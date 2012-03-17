@@ -1,0 +1,34 @@
+name: Citadel
+main: invalid.cxschx.citadel.Citadel
+version: 0.1
+description: Reenforce your structures!
+author: cxschx
+database: true
+commands:
+  ctfortify:
+    description: Each block you place will be reinforced with the block type you choose
+    usage: /ctfortify <reinforcement type>
+  ctstop:
+    description: Stop reinforcing the blocks you place
+    usage: /ctstop
+  ctplink:
+    description: The next block you place will be reinforced with the block type you choose
+    usage: /ctplink <reinforcement type>
+  ctlist:
+    description: List the possible fortification materials, their strenghts, and requirements.
+    usage: /ctlist
+  ctadd:
+    description: Adds the specified player to your group.
+    usage: /ctadd <playername>
+  ctrm:
+    description: Removes the specified player from your group.
+    usage: /ctremove <playername>
+  ctpublic:
+    description: Set all the chests and doors you place in this state to be public.
+    usage: /ctpublic
+  ctprivate:
+    description: Set all the chests and doors you place in this state to be private.
+    usage: /ctprivate
+  ctgrp:
+    description: Set all the chests and doors you place in thi state to be group owned.
+    usage: /ctgrp
