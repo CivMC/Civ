@@ -1,10 +1,5 @@
 package com.untamedears.Citadel;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -20,6 +15,12 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Door;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
 
 public class BlockListener implements Listener
 {
@@ -164,11 +165,10 @@ public class BlockListener implements Listener
 
 	@EventHandler
 	public void controlAccess(PlayerInteractEvent pie) {
+        if (!pie.hasBlock()) return;
+
 		Block block = pie.getClickedBlock();
-		Material matl = pie.getClickedBlock().getType();
-		if (block == null) {
-			return;
-		}
+        Material matl = block.getType();
 
 		Player p = pie.getPlayer();
 		try

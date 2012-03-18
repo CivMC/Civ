@@ -1,5 +1,5 @@
 name: Citadel
-main: invalid.cxschx.citadel.Citadel
+main: com.untamedears.Citadel.Citadel
 version: 0.1
 description: Reenforce your structures!
 author: cxschx
