@@ -55,7 +55,7 @@ public class Citadel extends JavaPlugin
 
 			this.connection = DriverManager.getConnection("jdbc:sqlite:plugins/Citadel/Citadel.db");
 			this.connection.createStatement().execute(
-				"CREATE TABLE IF NOT EXISTS REENFORCEMENTS (x INTEGER,y INTEGER,z INTEGER,world TEXT,durability INTEGER);");
+				"CREATE TABLE IF NOT EXISTS REINFORCEMENTS (x INTEGER,y INTEGER,z INTEGER,world TEXT,durability INTEGER);");
 
 			this.connection.createStatement().execute(
 				"CREATE TABLE IF NOT EXISTS GROUPS (grpName TEXT,member TEXT);");
@@ -103,31 +103,31 @@ public class Citadel extends JavaPlugin
 		{
 			if (args.length < 1)
 			{
-				sender.sendMessage(ChatColor.RED + "Please specify reenforcement block type.");
+				sender.sendMessage(ChatColor.RED + "Please specify reinforcement block type.");
 				return true;
 			}
 			Material matl = Material.getMaterial(args[0].toUpperCase());
 			if (materialStrengths.containsKey(matl))
 				BlockListener.playerReenforcers.put((Player)sender, matl);
 			else
-				sender.sendMessage(ChatColor.YELLOW + "Material " + args[0] + " not found as applicable reenforcement material");
+				sender.sendMessage(ChatColor.YELLOW + "Material " + args[0] + " not found as applicable reinforcement material");
 		}
 		else if (cmd.getName().equalsIgnoreCase("ctstop"))
 		{
 			BlockListener.playerReenforcers.remove((Player)sender);
-			sender.sendMessage(ChatColor.GREEN + "You are now out of reenforcement mode");
+			sender.sendMessage(ChatColor.GREEN + "You are now out of reinforcement mode");
 		} 
 		else if (cmd.getName().equalsIgnoreCase("ctplink"))
 		{
 			sender.sendMessage(ChatColor.RED + "Not yet implemented, sorry");
 			if (args.length < 1)
-				sender.sendMessage(ChatColor.RED + "Please specify reenforcement block type.");
+				sender.sendMessage(ChatColor.RED + "Please specify reinforcement block type.");
 		}
 		else if (cmd.getName().equalsIgnoreCase("ctlist"))
 		{
 			if ((materialRequirements.keySet() == null) || (materialRequirements.keySet().size() == 0))
 			{
-				sender.sendMessage(ChatColor.YELLOW + "No reenforcement materials available.");
+				sender.sendMessage(ChatColor.YELLOW + "No reinforcement materials available.");
 			}
 			for (Material m : materialRequirements.keySet())
 				sender.sendMessage(ChatColor.GREEN + m.toString() + " has strength " + materialStrengths.get(m) + " and you'll need " + materialRequirements.get(m) + " of it.");

@@ -24,7 +24,7 @@ import java.util.HashMap;
 
 public class BlockListener implements Listener
 {
-	private HashMap<Block, Integer> delayedReenforcements;
+	private HashMap<Block, Integer> delayedReinforcements;
 	private HashMap<Integer, Material> taskMaterial;
 	private HashMap<Integer, Player> taskInitiator;
 	public static HashMap<Player, Material> playerReenforcers;
@@ -33,7 +33,7 @@ public class BlockListener implements Listener
 
 	public BlockListener(JavaPlugin jp)throws SQLException, ClassNotFoundException
 	{
-		this.delayedReenforcements = new HashMap();
+		this.delayedReinforcements = new HashMap();
 		playerReenforcers = new HashMap();
 		this.taskMaterial = new HashMap();
 		this.taskInitiator = new HashMap();
@@ -43,7 +43,7 @@ public class BlockListener implements Listener
 	}
 
 	@EventHandler
-	public void applyReenforcement(BlockPlaceEvent bpe)
+	public void applyReinforcement(BlockPlaceEvent bpe)
 	{
 		Player placer = bpe.getPlayer();
 		Block block = bpe.getBlock();
@@ -57,7 +57,7 @@ public class BlockListener implements Listener
 				try
 				{
 					PreparedStatement tmp = this.conn.prepareStatement(
-						"INSERT INTO REENFORCEMENTS (x,y,z,world,durability) values (?,?,?,?,?)");
+						"INSERT INTO REINFORCEMENTS (x,y,z,world,durability) values (?,?,?,?,?)");
 					tmp.setInt(1, block.getX());
 					tmp.setInt(2, block.getY());
 					tmp.setInt(3, block.getZ());
@@ -66,31 +66,31 @@ public class BlockListener implements Listener
 
 					pid = Integer.valueOf(this.myPlugin.getServer().getScheduler().scheduleSyncDelayedTask(
 							this.myPlugin, 
-							new DelayedReenforcement(tmp), 
+							new DelayedReinforcement(tmp),
 							20L));
 
-					this.delayedReenforcements.put(block, pid);
+					this.delayedReinforcements.put(block, pid);
 					placer.getInventory().removeItem(new ItemStack[] { new ItemStack(matl, ((Integer)Citadel.materialRequirements.get(matl)).intValue()) });
 					this.taskInitiator.put(pid, placer);
 					this.taskMaterial.put(pid, matl);
 				}
 				catch (SQLException e)
 				{
-					System.err.println("Exception creating reenforcement:\n" + e);
+					System.err.println("Exception creating reinforcement:\n" + e);
 					return;
 				}
 			} 
 			else
 			{
-				placer.sendMessage(ChatColor.YELLOW + "You require more " + matl + " to continue reenforcements.");
+				placer.sendMessage(ChatColor.YELLOW + "You require more " + matl + " to continue reinforcements.");
 				playerReenforcers.remove(placer);
-				placer.sendMessage("You are now out of reenforcement mode");
+				placer.sendMessage("You are now out of reinforcement mode");
 			}
 		}
 	}
 
 	@EventHandler
-	public void gracefullyRemoveReenforcementModeOnLogout(PlayerQuitEvent pqe)
+	public void gracefullyRemoveReinforcementModeOnLogout(PlayerQuitEvent pqe)
 	{
 		if (playerReenforcers.containsKey(pqe.getPlayer()))
 			playerReenforcers.remove(pqe.getPlayer());
@@ -100,14 +100,14 @@ public class BlockListener implements Listener
 	public void checkDurabilityAndDelayedEventCheck(BlockBreakEvent bbe) {
 		Block tmp = bbe.getBlock();
 
-		if (this.delayedReenforcements.containsKey(tmp))
+		if (this.delayedReinforcements.containsKey(tmp))
 		{
-			Integer pid = (Integer)this.delayedReenforcements.get(tmp);
+			Integer pid = (Integer)this.delayedReinforcements.get(tmp);
 			Material matl = (Material)this.taskMaterial.get(pid);
-			this.myPlugin.getServer().getScheduler().cancelTask(((Integer)this.delayedReenforcements.get(tmp)).intValue());
+			this.myPlugin.getServer().getScheduler().cancelTask(((Integer)this.delayedReinforcements.get(tmp)).intValue());
 			((Player)this.taskInitiator.get(pid)).getInventory().addItem(new ItemStack[] { new ItemStack(matl, ((Integer)Citadel.materialRequirements.get(matl)).intValue()) });
 
-			this.delayedReenforcements.remove(tmp);
+			this.delayedReinforcements.remove(tmp);
 			this.taskInitiator.remove(pid);
 			this.taskMaterial.remove(pid);
 		}
@@ -115,7 +115,7 @@ public class BlockListener implements Listener
 		try
 		{
 			PreparedStatement ask = this.conn.prepareStatement(
-				"SELECT DURABILITY FROM REENFORCEMENTS WHERE x=? AND y=? AND z=? AND world=?");
+				"SELECT DURABILITY FROM REINFORCEMENTS WHERE x=? AND y=? AND z=? AND world=?");
 			ask.setInt(1, tmp.getX());
 			ask.setInt(2, tmp.getY());
 			ask.setInt(3, tmp.getZ());
@@ -135,7 +135,7 @@ public class BlockListener implements Listener
 			if (durability <= 0)
 			{
 				PreparedStatement delete = this.conn.prepareStatement(
-					"DELETE FROM REENFORCEMENTS WHERE x=? AND y=? AND z=? AND world=?");
+					"DELETE FROM REINFORCEMENTS WHERE x=? AND y=? AND z=? AND world=?");
 				delete.setInt(1, tmp.getX());
 				delete.setInt(2, tmp.getY());
 				delete.setInt(3, tmp.getZ());
@@ -147,7 +147,7 @@ public class BlockListener implements Listener
 			{
 				bbe.setCancelled(true);
 				PreparedStatement update = this.conn.prepareStatement(
-					"UPDATE REENFORCEMENTS SET DURABILITY=? WHERE x=? AND y=? AND z=? AND world=?");
+					"UPDATE REINFORCEMENTS SET DURABILITY=? WHERE x=? AND y=? AND z=? AND world=?");
 				update.setInt(1, durability);
 				update.setInt(2, tmp.getX());
 				update.setInt(3, tmp.getY());
