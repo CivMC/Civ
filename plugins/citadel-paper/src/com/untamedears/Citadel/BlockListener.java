@@ -17,205 +17,142 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Door;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
-public class BlockListener implements Listener
-{
-	private HashMap<Block, Integer> delayedReinforcements;
-	private HashMap<Integer, Material> taskMaterial;
-	private HashMap<Integer, Player> taskInitiator;
-	public static HashMap<Player, Material> playerReenforcers;
-	private JavaPlugin myPlugin;
-	private CitadelDao dao;
+public class BlockListener implements Listener {
+    private HashMap<Block, Integer> delayedReinforcements;
+    private HashMap<Integer, Material> taskMaterial;
+    private HashMap<Integer, Player> taskInitiator;
+    public static HashMap<Player, Material> playerReinforcers;
+    private JavaPlugin myPlugin;
+    private CitadelDao dao;
+    private Logger log;
 
-	public BlockListener(JavaPlugin jp)throws SQLException, ClassNotFoundException
-	{
-		this.delayedReinforcements = new HashMap<Block, Integer>();
-		playerReenforcers = new HashMap<Player, Material>();
-		this.taskMaterial = new HashMap<Integer, Material>();
-		this.taskInitiator = new HashMap<Integer, Player>();
+    public BlockListener(JavaPlugin jp) throws ClassNotFoundException {
+        this.delayedReinforcements = new HashMap<Block, Integer>();
+        playerReinforcers = new HashMap<Player, Material>();
+        this.taskMaterial = new HashMap<Integer, Material>();
+        this.taskInitiator = new HashMap<Integer, Player>();
 
-		this.myPlugin = jp;
-		this.dao = ((Citadel)this.myPlugin).dao;
-	}
+        this.myPlugin = jp;
+        this.dao = ((Citadel) this.myPlugin).dao;
+        this.log = myPlugin.getLogger();
+    }
 
-	@EventHandler
-	public void applyReinforcement(BlockPlaceEvent bpe)
-	{
-		Player placer = bpe.getPlayer();
-		Block block = bpe.getBlock();
-		Material matl = playerReenforcers.get(placer);
-		if ((matl != null) && (Citadel.materialStrengths.containsKey(matl)) && (Citadel.materialRequirements.containsKey(matl)))
-		{
-			System.out.println("matl: " + matl + " requires: " + Citadel.materialRequirements.get(matl));
-			if (placer.getInventory().contains(matl, Citadel.materialRequirements.get(matl)))
-			{
-				try
-				{
-                    int pid = this.myPlugin.getServer().getScheduler().scheduleSyncDelayedTask(
-                            this.myPlugin,
-                            dao.addReinforcement(block, matl),
-                            20L);
+    @EventHandler
+    public void applyReinforcement(BlockPlaceEvent bpe) {
+        Player placer = bpe.getPlayer();
+        Block block = bpe.getBlock();
+        Material matl = playerReinforcers.get(placer);
+        if ((matl != null) && (Citadel.materialStrengths.containsKey(matl)) && (Citadel.materialRequirements.containsKey(matl))) {
+            log.info("matl: " + matl + " requires: " + Citadel.materialRequirements.get(matl));
+            if (placer.getInventory().contains(matl, Citadel.materialRequirements.get(matl))) {
+                int pid = this.myPlugin.getServer().getScheduler().scheduleSyncDelayedTask(
+                        this.myPlugin,
+                        dao.addReinforcement(block, matl),
+                        20L);
 
-					this.delayedReinforcements.put(block, pid);
-					placer.getInventory().removeItem(new ItemStack(matl, Citadel.materialRequirements.get(matl)));
-					this.taskInitiator.put(pid, placer);
-					this.taskMaterial.put(pid, matl);
-				}
-				catch (SQLException e)
-				{
-					System.err.println("Exception creating reinforcement:\n" + e);
-					return;
-				}
-			}
-			else
-			{
-				placer.sendMessage(ChatColor.YELLOW + "You require more " + matl + " to continue reinforcements.");
-				playerReenforcers.remove(placer);
-				placer.sendMessage("You are now out of reinforcement mode");
-			}
-		}
-	}
-
-	@EventHandler
-	public void gracefullyRemoveReinforcementModeOnLogout(PlayerQuitEvent pqe)
-	{
-		if (playerReenforcers.containsKey(pqe.getPlayer()))
-			playerReenforcers.remove(pqe.getPlayer());
-	}
-
-	@EventHandler
-	public void checkDurabilityAndDelayedEventCheck(BlockBreakEvent bbe) {
-        Block block = bbe.getBlock();
-        try {
-            if (this.delayedReinforcements.containsKey(block))
-            {
-                Integer pid = this.delayedReinforcements.get(block);
-                Material matl = this.taskMaterial.get(pid);
-                this.myPlugin.getServer().getScheduler().cancelTask(this.delayedReinforcements.get(block));
-                this.taskInitiator.get(pid).getInventory().addItem(new ItemStack(matl, Citadel.materialRequirements.get(matl)));
-
-                this.delayedReinforcements.remove(block);
-                this.taskInitiator.remove(pid);
-                this.taskMaterial.remove(pid);
+                this.delayedReinforcements.put(block, pid);
+                placer.getInventory().removeItem(new ItemStack(matl, Citadel.materialRequirements.get(matl)));
+                this.taskInitiator.put(pid, placer);
+                this.taskMaterial.put(pid, matl);
+            } else {
+                placer.sendMessage(ChatColor.YELLOW + "You require more " + matl + " to continue reinforcements.");
+                playerReinforcers.remove(placer);
+                placer.sendMessage("You are now out of reinforcement mode");
             }
-
-            Integer durability = dao.updateReinforcement(block, 1);
-            if (durability == null) return;
-
-            if (durability <= 0)
-            {
-                dao.removeReinforcement(block);
-            } else
-            {
-                bbe.setCancelled(true);
-            }
-        } catch (SQLException e) {
-            System.err.println("Citadel - error accessing database:\n" + e);
         }
     }
 
-	@EventHandler
-	public void controlAccess(PlayerInteractEvent pie) {
+    @EventHandler
+    public void gracefullyRemoveReinforcementModeOnLogout(PlayerQuitEvent pqe) {
+        if (playerReinforcers.containsKey(pqe.getPlayer()))
+            playerReinforcers.remove(pqe.getPlayer());
+    }
+
+    @EventHandler
+    public void checkDurabilityAndDelayedEventCheck(BlockBreakEvent bbe) {
+        Block block = bbe.getBlock();
+        if (this.delayedReinforcements.containsKey(block)) {
+            Integer pid = this.delayedReinforcements.get(block);
+            Material matl = this.taskMaterial.get(pid);
+            this.myPlugin.getServer().getScheduler().cancelTask(this.delayedReinforcements.get(block));
+            this.taskInitiator.get(pid).getInventory().addItem(new ItemStack(matl, Citadel.materialRequirements.get(matl)));
+
+            this.delayedReinforcements.remove(block);
+            this.taskInitiator.remove(pid);
+            this.taskMaterial.remove(pid);
+        }
+
+        Integer durability = dao.updateReinforcement(block, 1);
+        if (durability == null) return;
+
+        if (durability <= 0) {
+            dao.removeReinforcement(block);
+        } else {
+            bbe.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void controlAccess(PlayerInteractEvent pie) {
         if (!pie.hasBlock()) return;
 
-		Block block = pie.getClickedBlock();
+        Block block = pie.getClickedBlock();
         Material matl = block.getType();
 
-		Player p = pie.getPlayer();
-		try
-		{
-			if ((matl == Material.CHEST) || (matl == Material.WOODEN_DOOR) || (matl == Material.IRON_DOOR)) {
-                String group = dao.getRegisteredGroup(block);
-				if (group != null && !dao.isPlayerInGroup(group, p.getDisplayName())) {
-                    p.sendMessage(ChatColor.RED + "That door/chest is locked.");
-                    pie.setCancelled(true);
-                }
-		    }
-		}
-		catch (SQLException e)
-		{
-			System.err.println("Error when seeing if the door's part of a group:\n" + e);
-		}
-	}
-
-	public void controlRedstone(BlockRedstoneEvent bre)
-	{
-		Block block = bre.getBlock();
-
-		if ((block instanceof Door))
-			try
-			{
-                String group = dao.getRegisteredGroup(block);
-                if (group != null) {
-                    bre.setNewCurrent(bre.getOldCurrent());
-                }
-			}
-			catch (SQLException e)
-			{
-				System.err.println("Error in redstone protection checking:\n" + e);
-			}
-	}
-
-	@EventHandler
-	public void makePrivateGroup(PlayerLoginEvent ple)
-	{
-		((Citadel)this.myPlugin).playerPlacementState.put(ple.getPlayer(), 1);
-		try
-		{
-            String playerName = ple.getPlayer().getDisplayName();
-            if (!dao.isPlayerInGroup(playerName, playerName)) {
-                dao.addPlayerToGroup(playerName, playerName);
+        Player p = pie.getPlayer();
+        if ((matl == Material.CHEST) || (matl == Material.WOODEN_DOOR) || (matl == Material.IRON_DOOR)) {
+            String group = dao.getRegisteredGroup(block);
+            if (group != null && !dao.isPlayerInGroup(group, p.getDisplayName())) {
+                p.sendMessage(ChatColor.RED + "That door/chest is locked.");
+                pie.setCancelled(true);
             }
-		}
-		catch (SQLException e)
-		{
-			System.err.println("Error in seeing if player has self-group:\n" + e);
-		}
-	}
+        }
+    }
 
-	@EventHandler
-	public void secureDoorOrChest(BlockPlaceEvent bpe)
-	{
-		Block blk = bpe.getBlock();
-		Material object = bpe.getBlock().getType();
+    public void controlRedstone(BlockRedstoneEvent bre) {
+        Block block = bre.getBlock();
 
-		if ((object != Material.CHEST) && (object != Material.WOODEN_DOOR) && (object != Material.IRON_DOOR))
-		{
-			return;
-		}
+        if ((block instanceof Door)) {
+            String group = dao.getRegisteredGroup(block);
+            if (group != null) {
+                bre.setNewCurrent(bre.getOldCurrent());
+            }
+        }
+    }
 
-		Integer playerState = ((Citadel)this.myPlugin).playerPlacementState.get(bpe.getPlayer());
-		if (playerState == null)
-		{
-			((Citadel)this.myPlugin).playerPlacementState.put(bpe.getPlayer(), 0);
-			playerState = 0;
-		}
+    @EventHandler
+    public void makePrivateGroup(PlayerLoginEvent ple) {
+        ((Citadel) this.myPlugin).playerPlacementState.put(ple.getPlayer(), 1);
+        String playerName = ple.getPlayer().getDisplayName();
+        if (!dao.isPlayerInGroup(playerName, playerName)) {
+            dao.addPlayerToGroup(playerName, playerName);
+        }
+    }
 
-		if (playerState > 0)
-		{
-			try
-			{
-                dao.addRegisteredGroup(blk, bpe.getPlayer().getDisplayName());
-			}
-			catch (SQLException e)
-			{
-				System.err.println("Error putting chest/door into protection database:\n" + e);
-			}
-		}
-	}
+    @EventHandler
+    public void secureDoorOrChest(BlockPlaceEvent bpe) {
+        Block blk = bpe.getBlock();
+        Material object = bpe.getBlock().getType();
 
-	public void close()
-	{
-		try
-		{
-			dao.close();
-		}
-		catch (SQLException e)
-		{
-			System.err.println("Citadel - Sorry, I'll have to close the database ungracefully!");
-			System.err.println(e.toString());
-		}
-	}
+        if ((object != Material.CHEST) && (object != Material.WOODEN_DOOR) && (object != Material.IRON_DOOR)) {
+            return;
+        }
+
+        Integer playerState = ((Citadel) this.myPlugin).playerPlacementState.get(bpe.getPlayer());
+        if (playerState == null) {
+            ((Citadel) this.myPlugin).playerPlacementState.put(bpe.getPlayer(), 0);
+            playerState = 0;
+        }
+
+        if (playerState > 0) {
+            dao.addRegisteredGroup(blk, bpe.getPlayer().getDisplayName());
+        }
+    }
+
+    public void close() {
+        dao.close();
+    }
 }
