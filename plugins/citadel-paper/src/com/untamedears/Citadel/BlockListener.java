@@ -6,6 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
@@ -111,15 +112,19 @@ public class BlockListener implements Listener
 			this.taskInitiator.remove(pid);
 			this.taskMaterial.remove(pid);
 		}
+        updateReinforcement(tmp, bbe);
+        bbe.setCancelled(true);
+    }
+    private void updateReinforcement(Block block, Event event){
 
 		try
 		{
 			PreparedStatement ask = this.conn.prepareStatement(
 				"SELECT DURABILITY FROM REINFORCEMENTS WHERE x=? AND y=? AND z=? AND world=?");
-			ask.setInt(1, tmp.getX());
-			ask.setInt(2, tmp.getY());
-			ask.setInt(3, tmp.getZ());
-			ask.setString(4, tmp.getWorld().getName());
+			ask.setInt(1, block.getX());
+			ask.setInt(2, block.getY());
+			ask.setInt(3, block.getZ());
+			ask.setString(4, block.getWorld().getName());
 			ask.execute();
 			ResultSet answer = ask.getResultSet();
 			if (!answer.next())
@@ -136,23 +141,22 @@ public class BlockListener implements Listener
 			{
 				PreparedStatement delete = this.conn.prepareStatement(
 					"DELETE FROM REINFORCEMENTS WHERE x=? AND y=? AND z=? AND world=?");
-				delete.setInt(1, tmp.getX());
-				delete.setInt(2, tmp.getY());
-				delete.setInt(3, tmp.getZ());
-				delete.setString(4, tmp.getWorld().getName());
+				delete.setInt(1, block.getX());
+				delete.setInt(2, block.getY());
+				delete.setInt(3, block.getZ());
+				delete.setString(4, block.getWorld().getName());
 				delete.execute();
 				delete.close();
 			}
 			else
 			{
-				bbe.setCancelled(true);
 				PreparedStatement update = this.conn.prepareStatement(
 					"UPDATE REINFORCEMENTS SET DURABILITY=? WHERE x=? AND y=? AND z=? AND world=?");
 				update.setInt(1, durability);
-				update.setInt(2, tmp.getX());
-				update.setInt(3, tmp.getY());
-				update.setInt(4, tmp.getZ());
-				update.setString(5, tmp.getWorld().getName());
+				update.setInt(2, block.getX());
+				update.setInt(3, block.getY());
+				update.setInt(4, block.getZ());
+				update.setString(5, block.getWorld().getName());
 				update.execute();
 				update.close();
 			}
