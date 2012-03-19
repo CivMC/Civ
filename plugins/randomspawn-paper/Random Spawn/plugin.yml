@@ -7,6 +7,11 @@ commands:
     description: The main command.
     usage: Incorrect usage! Try /rs help
     aliases: rs
+  help:
+    description: Shows a list with all the commands.
+    usage: /rs help [1/2/3]
+    permission: RandomSpawn.help
+    prefix: randomspawn
   reload:
     description: Reloads the Random Spawn config files.
     usage: /rs reload [config/worlds/spawnlocations]
@@ -30,7 +35,7 @@ commands:
    
   setarea:
     description: Sets the Random Spawn area.
-    usage: /rssetarea [square/circle] radius or /rssetarea xrange zrange or /rssetarea xmin xmax zmin zmax
+    usage: /rs setarea [square/circle] radius or /rs setarea xrange zrange or /rs setarea xmin xmax zmin zmax
     permission: RandomSpawn.configure
     prefix: randomspawn 
   usebeds:
@@ -66,7 +71,7 @@ commands:
   unsetfirstspawn:
     description: Unsets the first spawn location for this world.
     usage: /rs unsetfirstspawn
-    aliases: rsunsetfs
+    aliases: unsfs
     permission: RandomSpawn.setfirstspawn
     prefix: randomspawn
   
