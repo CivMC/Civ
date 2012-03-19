@@ -1,0 +1,111 @@
+name: RandomSpawn
+version: 1.8b
+main: me.Josvth.RandomSpawn.RandomSpawn
+author: Josvth
+commands:
+  randomspawn:
+    description: The main command.
+    usage: Incorrect usage! Try /rs help
+    aliases: rs
+  reload:
+    description: Reloads the Random Spawn config files.
+    usage: /rs reload [config/worlds/spawnlocations]
+    permission: RandomSpawn.reload
+    prefix: randomspawn
+  info:
+    description: Shows the Random Spawn settings for this world.
+    usage: /rs info
+    permission: RandomSpawn.info
+    prefix: randomspawn
+  enable:
+    description: Enables Random Spawn in this world.
+    usage: /rs enable
+    permission: RandomSpawn.configure
+    prefix: randomspawn
+  disable:
+    description: Disables Random Spawn in this world.
+    usage: /rs disable
+    permission: RandomSpawn.configure
+    prefix: randomspawn
+   
+  setarea:
+    description: Sets the Random Spawn area.
+    usage: /rssetarea [square/circle] radius or /rssetarea xrange zrange or /rssetarea xmin xmax zmin zmax
+    permission: RandomSpawn.configure
+    prefix: randomspawn 
+  usebeds:
+    description: Toggles using beds.
+    usage: /rs usebeds [true/false]
+    permission: RandomSpawn.configure
+    prefix: randomspawn  
+  keepfirstspawns:
+    description: Toggles spawn saving.
+    usage: /rs keepfirstspawns [true/false]
+    aliases: kfs
+    permission: RandomSpawn.configure
+    prefix: randomspawn
+  firstjoin:
+    description: Toggles randomspawning on first join.
+    usage: /rs firstjoin [true/false]
+    aliases: fj
+    permission: RandomSpawn.configure
+    prefix: randomspawn 
+
+  setfirstspawn:
+    description: Sets the first spawn location for this world.
+    usage: /rs setfirstspawn
+    aliases: sfs
+    permission: RandomSpawn.setfirstspawn
+    prefix: randomspawn 
+  tpfirstspawn:
+    description: Teleports you to the first spawn location of this world.
+    usage: /rs tpfirstspawn
+    aliases: tfs
+    permission: RandomSpawn.tpfirstspawn
+    prefix: randomspawn 
+  unsetfirstspawn:
+    description: Unsets the first spawn location for this world.
+    usage: /rs unsetfirstspawn
+    aliases: rsunsetfs
+    permission: RandomSpawn.setfirstspawn
+    prefix: randomspawn
+  
+permissions:
+  RandomSpawn.*:
+    description: Gives access to all Random Spawn commands.
+    default: op
+    children:
+      RandomSpawn.configure: true
+      RandomSpawn.help: true
+      RandomSpawn.info: true
+      RandomSpawn.placesign: true
+  RandomSpawn.reload:
+        description: Allows you to use the /rs reload command.
+        default: op
+  RandomSpawn.configure:
+        description: Allows you to configure Random Spawn.
+        default: op
+        children:
+          RandomSpawn.setfirstspawn: true
+          RandomSpawn.teleporttofirstspawn: true
+  RandomSpawn.help:
+    description: Gives you access to the help commands.
+    default: false
+  RandomSpawn.info:
+    description: Gives you access to the world info screen.
+    default: true
+  RandomSpawn.setfirstspawn:
+        description: Allows you to use the /setfirstspawn command.
+        default: op
+  RandomSpawn.teleporttofirstspawn:
+        description: Allows you to use the /tpfirstspawn command.
+        default: op
+  RandomSpawn.exclude:
+        description: Excludes you from being randomly spawned.
+        default: false
+  RandomSpawn.placesign:
+        description: Allows you to place Random Spawn Signs.
+        default: op
+  RandomSpawn.usesign:
+        description: Allows you to use Random Spawn Signs.
+        default: true

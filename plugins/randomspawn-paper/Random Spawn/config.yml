@@ -1,0 +1,8 @@
+debug: false
+fallfromsky: false
+generator:
+  chunkspertick: 8
+  interval: 4
+messages:
+   pleasewait: "Please wait while your spawn is being loaded."
+   randomspawned: "You wake up in an unfamiliar place."
