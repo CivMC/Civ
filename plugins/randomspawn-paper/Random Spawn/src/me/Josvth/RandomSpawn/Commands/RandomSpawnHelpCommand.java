@@ -22,7 +22,7 @@ public class RandomSpawnHelpCommand extends RandomSpawnCommandExecutor{
 
 		if (args.size() == 0 || (args.size() == 1 && args.get(0).matches("1"))){
 
-			player.sendMessage(ChatColor.WHITE +" ---------------- " + ChatColor.AQUA + "Random Spawn ver: " + version + ChatColor.WHITE + " ----------------");
+			player.sendMessage(ChatColor.WHITE +" ---------------- " + ChatColor.AQUA + "Random Spawn ver: " + version + ChatColor.WHITE + " ---------------");
 			player.sendMessage(ChatColor.AQUA + "PAGE 1 of 3");
 			player.sendMessage("");
 			player.sendMessage(ChatColor.AQUA + "/rs help (1/2/3)  " + ChatColor.WHITE + "Shows this screen." );
@@ -37,7 +37,7 @@ public class RandomSpawnHelpCommand extends RandomSpawnCommandExecutor{
 		}
 		if (args.get(0).matches("2")){
 
-			player.sendMessage(ChatColor.WHITE +" ---------------- " + ChatColor.AQUA + "Random Spawn ver: " + version + ChatColor.WHITE + " ----------------");
+			player.sendMessage(ChatColor.WHITE +" ---------------- " + ChatColor.AQUA + "Random Spawn ver: " + version + ChatColor.WHITE + " ---------------");
 			player.sendMessage(ChatColor.AQUA + "PAGE 2 of 3");
 			player.sendMessage("");
 			player.sendMessage(ChatColor.AQUA + "/rs setarea  " + ChatColor.WHITE + "Sets the Random Spawn area." );
@@ -52,7 +52,7 @@ public class RandomSpawnHelpCommand extends RandomSpawnCommandExecutor{
 		}
 		if (args.get(0).matches("3")){
 
-			player.sendMessage(ChatColor.WHITE +" ---------------- " + ChatColor.AQUA + "Random Spawn ver: " + version + ChatColor.WHITE + " ----------------");
+			player.sendMessage(ChatColor.WHITE +" ---------------- " + ChatColor.AQUA + "Random Spawn ver: " + version + ChatColor.WHITE + " ---------------");
 			player.sendMessage(ChatColor.AQUA + "PAGE 3 of 3");
 			player.sendMessage("");
 			player.sendMessage(ChatColor.AQUA + "/rs setfirstspawn  ");
