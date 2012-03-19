@@ -292,7 +292,7 @@ public class RandomSpawnSpawner implements Runnable{
 		if (taskID == 0){
 			plugin.logDebug("Task NOID: " + message);
 		}else{
-			plugin.logDebug("Task "+ taskID + " : " + message);
+			plugin.logDebug("Task "+ taskID + ": " + message);
 		}
 	}
 	
