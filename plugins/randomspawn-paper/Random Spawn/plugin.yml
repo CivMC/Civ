@@ -35,7 +35,7 @@ commands:
    
   setarea:
     description: Sets the Random Spawn area.
-    usage: /rs setarea [square/circle] radius or /rs setarea xrange zrange or /rs setarea xmin xmax zmin zmax
+    usage: /rs setarea [square/circle] <radius> or /rs setarea <xrange> <zrange> or /rs setarea <xmin> <xmax> <zmin> <zmax>
     permission: RandomSpawn.configure
     prefix: randomspawn 
   usebeds:
