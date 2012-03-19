@@ -1,11 +1,6 @@
 package com.untamedears.Citadel;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
+import com.untamedears.Citadel.dao.CitadelDao;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,27 +9,31 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+
 public class Citadel extends JavaPlugin
 {
 	public static HashMap<Material, Integer> materialStrengths;
 	public static HashMap<Material, Integer> materialRequirements;
 	public HashMap<Player, Integer> playerPlacementState;
-	public Connection connection;
+    public CitadelDao dao;
 
 	public void onEnable()
 	{
 		reloadConfig();
-		materialStrengths = new HashMap();
-		materialRequirements = new HashMap();
-		this.playerPlacementState = new HashMap();
+		materialStrengths = new HashMap<Material, Integer>();
+		materialRequirements = new HashMap<Material, Integer>();
+		this.playerPlacementState = new HashMap<Player, Integer>();
 
-		List tmp1 = getConfig().getIntegerList("materials.strengths.keys");
-		List tmp2 = getConfig().getIntegerList("materials.strengths.strengths");
-		List tmp3 = getConfig().getIntegerList("materials.strengths.requirements");
+		List<Integer> tmp1 = getConfig().getIntegerList("materials.strengths.keys");
+		List<Integer> tmp2 = getConfig().getIntegerList("materials.strengths.strengths");
+		List<Integer> tmp3 = getConfig().getIntegerList("materials.strengths.requirements");
 
-		Integer[] keys = (Integer[])tmp1.toArray(new Integer[tmp1.size()]);
-		Integer[] strengths = (Integer[])tmp2.toArray(new Integer[tmp2.size()]);
-		Integer[] requirements = (Integer[])tmp3.toArray(new Integer[tmp3.size()]);
+		Integer[] keys = tmp1.toArray(new Integer[tmp1.size()]);
+		Integer[] strengths = tmp2.toArray(new Integer[tmp2.size()]);
+		Integer[] requirements = tmp3.toArray(new Integer[tmp3.size()]);
 
 		if ((keys.length != strengths.length) || (keys.length != requirements.length))
 		{
@@ -45,25 +44,15 @@ public class Citadel extends JavaPlugin
 		}
 		for (int i = 0; i < Math.min(keys.length, Math.min(strengths.length, requirements.length)); i++)
 		{
-			materialStrengths.put(Material.getMaterial(keys[i].intValue()), strengths[i]);
-			materialRequirements.put(Material.getMaterial(keys[i].intValue()), requirements[i]);
+			materialStrengths.put(Material.getMaterial(keys[i]), strengths[i]);
+			materialRequirements.put(Material.getMaterial(keys[i]), requirements[i]);
 		}
 
 		try
 		{
-			Class.forName("org.sqlite.JDBC");
+            dao = new CitadelDao();
 
-			this.connection = DriverManager.getConnection("jdbc:sqlite:plugins/Citadel/Citadel.db");
-			this.connection.createStatement().execute(
-				"CREATE TABLE IF NOT EXISTS REINFORCEMENTS (x INTEGER,y INTEGER,z INTEGER,world TEXT,durability INTEGER);");
-
-			this.connection.createStatement().execute(
-				"CREATE TABLE IF NOT EXISTS GROUPS (grpName TEXT,member TEXT);");
-
-			this.connection.createStatement().execute(
-				"CREATE TABLE IF NOT EXISTS REGISTRY (x INTEGER,y INTEGER,z INTEGER,world TEXT,grp TEXT);");
-
-			Bukkit.getServer().getPluginManager().registerEvents(new BlockListener(this), this);
+            Bukkit.getServer().getPluginManager().registerEvents(new BlockListener(this), this);
 		}
 		catch (SQLException e)
 		{
@@ -140,11 +129,7 @@ public class Citadel extends JavaPlugin
 				return true;
 			}
 			try {
-				PreparedStatement tmp = this.connection.prepareStatement(
-					"INSERT INTO GROUPS (grpName,member) values (?,?)");
-				tmp.setString(1, ((Player)sender).getDisplayName() + "Grp");
-				tmp.setString(2, args[0]);
-				tmp.execute();
+                dao.addPlayerToGroup(((Player) sender).getDisplayName() + "Grp", args[0]);
 				sender.sendMessage(ChatColor.GREEN + " player " + args[0] + " added.");
 			}
 			catch (SQLException e)
@@ -161,11 +146,7 @@ public class Citadel extends JavaPlugin
 			}
 			try
 			{
-				PreparedStatement tmp = this.connection.prepareStatement(
-					"DELETE FROM GROUPS WHERE grpName=? AND member=?");
-				tmp.setString(1, ((Player)sender).getDisplayName() + "Grp");
-				tmp.setString(2, args[0]);
-				tmp.execute();
+				dao.removePlayerFromGroup(((Player)sender).getDisplayName() + "Grp", args[0]);
 				sender.sendMessage(ChatColor.GREEN + " player " + args[0] + " removed.");
 			} 
 			catch (SQLException e)
@@ -175,15 +156,15 @@ public class Citadel extends JavaPlugin
 		}
 		else if (cmd.getName().equalsIgnoreCase("ctpublic"))
 		{
-			this.playerPlacementState.put((Player)sender, Integer.valueOf(0));
+			this.playerPlacementState.put((Player)sender, 0);
 			sender.sendMessage(ChatColor.GREEN + "Now in public mode.");
 		} 
 		else if (cmd.getName().equalsIgnoreCase("ctprivate"))
 		{
-			this.playerPlacementState.put((Player)sender, Integer.valueOf(1));
+			this.playerPlacementState.put((Player)sender, 1);
 			sender.sendMessage(ChatColor.GREEN + "Now in private mode.");
 		} else if (cmd.getName().equalsIgnoreCase("ctgrp")) {
-			this.playerPlacementState.put((Player)sender, Integer.valueOf(2));
+			this.playerPlacementState.put((Player)sender, 2);
 			sender.sendMessage(ChatColor.GREEN + "Now in group mode.");
 		}
 		return true;
