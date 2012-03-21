@@ -111,7 +111,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 		
-		List<Coordinate> reinforcedBlocks = new ArrayList<Coordinate>();
+		List<Coordinate> reinforcedBlocksCoords = new ArrayList<Coordinate>();
 		HashMap<Coordinate, Block> affectedBlocks = new HashMap<Coordinate, Block>();
 		
 		//Initialize min & max X,Y,Z coordinates
@@ -165,18 +165,19 @@ public class BlockListener implements Listener {
 		
 		//Query database for any reinforced blocks that may be in the blast radius
 		//Reinforced blocks should have a durability > 0 (aka >= 1)
-		reinforcedBlocks = dao.selectReinforcements(worldName, smallestX, largestX, smallestY, largestY, smallestZ, largestZ);
-		System.out.println(reinforcedBlocks.get(0));
+		reinforcedBlocksCoords = dao.selectReinforcements(worldName, smallestX, largestX, smallestY, largestY, smallestZ, largestZ);
 		
-		if(reinforcedBlocks.size() < 1){
+		if(reinforcedBlocksCoords.size() < 1){
 			return;
 		}
 		
 		//If there was some found, loop through each one
-		for(int i = 0; i < reinforcedBlocks.size(); i++){
-			Coordinate reinforcedBlock = reinforcedBlocks.get(i);
+		for(int i = 0; i < reinforcedBlocksCoords.size(); i++){
+			Coordinate rbCoords = reinforcedBlocksCoords.get(i);
+			Block reinforcedBlock = affectedBlocks.get(rbCoords);
+			
 			//Then remove it from explosion
-			event.blockList().remove(affectedBlocks.get(reinforcedBlock));
+			event.blockList().remove(reinforcedBlock);
 		}
 		 
 		//Update reinforcements to set durability of blocks that are within blast radius
