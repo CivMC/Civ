@@ -27,6 +27,9 @@ public class CitadelDao {
     private static final String SELECT_REINFORCEMENT = "SELECT DURABILITY FROM REINFORCEMENTS WHERE x=? AND y=? AND z=? AND world=?;";
     private static final String DELETE_REINFORCEMENT = "DELETE FROM REINFORCEMENTS WHERE x=:x AND y=? AND z=? AND world=?;";
 
+    private static final String SELECT_REINFORCEMENTS = "SELECT X, Y, Z FROM REINFORCEMENTS WHERE DURABILITY >= 1 AND x<=? AND x>=? AND y<=? AND y>=? AND z<=? AND z>=? AND world=?";
+    private static final String UPDATE_REINFORCEMENTS = "UPDATE REINFORCEMENTS SET DURABILITY = DURABILITY - 1 WHERE DURABILITY >= 1 AND x<=? AND x>=? AND y<=? AND y>=? AND z<=? AND z>=? AND world=?";
+    
     private static final String INSERT_REGISTRY = "INSERT INTO REGISTRY (x,y,z,world,grp) VALUES (?,?,?,?,?)";
     private static final String SELECT_REGISTRY = "SELECT grp FROM REGISTRY WHERE x=? AND y=? AND z=? AND world=?";
 
@@ -137,6 +140,38 @@ public class CitadelDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    public ResultSet selectReinforcements(String worldName, Integer smallestX, Integer largestX, 
+    		Integer smallestY, Integer largestY, Integer smallestZ, Integer largestZ){
+    	try {
+    		PreparedStatement tmp = conn.prepareStatement(SELECT_REINFORCEMENTS);
+    		tmp.setString(1, worldName);
+			tmp.setInt(2, largestX);
+			tmp.setInt(3, smallestX);
+			tmp.setInt(4, largestY); 
+			tmp.setInt(5, smallestY);
+			tmp.execute();
+			ResultSet result = tmp.getResultSet();
+			return result;
+    	} catch (SQLException e){
+    		throw new RuntimeException(e);
+    	}
+    }
+    
+    public void updateReinforcements(String worldName, Integer smallestX, Integer largestX, 
+    		Integer smallestY, Integer largestY, Integer smallestZ, Integer largestZ){
+    	try {
+    		PreparedStatement tmp = conn.prepareStatement(UPDATE_REINFORCEMENTS);
+    		tmp.setString(1, worldName);
+			tmp.setInt(2, largestX);
+			tmp.setInt(3, smallestX);
+			tmp.setInt(4, largestY); 
+			tmp.setInt(5, smallestY);
+			tmp.execute();
+    	} catch (SQLException e){
+    		throw new RuntimeException(e);
+    	}
     }
 
     public void addRegisteredGroup(Block block, String group) {

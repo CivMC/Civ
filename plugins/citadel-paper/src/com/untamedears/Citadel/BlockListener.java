@@ -3,6 +3,7 @@ package com.untamedears.Citadel;
 import com.untamedears.Citadel.dao.CitadelDao;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -17,7 +19,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Door;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class BlockListener implements Listener {
@@ -94,6 +100,100 @@ public class BlockListener implements Listener {
             bbe.setCancelled(true);
         }
     }
+    
+    @EventHandler
+	public void checkForExplosion(EntityExplodeEvent event){
+		
+		if(event.isCancelled()){
+			return;
+		}
+		
+		//Store blocks that are inside explosion's blast radius
+		List<Block> blastRadiusBlocks = event.blockList();
+		
+		//If explosion occurs in mid air it returns 0 so no need to go any
+		//further since there are no blocks inside the explosions radius
+		if(blastRadiusBlocks.size() < 1){
+			return;
+		}
+		
+		HashMap<Coordinate, Block> affectedBlocks = new HashMap<Coordinate, Block>();
+		
+		//Initialize min & max X,Y,Z coordinates
+		int smallestX = blastRadiusBlocks.get(0).getX();
+		int largestX = smallestX;
+		int smallestY = blastRadiusBlocks.get(0).getY();
+		int largestY = smallestY;
+		int smallestZ = blastRadiusBlocks.get(0).getZ();
+		int largestZ = smallestZ;
+
+		//World Name
+		String worldName = blastRadiusBlocks.get(0).getWorld().getName();
+		World world = this.myPlugin.getServer().getWorld(worldName);
+		
+		//Find min & max X,Y,Z coordinates
+		for(int i = 0; i < blastRadiusBlocks.size(); i++){
+			Block block = blastRadiusBlocks.get(i);
+			int blockX = block.getX();
+			int blockY = block.getY();
+			int blockZ = block.getZ();
+			
+			if(blockX < smallestX){
+				smallestX = blockX;
+			}
+			
+			if(blockX > largestX){
+				largestX = blockX;
+			}
+			
+			if(blockY < smallestY){
+				smallestY = blockY;
+			}
+			
+			if(blockY > largestY){
+				largestY = blockY;
+			}
+			
+			if(blockZ < smallestZ){
+				smallestZ = blockZ;
+			}
+			
+			if(blockZ > largestZ){
+				largestZ = blockZ;
+			}
+			
+			//Instantiate Coordinate class passing in parameters
+			Coordinate coordinate = new Coordinate(world, blockX, blockY, blockZ);
+			//Put a new entry of type Coordinate as key and type Block as value
+			affectedBlocks.put(coordinate, block);
+		}
+		
+		//Query database for any reinforced blocks that may be in the blast radius
+		//Reinforced blocks should have a durability > 0 (aka >= 1)
+		ResultSet result = dao.selectReinforcements(worldName, smallestX, largestX, smallestY, largestY, smallestZ, largestZ);
+			
+		//If there was some found, loop through each one
+		try {
+			while(result.next()){
+				//Get X,Y,Z coords of reinforced block
+				int x = result.getInt(1);
+				int y = result.getInt(2);
+				int z = result.getInt(3);
+								    
+				//Pass in x, y, z of reinforced block into affectedBlocks HashMap to instantiate a Block
+				Block protectedBlock = affectedBlocks.get(new Coordinate(world, x, y, z));
+				//Then remove the protectedBlock from explosion list
+				event.blockList().remove(protectedBlock);
+				}
+			} catch (SQLException e) {
+				System.err.println("Citadel - explosion error");
+		}
+		 
+		//Update reinforcements to set durability of blocks that are within blast radius
+		//Explosion should decrement durability by 1
+		dao.updateReinforcements(worldName, smallestX, largestX, smallestY, largestY, smallestZ, largestZ);
+	}
+	
 
     @EventHandler
     public void controlAccess(PlayerInteractEvent pie) {
