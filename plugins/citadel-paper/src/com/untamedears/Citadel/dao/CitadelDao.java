@@ -1,11 +1,16 @@
 package com.untamedears.Citadel.dao;
 
 import com.untamedears.Citadel.Citadel;
+import com.untamedears.Citadel.Coordinate;
 import com.untamedears.Citadel.DelayedReinforcement;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,6 +39,7 @@ public class CitadelDao {
     private static final String SELECT_REGISTRY = "SELECT grp FROM REGISTRY WHERE x=? AND y=? AND z=? AND world=?";
 
     private Connection conn;
+    private JavaPlugin myPlugin;
 
     public CitadelDao() throws ClassNotFoundException {
         Class.forName("org.sqlite.JDBC");
@@ -142,18 +148,38 @@ public class CitadelDao {
         }
     }
     
-    public ResultSet selectReinforcements(String worldName, Integer smallestX, Integer largestX, 
+    public List<Coordinate> selectReinforcements(String worldName, Integer smallestX, Integer largestX, 
     		Integer smallestY, Integer largestY, Integer smallestZ, Integer largestZ){
+    	
+    	List<Coordinate> reinforcedBlocks = new ArrayList<Coordinate>();
+		World world = myPlugin.getServer().getWorld(worldName);
+    	
     	try {
     		PreparedStatement tmp = conn.prepareStatement(SELECT_REINFORCEMENTS);
-    		tmp.setString(1, worldName);
-			tmp.setInt(2, largestX);
-			tmp.setInt(3, smallestX);
-			tmp.setInt(4, largestY); 
-			tmp.setInt(5, smallestY);
+			tmp.setInt(1, largestX);
+			tmp.setInt(2, smallestX);
+			tmp.setInt(3, largestY); 
+			tmp.setInt(4, smallestY);
+			tmp.setInt(5, largestZ);
+			tmp.setInt(6, smallestZ);
+    		tmp.setString(7, worldName);
 			tmp.execute();
 			ResultSet result = tmp.getResultSet();
-			return result;
+			
+			while(result.next()){
+				//Get X,Y,Z coords of reinforced block
+				int x = result.getInt(1);
+				int y = result.getInt(2);
+				int z = result.getInt(3);
+								    
+				//Pass in x, y, z of reinforced block into affectedBlocks HashMap to instantiate a Block
+				reinforcedBlocks.add(new Coordinate(world, x, y, z));
+			}
+			
+			tmp.close();
+			result.close();
+			
+			return reinforcedBlocks;
     	} catch (SQLException e){
     		throw new RuntimeException(e);
     	}
@@ -163,13 +189,16 @@ public class CitadelDao {
     		Integer smallestY, Integer largestY, Integer smallestZ, Integer largestZ){
     	try {
     		PreparedStatement tmp = conn.prepareStatement(UPDATE_REINFORCEMENTS);
-    		tmp.setString(1, worldName);
-			tmp.setInt(2, largestX);
-			tmp.setInt(3, smallestX);
-			tmp.setInt(4, largestY); 
-			tmp.setInt(5, smallestY);
+    		tmp.setInt(1, largestX);
+			tmp.setInt(2, smallestX);
+			tmp.setInt(3, largestY); 
+			tmp.setInt(4, smallestY);
+			tmp.setInt(5, largestZ);
+			tmp.setInt(6, smallestZ);
+    		tmp.setString(7, worldName);
 			tmp.execute();
-    	} catch (SQLException e){
+			tmp.close();
+			} catch (SQLException e){
     		throw new RuntimeException(e);
     	}
     }
