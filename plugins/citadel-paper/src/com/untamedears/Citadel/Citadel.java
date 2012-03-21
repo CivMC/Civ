@@ -9,6 +9,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
@@ -19,6 +22,7 @@ public class Citadel extends JavaPlugin {
     public HashMap<Player, Integer> playerPlacementState;
     public CitadelDao dao;
     public Logger log;
+	public Connection connection;
 
     public void onEnable() {
         log = this.getLogger();
@@ -46,14 +50,41 @@ public class Citadel extends JavaPlugin {
             materialRequirements.put(Material.getMaterial(keys[i]), requirements[i]);
         }
 
-        try {
-            dao = new CitadelDao();
+        try
+		{
+			Class.forName("org.sqlite.JDBC");
 
-            Bukkit.getServer().getPluginManager().registerEvents(new BlockListener(this), this);
-            log.info("Citadel - Hi folks, Citadel is now on :D.");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+			this.connection = DriverManager.getConnection("jdbc:sqlite:plugins/Citadel/Citadel.db");
+			this.connection.createStatement().execute(
+				"CREATE TABLE IF NOT EXISTS REINFORCEMENTS (x INTEGER,y INTEGER,z INTEGER,world TEXT,durability INTEGER);");
+
+			this.connection.createStatement().execute(
+				"CREATE TABLE IF NOT EXISTS GROUPS (grpName TEXT,member TEXT);");
+
+			this.connection.createStatement().execute(
+				"CREATE TABLE IF NOT EXISTS REGISTRY (x INTEGER,y INTEGER,z INTEGER,world TEXT,grp TEXT);");
+
+			Bukkit.getServer().getPluginManager().registerEvents(new BlockListener(this), this);
+		}
+		catch (SQLException e)
+		{
+			System.err.println("sorry there was some sort of sql exception:");
+			System.err.println(e.toString());
+			System.err.println(e.getSQLState());
+			return;
+		} 
+		catch (ClassNotFoundException e)
+		{
+			System.err.println("sorry we couldn't find the sqlite driver:");
+			System.err.println(e.toString());
+			return;
+		} 
+		catch (Exception e)
+		{
+			System.err.println("Other weird error when enabling Citadel: ");
+			System.err.println(e.toString());
+		}
+
     }
 
     public void onDisable() {

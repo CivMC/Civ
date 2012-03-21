@@ -19,9 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Door;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
@@ -104,10 +102,6 @@ public class BlockListener implements Listener {
     @EventHandler
 	public void checkForExplosion(EntityExplodeEvent event){
 		
-		if(event.isCancelled()){
-			return;
-		}
-		
 		//Store blocks that are inside explosion's blast radius
 		List<Block> blastRadiusBlocks = event.blockList();
 		
@@ -117,6 +111,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 		
+		List<Coordinate> reinforcedBlocksCoords = new ArrayList<Coordinate>();
 		HashMap<Coordinate, Block> affectedBlocks = new HashMap<Coordinate, Block>();
 		
 		//Initialize min & max X,Y,Z coordinates
@@ -170,44 +165,41 @@ public class BlockListener implements Listener {
 		
 		//Query database for any reinforced blocks that may be in the blast radius
 		//Reinforced blocks should have a durability > 0 (aka >= 1)
-		ResultSet result = dao.selectReinforcements(worldName, smallestX, largestX, smallestY, largestY, smallestZ, largestZ);
-			
+		reinforcedBlocksCoords = dao.selectReinforcements(worldName, smallestX, largestX, smallestY, largestY, smallestZ, largestZ);
+		
+		if(reinforcedBlocksCoords.size() < 1){
+			return;
+		}
+		
 		//If there was some found, loop through each one
-		try {
-			while(result.next()){
-				//Get X,Y,Z coords of reinforced block
-				int x = result.getInt(1);
-				int y = result.getInt(2);
-				int z = result.getInt(3);
-								    
-				//Pass in x, y, z of reinforced block into affectedBlocks HashMap to instantiate a Block
-				Block protectedBlock = affectedBlocks.get(new Coordinate(world, x, y, z));
-				//Then remove the protectedBlock from explosion list
-				event.blockList().remove(protectedBlock);
-				}
-			} catch (SQLException e) {
-				System.err.println("Citadel - explosion error");
+		for(int i = 0; i < reinforcedBlocksCoords.size(); i++){
+			Coordinate rbCoords = reinforcedBlocksCoords.get(i);
+			Block reinforcedBlock = affectedBlocks.get(rbCoords);
+			
+			//Then remove it from explosion
+			event.blockList().remove(reinforcedBlock);
 		}
 		 
 		//Update reinforcements to set durability of blocks that are within blast radius
 		//Explosion should decrement durability by 1
 		dao.updateReinforcements(worldName, smallestX, largestX, smallestY, largestY, smallestZ, largestZ);
 	}
-	
 
     @EventHandler
-    public void controlAccess(PlayerInteractEvent pie) {
-        if (!pie.hasBlock()) return;
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (!event.hasBlock()) return;
+        if(event.isCancelled()) return;
 
-        Block block = pie.getClickedBlock();
+        Block block = event.getClickedBlock();        
+        
         Material matl = block.getType();
 
-        Player p = pie.getPlayer();
+        Player p = event.getPlayer();
         if ((matl == Material.CHEST) || (matl == Material.WOODEN_DOOR) || (matl == Material.IRON_DOOR)) {
             String group = dao.getRegisteredGroup(block);
             if (group != null && !dao.isPlayerInGroup(group, p.getDisplayName())) {
                 p.sendMessage(ChatColor.RED + "That door/chest is locked.");
-                pie.setCancelled(true);
+                event.setCancelled(true);
             }
         }
     }
