@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.untamedears.citadel</groupId>
+    <artifactId>citadel</artifactId>
+    <version>0.5-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Citadel</name>
+    <description>Bukkit Server Plugin</description>
+    <inceptionYear>2012</inceptionYear>
+
+    <!--
+    <scm>
+        <connection>scm:git:</connection>
+        <developerConnection>scm:git:</developerConnection>
+    </scm>
+    -->
+
+    <!--
+    <repositories>
+        <repository>
+            <id>lennardf1989</id>
+            <url>http://github.lennardf1989.com/repository/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.lennardf1989</groupId>
+            <artifactId>bukkitex</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    -->
+
+</project>

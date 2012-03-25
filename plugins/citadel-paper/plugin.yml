@@ -1,34 +1,63 @@
 name: Citadel
-main: com.untamedears.Citadel.Citadel
+main: com.untamedears.citadel.Citadel
 version: 0.1
-description: Reenforce your structures!
+description: Reinforce your structures!
 author: cxschx
-database: true
+database: false
 commands:
+  ctmaterials:
+    aliases: ctm
+    description: List the possible reinforcement materials, their strengths, and requirements.
+    usage: /ctmaterials (or /ctm)
+  ctsecurable:
+    aliases: cts
+    description: Other than containers and doors, lists the blocks which are securable.
+    usage: /ctsecurable (or /cts)
+  ctnonreinforceable:
+    aliases: ctn
+    description: Lists the blocks which may not be reinforced.
+    usage: /ctnonreinforceable (or /ctn)
+  ctreinforce:
+    aliases: ctr
+    description: The blocks you interact with will be reinforced with the material in hand.
+    usage: /ctreinforce (or /ctr) [security level]
   ctfortify:
-    description: Each block you place will be reinforced with the block type you choose
-    usage: /ctfortify <reinforcement type>
-  ctstop:
-    description: Stop reinforcing the blocks you place
-    usage: /ctstop
-  ctplink:
-    description: The next block you place will be reinforced with the block type you choose
-    usage: /ctplink <reinforcement type>
-  ctlist:
-    description: List the possible fortification materials, their strenghts, and requirements.
-    usage: /ctlist
-  ctadd:
-    description: Adds the specified player to your group.
-    usage: /ctadd <playername>
-  ctrm:
-    description: Removes the specified player from your group.
-    usage: /ctremove <playername>
+    aliases: ctf
+    description: Each placed block is reinforced with the material in hand at the time of the command.
+    usage: /ctfortify (or /ctf) [security level]
+  ctinfo:
+    aliases: cti
+    description: While in this mode, punching a block gives you information about it's reinforcement and security level.
+    usage: /ctinfo (or /cti)
+  ctoff:
+    aliases: cto
+    description: Turns off reinforcement, fortification, and info mode.
+    usage: /ctoff (or /cto)
+  ctbypass:
+    aliases: ctb
+    description: Toggles bypassing your own reinforcements to break blocks normally.
+    usage: /ctbypass (or /ctb)
   ctpublic:
-    description: Set all the chests and doors you place in this state to be public.
+    description: The next door/container you interact with will become publicly secured.
     usage: /ctpublic
   ctprivate:
-    description: Set all the chests and doors you place in this state to be private.
+    description: The next door/container you interact with will become privately secured.
     usage: /ctprivate
-  ctgrp:
-    description: Set all the chests and doors you place in thi state to be group owned.
-    usage: /ctgrp
+  ctgroup:
+    description: The next door/container you interact with will become secured to your group.
+    usage: /ctgroup
+  ctlist:
+    aliases: ctl
+    description: Lists the players in your group.
+    usage: /ctlist (or /ctl)
+  ctallow:
+    aliases: cta
+    description: Adds the specified player to your group.
+    usage: /ctallow (or /cta) <player name>
+  ctdisallow:
+    aliases: ctd
+    description: Removes the specified player from your group.
+    usage: /ctdisallow (or /ctd) <player name>
+  ctremovereinforcements:
+    description: Removes all reinforcements from the Citadel database.
+    usage: /ctremovereinforcements
