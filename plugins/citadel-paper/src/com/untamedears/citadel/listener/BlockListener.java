@@ -9,7 +9,6 @@ import com.untamedears.citadel.entity.PlayerState;
 import com.untamedears.citadel.entity.Reinforcement;
 import com.untamedears.citadel.entity.ReinforcementMaterial;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -19,9 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.material.Bed;
-import org.bukkit.material.Door;
-import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 
 import static com.untamedears.citadel.Utility.*;
@@ -66,41 +62,6 @@ public class BlockListener extends PluginConsumer implements Listener {
         }
     }
 
-    /**
-     * This handles the BlockPlaceEvent for chests which will attach to a registered chest.
-     *
-     * @param bpe BlockPlaceEvent
-     */
-    @EventHandler(ignoreCancelled = true)
-    public void placeDoubleChest(BlockPlaceEvent bpe) {
-        Block block = bpe.getBlock();
-        Material material = block.getType();
-
-        MaterialData data = block.getState().getData();
-        if (data instanceof Door || data instanceof Bed || block.getType() == Material.CHEST) {
-            plugin.logVerbose("Placed %s", block);
-        }
-
-        if (material == Material.CHEST) {
-            // if the placed block is a chest, check all around the chest for a connecting one
-            Block attachedChest = getAttachedChest(block);
-            if (attachedChest == null) return;
-
-            Reinforcement reinforcement = plugin.dao.findReinforcement(attachedChest);
-            if (reinforcement == null) return;
-
-            if (reinforcement.isAccessible(bpe.getPlayer())) {
-                // if the player has access
-                // add the same reinforcement to the new chest
-                plugin.dao.save(reinforcement.clone(block));
-            } else {
-                // do not allow chest placement
-                sendMessage(bpe.getPlayer(), ChatColor.RED, "The attached %s" + reinforcement.getStatus());
-                bpe.setCancelled(true);
-            }
-        }
-    }
-
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void blockBreak(BlockBreakEvent bbe) {
         Block block = bbe.getBlock();
@@ -123,7 +84,22 @@ public class BlockListener extends PluginConsumer implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    public void pistonExtend(BlockPistonExtendEvent bpee) {
+        for (Block block : bpee.getBlocks()) {
+            Reinforcement reinforcement = plugin.dao.findReinforcement(block);
+            bpee.setCancelled(reinforcement != null && reinforcement.getSecurityLevel() != SecurityLevel.PUBLIC);
+            if (bpee.isCancelled()) return;
+        }
+    }
+    
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    public void pistonRetract(BlockPistonRetractEvent bpre) {
+        Reinforcement reinforcement = plugin.dao.findReinforcement(bpre.getBlock());
+        bpre.setCancelled(reinforcement != null && reinforcement.getSecurityLevel() != SecurityLevel.PUBLIC);
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void blockBurn(BlockBurnEvent bbe) {
         bbe.setCancelled(maybeReinforcementDamaged(bbe.getBlock()));
     }
