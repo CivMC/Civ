@@ -5,76 +5,62 @@ author: Josvth
 commands:
   randomspawn:
     description: The main command.
-    usage: Incorrect usage! Try /rs help
+    usage: Command not found! Try /rs help
     aliases: rs
-  help:
+  rs help:
     description: Shows a list with all the commands.
     usage: /rs help [1/2/3]
     permission: RandomSpawn.help
-    prefix: randomspawn
-  reload:
+  rs reload:
     description: Reloads the Random Spawn config files.
     usage: /rs reload [config/worlds/spawnlocations]
     permission: RandomSpawn.reload
-    prefix: randomspawn
-  info:
+  rs info:
     description: Shows the Random Spawn settings for this world.
     usage: /rs info
     permission: RandomSpawn.info
-    prefix: randomspawn
-  enable:
+  rs enable:
     description: Enables Random Spawn in this world.
     usage: /rs enable
     permission: RandomSpawn.configure
-    prefix: randomspawn
-  disable:
+  rs disable:
     description: Disables Random Spawn in this world.
     usage: /rs disable
     permission: RandomSpawn.configure
-    prefix: randomspawn
-   
-  setarea:
+  rs setarea:
     description: Sets the Random Spawn area.
     usage: /rs setarea [square/circle] <radius> or /rs setarea <xrange> <zrange> or /rs setarea <xmin> <xmax> <zmin> <zmax>
     permission: RandomSpawn.configure
-    prefix: randomspawn 
-  usebeds:
+  rs usebeds:
     description: Toggles using beds.
     usage: /rs usebeds [true/false]
     permission: RandomSpawn.configure
-    prefix: randomspawn  
-  keepfirstspawns:
+  rs keepfirstspawns:
     description: Toggles spawn saving.
     usage: /rs keepfirstspawns [true/false]
     aliases: kfs
     permission: RandomSpawn.configure
-    prefix: randomspawn
-  firstjoin:
+  rs firstjoin:
     description: Toggles randomspawning on first join.
     usage: /rs firstjoin [true/false]
     aliases: fj
     permission: RandomSpawn.configure
-    prefix: randomspawn 
-
-  setfirstspawn:
+  rs setfirstspawn:
     description: Sets the first spawn location for this world.
     usage: /rs setfirstspawn
     aliases: sfs
     permission: RandomSpawn.setfirstspawn
-    prefix: randomspawn 
-  tpfirstspawn:
+  rs tpfirstspawn:
     description: Teleports you to the first spawn location of this world.
     usage: /rs tpfirstspawn
     aliases: tfs
     permission: RandomSpawn.tpfirstspawn
-    prefix: randomspawn 
-  unsetfirstspawn:
+  rs unsetfirstspawn:
     description: Unsets the first spawn location for this world.
     usage: /rs unsetfirstspawn
     aliases: unsfs
     permission: RandomSpawn.setfirstspawn
-    prefix: randomspawn
-  
+    
 permissions:
   RandomSpawn.*:
     description: Gives access to all Random Spawn commands.

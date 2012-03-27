@@ -38,7 +38,6 @@ public class RandomSpawnCommandHandler implements CommandExecutor{
 				}
 			}
 		}
-
 	}
 
 	@Override
@@ -52,7 +51,11 @@ public class RandomSpawnCommandHandler implements CommandExecutor{
 			sender.sendMessage("This command can only be used in game!");
 			return true;
 		}
-				
+		
+		if (!sender.hasPermission(commandExecutor.getPermission())){
+			sender.sendMessage("You don't have the permission to use this command!");
+		}
+		
 		if (commandExecutor.onCommand(sender, Arrays.asList(args).subList(1, args.length)) == false){
 			sender.sendMessage(commandExecutor.getUsage());
 		}

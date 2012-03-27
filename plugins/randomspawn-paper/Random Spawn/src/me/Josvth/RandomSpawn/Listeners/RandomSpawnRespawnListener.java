@@ -14,12 +14,13 @@ public class RandomSpawnRespawnListener implements Listener {
 	private RandomSpawn plugin;
 		
 	public RandomSpawnRespawnListener(RandomSpawn instance){
-		this.plugin = instance;
-		this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
+		plugin = instance;
+		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 	
 	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event){
+				
 		Player player = event.getPlayer();
 		String playerName = player.getName();
 		
@@ -28,17 +29,17 @@ public class RandomSpawnRespawnListener implements Listener {
 		
 		Location deathLocation = player.getLocation();
 				
-		if (player.hasPermission("RandomSpawn.exclude")){ 													// checks if player should be excluded
+		if (player.hasPermission("RandomSpawn.exclude")){ 																// checks if player should be excluded
 			this.plugin.logDebug(playerName + " is excluded from Random Spawning.");
 			return; 
 			} 							
 		
-		if (event.isBedSpawn() && this.plugin.getYamlHandler().worlds.getBoolean(worldName + ".usebeds", true)){ 
+		if (event.isBedSpawn() && this.plugin.getYamlHandler().worlds.getBoolean(worldName + ".usebeds", true)){  		// checks if player should be spawned at his bed
 			this.plugin.logDebug(playerName + " is spawned at his bed!");
 			return; 
 			}
 		
-		if (this.plugin.getYamlHandler().worlds.getBoolean(worldName + ".keeprandomspawns", false)){				// checks if player should be spawned at a saved spawn
+		if (this.plugin.getYamlHandler().worlds.getBoolean(worldName + ".keeprandomspawns", false)){					// checks if player should be spawned at a saved spawn
 			Location savedSpawn = getPlayerSpawn(player, world);
 			if (savedSpawn != null){
 				event.setRespawnLocation(savedSpawn);
@@ -54,6 +55,7 @@ public class RandomSpawnRespawnListener implements Listener {
 			this.plugin.logDebug(playerName + " is teleported somewhere in the sky.");
 			
 			plugin.randomSpawnPlayer(player, world);
+			
 		}
 	}
 	

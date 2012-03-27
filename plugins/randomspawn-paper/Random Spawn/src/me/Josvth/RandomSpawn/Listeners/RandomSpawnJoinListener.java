@@ -28,7 +28,7 @@ public class RandomSpawnJoinListener implements Listener {
 		World world = player.getWorld();
 		String worldName  = world.getName();
 
-		File file = new File(world.getWorldFolder() + "/players/" + player.getName() + ".dat");
+		File file = new File(world.getWorldFolder() + File.separator + "players" + File.separator + player.getName() + ".dat");
 
 		if(file.exists()){ return; }																// checks if its not the first join of a player
 		
