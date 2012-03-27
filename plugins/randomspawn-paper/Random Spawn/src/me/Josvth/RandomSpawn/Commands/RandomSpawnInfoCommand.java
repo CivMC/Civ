@@ -17,14 +17,13 @@ public class RandomSpawnInfoCommand extends RandomSpawnCommandExecutor {
 	public boolean onCommand(CommandSender sender, List<String> args){
 		
 		Player player = (Player)sender;
-		String version = plugin.getDescription().getVersion();
 		String worldname = player.getWorld().getName(); 
 		
-		player.sendMessage(ChatColor.WHITE +" --------------- " + ChatColor.AQUA + "Random Spawn ver: " + version + ChatColor.WHITE + " ----------------");
+		player.sendMessage(ChatColor.WHITE +" ------------------- " + ChatColor.AQUA + "Random Spawn" + ChatColor.WHITE + " ------------------- ");
 		player.sendMessage(ChatColor.AQUA + "World: " + ChatColor.WHITE + worldname );
 		if (!(plugin.getYamlHandler().worlds.contains(worldname))){
 			player.sendMessage("Is not configured in Random Spawn ");
-			player.sendMessage(ChatColor.WHITE +" --------------------------------------------------");
+			player.sendMessage(ChatColor.WHITE +" ---------------------------------------------------- ");
 			return true;
 		}
 
@@ -73,7 +72,7 @@ public class RandomSpawnInfoCommand extends RandomSpawnCommandExecutor {
 			player.sendMessage("There is no first spawn point set. Refering to worldspawn.");
 		}
 		
-		player.sendMessage(ChatColor.WHITE +" --------------------------------------------------");
+		player.sendMessage(ChatColor.WHITE +" ---------------------------------------------------- ");
 					
 		return true;
 	}
