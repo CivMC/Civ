@@ -13,7 +13,7 @@ import javax.persistence.Id;
  */
 @Entity
 public class Faction {
-    
+
     @Id private String name;
     private String founder;
 
