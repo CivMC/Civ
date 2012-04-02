@@ -2,8 +2,8 @@ package com.untamedears.citadel.command;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.PlacementMode;
-import com.untamedears.citadel.entity.ReinforcementMaterial;
 import com.untamedears.citadel.SecurityLevel;
+import com.untamedears.citadel.entity.ReinforcementMaterial;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 
@@ -38,12 +38,12 @@ public class ChangePlacementMode extends PlayerCommand {
                 sendMessage(player, ChatColor.YELLOW, "Invalid reinforcement material %s", player.getItemInHand().getType().name());
             } else {
                 state.setFortificationMaterial(material);
-                setMultiMode(PlacementMode.FORTIFICATION, securityLevel);
+                setMultiMode(PlacementMode.FORTIFICATION, securityLevel, args);
             }
         } else if (cmd.equals("ctreinforce")) {
-            setMultiMode(PlacementMode.REINFORCEMENT, securityLevel);
+            setMultiMode(PlacementMode.REINFORCEMENT, securityLevel, args);
         } else if (cmd.equals("ctinfo")) {
-            setMultiMode(PlacementMode.INFO, SecurityLevel.PUBLIC);
+            setMultiMode(PlacementMode.INFO, SecurityLevel.PUBLIC, args);
         } else if (cmd.equals("ctoff")) {
             state.reset();
             if (state.isBypassMode()) state.toggleBypassMode();
@@ -71,7 +71,7 @@ public class ChangePlacementMode extends PlayerCommand {
         }
     }
     
-    private void setMultiMode(PlacementMode mode, SecurityLevel securityLevel) {
+    private void setMultiMode(PlacementMode mode, SecurityLevel securityLevel, String[] args) {
         if (!MULTI_MODE.contains(mode)) return;
 
         if (state.getMode() == mode && state.getSecurityLevel() == securityLevel) {
@@ -91,6 +91,7 @@ public class ChangePlacementMode extends PlayerCommand {
                     sendMessage(player, ChatColor.GREEN, "%s mode on", mode.name());
                     break;
             }
+            state.checkResetMode();
         }
     }
 

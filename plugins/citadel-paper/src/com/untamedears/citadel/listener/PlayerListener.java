@@ -2,8 +2,6 @@ package com.untamedears.citadel.listener;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.PlacementMode;
-import com.untamedears.citadel.entity.PlayerState;
-import com.untamedears.citadel.entity.ReinforcementMaterial;
 import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.entity.*;
 import org.bukkit.ChatColor;
@@ -30,7 +28,7 @@ import static com.untamedears.citadel.Utility.sendMessage;
  * Time: 9:57 PM
  */
 public class PlayerListener implements Listener {
-    
+
     private Citadel plugin;
 
     public PlayerListener(Citadel plugin) {
@@ -65,9 +63,15 @@ public class PlayerListener implements Listener {
         PlayerState.remove(pqe.getPlayer());
     }
 
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void bookshelf(PlayerInteractEvent pie) {
+        if (pie.hasBlock() && pie.getMaterial() == Material.BOOKSHELF)
+            interact(pie);
+    }
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void interact(PlayerInteractEvent pie) {
-        if (pie.isCancelled() || !pie.hasBlock()) return;
+        if (!pie.hasBlock()) return;
 
         Player player = pie.getPlayer();
         Block block = pie.getClickedBlock();
@@ -80,8 +84,6 @@ public class PlayerListener implements Listener {
         if (pie.isCancelled()) return;
 
         PlayerState state = PlayerState.get(player);
-        maybeOpenIronDoor(state, block);
-
         switch (state.getMode()) {
             case NORMAL:
             case FORTIFICATION:
@@ -108,6 +110,7 @@ public class PlayerListener implements Listener {
                     if (materialChange) {
                         player.getInventory().remove(material.getRequiredMaterials());
                         reinforcement.setMaterialId(material.getMaterialId());
+                        reinforcement.setDurability(material.getStrength());
                     } else if (repair) {
                         player.getInventory().remove(material.getRequiredMaterials());
                         reinforcement.setDurability(reinforcement.getMaterial().getStrength());
@@ -116,7 +119,7 @@ public class PlayerListener implements Listener {
                         plugin.dao.save(reinforcement);
                         String message = null;
                         if (materialChange) {
-                            message = "Upgraded reinforcement to "+ material.getMaterial().name();
+                            message = "Upgraded reinforcement to " + material.getMaterial().name();
                         } else if (repair) {
                             message = "Repaired reinforcement";
                         }
@@ -131,13 +134,15 @@ public class PlayerListener implements Listener {
                 } else {
                     sendMessage(player, ChatColor.RED, "You are not permitted to modify this reinforcement");
                 }
-            pie.setCancelled(true);
-            if (state.getMode() == PlacementMode.REINFORCEMENT_SINGLE_BLOCK) {
-                state.reset();
-            }
+                pie.setCancelled(true);
+                if (state.getMode() == PlacementMode.REINFORCEMENT_SINGLE_BLOCK) {
+                    state.reset();
+                } else {
+                    state.checkResetMode();
+                }
         }
     }
-    
+
     private void checkAccessiblity(PlayerInteractEvent pie, Reinforcement reinforcement) {
         if (reinforcement != null
                 && reinforcement.isSecurable()
@@ -150,23 +155,9 @@ public class PlayerListener implements Listener {
             } else if (pie.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 plugin.logVerbose("%s failed to access locked reinforcement %s", pie.getPlayer().getDisplayName(), reinforcement);
                 // this block is secured and is inaccesible to the player
-                sendMessage(pie.getPlayer(), ChatColor.RED, reinforcement.getStatus());
+                sendMessage(pie.getPlayer(), ChatColor.RED, "%s is locked", pie.getClickedBlock().getType().name());
                 pie.setCancelled(true);
             }
-        }
-    }
-    
-    private void maybeOpenIronDoor(PlayerState state, Block block) {
-        if (block.getType() == Material.IRON_DOOR_BLOCK && (state.getMode() == PlacementMode.NORMAL || state.getMode() == PlacementMode.INFO)) {
-            // TODO: this doesn't work
-//            Block topBlock = block.getRelative(BlockFace.UP);
-//            for (Block doorBlock : new Block[] { block, topBlock }) {
-//                Door door = (Door) doorBlock.getState().getData();
-//                plugin.logVerbose("Toggling %s", door);
-//                door.setOpen(!door.isOpen());
-//                doorBlock.getState().setData(door);
-//                doorBlock.getState().update();
-//            }
         }
     }
 }

@@ -25,15 +25,17 @@ public class Citadel extends JavaPlugin {
     public int flashLength;
     private boolean verboseLogging;
     public double redstoneDistance;
+    public long autoModeReset;
 
     public void onEnable() {
         Citadel.instance = this;
-        
+
         reloadConfig();
         log = this.getLogger();
 
         getConfig().options().copyDefaults(true);
         flashLength = getConfig().getInt("general.flashLength");
+        autoModeReset = getConfig().getInt("general.autoModeReset");
         verboseLogging = getConfig().getBoolean("general.verboseLogging");
         redstoneDistance = getConfig().getDouble("general.redstoneDistance");
         for (Object obj : getConfig().getList("materials")) {

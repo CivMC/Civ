@@ -1,6 +1,8 @@
 general:
     flashLength: 500        # when reinforcement is applied, the block flashes to the specified block for this many milliseconds
     verboseLogging: false   # whether or not to output additional logging to the console
+    autoModeReset: 30       # number of seconds after which reinforcement or fortify mode will automatically be canceled. reset
+                            # upon reinforcement of a block
     redstoneDistance: 9     # if no authorized players are within this distance, redstone powered openables will not open
                             # note that this distance is compared using Location.distanceSquared()
 materials:                  # the materials used for reinforcement. strength is the number of times a block must be broken
