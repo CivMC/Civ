@@ -18,6 +18,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
 public class RandomSpawnSpawner implements Runnable{
@@ -98,7 +99,7 @@ public class RandomSpawnSpawner implements Runnable{
 		logStatus(player.getName() + " is added to the deadlist.");
 		
 		viewDistance = plugin.getServer().getViewDistance();
-		chunksPerInterval = plugin.getYamlHandler().config.getInt("generator.chunksperrun",32);
+		chunksPerInterval = plugin.yamlHandler.config.getInt("generator.chunksperrun",32);
 		
 		logStatus("Viewdistance: " + viewDistance);
 		logStatus("Chunks per interval: " + chunksPerInterval);
@@ -106,10 +107,10 @@ public class RandomSpawnSpawner implements Runnable{
 		worldName = world.getName();
 		playerName = player.getName();
 		
-		xmin = plugin.getYamlHandler().worlds.getInt(worldName +".spawnarea.x-min", -100);
-		xmax = plugin.getYamlHandler().worlds.getInt(worldName +".spawnarea.x-max", 100);
-		zmin = plugin.getYamlHandler().worlds.getInt(worldName +".spawnarea.z-min", -100);
-		zmax = plugin.getYamlHandler().worlds.getInt(worldName +".spawnarea.z-max", 100);
+		xmin = plugin.yamlHandler.worlds.getInt(worldName +".spawnarea.x-min", -100);
+		xmax = plugin.yamlHandler.worlds.getInt(worldName +".spawnarea.x-max", 100);
+		zmin = plugin.yamlHandler.worlds.getInt(worldName +".spawnarea.z-min", -100);
+		zmax = plugin.yamlHandler.worlds.getInt(worldName +".spawnarea.z-max", 100);
 				
 		initialised = true;
 				
@@ -304,25 +305,31 @@ public class RandomSpawnSpawner implements Runnable{
 		player.setFallDistance(-100);
 		player.setVelocity(new Vector(0,0,0));
 		
-		if (this.plugin.getYamlHandler().config.getBoolean("fallfromsky", false)){
+		if (this.plugin.yamlHandler.config.getBoolean("fallfromsky", false)){
 			spawnLocation.setY(300);
 			logStatus(playerName + " is dropped at: " + spawnLocation.getX() + "," + spawnLocation.getZ());			
 		}else{
 			logStatus(playerName + " is spawned at: " + spawnLocation.getX() + "," + spawnLocation.getY() + "," + spawnLocation.getZ());		
-			player.sendMessage(this.plugin.getYamlHandler().config.getString("messages.randomspawned", "You wake up in an unfamiliar place."));
+			player.sendMessage(this.plugin.yamlHandler.config.getString("messages.randomspawned"));
 		}
 		
-		if (this.plugin.getYamlHandler().worlds.getBoolean(worldName + ".keeprandomspawns",false)){					//checks if spawn should be saved
+		if (this.plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)){					//checks if spawn should be saved
 			
-			this.plugin.getYamlHandler().spawnLocations.set(worldName + "." + playerName + ".x", spawnLocation.getX());
-			this.plugin.getYamlHandler().spawnLocations.set(worldName + "." + playerName + ".y", spawnLocation.getY());
-			this.plugin.getYamlHandler().spawnLocations.set(worldName + "." + playerName + ".z", spawnLocation.getZ());
-			this.plugin.getYamlHandler().saveSpawnLocations();
+			this.plugin.yamlHandler.spawnLocations.set(worldName + "." + playerName + ".x", spawnLocation.getX());
+			this.plugin.yamlHandler.spawnLocations.set(worldName + "." + playerName + ".y", spawnLocation.getY());
+			this.plugin.yamlHandler.spawnLocations.set(worldName + "." + playerName + ".z", spawnLocation.getZ());
+			this.plugin.yamlHandler.saveSpawnLocations();
 			
 			logStatus(playerName + "'s Random Spawn location is saved!");
 		}
 		
 		logStatus(playerName + " Falldistance: " + player.getFallDistance() + " Velocity: " + player.getVelocity() + " No damage tickes: " + player.getNoDamageTicks());
+		
+		// Meta data for debug listener
+		if(plugin.yamlHandler.config.getBoolean("debug", false)){
+			player.removeMetadata("lasttimerandomspawned", plugin);
+			player.setMetadata("lasttimerandomspawned", new FixedMetadataValue(plugin, System.currentTimeMillis()));
+		}
 		
 		if (player.isOnline()){
 			player.teleport(spawnLocation);
