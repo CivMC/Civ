@@ -9,14 +9,16 @@ import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.Josvth.RandomSpawn.Handlers.CommandHandler;
+import me.Josvth.RandomSpawn.Handlers.YamlHandler;
 import me.Josvth.RandomSpawn.Listeners.*;
 
 public class RandomSpawn extends JavaPlugin{
 	
 	Logger logger;
 	
-	private RandomSpawnYamlHandler yamlHandler;
-	RandomSpawnCommandHandler commandHandler;
+	YamlHandler yamlHandler;
+	CommandHandler commandHandler;
 	
 	RandomSpawnRespawnListener respawnListener;
 	RandomSpawnJoinListener joinListener;
@@ -38,10 +40,10 @@ public class RandomSpawn extends JavaPlugin{
 		logger = Logger.getLogger("Minecraft");
 		
 		//setup handlers
-		yamlHandler = new RandomSpawnYamlHandler(this);
+		yamlHandler = new YamlHandler(this);
 		logDebug("Yamls loaded!");
 		
-		commandHandler = new RandomSpawnCommandHandler(this);
+		commandHandler = new CommandHandler(this);
 		logDebug("Commands registered!");
 		
 		//setup listeners
@@ -49,7 +51,7 @@ public class RandomSpawn extends JavaPlugin{
 		joinListener = new RandomSpawnJoinListener(this);
 		signListener = new RandomSpawnSignListener(this);
 		
-		if(getYamlHandler().config.getBoolean("debug",false)){
+		if(yamlHandler.config.getBoolean("debug",false)){
 			debugListener = new RandomSpawnDebugListener(this);
 		}
 	}
@@ -65,11 +67,7 @@ public class RandomSpawn extends JavaPlugin{
     public void playerInfo(Player player, String message){
     	player.sendMessage(ChatColor.AQUA + "[RandomSpawn] " + ChatColor.RESET + message);
     }
-    
-    public RandomSpawnYamlHandler getYamlHandler(){
-		return yamlHandler;   	
-    }
-    
+        
     public boolean hasValidEnviroment(World world){
     	return world.getEnvironment() != Environment.NETHER;
     }
@@ -79,6 +77,6 @@ public class RandomSpawn extends JavaPlugin{
 		spawner.setTaskId(getServer().getScheduler().scheduleSyncRepeatingTask(this, spawner, 0, yamlHandler.config.getInt("generator.interval",4)));
 		player.setMaximumNoDamageTicks(12000);
 		player.setNoDamageTicks(12000);
-		player.sendMessage(yamlHandler.config.getString("messages.pleasewait", "Please wait while your spawn is being loaded."));
+		player.sendMessage(yamlHandler.config.getString("messages.pleasewait"));
 	}
 }
