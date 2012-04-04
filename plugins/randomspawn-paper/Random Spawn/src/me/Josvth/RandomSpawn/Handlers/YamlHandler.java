@@ -22,7 +22,7 @@ public class YamlHandler{
     public FileConfiguration spawnLocations;
 	
 	public YamlHandler(RandomSpawn instance) {
-		this.plugin = instance;
+		plugin = instance;
 		setupYamls();
         loadYamls();
 	}
@@ -35,14 +35,16 @@ public class YamlHandler{
         if (!(configFile.exists())){this.plugin.saveResource("config.yml", false);}				// loads default config's on first run
         if (!(worldsFile.exists())){this.plugin.saveResource("worlds.yml", false);}
         if (!(spawnLocationsFile.exists())){this.plugin.saveResource("spawnLocations.yml", false);}
+			
+	}
+	
+	public void loadYamls() {
 		
 		config = new YamlConfiguration();
         worlds = new YamlConfiguration();
         spawnLocations = new YamlConfiguration();
-	}
-	
-	public void loadYamls() {
-        loadConfig();
+        
+		loadConfig();
         loadWorlds();
         loadSpawnLocations();
     }
