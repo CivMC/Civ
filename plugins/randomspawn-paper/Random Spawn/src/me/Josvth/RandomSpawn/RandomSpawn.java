@@ -17,13 +17,13 @@ public class RandomSpawn extends JavaPlugin{
 	
 	Logger logger;
 	
-	YamlHandler yamlHandler;
+	public YamlHandler yamlHandler;
 	CommandHandler commandHandler;
 	
 	RandomSpawnRespawnListener respawnListener;
 	RandomSpawnJoinListener joinListener;
 	RandomSpawnSignListener signListener;
-	RandomSpawnDebugListener debugListener;
+	DebugListener debugListener;
 	
 	public HashMap<Player,RandomSpawnSpawner> tasks = new HashMap<Player,RandomSpawnSpawner>();
 		
@@ -52,7 +52,7 @@ public class RandomSpawn extends JavaPlugin{
 		signListener = new RandomSpawnSignListener(this);
 		
 		if(yamlHandler.config.getBoolean("debug",false)){
-			debugListener = new RandomSpawnDebugListener(this);
+			debugListener = new DebugListener(this);
 		}
 	}
 	    
@@ -62,6 +62,10 @@ public class RandomSpawn extends JavaPlugin{
     
     public void logDebug(String message){
        if (yamlHandler.config.getBoolean("debug",false)) { logger.info("[Random Spawn] (DEBUG) " + message); }
+    }
+    
+    public void logWarning(String message){
+    	logger.warning("[Random Spawn] " + message);
     }
     
     public void playerInfo(Player player, String message){
@@ -74,9 +78,13 @@ public class RandomSpawn extends JavaPlugin{
     
 	public void randomSpawnPlayer(Player player, World spawnWorld) {		
 		RandomSpawnSpawner spawner = new RandomSpawnSpawner(this, player, spawnWorld);		
+		
 		spawner.setTaskId(getServer().getScheduler().scheduleSyncRepeatingTask(this, spawner, 0, yamlHandler.config.getInt("generator.interval",4)));
 		player.setMaximumNoDamageTicks(12000);
 		player.setNoDamageTicks(12000);
-		player.sendMessage(yamlHandler.config.getString("messages.pleasewait"));
+		
+		if(yamlHandler.config.contains("messages.pleasewait")){
+			player.sendMessage(yamlHandler.config.getString("messages.pleasewait"));
+		}
 	}
 }

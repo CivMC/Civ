@@ -310,7 +310,10 @@ public class RandomSpawnSpawner implements Runnable{
 			logStatus(playerName + " is dropped at: " + spawnLocation.getX() + "," + spawnLocation.getZ());			
 		}else{
 			logStatus(playerName + " is spawned at: " + spawnLocation.getX() + "," + spawnLocation.getY() + "," + spawnLocation.getZ());		
-			player.sendMessage(this.plugin.yamlHandler.config.getString("messages.randomspawned"));
+			
+			if(plugin.yamlHandler.config.contains("messages.randomspawned")){
+				player.sendMessage(plugin.yamlHandler.config.getString("messages.randomspawned"));
+			}
 		}
 		
 		if (this.plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)){					//checks if spawn should be saved
