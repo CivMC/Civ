@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
@@ -22,10 +23,12 @@ public class RandomSpawn extends JavaPlugin{
 	public YamlHandler yamlHandler;
 	CommandHandler commandHandler;
 
-	RandomSpawnRespawnListener respawnListener;
-	RandomSpawnJoinListener joinListener;
-	RandomSpawnSignListener signListener;
-	DebugListener debugListener;
+	//RandomSpawnRespawnListener respawnListener;
+	//RandomSpawnJoinListener joinListener;
+	//RandomSpawnSignListener signListener;
+	//DebugListener debugListener;
+
+	RespawnListener respawnListener;
 
 	public HashMap<Player,RandomSpawnSpawner> tasks = new HashMap<Player,RandomSpawnSpawner>();
 
@@ -49,13 +52,14 @@ public class RandomSpawn extends JavaPlugin{
 		logDebug("Commands registered!");
 
 		//setup listeners
-		respawnListener = new RandomSpawnRespawnListener(this);
-		joinListener = new RandomSpawnJoinListener(this);
-		signListener = new RandomSpawnSignListener(this);
+		respawnListener = new RespawnListener(this);
+		//respawnListener = new RandomSpawnRespawnListener(this);
+		//joinListener = new RandomSpawnJoinListener(this);
+		//signListener = new RandomSpawnSignListener(this);
 
-		if(yamlHandler.config.getBoolean("debug",false)){
-			debugListener = new DebugListener(this);
-		}
+		//if(yamlHandler.config.getBoolean("debug",false)){
+		//	debugListener = new DebugListener(this);
+		//}
 	}
 
 	public void logInfo(String message){
@@ -89,7 +93,7 @@ public class RandomSpawn extends JavaPlugin{
 	//			player.sendMessage(yamlHandler.config.getString("messages.pleasewait"));
 	//		}
 	//	}
-	
+
 	public Location chooseSpawn(World world){
 
 		String worldName = world.getName();
@@ -111,9 +115,9 @@ public class RandomSpawn extends JavaPlugin{
 
 		return new Location(
 				world, 
-				Double.parseDouble(Integer.toString(xrand))+0.5, 
+				Double.parseDouble(Integer.toString(xrand)) +0.5, 
 				Double.parseDouble(Integer.toString(y)),
-				Double.parseDouble(Integer.toString(zrand))+0.5
+				Double.parseDouble(Integer.toString(zrand)) +0.5
 				);
 
 	}
@@ -136,10 +140,15 @@ public class RandomSpawn extends JavaPlugin{
 
 		return y;
 	}
-	
-	public void sendBlockOnLocation(Player player, Location location){
+
+	public void sendRealBlockChange(Player player, Location location){
 		location.getChunk().load();
 		Block block = location.getBlock();
-		player.sendBlockChange(location, block.getType(), block.getData());
+		if(block.getType().equals(Material.SAND) || block.getType().equals(Material.GRAVEL)){
+			player.sendBlockChange(location, Material.DIRT, (byte) 0);
+		}else{
+			player.sendBlockChange(location, block.getType(), block.getData());
+		}
+
 	}
 }
