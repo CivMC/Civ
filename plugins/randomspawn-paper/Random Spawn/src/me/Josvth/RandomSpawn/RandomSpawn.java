@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -88,7 +89,7 @@ public class RandomSpawn extends JavaPlugin{
 	//			player.sendMessage(yamlHandler.config.getString("messages.pleasewait"));
 	//		}
 	//	}
-
+	
 	public Location chooseSpawn(World world){
 
 		String worldName = world.getName();
@@ -134,5 +135,11 @@ public class RandomSpawn extends JavaPlugin{
 		if (blockid == 81) return -1;
 
 		return y;
+	}
+	
+	public void sendBlockOnLocation(Player player, Location location){
+		location.getChunk().load();
+		Block block = location.getBlock();
+		player.sendBlockChange(location, block.getType(), block.getData());
 	}
 }
