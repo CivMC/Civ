@@ -5,7 +5,6 @@ example:
   - respawn
   - bedrespawn
   - firstjoin
-  randomspawnenabled: true
   keeprandomspawns: false
   spawnarea:
   	type: "square"
