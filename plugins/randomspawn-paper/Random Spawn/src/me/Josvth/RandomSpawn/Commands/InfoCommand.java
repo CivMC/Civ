@@ -8,9 +8,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RandomSpawnInfoCommand extends RandomSpawnCommandExecutor {
+public class InfoCommand extends RandomSpawnCommandExecutor {
 	
-	public RandomSpawnInfoCommand(){
+	public InfoCommand(){
 		this.name = "info";
 	}
 	
@@ -19,21 +19,21 @@ public class RandomSpawnInfoCommand extends RandomSpawnCommandExecutor {
 		Player player = (Player)sender;
 		String worldname = player.getWorld().getName(); 
 		
-		player.sendMessage(ChatColor.WHITE +" ------------------- " + ChatColor.AQUA + "Random Spawn" + ChatColor.WHITE + " ------------------- ");
+		player.sendMessage(ChatColor.WHITE +" ---------------- " + ChatColor.AQUA + "Random Spawn Info" + ChatColor.WHITE + " ------------------ ");
 		player.sendMessage(ChatColor.AQUA + "World: " + ChatColor.WHITE + worldname );
 		if (!(plugin.yamlHandler.worlds.contains(worldname))){
 			player.sendMessage("Is not configured in Random Spawn ");
 			player.sendMessage(ChatColor.WHITE +" ---------------------------------------------------- ");
 			return true;
 		}
-
-		if(plugin.yamlHandler.worlds.contains(worldname + ".randomspawnenabled")){
-			if (plugin.yamlHandler.worlds.getBoolean(worldname + ".randomspawnenabled")){
-				player.sendMessage("Random spawning is ENABLED in this world");
-			}else{
-				player.sendMessage("Random spawning is DISABELD in this world");	
-			}
+		
+		String flags = "";
+		
+		for(String flag : plugin.yamlHandler.worlds.getStringList(worldname + ".randomspawnon")){
+			flags += flag + ", ";
 		}
+		
+		player.sendMessage(ChatColor.AQUA + "Random spawn on: " + ChatColor.WHITE + flags);
 
 		if(plugin.yamlHandler.worlds.contains(worldname + ".spawnarea")){
 			player.sendMessage(ChatColor.AQUA + "Spawnarea:");
@@ -43,20 +43,17 @@ public class RandomSpawnInfoCommand extends RandomSpawnCommandExecutor {
 			int zmin = plugin.yamlHandler.worlds.getInt(worldname +".spawnarea.z-min");
 			int zmax = plugin.yamlHandler.worlds.getInt(worldname +".spawnarea.z-max");
 			
-			player.sendMessage("x-min = "+ xmin + "  |  x-max = " + xmax + "  |  z-min = " + zmin + "  |  z-max = " + zmax);
+			player.sendMessage("x-min = "+ xmin + "  |  x-max = " + xmax);
+			player.sendMessage("z-min = "+ zmin + "  |  z-max = " + zmax);
 		}else
 		{
-			player.sendMessage("");
-			player.sendMessage("There is no spawn point set. Refering to defaults:");
-			player.sendMessage("x-min = -100 | x-max = 100 | z-min = -100 | z-max = 100");
+			player.sendMessage("There is no spawn area set. Refering to defaults:");
+			player.sendMessage("x-min = -100 | x-max = 100");
+			player.sendMessage("z-min = -100 | z-max = 100");
 		}
 		
-		player.sendMessage(ChatColor.AQUA + "usebeds: "+ ChatColor.WHITE + plugin.yamlHandler.worlds.getBoolean(worldname + ".usebeds", true) + 
-				ChatColor.AQUA + "  keepspawns: " + ChatColor.WHITE + plugin.yamlHandler.worlds.getBoolean(worldname + ".keeprandomspawns", false));
-		player.sendMessage(ChatColor.AQUA + "firstjoin: " + ChatColor.WHITE + plugin.yamlHandler.worlds.getBoolean(worldname + ".randomspawnonfirstjoin", false) +
-				ChatColor.AQUA + "  worldchange: " + ChatColor.WHITE + plugin.yamlHandler.worlds.getBoolean(worldname + ".randomspawnonworldchange", false)
-				);
-		
+		player.sendMessage(ChatColor.AQUA + "keepspawns: " + ChatColor.WHITE + plugin.yamlHandler.worlds.getBoolean(worldname + ".keeprandomspawns", false));
+			
 		if(plugin.yamlHandler.worlds.contains(worldname + ".firstspawn")){
 			player.sendMessage(ChatColor.AQUA + "Firstspawn:");
 			
@@ -72,7 +69,7 @@ public class RandomSpawnInfoCommand extends RandomSpawnCommandExecutor {
 			player.sendMessage("There is no first spawn point set. Refering to worldspawn.");
 		}
 		
-		player.sendMessage(ChatColor.WHITE +" ---------------------------------------------------- ");
+		player.sendMessage(ChatColor.WHITE +" --------------------------------------------------- ");
 					
 		return true;
 	}
