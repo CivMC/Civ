@@ -1,8 +1,10 @@
 package me.Josvth.RandomSpawn;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+import org.bukkit.BlockChangeDelegate;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -114,14 +116,13 @@ public class RandomSpawn extends JavaPlugin{
 		}while (y == -1);
 
 		return new Location(
-				world, 
-				Double.parseDouble(Integer.toString(xrand)) +0.5, 
+				world,
+				Double.parseDouble(Integer.toString(xrand)) + 0.5, 
 				Double.parseDouble(Integer.toString(y)),
-				Double.parseDouble(Integer.toString(zrand)) +0.5
+				Double.parseDouble(Integer.toString(zrand)) + 0.5
 				);
-
 	}
-
+	
 	private int getValidHighestBlock(World world, int x, int z) {
 		world.getChunkAt(new Location(world, x, 0, z)).load();
 
@@ -140,15 +141,27 @@ public class RandomSpawn extends JavaPlugin{
 
 		return y;
 	}
-
-	public void sendRealBlockChange(Player player, Location location){
-		location.getChunk().load();
-		Block block = location.getBlock();
-		if(block.getType().equals(Material.SAND) || block.getType().equals(Material.GRAVEL)){
-			player.sendBlockChange(location, Material.DIRT, (byte) 0);
-		}else{
-			player.sendBlockChange(location, block.getType(), block.getData());
+	
+	public void sendGround(Player player, Location location){				
+		for(int xx = location.getBlockX() - 1; xx <= location.getBlockX() + 1; xx++){
+			for(int zz = location.getBlockZ() -1; zz <= location.getBlockZ() + 1; zz++){
+				int y = getValidHighestBlock(location.getWorld(), xx, zz);
+				Location groundLocation = new Location(location.getWorld(), xx, y-1, zz);
+				groundLocation.getChunk().load();
+				Block groundBlock = groundLocation.getBlock();
+				player.sendBlockChange(groundLocation, groundBlock.getType(), groundBlock.getData());
+			}
 		}
-
 	}
+	
+//	public void sendRealBlockChange(Player player, Location location){
+//		location.getChunk().load();
+//		Block block = location.getBlock();
+//		if(block.getType().equals(Material.SAND) || block.getType().equals(Material.GRAVEL)){
+//			player.sendBlockChange(location, Material.DIRT, (byte) 0);
+//		}else{
+//			player.sendBlockChange(location, block.getType(), block.getData());
+//		}
+//	}
+	
 }

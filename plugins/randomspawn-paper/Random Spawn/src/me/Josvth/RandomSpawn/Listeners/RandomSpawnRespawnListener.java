@@ -34,12 +34,12 @@ public class RandomSpawnRespawnListener implements Listener {
 			return; 
 			} 							
 		
-		if (event.isBedSpawn() && this.plugin.getYamlHandler().worlds.getBoolean(worldName + ".usebeds", true)){  		// checks if player should be spawned at his bed
+		if (event.isBedSpawn() && this.plugin.yamlHandler.worlds.getBoolean(worldName + ".usebeds", true)){  		// checks if player should be spawned at his bed
 			this.plugin.logDebug(playerName + " is spawned at his bed!");
 			return; 
 			}
 		
-		if (this.plugin.getYamlHandler().worlds.getBoolean(worldName + ".keeprandomspawns", false)){					// checks if player should be spawned at a saved spawn
+		if (this.plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns", false)){					// checks if player should be spawned at a saved spawn
 			Location savedSpawn = getPlayerSpawn(player, world);
 			if (savedSpawn != null){
 				event.setRespawnLocation(savedSpawn);
@@ -48,7 +48,7 @@ public class RandomSpawnRespawnListener implements Listener {
 			}
 		}
 		
-		if (this.plugin.getYamlHandler().worlds.getBoolean(worldName + ".randomspawnenabled", false)){					// checks if Random Spawn is enabled in this world
+		if (this.plugin.yamlHandler.worlds.getBoolean(worldName + ".randomspawnenabled", false)){					// checks if Random Spawn is enabled in this world
 				
 			Location skyLocation = new Location(deathLocation.getWorld(), deathLocation.getX(), +10000.0, deathLocation.getY());
 			event.setRespawnLocation(skyLocation);	
@@ -64,11 +64,11 @@ public class RandomSpawnRespawnListener implements Listener {
 		String playerName = player.getName();
 		String worldName  = world.getName();
 		
-		if (this.plugin.getYamlHandler().spawnLocations.contains(worldName + "." + playerName)){
+		if (this.plugin.yamlHandler.spawnLocations.contains(worldName + "." + playerName)){
 			
-			double x = this.plugin.getYamlHandler().spawnLocations.getDouble(worldName + "." + player.getName() + ".x");
-			double y = this.plugin.getYamlHandler().spawnLocations.getDouble(worldName + "." + player.getName() + ".y");
-			double z = this.plugin.getYamlHandler().spawnLocations.getDouble(worldName + "." + player.getName() + ".z");
+			double x = this.plugin.yamlHandler.spawnLocations.getDouble(worldName + "." + player.getName() + ".x");
+			double y = this.plugin.yamlHandler.spawnLocations.getDouble(worldName + "." + player.getName() + ".y");
+			double z = this.plugin.yamlHandler.spawnLocations.getDouble(worldName + "." + player.getName() + ".z");
 			
 			this.plugin.logDebug(playerName + "'s saved spawn found!");
 			

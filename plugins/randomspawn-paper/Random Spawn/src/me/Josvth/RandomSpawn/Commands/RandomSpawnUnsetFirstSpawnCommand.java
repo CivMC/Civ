@@ -16,11 +16,11 @@ public class RandomSpawnUnsetFirstSpawnCommand extends RandomSpawnCommandExecuto
 	public boolean onCommand(CommandSender sender, List<String> args){
 		Player player = (Player)sender;
 		String worldname = player.getWorld().getName();
-		if (plugin.getYamlHandler().worlds.contains((worldname +".firstspawn"))){
+		if (plugin.yamlHandler.worlds.contains((worldname +".firstspawn"))){
 
-			plugin.getYamlHandler().worlds.set(worldname +".firstspawn", null);
+			plugin.yamlHandler.worlds.set(worldname +".firstspawn", null);
 
-			plugin.getYamlHandler().saveWorlds();
+			plugin.yamlHandler.saveWorlds();
 
 			plugin.playerInfo(player,  "The first spawn location of this world is removed!");
 			plugin.playerInfo(player,  "Now refering to world spawn.");

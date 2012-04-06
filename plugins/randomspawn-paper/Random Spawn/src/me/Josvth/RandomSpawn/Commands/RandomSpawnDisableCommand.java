@@ -16,8 +16,8 @@ public class RandomSpawnDisableCommand extends RandomSpawnCommandExecutor{
 	public boolean onCommand(CommandSender sender, List<String> args){
 		Player player = (Player) sender;
 		String worldname = player.getWorld().getName();
-		plugin.getYamlHandler().worlds.set(worldname + ".randomspawnenabled", false);
-		plugin.getYamlHandler().saveWorlds();
+		plugin.yamlHandler.worlds.set(worldname + ".randomspawnenabled", false);
+		plugin.yamlHandler.saveWorlds();
 		plugin.playerInfo(player, "Random Spawn is now disabled in this world!");
 		return true;
 	}

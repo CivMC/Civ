@@ -27,14 +27,14 @@ public class RandomSpawnSetAreaCommand extends RandomSpawnCommandExecutor{
 
 			String worldname = reference.getWorld().getName();
 
-			plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.x-min", xmin);
-			plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.x-max", xmax);
-			plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.z-min", zmin);
-			plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.z-max", zmax);
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-min", xmin);
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-max", xmax);
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-min", zmin);
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-max", zmax);
 
-			plugin.getYamlHandler().worlds.set(worldname + ".randomspawnenabled", true);
+			plugin.yamlHandler.worlds.set(worldname + ".randomspawnenabled", true);
 
-			plugin.getYamlHandler().saveWorlds();
+			plugin.yamlHandler.saveWorlds();
 
 			plugin.playerInfo(player,  "Spawn area set!");
 
@@ -52,14 +52,14 @@ public class RandomSpawnSetAreaCommand extends RandomSpawnCommandExecutor{
 
 				String worldname = reference.getWorld().getName();
 
-				plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.x-min", xmin);
-				plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.x-max", xmax);
-				plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.z-min", zmin);
-				plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.z-max", zmax);
+				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-min", xmin);
+				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-max", xmax);
+				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-min", zmin);
+				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-max", zmax);
 
-				plugin.getYamlHandler().worlds.set(worldname + ".randomspawnenabled", true);
+				plugin.yamlHandler.worlds.set(worldname + ".randomspawnenabled", true);
 
-				plugin.getYamlHandler().saveWorlds();
+				plugin.yamlHandler.saveWorlds();
 
 				plugin.playerInfo(player,  "Spawn area set!");
 
@@ -82,14 +82,14 @@ public class RandomSpawnSetAreaCommand extends RandomSpawnCommandExecutor{
 
 				String worldname = reference.getWorld().getName();
 
-				plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.x-min", xmin);
-				plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.x-max", xmax);
-				plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.z-min", zmin);
-				plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.z-max", zmax);
+				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-min", xmin);
+				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-max", xmax);
+				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-min", zmin);
+				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-max", zmax);
 
-				plugin.getYamlHandler().worlds.set(worldname + ".randomspawnenabled", true);
+				plugin.yamlHandler.worlds.set(worldname + ".randomspawnenabled", true);
 
-				plugin.getYamlHandler().saveWorlds();
+				plugin.yamlHandler.saveWorlds();
 
 				plugin.playerInfo(player,  "Spawn area set!");
 
@@ -108,14 +108,14 @@ public class RandomSpawnSetAreaCommand extends RandomSpawnCommandExecutor{
 
 				String worldname = reference.getWorld().getName();
 
-				plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.x-min", xmin);
-				plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.x-max", xmax);
-				plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.z-min", zmin);
-				plugin.getYamlHandler().worlds.set(worldname + ".spawnarea.z-max", zmax);
+				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-min", xmin);
+				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-max", xmax);
+				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-min", zmin);
+				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-max", zmax);
 
-				plugin.getYamlHandler().worlds.set(worldname + ".randomspawnenabled", true);
+				plugin.yamlHandler.worlds.set(worldname + ".randomspawnenabled", true);
 
-				plugin.getYamlHandler().saveWorlds();
+				plugin.yamlHandler.saveWorlds();
 
 				plugin.playerInfo(player,  "Spawn area set!");
 

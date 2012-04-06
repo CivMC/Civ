@@ -1,13 +1,14 @@
 #edit the following example world to your preferences
 #remember to change 'example' into your world name
 example:
+  randomspawnon:
+  - respawn
+  - bedrespawn
+  - firstjoin
   randomspawnenabled: true
-  usebeds: true
   keeprandomspawns: false
-  randomspawnonfirstjoin: true
-  randomspawnonworldchange: true
-  type: "square"
   spawnarea:
+  	type: "square"
     x-min: -100
     x-max: 100
     z-min: -100

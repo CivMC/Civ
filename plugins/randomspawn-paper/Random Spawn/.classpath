@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="me/Josvth/RandomSpawn/Listeners/RandomSpawnJoinListener.java|me/Josvth/RandomSpawn/Listeners/RandomSpawnRespawnListener.java|me/Josvth/RandomSpawn/Listeners/DebugListener.java|me/Josvth/RandomSpawn/Listeners/RandomSpawnSignListener.java" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="C:/Users/Jos/Minecraft/Plugins/API&apos;s/bukkit-1.2.4-R1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>

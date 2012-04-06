@@ -34,7 +34,7 @@ public class RandomSpawnJoinListener implements Listener {
 		
 		plugin.logDebug(playerName + "'s first join in " + worldName);
 		
-		if (plugin.getYamlHandler().worlds.getBoolean(worldName + ".randomspawnonfirstjoin",true) == false){		
+		if (plugin.yamlHandler.worlds.getBoolean(worldName + ".randomspawnonfirstjoin",true) == false){		
 			player.teleport(getFirstSpawn(world));
 			plugin.logDebug(playerName + " is teleported to the first spawn of " + worldName);
 			return;
@@ -42,7 +42,7 @@ public class RandomSpawnJoinListener implements Listener {
 
 		if (player.hasPermission("RandomSpawn.exclude")){ return; } 							// checks if player should be excluded
 
-		if (this.plugin.getYamlHandler().worlds.getBoolean(worldName + ".randomspawnenabled", false)){					// checks if Random Spawn is enabled in this world
+		if (this.plugin.yamlHandler.worlds.getBoolean(worldName + ".randomspawnenabled", false)){					// checks if Random Spawn is enabled in this world
 
 			Location worldSpawn = world.getSpawnLocation();
 			
@@ -59,14 +59,14 @@ public class RandomSpawnJoinListener implements Listener {
 	private Location getFirstSpawn(World world) {
 		String worldName = world.getName();
 
-		if (plugin.getYamlHandler().worlds.contains(worldName +".firstspawn")){
+		if (plugin.yamlHandler.worlds.contains(worldName +".firstspawn")){
 
-			double x = this.plugin.getYamlHandler().worlds.getDouble(worldName+".firstspawn.x");
-			double y = this.plugin.getYamlHandler().worlds.getDouble(worldName+".firstspawn.y");
-			double z = this.plugin.getYamlHandler().worlds.getDouble(worldName+".firstspawn.z");
+			double x = this.plugin.yamlHandler.worlds.getDouble(worldName+".firstspawn.x");
+			double y = this.plugin.yamlHandler.worlds.getDouble(worldName+".firstspawn.y");
+			double z = this.plugin.yamlHandler.worlds.getDouble(worldName+".firstspawn.z");
 
-			double dyaw = this.plugin.getYamlHandler().worlds.getDouble(worldName+".firstspawn.yaw");
-			double dpitch = this.plugin.getYamlHandler().worlds.getDouble(worldName+".firstspawn.pitch");
+			double dyaw = this.plugin.yamlHandler.worlds.getDouble(worldName+".firstspawn.yaw");
+			double dpitch = this.plugin.yamlHandler.worlds.getDouble(worldName+".firstspawn.pitch");
 
 			float yaw = (float)dyaw;
 			float pitch = (float)dpitch;

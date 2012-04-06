@@ -20,14 +20,14 @@ public class RandomSpawnTpFirstSpawnCommand extends RandomSpawnCommandExecutor{
 		Player player = (Player)sender;
 		String worldname = player.getWorld().getName();
 		
-		if (plugin.getYamlHandler().worlds.contains(worldname +".firstspawn")){
+		if (plugin.yamlHandler.worlds.contains(worldname +".firstspawn")){
 			
-			double x = plugin.getYamlHandler().worlds.getDouble(worldname+".firstspawn.x");
-			double y = plugin.getYamlHandler().worlds.getDouble(worldname+".firstspawn.y");
-			double z = plugin.getYamlHandler().worlds.getDouble(worldname+".firstspawn.z");
+			double x = plugin.yamlHandler.worlds.getDouble(worldname+".firstspawn.x");
+			double y = plugin.yamlHandler.worlds.getDouble(worldname+".firstspawn.y");
+			double z = plugin.yamlHandler.worlds.getDouble(worldname+".firstspawn.z");
 			
-			double dyaw = plugin.getYamlHandler().worlds.getDouble(worldname+".firstspawn.yaw");
-			double dpitch = plugin.getYamlHandler().worlds.getDouble(worldname+".firstspawn.pitch");
+			double dyaw = plugin.yamlHandler.worlds.getDouble(worldname+".firstspawn.yaw");
+			double dpitch = plugin.yamlHandler.worlds.getDouble(worldname+".firstspawn.pitch");
 			
 			float yaw = (float)dyaw;
 			float pitch = (float)dpitch;

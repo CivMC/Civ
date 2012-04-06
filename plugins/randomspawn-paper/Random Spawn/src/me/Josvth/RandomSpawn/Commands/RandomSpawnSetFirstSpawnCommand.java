@@ -25,15 +25,15 @@ public class RandomSpawnSetFirstSpawnCommand extends RandomSpawnCommandExecutor{
 		double yaw = (double)player.getLocation().getYaw();
 		double pitch = (double)player.getLocation().getPitch();
 		
-		plugin.getYamlHandler().worlds.set(worldname+".firstspawn.x", x);
-		plugin.getYamlHandler().worlds.set(worldname+".firstspawn.y", y);
-		plugin.getYamlHandler().worlds.set(worldname+".firstspawn.z", z);
-		plugin.getYamlHandler().worlds.set(worldname+".firstspawn.yaw", yaw);
-		plugin.getYamlHandler().worlds.set(worldname+".firstspawn.pitch", pitch);
+		plugin.yamlHandler.worlds.set(worldname+".firstspawn.x", x);
+		plugin.yamlHandler.worlds.set(worldname+".firstspawn.y", y);
+		plugin.yamlHandler.worlds.set(worldname+".firstspawn.z", z);
+		plugin.yamlHandler.worlds.set(worldname+".firstspawn.yaw", yaw);
+		plugin.yamlHandler.worlds.set(worldname+".firstspawn.pitch", pitch);
 		
-		plugin.getYamlHandler().worlds.set(worldname+".randomspawnonfirstjoin", false);
+		plugin.yamlHandler.worlds.set(worldname+".randomspawnonfirstjoin", false);
 		
-		plugin.getYamlHandler().saveWorlds();
+		plugin.yamlHandler.saveWorlds();
 		
 		plugin.playerInfo(player, "First spawn location set!");
 		plugin.playerInfo(player, "Random spawning on first join is now disabled!");

@@ -17,25 +17,25 @@ public class RandomSpawnReloadCommand extends RandomSpawnCommandExecutor {
 		Player player = (Player) sender;
 
 		if (args.size() == 0) {
-			plugin.getYamlHandler().loadYamls();
+			plugin.yamlHandler.loadYamls();
 			plugin.playerInfo(player, "Random Spawn configurations reloaded!");
 			return true;
 		}
 
 		if (args.get(0).matches("config")) {
-			plugin.getYamlHandler().loadConfig();
+			plugin.yamlHandler.loadConfig();
 			plugin.playerInfo(player, "Random Spawn config file is reloaded!");
 			return true;
 		}
 
 		if (args.get(0).matches("worlds")) {
-			plugin.getYamlHandler().loadWorlds();
+			plugin.yamlHandler.loadWorlds();
 			plugin.playerInfo(player, "Random Spawn worlds file reloaded!");
 			return true;
 		}
 
 		if (args.get(0).matches("spawnlocations")) {
-			plugin.getYamlHandler().loadSpawnLocations();
+			plugin.yamlHandler.loadSpawnLocations();
 			plugin.playerInfo(player, "Random Spawn spawnlocations file reloaded!");
 			return true;
 		}
