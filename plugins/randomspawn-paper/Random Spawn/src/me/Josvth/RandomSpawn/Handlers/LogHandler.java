@@ -1,18 +1,20 @@
-package me.Josvth.RandomSpawn;
+package me.Josvth.RandomSpawn.Handlers;
 
 import java.util.logging.Logger;
 
+
+import me.Josvth.RandomSpawn.RandomSpawn;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 
-public class RandomSpawnLogger {
+public class LogHandler {
 
 	RandomSpawn plugin;
 	Logger logger;
 	
-	public RandomSpawnLogger(RandomSpawn instance){
+	public LogHandler(RandomSpawn instance){
 		this.plugin = instance;
 		this.logger = Logger.getLogger("Minecraft");
 	}
