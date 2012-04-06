@@ -34,7 +34,7 @@ public class JoinListener implements Listener{
 
 		if(file.exists()) return;
 		
-		List<String> randomSpawnFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".usebeds");
+		List<String> randomSpawnFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".randomspawnon");
 		
 		if (!randomSpawnFlags.contains("firstjoin")){ 
 			player.teleport(getFirstSpawn(world));
