@@ -2,6 +2,7 @@ package me.Josvth.RandomSpawn;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.BlockChangeDelegate;
@@ -12,7 +13,9 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 import me.Josvth.RandomSpawn.Handlers.CommandHandler;
 import me.Josvth.RandomSpawn.Handlers.YamlHandler;
@@ -122,7 +125,7 @@ public class RandomSpawn extends JavaPlugin{
 				Double.parseDouble(Integer.toString(zrand)) + 0.5
 				);
 	}
-	
+
 	private int getValidHighestBlock(World world, int x, int z) {
 		world.getChunkAt(new Location(world, x, 0, z)).load();
 
@@ -141,7 +144,7 @@ public class RandomSpawn extends JavaPlugin{
 
 		return y;
 	}
-	
+
 	public void sendGround(Player player, Location location){				
 		for(int xx = location.getBlockX() - 1; xx <= location.getBlockX() + 1; xx++){
 			for(int zz = location.getBlockZ() -1; zz <= location.getBlockZ() + 1; zz++){
@@ -153,7 +156,27 @@ public class RandomSpawn extends JavaPlugin{
 			}
 		}
 	}
-	
+
+	public Location getPlayerSpawn(Player player, World world){
+
+		String[] coordinates = player.getMetadata("spawn" + world.getName()).get(0).asString().split("[,]");
+
+		Vector vector = new Vector(
+				Double.parseDouble(coordinates[0]), 
+				Double.parseDouble(coordinates[1]), 
+				Double.parseDouble(coordinates[2])
+				);
+
+		return vector.toLocation(world);
+
+	}
+
+	public void setPlayerSpawn(Player player, Location location){
+		player.setMetadata("spawn" + location.getWorld().getName(), new FixedMetadataValue(this, location.toVector().toString()));
+	}
+
+}
+
 //	public void sendRealBlockChange(Player player, Location location){
 //		location.getChunk().load();
 //		Block block = location.getBlock();
@@ -163,5 +186,4 @@ public class RandomSpawn extends JavaPlugin{
 //			player.sendBlockChange(location, block.getType(), block.getData());
 //		}
 //	}
-	
-}
+
