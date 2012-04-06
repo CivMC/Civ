@@ -146,7 +146,7 @@ public class RandomSpawn extends JavaPlugin{
 
 	public Location getPlayerSpawn(Player player, World world){
 
-		String[] coordinates = player.getMetadata("spawn" + world.getName()).get(0).asString().split("[,]");
+		String[] coordinates = player.getMetadata(world.getName() + ".spawn").get(0).asString().split("[,]");
 
 		Vector vector = new Vector(
 				Double.parseDouble(coordinates[0]), 
@@ -159,7 +159,7 @@ public class RandomSpawn extends JavaPlugin{
 	}
 
 	public void setPlayerSpawn(Player player, Location location){
-		player.setMetadata("spawn" + location.getWorld().getName(), new FixedMetadataValue(this, location.toVector().toString()));
+		player.setMetadata(location.getWorld().getName()  + ".spawn", new FixedMetadataValue(this, location.toVector().toString()));
 	}
 
 }
