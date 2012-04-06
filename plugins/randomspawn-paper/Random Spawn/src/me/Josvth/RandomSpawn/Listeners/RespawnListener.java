@@ -34,14 +34,14 @@ public class RespawnListener implements Listener{
 		World world = player.getWorld();
 		String worldName = world.getName();
 		
-		List<String> randomSpawnFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".usebeds");
-		
+		List<String> randomSpawnFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".randomspawnon");
+				
 		if (event.isBedSpawn() && !randomSpawnFlags.contains("bedrespawn")){  		// checks if player should be spawned at his bed
 			plugin.logDebug(playerName + " is spawned at his bed!");
 			return; 
 		}
 		
-		if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keepspawns", false) && 
+		if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns", false) && 
 				player.hasMetadata(player.getWorld().getName() + ".spawn")){
 			event.setRespawnLocation(plugin.getPlayerSpawn(player, world));
 			plugin.logDebug(playerName + " is spawned at his saved spawn.");
