@@ -1,16 +1,11 @@
 package me.Josvth.RandomSpawn;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Logger;
 
-import org.bukkit.BlockChangeDelegate;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -28,13 +23,10 @@ public class RandomSpawn extends JavaPlugin{
 	public YamlHandler yamlHandler;
 	CommandHandler commandHandler;
 
-	//RandomSpawnRespawnListener respawnListener;
-	//RandomSpawnJoinListener joinListener;
-	//RandomSpawnSignListener signListener;
-	//DebugListener debugListener;
-
 	RespawnListener respawnListener;
-
+	JoinListener joinListener;
+	SignListener signListener;
+	
 	public HashMap<Player,RandomSpawnSpawner> tasks = new HashMap<Player,RandomSpawnSpawner>();
 
 	@Override
@@ -58,13 +50,8 @@ public class RandomSpawn extends JavaPlugin{
 
 		//setup listeners
 		respawnListener = new RespawnListener(this);
-		//respawnListener = new RandomSpawnRespawnListener(this);
-		//joinListener = new RandomSpawnJoinListener(this);
-		//signListener = new RandomSpawnSignListener(this);
-
-		//if(yamlHandler.config.getBoolean("debug",false)){
-		//	debugListener = new DebugListener(this);
-		//}
+		joinListener = new JoinListener(this);
+		signListener = new SignListener(this);
 	}
 
 	public void logInfo(String message){
