@@ -1,6 +1,6 @@
 #edit the following example world to your preferences
-#remember to change 'example' into your world name
-example:
+#remember to change 'exampleworld' into your world name
+exampleworld:
   randomspawnon:
   - respawn
   - bedrespawn
