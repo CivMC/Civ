@@ -1,6 +1,5 @@
 package me.Josvth.RandomSpawn;
 
-import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -27,15 +26,6 @@ public class RandomSpawn extends JavaPlugin{
 	JoinListener joinListener;
 	SignListener signListener;
 	
-	public HashMap<Player,RandomSpawnSpawner> tasks = new HashMap<Player,RandomSpawnSpawner>();
-
-	@Override
-	public void onDisable() {
-		for(RandomSpawnSpawner spawner : tasks.values()){
-			spawner.forcestop(true);
-		}
-	}
-
 	@Override
 	public void onEnable() {
 
@@ -86,6 +76,11 @@ public class RandomSpawn extends JavaPlugin{
 	//		}
 	//	}
 
+	// *------------------------------------------------------------------------------------------------------------*
+	// | The random location methods contain code made by NuclearW                                                  |
+	// | based on his SpawnArea plugin:                                                                             |
+	// | http://forums.bukkit.org/threads/tp-spawnarea-v0-1-spawns-targetPlayers-in-a-set-area-randomly-1060.20408/ |
+	// *------------------------------------------------------------------------------------------------------------*
 	public Location chooseSpawn(World world){
 
 		String worldName = world.getName();
