@@ -7,16 +7,19 @@ import me.Josvth.RandomSpawn.RandomSpawnCommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RandomSpawnEnableCommand extends RandomSpawnCommandExecutor{
+public class EnableCommand extends RandomSpawnCommandExecutor{
 	
-	public RandomSpawnEnableCommand(){
+	public EnableCommand(){
 		this.name = "enable";
 	}
 
 	public boolean onCommand(CommandSender sender, List<String> args){
 		Player player = (Player) sender;
 		String worldname = player.getWorld().getName();
-		plugin.yamlHandler.worlds.set(worldname + ".randomspawnenabled", true);
+		List<String> spawnFlags = plugin.yamlHandler.worlds.getStringList(worldname + ".randomspawnon");
+		spawnFlags.add("respawn");
+		
+		plugin.yamlHandler.worlds.set(worldname + ".randomspawnon", spawnFlags);
 		
 		if (!(plugin.yamlHandler.worlds.contains(worldname +".spawnarea"))){
 			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-min", -100);
@@ -27,6 +30,7 @@ public class RandomSpawnEnableCommand extends RandomSpawnCommandExecutor{
 		
 		plugin.yamlHandler.saveWorlds();
 		plugin.playerInfo(player, "Random Spawn is now enabled in this world!");
+		
 		return true;
 	}
 }
