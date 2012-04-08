@@ -68,7 +68,7 @@ public class JoinListener implements Listener{
 
 		}			
 	}
-
+	
 	private void migrateMetaData(Player player, World world) {
 		
 		String playerName = player.getName();

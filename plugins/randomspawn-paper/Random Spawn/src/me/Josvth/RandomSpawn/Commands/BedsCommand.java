@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 
 public class BedsCommand extends RandomSpawnCommandExecutor{
 	
-	
 	public BedsCommand(){
 		name = "usebeds";
 	}
