@@ -23,7 +23,7 @@ public class InfoCommand extends RandomSpawnCommandExecutor {
 		player.sendMessage(ChatColor.AQUA + "World: " + ChatColor.WHITE + worldname );
 		if (!(plugin.yamlHandler.worlds.contains(worldname))){
 			player.sendMessage("Is not configured in Random Spawn ");
-			player.sendMessage(ChatColor.WHITE +" ---------------------------------------------------- ");
+			player.sendMessage(ChatColor.WHITE +" --------------------------------------------------- ");
 			return true;
 		}
 		
