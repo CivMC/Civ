@@ -39,6 +39,9 @@ public class SignListener implements Listener {
 						
 						player.teleport(spawnLocation);
 						
+						player.setMaximumNoDamageTicks(plugin.yamlHandler.config.getInt("nodamagetime",5)*20);
+						player.setNoDamageTicks(plugin.yamlHandler.config.getInt("nodamagetime",5)*20);
+						
 						if (plugin.yamlHandler.worlds.getBoolean(world.getName() + ".keeprandomspawns",false)){
 							plugin.setPlayerSpawn(player, spawnLocation);
 						}

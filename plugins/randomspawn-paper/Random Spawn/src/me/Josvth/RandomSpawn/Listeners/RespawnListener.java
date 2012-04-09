@@ -56,6 +56,9 @@ public class RespawnListener implements Listener{
 			
 			event.setRespawnLocation(spawnLocation);
 			
+			player.setMaximumNoDamageTicks(plugin.yamlHandler.config.getInt("nodamagetime",5)*20);
+			player.setNoDamageTicks(plugin.yamlHandler.config.getInt("nodamagetime",5)*20);
+			
 			if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)){
 				plugin.setPlayerSpawn(player, spawnLocation);
 			}
