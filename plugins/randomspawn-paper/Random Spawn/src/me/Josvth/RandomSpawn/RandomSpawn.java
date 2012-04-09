@@ -136,8 +136,10 @@ public class RandomSpawn extends JavaPlugin{
 	public void sendGround(Player player, Location location){				
 		for(int xx = location.getBlockX() - 1; xx <= location.getBlockX() + 1; xx++){
 			for(int zz = location.getBlockZ() -1; zz <= location.getBlockZ() + 1; zz++){
+				
 				location.getWorld().getChunkAt(new Location(location.getWorld(), xx, 0, zz)).load();
 				int y = location.getWorld().getHighestBlockYAt(xx, zz);
+				
 				Location groundLocation = new Location(location.getWorld(), xx, y-1, zz);
 				Block groundBlock = groundLocation.getBlock();
 				if(canCauseBlockUpdate(groundBlock)){
@@ -150,6 +152,9 @@ public class RandomSpawn extends JavaPlugin{
 	}
 	
 	private boolean canCauseBlockUpdate(Block block){
+		
+		block.getChunk().load();
+		
 		int blockid = block.getTypeId();
 		
 		if (blockid == 8) return true;
