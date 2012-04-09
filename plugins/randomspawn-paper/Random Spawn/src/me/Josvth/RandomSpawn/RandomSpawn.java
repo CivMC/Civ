@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -60,27 +61,32 @@ public class RandomSpawn extends JavaPlugin{
 		player.sendMessage(ChatColor.AQUA + "[RandomSpawn] " + ChatColor.RESET + message);
 	}
 
-	//    public boolean hasValidEnviroment(World world){
-	//    	return world.getEnvironment() != Environment.NETHER;
-	//    }
+	// Getting and setting of saved spawn
+	
+	public Location getPlayerSpawn(Player player, World world){
 
-	//	public void randomSpawnPlayer(Player player, World spawnWorld) {		
-	//		RandomSpawnSpawner spawner = new RandomSpawnSpawner(this, player, spawnWorld);		
-	//		
-	//		spawner.setTaskId(getServer().getScheduler().scheduleSyncRepeatingTask(this, spawner, 0, yamlHandler.config.getInt("generator.interval",4)));
-	//		player.setMaximumNoDamageTicks(12000);
-	//		player.setNoDamageTicks(12000);
-	//		
-	//		if(yamlHandler.config.contains("messages.pleasewait")){
-	//			player.sendMessage(yamlHandler.config.getString("messages.pleasewait"));
-	//		}
-	//	}
+		String[] coordinates = player.getMetadata(world.getName() + ".spawn").get(0).asString().split("[,]");
 
+		Vector vector = new Vector(
+				Double.parseDouble(coordinates[0]), 
+				Double.parseDouble(coordinates[1]), 
+				Double.parseDouble(coordinates[2])
+				);
+
+		return vector.toLocation(world);
+
+	}
+
+	public void setPlayerSpawn(Player player, Location location){
+		player.setMetadata(location.getWorld().getName()  + ".spawn", new FixedMetadataValue(this, location.toVector().toString()));
+	}
+	
 	// *------------------------------------------------------------------------------------------------------------*
 	// | The random location methods contain code made by NuclearW                                                  |
 	// | based on his SpawnArea plugin:                                                                             |
 	// | http://forums.bukkit.org/threads/tp-spawnarea-v0-1-spawns-targetPlayers-in-a-set-area-randomly-1060.20408/ |
 	// *------------------------------------------------------------------------------------------------------------*
+	
 	public Location chooseSpawn(World world){
 
 		String worldName = world.getName();
@@ -126,46 +132,33 @@ public class RandomSpawn extends JavaPlugin{
 
 		return y;
 	}
-
+	
 	public void sendGround(Player player, Location location){				
 		for(int xx = location.getBlockX() - 1; xx <= location.getBlockX() + 1; xx++){
 			for(int zz = location.getBlockZ() -1; zz <= location.getBlockZ() + 1; zz++){
-				int y = getValidHighestBlock(location.getWorld(), xx, zz);
+				location.getWorld().getChunkAt(new Location(location.getWorld(), xx, 0, zz)).load();
+				int y = location.getWorld().getHighestBlockYAt(xx, zz);
 				Location groundLocation = new Location(location.getWorld(), xx, y-1, zz);
-				groundLocation.getChunk().load();
 				Block groundBlock = groundLocation.getBlock();
-				player.sendBlockChange(groundLocation, groundBlock.getType(), groundBlock.getData());
+				if(canCauseBlockUpdate(groundBlock)){
+					player.sendBlockChange(groundLocation, Material.DIRT, (byte) 0);
+				}else{
+					player.sendBlockChange(groundLocation, groundBlock.getType(), groundBlock.getData());
+				}
 			}
 		}
 	}
-
-	public Location getPlayerSpawn(Player player, World world){
-
-		String[] coordinates = player.getMetadata(world.getName() + ".spawn").get(0).asString().split("[,]");
-
-		Vector vector = new Vector(
-				Double.parseDouble(coordinates[0]), 
-				Double.parseDouble(coordinates[1]), 
-				Double.parseDouble(coordinates[2])
-				);
-
-		return vector.toLocation(world);
-
-	}
-
-	public void setPlayerSpawn(Player player, Location location){
-		player.setMetadata(location.getWorld().getName()  + ".spawn", new FixedMetadataValue(this, location.toVector().toString()));
-	}
-
+	
+	private boolean canCauseBlockUpdate(Block block){
+		int blockid = block.getTypeId();
+		
+		if (blockid == 8) return true;
+		if (blockid == 9) return true;
+		if (blockid == 10) return true;
+		if (blockid == 11) return true;
+		if (blockid == 12) return true;
+		if (blockid == 13) return true;
+		
+		return false;
+	}	
 }
-
-//	public void sendRealBlockChange(Player player, Location location){
-//		location.getChunk().load();
-//		Block block = location.getBlock();
-//		if(block.getType().equals(Material.SAND) || block.getType().equals(Material.GRAVEL)){
-//			player.sendBlockChange(location, Material.DIRT, (byte) 0);
-//		}else{
-//			player.sendBlockChange(location, block.getType(), block.getData());
-//		}
-//	}
-

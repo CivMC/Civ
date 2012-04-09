@@ -25,7 +25,7 @@ public class RespawnListener implements Listener{
 		
 		Player player = event.getPlayer();
 		String playerName = player.getName();
-		
+				
 		if (player.hasPermission("RandomSpawn.exclude")){ 																// checks if player should be excluded
 			plugin.logDebug(playerName + " is excluded from Random Spawning.");
 			return; 
@@ -62,39 +62,4 @@ public class RespawnListener implements Listener{
 			
 		}			
 	}
-	
-//	private Location getPlayerSpawn(Player player, World world) {
-//		
-//		String playerName = player.getName();
-//		String worldName  = world.getName();
-//		
-//		if (plugin.yamlHandler.spawnLocations.contains(worldName + "." + playerName)){
-//			
-//			double x = this.plugin.yamlHandler.spawnLocations.getDouble(worldName + "." + playerName + ".x");
-//			double y = this.plugin.yamlHandler.spawnLocations.getDouble(worldName + "." + playerName + ".y");
-//			double z = this.plugin.yamlHandler.spawnLocations.getDouble(worldName + "." + playerName + ".z");
-//			
-//			plugin.logDebug(playerName + "'s saved spawn found!");
-//			
-//			return new Location(world, x,y,z);
-//		}
-//		
-//		plugin.logDebug(playerName + "'s saved spawn not found!");
-//		return null;
-//	}
-//	
-//	private void savePlayerSpawn(Player player, Location location){
-//		
-//		String playerName = player.getName();
-//		String worldName  = location.getWorld().getName();
-//		
-//		plugin.yamlHandler.spawnLocations.set(worldName + "." + playerName + ".x", location.getX());
-//		plugin.yamlHandler.spawnLocations.set(worldName + "." + playerName + ".y", location.getY());
-//		plugin.yamlHandler.spawnLocations.set(worldName + "." + playerName + ".z", location.getZ());
-//		plugin.yamlHandler.saveSpawnLocations();
-//		
-//		plugin.logDebug(playerName + "'s Random Spawn location is saved!");
-//		
-//	}
-	
 }
