@@ -119,13 +119,16 @@ public class RandomSpawn extends JavaPlugin{
 
 		int y = world.getHighestBlockYAt(x, z);
 		int blockid = world.getBlockTypeIdAt(x, y - 1, z);
-
+		
+		logDebug("Type = " + Material.getMaterial(blockid));
+		
 		if (blockid == 8) return -1;
 		if (blockid == 9) return -1;
 		if (blockid == 10) return -1;
 		if (blockid == 11) return -1;
 		if (blockid == 51) return -1;
-
+		if (blockid == 18) return -1;
+		
 		blockid = world.getBlockTypeIdAt(x, y + 1, z);
 
 		if (blockid == 81) return -1;
@@ -133,22 +136,38 @@ public class RandomSpawn extends JavaPlugin{
 		return y;
 	}
 	
-	public void sendGround(Player player, Location location){				
-		for(int xx = location.getBlockX() - 1; xx <= location.getBlockX() + 1; xx++){
-			for(int zz = location.getBlockZ() -1; zz <= location.getBlockZ() + 1; zz++){
-				
-				location.getWorld().getChunkAt(new Location(location.getWorld(), xx, 0, zz)).load();
-				int y = location.getWorld().getHighestBlockYAt(xx, zz);
-				
-				Location groundLocation = new Location(location.getWorld(), xx, y-1, zz);
-				Block groundBlock = groundLocation.getBlock();
-				if(canCauseBlockUpdate(groundBlock)){
-					player.sendBlockChange(groundLocation, Material.DIRT, (byte) 0);
-				}else{
-					player.sendBlockChange(groundLocation, groundBlock.getType(), groundBlock.getData());
-				}
-			}
+	public void sendGround(Player player, Location location){		
+		
+		Location groundLocation = location.subtract(0, 1, 0);
+		
+		groundLocation.getChunk().load();
+		
+		if(canCauseBlockUpdate(groundLocation.getBlock())){
+			player.sendBlockChange(groundLocation, Material.DIRT, (byte) 0);
+		}else{
+			player.sendBlockChange(groundLocation, groundLocation.getBlock().getType(), groundLocation.getBlock().getData());
 		}
+		
+//		for(int xx = location.getBlockX() - 1; xx <= location.getBlockX() + 1; xx++){
+//			for(int zz = location.getBlockZ() -1; zz <= location.getBlockZ() + 1; zz++){
+//				
+//				location.getWorld().getChunkAt(new Location(location.getWorld(), xx, 0, zz)).load();
+//				
+//				int y = location.getWorld().getHighestBlockYAt(xx, zz);
+//				
+//				Location groundLocation = new Location(location.getWorld(), xx, y - 1, zz);
+//				
+//				Block groundBlock = groundLocation.getBlock();
+//				
+//				if(canCauseBlockUpdate(groundBlock)){
+//					player.sendBlockChange(groundLocation, Material.DIRT, (byte) 0);
+//					logDebug("MADE DIRT!");
+//				}else{
+//					player.sendBlockChange(groundLocation, groundBlock.getType(), groundBlock.getData());
+//					logDebug("Typeground = " + groundBlock.getType());
+//				}
+//			}
+//		}	
 	}
 	
 	private boolean canCauseBlockUpdate(Block block){
