@@ -19,6 +19,7 @@ import org.bukkit.event.block.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.Openable;
+import org.bukkit.Material;
 
 import static com.untamedears.citadel.Utility.*;
 
@@ -98,10 +99,34 @@ public class BlockListener extends PluginConsumer implements Listener {
         Reinforcement reinforcement = plugin.dao.findReinforcement(bpre.getBlock());
         bpre.setCancelled(reinforcement != null && reinforcement.getSecurityLevel() != SecurityLevel.PUBLIC);
     }
-
+    
+    private static final Material matfire = Material.FIRE;
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void blockBurn(BlockBurnEvent bbe) {
-        bbe.setCancelled(maybeReinforcementDamaged(bbe.getBlock()));
+        boolean wasprotected = maybeReinforcementDamaged(bbe.getBlock());
+    	if (wasprotected) {
+            bbe.setCancelled(wasprotected);
+	    Block block = bbe.getBlock();
+            // Basic essential fire protection
+            if (block.getRelative(0,1,0).getType() == matfire) {block.getRelative(0,1,0).setTypeId(0);} // Essential
+            // Extended fire protection (recommend)
+            if (block.getRelative(1,0,0).getType() == matfire) {block.getRelative(1,0,0).setTypeId(0);}
+            if (block.getRelative(-1,0,0).getType() == matfire) {block.getRelative(-1,0,0).setTypeId(0);}
+            if (block.getRelative(0,-1,0).getType() == matfire) {block.getRelative(0,-1,0).setTypeId(0);}
+            if (block.getRelative(0,0,1).getType() == matfire) {block.getRelative(0,0,1).setTypeId(0);}
+            if (block.getRelative(0,0,-1).getType() == matfire) {block.getRelative(0,0,-1).setTypeId(0);}
+            // Aggressive fire protection (would seriously reduce effectiveness of flint down to near the "you'd have to use it 25 times" mentality)
+            /*
+            if (block.getRelative(1,1,0).getType() == matfire) {block.getRelative(1,1,0).setTypeId(0);}
+            if (block.getRelative(1,-1,0).getType() == matfire) {block.getRelative(1,-1,0).setTypeId(0);}
+            if (block.getRelative(-1,1,0).getType() == matfire) {block.getRelative(-1,1,0).setTypeId(0);}
+            if (block.getRelative(-1,-1,0).getType() == matfire) {block.getRelative(-1,-1,0).setTypeId(0);}
+            if (block.getRelative(0,1,1).getType() == matfire) {block.getRelative(0,1,1).setTypeId(0);}
+            if (block.getRelative(0,-1,1).getType() == matfire) {block.getRelative(0,-1,1).setTypeId(0);}
+            if (block.getRelative(0,1,-1).getType() == matfire) {block.getRelative(0,1,-1).setTypeId(0);}
+            if (block.getRelative(0,-1,-1).getType() == matfire) {block.getRelative(0,-1,-1).setTypeId(0);}
+            */
+	}
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
