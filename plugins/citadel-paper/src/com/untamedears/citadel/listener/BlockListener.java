@@ -62,7 +62,7 @@ public class BlockListener extends PluginConsumer implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void blockBreak(BlockBreakEvent bbe) {
         Block block = bbe.getBlock();
         Player player = bbe.getPlayer();
@@ -72,7 +72,7 @@ public class BlockListener extends PluginConsumer implements Listener {
         if (reinforcement == null) return;
 
         PlayerState state = PlayerState.get(player);
-        if (state.isBypassMode() && reinforcement.isAccessible(player)) {
+        if (state.isBypassMode() && reinforcement.isBypassable(player)) {
             plugin.logVerbose("Player %s bypassed reinforcement %s", player.getDisplayName(), reinforcement);
 
             bbe.setCancelled(reinforcementBroken(reinforcement));

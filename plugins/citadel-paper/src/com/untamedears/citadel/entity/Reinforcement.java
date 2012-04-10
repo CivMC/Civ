@@ -130,6 +130,16 @@ public class Reinforcement {
         }
         return true;
     }
+    
+    public boolean isBypassable(Player player) {
+        String name = player.getDisplayName();
+        switch (securityLevel) {
+            case PRIVATE:
+                return name.equals(owner.getFounder());
+            default:
+                return name.equals(owner.getFounder()) || owner.hasMember(name);
+        }
+    }
 
     public boolean isSecurable() {
         Block block = getBlock();

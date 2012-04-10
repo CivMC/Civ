@@ -69,7 +69,7 @@ public class PlayerListener implements Listener {
             interact(pie);
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void interact(PlayerInteractEvent pie) {
         if (!pie.hasBlock()) return;
 
@@ -100,36 +100,10 @@ public class PlayerListener implements Listener {
                 if (reinforcement == null) {
                     createReinforcement(player, block);
                 } else if (reinforcement.isAccessible(player)) {
-                    ReinforcementMaterial material = ReinforcementMaterial.get(player.getItemInHand().getType());
-                    boolean accessChange = reinforcement.getSecurityLevel() != state.getSecurityLevel();
-                    boolean materialChange = material != null && reinforcement.getMaterialId() != material.getMaterialId();
-                    boolean repair = !materialChange && material != null && reinforcement.getHealth() < 1;
-                    if (accessChange) {
+                    if (reinforcement.getSecurityLevel() != state.getSecurityLevel()) {
                         reinforcement.setSecurityLevel(state.getSecurityLevel());
-                    }
-                    if (materialChange) {
-                        player.getInventory().remove(material.getRequiredMaterials());
-                        reinforcement.setMaterialId(material.getMaterialId());
-                        reinforcement.setDurability(material.getStrength());
-                    } else if (repair) {
-                        player.getInventory().remove(material.getRequiredMaterials());
-                        reinforcement.setDurability(reinforcement.getMaterial().getStrength());
-                    }
-                    if (accessChange || materialChange || repair) {
                         plugin.dao.save(reinforcement);
-                        String message = null;
-                        if (materialChange) {
-                            message = "Upgraded reinforcement to " + material.getMaterial().name();
-                        } else if (repair) {
-                            message = "Repaired reinforcement";
-                        }
-                        if (accessChange) {
-                            if (message == null) message = "Changed";
-                            else message += ",";
-
-                            message += " security level " + reinforcement.getSecurityLevel().name();
-                        }
-                        sendMessage(player, ChatColor.GREEN, message);
+                        sendMessage(player, ChatColor.GREEN, "Changed security level %s", reinforcement.getSecurityLevel().name());
                     }
                 } else {
                     sendMessage(player, ChatColor.RED, "You are not permitted to modify this reinforcement");
