@@ -55,14 +55,16 @@ public class RespawnListener implements Listener{
 			plugin.sendGround(player, spawnLocation);
 			
 			event.setRespawnLocation(spawnLocation);
-			
-			player.setMaximumNoDamageTicks(plugin.yamlHandler.config.getInt("nodamagetime",5)*20);
+						
 			player.setNoDamageTicks(plugin.yamlHandler.config.getInt("nodamagetime",5)*20);
 			
 			if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)){
 				plugin.setPlayerSpawn(player, spawnLocation);
 			}
-			
+
+			if (plugin.yamlHandler.config.getString("messages.randomspawned") != null){
+				player.sendMessage(plugin.yamlHandler.config.getString("messages.randomspawned"));
+			}
 		}			
 	}
 }
