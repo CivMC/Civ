@@ -25,7 +25,18 @@ public class CommandHandler implements CommandExecutor{
 		plugin.getCommand("rs").setExecutor(this);
 		
 		registerCommands(new RandomSpawnCommandExecutor[]{
-				new RandomSpawnBedsCommand(), new RandomSpawnDisableCommand(), new RandomSpawnEnableCommand(), new RandomSpawnFirstJoinCommand(), new RandomSpawnHelpCommand(), new RandomSpawnInfoCommand(), new RandomSpawnKeepSpawnsCommand(), new RandomSpawnReloadCommand(), new RandomSpawnSetAreaCommand(), new RandomSpawnSetFirstSpawnCommand(), new RandomSpawnTpFirstSpawnCommand(), new RandomSpawnUnsetFirstSpawnCommand()
+				new BedsCommand(), 
+				new DisableCommand(), 
+				new EnableCommand(), 
+				new FirstJoinCommand(), 
+				new RandomSpawnHelpCommand(), 
+				new InfoCommand(), 
+				new RandomSpawnKeepSpawnsCommand(), 
+				new RandomSpawnReloadCommand(), 
+				new RandomSpawnSetAreaCommand(), 
+				new RandomSpawnSetFirstSpawnCommand(), 
+				new RandomSpawnTpFirstSpawnCommand(), 
+				new RandomSpawnUnsetFirstSpawnCommand(),
 		});
 	}
 
@@ -54,11 +65,12 @@ public class CommandHandler implements CommandExecutor{
 			return true;
 		}
 		
-		if (!sender.hasPermission(commandExecutor.getPermission())){
+		if (commandExecutor.getPermission() != null && !sender.hasPermission(commandExecutor.getPermission())){
 			sender.sendMessage("You don't have the permission to use this command!");
+			return true;
 		}
 		
-		if (commandExecutor.onCommand(sender, Arrays.asList(args).subList(1, args.length)) == false){
+		if (commandExecutor.onCommand(sender, Arrays.asList(args).subList(1, args.length)) == false && commandExecutor.getUsage() != null){
 			sender.sendMessage(commandExecutor.getUsage());
 		}
 		
