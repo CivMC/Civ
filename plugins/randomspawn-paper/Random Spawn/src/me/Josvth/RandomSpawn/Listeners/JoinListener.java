@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,15 +30,13 @@ public class JoinListener implements Listener{
 		World world = player.getWorld();
 		String worldName = world.getName();
 
-		if(world.getEnvironment().equals(Environment.NETHER) || world.getEnvironment().equals(Environment.THE_END)) return;
-		
 		if(!player.hasMetadata(worldName + ".spawn")
 				&& plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)
 				&& plugin.yamlHandler.spawnLocations.contains(worldName + "." + playerName)
 				){
 			migrateMetaData(player, world);
 		}
-		
+
 		File file = new File(world.getWorldFolder() + File.separator + "players" + File.separator + player.getName() + ".dat");
 
 		if(file.exists()) return;
@@ -64,17 +61,14 @@ public class JoinListener implements Listener{
 			plugin.sendGround(player, spawnLocation);
 
 			player.teleport(spawnLocation);
-						
+			
+			player.setMaximumNoDamageTicks(plugin.yamlHandler.config.getInt("nodamagetime",5)*20);
 			player.setNoDamageTicks(plugin.yamlHandler.config.getInt("nodamagetime",5)*20);
 			
 			if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)){
 				plugin.setPlayerSpawn(player, spawnLocation);
 			}
-				
-			if (plugin.yamlHandler.config.getString("messages.randomspawned") != null){
-				player.sendMessage(plugin.yamlHandler.config.getString("messages.randomspawned"));
-			}
-			
+
 		}			
 	}
 	
