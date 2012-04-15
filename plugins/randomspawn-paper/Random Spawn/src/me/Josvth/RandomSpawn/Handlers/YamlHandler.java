@@ -35,7 +35,7 @@ public class YamlHandler{
         if (!(configFile.exists())){this.plugin.saveResource("config.yml", false);}				// loads default config's on first run
         if (!(worldsFile.exists())){this.plugin.saveResource("worlds.yml", false);}
         if (!(spawnLocationsFile.exists())){this.plugin.saveResource("spawnLocations.yml", false);}
-			
+	
 	}
 	
 	public void loadYamls() {
@@ -47,6 +47,7 @@ public class YamlHandler{
 		loadConfig();
         loadWorlds();
         loadSpawnLocations();
+       
     }
     
     public void loadConfig(){
