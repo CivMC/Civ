@@ -43,7 +43,7 @@ public class SignListener implements Listener {
 						player.setNoDamageTicks(plugin.yamlHandler.config.getInt("nodamagetime",5)*20);
 						
 						if (plugin.yamlHandler.worlds.getBoolean(world.getName() + ".keeprandomspawns",false)){
-							plugin.setPlayerSpawn(player, spawnLocation);
+							player.setBedSpawnLocation(spawnLocation);
 						}
 						
 					}else{

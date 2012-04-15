@@ -41,9 +41,8 @@ public class RespawnListener implements Listener{
 			return; 
 		}
 		
-		if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns", false) && 
-				player.hasMetadata(player.getWorld().getName() + ".spawn")){
-			event.setRespawnLocation(plugin.getPlayerSpawn(player, world));
+		if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns", false)){
+			event.setRespawnLocation(player.getBedSpawnLocation());
 			plugin.logDebug(playerName + " is spawned at his saved spawn.");
 			return;
 		}
@@ -59,7 +58,7 @@ public class RespawnListener implements Listener{
 			player.setNoDamageTicks(plugin.yamlHandler.config.getInt("nodamagetime",5)*20);
 			
 			if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)){
-				plugin.setPlayerSpawn(player, spawnLocation);
+				player.setBedSpawnLocation(spawnLocation);
 			}
 
 			if (plugin.yamlHandler.config.getString("messages.randomspawned") != null){
