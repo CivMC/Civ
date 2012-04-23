@@ -4,7 +4,6 @@ import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -24,7 +23,8 @@ public class RandomSpawn extends JavaPlugin{
 	RespawnListener respawnListener;
 	JoinListener joinListener;
 	SignListener signListener;
-
+	DamageListener damageListener;
+	
 	@Override
 	public void onEnable() {
 
@@ -41,6 +41,8 @@ public class RandomSpawn extends JavaPlugin{
 		respawnListener = new RespawnListener(this);
 		joinListener = new JoinListener(this);
 		signListener = new SignListener(this);
+		damageListener = new DamageListener(this);
+		
 	}
 
 	public void logInfo(String message){
@@ -83,7 +85,7 @@ public class RandomSpawn extends JavaPlugin{
 			zrand = zmin + (int) ( Math.random()*(zmax - zmin) + 0.5 );
 			y = getValidHighestBlock(world, xrand,zrand);
 		}while (y == -1);
-
+		
 		return new Location(
 				world,
 				Double.parseDouble(Integer.toString(xrand)) + 0.5, 
@@ -112,56 +114,17 @@ public class RandomSpawn extends JavaPlugin{
 		return y;
 	}
 
-
-	// Methodes for a save landing :)
+	// Methods for a save landing :)
 
 	public void sendGround(Player player, Location location){		
-
-		Location groundLocation = location.subtract(0, 1, 0);
-
-		groundLocation.getChunk().load();
-
-		if(canCauseBlockUpdate(groundLocation.getBlock())){
-			player.sendBlockChange(groundLocation, Material.DIRT, (byte) 1);
-		}else{
-			player.sendBlockChange(groundLocation, groundLocation.getBlock().getType(), groundLocation.getBlock().getData());
+		
+		location.getChunk().load();
+		
+		World world = location.getWorld();
+		
+		for(int y = 0 ; y <= location.getBlockY() + 2; y++){
+			Block block = world.getBlockAt(location.getBlockX(), y, location.getBlockZ());
+			player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
 		}
-
-		//		for(int xx = location.getBlockX() - 1; xx <= location.getBlockX() + 1; xx++){
-		//			for(int zz = location.getBlockZ() -1; zz <= location.getBlockZ() + 1; zz++){
-		//				
-		//				location.getWorld().getChunkAt(new Location(location.getWorld(), xx, 0, zz)).load();
-		//				
-		//				int y = location.getWorld().getHighestBlockYAt(xx, zz);
-		//				
-		//				Location groundLocation = new Location(location.getWorld(), xx, y - 1, zz);
-		//				
-		//				Block groundBlock = groundLocation.getBlock();
-		//				
-		//				if(canCauseBlockUpdate(groundBlock)){
-		//					player.sendBlockChange(groundLocation, Material.DIRT, (byte) 0);
-		//					logDebug("MADE DIRT!");
-		//				}else{
-		//					player.sendBlockChange(groundLocation, groundBlock.getType(), groundBlock.getData());
-		//					logDebug("Typeground = " + groundBlock.getType());
-		//				}
-		//			}
-		//		}	
-	}
-
-	private boolean canCauseBlockUpdate(Block block){
-
-		block.getChunk().load();
-
-		int blockid = block.getTypeId();
-
-		if (blockid == 8) return true;
-		if (blockid == 9) return true;
-		if (blockid == 10) return true;
-		if (blockid == 11) return true;
-		if (blockid == 12) return true;
-		if (blockid == 13) return true;
-
-		return false;
 	}
 }
