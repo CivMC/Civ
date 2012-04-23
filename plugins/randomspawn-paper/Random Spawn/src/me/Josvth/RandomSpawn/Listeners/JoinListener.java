@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import me.Josvth.RandomSpawn.RandomSpawn;
 
@@ -21,10 +23,15 @@ public class JoinListener implements Listener{
 		plugin = instance;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
-
+	
+	@EventHandler
+	public void onPlayerTeleport(PlayerTeleportEvent event){ 
+		plugin.sendGround(event.getPlayer(), event.getTo());
+	}
+	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event){
-
+		
 		Player player = event.getPlayer();
 		String playerName = player.getName();
 
@@ -54,12 +61,10 @@ public class JoinListener implements Listener{
 
 			Location spawnLocation = plugin.chooseSpawn(world);
 
-			plugin.sendGround(player, spawnLocation);
-
 			player.teleport(spawnLocation);
-						
-			player.setNoDamageTicks(plugin.yamlHandler.config.getInt("nodamagetime",5)*20);
 			
+			player.setMetadata("lasttimerandomspawned", new FixedMetadataValue(plugin, System.currentTimeMillis()));
+						
 			if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)){
 				player.setBedSpawnLocation(spawnLocation);
 			}

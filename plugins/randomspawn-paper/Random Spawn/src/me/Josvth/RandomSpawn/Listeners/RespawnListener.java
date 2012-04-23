@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class RespawnListener implements Listener{
 	
@@ -54,9 +55,9 @@ public class RespawnListener implements Listener{
 			plugin.sendGround(player, spawnLocation);
 			
 			event.setRespawnLocation(spawnLocation);
-						
-			player.setNoDamageTicks(plugin.yamlHandler.config.getInt("nodamagetime",5)*20);
 			
+			player.setMetadata("lasttimerandomspawned", new FixedMetadataValue(plugin, System.currentTimeMillis()));
+						
 			if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)){
 				player.setBedSpawnLocation(spawnLocation);
 			}
