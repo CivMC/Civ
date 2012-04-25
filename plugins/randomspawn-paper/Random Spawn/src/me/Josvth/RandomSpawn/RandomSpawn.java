@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,7 +25,7 @@ public class RandomSpawn extends JavaPlugin{
 	JoinListener joinListener;
 	SignListener signListener;
 	DamageListener damageListener;
-	
+
 	@Override
 	public void onEnable() {
 
@@ -42,7 +43,7 @@ public class RandomSpawn extends JavaPlugin{
 		joinListener = new JoinListener(this);
 		signListener = new SignListener(this);
 		damageListener = new DamageListener(this);
-		
+
 	}
 
 	public void logInfo(String message){
@@ -85,7 +86,7 @@ public class RandomSpawn extends JavaPlugin{
 			zrand = zmin + (int) ( Math.random()*(zmax - zmin) + 0.5 );
 			y = getValidHighestBlock(world, xrand,zrand);
 		}while (y == -1);
-		
+
 		return new Location(
 				world,
 				Double.parseDouble(Integer.toString(xrand)) + 0.5, 
@@ -96,8 +97,21 @@ public class RandomSpawn extends JavaPlugin{
 
 	private int getValidHighestBlock(World world, int x, int z) {
 		world.getChunkAt(new Location(world, x, 0, z)).load();
+		int y = 0;
 
-		int y = world.getHighestBlockYAt(x, z);
+		if(world.getEnvironment().equals(Environment.NETHER)){
+			int blockYid = world.getBlockTypeIdAt(x, y, z);
+			int blockY2id = world.getBlockTypeIdAt(x, y+1, z);
+			while(y < 129 || (blockYid != 0 && blockY2id != 0)){				
+				y++;
+				blockYid = blockY2id;
+				blockY2id = world.getBlockTypeIdAt(x, y+1, z);
+			}
+			if(y == 128) return -1;
+		}else{
+			y = world.getHighestBlockYAt(x, z);
+		}
+
 		int blockid = world.getBlockTypeIdAt(x, y - 1, z);
 
 		if (blockid == 8) return -1;
@@ -117,11 +131,11 @@ public class RandomSpawn extends JavaPlugin{
 	// Methods for a save landing :)
 
 	public void sendGround(Player player, Location location){		
-		
+
 		location.getChunk().load();
-		
+
 		World world = location.getWorld();
-		
+
 		for(int y = 0 ; y <= location.getBlockY() + 2; y++){
 			Block block = world.getBlockAt(location.getBlockX(), y, location.getBlockZ());
 			player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
