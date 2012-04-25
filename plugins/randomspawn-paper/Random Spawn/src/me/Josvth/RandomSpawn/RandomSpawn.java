@@ -1,5 +1,6 @@
 package me.Josvth.RandomSpawn;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -62,6 +63,17 @@ public class RandomSpawn extends JavaPlugin{
 		player.sendMessage(ChatColor.AQUA + "[RandomSpawn] " + ChatColor.RESET + message);
 	}
 
+	public boolean isFirstJoin(Player player, World world){
+		
+		if(!world.getEnvironment().equals(Environment.NORMAL)) return false; 
+		
+		File file = new File(world.getWorldFolder() + File.separator + "players" + File.separator + player.getName() + ".dat");
+
+		if(file.exists()) return false;
+		
+		return true;
+	}
+	
 	// *------------------------------------------------------------------------------------------------------------*
 	// | The random location methods contain code made by NuclearW                                                  |
 	// | based on his SpawnArea plugin:                                                                             |
