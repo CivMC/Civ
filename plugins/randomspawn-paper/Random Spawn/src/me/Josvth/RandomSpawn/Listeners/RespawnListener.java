@@ -32,7 +32,7 @@ public class RespawnListener implements Listener{
 			return; 
 		}
 		
-		World world = player.getWorld();
+		World world = event.getRespawnLocation().getWorld();
 		String worldName = world.getName();
 		
 		List<String> randomSpawnFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".randomspawnon");
