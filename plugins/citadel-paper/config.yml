@@ -1,16 +1,55 @@
-materials:
-  strengths:
-     keys:
-       - 264
-       - 265
-       - 5
-       - 4
-     strengths:
-       - 1000
-       - 100
-       - 5
-       - 10
-     requirements:
-       - 1
-       - 2
-       - 1
+general:
+    flashLength: 500        # when reinforcement is applied, the block flashes to the specified block for this many milliseconds
+    verboseLogging: false   # whether or not to output additional logging to the console
+    autoModeReset: 30       # number of seconds after which reinforcement or fortify mode will automatically be canceled. reset
+                            # upon reinforcement of a block
+    redstoneDistance: 9     # if no authorized players are within this distance, redstone powered openables will not open
+                            # note that this distance is compared using Location.distanceSquared()
+materials:                  # the materials used for reinforcement. strength is the number of times a block must be broken
+  - name: STONE             # specify by name or materialId
+    strength: 10
+    requirements: 1
+    flasher: STONE
+  - name: IRON_INGOT
+    strength: 100
+    requirements: 1
+    flasher: IRON_BLOCK
+  - name: DIAMOND
+    strength: 1000
+    requirements: 1
+    flasher: DIAMOND_BLOCK
+additionalSecurable:        # by default, any openable or container blocks can be secured. list additional material names here
+  - BED_BLOCK               # bed_block
+  - BOOKSHELF               # bookshelf
+nonReinforceable:           # these materials cause too many issues with reinforcements or are just pointless
+  - SAPLING
+  - GRASS
+  - DEAD_BUSH
+  - PISTON_EXTENSION
+  - PISTON_MOVING_PIECE
+  - RED_ROSE
+  - YELLOW_FLOWER
+  - BROWN_MUSHROOM
+  - RED_MUSHROOM
+  - TNT
+  - FIRE
+  - CROPS
+  - SNOW
+  - ICE
+  - CACTUS
+  - SUGAR_CANE_BLOCK
+  - PORTAL
+  - CAKE_BLOCK
+  - PUMPKIN_STEM
+  - MELON_STEM
+  - VINE
+  - NETHER_WARTS
+  - ENDER_PORTAL
+database:
+  driver: com.mysql.jdbc.Driver
+  url: jdbc:mysql://localhost:3306/bukkit
+  username: bukkit
+  password: walrus
+  isolation: SERIALIZABLE
+  logging: false
+  rebuild: false
