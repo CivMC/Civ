@@ -24,6 +24,7 @@ public class RandomSpawn extends JavaPlugin{
 
 	RespawnListener respawnListener;
 	JoinListener joinListener;
+	WorldChangeListener worldChangeListener;
 	SignListener signListener;
 	DamageListener damageListener;
 
@@ -42,9 +43,10 @@ public class RandomSpawn extends JavaPlugin{
 		//setup listeners
 		respawnListener = new RespawnListener(this);
 		joinListener = new JoinListener(this);
+		worldChangeListener = new WorldChangeListener(this);
 		signListener = new SignListener(this);
 		damageListener = new DamageListener(this);
-
+		
 	}
 
 	public void logInfo(String message){
@@ -109,8 +111,10 @@ public class RandomSpawn extends JavaPlugin{
 
 	private int getValidHighestBlock(World world, int x, int z) {
 		world.getChunkAt(new Location(world, x, 0, z)).load();
+		
 		int y = 0;
-
+		int blockid = 0;
+		
 		if(world.getEnvironment().equals(Environment.NETHER)){
 			int blockYid = world.getBlockTypeIdAt(x, y, z);
 			int blockY2id = world.getBlockTypeIdAt(x, y+1, z);
@@ -121,10 +125,12 @@ public class RandomSpawn extends JavaPlugin{
 			}
 			if(y == 128) return -1;
 		}else{
-			y = world.getHighestBlockYAt(x, z);
+			y = 256;
+			while(y >= 0 && blockid == 0){
+				blockid = world.getBlockTypeIdAt(x, y, z);
+			}
+			if(y == 0) return -1;
 		}
-
-		int blockid = world.getBlockTypeIdAt(x, y - 1, z);
 
 		if (blockid == 8) return -1;
 		if (blockid == 9) return -1;
