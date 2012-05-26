@@ -129,7 +129,8 @@ public class BlockListener extends PluginConsumer implements Listener {
             
             if (block.getType() == Material.AIR) break;
             
-            // Get the bottom half of the door
+            // Get the bottom half of the door because bottom half 
+            // is the part that's stored in the database as reinforced
             if(block.getType() == Material.WOODEN_DOOR || block.getType() == Material.IRON_DOOR){
                 Door door = (Door) block.getState().getData();
                 if(door.isTopHalf()){
@@ -144,6 +145,36 @@ public class BlockListener extends PluginConsumer implements Listener {
                 break;
             }
         }
+    }
+    
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    public void pistonRetract(BlockPistonRetractEvent bpre) {
+    	 Block piston = bpre.getBlock();
+         BlockState state = piston.getState();
+         MaterialData data = state.getData();
+         BlockFace direction = null;
+
+         // Check the block it pushed directly
+         if (data instanceof PistonBaseMaterial) {
+             direction = ((PistonBaseMaterial) data).getFacing();
+         }
+
+         if (direction == null) return;
+         
+         // the block that the piston moved
+         Block moved = piston.getRelative(direction, 2);
+         if (moved.getType() == Material.WOODEN_DOOR || moved.getType() == Material.IRON_DOOR_BLOCK) {
+             Block below = moved.getRelative(BlockFace.DOWN).getRelative(direction.getOppositeFace());
+
+             if (plugin.dao.findReinforcement(below) != null) {
+                 bpre.setCancelled(true);
+                 return;
+             }
+         }
+
+         if (plugin.dao.findReinforcement(moved) != null) {
+             bpre.setCancelled(true);
+         }
     }
     
     private static final Material matfire = Material.FIRE;
