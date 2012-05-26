@@ -10,6 +10,8 @@ import com.untamedears.citadel.entity.Reinforcement;
 import com.untamedears.citadel.entity.ReinforcementMaterial;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,8 +20,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 import org.bukkit.Material;
+import org.bukkit.material.PistonBaseMaterial;
 
 import static com.untamedears.citadel.Utility.*;
 
@@ -87,17 +91,69 @@ public class BlockListener extends PluginConsumer implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void pistonExtend(BlockPistonExtendEvent bpee) {
-        for (Block block : bpee.getBlocks()) {
+    	Block piston = bpee.getBlock();
+        BlockState state = piston.getState();
+        MaterialData data = state.getData();
+        BlockFace direction = null;
+        
+        // Check the block it pushed directly
+        if (data instanceof PistonBaseMaterial) {
+            direction = ((PistonBaseMaterial) data).getFacing();
+            Block block = bpee.getBlock().getRelative(direction);
+
             Reinforcement reinforcement = plugin.dao.findReinforcement(block);
-            bpee.setCancelled(reinforcement != null && reinforcement.getSecurityLevel() != SecurityLevel.PUBLIC);
-            if (bpee.isCancelled()) return;
+
+            if (reinforcement != null) {
+                bpee.setCancelled(true);
+                return;
+            }
+        }
+        
+        // if no direction was found, no point in going on
+        if (direction == null) return;
+        
+        // Check the affected blocks
+        for (int i = 0; i < bpee.getLength() + 2; i++) {
+            Block block = piston.getRelative(direction, i);
+            Reinforcement reinforcement = plugin.dao.findReinforcement(block);
+
+            if (block.getType() == Material.AIR) break;
+
+            if (reinforcement != null) {
+                bpee.setCancelled(true);
+                break;
+            }
         }
     }
     
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void pistonRetract(BlockPistonRetractEvent bpre) {
-        Reinforcement reinforcement = plugin.dao.findReinforcement(bpre.getBlock());
-        bpre.setCancelled(reinforcement != null && reinforcement.getSecurityLevel() != SecurityLevel.PUBLIC);
+    	 Block piston = bpre.getBlock();
+         BlockState state = piston.getState();
+         MaterialData data = state.getData();
+         BlockFace direction = null;
+
+         // Check the block it pushed directly
+         if (data instanceof PistonBaseMaterial) {
+             direction = ((PistonBaseMaterial) data).getFacing();
+         }
+
+         if (direction == null) return;
+         
+         // the block that the piston moved
+         Block moved = piston.getRelative(direction, 2);
+         if (moved.getType() == Material.WOODEN_DOOR || moved.getType() == Material.IRON_DOOR_BLOCK) {
+             Block below = moved.getRelative(BlockFace.DOWN).getRelative(direction.getOppositeFace());
+
+             if (plugin.dao.findReinforcement(below) != null) {
+                 bpre.setCancelled(true);
+                 return;
+             }
+         }
+
+         if (plugin.dao.findReinforcement(moved) != null) {
+             bpre.setCancelled(true);
+         }
     }
     
     private static final Material matfire = Material.FIRE;
