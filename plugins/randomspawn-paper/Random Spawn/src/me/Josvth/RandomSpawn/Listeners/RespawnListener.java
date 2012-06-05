@@ -47,7 +47,7 @@ public class RespawnListener implements Listener{
 			plugin.logDebug(playerName + " is spawned at his saved spawn.");
 			return;
 		}
-		
+				
 		if (randomSpawnFlags.contains("respawn")){
 			
 			Location spawnLocation = plugin.chooseSpawn(world);

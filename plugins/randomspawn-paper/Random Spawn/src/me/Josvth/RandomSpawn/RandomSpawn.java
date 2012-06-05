@@ -77,7 +77,7 @@ public class RandomSpawn extends JavaPlugin{
 	}
 	
 	// *------------------------------------------------------------------------------------------------------------*
-	// | The random location methods contain code made by NuclearW                                                  |
+	// | The following chooseSpawn method contains code made by NuclearW                                            |
 	// | based on his SpawnArea plugin:                                                                             |
 	// | http://forums.bukkit.org/threads/tp-spawnarea-v0-1-spawns-targetPlayers-in-a-set-area-randomly-1060.20408/ |
 	// *------------------------------------------------------------------------------------------------------------*
