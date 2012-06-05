@@ -125,8 +125,9 @@ public class RandomSpawn extends JavaPlugin{
 			}
 			if(y == 128) return -1;
 		}else{
-			y = 256;
+			y = 257;
 			while(y >= 0 && blockid == 0){
+				y--;
 				blockid = world.getBlockTypeIdAt(x, y, z);
 			}
 			if(y == 0) return -1;
