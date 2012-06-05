@@ -1,6 +1,5 @@
 package me.Josvth.RandomSpawn.Listeners;
 
-import java.io.File;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -39,10 +38,8 @@ public class JoinListener implements Listener{
 		String worldName = world.getName();
 
 		if(world.getEnvironment().equals(Environment.NETHER) || world.getEnvironment().equals(Environment.THE_END)) return;
-				
-		File file = new File(world.getWorldFolder() + File.separator + "players" + File.separator + player.getName() + ".dat");
-
-		if(file.exists()) return;
+		
+		if(!plugin.isFirstJoin(player, world)) return;
 
 		List<String> randomSpawnFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".randomspawnon");
 
