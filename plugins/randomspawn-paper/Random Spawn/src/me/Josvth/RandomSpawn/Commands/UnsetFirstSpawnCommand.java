@@ -2,15 +2,15 @@ package me.Josvth.RandomSpawn.Commands;
 
 import java.util.List;
 
-import me.Josvth.RandomSpawn.RandomSpawnCommandExecutor;
+import me.Josvth.RandomSpawn.RandomSpawn;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RandomSpawnUnsetFirstSpawnCommand extends RandomSpawnCommandExecutor{
+public class UnsetFirstSpawnCommand extends AbstractCommand{
 	
-	public RandomSpawnUnsetFirstSpawnCommand(){
-		this.name = "unsetfirstspawn";
+	public UnsetFirstSpawnCommand(RandomSpawn instance){
+		super(instance,"unsetfirstspawn");
 	}
 	
 	public boolean onCommand(CommandSender sender, List<String> args){

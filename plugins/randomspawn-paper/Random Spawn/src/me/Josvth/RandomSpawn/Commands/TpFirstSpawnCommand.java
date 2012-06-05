@@ -2,16 +2,16 @@ package me.Josvth.RandomSpawn.Commands;
 
 import java.util.List;
 
-import me.Josvth.RandomSpawn.RandomSpawnCommandExecutor;
+import me.Josvth.RandomSpawn.RandomSpawn;
 
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RandomSpawnTpFirstSpawnCommand extends RandomSpawnCommandExecutor{
+public class TpFirstSpawnCommand extends AbstractCommand{
 	
-	public RandomSpawnTpFirstSpawnCommand(){
-		this.name = "tpfirstspawn";
+	public TpFirstSpawnCommand(RandomSpawn instance){
+		super(instance,"tpfirstspawn");
 	}
 		
 	@Override

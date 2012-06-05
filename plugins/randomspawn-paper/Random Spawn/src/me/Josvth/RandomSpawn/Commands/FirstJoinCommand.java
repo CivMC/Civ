@@ -5,13 +5,12 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.Josvth.RandomSpawn.RandomSpawnCommandExecutor;
+import me.Josvth.RandomSpawn.RandomSpawn;
 
+public class FirstJoinCommand extends AbstractCommand{
 
-public class FirstJoinCommand extends RandomSpawnCommandExecutor{
-
-	public FirstJoinCommand(){
-		this.name = "firstjoin";
+	public FirstJoinCommand(RandomSpawn instance){
+		super(instance, "firstjoin");
 	}
 
 	public boolean onCommand(CommandSender sender, List<String> args){

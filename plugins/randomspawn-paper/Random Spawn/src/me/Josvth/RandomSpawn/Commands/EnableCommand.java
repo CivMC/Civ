@@ -2,15 +2,15 @@ package me.Josvth.RandomSpawn.Commands;
 
 import java.util.List;
 
-import me.Josvth.RandomSpawn.RandomSpawnCommandExecutor;
+import me.Josvth.RandomSpawn.RandomSpawn;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class EnableCommand extends RandomSpawnCommandExecutor{
+public class EnableCommand extends AbstractCommand{
 	
-	public EnableCommand(){
-		this.name = "enable";
+	public EnableCommand(RandomSpawn instance){
+		super(instance,"enable");
 	}
 
 	public boolean onCommand(CommandSender sender, List<String> args){

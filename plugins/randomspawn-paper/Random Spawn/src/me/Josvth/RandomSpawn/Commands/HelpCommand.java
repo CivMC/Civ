@@ -3,16 +3,16 @@ package me.Josvth.RandomSpawn.Commands;
 
 import java.util.List;
 
-import me.Josvth.RandomSpawn.RandomSpawnCommandExecutor;
+import me.Josvth.RandomSpawn.RandomSpawn;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RandomSpawnHelpCommand extends RandomSpawnCommandExecutor{
+public class HelpCommand extends AbstractCommand{
 
-	public RandomSpawnHelpCommand(){
-		this.name = "help";
+	public HelpCommand(RandomSpawn instance){
+		super(instance, "help");
 	}
 
 	public boolean onCommand(CommandSender sender, List<String> args){

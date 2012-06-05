@@ -1,18 +1,21 @@
-package me.Josvth.RandomSpawn;
+package me.Josvth.RandomSpawn.Commands;
 
 import java.util.List;
 
+import me.Josvth.RandomSpawn.RandomSpawn;
+
 import org.bukkit.command.CommandSender;
 
-public abstract class RandomSpawnCommandExecutor {
+public abstract class AbstractCommand {
 	
-	protected RandomSpawn plugin;
-	protected String name;
+	protected final RandomSpawn plugin;
+	protected final String name;
 	
-    public void setPlugin(RandomSpawn instance) {
-        plugin = instance;
-    }
-    
+	public AbstractCommand(RandomSpawn instance, String commandName){
+		plugin = instance;
+		name = commandName;
+	}
+	    
     public abstract boolean onCommand(CommandSender sender, List<String> args);
     
     public boolean onConsoleCommand(CommandSender sender, List<String> args){
@@ -22,8 +25,7 @@ public abstract class RandomSpawnCommandExecutor {
     public String getName() {
 		return name;
 	}
-    
-
+   
 	public String getDescription() {
 		try {
 			return plugin.getCommand("rs " + name).getDescription(); 

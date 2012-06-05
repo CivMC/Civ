@@ -2,13 +2,15 @@ package me.Josvth.RandomSpawn.Commands;
 
 import java.util.List;
 
+import me.Josvth.RandomSpawn.RandomSpawn;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BedsCommand extends AbstractCommand{
 	
-	public BedsCommand(){
-		name = "usebeds";
+	public BedsCommand(RandomSpawn instance){
+		super(instance,"usebeds");
 	}
 		
 	public boolean onCommand(CommandSender sender, List<String> args){

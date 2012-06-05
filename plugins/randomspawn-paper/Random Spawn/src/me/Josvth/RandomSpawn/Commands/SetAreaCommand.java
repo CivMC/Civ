@@ -2,16 +2,16 @@ package me.Josvth.RandomSpawn.Commands;
 
 import java.util.List;
 
-import me.Josvth.RandomSpawn.RandomSpawnCommandExecutor;
+import me.Josvth.RandomSpawn.RandomSpawn;
 
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RandomSpawnSetAreaCommand extends RandomSpawnCommandExecutor{
+public class SetAreaCommand extends AbstractCommand{
 	
-	public RandomSpawnSetAreaCommand(){
-		this.name = "setarea";
+	public SetAreaCommand(RandomSpawn instance){
+		super(instance,"setarea");
 	}
 	
 	public boolean onCommand(CommandSender sender, List<String> args){

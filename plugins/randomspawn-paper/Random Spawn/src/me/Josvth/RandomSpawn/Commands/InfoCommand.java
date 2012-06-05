@@ -2,16 +2,16 @@ package me.Josvth.RandomSpawn.Commands;
 
 import java.util.List;
 
-import me.Josvth.RandomSpawn.RandomSpawnCommandExecutor;
+import me.Josvth.RandomSpawn.RandomSpawn;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class InfoCommand extends RandomSpawnCommandExecutor {
+public class InfoCommand extends AbstractCommand {
 	
-	public InfoCommand(){
-		this.name = "info";
+	public InfoCommand(RandomSpawn instance){
+		super(instance, "info");
 	}
 	
 	public boolean onCommand(CommandSender sender, List<String> args){

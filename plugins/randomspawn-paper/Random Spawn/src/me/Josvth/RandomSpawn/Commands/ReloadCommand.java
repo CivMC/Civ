@@ -2,15 +2,15 @@ package me.Josvth.RandomSpawn.Commands;
 
 import java.util.List;
 
-import me.Josvth.RandomSpawn.RandomSpawnCommandExecutor;
+import me.Josvth.RandomSpawn.RandomSpawn;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RandomSpawnReloadCommand extends RandomSpawnCommandExecutor {
+public class ReloadCommand extends AbstractCommand {
 	
-	public RandomSpawnReloadCommand(){
-		this.name = "reload";
+	public ReloadCommand(RandomSpawn instance){
+		super(instance, "reload");
 	}
 	
 	public boolean onCommand(CommandSender sender, List<String> args){

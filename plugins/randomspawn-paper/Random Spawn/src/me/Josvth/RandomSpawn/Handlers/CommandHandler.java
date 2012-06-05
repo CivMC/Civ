@@ -2,6 +2,7 @@ package me.Josvth.RandomSpawn.Handlers;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,14 +10,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.Josvth.RandomSpawn.RandomSpawn;
-import me.Josvth.RandomSpawn.RandomSpawnCommandExecutor;
 import me.Josvth.RandomSpawn.Commands.*;
 
 public class CommandHandler implements CommandExecutor{
 
-	RandomSpawn plugin;
+	final RandomSpawn plugin;
 
-	HashMap<String,RandomSpawnCommandExecutor> commands = new HashMap<String,RandomSpawnCommandExecutor>();
+	HashMap<String,AbstractCommand> commands = new HashMap<String,AbstractCommand>();
 
 	public CommandHandler(RandomSpawn instance) {
 		plugin = instance;
@@ -24,30 +24,30 @@ public class CommandHandler implements CommandExecutor{
 		plugin.getCommand("randomspawn").setExecutor(this);
 		plugin.getCommand("rs").setExecutor(this);
 		
-		registerCommands(new RandomSpawnCommandExecutor[]{
-				new BedsCommand(), 
-				new DisableCommand(), 
-				new EnableCommand(), 
-				new FirstJoinCommand(), 
-				new RandomSpawnHelpCommand(), 
-				new InfoCommand(), 
-				new RandomSpawnKeepSpawnsCommand(), 
-				new RandomSpawnReloadCommand(), 
-				new RandomSpawnSetAreaCommand(), 
-				new RandomSpawnSetFirstSpawnCommand(), 
-				new RandomSpawnTpFirstSpawnCommand(), 
-				new RandomSpawnUnsetFirstSpawnCommand(),
+		registerCommands(new AbstractCommand[]{
+				new BedsCommand(plugin), 
+				new DisableCommand(plugin), 
+				new EnableCommand(plugin), 
+				new FirstJoinCommand(plugin), 
+				new HelpCommand(plugin), 
+				new InfoCommand(plugin), 
+				new KeepSpawnsCommand(plugin), 
+				new ReloadCommand(plugin), 
+				new SetAreaCommand(plugin), 
+				new SetFirstSpawnCommand(plugin), 
+				new TpFirstSpawnCommand(plugin), 
+				new UnsetFirstSpawnCommand(plugin),
 		});
 	}
 
-	private void registerCommands(RandomSpawnCommandExecutor[] executors) {
+	private void registerCommands(AbstractCommand[] abstractCommands) {
 
-		for(RandomSpawnCommandExecutor executor : executors){
-			executor.setPlugin(plugin);
-			commands.put(executor.getName(), executor);
-			if (executor.getAliases() != null){
-				for(String alias : executor.getAliases()){
-					commands.put(alias, executor);
+		for(AbstractCommand abstractCommand : abstractCommands){
+			commands.put(abstractCommand.getName(), abstractCommand);
+			List<String> aliases = abstractCommand.getAliases();
+			if (abstractCommand.getAliases() != null){
+				for(String alias: aliases){
+					commands.put(alias, abstractCommand);
 				}
 			}
 		}
@@ -58,20 +58,20 @@ public class CommandHandler implements CommandExecutor{
 					
 		if (args.length == 0 || !commands.containsKey(args[0])) return false;
 		
-		RandomSpawnCommandExecutor commandExecutor = commands.get(args[0]);
+		AbstractCommand abstractCommand = commands.get(args[0]);
 		
 		if (!(sender instanceof Player)){
 			sender.sendMessage("This command can only be used in game!");
 			return true;
 		}
 		
-		if (commandExecutor.getPermission() != null && !sender.hasPermission(commandExecutor.getPermission())){
+		if (abstractCommand.getPermission() != null && !sender.hasPermission(abstractCommand.getPermission())){
 			sender.sendMessage("You don't have the permission to use this command!");
 			return true;
 		}
 		
-		if (commandExecutor.onCommand(sender, Arrays.asList(args).subList(1, args.length)) == false && commandExecutor.getUsage() != null){
-			sender.sendMessage(commandExecutor.getUsage());
+		if (abstractCommand.onCommand(sender, Arrays.asList(args).subList(1, args.length)) == false && abstractCommand.getUsage() != null){
+			sender.sendMessage(abstractCommand.getUsage());
 		}
 		
 		return true;
