@@ -151,7 +151,7 @@ public class RandomSpawn extends JavaPlugin{
 
 	public void sendGround(Player player, Location location){		
 
-		location.getChunk().load();
+		location.getChunk().load(true);
 
 		World world = location.getWorld();
 
