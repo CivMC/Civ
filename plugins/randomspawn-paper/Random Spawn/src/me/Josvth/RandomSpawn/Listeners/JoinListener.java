@@ -22,15 +22,15 @@ public class JoinListener implements Listener{
 		plugin = instance;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
-	
+
 	@EventHandler
 	public void onPlayerTeleport(PlayerTeleportEvent event){ 
 		plugin.sendGround(event.getPlayer(), event.getTo());
 	}
-	
+
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event){
-		
+
 		Player player = event.getPlayer();
 		String playerName = player.getName();
 
@@ -38,7 +38,7 @@ public class JoinListener implements Listener{
 		String worldName = world.getName();
 
 		if(world.getEnvironment().equals(Environment.NETHER) || world.getEnvironment().equals(Environment.THE_END)) return;
-		
+
 		if(!plugin.isFirstJoin(player, world)) return;
 
 		List<String> randomSpawnFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".randomspawnon");
@@ -54,25 +54,21 @@ public class JoinListener implements Listener{
 			return; 
 		}
 
-		if (randomSpawnFlags.contains("respawn")){
+		Location spawnLocation = plugin.chooseSpawn(world);
 
-			Location spawnLocation = plugin.chooseSpawn(world);
+		player.teleport(spawnLocation);
 
-			player.teleport(spawnLocation);
-			
-			player.setMetadata("lasttimerandomspawned", new FixedMetadataValue(plugin, System.currentTimeMillis()));
-						
-			if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)){
-				player.setBedSpawnLocation(spawnLocation);
-			}
-				
-			if (plugin.yamlHandler.config.getString("messages.randomspawned") != null){
-				player.sendMessage(plugin.yamlHandler.config.getString("messages.randomspawned"));
-			}
-			
-		}			
+		player.setMetadata("lasttimerandomspawned", new FixedMetadataValue(plugin, System.currentTimeMillis()));
+
+		if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)){
+			player.setBedSpawnLocation(spawnLocation);
+		}
+
+		if (plugin.yamlHandler.config.getString("messages.randomspawned") != null){
+			player.sendMessage(plugin.yamlHandler.config.getString("messages.randomspawned"));
+		}
 	}
-	
+
 	private Location getFirstSpawn(World world) {
 		String worldName = world.getName();
 
