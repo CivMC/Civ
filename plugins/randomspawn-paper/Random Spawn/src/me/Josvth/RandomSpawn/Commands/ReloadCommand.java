@@ -34,11 +34,11 @@ public class ReloadCommand extends AbstractCommand {
 			return true;
 		}
 
-		if (args.get(0).matches("spawnlocations")) {
-			plugin.yamlHandler.loadSpawnLocations();
-			plugin.playerInfo(player, "Random Spawn spawnlocations file reloaded!");
-			return true;
-		}
+//		if (args.get(0).matches("spawnlocations")) {
+//			plugin.yamlHandler.loadSpawnLocations();
+//			plugin.playerInfo(player, "Random Spawn spawnlocations file reloaded!");
+//			return true;
+//		}
 		
 		return false;
 	}
