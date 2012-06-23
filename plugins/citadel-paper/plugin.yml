@@ -1,8 +1,8 @@
 name: Citadel
 main: com.untamedears.citadel.Citadel
-version: 0.1
+version: 1.2
 description: Reinforce your structures!
-author: cxschx
+author: cxschx, chrisrico, jonnyd
 database: false
 commands:
   ctmaterials:
@@ -61,3 +61,6 @@ commands:
   ctremovereinforcements:
     description: Removes all reinforcements from the Citadel database.
     usage: /ctremovereinforcements
+  ctversion:
+    description: Displays plugin version
+    usage: /ctversion

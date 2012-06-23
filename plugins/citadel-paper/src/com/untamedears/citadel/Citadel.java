@@ -25,6 +25,7 @@ public class Citadel extends JavaPlugin {
     public int flashLength;
     private boolean verboseLogging;
     public double redstoneDistance;
+    public double pistonRedstoneDistance;
     public long autoModeReset;
 
     public void onEnable() {
@@ -77,12 +78,13 @@ public class Citadel extends JavaPlugin {
         getCommand("ctlist").setExecutor(new ListMembers(this));
         getCommand("ctallow").setExecutor(new ModifyFaction(this));
         getCommand("ctdisallow").setExecutor(new ModifyFaction(this));
+        getCommand("ctversion").setExecutor(new ViewCurrentVersion(this));
 
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new EntityListener(this), this);
 
-        log.info("Citadel is now enabled. ( •_•)>⌐■-■ ( ⌐■_■)");
+        log.info("Citadel is now enabled. ( â€¢_â€¢)>âŒ�â– -â–  ( âŒ�â– _â– )");
     }
 
     @Override
@@ -98,7 +100,7 @@ public class Citadel extends JavaPlugin {
     public void onDisable() {
         Citadel.instance = null;
         
-        log.info("Citadel is now disabled. (╯ •_•)╯ 彡┻━┻");
+        log.info("Citadel is now disabled. (â•¯ â€¢_â€¢)â•¯ å½¡â”»â”�â”»");
     }
     
     public void logVerbose(String messageFormat, Object... args) {
