@@ -94,87 +94,59 @@ public class BlockListener extends PluginConsumer implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void pistonExtend(BlockPistonExtendEvent bpee) {
     	Block piston = bpee.getBlock();
-        BlockState state = piston.getState();
-        MaterialData data = state.getData();
-        BlockFace direction = null;
-        
-        // Check the block it pushed directly
-        if (data instanceof PistonBaseMaterial) {
-            direction = ((PistonBaseMaterial) data).getFacing();
-            Block block = bpee.getBlock().getRelative(direction);
-            
-            // Get the bottom half of the door
-            if(block.getType() == Material.WOODEN_DOOR || block.getType() == Material.IRON_DOOR){
-                Door door = (Door) block.getState().getData();
-                if(door.isTopHalf()){
-	            	Location reinforcedPart = new Location(block.getWorld(), block.getX(), block.getY() - 1, block.getZ());
-	            	block = reinforcedPart.getBlock();
-                }
-            }
-
-            Reinforcement reinforcement = plugin.dao.findReinforcement(block);
-
-            if (reinforcement != null) {
-                bpee.setCancelled(true);
-                return;
-            }
-        }
-        
-        // if no direction was found, no point in going on
-        if (direction == null) return;
-        
-        // Check the affected blocks
-        for (int i = 0; i < bpee.getLength() + 2; i++) {
-            Block block = piston.getRelative(direction, i);
-            
-            if (block.getType() == Material.AIR) break;
-            
-            // Get the bottom half of the door because bottom half 
-            // is the part that's stored in the database as reinforced
-            if(block.getType() == Material.WOODEN_DOOR || block.getType() == Material.IRON_DOOR){
-                Door door = (Door) block.getState().getData();
-                if(door.isTopHalf()){
-	            	Location reinforcedPart = new Location(block.getWorld(), block.getX(), block.getY() - 1, block.getZ());
-	            	block = reinforcedPart.getBlock();
-                }
-            }
-            
-            Reinforcement reinforcement = plugin.dao.findReinforcement(block);
-            if (reinforcement != null) {
-                bpee.setCancelled(true);
-                break;
-            }
-        }
+	BlockState state = piston.getState();
+	MaterialData data = state.getData();
+	BlockFace direction = null;
+	
+	if (data instanceof PistonBaseMaterial) {
+		direction = ((PistonBaseMaterial) data).getFacing();
+	}
+	
+	// if no direction was found, no point in going on
+	if (direction == null)
+		return;
+	
+	// Check the affected blocks
+	for (int i = 1; i < bpee.getLength() + 2; i++) {
+		Block block = piston.getRelative(direction, i);
+	
+		if (block.getType() == Material.AIR)
+			break;
+	
+		AccessDelegate delegate = AccessDelegate.getDelegate(block);
+		Reinforcement reinforcement = delegate.getReinforcement();
+	
+		if (reinforcement != null){
+			bpee.setCancelled(true);
+			break;
+		}
+	}
     }
     
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void pistonRetract(BlockPistonRetractEvent bpre) {
-    	 Block piston = bpre.getBlock();
-         BlockState state = piston.getState();
-         MaterialData data = state.getData();
-         BlockFace direction = null;
+    	Block piston = bpre.getBlock();
+	BlockState state = piston.getState();
+	MaterialData data = state.getData();
+	BlockFace direction = null;
 
-         // Check the block it pushed directly
-         if (data instanceof PistonBaseMaterial) {
-             direction = ((PistonBaseMaterial) data).getFacing();
-         }
+	// Check the block it pushed directly
+	if (data instanceof PistonBaseMaterial) {
+		direction = ((PistonBaseMaterial) data).getFacing();
+	}
 
-         if (direction == null) return;
-         
-         // the block that the piston moved
-         Block moved = piston.getRelative(direction, 2);
-         if (moved.getType() == Material.WOODEN_DOOR || moved.getType() == Material.IRON_DOOR_BLOCK) {
-             Block below = moved.getRelative(BlockFace.DOWN).getRelative(direction.getOppositeFace());
+	if (direction == null)
+		return;
 
-             if (plugin.dao.findReinforcement(below) != null) {
-                 bpre.setCancelled(true);
-                 return;
-             }
-         }
+	// the block that the piston moved
+	Block moved = piston.getRelative(direction, 2);
 
-         if (plugin.dao.findReinforcement(moved) != null) {
-             bpre.setCancelled(true);
-         }
+	AccessDelegate delegate = AccessDelegate.getDelegate(moved);
+	Reinforcement reinforcement = delegate.getReinforcement();
+
+	if (reinforcement != null) {
+		bpre.setCancelled(true);
+	}
     }
     
     private static final Material matfire = Material.FIRE;
