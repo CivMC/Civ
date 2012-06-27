@@ -62,6 +62,8 @@ public class BlockListener extends PluginConsumer implements Listener {
             if (createReinforcement(player, block) == null) {
                 sendMessage(player, ChatColor.RED, "%s is not a reinforcible material", block.getType().name());
             }
+            else
+            	state.checkResetMode();
         } else {
             sendMessage(player, ChatColor.YELLOW, "%s depleted, left fortification mode", material.getMaterial().name());
             state.reset();
