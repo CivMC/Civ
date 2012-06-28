@@ -43,6 +43,9 @@ public class PlayerState {
         bypassMode = false;
     }
     
+    /**
+     * Sets the placement mode to NORMAL and resets other properties.
+     */
     public void reset() {
         mode = PlacementMode.NORMAL;
         fortificationMaterial = null;
@@ -98,18 +101,25 @@ public class PlayerState {
         this.lastThrottledMessage = lastThrottledMessage;
     }
     
+    /**
+     * Prepares a scheduled task to reset the mode after a configured amount
+     * of time.
+     * 
+     * If a task is already scheduled it is canceled first.
+     */
     public void checkResetMode() {
-        Citadel plugin = Citadel.getInstance();
+    	Citadel plugin = Citadel.getInstance();
         BukkitScheduler scheduler = plugin.getServer().getScheduler();
         if (cancelModePid != null && scheduler.isQueued(cancelModePid))
             scheduler.cancelTask(cancelModePid);
         
         cancelModePid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
-            public void run() {
-                sendMessage(player, ChatColor.YELLOW, "%s mode off", mode.name());
-                reset();
-            }
+        	public void run() {
+        		if (mode != PlacementMode.NORMAL) {
+        			sendMessage(player, ChatColor.YELLOW, "%s mode off", mode.name());
+        			reset();
+        		}
+        	}
         }, 20L * plugin.autoModeReset);
-
     }
 }
