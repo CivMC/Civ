@@ -1,8 +1,10 @@
 package com.untamedears.citadel.access;
 
-import com.untamedears.citadel.Utility;
 import org.bukkit.block.Block;
 import org.bukkit.material.MaterialData;
+
+import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.Utility;
 /**
  * Created by IntelliJ IDEA.
  * User: chrisrico
@@ -19,7 +21,7 @@ public class ChestAccessDelegate extends AccessDelegate<MaterialData> {
     
     @Override
     protected boolean shouldDelegate() {
-        reinforcement = plugin.dao.findReinforcement(block);
+        reinforcement = Citadel.getReinforcementManager().getReinforcement(block);
         return reinforcement == null && (attachedChest = Utility.getAttachedChest(block)) != null;
     }
 

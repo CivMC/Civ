@@ -1,14 +1,14 @@
 name: Citadel
 main: com.untamedears.citadel.Citadel
-version: 1.2
+version: 2.0
 description: Reinforce your structures!
-author: cxschx, chrisrico, jonnyd
+author: chrisrico, jonnyd (aka Gu3rr1lla)
 database: false
 commands:
   ctmaterials:
-    aliases: ctm
+    aliases: ctmat
     description: List the possible reinforcement materials, their strengths, and requirements.
-    usage: /ctmaterials (or /ctm)
+    usage: /ctmaterials (or /ctmat)
   ctsecurable:
     aliases: cts
     description: Other than containers and doors, lists the blocks which are securable.
@@ -38,29 +38,73 @@ commands:
     description: Toggles bypassing your own reinforcements to break blocks normally.
     usage: /ctbypass (or /ctb)
   ctpublic:
+    aliases: ctpu
     description: The next door/container you interact with will become publicly secured.
-    usage: /ctpublic
+    usage: /ctpublic (or /ctpu)
   ctprivate:
+    aliases: ctpr
     description: The next door/container you interact with will become privately secured.
-    usage: /ctprivate
+    usage: /ctprivate (or /ctpr)
   ctgroup:
+    aliases: ctg
     description: The next door/container you interact with will become secured to your group.
-    usage: /ctgroup
-  ctlist:
-    aliases: ctl
+    usage: /ctgroup (or /ctg) <group-name>
+  ctcreate:
+    aliases: ctc
+    description: Creates a group.
+    usage: /ctcreate (or /ctc) <group-name>
+  ctdelete:
+    aliases: ctdel
+    description: Deletes a group.
+    usage: /ctdelete (or /ctdel) <group-name>
+  ctgroups:
+    aliases: ctgs
+    description: Lists your groups.
+    usage: /ctgroups (or /ctgs)
+  ctmembers:
+    aliases: ctm
     description: Lists the players in your group.
-    usage: /ctlist (or /ctl)
+    usage: /ctmembers (or /ctm) <group-name>
   ctallow:
     aliases: cta
     description: Adds the specified player to your group.
-    usage: /ctallow (or /cta) <player name>
+    usage: /ctallow (or /cta) <group-name> <player-name>
   ctdisallow:
     aliases: ctd
     description: Removes the specified player from your group.
-    usage: /ctdisallow (or /ctd) <player name>
-  ctremovereinforcements:
-    description: Removes all reinforcements from the Citadel database.
-    usage: /ctremovereinforcements
+    usage: /ctdisallow (or /ctd) <group-name> <player-name>
   ctversion:
-    description: Displays plugin version
-    usage: /ctversion
+    aliases: ctv
+    description: Displays plugin version.
+    usage: /ctversion (or /ctv)
+  ctstats:
+    description: Displays stats.
+    usage: /ctstats
+  ctleave:
+    aliases: ctl
+    description: Leave a group.
+    usage: /ctleave (or /ctl)
+  ctjoin:
+    aliases: ctj
+    description: Joins a group.
+    usage: /ctjoin (or /ctj) <group-name> <password>
+  ctpassword:
+    aliases: ctpw
+    description: Sets a groups password.
+    usage: /ctpassword (or /ctpw) <group-name> <password>
+  cttransfer:
+    aliases: ctt
+    description: Transfers a group to another player.
+    usage: /cttransfer (or /ctt) <group-name> <player-name>
+  ctaddmod:
+    aliases: ctam
+    description: Adds a player as moderator to a group.
+    usage: /ctaddmod (or /ctam) <group-name> <player-name>
+  ctremovemod:
+    aliases: ctrm
+    description: Removes a player as moderator from a group.
+    usage: /ctremovemod (or /ctrm) <group-name> <player-name>
+  ctmoderators:
+    aliases: ctmods
+    description: Displays moderators of a group.
+    usage: /ctmoderators (or /ctmods) <group-name>

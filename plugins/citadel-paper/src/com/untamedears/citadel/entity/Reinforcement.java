@@ -1,6 +1,13 @@
 package com.untamedears.citadel.entity;
 
-import com.untamedears.citadel.SecurityLevel;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -8,13 +15,11 @@ import org.bukkit.block.ContainerBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Openable;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import java.util.ArrayList;
-import java.util.List;
+import com.untamedears.citadel.SecurityLevel;
 
+/**
+ * User: chrisrico
+ */
 @Entity
 public class Reinforcement {
 
@@ -51,7 +56,13 @@ public class Reinforcement {
     }
 
     public Block getBlock() {
-        return Bukkit.getServer().getWorld(id.getWorld()).getBlockAt(id.getX(), id.getY(), id.getZ());
+        Block block;
+        try {
+        	block = Bukkit.getServer().getWorld(id.getWorld()).getBlockAt(id.getX(), id.getY(), id.getZ());
+        } catch (NullPointerException e){
+        	return null;
+        }
+        return block;
     }
 
     public ReinforcementMaterial getMaterial() {
@@ -86,8 +97,8 @@ public class Reinforcement {
         return owner;
     }
 
-    public void setOwner(Faction owner) {
-        this.owner = owner;
+    public void setOwner(Faction group) {
+        this.owner = group;
     }
 
     public double getHealth() {
@@ -114,10 +125,11 @@ public class Reinforcement {
         } else {
             verb = "Reinforced";
         }
-        return String.format("%s %s with %s",
+        return String.format("%s %s with %s %s",
                 verb,
-                getHealthText(),
-                getMaterial().getMaterial().name());
+                getDurability(),
+                getMaterial().getMaterial().name(),
+                this.owner.getName());
     }
     
     public boolean isAccessible(Player player) {
@@ -126,7 +138,7 @@ public class Reinforcement {
             case PRIVATE:
                 return name.equals(owner.getFounder());
             case GROUP:
-                return name.equals(owner.getFounder()) || owner.hasMember(name);
+                return name.equals(owner.getFounder()) || owner.isMember(name) || owner.isModerator(name);
         }
         return true;
     }
@@ -137,7 +149,7 @@ public class Reinforcement {
             case PRIVATE:
                 return name.equals(owner.getFounder());
             default:
-                return name.equals(owner.getFounder()) || owner.hasMember(name);
+                return name.equals(owner.getFounder()) || owner.isModerator(name);
         }
     }
 
@@ -157,5 +169,20 @@ public class Reinforcement {
     @Override
     public String toString() {
         return String.format("%s, material: %s, durability: %d", id, getMaterial().getMaterial().name(), durability);
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Reinforcement)) return false;
+
+        Reinforcement rein = (Reinforcement) o;
+
+        return this.id.equals(rein.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id.hashCode();
     }
 }

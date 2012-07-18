@@ -1,9 +1,8 @@
 package com.untamedears.citadel.listener;
 
-import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.PlacementMode;
-import com.untamedears.citadel.access.AccessDelegate;
-import com.untamedears.citadel.entity.*;
+import static com.untamedears.citadel.Utility.createReinforcement;
+import static com.untamedears.citadel.Utility.sendMessage;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,53 +13,66 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.material.Openable;
 
-import static com.untamedears.citadel.Utility.createReinforcement;
-import static com.untamedears.citadel.Utility.sendMessage;
+import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.GroupManager;
+import com.untamedears.citadel.MemberManager;
+import com.untamedears.citadel.PersonalGroupManager;
+import com.untamedears.citadel.PlacementMode;
+import com.untamedears.citadel.access.AccessDelegate;
+import com.untamedears.citadel.entity.Faction;
+import com.untamedears.citadel.entity.Member;
+import com.untamedears.citadel.entity.PlayerState;
+import com.untamedears.citadel.entity.Reinforcement;
 
 /**
  * Created by IntelliJ IDEA.
  * User: chrisrico
  * Date: 3/21/12
  * Time: 9:57 PM
+ * 
+ * Last edited by JonnyD
+ * 7/18/12
  */
 public class PlayerListener implements Listener {
-
-    private Citadel plugin;
-
-    public PlayerListener(Citadel plugin) {
-        this.plugin = plugin;
-    }
-
+	
     @EventHandler
     public void login(PlayerLoginEvent ple) {
-        String name = ple.getPlayer().getDisplayName();
-        Faction faction = plugin.dao.findGroupByName(name);
-        if (faction == null) {
-            plugin.logVerbose("Created personal faction for player %s", name);
+    	MemberManager memberManager = Citadel.getMemberManager();
+    	memberManager.addOnlinePlayer(ple.getPlayer());
 
-            faction = new Faction(name, name);
-            plugin.dao.save(faction);
-        }
-        for (FactionMember member : plugin.dao.findGroupMembers(name)) {
-            Player player = plugin.getServer().getPlayer(member.getMemberName());
-            if (player != null)
-                sendMessage(player, ChatColor.WHITE, "%s has logged in", name);
-        }
+    	String playerName = ple.getPlayer().getDisplayName();
+    	Member member = memberManager.getMember(playerName);
+    	if(member == null){
+    		member = new Member(playerName);
+    		memberManager.addMember(member);
+    	}
+    	
+		PersonalGroupManager personalGroupManager = Citadel.getPersonalGroupManager();
+    	if(!personalGroupManager.hasPersonalGroup(playerName)){
+    		GroupManager groupManager = Citadel.getGroupManager();
+			String groupName = playerName;
+			int i = 1;
+    		while(groupManager.isGroup(groupName)){
+    			groupName = playerName + i;
+    			i++;
+    		}
+        	Faction group = new Faction(groupName, playerName);
+    		groupManager.addGroup(group);
+    		personalGroupManager.addPersonalGroup(groupName, playerName);
+    	}
     }
 
     @EventHandler
     public void quit(PlayerQuitEvent pqe) {
-        String name = pqe.getPlayer().getDisplayName();
-        for (FactionMember member : plugin.dao.findGroupMembers(name)) {
-            Player player = plugin.getServer().getPlayer(member.getMemberName());
-            if (player != null)
-                sendMessage(player, ChatColor.GRAY, "%s has logged out", name);
-        }
-        PlayerState.remove(pqe.getPlayer());
+    	Player player = pqe.getPlayer();
+    	MemberManager memberManager = Citadel.getMemberManager();
+    	memberManager.removeOnlinePlayer(player);
+        PlayerState.remove(player);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -99,10 +111,18 @@ public class PlayerListener implements Listener {
                 // player is in reinforcement mode
                 if (reinforcement == null) {
                     createReinforcement(player, block);
-                } else if (reinforcement.isAccessible(player)) {
-                    if (reinforcement.getSecurityLevel() != state.getSecurityLevel()) {
+                } else if (reinforcement.isBypassable(player)) {
+                	boolean update = false;
+                    if (reinforcement.getSecurityLevel() != state.getSecurityLevel()){
                         reinforcement.setSecurityLevel(state.getSecurityLevel());
-                        plugin.dao.save(reinforcement);
+                        update = true;
+                    }
+                   	if(!reinforcement.getOwner().equals(state.getFaction())) {
+                        reinforcement.setOwner(state.getFaction());
+                        update = true;
+                    }
+                   	if(update){
+                        Citadel.getReinforcementManager().addReinforcement(reinforcement);
                         sendMessage(player, ChatColor.GREEN, "Changed security level %s", reinforcement.getSecurityLevel().name());
                     }
                 } else {
@@ -127,7 +147,9 @@ public class PlayerListener implements Listener {
                 // opening secured doors to right clicking
                 pie.setUseInteractedBlock(Event.Result.DENY);
             } else if (pie.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                plugin.logVerbose("%s failed to access locked reinforcement %s", pie.getPlayer().getDisplayName(), reinforcement);
+            	Citadel.info("%s failed to access locked reinforcement %s, " 
+            			+ pie.getPlayer().getDisplayName() + " at " 
+            			+ reinforcement.getBlock().getLocation().toString());
                 // this block is secured and is inaccesible to the player
                 sendMessage(pie.getPlayer(), ChatColor.RED, "%s is locked", pie.getClickedBlock().getType().name());
                 pie.setCancelled(true);

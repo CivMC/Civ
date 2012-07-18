@@ -1,10 +1,11 @@
 package com.untamedears.citadel;
 
-import com.untamedears.citadel.access.AccessDelegate;
-import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.PlayerState;
-import com.untamedears.citadel.entity.Reinforcement;
-import com.untamedears.citadel.entity.ReinforcementMaterial;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -17,9 +18,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Wool;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import com.untamedears.citadel.access.AccessDelegate;
+import com.untamedears.citadel.entity.Faction;
+import com.untamedears.citadel.entity.PlayerState;
+import com.untamedears.citadel.entity.Reinforcement;
+import com.untamedears.citadel.entity.ReinforcementMaterial;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,19 +34,12 @@ public class Utility {
 
     private static Map<SecurityLevel, MaterialData> securityMaterial;
     private static Random rng = new Random();
-    private static Citadel plugin;
     
     static {
         securityMaterial = new HashMap<SecurityLevel, MaterialData>();
         securityMaterial.put(SecurityLevel.PUBLIC, new Wool(DyeColor.GREEN));
         securityMaterial.put(SecurityLevel.GROUP, new Wool(DyeColor.YELLOW));
         securityMaterial.put(SecurityLevel.PRIVATE, new Wool(DyeColor.RED));
-    }
-
-    private static Citadel getPlugin() {
-        if (plugin == null)
-            plugin = Citadel.getInstance();
-        return plugin;
     }
 
     public static Block getAttachedChest(Block block) {
@@ -82,12 +78,19 @@ public class Utility {
         }
 
         if (player.getInventory().contains(material.getMaterial(), material.getRequirements())) {
-            Faction owner = getPlugin().dao.findGroupByName(player.getDisplayName());
+        	Faction group = state.getFaction();
+        	if(group == null){
+        		try {
+        		group = Citadel.getMemberManager().getMember(player.getDisplayName()).getPersonalGroup();
+        		} catch (NullPointerException e){
+        			sendMessage(player, ChatColor.RED, "You don't seem to have a personal group. Try logging out and back in first");
+        		}
+        	}
             player.getInventory().removeItem(material.getRequiredMaterials());
             //TODO: there will eventually be a better way to flush inventory changes to the client
             player.updateInventory();
-            Reinforcement reinforcement = new Reinforcement(block, material, owner, state.getSecurityLevel());
-            getPlugin().dao.save(reinforcement);
+            Reinforcement reinforcement = new Reinforcement(block, material, group, state.getSecurityLevel());
+            Citadel.getReinforcementManager().addReinforcement(reinforcement);
             sendThrottledMessage(player, ChatColor.GREEN, "Reinforced with %s at security level %s", material.getMaterial().name(), state.getSecurityLevel().name());
             // TODO: enable chained flashers, they're pretty cool
             //new BlockFlasher(block, material.getFlasher()).start(getPlugin());
@@ -125,21 +128,76 @@ public class Utility {
         if (reinforcement.getDurability() <= 0) {
             cancelled = reinforcementBroken(reinforcement);
         } else {
-            getPlugin().logVerbose("Reinforcement damaged %s", reinforcement);
-
-            getPlugin().dao.save(reinforcement);
+            Citadel.info("Reinforcement damaged %s at " + reinforcement.getBlock().getLocation().toString());
+            Citadel.getReinforcementManager().addReinforcement(reinforcement);
         }
         return cancelled;
     }
 
     public static boolean reinforcementBroken(Reinforcement reinforcement) {
-        getPlugin().logVerbose("Reinforcement %s destroyed", reinforcement);
+        Citadel.info("Reinforcement %s destroyed at " + reinforcement.getBlock().getLocation().toString());
 
-        getPlugin().dao.delete(reinforcement);
+        Citadel.getReinforcementManager().removeReinforcement(reinforcement);
         if (rng.nextDouble() <= reinforcement.getHealth()) {
             Location location = reinforcement.getBlock().getLocation();
             location.getWorld().dropItem(location, reinforcement.getMaterial().getRequiredMaterials());
         }
         return reinforcement.isSecurable();
     }
+    
+    public static SecurityLevel getSecurityLevel(String[] args, Player player) {
+        if (args.length > 0) {
+            try {
+                return SecurityLevel.valueOf(args[0].toUpperCase());
+            } catch (IllegalArgumentException e) {
+                sendMessage(player, ChatColor.RED, "Invalid access level %s", args[0]);
+                return null;
+            }
+        }
+        return SecurityLevel.PRIVATE;
+    }
+    
+    private static List<PlacementMode> MULTI_MODE = Arrays.asList(PlacementMode.FORTIFICATION, PlacementMode.INFO, PlacementMode.REINFORCEMENT);
+
+    public static void setMultiMode(PlacementMode mode, SecurityLevel securityLevel, String[] args, Player player, PlayerState state) {
+        if (!MULTI_MODE.contains(mode)) return;
+
+        if (state.getMode() == mode && state.getSecurityLevel() == securityLevel) {
+            state.reset();
+            sendMessage(player, ChatColor.GREEN, "%s mode off", mode.name());
+        } else {
+            state.setMode(mode);
+            state.setSecurityLevel(securityLevel);
+            switch (mode) {
+                case REINFORCEMENT:
+                    sendMessage(player, ChatColor.GREEN, "%s mode %s", mode.name(), securityLevel.name());
+                    break;
+                case FORTIFICATION:
+                    sendMessage(player, ChatColor.GREEN, "%s mode %s, %s", mode.name(), state.getReinforcementMaterial().getMaterial().name(), securityLevel.name());
+                    break;
+                case INFO:
+                    sendMessage(player, ChatColor.GREEN, "%s mode on", mode.name());
+                    break;
+            }
+            state.checkResetMode();
+        }
+    }
+    
+    public static void setSingleMode(SecurityLevel securityLevel, PlayerState state, Player player) {
+        if (state.getMode() != PlacementMode.REINFORCEMENT_SINGLE_BLOCK) {
+            state.setSecurityLevel(securityLevel);
+            state.setMode(PlacementMode.REINFORCEMENT_SINGLE_BLOCK);
+            sendMessage(player, ChatColor.GREEN, "Single block reinforcement mode %s", securityLevel.name() + ".");
+        }
+    }
+    
+    public static String getTruncatedMaterialMessage(String prefix, List<Integer> materials) {
+	    StringBuilder builder = new StringBuilder();
+	    for (int materialId : materials) {
+	        if (builder.length() > 0) builder.append(", ");
+	        builder.append(Material.getMaterial(materialId).name());
+	    }
+	    builder.insert(0, prefix);
+	    return builder.toString();
+	}
 }

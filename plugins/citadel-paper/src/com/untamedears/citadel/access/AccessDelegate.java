@@ -1,12 +1,13 @@
 package com.untamedears.citadel.access;
 
-import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.entity.Reinforcement;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.material.Bed;
 import org.bukkit.material.Door;
 import org.bukkit.material.MaterialData;
+
+import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.entity.Reinforcement;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,17 +41,15 @@ public abstract class AccessDelegate<T extends MaterialData> {
     protected Block block;
     protected T data;
     protected Reinforcement reinforcement;
-    protected Citadel plugin;
 
     public AccessDelegate(Block block, T data) {
         this.block = block;
         this.data = data;
-        plugin = Citadel.getInstance();
 
         if (shouldDelegate()) {
-            plugin.logVerbose("Attempted interaction with %s", block);
+            Citadel.info("Attempted interaction with %s block at " + block.getLocation().toString());
             delegate();
-            plugin.logVerbose("Delegated to %s", block);
+            Citadel.info("Delegated to %s block at " + block.getLocation().toString());
         }
     }
 
@@ -62,7 +61,7 @@ public abstract class AccessDelegate<T extends MaterialData> {
     }
     
     public Reinforcement getReinforcement() {
-        if (reinforcement == null) reinforcement = plugin.dao.findReinforcement(block);
+        if (reinforcement == null) reinforcement = Citadel.getReinforcementManager().getReinforcement(block);
         return reinforcement;
     }
 }

@@ -1,11 +1,11 @@
 package com.untamedears.citadel.entity;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
-
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 /**
  * Created by IntelliJ IDEA.
