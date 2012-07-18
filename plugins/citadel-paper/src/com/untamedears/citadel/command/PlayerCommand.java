@@ -1,37 +1,77 @@
 package com.untamedears.citadel.command;
 
-import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.entity.PlayerState;
-import com.untamedears.citadel.PluginConsumer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 /**
- * Created by IntelliJ IDEA.
- * User: chrisrico
- * Date: 3/21/12
- * Time: 11:00 AM
+ * User: JonnyD
+ * Date: 07/18/12
+ * Time: 11:57 PM
  */
-public abstract class PlayerCommand extends PluginConsumer implements CommandExecutor {
-
-    protected Player player;
-    protected PlayerState state;
-    protected int requiredArguments;
-
-    public PlayerCommand(Citadel plugin, int requiredArguments) {
-        super(plugin);
-        this.requiredArguments = requiredArguments;
-    }
-    
-    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-        if (sender instanceof Player) {
-            player = (Player) sender;
-            state = PlayerState.get(player);
-        }
-        return args.length >= requiredArguments && player != null && onCommand(command, args);
-    }
-    
-    public abstract boolean onCommand(Command command, String[] args);
+public abstract class PlayerCommand implements Command {
+	
+	private final String name;
+	private String description = "";
+	private String usage = "";
+	private int minArguments = 0;
+	private int maxArguments = 0;
+	private String[] identifiers = new String[0];
+	
+	public PlayerCommand(String name){
+		this.name = name;
+	}
+	
+	public String getName(){
+		return this.name;
+	}
+	
+	public String getDescription(){
+		return this.description;
+	}
+	
+	public String getUsage(){
+		return this.usage;
+	}
+	
+	public int getMinArguments(){
+		return this.minArguments;
+	}
+	
+	public int getMaxArguments(){
+		return this.maxArguments;
+	}
+	
+	public String[] getIdentifiers(){
+		return this.identifiers;
+	}
+	
+	public boolean isIdentifier(CommandSender executor, String input){
+		for(String identifier : this.identifiers){
+			if(input.equalsIgnoreCase(identifier)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean isInProgress(CommandSender sender){
+		return false;
+	}
+	
+	public void setDescription(String description){
+		this.description = description;
+	}
+	
+	public void setUsage(String usage){
+		this.usage = usage;
+	}
+	
+	public void setArgumentRange(int min, int max){
+		this.minArguments = min;
+		this.maxArguments = max;
+	}
+	
+	public void setIdentifiers(String[] identifiers){
+		this.identifiers = identifiers;
+	}
+	
 }

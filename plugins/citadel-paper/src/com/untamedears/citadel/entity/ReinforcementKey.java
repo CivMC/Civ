@@ -1,9 +1,10 @@
 package com.untamedears.citadel.entity;
 
-import org.bukkit.block.Block;
+import java.io.Serializable;
 
 import javax.persistence.Embeddable;
-import java.io.Serializable;
+
+import org.bukkit.block.Block;
 
 /**
  * Created by IntelliJ IDEA.

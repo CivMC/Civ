@@ -1,15 +1,16 @@
 package com.untamedears.citadel.entity;
 
-import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.PlacementMode;
-import com.untamedears.citadel.SecurityLevel;
+import static com.untamedears.citadel.Utility.sendMessage;
+
+import java.util.HashMap;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.util.HashMap;
-
-import static com.untamedears.citadel.Utility.sendMessage;
+import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.PlacementMode;
+import com.untamedears.citadel.SecurityLevel;
 
 public class PlayerState {
 
@@ -108,18 +109,16 @@ public class PlayerState {
      * If a task is already scheduled it is canceled first.
      */
     public void checkResetMode() {
-    	Citadel plugin = Citadel.getInstance();
+    	Citadel plugin = Citadel.getPlugin();
         BukkitScheduler scheduler = plugin.getServer().getScheduler();
         if (cancelModePid != null && scheduler.isQueued(cancelModePid))
             scheduler.cancelTask(cancelModePid);
         
         cancelModePid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
-        	public void run() {
-        		if (mode != PlacementMode.NORMAL) {
-        			sendMessage(player, ChatColor.YELLOW, "%s mode off", mode.name());
-        			reset();
-        		}
-        	}
-        }, 20L * plugin.autoModeReset);
+            public void run() {
+                sendMessage(player, ChatColor.YELLOW, "%s mode off", mode.name());
+                reset();
+            }
+        }, 20L * Citadel.getConfigManager().getAutoModeReset());
     }
 }

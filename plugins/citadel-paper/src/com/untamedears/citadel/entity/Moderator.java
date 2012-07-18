@@ -1,0 +1,55 @@
+package com.untamedears.citadel.entity;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+/**
+ * User: JonnyD
+ * Date: 7/18/12
+ * Time: 11:57 PM
+ */
+
+@Entity
+public class Moderator {
+
+	@Id private String memberName;
+	@Id private String factionName;
+	
+	public Moderator(){}
+	
+	public Moderator(String memberName, String factionName){
+		this.memberName = memberName;
+		this.factionName = factionName;
+	}
+	
+	public String getMemberName(){
+		return this.memberName;
+	}
+	
+	public void setMemberName(String memberName){
+		this.memberName = memberName;
+	}
+	
+	public String getFactionName(){
+		return factionName;
+	}
+	
+	public void setFactionName(String factionName){
+		this.factionName = factionName;
+	}
+
+	@Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Moderator)) return false;
+        Moderator that = (Moderator) o;
+        return factionName.equals(that.factionName) && memberName.equals(that.memberName);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = factionName.hashCode();
+        result = 31 * result + memberName.hashCode();
+        return result;
+    }
+}
