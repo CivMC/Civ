@@ -1,5 +1,9 @@
 package com.untamedears.citadel.listener;
 
+import java.util.ConcurrentModificationException;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.PlacementMode;
 import com.untamedears.citadel.PluginConsumer;
@@ -82,7 +86,8 @@ public class BlockListener extends PluginConsumer implements Listener {
 
         PlayerState state = PlayerState.get(player);
         if (state.isBypassMode() && reinforcement.isBypassable(player)) {
-            plugin.logVerbose("Player %s bypassed reinforcement %s", player.getDisplayName(), reinforcement);
+			Citadel.info(player.getDisplayName() + " bypassed reinforcement %s at " 
+					+ reinforcement.getBlock().getLocation().toString());
 
             bbe.setCancelled(reinforcementBroken(reinforcement));
         } else {
@@ -189,22 +194,27 @@ public class BlockListener extends PluginConsumer implements Listener {
         Openable openable = (Openable) block.getState().getData();
         if (openable.isOpen()) return;
         
-        Reinforcement reinforcement = plugin.dao.findReinforcement(block);
+        Reinforcement reinforcement = Citadel.getReinforcementManager().getReinforcement(block);
         if (reinforcement == null || reinforcement.getSecurityLevel() == SecurityLevel.PUBLIC) return;
 
-        boolean isAuthorizedPlayerNear = false;
-        for (Entity entity : block.getChunk().getEntities()) {
-            if (entity instanceof Player) {
-                if (entity.getLocation().distanceSquared(block.getLocation()) < plugin.redstoneDistance
-                        && reinforcement.isAccessible((Player) entity)) {
-                    isAuthorizedPlayerNear = true;
-                }
-                if (isAuthorizedPlayerNear) break;
-            }
-        }
+        Set<Player> onlinePlayers = new HashSet<Player>(Citadel.getMemberManager().getOnlinePlayers());
+		boolean isAuthorizedPlayerNear = false;
+		try {
+			for(Player player : onlinePlayers){
+				double redstoneDistance = Citadel.getConfigManager().getRedstoneDistance();
+				if(reinforcement.isAccessible(player) 
+						&& player.getLocation().distanceSquared(block.getLocation()) < redstoneDistance){
+					isAuthorizedPlayerNear = true;
+					break;
+				}
+			}
+		} catch (ConcurrentModificationException e){
+			
+		}
 
         if (!isAuthorizedPlayerNear) {
-            plugin.logVerbose("Prevented redstone from opening reinforcement %s", reinforcement);
+			Citadel.info("Prevented redstone from opening reinforcement %s at " 
+					+ reinforcement.getBlock().getLocation().toString());
             bre.setNewCurrent(bre.getOldCurrent());
         }
     }
