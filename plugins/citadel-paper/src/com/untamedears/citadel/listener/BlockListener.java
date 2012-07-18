@@ -40,11 +40,7 @@ import com.untamedears.citadel.entity.PlayerState;
 import com.untamedears.citadel.entity.Reinforcement;
 import com.untamedears.citadel.entity.ReinforcementMaterial;
 
-public class BlockListener extends PluginConsumer implements Listener {
-
-    public BlockListener(Citadel plugin) {
-        super(plugin);
-    }
+public class BlockListener implements Listener {
 
     /**
      * This handles the BlockPlaceEvent for Fortification mode (all placed blocks are reinforced)
