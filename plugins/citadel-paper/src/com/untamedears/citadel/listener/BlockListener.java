@@ -1,8 +1,35 @@
 package com.untamedears.citadel.listener;
 
+import static com.untamedears.citadel.Utility.createReinforcement;
+import static com.untamedears.citadel.Utility.maybeReinforcementDamaged;
+import static com.untamedears.citadel.Utility.reinforcementBroken;
+import static com.untamedears.citadel.Utility.reinforcementDamaged;
+import static com.untamedears.citadel.Utility.sendMessage;
+
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.material.MaterialData;
+import org.bukkit.material.Openable;
+import org.bukkit.material.PistonBaseMaterial;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.PlacementMode;
@@ -12,26 +39,6 @@ import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.entity.PlayerState;
 import com.untamedears.citadel.entity.Reinforcement;
 import com.untamedears.citadel.entity.ReinforcementMaterial;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.*;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.material.Door;
-import org.bukkit.material.MaterialData;
-import org.bukkit.material.Openable;
-import org.bukkit.Material;
-import org.bukkit.material.PistonBaseMaterial;
-
-import static com.untamedears.citadel.Utility.*;
 
 public class BlockListener extends PluginConsumer implements Listener {
 
