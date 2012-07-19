@@ -125,11 +125,10 @@ public class Reinforcement {
         } else {
             verb = "Reinforced";
         }
-        return String.format("%s %s with %s %s",
+        return String.format("%s %s with %s",
                 verb,
-                getDurability(),
-                getMaterial().getMaterial().name(),
-                this.owner.getName());
+                getHealthText(),
+                getMaterial().getMaterial().name());
     }
     
     public boolean isAccessible(Player player) {
