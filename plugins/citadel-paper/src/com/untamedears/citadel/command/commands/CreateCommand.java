@@ -38,7 +38,7 @@ public class CreateCommand extends PlayerCommand {
 			}
 			return true;
 		}
-		if(groupManager.getPlayerGroupsAmount(senderName) >= 2){
+		if(groupManager.getPlayerGroupsAmount(senderName) >= 60){
 			sendMessage(sender, ChatColor.RED, "You already have too many groups. 60 is the limit. Try deleting one first");
 			return true;
 		}
