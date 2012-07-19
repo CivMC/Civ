@@ -49,7 +49,7 @@ public class TransferCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "You already own this group");
 			return true;
 		}
-		if(groupManager.getPlayerGroupsAmount(targetName) >= 2){
+		if(groupManager.getPlayerGroupsAmount(targetName) >= 60){
 			sendMessage(sender, ChatColor.RED, "This player has already reached the maximum amount of groups allowed");
 			return true;
 		}
