@@ -102,8 +102,11 @@ public class PlayerListener implements Listener {
             case INFO:
                 // did player click on a reinforced block?
                 if (reinforcement != null) {
-                    ChatColor color = reinforcement.isAccessible(player) ? ChatColor.GREEN : ChatColor.RED;
-                    sendMessage(player, color, "%s, security: %s", reinforcement.getStatus(), reinforcement.getSecurityLevel().name());
+                    if(reinforcement.isAccessible(player)){
+                    	sendMessage(player, ChatColor.GREEN, "%s, security: %s-%s", reinforcement.getStatus(), reinforcement.getSecurityLevel().name(), reinforcement.getOwner().getName());
+                    } else {
+                    	sendMessage(player, ChatColor.RED, "%s, security: %s", reinforcement.getStatus(), reinforcement.getSecurityLevel().name());
+                    }
                 }
                 break;
             default:
