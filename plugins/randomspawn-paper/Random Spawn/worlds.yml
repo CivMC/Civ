@@ -12,3 +12,4 @@ exampleworld:
     x-max: 100
     z-min: -100
     z-max: 100
+    thickness: 0

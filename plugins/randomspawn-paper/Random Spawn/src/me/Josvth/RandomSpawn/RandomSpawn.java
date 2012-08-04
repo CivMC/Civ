@@ -89,23 +89,50 @@ public class RandomSpawn extends JavaPlugin{
 		int xmax = yamlHandler.worlds.getInt(worldName +".spawnarea.x-max", 100);
 		int zmin = yamlHandler.worlds.getInt(worldName +".spawnarea.z-min", -100);
 		int zmax = yamlHandler.worlds.getInt(worldName +".spawnarea.z-max", 100);
+		// Spawn area thickness near border. If 0 spawns whole area
+		int thickness = yamlHandler.worlds.getInt(worldName +".spawnarea.thickness", 0);
 
 		int xrand = 0;
 		int zrand = 0;
 		int y = -1;
 
 		do {
-			xrand = xmin + (int) ( Math.random()*(xmax - xmin) + 0.5 );
-			zrand = zmin + (int) ( Math.random()*(zmax - zmin) + 0.5 );
-			y = getValidHighestY(world, xrand,zrand);
-		}while (y == -1);
-
+			if (thickness <= 0) {
+				xrand = xmin + (int) ( Math.random()*(xmax - xmin + 1) );
+				zrand = zmin + (int) ( Math.random()*(zmax - zmin + 1) );
+			}
+			else {
+				int side = (int) (Math.random() * 4d);
+				int borderOffset = (int) (Math.random() * (double) thickness);
+				if (side == 0) {
+					xrand = xmin + borderOffset;
+					// Also balancing probability considering thickness
+					zrand = zmin + (int) ( Math.random() * (zmax - zmin + 1 - 2*thickness) ) + thickness;
+				}
+				else if (side == 1) {
+					xrand = xmax - borderOffset;
+					zrand = zmin + (int) ( Math.random() * (zmax - zmin + 1 - 2*thickness) ) + thickness;
+				}
+				else if (side == 2) {
+					xrand = xmin + (int) ( Math.random() * (xmax - xmin + 1) );
+					zrand = zmin + borderOffset;
+				}
+				else {
+					xrand = xmin + (int) ( Math.random() * (xmax - xmin + 1) );
+					zrand = zmax - borderOffset;
+				}
+				logDebug("Choosed side for spawn: " + side + "; x = " + xrand + "; z = " + zrand);
+			}
+			
+			y = getValidHighestY(world, xrand, zrand);
+		} while (y == -1);
+		
 		return new Location(
-				world,
-				Double.parseDouble(Integer.toString(xrand)) + 0.5, 
-				Double.parseDouble(Integer.toString(y)),
-				Double.parseDouble(Integer.toString(zrand)) + 0.5
-				);
+			world,
+			Double.parseDouble(Integer.toString(xrand) + 0.5),
+			Double.parseDouble(Integer.toString(y)),
+			Double.parseDouble(Integer.toString(zrand) + 0.5)
+		);
 	}
 
 	private int getValidHighestY(World world, int x, int z) {
@@ -138,19 +165,19 @@ public class RandomSpawn extends JavaPlugin{
 		if (blockid == 11) return -1;
 		if (blockid == 51) return -1;
 		if (blockid == 18) return -1;
-
+		
 		blockid = world.getBlockTypeIdAt(x, y + 1, z);
-
+		
 		if (blockid == 81) return -1;
-
+		
 		return y;
 	}
 
 	// Methods for a save landing :)
 
-	public void sendGround(Player player, Location location){		
-
-		location.getChunk().load(true);
+	public void sendGround(Player player, Location location){
+		
+		location.getChunk().load();
 
 		World world = location.getWorld();
 		
