@@ -4,6 +4,7 @@ import java.util.List;
 
 import me.Josvth.RandomSpawn.RandomSpawn;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -52,6 +53,8 @@ public class RespawnListener implements Listener{
 			
 			Location spawnLocation = plugin.chooseSpawn(world);
 			
+			//player.sendMessage("You should be random spawned at: " + spawnLocation.getX() + "," + spawnLocation.getY() + "," + spawnLocation.getZ());
+			
 			plugin.sendGround(player, spawnLocation);
 			
 			event.setRespawnLocation(spawnLocation);
@@ -63,7 +66,7 @@ public class RespawnListener implements Listener{
 			}
 
 			if (plugin.yamlHandler.config.getString("messages.randomspawned") != null){
-				player.sendMessage(plugin.yamlHandler.config.getString("messages.randomspawned"));
+				player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.yamlHandler.config.getString("messages.randomspawned")));
 			}
 		}			
 	}
