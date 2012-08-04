@@ -1,6 +1,5 @@
 package me.Josvth.RandomSpawn;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -65,16 +64,16 @@ public class RandomSpawn extends JavaPlugin{
 		player.sendMessage(ChatColor.AQUA + "[RandomSpawn] " + ChatColor.RESET + message);
 	}
 
-	public boolean isFirstJoin(Player player, World world){
-		
-		if(!world.getEnvironment().equals(Environment.NORMAL)) return false; 
-		
-		File file = new File(world.getWorldFolder() + File.separator + "players" + File.separator + player.getName() + ".dat");
-
-		if(file.exists()) return false;
-		
-		return true;
-	}
+//	public boolean isFirstJoin(Player player, World world){
+//	
+//		if(!world.getEnvironment().equals(Environment.NORMAL)) return false; 
+//		
+//		File file = new File(world.getWorldFolder() + File.separator + "players" + File.separator + player.getName() + ".dat");
+//
+//		if(file.exists()) return false;
+//		
+//		return true;
+//	}
 	
 	// *------------------------------------------------------------------------------------------------------------*
 	// | The following chooseSpawn method contains code made by NuclearW                                            |
@@ -98,7 +97,7 @@ public class RandomSpawn extends JavaPlugin{
 		do {
 			xrand = xmin + (int) ( Math.random()*(xmax - xmin) + 0.5 );
 			zrand = zmin + (int) ( Math.random()*(zmax - zmin) + 0.5 );
-			y = getValidHighestBlock(world, xrand,zrand);
+			y = getValidHighestY(world, xrand,zrand);
 		}while (y == -1);
 
 		return new Location(
@@ -109,7 +108,7 @@ public class RandomSpawn extends JavaPlugin{
 				);
 	}
 
-	private int getValidHighestBlock(World world, int x, int z) {
+	private int getValidHighestY(World world, int x, int z) {
 		world.getChunkAt(new Location(world, x, 0, z)).load();
 		
 		int y = 0;
@@ -117,13 +116,13 @@ public class RandomSpawn extends JavaPlugin{
 		
 		if(world.getEnvironment().equals(Environment.NETHER)){
 			int blockYid = world.getBlockTypeIdAt(x, y, z);
-			int blockY2id = world.getBlockTypeIdAt(x, y+1, z);
-			while(y < 129 || (blockYid != 0 && blockY2id != 0)){				
+			int blockY2id = world.getBlockTypeIdAt(x, y+1, z);			
+			while(y < 128 && !(blockYid == 0 && blockY2id == 0)){				
 				y++;
 				blockYid = blockY2id;
 				blockY2id = world.getBlockTypeIdAt(x, y+1, z);
 			}
-			if(y == 128) return -1;
+			if(y == 127) return -1;
 		}else{
 			y = 257;
 			while(y >= 0 && blockid == 0){
@@ -154,10 +153,11 @@ public class RandomSpawn extends JavaPlugin{
 		location.getChunk().load(true);
 
 		World world = location.getWorld();
-
+		
 		for(int y = 0 ; y <= location.getBlockY() + 2; y++){
 			Block block = world.getBlockAt(location.getBlockX(), y, location.getBlockZ());
 			player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
 		}
+			
 	}
 }
