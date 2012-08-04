@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
 <jardesc>
-    <jar path="E:/Bukkit Test Server/plugins/RandomSpawn-1.9-BETA.jar"/>
+    <jar path="R:/Bukkit Test Server/plugins/RandomSpawn-2.2.2.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/Random Spawn/Random Spawn.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
@@ -11,12 +11,11 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <file path="/Random Spawn/.classpath"/>
-        <file path="/Random Spawn/spawnLocations.yml"/>
-        <file path="/Random Spawn/config.yml"/>
-        <file path="/Random Spawn/worlds.yml"/>
         <file path="/Random Spawn/plugin.yml"/>
+        <file path="/Random Spawn/.classpath"/>
         <javaElement handleIdentifier="=Random Spawn/src"/>
+        <file path="/Random Spawn/config.yml"/>
         <file path="/Random Spawn/.project"/>
+        <file path="/Random Spawn/worlds.yml"/>
     </selectedElements>
 </jardesc>
