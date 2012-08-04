@@ -1,5 +1,4 @@
 debug: false
 messages:
-   pleasewait: "Please wait while your spawn is being loaded."
    randomspawned: "You wake up in an unfamiliar place."
 nodamagetime: 5
