@@ -1,5 +1,7 @@
 package me.Josvth.RandomSpawn;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -45,7 +47,7 @@ public class RandomSpawn extends JavaPlugin{
 		worldChangeListener = new WorldChangeListener(this);
 		signListener = new SignListener(this);
 		damageListener = new DamageListener(this);
-		
+
 	}
 
 	public void logInfo(String message){
@@ -64,17 +66,17 @@ public class RandomSpawn extends JavaPlugin{
 		player.sendMessage(ChatColor.AQUA + "[RandomSpawn] " + ChatColor.RESET + message);
 	}
 
-//	public boolean isFirstJoin(Player player, World world){
-//	
-//		if(!world.getEnvironment().equals(Environment.NORMAL)) return false; 
-//		
-//		File file = new File(world.getWorldFolder() + File.separator + "players" + File.separator + player.getName() + ".dat");
-//
-//		if(file.exists()) return false;
-//		
-//		return true;
-//	}
-	
+	//	public boolean isFirstJoin(Player player, World world){
+	//	
+	//		if(!world.getEnvironment().equals(Environment.NORMAL)) return false; 
+	//		
+	//		File file = new File(world.getWorldFolder() + File.separator + "players" + File.separator + player.getName() + ".dat");
+	//
+	//		if(file.exists()) return false;
+	//		
+	//		return true;
+	//	}
+
 	// *------------------------------------------------------------------------------------------------------------*
 	// | The following chooseSpawn method contains code made by NuclearW                                            |
 	// | based on his SpawnArea plugin:                                                                             |
@@ -85,12 +87,27 @@ public class RandomSpawn extends JavaPlugin{
 
 		String worldName = world.getName();
 
+		List<Integer> blacklist = new ArrayList<Integer>();
+		List<String> stringblacklist = yamlHandler.worlds.getStringList("spawnblacklist");
+
+		if (stringblacklist == null){
+			stringblacklist = yamlHandler.config.getStringList("defaultspawnblacklist");
+		}else{ 
+			for(String item : stringblacklist){
+				try {
+					blacklist.add(Integer.valueOf(item));
+				} catch (NumberFormatException e) {}
+			}
+		} 
+
 		int xmin = yamlHandler.worlds.getInt(worldName +".spawnarea.x-min", -100);
 		int xmax = yamlHandler.worlds.getInt(worldName +".spawnarea.x-max", 100);
 		int zmin = yamlHandler.worlds.getInt(worldName +".spawnarea.z-min", -100);
 		int zmax = yamlHandler.worlds.getInt(worldName +".spawnarea.z-max", 100);
 		// Spawn area thickness near border. If 0 spawns whole area
 		int thickness = yamlHandler.worlds.getInt(worldName +".spawnarea.thickness", 0);
+
+
 
 		int xrand = 0;
 		int zrand = 0;
@@ -123,24 +140,24 @@ public class RandomSpawn extends JavaPlugin{
 				}
 				logDebug("Choosed side for spawn: " + side + "; x = " + xrand + "; z = " + zrand);
 			}
-			
-			y = getValidHighestY(world, xrand, zrand);
+
+			y = getValidHighestY(world, xrand, zrand, blacklist);
 		} while (y == -1);
-		
+
 		return new Location(
-			world,
-			Double.parseDouble(Integer.toString(xrand) + 0.5),
-			Double.parseDouble(Integer.toString(y)),
-			Double.parseDouble(Integer.toString(zrand) + 0.5)
-		);
+				world,
+				Double.parseDouble(Integer.toString(xrand) + 0.5),
+				Double.parseDouble(Integer.toString(y)),
+				Double.parseDouble(Integer.toString(zrand) + 0.5)
+				);
 	}
 
-	private int getValidHighestY(World world, int x, int z) {
+	private int getValidHighestY(World world, int x, int z, List<Integer> blacklist) {
 		world.getChunkAt(new Location(world, x, 0, z)).load();
-		
+
 		int y = 0;
 		int blockid = 0;
-		
+
 		if(world.getEnvironment().equals(Environment.NETHER)){
 			int blockYid = world.getBlockTypeIdAt(x, y, z);
 			int blockY2id = world.getBlockTypeIdAt(x, y+1, z);			
@@ -159,32 +176,24 @@ public class RandomSpawn extends JavaPlugin{
 			if(y == 0) return -1;
 		}
 
-		if (blockid == 8) return -1;
-		if (blockid == 9) return -1;
-		if (blockid == 10) return -1;
-		if (blockid == 11) return -1;
-		if (blockid == 51) return -1;
-		if (blockid == 18) return -1;
-		
-		blockid = world.getBlockTypeIdAt(x, y + 1, z);
-		
-		if (blockid == 81) return -1;
-		
+		if (blacklist.contains(blockid));
+		if (blacklist.contains(81) && world.getBlockTypeIdAt(x, y + 1, z) == 81) return -1; // Check for cacti
+
 		return y;
 	}
 
 	// Methods for a save landing :)
 
 	public void sendGround(Player player, Location location){
-		
+
 		location.getChunk().load();
 
 		World world = location.getWorld();
-		
+
 		for(int y = 0 ; y <= location.getBlockY() + 2; y++){
 			Block block = world.getBlockAt(location.getBlockX(), y, location.getBlockZ());
 			player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
 		}
-			
+
 	}
 }
