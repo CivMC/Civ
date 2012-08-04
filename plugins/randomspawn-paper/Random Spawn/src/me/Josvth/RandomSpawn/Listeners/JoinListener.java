@@ -2,6 +2,7 @@ package me.Josvth.RandomSpawn.Listeners;
 
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -9,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -39,7 +41,9 @@ public class JoinListener implements Listener{
 
 		if(world.getEnvironment().equals(Environment.NETHER) || world.getEnvironment().equals(Environment.THE_END)) return;
 
-		if(!plugin.isFirstJoin(player, world)) return;
+		if(player.hasPlayedBefore()) return;
+		
+		//if(!plugin.isFirstJoin(player, world)) return;
 
 		List<String> randomSpawnFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".randomspawnon");
 
@@ -55,8 +59,12 @@ public class JoinListener implements Listener{
 		}
 
 		Location spawnLocation = plugin.chooseSpawn(world);
-
-		player.teleport(spawnLocation);
+		
+		//player.sendMessage("You should be random spawned at: " + spawnLocation.getX() + "," + spawnLocation.getY() + "," + spawnLocation.getX());
+		
+		plugin.sendGround(player, spawnLocation);
+		
+		player.teleport(spawnLocation.add(0, 3, 0));
 
 		player.setMetadata("lasttimerandomspawned", new FixedMetadataValue(plugin, System.currentTimeMillis()));
 
@@ -65,10 +73,21 @@ public class JoinListener implements Listener{
 		}
 
 		if (plugin.yamlHandler.config.getString("messages.randomspawned") != null){
-			player.sendMessage(plugin.yamlHandler.config.getString("messages.randomspawned"));
+			player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.yamlHandler.config.getString("messages.randomspawned")));
 		}
 	}
 
+	@EventHandler
+	public void onPlayerKick(PlayerKickEvent event){
+		if(event.getPlayer().hasMetadata("lasttimerandomspawned")){
+			if((event.getPlayer().getMetadata("lasttimerandomspawned").get(0).asLong() + (plugin.yamlHandler.config.getInt("nodamagetime",5)*1000)) > System.currentTimeMillis()){
+				event.setReason("");
+				event.setLeaveMessage("");
+				event.setCancelled(true);
+			}
+		}
+	}
+	
 	private Location getFirstSpawn(World world) {
 		String worldName = world.getName();
 
