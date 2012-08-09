@@ -78,7 +78,7 @@ public class BlockListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOW)
     public void blockBreak(BlockBreakEvent bbe) {
         Block block = bbe.getBlock();
         Player player = bbe.getPlayer();
