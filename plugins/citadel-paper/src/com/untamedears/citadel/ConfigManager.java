@@ -19,6 +19,7 @@ public class ConfigManager {
 	private int autoModeReset;
 	private boolean verboseLogging;
 	private double redstoneDistance;
+	private int groupsAllowed;
 
 	public void load(){
 		Citadel.getPlugin().reloadConfig();
@@ -28,6 +29,7 @@ public class ConfigManager {
         autoModeReset = config.getInt("general.autoModeReset");
         verboseLogging = config.getBoolean("general.verboseLogging");
         redstoneDistance = config.getDouble("general.redstoneDistance");
+        groupsAllowed = config.getInt("general.groupsAllowed");
         for (Object obj : config.getList("materials")) {
             LinkedHashMap map = (LinkedHashMap) obj;
             ReinforcementMaterial.put(new ReinforcementMaterial(map));
@@ -60,5 +62,13 @@ public class ConfigManager {
 	
 	public int getFlashLength(){
 		return this.flashLength;
+	}
+	
+	public int getGroupsAllowed(){
+		return this.groupsAllowed;
+	}
+	
+	public boolean getVerboseLogging(){
+		return this.verboseLogging;
 	}
 }
