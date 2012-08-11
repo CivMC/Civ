@@ -61,8 +61,9 @@ public class JoinCommand extends PlayerCommand {
 		groupManager.addMemberToGroup(groupName, playerName);
 		sendMessage(sender, ChatColor.GREEN, "You have joined %s", groupName);
 		MemberManager memberManager = Citadel.getMemberManager();
-		if(memberManager.isOnline(playerName)){
-			sendMessage(memberManager.getOnlinePlayer(group.getFounder()), ChatColor.YELLOW, "%s has joined %s", playerName, groupName);
+		String founderName = group.getFounder();
+		if(memberManager.isOnline(founderName)){
+			sendMessage(memberManager.getOnlinePlayer(founderName), ChatColor.YELLOW, "%s has joined %s", playerName, groupName);
 		}
 		return true;
 	}
