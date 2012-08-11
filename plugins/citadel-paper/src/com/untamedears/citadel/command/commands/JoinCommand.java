@@ -36,7 +36,7 @@ public class JoinCommand extends PlayerCommand {
 		}
 		String playerName = sender.getName();
 		if(group.isFounder(playerName)){
-			sendMessage(sender, ChatColor.RED, "You are already owner of the group $s", groupName);
+			sendMessage(sender, ChatColor.RED, "You are already owner of the group %s", groupName);
 			return true;
 		}
 		if(group.isMember(playerName)){
@@ -46,10 +46,10 @@ public class JoinCommand extends PlayerCommand {
 		if(group.isModerator(playerName)){
 			sendMessage(sender, ChatColor.RED, "You are already a moderator of the group %s", groupName);
 		}
-		if(group.getPassword().isEmpty() 
+		if(group.getPassword() == null
+				|| group.getPassword().isEmpty() 
 				|| group.getPassword().equalsIgnoreCase("") 
-				|| group.getPassword().equalsIgnoreCase("NULL")
-				|| group.getPassword() == null){
+				|| group.getPassword().equalsIgnoreCase("NULL")){
 			sendMessage(sender, ChatColor.RED, "Group is not joinable");
 			return true;
 		}
