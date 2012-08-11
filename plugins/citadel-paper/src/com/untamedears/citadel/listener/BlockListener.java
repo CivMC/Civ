@@ -210,7 +210,8 @@ public class BlockListener implements Listener {
 					Location playerLocation = player.getLocation();
 					Location blockLocation = block.getLocation();
 					if(playerLocation.getWorld() == blockLocation.getWorld()){
-						if(playerLocation.distanceSquared(blockLocation) <= redstoneDistance){
+						double distanceSquared = playerLocation.distance(blockLocation);
+						if(distanceSquared <= redstoneDistance){
 							isAuthorizedPlayerNear = true;
 							break;
 						}
