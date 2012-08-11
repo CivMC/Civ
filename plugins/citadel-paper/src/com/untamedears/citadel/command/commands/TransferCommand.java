@@ -49,11 +49,16 @@ public class TransferCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "You already own this group");
 			return true;
 		}
-		if(groupManager.getPlayerGroupsAmount(targetName) >= 60){
+		int groupsAllowed = Citadel.getConfigManager().getGroupsAllowed();
+		if(groupManager.getPlayerGroupsAmount(targetName) >= groupsAllowed){
 			sendMessage(sender, ChatColor.RED, "This player has already reached the maximum amount of groups allowed");
 			return true;
 		}
 		MemberManager memberManager = Citadel.getMemberManager();
+		if(!memberManager.isOnline(targetName)){
+			sendMessage(sender, ChatColor.RED, "User must be online");
+			return true;
+		}
 		Member member = memberManager.getMember(targetName);
 		if(member == null){
 			member = new Member(targetName);
