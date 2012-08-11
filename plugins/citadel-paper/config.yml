@@ -3,6 +3,7 @@ general:
   verboseLogging: false
   autoModeReset: 30
   redstoneDistance: 9
+  groupsAllowed: 60
 materials:
 - name: STONE
   strength: 25

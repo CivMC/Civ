@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.PersistenceException;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
@@ -243,5 +245,28 @@ public class CitadelDao extends MyDatabase {
 		SqlUpdate update = getDatabase().createSqlUpdate("delete from moderator where faction_name = :groupName")
 				.setParameter("groupName", groupName);
 		getDatabase().execute(update);
+	}
+	
+	public void updateDatabase(){
+		//this for when Citadel 2.0 is loaded after an older version of Citadel was previously installed
+		SqlUpdate createMemberTable = getDatabase().createSqlUpdate
+				("CREATE TABLE IF NOT EXISTS member (member_name varchar(255) NOT NULL, PRIMARY KEY (member_name))");
+		getDatabase().execute(createMemberTable);
+
+		SqlUpdate createModeratorTable = getDatabase().createSqlUpdate
+				("CREATE TABLE IF NOT EXISTS moderator (member_name varchar(255) NOT NULL, faction_name varchar(255) NOT NULL)");
+		getDatabase().execute(createModeratorTable);
+		
+		SqlUpdate createPersonalGroupTable = getDatabase().createSqlUpdate
+				("CREATE TABLE IF NOT EXISTS personal_group (group_name varchar(255) NOT NULL, owner_name varchar(255) NOT NULL)");
+		getDatabase().execute(createPersonalGroupTable);
+
+		try {
+			SqlUpdate alterFactionAddPassword = getDatabase().createSqlUpdate
+				("ALTER TABLE faction ADD password varchar(255) DEFAULT NULL");
+			getDatabase().execute(alterFactionAddPassword);
+		} catch(PersistenceException e){
+			//column already exists
+		}
 	}
 }

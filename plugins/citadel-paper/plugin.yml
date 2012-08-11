@@ -108,3 +108,7 @@ commands:
     aliases: ctmods
     description: Displays moderators of a group.
     usage: /ctmoderators (or /ctmods) <group-name>
+  ctgroupinfo:
+    aliases: ctgi
+    description: Displays information about a group.
+    usage: /ctgroupinfo (or /ctgi) <group-name>

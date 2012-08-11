@@ -91,7 +91,11 @@ public class Utility {
             player.updateInventory();
             Reinforcement reinforcement = new Reinforcement(block, material, group, state.getSecurityLevel());
             Citadel.getReinforcementManager().addReinforcement(reinforcement);
-            sendThrottledMessage(player, ChatColor.GREEN, "Reinforced with %s at security level %s", material.getMaterial().name(), state.getSecurityLevel().name());
+            String securityLevelText = state.getSecurityLevel().name();
+            if(securityLevelText.equalsIgnoreCase("group")){
+            	securityLevelText = securityLevelText + "-" + state.getFaction().getName();
+            }
+            sendThrottledMessage(player, ChatColor.GREEN, "Reinforced with %s at security level %s", material.getMaterial().name(), securityLevelText);
             // TODO: enable chained flashers, they're pretty cool
             //new BlockFlasher(block, material.getFlasher()).start(getPlugin());
             //new BlockFlasher(block, material.getFlasher()).chain(securityMaterial.get(state.getSecurityLevel())).start();
