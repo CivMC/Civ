@@ -22,6 +22,7 @@ import com.untamedears.citadel.GroupManager;
 import com.untamedears.citadel.MemberManager;
 import com.untamedears.citadel.PersonalGroupManager;
 import com.untamedears.citadel.PlacementMode;
+import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.Member;
@@ -52,8 +53,9 @@ public class PlayerListener implements Listener {
     	}
     	
 		PersonalGroupManager personalGroupManager = Citadel.getPersonalGroupManager();
-    	if(!personalGroupManager.hasPersonalGroup(playerName)){
-    		GroupManager groupManager = Citadel.getGroupManager();
+		boolean hasPersonalGroup = personalGroupManager.hasPersonalGroup(playerName);
+		GroupManager groupManager = Citadel.getGroupManager();
+    	if(!hasPersonalGroup){
 			String groupName = playerName;
 			int i = 1;
     		while(groupManager.isGroup(groupName)){
@@ -63,6 +65,12 @@ public class PlayerListener implements Listener {
         	Faction group = new Faction(groupName, playerName);
     		groupManager.addGroup(group);
     		personalGroupManager.addPersonalGroup(groupName, playerName);
+    	} else if(hasPersonalGroup){
+    		String personalGroupName = personalGroupManager.getPersonalGroup(playerName).getGroupName();
+    		if(!groupManager.isGroup(personalGroupName)){
+    			Faction group = new Faction(personalGroupName, playerName);
+    			groupManager.addGroup(group);
+    		}
     	}
     }
 
@@ -90,22 +98,46 @@ public class PlayerListener implements Listener {
         AccessDelegate accessDelegate = AccessDelegate.getDelegate(block);
         block = accessDelegate.getBlock();
         Reinforcement reinforcement = accessDelegate.getReinforcement();
-
-        checkAccessiblity(pie, reinforcement);
+        
+        if (reinforcement != null
+                && reinforcement.isSecurable()
+                && !reinforcement.isAccessible(pie.getPlayer())) {
+            Block reinforcedBlock = reinforcement.getBlock();
+            Citadel.info("%s failed to access locked reinforcement %s, " 
+        			+ player.getDisplayName() + " at " 
+        			+ reinforcedBlock.getLocation().toString());
+            pie.setCancelled(true);
+            pie.setUseInteractedBlock(Event.Result.DENY);
+            sendMessage(player, ChatColor.RED, "%s is locked", block.getType().name());
+            return;
+        }
         if (pie.isCancelled()) return;
 
         PlayerState state = PlayerState.get(player);
-        switch (state.getMode()) {
+        PlacementMode placementMode = state.getMode();
+        switch (placementMode) {
             case NORMAL:
+            	return;
             case FORTIFICATION:
                 return;
             case INFO:
                 // did player click on a reinforced block?
                 if (reinforcement != null) {
+                	String reinforcementStatus = reinforcement.getStatus();
+                	SecurityLevel securityLevel = reinforcement.getSecurityLevel();
                     if(reinforcement.isAccessible(player)){
-                    	sendMessage(player, ChatColor.GREEN, "%s, security: %s-%s", reinforcement.getStatus(), reinforcement.getSecurityLevel().name(), reinforcement.getOwner().getName());
+                    	Faction group = reinforcement.getOwner();
+                    	if(group.isPersonalGroup()){
+                    		sendMessage(player, ChatColor.GREEN, "%s, security: %s", reinforcementStatus, securityLevel);
+                    	} else {
+	                    	if(securityLevel == SecurityLevel.PRIVATE){
+	                    		sendMessage(player, ChatColor.GREEN, "%s, security: %s", reinforcementStatus, securityLevel);
+	                    	} else {
+	                    		sendMessage(player, ChatColor.GREEN, "%s, security: %s, group: %s", reinforcementStatus, securityLevel, group.getName());
+	                    	}
+                    	}
                     } else {
-                    	sendMessage(player, ChatColor.RED, "%s, security: %s", reinforcement.getStatus(), reinforcement.getSecurityLevel().name());
+                    	sendMessage(player, ChatColor.RED, "%s, security: %s", reinforcementStatus, securityLevel);
                     }
                 }
                 break;
@@ -115,17 +147,25 @@ public class PlayerListener implements Listener {
                     createReinforcement(player, block);
                 } else if (reinforcement.isBypassable(player)) {
                 	boolean update = false;
+                	String message = "";
                     if (reinforcement.getSecurityLevel() != state.getSecurityLevel()){
                         reinforcement.setSecurityLevel(state.getSecurityLevel());
                         update = true;
+                        message = String.format("Changed security level %s", reinforcement.getSecurityLevel().name());
                     }
                    	if(!reinforcement.getOwner().equals(state.getFaction())) {
                         reinforcement.setOwner(state.getFaction());
                         update = true;
+                        if(!message.equals("")){
+                        	message = message + ". ";
+                        }
+                        if(reinforcement.getSecurityLevel() != SecurityLevel.PRIVATE){
+                        	message = message + String.format("Changed group to %s", state.getFaction().getName());
+                        }
                     }
                    	if(update){
                         Citadel.getReinforcementManager().addReinforcement(reinforcement);
-                        sendMessage(player, ChatColor.GREEN, "Changed security level %s", reinforcement.getSecurityLevel().name());
+                        sendMessage(player, ChatColor.GREEN, message);
                     }
                 } else {
                     sendMessage(player, ChatColor.RED, "You are not permitted to modify this reinforcement");
@@ -136,26 +176,6 @@ public class PlayerListener implements Listener {
                 } else {
                     state.checkResetMode();
                 }
-        }
-    }
-
-    private void checkAccessiblity(PlayerInteractEvent pie, Reinforcement reinforcement) {
-        if (reinforcement != null
-                && reinforcement.isSecurable()
-                && !reinforcement.isAccessible(pie.getPlayer())) {
-            if (pie.getAction() == Action.LEFT_CLICK_BLOCK && reinforcement.getBlock().getState().getData() instanceof Openable) {
-                // because openable objects can be opened with a left or right click
-                // and we want to deny use but allow destruction, we need to limit
-                // opening secured doors to right clicking
-                pie.setUseInteractedBlock(Event.Result.DENY);
-            } else if (pie.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            	Citadel.info("%s failed to access locked reinforcement %s, " 
-            			+ pie.getPlayer().getDisplayName() + " at " 
-            			+ reinforcement.getBlock().getLocation().toString());
-                // this block is secured and is inaccesible to the player
-                sendMessage(pie.getPlayer(), ChatColor.RED, "%s is locked", pie.getClickedBlock().getType().name());
-                pie.setCancelled(true);
-            }
         }
     }
 }

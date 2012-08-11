@@ -20,7 +20,6 @@ public class Member implements Serializable {
 	private static final long serialVersionUID = -219411751058578508L;
 	
 	@Id private String memberName;
-	private Faction activeGroup;
     private Set<Faction> groups = new HashSet<Faction>();
 
     public Member() {}
@@ -51,17 +50,10 @@ public class Member implements Serializable {
         return result;
     }
     
-    public Faction getActiveGroup(){
-    	return this.activeGroup;
-    }
-    
-    public void setActiveGroup(Faction activeGroup){
-    	this.activeGroup = activeGroup;
-    }
-    
     public Faction getPersonalGroup(){
     	PersonalGroup personalGroup = Citadel.getPersonalGroupManager().getPersonalGroup(this.memberName);
-    	Faction group = Citadel.getGroupManager().getGroup(personalGroup.getGroupName());
+    	String personalGroupName = personalGroup.getGroupName();
+    	Faction group = Citadel.getGroupManager().getGroup(personalGroupName);
     	return group;
     }
     

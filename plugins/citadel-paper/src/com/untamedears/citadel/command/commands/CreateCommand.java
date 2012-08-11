@@ -38,8 +38,9 @@ public class CreateCommand extends PlayerCommand {
 			}
 			return true;
 		}
-		if(groupManager.getPlayerGroupsAmount(senderName) >= 60){
-			sendMessage(sender, ChatColor.RED, "You already have too many groups. 60 is the limit. Try deleting one first");
+		int groupsAllowed = Citadel.getConfigManager().getGroupsAllowed();
+		if(groupManager.getPlayerGroupsAmount(senderName) >= groupsAllowed){
+			sendMessage(sender, ChatColor.RED, "You already have too many groups. %s is the limit. Try deleting one first", groupsAllowed);
 			return true;
 		}
 		Faction group = new Faction(groupName, senderName);

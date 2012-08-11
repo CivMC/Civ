@@ -11,8 +11,10 @@ import org.bukkit.command.CommandSender;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
+import com.untamedears.citadel.MemberManager;
 import com.untamedears.citadel.command.PlayerCommand;
 import com.untamedears.citadel.entity.Faction;
+import com.untamedears.citadel.entity.Member;
 
 /**
  * User: JonnyD
@@ -31,14 +33,23 @@ public class GroupsCommand extends PlayerCommand {
 
 	public boolean execute(CommandSender sender, String[] args) {
 		String memberName = sender.getName();
+		
 		GroupManager groupManager = Citadel.getGroupManager();
+		MemberManager memberManager = Citadel.getMemberManager();
+		
+		Member member = memberManager.getMember(memberName);
+		Faction personalGroup = member.getPersonalGroup();
+		String personalGroupName = personalGroup.getName();
+		
 		List<Faction> groups = new ArrayList<Faction>();
-		Set<Faction> member = groupManager.getGroupsByMember(memberName);
-		Set<Faction> moderate = groupManager.getGroupsByModerator(memberName);
-		Set<Faction> owned = groupManager.getGroupsByFounder(memberName);
-		groups.addAll(owned);
-		groups.addAll(moderate);
-		groups.addAll(member);
+		Set<Faction> memberGroups = groupManager.getGroupsByMember(memberName);
+		Set<Faction> moderatedGroups = groupManager.getGroupsByModerator(memberName);
+		Set<Faction> ownedGroups = groupManager.getGroupsByFounder(memberName);
+		
+		groups.addAll(ownedGroups);
+		groups.addAll(moderatedGroups);
+		groups.addAll(memberGroups);
+		
 		if(groups.isEmpty()){
 			sendMessage(sender, ChatColor.GREEN, "You have no groups");
 			return true;
@@ -72,13 +83,16 @@ public class GroupsCommand extends PlayerCommand {
 		for(int g = start; g < end; g++){
 			Faction group = groups.get(g);
 			String line = group.getName();
-			if(member.contains(group)){
-				line = line + " (Member)";
-			} else if(moderate.contains(group)){
-				line = line + " (Moderator)";
-			} else if(owned.contains(group)){
+			if(ownedGroups.contains(group)){
 				line = line + " (Owner)";
+			} else if(moderatedGroups.contains(group)){
+				line = line + " (Moderator)";
+			} else if(memberGroups.contains(group)){
+				line = line + " (Member)";
 			} 
+			if(group.getName().equalsIgnoreCase(personalGroupName)){
+				line = line + " (Default Group)";
+			}
 			sendMessage(sender, ChatColor.WHITE, line);
 		}
 		if(page + 1 < numPages){

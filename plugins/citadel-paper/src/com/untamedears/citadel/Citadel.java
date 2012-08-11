@@ -19,6 +19,7 @@ import com.untamedears.citadel.command.commands.DeleteCommand;
 import com.untamedears.citadel.command.commands.DisallowCommand;
 import com.untamedears.citadel.command.commands.FortifyCommand;
 import com.untamedears.citadel.command.commands.GroupCommand;
+import com.untamedears.citadel.command.commands.GroupInfoCommand;
 import com.untamedears.citadel.command.commands.GroupsCommand;
 import com.untamedears.citadel.command.commands.InfoCommand;
 import com.untamedears.citadel.command.commands.JoinCommand;
@@ -72,6 +73,7 @@ public class Citadel extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         dao = new CitadelDao(this);
+        dao.updateDatabase();
         setUpStorage();
         registerCommands();
         registerEvents();
@@ -109,6 +111,7 @@ public class Citadel extends JavaPlugin {
     	commandHandler.addCommand(new DisallowCommand());
     	commandHandler.addCommand(new FortifyCommand());
     	commandHandler.addCommand(new GroupCommand());
+    	commandHandler.addCommand(new GroupInfoCommand());
     	commandHandler.addCommand(new GroupsCommand());
     	//commandHandler.addCommand(new Help())
     	commandHandler.addCommand(new InfoCommand());
@@ -151,7 +154,9 @@ public class Citadel extends JavaPlugin {
     }
     
     public static void info(String message){
-    	log.info("[Citadel] " + message);
+    	if(configManager.getVerboseLogging()){
+    		log.info("[Citadel] " + message);
+    	}
     }
     
     public static void severe(String message){

@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -33,7 +34,6 @@ import org.bukkit.material.PistonBaseMaterial;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.PlacementMode;
-import com.untamedears.citadel.PluginConsumer;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.entity.PlayerState;
@@ -104,59 +104,60 @@ public class BlockListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void pistonExtend(BlockPistonExtendEvent bpee) {
     	Block piston = bpee.getBlock();
-	BlockState state = piston.getState();
-	MaterialData data = state.getData();
-	BlockFace direction = null;
-	
-	if (data instanceof PistonBaseMaterial) {
-		direction = ((PistonBaseMaterial) data).getFacing();
-	}
-	
-	// if no direction was found, no point in going on
-	if (direction == null)
-		return;
-	
-	// Check the affected blocks
-	for (int i = 1; i < bpee.getLength() + 2; i++) {
-		Block block = piston.getRelative(direction, i);
-	
-		if (block.getType() == Material.AIR)
-			break;
-	
-		AccessDelegate delegate = AccessDelegate.getDelegate(block);
-		Reinforcement reinforcement = delegate.getReinforcement();
-	
-		if (reinforcement != null){
-			bpee.setCancelled(true);
-			break;
+		BlockState state = piston.getState();
+		MaterialData data = state.getData();
+		BlockFace direction = null;
+		
+		if (data instanceof PistonBaseMaterial) {
+			direction = ((PistonBaseMaterial) data).getFacing();
 		}
-	}
+		
+		// if no direction was found, no point in going on
+		if (direction == null)
+			return;
+	
+		// Check the affected blocks
+		for (int i = 1; i < bpee.getLength() + 2; i++) {
+			Block block = piston.getRelative(direction, i);
+		
+			if (block.getType() == Material.AIR){
+				break;
+			}
+		
+			AccessDelegate delegate = AccessDelegate.getDelegate(block);
+			Reinforcement reinforcement = delegate.getReinforcement();
+		
+			if (reinforcement != null){
+				bpee.setCancelled(true);
+				break;
+			}
+		}
     }
     
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void pistonRetract(BlockPistonRetractEvent bpre) {
     	Block piston = bpre.getBlock();
-	BlockState state = piston.getState();
-	MaterialData data = state.getData();
-	BlockFace direction = null;
-
-	// Check the block it pushed directly
-	if (data instanceof PistonBaseMaterial) {
-		direction = ((PistonBaseMaterial) data).getFacing();
-	}
-
-	if (direction == null)
-		return;
-
-	// the block that the piston moved
-	Block moved = piston.getRelative(direction, 2);
-
-	AccessDelegate delegate = AccessDelegate.getDelegate(moved);
-	Reinforcement reinforcement = delegate.getReinforcement();
-
-	if (reinforcement != null) {
-		bpre.setCancelled(true);
-	}
+		BlockState state = piston.getState();
+		MaterialData data = state.getData();
+		BlockFace direction = null;
+	
+		// Check the block it pushed directly
+		if (data instanceof PistonBaseMaterial) {
+			direction = ((PistonBaseMaterial) data).getFacing();
+		}
+	
+		if (direction == null)
+			return;
+	
+		// the block that the piston moved
+		Block moved = piston.getRelative(direction, 2);
+	
+		AccessDelegate delegate = AccessDelegate.getDelegate(moved);
+		Reinforcement reinforcement = delegate.getReinforcement();
+	
+		if (reinforcement != null) {
+			bpre.setCancelled(true);
+		}
     }
     
     private static final Material matfire = Material.FIRE;
@@ -203,16 +204,21 @@ public class BlockListener implements Listener {
         Set<Player> onlinePlayers = new HashSet<Player>(Citadel.getMemberManager().getOnlinePlayers());
 		boolean isAuthorizedPlayerNear = false;
 		try {
+			double redstoneDistance = Citadel.getConfigManager().getRedstoneDistance();
 			for(Player player : onlinePlayers){
-				double redstoneDistance = Citadel.getConfigManager().getRedstoneDistance();
-				if(reinforcement.isAccessible(player) 
-						&& player.getLocation().distanceSquared(block.getLocation()) < redstoneDistance){
-					isAuthorizedPlayerNear = true;
-					break;
+				if(reinforcement.isAccessible(player)){
+					Location playerLocation = player.getLocation();
+					Location blockLocation = block.getLocation();
+					if(playerLocation.getWorld() == blockLocation.getWorld()){
+						if(playerLocation.distanceSquared(blockLocation) <= redstoneDistance){
+							isAuthorizedPlayerNear = true;
+							break;
+						}
+					}
 				}
 			}
 		} catch (ConcurrentModificationException e){
-			
+			Citadel.warning("ConcurrentModificationException at redstonePower() in BlockListener");
 		}
 
         if (!isAuthorizedPlayerNear) {
