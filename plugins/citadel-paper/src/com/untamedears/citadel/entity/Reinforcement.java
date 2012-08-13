@@ -138,8 +138,10 @@ public class Reinforcement {
                 return name.equals(owner.getFounder());
             case GROUP:
                 return name.equals(owner.getFounder()) || owner.isMember(name) || owner.isModerator(name);
+            case PUBLIC:
+            	return true;
         }
-        return true;
+        return false;
     }
     
     public boolean isBypassable(Player player) {
