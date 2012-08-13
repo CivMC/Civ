@@ -36,7 +36,7 @@ public class JoinCommand extends PlayerCommand {
 		}
 		String playerName = sender.getName();
 		if(group.isFounder(playerName)){
-			sendMessage(sender, ChatColor.RED, "You are already owner of the group $s", groupName);
+			sendMessage(sender, ChatColor.RED, "You are already owner of the group %s", groupName);
 			return true;
 		}
 		if(group.isMember(playerName)){
@@ -46,10 +46,10 @@ public class JoinCommand extends PlayerCommand {
 		if(group.isModerator(playerName)){
 			sendMessage(sender, ChatColor.RED, "You are already a moderator of the group %s", groupName);
 		}
-		if(group.getPassword().isEmpty() 
+		if(group.getPassword() == null
+				|| group.getPassword().isEmpty() 
 				|| group.getPassword().equalsIgnoreCase("") 
-				|| group.getPassword().equalsIgnoreCase("NULL")
-				|| group.getPassword() == null){
+				|| group.getPassword().equalsIgnoreCase("NULL")){
 			sendMessage(sender, ChatColor.RED, "Group is not joinable");
 			return true;
 		}
@@ -61,8 +61,9 @@ public class JoinCommand extends PlayerCommand {
 		groupManager.addMemberToGroup(groupName, playerName);
 		sendMessage(sender, ChatColor.GREEN, "You have joined %s", groupName);
 		MemberManager memberManager = Citadel.getMemberManager();
-		if(memberManager.isOnline(playerName)){
-			sendMessage(memberManager.getOnlinePlayer(group.getFounder()), ChatColor.YELLOW, "%s has joined %s", playerName, groupName);
+		String founderName = group.getFounder();
+		if(memberManager.isOnline(founderName)){
+			sendMessage(memberManager.getOnlinePlayer(founderName), ChatColor.YELLOW, "%s has joined %s", playerName, groupName);
 		}
 		return true;
 	}
