@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.bukkit.command.CommandSender;
 
+import com.untamedears.citadel.Citadel;
+
 /**
  * User: JonnyD
  * Date: 07/18/12
@@ -48,7 +50,11 @@ public class CommandHandler {
 				}
 			}
 			
-			cmd.execute(sender, realArgs);
+			try {
+				cmd.execute(sender, realArgs);
+			} catch(Exception e){
+			  Citadel.printStackTrace(e);
+			}
 			return true;
 		}
 		return true;

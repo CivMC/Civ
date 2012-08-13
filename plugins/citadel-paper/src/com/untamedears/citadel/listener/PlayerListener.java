@@ -90,6 +90,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void interact(PlayerInteractEvent pie) {
+    	try {
         if (!pie.hasBlock()) return;
 
         Player player = pie.getPlayer();
@@ -98,18 +99,21 @@ public class PlayerListener implements Listener {
         AccessDelegate accessDelegate = AccessDelegate.getDelegate(block);
         block = accessDelegate.getBlock();
         Reinforcement reinforcement = accessDelegate.getReinforcement();
-        
+
         if (reinforcement != null
                 && reinforcement.isSecurable()
-                && !reinforcement.isAccessible(pie.getPlayer())) {
-            Block reinforcedBlock = reinforcement.getBlock();
-            Citadel.info("%s failed to access locked reinforcement %s, " 
-        			+ player.getDisplayName() + " at " 
-        			+ reinforcedBlock.getLocation().toString());
-            pie.setCancelled(true);
-            pie.setUseInteractedBlock(Event.Result.DENY);
-            sendMessage(player, ChatColor.RED, "%s is locked", block.getType().name());
-            return;
+                && !reinforcement.isAccessible(player)) {
+        	Action action = pie.getAction();
+        	if(action == Action.LEFT_CLICK_BLOCK
+        			&& reinforcement.getBlock().getState().getData() instanceof Openable){
+        		pie.setUseInteractedBlock(Event.Result.DENY);
+        	} else if(action == Action.RIGHT_CLICK_BLOCK){
+                Citadel.info("%s failed to access locked reinforcement %s, " 
+            			+ player.getDisplayName() + " at " 
+            			+ block.getLocation().toString());
+              sendMessage(pie.getPlayer(), ChatColor.RED, "%s is locked", block.getType().name());
+              pie.setCancelled(true);
+        	}
         }
         if (pie.isCancelled()) return;
 
@@ -127,15 +131,14 @@ public class PlayerListener implements Listener {
                 	SecurityLevel securityLevel = reinforcement.getSecurityLevel();
                     if(reinforcement.isAccessible(player)){
                     	Faction group = reinforcement.getOwner();
+                    	String groupName = group.getName();
+                    	String message = "";
                     	if(group.isPersonalGroup()){
-                    		sendMessage(player, ChatColor.GREEN, "%s, security: %s", reinforcementStatus, securityLevel);
+                    		message = String.format("%s, security: %s, group: %s (Default Group)", reinforcementStatus, securityLevel, groupName);
                     	} else {
-	                    	if(securityLevel == SecurityLevel.PRIVATE){
-	                    		sendMessage(player, ChatColor.GREEN, "%s, security: %s", reinforcementStatus, securityLevel);
-	                    	} else {
-	                    		sendMessage(player, ChatColor.GREEN, "%s, security: %s, group: %s", reinforcementStatus, securityLevel, group.getName());
-	                    	}
+                    		message = String.format("%s, security: %s, group: %s", reinforcementStatus, securityLevel, groupName);
                     	}
+                		sendMessage(player, ChatColor.GREEN, message);
                     } else {
                     	sendMessage(player, ChatColor.RED, "%s, security: %s", reinforcementStatus, securityLevel);
                     }
@@ -176,6 +179,12 @@ public class PlayerListener implements Listener {
                 } else {
                     state.checkResetMode();
                 }
+        }
+
+        }
+        catch(Exception e)
+        {
+          Citadel.printStackTrace(e);
         }
     }
 }

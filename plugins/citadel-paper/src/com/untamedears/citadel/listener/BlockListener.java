@@ -68,9 +68,9 @@ public class BlockListener implements Listener {
         if (inventory.contains(material.getMaterial(), required.getAmount())) {
             if (createReinforcement(player, block) == null) {
                 sendMessage(player, ChatColor.RED, "%s is not a reinforcible material", block.getType().name());
-            }
-            else
+            } else {
             	state.checkResetMode();
+            }
         } else {
             sendMessage(player, ChatColor.YELLOW, "%s depleted, left fortification mode", material.getMaterial().name());
             state.reset();
@@ -191,6 +191,7 @@ public class BlockListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void redstonePower(BlockRedstoneEvent bre) {
+    	try {
         Block block = bre.getBlock();
         
         if (!(block.getState().getData() instanceof Openable)) return;
@@ -201,7 +202,8 @@ public class BlockListener implements Listener {
         Reinforcement reinforcement = Citadel.getReinforcementManager().getReinforcement(block);
         if (reinforcement == null || reinforcement.getSecurityLevel() == SecurityLevel.PUBLIC) return;
 
-        Set<Player> onlinePlayers = new HashSet<Player>(Citadel.getMemberManager().getOnlinePlayers());
+        //Set<Player> onlinePlayers = new HashSet<Player>(Citadel.getMemberManager().getOnlinePlayers());
+        Player[] onlinePlayers = Citadel.getPlugin().getServer().getOnlinePlayers();
 		boolean isAuthorizedPlayerNear = false;
 		try {
 			double redstoneDistance = Citadel.getConfigManager().getRedstoneDistance();
@@ -226,6 +228,12 @@ public class BlockListener implements Listener {
 			Citadel.info("Prevented redstone from opening reinforcement %s at " 
 					+ reinforcement.getBlock().getLocation().toString());
             bre.setNewCurrent(bre.getOldCurrent());
+        }
+
+        }
+        catch(Exception e)
+        {
+          Citadel.printStackTrace(e);
         }
     }
 }

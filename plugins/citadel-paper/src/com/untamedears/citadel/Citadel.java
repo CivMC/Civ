@@ -1,5 +1,8 @@
 package com.untamedears.citadel;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -81,6 +84,13 @@ public class Citadel extends JavaPlugin {
         for(Player player : getServer().getOnlinePlayers()){
         	memberManager.addOnlinePlayer(player);
         }
+        try {
+            Metrics metrics = new Metrics(this);
+            metrics.start();
+        } catch (IOException e) {
+            // Failed to submit the stats :-(
+        	System.out.println("failed");
+        }
         log.info("[Citadel] Citadel is now enabled.");
     }
 
@@ -134,10 +144,16 @@ public class Citadel extends JavaPlugin {
     }
     
     public void registerEvents(){
-    	PluginManager pm = getServer().getPluginManager();
-    	pm.registerEvents(new BlockListener(), this);
-    	pm.registerEvents(new PlayerListener(), this);
-    	pm.registerEvents(new EntityListener(), this);
+    	try {
+	    	PluginManager pm = getServer().getPluginManager();
+	    	pm.registerEvents(new BlockListener(), this);
+	    	pm.registerEvents(new PlayerListener(), this);
+	    	pm.registerEvents(new EntityListener(), this);
+    	}
+    	catch(Exception e)
+    	{
+    	  printStackTrace(e);
+    	}
     }
 
     @Override
@@ -189,5 +205,30 @@ public class Citadel extends JavaPlugin {
     
     public static Citadel getPlugin(){
     	return plugin;
+    }
+    
+    public static void printStackTrace(Throwable t)
+    {
+      severe("");
+      severe("Internal error!");
+      severe("Include the following into your bug report:");
+      severe("          ======= SNIP HERE =======");
+      
+      StringWriter sw = new StringWriter();
+      PrintWriter pw = new PrintWriter(sw);
+      t.printStackTrace(pw);
+      for(String l: sw.toString().replace("\r", "").split("\n"))
+        severe(l);
+      pw.close();
+      try
+      {
+        sw.close();
+      }
+      catch(IOException e)
+      {
+      }
+      
+      severe("          ======= SNIP HERE =======");
+      severe("");
     }
 }
