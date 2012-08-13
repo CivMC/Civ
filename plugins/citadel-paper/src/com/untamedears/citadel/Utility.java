@@ -71,7 +71,6 @@ public class Utility {
                 break;
             case FORTIFICATION:
                 material = state.getReinforcementMaterial();
-                player.getInventory().removeItem(new ItemStack(block.getType(), 1));
                 break;
             default:
                 return null;
