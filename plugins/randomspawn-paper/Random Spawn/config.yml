@@ -2,11 +2,3 @@ debug: false
 messages:
    randomspawned: "You wake up in an unfamiliar place."
 nodamagetime: 5
-defaultspawnblacklist:
-  - 8
-  - 9
-  - 10
-  - 11
-  - 51
-  - 81
-  - 18
