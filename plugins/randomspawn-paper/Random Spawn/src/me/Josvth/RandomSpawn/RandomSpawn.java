@@ -1,6 +1,7 @@
 package me.Josvth.RandomSpawn;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -87,17 +88,16 @@ public class RandomSpawn extends JavaPlugin{
 
 		String worldName = world.getName();
 
+		// I don't like this method
 		List<Integer> blacklist = new ArrayList<Integer>();
-		List<String> stringblacklist = yamlHandler.worlds.getStringList("spawnblacklist");
+		List<String> stringblacklist = yamlHandler.worlds.getStringList(worldName + ".spawnblacklist");
 
-		if (stringblacklist == null){
-			stringblacklist = yamlHandler.config.getStringList("defaultspawnblacklist");
-		}else{ 
-			for(String item : stringblacklist){
-				try {
-					blacklist.add(Integer.valueOf(item));
-				} catch (NumberFormatException e) {}
-			}
+		if (stringblacklist == null) stringblacklist = Arrays.asList(new String[]{"8","9","10","11","18","51","81"});
+
+		for(String item : stringblacklist){
+			try {
+				blacklist.add(Integer.valueOf(item));
+			} catch (NumberFormatException e) {}
 		} 
 
 		int xmin = yamlHandler.worlds.getInt(worldName +".spawnarea.x-min", -100);
@@ -107,42 +107,73 @@ public class RandomSpawn extends JavaPlugin{
 		// Spawn area thickness near border. If 0 spawns whole area
 		int thickness = yamlHandler.worlds.getInt(worldName +".spawnarea.thickness", 0);
 
-
+		String type = yamlHandler.worlds.getString(worldName +".spawnarea.type", "square");
 
 		int xrand = 0;
 		int zrand = 0;
 		int y = -1;
+		
+		if(type.equalsIgnoreCase("circle")){
 
-		do {
-			if (thickness <= 0) {
-				xrand = xmin + (int) ( Math.random()*(xmax - xmin + 1) );
-				zrand = zmin + (int) ( Math.random()*(zmax - zmin + 1) );
-			}
-			else {
-				int side = (int) (Math.random() * 4d);
-				int borderOffset = (int) (Math.random() * (double) thickness);
-				if (side == 0) {
-					xrand = xmin + borderOffset;
-					// Also balancing probability considering thickness
-					zrand = zmin + (int) ( Math.random() * (zmax - zmin + 1 - 2*thickness) ) + thickness;
-				}
-				else if (side == 1) {
-					xrand = xmax - borderOffset;
-					zrand = zmin + (int) ( Math.random() * (zmax - zmin + 1 - 2*thickness) ) + thickness;
-				}
-				else if (side == 2) {
-					xrand = xmin + (int) ( Math.random() * (xmax - xmin + 1) );
-					zrand = zmin + borderOffset;
-				}
-				else {
-					xrand = xmin + (int) ( Math.random() * (xmax - xmin + 1) );
-					zrand = zmax - borderOffset;
-				}
-				logDebug("Choosed side for spawn: " + side + "; x = " + xrand + "; z = " + zrand);
-			}
+			int xcenter = (xmax - xmin)/2 + xmin;
+			int zcenter = (zmax - zmin)/2 + xmin;
 
-			y = getValidHighestY(world, xrand, zrand, blacklist);
-		} while (y == -1);
+			do {
+
+				int r = (int) (Math.random()*( (xmax - thickness) - xcenter + 1) );
+				double phi = Math.random() * 2 * Math.PI;
+
+				xrand = (int) (xcenter + Math.cos(phi) * r);
+				zrand = (int) (zcenter + Math.sin(phi) * r);
+
+				y = getValidHighestY(world, xrand, zrand, blacklist);
+
+			} while (y == -1);
+
+
+		}else{
+
+			if(thickness <= 0){
+
+				do {
+
+					xrand = xmin + (int) ( Math.random()*(xmax - xmin + 1) );
+					zrand = zmin + (int) ( Math.random()*(zmax - zmin + 1) );
+
+					y = getValidHighestY(world, xrand, zrand, blacklist);
+
+				} while (y == -1);
+
+			}else {
+
+				do {
+
+					int side = (int) (Math.random() * 4d);
+					int borderOffset = (int) (Math.random() * (double) thickness);
+					if (side == 0) {
+						xrand = xmin + borderOffset;
+						// Also balancing probability considering thickness
+						zrand = zmin + (int) ( Math.random() * (zmax - zmin + 1 - 2*thickness) ) + thickness;
+					}
+					else if (side == 1) {
+						xrand = xmax - borderOffset;
+						zrand = zmin + (int) ( Math.random() * (zmax - zmin + 1 - 2*thickness) ) + thickness;
+					}
+					else if (side == 2) {
+						xrand = xmin + (int) ( Math.random() * (xmax - xmin + 1) );
+						zrand = zmin + borderOffset;
+					}
+					else {
+						xrand = xmin + (int) ( Math.random() * (xmax - xmin + 1) );
+						zrand = zmax - borderOffset;
+					}
+
+					y = getValidHighestY(world, xrand, zrand, blacklist);
+
+				} while (y == -1);
+				
+			}
+		}
 
 		return new Location(
 				world,
@@ -176,7 +207,7 @@ public class RandomSpawn extends JavaPlugin{
 			if(y == 0) return -1;
 		}
 
-		if (blacklist.contains(blockid));
+		if (blacklist.contains(blockid)) return -1;
 		if (blacklist.contains(81) && world.getBlockTypeIdAt(x, y + 1, z) == 81) return -1; // Check for cacti
 
 		return y;
