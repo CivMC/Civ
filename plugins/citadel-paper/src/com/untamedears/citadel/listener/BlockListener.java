@@ -26,11 +26,13 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 import org.bukkit.material.PistonBaseMaterial;
+import org.bukkit.Effect;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.PlacementMode;
@@ -187,6 +189,27 @@ public class BlockListener implements Listener {
             if (block.getRelative(0,-1,-1).getType() == matfire) {block.getRelative(0,-1,-1).setTypeId(0);}
             */
 	}
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+    public void blockPhysics(BlockPhysicsEvent bpe) {
+       Material changedType = bpe.getChangedType();
+       if (Material.LAVA == changedType) {
+           Block block = bpe.getBlock();
+           // Protection for reinforced rails types from lava. Similar to water, transform surrounding blocks in cobblestone to stop the lava effect.
+           if (Material.RAILS == block.getType() || Material.POWERED_RAIL == block.getType() || Material.DETECTOR_RAIL == block.getType()) {
+               boolean isReinforced = maybeReinforcementDamaged(block);
+               if (isReinforced) {
+                   for (BlockFace blockFace : new BlockFace[]{BlockFace.DOWN, BlockFace.UP, BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH}) {
+                       Block otherBlock = block.getRelative(blockFace);
+                       if (Material.LAVA == otherBlock.getType()) {
+                           otherBlock.setType(Material.COBBLESTONE);
+                           otherBlock.getWorld().playEffect(otherBlock.getLocation(), Effect.EXTINGUISH, 0);
+                       }
+                   }
+               }
+           }
+       }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
