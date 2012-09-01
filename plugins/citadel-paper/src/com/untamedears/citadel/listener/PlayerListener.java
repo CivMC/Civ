@@ -1,11 +1,13 @@
 package com.untamedears.citadel.listener;
 
 import static com.untamedears.citadel.Utility.createReinforcement;
+import static com.untamedears.citadel.Utility.maybeReinforcementDamaged;
 import static com.untamedears.citadel.Utility.sendMessage;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -15,6 +17,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.material.Openable;
 
 import com.untamedears.citadel.Citadel;
@@ -86,6 +89,21 @@ public class PlayerListener implements Listener {
     public void bookshelf(PlayerInteractEvent pie) {
         if (pie.hasBlock() && pie.getMaterial() == Material.BOOKSHELF)
             interact(pie);
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+    public void bucketEmpty(PlayerBucketEmptyEvent pbee) {
+       Material bucket = pbee.getBucket();
+       if (Material.LAVA_BUCKET == bucket) {
+           Block block = pbee.getBlockClicked();
+           BlockFace face = pbee.getBlockFace();
+           Block relativeBlock = block.getRelative(face);
+           // Protection for reinforced rails types from direct lava bucket drop.
+           if (Material.RAILS == relativeBlock.getType() || Material.POWERED_RAIL == relativeBlock.getType() || Material.DETECTOR_RAIL == relativeBlock.getType()) {               
+               boolean isReinforced = maybeReinforcementDamaged(relativeBlock);
+               pbee.setCancelled(isReinforced);
+           }
+       }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
