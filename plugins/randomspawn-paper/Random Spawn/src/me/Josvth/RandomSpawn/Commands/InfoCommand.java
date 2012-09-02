@@ -36,15 +36,17 @@ public class InfoCommand extends AbstractCommand {
 		player.sendMessage(ChatColor.AQUA + "Random spawn on: " + ChatColor.WHITE + flags);
 
 		if(plugin.yamlHandler.worlds.contains(worldname + ".spawnarea")){
-			player.sendMessage(ChatColor.AQUA + "Spawnarea:");
+			player.sendMessage(ChatColor.AQUA + "Spawnarea " + plugin.yamlHandler.worlds.getString(worldname +".spawnarea.type","square") + ":");
 			
-			int xmin = plugin.yamlHandler.worlds.getInt(worldname +".spawnarea.x-min");
-			int xmax = plugin.yamlHandler.worlds.getInt(worldname +".spawnarea.x-max");
-			int zmin = plugin.yamlHandler.worlds.getInt(worldname +".spawnarea.z-min");
-			int zmax = plugin.yamlHandler.worlds.getInt(worldname +".spawnarea.z-max");
+			double xmin = plugin.yamlHandler.worlds.getDouble(worldname +".spawnarea.x-min");
+			double xmax = plugin.yamlHandler.worlds.getDouble(worldname +".spawnarea.x-max");
+			double zmin = plugin.yamlHandler.worlds.getDouble(worldname +".spawnarea.z-min");
+			double zmax = plugin.yamlHandler.worlds.getDouble(worldname +".spawnarea.z-max");
 			
-			player.sendMessage("x-min = "+ xmin + "  |  x-max = " + xmax);
-			player.sendMessage("z-min = "+ zmin + "  |  z-max = " + zmax);
+			player.sendMessage("x-min = "+ xmin);
+			player.sendMessage("x-max = " + xmax);
+			player.sendMessage("z-min = "+ zmin);
+			player.sendMessage("z-max = " + zmax);
 		}else
 		{
 			player.sendMessage("There is no spawn area set. Refering to defaults:");
@@ -57,11 +59,11 @@ public class InfoCommand extends AbstractCommand {
 		if(plugin.yamlHandler.worlds.contains(worldname + ".firstspawn")){
 			player.sendMessage(ChatColor.AQUA + "Firstspawn:");
 			
-			int x = plugin.yamlHandler.worlds.getInt(worldname +".firstspawn.x");
-			int y = plugin.yamlHandler.worlds.getInt(worldname +".firstspawn.y");
-			int z = plugin.yamlHandler.worlds.getInt(worldname +".firstspawn.z");
-			double yaw = plugin.yamlHandler.worlds.getInt(worldname +".firstspawn.yaw");
-			double pitch = plugin.yamlHandler.worlds.getInt(worldname +".firstspawn.pitch");
+			double x = plugin.yamlHandler.worlds.getDouble(worldname +".firstspawn.x");
+			double y = plugin.yamlHandler.worlds.getDouble(worldname +".firstspawn.y");
+			double z = plugin.yamlHandler.worlds.getDouble(worldname +".firstspawn.z");
+			double yaw = plugin.yamlHandler.worlds.getDouble(worldname +".firstspawn.yaw");
+			double pitch = plugin.yamlHandler.worlds.getDouble(worldname +".firstspawn.pitch");
 			
 			player.sendMessage("x = "+ x + "  |  y = " + y + "  |  z = " + z + "  |  yaw = " + yaw + "  |  pitch = " + pitch);
 		}else

@@ -1,5 +1,6 @@
 package me.Josvth.RandomSpawn.Commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.Josvth.RandomSpawn.RandomSpawn;
@@ -9,21 +10,31 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SetAreaCommand extends AbstractCommand{
-	
+
 	public SetAreaCommand(RandomSpawn instance){
 		super(instance,"setarea");
 	}
-	
+
 	public boolean onCommand(CommandSender sender, List<String> args){
 		Player player = (Player) sender;
 
-		if (args.size() == 1 && args.get(0).matches("[0-9]+")) {
+		double xmin = 0;
+		double xmax = 0;
+		double zmin = 0;
+		double zmax = 0;
+
+		if (args.size() == 1) {
 			Location reference = player.getLocation();
 
-			int xmin = (int) (reference.getX() - Integer.parseInt(args.get(0)));
-			int xmax = (int) (reference.getX() + Integer.parseInt(args.get(0)));
-			int zmin = (int) (reference.getZ() - Integer.parseInt(args.get(0)));
-			int zmax = (int) (reference.getZ() + Integer.parseInt(args.get(0)));
+			try{
+				xmin = reference.getX() - Double.parseDouble(args.get(0));
+				xmax = reference.getX() + Double.parseDouble(args.get(0));
+				zmin = reference.getZ() - Double.parseDouble(args.get(0));
+				zmax = reference.getZ() + Double.parseDouble(args.get(0));
+			} catch(NumberFormatException e){
+				sender.sendMessage("Invalid number.");
+				return false;
+			}
 
 			String worldname = reference.getWorld().getName();
 
@@ -41,90 +52,117 @@ public class SetAreaCommand extends AbstractCommand{
 			return true;
 		}
 
-		if (args.size() == 2 && args.get(1).matches("[0-9]+")) {
-			if (args.get(0).matches("square")) {
-				Location reference = player.getLocation();
+		if (args.size() == 2 && (args.get(0).equalsIgnoreCase("circle") || args.get(0).equalsIgnoreCase("square"))) {
 
-				int xmin = (int) (reference.getX() - Integer.parseInt(args.get(1)));
-				int xmax = (int) (reference.getX() + Integer.parseInt(args.get(1)));
-				int zmin = (int) (reference.getZ() - Integer.parseInt(args.get(1)));
-				int zmax = (int) (reference.getZ() + Integer.parseInt(args.get(1)));
+			Location reference = player.getLocation();
 
-				String worldname = reference.getWorld().getName();
+			try{
 
-				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-min", xmin);
-				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-max", xmax);
-				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-min", zmin);
-				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-max", zmax);
+				xmin = reference.getX() - Double.parseDouble(args.get(1));
+				xmax = reference.getX() + Double.parseDouble(args.get(1));
+				zmin = reference.getZ() - Double.parseDouble(args.get(1));
+				zmax = reference.getZ() + Double.parseDouble(args.get(1));
 
-				plugin.yamlHandler.worlds.set(worldname + ".randomspawnenabled", true);
-
-				plugin.yamlHandler.saveWorlds();
-
-				plugin.playerInfo(player,  "Spawn area set!");
-
-				return true;
+			} catch(NumberFormatException e){
+				sender.sendMessage("Invalid number.");
+				return false;
 			}
+
+			String worldname = reference.getWorld().getName();
+
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-min", xmin);
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-max", xmax);
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-min", zmin);
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-max", zmax);
+
+			List<String> rsflags = new ArrayList<String>();
+			rsflags.add("respawn");
+
+			plugin.yamlHandler.worlds.set(worldname + ".randomspawnon", rsflags);
+
 			if (args.get(0).matches("circle")) {
-
+				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.type", "circle");
+			}else{
+				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.type", "square");
 			}
-			return false;
+
+			plugin.playerInfo(player, "Spawn area set!");
+
+			plugin.yamlHandler.saveWorlds();
+
+			return true;
 		}
 
-		if (args.size() == 2) {
-			if (args.get(0).matches("-{0,1}[0-9]+") && args.get(1).matches("-{0,1}[0-9]+")){
-				Location reference = player.getLocation();
+		if (args.size() == 2){
+			
+			Location reference = player.getLocation();
 
-				int xmin = (int) (reference.getX() - Integer.parseInt(args.get(0))/2);
-				int xmax = (int) (reference.getX() + Integer.parseInt(args.get(0))/2);
-				int zmin = (int) (reference.getZ() - Integer.parseInt(args.get(1))/2);
-				int zmax = (int) (reference.getZ() + Integer.parseInt(args.get(1))/2);
-
-				String worldname = reference.getWorld().getName();
-
-				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-min", xmin);
-				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-max", xmax);
-				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-min", zmin);
-				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-max", zmax);
-
-				plugin.yamlHandler.worlds.set(worldname + ".randomspawnenabled", true);
-
-				plugin.yamlHandler.saveWorlds();
-
-				plugin.playerInfo(player,  "Spawn area set!");
-
-				return true;
+			try{
+				xmin = reference.getX() - (Double.parseDouble(args.get(0)) / 2);
+				xmax = reference.getX() + (Double.parseDouble(args.get(0)) / 2);
+				zmin = reference.getZ() - (Double.parseDouble(args.get(1)) / 2);
+				zmax = reference.getZ() + (Double.parseDouble(args.get(1)) / 2);
+			}catch(NumberFormatException e){
+				sender.sendMessage("Invalid number.");
+				return false;
 			}
+
+
+			String worldname = reference.getWorld().getName();
+
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-min", xmin);
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-max", xmax);
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-min", zmin);
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-max", zmax);
+
+			List<String> rsflags = new ArrayList<String>();
+			rsflags.add("respawn");
+
+			plugin.yamlHandler.worlds.set(worldname + ".randomspawnon", rsflags);
+			
+			plugin.yamlHandler.saveWorlds();
+
+			plugin.playerInfo(player,  "Spawn area set!");
+
+			return true;
 		}
-		
-		if (args.size() == 4) {
-			if (args.get(0).matches("-{0,1}[0-9]+") && args.get(1).matches("-{0,1}[0-9]+") && args.get(2).matches("-{0,1}[0-9]+") && args.get(3).matches("-{0,1}[0-9]+")){
-				Location reference = player.getLocation();
 
-				int xmin = Integer.parseInt(args.get(0));
-				int xmax = Integer.parseInt(args.get(1));
-				int zmin = Integer.parseInt(args.get(2));
-				int zmax = Integer.parseInt(args.get(3));
+		if (args.size() == 4){
+			Location reference = player.getLocation();
 
-				String worldname = reference.getWorld().getName();
+			try{
 
-				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-min", xmin);
-				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-max", xmax);
-				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-min", zmin);
-				plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-max", zmax);
+				xmin = Double.parseDouble(args.get(0));
+				xmax = Double.parseDouble(args.get(1));
+				zmin = Double.parseDouble(args.get(2));
+				zmax = Double.parseDouble(args.get(3));
 
-				plugin.yamlHandler.worlds.set(worldname + ".randomspawnenabled", true);
-
-				plugin.yamlHandler.saveWorlds();
-
-				plugin.playerInfo(player,  "Spawn area set!");
-
-				return true;
+			} catch(NumberFormatException e){
+				sender.sendMessage("Invalid number.");
+				return false;
 			}
-			return false;
+
+			String worldname = reference.getWorld().getName();
+
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-min", xmin);
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.x-max", xmax);
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-min", zmin);
+			plugin.yamlHandler.worlds.set(worldname + ".spawnarea.z-max", zmax);
+
+			List<String> rsflags = new ArrayList<String>();
+			rsflags.add("respawn");
+
+			plugin.yamlHandler.worlds.set(worldname + ".randomspawnon", rsflags);
+			
+			plugin.yamlHandler.saveWorlds();
+
+			plugin.playerInfo(player,  "Spawn area set!");
+
+			return true;
 		}
-		
+
 		return false;
 
 	}
+
 }
