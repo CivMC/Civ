@@ -36,18 +36,26 @@ public class ConfigManager {
         }
         for (String name : config.getStringList("additionalSecurable")) {
             Material material = Material.matchMaterial(name);
-            if (material == null) {
-                Citadel.warning("Invalid additionalSecurable material " + name);
+            if (material != null) {
+            	Reinforcement.SECURABLE.add(material.getId());
             } else {
-                Reinforcement.SECURABLE.add(material.getId());
+            	try {
+            		Reinforcement.SECURABLE.add(Integer.parseInt(name));
+            	} catch (NumberFormatException e) {
+            		Citadel.warning("Invalid additionalSecurable material " + name);
+            	}
             }
         }
         for (String name : config.getStringList("nonReinforceable")) {
-            Material material = Material.matchMaterial(name);
-            if (material == null) {
-                Citadel.warning("Invalid nonReinforceable material " + name);
+        	Material material = Material.matchMaterial(name);
+            if (material != null) {
+            	Reinforcement.NON_REINFORCEABLE.add(material.getId());
             } else {
-                Reinforcement.NON_REINFORCEABLE.add(material.getId());
+            	try {
+            		Reinforcement.NON_REINFORCEABLE.add(Integer.parseInt(name));
+            	} catch (NumberFormatException e) {
+            		Citadel.warning("Invalid nonReinforceable material " + name);
+            	}
             }
         }
 	}
