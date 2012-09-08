@@ -24,7 +24,7 @@ public class ModeratorsCommand extends PlayerCommand {
 	public ModeratorsCommand() {
 		super("List Moderators");
 		setDescription("List the moderators of a group");
-		setUsage("/ctmoderators ง8<group-name>");
+		setUsage("/ctmoderators ยง8<group-name>");
 		setArgumentRange(1,1);
 		setIdentifiers(new String[] {"ctmoderators", "ctmods"});
 	}

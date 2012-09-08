@@ -20,7 +20,7 @@ public class DisallowCommand extends PlayerCommand {
 	public DisallowCommand() {
 		super("Disallow Player");
 		setDescription("Removes a player from a group");
-		setUsage("/ctdisallow ง8<group-name> <player-name>");
+		setUsage("/ctdisallow ยง8<group-name> <player-name>");
 		setArgumentRange(2,2);
 		setIdentifiers(new String[] {"ctdisallow", "ctd"});
 	}

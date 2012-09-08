@@ -20,7 +20,7 @@ public class CreateCommand extends PlayerCommand {
 	public CreateCommand(){
 		super("Create Group");
 		setDescription("Creates a new group");
-		setUsage("/ctcreate ง8<group-name>");
+		setUsage("/ctcreate ยง8<group-name>");
 		setArgumentRange(1, 1);
 		setIdentifiers(new String[] {"ctcreate", "ctc"});
 	}

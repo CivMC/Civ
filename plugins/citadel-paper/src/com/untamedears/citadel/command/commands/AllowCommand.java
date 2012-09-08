@@ -23,7 +23,7 @@ public class AllowCommand extends PlayerCommand {
 	public AllowCommand() {
 		super("Allow Player");
 		setDescription("Adds a player to your group");
-		setUsage("/ctallow ง8<group-name> <player name>");
+		setUsage("/ctallow ยง8<group-name> <player name>");
 		setArgumentRange(2,2);
 		setIdentifiers(new String[] {"ctallow", "cta"});
 	}
