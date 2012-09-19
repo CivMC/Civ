@@ -41,6 +41,7 @@ import com.untamedears.citadel.command.commands.SecurableCommand;
 import com.untamedears.citadel.command.commands.StatsCommand;
 import com.untamedears.citadel.command.commands.TransferCommand;
 import com.untamedears.citadel.command.commands.VersionCommand;
+import com.untamedears.citadel.dao.CitadelCachingDao;
 import com.untamedears.citadel.dao.CitadelDao;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionMember;
@@ -66,7 +67,7 @@ public class Citadel extends JavaPlugin {
     private static final PersonalGroupManager personalGroupManager = new PersonalGroupManager();
     private static final MemberManager memberManager = new MemberManager();
     private static final ConfigManager configManager = new ConfigManager();
-    private static CitadelDao dao;
+    private static CitadelCachingDao dao;
     private static Citadel plugin;
     
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
@@ -75,7 +76,7 @@ public class Citadel extends JavaPlugin {
 
     public void onEnable() {
         plugin = this;
-        dao = new CitadelDao(this);
+        dao = new CitadelCachingDao(this);
         dao.updateDatabase();
         setUpStorage();
         registerCommands();
@@ -95,6 +96,11 @@ public class Citadel extends JavaPlugin {
     }
 
     public void onDisable() {
+    	//There should be some interface that CitadelCachingDao can implement that does this automatically on disable:
+        //I don't want to do this as close() or finalize() because I want to make sure the database connection is still alive.
+    	if( dao instanceof CitadelCachingDao ){
+            ((CitadelCachingDao)dao).shutDown();
+        }
         log.info("[Citadel] Citadel is now disabled.");
     }
     

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 
 /**
@@ -14,7 +15,7 @@ import org.bukkit.block.Block;
  */
 
 @Embeddable
-public class ReinforcementKey implements Serializable {
+public class ReinforcementKey implements Serializable, Comparable<ReinforcementKey> {
     private static final long serialVersionUID = 8057222586259248268L;
 
     private int x;
@@ -72,6 +73,32 @@ public class ReinforcementKey implements Serializable {
         ReinforcementKey key = (ReinforcementKey) o;
 
         return x == key.x && y == key.y && z == key.z && world.equals(key.world);
+    }
+    
+    /**
+     * Order keys in lexographic order.
+     * 
+     * @param rk2
+     * @return
+     */
+    public int compareTo(ReinforcementKey rk2) {
+    	ReinforcementKey rk1 = this;
+    	
+    	if( rk1.x < rk2.x ){
+    		return -1;
+    	}else if( rk1.x > rk2.x ){
+    		return 1;
+    	}else if( rk1.y < rk2.y ){
+    		return -1;
+    	}else if( rk1.y > rk2.y ){
+    		return 1;
+    	}else if( rk1.z < rk2.z ){
+    		return -1;
+    	}else if( rk1.z > rk2.z ){
+    		return 1;
+    	}else{
+    		return rk1.world.compareTo(rk2.world);
+    	}
     }
 
     @Override

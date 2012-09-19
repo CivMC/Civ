@@ -52,3 +52,6 @@ database:
   isolation: SERIALIZABLE
   logging: false
   rebuild: false
+caching:
+  max_age: 300000
+  max_chunks: 10000

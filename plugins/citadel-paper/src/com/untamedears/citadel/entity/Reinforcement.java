@@ -21,7 +21,7 @@ import com.untamedears.citadel.SecurityLevel;
  * User: chrisrico
  */
 @Entity
-public class Reinforcement {
+public class Reinforcement implements Comparable<Reinforcement> {
 
     public static final List<Integer> SECURABLE = new ArrayList<Integer>();
     public static final List<Integer> NON_REINFORCEABLE = new ArrayList<Integer>();
@@ -180,6 +180,10 @@ public class Reinforcement {
         Reinforcement rein = (Reinforcement) o;
 
         return this.id.equals(rein.id);
+    }
+    
+    public int compareTo( Reinforcement r ){
+    	return this.id.compareTo( r.id );
     }
 
     @Override
