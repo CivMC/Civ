@@ -20,6 +20,8 @@ public class ConfigManager {
 	private boolean verboseLogging;
 	private double redstoneDistance;
 	private int groupsAllowed;
+	private long cacheMaxAge;
+	private int cacheMaxChunks;
 
 	public void load(){
 		Citadel.getPlugin().reloadConfig();
@@ -30,6 +32,8 @@ public class ConfigManager {
         verboseLogging = config.getBoolean("general.verboseLogging");
         redstoneDistance = config.getDouble("general.redstoneDistance");
         groupsAllowed = config.getInt("general.groupsAllowed");
+        cacheMaxAge = config.getLong("caching.max_age");
+        cacheMaxChunks = config.getInt("caching.max_chunks");
         for (Object obj : config.getList("materials")) {
             LinkedHashMap map = (LinkedHashMap) obj;
             ReinforcementMaterial.put(new ReinforcementMaterial(map));
@@ -70,5 +74,13 @@ public class ConfigManager {
 	
 	public boolean getVerboseLogging(){
 		return this.verboseLogging;
+	}
+	
+	public long getCacheMaxAge(){
+		return this.cacheMaxAge;
+	}
+	
+	public int getCacheMaxChunks(){
+		return this.cacheMaxChunks;
 	}
 }

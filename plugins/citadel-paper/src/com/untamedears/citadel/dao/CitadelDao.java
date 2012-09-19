@@ -1,11 +1,13 @@
 package com.untamedears.citadel.dao;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.PersistenceException;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
@@ -32,6 +34,7 @@ import com.untamedears.citadel.entity.ReinforcementKey;
  * 7/18/12
  */
 public class CitadelDao extends MyDatabase {
+	private static final int CHUNK_SIZE = 16;
 
     public CitadelDao(JavaPlugin plugin) {
         super(plugin);
@@ -158,6 +161,18 @@ public class CitadelDao extends MyDatabase {
                 .findUnique();
     }
     
+    public Set<Reinforcement> findReinforcementsInChunk(Chunk c){
+    	//The minus ones are intentional.  Think about fenceposts if you aren't sure why.
+    	return getDatabase().createQuery(Reinforcement.class, "find reinforcement where x >= :xlo and x <= :xhi " +
+    			"and z >= :zlo and z <= :zhi and world = :world").
+    			setParameter("xlo", c.getX()).
+    			setParameter("xhi", c.getX()+CHUNK_SIZE-1).
+    			setParameter("zlo", c.getZ()).
+    			setParameter("zhi", c.getZ()+CHUNK_SIZE-1).
+    			setParameter("world", c.getWorld().getName()).
+    			findSet();
+    }
+    
     public void moveReinforcements(String from, String target){
     	SqlUpdate update = getDatabase().createSqlUpdate("UPDATE reinforcement SET name = :target, security_level = 1" +
     			" WHERE name = :from")
@@ -197,16 +212,6 @@ public class CitadelDao extends MyDatabase {
 	public Set<PersonalGroup> findAllPersonalGroups() {
 		return getDatabase().createQuery(PersonalGroup.class, "find personalGroup")
 				.findSet();
-	}
-
-	public void addRein(int x, int y, int z, String groupName) {
-		SqlUpdate update = getDatabase().createSqlUpdate("INSERT INTO reinforcement (x, y, z, world, material_id, durability, security_level, name)" +
-				"Values (:x, :y, :z, 'World One', 1, 1800, 1, :groupName)")
-				.setParameter("x", x)
-				.setParameter("y", y)
-				.setParameter("z", z)
-				.setParameter("groupName", groupName);
-		getDatabase().execute(update);
 	}
 
 	public void addGroup(String groupName) {
