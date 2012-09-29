@@ -71,95 +71,95 @@ public class Citadel extends JavaPlugin {
     private static Citadel plugin;
     
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
-    	return commandHandler.dispatch(sender, label, args);
+        return commandHandler.dispatch(sender, label, args);
     }
 
     public void onEnable() {
         plugin = this;
+        configManager.load();
         dao = new CitadelCachingDao(this);
         dao.updateDatabase();
         setUpStorage();
         registerCommands();
         registerEvents();
-        configManager.load();
         for(Player player : getServer().getOnlinePlayers()){
-        	memberManager.addOnlinePlayer(player);
+            memberManager.addOnlinePlayer(player);
         }
         try {
             Metrics metrics = new Metrics(this);
             metrics.start();
         } catch (IOException e) {
             // Failed to submit the stats :-(
-        	System.out.println("failed");
+            System.out.println("failed");
         }
         log.info("[Citadel] Citadel is now enabled.");
     }
 
     public void onDisable() {
-    	//There should be some interface that CitadelCachingDao can implement that does this automatically on disable:
+        //There should be some interface that CitadelCachingDao can implement that does this automatically on disable:
         //I don't want to do this as close() or finalize() because I want to make sure the database connection is still alive.
-    	if( dao instanceof CitadelCachingDao ){
+        if( dao instanceof CitadelCachingDao ){
             ((CitadelCachingDao)dao).shutDown();
         }
         log.info("[Citadel] Citadel is now disabled.");
     }
     
     public void setUpStorage(){
-    	GroupStorage groupStorage = new GroupStorage(dao);
-    	groupManager.setStorage(groupStorage);
-    	
-    	PersonalGroupStorage personalGroupStorage = new PersonalGroupStorage(dao);
-    	personalGroupManager.setStorage(personalGroupStorage);
-    	
-    	MemberStorage memberStorage = new MemberStorage(dao);
-    	memberManager.setStorage(memberStorage);
-    	
-    	ReinforcementStorage reinforcementStorage = new ReinforcementStorage(dao);
-    	reinforcementManager.setStorage(reinforcementStorage);
+        GroupStorage groupStorage = new GroupStorage(dao);
+        groupManager.setStorage(groupStorage);
+        
+        PersonalGroupStorage personalGroupStorage = new PersonalGroupStorage(dao);
+        personalGroupManager.setStorage(personalGroupStorage);
+        
+        MemberStorage memberStorage = new MemberStorage(dao);
+        memberManager.setStorage(memberStorage);
+        
+        ReinforcementStorage reinforcementStorage = new ReinforcementStorage(dao);
+        reinforcementManager.setStorage(reinforcementStorage);
     }
     
     public void registerCommands(){
-    	commandHandler.addCommand(new AddModCommand());
-    	commandHandler.addCommand(new AllowCommand());
-    	commandHandler.addCommand(new BypassCommand());
-    	commandHandler.addCommand(new CreateCommand());
-    	commandHandler.addCommand(new DeleteCommand());
-    	commandHandler.addCommand(new DisallowCommand());
-    	commandHandler.addCommand(new FortifyCommand());
-    	commandHandler.addCommand(new GroupCommand());
-    	commandHandler.addCommand(new GroupInfoCommand());
-    	commandHandler.addCommand(new GroupsCommand());
-    	//commandHandler.addCommand(new Help())
-    	commandHandler.addCommand(new InfoCommand());
-    	commandHandler.addCommand(new JoinCommand());
-    	commandHandler.addCommand(new LeaveCommand());
-    	commandHandler.addCommand(new MaterialsCommand());
-    	commandHandler.addCommand(new MembersCommand());
-    	commandHandler.addCommand(new ModeratorsCommand());
-    	commandHandler.addCommand(new NonReinforceableCommand());
-    	commandHandler.addCommand(new OffCommand());
-    	commandHandler.addCommand(new PasswordCommand());
-    	commandHandler.addCommand(new PrivateCommand());
-    	commandHandler.addCommand(new PublicCommand());
-    	commandHandler.addCommand(new ReinforceCommand());
-    	commandHandler.addCommand(new RemoveModCommand());
-    	commandHandler.addCommand(new SecurableCommand());
-    	commandHandler.addCommand(new StatsCommand());
-    	commandHandler.addCommand(new TransferCommand());
-    	commandHandler.addCommand(new VersionCommand());
+        commandHandler.addCommand(new AddModCommand());
+        commandHandler.addCommand(new AllowCommand());
+        commandHandler.addCommand(new BypassCommand());
+        commandHandler.addCommand(new CreateCommand());
+        commandHandler.addCommand(new DeleteCommand());
+        commandHandler.addCommand(new DisallowCommand());
+        commandHandler.addCommand(new FortifyCommand());
+        commandHandler.addCommand(new GroupCommand());
+        commandHandler.addCommand(new GroupInfoCommand());
+        commandHandler.addCommand(new GroupsCommand());
+        //commandHandler.addCommand(new Help())
+        commandHandler.addCommand(new InfoCommand());
+        commandHandler.addCommand(new JoinCommand());
+        commandHandler.addCommand(new LeaveCommand());
+        commandHandler.addCommand(new MaterialsCommand());
+        commandHandler.addCommand(new MembersCommand());
+        commandHandler.addCommand(new ModeratorsCommand());
+        commandHandler.addCommand(new NonReinforceableCommand());
+        commandHandler.addCommand(new OffCommand());
+        commandHandler.addCommand(new PasswordCommand());
+        commandHandler.addCommand(new PrivateCommand());
+        commandHandler.addCommand(new PublicCommand());
+        commandHandler.addCommand(new ReinforceCommand());
+        commandHandler.addCommand(new RemoveModCommand());
+        commandHandler.addCommand(new SecurableCommand());
+        commandHandler.addCommand(new StatsCommand());
+        commandHandler.addCommand(new TransferCommand());
+        commandHandler.addCommand(new VersionCommand());
     }
     
     public void registerEvents(){
-    	try {
-	    	PluginManager pm = getServer().getPluginManager();
-	    	pm.registerEvents(new BlockListener(), this);
-	    	pm.registerEvents(new PlayerListener(), this);
-	    	pm.registerEvents(new EntityListener(), this);
-    	}
-    	catch(Exception e)
-    	{
-    	  printStackTrace(e);
-    	}
+        try {
+            PluginManager pm = getServer().getPluginManager();
+            pm.registerEvents(new BlockListener(), this);
+            pm.registerEvents(new PlayerListener(), this);
+            pm.registerEvents(new EntityListener(), this);
+        }
+        catch(Exception e)
+        {
+          printStackTrace(e);
+        }
     }
 
     @Override
@@ -176,41 +176,41 @@ public class Citadel extends JavaPlugin {
     }
     
     public static void info(String message){
-    	if(configManager.getVerboseLogging()){
-    		log.info("[Citadel] " + message);
-    	}
+        if(configManager.getVerboseLogging()){
+            log.info("[Citadel] " + message);
+        }
     }
     
     public static void severe(String message){
-    	log.severe("[Citadel] " + message);
+        log.severe("[Citadel] " + message);
     }
     
     public static void warning(String message){
-    	log.warning("[Citadel] " + message);
+        log.warning("[Citadel] " + message);
     }
     
     public static GroupManager getGroupManager(){
-    	return groupManager;
+        return groupManager;
     }
     
     public static PersonalGroupManager getPersonalGroupManager(){
-    	return personalGroupManager;
+        return personalGroupManager;
     }
     
     public static MemberManager getMemberManager(){
-    	return memberManager;
+        return memberManager;
     }
     
     public static ReinforcementManager getReinforcementManager(){
-    	return reinforcementManager;
+        return reinforcementManager;
     }
     
     public static ConfigManager getConfigManager(){
-    	return configManager;
+        return configManager;
     }
     
     public static Citadel getPlugin(){
-    	return plugin;
+        return plugin;
     }
     
     public static void printStackTrace(Throwable t)
