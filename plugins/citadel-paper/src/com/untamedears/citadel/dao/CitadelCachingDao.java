@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -17,6 +16,7 @@ import com.untamedears.citadel.entity.Reinforcement;
 import com.untamedears.citadel.entity.ReinforcementKey;
 
 public class CitadelCachingDao extends CitadelDao{
+    
     HashMap<Chunk, ChunkCache> cachesByChunk;
     LinkedList<ChunkCache> cachesByTime;
 
@@ -47,7 +47,8 @@ public class CitadelCachingDao extends CitadelDao{
             cachesByTime.add( cache );
             
             ChunkCache last = cachesByTime.getLast();
-            while( (last.getLastPlooked() + maxAge < System.currentTimeMillis() ||
+            
+            while( (last.getLastQueried() + maxAge < System.currentTimeMillis() ||
                    cachesByTime.size() > maxChunks) && 
                    !cachesByTime.isEmpty() ){
                 last.flush();
@@ -118,14 +119,14 @@ public class CitadelCachingDao extends CitadelDao{
         TreeSet<Reinforcement> cache;//if RAM isn't a problem replace this with a HashSet.
         
         Chunk chunk;
-        long lastPlooked;
+        long lastQueried;
         
         public ChunkCache( Chunk chunk ){
             this.chunk = chunk;
             cache = new TreeSet<Reinforcement>( findReinforcementsInChunk( chunk ));
             toSave = new TreeSet<Reinforcement>();
             toDelete = new TreeSet<Reinforcement>();
-            lastPlooked = System.currentTimeMillis();
+            lastQueried = System.currentTimeMillis();
         }
         
         public Reinforcement findReinforcement( Location l ){
@@ -133,7 +134,7 @@ public class CitadelCachingDao extends CitadelDao{
         }
         
         public Reinforcement findReinforcement( Block block ){
-            lastPlooked = System.currentTimeMillis();
+            lastQueried = System.currentTimeMillis();
             
             Reinforcement key = new Reinforcement();
             key.setId(new ReinforcementKey(block));
@@ -148,8 +149,17 @@ public class CitadelCachingDao extends CitadelDao{
         }
         
         public void save( Reinforcement r ){
-            lastPlooked = System.currentTimeMillis();
-            if( !cache.add( r )){
+            lastQueried = System.currentTimeMillis();
+            
+            if (r.getDurability() <= 0)
+            {
+                toSave.remove(r);
+                cache.remove(r);
+                delete(r);
+                return;
+            }
+            
+            if( cache.contains(r) ){
                 //Yes, this makes sense.
                 //If we're editing the cache, then our new "r" will equal the old "r"
                 //because reinforements are compared by their ReinforcementKeys, and the
@@ -158,29 +168,51 @@ public class CitadelCachingDao extends CitadelDao{
                 //the new "r".
                 cache.remove( r );
                 cache.add( r );
+            }else{
+                cache.add( r );
             }
+            
             toDelete.remove( r );
-            toSave.add( r );
+            if (toSave.contains(r)){
+                toSave.remove(r);
+                toSave.add( r );
+            }else{
+                toSave.add(r);
+            }
         }
         
         public void delete( Reinforcement r ){
-            lastPlooked = System.currentTimeMillis();
+            lastQueried = System.currentTimeMillis();
             cache.remove( r );
             toSave.remove( r );
-            toDelete.add( r );
+            toDelete.add( r );//Don't need to replace, merely include if not there already, since there's only one way to do a deletion.
         }
         
         public void flush(){
-            getDatabase().save(toSave);
-            getDatabase().delete(toDelete);
+            int saveSuccess = getDatabase().save(toSave);
+            int deleteSuccess = getDatabase().delete(toDelete);
         }
         
-        public long getLastPlooked(){
-            return lastPlooked;
+        public long getLastQueried(){
+            return lastQueried;
         }
         
         public Chunk getChunk(){
             return chunk;
+        }
+        
+        public String toString(){
+            StringBuilder builder = new StringBuilder();
+            builder.append( "Cache at (");
+            builder.append( chunk.getX());
+            builder.append( ",");
+            builder.append( chunk.getZ());
+            builder.append( "), has ");
+            builder.append( toSave.size() );
+            builder.append( " unsaved saves and ");
+            builder.append( " unsaved deletions.");
+            
+            return builder.toString();
         }
     }
     

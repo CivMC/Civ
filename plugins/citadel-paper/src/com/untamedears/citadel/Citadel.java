@@ -59,7 +59,7 @@ import com.untamedears.citadel.listener.PlayerListener;
  * Date: 07/18/12
  * Time: 11:57 PM
  */
-public class Citadel extends JavaPlugin {    
+public class Citadel extends JavaPlugin {
     private static final Logger log = Logger.getLogger("Citadel");
     private static final CommandHandler commandHandler = new CommandHandler();
     private static final ReinforcementManager reinforcementManager = new ReinforcementManager();
