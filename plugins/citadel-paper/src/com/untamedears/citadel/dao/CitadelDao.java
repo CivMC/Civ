@@ -163,12 +163,15 @@ public class CitadelDao extends MyDatabase {
     
     public Set<Reinforcement> findReinforcementsInChunk(Chunk c){
     	//The minus ones are intentional.  Think about fenceposts if you aren't sure why.
+    	Block minBlock = c.getBlock(0, 0, 0);
+    	int xlo = minBlock.getX();
+    	int zlo = minBlock.getZ();
     	return getDatabase().createQuery(Reinforcement.class, "find reinforcement where x >= :xlo and x <= :xhi " +
     			"and z >= :zlo and z <= :zhi and world = :world").
-    			setParameter("xlo", c.getX()).
-    			setParameter("xhi", c.getX()+CHUNK_SIZE-1).
-    			setParameter("zlo", c.getZ()).
-    			setParameter("zhi", c.getZ()+CHUNK_SIZE-1).
+    			setParameter("xlo", xlo).
+    			setParameter("xhi", xlo+CHUNK_SIZE-1).
+    			setParameter("zlo", zlo).
+    			setParameter("zhi", zlo+CHUNK_SIZE-1).
     			setParameter("world", c.getWorld().getName()).
     			findSet();
     }
