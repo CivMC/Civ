@@ -27,7 +27,7 @@
     </build>
     
     <properties>
-        <project.build.sourceEncoding>CP-1252</project.build.sourceEncoding>
+        <project.build.sourceEncoding>CP1252</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
