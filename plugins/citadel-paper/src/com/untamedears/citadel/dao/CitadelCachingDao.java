@@ -95,7 +95,7 @@ public class CitadelCachingDao extends CitadelDao{
         if( o instanceof Reinforcement ){
             Reinforcement r = (Reinforcement)o;
             try{
-                getCacheOfBlock( r.getBlock() ).save( r );
+                getCacheOfBlock( r.getBlock() ).delete( r );
             }catch( RefuseToPreventThrashingException e ){
                 Citadel.warning( "Bypassing RAM cache to prevent database thrashing.  Consider raising caching.max_chunks");
                 super.delete( r );
