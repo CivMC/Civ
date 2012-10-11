@@ -133,6 +133,10 @@ public class Reinforcement implements Comparable<Reinforcement> {
     
     public boolean isAccessible(Player player) {
         String name = player.getDisplayName();
+        return isAccessible(name);
+    }
+    
+    public boolean isAccessible(String name) {
         switch (securityLevel) {
             case PRIVATE:
                 return name.equals(owner.getFounder());

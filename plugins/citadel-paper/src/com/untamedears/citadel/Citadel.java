@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -236,5 +237,12 @@ public class Citadel extends JavaPlugin {
       
       severe("          ======= SNIP HERE =======");
       severe("");
+    }
+    
+    public boolean playerCanAccessBlock(Block block, String name) {
+    	Reinforcement reinforcement = reinforcementManager.getReinforcement(block);
+    	if (reinforcement == null)
+    		return true;
+    	return reinforcement.isAccessible(name);
     }
 }
