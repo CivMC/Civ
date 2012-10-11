@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.command.CommandHandler;
 import com.untamedears.citadel.command.commands.AddModCommand;
 import com.untamedears.citadel.command.commands.AllowCommand;
@@ -240,7 +241,9 @@ public class Citadel extends JavaPlugin {
     }
     
     public boolean playerCanAccessBlock(Block block, String name) {
-    	Reinforcement reinforcement = reinforcementManager.getReinforcement(block);
+        AccessDelegate accessDelegate = AccessDelegate.getDelegate(block);
+        Reinforcement reinforcement = accessDelegate.getReinforcement();
+        
     	if (reinforcement == null)
     		return true;
     	return reinforcement.isAccessible(name);
