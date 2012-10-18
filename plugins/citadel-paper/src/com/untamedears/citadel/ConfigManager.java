@@ -3,6 +3,7 @@ package com.untamedears.citadel;
 import java.util.LinkedHashMap;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import com.untamedears.citadel.entity.Reinforcement;
@@ -54,6 +55,22 @@ public class ConfigManager {
                 Reinforcement.NON_REINFORCEABLE.add(material.getId());
             }
         }
+	ConfigurationSection hardenedMaterials = config.getConfigurationSection("hardenedMaterials");
+	for (String materialName : hardenedMaterials.getKeys(false)) {
+            Material material = Material.matchMaterial(materialName);
+            if (material == null) {
+                Citadel.warning("Invalid hardenedMaterials material " + materialName);
+            } else {
+		int breakCount = hardenedMaterials.getInt(materialName);
+		// .1 sec * 100 == 10 sec max to break the quickest blocks seems reasonable.
+		if (breakCount < 2 || breakCount > 100) {
+                    Citadel.warning("Invalid hardenedMaterials breakCount " +
+				    materialName + " " + Integer.toString(breakCount));
+		} else {
+                    Reinforcement.HARDENED_BREAK_COUNTS.put(material.getId(), breakCount);
+		}
+            }
+	}
 	}
 	
 	public double getRedstoneDistance(){
@@ -82,5 +99,13 @@ public class ConfigManager {
 	
 	public int getCacheMaxChunks(){
 		return this.cacheMaxChunks;
+	}
+
+	public int getMaterialBreakCount(int materialId){
+		Integer breakCount = Reinforcement.HARDENED_BREAK_COUNTS.get(materialId);
+		if (breakCount == null) {
+			return 1;
+		}
+		return (int)breakCount;
 	}
 }

@@ -87,7 +87,18 @@ public class BlockListener implements Listener {
 
         AccessDelegate delegate = AccessDelegate.getDelegate(block);
         Reinforcement reinforcement = delegate.getReinforcement();
-        if (reinforcement == null) return;
+        if (reinforcement == null) {
+	    Material material = block.getType();
+	    int breakCount = Citadel.getConfigManager().getMaterialBreakCount(material.getId());
+	    if (breakCount <= 1) {
+	    	return;
+	    }
+            reinforcement = new Reinforcement(block, breakCount);
+            Citadel.getReinforcementManager().addReinforcement(reinforcement);
+            bbe.setCancelled(reinforcementDamaged(reinforcement));
+            block.getDrops().clear();
+	    return;
+	}
 
         PlayerState state = PlayerState.get(player);
         if (state.isBypassMode() && reinforcement.isBypassable(player)) {
