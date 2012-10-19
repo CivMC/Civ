@@ -20,7 +20,7 @@ public class PasswordCommand extends PlayerCommand {
 	public PasswordCommand() {
 		super("Set Group Password");
         setDescription("Sets the password for a group. Set password to \"null\" to make your group not joinable");
-        setUsage("/ctpassword ง8<group-name> <password>");
+        setUsage("/ctpassword ยง8<group-name> <password>");
         setArgumentRange(2,2);
 		setIdentifiers(new String[] {"ctpassword", "ctpw"});
 	}

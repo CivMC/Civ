@@ -28,8 +28,8 @@ public class StatsCommand extends PlayerCommand {
 		GroupManager groupManager = Citadel.getGroupManager();
 		int numGroups = groupManager.getGroupsAmount();
 		
-		sender.sendMessage(new StringBuilder().append("§cTotal Reinforcements:§e " ).append(numReinforcements).toString());
-		sender.sendMessage(new StringBuilder().append("§cTotal Groups:§e " ).append(numGroups).toString());
+		sender.sendMessage(new StringBuilder().append("Â§cTotal Reinforcements:Â§e " ).append(numReinforcements).toString());
+		sender.sendMessage(new StringBuilder().append("Â§cTotal Groups:Â§e " ).append(numGroups).toString());
 		return true;
 	}
 

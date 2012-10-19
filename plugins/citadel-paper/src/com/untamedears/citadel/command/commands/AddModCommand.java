@@ -23,7 +23,7 @@ public class AddModCommand extends PlayerCommand {
 	public AddModCommand() {
 		super("Add Moderator");
 		setDescription("Adds a player as moderator to a group");
-		setUsage("/ctaddmod ง8<group-name> <player-name>");
+		setUsage("/ctaddmod ยง8<group-name> <player-name>");
 		setArgumentRange(2,2);
 		setIdentifiers(new String[] {"ctaddmod", "ctam"});
 	}

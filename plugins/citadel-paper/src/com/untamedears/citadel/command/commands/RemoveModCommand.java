@@ -20,7 +20,7 @@ public class RemoveModCommand extends PlayerCommand {
 	public RemoveModCommand() {
 		super("Remove Moderator");
 		setDescription("Removes a player as moderator from a group");
-		setUsage("/ctremovemod ง8<group-name> <player-name>");
+		setUsage("/ctremovemod ยง8<group-name> <player-name>");
 		setArgumentRange(2,2);
 		setIdentifiers(new String[] {"ctremovemod", "ctrm"});
 	}
