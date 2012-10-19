@@ -65,17 +65,25 @@ public class ConfigManager {
         }
 	ConfigurationSection hardenedMaterials = config.getConfigurationSection("hardenedMaterials");
 	for (String materialName : hardenedMaterials.getKeys(false)) {
+	    int materialId = Integer.MIN_VALUE;
             Material material = Material.matchMaterial(materialName);
-            if (material == null) {
-                Citadel.warning("Invalid hardenedMaterials material " + materialName);
-            } else {
+	    if (material != null) {
+	        materialId = material.getId();
+	    } else {
+	        try {
+		    materialId = Integer.parseInt(materialName);
+		} catch (NumberFormatException e) {
+                    Citadel.warning("Invalid hardenedMaterials material " + materialName);
+		}
+	    }
+	    if (materialId != Integer.MIN_VALUE) {
 		int breakCount = hardenedMaterials.getInt(materialName);
-		// .1 sec * 100 == 10 sec max to break the quickest blocks seems reasonable.
-		if (breakCount < 2 || breakCount > 100) {
+		// .1 sec * 600 == 60 sec max to break the quickest blocks seems reasonable.
+		if (breakCount < 2 || breakCount > 600) {
                     Citadel.warning("Invalid hardenedMaterials breakCount " +
 				    materialName + " " + Integer.toString(breakCount));
 		} else {
-                    Reinforcement.HARDENED_BREAK_COUNTS.put(material.getId(), breakCount);
+                    Reinforcement.HARDENED_BREAK_COUNTS.put(materialId, breakCount);
 		}
             }
 	}
