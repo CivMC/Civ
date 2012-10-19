@@ -141,9 +141,13 @@ public class Utility {
         Citadel.info("Reinforcement %s destroyed at " + reinforcement.getBlock().getLocation().toString());
 
         Citadel.getReinforcementManager().removeReinforcement(reinforcement);
+	if (reinforcement.getSecurityLevel() == SecurityLevel.GENERATED) {
+		return false;
+	}
         if (rng.nextDouble() <= reinforcement.getHealth()) {
             Location location = reinforcement.getBlock().getLocation();
-            location.getWorld().dropItem(location, reinforcement.getMaterial().getRequiredMaterials());
+	    ReinforcementMaterial material = reinforcement.getMaterial();
+            location.getWorld().dropItem(location, material.getRequiredMaterials());
         }
         return reinforcement.isSecurable();
     }

@@ -26,7 +26,7 @@ public class ReinforceCommand extends PlayerCommand {
 	public ReinforceCommand() {
 		super("Reinforce Mode");
 		setDescription("Toggles reinforce mode");
-		setUsage("/ctreinforce §8[security-level] [group-name]");
+		setUsage("/ctreinforce Â§8[security-level] [group-name]");
 		setArgumentRange(0, 2);
 		setIdentifiers(new String[] {"ctreinforce", "ctr"});
 	}
@@ -45,8 +45,8 @@ public class ReinforceCommand extends PlayerCommand {
 		}
 		if(secLevel != null && secLevel.equalsIgnoreCase("group")){
 			if(groupName == null || groupName.isEmpty() || groupName.equals("")){
-				sender.sendMessage(new StringBuilder().append("§cYou must specify a group in group reinforce mode").toString());
-				sender.sendMessage(new StringBuilder().append("§cUsage:§e ").append("/ctreinforce §8group <group-name>").toString());
+				sender.sendMessage(new StringBuilder().append("Â§cYou must specify a group in group reinforce mode").toString());
+				sender.sendMessage(new StringBuilder().append("Â§cUsage:Â§e ").append("/ctreinforce Â§8group <group-name>").toString());
 				return true;
 			}
 			GroupManager groupManager = Citadel.getGroupManager();

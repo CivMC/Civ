@@ -15,7 +15,7 @@ public class GroupInfoCommand extends PlayerCommand {
 	public GroupInfoCommand() {
 		super("Group Information");
 		setDescription("Displays information about a group");
-		setUsage("/ctgroupinfo §8<group-name>");
+		setUsage("/ctgroupinfo Â§8<group-name>");
 		setArgumentRange(1,1);
 		setIdentifiers(new String[] {"ctgroupinfo", "ctgi"});
 	}
@@ -33,20 +33,20 @@ public class GroupInfoCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "Invalid permission to access this group");
 			return true;
 		}
-		sender.sendMessage(new StringBuilder().append("§cGroup Name:§e ").append(groupName).toString());
-		sender.sendMessage(new StringBuilder().append("§cOwner:§e ").append(group.getFounder()).toString());
-		sender.sendMessage(new StringBuilder().append("§cModerators:§e ").append(groupManager.getModeratorsOfGroup(groupName).size()).toString());
-		sender.sendMessage(new StringBuilder().append("§cMembers:§e ").append(groupManager.getMembersOfGroup(groupName).size()).toString());
+		sender.sendMessage(new StringBuilder().append("Â§cGroup Name:Â§e ").append(groupName).toString());
+		sender.sendMessage(new StringBuilder().append("Â§cOwner:Â§e ").append(group.getFounder()).toString());
+		sender.sendMessage(new StringBuilder().append("Â§cModerators:Â§e ").append(groupManager.getModeratorsOfGroup(groupName).size()).toString());
+		sender.sendMessage(new StringBuilder().append("Â§cMembers:Â§e ").append(groupManager.getMembersOfGroup(groupName).size()).toString());
 		if(group.isFounder(senderName) || group.isModerator(senderName)){
 			String password = group.getPassword();
-			sender.sendMessage(new StringBuilder().append("§cPassword:§e ").append(password).toString());
+			sender.sendMessage(new StringBuilder().append("Â§cPassword:Â§e ").append(password).toString());
 			String joinable = "";
 			if(password != null && !password.equalsIgnoreCase("null")){
 				joinable = "Yes";
 			} else {
 				joinable = "No";
 			}
-			sender.sendMessage(new StringBuilder().append("§cJoinable:§e ").append(joinable).toString());
+			sender.sendMessage(new StringBuilder().append("Â§cJoinable:Â§e ").append(joinable).toString());
 		}
 		return true;
 	}

@@ -1,6 +1,7 @@
 package com.untamedears.citadel.entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -25,10 +26,12 @@ public class Reinforcement implements Comparable<Reinforcement> {
 
     public static final List<Integer> SECURABLE = new ArrayList<Integer>();
     public static final List<Integer> NON_REINFORCEABLE = new ArrayList<Integer>();
+    // HashMap<materialId, breakCount>
+    public static final HashMap<Integer, Integer> HARDENED_BREAK_COUNTS = new HashMap<Integer, Integer>();
 
     @Id private ReinforcementKey id;
 
-    private int materialId;
+    private Integer materialId;
     private int durability;
     private SecurityLevel securityLevel;
 
@@ -45,6 +48,14 @@ public class Reinforcement implements Comparable<Reinforcement> {
         this.durability = material.getStrength();
         this.owner = owner;
         this.securityLevel = securityLevel;
+    }
+
+    public Reinforcement(Block block, int breakCount) {
+        this.id = new ReinforcementKey(block);
+        this.materialId = null;
+        this.durability = breakCount;
+        this.owner = null;
+        this.securityLevel = SecurityLevel.GENERATED;
     }
 
     public ReinforcementKey getId() {
@@ -66,10 +77,13 @@ public class Reinforcement implements Comparable<Reinforcement> {
     }
 
     public ReinforcementMaterial getMaterial() {
+	if (materialId == null) {
+		return null;
+ 	}
         return ReinforcementMaterial.get(Material.getMaterial(materialId));
     }
     
-    public int getMaterialId() {
+    public Integer getMaterialId() {
         return materialId;
     }
     
@@ -144,6 +158,8 @@ public class Reinforcement implements Comparable<Reinforcement> {
                 return name.equals(owner.getFounder()) || owner.isMember(name) || owner.isModerator(name);
             case PUBLIC:
             	return true;
+	    case GENERATED:
+		return false;
         }
         return false;
     }
@@ -153,6 +169,8 @@ public class Reinforcement implements Comparable<Reinforcement> {
         switch (securityLevel) {
             case PRIVATE:
                 return name.equals(owner.getFounder());
+	    case GENERATED:
+		return false;
             default:
                 return name.equals(owner.getFounder()) || owner.isModerator(name);
         }

@@ -3,6 +3,7 @@ package com.untamedears.citadel;
 import java.util.LinkedHashMap;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import com.untamedears.citadel.entity.Reinforcement;
@@ -40,20 +41,52 @@ public class ConfigManager {
         }
         for (String name : config.getStringList("additionalSecurable")) {
             Material material = Material.matchMaterial(name);
-            if (material == null) {
-                Citadel.warning("Invalid additionalSecurable material " + name);
+            if (material != null) {
+            	Reinforcement.SECURABLE.add(material.getId());
             } else {
-                Reinforcement.SECURABLE.add(material.getId());
+            	try {
+            		Reinforcement.SECURABLE.add(Integer.parseInt(name));
+            	} catch (NumberFormatException e) {
+            		Citadel.warning("Invalid additionalSecurable material " + name);
+            	}
             }
         }
         for (String name : config.getStringList("nonReinforceable")) {
-            Material material = Material.matchMaterial(name);
-            if (material == null) {
-                Citadel.warning("Invalid nonReinforceable material " + name);
+        	Material material = Material.matchMaterial(name);
+            if (material != null) {
+            	Reinforcement.NON_REINFORCEABLE.add(material.getId());
             } else {
-                Reinforcement.NON_REINFORCEABLE.add(material.getId());
+            	try {
+            		Reinforcement.NON_REINFORCEABLE.add(Integer.parseInt(name));
+            	} catch (NumberFormatException e) {
+            		Citadel.warning("Invalid nonReinforceable material " + name);
+            	}
             }
         }
+	ConfigurationSection hardenedMaterials = config.getConfigurationSection("hardenedMaterials");
+	for (String materialName : hardenedMaterials.getKeys(false)) {
+	    int materialId = Integer.MIN_VALUE;
+            Material material = Material.matchMaterial(materialName);
+	    if (material != null) {
+	        materialId = material.getId();
+	    } else {
+	        try {
+		    materialId = Integer.parseInt(materialName);
+		} catch (NumberFormatException e) {
+                    Citadel.warning("Invalid hardenedMaterials material " + materialName);
+		}
+	    }
+	    if (materialId != Integer.MIN_VALUE) {
+		int breakCount = hardenedMaterials.getInt(materialName);
+		// .1 sec * 600 == 60 sec max to break the quickest blocks seems reasonable.
+		if (breakCount < 2 || breakCount > 600) {
+                    Citadel.warning("Invalid hardenedMaterials breakCount " +
+				    materialName + " " + Integer.toString(breakCount));
+		} else {
+                    Reinforcement.HARDENED_BREAK_COUNTS.put(materialId, breakCount);
+		}
+            }
+	}
 	}
 	
 	public double getRedstoneDistance(){
@@ -82,5 +115,13 @@ public class ConfigManager {
 	
 	public int getCacheMaxChunks(){
 		return this.cacheMaxChunks;
+	}
+
+	public int getMaterialBreakCount(int materialId){
+		Integer breakCount = Reinforcement.HARDENED_BREAK_COUNTS.get(materialId);
+		if (breakCount == null) {
+			return 1;
+		}
+		return (int)breakCount;
 	}
 }

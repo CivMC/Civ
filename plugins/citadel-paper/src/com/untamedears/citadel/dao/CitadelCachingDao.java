@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.entity.Reinforcement;
 import com.untamedears.citadel.entity.ReinforcementKey;
 
@@ -141,7 +142,9 @@ public class CitadelCachingDao extends CitadelDao{
             Reinforcement r = cache.floor( key );
             
             if( r != null && r.equals(key) ){
-                toSave.add(r);
+	        if (r.getSecurityLevel() != SecurityLevel.GENERATED){
+                    toSave.add(r);
+	        }
                 return r;
             }else{
                 return null;
@@ -175,10 +178,10 @@ public class CitadelCachingDao extends CitadelDao{
             toDelete.remove( r );
             if (toSave.contains(r)){
                 toSave.remove(r);
-                toSave.add( r );
-            }else{
+	    }
+	    if (r.getSecurityLevel() != SecurityLevel.GENERATED){
                 toSave.add(r);
-            }
+	    }
         }
         
         public void delete( Reinforcement r ){

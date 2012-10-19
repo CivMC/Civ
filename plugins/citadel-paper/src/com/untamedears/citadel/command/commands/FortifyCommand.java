@@ -27,7 +27,7 @@ public class FortifyCommand extends PlayerCommand {
 	public FortifyCommand() {
 		super("Fority Mode");
 		setDescription("Toggle fortification mode");
-		setUsage("/ctfortify §8[security-level]");
+		setUsage("/ctfortify Â§8[security-level]");
 		setArgumentRange(0, 2);
 		setIdentifiers(new String[] {"ctfortify", "ctf"});
 	}
@@ -46,8 +46,8 @@ public class FortifyCommand extends PlayerCommand {
 		}
 		if(secLevel != null && secLevel.equalsIgnoreCase("group")){
 			if(groupName == null || groupName.isEmpty() || groupName.equals("")){
-				sender.sendMessage(new StringBuilder().append("§cYou must specify a group in group fortification mode").toString());
-				sender.sendMessage(new StringBuilder().append("§cUsage:§e ").append("/ctfortify §8group <group-name>").toString());
+				sender.sendMessage(new StringBuilder().append("Â§cYou must specify a group in group fortification mode").toString());
+				sender.sendMessage(new StringBuilder().append("Â§cUsage:Â§e ").append("/ctfortify Â§8group <group-name>").toString());
 				return true;
 			}
 			GroupManager groupManager = Citadel.getGroupManager();

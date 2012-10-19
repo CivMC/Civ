@@ -22,7 +22,7 @@ public class DeleteCommand extends PlayerCommand {
 	public DeleteCommand() {
 		super("Delete group");
 		setDescription("Deletes a group");
-		setUsage("/ctdelete ง8<group-name>");
+		setUsage("/ctdelete ยง8<group-name>");
 		setArgumentRange(1,1);
 		setIdentifiers(new String[] {"ctdelete", "ctdel"});
 	}

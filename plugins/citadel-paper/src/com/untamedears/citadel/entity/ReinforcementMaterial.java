@@ -37,18 +37,38 @@ public class ReinforcementMaterial implements Comparable<ReinforcementMaterial> 
     private int flasherMaterialId;
     
     public ReinforcementMaterial(LinkedHashMap map) {
-        Material material = Material.getMaterial((String) map.get("name"));
-        if (material == null) {
-            throw new IllegalArgumentException("Supplied name value is not a valid material.");
-        }
-        materialId = material.getId();
+        // Materials may be specified by name or by integer value
+    	Material material;
+    	
+    	material = Material.matchMaterial(map.get("name").toString());
+        if (material != null) {
+        	materialId = material.getId();
+        } else {
+        	try {
+        		materialId = Integer.parseInt(map.get("name").toString()); // Non-existent (Forge) materials
+        	} catch(NumberFormatException e) {
+        		throw new IllegalArgumentException("Invalid reinforcement material.");
+        	}
+    	}
+    	
+        
         strength = (Integer) map.get("strength");
         requirements = (Integer) map.get("requirements");
-        material = Material.getMaterial((String) map.get("flasher"));
-        if (material == null || !material.isBlock()) {
-            throw new IllegalArgumentException("Supplied flasher value is not a valid block material.");
-        }
-        flasherMaterialId = material.getId();
+        
+        
+        material = Material.matchMaterial(map.get("flasher").toString());
+        if (material != null) {
+        	if(!material.isBlock()) {
+        		throw new IllegalArgumentException("Supplied flasher value is a non-block material.");
+        	}
+        	flasherMaterialId = material.getId();
+        } else {
+        	try {
+        		flasherMaterialId = Integer.parseInt((map.get("flasher").toString()));
+        	} catch(NumberFormatException e) {
+        		throw new IllegalArgumentException("Invalid flasher material.");
+        	}
+    	}
     }
 
     public ReinforcementMaterial(int materialId, int strength, int requirements, int flasherMaterialId) {

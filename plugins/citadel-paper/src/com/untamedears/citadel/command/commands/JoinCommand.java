@@ -21,7 +21,7 @@ public class JoinCommand extends PlayerCommand {
 	public JoinCommand() {
 		super("Join Group");
         setDescription("Joins a group");
-        setUsage("/ctjoin ง8<group-name> <password>");
+        setUsage("/ctjoin ยง8<group-name> <password>");
         setArgumentRange(2,2);
 		setIdentifiers(new String[] {"ctjoin", "ctj"});
 	}

@@ -28,7 +28,7 @@ public class MembersCommand extends PlayerCommand {
 	public MembersCommand() {
 		super("List Members");
 		setDescription("List the members of a group");
-		setUsage("/ctmembers ง8<group-name>");
+		setUsage("/ctmembers ยง8<group-name>");
 		setArgumentRange(1,1);
 		setIdentifiers(new String[] {"ctmembers", "ctm"});
 	}
