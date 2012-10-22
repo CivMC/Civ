@@ -29,7 +29,7 @@ public class MembersCommand extends PlayerCommand {
 		super("List Members");
 		setDescription("List the members of a group");
 		setUsage("/ctmembers §8<group-name>");
-		setArgumentRange(1,1);
+		setArgumentRange(1,2);
 		setIdentifiers(new String[] {"ctmembers", "ctm"});
 	}
 
@@ -52,9 +52,9 @@ public class MembersCommand extends PlayerCommand {
 			return true;
 		}
 		int page = 0;
-		if(args.length != 0){
+		if(args.length != 1){
 			try {
-				page = Integer.parseInt(args[0]) - 1;
+				page = Integer.parseInt(args[1]) - 1;
 			} catch (NumberFormatException ignored){
 				
 			}
