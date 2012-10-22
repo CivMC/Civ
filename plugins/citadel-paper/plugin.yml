@@ -1,6 +1,6 @@
 name: Citadel
 main: com.untamedears.citadel.Citadel
-version: 2.0
+version: 2.0.1
 description: Reinforce your structures!
 author: chrisrico, jonnyd (aka Gu3rr1lla)
 database: false
@@ -81,9 +81,11 @@ commands:
     description: Displays stats.
     usage: /ctstats
   ctgstats:
+    aliases: ctgst
     description: Displayers group statistics
     usage: /ctgstats <group-name>
   ctpstats:
+    aliases: ctpst
     description: Displayers player statistics
     usage: /ctpstats <player-name>
   ctleave:

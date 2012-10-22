@@ -25,6 +25,7 @@ import com.untamedears.citadel.command.commands.DisallowCommand;
 import com.untamedears.citadel.command.commands.FortifyCommand;
 import com.untamedears.citadel.command.commands.GroupCommand;
 import com.untamedears.citadel.command.commands.GroupInfoCommand;
+import com.untamedears.citadel.command.commands.GroupStatsCommand;
 import com.untamedears.citadel.command.commands.GroupsCommand;
 import com.untamedears.citadel.command.commands.InfoCommand;
 import com.untamedears.citadel.command.commands.JoinCommand;
@@ -35,6 +36,7 @@ import com.untamedears.citadel.command.commands.ModeratorsCommand;
 import com.untamedears.citadel.command.commands.NonReinforceableCommand;
 import com.untamedears.citadel.command.commands.OffCommand;
 import com.untamedears.citadel.command.commands.PasswordCommand;
+import com.untamedears.citadel.command.commands.PlayerStatsCommand;
 import com.untamedears.citadel.command.commands.PrivateCommand;
 import com.untamedears.citadel.command.commands.PublicCommand;
 import com.untamedears.citadel.command.commands.ReinforceCommand;
@@ -151,6 +153,8 @@ public class Citadel extends JavaPlugin {
         commandHandler.addCommand(new RemoveModCommand());
         commandHandler.addCommand(new SecurableCommand());
         commandHandler.addCommand(new StatsCommand());
+        commandHandler.addCommand(new GroupStatsCommand());
+        commandHandler.addCommand(new PlayerStatsCommand());
         commandHandler.addCommand(new TransferCommand());
         commandHandler.addCommand(new VersionCommand());
     }
