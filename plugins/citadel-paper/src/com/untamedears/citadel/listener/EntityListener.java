@@ -1,5 +1,6 @@
 package com.untamedears.citadel.listener;
 
+import static com.untamedears.citadel.Utility.explodeReinforcement;
 import static com.untamedears.citadel.Utility.maybeReinforcementDamaged;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class EntityListener implements Listener {
         while (iterator.hasNext()) {
             Block block = iterator.next();
             try {
-	            if (maybeReinforcementDamaged(block)) {
+	            if (explodeReinforcement(block)) {
 	                block.getDrops().clear();
 	                iterator.remove();
 	            }

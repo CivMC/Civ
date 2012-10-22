@@ -132,6 +132,17 @@ public class Utility {
         }
     }
 
+    public static boolean explodeReinforcement(Block block) {
+        AccessDelegate delegate = AccessDelegate.getDelegate(block);
+        IReinforcement reinforcement = delegate.getReinforcement();
+        if (reinforcement == null) {
+            return false;
+        } else if(reinforcement instanceof NaturalReinforcement) {
+            return reinforcementBroken(reinforcement);
+        }
+        return reinforcementDamaged(reinforcement);
+    }
+
     public static boolean maybeReinforcementDamaged(Block block) {
         AccessDelegate delegate = AccessDelegate.getDelegate(block);
         IReinforcement reinforcement = delegate.getReinforcement();
