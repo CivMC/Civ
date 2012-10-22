@@ -1,6 +1,6 @@
 package com.untamedears.citadel.listener;
 
-import static com.untamedears.citadel.Utility.createReinforcement;
+import static com.untamedears.citadel.Utility.createPlayerReinforcement;
 import static com.untamedears.citadel.Utility.maybeReinforcementDamaged;
 import static com.untamedears.citadel.Utility.sendMessage;
 
@@ -30,7 +30,8 @@ import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.Member;
 import com.untamedears.citadel.entity.PlayerState;
-import com.untamedears.citadel.entity.Reinforcement;
+import com.untamedears.citadel.entity.IReinforcement;
+import com.untamedears.citadel.entity.PlayerReinforcement;
 
 /**
  * Created by IntelliJ IDEA.
@@ -116,7 +117,11 @@ public class PlayerListener implements Listener {
 
         AccessDelegate accessDelegate = AccessDelegate.getDelegate(block);
         block = accessDelegate.getBlock();
-        Reinforcement reinforcement = accessDelegate.getReinforcement();
+        IReinforcement generic_reinforcement = accessDelegate.getReinforcement();
+        PlayerReinforcement reinforcement = null;
+        if (generic_reinforcement instanceof PlayerReinforcement) {
+            reinforcement = (PlayerReinforcement)generic_reinforcement;
+        }
 
         if (reinforcement != null
                 && reinforcement.isSecurable()
@@ -165,7 +170,7 @@ public class PlayerListener implements Listener {
             default:
                 // player is in reinforcement mode
                 if (reinforcement == null) {
-                    createReinforcement(player, block);
+                    createPlayerReinforcement(player, block);
                 } else if (reinforcement.isBypassable(player)) {
                 	boolean update = false;
                 	String message = "";

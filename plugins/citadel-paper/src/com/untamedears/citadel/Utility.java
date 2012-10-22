@@ -21,7 +21,9 @@ import org.bukkit.material.Wool;
 import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.PlayerState;
-import com.untamedears.citadel.entity.Reinforcement;
+import com.untamedears.citadel.entity.IReinforcement;
+import com.untamedears.citadel.entity.NaturalReinforcement;
+import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.entity.ReinforcementMaterial;
 
 /**
@@ -53,8 +55,19 @@ public class Utility {
         return null;
     }
 
-    public static Reinforcement createReinforcement(Player player, Block block) {
-        if (Reinforcement.NON_REINFORCEABLE.contains(block.getTypeId())) return null;
+    public static IReinforcement createNaturalReinforcement(Block block) {
+        Material material = block.getType();
+        int breakCount = Citadel.getConfigManager().getMaterialBreakCount(material.getId());
+        if (breakCount <= 1) {
+            return null;
+        }
+        NaturalReinforcement nr = new NaturalReinforcement(block, breakCount);
+        Citadel.getReinforcementManager().addReinforcement(nr);
+        return nr;
+    }
+
+    public static IReinforcement createPlayerReinforcement(Player player, Block block) {
+        if (PlayerReinforcement.NON_REINFORCEABLE.contains(block.getTypeId())) return null;
 
         PlayerState state = PlayerState.get(player);
         ReinforcementMaterial material;
@@ -88,7 +101,7 @@ public class Utility {
             player.getInventory().removeItem(material.getRequiredMaterials());
             //TODO: there will eventually be a better way to flush inventory changes to the client
             player.updateInventory();
-            Reinforcement reinforcement = new Reinforcement(block, material, group, state.getSecurityLevel());
+            PlayerReinforcement reinforcement = new PlayerReinforcement(block, material, group, state.getSecurityLevel());
             Citadel.getReinforcementManager().addReinforcement(reinforcement);
             String securityLevelText = state.getSecurityLevel().name();
             if(securityLevelText.equalsIgnoreCase("group")){
@@ -121,37 +134,40 @@ public class Utility {
 
     public static boolean maybeReinforcementDamaged(Block block) {
         AccessDelegate delegate = AccessDelegate.getDelegate(block);
-        Reinforcement reinforcement = delegate.getReinforcement();
+        IReinforcement reinforcement = delegate.getReinforcement();
         return reinforcement != null && reinforcementDamaged(reinforcement);
     }
 
-    public static boolean reinforcementDamaged(Reinforcement reinforcement) {
+    public static boolean reinforcementDamaged(IReinforcement reinforcement) {
         reinforcement.setDurability(reinforcement.getDurability() - 1);
         boolean cancelled = reinforcement.getDurability() > 0;
         if (reinforcement.getDurability() <= 0) {
             cancelled = reinforcementBroken(reinforcement);
         } else {
-            Citadel.info("Reinforcement damaged %s at " + reinforcement.getBlock().getLocation().toString());
+            if (reinforcement instanceof PlayerReinforcement) {
+                Citadel.info("Reinforcement damaged at " + reinforcement.getBlock().getLocation().toString());
+            }
             Citadel.getReinforcementManager().addReinforcement(reinforcement);
         }
         return cancelled;
     }
 
-    public static boolean reinforcementBroken(Reinforcement reinforcement) {
-        Citadel.info("Reinforcement %s destroyed at " + reinforcement.getBlock().getLocation().toString());
-
+    public static boolean reinforcementBroken(IReinforcement reinforcement) {
         Citadel.getReinforcementManager().removeReinforcement(reinforcement);
-	if (reinforcement.getSecurityLevel() == SecurityLevel.GENERATED) {
-		return false;
-	}
-        if (rng.nextDouble() <= reinforcement.getHealth()) {
-            Location location = reinforcement.getBlock().getLocation();
-	    ReinforcementMaterial material = reinforcement.getMaterial();
-            location.getWorld().dropItem(location, material.getRequiredMaterials());
+        if (reinforcement instanceof PlayerReinforcement) {
+            PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+            Citadel.info("Reinforcement destroyed at " + pr.getBlock().getLocation().toString());
+
+            if (rng.nextDouble() <= pr.getHealth()) {
+                Location location = pr.getBlock().getLocation();
+    	        ReinforcementMaterial material = pr.getMaterial();
+                location.getWorld().dropItem(location, material.getRequiredMaterials());
+            }
+            return pr.isSecurable();
         }
-        return reinforcement.isSecurable();
+        return false;  // implicit isSecureable() == false
     }
-    
+
     public static SecurityLevel getSecurityLevel(String[] args, Player player) {
         if (args.length > 0) {
             try {

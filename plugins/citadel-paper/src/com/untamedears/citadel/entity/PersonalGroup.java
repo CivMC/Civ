@@ -16,7 +16,7 @@ public class PersonalGroup implements Serializable {
 	private static final long serialVersionUID = -5051617245015238200L;
 
 	@Id private String groupName;
-	@Id private String ownerName;
+	private String ownerName;
 	
 	public PersonalGroup(){}
 	

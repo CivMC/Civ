@@ -50,9 +50,12 @@ import com.untamedears.citadel.entity.FactionMember;
 import com.untamedears.citadel.entity.Member;
 import com.untamedears.citadel.entity.Moderator;
 import com.untamedears.citadel.entity.PersonalGroup;
-import com.untamedears.citadel.entity.Reinforcement;
+import com.untamedears.citadel.entity.IReinforcement;
+import com.untamedears.citadel.entity.NaturalReinforcement;
+import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.entity.ReinforcementKey;
 import com.untamedears.citadel.listener.BlockListener;
+import com.untamedears.citadel.listener.ChunkListener;
 import com.untamedears.citadel.listener.EntityListener;
 import com.untamedears.citadel.listener.PlayerListener;
 
@@ -83,6 +86,7 @@ public class Citadel extends JavaPlugin {
         dao.updateDatabase();
         setUpStorage();
         registerCommands();
+        // Events must register after dao is available
         registerEvents();
         for(Player player : getServer().getOnlinePlayers()){
             memberManager.addOnlinePlayer(player);
@@ -155,6 +159,7 @@ public class Citadel extends JavaPlugin {
         try {
             PluginManager pm = getServer().getPluginManager();
             pm.registerEvents(new BlockListener(), this);
+            pm.registerEvents(new ChunkListener(this.dao), this);
             pm.registerEvents(new PlayerListener(), this);
             pm.registerEvents(new EntityListener(), this);
         }
@@ -169,7 +174,7 @@ public class Citadel extends JavaPlugin {
         ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
         classes.add(Faction.class);
         classes.add(Member.class);
-        classes.add(Reinforcement.class);
+        classes.add(PlayerReinforcement.class);
         classes.add(ReinforcementKey.class);
         classes.add(FactionMember.class);
         classes.add(PersonalGroup.class);
@@ -242,10 +247,13 @@ public class Citadel extends JavaPlugin {
     
     public boolean playerCanAccessBlock(Block block, String name) {
         AccessDelegate accessDelegate = AccessDelegate.getDelegate(block);
-        Reinforcement reinforcement = accessDelegate.getReinforcement();
+        IReinforcement reinforcement = accessDelegate.getReinforcement();
         
     	if (reinforcement == null)
     		return true;
-    	return reinforcement.isAccessible(name);
+        if (reinforcement instanceof NaturalReinforcement)
+            return false;
+        PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+    	return pr.isAccessible(name);
     }
 }

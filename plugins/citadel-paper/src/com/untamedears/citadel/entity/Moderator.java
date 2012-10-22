@@ -2,6 +2,8 @@ package com.untamedears.citadel.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * User: JonnyD
@@ -10,10 +12,12 @@ import javax.persistence.Id;
  */
 
 @Entity
+@Table(name="moderator",  uniqueConstraints={
+		   @UniqueConstraint(columnNames={"faction_name", "member_name"})})
 public class Moderator {
 
-	@Id private String memberName;
-	@Id private String factionName;
+	private String memberName;
+	private String factionName;
 	
 	public Moderator(){}
 	

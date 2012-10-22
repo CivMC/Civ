@@ -6,7 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import com.untamedears.citadel.entity.Reinforcement;
+import com.untamedears.citadel.entity.NaturalReinforcement;
+import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.entity.ReinforcementMaterial;
 
 /**
@@ -42,10 +43,10 @@ public class ConfigManager {
         for (String name : config.getStringList("additionalSecurable")) {
             Material material = Material.matchMaterial(name);
             if (material != null) {
-            	Reinforcement.SECURABLE.add(material.getId());
+            	PlayerReinforcement.SECURABLE.add(material.getId());
             } else {
             	try {
-            		Reinforcement.SECURABLE.add(Integer.parseInt(name));
+            		PlayerReinforcement.SECURABLE.add(Integer.parseInt(name));
             	} catch (NumberFormatException e) {
             		Citadel.warning("Invalid additionalSecurable material " + name);
             	}
@@ -54,10 +55,10 @@ public class ConfigManager {
         for (String name : config.getStringList("nonReinforceable")) {
         	Material material = Material.matchMaterial(name);
             if (material != null) {
-            	Reinforcement.NON_REINFORCEABLE.add(material.getId());
+            	PlayerReinforcement.NON_REINFORCEABLE.add(material.getId());
             } else {
             	try {
-            		Reinforcement.NON_REINFORCEABLE.add(Integer.parseInt(name));
+            		PlayerReinforcement.NON_REINFORCEABLE.add(Integer.parseInt(name));
             	} catch (NumberFormatException e) {
             		Citadel.warning("Invalid nonReinforceable material " + name);
             	}
@@ -83,7 +84,7 @@ public class ConfigManager {
                     Citadel.warning("Invalid hardenedMaterials breakCount " +
 				    materialName + " " + Integer.toString(breakCount));
 		} else {
-                    Reinforcement.HARDENED_BREAK_COUNTS.put(materialId, breakCount);
+                    NaturalReinforcement.HARDENED_BREAK_COUNTS.put(materialId, breakCount);
 		}
             }
 	}
@@ -118,7 +119,7 @@ public class ConfigManager {
 	}
 
 	public int getMaterialBreakCount(int materialId){
-		Integer breakCount = Reinforcement.HARDENED_BREAK_COUNTS.get(materialId);
+		Integer breakCount = NaturalReinforcement.HARDENED_BREAK_COUNTS.get(materialId);
 		if (breakCount == null) {
 			return 1;
 		}
