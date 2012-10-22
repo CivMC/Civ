@@ -87,7 +87,6 @@ public final class CommandUtils {
 	
 	public static void printGroupMembers(CommandSender sender, String name) {
 		GroupManager groupManager = Citadel.getGroupManager();
-		MemberManager memberManager = Citadel.getMemberManager();
 		Faction group = groupManager.getGroup(name);
 		if (group != null) {
 			sender.sendMessage("Group name: "+name);

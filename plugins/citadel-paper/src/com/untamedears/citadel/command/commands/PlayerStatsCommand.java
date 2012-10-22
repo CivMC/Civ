@@ -29,7 +29,6 @@ public class PlayerStatsCommand extends PlayerCommand {
 			return false;
 		}
 		
-		ReinforcementManager reinforcementManager = Citadel.getReinforcementManager();
 		GroupManager groupManager = Citadel.getGroupManager();
 		Set<Faction> memberGroups = groupManager.getGroupsByMember(args[0]);
 		Set<Faction> moderatorGroups = groupManager.getGroupsByModerator(args[0]);
@@ -42,9 +41,14 @@ public class PlayerStatsCommand extends PlayerCommand {
 		if (memberGroups.size() > 0)
 			sender.sendMessage("Member of groups: "+CommandUtils.joinFactionSet(memberGroups));
 		
-		sender.sendMessage("Personal group reinforcements: ");
-		String personalGroupName = Citadel.getMemberManager().getMember(args[0]).getPersonalGroup().getName();
-		CommandUtils.printReinforcements(sender, args[0], CommandUtils.countReinforcements(personalGroupName));
+		Faction group = Citadel.getMemberManager().getMember(args[0]).getPersonalGroup();
+		if (group != null) {
+			String personalGroupName = group.getName();
+			sender.sendMessage("Personal group reinforcements: ");
+			CommandUtils.printReinforcements(sender, args[0], CommandUtils.countReinforcements(personalGroupName));
+		} else {
+			sender.sendMessage("Player has no personal group.");
+		}
 		
 		return false;
 	}
