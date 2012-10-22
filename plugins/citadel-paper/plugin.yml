@@ -80,6 +80,12 @@ commands:
   ctstats:
     description: Displays stats.
     usage: /ctstats
+  ctgstats:
+    description: Displayers group statistics
+    usage: /ctgstats <group-name>
+  ctpstats:
+    description: Displayers player statistics
+    usage: /ctpstats <player-name>
   ctleave:
     aliases: ctl
     description: Leave a group.
