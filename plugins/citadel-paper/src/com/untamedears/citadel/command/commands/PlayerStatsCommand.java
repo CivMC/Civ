@@ -42,11 +42,9 @@ public class PlayerStatsCommand extends PlayerCommand {
 		if (memberGroups.size() > 0)
 			sender.sendMessage("Member of groups: "+CommandUtils.joinFactionSet(memberGroups));
 		
-		sender.sendMessage("Person group has reinforcements: ");
+		sender.sendMessage("Personal group reinforcements: ");
 		String personalGroupName = Citadel.getMemberManager().getMember(args[0]).getPersonalGroup().getName();
 		CommandUtils.printReinforcements(sender, args[0], CommandUtils.countReinforcements(personalGroupName));
-		
-		
 		
 		return false;
 	}
