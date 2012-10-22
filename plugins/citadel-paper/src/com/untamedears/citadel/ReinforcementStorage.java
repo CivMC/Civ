@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 
 import com.untamedears.citadel.dao.CitadelDao;
-import com.untamedears.citadel.entity.Reinforcement;
+import com.untamedears.citadel.entity.IReinforcement;
 
 /**
  * User: JonnyD
@@ -21,23 +21,23 @@ public class ReinforcementStorage {
 		this.dao = dao;
 	}
 
-	public void addReinforcement(Reinforcement reinforcement){
+	public void addReinforcement(IReinforcement reinforcement){
 		this.dao.save(reinforcement);
 	}
 
-	public void removeReinforcement(Reinforcement reinforcement) {
+	public void removeReinforcement(IReinforcement reinforcement) {
 		this.dao.delete(reinforcement);
 	}
 	
-	public Reinforcement findReinforcement(Block block){
+	public IReinforcement findReinforcement(Block block){
 		return this.dao.findReinforcement(block);
 	}
 
-	public Reinforcement findReinforcement(Location location) {
+	public IReinforcement findReinforcement(Location location) {
 		return this.dao.findReinforcement(location);
 	}
 	
-	public Set<Reinforcement> findReinforcementsByGroup(String groupName){
+	public Set<IReinforcement> findReinforcementsByGroup(String groupName){
 		return this.dao.findReinforcementsByGroup(groupName);
 	}
 	

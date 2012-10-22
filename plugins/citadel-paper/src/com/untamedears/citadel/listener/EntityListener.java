@@ -20,7 +20,7 @@ import org.bukkit.event.world.StructureGrowEvent;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.ReinforcementManager;
-import com.untamedears.citadel.entity.Reinforcement;
+import com.untamedears.citadel.entity.IReinforcement;
 
 /**
  * Created by IntelliJ IDEA.
@@ -63,7 +63,7 @@ public class EntityListener implements Listener {
         if (type != EntityType.IRON_GOLEM && type != EntityType.SNOWMAN) return;
 
         for (Block block : getGolemBlocks(type, cse.getLocation().getBlock())) {
-            Reinforcement reinforcement = reinforcementManager.getReinforcement(block);
+            IReinforcement reinforcement = reinforcementManager.getReinforcement(block);
             if (reinforcement != null) {
             	Citadel.info("Reinforcement %s removed due to golem creation at " 
             			+ reinforcement.getBlock().getLocation().toString());
@@ -93,7 +93,7 @@ public class EntityListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void grow(StructureGrowEvent sge) {
     	ReinforcementManager reinforcementManager = Citadel.getReinforcementManager();
-        Reinforcement reinforcement = reinforcementManager.getReinforcement(sge.getLocation());
+        IReinforcement reinforcement = reinforcementManager.getReinforcement(sge.getLocation());
         if (reinforcement != null) {
         	Citadel.info("Reinforcement %s removed due to structure growth at " 
         			+ reinforcement.getBlock().getLocation().toString());

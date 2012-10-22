@@ -1,9 +1,11 @@
 package com.untamedears.citadel.dao;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.PersistenceException;
 
@@ -21,7 +23,8 @@ import com.untamedears.citadel.entity.FactionMember;
 import com.untamedears.citadel.entity.Member;
 import com.untamedears.citadel.entity.Moderator;
 import com.untamedears.citadel.entity.PersonalGroup;
-import com.untamedears.citadel.entity.Reinforcement;
+import com.untamedears.citadel.entity.IReinforcement;
+import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.entity.ReinforcementKey;
 
 /**
@@ -57,7 +60,10 @@ public class CitadelDao extends MyDatabase {
 
     @Override
     protected List<Class<?>> getDatabaseClasses() {
-        return Arrays.asList(Faction.class, Member.class, FactionMember.class, Reinforcement.class, ReinforcementKey.class, PersonalGroup.class, Moderator.class);
+        return Arrays.asList(
+                Faction.class, Member.class, FactionMember.class,
+                PlayerReinforcement.class, ReinforcementKey.class,
+                PersonalGroup.class, Moderator.class);
     }
 
     public void save(Object object) {
@@ -137,23 +143,27 @@ public class CitadelDao extends MyDatabase {
                 .findSet();
     }
     
-    public Set<Reinforcement> findReinforcementsByGroup(String groupName){
-    	return getDatabase().createQuery(Reinforcement.class, "find reinforcement where name = :groupName")
-    			.setParameter("groupName", groupName)
-    			.findSet();    	
+    public Set<IReinforcement> findReinforcementsByGroup(String groupName){
+        Set<PlayerReinforcement> result = getDatabase()
+            .createQuery(PlayerReinforcement.class, "find reinforcement where name = :groupName")
+    		.setParameter("groupName", groupName)
+    		.findSet();    	
+        return new TreeSet<IReinforcement>(result);
     }
     
-    public List<Reinforcement> findAllReinforcements(){
-    	return getDatabase().createQuery(Reinforcement.class, "find reinforcement")
-    			.findList();
+    public List<? extends IReinforcement> findAllReinforcements(){
+        List<PlayerReinforcement> result = getDatabase()
+            .createQuery(PlayerReinforcement.class, "find reinforcement")
+    		.findList();
+        return new ArrayList<IReinforcement>(result);
     }
 
-    public Reinforcement findReinforcement(Block block) {
+    public IReinforcement findReinforcement(Block block) {
         return findReinforcement(block.getLocation());
     }
 
-    public Reinforcement findReinforcement(Location location) {
-        return getDatabase().createQuery(Reinforcement.class, "find reinforcement where x = :x and y = :y and z = :z and world = :world")
+    public IReinforcement findReinforcement(Location location) {
+        return getDatabase().createQuery(PlayerReinforcement.class, "find reinforcement where x = :x and y = :y and z = :z and world = :world")
                 .setParameter("x", location.getX())
                 .setParameter("y", location.getY())
                 .setParameter("z", location.getZ())
@@ -161,19 +171,22 @@ public class CitadelDao extends MyDatabase {
                 .findUnique();
     }
     
-    public Set<Reinforcement> findReinforcementsInChunk(Chunk c){
+    public Set<IReinforcement> findReinforcementsInChunk(Chunk c){
     	//The minus ones are intentional.  Think about fenceposts if you aren't sure why.
     	Block minBlock = c.getBlock(0, 0, 0);
     	int xlo = minBlock.getX();
     	int zlo = minBlock.getZ();
-    	return getDatabase().createQuery(Reinforcement.class, "find reinforcement where x >= :xlo and x <= :xhi " +
-    			"and z >= :zlo and z <= :zhi and world = :world").
-    			setParameter("xlo", xlo).
-    			setParameter("xhi", xlo+CHUNK_SIZE-1).
-    			setParameter("zlo", zlo).
-    			setParameter("zhi", zlo+CHUNK_SIZE-1).
-    			setParameter("world", c.getWorld().getName()).
-    			findSet();
+    	Set<PlayerReinforcement> result = getDatabase()
+                .createQuery(
+                    PlayerReinforcement.class,
+                    "find reinforcement where x >= :xlo and x <= :xhi and z >= :zlo and z <= :zhi and world = :world")
+    			.setParameter("xlo", xlo)
+    			.setParameter("xhi", xlo+CHUNK_SIZE-1)
+    			.setParameter("zlo", zlo)
+    			.setParameter("zhi", zlo+CHUNK_SIZE-1)
+    			.setParameter("world", c.getWorld().getName())
+    			.findSet();
+        return new TreeSet<IReinforcement>(result);
     }
     
     public void moveReinforcements(String from, String target){

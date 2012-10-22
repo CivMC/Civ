@@ -1,6 +1,7 @@
 package com.untamedears.citadel.listener;
 
-import static com.untamedears.citadel.Utility.createReinforcement;
+import static com.untamedears.citadel.Utility.createNaturalReinforcement;
+import static com.untamedears.citadel.Utility.createPlayerReinforcement;
 import static com.untamedears.citadel.Utility.maybeReinforcementDamaged;
 import static com.untamedears.citadel.Utility.reinforcementBroken;
 import static com.untamedears.citadel.Utility.reinforcementDamaged;
@@ -39,7 +40,9 @@ import com.untamedears.citadel.PlacementMode;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.entity.PlayerState;
-import com.untamedears.citadel.entity.Reinforcement;
+import com.untamedears.citadel.entity.IReinforcement;
+import com.untamedears.citadel.entity.NaturalReinforcement;
+import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.entity.ReinforcementMaterial;
 
 public class BlockListener implements Listener {
@@ -68,7 +71,7 @@ public class BlockListener implements Listener {
         ReinforcementMaterial material = state.getReinforcementMaterial();
         ItemStack required = material.getRequiredMaterials();
         if (inventory.contains(material.getMaterial(), required.getAmount())) {
-            if (createReinforcement(player, block) == null) {
+            if (createPlayerReinforcement(player, block) == null) {
                 sendMessage(player, ChatColor.RED, "%s is not a reinforcible material", block.getType().name());
             } else {
             	state.checkResetMode();
@@ -86,26 +89,26 @@ public class BlockListener implements Listener {
         Player player = bbe.getPlayer();
 
         AccessDelegate delegate = AccessDelegate.getDelegate(block);
-        Reinforcement reinforcement = delegate.getReinforcement();
+        IReinforcement reinforcement = delegate.getReinforcement();
         if (reinforcement == null) {
-	    Material material = block.getType();
-	    int breakCount = Citadel.getConfigManager().getMaterialBreakCount(material.getId());
-	    if (breakCount <= 1) {
-	    	return;
+            reinforcement = createNaturalReinforcement(block);
+            if (reinforcement != null && reinforcementDamaged(reinforcement)) {
+                bbe.setCancelled(true);
+                block.getDrops().clear();
+            }
+	        return;
 	    }
-            reinforcement = new Reinforcement(block, breakCount);
-            Citadel.getReinforcementManager().addReinforcement(reinforcement);
-            bbe.setCancelled(reinforcementDamaged(reinforcement));
-            block.getDrops().clear();
-	    return;
-	}
 
-        PlayerState state = PlayerState.get(player);
-        if (state.isBypassMode() && reinforcement.isBypassable(player)) {
-			Citadel.info(player.getDisplayName() + " bypassed reinforcement %s at " 
-					+ reinforcement.getBlock().getLocation().toString());
-
-            bbe.setCancelled(reinforcementBroken(reinforcement));
+        if (reinforcement instanceof PlayerReinforcement) {
+            PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+            PlayerState state = PlayerState.get(player);
+            if (state.isBypassMode() && pr.isBypassable(player)) {
+		    	Citadel.info(player.getDisplayName() + " bypassed reinforcement %s at " 
+		    			+ pr.getBlock().getLocation().toString());
+                bbe.setCancelled(reinforcementBroken(reinforcement));
+            } else {
+                bbe.setCancelled(reinforcementDamaged(reinforcement));
+            }
         } else {
             bbe.setCancelled(reinforcementDamaged(reinforcement));
         }
@@ -138,7 +141,7 @@ public class BlockListener implements Listener {
 			}
 		
 			AccessDelegate delegate = AccessDelegate.getDelegate(block);
-			Reinforcement reinforcement = delegate.getReinforcement();
+			IReinforcement reinforcement = delegate.getReinforcement();
 		
 			if (reinforcement != null){
 				bpee.setCancelled(true);
@@ -166,7 +169,7 @@ public class BlockListener implements Listener {
 		Block moved = piston.getRelative(direction, 2);
 	
 		AccessDelegate delegate = AccessDelegate.getDelegate(moved);
-		Reinforcement reinforcement = delegate.getReinforcement();
+		IReinforcement reinforcement = delegate.getReinforcement();
 	
 		if (reinforcement != null) {
 			bpre.setCancelled(true);
@@ -233,8 +236,14 @@ public class BlockListener implements Listener {
         Openable openable = (Openable) block.getState().getData();
         if (openable.isOpen()) return;
         
-        Reinforcement reinforcement = Citadel.getReinforcementManager().getReinforcement(block);
-        if (reinforcement == null || reinforcement.getSecurityLevel() == SecurityLevel.PUBLIC) return;
+        IReinforcement generic_reinforcement = Citadel.getReinforcementManager().getReinforcement(block);
+        if (generic_reinforcement == null ||
+                !(generic_reinforcement instanceof PlayerReinforcement))
+            return;
+
+        PlayerReinforcement reinforcement = (PlayerReinforcement)generic_reinforcement;
+        if (reinforcement.getSecurityLevel() == SecurityLevel.PUBLIC)
+            return;
 
         //Set<Player> onlinePlayers = new HashSet<Player>(Citadel.getMemberManager().getOnlinePlayers());
         Player[] onlinePlayers = Citadel.getPlugin().getServer().getOnlinePlayers();

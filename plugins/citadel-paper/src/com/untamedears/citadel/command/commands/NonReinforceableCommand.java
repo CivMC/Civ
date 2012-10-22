@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.untamedears.citadel.command.PlayerCommand;
-import com.untamedears.citadel.entity.Reinforcement;
+import com.untamedears.citadel.entity.PlayerReinforcement;
 
 public class NonReinforceableCommand extends PlayerCommand {
 
@@ -19,10 +19,12 @@ public class NonReinforceableCommand extends PlayerCommand {
 	}
 
 	public boolean execute(CommandSender sender, String[] args) {
-		if (Reinforcement.NON_REINFORCEABLE.isEmpty()) {
+		if (PlayerReinforcement.NON_REINFORCEABLE.isEmpty()) {
              sendMessage(sender, ChatColor.YELLOW, "No blocks are non-reinforceable.");
          } else {
-             sendMessage(sender, ChatColor.GREEN, getTruncatedMaterialMessage("Non-reinforceable blocks: ", Reinforcement.NON_REINFORCEABLE));
+             sendMessage(
+                     sender, ChatColor.GREEN,
+                     getTruncatedMaterialMessage("Non-reinforceable blocks: ", PlayerReinforcement.NON_REINFORCEABLE));
          }
 		 return true;
 	}

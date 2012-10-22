@@ -5,7 +5,7 @@ import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
-import com.untamedears.citadel.entity.Reinforcement;
+import com.untamedears.citadel.entity.IReinforcement;
 
 /**
  * User: JonnyD
@@ -26,15 +26,15 @@ public class ReinforcementManager {
 		this.storage = storage;
 	}
 
-	public Reinforcement getReinforcement(Block block){
+	public IReinforcement getReinforcement(Block block){
 		return this.storage.findReinforcement(block);
 	}
 
-	public Reinforcement getReinforcement(Location location) {
+	public IReinforcement getReinforcement(Location location) {
 		return getReinforcement(location.getBlock());
 	}
 	
-	public Set<Reinforcement> getReinforcementsByGroup(String groupName){
+	public Set<IReinforcement> getReinforcementsByGroup(String groupName){
 		return this.storage.findReinforcementsByGroup(groupName);
 	}
 	
@@ -42,11 +42,11 @@ public class ReinforcementManager {
 		this.storage.moveReinforcements(from, target);
 	}
 	
-	public void addReinforcement(Reinforcement reinforcement){
+	public void addReinforcement(IReinforcement reinforcement){
 		this.storage.addReinforcement(reinforcement);
 	}
 	
-	public void removeReinforcement(Reinforcement reinforcement){
+	public void removeReinforcement(IReinforcement reinforcement){
 		this.storage.removeReinforcement(reinforcement);
 	}
 	

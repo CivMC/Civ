@@ -7,7 +7,7 @@ import org.bukkit.material.Door;
 import org.bukkit.material.MaterialData;
 
 import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.entity.Reinforcement;
+import com.untamedears.citadel.entity.IReinforcement;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,7 +40,7 @@ public abstract class AccessDelegate<T extends MaterialData> {
     
     protected Block block;
     protected T data;
-    protected Reinforcement reinforcement;
+    protected IReinforcement reinforcement;
 
     public AccessDelegate(Block block, T data) {
         this.block = block;
@@ -60,7 +60,7 @@ public abstract class AccessDelegate<T extends MaterialData> {
         return block;
     }
     
-    public Reinforcement getReinforcement() {
+    public IReinforcement getReinforcement() {
         if (reinforcement == null) reinforcement = Citadel.getReinforcementManager().getReinforcement(block);
         return reinforcement;
     }

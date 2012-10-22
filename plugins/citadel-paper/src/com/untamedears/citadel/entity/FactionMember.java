@@ -15,8 +15,8 @@ import javax.persistence.UniqueConstraint;
 @Table(name="faction_member",  uniqueConstraints={
 		   @UniqueConstraint(columnNames={"faction_name", "member_name"})})
 public class FactionMember {
-	@Id private String factionName;
-	@Id private String memberName;
+	private String factionName;
+	private String memberName;
 	
 	public FactionMember(){}
 	

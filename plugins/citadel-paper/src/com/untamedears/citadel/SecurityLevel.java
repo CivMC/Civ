@@ -14,8 +14,5 @@ public enum SecurityLevel {
     @EnumValue("1")
     PRIVATE,
     @EnumValue("2")
-    GROUP,
-    // Used when auto-generating a reinforcement in the world
-    @EnumValue("3")
-    GENERATED
+    GROUP
 }
