@@ -2,6 +2,8 @@ package com.untamedears.citadel.dao;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.TreeSet;
@@ -19,7 +21,11 @@ import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.entity.ReinforcementKey;
 
 public class CitadelCachingDao extends CitadelDao {
-    HashMap<Chunk, ChunkCache> cachesByChunk;
+    public static String MakeChunkId( Chunk chunk ) {
+        return String.format("%s.%d.%d", chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
+    }
+
+    HashMap<String, ChunkCache> cachesByChunkId;
     PriorityQueue<ChunkCache> cachesByTime;
 
     long maxAge;
@@ -28,25 +34,28 @@ public class CitadelCachingDao extends CitadelDao {
     public CitadelCachingDao(JavaPlugin plugin){
         super(plugin);
         cachesByTime = new PriorityQueue<ChunkCache>();
-        cachesByChunk = new HashMap<Chunk, ChunkCache>();
+        cachesByChunkId = new HashMap<String, ChunkCache>();
         maxAge = Citadel.getConfigManager().getCacheMaxAge();
         maxChunks = Citadel.getConfigManager().getCacheMaxChunks();
     }
 
     public ChunkCache getCacheOfBlock( Block block ) throws RefuseToPreventThrashingException {
-        ChunkCache cache = cachesByChunk.get( block.getChunk() );
+        String chunkId = MakeChunkId(block.getChunk());
+        ChunkCache cache = cachesByChunkId.get(chunkId);
 
         if( cache != null ){
             cachesByTime.remove(cache);
             cache.Access();
             cachesByTime.add(cache);
         }else{
+            int removeCount = Math.max(5, cachesByTime.size() - maxChunks + 1);
             ChunkCache last = cachesByTime.peek();
-            while (last != null && last.getLastAccessed() + maxAge < System.currentTimeMillis()) {
-                cachesByChunk.remove(last);
+            while (last != null && removeCount > 0 && last.getLastAccessed() + maxAge < System.currentTimeMillis()) {
+                cachesByChunkId.remove(last.getChunkId());
                 cachesByTime.poll();
                 last.flush();
                 last = cachesByTime.peek();
+                --removeCount;
             }
             if( cachesByTime.size() > maxChunks ){
                 // WARNING: This WILL cause NaturalReinforcements to NOT be saved and thus lost.
@@ -54,7 +63,7 @@ public class CitadelCachingDao extends CitadelDao {
                 throw new RefuseToPreventThrashingException();
             }
             cache = new ChunkCache( block.getChunk() );
-            cachesByChunk.put( block.getChunk() , cache );
+            cachesByChunkId.put( cache.getChunkId(), cache );
             cachesByTime.add( cache );
         }
         return cache;
@@ -114,35 +123,39 @@ public class CitadelCachingDao extends CitadelDao {
     public void shutDown(){
         while( !cachesByTime.isEmpty() ){
             ChunkCache cache = cachesByTime.poll();
-            cachesByChunk.remove(cache.getChunk());
+            cachesByChunkId.remove(cache.getChunkId());
             cache.flush();
         }
     }
 
     public void unloadChunk(Chunk chunk) {
-        ChunkCache cache = cachesByChunk.get(chunk);
+        // Flush any chunk data to the DB when the chunk unloads. Leave the
+        //  ChunkCache intact in case the chunk reloads before it is removed
+        //  from the ChunkCache cache.
+        String chunkId = MakeChunkId(chunk);
+        ChunkCache cache = cachesByChunkId.get(chunkId);
         if (cache != null) {
-            cachesByTime.remove(cache);
             cache.flush();
         }
-        cachesByChunk.remove(chunk);
+    }
+
+    private enum DBUpdateAction {
+        SAVE,
+        DELETE
     }
 
     private class ChunkCache implements
             Comparable<ChunkCache> {
-        TreeSet<PlayerReinforcement> toSave;//if RAM isn't a problem replace this with a HashSet.
-        TreeSet<PlayerReinforcement> toDelete;//if RAM isn't a problem replace this with a HashSet.
 
-        TreeSet<IReinforcement> cache;//if RAM isn't a problem replace this with a HashSet.
-
-        Chunk chunk;
-        long lastAccessed;
+        private HashMap<PlayerReinforcement, DBUpdateAction> dbUpdates;
+        private TreeSet<IReinforcement> cache;//if RAM isn't a problem replace this with a HashSet.
+        private String chunkId;
+        private long lastAccessed;
 
         public ChunkCache( Chunk chunk ){
-            this.chunk = chunk;
+            this.chunkId = CitadelCachingDao.MakeChunkId(chunk);
             cache = new TreeSet<IReinforcement>( findReinforcementsInChunk( chunk ));
-            toSave = new TreeSet<PlayerReinforcement>();
-            toDelete = new TreeSet<PlayerReinforcement>();
+            dbUpdates = new HashMap<PlayerReinforcement, DBUpdateAction>();
             lastAccessed = System.currentTimeMillis();
         }
 
@@ -160,7 +173,7 @@ public class CitadelCachingDao extends CitadelDao {
 
             if( r != null && r.equals(key) ){
                 if ( r instanceof PlayerReinforcement){
-                    toSave.add((PlayerReinforcement)r);
+                    dbUpdates.put((PlayerReinforcement)r, DBUpdateAction.SAVE);
     	        }
                 return r;
             }else{
@@ -189,46 +202,38 @@ public class CitadelCachingDao extends CitadelDao {
             }
 
             if ( r instanceof PlayerReinforcement){
-                PlayerReinforcement pr = (PlayerReinforcement)r;
-                toDelete.remove(pr);
-                if (toSave.contains(pr)){
-                    toSave.remove(pr);
-	            }
-                toSave.add(pr);
+                dbUpdates.put((PlayerReinforcement)r, DBUpdateAction.SAVE);
             }
         }
 
         public void delete( IReinforcement r ){
             cache.remove( r );
             if ( r instanceof PlayerReinforcement){
-                PlayerReinforcement pr = (PlayerReinforcement)r;
-                toSave.remove( pr );
-                toDelete.add( pr );//Don't need to replace, merely include if not there already, since there's only one way to do a deletion.
+                dbUpdates.put((PlayerReinforcement)r, DBUpdateAction.DELETE);
             }
         }
 
         public void flush(){
+            LinkedList<PlayerReinforcement> toSave = new LinkedList<PlayerReinforcement>();
+            LinkedList<PlayerReinforcement> toDelete = new LinkedList<PlayerReinforcement>();
+            for (Map.Entry<PlayerReinforcement, DBUpdateAction> entry : dbUpdates.entrySet()) {
+                if (entry.getValue() == DBUpdateAction.DELETE) {
+                    toDelete.add(entry.getKey());
+                } else {
+                    toSave.add(entry.getKey());
+                }
+            }
+            dbUpdates.clear();
             int saveSuccess = getDatabase().save(toSave);
             int deleteSuccess = getDatabase().delete(toDelete);
         }
-        
-        public Chunk getChunk(){
-            return chunk;
+
+        public String getChunkId(){
+            return chunkId;
         }
 
         public String toString(){
-            StringBuilder builder = new StringBuilder();
-            builder.append( "Cache at (");
-            builder.append( chunk.getX());
-            builder.append( ",");
-            builder.append( chunk.getZ());
-            builder.append( "), has ");
-            builder.append( toSave.size() );
-            builder.append( " unsaved saves and ");
-            builder.append( toDelete.size() );
-            builder.append( " unsaved deletions.");
-            
-            return builder.toString();
+            return String.format("Cache (%s) has %d unsaved reinforcements.", chunkId, dbUpdates.size());
         }
 
         public int compareTo(ChunkCache that) {
