@@ -19,6 +19,7 @@ import com.untamedears.citadel.command.CommandHandler;
 import com.untamedears.citadel.command.commands.AddModCommand;
 import com.untamedears.citadel.command.commands.AllowCommand;
 import com.untamedears.citadel.command.commands.BypassCommand;
+import com.untamedears.citadel.command.commands.ConsoleCommands;
 import com.untamedears.citadel.command.commands.CreateCommand;
 import com.untamedears.citadel.command.commands.DeleteCommand;
 import com.untamedears.citadel.command.commands.DisallowCommand;
@@ -128,6 +129,7 @@ public class Citadel extends JavaPlugin {
         commandHandler.addCommand(new AddModCommand());
         commandHandler.addCommand(new AllowCommand());
         commandHandler.addCommand(new BypassCommand());
+        commandHandler.addCommand(new ConsoleCommands());
         commandHandler.addCommand(new CreateCommand());
         commandHandler.addCommand(new DeleteCommand());
         commandHandler.addCommand(new DisallowCommand());

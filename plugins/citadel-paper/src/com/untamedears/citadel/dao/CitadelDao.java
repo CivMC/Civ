@@ -15,8 +15,11 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.avaje.ebean.LogLevel;
 import com.avaje.ebean.SqlRow;
 import com.avaje.ebean.SqlUpdate;
+import com.avaje.ebean.config.DataSourceConfig;
+import com.avaje.ebean.config.ServerConfig;
 import com.lennardf1989.bukkitex.MyDatabase;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionMember;
@@ -39,10 +42,16 @@ import com.untamedears.citadel.entity.ReinforcementKey;
 public class CitadelDao extends MyDatabase {
 	private static final int CHUNK_SIZE = 16;
 
+    private String sqlLogDirectory;
+    private boolean sqlEnableLog;
+    private boolean sqlLogToConsole;
+
     public CitadelDao(JavaPlugin plugin) {
         super(plugin);
 
         Configuration config = plugin.getConfig();
+        sqlLogDirectory = config.getString("database.logdirectory", "sql-logs");
+        sqlEnableLog = config.getBoolean("database.enablefilelog", false);
 
         initializeDatabase(
                 config.getString("database.driver"),
@@ -290,4 +299,13 @@ public class CitadelDao extends MyDatabase {
 			//column already exists
 		}
 	}
+
+    protected void prepareDatabaseAdditionalConfig(DataSourceConfig dataSourceConfig, ServerConfig serverConfig) {
+        serverConfig.setLoggingDirectory(sqlLogDirectory);
+        if (sqlEnableLog) {
+            serverConfig.setLoggingLevel(LogLevel.SQL);
+        } else {
+            serverConfig.setLoggingLevel(LogLevel.NONE);
+        }
+    }
 }

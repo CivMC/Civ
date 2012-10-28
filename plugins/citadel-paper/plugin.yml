@@ -112,3 +112,6 @@ commands:
     aliases: ctgi
     description: Displays information about a group.
     usage: /ctgroupinfo (or /ctgi) <group-name>
+  ctcon:
+    description: Restricted.
+    usage: /ctcon
