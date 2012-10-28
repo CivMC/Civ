@@ -24,7 +24,6 @@ public class ChunkListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void chunkUnload(ChunkUnloadEvent cue) {
         Chunk chunk = cue.getChunk();
-		Citadel.info("Chunk unloading: " + chunk.toString());
         this.cdao_.unloadChunk(chunk);
     }
 }

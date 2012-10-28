@@ -67,7 +67,9 @@ public class Utility {
     }
 
     public static IReinforcement createPlayerReinforcement(Player player, Block block) {
-        if (PlayerReinforcement.NON_REINFORCEABLE.contains(block.getTypeId())) return null;
+        int blockTypeId = block.getTypeId();
+        if (PlayerReinforcement.NON_REINFORCEABLE.contains(blockTypeId)) return null;
+        if (NaturalReinforcement.HARDENED_BREAK_COUNTS.containsKey(blockTypeId)) return null;
 
         PlayerState state = PlayerState.get(player);
         ReinforcementMaterial material;
