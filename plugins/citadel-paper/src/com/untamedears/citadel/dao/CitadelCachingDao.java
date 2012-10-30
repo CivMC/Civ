@@ -27,16 +27,29 @@ public class CitadelCachingDao extends CitadelDao {
 
     HashMap<String, ChunkCache> cachesByChunkId;
     PriorityQueue<ChunkCache> cachesByTime;
-
     long maxAge;
     int maxChunks;
-    
+    int counterChunkCacheLoads;
+    int counterChunkUnloads;
+    int counterChunkTimeouts;
+    int counterReinforcementsSaved;
+    int counterReinforcementsDeleted;
+    int counterCacheHits;
+    int counterPreventedThrashing;
+
     public CitadelCachingDao(JavaPlugin plugin){
         super(plugin);
         cachesByTime = new PriorityQueue<ChunkCache>();
         cachesByChunkId = new HashMap<String, ChunkCache>();
         maxAge = Citadel.getConfigManager().getCacheMaxAge();
         maxChunks = Citadel.getConfigManager().getCacheMaxChunks();
+        counterChunkCacheLoads = 0;
+        counterChunkUnloads = 0;
+        counterChunkTimeouts = 0;
+        counterReinforcementsSaved = 0;
+        counterReinforcementsDeleted = 0;
+        counterCacheHits = 0;
+        counterPreventedThrashing = 0;
     }
 
     public ChunkCache getCacheOfBlock( Block block ) throws RefuseToPreventThrashingException {
@@ -47,6 +60,7 @@ public class CitadelCachingDao extends CitadelDao {
             cachesByTime.remove(cache);
             cache.Access();
             cachesByTime.add(cache);
+            ++counterCacheHits;
         }else{
             int removeCount = Math.max(5, cachesByTime.size() - maxChunks + 1);
             ChunkCache last = cachesByTime.peek();
@@ -56,13 +70,16 @@ public class CitadelCachingDao extends CitadelDao {
                 last.flush();
                 last = cachesByTime.peek();
                 --removeCount;
+                ++counterChunkTimeouts;
             }
             if( cachesByTime.size() > maxChunks ){
                 // WARNING: This WILL cause NaturalReinforcements to NOT be saved and thus lost.
                 // TODO: Figure out why this needed to be added
+                ++counterPreventedThrashing;
                 throw new RefuseToPreventThrashingException();
             }
-            cache = new ChunkCache( block.getChunk() );
+            ++counterChunkCacheLoads;
+            cache = new ChunkCache( this, block.getChunk() );
             cachesByChunkId.put( cache.getChunkId(), cache );
             cachesByTime.add( cache );
         }
@@ -137,6 +154,15 @@ public class CitadelCachingDao extends CitadelDao {
         if (cache != null) {
             cache.flush();
         }
+        ++counterChunkUnloads;
+    }
+
+    public void addCounterReinforcementsSaved(int delta) {
+        counterReinforcementsSaved += delta;
+    }
+
+    public void addCounterReinforcementsDeleted(int delta) {
+        counterReinforcementsDeleted += delta;
     }
 
     private enum DBUpdateAction {
@@ -146,13 +172,14 @@ public class CitadelCachingDao extends CitadelDao {
 
     private class ChunkCache implements
             Comparable<ChunkCache> {
-
+        private CitadelCachingDao dao;
         private HashMap<PlayerReinforcement, DBUpdateAction> dbUpdates;
         private TreeSet<IReinforcement> cache;//if RAM isn't a problem replace this with a HashSet.
         private String chunkId;
         private long lastAccessed;
 
-        public ChunkCache( Chunk chunk ){
+        public ChunkCache( CitadelCachingDao dao, Chunk chunk ){
+            this.dao = dao;
             this.chunkId = CitadelCachingDao.MakeChunkId(chunk);
             cache = new TreeSet<IReinforcement>( findReinforcementsInChunk( chunk ));
             dbUpdates = new HashMap<PlayerReinforcement, DBUpdateAction>();
@@ -224,6 +251,8 @@ public class CitadelCachingDao extends CitadelDao {
                 }
             }
             dbUpdates.clear();
+            dao.addCounterReinforcementsSaved(toSave.size());
+            dao.addCounterReinforcementsDeleted(toDelete.size());
             int saveSuccess = getDatabase().save(toSave);
             int deleteSuccess = getDatabase().delete(toDelete);
         }
