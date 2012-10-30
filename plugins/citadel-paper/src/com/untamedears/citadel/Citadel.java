@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.craftbukkit.command.ColouredConsoleSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -99,6 +101,8 @@ public class Citadel extends JavaPlugin {
             // Failed to submit the stats :-(
             System.out.println("failed");
         }
+        ConsoleCommandSender console = ColouredConsoleSender.getInstance();
+        console.addAttachment(this, "citadel.console", true);
         log.info("[Citadel] Citadel is now enabled.");
     }
 
