@@ -44,7 +44,6 @@ public class CitadelDao extends MyDatabase {
 
     private String sqlLogDirectory;
     private boolean sqlEnableLog;
-    private boolean sqlLogToConsole;
 
     public CitadelDao(JavaPlugin plugin) {
         super(plugin);
@@ -301,11 +300,9 @@ public class CitadelDao extends MyDatabase {
 	}
 
     protected void prepareDatabaseAdditionalConfig(DataSourceConfig dataSourceConfig, ServerConfig serverConfig) {
-        serverConfig.setLoggingDirectory(sqlLogDirectory);
         if (sqlEnableLog) {
             serverConfig.setLoggingLevel(LogLevel.SQL);
-        } else {
-            serverConfig.setLoggingLevel(LogLevel.NONE);
+            serverConfig.setLoggingDirectory(sqlLogDirectory);
         }
     }
 }
