@@ -57,7 +57,9 @@ public class Utility {
 
     public static IReinforcement createNaturalReinforcement(Block block) {
         Material material = block.getType();
-        int breakCount = Citadel.getConfigManager().getMaterialBreakCount(material.getId());
+        int breakCount = Citadel
+            .getConfigManager()
+            .getMaterialBreakCount(material.getId(), block.getY());
         if (breakCount <= 1) {
             return null;
         }
@@ -69,7 +71,7 @@ public class Utility {
     public static IReinforcement createPlayerReinforcement(Player player, Block block) {
         int blockTypeId = block.getTypeId();
         if (PlayerReinforcement.NON_REINFORCEABLE.contains(blockTypeId)) return null;
-        if (NaturalReinforcement.HARDENED_BREAK_COUNTS.containsKey(blockTypeId)) return null;
+        if (NaturalReinforcement.CONFIGURATION.containsKey(blockTypeId)) return null;
 
         PlayerState state = PlayerState.get(player);
         ReinforcementMaterial material;
