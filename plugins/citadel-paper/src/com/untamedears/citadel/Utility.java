@@ -112,6 +112,8 @@ public class Utility {
             	securityLevelText = securityLevelText + "-" + state.getFaction().getName();
             }
             sendThrottledMessage(player, ChatColor.GREEN, "Reinforced with %s at security level %s", material.getMaterial().name(), securityLevelText);
+            Citadel.warning(String.format("PlRein:%s:%d@%s,%d,%d,%d",
+                player.getName(), material.getMaterialId(), block.getWorld().getName(), block.getX(), block.getY(), block.getZ()));
             // TODO: enable chained flashers, they're pretty cool
             //new BlockFlasher(block, material.getFlasher()).start(getPlugin());
             //new BlockFlasher(block, material.getFlasher()).chain(securityMaterial.get(state.getSecurityLevel())).start();
