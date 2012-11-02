@@ -65,12 +65,12 @@ public class ConfigManager {
             	}
             }
         }
-        ConfigurationSection hardenedMaterials =
-            config.getConfigurationSection("hardenedMaterials");
-        if (hardenedMaterials != null) {
-            for (String materialName : hardenedMaterials.getKeys(false)) {
+        ConfigurationSection naturalReinforcements =
+            config.getConfigurationSection("naturalReinforcements");
+        if (naturalReinforcements != null) {
+            for (String materialName : naturalReinforcements.getKeys(false)) {
                 ConfigurationSection materialConfig =
-                    hardenedMaterials.getConfigurationSection(materialName);
+                    naturalReinforcements.getConfigurationSection(materialName);
                 if (materialConfig == null) {
                     Citadel.warning("Misconfigured Natural Reinforcement: " + materialName);
                     continue;
