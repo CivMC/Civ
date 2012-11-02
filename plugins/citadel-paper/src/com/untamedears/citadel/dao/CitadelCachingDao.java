@@ -28,21 +28,21 @@ public class CitadelCachingDao extends CitadelDao {
     HashMap<String, ChunkCache> cachesByChunkId;
     PriorityQueue<ChunkCache> cachesByTime;
     long maxAge;
-    int maxChunks;
-    int counterChunkCacheLoads;
-    int counterChunkUnloads;
-    int counterChunkTimeouts;
-    int counterReinforcementsSaved;
-    int counterReinforcementsDeleted;
-    int counterCacheHits;
+    long maxChunks;
+    long counterChunkCacheLoads;
+    long counterChunkUnloads;
+    long counterChunkTimeouts;
+    long counterReinforcementsSaved;
+    long counterReinforcementsDeleted;
+    long counterCacheHits;
     int counterPreventedThrashing;
 
     public CitadelCachingDao(JavaPlugin plugin){
         super(plugin);
         cachesByTime = new PriorityQueue<ChunkCache>();
         cachesByChunkId = new HashMap<String, ChunkCache>();
-        maxAge = Citadel.getConfigManager().getCacheMaxAge();
-        maxChunks = Citadel.getConfigManager().getCacheMaxChunks();
+        setMaxAge(Citadel.getConfigManager().getCacheMaxAge());
+        setMaxChunks(Citadel.getConfigManager().getCacheMaxChunks());
         counterChunkCacheLoads = 0;
         counterChunkUnloads = 0;
         counterChunkTimeouts = 0;
@@ -62,7 +62,7 @@ public class CitadelCachingDao extends CitadelDao {
             cachesByTime.add(cache);
             ++counterCacheHits;
         }else{
-            int removeCount = Math.max(5, cachesByTime.size() - maxChunks + 1);
+            long removeCount = Math.max(5, cachesByTime.size() - maxChunks + 1);
             ChunkCache last = cachesByTime.peek();
             while (last != null && removeCount > 0 && last.getLastAccessed() + maxAge < System.currentTimeMillis()) {
                 cachesByChunkId.remove(last.getChunkId());
@@ -84,6 +84,22 @@ public class CitadelCachingDao extends CitadelDao {
             cachesByTime.add( cache );
         }
         return cache;
+    }
+
+    public void ForceCacheFlush(int flushCount) {
+        // This is only forcing caches with pending updates to flush to DB. The
+        //  ChunkCaches will remain intact.
+        for (Map.Entry<String, ChunkCache> cursor : cachesByChunkId.entrySet()) {
+            ChunkCache cache = cursor.getValue();
+            if (cache.getTotalPendingCount() <= 0) {
+                continue;
+            }
+            cache.flush();
+            --flushCount;
+            if (flushCount <= 0) {
+                break;
+            }
+        }
     }
 
     @Override
@@ -157,12 +173,53 @@ public class CitadelCachingDao extends CitadelDao {
         ++counterChunkUnloads;
     }
 
+    public void setMaxAge(long age) {
+        if (age > 1000) {  // 1 sec minimum
+            maxAge = age;
+        }
+    }
+
+    public void setMaxChunks(int count) {
+        if (count > 0) {
+            maxChunks = count;
+        }
+    }
+
     public void addCounterReinforcementsSaved(int delta) {
         counterReinforcementsSaved += delta;
     }
 
     public void addCounterReinforcementsDeleted(int delta) {
         counterReinforcementsDeleted += delta;
+    }
+
+    public long getCounterChunkCacheLoads()  { return counterChunkCacheLoads; }
+    public long getCounterChunkUnloads()  { return counterChunkUnloads; }
+    public long getCounterChunkTimeouts()  { return counterChunkTimeouts; }
+    public long getCounterReinforcementsSaved()  { return counterReinforcementsSaved; }
+    public long getCounterReinforcementsDeleted()  { return counterReinforcementsDeleted; }
+    public long getCounterCacheHits()  { return counterCacheHits; }
+    public int getCounterPreventedThrashing()  { return counterPreventedThrashing; }
+    public int getChunkCacheSize()  { return cachesByChunkId.size(); }
+
+    public Map<String, Long> getPendingUpdateCounts() {
+        long totalCount = 0;
+        long saveCount = 0;
+        long deleteCount = 0;
+        for (Map.Entry<String, ChunkCache> cursor : cachesByChunkId.entrySet()) {
+            ChunkCache cache = cursor.getValue();
+            int total = cache.getTotalPendingCount();
+            int delete = cache.getPendingDeleteCount();
+            int save = total - delete;
+            saveCount += save;
+            deleteCount += delete;
+            totalCount += save + delete;
+        }
+        HashMap<String, Long> result = new HashMap<String, Long>();
+        result.put("TotalPending", totalCount);
+        result.put("PendingSaves", saveCount);
+        result.put("PendingDeletes", deleteCount);
+        return result;
     }
 
     private enum DBUpdateAction {
@@ -174,6 +231,7 @@ public class CitadelCachingDao extends CitadelDao {
             Comparable<ChunkCache> {
         private CitadelCachingDao dao;
         private HashMap<PlayerReinforcement, DBUpdateAction> dbUpdates;
+        private Set<PlayerReinforcement> freshRein = new TreeSet<PlayerReinforcement>();
         private TreeSet<IReinforcement> cache;//if RAM isn't a problem replace this with a HashSet.
         private String chunkId;
         private long lastAccessed;
@@ -215,7 +273,8 @@ public class CitadelCachingDao extends CitadelDao {
                 return;
             }
 
-            if( cache.contains(r) ){
+            boolean inCache = cache.contains(r);
+            if( inCache ){
                 //Yes, this makes sense.
                 //If we're editing the cache, then our new "r" will equal the old "r"
                 //because reinforements are compared by their ReinforcementKeys, and the
@@ -229,14 +288,26 @@ public class CitadelCachingDao extends CitadelDao {
             }
 
             if ( r instanceof PlayerReinforcement){
-                dbUpdates.put((PlayerReinforcement)r, DBUpdateAction.SAVE);
+                PlayerReinforcement pr = (PlayerReinforcement)r;
+                if (!inCache) {
+                    freshRein.add(pr);
+                }
+                dbUpdates.put(pr, DBUpdateAction.SAVE);
             }
         }
 
         public void delete( IReinforcement r ){
-            cache.remove( r );
-            if ( r instanceof PlayerReinforcement){
-                dbUpdates.put((PlayerReinforcement)r, DBUpdateAction.DELETE);
+            if( cache.contains(r) ){
+                cache.remove( r );
+                if ( r instanceof PlayerReinforcement){
+                    PlayerReinforcement pr = (PlayerReinforcement)r;
+                    if (freshRein.contains(pr)) {
+                        dbUpdates.remove(pr);
+                        freshRein.remove(pr);
+                    } else {
+                        dbUpdates.put(pr, DBUpdateAction.DELETE);
+                    }
+                }
             }
         }
 
@@ -246,15 +317,22 @@ public class CitadelCachingDao extends CitadelDao {
             for (Map.Entry<PlayerReinforcement, DBUpdateAction> entry : dbUpdates.entrySet()) {
                 if (entry.getValue() == DBUpdateAction.DELETE) {
                     toDelete.add(entry.getKey());
-                } else {
+                } else {  // SAVE
                     toSave.add(entry.getKey());
                 }
             }
             dbUpdates.clear();
-            dao.addCounterReinforcementsSaved(toSave.size());
-            dao.addCounterReinforcementsDeleted(toDelete.size());
-            int saveSuccess = getDatabase().save(toSave);
-            int deleteSuccess = getDatabase().delete(toDelete);
+            freshRein.clear();
+            int size = toSave.size();
+            if (size > 0) {
+                int saveSuccess = getDatabase().save(toSave);
+                dao.addCounterReinforcementsSaved(size);
+            }
+            size = toDelete.size();
+            if (size > 0) {
+                int deleteSuccess = getDatabase().delete(toDelete);
+                dao.addCounterReinforcementsDeleted(size);
+            }
         }
 
         public String getChunkId(){
@@ -263,6 +341,30 @@ public class CitadelCachingDao extends CitadelDao {
 
         public String toString(){
             return String.format("Cache (%s) has %d unsaved reinforcements.", chunkId, dbUpdates.size());
+        }
+
+        public int getTotalPendingCount() {
+            return dbUpdates.size();
+        }
+
+        public int getPendingSaveCount() {
+            int count = 0;
+            for (Map.Entry<PlayerReinforcement, DBUpdateAction> entry : dbUpdates.entrySet()) {
+                if (entry.getValue() == DBUpdateAction.SAVE) {
+                    ++count;
+                }
+            }
+            return count;
+        }
+
+        public int getPendingDeleteCount() {
+            int count = 0;
+            for (Map.Entry<PlayerReinforcement, DBUpdateAction> entry : dbUpdates.entrySet()) {
+                if (entry.getValue() == DBUpdateAction.DELETE) {
+                    ++count;
+                }
+            }
+            return count;
         }
 
         public int compareTo(ChunkCache that) {

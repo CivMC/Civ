@@ -2,6 +2,8 @@ package com.untamedears.citadel.command.commands;
 
 import static com.untamedears.citadel.Utility.sendMessage;
 
+import java.util.Map;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -9,6 +11,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.ConfigManager;
 import com.untamedears.citadel.command.ConsoleCommand;
+import com.untamedears.citadel.dao.CitadelDao;
+import com.untamedears.citadel.dao.CitadelCachingDao;
 
 public class ConsoleCommands extends ConsoleCommand {
     public ConsoleCommands() {
@@ -28,7 +32,13 @@ public class ConsoleCommands extends ConsoleCommand {
             return GetConfig((ConsoleCommandSender)sender, args);
         } else if (command.equalsIgnoreCase("setconfig")) {
             return SetConfig((ConsoleCommandSender)sender, args);
-        }
+        } else if (command.equalsIgnoreCase("daocachestats")) {
+            return GetDaoCacheStats((ConsoleCommandSender)sender, args);
+        } else if (command.equalsIgnoreCase("daocachestatsslow")) {
+            return GetSlowDaoCacheStats((ConsoleCommandSender)sender, args);
+        } else if (command.equalsIgnoreCase("forcecacheflush")) {
+            return ForceCacheFlush((ConsoleCommandSender)sender, args);
+        } 
         return false;
     }
 
@@ -92,10 +102,20 @@ public class ConsoleCommands extends ConsoleCommand {
                 cm.setGroupsAllowed(Integer.parseInt(value));
 
             } else if (settingName.equalsIgnoreCase("cacheMaxAge")) {
-                cm.setCacheMaxAge(Long.parseLong(value));
+                long maxAge = Long.parseLong(value);
+                cm.setCacheMaxAge(maxAge);
+                CitadelDao std_dao = Citadel.getDao();
+                if (std_dao instanceof CitadelCachingDao) {
+                    ((CitadelCachingDao)std_dao).setMaxAge(maxAge);
+                }
 
             } else if (settingName.equalsIgnoreCase("cacheMaxChunks")) {
-                cm.setCacheMaxChunks(Integer.parseInt(value));
+                int maxChunks = Integer.parseInt(value);
+                cm.setCacheMaxChunks(maxChunks);
+                CitadelDao std_dao = Citadel.getDao();
+                if (std_dao instanceof CitadelCachingDao) {
+                    ((CitadelCachingDao)std_dao).setMaxChunks(maxChunks);
+                }
 
             } else {
                 sendMessage(sender, ChatColor.RED, "Unknown setting: " + settingName);
@@ -108,6 +128,63 @@ public class ConsoleCommands extends ConsoleCommand {
         if (success) {
             sendMessage(sender, ChatColor.GREEN, "Setting updated");
         }
+        return true;
+    }
+
+    public boolean GetDaoCacheStats(ConsoleCommandSender sender, String[] args) {
+        CitadelDao std_dao = Citadel.getDao();
+        if (!(std_dao instanceof CitadelCachingDao)) {
+            sendMessage(sender, ChatColor.RED, "Sorry, the Caching DAO is not being used.");
+            return true;
+        }
+        CitadelCachingDao dao = (CitadelCachingDao)std_dao;
+        sendMessage(sender, ChatColor.YELLOW, String.format(
+            "ChunkCacheSize = %d", dao.getChunkCacheSize()));
+        sendMessage(sender, ChatColor.YELLOW, String.format(
+            "ChunkCacheLoads = %d", dao.getCounterChunkCacheLoads()));
+        sendMessage(sender, ChatColor.YELLOW, String.format(
+            "CacheHits = %d", dao.getCounterCacheHits()));
+        sendMessage(sender, ChatColor.YELLOW, String.format(
+            "ChunkUnloads = %d", dao.getCounterChunkUnloads()));
+        sendMessage(sender, ChatColor.YELLOW, String.format(
+            "ChunkTimeouts = %d", dao.getCounterChunkTimeouts()));
+        sendMessage(sender, ChatColor.YELLOW, String.format(
+            "ReinforcementsSaved = %d", dao.getCounterReinforcementsSaved()));
+        sendMessage(sender, ChatColor.YELLOW, String.format(
+            "ReinforcementsDeleted = %d", dao.getCounterReinforcementsDeleted()));
+        sendMessage(sender, ChatColor.YELLOW, String.format(
+            "PreventedThrashing = %d", dao.getCounterPreventedThrashing()));
+        return true;
+    }
+
+    public boolean GetSlowDaoCacheStats(ConsoleCommandSender sender, String[] args) {
+        CitadelDao std_dao = Citadel.getDao();
+        if (!(std_dao instanceof CitadelCachingDao)) {
+            sendMessage(sender, ChatColor.RED, "Sorry, the Caching DAO is not being used.");
+            return true;
+        }
+        CitadelCachingDao dao = (CitadelCachingDao)std_dao;
+        Map<String, Long> stats = dao.getPendingUpdateCounts();
+        for (Map.Entry<String, Long> cursor : stats.entrySet()) {
+            sendMessage(sender, ChatColor.YELLOW, String.format(
+                        "%s = %d", cursor.getKey(), cursor.getValue()));
+        }
+        return true;
+    }
+
+    public boolean ForceCacheFlush(ConsoleCommandSender sender, String[] args) {
+        int flushCount = 5;
+        if (args.length >= 2) {
+            flushCount = Integer.parseInt(args[1]);
+        }
+        CitadelDao std_dao = Citadel.getDao();
+        if (!(std_dao instanceof CitadelCachingDao)) {
+            sendMessage(sender, ChatColor.RED, "Sorry, the Caching DAO is not being used.");
+            return true;
+        }
+        CitadelCachingDao dao = (CitadelCachingDao)std_dao;
+        dao.ForceCacheFlush(flushCount);
+        sendMessage(sender, ChatColor.YELLOW, "Flush complete.");
         return true;
     }
 }

@@ -268,4 +268,8 @@ public class Citadel extends JavaPlugin {
         PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
     	return pr.isAccessible(name);
     }
+
+    public static CitadelDao getDao() {
+        return (CitadelDao)dao;
+    }
 }
