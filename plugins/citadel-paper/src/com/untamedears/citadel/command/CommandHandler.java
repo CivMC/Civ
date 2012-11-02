@@ -6,8 +6,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.command.ConsoleCommand;
 
 /**
  * User: JonnyD
@@ -27,18 +29,24 @@ public class CommandHandler {
 	}
 	
 	public boolean dispatch(CommandSender sender, String label, String[] args){
+        boolean isConsoleSender = sender instanceof ConsoleCommandSender;
 		for(int argsIncluded = args.length; argsIncluded >= 0; argsIncluded--){
 			StringBuilder identifier = new StringBuilder(label);
 			for(int i = 0; i < argsIncluded; i++){
 				identifier.append(" ").append(args[i]);
 			}
-			
+
 			Command cmd = getCmdFromIdent(identifier.toString(), sender);
 			if(cmd == null){
 				continue;
 			}
+            boolean isConsoleCmd = cmd instanceof ConsoleCommand;
+            if (!isConsoleSender && isConsoleCmd) {
+                // Don't allow console commands to be run by Players.
+                return true;
+            }
 			String[] realArgs = (String[])Arrays.copyOfRange(args, argsIncluded, args.length);
-			
+
 			if(!cmd.isInProgress(sender)){
 				if((realArgs.length < cmd.getMinArguments()) || (realArgs.length > cmd.getMaxArguments())){
 					displayCommandHelp(cmd, sender);

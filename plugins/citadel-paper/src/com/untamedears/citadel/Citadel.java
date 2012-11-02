@@ -6,10 +6,13 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.Random;
 
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.craftbukkit.command.ColouredConsoleSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,6 +22,7 @@ import com.untamedears.citadel.command.CommandHandler;
 import com.untamedears.citadel.command.commands.AddModCommand;
 import com.untamedears.citadel.command.commands.AllowCommand;
 import com.untamedears.citadel.command.commands.BypassCommand;
+import com.untamedears.citadel.command.commands.ConsoleCommands;
 import com.untamedears.citadel.command.commands.CreateCommand;
 import com.untamedears.citadel.command.commands.DeleteCommand;
 import com.untamedears.citadel.command.commands.DisallowCommand;
@@ -74,6 +78,7 @@ public class Citadel extends JavaPlugin {
     private static final PersonalGroupManager personalGroupManager = new PersonalGroupManager();
     private static final MemberManager memberManager = new MemberManager();
     private static final ConfigManager configManager = new ConfigManager();
+    private static final Random randomGenerator = new Random();
     private static CitadelCachingDao dao;
     private static Citadel plugin;
     
@@ -100,6 +105,8 @@ public class Citadel extends JavaPlugin {
             // Failed to submit the stats :-(
             System.out.println("failed");
         }
+        ConsoleCommandSender console = ColouredConsoleSender.getInstance();
+        console.addAttachment(this, "citadel.console", true);
         log.info("[Citadel] Citadel is now enabled.");
     }
 
@@ -130,6 +137,7 @@ public class Citadel extends JavaPlugin {
         commandHandler.addCommand(new AddModCommand());
         commandHandler.addCommand(new AllowCommand());
         commandHandler.addCommand(new BypassCommand());
+        commandHandler.addCommand(new ConsoleCommands());
         commandHandler.addCommand(new CreateCommand());
         commandHandler.addCommand(new DeleteCommand());
         commandHandler.addCommand(new DisallowCommand());
@@ -222,6 +230,10 @@ public class Citadel extends JavaPlugin {
     
     public static Citadel getPlugin(){
         return plugin;
+    }
+
+    public static Random getRandom(){
+        return randomGenerator;
     }
     
     public static void printStackTrace(Throwable t)

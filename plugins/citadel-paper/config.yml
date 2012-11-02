@@ -44,9 +44,7 @@ nonReinforceable:
 - VINE
 - NETHER_WARTS
 - ENDER_PORTAL
-hardenedMaterials:
-  IRON_ORE: 3
-  DIAMOND_ORE: 10
+naturalReinforcements:
 database:
   driver: com.mysql.jdbc.Driver
   url: jdbc:mysql://localhost:3306/bukkit
@@ -55,6 +53,7 @@ database:
   isolation: SERIALIZABLE
   logging: false
   rebuild: false
+  enablefilelog: false
 caching:
   max_age: 300000
   max_chunks: 10000

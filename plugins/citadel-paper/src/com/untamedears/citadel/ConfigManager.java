@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import com.untamedears.citadel.NaturalReinforcementConfig;
 import com.untamedears.citadel.entity.NaturalReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.entity.ReinforcementMaterial;
@@ -64,65 +65,84 @@ public class ConfigManager {
             	}
             }
         }
-	ConfigurationSection hardenedMaterials = config.getConfigurationSection("hardenedMaterials");
-	for (String materialName : hardenedMaterials.getKeys(false)) {
-	    int materialId = Integer.MIN_VALUE;
-            Material material = Material.matchMaterial(materialName);
-	    if (material != null) {
-	        materialId = material.getId();
-	    } else {
-	        try {
-		    materialId = Integer.parseInt(materialName);
-		} catch (NumberFormatException e) {
-                    Citadel.warning("Invalid hardenedMaterials material " + materialName);
-		}
-	    }
-	    if (materialId != Integer.MIN_VALUE) {
-		int breakCount = hardenedMaterials.getInt(materialName);
-		// .1 sec * 600 == 60 sec max to break the quickest blocks seems reasonable.
-		if (breakCount < 2 || breakCount > 600) {
-                    Citadel.warning("Invalid hardenedMaterials breakCount " +
-				    materialName + " " + Integer.toString(breakCount));
-		} else {
-                    NaturalReinforcement.HARDENED_BREAK_COUNTS.put(materialId, breakCount);
-		}
+        ConfigurationSection naturalReinforcements =
+            config.getConfigurationSection("naturalReinforcements");
+        if (naturalReinforcements != null) {
+            for (String materialName : naturalReinforcements.getKeys(false)) {
+                ConfigurationSection materialConfig =
+                    naturalReinforcements.getConfigurationSection(materialName);
+                if (materialConfig == null) {
+                    Citadel.warning("Misconfigured Natural Reinforcement: " + materialName);
+                    continue;
+                }
+                NaturalReinforcementConfig natReinCfg = new NaturalReinforcementConfig(materialConfig);
+                NaturalReinforcement.CONFIGURATION.put(natReinCfg.getMaterialId(), natReinCfg);
             }
-	}
+        }
 	}
 	
 	public double getRedstoneDistance(){
 		return this.redstoneDistance;
 	}
 	
+	public void setRedstoneDistance(double rd){
+		this.redstoneDistance = rd;
+	}
+	
 	public int getAutoModeReset(){
 		return this.autoModeReset;
+	}
+	
+	public void setAutoModeReset(int amr){
+		this.autoModeReset = amr;
 	}
 	
 	public int getFlashLength(){
 		return this.flashLength;
 	}
 	
+	public void setFlashLength(int fl){
+		this.flashLength = fl;
+	}
+	
 	public int getGroupsAllowed(){
 		return this.groupsAllowed;
+	}
+	
+	public void setGroupsAllowed(int ga){
+		this.groupsAllowed = ga;
 	}
 	
 	public boolean getVerboseLogging(){
 		return this.verboseLogging;
 	}
 	
+	public void setVerboseLogging(boolean vl){
+		this.verboseLogging = vl;
+	}
+	
 	public long getCacheMaxAge(){
 		return this.cacheMaxAge;
+	}
+	
+	public void setCacheMaxAge(long cma){
+		this.cacheMaxAge = cma;
 	}
 	
 	public int getCacheMaxChunks(){
 		return this.cacheMaxChunks;
 	}
 
-	public int getMaterialBreakCount(int materialId){
-		Integer breakCount = NaturalReinforcement.HARDENED_BREAK_COUNTS.get(materialId);
-		if (breakCount == null) {
-			return 1;
-		}
-		return (int)breakCount;
+	public void setCacheMaxChunks(int cmc){
+		this.cacheMaxChunks = cmc;
 	}
+
+    public int getMaterialBreakCount(int materialId, int blockY){
+        NaturalReinforcementConfig natReinCfg =
+            NaturalReinforcement.CONFIGURATION.get(materialId);
+        if (natReinCfg == null) {
+            return 1;
+        }
+        return natReinCfg.generateDurability(blockY);
+    }
 }
