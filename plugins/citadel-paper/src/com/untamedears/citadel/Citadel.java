@@ -6,6 +6,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.Random;
 
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -75,6 +76,7 @@ public class Citadel extends JavaPlugin {
     private static final PersonalGroupManager personalGroupManager = new PersonalGroupManager();
     private static final MemberManager memberManager = new MemberManager();
     private static final ConfigManager configManager = new ConfigManager();
+    private static final Random randomGenerator = new Random();
     private static CitadelCachingDao dao;
     private static Citadel plugin;
     
@@ -224,6 +226,10 @@ public class Citadel extends JavaPlugin {
     
     public static Citadel getPlugin(){
         return plugin;
+    }
+
+    public static Random getRandom(){
+        return randomGenerator;
     }
     
     public static void printStackTrace(Throwable t)

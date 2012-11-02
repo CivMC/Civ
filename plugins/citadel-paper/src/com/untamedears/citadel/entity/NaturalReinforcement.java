@@ -5,12 +5,15 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 
+import com.untamedears.citadel.NaturalReinforcementConfig;
+
 /**
  * User: erocs
  */
 public class NaturalReinforcement implements IReinforcement {
     // HashMap<materialId, breakCount>
-    public static final HashMap<Integer, Integer> HARDENED_BREAK_COUNTS = new HashMap<Integer, Integer>();
+    public static final HashMap<Integer, NaturalReinforcementConfig> CONFIGURATION =
+        new HashMap<Integer, NaturalReinforcementConfig>();
 
     private ReinforcementKey id_;
     private int durability_;
