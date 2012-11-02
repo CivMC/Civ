@@ -140,9 +140,11 @@ public class Utility {
         AccessDelegate delegate = AccessDelegate.getDelegate(block);
         IReinforcement reinforcement = delegate.getReinforcement();
         if (reinforcement == null) {
+            reinforcement = (IReinforcement)createNaturalReinforcement(
+                    block);
+        }
+        if (reinforcement == null) {
             return false;
-        } else if(reinforcement instanceof NaturalReinforcement) {
-            return reinforcementBroken(reinforcement);
         }
         return reinforcementDamaged(reinforcement);
     }
