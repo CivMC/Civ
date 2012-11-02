@@ -44,7 +44,7 @@ nonReinforceable:
 - VINE
 - NETHER_WARTS
 - ENDER_PORTAL
-hardenedMaterials:
+naturalReinforcements:
 database:
   driver: com.mysql.jdbc.Driver
   url: jdbc:mysql://localhost:3306/bukkit
