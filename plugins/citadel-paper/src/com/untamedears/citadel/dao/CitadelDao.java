@@ -21,6 +21,7 @@ import com.avaje.ebean.SqlUpdate;
 import com.avaje.ebean.config.DataSourceConfig;
 import com.avaje.ebean.config.ServerConfig;
 import com.lennardf1989.bukkitex.MyDatabase;
+import com.untamedears.citadel.DbUpdateAction;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionMember;
 import com.untamedears.citadel.entity.Member;
@@ -74,8 +75,9 @@ public class CitadelDao extends MyDatabase {
                 PersonalGroup.class, Moderator.class);
     }
 
-    public void save(Object object) {
+    public Object save(Object object) {
         getDatabase().save(object);
+        return object;
     }
 
     public void delete(Object object) {
@@ -156,6 +158,9 @@ public class CitadelDao extends MyDatabase {
             .createQuery(PlayerReinforcement.class, "find reinforcement where name = :groupName")
     		.setParameter("groupName", groupName)
     		.findSet();    	
+        for (PlayerReinforcement pr : result) {
+            pr.setDbAction(DbUpdateAction.NONE);
+        }
         return new TreeSet<IReinforcement>(result);
     }
     
@@ -163,6 +168,9 @@ public class CitadelDao extends MyDatabase {
         List<PlayerReinforcement> result = getDatabase()
             .createQuery(PlayerReinforcement.class, "find reinforcement")
     		.findList();
+        for (PlayerReinforcement pr : result) {
+            pr.setDbAction(DbUpdateAction.NONE);
+        }
         return new ArrayList<IReinforcement>(result);
     }
 
@@ -194,6 +202,9 @@ public class CitadelDao extends MyDatabase {
     			.setParameter("zhi", zlo+CHUNK_SIZE-1)
     			.setParameter("world", c.getWorld().getName())
     			.findSet();
+        for (PlayerReinforcement pr : result) {
+            pr.setDbAction(DbUpdateAction.NONE);
+        }
         return new TreeSet<IReinforcement>(result);
     }
     
@@ -297,7 +308,15 @@ public class CitadelDao extends MyDatabase {
 		} catch(PersistenceException e){
 			//column already exists
 		}
-	}
+
+        try {
+            SqlUpdate addReinforcementVersion = getDatabase().createSqlUpdate(
+                "ALTER TABLE reinforcement ADD COLUMN version INT NOT NULL DEFAULT 0");
+            getDatabase().execute(addReinforcementVersion);
+        } catch(PersistenceException e){
+           	//column already exists
+        }
+    }
 
     protected void prepareDatabaseAdditionalConfig(DataSourceConfig dataSourceConfig, ServerConfig serverConfig) {
         if (sqlEnableLog) {

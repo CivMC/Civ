@@ -138,22 +138,7 @@ public class ConsoleCommands extends ConsoleCommand {
             return true;
         }
         CitadelCachingDao dao = (CitadelCachingDao)std_dao;
-        sendMessage(sender, ChatColor.YELLOW, String.format(
-            "ChunkCacheSize = %d", dao.getChunkCacheSize()));
-        sendMessage(sender, ChatColor.YELLOW, String.format(
-            "ChunkCacheLoads = %d", dao.getCounterChunkCacheLoads()));
-        sendMessage(sender, ChatColor.YELLOW, String.format(
-            "CacheHits = %d", dao.getCounterCacheHits()));
-        sendMessage(sender, ChatColor.YELLOW, String.format(
-            "ChunkUnloads = %d", dao.getCounterChunkUnloads()));
-        sendMessage(sender, ChatColor.YELLOW, String.format(
-            "ChunkTimeouts = %d", dao.getCounterChunkTimeouts()));
-        sendMessage(sender, ChatColor.YELLOW, String.format(
-            "ReinforcementsSaved = %d", dao.getCounterReinforcementsSaved()));
-        sendMessage(sender, ChatColor.YELLOW, String.format(
-            "ReinforcementsDeleted = %d", dao.getCounterReinforcementsDeleted()));
-        sendMessage(sender, ChatColor.YELLOW, String.format(
-            "PreventedThrashing = %d", dao.getCounterPreventedThrashing()));
+        sendMessage(sender, ChatColor.YELLOW, dao.formatCacheStats());
         return true;
     }
 
@@ -165,10 +150,12 @@ public class ConsoleCommands extends ConsoleCommand {
         }
         CitadelCachingDao dao = (CitadelCachingDao)std_dao;
         Map<String, Long> stats = dao.getPendingUpdateCounts();
+        StringBuilder sb = new StringBuilder();
+        sb.append("--- Cache Stats Slow ---\n");
         for (Map.Entry<String, Long> cursor : stats.entrySet()) {
-            sendMessage(sender, ChatColor.YELLOW, String.format(
-                        "%s = %d", cursor.getKey(), cursor.getValue()));
+            sb.append(String.format("%s = %d\n", cursor.getKey(), cursor.getValue()));
         }
+        sendMessage(sender, ChatColor.YELLOW, sb.toString());
         return true;
     }
 

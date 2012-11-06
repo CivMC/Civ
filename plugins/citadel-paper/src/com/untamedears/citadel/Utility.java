@@ -106,7 +106,7 @@ public class Utility {
             //TODO: there will eventually be a better way to flush inventory changes to the client
             player.updateInventory();
             PlayerReinforcement reinforcement = new PlayerReinforcement(block, material, group, state.getSecurityLevel());
-            Citadel.getReinforcementManager().addReinforcement(reinforcement);
+            reinforcement = (PlayerReinforcement)Citadel.getReinforcementManager().addReinforcement(reinforcement);
             String securityLevelText = state.getSecurityLevel().name();
             if(securityLevelText.equalsIgnoreCase("group")){
             	securityLevelText = securityLevelText + "-" + state.getFaction().getName();
