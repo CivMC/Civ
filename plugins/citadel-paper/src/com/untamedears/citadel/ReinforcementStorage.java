@@ -21,8 +21,8 @@ public class ReinforcementStorage {
 		this.dao = dao;
 	}
 
-	public void addReinforcement(IReinforcement reinforcement){
-		this.dao.save(reinforcement);
+	public IReinforcement addReinforcement(IReinforcement reinforcement){
+		return (IReinforcement)this.dao.save(reinforcement);
 	}
 
 	public void removeReinforcement(IReinforcement reinforcement) {

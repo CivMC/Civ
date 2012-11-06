@@ -3,11 +3,14 @@ package com.untamedears.citadel.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,6 +19,7 @@ import org.bukkit.block.ContainerBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Openable;
 
+import com.untamedears.citadel.DbUpdateAction;
 import com.untamedears.citadel.SecurityLevel;
 
 /**
@@ -33,12 +37,21 @@ public class PlayerReinforcement implements
     private int materialId;
     private int durability;
     private SecurityLevel securityLevel;
+    // @Transient == not persisted in the DB
+    @Transient private DbUpdateAction dbAction;
+
+    @Version
+    @Column(name="version")
+    private int dbRowVersion;  // Do not touch
 
     @ManyToOne
     @JoinColumn(name = "name")
     private Faction owner;
 
-    public PlayerReinforcement() {}
+
+    public PlayerReinforcement() {
+        this.dbAction = DbUpdateAction.NONE;
+    }
 
     public PlayerReinforcement(
 	        Block block,
@@ -50,10 +63,32 @@ public class PlayerReinforcement implements
         this.durability = material.getStrength();
         this.owner = owner;
         this.securityLevel = securityLevel;
+        this.dbAction = DbUpdateAction.INSERT;
+    }
+
+    private void flagForDbUpdate() {
+        if (getDbAction() == DbUpdateAction.NONE) {
+            setDbAction(DbUpdateAction.SAVE);
+        }
+    }
+
+    public void updateFrom(PlayerReinforcement that) {
+        setMaterialId(that.getMaterialId());
+        setDurability(that.getDurability());
+        setOwner(that.getOwner());
+        setSecurityLevel(that.getSecurityLevel());
+        if (getDbAction() == DbUpdateAction.DELETE) {
+            setDbAction(DbUpdateAction.SAVE);
+        }
     }
 
     public ReinforcementKey getId() { return id; }
     public void setId(ReinforcementKey id) { this.id = id; }
+
+    // Do not touch
+    public int getDbRowVersion() { return this.dbRowVersion; }
+    public void setDbRowVersion(int value) { this.dbRowVersion = value; }
+    // Do not touch
 
     public Block getBlock() {
         try {
@@ -75,6 +110,7 @@ public class PlayerReinforcement implements
     }
 
     public void setMaterialId(int materialId) {
+        flagForDbUpdate();
         this.materialId = materialId;
     }
 
@@ -83,6 +119,7 @@ public class PlayerReinforcement implements
     }
 
     public void setDurability(int durability) {
+        flagForDbUpdate();
         this.durability = durability;
     }
 
@@ -91,6 +128,7 @@ public class PlayerReinforcement implements
     }
 
     public void setSecurityLevel(SecurityLevel securityLevel) {
+        flagForDbUpdate();
         this.securityLevel = securityLevel;
     }
 
@@ -99,6 +137,7 @@ public class PlayerReinforcement implements
     }
 
     public void setOwner(Faction group) {
+        flagForDbUpdate();
         this.owner = group;
     }
 
@@ -166,12 +205,6 @@ public class PlayerReinforcement implements
                 || SECURABLE.contains(block.getTypeId());
     }
 
-    public IReinforcement clone(Block block) {
-        PlayerReinforcement clone = new PlayerReinforcement(block, getMaterial(), getOwner(), securityLevel);
-        clone.setDurability(durability);
-        return clone;
-    }
-
     @Override
     public String toString() {
         return String.format("%s, material: %s, durability: %d", id, getMaterial().getMaterial().name(), durability);
@@ -194,4 +227,7 @@ public class PlayerReinforcement implements
     public int hashCode() {
         return this.id.hashCode();
     }
+
+    public DbUpdateAction getDbAction() { return this.dbAction; }
+    public void setDbAction(DbUpdateAction value) { this.dbAction = value; }
 }

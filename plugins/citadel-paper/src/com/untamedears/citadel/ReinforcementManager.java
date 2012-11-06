@@ -42,8 +42,8 @@ public class ReinforcementManager {
 		this.storage.moveReinforcements(from, target);
 	}
 	
-	public void addReinforcement(IReinforcement reinforcement){
-		this.storage.addReinforcement(reinforcement);
+	public IReinforcement addReinforcement(IReinforcement reinforcement){
+		return this.storage.addReinforcement(reinforcement);
 	}
 	
 	public void removeReinforcement(IReinforcement reinforcement){

@@ -8,17 +8,74 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.avaje.ebean.EbeanServer;
+
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.DbUpdateAction;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.NaturalReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.entity.ReinforcementKey;
+
+// Wonderfully pleasent and happy thought section.
+//
+// Rules:
+// 1. If a PlayerReinforcement was created by the DB layer, it can't be
+//    deleted and MUST be reused for any updates to that reinforcement
+//    until it has been deleted from the DB.
+// 2. NaturalReinforcements cannot be saved to the DB (currently).
+//
+// Scenarios:
+// 1. Player hits a naturally reinforced block
+//   a. Reinforcement lookup returns null
+//   b. NaturalReinforcement created and decremeted
+//   c. Reinforcement inserted into the cache
+// 2. Player hits a damaged naturally reinforced block
+//   a. Reinforcement lookup returns the NaturalReinforcement
+//   b. Durability decremented by 1
+// 3. Player destroys a naturally reinforced block
+//   a. Reinforcement lookup returns the NaturalReinforcement
+//   b. Durability decremented to 0
+//   c. NaturalReinforcement deleted from the cache
+// 4. Player creates a reinforcement on a naturally reinforced block
+//   a. Utility.createPlayerReinforcement rejects the request and returns null
+// 5. Player creates a reinforcement on reinforced block
+//   a. Utility.createPlayerReinforcement rejects the request and returns null
+// 6. Player creates a reinforcement on normal block
+//   a. Utility.createPlayerReinforcement creates and returns reinforcement
+// 7. Player deletes via ctbypass a natural reinforcement
+//   a. BlockListener.blockBreak sees that its a natural reinforcement
+//   b. It only calls Utility.reinforcementDamaged and not Utility.reinforcementBroken.
+// 8. Player deletes an unmodified DB backed reinforcement
+//   a. Delete sees state is NONE thus it is stored in the DB
+//   b. Reinforcement DB state changed to DELETED
+//   c. Reinforcement moved into pendingDbUpdate
+//   d. Reinforcement removed from the cache
+// 9. Player deletes a modified DB backed reinforcement
+//   a. Delete sees state is SAVED thus it is stored in the DB
+//   b. Reinforcement DB state changed to DELETED
+//   c. Reinforcement is already in pendingDbUpdate
+//   d. Reinforcement removed from the cache
+// A. Player deletes an unsaved non-DB backed reinforcement
+//   a. Delete sees its state is INSERT thus it was not loaded from the DB and
+//      has no been saved to the DB yet
+//   b. Delete just removes it from the cache
+// B. Player creates a reinforcement on previously deleted reinforcement
+//   a. Prior reinforcement found in pendingDbUpdate with state DELETE
+//   b. Properties copied from the new into prior reinforcement
+//   c. State changed to SAVE
+//   d. Reinforcement removed from pendingDbUpdate and added to cache
+//   e. The prior reinforcement is returned while the new one is deleted
+// C. Player creates a natural reinforcement on previously deleted reinforcement
+//   a. Reinforcement not found in cache
+//   b. Natural reinforcement added to cache and returned
+
 
 public class CitadelCachingDao extends CitadelDao {
     public static String MakeChunkId( Chunk chunk ) {
@@ -35,6 +92,10 @@ public class CitadelCachingDao extends CitadelDao {
     long counterReinforcementsSaved;
     long counterReinforcementsDeleted;
     long counterCacheHits;
+    int counterAttemptedDbSaveRecoveries;
+    int counterAttemptedDbDeleteRecoveries;
+    int counterDbSaveFailures;
+    int counterDbDeleteFailures;
     int counterPreventedThrashing;
 
     public CitadelCachingDao(JavaPlugin plugin){
@@ -49,6 +110,10 @@ public class CitadelCachingDao extends CitadelDao {
         counterReinforcementsSaved = 0;
         counterReinforcementsDeleted = 0;
         counterCacheHits = 0;
+        counterAttemptedDbSaveRecoveries = 0;
+        counterAttemptedDbDeleteRecoveries = 0;
+        counterDbSaveFailures = 0;
+        counterDbDeleteFailures = 0;
         counterPreventedThrashing = 0;
     }
 
@@ -119,11 +184,11 @@ public class CitadelCachingDao extends CitadelDao {
     }
 
     @Override
-    public void save(Object o){
+    public Object save(Object o){
         if( o instanceof IReinforcement ){
             IReinforcement r = (IReinforcement)o;
             try{
-                getCacheOfBlock( r.getBlock() ).save( r );
+                return (Object)getCacheOfBlock( r.getBlock() ).save( r );
             }catch( RefuseToPreventThrashingException e ){
                 if ( !(r instanceof NaturalReinforcement) ){
                     Citadel.warning( "Bypassing RAM cache to prevent database thrashing.  Consider raising caching.max_chunks");
@@ -133,8 +198,9 @@ public class CitadelCachingDao extends CitadelDao {
         }else{
             super.save( o );
         }
+        return o;
     }
-    
+
     @Override
     public void delete(Object o){
         if( o instanceof IReinforcement ){
@@ -159,6 +225,7 @@ public class CitadelCachingDao extends CitadelDao {
             cachesByChunkId.remove(cache.getChunkId());
             cache.flush();
         }
+        Citadel.warning(formatCacheStats());
     }
 
     public void unloadChunk(Chunk chunk) {
@@ -199,8 +266,30 @@ public class CitadelCachingDao extends CitadelDao {
     public long getCounterReinforcementsSaved()  { return counterReinforcementsSaved; }
     public long getCounterReinforcementsDeleted()  { return counterReinforcementsDeleted; }
     public long getCounterCacheHits()  { return counterCacheHits; }
+    public int getCounterAttemptedDbSaveRecoveries()  { return counterAttemptedDbSaveRecoveries; }
+    public int getCounterAttemptedDbDeleteRecoveries()  { return counterAttemptedDbDeleteRecoveries; }
+    public int getCounterDbSaveFailures()  { return counterDbSaveFailures; }
+    public int getCounterDbDeleteFailures()  { return counterDbDeleteFailures; }
     public int getCounterPreventedThrashing()  { return counterPreventedThrashing; }
     public int getChunkCacheSize()  { return cachesByChunkId.size(); }
+
+    public String formatCacheStats() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("--- Cache Stats ---\n");
+        sb.append(String.format("ChunkCacheSize = %d\n", getChunkCacheSize()));
+        sb.append(String.format("ChunkCacheLoads = %d\n", getCounterChunkCacheLoads()));
+        sb.append(String.format("CacheHits = %d\n", getCounterCacheHits()));
+        sb.append(String.format("ChunkUnloads = %d\n", getCounterChunkUnloads()));
+        sb.append(String.format("ChunkTimeouts = %d\n", getCounterChunkTimeouts()));
+        sb.append(String.format("ReinforcementsSaved = %d\n", getCounterReinforcementsSaved()));
+        sb.append(String.format("ReinforcementsDeleted = %d\n", getCounterReinforcementsDeleted()));
+        sb.append(String.format("AttemptedDbSaveRecoveries = %d\n", getCounterAttemptedDbSaveRecoveries()));
+        sb.append(String.format("AttemptedDbDeleteRecoveries = %d\n", getCounterAttemptedDbDeleteRecoveries()));
+        sb.append(String.format("DbSaveFailures = %d\n", getCounterDbSaveFailures()));
+        sb.append(String.format("DbDeleteFailures = %d\n", getCounterDbDeleteFailures()));
+        sb.append(String.format("PreventedThrashing = %d", getCounterPreventedThrashing()));
+        return sb.toString();
+    }
 
     public Map<String, Long> getPendingUpdateCounts() {
         long totalCount = 0;
@@ -222,26 +311,22 @@ public class CitadelCachingDao extends CitadelDao {
         return result;
     }
 
-    private enum DBUpdateAction {
-        SAVE,
-        DELETE
-    }
-
     private class ChunkCache implements
             Comparable<ChunkCache> {
         private CitadelCachingDao dao;
-        private HashMap<PlayerReinforcement, DBUpdateAction> dbUpdates;
-        private Set<PlayerReinforcement> freshRein = new TreeSet<PlayerReinforcement>();
-        private TreeSet<IReinforcement> cache;//if RAM isn't a problem replace this with a HashSet.
+        // If RAM isn't a problem replace these with HashSets.
+        private TreeSet<PlayerReinforcement> pendingDbUpdate;
+        private TreeSet<IReinforcement> cache;
         private String chunkId;
         private long lastAccessed;
 
         public ChunkCache( CitadelCachingDao dao, Chunk chunk ){
             this.dao = dao;
             this.chunkId = CitadelCachingDao.MakeChunkId(chunk);
-            cache = new TreeSet<IReinforcement>( findReinforcementsInChunk( chunk ));
-            dbUpdates = new HashMap<PlayerReinforcement, DBUpdateAction>();
-            lastAccessed = System.currentTimeMillis();
+            this.pendingDbUpdate = new TreeSet<PlayerReinforcement>();
+            this.cache = new TreeSet<IReinforcement>(
+                findReinforcementsInChunk(chunk));
+            this.lastAccessed = System.currentTimeMillis();
         }
 
         public long getLastAccessed() { return lastAccessed; }
@@ -252,87 +337,159 @@ public class CitadelCachingDao extends CitadelDao {
         }
 
         public IReinforcement findReinforcement( Block block ){
-            IReinforcement key = new NaturalReinforcement();
-            key.setId(new ReinforcementKey(block));
+            NaturalReinforcement rein = new NaturalReinforcement();
+            rein.setId(new ReinforcementKey(block));
+            IReinforcement key = (IReinforcement)rein;
             IReinforcement r = cache.floor( key );
 
             if( r != null && r.equals(key) ){
-                if ( r instanceof PlayerReinforcement){
-                    dbUpdates.put((PlayerReinforcement)r, DBUpdateAction.SAVE);
-    	        }
                 return r;
             }else{
                 return null;
             }
         }
 
-        public void save( IReinforcement r ){
+        public IReinforcement save( IReinforcement r ){
             if (r.getDurability() <= 0)
             {
                 delete(r);
-                return;
+                return null;
             }
-
-            boolean inCache = cache.contains(r);
-            if( inCache ){
-                //Yes, this makes sense.
-                //If we're editing the cache, then our new "r" will equal the old "r"
-                //because reinforements are compared by their ReinforcementKeys, and the
-                //new and old Reinforcements have the same key.  So we're removing the reinforcement
-                //from the set that matches the new "r" (which the old "r" does) and then adding
-                //the new "r".
-                cache.remove( r );
-                cache.add( r );
-            }else{
-                cache.add( r );
+            PlayerReinforcement pr = null;
+            if (r instanceof PlayerReinforcement) {
+                pr = (PlayerReinforcement)r;
             }
-
-            if ( r instanceof PlayerReinforcement){
-                PlayerReinforcement pr = (PlayerReinforcement)r;
-                if (!inCache) {
-                    freshRein.add(pr);
+            IReinforcement old_rein = null;
+            if (cache.contains(r)) {
+                old_rein = cache.floor(r);
+                cache.remove(old_rein);
+            } else if (pr != null && pendingDbUpdate.contains(pr)) {
+                // When the PlayerReinforcement is marked for delete, it is
+                //  removed from the cache but kept in pendingDbUpdate. This
+                //  must reuse the old object if at all possible.
+                old_rein = (IReinforcement)pendingDbUpdate.floor(pr);
+            }
+            if (pr == null || old_rein == null) {
+                cache.add(r);
+                if (pr != null) {
+                    pendingDbUpdate.add(pr);  // DB INSERT
                 }
-                dbUpdates.put(pr, DBUpdateAction.SAVE);
+                return r;
             }
+            // pr != null && old_rein != null
+            ((PlayerReinforcement)old_rein).updateFrom(pr);
+            cache.add(old_rein);
+            pendingDbUpdate.add((PlayerReinforcement)old_rein);  // DB UPDATE
+            return old_rein;
         }
 
-        public void delete( IReinforcement r ){
-            if( cache.contains(r) ){
-                cache.remove( r );
-                if ( r instanceof PlayerReinforcement){
-                    PlayerReinforcement pr = (PlayerReinforcement)r;
-                    if (freshRein.contains(pr)) {
-                        dbUpdates.remove(pr);
-                        freshRein.remove(pr);
-                    } else {
-                        dbUpdates.put(pr, DBUpdateAction.DELETE);
-                    }
+        public void delete(IReinforcement r) {
+            if (cache.contains(r)) {
+                // NaturalReinforcements aren't stored in the DB, only cached.
+                cache.remove(r);
+                if (!(r instanceof PlayerReinforcement)) {
+                    return;
                 }
+                PlayerReinforcement pr = (PlayerReinforcement)r;
+                if (pr.getDbAction() == DbUpdateAction.DELETE) {
+                    // Just a WTF safety net
+                    Citadel.warning("PlayerReinforcement already pending delete, bad: " + pr.toString());
+                    return;
+                }
+                if (pr.getDbAction() == DbUpdateAction.INSERT) {
+                    // Inserts don't exist in the DB yet so this only has
+                    //  to be removed from the caches.
+                    cache.remove(r);
+                    pendingDbUpdate.remove(pr);
+                    return;
+                }
+                pr.setDbAction(DbUpdateAction.DELETE);
+                pendingDbUpdate.add(pr);  // DB DELETE
             }
         }
 
         public void flush(){
             LinkedList<PlayerReinforcement> toSave = new LinkedList<PlayerReinforcement>();
             LinkedList<PlayerReinforcement> toDelete = new LinkedList<PlayerReinforcement>();
-            for (Map.Entry<PlayerReinforcement, DBUpdateAction> entry : dbUpdates.entrySet()) {
-                if (entry.getValue() == DBUpdateAction.DELETE) {
-                    toDelete.add(entry.getKey());
-                } else {  // SAVE
-                    toSave.add(entry.getKey());
+            for (PlayerReinforcement pr : pendingDbUpdate) {
+                if (pr.getDbAction() == DbUpdateAction.DELETE) {
+                    toDelete.add(pr);
+                } else {  // INSERT or SAVE
+                    toSave.add(pr);
+                }
+                pr.setDbAction(DbUpdateAction.NONE);
+            }
+            pendingDbUpdate.clear();
+            if (toSave.size() > 0) {
+                dao.addCounterReinforcementsSaved(
+                    AttemptSave(toSave));
+            }
+            if (toDelete.size() > 0) {
+                dao.addCounterReinforcementsDeleted(
+                    AttemptDelete(toDelete));
+            }
+        }
+
+        private int AttemptSave(LinkedList<PlayerReinforcement> toSave) {
+            boolean attemptRecovery = false;
+            try {
+                getDatabase().save(toSave);
+            } catch (Exception ex) {
+                attemptRecovery = true;
+                Citadel.warning("DB mass save failure: " + ex.toString());
+            }
+            if (!attemptRecovery) {
+                return toSave.size();
+            }
+
+            // Attempt to recover from any exception by individually saving
+            //  each reinforcement.
+            int successfulSaves = 0;
+            ++counterAttemptedDbSaveRecoveries;
+            EbeanServer db = getDatabase();
+            for (PlayerReinforcement pr : toSave) {
+                try {
+                    db.save(pr);
+                    ++successfulSaves;
+                } catch (Exception ex) {
+                    ++counterDbSaveFailures;
+                    Citadel.severe("Attempted DB Save recovery failed for: "
+                        + pr.toString());
+                    Citadel.printStackTrace(ex);
                 }
             }
-            dbUpdates.clear();
-            freshRein.clear();
-            int size = toSave.size();
-            if (size > 0) {
-                int saveSuccess = getDatabase().save(toSave);
-                dao.addCounterReinforcementsSaved(size);
+            return successfulSaves;
+        }
+
+        private int AttemptDelete(LinkedList<PlayerReinforcement> toDelete) {
+            boolean attemptRecovery = false;
+            try {
+                getDatabase().delete(toDelete);
+            } catch (Exception ex) {
+                attemptRecovery = true;
+                Citadel.warning("DB mass delete failure: " + ex.toString());
             }
-            size = toDelete.size();
-            if (size > 0) {
-                int deleteSuccess = getDatabase().delete(toDelete);
-                dao.addCounterReinforcementsDeleted(size);
+            if (!attemptRecovery) {
+                return toDelete.size();
             }
+
+            // Attempt to recover from any exception by individually saving
+            //  each reinforcement.
+            ++counterAttemptedDbDeleteRecoveries;
+            int successfulDeletes = 0;
+            EbeanServer db = getDatabase();
+            for (PlayerReinforcement pr : toDelete) {
+                try {
+                    db.delete(pr);
+                    ++successfulDeletes;
+                } catch (Exception ex) {
+                    ++counterDbDeleteFailures;
+                    Citadel.severe("Attempted DB Delete recovery failed for: "
+                        + pr.toString());
+                    Citadel.printStackTrace(ex);
+                }
+            }
+            return successfulDeletes;
         }
 
         public String getChunkId(){
@@ -340,17 +497,18 @@ public class CitadelCachingDao extends CitadelDao {
         }
 
         public String toString(){
-            return String.format("Cache (%s) has %d unsaved reinforcements.", chunkId, dbUpdates.size());
+            return String.format("Cache (%s) has %d unsaved reinforcements.", chunkId, pendingDbUpdate.size());
         }
 
         public int getTotalPendingCount() {
-            return dbUpdates.size();
+            return pendingDbUpdate.size();
         }
 
         public int getPendingSaveCount() {
             int count = 0;
-            for (Map.Entry<PlayerReinforcement, DBUpdateAction> entry : dbUpdates.entrySet()) {
-                if (entry.getValue() == DBUpdateAction.SAVE) {
+            for (PlayerReinforcement pr : pendingDbUpdate) {
+                DbUpdateAction action = pr.getDbAction();
+                if (action == DbUpdateAction.INSERT || action == DbUpdateAction.SAVE) {
                     ++count;
                 }
             }
@@ -359,8 +517,8 @@ public class CitadelCachingDao extends CitadelDao {
 
         public int getPendingDeleteCount() {
             int count = 0;
-            for (Map.Entry<PlayerReinforcement, DBUpdateAction> entry : dbUpdates.entrySet()) {
-                if (entry.getValue() == DBUpdateAction.DELETE) {
+            for (PlayerReinforcement pr : pendingDbUpdate) {
+                if (pr.getDbAction() == DbUpdateAction.DELETE) {
                     ++count;
                 }
             }
