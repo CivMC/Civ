@@ -16,8 +16,8 @@ import javax.persistence.UniqueConstraint;
 		   @UniqueConstraint(columnNames={"faction_name", "member_name"})})
 public class Moderator {
 
-	private String memberName;
-	private String factionName;
+	@Id private String memberName;
+	@Id private String factionName;
 	
 	public Moderator(){}
 	
