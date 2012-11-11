@@ -65,6 +65,24 @@ public class ReinforcementKey implements Serializable, Comparable<ReinforcementK
         this.world = world;
     }
 
+    public String getChunkId() {
+        // See CitadelDao.MakeChunkId
+        int chunkX;
+        if (this.x < 0) {
+            chunkX = (this.x - 15) / 16;
+        } else {
+            chunkX = this.x / 16;
+        }
+        int chunkZ;
+        if (this.z < 0) {
+            chunkZ = (this.z - 15) / 16;
+        } else {
+            chunkZ = this.z / 16;
+        }
+        return String.format(
+            "%s:%d:%d", this.world, chunkX, chunkZ);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

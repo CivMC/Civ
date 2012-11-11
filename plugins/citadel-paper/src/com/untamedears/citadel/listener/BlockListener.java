@@ -34,6 +34,7 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 import org.bukkit.material.PistonBaseMaterial;
 import org.bukkit.Effect;
+import org.bukkit.World;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.PlacementMode;
@@ -228,55 +229,85 @@ public class BlockListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void redstonePower(BlockRedstoneEvent bre) {
-    	try {
-        Block block = bre.getBlock();
-        
-        if (!(block.getState().getData() instanceof Openable)) return;
-        
-        Openable openable = (Openable) block.getState().getData();
-        if (openable.isOpen()) return;
-        
-        IReinforcement generic_reinforcement = Citadel.getReinforcementManager().getReinforcement(block);
-        if (generic_reinforcement == null ||
-                !(generic_reinforcement instanceof PlayerReinforcement))
-            return;
-
-        PlayerReinforcement reinforcement = (PlayerReinforcement)generic_reinforcement;
-        if (reinforcement.getSecurityLevel() == SecurityLevel.PUBLIC)
-            return;
-
-        //Set<Player> onlinePlayers = new HashSet<Player>(Citadel.getMemberManager().getOnlinePlayers());
-        Player[] onlinePlayers = Citadel.getPlugin().getServer().getOnlinePlayers();
-		boolean isAuthorizedPlayerNear = false;
-		try {
-			double redstoneDistance = Citadel.getConfigManager().getRedstoneDistance();
-			for(Player player : onlinePlayers){
-				if(reinforcement.isAccessible(player)){
-					Location playerLocation = player.getLocation();
-					Location blockLocation = block.getLocation();
-					if(playerLocation.getWorld() == blockLocation.getWorld()){
-						double distanceSquared = playerLocation.distance(blockLocation);
-						if(distanceSquared <= redstoneDistance){
-							isAuthorizedPlayerNear = true;
-							break;
-						}
-					}
-				}
-			}
-		} catch (ConcurrentModificationException e){
-			Citadel.warning("ConcurrentModificationException at redstonePower() in BlockListener");
-		}
-
-        if (!isAuthorizedPlayerNear) {
-			Citadel.info("Prevented redstone from opening reinforcement %s at " 
-					+ reinforcement.getBlock().getLocation().toString());
-            bre.setNewCurrent(bre.getOldCurrent());
-        }
-
-        }
-        catch(Exception e)
-        {
-          Citadel.printStackTrace(e);
+        // This currently only protects against reinforced openable objects,
+        //  like doors, from being opened by unauthorizied players.
+        try {
+            // NewCurrent <= 0 means the redstone wire is turning off, so the
+            //  container is closing. Closing is good so just return. This also
+            //  shaves off some time when dealing with sand generators.
+            // OldCurrent > 0 means that the wire was already on, thus the
+            //  container was already open by an authorized player. Now it's
+            //  either staying open or closing. Just return.
+            if (bre.getNewCurrent() <= 0 || bre.getOldCurrent() > 0) {
+                return;
+            }
+            Block block = bre.getBlock();
+            MaterialData blockData = block.getState().getData();
+            if (!(blockData instanceof Openable)) {
+                return;
+            }
+            Openable openable = (Openable)blockData;
+            if (openable.isOpen()) {
+                return;
+            }
+            IReinforcement generic_reinforcement =
+                Citadel.getReinforcementManager().getReinforcement(block);
+            if (generic_reinforcement == null ||
+                !(generic_reinforcement instanceof PlayerReinforcement)) {
+                return;
+            }
+            PlayerReinforcement reinforcement =
+                (PlayerReinforcement)generic_reinforcement;
+            if (reinforcement.getSecurityLevel() == SecurityLevel.PUBLIC) {
+                return;
+            }
+            double redstoneDistance = Citadel.getConfigManager().getRedstoneDistance();
+            Location blockLocation = block.getLocation();
+            double min_x = blockLocation.getX() - redstoneDistance;
+            double min_z = blockLocation.getZ() - redstoneDistance;
+            double max_x = blockLocation.getX() + redstoneDistance;
+            double max_z = blockLocation.getZ() + redstoneDistance;
+            World blockWorld = blockLocation.getWorld();
+            //Set<Player> onlinePlayers = new HashSet<Player>(Citadel.getMemberManager().getOnlinePlayers());
+            Player[] onlinePlayers = Citadel.getPlugin().getServer().getOnlinePlayers();
+            boolean isAuthorizedPlayerNear = false;
+            try {
+                for (Player player : onlinePlayers) {
+                    if (player.isDead()) {
+                        continue;
+                    }
+                    Location playerLocation = player.getLocation();
+                    double player_x = playerLocation.getX();
+                    double player_z = playerLocation.getZ();
+                    // Simple bounding box check to quickly rule out Players
+                    //  before doing the more expensive playerLocation.distance
+                    if (player_x < min_x || player_x > max_x ||
+                        player_z < min_z || player_z > max_z) {
+                        continue;
+                    }
+                    if (playerLocation.getWorld() != blockWorld) {
+                        continue;
+                    }
+                    if (!reinforcement.isAccessible(player)) {
+                        continue;
+                    }
+                    double distanceSquared =
+                        playerLocation.distance(blockLocation);
+                    if (distanceSquared <= redstoneDistance) {
+                        isAuthorizedPlayerNear = true;
+                        break;
+                    }
+                }
+            } catch (ConcurrentModificationException e) {
+                Citadel.warning("ConcurrentModificationException at redstonePower() in BlockListener");
+            }
+            if (!isAuthorizedPlayerNear) {
+                Citadel.info("Prevented redstone from opening reinforcement at "
+                        + reinforcement.getBlock().getLocation().toString());
+                bre.setNewCurrent(bre.getOldCurrent());
+            }
+        } catch(Exception e) {
+            Citadel.printStackTrace(e);
         }
     }
 }

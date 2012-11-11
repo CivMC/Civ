@@ -46,6 +46,10 @@ public class CitadelDao extends MyDatabase {
     private String sqlLogDirectory;
     private boolean sqlEnableLog;
 
+    public static String MakeChunkId(Chunk chunk) {
+        return String.format("%s:%d:%d", chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
+    }
+
     public CitadelDao(JavaPlugin plugin) {
         super(plugin);
 
@@ -186,28 +190,24 @@ public class CitadelDao extends MyDatabase {
                 .setParameter("world", location.getWorld().getName())
                 .findUnique();
     }
-    
-    public Set<IReinforcement> findReinforcementsInChunk(Chunk c){
-    	//The minus ones are intentional.  Think about fenceposts if you aren't sure why.
-    	Block minBlock = c.getBlock(0, 0, 0);
-    	int xlo = minBlock.getX();
-    	int zlo = minBlock.getZ();
+
+    public TreeSet<IReinforcement> findReinforcementsInChunk(Chunk c){
+        String chunkId = MakeChunkId(c);
     	Set<PlayerReinforcement> result = getDatabase()
                 .createQuery(
                     PlayerReinforcement.class,
-                    "find reinforcement where x >= :xlo and x <= :xhi and z >= :zlo and z <= :zhi and world = :world")
-    			.setParameter("xlo", xlo)
-    			.setParameter("xhi", xlo+CHUNK_SIZE-1)
-    			.setParameter("zlo", zlo)
-    			.setParameter("zhi", zlo+CHUNK_SIZE-1)
-    			.setParameter("world", c.getWorld().getName())
+                    "find reinforcement where chunk_id = :chunk_id")
+    			.setParameter("chunk_id", chunkId)
     			.findSet();
+        // This manually resets each reinforcement DB state. The ORM calls the
+        //  object's property setter methods which incorrectly flags the object
+        //  for SAVE.
         for (PlayerReinforcement pr : result) {
             pr.setDbAction(DbUpdateAction.NONE);
         }
         return new TreeSet<IReinforcement>(result);
     }
-    
+
     public void moveReinforcements(String from, String target){
     	SqlUpdate update = getDatabase().createSqlUpdate("UPDATE reinforcement SET name = :target, security_level = 1" +
     			" WHERE name = :from")
@@ -286,7 +286,7 @@ public class CitadelDao extends MyDatabase {
 				.setParameter("groupName", groupName);
 		getDatabase().execute(update);
 	}
-	
+
 	public void updateDatabase(){
 		//this for when Citadel 2.0 is loaded after an older version of Citadel was previously installed
 		SqlUpdate createMemberTable = getDatabase().createSqlUpdate
@@ -313,6 +313,26 @@ public class CitadelDao extends MyDatabase {
             SqlUpdate addReinforcementVersion = getDatabase().createSqlUpdate(
                 "ALTER TABLE reinforcement ADD COLUMN version INT NOT NULL DEFAULT 0");
             getDatabase().execute(addReinforcementVersion);
+        } catch(PersistenceException e){
+           	//column already exists
+        }
+
+        try {
+            // The initial add column statement is our indicator if the DB
+            //  needs this reconstruction.
+            SqlUpdate addReinforcementChunkId = getDatabase().createSqlUpdate(
+                "ALTER TABLE reinforcement ADD COLUMN chunk_id VARCHAR(255)");
+            getDatabase().execute(addReinforcementChunkId);
+
+            addReinforcementChunkId = getDatabase().createSqlUpdate(
+                "UPDATE reinforcement SET chunk_id = " +
+                "CONCAT(world, ':', CONVERT(IF(x >= 0, x, x - 15) DIV 16, CHAR), ':'," +
+                "CONVERT(IF(z >= 0, z, z - 15) DIV 16, CHAR))");
+            getDatabase().execute(addReinforcementChunkId);
+
+            addReinforcementChunkId = getDatabase().createSqlUpdate(
+                "ALTER TABLE reinforcement ADD INDEX ix_chunk_id (chunk_id)");
+            getDatabase().execute(addReinforcementChunkId);
         } catch(PersistenceException e){
            	//column already exists
         }
