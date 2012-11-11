@@ -37,6 +37,7 @@ public class PlayerReinforcement implements
     private int materialId;
     private int durability;
     private SecurityLevel securityLevel;
+    private String chunkId;
     // @Transient == not persisted in the DB
     @Transient private DbUpdateAction dbAction;
 
@@ -63,6 +64,7 @@ public class PlayerReinforcement implements
         this.durability = material.getStrength();
         this.owner = owner;
         this.securityLevel = securityLevel;
+        this.chunkId = this.id.getChunkId();
         this.dbAction = DbUpdateAction.INSERT;
     }
 
@@ -121,6 +123,14 @@ public class PlayerReinforcement implements
     public void setDurability(int durability) {
         flagForDbUpdate();
         this.durability = durability;
+    }
+
+    public String getChunkId() {
+        return this.chunkId;
+    }
+
+    public void setChunkId(String id) {
+        this.chunkId = id;
     }
 
     public SecurityLevel getSecurityLevel() {

@@ -78,10 +78,6 @@ import com.untamedears.citadel.entity.ReinforcementKey;
 
 
 public class CitadelCachingDao extends CitadelDao {
-    public static String MakeChunkId( Chunk chunk ) {
-        return String.format("%s.%d.%d", chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
-    }
-
     HashMap<String, ChunkCache> cachesByChunkId;
     PriorityQueue<ChunkCache> cachesByTime;
     long maxAge;
@@ -324,8 +320,7 @@ public class CitadelCachingDao extends CitadelDao {
             this.dao = dao;
             this.chunkId = CitadelCachingDao.MakeChunkId(chunk);
             this.pendingDbUpdate = new TreeSet<PlayerReinforcement>();
-            this.cache = new TreeSet<IReinforcement>(
-                findReinforcementsInChunk(chunk));
+            this.cache = dao.findReinforcementsInChunk(chunk);
             this.lastAccessed = System.currentTimeMillis();
         }
 
