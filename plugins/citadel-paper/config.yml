@@ -20,6 +20,8 @@ materials:
 additionalSecurable:
 - BED_BLOCK
 - BOOKSHELF
+- BEACON
+- ANVIL
 nonReinforceable:
 - SAPLING
 - GRASS

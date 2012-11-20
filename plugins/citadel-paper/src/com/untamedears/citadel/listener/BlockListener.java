@@ -100,20 +100,27 @@ public class BlockListener implements Listener {
 	        return;
 	    }
 
+        boolean is_cancelled = true;
         if (reinforcement instanceof PlayerReinforcement) {
             PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
             PlayerState state = PlayerState.get(player);
             if (state.isBypassMode() && pr.isBypassable(player)) {
 		    	Citadel.info(player.getDisplayName() + " bypassed reinforcement %s at " 
 		    			+ pr.getBlock().getLocation().toString());
-                bbe.setCancelled(reinforcementBroken(reinforcement));
+                is_cancelled = reinforcementBroken(reinforcement);
             } else {
-                bbe.setCancelled(reinforcementDamaged(reinforcement));
+                is_cancelled = reinforcementDamaged(reinforcement);
+            }
+            if (!is_cancelled) {
+                // The player reinforcement broke. Now check for natural
+                is_cancelled = createNaturalReinforcement(block) != null;
             }
         } else {
-            bbe.setCancelled(reinforcementDamaged(reinforcement));
+            is_cancelled = reinforcementDamaged(reinforcement);
         }
-        if (bbe.isCancelled()) {
+
+        if (is_cancelled) {
+            bbe.setCancelled(true);
             block.getDrops().clear();
         }
     }

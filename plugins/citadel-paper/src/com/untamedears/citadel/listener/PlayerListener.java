@@ -2,6 +2,7 @@ package com.untamedears.citadel.listener;
 
 import static com.untamedears.citadel.Utility.createPlayerReinforcement;
 import static com.untamedears.citadel.Utility.maybeReinforcementDamaged;
+import static com.untamedears.citadel.Utility.reinforcementBroken;
 import static com.untamedears.citadel.Utility.sendMessage;
 
 import org.bukkit.ChatColor;
@@ -170,6 +171,10 @@ public class PlayerListener implements Listener {
             default:
                 // player is in reinforcement mode
                 if (reinforcement == null) {
+                    // Break any natural reinforcement before placing the player reinforcement
+                    if (generic_reinforcement != null) {
+                        reinforcementBroken(generic_reinforcement);
+                    }
                     createPlayerReinforcement(player, block);
                 } else if (reinforcement.isBypassable(player)) {
                 	boolean update = false;
