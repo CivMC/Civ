@@ -80,14 +80,6 @@ commands:
   ctstats:
     description: Displays stats.
     usage: /ctstats
-  ctgstats:
-    aliases: ctgst
-    description: Displayers group statistics
-    usage: /ctgstats <group-name>
-  ctpstats:
-    aliases: ctpst
-    description: Displayers player statistics
-    usage: /ctpstats <player-name>
   ctleave:
     aliases: ctl
     description: Leave a group.
@@ -123,6 +115,16 @@ commands:
   ctcon:
     description: Restricted.
     usage: /ctcon
+    permission: citadel.console
+  ctgstats:
+    aliases: ctgst
+    description: Displayers group statistics
+    usage: /ctgstats <group-name>
+    permission: citadel.console
+  ctpstats:
+    aliases: ctpst
+    description: Displayers player statistics
+    usage: /ctpstats <player-name>
     permission: citadel.console
 permissions:
   citadel.console:

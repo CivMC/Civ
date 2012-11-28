@@ -2,19 +2,17 @@ package com.untamedears.citadel.command.commands;
 
 import java.util.Set;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
-import com.untamedears.citadel.ReinforcementManager;
 import com.untamedears.citadel.command.CommandUtils;
-import com.untamedears.citadel.command.PlayerCommand;
+import com.untamedears.citadel.command.ConsoleCommand;
 import com.untamedears.citadel.entity.Faction;
+import com.untamedears.citadel.entity.Member;
 
-public class PlayerStatsCommand extends PlayerCommand {
-	
+public class PlayerStatsCommand extends ConsoleCommand {
+
 	public PlayerStatsCommand() {
 		super("View Player Stats");
 		setDescription("View citadel player stats");
@@ -22,13 +20,8 @@ public class PlayerStatsCommand extends PlayerCommand {
 		setArgumentRange(1, 1);
 		setIdentifiers(new String[] {"ctpstats", "ctpst"});
 	}
-	
+
 	public boolean execute(CommandSender sender, String[] args) {
-		if (sender instanceof Player) {
-			sender.sendMessage(ChatColor.RED+"You do not have permission to use this command.");
-			return false;
-		}
-		
 		GroupManager groupManager = Citadel.getGroupManager();
 		Set<Faction> memberGroups = groupManager.getGroupsByMember(args[0]);
 		Set<Faction> moderatorGroups = groupManager.getGroupsByModerator(args[0]);
@@ -40,8 +33,12 @@ public class PlayerStatsCommand extends PlayerCommand {
 			sender.sendMessage("Moderator of groups: "+CommandUtils.joinFactionSet(moderatorGroups));
 		if (memberGroups.size() > 0)
 			sender.sendMessage("Member of groups: "+CommandUtils.joinFactionSet(memberGroups));
-		
-		Faction group = Citadel.getMemberManager().getMember(args[0]).getPersonalGroup();
+
+		Faction group = null;
+		Member member = Citadel.getMemberManager().getMember(args[0]);
+		if (member != null) {
+			group = member.getPersonalGroup();
+		}
 		if (group != null) {
 			String personalGroupName = group.getName();
 			sender.sendMessage("Personal group reinforcements: ");
