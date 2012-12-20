@@ -13,14 +13,18 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.ContainerBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Openable;
 
+import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.DbUpdateAction;
 import com.untamedears.citadel.SecurityLevel;
+
+import static com.untamedears.citadel.Utility.sendMessage;
 
 /**
  * User: chrisrico
@@ -187,6 +191,11 @@ public class PlayerReinforcement implements
     }
 
     public boolean isAccessible(String name) {
+        if (owner == null) {
+            Citadel.severe(String.format("isAccessible(%s) encountered unowned reinforcement: %s",
+                           name, toString()));
+            return false;
+        }
         switch (securityLevel) {
             case PRIVATE:
                 return name.equals(owner.getFounder());
@@ -197,9 +206,15 @@ public class PlayerReinforcement implements
         }
         return false;
     }
-    
+
     public boolean isBypassable(Player player) {
         String name = player.getDisplayName();
+        if (owner == null) {
+            Citadel.severe(String.format("isBypassable(%s) encountered unowned reinforcement: %s",
+                           name, toString()));
+            sendMessage(player, ChatColor.RED, "This reinforcement has an issue. Please send modmail.");
+            return false;
+        }
         switch (securityLevel) {
             case PRIVATE:
                 return name.equals(owner.getFounder());
