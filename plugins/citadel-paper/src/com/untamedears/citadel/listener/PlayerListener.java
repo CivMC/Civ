@@ -128,10 +128,7 @@ public class PlayerListener implements Listener {
                 && reinforcement.isSecurable()
                 && !reinforcement.isAccessible(player)) {
         	Action action = pie.getAction();
-        	if(action == Action.LEFT_CLICK_BLOCK
-        			&& reinforcement.getBlock().getState().getData() instanceof Openable){
-        		pie.setUseInteractedBlock(Event.Result.DENY);
-        	} else if(action == Action.RIGHT_CLICK_BLOCK){
+        	if(action == Action.RIGHT_CLICK_BLOCK){
                 Citadel.info("%s failed to access locked reinforcement %s, " 
             			+ player.getDisplayName() + " at " 
             			+ block.getLocation().toString());
