@@ -74,11 +74,21 @@ public class FortifyCommand extends PlayerCommand {
         if (securityLevel == null) return false;
 
         ReinforcementMaterial material = ReinforcementMaterial.get(player.getItemInHand().getType());
-        if (material == null) {
-            sendMessage(sender, ChatColor.YELLOW, "Invalid reinforcement material %s", player.getItemInHand().getType().name());
-        } else {
-            state.setFortificationMaterial(material);
+        if (state.getMode() == PlacementMode.FORTIFICATION) {
+            // Only change material if a valid reinforcement material in hand and not current reinforcement
+            if (material != null && material != state.getFortificationMaterial()) {
+                // Switch reinforcement materials without turning off and on again
+                state.reset();
+                state.setFortificationMaterial(material);
+            }
             setMultiMode(PlacementMode.FORTIFICATION, securityLevel, args, player, state);
+        } else {
+            if (material == null) {
+                sendMessage(sender, ChatColor.YELLOW, "Invalid reinforcement material %s", player.getItemInHand().getType().name());
+            } else {
+                state.setFortificationMaterial(material);
+                setMultiMode(PlacementMode.FORTIFICATION, securityLevel, args, player, state);
+            }
         }
         
         return true;
