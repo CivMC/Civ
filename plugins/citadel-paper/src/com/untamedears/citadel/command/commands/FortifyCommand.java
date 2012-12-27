@@ -76,7 +76,7 @@ public class FortifyCommand extends PlayerCommand {
         ReinforcementMaterial material = ReinforcementMaterial.get(player.getItemInHand().getType());
         if (state.getMode() == PlacementMode.FORTIFICATION) {
             // Only change material if a valid reinforcement material in hand and not current reinforcement
-            if (material != null && material != state.getFortificationMaterial()) {
+            if (material != null && material != state.getReinforcementMaterial()) {
                 // Switch reinforcement materials without turning off and on again
                 state.reset();
                 state.setFortificationMaterial(material);
