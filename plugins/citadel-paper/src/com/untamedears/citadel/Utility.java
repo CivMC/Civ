@@ -150,6 +150,32 @@ public class Utility {
         return reinforcementDamaged(reinforcement);
     }
 
+    public static boolean isReinforced(Location location) {
+        return getReinforcement(location) != null;
+    }
+
+    public static boolean isReinforced(Block block) {
+        return getReinforcement(block) != null;
+    }
+
+    public static IReinforcement getReinforcement(Location location) {
+        return getReinforcement(location.getBlock());
+    }
+
+    public static IReinforcement getReinforcement(Block block) {
+        AccessDelegate delegate = AccessDelegate.getDelegate(block);
+        IReinforcement reinforcement = delegate.getReinforcement();
+        return reinforcement;
+    }
+
+    public static IReinforcement addReinforcement(IReinforcement reinforcement) {
+        return Citadel.getReinforcementManager().addReinforcement(reinforcement);
+    }
+
+    public static void removeReinforcement(IReinforcement reinforcement) {
+        Citadel.getReinforcementManager().removeReinforcement(reinforcement);
+    }
+
     public static boolean maybeReinforcementDamaged(Block block) {
         AccessDelegate delegate = AccessDelegate.getDelegate(block);
         IReinforcement reinforcement = delegate.getReinforcement();
