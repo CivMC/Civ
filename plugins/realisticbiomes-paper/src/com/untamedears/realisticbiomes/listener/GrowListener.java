@@ -5,44 +5,204 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.bukkit.Material;
+import org.bukkit.TreeType;
 import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.world.StructureGrowEvent;
 
 public class GrowListener implements Listener {
 
-	private static final Logger LOG = Logger.getLogger("RealisticBiomes");
-
-	private static Map<Material, Set<Biome>> allowedGrowth = new HashMap<Material, Set<Biome>>();
+	private static Map<Object, Set<Biome>> allowedGrowth = new HashMap<Object, Set<Biome>>();
 
 	static {
-		allowedGrowth.put(Material.CROPS, new HashSet<Biome>( Arrays.asList(new Biome[]{ Biome.PLAINS, Biome.FOREST, Biome.FOREST_HILLS, Biome.MUSHROOM_ISLAND, Biome.RIVER, Biome.SKY, Biome.SMALL_MOUNTAINS, Biome.SWAMPLAND, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.EXTREME_HILLS }) ));
-		allowedGrowth.put(Material.MELON_STEM, new HashSet<Biome>( Arrays.asList(new Biome[]{ Biome.PLAINS, Biome.FOREST, Biome.FOREST_HILLS, Biome.MUSHROOM_ISLAND, Biome.RIVER, Biome.SMALL_MOUNTAINS, Biome.SWAMPLAND, Biome.JUNGLE, Biome.JUNGLE_HILLS }) ));
-		allowedGrowth.put(Material.PUMPKIN_STEM, new HashSet<Biome>( Arrays.asList(new Biome[]{ Biome.PLAINS, Biome.FOREST, Biome.FOREST_HILLS, Biome.MUSHROOM_ISLAND, Biome.RIVER, Biome.SKY, Biome.SMALL_MOUNTAINS, Biome.SWAMPLAND }) ));
-		allowedGrowth.put(Material.CARROT, new HashSet<Biome>( Arrays.asList(new Biome[]{ Biome.PLAINS, Biome.FOREST, Biome.FOREST_HILLS, Biome.MUSHROOM_ISLAND, Biome.RIVER }) ));
-		allowedGrowth.put(Material.POTATO, new HashSet<Biome>( Arrays.asList(new Biome[]{ Biome.PLAINS, Biome.FOREST, Biome.FOREST_HILLS, Biome.MUSHROOM_ISLAND, Biome.RIVER }) ));
-		allowedGrowth.put(Material.COCOA, new HashSet<Biome>( Arrays.asList(new Biome[]{ Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.MUSHROOM_ISLAND }) ));
-		allowedGrowth.put(Material.CACTUS, new HashSet<Biome>( Arrays.asList(new Biome[]{ Biome.DESERT, Biome.DESERT_HILLS, Biome.MUSHROOM_ISLAND }) ));
-		allowedGrowth.put(Material.SUGAR_CANE_BLOCK, new HashSet<Biome>( Arrays.asList(new Biome[]{ Biome.DESERT, Biome.DESERT_HILLS, Biome.SWAMPLAND, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.BEACH, Biome.MUSHROOM_SHORE, Biome.RIVER }) ));
-		allowedGrowth.put(Material.SAPLING, new HashSet<Biome>( Arrays.asList(new Biome[]{ Biome.FOREST, Biome.FOREST_HILLS, Biome.MUSHROOM_ISLAND, Biome.SMALL_MOUNTAINS, Biome.SWAMPLAND, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.EXTREME_HILLS, Biome.JUNGLE, Biome.JUNGLE_HILLS }) ));
-		allowedGrowth.put(Material.NETHER_STALK, new HashSet<Biome>( Arrays.asList(new Biome[]{ Biome.HELL }) ));
+		allowedGrowth.put(	Material.CROPS,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.PLAINS,
+				Biome.FOREST,
+				Biome.FOREST_HILLS,
+				Biome.MUSHROOM_ISLAND,
+				Biome.RIVER, Biome.SKY,
+				Biome.SMALL_MOUNTAINS,
+				Biome.SWAMPLAND,
+				Biome.TAIGA,
+				Biome.TAIGA_HILLS,
+				Biome.EXTREME_HILLS
+			}))
+		);
+		allowedGrowth.put(	Material.MELON_STEM,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.PLAINS,
+				Biome.FOREST,
+				Biome.FOREST_HILLS,
+				Biome.MUSHROOM_ISLAND,
+				Biome.RIVER,
+				Biome.SMALL_MOUNTAINS,
+				Biome.SWAMPLAND,
+				Biome.JUNGLE,
+				Biome.JUNGLE_HILLS
+			}))
+		);
+		allowedGrowth.put(	Material.PUMPKIN_STEM,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.PLAINS,
+				Biome.FOREST,
+				Biome.FOREST_HILLS,
+				Biome.MUSHROOM_ISLAND,
+				Biome.RIVER, Biome.SKY,
+				Biome.SMALL_MOUNTAINS,
+				Biome.SWAMPLAND
+			}))
+		);
+		allowedGrowth.put(	Material.CARROT,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.PLAINS,
+				Biome.FOREST,
+				Biome.FOREST_HILLS,
+				Biome.MUSHROOM_ISLAND,
+				Biome.RIVER
+			}))
+		);
+		allowedGrowth.put(	Material.POTATO,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.PLAINS,
+				Biome.FOREST,
+				Biome.FOREST_HILLS,
+				Biome.MUSHROOM_ISLAND,
+				Biome.RIVER
+			}))
+		);
+		allowedGrowth.put(	Material.COCOA,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.JUNGLE,
+				Biome.JUNGLE_HILLS,
+				Biome.MUSHROOM_ISLAND
+			}))
+		);
+		allowedGrowth.put(	Material.CACTUS,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.DESERT,
+				Biome.DESERT_HILLS,
+				Biome.MUSHROOM_ISLAND
+			}))
+		);
+		allowedGrowth.put(	Material.SUGAR_CANE_BLOCK,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.DESERT,
+				Biome.DESERT_HILLS,
+				Biome.SWAMPLAND,
+				Biome.JUNGLE,
+				Biome.JUNGLE_HILLS,
+				Biome.BEACH,
+				Biome.MUSHROOM_SHORE,
+				Biome.RIVER
+			}))
+		);
+		allowedGrowth.put(	Material.NETHER_STALK,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.HELL
+			}))
+		);
+		allowedGrowth.put(	TreeType.TREE,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.FOREST,
+				Biome.FOREST_HILLS,
+				Biome.EXTREME_HILLS,
+				Biome.JUNGLE,
+				Biome.JUNGLE_HILLS,
+				Biome.SMALL_MOUNTAINS,
+				Biome.SWAMPLAND,
+				Biome.ICE_MOUNTAINS,
+				Biome.ICE_PLAINS,
+				Biome.MUSHROOM_ISLAND
+			}))
+		);
+		allowedGrowth.put(	TreeType.BIG_TREE,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.FOREST,
+				Biome.FOREST_HILLS,
+				Biome.MUSHROOM_ISLAND
+			}))
+		);
+		allowedGrowth.put(	TreeType.BIRCH,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.FOREST,
+				Biome.FOREST_HILLS,
+				Biome.MUSHROOM_ISLAND
+			}))
+		);
+		allowedGrowth.put(	TreeType.JUNGLE,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.JUNGLE,
+				Biome.JUNGLE_HILLS,
+				Biome.MUSHROOM_ISLAND
+			}))
+		);
+		allowedGrowth.put(	TreeType.SMALL_JUNGLE,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.JUNGLE,
+				Biome.JUNGLE_HILLS,
+				Biome.MUSHROOM_ISLAND
+			}))
+		);
+		allowedGrowth.put(	TreeType.JUNGLE_BUSH,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.JUNGLE,
+				Biome.JUNGLE_HILLS,
+				Biome.MUSHROOM_ISLAND
+			}))
+		);
+		allowedGrowth.put(	TreeType.REDWOOD,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.TAIGA,
+				Biome.TAIGA_HILLS,
+				Biome.MUSHROOM_ISLAND,
+				Biome.EXTREME_HILLS,
+				Biome.ICE_MOUNTAINS,
+				Biome.ICE_PLAINS
+			}))
+		);
+		allowedGrowth.put(	TreeType.TALL_REDWOOD,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.TAIGA,
+				Biome.TAIGA_HILLS,
+				Biome.MUSHROOM_ISLAND
+			}))
+		);
+		allowedGrowth.put(	TreeType.SWAMP,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.SWAMPLAND
+			}))
+		);
 	}
 
 	@EventHandler(ignoreCancelled = true)
 	public void growBlock(BlockGrowEvent event) {
-		Material blockType = event.getBlock().getType();
-		Block block = event.getBlock();
-		event.setCancelled(!canGrowHere(blockType, block));
+		Material m = event.getNewState().getType();
+		Biome b = event.getBlock().getBiome();
+		event.setCancelled(!canGrowHere(m, b));
 	}
 
-	private boolean canGrowHere(Material m, Block b) {
+	@EventHandler(ignoreCancelled = true)
+	public void growStructure(StructureGrowEvent event) {
+		Biome b = event.getLocation().getBlock().getBiome();
+		TreeType t = event.getSpecies();
+		event.setCancelled(!canGrowHere(t, b));
+	}
+
+	private boolean canGrowHere(Material m, Biome b) {
 		if(allowedGrowth.containsKey(m)) {
-			return allowedGrowth.get(m).contains(b.getBiome());
+			return allowedGrowth.get(m).contains(b);
+		}
+		return true;
+	}
+
+	private boolean canGrowHere(TreeType t, Biome b) {
+		if(allowedGrowth.containsKey(t)) {
+			return allowedGrowth.get(t).contains(b);
 		}
 		return true;
 	}
