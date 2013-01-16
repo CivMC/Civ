@@ -44,14 +44,20 @@ public class FortifyCommand extends PlayerCommand {
 				groupName = args[1];
 			}
 		}
+		
 		if(secLevel != null && secLevel.equalsIgnoreCase("group")){
-			if(groupName == null || groupName.isEmpty() || groupName.equals("")){
-				sender.sendMessage(new StringBuilder().append("§cYou must specify a group in group fortification mode").toString());
-				sender.sendMessage(new StringBuilder().append("§cUsage:§e ").append("/ctfortify §8group <group-name>").toString());
-				return true;
-			}
-			GroupManager groupManager = Citadel.getGroupManager();
-			Faction group = groupManager.getGroup(groupName);
+                        Faction group;
+                        if(!(groupName == null) && !(groupName.isEmpty()) && !(groupName.equals(""))){
+                            GroupManager groupManager = Citadel.getGroupManager();
+                            group = groupManager.getGroup(groupName);
+                        } else if (state.getMode() == PlacementMode.FORTIFICATION && state.getSecurityLevel() == SecurityLevel.GROUP) {
+                            /* Default to current faction */
+                            group = state.getFaction();
+                        } else {
+                            sender.sendMessage(new StringBuilder().append("§cYou must specify a group in group fortification mode").toString());
+                            sender.sendMessage(new StringBuilder().append("§cUsage:§e ").append("/ctfortify §8group <group-name>").toString());
+                            return true;
+                        }
 			if(group == null){
 				sendMessage(sender, ChatColor.RED, "Group doesn't exist");
 				return true;
