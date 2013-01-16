@@ -46,7 +46,7 @@ public class FortifyCommand extends PlayerCommand {
 		}
                 
                 SecurityLevel securityLevel = getSecurityLevel(args, player);
-                if (securityLevel == null && state.getMode() == PlacementMode.FORTIFICATION) {
+                if (secLevel == null && state.getMode() == PlacementMode.FORTIFICATION) {
                     securityLevel = state.getSecurityLevel();
                 }
                 if (securityLevel == null) return false;
