@@ -44,8 +44,14 @@ public class FortifyCommand extends PlayerCommand {
 				groupName = args[1];
 			}
 		}
+                
+                SecurityLevel securityLevel = getSecurityLevel(args, player);
+                if (securityLevel == null && state.getMode() == PlacementMode.FORTIFICATION) {
+                    securityLevel = state.getSecurityLevel();
+                }
+                if (securityLevel == null) return false;
 		
-		if(secLevel != null && secLevel.equalsIgnoreCase("group")){
+		if(securityLevel == SecurityLevel.GROUP){
                         Faction group;
                         if(!(groupName == null) && !(groupName.isEmpty()) && !(groupName.equals(""))){
                             GroupManager groupManager = Citadel.getGroupManager();
@@ -75,9 +81,6 @@ public class FortifyCommand extends PlayerCommand {
 		} else {
 			state.setFaction(Citadel.getMemberManager().getMember(player).getPersonalGroup());
 		}
-		
-		SecurityLevel securityLevel = getSecurityLevel(args, player);
-        if (securityLevel == null) return false;
 
         ReinforcementMaterial material = ReinforcementMaterial.get(player.getItemInHand().getType());
         if (state.getMode() == PlacementMode.FORTIFICATION) {
