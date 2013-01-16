@@ -25,7 +25,8 @@ public class GrowListener implements Listener {
 				Biome.FOREST,
 				Biome.FOREST_HILLS,
 				Biome.MUSHROOM_ISLAND,
-				Biome.RIVER, Biome.SKY,
+				Biome.RIVER,
+				Biome.SKY,
 				Biome.SMALL_MOUNTAINS,
 				Biome.SWAMPLAND,
 				Biome.TAIGA,
@@ -43,7 +44,22 @@ public class GrowListener implements Listener {
 				Biome.SMALL_MOUNTAINS,
 				Biome.SWAMPLAND,
 				Biome.JUNGLE,
-				Biome.JUNGLE_HILLS
+				Biome.JUNGLE_HILLS,
+				Biome.SKY
+			}))
+		);
+		allowedGrowth.put(	Material.MELON_BLOCK,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.PLAINS,
+				Biome.FOREST,
+				Biome.FOREST_HILLS,
+				Biome.MUSHROOM_ISLAND,
+				Biome.RIVER,
+				Biome.SMALL_MOUNTAINS,
+				Biome.SWAMPLAND,
+				Biome.JUNGLE,
+				Biome.JUNGLE_HILLS,
+				Biome.SKY
 			}))
 		);
 		allowedGrowth.put(	Material.PUMPKIN_STEM,
@@ -52,7 +68,20 @@ public class GrowListener implements Listener {
 				Biome.FOREST,
 				Biome.FOREST_HILLS,
 				Biome.MUSHROOM_ISLAND,
-				Biome.RIVER, Biome.SKY,
+				Biome.RIVER,
+				Biome.SKY,
+				Biome.SMALL_MOUNTAINS,
+				Biome.SWAMPLAND
+			}))
+		);
+		allowedGrowth.put(	Material.PUMPKIN,
+			new HashSet<Biome>( Arrays.asList(new Biome[]{
+				Biome.PLAINS,
+				Biome.FOREST,
+				Biome.FOREST_HILLS,
+				Biome.MUSHROOM_ISLAND,
+				Biome.RIVER,
+				Biome.SKY,
 				Biome.SMALL_MOUNTAINS,
 				Biome.SWAMPLAND
 			}))

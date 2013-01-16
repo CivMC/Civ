@@ -88,7 +88,7 @@ public class SpawnListener implements Listener {
 		if(event.getSpawnReason() == SpawnReason.BREEDING) {
 			EntityType type = event.getEntityType();
 			Block block = event.getLocation().getBlock();
-			event.setCancelled(canSpawnHere(type, block));
+			event.setCancelled(!canSpawnHere(type, block));
 		}
 	}
 
