@@ -9,10 +9,14 @@ import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class GrowListener implements Listener {
 
@@ -220,6 +224,20 @@ public class GrowListener implements Listener {
 		Biome b = event.getLocation().getBlock().getBiome();
 		TreeType t = event.getSpecies();
 		event.setCancelled(!canGrowHere(t, b));
+	}
+
+	@EventHandler(ignoreCancelled = true)
+	public void onPlayerInteract(PlayerInteractEvent event) {
+	    if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			ItemStack item = event.getItem();
+			// Ink Sack with data 15  == Bone Meal
+			if (item.getType() == Material.INK_SACK	&& item.getData().getData() == 15) {
+			    if (event.hasBlock()) {
+			    	Block b = event.getClickedBlock();
+			    	event.setCancelled(!canGrowHere(b.getType(), b.getBiome()));
+			    }
+			}
+	    }
 	}
 
 	private boolean canGrowHere(Material m, Biome b) {
