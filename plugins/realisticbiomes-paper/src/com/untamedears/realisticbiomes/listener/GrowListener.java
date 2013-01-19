@@ -9,7 +9,6 @@ import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -18,8 +17,18 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Event listener for all plant growth related events. Whenever a crop, plant block, or sapling attempts to grow, its type
+ * is checked against the biomes in which it is permitted to grow. If the biome is not permitted, the event is canceled and
+ * the plant does not grow. Additionally, all instances of bonemeal being used as fertilizer are canceled.
+ * @author WildWeazel
+ *
+ */
 public class GrowListener implements Listener {
 
+	/**
+	 *  Maps a {@link Material} or {@link TreeType} to the {@link Biome}s in which it is permitted to grow
+	 */
 	private static Map<Object, Set<Biome>> allowedGrowth = new HashMap<Object, Set<Biome>>();
 
 	static {
@@ -212,6 +221,10 @@ public class GrowListener implements Listener {
 		);
 	}
 
+	/**
+	 *  Event handler for {@link BlockGrowEvent}. Checks plant growth for proper biomes.
+	 * @param event The {@link BlockGrowEvent} being handled
+	 */
 	@EventHandler(ignoreCancelled = true)
 	public void growBlock(BlockGrowEvent event) {
 		Material m = event.getNewState().getType();
@@ -219,6 +232,10 @@ public class GrowListener implements Listener {
 		event.setCancelled(!canGrowHere(m, b));
 	}
 
+	/**
+	 * Event handler for {@link StructureGrowEvent}. Checks tree growth for proper biomes.
+	 * @param event The {@link StructureGrowEvent} being handled
+	 */
 	@EventHandler(ignoreCancelled = true)
 	public void growStructure(StructureGrowEvent event) {
 		Biome b = event.getLocation().getBlock().getBiome();
@@ -226,20 +243,27 @@ public class GrowListener implements Listener {
 		event.setCancelled(!canGrowHere(t, b));
 	}
 
+	/**
+	 * Event handler for {@link PlayerInteractEvent}. Cancels all uses of Bonemeal as an item.
+	 * @param event The {@link PlayerInteractEvent} being handled
+	 */
 	@EventHandler(ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 	    if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			ItemStack item = event.getItem();
 			// Ink Sack with data 15  == Bone Meal
 			if (item.getType() == Material.INK_SACK	&& item.getData().getData() == 15) {
-			    if (event.hasBlock()) {
-			    	Block b = event.getClickedBlock();
-			    	event.setCancelled(!canGrowHere(b.getType(), b.getBiome()));
-			    }
+			    event.setCancelled(true);
 			}
 	    }
 	}
 
+	/**
+	 * Determines if a plant {@link Material} type can grow in a {@link Biome}
+	 * @param m The material type of the plant
+	 * @param b The biome in which the plant is growing
+	 * @return Whether the plant type is allowed in the biome
+	 */
 	private boolean canGrowHere(Material m, Biome b) {
 		if(allowedGrowth.containsKey(m)) {
 			return allowedGrowth.get(m).contains(b);
@@ -247,6 +271,12 @@ public class GrowListener implements Listener {
 		return true;
 	}
 
+	/**
+	 * Determines if a {@link TreeType} can grow in a {@link Biome}
+	 * @param t The tree structure type
+	 * @param b The biome in which the tree is growing
+	 * @return Whether the tree type is allowed in the biome
+	 */
 	private boolean canGrowHere(TreeType t, Biome b) {
 		if(allowedGrowth.containsKey(t)) {
 			return allowedGrowth.get(t).contains(b);
