@@ -248,15 +248,17 @@ public class GrowListener implements Listener {
 	 * @param event The {@link PlayerInteractEvent} being handled
 	 */
 	@EventHandler(ignoreCancelled = true)
+	
 	public void onPlayerInteract(PlayerInteractEvent event) {
-	    if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			ItemStack item = event.getItem();
-			// Ink Sack with data 15  == Bone Meal
-			if (item.getType() == Material.INK_SACK	&& item.getData().getData() == 15) {
-			    event.setCancelled(true);
-			}
-	    }
-	}
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                        ItemStack item = event.getPlayer().getItemInHand();
+                        // Ink Sack with data 15  == Bone Meal
+                        if (item.getTypeId() == 351 && item.getData().getData() == 15) {
+                                        event.setCancelled(true);
+                        }
+            }
+        }
+	
 
 	/**
 	 * Determines if a plant {@link Material} type can grow in a {@link Biome}
