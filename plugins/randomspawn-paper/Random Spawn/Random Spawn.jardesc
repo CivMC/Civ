@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
 <jardesc>
-    <jar path="R:/Bukkit Test Server/plugins/RandomSpawn-2.4.jar"/>
+    <jar path="R:/Bukkit Test Server/plugins/RandomSpawn-2.5.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/Random Spawn/Random Spawn.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
