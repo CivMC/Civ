@@ -1,5 +1,5 @@
 name: Random Spawn
-version: 2.2.2
+version: 2.5
 main: me.Josvth.RandomSpawn.RandomSpawn
 author: Josvth
 commands:
@@ -60,7 +60,10 @@ commands:
     usage: /rs unsetfirstspawn
     aliases: unsfs
     permission: RandomSpawn.setfirstspawn
-    
+  rs spawn:
+    description: Random spawns a player.
+    usage: /rs spawn <playername> <world> or /rs spawn
+    permission: RandomSpawn.spawncommand
 permissions:
   RandomSpawn.*:
     description: Gives access to all Random Spawn commands.
@@ -100,3 +103,6 @@ permissions:
   RandomSpawn.usesign:
         description: Allows you to use Random Spawn Signs.
         default: true
+  RandomSpawn.spawncommand:
+    description: allows you to use the spawn command.
+    default: op
