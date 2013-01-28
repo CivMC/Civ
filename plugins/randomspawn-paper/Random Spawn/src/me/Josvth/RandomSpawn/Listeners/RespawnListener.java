@@ -43,12 +43,12 @@ public class RespawnListener implements Listener{
 			return; 
 		}
 		
-		if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns", false)){
+		if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns", false) && player.getBedSpawnLocation() != null ){
 			event.setRespawnLocation(player.getBedSpawnLocation());
 			plugin.logDebug(playerName + " is spawned at his saved spawn.");
 			return;
 		}
-				
+		
 		if (randomSpawnFlags.contains("respawn")){
 			
 			Location spawnLocation = plugin.chooseSpawn(world);
