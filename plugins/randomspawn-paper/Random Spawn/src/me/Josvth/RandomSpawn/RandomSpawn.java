@@ -79,16 +79,12 @@ public class RandomSpawn extends JavaPlugin{
 
 		// I don't like this method
 		List<Integer> blacklist = new ArrayList<Integer>();
-		List<String> stringblacklist = yamlHandler.worlds.getStringList(worldName + ".spawnblacklist");
-
-		if (stringblacklist == null) stringblacklist = Arrays.asList(new String[]{"8","9","10","11","18","51","81"});
-
-		for(String item : stringblacklist){
-			try {
-				blacklist.add(Integer.valueOf(item));
-			} catch (NumberFormatException e) {}
-		} 
-
+		
+		if( yamlHandler.worlds.contains( worldName + ".spawnblacklist") )
+			blacklist = yamlHandler.worlds.getIntegerList(worldName + ".spawnblacklist");
+		else
+			blacklist = Arrays.asList(new Integer[]{8,9,10,11,18,51,81});			
+	
 		double xmin = yamlHandler.worlds.getDouble(worldName +".spawnarea.x-min", -100);
 		double xmax = yamlHandler.worlds.getDouble(worldName +".spawnarea.x-max", 100);
 		double zmin = yamlHandler.worlds.getDouble(worldName +".spawnarea.z-min", -100);
@@ -98,16 +94,14 @@ public class RandomSpawn extends JavaPlugin{
 		int thickness = yamlHandler.worlds.getInt(worldName +".spawnarea.thickness", 0);
 
 		String type = yamlHandler.worlds.getString(worldName +".spawnarea.type", "square");
-		
-		logInfo(xmin + "," + xmax + "," + zmin + "," + zmax + ":" + type);
-		
+				
 		double xrand = 0;
 		double zrand = 0;
 		double y = -1;
 		
 		if(type.equalsIgnoreCase("circle")){
 
-			double xcenter = xmin +  (xmax - xmin)/2;
+			double xcenter = xmin + (xmax - xmin)/2;
 			double zcenter = zmin + (zmax - zmin)/2;
 			
 			do {
