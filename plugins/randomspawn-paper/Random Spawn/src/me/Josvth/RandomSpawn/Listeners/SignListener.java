@@ -30,7 +30,7 @@ public class SignListener implements Listener {
 			if (block.getTypeId() == 68 || block.getTypeId() == 63){
 				Sign sign = (Sign)block.getState();
 				final Player player = event.getPlayer();
-				if (sign.getLine(0).equalsIgnoreCase("[RandomSpawn]")){
+				if (sign.getLine(0).equalsIgnoreCase(plugin.yamlHandler.config.getString("rs-sign-text","[RandomSpawn]") ) ){
 										
 					if (player.hasPermission("RandomSpawn.usesign")){
 
@@ -62,7 +62,7 @@ public class SignListener implements Listener {
 
 	@EventHandler
 	public void onPlayerSignPlace(SignChangeEvent event){
-		if (event.getLine(0).equalsIgnoreCase("[RandomSpawn]")){
+		if (event.getLine(0).equalsIgnoreCase( plugin.yamlHandler.config.getString("rs-sign-text","[RandomSpawn]") ) ){
 			Player player = event.getPlayer();
 			if (player.hasPermission("RandomSpawn.placesign")){
 				this.plugin.playerInfo(player, "Random Spawn Sign created!");
