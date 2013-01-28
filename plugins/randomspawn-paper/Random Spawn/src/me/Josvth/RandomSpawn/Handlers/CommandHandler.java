@@ -37,6 +37,7 @@ public class CommandHandler implements CommandExecutor{
 				new SetFirstSpawnCommand(plugin), 
 				new TpFirstSpawnCommand(plugin), 
 				new UnsetFirstSpawnCommand(plugin),
+				new SpawnCommand(plugin)
 		});
 	}
 
@@ -60,7 +61,7 @@ public class CommandHandler implements CommandExecutor{
 		
 		AbstractCommand abstractCommand = commands.get(args[0]);
 		
-		if (!(sender instanceof Player)){
+		if (!(sender instanceof Player) && args[0] != null && !args[0].equals( "reload" ) ){
 			sender.sendMessage("This command can only be used in game!");
 			return true;
 		}
