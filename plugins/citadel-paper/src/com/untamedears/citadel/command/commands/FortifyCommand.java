@@ -44,14 +44,26 @@ public class FortifyCommand extends PlayerCommand {
 				groupName = args[1];
 			}
 		}
-		if(secLevel != null && secLevel.equalsIgnoreCase("group")){
-			if(groupName == null || groupName.isEmpty() || groupName.equals("")){
-				sender.sendMessage(new StringBuilder().append("§cYou must specify a group in group fortification mode").toString());
-				sender.sendMessage(new StringBuilder().append("§cUsage:§e ").append("/ctfortify §8group <group-name>").toString());
-				return true;
-			}
-			GroupManager groupManager = Citadel.getGroupManager();
-			Faction group = groupManager.getGroup(groupName);
+                
+                SecurityLevel securityLevel = getSecurityLevel(args, player);
+                if ((secLevel == null || secLevel.isEmpty()) && state.getMode() == PlacementMode.FORTIFICATION) {
+                    securityLevel = state.getSecurityLevel();
+                }
+                if (securityLevel == null) return false;
+		
+		if(securityLevel == SecurityLevel.GROUP){
+                        Faction group;
+                        if(!(groupName == null) && !(groupName.isEmpty()) && !(groupName.equals(""))){
+                            GroupManager groupManager = Citadel.getGroupManager();
+                            group = groupManager.getGroup(groupName);
+                        } else if (state.getMode() == PlacementMode.FORTIFICATION && state.getSecurityLevel() == SecurityLevel.GROUP) {
+                            /* Default to current faction */
+                            group = state.getFaction();
+                        } else {
+                            sender.sendMessage(new StringBuilder().append("§cYou must specify a group in group fortification mode").toString());
+                            sender.sendMessage(new StringBuilder().append("§cUsage:§e ").append("/ctfortify §8group <group-name>").toString());
+                            return true;
+                        }
 			if(group == null){
 				sendMessage(sender, ChatColor.RED, "Group doesn't exist");
 				return true;
@@ -69,16 +81,23 @@ public class FortifyCommand extends PlayerCommand {
 		} else {
 			state.setFaction(Citadel.getMemberManager().getMember(player).getPersonalGroup());
 		}
-		
-		SecurityLevel securityLevel = getSecurityLevel(args, player);
-        if (securityLevel == null) return false;
 
         ReinforcementMaterial material = ReinforcementMaterial.get(player.getItemInHand().getType());
-        if (material == null) {
-            sendMessage(sender, ChatColor.YELLOW, "Invalid reinforcement material %s", player.getItemInHand().getType().name());
-        } else {
-            state.setFortificationMaterial(material);
+        if (state.getMode() == PlacementMode.FORTIFICATION) {
+            // Only change material if a valid reinforcement material in hand and not current reinforcement
+            if (material != null && material != state.getReinforcementMaterial()) {
+                // Switch reinforcement materials without turning off and on again
+                state.reset();
+                state.setFortificationMaterial(material);
+            }
             setMultiMode(PlacementMode.FORTIFICATION, securityLevel, args, player, state);
+        } else {
+            if (material == null) {
+                sendMessage(sender, ChatColor.YELLOW, "Invalid reinforcement material %s", player.getItemInHand().getType().name());
+            } else {
+                state.setFortificationMaterial(material);
+                setMultiMode(PlacementMode.FORTIFICATION, securityLevel, args, player, state);
+            }
         }
         
         return true;
