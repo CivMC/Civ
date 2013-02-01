@@ -101,7 +101,20 @@ public class Utility {
         			sendMessage(player, ChatColor.RED, "You don't seem to have a personal group. Try logging out and back in first");
         		}
         	}
-            player.getInventory().removeItem(material.getRequiredMaterials());
+
+            // workaround fix for 1.4.6, it doesnt remove the placed item if its already removed for some reason?
+            if ((state.getMode() == PlacementMode.FORTIFICATION) && (blockTypeId == material.getMaterialId())) {
+            	ItemStack stack = player.getItemInHand();
+            	if (stack.getAmount() < material.getRequirements() + 1) {
+            		sendMessage(player, ChatColor.RED, "Not enough material in hand to place and fortify this block");
+            		return null;
+            	}
+            	stack.setAmount(stack.getAmount() - (material.getRequirements() + 1));
+            	player.setItemInHand(stack);
+            }
+            else {
+            	player.getInventory().removeItem(material.getRequiredMaterials());
+            }
             //TODO: there will eventually be a better way to flush inventory changes to the client
             player.updateInventory();
             PlayerReinforcement reinforcement = new PlayerReinforcement(block, material, group, state.getSecurityLevel());
