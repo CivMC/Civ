@@ -216,15 +216,6 @@ public class BlockListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onBlockFromToEvent(BlockFromToEvent event) {
-//        Block from_block = event.getBlock();
-//        Material from_material = from_block.getType();
-//        if (!from_material.equals(Material.LAVA) &&
-//            !from_material.equals(Material.STATIONARY_LAVA) &&
-//            !from_material.equals(Material.WATER) &&
-//            !from_material.equals(Material.STATIONARY_WATER) &&
-//            !from_material.equals(Material.AIR)) {
-//            return;
-//        }
         Block to_block = event.getToBlock();
         Material to_material = to_block.getType();
         if (!to_material.equals(Material.RAILS) &&
