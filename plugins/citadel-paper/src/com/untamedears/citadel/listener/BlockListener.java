@@ -2,6 +2,7 @@ package com.untamedears.citadel.listener;
 
 import static com.untamedears.citadel.Utility.createNaturalReinforcement;
 import static com.untamedears.citadel.Utility.createPlayerReinforcement;
+import static com.untamedears.citadel.Utility.isReinforced;
 import static com.untamedears.citadel.Utility.maybeReinforcementDamaged;
 import static com.untamedears.citadel.Utility.reinforcementBroken;
 import static com.untamedears.citadel.Utility.reinforcementDamaged;
@@ -23,11 +24,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
@@ -214,24 +215,26 @@ public class BlockListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
-    public void blockPhysics(BlockPhysicsEvent bpe) {
-       Material changedType = bpe.getChangedType();
-       if (Material.LAVA == changedType) {
-           Block block = bpe.getBlock();
-           // Protection for reinforced rails types from lava. Similar to water, transform surrounding blocks in cobblestone to stop the lava effect.
-           if (Material.RAILS == block.getType() || Material.POWERED_RAIL == block.getType() || Material.DETECTOR_RAIL == block.getType()) {
-               boolean isReinforced = maybeReinforcementDamaged(block);
-               if (isReinforced) {
-                   for (BlockFace blockFace : new BlockFace[]{BlockFace.DOWN, BlockFace.UP, BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH}) {
-                       Block otherBlock = block.getRelative(blockFace);
-                       if (Material.LAVA == otherBlock.getType()) {
-                           otherBlock.setType(Material.COBBLESTONE);
-                           otherBlock.getWorld().playEffect(otherBlock.getLocation(), Effect.EXTINGUISH, 0);
-                       }
-                   }
-               }
-           }
-       }
+    public void onBlockFromToEvent(BlockFromToEvent event) {
+//        Block from_block = event.getBlock();
+//        Material from_material = from_block.getType();
+//        if (!from_material.equals(Material.LAVA) &&
+//            !from_material.equals(Material.STATIONARY_LAVA) &&
+//            !from_material.equals(Material.WATER) &&
+//            !from_material.equals(Material.STATIONARY_WATER) &&
+//            !from_material.equals(Material.AIR)) {
+//            return;
+//        }
+        Block to_block = event.getToBlock();
+        Material to_material = to_block.getType();
+        if (!to_material.equals(Material.RAILS) &&
+            !to_material.equals(Material.POWERED_RAIL) &&
+            !to_material.equals(Material.DETECTOR_RAIL)) {
+            return;
+        }
+        if (isReinforced(to_block)) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)

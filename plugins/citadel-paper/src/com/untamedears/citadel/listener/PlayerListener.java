@@ -1,7 +1,7 @@
 package com.untamedears.citadel.listener;
 
 import static com.untamedears.citadel.Utility.createPlayerReinforcement;
-import static com.untamedears.citadel.Utility.maybeReinforcementDamaged;
+import static com.untamedears.citadel.Utility.isReinforced;
 import static com.untamedears.citadel.Utility.reinforcementBroken;
 import static com.untamedears.citadel.Utility.sendMessage;
 
@@ -96,14 +96,15 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void bucketEmpty(PlayerBucketEmptyEvent pbee) {
        Material bucket = pbee.getBucket();
-       if (Material.LAVA_BUCKET == bucket) {
+       if (Material.LAVA_BUCKET == bucket || Material.WATER_BUCKET == bucket) {
            Block block = pbee.getBlockClicked();
            BlockFace face = pbee.getBlockFace();
            Block relativeBlock = block.getRelative(face);
            // Protection for reinforced rails types from direct lava bucket drop.
            if (Material.RAILS == relativeBlock.getType() || Material.POWERED_RAIL == relativeBlock.getType() || Material.DETECTOR_RAIL == relativeBlock.getType()) {               
-               boolean isReinforced = maybeReinforcementDamaged(relativeBlock);
-               pbee.setCancelled(isReinforced);
+               if (isReinforced(relativeBlock)) {
+                  pbee.setCancelled(true);
+               }
            }
        }
     }
