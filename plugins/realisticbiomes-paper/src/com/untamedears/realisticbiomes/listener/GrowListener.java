@@ -143,10 +143,14 @@ public class GrowListener implements Listener {
 				Biome.RIVER
 			}))
 		);
-		allowedGrowth.put(	Material.NETHER_STALK,
+		allowedGrowth.put(	Material.NETHER_WARTS,
 			new HashSet<Biome>( Arrays.asList(new Biome[]{
 				Biome.HELL
 			}))
+		);
+		allowedGrowth.put(	Material.SAPLING,
+			// store sapling material only to catch bonemeal interaction; growth handled by tree type
+			new HashSet<Biome>()
 		);
 		allowedGrowth.put(	TreeType.TREE,
 			new HashSet<Biome>( Arrays.asList(new Biome[]{
@@ -159,7 +163,8 @@ public class GrowListener implements Listener {
 				Biome.SWAMPLAND,
 				Biome.ICE_MOUNTAINS,
 				Biome.ICE_PLAINS,
-				Biome.MUSHROOM_ISLAND
+				Biome.MUSHROOM_ISLAND,
+				Biome.SKY
 			}))
 		);
 		allowedGrowth.put(	TreeType.BIG_TREE,
@@ -248,17 +253,19 @@ public class GrowListener implements Listener {
 	 * @param event The {@link PlayerInteractEvent} being handled
 	 */
 	@EventHandler(ignoreCancelled = true)
-	
+
 	public void onPlayerInteract(PlayerInteractEvent event) {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                        ItemStack item = event.getPlayer().getItemInHand();
-                        // Ink Sack with data 15  == Bone Meal
-                        if (item.getTypeId() == 351 && item.getData().getData() == 15) {
-                                        event.setCancelled(true);
-                        }
+                ItemStack item = event.getPlayer().getItemInHand();
+                if (item.getTypeId() == 351 && item.getData().getData() == 15) {
+                	Material clicked = event.getClickedBlock().getType();
+                	if(allowedGrowth.containsKey(clicked)) {
+                		event.setCancelled(true);
+                	}
+                }
             }
         }
-	
+
 
 	/**
 	 * Determines if a plant {@link Material} type can grow in a {@link Biome}
