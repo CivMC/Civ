@@ -1,0 +1,8 @@
+general:
+
+disabled_recipes:
+  amount: 4
+  recipe_1: DIAMOND_HELMET
+  recipe_2: DIAMOND_CHESTPLATE
+  recipe_3: DIAMOND_LEGGINGS
+  recipe_4: DIAMOND_BOOTS
