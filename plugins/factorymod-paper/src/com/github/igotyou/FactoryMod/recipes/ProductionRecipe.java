@@ -1,10 +1,13 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Material;
 
+import com.github.igotyou.FactoryMod.FactoryObject.SubFactoryType;
 import com.github.igotyou.FactoryMod.interfaces.Recipe;
+import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 
 public class ProductionRecipe implements Recipe
 {
@@ -44,7 +47,20 @@ public class ProductionRecipe implements Recipe
 	{
 		return inputAmount;
 	}
-
+	
+	public HashMap<Integer, Integer> getInputAmountWithBatchAmount() 
+	{
+		HashMap<Integer,Integer> returnValue = getInputAmount();
+		for (Map.Entry<Integer, Integer> entry : getInputAmount().entrySet())
+		{
+			int key = entry.getKey();
+			int value = entry.getValue();
+			value = value * getBatchAmount();
+			returnValue.put(key, value);
+		}
+		return returnValue;
+	}
+	
 	public String getRecipeName() 
 	{
 		return recipeName;
@@ -54,5 +70,7 @@ public class ProductionRecipe implements Recipe
 	{
 		return productionTime;
 	}
+
+
 
 }

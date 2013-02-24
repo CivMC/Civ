@@ -3,17 +3,14 @@ package com.github.igotyou.FactoryMod;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
-import org.bukkit.block.Dispenser;
+import org.bukkit.block.Furnace;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.interfaces.Properties;
-import com.github.igotyou.FactoryMod.utility.InteractionResponse;
-import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 
 //original file:
 /**
@@ -45,7 +42,7 @@ public class FactoryObject
 	
 	protected Location factoryLocation; // Current location of factory center
 	protected Location factoryInventoryLocation;
-	protected Location factoryPowerSource;
+	protected Location factoryPowerSourceLocation;
 	protected boolean active; // Whether factory is currently active
 	protected Inventory factoryInventory; // The inventory of the factory
 	protected FactoryType factoryType; // The type this factory is
@@ -62,7 +59,7 @@ public class FactoryObject
 	{
 		this.factoryLocation = factoryLocation;
 		this.factoryInventoryLocation = factoryInventoryLocation;
-		this.factoryPowerSource = factoryPowerSource;
+		this.factoryPowerSourceLocation = factoryPowerSource;
 		this.active = false;
 		this.factoryType = factoryType;
 		this.subFactoryType = subFactoryType;
@@ -79,7 +76,7 @@ public class FactoryObject
 	{
 		this.factoryLocation = factoryLocation;
 		this.factoryInventoryLocation = factoryInventoryLocation;
-		this.factoryPowerSource = factoryPowerSource;
+		this.factoryPowerSourceLocation = factoryPowerSource;
 		this.active = active;
 		this.factoryType = factoryType;
 		this.subFactoryType = subFactoryType;
@@ -97,7 +94,7 @@ public class FactoryObject
 	{
 		this.factoryLocation = factoryLocation;
 		this.factoryInventoryLocation = factoryInventoryLocation;
-		this.factoryPowerSource = factoryPowerSource;
+		this.factoryPowerSourceLocation = factoryPowerSource;
 		this.active = active;
 		this.factoryType = factoryType;
 		this.subFactoryType = subFactoryType;
@@ -143,14 +140,13 @@ public class FactoryObject
 	
 	/**
 	 * Returns whether there is enough material available for an upgrade in cloaker inventory
-	 */
-	public boolean upgradeMaterialAvailable(int desiredTier)
+	 */	
+	public boolean buildMaterialAvailable(Properties desiredProperties)
 	{
-		Properties desiredProperties = FactoryModPlugin.getProperties(factoryType, subFactoryType);
 		boolean returnValue = true;
 		for (int i = 1; i <= desiredProperties.getBuildMaterial().size(); i++)
 		{
-			if (!isMaterialAvailable(desiredProperties.getBuildAmount().get(i), desiredProperties.getBuildMaterial().get(i)))
+			if (!isMaterialAvailable(getInventory(), desiredProperties.getBuildMaterial().get(i), desiredProperties.getBuildAmount().get(i)))
 			{
 				returnValue = false;
 			}
@@ -158,17 +154,10 @@ public class FactoryObject
 		return returnValue;
 	}
 	
-	public boolean buildMaterialAvailable(Properties desiredProperties)
+	public void addMaterial(Inventory inventory, Material material, int amount)
 	{
-		boolean returnValue = true;
-		for (int i = 1; i <= desiredProperties.getBuildMaterial().size(); i++)
-		{
-			if (!isMaterialAvailable(desiredProperties.getBuildAmount().get(i), desiredProperties.getBuildMaterial().get(i)))
-			{
-				returnValue = false;
-			}
-		}
-		return returnValue;
+		ItemStack itemStack = new ItemStack(material, amount);
+		inventory.addItem(itemStack);
 	}
 	
 	/**
@@ -179,7 +168,7 @@ public class FactoryObject
 		boolean returnValue = true;
 		for (int i = 1; i <= desiredProperties.getBuildMaterial().size(); i++)
 		{
-			if (!removeMaterial(desiredProperties.getBuildAmount().get(i), desiredProperties.getBuildMaterial().get(i)))
+			if (!removeMaterial(getInventory(), desiredProperties.getBuildMaterial().get(i), desiredProperties.getBuildAmount().get(i)))
 			{
 				returnValue = false;
 			}
@@ -187,12 +176,26 @@ public class FactoryObject
 		return returnValue;
 	}
 	
+	public boolean removeMaterials(Inventory inventory, HashMap<Integer, Material> materials, HashMap<Integer, Integer> amount)
+	{
+		boolean returnValue = true;
+		for (int i = 1; i <= materials.size(); i++)
+		{
+			if (!removeMaterial(inventory, materials.get(i), amount.get(i)))
+			{
+				returnValue = false;
+			}
+		}
+		return returnValue;
+	}
+
+	
 	/**
 	 * Attempts to remove a specific material of given amount from dispenser
 	 */
-	public boolean removeMaterial(int amount, Material material)
+	public boolean removeMaterial(Inventory inventory, Material material, int amount)
 	{
-		HashMap<Integer,? extends ItemStack> inventoryMaterials = getInventory().all(material);
+		HashMap<Integer,? extends ItemStack> inventoryMaterials = inventory.all(material);
 		
 		int materialsToRemove = amount;
 		for(Entry<Integer,? extends ItemStack> entry : inventoryMaterials.entrySet())
@@ -224,9 +227,9 @@ public class FactoryObject
 	/**
 	 * Checks if a specific material of given amount is available in dispenser
 	 */
-	public boolean isMaterialAvailable(int amount, Material material)
+	public boolean isMaterialAvailable(Inventory inventory, Material material, int amount)
 	{
-		HashMap<Integer,? extends ItemStack> inventoryMaterials = getInventory().all(material);
+		HashMap<Integer,? extends ItemStack> inventoryMaterials = inventory.all(material);
 		
 		int totalMaterial = 0;
 		for(Entry<Integer,? extends ItemStack> entry : inventoryMaterials.entrySet())
@@ -262,7 +265,7 @@ public class FactoryObject
 		switch (factoryType)
 		{
 		case PRODUCTION:
-			Chest chestBlock = (Chest)factoryLocation.getBlock();
+			Chest chestBlock = (Chest)factoryInventoryLocation.getBlock();
 			factoryInventory = chestBlock.getInventory();
 			return factoryInventory;
 		default:
@@ -270,4 +273,16 @@ public class FactoryObject
 		}
 	}
 
+	public Inventory getPowerSourceInventory()
+	{
+		switch (factoryType)
+		{
+		case PRODUCTION:
+			Furnace furnaceBlock = (Furnace)factoryPowerSourceLocation.getBlock();
+			factoryInventory = furnaceBlock.getInventory();
+			return factoryInventory;
+		default:
+			return factoryInventory;
+		}
+	}
 }

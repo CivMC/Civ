@@ -1,10 +1,10 @@
 package com.github.igotyou.FactoryMod;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ItemStack;
@@ -22,10 +22,17 @@ public class FactoryModPlugin extends JavaPlugin
 	FactoryModManager manager;
 	public static HashMap<SubFactoryType, ProductionProperties> Production_Properties;
 	
+	public static final String VERSION = "v1.0"; //Current version of plugin
+	public static final String PLUGIN_NAME = "FactoryMod"; //Name of plugin
+	public static final String PLUGIN_PREFIX = PLUGIN_NAME + " " + VERSION + ": ";
+	public static final String PRODUCTION_SAVES_FILE = "productionSaves"; // The ore gin saves file name
+	public static final int TICKS_PER_SECOND = 20; //The number of ticks per second
+	
 	public static int AMOUNT_OF_RECIPES_TO_REMOVE;
 	public static int PRODUCTION_MAX_TIERS;
 	public static int PRODUCER_UPDATE_CYCLE;
-	public static String PRODUCTION_SAVES_FILE;
+	public static boolean PRODUCTION_ENEABLED;
+	public static int SAVE_CYCLE;
 	
 	public void onEnable()
 	{
@@ -94,5 +101,10 @@ public class FactoryModPlugin extends JavaPlugin
 	{
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public static void sendConsoleMessage(String message) 
+	{
+		Bukkit.getLogger().info(FactoryModPlugin.PLUGIN_PREFIX + message);	
 	}
 }

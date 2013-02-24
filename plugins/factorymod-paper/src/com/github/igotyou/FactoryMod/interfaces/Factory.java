@@ -1,7 +1,6 @@
 package com.github.igotyou.FactoryMod.interfaces;
 
 import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 //original file:
