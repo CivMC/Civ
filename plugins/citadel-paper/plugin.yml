@@ -120,13 +120,19 @@ commands:
     aliases: ctgst
     description: Displayers group statistics
     usage: /ctgstats <group-name>
-    permission: citadel.console
+    permission: citadel.admin.ctgstats
   ctpstats:
     aliases: ctpst
     description: Displayers player statistics
     usage: /ctpstats <player-name>
-    permission: citadel.console
+    permission: citadel.admin.ctpstats
 permissions:
   citadel.console:
     description: Console commands for Citadel
     default: false
+  citadel.admin:
+    description: Grants permission to Citadels admin commands.
+    default: op
+    children:
+      citadel.admin.ctgstats: true
+      citadel.admin.ctpstats: true
