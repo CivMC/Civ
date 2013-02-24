@@ -6,3 +6,46 @@ disabled_recipes:
   recipe_2: DIAMOND_CHESTPLATE
   recipe_3: DIAMOND_LEGGINGS
   recipe_4: DIAMOND_BOOTS
+
+production_recipes:
+  amount:4
+  recipe_1:
+    name: Diamond Helmet
+    batch_amount: 10
+    production_time: 120
+    output_material: DIAMOND_HELMET
+    amount_of_material_inputs: 1
+    input_material_1: DIAMOND
+    input_amount_1: 5
+  recipe_2:
+    name: Diamond Chestplate
+    batch_amount: 10
+    production_time: 120
+    output_material: DIAMOND_CHESTPLATE
+    amount_of_material_inputs: 1
+    input_material_1: DIAMOND
+    input_amount_1: 8
+  recipe_3:
+    name: Diamond Leggings
+    batch_amount: 10
+    production_time: 120
+    output_material: DIAMOND_LEGGINGS
+    amount_of_material_inputs: 1
+    input_material_1: DIAMOND
+    input_amount_1: 7
+  recipe_4:
+    name: Diamond Boots
+    batch_amount: 10
+    production_time: 120
+    output_material: DIAMOND_BOOTS
+    amount_of_material_inputs: 1
+    input_material_1: DIAMOND
+    input_amount_1: 4
+    
+production_general:
+  update_cycle: 20
+  amount_of_factory_types: 1
+  
+  factory_1:
+    name: workshop
+    
