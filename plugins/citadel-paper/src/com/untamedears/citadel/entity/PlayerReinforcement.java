@@ -196,6 +196,9 @@ public class PlayerReinforcement implements
                            name, toString()));
             return false;
         }
+        if (owner.isDisciplined()) {
+            return false;
+        }
         switch (securityLevel) {
             case PRIVATE:
                 return name.equals(owner.getFounder());
@@ -213,6 +216,9 @@ public class PlayerReinforcement implements
             Citadel.severe(String.format("isBypassable(%s) encountered unowned reinforcement: %s",
                            name, toString()));
             sendMessage(player, ChatColor.RED, "This reinforcement has an issue. Please send modmail.");
+            return false;
+        }
+        if (owner.isDisciplined()) {
             return false;
         }
         switch (securityLevel) {

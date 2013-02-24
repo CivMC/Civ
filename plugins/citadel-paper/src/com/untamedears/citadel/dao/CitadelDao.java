@@ -336,6 +336,14 @@ public class CitadelDao extends MyDatabase {
         } catch(PersistenceException e){
            	//column already exists
         }
+
+        try {
+            SqlUpdate addFactionDisabled = getDatabase().createSqlUpdate(
+                "ALTER TABLE faction ADD COLUMN discipline_flags TINYINT NOT NULL DEFAULT 0");
+            getDatabase().execute(addFactionDisabled);
+        } catch(PersistenceException e){
+           	//column already exists
+        }
     }
 
     protected void prepareDatabaseAdditionalConfig(DataSourceConfig dataSourceConfig, ServerConfig serverConfig) {

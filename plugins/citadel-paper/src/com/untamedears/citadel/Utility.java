@@ -1,6 +1,7 @@
 package com.untamedears.citadel;
 
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
@@ -24,6 +27,7 @@ import com.untamedears.citadel.entity.PlayerState;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.NaturalReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
+import com.untamedears.citadel.entity.ReinforcementKey;
 import com.untamedears.citadel.entity.ReinforcementMaterial;
 
 /**
@@ -73,6 +77,10 @@ public class Utility {
         if (PlayerReinforcement.NON_REINFORCEABLE.contains(blockTypeId)) return null;
 
         PlayerState state = PlayerState.get(player);
+        if (state.getFaction().isDisciplined()) {
+            sendMessage(player, ChatColor.RED, Faction.kDisciplineMsg);
+            return null;
+        }
         ReinforcementMaterial material;
         switch (state.getMode()) {
             case REINFORCEMENT:
@@ -189,6 +197,46 @@ public class Utility {
         Citadel.getReinforcementManager().removeReinforcement(reinforcement);
     }
 
+    public static boolean isAuthorizedPlayerNear(PlayerReinforcement reinforcement, double distance) {
+        ReinforcementKey key = reinforcement.getId();
+        World reinWorld = Citadel.getPlugin().getServer().getWorld(key.getWorld());
+        Location reinLocation = new Location(
+            reinWorld, (double)key.getX(), (double)key.getY(), (double)key.getZ());
+        double min_x = reinLocation.getX() - distance;
+        double min_z = reinLocation.getZ() - distance;
+        double max_x = reinLocation.getX() + distance;
+        double max_z = reinLocation.getZ() + distance;
+        List<Player> onlinePlayers = reinWorld.getPlayers();
+        boolean result = false;
+        try {
+            for (Player player : onlinePlayers) {
+                if (player.isDead()) {
+                    continue;
+                }
+                Location playerLocation = player.getLocation();
+                double player_x = playerLocation.getX();
+                double player_z = playerLocation.getZ();
+                // Simple bounding box check to quickly rule out Players
+                //  before doing the more expensive playerLocation.distance
+                if (player_x < min_x || player_x > max_x ||
+                        player_z < min_z || player_z > max_z) {
+                    continue;
+                }
+                if (!reinforcement.isAccessible(player)) {
+                    continue;
+                }
+                double distanceSquared = playerLocation.distance(reinLocation);
+                if (distanceSquared <= distance) {
+                    result = true;
+                    break;
+                }
+            }
+        } catch (ConcurrentModificationException e) {
+            Citadel.warning("ConcurrentModificationException at redstonePower() in BlockListener");
+        }
+        return result;
+    }
+
     public static boolean maybeReinforcementDamaged(Block block) {
         AccessDelegate delegate = AccessDelegate.getDelegate(block);
         IReinforcement reinforcement = delegate.getReinforcement();
@@ -241,7 +289,10 @@ public class Utility {
 
     public static void setMultiMode(PlacementMode mode, SecurityLevel securityLevel, String[] args, Player player, PlayerState state) {
         if (!MULTI_MODE.contains(mode)) return;
-
+        if (state.getFaction().isDisciplined()) {
+            sendMessage(player, ChatColor.RED, Faction.kDisciplineMsg);
+            return;
+        }
         if (state.getMode() == mode && state.getSecurityLevel() == securityLevel) {
             state.reset();
             sendMessage(player, ChatColor.GREEN, "%s mode off", mode.name());
@@ -264,6 +315,10 @@ public class Utility {
     }
     
     public static void setSingleMode(SecurityLevel securityLevel, PlayerState state, Player player) {
+        if (state.getFaction().isDisciplined()) {
+            sendMessage(player, ChatColor.RED, Faction.kDisciplineMsg);
+            return;
+        }
         if (state.getMode() != PlacementMode.REINFORCEMENT_SINGLE_BLOCK) {
             state.setSecurityLevel(securityLevel);
             state.setMode(PlacementMode.REINFORCEMENT_SINGLE_BLOCK);

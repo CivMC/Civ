@@ -48,6 +48,16 @@ public class GroupInfoCommand extends PlayerCommand {
 			}
 			sender.sendMessage(new StringBuilder().append("§cJoinable:§e ").append(joinable).toString());
 		}
+		if (group.isDisciplined()) {
+			StringBuilder discipline = new StringBuilder().append("§cDiscipline:§e");
+   			if (group.isDisabled()) {
+				discipline.append(" Disabled");
+			}
+			if (group.isDeleted()) {
+				discipline.append(" Deleted");
+			}
+			sender.sendMessage(discipline.toString());
+		}
 		return true;
 	}
 

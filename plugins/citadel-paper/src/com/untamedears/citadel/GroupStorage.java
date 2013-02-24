@@ -60,8 +60,7 @@ public class GroupStorage {
 	public Set<Faction> findGroupsByMember(String memberName){
 		Set<Faction> groups = new HashSet<Faction>();
 		for(FactionMember factionMember : this.dao.findGroupsByMember(memberName)){
-			Faction group = new Faction(factionMember.getFactionName(), factionMember.getMemberName());
-			groups.add(group);
+			groups.add(findGroupByName(factionMember.getFactionName()));
 		}
 		return groups;
 	}
@@ -96,8 +95,7 @@ public class GroupStorage {
 	public Set<Faction> findGroupsByModerator(String memberName) {
 		Set<Faction> groups = new HashSet<Faction>();
 		for(Moderator mod : this.dao.findGroupsByModerator(memberName)){
-			Faction group = new Faction(mod.getFactionName(), mod.getMemberName());
-			groups.add(group);
+			groups.add(findGroupByName(mod.getFactionName()));
 		}
 		return groups;
 	}

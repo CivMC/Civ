@@ -40,6 +40,10 @@ public class AddModCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "Group doesn't exist");
 			return true;
 		}
+		if (group.isDisciplined()) {
+			sendMessage(sender, ChatColor.RED, Faction.kDisciplineMsg);
+			return true;
+		}
 		String founderName = sender.getName();
 		if(!group.isFounder(founderName)){
 			sendMessage(sender, ChatColor.RED, "Invalid permission to modify this group");

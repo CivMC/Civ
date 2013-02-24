@@ -82,18 +82,22 @@ public class GroupsCommand extends PlayerCommand {
 		}
 		for(int g = start; g < end; g++){
 			Faction group = groups.get(g);
-			String line = group.getName();
+            StringBuilder line = new StringBuilder()
+                .append(group.getName());
 			if(ownedGroups.contains(group)){
-				line = line + " (Owner)";
+				line.append(" (Owner)");
 			} else if(moderatedGroups.contains(group)){
-				line = line + " (Moderator)";
+				line.append(" (Moderator)");
 			} else if(memberGroups.contains(group)){
-				line = line + " (Member)";
+				line.append(" (Member)");
 			} 
 			if(group.getName().equalsIgnoreCase(personalGroupName)){
-				line = line + " (Default Group)";
+				line.append(" (Default Group)");
 			}
-			sendMessage(sender, ChatColor.WHITE, line);
+			if (group.isDisciplined()) {
+				line.append(" (Disciplined)");
+			}
+			sendMessage(sender, ChatColor.WHITE, line.toString());
 		}
 		if(page + 1 < numPages){
 			sendMessage(sender, ChatColor.GRAY, "For more type \"/ctgroups [n]\"");

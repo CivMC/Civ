@@ -33,6 +33,10 @@ public class PasswordCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "Group doesn't exist");
 			return true;
 		}
+		if (group.isDisciplined()) {
+			sendMessage(sender, ChatColor.RED, Faction.kDisciplineMsg);
+			return true;
+		}
 		String playerName = sender.getName();
 		if(!group.isFounder(playerName)){
 			sendMessage(sender, ChatColor.RED, "Invalid permission to modify this group");

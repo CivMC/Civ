@@ -2,6 +2,7 @@ package com.untamedears.citadel.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -16,17 +17,28 @@ import com.untamedears.citadel.Citadel;
 @Entity
 public class Faction implements Serializable {
 
-	private static final long serialVersionUID = -1660849671051487634L;
-	
+	private static final long serialVersionUID = -1660123901051487634L;
+    public static final byte kDisabledFlag = 0x01;
+    public static final byte kDeletedFlag = 0x02;
+    public static final String kDisciplineMsg = "The group is under administrative discipline";
+
 	@Id private String name;
     private String founder;
     private String password;
 
-    public Faction() {}
+    @Column(name="discipline_flags", nullable=false)
+    private Integer disciplineFlags;
+
+    public Faction() {
+        this.name = "";
+        this.founder = "";
+        this.disciplineFlags = 0;
+    }
 
     public Faction(String name, String founder) {
         this.name = name;
         this.founder = founder;
+        this.disciplineFlags = 0;
     }
 
     public String getName() {
@@ -52,7 +64,49 @@ public class Faction implements Serializable {
     public void setPassword(String password){
     	this.password = password;
     }
-    
+
+    // Don't get/set this.disciplineFlags outside of these getter/setters
+    //  even when accessing from inside the class
+    public Integer getDisciplineFlags() {
+        return this.disciplineFlags & 0xFF;
+    }
+
+    public void setDisciplineFlags(Integer flags) {
+        this.disciplineFlags = flags & 0xFF;
+    }
+
+    public boolean isDisabled() {
+        return (getDisciplineFlags() & kDisabledFlag) != 0;
+    }
+
+    public void setDisabled(boolean set) {
+        Integer flag = getDisciplineFlags();
+        if (set) {
+            flag |= kDisabledFlag;
+        } else {
+            flag &= ~kDisabledFlag;
+        }
+        setDisciplineFlags(flag);
+    }
+
+    public boolean isDeleted() {
+        return (getDisciplineFlags() & kDeletedFlag) != 0;
+    }
+
+    public void setDeleted(boolean set) {
+        Integer flag = getDisciplineFlags();
+        if (set) {
+            flag |= kDeletedFlag;
+        } else {
+            flag &= ~kDeletedFlag;
+        }
+        setDisciplineFlags(flag);
+    }
+
+    public boolean isDisciplined() {
+        return getDisciplineFlags() != 0;
+    }
+
     public boolean isFounder(String memberName){
     	return isFounder(new Member(memberName));
     }

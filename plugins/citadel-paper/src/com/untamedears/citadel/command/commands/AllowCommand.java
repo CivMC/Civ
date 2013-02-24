@@ -37,9 +37,13 @@ public class AllowCommand extends PlayerCommand {
 		GroupManager groupManager = Citadel.getGroupManager();
 		Faction group = groupManager.getGroup(groupName);
 		if(group == null){
-        	sendMessage(sender, ChatColor.RED, "Group doesn't exist");
-        	return true;
-        }
+			sendMessage(sender, ChatColor.RED, "Group doesn't exist");
+			return true;
+		}
+		if (group.isDisciplined()) {
+			sendMessage(sender, ChatColor.RED, Faction.kDisciplineMsg);
+			return true;
+		}
 		String senderName = sender.getName();
         if(!group.isFounder(senderName) && !group.isModerator(senderName)){
         	sendMessage(sender, ChatColor.RED, "Invalid access to modify this group");

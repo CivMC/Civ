@@ -37,6 +37,10 @@ public class ModeratorsCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "Group doesn't exist");
 			return true;
 		}
+		if (group.isDisciplined()) {
+			sendMessage(sender, ChatColor.RED, Faction.kDisciplineMsg);
+			return true;
+		}
 		String senderName = sender.getName();
 		if(!group.isFounder(senderName) && !group.isModerator(senderName)){
 			sendMessage(sender, ChatColor.RED, "Invalid permission to access this group");

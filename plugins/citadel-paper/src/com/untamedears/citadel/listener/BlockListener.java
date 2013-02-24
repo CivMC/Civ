@@ -2,13 +2,14 @@ package com.untamedears.citadel.listener;
 
 import static com.untamedears.citadel.Utility.createNaturalReinforcement;
 import static com.untamedears.citadel.Utility.createPlayerReinforcement;
+import static com.untamedears.citadel.Utility.isAuthorizedPlayerNear;
 import static com.untamedears.citadel.Utility.isReinforced;
 import static com.untamedears.citadel.Utility.maybeReinforcementDamaged;
 import static com.untamedears.citadel.Utility.reinforcementBroken;
 import static com.untamedears.citadel.Utility.reinforcementDamaged;
 import static com.untamedears.citadel.Utility.sendMessage;
+import static com.untamedears.citadel.Utility.sendThrottledMessage;
 
-import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,10 +42,12 @@ import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.PlacementMode;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.access.AccessDelegate;
+import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.PlayerState;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.NaturalReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
+import com.untamedears.citadel.entity.ReinforcementKey;
 import com.untamedears.citadel.entity.ReinforcementMaterial;
 
 public class BlockListener implements Listener {
@@ -58,6 +61,11 @@ public class BlockListener implements Listener {
     public void placeFortifiedBlock(BlockPlaceEvent bpe) {
         Player player = bpe.getPlayer();
         PlayerState state = PlayerState.get(player);
+        if (state.getFaction().isDisciplined()) {
+            sendThrottledMessage(player, ChatColor.RED, Faction.kDisciplineMsg);
+            bpe.setCancelled(true);
+            return;
+        }
 
         if (state.getMode() != PlacementMode.FORTIFICATION) {
             // if we are not in fortification mode
@@ -263,46 +271,7 @@ public class BlockListener implements Listener {
                 return;
             }
             double redstoneDistance = Citadel.getConfigManager().getRedstoneDistance();
-            Location blockLocation = block.getLocation();
-            double min_x = blockLocation.getX() - redstoneDistance;
-            double min_z = blockLocation.getZ() - redstoneDistance;
-            double max_x = blockLocation.getX() + redstoneDistance;
-            double max_z = blockLocation.getZ() + redstoneDistance;
-            World blockWorld = blockLocation.getWorld();
-            //Set<Player> onlinePlayers = new HashSet<Player>(Citadel.getMemberManager().getOnlinePlayers());
-            Player[] onlinePlayers = Citadel.getPlugin().getServer().getOnlinePlayers();
-            boolean isAuthorizedPlayerNear = false;
-            try {
-                for (Player player : onlinePlayers) {
-                    if (player.isDead()) {
-                        continue;
-                    }
-                    Location playerLocation = player.getLocation();
-                    double player_x = playerLocation.getX();
-                    double player_z = playerLocation.getZ();
-                    // Simple bounding box check to quickly rule out Players
-                    //  before doing the more expensive playerLocation.distance
-                    if (player_x < min_x || player_x > max_x ||
-                        player_z < min_z || player_z > max_z) {
-                        continue;
-                    }
-                    if (playerLocation.getWorld() != blockWorld) {
-                        continue;
-                    }
-                    if (!reinforcement.isAccessible(player)) {
-                        continue;
-                    }
-                    double distanceSquared =
-                        playerLocation.distance(blockLocation);
-                    if (distanceSquared <= redstoneDistance) {
-                        isAuthorizedPlayerNear = true;
-                        break;
-                    }
-                }
-            } catch (ConcurrentModificationException e) {
-                Citadel.warning("ConcurrentModificationException at redstonePower() in BlockListener");
-            }
-            if (!isAuthorizedPlayerNear) {
+            if (!isAuthorizedPlayerNear(reinforcement, redstoneDistance)) {
                 Citadel.info("Prevented redstone from opening reinforcement at "
                         + reinforcement.getBlock().getLocation().toString());
                 bre.setNewCurrent(bre.getOldCurrent());

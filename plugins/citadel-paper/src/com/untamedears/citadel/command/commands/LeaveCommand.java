@@ -35,6 +35,10 @@ public class LeaveCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "Group doesn't exist");
 			return true;
 		}
+		if (group.isDisciplined()) {
+			sendMessage(sender, ChatColor.RED, Faction.kDisciplineMsg);
+			return true;
+		}
 		String playerName = sender.getName();
 		if(group.isFounder(playerName)){
 			sendMessage(sender, ChatColor.RED, "You are the owner. If you wish to leave you must either delete or transfer the group");
