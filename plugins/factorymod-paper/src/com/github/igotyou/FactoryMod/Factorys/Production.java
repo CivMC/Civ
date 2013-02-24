@@ -7,9 +7,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.FactoryObject;
+import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.managers.ProductionManager;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
-import com.github.igotyou.interfaces.Factory;
 
 public class Production extends FactoryObject implements Factory
 {
@@ -39,21 +39,14 @@ public class Production extends FactoryObject implements Factory
 		// TODO add 	
 	}
 
-	public void destroy(ItemStack item) 
-	{
-		// TODO Auto-generated method stub
-	}
-
 	public void powerOn() 
 	{
-		// TODO Auto-generated method stub
-		
+		active = true;
 	}
 
 	public void powerOff() 
 	{
-		// TODO Auto-generated method stub
-		
+		active = false;
 	}
 
 	public InteractionResponse togglePower() 
@@ -62,10 +55,19 @@ public class Production extends FactoryObject implements Factory
 		return null;
 	}
 
-	public Location getLocation() 
+	public Location getCenterLocation() 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return factoryLocation;
+	}
+
+	public Location getInventoryLocation() 
+	{
+		return factoryInventoryLocation;
+	}
+
+	public Location getPowerSourceLocation() 
+	{
+		return factoryPowerSource;
 	}
 
 }

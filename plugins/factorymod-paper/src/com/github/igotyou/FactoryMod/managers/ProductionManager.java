@@ -16,11 +16,11 @@ import org.bukkit.inventory.Inventory;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.FactoryObject.SubFactoryType;
 import com.github.igotyou.FactoryMod.Factorys.Production;
+import com.github.igotyou.FactoryMod.interfaces.Factory;
+import com.github.igotyou.FactoryMod.interfaces.Manager;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
-import com.github.igotyou.interfaces.Factory;
-import com.github.igotyou.interfaces.Manager;
 
 public class ProductionManager implements Manager
 {
@@ -60,7 +60,7 @@ public class ProductionManager implements Manager
 		}, 0L, FactoryModPlugin.PRODUCER_UPDATE_CYCLE);
 	}
 
-	public InteractionResponse createFactory(Location factoryLocation, Location inventoryLocation, Location powerLocation) 
+	public InteractionResponse createFactory(Location factoryLocation, Location inventoryLocation, Location powerSourceLocation) 
 	{
 		if (!factoryExistsAt(factoryLocation))
 		{
@@ -87,7 +87,7 @@ public class ProductionManager implements Manager
 			}
 			if (hasMaterials == true && subFactoryType != null)
 			{
-				Production production = new Production(factoryLocation, inventoryLocation, powerLocation,subFactoryType);
+				Production production = new Production(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
 				if (production.buildMaterialAvailable(properties.get(subFactoryType)))
 				{
 					addFactory(production);
@@ -102,32 +102,43 @@ public class ProductionManager implements Manager
 
 	public InteractionResponse addFactory(Factory factory) 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		Production production = (Production) factory;
+		if (production.getCenterLocation().getBlock().getType().equals(Material.WORKBENCH) && (!factoryExistsAt(production.getCenterLocation()))
+				|| !factoryExistsAt(production.getInventoryLocation()) || !factoryExistsAt(production.getPowerSourceLocation()))
+		{
+			producers.add(production);
+			return new InteractionResponse(InteractionResult.SUCCESS, "");
+		}
+		else
+		{
+			return new InteractionResponse(InteractionResult.FAILURE, "");
+		}
 	}
 
 	public Factory getFactory(Location factoryLocation) 
 	{
-		// TODO Auto-generated method stub
+		for (Production production : producers)
+		{
+			if (production.getCenterLocation().equals(factoryLocation) || production.getInventory().equals(factoryLocation)
+					|| production.getPowerSourceLocation().equals(factoryLocation))
+				return production;
+		}
 		return null;
 	}
 
 	public boolean factoryExistsAt(Location factoryLocation) 
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return getFactory(factoryLocation) != null;
 	}
 
 	public void removeFactory(Factory factory) 
 	{
-		// TODO Auto-generated method stub
-		
+		producers.remove((Production)factory);
 	}
 
 	public String getSavesFileName() 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return FactoryModPlugin.PRODUCTION_SAVES_FILE;
 	}
 
 }

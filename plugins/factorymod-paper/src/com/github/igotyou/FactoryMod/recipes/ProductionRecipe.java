@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import org.bukkit.Material;
 
-import com.github.igotyou.interfaces.Recipe;
+import com.github.igotyou.FactoryMod.interfaces.Recipe;
 
 public class ProductionRecipe implements Recipe
 {

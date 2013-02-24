@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.bukkit.Material;
 
+import com.github.igotyou.FactoryMod.interfaces.Properties;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
-import com.github.igotyou.interfaces.Properties;
 
 public class ProductionProperties implements Properties
 {

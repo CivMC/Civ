@@ -12,9 +12,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
 import com.github.igotyou.FactoryMod.FactoryObject.SubFactoryType;
+import com.github.igotyou.FactoryMod.interfaces.Properties;
 import com.github.igotyou.FactoryMod.managers.FactoryModManager;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
-import com.github.igotyou.interfaces.Properties;
 
 public class FactoryModPlugin extends JavaPlugin
 {
@@ -25,6 +25,7 @@ public class FactoryModPlugin extends JavaPlugin
 	public static int AMOUNT_OF_RECIPES_TO_REMOVE;
 	public static int PRODUCTION_MAX_TIERS;
 	public static int PRODUCER_UPDATE_CYCLE;
+	public static String PRODUCTION_SAVES_FILE;
 	
 	public void onEnable()
 	{
