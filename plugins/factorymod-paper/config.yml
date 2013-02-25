@@ -1,6 +1,9 @@
 general:
   central_block: WORKBENCH
   save_cycle: 100
+  return_build_materials: false
+  citadel_enabled: true
+  factory_interaction_material: STONE_SPADE
 
 disabled_recipes:
   amount: 4
@@ -14,7 +17,7 @@ production_recipes:
   recipe_1:
     name: Diamond Helmet
     batch_amount: 10
-    production_time: 120
+    production_time: 60
     output_material: DIAMOND_HELMET
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
@@ -22,7 +25,7 @@ production_recipes:
   recipe_2:
     name: Diamond Chestplate
     batch_amount: 10
-    production_time: 120
+    production_time: 60
     output_material: DIAMOND_CHESTPLATE
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
@@ -30,7 +33,7 @@ production_recipes:
   recipe_3:
     name: Diamond Leggings
     batch_amount: 10
-    production_time: 120
+    production_time: 60
     output_material: DIAMOND_LEGGINGS
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
@@ -38,7 +41,7 @@ production_recipes:
   recipe_4:
     name: Diamond Boots
     batch_amount: 10
-    production_time: 120
+    production_time: 60
     output_material: DIAMOND_BOOTS
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
@@ -52,7 +55,7 @@ production_general:
     name: workshop
     sub_factory_type: WORKSHOP
     fuel_material: COAL
-    fuel_time: 8
+    fuel_time: 2
     fuel_consumption: 1
     amount_of_build_materials: 2
     build_material_1: STONE

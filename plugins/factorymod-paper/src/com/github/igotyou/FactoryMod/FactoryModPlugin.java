@@ -30,7 +30,7 @@ public class FactoryModPlugin extends JavaPlugin
 	public static final String VERSION = "v1.0"; //Current version of plugin
 	public static final String PLUGIN_NAME = "FactoryMod"; //Name of plugin
 	public static final String PLUGIN_PREFIX = PLUGIN_NAME + " " + VERSION + ": ";
-	public static final String PRODUCTION_SAVES_FILE = "productionSaves"; // The ore gin saves file name
+	public static final String PRODUCTION_SAVES_FILE = "productionSaves"; // The production saves file name
 	public static final int TICKS_PER_SECOND = 20; //The number of ticks per second
 	
 	public static int AMOUNT_OF_RECIPES_TO_REMOVE;
@@ -40,6 +40,9 @@ public class FactoryModPlugin extends JavaPlugin
 	public static int AMOUNT_OF_PRODUCTION_RECIPES;
 	public static int AMOUNT_OF_PRODUCTION_FACTORY_TYPES;
 	public static Material CENTRAL_BLOCK_MATERIAL;
+	public static boolean RETURN_BUILD_MATERIALS;
+	public static boolean CITADEL_ENABLED;
+	public static Material FACTORY_INTERACTION_MATERIAL;
 	
 	public void onEnable()
 	{
@@ -75,6 +78,9 @@ public class FactoryModPlugin extends JavaPlugin
 		SAVE_CYCLE = config.getInt("general.save_cycle");
 		AMOUNT_OF_RECIPES_TO_REMOVE = config.getInt("disabled_recipes.amount");
 		CENTRAL_BLOCK_MATERIAL = Material.getMaterial(config.getString("general.central_block"));
+		RETURN_BUILD_MATERIALS = config.getBoolean("general.return_build_materials");
+		CITADEL_ENABLED = config.getBoolean("general.citadel_enabled");
+		FACTORY_INTERACTION_MATERIAL = Material.getMaterial(config.getString("general.factory_interaction_material"));
 		
 		for (int i = 1; i <= FactoryModPlugin.AMOUNT_OF_RECIPES_TO_REMOVE; i++)
 		{
@@ -109,6 +115,7 @@ public class FactoryModPlugin extends JavaPlugin
 		}
 		
 		AMOUNT_OF_PRODUCTION_FACTORY_TYPES = config.getInt("production_general.amount_of_factory_types");
+		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle");
 		for (int i = 1; i <=FactoryModPlugin.AMOUNT_OF_PRODUCTION_FACTORY_TYPES; i++)
 		{
 			HashMap<Integer, Material> buildMaterials= new HashMap<Integer, Material>();
@@ -117,9 +124,12 @@ public class FactoryModPlugin extends JavaPlugin
 		
 			String name = config.getString(getPathToFactory(i) + ".name");
 			String subFactoryType = config.getString(getPathToFactory(i) + ".sub_factory_type");
-			Material energyMaterial = Material.getMaterial(config.getInt(getPathToFactory(i) + ".fuel_material"));
+			Material energyMaterial = Material.getMaterial(config.getString(getPathToFactory(i) + ".fuel_material"));
+			FactoryModPlugin.sendConsoleMessage("fuel material at loading is: " + energyMaterial.toString());
 			int fuelTime = config.getInt(getPathToFactory(i) + ".fuel_time");
-			int fuelConsumption = config.getInt(getPathToFactory(i) + "fuel_consumption");
+			FactoryModPlugin.sendConsoleMessage("fuel time at loading is: " + String.valueOf(fuelTime));
+			int fuelConsumption = config.getInt(getPathToFactory(i) + ".fuel_consumption");
+			FactoryModPlugin.sendConsoleMessage("fuel consumption at loading is: " + String.valueOf(fuelConsumption));
 			
 			for (int i1 = 1; i1 <= config.getInt(getPathToFactory(i) + ".amount_of_build_materials"); i1++)
 			{

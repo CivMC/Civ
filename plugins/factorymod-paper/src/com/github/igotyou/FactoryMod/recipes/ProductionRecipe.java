@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.bukkit.Material;
 
+import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.interfaces.Recipe;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 
@@ -50,8 +51,8 @@ public class ProductionRecipe implements Recipe
 	
 	public HashMap<Integer, Integer> getInputAmountWithBatchAmount() 
 	{
-		HashMap<Integer,Integer> returnValue = getInputAmount();
-		for (Map.Entry<Integer, Integer> entry : getInputAmount().entrySet())
+		HashMap<Integer,Integer> returnValue = (HashMap<Integer, Integer>) getInputAmount().clone();
+		for (Map.Entry<Integer, Integer> entry : returnValue.entrySet())
 		{
 			int key = entry.getKey();
 			int value = entry.getValue();

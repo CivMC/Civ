@@ -45,6 +45,7 @@ public class FactoryObject
 	protected Properties factoryProperties; // The properties of this factory type and tier
 	
 	protected boolean upgraded; // Whether the tier has recently upgraded
+	private Inventory factoryPowerInventory;
 	
 	/**
 	 * Constructor
@@ -107,6 +108,8 @@ public class FactoryObject
 		case PRODUCTION:
 			Chest chestBlock = (Chest)factoryInventoryLocation.getBlock().getState();
 			factoryInventory = chestBlock.getInventory();
+			Furnace furnaceBlock = (Furnace)factoryPowerSourceLocation.getBlock().getState();
+			factoryPowerInventory = furnaceBlock.getInventory();
 			break;
 		default:
 			break;
@@ -202,24 +205,38 @@ public class FactoryObject
 			
 			if(entry.getValue().getAmount() == materialsToRemove)
 			{
-				getInventory().setItem(entry.getKey(), new ItemStack(Material.AIR, 0));
+				inventory.setItem(entry.getKey(), new ItemStack(Material.AIR, 0));
 				materialsToRemove = 0;
 			}
 			else if(entry.getValue().getAmount() > materialsToRemove)
 			{
-				getInventory().setItem(entry.getKey(), new ItemStack(material, (entry.getValue().getAmount() - materialsToRemove)));
+				inventory.setItem(entry.getKey(), new ItemStack(material, (entry.getValue().getAmount() - materialsToRemove)));
 				materialsToRemove = 0;
 			}
 			else
 			{
 				int inStack = entry.getValue().getAmount();
-				getInventory().setItem(entry.getKey(), new ItemStack(Material.AIR, 0));
+				inventory.setItem(entry.getKey(), new ItemStack(Material.AIR, 0));
 				materialsToRemove -= inStack;
 			}
 		}
 		
 		return materialsToRemove == 0;
 	}
+	
+	public boolean areMaterialsAvailable(Inventory inventory, HashMap<Integer, Material> materials, HashMap<Integer, Integer> amount)
+	{
+		boolean returnValue = true;
+		for (int i = 1; i <= materials.size(); i++)
+		{
+			if (!isMaterialAvailable(inventory, materials.get(i), amount.get(i)))
+			{
+				returnValue = false;
+			}
+		}
+		return returnValue;
+	}
+	
 	
 	/**
 	 * Checks if a specific material of given amount is available in dispenser
@@ -262,7 +279,6 @@ public class FactoryObject
 		switch (factoryType)
 		{
 		case PRODUCTION:
-			FactoryModPlugin.sendConsoleMessage("block type is:" + factoryInventoryLocation.getBlock().getType().toString() + " , and location is " + factoryInventoryLocation.toString());
 			Chest chestBlock = (Chest)factoryInventoryLocation.getBlock().getState();
 			factoryInventory = chestBlock.getInventory();
 			return factoryInventory;
@@ -277,10 +293,31 @@ public class FactoryObject
 		{
 		case PRODUCTION:
 			Furnace furnaceBlock = (Furnace)factoryPowerSourceLocation.getBlock().getState();
-			factoryInventory = furnaceBlock.getInventory();
-			return factoryInventory;
+			factoryPowerInventory = furnaceBlock.getInventory();
+			return factoryPowerInventory;
 		default:
-			return factoryInventory;
+			return factoryPowerInventory;
 		}
+		
+	
+	}
+	public String getSubFactoryType()
+	{
+		return subFactoryType;
+	}
+	
+	public boolean getActive()
+	{
+		return active;
+	}
+	
+	public String getMaterialsNeededMessage(HashMap<Integer, Material> materials, HashMap<Integer, Integer> amount)
+	{
+		String returnValue = "";
+		for (int i = 1; i <= materials.size(); i++)
+		{
+			returnValue = returnValue + String.valueOf(amount.get(i) + " " + materials.get(i).toString() + ", ");
+		}
+		return returnValue;
 	}
 }

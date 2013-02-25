@@ -20,7 +20,7 @@ public class ProductionProperties implements Properties
 	String name;
 	
 	public ProductionProperties(HashMap<Integer, Material> buildMaterial, HashMap<Integer, Integer> buildAmount,
-			List<ProductionRecipe> recipes, Material energyMaterial, int energyTime, int energConsumption, String name)
+			List<ProductionRecipe> recipes, Material energyMaterial, int energyTime, int energyConsumption, String name)
 	{
 		this.buildMaterial = buildMaterial;
 		this.buildAmount = buildAmount;
@@ -49,5 +49,15 @@ public class ProductionProperties implements Properties
 	public int getEnergyConsumption()
 	{
 		return energyConsumption;
+	}
+	
+	public Material getEnergyMaterial()
+	{
+		return energyMaterial;
+	}
+	
+	public int getEnergyTime()
+	{
+		return energyTime;
 	}
 }

@@ -25,6 +25,8 @@ public interface Factory
 	 */
 	public void update();
 	
+	public void destroy(Location destroyLocation);
+	
 	/**
 	 * Powers on the machine
 	 */

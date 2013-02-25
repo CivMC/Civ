@@ -2,21 +2,28 @@ package com.github.igotyou.FactoryMod.Factorys;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Furnace;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
+import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.FactoryObject;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Recipe;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
+import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 
 public class Production extends FactoryObject implements Factory
 {
 
-	private Material currentProductionItem;
 	private Recipe currentRecipe = null;
 	private ProductionProperties productionFactoryProperties;
 	private int currentProductionTimer = 0;
+	private int currentEnergyTimer = 0;
+	private int currentRecipeNumber = 0;
 	public static final FactoryType FACTORY_TYPE = FactoryType.PRODUCTION;
 	public String SUB_FACTORY_TYPE;
 	
@@ -26,16 +33,20 @@ public class Production extends FactoryObject implements Factory
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, Production.FACTORY_TYPE, subFactoryType);
 		this.SUB_FACTORY_TYPE = subFactoryType;
 		this.productionFactoryProperties = (ProductionProperties) factoryProperties;
+		this.setRecipeToNumber(0);
 
 	}
 
 	public Production (Location factoryLocation, Location factoryInventoryLocation, Location factoryPowerSource,
-			Material currentProductionItem, String subFactoryType)
+			String subFactoryType, boolean active, int currentProductionTimer, int currentEnergyTimer, int currentRecipeNumber)
 	{
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, Production.FACTORY_TYPE, subFactoryType);
 		this.SUB_FACTORY_TYPE = subFactoryType;
-		this.currentProductionItem = currentProductionItem;
 		this.productionFactoryProperties = (ProductionProperties) factoryProperties;
+		this.active = active;
+		this.currentEnergyTimer = currentEnergyTimer;
+		this.currentProductionTimer = currentProductionTimer;
+		this.setRecipeToNumber(currentRecipeNumber);
 	}
 	
 	public void update() 
@@ -43,25 +54,35 @@ public class Production extends FactoryObject implements Factory
 		//if factory is turned on
 		if (active)
 		{
-			//if the production time has not reached the recipes production time
-			if (currentProductionTimer < currentRecipe.getProductionTime())
+			if (areMaterialsAvailable(getInventory(), currentRecipe.getInputMaterial(), currentRecipe.getInputAmountWithBatchAmount()))
 			{
-				if (isFuelAvailable())
+				//if the production time has not reached the recipes production time
+				if (currentProductionTimer < currentRecipe.getProductionTime())
 				{
-					removeMaterial(getPowerSourceInventory(), Material.COAL, 1);
-					currentProductionTimer ++;
+					//FactoryModPlugin.sendConsoleMessage("current Production Timer is: " + String.valueOf(currentProductionTimer) + " and current recipe's production timer is: " + String.valueOf(currentRecipe.getProductionTime()));
+					if (isFuelAvailable())
+					{
+						if (currentEnergyTimer == productionFactoryProperties.getEnergyTime())
+						{
+							removeMaterial(getPowerSourceInventory(), productionFactoryProperties.getEnergyMaterial(), productionFactoryProperties.getEnergyConsumption());
+							currentEnergyTimer = 0;
+						}
+						currentEnergyTimer++;
+						currentProductionTimer ++;
+					}
 				}
-			}
-			else if (currentProductionTimer == currentRecipe.getProductionTime())
-			{
-				if (removeMaterials(getInventory(), currentRecipe.getInputMaterial(), currentRecipe.getInputAmountWithBatchAmount()))
+				
+				//if the production timer has reached the recipes production time remove input from chest, and add output material
+				else if (currentProductionTimer == currentRecipe.getProductionTime())
 				{
-					addMaterial(getInventory(), currentRecipe.getOutput(), currentRecipe.getBatchAmount());
-					currentProductionTimer = 0;
-					powerOff();
+					if (removeMaterials(getInventory(), currentRecipe.getInputMaterial(), currentRecipe.getInputAmountWithBatchAmount()))
+					{
+						addMaterial(getInventory(), currentRecipe.getOutput(), currentRecipe.getBatchAmount());
+						currentProductionTimer = 0;
+						powerOff();
+					}
 				}
-			}
-			
+			}	
 		}
 		// TODO add 	
 	}
@@ -82,8 +103,15 @@ public class Production extends FactoryObject implements Factory
 		{
 			if (isFuelAvailable())
 			{
-				powerOn();
-				return new InteractionResponse(InteractionResult.SUCCESS, "Factory activated!");
+				if (areMaterialsAvailable(getInventory(), currentRecipe.getInputMaterial(), currentRecipe.getInputAmountWithBatchAmount()))
+				{
+					powerOn();
+					return new InteractionResponse(InteractionResult.SUCCESS, "Factory activated!");
+				}
+				else
+				{
+					return new InteractionResponse(InteractionResult.FAILURE, "Factory does not have enough materials for the current recipe! You need: " + getMaterialsNeededMessage(currentRecipe.getInputMaterial(), currentRecipe.getInputAmountWithBatchAmount()));
+				}
 			}
 			else
 			{
@@ -99,32 +127,22 @@ public class Production extends FactoryObject implements Factory
 	
 	public InteractionResponse toggleRecipes()
 	{
-		Recipe[] recipeArray = (Recipe[]) productionFactoryProperties.getRecipes().toArray();
 		if (currentRecipe != null)
 		{		
-			int currentRecipeNumber = 0;
-
-			for (int i=0; i <= recipeArray.length; i++)
+			if (currentRecipeNumber == productionFactoryProperties.getRecipes().size() - 1)
 			{
-				if (recipeArray[i] == currentRecipe)
-				{
-					currentRecipeNumber = i;
-				}
-			}
-			if (currentRecipeNumber == recipeArray.length)
-			{
-				currentRecipe = recipeArray[0];
+				setRecipeToNumber(0);
 				return new InteractionResponse(InteractionResult.SUCCESS, "Recipe switched! Current recipe is:" + currentRecipe.getRecipeName());
 			}
 			else
 			{
-				currentRecipe = recipeArray[currentRecipeNumber+1];
+				setRecipeToNumber(currentRecipeNumber + 1);
 				return new InteractionResponse(InteractionResult.SUCCESS, "Recipe switched! Current recipe is:" + currentRecipe.getRecipeName());
 			}
 		}
 		else
 		{
-			currentRecipe = recipeArray[0];
+			setRecipeToNumber(0);
 			return new InteractionResponse(InteractionResult.SUCCESS, "Recipe selected! Current recipe is:" + currentRecipe.getRecipeName());
 		}	
 	}
@@ -132,6 +150,12 @@ public class Production extends FactoryObject implements Factory
 	public void setRecipe(Recipe newRecipe)
 	{
 		currentRecipe = newRecipe;
+	}
+	
+	public void setRecipeToNumber(int newRecipeNumber)
+	{
+		currentRecipe = productionFactoryProperties.getRecipes().get(newRecipeNumber);
+		currentRecipeNumber = newRecipeNumber;
 	}
 
 	public Location getCenterLocation() 
@@ -151,7 +175,39 @@ public class Production extends FactoryObject implements Factory
 	
 	public boolean isFuelAvailable()
 	{
-		return isMaterialAvailable(getPowerSourceInventory(), Material.COAL, 1);
+		return isMaterialAvailable(getPowerSourceInventory(), productionFactoryProperties.getEnergyMaterial(), productionFactoryProperties.getEnergyConsumption());
 	}
 
+	public void destroy(Location destroyLocation)
+	{
+		if (FactoryModPlugin.RETURN_BUILD_MATERIALS)
+		{
+			for (int i = 1; i <= productionFactoryProperties.getBuildMaterial().size(); i++)
+			{
+				ItemStack item = new ItemStack(productionFactoryProperties.getBuildMaterial().get(i), productionFactoryProperties.getBuildAmount().get(i));
+				factoryLocation.getWorld().dropItemNaturally(destroyLocation, item);
+			}
+		}
+		destroyLocation.getBlock().setType(Material.AIR);
+	}
+	
+	public int getProductionTimer()
+	{
+		return currentProductionTimer;
+	}
+	
+	public int getEnergyTimer()
+	{
+		return currentEnergyTimer;
+	}
+
+	public Recipe getCurrentRecipe()
+	{
+		return currentRecipe;
+	}
+	
+	public int getCurrentRecipeNumber()
+	{
+		return currentRecipeNumber;
+	}
 }
