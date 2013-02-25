@@ -1,9 +1,12 @@
 package com.github.igotyou.FactoryMod.managers;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,6 +68,8 @@ public class ProductionManager implements Manager
 			Location inventoryLoctation = production.getInventoryLocation();
 			Location powerLocation = production.getPowerSourceLocation();
 			
+			
+			
 			bufferedWriter.append(production.getSubFactoryType());
 			bufferedWriter.append(" ");
 			
@@ -77,8 +82,6 @@ public class ProductionManager implements Manager
 			bufferedWriter.append(Integer.toString(centerlocation.getBlockZ()));
 			bufferedWriter.append(" ");
 			
-			bufferedWriter.append(inventoryLoctation.getWorld().getName());
-			bufferedWriter.append(" ");
 			bufferedWriter.append(Integer.toString(inventoryLoctation.getBlockX()));
 			bufferedWriter.append(" ");
 			bufferedWriter.append(Integer.toString(inventoryLoctation.getBlockY()));
@@ -86,8 +89,6 @@ public class ProductionManager implements Manager
 			bufferedWriter.append(Integer.toString(inventoryLoctation.getBlockZ()));
 			bufferedWriter.append(" ");
 			
-			bufferedWriter.append(powerLocation.getWorld().getName());
-			bufferedWriter.append(" ");
 			bufferedWriter.append(Integer.toString(powerLocation.getBlockX()));
 			bufferedWriter.append(" ");
 			bufferedWriter.append(Integer.toString(powerLocation.getBlockY()));
@@ -104,11 +105,35 @@ public class ProductionManager implements Manager
 			bufferedWriter.append(Integer.toString(production.getCurrentRecipeNumber()));
 			bufferedWriter.append("\n");
 		}
+		bufferedWriter.flush();
+		fileOutputStream.close();
 	}
 
 	public void load(File file) throws IOException 
 	{
-		
+		FileInputStream fileInputStream = new FileInputStream(file);
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+
+		String line;
+		while ((line = bufferedReader.readLine()) != null)
+		{
+			FactoryModPlugin.sendConsoleMessage(line);
+			String parts[] = line.split(" ");
+			//order: subFactoryType world central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
+			String subFactoryType = parts[0];
+
+			Location centerLocation = new Location(plugin.getServer().getWorld(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]));
+			Location inventoryLocation = new Location(plugin.getServer().getWorld(parts[1]), Integer.parseInt(parts[5]), Integer.parseInt(parts[6]), Integer.parseInt(parts[7]));
+			Location powerLocation = new Location(plugin.getServer().getWorld(parts[1]), Integer.parseInt(parts[8]), Integer.parseInt(parts[9]), Integer.parseInt(parts[10]));
+			boolean active = Boolean.parseBoolean(parts[11]);
+			int productionTimer = Integer.parseInt(parts[12]);
+			int energyTimer = Integer.parseInt(parts[13]);
+			int currentRecipeNumber = Integer.parseInt(parts[14]);
+			
+			Production production = new Production(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, currentRecipeNumber);
+			addFactory(production);
+		}
+		fileInputStream.close();
 	}
 
 	public void updateFactorys() 
@@ -139,9 +164,7 @@ public class ProductionManager implements Manager
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
 				HashMap<Integer, Material> buildMaterial = entry.getValue().getBuildMaterial();
-				FactoryModPlugin.sendConsoleMessage("build Material is: " + buildMaterial.toString());
 				HashMap<Integer, Integer> buildAmount = entry.getValue().getBuildAmount();
-				FactoryModPlugin.sendConsoleMessage("build amount is: " + buildAmount.toString());
 				for (int i = 1; i <= buildMaterial.size(); i ++)
 				{
 					if(!chestInventory.contains(buildMaterial.get(i), buildAmount.get(i)))

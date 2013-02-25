@@ -53,7 +53,7 @@ public class FactoryModPlugin extends JavaPlugin
 	
 	public void onDisable()
 	{
-		
+		manager.onDisable();
 	}
 	
 	public void registerEvents()
@@ -81,10 +81,10 @@ public class FactoryModPlugin extends JavaPlugin
 		RETURN_BUILD_MATERIALS = config.getBoolean("general.return_build_materials");
 		CITADEL_ENABLED = config.getBoolean("general.citadel_enabled");
 		FACTORY_INTERACTION_MATERIAL = Material.getMaterial(config.getString("general.factory_interaction_material"));
-		
+		int g = 0;
 		for (int i = 1; i <= FactoryModPlugin.AMOUNT_OF_RECIPES_TO_REMOVE; i++)
 		{
-			int g = 0;
+	
 			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(config.getString(getPathToRecipe(i))));
 			List<Recipe> tempList = getServer().getRecipesFor(recipeItemStack);
 			for (int itterator = 0; itterator < tempList.size(); itterator ++)
@@ -92,8 +92,9 @@ public class FactoryModPlugin extends JavaPlugin
 				removeRecipe(tempList.get(itterator));
 				g++;
 			}
-			sendConsoleMessage(g + " recipes removed");
+
 		}
+		sendConsoleMessage(g + " recipes removed");
 		AMOUNT_OF_PRODUCTION_RECIPES = config.getInt("production_recipes.amount");
 		for (int i =1; i <= FactoryModPlugin.AMOUNT_OF_PRODUCTION_RECIPES; i++)
 		{
@@ -125,11 +126,8 @@ public class FactoryModPlugin extends JavaPlugin
 			String name = config.getString(getPathToFactory(i) + ".name");
 			String subFactoryType = config.getString(getPathToFactory(i) + ".sub_factory_type");
 			Material energyMaterial = Material.getMaterial(config.getString(getPathToFactory(i) + ".fuel_material"));
-			FactoryModPlugin.sendConsoleMessage("fuel material at loading is: " + energyMaterial.toString());
 			int fuelTime = config.getInt(getPathToFactory(i) + ".fuel_time");
-			FactoryModPlugin.sendConsoleMessage("fuel time at loading is: " + String.valueOf(fuelTime));
 			int fuelConsumption = config.getInt(getPathToFactory(i) + ".fuel_consumption");
-			FactoryModPlugin.sendConsoleMessage("fuel consumption at loading is: " + String.valueOf(fuelConsumption));
 			
 			for (int i1 = 1; i1 <= config.getInt(getPathToFactory(i) + ".amount_of_build_materials"); i1++)
 			{

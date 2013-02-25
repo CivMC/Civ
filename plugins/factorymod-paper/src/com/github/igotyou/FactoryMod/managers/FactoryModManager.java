@@ -134,7 +134,7 @@ public class FactoryModManager
 		}
 		catch (FileNotFoundException exception)
 		{
-			Bukkit.getServer().getLogger().info(file.getName() + " does not exist! Creating file!");
+			FactoryModPlugin.sendConsoleMessage(file.getName() + " does not exist! Creating file!");
 		}
 		catch (IOException exception)
 		{
