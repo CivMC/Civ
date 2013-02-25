@@ -49,9 +49,8 @@ public class PlayerReinforcement implements
     @Column(name="version")
     private int dbRowVersion;  // Do not touch
 
-    @ManyToOne
-    @JoinColumn(name = "name")
-    private Faction owner;
+    @Column(name = "name")
+    private String ownerName;
 
 
     public PlayerReinforcement() {
@@ -66,7 +65,7 @@ public class PlayerReinforcement implements
         this.id = new ReinforcementKey(block);
         this.materialId = material.getMaterial().getId();
         this.durability = material.getStrength();
-        this.owner = owner;
+        this.ownerName = owner.getName();
         this.securityLevel = securityLevel;
         this.chunkId = this.id.getChunkId();
         this.dbAction = DbUpdateAction.INSERT;
@@ -146,13 +145,21 @@ public class PlayerReinforcement implements
         this.securityLevel = securityLevel;
     }
 
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String newOwner) {
+        flagForDbUpdate();
+        ownerName = newOwner;
+    }
+
     public Faction getOwner() {
-        return owner;
+        return Citadel.getGroupManager().getGroup(getOwnerName());
     }
 
     public void setOwner(Faction group) {
-        flagForDbUpdate();
-        this.owner = group;
+        setOwnerName(group.getName());
     }
 
     public double getHealth() {
@@ -191,6 +198,7 @@ public class PlayerReinforcement implements
     }
 
     public boolean isAccessible(String name) {
+        Faction owner = getOwner();
         if (owner == null) {
             Citadel.severe(String.format("isAccessible(%s) encountered unowned reinforcement: %s",
                            name, toString()));
@@ -212,6 +220,7 @@ public class PlayerReinforcement implements
 
     public boolean isBypassable(Player player) {
         String name = player.getDisplayName();
+        Faction owner = getOwner();
         if (owner == null) {
             Citadel.severe(String.format("isBypassable(%s) encountered unowned reinforcement: %s",
                            name, toString()));

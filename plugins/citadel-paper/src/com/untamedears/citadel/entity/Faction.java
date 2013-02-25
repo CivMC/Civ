@@ -20,6 +20,7 @@ public class Faction implements Serializable {
 	private static final long serialVersionUID = -1660123901051487634L;
     public static final byte kDisabledFlag = 0x01;
     public static final byte kDeletedFlag = 0x02;
+    public static final byte kFlagMask = kDisabledFlag | kDeletedFlag;
     public static final String kDisciplineMsg = "The group is under administrative discipline";
 
 	@Id private String name;
@@ -68,11 +69,11 @@ public class Faction implements Serializable {
     // Don't get/set this.disciplineFlags outside of these getter/setters
     //  even when accessing from inside the class
     public Integer getDisciplineFlags() {
-        return this.disciplineFlags & 0xFF;
+        return this.disciplineFlags & kFlagMask;
     }
 
     public void setDisciplineFlags(Integer flags) {
-        this.disciplineFlags = flags & 0xFF;
+        this.disciplineFlags = flags & kFlagMask;
     }
 
     public boolean isDisabled() {

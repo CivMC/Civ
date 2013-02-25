@@ -18,36 +18,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.command.CommandHandler;
-import com.untamedears.citadel.command.commands.AddModCommand;
-import com.untamedears.citadel.command.commands.AllowCommand;
-import com.untamedears.citadel.command.commands.BypassCommand;
-import com.untamedears.citadel.command.commands.ConsoleCommands;
-import com.untamedears.citadel.command.commands.CreateCommand;
-import com.untamedears.citadel.command.commands.DeleteCommand;
-import com.untamedears.citadel.command.commands.DisallowCommand;
-import com.untamedears.citadel.command.commands.FortifyCommand;
-import com.untamedears.citadel.command.commands.GroupCommand;
-import com.untamedears.citadel.command.commands.GroupInfoCommand;
-import com.untamedears.citadel.command.commands.GroupStatsCommand;
-import com.untamedears.citadel.command.commands.GroupsCommand;
-import com.untamedears.citadel.command.commands.InfoCommand;
-import com.untamedears.citadel.command.commands.JoinCommand;
-import com.untamedears.citadel.command.commands.LeaveCommand;
-import com.untamedears.citadel.command.commands.MaterialsCommand;
-import com.untamedears.citadel.command.commands.MembersCommand;
-import com.untamedears.citadel.command.commands.ModeratorsCommand;
-import com.untamedears.citadel.command.commands.NonReinforceableCommand;
-import com.untamedears.citadel.command.commands.OffCommand;
-import com.untamedears.citadel.command.commands.PasswordCommand;
-import com.untamedears.citadel.command.commands.PlayerStatsCommand;
-import com.untamedears.citadel.command.commands.PrivateCommand;
-import com.untamedears.citadel.command.commands.PublicCommand;
-import com.untamedears.citadel.command.commands.ReinforceCommand;
-import com.untamedears.citadel.command.commands.RemoveModCommand;
-import com.untamedears.citadel.command.commands.SecurableCommand;
-import com.untamedears.citadel.command.commands.StatsCommand;
-import com.untamedears.citadel.command.commands.TransferCommand;
-import com.untamedears.citadel.command.commands.VersionCommand;
 import com.untamedears.citadel.dao.CitadelCachingDao;
 import com.untamedears.citadel.dao.CitadelDao;
 import com.untamedears.citadel.entity.Faction;
@@ -91,7 +61,7 @@ public class Citadel extends JavaPlugin {
         dao = new CitadelCachingDao(this);
         dao.updateDatabase();
         setUpStorage();
-        registerCommands();
+        commandHandler.registerCommands();
         // Events must register after dao is available
         registerEvents();
         for(Player player : getServer().getOnlinePlayers()){
@@ -105,6 +75,7 @@ public class Citadel extends JavaPlugin {
             System.out.println("failed");
         }
         ConsoleCommandSender console = getServer().getConsoleSender();
+        console.addAttachment(this, "citadel.admin", true);
         console.addAttachment(this, "citadel.console", true);
         log.info("[Citadel] Citadel is now enabled.");
     }
@@ -130,40 +101,6 @@ public class Citadel extends JavaPlugin {
         
         ReinforcementStorage reinforcementStorage = new ReinforcementStorage(dao);
         reinforcementManager.setStorage(reinforcementStorage);
-    }
-    
-    public void registerCommands(){
-        commandHandler.addCommand(new AddModCommand());
-        commandHandler.addCommand(new AllowCommand());
-        commandHandler.addCommand(new BypassCommand());
-        commandHandler.addCommand(new ConsoleCommands());
-        commandHandler.addCommand(new CreateCommand());
-        commandHandler.addCommand(new DeleteCommand());
-        commandHandler.addCommand(new DisallowCommand());
-        commandHandler.addCommand(new FortifyCommand());
-        commandHandler.addCommand(new GroupCommand());
-        commandHandler.addCommand(new GroupInfoCommand());
-        commandHandler.addCommand(new GroupsCommand());
-        //commandHandler.addCommand(new Help())
-        commandHandler.addCommand(new InfoCommand());
-        commandHandler.addCommand(new JoinCommand());
-        commandHandler.addCommand(new LeaveCommand());
-        commandHandler.addCommand(new MaterialsCommand());
-        commandHandler.addCommand(new MembersCommand());
-        commandHandler.addCommand(new ModeratorsCommand());
-        commandHandler.addCommand(new NonReinforceableCommand());
-        commandHandler.addCommand(new OffCommand());
-        commandHandler.addCommand(new PasswordCommand());
-        commandHandler.addCommand(new PrivateCommand());
-        commandHandler.addCommand(new PublicCommand());
-        commandHandler.addCommand(new ReinforceCommand());
-        commandHandler.addCommand(new RemoveModCommand());
-        commandHandler.addCommand(new SecurableCommand());
-        commandHandler.addCommand(new StatsCommand());
-        commandHandler.addCommand(new GroupStatsCommand());
-        commandHandler.addCommand(new PlayerStatsCommand());
-        commandHandler.addCommand(new TransferCommand());
-        commandHandler.addCommand(new VersionCommand());
     }
     
     public void registerEvents(){

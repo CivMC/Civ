@@ -7,11 +7,11 @@ import org.bukkit.command.CommandSender;
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
 import com.untamedears.citadel.command.CommandUtils;
-import com.untamedears.citadel.command.ConsoleCommand;
+import com.untamedears.citadel.command.PlayerCommand;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.Member;
 
-public class PlayerStatsCommand extends ConsoleCommand {
+public class PlayerStatsCommand extends PlayerCommand {
 
 	public PlayerStatsCommand() {
 		super("View Player Stats");

@@ -77,7 +77,8 @@ public class Utility {
         if (PlayerReinforcement.NON_REINFORCEABLE.contains(blockTypeId)) return null;
 
         PlayerState state = PlayerState.get(player);
-        if (state.getFaction().isDisciplined()) {
+        Faction group = state.getFaction();
+        if (group != null && group.isDisciplined()) {
             sendMessage(player, ChatColor.RED, Faction.kDisciplineMsg);
             return null;
         }
@@ -101,10 +102,13 @@ public class Utility {
         }
 
         if (player.getInventory().contains(material.getMaterial(), material.getRequirements())) {
-        	Faction group = state.getFaction();
         	if(group == null){
         		try {
-        		group = Citadel.getMemberManager().getMember(player.getDisplayName()).getPersonalGroup();
+        		    group = Citadel.getMemberManager().getMember(player.getDisplayName()).getPersonalGroup();
+                    if (group.isDisciplined()) {
+                        sendMessage(player, ChatColor.RED, Faction.kDisciplineMsg);
+                        return null;
+                    }
         		} catch (NullPointerException e){
         			sendMessage(player, ChatColor.RED, "You don't seem to have a personal group. Try logging out and back in first");
         		}
@@ -129,7 +133,7 @@ public class Utility {
             reinforcement = (PlayerReinforcement)Citadel.getReinforcementManager().addReinforcement(reinforcement);
             String securityLevelText = state.getSecurityLevel().name();
             if(securityLevelText.equalsIgnoreCase("group")){
-            	securityLevelText = securityLevelText + "-" + state.getFaction().getName();
+            	securityLevelText = securityLevelText + "-" + group.getName();
             }
             sendThrottledMessage(player, ChatColor.GREEN, "Reinforced with %s at security level %s", material.getMaterial().name(), securityLevelText);
             Citadel.warning(String.format("PlRein:%s:%d@%s,%d,%d,%d",
@@ -289,7 +293,8 @@ public class Utility {
 
     public static void setMultiMode(PlacementMode mode, SecurityLevel securityLevel, String[] args, Player player, PlayerState state) {
         if (!MULTI_MODE.contains(mode)) return;
-        if (state.getFaction().isDisciplined()) {
+        Faction group = state.getFaction();
+        if (group != null && group.isDisciplined()) {
             sendMessage(player, ChatColor.RED, Faction.kDisciplineMsg);
             return;
         }
@@ -315,7 +320,8 @@ public class Utility {
     }
     
     public static void setSingleMode(SecurityLevel securityLevel, PlayerState state, Player player) {
-        if (state.getFaction().isDisciplined()) {
+        Faction group = state.getFaction();
+        if (group != null && group.isDisciplined()) {
             sendMessage(player, ChatColor.RED, Faction.kDisciplineMsg);
             return;
         }

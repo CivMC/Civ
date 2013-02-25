@@ -182,14 +182,15 @@ public class PlayerListener implements Listener {
                         update = true;
                         message = String.format("Changed security level %s", reinforcement.getSecurityLevel().name());
                     }
-                   	if(!reinforcement.getOwner().equals(state.getFaction())) {
-                        reinforcement.setOwner(state.getFaction());
+                    Faction group = state.getFaction();
+                   	if(!reinforcement.getOwner().equals(group)) {
+                        reinforcement.setOwner(group);
                         update = true;
                         if(!message.equals("")){
                         	message = message + ". ";
                         }
                         if(reinforcement.getSecurityLevel() != SecurityLevel.PRIVATE){
-                        	message = message + String.format("Changed group to %s", state.getFaction().getName());
+                        	message = message + String.format("Changed group to %s", group.getName());
                         }
                     }
                    	if(update){

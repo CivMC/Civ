@@ -3,9 +3,9 @@ package com.untamedears.citadel.command.commands;
 import org.bukkit.command.CommandSender;
 
 import com.untamedears.citadel.command.CommandUtils;
-import com.untamedears.citadel.command.ConsoleCommand;
+import com.untamedears.citadel.command.PlayerCommand;
 
-public class GroupStatsCommand extends ConsoleCommand {
+public class GroupStatsCommand extends PlayerCommand {
 	
 	public GroupStatsCommand() {
 		super("View Group Stats");
