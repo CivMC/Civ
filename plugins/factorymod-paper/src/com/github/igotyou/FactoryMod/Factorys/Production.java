@@ -18,10 +18,10 @@ public class Production extends FactoryObject implements Factory
 	private ProductionProperties productionFactoryProperties;
 	private int currentProductionTimer = 0;
 	public static final FactoryType FACTORY_TYPE = FactoryType.PRODUCTION;
-	public static SubFactoryType SUB_FACTORY_TYPE;
+	public String SUB_FACTORY_TYPE;
 	
 	public Production (Location factoryLocation, Location factoryInventoryLocation, Location factoryPowerSource
-			, SubFactoryType subFactoryType)
+			, String subFactoryType)
 	{
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, Production.FACTORY_TYPE, subFactoryType);
 		this.SUB_FACTORY_TYPE = subFactoryType;
@@ -30,7 +30,7 @@ public class Production extends FactoryObject implements Factory
 	}
 
 	public Production (Location factoryLocation, Location factoryInventoryLocation, Location factoryPowerSource,
-			Material currentProductionItem, SubFactoryType subFactoryType)
+			Material currentProductionItem, String subFactoryType)
 	{
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, Production.FACTORY_TYPE, subFactoryType);
 		this.SUB_FACTORY_TYPE = subFactoryType;

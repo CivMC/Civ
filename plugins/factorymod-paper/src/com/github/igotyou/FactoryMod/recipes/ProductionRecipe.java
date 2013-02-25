@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.bukkit.Material;
 
-import com.github.igotyou.FactoryMod.FactoryObject.SubFactoryType;
 import com.github.igotyou.FactoryMod.interfaces.Recipe;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 
@@ -19,13 +18,14 @@ public class ProductionRecipe implements Recipe
 	private String recipeName;
 	
 	public ProductionRecipe(HashMap<Integer, Material> inputMaterial, HashMap<Integer,Integer> inputAmount, Material output,
-			int batchAmount, String recipeName)
+			int batchAmount, String recipeName, int productionTime)
 	{
 		this.inputMaterial = inputMaterial;
 		this.inputAmount = inputAmount;
 		this.output = output;
 		this.batchAmount = batchAmount;
 		this.recipeName = recipeName;
+		this.productionTime = productionTime;
 	}
 	
 	public int getBatchAmount() 

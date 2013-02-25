@@ -8,7 +8,7 @@ disabled_recipes:
   recipe_4: DIAMOND_BOOTS
 
 production_recipes:
-  amount:4
+  amount: 4
   recipe_1:
     name: Diamond Helmet
     batch_amount: 10
@@ -48,4 +48,17 @@ production_general:
   
   factory_1:
     name: workshop
-    
+    sub_factory_type: WORKSHOP
+    fuel_material: COAL
+    fuel_time: 8
+    fuel_consumption: 1
+    amount_of_build_materials: 2
+    build_material_1: STONE
+    build_amount_1: 64
+    build_material_2: DIAMOND
+    build_amount_2: 10
+    amount_of_production_recipes: 4
+    recipe_1: 2
+    recipe_2: 1
+    recipe_3: 4
+    recipe_4: 3

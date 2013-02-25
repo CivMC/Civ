@@ -14,15 +14,21 @@ public class ProductionProperties implements Properties
 	private HashMap<Integer, Material> buildMaterial;
 	private HashMap<Integer, Integer> buildAmount;
 	private List<ProductionRecipe> recipes;
-	int energyConsumption; 
+	Material energyMaterial;
+	int energyTime;
+	int energyConsumption;
+	String name;
 	
 	public ProductionProperties(HashMap<Integer, Material> buildMaterial, HashMap<Integer, Integer> buildAmount,
-			ArrayList<ProductionRecipe> recipes, int energyConsumption)
+			List<ProductionRecipe> recipes, Material energyMaterial, int energyTime, int energConsumption, String name)
 	{
 		this.buildMaterial = buildMaterial;
 		this.buildAmount = buildAmount;
 		this.recipes = recipes;
+		this.energyMaterial = energyMaterial;
+		this.energyTime = energyTime;
 		this.energyConsumption = energyConsumption;
+		this.name = name;
 	}
 
 	public HashMap<Integer, Integer> getBuildAmount() 

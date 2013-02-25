@@ -33,11 +33,6 @@ public class FactoryObject
 	{
 		PRODUCTION
 	}
-	public enum SubFactoryType
-	{
-		WORKSHOP,
-		MOSSYCOBBLE
-	}
 	
 	
 	protected Location factoryLocation; // Current location of factory center
@@ -46,7 +41,7 @@ public class FactoryObject
 	protected boolean active; // Whether factory is currently active
 	protected Inventory factoryInventory; // The inventory of the factory
 	protected FactoryType factoryType; // The type this factory is
-	protected SubFactoryType subFactoryType;
+	protected String subFactoryType;
 	protected Properties factoryProperties; // The properties of this factory type and tier
 	
 	protected boolean upgraded; // Whether the tier has recently upgraded
@@ -55,7 +50,7 @@ public class FactoryObject
 	 * Constructor
 	 */
 	public FactoryObject(Location factoryLocation, Location factoryInventoryLocation, Location factoryPowerSource,
-			FactoryType factoryType, SubFactoryType subFactoryType)
+			FactoryType factoryType, String subFactoryType)
 	{
 		this.factoryLocation = factoryLocation;
 		this.factoryInventoryLocation = factoryInventoryLocation;
@@ -72,7 +67,7 @@ public class FactoryObject
 	 * Constructor
 	 */
 	public FactoryObject(Location factoryLocation, Location factoryInventoryLocation, Location factoryPowerSource,
-			boolean active, FactoryType factoryType, SubFactoryType subFactoryType)
+			boolean active, FactoryType factoryType, String subFactoryType)
 	{
 		this.factoryLocation = factoryLocation;
 		this.factoryInventoryLocation = factoryInventoryLocation;
@@ -90,7 +85,7 @@ public class FactoryObject
 	 */
 	public FactoryObject(Location factoryLocation, Location factoryInventoryLocation, Location factoryPowerSource,
 			boolean active, int tierLevel, FactoryType factoryType, Inventory factoryInventory,
-			SubFactoryType subFactoryType)
+			String subFactoryType)
 	{
 		this.factoryLocation = factoryLocation;
 		this.factoryInventoryLocation = factoryInventoryLocation;

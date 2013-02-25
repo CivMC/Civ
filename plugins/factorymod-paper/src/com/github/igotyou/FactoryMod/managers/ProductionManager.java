@@ -13,7 +13,6 @@ import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.FactoryObject.SubFactoryType;
 import com.github.igotyou.FactoryMod.Factorys.Production;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
@@ -63,12 +62,12 @@ public class ProductionManager implements Manager
 	{
 		if (!factoryExistsAt(factoryLocation))
 		{
-			HashMap<SubFactoryType, ProductionProperties> properties = plugin.Production_Properties;
+			HashMap<String, ProductionProperties> properties = plugin.production_Properties;
 			Chest chest = (Chest)inventoryLocation.getBlock();
 			Inventory inventory = chest.getInventory();
-			SubFactoryType subFactoryType = null;
+			String subFactoryType = null;
 			boolean hasMaterials = true;
-			for (Map.Entry<SubFactoryType, ProductionProperties> entry : properties.entrySet())
+			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
 				HashMap<Integer, Material> buildMaterial = entry.getValue().getBuildMaterial();
 				HashMap<Integer, Integer> buildAmount = entry.getValue().getBuildAmount();

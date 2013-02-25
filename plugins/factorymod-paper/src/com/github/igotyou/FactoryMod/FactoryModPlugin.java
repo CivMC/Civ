@@ -1,26 +1,29 @@
 package com.github.igotyou.FactoryMod;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
-import com.github.igotyou.FactoryMod.FactoryObject.SubFactoryType;
 import com.github.igotyou.FactoryMod.interfaces.Properties;
 import com.github.igotyou.FactoryMod.managers.FactoryModManager;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
+import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 
 public class FactoryModPlugin extends JavaPlugin
 {
 
 	FactoryModManager manager;
-	public static HashMap<SubFactoryType, ProductionProperties> Production_Properties;
+	public static HashMap<String, ProductionProperties> production_Properties;
+	public static List<ProductionRecipe> productionRecipes;
 	
 	public static final String VERSION = "v1.0"; //Current version of plugin
 	public static final String PLUGIN_NAME = "FactoryMod"; //Name of plugin
@@ -29,10 +32,11 @@ public class FactoryModPlugin extends JavaPlugin
 	public static final int TICKS_PER_SECOND = 20; //The number of ticks per second
 	
 	public static int AMOUNT_OF_RECIPES_TO_REMOVE;
-	public static int PRODUCTION_MAX_TIERS;
 	public static int PRODUCER_UPDATE_CYCLE;
 	public static boolean PRODUCTION_ENEABLED;
 	public static int SAVE_CYCLE;
+	public static int AMOUNT_OF_PRODUCTION_RECIPES;
+	public static int AMOUNT_OF_PRODUCTION_FACTORY_TYPES;
 	
 	public void onEnable()
 	{
@@ -46,31 +50,85 @@ public class FactoryModPlugin extends JavaPlugin
 	
 	public void initConfig()
 	{
-		Production_Properties = new HashMap<SubFactoryType, ProductionProperties>();
-		AMOUNT_OF_RECIPES_TO_REMOVE = getConfig().getInt("disabled_recipes.amount");
-		PRODUCTION_MAX_TIERS = getConfig().getInt("production_general.max_tiers");
+		production_Properties = new HashMap<String, ProductionProperties>();
+		productionRecipes = new ArrayList<ProductionRecipe>();
+		FileConfiguration config = getConfig();
+		
+		AMOUNT_OF_RECIPES_TO_REMOVE = config.getInt("disabled_recipes.amount");
 		
 		for (int i = 1; i <= FactoryModPlugin.AMOUNT_OF_RECIPES_TO_REMOVE; i++)
 		{
 			int g = 0;
-			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(getConfig().getString(getPathToRecipe(i))));
+			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(config.getString(getPathToRecipe(i))));
 			List<Recipe> tempList = getServer().getRecipesFor(recipeItemStack);
 			for (int itterator = 0; itterator < tempList.size(); itterator ++)
 			{
 				removeRecipe(tempList.get(itterator));
 				g++;
 			}
-			getLogger().info(g + " recipes removed");
+			sendConsoleMessage(g + " recipes removed");
 		}
-		for (int i = 1; i <= FactoryModPlugin.PRODUCTION_MAX_TIERS; i++)
+		AMOUNT_OF_PRODUCTION_RECIPES = config.getInt("production_recipes.amount");
+		for (int i =1; i <= FactoryModPlugin.AMOUNT_OF_PRODUCTION_RECIPES; i++)
 		{
-			int amount_of_materials = getConfig().getInt("production_general.amount_of_materials");
+			String recipeName = config.getString(getPathToProductionRecipe(i) + ".name");
+			int batchAmount = config.getInt(getPathToProductionRecipe(i)  + ".batch_amount");
+			int productionTime = config.getInt(getPathToProductionRecipe(i)  + ".production_time");
+			Material output = Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".output_material"));
+			
+			HashMap<Integer, Material> inputMaterials = new HashMap<Integer, Material>();
+			HashMap<Integer, Integer> inputAmount = new HashMap<Integer, Integer>();
+			
+			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_material_inputs"); i1++)
+			{
+				inputMaterials.put(i1, Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".input_material_" + String.valueOf(i1))));
+				inputAmount.put(i1, config.getInt(getPathToProductionRecipe(i) + ".input_amount_" + String.valueOf(i1)));
+			}
+			ProductionRecipe recipe = new ProductionRecipe(inputMaterials, inputAmount, output, batchAmount, recipeName, productionTime);
+			productionRecipes.add(recipe);
+		}
+		
+		AMOUNT_OF_PRODUCTION_FACTORY_TYPES = config.getInt("production_general.amount_of_factory_types");
+		for (int i = 1; i <=FactoryModPlugin.AMOUNT_OF_PRODUCTION_FACTORY_TYPES; i++)
+		{
+			HashMap<Integer, Material> buildMaterials= new HashMap<Integer, Material>();
+			HashMap<Integer, Integer> buildAmount = new HashMap<Integer, Integer>();
+			List<ProductionRecipe> recipes = new ArrayList<ProductionRecipe>();
+		
+			String name = config.getString(getPathToFactory(i) + ".name");
+			String subFactoryType = config.getString(getPathToFactory(i) + ".sub_factory_type");
+			Material energyMaterial = Material.getMaterial(config.getInt(getPathToFactory(i) + ".fuel_material"));
+			int fuelTime = config.getInt(getPathToFactory(i) + ".fuel_time");
+			int fuelConsumption = config.getInt(getPathToFactory(i) + "fuel_consumption");
+			
+			for (int i1 = 1; i1 <= config.getInt(getPathToFactory(i) + ".amount_of_build_materials"); i1++)
+			{
+
+				buildMaterials.put(i1, Material.getMaterial(config.getString(getPathToFactory(i) + ".build_material_" + String.valueOf(i1))));
+				buildAmount.put(i1, config.getInt(getPathToFactory(i) + ".build_material_amount_" + String.valueOf(i1)));
+			}
+			for(int i1 = 1; i1 <= config.getInt(getPathToFactory(i) + ".amount_of_production_recipes"); i1++)
+			{
+				recipes.add(productionRecipes.get(config.getInt(getPathToFactory(i) + ".recipe_" + String.valueOf(i1)) - 1));
+			}
+			ProductionProperties productionProperties = new ProductionProperties(buildMaterials, buildAmount, recipes, energyMaterial, fuelTime, fuelConsumption, name);
+			production_Properties.put(subFactoryType, productionProperties);
 		}
 	}
 	
 	private String getPathToRecipe(int i)
 	{
 		return "disabled_recipes.recipe_" + String.valueOf(i);
+	}
+	
+	private String getPathToProductionRecipe(int i)
+	{
+		return "production_recipes.recipe_" + String.valueOf(i);
+	}
+	
+	private String getPathToFactory(int i)
+	{
+		return "production_general.factory_" + String.valueOf(i);
 	}
 	
 	private void removeRecipe(Recipe removalRecipe)
@@ -86,12 +144,12 @@ public class FactoryModPlugin extends JavaPlugin
 		}
 	}
 
-	public static Properties getProperties(FactoryType factoryType, SubFactoryType subFactoryType)
+	public static Properties getProperties(FactoryType factoryType, String subFactoryType)
 	{
 		switch(factoryType)
 		{
 			case PRODUCTION:
-				return FactoryModPlugin.Production_Properties.get(subFactoryType);
+				return FactoryModPlugin.production_Properties.get(subFactoryType);
 			default:
 				return null;
 		}
