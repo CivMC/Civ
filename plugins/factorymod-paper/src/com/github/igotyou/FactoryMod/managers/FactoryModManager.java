@@ -59,10 +59,10 @@ public class FactoryModManager
 		managers = new ArrayList<Manager>();
 		listeners = new ArrayList<Listener>();
 		
-		if (FactoryModPlugin.PRODUCTION_ENEABLED)
-		{
+		//if (FactoryModPlugin.PRODUCTION_ENEABLED)
+		//{
 			initializeProductionManager();
-		}
+		//}
 	}
 	
 
@@ -220,5 +220,18 @@ public class FactoryModManager
 			}
 		}	
 		return false;
+	}
+
+	public ProductionManager getProductionManager() 
+	{
+		for (Manager manager : managers)
+		{
+			if (manager.getClass() == ProductionManager.class)
+			{
+				return (ProductionManager) manager;
+			}
+		}
+		
+		return null;
 	}
 }

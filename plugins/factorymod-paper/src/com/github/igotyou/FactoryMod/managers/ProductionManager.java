@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
 
@@ -63,8 +64,9 @@ public class ProductionManager implements Manager
 		if (!factoryExistsAt(factoryLocation))
 		{
 			HashMap<String, ProductionProperties> properties = plugin.production_Properties;
-			Chest chest = (Chest)inventoryLocation.getBlock();
-			Inventory inventory = chest.getInventory();
+			Block inventoryBlock = inventoryLocation.getBlock();
+			Chest chest = (Chest) inventoryBlock;
+			Inventory inventory = chest.getBlockInventory();
 			String subFactoryType = null;
 			boolean hasMaterials = true;
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())

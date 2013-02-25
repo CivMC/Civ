@@ -1,4 +1,6 @@
 general:
+  central_block: WORKBENCH
+  save_cycle: 100
 
 disabled_recipes:
   amount: 4
