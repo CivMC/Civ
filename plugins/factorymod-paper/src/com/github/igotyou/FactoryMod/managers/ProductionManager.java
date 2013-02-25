@@ -65,17 +65,19 @@ public class ProductionManager implements Manager
 		{
 			HashMap<String, ProductionProperties> properties = plugin.production_Properties;
 			Block inventoryBlock = inventoryLocation.getBlock();
-			Chest chest = (Chest) inventoryBlock;
-			Inventory inventory = chest.getBlockInventory();
+			Chest chest = (Chest) inventoryBlock.getState();
+			Inventory chestInventory = chest.getInventory();
 			String subFactoryType = null;
 			boolean hasMaterials = true;
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
 				HashMap<Integer, Material> buildMaterial = entry.getValue().getBuildMaterial();
+				FactoryModPlugin.sendConsoleMessage("build Material is: " + buildMaterial.toString());
 				HashMap<Integer, Integer> buildAmount = entry.getValue().getBuildAmount();
-				for (int i = 0; i < buildMaterial.size(); i ++)
+				FactoryModPlugin.sendConsoleMessage("build amount is: " + buildAmount.toString());
+				for (int i = 1; i <= buildMaterial.size(); i ++)
 				{
-					if(!inventory.contains(buildMaterial.get(i), buildAmount.get(i)))
+					if(!chestInventory.contains(buildMaterial.get(i), buildAmount.get(i)))
 					{
 						hasMaterials = false;
 					}
@@ -115,11 +117,11 @@ public class ProductionManager implements Manager
 		}
 	}
 
-	public Factory getFactory(Location factoryLocation) 
+	public Factory r(Location factoryLocation) 
 	{
 		for (Production production : producers)
 		{
-			if (production.getCenterLocation().equals(factoryLocation) || production.getInventory().equals(factoryLocation)
+			if (production.getCenterLocation().equals(factoryLocation) || production.getInventoryLocation().equals(factoryLocation)
 					|| production.getPowerSourceLocation().equals(factoryLocation))
 				return production;
 		}
@@ -128,7 +130,39 @@ public class ProductionManager implements Manager
 
 	public boolean factoryExistsAt(Location factoryLocation) 
 	{
-		return getFactory(factoryLocation) != null;
+		Location westLocation = factoryLocation.clone();
+		Location eastLocation = factoryLocation.clone();
+		Location northLocation = factoryLocation.clone();
+		Location southLocation = factoryLocation.clone();
+		
+		westLocation.add(-1,0,0);
+		eastLocation.add(1,0,0);
+		northLocation.add(0,0,-1);
+		southLocation.add(0,0,1);
+		
+		boolean returnValue = false;
+		if (getFactory(factoryLocation) != null)
+		{
+			returnValue = true;
+		}
+
+		if (getFactory(westLocation) != null)
+		{
+			returnValue = true;
+		}
+		if (getFactory(eastLocation) != null)
+		{
+			returnValue = true;
+		}
+		if (getFactory(northLocation) != null)
+		{
+			returnValue = true;
+		}
+		if (getFactory(southLocation) != null)
+		{
+			returnValue = true;
+		}
+		return returnValue;
 	}
 
 	public void removeFactory(Factory factory) 

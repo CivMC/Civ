@@ -125,7 +125,7 @@ public class FactoryModPlugin extends JavaPlugin
 			{
 
 				buildMaterials.put(i1, Material.getMaterial(config.getString(getPathToFactory(i) + ".build_material_" + String.valueOf(i1))));
-				buildAmount.put(i1, config.getInt(getPathToFactory(i) + ".build_material_amount_" + String.valueOf(i1)));
+				buildAmount.put(i1, config.getInt(getPathToFactory(i) + ".build_amount_" + String.valueOf(i1)));
 			}
 			for(int i1 = 1; i1 <= config.getInt(getPathToFactory(i) + ".amount_of_production_recipes"); i1++)
 			{

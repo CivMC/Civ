@@ -6,6 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
@@ -30,15 +31,15 @@ public class BlockListener implements Listener
 	{
 		 Player player = e.getPlayer();
 		 Block block = e.getBlock();
-		 Location CentralLoctation = block.getLocation();
+		 Location centralLoctation = block.getLocation();
 		 Material type = block.getType();
 		 
 		 if (type == FactoryModPlugin.CENTRAL_BLOCK_MATERIAL)
 		 {
-			 Location northLocation = northLoc(CentralLoctation);
-			 Location southLocation = southLoc(CentralLoctation);
-			 Location eastLocation = eastLoc(CentralLoctation);
-			 Location westLocation = westLoc(CentralLoctation);
+			 Location northLocation = northLoc(centralLoctation);
+			 Location southLocation = southLoc(centralLoctation);
+			 Location eastLocation = eastLoc(centralLoctation);
+			 Location westLocation = westLoc(centralLoctation);
 			 
 			 Block northBlock = northLocation.getBlock();
 			 Block southBlock = southLocation.getBlock();
@@ -52,45 +53,42 @@ public class BlockListener implements Listener
 		      
 		      if(northType.getId()== 61 || northType.getId()== 62)  
 		      {
-		    	  player.sendMessage("Furnace detected North");
 		    	  if(southType.getId()== 54) 
 		    	  {
-		    		  player.sendMessage("Correct placement, checking chest for factory foundations");
-		    		  InteractionResponse.messagePlayerResult(player, productionMan.createFactory(CentralLoctation, southLocation, northLocation));
+		    		  InteractionResponse.messagePlayerResult(player, productionMan.createFactory(centralLoctation, southLocation, northLocation));
 		    	  }
 		      }
 		        
 		      if(westType.getId()== 61 || westType.getId() == 62)  
 		      {  
-		    	  player.sendMessage("Furnace detected West");
 		    	  if(eastType.getId()== 54) 
 		    	  {
-		    		  player.sendMessage("Correct placement, checking chest for factory foundations");
-		    		  InteractionResponse.messagePlayerResult(player, productionMan.createFactory(CentralLoctation, eastLocation, westLocation));
+		    		  InteractionResponse.messagePlayerResult(player, productionMan.createFactory(centralLoctation, eastLocation, westLocation));
 		    	  }
 		      }
 		            
 		      if(southType.getId()== 61 || southType.getId()== 62)  
 		      {
-		    	  player.sendMessage("Furnace detected South");
 		    	  if(northType.getId()== 54) 
 		    	  {
-		    		  player.sendMessage("Correct placement, checking chest for factory foundations");
-		    		  InteractionResponse.messagePlayerResult(player, productionMan.createFactory(CentralLoctation, northLocation, southLocation));
+		    		  InteractionResponse.messagePlayerResult(player, productionMan.createFactory(centralLoctation, northLocation, southLocation));
 		    	  }
 		      }        
 		        
 		        if(eastType.getId()== 61 || eastType.getId()== 62)  
 		        {
-		        	player.sendMessage("Furnace detected East");
 		        	if(westType.getId()== 54) 
 		        	{
-		        		player.sendMessage("Correct placement, checking chest for factory foundations");
-		        		player.sendMessage("west location block type is:" + westLocation.getBlock().getType().toString() + " , and location is" + westLocation.toString());
-		        		InteractionResponse.messagePlayerResult(player, productionMan.createFactory(CentralLoctation, westLocation, eastLocation));
+		        		InteractionResponse.messagePlayerResult(player, productionMan.createFactory(centralLoctation, westLocation, eastLocation));
 		        	}
 		        } 
 		 }
+	}
+	
+	@EventHandler
+	public void blockBreakEvent(BlockBreakEvent e)
+	{
+		
 	}
 	
 	private Location westLoc(Location loc)

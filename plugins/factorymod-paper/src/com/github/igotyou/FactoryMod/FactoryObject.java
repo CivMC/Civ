@@ -105,8 +105,10 @@ public class FactoryObject
 		switch(factoryType)
 		{
 		case PRODUCTION:
-			Chest chestBlock = (Chest)factoryLocation.getBlock();
+			Chest chestBlock = (Chest)factoryInventoryLocation.getBlock().getState();
 			factoryInventory = chestBlock.getInventory();
+			break;
+		default:
 			break;
 		}
 	}
@@ -260,7 +262,8 @@ public class FactoryObject
 		switch (factoryType)
 		{
 		case PRODUCTION:
-			Chest chestBlock = (Chest)factoryInventoryLocation.getBlock();
+			FactoryModPlugin.sendConsoleMessage("block type is:" + factoryInventoryLocation.getBlock().getType().toString() + " , and location is " + factoryInventoryLocation.toString());
+			Chest chestBlock = (Chest)factoryInventoryLocation.getBlock().getState();
 			factoryInventory = chestBlock.getInventory();
 			return factoryInventory;
 		default:
@@ -273,7 +276,7 @@ public class FactoryObject
 		switch (factoryType)
 		{
 		case PRODUCTION:
-			Furnace furnaceBlock = (Furnace)factoryPowerSourceLocation.getBlock();
+			Furnace furnaceBlock = (Furnace)factoryPowerSourceLocation.getBlock().getState();
 			factoryInventory = furnaceBlock.getInventory();
 			return factoryInventory;
 		default:
