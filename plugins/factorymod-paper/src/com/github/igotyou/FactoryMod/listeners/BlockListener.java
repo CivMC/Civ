@@ -151,6 +151,62 @@ public class BlockListener implements Listener
 
 					}
 				}
+				else if (clicked.getType() == Material.CHEST)
+				{
+					if (factoryMan.factoryExistsAt(clicked.getLocation()))
+					{
+						if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || !FactoryModPlugin.CITADEL_ENABLED)
+						{
+							if (productionMan.factoryExistsAt(clicked.getLocation()))
+							{
+								Production production = (Production) productionMan.getFactory(clicked.getLocation());
+								int procentDone = Math.round(production.getProductionTimer()*100/production.getCurrentRecipe().getProductionTime());
+								if (production.getActive() == true)
+								{
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Factory is currently on"));
+								}
+								else if (production.getActive() == false)
+								{
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE, "Factory is currently off"));
+								}
+								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "The selected recipe is " + production.getCurrentRecipe().getRecipeName()));
+								if (production.getActive())
+								{
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Production of the current recipe is " + String.valueOf(procentDone) + "% done."));
+								}
+							}
+						}
+						else
+						{
+							PlayerReinforcement reinforcment = (PlayerReinforcement) getReinforcement(clicked);
+							if (reinforcment.isAccessible(player))
+							{
+								if (productionMan.factoryExistsAt(clicked.getLocation()))
+								{
+									Production production = (Production) productionMan.getFactory(clicked.getLocation());
+									int procentDone = Math.round(production.getProductionTimer()*100/production.getCurrentRecipe().getProductionTime());
+									if (production.getActive() == true)
+									{
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Factory is currently on"));
+									}
+									else if (production.getActive() == false)
+									{
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE, "Factory is currently off"));
+									}
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "The selected recipe is " + production.getCurrentRecipe().getRecipeName()));
+									if (production.getActive())
+									{
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Production of the current recipe is " + String.valueOf(procentDone) + "% done."));
+									}
+								}
+							}
+							else
+							{
+								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
+							}
+						}
+					}
+				}
 			}
 		}
 	}

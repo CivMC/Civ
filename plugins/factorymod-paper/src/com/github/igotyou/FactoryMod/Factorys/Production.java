@@ -1,9 +1,12 @@
 package com.github.igotyou.FactoryMod.Factorys;
 
+import java.util.Collection;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
+import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -70,6 +73,10 @@ public class Production extends FactoryObject implements Factory
 						currentEnergyTimer++;
 						currentProductionTimer ++;
 					}
+					else
+					{
+						powerOff();
+					}
 				}
 				
 				//if the production timer has reached the recipes production time remove input from chest, and add output material
@@ -77,7 +84,12 @@ public class Production extends FactoryObject implements Factory
 				{
 					if (removeMaterials(getInventory(), currentRecipe.getInputMaterial(), currentRecipe.getInputAmountWithBatchAmount()))
 					{
-						addMaterial(getInventory(), currentRecipe.getOutput(), currentRecipe.getBatchAmount());
+						for (int i = 1; i <= currentRecipe.getBatchAmount(); i++)
+						{
+							addMaterial(getInventory(), currentRecipe.getOutput(), 1);
+						}
+						
+						//addMaterial(getInventory(), currentRecipe.getOutput(), currentRecipe.getBatchAmount());
 						currentProductionTimer = 0;
 						powerOff();
 					}
@@ -127,24 +139,31 @@ public class Production extends FactoryObject implements Factory
 	
 	public InteractionResponse toggleRecipes()
 	{
-		if (currentRecipe != null)
-		{		
-			if (currentRecipeNumber == productionFactoryProperties.getRecipes().size() - 1)
-			{
-				setRecipeToNumber(0);
-				return new InteractionResponse(InteractionResult.SUCCESS, "Recipe switched! Current recipe is:" + currentRecipe.getRecipeName());
+		if (!active)
+		{
+			if (currentRecipe != null)
+			{		
+				if (currentRecipeNumber == productionFactoryProperties.getRecipes().size() - 1)
+				{
+					setRecipeToNumber(0);
+					return new InteractionResponse(InteractionResult.SUCCESS, "Recipe switched! Current recipe is:" + currentRecipe.getRecipeName());
+				}
+				else
+				{
+					setRecipeToNumber(currentRecipeNumber + 1);
+					return new InteractionResponse(InteractionResult.SUCCESS, "Recipe switched! Current recipe is:" + currentRecipe.getRecipeName());
+				}
 			}
 			else
 			{
-				setRecipeToNumber(currentRecipeNumber + 1);
-				return new InteractionResponse(InteractionResult.SUCCESS, "Recipe switched! Current recipe is:" + currentRecipe.getRecipeName());
-			}
+				setRecipeToNumber(0);
+				return new InteractionResponse(InteractionResult.SUCCESS, "Recipe selected! Current recipe is:" + currentRecipe.getRecipeName());
+			}	
 		}
 		else
 		{
-			setRecipeToNumber(0);
-			return new InteractionResponse(InteractionResult.SUCCESS, "Recipe selected! Current recipe is:" + currentRecipe.getRecipeName());
-		}	
+			return new InteractionResponse(InteractionResult.FAILURE, "You can't change recipes while the factory is on! Turn it off first.");
+		}
 	}
 	
 	public void setRecipe(Recipe newRecipe)

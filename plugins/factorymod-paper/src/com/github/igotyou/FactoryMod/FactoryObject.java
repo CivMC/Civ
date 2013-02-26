@@ -160,6 +160,11 @@ public class FactoryObject
 		inventory.addItem(itemStack);
 	}
 	
+	public void addItem(Inventory inventory, ItemStack itemStack)
+	{
+		inventory.addItem(itemStack);
+	}
+	
 	/**
 	 * Attempts to remove materials for upgrading from cloaker inventory
 	 */
