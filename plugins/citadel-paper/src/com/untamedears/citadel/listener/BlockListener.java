@@ -61,7 +61,8 @@ public class BlockListener implements Listener {
     public void placeFortifiedBlock(BlockPlaceEvent bpe) {
         Player player = bpe.getPlayer();
         PlayerState state = PlayerState.get(player);
-        if (state.getFaction().isDisciplined()) {
+        Faction group = state.getFaction();
+        if (group != null && group.isDisciplined()) {
             sendThrottledMessage(player, ChatColor.RED, Faction.kDisciplineMsg);
             bpe.setCancelled(true);
             return;
