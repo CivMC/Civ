@@ -17,10 +17,7 @@ public interface Recipe
 	
 	//get the amount of above material nedded
 	public HashMap<Integer,Integer> getInputAmount();
-	
-	//get the amount of above material nedded times the batch amount
-	public HashMap<Integer, Integer> getInputAmountWithBatchAmount();
-	
+		
 	//get the recipes name, example: Iron Pickaxe
 	public String getRecipeName();
 	

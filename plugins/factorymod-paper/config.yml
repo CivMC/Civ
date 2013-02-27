@@ -21,7 +21,7 @@ production_recipes:
     output_material: DIAMOND_HELMET
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
-    input_amount_1: 5
+    input_amount_1: 50
   recipe_2:
     name: Diamond Chestplate
     batch_amount: 10
@@ -29,7 +29,7 @@ production_recipes:
     output_material: DIAMOND_CHESTPLATE
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
-    input_amount_1: 8
+    input_amount_1: 80
   recipe_3:
     name: Diamond Leggings
     batch_amount: 10
@@ -37,7 +37,7 @@ production_recipes:
     output_material: DIAMOND_LEGGINGS
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
-    input_amount_1: 7
+    input_amount_1: 70
   recipe_4:
     name: Diamond Boots
     batch_amount: 10
@@ -45,7 +45,7 @@ production_recipes:
     output_material: DIAMOND_BOOTS
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
-    input_amount_1: 4
+    input_amount_1: 40
     
 production_general:
   update_cycle: 20

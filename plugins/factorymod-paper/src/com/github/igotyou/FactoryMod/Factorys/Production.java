@@ -58,7 +58,7 @@ public class Production extends FactoryObject implements Factory
 		//if factory is turned on
 		if (active)
 		{
-			if (areMaterialsAvailable(getInventory(), currentRecipe.getInputMaterial(), currentRecipe.getInputAmountWithBatchAmount()))
+			if (areMaterialsAvailable(getInventory(), currentRecipe.getInputMaterial(), currentRecipe.getInputAmount()))
 			{
 				//if the production time has not reached the recipes production time
 				if (currentProductionTimer < currentRecipe.getProductionTime())
@@ -83,7 +83,7 @@ public class Production extends FactoryObject implements Factory
 				//if the production timer has reached the recipes production time remove input from chest, and add output material
 				else if (currentProductionTimer == currentRecipe.getProductionTime())
 				{
-					if (removeMaterials(getInventory(), currentRecipe.getInputMaterial(), currentRecipe.getInputAmountWithBatchAmount()))
+					if (removeMaterials(getInventory(), currentRecipe.getInputMaterial(), currentRecipe.getInputAmount()))
 					{
 						for (int i = 1; i <= currentRecipe.getBatchAmount(); i++)
 						{
@@ -136,14 +136,14 @@ public class Production extends FactoryObject implements Factory
 		{
 			if (isFuelAvailable())
 			{
-				if (areMaterialsAvailable(getInventory(), currentRecipe.getInputMaterial(), currentRecipe.getInputAmountWithBatchAmount()))
+				if (areMaterialsAvailable(getInventory(), currentRecipe.getInputMaterial(), currentRecipe.getInputAmount()))
 				{
 					powerOn();
 					return new InteractionResponse(InteractionResult.SUCCESS, "Factory activated!");
 				}
 				else
 				{
-					return new InteractionResponse(InteractionResult.FAILURE, "Factory does not have enough materials for the current recipe! You need: " + getMaterialsNeededMessage(currentRecipe.getInputMaterial(), currentRecipe.getInputAmountWithBatchAmount()));
+					return new InteractionResponse(InteractionResult.FAILURE, "Factory does not have enough materials for the current recipe! You need: " + getMaterialsNeededMessage(currentRecipe.getInputMaterial(), currentRecipe.getInputAmount()));
 				}
 			}
 			else

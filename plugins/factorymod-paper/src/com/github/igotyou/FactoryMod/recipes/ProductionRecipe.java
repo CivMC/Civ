@@ -48,20 +48,7 @@ public class ProductionRecipe implements Recipe
 	{
 		return inputAmount;
 	}
-	
-	public HashMap<Integer, Integer> getInputAmountWithBatchAmount() 
-	{
-		HashMap<Integer,Integer> returnValue = (HashMap<Integer, Integer>) getInputAmount().clone();
-		for (Map.Entry<Integer, Integer> entry : returnValue.entrySet())
-		{
-			int key = entry.getKey();
-			int value = entry.getValue();
-			value = value * getBatchAmount();
-			returnValue.put(key, value);
-		}
-		return returnValue;
-	}
-	
+		
 	public String getRecipeName() 
 	{
 		return recipeName;
