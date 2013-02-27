@@ -83,11 +83,21 @@ public class Production extends FactoryObject implements Factory
 				//if the production timer has reached the recipes production time remove input from chest, and add output material
 				else if (currentProductionTimer == currentRecipe.getProductionTime())
 				{
+					ProductionRecipe recipe = (ProductionRecipe) currentRecipe;
 					if (removeMaterials(getInventory(), currentRecipe.getInputMaterial(), currentRecipe.getInputAmount()))
 					{
 						for (int i = 1; i <= currentRecipe.getBatchAmount(); i++)
 						{
-							addMaterial(getInventory(), currentRecipe.getOutput(), 1);
+							ItemStack itemStack = new ItemStack(currentRecipe.getOutput(), 1); 
+							if (recipe.getDurability() != 0)
+							{
+								itemStack = new ItemStack(currentRecipe.getOutput(), 1, recipe.getDurability()); 
+							}
+							if (recipe.getEnchantments() != null)
+							{
+								itemStack.addEnchantments(recipe.getEnchantments());
+							}
+							addItem(getInventory(),itemStack);
 						}
 						
 						//addMaterial(getInventory(), currentRecipe.getOutput(), currentRecipe.getBatchAmount());

@@ -22,6 +22,10 @@ production_recipes:
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
     input_amount_1: 50
+    durability: 10
+    amount_of_enchantments: 1
+    enchantment_1: PROTECTION_ENVIRONMENTAL
+    enchantment_1_level: 4
   recipe_2:
     name: Diamond Chestplate
     batch_amount: 10
@@ -30,6 +34,8 @@ production_recipes:
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
     input_amount_1: 80
+    durability: MAX
+    amount_of_enchantments: 0
   recipe_3:
     name: Diamond Leggings
     batch_amount: 10
@@ -38,6 +44,8 @@ production_recipes:
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
     input_amount_1: 70
+    durability: MAX
+    amount_of_enchantments: 0
   recipe_4:
     name: Diamond Boots
     batch_amount: 10
@@ -46,6 +54,9 @@ production_recipes:
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
     input_amount_1: 40
+    durability: MAX
+    amount_of_enchantments: 0
+    
     
 production_general:
   update_cycle: 20

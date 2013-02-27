@@ -8,6 +8,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -101,18 +102,49 @@ public class FactoryModPlugin extends JavaPlugin
 			String recipeName = config.getString(getPathToProductionRecipe(i) + ".name");
 			int batchAmount = config.getInt(getPathToProductionRecipe(i)  + ".batch_amount");
 			int productionTime = config.getInt(getPathToProductionRecipe(i)  + ".production_time");
+			short durability = 0;
+			if (config.getString(getPathToProductionRecipe(i) + ".durability") != "MAX")
+			{
+				durability = (short) config.getInt(getPathToProductionRecipe(i) + ".durability");
+			}
 			Material output = Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".output_material"));
 			
 			HashMap<Integer, Material> inputMaterials = new HashMap<Integer, Material>();
 			HashMap<Integer, Integer> inputAmount = new HashMap<Integer, Integer>();
+			HashMap<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
 			
 			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_material_inputs"); i1++)
 			{
 				inputMaterials.put(i1, Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".input_material_" + String.valueOf(i1))));
 				inputAmount.put(i1, config.getInt(getPathToProductionRecipe(i) + ".input_amount_" + String.valueOf(i1)));
 			}
-			ProductionRecipe recipe = new ProductionRecipe(inputMaterials, inputAmount, output, batchAmount, recipeName, productionTime);
-			productionRecipes.add(recipe);
+			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_enchantments"); i1++)
+			{
+				String enchantmentName = config.getString(getPathToProductionRecipe(i) + ".enchantment_" + String.valueOf(i1));
+				int enchantmentLevel = config.getInt(getPathToProductionRecipe(i) + ".enchantment_" + String.valueOf(i1) + "_level");
+				enchantments.put(Enchantment.getByName(enchantmentName), enchantmentLevel);
+			}
+			
+			if(durability != 0 && enchantments.size() > 0)
+			{
+				ProductionRecipe recipe = new ProductionRecipe(inputMaterials, inputAmount, output, batchAmount, recipeName, productionTime,enchantments,durability);
+				productionRecipes.add(recipe);
+			}
+			else if (durability != 0 && enchantments.size() == 0)
+			{
+				ProductionRecipe recipe = new ProductionRecipe(inputMaterials, inputAmount, output, batchAmount, recipeName, productionTime,durability);
+				productionRecipes.add(recipe);
+			}
+			else if (enchantments.size() != 0 && durability == 0)
+			{
+				ProductionRecipe recipe = new ProductionRecipe(inputMaterials, inputAmount, output, batchAmount, recipeName, productionTime,enchantments);
+				productionRecipes.add(recipe);
+			}
+			else
+			{
+				ProductionRecipe recipe = new ProductionRecipe(inputMaterials, inputAmount, output, batchAmount, recipeName, productionTime);
+				productionRecipes.add(recipe);
+			}
 		}
 		
 		AMOUNT_OF_PRODUCTION_FACTORY_TYPES = config.getInt("production_general.amount_of_factory_types");
