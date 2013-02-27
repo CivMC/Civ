@@ -117,7 +117,6 @@ public class ProductionManager implements Manager
 		String line;
 		while ((line = bufferedReader.readLine()) != null)
 		{
-			FactoryModPlugin.sendConsoleMessage(line);
 			String parts[] = line.split(" ");
 			//order: subFactoryType world central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
 			String subFactoryType = parts[0];

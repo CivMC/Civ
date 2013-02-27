@@ -163,16 +163,18 @@ public class BlockListener implements Listener
 								int procentDone = Math.round(production.getProductionTimer()*100/production.getCurrentRecipe().getProductionTime());
 								if (production.getActive() == true)
 								{
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Factory is currently on"));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------Factory Information---------"));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type     : " + production.getSubFactoryType()));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status  : On"));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe  : " + production.getCurrentRecipe().getRecipeName()));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Progress: of the current recipe is " + String.valueOf(procentDone) + "%."));
 								}
-								else if (production.getActive() == false)
+								else
 								{
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE, "Factory is currently off"));
-								}
-								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "The selected recipe is " + production.getCurrentRecipe().getRecipeName()));
-								if (production.getActive())
-								{
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Production of the current recipe is " + String.valueOf(procentDone) + "% done."));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------Factory Information---------"));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type   : " + production.getSubFactoryType()));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status: Off"));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe: " + production.getCurrentRecipe().getRecipeName()));
 								}
 							}
 						}
@@ -187,16 +189,18 @@ public class BlockListener implements Listener
 									int procentDone = Math.round(production.getProductionTimer()*100/production.getCurrentRecipe().getProductionTime());
 									if (production.getActive() == true)
 									{
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Factory is currently on"));
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------Factory Information---------"));
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type     : " + production.getSubFactoryType()));
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status  : On"));
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe  : " + production.getCurrentRecipe().getRecipeName()));
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Progress: of the current recipe is " + String.valueOf(procentDone) + "%."));
 									}
-									else if (production.getActive() == false)
+									else
 									{
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE, "Factory is currently off"));
-									}
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "The selected recipe is " + production.getCurrentRecipe().getRecipeName()));
-									if (production.getActive())
-									{
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Production of the current recipe is " + String.valueOf(procentDone) + "% done."));
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------Factory Information---------"));
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type   : " + production.getSubFactoryType()));
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status: Off"));
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe: " + production.getCurrentRecipe().getRecipeName()));
 									}
 								}
 							}

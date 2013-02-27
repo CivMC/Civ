@@ -9,6 +9,7 @@ import org.bukkit.block.Furnace;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.FactoryObject;
@@ -101,11 +102,31 @@ public class Production extends FactoryObject implements Factory
 
 	public void powerOn() 
 	{
+		Furnace furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();
+		byte data = furnace.getData().getData();
+		ItemStack[] oldContents = furnace.getInventory().getContents();
+		furnace.getInventory().clear();
+		factoryPowerSourceLocation.getBlock().setType(Material.BURNING_FURNACE);
+		furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();
+		furnace.setRawData(data);
+		furnace.update();
+		furnace.getInventory().setContents(oldContents);
+		furnace.setBurnTime((short) 1000);
 		active = true;
 	}
 
 	public void powerOff() 
 	{
+		Furnace furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();
+		byte data = furnace.getData().getData();
+		ItemStack[] oldContents = furnace.getInventory().getContents();
+		furnace.getInventory().clear();
+		factoryPowerSourceLocation.getBlock().setType(Material.FURNACE);
+		furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();
+		furnace.setRawData(data);
+		furnace.update();
+		furnace.getInventory().setContents(oldContents);
+		furnace.setBurnTime((short) 0);
 		active = false;
 	}
 
