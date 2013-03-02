@@ -6,61 +6,485 @@ general:
   factory_interaction_material: STONE_SPADE
 
 disabled_recipes:
-  amount: 4
+  amount: 26
   recipe_1: DIAMOND_HELMET
   recipe_2: DIAMOND_CHESTPLATE
   recipe_3: DIAMOND_LEGGINGS
   recipe_4: DIAMOND_BOOTS
+  recipe_5: IRON_PICKAXE
+  recipe_6: IRON_AXE
+  recipe_7: IRON_HOE
+  recipe_8: SHEARS
+  recipe_9: MOSSY_COBBLESTONE
+  recipe_10: LEATHER_HELMET
+  recipe_11: LEATHER_CHESTPLATE
+  recipe_12: LEATHER_LEGGINGS
+  recipe_13: LEATHER_BOOTS
+  recipe_14: IRON_SWORD
+  recipe_15: BOW
+  recipe_16: IRON_HELMET
+  recipe_17: IRON_CHESTPLATE
+  recipe_18: IRON_LEGGINGS
+  recipe_19: IRON_BOOTS
+  recipe_20: ENCHANTMENT_TABLE
+  recipe_21: ANVIL
+  recipe_22: GOLD_HELMET
+  recipe_23: GOLD_CHESTPLATE
+  recipe_24: GOLD_LEGGINGS
+  recipe_25: GOLD_BOOTS
+  recipe_26: BREWING_STAND
 
 production_recipes:
-  amount: 4
+  amount: 33
   recipe_1:
     name: Diamond Helmet
-    batch_amount: 10
-    production_time: 60
+    batch_amount: 1
+    production_time: 600
     output_material: DIAMOND_HELMET
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
-    input_amount_1: 50
+    input_amount_1: 5
     durability: 10
-    amount_of_enchantments: 1
-    enchantment_1: PROTECTION_ENVIRONMENTAL
-    enchantment_1_level: 4
+    amount_of_enchantments: 0
   recipe_2:
     name: Diamond Chestplate
-    batch_amount: 10
-    production_time: 60
+    batch_amount: 1
+    production_time: 600
     output_material: DIAMOND_CHESTPLATE
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
-    input_amount_1: 80
+    input_amount_1: 8
     durability: MAX
     amount_of_enchantments: 0
   recipe_3:
     name: Diamond Leggings
-    batch_amount: 10
-    production_time: 60
+    batch_amount: 1
+    production_time: 600
     output_material: DIAMOND_LEGGINGS
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
-    input_amount_1: 70
+    input_amount_1: 7
     durability: MAX
     amount_of_enchantments: 0
   recipe_4:
     name: Diamond Boots
-    batch_amount: 10
-    production_time: 60
+    batch_amount: 1
+    production_time: 600
     output_material: DIAMOND_BOOTS
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
-    input_amount_1: 40
+    input_amount_1: 4
     durability: MAX
     amount_of_enchantments: 0
-    
+  recipe_5:
+    name: Iron Pickaxe
+    batch_amount: 10
+    production_time: 600
+    output_material: IRON_PICKAXE
+    amount_of_material_inputs: 2
+    input_material_1: IRON_INGOT
+    input_amount_1: 30
+    input_material_2: STICK
+    input_amount_2: 20
+    durability: MAX
+    amount_of_enchantments: 0
+  recipe_6:
+    name: Iron axe
+    batch_amount: 10
+    production_time: 600
+    output_material: IRON_AXE
+    amount_of_material_inputs: 2
+    input_material_1: IRON_INGOT
+    input_amount_1: 30
+    input_material_2: STICK
+    input_amount_2: 20
+    durability: MAX
+    amount_of_enchantments: 0   
+  recipe_7:
+    name: Iron Hoe
+    batch_amount: 10
+    production_time: 600
+    output_material: IRON_HOE
+    amount_of_material_inputs: 2
+    input_material_1: IRON_INGOT
+    input_amount_1: 20
+    input_material_2: STICK
+    input_amount_2: 20
+    durability: MAX
+    amount_of_enchantments: 0   
+  recipe_8:
+    name: Iron Shears
+    batch_amount: 10
+    production_time: 600
+    output_material: SHEARS
+    amount_of_material_inputs: 2
+    input_material_1: IRON_INGOT
+    input_amount_1: 20
+    input_material_2: STICK
+    input_amount_2: 20
+    durability: MAX
+    amount_of_enchantments: 0 
+  recipe_9:
+    name: Mossy Cobble Stone
+    batch_amount: 8
+    production_time: 60
+    output_material: MOSSY_COBBLESTONE
+    amount_of_material_inputs: 2
+    input_material_1: STONE
+    input_amount_1: 512
+    input_material_2: SUGAR
+    input_amount_2: 64
+    durability: MAX
+    amount_of_enchantments: 0
+  recipe_10:
+    name: Leather Helmet
+    batch_amount: 1
+    production_time: 600
+    output_material: LEATHER_HELMET
+    amount_of_material_inputs: 2
+    input_material_1: LEATHER
+    input_amount_1: 5
+    input_material_2: CACTUS
+    input_amount_2: 8
+    durability: MAX
+    amount_of_enchantments: 0
+  recipe_11:
+    name: Leather Chestplate
+    batch_amount: 1
+    production_time: 600
+    output_material: LEATHER_CHESTPLATE
+    amount_of_material_inputs: 2
+    input_material_1: LEATHER
+    input_amount_1: 8
+    input_material_2: CACTUS
+    input_amount_2: 8
+    durability: MAX
+    amount_of_enchantments: 0
+  recipe_12:
+    name: Leather Leggings
+    batch_amount: 1
+    production_time: 600
+    output_material: LEATHER_LEGGINGS
+    amount_of_material_inputs: 2
+    input_material_1: LEATHER
+    input_amount_1: 7
+    input_material_2: CACTUS
+    input_amount_2: 8
+    durability: MAX
+    amount_of_enchantments: 0
+  recipe_13:
+    name: Leather Boots
+    batch_amount: 1
+    production_time: 600
+    output_material: LEATHER_BOOTS
+    amount_of_material_inputs: 2
+    input_material_1: LEATHER
+    input_amount_1: 4
+    input_material_2: CACTUS
+    input_amount_2: 8
+    durability: MAX
+    amount_of_enchantments: 0   
+  recipe_14: 
+    name: Iron Sword
+    batch_amount: 10
+    production_time: 600
+    output_material: IRON_SWORD
+    amount_of_material_inputs: 3
+    input_material_1: IRON_INGOT
+    input_amount_1: 20
+    input_material_2: STICK
+    input_amount_2: 10
+    input_material_3: BREAD
+    input_amount_3: 80
+    durability: MAX
+    amount_of_enchantments: 0
+  recipe_15: 
+    name: Bow
+    batch_amount: 10
+    production_time: 600
+    output_material: BOW
+    amount_of_material_inputs: 3
+    input_material_1: STRING
+    input_amount_1: 30
+    input_material_2: STICK
+    input_amount_2: 30
+    input_material_3: BREAD
+    input_amount_3: 80
+    durability: MAX
+    amount_of_enchantments: 0       
+  recipe_16:
+    name: Iron Helmet
+    batch_amount: 1
+    production_time: 600
+    output_material: IRON_HELMET
+    amount_of_material_inputs: 2
+    input_material_1: IRON_INGOT
+    input_amount_1: 5
+    input_material_2: CACTUS
+    input_amount_2: 48
+    durability: MAX
+    amount_of_enchantments: 0
+  recipe_17:
+    name: Iron Chestplate
+    batch_amount: 1
+    production_time: 600
+    output_material: IRON_CHESTPLATE
+    amount_of_material_inputs: 2
+    input_material_1: IRON_INGOT
+    input_amount_1: 8
+    input_material_2: CACTUS
+    input_amount_2: 48
+    durability: MAX
+    amount_of_enchantments: 0
+  recipe_18:
+    name: Iron Leggings
+    batch_amount: 1
+    production_time: 600
+    output_material: IRON_LEGGINGS
+    amount_of_material_inputs: 2
+    input_material_1: IRON_INGOT
+    input_amount_1: 7
+    input_material_2: CACTUS
+    input_amount_2: 48
+    durability: MAX
+    amount_of_enchantments: 0
+  recipe_19:
+    name: Iron Boots
+    batch_amount: 1
+    production_time: 600
+    output_material: IRON_BOOTS
+    amount_of_material_inputs: 2
+    input_material_1: IRON_INGOT
+    input_amount_1: 4
+    input_material_2: CACTUS
+    input_amount_2: 48
+    durability: MAX
+    amount_of_enchantments: 0       
+  recipe_20:
+    name: Javelin
+    batch_amount: 1
+    production_time: 600
+    output_material: BOW
+    amount_of_material_inputs: 3
+    input_material_1: IRON_INGOT
+    input_amount_1: 2
+    input_material_2: STICK
+    input_amount_2: 2
+    input_material_3: COOKIE
+    input_amount_3: 10
+    durability: 384
+    amount_of_enchantments: 1
+    enchantment_1: ARROW_DAMAGE
+    enchantment_1_level: 5
+  recipe_21:
+    name: Mossy Cracked Stone
+    batch_amount: 1
+    production_time: 600
+    output_material: SMOOTH_BRICK
+    output_data: 1
+    amount_of_material_inputs: 2
+    input_material_1: MOSSY_COBBLESTONE
+    input_amount_1: 64
+    input_material_2: BREAD
+    input_amount_2: 50
+    durability: MAX
+    amount_of_enchantments: 0
+  recipe_22:
+    name: Enchanted Leather Helmet
+    batch_amount: 1
+    production_time: 600
+    output_material: LEATHER_HELMET
+    amount_of_material_inputs: 3
+    input_material_1: LEATHER_HELMET
+    input_amount_1: 1
+    input_material_2: SUGAR
+    input_amount_2: 50
+    input_material_3: MOSSY_COBBLESTONE
+    input_amount_3: 64
+    durability: MAX
+    amount_of_enchantments: 1
+    enchantment_1: PROTECTION_ENVIRONMENT
+    enchantment_1_level: 1
+  recipe_23:
+    name: Enchanted Leather Chestplate
+    batch_amount: 1
+    production_time: 600
+    output_material: LEATHER_CHESTPLATE
+    amount_of_material_inputs: 2
+    input_material_1: LEATHER_CHESTPLATE
+    input_amount_1: 1
+    input_material_2: SUGAR
+    input_amount_2: 50
+    durability: MAX
+    amount_of_enchantments: 1
+    enchantment_1: PROTECTION_ENVIRONMENT
+    enchantment_1_level: 1
+  recipe_24:
+    name: Leather Leggings
+    batch_amount: 1
+    production_time: 600
+    output_material: LEATHER_LEGGINGS
+    amount_of_material_inputs: 2
+    input_material_1: LEATHER_LEGGINGS
+    input_amount_1: 1
+    input_material_2: SUGAR
+    input_amount_2: 50
+    durability: MAX
+    amount_of_enchantments: 1
+    enchantment_1: PROTECTION_ENVIRONMENT
+    enchantment_1_level: 1
+  recipe_25:
+    name: Leather Boots
+    batch_amount: 1
+    production_time: 600
+    output_material: LEATHER_BOOTS
+    amount_of_material_inputs: 2
+    input_material_1: LEATHER_BOOTS
+    input_amount_1: 1
+    input_material_2: SUGAR
+    input_amount_2: 50
+    durability: MAX
+    amount_of_enchantments: 1
+    enchantment_1: PROTECTION_FALL
+    enchantment_1_level: 2
+  recipe_26:
+    name: Diamond Sword
+    batch_amount: 1
+    production_time: 600
+    output_material: DIAMOND_SWORD
+    amount_of_material_inputs: 2
+    input_material_1: DIAMOND
+    input_amount_1: 2
+    input_material_2: STICK
+    input_amount_2: 1
+    input_material_2: CACTUS
+    input_amount_2: 64
+    durability: MAX
+    amount_of_enchantments: 0
+  recipe_27:
+    name: Cracked Stone
+    batch_amount: 1
+    production_time: 600
+    output_material: SMOOTH_BRICK
+    output_data: 2
+    amount_of_material_inputs: 2
+    input_material_1: SMOOTH_BRICK
+    input_amount_1: 64
+    input_data_1: 1
+    input_material_2: NETHER_STALK
+    input_amount_2: 64
+    input_data_2: 0
+    durability: MAX
+    amount_of_enchantments: 0
+  recipe_28:
+    name: Enchanted Leather Helmet
+    batch_amount: 1
+    production_time: 600
+    output_material: LEATHER_HELMET
+    amount_of_material_inputs: 3
+    input_material_1: LEATHER_HELMET
+    input_amount_1: 1
+    input_material_2: COOKED_BEEF
+    input_amount_2: 64
+    input_material_3: SMOOTH_BRICK
+    input_amount_3: 8
+    input_data_3: 1
+    durability: MAX
+    amount_of_enchantments: 1
+    enchantment_1: PROTECTION_ENVIRONMENT
+    enchantment_1_level: 3
+  recipe_29:
+    name: Enchanted Leather Chestplate
+    batch_amount: 1
+    production_time: 600
+    output_material: LEATHER_CHESTPLATE
+    amount_of_material_inputs: 3
+    input_material_1: LEATHER_CHESTPLATE
+    input_amount_1: 1
+    input_material_2: COOKED_BEEF
+    input_amount_2: 64
+    input_material_3: SMOOTH_BRICK
+    input_amount_3: 8
+    input_data_3: 1
+    durability: MAX
+    amount_of_enchantments: 1
+    enchantment_1: PROTECTION_ENVIRONMENT
+    enchantment_1_level: 3
+  recipe_30:
+    name: Leather Leggings
+    batch_amount: 1
+    production_time: 600
+    output_material: LEATHER_LEGGINGS
+    amount_of_material_inputs: 3
+    input_material_1: LEATHER_LEGGINGS
+    input_amount_1: 1
+    input_material_2: COOKED_BEEF
+    input_amount_2: 64
+    input_material_3: SMOOTH_BRICK
+    input_amount_3: 8
+    input_data_3: 1
+    durability: MAX
+    amount_of_enchantments: 1
+    enchantment_1: PROTECTION_ENVIRONMENT
+    enchantment_1_level: 3
+  recipe_31:
+    name: Leather Boots
+    batch_amount: 1
+    production_time: 600
+    output_material: LEATHER_BOOTS
+    amount_of_material_inputs: 3
+    input_material_1: LEATHER_BOOTS
+    input_amount_1: 1
+    input_material_2: COOKED_BEEF
+    input_amount_2: 64
+    input_material_3: SMOOTH_BRICK
+    input_amount_3: 8
+    input_data_3: 1
+    durability: MAX
+    amount_of_enchantments: 1
+    enchantment_1: PROTECTION_FALL
+    enchantment_1_level: 3  
+  recipe_32:
+    name: Sharp Diamond Sword
+    batch_amount: 1
+    production_time: 600
+    output_material: DIAMOND_SWORD
+    amount_of_material_inputs: 2
+    input_material_1: DIAMOND_SWORD
+    input_amount_1: 1
+    input_material_2: SMOOTH_BRICK
+    input_amount_2: 64
+    input_data_2: 2
+    input_material_2: BAKED_POTATO
+    input_amount_2: 64
+    durability: MAX
+    amount_of_enchantments: 1
+    enchantment_1: DAMAGE_ALL
+    enchantment_1_level: 5
+  recipe_33:
+    name: Ranger Bow
+    batch_amount: 1
+    output_material: BOW
+    amount_of_material_inputs: 3
+    input_material_1: BOW
+    input_amount_1: 1
+    input_material_2: SMOOTH_BRICK
+    input_amount_2: 64
+    input_data_2: 2
+    input_material_3: CARROT
+    input_amount_3: 64
+    durability: MAX
+    amount_of_enchantments: 3       
+    enchantment_1: ARROW_DAMAGE
+    enchantment_1_level: 3  
+    enchantment_2: ARROW_FIRE
+    enchantment_2_level: 2
+    enchantment_3: ARROW_KNOCKBACK
+    enchantment_3_level: 2  
     
 production_general:
   update_cycle: 20
-  amount_of_factory_types: 1
+  amount_of_factory_types: 14
   
   factory_1:
     name: workshop
@@ -71,10 +495,223 @@ production_general:
     amount_of_build_materials: 2
     build_material_1: STONE
     build_amount_1: 64
-    build_material_2: DIAMOND
-    build_amount_2: 10
+    build_material_2: IRON_INGOT
+    build_amount_2: 32
     amount_of_production_recipes: 4
-    recipe_1: 2
-    recipe_2: 1
-    recipe_3: 4
-    recipe_4: 3
+    recipe_1: 5
+    recipe_2: 6
+    recipe_3: 7
+    recipe_4: 8
+  factory_2:
+    name: Moss Stone Factory
+    sub_factory_type: MOSS STONE FACTORY
+    fuel_material: COAL
+    fuel_time: 2
+    fuel_consumption: 1
+    amount_of_build_materials: 2
+    build_material_1: STONE
+    build_amount_1: 64
+    build_material_2: DIAMOND
+    build_amount_2: 32
+    amount_of_production_recipes: 1
+    recipe_1: 9
+  factory_3:
+    name: Tannery
+    sub_factory_type: TANNERY
+    fuel_material: COAL
+    fuel_time: 2
+    fuel_consumption: 1
+    amount_of_build_materials: 3
+    build_material_1: STONE
+    build_amount_1: 64
+    build_material_2: IRON_INGOT
+    build_amount_2: 16
+    build_material_3: NETHER_STALK
+    build_amount_3: 16
+    amount_of_production_recipes: 4
+    recipe_1: 10
+    recipe_2: 11
+    recipe_3: 12
+    recipe_4: 13
+  factory_4:
+    name: Weaponsmith
+    sub_factory_type: WEAPONSMITH
+    fuel_material: COAL
+    fuel_time: 2
+    fuel_consumption: 1
+    amount_of_build_materials: 2
+    build_material_1: STONE
+    build_amount_1: 64
+    build_material_2: IRON_INGOT
+    build_amount_2: 64
+    amount_of_production_recipes: 2
+    recipe_1: 14
+    recipe_2: 15
+  factory_5:
+    name: Smithy
+    sub_factory_type: SMITHY
+    fuel_material: COAL
+    fuel_time: 2
+    fuel_consumption: 1
+    amount_of_build_materials: 3
+    build_material_1: STONE
+    build_amount_1: 64
+    build_material_2: IRON_INGOT
+    build_amount_2: 48
+    build_material_3: MOSSY_COBBLESTONE
+    build_amount_3: 64
+    amount_of_production_recipes: 4
+    recipe_1: 16
+    recipe_2: 17
+    recipe_3: 18
+    recipe_4: 19
+  factory_6:
+    name: Javelin Maker
+    sub_factory_type: JAVELIN_MAKER
+    fuel_material: COAL
+    fuel_time: 2
+    fuel_consumption: 1
+    amount_of_build_materials: 3
+    build_material_1: STONE
+    build_amount_1: 64
+    build_material_2: WOOD
+    build_amount_2: 64
+    build_material_3: MOSSY_COBBLESTONE
+    build_amount_3: 64
+    amount_of_production_recipes: 1
+    recipe_1: 20
+  factory_7:
+    name: Mossy Cracked Brick Manufactory 
+    sub_factory_type: MCB_FACTORY 
+    fuel_material: COAL
+    fuel_time: 2
+    fuel_consumption: 1
+    amount_of_build_materials: 3
+    build_material_1: STONE
+    build_amount_1: 64
+    build_material_2: GOLD_INGOT
+    build_amount_2: 64
+    build_material_3: MOSSY_COBBLESTONE
+    build_amount_3: 64
+    amount_of_production_recipes: 1
+    recipe_1: 21
+  factory_8:
+    name: Leather Enchant Tipi
+    sub_factory_type: LEATHER_ENCHANT_TIPI
+    fuel_material: COAL
+    fuel_time: 2
+    fuel_consumption: 1
+    amount_of_build_materials: 3
+    build_material_1: STONE
+    build_amount_1: 64
+    build_material_2: WOOD
+    build_amount_2: 64
+    build_material_3: MOSSY_COBBLESTONE
+    build_amount_3: 64
+    amount_of_production_recipes: 4
+    recipe_1: 22
+    recipe_2: 23
+    recipe_3: 24
+    recipe_4: 25
+  factory_9:
+    name: Diamond Smithy
+    sub_factory_type: DIAMOND_SMITHY
+    fuel_material: COAL
+    fuel_time: 2
+    fuel_consumption: 1
+    amount_of_build_materials: 3
+    build_material_1: STONE
+    build_amount_1: 64
+    build_material_2: SMOOTH_BRICK
+    build_amount_2: 64
+    build_data_2: 1
+    build_material_3: MOSSY_COBBLESTONE
+    build_amount_3: 64
+    amount_of_production_recipes: 4
+    recipe_1: 1
+    recipe_2: 2
+    recipe_3: 3
+    recipe_4: 4
+  factory_10:
+    name: Diamond BladeSmith
+    sub_factory_type: DIAMOND_BLADESMITH
+    fuel_material: COAL
+    fuel_time: 2
+    fuel_consumption: 1
+    amount_of_build_materials: 3
+    build_material_1: STONE
+    build_amount_1: 64
+    build_material_2: SMOOTH_BRICK
+    build_amount_2: 64
+    build_data_2: 1
+    build_material_3: SANDSTONE
+    build_amount_3: 64
+    amount_of_production_recipes: 1
+    recipe_1: 26
+  factory_11:
+    name: Cracked Brick Factory 
+    sub_factory_type: CRACKED_BRICK_FACTORY
+    fuel_material: COAL
+    fuel_time: 2
+    fuel_consumption: 1
+    amount_of_build_materials: 3
+    build_material_1: STONE
+    build_amount_1: 64
+    build_material_2: SMOOTH_BRICK
+    build_amount_2: 128
+    build_data_2: 1
+    build_material_3: DIAMOND
+    build_amount_3: 64
+    amount_of_production_recipes: 1
+    recipe_1: 27
+  factory_12:
+    name: Leather Enchant Altar
+    sub_factory_type: LEATHER_ENCHANT_ALTAR
+    fuel_material: COAL
+    fuel_time: 2
+    fuel_consumption: 1
+    amount_of_build_materials: 3
+    build_material_1: SMOOTH_BRICK
+    build_amount_1: 64
+    build_data_2: 1
+    build_material_2: WOOD
+    build_amount_2: 64
+    build_material_3: COOKED_BEEF
+    build_amount_3: 64
+    amount_of_production_recipes: 4
+    recipe_1: 28
+    recipe_2: 29
+    recipe_3: 30
+    recipe_4: 31 
+  factory_13:
+    name: Diamond Blade Master 
+    sub_factory_type: DIAMOND_BLADE_MASTER
+    fuel_material: COAL
+    fuel_time: 2
+    fuel_consumption: 1
+    amount_of_build_materials: 3
+    build_material_1: STONE
+    build_amount_1: 64
+    build_material_2: SMOOTH_BRICK
+    build_amount_2: 64
+    build_data_2: 2
+    build_material_3: DIAMOND
+    build_amount_3: 64
+    amount_of_production_recipes: 1
+    recipe_1: 32
+  factory_14:
+    name: Ranger Bow Maker
+    sub_factory_type: RANGER_BOW_MAKER
+    fuel_material: COAL
+    fuel_time: 2
+    fuel_consumption: 1
+    amount_of_build_materials: 3
+    build_material_1: WOOD
+    build_amount_1: 64
+    build_material_2: SMOOTH_BRICK
+    build_amount_2: 64
+    build_data_2: 1
+    build_material_3: DIAMOND
+    build_amount_3: 16
+    amount_of_production_recipes: 1
+    recipe_1: 33

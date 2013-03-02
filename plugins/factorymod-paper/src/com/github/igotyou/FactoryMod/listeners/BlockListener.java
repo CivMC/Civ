@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
@@ -167,7 +168,9 @@ public class BlockListener implements Listener
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type     : " + production.getSubFactoryType()));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status  : On"));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe  : " + production.getCurrentRecipe().getRecipeName()));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Progress: of the current recipe is " + String.valueOf(procentDone) + "%."));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutput().getType().toString()));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + production.getMaterialsNeededMessage(production.getCurrentRecipe().getInput())));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Progress: " + String.valueOf(procentDone) + "%."));
 								}
 								else
 								{
@@ -175,6 +178,8 @@ public class BlockListener implements Listener
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type   : " + production.getSubFactoryType()));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status: Off"));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe: " + production.getCurrentRecipe().getRecipeName()));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutput().getType().toString()));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + production.getMaterialsNeededMessage(production.getCurrentRecipe().getInput())));
 								}
 							}
 						}
@@ -193,7 +198,9 @@ public class BlockListener implements Listener
 										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type     : " + production.getSubFactoryType()));
 										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status  : On"));
 										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe  : " + production.getCurrentRecipe().getRecipeName()));
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Progress: of the current recipe is " + String.valueOf(procentDone) + "%."));
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutput().getType().toString()));
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + production.getMaterialsNeededMessage(production.getCurrentRecipe().getInput())));
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Progress: " + String.valueOf(procentDone) + "%."));
 									}
 									else
 									{
@@ -201,6 +208,8 @@ public class BlockListener implements Listener
 										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type   : " + production.getSubFactoryType()));
 										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status: Off"));
 										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe: " + production.getCurrentRecipe().getRecipeName()));
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutput().getType().toString()));
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + production.getMaterialsNeededMessage(production.getCurrentRecipe().getInput())));
 									}
 								}
 							}
@@ -213,9 +222,33 @@ public class BlockListener implements Listener
 				}
 			}
 		}
+		else if(e.getAction() == Action.RIGHT_CLICK_BLOCK)
+		{
+			if (clicked.getType() == Material.CHEST)
+			{
+				if (factoryMan.factoryExistsAt(clicked.getLocation()))
+				{
+					if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || !FactoryModPlugin.CITADEL_ENABLED)
+					{
+						if (productionMan.factoryExistsAt(clicked.getLocation()))
+						{
+							Production production = (Production) productionMan.getFactory(clicked.getLocation());
+							if (production.getActive() == true)
+							{
+								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You can't access the chest while the factory is active! Turn if off first!" ));
+								e.setCancelled(true);
+							}
+						}
+					}
+					else
+					{
+						InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
+					}
+				}
+			}
+		}
 	}
-	
-	
+
 	private Location westLoc(Location loc)
 	{
 		Location newLoc = loc.clone();

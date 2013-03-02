@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
@@ -75,6 +76,8 @@ public class FactoryModPlugin extends JavaPlugin
 		production_Properties = new HashMap<String, ProductionProperties>();
 		productionRecipes = new ArrayList<ProductionRecipe>();
 		FileConfiguration config = getConfig();
+	
+		this.saveDefaultConfig();
 		
 		SAVE_CYCLE = config.getInt("general.save_cycle");
 		AMOUNT_OF_RECIPES_TO_REMOVE = config.getInt("disabled_recipes.amount");
@@ -107,16 +110,93 @@ public class FactoryModPlugin extends JavaPlugin
 			{
 				durability = (short) config.getInt(getPathToProductionRecipe(i) + ".durability");
 			}
-			Material output = Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".output_material"));
+			Byte output_data = 0;
+			Material outputMaterial = Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".output_material"));
+			try
+			{
+				output_data = (byte) config.getInt(getPathToProductionRecipe(i) + ".data");
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			ItemStack output = new ItemStack(outputMaterial);
+			if (output_data != 0 && durability != 0)
+			{
+				output = new ItemStack(outputMaterial, 1, durability, output_data);
+			}
+			else if (output_data != 0 && durability == 0)
+			{
+				output = new ItemStack(outputMaterial, 1, (short) 0, output_data);
+			}
+
 			
-			HashMap<Integer, Material> inputMaterials = new HashMap<Integer, Material>();
-			HashMap<Integer, Integer> inputAmount = new HashMap<Integer, Integer>();
+			HashMap<Integer, ItemStack> input = new HashMap<Integer, ItemStack>();
 			HashMap<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
 			
 			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_material_inputs"); i1++)
 			{
-				inputMaterials.put(i1, Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".input_material_" + String.valueOf(i1))));
-				inputAmount.put(i1, config.getInt(getPathToProductionRecipe(i) + ".input_amount_" + String.valueOf(i1)));
+				Byte data = 0;
+				try
+				{
+					data = (byte) config.getInt(getPathToProductionRecipe(i) + ".input_data_" + String.valueOf(i1));
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+				int amount = config.getInt(getPathToProductionRecipe(i) + ".input_amount_" + String.valueOf(i1));
+				Material material = Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".input_material_" + String.valueOf(i1)));
+				if (material == null && "NETHER_STALK".equals(config.getString(getPathToProductionRecipe(i) + ".input_material_" + String.valueOf(i1))))
+				{
+					FactoryModPlugin.sendConsoleMessage("inside nether wart exception thing");
+					material = Material.getMaterial(372);
+				}
+				if (material == null)
+				{
+					this.sendConsoleMessage("recipe number is:" + String.valueOf(i) + "material is:" + config.getString(getPathToProductionRecipe(i) + ".input_material_" + String.valueOf(i1)));
+				}
+				if (amount > 64)
+				{
+					while(amount > 64)
+					{
+						if (data != 0)
+						{
+							ItemStack itemStack = new ItemStack(material, 64, (short) 0, data);
+							input.put(input.size()+1, itemStack);
+						}
+						else
+						{
+							ItemStack itemStack = new ItemStack(material, 64);
+							input.put(input.size()+1, itemStack);
+						}
+						amount = amount - 64;
+					}
+					if (data != 0)
+					{
+						ItemStack itemStack = new ItemStack(material, amount, (short) 0, data);
+						input.put(input.size()+1, itemStack);
+					}
+					else
+					{
+						ItemStack itemStack = new ItemStack(material, amount);
+						input.put(input.size()+1, itemStack);
+					}
+				}
+				else
+				{
+					if (data != 0)
+					{
+						ItemStack itemStack = new ItemStack(material, amount, (short) 0, data);
+						input.put(input.size()+1, itemStack);
+					}
+					else
+					{
+						FactoryModPlugin.sendConsoleMessage("material is:" + material);
+						ItemStack itemStack = new ItemStack(material, amount);
+						input.put(input.size()+1, itemStack);
+					}
+				}
 			}
 			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_enchantments"); i1++)
 			{
@@ -125,24 +205,14 @@ public class FactoryModPlugin extends JavaPlugin
 				enchantments.put(Enchantment.getByName(enchantmentName), enchantmentLevel);
 			}
 			
-			if(durability != 0 && enchantments.size() > 0)
+			if(enchantments.size() != 0)
 			{
-				ProductionRecipe recipe = new ProductionRecipe(inputMaterials, inputAmount, output, batchAmount, recipeName, productionTime,enchantments,durability);
-				productionRecipes.add(recipe);
-			}
-			else if (durability != 0 && enchantments.size() == 0)
-			{
-				ProductionRecipe recipe = new ProductionRecipe(inputMaterials, inputAmount, output, batchAmount, recipeName, productionTime,durability);
-				productionRecipes.add(recipe);
-			}
-			else if (enchantments.size() != 0 && durability == 0)
-			{
-				ProductionRecipe recipe = new ProductionRecipe(inputMaterials, inputAmount, output, batchAmount, recipeName, productionTime,enchantments);
+				ProductionRecipe recipe = new ProductionRecipe(input, output, batchAmount, recipeName, productionTime, enchantments);
 				productionRecipes.add(recipe);
 			}
 			else
 			{
-				ProductionRecipe recipe = new ProductionRecipe(inputMaterials, inputAmount, output, batchAmount, recipeName, productionTime);
+				ProductionRecipe recipe = new ProductionRecipe(input, output, batchAmount, recipeName, productionTime);
 				productionRecipes.add(recipe);
 			}
 		}
@@ -151,8 +221,7 @@ public class FactoryModPlugin extends JavaPlugin
 		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle");
 		for (int i = 1; i <=FactoryModPlugin.AMOUNT_OF_PRODUCTION_FACTORY_TYPES; i++)
 		{
-			HashMap<Integer, Material> buildMaterials= new HashMap<Integer, Material>();
-			HashMap<Integer, Integer> buildAmount = new HashMap<Integer, Integer>();
+			HashMap<Integer, ItemStack> buildMaterials= new HashMap<Integer, ItemStack>();
 			List<ProductionRecipe> recipes = new ArrayList<ProductionRecipe>();
 		
 			String name = config.getString(getPathToFactory(i) + ".name");
@@ -163,15 +232,76 @@ public class FactoryModPlugin extends JavaPlugin
 			
 			for (int i1 = 1; i1 <= config.getInt(getPathToFactory(i) + ".amount_of_build_materials"); i1++)
 			{
-
-				buildMaterials.put(i1, Material.getMaterial(config.getString(getPathToFactory(i) + ".build_material_" + String.valueOf(i1))));
-				buildAmount.put(i1, config.getInt(getPathToFactory(i) + ".build_amount_" + String.valueOf(i1)));
+				Byte data = 0;
+				try
+				{
+					data = (byte) config.getInt(getPathToFactory(i) + ".build_data_" + String.valueOf(i1));
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+				int amount = config.getInt(getPathToFactory(i) + ".build_amount_" + String.valueOf(i1));
+				Material material = Material.getMaterial(config.getString(getPathToFactory(i) + ".build_material_" + String.valueOf(i1)));
+				if (material == null && "NETHER_STALK".equals(config.getString(getPathToFactory(i) + ".build_material_" + String.valueOf(i1))))
+				{
+					FactoryModPlugin.sendConsoleMessage("inside nether wart exception thing");
+					material = Material.getMaterial(372);
+				}
+				if (amount > 64)
+				{
+					while(amount > 64)
+					{
+						if (data != 0)
+						{
+							ItemStack itemStack = new ItemStack(material, 64, (short) 0, data);
+							buildMaterials.put(buildMaterials.size()+1, itemStack);
+						}
+						else
+						{
+							ItemStack itemStack = new ItemStack(material, 64);
+							buildMaterials.put(buildMaterials.size()+1, itemStack);
+						}
+						amount -= 64;
+					}
+					if (data != 0)
+					{
+						ItemStack itemStack = new ItemStack(material, amount, (short) 0, data);
+						buildMaterials.put(buildMaterials.size()+1, itemStack);
+					}
+					else
+					{
+						ItemStack itemStack = new ItemStack(material, amount);
+						buildMaterials.put(buildMaterials.size()+1, itemStack);
+					}
+				}
+				else
+				{
+				if (data != 0)
+					{
+						ItemStack itemStack = new ItemStack(material, amount, (short) 0, data);
+						buildMaterials.put(buildMaterials.size()+1, itemStack);
+					}
+					else
+					{
+						if (material == Material.NETHER_WARTS)
+						{
+							ItemStack itemStack = new ItemStack(material, amount, (short) 0,(byte) 0);
+							buildMaterials.put(buildMaterials.size()+1, itemStack);
+						}
+						else
+						{
+							ItemStack itemStack = new ItemStack(material, amount);
+							buildMaterials.put(buildMaterials.size()+1, itemStack);
+						}
+					}
+				}
 			}
 			for(int i1 = 1; i1 <= config.getInt(getPathToFactory(i) + ".amount_of_production_recipes"); i1++)
 			{
 				recipes.add(productionRecipes.get(config.getInt(getPathToFactory(i) + ".recipe_" + String.valueOf(i1)) - 1));
 			}
-			ProductionProperties productionProperties = new ProductionProperties(buildMaterials, buildAmount, recipes, energyMaterial, fuelTime, fuelConsumption, name);
+			ProductionProperties productionProperties = new ProductionProperties(buildMaterials, recipes, energyMaterial, fuelTime, fuelConsumption, name);
 			production_Properties.put(subFactoryType, productionProperties);
 		}
 	}

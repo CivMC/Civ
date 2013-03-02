@@ -4,67 +4,38 @@ import java.util.HashMap;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.interfaces.Recipe;
 
 public class ProductionRecipe implements Recipe
 {
-	private HashMap <Integer, Material> inputMaterial;
-	private HashMap <Integer, Integer> inputAmount;
-	private Material output;
+	private HashMap <Integer, ItemStack> input;
+	private ItemStack output;
 	private HashMap <Enchantment, Integer> enchantments;
-	private short durability = 0;
 	private int batchAmount;
 	private int productionTime;
 	private String recipeName;
 	
-	public ProductionRecipe(HashMap<Integer, Material> inputMaterial, HashMap<Integer,Integer> inputAmount, Material output,
+	public ProductionRecipe(HashMap<Integer, ItemStack> input, ItemStack output,
 			int batchAmount, String recipeName, int productionTime)
 	{
-		this.inputMaterial = inputMaterial;
-		this.inputAmount = inputAmount;
+		this.input = input;
 		this.output = output;
 		this.batchAmount = batchAmount;
 		this.recipeName = recipeName;
 		this.productionTime = productionTime;
 	}
 	
-	public ProductionRecipe(HashMap<Integer, Material> inputMaterial, HashMap<Integer,Integer> inputAmount, Material output,
-			int batchAmount, String recipeName, int productionTime, HashMap <Enchantment, Integer> enchantments)
+	public ProductionRecipe(HashMap<Integer, ItemStack> input, ItemStack output, int batchAmount, String recipeName, 
+			int productionTime, HashMap <Enchantment, Integer> enchantments)
 	{
-		this.inputMaterial = inputMaterial;
-		this.inputAmount = inputAmount;
+		this.input = input;
 		this.output = output;
 		this.batchAmount = batchAmount;
 		this.recipeName = recipeName;
 		this.productionTime = productionTime;
 		this.enchantments = enchantments;
-	}
-	
-	public ProductionRecipe(HashMap<Integer, Material> inputMaterial, HashMap<Integer,Integer> inputAmount, Material output,
-			int batchAmount, String recipeName, int productionTime, short durability)
-	{
-		this.inputMaterial = inputMaterial;
-		this.inputAmount = inputAmount;
-		this.output = output;
-		this.batchAmount = batchAmount;
-		this.recipeName = recipeName;
-		this.productionTime = productionTime;
-		this.durability = durability;
-	}
-	
-	public ProductionRecipe(HashMap<Integer, Material> inputMaterial, HashMap<Integer,Integer> inputAmount, Material output,
-			int batchAmount, String recipeName, int productionTime, HashMap <Enchantment, Integer> enchantments,
-			short durability)
-	{
-		this.inputMaterial = inputMaterial;
-		this.inputAmount = inputAmount;
-		this.output = output;
-		this.batchAmount = batchAmount;
-		this.recipeName = recipeName;
-		this.productionTime = productionTime;
-		this.enchantments = enchantments;
-		this.durability = durability;
 	}
 	
 	public int getBatchAmount() 
@@ -72,29 +43,19 @@ public class ProductionRecipe implements Recipe
 		return batchAmount;
 	}
 
-	public Material getOutput() 
+	public ItemStack getOutput() 
 	{
 		return output;
 	}
 
-	public HashMap<Integer, Material> getInputMaterial() 
+	public HashMap<Integer, ItemStack> getInput()
 	{
-		return inputMaterial;
-	}
-
-	public HashMap<Integer, Integer> getInputAmount() 
-	{
-		return inputAmount;
+		return input;
 	}
 	
 	public HashMap<Enchantment, Integer> getEnchantments()
 	{
 		return enchantments;
-	}
-	
-	public short getDurability()
-	{
-		return durability;
 	}
 	
 	public String getRecipeName() 

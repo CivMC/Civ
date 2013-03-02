@@ -5,25 +5,24 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.interfaces.Properties;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 
 public class ProductionProperties implements Properties
 {
-	private HashMap<Integer, Material> buildMaterial;
-	private HashMap<Integer, Integer> buildAmount;
+	private HashMap<Integer, ItemStack> buildMaterials;
 	private List<ProductionRecipe> recipes;
 	Material energyMaterial;
 	int energyTime;
 	int energyConsumption;
 	String name;
 	
-	public ProductionProperties(HashMap<Integer, Material> buildMaterial, HashMap<Integer, Integer> buildAmount,
-			List<ProductionRecipe> recipes, Material energyMaterial, int energyTime, int energyConsumption, String name)
+	public ProductionProperties(HashMap<Integer, ItemStack> buildMaterials, List<ProductionRecipe> recipes,
+			Material energyMaterial, int energyTime, int energyConsumption, String name)
 	{
-		this.buildMaterial = buildMaterial;
-		this.buildAmount = buildAmount;
+		this.buildMaterials = buildMaterials;
 		this.recipes = recipes;
 		this.energyMaterial = energyMaterial;
 		this.energyTime = energyTime;
@@ -31,14 +30,9 @@ public class ProductionProperties implements Properties
 		this.name = name;
 	}
 
-	public HashMap<Integer, Integer> getBuildAmount() 
+	public HashMap<Integer, ItemStack> getBuildMaterials() 
 	{
-		return buildAmount;
-	}
-
-	public HashMap<Integer, Material> getBuildMaterial() 
-	{
-		return buildMaterial;
+		return buildMaterials;
 	}
 	
 	public List<ProductionRecipe> getRecipes()

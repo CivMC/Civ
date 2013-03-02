@@ -58,7 +58,7 @@ public class Production extends FactoryObject implements Factory
 		//if factory is turned on
 		if (active)
 		{
-			if (areMaterialsAvailable(getInventory(), currentRecipe.getInputMaterial(), currentRecipe.getInputAmount()))
+			if (areMaterialsAvailable(getInventory(), currentRecipe.getInput()))
 			{
 				//if the production time has not reached the recipes production time
 				if (currentProductionTimer < currentRecipe.getProductionTime())
@@ -84,15 +84,11 @@ public class Production extends FactoryObject implements Factory
 				else if (currentProductionTimer == currentRecipe.getProductionTime())
 				{
 					ProductionRecipe recipe = (ProductionRecipe) currentRecipe;
-					if (removeMaterials(getInventory(), currentRecipe.getInputMaterial(), currentRecipe.getInputAmount()))
+					if (removeMaterials(getInventory(), currentRecipe.getInput()))
 					{
 						for (int i = 1; i <= currentRecipe.getBatchAmount(); i++)
 						{
-							ItemStack itemStack = new ItemStack(currentRecipe.getOutput(), 1); 
-							if (recipe.getDurability() != 0)
-							{
-								itemStack = new ItemStack(currentRecipe.getOutput(), 1, recipe.getDurability()); 
-							}
+							ItemStack itemStack = currentRecipe.getOutput();
 							if (recipe.getEnchantments() != null)
 							{
 								itemStack.addEnchantments(recipe.getEnchantments());
@@ -123,6 +119,7 @@ public class Production extends FactoryObject implements Factory
 		furnace.getInventory().setContents(oldContents);
 		furnace.setBurnTime((short) 1000);
 		active = true;
+		currentProductionTimer = 0;
 	}
 
 	public void powerOff() 
@@ -138,6 +135,7 @@ public class Production extends FactoryObject implements Factory
 		furnace.getInventory().setContents(oldContents);
 		furnace.setBurnTime((short) 0);
 		active = false;
+		currentProductionTimer = 0;
 	}
 
 	public InteractionResponse togglePower() 
@@ -146,14 +144,14 @@ public class Production extends FactoryObject implements Factory
 		{
 			if (isFuelAvailable())
 			{
-				if (areMaterialsAvailable(getInventory(), currentRecipe.getInputMaterial(), currentRecipe.getInputAmount()))
+				if (areMaterialsAvailable(getInventory(), currentRecipe.getInput()))
 				{
 					powerOn();
 					return new InteractionResponse(InteractionResult.SUCCESS, "Factory activated!");
 				}
 				else
 				{
-					return new InteractionResponse(InteractionResult.FAILURE, "Factory does not have enough materials for the current recipe! You need: " + getMaterialsNeededMessage(currentRecipe.getInputMaterial(), currentRecipe.getInputAmount()));
+					return new InteractionResponse(InteractionResult.FAILURE, "Factory does not have enough materials for the current recipe! You need: " + getMaterialsNeededMessage(currentRecipe.getInput()));
 				}
 			}
 			else
@@ -177,17 +175,20 @@ public class Production extends FactoryObject implements Factory
 				if (currentRecipeNumber == productionFactoryProperties.getRecipes().size() - 1)
 				{
 					setRecipeToNumber(0);
+					currentProductionTimer = 0;
 					return new InteractionResponse(InteractionResult.SUCCESS, "Recipe switched! Current recipe is:" + currentRecipe.getRecipeName());
 				}
 				else
 				{
 					setRecipeToNumber(currentRecipeNumber + 1);
+					currentProductionTimer = 0;
 					return new InteractionResponse(InteractionResult.SUCCESS, "Recipe switched! Current recipe is:" + currentRecipe.getRecipeName());
 				}
 			}
 			else
 			{
 				setRecipeToNumber(0);
+				currentProductionTimer = 0;
 				return new InteractionResponse(InteractionResult.SUCCESS, "Recipe selected! Current recipe is:" + currentRecipe.getRecipeName());
 			}	
 		}
@@ -232,9 +233,9 @@ public class Production extends FactoryObject implements Factory
 	{
 		if (FactoryModPlugin.RETURN_BUILD_MATERIALS)
 		{
-			for (int i = 1; i <= productionFactoryProperties.getBuildMaterial().size(); i++)
+			for (int i = 1; i <= productionFactoryProperties.getBuildMaterials().size(); i++)
 			{
-				ItemStack item = new ItemStack(productionFactoryProperties.getBuildMaterial().get(i), productionFactoryProperties.getBuildAmount().get(i));
+				ItemStack item = productionFactoryProperties.getBuildMaterials().get(i);
 				factoryLocation.getWorld().dropItemNaturally(destroyLocation, item);
 			}
 		}

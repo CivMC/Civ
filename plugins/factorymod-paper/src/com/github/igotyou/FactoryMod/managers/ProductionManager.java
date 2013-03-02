@@ -18,8 +18,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
+import com.github.igotyou.FactoryMod.FactoryObject;
 import com.github.igotyou.FactoryMod.Factorys.Production;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
@@ -159,24 +161,15 @@ public class ProductionManager implements Manager
 			Chest chest = (Chest) inventoryBlock.getState();
 			Inventory chestInventory = chest.getInventory();
 			String subFactoryType = null;
-			boolean hasMaterials = true;
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
-				HashMap<Integer, Material> buildMaterial = entry.getValue().getBuildMaterial();
-				HashMap<Integer, Integer> buildAmount = entry.getValue().getBuildAmount();
-				for (int i = 1; i <= buildMaterial.size(); i ++)
-				{
-					if(!chestInventory.contains(buildMaterial.get(i), buildAmount.get(i)))
-					{
-						hasMaterials = false;
-					}
-				}
-				if (hasMaterials = true)
+				HashMap<Integer, ItemStack> buildMaterials = entry.getValue().getBuildMaterials();
+				if(FactoryObject.areMaterialsAvailable(chestInventory, buildMaterials))
 				{
 					subFactoryType = entry.getKey();
 				}
 			}
-			if (hasMaterials == true && subFactoryType != null)
+			if (subFactoryType != null)
 			{
 				Production production = new Production(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
 				if (production.buildMaterialAvailable(properties.get(subFactoryType)))
@@ -203,14 +196,10 @@ public class ProductionManager implements Manager
 			boolean hasMaterials = true;
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
-				HashMap<Integer, Material> buildMaterial = entry.getValue().getBuildMaterial();
-				HashMap<Integer, Integer> buildAmount = entry.getValue().getBuildAmount();
-				for (int i = 1; i <= buildMaterial.size(); i ++)
+				HashMap<Integer, ItemStack> buildMaterials = entry.getValue().getBuildMaterials();
+				if(!FactoryObject.areMaterialsAvailable(chestInventory, buildMaterials))
 				{
-					if(!chestInventory.contains(buildMaterial.get(i), buildAmount.get(i)))
-					{
-						hasMaterials = false;
-					}
+					hasMaterials = false;
 				}
 				if (hasMaterials = true)
 				{

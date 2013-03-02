@@ -3,6 +3,7 @@ package com.github.igotyou.FactoryMod.interfaces;
 import java.util.HashMap;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 //original file:
 /**
@@ -21,13 +22,5 @@ import org.bukkit.Material;
 */
 public interface Properties 
 {
-	/**
-	 * Returns the amount of upgrade materials required to reach this tier
-	 */
-	public HashMap<Integer,Integer> getBuildAmount();
-	
-	/**
-	 * Returns the material used to upgrade to this tier
-	 */
-	public HashMap<Integer,Material> getBuildMaterial();
+	public HashMap<Integer, ItemStack> getBuildMaterials() ;
 }

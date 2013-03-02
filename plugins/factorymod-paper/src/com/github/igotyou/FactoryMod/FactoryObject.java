@@ -1,6 +1,8 @@
 package com.github.igotyou.FactoryMod;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Map.Entry;
 
 import org.bukkit.Location;
@@ -144,9 +146,9 @@ public class FactoryObject
 	public boolean buildMaterialAvailable(Properties desiredProperties)
 	{
 		boolean returnValue = true;
-		for (int i = 1; i <= desiredProperties.getBuildMaterial().size(); i++)
+		for (int i = 1; i <= desiredProperties.getBuildMaterials().size(); i++)
 		{
-			if (!isMaterialAvailable(getInventory(), desiredProperties.getBuildMaterial().get(i), desiredProperties.getBuildAmount().get(i)))
+			if (!isMaterialAvailable(getInventory(), desiredProperties.getBuildMaterials().get(i)))
 			{
 				returnValue = false;
 			}
@@ -171,9 +173,9 @@ public class FactoryObject
 	public boolean removeBuildMaterial(Properties desiredProperties)
 	{
 		boolean returnValue = true;
-		for (int i = 1; i <= desiredProperties.getBuildMaterial().size(); i++)
+		for (int i = 1; i <= desiredProperties.getBuildMaterials().size(); i++)
 		{
-			if (!removeMaterial(getInventory(), desiredProperties.getBuildMaterial().get(i), desiredProperties.getBuildAmount().get(i)))
+			if (!removeMaterial(getInventory(), desiredProperties.getBuildMaterials().get(i)))
 			{
 				returnValue = false;
 			}
@@ -187,6 +189,19 @@ public class FactoryObject
 		for (int i = 1; i <= materials.size(); i++)
 		{
 			if (!removeMaterial(inventory, materials.get(i), amount.get(i)))
+			{
+				returnValue = false;
+			}
+		}
+		return returnValue;
+	}
+	
+	public boolean removeMaterials(Inventory inventory, HashMap<Integer, ItemStack> itemStack)
+	{
+		boolean returnValue = true;
+		for (int i = 1; i <= itemStack.size(); i++)
+		{
+			if (!removeMaterial(inventory, itemStack.get(i)))
 			{
 				returnValue = false;
 			}
@@ -228,6 +243,45 @@ public class FactoryObject
 		
 		return materialsToRemove == 0;
 	}
+
+	public boolean removeMaterial(Inventory inventory, ItemStack itemStack)
+	{		
+		int materialsToRemove = itemStack.getAmount();
+		ListIterator<ItemStack> iterator = inventory.iterator();
+		
+		while(iterator.hasNext())
+		{
+			ItemStack currentItemStack = iterator.next();
+			if (currentItemStack != null)
+			{
+				if (currentItemStack.isSimilar(itemStack))
+				{
+					if (materialsToRemove <= 0)
+						break;
+					
+					if(currentItemStack.getAmount() == materialsToRemove)
+					{
+						iterator.set(new ItemStack(Material.AIR, 0));
+						materialsToRemove = 0;
+					}
+					else if(currentItemStack.getAmount() > materialsToRemove)
+					{
+						ItemStack temp = currentItemStack.clone();
+						temp.setAmount(currentItemStack.getAmount() - materialsToRemove);
+						iterator.set(temp);
+						materialsToRemove = 0;
+					}
+					else
+					{
+						int inStack = currentItemStack.getAmount();
+						iterator.set(new ItemStack(Material.AIR, 0));
+						materialsToRemove -= inStack;
+					}
+				}
+			}
+		}				
+		return materialsToRemove == 0;
+	}
 	
 	public boolean areMaterialsAvailable(Inventory inventory, HashMap<Integer, Material> materials, HashMap<Integer, Integer> amount)
 	{
@@ -235,6 +289,20 @@ public class FactoryObject
 		for (int i = 1; i <= materials.size(); i++)
 		{
 			if (!isMaterialAvailable(inventory, materials.get(i), amount.get(i)))
+			{
+				returnValue = false;
+			}
+		}
+		return returnValue;
+	}
+	
+	public static boolean areMaterialsAvailable(Inventory inventory, HashMap<Integer, ItemStack> itemStack)
+	{
+		boolean returnValue = true;
+		for (int i = 1; i <= itemStack.size(); i++)
+		{
+
+			if (!isMaterialAvailable(inventory, itemStack.get(i)))
 			{
 				returnValue = false;
 			}
@@ -257,6 +325,35 @@ public class FactoryObject
 		}
 		
 		return (totalMaterial >= amount);
+	}
+	
+	public static boolean isMaterialAvailable(Inventory inventory, ItemStack itemStack)
+	{
+		ListIterator<ItemStack> iterator = inventory.iterator();
+		int totalMaterial = 0;
+		
+		while(iterator.hasNext())
+		{
+			ItemStack currentItemStack = iterator.next();
+			if (currentItemStack != null)
+			{
+				FactoryModPlugin.sendConsoleMessage("currentItemStack is:" + currentItemStack + "item stack is:" + itemStack);
+				if (currentItemStack.isSimilar(itemStack) ||
+						itemStack.getType() == Material.NETHER_WARTS && currentItemStack.getType() == Material.NETHER_WARTS)
+				{		
+					FactoryModPlugin.sendConsoleMessage("yahhh were inside the if!");
+					totalMaterial += currentItemStack.getAmount();
+				}
+			}
+		}
+		if (totalMaterial >= itemStack.getAmount())
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	
@@ -316,12 +413,12 @@ public class FactoryObject
 		return active;
 	}
 	
-	public String getMaterialsNeededMessage(HashMap<Integer, Material> materials, HashMap<Integer, Integer> amount)
+	public static String getMaterialsNeededMessage(HashMap<Integer, ItemStack> itemStack)
 	{
 		String returnValue = "";
-		for (int i = 1; i <= materials.size(); i++)
+		for (int i = 1; i <= itemStack.size(); i++)
 		{
-			returnValue = returnValue + String.valueOf(amount.get(i) + " " + materials.get(i).toString() + ", ");
+			returnValue = returnValue + String.valueOf(itemStack.get(i).getAmount() + " " + itemStack.get(i).getType().toString() + ", ");
 		}
 		return returnValue;
 	}
