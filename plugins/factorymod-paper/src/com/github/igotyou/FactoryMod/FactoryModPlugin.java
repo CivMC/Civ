@@ -149,12 +149,7 @@ public class FactoryModPlugin extends JavaPlugin
 				Material material = Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".input_material_" + String.valueOf(i1)));
 				if (material == null && "NETHER_STALK".equals(config.getString(getPathToProductionRecipe(i) + ".input_material_" + String.valueOf(i1))))
 				{
-					FactoryModPlugin.sendConsoleMessage("inside nether wart exception thing");
 					material = Material.getMaterial(372);
-				}
-				if (material == null)
-				{
-					this.sendConsoleMessage("recipe number is:" + String.valueOf(i) + "material is:" + config.getString(getPathToProductionRecipe(i) + ".input_material_" + String.valueOf(i1)));
 				}
 				if (amount > 64)
 				{
@@ -192,7 +187,6 @@ public class FactoryModPlugin extends JavaPlugin
 					}
 					else
 					{
-						FactoryModPlugin.sendConsoleMessage("material is:" + material);
 						ItemStack itemStack = new ItemStack(material, amount);
 						input.put(input.size()+1, itemStack);
 					}
@@ -245,7 +239,6 @@ public class FactoryModPlugin extends JavaPlugin
 				Material material = Material.getMaterial(config.getString(getPathToFactory(i) + ".build_material_" + String.valueOf(i1)));
 				if (material == null && "NETHER_STALK".equals(config.getString(getPathToFactory(i) + ".build_material_" + String.valueOf(i1))))
 				{
-					FactoryModPlugin.sendConsoleMessage("inside nether wart exception thing");
 					material = Material.getMaterial(372);
 				}
 				if (amount > 64)

@@ -337,11 +337,9 @@ public class FactoryObject
 			ItemStack currentItemStack = iterator.next();
 			if (currentItemStack != null)
 			{
-				FactoryModPlugin.sendConsoleMessage("currentItemStack is:" + currentItemStack + "item stack is:" + itemStack);
 				if (currentItemStack.isSimilar(itemStack) ||
 						itemStack.getType() == Material.NETHER_WARTS && currentItemStack.getType() == Material.NETHER_WARTS)
 				{		
-					FactoryModPlugin.sendConsoleMessage("yahhh were inside the if!");
 					totalMaterial += currentItemStack.getAmount();
 				}
 			}
