@@ -164,7 +164,7 @@ public class ProductionManager implements Manager
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
 				HashMap<Integer, ItemStack> buildMaterials = entry.getValue().getBuildMaterials();
-				if(FactoryObject.areMaterialsAvailable(chestInventory, buildMaterials))
+				if(FactoryObject.materialsMatch(chestInventory, buildMaterials))
 				{
 					subFactoryType = entry.getKey();
 				}

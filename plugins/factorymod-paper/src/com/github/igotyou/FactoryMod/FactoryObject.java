@@ -310,6 +310,19 @@ public class FactoryObject
 		return returnValue;
 	}
 	
+	public static boolean materialsMatch(Inventory inventory, HashMap<Integer, ItemStack> itemStack)
+	{
+		boolean returnValue = true;
+		for (int i = 1; i <= itemStack.size(); i++)
+		{
+
+			if (!materialMatches(inventory, itemStack.get(i)))
+			{
+				returnValue = false;
+			}
+		}
+		return returnValue;
+	}
 	
 	/**
 	 * Checks if a specific material of given amount is available in dispenser
@@ -352,6 +365,25 @@ public class FactoryObject
 		{
 			return false;
 		}
+	}
+	
+	public static boolean materialMatches(Inventory inventory, ItemStack itemStack)
+	{
+		ListIterator<ItemStack> iterator = inventory.iterator();
+		boolean returnValue = false;
+		
+		while(iterator.hasNext())
+		{
+			ItemStack currentItemStack = iterator.next();
+			if (currentItemStack != null)
+			{
+				if (currentItemStack.equals(itemStack))
+				{		
+					returnValue = !returnValue;
+				}
+			}
+		}
+		return returnValue;
 	}
 	
 	
