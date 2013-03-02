@@ -1,0 +1,280 @@
+realistic_biomes:
+ biome_aliases:
+  cold: [ICE_PLAINS, ICE_MOUNTAINS, TAIGA, TAIGA_HILLS]
+  temperate: [PLAINS, FOREST, FOREST_HILLS]
+  mountain: [EXTREME_HILLS, SMALL_MOUNTAINS]
+  hot_dry: [DESERT, DESERT_HILLS]
+  hot_rainy: [JUNGLE, JUNGLE_HILLS]
+  water: [BEACH, OCEAN, FROZEN_OCEAN, RIVER, FROZEN_RIVER]
+  mushroom: [MUSHROOM_ISLAND, MUSHROOM_SHORE]
+  other: [HELL, SKY, SWAMPLAND]
+
+ # list of crops to be effected by the plugin
+ # valid crop names can be any of the following:
+ #  any of the bukkit.Material enum names
+ #  any of the bukkit.TreeType enum names
+ #  any of the bukkit.EntityType enum names
+ # any other name will be registered, and usable for inheritance, though not directly implemented
+
+ growth:
+  #----------------------------------------
+  crop:
+   base_rate: 0.05
+   needs_sunlight: true
+   open_sky_bonus: 2.0
+
+   soil_material: CLAY
+   soil_max_layers: 4
+   soil_bonus_per_layer: 0.5
+   # check below the plant block and the farmland block
+   # for soil
+   soil_layer_offset: 2
+
+  # wheat
+  CROPS:
+   inherit: crop
+   biomes:
+    cold: 0.25
+    hot_dry: 0.25
+    mountain: 0.25
+    temperate: 1.0
+    SKY: 0.5
+
+  CARROT:
+   inherit: crop
+   biomes:
+    hot_dry: 0.25
+    hot_rainy: 1.0
+    temperate: 0.5
+    SWAMPLAND: 0.25
+    SKY: 0.25
+
+  POTATO:
+   inherit: crop
+   biomes:
+    mountain: 1.0
+    cold: 0.25
+    temperate: 1.0
+    SKY: 1.0
+
+  NETHER_STALK:
+   inherit: crop
+   biomes:
+    HELL: 
+
+  #.....................
+  # stems grow super slow, while they produce blocks quite quickly
+
+  MELON_STEM:
+   inherit: crop
+   base_rate: 0.01
+   biomes:
+    temperate: 0.25
+    SWAMPLAND: 1.0
+    hot_rainy: 2.0
+
+  PUMPKIN_STEM:
+   inherit: crop
+   base_rate: 0.01
+   biomes:
+    temperate: 0.25
+    cold: 1.0
+
+  #.....................
+
+  MELON_BLOCK:
+   inherit: crop
+   base_rate: 0.2
+   biomes:
+    temperate: 0.5
+    SWAMPLAND: 1.0
+    hot_rainy: 2.0
+
+  PUMPKIN:
+   inherit: crop
+   base_rate: 0.2
+   biomes:
+    temperate: 0.5
+    cold: 1.0
+
+  #----------------------------------------
+
+  column:
+   base_rate: 0.5
+   needs_sunlight: true
+   open_sky_bonus: 2.0
+
+   soil_max_layers: 0
+
+  CACTUS:
+   inherit: column
+   base_rate: 0.5
+   biomes:
+    hot_dry: 1.0
+
+  SUGAR_CANE_BLOCK:
+   inherit: column
+   base_rate: 0.5
+   biomes:
+    hot_dry: 0.5
+    hot_rainy: 1.0
+    BEACH: 1.0
+    SWAMPLAND: 1.0
+
+  #----------------------------------------
+
+  COCOA:
+   base_rate: 0.1
+   needs_sunlight: true
+   open_sky_bonus: 2.0
+   
+   soil_material: VINE
+   soil_max_layers: 25
+   soil_bonus_per_layer: 0.2
+   soil_layer_offset: 1
+
+   biomes:
+    hot_rainy: 1.0
+
+  #----------------------------------------
+
+  tree:
+   base_rate: 0.125
+   needs_sunlight: true
+   open_sky_bonus: 8.0
+   
+   max_soil_layers: 0
+
+   biomes:
+    temperate: 1.0
+    cold: 0.5
+    hot_dry: 0.1
+    hot_rainy: 0.5
+    mountain: 0.1
+    SWAMPLAND: 0.25
+  BIG_TREE:
+   inherit: tree
+  BIRCH:
+   inherit: tree
+  REDWOOD:
+   inherit: tree
+  SWAMP:
+   inherit: tree
+  TALL_REDWOOD:
+   inherit: tree
+  TREE:
+   inherit: tree
+
+  #......................
+
+  jungle_tree:
+   base_rate: 0.125
+   needs_sunlight: true
+   open_sky_bonus: 8.0
+   max_soil_layers: 0
+   biomes:
+    hot_rainy: 1.0
+  JUNGLE:
+   inherit: jungle_tree
+  JUNGLE_BUSH:
+   inherit: jungle_tree
+  SMALL_JUNGLE:
+   inherit: jungle_tree
+
+  #......................
+
+  mushroom:
+   base_rate: 0.125
+   needs_sunlight: false
+   open_sky_bonus: 0.0
+   max_soil_layers: 0
+   biomes:
+    mushroom: 8.0
+    hot_rainy: 1.0
+    HELL: 0.5
+    SWAMPLAND: 0.5
+    temperate: 0.1
+    water: 0.1
+  BROWN_MUSHROOM:
+   inherit: mushroom
+   biomes:
+    SWAMPLAND: 4.0
+  RED_MUSHROOM:
+   inherit: mushroom
+   biomes:
+    HELL: 4.0
+
+  #----------------------------------------
+  animal:
+   needs_sunlight: true
+   base_rate: 0.25
+   open_sky_bonus: 2.0
+
+   soil_max_layers: 0
+
+  COW:
+   inherit: animal
+   base_rate: 0.1
+   open_sky_bonus: 4.0
+   biomes:
+    temperate: 1.0
+    mountain: 0.25
+    hot_dry: 0.5
+    cold: 0.1
+    hot_rainy: 0.1
+    mushroom: 1.0
+
+  CHICKEN:
+   inherit: animal
+   base_rate: 0.2
+   open_sky_bonus: 0.0
+   biomes:
+    temperate: 1.0
+    mountain: 0.25
+    hot_dry: 0.25
+    hot_rainy: 0.1
+    SWAMPLAND: 0.1
+    mushroom: 1.0
+    SKY: 1.0
+
+  PIG:
+   inherit: animal
+   biomes:
+    temperate: 0.5
+    mushroom: 1.0
+    SWAMPLAND: 1.0
+    hot_rainy: 1.0
+
+  SHEEP:
+   inherit: animal
+   biomes:
+    temperate: 0.5
+    mountain: 1.0
+    cold: 0.5
+    mushroom: 0.25
+
+  MUSHROOM_COW:
+   inherit: animal
+   biomes:
+    mushroom: 1.0
+   
+  #---------------------------------------
+
+  EGG:
+   inherit: CHICKEN
+
+  #---------------------------------------
+
+  FISHING_HOOK:
+   base_rate: 0.1
+
+   needs_sunlight: false
+   open_sky_bonus: 1.0
+
+   soil_material: STATIONARY_WATER
+   soil_max_layers: 30
+   soil_bonus_per_layer: 0.3
+   soil_layer_offset: 2
+
+   biomes:
+    water: 1.0
