@@ -3,6 +3,8 @@ package com.github.igotyou.FactoryMod.listeners;
 import static com.untamedears.citadel.Utility.isReinforced;
 import static com.untamedears.citadel.Utility.getReinforcement;
 
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,7 +14,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -36,7 +40,7 @@ public class BlockListener implements Listener
 		this.productionMan = productionManager;
 	}
 	
-	@EventHandler
+/*	@EventHandler
 	public void blockPlaceEvent(BlockPlaceEvent e)
 	{
 		 Player player = e.getPlayer();
@@ -48,22 +52,39 @@ public class BlockListener implements Listener
 		 {
 			 createFactory(centralLoctation, player);
 		 }
-	}
+	}*/
 	
 	@EventHandler
 	public void blockBreakEvent(BlockBreakEvent e)
 	{
 		Block block = e.getBlock();
-		Material type = block.getType();
-		
-		if (type == FactoryModPlugin.CENTRAL_BLOCK_MATERIAL || type == Material.CHEST || type == Material.FURNACE)
+		if (factoryMan.factoryExistsAt(block.getLocation()))
+		{
+			if (productionMan.factoryExistsAt(block.getLocation()))
+			{
+				Production factory = (Production) productionMan.getFactory(block.getLocation());
+				e.setCancelled(true);
+				
+				if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
+				{
+					factory.destroy(block.getLocation());
+					productionMan.removeFactory(factory);
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void explosionListener(EntityExplodeEvent e)
+	{
+		List<Block> blocks = e.blockList();
+		for (Block block : blocks)
 		{
 			if (factoryMan.factoryExistsAt(block.getLocation()))
 			{
 				if (productionMan.factoryExistsAt(block.getLocation()))
 				{
 					Production factory = (Production) productionMan.getFactory(block.getLocation());
-					
 					e.setCancelled(true);
 					
 					if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
@@ -71,6 +92,26 @@ public class BlockListener implements Listener
 						factory.destroy(block.getLocation());
 						productionMan.removeFactory(factory);
 					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void burnListener(BlockBurnEvent e)
+	{
+		Block block = e.getBlock();
+		if (factoryMan.factoryExistsAt(block.getLocation()))
+		{
+			if (productionMan.factoryExistsAt(block.getLocation()))
+			{
+				Production factory = (Production) productionMan.getFactory(block.getLocation());
+				e.setCancelled(true);
+				
+				if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
+				{
+					factory.destroy(block.getLocation());
+					productionMan.removeFactory(factory);
 				}
 			}
 		}
@@ -90,7 +131,9 @@ public class BlockListener implements Listener
 				{
 					if (factoryMan.factoryExistsAt(clicked.getLocation()))
 					{
-						if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || !FactoryModPlugin.CITADEL_ENABLED)
+						PlayerReinforcement reinforcment = (PlayerReinforcement) getReinforcement(clicked);
+						if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || !FactoryModPlugin.CITADEL_ENABLED || 
+								(reinforcment.isAccessible(player)))
 						{
 							if (productionMan.factoryExistsAt(clicked.getLocation()))
 							{
@@ -100,21 +143,8 @@ public class BlockListener implements Listener
 						}
 						else
 						{
-							PlayerReinforcement reinforcment = (PlayerReinforcement) getReinforcement(clicked);
-							if (reinforcment.isAccessible(player))
-							{
-								if (productionMan.factoryExistsAt(clicked.getLocation()))
-								{
-									Production production = (Production) productionMan.getFactory(clicked.getLocation());
-									InteractionResponse.messagePlayerResult(player, production.toggleRecipes());
-								}
-							}
-							else
-							{
-								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
-							}
+							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
 						}
-
 					}
 					else
 					{
@@ -125,7 +155,9 @@ public class BlockListener implements Listener
 				{
 					if (factoryMan.factoryExistsAt(clicked.getLocation()))
 					{
-						if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || !FactoryModPlugin.CITADEL_ENABLED)
+						PlayerReinforcement reinforcment = (PlayerReinforcement) getReinforcement(clicked);
+						if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || !FactoryModPlugin.CITADEL_ENABLED || 
+								(reinforcment.isAccessible(player)))
 						{
 							if (productionMan.factoryExistsAt(clicked.getLocation()))
 							{
@@ -135,28 +167,17 @@ public class BlockListener implements Listener
 						}
 						else
 						{
-							PlayerReinforcement reinforcment = (PlayerReinforcement) getReinforcement(clicked);
-							if (reinforcment.isAccessible(player))
-							{
-								if (productionMan.factoryExistsAt(clicked.getLocation()))
-								{
-									Production production = (Production) productionMan.getFactory(clicked.getLocation());
-									InteractionResponse.messagePlayerResult(player, production.togglePower());
-								}
-							}
-							else
-							{
-								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
-							}
+							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
 						}
-
 					}
 				}
 				else if (clicked.getType() == Material.CHEST)
 				{
 					if (factoryMan.factoryExistsAt(clicked.getLocation()))
 					{
-						if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || !FactoryModPlugin.CITADEL_ENABLED)
+						PlayerReinforcement reinforcment = (PlayerReinforcement) getReinforcement(clicked);
+						if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || !FactoryModPlugin.CITADEL_ENABLED || 
+								(reinforcment.isAccessible(player)))
 						{
 							if (productionMan.factoryExistsAt(clicked.getLocation()))
 							{
@@ -168,9 +189,10 @@ public class BlockListener implements Listener
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type     : " + production.getSubFactoryType()));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status  : On"));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe  : " + production.getCurrentRecipe().getRecipeName()));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutput().getType().toString()));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutput().getType().toString() + production.getEnchantmentsMessage(production.getCurrentRecipe().getEnchantments())));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + production.getMaterialsNeededMessage(production.getCurrentRecipe().getInput())));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Progress: " + String.valueOf(procentDone) + "%."));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe production time: " + production.getCurrentRecipe().getProductionTime() + " ticks(" + production.getCurrentRecipe().getProductionTime()/20 + "seconds)"));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe production time: " +  production.getCurrentRecipe().getProductionTime() + " seconds("+ production.getCurrentRecipe().getProductionTime()*FactoryModPlugin.TICKS_PER_SECOND + " ticks)"));
 								}
 								else
 								{
@@ -178,45 +200,15 @@ public class BlockListener implements Listener
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type   : " + production.getSubFactoryType()));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status: Off"));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe: " + production.getCurrentRecipe().getRecipeName()));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutput().getType().toString()));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutput().getType().toString() + production.getEnchantmentsMessage(production.getCurrentRecipe().getEnchantments())));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + production.getMaterialsNeededMessage(production.getCurrentRecipe().getInput())));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe production time: " +  production.getCurrentRecipe().getProductionTime() + " seconds("+ production.getCurrentRecipe().getProductionTime()*FactoryModPlugin.TICKS_PER_SECOND + " ticks)"));
 								}
 							}
 						}
 						else
 						{
-							PlayerReinforcement reinforcment = (PlayerReinforcement) getReinforcement(clicked);
-							if (reinforcment.isAccessible(player))
-							{
-								if (productionMan.factoryExistsAt(clicked.getLocation()))
-								{
-									Production production = (Production) productionMan.getFactory(clicked.getLocation());
-									int procentDone = Math.round(production.getProductionTimer()*100/production.getCurrentRecipe().getProductionTime());
-									if (production.getActive() == true)
-									{
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------Factory Information---------"));
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type     : " + production.getSubFactoryType()));
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status  : On"));
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe  : " + production.getCurrentRecipe().getRecipeName()));
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutput().getType().toString()));
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + production.getMaterialsNeededMessage(production.getCurrentRecipe().getInput())));
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Progress: " + String.valueOf(procentDone) + "%."));
-									}
-									else
-									{
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------Factory Information---------"));
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type   : " + production.getSubFactoryType()));
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status: Off"));
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe: " + production.getCurrentRecipe().getRecipeName()));
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutput().getType().toString()));
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + production.getMaterialsNeededMessage(production.getCurrentRecipe().getInput())));
-									}
-								}
-							}
-							else
-							{
-								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
-							}
+							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
 						}
 					}
 				}
@@ -235,7 +227,7 @@ public class BlockListener implements Listener
 							Production production = (Production) productionMan.getFactory(clicked.getLocation());
 							if (production.getActive() == true)
 							{
-								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You can't access the chest while the factory is active! Turn if off first!" ));
+								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You can't access the chest while the factory is active! Turn it off first!" ));
 								e.setCancelled(true);
 							}
 						}

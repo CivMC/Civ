@@ -1,12 +1,12 @@
 general:
   central_block: WORKBENCH
-  save_cycle: 100
+  save_cycle: 15
   return_build_materials: false
   citadel_enabled: true
   factory_interaction_material: STONE_SPADE
 
 disabled_recipes:
-  amount: 26
+  amount: 35
   recipe_1: DIAMOND_HELMET
   recipe_2: DIAMOND_CHESTPLATE
   recipe_3: DIAMOND_LEGGINGS
@@ -33,9 +33,18 @@ disabled_recipes:
   recipe_24: GOLD_LEGGINGS
   recipe_25: GOLD_BOOTS
   recipe_26: BREWING_STAND
+  recipe_27: IRON_SPADE
+  recipe_28: DIAMOND_SWORD
+  recipe_29: DIAMOND_SPADE
+  recipe_30: DIAMOND_PICKAXE
+  recipe_31: DIAMOND_AXE
+  recipe_32: GOLD_SWORD
+  recipe_33: GOLD_SPADE
+  recipe_34: GOLD_PICKAXE
+  recipe_35: GOLD_AXE
 
 production_recipes:
-  amount: 33
+  amount: 34
   recipe_1:
     name: Diamond Helmet
     batch_amount: 1
@@ -44,7 +53,7 @@ production_recipes:
     amount_of_material_inputs: 1
     input_material_1: DIAMOND
     input_amount_1: 5
-    durability: 10
+    durability: MAX
     amount_of_enchantments: 0
   recipe_2:
     name: Diamond Chestplate
@@ -352,13 +361,13 @@ production_recipes:
     batch_amount: 1
     production_time: 600
     output_material: DIAMOND_SWORD
-    amount_of_material_inputs: 2
+    amount_of_material_inputs: 3
     input_material_1: DIAMOND
     input_amount_1: 2
     input_material_2: STICK
     input_amount_2: 1
-    input_material_2: CACTUS
-    input_amount_2: 64
+    input_material_3: CACTUS
+    input_amount_3: 64
     durability: MAX
     amount_of_enchantments: 0
   recipe_27:
@@ -449,14 +458,14 @@ production_recipes:
     batch_amount: 1
     production_time: 600
     output_material: DIAMOND_SWORD
-    amount_of_material_inputs: 2
+    amount_of_material_inputs: 3
     input_material_1: DIAMOND_SWORD
     input_amount_1: 1
     input_material_2: SMOOTH_BRICK
     input_amount_2: 64
     input_data_2: 2
-    input_material_2: BAKED_POTATO
-    input_amount_2: 64
+    input_material_3: BAKED_POTATO
+    input_amount_3: 64
     durability: MAX
     amount_of_enchantments: 1
     enchantment_1: DAMAGE_ALL
@@ -481,6 +490,18 @@ production_recipes:
     enchantment_2_level: 2
     enchantment_3: ARROW_KNOCKBACK
     enchantment_3_level: 2  
+  recipe_34:
+    name: Iron Spade
+    batch_amount: 10
+    production_time: 600
+    output_material: SHEARS
+    amount_of_material_inputs: 2
+    input_material_1: IRON_INGOT
+    input_amount_1: 10
+    input_material_2: STICK
+    input_amount_2: 20
+    durability: MAX
+    amount_of_enchantments: 0 
     
 production_general:
   update_cycle: 20
@@ -492,22 +513,25 @@ production_general:
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
+    fuel_data: 1
     amount_of_build_materials: 2
     build_material_1: STONE
     build_amount_1: 64
     build_material_2: IRON_INGOT
     build_amount_2: 32
-    amount_of_production_recipes: 4
+    amount_of_production_recipes: 5
     recipe_1: 5
     recipe_2: 6
     recipe_3: 7
     recipe_4: 8
+    recipe_5: 34
   factory_2:
     name: Moss Stone Factory
     sub_factory_type: MOSS STONE FACTORY
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
+    fuel_data: 1
     amount_of_build_materials: 2
     build_material_1: STONE
     build_amount_1: 64
@@ -521,6 +545,7 @@ production_general:
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
+    fuel_data: 1
     amount_of_build_materials: 3
     build_material_1: STONE
     build_amount_1: 64
@@ -539,6 +564,7 @@ production_general:
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
+    fuel_data: 1
     amount_of_build_materials: 2
     build_material_1: STONE
     build_amount_1: 64
@@ -553,6 +579,7 @@ production_general:
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
+    fuel_data: 1
     amount_of_build_materials: 3
     build_material_1: STONE
     build_amount_1: 64
@@ -571,6 +598,7 @@ production_general:
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
+    fuel_data: 1
     amount_of_build_materials: 3
     build_material_1: STONE
     build_amount_1: 64
@@ -586,6 +614,7 @@ production_general:
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
+    fuel_data: 1
     amount_of_build_materials: 3
     build_material_1: STONE
     build_amount_1: 64
@@ -601,6 +630,7 @@ production_general:
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
+    fuel_data: 1
     amount_of_build_materials: 3
     build_material_1: STONE
     build_amount_1: 64
@@ -619,6 +649,7 @@ production_general:
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
+    fuel_data: 1
     amount_of_build_materials: 3
     build_material_1: STONE
     build_amount_1: 64
@@ -638,6 +669,7 @@ production_general:
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
+    fuel_data: 1
     amount_of_build_materials: 3
     build_material_1: STONE
     build_amount_1: 64
@@ -654,6 +686,7 @@ production_general:
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
+    fuel_data: 1
     amount_of_build_materials: 3
     build_material_1: STONE
     build_amount_1: 64
@@ -670,6 +703,7 @@ production_general:
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
+    fuel_data: 1
     amount_of_build_materials: 3
     build_material_1: SMOOTH_BRICK
     build_amount_1: 64
@@ -689,6 +723,7 @@ production_general:
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
+    fuel_data: 1
     amount_of_build_materials: 3
     build_material_1: STONE
     build_amount_1: 64
@@ -705,6 +740,7 @@ production_general:
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
+    fuel_data: 1
     amount_of_build_materials: 3
     build_material_1: WOOD
     build_amount_1: 64

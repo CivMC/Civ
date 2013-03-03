@@ -223,6 +223,25 @@ public class FactoryModPlugin extends JavaPlugin
 			Material energyMaterial = Material.getMaterial(config.getString(getPathToFactory(i) + ".fuel_material"));
 			int fuelTime = config.getInt(getPathToFactory(i) + ".fuel_time");
 			int fuelConsumption = config.getInt(getPathToFactory(i) + ".fuel_consumption");
+			Byte fuelData = 0;
+			ItemStack fuelStack;
+			try
+			{
+				fuelData = (byte) config.getInt(getPathToFactory(i) + ".fuel_data");
+			}
+			catch (Exception e)
+			{
+				
+			}
+			if (fuelData != 0)
+			{
+				fuelStack = new ItemStack(energyMaterial, fuelConsumption, (short) 0, fuelData);
+			}
+			else
+			{
+				fuelStack = new ItemStack(energyMaterial, fuelConsumption);
+			}
+			
 			
 			for (int i1 = 1; i1 <= config.getInt(getPathToFactory(i) + ".amount_of_build_materials"); i1++)
 			{
@@ -294,7 +313,7 @@ public class FactoryModPlugin extends JavaPlugin
 			{
 				recipes.add(productionRecipes.get(config.getInt(getPathToFactory(i) + ".recipe_" + String.valueOf(i1)) - 1));
 			}
-			ProductionProperties productionProperties = new ProductionProperties(buildMaterials, recipes, energyMaterial, fuelTime, fuelConsumption, name);
+			ProductionProperties productionProperties = new ProductionProperties(buildMaterials, recipes, fuelStack, fuelTime, name);
 			production_Properties.put(subFactoryType, productionProperties);
 		}
 	}

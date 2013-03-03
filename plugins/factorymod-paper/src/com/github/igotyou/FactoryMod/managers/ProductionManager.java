@@ -249,35 +249,8 @@ public class ProductionManager implements Manager
 
 	public boolean factoryExistsAt(Location factoryLocation) 
 	{
-		Location westLocation = factoryLocation.clone();
-		Location eastLocation = factoryLocation.clone();
-		Location northLocation = factoryLocation.clone();
-		Location southLocation = factoryLocation.clone();
-		
-		westLocation.add(-1,0,0);
-		eastLocation.add(1,0,0);
-		northLocation.add(0,0,-1);
-		southLocation.add(0,0,1);
-		
 		boolean returnValue = false;
 		if (getFactory(factoryLocation) != null)
-		{
-			returnValue = true;
-		}
-
-		if (getFactory(westLocation) != null)
-		{
-			returnValue = true;
-		}
-		if (getFactory(eastLocation) != null)
-		{
-			returnValue = true;
-		}
-		if (getFactory(northLocation) != null)
-		{
-			returnValue = true;
-		}
-		if (getFactory(southLocation) != null)
 		{
 			returnValue = true;
 		}

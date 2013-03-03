@@ -3,12 +3,14 @@ package com.github.igotyou.FactoryMod;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -448,8 +450,30 @@ public class FactoryObject
 		String returnValue = "";
 		for (int i = 1; i <= itemStack.size(); i++)
 		{
-			returnValue = returnValue + String.valueOf(itemStack.get(i).getAmount() + " " + itemStack.get(i).getType().toString() + ", ");
+			if (itemStack.get(i).hasItemMeta() && itemStack.get(i).getItemMeta().hasDisplayName())
+			{
+				returnValue = returnValue + String.valueOf(itemStack.get(i).getAmount() + " " + itemStack.get(i).getItemMeta().getDisplayName() + ", ");
+			}
+			else
+			{
+				returnValue = returnValue + String.valueOf(itemStack.get(i).getAmount() + " " + itemStack.get(i).getType().toString() + ", ");
+			}
 		}
 		return returnValue;
+	}
+	
+	public static String getEnchantmentsMessage(Map<Enchantment, Integer> enchants)
+	{
+		if (enchants != null)
+		{
+			String returnValue = " with ";
+
+			for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet())
+			{
+				returnValue = returnValue + entry.getKey().getName() + " " + entry.getValue() + ", ";
+			}
+			return returnValue;
+		}
+		return "";
 	}
 }

@@ -1,8 +1,10 @@
 package com.github.igotyou.FactoryMod.interfaces;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 public interface Recipe 
@@ -20,5 +22,7 @@ public interface Recipe
 	
 	//get production time in update cycles
 	public int getProductionTime();
+
+	public Map<Enchantment, Integer> getEnchantments();
 	
 }

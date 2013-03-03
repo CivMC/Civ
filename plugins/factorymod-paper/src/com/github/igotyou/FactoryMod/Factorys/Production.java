@@ -1,11 +1,15 @@
 package com.github.igotyou.FactoryMod.Factorys;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -68,7 +72,7 @@ public class Production extends FactoryObject implements Factory
 					{
 						if (currentEnergyTimer == productionFactoryProperties.getEnergyTime())
 						{
-							removeMaterial(getPowerSourceInventory(), productionFactoryProperties.getEnergyMaterial(), productionFactoryProperties.getEnergyConsumption());
+							removeMaterial(getPowerSourceInventory(), productionFactoryProperties.getEnergyMaterial());
 							currentEnergyTimer = 0;
 						}
 						currentEnergyTimer++;
@@ -117,7 +121,6 @@ public class Production extends FactoryObject implements Factory
 		furnace.setRawData(data);
 		furnace.update();
 		furnace.getInventory().setContents(oldContents);
-		furnace.setBurnTime((short) 1000);
 		active = true;
 		currentProductionTimer = 0;
 	}
@@ -133,7 +136,6 @@ public class Production extends FactoryObject implements Factory
 		furnace.setRawData(data);
 		furnace.update();
 		furnace.getInventory().setContents(oldContents);
-		furnace.setBurnTime((short) 0);
 		active = false;
 		currentProductionTimer = 0;
 	}
@@ -226,11 +228,12 @@ public class Production extends FactoryObject implements Factory
 	
 	public boolean isFuelAvailable()
 	{
-		return isMaterialAvailable(getPowerSourceInventory(), productionFactoryProperties.getEnergyMaterial(), productionFactoryProperties.getEnergyConsumption());
+		return isMaterialAvailable(getPowerSourceInventory(), productionFactoryProperties.getEnergyMaterial());
 	}
 
 	public void destroy(Location destroyLocation)
 	{
+		powerOff();
 		if (FactoryModPlugin.RETURN_BUILD_MATERIALS)
 		{
 			for (int i = 1; i <= productionFactoryProperties.getBuildMaterials().size(); i++)
