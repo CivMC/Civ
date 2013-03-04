@@ -19,9 +19,9 @@ realistic_biomes:
  growth:
   #----------------------------------------
   crop:
-   base_rate: 0.05
+   base_rate: 0.075
    needs_sunlight: true
-   open_sky_bonus: 2.0
+   open_sky_bonus: 4.0
 
    soil_material: CLAY
    soil_max_layers: 4
@@ -57,10 +57,17 @@ realistic_biomes:
     temperate: 1.0
     SKY: 1.0
 
-  NETHER_STALK:
+  #...................
+
+  NETHER_WARTS:
    inherit: crop
+   needs_sunlight: false
+   open_sky_bonus: 0.5
+   soil_material: SOUL_SAND
    biomes:
-    HELL: 
+    HELL: 1.0
+    hot_rainy: 0.25
+    mushroom: 0.5
 
   #.....................
   # stems grow super slow, while they produce blocks quite quickly
@@ -84,15 +91,15 @@ realistic_biomes:
 
   MELON_BLOCK:
    inherit: crop
-   base_rate: 0.2
+   base_rate: 0.4
    biomes:
-    temperate: 0.5
-    SWAMPLAND: 1.0
-    hot_rainy: 2.0
+    temperate: 0.25
+    SWAMPLAND: 0.5
+    hot_rainy: 1.0
 
   PUMPKIN:
    inherit: crop
-   base_rate: 0.2
+   base_rate: 0.4
    biomes:
     temperate: 0.5
     cold: 1.0
@@ -111,6 +118,7 @@ realistic_biomes:
    base_rate: 0.5
    biomes:
     hot_dry: 1.0
+    HELL: 0.5
 
   SUGAR_CANE_BLOCK:
    inherit: column
@@ -195,14 +203,18 @@ realistic_biomes:
     SWAMPLAND: 0.5
     temperate: 0.1
     water: 0.1
-  BROWN_MUSHROOM:
+  tree_BROWN_MUSHROOM:
    inherit: mushroom
    biomes:
     SWAMPLAND: 4.0
-  RED_MUSHROOM:
+  mat_BROWN_MUSHROOM:
+   inherit: tree_BROWN_MUSHROOM
+  tree_RED_MUSHROOM:
    inherit: mushroom
    biomes:
     HELL: 4.0
+  mat_RED_MUSHROOM:
+   inherit: tree_RED_MUSHROOM
 
   #----------------------------------------
   animal:
@@ -260,8 +272,9 @@ realistic_biomes:
    
   #---------------------------------------
 
-  EGG:
+  mat_EGG:
    inherit: CHICKEN
+   base_rate: 0.05
 
   #---------------------------------------
 

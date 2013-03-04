@@ -1,5 +1,6 @@
 package com.untamedears.realisticbiomes.listener;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -27,6 +28,7 @@ public class PlayerListener implements Listener {
 	
 	static {
 		materialAliases.put(Material.SEEDS, Material.CROPS);
+		materialAliases.put(Material.WHEAT, Material.CROPS);
 		materialAliases.put(Material.CARROT_ITEM, Material.CARROT);
 		materialAliases.put(Material.POTATO_ITEM, Material.POTATO);
 		materialAliases.put(Material.POISONOUS_POTATO, Material.POTATO);
@@ -43,7 +45,7 @@ public class PlayerListener implements Listener {
 		
 		materialAliases.put(Material.SUGAR_CANE, Material.SUGAR_CANE_BLOCK);
 		
-		materialAliases.put(Material.NETHER_WARTS, Material.NETHER_STALK);
+		materialAliases.put(Material.NETHER_STALK, Material.NETHER_WARTS);
 		
 		// ----------------- //
 		
@@ -74,7 +76,6 @@ public class PlayerListener implements Listener {
 			
 			if (material == null)
 				return;
-			LOG.info(material.toString());
 			
 			GrowthConfig growthConfig = growthConfigs.get(material);
 			if (growthConfig == null)
@@ -82,7 +83,8 @@ public class PlayerListener implements Listener {
 			
 			double growthAmount = growthConfig.getRate(event.getClickedBlock().getRelative(0,1,0));
 			
-			event.getPlayer().sendMessage("§7[Realistic Biomes] Growth rate: "+growthAmount);
+			String amount = new DecimalFormat("#0.00").format(growthAmount);
+			event.getPlayer().sendMessage("§7[Realistic Biomes] Growth rate \""+material.toString()+"\" = "+amount);
 		}
 	}
 	
@@ -97,7 +99,8 @@ public class PlayerListener implements Listener {
 			
 			double growthAmount = growthConfig.getRate(entity.getLocation().getBlock());
 			
-			event.getPlayer().sendMessage("§7[Realistic Biomes] Spawn rate: "+growthAmount);
+			String amount = new DecimalFormat("#0.00").format(growthAmount);
+			event.getPlayer().sendMessage("§7[Realistic Biomes] Spawn rate \""+entity.getType().toString()+"\" = "+amount);
 		}
 	}
 }

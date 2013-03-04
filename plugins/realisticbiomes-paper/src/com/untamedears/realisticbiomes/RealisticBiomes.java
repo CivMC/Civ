@@ -91,9 +91,9 @@ public class RealisticBiomes extends JavaPlugin {
 			
 			Object key = getMaterialKey(materialName);	
 			if (key == null) {
-				// if the name is capitalized, then warnin the player that
+				// if the name is partially capitalized, then warning the player that
 				// the name might be a misspelling
-				if (materialName.length() > 0 && Character.isUpperCase(materialName.charAt(0)))
+				if (materialName.length() > 0 && materialName.matches(".*[A-Z].*"))
 					LOG.warning("config material name: is \""+materialName+"\" misspelled?");
 				growthConfigNodes.put(materialName, newGrowthConfig);
 			}
@@ -104,19 +104,65 @@ public class RealisticBiomes extends JavaPlugin {
 	}
 	
 	private Object getMaterialKey(String materialName) {
+		boolean isMat = false, isTree = false, isEntity = false;
+		// test to see if the material has a "type" specifier, record the specifier and remover it
+		if (materialName.startsWith("mat_")) {
+			materialName = materialName.replaceFirst("mat\\_", "");
+			isMat = true;
+		}
+		else if (materialName.startsWith("tree_")) {
+			materialName = materialName.replaceFirst("tree\\_", "");
+			isTree = true;
+		}
+		else if (materialName.startsWith("entity_")) {
+			materialName = materialName.replaceFirst("entity\\_", "");
+			isEntity = true;
+		}
+		
+		// match name to bukkit objects
 		TreeType treeType;
 		try { treeType = TreeType.valueOf(materialName); }
 		catch (IllegalArgumentException e) { treeType = null; }
-		if (treeType != null)
-			return treeType;
 		
 		Material material = Material.getMaterial(materialName);
 		EntityType entityType;
-		if (material != null)
-			return material;
-		
+
 		try { entityType = EntityType.valueOf(materialName); }
 		catch (IllegalArgumentException e) { entityType = null; }
+		
+		// if the type was specifically specified, thenregister only for that type of object
+		// warn if that object doesn't actully match anything
+		if (isMat) {
+			if (material != null)
+				return material;
+			LOG.warning("config: \""+materialName+"\" specified material but does not match one.");
+		}
+		if (isTree) {
+			if (treeType != null)
+				return treeType;
+			LOG.warning("config: \""+materialName+"\" specified tree type name but does not match one.");
+		}
+		if (isEntity) {
+			if (entityType != null)
+				return entityType;
+			LOG.warning("config: \""+materialName+"\" specified entity type name but does not match one.");
+		}
+		
+		// wanr user if they are unsing an ambiguous name
+		if (material != null  && entityType != null && treeType != null)
+			LOG.warning("config name: \""+materialName+"\" ambiguous, could be material, tree type, or entity type.");
+		if (treeType != null  && material != null)
+			LOG.warning("config name: \""+materialName+"\" ambiguous, could be material or tree type.");
+		if (material != null  && entityType != null)
+			LOG.warning("config name: \""+materialName+"\" ambiguous, could be material or entity type.");
+		if (treeType != null  && entityType != null)
+			LOG.warning("config name: \""+materialName+"\" ambiguous, could be tree type or entity type.");
+		
+		// finally just match any type
+		if (material != null)
+			return material;
+		if (treeType != null)
+			return treeType;
 		if (entityType != null)
 			return entityType;
 
