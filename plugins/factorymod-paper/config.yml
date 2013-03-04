@@ -153,7 +153,7 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: LEATHER
     input_amount_1: 5
-    input_material_2: CACTUS
+    input_material_2: COCOA
     input_amount_2: 8
     durability: MAX
     amount_of_enchantments: 0
@@ -165,7 +165,7 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: LEATHER
     input_amount_1: 8
-    input_material_2: CACTUS
+    input_material_2: COCOA
     input_amount_2: 8
     durability: MAX
     amount_of_enchantments: 0
@@ -177,7 +177,7 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: LEATHER
     input_amount_1: 7
-    input_material_2: CACTUS
+    input_material_2: COCOA
     input_amount_2: 8
     durability: MAX
     amount_of_enchantments: 0
@@ -189,7 +189,7 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: LEATHER
     input_amount_1: 4
-    input_material_2: CACTUS
+    input_material_2: COCOA
     input_amount_2: 8
     durability: MAX
     amount_of_enchantments: 0   
@@ -229,7 +229,7 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: IRON_INGOT
     input_amount_1: 5
-    input_material_2: CACTUS
+    input_material_2: COCOA
     input_amount_2: 48
     durability: MAX
     amount_of_enchantments: 0
@@ -241,7 +241,7 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: IRON_INGOT
     input_amount_1: 8
-    input_material_2: CACTUS
+    input_material_2: COCOA
     input_amount_2: 48
     durability: MAX
     amount_of_enchantments: 0
@@ -253,7 +253,7 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: IRON_INGOT
     input_amount_1: 7
-    input_material_2: CACTUS
+    input_material_2: COCOA
     input_amount_2: 48
     durability: MAX
     amount_of_enchantments: 0
@@ -265,7 +265,7 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: IRON_INGOT
     input_amount_1: 4
-    input_material_2: CACTUS
+    input_material_2: COCOA
     input_amount_2: 48
     durability: MAX
     amount_of_enchantments: 0       
@@ -366,7 +366,7 @@ production_recipes:
     input_amount_1: 2
     input_material_2: STICK
     input_amount_2: 1
-    input_material_3: CACTUS
+    input_material_3: COCOA
     input_amount_3: 64
     durability: MAX
     amount_of_enchantments: 0
