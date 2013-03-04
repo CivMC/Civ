@@ -264,4 +264,9 @@ public class Production extends FactoryObject implements Factory
 	{
 		return currentRecipeNumber;
 	}
+	
+	public ProductionProperties getProductionFactoryProperties()
+	{
+		return productionFactoryProperties;
+	}
 }

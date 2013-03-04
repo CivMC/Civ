@@ -87,50 +87,50 @@ production_recipes:
     amount_of_enchantments: 0
   recipe_5:
     name: Iron Pickaxe
-    batch_amount: 10
+    batch_amount: 5
     production_time: 600
     output_material: IRON_PICKAXE
     amount_of_material_inputs: 2
     input_material_1: IRON_INGOT
-    input_amount_1: 30
+    input_amount_1: 15
     input_material_2: STICK
-    input_amount_2: 20
+    input_amount_2: 10
     durability: MAX
     amount_of_enchantments: 0
   recipe_6:
     name: Iron axe
-    batch_amount: 10
+    batch_amount: 5
     production_time: 600
     output_material: IRON_AXE
     amount_of_material_inputs: 2
     input_material_1: IRON_INGOT
-    input_amount_1: 30
+    input_amount_1: 15
     input_material_2: STICK
-    input_amount_2: 20
+    input_amount_2: 10
     durability: MAX
     amount_of_enchantments: 0   
   recipe_7:
     name: Iron Hoe
-    batch_amount: 10
+    batch_amount: 5
     production_time: 600
     output_material: IRON_HOE
     amount_of_material_inputs: 2
     input_material_1: IRON_INGOT
-    input_amount_1: 20
+    input_amount_1: 10
     input_material_2: STICK
-    input_amount_2: 20
+    input_amount_2: 10
     durability: MAX
     amount_of_enchantments: 0   
   recipe_8:
     name: Iron Shears
-    batch_amount: 10
+    batch_amount: 5
     production_time: 600
     output_material: SHEARS
     amount_of_material_inputs: 2
     input_material_1: IRON_INGOT
-    input_amount_1: 20
+    input_amount_1: 10
     input_material_2: STICK
-    input_amount_2: 20
+    input_amount_2: 10
     durability: MAX
     amount_of_enchantments: 0 
   recipe_9:
@@ -492,14 +492,14 @@ production_recipes:
     enchantment_3_level: 2  
   recipe_34:
     name: Iron Spade
-    batch_amount: 10
+    batch_amount: 5
     production_time: 600
     output_material: SHEARS
     amount_of_material_inputs: 2
     input_material_1: IRON_INGOT
-    input_amount_1: 10
+    input_amount_1: 5
     input_material_2: STICK
-    input_amount_2: 20
+    input_amount_2: 10
     durability: MAX
     amount_of_enchantments: 0 
     
