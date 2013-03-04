@@ -450,9 +450,9 @@ public class FactoryObject
 		String returnValue = "";
 		for (int i = 1; i <= itemStack.size(); i++)
 		{
-			if (itemStack.get(i).hasItemMeta() && itemStack.get(i).getItemMeta().hasDisplayName())
+			if (itemStack.get(i).getData() != null)
 			{
-				returnValue = returnValue + String.valueOf(itemStack.get(i).getAmount() + " " + itemStack.get(i).getItemMeta().getDisplayName() + ", ");
+				returnValue = returnValue + String.valueOf(itemStack.get(i).getAmount() + " " + itemStack.get(i).getData().toString() + ", ");
 			}
 			else
 			{
