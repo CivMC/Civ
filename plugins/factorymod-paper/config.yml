@@ -153,8 +153,9 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: LEATHER
     input_amount_1: 5
-    input_material_2: COCOA
+    input_material_2: INK_SACK
     input_amount_2: 8
+    input_data_2: 3
     durability: MAX
     amount_of_enchantments: 0
   recipe_11:
@@ -165,8 +166,9 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: LEATHER
     input_amount_1: 8
-    input_material_2: COCOA
+    input_material_2: INK_SACK
     input_amount_2: 8
+    input_data_2: 3
     durability: MAX
     amount_of_enchantments: 0
   recipe_12:
@@ -177,8 +179,9 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: LEATHER
     input_amount_1: 7
-    input_material_2: COCOA
+    input_material_2: INK_SACK
     input_amount_2: 8
+    input_data_2: 3
     durability: MAX
     amount_of_enchantments: 0
   recipe_13:
@@ -189,8 +192,9 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: LEATHER
     input_amount_1: 4
-    input_material_2: COCOA
+    input_material_2: INK_SACK
     input_amount_2: 8
+    input_data_2: 3
     durability: MAX
     amount_of_enchantments: 0   
   recipe_14: 
@@ -229,8 +233,9 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: IRON_INGOT
     input_amount_1: 5
-    input_material_2: COCOA
+    input_material_2: INK_SACK
     input_amount_2: 48
+    input_data_2: 3
     durability: MAX
     amount_of_enchantments: 0
   recipe_17:
@@ -241,8 +246,9 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: IRON_INGOT
     input_amount_1: 8
-    input_material_2: COCOA
+    input_material_2: INK_SACK
     input_amount_2: 48
+    input_data_2: 3
     durability: MAX
     amount_of_enchantments: 0
   recipe_18:
@@ -253,8 +259,9 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: IRON_INGOT
     input_amount_1: 7
-    input_material_2: COCOA
+    input_material_2: INK_SACK
     input_amount_2: 48
+    input_data_2: 3
     durability: MAX
     amount_of_enchantments: 0
   recipe_19:
@@ -265,8 +272,9 @@ production_recipes:
     amount_of_material_inputs: 2
     input_material_1: IRON_INGOT
     input_amount_1: 4
-    input_material_2: COCOA
+    input_material_2: INK_SACK
     input_amount_2: 48
+    input_data_2: 3
     durability: MAX
     amount_of_enchantments: 0       
   recipe_20:
@@ -366,8 +374,9 @@ production_recipes:
     input_amount_1: 2
     input_material_2: STICK
     input_amount_2: 1
-    input_material_3: COCOA
+    input_material_3: INK_SACK
     input_amount_3: 64
+    input_data_3: 3
     durability: MAX
     amount_of_enchantments: 0
   recipe_27:
