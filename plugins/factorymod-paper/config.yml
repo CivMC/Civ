@@ -535,8 +535,8 @@ production_general:
     recipe_4: 8
     recipe_5: 34
   factory_2:
-    name: Moss_Stone_Factory
-    sub_factory_type: MOSS STONE FACTORY
+    name: Moss Stone Factory
+    sub_factory_type: MOSS_STONE_FACTORY
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
