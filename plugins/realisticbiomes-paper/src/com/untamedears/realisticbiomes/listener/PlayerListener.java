@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.Material;
 import org.bukkit.TreeType;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -71,19 +72,47 @@ public class PlayerListener implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {	
 		// right click block with the seeds or plant in hand to see what the status is
-		if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-			Object material = materialAliases.get(event.getMaterial());
+		if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			Object material = event.getMaterial()/*in hand*/;
+			Block block = event.getClickedBlock();
 			
-			if (material == null)
+			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+				// hit the ground with a seed, or other farm product: get the adjusted crop growth
+				// rate as if that crop was planted on top of the block
+				material = materialAliases.get(material);
+				// if the material isn't aliased, just use the material
+				if (material == null)
+					material = event.getMaterial();
+				
+				block = block.getRelative(0,1,0);
+			}
+			else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && material == Material.STICK) {
+				// right click on a growing crop with a stick: get information about that crop
+				material = event.getClickedBlock().getType();
+
+				// handle saplings as their tree types
+				if (material == Material.SAPLING) {
+					material = TreeType.TREE;
+				}
+			}
+			else {
+				// right clicked without stick, do nothing
 				return;
+			}
 			
 			GrowthConfig growthConfig = growthConfigs.get(material);
 			if (growthConfig == null)
 				return;
 			
-			double growthAmount = growthConfig.getRate(event.getClickedBlock().getRelative(0,1,0));
+			double growthAmount = growthConfig.getRate(block);
 			
-			String amount = new DecimalFormat("#0.00").format(growthAmount);
+			// clamp the growth value between 0 and 1 and put into percent format
+			if (growthAmount > 1.0)
+				growthAmount = 1.0;
+			else if (growthAmount < 0.0)
+				growthAmount = 0.0;
+			String amount = new DecimalFormat("#0.00").format(growthAmount*100.0)+"%";
+			// send the message out to the user!
 			event.getPlayer().sendMessage("§7[Realistic Biomes] Growth rate \""+material.toString()+"\" = "+amount);
 		}
 	}
@@ -99,7 +128,13 @@ public class PlayerListener implements Listener {
 			
 			double growthAmount = growthConfig.getRate(entity.getLocation().getBlock());
 			
-			String amount = new DecimalFormat("#0.00").format(growthAmount);
+			// clamp the growth value between 0 and 1 and put into percent format
+			if (growthAmount > 1.0)
+				growthAmount = 1.0;
+			else if (growthAmount < 0.0)
+				growthAmount = 0.0;
+			String amount = new DecimalFormat("#0.00").format(growthAmount*100.0)+"%";
+			// send the message out to the user!
 			event.getPlayer().sendMessage("§7[Realistic Biomes] Spawn rate \""+entity.getType().toString()+"\" = "+amount);
 		}
 	}
