@@ -1,4 +1,5 @@
 realistic_biomes:
+ # catagories of biomes
  biome_aliases:
   cold: [ICE_PLAINS, ICE_MOUNTAINS, TAIGA, TAIGA_HILLS]
   temperate: [PLAINS, FOREST, FOREST_HILLS]
@@ -11,27 +12,45 @@ realistic_biomes:
 
  # list of crops to be effected by the plugin
  # valid crop names can be any of the following:
- #  any of the bukkit.Material enum names
- #  any of the bukkit.TreeType enum names
- #  any of the bukkit.EntityType enum names
- # any other name will be registered, and usable for inheritance, though not directly implemented
+ #  any of the bukkit.Material enum names    -- crops
+ #  any of the bukkit.TreeType enum names    -- trees
+ #  any of the bukkit.EntityType enum names  -- animals
+ # any other name will have no effect except for inheritance
+ # names with capital letters will be assumed to be official bukkit names
+ # the plugin will give you a warning if you use a name with any capital letters
+ # that does not map to a bukkit material, tree type, or entity type
 
  growth:
   #----------------------------------------
   crop:
-   base_rate: 0.075
+   # the base rate of this plant as a fraction of the standard rate
+   base_rate: 0.015
+   # if this flag is true, the growth rate of the grower is modulated by sunlight levels
+   # ie sunlight level = 15 means full growth, while sunlight level 0 means 0 growth
+   # sunlight level is disregarded is this flag is false
    needs_sunlight: true
+   # bonus that this crop or animal gets to its growth rate from being directly exposed
+   # to the sky (meaning that there are no blocks except AIR, LEAVES, and VINES from the
+   # growing block to the sky level)
    open_sky_bonus: 4.0
 
+   # material that, placed in a column beneath a crop block, may provide a bonus for each underlying
+   # level of the material.
    soil_material: CLAY
+   # the maximum number of layers to count towards the bonus
    soil_max_layers: 4
+   # the bonus per level. The total multiplier to the overall growth rate will be:
+   #   100%  +  soil_bonus_per_layer * number_of_layers
    soil_bonus_per_layer: 0.5
-   # check below the plant block and the farmland block
-   # for soil
+   # the relative z-level at which to start looking for soil blocks, in this example the column will start
+   # 2 blocks below the crop block, ie beneath both itself and the farmland block
    soil_layer_offset: 2
 
   # wheat
   CROPS:
+   # CROPS will take on any parameters from the "crop" growth configuration that are
+   # not specified in the CROPS definition (so CROPS will "inherit" the base_rate, needs_sunlight ... etc
+   # from "crop")
    inherit: crop
    biomes:
     cold: 0.25
@@ -54,7 +73,7 @@ realistic_biomes:
    biomes:
     mountain: 1.0
     cold: 0.25
-    temperate: 1.0
+    temperate: 0.5
     SKY: 1.0
 
   #...................
@@ -74,15 +93,15 @@ realistic_biomes:
 
   MELON_STEM:
    inherit: crop
-   base_rate: 0.01
+   base_rate: 0.005
    biomes:
     temperate: 0.25
     SWAMPLAND: 1.0
-    hot_rainy: 2.0
+    hot_rainy: 0.5
 
   PUMPKIN_STEM:
    inherit: crop
-   base_rate: 0.01
+   base_rate: 0.005
    biomes:
     temperate: 0.25
     cold: 1.0
@@ -91,15 +110,15 @@ realistic_biomes:
 
   MELON_BLOCK:
    inherit: crop
-   base_rate: 0.4
+   base_rate: 0.08
    biomes:
     temperate: 0.25
-    SWAMPLAND: 0.5
-    hot_rainy: 1.0
+    SWAMPLAND: 1.0
+    hot_rainy: 0.5
 
   PUMPKIN:
    inherit: crop
-   base_rate: 0.4
+   base_rate: 0.08
    biomes:
     temperate: 0.5
     cold: 1.0
@@ -107,7 +126,7 @@ realistic_biomes:
   #----------------------------------------
 
   column:
-   base_rate: 0.5
+   base_rate: 0.1
    needs_sunlight: true
    open_sky_bonus: 2.0
 
@@ -115,14 +134,14 @@ realistic_biomes:
 
   CACTUS:
    inherit: column
-   base_rate: 0.5
+   base_rate: 0.1
    biomes:
     hot_dry: 1.0
     HELL: 0.5
 
   SUGAR_CANE_BLOCK:
    inherit: column
-   base_rate: 0.5
+   base_rate: 0.1
    biomes:
     hot_dry: 0.5
     hot_rainy: 1.0
@@ -132,13 +151,15 @@ realistic_biomes:
   #----------------------------------------
 
   COCOA:
-   base_rate: 0.1
-   needs_sunlight: true
-   open_sky_bonus: 2.0
+   base_rate: 0.02
+   needs_sunlight: false
+   open_sky_bonus: 5.0
    
+   # get incremental bonus from an unbroken chain of up to 25 
+   # vines starting directly below the cocoa pod
    soil_material: VINE
    soil_max_layers: 25
-   soil_bonus_per_layer: 0.2
+   soil_bonus_per_layer: 0.3
    soil_layer_offset: 1
 
    biomes:
@@ -192,7 +213,7 @@ realistic_biomes:
   #......................
 
   mushroom:
-   base_rate: 0.125
+   base_rate: 0.025
    needs_sunlight: false
    open_sky_bonus: 0.0
    max_soil_layers: 0
@@ -219,15 +240,15 @@ realistic_biomes:
   #----------------------------------------
   animal:
    needs_sunlight: true
-   base_rate: 0.25
+   base_rate: 0.5
    open_sky_bonus: 2.0
 
    soil_max_layers: 0
 
   COW:
    inherit: animal
-   base_rate: 0.1
-   open_sky_bonus: 4.0
+   base_rate: 0.125
+   open_sky_bonus: 8.0
    biomes:
     temperate: 1.0
     mountain: 0.25
@@ -259,6 +280,8 @@ realistic_biomes:
 
   SHEEP:
    inherit: animal
+   base_rate: 0.25
+   open_sky_bonus: 4.0
    biomes:
     temperate: 0.5
     mountain: 1.0
@@ -279,15 +302,12 @@ realistic_biomes:
   #---------------------------------------
 
   FISHING_HOOK:
-   base_rate: 0.1
+   base_rate: 1.0
 
    needs_sunlight: false
    open_sky_bonus: 1.0
 
-   soil_material: STATIONARY_WATER
-   soil_max_layers: 30
-   soil_bonus_per_layer: 0.3
-   soil_layer_offset: 2
+   soil_max_layers: 0
 
    biomes:
     water: 1.0
