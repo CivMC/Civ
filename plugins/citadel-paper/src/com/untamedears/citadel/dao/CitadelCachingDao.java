@@ -163,6 +163,30 @@ public class CitadelCachingDao extends CitadelDao {
         }
     }
 
+    public boolean ForceChunkFlush(String chunk_id) {
+        ChunkCache cache = cachesByChunkId.get(chunk_id);
+        if (cache == null) {
+            return false;
+        }
+        if (cache.getTotalPendingCount() > 0) {
+            cache.flush();
+        }
+        return true;
+    }
+
+    public boolean ForceChunkUnload(String chunk_id) {
+        ChunkCache cache = cachesByChunkId.get(chunk_id);
+        if (cache == null) {
+            return false;
+        }
+        if (cache.getTotalPendingCount() > 0) {
+            cache.flush();
+        }
+        cachesByChunkId.remove(chunk_id);
+        cachesByTime.remove(cache);
+        return true;
+    }
+
     @Override
     public IReinforcement findReinforcement( Location location ){
         return findReinforcement(location.getBlock());

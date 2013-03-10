@@ -125,17 +125,21 @@ public class PlayerListener implements Listener {
             reinforcement = (PlayerReinforcement)generic_reinforcement;
         }
 
-        if (reinforcement != null
-                && reinforcement.isSecurable()
-                && !reinforcement.isAccessible(player)) {
-        	Action action = pie.getAction();
-        	if(action == Action.RIGHT_CLICK_BLOCK){
-                Citadel.info("%s failed to access locked reinforcement %s, " 
-            			+ player.getDisplayName() + " at " 
-            			+ block.getLocation().toString());
-              sendMessage(pie.getPlayer(), ChatColor.RED, "%s is locked", block.getType().name());
-              pie.setCancelled(true);
-        	}
+       	Action action = pie.getAction();
+        boolean access_reinforcement = 
+            action == Action.RIGHT_CLICK_BLOCK
+            && reinforcement != null
+            && reinforcement.isSecurable();
+        boolean normal_access_denied =
+            reinforcement != null
+            && !reinforcement.isAccessible(player);
+        boolean admin_can_access = player.hasPermission("citadel.admin.accesssecurable");
+        if (access_reinforcement && normal_access_denied && !admin_can_access) {
+            Citadel.info(String.format(
+                "%s failed to access locked reinforcement at %s",
+                player.getDisplayName(), block.getLocation().toString()));
+            sendMessage(pie.getPlayer(), ChatColor.RED, "%s is locked", block.getType().name());
+            pie.setCancelled(true);
         }
         if (pie.isCancelled()) return;
 
@@ -143,6 +147,11 @@ public class PlayerListener implements Listener {
         PlacementMode placementMode = state.getMode();
         switch (placementMode) {
             case NORMAL:
+                if (access_reinforcement && normal_access_denied && admin_can_access) {
+                    Citadel.info(String.format(
+                        "[Admin] %s accessed locked reinforcement at %s",
+                        player.getDisplayName(), block.getLocation().toString()));
+                }
             	return;
             case FORTIFICATION:
                 return;
@@ -151,21 +160,46 @@ public class PlayerListener implements Listener {
                 if (reinforcement != null) {
                 	String reinforcementStatus = reinforcement.getStatus();
                 	SecurityLevel securityLevel = reinforcement.getSecurityLevel();
-                    if(reinforcement.isAccessible(player)){
-                    	Faction group = reinforcement.getOwner();
-                    	String groupName = group.getName();
-                    	String message = "";
-                    	if(group.isPersonalGroup()){
-                    		message = String.format("%s, security: %s, group: %s (Default Group)", reinforcementStatus, securityLevel, groupName);
-                    	} else {
-                    		message = String.format("%s, security: %s, group: %s", reinforcementStatus, securityLevel, groupName);
-                    	}
-                		sendMessage(player, ChatColor.GREEN, message);
+                    Faction group = reinforcement.getOwner();
+                    String message;
+                    if (player.hasPermission("citadel.admin.ctinfodetails")) {
+                        message = String.format("Loc[%s]  Chunk[%s]", 
+                            reinforcement.getId().toString(),
+                            reinforcement.getChunkId());
+                        sendMessage(player, ChatColor.GREEN, message);
+                        String groupName = "!NULL!";
+                        if (group != null) {
+                            if (group.isPersonalGroup()) {
+                                groupName = String.format("[%s] (Personal)", group.getName());
+                            } else {
+                                groupName = String.format("[%s]", group.getName());
+                            }
+                        }
+                        message = String.format(" Group%s  Durability[%d/%d]",
+                            groupName,
+                            reinforcement.getDurability(),
+                            reinforcement.getMaterial().getStrength());
+                        sendMessage(player, ChatColor.GREEN, message);
+                    } else if(reinforcement.isAccessible(player)){
+                        boolean is_personal_group = false;
+                        String groupName = "!NULL!";
+                        if (group != null) {
+                            groupName = group.getName();
+                            is_personal_group = group.isPersonalGroup();
+                        }
+                        if(is_personal_group){
+                            message = String.format("%s, security: %s, group: %s (Default Group)", reinforcementStatus, securityLevel, groupName);
+                        } else {
+                            message = String.format("%s, security: %s, group: %s", reinforcementStatus, securityLevel, groupName);
+                        }
+                        sendMessage(player, ChatColor.GREEN, message);
                     } else {
-                    	sendMessage(player, ChatColor.RED, "%s, security: %s", reinforcementStatus, securityLevel);
+                        sendMessage(player, ChatColor.RED, "%s, security: %s", reinforcementStatus, securityLevel);
                     }
+                    pie.setCancelled(true);
                 }
                 break;
+
             default:
                 // player is in reinforcement mode
                 if (reinforcement == null) {

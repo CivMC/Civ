@@ -34,6 +34,10 @@ public class ConsoleCommands extends PlayerCommand {
             return GetSlowDaoCacheStats(sender, args);
         } else if (command.equalsIgnoreCase("forcecacheflush")) {
             return ForceCacheFlush(sender, args);
+        } else if (command.equalsIgnoreCase("forcechunkflush")) {
+            return ForceChunkFlush(sender, args);
+        } else if (command.equalsIgnoreCase("forcechunkunload")) {
+            return ForceChunkUnload(sender, args);
         } 
         return false;
     }
@@ -168,6 +172,40 @@ public class ConsoleCommands extends PlayerCommand {
         CitadelCachingDao dao = (CitadelCachingDao)std_dao;
         dao.ForceCacheFlush(flushCount);
         sendMessage(sender, ChatColor.YELLOW, "Flush complete.");
+        return true;
+    }
+
+    public boolean ForceChunkFlush(CommandSender sender, String[] args) {
+        if (args.length < 2) {
+            sendMessage(sender, ChatColor.RED, "Please provide a Chunk ID");
+            return true;
+        }
+        String chunk_id = args[1];
+        CitadelDao std_dao = Citadel.getDao();
+        if (!(std_dao instanceof CitadelCachingDao)) {
+            sendMessage(sender, ChatColor.RED, "Sorry, the Caching DAO is not being used.");
+            return true;
+        }
+        CitadelCachingDao dao = (CitadelCachingDao)std_dao;
+        dao.ForceChunkFlush(chunk_id);
+        sendMessage(sender, ChatColor.YELLOW, "Flush complete.");
+        return true;
+    }
+
+    public boolean ForceChunkUnload(CommandSender sender, String[] args) {
+        if (args.length < 2) {
+            sendMessage(sender, ChatColor.RED, "Please provide a Chunk ID");
+            return true;
+        }
+        String chunk_id = args[1];
+        CitadelDao std_dao = Citadel.getDao();
+        if (!(std_dao instanceof CitadelCachingDao)) {
+            sendMessage(sender, ChatColor.RED, "Sorry, the Caching DAO is not being used.");
+            return true;
+        }
+        CitadelCachingDao dao = (CitadelCachingDao)std_dao;
+        dao.ForceChunkUnload(chunk_id);
+        sendMessage(sender, ChatColor.YELLOW, "Unload complete.");
         return true;
     }
 }

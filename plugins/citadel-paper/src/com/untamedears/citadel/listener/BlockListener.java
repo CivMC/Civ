@@ -114,9 +114,17 @@ public class BlockListener implements Listener {
         if (reinforcement instanceof PlayerReinforcement) {
             PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
             PlayerState state = PlayerState.get(player);
-            if (state.isBypassMode() && pr.isBypassable(player)) {
-		    	Citadel.info(player.getDisplayName() + " bypassed reinforcement %s at " 
-		    			+ pr.getBlock().getLocation().toString());
+            boolean admin_bypass = player.hasPermission("citadel.admin.bypassmode");
+            if (state.isBypassMode() && (pr.isBypassable(player) || admin_bypass)) {
+                if (admin_bypass) {
+                    Citadel.info(String.format(
+                        "[Admin] %s bypassed reinforcement at %s",
+                        player.getDisplayName(), pr.getBlock().getLocation().toString()));
+                } else {
+                    Citadel.info(String.format(
+                        "%s bypassed reinforcement at %s",
+                        player.getDisplayName(), pr.getBlock().getLocation().toString()));
+                }
                 is_cancelled = reinforcementBroken(reinforcement);
             } else {
                 is_cancelled = reinforcementDamaged(reinforcement);

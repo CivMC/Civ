@@ -159,7 +159,11 @@ public class PlayerReinforcement implements
     }
 
     public void setOwner(Faction group) {
-        setOwnerName(group.getName());
+        String group_name = null;
+        if (group != null) {
+            group_name = group.getName();
+        }
+        setOwnerName(group_name);
     }
 
     public double getHealth() {

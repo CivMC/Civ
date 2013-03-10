@@ -1,6 +1,6 @@
 name: Citadel
 main: com.untamedears.citadel.Citadel
-version: 2.1.1
+version: 2.2.0
 description: Reinforce your structures!
 author: chrisrico, jonnyd (aka Gu3rr1lla)
 database: false
@@ -148,3 +148,8 @@ permissions:
       citadel.admin.ctpstats: true
       citadel.admin.ctdiscipline: true
       citadel.admin.ctreprieve: true
+      citadel.admin.ctinfodetails: true
+      citadel.admin.accesssecurable: true
+      citadel.admin.cttransfer: true
+      citadel.admin.reassignreinforcements: true
+      citadel.admin.bypassmode: true

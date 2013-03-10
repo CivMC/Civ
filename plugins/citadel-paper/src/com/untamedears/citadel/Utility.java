@@ -226,7 +226,8 @@ public class Utility {
                         player_z < min_z || player_z > max_z) {
                     continue;
                 }
-                if (!reinforcement.isAccessible(player)) {
+                if (!reinforcement.isAccessible(player) &&
+                        !player.hasPermission("citadel.admin.accesssecurable")) {
                     continue;
                 }
                 double distanceSquared = playerLocation.distance(reinLocation);
