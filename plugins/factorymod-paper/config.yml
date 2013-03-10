@@ -108,7 +108,7 @@ production_recipes:
     input_material_2: STICK
     input_amount_2: 10
     durability: MAX
-    amount_of_enchantments: 0   
+    amount_of_enchantments: 0
   recipe_7:
     name: Iron Hoe
     batch_amount: 5
@@ -120,7 +120,7 @@ production_recipes:
     input_material_2: STICK
     input_amount_2: 10
     durability: MAX
-    amount_of_enchantments: 0   
+    amount_of_enchantments: 0
   recipe_8:
     name: Iron Shears
     batch_amount: 5
@@ -132,7 +132,7 @@ production_recipes:
     input_material_2: STICK
     input_amount_2: 10
     durability: MAX
-    amount_of_enchantments: 0 
+    amount_of_enchantments: 0
   recipe_9:
     name: Mossy Cobble Stone
     batch_amount: 8
@@ -196,8 +196,8 @@ production_recipes:
     input_amount_2: 8
     input_data_2: 3
     durability: MAX
-    amount_of_enchantments: 0   
-  recipe_14: 
+    amount_of_enchantments: 0
+  recipe_14:
     name: Iron Sword
     batch_amount: 10
     production_time: 600
@@ -211,7 +211,7 @@ production_recipes:
     input_amount_3: 80
     durability: MAX
     amount_of_enchantments: 0
-  recipe_15: 
+  recipe_15:
     name: Bow
     batch_amount: 10
     production_time: 600
@@ -224,7 +224,7 @@ production_recipes:
     input_material_3: BREAD
     input_amount_3: 80
     durability: MAX
-    amount_of_enchantments: 0       
+    amount_of_enchantments: 0
   recipe_16:
     name: Iron Helmet
     batch_amount: 1
@@ -276,7 +276,7 @@ production_recipes:
     input_amount_2: 48
     input_data_2: 3
     durability: MAX
-    amount_of_enchantments: 0       
+    amount_of_enchantments: 0
   recipe_20:
     name: Javelin
     batch_amount: 1
@@ -461,7 +461,7 @@ production_recipes:
     durability: MAX
     amount_of_enchantments: 1
     enchantment_1: PROTECTION_FALL
-    enchantment_1_level: 3  
+    enchantment_1_level: 3
   recipe_32:
     name: Sharp Diamond Sword
     batch_amount: 1
@@ -492,25 +492,25 @@ production_recipes:
     input_material_3: CARROT
     input_amount_3: 64
     durability: MAX
-    amount_of_enchantments: 3       
+    amount_of_enchantments: 3
     enchantment_1: ARROW_DAMAGE
-    enchantment_1_level: 3  
+    enchantment_1_level: 3
     enchantment_2: ARROW_FIRE
     enchantment_2_level: 2
     enchantment_3: ARROW_KNOCKBACK
-    enchantment_3_level: 2  
+    enchantment_3_level: 2
   recipe_34:
     name: Iron Spade
     batch_amount: 5
     production_time: 600
-    output_material: SHEARS
+    output_material: IRON_SPADE
     amount_of_material_inputs: 2
     input_material_1: IRON_INGOT
     input_amount_1: 5
     input_material_2: STICK
     input_amount_2: 10
     durability: MAX
-    amount_of_enchantments: 0 
+    amount_of_enchantments: 0
     
 production_general:
   update_cycle: 20
@@ -618,8 +618,8 @@ production_general:
     amount_of_production_recipes: 1
     recipe_1: 20
   factory_7:
-    name: Mossy Cracked Brick Manufactory 
-    sub_factory_type: MCB_FACTORY 
+    name: Mossy Cracked Brick Manufactory
+    sub_factory_type: MCB_FACTORY
     fuel_material: COAL
     fuel_time: 2
     fuel_consumption: 1
@@ -690,7 +690,7 @@ production_general:
     amount_of_production_recipes: 1
     recipe_1: 26
   factory_11:
-    name: Cracked Brick Factory 
+    name: Cracked Brick Factory
     sub_factory_type: CRACKED_BRICK_FACTORY
     fuel_material: COAL
     fuel_time: 2
@@ -725,9 +725,9 @@ production_general:
     recipe_1: 28
     recipe_2: 29
     recipe_3: 30
-    recipe_4: 31 
+    recipe_4: 31
   factory_13:
-    name: Diamond Blade Master 
+    name: Diamond Blade Master
     sub_factory_type: DIAMOND_BLADE_MASTER
     fuel_material: COAL
     fuel_time: 2

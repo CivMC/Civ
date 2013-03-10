@@ -22,11 +22,12 @@ import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.FactoryObject;
-import com.github.igotyou.FactoryMod.Factorys.Production;
+import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
+import com.github.igotyou.FactoryMod.utility.InventoryMethods;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 
 //original file:
@@ -48,12 +49,12 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResu
 public class ProductionManager implements Manager
 {
 	private FactoryModPlugin plugin;
-	private List<Production> producers;
+	private List<ProductionFactory> producers;
 	
 	public ProductionManager(FactoryModPlugin plugin)
 	{
 		this.plugin = plugin;
-		producers = new ArrayList<Production>();
+		producers = new ArrayList<ProductionFactory>();
 		
 		updateFactorys();
 	}
@@ -62,7 +63,7 @@ public class ProductionManager implements Manager
 	{
 		FileOutputStream fileOutputStream = new FileOutputStream(file);
 		BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
-		for (Production production : producers)
+		for (ProductionFactory production : producers)
 		{
 			//order: subFactoryType world central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
 			
@@ -131,7 +132,7 @@ public class ProductionManager implements Manager
 			int energyTimer = Integer.parseInt(parts[13]);
 			int currentRecipeNumber = Integer.parseInt(parts[14]);
 			
-			Production production = new Production(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, currentRecipeNumber);
+			ProductionFactory production = new ProductionFactory(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, currentRecipeNumber);
 			addFactory(production);
 		}
 		fileInputStream.close();
@@ -144,7 +145,7 @@ public class ProductionManager implements Manager
 		    @Override  
 		    public void run() 
 		    {
-		    	for (Production production: producers)
+		    	for (ProductionFactory production: producers)
 				{
 					production.update();
 				}
@@ -164,19 +165,19 @@ public class ProductionManager implements Manager
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
 				HashMap<Integer, ItemStack> buildMaterials = entry.getValue().getBuildMaterials();
-				if(FactoryObject.materialsMatch(chestInventory, buildMaterials))
+				if(InventoryMethods.itemStacksMatch(chestInventory, buildMaterials))
 				{
 					subFactoryType = entry.getKey();
 				}
 			}
 			if (subFactoryType != null)
 			{
-				Production production = new Production(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
-				if (production.buildMaterialAvailable(properties.get(subFactoryType)))
+				ProductionFactory production = new ProductionFactory(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
+				if (InventoryMethods.buildMaterialAvailable(production.getInventory(), properties.get(subFactoryType)))
 				{
 					addFactory(production);
-					production.removeBuildMaterial(properties.get(subFactoryType));
-					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + subFactoryType + " production factory");
+					InventoryMethods.removeBuildMaterial(production.getInventory(), properties.get(subFactoryType));
+					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + production.getProductionFactoryProperties().getName() + " production factory");
 				}
 			}
 			return new InteractionResponse(InteractionResult.FAILURE, "not enough materials in chest!");
@@ -197,7 +198,7 @@ public class ProductionManager implements Manager
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
 				HashMap<Integer, ItemStack> buildMaterials = entry.getValue().getBuildMaterials();
-				if(!FactoryObject.areMaterialsAvailable(chestInventory, buildMaterials))
+				if(!InventoryMethods.areItemStacksAvilable(chestInventory, buildMaterials))
 				{
 					hasMaterials = false;
 				}
@@ -208,11 +209,11 @@ public class ProductionManager implements Manager
 			}
 			if (hasMaterials == true && subFactoryType != null)
 			{
-				Production production = new Production(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
-				if (production.buildMaterialAvailable(properties.get(subFactoryType)))
+				ProductionFactory production = new ProductionFactory(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
+				if (InventoryMethods.buildMaterialAvailable(production.getInventory(), properties.get(subFactoryType)))
 				{
 					addFactory(production);
-					production.removeBuildMaterial(properties.get(subFactoryType));
+					InventoryMethods.removeBuildMaterial(production.getInventory(), properties.get(subFactoryType));
 					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + subFactoryType + " production factory");
 				}
 			}
@@ -223,7 +224,7 @@ public class ProductionManager implements Manager
 
 	public InteractionResponse addFactory(Factory factory) 
 	{
-		Production production = (Production) factory;
+		ProductionFactory production = (ProductionFactory) factory;
 		if (production.getCenterLocation().getBlock().getType().equals(Material.WORKBENCH) && (!factoryExistsAt(production.getCenterLocation()))
 				|| !factoryExistsAt(production.getInventoryLocation()) || !factoryExistsAt(production.getPowerSourceLocation()))
 		{
@@ -236,9 +237,9 @@ public class ProductionManager implements Manager
 		}
 	}
 
-	public Production getFactory(Location factoryLocation) 
+	public ProductionFactory getFactory(Location factoryLocation) 
 	{
-		for (Production production : producers)
+		for (ProductionFactory production : producers)
 		{
 			if (production.getCenterLocation().equals(factoryLocation) || production.getInventoryLocation().equals(factoryLocation)
 					|| production.getPowerSourceLocation().equals(factoryLocation))
@@ -259,7 +260,7 @@ public class ProductionManager implements Manager
 
 	public void removeFactory(Factory factory) 
 	{
-		producers.remove((Production)factory);
+		producers.remove((ProductionFactory)factory);
 	}
 
 	public String getSavesFileName() 

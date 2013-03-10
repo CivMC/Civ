@@ -9,23 +9,21 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.Factorys.Production;
+import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.managers.FactoryModManager;
 import com.github.igotyou.FactoryMod.managers.ProductionManager;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
+import com.github.igotyou.FactoryMod.utility.InventoryMethods;
 import com.untamedears.citadel.entity.PlayerReinforcement;
 
 public class BlockListener implements Listener
@@ -62,7 +60,7 @@ public class BlockListener implements Listener
 		{
 			if (productionMan.factoryExistsAt(block.getLocation()))
 			{
-				Production factory = (Production) productionMan.getFactory(block.getLocation());
+				ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
 				e.setCancelled(true);
 				
 				if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
@@ -84,7 +82,7 @@ public class BlockListener implements Listener
 			{
 				if (productionMan.factoryExistsAt(block.getLocation()))
 				{
-					Production factory = (Production) productionMan.getFactory(block.getLocation());
+					ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
 					e.setCancelled(true);
 					
 					if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
@@ -105,7 +103,7 @@ public class BlockListener implements Listener
 		{
 			if (productionMan.factoryExistsAt(block.getLocation()))
 			{
-				Production factory = (Production) productionMan.getFactory(block.getLocation());
+				ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
 				e.setCancelled(true);
 				
 				if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
@@ -137,7 +135,7 @@ public class BlockListener implements Listener
 						{
 							if (productionMan.factoryExistsAt(clicked.getLocation()))
 							{
-								Production production = (Production) productionMan.getFactory(clicked.getLocation());
+								ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
 								InteractionResponse.messagePlayerResult(player, production.toggleRecipes());
 							}
 						}
@@ -161,7 +159,7 @@ public class BlockListener implements Listener
 						{
 							if (productionMan.factoryExistsAt(clicked.getLocation()))
 							{
-								Production production = (Production) productionMan.getFactory(clicked.getLocation());
+								ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
 								InteractionResponse.messagePlayerResult(player, production.togglePower());
 							}
 						}
@@ -181,29 +179,29 @@ public class BlockListener implements Listener
 						{
 							if (productionMan.factoryExistsAt(clicked.getLocation()))
 							{
-								Production production = (Production) productionMan.getFactory(clicked.getLocation());
+								ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
 								int procentDone = Math.round(production.getProductionTimer()*100/production.getCurrentRecipe().getProductionTime());
 								if (production.getActive() == true)
 								{
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------Factory Information---------"));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type     : " + production.getSubFactoryType()));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type     : " + production.getProductionFactoryProperties().getName()));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status  : On"));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe  : " + production.getCurrentRecipe().getRecipeName()));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutput().getType().toString() + production.getEnchantmentsMessage(production.getCurrentRecipe().getEnchantments())));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + production.getMaterialsNeededMessage(production.getCurrentRecipe().getInput())));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe fuel requirement: " + production.getCurrentRecipe().getProductionTime()/production.getProductionFactoryProperties().getEnergyTime()*production.getProductionFactoryProperties().getEnergyMaterial().getAmount()));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutput().getData().toString() + InventoryMethods.getEnchantmentsMessage(production.getCurrentRecipe().getEnchantments())));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + InventoryMethods.getMaterialsNeededMessage(production.getCurrentRecipe().getInput())));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe fuel requirement: " + production.getCurrentRecipe().getProductionTime()/production.getProductionFactoryProperties().getEnergyTime()*production.getProductionFactoryProperties().getEnergyMaterial().getAmount() + " " + production.getProductionFactoryProperties().getEnergyMaterial().getData().toString()));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe production time: " +  production.getCurrentRecipe().getProductionTime() + " seconds("+ production.getCurrentRecipe().getProductionTime()*FactoryModPlugin.TICKS_PER_SECOND + " ticks)"));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Progress: " + procentDone + "%"));
 								}
 								else
 								{
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------Factory Information---------"));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type   : " + production.getSubFactoryType()));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type   : " + production.getProductionFactoryProperties().getName()));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status: Off"));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe: " + production.getCurrentRecipe().getRecipeName()));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutput().getType().toString() + production.getEnchantmentsMessage(production.getCurrentRecipe().getEnchantments())));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + production.getMaterialsNeededMessage(production.getCurrentRecipe().getInput())));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe fuel requirement: " + production.getCurrentRecipe().getProductionTime()/production.getProductionFactoryProperties().getEnergyTime()*production.getProductionFactoryProperties().getEnergyMaterial().getAmount()));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutput().getData().toString() + InventoryMethods.getEnchantmentsMessage(production.getCurrentRecipe().getEnchantments())));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + InventoryMethods.getMaterialsNeededMessage(production.getCurrentRecipe().getInput())));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe fuel requirement: " + production.getCurrentRecipe().getProductionTime()/production.getProductionFactoryProperties().getEnergyTime()*production.getProductionFactoryProperties().getEnergyMaterial().getAmount() + " " + production.getProductionFactoryProperties().getEnergyMaterial().getData().toString()));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe production time: " +  production.getCurrentRecipe().getProductionTime() + " seconds("+ production.getCurrentRecipe().getProductionTime()*FactoryModPlugin.TICKS_PER_SECOND + " ticks)"));
 								}
 							}
@@ -228,7 +226,7 @@ public class BlockListener implements Listener
 					{
 						if (productionMan.factoryExistsAt(clicked.getLocation()))
 						{
-							Production production = (Production) productionMan.getFactory(clicked.getLocation());
+							ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
 							if (production.getActive() == true)
 							{
 								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You can't access the chest while the factory is active! Turn it off first!" ));
@@ -238,7 +236,7 @@ public class BlockListener implements Listener
 					}
 					else
 					{
-						InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
+						//No need to get 2 messages, citadel already does 1. e InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
 					}
 				}
 			}

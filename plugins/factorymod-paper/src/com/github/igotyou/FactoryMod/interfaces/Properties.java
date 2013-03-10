@@ -2,7 +2,6 @@ package com.github.igotyou.FactoryMod.interfaces;
 
 import java.util.HashMap;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 //original file:

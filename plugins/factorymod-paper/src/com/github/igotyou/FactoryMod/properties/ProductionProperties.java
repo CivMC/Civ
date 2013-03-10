@@ -1,10 +1,8 @@
 package com.github.igotyou.FactoryMod.properties;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.interfaces.Properties;
@@ -46,5 +44,10 @@ public class ProductionProperties implements Properties
 	public int getEnergyTime()
 	{
 		return energyTime;
+	}
+	
+	public String getName()
+	{
+		return name;
 	}
 }

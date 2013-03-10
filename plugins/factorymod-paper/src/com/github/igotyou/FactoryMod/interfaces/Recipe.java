@@ -3,7 +3,6 @@ package com.github.igotyou.FactoryMod.interfaces;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 

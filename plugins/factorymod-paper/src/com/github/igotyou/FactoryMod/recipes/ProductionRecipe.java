@@ -2,7 +2,6 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import java.util.HashMap;
 
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 

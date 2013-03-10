@@ -11,14 +11,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
 import com.github.igotyou.FactoryMod.interfaces.Properties;
 import com.github.igotyou.FactoryMod.listeners.BlockListener;
 import com.github.igotyou.FactoryMod.managers.FactoryModManager;
-import com.github.igotyou.FactoryMod.managers.ProductionManager;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 
@@ -60,7 +58,6 @@ public class FactoryModPlugin extends JavaPlugin
 	
 	public void registerEvents()
 	{
-		ProductionManager proMan;
 		try
 		{
 			getServer().getPluginManager().registerEvents(new BlockListener(manager, manager.getProductionManager()), this);
