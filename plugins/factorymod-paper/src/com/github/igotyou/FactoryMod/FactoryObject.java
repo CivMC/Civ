@@ -1,20 +1,11 @@
 package com.github.igotyou.FactoryMod;
 
-import java.util.HashMap;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.interfaces.Properties;
-import com.github.igotyou.FactoryMod.utility.InventoryMethods;
 
 //original file:
 /**
@@ -33,6 +24,7 @@ import com.github.igotyou.FactoryMod.utility.InventoryMethods;
  */
 public class FactoryObject
 {
+	//the diffrent factory types, NOTE: these are not the sub-factory types, these are the main types.
 	public enum FactoryType
 	{
 		PRODUCTION, POWER
@@ -40,16 +32,16 @@ public class FactoryObject
 	
 	
 	protected Location factoryLocation; // Current location of factory center
-	protected Location factoryInventoryLocation;
-	protected Location factoryPowerSourceLocation;
+	protected Location factoryInventoryLocation; //Current location of factory inventory(normmaly a chest)
+	protected Location factoryPowerSourceLocation;//Current location of factory power source(normmaly a furnace)
 	protected boolean active; // Whether factory is currently active
 	protected Inventory factoryInventory; // The inventory of the factory
+	protected Inventory factoryPowerInventory;//The inventory of the power source.
 	protected FactoryType factoryType; // The type this factory is
-	protected String subFactoryType;
+	protected String subFactoryType;//the SUBfactory type(the ones loaded from the config file)
 	protected Properties factoryProperties; // The properties of this factory type and tier
 	
 	protected boolean upgraded; // Whether the tier has recently upgraded
-	private Inventory factoryPowerInventory;
 	
 	/**
 	 * Constructor
@@ -121,7 +113,7 @@ public class FactoryObject
 	}
 	
 	/**
-	 * Updates the current properties for the current tier level
+	 * Updates the current properties for the factory.
 	 */
 	public void updateProperties()
 	{
@@ -142,6 +134,9 @@ public class FactoryObject
 		}
 	}
 
+	/**
+	 * returns the factory Inventory(normally a chest), updates the inventory variable aswell.
+	 */
 	public Inventory getInventory()
 	{
 		switch (factoryType)
@@ -155,6 +150,9 @@ public class FactoryObject
 		}
 	}
 
+	/**
+	 * Returns the power Source inventory, updates it aswell.
+	 */
 	public Inventory getPowerSourceInventory()
 	{
 		switch (factoryType)
@@ -169,11 +167,19 @@ public class FactoryObject
 		
 	
 	}
+	
+	/**
+	 * Returns the sub-factory type of the factory. 
+	 */
 	public String getSubFactoryType()
 	{
 		return subFactoryType;
 	}
 	
+	
+	/**
+	 * returns if the factory is on or not.
+	 */
 	public boolean getActive()
 	{
 		return active;

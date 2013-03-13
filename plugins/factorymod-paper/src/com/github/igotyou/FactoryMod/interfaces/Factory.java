@@ -14,9 +14,8 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 //edited version:
 /**
 * Factory.java	 
-* Purpose: An interface for machines to implement with basic functionality
+* Purpose: An interface for factorys to implement with basic functionality
 * @author igotyou
-*
 */
 public interface Factory
 {

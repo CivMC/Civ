@@ -32,37 +32,33 @@ public class BlockListener implements Listener
 	//this is a lazy fix...
 	private ProductionManager productionMan;
 	
+	/**
+	 * Constructor
+	 */
 	public BlockListener(FactoryModManager factoryManager, ProductionManager productionManager)
 	{
 		this.factoryMan = factoryManager;
 		this.productionMan = productionManager;
 	}
 	
-/*	@EventHandler
-	public void blockPlaceEvent(BlockPlaceEvent e)
-	{
-		 Player player = e.getPlayer();
-		 Block block = e.getBlock();
-		 Location centralLoctation = block.getLocation();
-		 Material type = block.getType();
-		 
-		 if (type == FactoryModPlugin.CENTRAL_BLOCK_MATERIAL)
-		 {
-			 createFactory(centralLoctation, player);
-		 }
-	}*/
-	
+	/**
+	 * Called when a block is broken
+	 * If the block that is destroyed is part of a factory, call the required methods.
+	 */
 	@EventHandler
 	public void blockBreakEvent(BlockBreakEvent e)
 	{
 		Block block = e.getBlock();
+		//Is the block part of a factory?
 		if (factoryMan.factoryExistsAt(block.getLocation()))
 		{
+			//Is the factory a production factory?
 			if (productionMan.factoryExistsAt(block.getLocation()))
 			{
 				ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
 				e.setCancelled(true);
 				
+				//if the blocks is not reinforced destroy it
 				if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 				{
 					factory.destroy(block.getLocation());
@@ -72,6 +68,10 @@ public class BlockListener implements Listener
 		}
 	}
 	
+	/**
+	 * Called when a entity explodes(creeper,tnt etc.)
+	 * Nearly the same as blockBreakEvent
+	 */
 	@EventHandler
 	public void explosionListener(EntityExplodeEvent e)
 	{
@@ -95,6 +95,10 @@ public class BlockListener implements Listener
 		}
 	}
 	
+	/**
+	 * Called when a block burns
+	 * Nearly the same as blockBreakEvent
+	 */
 	@EventHandler
 	public void burnListener(BlockBurnEvent e)
 	{
@@ -115,65 +119,100 @@ public class BlockListener implements Listener
 		}
 	}
 	
+	/**
+	 * Called when a player left or right clicks.
+	 * Takes care of cycling recipes turning factory's on and off, etc.
+	 */
 	@EventHandler
 	public void playerInteractionEvent(PlayerInteractEvent e)
 	{
 		Block clicked = e.getClickedBlock();
 		Player player = e.getPlayer();
 		
+		//if the player left clicked a block
 		if (e.getAction().equals(Action.LEFT_CLICK_BLOCK))
 		{
+			//If the player was holding a item matching the interaction material
 			if (player.getItemInHand().getType() == FactoryModPlugin.FACTORY_INTERACTION_MATERIAL)
 			{
+				//If the material which was clicked is the central block material
 				if (clicked.getType() == FactoryModPlugin.CENTRAL_BLOCK_MATERIAL)
 				{
+					//is there a factory at the clicked location?
 					if (factoryMan.factoryExistsAt(clicked.getLocation()))
 					{
 						PlayerReinforcement reinforcment = (PlayerReinforcement) getReinforcement(clicked);
+						//if the player is allowed to interact with that block.
 						if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || !FactoryModPlugin.CITADEL_ENABLED || 
 								(reinforcment.isAccessible(player)))
 						{
+							//if there is a production Factory at the clicked location
 							if (productionMan.factoryExistsAt(clicked.getLocation()))
 							{
 								ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
+								//toggle the recipe, and print the returned message.
 								InteractionResponse.messagePlayerResult(player, production.toggleRecipes());
 							}
 						}
+						//if the player does NOT have acssess to the block that was clicked
 						else
 						{
+							//return a error message
 							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
 						}
 					}
+					//if no factory exists at the clicked location
 					else
 					{
-						createFactory(clicked.getLocation(), player);
+						PlayerReinforcement reinforcment = (PlayerReinforcement) getReinforcement(clicked);
+						//if the player is allowed to interact with that block.
+						if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || !FactoryModPlugin.CITADEL_ENABLED || 
+								(reinforcment.isAccessible(player)))
+						{
+							createFactory(clicked.getLocation(), player);
+						}
+						//if the player does NOT have acssess to the block that was clicked
+						else
+						{
+							//return a error message
+							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
+						}
 					}
 				}
+				//if the clicked block is a furnace
 				else if (clicked.getType() == Material.FURNACE || clicked.getType() == Material.BURNING_FURNACE)
 				{
+					//if there is a factory at that location
 					if (factoryMan.factoryExistsAt(clicked.getLocation()))
 					{
 						PlayerReinforcement reinforcment = (PlayerReinforcement) getReinforcement(clicked);
+						//if the player is allowed to interact with that block.
 						if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || !FactoryModPlugin.CITADEL_ENABLED || 
 								(reinforcment.isAccessible(player)))
 						{
 							if (productionMan.factoryExistsAt(clicked.getLocation()))
 							{
 								ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
+								//toggle the power, and print the returned message
 								InteractionResponse.messagePlayerResult(player, production.togglePower());
 							}
 						}
+						//if the player is NOT allowed to interact with the clicked block.
 						else
 						{
+							//return error message
 							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
 						}
 					}
 				}
+				//if the block clicked is a chest
 				else if (clicked.getType() == Material.CHEST)
 				{
+					//is there a factory there?
 					if (factoryMan.factoryExistsAt(clicked.getLocation()))
 					{
 						PlayerReinforcement reinforcment = (PlayerReinforcement) getReinforcement(clicked);
+						//if the player is allowed to interact with that block?
 						if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || !FactoryModPlugin.CITADEL_ENABLED || 
 								(reinforcment.isAccessible(player)))
 						{
@@ -181,6 +220,7 @@ public class BlockListener implements Listener
 							{
 								ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
 								int procentDone = Math.round(production.getProductionTimer()*100/production.getCurrentRecipe().getProductionTime());
+								//if the clicked factory is turned on, print information
 								if (production.getActive() == true)
 								{
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------Factory Information---------"));
@@ -193,6 +233,7 @@ public class BlockListener implements Listener
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe production time: " +  production.getCurrentRecipe().getProductionTime() + " seconds("+ production.getCurrentRecipe().getProductionTime()*FactoryModPlugin.TICKS_PER_SECOND + " ticks)"));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Progress: " + procentDone + "%"));
 								}
+								//if the factory is turned off, print information
 								else
 								{
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------Factory Information---------"));
@@ -206,34 +247,43 @@ public class BlockListener implements Listener
 								}
 							}
 						}
+						//if the player is NOT allowed to interact with the clicked block
 						else
 						{
+							//return error message
 							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
 						}
 					}
 				}
 			}
 		}
+		//if the player right clicked a block
 		else if(e.getAction() == Action.RIGHT_CLICK_BLOCK)
 		{
+			//if the player right clicked a chest
 			if (clicked.getType() == Material.CHEST)
 			{
+				//is the chest part of a factory?
 				if (factoryMan.factoryExistsAt(clicked.getLocation()))
 				{
 					PlayerReinforcement reinforcment = (PlayerReinforcement) getReinforcement(clicked);
+					//if the player is allowed to interact with that block.
 					if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || !FactoryModPlugin.CITADEL_ENABLED || 
 							(reinforcment.isAccessible(player)))
 					{
 						if (productionMan.factoryExistsAt(clicked.getLocation()))
 						{
 							ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
+							//is the factory turned on?
 							if (production.getActive() == true)
 							{
+								//return error message
 								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You can't access the chest while the factory is active! Turn it off first!" ));
 								e.setCancelled(true);
 							}
 						}
 					}
+					//if the player is NOT allowed to interact with the block
 					else
 					{
 						//No need to get 2 messages, citadel already does 1. e InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));

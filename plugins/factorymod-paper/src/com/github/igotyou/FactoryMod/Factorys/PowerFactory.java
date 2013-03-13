@@ -3,10 +3,8 @@ package com.github.igotyou.FactoryMod.Factorys;
 import org.bukkit.Location;
 
 import com.github.igotyou.FactoryMod.FactoryObject;
-import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.properties.PowerProperties;
-import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 
 public class PowerFactory extends FactoryObject implements Factory
@@ -14,6 +12,8 @@ public class PowerFactory extends FactoryObject implements Factory
 	public static final FactoryType FACTORY_TYPE = FactoryType.POWER;
 	public String SUB_FACTORY_TYPE;
 	private PowerProperties powerFactoryProduction;
+	private int outputTimer = 0;
+	private int energyTimer = 0;
 	
 	public PowerFactory (Location factoryLocation, Location factoryInventoryLocation, Location factoryPowerSource
 			, String subFactoryType)
@@ -21,7 +21,7 @@ public class PowerFactory extends FactoryObject implements Factory
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, ProductionFactory.FACTORY_TYPE, subFactoryType);
 		this.SUB_FACTORY_TYPE = subFactoryType;
 		this.powerFactoryProduction = (PowerProperties) factoryProperties;
-
+		
 	}
 
 	public void update() 

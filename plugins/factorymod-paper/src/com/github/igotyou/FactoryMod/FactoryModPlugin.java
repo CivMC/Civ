@@ -46,13 +46,17 @@ public class FactoryModPlugin extends JavaPlugin
 	
 	public void onEnable()
 	{
+		//load the config.yml
 		initConfig();
+		//create the main manager
 		manager = new FactoryModManager(this);
+		//register the events(this should be moved...)
 		registerEvents();
 	}
 	
 	public void onDisable()
 	{
+		//call the disable method, this will save the data etc.
 		manager.onDisable();
 	}
 	
@@ -76,13 +80,20 @@ public class FactoryModPlugin extends JavaPlugin
 	
 		this.saveDefaultConfig();
 		
+		//how often should the managers save?
 		SAVE_CYCLE = config.getInt("general.save_cycle");
+		//how many vanila recipes should be removed?
 		AMOUNT_OF_RECIPES_TO_REMOVE = config.getInt("disabled_recipes.amount");
+		//what's the material of the center block of factorys?
 		CENTRAL_BLOCK_MATERIAL = Material.getMaterial(config.getString("general.central_block"));
+		//Return the build materials upon destruction of factory.
 		RETURN_BUILD_MATERIALS = config.getBoolean("general.return_build_materials");
+		//is citadel enabled?
 		CITADEL_ENABLED = config.getBoolean("general.citadel_enabled");
+		//what's the tool that we use to interact with the factorys?
 		FACTORY_INTERACTION_MATERIAL = Material.getMaterial(config.getString("general.factory_interaction_material"));
 		int g = 0;
+		//loop trough all the vanilla recipes we want to disable
 		for (int i = 1; i <= FactoryModPlugin.AMOUNT_OF_RECIPES_TO_REMOVE; i++)
 		{
 	
@@ -96,7 +107,9 @@ public class FactoryModPlugin extends JavaPlugin
 
 		}
 		sendConsoleMessage(g + " recipes removed");
+		//how many production recipes are there?
 		AMOUNT_OF_PRODUCTION_RECIPES = config.getInt("production_recipes.amount");
+		//loop trough all production recipes
 		for (int i =1; i <= FactoryModPlugin.AMOUNT_OF_PRODUCTION_RECIPES; i++)
 		{
 			String recipeName = config.getString(getPathToProductionRecipe(i) + ".name");
