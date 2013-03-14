@@ -646,7 +646,7 @@ production_general:
     build_material_2: WOOD
     build_amount_2: 64
     build_material_3: MOSSY_COBBLESTONE
-    build_amount_3: 64
+    build_amount_3: 48
     amount_of_production_recipes: 4
     recipe_1: 22
     recipe_2: 23
