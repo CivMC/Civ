@@ -1,7 +1,9 @@
 package com.untamedears.realisticbiomes.listener;
 
 import java.util.HashMap;
+import java.util.logging.Logger;
 
+import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
@@ -9,11 +11,18 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.realisticbiomes.GrowthConfig;
+import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.persist.Coords;
+import com.untamedears.realisticbiomes.persist.Plant;
+import com.untamedears.realisticbiomes.persist.WorldID;
 
 /**
  * Event listener for all plant growth related events. Whenever a crop, plant block, or sapling attempts to grow, its type
@@ -23,12 +32,15 @@ import com.untamedears.realisticbiomes.GrowthConfig;
  *
  */
 public class GrowListener implements Listener {
-
-	private HashMap<Object, GrowthConfig> growthMap;
+	public static Logger LOG = Logger.getLogger("RealisticBiomes");
 	
-	public GrowListener(HashMap<Object, GrowthConfig> growthMap) {
+	private HashMap<Object, GrowthConfig> growthMap;
+	RealisticBiomes plugin;
+	
+	public GrowListener(RealisticBiomes plugin, HashMap<Object, GrowthConfig> growthMap) {
 		super();
 		
+		this.plugin = plugin;
 		this.growthMap = growthMap;
 	}
 
@@ -37,10 +49,19 @@ public class GrowListener implements Listener {
 	 * @param event The {@link BlockGrowEvent} being handled
 	 */
 	@EventHandler(ignoreCancelled = true)
-	public void growBlock(BlockGrowEvent event) {
+	public void onBlockGrow(BlockGrowEvent event) {
 		Material m = event.getNewState().getType();
 		Block b = event.getBlock();
-		event.setCancelled(!willGrow(m, b));
+		GrowthConfig growthConfig = growthMap.get(m);
+		
+		if (growthConfig != null && growthConfig.isPersistent()) {
+			plugin.growAndPersistBlock(b, growthConfig);
+			
+			event.setCancelled(true);
+		}
+		else {
+			event.setCancelled(!willGrow(m, b));
+		}
 	}
 
 	/**
@@ -48,7 +69,7 @@ public class GrowListener implements Listener {
 	 * @param event The {@link StructureGrowEvent} being handled
 	 */
 	@EventHandler(ignoreCancelled = true)
-	public void growStructure(StructureGrowEvent event) {
+	public void onStructureGrow(StructureGrowEvent event) {
 		TreeType t = event.getSpecies();
 		Block b = event.getLocation().getBlock();
 		event.setCancelled(!willGrow(t, b));
@@ -61,15 +82,14 @@ public class GrowListener implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	
 	public void onPlayerInteract(PlayerInteractEvent event) {
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                        ItemStack item = event.getPlayer().getItemInHand();
-                        // Ink Sack with data 15  == Bone Meal
-                        if (item.getTypeId() == 351 && item.getData().getData() == 15) {
-                                        event.setCancelled(true);
-                        }
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            ItemStack item = event.getPlayer().getItemInHand();
+            // Ink Sack with data 15  == Bone Meal
+            if (item.getTypeId() == 351 && item.getData().getData() == 15) {
+                    event.setCancelled(true);
             }
         }
-	
+    }
 
 	/**
 	 * Determines if a plant {@link Material | @link TreeType} will grow, given the current conditions
@@ -79,8 +99,37 @@ public class GrowListener implements Listener {
 	 */
 	private boolean willGrow(Object m, Block b) {
 		if(growthMap.containsKey(m)) {
-			return Math.random() < growthMap.get(m).getRate(b);
+			boolean willGrow = Math.random() < growthMap.get(m).getRate(b);
+			return willGrow;
 		}
 		return true;
+	}
+
+	@EventHandler
+	public void onChunkLoad(ChunkLoadEvent e) {
+		Chunk chunk = e.getChunk();
+		int w = WorldID.getPID(e.getChunk().getWorld().getUID());
+		Coords coords = new Coords(w, chunk.getX(), 0, chunk.getZ());
+		plugin.getPlantManager().minecraftChunkLoaded(coords);
+	}
+	
+	@EventHandler
+	public void onChunkUnload(ChunkUnloadEvent e) {
+		Chunk chunk = e.getChunk();
+		int w = WorldID.getPID(e.getChunk().getWorld().getUID());
+		Coords coords = new Coords(w, chunk.getX(), 0, chunk.getZ());
+		plugin.getPlantManager().minecraftChunkUnloaded(coords);
+	}
+	
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent event) {
+		// if the block placed was a recognized crop, register it with the manager
+		Block block = event.getBlockPlaced();
+		GrowthConfig growthConfig = growthMap.get(block.getType());
+		if (growthConfig == null)
+			return;	
+		
+		int w = WorldID.getPID(block.getWorld().getUID());
+		plugin.getPlantManager().add(new Coords(w, block.getX(), block.getY(), block.getZ()), new Plant(System.currentTimeMillis()));
 	}
 }

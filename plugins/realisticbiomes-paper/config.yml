@@ -1,4 +1,15 @@
 realistic_biomes:
+ filePath: plantData.sqlite
+
+ unloadBatchTime: 300
+
+ minLoadTime: 10
+ maxLoadTime: 100
+ minUnloadTime: 10
+ maxUnloadTime: 100
+
+ reschedulePeriod: 300
+
  # catagories of biomes
  biome_aliases:
   cold: [ICE_PLAINS, ICE_MOUNTAINS, TAIGA, TAIGA_HILLS]
@@ -52,6 +63,11 @@ realistic_biomes:
    # not specified in the CROPS definition (so CROPS will "inherit" the base_rate, needs_sunlight ... etc
    # from "crop")
    inherit: crop
+   # if this parameter is set for a crop, then it is "persisted" to grow even when the chunk it is in
+   # is unloaded or the server is off. It sets the time to grow to maturity in units of real-life hours
+   # if this parameter is set, then the base_rate is ignored, though the other multipliers will still be
+   # in effect
+   persistent_growth_period: 24
    biomes:
     cold: 0.25
     hot_dry: 0.25
@@ -61,15 +77,17 @@ realistic_biomes:
 
   CARROT:
    inherit: crop
+   persistent_growth_period: 24
    biomes:
-    hot_dry: 0.25
+    hot_dry: 0.1
     hot_rainy: 1.0
-    temperate: 0.5
-    SWAMPLAND: 0.25
-    SKY: 0.25
+    temperate: 0.25
+    SWAMPLAND: 0.5
+    SKY: 0.1
 
   POTATO:
    inherit: crop
+   persistent_growth_period: 24
    biomes:
     mountain: 1.0
     cold: 0.25
@@ -80,6 +98,7 @@ realistic_biomes:
 
   NETHER_WARTS:
    inherit: crop
+   persistent_growth_period: 4
    needs_sunlight: false
    open_sky_bonus: 0.5
    soil_material: SOUL_SAND
@@ -93,7 +112,7 @@ realistic_biomes:
 
   MELON_STEM:
    inherit: crop
-   base_rate: 0.005
+   persistent_growth_period: 48
    biomes:
     temperate: 0.25
     SWAMPLAND: 1.0
@@ -101,6 +120,7 @@ realistic_biomes:
 
   PUMPKIN_STEM:
    inherit: crop
+   persistent_growth_period: 48
    base_rate: 0.005
    biomes:
     temperate: 0.25
@@ -151,9 +171,10 @@ realistic_biomes:
   #----------------------------------------
 
   COCOA:
-   base_rate: 0.02
    needs_sunlight: false
    open_sky_bonus: 5.0
+   persistent_growth_period: 120
+
    
    # get incremental bonus from an unbroken chain of up to 25 
    # vines starting directly below the cocoa pod
@@ -213,27 +234,27 @@ realistic_biomes:
   #......................
 
   mushroom:
-   base_rate: 0.025
+   base_rate: 1.0
    needs_sunlight: false
    open_sky_bonus: 0.0
    max_soil_layers: 0
    biomes:
-    mushroom: 8.0
-    hot_rainy: 1.0
-    HELL: 0.5
-    SWAMPLAND: 0.5
+    mushroom: 1.0
+    hot_rainy: 0.1
+    HELL: 0.1
+    SWAMPLAND: 0.1
     temperate: 0.1
     water: 0.1
   tree_BROWN_MUSHROOM:
    inherit: mushroom
    biomes:
-    SWAMPLAND: 4.0
+    SWAMPLAND: 1.0
   mat_BROWN_MUSHROOM:
    inherit: tree_BROWN_MUSHROOM
   tree_RED_MUSHROOM:
    inherit: mushroom
    biomes:
-    HELL: 4.0
+    HELL: 1.0
   mat_RED_MUSHROOM:
    inherit: tree_RED_MUSHROOM
 

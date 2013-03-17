@@ -5,33 +5,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.EntityType;
+import org.bukkit.event.Listener;
 
 import com.untamedears.realisticbiomes.listener.GrowListener;
 import com.untamedears.realisticbiomes.listener.PlayerListener;
 import com.untamedears.realisticbiomes.listener.SpawnListener;
+import com.untamedears.realisticbiomes.persist.BlockGrower;
+import com.untamedears.realisticbiomes.persist.Coords;
+import com.untamedears.realisticbiomes.persist.Plant;
+import com.untamedears.realisticbiomes.persist.PlantManager;
+import com.untamedears.realisticbiomes.persist.WorldID;
 
-public class RealisticBiomes extends JavaPlugin {
+public class RealisticBiomes extends JavaPlugin implements Listener {
 
 	private static final Logger LOG = Logger.getLogger("RealisticBiomes");
 	
-	HashMap<Object, GrowthConfig> materialGrowth;
-
+	public HashMap<Object, GrowthConfig> materialGrowth;
+	public BlockGrower blockGrower;
+	public PersistConfig persistConfig;
+	public PlantManager plantManager;
+	
 	public void onEnable() {		
-
-		loadConfigs();
-		registerEvents();
 		
-		LOG.info("[RealisticBiomes] is now enabled.");
-	}
-
-	private void loadConfigs() {
+		WorldID.init(this);
+		
 		// perform check for config file, if it doesn't exist, then create it using the default config file
 		if (!this.getConfig().isSet("realistic_biomes")) {
 			this.saveDefaultConfig();
@@ -40,6 +47,42 @@ public class RealisticBiomes extends JavaPlugin {
 		this.reloadConfig();
 		
 		ConfigurationSection config = this.getConfig().getConfigurationSection("realistic_biomes");
+		
+		loadPersistConfig(config);
+		loadGrowthConfigs(config);
+		
+		registerEvents();
+		
+		plantManager = new PlantManager(this, persistConfig);
+		blockGrower = new BlockGrower(plantManager);
+		
+		getServer().getPluginManager().registerEvents(this, this);
+		
+		// load plant data for all currently loaded chunks
+		for (World world : getServer().getWorlds()) {
+			for (Chunk chunk : world.getLoadedChunks()) {
+				int w = WorldID.getPID(world.getUID());
+				Coords coords = new Coords(w, chunk.getX(), 0, chunk.getZ());
+				plantManager.minecraftChunkLoaded(coords);
+			}
+		}
+		
+		LOG.info("[RealisticBiomes] is now enabled.");
+	}
+
+	private void loadPersistConfig(ConfigurationSection config) {
+		persistConfig = new PersistConfig();
+		
+		persistConfig.databaseName = config.getString("filePath");
+		persistConfig.minLoadTime = config.getInt("minLoadTime");
+		persistConfig.maxLoadTime = config.getInt("maxLoadTime");
+		persistConfig.minUnloadTime = config.getInt("minUnloadTime");
+		persistConfig.maxUnloadTime = config.getInt("maxUnloadTime");
+		persistConfig.reschedulePeriod = config.getInt("reschedulePeriod");
+		persistConfig.unloadBatchPeriod = config.getInt("unloadBatchTime");
+	}
+	
+	private void loadGrowthConfigs(ConfigurationSection config) {
 		
 		// load names that map to lists of biomes to be used as shorthand for those biomes
 		ConfigurationSection biomeAliasSection = config.getConfigurationSection("biome_aliases");
@@ -170,15 +213,18 @@ public class RealisticBiomes extends JavaPlugin {
 	}
 	
 	public void onDisable() {
+		LOG.info("[RealisticBiomes] saving plant growth data.");
+		plantManager.saveAll();
+		plantManager = null;
 		LOG.info("[RealisticBiomes] is now disabled.");
 	}
 
 	private void registerEvents() {
 		try {
             PluginManager pm = getServer().getPluginManager();
-            pm.registerEvents(new GrowListener(materialGrowth), this);
+            pm.registerEvents(new GrowListener(this, materialGrowth), this);
             pm.registerEvents(new SpawnListener(materialGrowth), this);
-            pm.registerEvents(new PlayerListener(materialGrowth), this);
+            pm.registerEvents(new PlayerListener(this, materialGrowth), this);
         }
         catch(Exception e)
         {
@@ -187,4 +233,48 @@ public class RealisticBiomes extends JavaPlugin {
         }
 	}
 
+	public HashMap<Object, GrowthConfig> getGrowthConfigs() {
+		return materialGrowth;
+	}
+	
+	public BlockGrower getBlockGrower() {
+		return blockGrower;
+	}
+	
+	// -----------------------------------
+	
+	// grow the specified block, return the new growth magnitude
+	public double growAndPersistBlock(Block block, GrowthConfig growthConfig) {
+		int w = WorldID.getPID(block.getWorld().getUID());
+		Coords coords = new Coords(w, block.getX(), block.getY(), block.getZ());
+		Plant plant = plantManager.get(coords);
+		
+		if (plant == null) {
+			plant = new Plant(System.currentTimeMillis());
+			plant.addGrowth((float)BlockGrower.getGrowthFraction(block));
+			plantManager.add(coords, plant);
+		}
+		else {
+			double growthAmount = growthConfig.getRate(block) * plant.setUpdateTime(System.currentTimeMillis());
+			plant.addGrowth((float) growthAmount);
+		}
+		
+		blockGrower.growBlock(block,coords,plant.getGrowth());
+		
+		return plant.getGrowth();
+	}
+	
+	public void growBlock(Block block, Coords coords, float growth) {
+		block.setData((byte)(7.0*growth));
+		
+		// if the plant is finished growing, then remove it from the manager
+		if (growth >= 1.0) {
+			block.setData((byte) 7);
+			plantManager.remove(coords);
+		}		
+	}
+	
+	public PlantManager getPlantManager() {
+		return plantManager;
+	}
 }

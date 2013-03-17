@@ -17,6 +17,10 @@ public class GrowthConfig {
 	// for an animal, it would be the chance to spawn after mating
 	private double baseRate;
 	
+	// flag that denotes if this crop's growth is persisted
+	private boolean isPersistent;
+	private double persistentRate;
+	
 	// a crop's growth rate can be modulated by the amount of sunlight, not just light in general
 	// the crop's growth rate may also get a bonus if it is directly open to the sky, or underneath glowstone (not yet)
 	private boolean needsSunlight;
@@ -48,6 +52,7 @@ public class GrowthConfig {
 	// create a new default configuration
 	GrowthConfig() {
 		baseRate = 1.0;
+		isPersistent = false;
 		
 		needsSunlight = false;
 		openSkyBonus = 0.0;
@@ -81,6 +86,12 @@ public class GrowthConfig {
 		
 		if (config.isSet("base_rate"))
 			baseRate = config.getDouble("base_rate");
+		
+		isPersistent = false;
+		if (config.isSet("persistent_growth_period")) {
+			isPersistent = true;
+			persistentRate = config.getDouble("persistent_growth_period");
+		}
 		
 		if (config.isSet("needs_sunlight"))
 			needsSunlight = config.getBoolean("needs_sunlight");
@@ -136,10 +147,17 @@ public class GrowthConfig {
 	/* ================================================================================ */
 	// Public Methods
 	
+	public boolean isPersistent() {
+		return isPersistent;
+	}
+	
 	// given a block (a location), find the growth rate using these rules
 	public double getRate(Block block) {
 		// rate = baseRate * sunlightLevel * biome * (1.0 + soilBonus)
 		double rate = baseRate;
+		// if persistent, the growth rate is measured in growth/millisecond
+		if (isPersistent)
+			rate = 1.0 / (persistentRate * (1000.0*60.0*60.0/*milliseconds per hour*/));
 		
 		// modulate the rate by the amount of sunlight recieved by this plant
 		if (needsSunlight) {
