@@ -235,8 +235,6 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		int w = WorldID.getPID(block.getWorld().getUID());
 		Coords coords = new Coords(w, block.getX(), block.getY(), block.getZ());
 		boolean loadChunk = naturalGrowEvent ? Math.random() < persistConfig.growEventLoadChance : true;
-		getLogger().info("chunk: "+coords);
-		getLogger().info("will load if not loaded: " + loadChunk);
 		if (!loadChunk && !plantManager.chunkLoaded(coords))
 			return 0.0; // don't load the chunk or do anything
 			
