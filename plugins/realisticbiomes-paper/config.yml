@@ -1,14 +1,8 @@
 realistic_biomes:
- filePath: plantData.sqlite
+ file_path: plantData.sqlite
 
- unloadBatchTime: 300
-
- minLoadTime: 10
- maxLoadTime: 100
- minUnloadTime: 10
- maxUnloadTime: 100
-
- reschedulePeriod: 300
+ unload_batch_period: 300
+ grow_event_load_chance: 0.1
 
  # catagories of biomes
  biome_aliases:
@@ -332,3 +326,4 @@ realistic_biomes:
 
    biomes:
     water: 1.0
+

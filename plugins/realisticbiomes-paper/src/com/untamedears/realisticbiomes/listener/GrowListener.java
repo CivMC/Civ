@@ -13,7 +13,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
@@ -55,7 +54,7 @@ public class GrowListener implements Listener {
 		GrowthConfig growthConfig = growthMap.get(m);
 		
 		if (growthConfig != null && growthConfig.isPersistent()) {
-			plugin.growAndPersistBlock(b, growthConfig);
+			plugin.growAndPersistBlock(b, growthConfig, true);
 			
 			event.setCancelled(true);
 		}
@@ -103,14 +102,6 @@ public class GrowListener implements Listener {
 			return willGrow;
 		}
 		return true;
-	}
-
-	@EventHandler
-	public void onChunkLoad(ChunkLoadEvent e) {
-		Chunk chunk = e.getChunk();
-		int w = WorldID.getPID(e.getChunk().getWorld().getUID());
-		Coords coords = new Coords(w, chunk.getX(), 0, chunk.getZ());
-		plugin.getPlantManager().minecraftChunkLoaded(coords);
 	}
 	
 	@EventHandler

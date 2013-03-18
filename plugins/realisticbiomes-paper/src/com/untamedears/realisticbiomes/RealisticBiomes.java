@@ -58,28 +58,15 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		
 		getServer().getPluginManager().registerEvents(this, this);
 		
-		// load plant data for all currently loaded chunks
-		for (World world : getServer().getWorlds()) {
-			for (Chunk chunk : world.getLoadedChunks()) {
-				int w = WorldID.getPID(world.getUID());
-				Coords coords = new Coords(w, chunk.getX(), 0, chunk.getZ());
-				plantManager.minecraftChunkLoaded(coords);
-			}
-		}
-		
 		LOG.info("[RealisticBiomes] is now enabled.");
 	}
 
 	private void loadPersistConfig(ConfigurationSection config) {
 		persistConfig = new PersistConfig();
 		
-		persistConfig.databaseName = config.getString("filePath");
-		persistConfig.minLoadTime = config.getInt("minLoadTime");
-		persistConfig.maxLoadTime = config.getInt("maxLoadTime");
-		persistConfig.minUnloadTime = config.getInt("minUnloadTime");
-		persistConfig.maxUnloadTime = config.getInt("maxUnloadTime");
-		persistConfig.reschedulePeriod = config.getInt("reschedulePeriod");
-		persistConfig.unloadBatchPeriod = config.getInt("unloadBatchTime");
+		persistConfig.databaseName = config.getString("file_path");
+		persistConfig.unloadBatchPeriod = config.getInt("unload_batch_period");
+		persistConfig.growEventLoadChance = config.getDouble("grow_event_load_chance");
 	}
 	
 	private void loadGrowthConfigs(ConfigurationSection config) {
@@ -244,9 +231,15 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	// -----------------------------------
 	
 	// grow the specified block, return the new growth magnitude
-	public double growAndPersistBlock(Block block, GrowthConfig growthConfig) {
+	public double growAndPersistBlock(Block block, GrowthConfig growthConfig, boolean naturalGrowEvent) {
 		int w = WorldID.getPID(block.getWorld().getUID());
 		Coords coords = new Coords(w, block.getX(), block.getY(), block.getZ());
+		boolean loadChunk = naturalGrowEvent ? Math.random() < persistConfig.growEventLoadChance : true;
+		getLogger().info("chunk: "+coords);
+		getLogger().info("will load if not loaded: " + loadChunk);
+		if (!loadChunk && !plantManager.chunkLoaded(coords))
+			return 0.0; // don't load the chunk or do anything
+			
 		Plant plant = plantManager.get(coords);
 		
 		if (plant == null) {

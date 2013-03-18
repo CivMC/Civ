@@ -100,7 +100,7 @@ public class PlayerListener implements Listener {
 				
 				GrowthConfig growthConfig = growthConfigs.get(material);
 				if (growthConfig != null && growthConfig.isPersistent()) {
-					plantGrowth = plugin.growAndPersistBlock(block, growthConfig);
+					plantGrowth = plugin.growAndPersistBlock(block, growthConfig, false);
 				}
 			}
 			else {
