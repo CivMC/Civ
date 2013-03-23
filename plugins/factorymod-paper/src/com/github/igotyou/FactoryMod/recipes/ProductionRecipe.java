@@ -6,6 +6,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.interfaces.Recipe;
+import java.util.ArrayList;
 
 public class ProductionRecipe implements Recipe
 {
@@ -15,26 +16,33 @@ public class ProductionRecipe implements Recipe
 	private int batchAmount;
 	private int productionTime;
 	private String recipeName;
+	private int number;
+	private ArrayList <ProductionRecipe> outputRecipes;
+	private boolean useOnce;
 	
 	public ProductionRecipe(HashMap<Integer, ItemStack> input, ItemStack output,
-			int batchAmount, String recipeName, int productionTime)
+			int batchAmount, String recipeName, int productionTime,int number,boolean useOnce)
 	{
 		this.input = input;
 		this.output = output;
 		this.batchAmount = batchAmount;
 		this.recipeName = recipeName;
 		this.productionTime = productionTime;
+		this.number=number;
+		this.outputRecipes=new ArrayList<ProductionRecipe>();
+		this.useOnce=useOnce;
 	}
 	
 	public ProductionRecipe(HashMap<Integer, ItemStack> input, ItemStack output, int batchAmount, String recipeName, 
-			int productionTime, HashMap <Enchantment, Integer> enchantments)
+			int productionTime,int number,boolean useOnce, HashMap <Enchantment, Integer> enchantments)
 	{
-		this.input = input;
-		this.output = output;
-		this.batchAmount = batchAmount;
-		this.recipeName = recipeName;
-		this.productionTime = productionTime;
+		this(input,output,batchAmount,recipeName,productionTime,number,useOnce);
 		this.enchantments = enchantments;
+	}
+	
+	public void addOutputRecipe(ProductionRecipe outputRecipe)
+	{
+		this.outputRecipes.add(outputRecipe);
 	}
 	
 	public int getBatchAmount() 
@@ -66,7 +74,19 @@ public class ProductionRecipe implements Recipe
 	{
 		return productionTime;
 	}
+	
+	public int getNumber()
+	{
+		return number;
+	}
 
+	public ArrayList<ProductionRecipe> getOutputRecipes()
+	{
+		return outputRecipes;
+	}
 
-
+	public boolean getUseOnce()
+	{
+		return useOnce;
+	}
 }

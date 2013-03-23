@@ -14,6 +14,7 @@ import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.InventoryMethods;
+import java.util.List;
 
 public class ProductionFactory extends FactoryObject implements Factory
 {
@@ -25,6 +26,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	private int currentRecipeNumber = 0;//the array index of the current recipe
 	public static final FactoryType FACTORY_TYPE = FactoryType.PRODUCTION;//the factrys type
 	public String SUB_FACTORY_TYPE;//the sub-factory Type
+	private List<ProductionRecipe> recipes;
 	
 	/**
 	 * Constructor
@@ -35,15 +37,16 @@ public class ProductionFactory extends FactoryObject implements Factory
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, ProductionFactory.FACTORY_TYPE, subFactoryType);
 		this.SUB_FACTORY_TYPE = subFactoryType;
 		this.productionFactoryProperties = (ProductionProperties) factoryProperties;
+		this.recipes=productionFactoryProperties.getRecipes();
 		this.setRecipeToNumber(0);
-
 	}
 
 	/**
 	 * Constructor
 	 */
 	public ProductionFactory (Location factoryLocation, Location factoryInventoryLocation, Location factoryPowerSource,
-			String subFactoryType, boolean active, int currentProductionTimer, int currentEnergyTimer, int currentRecipeNumber)
+			String subFactoryType, boolean active, int currentProductionTimer, int currentEnergyTimer,  List<ProductionRecipe> recipes,
+			int currentRecipeNumber)
 	{
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, ProductionFactory.FACTORY_TYPE, subFactoryType);
 		this.SUB_FACTORY_TYPE = subFactoryType;
@@ -51,6 +54,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 		this.active = active;
 		this.currentEnergyTimer = currentEnergyTimer;
 		this.currentProductionTimer = currentProductionTimer;
+		this.recipes=recipes;
 		this.setRecipeToNumber(currentRecipeNumber);
 	}
 	
@@ -108,8 +112,25 @@ public class ProductionFactory extends FactoryObject implements Factory
 							}
 							getInventory().addItem(itemStack);
 						}
+						if (currentRecipe.getOutputRecipes() != null)
+						{
+							for (int i = 0; i < currentRecipe.getOutputRecipes().size();i++)
+								{
+									if(!recipes.contains(currentRecipe.getOutputRecipes().get(i)))
+									{
+										recipes.add(currentRecipe.getOutputRecipes().get(i));
+									}
+									
+								}
+						}
 						currentProductionTimer = 0;
 						powerOff();
+						//Remove currentRecipe if it only is meant to be used once
+						if(currentRecipe.getUseOnce())
+						{
+							recipes.remove(currentRecipe);
+							setRecipeToNumber(0);
+						}
 					}
 				}
 			}	
@@ -215,7 +236,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 			if (currentRecipe != null)
 			{		
 				//if we are at the end of the recipe array loop around
-				if (currentRecipeNumber == productionFactoryProperties.getRecipes().size() - 1)
+				if (currentRecipeNumber == recipes.size() - 1)
 				{
 					setRecipeToNumber(0);
 					currentProductionTimer = 0;
@@ -262,7 +283,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	 */
 	public void setRecipeToNumber(int newRecipeNumber)
 	{
-		currentRecipe = productionFactoryProperties.getRecipes().get(newRecipeNumber);
+		currentRecipe = recipes.get(newRecipeNumber);
 		currentRecipeNumber = newRecipeNumber;
 	}
 
@@ -359,4 +380,10 @@ public class ProductionFactory extends FactoryObject implements Factory
 	{
 		return productionFactoryProperties;
 	}
+	
+	public List<ProductionRecipe> getRecipes()
+	{
+	    return recipes;
+	}
+	
 }

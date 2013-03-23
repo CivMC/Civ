@@ -109,6 +109,8 @@ public class FactoryModPlugin extends JavaPlugin
 		sendConsoleMessage(g + " recipes removed");
 		//how many production recipes are there?
 		AMOUNT_OF_PRODUCTION_RECIPES = config.getInt("production_recipes.amount");
+		//Temporarily store the indexs of the outputRecipes until all recipes are initliazed
+		ArrayList<ArrayList> outputRecipesNumbers=new ArrayList<ArrayList>(AMOUNT_OF_PRODUCTION_RECIPES);
 		//loop trough all production recipes
 		for (int i =1; i <= FactoryModPlugin.AMOUNT_OF_PRODUCTION_RECIPES; i++)
 		{
@@ -124,6 +126,8 @@ public class FactoryModPlugin extends JavaPlugin
 			Material outputMaterial = Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".output_material"));
 			try
 			{
+				//I don't fully understand this, but it appears that it should be ".output_data" not ".data"
+				//possibly this never succeeds...
 				output_data = (byte) config.getInt(getPathToProductionRecipe(i) + ".data");
 			}
 			catch(Exception e)
@@ -143,7 +147,7 @@ public class FactoryModPlugin extends JavaPlugin
 			
 			HashMap<Integer, ItemStack> input = new HashMap<Integer, ItemStack>();
 			HashMap<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
-			
+						
 			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_material_inputs"); i1++)
 			{
 				Byte data = 0;
@@ -209,15 +213,48 @@ public class FactoryModPlugin extends JavaPlugin
 				enchantments.put(Enchantment.getByName(enchantmentName), enchantmentLevel);
 			}
 			
+			//Stores where recipes should point since some of the ProductionRecipe objects may not have been generated yet
+			
+			ArrayList <Integer> currentRecipesNumbers=new ArrayList<Integer>();
+			for (int i1=1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_output_recipes");i1++)
+			{
+				currentRecipesNumbers.add(config.getInt(getPathToProductionRecipe(i) + ".output_recipe_" + String.valueOf(i1)));
+			}
+			outputRecipesNumbers.add(i-1,currentRecipesNumbers);
+			
+			boolean useOnce=false;
+			try
+			{
+				//I don't fully understand this, but it appears that it should be ".output_data" not ".data"
+				//possibly this never succeeds...
+				useOnce = (boolean) config.getBoolean(getPathToProductionRecipe(i) + ".use_once");
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			
 			if(enchantments.size() != 0)
 			{
-				ProductionRecipe recipe = new ProductionRecipe(input, output, batchAmount, recipeName, productionTime, enchantments);
+				ProductionRecipe recipe = new ProductionRecipe(input, output, batchAmount, recipeName, productionTime, i, useOnce, enchantments);
 				productionRecipes.add(recipe);
 			}
 			else
 			{
-				ProductionRecipe recipe = new ProductionRecipe(input, output, batchAmount, recipeName, productionTime);
+				ProductionRecipe recipe = new ProductionRecipe(input, output, batchAmount, recipeName, productionTime, i, useOnce);
 				productionRecipes.add(recipe);
+			}
+		}
+		
+		//Once ProductionRecipe objects have been created correctly insert different pointers
+		
+		for(int i=0; i<outputRecipesNumbers.size(); i++)
+		{
+			ArrayList <Integer> currentRecipeOutputNumbers=outputRecipesNumbers.get(i);
+			for(int i1=0; i1<currentRecipeOutputNumbers.size(); i1++)
+			{
+				int outputRecipeIndex=((Integer)currentRecipeOutputNumbers.get(i1)).intValue()-1;
+				productionRecipes.get(i).addOutputRecipe(productionRecipes.get(outputRecipeIndex));
 			}
 		}
 		

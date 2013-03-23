@@ -28,6 +28,7 @@ import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InventoryMethods;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
+import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 
 //original file:
 /**
@@ -73,6 +74,14 @@ public class ProductionManager implements Manager
 			
 			
 			bufferedWriter.append(production.getSubFactoryType());
+			bufferedWriter.append(" ");
+			
+			List<ProductionRecipe> recipes=production.getRecipes();
+			for (int i = 0; i < recipes.size(); i++)
+			{
+				bufferedWriter.append(String.valueOf(recipes.get(i).getNumber()));
+				bufferedWriter.append(",");
+			}
 			bufferedWriter.append(" ");
 			
 			bufferedWriter.append(centerlocation.getWorld().getName());
@@ -122,16 +131,22 @@ public class ProductionManager implements Manager
 			String parts[] = line.split(" ");
 			//order: subFactoryType world central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
 			String subFactoryType = parts[0];
-
-			Location centerLocation = new Location(plugin.getServer().getWorld(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]));
-			Location inventoryLocation = new Location(plugin.getServer().getWorld(parts[1]), Integer.parseInt(parts[5]), Integer.parseInt(parts[6]), Integer.parseInt(parts[7]));
-			Location powerLocation = new Location(plugin.getServer().getWorld(parts[1]), Integer.parseInt(parts[8]), Integer.parseInt(parts[9]), Integer.parseInt(parts[10]));
-			boolean active = Boolean.parseBoolean(parts[11]);
-			int productionTimer = Integer.parseInt(parts[12]);
-			int energyTimer = Integer.parseInt(parts[13]);
-			int currentRecipeNumber = Integer.parseInt(parts[14]);
+			String recipeNumbers[] = parts[1].split(",");
+			List<ProductionRecipe> recipes=new ArrayList<ProductionRecipe>();
+			for(int i=0;i<recipeNumbers.length;i++)
+			{
+				recipes.add(FactoryModPlugin.productionRecipes.get(Integer.parseInt(recipeNumbers[i])-1));
+			}
 			
-			ProductionFactory production = new ProductionFactory(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, currentRecipeNumber);
+			Location centerLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
+			Location inventoryLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[6]), Integer.parseInt(parts[7]), Integer.parseInt(parts[8]));
+			Location powerLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[9]), Integer.parseInt(parts[10]), Integer.parseInt(parts[11]));
+			boolean active = Boolean.parseBoolean(parts[12]);
+			int productionTimer = Integer.parseInt(parts[13]);
+			int energyTimer = Integer.parseInt(parts[14]);
+			int currentRecipeNumber = Integer.parseInt(parts[15]);
+			
+			ProductionFactory production = new ProductionFactory(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, recipes, currentRecipeNumber);
 			addFactory(production);
 		}
 		fileInputStream.close();
