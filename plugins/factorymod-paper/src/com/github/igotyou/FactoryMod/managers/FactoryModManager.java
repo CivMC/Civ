@@ -47,7 +47,6 @@ public class FactoryModManager
 		
 		initializeManagers();
 		loadManagers();
-		
 		periodicSaving();
 	}
 	

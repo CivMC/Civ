@@ -103,26 +103,35 @@ public class ProductionFactory extends FactoryObject implements Factory
 				{
 					if (InventoryMethods.removeItemStacks(getInventory(), currentRecipe.getInput()))
 					{
-						for (int i = 1; i <= currentRecipe.getBatchAmount(); i++)
+						for (int i = 1;i <=currentRecipe.getOutput().size();i++)
 						{
-							ItemStack itemStack = currentRecipe.getOutput();
-							if (currentRecipe.getEnchantments() != null)
+							ItemStack itemStack = currentRecipe.getOutput().get(i);
+							if (currentRecipe.getEnchantments().size()>0)
 							{
-								itemStack.addEnchantments(currentRecipe.getEnchantments());
+								try
+								{
+									itemStack.addEnchantments(currentRecipe.getEnchantments());
+								}
+								catch(Exception e)
+								{
+									e.printStackTrace();
+								}
 							}
 							getInventory().addItem(itemStack);
 						}
-						if (currentRecipe.getOutputRecipes() != null)
+						//Adds new recipes to the factory
+						FactoryModPlugin.sendConsoleMessage(String.valueOf(currentRecipe.getOutputRecipes().size()));
+						for (int i = 0; i < currentRecipe.getOutputRecipes().size();i++)
 						{
-							for (int i = 0; i < currentRecipe.getOutputRecipes().size();i++)
-								{
-									if(!recipes.contains(currentRecipe.getOutputRecipes().get(i)))
-									{
-										recipes.add(currentRecipe.getOutputRecipes().get(i));
-									}
-									
-								}
+							FactoryModPlugin.sendConsoleMessage("adding Recipes");
+
+							if(!recipes.contains(currentRecipe.getOutputRecipes().get(i)))
+							{
+								recipes.add(currentRecipe.getOutputRecipes().get(i));
+							}
+
 						}
+						
 						currentProductionTimer = 0;
 						powerOff();
 						//Remove currentRecipe if it only is meant to be used once

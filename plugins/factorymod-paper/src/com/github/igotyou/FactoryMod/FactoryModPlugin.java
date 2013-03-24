@@ -66,10 +66,10 @@ public class FactoryModPlugin extends JavaPlugin
 		{
 			getServer().getPluginManager().registerEvents(new BlockListener(manager, manager.getProductionManager()), this);
 		}
-        catch(Exception e)
-        {
-        	e.printStackTrace();
-        }
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public void initConfig()
@@ -77,7 +77,7 @@ public class FactoryModPlugin extends JavaPlugin
 		production_Properties = new HashMap<String, ProductionProperties>();
 		productionRecipes = new ArrayList<ProductionRecipe>();
 		FileConfiguration config = getConfig();
-	
+		
 		this.saveDefaultConfig();
 		
 		//how often should the managers save?
@@ -115,39 +115,65 @@ public class FactoryModPlugin extends JavaPlugin
 		for (int i =1; i <= FactoryModPlugin.AMOUNT_OF_PRODUCTION_RECIPES; i++)
 		{
 			String recipeName = config.getString(getPathToProductionRecipe(i) + ".name");
-			int batchAmount = config.getInt(getPathToProductionRecipe(i)  + ".batch_amount");
 			int productionTime = config.getInt(getPathToProductionRecipe(i)  + ".production_time");
-			short durability = 0;
-			if (config.getString(getPathToProductionRecipe(i) + ".durability") != "MAX")
-			{
-				durability = (short) config.getInt(getPathToProductionRecipe(i) + ".durability");
-			}
-			Byte output_data = 0;
-			Material outputMaterial = Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".output_material"));
-			try
-			{
-				//I don't fully understand this, but it appears that it should be ".output_data" not ".data"
-				//possibly this never succeeds...
-				output_data = (byte) config.getInt(getPathToProductionRecipe(i) + ".data");
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-			ItemStack output = new ItemStack(outputMaterial);
-			if (output_data != 0 && durability != 0)
-			{
-				output = new ItemStack(outputMaterial, 1, durability, output_data);
-			}
-			else if (output_data != 0 && durability == 0)
-			{
-				output = new ItemStack(outputMaterial, 1, (short) 0, output_data);
-			}
 
+			HashMap<Integer, ItemStack> output = new HashMap<Integer, ItemStack>();
+			//if amount_of_material_outputs: = 0 or doesn't exist this for loop doesn't execute
+			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_material_outputs"); i1++)
+			{
+				byte data = (byte) config.getInt(getPathToProductionRecipe(i) + ".output_data_" + String.valueOf(i1));
+				int amount = config.getInt(getPathToProductionRecipe(i) + ".output_amount_" + String.valueOf(i1));
+				short durability= (short) config.getInt(getPathToProductionRecipe(i) + ".durability_"+ String.valueOf(i1));
+				Material material = Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".output_material_" + String.valueOf(i1)));
+				if (material == null && "NETHER_STALK".equals(config.getString(getPathToProductionRecipe(i) + ".output_material_" + String.valueOf(i1))))
+				{
+					material = Material.getMaterial(372);
+				}
+				int stackSize=material.getMaxStackSize();
+				if (amount > stackSize)
+				{
+					while(amount > stackSize)
+					{
+						if (data != 0)
+						{
+							ItemStack itemStack = new ItemStack(material, stackSize, durability, data);
+							output.put(output.size()+1, itemStack);
+						}
+						else
+						{
+							ItemStack itemStack = new ItemStack(material, stackSize,durability);
+							output.put(output.size()+1, itemStack);
+						}
+						amount = amount - stackSize;
+					}
+					if (data != 0)
+					{
+						ItemStack itemStack = new ItemStack(material, amount, durability, data);
+						output.put(output.size()+1, itemStack);
+					}
+					else
+					{
+						ItemStack itemStack = new ItemStack(material, amount,durability);
+						output.put(output.size()+1, itemStack);
+					}
+				}
+				else
+				{
+					if (data != 0)
+					{
+						ItemStack itemStack = new ItemStack(material, amount, durability, data);
+						output.put(output.size()+1, itemStack);
+					}
+					else
+					{
+						ItemStack itemStack = new ItemStack(material, amount,durability);
+						output.put(output.size()+1, itemStack);
+					}
+				}
+			}
 			
 			HashMap<Integer, ItemStack> input = new HashMap<Integer, ItemStack>();
-			HashMap<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
-						
+			//if amount_of_material_inputs: =0 or doesn't exist this for loop doesn't execute
 			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_material_inputs"); i1++)
 			{
 				Byte data = 0;
@@ -165,21 +191,22 @@ public class FactoryModPlugin extends JavaPlugin
 				{
 					material = Material.getMaterial(372);
 				}
-				if (amount > 64)
+				int stackSize=material.getMaxStackSize();
+				if (amount > stackSize)
 				{
-					while(amount > 64)
+					while(amount > stackSize)
 					{
 						if (data != 0)
 						{
-							ItemStack itemStack = new ItemStack(material, 64, (short) 0, data);
+							ItemStack itemStack = new ItemStack(material, stackSize, (short) 0, data);
 							input.put(input.size()+1, itemStack);
 						}
 						else
 						{
-							ItemStack itemStack = new ItemStack(material, 64);
+							ItemStack itemStack = new ItemStack(material, stackSize);
 							input.put(input.size()+1, itemStack);
 						}
-						amount = amount - 64;
+						amount = amount - stackSize;
 					}
 					if (data != 0)
 					{
@@ -206,6 +233,9 @@ public class FactoryModPlugin extends JavaPlugin
 					}
 				}
 			}
+			
+			HashMap<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
+			//if amount_of_enchantments: = 0 or doesn't exist this for loop doesn't exectue
 			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_enchantments"); i1++)
 			{
 				String enchantmentName = config.getString(getPathToProductionRecipe(i) + ".enchantment_" + String.valueOf(i1));
@@ -214,7 +244,6 @@ public class FactoryModPlugin extends JavaPlugin
 			}
 			
 			//Stores where recipes should point since some of the ProductionRecipe objects may not have been generated yet
-			
 			ArrayList <Integer> currentRecipesNumbers=new ArrayList<Integer>();
 			for (int i1=1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_output_recipes");i1++)
 			{
@@ -222,28 +251,13 @@ public class FactoryModPlugin extends JavaPlugin
 			}
 			outputRecipesNumbers.add(i-1,currentRecipesNumbers);
 			
-			boolean useOnce=false;
-			try
-			{
-				//I don't fully understand this, but it appears that it should be ".output_data" not ".data"
-				//possibly this never succeeds...
-				useOnce = (boolean) config.getBoolean(getPathToProductionRecipe(i) + ".use_once");
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
+			//If use_once is not specified the method returns false by default
+			boolean useOnce = config.getBoolean(getPathToProductionRecipe(i) + ".use_once");
 			
-			if(enchantments.size() != 0)
-			{
-				ProductionRecipe recipe = new ProductionRecipe(input, output, batchAmount, recipeName, productionTime, i, useOnce, enchantments);
-				productionRecipes.add(recipe);
-			}
-			else
-			{
-				ProductionRecipe recipe = new ProductionRecipe(input, output, batchAmount, recipeName, productionTime, i, useOnce);
-				productionRecipes.add(recipe);
-			}
+			//This may be sending lists of size 0, but it shouldn't be sending any null pointers.
+			ProductionRecipe recipe = new ProductionRecipe(input, output, recipeName, productionTime, i, useOnce,enchantments);
+			productionRecipes.add(recipe);
+
 		}
 		
 		//Once ProductionRecipe objects have been created correctly insert different pointers
@@ -307,21 +321,22 @@ public class FactoryModPlugin extends JavaPlugin
 				{
 					material = Material.getMaterial(372);
 				}
-				if (amount > 64)
+				int stackSize=material.getMaxStackSize();
+				if (amount > stackSize)
 				{
-					while(amount > 64)
+					while(amount > stackSize)
 					{
 						if (data != 0)
 						{
-							ItemStack itemStack = new ItemStack(material, 64, (short) 0, data);
+							ItemStack itemStack = new ItemStack(material, stackSize, (short) 0, data);
 							buildMaterials.put(buildMaterials.size()+1, itemStack);
 						}
 						else
 						{
-							ItemStack itemStack = new ItemStack(material, 64);
+							ItemStack itemStack = new ItemStack(material, stackSize);
 							buildMaterials.put(buildMaterials.size()+1, itemStack);
 						}
-						amount -= 64;
+						amount -= stackSize;
 					}
 					if (data != 0)
 					{

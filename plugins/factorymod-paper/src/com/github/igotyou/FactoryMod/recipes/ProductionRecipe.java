@@ -11,32 +11,24 @@ import java.util.ArrayList;
 public class ProductionRecipe implements Recipe
 {
 	private HashMap <Integer, ItemStack> input;
-	private ItemStack output;
+	private HashMap<Integer, ItemStack> output;
 	private HashMap <Enchantment, Integer> enchantments;
-	private int batchAmount;
 	private int productionTime;
 	private String recipeName;
 	private int number;
 	private ArrayList <ProductionRecipe> outputRecipes;
 	private boolean useOnce;
 	
-	public ProductionRecipe(HashMap<Integer, ItemStack> input, ItemStack output,
-			int batchAmount, String recipeName, int productionTime,int number,boolean useOnce)
+	public ProductionRecipe(HashMap<Integer, ItemStack> input, HashMap<Integer, ItemStack>  output, String recipeName, 
+			int productionTime,int number,boolean useOnce, HashMap <Enchantment, Integer> enchantments)
 	{
 		this.input = input;
 		this.output = output;
-		this.batchAmount = batchAmount;
 		this.recipeName = recipeName;
 		this.productionTime = productionTime;
 		this.number=number;
 		this.outputRecipes=new ArrayList<ProductionRecipe>();
 		this.useOnce=useOnce;
-	}
-	
-	public ProductionRecipe(HashMap<Integer, ItemStack> input, ItemStack output, int batchAmount, String recipeName, 
-			int productionTime,int number,boolean useOnce, HashMap <Enchantment, Integer> enchantments)
-	{
-		this(input,output,batchAmount,recipeName,productionTime,number,useOnce);
 		this.enchantments = enchantments;
 	}
 	
@@ -44,13 +36,8 @@ public class ProductionRecipe implements Recipe
 	{
 		this.outputRecipes.add(outputRecipe);
 	}
-	
-	public int getBatchAmount() 
-	{
-		return batchAmount;
-	}
 
-	public ItemStack getOutput() 
+	public HashMap<Integer, ItemStack>  getOutput() 
 	{
 		return output;
 	}
