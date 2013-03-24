@@ -63,6 +63,7 @@ production_recipes:
 #  amounts_of_enchanments: number of enchantments applied to output - Defualt of 0
 #  enchantment_1: enchantment 1 of output - Required if <=# of enchantments
 #  enchantment_level_1: level of enchantment 1 - Required if <=# of enchantments
+#  enchantment_probability_1: probability of enchantment 1 - Default of 1
 #  amount_of_output_recipes: number of output recipes - Default of 0
 #  output_recipe_1: # of output recipe '2' - Requied if <=# of output_recipes
 #  use_once: dictates if recipe can be used more than once - Default of false
@@ -81,9 +82,11 @@ production_recipes:
     input_amount_1: 1
     amount_of_enchantments: 2
     enchantment_1: PROTECTION_FIRE
-    enchantment_1_level: 2
-    enchantement_2: PROTECTION_FIRE
-    enchantment_2_level: 1
+    enchantment_level_1: 2
+    enchantment_probability_1: 0.6
+    enchantment_2: PROTECTION_FIRE
+    enchantment_level_2: 1
+    enchantment_probability_2: 0.5
   recipe_2:
     name: Upgrade - Iron Helmet
     production_time: 5

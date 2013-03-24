@@ -234,6 +234,29 @@ public class FactoryModPlugin extends JavaPlugin
 				}
 			}
 			
+			ArrayList<Enchantment> enchantments=new ArrayList();
+			ArrayList<Integer> enchantmentLevels=new ArrayList();
+			ArrayList<Double> enchantmentProbabilities=new ArrayList();
+			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_enchantments"); i1++)
+			{
+				Enchantment enchantment=Enchantment.getByName(config.getString(getPathToProductionRecipe(i) + ".enchantment_" + String.valueOf(i1)));
+				//Proceeds to the next enchant if a null enchantment was returned, likely due to an incorrect enchant name
+				if(enchantment==null)
+				{
+					continue;
+				}
+				enchantments.add(enchantment);
+				enchantmentLevels.add(config.getInt(getPathToProductionRecipe(i) + ".enchantment_level"+String.valueOf(i1)));
+				try
+				{
+					enchantmentProbabilities.add(config.getDouble(getPathToProductionRecipe(i) + ".enchantment_probability"+String.valueOf(i1)));
+				}
+				catch(Exception e)
+				{
+					enchantmentProbabilities.add(1.0);
+				}				
+			}
+			/*
 			HashMap<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
 			//if amount_of_enchantments: = 0 or doesn't exist this for loop doesn't exectue
 			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_enchantments"); i1++)
@@ -242,7 +265,7 @@ public class FactoryModPlugin extends JavaPlugin
 				int enchantmentLevel = config.getInt(getPathToProductionRecipe(i) + ".enchantment_" + String.valueOf(i1) + "_level");
 				enchantments.put(Enchantment.getByName(enchantmentName), enchantmentLevel);
 			}
-			
+			*/
 			//Stores where recipes should point since some of the ProductionRecipe objects may not have been generated yet
 			ArrayList <Integer> currentRecipesNumbers=new ArrayList<Integer>();
 			for (int i1=1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_output_recipes");i1++)
@@ -255,7 +278,7 @@ public class FactoryModPlugin extends JavaPlugin
 			boolean useOnce = config.getBoolean(getPathToProductionRecipe(i) + ".use_once");
 			
 			//This may be sending lists of size 0, but it shouldn't be sending any null pointers.
-			ProductionRecipe recipe = new ProductionRecipe(input, output, recipeName, productionTime, i, useOnce,enchantments);
+			ProductionRecipe recipe = new ProductionRecipe(input, output, recipeName, productionTime, i, useOnce,enchantments,enchantmentLevels,enchantmentProbabilities);
 			productionRecipes.add(recipe);
 
 		}

@@ -120,11 +120,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 							getInventory().addItem(itemStack);
 						}
 						//Adds new recipes to the factory
-						FactoryModPlugin.sendConsoleMessage(String.valueOf(currentRecipe.getOutputRecipes().size()));
 						for (int i = 0; i < currentRecipe.getOutputRecipes().size();i++)
 						{
-							FactoryModPlugin.sendConsoleMessage("adding Recipes");
-
 							if(!recipes.contains(currentRecipe.getOutputRecipes().get(i)))
 							{
 								recipes.add(currentRecipe.getOutputRecipes().get(i));
