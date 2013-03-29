@@ -50,16 +50,20 @@ production_recipes:
 #amount: number of recipes
 #recipe_1: must be a sequential list of 'recipe_#'
 #  name: Common Name - Required
-#  production_time: time to produce=#*tps/update_cycle - Required
-#  amount_of_material_outputs: number of outputs - Defualt 0
-#  output_material_1: output 1 of recipe - Required if <# of inputs 
-#  output_amount_1: amount of input 1 - Default of 0
-#  output_data_1: _______________________ - Default of 0
-#  output_durability_1: druability of output - Default of 0
+#  production_time: time to produce=#*tps/update_cycle - Defualt of 10
 #  amount_of_material_inputs: number of inputs - Defualt 0
 #  input_material_1: input 1 of recipe - Required if <# of inputs 
 #  input_amount_1: amount of input 1 - Required if <=# of inputs
 #  input_data_1: _______________________ - Default of 0
+#  input_lore_1: 
+#  input_name_1: 
+#  amount_of_material_outputs: number of outputs - Defualt 0
+#  output_material_1: output 1 of recipe - Required if <# of inputs 
+#  output_amount_1: amount of input 1 - Default of 0
+#  output_data_1: _______________________ - Default of 0
+#  output_durability_1: durability of output - Default of 0
+#  output_lore_1:
+#  output_name_1:
 #  amounts_of_enchanments: number of enchantments applied to output - Defualt of 0
 #  enchantment_1: enchantment 1 of output - Required if <=# of enchantments
 #  enchantment_level_1: level of enchantment 1 - Required if <=# of enchantments
@@ -70,60 +74,25 @@ production_recipes:
 
   amount: 5
   recipe_1:
-    name: Leather Suit
-    production_time: 5
-    amount_of_material_outputs: 4
-    output_material_1: LEATHER_HELMET
-    output_material_2: LEATHER_CHESTPLATE
-    output_material_3: LEATHER_LEGGINGS
-    output_material_4: LEATHER_BOOTS
+    name: Pots
+    production_time: 2
     amount_of_material_inputs: 1
-    input_material_1: LEATHER
+    input_material_1: STONE
     input_amount_1: 1
-    amount_of_enchantments: 2
-    enchantment_1: PROTECTION_FIRE
-    enchantment_level_1: 2
-    enchantment_probability_1: 0.6
-    enchantment_2: PROTECTION_FIRE
-    enchantment_level_2: 1
-    enchantment_probability_2: 0.5
-  recipe_2:
-    name: Upgrade - Iron Helmet
-    production_time: 5
-    amount_of_material_outputs: 0
-    amount_of_material_inputs: 1
-    input_material_1: IRON_INGOT
-    input_amount_1: 1
-    amount_of_output_recipes: 2
-    output_recipe_1: 3
-    output_recipe_2: 4
-    use_once: true  
-  recipe_3:
-    name: Iron Helmet
-    production_time: 5
-    amount_of_material_outputs: 2
-    output_material_1: IRON_HELMET
-    output_material_2: IRON_LEGGINGS
-    amount_of_material_inputs: 1
-    input_material_1: IRON_INGOT
-    input_amount_1: 1
-  recipe_4:
-    name: Upgrade - Iron Helmet - Mass Production
-    production_time: 5
-    amount_of_output_recipes: 1
-    output_recipe_1: 5
-    use_once: true
-  recipe_5:
-    name: Iron Helmet - Mass Production
-    production_time: 5
     amount_of_material_outputs: 1
-    output_material_1: IRON_HELMET
-    output_amount_1: 5
+    output_material_1: STONE
+    output_name_1: SUPER STONE!
+    output_lore_1: testing lore now 1 1 1
+  recipe_2:
+    name: Lore
+    production_time: 2
     amount_of_material_inputs: 1
-    input_material_1: IRON_INGOT
+    input_material_1: STONE
     input_amount_1: 1
-
-    
+    input_name_1: SUPER STONE!
+    input_lore_1: testing lore now 1 1 1
+    amount_of_material_outputs: 1
+    output_material_1: STONE
     
 production_general:
   
@@ -162,3 +131,4 @@ production_general:
     amount_of_production_recipes: 2
     recipe_1: 1
     recipe_2: 2
+

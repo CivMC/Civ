@@ -12,6 +12,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
 import com.github.igotyou.FactoryMod.interfaces.Properties;
@@ -115,123 +116,99 @@ public class FactoryModPlugin extends JavaPlugin
 		for (int i =1; i <= FactoryModPlugin.AMOUNT_OF_PRODUCTION_RECIPES; i++)
 		{
 			String recipeName = config.getString(getPathToProductionRecipe(i) + ".name");
-			int productionTime = config.getInt(getPathToProductionRecipe(i)  + ".production_time");
-
-			HashMap<Integer, ItemStack> output = new HashMap<Integer, ItemStack>();
-			//if amount_of_material_outputs: = 0 or doesn't exist this for loop doesn't execute
-			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_material_outputs"); i1++)
-			{
-				byte data = (byte) config.getInt(getPathToProductionRecipe(i) + ".output_data_" + String.valueOf(i1));
-				int amount = config.getInt(getPathToProductionRecipe(i) + ".output_amount_" + String.valueOf(i1));
-				short durability= (short) config.getInt(getPathToProductionRecipe(i) + ".durability_"+ String.valueOf(i1));
-				Material material = Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".output_material_" + String.valueOf(i1)));
-				if (material == null && "NETHER_STALK".equals(config.getString(getPathToProductionRecipe(i) + ".output_material_" + String.valueOf(i1))))
-				{
-					material = Material.getMaterial(372);
-				}
-				int stackSize=material.getMaxStackSize();
-				if (amount > stackSize)
-				{
-					while(amount > stackSize)
-					{
-						if (data != 0)
-						{
-							ItemStack itemStack = new ItemStack(material, stackSize, durability, data);
-							output.put(output.size()+1, itemStack);
-						}
-						else
-						{
-							ItemStack itemStack = new ItemStack(material, stackSize,durability);
-							output.put(output.size()+1, itemStack);
-						}
-						amount = amount - stackSize;
-					}
-					if (data != 0)
-					{
-						ItemStack itemStack = new ItemStack(material, amount, durability, data);
-						output.put(output.size()+1, itemStack);
-					}
-					else
-					{
-						ItemStack itemStack = new ItemStack(material, amount,durability);
-						output.put(output.size()+1, itemStack);
-					}
-				}
-				else
-				{
-					if (data != 0)
-					{
-						ItemStack itemStack = new ItemStack(material, amount, durability, data);
-						output.put(output.size()+1, itemStack);
-					}
-					else
-					{
-						ItemStack itemStack = new ItemStack(material, amount,durability);
-						output.put(output.size()+1, itemStack);
-					}
-				}
-			}
 			
+			int productionTime;
+			try{
+				productionTime=config.getInt(getPathToProductionRecipe(i)  + ".production_time");
+			}
+			catch(Exception e)
+			{
+				productionTime=10;
+			}
+
 			HashMap<Integer, ItemStack> input = new HashMap<Integer, ItemStack>();
-			//if amount_of_material_inputs: =0 or doesn't exist this for loop doesn't execute
+			//if amount_of_material_inputs: = 0 or doesn't exist this for loop doesn't execute
 			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_material_inputs"); i1++)
 			{
-				Byte data = 0;
-				try
-				{
-					data = (byte) config.getInt(getPathToProductionRecipe(i) + ".input_data_" + String.valueOf(i1));
+				//Gets data of the input, if it is not found data remains null and is discarded by ItemStack constructor
+				byte data=0;
+				try{
+					data=(byte) config.getInt(getPathToProductionRecipe(i) + ".input_data_" + String.valueOf(i1));
 				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
+				catch(Exception e){
+					data=0;
 				}
+				//Gets the amount of the input, if it is 0 a default of 1 is used
 				int amount = config.getInt(getPathToProductionRecipe(i) + ".input_amount_" + String.valueOf(i1));
+				if(amount==0)
+				{
+					amount=1;
+				}
+				//Gets new item name of the input, returns null if it fails which is handeled by createItemStack
+				String name=config.getString(getPathToProductionRecipe(i) + ".input_name_" + String.valueOf(i1));
+				//Gets item lore for the input, returns null if none exists which is handeled by createItemStack
+				String lore=config.getString(getPathToProductionRecipe(i) + ".input_lore_" + String.valueOf(i1));
+				//The correct error catch should be implemented here to stop program from crashing on an incorrect config file
 				Material material = Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".input_material_" + String.valueOf(i1)));
 				if (material == null && "NETHER_STALK".equals(config.getString(getPathToProductionRecipe(i) + ".input_material_" + String.valueOf(i1))))
 				{
 					material = Material.getMaterial(372);
 				}
+				//Places individual stacks at their max stack size in the input
 				int stackSize=material.getMaxStackSize();
-				if (amount > stackSize)
+				while(amount > stackSize)
 				{
-					while(amount > stackSize)
-					{
-						if (data != 0)
-						{
-							ItemStack itemStack = new ItemStack(material, stackSize, (short) 0, data);
-							input.put(input.size()+1, itemStack);
-						}
-						else
-						{
-							ItemStack itemStack = new ItemStack(material, stackSize);
-							input.put(input.size()+1, itemStack);
-						}
-						amount = amount - stackSize;
-					}
-					if (data != 0)
-					{
-						ItemStack itemStack = new ItemStack(material, amount, (short) 0, data);
-						input.put(input.size()+1, itemStack);
-					}
-					else
-					{
-						ItemStack itemStack = new ItemStack(material, amount);
-						input.put(input.size()+1, itemStack);
-					}
+					ItemStack itemStack =createItemStack(material, stackSize, (short) 0, data,name,lore);
+					input.put(input.size()+1, itemStack);					
+					amount = amount - stackSize;
 				}
-				else
+				ItemStack itemStack =createItemStack(material, amount, (short) 0, data,name,lore);
+				input.put(input.size()+1, itemStack);	
+			}
+			
+			
+					
+			
+			HashMap<Integer, ItemStack> output = new HashMap<Integer, ItemStack>();
+			//if amount_of_material_outputs: = 0 or doesn't exist this for loop doesn't execute
+			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_material_outputs"); i1++)
+			{
+				//Gets data of the output, if it is not found data remains null and is discarded by ItemStack constructor
+				byte data=0;
+				try{
+					data=(byte) config.getInt(getPathToProductionRecipe(i) + ".output_data_" + String.valueOf(i1));
+				}
+				catch(Exception e){
+					data=0;
+				}
+				//Gets durability of the output, returns a value of 0 (max) if none is found
+				short durability= (short) config.getInt(getPathToProductionRecipe(i) + ".durability_"+ String.valueOf(i1));
+				//Gets the amount of the output, if it is 0 a default of 1 is used
+				int amount = config.getInt(getPathToProductionRecipe(i) + ".output_amount_" + String.valueOf(i1));
+				if(amount==0)
 				{
-					if (data != 0)
-					{
-						ItemStack itemStack = new ItemStack(material, amount, (short) 0, data);
-						input.put(input.size()+1, itemStack);
-					}
-					else
-					{
-						ItemStack itemStack = new ItemStack(material, amount);
-						input.put(input.size()+1, itemStack);
-					}
+					amount=1;
 				}
+				//Gets new item name of the output, returns null if it fails which is handeled by createItemStack
+				String name=config.getString(getPathToProductionRecipe(i) + ".output_name_" + String.valueOf(i1));
+				//Gets item lore for the output, returns null if none exists which is handeled by createItemStack
+				String lore=config.getString(getPathToProductionRecipe(i) + ".output_lore_" + String.valueOf(i1));
+				//The correct error catch should be implemented here to stop program from crashing on an incorrect config file
+				Material material = Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".output_material_" + String.valueOf(i1)));
+				if (material == null && "NETHER_STALK".equals(config.getString(getPathToProductionRecipe(i) + ".output_material_" + String.valueOf(i1))))
+				{
+					material = Material.getMaterial(372);
+				}
+				//Places individual stacks at their max stack size in the output
+				int stackSize=material.getMaxStackSize();
+				while(amount > stackSize)
+				{
+					ItemStack itemStack =createItemStack(material, stackSize, (short) 0, data,name,lore);
+					output.put(output.size()+1, itemStack);					
+					amount = amount - stackSize;
+				}
+				ItemStack itemStack =createItemStack(material, amount, (short) 0, data,name,lore);
+				output.put(output.size()+1, itemStack);	
 			}
 			
 			ArrayList<Enchantment> enchantments=new ArrayList();
@@ -256,16 +233,6 @@ public class FactoryModPlugin extends JavaPlugin
 					enchantmentProbabilities.add(1.0);
 				}				
 			}
-			/*
-			HashMap<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
-			//if amount_of_enchantments: = 0 or doesn't exist this for loop doesn't exectue
-			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_enchantments"); i1++)
-			{
-				String enchantmentName = config.getString(getPathToProductionRecipe(i) + ".enchantment_" + String.valueOf(i1));
-				int enchantmentLevel = config.getInt(getPathToProductionRecipe(i) + ".enchantment_" + String.valueOf(i1) + "_level");
-				enchantments.put(Enchantment.getByName(enchantmentName), enchantmentLevel);
-			}
-			*/
 			//Stores where recipes should point since some of the ProductionRecipe objects may not have been generated yet
 			ArrayList <Integer> currentRecipesNumbers=new ArrayList<Integer>();
 			for (int i1=1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_output_recipes");i1++)
@@ -401,6 +368,27 @@ public class FactoryModPlugin extends JavaPlugin
 			ProductionProperties productionProperties = new ProductionProperties(buildMaterials, recipes, fuelStack, fuelTime, name);
 			production_Properties.put(subFactoryType, productionProperties);
 		}
+	}
+	
+	private ItemStack createItemStack(Material material,int stackSize,short durability,byte data,String name,String loreString)
+	{
+		ItemStack itemStack;
+		if(data!=0)
+			itemStack = new ItemStack(material, stackSize, durability, data);
+		else
+			itemStack= new ItemStack(material, stackSize, durability);
+		ItemMeta meta=itemStack.getItemMeta();
+		if (name!=null)
+			meta.setDisplayName(name);
+		if (loreString!=null)
+		{
+			List<String> lore = new ArrayList<String>();
+			lore.add(loreString);
+			meta.setLore(lore);
+		}
+		itemStack.setItemMeta(meta);
+		return itemStack;
+			
 	}
 	
 	private String getPathToRecipe(int i)
