@@ -50,7 +50,7 @@ public class PlayerListener implements Listener {
     	MemberManager memberManager = Citadel.getMemberManager();
     	memberManager.addOnlinePlayer(ple.getPlayer());
 
-    	String playerName = ple.getPlayer().getDisplayName();
+    	String playerName = ple.getPlayer().getName();
     	Member member = memberManager.getMember(playerName);
     	if(member == null){
     		member = new Member(playerName);
@@ -137,7 +137,7 @@ public class PlayerListener implements Listener {
         if (access_reinforcement && normal_access_denied && !admin_can_access) {
             Citadel.info(String.format(
                 "%s failed to access locked reinforcement at %s",
-                player.getDisplayName(), block.getLocation().toString()));
+                player.getName(), block.getLocation().toString()));
             sendMessage(pie.getPlayer(), ChatColor.RED, "%s is locked", block.getType().name());
             pie.setCancelled(true);
         }
@@ -150,7 +150,7 @@ public class PlayerListener implements Listener {
                 if (access_reinforcement && normal_access_denied && admin_can_access) {
                     Citadel.info(String.format(
                         "[Admin] %s accessed locked reinforcement at %s",
-                        player.getDisplayName(), block.getLocation().toString()));
+                        player.getName(), block.getLocation().toString()));
                 }
             	return;
             case FORTIFICATION:

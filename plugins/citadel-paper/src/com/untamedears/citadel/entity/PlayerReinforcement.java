@@ -197,7 +197,7 @@ public class PlayerReinforcement implements
     }
 
     public boolean isAccessible(Player player) {
-        String name = player.getDisplayName();
+        String name = player.getName();
         return isAccessible(name);
     }
 
@@ -223,7 +223,7 @@ public class PlayerReinforcement implements
     }
 
     public boolean isBypassable(Player player) {
-        String name = player.getDisplayName();
+        String name = player.getName();
         Faction owner = getOwner();
         if (owner == null) {
             Citadel.severe(String.format("isBypassable(%s) encountered unowned reinforcement: %s",

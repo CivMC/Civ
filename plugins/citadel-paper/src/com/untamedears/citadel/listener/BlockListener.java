@@ -119,11 +119,11 @@ public class BlockListener implements Listener {
                 if (admin_bypass) {
                     Citadel.info(String.format(
                         "[Admin] %s bypassed reinforcement at %s",
-                        player.getDisplayName(), pr.getBlock().getLocation().toString()));
+                        player.getName(), pr.getBlock().getLocation().toString()));
                 } else {
                     Citadel.info(String.format(
                         "%s bypassed reinforcement at %s",
-                        player.getDisplayName(), pr.getBlock().getLocation().toString()));
+                        player.getName(), pr.getBlock().getLocation().toString()));
                 }
                 is_cancelled = reinforcementBroken(reinforcement);
             } else {

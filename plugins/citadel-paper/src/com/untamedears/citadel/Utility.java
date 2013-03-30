@@ -102,17 +102,17 @@ public class Utility {
         }
 
         if (player.getInventory().contains(material.getMaterial(), material.getRequirements())) {
-        	if(group == null){
-        		try {
-        		    group = Citadel.getMemberManager().getMember(player.getDisplayName()).getPersonalGroup();
+            if(group == null){
+                try {
+                    group = Citadel.getMemberManager().getMember(player.getName()).getPersonalGroup();
                     if (group.isDisciplined()) {
                         sendMessage(player, ChatColor.RED, Faction.kDisciplineMsg);
                         return null;
                     }
-        		} catch (NullPointerException e){
-        			sendMessage(player, ChatColor.RED, "You don't seem to have a personal group. Try logging out and back in first");
-        		}
-        	}
+                } catch (NullPointerException e){
+                    sendMessage(player, ChatColor.RED, "You don't seem to have a personal group. Try logging out and back in first");
+                }
+            }
 
             // workaround fix for 1.4.6, it doesnt remove the placed item if its already removed for some reason?
             if ((state.getMode() == PlacementMode.FORTIFICATION) && (blockTypeId == material.getMaterialId())) {
