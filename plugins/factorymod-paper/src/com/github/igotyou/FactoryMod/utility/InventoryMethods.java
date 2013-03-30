@@ -1,6 +1,5 @@
 package com.github.igotyou.FactoryMod.utility;
 
-import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Map;
 
@@ -10,6 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.interfaces.Properties;
+import java.util.List;
 /**
  * InventoryMethods.java
  * @author igotyou
@@ -18,10 +18,10 @@ import com.github.igotyou.FactoryMod.interfaces.Properties;
 public class InventoryMethods 
 {
 	//returns a string cotaining the material names of the supplied hashap
-	public static String getMaterialsNeededMessage(HashMap<Integer, ItemStack> itemStack)
+	public static String getMaterialsNeededMessage(List<ItemStack> itemStack)
 	{
 		String returnValue = "";
-		for (int i = 1; i <= itemStack.size(); i++)
+		for (int i = 0; i < itemStack.size(); i++)
 		{
 			if (itemStack.get(i).getData() != null)
 			{
@@ -55,7 +55,7 @@ public class InventoryMethods
 	public static boolean buildMaterialAvailable(Inventory inventory, Properties desiredProperties)
 	{
 		boolean returnValue = true;
-		for (int i = 1; i <= desiredProperties.getBuildMaterials().size(); i++)
+		for (int i = 0; i < desiredProperties.getBuildMaterials().size(); i++)
 		{
 			if (!isItemStackAvailable(inventory, desiredProperties.getBuildMaterials().get(i)))
 			{
@@ -66,13 +66,13 @@ public class InventoryMethods
 	}
 	
 	//checks whether the inventory has atleast the amount of item's that are in the supplied hashMap
-	public static boolean areItemStacksAvilable(Inventory inventory, HashMap<Integer, ItemStack> itemStack)
+	public static boolean areItemStacksAvilable(Inventory inventory, List<ItemStack> itemStacks)
 	{
 		boolean returnValue = true;
-		for (int i = 1; i <= itemStack.size(); i++)
+		for (int i = 0; i < itemStacks.size(); i++)
 		{
 
-			if (!isItemStackAvailable(inventory, itemStack.get(i)))
+			if (!isItemStackAvailable(inventory, itemStacks.get(i)))
 			{
 				returnValue = false;
 			}
@@ -109,10 +109,10 @@ public class InventoryMethods
 	}
 	
 	//checks whether or not the inventory cotains EXACTLY the amount of items in the supplied hashMap
-	public static boolean itemStacksMatch(Inventory inventory, HashMap<Integer, ItemStack> itemStack)
+	public static boolean itemStacksMatch(Inventory inventory, List<ItemStack> itemStack)
 	{
 		boolean returnValue = true;
-		for (int i = 1; i <= itemStack.size(); i++)
+		for (int i = 0; i < itemStack.size(); i++)
 		{
 
 			if (!itemStackMatches(inventory, itemStack.get(i)))
@@ -147,7 +147,7 @@ public class InventoryMethods
 	public static boolean removeBuildMaterial(Inventory inventory, Properties desiredProperties)
 	{
 		boolean returnValue = true;
-		for (int i = 1; i <= desiredProperties.getBuildMaterials().size(); i++)
+		for (int i = 0; i < desiredProperties.getBuildMaterials().size(); i++)
 		{
 			if (!removeItemStack(inventory, desiredProperties.getBuildMaterials().get(i)))
 			{
@@ -158,10 +158,10 @@ public class InventoryMethods
 	}
 	
 	//removes the the itemStacks form teh supplied HashMap from the inventory.
-	public static boolean removeItemStacks(Inventory inventory, HashMap<Integer, ItemStack> itemStack)
+	public static boolean removeItemStacks(Inventory inventory, List<ItemStack> itemStack)
 	{
 		boolean returnValue = true;
-		for (int i = 1; i <= itemStack.size(); i++)
+		for (int i = 0; i < itemStack.size(); i++)
 		{
 			if (!removeItemStack(inventory, itemStack.get(i)))
 			{

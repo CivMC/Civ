@@ -79,7 +79,7 @@ public class ProductionManager implements Manager
 			List<ProductionRecipe> recipes=production.getRecipes();
 			for (int i = 0; i < recipes.size(); i++)
 			{
-				bufferedWriter.append(String.valueOf(recipes.get(i).getNumber()));
+				bufferedWriter.append(String.valueOf(recipes.get(i).getTitle()));
 				bufferedWriter.append(",");
 			}
 			bufferedWriter.append(" ");
@@ -129,13 +129,13 @@ public class ProductionManager implements Manager
 		while ((line = bufferedReader.readLine()) != null)
 		{
 			String parts[] = line.split(" ");
-			//order: subFactoryType world central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
+			//order: subFactoryType recipes world central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
 			String subFactoryType = parts[0];
 			String recipeNumbers[] = parts[1].split(",");
 			List<ProductionRecipe> recipes=new ArrayList<ProductionRecipe>();
 			for(int i=0;i<recipeNumbers.length;i++)
 			{
-				recipes.add(FactoryModPlugin.productionRecipes.get(Integer.parseInt(recipeNumbers[i])-1));
+				recipes.add(FactoryModPlugin.productionRecipes.get(recipeNumbers[i]));
 			}
 			
 			Location centerLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
@@ -178,7 +178,7 @@ public class ProductionManager implements Manager
 			String subFactoryType = null;
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
-				HashMap<Integer, ItemStack> buildMaterials = entry.getValue().getBuildMaterials();
+				List<ItemStack> buildMaterials = entry.getValue().getBuildMaterials();
 				if(InventoryMethods.itemStacksMatch(chestInventory, buildMaterials))
 				{
 					subFactoryType = entry.getKey();
@@ -211,7 +211,7 @@ public class ProductionManager implements Manager
 			boolean hasMaterials = true;
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
-				HashMap<Integer, ItemStack> buildMaterials = entry.getValue().getBuildMaterials();
+				List<ItemStack> buildMaterials = entry.getValue().getBuildMaterials();
 				if(!InventoryMethods.areItemStacksAvilable(chestInventory, buildMaterials))
 				{
 					hasMaterials = false;

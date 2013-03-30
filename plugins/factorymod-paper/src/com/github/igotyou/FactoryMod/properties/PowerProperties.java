@@ -1,21 +1,22 @@
 package com.github.igotyou.FactoryMod.properties;
 
-import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.interfaces.Properties;
 
+
 public class PowerProperties implements Properties
 {
-	private HashMap<Integer, ItemStack> buildMaterials;
+	private List<ItemStack> buildMaterials;
 	
-	public PowerProperties(HashMap<Integer, ItemStack> buildMaterials)
+	public PowerProperties(List<ItemStack> buildMaterials)
 	{
 		this.buildMaterials = buildMaterials;
 	}
 	
-	public HashMap<Integer, ItemStack> getBuildMaterials() 
+	public List<ItemStack> getBuildMaterials() 
 	{
 		return buildMaterials;
 	}

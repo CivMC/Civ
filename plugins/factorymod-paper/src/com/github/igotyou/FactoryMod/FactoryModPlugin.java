@@ -13,6 +13,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.configuration.ConfigurationSection;
 
 import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
 import com.github.igotyou.FactoryMod.interfaces.Properties;
@@ -20,13 +21,15 @@ import com.github.igotyou.FactoryMod.listeners.BlockListener;
 import com.github.igotyou.FactoryMod.managers.FactoryModManager;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
+import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
+
 
 public class FactoryModPlugin extends JavaPlugin
 {
 
 	FactoryModManager manager;
 	public static HashMap<String, ProductionProperties> production_Properties;
-	public static List<ProductionRecipe> productionRecipes;
+	public static HashMap<String,ProductionRecipe> productionRecipes;
 	
 	public static final String VERSION = "v1.0"; //Current version of plugin
 	public static final String PLUGIN_NAME = "FactoryMod"; //Name of plugin
@@ -34,7 +37,6 @@ public class FactoryModPlugin extends JavaPlugin
 	public static final String PRODUCTION_SAVES_FILE = "productionSaves"; // The production saves file name
 	public static final int TICKS_PER_SECOND = 20; //The number of ticks per second
 	
-	public static int AMOUNT_OF_RECIPES_TO_REMOVE;
 	public static int PRODUCER_UPDATE_CYCLE;
 	public static boolean PRODUCTION_ENEABLED;
 	public static int SAVE_CYCLE;
@@ -76,15 +78,12 @@ public class FactoryModPlugin extends JavaPlugin
 	public void initConfig()
 	{
 		production_Properties = new HashMap<String, ProductionProperties>();
-		productionRecipes = new ArrayList<ProductionRecipe>();
+		productionRecipes = new HashMap<String,ProductionRecipe>();
 		FileConfiguration config = getConfig();
-		
 		this.saveDefaultConfig();
-		
+				
 		//how often should the managers save?
 		SAVE_CYCLE = config.getInt("general.save_cycle");
-		//how many vanila recipes should be removed?
-		AMOUNT_OF_RECIPES_TO_REMOVE = config.getInt("disabled_recipes.amount");
 		//what's the material of the center block of factorys?
 		CENTRAL_BLOCK_MATERIAL = Material.getMaterial(config.getString("general.central_block"));
 		//Return the build materials upon destruction of factory.
@@ -93,12 +92,16 @@ public class FactoryModPlugin extends JavaPlugin
 		CITADEL_ENABLED = config.getBoolean("general.citadel_enabled");
 		//what's the tool that we use to interact with the factorys?
 		FACTORY_INTERACTION_MATERIAL = Material.getMaterial(config.getString("general.factory_interaction_material"));
-		int g = 0;
+		
+		//How frequently factories are updated
+		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle");
+		
 		//loop trough all the vanilla recipes we want to disable
-		for (int i = 1; i <= FactoryModPlugin.AMOUNT_OF_RECIPES_TO_REMOVE; i++)
+		int g = 0;
+		Iterator<String> disabledRecipes=config.getDefaultSection().getStringList("disabled_recipes").iterator();
+		while(disabledRecipes.hasNext())
 		{
-	
-			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(config.getString(getPathToRecipe(i))));
+			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(disabledRecipes.next()));
 			List<Recipe> tempList = getServer().getRecipesFor(recipeItemStack);
 			for (int itterator = 0; itterator < tempList.size(); itterator ++)
 			{
@@ -108,266 +111,137 @@ public class FactoryModPlugin extends JavaPlugin
 
 		}
 		sendConsoleMessage(g + " recipes removed");
-		//how many production recipes are there?
-		AMOUNT_OF_PRODUCTION_RECIPES = config.getInt("production_recipes.amount");
-		//Temporarily store the indexs of the outputRecipes until all recipes are initliazed
-		ArrayList<ArrayList> outputRecipesNumbers=new ArrayList<ArrayList>(AMOUNT_OF_PRODUCTION_RECIPES);
-		//loop trough all production recipes
-		for (int i =1; i <= FactoryModPlugin.AMOUNT_OF_PRODUCTION_RECIPES; i++)
-		{
-			String recipeName = config.getString(getPathToProductionRecipe(i) + ".name");
-			
-			int productionTime;
-			try{
-				productionTime=config.getInt(getPathToProductionRecipe(i)  + ".production_time");
-			}
-			catch(Exception e)
-			{
-				productionTime=10;
-			}
-
-			HashMap<Integer, ItemStack> input = new HashMap<Integer, ItemStack>();
-			//if amount_of_material_inputs: = 0 or doesn't exist this for loop doesn't execute
-			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_material_inputs"); i1++)
-			{
-				//Gets data of the input, if it is not found data remains null and is discarded by ItemStack constructor
-				byte data=0;
-				try{
-					data=(byte) config.getInt(getPathToProductionRecipe(i) + ".input_data_" + String.valueOf(i1));
-				}
-				catch(Exception e){
-					data=0;
-				}
-				//Gets the amount of the input, if it is 0 a default of 1 is used
-				int amount = config.getInt(getPathToProductionRecipe(i) + ".input_amount_" + String.valueOf(i1));
-				if(amount==0)
-				{
-					amount=1;
-				}
-				//Gets new item name of the input, returns null if it fails which is handeled by createItemStack
-				String name=config.getString(getPathToProductionRecipe(i) + ".input_name_" + String.valueOf(i1));
-				//Gets item lore for the input, returns null if none exists which is handeled by createItemStack
-				String lore=config.getString(getPathToProductionRecipe(i) + ".input_lore_" + String.valueOf(i1));
-				//The correct error catch should be implemented here to stop program from crashing on an incorrect config file
-				Material material = Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".input_material_" + String.valueOf(i1)));
-				if (material == null && "NETHER_STALK".equals(config.getString(getPathToProductionRecipe(i) + ".input_material_" + String.valueOf(i1))))
-				{
-					material = Material.getMaterial(372);
-				}
-				//Places individual stacks at their max stack size in the input
-				int stackSize=material.getMaxStackSize();
-				while(amount > stackSize)
-				{
-					ItemStack itemStack =createItemStack(material, stackSize, (short) 0, data,name,lore);
-					input.put(input.size()+1, itemStack);					
-					amount = amount - stackSize;
-				}
-				ItemStack itemStack =createItemStack(material, amount, (short) 0, data,name,lore);
-				input.put(input.size()+1, itemStack);	
-			}
-			
-			
-					
-			
-			HashMap<Integer, ItemStack> output = new HashMap<Integer, ItemStack>();
-			//if amount_of_material_outputs: = 0 or doesn't exist this for loop doesn't execute
-			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_material_outputs"); i1++)
-			{
-				//Gets data of the output, if it is not found data remains null and is discarded by ItemStack constructor
-				byte data=0;
-				try{
-					data=(byte) config.getInt(getPathToProductionRecipe(i) + ".output_data_" + String.valueOf(i1));
-				}
-				catch(Exception e){
-					data=0;
-				}
-				//Gets durability of the output, returns a value of 0 (max) if none is found
-				short durability= (short) config.getInt(getPathToProductionRecipe(i) + ".durability_"+ String.valueOf(i1));
-				//Gets the amount of the output, if it is 0 a default of 1 is used
-				int amount = config.getInt(getPathToProductionRecipe(i) + ".output_amount_" + String.valueOf(i1));
-				if(amount==0)
-				{
-					amount=1;
-				}
-				//Gets new item name of the output, returns null if it fails which is handeled by createItemStack
-				String name=config.getString(getPathToProductionRecipe(i) + ".output_name_" + String.valueOf(i1));
-				//Gets item lore for the output, returns null if none exists which is handeled by createItemStack
-				String lore=config.getString(getPathToProductionRecipe(i) + ".output_lore_" + String.valueOf(i1));
-				//The correct error catch should be implemented here to stop program from crashing on an incorrect config file
-				Material material = Material.getMaterial(config.getString(getPathToProductionRecipe(i) + ".output_material_" + String.valueOf(i1)));
-				if (material == null && "NETHER_STALK".equals(config.getString(getPathToProductionRecipe(i) + ".output_material_" + String.valueOf(i1))))
-				{
-					material = Material.getMaterial(372);
-				}
-				//Places individual stacks at their max stack size in the output
-				int stackSize=material.getMaxStackSize();
-				while(amount > stackSize)
-				{
-					ItemStack itemStack =createItemStack(material, stackSize, (short) 0, data,name,lore);
-					output.put(output.size()+1, itemStack);					
-					amount = amount - stackSize;
-				}
-				ItemStack itemStack =createItemStack(material, amount, (short) 0, data,name,lore);
-				output.put(output.size()+1, itemStack);	
-			}
-			
-			ArrayList<Enchantment> enchantments=new ArrayList();
-			ArrayList<Integer> enchantmentLevels=new ArrayList();
-			ArrayList<Double> enchantmentProbabilities=new ArrayList();
-			for (int i1 = 1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_enchantments"); i1++)
-			{
-				Enchantment enchantment=Enchantment.getByName(config.getString(getPathToProductionRecipe(i) + ".enchantment_" + String.valueOf(i1)));
-				//Proceeds to the next enchant if a null enchantment was returned, likely due to an incorrect enchant name
-				if(enchantment==null)
-				{
-					continue;
-				}
-				enchantments.add(enchantment);
-				enchantmentLevels.add(config.getInt(getPathToProductionRecipe(i) + ".enchantment_level"+String.valueOf(i1)));
-				try
-				{
-					enchantmentProbabilities.add(config.getDouble(getPathToProductionRecipe(i) + ".enchantment_probability"+String.valueOf(i1)));
-				}
-				catch(Exception e)
-				{
-					enchantmentProbabilities.add(1.0);
-				}				
-			}
-			//Stores where recipes should point since some of the ProductionRecipe objects may not have been generated yet
-			ArrayList <Integer> currentRecipesNumbers=new ArrayList<Integer>();
-			for (int i1=1; i1 <= config.getInt(getPathToProductionRecipe(i) + ".amount_of_output_recipes");i1++)
-			{
-				currentRecipesNumbers.add(config.getInt(getPathToProductionRecipe(i) + ".output_recipe_" + String.valueOf(i1)));
-			}
-			outputRecipesNumbers.add(i-1,currentRecipesNumbers);
-			
-			//If use_once is not specified the method returns false by default
-			boolean useOnce = config.getBoolean(getPathToProductionRecipe(i) + ".use_once");
-			
-			//This may be sending lists of size 0, but it shouldn't be sending any null pointers.
-			ProductionRecipe recipe = new ProductionRecipe(input, output, recipeName, productionTime, i, useOnce,enchantments,enchantmentLevels,enchantmentProbabilities);
-			productionRecipes.add(recipe);
-
-		}
 		
+		//Import recipes from config.yml
+		ConfigurationSection configProdRecipes=config.getDefaultSection().getConfigurationSection("production_recipes");
+		//Temporary Storage array to store where recipes should point to each other
+		HashMap<ProductionRecipe,ArrayList> outputRecipes=new HashMap<ProductionRecipe,ArrayList>();
+		Iterator<String> recipeTitles=configProdRecipes.getKeys(false).iterator();
+		while (recipeTitles.hasNext())
+		{
+			//Section header in recipe file, also serves as unique identifier for the recipe
+			//All spaces are replaced with udnerscores so they don't disrupt saving format
+			//There should be a check for uniqueness of this identifier...
+			String title=recipeTitles.next();
+			ConfigurationSection configSection=configProdRecipes.getConfigurationSection(title);
+			title=title.replaceAll(" ","_");
+			//Display name of the recipe, Deafult of "Default Name"
+			String recipeName = configSection.getString("name","Default Name");
+			//Production time of the recipe, default of 1
+			int productionTime=configSection.getInt("production_time",1);
+			//Inputs of the recipe, empty of there are no inputs
+			List<ItemStack> inputs = getItems(configSection.getConfigurationSection("inputs"));
+			//Outputs of the recipe, empty of there are no inputs
+			List<ItemStack> outputs = getItems(configSection.getConfigurationSection("outputs"));
+			//Enchantments of the recipe, empty of there are no inputs
+			List<ProbabilisticEnchantment> enchantments=getEnchantments(configSection.getConfigurationSection("enchantments"));
+			//Whether this recipe can only be used once
+			boolean useOnce = configSection.getBoolean("use_once");
+			ProductionRecipe recipe = new ProductionRecipe(title,recipeName,productionTime,inputs,outputs,enchantments,useOnce);
+			productionRecipes.put(title,recipe);
+			//Store the titles of the recipes that this should point to
+			ArrayList <String> currentOutputRecipes=new ArrayList<String>();
+			currentOutputRecipes.addAll(configSection.getStringList("output_recipes"));
+			outputRecipes.put(recipe,currentOutputRecipes);
+		}
 		//Once ProductionRecipe objects have been created correctly insert different pointers
-		
-		for(int i=0; i<outputRecipesNumbers.size(); i++)
+		Iterator<ProductionRecipe> recipeIterator=outputRecipes.keySet().iterator();
+		while (recipeIterator.hasNext())
 		{
-			ArrayList <Integer> currentRecipeOutputNumbers=outputRecipesNumbers.get(i);
-			for(int i1=0; i1<currentRecipeOutputNumbers.size(); i1++)
+			ProductionRecipe recipe=recipeIterator.next();
+			Iterator<String> outputIterator=outputRecipes.get(recipe).iterator();
+			while(outputIterator.hasNext())
 			{
-				int outputRecipeIndex=((Integer)currentRecipeOutputNumbers.get(i1)).intValue()-1;
-				productionRecipes.get(i).addOutputRecipe(productionRecipes.get(outputRecipeIndex));
+				recipe.addOutputRecipe(productionRecipes.get(outputIterator.next()));
 			}
 		}
 		
-		AMOUNT_OF_PRODUCTION_FACTORY_TYPES = config.getInt("production_general.amount_of_factory_types");
-		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle");
-		for (int i = 1; i <=FactoryModPlugin.AMOUNT_OF_PRODUCTION_FACTORY_TYPES; i++)
-		{
-			HashMap<Integer, ItemStack> buildMaterials= new HashMap<Integer, ItemStack>();
-			List<ProductionRecipe> recipes = new ArrayList<ProductionRecipe>();
 		
-			String name = config.getString(getPathToFactory(i) + ".name");
-			String subFactoryType = config.getString(getPathToFactory(i) + ".sub_factory_type");
-			Material energyMaterial = Material.getMaterial(config.getString(getPathToFactory(i) + ".fuel_material"));
-			int fuelTime = config.getInt(getPathToFactory(i) + ".fuel_time");
-			int fuelConsumption = config.getInt(getPathToFactory(i) + ".fuel_consumption");
-			Byte fuelData = 0;
-			ItemStack fuelStack;
-			try
+		//Import factories from config.yml
+		ConfigurationSection configProdFactories=config.getDefaultSection().getConfigurationSection("production_factories");
+		Iterator<String> factoryTitles=configProdFactories.getKeys(false).iterator();
+		while(factoryTitles.hasNext())
+		{
+			String title=factoryTitles.next();
+			ConfigurationSection configSection=configProdFactories.getConfigurationSection(title);
+			title=title.replaceAll(" ","_");
+			String factoryName=configSection.getString("name","Default Name");
+			//Uses overpowered getItems method for consistency, should always return a list of size=1
+			//If no fuel is found, default to charcoal
+			ItemStack fuel;
+			List<ItemStack> fuelStack=getItems(configSection.getConfigurationSection("fuel"));
+			if(fuelStack.size()==0)
 			{
-				fuelData = (byte) config.getInt(getPathToFactory(i) + ".fuel_data");
-			}
-			catch (Exception e)
-			{
-				
-			}
-			if (fuelData != 0)
-			{
-				fuelStack = new ItemStack(energyMaterial, fuelConsumption, (short) 0, fuelData);
+				fuel=new ItemStack(Material.getMaterial("COAL"),1,(short)0,(byte) 1);
 			}
 			else
 			{
-				fuelStack = new ItemStack(energyMaterial, fuelConsumption);
+				fuel=fuelStack.get(0);
 			}
-			
-			
-			for (int i1 = 1; i1 <= config.getInt(getPathToFactory(i) + ".amount_of_build_materials"); i1++)
+			int fuelTime=configSection.getInt("fuel_time",1);
+			List<ItemStack> buildMaterials=getItems(configSection.getConfigurationSection("build_materials"));
+			List<ProductionRecipe> factoryRecipes=new ArrayList<ProductionRecipe>();
+			Iterator<String> ouputRecipeIterator=configSection.getStringList("production_recipes").iterator();
+			while (ouputRecipeIterator.hasNext())
 			{
-				Byte data = 0;
-				try
-				{
-					data = (byte) config.getInt(getPathToFactory(i) + ".build_data_" + String.valueOf(i1));
-				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
-				}
-				int amount = config.getInt(getPathToFactory(i) + ".build_amount_" + String.valueOf(i1));
-				Material material = Material.getMaterial(config.getString(getPathToFactory(i) + ".build_material_" + String.valueOf(i1)));
-				if (material == null && "NETHER_STALK".equals(config.getString(getPathToFactory(i) + ".build_material_" + String.valueOf(i1))))
-				{
-					material = Material.getMaterial(372);
-				}
-				int stackSize=material.getMaxStackSize();
-				if (amount > stackSize)
-				{
-					while(amount > stackSize)
-					{
-						if (data != 0)
-						{
-							ItemStack itemStack = new ItemStack(material, stackSize, (short) 0, data);
-							buildMaterials.put(buildMaterials.size()+1, itemStack);
-						}
-						else
-						{
-							ItemStack itemStack = new ItemStack(material, stackSize);
-							buildMaterials.put(buildMaterials.size()+1, itemStack);
-						}
-						amount -= stackSize;
-					}
-					if (data != 0)
-					{
-						ItemStack itemStack = new ItemStack(material, amount, (short) 0, data);
-						buildMaterials.put(buildMaterials.size()+1, itemStack);
-					}
-					else
-					{
-						ItemStack itemStack = new ItemStack(material, amount);
-						buildMaterials.put(buildMaterials.size()+1, itemStack);
-					}
-				}
-				else
-				{
-				if (data != 0)
-					{
-						ItemStack itemStack = new ItemStack(material, amount, (short) 0, data);
-						buildMaterials.put(buildMaterials.size()+1, itemStack);
-					}
-					else
-					{
-						if (material == Material.NETHER_WARTS)
-						{
-							ItemStack itemStack = new ItemStack(material, amount, (short) 0,(byte) 0);
-							buildMaterials.put(buildMaterials.size()+1, itemStack);
-						}
-						else
-						{
-							ItemStack itemStack = new ItemStack(material, amount);
-							buildMaterials.put(buildMaterials.size()+1, itemStack);
-						}
-					}
-				}
+				factoryRecipes.add(productionRecipes.get(ouputRecipeIterator.next()));
 			}
-			for(int i1 = 1; i1 <= config.getInt(getPathToFactory(i) + ".amount_of_production_recipes"); i1++)
-			{
-				recipes.add(productionRecipes.get(config.getInt(getPathToFactory(i) + ".recipe_" + String.valueOf(i1)) - 1));
-			}
-			ProductionProperties productionProperties = new ProductionProperties(buildMaterials, recipes, fuelStack, fuelTime, name);
-			production_Properties.put(subFactoryType, productionProperties);
+			ProductionProperties productionProperties = new ProductionProperties(buildMaterials, factoryRecipes, fuel, fuelTime, factoryName);
+			production_Properties.put(title, productionProperties);
 		}
+	}
+	private List<ProbabilisticEnchantment> getEnchantments(ConfigurationSection configEnchantments)
+	{
+		List<ProbabilisticEnchantment> enchantments=new ArrayList<ProbabilisticEnchantment>();
+		if(configEnchantments!=null)
+		{
+			Iterator<String> names=configEnchantments.getKeys(false).iterator();
+
+			while (names.hasNext())
+			{
+				String name=names.next();
+				ConfigurationSection configEnchantment=configEnchantments.getConfigurationSection(name);
+				int level=configEnchantment.getInt("level",1);
+				double probability=configEnchantment.getDouble("probability",1.0);
+				ProbabilisticEnchantment enchantment=new ProbabilisticEnchantment(name,level,probability);
+				enchantments.add(enchantment);
+			}
+		}
+		return enchantments;
+	}
+	private List<ItemStack> getItems(ConfigurationSection configItems)
+	{
+		List<ItemStack> items=new ArrayList<ItemStack>();
+		if(configItems!=null)
+		{
+			Iterator<String> itemNames=configItems.getKeys(false).iterator();
+			while(itemNames.hasNext())
+			{
+				
+				String name=itemNames.next();
+				ConfigurationSection configItem= configItems.getConfigurationSection(name);
+				int amount=configItem.getInt("amount",1);
+				byte data=(byte)configItem.getInt("data",0);
+				short damage=(short)configItem.getInt("durability",0);
+				String displayName=configItem.getString("display_name");
+				String lore=configItem.getString("lore");
+				Material material = Material.getMaterial(name);
+				if (material == null && "NETHER_STALK".equals(name))
+					{
+						material = Material.getMaterial(372);
+					}
+				int stackSize=material.getMaxStackSize();
+				while(amount>stackSize)
+				{
+					ItemStack itemStack =createItemStack(material,stackSize,damage,data,displayName,lore);
+					items.add(itemStack);					
+					amount = amount - stackSize;	
+				}
+				ItemStack itemStack =createItemStack(material,amount,damage,data,displayName,lore);
+				items.add(itemStack);
+			}
+		}
+		return items;
 	}
 	
 	private ItemStack createItemStack(Material material,int stackSize,short durability,byte data,String name,String loreString)

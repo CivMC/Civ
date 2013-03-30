@@ -6,129 +6,101 @@ general:
   factory_interaction_material: STICK
 
 disabled_recipes:
-  amount: 35
-  recipe_1: DIAMOND_HELMET
-  recipe_2: DIAMOND_CHESTPLATE
-  recipe_3: DIAMOND_LEGGINGS
-  recipe_4: DIAMOND_BOOTS
-  recipe_5: IRON_PICKAXE
-  recipe_6: IRON_AXE
-  recipe_7: IRON_HOE
-  recipe_8: SHEARS
-  recipe_9: MOSSY_COBBLESTONE
-  recipe_10: LEATHER_HELMET
-  recipe_11: LEATHER_CHESTPLATE
-  recipe_12: LEATHER_LEGGINGS
-  recipe_13: LEATHER_BOOTS
-  recipe_14: IRON_SWORD
-  recipe_15: BOW
-  recipe_16: IRON_HELMET
-  recipe_17: IRON_CHESTPLATE
-  recipe_18: IRON_LEGGINGS
-  recipe_19: IRON_BOOTS
-  recipe_20: ENCHANTMENT_TABLE
-  recipe_21: ANVIL
-  recipe_22: GOLD_HELMET
-  recipe_23: GOLD_CHESTPLATE
-  recipe_24: GOLD_LEGGINGS
-  recipe_25: GOLD_BOOTS
-  recipe_26: BREWING_STAND
-  recipe_27: IRON_SPADE
-  recipe_28: DIAMOND_SWORD
-  recipe_29: DIAMOND_SPADE
-  recipe_30: DIAMOND_PICKAXE
-  recipe_31: DIAMOND_AXE
-  recipe_32: GOLD_SWORD
-  recipe_33: GOLD_SPADE
-  recipe_34: GOLD_PICKAXE
-  recipe_35: GOLD_AXE
-  
+  - DIAMOND_HELMET
+  - DIAMOND_CHESTPLATE
+  - DIAMOND_LEGGINGS
+  - DIAMOND_BOOTS
+  - IRON_PICKAXE
+  - IRON_AXE
 
+production_general:
+  update_cycle: 20
+
+#Example entry with defaults included any section should be able to be excluded
+# TITLE: (Don't use spaces, should be a unique identifier)
+#   name: Default Name (Displayed name to user)
+#   production_time: 1 (Time to produce the recipe)
+#   inputs: (only include if there are inputs)
+#     MATERIAL_NAME: (Official bukkit material name)
+#       amount: 1 (number of a particular input)
+#       durability: 0 (damage value, 0 represents max durability)
+#       data: 0 (data value of the item stack
+#       display_name: (display name of the item, null by default)
+#       lore: (lore of the item, null by default)
+#   outputs: (only include if there are outputs)
+#     MATERIAL_NAME: (Official bukkit material name)
+#       amount: 1 (number of a particular input)
+#       durability: 0 (damage value, 0 represents max durability)
+#       data: 0 (data value of the item stack
+#       display_name: (display name of the item, null by default)
+#       lore: (lore of the item, null by default)
+#   enchantments:
+#     ENCHANTMENT_NAME: (Offificial bukkit enchantment name)
+#       level: 1 (level of the enchantment
+#       probability: 1 (0-1 probability of the enchantment being applied)
+#   output_recipes:
+#     - TITLE (TITLE of the output recipe)
+#   use_once: false (If this recipe is removed after its first use)
 
 production_recipes:
-  
-#amount: number of recipes
-#recipe_1: must be a sequential list of 'recipe_#'
-#  name: Common Name - Required
-#  production_time: time to produce=#*tps/update_cycle - Defualt of 10
-#  amount_of_material_inputs: number of inputs - Defualt 0
-#  input_material_1: input 1 of recipe - Required if <# of inputs 
-#  input_amount_1: amount of input 1 - Required if <=# of inputs
-#  input_data_1: _______________________ - Default of 0
-#  input_lore_1: 
-#  input_name_1: 
-#  amount_of_material_outputs: number of outputs - Defualt 0
-#  output_material_1: output 1 of recipe - Required if <# of inputs 
-#  output_amount_1: amount of input 1 - Default of 0
-#  output_data_1: _______________________ - Default of 0
-#  output_durability_1: durability of output - Default of 0
-#  output_lore_1:
-#  output_name_1:
-#  amounts_of_enchanments: number of enchantments applied to output - Defualt of 0
-#  enchantment_1: enchantment 1 of output - Required if <=# of enchantments
-#  enchantment_level_1: level of enchantment 1 - Required if <=# of enchantments
-#  enchantment_probability_1: probability of enchantment 1 - Default of 1
-#  amount_of_output_recipes: number of output recipes - Default of 0
-#  output_recipe_1: # of output recipe '2' - Requied if <=# of output_recipes
-#  use_once: dictates if recipe can be used more than once - Default of false
+  TEST1:
+    name: test1
+    production_time: 1
+    inputs:
+      STONE:
+        amount: 1
+    outputs:
+      STONE:
+        amount: 1
+        lore: ouput!
+    enchantments:
+      PROTECTION_ENVIRONMENTAL:
+        level: 1
+        probability: 1
+    useonce: true
+  TEST2:
+    name: test2
+    production_time: 1
+    inputs:
+      STONE:
+        amount: 1
+        lore: ouput!
+    output_recipes:
+      - TEST3
+  TEST3:
+    name: test3
 
-  amount: 5
-  recipe_1:
-    name: Pots
-    production_time: 2
-    amount_of_material_inputs: 1
-    input_material_1: STONE
-    input_amount_1: 1
-    amount_of_material_outputs: 1
-    output_material_1: STONE
-    output_name_1: SUPER STONE!
-    output_lore_1: testing lore now 1 1 1
-  recipe_2:
-    name: Lore
-    production_time: 2
-    amount_of_material_inputs: 1
-    input_material_1: STONE
-    input_amount_1: 1
-    input_name_1: SUPER STONE!
-    input_lore_1: testing lore now 1 1 1
-    amount_of_material_outputs: 1
-    output_material_1: STONE
-    
-production_general:
-  
-  #update_cycle: period of ticks between updates of factories - Required
-  #amount_of_factory_types: # of different production factories - Required
-  #factory_1: first factory, must be continous sequential labeling - Required
-  #  name: comme name - Requied
-  #  sub_factory_type: offical code name - Required
-  #  fuel_material: type of fuel consumed - Required
-  #    (charcoal is COAL with fuel_data: 1)
-  #  fuel_time: Amount of time required to consume fuel - Requiered
-  #  fuel_consumption: Amount of fuel consumed in a cycle (I think) - Required
-  #  fueld_data: ________________________ - Deafult of 0
-  #  amount_of_build_materials: number of inputs - Required >=1
-  #  build_material_1: input material - Required for <=# of inputs
-  #  build_amount_1: number of input material 1 - Required for <=# of inputs
-  #  build_data_1: ______________________ - Default of 0
-  #  amount_of_production_recipes: number of starting recipes - Reqruied
-  #  recipe_1: starting recipe_1, refers to title of recipes - Required if <=#
-  
-  update_cycle: 20
-  amount_of_factory_types: 1
-  
-  factory_1:
+# TITLE: (Don't use spaces, should be a unique identifier)
+#   name: Default Name (Displayed name to user)
+#   production_time: 1 (Time to produce the recipe)
+#   fuel: (Defaults to charcoal if not present)
+#     MATERIAL_NAME: (Official bukkit material name)
+#       amount: 1 (number of a particular input)
+#       durability: 0 (damage value, 0 represents max durability)
+#       data: 0 (data value of the item stack
+#       display_name: (display name of the item, null by default)
+#       lore: (lore of the item, null by default)
+#   fuel_time: 1 (Time that a piece of fuel lasts)
+#   build_materials: (required)
+#     MATERIAL_NAME: (Official bukkit material name)
+#       amount: 1 (number of a particular input)
+#       durability: 0 (damage value, 0 represents max durability)
+#       data: 0 (data value of the item stack
+#       display_name: (display name of the item, null by default)
+#       lore: (lore of the item, null by default)
+#     production_recipes:
+#       - TITLE (title of recipe)
+production_factories:  
+  WORKSHOP:
     name: Workshop
-    sub_factory_type: WORKSHOP
-    fuel_material: COAL
-    fuel_time: 2
-    fuel_consumption: 1
-    fuel_data: 1
-    amount_of_build_materials: 2
-    build_material_1: STONE
-    build_amount_1: 2
-    build_material_2: IRON_INGOT
-    build_amount_2: 1
-    amount_of_production_recipes: 2
-    recipe_1: 1
-    recipe_2: 2
-
+    fuel:
+      COAL:
+        amount: 1
+        data: 1
+    fuel_time: 1
+    build_materials:
+      STONE:
+        amount: 1
+    production_recipes:
+      - TEST1
+      - TEST2

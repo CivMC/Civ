@@ -103,7 +103,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 				{
 					if (InventoryMethods.removeItemStacks(getInventory(), currentRecipe.getInput()))
 					{
-						for (int i = 1;i <=currentRecipe.getOutput().size();i++)
+						for (int i = 0;i <currentRecipe.getOutput().size();i++)
 						{
 							ItemStack itemStack = currentRecipe.getOutput().get(i);
 							if (currentRecipe.getEnchantments().size()>0)

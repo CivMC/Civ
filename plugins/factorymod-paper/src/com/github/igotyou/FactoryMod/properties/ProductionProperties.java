@@ -10,13 +10,13 @@ import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 
 public class ProductionProperties implements Properties
 {
-	private HashMap<Integer, ItemStack> buildMaterials;
+	private List<ItemStack> buildMaterials;
 	private List<ProductionRecipe> recipes;
 	ItemStack energyMaterial;
 	int energyTime;
 	String name;
 	
-	public ProductionProperties(HashMap<Integer, ItemStack> buildMaterials, List<ProductionRecipe> recipes,
+	public ProductionProperties(List<ItemStack> buildMaterials, List<ProductionRecipe> recipes,
 			ItemStack energyMaterial, int energyTime, String name)
 	{
 		this.buildMaterials = buildMaterials;
@@ -26,7 +26,7 @@ public class ProductionProperties implements Properties
 		this.name = name;
 	}
 
-	public HashMap<Integer, ItemStack> getBuildMaterials() 
+	public List<ItemStack> getBuildMaterials() 
 	{
 		return buildMaterials;
 	}
