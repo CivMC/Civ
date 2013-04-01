@@ -53,6 +53,38 @@ import com.untamedears.citadel.entity.ReinforcementMaterial;
 public class BlockListener implements Listener {
 
     /**
+     * This handles the BlockPlaceEvent to disallow placing signs directly above unaccessable chests
+     *
+     * @param bpe BlockPlaceEvent
+     */
+	@EventHandler(ignoreCancelled = true)
+	public void onBlockPlace( BlockPlaceEvent bpe ) {
+		// See if block is a sign.
+		Block block = bpe.getBlockPlaced();
+		if( block.getType() != Material.WALL_SIGN ) {
+			return;
+		}
+		// See if block below is a chest
+		Block below = block.getRelative(0, -1, 0);
+		if( below.getType() != Material.CHEST ) {
+			return;
+		}
+
+		// Finally check and see if the chest is reinforced.
+        IReinforcement reinforcement = AccessDelegate.getDelegate(below).getReinforcement();
+        PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+        // Return if this is a natural reinforcement
+        if( null == pr ) {
+        	return;
+        }
+
+        // And cancel the event (sign placement) if the user can't access the reinforced chest below
+    	if( false == pr.isAccessible(bpe.getPlayer().getName()) ) {
+    		bpe.setCancelled( true );
+    	}
+	}
+	
+    /**
      * This handles the BlockPlaceEvent for Fortification mode (all placed blocks are reinforced)
      *
      * @param bpe BlockPlaceEvent
