@@ -13,6 +13,7 @@ import static com.untamedears.citadel.Utility.sendThrottledMessage;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -59,6 +60,541 @@ public class BlockListener implements Listener {
      */
     @EventHandler(ignoreCancelled = true)
     public void placeFortifiedBlock(BlockPlaceEvent bpe) {
+    	// Do an initial check to see if we need to worry about physical shop interaction.
+    	if( Bukkit.getPluginManager().isPluginEnabled("PhysicalShop")) {
+    		// See if block is a sign.
+    		Block block = bpe.getBlockPlaced();
+    		if(block.getType() == Material.WALL_SIGN ) {
+        		Block below = block.getRelative(0, -1, 0);
+	    		if(below.getType() == Material.CHEST) {
+	    		    IReinforcement reinforcement = AccessDelegate.getDelegate(below).getReinforcement();
+	    		    if( null != reinforcement ) {
+		                if( reinforcement instanceof PlayerReinforcement ) {
+		                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+		                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+		                		bpe.setCancelled( true );
+		                		// we're done here.
+		                		return;
+		                	}
+		                }
+	    		    }
+	    		}
+    		}
+    	}
+    	Block block = bpe.getBlockPlaced();
+    	if (block.getType() == Material.HOPPER){
+    		Block below = block.getRelative(0, -1, 0);
+    		if(below.getType() == Material.CHEST) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(below).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(below.getType()== Material.FURNACE){
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(below).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(below.getType() == Material.HOPPER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(below).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(below.getType() == Material.DISPENSER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(below).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(below.getType() == Material.DROPPER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(below).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(below.getType() == Material.BREWING_STAND) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(below).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		Block x = block.getRelative(-1, 0, 0);
+    		if(x.getType() == Material.CHEST) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(x).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(x.getType()== Material.FURNACE){
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(x).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(x.getType() == Material.HOPPER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(x).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(x.getType() == Material.DISPENSER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(x).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(x.getType() == Material.DROPPER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(x).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(x.getType() == Material.BREWING_STAND) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(x).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		Block xx = block.getRelative(1, 0, 0);
+    		if(xx.getType() == Material.CHEST) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(xx).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(xx.getType()== Material.FURNACE){
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(xx).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(xx.getType() == Material.HOPPER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(xx).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(xx.getType() == Material.DISPENSER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(xx).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(xx.getType() == Material.DROPPER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(xx).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(xx.getType() == Material.BREWING_STAND) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(xx).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		Block z = block.getRelative(0, 0, -1);
+    		if(z.getType() == Material.CHEST) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(z).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(z.getType()== Material.FURNACE){
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(z).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(z.getType() == Material.HOPPER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(z).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(z.getType() == Material.DISPENSER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(z).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(z.getType() == Material.DROPPER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(z).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(z.getType() == Material.BREWING_STAND) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(z).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		Block zz = block.getRelative(0, 0, 1);
+    		if(zz.getType() == Material.CHEST) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(zz).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(zz.getType()== Material.FURNACE){
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(zz).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(zz.getType() == Material.HOPPER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(zz).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(zz.getType() == Material.DISPENSER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(zz).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(zz.getType() == Material.DROPPER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(zz).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(zz.getType() == Material.BREWING_STAND) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(zz).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		Block above = block.getRelative(0, 1, 0);
+    		if(above.getType() == Material.CHEST) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(above).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(above.getType()== Material.FURNACE){
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(above).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(above.getType() == Material.HOPPER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(above).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(above.getType() == Material.DISPENSER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(above).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(above.getType() == Material.DROPPER) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(above).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    		if(above.getType() == Material.BREWING_STAND) {
+    			IReinforcement reinforcement = AccessDelegate.getDelegate(above).getReinforcement();
+    		    if( null != reinforcement ) {
+	                if( reinforcement instanceof PlayerReinforcement ) {
+	                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+	                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+	                		bpe.setCancelled( true );
+	                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+	                		// we're done here.
+	                		return;
+	                	}
+	                }
+    		    }
+    		}
+    	}
+    	
         Player player = bpe.getPlayer();
         PlayerState state = PlayerState.get(player);
         Faction group = state.getFaction();
@@ -76,7 +612,7 @@ public class BlockListener implements Listener {
             return;
         }
 
-        Block block = bpe.getBlockPlaced();
+       
         PlayerInventory inventory = player.getInventory();
 
         ReinforcementMaterial material = state.getReinforcementMaterial();
