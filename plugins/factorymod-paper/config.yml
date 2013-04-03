@@ -1,26 +1,15 @@
-general:
-  central_block: WORKBENCH
-  save_cycle: 15
-  return_build_materials: false
-  citadel_enabled: false
-  factory_interaction_material: STICK
-
-disabled_recipes:
-  - DIAMOND_HELMET
-  - DIAMOND_CHESTPLATE
-  - DIAMOND_LEGGINGS
-  - DIAMOND_BOOTS
-  - IRON_PICKAXE
-  - IRON_AXE
-
-production_general:
-  update_cycle: 20
-
-#Example entry with defaults included any section should be able to be excluded
+#Example recipe entry with defaults included any section should be able to be excluded
 # TITLE: (Don't use spaces, should be a unique identifier)
 #   name: Default Name (Displayed name to user)
 #   production_time: 1 (Time to produce the recipe)
 #   inputs: (only include if there are inputs)
+#     MATERIAL_NAME: (Official bukkit material name)
+#       amount: 1 (number of a particular input)
+#       durability: 0 (damage value, 0 represents max durability)
+#       data: 0 (data value of the item stack
+#       display_name: (display name of the item, null by default)
+#       lore: (lore of the item, null by default)
+#   upgrades: (only include if there are inputs)
 #     MATERIAL_NAME: (Official bukkit material name)
 #       amount: 1 (number of a particular input)
 #       durability: 0 (damage value, 0 represents max durability)
@@ -41,35 +30,8 @@ production_general:
 #   output_recipes:
 #     - TITLE (TITLE of the output recipe)
 #   use_once: false (If this recipe is removed after its first use)
-
-production_recipes:
-  TEST1:
-    name: test1
-    production_time: 1
-    inputs:
-      STONE:
-        amount: 1
-    outputs:
-      STONE:
-        amount: 1
-        lore: ouput!
-    enchantments:
-      PROTECTION_ENVIRONMENTAL:
-        level: 1
-        probability: 1
-    useonce: true
-  TEST2:
-    name: test2
-    production_time: 1
-    inputs:
-      STONE:
-        amount: 1
-        lore: ouput!
-    output_recipes:
-      - TEST3
-  TEST3:
-    name: test3
-
+######################################################################
+#Example factory entry with defaults included any section should be able to be excluded
 # TITLE: (Don't use spaces, should be a unique identifier)
 #   name: Default Name (Displayed name to user)
 #   production_time: 1 (Time to produce the recipe)
@@ -90,6 +52,47 @@ production_recipes:
 #       lore: (lore of the item, null by default)
 #     production_recipes:
 #       - TITLE (title of recipe)
+general:
+  central_block: WORKBENCH
+  save_cycle: 15
+  return_build_materials: false
+  citadel_enabled: false
+  factory_interaction_material: STICK
+disabled_recipes:
+  - DIAMOND_HELMET
+  - DIAMOND_CHESTPLATE
+  - DIAMOND_LEGGINGS
+  - DIAMOND_BOOTS
+  - IRON_PICKAXE
+  - IRON_AXE
+production_general:
+  update_cycle: 20
+production_recipes:
+  TEST1:
+    name: test1
+    production_time: 1
+    inputs:
+      STONE:
+    outputs:
+      STONE:
+        amount: 2
+        lore: ouput!
+    enchantments:
+      PROTECTION_ENVIRONMENTAL:
+        level: 1
+        probability: 1
+    useonce: true
+  TEST2:
+    name: test2
+    production_time: 1
+    inputs:
+      STONE:
+        amount: 4
+        lore: ouput!
+    output_recipes:
+      - TEST3
+  TEST3:
+    name: test3
 production_factories:  
   WORKSHOP:
     name: Workshop
@@ -100,7 +103,7 @@ production_factories:
     fuel_time: 1
     build_materials:
       STONE:
-        amount: 1
+        amount: 5
     production_recipes:
       - TEST1
       - TEST2

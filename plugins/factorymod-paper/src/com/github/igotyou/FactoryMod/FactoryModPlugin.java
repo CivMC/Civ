@@ -46,6 +46,7 @@ public class FactoryModPlugin extends JavaPlugin
 	public static boolean RETURN_BUILD_MATERIALS;
 	public static boolean CITADEL_ENABLED;
 	public static Material FACTORY_INTERACTION_MATERIAL;
+	public static boolean DESTRUCTIBLE_FACTORIES;
 	
 	public void onEnable()
 	{
@@ -80,8 +81,10 @@ public class FactoryModPlugin extends JavaPlugin
 		production_Properties = new HashMap<String, ProductionProperties>();
 		productionRecipes = new HashMap<String,ProductionRecipe>();
 		FileConfiguration config = getConfig();
+		
 		this.saveDefaultConfig();
-				
+		this.reloadConfig();
+		config = getConfig();
 		//how often should the managers save?
 		SAVE_CYCLE = config.getInt("general.save_cycle");
 		//what's the material of the center block of factorys?
@@ -95,10 +98,11 @@ public class FactoryModPlugin extends JavaPlugin
 		
 		//How frequently factories are updated
 		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle");
-		
+		//If factories are removed upon destruction of their blocks
+		DESTRUCTIBLE_FACTORIES=false;		
 		//loop trough all the vanilla recipes we want to disable
 		int g = 0;
-		Iterator<String> disabledRecipes=config.getDefaultSection().getStringList("disabled_recipes").iterator();
+		Iterator<String> disabledRecipes=config.getStringList("disabled_recipes").iterator();
 		while(disabledRecipes.hasNext())
 		{
 			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(disabledRecipes.next()));
@@ -113,7 +117,7 @@ public class FactoryModPlugin extends JavaPlugin
 		sendConsoleMessage(g + " recipes removed");
 		
 		//Import recipes from config.yml
-		ConfigurationSection configProdRecipes=config.getDefaultSection().getConfigurationSection("production_recipes");
+		ConfigurationSection configProdRecipes=config.getConfigurationSection("production_recipes");
 		//Temporary Storage array to store where recipes should point to each other
 		HashMap<ProductionRecipe,ArrayList> outputRecipes=new HashMap<ProductionRecipe,ArrayList>();
 		Iterator<String> recipeTitles=configProdRecipes.getKeys(false).iterator();
@@ -131,13 +135,15 @@ public class FactoryModPlugin extends JavaPlugin
 			int productionTime=configSection.getInt("production_time",1);
 			//Inputs of the recipe, empty of there are no inputs
 			List<ItemStack> inputs = getItems(configSection.getConfigurationSection("inputs"));
+			//Inputs of the recipe, empty of there are no inputs
+			List<ItemStack> upgrades = getItems(configSection.getConfigurationSection("upgrade"));
 			//Outputs of the recipe, empty of there are no inputs
 			List<ItemStack> outputs = getItems(configSection.getConfigurationSection("outputs"));
 			//Enchantments of the recipe, empty of there are no inputs
 			List<ProbabilisticEnchantment> enchantments=getEnchantments(configSection.getConfigurationSection("enchantments"));
 			//Whether this recipe can only be used once
 			boolean useOnce = configSection.getBoolean("use_once");
-			ProductionRecipe recipe = new ProductionRecipe(title,recipeName,productionTime,inputs,outputs,enchantments,useOnce);
+			ProductionRecipe recipe = new ProductionRecipe(title,recipeName,productionTime,inputs,upgrades,outputs,enchantments,useOnce);
 			productionRecipes.put(title,recipe);
 			//Store the titles of the recipes that this should point to
 			ArrayList <String> currentOutputRecipes=new ArrayList<String>();
@@ -158,7 +164,7 @@ public class FactoryModPlugin extends JavaPlugin
 		
 		
 		//Import factories from config.yml
-		ConfigurationSection configProdFactories=config.getDefaultSection().getConfigurationSection("production_factories");
+		ConfigurationSection configProdFactories=config.getConfigurationSection("production_factories");
 		Iterator<String> factoryTitles=configProdFactories.getKeys(false).iterator();
 		while(factoryTitles.hasNext())
 		{
@@ -263,21 +269,6 @@ public class FactoryModPlugin extends JavaPlugin
 		itemStack.setItemMeta(meta);
 		return itemStack;
 			
-	}
-	
-	private String getPathToRecipe(int i)
-	{
-		return "disabled_recipes.recipe_" + String.valueOf(i);
-	}
-	
-	private String getPathToProductionRecipe(int i)
-	{
-		return "production_recipes.recipe_" + String.valueOf(i);
-	}
-	
-	private String getPathToFactory(int i)
-	{
-		return "production_general.factory_" + String.valueOf(i);
 	}
 	
 	private void removeRecipe(Recipe removalRecipe)

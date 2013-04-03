@@ -261,13 +261,23 @@ public class ProductionManager implements Manager
 		}
 		return null;
 	}
-
+	
 	public boolean factoryExistsAt(Location factoryLocation) 
 	{
 		boolean returnValue = false;
 		if (getFactory(factoryLocation) != null)
 		{
 			returnValue = true;
+		}
+		return returnValue;
+	}
+	
+	public boolean factoryWholeAt(Location factoryLocation) 
+	{
+		boolean returnValue = false;
+		if (getFactory(factoryLocation) != null)
+		{
+			returnValue = getFactory(factoryLocation).isWhole();
 		}
 		return returnValue;
 	}

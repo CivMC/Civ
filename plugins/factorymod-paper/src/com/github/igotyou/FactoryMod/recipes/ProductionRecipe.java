@@ -17,18 +17,20 @@ public class ProductionRecipe implements Recipe
 	private String recipeName;
 	private int productionTime;
 	private List<ItemStack> inputs;
+	private List<ItemStack> upgrades;
 	private List<ItemStack> outputs;
 	private List<ProductionRecipe> outputRecipes;
 	private List<ProbabilisticEnchantment> enchantments;
 	private boolean useOnce;
 	
 	public ProductionRecipe(String title,String recipeName,int productionTime,List<ItemStack> inputs,
-		List<ItemStack> outputs,List<ProbabilisticEnchantment> enchantments,boolean useOnce)
+		List<ItemStack> upgrades,List<ItemStack> outputs,List<ProbabilisticEnchantment> enchantments,boolean useOnce)
 	{
 		this.title=title;
 		this.recipeName = recipeName;
 		this.productionTime = productionTime;
 		this.inputs = inputs;
+		this.upgrades=upgrades;
 		this.outputs = outputs;
 		this.outputRecipes=new ArrayList<ProductionRecipe>();
 		this.enchantments=enchantments;
@@ -40,16 +42,21 @@ public class ProductionRecipe implements Recipe
 		this.outputRecipes.add(outputRecipe);
 	}
 
-	public List<ItemStack> getOutput() 
-	{
-		return outputs;
-	}
-
 	public List<ItemStack> getInput()
 	{
 		return inputs;
 	}
 	
+	public List<ItemStack> getUpgrades()
+	{
+		return upgrades;
+	}
+	
+	public List<ItemStack> getOutput() 
+	{
+		return outputs;
+	}
+
 	public HashMap<Enchantment, Integer> getEnchantments()
 	{
 		HashMap<Enchantment, Integer> randomEnchantments = new HashMap<Enchantment, Integer>();

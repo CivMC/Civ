@@ -67,7 +67,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 		if (active)
 		{
 			//if the materials required to produce the current recipe are in the factory inventory
-			if (InventoryMethods.areItemStacksAvilable(getInventory(), currentRecipe.getInput()))
+			if (InventoryMethods.areItemStacksAvilable(getInventory(), currentRecipe.getInput()));
 			{
 				//if the factory has been working for less than the required time for the recipe
 				if (currentProductionTimer < currentRecipe.getProductionTime())
@@ -169,20 +169,23 @@ public class ProductionFactory extends FactoryObject implements Factory
 	 */
 	public void powerOff() 
 	{
-		//lots of code to make the furnace turn off, without loosing contents.
-		Furnace furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();
-		byte data = furnace.getData().getData();
-		ItemStack[] oldContents = furnace.getInventory().getContents();
-		furnace.getInventory().clear();
-		factoryPowerSourceLocation.getBlock().setType(Material.FURNACE);
-		furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();
-		furnace.setRawData(data);
-		furnace.update();
-		furnace.getInventory().setContents(oldContents);
-		//put active to false
-		active = false;
-		//reset the production timer
-		currentProductionTimer = 0;
+		if(active)
+		{
+			//lots of code to make the furnace turn off, without loosing contents.
+			Furnace furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();
+			byte data = furnace.getData().getData();
+			ItemStack[] oldContents = furnace.getInventory().getContents();
+			furnace.getInventory().clear();
+			factoryPowerSourceLocation.getBlock().setType(Material.FURNACE);
+			furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();
+			furnace.setRawData(data);
+			furnace.update();
+			furnace.getInventory().setContents(oldContents);
+			//put active to false
+			active = false;
+			//reset the production timer
+			currentProductionTimer = 0;
+		}
 	}
 
 	/**
@@ -335,7 +338,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 		//Turn the factory off.
 		powerOff();
 		//Return the build materials?
-		if (FactoryModPlugin.RETURN_BUILD_MATERIALS)
+		if (FactoryModPlugin.RETURN_BUILD_MATERIALS&&FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
 		{
 			for (int i = 1; i <= productionFactoryProperties.getBuildMaterials().size(); i++)
 			{

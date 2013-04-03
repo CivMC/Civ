@@ -1,4 +1,6 @@
 package com.github.igotyou.FactoryMod;
+import com.github.igotyou.FactoryMod.FactoryModPlugin;
+
 
 import org.bukkit.Location;
 import org.bukkit.block.Chest;
@@ -56,7 +58,10 @@ public class FactoryObject
 		this.factoryType = factoryType;
 		this.subFactoryType = subFactoryType;
 		this.upgraded = false;
-		initializeInventory();
+		if (this.isWhole())
+		{
+			initializeInventory();
+		}
 		updateProperties();
 	}
 
@@ -73,7 +78,10 @@ public class FactoryObject
 		this.factoryType = factoryType;
 		this.subFactoryType = subFactoryType;
 		this.upgraded = false;
-		initializeInventory();
+		if (this.isWhole())
+		{
+			initializeInventory();
+		}
 		updateProperties();
 	}
 	
@@ -97,6 +105,10 @@ public class FactoryObject
 	/**
 	 * Initializes the inventory for this factory
 	 */
+	//Due to non-destructable factories this will not have been called on reconstructed factories
+	//however I am unable to find a use for this method in the current code, so it doesn't
+	//seem to be an issue right now, maybe  the calls in the constructor should be gotten rid of
+	//all methods that get the inventory reinitialize the contents.
 	public void initializeInventory()
 	{
 		switch(factoryType)
@@ -183,5 +195,26 @@ public class FactoryObject
 	public boolean getActive()
 	{
 		return active;
+	}
+	
+	/**
+	 * returns true if all factory blocks are occupied with the correct blocks
+	 */
+	public boolean isWhole()
+	{
+	//Check if power source exists
+	if(factoryPowerSourceLocation.getBlock().getType().getId()== 61 || factoryPowerSourceLocation.getBlock().getType().getId()== 62)
+	{
+		//Check inventory location
+		if(factoryInventoryLocation.getBlock().getType().getId()== 54) 	
+		{
+			//Check Interaction block location
+			if(factoryLocation.getBlock().getType().getId()==FactoryModPlugin.CENTRAL_BLOCK_MATERIAL.getId())
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 	}
 }

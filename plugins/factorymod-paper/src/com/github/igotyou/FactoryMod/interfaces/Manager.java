@@ -60,6 +60,11 @@ public interface Manager
 * Returns whether a machine exists at the given location
 */
 	public boolean factoryExistsAt(Location factoryLocation);
+	
+/**
+* Returns whether a machine is whole at the given location
+*/
+	public boolean factoryWholeAt(Location factoryLocation);
 
 /**
 * Removes the given machine from the object list

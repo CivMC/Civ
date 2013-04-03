@@ -62,7 +62,10 @@ public class BlockListener implements Listener
 				if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 				{
 					factory.destroy(block.getLocation());
-					productionMan.removeFactory(factory);
+					if(FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
+					{
+						productionMan.removeFactory(factory);
+					}
 				}
 			}
 		}
@@ -88,7 +91,10 @@ public class BlockListener implements Listener
 					if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 					{
 						factory.destroy(block.getLocation());
-						productionMan.removeFactory(factory);
+						if(FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
+						{		
+							productionMan.removeFactory(factory);
+						}
 					}
 				}
 			}
@@ -113,7 +119,10 @@ public class BlockListener implements Listener
 				if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 				{
 					factory.destroy(block.getLocation());
-					productionMan.removeFactory(factory);
+					if(FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
+					{
+						productionMan.removeFactory(factory);
+					}
 				}
 			}
 		}
@@ -141,23 +150,27 @@ public class BlockListener implements Listener
 					//is there a factory at the clicked location?
 					if (factoryMan.factoryExistsAt(clicked.getLocation()))
 					{
-						//if the player is allowed to interact with that block.
-						if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
-								(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(player)))
+						//if the factory has all its blocks
+						if(factoryMan.factoryWholeAt(clicked.getLocation()))
 						{
-							//if there is a production Factory at the clicked location
-							if (productionMan.factoryExistsAt(clicked.getLocation()))
+							//if the player is allowed to interact with that block.
+							if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
+									(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(player)))
 							{
-								ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
-								//toggle the recipe, and print the returned message.
-								InteractionResponse.messagePlayerResult(player, production.toggleRecipes());
+								//if there is a production Factory at the clicked location
+								if (productionMan.factoryExistsAt(clicked.getLocation()))
+								{
+									ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
+									//toggle the recipe, and print the returned message.
+									InteractionResponse.messagePlayerResult(player, production.toggleRecipes());
+								}
 							}
-						}
-						//if the player does NOT have acssess to the block that was clicked
-						else
-						{
-							//return a error message
-							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
+							//if the player does NOT have acssess to the block that was clicked
+							else
+							{
+								//return a error message
+								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
+							}
 						}
 					}
 					//if no factory exists at the clicked location
@@ -180,8 +193,8 @@ public class BlockListener implements Listener
 				//if the clicked block is a furnace
 				else if (clicked.getType() == Material.FURNACE || clicked.getType() == Material.BURNING_FURNACE)
 				{
-					//if there is a factory at that location
-					if (factoryMan.factoryExistsAt(clicked.getLocation()))
+					//if there is a factory at that location and it has all its blocks
+					if (factoryMan.factoryExistsAt(clicked.getLocation())&&factoryMan.factoryWholeAt(clicked.getLocation()))
 					{
 						//if the player is allowed to interact with that block.
 						if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
@@ -205,8 +218,8 @@ public class BlockListener implements Listener
 				//if the block clicked is a chest
 				else if (clicked.getType() == Material.CHEST)
 				{
-					//is there a factory there?
-					if (factoryMan.factoryExistsAt(clicked.getLocation()))
+					//is there a factory there? and if it has all its blocks
+					if (factoryMan.factoryExistsAt(clicked.getLocation())&&factoryMan.factoryWholeAt(clicked.getLocation()))
 					{
 						//if the player is allowed to interact with that block?
 						if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
@@ -259,8 +272,8 @@ public class BlockListener implements Listener
 			//if the player right clicked a chest
 			if (clicked.getType() == Material.CHEST)
 			{
-				//is the chest part of a factory?
-				if (factoryMan.factoryExistsAt(clicked.getLocation()))
+				//is the chest part of a factory? and does the factory have all its blocks
+				if (factoryMan.factoryExistsAt(clicked.getLocation())&&factoryMan.factoryWholeAt(clicked.getLocation()))
 				{
 					//if the player is allowed to interact with that block.
 					if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 

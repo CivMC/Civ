@@ -221,6 +221,22 @@ public class FactoryModManager
 		return false;
 	}
 
+	/**
+	 * Returns whether a factory is whole at given location in any manager
+	 */
+	public boolean factoryWholeAt(Location location)
+	{
+		for (Manager manager : managers)
+		{
+			if (manager.factoryWholeAt(location))
+			{
+				return true;
+			}
+		}	
+		return false;
+	}	
+	
+
 	public ProductionManager getProductionManager() 
 	{
 		for (Manager manager : managers)

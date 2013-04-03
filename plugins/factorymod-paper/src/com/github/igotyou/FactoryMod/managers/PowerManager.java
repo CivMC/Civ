@@ -49,7 +49,13 @@ public class PowerManager implements Manager
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
+	@Override
+	public boolean factoryWholeAt(Location factoryLocation) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 	@Override
 	public void removeFactory(Factory factory) {
 		// TODO Auto-generated method stub
