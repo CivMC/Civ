@@ -594,6 +594,69 @@ public class BlockListener implements Listener {
     		    }
     		}
     	}
+    	if (block.getType() == Material.CHEST){
+    		Block x = block.getRelative(-1, 0, 0);
+    		if(x.getType() == Material.CHEST) {
+			IReinforcement reinforcement = AccessDelegate.getDelegate(x).getReinforcement();
+		    if( null != reinforcement ) {
+                if( reinforcement instanceof PlayerReinforcement ) {
+                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+                		bpe.setCancelled( true );
+                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+                		// we're done here.
+                		return;
+                	}
+                }
+		    }
+		}
+    		Block xx = block.getRelative(1, 0, 0);
+    		if(xx.getType() == Material.CHEST) {
+			IReinforcement reinforcement = AccessDelegate.getDelegate(xx).getReinforcement();
+		    if( null != reinforcement ) {
+                if( reinforcement instanceof PlayerReinforcement ) {
+                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+                		bpe.setCancelled( true );
+                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+                		// we're done here.
+                		return;
+                	}
+                }
+		    }
+		}
+    		Block y = block.getRelative(0, 0, -1);
+    		if(y.getType() == Material.CHEST) {
+			IReinforcement reinforcement = AccessDelegate.getDelegate(y).getReinforcement();
+		    if( null != reinforcement ) {
+                if( reinforcement instanceof PlayerReinforcement ) {
+                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+                		bpe.setCancelled( true );
+                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+                		// we're done here.
+                		return;
+                	}
+                }
+		    }
+		}
+    		Block yy = block.getRelative(0, 0, 1);
+    		if(yy.getType() == Material.CHEST) {
+			IReinforcement reinforcement = AccessDelegate.getDelegate(yy).getReinforcement();
+		    if( null != reinforcement ) {
+                if( reinforcement instanceof PlayerReinforcement ) {
+                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+                		bpe.setCancelled( true );
+                		bpe.getPlayer().sendMessage(ChatColor.RED +"Cancelled block place, the block is reinforced.");
+                		// we're done here.
+                		return;
+                	}
+                }
+		    }
+		}
+    		
+    	}
     	
         Player player = bpe.getPlayer();
         PlayerState state = PlayerState.get(player);
