@@ -65,7 +65,7 @@ public class InventoryMethods
 		return returnValue;
 	}
 	
-	//checks whether the inventory has atleast the amount of item's that are in the supplied hashMap
+	//checks whether the inventory has atleast the amount of item's in the list
 	public static boolean areItemStacksAvilable(Inventory inventory, List<ItemStack> itemStacks)
 	{
 		boolean returnValue = true;
@@ -75,6 +75,21 @@ public class InventoryMethods
 			if (!isItemStackAvailable(inventory, itemStacks.get(i)))
 			{
 				returnValue = false;
+			}
+		}
+		return returnValue;
+	}
+
+	//checks whether the inventory has atleast one of the item stack inputs
+	public static boolean isOneItemStackAvilable(Inventory inventory, List<ItemStack> itemStacks)
+	{
+		boolean returnValue = false;
+		for (int i = 0; i < itemStacks.size(); i++)
+		{
+
+			if (isItemStackAvailable(inventory, itemStacks.get(i)))
+			{
+				returnValue = true;
 			}
 		}
 		return returnValue;
@@ -157,57 +172,87 @@ public class InventoryMethods
 		return returnValue;
 	}
 	
-	//removes the the itemStacks form teh supplied HashMap from the inventory.
-	public static boolean removeItemStacks(Inventory inventory, List<ItemStack> itemStack)
+	//removes the itemStacks from the supplied List from the inventory.
+	public static boolean removeItemStacks(Inventory inventory, List<ItemStack> itemStacks)
 	{
-		boolean returnValue = true;
-		for (int i = 0; i < itemStack.size(); i++)
+		if(areItemStacksAvilable(inventory,itemStacks))
 		{
-			if (!removeItemStack(inventory, itemStack.get(i)))
+			boolean returnValue = true;
+			for (int i = 0; i < itemStacks.size(); i++)
 			{
-				returnValue = false;
+				if (!removeItemStack(inventory, itemStacks.get(i)))
+				{
+					returnValue = false;
+				}
+			}
+			return returnValue;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	//removes one of the items in the list from the inventory. The first item in the list
+	//which matches is removed. The item is then returned
+	public static ItemStack removeOneItemStack(Inventory inventory, List<ItemStack> itemStacks)
+	{
+		ItemStack removedItem=null;
+		for (int i = 0; i < itemStacks.size(); i++)
+		{
+			if (removeItemStack(inventory, itemStacks.get(i)))
+			{
+				removedItem=itemStacks.get(i);
+				break;
 			}
 		}
-		return returnValue;
+		return removedItem;
 	}
 	
 	//removes the amount of items in the supplied ItemStack from the inventory
 	public static boolean removeItemStack(Inventory inventory, ItemStack itemStack)
 	{		
-		int materialsToRemove = itemStack.getAmount();
-		ListIterator<ItemStack> iterator = inventory.iterator();
-		
-		while(iterator.hasNext())
+		if(isItemStackAvailable(inventory,itemStack))
 		{
-			ItemStack currentItemStack = iterator.next();
-			if (currentItemStack != null)
+			int materialsToRemove = itemStack.getAmount();
+			ListIterator<ItemStack> iterator = inventory.iterator();
+
+			while(iterator.hasNext())
 			{
-				if (currentItemStack.isSimilar(itemStack))
+				ItemStack currentItemStack = iterator.next();
+				if (currentItemStack != null)
 				{
-					if (materialsToRemove <= 0)
-						break;
-					
-					if(currentItemStack.getAmount() == materialsToRemove)
+					if (currentItemStack.isSimilar(itemStack))
 					{
-						iterator.set(new ItemStack(Material.AIR, 0));
-						materialsToRemove = 0;
-					}
-					else if(currentItemStack.getAmount() > materialsToRemove)
-					{
-						ItemStack temp = currentItemStack.clone();
-						temp.setAmount(currentItemStack.getAmount() - materialsToRemove);
-						iterator.set(temp);
-						materialsToRemove = 0;
-					}
-					else
-					{
-						int inStack = currentItemStack.getAmount();
-						iterator.set(new ItemStack(Material.AIR, 0));
-						materialsToRemove -= inStack;
+						if (materialsToRemove <= 0)
+							break;
+
+						if(currentItemStack.getAmount() == materialsToRemove)
+						{
+							iterator.set(new ItemStack(Material.AIR, 0));
+							materialsToRemove = 0;
+						}
+						else if(currentItemStack.getAmount() > materialsToRemove)
+						{
+							ItemStack temp = currentItemStack.clone();
+							temp.setAmount(currentItemStack.getAmount() - materialsToRemove);
+							iterator.set(temp);
+							materialsToRemove = 0;
+						}
+						else
+						{
+							int inStack = currentItemStack.getAmount();
+							iterator.set(new ItemStack(Material.AIR, 0));
+							materialsToRemove -= inStack;
+						}
 					}
 				}
-			}
-		}				
-		return materialsToRemove == 0;
+			}				
+			return materialsToRemove == 0;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }

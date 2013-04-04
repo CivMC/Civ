@@ -58,6 +58,7 @@ general:
   return_build_materials: false
   citadel_enabled: false
   factory_interaction_material: STICK
+  destructible_factories: false
 disabled_recipes:
   - DIAMOND_HELMET
   - DIAMOND_CHESTPLATE
@@ -73,6 +74,12 @@ production_recipes:
     production_time: 1
     inputs:
       STONE:
+        amount: 1
+    upgrades:
+      DIAMOND_HELMET:
+        amount: 1
+      DIAMOND_SWORD:
+        amount: 1
     outputs:
       STONE:
         amount: 2

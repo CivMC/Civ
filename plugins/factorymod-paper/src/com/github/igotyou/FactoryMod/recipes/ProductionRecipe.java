@@ -42,7 +42,7 @@ public class ProductionRecipe implements Recipe
 		this.outputRecipes.add(outputRecipe);
 	}
 
-	public List<ItemStack> getInput()
+	public List<ItemStack> getInputs()
 	{
 		return inputs;
 	}
@@ -63,12 +63,17 @@ public class ProductionRecipe implements Recipe
 		Random rand = new Random();
 		for(int i=0;i<enchantments.size();i++)
 		{
-			if(enchantments.get(i).getProbability()<=rand.nextDouble())
+			if(enchantments.get(i).getProbability()>=rand.nextDouble())
 			{
 				randomEnchantments.put(enchantments.get(i).getEnchantment(),enchantments.get(i).getLevel());
 			}
 		}
 		return randomEnchantments;
+	}
+	
+	public boolean hasEnchantments()
+	{
+		return enchantments.size()>0;
 	}
 	
 	public String getTitle()

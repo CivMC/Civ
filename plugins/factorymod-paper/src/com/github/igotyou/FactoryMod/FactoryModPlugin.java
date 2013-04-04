@@ -8,7 +8,6 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,6 +21,7 @@ import com.github.igotyou.FactoryMod.managers.FactoryModManager;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
+import java.util.Map;
 
 
 public class FactoryModPlugin extends JavaPlugin
@@ -95,11 +95,10 @@ public class FactoryModPlugin extends JavaPlugin
 		CITADEL_ENABLED = config.getBoolean("general.citadel_enabled");
 		//what's the tool that we use to interact with the factorys?
 		FACTORY_INTERACTION_MATERIAL = Material.getMaterial(config.getString("general.factory_interaction_material"));
-		
+		//If factories are removed upon destruction of their blocks
+		DESTRUCTIBLE_FACTORIES=config.getBoolean("general.destructible_factories");		
 		//How frequently factories are updated
 		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle");
-		//If factories are removed upon destruction of their blocks
-		DESTRUCTIBLE_FACTORIES=false;		
 		//loop trough all the vanilla recipes we want to disable
 		int g = 0;
 		Iterator<String> disabledRecipes=config.getStringList("disabled_recipes").iterator();
@@ -115,7 +114,7 @@ public class FactoryModPlugin extends JavaPlugin
 
 		}
 		sendConsoleMessage(g + " recipes removed");
-		
+
 		//Import recipes from config.yml
 		ConfigurationSection configProdRecipes=config.getConfigurationSection("production_recipes");
 		//Temporary Storage array to store where recipes should point to each other
@@ -136,7 +135,10 @@ public class FactoryModPlugin extends JavaPlugin
 			//Inputs of the recipe, empty of there are no inputs
 			List<ItemStack> inputs = getItems(configSection.getConfigurationSection("inputs"));
 			//Inputs of the recipe, empty of there are no inputs
-			List<ItemStack> upgrades = getItems(configSection.getConfigurationSection("upgrade"));
+			List<ItemStack> upgrades = getItems(configSection.getConfigurationSection("upgrades"));
+			/*Iterator<ItemStack> itr=upgrades.iterator();
+			while (itr.hasNext())
+				sendConsoleMessage(itr.next().getType().name());*/
 			//Outputs of the recipe, empty of there are no inputs
 			List<ItemStack> outputs = getItems(configSection.getConfigurationSection("outputs"));
 			//Enchantments of the recipe, empty of there are no inputs

@@ -67,7 +67,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 		if (active)
 		{
 			//if the materials required to produce the current recipe are in the factory inventory
-			if (InventoryMethods.areItemStacksAvilable(getInventory(), currentRecipe.getInput()));
+			if (InventoryMethods.areItemStacksAvilable(getInventory(), currentRecipe.getInputs())&&
+				(currentRecipe.getUpgrades().isEmpty() || InventoryMethods.isOneItemStackAvilable(getInventory(), currentRecipe.getUpgrades())))
 			{
 				//if the factory has been working for less than the required time for the recipe
 				if (currentProductionTimer < currentRecipe.getProductionTime())
@@ -101,12 +102,31 @@ public class ProductionFactory extends FactoryObject implements Factory
 				//if the production timer has reached the recipes production time remove input from chest, and add output material
 				else if (currentProductionTimer == currentRecipe.getProductionTime())
 				{
-					if (InventoryMethods.removeItemStacks(getInventory(), currentRecipe.getInput()))
+					boolean inputsRemoved=InventoryMethods.removeItemStacks(getInventory(), currentRecipe.getInputs());
+					ItemStack upgrade=InventoryMethods.removeOneItemStack(getInventory(), currentRecipe.getUpgrades());
+					if (inputsRemoved && (currentRecipe.getUpgrades().isEmpty() || upgrade!=null))
 					{
+						//Adds modified upgrade back to check with appropriate enchantments and modifications
+						if(upgrade!=null)
+						{
+							if (currentRecipe.hasEnchantments())
+							{
+								try
+								{
+									upgrade.addEnchantments(currentRecipe.getEnchantments());
+								}
+								catch(Exception e)
+								{
+									//e.printStackTrace();
+								}
+							}
+							getInventory().addItem(upgrade);
+						}
+						//Adds outputs to chest with appropriate enchantments
 						for (int i = 0;i <currentRecipe.getOutput().size();i++)
 						{
 							ItemStack itemStack = currentRecipe.getOutput().get(i);
-							if (currentRecipe.getEnchantments().size()>0)
+							if (currentRecipe.hasEnchantments())
 							{
 								try
 								{
@@ -201,7 +221,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 			if (isFuelAvailable())
 			{
 				//are there enough materials for the current recipe in the chest?
-				if (InventoryMethods.areItemStacksAvilable(getInventory(), currentRecipe.getInput()))
+				if (InventoryMethods.areItemStacksAvilable(getInventory(), currentRecipe.getInputs())&&
+				InventoryMethods.isOneItemStackAvilable(getInventory(), currentRecipe.getUpgrades()))
 				{
 					//turn the factory on
 					powerOn();
@@ -212,7 +233,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 				else
 				{
 					//return a failure message, containing which materials are needed for the recipe
-					return new InteractionResponse(InteractionResult.FAILURE, "Factory does not have enough materials for the current recipe! You need: " + InventoryMethods.getMaterialsNeededMessage(currentRecipe.getInput()));
+					return new InteractionResponse(InteractionResult.FAILURE, "Factory does not have enough materials for the current recipe! You need: " + InventoryMethods.getMaterialsNeededMessage(currentRecipe.getInputs()));
 				}
 			}
 			//if there isn't enough fuel for atleast on energy cycle
