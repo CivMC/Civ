@@ -13,6 +13,7 @@ import static com.untamedears.citadel.Utility.sendThrottledMessage;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -59,6 +60,28 @@ public class BlockListener implements Listener {
      */
     @EventHandler(ignoreCancelled = true)
     public void placeFortifiedBlock(BlockPlaceEvent bpe) {
+    	// Do an initial check to see if we need to worry about physical shop interaction.
+    	if( Bukkit.getPluginManager().isPluginEnabled("PhysicalShop")) {
+    		// See if block is a sign.
+    		Block block = bpe.getBlockPlaced();
+    		if(block.getType() == Material.WALL_SIGN ) {
+        		Block below = block.getRelative(0, -1, 0);
+	    		if(below.getType() == Material.CHEST) {
+	    		    IReinforcement reinforcement = AccessDelegate.getDelegate(below).getReinforcement();
+	    		    if( null != reinforcement ) {
+		                if( reinforcement instanceof PlayerReinforcement ) {
+		                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
+		                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
+		                		bpe.setCancelled( true );
+		                		// we're done here.
+		                		return;
+		                	}
+		                }
+	    		    }
+	    		}
+    		}
+    	}
+    	
         Player player = bpe.getPlayer();
         PlayerState state = PlayerState.get(player);
         Faction group = state.getFaction();
