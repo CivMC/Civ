@@ -1,6 +1,6 @@
 package com.github.igotyou.FactoryMod.interfaces;
 
-import java.util.List;
+import java.util.Map;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -21,5 +21,5 @@ import org.bukkit.inventory.ItemStack;
 */
 public interface Properties 
 {
-	public List<ItemStack> getBuildMaterials() ;
+	public Map<ItemStack,String> getBuildMaterials() ;
 }

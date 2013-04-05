@@ -14,6 +14,7 @@ import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.InventoryMethods;
+import java.util.Iterator;
 import java.util.List;
 
 public class ProductionFactory extends FactoryObject implements Factory
@@ -117,15 +118,15 @@ public class ProductionFactory extends FactoryObject implements Factory
 								}
 								catch(Exception e)
 								{
-									//e.printStackTrace();
 								}
 							}
 							getInventory().addItem(upgrade);
 						}
 						//Adds outputs to chest with appropriate enchantments
-						for (int i = 0;i <currentRecipe.getOutput().size();i++)
+						Iterator<ItemStack> outputItr=currentRecipe.getOutputs().keySet().iterator();
+						while(outputItr.hasNext())
 						{
-							ItemStack itemStack = currentRecipe.getOutput().get(i);
+							ItemStack itemStack = outputItr.next();
 							if (currentRecipe.hasEnchantments())
 							{
 								try
@@ -134,7 +135,6 @@ public class ProductionFactory extends FactoryObject implements Factory
 								}
 								catch(Exception e)
 								{
-									e.printStackTrace();
 								}
 							}
 							getInventory().addItem(itemStack);
@@ -222,7 +222,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 			{
 				//are there enough materials for the current recipe in the chest?
 				if (InventoryMethods.areItemStacksAvilable(getInventory(), currentRecipe.getInputs())&&
-				InventoryMethods.isOneItemStackAvilable(getInventory(), currentRecipe.getUpgrades()))
+				(currentRecipe.getUpgrades().isEmpty() || InventoryMethods.isOneItemStackAvilable(getInventory(), currentRecipe.getUpgrades())))
 				{
 					//turn the factory on
 					powerOn();
@@ -361,9 +361,10 @@ public class ProductionFactory extends FactoryObject implements Factory
 		//Return the build materials?
 		if (FactoryModPlugin.RETURN_BUILD_MATERIALS&&FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
 		{
-			for (int i = 1; i <= productionFactoryProperties.getBuildMaterials().size(); i++)
+			Iterator<ItemStack> materialItr=productionFactoryProperties.getBuildMaterials().keySet().iterator();
+			while(materialItr.hasNext())
 			{
-				ItemStack item = productionFactoryProperties.getBuildMaterials().get(i);
+				ItemStack item = materialItr.next();
 				factoryLocation.getWorld().dropItemNaturally(destroyLocation, item);
 			}
 		}

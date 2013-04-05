@@ -178,7 +178,7 @@ public class ProductionManager implements Manager
 			String subFactoryType = null;
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
-				List<ItemStack> buildMaterials = entry.getValue().getBuildMaterials();
+				Map<ItemStack,String> buildMaterials = entry.getValue().getBuildMaterials();
 				if(InventoryMethods.itemStacksMatch(chestInventory, buildMaterials))
 				{
 					subFactoryType = entry.getKey();
@@ -187,10 +187,10 @@ public class ProductionManager implements Manager
 			if (subFactoryType != null)
 			{
 				ProductionFactory production = new ProductionFactory(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
-				if (InventoryMethods.buildMaterialAvailable(production.getInventory(), properties.get(subFactoryType)))
+				if (InventoryMethods.areItemStacksAvilable(production.getInventory(), properties.get(subFactoryType).getBuildMaterials()))
 				{
 					addFactory(production);
-					InventoryMethods.removeBuildMaterial(production.getInventory(), properties.get(subFactoryType));
+					InventoryMethods.removeItemStacks(production.getInventory(), properties.get(subFactoryType).getBuildMaterials());
 					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + production.getProductionFactoryProperties().getName() + " production factory");
 				}
 			}
@@ -211,7 +211,7 @@ public class ProductionManager implements Manager
 			boolean hasMaterials = true;
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
-				List<ItemStack> buildMaterials = entry.getValue().getBuildMaterials();
+				Map<ItemStack,String> buildMaterials = entry.getValue().getBuildMaterials();
 				if(!InventoryMethods.areItemStacksAvilable(chestInventory, buildMaterials))
 				{
 					hasMaterials = false;
@@ -224,10 +224,10 @@ public class ProductionManager implements Manager
 			if (hasMaterials == true && subFactoryType != null)
 			{
 				ProductionFactory production = new ProductionFactory(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
-				if (InventoryMethods.buildMaterialAvailable(production.getInventory(), properties.get(subFactoryType)))
+				if (InventoryMethods.areItemStacksAvilable(production.getInventory(), properties.get(subFactoryType).getBuildMaterials()))
 				{
 					addFactory(production);
-					InventoryMethods.removeBuildMaterial(production.getInventory(), properties.get(subFactoryType));
+					InventoryMethods.removeItemStacks(production.getInventory(), properties.get(subFactoryType).getBuildMaterials());
 					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + subFactoryType + " production factory");
 				}
 			}

@@ -9,6 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.interfaces.Properties;
+import java.util.Iterator;
 import java.util.List;
 /**
  * InventoryMethods.java
@@ -18,18 +19,20 @@ import java.util.List;
 public class InventoryMethods 
 {
 	//returns a string cotaining the material names of the supplied hashap
-	public static String getMaterialsNeededMessage(List<ItemStack> itemStack)
+	public static String getMaterialsNeededMessage(Map<ItemStack,String> itemStacks)
 	{
+		Iterator<ItemStack> itemStackItr=itemStacks.keySet().iterator();
 		String returnValue = "";
-		for (int i = 0; i < itemStack.size(); i++)
+		while(itemStackItr.hasNext())
 		{
-			if (itemStack.get(i).getData() != null)
+			ItemStack itemStack=itemStackItr.next();
+			if (itemStack.getData() != null)
 			{
-				returnValue = returnValue + String.valueOf(itemStack.get(i).getAmount() + " " + itemStack.get(i).getData().toString() + ", ");
+				returnValue = returnValue + String.valueOf(itemStack.getAmount() + " " + itemStack.getData().toString() + ", ");
 			}
 			else
 			{
-				returnValue = returnValue + String.valueOf(itemStack.get(i).getAmount() + " " + itemStack.get(i).getType().toString() + ", ");
+				returnValue = returnValue + String.valueOf(itemStack.getAmount() + " " + itemStack.getType().toString() + ", ");
 			}
 		}
 		return returnValue;
@@ -51,28 +54,15 @@ public class InventoryMethods
 		return "";
 	}
 	
-	//checks whever or not there are atleast the amount of item's nedded for the supplied property.
-	public static boolean buildMaterialAvailable(Inventory inventory, Properties desiredProperties)
-	{
-		boolean returnValue = true;
-		for (int i = 0; i < desiredProperties.getBuildMaterials().size(); i++)
-		{
-			if (!isItemStackAvailable(inventory, desiredProperties.getBuildMaterials().get(i)))
-			{
-				returnValue = false;
-			}
-		}
-		return returnValue;
-	}
-	
 	//checks whether the inventory has atleast the amount of item's in the list
-	public static boolean areItemStacksAvilable(Inventory inventory, List<ItemStack> itemStacks)
+	public static boolean areItemStacksAvilable(Inventory inventory, Map<ItemStack,String> itemStacks)
 	{
 		boolean returnValue = true;
-		for (int i = 0; i < itemStacks.size(); i++)
+		Iterator<ItemStack> itemStackItr=itemStacks.keySet().iterator();
+		while(itemStackItr.hasNext())
 		{
-
-			if (!isItemStackAvailable(inventory, itemStacks.get(i)))
+			ItemStack itemStack=itemStackItr.next();
+			if (!isItemStackAvailable(inventory, itemStack))
 			{
 				returnValue = false;
 			}
@@ -81,18 +71,18 @@ public class InventoryMethods
 	}
 
 	//checks whether the inventory has atleast one of the item stack inputs
-	public static boolean isOneItemStackAvilable(Inventory inventory, List<ItemStack> itemStacks)
+	public static boolean isOneItemStackAvilable(Inventory inventory, Map<ItemStack,String> itemStacks)
 	{
-		boolean returnValue = false;
-		for (int i = 0; i < itemStacks.size(); i++)
+		Iterator<ItemStack> itemStackItr=itemStacks.keySet().iterator();
+		while(itemStackItr.hasNext())
 		{
-
-			if (isItemStackAvailable(inventory, itemStacks.get(i)))
+			ItemStack itemStack=itemStackItr.next();
+			if (isItemStackAvailable(inventory, itemStack))
 			{
-				returnValue = true;
+				return true;
 			}
 		}
-		return returnValue;
+		return false;
 	}
 	
 	//checks whether or not the inventory contains atleast the amount of items in the itemstack
@@ -124,13 +114,14 @@ public class InventoryMethods
 	}
 	
 	//checks whether or not the inventory cotains EXACTLY the amount of items in the supplied hashMap
-	public static boolean itemStacksMatch(Inventory inventory, List<ItemStack> itemStack)
+	public static boolean itemStacksMatch(Inventory inventory, Map<ItemStack,String> itemStacks)
 	{
 		boolean returnValue = true;
-		for (int i = 0; i < itemStack.size(); i++)
+		Iterator<ItemStack> itemStackItr=itemStacks.keySet().iterator();
+		while(itemStackItr.hasNext())
 		{
-
-			if (!itemStackMatches(inventory, itemStack.get(i)))
+			ItemStack itemStack=itemStackItr.next();
+			if (!itemStackMatches(inventory, itemStack))
 			{
 				returnValue = false;
 			}
@@ -157,30 +148,18 @@ public class InventoryMethods
 		}
 		return returnValue;
 	}
-	
-	//removes the build materials nedded(form the properties file)
-	public static boolean removeBuildMaterial(Inventory inventory, Properties desiredProperties)
-	{
-		boolean returnValue = true;
-		for (int i = 0; i < desiredProperties.getBuildMaterials().size(); i++)
-		{
-			if (!removeItemStack(inventory, desiredProperties.getBuildMaterials().get(i)))
-			{
-				returnValue = false;
-			}
-		}
-		return returnValue;
-	}
-	
+
 	//removes the itemStacks from the supplied List from the inventory.
-	public static boolean removeItemStacks(Inventory inventory, List<ItemStack> itemStacks)
+	public static boolean removeItemStacks(Inventory inventory, Map<ItemStack,String> itemStacks)
 	{
 		if(areItemStacksAvilable(inventory,itemStacks))
 		{
 			boolean returnValue = true;
-			for (int i = 0; i < itemStacks.size(); i++)
+			Iterator<ItemStack> itemStackItr=itemStacks.keySet().iterator();
+			while(itemStackItr.hasNext())
 			{
-				if (!removeItemStack(inventory, itemStacks.get(i)))
+				ItemStack itemStack=itemStackItr.next();
+				if (!removeItemStack(inventory, itemStack))
 				{
 					returnValue = false;
 				}
@@ -195,14 +174,16 @@ public class InventoryMethods
 	
 	//removes one of the items in the list from the inventory. The first item in the list
 	//which matches is removed. The item is then returned
-	public static ItemStack removeOneItemStack(Inventory inventory, List<ItemStack> itemStacks)
+	public static ItemStack removeOneItemStack(Inventory inventory, Map<ItemStack,String> itemStacks)
 	{
 		ItemStack removedItem=null;
-		for (int i = 0; i < itemStacks.size(); i++)
+		Iterator<ItemStack> itemStackItr=itemStacks.keySet().iterator();
+		while(itemStackItr.hasNext())
 		{
-			if (removeItemStack(inventory, itemStacks.get(i)))
+			ItemStack itemStack=itemStackItr.next();
+			if (removeItemStack(inventory, itemStack))
 			{
-				removedItem=itemStacks.get(i);
+				removedItem=itemStack;
 				break;
 			}
 		}

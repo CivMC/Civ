@@ -4,27 +4,27 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.interfaces.Recipe;
 
-
 public class ProductionRecipe implements Recipe
 {
 	private String title;
 	private String recipeName;
 	private int productionTime;
-	private List<ItemStack> inputs;
-	private List<ItemStack> upgrades;
-	private List<ItemStack> outputs;
+	private Map<ItemStack,String> inputs;
+	private Map<ItemStack,String> upgrades;
+	private Map<ItemStack,String> outputs;
 	private List<ProductionRecipe> outputRecipes;
 	private List<ProbabilisticEnchantment> enchantments;
 	private boolean useOnce;
 	
-	public ProductionRecipe(String title,String recipeName,int productionTime,List<ItemStack> inputs,
-		List<ItemStack> upgrades,List<ItemStack> outputs,List<ProbabilisticEnchantment> enchantments,boolean useOnce)
+	public ProductionRecipe(String title,String recipeName,int productionTime,Map<ItemStack,String> inputs,
+		Map<ItemStack,String> upgrades,Map<ItemStack,String> outputs,List<ProbabilisticEnchantment> enchantments,boolean useOnce)
 	{
 		this.title=title;
 		this.recipeName = recipeName;
@@ -42,17 +42,17 @@ public class ProductionRecipe implements Recipe
 		this.outputRecipes.add(outputRecipe);
 	}
 
-	public List<ItemStack> getInputs()
+	public Map<ItemStack,String> getInputs()
 	{
 		return inputs;
 	}
 	
-	public List<ItemStack> getUpgrades()
+	public Map<ItemStack,String> getUpgrades()
 	{
 		return upgrades;
 	}
 	
-	public List<ItemStack> getOutput() 
+	public Map<ItemStack,String> getOutputs() 
 	{
 		return outputs;
 	}
