@@ -1,6 +1,6 @@
 name: Citadel
 main: com.untamedears.citadel.Citadel
-version: 2.2.3
+version: 2.2.4
 description: Reinforce your structures!
 author: chrisrico, jonnyd (aka Gu3rr1lla)
 database: false
@@ -112,15 +112,14 @@ commands:
     aliases: ctgi
     description: Displays information about a group.
     usage: /ctgroupinfo (or /ctgi) <group-name>
+  ctgstats:
+    aliases: ctgst
+    description: Displays group statistics
+    usage: /ctgstats <group-name>
   ctcon:
     description: Restricted console commands
     usage: /ctcon
     permission: citadel.console
-  ctgstats:
-    aliases: ctgst
-    description: Displayers group statistics
-    usage: /ctgstats <group-name>
-    permission: citadel.admin.ctgstats
   ctpstats:
     aliases: ctpst
     description: Displayers player statistics
