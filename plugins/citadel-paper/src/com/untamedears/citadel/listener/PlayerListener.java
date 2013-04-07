@@ -6,6 +6,7 @@ import static com.untamedears.citadel.Utility.reinforcementBroken;
 import static com.untamedears.citadel.Utility.sendMessage;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -196,7 +197,9 @@ public class PlayerListener implements Listener {
                     } else {
                         sendMessage(player, ChatColor.RED, "%s, security: %s", reinforcementStatus, securityLevel);
                     }
-                    pie.setCancelled(true);
+		    if (player.getGameMode() == GameMode.CREATIVE) {
+                        pie.setCancelled(true);
+		    }
                 }
                 break;
 
