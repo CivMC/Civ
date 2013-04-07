@@ -45,46 +45,46 @@ import com.untamedears.citadel.entity.PlayerReinforcement;
  * 7/18/12
  */
 public class PlayerListener implements Listener {
-	
+
     @EventHandler
     public void login(PlayerLoginEvent ple) {
-    	MemberManager memberManager = Citadel.getMemberManager();
-    	memberManager.addOnlinePlayer(ple.getPlayer());
+        MemberManager memberManager = Citadel.getMemberManager();
+        memberManager.addOnlinePlayer(ple.getPlayer());
 
-    	String playerName = ple.getPlayer().getName();
-    	Member member = memberManager.getMember(playerName);
-    	if(member == null){
-    		member = new Member(playerName);
-    		memberManager.addMember(member);
-    	}
-    	
-		PersonalGroupManager personalGroupManager = Citadel.getPersonalGroupManager();
-		boolean hasPersonalGroup = personalGroupManager.hasPersonalGroup(playerName);
-		GroupManager groupManager = Citadel.getGroupManager();
-    	if(!hasPersonalGroup){
-			String groupName = playerName;
-			int i = 1;
-    		while(groupManager.isGroup(groupName)){
-    			groupName = playerName + i;
-    			i++;
-    		}
-        	Faction group = new Faction(groupName, playerName);
-    		groupManager.addGroup(group);
-    		personalGroupManager.addPersonalGroup(groupName, playerName);
-    	} else if(hasPersonalGroup){
-    		String personalGroupName = personalGroupManager.getPersonalGroup(playerName).getGroupName();
-    		if(!groupManager.isGroup(personalGroupName)){
-    			Faction group = new Faction(personalGroupName, playerName);
-    			groupManager.addGroup(group);
-    		}
-    	}
+        String playerName = ple.getPlayer().getName();
+        Member member = memberManager.getMember(playerName);
+        if(member == null){
+            member = new Member(playerName);
+            memberManager.addMember(member);
+        }
+
+        PersonalGroupManager personalGroupManager = Citadel.getPersonalGroupManager();
+        boolean hasPersonalGroup = personalGroupManager.hasPersonalGroup(playerName);
+        GroupManager groupManager = Citadel.getGroupManager();
+        if(!hasPersonalGroup){
+            String groupName = playerName;
+            int i = 1;
+            while(groupManager.isGroup(groupName)){
+                groupName = playerName + i;
+                i++;
+            }
+            Faction group = new Faction(groupName, playerName);
+            groupManager.addGroup(group);
+            personalGroupManager.addPersonalGroup(groupName, playerName);
+        } else if(hasPersonalGroup){
+            String personalGroupName = personalGroupManager.getPersonalGroup(playerName).getGroupName();
+            if(!groupManager.isGroup(personalGroupName)){
+                Faction group = new Faction(personalGroupName, playerName);
+                groupManager.addGroup(group);
+            }
+        }
     }
 
     @EventHandler
     public void quit(PlayerQuitEvent pqe) {
-    	Player player = pqe.getPlayer();
-    	MemberManager memberManager = Citadel.getMemberManager();
-    	memberManager.removeOnlinePlayer(player);
+        Player player = pqe.getPlayer();
+        MemberManager memberManager = Citadel.getMemberManager();
+        memberManager.removeOnlinePlayer(player);
         PlayerState.remove(player);
     }
 
@@ -96,23 +96,25 @@ public class PlayerListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void bucketEmpty(PlayerBucketEmptyEvent pbee) {
-       Material bucket = pbee.getBucket();
-       if (Material.LAVA_BUCKET == bucket || Material.WATER_BUCKET == bucket) {
-           Block block = pbee.getBlockClicked();
-           BlockFace face = pbee.getBlockFace();
-           Block relativeBlock = block.getRelative(face);
-           // Protection for reinforced rails types from direct lava bucket drop.
-           if (Material.RAILS == relativeBlock.getType() || Material.POWERED_RAIL == relativeBlock.getType() || Material.DETECTOR_RAIL == relativeBlock.getType()) {               
-               if (isReinforced(relativeBlock)) {
-                  pbee.setCancelled(true);
-               }
-           }
-       }
+        Material bucket = pbee.getBucket();
+        if (Material.LAVA_BUCKET == bucket || Material.WATER_BUCKET == bucket) {
+            Block block = pbee.getBlockClicked();
+            BlockFace face = pbee.getBlockFace();
+            Block relativeBlock = block.getRelative(face);
+            // Protection for reinforced rails types from direct lava bucket drop.
+            Material relativeType = relativeBlock.getType();
+            if (Material.RAILS == relativeType || Material.POWERED_RAIL == relativeType ||
+                    Material.DETECTOR_RAIL == relativeType) {
+                if (isReinforced(relativeBlock)) {
+                   pbee.setCancelled(true);
+                }
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void interact(PlayerInteractEvent pie) {
-    	try {
+        try {
         if (!pie.hasBlock()) return;
 
         Player player = pie.getPlayer();
@@ -126,7 +128,7 @@ public class PlayerListener implements Listener {
             reinforcement = (PlayerReinforcement)generic_reinforcement;
         }
 
-       	Action action = pie.getAction();
+        Action action = pie.getAction();
         boolean access_reinforcement = 
             action == Action.RIGHT_CLICK_BLOCK
             && reinforcement != null
@@ -153,14 +155,14 @@ public class PlayerListener implements Listener {
                         "[Admin] %s accessed locked reinforcement at %s",
                         player.getName(), block.getLocation().toString()));
                 }
-            	return;
+                return;
             case FORTIFICATION:
                 return;
             case INFO:
                 // did player click on a reinforced block?
                 if (reinforcement != null) {
-                	String reinforcementStatus = reinforcement.getStatus();
-                	SecurityLevel securityLevel = reinforcement.getSecurityLevel();
+                    String reinforcementStatus = reinforcement.getStatus();
+                    SecurityLevel securityLevel = reinforcement.getSecurityLevel();
                     Faction group = reinforcement.getOwner();
                     String message;
                     if (player.hasPermission("citadel.admin.ctinfodetails")) {
@@ -197,9 +199,9 @@ public class PlayerListener implements Listener {
                     } else {
                         sendMessage(player, ChatColor.RED, "%s, security: %s", reinforcementStatus, securityLevel);
                     }
-		    if (player.getGameMode() == GameMode.CREATIVE) {
+                    if (player.getGameMode() == GameMode.CREATIVE) {
                         pie.setCancelled(true);
-		    }
+                    }
                 }
                 break;
 
@@ -212,25 +214,25 @@ public class PlayerListener implements Listener {
                     }
                     createPlayerReinforcement(player, block);
                 } else if (reinforcement.isBypassable(player)) {
-                	boolean update = false;
-                	String message = "";
+                    boolean update = false;
+                    String message = "";
                     if (reinforcement.getSecurityLevel() != state.getSecurityLevel()){
                         reinforcement.setSecurityLevel(state.getSecurityLevel());
                         update = true;
                         message = String.format("Changed security level %s", reinforcement.getSecurityLevel().name());
                     }
                     Faction group = state.getFaction();
-                   	if(!reinforcement.getOwner().equals(group)) {
+                    if(!reinforcement.getOwner().equals(group)) {
                         reinforcement.setOwner(group);
                         update = true;
                         if(!message.equals("")){
-                        	message = message + ". ";
+                            message = message + ". ";
                         }
                         if(reinforcement.getSecurityLevel() != SecurityLevel.PRIVATE){
-                        	message = message + String.format("Changed group to %s", group.getName());
+                            message = message + String.format("Changed group to %s", group.getName());
                         }
                     }
-                   	if(update){
+                    if(update){
                         Citadel.getReinforcementManager().addReinforcement(reinforcement);
                         sendMessage(player, ChatColor.GREEN, message);
                     }
@@ -248,7 +250,7 @@ public class PlayerListener implements Listener {
         }
         catch(Exception e)
         {
-          Citadel.printStackTrace(e);
+            Citadel.printStackTrace(e);
         }
     }
 }
