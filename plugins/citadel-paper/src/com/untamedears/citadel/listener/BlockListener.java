@@ -83,7 +83,6 @@ public class BlockListener implements Listener {
                 }
             }
         }
-        /* 1.5.x Change
         if (block_mat == Material.HOPPER || block_mat == Material.DROPPER){
             for (BlockFace direction : all_sides) {
                 Block adjacent = block.getRelative(direction);
@@ -99,7 +98,6 @@ public class BlockListener implements Listener {
                 }
             }
         }
-        */
         if (block_mat == Material.CHEST){
             for (BlockFace direction : planar_sides) {
                 Block adjacent = block.getRelative(direction);
