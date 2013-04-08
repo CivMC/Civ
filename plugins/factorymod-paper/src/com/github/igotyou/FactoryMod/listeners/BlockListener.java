@@ -203,8 +203,8 @@ public class BlockListener implements Listener
 							if (productionMan.factoryExistsAt(clicked.getLocation()))
 							{
 								ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
-								//toggle the power, and print the returned message
 								InteractionResponse.messagePlayerResult(player, production.togglePower());
+							
 							}
 						}
 						//if the player is NOT allowed to interact with the clicked block.
@@ -234,8 +234,8 @@ public class BlockListener implements Listener
 								{
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------Factory Information---------"));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type     : " + production.getProductionFactoryProperties().getName()));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status  : On"));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe  : " + production.getCurrentRecipe().getRecipeName()));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status  : On,"+String.valueOf(Math.round(100*production.getMaintenance()))+"%"));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe  : " +production.getCurrentRecipe().getRecipeName()));
 //									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutputs().getData().toString() + InventoryMethods.getEnchantmentsMessage(production.getCurrentRecipe().getEnchantments())));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + InventoryMethods.getMaterialsNeededMessage(production.getCurrentRecipe().getInputs())));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe fuel requirement: " + production.getCurrentRecipe().getProductionTime()/production.getProductionFactoryProperties().getEnergyTime()*production.getProductionFactoryProperties().getEnergyMaterial().getAmount() + " " + production.getProductionFactoryProperties().getEnergyMaterial().getData().toString()));
@@ -247,7 +247,7 @@ public class BlockListener implements Listener
 								{
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------Factory Information---------"));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type   : " + production.getProductionFactoryProperties().getName()));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status: Off"));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status: Off Maintenace: "+String.valueOf(Math.round(100*production.getMaintenance()))+"%"));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe: " + production.getCurrentRecipe().getRecipeName()));
 //									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutputs().getData().toString() + InventoryMethods.getEnchantmentsMessage(production.getCurrentRecipe().getEnchantments())));
 									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + InventoryMethods.getMaterialsNeededMessage(production.getCurrentRecipe().getInputs())));

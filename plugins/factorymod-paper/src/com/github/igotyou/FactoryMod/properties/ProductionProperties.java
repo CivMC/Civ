@@ -12,6 +12,7 @@ import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 public class ProductionProperties implements Properties
 {
 	private Map<ItemStack,String> buildMaterials;
+	private ProductionRecipe repairRecipe;
 	private List<ProductionRecipe> recipes;
 	ItemStack energyMaterial;
 	int energyTime;

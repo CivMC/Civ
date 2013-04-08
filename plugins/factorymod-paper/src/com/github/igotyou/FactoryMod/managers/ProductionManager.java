@@ -29,6 +29,7 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InventoryMethods;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
+import java.util.Iterator;
 
 //original file:
 /**
@@ -50,12 +51,14 @@ public class ProductionManager implements Manager
 {
 	private FactoryModPlugin plugin;
 	private List<ProductionFactory> producers;
+	private int clock;
 	
 	public ProductionManager(FactoryModPlugin plugin)
 	{
 		this.plugin = plugin;
 		producers = new ArrayList<ProductionFactory>();
-		
+		//Set maintenance clock to 0
+		clock=0;
 		updateFactorys();
 	}
 	
@@ -63,6 +66,8 @@ public class ProductionManager implements Manager
 	{
 		FileOutputStream fileOutputStream = new FileOutputStream(file);
 		BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
+		bufferedWriter.append(String.valueOf(clock));
+		bufferedWriter.append("\n");		
 		for (ProductionFactory production : producers)
 		{
 			//order: subFactoryType world central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
@@ -114,6 +119,8 @@ public class ProductionManager implements Manager
 			bufferedWriter.append(Integer.toString(production.getEnergyTimer()));
 			bufferedWriter.append(" ");
 			bufferedWriter.append(Integer.toString(production.getCurrentRecipeNumber()));
+			bufferedWriter.append(" ");
+			bufferedWriter.append(Double.toString(production.getCurrentMaintenance()));
 			bufferedWriter.append("\n");
 		}
 		bufferedWriter.flush();
@@ -125,19 +132,19 @@ public class ProductionManager implements Manager
 		FileInputStream fileInputStream = new FileInputStream(file);
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
+		clock=Integer.parseInt(bufferedReader.readLine());
 		String line;
 		while ((line = bufferedReader.readLine()) != null)
 		{
 			String parts[] = line.split(" ");
 			//order: subFactoryType recipes world central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
 			String subFactoryType = parts[0];
-			String recipeNumbers[] = parts[1].split(",");
+			String recipeNames[] = parts[1].split(",");
 			List<ProductionRecipe> recipes=new ArrayList<ProductionRecipe>();
-			for(int i=0;i<recipeNumbers.length;i++)
+			for(String name:recipeNames)
 			{
-				recipes.add(FactoryModPlugin.productionRecipes.get(recipeNumbers[i]));
+				recipes.add(FactoryModPlugin.productionRecipes.get(name));
 			}
-			
 			Location centerLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
 			Location inventoryLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[6]), Integer.parseInt(parts[7]), Integer.parseInt(parts[8]));
 			Location powerLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[9]), Integer.parseInt(parts[10]), Integer.parseInt(parts[11]));
@@ -145,8 +152,8 @@ public class ProductionManager implements Manager
 			int productionTimer = Integer.parseInt(parts[13]);
 			int energyTimer = Integer.parseInt(parts[14]);
 			int currentRecipeNumber = Integer.parseInt(parts[15]);
-			
-			ProductionFactory production = new ProductionFactory(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, recipes, currentRecipeNumber);
+			double maintenance = Double.parseDouble(parts[16]);
+			ProductionFactory production = new ProductionFactory(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, recipes, currentRecipeNumber, maintenance);
 			addFactory(production);
 		}
 		fileInputStream.close();
@@ -156,14 +163,38 @@ public class ProductionManager implements Manager
 	{
 		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
 		{
-		    @Override  
-		    public void run() 
-		    {
-		    	for (ProductionFactory production: producers)
+			@Override
+			public void run()
+			{
+				clock++;
+				if(clock>=FactoryModPlugin.MAINTENANCE_CYCLE)
+				{
+					//Count how many of each recipe there are
+					//Reset counters on all recipe object
+					for(ProductionRecipe recipe:FactoryModPlugin.productionRecipes.values())
+					{
+						recipe.setTotalNumber(0);
+					}
+					//Count recipes in each factory					
+					for (ProductionFactory production: producers)
+					{
+						for (ProductionRecipe recipe: production.getRecipes())
+						{
+							recipe.incrementCount();
+						}
+					}
+					//Conduct Maintenance on each factory
+					for (ProductionFactory production: producers)
+					{
+						production.degrade();
+					}
+					clock=0;
+				}
+				for (ProductionFactory production: producers)
 				{
 					production.update();
 				}
-		    }
+			}
 		}, 0L, FactoryModPlugin.PRODUCER_UPDATE_CYCLE);
 	}
 
@@ -187,7 +218,7 @@ public class ProductionManager implements Manager
 			if (subFactoryType != null)
 			{
 				ProductionFactory production = new ProductionFactory(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
-				if (InventoryMethods.areItemStacksAvilable(production.getInventory(), properties.get(subFactoryType).getBuildMaterials()))
+				if (InventoryMethods.areItemStacksAvailable(production.getInventory(), properties.get(subFactoryType).getBuildMaterials()))
 				{
 					addFactory(production);
 					InventoryMethods.removeItemStacks(production.getInventory(), properties.get(subFactoryType).getBuildMaterials());
@@ -212,7 +243,7 @@ public class ProductionManager implements Manager
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
 				Map<ItemStack,String> buildMaterials = entry.getValue().getBuildMaterials();
-				if(!InventoryMethods.areItemStacksAvilable(chestInventory, buildMaterials))
+				if(!InventoryMethods.areItemStacksAvailable(chestInventory, buildMaterials))
 				{
 					hasMaterials = false;
 				}
@@ -224,7 +255,7 @@ public class ProductionManager implements Manager
 			if (hasMaterials == true && subFactoryType != null)
 			{
 				ProductionFactory production = new ProductionFactory(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
-				if (InventoryMethods.areItemStacksAvilable(production.getInventory(), properties.get(subFactoryType).getBuildMaterials()))
+				if (InventoryMethods.areItemStacksAvailable(production.getInventory(), properties.get(subFactoryType).getBuildMaterials()))
 				{
 					addFactory(production);
 					InventoryMethods.removeItemStacks(production.getInventory(), properties.get(subFactoryType).getBuildMaterials());

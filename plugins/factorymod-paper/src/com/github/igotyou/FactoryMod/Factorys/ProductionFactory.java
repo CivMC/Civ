@@ -28,6 +28,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 	public static final FactoryType FACTORY_TYPE = FactoryType.PRODUCTION;//the factrys type
 	public String SUB_FACTORY_TYPE;//the sub-factory Type
 	private List<ProductionRecipe> recipes;
+	private int totalMaintenance;
+	private double currentMaintenance;
 	
 	/**
 	 * Constructor
@@ -40,6 +42,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 		this.productionFactoryProperties = (ProductionProperties) factoryProperties;
 		this.recipes=productionFactoryProperties.getRecipes();
 		this.setRecipeToNumber(0);
+		updateMaintenance();
+		this.currentMaintenance=0.0;
 	}
 
 	/**
@@ -47,7 +51,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	 */
 	public ProductionFactory (Location factoryLocation, Location factoryInventoryLocation, Location factoryPowerSource,
 			String subFactoryType, boolean active, int currentProductionTimer, int currentEnergyTimer,  List<ProductionRecipe> recipes,
-			int currentRecipeNumber)
+			int currentRecipeNumber,double currentMaintenance)
 	{
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, ProductionFactory.FACTORY_TYPE, subFactoryType);
 		this.SUB_FACTORY_TYPE = subFactoryType;
@@ -57,6 +61,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 		this.currentProductionTimer = currentProductionTimer;
 		this.recipes=recipes;
 		this.setRecipeToNumber(currentRecipeNumber);
+		updateMaintenance();
+		this.currentMaintenance=currentMaintenance;
 	}
 	
 	/**
@@ -68,8 +74,9 @@ public class ProductionFactory extends FactoryObject implements Factory
 		if (active)
 		{
 			//if the materials required to produce the current recipe are in the factory inventory
-			if (InventoryMethods.areItemStacksAvilable(getInventory(), currentRecipe.getInputs())&&
-				(currentRecipe.getUpgrades().isEmpty() || InventoryMethods.isOneItemStackAvilable(getInventory(), currentRecipe.getUpgrades())))
+			if (InventoryMethods.areItemStacksAvailable(getInventory(), currentRecipe.getInputs())&&
+				InventoryMethods.isOneItemStackAvailable(getInventory(), currentRecipe.getUpgrades())&&
+				InventoryMethods.areItemStacksAvailable(getInventory(), currentRecipe.getRepairs()))
 			{
 				//if the factory has been working for less than the required time for the recipe
 				if (currentProductionTimer < currentRecipe.getProductionTime())
@@ -93,7 +100,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 						//increment the production timer
 						currentProductionTimer ++;
 					}
-					//if there is no fuel avilable turn off the factory
+					//if there is no fuel Available turn off the factory
 					else
 					{
 						powerOff();
@@ -105,6 +112,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 				{
 					boolean inputsRemoved=InventoryMethods.removeItemStacks(getInventory(), currentRecipe.getInputs());
 					ItemStack upgrade=InventoryMethods.removeOneItemStack(getInventory(), currentRecipe.getUpgrades());
+					int amountRepaired=InventoryMethods.removeAllItemStacks(getInventory(),currentRecipe.getRepairs(),(int) currentMaintenance);
 					if (inputsRemoved && (currentRecipe.getUpgrades().isEmpty() || upgrade!=null))
 					{
 						//Adds modified upgrade back to check with appropriate enchantments and modifications
@@ -148,9 +156,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 							}
 
 						}
-						
-						currentProductionTimer = 0;
-						powerOff();
+						//Repairs the factory
+						currentMaintenance-=amountRepaired;
 						//Remove currentRecipe if it only is meant to be used once
 						if(currentRecipe.getUseOnce())
 						{
@@ -158,8 +165,14 @@ public class ProductionFactory extends FactoryObject implements Factory
 							setRecipeToNumber(0);
 						}
 					}
+					currentProductionTimer = 0;
+					powerOff();
 				}
 			}	
+			else
+			{
+				powerOff();
+			}
 		}	
 	}
 
@@ -209,7 +222,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	}
 
 	/**
-	 * Returns either a succsess or error message.
+	 * Returns either a success or error message.
 	 * Called by the blockListener when a player left clicks the powerSourceLocation with the InteractionMaterial
 	 */
 	public InteractionResponse togglePower() 
@@ -217,31 +230,40 @@ public class ProductionFactory extends FactoryObject implements Factory
 		//if the factory is turned off
 		if (!active)
 		{
-			//is there fuel enough for at least once energy cycle?
-			if (isFuelAvailable())
+			//if the factory isn't broken or the current recipe can repair it
+			if(!isBroken()||!currentRecipe.getRepairs().isEmpty())
 			{
-				//are there enough materials for the current recipe in the chest?
-				if (InventoryMethods.areItemStacksAvilable(getInventory(), currentRecipe.getInputs())&&
-				(currentRecipe.getUpgrades().isEmpty() || InventoryMethods.isOneItemStackAvilable(getInventory(), currentRecipe.getUpgrades())))
+				//is there fuel enough for at least once energy cycle?
+				if (isFuelAvailable())
 				{
-					//turn the factory on
-					powerOn();
-					//return a success message
-					return new InteractionResponse(InteractionResult.SUCCESS, "Factory activated!");
+					//are there enough materials for the current recipe in the chest?
+					if (InventoryMethods.areItemStacksAvailable(getInventory(), currentRecipe.getInputs())&&
+						InventoryMethods.isOneItemStackAvailable(getInventory(), currentRecipe.getUpgrades())&&
+						InventoryMethods.areItemStacksAvailable(getInventory(), currentRecipe.getRepairs()))
+					{
+						//turn the factory on
+						powerOn();
+						//return a success message
+						return new InteractionResponse(InteractionResult.SUCCESS, "Factory activated!");
+					}
+					//there are not enough materials for the recipe!
+					else
+					{
+						//return a failure message, containing which materials are needed for the recipe
+						return new InteractionResponse(InteractionResult.FAILURE, "Factory does not have enough materials for the current recipe! You need: " + InventoryMethods.getMaterialsNeededMessage(currentRecipe.getInputs()));
+					}
 				}
-				//there are not enough materials for the recipe!
+				//if there isn't enough fuel for atleast on energy cycle
 				else
 				{
-					//return a failure message, containing which materials are needed for the recipe
-					return new InteractionResponse(InteractionResult.FAILURE, "Factory does not have enough materials for the current recipe! You need: " + InventoryMethods.getMaterialsNeededMessage(currentRecipe.getInputs()));
+					//return a error message
+					return new InteractionResponse(InteractionResult.FAILURE, "Factory is missing fuel!");
 				}
 			}
-			//if there isn't enough fuel for atleast on energy cycle
 			else
 			{
-				//return a error message
-				return new InteractionResponse(InteractionResult.FAILURE, "Factory is missing fuel!");
-			}
+				return new InteractionResponse(InteractionResult.FAILURE, "Factory is broken!");
+			}			
 		}
 		//if the factory is on already
 		else
@@ -296,7 +318,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	}
 	
 	/**
-	 * Sets the factorys current recipe.
+	 * Sets the factories current recipe.
 	 * @param newRecipe the desired recipe
 	 */
 	public void setRecipe(Recipe newRecipe)
@@ -342,7 +364,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	}
 	
 	/**
-	 * Checks if there is enough fuel avilable for atleast once energy cycle
+	 * Checks if there is enough fuel Available for atleast once energy cycle
 	 * @return true if there is enough fuel, false otherwise
 	 */
 	public boolean isFuelAvailable()
@@ -371,7 +393,58 @@ public class ProductionFactory extends FactoryObject implements Factory
 		
 		destroyLocation.getBlock().setType(Material.AIR);
 	}
-	
+	/**
+	 * Degrades the factory
+	 */
+	public void degrade()
+	{
+		updateMaintenance();
+		//No need to run check if already completely degraded
+		if(currentMaintenance<totalMaintenance){
+			double degradation=0;
+			for(ProductionRecipe recipe:recipes)
+			{
+				degradation+=recipe.degradeFactory();
+			}
+			currentMaintenance+=degradation;
+		}
+		//If totalMaintenance was exceeded set currentMaintance back to it
+		if(currentMaintenance>totalMaintenance)
+		{
+			currentMaintenance=totalMaintenance;
+		}
+	}
+	/**
+	 * Recalculate the total maintenance of the factory
+	 */
+	private void updateMaintenance()
+	{
+		totalMaintenance=1;
+		for(ProductionRecipe recipe:recipes)
+		{
+			totalMaintenance+=recipe.getMaintenance();
+		}
+	}
+	public double getCurrentMaintenance()
+	{
+		return currentMaintenance;
+	}
+	public double getMaintenance()
+	{
+		double percentMaintenance=1;
+		if(totalMaintenance!=0)
+		{
+			percentMaintenance=currentMaintenance/totalMaintenance;
+		}
+		return percentMaintenance;
+	}
+	/**
+	 * Checks that a factory hasn't degraded too much
+	 */
+	public boolean isBroken()
+	{
+		return currentMaintenance>=totalMaintenance;
+	}
 	/**
 	 * Returns the production timer
 	 */

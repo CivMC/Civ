@@ -47,6 +47,8 @@ public class FactoryModPlugin extends JavaPlugin
 	public static boolean CITADEL_ENABLED;
 	public static Material FACTORY_INTERACTION_MATERIAL;
 	public static boolean DESTRUCTIBLE_FACTORIES;
+	public static int MAINTENANCE_CYCLE;
+	public static int MAINTENANCE_PERIOD;
 	
 	public void onEnable()
 	{
@@ -99,6 +101,10 @@ public class FactoryModPlugin extends JavaPlugin
 		DESTRUCTIBLE_FACTORIES=config.getBoolean("general.destructible_factories");		
 		//How frequently factories are updated
 		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle");
+		//How frequently maintenance is update
+		MAINTENANCE_CYCLE = config.getInt("production_general.maintenance_cycle");
+		//How long it takes for factories to break down, modifiers upkeep costs
+		MAINTENANCE_PERIOD = config.getInt("production_general.maintenance_period");
 		//loop trough all the vanilla recipes we want to disable
 		int g = 0;
 		Iterator<String> disabledRecipes=config.getStringList("disabled_recipes").iterator();
@@ -136,16 +142,14 @@ public class FactoryModPlugin extends JavaPlugin
 			Map<ItemStack,String> inputs = getItems(configSection.getConfigurationSection("inputs"));
 			//Inputs of the recipe, empty of there are no inputs
 			Map<ItemStack,String> upgrades = getItems(configSection.getConfigurationSection("upgrades"));
-			/*Iterator<ItemStack> itr=upgrades.iterator();
-			while (itr.hasNext())
-				sendConsoleMessage(itr.next().getType().name());*/
 			//Outputs of the recipe, empty of there are no inputs
 			Map<ItemStack,String> outputs = getItems(configSection.getConfigurationSection("outputs"));
 			//Enchantments of the recipe, empty of there are no inputs
 			List<ProbabilisticEnchantment> enchantments=getEnchantments(configSection.getConfigurationSection("enchantments"));
 			//Whether this recipe can only be used once
 			boolean useOnce = configSection.getBoolean("use_once");
-			ProductionRecipe recipe = new ProductionRecipe(title,recipeName,productionTime,inputs,upgrades,outputs,enchantments,useOnce);
+			int maintenance = configSection.getInt("maintenance");
+			ProductionRecipe recipe = new ProductionRecipe(title,recipeName,productionTime,inputs,upgrades,outputs,enchantments,useOnce,maintenance,new HashMap<ItemStack,String>());
 			productionRecipes.put(title,recipe);
 			//Store the titles of the recipes that this should point to
 			ArrayList <String> currentOutputRecipes=new ArrayList<String>();
@@ -187,13 +191,17 @@ public class FactoryModPlugin extends JavaPlugin
 				fuel=fuelStack.keySet().iterator().next();
 			}
 			int fuelTime=configSection.getInt("fuel_time",1);
-			Map<ItemStack,String> buildMaterials=getItems(configSection.getConfigurationSection("build_materials"));
+			Map<ItemStack,String> buildMaterials=getItems(configSection.getConfigurationSection("inputs"));
+			Map<ItemStack,String> repairs=getItems(configSection.getConfigurationSection("maintenance_input"));
 			List<ProductionRecipe> factoryRecipes=new ArrayList<ProductionRecipe>();
 			Iterator<String> ouputRecipeIterator=configSection.getStringList("production_recipes").iterator();
 			while (ouputRecipeIterator.hasNext())
 			{
 				factoryRecipes.add(productionRecipes.get(ouputRecipeIterator.next()));
 			}
+			//Create repair recipe
+			productionRecipes.put(title+"REPAIR",new ProductionRecipe(title+"REPAIR","Repair Factory",1,repairs));
+			factoryRecipes.add(productionRecipes.get(title+"REPAIR"));
 			ProductionProperties productionProperties = new ProductionProperties(buildMaterials, factoryRecipes, fuel, fuelTime, factoryName);
 			production_Properties.put(title, productionProperties);
 		}
@@ -204,15 +212,18 @@ public class FactoryModPlugin extends JavaPlugin
 		if(configEnchantments!=null)
 		{
 			Iterator<String> names=configEnchantments.getKeys(false).iterator();
-
 			while (names.hasNext())
 			{
 				String name=names.next();
 				ConfigurationSection configEnchantment=configEnchantments.getConfigurationSection(name);
-				int level=configEnchantment.getInt("level",1);
-				double probability=configEnchantment.getDouble("probability",1.0);
-				ProbabilisticEnchantment enchantment=new ProbabilisticEnchantment(name,level,probability);
-				enchantments.add(enchantment);
+				String type=configEnchantment.getString("type");
+				if (type!=null)
+				{
+					int level=configEnchantment.getInt("level",1);
+					double probability=configEnchantment.getDouble("probability",1.0);
+					ProbabilisticEnchantment enchantment=new ProbabilisticEnchantment(name,type,level,probability);
+					enchantments.add(enchantment);
+				}
 			}
 		}
 		return enchantments;

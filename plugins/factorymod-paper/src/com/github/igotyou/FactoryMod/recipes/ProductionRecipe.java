@@ -19,12 +19,15 @@ public class ProductionRecipe implements Recipe
 	private Map<ItemStack,String> inputs;
 	private Map<ItemStack,String> upgrades;
 	private Map<ItemStack,String> outputs;
+	private Map<ItemStack,String> repairs;
 	private List<ProductionRecipe> outputRecipes;
 	private List<ProbabilisticEnchantment> enchantments;
 	private boolean useOnce;
+	private int maintenance;
+	int totalNumber;
 	
-	public ProductionRecipe(String title,String recipeName,int productionTime,Map<ItemStack,String> inputs,
-		Map<ItemStack,String> upgrades,Map<ItemStack,String> outputs,List<ProbabilisticEnchantment> enchantments,boolean useOnce)
+	public ProductionRecipe(String title,String recipeName,int productionTime,Map<ItemStack,String> inputs,Map<ItemStack,String> upgrades,
+		Map<ItemStack,String> outputs,List<ProbabilisticEnchantment> enchantments,boolean useOnce,int maintenance, Map<ItemStack,String> repairs)
 	{
 		this.title=title;
 		this.recipeName = recipeName;
@@ -35,6 +38,14 @@ public class ProductionRecipe implements Recipe
 		this.outputRecipes=new ArrayList<ProductionRecipe>();
 		this.enchantments=enchantments;
 		this.useOnce=useOnce;
+		this.maintenance=maintenance;
+		int totalNumber=0;
+		this.repairs=repairs;
+	}
+	
+	public ProductionRecipe(String title,String recipeName,int productionTime,Map<ItemStack,String> repairs)
+	{
+		this(title,recipeName,productionTime,new HashMap<ItemStack,String>(),new HashMap<ItemStack,String>(),new HashMap<ItemStack,String>(),new ArrayList<ProbabilisticEnchantment>(),false,0,repairs);
 	}
 	
 	public void addOutputRecipe(ProductionRecipe outputRecipe)
@@ -55,6 +66,11 @@ public class ProductionRecipe implements Recipe
 	public Map<ItemStack,String> getOutputs() 
 	{
 		return outputs;
+	}
+	
+	public Map<ItemStack,String> getRepairs()
+	{
+		return repairs;
 	}
 
 	public HashMap<Enchantment, Integer> getEnchantments()
@@ -98,5 +114,23 @@ public class ProductionRecipe implements Recipe
 	public boolean getUseOnce()
 	{
 		return useOnce;
+	}
+	
+	public int getMaintenance()
+	{
+		return maintenance;
+	}
+	
+	public double degradeFactory()
+	{
+		return maintenance/10.0;
+	}
+	public void setTotalNumber(int number)
+	{
+		totalNumber=number;
+	}
+	public void incrementCount()
+	{
+		totalNumber++;
 	}
 }

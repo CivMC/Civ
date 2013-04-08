@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod.utility;
 
+import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import java.util.ListIterator;
 import java.util.Map;
 
@@ -8,9 +9,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.igotyou.FactoryMod.interfaces.Properties;
 import java.util.Iterator;
-import java.util.List;
 /**
  * InventoryMethods.java
  * @author igotyou
@@ -55,13 +54,11 @@ public class InventoryMethods
 	}
 	
 	//checks whether the inventory has atleast the amount of item's in the list
-	public static boolean areItemStacksAvilable(Inventory inventory, Map<ItemStack,String> itemStacks)
+	public static boolean areItemStacksAvailable(Inventory inventory, Map<ItemStack,String> itemStacks)
 	{
 		boolean returnValue = true;
-		Iterator<ItemStack> itemStackItr=itemStacks.keySet().iterator();
-		while(itemStackItr.hasNext())
+		for(ItemStack itemStack:itemStacks.keySet())
 		{
-			ItemStack itemStack=itemStackItr.next();
 			if (!isItemStackAvailable(inventory, itemStack))
 			{
 				returnValue = false;
@@ -71,12 +68,12 @@ public class InventoryMethods
 	}
 
 	//checks whether the inventory has atleast one of the item stack inputs
-	public static boolean isOneItemStackAvilable(Inventory inventory, Map<ItemStack,String> itemStacks)
+	public static boolean isOneItemStackAvailable(Inventory inventory, Map<ItemStack,String> itemStacks)
 	{
-		Iterator<ItemStack> itemStackItr=itemStacks.keySet().iterator();
-		while(itemStackItr.hasNext())
+		if(itemStacks.isEmpty())
+			return true;
+		for(ItemStack itemStack:itemStacks.keySet())
 		{
-			ItemStack itemStack=itemStackItr.next();
 			if (isItemStackAvailable(inventory, itemStack))
 			{
 				return true;
@@ -152,17 +149,12 @@ public class InventoryMethods
 	//removes the itemStacks from the supplied List from the inventory.
 	public static boolean removeItemStacks(Inventory inventory, Map<ItemStack,String> itemStacks)
 	{
-		if(areItemStacksAvilable(inventory,itemStacks))
+		if(areItemStacksAvailable(inventory,itemStacks))
 		{
 			boolean returnValue = true;
-			Iterator<ItemStack> itemStackItr=itemStacks.keySet().iterator();
-			while(itemStackItr.hasNext())
+			for(ItemStack itemStack:itemStacks.keySet())
 			{
-				ItemStack itemStack=itemStackItr.next();
-				if (!removeItemStack(inventory, itemStack))
-				{
-					returnValue = false;
-				}
+				returnValue=removeItemStack(inventory, itemStack);
 			}
 			return returnValue;
 		}
@@ -188,6 +180,22 @@ public class InventoryMethods
 			}
 		}
 		return removedItem;
+	}
+	
+	//Removes as many items stacks as possible returning the number removed
+	public static int removeAllItemStacks(Inventory inventory, Map<ItemStack,String> itemStacks,int maintenance)
+	{
+		int numberRemoved=0;
+		if(!itemStacks.isEmpty())
+		{
+			while(areItemStacksAvailable(inventory,itemStacks)&&numberRemoved<maintenance)
+			{
+				removeItemStacks(inventory,itemStacks);
+				numberRemoved++;
+			}
+		}
+		return numberRemoved;
+			
 	}
 	
 	//removes the amount of items in the supplied ItemStack from the inventory

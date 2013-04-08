@@ -17,15 +17,18 @@
 #       durability: 0 (damage value, 0 represents max durability, negative represents greater than max)
 #       data: 0 (data value of the item stack
 #       display_name: (display name of the item, null by default)
-#       lore: (lore of the item, null by default)#   outputs: (only include if there are outputs)
+#       lore: (lore of the item, null by default)
+#   outputs: (only include if there are outputs)
 #     Common Name:
 #       material: MATERIAL_NAME (Official bukkit material name)
 #       amount: 1 (number of a particular item)
 #       durability: 0 (damage value, 0 represents max durability, negative represents greater than max)
 #       data: 0 (data value of the item stack
 #       display_name: (display name of the item, null by default)
-#       lore: (lore of the item, null by default)#   enchantments:
-#     ENCHANTMENT_NAME: (Offificial bukkit enchantment name)
+#       lore: (lore of the item, null by default)
+#   enchantments:
+#     Common Name:
+#       type: (Offificial bukkit enchantment name, Require)
 #       level: 1 (level of the enchantment
 #       probability: 1 (0-1 probability of the enchantment being applied)
 #   output_recipes:
@@ -36,7 +39,6 @@
 #Example factory entry with defaults included any section should be able to be excluded
 # TITLE: (Don't use spaces, should be a unique identifier)
 #   name: Default Name (Displayed name to user)
-#   production_time: 1 (Time to produce the recipe)
 #   fuel: (Defaults to charcoal if not present, only first entry used)
 #     Common Name:
 #       material: MATERIAL_NAME (Official bukkit material name)
@@ -45,7 +47,8 @@
 #       data: 0 (data value of the item stack
 #       display_name: (display name of the item, null by default)
 #       lore: (lore of the item, null by default)#   fuel_time: 1 (Time that a piece of fuel lasts)
-#   build_materials: (required)
+#   fuel_time: 1 (Time which fuel lasts)
+#   inputs: (required)
 #     Common Name:
 #       material: MATERIAL_NAME (Official bukkit material name)
 #       amount: 1 (number of a particular item)
@@ -79,8 +82,8 @@ disabled_recipes:
   - IRON_AXE
 production_general:
   update_cycle: 20
-  maintence_cycle: 1728000
-  maintence_period: 51840000
+  maintenance_cycle: 15
+  maintenance_period: 100
 production_recipes:
   TEST1:
     name: test1
@@ -89,23 +92,17 @@ production_recipes:
       Stone:
         material: STONE
         amount: 1
-    upgrades:
-      Diamond Helmet:
-        material: DIAMOND_HELMET
-        amount: 1
-      Diamone Helmet:
-        material: DIAMOND_SWORD
-        amount: 1
+      Cricle Stone:
+        material: SMOOTH_BRICK
+        durability: 3
     outputs:
-      Diamond Leggings:
-        material: DIAMOND_LEGGINGS
-        amount: 2
-        lore: ouput!
-    enchantments:
-      PROTECTION_ENVIRONMENTAL:
-        level: 1
-        probability: 1
+      Charcoal:
+        material: COAL
+        amount: 1
+        durability: 1
     useonce: true
+    maintenance: 7
+    
   TEST2:
     name: test2
     production_time: 1
@@ -114,21 +111,30 @@ production_recipes:
         material: STONE
         amount: 4
         lore: ouput!
+      Charcoal:
+        material: COAL
+        amount: 1
+        durability: 1
     output_recipes:
-      - TEST3
+      - TEST1
+    maintenance: 16
 
 production_factories:  
   WORKSHOP:
     name: Workshop
     fuel:
       Charcoal:
-        material: COAL
+        material: DIMAOND_HELMET
         data: 1
     fuel_time: 1
-    build_materials:
+    inputs:
       Stone:
         material: STONE
         amount: 5
     production_recipes:
       - TEST1
       - TEST2
+    maintenance_input:
+      Stone:
+        material: STONE
+        amount: 1
