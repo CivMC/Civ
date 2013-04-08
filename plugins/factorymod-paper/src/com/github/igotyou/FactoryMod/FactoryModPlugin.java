@@ -245,7 +245,6 @@ public class FactoryModPlugin extends JavaPlugin
 				if(material!=null)
 				{
 					int amount=configItem.getInt("amount",1);
-					byte data=(byte)configItem.getInt("data",0);
 					short damage=(short)configItem.getInt("durability",0);
 					String displayName=configItem.getString("display_name");
 					String lore=configItem.getString("lore");
@@ -256,11 +255,11 @@ public class FactoryModPlugin extends JavaPlugin
 					int stackSize=material.getMaxStackSize();
 					while(amount>stackSize)
 					{
-						ItemStack itemStack =createItemStack(material,stackSize,damage,data,displayName,lore);
+						ItemStack itemStack =createItemStack(material,stackSize,damage,displayName,lore);
 						items.put(itemStack,commonName);					
 						amount = amount - stackSize;	
 					}
-					ItemStack itemStack =createItemStack(material,amount,damage,data,displayName,lore);
+					ItemStack itemStack =createItemStack(material,amount,damage,displayName,lore);
 					items.put(itemStack,commonName);
 				}
 			}
@@ -268,13 +267,10 @@ public class FactoryModPlugin extends JavaPlugin
 		return items;
 	}
 	
-	private ItemStack createItemStack(Material material,int stackSize,short durability,byte data,String name,String loreString)
+	private ItemStack createItemStack(Material material,int stackSize,short durability,String name,String loreString)
 	{
 		ItemStack itemStack;
-		if(data!=0)
-			itemStack = new ItemStack(material, stackSize, durability, data);
-		else
-			itemStack= new ItemStack(material, stackSize, durability);
+		itemStack= new ItemStack(material, stackSize, durability);
 		ItemMeta meta=itemStack.getItemMeta();
 		if (name!=null)
 			meta.setDisplayName(name);
