@@ -1,12 +1,22 @@
 package com.untamedears.JukeAlert;
 
-public class JukeAlert {
+
+import org.bukkit.plugin.java.JavaPlugin;
+
+
+
+public class JukeAlert extends JavaPlugin{
 	
 	public void onEnable(){
-		JukeAlertCommands command= new JukeAlertCommands(this);
 		
-		getcommand(command).setExecutor(new JukeAlertCommands(this));
-		
+	
+		JukeAlertCommands commands = new JukeAlertCommands(this);
+		for (String command : getDescription().getCommands().keySet()) {
+			
+			
+			getCommand(command).setExecutor(commands);
+		}
+
 	}
 
 	public void onDisable(){
