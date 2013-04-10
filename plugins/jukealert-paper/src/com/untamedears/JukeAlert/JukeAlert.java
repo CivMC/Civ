@@ -13,7 +13,6 @@ public class JukeAlert extends JavaPlugin{
 		JukeAlertCommands commands = new JukeAlertCommands(this);
 		for (String command : getDescription().getCommands().keySet()) {
 			
-			
 			getCommand(command).setExecutor(commands);
 		}
 

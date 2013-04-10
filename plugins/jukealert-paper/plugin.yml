@@ -1,5 +1,5 @@
 name: JukeAlert
-main: com.untamedears.JukeAlert
+main: com.untamedears.JukeAlert.JukeAlert
 version: .1
 
 commands:
