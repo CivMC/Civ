@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.untamedears.citadel.Citadel;
 
 public class JukeAlertSnitch extends JavaPlugin{{
-	private juke;
+	
 
 	
 	if (Bukkit.getPluginManager().isPluginEnabled("Citadel")){  //gets citadel.

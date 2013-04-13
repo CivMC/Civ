@@ -9,7 +9,7 @@ public class JukeAlert extends JavaPlugin{
 	
 	public void onEnable(){
 		
-	
+		getServer().getPluginManager().registerEvents(new JukeAlertListening(), this);
 		JukeAlertCommands commands = new JukeAlertCommands(this);
 		for (String command : getDescription().getCommands().keySet()) {
 			
@@ -21,5 +21,6 @@ public class JukeAlert extends JavaPlugin{
 	public void onDisable(){
 		
 	}
+	
 }
 
