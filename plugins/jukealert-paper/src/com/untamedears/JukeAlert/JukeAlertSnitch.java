@@ -1,5 +1,25 @@
 package com.untamedears.JukeAlert;
 
-public class JukeAlertSnitch {
+import java.util.logging.Logger;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.libs.jline.internal.Log;
+import org.bukkit.plugin.java.JavaPlugin;
+import com.untamedears.citadel.Citadel;
+
+public class JukeAlertSnitch extends JavaPlugin{
 	
+
+	
+	if (Bukkit.getPluginManager().isPluginEnabled("Citadel")){
+		Location location= null;
+		Citadel.getReinforcementManager().getReinforcement(location.getBlock());
+		
+	}
+	else {
+		getLogger().info("Citadel is not loaded, this plugin will not function as intended.");
+	}
+
+
 }
