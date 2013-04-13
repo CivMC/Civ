@@ -23,7 +23,7 @@ import com.github.igotyou.FactoryMod.managers.FactoryModManager;
 import com.github.igotyou.FactoryMod.managers.ProductionManager;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
-import com.github.igotyou.FactoryMod.utility.InventoryMethods;
+import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.untamedears.citadel.entity.PlayerReinforcement;
 
 public class BlockListener implements Listener
@@ -169,7 +169,7 @@ public class BlockListener implements Listener
 							else
 							{
 								//return a error message
-								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
+								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use this factory!" ));
 							}
 						}
 					}
@@ -186,7 +186,7 @@ public class BlockListener implements Listener
 						else
 						{
 							//return a error message
-							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
+							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use this factory!" ));
 						}
 					}
 				}
@@ -211,7 +211,7 @@ public class BlockListener implements Listener
 						else
 						{
 							//return error message
-							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
+							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use this factory!" ));
 						}
 					}
 				}
@@ -228,31 +228,16 @@ public class BlockListener implements Listener
 							if (productionMan.factoryExistsAt(clicked.getLocation()))
 							{
 								ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
-								int procentDone = Math.round(production.getProductionTimer()*100/production.getCurrentRecipe().getProductionTime());
-								//if the clicked factory is turned on, print information
-								if (production.getActive() == true)
+								int percentDone = Math.round(production.getProductionTimer()*100/production.getCurrentRecipe().getProductionTime());
+								String status=production.getActive() ? "On" : "Off";
+								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------"+production.getProductionFactoryProperties().getName()+"---------"));
+								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status  : "+status+". Condition:"+String.valueOf(Math.round(100*(1-production.getMaintenance())))+"%."));
+								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe  : " +production.getCurrentRecipe().getRecipeName()));
+								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, production.getCurrentRecipe().needMaterialsMessage(production.getInventory())));
+								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe production time: " +  production.getCurrentRecipe().getProductionTime() + " seconds("+ production.getCurrentRecipe().getProductionTime()*FactoryModPlugin.TICKS_PER_SECOND + " ticks)"));
+								if(status.equals("On"))
 								{
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------Factory Information---------"));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type     : " + production.getProductionFactoryProperties().getName()));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status  : On,"+String.valueOf(Math.round(100*production.getMaintenance()))+"%"));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe  : " +production.getCurrentRecipe().getRecipeName()));
-//									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutputs().getData().toString() + InventoryMethods.getEnchantmentsMessage(production.getCurrentRecipe().getEnchantments())));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + InventoryMethods.getMaterialsNeededMessage(production.getCurrentRecipe().getInputs())));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe fuel requirement: " + production.getCurrentRecipe().getProductionTime()/production.getProductionFactoryProperties().getEnergyTime()*production.getProductionFactoryProperties().getEnergyMaterial().getAmount() + " " + production.getProductionFactoryProperties().getEnergyMaterial().getData().toString()));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe production time: " +  production.getCurrentRecipe().getProductionTime() + " seconds("+ production.getCurrentRecipe().getProductionTime()*FactoryModPlugin.TICKS_PER_SECOND + " ticks)"));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Progress: " + procentDone + "%"));
-								}
-								//if the factory is turned off, print information
-								else
-								{
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------Factory Information---------"));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Type   : " + production.getProductionFactoryProperties().getName()));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status: Off Maintenace: "+String.valueOf(Math.round(100*production.getMaintenance()))+"%"));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe: " + production.getCurrentRecipe().getRecipeName()));
-//									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe output: " + production.getCurrentRecipe().getBatchAmount() + " " + production.getCurrentRecipe().getOutputs().getData().toString() + InventoryMethods.getEnchantmentsMessage(production.getCurrentRecipe().getEnchantments())));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe input: " + InventoryMethods.getMaterialsNeededMessage(production.getCurrentRecipe().getInputs())));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe fuel requirement: " + production.getCurrentRecipe().getProductionTime()/production.getProductionFactoryProperties().getEnergyTime()*production.getProductionFactoryProperties().getEnergyMaterial().getAmount() + " " + production.getProductionFactoryProperties().getEnergyMaterial().getData().toString()));
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe production time: " +  production.getCurrentRecipe().getProductionTime() + " seconds("+ production.getCurrentRecipe().getProductionTime()*FactoryModPlugin.TICKS_PER_SECOND + " ticks)"));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Progress: " + percentDone + "%"));
 								}
 							}
 						}
@@ -260,7 +245,7 @@ public class BlockListener implements Listener
 						else
 						{
 							//return error message
-							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that block!" ));
+							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that this factory!" ));
 						}
 					}
 				}

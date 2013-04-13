@@ -1,36 +1,34 @@
 package com.github.igotyou.FactoryMod.properties;
 
 import java.util.List;
-import java.util.Map;
-
-import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.interfaces.Properties;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
+import com.github.igotyou.FactoryMod.utility.ItemList;
+import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 
 
 public class ProductionProperties implements Properties
 {
-	private Map<ItemStack,String> buildMaterials;
-	private ProductionRecipe repairRecipe;
+	private ItemList<NamedItemStack> inputs;
 	private List<ProductionRecipe> recipes;
-	ItemStack energyMaterial;
+	private ItemList<NamedItemStack> fuel;
 	int energyTime;
 	String name;
 	
-	public ProductionProperties(Map<ItemStack,String> buildMaterials, List<ProductionRecipe> recipes,
-			ItemStack energyMaterial, int energyTime, String name)
+	public ProductionProperties(ItemList<NamedItemStack> inputs, List<ProductionRecipe> recipes,
+			ItemList<NamedItemStack> fuel, int energyTime, String name)
 	{
-		this.buildMaterials = buildMaterials;
+		this.inputs = inputs;
 		this.recipes = recipes;
-		this.energyMaterial = energyMaterial;
+		this.fuel = fuel;
 		this.energyTime = energyTime;
 		this.name = name;
 	}
 
-	public Map<ItemStack,String> getBuildMaterials() 
+	public ItemList<NamedItemStack> getInputs() 
 	{
-		return buildMaterials;
+		return inputs;
 	}
 	
 	public List<ProductionRecipe> getRecipes()
@@ -38,9 +36,9 @@ public class ProductionProperties implements Properties
 		return recipes;
 	}
 	
-	public ItemStack getEnergyMaterial()
+	public ItemList<NamedItemStack> getFuel()
 	{
-		return energyMaterial;
+		return fuel;
 	}
 	
 	public int getEnergyTime()

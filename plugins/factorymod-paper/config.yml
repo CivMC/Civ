@@ -91,14 +91,22 @@ production_recipes:
     inputs:
       Stone:
         material: STONE
-        amount: 1
       Cricle Stone:
         material: SMOOTH_BRICK
         durability: 3
     outputs:
+      Sword:
+        material: DIAMOND_SWORD
+        amount: 3
       Charcoal:
         material: COAL
         amount: 1
+        durability: 1
+      Cracked Stone:
+        material: SMOOTH_BRICK
+        durability: 2
+      Mossy Stone:
+        material: SMOOTH_BRICK
         durability: 1
     useonce: true
     maintenance: 7
@@ -123,9 +131,8 @@ production_factories:
   WORKSHOP:
     name: Workshop
     fuel:
-      Charcoal:
-        material: DIMAOND_HELMET
-        data: 1
+      Stone:
+        material: STONE
     fuel_time: 1
     inputs:
       Stone:

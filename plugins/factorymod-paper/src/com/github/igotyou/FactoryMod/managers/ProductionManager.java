@@ -26,10 +26,10 @@ import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
-import com.github.igotyou.FactoryMod.utility.InventoryMethods;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
-import java.util.Iterator;
+import com.github.igotyou.FactoryMod.utility.ItemList;
+import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 
 //original file:
 /**
@@ -209,8 +209,8 @@ public class ProductionManager implements Manager
 			String subFactoryType = null;
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
-				Map<ItemStack,String> buildMaterials = entry.getValue().getBuildMaterials();
-				if(InventoryMethods.itemStacksMatch(chestInventory, buildMaterials))
+				ItemList<NamedItemStack> inputs = entry.getValue().getInputs();
+				if(inputs.exactlyIn(chestInventory))
 				{
 					subFactoryType = entry.getKey();
 				}
@@ -218,10 +218,10 @@ public class ProductionManager implements Manager
 			if (subFactoryType != null)
 			{
 				ProductionFactory production = new ProductionFactory(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
-				if (InventoryMethods.areItemStacksAvailable(production.getInventory(), properties.get(subFactoryType).getBuildMaterials()))
+				if (properties.get(subFactoryType).getInputs().allIn(production.getInventory()))
 				{
 					addFactory(production);
-					InventoryMethods.removeItemStacks(production.getInventory(), properties.get(subFactoryType).getBuildMaterials());
+					properties.get(subFactoryType).getInputs().removeFrom(production.getInventory());
 					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + production.getProductionFactoryProperties().getName() + " production factory");
 				}
 			}
@@ -242,8 +242,8 @@ public class ProductionManager implements Manager
 			boolean hasMaterials = true;
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
-				Map<ItemStack,String> buildMaterials = entry.getValue().getBuildMaterials();
-				if(!InventoryMethods.areItemStacksAvailable(chestInventory, buildMaterials))
+				ItemList<NamedItemStack> inputs = entry.getValue().getInputs();
+				if(!inputs.allIn(chestInventory))
 				{
 					hasMaterials = false;
 				}
@@ -255,10 +255,10 @@ public class ProductionManager implements Manager
 			if (hasMaterials == true && subFactoryType != null)
 			{
 				ProductionFactory production = new ProductionFactory(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
-				if (InventoryMethods.areItemStacksAvailable(production.getInventory(), properties.get(subFactoryType).getBuildMaterials()))
+				if (properties.get(subFactoryType).getInputs().allIn(production.getInventory()))
 				{
 					addFactory(production);
-					InventoryMethods.removeItemStacks(production.getInventory(), properties.get(subFactoryType).getBuildMaterials());
+					properties.get(subFactoryType).getInputs().removeFrom(chestInventory);
 					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + subFactoryType + " production factory");
 				}
 			}

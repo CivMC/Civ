@@ -4,30 +4,31 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.interfaces.Recipe;
+import com.github.igotyou.FactoryMod.utility.ItemList;
+import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import org.bukkit.inventory.Inventory;
 
 public class ProductionRecipe implements Recipe
 {
 	private String title;
 	private String recipeName;
 	private int productionTime;
-	private Map<ItemStack,String> inputs;
-	private Map<ItemStack,String> upgrades;
-	private Map<ItemStack,String> outputs;
-	private Map<ItemStack,String> repairs;
+	private ItemList<NamedItemStack> inputs;
+	private ItemList<NamedItemStack> upgrades;
+	private ItemList<NamedItemStack> outputs;
+	private ItemList<NamedItemStack> repairs;
 	private List<ProductionRecipe> outputRecipes;
 	private List<ProbabilisticEnchantment> enchantments;
 	private boolean useOnce;
 	private int maintenance;
 	int totalNumber;
 	
-	public ProductionRecipe(String title,String recipeName,int productionTime,Map<ItemStack,String> inputs,Map<ItemStack,String> upgrades,
-		Map<ItemStack,String> outputs,List<ProbabilisticEnchantment> enchantments,boolean useOnce,int maintenance, Map<ItemStack,String> repairs)
+	public ProductionRecipe(String title,String recipeName,int productionTime,ItemList<NamedItemStack> inputs,ItemList<NamedItemStack> upgrades,
+		ItemList<NamedItemStack> outputs,List<ProbabilisticEnchantment> enchantments,boolean useOnce,int maintenance, ItemList<NamedItemStack> repairs)
 	{
 		this.title=title;
 		this.recipeName = recipeName;
@@ -39,36 +40,40 @@ public class ProductionRecipe implements Recipe
 		this.enchantments=enchantments;
 		this.useOnce=useOnce;
 		this.maintenance=maintenance;
-		int totalNumber=0;
+		this.totalNumber=0;
 		this.repairs=repairs;
 	}
 	
-	public ProductionRecipe(String title,String recipeName,int productionTime,Map<ItemStack,String> repairs)
+	public ProductionRecipe(String title,String recipeName,int productionTime,ItemList<NamedItemStack> repairs)
 	{
-		this(title,recipeName,productionTime,new HashMap<ItemStack,String>(),new HashMap<ItemStack,String>(),new HashMap<ItemStack,String>(),new ArrayList<ProbabilisticEnchantment>(),false,0,repairs);
+		this(title,recipeName,productionTime,new ItemList<>(),new ItemList<>(),new ItemList<>(),new ArrayList<ProbabilisticEnchantment>(),false,0,repairs);
 	}
 	
+	public boolean hasMaterials(Inventory inventory)
+	{
+		return inputs.allIn(inventory)&&upgrades.oneIn(inventory)&&repairs.allIn(inventory);
+	}
 	public void addOutputRecipe(ProductionRecipe outputRecipe)
 	{
 		this.outputRecipes.add(outputRecipe);
 	}
 
-	public Map<ItemStack,String> getInputs()
+	public ItemList<NamedItemStack> getInputs()
 	{
 		return inputs;
 	}
 	
-	public Map<ItemStack,String> getUpgrades()
+	public ItemList<NamedItemStack> getUpgrades()
 	{
 		return upgrades;
 	}
 	
-	public Map<ItemStack,String> getOutputs() 
+	public ItemList<NamedItemStack> getOutputs() 
 	{
 		return outputs;
 	}
 	
-	public Map<ItemStack,String> getRepairs()
+	public ItemList<NamedItemStack> getRepairs()
 	{
 		return repairs;
 	}
@@ -132,5 +137,29 @@ public class ProductionRecipe implements Recipe
 	public void incrementCount()
 	{
 		totalNumber++;
+	}
+	public String needMaterialsMessage(Inventory inventory)
+	{
+		String needAll=inputs.getDifference(inventory).toString();
+		if(!needAll.equals(""))
+		{
+			needAll+=", ";
+		}
+		needAll+=repairs.getDifference(inventory).toString();
+		String needOne=upgrades.getDifference(inventory).toString();
+		if(!needAll.equals("")&&!needOne.equals(""))
+		{
+			return "You need "+needAll+" and one of the following: "+needOne+".";
+		}
+		else if(!needAll.equals("")&&needOne.equals(""))
+		{
+			return "You need "+needAll+".";
+		}
+		else if(needAll.equals("")&&!needOne.equals(""))
+		{
+			return "You need one of the following: "+needOne+".";
+		}
+		else return "Something seems to have gone wrong.";
+			
 	}
 }

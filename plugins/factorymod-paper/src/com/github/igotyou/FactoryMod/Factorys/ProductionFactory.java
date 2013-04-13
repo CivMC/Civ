@@ -13,7 +13,7 @@ import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
-import com.github.igotyou.FactoryMod.utility.InventoryMethods;
+import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 import java.util.Iterator;
 import java.util.List;
 
@@ -74,9 +74,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 		if (active)
 		{
 			//if the materials required to produce the current recipe are in the factory inventory
-			if (InventoryMethods.areItemStacksAvailable(getInventory(), currentRecipe.getInputs())&&
-				InventoryMethods.isOneItemStackAvailable(getInventory(), currentRecipe.getUpgrades())&&
-				InventoryMethods.areItemStacksAvailable(getInventory(), currentRecipe.getRepairs()))
+			if (currentRecipe.hasMaterials(getInventory()))
 			{
 				//if the factory has been working for less than the required time for the recipe
 				if (currentProductionTimer < currentRecipe.getProductionTime())
@@ -88,7 +86,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 						if (currentEnergyTimer == productionFactoryProperties.getEnergyTime())
 						{
 							//remove one fuel.
-							InventoryMethods.removeItemStack(getPowerSourceInventory(), productionFactoryProperties.getEnergyMaterial());
+							productionFactoryProperties.getFuel().removeFrom(getPowerSourceInventory());
 							//0 seconds since last fuel consumption
 							currentEnergyTimer = 0;
 						}
@@ -108,63 +106,42 @@ public class ProductionFactory extends FactoryObject implements Factory
 				}
 				
 				//if the production timer has reached the recipes production time remove input from chest, and add output material
-				else if (currentProductionTimer == currentRecipe.getProductionTime())
+				else if (currentProductionTimer >= currentRecipe.getProductionTime())
 				{
-					boolean inputsRemoved=InventoryMethods.removeItemStacks(getInventory(), currentRecipe.getInputs());
-					ItemStack upgrade=InventoryMethods.removeOneItemStack(getInventory(), currentRecipe.getUpgrades());
-					int amountRepaired=InventoryMethods.removeAllItemStacks(getInventory(),currentRecipe.getRepairs(),(int) currentMaintenance);
-					if (inputsRemoved && (currentRecipe.getUpgrades().isEmpty() || upgrade!=null))
+					
+					//Remove inputs from chest
+					currentRecipe.getInputs().removeFrom(getInventory());
+					FactoryModPlugin.sendConsoleMessage("InputsRemoveD!");
+					//Remove upgrade and replace it with its upgraded form
+					currentRecipe.getUpgrades().removeOneFrom(getInventory()).addEnchantments(currentRecipe.getEnchantments()).putIn(getInventory());
+					FactoryModPlugin.sendConsoleMessage("Upgraded!");
+					//Adds outputs to chest with appropriate enchantments
+					currentRecipe.getOutputs().addEnchantments(currentRecipe.getEnchantments()).putIn(getInventory());
+					FactoryModPlugin.sendConsoleMessage("Output!");
+					//Adds new recipes to the factory
+					for (int i = 0; i < currentRecipe.getOutputRecipes().size();i++)
 					{
-						//Adds modified upgrade back to check with appropriate enchantments and modifications
-						if(upgrade!=null)
+						if(!recipes.contains(currentRecipe.getOutputRecipes().get(i)))
 						{
-							if (currentRecipe.hasEnchantments())
-							{
-								try
-								{
-									upgrade.addEnchantments(currentRecipe.getEnchantments());
-								}
-								catch(Exception e)
-								{
-								}
-							}
-							getInventory().addItem(upgrade);
+							recipes.add(currentRecipe.getOutputRecipes().get(i));
 						}
-						//Adds outputs to chest with appropriate enchantments
-						Iterator<ItemStack> outputItr=currentRecipe.getOutputs().keySet().iterator();
-						while(outputItr.hasNext())
-						{
-							ItemStack itemStack = outputItr.next();
-							if (currentRecipe.hasEnchantments())
-							{
-								try
-								{
-									itemStack.addEnchantments(currentRecipe.getEnchantments());
-								}
-								catch(Exception e)
-								{
-								}
-							}
-							getInventory().addItem(itemStack);
-						}
-						//Adds new recipes to the factory
-						for (int i = 0; i < currentRecipe.getOutputRecipes().size();i++)
-						{
-							if(!recipes.contains(currentRecipe.getOutputRecipes().get(i)))
-							{
-								recipes.add(currentRecipe.getOutputRecipes().get(i));
-							}
 
-						}
-						//Repairs the factory
-						currentMaintenance-=amountRepaired;
-						//Remove currentRecipe if it only is meant to be used once
-						if(currentRecipe.getUseOnce())
-						{
-							recipes.remove(currentRecipe);
-							setRecipeToNumber(0);
-						}
 					}
+					updateMaintenance();
+					FactoryModPlugin.sendConsoleMessage("Recipes Upgraded");
+					//Repairs the factory
+					int amountRepaired=currentRecipe.getRepairs().removeMaxFrom(getInventory(),(int)currentMaintenance);
+					currentMaintenance-=amountRepaired;
+					FactoryModPlugin.sendConsoleMessage("Repaired");
+					
+					//Remove currentRecipe if it only is meant to be used once
+					if(currentRecipe.getUseOnce())
+					{
+						recipes.remove(currentRecipe);
+						setRecipeToNumber(0);
+					}
+					FactoryModPlugin.sendConsoleMessage("Bye bYe recipe");
+					
 					currentProductionTimer = 0;
 					powerOff();
 				}
@@ -237,9 +214,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 				if (isFuelAvailable())
 				{
 					//are there enough materials for the current recipe in the chest?
-					if (InventoryMethods.areItemStacksAvailable(getInventory(), currentRecipe.getInputs())&&
-						InventoryMethods.isOneItemStackAvailable(getInventory(), currentRecipe.getUpgrades())&&
-						InventoryMethods.areItemStacksAvailable(getInventory(), currentRecipe.getRepairs()))
+					if (currentRecipe.hasMaterials(getInventory()))
 					{
 						//turn the factory on
 						powerOn();
@@ -250,7 +225,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 					else
 					{
 						//return a failure message, containing which materials are needed for the recipe
-						return new InteractionResponse(InteractionResult.FAILURE, "Factory does not have enough materials for the current recipe! You need: " + InventoryMethods.getMaterialsNeededMessage(currentRecipe.getInputs()));
+						return new InteractionResponse(InteractionResult.FAILURE, currentRecipe.needMaterialsMessage(getInventory()));
 					}
 				}
 				//if there isn't enough fuel for atleast on energy cycle
@@ -276,7 +251,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	}
 	
 	/**
-	 * Returns either a succsess or error message.
+	 * Returns either a success or error message.
 	 * Called by the blockListener when a player left clicks the center block, with the InteractionMaterial
 	 */
 	public InteractionResponse toggleRecipes()
@@ -369,7 +344,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	 */
 	public boolean isFuelAvailable()
 	{
-		return InventoryMethods.isItemStackAvailable(getPowerSourceInventory(), productionFactoryProperties.getEnergyMaterial());
+		return productionFactoryProperties.getFuel().allIn(getPowerSourceInventory());
 	}
 
 	/**
@@ -383,7 +358,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 		//Return the build materials?
 		if (FactoryModPlugin.RETURN_BUILD_MATERIALS&&FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
 		{
-			Iterator<ItemStack> materialItr=productionFactoryProperties.getBuildMaterials().keySet().iterator();
+			Iterator<NamedItemStack> materialItr=productionFactoryProperties.getInputs().iterator();
 			while(materialItr.hasNext())
 			{
 				ItemStack item = materialItr.next();

@@ -1,25 +1,24 @@
 package com.github.igotyou.FactoryMod.properties;
 
-import java.util.Map;
-
-import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.interfaces.Properties;
+import com.github.igotyou.FactoryMod.utility.ItemList;
+import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 
 
 
 public class PowerProperties implements Properties
 {
-	private Map<ItemStack,String> buildMaterials;
+	private ItemList<NamedItemStack> inputs;
 	
-	public PowerProperties(Map<ItemStack,String> buildMaterials)
+	public PowerProperties(ItemList<NamedItemStack> inputs)
 	{
-		this.buildMaterials = buildMaterials;
+		this.inputs = inputs;
 	}
 	
-	public Map<ItemStack,String> getBuildMaterials() 
+	public ItemList<NamedItemStack> getInputs() 
 	{
-		return buildMaterials;
+		return inputs;
 	}
 
 }
