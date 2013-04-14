@@ -28,6 +28,7 @@ public class JukeAlertListening extends JavaPlugin implements Listener{
 		  if(Utility.isReinforced(snitch)){
 		  player= bpe.getPlayer();
 		  player.sendMessage(ChatColor.RED+"You have created a Juke Snitch");
+		  //point a
 		  		}
 			}
 		  
