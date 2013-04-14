@@ -1,5 +1,6 @@
 package com.untamedears.JukeAlert;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,6 +13,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.Utility;
 
 public class JukeAlertListening extends JavaPlugin implements Listener{
 	
@@ -23,10 +25,10 @@ public class JukeAlertListening extends JavaPlugin implements Listener{
 		  if (snitch.getType()== Material.JUKEBOX){
 			  location=bpe.getBlockPlaced().getLocation();
 			  
-		  if(snitch== Citadel.getReinforcementManager().getReinforcement(location))
+		  if(Utility.isReinforced(snitch)){
 		  player= bpe.getPlayer();
-		  player.sendMessage("You have created a Juke Snitch");
-		  
+		  player.sendMessage(ChatColor.RED+"You have created a Juke Snitch");
+		  		}
 			}
 		  
 		 

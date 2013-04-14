@@ -18,10 +18,11 @@ public class JukeAlertSnitch extends JavaPlugin{{
 			
 		if(JukeAlertListening.location == Citadel.getReinforcementManager().getReinforcement(JukeAlertListening.location)){
 				
-			if(JukeAlertListening.player== AccessDelegate.getDelegate(JukeAlertListening.snitch)){
-				//Juke will send the player a message if someone crosses their field.  unfinished.
+					if(JukeAlertListening.player== AccessDelegate.getDelegate(JukeAlertListening.snitch)){
+						//Juke will send the player a message if someone crosses their field.  unfinished.
 				
-			}
+					}
+				}
 		}
 		
 		
