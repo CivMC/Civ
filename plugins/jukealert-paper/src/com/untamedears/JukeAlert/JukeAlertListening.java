@@ -10,23 +10,21 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class JukeAlertListening extends JavaPlugin implements Listener{
-
+	  public Block block(Block block){
+			return block;
+		}
 	  public void placeSnitchBlock(BlockPlaceEvent bpe) {
 		  
 		 
 		
-		 if (block.getType()== Material.JUKEBOX){
-			 		
-		}
-		public block(block BlockPlacedEvent()){
-			return block;
-		}
-
-
-			 
+		  if (block.getType()== Material.JUKEBOX){
+		 		
+			}
+		  
 		 
 		 
 	  }
+
 	  private void registerEvents() {
 		    getServer().getPluginManager().registerEvents(this, this);
 		  }
