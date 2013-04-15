@@ -5,8 +5,16 @@
 package com.untamedears.JukeAlert.sql;
 
 import com.untamedears.JukeAlert.JukeAlert;
+
+import java.awt.Event;
 import java.util.logging.Level;
+
+import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 /**
  *
@@ -122,14 +130,31 @@ public class JukeAlertLogger {
 	public void updateGroupSnitch(String group) {
 		//TODO: Add query
 	}
-	
+	@EventHandler(priority = EventPriority.HIGH)
 	public void updateCubiodSize(int x, int y, int z) {
+		
+		
 		Configuration c = plugin.getConfig();
 		int length =c.getInt("length");
 		int width = c.getInt("width");
 		int height = c.getInt("height");
+		int maxX = x + length/2;
+		int maxY = y + width/2;
+		int maxZ = z + height/2;
 		
-		
+		for (int minX= x - length/2; minX<=maxX; minX++){
+			for (int minY = y - width/2; minY<=maxY; minY++){
+				for (int minZ = z - height/2; minZ<=maxZ; minZ++){
+					if (x == minX){
+						if (y == minY){
+							if (z == minZ){
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
 		//TODO: Add query
 	}
 }
