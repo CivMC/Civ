@@ -155,7 +155,6 @@ public class JukeAlertLogger {
 				}
 			}
 		}
-		//
-		//TODO: Add query
+		//Calculates whether or not a player enters a snitch field: unfinished.
 	}
 }
