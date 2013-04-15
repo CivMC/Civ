@@ -27,6 +27,9 @@ public class JukeAlertLogger {
 		String user = c.getString("db.user");
 		String pass = c.getString("db.pass");
 		String prefix = c.getString("db.prefix");
+		int length= c.getInt("20");
+		int width= c.getInt("20");
+		int height= c.getInt("20");
 
 		if (host == null) {
 			host = "localhost";
@@ -51,6 +54,18 @@ public class JukeAlertLogger {
 		if (prefix == null) {
 			prefix = "pvp_";
 			c.set("db.prefix", prefix);
+		}
+		if (length == 0){
+			length = 20;
+			c.set("db.length", length);
+		}
+		if (width == 0){
+			length = 20;
+			c.set("db.width", width);
+		}
+		if (height == 0){
+			height =20;
+			c.set("db.height", height);
 		}
 
 		plugin.saveConfig();
@@ -109,6 +124,12 @@ public class JukeAlertLogger {
 	}
 	
 	public void updateCubiodSize(int x, int y, int z) {
+		Configuration c = plugin.getConfig();
+		int length =c.getInt("length");
+		int width = c.getInt("width");
+		int height = c.getInt("height");
+		
+		
 		//TODO: Add query
 	}
 }

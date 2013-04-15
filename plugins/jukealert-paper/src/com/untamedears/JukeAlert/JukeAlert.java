@@ -22,6 +22,7 @@ public class JukeAlert extends JavaPlugin {
 
 			getCommand(command).setExecutor(commands);
 		}
+	
 	}
 
 	@Override
