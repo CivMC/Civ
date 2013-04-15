@@ -81,7 +81,8 @@ public class JukeAlertListener implements Listener {
 		int x= loc.getBlockX();
 		int y= loc.getBlockY();
 		int z= loc.getBlockZ();
-		ja.getJaLogger().updateCubiodSize(x, y, z);
+		
+		
 		
 		//TODO: Add/remove players to/from the JukeAlertSnitch's list and notify the player's who own the snitch if they have entered.
 	}

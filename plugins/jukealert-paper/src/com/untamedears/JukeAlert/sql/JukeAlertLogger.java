@@ -155,6 +155,7 @@ public class JukeAlertLogger {
 				}
 			}
 		}
+		//
 		//TODO: Add query
 	}
 }
