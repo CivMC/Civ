@@ -131,20 +131,20 @@ public class JukeAlertLogger {
 		//TODO: Add query
 	}
 	@EventHandler(priority = EventPriority.HIGH)
-	public void updateCubiodSize(int x, int y, int z) {
-		
+	public void updateCubiodSize(double x, double y, double z) {
+		// todo: add finding snitch to replace variable x y z.
 		
 		Configuration c = plugin.getConfig();
-		int length =c.getInt("length");
-		int width = c.getInt("width");
-		int height = c.getInt("height");
-		int maxX = x + length/2;
-		int maxY = y + width/2;
-		int maxZ = z + height/2;
+		double length =c.getInt("length");
+		double width = c.getInt("width");
+		double height = c.getInt("height");
+		double maxX = x + length/2;
+		double maxY = y + width/2;
+		double maxZ = z + height/2;
 		
-		for (int minX= x - length/2; minX<=maxX; minX++){
-			for (int minY = y - width/2; minY<=maxY; minY++){
-				for (int minZ = z - height/2; minZ<=maxZ; minZ++){
+		for (double minX= x - length/2; minX<=maxX; minX++){
+			for (double minY = y - width/2; minY<=maxY; minY++){
+				for (double minZ = z - height/2; minZ<=maxZ; minZ++){
 					if (x == minX){
 						if (y == minY){
 							if (z == minZ){

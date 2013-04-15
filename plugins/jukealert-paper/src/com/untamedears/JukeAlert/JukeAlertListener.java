@@ -1,5 +1,6 @@
 package com.untamedears.JukeAlert;
 
+import com.untamedears.JukeAlert.sql.JukeAlertLogger;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.Utility;
 import com.untamedears.citadel.access.AccessDelegate;
@@ -22,7 +23,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 public class JukeAlertListener implements Listener {
 
 	private JukeAlert ja;
-
+	private JukeAlertLogger jal;
 	public JukeAlertListener(JukeAlert ja) {
 		this.ja = ja;
 	}
@@ -78,10 +79,11 @@ public class JukeAlertListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void enterSnitchProximity(PlayerMoveEvent event) {
 		Location loc= event.getPlayer().getLocation();
-		int x= loc.getBlockX();
-		int y= loc.getBlockY();
-		int z= loc.getBlockZ();
-		
+		double x=0,y=0,z=0;
+		jal.updateCubiodSize(x, y, z);//gets snitch field.
+		if (loc.getX() == x || loc.getY() == y || loc.getZ() == z){ //if snitch field and player have the same cords.
+			// todo: send player message.
+		}
 		
 		
 		//TODO: Add/remove players to/from the JukeAlertSnitch's list and notify the player's who own the snitch if they have entered.
