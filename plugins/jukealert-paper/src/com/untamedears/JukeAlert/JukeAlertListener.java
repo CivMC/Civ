@@ -100,6 +100,8 @@ public class JukeAlertListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void enterSnitchProximity(PlayerMoveEvent event) {
+		Location loc = event.getPlayer().getLocation();
+		for (JukeAlertSnitch snitch : listOSnitches) {
             //TODO: Add/remove players to/from the JukeAlertSnitch's list and notify the players who own the snitch if they have entered.
             /*
              * Pseudo Code (Code that wont just work if copy and pasted but gives a general idea of what we want)
