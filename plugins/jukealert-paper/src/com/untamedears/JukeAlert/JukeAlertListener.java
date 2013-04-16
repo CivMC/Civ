@@ -43,7 +43,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class JukeAlertListener implements Listener {
-
+	private JukeAlertSnitch jas;
 	private JukeAlert ja;
 
 	public JukeAlertListener(JukeAlert ja) {
@@ -101,6 +101,7 @@ public class JukeAlertListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void enterSnitchProximity(PlayerMoveEvent event) {
 		Location loc = event.getPlayer().getLocation();
+		
 		for (JukeAlertSnitch snitch : listOSnitches) {
             //TODO: Add/remove players to/from the JukeAlertSnitch's list and notify the players who own the snitch if they have entered.
             /*
