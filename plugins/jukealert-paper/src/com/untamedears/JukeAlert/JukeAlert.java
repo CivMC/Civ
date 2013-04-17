@@ -13,7 +13,7 @@ public class JukeAlert extends JavaPlugin {
 	public static final Logger LOGGER = Logger.getLogger("Minecraft");
 	private JukeAlertLogger jaLogger;
 	static List<JukeAlertSnitch> snitches = new ArrayList<>(); //TODO: Add snitches to memory so it's not server intensive going to the SQL everytime.
-
+	static List<JukeAlertSnitch> listOSnitches= new ArrayList<>().get(index);//index should be amount of snitches?
 	@Override
 	public void onEnable() {
 		jaLogger = new JukeAlertLogger(this);

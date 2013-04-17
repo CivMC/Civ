@@ -56,6 +56,8 @@ public class JukeAlertSnitch {
 
     public void load() {
     	JukeAlert.snitches.add(this);
+    	
+    	
         //TODO: Make it load from the SQL Database when the server starts up.
         /*
          * JukeAlert.snitches.add(this);
