@@ -9,13 +9,14 @@ import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class JukeAlert extends JavaPlugin {
-	private JukeAlertSnitch jas;
+	private Manager manager;
 	public static final Logger LOGGER = Logger.getLogger("Minecraft");
 	private JukeAlertLogger jaLogger;
-	static List<JukeAlertSnitch> snitches = new ArrayList<>(); //TODO: Add snitches to memory so it's not server intensive going to the SQL everytime.
-	static List<JukeAlertSnitch> listOSnitches= new ArrayList<>().get(index);//index should be amount of snitches?
+	private List<JukeAlertSnitch> snitches = new ArrayList<>(); //TODO: Add snitches to memory so it's not server intensive going to the SQL everytime.
+	
 	@Override
 	public void onEnable() {
+		manager.load();
 		jaLogger = new JukeAlertLogger(this);
 
 		JukeAlertCommands commands = new JukeAlertCommands(this);
@@ -28,7 +29,7 @@ public class JukeAlert extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		jas.save();
+		
 		//TODO: Make sure everything saves properly and does save.
 	}
 

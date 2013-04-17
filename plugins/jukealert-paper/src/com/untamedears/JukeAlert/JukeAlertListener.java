@@ -44,6 +44,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class JukeAlertListener implements Listener {
 	private JukeAlert ja;
+	private JukeAlertSnitch jas;
 
 	public JukeAlertListener(JukeAlert ja) {
 		this.ja = ja;
@@ -101,7 +102,11 @@ public class JukeAlertListener implements Listener {
 	public void enterSnitchProximity(PlayerMoveEvent event) {
 		Location loc = event.getPlayer().getLocation();
 		
-		for (JukeAlertSnitch snitch :listOSnitches) {
+		for (JukeAlertSnitch snitch :listOfSnitches) {
+			if (snitch.isWithinCuboid(loc)) {
+				snitch.add(event.getPlayer().getName());
+			}
+			}
             //TODO: Add/remove players to/from the JukeAlertSnitch's list and notify the players who own the snitch if they have entered.
             /*
              * Pseudo Code (Code that wont just work if copy and pasted but gives a general idea of what we want)
@@ -113,7 +118,7 @@ public class JukeAlertListener implements Listener {
              * }
              */
 	}
-	}
+	
 	//Registers the events in this to JukeAlert.java
 	public void registerEvents() {
 		Bukkit.getServer().getPluginManager().registerEvents(this, ja);
