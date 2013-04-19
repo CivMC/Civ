@@ -19,8 +19,6 @@ import me.josvth.randomspawn.listeners.*;
 
 public class RandomSpawn extends JavaPlugin{
 
-	Logger logger;
-
 	public YamlHandler yamlHandler;
 	CommandHandler commandHandler;
 
@@ -32,8 +30,6 @@ public class RandomSpawn extends JavaPlugin{
 
 	@Override
 	public void onEnable() {
-
-		logger = Logger.getLogger("Minecraft");
 
 		//setup handlers
 		yamlHandler = new YamlHandler(this);
@@ -52,15 +48,15 @@ public class RandomSpawn extends JavaPlugin{
 	}
 
 	public void logInfo(String message){
-		logger.info("[Random Spawn] " + message);
+		getLogger().info(message);
 	}
 
 	public void logDebug(String message){
-		if (yamlHandler.config.getBoolean("debug",false)) { logger.info("[Random Spawn] (DEBUG) " + message); }
+		if (yamlHandler.config.getBoolean("debug",false)) { getLogger().info("(DEBUG) " + message); }
 	}
 
 	public void logWarning(String message){
-		logger.warning("[Random Spawn] " + message);
+		getLogger().warning(message);
 	}
 
 	public void playerInfo(Player player, String message){

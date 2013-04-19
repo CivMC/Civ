@@ -1,5 +1,6 @@
 package me.josvth.randomspawn.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -33,9 +34,17 @@ public class SignListener implements Listener {
 				if (sign.getLine(0).equalsIgnoreCase(plugin.yamlHandler.config.getString("rs-sign-text","[RandomSpawn]") ) ){
 										
 					if (player.hasPermission("RandomSpawn.usesign")){
-
-						World world = player.getWorld();
-
+						
+						World world = null;
+						
+						String worldName = sign.getLine(1);
+						
+						if ( worldName != null )
+							world = Bukkit.getWorld(worldName);
+						
+						if ( world == null )
+							world = player.getWorld();
+						
 						final Location spawnLocation = plugin.chooseSpawn(world);
 						
 						plugin.sendGround(player, spawnLocation);
