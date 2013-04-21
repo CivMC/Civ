@@ -1,6 +1,6 @@
 name: Random Spawn
 version: 2.6
-main: me.Josvth.RandomSpawn.RandomSpawn
+main: me.josvth.randomspawn.randomspawn
 author: Josvth
 commands:
   randomspawn:
