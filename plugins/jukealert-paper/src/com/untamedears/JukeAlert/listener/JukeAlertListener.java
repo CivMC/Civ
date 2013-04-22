@@ -1,5 +1,6 @@
-package com.untamedears.JukeAlert;
+package com.untamedears.JukeAlert.listener;
 
+import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.Utility;
 import com.untamedears.citadel.access.AccessDelegate;
@@ -17,6 +18,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class JukeAlertListener implements Listener {
@@ -59,7 +64,6 @@ public class JukeAlertListener implements Listener {
 
         ja.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + player.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         player.sendMessage(ChatColor.AQUA + "You've created a private snitch; reinforce it to add others to it.");
-        return;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -89,6 +93,41 @@ public class JukeAlertListener implements Listener {
          *      }
          * }
          */
+    }
+
+    //Will assign even.getEntity() to a variable I just wanted to set these up real fast before my next class.
+    @EventHandler(priority = EventPriority.HIGH)
+    public void playerKillEntity(EntityDeathEvent event) {
+        if (event.getEntity().getKiller() instanceof Player) {
+            //TODO: Put stuff here
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void playerKillPlayer(PlayerDeathEvent event) {
+        if (event.getEntity().getKiller() instanceof Player) {
+            //TODO: Put stuff here
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void playerBreakBlock(BlockPlaceEvent event) {
+        //TODO: Put stuff here
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void playerPlaceBlock(BlockPlaceEvent event) {
+        //TODO: Put stuff here
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void playerFillBucket(PlayerBucketFillEvent event) {
+        //TODO: Put stuff here
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void playerEmptyBucket(PlayerBucketEmptyEvent event) {
+        //TODO: Put stuff here
     }
 
     //Registers the events in this to JukeAlert.java
