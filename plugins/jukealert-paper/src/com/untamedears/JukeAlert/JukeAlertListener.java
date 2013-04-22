@@ -21,76 +21,78 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class JukeAlertListener implements Listener {
 
-	private JukeAlert ja;
+    private JukeAlert ja;
 
-	public JukeAlertListener(JukeAlert ja) {
-		this.ja = ja;
-	}
+    public JukeAlertListener(JukeAlert ja) {
+        this.ja = ja;
+    }
 
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void placeSnitchBlock(BlockPlaceEvent event) {
-		if (event.isCancelled()) {
-			return;
-		}
-		Block block = event.getBlock();
-		if (!block.getType().equals(Material.JUKEBOX)) {
-			return;
-		}
-		Player player = event.getPlayer();
-		Location loc = player.getLocation();
-		if (Utility.isReinforced(loc)) {
-			AccessDelegate access = AccessDelegate.getDelegate(block);
-			IReinforcement rei = access.getReinforcement();
-			if (rei instanceof PlayerReinforcement) {
-				PlayerReinforcement reinforcement = (PlayerReinforcement) rei;
-				Faction owner = reinforcement.getOwner();
-				if (reinforcement.getSecurityLevel().equals(SecurityLevel.GROUP)) {
-					ja.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-					player.sendMessage(ChatColor.AQUA + "You've created a snitch block registered to the group " + owner.getName() + ".");
-				} else {
-					ja.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + owner.getFounder(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-					player.sendMessage(ChatColor.AQUA + "You've created a private snitch block; Reinforce it with a group to register others.");
-				}
-			}
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void placeSnitchBlock(BlockPlaceEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        Block block = event.getBlock();
+        if (!block.getType().equals(Material.JUKEBOX)) {
+            return;
+        }
+        Player player = event.getPlayer();
+        Location loc = block.getLocation();
+        if (!Utility.isReinforced(loc)) {
+            player.sendMessage(ChatColor.YELLOW + "You've placed a jukebox reinforce it to register it as a snitch.");
 
-			ja.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + player.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-			player.sendMessage(ChatColor.AQUA + "You've created a private snitch; reinforce it to add others to it.");
-			return;
-		}
-		player.sendMessage(ChatColor.YELLOW + "You've placed a jukebox reinforce it to register it as a snitch.");
-	}
+            return;
+        }
+        AccessDelegate access = AccessDelegate.getDelegate(block);
+        IReinforcement rei = access.getReinforcement();
+        if (rei instanceof PlayerReinforcement) {
+            PlayerReinforcement reinforcement = (PlayerReinforcement) rei;
+            Faction owner = reinforcement.getOwner();
+            if (reinforcement.getSecurityLevel().equals(SecurityLevel.GROUP)) {
+                ja.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+                player.sendMessage(ChatColor.AQUA + "You've created a snitch block registered to the group " + owner.getName() + ".");
+            } else {
+                ja.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + owner.getFounder(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+                player.sendMessage(ChatColor.AQUA + "You've created a private snitch block; Reinforce it with a group to register others.");
+            }
+        }
 
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void breakSnitchBlock(BlockBreakEvent event) {
-		if (event.isCancelled()) {
-			return;
-		}
-		Block block = event.getBlock();
-		if (!block.getType().equals(Material.JUKEBOX)) {
-			return;
-		}
-		Player player = event.getPlayer();
-		Location loc = player.getLocation();
-		ja.getJaLogger().logSnitchBreak(player.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-		//TODO: Make sure this is 100% complete. Also make it remove from the List in JukeAlert.java
-	}
-	
-	@EventHandler(priority = EventPriority.HIGH)
-	public void enterSnitchProximity(PlayerMoveEvent event) {
-            //TODO: Add/remove players to/from the JukeAlertSnitch's list and notify the players who own the snitch if they have entered.
+        ja.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + player.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        player.sendMessage(ChatColor.AQUA + "You've created a private snitch; reinforce it to add others to it.");
+        return;
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void breakSnitchBlock(BlockBreakEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        Block block = event.getBlock();
+        if (!block.getType().equals(Material.JUKEBOX)) {
+            return;
+        }
+        Player player = event.getPlayer();
+        Location loc = player.getLocation();
+        ja.getJaLogger().logSnitchBreak(player.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        //TODO: Make sure this is 100% complete. Also make it remove from the List in JukeAlert.java
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void enterSnitchProximity(PlayerMoveEvent event) {
+        //TODO: Add/remove players to/from the JukeAlertSnitch's list and notify the players who own the snitch if they have entered.
             /*
-             * Pseudo Code (Code that wont just work if copy and pasted but gives a general idea of what we want)
-             * Location loc = event.getPlayer().getLocation();
-             * for (JukeAlertSnitch snitch : listOSnitches) {
-             *      if (snitch.isWithinCuboid(loc)) {
-             *          snitch.add(event.getPlayer().getName();
-             *      }
-             * }
-             */
-	}
-	 
-	//Registers the events in this to JukeAlert.java
-	public void registerEvents() {
-		Bukkit.getServer().getPluginManager().registerEvents(this, ja);
-	}
+         * Pseudo Code (Code that wont just work if copy and pasted but gives a general idea of what we want)
+         * Location loc = event.getPlayer().getLocation();
+         * for (JukeAlertSnitch snitch : listOSnitches) {
+         *      if (snitch.isWithinCuboid(loc)) {
+         *          snitch.add(event.getPlayer().getName();
+         *      }
+         * }
+         */
+    }
+
+    //Registers the events in this to JukeAlert.java
+    public void registerEvents() {
+        Bukkit.getServer().getPluginManager().registerEvents(this, ja);
+    }
 }
