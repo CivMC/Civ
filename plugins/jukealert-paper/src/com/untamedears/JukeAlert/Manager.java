@@ -7,7 +7,8 @@ public class Manager {
     }
 
     public void load() {
-    	JukeAlert.snitches.add(jas);
+    	
+    	//JukeAlert.snitches.add(jas);
     	
     	
         //TODO: Make it load from the SQL Database when the server starts up.

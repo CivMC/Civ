@@ -5,31 +5,25 @@
 package com.untamedears.JukeAlert.sql;
 
 import com.untamedears.JukeAlert.JukeAlert;
-<<<<<<< HEAD
 
 import java.awt.Event;
-=======
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
->>>>>>> b6f4192c45392d7f59c9c898da26a758a346aee6
 import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
-<<<<<<< HEAD
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerMoveEvent;
-=======
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
->>>>>>> b6f4192c45392d7f59c9c898da26a758a346aee6
+
 
 /**
  *
