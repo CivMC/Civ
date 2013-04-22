@@ -1,0 +1,68 @@
+#Example recipe entry with defaults included any section should be able to be excluded
+# TITLE: (Don't use spaces, should be a unique identifier)
+#   name: Default Name (Displayed name to user)
+#   production_time: 1 (Time to produce the recipe)
+#   inputs: (only include if there are inputs)
+#     Common Name:
+#       material: MATERIAL_NAME (Official bukkit material name)
+#       amount: 1 (number of a particular item)
+#       durability: 0 (damage value, 0 represents max durability, negative represents greater than max)
+#       data: 0 (data value of the item stack
+#       display_name: (display name of the item, null by default)
+#       lore: (lore of the item, null by default)
+#   upgrades: (only include if there are inputs)
+#     Common Name:
+#       material: MATERIAL_NAME (Official bukkit material name)
+#       amount: 1 (number of a particular item)
+#       durability: 0 (damage value, 0 represents max durability, negative represents greater than max)
+#       data: 0 (data value of the item stack
+#       display_name: (display name of the item, null by default)
+#       lore: (lore of the item, null by default)
+#   outputs: (only include if there are outputs)
+#     Common Name:
+#       material: MATERIAL_NAME (Official bukkit material name)
+#       amount: 1 (number of a particular item)
+#       durability: 0 (damage value, 0 represents max durability, negative represents greater than max)
+#       data: 0 (data value of the item stack
+#       display_name: (display name of the item, null by default)
+#       lore: (lore of the item, null by default)
+#   enchantments:
+#     Common Name:
+#       type: (Offificial bukkit enchantment name, Require)
+#       level: 1 (level of the enchantment
+#       probability: 1 (0-1 probability of the enchantment being applied)
+#   output_recipes:
+#     - TITLE (TITLE of the output recipe)
+#   use_once: false (If this recipe is removed after its first use)
+#   maintenance: 0 (Maximum amount of maintence required for this recipe)
+######################################################################
+#Example factory entry with defaults included any section should be able to be excluded
+# TITLE: (Don't use spaces, should be a unique identifier)
+#   name: Default Name (Displayed name to user)
+#   fuel: (Defaults to charcoal if not present, only first entry used)
+#     Common Name:
+#       material: MATERIAL_NAME (Official bukkit material name)
+#       amount: 1 (number of a particular item)
+#       durability: 0 (damage value, 0 represents max durability, negative represents greater than max)
+#       data: 0 (data value of the item stack
+#       display_name: (display name of the item, null by default)
+#       lore: (lore of the item, null by default)#   fuel_time: 1 (Time that a piece of fuel lasts)
+#   fuel_time: 1 (Time which fuel lasts)
+#   inputs: (required)
+#     Common Name:
+#       material: MATERIAL_NAME (Official bukkit material name)
+#       amount: 1 (number of a particular item)
+#       durability: 0 (damage value, 0 represents max durability, negative represents greater than max)
+#       data: 0 (data value of the item stack
+#       display_name: (display name of the item, null by default)
+#       lore: (lore of the item, null by default)
+#   production_recipes:
+#       - TITLE (title of recipe)
+#   repair_material: (Defaults to coal if none are present)
+#     Common Name:
+#       material: MATERIAL_NAME (Official bukkit material name)
+#       amount: 1 (number of a particular item)
+#       durability: 0 (damage value, 0 represents max durability, negative represents greater than max)
+#       data: 0 (data value of the item stack
+#       display_name: (display name of the item, null by default)
+#       lore: (lore of the item, null by default)

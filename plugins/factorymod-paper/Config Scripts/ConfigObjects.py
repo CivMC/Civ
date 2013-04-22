@@ -25,7 +25,8 @@ class Recipe:
         self.enchants=enchants if enchants!=None else []
         self.outputRecipes=outputRecipes if outputRecipes!=None else []
         self.useOnce=useOnce
-        self.maintenance=maintenance
+        from math import ceil
+        self.maintenance=int(ceil(maintenance)) if maintenance!=None else None
     def addEnchant(self,enchant):
         self.enchants.append(enchant)
     def addOutputRecipe(self,recipe):
@@ -51,7 +52,7 @@ class Recipe:
             for outputRecipe in self.outputRecipes:
                 out+='\n      - '+outputRecipe.identifier
         if self.useOnce!=defaults['useOnce']:out+='\n    use_once: '+str(self.useOnce).lower()  
-        if self.maintenance!=defaults['maintenance']:out+='\n    maintenance: '+str(maintenance)
+        if self.maintenance!=None and self.maintenance!=0:out+='\n    maintenance: '+str(self.maintenance)
         return out
     def getShortText(self):
         #spare code: ('' if out=='' else: '\l')+
@@ -63,7 +64,7 @@ class Recipe:
         for output in self.outputs:
             out+='O\:'+output.getShortText()+'\l'
         for enchant in self.enchants:
-            out+='E\:'+enchant.getShortText()+'\l'
+            if enchant.probability!=0:out+='E\:'+enchant.getShortText()+'\l'
         out+='' if self.maintenance==defaults['maintenance'] else 'M\:'+str(self.maintenance)+'\l'
         return out
     def getNode(self):
@@ -74,10 +75,15 @@ class Recipe:
             edges.append(pydot.Edge(src=self.identifier,dst=outputRecipe.identifier))
         return edges
             
-class Enchant:        
-    def __init__(self,type,name=None,level=defaults['level'],probability=defaults['probability']):    
-        self.type=type
-        self.name=name if name!=None else self.type
+class Enchant:   
+    lookup={'Durability':'DURABILITY','Efficiency':'DIG_SPEED','Silk Touch':'SILK_TOUCH','Fortune':'LOOT_BONUS_BLOCKS'}
+    lookup.update({'Sharpness':'DAMAGE_ALL','Bane of the Anthropods':'DAMAGE_ANTHROPODS','Knockback':'KNOCKBACK','Fire Aspect':'FIRE_ASPECT','Looting':'LOOT_BONUS_MOBS'})
+    lookup.update({'Power':'ARROW_DAMAGE','Knockback':'ARROW_KNOCKBACK','Flame':'ARROW_FIRE','Infinite':'ARROW_INFINITE'})
+    lookup.update({'Fire Protection':'PROTECTION_FIRE','Respiration':'OXYGEN','Protection':'PROTECTION_ENVIRONMENTAL','Projectile Protection':'PROTECTION_PROJECTILE','Feather Falling':'PROTECTION_FALL'})
+    def __init__(self,type=None,name=None,level=defaults['level'],probability=defaults['probability']):    
+        if type==None and name==None: raise ValueError('Enchantment can\'t lack both a type and name') 
+        self.name=type if name==None else name
+        self.type=self.lookup[name] if type==None else type        
         self.level=level
         self.probability=probability
     def cOutput(self,spacer):
@@ -92,19 +98,27 @@ class Enchant:
         
 
         
-class ItemStack:        
-    lookup={'Smooth Stone':('STONE',0),'Coal':('COAL',0),'Charcoal':('COAL',1),'Iron Block':('IRON_BLOCK',0),'Gold Block':('GOLD_BLOCK',0),('Diamond Block',0):('DIAMOND_BLOCK',0)}
+class ItemStack:
+           
+    lookup={'Stone':('STONE',0),'Coal':('COAL',0),'Charcoal':('COAL',1),'Iron Block':('IRON_BLOCK',0),'Gold Block':('GOLD_BLOCK',0),'Diamond Block':('DIAMOND_BLOCK',0),'Leather':('LEATHER',0)}
+    lookup.update({'Emerald Block':('EMERALD_BLOCK',0)})
+    lookup.update({'Stick':('STICK',0),'Clear Potion':('POTION',7),'Diffuse Potion':('POTION',11),'Artless Potion':('POTION',13),'Thin Potion':('POTION',14),'Bungling Potion':('POTION',23)})
     def __init__(self,material=None,name=None,amount=defaults['amount'],durability=None,displayName=defaults['displayName'],lore=defaults['lore']):    
         if material==None and name==None: raise ValueError('Itemstack can\'t lack both a material and name') 
-        self.name=material if name==None else name
+        self.name=material.replace('_',' ').capitalize() if name==None else name
         self.material=self.lookup[name][0] if material==None else material
         if durability!=None:self.durability=durability
         elif material!=None:self.durability=defaults['durability']
         else: self.durability=self.lookup[name][1]
-        import math
+        import math 
         self.amount=int(math.ceil(amount))
         self.displayName=displayName
         self.lore=lore
+    def modifyAmount(self,modifier):
+        import copy,math
+        copy=copy.copy(self)
+        copy.amount=int(math.ceil(copy.amount*modifier))
+        return copy
     def cOutput(self,spacer):
         out=spacer+self.name+':'
         spacer=spacer+'  '
@@ -124,16 +138,16 @@ class ItemStack:
         
 
 defaults['fuel']=ItemStack('COAL',name='Charcoal',durability=1)
-defaults['maintenanceInput']=ItemStack('COAL',name='Charcoal',durability=1)
+defaults['maintenanceInputs']=ItemStack('COAL',name='Charcoal',durability=1)
 class Factory:
-    def __init__(self,identifier,name=defaults['name'],fuel=defaults['fuel'],fuelTime=defaults['fuelTime'],inputs=None,outputRecipes=None,maintenanceInput=None):
+    def __init__(self,identifier,name=defaults['name'],fuel=defaults['fuel'],fuelTime=defaults['fuelTime'],inputs=None,outputRecipes=None,maintenanceInputs=None):
         self.name=name
         self.identifier=identifier
         self.fuel=fuel
         self.fuelTime=int(fuelTime)
         self.inputs=inputs if inputs!=None else []
         self.outputRecipes=outputRecipes if outputRecipes!=None else []
-        self.maintenanceInput=maintenanceInput if maintenanceInput!=None else defaults['maintenanceInput']
+        self.maintenanceInputs=maintenanceInputs if maintenanceInputs!=None else defaults['maintenanceInputs']
     def addRecipe(self,outputRecipe):
         self.outputRecipes.append(outputRecipe)
     def cOutput(self):
@@ -147,7 +161,9 @@ class Factory:
             out+='\n    output_recipes:'
             for outputRecipe in self.outputRecipes:
                 out+='\n      - '+outputRecipe.identifier
-        out+='\n    maintenance_input:'+self.maintenanceInput.cOutput('\n      ')
+        if len(self.maintenanceInputs)>0:
+            out+='\n    maintenance_inputs:'
+            for maintenanceInput in self.maintenanceInputs:out+=maintenanceInput.cOutput('\n      ')        
         return out
     def getShortText(self):
         out=self.name+'\\n'
@@ -155,7 +171,8 @@ class Factory:
             out+='I\:'+input.getShortText()+'\l'
         out+='F\:'+self.fuel.getShortText()+'\l'
         out+='' if self.fuelTime==defaults['fuelTime'] else 'T\:'+str(self.fuelTime)+'\l'
-        out+='M\:'+self.maintenanceInput.getShortText()+'\l'
+        for maintenance in self.maintenanceInputs:
+            out+='M\:'+maintenance.getShortText()+'\l'
         return out
     def getNode(self):
         return pydot.Node(name=self.identifier,label=self.getShortText())
@@ -164,8 +181,3 @@ class Factory:
         for recipe in self.outputRecipes:
             edges.append(pydot.Edge(src=self.identifier,dst=recipe.identifier))
         return edges
-
-        
-
-if __name__ == '__main__':
-  main()

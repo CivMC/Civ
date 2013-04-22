@@ -18,17 +18,30 @@ class ParseConfig:
                 items.append(ItemStack(material=material,name=name,amount=amount,durability=durability,displayName=displayName,lore=lore))
         return items
     @staticmethod
-    def saveConfig(config,filename='my_config.yml'):
-        file=open(filename,'w')
-        recipes=config['recipes']
-        factories=config['factories']
-        file.write('\nproduction_recipes:')
-        for recipe in recipes.values():
-            file.write(recipe.cOutput())
-        file.write('\n  production_factories:')
-        for factory in factories.values():
-            file.write(factory.cOutput())
-        file.close()
+    def saveConfig(config,filename='config.yml'):
+        from shutil import copyfile
+        copyfile('template.yml',filename)
+        myfile=open(filename,'a')
+        myfile.write('\ngeneral:')
+        myfile.write('\n  central_block: '+config['central_block'])
+        myfile.write('\n  save_cycle: '+config['save_cycle'])
+        myfile.write('\n  return_build_materials: '+config['return_build_materials'])
+        myfile.write('\n  citadel_enabled: '+config['citadel_enabled'])
+        myfile.write('\n  factory_interaction_material: '+config['factory_interaction_material'])
+        myfile.write('\nproduction_general:')
+        myfile.write('\n  update_cycle: '+config['update_cycle'])
+        myfile.write('\n  maintenance_cycle: '+config['maintenance_cycle'])
+        myfile.write('\n  maintenance_period: '+config['maintenance_period'])
+        myfile.write('\ndisabled_recipes:')
+        for disabled_recipe in config['disabled_recipes']:
+            myfile.write('\n  - '+disabled_recipe)
+        myfile.write('\nproduction_factories:')
+        for factory in config['factories'].values():
+            myfile.write(factory.cOutput())
+        myfile.write('\nproduction_recipes:')
+        for recipe in config['recipes'].values():
+            myfile.write(recipe.cOutput())
+        myfile.close()
     @staticmethod
     def parseConfig(filename):
         import yaml
