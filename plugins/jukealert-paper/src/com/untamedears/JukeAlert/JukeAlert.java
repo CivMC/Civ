@@ -11,7 +11,7 @@ public class JukeAlert extends JavaPlugin {
 
 	public static final Logger LOGGER = Logger.getLogger("Minecraft");
 	private JukeAlertLogger jaLogger;
-	private List<JukeAlertSnitch> snitches = new ArrayList<>(); //TODO: Add snitches to memory so it's not server intensive going to the SQL everytime.
+	private List<JukeAlertSnitch> snitches = new ArrayList<>();
 
 	@Override
 	public void onEnable() {
