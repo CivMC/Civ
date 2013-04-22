@@ -1,6 +1,7 @@
 package com.github.igotyou.FactoryMod.utility;
 
 
+import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -46,6 +47,17 @@ public class InteractionResponse
 	public static void messagePlayerResult(Player player, InteractionResponse interactionResponse)
 	{
 		player.sendMessage(interactionResponse.getInteractionMessage());
+	}
+	
+	/**
+	 * Messages the given Player all of this object's interaction message
+	 */
+	public static void messagePlayerResults(Player player, List<InteractionResponse> interactionResponses)
+	{
+		for(InteractionResponse interactionResponse:interactionResponses)
+		{
+			player.sendMessage(interactionResponse.getInteractionMessage());
+		}
 	}
 	
 	/**

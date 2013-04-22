@@ -35,5 +35,9 @@ public class NamedItemStack extends ItemStack{
 		throw e;
 		}
 	}
+	public String toString()
+	{
+		return String.valueOf(getAmount())+" "+commonName;
+	}
 	
 }

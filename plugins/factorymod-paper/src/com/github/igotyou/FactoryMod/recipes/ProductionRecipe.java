@@ -126,9 +126,9 @@ public class ProductionRecipe implements Recipe
 		return maintenance;
 	}
 	
-	public double degradeFactory()
+	public double degradeAmount()
 	{
-		return maintenance/10.0;
+		return (1-Math.pow(.9,totalNumber))*maintenance;
 	}
 	public void setTotalNumber(int number)
 	{
@@ -137,29 +137,5 @@ public class ProductionRecipe implements Recipe
 	public void incrementCount()
 	{
 		totalNumber++;
-	}
-	public String needMaterialsMessage(Inventory inventory)
-	{
-		String needAll=inputs.getDifference(inventory).toString();
-		if(!needAll.equals(""))
-		{
-			needAll+=", ";
-		}
-		needAll+=repairs.getDifference(inventory).toString();
-		String needOne=upgrades.getDifference(inventory).toString();
-		if(!needAll.equals("")&&!needOne.equals(""))
-		{
-			return "You need "+needAll+" and one of the following: "+needOne+".";
-		}
-		else if(!needAll.equals("")&&needOne.equals(""))
-		{
-			return "You need "+needAll+".";
-		}
-		else if(needAll.equals("")&&!needOne.equals(""))
-		{
-			return "You need one of the following: "+needOne+".";
-		}
-		else return "Something seems to have gone wrong.";
-			
 	}
 }

@@ -162,7 +162,7 @@ public class BlockListener implements Listener
 								{
 									ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
 									//toggle the recipe, and print the returned message.
-									InteractionResponse.messagePlayerResult(player, production.toggleRecipes());
+									InteractionResponse.messagePlayerResults(player, production.toggleRecipes());
 								}
 							}
 							//if the player does NOT have acssess to the block that was clicked
@@ -202,9 +202,7 @@ public class BlockListener implements Listener
 						{
 							if (productionMan.factoryExistsAt(clicked.getLocation()))
 							{
-								ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
-								InteractionResponse.messagePlayerResult(player, production.togglePower());
-							
+								InteractionResponse.messagePlayerResults(player,((ProductionFactory) productionMan.getFactory(clicked.getLocation())).togglePower());
 							}
 						}
 						//if the player is NOT allowed to interact with the clicked block.
@@ -227,18 +225,7 @@ public class BlockListener implements Listener
 						{
 							if (productionMan.factoryExistsAt(clicked.getLocation()))
 							{
-								ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
-								int percentDone = Math.round(production.getProductionTimer()*100/production.getCurrentRecipe().getProductionTime());
-								String status=production.getActive() ? "On" : "Off";
-								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "----------"+production.getProductionFactoryProperties().getName()+"---------"));
-								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Status  : "+status+". Condition:"+String.valueOf(Math.round(100*(1-production.getMaintenance())))+"%."));
-								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe  : " +production.getCurrentRecipe().getRecipeName()));
-								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, production.getCurrentRecipe().needMaterialsMessage(production.getInventory())));
-								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Recipe production time: " +  production.getCurrentRecipe().getProductionTime() + " seconds("+ production.getCurrentRecipe().getProductionTime()*FactoryModPlugin.TICKS_PER_SECOND + " ticks)"));
-								if(status.equals("On"))
-								{
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS, "Progress: " + percentDone + "%"));
-								}
+								InteractionResponse.messagePlayerResults(player,((ProductionFactory) productionMan.getFactory(clicked.getLocation())).getChestResponse());
 							}
 						}
 						//if the player is NOT allowed to interact with the clicked block
@@ -327,34 +314,38 @@ public class BlockListener implements Listener
 		Material southType = southBlock.getType();
 		Material eastType = eastBlock.getType();
 		Material westType = westBlock.getType();
-	      
-		if(northType.getId()== 61 || northType.getId()== 62)  
+		
+		//For each of the four orientations check: 1. For a furnance or burning furnance and that a factory doesn't exist there
+		//Then check for a chest and that a factory doesn't exist at the chest
+		//This still allows a double chest to be shared between two factories, which may lead to undesirable behavior
+		
+		if((northType.getId()== 61 || northType.getId()== 62) && ! productionMan.factoryExistsAt(northLocation))  
 		{
-			if(southType.getId()== 54) 
+			if(southType.getId()== 54 && ! productionMan.factoryExistsAt(southLocation)) 
 			{
 				InteractionResponse.messagePlayerResult(player, productionMan.createFactory(loc, southLocation, northLocation));
 			}
 		}
 	        
-		if(westType.getId()== 61 || westType.getId() == 62)  
+		if((westType.getId()== 61 || westType.getId() == 62) && ! productionMan.factoryExistsAt(westLocation))  
 		{  
-			if(eastType.getId()== 54) 
+			if(eastType.getId()== 54 && ! productionMan.factoryExistsAt(eastLocation)) 
 			{
 				InteractionResponse.messagePlayerResult(player, productionMan.createFactory(loc, eastLocation, westLocation));
 			}
 		}
 	            
-		if(southType.getId()== 61 || southType.getId()== 62)  
+		if((southType.getId()== 61 || southType.getId()== 62) && ! productionMan.factoryExistsAt(southLocation))  
 		{
-			if(northType.getId()== 54) 
+			if(northType.getId()== 54 && ! productionMan.factoryExistsAt(northLocation)) 
 			{
 				InteractionResponse.messagePlayerResult(player, productionMan.createFactory(loc, northLocation, southLocation));
 			}
 		}        
 	        
-		if(eastType.getId()== 61 || eastType.getId()== 62)  
+		if((eastType.getId()== 61 || eastType.getId()== 62) && ! productionMan.factoryExistsAt(eastLocation))  
 		{
-			if(westType.getId()== 54) 
+			if(westType.getId()== 54 && ! productionMan.factoryExistsAt(westLocation)) 
 			{
 				InteractionResponse.messagePlayerResult(player, productionMan.createFactory(loc, westLocation, eastLocation));
 			}

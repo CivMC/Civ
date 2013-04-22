@@ -6,6 +6,7 @@ import com.github.igotyou.FactoryMod.FactoryObject;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.properties.PowerProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
+import java.util.List;
 
 public class PowerFactory extends FactoryObject implements Factory
 {
@@ -45,7 +46,7 @@ public class PowerFactory extends FactoryObject implements Factory
 		
 	}
 
-	public InteractionResponse togglePower() 
+	public List<InteractionResponse> togglePower() 
 	{
 		return null;
 	}

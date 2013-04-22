@@ -225,9 +225,9 @@ public class ProductionManager implements Manager
 					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + production.getProductionFactoryProperties().getName() + " production factory");
 				}
 			}
-			return new InteractionResponse(InteractionResult.FAILURE, "not enough materials in chest!");
+			return new InteractionResponse(InteractionResult.FAILURE, "Incorrect materials in chest! Stacks must match perfectly.");
 		}
-		return new InteractionResponse(InteractionResult.FAILURE, "there is already a factory there!");
+		return new InteractionResponse(InteractionResult.FAILURE, "There is already a factory there!");
 	}
 	
 	public InteractionResponse createFactory(Location factoryLocation, Location inventoryLocation, Location powerSourceLocation, int productionTimer, int energyTimer) 
@@ -247,18 +247,17 @@ public class ProductionManager implements Manager
 				{
 					hasMaterials = false;
 				}
-				if (hasMaterials = true)
+				if (hasMaterials == true)
 				{
 					subFactoryType = entry.getKey();
 				}
 			}
-			if (hasMaterials == true && subFactoryType != null)
+			if (hasMaterials && subFactoryType != null)
 			{
 				ProductionFactory production = new ProductionFactory(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
-				if (properties.get(subFactoryType).getInputs().allIn(production.getInventory()))
+				if (properties.get(subFactoryType).getInputs().removeFrom(production.getInventory()))
 				{
 					addFactory(production);
-					properties.get(subFactoryType).getInputs().removeFrom(chestInventory);
 					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + subFactoryType + " production factory");
 				}
 			}

@@ -13,7 +13,9 @@ import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
+import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -111,13 +113,10 @@ public class ProductionFactory extends FactoryObject implements Factory
 					
 					//Remove inputs from chest
 					currentRecipe.getInputs().removeFrom(getInventory());
-					FactoryModPlugin.sendConsoleMessage("InputsRemoveD!");
 					//Remove upgrade and replace it with its upgraded form
 					currentRecipe.getUpgrades().removeOneFrom(getInventory()).addEnchantments(currentRecipe.getEnchantments()).putIn(getInventory());
-					FactoryModPlugin.sendConsoleMessage("Upgraded!");
 					//Adds outputs to chest with appropriate enchantments
 					currentRecipe.getOutputs().addEnchantments(currentRecipe.getEnchantments()).putIn(getInventory());
-					FactoryModPlugin.sendConsoleMessage("Output!");
 					//Adds new recipes to the factory
 					for (int i = 0; i < currentRecipe.getOutputRecipes().size();i++)
 					{
@@ -128,20 +127,19 @@ public class ProductionFactory extends FactoryObject implements Factory
 
 					}
 					updateMaintenance();
-					FactoryModPlugin.sendConsoleMessage("Recipes Upgraded");
 					//Repairs the factory
 					int amountRepaired=currentRecipe.getRepairs().removeMaxFrom(getInventory(),(int)currentMaintenance);
 					currentMaintenance-=amountRepaired;
-					FactoryModPlugin.sendConsoleMessage("Repaired");
-					
+					if(currentMaintenance<0)
+					{
+						currentMaintenance=0;
+					}
 					//Remove currentRecipe if it only is meant to be used once
 					if(currentRecipe.getUseOnce())
 					{
 						recipes.remove(currentRecipe);
 						setRecipeToNumber(0);
 					}
-					FactoryModPlugin.sendConsoleMessage("Bye bYe recipe");
-					
 					currentProductionTimer = 0;
 					powerOff();
 				}
@@ -202,13 +200,14 @@ public class ProductionFactory extends FactoryObject implements Factory
 	 * Returns either a success or error message.
 	 * Called by the blockListener when a player left clicks the powerSourceLocation with the InteractionMaterial
 	 */
-	public InteractionResponse togglePower() 
+	public List<InteractionResponse> togglePower() 
 	{
+		List<InteractionResponse> response=new ArrayList<>();
 		//if the factory is turned off
 		if (!active)
 		{
 			//if the factory isn't broken or the current recipe can repair it
-			if(!isBroken()||!currentRecipe.getRepairs().isEmpty())
+			if(!isBroken()||currentRecipe.getMaintenance()==0)
 			{
 				//is there fuel enough for at least once energy cycle?
 				if (isFuelAvailable())
@@ -219,25 +218,42 @@ public class ProductionFactory extends FactoryObject implements Factory
 						//turn the factory on
 						powerOn();
 						//return a success message
-						return new InteractionResponse(InteractionResult.SUCCESS, "Factory activated!");
+						response.add(new InteractionResponse(InteractionResult.SUCCESS, "Factory activated!"));
+						return response;
 					}
 					//there are not enough materials for the recipe!
 					else
 					{
 						//return a failure message, containing which materials are needed for the recipe
-						return new InteractionResponse(InteractionResult.FAILURE, currentRecipe.needMaterialsMessage(getInventory()));
+						//[Requires the following: Amount Name, Amount Name.]
+						//[Requires one of the following: Amount Name, Amount Name.]
+						ItemList<NamedItemStack> needAll=new ItemList<>();
+						needAll.addAll(currentRecipe.getInputs().getDifference(getInventory()));
+						needAll.addAll(currentRecipe.getRepairs().getDifference(getInventory()));
+						if(!needAll.isEmpty())
+						{
+							response.add(new InteractionResponse(InteractionResult.FAILURE,"You need all of the following: "+needAll.toString()+"."));
+						}
+						if(!currentRecipe.getUpgrades().oneIn(getInventory()))
+						{
+							response.add(new InteractionResponse(InteractionResult.FAILURE,"You need one of the following: "+currentRecipe.getUpgrades().toString()+"."));
+
+						}
+						return response;
 					}
 				}
 				//if there isn't enough fuel for atleast on energy cycle
 				else
 				{
 					//return a error message
-					return new InteractionResponse(InteractionResult.FAILURE, "Factory is missing fuel!");
+					response.add(new InteractionResponse(InteractionResult.FAILURE, "Factory is missing fuel! ("+getProductionFactoryProperties().getFuel().toString()+")"));
+					return response;
 				}
 			}
 			else
 			{
-				return new InteractionResponse(InteractionResult.FAILURE, "Factory is broken!");
+				response.add(new InteractionResponse(InteractionResult.FAILURE, "Factory is broken!"));
+				return response;
 			}			
 		}
 		//if the factory is on already
@@ -246,7 +262,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 			//turn the factory off
 			powerOff();
 			//return success message
-			return new InteractionResponse(InteractionResult.FAILURE, "Factory has been deactivated!");
+			response.add(new InteractionResponse(InteractionResult.FAILURE, "Factory has been deactivated!"));
+			return response;
 		}
 	}
 	
@@ -254,8 +271,9 @@ public class ProductionFactory extends FactoryObject implements Factory
 	 * Returns either a success or error message.
 	 * Called by the blockListener when a player left clicks the center block, with the InteractionMaterial
 	 */
-	public InteractionResponse toggleRecipes()
+	public List<InteractionResponse> toggleRecipes()
 	{
+		List<InteractionResponse> responses=new ArrayList<>();
 		//Is the factory off
 		if (!active)
 		{
@@ -267,14 +285,12 @@ public class ProductionFactory extends FactoryObject implements Factory
 				{
 					setRecipeToNumber(0);
 					currentProductionTimer = 0;
-					return new InteractionResponse(InteractionResult.SUCCESS, "Recipe switched! Current recipe is:" + currentRecipe.getRecipeName());
 				}
 				//if we can just increment the recipe
 				else
 				{
 					setRecipeToNumber(currentRecipeNumber + 1);
 					currentProductionTimer = 0;
-					return new InteractionResponse(InteractionResult.SUCCESS, "Recipe switched! Current recipe is:" + currentRecipe.getRecipeName());
 				}
 			}
 			//if the recipe for some reason is not initialised, initialise it to recipe 0
@@ -282,14 +298,24 @@ public class ProductionFactory extends FactoryObject implements Factory
 			{
 				setRecipeToNumber(0);
 				currentProductionTimer = 0;
-				return new InteractionResponse(InteractionResult.SUCCESS, "Recipe selected! Current recipe is:" + currentRecipe.getRecipeName());
-			}	
+			}
+			responses.add(new InteractionResponse(InteractionResult.SUCCESS, "-----------------------------------------------------"));
+			responses.add(new InteractionResponse(InteractionResult.SUCCESS, "Switched recipe to: " + currentRecipe.getRecipeName()+"."));
+			if(currentRecipeNumber != recipes.size() - 1)
+			{
+				responses.add(new InteractionResponse(InteractionResult.SUCCESS, "Next Recipe is: "+recipes.get(currentRecipeNumber+1).getRecipeName()+"."));
+			}
+			else
+			{
+				responses.add(new InteractionResponse(InteractionResult.SUCCESS, "Next Recipe is: "+recipes.get(0).getRecipeName()+"."));
+			}
 		}
 		//if the factory is on, return error message
 		else
 		{
-			return new InteractionResponse(InteractionResult.FAILURE, "You can't change recipes while the factory is on! Turn it off first.");
+			responses.add(new InteractionResponse(InteractionResult.FAILURE, "You can't change recipes while the factory is on! Turn it off first."));
 		}
+		return responses;
 	}
 	
 	/**
@@ -379,7 +405,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 			double degradation=0;
 			for(ProductionRecipe recipe:recipes)
 			{
-				degradation+=recipe.degradeFactory();
+				degradation+=recipe.degradeAmount();
 			}
 			currentMaintenance+=degradation;
 		}
@@ -463,6 +489,56 @@ public class ProductionFactory extends FactoryObject implements Factory
 	public List<ProductionRecipe> getRecipes()
 	{
 	    return recipes;
+	}
+	
+	public List<InteractionResponse> getChestResponse()
+	{
+		List<InteractionResponse> responses=new ArrayList<>();
+		String status=active ? "On" : "Off";
+		String percentDone=status.equals("On") ? " - "+Math.round(currentProductionTimer*100/currentRecipe.getProductionTime())+"% done." : "";
+		//Name: Status with XX% health.
+		responses.add(new InteractionResponse(InteractionResult.SUCCESS, getProductionFactoryProperties().getName()+": "+status+" with "+String.valueOf(Math.round(100*(1-currentMaintenance/totalMaintenance)))+"% health."));
+		//RecipeName: X seconds(Y ticks)[ - XX% done.]
+		responses.add(new InteractionResponse(InteractionResult.SUCCESS, currentRecipe.getRecipeName()+": "+currentRecipe.getProductionTime() + " seconds("+ currentRecipe.getProductionTime()*FactoryModPlugin.TICKS_PER_SECOND + " ticks)"+percentDone));
+		//[Inputs: amount Name, amount Name.]
+		if(!currentRecipe.getInputs().isEmpty())
+		{
+			responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Input: "+currentRecipe.getInputs().toString()+"."));
+		}
+		//[Upgrades: amount Name, amount Name.]
+		if(!currentRecipe.getUpgrades().isEmpty())
+		{
+			responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Upgrades: "+currentRecipe.getUpgrades().toString()+"."));
+		}
+		//[Outputs: amount Name, amount Name.]
+		if(!currentRecipe.getOutputs().isEmpty())
+		{
+			responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Output: "+currentRecipe.getOutputs().toString()+"."));
+		}
+		//[Will repair XX% of the factory]
+		if(!currentRecipe.getRepairs().isEmpty()&&totalMaintenance!=0)
+		{
+			int amountAvailable=currentRecipe.getRepairs().amountAvailable(getInventory());
+			int amountRepaired=amountAvailable>currentMaintenance ? (int) Math.ceil(currentMaintenance) : amountAvailable;
+			int percentRepaired=(int) (( (double) amountRepaired)/totalMaintenance*100);
+			responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Will repair "+String.valueOf(percentRepaired)+"% of the factory with "+String.valueOf(amountRepaired)+" ("+currentRecipe.getRepairs().toString()+")."));
+		}
+		if(!currentRecipe.getOutputRecipes().isEmpty())
+		{
+			List<ProductionRecipe> outputRecipes=currentRecipe.getOutputRecipes();
+			String response="Makes available: ";
+			for(int i=0;i<outputRecipes.size();i++)
+			{
+				response+=outputRecipes.get(i).getRecipeName();
+				if(i<outputRecipes.size()-1)
+				{
+					response+=", ";
+				}
+				response+=".";
+			}
+			responses.add(new InteractionResponse(InteractionResult.SUCCESS,response));
+		}
+		return responses;
 	}
 	
 }

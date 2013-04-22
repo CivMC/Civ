@@ -42,7 +42,6 @@ public class FactoryObject
 	protected FactoryType factoryType; // The type this factory is
 	protected String subFactoryType;//the SUBfactory type(the ones loaded from the config file)
 	protected Properties factoryProperties; // The properties of this factory type and tier
-	
 	protected boolean upgraded; // Whether the tier has recently upgraded
 	
 	/**

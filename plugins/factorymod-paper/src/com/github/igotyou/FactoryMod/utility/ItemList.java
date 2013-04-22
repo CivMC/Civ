@@ -113,6 +113,16 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		}
 		return missingItems;
 	}
+	public int amountAvailable(Inventory inventory)
+	{
+		int amountAvailable=0;
+		for(ItemStack itemStack:this)
+		{
+			int currentAmountAvailable=amountAvailable(inventory,itemStack);
+			amountAvailable=amountAvailable>currentAmountAvailable ? amountAvailable : currentAmountAvailable;
+		}
+		return amountAvailable;
+	}
 	public void putIn(Inventory inventory)
 	{
 		for(ItemStack itemStack:this)
@@ -140,25 +150,17 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 	}
 	public String toString()
 	{
-		if(isEmpty())
+		String returnString="";
+		for(int i=0;i<size();i++)
 		{
-			return "";
-		}
-		else
-		{
-			String returnString="";
-			FactoryModPlugin.sendConsoleMessage(String.valueOf(size()));
-			
-			for(NamedItemStack itemStack:this)
+			String name=get(i).getItemMeta().hasDisplayName() ? get(i).getItemMeta().getDisplayName() : get(i).commonName;
+			returnString+=String.valueOf(get(i).getAmount())+" "+name;
+			if(i<size()-1)
 			{
-				FactoryModPlugin.sendConsoleMessage(itemStack.toString());
-				String name=itemStack.getItemMeta().hasDisplayName() ? itemStack.getItemMeta().getDisplayName() : itemStack.commonName;
-				returnString+=String.valueOf(itemStack.getAmount())+" "+name+", ";
+				returnString+=", ";
 			}
-			//Removes last ", "
-			returnString=returnString.substring(0, returnString.length()-2);
-			return returnString;
 		}
+		return returnString;
 	}
 	//Returns the number of multiples of an ItemStack that are availible
 	private int amountAvailable(Inventory inventory, ItemStack itemStack)

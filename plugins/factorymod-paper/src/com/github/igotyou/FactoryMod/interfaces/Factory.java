@@ -3,6 +3,7 @@ package com.github.igotyou.FactoryMod.interfaces;
 import org.bukkit.Location;
 
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
+import java.util.List;
 //original file:
 /**
  * Machine.java
@@ -39,7 +40,7 @@ public interface Factory
 	/**
 	 * Toggles the current power state and returns interaction response
 	 */
-	public InteractionResponse togglePower();
+	public List<InteractionResponse> togglePower();
 	
 	/**
 	 * Returns the location of the machine

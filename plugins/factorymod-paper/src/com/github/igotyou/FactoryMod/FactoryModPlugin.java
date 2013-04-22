@@ -120,8 +120,6 @@ public class FactoryModPlugin extends JavaPlugin
 			}
 
 		}
-		sendConsoleMessage(g + " recipes removed");
-
 		//Import recipes from config.yml
 		ConfigurationSection configProdRecipes=config.getConfigurationSection("production_recipes");
 		//Temporary Storage array to store where recipes should point to each other
@@ -189,7 +187,7 @@ public class FactoryModPlugin extends JavaPlugin
 			}
 			int fuelTime=configSection.getInt("fuel_time",1);
 			ItemList<NamedItemStack> inputs=getItems(configSection.getConfigurationSection("inputs"));
-			ItemList<NamedItemStack> repairs=getItems(configSection.getConfigurationSection("maintenance_input"));
+			ItemList<NamedItemStack> repairs=getItems(configSection.getConfigurationSection("maintenance_inputs"));
 			List<ProductionRecipe> factoryRecipes=new ArrayList<ProductionRecipe>();
 			Iterator<String> ouputRecipeIterator=configSection.getStringList("production_recipes").iterator();
 			while (ouputRecipeIterator.hasNext())

@@ -141,7 +141,7 @@ production_factories:
     production_recipes:
       - TEST1
       - TEST2
-    maintenance_input:
+    maintenance_inputs:
       Stone:
         material: STONE
-        amount: 1
+        durability: 1
