@@ -5,25 +5,21 @@
 package com.untamedears.JukeAlert.sql;
 
 import com.untamedears.JukeAlert.JukeAlert;
-
-import java.awt.Event;
-import java.lang.reflect.Field;
+import com.untamedears.JukeAlert.JukeAlertSnitch;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerMoveEvent;
-
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -101,6 +97,7 @@ public class JukeAlertLogger {
                 + "`snitch_cuboid_x` int(10) NOT NULL,"
                 + "`snitch_cuboid_y` int(10) NOT NULL,"
                 + "`snitch_cuboid_z` int(10) NOT NULL,"
+                + "`snitch_should_log` BOOL,"
                 + "PRIMARY KEY (`snitch_id`));");
         //Snitch Details
         db.execute("CREATE TABLE IF NOT EXISTS `" + db.getPrefix() + "snitch_details` ("
@@ -131,56 +128,97 @@ public class JukeAlertLogger {
         return info;
     }
 
-    public void logSnitchEntityKill(Player player, Entity entity) {
+    //Logs info to a specific snitch with a time stamp.
+    /*
+     * ------DATE-----------DETAIL------
+     * 2013-4-24 12:14:35 : Bob made an entry at [Nether(X: 56 Y: 87 Z: -1230)]
+     * 2013-4-25 12:14:35 : Bob broke a chest at X: 896 Y: 1 Z: 8501
+     * 2013-4-28 12:14:35 : Bob killed Trevor.
+     * ----Type /ja more to see more----
+     */
+    public void logSnitchInfo(String info, JukeAlertSnitch snitch) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        db.execute("INSERT INTO " + db.getPrefix() + "snitch_details "
+                + "(snitch_location, snitch_log_time, snitch_info) "
+                + "VALUES("
+                + "'" + "World: " + snitch.getLoc().getWorld().getName() + " X: "
+                + snitch.getLoc().getBlockX() + " Y: " + snitch.getLoc().getBlockY()
+                + " Z: " + snitch.getLoc().getBlockZ() + "',"
+                + "'" + time.toString() + "',"
+                + "'" + info + "'"
+                + ")");
+    }
+
+    public void logSnitchEntityKill(JukeAlertSnitch snitch, Player player, Entity entity) {
+        logSnitchInfo(player.getName() + " killed a " + entity.toString() + ".", snitch);
     }
 
     /**
      * @param player
      * @param victim
      */
-    public void logSnitchPlayerKill(Player player, Player victim) {
+    public void logSnitchPlayerKill(JukeAlertSnitch snitch, Player player, Player victim) {
+        logSnitchInfo(player.getName() + " killed " + victim.getName() + ".", snitch);
+
     }
 
     /**
      * @param player
      * @param field
      */
-    public void logSnitchEntry(Player player) {
+    public void logSnitchEntry(JukeAlertSnitch snitch, Location loc, Player player) {
+        logSnitchInfo(player.getName() + " made an entry at [" + ChatColor.AQUA + loc.getWorld().getName()
+                + ChatColor.RESET + " (" + ChatColor.RED + " X: " + loc.getBlockX()
+                + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ() + ChatColor.RESET + ")]", snitch);
     }
 
     /**
      * @param player
      * @param block
      */
-    public void logSnitchBlockBreak(Player player, Block block) {
+    public void logSnitchBlockBreak(JukeAlertSnitch snitch, Player player, Block block) {
+        Location loc = block.getLocation();
+        logSnitchInfo(player.getName() + " broke a " + block.getType().toString() + " at X: " + loc.getBlockX()
+                + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ() + ".", snitch);
     }
 
     /**
      * @param player
      * @param block
      */
-    public void logSnitchBucketEmpty(Player player, Block block, String type) {
+    public void logSnitchBucketEmpty(JukeAlertSnitch snitch, Player player, Location loc, ItemStack item) {
+        logSnitchInfo(player.getName() + " emptied a " + item.getType() + " at X: " + loc.getBlockX()
+                + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ() + ".", snitch);
     }
 
     /**
      * @param player
      * @param block
      */
-    public void logSnitchBucketFill(Player player, Block block) {
+    public void logSnitchBucketFill(JukeAlertSnitch snitch, Player player, Block block) {
+        Location loc = block.getLocation();
+        logSnitchInfo(player.getName() + " filled a bucket of " + block.getType().toString() + " at X: " + loc.getBlockX()
+                + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ() + ".", snitch);
     }
 
     /**
      * @param player
      * @param block
      */
-    public void logSnitchBlockPlace(Player player, Block block) {
+    public void logSnitchBlockPlace(JukeAlertSnitch snitch, Player player, Block block) {
+        Location loc = block.getLocation();
+        logSnitchInfo(player.getName() + " placed a " + block.getType().toString() + " at X: " + loc.getBlockX()
+                + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ() + ".", snitch);
     }
 
     /**
      * @param player
      * @param block
      */
-    public void logSnitchUsed(Player player, Block block) {
+    public void logSnitchUsed(JukeAlertSnitch snitch, Player player, Block block) {
+         Location loc = block.getLocation();
+        logSnitchInfo(player.getName() + " used a snitch at X: " + loc.getBlockX()
+                + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ() + ".", snitch);
     }
 
     //Logs the snitch being placed at World, x, y, z in the database.

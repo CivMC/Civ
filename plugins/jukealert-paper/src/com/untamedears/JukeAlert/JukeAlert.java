@@ -1,6 +1,5 @@
 package com.untamedears.JukeAlert;
 
-import com.untamedears.JukeAlert.sql.Database;
 import com.untamedears.JukeAlert.sql.JukeAlertLogger;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,14 +8,13 @@ import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class JukeAlert extends JavaPlugin {
-	private Manager manager;
+
 	public static final Logger LOGGER = Logger.getLogger("Minecraft");
 	private JukeAlertLogger jaLogger;
-	private List<JukeAlertSnitch> snitches = new ArrayList<>(); //TODO: Add snitches to memory so it's not server intensive going to the SQL everytime.
-	
+	private List<JukeAlertSnitch> snitches = new ArrayList<>();
+
 	@Override
 	public void onEnable() {
-		manager.load();
 		jaLogger = new JukeAlertLogger(this);
 
 		JukeAlertCommands commands = new JukeAlertCommands(this);
@@ -24,12 +22,10 @@ public class JukeAlert extends JavaPlugin {
 
 			getCommand(command).setExecutor(commands);
 		}
-	
 	}
 
 	@Override
 	public void onDisable() {
-		
 		//TODO: Make sure everything saves properly and does save.
 	}
 
