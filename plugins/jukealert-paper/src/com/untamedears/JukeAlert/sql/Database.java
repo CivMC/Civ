@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -100,6 +101,21 @@ public class Database {
 			log(Level.SEVERE, "isConnected error!", ex);
 		}
 		return false;
+	}
+
+	/**
+	 * Prepare the SQL statements
+	 *
+	 * @return PreparedStatement
+	 * @throws SQLException
+	 */
+	public PreparedStatement prepareStatement(String sqlStatement) {
+		try {
+			return connection.prepareStatement(sqlStatement);
+		} catch (SQLException ex) {
+			log(Level.SEVERE, "Failed to prepare statement! " + sqlStatement, ex);
+		}
+		return null;
 	}
 
 	/**
