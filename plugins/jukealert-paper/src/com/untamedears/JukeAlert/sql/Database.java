@@ -1,6 +1,8 @@
 package com.untamedears.JukeAlert.sql;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,14 +25,16 @@ public class Database {
 	private String user;
 	private String password;
 	private String prefix;
+	private Logger logger;
 	private Connection connection;
 
-	public Database(String host, String db, String user, String password, String prefix) {
+	public Database(String host, String db, String user, String password, String prefix, Logger logger) {
 		this.host = host;
 		this.db = db;
 		this.user = user;
 		this.password = password;
 		this.prefix = prefix;
+		this.logger = logger;
 	}
 
 	public String getDb() {
@@ -67,10 +71,10 @@ public class Database {
 		}
 		try {
 			connection = DriverManager.getConnection(jdbc);
-			log("Connected to database!");
+			this.logger.log(Level.INFO, "Connected to database!");
 			return true;
 		} catch (SQLException ex) { //Error handling below:
-			log(Level.SEVERE, "Could not connnect to the database!", ex);
+			this.logger.log(Level.SEVERE, "Could not connnect to the database!", ex);
 			return false;
 		}
 	}
@@ -84,7 +88,7 @@ public class Database {
 		try {
 			connection.close();
 		} catch (SQLException ex) {
-			log(Level.SEVERE, "An error occured while closing the connection.", ex);
+			this.logger.log(Level.SEVERE, "An error occured while closing the connection.", ex);
 		}
 	}
 
@@ -98,7 +102,7 @@ public class Database {
 		try {
 			return connection.isValid(5);
 		} catch (SQLException ex) {
-			log(Level.SEVERE, "isConnected error!", ex);
+			this.logger.log(Level.SEVERE, "isConnected error!", ex);
 		}
 		return false;
 	}
@@ -113,7 +117,7 @@ public class Database {
 		try {
 			return connection.prepareStatement(sqlStatement);
 		} catch (SQLException ex) {
-			log(Level.SEVERE, "Failed to prepare statement! " + sqlStatement, ex);
+			this.logger.log(Level.SEVERE, "Failed to prepare statement! " + sqlStatement, ex);
 		}
 		return null;
 	}
@@ -132,7 +136,7 @@ public class Database {
 				execute(sql);
 			}
 		} catch (SQLException ex) {
-			log(Level.SEVERE, "Could not execute SQL statement!", ex);
+			this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
 		}
 	}
 
@@ -151,7 +155,7 @@ public class Database {
 				return getResultSet(sql);
 			}
 		} catch (SQLException ex) {
-			log(Level.SEVERE, "Could not execute SQL statement!", ex);
+			this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
 			return null;
 		}
 	}
@@ -170,7 +174,7 @@ public class Database {
 			result.next();
 			return result.getString(1);
 		} catch (SQLException ex) {
-			log(Level.SEVERE, "Could not execute SQL statement!", ex);
+			this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
 		}
 		return null;
 	}
@@ -187,7 +191,7 @@ public class Database {
 			result.next();
 			return result.getInt(1);
 		} catch (SQLException ex) {
-			log(Level.SEVERE, "Could not execute SQL statement!", ex);
+			this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
 		}
 		return 0;
 	}
@@ -204,7 +208,7 @@ public class Database {
 			result.next();
 			return result.getDouble(1);
 		} catch (SQLException ex) {
-			log(Level.SEVERE, "Could not execute SQL statement!", ex);
+			this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
 		}
 		return 0;
 	}
@@ -222,7 +226,7 @@ public class Database {
 			boolean returnValue = result.getBoolean(1);
 			return returnValue;
 		} catch (SQLException ex) {
-			log(Level.SEVERE, "Could not execute SQL statement!", ex);
+			this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
 		}
 		return false;
 	}
@@ -242,7 +246,7 @@ public class Database {
 			}
 			return coldata;
 		} catch (SQLException ex) {
-			log(Level.SEVERE, "Could not execute SQL statement!", ex);
+			this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
 		}
 		return null;
 	}

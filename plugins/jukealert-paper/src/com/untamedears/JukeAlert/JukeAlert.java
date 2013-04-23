@@ -9,7 +9,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class JukeAlert extends JavaPlugin {
 
-	public static final Logger LOGGER = Logger.getLogger("Minecraft");
 	private JukeAlertLogger jaLogger;
 	private List<JukeAlertSnitch> snitches = new ArrayList<>();
 
@@ -35,17 +34,9 @@ public class JukeAlert extends JavaPlugin {
 	}
 
 	//Logs a message with the level of Info.
-	public static void log(String message) {
-		log(Level.INFO, message);
+	public void log(String message) {
+		this.getLogger().log(Level.INFO, message);
 	}
 
-	//Logs a message with a level defined.
-	public static void log(Level level, String message) {
-		LOGGER.log(level, "[HCSMP] " + message);
-	}
-
-	//Logs a message with a level define and a throwable.
-	public static void log(Level level, String message, Throwable thrown) {
-		LOGGER.log(level, "[HCSMP] " + message, thrown);
-	}
+	
 }
