@@ -78,7 +78,19 @@ public class JukeAlertListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void enterSnitchProximity(PlayerMoveEvent event) {
+    public void enterSnitchProximity(PlayerMoveEvent event) {		
+		Location from = event.getFrom();
+		Location to   = event.getTo();
+		
+		 if (from.getBlockX() == to.getBlockX()
+				 && from.getBlockY() == to.getBlockY()
+	             && from.getBlockZ() == to.getBlockZ()
+	             && from.getWorld().equals(to.getWorld())) 
+		 {
+			 // Player didn't move by at least one block.
+			 return;
+	     }
+		 
         //TODO: Add/remove players to/from the JukeAlertSnitch's list and notify the players who own the snitch if they have entered.
             /*
          * Pseudo Code (Code that wont just work if copy and pasted but gives a general idea of what we want)
