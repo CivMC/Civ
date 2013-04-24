@@ -3,11 +3,8 @@ package com.untamedears.JukeAlert;
 import com.untamedears.JukeAlert.command.CommandHandler;
 import com.untamedears.JukeAlert.listener.JukeAlertListener;
 import com.untamedears.JukeAlert.manager.ConfigManager;
-import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.plugin.PluginManager;
@@ -18,7 +15,6 @@ public class JukeAlert extends JavaPlugin {
 	private static JukeAlert instance;
 	private JukeAlertLogger jaLogger;
 	private ConfigManager configManager;
-	private List<Snitch> snitches = new ArrayList<>();
 
 	@Override
 	public void onEnable() {
