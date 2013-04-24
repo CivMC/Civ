@@ -5,6 +5,7 @@
 package com.untamedears.JukeAlert.storage;
 
 import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.model.Snitch;
 
 import java.sql.PreparedStatement;
@@ -29,7 +30,8 @@ import org.bukkit.inventory.ItemStack;
  */
 public class JukeAlertLogger {
 
-    private JukeAlert plugin = JukeAlert.getInstance();
+    private JukeAlert plugin;
+    private ConfigManager configManager;
     private Database db;
     private String snitchsTbl;
     private String snitchDetailsTbl;
@@ -41,46 +43,19 @@ public class JukeAlertLogger {
     private PreparedStatement updateCuboidVolumeStmt;
 
     public JukeAlertLogger() {
-
-        Configuration c = plugin.getConfig();
-
-        String host = c.getString("db.host");
-        String dbname = c.getString("db.name");
-        String user = c.getString("db.user");
-        String pass = c.getString("db.pass");
-        String prefix = c.getString("db.prefix");
-
-        if (host == null) {
-            host = "localhost";
-            c.set("db.host", host);
-        }
-
-        if (dbname == null) {
-            dbname = "mydb";
-            c.set("db.name", dbname);
-        }
-
-        if (user == null) {
-            user = "root";
-            c.set("db.user", user);
-        }
-
-        if (pass == null) {
-            pass = "admin";
-            c.set("db.pass", pass);
-        }
-
-        if (prefix == null) {
-            prefix = "pvp_";
-            c.set("db.prefix", prefix);
-        }
-
-        plugin.saveConfig();
+    	plugin = JukeAlert.getInstance();
+    	configManager = plugin.getConfigManager();
+    	
+        String host   = configManager.getHost();
+        String dbname = configManager.getDatabase();
+        String username   = configManager.getUsername();
+        String password   = configManager.getPassword();
+        String prefix = configManager.getPrefix();
 
         snitchsTbl = prefix + "snitchs";
         snitchDetailsTbl = prefix + "snitch_details";
 
-        db = new Database(host, dbname, user, pass, prefix, this.plugin.getLogger());
+        db = new Database(host, dbname, username, password, prefix, this.plugin.getLogger());
         boolean connected = db.connect();
         if (connected) {
             genTables();
@@ -130,7 +105,7 @@ public class JukeAlertLogger {
             snitchDetailsTbl));
         insertNewSnitchStmt = db.prepareStatement(String.format(
             "INSERT INTO %s (snitch_world, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z)"
-            + " VALUES(?, ?, ?, ?, ?, 11, 11, 11)",
+            + " VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
             snitchsTbl));
         deleteSnitchStmt = db.prepareStatement(String.format(
             "DELETE FROM %s WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
@@ -276,6 +251,9 @@ public class JukeAlertLogger {
             insertNewSnitchStmt.setInt(3, y);
             insertNewSnitchStmt.setInt(4, z);
             insertNewSnitchStmt.setString(5, group);
+            insertNewSnitchStmt.setInt(6, configManager.getDefaultCuboidSize());
+            insertNewSnitchStmt.setInt(7, configManager.getDefaultCuboidSize());
+            insertNewSnitchStmt.setInt(8, configManager.getDefaultCuboidSize());
             insertNewSnitchStmt.execute();
         } catch (SQLException ex) {
         	this.plugin.getLogger().log(Level.SEVERE, "Could not create new snitch in DB!", ex);
