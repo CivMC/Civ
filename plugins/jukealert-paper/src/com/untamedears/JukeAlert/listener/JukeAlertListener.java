@@ -25,12 +25,8 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class JukeAlertListener implements Listener {
-
-    private JukeAlert ja;
-
-    public JukeAlertListener(JukeAlert ja) {
-        this.ja = ja;
-    }
+	
+	private JukeAlert plugin = JukeAlert.getInstance();
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void placeSnitchBlock(BlockPlaceEvent event) {
@@ -54,15 +50,15 @@ public class JukeAlertListener implements Listener {
             PlayerReinforcement reinforcement = (PlayerReinforcement) rei;
             Faction owner = reinforcement.getOwner();
             if (reinforcement.getSecurityLevel().equals(SecurityLevel.GROUP)) {
-                ja.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+                plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
                 player.sendMessage(ChatColor.AQUA + "You've created a snitch block registered to the group " + owner.getName() + ".");
             } else {
-                ja.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + owner.getFounder(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+                plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + owner.getFounder(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
                 player.sendMessage(ChatColor.AQUA + "You've created a private snitch block; Reinforce it with a group to register others.");
             }
         }
 
-        ja.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + player.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + player.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         player.sendMessage(ChatColor.AQUA + "You've created a private snitch; reinforce it to add others to it.");
     }
 
@@ -77,7 +73,7 @@ public class JukeAlertListener implements Listener {
         }
         Player player = event.getPlayer();
         Location loc = player.getLocation();
-        ja.getJaLogger().logSnitchBreak(player.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        plugin.getJaLogger().logSnitchBreak(player.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         //TODO: Make sure this is 100% complete. Also make it remove from the List in JukeAlert.java
     }
 
@@ -128,10 +124,5 @@ public class JukeAlertListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void playerEmptyBucket(PlayerBucketEmptyEvent event) {
         //TODO: Put stuff here
-    }
-
-    //Registers the events in this to JukeAlert.java
-    public void registerEvents() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, ja);
     }
 }

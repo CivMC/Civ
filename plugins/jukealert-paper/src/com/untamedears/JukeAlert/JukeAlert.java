@@ -1,6 +1,7 @@
 package com.untamedears.JukeAlert;
 
 import com.untamedears.JukeAlert.command.CommandHandler;
+import com.untamedears.JukeAlert.listener.JukeAlertListener;
 import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
@@ -8,7 +9,8 @@ import com.untamedears.JukeAlert.storage.JukeAlertLogger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class JukeAlert extends JavaPlugin {
@@ -24,6 +26,7 @@ public class JukeAlert extends JavaPlugin {
 		jaLogger = new JukeAlertLogger();
 
 		loadManagers();
+		registerEvents();
 		
 		CommandHandler commands = new CommandHandler();
 		for (String command : getDescription().getCommands().keySet()) {
@@ -34,6 +37,12 @@ public class JukeAlert extends JavaPlugin {
 	private void loadManagers()
 	{
 		configManager = new ConfigManager();
+	}
+	
+	public void registerEvents()
+	{
+		PluginManager pm = getServer().getPluginManager();
+		pm.registerEvents(new JukeAlertListener(), this);
 	}
 
 	@Override
