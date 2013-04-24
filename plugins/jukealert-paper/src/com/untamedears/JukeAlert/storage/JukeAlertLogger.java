@@ -7,17 +7,22 @@ package com.untamedears.JukeAlert.storage;
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.entity.Faction;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Entity;
@@ -35,6 +40,7 @@ public class JukeAlertLogger {
     private Database db;
     private String snitchsTbl;
     private String snitchDetailsTbl;
+    private PreparedStatement getAllSnitchesStmt;
     private PreparedStatement getSnitchLogStmt;
     private PreparedStatement insertSnitchLogStmt;
     private PreparedStatement insertNewSnitchStmt;
@@ -48,8 +54,8 @@ public class JukeAlertLogger {
     	
         String host   = configManager.getHost();
         String dbname = configManager.getDatabase();
-        String username   = configManager.getUsername();
-        String password   = configManager.getPassword();
+        String username = configManager.getUsername();
+        String password = configManager.getPassword();
         String prefix = configManager.getPrefix();
 
         snitchsTbl = prefix + "snitchs";
@@ -96,6 +102,9 @@ public class JukeAlertLogger {
     }
 
     private void initializeStatements() {
+    	getAllSnitchesStmt = db.prepareStatement(String.format(
+    		"SELECT * FROM %s", snitchsTbl
+    	));
         getSnitchLogStmt = db.prepareStatement(String.format(
             "SELECT snitch_info, snitch_log_time FROM %s"
             + " WHERE snitch_location=? GROUP BY snitch_location ORDER BY snitch_log_time ASC LIMIT ?",
@@ -123,6 +132,30 @@ public class JukeAlertLogger {
         return String.format(
             "World: %s X: %d Y: %d Z: %d",
             loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+    }
+    
+    public List<Snitch> getAllSnitches() {
+    	List<Snitch> snitches = new ArrayList<Snitch>();
+    	try {
+    		ResultSet set = getAllSnitchesStmt.executeQuery();
+    		Snitch snitch = null;
+    		while(set.next()) {
+    			World world = this.plugin.getServer().getWorld(set.getString("snitch_world"));
+    			double x = set.getInt("snitch_x");
+    			double y = set.getInt("snitch_y");
+    			double z = set.getInt("snitch_z");
+    			String groupName = set.getString("snitch_faction");
+    			
+    			Faction faction = Citadel.getGroupManager().getGroup(groupName);
+    			Location location = new Location(world, x, y, z);
+    			
+    			snitch = new Snitch(location, faction);
+    			snitches.add(snitch);
+    		}
+    	} catch (SQLException ex) {
+    		this.plugin.getLogger().log(Level.SEVERE, "Could not get all Snitches!");
+    	}
+    	return snitches;
     }
 
     //Gets @limit events about that snitch. 

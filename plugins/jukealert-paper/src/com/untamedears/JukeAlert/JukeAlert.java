@@ -3,6 +3,7 @@ package com.untamedears.JukeAlert;
 import com.untamedears.JukeAlert.command.CommandHandler;
 import com.untamedears.JukeAlert.listener.JukeAlertListener;
 import com.untamedears.JukeAlert.manager.ConfigManager;
+import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
 
 import java.util.logging.Level;
@@ -15,6 +16,7 @@ public class JukeAlert extends JavaPlugin {
 	private static JukeAlert instance;
 	private JukeAlertLogger jaLogger;
 	private ConfigManager configManager;
+	private SnitchManager snitchManager;
 
 	@Override
 	public void onEnable() {
@@ -22,6 +24,7 @@ public class JukeAlert extends JavaPlugin {
 		jaLogger = new JukeAlertLogger();
 
 		loadManagers();
+		loadSnitches();
 		registerEvents();
 		
 		CommandHandler commands = new CommandHandler();
@@ -33,10 +36,14 @@ public class JukeAlert extends JavaPlugin {
 	private void loadManagers()
 	{
 		configManager = new ConfigManager();
+		snitchManager = new SnitchManager();
 	}
 	
-	public void registerEvents()
-	{
+	public void loadSnitches() {
+		snitchManager.loadSnitches();
+	}
+	
+	public void registerEvents() {
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new JukeAlertListener(), this);
 	}
@@ -55,9 +62,12 @@ public class JukeAlert extends JavaPlugin {
 		return jaLogger;
 	}
 	
-	public ConfigManager getConfigManager()
-	{
+	public ConfigManager getConfigManager()	{
 		return configManager;
+	}
+	
+	public SnitchManager getSnitchManager() {
+		return snitchManager;
 	}
 
 	//Logs a message with the level of Info.
