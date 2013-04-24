@@ -10,12 +10,6 @@ import com.untamedears.JukeAlert.JukeAlert;
 
 public class CommandHandler implements CommandExecutor {
 
-	private JukeAlert plugin;
-
-	public CommandHandler(JukeAlert plugin) {
-		this.plugin = plugin;
-	}
-
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 

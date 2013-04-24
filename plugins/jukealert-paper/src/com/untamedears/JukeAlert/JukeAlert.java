@@ -12,16 +12,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class JukeAlert extends JavaPlugin {
 
+	private static JukeAlert instance;
 	private JukeAlertLogger jaLogger;
 	private List<Snitch> snitches = new ArrayList<>();
 
 	@Override
 	public void onEnable() {
-		jaLogger = new JukeAlertLogger(this);
+		instance = this;
+		jaLogger = new JukeAlertLogger();
 
-		CommandHandler commands = new CommandHandler(this);
+		CommandHandler commands = new CommandHandler();
 		for (String command : getDescription().getCommands().keySet()) {
-
 			getCommand(command).setExecutor(commands);
 		}
 	}
@@ -29,6 +30,10 @@ public class JukeAlert extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		//TODO: Make sure everything saves properly and does save.
+	}
+	
+	public static JukeAlert getInstance() {
+		return instance;
 	}
 
 	//Gets the JaLogger.

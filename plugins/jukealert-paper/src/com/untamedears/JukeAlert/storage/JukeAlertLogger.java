@@ -29,7 +29,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class JukeAlertLogger {
 
-    private JukeAlert plugin;
+    private JukeAlert plugin = JukeAlert.getInstance();
     private Database db;
     private String snitchsTbl;
     private String snitchDetailsTbl;
@@ -40,8 +40,7 @@ public class JukeAlertLogger {
     private PreparedStatement updateGroupStmt;
     private PreparedStatement updateCuboidVolumeStmt;
 
-    public JukeAlertLogger(JukeAlert plugin) {
-        this.plugin = plugin;
+    public JukeAlertLogger() {
 
         Configuration c = plugin.getConfig();
 
