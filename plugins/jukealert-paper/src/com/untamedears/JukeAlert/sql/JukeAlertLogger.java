@@ -86,7 +86,7 @@ public class JukeAlertLogger {
             genTables();
             initializeStatements();
         } else {
-        	this.plugin.getLogger().log(Level.SEVERE, "Could not connect to the database! Fill out your config.yml!");
+            this.plugin.getLogger().log(Level.SEVERE, "Could not connect to the database! Fill out your config.yml!");
         }
     }
 
@@ -122,32 +122,32 @@ public class JukeAlertLogger {
 
     private void initializeStatements() {
         getSnitchLogStmt = db.prepareStatement(String.format(
-            "SELECT snitch_info, snitch_log_time FROM %s"
-            + " WHERE snitch_location=? GROUP BY snitch_location ORDER BY snitch_log_time ASC LIMIT ?",
-            snitchDetailsTbl));
+                "SELECT snitch_info, snitch_log_time FROM %s"
+                + " WHERE snitch_location=? GROUP BY snitch_location ORDER BY snitch_log_time ASC LIMIT ?",
+                snitchDetailsTbl));
         insertSnitchLogStmt = db.prepareStatement(String.format(
-            "INSERT INTO %s (snitch_location, snitch_log_time, snitch_info) VALUES(?, ?, ?)",
-            snitchDetailsTbl));
+                "INSERT INTO %s (snitch_location, snitch_log_time, snitch_info) VALUES(?, ?, ?)",
+                snitchDetailsTbl));
         insertNewSnitchStmt = db.prepareStatement(String.format(
-            "INSERT INTO %s (snitch_world, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z)"
-            + " VALUES(?, ?, ?, ?, ?, 11, 11, 11)",
-            snitchsTbl));
+                "INSERT INTO %s (snitch_world, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z)"
+                + " VALUES(?, ?, ?, ?, ?, 11, 11, 11)",
+                snitchsTbl));
         deleteSnitchStmt = db.prepareStatement(String.format(
-            "DELETE FROM %s WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
-            snitchsTbl));
+                "DELETE FROM %s WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
+                snitchsTbl));
         updateGroupStmt = db.prepareStatement(String.format(
-            "UPDATE %s SET snitch_group=? WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
-            snitchsTbl));
+                "UPDATE %s SET snitch_group=? WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
+                snitchsTbl));
         updateCuboidVolumeStmt = db.prepareStatement(String.format(
-            "UPDATE %s SET snitch_cuboid_x=?, snitch_cuboid_y=?, snitch_cuboid_z=?"
-            + " WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
-            snitchsTbl));
+                "UPDATE %s SET snitch_cuboid_x=?, snitch_cuboid_y=?, snitch_cuboid_z=?"
+                + " WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
+                snitchsTbl));
     }
 
     public static String snitchKey(final Location loc) {
         return String.format(
-            "World: %s X: %d Y: %d Z: %d",
-            loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+                "World: %s X: %d Y: %d Z: %d",
+                loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
     }
 
     //Gets @limit events about that snitch. 
@@ -182,7 +182,7 @@ public class JukeAlertLogger {
             insertSnitchLogStmt.setString(3, info);
             insertSnitchLogStmt.execute();
         } catch (SQLException ex) {
-        	this.plugin.getLogger().log(Level.SEVERE, "Could not create snitch log entry!", ex);
+            this.plugin.getLogger().log(Level.SEVERE, "Could not create snitch log entry!", ex);
         }
     }
 
@@ -204,9 +204,9 @@ public class JukeAlertLogger {
      */
     public void logSnitchEntry(JukeAlertSnitch snitch, Location loc, Player player) {
         logSnitchInfo(String.format(
-            "%s made an entry at [%s%s %s(%sX: %d Y: %d Z: %d%s)]", player.getName(), ChatColor.AQUA, loc.getWorld().getName(),
+                "%s made an entry at [%s%s %s(%sX: %d Y: %d Z: %d%s)]", player.getName(), ChatColor.AQUA, loc.getWorld().getName(),
                 ChatColor.RESET, ChatColor.RED, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), ChatColor.RESET),
-            snitch);
+                snitch);
     }
 
     /**
@@ -216,9 +216,9 @@ public class JukeAlertLogger {
     public void logSnitchBlockBreak(JukeAlertSnitch snitch, Player player, Block block) {
         Location loc = block.getLocation();
         logSnitchInfo(String.format(
-            "%s broke a %s at X: %d Y: %d Z: %d.", player.getName(), block.getType().toString(), loc.getBlockX(),
+                "%s broke a %s at X: %d Y: %d Z: %d.", player.getName(), block.getType().toString(), loc.getBlockX(),
                 loc.getBlockY(), loc.getBlockZ()),
-            snitch);
+                snitch);
     }
 
     /**
@@ -227,9 +227,9 @@ public class JukeAlertLogger {
      */
     public void logSnitchBucketEmpty(JukeAlertSnitch snitch, Player player, Location loc, ItemStack item) {
         logSnitchInfo(String.format(
-            "%s emptied a %s at X: %d Y: %d Z: %d.", player.getName(), item.getType().toString(), loc.getBlockX(),
+                "%s emptied a %s at X: %d Y: %d Z: %d.", player.getName(), item.getType().toString(), loc.getBlockX(),
                 loc.getBlockY(), loc.getBlockZ()),
-            snitch);
+                snitch);
     }
 
     /**
@@ -239,9 +239,9 @@ public class JukeAlertLogger {
     public void logSnitchBucketFill(JukeAlertSnitch snitch, Player player, Block block) {
         Location loc = block.getLocation();
         logSnitchInfo(String.format(
-            "%s filled a bucket of %s at X: %d Y: %d Z: %d.", player.getName(), block.getType().toString(),
+                "%s filled a bucket of %s at X: %d Y: %d Z: %d.", player.getName(), block.getType().toString(),
                 loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()),
-            snitch);
+                snitch);
     }
 
     /**
@@ -251,9 +251,9 @@ public class JukeAlertLogger {
     public void logSnitchBlockPlace(JukeAlertSnitch snitch, Player player, Block block) {
         Location loc = block.getLocation();
         logSnitchInfo(String.format(
-            "%s placed a %s at X: %d Y: %d Z: %d.", player.getName(), block.getType().toString(),
+                "%s placed a %s at X: %d Y: %d Z: %d.", player.getName(), block.getType().toString(),
                 loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()),
-            snitch);
+                snitch);
     }
 
     /**
@@ -263,9 +263,9 @@ public class JukeAlertLogger {
     public void logSnitchUsed(JukeAlertSnitch snitch, Player player, Block block) {
         Location loc = block.getLocation();
         logSnitchInfo(String.format(
-            "%s used a snitch at X: %d Y: %d Z: %d.", player.getName(), loc.getBlockX(),
+                "%s used a snitch at X: %d Y: %d Z: %d.", player.getName(), loc.getBlockX(),
                 loc.getBlockY(), loc.getBlockZ()),
-            snitch);
+                snitch);
     }
 
     //Logs the snitch being placed at World, x, y, z in the database.
@@ -278,7 +278,7 @@ public class JukeAlertLogger {
             insertNewSnitchStmt.setString(5, group);
             insertNewSnitchStmt.execute();
         } catch (SQLException ex) {
-        	this.plugin.getLogger().log(Level.SEVERE, "Could not create new snitch in DB!", ex);
+            this.plugin.getLogger().log(Level.SEVERE, "Could not create new snitch in DB!", ex);
         }
     }
 
@@ -286,12 +286,12 @@ public class JukeAlertLogger {
     public void logSnitchBreak(String world, double x, double y, double z) {
         try {
             deleteSnitchStmt.setString(1, world);
-            deleteSnitchStmt.setInt(2, (int)Math.floor(x));
-            deleteSnitchStmt.setInt(3, (int)Math.floor(y));
-            deleteSnitchStmt.setInt(4, (int)Math.floor(z));
+            deleteSnitchStmt.setInt(2, (int) Math.floor(x));
+            deleteSnitchStmt.setInt(3, (int) Math.floor(y));
+            deleteSnitchStmt.setInt(4, (int) Math.floor(z));
             deleteSnitchStmt.execute();
         } catch (SQLException ex) {
-        	this.plugin.getLogger().log(Level.SEVERE, "Could not log Snitch break!", ex);
+            this.plugin.getLogger().log(Level.SEVERE, "Could not log Snitch break!", ex);
         }
     }
 
@@ -305,7 +305,7 @@ public class JukeAlertLogger {
             updateGroupStmt.setInt(5, loc.getBlockZ());
             updateGroupStmt.execute();
         } catch (SQLException ex) {
-        	this.plugin.getLogger().log(Level.SEVERE, "Could not update Snitch group!", ex);
+            this.plugin.getLogger().log(Level.SEVERE, "Could not update Snitch group!", ex);
         }
     }
 
@@ -321,7 +321,7 @@ public class JukeAlertLogger {
             updateCuboidVolumeStmt.setInt(7, loc.getBlockZ());
             updateCuboidVolumeStmt.execute();
         } catch (SQLException ex) {
-        	this.plugin.getLogger().log(Level.SEVERE, "Could not update Snitch cubiod size!", ex);
+            this.plugin.getLogger().log(Level.SEVERE, "Could not update Snitch cubiod size!", ex);
         }
     }
 }

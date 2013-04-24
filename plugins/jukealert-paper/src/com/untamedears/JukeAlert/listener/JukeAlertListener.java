@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -95,12 +96,21 @@ public class JukeAlertListener implements Listener {
          */
     }
 
-    //Will assign even.getEntity() to a variable I just wanted to set these up real fast before my next class.
     @EventHandler(priority = EventPriority.HIGH)
     public void playerKillEntity(EntityDeathEvent event) {
-        if (event.getEntity().getKiller() instanceof Player) {
-            //TODO: Put stuff here
+        LivingEntity entity = event.getEntity();
+        LivingEntity killer = entity.getKiller();
+        if (entity instanceof Player) {
+            return;
         }
+        if (!(killer instanceof Player)) {
+            return;
+        }
+        Player player = (Player) killer;
+        for (JukeAlertSnitch snitch : ja.getSnitches(player.getWorld())) {
+            
+        }
+
     }
 
     @EventHandler(priority = EventPriority.HIGH)
