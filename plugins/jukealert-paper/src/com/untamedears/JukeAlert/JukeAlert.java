@@ -9,43 +9,43 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class JukeAlert extends JavaPlugin {
 
-	public static final Logger LOGGER = Logger.getLogger("Minecraft");
-	private JukeAlertLogger jaLogger;
-	private List<JukeAlertSnitch> snitches = new ArrayList<>();
+    public static final Logger LOGGER = Logger.getLogger("Minecraft");
+    private JukeAlertLogger jaLogger;
+    private List<JukeAlertSnitch> snitches = new ArrayList<>();
 
-	@Override
-	public void onEnable() {
-		jaLogger = new JukeAlertLogger(this);
+    @Override
+    public void onEnable() {
+        jaLogger = new JukeAlertLogger(this);
 
-		JukeAlertCommands commands = new JukeAlertCommands(this);
-		for (String command : getDescription().getCommands().keySet()) {
+        JukeAlertCommands commands = new JukeAlertCommands(this);
+        for (String command : getDescription().getCommands().keySet()) {
 
-			getCommand(command).setExecutor(commands);
-		}
-	}
+            getCommand(command).setExecutor(commands);
+        }
+    }
 
-	@Override
-	public void onDisable() {
-		//TODO: Make sure everything saves properly and does save.
-	}
+    @Override
+    public void onDisable() {
+        //TODO: Make sure everything saves properly and does save.
+    }
 
-	//Gets the JaLogger.
-	public JukeAlertLogger getJaLogger() {
-		return jaLogger;
-	}
+    //Gets the JaLogger.
+    public JukeAlertLogger getJaLogger() {
+        return jaLogger;
+    }
 
-	//Logs a message with the level of Info.
-	public static void log(String message) {
-		log(Level.INFO, message);
-	}
+    //Logs a message with the level of Info.
+    public static void log(String message) {
+        log(Level.INFO, message);
+    }
 
-	//Logs a message with a level defined.
-	public static void log(Level level, String message) {
-		LOGGER.log(level, "[HCSMP] " + message);
-	}
+    //Logs a message with a level defined.
+    public static void log(Level level, String message) {
+        LOGGER.log(level, "[HCSMP] " + message);
+    }
 
-	//Logs a message with a level define and a throwable.
-	public static void log(Level level, String message, Throwable thrown) {
-		LOGGER.log(level, "[HCSMP] " + message, thrown);
-	}
+    //Logs a message with a level define and a throwable.
+    public static void log(Level level, String message, Throwable thrown) {
+        LOGGER.log(level, "[HCSMP] " + message, thrown);
+    }
 }
