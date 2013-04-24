@@ -1,4 +1,4 @@
-package com.untamedears.JukeAlert;
+package com.untamedears.JukeAlert.model;
 
 import com.untamedears.citadel.entity.Faction;
 import java.util.ArrayList;
@@ -6,14 +6,14 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-public class JukeAlertSnitch {
+public class Snitch {
 
     private Location loc;
     private Faction group;
     private int x, y, z;
     private List<String> inProximity = new ArrayList<>(); //Contains all the players who are within the proximity of the snitch.
 
-    public JukeAlertSnitch(Location loc, Faction group) {
+    public Snitch(Location loc, Faction group) {
         this.group = group;
         this.loc = loc;
     }
