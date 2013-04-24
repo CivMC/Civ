@@ -1,6 +1,10 @@
 package com.untamedears.JukeAlert.listener;
 
+import java.util.List;
+
 import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.manager.SnitchManager;
+import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.Utility;
 import com.untamedears.citadel.access.AccessDelegate;
@@ -101,6 +105,16 @@ public class JukeAlertListener implements Listener {
          *      }
          * }
          */
+		 
+		 Player player = event.getPlayer();
+		 Location location = player.getLocation();
+		 SnitchManager snitchManager = this.plugin.getSnitchManager();
+		 List<Snitch> snitches = snitchManager.getSnitches();
+		 for(Snitch snitch : snitches) {
+			 if(snitch.isWithinCuboid(location)) {
+				 snitch.add(player.getName());
+			 }
+		 }
     }
 
     //Will assign even.getEntity() to a variable I just wanted to set these up real fast before my next class.
