@@ -8,6 +8,7 @@ import org.bukkit.Location;
 
 public class JukeAlertSnitch {
 
+	private int snitchId;
     private Location loc;
     private Faction group;
     private int x, y, z;
@@ -16,6 +17,14 @@ public class JukeAlertSnitch {
     public JukeAlertSnitch(Location loc, Faction group) {
         this.group = group;
         this.loc = loc;
+    }
+    
+    public int getId() {
+    	return this.snitchId;
+    }
+    
+    public void setId(int newId) {
+    	this.snitchId = newId;
     }
 
     public Faction getGroup() {

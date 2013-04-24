@@ -126,7 +126,7 @@ public class JukeAlertLogger {
         		+ "`snitch_id` int(10) unsigned NOT NULL," // reference to the column in the main snitches table
                 + "`snitch_log_time` datetime,"
                 + "`snitch_logged_action` tinyint unsigned NOT NULL,"
-                + "`snitch_logged_initated_user`  char(16) NOT NULL,"
+                + "`snitch_logged_initiated_user`  char(16) NOT NULL,"
                 + "`snitch_logged_victim_user` char(16), "
                 + "`snitch_logged_x` int(10), "
                 + "`snitch_logged_Y` int(10), "
@@ -136,29 +136,41 @@ public class JukeAlertLogger {
     }
 
     private void initializeStatements() {
-    	// statement to get LIMIT entries from the snitchesDetailsTbl based on a snitch_id from the main snitchesTbl
+    	// statement to get LIMIT entries OFFSET from a number from the snitchesDetailsTbl based on a snitch_id from the main snitchesTbl
+    	// LIMIT ?,? means offset followed by max rows to return 
         getSnitchLogStmt = db.prepareStatement(String.format(
             "SELECT * FROM %s"
-            + " WHERE snitch_location=? GROUP BY snitch_location ORDER BY snitch_log_time ASC LIMIT ?",
+            + " WHERE snitch_id=? ORDER BY snitch_log_time ASC LIMIT ?,?",
             snitchDetailsTbl));
         
         // statement to get the ID of a snitch in the main snitchsTbl based on a Location (x,y,z, world)
         getSnitchIdFromLocationStmt = db.prepareStatement(String.format("SELECT snitch_id FROM %s"
         		+ "WHERE snitch_x=? AND snitch_y=? AND snitch_z=? AND snitch_world=?", snitchsTbl));
         
+        // statement to insert a log entry into the snitchesDetailsTable
         insertSnitchLogStmt = db.prepareStatement(String.format(
-            "INSERT INTO %s (snitch_location, snitch_log_time, snitch_info) VALUES(?, ?, ?)",
+            "INSERT INTO %s (snitch_id, snitch_log_time, snitch_logged_action, snitch_logged_initated_user," +
+            " snitch_logged_victim_user, snitch_logged_x, snitch_logged_y, snitch_logged_z, snitch_logged_blockid) " +
+            " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
             snitchDetailsTbl));
+        
+        // 
         insertNewSnitchStmt = db.prepareStatement(String.format(
             "INSERT INTO %s (snitch_world, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z)"
             + " VALUES(?, ?, ?, ?, ?, 11, 11, 11)",
             snitchsTbl));
+        
+        // 
         deleteSnitchStmt = db.prepareStatement(String.format(
             "DELETE FROM %s WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
             snitchsTbl));
+        
+        // 
         updateGroupStmt = db.prepareStatement(String.format(
             "UPDATE %s SET snitch_group=? WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
             snitchsTbl));
+        
+        // 
         updateCuboidVolumeStmt = db.prepareStatement(String.format(
             "UPDATE %s SET snitch_cuboid_x=?, snitch_cuboid_y=?, snitch_cuboid_z=?"
             + " WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
@@ -205,12 +217,21 @@ public class JukeAlertLogger {
         		} else {
         			// we got a snitch id from the location, so now get the records that we want from the snitches detail table
         			try {
-	        	        	
-	                    getSnitchLogStmt.setString(1, snitchKey(loc));
-	                    getSnitchLogStmt.setInt(2, limit);
+	        	        // params are snitch_id (int), returns everything
+	                    getSnitchLogStmt.setInt(1, interestedSnitchId);
+	                    
 	                    ResultSet set = getSnitchLogStmt.executeQuery();
+	                    didFind = false;
 	                    while (set.next()) {
-	                        info.put(set.getString("snitch_info"), set.getDate("snitch_log_time"));
+	                    	didFind = true;
+	                    	// TODO: need a function to create a string based upon what things we have / don't have in this result set
+	                    	// so like if we have a block place action, then we include the x,y,z, but if its a KILL action, then we just say
+	                    	// x killed y, etc
+	                    	String resultString = String.format("%s did action %i", set.getString("snitch_logged_initated_user"), (int)set.getByte("snitch_logged_action"));
+	                        info.put(resultString, set.getDate("snitch_log_time"));
+	                    }
+	                    if (!didFind) {
+	                    	// Output something like 'no snitch action recorded" or something
 	                    }
 	                } catch (SQLException ex) {
 	                    this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details from the snitchesDetail table using the snitch id " + interestedSnitchId, ex);
@@ -228,23 +249,42 @@ public class JukeAlertLogger {
         return info;
     }
 
-    //Logs info to a specific snitch with a time stamp.
-    /*
+    
+    /**
+     * Logs info to a specific snitch with a time stamp.
+     * 
+     * example: 
+     * 
      * ------DATE-----------DETAIL------
      * 2013-4-24 12:14:35 : Bob made an entry at [Nether(X: 56 Y: 87 Z: -1230)]
      * 2013-4-25 12:14:35 : Bob broke a chest at X: 896 Y: 1 Z: 8501
      * 2013-4-28 12:14:35 : Bob killed Trevor.
      * ----Type /ja more to see more----
+     * 
+     * @param snitch - the snitch that recorded this event, required
+     * @param block - the block that was part of the event, if there was one , null if no block was part of the event
+     * @param date - the date this event occurred , required
+     * @param action - the action that took place in this event
+     * @param initiatedUser - the user who initiated the event, required
+     * @param victimUser - the user who was victim of the event, can be null
      */
-    public void logSnitchInfo(String info, JukeAlertSnitch snitch) {
-        Timestamp time = new Timestamp(System.currentTimeMillis());
+    public void logSnitchInfo(JukeAlertSnitch snitch, Block block, Date date, LoggedAction action, String initiatedUser, String victimUser) {
+    	
         try {
-            insertSnitchLogStmt.setString(1, snitchKey(snitch.getLoc()));
-            insertSnitchLogStmt.setTimestamp(2, time);
-            insertSnitchLogStmt.setString(3, info);
-            insertSnitchLogStmt.execute();
+        	insertSnitchLogStmt.setInt(1,  snitch.getId());
+        	insertSnitchLogStmt.setDate(2, new java.sql.Date(date.getTime()));
+        	insertSnitchLogStmt.setByte(3,  (byte)action.getLoggedActionId());
+        	insertSnitchLogStmt.setString(4,  initiatedUser);
+        	insertSnitchLogStmt.setString(5, victimUser);
+        	insertSnitchLogStmt.setInt(6,  block.getLocation().getBlockX());
+        	insertSnitchLogStmt.setInt(7,  block.getLocation().getBlockY());
+        	insertSnitchLogStmt.setInt(8,  block.getLocation().getBlockZ());
+        	insertSnitchLogStmt.setShort(9,  (short) block.getTypeId());
+        	
+        	insertSnitchLogStmt.execute();
         } catch (SQLException ex) {
-        	this.plugin.getLogger().log(Level.SEVERE, "Could not create snitch log entry!", ex);
+        	this.plugin.getLogger().log(Level.SEVERE, String.format("Could not create snitch log entry! with snitch %s, " +
+        			"block %s, date %s, initiatedUser %s, victimUser %s", snitch, block, date, initiatedUser, victimUser), ex);
         }
     }
 

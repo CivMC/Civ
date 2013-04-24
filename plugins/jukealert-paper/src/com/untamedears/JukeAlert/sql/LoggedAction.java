@@ -18,11 +18,15 @@ public enum LoggedAction {
 	USED(6), 
 	IGNITED(7);
 	
-	public int value;
+	private int value;
 	
 	// constructor, has to be private
 	private LoggedAction(int value) {
 		this.value = value;
+	}
+	
+	public int getLoggedActionId() {
+		return this.value;
 	}
 
 }
