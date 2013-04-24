@@ -1,0 +1,10 @@
+mysql:
+  username: ''
+  host: localhost
+  enable: false
+  password: ''
+  database: minecraft
+  port: 3306
+  prefix: ''
+settings:
+  defaultCuboidSize: 11

@@ -1,7 +1,9 @@
-package com.untamedears.JukeAlert;
+package com.untamedears.JukeAlert.manager;
 
-public class Manager {
-	private JukeAlertSnitch jas;
+import com.untamedears.JukeAlert.model.Snitch;
+
+public class StorageManager {
+	private Snitch jas;
     public void save() {
         //TODO: Make it update the SQL Database onDisable(), and or on a SaveTask.
     }
