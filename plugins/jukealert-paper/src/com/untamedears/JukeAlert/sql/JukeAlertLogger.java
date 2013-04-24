@@ -80,13 +80,13 @@ public class JukeAlertLogger {
         snitchsTbl = prefix + "snitchs";
         snitchDetailsTbl = prefix + "snitch_details";
 
-        db = new Database(host, dbname, user, pass, prefix);
+        db = new Database(host, dbname, user, pass, prefix, this.plugin.getLogger());
         boolean connected = db.connect();
         if (connected) {
             genTables();
             initializeStatements();
         } else {
-            JukeAlert.log(Level.SEVERE, "Could not connect to the database! Fill out your config.yml!");
+        	this.plugin.getLogger().log(Level.SEVERE, "Could not connect to the database! Fill out your config.yml!");
         }
     }
 
@@ -161,7 +161,7 @@ public class JukeAlertLogger {
                 info.put(set.getString("snitch_info"), set.getDate("snitch_log_time"));
             }
         } catch (SQLException ex) {
-            JukeAlert.log(Level.SEVERE, "Could not get Snitch Details!", ex);
+            this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details!", ex);
         }
         return info;
     }
@@ -182,7 +182,7 @@ public class JukeAlertLogger {
             insertSnitchLogStmt.setString(3, info);
             insertSnitchLogStmt.execute();
         } catch (SQLException ex) {
-            JukeAlert.log(Level.SEVERE, "Could not create snitch log entry!", ex);
+        	this.plugin.getLogger().log(Level.SEVERE, "Could not create snitch log entry!", ex);
         }
     }
 
@@ -278,7 +278,7 @@ public class JukeAlertLogger {
             insertNewSnitchStmt.setString(5, group);
             insertNewSnitchStmt.execute();
         } catch (SQLException ex) {
-            JukeAlert.log(Level.SEVERE, "Could not create new snitch in DB!", ex);
+        	this.plugin.getLogger().log(Level.SEVERE, "Could not create new snitch in DB!", ex);
         }
     }
 
@@ -291,7 +291,7 @@ public class JukeAlertLogger {
             deleteSnitchStmt.setInt(4, (int)Math.floor(z));
             deleteSnitchStmt.execute();
         } catch (SQLException ex) {
-            JukeAlert.log(Level.SEVERE, "Could not log Snitch break!", ex);
+        	this.plugin.getLogger().log(Level.SEVERE, "Could not log Snitch break!", ex);
         }
     }
 
@@ -305,7 +305,7 @@ public class JukeAlertLogger {
             updateGroupStmt.setInt(5, loc.getBlockZ());
             updateGroupStmt.execute();
         } catch (SQLException ex) {
-            JukeAlert.log(Level.SEVERE, "Could not update Snitch group!", ex);
+        	this.plugin.getLogger().log(Level.SEVERE, "Could not update Snitch group!", ex);
         }
     }
 
@@ -321,7 +321,7 @@ public class JukeAlertLogger {
             updateCuboidVolumeStmt.setInt(7, loc.getBlockZ());
             updateCuboidVolumeStmt.execute();
         } catch (SQLException ex) {
-            JukeAlert.log(Level.SEVERE, "Could not update Snitch cubiod size!", ex);
+        	this.plugin.getLogger().log(Level.SEVERE, "Could not update Snitch cubiod size!", ex);
         }
     }
 }
