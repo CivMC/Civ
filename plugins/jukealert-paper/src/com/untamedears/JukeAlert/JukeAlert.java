@@ -1,6 +1,9 @@
 package com.untamedears.JukeAlert;
 
-import com.untamedears.JukeAlert.sql.JukeAlertLogger;
+import com.untamedears.JukeAlert.command.CommandHandler;
+import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.storage.JukeAlertLogger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -10,13 +13,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class JukeAlert extends JavaPlugin {
 
 	private JukeAlertLogger jaLogger;
-	private List<JukeAlertSnitch> snitches = new ArrayList<>();
+	private List<Snitch> snitches = new ArrayList<>();
 
 	@Override
 	public void onEnable() {
 		jaLogger = new JukeAlertLogger(this);
 
-		JukeAlertCommands commands = new JukeAlertCommands(this);
+		CommandHandler commands = new CommandHandler(this);
 		for (String command : getDescription().getCommands().keySet()) {
 
 			getCommand(command).setExecutor(commands);
