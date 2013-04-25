@@ -2,20 +2,27 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.untamedears.JukeAlert.sql;
+package com.untamedears.JukeAlert.storage;
 
 import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.JukeAlertSnitch;
+import com.untamedears.JukeAlert.manager.ConfigManager;
+import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.entity.Faction;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Entity;
@@ -29,10 +36,12 @@ import org.bukkit.inventory.ItemStack;
 public class JukeAlertLogger {
 
     private JukeAlert plugin;
+    private ConfigManager configManager;
     private Database db;
     private String snitchsTbl;
     private String snitchDetailsTbl;
     private PreparedStatement getSnitchIdFromLocationStmt;
+    private PreparedStatement getAllSnitchesStmt;
     private PreparedStatement getSnitchLogStmt;
     private PreparedStatement insertSnitchLogStmt;
     private PreparedStatement insertNewSnitchStmt;
@@ -40,48 +49,20 @@ public class JukeAlertLogger {
     private PreparedStatement updateGroupStmt;
     private PreparedStatement updateCuboidVolumeStmt;
 
-    public JukeAlertLogger(JukeAlert plugin) {
-        this.plugin = plugin;
-
-        Configuration c = plugin.getConfig();
-
-        String host = c.getString("db.host");
-        String dbname = c.getString("db.name");
-        String user = c.getString("db.user");
-        String pass = c.getString("db.pass");
-        String prefix = c.getString("db.prefix");
-
-        if (host == null) {
-            host = "localhost";
-            c.set("db.host", host);
-        }
-
-        if (dbname == null) {
-            dbname = "mydb";
-            c.set("db.name", dbname);
-        }
-
-        if (user == null) {
-            user = "root";
-            c.set("db.user", user);
-        }
-
-        if (pass == null) {
-            pass = "admin";
-            c.set("db.pass", pass);
-        }
-
-        if (prefix == null) {
-            prefix = "pvp_";
-            c.set("db.prefix", prefix);
-        }
-
-        plugin.saveConfig();
+    public JukeAlertLogger() {
+    	plugin = JukeAlert.getInstance();
+    	configManager = plugin.getConfigManager();
+    	
+        String host   = configManager.getHost();
+        String dbname = configManager.getDatabase();
+        String username = configManager.getUsername();
+        String password = configManager.getPassword();
+        String prefix = configManager.getPrefix();
 
         snitchsTbl = prefix + "snitchs";
         snitchDetailsTbl = prefix + "snitch_details";
 
-        db = new Database(host, dbname, user, pass, prefix, this.plugin.getLogger());
+        db = new Database(host, dbname, username, password, prefix, this.plugin.getLogger());
         boolean connected = db.connect();
         if (connected) {
             genTables();
@@ -136,8 +117,13 @@ public class JukeAlertLogger {
     }
 
     private void initializeStatements() {
-    	// statement to get LIMIT entries OFFSET from a number from the snitchesDetailsTbl based on a snitch_id from the main snitchesTbl
-    	// LIMIT ?,? means offset followed by max rows to return 
+
+    	getAllSnitchesStmt = db.prepareStatement(String.format(
+    		"SELECT * FROM %s", snitchsTbl
+    	));
+
+        // statement to get LIMIT entries OFFSET from a number from the snitchesDetailsTbl based on a snitch_id from the main snitchesTbl
+        // LIMIT ?,? means offset followed by max rows to return 
         getSnitchLogStmt = db.prepareStatement(String.format(
             "SELECT * FROM %s"
             + " WHERE snitch_id=? ORDER BY snitch_log_time ASC LIMIT ?,?",
@@ -157,7 +143,7 @@ public class JukeAlertLogger {
         // 
         insertNewSnitchStmt = db.prepareStatement(String.format(
             "INSERT INTO %s (snitch_world, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z)"
-            + " VALUES(?, ?, ?, ?, ?, 11, 11, 11)",
+            + " VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
             snitchsTbl));
         
         // 
@@ -181,6 +167,30 @@ public class JukeAlertLogger {
         return String.format(
             "World: %s X: %d Y: %d Z: %d",
             loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+    }
+    
+    public List<Snitch> getAllSnitches() {
+    	List<Snitch> snitches = new ArrayList<Snitch>();
+    	try {
+    		ResultSet set = getAllSnitchesStmt.executeQuery();
+    		Snitch snitch = null;
+    		while(set.next()) {
+    			World world = this.plugin.getServer().getWorld(set.getString("snitch_world"));
+    			double x = set.getInt("snitch_x");
+    			double y = set.getInt("snitch_y");
+    			double z = set.getInt("snitch_z");
+    			String groupName = set.getString("snitch_faction");
+    			
+    			Faction faction = Citadel.getGroupManager().getGroup(groupName);
+    			Location location = new Location(world, x, y, z);
+    			
+    			snitch = new Snitch(location, faction);
+    			snitches.add(snitch);
+    		}
+    	} catch (SQLException ex) {
+    		this.plugin.getLogger().log(Level.SEVERE, "Could not get all Snitches!");
+    	}
+    	return snitches;
     }
 
     /**
@@ -288,7 +298,7 @@ public class JukeAlertLogger {
         }
     }
 
-    public void logSnitchEntityKill(JukeAlertSnitch snitch, Player player, Entity entity) {
+    public void logSnitchEntityKill(Snitch snitch, Player player, Entity entity) {
         logSnitchInfo(String.format("%s killed a %s.", player.getName(), entity.toString()), snitch);
     }
 
@@ -296,7 +306,7 @@ public class JukeAlertLogger {
      * @param player
      * @param victim
      */
-    public void logSnitchPlayerKill(JukeAlertSnitch snitch, Player player, Player victim) {
+    public void logSnitchPlayerKill(Snitch snitch, Player player, Player victim) {
         logSnitchInfo(String.format("%s killed %s.", player.getName(), victim.getName()), snitch);
     }
 
@@ -304,7 +314,7 @@ public class JukeAlertLogger {
      * @param player
      * @param field
      */
-    public void logSnitchEntry(JukeAlertSnitch snitch, Location loc, Player player) {
+    public void logSnitchEntry(Snitch snitch, Location loc, Player player) {
         logSnitchInfo(String.format(
             "%s made an entry at [%s%s %s(%sX: %d Y: %d Z: %d%s)]", player.getName(), ChatColor.AQUA, loc.getWorld().getName(),
                 ChatColor.RESET, ChatColor.RED, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), ChatColor.RESET),
@@ -315,7 +325,7 @@ public class JukeAlertLogger {
      * @param player
      * @param block
      */
-    public void logSnitchBlockBreak(JukeAlertSnitch snitch, Player player, Block block) {
+    public void logSnitchBlockBreak(Snitch snitch, Player player, Block block) {
         Location loc = block.getLocation();
         logSnitchInfo(String.format(
             "%s broke a %s at X: %d Y: %d Z: %d.", player.getName(), block.getType().toString(), loc.getBlockX(),
@@ -327,7 +337,7 @@ public class JukeAlertLogger {
      * @param player
      * @param block
      */
-    public void logSnitchBucketEmpty(JukeAlertSnitch snitch, Player player, Location loc, ItemStack item) {
+    public void logSnitchBucketEmpty(Snitch snitch, Player player, Location loc, ItemStack item) {
         logSnitchInfo(String.format(
             "%s emptied a %s at X: %d Y: %d Z: %d.", player.getName(), item.getType().toString(), loc.getBlockX(),
                 loc.getBlockY(), loc.getBlockZ()),
@@ -338,7 +348,7 @@ public class JukeAlertLogger {
      * @param player
      * @param block
      */
-    public void logSnitchBucketFill(JukeAlertSnitch snitch, Player player, Block block) {
+    public void logSnitchBucketFill(Snitch snitch, Player player, Block block) {
         Location loc = block.getLocation();
         logSnitchInfo(String.format(
             "%s filled a bucket of %s at X: %d Y: %d Z: %d.", player.getName(), block.getType().toString(),
@@ -350,7 +360,7 @@ public class JukeAlertLogger {
      * @param player
      * @param block
      */
-    public void logSnitchBlockPlace(JukeAlertSnitch snitch, Player player, Block block) {
+    public void logSnitchBlockPlace(Snitch snitch, Player player, Block block) {
         Location loc = block.getLocation();
         logSnitchInfo(String.format(
             "%s placed a %s at X: %d Y: %d Z: %d.", player.getName(), block.getType().toString(),
@@ -362,7 +372,7 @@ public class JukeAlertLogger {
      * @param player
      * @param block
      */
-    public void logSnitchUsed(JukeAlertSnitch snitch, Player player, Block block) {
+    public void logSnitchUsed(Snitch snitch, Player player, Block block) {
         Location loc = block.getLocation();
         logSnitchInfo(String.format(
             "%s used a snitch at X: %d Y: %d Z: %d.", player.getName(), loc.getBlockX(),
@@ -378,6 +388,9 @@ public class JukeAlertLogger {
             insertNewSnitchStmt.setInt(3, y);
             insertNewSnitchStmt.setInt(4, z);
             insertNewSnitchStmt.setString(5, group);
+            insertNewSnitchStmt.setInt(6, configManager.getDefaultCuboidSize());
+            insertNewSnitchStmt.setInt(7, configManager.getDefaultCuboidSize());
+            insertNewSnitchStmt.setInt(8, configManager.getDefaultCuboidSize());
             insertNewSnitchStmt.execute();
         } catch (SQLException ex) {
         	this.plugin.getLogger().log(Level.SEVERE, "Could not create new snitch in DB!", ex);

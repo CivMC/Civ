@@ -1,4 +1,4 @@
-package com.untamedears.JukeAlert.sql;
+package com.untamedears.JukeAlert.storage;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
