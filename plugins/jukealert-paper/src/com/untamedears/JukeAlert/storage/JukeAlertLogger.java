@@ -6,6 +6,7 @@ package com.untamedears.JukeAlert.storage;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.manager.ConfigManager;
+import com.untamedears.JukeAlert.model.LoggedAction;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.entity.Faction;
@@ -278,7 +279,7 @@ public class JukeAlertLogger {
      * @param initiatedUser - the user who initiated the event, required
      * @param victimUser - the user who was victim of the event, can be null
      */
-    public void logSnitchInfo(JukeAlertSnitch snitch, Block block, Date date, LoggedAction action, String initiatedUser, String victimUser) {
+    public void logSnitchInfo(Snitch snitch, Block block, Date date, LoggedAction action, String initiatedUser, String victimUser) {
     	
         try {
         	insertSnitchLogStmt.setInt(1,  snitch.getId());

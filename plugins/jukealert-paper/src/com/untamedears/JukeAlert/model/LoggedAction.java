@@ -1,4 +1,4 @@
-package com.untamedears.JukeAlert.sql;
+package com.untamedears.JukeAlert.model;
 
 /**
  * Enum that represents a type of action that a snitch can record, and the value
