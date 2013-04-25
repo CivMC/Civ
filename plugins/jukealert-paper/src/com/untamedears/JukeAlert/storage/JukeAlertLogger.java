@@ -14,19 +14,15 @@ import com.untamedears.citadel.entity.Faction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -44,6 +40,7 @@ public class JukeAlertLogger {
     private String snitchDetailsTbl;
     private PreparedStatement getSnitchIdFromLocationStmt;
     private PreparedStatement getAllSnitchesStmt;
+    private PreparedStatement getAllSnitchesByWorldStmt;
     private PreparedStatement getSnitchLogStmt;
     private PreparedStatement insertSnitchLogStmt;
     private PreparedStatement insertNewSnitchStmt;
@@ -123,6 +120,10 @@ public class JukeAlertLogger {
     	getAllSnitchesStmt = db.prepareStatement(String.format(
     		"SELECT * FROM %s", snitchsTbl
     	));
+    	
+    	getAllSnitchesByWorldStmt = db.prepareStatement(String.format(
+    		"SELECT * FROM %s WHERE snitch_world = ?", snitchsTbl    			
+    	));
 
         // statement to get LIMIT entries OFFSET from a number from the snitchesDetailsTbl based on a snitch_id from the main snitchesTbl
         // LIMIT ?,? means offset followed by max rows to return 
@@ -171,30 +172,40 @@ public class JukeAlertLogger {
             loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
     }
     
-    public List<Snitch> getAllSnitches() {
-    	List<Snitch> snitches = new ArrayList<Snitch>();
-    	try {
-    		ResultSet set = getAllSnitchesStmt.executeQuery();
-    		Snitch snitch = null;
-    		while(set.next()) {
-    			World world = this.plugin.getServer().getWorld(set.getString("snitch_world"));
-    			double x = set.getInt("snitch_x");
-    			double y = set.getInt("snitch_y");
-    			double z = set.getInt("snitch_z");
-    			String groupName = set.getString("snitch_faction");
-    			
-    			Faction faction = Citadel.getGroupManager().getGroup(groupName);
-    			Location location = new Location(world, x, y, z);
-    			
-    			snitch = new Snitch(location, faction);
-    			snitches.add(snitch);
-    		}
-    	} catch (SQLException ex) {
-    		this.plugin.getLogger().log(Level.SEVERE, "Could not get all Snitches!");
+    public Map<World, Map<Location, Snitch>> getAllSnitches() {
+    	Map<World, Map<Location, Snitch>> snitches = new HashMap<World, Map<Location, Snitch>>();
+    	List<World> worlds = this.plugin.getServer().getWorlds();
+    	for(World world : worlds) {
+    		Map<Location, Snitch> snitchesByWorld = getAllSnitchesByWorld(world);
+    		snitches.put(world, snitchesByWorld);
     	}
     	return snitches;
     }
-
+    
+    public Map<Location, Snitch> getAllSnitchesByWorld(World world) {
+    	Map<Location, Snitch> snitches = new HashMap<Location, Snitch>();
+    	try {
+    		Snitch snitch = null;
+    		getAllSnitchesByWorldStmt.setString(1, world.getName());
+    		ResultSet rs = getAllSnitchesByWorldStmt.executeQuery();
+    		while(rs.next()) {
+    			double x = rs.getInt("snitch_x");
+    			double y = rs.getInt("snitch_y");
+    			double z = rs.getInt("snitch_z");
+    			String groupName = rs.getString("snitch_group");
+    			
+    			Faction group = Citadel.getGroupManager().getGroup(groupName);
+    			Location location = new Location(world, x, y, z);
+    			
+    			snitch = new Snitch(location, group);
+    			snitches.put(location, snitch);
+    		}
+    	} catch (SQLException ex) {
+    		this.plugin.getLogger().log(Level.SEVERE, "Could not get all Snitches from World " + world + "!");
+    	}
+    	return snitches;
+    }
+    
     /**
      * Gets @limit events about that snitch. 
      * @param loc - the location of the snitch

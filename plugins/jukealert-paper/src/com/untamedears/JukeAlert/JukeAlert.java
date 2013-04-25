@@ -23,8 +23,7 @@ public class JukeAlert extends JavaPlugin {
 	private JukeAlertLogger jaLogger;
 	private ConfigManager configManager;
 	private SnitchManager snitchManager;
-        private Map<World, Map<Location, JukeAlertSnitch>> snitches = new HashMap<World, Map<Location, JukeAlertSnitch>>();
-
+        
 	@Override
 	public void onEnable() {
 		instance = this;
@@ -39,9 +38,13 @@ public class JukeAlert extends JavaPlugin {
 			getCommand(command).setExecutor(commands);
 		}
 	}
+
+	@Override
+	public void onDisable() {
+		saveSnitches();
+	}
 	
-	private void loadManagers()
-	{
+	private void loadManagers() {
 		configManager = new ConfigManager();
 		snitchManager = new SnitchManager();
 	}
@@ -50,14 +53,13 @@ public class JukeAlert extends JavaPlugin {
 		snitchManager.loadSnitches();
 	}
 	
+	public void saveSnitches() {
+		snitchManager.saveSnitches();
+	}
+	
 	public void registerEvents() {
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new JukeAlertListener(), this);
-	}
-
-	@Override
-	public void onDisable() {
-		//TODO: Make sure everything saves properly and does save.
 	}
 	
 	public static JukeAlert getInstance() {
@@ -75,14 +77,6 @@ public class JukeAlert extends JavaPlugin {
 	
 	public SnitchManager getSnitchManager() {
 		return snitchManager;
-	}
-
-	public List<JukeAlertSnitch> getSnitches(World world) {
-		return (List<JukeAlertSnitch>) snitches.get(world).values();
-	}
-
-	public JukeAlertSnitch getSnitch(World world, Location location) {
-		return snitches.get(world).get(location);
 	}
 
 	//Logs a message with the level of Info.
