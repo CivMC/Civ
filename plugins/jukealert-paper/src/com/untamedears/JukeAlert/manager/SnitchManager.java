@@ -1,5 +1,6 @@
 package com.untamedears.JukeAlert.manager;
 
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
@@ -26,14 +27,23 @@ public class SnitchManager {
 	
 	public void saveSnitches() {
 		//TODO: saveSnitches
+		//logger.saveAllSnitches();
 	}
 	
-	public Map<World, Map<Location, Snitch>> getSnitches() {
+	public Map<World, Map<Location, Snitch>> getAllSnitches() {
 		return snitches;
 	}
 	
 	public void setSnitches(Map<World, Map<Location, Snitch>> snitches)	{
 		this.snitches = snitches;
+	}
+	
+	public List<Snitch> getSnitchesByWorld(World world) {
+		return (List<Snitch>) snitches.get(world).values();
+	}
+	
+	public Snitch getSnitch(World world, Location location) {
+		return snitches.get(world).get(location);
 	}
 	
 	public void addSnitch(Snitch snitch) {
