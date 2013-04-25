@@ -6,8 +6,14 @@ import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Level;
 
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,6 +23,7 @@ public class JukeAlert extends JavaPlugin {
 	private JukeAlertLogger jaLogger;
 	private ConfigManager configManager;
 	private SnitchManager snitchManager;
+        private Map<World, Map<Location, JukeAlertSnitch>> snitches = new HashMap<World, Map<Location, JukeAlertSnitch>>();
 
 	@Override
 	public void onEnable() {
@@ -70,10 +77,16 @@ public class JukeAlert extends JavaPlugin {
 		return snitchManager;
 	}
 
+	public List<JukeAlertSnitch> getSnitches(World world) {
+		return (List<JukeAlertSnitch>) snitches.get(world).values();
+	}
+
+	public JukeAlertSnitch getSnitch(World world, Location location) {
+		return snitches.get(world).get(location);
+	}
+
 	//Logs a message with the level of Info.
 	public void log(String message) {
 		this.getLogger().log(Level.INFO, message);
 	}
-
-	
 }
