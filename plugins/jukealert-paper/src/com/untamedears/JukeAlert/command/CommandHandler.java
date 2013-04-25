@@ -1,26 +1,38 @@
 package com.untamedears.JukeAlert.command;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.fusesource.jansi.Ansi.Color;
 
-import com.untamedears.JukeAlert.JukeAlert;
+public class CommandHandler {
+	
+	private Map<String, Command> commands = new LinkedHashMap<String, Command>();
 
-public class CommandHandler implements CommandExecutor {
+	public void addCommand(Command command) {
+		String identifier = command.getIdentifier().toLowerCase();
+		this.commands.put(identifier, command);
+	}
 
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-
-		Player player = null;
-		if (sender instanceof Player) {
-			player = (Player) sender;
+	public boolean dispatch(CommandSender sender, String label, String[] args) {
+		if (commands.containsKey(label)) {
+			Command command = commands.get(label);
+			if (args.length < command.getMinArguments()
+					|| args.length > command.getMaxArguments()) {
+				this.displayCommandHelp(command, sender);
+				return true;
+			}
+			command.execute(sender, args);
 		}
-		if (label.equalsIgnoreCase("jahelp")) {
-			player.sendMessage(Color.RED + "Help \n ");
-			return true;
-		}
-		return false;
+		return true;
+	}
+
+	public void displayCommandHelp(Command command, CommandSender sender) {
+		sender.sendMessage(new StringBuilder().append("Command: ")
+				.append(command.getName()).toString());
+		sender.sendMessage(new StringBuilder().append("Description: ")
+				.append(command.getDescription()).toString());
+		sender.sendMessage(new StringBuilder().append("Usage: ")
+				.append(command.getUsage()).toString());
 	}
 }
