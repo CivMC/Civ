@@ -1,6 +1,7 @@
 package com.untamedears.JukeAlert.listener;
 
 import java.util.List;
+import java.util.Map;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.manager.SnitchManager;
@@ -15,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -32,6 +34,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 public class JukeAlertListener implements Listener {
 	
 	private JukeAlert plugin = JukeAlert.getInstance();
+	SnitchManager snitchManager = plugin.getSnitchManager();
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void placeSnitchBlock(BlockPlaceEvent event) {
@@ -107,10 +110,11 @@ public class JukeAlertListener implements Listener {
          * }
          */
 		 
-		 Player player = event.getPlayer();
+		 Player player = event.getPlayer();		 
 		 Location location = player.getLocation();
-		 SnitchManager snitchManager = this.plugin.getSnitchManager();
-		 List<Snitch> snitches = snitchManager.getSnitches();
+		 World world = location.getWorld();
+		 
+		 List<Snitch> snitches = snitchManager.getSnitchesByWorld(world);
 		 for(Snitch snitch : snitches) {
 			 if(snitch.isWithinCuboid(location)) {
 				 snitch.add(player.getName());
@@ -129,8 +133,9 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Player player = (Player) killer;
-        for (JukeAlertSnitch snitch : ja.getSnitches(player.getWorld())) {
-            
+        List<Snitch> snitches = snitchManager.getSnitchesByWorld(player.getWorld());
+        for (Snitch snitch : snitches) {
+            //TODO
         }
 
     }

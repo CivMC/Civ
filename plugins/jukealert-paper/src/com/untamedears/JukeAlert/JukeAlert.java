@@ -1,6 +1,9 @@
 package com.untamedears.JukeAlert;
 
+import com.untamedears.JukeAlert.command.Command;
 import com.untamedears.JukeAlert.command.CommandHandler;
+import com.untamedears.JukeAlert.command.commands.HelpCommand;
+import com.untamedears.JukeAlert.command.commands.InfoCommand;
 import com.untamedears.JukeAlert.listener.JukeAlertListener;
 import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
@@ -14,6 +17,7 @@ import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,8 +27,8 @@ public class JukeAlert extends JavaPlugin {
 	private JukeAlertLogger jaLogger;
 	private ConfigManager configManager;
 	private SnitchManager snitchManager;
-        private Map<World, Map<Location, JukeAlertSnitch>> snitches = new HashMap<World, Map<Location, JukeAlertSnitch>>();
-
+	private CommandHandler commandHandler;
+        
 	@Override
 	public void onEnable() {
 		instance = this;
@@ -33,38 +37,46 @@ public class JukeAlert extends JavaPlugin {
 		loadManagers();
 		loadSnitches();
 		registerEvents();
-		
-		CommandHandler commands = new CommandHandler();
-		for (String command : getDescription().getCommands().keySet()) {
-			getCommand(command).setExecutor(commands);
-		}
-	}
-	
-	private void loadManagers()
-	{
-		configManager = new ConfigManager();
-		snitchManager = new SnitchManager();
-	}
-	
-	public void loadSnitches() {
-		snitchManager.loadSnitches();
-	}
-	
-	public void registerEvents() {
-		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(new JukeAlertListener(), this);
+		registerCommands();
 	}
 
 	@Override
 	public void onDisable() {
-		//TODO: Make sure everything saves properly and does save.
+		saveSnitches();
+	}
+	
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		return commandHandler.dispatch(sender, label, args);
+	}
+	
+	private void loadManagers() {
+		configManager = new ConfigManager();
+		snitchManager = new SnitchManager();
+	}
+	
+	private void loadSnitches() {
+		snitchManager.loadSnitches();
+	}
+	
+	private void saveSnitches() {
+		snitchManager.saveSnitches();
+	}
+	
+	private void registerEvents() {
+		PluginManager pm = getServer().getPluginManager();
+		pm.registerEvents(new JukeAlertListener(), this);
+	}
+	
+	private void registerCommands() {
+		commandHandler = new CommandHandler();
+		commandHandler.addCommand(new InfoCommand());
+		commandHandler.addCommand(new HelpCommand());
 	}
 	
 	public static JukeAlert getInstance() {
 		return instance;
 	}
 
-	//Gets the JaLogger.
 	public JukeAlertLogger getJaLogger() {
 		return jaLogger;
 	}
@@ -76,13 +88,9 @@ public class JukeAlert extends JavaPlugin {
 	public SnitchManager getSnitchManager() {
 		return snitchManager;
 	}
-
-	public List<JukeAlertSnitch> getSnitches(World world) {
-		return (List<JukeAlertSnitch>) snitches.get(world).values();
-	}
-
-	public JukeAlertSnitch getSnitch(World world, Location location) {
-		return snitches.get(world).get(location);
+	
+	public CommandHandler getCommandHandler() {
+		return commandHandler;
 	}
 
 	//Logs a message with the level of Info.
