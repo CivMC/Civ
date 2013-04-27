@@ -15,7 +15,7 @@ def createConfigFile():
     config['central_block']='WORKBENCH'
     config['save_cycle']='15'
     config['return_build_materials']='false'
-    config['citadel_enabled']='false'
+    config['citadel_enabled']='true'
     config['factory_interaction_material']='STICK'
     config['destructible_factories']='false'
     config['update_cycle']='20'

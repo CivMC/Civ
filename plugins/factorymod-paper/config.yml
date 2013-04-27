@@ -75,7 +75,7 @@ general:
   central_block: WORKBENCH
   save_cycle: 15
   return_build_materials: false
-  citadel_enabled: false
+  citadel_enabled: true
   factory_interaction_material: STICK
 production_general:
   update_cycle: 20
