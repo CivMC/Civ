@@ -101,7 +101,7 @@ class Enchant:
 class ItemStack:
            
     lookup={'Stone':('STONE',0),'Coal':('COAL',0),'Charcoal':('COAL',1),'Iron Block':('IRON_BLOCK',0),'Gold Block':('GOLD_BLOCK',0),'Diamond Block':('DIAMOND_BLOCK',0),'Leather':('LEATHER',0)}
-    lookup.update({'Emerald Block':('EMERALD_BLOCK',0)})
+    lookup.update({'Emerald Block':('EMERALD_BLOCK',0),'Cocoa':('INK_SACK',3)})
     lookup.update({'Stick':('STICK',0),'Clear Potion':('POTION',7),'Diffuse Potion':('POTION',11),'Artless Potion':('POTION',13),'Thin Potion':('POTION',14),'Bungling Potion':('POTION',23)})
     def __init__(self,material=None,name=None,amount=defaults['amount'],durability=None,displayName=defaults['displayName'],lore=defaults['lore']):    
         if material==None and name==None: raise ValueError('Itemstack can\'t lack both a material and name') 
@@ -158,7 +158,7 @@ class Factory:
         out+='\n    inputs:'
         for input in self.inputs:out+=input.cOutput('\n      ')
         if len(self.outputRecipes)>0:
-            out+='\n    output_recipes:'
+            out+='\n    recipes:'
             for outputRecipe in self.outputRecipes:
                 out+='\n      - '+outputRecipe.identifier
         if len(self.maintenanceInputs)>0:

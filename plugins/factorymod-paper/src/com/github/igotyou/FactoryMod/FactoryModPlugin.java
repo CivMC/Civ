@@ -49,7 +49,7 @@ public class FactoryModPlugin extends JavaPlugin
 	public static Material FACTORY_INTERACTION_MATERIAL;
 	public static boolean DESTRUCTIBLE_FACTORIES;
 	public static int MAINTENANCE_CYCLE;
-	public static int MAINTENANCE_PERIOD;
+	public static double MAINTENANCE_RATE;
 	
 	public void onEnable()
 	{
@@ -105,7 +105,7 @@ public class FactoryModPlugin extends JavaPlugin
 		//How frequently maintenance is update
 		MAINTENANCE_CYCLE = config.getInt("production_general.maintenance_cycle");
 		//How long it takes for factories to break down, modifiers upkeep costs
-		MAINTENANCE_PERIOD = config.getInt("production_general.maintenance_period");
+		MAINTENANCE_RATE = config.getDouble("production_general.maintenance_rate");
 		//loop trough all the vanilla recipes we want to disable
 		int g = 0;
 		Iterator<String> disabledRecipes=config.getStringList("disabled_recipes").iterator();
@@ -189,7 +189,7 @@ public class FactoryModPlugin extends JavaPlugin
 			ItemList<NamedItemStack> inputs=getItems(configSection.getConfigurationSection("inputs"));
 			ItemList<NamedItemStack> repairs=getItems(configSection.getConfigurationSection("maintenance_inputs"));
 			List<ProductionRecipe> factoryRecipes=new ArrayList<ProductionRecipe>();
-			Iterator<String> ouputRecipeIterator=configSection.getStringList("production_recipes").iterator();
+			Iterator<String> ouputRecipeIterator=configSection.getStringList("recipes").iterator();
 			while (ouputRecipeIterator.hasNext())
 			{
 				factoryRecipes.add(productionRecipes.get(ouputRecipeIterator.next()));

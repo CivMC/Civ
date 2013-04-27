@@ -180,7 +180,7 @@ public class BlockListener implements Listener
 						if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
 								(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(player)))
 						{
-							createFactory(clicked.getLocation(), player);
+							InteractionResponse.messagePlayerResult(player, createFactory(clicked.getLocation(), player));
 						}
 						//if the player does NOT have acssess to the block that was clicked
 						else
@@ -232,7 +232,7 @@ public class BlockListener implements Listener
 						else
 						{
 							//return error message
-							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use that this factory!" ));
+							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use this factory!" ));
 						}
 					}
 				}
@@ -298,7 +298,7 @@ public class BlockListener implements Listener
 		return newLoc;
 	}
 	
-	private void createFactory(Location loc, Player player)
+	private InteractionResponse createFactory(Location loc, Player player)
 	{
 		Location northLocation = northLoc(loc);
 		Location southLocation = southLoc(loc);
@@ -323,7 +323,7 @@ public class BlockListener implements Listener
 		{
 			if(southType.getId()== 54 && ! productionMan.factoryExistsAt(southLocation)) 
 			{
-				InteractionResponse.messagePlayerResult(player, productionMan.createFactory(loc, southLocation, northLocation));
+				return productionMan.createFactory(loc, southLocation, northLocation);
 			}
 		}
 	        
@@ -331,7 +331,7 @@ public class BlockListener implements Listener
 		{  
 			if(eastType.getId()== 54 && ! productionMan.factoryExistsAt(eastLocation)) 
 			{
-				InteractionResponse.messagePlayerResult(player, productionMan.createFactory(loc, eastLocation, westLocation));
+				return productionMan.createFactory(loc, eastLocation, westLocation);
 			}
 		}
 	            
@@ -339,7 +339,7 @@ public class BlockListener implements Listener
 		{
 			if(northType.getId()== 54 && ! productionMan.factoryExistsAt(northLocation)) 
 			{
-				InteractionResponse.messagePlayerResult(player, productionMan.createFactory(loc, northLocation, southLocation));
+				return productionMan.createFactory(loc, northLocation, southLocation);
 			}
 		}        
 	        
@@ -347,8 +347,9 @@ public class BlockListener implements Listener
 		{
 			if(westType.getId()== 54 && ! productionMan.factoryExistsAt(westLocation)) 
 			{
-				InteractionResponse.messagePlayerResult(player, productionMan.createFactory(loc, westLocation, eastLocation));
+				return productionMan.createFactory(loc, westLocation, eastLocation);
 			}
 		} 
+		return new InteractionResponse(InteractionResult.FAILURE, "There is already a factory there!");
 	 }		
 }

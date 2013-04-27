@@ -1,3 +1,7 @@
+#Example: production_general
+# update_cycle: 20 the period of ticks between which factories are updated
+# maintenance_cycle: 15 the period of ticks between which the maintenance of the factories are updated
+# maintenance_rate: 1 %Modifies the rate at which factories degrade, higher numbers degrade the factories faster
 #Example recipe entry with defaults included any section should be able to be excluded
 # TITLE: (Don't use spaces, should be a unique identifier)
 #   name: Default Name (Displayed name to user)
@@ -94,7 +98,7 @@ disabled_recipes:
   - DIAMOND_CHESTPLATE
   - DIAMOND_SWORD
   - IRON_LEGGINGS
-  - MUSHROOM_STEW
+  - MUSHROOM_SOUP
   - GOLD_PICKAXE
   - GOLDEN_CARROT
   - GOLD_LEGGINGS
@@ -137,7 +141,7 @@ production_factories:
       Stone:
         material: STONE
         amount: 2
-    output_recipes:
+    recipes:
       - UStoneAxe
     maintenance_inputs:
       Coal:
@@ -150,7 +154,7 @@ production_factories:
     inputs:
       Bowl:
         material: BOWL
-    output_recipes:
+    recipes:
       - ClearPotion0
       - U_DiffusePotion0
       - U_E_ClearPotion0
@@ -167,7 +171,7 @@ production_factories:
       Stone:
         material: STONE
         amount: 5
-    output_recipes:
+    recipes:
       - ULeatherHelmet
     maintenance_inputs:
       Coal:
@@ -182,7 +186,7 @@ production_factories:
       Stone:
         material: STONE
         amount: 8
-    output_recipes:
+    recipes:
       - ULeatherBoots
     maintenance_inputs:
       Coal:
@@ -194,14 +198,14 @@ production_factories:
         material: COAL
         durability: 1
     inputs:
-      Cobble:
-        material: COBBLE
+      Cobblestone:
+        material: COBBLESTONE
         amount: 64
-    output_recipes:
+    recipes:
       - UStone
     maintenance_inputs:
-      Diamond:
-        material: DIAMOND
+      Diamond Block:
+        material: DIAMOND_BLOCK
   Quirky_Bakery:
     name: Quirky Bakery
     fuel:
@@ -212,7 +216,7 @@ production_factories:
       Stick:
         material: STICK
         amount: 10
-    output_recipes:
+    recipes:
       - Baked_Potato
       - U_E_Baked_Potato
       - Mushroom_Soup
@@ -231,7 +235,7 @@ production_factories:
       Stick:
         material: STICK
         amount: 5
-    output_recipes:
+    recipes:
       - Bread
       - U_E_Bread
       - Cookie
@@ -249,7 +253,7 @@ production_factories:
     inputs:
       Stone:
         material: STONE
-    output_recipes:
+    recipes:
       - UStoneSword
     maintenance_inputs:
       Coal:
@@ -264,7 +268,7 @@ production_factories:
       Stone:
         material: STONE
         amount: 7
-    output_recipes:
+    recipes:
       - ULeatherLeggings
     maintenance_inputs:
       Coal:
@@ -278,7 +282,7 @@ production_factories:
       Stick:
         material: STICK
         amount: 16
-    output_recipes:
+    recipes:
       - UIndustrial0
     maintenance_inputs:
       Clear Potion:
@@ -294,7 +298,7 @@ production_factories:
       Stone:
         material: STONE
         amount: 4
-    output_recipes:
+    recipes:
       - UStoneSpade
     maintenance_inputs:
       Coal:
@@ -308,7 +312,7 @@ production_factories:
       Bowl:
         material: BOWL
         amount: 2
-    output_recipes:
+    recipes:
       - ClearPotion1
       - U_DiffusePotion1
       - U_E_ClearPotion1
@@ -324,7 +328,7 @@ production_factories:
       Stick:
         material: STICK
         amount: 48
-    output_recipes:
+    recipes:
       - UDefensive0
     maintenance_inputs:
       Clear Potion:
@@ -339,7 +343,7 @@ production_factories:
       Stick:
         material: STICK
         amount: 32
-    output_recipes:
+    recipes:
       - UMelee0
     maintenance_inputs:
       Clear Potion:
@@ -355,7 +359,7 @@ production_factories:
       Stone:
         material: STONE
         amount: 6
-    output_recipes:
+    recipes:
       - ULeatherChestplate
     maintenance_inputs:
       Coal:
@@ -370,7 +374,7 @@ production_factories:
       Stone:
         material: STONE
         amount: 3
-    output_recipes:
+    recipes:
       - UStonePickaxe
     maintenance_inputs:
       Coal:
@@ -384,7 +388,7 @@ production_factories:
       Stick:
         material: STICK
         amount: 64
-    output_recipes:
+    recipes:
       - UBows0
     maintenance_inputs:
       Clear Potion:
@@ -413,14 +417,16 @@ production_recipes:
         amount: 240
     output_recipes:
       - EGoldPickaxe
+    use_once: true
   UEIron:
     name: Upgrade to Efficient Iron Processing
     inputs:
       Iron Block:
         material: IRON_BLOCK
-        amount: 200
+        amount: 10
     output_recipes:
       - EIron
+    use_once: true
   EGoldAxe:
     name: Forge Gold Axes Efficiently
     inputs:
@@ -438,17 +444,19 @@ production_recipes:
     inputs:
       Coal:
         material: COAL
-        amount: 100
+        amount: 5
     output_recipes:
       - EIronHelmet
+    use_once: true
   UELeatherHelmet:
     name: Upgrade to Efficent Leather Helmet Production
     inputs:
       Coal:
         material: COAL
-        amount: 50
+        amount: 3
     output_recipes:
       - ELeatherHelmet
+    use_once: true
   EDiamondSpade:
     name: Forge Diamond Spades Efficiently
     inputs:
@@ -470,24 +478,25 @@ production_recipes:
       - GoldSword
       - UEGoldSword
       - UDiamondSword
+    use_once: true
   UBows4:
     name: Upgrade to Level 5 Bows Enchantments
     inputs:
       Bungling Potion:
         material: POTION
-        amount: 20
         durability: 23
     output_recipes:
       - Bows4
+    use_once: true
   UMelee4:
     name: Upgrade to Level 5 Melee Enchantments
     inputs:
       Bungling Potion:
         material: POTION
-        amount: 20
         durability: 23
     output_recipes:
       - Melee4
+    use_once: true
   GoldHelmet:
     name: Forge Gold Helmet
     inputs:
@@ -502,21 +511,21 @@ production_recipes:
     inputs:
       Artless Potion:
         material: POTION
-        amount: 20
         durability: 13
     output_recipes:
       - Melee2
       - UMelee3
+    use_once: true
   UMelee3:
     name: Upgrade to Level 4 Melee Enchantments
     inputs:
       Thin Potion:
         material: POTION
-        amount: 20
         durability: 14
     output_recipes:
       - Melee3
       - UMelee4
+    use_once: true
   UEDiamondAxe:
     name: Upgrade to Efficient Diamond Axe production
     inputs:
@@ -525,16 +534,17 @@ production_recipes:
         amount: 320
     output_recipes:
       - EDiamondAxe
+    use_once: true
   UMelee1:
     name: Upgrade to Level 2 Melee Enchantments
     inputs:
       Diffuse Potion:
         material: POTION
-        amount: 20
         durability: 11
     output_recipes:
       - Melee1
       - UMelee2
+    use_once: true
   UIronSword:
     name: Upgrade to Iron Sword Production
     inputs:
@@ -545,6 +555,7 @@ production_recipes:
       - IronSword
       - UEIronSword
       - UGoldSword
+    use_once: true
   LeatherLeggings:
     name: Forge Leather Leggings
     inputs:
@@ -559,7 +570,7 @@ production_recipes:
     inputs:
       Stone:
         material: STONE
-        amount: 24
+        amount: 2
     outputs:
       Stone Pickaxe:
         material: STONE_PICKAXE
@@ -613,23 +624,21 @@ production_recipes:
     inputs:
       Ender pearl:
         material: ENDER_PEARL
-        amount: 20
       Ghast tear:
         material: GHAST_TEAR
-        amount: 20
     output_recipes:
       - E_Beef
+    use_once: true
   U_E_Cookie:
     name: Upgrade to Efficient Cookie
     inputs:
       Bone:
         material: BONE
-        amount: 20
       Rotten flesh:
         material: ROTTEN_FLESH
-        amount: 20
     output_recipes:
       - E_Cookie
+    use_once: true
   E_ArtlessPotion0:
     name: Brew Artless Potions Efficiently
     inputs:
@@ -653,18 +662,20 @@ production_recipes:
     inputs:
       Diffuse Potion:
         material: POTION
-        amount: 50
+        amount: 5
         durability: 11
     output_recipes:
       - E_DiffusePotion1
+    use_once: true
   UEDiamondHelmet:
     name: Upgrade to Efficent Diamond Helmet Production
     inputs:
       Coal:
         material: COAL
-        amount: 400
+        amount: 20
     output_recipes:
       - EDiamondHelmet
+    use_once: true
   EGoldSpade:
     name: Forge Gold Spades Efficiently
     inputs:
@@ -690,7 +701,7 @@ production_recipes:
     name: Baked Potato
     inputs:
       Potato:
-        material: POTATO
+        material: POTATO_ITEM
     outputs:
       Baked potato:
         material: BAKED_POTATO
@@ -699,15 +710,15 @@ production_recipes:
     inputs:
       Iron Block:
         material: IRON_BLOCK
-        amount: 32
+        amount: 2
     outputs:
       Iron Sword:
         material: IRON_SWORD
   EGold:
-    name: Process Gold Efficiently
+    name: Process GOLD_ORE Efficiently
     inputs:
-      Gold Ingot:
-        material: GOLD_INGOT
+      Gold Ore:
+        material: GOLD_ORE
         amount: 52
     outputs:
       Gold Block:
@@ -732,6 +743,7 @@ production_recipes:
       Diamond Chestplate:
         material: DIAMOND_CHESTPLATE
         amount: 10
+    use_once: true
     maintenance: 64
   Industrial1:
     name: Level 2 Industrial Enchantments
@@ -896,7 +908,7 @@ production_recipes:
     inputs:
       Diamond Block:
         material: DIAMOND_BLOCK
-        amount: 32
+        amount: 2
     outputs:
       Diamond Sword:
         material: DIAMOND_SWORD
@@ -979,7 +991,7 @@ production_recipes:
         type: DURABILITY
         level: 3
         probability: 0.3
-    maintenance: 20
+    maintenance: 1
   IronLeggings:
     name: Forge Iron Leggings
     inputs:
@@ -994,12 +1006,11 @@ production_recipes:
     inputs:
       Spider eye:
         material: SPIDER_EYE
-        amount: 20
       Gunpowder:
         material: SULPHUR
-        amount: 20
     output_recipes:
       - E_Chicken
+    use_once: true
   Mushroom_Soup:
     name: Mushroom Soup
     inputs:
@@ -1008,8 +1019,8 @@ production_recipes:
       Red Mushroom:
         material: RED_MUSHROOM
     outputs:
-      Mushroom stew:
-        material: MUSHROOM_STEW
+      Mushroom soup:
+        material: MUSHROOM_SOUP
         amount: 3
   EGoldPickaxe:
     name: Forge Gold Pickaxes Efficiently
@@ -1027,7 +1038,7 @@ production_recipes:
     name: Golden Carrot
     inputs:
       Carrot:
-        material: CARROT
+        material: CARROT_ITEM
       Gold block:
         material: GOLD_BLOCK
         amount: 3
@@ -1039,85 +1050,88 @@ production_recipes:
     inputs:
       Gold Block:
         material: GOLD_BLOCK
-        amount: 200
+        amount: 10
     output_recipes:
       - EGold
+    use_once: true
   UEDiamondLeggings:
     name: Upgrade to Efficent Diamond Leggings Production
     inputs:
       Coal:
         material: COAL
-        amount: 560
+        amount: 28
     output_recipes:
       - EDiamondLeggings
+    use_once: true
   U_E_Pumpkin_Pie:
     name: Upgrade to Efficient Pumpkin Pie
     inputs:
       Spider eye:
         material: SPIDER_EYE
-        amount: 20
       Gunpowder:
         material: SULPHUR
-        amount: 20
     output_recipes:
       - E_Pumpkin_Pie
+    use_once: true
   U_E_ArtlessPotion1:
     name: Upgrade to Producing Artless Potions Efficiently
     inputs:
       Artless Potion:
         material: POTION
-        amount: 50
+        amount: 5
         durability: 13
     output_recipes:
       - E_ArtlessPotion1
+    use_once: true
   UBows0:
     name: Upgrade to Level 1 Bows Enchantments
     inputs:
       Clear Potion:
         material: POTION
-        amount: 20
         durability: 7
     output_recipes:
       - Bows0
       - UBows1
+    use_once: true
   UBows1:
     name: Upgrade to Level 2 Bows Enchantments
     inputs:
       Diffuse Potion:
         material: POTION
-        amount: 20
         durability: 11
     output_recipes:
       - Bows1
       - UBows2
+    use_once: true
   UBows2:
     name: Upgrade to Level 3 Bows Enchantments
     inputs:
       Artless Potion:
         material: POTION
-        amount: 20
         durability: 13
     output_recipes:
       - Bows2
       - UBows3
+    use_once: true
   UBows3:
     name: Upgrade to Level 4 Bows Enchantments
     inputs:
       Thin Potion:
         material: POTION
-        amount: 20
         durability: 14
     output_recipes:
       - Bows3
       - UBows4
+    use_once: true
   UEIronBoots:
     name: Upgrade to Efficent Iron Boots Production
     inputs:
       Coal:
         material: COAL
-        amount: 80
+        amount: 4
     output_recipes:
       - EIronBoots
+    use_once: true
   E_ThinPotion0:
     name: Brew Thin Potions Efficiently
     inputs:
@@ -1141,21 +1155,21 @@ production_recipes:
     inputs:
       Clear Potion:
         material: POTION
-        amount: 20
         durability: 7
     output_recipes:
       - Industrial0
       - UIndustrial1
+    use_once: true
   UIndustrial2:
     name: Upgrade to Level 3 Industrial Enchantments
     inputs:
       Artless Potion:
         material: POTION
-        amount: 20
         durability: 13
     output_recipes:
       - Industrial2
       - UIndustrial3
+    use_once: true
   GoldLeggings:
     name: Forge Gold Leggings
     inputs:
@@ -1170,11 +1184,11 @@ production_recipes:
     inputs:
       Thin Potion:
         material: POTION
-        amount: 20
         durability: 14
     output_recipes:
       - Industrial3
       - UIndustrial4
+    use_once: true
   UDiamondAxe:
     name: Upgrade to Diamond Axe Production
     inputs:
@@ -1184,12 +1198,12 @@ production_recipes:
     output_recipes:
       - DiamondAxe
       - UEDiamondAxe
+    use_once: true
   ULeatherChestplate:
     name: Upgrade to Leather Chestplate Production
     inputs:
       Coal:
         material: COAL
-        amount: 16
     output_recipes:
       - LeatherChestplate
       - UELeatherChestplate
@@ -1199,16 +1213,16 @@ production_recipes:
     inputs:
       Thin Potion:
         material: POTION
-        amount: 50
+        amount: 5
         durability: 14
     output_recipes:
       - E_ThinPotion1
+    use_once: true
   ULeatherHelmet:
     name: Upgrade to Leather Helmet Production
     inputs:
       Coal:
         material: COAL
-        amount: 10
     output_recipes:
       - LeatherHelmet
       - UELeatherHelmet
@@ -1227,23 +1241,25 @@ production_recipes:
     inputs:
       Diamond Block:
         material: DIAMOND_BLOCK
-        amount: 200
+        amount: 10
     output_recipes:
       - EDiamond
+    use_once: true
   UEGoldBoots:
     name: Upgrade to Efficent Gold Boots Production
     inputs:
       Coal:
         material: COAL
-        amount: 160
+        amount: 8
     output_recipes:
       - EGoldBoots
+    use_once: true
   UDiamondHelmet:
     name: Upgrade to Diamond Helmet Production
     inputs:
       Coal:
         material: COAL
-        amount: 80
+        amount: 4
     output_recipes:
       - DiamondHelmet
       - UEDiamondHelmet
@@ -1252,7 +1268,7 @@ production_recipes:
     inputs:
       Diamond Block:
         material: DIAMOND_BLOCK
-        amount: 24
+        amount: 2
     outputs:
       Diamond Pickaxe:
         material: DIAMOND_PICKAXE
@@ -1261,16 +1277,15 @@ production_recipes:
     inputs:
       Spider eye:
         material: SPIDER_EYE
-        amount: 20
       Gunpowder:
         material: SULPHUR
-        amount: 20
     output_recipes:
       - Pumpkin_Pie
       - U_E_Pumpkin_Pie
       - Pork
       - U_E_Pork
       - U_Golden_Carrot_and_Beef
+    use_once: true
   E_Beef:
     name: Efficient Beef
     inputs:
@@ -1303,6 +1318,7 @@ production_recipes:
       Diamond Helmet:
         material: DIAMOND_HELMET
         amount: 10
+    use_once: true
     maintenance: 40
   UStoneSpade:
     name: Upgrade to Stone Spade Production
@@ -1314,6 +1330,7 @@ production_recipes:
       - StoneSpade
       - UEStoneSpade
       - UIronSpade
+    use_once: true
   UEStoneAxe:
     name: Upgrade to Efficient Stone Axe production
     inputs:
@@ -1322,6 +1339,7 @@ production_recipes:
         amount: 40
     output_recipes:
       - EStoneAxe
+    use_once: true
   Beef:
     name: Beef
     inputs:
@@ -1335,7 +1353,7 @@ production_recipes:
     inputs:
       Gold Block:
         material: GOLD_BLOCK
-        amount: 32
+        amount: 2
     outputs:
       Gold Sword:
         material: GOLD_SWORD
@@ -1355,8 +1373,9 @@ production_recipes:
     name: Efficient Cookies!
     inputs:
       Cocoa:
-        material: COCOA
+        material: INK_SACK
         amount: 45
+        durability: 3
       Wheat:
         material: WHEAT
         amount: 45
@@ -1369,15 +1388,16 @@ production_recipes:
     inputs:
       Clear Potion:
         material: POTION
-        amount: 50
+        amount: 5
         durability: 7
     output_recipes:
       - E_ClearPotion0
+    use_once: true
   E_Golden_Carrot:
     name: Efficient Golden Carrot
     inputs:
       Carrot:
-        material: CARROT
+        material: CARROT_ITEM
         amount: 45
       Gold block:
         material: GOLD_BLOCK
@@ -1392,7 +1412,6 @@ production_recipes:
     inputs:
       Diamond Block:
         material: DIAMOND_BLOCK
-        amount: 16
     outputs:
       Diamond Axe:
         material: DIAMOND_AXE
@@ -1406,6 +1425,7 @@ production_recipes:
       Diamond Boots:
         material: DIAMOND_BOOTS
         amount: 10
+    use_once: true
     maintenance: 32
   EGoldLeggings:
     name: Forge Gold Leggingss Efficiently
@@ -1417,6 +1437,7 @@ production_recipes:
       Gold Leggings:
         material: GOLD_LEGGINGS
         amount: 10
+    use_once: true
     maintenance: 28
   UGoldAxe:
     name: Upgrade to Gold Axe Production
@@ -1428,6 +1449,7 @@ production_recipes:
       - GoldAxe
       - UEGoldAxe
       - UDiamondAxe
+    use_once: true
   LeatherHelmet:
     name: Forge Leather Helmet
     inputs:
@@ -1442,34 +1464,34 @@ production_recipes:
     inputs:
       Coal:
         material: COAL
-        amount: 640
+        amount: 32
     output_recipes:
       - EDiamondChestplate
+    use_once: true
   UEIronChestplate:
     name: Upgrade to Efficent Iron Chestplate Production
     inputs:
       Coal:
         material: COAL
-        amount: 160
+        amount: 8
     output_recipes:
       - EIronChestplate
+    use_once: true
   U_E_Bread:
     name: Upgrade to Efficient Bread
     inputs:
       Bone:
         material: BONE
-        amount: 20
       Rotten flesh:
         material: ROTTEN_FLESH
-        amount: 20
     output_recipes:
       - E_Bread
+    use_once: true
   ULeatherLeggings:
     name: Upgrade to Leather Leggings Production
     inputs:
       Coal:
         material: COAL
-        amount: 14
     output_recipes:
       - LeatherLeggings
       - UELeatherLeggings
@@ -1479,18 +1501,20 @@ production_recipes:
     inputs:
       Bungling Potion:
         material: POTION
-        amount: 50
+        amount: 5
         durability: 23
     output_recipes:
       - E_BunglingPotion0
+    use_once: true
   UEDiamondBoots:
     name: Upgrade to Efficent Diamond Boots Production
     inputs:
       Coal:
         material: COAL
-        amount: 320
+        amount: 16
     output_recipes:
       - EDiamondBoots
+    use_once: true
   E_Cake:
     name: Efficient Cake
     inputs:
@@ -1517,6 +1541,7 @@ production_recipes:
     output_recipes:
       - DiamondPickaxe
       - UEDiamondPickaxe
+    use_once: true
   UEStonePickaxe:
     name: Upgrade to Efficient Stone Pickaxe production
     inputs:
@@ -1525,29 +1550,32 @@ production_recipes:
         amount: 60
     output_recipes:
       - EStonePickaxe
+    use_once: true
   UEIronLeggings:
     name: Upgrade to Efficent Iron Leggings Production
     inputs:
       Coal:
         material: COAL
-        amount: 140
+        amount: 7
     output_recipes:
       - EIronLeggings
+    use_once: true
   U_E_DiffusePotion0:
     name: Upgrade to Producing Diffuse Potions Efficiently
     inputs:
       Diffuse Potion:
         material: POTION
-        amount: 50
+        amount: 5
         durability: 11
     output_recipes:
       - E_DiffusePotion0
+    use_once: true
   UGoldBoots:
     name: Upgrade to Gold Boots Production
     inputs:
       Coal:
         material: COAL
-        amount: 32
+        amount: 2
     output_recipes:
       - GoldBoots
       - UEGoldBoots
@@ -1555,13 +1583,14 @@ production_recipes:
   UIron:
     name: Upgrade to Iron Processing
     inputs:
-      Iron Ingot:
-        material: IRON_INGOT
-        amount: 40
+      Iron Ore:
+        material: IRON_ORE
+        amount: 2
     output_recipes:
       - Iron
       - UEIron
       - UGold
+    use_once: true
   UEIronPickaxe:
     name: Upgrade to Efficient Iron Pickaxe production
     inputs:
@@ -1570,6 +1599,7 @@ production_recipes:
         amount: 120
     output_recipes:
       - EIronPickaxe
+    use_once: true
   E_Pumpkin_Pie:
     name: Efficient Pumpkin Pit
     inputs:
@@ -1592,38 +1622,38 @@ production_recipes:
     inputs:
       Spider eye:
         material: SPIDER_EYE
-        amount: 20
       Gunpowder:
         material: SULPHUR
-        amount: 20
     output_recipes:
       - Cake
       - U_E_Cake
       - Chicken
       - U_E_Chicken
       - U_Golden_Apple
+    use_once: true
   UELeatherChestplate:
     name: Upgrade to Efficent Leather Chestplate Production
     inputs:
       Coal:
         material: COAL
-        amount: 80
+        amount: 4
     output_recipes:
       - ELeatherChestplate
+    use_once: true
   IronPickaxe:
     name: Forge Iron Pickaxe
     inputs:
       Iron Block:
         material: IRON_BLOCK
-        amount: 24
+        amount: 2
     outputs:
       Iron Pickaxe:
         material: IRON_PICKAXE
   Stone:
-    name: Process Stone
+    name: Process COBBLESTONE
     inputs:
-      Cobble:
-        material: COBBLE
+      Cobblestone:
+        material: COBBLESTONE
     outputs:
       Stone:
         material: STONE
@@ -1632,21 +1662,22 @@ production_recipes:
     inputs:
       Clear Potion:
         material: POTION
-        amount: 50
+        amount: 5
         durability: 7
     output_recipes:
       - E_ClearPotion1
+    use_once: true
   U_ThinPotion0:
     name: Upgrade to Thin Potions
     inputs:
       Thin Potion:
         material: POTION
-        amount: 10
         durability: 14
     output_recipes:
       - ThinPotion0
       - U_E_ThinPotion0
       - U_BunglingPotion0
+    use_once: true
   EIronBoots:
     name: Forge Iron Bootss Efficiently
     inputs:
@@ -1657,6 +1688,7 @@ production_recipes:
       Iron Boots:
         material: IRON_BOOTS
         amount: 10
+    use_once: true
     maintenance: 8
   EIronAxe:
     name: Forge Iron Axes Efficiently
@@ -1692,12 +1724,12 @@ production_recipes:
     inputs:
       Stone:
         material: STONE
-        amount: 32
+        amount: 2
     outputs:
       Stone Sword:
         material: STONE_SWORD
   Diamond:
-    name: Process Diamond
+    name: Process DIAMOND
     inputs:
       Diamond:
         material: DIAMOND
@@ -1709,35 +1741,34 @@ production_recipes:
     inputs:
       Artless Potion:
         material: POTION
-        amount: 10
         durability: 13
     output_recipes:
       - ArtlessPotion1
       - U_E_ArtlessPotion1
       - U_ThinPotion1
+    use_once: true
   U_ArtlessPotion0:
     name: Upgrade to Artless Potions
     inputs:
       Artless Potion:
         material: POTION
-        amount: 10
         durability: 13
     output_recipes:
       - ArtlessPotion0
       - U_E_ArtlessPotion0
       - U_ThinPotion0
+    use_once: true
   UIronHelmet:
     name: Upgrade to Iron Helmet Production
     inputs:
       Coal:
         material: COAL
-        amount: 20
     output_recipes:
       - IronHelmet
       - UEIronHelmet
       - UGoldHelmet
   Emerald:
-    name: Process Emerald
+    name: Process EMERALD
     inputs:
       Emerald:
         material: EMERALD
@@ -1765,13 +1796,14 @@ production_recipes:
       Leather Helmet:
         material: LEATHER_HELMET
         amount: 10
+    use_once: true
     maintenance: 5
   UDiamondBoots:
     name: Upgrade to Diamond Boots Production
     inputs:
       Coal:
         material: COAL
-        amount: 64
+        amount: 4
     output_recipes:
       - DiamondBoots
       - UEDiamondBoots
@@ -1803,6 +1835,7 @@ production_recipes:
       Iron Leggings:
         material: IRON_LEGGINGS
         amount: 10
+    use_once: true
     maintenance: 14
   UDiamondSword:
     name: Upgrade to Diamond Sword Production
@@ -1813,6 +1846,7 @@ production_recipes:
     output_recipes:
       - DiamondSword
       - UEDiamondSword
+    use_once: true
   UEStoneSword:
     name: Upgrade to Efficient Stone Sword production
     inputs:
@@ -1821,6 +1855,7 @@ production_recipes:
         amount: 80
     output_recipes:
       - EStoneSword
+    use_once: true
   EGoldChestplate:
     name: Forge Gold Chestplates Efficiently
     inputs:
@@ -1831,6 +1866,7 @@ production_recipes:
       Gold Chestplate:
         material: GOLD_CHESTPLATE
         amount: 10
+    use_once: true
     maintenance: 32
   UIronAxe:
     name: Upgrade to Iron Axe Production
@@ -1842,6 +1878,7 @@ production_recipes:
       - IronAxe
       - UEIronAxe
       - UGoldAxe
+    use_once: true
   UEIronSpade:
     name: Upgrade to Efficient Iron Spade production
     inputs:
@@ -1850,16 +1887,17 @@ production_recipes:
         amount: 40
     output_recipes:
       - EIronSpade
+    use_once: true
   UMelee0:
     name: Upgrade to Level 1 Melee Enchantments
     inputs:
       Clear Potion:
         material: POTION
-        amount: 20
         durability: 7
     output_recipes:
       - Melee0
       - UMelee1
+    use_once: true
   E_BunglingPotion0:
     name: Brew Bungling Potions Efficiently
     inputs:
@@ -1885,8 +1923,9 @@ production_recipes:
         material: WHEAT
         amount: 224
       Cocoa:
-        material: COCOA
+        material: INK_SACK
         amount: 224
+        durability: 3
     outputs:
       Clear Potion:
         material: POTION
@@ -1897,7 +1936,7 @@ production_recipes:
     name: Brew Clear Potions Efficiently
     inputs:
       Potato:
-        material: POTATO
+        material: POTATO_ITEM
         amount: 224
       Brown Mushroom:
         material: BROWN_MUSHROOM
@@ -1913,9 +1952,10 @@ production_recipes:
     inputs:
       Coal:
         material: COAL
-        amount: 280
+        amount: 14
     output_recipes:
       - EGoldLeggings
+    use_once: true
   EIronHelmet:
     name: Forge Iron Helmets Efficiently
     inputs:
@@ -1926,6 +1966,7 @@ production_recipes:
       Iron Helmet:
         material: IRON_HELMET
         amount: 10
+    use_once: true
     maintenance: 10
   EGoldSword:
     name: Forge Gold Swords Efficiently
@@ -1949,12 +1990,13 @@ production_recipes:
       - IronPickaxe
       - UEIronPickaxe
       - UGoldPickaxe
+    use_once: true
   UGoldHelmet:
     name: Upgrade to Gold Helmet Production
     inputs:
       Coal:
         material: COAL
-        amount: 40
+        amount: 2
     output_recipes:
       - GoldHelmet
       - UEGoldHelmet
@@ -1964,27 +2006,25 @@ production_recipes:
     inputs:
       Spider eye:
         material: SPIDER_EYE
-        amount: 20
       Gunpowder:
         material: SULPHUR
-        amount: 20
     output_recipes:
       - E_Cake
+    use_once: true
   GoldAxe:
     name: Forge Gold Axe
     inputs:
       Gold Block:
         material: GOLD_BLOCK
-        amount: 16
     outputs:
       Gold Axe:
         material: GOLD_AXE
         durability: -218
   EIron:
-    name: Process Iron Efficiently
+    name: Process IRON_ORE Efficiently
     inputs:
-      Iron Ingot:
-        material: IRON_INGOT
+      Iron Ore:
+        material: IRON_ORE
         amount: 52
     outputs:
       Iron Block:
@@ -2038,7 +2078,6 @@ production_recipes:
     inputs:
       Gold Block:
         material: GOLD_BLOCK
-        amount: 8
     outputs:
       Gold Spade:
         material: GOLD_SPADE
@@ -2048,22 +2087,21 @@ production_recipes:
     inputs:
       Bone:
         material: BONE
-        amount: 20
       Rotten flesh:
         material: ROTTEN_FLESH
-        amount: 20
     output_recipes:
       - E_Mushroom_Soup
+    use_once: true
   UDefensive2:
     name: Upgrade to Level 3 Defensive Enchantments
     inputs:
       Artless Potion:
         material: POTION
-        amount: 20
         durability: 13
     output_recipes:
       - Defensive2
       - UDefensive3
+    use_once: true
   Golden_Apple:
     name: Golden Apple
     inputs:
@@ -2091,12 +2129,11 @@ production_recipes:
     inputs:
       Ender pearl:
         material: ENDER_PEARL
-        amount: 20
       Ghast tear:
         material: GHAST_TEAR
-        amount: 20
     output_recipes:
       - E_Golden_Carrot
+    use_once: true
   UEIronSword:
     name: Upgrade to Efficient Iron Sword production
     inputs:
@@ -2105,6 +2142,7 @@ production_recipes:
         amount: 160
     output_recipes:
       - EIronSword
+    use_once: true
   UEGoldSpade:
     name: Upgrade to Efficient Gold Spade production
     inputs:
@@ -2113,6 +2151,7 @@ production_recipes:
         amount: 80
     output_recipes:
       - EGoldSpade
+    use_once: true
   Defensive4:
     name: Level 5 Defensive Enchantments
     inputs:
@@ -2228,26 +2267,27 @@ production_recipes:
         type: PROTECTION_FALL
         level: 4
         probability: 0.1
-    maintenance: 20
+    maintenance: 1
   UEGoldHelmet:
     name: Upgrade to Efficent Gold Helmet Production
     inputs:
       Coal:
         material: COAL
-        amount: 200
+        amount: 10
     output_recipes:
       - EGoldHelmet
+    use_once: true
   U_ThinPotion1:
     name: Upgrade to Thin Potions
     inputs:
       Thin Potion:
         material: POTION
-        amount: 10
         durability: 14
     output_recipes:
       - ThinPotion1
       - U_E_ThinPotion1
       - U_BunglingPotion1
+    use_once: true
   Bows0:
     name: Level 1 Bows Enchantments
     inputs:
@@ -2314,7 +2354,7 @@ production_recipes:
         amount: 64
     maintenance: 64
   EDiamond:
-    name: Process Diamond Efficiently
+    name: Process DIAMOND Efficiently
     inputs:
       Diamond:
         material: DIAMOND
@@ -2329,10 +2369,11 @@ production_recipes:
     inputs:
       Thin Potion:
         material: POTION
-        amount: 50
+        amount: 5
         durability: 14
     output_recipes:
       - E_ThinPotion0
+    use_once: true
   UDiamondSpade:
     name: Upgrade to Diamond Spade Production
     inputs:
@@ -2342,14 +2383,16 @@ production_recipes:
     output_recipes:
       - DiamondSpade
       - UEDiamondSpade
+    use_once: true
   UELeatherBoots:
     name: Upgrade to Efficent Leather Boots Production
     inputs:
       Coal:
         material: COAL
-        amount: 40
+        amount: 2
     output_recipes:
       - ELeatherBoots
+    use_once: true
   UEDiamondPickaxe:
     name: Upgrade to Efficient Diamond Pickaxe production
     inputs:
@@ -2358,12 +2401,13 @@ production_recipes:
         amount: 480
     output_recipes:
       - EDiamondPickaxe
+    use_once: true
   GoldPickaxe:
     name: Forge Gold Pickaxe
     inputs:
       Gold Block:
         material: GOLD_BLOCK
-        amount: 24
+        amount: 2
     outputs:
       Gold Pickaxe:
         material: GOLD_PICKAXE
@@ -2533,32 +2577,31 @@ production_recipes:
       Leather Leggings:
         material: LEATHER_LEGGINGS
         amount: 10
+    use_once: true
     maintenance: 7
   U_Golden_Carrot_and_Beef:
     name: Upgrade to Golden Carrots
     inputs:
       Ender pearl:
         material: ENDER_PEARL
-        amount: 20
       Ghast tear:
         material: GHAST_TEAR
-        amount: 20
     output_recipes:
       - Golden_Carrot
       - U_E_Golden_Carrot
       - Beef
       - U_E_Beef
+    use_once: true
   U_E_Golden_Apple:
     name: Upgrade to Efficient Golden Apples
     inputs:
       Ender pearl:
         material: ENDER_PEARL
-        amount: 20
       Ghast tear:
         material: GHAST_TEAR
-        amount: 20
     output_recipes:
       - E_Golden_Apple
+    use_once: true
   Bread:
     name: Bread
     inputs:
@@ -2579,6 +2622,7 @@ production_recipes:
       - IronSpade
       - UEIronSpade
       - UGoldSpade
+    use_once: true
   ThinPotion1:
     name: Brew Thin Potion
     inputs:
@@ -2616,10 +2660,10 @@ production_recipes:
     inputs:
       Bungling Potion:
         material: POTION
-        amount: 20
         durability: 23
     output_recipes:
       - Industrial4
+    use_once: true
   UEDiamondSword:
     name: Upgrade to Efficient Diamond Sword production
     inputs:
@@ -2628,12 +2672,12 @@ production_recipes:
         amount: 640
     output_recipes:
       - EDiamondSword
+    use_once: true
   ULeatherBoots:
     name: Upgrade to Leather Boots Production
     inputs:
       Coal:
         material: COAL
-        amount: 8
     output_recipes:
       - LeatherBoots
       - UELeatherBoots
@@ -2646,21 +2690,23 @@ production_recipes:
         amount: 160
     output_recipes:
       - EDiamondSpade
+    use_once: true
   UDiamond:
     name: Upgrade to Diamond Processing
     inputs:
       Diamond:
         material: DIAMOND
-        amount: 40
+        amount: 2
     output_recipes:
       - Diamond
       - UEDiamond
       - UEmerald
+    use_once: true
   E_Baked_Potato:
     name: Efficient Baked Potato
     inputs:
       Potato:
-        material: POTATO
+        material: POTATO_ITEM
         amount: 45
     outputs:
       Baked potato:
@@ -2675,12 +2721,13 @@ production_recipes:
         amount: 80
     output_recipes:
       - EIronAxe
+    use_once: true
   UGoldLeggings:
     name: Upgrade to Gold Leggings Production
     inputs:
       Coal:
         material: COAL
-        amount: 56
+        amount: 3
     output_recipes:
       - GoldLeggings
       - UEGoldLeggings
@@ -2690,17 +2737,17 @@ production_recipes:
     inputs:
       Thin Potion:
         material: POTION
-        amount: 20
         durability: 14
     output_recipes:
       - Defensive3
       - UDefensive4
+    use_once: true
   UIronChestplate:
     name: Upgrade to Iron Chestplate Production
     inputs:
       Coal:
         material: COAL
-        amount: 32
+        amount: 2
     output_recipes:
       - IronChestplate
       - UEIronChestplate
@@ -2710,21 +2757,21 @@ production_recipes:
     inputs:
       Diffuse Potion:
         material: POTION
-        amount: 20
         durability: 11
     output_recipes:
       - Defensive1
       - UDefensive2
+    use_once: true
   UDefensive0:
     name: Upgrade to Level 1 Defensive Enchantments
     inputs:
       Clear Potion:
         material: POTION
-        amount: 20
         durability: 7
     output_recipes:
       - Defensive0
       - UDefensive1
+    use_once: true
   EStoneSword:
     name: Forge Stone Swords Efficiently
     inputs:
@@ -2741,17 +2788,16 @@ production_recipes:
     inputs:
       Bone:
         material: BONE
-        amount: 20
       Rotten flesh:
         material: ROTTEN_FLESH
-        amount: 20
     output_recipes:
       - E_Baked_Potato
+    use_once: true
   Gold:
-    name: Process Gold
+    name: Process GOLD_ORE
     inputs:
-      Gold Ingot:
-        material: GOLD_INGOT
+      Gold Ore:
+        material: GOLD_ORE
     outputs:
       Gold Block:
         material: GOLD_BLOCK
@@ -2760,10 +2806,10 @@ production_recipes:
     inputs:
       Bungling Potion:
         material: POTION
-        amount: 20
         durability: 23
     output_recipes:
       - Defensive4
+    use_once: true
   Melee2:
     name: Level 3 Melee Enchantments
     inputs:
@@ -3139,13 +3185,12 @@ production_recipes:
         type: FIRE_ASPECT
         level: 2
         probability: 0.2
-    maintenance: 20
+    maintenance: 1
   DiamondSpade:
     name: Forge Diamond Spade
     inputs:
       Diamond Block:
         material: DIAMOND_BLOCK
-        amount: 8
     outputs:
       Diamond Spade:
         material: DIAMOND_SPADE
@@ -3159,8 +3204,8 @@ production_recipes:
         material: RED_MUSHROOM
         amount: 45
     outputs:
-      Mushroom stew:
-        material: MUSHROOM_STEW
+      Mushroom soup:
+        material: MUSHROOM_SOUP
         amount: 192
     maintenance: 64
   IronAxe:
@@ -3168,7 +3213,6 @@ production_recipes:
     inputs:
       Iron Block:
         material: IRON_BLOCK
-        amount: 16
     outputs:
       Iron Axe:
         material: IRON_AXE
@@ -3177,10 +3221,11 @@ production_recipes:
     inputs:
       Bungling Potion:
         material: POTION
-        amount: 50
+        amount: 5
         durability: 23
     output_recipes:
       - E_BunglingPotion1
+    use_once: true
   UStoneAxe:
     name: Upgrade to Stone Axe Production
     inputs:
@@ -3191,6 +3236,7 @@ production_recipes:
       - StoneAxe
       - UEStoneAxe
       - UIronAxe
+    use_once: true
   UEGoldSword:
     name: Upgrade to Efficient Gold Sword production
     inputs:
@@ -3199,11 +3245,12 @@ production_recipes:
         amount: 320
     output_recipes:
       - EGoldSword
+    use_once: true
   EStone:
-    name: Process Stone Efficiently
+    name: Process COBBLESTONE Efficiently
     inputs:
-      Cobble:
-        material: COBBLE
+      Cobblestone:
+        material: COBBLESTONE
         amount: 52
     outputs:
       Stone:
@@ -3298,6 +3345,7 @@ production_recipes:
       Gold Boots:
         material: GOLD_BOOTS
         amount: 10
+    use_once: true
     maintenance: 16
   Industrial3:
     name: Level 4 Industrial Enchantments
@@ -3393,24 +3441,25 @@ production_recipes:
   UGold:
     name: Upgrade to Gold Processing
     inputs:
-      Gold Ingot:
-        material: GOLD_INGOT
-        amount: 40
+      Gold Ore:
+        material: GOLD_ORE
+        amount: 2
     output_recipes:
       - Gold
       - UEGold
       - UDiamond
+    use_once: true
   U_DiffusePotion0:
     name: Upgrade to Diffuse Potions
     inputs:
       Diffuse Potion:
         material: POTION
-        amount: 10
         durability: 11
     output_recipes:
       - DiffusePotion0
       - U_E_DiffusePotion0
       - U_ArtlessPotion0
+    use_once: true
   UEStoneSpade:
     name: Upgrade to Efficient Stone Spade production
     inputs:
@@ -3419,6 +3468,7 @@ production_recipes:
         amount: 20
     output_recipes:
       - EStoneSpade
+    use_once: true
   E_Bread:
     name: Efficient Bread
     inputs:
@@ -3441,6 +3491,7 @@ production_recipes:
         amount: 160
     output_recipes:
       - EGoldAxe
+    use_once: true
   EGoldHelmet:
     name: Forge Gold Helmets Efficiently
     inputs:
@@ -3451,6 +3502,7 @@ production_recipes:
       Gold Helmet:
         material: GOLD_HELMET
         amount: 10
+    use_once: true
     maintenance: 20
   UStoneSword:
     name: Upgrade to Stone Sword Production
@@ -3462,11 +3514,13 @@ production_recipes:
       - StoneSword
       - UEStoneSword
       - UIronSword
+    use_once: true
   Cookie:
     name: Cookies!
     inputs:
       Cocoa:
-        material: COCOA
+        material: INK_SACK
+        durability: 3
       Wheat:
         material: WHEAT
     outputs:
@@ -3478,7 +3532,6 @@ production_recipes:
     inputs:
       Coal:
         material: COAL
-        amount: 16
     output_recipes:
       - IronBoots
       - UEIronBoots
@@ -3493,13 +3546,13 @@ production_recipes:
       Leather Chestplate:
         material: LEATHER_CHESTPLATE
         amount: 10
+    use_once: true
     maintenance: 8
   IronSpade:
     name: Forge Iron Spade
     inputs:
       Iron Block:
         material: IRON_BLOCK
-        amount: 8
     outputs:
       Iron Spade:
         material: IRON_SPADE
@@ -3508,12 +3561,11 @@ production_recipes:
     inputs:
       Spider eye:
         material: SPIDER_EYE
-        amount: 20
       Gunpowder:
         material: SULPHUR
-        amount: 20
     output_recipes:
       - E_Pork
+    use_once: true
   DiffusePotion0:
     name: Brew Diffuse Potion
     inputs:
@@ -3551,6 +3603,7 @@ production_recipes:
       Diamond Leggings:
         material: DIAMOND_LEGGINGS
         amount: 10
+    use_once: true
     maintenance: 56
   IronChestplate:
     name: Forge Iron Chestplate
@@ -3588,8 +3641,9 @@ production_recipes:
         material: WHEAT
         amount: 32
       Cocoa:
-        material: COCOA
+        material: INK_SACK
         amount: 32
+        durability: 3
     outputs:
       Clear Potion:
         material: POTION
@@ -3598,7 +3652,7 @@ production_recipes:
     name: Brew Clear Potion
     inputs:
       Potato:
-        material: POTATO
+        material: POTATO_ITEM
         amount: 32
       Brown Mushroom:
         material: BROWN_MUSHROOM
@@ -3612,9 +3666,10 @@ production_recipes:
     inputs:
       Coal:
         material: COAL
-        amount: 70
+        amount: 4
     output_recipes:
       - ELeatherLeggings
+    use_once: true
   EIronChestplate:
     name: Forge Iron Chestplates Efficiently
     inputs:
@@ -3625,9 +3680,10 @@ production_recipes:
       Iron Chestplate:
         material: IRON_CHESTPLATE
         amount: 10
+    use_once: true
     maintenance: 16
   EEmerald:
-    name: Process Emerald Efficiently
+    name: Process EMERALD Efficiently
     inputs:
       Emerald:
         material: EMERALD
@@ -3658,24 +3714,25 @@ production_recipes:
     inputs:
       Stone:
         material: STONE
-        amount: 200
+        amount: 10
     output_recipes:
       - EStone
+    use_once: true
   U_E_ArtlessPotion0:
     name: Upgrade to Producing Artless Potions Efficiently
     inputs:
       Artless Potion:
         material: POTION
-        amount: 50
+        amount: 5
         durability: 13
     output_recipes:
       - E_ArtlessPotion0
+    use_once: true
   StoneSpade:
     name: Forge Stone Spade
     inputs:
       Stone:
         material: STONE
-        amount: 8
     outputs:
       Stone Spade:
         material: STONE_SPADE
@@ -3689,16 +3746,18 @@ production_recipes:
       Leather Boots:
         material: LEATHER_BOOTS
         amount: 10
+    use_once: true
     maintenance: 4
   UEmerald:
     name: Upgrade to Emerald Processing
     inputs:
       Emerald:
         material: EMERALD
-        amount: 40
+        amount: 2
     output_recipes:
       - Emerald
       - UEEmerald
+    use_once: true
   Defensive3:
     name: Level 4 Defensive Enchantments
     inputs:
@@ -4164,9 +4223,10 @@ production_recipes:
     inputs:
       Coal:
         material: COAL
-        amount: 320
+        amount: 16
     output_recipes:
       - EGoldChestplate
+    use_once: true
   DiamondHelmet:
     name: Forge Diamond Helmet
     inputs:
@@ -4181,19 +4241,18 @@ production_recipes:
     inputs:
       Ender pearl:
         material: ENDER_PEARL
-        amount: 20
       Ghast tear:
         material: GHAST_TEAR
-        amount: 20
     output_recipes:
       - Golden_Apple
       - U_E_Golden_Apple
+    use_once: true
   UDiamondChestplate:
     name: Upgrade to Diamond Chestplate Production
     inputs:
       Coal:
         material: COAL
-        amount: 128
+        amount: 7
     output_recipes:
       - DiamondChestplate
       - UEDiamondChestplate
@@ -4207,10 +4266,10 @@ production_recipes:
       Leather Chestplate:
         material: LEATHER_CHESTPLATE
   Iron:
-    name: Process Iron
+    name: Process IRON_ORE
     inputs:
-      Iron Ingot:
-        material: IRON_INGOT
+      Iron Ore:
+        material: IRON_ORE
     outputs:
       Iron Block:
         material: IRON_BLOCK
@@ -4229,13 +4288,14 @@ production_recipes:
   UStone:
     name: Upgrade to Stone Processing
     inputs:
-      Cobble:
-        material: COBBLE
-        amount: 40
+      Cobblestone:
+        material: COBBLESTONE
+        amount: 2
     output_recipes:
       - Stone
       - UEStone
       - UIron
+    use_once: true
   EDiamondPickaxe:
     name: Forge Diamond Pickaxes Efficiently
     inputs:
@@ -4260,28 +4320,27 @@ production_recipes:
     inputs:
       Diffuse Potion:
         material: POTION
-        amount: 20
         durability: 11
     output_recipes:
       - Industrial1
       - UIndustrial2
+    use_once: true
   U_DiffusePotion1:
     name: Upgrade to Diffuse Potions
     inputs:
       Diffuse Potion:
         material: POTION
-        amount: 10
         durability: 11
     output_recipes:
       - DiffusePotion1
       - U_E_DiffusePotion1
       - U_ArtlessPotion1
+    use_once: true
   StoneAxe:
     name: Forge Stone Axe
     inputs:
       Stone:
         material: STONE
-        amount: 16
     outputs:
       Stone Axe:
         material: STONE_AXE
@@ -4298,9 +4357,10 @@ production_recipes:
     inputs:
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 200
+        amount: 10
     output_recipes:
       - EEmerald
+    use_once: true
   UGoldSpade:
     name: Upgrade to Gold Spade Production
     inputs:
@@ -4311,6 +4371,7 @@ production_recipes:
       - GoldSpade
       - UEGoldSpade
       - UDiamondSpade
+    use_once: true
   ArtlessPotion1:
     name: Brew Artless Potion
     inputs:
@@ -4388,7 +4449,7 @@ production_recipes:
         type: ARROW_DAMAGE
         level: 5
         probability: 0.1
-    maintenance: 20
+    maintenance: 1
   DiamondLeggings:
     name: Forge Diamond Leggings
     inputs:
@@ -4403,7 +4464,7 @@ production_recipes:
     inputs:
       Coal:
         material: COAL
-        amount: 112
+        amount: 6
     output_recipes:
       - DiamondLeggings
       - UEDiamondLeggings
@@ -4412,21 +4473,21 @@ production_recipes:
     inputs:
       Bungling Potion:
         material: POTION
-        amount: 10
         durability: 23
     output_recipes:
       - BunglingPotion0
       - U_E_BunglingPotion0
+    use_once: true
   U_BunglingPotion1:
     name: Upgrade to Bungling Potions
     inputs:
       Bungling Potion:
         material: POTION
-        amount: 10
         durability: 23
     output_recipes:
       - BunglingPotion1
       - U_E_BunglingPotion1
+    use_once: true
   E_BunglingPotion1:
     name: Brew Bungling Potions Efficiently
     inputs:
@@ -4466,12 +4527,13 @@ production_recipes:
       - GoldPickaxe
       - UEGoldPickaxe
       - UDiamondPickaxe
+    use_once: true
   UIronLeggings:
     name: Upgrade to Iron Leggings Production
     inputs:
       Coal:
         material: COAL
-        amount: 28
+        amount: 2
     output_recipes:
       - IronLeggings
       - UEIronLeggings
@@ -4486,12 +4548,13 @@ production_recipes:
       - StonePickaxe
       - UEStonePickaxe
       - UIronPickaxe
+    use_once: true
   UGoldChestplate:
     name: Upgrade to Gold Chestplate Production
     inputs:
       Coal:
         material: COAL
-        amount: 64
+        amount: 4
     output_recipes:
       - GoldChestplate
       - UEGoldChestplate

@@ -186,7 +186,7 @@ public class ProductionManager implements Manager
 					//Conduct Maintenance on each factory
 					for (ProductionFactory production: producers)
 					{
-						production.degrade();
+						production.degrade(FactoryModPlugin.MAINTENANCE_RATE*(FactoryModPlugin.MAINTENANCE_CYCLE/20.0));
 					}
 					clock=0;
 				}
@@ -222,7 +222,7 @@ public class ProductionManager implements Manager
 				{
 					addFactory(production);
 					properties.get(subFactoryType).getInputs().removeFrom(production.getInventory());
-					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + production.getProductionFactoryProperties().getName() + " production factory");
+					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + production.getProductionFactoryProperties().getName());
 				}
 			}
 			return new InteractionResponse(InteractionResult.FAILURE, "Incorrect materials in chest! Stacks must match perfectly.");
@@ -261,9 +261,9 @@ public class ProductionManager implements Manager
 					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + subFactoryType + " production factory");
 				}
 			}
-			return new InteractionResponse(InteractionResult.FAILURE, "not enough materials in chest!");
+			return new InteractionResponse(InteractionResult.FAILURE, "Not enough materials in chest!");
 		}
-		return new InteractionResponse(InteractionResult.FAILURE, "there is already a factory there!");
+		return new InteractionResponse(InteractionResult.FAILURE, "There is already a factory there!");
 	}
 
 	public InteractionResponse addFactory(Factory factory) 

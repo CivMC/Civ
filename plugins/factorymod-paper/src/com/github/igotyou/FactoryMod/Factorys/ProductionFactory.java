@@ -397,7 +397,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	/**
 	 * Degrades the factory
 	 */
-	public void degrade()
+	public void degrade(double percent)
 	{
 		updateMaintenance();
 		//No need to run check if already completely degraded
@@ -405,7 +405,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 			double degradation=0;
 			for(ProductionRecipe recipe:recipes)
 			{
-				degradation+=recipe.degradeAmount();
+				degradation+=percent*recipe.degradeAmount();
 			}
 			currentMaintenance+=degradation;
 		}
@@ -534,8 +534,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 				{
 					response+=", ";
 				}
-				response+=".";
 			}
+			response+=".";
 			responses.add(new InteractionResponse(InteractionResult.SUCCESS,response));
 		}
 		return responses;
