@@ -92,7 +92,7 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		{
 			if(removeItemStack(inventory,itemStack))
 			{
-				itemList.add(itemStack);
+				itemList.add(itemStack.clone());
 				break;
 			}
 		}
@@ -144,7 +144,16 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		ItemList<NamedItemStack> clonedItemList=(ItemList<NamedItemStack>) this.clone();
 		for(ItemStack itemStack:this)
 		{
-			itemStack.addEnchantments(enchantments);
+			for(Enchantment enchantment:enchantments.keySet())
+			{
+				try{
+					itemStack.addEnchantment(enchantment,enchantments.get(enchantment));
+				}
+				catch (Exception e)
+				{
+
+				}
+		}
 		}
 		return clonedItemList;
 	}

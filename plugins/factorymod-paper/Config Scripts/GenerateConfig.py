@@ -4,7 +4,7 @@ from ParseConfig import ParseConfig
 import pydot
 gMod=1#Global Modifier
 gpMod=1#Global Production Modifier
-guMod=.05#Global Upgrade Modifier
+guMod=1#Global Upgrade Modifier
 gmMod=1#Global Maintenance Modifier
 def main():
     print 'Running....'
@@ -41,6 +41,9 @@ def createConfigFile():
         for output in recipe.outputs:
             if output.material not in notDisabled and output.material not in config['disabled_recipes']:
                 config['disabled_recipes'].append(output.material)
+    extraDisabled=['ENCHANTMENT_TABLE']
+    for outputMaterial in extraDisabled:
+        config['disabled_recipes'].append(outputMaterial)
     ParseConfig.saveConfig(config)
 def createGraphs():
     configs={'Tools and Armor':merge(createTools(),createArmor()),'Metal Technology':createMetalTech(),'Enchanting':createEnchanting(),'Enchanting Technology':createCauldron(),'Food Technology':createFood()}
@@ -385,8 +388,8 @@ def createFood():
 def createEnchanting():
     factories={}
     recipes={}
-    techs=['Clear Potion','Diffuse Potion','Artless Potion','Thin Potion','Bungling Potion']
-    uMod=20*guMod
+    techs=['Clear Potion','Diffuse Potion','Artless Potion','Suave Potion','Bungling Potion']
+    uMod=5*guMod
     pMod=1*gpMod
     mMod=1*gmMod
     
@@ -417,7 +420,7 @@ def createEnchanting():
     enchantments['Bows']={}
     items['Bows']=['BOW']
     enchantments['Bows']['Power']={1:[.3,.4,.5,.4,.3],2:[.4,.5,.5,.3,.2],3:[0,.2,.3,.4,.2],4:[0,0,0,.2,.2],5:[0,0,0,0,.1]}
-    enchantments['Bows']['Knockback']={1:[.1,.2,.3,.4,.4],2:[0,0,0,.1,.2]}
+    enchantments['Bows']['Arrow Knockback']={1:[.1,.2,.3,.4,.4],2:[0,0,0,.1,.2]}
     enchantments['Bows']['Flame']={1:[0,0,0,.1,.2]}
     enchantments['Bows']['Infinite']={1:[.9,.7,.5,.3,.2]}
     
@@ -436,7 +439,7 @@ def createEnchanting():
     
     for branch in enchantments.keys():#Go through different classes of enchanments
         for tier in reversed(range(tiers)):#Goes thougheach tier of more advanced enchantments
-            inputs=[ItemStack(techs[tier],amount=pMod)]
+            inputs=[ItemStack(name=techs[tier],amount=pMod)]
             upgrades=[]
             for item in items[branch]:
                 upgrades.append(ItemStack(material=item))
@@ -471,22 +474,22 @@ def createCauldron():
     bulk=10
     mMod=64*gmMod
     maintenance=[mMod* num for num in [1,2,3,4,5]]
-    techs=['Clear Potion','Diffuse Potion','Artless Potion','Thin Potion','Bungling Potion']
-    tMod={'Clear Potion':1*pMod,'Diffuse Potion':1*pMod,'Artless Potion':1*pMod,'Thin Potion':1*pMod,'Bungling Potion':1*pMod}
+    techs=['Clear Potion','Diffuse Potion','Artless Potion','Suave Potion','Bungling Potion']
+    tMod={'Clear Potion':1*pMod,'Diffuse Potion':1*pMod,'Artless Potion':1*pMod,'Suave Potion':1*pMod,'Bungling Potion':1*pMod}
     
     defined_inputs={}
     for tech in techs:
         defined_inputs[tech]=[None,None]
     defined_inputs[techs[0]][0]=[ItemStack(name='Wheat',material='WHEAT',amount=cMod*tMod[techs[0]]*32),ItemStack(name='Cocoa',amount=cMod*tMod[techs[0]]*32)]
     defined_inputs[techs[0]][1]=[ItemStack(name='Potato',material='POTATO_ITEM',amount=cMod*tMod[techs[0]]*32),ItemStack(name='Brown Mushroom',material='BROWN_MUSHROOM',amount=cMod*tMod[techs[0]]*8)]
-    defined_inputs[techs[1]][0]=[ItemStack(name='Bread',material='BREAD',amount=cMod*tMod[techs[1]]*32),ItemStack(name='Cookies!',material='COOKIE',amount=cMod*tMod[techs[1]]*32),ItemStack(name='Potato',material='POTATO',amount=cMod*tMod[techs[1]]*8)]
+    defined_inputs[techs[1]][0]=[ItemStack(name='Bread',material='BREAD',amount=cMod*tMod[techs[1]]*32),ItemStack(name='Cookies!',material='COOKIE',amount=cMod*tMod[techs[1]]*32),ItemStack(name='Potato',material='POTATO_ITEM',amount=cMod*tMod[techs[1]]*8)]
     defined_inputs[techs[1]][1]=[ItemStack(name='Baked Potato',material='BAKED_POTATO',amount=cMod*tMod[techs[1]]*32),ItemStack(name='Mushroom Soup',material='MUSHROOM_SOUP',amount=cMod*tMod[techs[1]]*8),ItemStack(name='Wheat',material='WHEAT',amount=cMod*tMod[techs[1]]*8)]
-    defined_inputs[techs[2]][0]=[ItemStack(name='Cake',material='CAKE',amount=cMod*tMod[techs[2]]*32),ItemStack(name='Chicken Wings',material='CHICKEN',amount=cMod*tMod[techs[2]]*16),ItemStack(name='Baked Potato',material='BAKED_POTATO',amount=cMod*tMod[techs[2]]*64)]
+    defined_inputs[techs[2]][0]=[ItemStack(name='Cake',material='CAKE',amount=cMod*tMod[techs[2]]*1),ItemStack(name='Chicken Wings',material='CHICKEN',amount=cMod*tMod[techs[2]]*16),ItemStack(name='Baked Potato',material='BAKED_POTATO',amount=cMod*tMod[techs[2]]*64)]
     defined_inputs[techs[2]][1]=[ItemStack('PUMPKIN_PIE',amount=cMod*tMod[techs[2]]*32),ItemStack('PORK',amount=cMod*tMod[techs[2]]*16),ItemStack('BREAD',amount=cMod*tMod[techs[2]]*64)]
-    defined_inputs[techs[3]][0]=[ItemStack('CACTUS',amount=cMod*tMod[techs[3]]*32),ItemStack('NETHERWART',amount=cMod*tMod[techs[3]]*32),ItemStack('CAKE',amount=cMod*tMod[techs[3]]*32)]
+    defined_inputs[techs[3]][0]=[ItemStack('CACTUS',amount=cMod*tMod[techs[3]]*32),ItemStack('NETHERWART',amount=cMod*tMod[techs[3]]*32),ItemStack('CAKE',amount=cMod*tMod[techs[3]]*1)]
     defined_inputs[techs[3]][1]=[ItemStack('CACTUS',amount=cMod*tMod[techs[3]]*32),ItemStack('NETHERWART',amount=cMod*tMod[techs[3]]*32),ItemStack('PUMPKIN_PIE',amount=cMod*tMod[techs[3]]*32)]
     defined_inputs[techs[4]][0]=[ItemStack('NETHERWART',amount=cMod*tMod[techs[4]]*32),ItemStack('GOLDEN_APPLE',amount=cMod*tMod[techs[4]]*32),ItemStack('STEAK',amount=cMod*tMod[techs[4]]*16)]
-    defined_inputs[techs[4]][1]=[ItemStack('NETHERWART',amount=cMod*tMod[techs[4]]*32),ItemStack('GOLDEN_CARROT',amount=cMod*tMod[techs[4]]*32),ItemStack('CAKE',amount=cMod*tMod[techs[4]]*64)]
+    defined_inputs[techs[4]][1]=[ItemStack('NETHERWART',amount=cMod*tMod[techs[4]]*32),ItemStack('GOLDEN_CARROT',amount=cMod*tMod[techs[4]]*32),ItemStack('CAKE',amount=cMod*tMod[techs[4]]*1)]
     for i in reversed(range(len(techs))):
         tech=techs[i]
         for j in [0,1]:
@@ -503,9 +506,10 @@ def createCauldron():
             inputs[identifier['E_Potion']]=[input.modifyAmount(bulk*eff) for input in inputs[identifier['Potion']]]
             outputs[identifier['E_Potion']]=[output.modifyAmount(bulk) for output in outputs[identifier['Potion']]]
             #U Potion
-            inputs[identifier['U_Potion']]=[ItemStack(name=tech,amount=cMod*uMod)]
+            if i!=0:
+                inputs[identifier['U_Potion']]=[ItemStack(name=techs[i-1],amount=cMod*uMod)]
             #U E Potion
-            inputs[identifier['U_E_Potion']]=[input.modifyAmount(euMod) for input in inputs[identifier['U_Potion']]]
+            inputs[identifier['U_E_Potion']]=[ItemStack(name=tech,amount=cMod*uMod*euMod)]
             #Potion Recipe
             recipes[identifier['Potion']]=Recipe(identifier=identifier['Potion'],name='Brew '+tech,inputs=inputs[identifier['Potion']],outputs=outputs[identifier['Potion']])
             #Efficient Potion Recipe

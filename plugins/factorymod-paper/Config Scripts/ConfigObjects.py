@@ -46,7 +46,9 @@ class Recipe:
             for output in self.outputs:out+=output.cOutput('\n      ')        
         if len(self.enchants)>0:
             out+='\n    enchantments:'
-            for enchantment in self.enchants:out+=enchantment.cOutput('\n      ') 
+            for enchantment in self.enchants:
+                if enchantment.probability!=0:
+                    out+=enchantment.cOutput('\n      ') 
         if len(self.outputRecipes)>0:
             out+='\n    output_recipes:'
             for outputRecipe in self.outputRecipes:
@@ -78,7 +80,7 @@ class Recipe:
 class Enchant:   
     lookup={'Durability':'DURABILITY','Efficiency':'DIG_SPEED','Silk Touch':'SILK_TOUCH','Fortune':'LOOT_BONUS_BLOCKS'}
     lookup.update({'Sharpness':'DAMAGE_ALL','Bane of the Anthropods':'DAMAGE_ANTHROPODS','Knockback':'KNOCKBACK','Fire Aspect':'FIRE_ASPECT','Looting':'LOOT_BONUS_MOBS'})
-    lookup.update({'Power':'ARROW_DAMAGE','Knockback':'ARROW_KNOCKBACK','Flame':'ARROW_FIRE','Infinite':'ARROW_INFINITE'})
+    lookup.update({'Power':'ARROW_DAMAGE','Arrow Knockback':'ARROW_KNOCKBACK','Flame':'ARROW_FIRE','Infinite':'ARROW_INFINITE'})
     lookup.update({'Fire Protection':'PROTECTION_FIRE','Respiration':'OXYGEN','Protection':'PROTECTION_ENVIRONMENTAL','Projectile Protection':'PROTECTION_PROJECTILE','Feather Falling':'PROTECTION_FALL'})
     def __init__(self,type=None,name=None,level=defaults['level'],probability=defaults['probability']):    
         if type==None and name==None: raise ValueError('Enchantment can\'t lack both a type and name') 
@@ -87,7 +89,7 @@ class Enchant:
         self.level=level
         self.probability=probability
     def cOutput(self,spacer):
-        out=spacer+self.name+':'
+        out=spacer+self.name+' '+str(self.level)+':'
         spacer=spacer+'  '
         out+=spacer+'type: '+self.type
         out+=spacer+'level: '+str(self.level)
@@ -102,7 +104,7 @@ class ItemStack:
            
     lookup={'Stone':('STONE',0),'Coal':('COAL',0),'Charcoal':('COAL',1),'Iron Block':('IRON_BLOCK',0),'Gold Block':('GOLD_BLOCK',0),'Diamond Block':('DIAMOND_BLOCK',0),'Leather':('LEATHER',0)}
     lookup.update({'Emerald Block':('EMERALD_BLOCK',0),'Cocoa':('INK_SACK',3)})
-    lookup.update({'Stick':('STICK',0),'Clear Potion':('POTION',7),'Diffuse Potion':('POTION',11),'Artless Potion':('POTION',13),'Thin Potion':('POTION',14),'Bungling Potion':('POTION',23)})
+    lookup.update({'Stick':('STICK',0),'Clear Potion':('POTION',7),'Diffuse Potion':('POTION',11),'Artless Potion':('POTION',13),'Suave Potion':('POTION',29),'Bungling Potion':('POTION',23)})
     def __init__(self,material=None,name=None,amount=defaults['amount'],durability=None,displayName=defaults['displayName'],lore=defaults['lore']):    
         if material==None and name==None: raise ValueError('Itemstack can\'t lack both a material and name') 
         self.name=material.replace('_',' ').capitalize() if name==None else name
