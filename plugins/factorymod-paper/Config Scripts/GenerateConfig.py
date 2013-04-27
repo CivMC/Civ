@@ -19,8 +19,8 @@ def createConfigFile():
     config['factory_interaction_material']='STICK'
     config['destructible_factories']='false'
     config['update_cycle']='20'
-    config['maintenance_cycle']='15'
-    config['maintenance_period']='100'
+    config['maintenance_cycle']='6000'
+    config['maintenance_rate']='0.00000165'
     
     config['factories']={}
     config['recipes']={}

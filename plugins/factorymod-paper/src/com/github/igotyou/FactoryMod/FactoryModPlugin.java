@@ -93,19 +93,19 @@ public class FactoryModPlugin extends JavaPlugin
 		//what's the material of the center block of factorys?
 		CENTRAL_BLOCK_MATERIAL = Material.getMaterial(config.getString("general.central_block"));
 		//Return the build materials upon destruction of factory.
-		RETURN_BUILD_MATERIALS = config.getBoolean("general.return_build_materials");
+		RETURN_BUILD_MATERIALS = config.getBoolean("general.return_build_materials",false);
 		//is citadel enabled?
-		CITADEL_ENABLED = config.getBoolean("general.citadel_enabled");
+		CITADEL_ENABLED = config.getBoolean("general.citadel_enabled",true);
 		//what's the tool that we use to interact with the factorys?
-		FACTORY_INTERACTION_MATERIAL = Material.getMaterial(config.getString("general.factory_interaction_material"));
+		FACTORY_INTERACTION_MATERIAL = Material.getMaterial(config.getString("general.factory_interaction_material","STICK"));
 		//If factories are removed upon destruction of their blocks
-		DESTRUCTIBLE_FACTORIES=config.getBoolean("general.destructible_factories");		
+		DESTRUCTIBLE_FACTORIES=config.getBoolean("general.destructible_factories",false);		
 		//How frequently factories are updated
-		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle");
+		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle",20);
 		//How frequently maintenance is update
-		MAINTENANCE_CYCLE = config.getInt("production_general.maintenance_cycle");
+		MAINTENANCE_CYCLE = config.getInt("production_general.maintenance_cycle",6000);
 		//How long it takes for factories to break down, modifiers upkeep costs
-		MAINTENANCE_RATE = config.getDouble("production_general.maintenance_rate");
+		MAINTENANCE_RATE = config.getDouble("production_general.maintenance_rate",0.00000165);
 		//loop trough all the vanilla recipes we want to disable
 		int g = 0;
 		Iterator<String> disabledRecipes=config.getStringList("disabled_recipes").iterator();

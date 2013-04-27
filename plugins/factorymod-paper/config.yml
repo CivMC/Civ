@@ -1,7 +1,7 @@
 #Example: production_general
 # update_cycle: 20 the period of ticks between which factories are updated
-# maintenance_cycle: 15 the period of ticks between which the maintenance of the factories are updated
-# maintenance_rate: 1 %Modifies the rate at which factories degrade, higher numbers degrade the factories faster
+# maintenance_cycle: 6000 the period of ticks between which the maintenance of the factories are updated
+# maintenance_rate: 0.00000165 %Modifies the rate at which factories degrade, higher numbers degrade the factories faster
 #Example recipe entry with defaults included any section should be able to be excluded
 # TITLE: (Don't use spaces, should be a unique identifier)
 #   name: Default Name (Displayed name to user)
@@ -79,8 +79,8 @@ general:
   factory_interaction_material: STICK
 production_general:
   update_cycle: 20
-  maintenance_cycle: 15
-  maintenance_period: 100
+  maintenance_cycle: 6000
+  maintenance_rate: 0.00000165
 disabled_recipes:
   - GOLDEN_APPLE
   - GOLD_AXE
