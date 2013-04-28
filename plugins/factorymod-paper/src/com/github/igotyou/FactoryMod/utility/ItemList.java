@@ -131,11 +131,11 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 			int amount=itemStack.getAmount();
 			while(amount>maxStackSize)
 			{
-				itemStack.setAmount(maxStackSize);
+				itemStack.clone().setAmount(maxStackSize);
 				inventory.addItem(itemStack);
 				amount-=maxStackSize;
 			}
-			itemStack.setAmount(amount);
+			itemStack.clone().setAmount(amount);
 			inventory.addItem(itemStack);
 		}
 	}
