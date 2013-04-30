@@ -8,3 +8,4 @@ commands:
   jainfo:
     description: Display information from a Snitch
     usage: /jainfo
+depend: [Citadel]

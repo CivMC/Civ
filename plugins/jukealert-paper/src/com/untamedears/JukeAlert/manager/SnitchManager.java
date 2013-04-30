@@ -49,10 +49,19 @@ public class SnitchManager {
 
     public void addSnitch(Snitch snitch) {
         World world = snitch.getLoc().getWorld();
-        snitches.get(world).put(snitch.getLoc(), snitch);
+        if(snitches.get(world) == null) {
+        	Map<Location, Snitch> map = new HashMap<Location, Snitch>();
+        	map.put(snitch.getLoc(), snitch);
+        	snitches.put(snitch.getLoc().getWorld(), map);
+        } else {
+            snitches.get(world).put(snitch.getLoc(), snitch);
+        }
     }
-
+	
     public void removeSnitch(Snitch snitch) {
-        snitches.get(snitch.getLoc().getWorld()).remove(snitch.getLoc());
+    	if(snitch.getLoc().getWorld() == null) {
+    		System.out.println("null");
+    	}
+        //snitches.get(snitch.getLoc().getWorld()).remove(snitch.getLoc());
     }
 }
