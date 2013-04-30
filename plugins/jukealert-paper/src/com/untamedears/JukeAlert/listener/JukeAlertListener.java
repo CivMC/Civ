@@ -48,7 +48,7 @@ public class JukeAlertListener implements Listener {
         Player player = event.getPlayer();
         Location loc = block.getLocation();
         if (!Utility.isReinforced(loc)) {
-            player.sendMessage(ChatColor.YELLOW + "You've placed a jukebox reinforce it to register it as a snitch.");
+            player.sendMessage(ChatColor.YELLOW + "You've placed a jukebox; reinforce it to register it as a snitch.");
 
             return;
         }
@@ -62,7 +62,7 @@ public class JukeAlertListener implements Listener {
                 player.sendMessage(ChatColor.AQUA + "You've created a snitch block registered to the group " + owner.getName() + ".");
             } else {
                 plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + owner.getFounder(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-                player.sendMessage(ChatColor.AQUA + "You've created a private snitch block; Reinforce it with a group to register others.");
+                player.sendMessage(ChatColor.AQUA + "You've created a private snitch block; reinforce it with a group to register others.");
             }
         }
 

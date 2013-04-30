@@ -53,6 +53,7 @@ public class JukeAlertLogger {
     	configManager = plugin.getConfigManager();
     	
         String host   = configManager.getHost();
+        int port   = configManager.getPort();
         String dbname = configManager.getDatabase();
         String username = configManager.getUsername();
         String password = configManager.getPassword();
@@ -61,7 +62,7 @@ public class JukeAlertLogger {
         snitchsTbl = prefix + "snitchs";
         snitchDetailsTbl = prefix + "snitch_details";
 
-        db = new Database(host, dbname, username, password, prefix, this.plugin.getLogger());
+        db = new Database(host, port, dbname, username, password, prefix, this.plugin.getLogger());
         boolean connected = db.connect();
         if (connected) {
             genTables();

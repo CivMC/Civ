@@ -20,6 +20,7 @@ import java.util.List;
 public class Database {
 
     private String host;
+    private int port;
     private String db;
     private String user;
     private String password;
@@ -27,8 +28,9 @@ public class Database {
     private Logger logger;
     private Connection connection;
 
-    public Database(String host, String db, String user, String password, String prefix, Logger logger) {
+    public Database(String host, int port, String db, String user, String password, String prefix, Logger logger) {
         this.host = host;
+        this.port = port;
         this.db = db;
         this.user = user;
         this.password = password;
@@ -62,7 +64,7 @@ public class Database {
      * @since 0.1
      */
     public boolean connect() {
-        String jdbc = "jdbc:mysql://" + host + "/" + db + "?user=" + user + "&password=" + password;
+        String jdbc = "jdbc:mysql://" + host + ":" + port + "/" + db + "?user=" + user + "&password=" + password;
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
         } catch (Exception ex) {
