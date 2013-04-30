@@ -4,7 +4,7 @@ version: .1
 commands:
   jahelp:
     description: Displays help
-    usages: /jahelp
-  jainfo
+    usage: /jahelp
+  jainfo:
     description: Display information from a Snitch
     usage: /jainfo
