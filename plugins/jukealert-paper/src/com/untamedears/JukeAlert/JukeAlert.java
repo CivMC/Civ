@@ -34,12 +34,13 @@ public class JukeAlert extends JavaPlugin {
 		instance = this;
 
 		loadConfigManager();
-		registerEvents();
-		registerCommands();
 		
 		jaLogger = new JukeAlertLogger();
 		
 		loadSnitchManager();
+		
+		registerEvents();
+		registerCommands();
 		
 		loadSnitches();
 	}

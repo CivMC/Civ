@@ -57,17 +57,13 @@ public class JukeAlertListener implements Listener {
             Faction owner = reinforcement.getOwner();
             if (reinforcement.getSecurityLevel().equals(SecurityLevel.GROUP)) {
                 plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-                Snitch snitch = new Snitch(loc, owner);
-                snitchManager.addSnitch(snitch);
+                snitchManager.addSnitch(new Snitch(loc, owner));
                 player.sendMessage(ChatColor.AQUA + "You've created a snitch block registered to the group " + owner.getName() + ".");
             } else {
                 plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + owner.getFounder(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
                 player.sendMessage(ChatColor.AQUA + "You've created a private snitch block; reinforce it with a group to register others.");
             }
         }
-
-        plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + player.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-        player.sendMessage(ChatColor.AQUA + "You've created a private snitch; reinforce it to add others to it.");
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -79,9 +75,8 @@ public class JukeAlertListener implements Listener {
         if (!block.getType().equals(Material.JUKEBOX)) {
             return;
         }
-        Player player = event.getPlayer();
-        Location loc = player.getLocation();
-        plugin.getJaLogger().logSnitchBreak(player.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        Location loc = block.getLocation();
+        plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         snitchManager.removeSnitch(snitchManager.getSnitch(loc.getWorld(), loc));
     }
 
@@ -97,7 +92,7 @@ public class JukeAlertListener implements Listener {
             // Player didn't move by at least one block.
             return;
         }
-        Player player = event.getPlayer();
+        /*Player player = event.getPlayer();
         Location location = player.getLocation();
         World world = location.getWorld();
 
@@ -110,7 +105,7 @@ public class JukeAlertListener implements Listener {
                 continue;
             }
             snitch.add(player.getName());
-        }
+        }*/
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -157,8 +152,8 @@ public class JukeAlertListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
-    public void playerBreakBlock(BlockPlaceEvent event) {
+    /*@EventHandler(priority = EventPriority.HIGH)
+    public void playerBreakBlock(BlockBreakEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -174,9 +169,9 @@ public class JukeAlertListener implements Listener {
             }
             plugin.getJaLogger().logSnitchBlockBreak(snitch, breaker, block);
         }
-    }
+    }*/
 
-    @EventHandler(priority = EventPriority.HIGH)
+    /*@EventHandler(priority = EventPriority.HIGH)
     public void playerPlaceBlock(BlockPlaceEvent event) {
         if (event.isCancelled()) {
             return;
@@ -193,7 +188,7 @@ public class JukeAlertListener implements Listener {
             }
             plugin.getJaLogger().logSnitchBlockPlace(snitch, placer, block);
         }
-    }
+    }*/
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerFillBucket(PlayerBucketFillEvent event) {
