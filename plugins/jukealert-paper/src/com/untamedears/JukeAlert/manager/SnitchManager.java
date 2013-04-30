@@ -1,5 +1,6 @@
 package com.untamedears.JukeAlert.manager;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +49,10 @@ public class SnitchManager {
 	
 	public void addSnitch(Snitch snitch) {
 		//TODO: addSnitch
+		System.out.println("Snitch added");
+		/*Map<Location, Snitch> map = new HashMap<Location, Snitch>();
+		map.put(snitch.getLoc(), snitch);
+		snitches.put(snitch.getLoc().getWorld(), map);*/
 	}
 	
 	public void removeSnitch(Snitch snitch)	{

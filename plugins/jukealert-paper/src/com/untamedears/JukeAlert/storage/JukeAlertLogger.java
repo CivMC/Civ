@@ -83,7 +83,7 @@ public class JukeAlertLogger {
         //Snitches
         db.execute("CREATE TABLE IF NOT EXISTS `" + snitchsTbl + "` ("
                 + "`snitch_id` int(10) unsigned NOT NULL AUTO_INCREMENT,"
-                + "`snitch_world` tinyint NOT NULL,"
+                + "`snitch_world` varchar(40) NOT NULL,"
                 + "`snitch_x` int(10) NOT NULL,"
                 + "`snitch_y` int(10) NOT NULL,"
                 + "`snitch_z` int(10) NOT NULL,"

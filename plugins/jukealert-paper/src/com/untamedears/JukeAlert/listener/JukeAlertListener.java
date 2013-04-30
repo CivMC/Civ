@@ -36,7 +36,7 @@ public class JukeAlertListener implements Listener {
 	private JukeAlert plugin = JukeAlert.getInstance();
 	SnitchManager snitchManager = plugin.getSnitchManager();
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void placeSnitchBlock(BlockPlaceEvent event) {
         if (event.isCancelled()) {
             return;
@@ -59,15 +59,14 @@ public class JukeAlertListener implements Listener {
             Faction owner = reinforcement.getOwner();
             if (reinforcement.getSecurityLevel().equals(SecurityLevel.GROUP)) {
                 plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+                Snitch snitch = new Snitch(loc, owner);
+                snitchManager.addSnitch(snitch);
                 player.sendMessage(ChatColor.AQUA + "You've created a snitch block registered to the group " + owner.getName() + ".");
             } else {
                 plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + owner.getFounder(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
                 player.sendMessage(ChatColor.AQUA + "You've created a private snitch block; reinforce it with a group to register others.");
             }
         }
-
-        plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + player.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-        player.sendMessage(ChatColor.AQUA + "You've created a private snitch; reinforce it to add others to it.");
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -110,7 +109,7 @@ public class JukeAlertListener implements Listener {
          * }
          */
 		 
-		 Player player = event.getPlayer();		 
+		 /*Player player = event.getPlayer();		 
 		 Location location = player.getLocation();
 		 World world = location.getWorld();
 		 
@@ -119,7 +118,7 @@ public class JukeAlertListener implements Listener {
 			 if(snitch.isWithinCuboid(location)) {
 				 snitch.add(player.getName());
 			 }
-		 }
+		 }*/
     }
 
     @EventHandler(priority = EventPriority.HIGH)
