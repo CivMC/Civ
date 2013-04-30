@@ -32,12 +32,16 @@ public class JukeAlert extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
-		jaLogger = new JukeAlertLogger();
 
-		loadManagers();
-		loadSnitches();
+		loadConfigManager();
 		registerEvents();
 		registerCommands();
+		
+		jaLogger = new JukeAlertLogger();
+		
+		loadSnitchManager();
+		
+		loadSnitches();
 	}
 
 	@Override
@@ -49,8 +53,11 @@ public class JukeAlert extends JavaPlugin {
 		return commandHandler.dispatch(sender, label, args);
 	}
 	
-	private void loadManagers() {
+	private void loadConfigManager() {
 		configManager = new ConfigManager();
+	}
+	
+	private void loadSnitchManager() {
 		snitchManager = new SnitchManager();
 	}
 	
