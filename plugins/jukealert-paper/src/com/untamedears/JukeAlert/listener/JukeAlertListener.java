@@ -86,40 +86,6 @@ public class JukeAlertListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void enterSnitchProximity(PlayerMoveEvent event) {		
-		Location from = event.getFrom();
-		Location to   = event.getTo();
-		
-		 if (from.getBlockX() == to.getBlockX()
-				 && from.getBlockY() == to.getBlockY()
-	             && from.getBlockZ() == to.getBlockZ()
-	             && from.getWorld().equals(to.getWorld())) 
-		 {
-			 // Player didn't move by at least one block.
-			 return;
-	     }
-		 
-        //TODO: Add/remove players to/from the JukeAlertSnitch's list and notify the players who own the snitch if they have entered.
-            /*
-         * Pseudo Code (Code that wont just work if copy and pasted but gives a general idea of what we want)
-         * Location loc = event.getPlayer().getLocation();
-         * for (JukeAlertSnitch snitch : listOSnitches) {
-         *      if (snitch.isWithinCuboid(loc)) {
-         *          snitch.add(event.getPlayer().getName();
-         *      }
-         * }
-         */
-		 
-		 /*Player player = event.getPlayer();		 
-		 Location location = player.getLocation();
-		 World world = location.getWorld();
-		 
-		 List<Snitch> snitches = snitchManager.getSnitchesByWorld(world);
-		 for(Snitch snitch : snitches) {
-			 if(snitch.isWithinCuboid(location)) {
-				 snitch.add(player.getName());
-			 }
-		 }*/
     public void enterSnitchProximity(PlayerMoveEvent event) {
         Location from = event.getFrom();
         Location to = event.getTo();

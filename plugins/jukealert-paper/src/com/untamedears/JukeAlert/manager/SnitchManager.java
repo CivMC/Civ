@@ -16,9 +16,6 @@ public class SnitchManager {
     private JukeAlert plugin;
     private JukeAlertLogger logger;
     private Map<World, Map<Location, Snitch>> snitches;
-    private JukeAlert plugin;
-    private JukeAlertLogger logger;
-    private Map<World, Map<Location, Snitch>> snitches;
 
     public SnitchManager() {
         plugin = JukeAlert.getInstance();
@@ -54,48 +51,7 @@ public class SnitchManager {
         World world = snitch.getLoc().getWorld();
         snitches.get(world).put(snitch.getLoc(), snitch);
     }
-
-	public SnitchManager() {
-		plugin = JukeAlert.getInstance();
-		logger = plugin.getJaLogger();
-	}
 	
-	public void loadSnitches() {
-		snitches = logger.getAllSnitches();
-	}
-	
-	public void saveSnitches() {
-		//TODO: saveSnitches
-		//logger.saveAllSnitches();
-	}
-	
-	public Map<World, Map<Location, Snitch>> getAllSnitches() {
-		return snitches;
-	}
-	
-	public void setSnitches(Map<World, Map<Location, Snitch>> snitches)	{
-		this.snitches = snitches;
-	}
-	
-	public List<Snitch> getSnitchesByWorld(World world) {
-		return (List<Snitch>) snitches.get(world).values();
-	}
-	
-	public Snitch getSnitch(World world, Location location) {
-		return snitches.get(world).get(location);
-	}
-	
-	public void addSnitch(Snitch snitch) {
-		//TODO: addSnitch
-		System.out.println("Snitch added");
-		/*Map<Location, Snitch> map = new HashMap<Location, Snitch>();
-		map.put(snitch.getLoc(), snitch);
-		snitches.put(snitch.getLoc().getWorld(), map);*/
-	}
-	
-	public void removeSnitch(Snitch snitch)	{
-		//TODO: removeSnitch
-	}
     public void removeSnitch(Snitch snitch) {
         snitches.get(snitch.getLoc().getWorld()).remove(snitch.getLoc());
     }
