@@ -3,18 +3,14 @@ package com.untamedears.JukeAlert;
 import com.untamedears.JukeAlert.command.CommandHandler;
 import com.untamedears.JukeAlert.command.commands.HelpCommand;
 import com.untamedears.JukeAlert.command.commands.InfoCommand;
+import com.untamedears.JukeAlert.group.GroupMediator;
 import com.untamedears.JukeAlert.listener.JukeAlertListener;
 import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
@@ -27,46 +23,27 @@ public class JukeAlert extends JavaPlugin {
 	private ConfigManager configManager;
 	private SnitchManager snitchManager;
 	private CommandHandler commandHandler;
+	private GroupMediator groupMediator;
         
 	@Override
 	public void onEnable() {
 		instance = this;
-
-		loadConfigManager();
-		
+		configManager = new ConfigManager();
 		jaLogger = new JukeAlertLogger();
-		
-		loadSnitchManager();
-		
+		snitchManager = new SnitchManager();
+		groupMediator = new GroupMediator();
 		registerEvents();
 		registerCommands();
-		
-		loadSnitches();
+		snitchManager.loadSnitches();
 	}
 
 	@Override
 	public void onDisable() {
-		saveSnitches();
+		snitchManager.saveSnitches();
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		return commandHandler.dispatch(sender, label, args);
-	}
-	
-	private void loadConfigManager() {
-		configManager = new ConfigManager();
-	}
-	
-	private void loadSnitchManager() {
-		snitchManager = new SnitchManager();
-	}
-	
-	private void loadSnitches() {
-		snitchManager.loadSnitches();
-	}
-	
-	private void saveSnitches() {
-		snitchManager.saveSnitches();
 	}
 	
 	private void registerEvents() {
@@ -94,6 +71,10 @@ public class JukeAlert extends JavaPlugin {
 	
 	public SnitchManager getSnitchManager() {
 		return snitchManager;
+	}
+	
+	public GroupMediator getGroupMediator() {
+		return groupMediator;
 	}
 	
 	public CommandHandler getCommandHandler() {

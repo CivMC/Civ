@@ -5,12 +5,11 @@
 package com.untamedears.JukeAlert.storage;
 
 import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.group.GroupMediator;
 import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.model.LoggedAction;
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.PersonalGroup;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,6 +35,7 @@ public class JukeAlertLogger {
 
     private JukeAlert plugin;
     private ConfigManager configManager;
+    private GroupMediator groupMediator;
     private Database db;
     private String snitchsTbl;
     private String snitchDetailsTbl;
@@ -55,6 +55,7 @@ public class JukeAlertLogger {
     public JukeAlertLogger() {
     	plugin = JukeAlert.getInstance();
     	configManager = plugin.getConfigManager();
+    	groupMediator = plugin.getGroupMediator();
     	
         String host   = configManager.getHost();
         int port   = configManager.getPort();
@@ -205,9 +206,9 @@ public class JukeAlertLogger {
     			
     			Faction group;
     			if(groupName.substring(0, 2).contentEquals("p:")) {
-    				group = Citadel.getGroupManager().getGroup(groupName.substring(2));
+    				group = groupMediator.getGroupByName(groupName.substring(2));
     			} else {
-    				group = Citadel.getGroupManager().getGroup(groupName);
+    				group = groupMediator.getGroupByName(groupName);
     			}
 
     			Location location = new Location(world, x, y, z);
