@@ -1,5 +1,6 @@
 package com.untamedears.JukeAlert.manager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +41,8 @@ public class SnitchManager {
     }
 
     public List<Snitch> getSnitchesByWorld(World world) {
-        return (List<Snitch>) snitches.get(world).values();
+    	//List<Snitch> list = new ArrayList<Snitch>(map.values());
+        return new ArrayList<Snitch>(snitches.get(world).values());
     }
 
     public Snitch getSnitch(World world, Location location) {

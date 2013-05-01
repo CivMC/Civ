@@ -10,6 +10,7 @@ import com.untamedears.JukeAlert.model.LoggedAction;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.entity.Faction;
+import com.untamedears.citadel.entity.PersonalGroup;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -139,7 +140,7 @@ public class JukeAlertLogger {
         
         // statement to insert a log entry into the snitchesDetailsTable
         insertSnitchLogStmt = db.prepareStatement(String.format(
-            "INSERT INTO %s (snitch_id, snitch_log_time, snitch_logged_action, snitch_logged_initated_user," +
+            "INSERT INTO %s (snitch_id, snitch_log_time, snitch_logged_action, snitch_logged_initiated_user," +
             " snitch_logged_victim_user, snitch_logged_x, snitch_logged_y, snitch_logged_z, snitch_logged_materialid) " +
             " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
             snitchDetailsTbl));
@@ -195,7 +196,14 @@ public class JukeAlertLogger {
     			double z = rs.getInt("snitch_z");
     			String groupName = rs.getString("snitch_group");
     			
-    			Faction group = Citadel.getGroupManager().getGroup(groupName);
+    			Faction group;
+    			if(groupName.substring(0, 2).contentEquals("p:")) {
+    				group = Citadel.getGroupManager().getGroup(groupName.substring(2));
+    			} else {
+    				group = Citadel.getGroupManager().getGroup(groupName);
+    			}
+
+    			System.out.println(group);
     			Location location = new Location(world, x, y, z);
     			
     			snitch = new Snitch(location, group);
@@ -294,7 +302,6 @@ public class JukeAlertLogger {
      * @param victimUser - the user who was victim of the event, can be null
      */
     public void logSnitchInfo(Snitch snitch, Material material, Location loc, Date date, LoggedAction action, String initiatedUser, String victimUser) {
-    	
         try {
         	// snitchid
         	insertSnitchLogStmt.setInt(1,  snitch.getId());
@@ -348,7 +355,7 @@ public class JukeAlertLogger {
     public void logSnitchEntityKill(Snitch snitch, Player player, Entity entity) {
     	
     	// There is no material or location involved in this event
-    	this.logSnitchInfo(snitch, null, null, new Date(), LoggedAction.KILL, player.getPlayerListName(), entity.getClass().getName());
+    	this.logSnitchInfo(snitch, null, null, new Date(), LoggedAction.KILL, player.getPlayerListName(), entity.getType().toString());
     }
 
     /**
