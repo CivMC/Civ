@@ -70,7 +70,7 @@ public class BlockListener implements Listener {
         if (block_mat == Material.WALL_SIGN
                 && Bukkit.getPluginManager().isPluginEnabled("PhysicalShop")) {
             Block below = block.getRelative(BlockFace.DOWN);
-            if (below.getType() == Material.CHEST) {
+            if (below.getType() == Material.CHEST || block_mat == Material.TRAPPED_CHEST) {
                 IReinforcement rein = AccessDelegate.getDelegate(below).getReinforcement();
                 if (null != rein
                         && rein instanceof PlayerReinforcement
@@ -95,7 +95,7 @@ public class BlockListener implements Listener {
                 }
             }
         }
-        if (block_mat == Material.CHEST){
+        if (block_mat == Material.CHEST || block_mat == Material.TRAPPED_CHEST){
             for (BlockFace direction : planar_sides) {
                 Block adjacent = block.getRelative(direction);
                 if (!(adjacent.getState() instanceof ContainerBlock)) {
