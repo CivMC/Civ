@@ -57,11 +57,17 @@ public class JukeAlertListener implements Listener {
             Faction owner = reinforcement.getOwner();
             if (reinforcement.getSecurityLevel().equals(SecurityLevel.GROUP)) {
                 plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-                snitchManager.addSnitch(new Snitch(loc, owner));
+                Snitch snitch = new Snitch(loc, owner);
+                snitch.setId(plugin.getJaLogger().getLastSnitchID()+1);
+                plugin.getJaLogger().increaseLastSnitchID();
+                snitchManager.addSnitch(snitch);
                 player.sendMessage(ChatColor.AQUA + "You've created a snitch block registered to the group " + owner.getName() + ".");
             } else {
                 plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + owner.getFounder(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-                snitchManager.addSnitch(new Snitch(loc, owner));
+                Snitch snitch = new Snitch(loc, owner);
+                snitch.setId(plugin.getJaLogger().getLastSnitchID()+1);
+                plugin.getJaLogger().increaseLastSnitchID();
+                snitchManager.addSnitch(snitch);
                 player.sendMessage(ChatColor.AQUA + "You've created a private snitch block; reinforce it with a group to register others.");
             }
         }
