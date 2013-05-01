@@ -65,21 +65,18 @@ public class BlockListener implements Listener {
 
     private boolean canPlace(Block block, String player_name) {
         Material block_mat = block.getType();
-        IReinforcement block_rein = AccessDelegate.getDelegate(block).getReinforcement();
-        PlayerReinforcement block_pr = null;
-        if (null != block_rein && block_rein instanceof PlayerReinforcement) {
-            block_pr = (PlayerReinforcement)block_rein;
-        }
-        // Do an initial check to see if we need to worry about physical shop interaction.
-        if (Bukkit.getPluginManager().isPluginEnabled("PhysicalShop")) {
-            // See if block is a sign over a chest indicating it's a shop
-            if (block_mat == Material.WALL_SIGN) {
-                Block below = block.getRelative(BlockFace.DOWN);
-                if (below.getType() == Material.CHEST) {
-                    if (null != block_pr && !block_pr.isAccessible(player_name)) {
-                        // Don't allow another player to access the chest by creating a shop
-                        return false;
-                    }
+        // See if block is a sign over a chest indicating it's a shop.
+        // Check to see if we need to worry about physical shop interaction.
+        if (block_mat == Material.WALL_SIGN
+                && Bukkit.getPluginManager().isPluginEnabled("PhysicalShop")) {
+            Block below = block.getRelative(BlockFace.DOWN);
+            if (below.getType() == Material.CHEST) {
+                IReinforcement rein = AccessDelegate.getDelegate(below).getReinforcement();
+                if (null != rein
+                        && rein instanceof PlayerReinforcement
+                        && !((PlayerReinforcement)rein).isAccessible(player_name)) {
+                    // Don't allow another player to access the chest by creating a shop
+                    return false;
                 }
             }
         }
@@ -123,28 +120,6 @@ public class BlockListener implements Listener {
      */
     @EventHandler(ignoreCancelled = true)
     public void placeFortifiedBlock(BlockPlaceEvent bpe) {
-    	// Do an initial check to see if we need to worry about physical shop interaction.
-    	if( Bukkit.getPluginManager().isPluginEnabled("PhysicalShop")) {
-    		// See if block is a sign.
-    		Block block = bpe.getBlockPlaced();
-    		if(block.getType() == Material.WALL_SIGN ) {
-        		Block below = block.getRelative(0, -1, 0);
-	    		if(below.getType() == Material.CHEST) {
-	    		    IReinforcement reinforcement = AccessDelegate.getDelegate(below).getReinforcement();
-	    		    if( null != reinforcement ) {
-		                if( reinforcement instanceof PlayerReinforcement ) {
-		                    PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
-		                	if( false == pr.isAccessible( bpe.getPlayer().getName())) {
-		                		bpe.setCancelled( true );
-		                		// we're done here.
-		                		return;
-		                	}
-		                }
-	    		    }
-	    		}
-    		}
-    	}
-    	
         Player player = bpe.getPlayer();
         Block block = bpe.getBlockPlaced();
         if (!canPlace(block, player.getName())) {
