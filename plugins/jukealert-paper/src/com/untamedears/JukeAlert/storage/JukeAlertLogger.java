@@ -493,4 +493,8 @@ public class JukeAlertLogger {
         	this.plugin.getLogger().log(Level.SEVERE, "Could not update Snitch cubiod size!", ex);
         }
     }
+
+	public void logSnitchBlockBurn(Snitch snitch, Block block) {
+		this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_BURN, null, snitchDetailsTbl);
+	}
 }

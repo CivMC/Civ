@@ -22,7 +22,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -92,7 +94,7 @@ public class JukeAlertListener implements Listener {
             // Player didn't move by at least one block.
             return;
         }
-        /*Player player = event.getPlayer();
+        Player player = event.getPlayer();
         Location location = player.getLocation();
         World world = location.getWorld();
 
@@ -105,7 +107,7 @@ public class JukeAlertListener implements Listener {
                 continue;
             }
             snitch.add(player.getName());
-        }*/
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -151,8 +153,26 @@ public class JukeAlertListener implements Listener {
             plugin.getJaLogger().logSnitchPlayerKill(snitch, killer, killed);
         }
     }
-
-    /*@EventHandler(priority = EventPriority.HIGH)
+    
+    @EventHandler(priority = EventPriority.HIGH)
+    public void playerDoesSomething(BlockBurnEvent event) {
+    	if (event.isCancelled()) {
+            return;
+        }
+        Block block = event.getBlock();
+        List<Snitch> snitches = snitchManager.getSnitchesByWorld(block.getWorld());
+        for (Snitch snitch : snitches) {
+            if (!snitch.isWithinCuboid(block)) {
+                continue;
+            }
+            if (snitch.getGroup() != null) {
+                continue;
+            }
+            plugin.getJaLogger().logSnitchBlockBurn(snitch, block);
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.HIGH)
     public void playerBreakBlock(BlockBreakEvent event) {
         if (event.isCancelled()) {
             return;
@@ -169,9 +189,9 @@ public class JukeAlertListener implements Listener {
             }
             plugin.getJaLogger().logSnitchBlockBreak(snitch, breaker, block);
         }
-    }*/
+    }
 
-    /*@EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH)
     public void playerPlaceBlock(BlockPlaceEvent event) {
         if (event.isCancelled()) {
             return;
@@ -188,7 +208,7 @@ public class JukeAlertListener implements Listener {
             }
             plugin.getJaLogger().logSnitchBlockPlace(snitch, placer, block);
         }
-    }*/
+    }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerFillBucket(PlayerBucketFillEvent event) {

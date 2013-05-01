@@ -16,7 +16,8 @@ public enum LoggedAction {
 	BUCKET_EMPTY(4),
 	ENTRY(5),
 	USED(6), 
-	IGNITED(7);
+	IGNITED(7),
+	BLOCK_BURN(8);
 	
 	private int value;
 	
