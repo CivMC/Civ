@@ -22,7 +22,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -157,7 +159,25 @@ public class JukeAlertListener implements Listener {
             }
         }
     }
-
+    
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onBlockBurnEvent(BlockBurnEvent event) {
+    	if (event.isCancelled()) {
+            return;
+        }
+        Block block = event.getBlock();
+        List<Snitch> snitches = snitchManager.getSnitchesByWorld(block.getWorld());
+        for (Snitch snitch : snitches) {
+            if (!snitch.isWithinCuboid(block)) {
+                continue;
+            }
+            if (snitch.getGroup() != null) {
+                continue;
+            }
+            plugin.getJaLogger().logSnitchBlockBurn(snitch, block);
+        }
+    }
+    
     @EventHandler(priority = EventPriority.HIGH)
     public void playerBreakBlock(BlockBreakEvent event) {
         if (event.isCancelled()) {

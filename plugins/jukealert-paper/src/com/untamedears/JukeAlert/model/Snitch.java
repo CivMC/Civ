@@ -19,6 +19,8 @@ public class Snitch {
         this.group = group;
         this.location = loc;
         radius = 11;
+        
+        
     }
 
     public int getX() {

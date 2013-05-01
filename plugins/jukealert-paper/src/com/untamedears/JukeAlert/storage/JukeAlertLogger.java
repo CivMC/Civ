@@ -532,4 +532,8 @@ public class JukeAlertLogger {
     public void increaseLastSnitchID() {
     	lastSnitchID++;
     }
+
+	public void logSnitchBlockBurn(Snitch snitch, Block block) {
+		this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_BURN, null, snitchDetailsTbl);
+	}
 }
