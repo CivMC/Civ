@@ -3,6 +3,7 @@ package com.untamedears.JukeAlert;
 import com.untamedears.JukeAlert.command.CommandHandler;
 import com.untamedears.JukeAlert.command.commands.HelpCommand;
 import com.untamedears.JukeAlert.command.commands.InfoCommand;
+import com.untamedears.JukeAlert.group.GroupMediator;
 import com.untamedears.JukeAlert.listener.JukeAlertListener;
 import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
@@ -22,6 +23,7 @@ public class JukeAlert extends JavaPlugin {
 	private ConfigManager configManager;
 	private SnitchManager snitchManager;
 	private CommandHandler commandHandler;
+	private GroupMediator groupMediator;
         
 	@Override
 	public void onEnable() {
@@ -29,6 +31,7 @@ public class JukeAlert extends JavaPlugin {
 		configManager = new ConfigManager();
 		jaLogger = new JukeAlertLogger();
 		snitchManager = new SnitchManager();
+		groupMediator = new GroupMediator();
 		registerEvents();
 		registerCommands();
 		snitchManager.loadSnitches();
@@ -68,6 +71,10 @@ public class JukeAlert extends JavaPlugin {
 	
 	public SnitchManager getSnitchManager() {
 		return snitchManager;
+	}
+	
+	public GroupMediator getGroupMediator() {
+		return groupMediator;
 	}
 	
 	public CommandHandler getCommandHandler() {
