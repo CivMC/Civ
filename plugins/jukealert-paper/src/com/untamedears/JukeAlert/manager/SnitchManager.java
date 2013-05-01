@@ -1,7 +1,9 @@
 package com.untamedears.JukeAlert.manager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -16,6 +18,9 @@ public class SnitchManager {
     private JukeAlert plugin;
     private JukeAlertLogger logger;
     private Map<World, Map<Location, Snitch>> snitches;
+    
+    //Stores the highest autoincrement snitch_id number
+    private Integer lastSnitchID;
 
     public SnitchManager() {
         plugin = JukeAlert.getInstance();
@@ -27,6 +32,9 @@ public class SnitchManager {
     }
 
     public void saveSnitches() {
+        /*for (Entry<World, Map<Location, Snitch>> world : snitches.entrySet()) {
+        	for (Entry<Location, Snitch> location : world.entrySet()) {*/
+
         //TODO: saveSnitches
         //logger.saveAllSnitches();
     }
@@ -40,7 +48,7 @@ public class SnitchManager {
     }
 
     public List<Snitch> getSnitchesByWorld(World world) {
-        return (List<Snitch>) snitches.get(world).values();
+        return new ArrayList<Snitch>(snitches.get(world).values());
     }
 
     public Snitch getSnitch(World world, Location location) {
@@ -59,9 +67,7 @@ public class SnitchManager {
     }
 	
     public void removeSnitch(Snitch snitch) {
-    	if(snitch.getLoc().getWorld() == null) {
-    		System.out.println("null");
-    	}
-        //snitches.get(snitch.getLoc().getWorld()).remove(snitch.getLoc());
+        snitches.get(snitch.getLoc().getWorld()).remove(snitch.getLoc());
+        plugin.getJaLogger().logSnitchBreak(snitch.getLoc().getWorld().getName(), snitch.getLoc().getBlockX(), snitch.getLoc().getBlockY(), snitch.getLoc().getBlockZ());
     }
 }

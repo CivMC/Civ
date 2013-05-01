@@ -1,6 +1,5 @@
 package com.untamedears.JukeAlert;
 
-import com.untamedears.JukeAlert.command.Command;
 import com.untamedears.JukeAlert.command.CommandHandler;
 import com.untamedears.JukeAlert.command.commands.HelpCommand;
 import com.untamedears.JukeAlert.command.commands.InfoCommand;
@@ -13,10 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;

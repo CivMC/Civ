@@ -22,15 +22,15 @@ public class Snitch {
     }
 
     public int getX() {
-        return x;
+        return location.getBlockX();
     }
 
     public int getY() {
-        return y;
+        return location.getBlockY();
     }
 
     public int getZ() {
-        return z;
+        return location.getBlockZ();
     }
 
     public void calculateDimensions() {
@@ -75,6 +75,10 @@ public class Snitch {
     public boolean add(String e) {
         return inProximity.add(e);
     }
+    
+    public boolean checkProximity(String e) {
+    	return inProximity.contains(e);
+    }
 
     //Checks if the location is within the cuboid.
     public boolean isWithinCuboid(Location loc) {
@@ -91,6 +95,7 @@ public class Snitch {
         int vX = vec.getBlockX();
         int vY = vec.getBlockY();
         int vZ = vec.getBlockZ();
+        calculateDimensions();
         if (vX >= minx && vX <= maxx && vY >= miny && vY <= maxy && vZ >= minz && vZ <= maxz) {
             return true;
         }

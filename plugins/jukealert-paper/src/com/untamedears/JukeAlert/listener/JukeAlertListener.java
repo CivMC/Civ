@@ -57,10 +57,17 @@ public class JukeAlertListener implements Listener {
             Faction owner = reinforcement.getOwner();
             if (reinforcement.getSecurityLevel().equals(SecurityLevel.GROUP)) {
                 plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-                snitchManager.addSnitch(new Snitch(loc, owner));
+                Snitch snitch = new Snitch(loc, owner);
+                snitch.setId(plugin.getJaLogger().getLastSnitchID()+1);
+                plugin.getJaLogger().increaseLastSnitchID();
+                snitchManager.addSnitch(snitch);
                 player.sendMessage(ChatColor.AQUA + "You've created a snitch block registered to the group " + owner.getName() + ".");
             } else {
                 plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + owner.getFounder(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+                Snitch snitch = new Snitch(loc, owner);
+                snitch.setId(plugin.getJaLogger().getLastSnitchID()+1);
+                plugin.getJaLogger().increaseLastSnitchID();
+                snitchManager.addSnitch(snitch);
                 player.sendMessage(ChatColor.AQUA + "You've created a private snitch block; reinforce it with a group to register others.");
             }
         }
@@ -92,20 +99,23 @@ public class JukeAlertListener implements Listener {
             // Player didn't move by at least one block.
             return;
         }
-        /*Player player = event.getPlayer();
+        Player player = event.getPlayer();
         Location location = player.getLocation();
         World world = location.getWorld();
 
         List<Snitch> snitches = snitchManager.getSnitchesByWorld(world);
         for (Snitch snitch : snitches) {
-            if (snitch.getGroup().isMember(player.getName())) {
-                continue;
+            if (!snitch.getGroup().isMember(player.getName()) && !snitch.getGroup().isFounder(player.getName()) && !snitch.getGroup().isModerator(player.getName())) {
+	            if (snitch.isWithinCuboid(location)) {
+	                if(!snitch.checkProximity(player.getName())) {
+	                	snitch.add(player.getName());
+	                    plugin.getJaLogger().logSnitchEntry(snitch, location, player);
+	                }
+	            } else if(snitch.checkProximity(player.getName())) {
+	            	snitch.remove(player.getName());
+	            }
             }
-            if (!snitch.isWithinCuboid(location)) {
-                continue;
-            }
-            snitch.add(player.getName());
-        }*/
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -121,13 +131,11 @@ public class JukeAlertListener implements Listener {
         Player player = (Player) killer;
         List<Snitch> snitches = snitchManager.getSnitchesByWorld(player.getWorld());
         for (Snitch snitch : snitches) {
-            if (!snitch.isWithinCuboid(player.getLocation())) {
-                continue;
+            if (!snitch.getGroup().isMember(player.getName()) && !snitch.getGroup().isFounder(player.getName()) && !snitch.getGroup().isModerator(player.getName())) {
+	            if (snitch.checkProximity(player.getName())) {
+	            	plugin.getJaLogger().logSnitchEntityKill(snitch, player, entity);
+	            }
             }
-            if (snitch.getGroup().isMember(player.getName())) {
-                continue;
-            }
-            plugin.getJaLogger().logSnitchEntityKill(snitch, player, entity);
         }
     }
 
@@ -142,53 +150,47 @@ public class JukeAlertListener implements Listener {
         Player player = (Player) killer;
         List<Snitch> snitches = snitchManager.getSnitchesByWorld(player.getWorld());
         for (Snitch snitch : snitches) {
-            if (!snitch.isWithinCuboid(player.getLocation())) {
-                continue;
+        	if (!snitch.getGroup().isMember(player.getName()) && !snitch.getGroup().isFounder(player.getName()) && !snitch.getGroup().isModerator(player.getName())) {
+	            if (snitch.checkProximity(player.getName())) {
+	                plugin.getJaLogger().logSnitchPlayerKill(snitch, killer, killed);
+	            }
             }
-            if (snitch.getGroup().isMember(player.getName())) {
-                continue;
-            }
-            plugin.getJaLogger().logSnitchPlayerKill(snitch, killer, killed);
         }
     }
 
-    /*@EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH)
     public void playerBreakBlock(BlockBreakEvent event) {
         if (event.isCancelled()) {
             return;
         }
         Block block = event.getBlock();
-        Player breaker = event.getPlayer();
-        List<Snitch> snitches = snitchManager.getSnitchesByWorld(breaker.getWorld());
+        Player player = event.getPlayer();
+        List<Snitch> snitches = snitchManager.getSnitchesByWorld(player.getWorld());
         for (Snitch snitch : snitches) {
-            if (!snitch.isWithinCuboid(block)) {
-                continue;
+        	if (!snitch.getGroup().isMember(player.getName()) && !snitch.getGroup().isFounder(player.getName()) && !snitch.getGroup().isModerator(player.getName())) {
+	            if (snitch.checkProximity(player.getName())) {
+	                plugin.getJaLogger().logSnitchBlockBreak(snitch, player, block);
+	            }
             }
-            if (snitch.getGroup().isMember(breaker.getName())) {
-                continue;
-            }
-            plugin.getJaLogger().logSnitchBlockBreak(snitch, breaker, block);
         }
-    }*/
+    }
 
-    /*@EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH)
     public void playerPlaceBlock(BlockPlaceEvent event) {
         if (event.isCancelled()) {
             return;
         }
         Block block = event.getBlock();
-        Player placer = event.getPlayer();
-        List<Snitch> snitches = snitchManager.getSnitchesByWorld(placer.getWorld());
+        Player player = event.getPlayer();
+        List<Snitch> snitches = snitchManager.getSnitchesByWorld(player.getWorld());
         for (Snitch snitch : snitches) {
-            if (!snitch.isWithinCuboid(block)) {
-                continue;
+        	if (!snitch.getGroup().isMember(player.getName()) && !snitch.getGroup().isFounder(player.getName()) && !snitch.getGroup().isModerator(player.getName())) {
+	            if (snitch.checkProximity(player.getName())) {
+	                plugin.getJaLogger().logSnitchBlockPlace(snitch, player, block);
+	            }
             }
-            if (snitch.getGroup().isMember(placer.getName())) {
-                continue;
-            }
-            plugin.getJaLogger().logSnitchBlockPlace(snitch, placer, block);
         }
-    }*/
+    }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerFillBucket(PlayerBucketFillEvent event) {
@@ -196,16 +198,14 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Block block = event.getBlockClicked();
-        Player filler = event.getPlayer();
-        List<Snitch> snitches = snitchManager.getSnitchesByWorld(filler.getWorld());
+        Player player = event.getPlayer();
+        List<Snitch> snitches = snitchManager.getSnitchesByWorld(player.getWorld());
         for (Snitch snitch : snitches) {
-            if (!snitch.isWithinCuboid(block)) {
-                continue;
+        	if (!snitch.getGroup().isMember(player.getName()) && !snitch.getGroup().isFounder(player.getName()) && !snitch.getGroup().isModerator(player.getName())) {
+	            if (snitch.checkProximity(player.getName())) {
+	                plugin.getJaLogger().logSnitchBucketFill(snitch, player, block);
+	            }
             }
-            if (snitch.getGroup().isMember(filler.getName())) {
-                continue;
-            }
-            plugin.getJaLogger().logSnitchBucketFill(snitch, filler, block);
         }
     }
 
@@ -215,16 +215,14 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Block block = event.getBlockClicked();
-        Player emptier = event.getPlayer();
-        List<Snitch> snitches = snitchManager.getSnitchesByWorld(emptier.getWorld());
+        Player player = event.getPlayer();
+        List<Snitch> snitches = snitchManager.getSnitchesByWorld(player.getWorld());
         for (Snitch snitch : snitches) {
-            if (!snitch.isWithinCuboid(block)) {
-                continue;
+        	if (!snitch.getGroup().isMember(player.getName()) && !snitch.getGroup().isFounder(player.getName()) && !snitch.getGroup().isModerator(player.getName())) {
+	            if (snitch.checkProximity(player.getName())) {
+	                plugin.getJaLogger().logSnitchBucketEmpty(snitch, player, block.getLocation(), player.getItemInHand());
+	            }
             }
-            if (snitch.getGroup().isMember(emptier.getName())) {
-                continue;
-            }
-            plugin.getJaLogger().logSnitchBucketEmpty(snitch, emptier, block.getLocation(), emptier.getItemInHand());
         }
     }
 }
