@@ -30,17 +30,14 @@ public class InfoCommand extends PlayerCommand {
 	           World world = player.getWorld();
 	           
 	           List<Snitch> snitches = plugin.getSnitchManager().getSnitchesByWorld(world);
-	           Boolean snitchFound = false;
 	           for (Snitch snitch : snitches) {
 	        	   //Get only first snitch in cuboid
-	        	   if(!snitchFound) {
-		               if (snitch.getGroup().isMember(player.getName()) || snitch.getGroup().isFounder(player.getName()) || snitch.getGroup().isModerator(player.getName())) {
-			   	           if (snitch.isWithinCuboid(player.getLocation())) {
-			   	               snitchFound = true;
-			   	               sendLog(sender, snitch);
-			   	           }
-		               }
-	        	   }
+		           if (snitch.getGroup().isMember(player.getName()) || snitch.getGroup().isFounder(player.getName()) || snitch.getGroup().isModerator(player.getName())) {
+		        	   if (snitch.isWithinCuboid(player.getLocation())) {
+		        		   sendLog(sender, snitch);
+		        		   break;
+			   	       }
+		           }
 	           }
 
 	        } else {

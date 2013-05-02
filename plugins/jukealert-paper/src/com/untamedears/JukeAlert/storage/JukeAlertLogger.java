@@ -204,12 +204,7 @@ public class JukeAlertLogger {
     			double z = rs.getInt("snitch_z");
     			String groupName = rs.getString("snitch_group");
     			
-    			Faction group;
-    			if(groupName.substring(0, 2).contentEquals("p:")) {
-    				group = groupMediator.getGroupByName(groupName.substring(2));
-    			} else {
-    				group = groupMediator.getGroupByName(groupName);
-    			}
+    			Faction group = groupMediator.getGroupByName(groupName);
 
     			Location location = new Location(world, x, y, z);
     			
