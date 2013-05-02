@@ -29,9 +29,9 @@ public class JukeAlert extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 		configManager = new ConfigManager();
+		groupMediator = new GroupMediator();
 		jaLogger = new JukeAlertLogger();
 		snitchManager = new SnitchManager();
-		groupMediator = new GroupMediator();
 		registerEvents();
 		registerCommands();
 		snitchManager.loadSnitches();
