@@ -5,6 +5,7 @@
 package com.untamedears.JukeAlert.storage;
 
 import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.chat.ChatFiller;
 import com.untamedears.JukeAlert.group.GroupMediator;
 import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.model.LoggedAction;
@@ -21,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -51,7 +54,7 @@ public class JukeAlertLogger {
     private PreparedStatement deleteSnitchStmt;
     private PreparedStatement updateGroupStmt;
     private PreparedStatement updateCuboidVolumeStmt;
-    
+        
     private int logsPerPage;
     
     private int lastSnitchID;
@@ -67,7 +70,7 @@ public class JukeAlertLogger {
         String username = configManager.getUsername();
         String password = configManager.getPassword();
         String prefix = configManager.getPrefix();
-
+        
         snitchsTbl = prefix + "snitchs";
         snitchDetailsTbl = prefix + "snitch_details";
 
@@ -283,8 +286,7 @@ public class JukeAlertLogger {
 	                    	// TODO: need a function to create a string based upon what things we have / don't have in this result set
 	                    	// so like if we have a block place action, then we include the x,y,z, but if its a KILL action, then we just say
 	                    	// x killed y, etc
-	                    	String resultString = String.format("%s did action %d at %s", set.getString("snitch_logged_initiated_user"), (int)set.getByte("snitch_logged_action"), new SimpleDateFormat("yyyy-MM-dd HH:mm:SS").format(set.getTimestamp("snitch_log_time")));
-	                    	info.add(resultString);
+	                    	info.add(createInfoString(set));
 	                        
 	                    }
 	                    if (!didFind) {
@@ -536,5 +538,48 @@ public class JukeAlertLogger {
 
 	public void logSnitchBlockBurn(Snitch snitch, Block block) {
 		this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_BURN, null, snitchDetailsTbl);
+	}
+	
+	public String createInfoString(ResultSet set) {
+		String resultString = ChatColor.RED + "Error!";
+		try {
+			int id = set.getInt("snitch_details_id");
+			String initiator = set.getString("snitch_logged_initiated_user");
+			String victim = set.getString("snitch_logged_victim_user");
+			int action = (int)set.getByte("snitch_logged_action");
+			int material = set.getInt("snitch_logged_materialid");
+			
+			int x = set.getInt("snitch_logged_X");
+			int y = set.getInt("snitch_logged_Y");
+			int z = set.getInt("snitch_logged_Z");
+			
+			String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(set.getTimestamp("snitch_log_time"));
+	    	
+			if (action == LoggedAction.ENTRY.getLoggedActionId()) {
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.BLUE + ChatFiller.fillString("Entry", (double) 20), ChatColor.WHITE + ChatFiller.fillString(timestamp, (double) 30));
+			} else if (action == LoggedAction.BLOCK_BREAK.getLoggedActionId()) {
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.DARK_RED + ChatFiller.fillString("Block Break", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
+			} else if (action == LoggedAction.BLOCK_PLACE.getLoggedActionId()) {
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.DARK_RED + ChatFiller.fillString("Block Place", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
+			} else if (action == LoggedAction.BLOCK_BURN.getLoggedActionId()) {
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.DARK_RED + ChatFiller.fillString("Block Burn", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
+			} else if (action == LoggedAction.IGNITED.getLoggedActionId()) {
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.GOLD + ChatFiller.fillString("Ignited", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
+			} else if (action == LoggedAction.USED.getLoggedActionId()) {
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.GREEN + ChatFiller.fillString("Used", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
+			} else if (action == LoggedAction.BUCKET_EMPTY.getLoggedActionId()) {
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.DARK_RED + ChatFiller.fillString("Bucket Empty", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
+			} else if (action == LoggedAction.BUCKET_FILL.getLoggedActionId()) {
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.GREEN+ ChatFiller.fillString("Bucket Fill", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
+			} else if (action == LoggedAction.KILL.getLoggedActionId()) {
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.DARK_RED + ChatFiller.fillString("Killed", (double) 20), ChatColor.WHITE + ChatFiller.fillString(victim, (double) 30));
+			} else {
+				resultString = ChatColor.RED + "Action not found. Please contact your administrator with log ID " + id;
+			}
+		} catch (SQLException ex) {
+        	this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details!");
+        }
+		
+		return resultString;
 	}
 }

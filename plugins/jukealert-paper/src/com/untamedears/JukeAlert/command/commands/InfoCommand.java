@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.command.PlayerCommand;
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.chat.ChatFiller;
 
 public class InfoCommand extends PlayerCommand {
 
@@ -52,7 +53,8 @@ public class InfoCommand extends PlayerCommand {
 		Player player = (Player)sender;
 		List<String> info = plugin.getJaLogger().getSnitchInfo(snitch.getLoc(), 0);
 		
-		player.sendMessage(ChatColor.WHITE + "Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------");
+		player.sendMessage(ChatColor.WHITE + " Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------");
+		player.sendMessage(ChatColor.DARK_GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 30), ChatFiller.fillString("Reason", (double) 20), ChatFiller.fillString("Details", (double) 30)));
 		for(String dataEntry : info) {
 			player.sendMessage(dataEntry);
 		}
