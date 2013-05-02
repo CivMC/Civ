@@ -325,7 +325,7 @@ public class JukeAlertLogger {
         	// snitchid
         	insertSnitchLogStmt.setInt(1,  snitch.getId());
         	// snitch log time
-        	insertSnitchLogStmt.setDate(2, new java.sql.Date(date.getTime()));
+        	insertSnitchLogStmt.setTimestamp(2,  new java.sql.Timestamp(new java.util.Date().getTime()));
         	// snitch logged action
         	insertSnitchLogStmt.setByte(3,  (byte)action.getLoggedActionId());
         	// initiated user
