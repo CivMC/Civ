@@ -42,7 +42,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, ProductionFactory.FACTORY_TYPE, subFactoryType);
 		this.SUB_FACTORY_TYPE = subFactoryType;
 		this.productionFactoryProperties = (ProductionProperties) factoryProperties;
-		this.recipes=productionFactoryProperties.getRecipes();
+		this.recipes=new ArrayList<> (productionFactoryProperties.getRecipes());
 		this.setRecipeToNumber(0);
 		updateMaintenance();
 		this.currentMaintenance=0.0;

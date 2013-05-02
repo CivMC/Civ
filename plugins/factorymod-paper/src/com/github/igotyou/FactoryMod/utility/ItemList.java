@@ -129,14 +129,15 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		{
 			int maxStackSize=itemStack.getMaxStackSize();
 			int amount=itemStack.getAmount();
+			ItemStack itemClone=itemStack.clone();
 			while(amount>maxStackSize)
 			{
-				itemStack.clone().setAmount(maxStackSize);
-				inventory.addItem(itemStack);
+				itemClone.setAmount(maxStackSize);
+				inventory.addItem(itemClone);
 				amount-=maxStackSize;
 			}
-			itemStack.clone().setAmount(amount);
-			inventory.addItem(itemStack);
+			itemClone.setAmount(amount);
+			inventory.addItem(itemClone);
 		}
 	}
 	public ItemList<NamedItemStack> addEnchantments(Map<Enchantment,Integer> enchantments)
