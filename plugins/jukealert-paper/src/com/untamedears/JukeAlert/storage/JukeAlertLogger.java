@@ -52,7 +52,9 @@ public class JukeAlertLogger {
     private PreparedStatement updateGroupStmt;
     private PreparedStatement updateCuboidVolumeStmt;
     
-    private Integer lastSnitchID;
+    private int logsPerPage;
+    
+    private int lastSnitchID;
 
     public JukeAlertLogger() {
     	plugin = JukeAlert.getInstance();
@@ -77,6 +79,8 @@ public class JukeAlertLogger {
         } else {
         	this.plugin.getLogger().log(Level.SEVERE, "Could not connect to the database! Fill out your config.yml!");
         }
+        
+        logsPerPage = configManager.getLogsPerPage();
     }
 
     public Database getDb() {
@@ -232,7 +236,7 @@ public class JukeAlertLogger {
      * @param limit - the number of entries to limit
      * @return a Map of String/Date objects of the snitch entries, formatted nicely
      */
-    public List<String> getSnitchInfo(Location loc, int limit) {
+    public List<String> getSnitchInfo(Location loc, int offset) {
         List<String> info = new ArrayList<String>();
 
         	// get the snitch's ID based on the location, then use that to get the snitch details from the snitchesDetail table
@@ -263,10 +267,10 @@ public class JukeAlertLogger {
 	                    getSnitchLogStmt.setInt(1, interestedSnitchId);
 	                    
 	                    //Offset
-	                    getSnitchLogStmt.setInt(2, 0);
+	                    getSnitchLogStmt.setInt(2, offset);
 	                    
 	                    //Number of rows
-	                    getSnitchLogStmt.setInt(3, limit);
+	                    getSnitchLogStmt.setInt(3, logsPerPage);
 	                    	                    
 	                    ResultSet set = getSnitchLogStmt.executeQuery();
 	                    

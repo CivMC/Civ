@@ -8,3 +8,4 @@ mysql:
   prefix: ''
 settings:
   defaultCuboidSize: 11
+  logsPerPage: 10

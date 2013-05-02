@@ -35,6 +35,7 @@ public class InfoCommand extends PlayerCommand {
 		           if (snitch.getGroup().isMember(player.getName()) || snitch.getGroup().isFounder(player.getName()) || snitch.getGroup().isModerator(player.getName())) {
 		        	   if (snitch.isWithinCuboid(player.getLocation())) {
 		        		   sendLog(sender, snitch);
+		        		   break;
 			   	       }
 		           }
 	           }
@@ -49,7 +50,7 @@ public class InfoCommand extends PlayerCommand {
 	
 	private void sendLog(CommandSender sender, Snitch snitch) {
 		Player player = (Player)sender;
-		List<String> info = plugin.getJaLogger().getSnitchInfo(snitch.getLoc(), 20);
+		List<String> info = plugin.getJaLogger().getSnitchInfo(snitch.getLoc(), 0);
 		
 		player.sendMessage(ChatColor.WHITE + "Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------");
 		for(String dataEntry : info) {

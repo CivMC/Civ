@@ -22,6 +22,8 @@ public class ConfigManager
 	
 	private int defaultCuboidSize;
 	
+	private int logsPerPage;
+	
 	private File main;
 	private FileConfiguration config;
 	private FileConfiguration cleanConfig;
@@ -67,6 +69,8 @@ public class ConfigManager
         port     = loadInt("mysql.port");
         
         setDefaultCuboidSize(loadInt("settings.defaultCuboidSize"));
+        
+        logsPerPage = loadInt("settings.logsPerPage");
         
         save();
 	}
@@ -196,6 +200,14 @@ public class ConfigManager
 
 	public void setDefaultCuboidSize(int defaultCuboidSize) {
 		this.defaultCuboidSize = defaultCuboidSize;
+	}
+	
+	public int getLogsPerPage() {
+		return logsPerPage;
+	}
+
+	public void setLogsPerPage(int logsPerPage) {
+		this.logsPerPage = logsPerPage;
 	}
 
 	public File getMain() {
