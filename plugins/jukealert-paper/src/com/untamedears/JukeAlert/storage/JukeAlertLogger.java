@@ -14,6 +14,8 @@ import com.untamedears.citadel.entity.Faction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -230,8 +232,8 @@ public class JukeAlertLogger {
      * @param limit - the number of entries to limit
      * @return a Map of String/Date objects of the snitch entries, formatted nicely
      */
-    public Map<String, Date> getSnitchInfo(Location loc, int limit) {
-        Map<String, Date> info = new HashMap<String, Date>();
+    public List<String> getSnitchInfo(Location loc, int limit) {
+        List<String> info = new ArrayList<String>();
 
         	// get the snitch's ID based on the location, then use that to get the snitch details from the snitchesDetail table
         	int interestedSnitchId = -1;
@@ -265,20 +267,20 @@ public class JukeAlertLogger {
 	                    
 	                    //Number of rows
 	                    getSnitchLogStmt.setInt(3, limit);
-	                    
+	                    	                    
 	                    ResultSet set = getSnitchLogStmt.executeQuery();
-
+	                    
 	                    didFind = false;
 	                    if (!set.isBeforeFirst() ) {    
 	                    	 System.out.println("No data"); 
-	                    	} 
+	                    } 
 	                    while (set.next()) {
 	                    	didFind = true;
 	                    	// TODO: need a function to create a string based upon what things we have / don't have in this result set
 	                    	// so like if we have a block place action, then we include the x,y,z, but if its a KILL action, then we just say
 	                    	// x killed y, etc
-	                    	String resultString = String.format("%s did action %d", set.getString("snitch_logged_initiated_user"), (int)set.getByte("snitch_logged_action"));
-	                        info.put(resultString, set.getDate("snitch_log_time"));
+	                    	String resultString = String.format("%s did action %d at %s", set.getString("snitch_logged_initiated_user"), (int)set.getByte("snitch_logged_action"), new SimpleDateFormat("yyyy-MM-dd HH:mm:SS").format(set.getTimestamp("snitch_log_time")));
+	                    	info.add(resultString);
 	                        
 	                    }
 	                    if (!didFind) {
