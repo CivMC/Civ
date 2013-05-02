@@ -23,8 +23,9 @@ import com.github.igotyou.FactoryMod.managers.FactoryModManager;
 import com.github.igotyou.FactoryMod.managers.ProductionManager;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
-import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.untamedears.citadel.entity.PlayerReinforcement;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.inventory.FurnaceExtractEvent;
 
 public class BlockListener implements Listener
 {
@@ -272,7 +273,22 @@ public class BlockListener implements Listener
 			}
 		}
 	}
-
+	@EventHandler
+	public void onSmelt(FurnaceExtractEvent j) 
+	{
+		if(FactoryModPlugin.DISABLE_EXPERIENCE_DROPS)
+		{
+			j.setExpToDrop(0);
+		}
+	}	
+	@EventHandler
+	public void onMonsterDrop(EntityDeathEvent j)
+	{
+		if(FactoryModPlugin.DISABLE_EXPERIENCE_DROPS)
+		{
+			j.setDroppedExp(0);
+		}
+	}
 	private Location westLoc(Location loc)
 	{
 		Location newLoc = loc.clone();
@@ -351,5 +367,6 @@ public class BlockListener implements Listener
 			}
 		} 
 		return new InteractionResponse(InteractionResult.FAILURE, "There is already a factory there!");
-	 }		
+	 }
+	
 }

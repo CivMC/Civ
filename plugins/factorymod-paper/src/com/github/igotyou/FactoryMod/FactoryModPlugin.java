@@ -48,6 +48,7 @@ public class FactoryModPlugin extends JavaPlugin
 	public static boolean CITADEL_ENABLED;
 	public static Material FACTORY_INTERACTION_MATERIAL;
 	public static boolean DESTRUCTIBLE_FACTORIES;
+	public static boolean DISABLE_EXPERIENCE_DROPS;
 	public static int MAINTENANCE_CYCLE;
 	public static double MAINTENANCE_RATE;
 	
@@ -100,6 +101,8 @@ public class FactoryModPlugin extends JavaPlugin
 		FACTORY_INTERACTION_MATERIAL = Material.getMaterial(config.getString("general.factory_interaction_material","STICK"));
 		//If factories are removed upon destruction of their blocks
 		DESTRUCTIBLE_FACTORIES=config.getBoolean("general.destructible_factories",false);		
+		//Check if XP drops should be disabled
+		DISABLE_EXPERIENCE_DROPS=config.getBoolean("general.disable_experience_drops",false);
 		//How frequently factories are updated
 		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle",20);
 		//How frequently maintenance is update
