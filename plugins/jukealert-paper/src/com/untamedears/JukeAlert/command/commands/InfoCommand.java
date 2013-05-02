@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.command.PlayerCommand;
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.chat.ChatFiller;
 
 public class InfoCommand extends PlayerCommand {
 
@@ -30,17 +31,14 @@ public class InfoCommand extends PlayerCommand {
 	           World world = player.getWorld();
 	           
 	           List<Snitch> snitches = plugin.getSnitchManager().getSnitchesByWorld(world);
-	           Boolean snitchFound = false;
 	           for (Snitch snitch : snitches) {
 	        	   //Get only first snitch in cuboid
-	        	   if(!snitchFound) {
-		               if (snitch.getGroup().isMember(player.getName()) || snitch.getGroup().isFounder(player.getName()) || snitch.getGroup().isModerator(player.getName())) {
-			   	           if (snitch.isWithinCuboid(player.getLocation())) {
-			   	               snitchFound = true;
-			   	               sendLog(sender, snitch);
-			   	           }
-		               }
-	        	   }
+		           if (snitch.getGroup().isMember(player.getName()) || snitch.getGroup().isFounder(player.getName()) || snitch.getGroup().isModerator(player.getName())) {
+		        	   if (snitch.isWithinCuboid(player.getLocation())) {
+		        		   sendLog(sender, snitch);
+		        		   break;
+			   	       }
+		           }
 	           }
 
 	        } else {
@@ -53,11 +51,12 @@ public class InfoCommand extends PlayerCommand {
 	
 	private void sendLog(CommandSender sender, Snitch snitch) {
 		Player player = (Player)sender;
-		Map<String, Date> info = plugin.getJaLogger().getSnitchInfo(snitch.getLoc(), 20);
+		List<String> info = plugin.getJaLogger().getSnitchInfo(snitch.getLoc(), 0);
 		
-		player.sendMessage(ChatColor.WHITE + "Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------");
-		for(Entry<String, Date> dataEntry : info.entrySet()) {
-			player.sendMessage(dataEntry.getKey() + " " + dataEntry.getValue());
+		player.sendMessage(ChatColor.WHITE + " Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------");
+		player.sendMessage(ChatColor.DARK_GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 30), ChatFiller.fillString("Reason", (double) 20), ChatFiller.fillString("Details", (double) 30)));
+		for(String dataEntry : info) {
+			player.sendMessage(dataEntry);
 		}
 	}
 
