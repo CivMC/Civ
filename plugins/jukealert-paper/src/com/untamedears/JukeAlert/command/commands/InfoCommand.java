@@ -1,9 +1,6 @@
 package com.untamedears.JukeAlert.command.commands;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -19,7 +16,7 @@ public class InfoCommand extends PlayerCommand {
 	public InfoCommand() {
 		super("Info");
 		setDescription("Displays information from a Snitch");
-		setUsage("/jainfo");
+		setUsage("/jainfo <page number>");
 		setArgumentRange(0,1);
 		setIdentifier("jainfo");
 	}
@@ -30,11 +27,8 @@ public class InfoCommand extends PlayerCommand {
 	           Player player = (Player) sender;
 	           World world = player.getWorld();
 	           
-	           int offset;
-	           
-	           if(args.length != 0 && Integer.parseInt(args[0]) > 0) {
-	        	   offset = Integer.parseInt(args[0]);
-	           } else {
+	           int offset = Integer.parseInt(args[0]);
+	           if(offset < 2) {
 	        	   offset = 1;
 	           }
 	           
