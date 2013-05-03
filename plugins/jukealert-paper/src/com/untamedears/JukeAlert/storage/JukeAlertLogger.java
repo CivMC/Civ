@@ -244,126 +244,115 @@ public class JukeAlertLogger {
      * @param offset - the number of entries to start at (10 means you start at the 10th entry and go to @limit)
      * @param limit - the number of entries to limit
      * @return a Map of String/Date objects of the snitch entries, formatted nicely
-     */
-    
-    //TODO - Switch to using snitch ID directly from snitch object, instead of searching the database by location
-    
+     */    
     public List<String> getSnitchInfo(Location loc, int offset) {
-        List<String> info = new ArrayList<String>();
+    	List<String> info = new ArrayList<String>();
 
-        	// get the snitch's ID based on the location, then use that to get the snitch details from the snitchesDetail table
-        	int interestedSnitchId = -1;
-        	try {
-        		// params are x(int), y(int), z(int), world(tinyint), column returned: snitch_id (int)
-        		getSnitchIdFromLocationStmt.setInt(1, loc.getBlockX());
-        		getSnitchIdFromLocationStmt.setInt(2, loc.getBlockY());
-        		getSnitchIdFromLocationStmt.setInt(3, loc.getBlockZ());
-        		getSnitchIdFromLocationStmt.setString(4,  loc.getWorld().getName());
-        		
-        		ResultSet snitchIdSet = getSnitchIdFromLocationStmt.executeQuery();
-        		
-        		// make sure we got a result
-        		boolean didFind = false;
-        		while (snitchIdSet.next()) {
-        			didFind = true;
-        			interestedSnitchId = snitchIdSet.getInt("snitch_id");
-        		}
-        		
-        		// only continue if we actually got a result from the first query
-        		if (!didFind) {
-        			this.plugin.getLogger().log(Level.SEVERE, "Didn't get any results trying to find a snitch in the snitches table at location " + loc);
-        		} else {
-        			// we got a snitch id from the location, so now get the records that we want from the snitches detail table
-        			try {
-	        	        // params are snitch_id (int), returns everything
-	                    getSnitchLogStmt.setInt(1, interestedSnitchId);
-	                    
-	                    //Offset
-	                    getSnitchLogStmt.setInt(2, offset);
-	                    
-	                    //Number of rows
-	                    getSnitchLogStmt.setInt(3, logsPerPage);
-	                    	                    
-	                    ResultSet set = getSnitchLogStmt.executeQuery();
-	                    
-	                    didFind = false;
-	                    if (!set.isBeforeFirst() ) {  
-	                    	info = null;
-	                    	System.out.println("No data"); 
-	                    } else {
-		                    while (set.next()) {
-		                    	didFind = true;
-		                    	// TODO: need a function to create a string based upon what things we have / don't have in this result set
-		                    	// so like if we have a block place action, then we include the x,y,z, but if its a KILL action, then we just say
-		                    	// x killed y, etc
-		                    	info.add(createInfoString(set));
-		                        
-		                    }
-	                    }
-	                    if (!didFind) {
-	                    	// Output something like 'no snitch action recorded" or something
-	                    }
-	                } catch (SQLException ex) {
-	                    this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details from the snitchesDetail table using the snitch id " + interestedSnitchId, ex);
-	                    // rethrow
-	                    throw ex;
-	                }
-        		} // end if..else (didFind)
-        		
-        	} catch (SQLException ex1) {
-        		 this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details! loc: " + loc, ex1);
-        	}
-        	
-        return info;
+    	// get the snitch's ID based on the location, then use that to get the snitch details from the snitchesDetail table
+    	int interestedSnitchId = -1;
+    	try {
+    		// params are x(int), y(int), z(int), world(tinyint), column returned: snitch_id (int)
+    		getSnitchIdFromLocationStmt.setInt(1, loc.getBlockX());
+    		getSnitchIdFromLocationStmt.setInt(2, loc.getBlockY());
+    		getSnitchIdFromLocationStmt.setInt(3, loc.getBlockZ());
+    		getSnitchIdFromLocationStmt.setString(4,  loc.getWorld().getName());
+
+    		ResultSet snitchIdSet = getSnitchIdFromLocationStmt.executeQuery();
+
+    		// make sure we got a result
+    		boolean didFind = false;
+    		while (snitchIdSet.next()) {
+    			didFind = true;
+    			interestedSnitchId = snitchIdSet.getInt("snitch_id");
+    		}
+
+    		// only continue if we actually got a result from the first query
+    		if (!didFind) {
+    			this.plugin.getLogger().log(Level.SEVERE, "Didn't get any results trying to find a snitch in the snitches table at location " + loc);
+    		} else {
+    			getSnitchInfo(interestedSnitchId, offset);
+    		}
+
+    	} catch (SQLException ex1) {
+    		this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details! loc: " + loc, ex1);
+    	}
+
+    	return info;
     }
     
-    //TODO - Switch to using snitch ID directly from snitch object, instead of searching the database by location
+    public List<String> getSnitchInfo(int snitchId, int offset) throws SQLException {
+    	List<String> info = new ArrayList<String>();
+    	
+    	try {
+            getSnitchLogStmt.setInt(1, snitchId);
+            getSnitchLogStmt.setInt(2, offset);
+            getSnitchLogStmt.setInt(3, logsPerPage);
+            	                    
+            ResultSet set = getSnitchLogStmt.executeQuery();
+            if (!set.isBeforeFirst() ) {  
+            	System.out.println("No data"); 
+            } else {
+                while (set.next()) {
+                	// TODO: need a function to create a string based upon what things we have / don't have in this result set
+                	// so like if we have a block place action, then we include the x,y,z, but if its a KILL action, then we just say
+                	// x killed y, etc
+                	info.add(createInfoString(set));
+                    
+                }
+            }
+        } catch (SQLException ex) {
+            this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details from the snitchesDetail table using the snitch id " + snitchId, ex);
+            // rethrow
+            throw ex;
+        }
+    	
+    	return info;
+    }
     
     public Boolean deleteSnitchInfo(Location loc) {
     	Boolean completed = false;
-        	// get the snitch's ID based on the location, then use that to get the snitch details from the snitchesDetail table
-        	int interestedSnitchId = -1;
-        	try {
-        		// params are x(int), y(int), z(int), world(tinyint), column returned: snitch_id (int)
-        		getSnitchIdFromLocationStmt.setInt(1, loc.getBlockX());
-        		getSnitchIdFromLocationStmt.setInt(2, loc.getBlockY());
-        		getSnitchIdFromLocationStmt.setInt(3, loc.getBlockZ());
-        		getSnitchIdFromLocationStmt.setString(4,  loc.getWorld().getName());
-        		
-        		ResultSet snitchIdSet = getSnitchIdFromLocationStmt.executeQuery();
-        		
-        		// make sure we got a result
-        		boolean didFind = false;
-        		while (snitchIdSet.next()) {
-        			didFind = true;
-        			interestedSnitchId = snitchIdSet.getInt("snitch_id");
-        		}
-        		
-        		// only continue if we actually got a result from the first query
-        		if (!didFind) {
-        			this.plugin.getLogger().log(Level.SEVERE, "Didn't get any results trying to find a snitch in the snitches table at location " + loc);
-        		} else {
-        			// we got a snitch id from the location, so now get the records that we want from the snitches detail table
-        			try {
-	                    deleteSnitchLogStmt.setInt(1, interestedSnitchId);
-	                   deleteSnitchLogStmt.execute();
-	                   completed = true;
-	                } catch (SQLException ex) {
-	                	completed = false;
-	                    this.plugin.getLogger().log(Level.SEVERE, "Could not delete Snitch Details from the snitchesDetail table using the snitch id " + interestedSnitchId, ex);
-	                    // rethrow
-	                    throw ex;
-	                }
-        		} // end if..else (didFind)
-        		
-        	} catch (SQLException ex1) {
-        		completed = false;
-        		this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details! loc: " + loc, ex1);
-        	}
-        	
-        return completed;
-    }
+    	// get the snitch's ID based on the location, then use that to get the snitch details from the snitchesDetail table
+    	int interestedSnitchId = -1;
+    	try {
+    		// params are x(int), y(int), z(int), world(tinyint), column returned: snitch_id (int)
+    		getSnitchIdFromLocationStmt.setInt(1, loc.getBlockX());
+    		getSnitchIdFromLocationStmt.setInt(2, loc.getBlockY());
+    		getSnitchIdFromLocationStmt.setInt(3, loc.getBlockZ());
+    		getSnitchIdFromLocationStmt.setString(4,  loc.getWorld().getName());
 
+    		ResultSet snitchIdSet = getSnitchIdFromLocationStmt.executeQuery();
+
+    		// make sure we got a result
+    		boolean didFind = false;
+    		while (snitchIdSet.next()) {
+    			didFind = true;
+    			interestedSnitchId = snitchIdSet.getInt("snitch_id");
+    		}
+
+    		// only continue if we actually got a result from the first query
+    		if (!didFind) {
+    			this.plugin.getLogger().log(Level.SEVERE, "Didn't get any results trying to find a snitch in the snitches table at location " + loc);
+    		} else {
+    			deleteSnitchInfo(interestedSnitchId);
+    		}
+
+    	} catch (SQLException ex1) {
+    		completed = false;
+    		this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details! loc: " + loc, ex1);
+    	}
+
+    	return completed;
+    }
+    
+    public Boolean deleteSnitchInfo(int snitchId) throws SQLException {
+    	try {
+           deleteSnitchLogStmt.setInt(1, snitchId);
+           return deleteSnitchLogStmt.execute();
+        } catch (SQLException ex) {
+            this.plugin.getLogger().log(Level.SEVERE, "Could not delete Snitch Details from the snitchesDetail table using the snitch id " + snitchId, ex);
+            throw ex;
+        }
+    }
 
     
     /**
