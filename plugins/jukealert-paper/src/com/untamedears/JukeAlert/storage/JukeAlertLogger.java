@@ -49,6 +49,7 @@ public class JukeAlertLogger {
     private PreparedStatement getAllSnitchesByWorldStmt;
     private PreparedStatement getLastSnitchID;
     private PreparedStatement getSnitchLogStmt;
+    private PreparedStatement deleteSnitchLogStmt;
     private PreparedStatement insertSnitchLogStmt;
     private PreparedStatement insertNewSnitchStmt;
     private PreparedStatement deleteSnitchStmt;
@@ -148,7 +149,7 @@ public class JukeAlertLogger {
         // LIMIT ?,? means offset followed by max rows to return 
         getSnitchLogStmt = db.prepareStatement(String.format(
             "SELECT * FROM %s"
-            + " WHERE snitch_id=? ORDER BY snitch_log_time ASC LIMIT ?,?",
+            + " WHERE snitch_id=? ORDER BY snitch_log_time DESC LIMIT ?,?",
             snitchDetailsTbl));
         
         // statement to get the ID of a snitch in the main snitchsTbl based on a Location (x,y,z, world)
@@ -169,6 +170,11 @@ public class JukeAlertLogger {
             snitchsTbl));
         
         // 
+        deleteSnitchLogStmt = db.prepareStatement(String.format(
+                "DELETE FROM %s WHERE snitch_id=?",
+                snitchDetailsTbl));
+        
+        //
         deleteSnitchStmt = db.prepareStatement(String.format(
             "DELETE FROM %s WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
             snitchsTbl));
@@ -239,6 +245,9 @@ public class JukeAlertLogger {
      * @param limit - the number of entries to limit
      * @return a Map of String/Date objects of the snitch entries, formatted nicely
      */
+    
+    //TODO - Switch to using snitch ID directly from snitch object, instead of searching the database by location
+    
     public List<String> getSnitchInfo(Location loc, int offset) {
         List<String> info = new ArrayList<String>();
 
@@ -278,16 +287,18 @@ public class JukeAlertLogger {
 	                    ResultSet set = getSnitchLogStmt.executeQuery();
 	                    
 	                    didFind = false;
-	                    if (!set.isBeforeFirst() ) {    
-	                    	 System.out.println("No data"); 
-	                    } 
-	                    while (set.next()) {
-	                    	didFind = true;
-	                    	// TODO: need a function to create a string based upon what things we have / don't have in this result set
-	                    	// so like if we have a block place action, then we include the x,y,z, but if its a KILL action, then we just say
-	                    	// x killed y, etc
-	                    	info.add(createInfoString(set));
-	                        
+	                    if (!set.isBeforeFirst() ) {  
+	                    	info = null;
+	                    	System.out.println("No data"); 
+	                    } else {
+		                    while (set.next()) {
+		                    	didFind = true;
+		                    	// TODO: need a function to create a string based upon what things we have / don't have in this result set
+		                    	// so like if we have a block place action, then we include the x,y,z, but if its a KILL action, then we just say
+		                    	// x killed y, etc
+		                    	info.add(createInfoString(set));
+		                        
+		                    }
 	                    }
 	                    if (!didFind) {
 	                    	// Output something like 'no snitch action recorded" or something
@@ -303,10 +314,56 @@ public class JukeAlertLogger {
         		 this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details! loc: " + loc, ex1);
         	}
         	
-        	
-
         return info;
     }
+    
+    //TODO - Switch to using snitch ID directly from snitch object, instead of searching the database by location
+    
+    public Boolean deleteSnitchInfo(Location loc) {
+    	Boolean completed = false;
+        	// get the snitch's ID based on the location, then use that to get the snitch details from the snitchesDetail table
+        	int interestedSnitchId = -1;
+        	try {
+        		// params are x(int), y(int), z(int), world(tinyint), column returned: snitch_id (int)
+        		getSnitchIdFromLocationStmt.setInt(1, loc.getBlockX());
+        		getSnitchIdFromLocationStmt.setInt(2, loc.getBlockY());
+        		getSnitchIdFromLocationStmt.setInt(3, loc.getBlockZ());
+        		getSnitchIdFromLocationStmt.setString(4,  loc.getWorld().getName());
+        		
+        		ResultSet snitchIdSet = getSnitchIdFromLocationStmt.executeQuery();
+        		
+        		// make sure we got a result
+        		boolean didFind = false;
+        		while (snitchIdSet.next()) {
+        			didFind = true;
+        			interestedSnitchId = snitchIdSet.getInt("snitch_id");
+        		}
+        		
+        		// only continue if we actually got a result from the first query
+        		if (!didFind) {
+        			this.plugin.getLogger().log(Level.SEVERE, "Didn't get any results trying to find a snitch in the snitches table at location " + loc);
+        		} else {
+        			// we got a snitch id from the location, so now get the records that we want from the snitches detail table
+        			try {
+	                    deleteSnitchLogStmt.setInt(1, interestedSnitchId);
+	                   deleteSnitchLogStmt.execute();
+	                   completed = true;
+	                } catch (SQLException ex) {
+	                	completed = false;
+	                    this.plugin.getLogger().log(Level.SEVERE, "Could not delete Snitch Details from the snitchesDetail table using the snitch id " + interestedSnitchId, ex);
+	                    // rethrow
+	                    throw ex;
+	                }
+        		} // end if..else (didFind)
+        		
+        	} catch (SQLException ex1) {
+        		completed = false;
+        		this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details! loc: " + loc, ex1);
+        	}
+        	
+        return completed;
+    }
+
 
     
     /**
@@ -556,23 +613,23 @@ public class JukeAlertLogger {
 			String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(set.getTimestamp("snitch_log_time"));
 	    	
 			if (action == LoggedAction.ENTRY.getLoggedActionId()) {
-				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.BLUE + ChatFiller.fillString("Entry", (double) 20), ChatColor.WHITE + ChatFiller.fillString(timestamp, (double) 30));
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.BLUE + ChatFiller.fillString("Entry", (double) 20), ChatColor.WHITE + ChatFiller.fillString(timestamp, (double) 30));
 			} else if (action == LoggedAction.BLOCK_BREAK.getLoggedActionId()) {
-				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.DARK_RED + ChatFiller.fillString("Block Break", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.DARK_RED + ChatFiller.fillString("Block Break", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
 			} else if (action == LoggedAction.BLOCK_PLACE.getLoggedActionId()) {
-				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.DARK_RED + ChatFiller.fillString("Block Place", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.DARK_RED + ChatFiller.fillString("Block Place", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
 			} else if (action == LoggedAction.BLOCK_BURN.getLoggedActionId()) {
-				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.DARK_RED + ChatFiller.fillString("Block Burn", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.DARK_RED + ChatFiller.fillString("Block Burn", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
 			} else if (action == LoggedAction.IGNITED.getLoggedActionId()) {
-				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.GOLD + ChatFiller.fillString("Ignited", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.GOLD + ChatFiller.fillString("Ignited", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
 			} else if (action == LoggedAction.USED.getLoggedActionId()) {
-				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.GREEN + ChatFiller.fillString("Used", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.GREEN + ChatFiller.fillString("Used", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
 			} else if (action == LoggedAction.BUCKET_EMPTY.getLoggedActionId()) {
-				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.DARK_RED + ChatFiller.fillString("Bucket Empty", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.DARK_RED + ChatFiller.fillString("Bucket Empty", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
 			} else if (action == LoggedAction.BUCKET_FILL.getLoggedActionId()) {
-				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.GREEN+ ChatFiller.fillString("Bucket Fill", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.GREEN+ ChatFiller.fillString("Bucket Fill", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
 			} else if (action == LoggedAction.KILL.getLoggedActionId()) {
-				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 30), ChatColor.DARK_RED + ChatFiller.fillString("Killed", (double) 20), ChatColor.WHITE + ChatFiller.fillString(victim, (double) 30));
+				resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.DARK_RED + ChatFiller.fillString("Killed", (double) 20), ChatColor.WHITE + ChatFiller.fillString(victim, (double) 30));
 			} else {
 				resultString = ChatColor.RED + "Action not found. Please contact your administrator with log ID " + id;
 			}

@@ -1,6 +1,7 @@
 package com.untamedears.JukeAlert;
 
 import com.untamedears.JukeAlert.command.CommandHandler;
+import com.untamedears.JukeAlert.command.commands.ClearCommand;
 import com.untamedears.JukeAlert.command.commands.HelpCommand;
 import com.untamedears.JukeAlert.command.commands.InfoCommand;
 import com.untamedears.JukeAlert.group.GroupMediator;
@@ -54,6 +55,7 @@ public class JukeAlert extends JavaPlugin {
 	private void registerCommands() {
 		commandHandler = new CommandHandler();
 		commandHandler.addCommand(new InfoCommand());
+		commandHandler.addCommand(new ClearCommand());
 		commandHandler.addCommand(new HelpCommand());
 	}
 	
