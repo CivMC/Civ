@@ -20,7 +20,7 @@ public class InfoCommand extends PlayerCommand {
 		super("Info");
 		setDescription("Displays information from a Snitch");
 		setUsage("/jainfo");
-		setArgumentRange(0,0);
+		setArgumentRange(0,1);
 		setIdentifier("jainfo");
 	}
 
@@ -30,12 +30,20 @@ public class InfoCommand extends PlayerCommand {
 	           Player player = (Player) sender;
 	           World world = player.getWorld();
 	           
+	           int offset;
+	           
+	           if(args.length != 0 && Integer.parseInt(args[0]) > 0) {
+	        	   offset = Integer.parseInt(args[0]);
+	           } else {
+	        	   offset = 1;
+	           }
+	           
 	           List<Snitch> snitches = plugin.getSnitchManager().getSnitchesByWorld(world);
 	           for (Snitch snitch : snitches) {
 	        	   //Get only first snitch in cuboid
 		           if (snitch.getGroup().isMember(player.getName()) || snitch.getGroup().isFounder(player.getName()) || snitch.getGroup().isModerator(player.getName())) {
 		        	   if (snitch.isWithinCuboid(player.getLocation())) {
-		        		   sendLog(sender, snitch);
+		        		   sendLog(sender, snitch, offset);
 		        		   break;
 			   	       }
 		           }
@@ -49,14 +57,18 @@ public class InfoCommand extends PlayerCommand {
 		
 	}
 	
-	private void sendLog(CommandSender sender, Snitch snitch) {
+	private void sendLog(CommandSender sender, Snitch snitch, int offset) {
 		Player player = (Player)sender;
-		List<String> info = plugin.getJaLogger().getSnitchInfo(snitch.getLoc(), 0);
+		List<String> info = plugin.getJaLogger().getSnitchInfo(snitch.getLoc(), 10*offset);
 		
 		player.sendMessage(ChatColor.WHITE + " Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------");
 		player.sendMessage(ChatColor.GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 25), ChatFiller.fillString("Reason", (double) 20), ChatFiller.fillString("Details", (double) 30)));
-		for(String dataEntry : info) {
-			player.sendMessage(dataEntry);
+		if(info != null) {
+			for(String dataEntry : info) {
+				player.sendMessage(dataEntry);
+			}
+		} else {
+			player.sendMessage(ChatColor.AQUA + "Page " + offset + " is empty");
 		}
 	}
 

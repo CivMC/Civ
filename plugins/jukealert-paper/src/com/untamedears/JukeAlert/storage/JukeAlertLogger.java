@@ -149,7 +149,7 @@ public class JukeAlertLogger {
         // LIMIT ?,? means offset followed by max rows to return 
         getSnitchLogStmt = db.prepareStatement(String.format(
             "SELECT * FROM %s"
-            + " WHERE snitch_id=? ORDER BY snitch_log_time ASC LIMIT ?,?",
+            + " WHERE snitch_id=? ORDER BY snitch_log_time DESC LIMIT ?,?",
             snitchDetailsTbl));
         
         // statement to get the ID of a snitch in the main snitchsTbl based on a Location (x,y,z, world)
@@ -287,16 +287,18 @@ public class JukeAlertLogger {
 	                    ResultSet set = getSnitchLogStmt.executeQuery();
 	                    
 	                    didFind = false;
-	                    if (!set.isBeforeFirst() ) {    
-	                    	 System.out.println("No data"); 
-	                    } 
-	                    while (set.next()) {
-	                    	didFind = true;
-	                    	// TODO: need a function to create a string based upon what things we have / don't have in this result set
-	                    	// so like if we have a block place action, then we include the x,y,z, but if its a KILL action, then we just say
-	                    	// x killed y, etc
-	                    	info.add(createInfoString(set));
-	                        
+	                    if (!set.isBeforeFirst() ) {  
+	                    	info = null;
+	                    	System.out.println("No data"); 
+	                    } else {
+		                    while (set.next()) {
+		                    	didFind = true;
+		                    	// TODO: need a function to create a string based upon what things we have / don't have in this result set
+		                    	// so like if we have a block place action, then we include the x,y,z, but if its a KILL action, then we just say
+		                    	// x killed y, etc
+		                    	info.add(createInfoString(set));
+		                        
+		                    }
 	                    }
 	                    if (!didFind) {
 	                    	// Output something like 'no snitch action recorded" or something
@@ -312,8 +314,6 @@ public class JukeAlertLogger {
         		 this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details! loc: " + loc, ex1);
         	}
         	
-        	
-
         return info;
     }
     
