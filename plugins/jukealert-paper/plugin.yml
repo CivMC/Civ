@@ -8,4 +8,7 @@ commands:
   jainfo:
     description: Display information from a Snitch
     usage: /jainfo
+  jaclear:
+    description: Clear information from a Snitch
+    usage: /jaclear
 depend: [Citadel]

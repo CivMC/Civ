@@ -54,7 +54,7 @@ public class InfoCommand extends PlayerCommand {
 		List<String> info = plugin.getJaLogger().getSnitchInfo(snitch.getLoc(), 0);
 		
 		player.sendMessage(ChatColor.WHITE + " Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------");
-		player.sendMessage(ChatColor.DARK_GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 25), ChatFiller.fillString("Reason", (double) 20), ChatFiller.fillString("Details", (double) 30)));
+		player.sendMessage(ChatColor.GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 25), ChatFiller.fillString("Reason", (double) 20), ChatFiller.fillString("Details", (double) 30)));
 		for(String dataEntry : info) {
 			player.sendMessage(dataEntry);
 		}
