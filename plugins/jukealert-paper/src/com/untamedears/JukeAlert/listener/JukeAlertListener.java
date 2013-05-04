@@ -149,11 +149,10 @@ public class JukeAlertListener implements Listener {
         Player killed = event.getEntity();
         Player killer = killed.getKiller();
 
-        Player player = (Player) killer;
-        List<Snitch> snitches = snitchManager.getSnitchesByWorld(player.getWorld());
+        List<Snitch> snitches = snitchManager.getSnitchesByWorld(killer.getWorld());
         for (Snitch snitch : snitches) {
-        	if (!snitch.getGroup().isMember(player.getName()) && !snitch.getGroup().isFounder(player.getName()) && !snitch.getGroup().isModerator(player.getName())) {
-	            if (snitch.checkProximity(player.getName())) {
+        	if (!snitch.getGroup().isMember(killer.getName()) && !snitch.getGroup().isFounder(killer.getName()) && !snitch.getGroup().isModerator(killer.getName())) {
+	            if (snitch.checkProximity(killer.getName())) {
 	                plugin.getJaLogger().logSnitchPlayerKill(snitch, killer, killed);
 	            }
             }

@@ -13,7 +13,7 @@ public class Snitch {
     private Location location;
     private Faction group;
     private int x, y, z, minx, maxx, miny, maxy, minz, maxz, radius;
-    private List<String> inProximity = new ArrayList<>(); //Contains all the players who are within the proximity of the snitch.
+    private List<String> inProximity = new ArrayList<String>(); //Contains all the players who are within the proximity of the snitch.
 
     public Snitch(Location loc, Faction group) {
         this.group = group;
