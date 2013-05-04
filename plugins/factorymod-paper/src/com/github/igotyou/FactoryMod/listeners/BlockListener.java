@@ -24,8 +24,8 @@ import com.github.igotyou.FactoryMod.managers.ProductionManager;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.untamedears.citadel.entity.PlayerReinforcement;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.inventory.FurnaceExtractEvent;
+import org.bukkit.event.entity.ExpBottleEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 
 public class BlockListener implements Listener
 {
@@ -274,20 +274,24 @@ public class BlockListener implements Listener
 		}
 	}
 	@EventHandler
-	public void onSmelt(FurnaceExtractEvent j) 
+	public void onExperienceGain(PlayerExpChangeEvent j)
 	{
-		if(FactoryModPlugin.DISABLE_EXPERIENCE_DROPS)
+		if(FactoryModPlugin.DISABLE_EXPERIENCE)
 		{
-			j.setExpToDrop(0);
+			j.setAmount(0);			
 		}
-	}	
+		return;
+	}
+	
 	@EventHandler
-	public void onMonsterDrop(EntityDeathEvent j)
+	public void onXPThrow(ExpBottleEvent j)
 	{
-		if(FactoryModPlugin.DISABLE_EXPERIENCE_DROPS)
+		if(FactoryModPlugin.DISABLE_EXPERIENCE)
 		{
-			j.setDroppedExp(0);
+			Player player=(Player)j.getEntity().getShooter();
+			player.giveExp(1);
 		}
+		return;
 	}
 	private Location westLoc(Location loc)
 	{
