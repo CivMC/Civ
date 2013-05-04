@@ -102,7 +102,7 @@ public class FactoryModPlugin extends JavaPlugin
 		//If factories are removed upon destruction of their blocks
 		DESTRUCTIBLE_FACTORIES=config.getBoolean("general.destructible_factories",false);		
 		//Check if XP drops should be disabled
-		DISABLE_EXPERIENCE=config.getBoolean("general.disable_experience_drops",false);
+		DISABLE_EXPERIENCE=config.getBoolean("general.disable_experience",false);
 		//How frequently factories are updated
 		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle",20);
 		//How frequently maintenance is update

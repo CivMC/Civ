@@ -291,7 +291,6 @@ public class BlockListener implements Listener
 			Player player=(Player)j.getEntity().getShooter();
 			player.giveExp(1);
 		}
-		return;
 	}
 	private Location westLoc(Location loc)
 	{
