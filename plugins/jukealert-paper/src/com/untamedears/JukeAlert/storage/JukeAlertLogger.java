@@ -232,7 +232,6 @@ public class JukeAlertLogger {
     			lastSnitchID = rsKey.getInt("Auto_increment");
     		}
     	} catch (SQLException ex) {
-    		System.out.println(ex);
     		this.plugin.getLogger().log(Level.SEVERE, "Could not get all Snitches from World " + world + "!");
     	}
     	return snitches;
@@ -280,7 +279,7 @@ public class JukeAlertLogger {
     	return info;
     }
     
-    public List<String> getSnitchInfo(int snitchId, int offset) throws SQLException {
+    public List<String> getSnitchInfo(int snitchId, int offset) {
     	List<String> info = new ArrayList<String>();
     	
     	try {
@@ -302,8 +301,6 @@ public class JukeAlertLogger {
             }
         } catch (SQLException ex) {
             this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details from the snitchesDetail table using the snitch id " + snitchId, ex);
-            // rethrow
-            throw ex;
         }
     	
     	return info;
@@ -344,13 +341,13 @@ public class JukeAlertLogger {
     	return completed;
     }
     
-    public Boolean deleteSnitchInfo(int snitchId) throws SQLException {
+    public Boolean deleteSnitchInfo(int snitchId) {
     	try {
            deleteSnitchLogStmt.setInt(1, snitchId);
            return deleteSnitchLogStmt.execute();
         } catch (SQLException ex) {
             this.plugin.getLogger().log(Level.SEVERE, "Could not delete Snitch Details from the snitchesDetail table using the snitch id " + snitchId, ex);
-            throw ex;
+            return false;
         }
     }
 

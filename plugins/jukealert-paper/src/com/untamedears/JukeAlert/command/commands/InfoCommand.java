@@ -27,8 +27,11 @@ public class InfoCommand extends PlayerCommand {
 	           Player player = (Player) sender;
 	           World world = player.getWorld();
 	           
-	           int offset = Integer.parseInt(args[0]);
-	           if(offset < 2) {
+	           int offset = 1;
+	           if(args.length > 0) {
+		           offset = Integer.parseInt(args[0]);
+	           }
+	           if(offset < 1) {
 	        	   offset = 1;
 	           }
 	           
@@ -53,7 +56,7 @@ public class InfoCommand extends PlayerCommand {
 	
 	private void sendLog(CommandSender sender, Snitch snitch, int offset) {
 		Player player = (Player)sender;
-		List<String> info = plugin.getJaLogger().getSnitchInfo(snitch.getLoc(), 10*offset);
+		List<String> info = plugin.getJaLogger().getSnitchInfo(snitch.getId(), 10*offset);
 		
 		player.sendMessage(ChatColor.WHITE + " Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------");
 		player.sendMessage(ChatColor.GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 25), ChatFiller.fillString("Reason", (double) 20), ChatFiller.fillString("Details", (double) 30)));
