@@ -90,11 +90,12 @@ public class FactoryModPlugin extends JavaPlugin
 		production_Properties = new HashMap<String, ProductionProperties>();
 		productionRecipes = new HashMap<String,ProductionRecipe>();
 		FileConfiguration config = getConfig();
+		if(getConfig().getDefaults().getBoolean("copy_defaults", true))
+		{
+			saveResource("config.yml",true);
+		}
 		this.saveDefaultConfig();
-		this.reloadConfig();
-		config = getConfig();
-		//this.saveDefaultConfig();
-		this.reloadConfig();
+		reloadConfig();
 		config = getConfig();
 		//how often should the managers save?
 		SAVE_CYCLE = config.getInt("general.save_cycle");
