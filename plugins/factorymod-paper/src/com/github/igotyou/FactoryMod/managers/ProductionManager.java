@@ -152,7 +152,11 @@ public class ProductionManager implements Manager
 			int energyTimer = Integer.parseInt(parts[14]);
 			int currentRecipeNumber = Integer.parseInt(parts[15]);
 			double maintenance = Double.parseDouble(parts[16]);
-			int dateDisrepair  = Integer.parseInt(parts[17]);
+			int dateDisrepair  = 99999999;
+			if(parts.length==18)
+			{
+				dateDisrepair  = Integer.parseInt(parts[17]);
+			}
 			if(FactoryModPlugin.production_Properties.containsKey(subFactoryType))
 			{
 				List<ProductionRecipe> recipes=new ArrayList<ProductionRecipe>();
