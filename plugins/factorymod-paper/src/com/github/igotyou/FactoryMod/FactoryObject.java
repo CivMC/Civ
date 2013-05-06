@@ -29,7 +29,7 @@ public class FactoryObject
 	//the diffrent factory types, NOTE: these are not the sub-factory types, these are the main types.
 	public enum FactoryType
 	{
-		PRODUCTION, POWER
+		PRODUCTION
 	}
 	
 	
@@ -43,6 +43,7 @@ public class FactoryObject
 	protected String subFactoryType;//the SUBfactory type(the ones loaded from the config file)
 	protected Properties factoryProperties; // The properties of this factory type and tier
 	protected boolean upgraded; // Whether the tier has recently upgraded
+	protected int dateDisrepair; // The date at which the factory last reached 0 maintenance, yyyymmdd, 99999999 represents a unbroken factory
 	
 	/**
 	 * Constructor
@@ -57,6 +58,7 @@ public class FactoryObject
 		this.factoryType = factoryType;
 		this.subFactoryType = subFactoryType;
 		this.upgraded = false;
+		this.dateDisrepair=99999999;
 		if (this.isWhole())
 		{
 			initializeInventory();
@@ -77,6 +79,7 @@ public class FactoryObject
 		this.factoryType = factoryType;
 		this.subFactoryType = subFactoryType;
 		this.upgraded = false;
+		this.dateDisrepair=99999999;
 		if (this.isWhole())
 		{
 			initializeInventory();
@@ -215,5 +218,13 @@ public class FactoryObject
 		}
 	}
 	return false;
+	}
+	
+	/**
+	 * returns the date at which the factory went into disrepair
+	 */
+	public int getDateDisrepair()
+	{
+		return dateDisrepair;
 	}
 }

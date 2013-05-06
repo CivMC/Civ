@@ -4,6 +4,30 @@ import pydot
 
 class ParseConfig:
     @staticmethod
+    def prettyList(config,filename='prettylist.txt'):
+        myfile=open(filename,'w')
+        myfile.write('\n\n##Factory List')
+        sortedFactoryKeys=config['factories'].keys()
+        sortedFactoryKeys.sort()
+        for type,name in [('Enchanting','Cauldron'),('Food','Bakery'),('Equipment','Smithy')]:
+            myfile.write('\n\n###'+type)
+            for key in sortedFactoryKeys:
+                factory=config['factories'][key]
+                if name in factory.name:
+                    myfile.write('\n\n**'+factory.name+'**')
+                    for input in factory.inputs:
+                        myfile.write(' - '+input.getShortText())
+                    for recipe in factory.outputRecipes:
+                        myfile.write('\n\n\t')
+                        for output in recipe.outputs:
+                            myfile.write(str(output.amount)+' '+output.name)
+                        myfile.write(' for ')
+                        for input in recipe.inputs:
+                            myfile.write(str(input.amount)+' '+input.name)
+                            if(recipe.inputs.index(input)!=len(recipe.inputs)-1):
+                                myfile.write(', ')
+        
+    @staticmethod
     def parseItems(itemsConfig):
         items=[]
         for itemConfig in itemsConfig.items():
@@ -22,12 +46,15 @@ class ParseConfig:
         from shutil import copyfile
         copyfile('template.yml',filename)
         myfile=open(filename,'a')
+        myfile.write('copy_defaults: '+config['copy_defaults'])
         myfile.write('\ngeneral:')
         myfile.write('\n  central_block: '+config['central_block'])
         myfile.write('\n  save_cycle: '+config['save_cycle'])
         myfile.write('\n  return_build_materials: '+config['return_build_materials'])
         myfile.write('\n  citadel_enabled: '+config['citadel_enabled'])
         myfile.write('\n  factory_interaction_material: '+config['factory_interaction_material'])
+        myfile.write('\n  disable_experience: '+config['disable_experience'])
+        myfile.write('\n  disrepair_length: '+config['disrepair_length'])
         myfile.write('\nproduction_general:')
         myfile.write('\n  update_cycle: '+config['update_cycle'])
         myfile.write('\n  maintenance_cycle: '+config['maintenance_cycle'])
@@ -36,8 +63,10 @@ class ParseConfig:
         for disabled_recipe in config['disabled_recipes']:
             myfile.write('\n  - '+disabled_recipe)
         myfile.write('\nproduction_factories:')
-        for factory in config['factories'].values():
-            myfile.write(factory.cOutput())
+        sortedFactoryKeys=config['factories'].keys()
+        sortedFactoryKeys.sort()
+        for key in sortedFactoryKeys:
+            myfile.write(config['factories'][key].cOutput())
         myfile.write('\nproduction_recipes:')
         for recipe in config['recipes'].values():
             myfile.write(recipe.cOutput())

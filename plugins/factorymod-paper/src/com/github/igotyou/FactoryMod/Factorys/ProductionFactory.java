@@ -16,6 +16,7 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResu
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,8 +28,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	private int currentProductionTimer = 0;//The "production timer", which trachs for how long the factory has been producing the selected recipe
 	private int currentEnergyTimer = 0;//Time since last energy consumption(if there's no lag, it's in seconds)
 	private int currentRecipeNumber = 0;//the array index of the current recipe
-	public static final FactoryType FACTORY_TYPE = FactoryType.PRODUCTION;//the factrys type
-	public String SUB_FACTORY_TYPE;//the sub-factory Type
+	public static final FactoryType FACTORY_TYPE = FactoryType.PRODUCTION;//the factory's type
 	private List<ProductionRecipe> recipes;
 	private int totalMaintenance;
 	private double currentMaintenance;
@@ -40,12 +40,12 @@ public class ProductionFactory extends FactoryObject implements Factory
 			, String subFactoryType)
 	{
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, ProductionFactory.FACTORY_TYPE, subFactoryType);
-		this.SUB_FACTORY_TYPE = subFactoryType;
 		this.productionFactoryProperties = (ProductionProperties) factoryProperties;
 		this.recipes=new ArrayList<> (productionFactoryProperties.getRecipes());
 		this.setRecipeToNumber(0);
 		updateMaintenance();
 		this.currentMaintenance=0.0;
+		this.dateDisrepair=99999999;
 	}
 
 	/**
@@ -53,10 +53,9 @@ public class ProductionFactory extends FactoryObject implements Factory
 	 */
 	public ProductionFactory (Location factoryLocation, Location factoryInventoryLocation, Location factoryPowerSource,
 			String subFactoryType, boolean active, int currentProductionTimer, int currentEnergyTimer,  List<ProductionRecipe> recipes,
-			int currentRecipeNumber,double currentMaintenance)
+			int currentRecipeNumber,double currentMaintenance,int dateDisrepair)
 	{
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, ProductionFactory.FACTORY_TYPE, subFactoryType);
-		this.SUB_FACTORY_TYPE = subFactoryType;
 		this.productionFactoryProperties = (ProductionProperties) factoryProperties;
 		this.active = active;
 		this.currentEnergyTimer = currentEnergyTimer;
@@ -65,6 +64,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 		this.setRecipeToNumber(currentRecipeNumber);
 		updateMaintenance();
 		this.currentMaintenance=currentMaintenance;
+		this.dateDisrepair=dateDisrepair;
 	}
 	
 	/**
@@ -150,7 +150,26 @@ public class ProductionFactory extends FactoryObject implements Factory
 			}
 		}	
 	}
-
+	//Repairs the factory
+	private void repair(int amountRepaired)
+	{
+		currentMaintenance-=amountRepaired;
+		if(currentMaintenance<0)
+		{
+			currentMaintenance=0;
+		}
+		updateDateDisrepair();
+	}
+	//updates the state of disrepair of the factori
+	private void updateDateDisrepair()
+	{
+		// if the current date is smaller that the dateDisrepair this signifies the factory is broken for the first time, so record the dateDisrepair
+		int currentDate=Integer.valueOf(FactoryModPlugin.dateFormat.format(new Date()));
+		if (currentDate<dateDisrepair)
+		{
+			dateDisrepair=currentDate;
+		}
+	}
 	/**
 	 * Turns the factory on
 	 */
@@ -410,10 +429,11 @@ public class ProductionFactory extends FactoryObject implements Factory
 			currentMaintenance+=degradation;
 		}
 		//If totalMaintenance was exceeded set currentMaintance back to it
-		if(currentMaintenance>totalMaintenance)
+		if(currentMaintenance>=totalMaintenance)
 		{
 			currentMaintenance=totalMaintenance;
 		}
+		updateDateDisrepair();
 	}
 	/**
 	 * Recalculate the total maintenance of the factory
@@ -539,6 +559,11 @@ public class ProductionFactory extends FactoryObject implements Factory
 			responses.add(new InteractionResponse(InteractionResult.SUCCESS,response));
 		}
 		return responses;
+	}
+	
+	public int getDateDisrepair()
+	{
+		return dateDisrepair;
 	}
 	
 }

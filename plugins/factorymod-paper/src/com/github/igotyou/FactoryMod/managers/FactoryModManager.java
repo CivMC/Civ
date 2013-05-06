@@ -184,7 +184,7 @@ public class FactoryModManager
 	}
 	
 	/**
-	 * Save OreGins to file every SAVE_CYCLE minutes.
+	 * Save Factories to file every SAVE_CYCLE minutes.
 	 */
 	private void periodicSaving()
 	{
@@ -199,7 +199,7 @@ public class FactoryModManager
 	}
 	
 	/**
-	 * Returns the OreGin Saves file
+	 * Returns the Factory Saves file
 	 */
 	public File getSavesFile(String fileName)
 	{

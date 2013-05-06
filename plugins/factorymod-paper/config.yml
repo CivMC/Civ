@@ -70,14 +70,15 @@
 #       data: 0 (data value of the item stack
 #       display_name: (display name of the item, null by default)
 #       lore: (lore of the item, null by default)
-
+copy_defaults: true
 general:
   central_block: WORKBENCH
   save_cycle: 15
   return_build_materials: false
   citadel_enabled: true
   factory_interaction_material: STICK
-  disable_experience_drops: true
+  disable_experience: true
+  disrepair_length: 15
 production_general:
   update_cycle: 20
   maintenance_cycle: 6000
@@ -112,26 +113,6 @@ production_factories:
         amount: 270
     recipes:
       - Bread
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
-  Cauldron:
-    name: Cauldron
-    fuel:
-      Charcoal:
-        material: COAL
-        durability: 1
-    inputs:
-      Stick:
-        material: STICK
-        amount: 5
-    recipes:
-      - XP_Bottle_0
-      - XP_Bottle_1
-      - XP_Bottle_2
-      - XP_Bottle_3
-      - XP_Bottle_4
     maintenance_inputs:
       Charcoal:
         material: COAL
@@ -234,6 +215,25 @@ production_factories:
     maintenance_inputs:
       Diamond:
         material: DIAMOND
+  Diamond_Cauldron:
+    name: Diamond Cauldron
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Diamond:
+        material: DIAMOND
+        amount: 20
+    recipes:
+      - Diamond_XP_Bottle_0
+      - Diamond_XP_Bottle_1
+      - Diamond_XP_Bottle_2
+      - Diamond_XP_Bottle_3
+    maintenance_inputs:
+      Charcoal:
+        material: COAL
+        durability: 1
   Diamond_Chestplate_Smithy:
     name: Diamond Chestplate Smithy
     fuel:
@@ -339,6 +339,23 @@ production_factories:
     maintenance_inputs:
       Diamond:
         material: DIAMOND
+  Emerald_Cauldron:
+    name: Emerald Cauldron
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Emerald:
+        material: EMERALD
+        amount: 20
+    recipes:
+      - Emerald_XP_Bottle_0
+      - Emerald_XP_Bottle_1
+    maintenance_inputs:
+      Charcoal:
+        material: COAL
+        durability: 1
   Grilled_Pork_Bakery:
     name: Grilled Pork Bakery
     fuel:
@@ -490,6 +507,25 @@ production_factories:
     maintenance_inputs:
       Iron Ingot:
         material: IRON_INGOT
+  Wood_Cauldron:
+    name: Wood Cauldron
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Stick:
+        material: STICK
+        amount: 64
+    recipes:
+      - Wood_XP_Bottle_0
+      - Wood_XP_Bottle_1
+      - Wood_XP_Bottle_2
+      - Wood_XP_Bottle_3
+    maintenance_inputs:
+      Charcoal:
+        material: COAL
+        durability: 1
 production_recipes:
   Iron_Spade:
     name: Forge Iron Spade.
@@ -521,6 +557,52 @@ production_recipes:
       Iron Leggings:
         material: IRON_LEGGINGS
         amount: 10
+  Diamond_XP_Bottle_1:
+    name: Brew XP Bottles  - 2
+    inputs:
+      Glass Bottle:
+        material: GLASS_BOTTLE
+      Yellow Flower:
+        material: YELLOW_FLOWER
+      Potato:
+        material: POTATO_ITEM
+        amount: 4
+      Sugar Cane:
+        material: SUGAR_CANE
+        amount: 3
+      Raw Chicken:
+        material: RAW_CHICKEN
+      Spider Eye:
+        material: SPIDER_EYE
+        amount: 2
+      Brown Mushroom:
+        material: BROWN_MUSHROOM
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
+  Diamond_XP_Bottle_2:
+    name: Brew XP Bottles  - 3
+    inputs:
+      Glass Bottle:
+        material: GLASS_BOTTLE
+      Red Rose:
+        material: RED_ROSE
+      Carrot:
+        material: CARROT_ITEM
+        amount: 4
+      Melon Block:
+        material: MELON_BLOCK
+        amount: 3
+      Raw Beef:
+        material: RAW_BEEF
+      Bone:
+        material: BONE
+        amount: 2
+      Nether Warts:
+        material: NETHER_WARTS
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
   Diamond_Pickaxe:
     name: Forge Diamond Pickaxe.
     inputs:
@@ -531,6 +613,17 @@ production_recipes:
       Diamond Pickaxe:
         material: DIAMOND_PICKAXE
         amount: 10
+  Wood_XP_Bottle_0:
+    name: Brew XP Bottles  - 1
+    inputs:
+      Glass Bottle:
+        material: GLASS_BOTTLE
+      Wheat:
+        material: WHEAT
+        amount: 30
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
   Baked_Potato:
     name: Baked Potato
     inputs:
@@ -541,6 +634,29 @@ production_recipes:
       Baked Potato:
         material: BAKED_POTATO
         amount: 64
+  Wood_XP_Bottle_2:
+    name: Brew XP Bottles  - 3
+    inputs:
+      Glass Bottle:
+        material: GLASS_BOTTLE
+      Potato:
+        material: POTATO_ITEM
+        amount: 30
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
+  Wood_XP_Bottle_3:
+    name: Brew XP Bottles  - 4
+    inputs:
+      Glass Bottle:
+        material: GLASS_BOTTLE
+      Cocoa:
+        material: INK_SACK
+        amount: 30
+        durability: 3
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
   Iron_Hoe:
     name: Forge Iron Hoe.
     inputs:
@@ -551,73 +667,106 @@ production_recipes:
       Iron Hoe:
         material: IRON_HOE
         amount: 10
-  XP_Bottle_1:
-    name: Brew XP Bottles  - 2
-    inputs:
-      Potato:
-        material: POTATO_ITEM
-        amount: 30
-    outputs:
-      Exp Bottle:
-        material: EXP_BOTTLE
-        amount: 5
-  XP_Bottle_0:
+  Emerald_XP_Bottle_0:
     name: Brew XP Bottles  - 1
     inputs:
+      Glass Bottle:
+        material: GLASS_BOTTLE
+        amount: 4
+      Red Rose:
+        material: RED_ROSE
       Wheat:
         material: WHEAT
-        amount: 30
-    outputs:
-      Exp Bottle:
-        material: EXP_BOTTLE
-        amount: 5
-  XP_Bottle_3:
-    name: Brew XP Bottles  - 4
-    inputs:
-      Wheat:
-        material: WHEAT
-        amount: 5
-      Potato:
-        material: POTATO_ITEM
-        amount: 5
+        amount: 4
       Cactus:
         material: CACTUS
-      Cocoa:
-        material: INK_SACK
-        durability: 3
-    outputs:
-      Exp Bottle:
-        material: EXP_BOTTLE
-        amount: 5
-  XP_Bottle_2:
-    name: Brew XP Bottles  - 3
-    inputs:
-      Wheat:
-        material: WHEAT
-        amount: 10
-      Potato:
-        material: POTATO_ITEM
-        amount: 10
-    outputs:
-      Exp Bottle:
-        material: EXP_BOTTLE
-        amount: 5
-  XP_Bottle_4:
-    name: Brew XP Bottles  - 5
-    inputs:
+        amount: 3
+      Pork:
+        material: PORK
+      Rotten Flesh:
+        material: ROTTEN_FLESH
+        amount: 2
+      Red Mushroom:
+        material: RED_MUSHROOM
+      Carrot:
+        material: CARROT_ITEM
+        amount: 4
+      Melon Block:
+        material: MELON_BLOCK
+        amount: 3
+      Raw Beef:
+        material: RAW_BEEF
+      Bone:
+        material: BONE
+        amount: 2
       Nether Warts:
         material: NETHER_WARTS
-      Pumpkin:
-        material: PUMPKIN
-      Cactus:
-        material: CACTUS
-      Cocoa:
-        material: INK_SACK
-        durability: 3
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
-        amount: 5
+        amount: 4
+  Emerald_XP_Bottle_1:
+    name: Brew XP Bottles  - 2
+    inputs:
+      Glass Bottle:
+        material: GLASS_BOTTLE
+        amount: 4
+      Yellow Flower:
+        material: YELLOW_FLOWER
+      Potato:
+        material: POTATO_ITEM
+        amount: 4
+      Sugar Cane:
+        material: SUGAR_CANE
+        amount: 3
+      Raw Chicken:
+        material: RAW_CHICKEN
+      Spider Eye:
+        material: SPIDER_EYE
+        amount: 2
+      Red Mushroom:
+        material: RED_MUSHROOM
+      Cocoa:
+        material: INK_SACK
+        amount: 4
+        durability: 3
+      Pumpkin:
+        material: PUMPKIN
+        amount: 3
+      Raw Fish:
+        material: RAW_FISH
+      Spider Eye:
+        material: SPIDER_EYE
+        amount: 2
+      Brown Mushroom:
+        material: BROWN_MUSHROOM
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
+        amount: 4
+  Diamond_XP_Bottle_0:
+    name: Brew XP Bottles  - 1
+    inputs:
+      Glass Bottle:
+        material: GLASS_BOTTLE
+      Red Rose:
+        material: RED_ROSE
+      Wheat:
+        material: WHEAT
+        amount: 4
+      Cactus:
+        material: CACTUS
+        amount: 3
+      Pork:
+        material: PORK
+      Rotten Flesh:
+        material: ROTTEN_FLESH
+        amount: 2
+      Red Mushroom:
+        material: RED_MUSHROOM
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
   Diamond_Boots:
     name: Forge Diamond Boots.
     inputs:
@@ -648,6 +797,30 @@ production_recipes:
       Cooked Chicken:
         material: COOKED_CHICKEN
         amount: 64
+  Diamond_XP_Bottle_3:
+    name: Brew XP Bottles  - 4
+    inputs:
+      Glass Bottle:
+        material: GLASS_BOTTLE
+      Yellow Flower:
+        material: YELLOW_FLOWER
+      Cocoa:
+        material: INK_SACK
+        amount: 4
+        durability: 3
+      Pumpkin:
+        material: PUMPKIN
+        amount: 3
+      Raw Fish:
+        material: RAW_FISH
+      Spider Eye:
+        material: SPIDER_EYE
+        amount: 2
+      Brown Mushroom:
+        material: BROWN_MUSHROOM
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
   Iron_Boots:
     name: Forge Iron Boots.
     inputs:
@@ -682,6 +855,17 @@ production_recipes:
       Cookie:
         material: COOKIE
         amount: 512
+  Wood_XP_Bottle_1:
+    name: Brew XP Bottles  - 2
+    inputs:
+      Glass Bottle:
+        material: GLASS_BOTTLE
+      Carrot:
+        material: CARROT_ITEM
+        amount: 30
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
   Diamond_Hoe:
     name: Forge Diamond Hoe.
     inputs:

@@ -16,13 +16,15 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
 import com.github.igotyou.FactoryMod.interfaces.Properties;
-import com.github.igotyou.FactoryMod.listeners.BlockListener;
+import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.managers.FactoryModManager;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 
 public class FactoryModPlugin extends JavaPlugin
@@ -49,8 +51,10 @@ public class FactoryModPlugin extends JavaPlugin
 	public static Material FACTORY_INTERACTION_MATERIAL;
 	public static boolean DESTRUCTIBLE_FACTORIES;
 	public static boolean DISABLE_EXPERIENCE;
+	public static int DISREPAIR_LENGTH;
 	public static int MAINTENANCE_CYCLE;
 	public static double MAINTENANCE_RATE;
+	public static DateFormat dateFormat;
 	
 	public void onEnable()
 	{
@@ -72,7 +76,7 @@ public class FactoryModPlugin extends JavaPlugin
 	{
 		try
 		{
-			getServer().getPluginManager().registerEvents(new BlockListener(manager, manager.getProductionManager()), this);
+			getServer().getPluginManager().registerEvents(new FactoryModListener(manager, manager.getProductionManager()), this);
 		}
 		catch(Exception e)
 		{
@@ -82,11 +86,12 @@ public class FactoryModPlugin extends JavaPlugin
 	
 	public void initConfig()
 	{
+		dateFormat = new SimpleDateFormat("yyyyMMdd");		
 		production_Properties = new HashMap<String, ProductionProperties>();
 		productionRecipes = new HashMap<String,ProductionRecipe>();
 		FileConfiguration config = getConfig();
-		
-		this.saveDefaultConfig();
+		config.options().copyDefaults(config.getDefaults().getBoolean("copy_defaults",true));
+		this.saveConfig();
 		this.reloadConfig();
 		config = getConfig();
 		//how often should the managers save?
@@ -103,6 +108,8 @@ public class FactoryModPlugin extends JavaPlugin
 		DESTRUCTIBLE_FACTORIES=config.getBoolean("general.destructible_factories",false);		
 		//Check if XP drops should be disabled
 		DISABLE_EXPERIENCE=config.getBoolean("general.disable_experience",false);
+		//Period of days before a factory is removed after it falls into disrepair
+		DISREPAIR_LENGTH=config.getInt("general.direpair_length",20);
 		//How frequently factories are updated
 		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle",20);
 		//How frequently maintenance is update

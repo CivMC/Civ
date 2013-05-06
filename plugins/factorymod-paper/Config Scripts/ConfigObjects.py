@@ -101,21 +101,25 @@ class Enchant:
 
         
 class ItemStack:
-           
-    lookup={'Stone':('STONE',0),'Coal':('COAL',0),'Charcoal':('COAL',1),'Iron Block':('IRON_BLOCK',0),'Gold Block':('GOLD_BLOCK',0),'Diamond Block':('DIAMOND_BLOCK',0),'Leather':('LEATHER',0)}
-    lookup.update({'Emerald Block':('EMERALD_BLOCK',0),'Cocoa':('INK_SACK',3)})
-    lookup.update({'Stick':('STICK',0),'Clear Potion':('POTION',7),'Diffuse Potion':('POTION',11),'Artless Potion':('POTION',13),'Suave Potion':('POTION',29),'Bungling Potion':('POTION',23)})
-    def __init__(self,material=None,name=None,amount=defaults['amount'],durability=None,displayName=defaults['displayName'],lore=defaults['lore']):    
-        if material==None and name==None: raise ValueError('Itemstack can\'t lack both a material and name') 
-        self.name=material.replace('_',' ').capitalize() if name==None else name
-        self.material=self.lookup[name][0] if material==None else material
-        if durability!=None:self.durability=durability
-        elif material!=None:self.durability=defaults['durability']
-        else: self.durability=self.lookup[name][1]
+    materials={}
+    
+    def __init__(self,name,material=None,amount=defaults['amount'],durability=None,displayName=defaults['displayName'],lore=defaults['lore']):    
+        self.name=name
+        self.material=material if material!=None else ItemStack.materials[name][1]
+        self.durability=durability if durability!=None else ItemStack.materials[name][3]
         import math 
         self.amount=int(math.ceil(amount))
         self.displayName=displayName
         self.lore=lore
+    @staticmethod
+    def importMaterials(filename='materials.csv'):
+        import csv
+        myfile=open(filename)
+        csvReader=csv.reader(myfile)
+        for line in csvReader:
+            commonName,material,id,durability=line
+            ItemStack.materials[commonName]=(commonName,material,int(id),int(durability))
+    
     def modifyAmount(self,modifier):
         import copy,math
         copy=copy.copy(self)
@@ -136,11 +140,13 @@ class ItemStack:
         out+='' if self.displayName==defaults['displayName'] else ' '+self.displayName
         out+='' if self.lore==defaults['lore'] else ' '+self.lore
         return out
-    
+    def equals(self,otherItemStack):
+        return self.material==otherItemStack.material and self.durability==otherItemStack.durability and self.amount==otherItemStack.amount and self.displayName==otherItemStack.displayName and self.lore==otherItemStack.lore
+ItemStack.importMaterials();   
         
 
-defaults['fuel']=ItemStack('COAL',name='Charcoal',durability=1)
-defaults['maintenanceInputs']=ItemStack('COAL',name='Charcoal',durability=1)
+defaults['fuel']=ItemStack(name='Charcoal')
+defaults['maintenanceInputs']=[ItemStack(name='Charcoal')]
 class Factory:
     def __init__(self,identifier,name=defaults['name'],fuel=defaults['fuel'],fuelTime=defaults['fuelTime'],inputs=None,outputRecipes=None,maintenanceInputs=None):
         self.name=name

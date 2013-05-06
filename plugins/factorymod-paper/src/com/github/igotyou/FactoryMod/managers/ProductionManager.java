@@ -18,7 +18,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
@@ -30,6 +29,7 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResu
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import java.util.Date;
 
 //original file:
 /**
@@ -59,6 +59,7 @@ public class ProductionManager implements Manager
 		producers = new ArrayList<ProductionFactory>();
 		//Set maintenance clock to 0
 		clock=0;
+		cullFactories();
 		updateFactorys();
 	}
 	
@@ -70,7 +71,7 @@ public class ProductionManager implements Manager
 		bufferedWriter.append("\n");		
 		for (ProductionFactory production : producers)
 		{
-			//order: subFactoryType world central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
+			//order: subFactoryType world recipe1,recipe2 central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
 			
 			Location centerlocation = production.getCenterLocation();
 			Location inventoryLoctation = production.getInventoryLocation();
@@ -121,6 +122,8 @@ public class ProductionManager implements Manager
 			bufferedWriter.append(Integer.toString(production.getCurrentRecipeNumber()));
 			bufferedWriter.append(" ");
 			bufferedWriter.append(Double.toString(production.getCurrentMaintenance()));
+			bufferedWriter.append(" ");
+			bufferedWriter.append(Integer.toString(production.getDateDisrepair()));
 			bufferedWriter.append("\n");
 		}
 		bufferedWriter.flush();
@@ -137,14 +140,10 @@ public class ProductionManager implements Manager
 		while ((line = bufferedReader.readLine()) != null)
 		{
 			String parts[] = line.split(" ");
-			//order: subFactoryType recipes world central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
+			//order: subFactoryType world recipe1,recipe2 central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
 			String subFactoryType = parts[0];
 			String recipeNames[] = parts[1].split(",");
-			List<ProductionRecipe> recipes=new ArrayList<ProductionRecipe>();
-			for(String name:recipeNames)
-			{
-				recipes.add(FactoryModPlugin.productionRecipes.get(name));
-			}
+
 			Location centerLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
 			Location inventoryLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[6]), Integer.parseInt(parts[7]), Integer.parseInt(parts[8]));
 			Location powerLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[9]), Integer.parseInt(parts[10]), Integer.parseInt(parts[11]));
@@ -153,8 +152,21 @@ public class ProductionManager implements Manager
 			int energyTimer = Integer.parseInt(parts[14]);
 			int currentRecipeNumber = Integer.parseInt(parts[15]);
 			double maintenance = Double.parseDouble(parts[16]);
-			ProductionFactory production = new ProductionFactory(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, recipes, currentRecipeNumber, maintenance);
-			addFactory(production);
+			int dateDisrepair  = Integer.parseInt(parts[17]);
+			if(FactoryModPlugin.production_Properties.containsKey(subFactoryType))
+			{
+				List<ProductionRecipe> recipes=new ArrayList<ProductionRecipe>();
+				for(String name:recipeNames)
+				{
+					if(FactoryModPlugin.productionRecipes.containsKey(name))
+					{
+						recipes.add(FactoryModPlugin.productionRecipes.get(name));
+					}
+				}
+
+				ProductionFactory production = new ProductionFactory(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, recipes, currentRecipeNumber, maintenance,dateDisrepair);
+				addFactory(production);
+			}
 		}
 		fileInputStream.close();
 	}
@@ -315,6 +327,17 @@ public class ProductionManager implements Manager
 	public void removeFactory(Factory factory) 
 	{
 		producers.remove((ProductionFactory)factory);
+	}
+	public void cullFactories()
+	{
+		int currentDate=Integer.valueOf(FactoryModPlugin.dateFormat.format(new Date()));
+		for (ProductionFactory production: producers)
+		{
+			if(currentDate<(production.getDateDisrepair()+FactoryModPlugin.DISREPAIR_LENGTH))
+			{
+				removeFactory(production);
+			}
+		} 
 	}
 
 	public String getSavesFileName() 
