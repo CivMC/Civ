@@ -232,7 +232,6 @@ public class JukeAlertLogger {
     			lastSnitchID = rsKey.getInt("Auto_increment");
     		}
     	} catch (SQLException ex) {
-    		System.out.println(ex);
     		this.plugin.getLogger().log(Level.SEVERE, "Could not get all Snitches from World " + world + "!");
     	}
     	return snitches;
@@ -280,7 +279,7 @@ public class JukeAlertLogger {
     	return info;
     }
     
-    public List<String> getSnitchInfo(int snitchId, int offset) throws SQLException {
+    public List<String> getSnitchInfo(int snitchId, int offset) {
     	List<String> info = new ArrayList<String>();
     	
     	try {
@@ -302,8 +301,6 @@ public class JukeAlertLogger {
             }
         } catch (SQLException ex) {
             this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details from the snitchesDetail table using the snitch id " + snitchId, ex);
-            // rethrow
-            throw ex;
         }
     	
     	return info;
@@ -344,13 +341,13 @@ public class JukeAlertLogger {
     	return completed;
     }
     
-    public Boolean deleteSnitchInfo(int snitchId) throws SQLException {
+    public Boolean deleteSnitchInfo(int snitchId) {
     	try {
            deleteSnitchLogStmt.setInt(1, snitchId);
            return deleteSnitchLogStmt.execute();
         } catch (SQLException ex) {
             this.plugin.getLogger().log(Level.SEVERE, "Could not delete Snitch Details from the snitchesDetail table using the snitch id " + snitchId, ex);
-            throw ex;
+            return false;
         }
     }
 
@@ -441,6 +438,17 @@ public class JukeAlertLogger {
     	// There is no material or location involved in this event
     	this.logSnitchInfo(snitch, null, null, new Date(), LoggedAction.KILL, player.getPlayerListName(), victim.getPlayerListName());
     }
+    
+    /**
+     * Logs a message that someone ignited a block within the snitch's field
+     * @param snitch - the snitch that recorded this event
+     * @param player - the player that did the ignition
+     * @param block - the block that was ignited
+     */
+    public void logSnitchIgnite(Snitch snitch, Player player, Block block) {
+    	// There is no material or location involved in this event
+    	this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.IGNITED, player.getPlayerListName(), null);
+    }
 
     /**
      * Logs a message that someone entered the snitch's field
@@ -501,8 +509,6 @@ public class JukeAlertLogger {
     	// no victim user in this event
         this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BUCKET_FILL, player.getPlayerListName(), null);
     }
-
-
 
     /**
      * Logs a message that someone used a block within the snitch's field

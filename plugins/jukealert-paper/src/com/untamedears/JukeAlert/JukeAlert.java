@@ -8,6 +8,7 @@ import com.untamedears.JukeAlert.group.GroupMediator;
 import com.untamedears.JukeAlert.listener.JukeAlertListener;
 import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
+import com.untamedears.JukeAlert.manager.PlayerManager;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
 
 import java.util.logging.Level;
@@ -23,6 +24,7 @@ public class JukeAlert extends JavaPlugin {
 	private JukeAlertLogger jaLogger;
 	private ConfigManager configManager;
 	private SnitchManager snitchManager;
+	private PlayerManager playerManager;
 	private CommandHandler commandHandler;
 	private GroupMediator groupMediator;
         
@@ -33,6 +35,7 @@ public class JukeAlert extends JavaPlugin {
 		groupMediator = new GroupMediator();
 		jaLogger = new JukeAlertLogger();
 		snitchManager = new SnitchManager();
+		playerManager = new PlayerManager();
 		registerEvents();
 		registerCommands();
 		snitchManager.loadSnitches();
@@ -73,6 +76,10 @@ public class JukeAlert extends JavaPlugin {
 	
 	public SnitchManager getSnitchManager() {
 		return snitchManager;
+	}
+	
+	public PlayerManager getPlayerManager() {
+		return playerManager;
 	}
 	
 	public GroupMediator getGroupMediator() {
