@@ -14,21 +14,36 @@ defaults['level']=1
 
 import pydot
 
+    
+
 class Recipe:
-    def __init__(self,identifier,name=defaults['name'],time=defaults['time'],inputs=None,upgrades=None,outputs=None,enchants=None,useOnce=defaults['useOnce'],outputRecipes=None,maintenance=defaults['maintenance']):
+    def __init__(self,identifier,name=defaults['name'],time=defaults['time'],inputs=None,upgrades=None,outputs=None,enchantments=None,useOnce=defaults['useOnce'],outputRecipes=None,maintenance=defaults['maintenance']):
         self.identifier=identifier
         self.name=name
         self.time=int(time)
         self.inputs=inputs if inputs!=None else []
         self.upgrades=upgrades if upgrades!=None else []
         self.outputs=outputs if outputs!=None else []
-        self.enchants=enchants if enchants!=None else []
+        self.enchantments=enchantments if enchantments!=None else []
         self.outputRecipes=outputRecipes if outputRecipes!=None else []
         self.useOnce=useOnce
         from math import ceil
         self.maintenance=int(ceil(maintenance)) if maintenance!=None else None
+        self.checkEnchantments()
+    def checkEnchantments(self):
+        removeEnchantments=[]
+        for enchantment in self.enchantments:
+            valid=False
+            for output in self.outputs:
+                for target in enchantment.targets:
+                    if target in output.name:
+                        valid=True
+            if not valid:
+                removeEnchantments.append(enchantment)
+        for enchantment in removeEnchantments:
+            self.enchantments.remove(enchantment)
     def addEnchant(self,enchant):
-        self.enchants.append(enchant)
+        self.enchantments.append(enchant)
     def addOutputRecipe(self,recipe):
         self.outputRecipes.append(recipe)
     def cOutput(self):
@@ -44,9 +59,9 @@ class Recipe:
         if len(self.outputs)>0:
             out+='\n    outputs:'
             for output in self.outputs:out+=output.cOutput('\n      ')        
-        if len(self.enchants)>0:
+        if len(self.enchantments)>0:
             out+='\n    enchantments:'
-            for enchantment in self.enchants:
+            for enchantment in self.enchantments:
                 if enchantment.probability!=0:
                     out+=enchantment.cOutput('\n      ') 
         if len(self.outputRecipes)>0:
@@ -65,7 +80,7 @@ class Recipe:
             out+='U\:'+upgrade.getShortText()+'\l'
         for output in self.outputs:
             out+='O\:'+output.getShortText()+'\l'
-        for enchant in self.enchants:
+        for enchant in self.enchantments:
             if enchant.probability!=0:out+='E\:'+enchant.getShortText()+'\l'
         out+='' if self.maintenance==defaults['maintenance'] else 'M\:'+str(self.maintenance)+'\l'
         return out
@@ -77,17 +92,21 @@ class Recipe:
             edges.append(pydot.Edge(src=self.identifier,dst=outputRecipe.identifier))
         return edges
             
-class Enchant:   
-    lookup={'Durability':'DURABILITY','Efficiency':'DIG_SPEED','Silk Touch':'SILK_TOUCH','Fortune':'LOOT_BONUS_BLOCKS'}
-    lookup.update({'Sharpness':'DAMAGE_ALL','Bane of the Anthropods':'DAMAGE_ANTHROPODS','Knockback':'KNOCKBACK','Fire Aspect':'FIRE_ASPECT','Looting':'LOOT_BONUS_MOBS'})
-    lookup.update({'Power':'ARROW_DAMAGE','Arrow Knockback':'ARROW_KNOCKBACK','Flame':'ARROW_FIRE','Infinite':'ARROW_INFINITE'})
-    lookup.update({'Fire Protection':'PROTECTION_FIRE','Respiration':'OXYGEN','Protection':'PROTECTION_ENVIRONMENTAL','Projectile Protection':'PROTECTION_PROJECTILE','Feather Falling':'PROTECTION_FALL'})
-    def __init__(self,type=None,name=None,level=defaults['level'],probability=defaults['probability']):    
-        if type==None and name==None: raise ValueError('Enchantment can\'t lack both a type and name') 
-        self.name=type if name==None else name
-        self.type=self.lookup[name] if type==None else type        
+class Enchantment:   
+    enchantments={}
+    def __init__(self,name=None,type=None,level=defaults['level'],probability=defaults['probability'],targets=[]):    
+        self.name=name
+        self.type=Enchantment.enchantments[name][0]
         self.level=level
         self.probability=probability
+        self.targets=Enchantment.enchantments[name][1]
+    @staticmethod
+    def importEnchantments(filename='enchantments.csv'):
+        import csv
+        myfile=open(filename)
+        csvReader=csv.reader(myfile)
+        for line in csvReader:
+            Enchantment.enchantments[line[0]]=(line[1],filter(None,line[2:]))
     def cOutput(self,spacer):
         out=spacer+self.name+' '+str(self.level)+':'
         spacer=spacer+'  '
@@ -97,7 +116,6 @@ class Enchant:
         return out
     def getShortText(self):
         return str(int(self.probability*100))+'% '+self.name+' '+str(self.level)
-        
 
         
 class ItemStack:
@@ -142,9 +160,8 @@ class ItemStack:
         return out
     def equals(self,otherItemStack):
         return self.material==otherItemStack.material and self.durability==otherItemStack.durability and self.amount==otherItemStack.amount and self.displayName==otherItemStack.displayName and self.lore==otherItemStack.lore
-ItemStack.importMaterials();   
+ItemStack.importMaterials()
         
-
 defaults['fuel']=ItemStack(name='Charcoal')
 defaults['maintenanceInputs']=[ItemStack(name='Charcoal')]
 class Factory:

@@ -32,7 +32,22 @@ Long Grass,LONG_GRASS,31,0
 Dead Bush,DEAD_BUSH,32,0
 Piston Base,PISTON_BASE,33,0
 Piston Extension,PISTON_EXTENSION,34,0
-Wool,WOOL,35,0
+White Wool,WOOL,35,0
+Orange Wool,WOOL,35,1
+Magenta Wool,WOOL,35,2
+Light Blue Wool,WOOL,35,3
+Yellow Wool,WOOL,35,4
+Lime Wool,WOOL,35,5
+Pink Wool,WOOL,35,6
+Gray Wool,WOOL,35,7
+Light Gray Wool,WOOL,35,8
+Cyan Wool,WOOL,35,9
+Purple Wool,WOOL,35,10
+Blue Wool,WOOL,35,11
+Brown Wool,WOOL,35,12
+Green Wool,WOOL,35,13
+Red Wool,WOOL,35,14
+Black Wool,WOOL,35,15
 Piston Moving Piece,PISTON_MOVING_PIECE,36,0
 Yellow Flower,YELLOW_FLOWER,37,0
 Red Rose,RED_ROSE,38,0
@@ -184,10 +199,10 @@ Diamond Axe,DIAMOND_AXE,279,0
 Stick,STICK,280,0
 Bowl,BOWL,281,0
 Mushroom Soup,MUSHROOM_SOUP,282,0
-Gold Sword,GOLD_SWORD,283,-218
-Gold Spade,GOLD_SPADE,284,-218
-Gold Pickaxe,GOLD_PICKAXE,285,-218
-Gold Axe,GOLD_AXE,286,-218
+Gold Sword,GOLD_SWORD,283,0
+Gold Spade,GOLD_SPADE,284,0
+Gold Pickaxe,GOLD_PICKAXE,285,0
+Gold Axe,GOLD_AXE,286,0
 String,STRING,287,0
 Feather,FEATHER,288,0
 Sulphur,SULPHUR,289,0
@@ -253,7 +268,21 @@ Glowstone Dust,GLOWSTONE_DUST,348,0
 Raw Fish,RAW_FISH,349,0
 Cooked Fish,COOKED_FISH,350,0
 Ink Sack,INK_SACK,351,0
+Rose Red,INK_SACK,351,1
+Cactus Green,INK_SACK,351,2
 Cocoa,INK_SACK,351,3
+Lapis Lazuli,INK_SACK,351,4
+Purple Dye,INK_SACK,351,5
+Cyan Dye,INK_SACK,351,6
+Light Gray Dye,INK_SACK,351,7
+Gray Dye,INK_SACK,351,8
+Pink Dye,INK_SACK,351,9
+Lime Dye,INK_SACK,351,10
+Dandelion Yellow,INK_SACK,351,11
+Light Blue Dye,INK_SACK,351,12
+Magenta Dye,INK_SACK,351,13
+Orange Dye,INK_SACK,351,14
+Bone Meal,INK_SACK,351,15
 Bone,BONE,352,0
 Sugar,SUGAR,353,0
 Cake,CAKE,354,0

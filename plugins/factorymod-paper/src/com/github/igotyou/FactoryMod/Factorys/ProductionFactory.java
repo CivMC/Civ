@@ -116,7 +116,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 					//Remove upgrade and replace it with its upgraded form
 					currentRecipe.getUpgrades().removeOneFrom(getInventory()).addEnchantments(currentRecipe.getEnchantments()).putIn(getInventory());
 					//Adds outputs to chest with appropriate enchantments
-					currentRecipe.getOutputs().addEnchantments(currentRecipe.getEnchantments()).putIn(getInventory());
+					currentRecipe.getOutputs().putInWithEnchantments(getInventory(),currentRecipe);
 					//Adds new recipes to the factory
 					for (int i = 0; i < currentRecipe.getOutputRecipes().size();i++)
 					{
@@ -124,7 +124,6 @@ public class ProductionFactory extends FactoryObject implements Factory
 						{
 							recipes.add(currentRecipe.getOutputRecipes().get(i));
 						}
-
 					}
 					updateMaintenance();
 					//Repairs the factory

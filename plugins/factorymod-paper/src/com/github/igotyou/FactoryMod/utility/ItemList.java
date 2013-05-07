@@ -4,7 +4,7 @@
  */
 package com.github.igotyou.FactoryMod.utility;
 
-import com.github.igotyou.FactoryMod.FactoryModPlugin;
+import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Map;
@@ -140,6 +140,27 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 			inventory.addItem(itemClone);
 		}
 	}
+	public void putInWithEnchantments(Inventory inventory,ProductionRecipe recipe)
+	{
+		for(ItemStack itemStack:this)
+		{
+			int maxStackSize=itemStack.getMaxStackSize();
+			int amount=itemStack.getAmount();
+			while(amount>maxStackSize)
+			{
+				ItemStack itemClone=itemStack.clone();
+				itemClone.addEnchantments(recipe.getEnchantments());
+				itemClone.setAmount(maxStackSize);
+				inventory.addItem(itemClone);
+				amount-=maxStackSize;
+			}
+			ItemStack itemClone=itemStack.clone();
+			itemClone.addEnchantments(recipe.getEnchantments());
+			itemClone.setAmount(amount);
+			inventory.addItem(itemClone);
+		}
+	}
+	
 	public ItemList<NamedItemStack> addEnchantments(Map<Enchantment,Integer> enchantments)
 	{
 		ItemList<NamedItemStack> clonedItemList=(ItemList<NamedItemStack>) this.clone();

@@ -1,4 +1,4 @@
-from ConfigObjects import Recipe, Enchant, ItemStack, Factory, defaults
+from ConfigObjects import Recipe, Enchantment, ItemStack, Factory, defaults
 import ConfigObjects
 import pydot
 
@@ -9,14 +9,14 @@ class ParseConfig:
         myfile.write('\n\n##Factory List')
         sortedFactoryKeys=config['factories'].keys()
         sortedFactoryKeys.sort()
-        for type,name in [('Enchanting','Cauldron'),('Food','Bakery'),('Equipment','Smithy')]:
+        for type,name in [('Enchanting','Cauldron'),('Food','Bakery'),('Equipment','Smithy'),('Wool','Wool')]:
             myfile.write('\n\n###'+type)
             for key in sortedFactoryKeys:
                 factory=config['factories'][key]
                 if name in factory.name:
                     myfile.write('\n\n**'+factory.name+'**')
                     for input in factory.inputs:
-                        myfile.write(' - '+input.getShortText())
+                        myfile.write(' - '+str(input.amount)+' '+input.name)
                     for recipe in factory.outputRecipes:
                         myfile.write('\n\n\t')
                         for output in recipe.outputs:
