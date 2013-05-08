@@ -237,6 +237,10 @@ public class JukeAlertLogger {
     	return snitches;
     }
     
+    public void saveAllSnitches() {
+        //TODO: Save snitches.
+    }
+    
     /**
      * Gets @limit events about that snitch. 
      * @param loc - the location of the snitch

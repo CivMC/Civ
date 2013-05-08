@@ -32,11 +32,7 @@ public class SnitchManager {
     }
 
     public void saveSnitches() {
-        /*for (Entry<World, Map<Location, Snitch>> world : snitches.entrySet()) {
-        	for (Entry<Location, Snitch> location : world.entrySet()) {*/
-
-        //TODO: saveSnitches
-        //logger.saveAllSnitches();
+        logger.saveAllSnitches();
     }
 
     public Map<World, Map<Location, Snitch>> getAllSnitches() {
