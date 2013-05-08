@@ -9,7 +9,7 @@ class ParseConfig:
         myfile.write('\n\n##Factory List')
         sortedFactoryKeys=config['factories'].keys()
         sortedFactoryKeys.sort()
-        for type,name in [('Enchanting','Cauldron'),('Food','Bakery'),('Equipment','Smithy'),('Wool','Wool')]:
+        for type,name in [('Enchanting','Cauldron'),('Smelting','Smelter'),('Food','Bakery'),('Equipment','Smithy'),('Wool','Wool')]:
             myfile.write('\n\n###'+type)
             for key in sortedFactoryKeys:
                 factory=config['factories'][key]

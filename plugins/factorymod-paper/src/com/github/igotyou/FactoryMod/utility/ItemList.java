@@ -4,10 +4,15 @@
  */
 package com.github.igotyou.FactoryMod.utility;
 
+import com.github.igotyou.FactoryMod.FactoryModPlugin;
+import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
@@ -125,22 +130,9 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 	}
 	public void putIn(Inventory inventory)
 	{
-		for(ItemStack itemStack:this)
-		{
-			int maxStackSize=itemStack.getMaxStackSize();
-			int amount=itemStack.getAmount();
-			ItemStack itemClone=itemStack.clone();
-			while(amount>maxStackSize)
-			{
-				itemClone.setAmount(maxStackSize);
-				inventory.addItem(itemClone);
-				amount-=maxStackSize;
-			}
-			itemClone.setAmount(amount);
-			inventory.addItem(itemClone);
-		}
+		putIn(inventory,new ArrayList<ProbabilisticEnchantment>());
 	}
-	public void putInWithEnchantments(Inventory inventory,ProductionRecipe recipe)
+	public void putIn(Inventory inventory,List<ProbabilisticEnchantment> probabilisticEnchaments)
 	{
 		for(ItemStack itemStack:this)
 		{
@@ -149,36 +141,46 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 			while(amount>maxStackSize)
 			{
 				ItemStack itemClone=itemStack.clone();
-				itemClone.addEnchantments(recipe.getEnchantments());
+				Map<Enchantment,Integer> enchantments=getEnchantments(probabilisticEnchaments);
+				for(Enchantment enchantment:enchantments.keySet())
+				{
+					if(enchantment.canEnchantItem(itemStack))
+					{
+						itemClone.addUnsafeEnchantment(enchantment,enchantments.get(enchantment));
+					}
+				}
 				itemClone.setAmount(maxStackSize);
 				inventory.addItem(itemClone);
 				amount-=maxStackSize;
 			}
 			ItemStack itemClone=itemStack.clone();
-			itemClone.addEnchantments(recipe.getEnchantments());
+			Map<Enchantment,Integer> enchantments=getEnchantments(probabilisticEnchaments);
+			for(Enchantment enchantment:enchantments.keySet())
+			{
+				if(enchantment.canEnchantItem(itemStack))
+				{
+					itemClone.addUnsafeEnchantment(enchantment,enchantments.get(enchantment));
+				}
+			}
 			itemClone.setAmount(amount);
 			inventory.addItem(itemClone);
 		}
 	}
 	
-	public ItemList<NamedItemStack> addEnchantments(Map<Enchantment,Integer> enchantments)
+	public HashMap<Enchantment, Integer> getEnchantments(List<ProbabilisticEnchantment> probabilisticEnchaments)
 	{
-		ItemList<NamedItemStack> clonedItemList=(ItemList<NamedItemStack>) this.clone();
-		for(ItemStack itemStack:this)
+		HashMap<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
+		Random rand = new Random();
+		for(int i=0;i<probabilisticEnchaments.size();i++)
 		{
-			for(Enchantment enchantment:enchantments.keySet())
+			if(probabilisticEnchaments.get(i).getProbability()>=rand.nextDouble())
 			{
-				try{
-					itemStack.addEnchantment(enchantment,enchantments.get(enchantment));
-				}
-				catch (Exception e)
-				{
-
-				}
+				enchantments.put(probabilisticEnchaments.get(i).getEnchantment(),probabilisticEnchaments.get(i).getLevel());
+			}
 		}
-		}
-		return clonedItemList;
+		return enchantments;
 	}
+	
 	public String toString()
 	{
 		String returnString="";

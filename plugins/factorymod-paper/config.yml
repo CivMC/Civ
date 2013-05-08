@@ -180,6 +180,22 @@ production_factories:
       Charcoal:
         material: COAL
         durability: 1
+  Coal_Ore_Smelter:
+    name: Coal Ore Smelter
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Coal Ore:
+        material: COAL_ORE
+        amount: 30
+    recipes:
+      - Smelt_Coal_Ore
+    maintenance_inputs:
+      Charcoal:
+        material: COAL
+        durability: 1
   Cooked_Beef_Bakery:
     name: Cooked Beef Bakery
     fuel:
@@ -383,6 +399,22 @@ production_factories:
     maintenance_inputs:
       Diamond:
         material: DIAMOND
+  Diamond_Ore_Smelter:
+    name: Diamond Ore Smelter
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Diamond Ore:
+        material: DIAMOND_ORE
+        amount: 30
+    recipes:
+      - Smelt_Diamond_Ore
+    maintenance_inputs:
+      Charcoal:
+        material: COAL
+        durability: 1
   Diamond_Pickaxe_Smithy:
     name: Diamond Pickaxe Smithy
     fuel:
@@ -537,6 +569,22 @@ production_factories:
     maintenance_inputs:
       Gold Ingot:
         material: GOLD_INGOT
+  Gold_Ore_Smelter:
+    name: Gold Ore Smelter
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Gold Ore:
+        material: GOLD_ORE
+        amount: 30
+    recipes:
+      - Smelt_Gold_Ore
+    maintenance_inputs:
+      Charcoal:
+        material: COAL
+        durability: 1
   Gold_Pickaxe_Smithy:
     name: Gold Pickaxe Smithy
     fuel:
@@ -731,6 +779,22 @@ production_factories:
     maintenance_inputs:
       Iron Ingot:
         material: IRON_INGOT
+  Iron_Ore_Smelter:
+    name: Iron Ore Smelter
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Iron Ore:
+        material: IRON_ORE
+        amount: 30
+    recipes:
+      - Smelt_Iron_Ore
+    maintenance_inputs:
+      Charcoal:
+        material: COAL
+        durability: 1
   Iron_Pickaxe_Smithy:
     name: Iron Pickaxe Smithy
     fuel:
@@ -946,6 +1010,22 @@ production_factories:
       - Black_Wool_Red
       - Brown_Wool_Red
       - Pink_Wool_Red
+    maintenance_inputs:
+      Charcoal:
+        material: COAL
+        durability: 1
+  Stone_Smelter:
+    name: Stone Smelter
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Stone:
+        material: STONE
+        amount: 200
+    recipes:
+      - Smelt_Stone
     maintenance_inputs:
       Charcoal:
         material: COAL
@@ -1194,6 +1274,17 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 10
+  Smelt_Diamond_Ore:
+    name: Smelt Diamond Ore
+    production_time: 16
+    inputs:
+      Diamond Ore:
+        material: DIAMOND_ORE
+        amount: 64
+    outputs:
+      Diamond:
+        material: DIAMOND
+        amount: 160
   Diamond_XP_Bottle_0:
     name: Brew XP Bottles  - 1
     inputs:
@@ -1656,6 +1747,17 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 5
+  Smelt_Coal_Ore:
+    name: Smelt Coal Ore
+    production_time: 16
+    inputs:
+      Coal Ore:
+        material: COAL_ORE
+        amount: 64
+    outputs:
+      Coal:
+        material: COAL
+        amount: 160
   Brown_Wool_Pink:
     name: Dye Brown Wool Pink
     inputs:
@@ -2637,6 +2739,17 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 1
+  Smelt_Gold_Ore:
+    name: Smelt Gold Ore
+    production_time: 16
+    inputs:
+      Gold Ore:
+        material: GOLD_ORE
+        amount: 64
+    outputs:
+      Gold Ingot:
+        material: GOLD_INGOT
+        amount: 80
   Brown_Wool_Yellow:
     name: Dye Brown Wool Yellow
     inputs:
@@ -3275,6 +3388,17 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 11
+  Smelt_Iron_Ore:
+    name: Smelt Iron Ore
+    production_time: 16
+    inputs:
+      Iron Ore:
+        material: IRON_ORE
+        amount: 64
+    outputs:
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 80
   Gold_Helmet:
     name: Forge Gold Helmet.
     inputs:
@@ -3512,6 +3636,17 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 3
+  Smelt_Stone:
+    name: Smelt Stone
+    production_time: 120
+    inputs:
+      Cobblestone:
+        material: COBBLESTONE
+        amount: 560
+    outputs:
+      Stone:
+        material: STONE
+        amount: 640
   Grilled_Pork:
     name: Grilled Pork
     inputs:

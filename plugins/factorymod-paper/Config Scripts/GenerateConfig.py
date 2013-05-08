@@ -47,14 +47,14 @@ def createConfig():
     bulk=64
     eff=0.7
     for output in oi.keys():
-        identifier=output[0].replace(' ','_')
-        inputs[identifier]=[]
+        id=output[0].replace(' ','_')
+        inputs[id]=[]
         for input in oi[output]:
-            inputs[identifier].append(ItemStack(name=input[0],amount=input[1]*bulk*eff))
-        outputs[identifier]=[ItemStack(name=output[0],amount=output[1]*bulk)]
-        recipes[identifier]=Recipe(identifier=identifier,name=output[0],inputs=inputs[identifier],outputs=outputs[identifier])
-        inputs[identifier+'_Bakery']=[itemStack.modifyAmount(20*gMod) for itemStack in inputs[identifier]]
-        factories[identifier+'_Bakery']=Factory(identifier=identifier+'_Bakery',name=output[0]+' Bakery',inputs=inputs[identifier+'_Bakery'],outputRecipes=[recipes[identifier]])
+            inputs[id].append(ItemStack(name=input[0],amount=input[1]*bulk*eff))
+        outputs[id]=[ItemStack(name=output[0],amount=output[1]*bulk)]
+        recipes[id]=Recipe(identifier=id,name=output[0],inputs=inputs[id],outputs=outputs[id])
+        inputs[id+'_Bakery']=[itemStack.modifyAmount(20*gMod) for itemStack in inputs[id]]
+        factories[id+'_Bakery']=Factory(identifier=id+'_Bakery',name=output[0]+' Bakery',inputs=inputs[id+'_Bakery'],outputRecipes=[recipes[id]])
     
     #Enchanting
     inputs['Wood_Cauldron']=[ItemStack(name='Stick',amount=64)]
@@ -76,34 +76,58 @@ def createConfig():
     for cauldron in cauldronInputs.keys():
         i=0
         for recipeInput,bottles in cauldronInputs[cauldron]:
-            identifier=cauldron+'_XP_Bottle_'+str(i)
+            id=cauldron+'_XP_Bottle_'+str(i)
             i+=1
-            inputs[identifier]=[ItemStack(name=name,amount=amount) for name,amount in recipeInput]
-            outputs[identifier]=[ItemStack(name='Exp Bottle',amount=bottles)]
-            recipes[identifier]=Recipe(identifier=identifier,name='Brew XP Bottles  - '+str(i),inputs=inputs[identifier],outputs=outputs[identifier])
-            factories[cauldron+'_Cauldron'].addRecipe(recipes[identifier])
+            inputs[id]=[ItemStack(name=name,amount=amount) for name,amount in recipeInput]
+            outputs[id]=[ItemStack(name='Exp Bottle',amount=bottles)]
+            recipes[id]=Recipe(identifier=id,name='Brew XP Bottles  - '+str(i),inputs=inputs[id],outputs=outputs[id])
+            factories[cauldron+'_Cauldron'].addRecipe(recipes[id])
             
-            inputs[identifier+'_Bulk']=[itemStack.modifyAmount(64) for itemStack in recipes[identifier].inputs]
-            outputs[identifier+'_Bulk']=[itemStack.modifyAmount(64) for itemStack in recipes[identifier].outputs]
-            recipes[identifier+'_Bulk']=Recipe(identifier=identifier+'_Bulk',name='Brew XP Bottles  - '+str(i),inputs=inputs[identifier+'_Bulk'],outputs=outputs[identifier+'_Bulk'],time=128)
-            factories[cauldron+'_Cauldron'].addRecipe(recipes[identifier+'_Bulk'])
+            inputs[id+'_Bulk']=[itemStack.modifyAmount(64) for itemStack in recipes[id].inputs]
+            outputs[id+'_Bulk']=[itemStack.modifyAmount(64) for itemStack in recipes[id].outputs]
+            recipes[id+'_Bulk']=Recipe(identifier=id+'_Bulk',name='Brew XP Bottles  - '+str(i),inputs=inputs[id+'_Bulk'],outputs=outputs[id+'_Bulk'],time=128)
+            factories[cauldron+'_Cauldron'].addRecipe(recipes[id+'_Bulk'])
     #Wool
     inputColors=['White', 'Light Gray', 'Gray', 'Black', 'Brown', 'Pink']
     dyes={'Light Gray':'Light Gray Dye','Gray':'Gray Dye','Black':'Ink Sack','Red':'Rose Red','Orange':'Orange Dye','Yellow':'Dandelion Yellow','Lime':'Lime Dye','Green':'Cactus Green','Cyan':'Cyan Dye','Light Blue':'Light Blue Dye','Blue':'Lapis Lazuli','Purple':'Purple Dye','Magenta':'Magenta Dye','Pink':'Pink Dye','Brown':'Cocoa'}
     for outputColor in dyes.keys():
-        factoryIdentifier=outputColor.replace(' ','_')+'_Wool_Processing'
-        inputs[factoryIdentifier]=[ItemStack(name=dyes[outputColor],amount=256*gMod)]
-        factories[factoryIdentifier]=Factory(identifier=factoryIdentifier,name=outputColor+' Wool Processing',inputs=inputs[factoryIdentifier])
+        factoryId=outputColor.replace(' ','_')+'_Wool_Processing'
+        inputs[factoryId]=[ItemStack(name=dyes[outputColor],amount=256*gMod)]
+        factories[factoryId]=Factory(identifier=factoryId,name=outputColor+' Wool Processing',inputs=inputs[factoryId])
         for inputColor in inputColors:
             if inputColor!=outputColor:
-                identifier=inputColor.replace(' ','_')+'_Wool_'+outputColor
-                inputs[identifier]=[ItemStack(name=inputColor+' Wool',amount=64),ItemStack(name=dyes[outputColor],amount=4)]
-                outputs[identifier]=[ItemStack(name=outputColor+' Wool',amount=64)]
-                recipes[identifier]=Recipe(identifier=identifier,name='Dye '+inputColor+' Wool '+outputColor,inputs=inputs[identifier],outputs=outputs[identifier])
-                factories[factoryIdentifier].addRecipe(recipes[identifier])
+                id=inputColor.replace(' ','_')+'_Wool_'+outputColor
+                inputs[id]=[ItemStack(name=inputColor+' Wool',amount=64),ItemStack(name=dyes[outputColor],amount=4)]
+                outputs[id]=[ItemStack(name=outputColor+' Wool',amount=64)]
+                recipes[id]=Recipe(identifier=id,name='Dye '+inputColor+' Wool '+outputColor,inputs=inputs[id],outputs=outputs[id])
+                factories[factoryId].addRecipe(recipes[id])
     
+    #Smelting
+    #Stone
+    id='Smelt_Stone'
+    inputs[id]=[ItemStack(name='Cobblestone',amount=560)]
+    outputs[id]=[ItemStack(name='Stone',amount=640)]
+    recipes[id]=Recipe(identifier=id,name='Smelt Stone',inputs=inputs[id],outputs=outputs[id],time=120)
+    id='Stone_Smelter'
+    inputs[id]=[ItemStack(name='Stone',amount=2000*gMod)]
+    factories[id]=Factory(identifier=id,name='Stone Smelter',inputs=inputs[id],outputRecipes=[recipes['Smelt_Stone']])
+    #1:2.5 yield
+    ores={'Coal Ore':'Coal','Iron Ore':'Iron Ingot','Gold Ore':'Gold Ingot','Diamond Ore':'Diamond'}
+    mod={'Coal Ore':2.5,'Iron Ore':1.25,'Gold Ore':1.25,'Diamond Ore':2.5}
+    bulk=64
+    for ore in ores.keys():
+        #Recipe
+        id='Smelt_'+ore.replace(' ','_')
+        inputs[id]=[ItemStack(name=ore,amount=bulk)]
+        outputs[id]=[ItemStack(name=ores[ore],amount=mod[ore]*bulk)]
+        recipes[id]=Recipe(identifier=id,name='Smelt '+ore,inputs=inputs[id],outputs=outputs[id],time=bulk/8*2)
+        #Factory
+        id=ore.replace(' ','_')+'_Smelter'
+        inputs[id]=[ItemStack(name=ore,amount=300*gMod)]
+        factories[id]=Factory(identifier=id,name=ore+' Smelter',inputs=inputs[id],outputRecipes=[recipes['Smelt_'+ore.replace(' ','_')]])
     return (factories,recipes)
-        
+    
+    
 def createConfigFile():
     config={}
     config['copy_defaults']='true'

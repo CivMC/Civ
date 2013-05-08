@@ -78,18 +78,9 @@ public class ProductionRecipe implements Recipe
 		return repairs;
 	}
 
-	public HashMap<Enchantment, Integer> getEnchantments()
+	public List<ProbabilisticEnchantment> getEnchantments()
 	{
-		HashMap<Enchantment, Integer> randomEnchantments = new HashMap<Enchantment, Integer>();
-		Random rand = new Random();
-		for(int i=0;i<enchantments.size();i++)
-		{
-			if(enchantments.get(i).getProbability()>=rand.nextDouble())
-			{
-				randomEnchantments.put(enchantments.get(i).getEnchantment(),enchantments.get(i).getLevel());
-			}
-		}
-		return randomEnchantments;
+		return enchantments;
 	}
 	
 	public boolean hasEnchantments()
