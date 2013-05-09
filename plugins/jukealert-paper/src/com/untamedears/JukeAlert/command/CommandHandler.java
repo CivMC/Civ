@@ -10,8 +10,15 @@ public class CommandHandler {
 	private Map<String, Command> commands = new LinkedHashMap<String, Command>();
 
 	public void addCommand(Command command) {
-		String identifier = command.getIdentifier().toLowerCase();
-		this.commands.put(identifier, command);
+		//JM: Is this sanitized enough? Minecraft technically accepts every ASCII character
+		// Maybe do this instead:
+		String identifier = command.getIdentifier();
+		boolean correctForm = identifier.matches("^[0-9a-zA-Z\\._/]*$");
+		if(correctForm){
+			this.commands.put(identifier.toLowerCase(), command)
+		{
+//		String identifier = command.getIdentifier().toLowerCase();
+//		this.commands.put(identifier, command);
 	}
 
 	public boolean dispatch(CommandSender sender, String label, String[] args) {
@@ -24,6 +31,7 @@ public class CommandHandler {
 			}
 			command.execute(sender, args);
 		}
+		//JM: Maybe throw something on bad dispatch
 		return true;
 	}
 
