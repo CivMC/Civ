@@ -50,17 +50,22 @@ public class PlantManager {
 		}
 		
 		String sJdbc = "jdbc:sqlite";
-		String sDbUrl = sJdbc + ":" + config.databaseName;
+		String sDbUrl = sJdbc + ":" + plugin.getDataFolder().getAbsolutePath() + "/" + config.databaseName;
 		int iTimeout = 30;
 		
 		String makeTableChunk = "CREATE TABLE IF NOT EXISTS chunk (id INTEGER PRIMARY KEY AUTOINCREMENT, w INTEGER, x INTEGER, z INTEGER)";
 		String makeTablePlant = "CREATE TABLE IF NOT EXISTS plant (chunkid INTEGER, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER, growth REAL, FOREIGN KEY(chunkid) REFERENCES chunk(id))";
+		String vacuumDatabase = "VACUUM;";
 		
 		try {
 			// connect to the database
 			conn = DriverManager.getConnection(sDbUrl);
 			Statement stmt = conn.createStatement();
 			stmt.setQueryTimeout(iTimeout);
+			
+			// clean up the database
+			stmt.executeUpdate(vacuumDatabase);
+			
 			// make tables if they don't exist
 			stmt.executeUpdate(makeTableChunk);
 			stmt.executeUpdate(makeTablePlant);
@@ -79,7 +84,7 @@ public class PlantManager {
 			
 			// create prepared statements
 			addChunkStmt = conn.prepareStatement("INSERT INTO chunk (w, x, z) VALUES (?, ?, ?)");
-			getLastChunkIdStmt = conn.prepareStatement("SELECT last_insert_rowid()");
+			getLastChunkIdStmt = conn.prepareStatement("SELECT last_insert_rowid()");			
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
@@ -100,15 +105,18 @@ public class PlantManager {
 	////================================================================================= ////
 	
 	private void unloadBatch() {
+		int count = chunksToUnload.size();
+		long start = System.currentTimeMillis();
 		try {
 			conn.setAutoCommit(false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		for (Coords batchCoords:chunksToUnload) {
 			unloadChunk(batchCoords);
 		}
+		
 		
 		try {
 			conn.commit();
@@ -116,6 +124,10 @@ public class PlantManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		long end = System.currentTimeMillis();
+		
+		if (plugin.persistConfig.logDB)
+			plugin.getLogger().info("db save: "+count+" chunks unloaded in "+(end-start)+" ms");
 		
 		chunksToUnload.clear();		
 	}
@@ -154,6 +166,7 @@ public class PlantManager {
 			return false;
 		
 		// finally, just load this thing!
+		long start = System.currentTimeMillis();
 		try {
 			conn.setAutoCommit(false);
 		} catch (SQLException e) {
@@ -166,6 +179,10 @@ public class PlantManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		long end = System.currentTimeMillis();
+		
+		if (plugin.persistConfig.logDB)
+			plugin.getLogger().info("db load chunk["+coords.x+","+coords.z+"]: "+pChunk.getPlantCount()+" entries loaded in "+(end-start)+" ms");
 		
 		return loaded;
 	}
@@ -216,6 +233,8 @@ public class PlantManager {
 		
 		PlantChunk pChunk = null;
 		if (!chunks.containsKey(chunkCoords)) {
+			
+			long start = System.currentTimeMillis();
 			try {
 			addChunkStmt.setInt(1, chunkCoords.w);
 			addChunkStmt.setInt(2, chunkCoords.x);
@@ -229,6 +248,10 @@ public class PlantManager {
 			catch (SQLException e) {
 				e.printStackTrace();
 			}
+			long end = System.currentTimeMillis();
+			
+			if (plugin.persistConfig.logDB)
+				plugin.getLogger().info("db init chunk["+chunkCoords.x+","+chunkCoords.z+"]: in "+(end-start)+" ms");
 		}
 		else
 			pChunk = chunks.get(chunkCoords);

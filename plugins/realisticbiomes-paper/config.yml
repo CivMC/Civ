@@ -4,6 +4,8 @@ realistic_biomes:
  unload_batch_period: 300
  grow_event_load_chance: 0.1
 
+ log_db: true;
+
  # catagories of biomes
  biome_aliases:
   cold: [ICE_PLAINS, ICE_MOUNTAINS, TAIGA, TAIGA_HILLS]
