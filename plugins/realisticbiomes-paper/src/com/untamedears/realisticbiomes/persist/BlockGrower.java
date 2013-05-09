@@ -52,9 +52,8 @@ public class BlockGrower {
 			stage = (byte)(stages - 1);
 			if (block.getType() == Material.COCOA)
 				stage = (byte)((block.getData()%4) + stage*4);
-
+			
 			block.setData((byte) stage);
-			plantManager.remove(coords);
 		}
 	}
 	

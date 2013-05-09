@@ -252,18 +252,10 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		}
 		
 		blockGrower.growBlock(block,coords,plant.getGrowth());
+		if (plant.getGrowth() > 1.0)
+			plantManager.remove(coords);
 		
 		return plant.getGrowth();
-	}
-	
-	public void growBlock(Block block, Coords coords, float growth) {
-		block.setData((byte)(7.0*growth));
-		
-		// if the plant is finished growing, then remove it from the manager
-		if (growth >= 1.0) {
-			block.setData((byte) 7);
-			plantManager.remove(coords);
-		}		
 	}
 	
 	public PlantManager getPlantManager() {
