@@ -21,11 +21,14 @@ public class PlantChunk {
 	int index;
 	
 	boolean loaded;
+	boolean inDatabase;
 	
 	private static PreparedStatement deleteOldDataStmt = null;
 	private static PreparedStatement loadPlantsStmt = null;
 	private static PreparedStatement deleteChunkStmt = null;
+	private static PreparedStatement addChunkStmt = null;
 	private static PreparedStatement savePlantsStmt = null;
+	private static PreparedStatement getLastChunkIdStmt = null;
 	
 	public PlantChunk(RealisticBiomes plugin, Connection conn, int index) {
 		this.plugin = plugin;
@@ -33,12 +36,19 @@ public class PlantChunk {
 		this.index = index;
 		
 		this.loaded = false;
+		this.inDatabase = false;
 
 		if (deleteOldDataStmt == null) {
 			try {
 			deleteOldDataStmt = conn.prepareStatement("DELETE FROM plant WHERE chunkid = ?1");
+			
 			loadPlantsStmt = conn.prepareStatement("SELECT w, x, y, z, date, growth FROM plant WHERE chunkid = ?1");
+			
+			addChunkStmt = conn.prepareStatement("INSERT INTO chunk (w, x, z) VALUES (?, ?, ?)");
+			getLastChunkIdStmt = conn.prepareStatement("SELECT last_insert_rowid()");	
+			
 			savePlantsStmt = conn.prepareStatement("INSERT INTO plant (chunkid, w, x, y, z, date, growth) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)");
+			
 			deleteChunkStmt = conn.prepareStatement("DELETE FROM chunk WHERE id = ?1");
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -82,6 +92,9 @@ public class PlantChunk {
 	}
 
 	public boolean load(Connection conn, Coords coords) {
+		// if the data is being loaded, it is known that this chunk is in the database
+		inDatabase = true;
+		
 		if (loaded)
 			return true;
 		
@@ -132,11 +145,24 @@ public class PlantChunk {
 		return true;
 	}
 	
-	public void unload(Connection conn) {
+	public void unload(Connection conn, Coords chunkCoords) {
 		if (!loaded)
 			return;
 		
 		try {
+			// if this chunk was not in the database, then add it to the database
+			if (!inDatabase) {
+				addChunkStmt.setInt(1, chunkCoords.w);
+				addChunkStmt.setInt(2, chunkCoords.x);
+				addChunkStmt.setInt(3, chunkCoords.z);
+				addChunkStmt.execute();
+				getLastChunkIdStmt.execute();
+				ResultSet rs = getLastChunkIdStmt.getResultSet();
+				index = rs.getInt(1);
+				
+				inDatabase = true;
+			}
+			
 			// first, delete the old data
 			deleteOldDataStmt.setInt(1, index);
 			deleteOldDataStmt.execute();

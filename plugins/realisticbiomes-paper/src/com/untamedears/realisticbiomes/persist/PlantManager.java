@@ -30,9 +30,6 @@ public class PlantManager {
 	// task that periodically unloads chunks in batches
 	private BukkitTask unloadBatchTask;
 	
-	private PreparedStatement addChunkStmt;
-	private PreparedStatement getLastChunkIdStmt;
-	
 	////================================================================================= ////
 	
 	public PlantManager(RealisticBiomes plugin, PersistConfig config) {
@@ -81,10 +78,6 @@ public class PlantManager {
 				PlantChunk pChunk = new PlantChunk(plugin, conn, id);
 				chunks.put(new Coords(w,x,0,z), pChunk);
 			}
-			
-			// create prepared statements
-			addChunkStmt = conn.prepareStatement("INSERT INTO chunk (w, x, z) VALUES (?, ?, ?)");
-			getLastChunkIdStmt = conn.prepareStatement("SELECT last_insert_rowid()");			
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
@@ -199,7 +192,7 @@ public class PlantManager {
 		
 		// finally, actually unload this thing
 		PlantChunk pChunk = chunks.get(coords);		
-		pChunk.unload(conn);
+		pChunk.unload(conn, coords);
 	}
 	
 	////================================================================================= ////
@@ -213,7 +206,7 @@ public class PlantManager {
 		
 		for (Coords coords:chunks.keySet()) {
 			PlantChunk pChunk = chunks.get(coords);
-			pChunk.unload(conn);
+			pChunk.unload(conn, coords);
 		}
 		
 		try {
@@ -232,27 +225,8 @@ public class PlantManager {
 		Coords chunkCoords = new Coords(coords.w, coords.x/16, 0, coords.z/16);
 		
 		PlantChunk pChunk = null;
-		if (!chunks.containsKey(chunkCoords)) {
-			
-			long start = System.currentTimeMillis();
-			try {
-			addChunkStmt.setInt(1, chunkCoords.w);
-			addChunkStmt.setInt(2, chunkCoords.x);
-			addChunkStmt.setInt(3, chunkCoords.z);
-			addChunkStmt.execute();
-			getLastChunkIdStmt.execute();
-			ResultSet rs = getLastChunkIdStmt.getResultSet();
-			int chunkid = rs.getInt(1);
-			pChunk = new PlantChunk(plugin, conn, chunkid);
-			}
-			catch (SQLException e) {
-				e.printStackTrace();
-			}
-			long end = System.currentTimeMillis();
-			
-			if (plugin.persistConfig.logDB)
-				plugin.getLogger().info("db init chunk["+chunkCoords.x+","+chunkCoords.z+"]: in "+(end-start)+" ms");
-		}
+		if (!chunks.containsKey(chunkCoords))
+			pChunk = new PlantChunk(plugin, conn, -1/*dummy index until assigned when added*/);
 		else
 			pChunk = chunks.get(chunkCoords);
 		
