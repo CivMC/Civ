@@ -1,21 +1,27 @@
 package com.untamedears.realisticbiomes.listener;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.logging.Logger;
 
+import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
-import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
+
+import com.untamedears.realisticbiomes.GrowthConfig;
+import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.persist.Coords;
+import com.untamedears.realisticbiomes.persist.Plant;
+import com.untamedears.realisticbiomes.persist.WorldID;
 
 /**
  * Event listener for all plant growth related events. Whenever a crop, plant block, or sapling attempts to grow, its type
@@ -25,227 +31,47 @@ import org.bukkit.inventory.ItemStack;
  *
  */
 public class GrowListener implements Listener {
-
-	/**
-	 *  Maps a {@link Material} or {@link TreeType} to the {@link Biome}s in which it is permitted to grow
-	 */
-	private static Map<Object, Set<Biome>> allowedGrowth = new HashMap<Object, Set<Biome>>();
-
-	static {
-		allowedGrowth.put(	Material.CROPS,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.PLAINS,
-				Biome.FOREST,
-				Biome.FOREST_HILLS,
-				Biome.MUSHROOM_ISLAND,
-				Biome.RIVER,
-				Biome.SKY,
-				Biome.SMALL_MOUNTAINS,
-				Biome.SWAMPLAND,
-				Biome.TAIGA,
-				Biome.TAIGA_HILLS,
-				Biome.EXTREME_HILLS
-			}))
-		);
-		allowedGrowth.put(	Material.MELON_STEM,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.PLAINS,
-				Biome.FOREST,
-				Biome.FOREST_HILLS,
-				Biome.MUSHROOM_ISLAND,
-				Biome.RIVER,
-				Biome.SMALL_MOUNTAINS,
-				Biome.SWAMPLAND,
-				Biome.JUNGLE,
-				Biome.JUNGLE_HILLS,
-				Biome.SKY
-			}))
-		);
-		allowedGrowth.put(	Material.MELON_BLOCK,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.PLAINS,
-				Biome.FOREST,
-				Biome.FOREST_HILLS,
-				Biome.MUSHROOM_ISLAND,
-				Biome.RIVER,
-				Biome.SMALL_MOUNTAINS,
-				Biome.SWAMPLAND,
-				Biome.JUNGLE,
-				Biome.JUNGLE_HILLS,
-				Biome.SKY
-			}))
-		);
-		allowedGrowth.put(	Material.PUMPKIN_STEM,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.PLAINS,
-				Biome.FOREST,
-				Biome.FOREST_HILLS,
-				Biome.MUSHROOM_ISLAND,
-				Biome.RIVER,
-				Biome.SKY,
-				Biome.SMALL_MOUNTAINS,
-				Biome.SWAMPLAND
-			}))
-		);
-		allowedGrowth.put(	Material.PUMPKIN,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.PLAINS,
-				Biome.FOREST,
-				Biome.FOREST_HILLS,
-				Biome.MUSHROOM_ISLAND,
-				Biome.RIVER,
-				Biome.SKY,
-				Biome.SMALL_MOUNTAINS,
-				Biome.SWAMPLAND
-			}))
-		);
-		allowedGrowth.put(	Material.CARROT,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.PLAINS,
-				Biome.FOREST,
-				Biome.FOREST_HILLS,
-				Biome.MUSHROOM_ISLAND,
-				Biome.RIVER
-			}))
-		);
-		allowedGrowth.put(	Material.POTATO,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.PLAINS,
-				Biome.FOREST,
-				Biome.FOREST_HILLS,
-				Biome.MUSHROOM_ISLAND,
-				Biome.RIVER
-			}))
-		);
-		allowedGrowth.put(	Material.COCOA,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.JUNGLE,
-				Biome.JUNGLE_HILLS,
-				Biome.MUSHROOM_ISLAND
-			}))
-		);
-		allowedGrowth.put(	Material.CACTUS,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.DESERT,
-				Biome.DESERT_HILLS,
-				Biome.MUSHROOM_ISLAND
-			}))
-		);
-		allowedGrowth.put(	Material.SUGAR_CANE_BLOCK,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.DESERT,
-				Biome.DESERT_HILLS,
-				Biome.SWAMPLAND,
-				Biome.JUNGLE,
-				Biome.JUNGLE_HILLS,
-				Biome.BEACH,
-				Biome.MUSHROOM_SHORE,
-				Biome.RIVER
-			}))
-		);
-		allowedGrowth.put(	Material.NETHER_WARTS,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.HELL
-			}))
-		);
-		allowedGrowth.put(	Material.SAPLING,
-			// store sapling material only to catch bonemeal interaction; growth handled by tree type
-			new HashSet<Biome>()
-		);
-		allowedGrowth.put(	TreeType.TREE,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.FOREST,
-				Biome.FOREST_HILLS,
-				Biome.EXTREME_HILLS,
-				Biome.JUNGLE,
-				Biome.JUNGLE_HILLS,
-				Biome.SMALL_MOUNTAINS,
-				Biome.SWAMPLAND,
-				Biome.ICE_MOUNTAINS,
-				Biome.ICE_PLAINS,
-				Biome.MUSHROOM_ISLAND,
-				Biome.SKY
-			}))
-		);
-		allowedGrowth.put(	TreeType.BIG_TREE,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.FOREST,
-				Biome.FOREST_HILLS,
-				Biome.MUSHROOM_ISLAND
-			}))
-		);
-		allowedGrowth.put(	TreeType.BIRCH,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.FOREST,
-				Biome.FOREST_HILLS,
-				Biome.MUSHROOM_ISLAND
-			}))
-		);
-		allowedGrowth.put(	TreeType.JUNGLE,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.JUNGLE,
-				Biome.JUNGLE_HILLS,
-				Biome.MUSHROOM_ISLAND
-			}))
-		);
-		allowedGrowth.put(	TreeType.SMALL_JUNGLE,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.JUNGLE,
-				Biome.JUNGLE_HILLS,
-				Biome.MUSHROOM_ISLAND
-			}))
-		);
-		allowedGrowth.put(	TreeType.JUNGLE_BUSH,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.JUNGLE,
-				Biome.JUNGLE_HILLS,
-				Biome.MUSHROOM_ISLAND
-			}))
-		);
-		allowedGrowth.put(	TreeType.REDWOOD,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.TAIGA,
-				Biome.TAIGA_HILLS,
-				Biome.MUSHROOM_ISLAND,
-				Biome.EXTREME_HILLS,
-				Biome.ICE_MOUNTAINS,
-				Biome.ICE_PLAINS
-			}))
-		);
-		allowedGrowth.put(	TreeType.TALL_REDWOOD,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.TAIGA,
-				Biome.TAIGA_HILLS,
-				Biome.MUSHROOM_ISLAND
-			}))
-		);
-		allowedGrowth.put(	TreeType.SWAMP,
-			new HashSet<Biome>( Arrays.asList(new Biome[]{
-				Biome.SWAMPLAND
-			}))
-		);
+	public static Logger LOG = Logger.getLogger("RealisticBiomes");
+	
+	private HashMap<Object, GrowthConfig> growthMap;
+	RealisticBiomes plugin;
+	
+	public GrowListener(RealisticBiomes plugin, HashMap<Object, GrowthConfig> growthMap) {
+		super();
+		
+		this.plugin = plugin;
+		this.growthMap = growthMap;
 	}
 
 	/**
-	 *  Event handler for {@link BlockGrowEvent}. Checks plant growth for proper biomes.
+	 *  Event handler for {@link BlockGrowEvent}. Checks plant growth for proper conditions
 	 * @param event The {@link BlockGrowEvent} being handled
 	 */
 	@EventHandler(ignoreCancelled = true)
-	public void growBlock(BlockGrowEvent event) {
+	public void onBlockGrow(BlockGrowEvent event) {
 		Material m = event.getNewState().getType();
-		Biome b = event.getBlock().getBiome();
-		event.setCancelled(!canGrowHere(m, b));
+		Block b = event.getBlock();
+		GrowthConfig growthConfig = growthMap.get(m);
+		
+		if (growthConfig != null && growthConfig.isPersistent()) {
+			plugin.growAndPersistBlock(b, growthConfig, true);
+			
+			event.setCancelled(true);
+		}
+		else {
+			event.setCancelled(!willGrow(m, b));
+		}
 	}
 
 	/**
-	 * Event handler for {@link StructureGrowEvent}. Checks tree growth for proper biomes.
+	 * Event handler for {@link StructureGrowEvent}. Checks tree growth for proper conditions
 	 * @param event The {@link StructureGrowEvent} being handled
 	 */
 	@EventHandler(ignoreCancelled = true)
-	public void growStructure(StructureGrowEvent event) {
-		Biome b = event.getLocation().getBlock().getBiome();
+	public void onStructureGrow(StructureGrowEvent event) {
 		TreeType t = event.getSpecies();
-		event.setCancelled(!canGrowHere(t, b));
+		Block b = event.getLocation().getBlock();
+		event.setCancelled(!willGrow(t, b));
 	}
 
 	/**
@@ -255,42 +81,46 @@ public class GrowListener implements Listener {
 	@EventHandler(ignoreCancelled = true)
 
 	public void onPlayerInteract(PlayerInteractEvent event) {
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                ItemStack item = event.getPlayer().getItemInHand();
-                if (item.getTypeId() == 351 && item.getData().getData() == 15) {
-                	Material clicked = event.getClickedBlock().getType();
-                	if(allowedGrowth.containsKey(clicked)) {
-                		event.setCancelled(true);
-                	}
-                }
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            ItemStack item = event.getPlayer().getItemInHand();
+            // Ink Sack with data 15  == Bone Meal
+            if (item.getTypeId() == 351 && item.getData().getData() == 15) {
+                    event.setCancelled(true);
             }
         }
-
+    }
 
 	/**
-	 * Determines if a plant {@link Material} type can grow in a {@link Biome}
+	 * Determines if a plant {@link Material | @link TreeType} will grow, given the current conditions
 	 * @param m The material type of the plant
-	 * @param b The biome in which the plant is growing
-	 * @return Whether the plant type is allowed in the biome
+	 * @param b The block that the plant is on
+	 * @return Whether the plant will grow this tick
 	 */
-	private boolean canGrowHere(Material m, Biome b) {
-		if(allowedGrowth.containsKey(m)) {
-			return allowedGrowth.get(m).contains(b);
+	private boolean willGrow(Object m, Block b) {
+		if(growthMap.containsKey(m)) {
+			boolean willGrow = Math.random() < growthMap.get(m).getRate(b);
+			return willGrow;
 		}
 		return true;
 	}
-
-	/**
-	 * Determines if a {@link TreeType} can grow in a {@link Biome}
-	 * @param t The tree structure type
-	 * @param b The biome in which the tree is growing
-	 * @return Whether the tree type is allowed in the biome
-	 */
-	private boolean canGrowHere(TreeType t, Biome b) {
-		if(allowedGrowth.containsKey(t)) {
-			return allowedGrowth.get(t).contains(b);
-		}
-		return true;
+	
+	@EventHandler
+	public void onChunkUnload(ChunkUnloadEvent e) {
+		Chunk chunk = e.getChunk();
+		int w = WorldID.getPID(e.getChunk().getWorld().getUID());
+		Coords coords = new Coords(w, chunk.getX(), 0, chunk.getZ());
+		plugin.getPlantManager().minecraftChunkUnloaded(coords);
 	}
-
+	
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent event) {
+		// if the block placed was a recognized crop, register it with the manager
+		Block block = event.getBlockPlaced();
+		GrowthConfig growthConfig = growthMap.get(block.getType());
+		if (growthConfig == null)
+			return;	
+		
+		int w = WorldID.getPID(block.getWorld().getUID());
+		plugin.getPlantManager().add(new Coords(w, block.getX(), block.getY(), block.getZ()), new Plant(System.currentTimeMillis()));
+	}
 }
