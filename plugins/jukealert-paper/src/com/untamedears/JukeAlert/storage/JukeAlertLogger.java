@@ -509,7 +509,8 @@ public class JukeAlertLogger {
      */
     public void logSnitchBucketFill(Snitch snitch, Player player, Block block) {
     	// TODO: should we take a block or a ItemStack as a parameter here? 
-    	
+    	// JM: I think it'll be fine either way, most griefing is done with with block placement and this could be updated fairly easily
+ 
     	// no victim user in this event
         this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BUCKET_FILL, player.getPlayerListName(), null);
     }
@@ -522,6 +523,8 @@ public class JukeAlertLogger {
      */
     public void logUsed(Snitch snitch, Player player, Block block) {
         // TODO: what should we use to identify what was used? Block? Material? 
+    	//JM: Let's keep this consistent with block plament
+    	this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_USED, player.getPlayerListName(), null);
     }
 
     //Logs the snitch being placed at World, x, y, z in the database.
