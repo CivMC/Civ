@@ -69,13 +69,19 @@ public class GrowListener implements Listener {
 	 */
 	@EventHandler(ignoreCancelled = true)
 	public void onStructureGrow(StructureGrowEvent event) {
+		// disable bonemeal
+		if (event.isFromBonemeal()) {
+			event.setCancelled(true);
+			return;
+		}
+		
 		TreeType t = event.getSpecies();
 		Block b = event.getLocation().getBlock();
 		event.setCancelled(!willGrow(t, b));
 	}
 
 	/**
-	 * Event handler for {@link PlayerInteractEvent}. Cancels all uses of Bonemeal as an item.
+	 * Event handler for {@link PlayerInteractEvent}. Cancels all uses of Bonemeal as an item on crops registered in the config.
 	 * @param event The {@link PlayerInteractEvent} being handled
 	 */
 	@EventHandler(ignoreCancelled = true)
@@ -85,7 +91,10 @@ public class GrowListener implements Listener {
             ItemStack item = event.getPlayer().getItemInHand();
             // Ink Sack with data 15  == Bone Meal
             if (item.getTypeId() == 351 && item.getData().getData() == 15) {
-                    event.setCancelled(true);
+            	Material material = event.getClickedBlock().getType();
+    			if (material != Material.SAPLING && growthMap.containsKey(material)) {
+        			event.setCancelled(true);
+    			}
             }
         }
     }

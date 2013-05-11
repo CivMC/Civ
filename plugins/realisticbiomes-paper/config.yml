@@ -63,7 +63,7 @@ realistic_biomes:
    # is unloaded or the server is off. It sets the time to grow to maturity in units of real-life hours
    # if this parameter is set, then the base_rate is ignored, though the other multipliers will still be
    # in effect
-   persistent_growth_period: 24
+   persistent_growth_period: 12
    biomes:
     cold: 0.25
     hot_dry: 0.25
@@ -73,7 +73,7 @@ realistic_biomes:
 
   CARROT:
    inherit: crop
-   persistent_growth_period: 24
+   persistent_growth_period: 12
    biomes:
     hot_dry: 0.1
     hot_rainy: 1.0
@@ -83,7 +83,7 @@ realistic_biomes:
 
   POTATO:
    inherit: crop
-   persistent_growth_period: 24
+   persistent_growth_period: 12
    biomes:
     mountain: 1.0
     cold: 0.25
