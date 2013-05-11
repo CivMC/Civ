@@ -70,10 +70,10 @@ public class GrowListener implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	public void onStructureGrow(StructureGrowEvent event) {
 		// disable bonemeal
-		if (event.isFromBonemeal()) {
-			event.setCancelled(true);
-			return;
-		}
+//		if (event.isFromBonemeal()) {
+//			event.setCancelled(true);
+//			return;
+//		}
 		
 		TreeType t = event.getSpecies();
 		Block b = event.getLocation().getBlock();
