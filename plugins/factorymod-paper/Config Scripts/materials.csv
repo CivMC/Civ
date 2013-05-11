@@ -2,10 +2,10 @@ Stone,STONE,1,0
 Grass,GRASS,2,0
 Dirt,DIRT,3,0
 Cobblestone,COBBLESTONE,4,0
-Oak Wood,WOOD,5,0
-Spruce Wood,WOOD,5,1
-Birch Wood,WOOD,5,2
-Jungle Wood,WOOD,5,3
+Oak Wood Planks,WOOD,5,0
+Spruce Wood Planks,WOOD,5,1
+Birch Wood Planks,WOOD,5,2
+Jungle Wood Planks,WOOD,5,3
 Sapling,SAPLING,6,0
 Bedrock,BEDROCK,7,0
 Water,WATER,8,0
@@ -17,7 +17,10 @@ Gravel,GRAVEL,13,0
 Gold Ore,GOLD_ORE,14,0
 Iron Ore,IRON_ORE,15,0
 Coal Ore,COAL_ORE,16,0
-Log,LOG,17,0
+Oak Wood,LOG,17,0
+Spruce Wood,LOG,17,1
+Birch Wood,LOG,17,2
+Jungle Wood,LOG,17,3
 Leaves,LEAVES,18,0
 Sponge,SPONGE,19,0
 Glass,GLASS,20,0

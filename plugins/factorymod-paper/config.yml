@@ -1767,7 +1767,7 @@ production_recipes:
     production_time: 60
     inputs:
       Jungle Wood:
-        material: WOOD
+        material: LOG
         amount: 280
         durability: 3
     outputs:
@@ -1796,7 +1796,7 @@ production_recipes:
     production_time: 60
     inputs:
       Spruce Wood:
-        material: WOOD
+        material: LOG
         amount: 280
         durability: 1
     outputs:
@@ -1941,7 +1941,7 @@ production_recipes:
     production_time: 60
     inputs:
       Birch Wood:
-        material: WOOD
+        material: LOG
         amount: 280
         durability: 2
     outputs:
@@ -3833,7 +3833,7 @@ production_recipes:
     production_time: 60
     inputs:
       Oak Wood:
-        material: WOOD
+        material: LOG
         amount: 280
     outputs:
       Charcoal:
