@@ -24,11 +24,9 @@ public class ProductionRecipe implements Recipe
 	private List<ProductionRecipe> outputRecipes;
 	private List<ProbabilisticEnchantment> enchantments;
 	private boolean useOnce;
-	private int maintenance;
-	int totalNumber;
 	
 	public ProductionRecipe(String title,String recipeName,int productionTime,ItemList<NamedItemStack> inputs,ItemList<NamedItemStack> upgrades,
-		ItemList<NamedItemStack> outputs,List<ProbabilisticEnchantment> enchantments,boolean useOnce,int maintenance, ItemList<NamedItemStack> repairs)
+		ItemList<NamedItemStack> outputs,List<ProbabilisticEnchantment> enchantments,boolean useOnce, ItemList<NamedItemStack> repairs)
 	{
 		this.title=title;
 		this.recipeName = recipeName;
@@ -39,14 +37,12 @@ public class ProductionRecipe implements Recipe
 		this.outputRecipes=new ArrayList<ProductionRecipe>();
 		this.enchantments=enchantments;
 		this.useOnce=useOnce;
-		this.maintenance=maintenance;
-		this.totalNumber=0;
 		this.repairs=repairs;
 	}
 	
 	public ProductionRecipe(String title,String recipeName,int productionTime,ItemList<NamedItemStack> repairs)
 	{
-		this(title,recipeName,productionTime,new ItemList<>(),new ItemList<>(),new ItemList<>(),new ArrayList<ProbabilisticEnchantment>(),false,0,repairs);
+		this(title,recipeName,productionTime,new ItemList<>(),new ItemList<>(),new ItemList<>(),new ArrayList<ProbabilisticEnchantment>(),false,repairs);
 	}
 	
 	public boolean hasMaterials(Inventory inventory)
@@ -110,23 +106,5 @@ public class ProductionRecipe implements Recipe
 	public boolean getUseOnce()
 	{
 		return useOnce;
-	}
-	
-	public int getMaintenance()
-	{
-		return maintenance;
-	}
-	
-	public double degradeAmount()
-	{
-		return (1-Math.pow(.9,totalNumber))*maintenance;
-	}
-	public void setTotalNumber(int number)
-	{
-		totalNumber=number;
-	}
-	public void incrementCount()
-	{
-		totalNumber++;
 	}
 }

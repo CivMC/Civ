@@ -10,11 +10,13 @@ class ParseConfig:
         sortedFactoryKeys=config['factories'].keys()
         sortedFactoryKeys.sort()
         for type,name in [('Enchanting','Cauldron'),('Smelting','Smelter'),('Food','Bakery'),('Equipment','Smithy'),('Wool','Wool')]:
+            myfile.write('\n\n-  ['+type+'](https://github.com/gmlaxfanatic/FactoryMod/wiki#'+type.lower()+')')        
+        for type,name in [('Enchanting','Cauldron'),('Smelting','Smelter'),('Food','Bakery'),('Equipment','Smithy'),('Wool','Wool')]:
             myfile.write('\n\n###'+type)
             for key in sortedFactoryKeys:
                 factory=config['factories'][key]
-                if name in factory.name:
-                    myfile.write('\n\n**'+factory.name+'**')
+                if name in factory.identifier:
+                    myfile.write('\n\n**'+factory.identifier+'**')
                     for input in factory.inputs:
                         myfile.write(' - '+str(input.amount)+' '+input.name)
                     for recipe in factory.outputRecipes:
@@ -54,14 +56,17 @@ class ParseConfig:
         myfile.write('\n  citadel_enabled: '+config['citadel_enabled'])
         myfile.write('\n  factory_interaction_material: '+config['factory_interaction_material'])
         myfile.write('\n  disable_experience: '+config['disable_experience'])
-        myfile.write('\n  disrepair_length: '+config['disrepair_length'])
         myfile.write('\nproduction_general:')
         myfile.write('\n  update_cycle: '+config['update_cycle'])
-        myfile.write('\n  maintenance_cycle: '+config['maintenance_cycle'])
-        myfile.write('\n  maintenance_rate: '+config['maintenance_rate'])
-        myfile.write('\ndisabled_recipes:')
+        myfile.write('\n  repair_period: '+config['repair_period'])
+        myfile.write('\n  culling_period: '+config['culling_period'])
+        myfile.write('\ncrafting:')
+        myfile.write('\n  disable:')
         for disabled_recipe in config['disabled_recipes']:
-            myfile.write('\n  - '+disabled_recipe)
+            myfile.write('\n    - '+disabled_recipe)
+        myfile.write('\n  enable:')
+        for enabledRecipe in config['enabled_recipes']:
+            myfile.write(enabledRecipe.cOutput())
         myfile.write('\nproduction_factories:')
         sortedFactoryKeys=config['factories'].keys()
         sortedFactoryKeys.sort()

@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class NamedItemStack extends ItemStack{
 	//Name to be printed to the user, not necessarily the DisplayName
-	public final String commonName;
+	private final String commonName;
 	public NamedItemStack (final Material type, final int amount, final short damage,final String commonName)
 	{
 		super(type,amount,damage);
@@ -40,4 +40,8 @@ public class NamedItemStack extends ItemStack{
 		return String.valueOf(getAmount())+" "+commonName;
 	}
 	
+	public String getCommonName()
+	{
+		return commonName;
+	}
 }

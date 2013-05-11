@@ -2,7 +2,10 @@ Stone,STONE,1,0
 Grass,GRASS,2,0
 Dirt,DIRT,3,0
 Cobblestone,COBBLESTONE,4,0
-Wood,WOOD,5,0
+Oak Wood,WOOD,5,0
+Spruce Wood,WOOD,5,1
+Birch Wood,WOOD,5,2
+Jungle Wood,WOOD,5,3
 Sapling,SAPLING,6,0
 Bedrock,BEDROCK,7,0
 Water,WATER,8,0
@@ -55,10 +58,11 @@ Brown Mushroom,BROWN_MUSHROOM,39,0
 Red Mushroom,RED_MUSHROOM,40,0
 Gold Block,GOLD_BLOCK,41,0
 Iron Block,IRON_BLOCK,42,0
-Double Step,DOUBLE_STEP,43,0
-Step,STEP,44,0
+Double Stone Slab,DOUBLE_STEP,43,0
+Nether Brick Slab,DOUBLE_STEP,43,6
+Stone Slab,STEP,44,0
 Brick,BRICK,45,0
-Tnt,TNT,46,0
+TNT,TNT,46,0
 Bookshelf,BOOKSHELF,47,0
 Mossy Cobblestone,MOSSY_COBBLESTONE,48,0
 Obsidian,OBSIDIAN,49,0

@@ -1,5 +1,4 @@
 package com.github.igotyou.FactoryMod;
-import com.github.igotyou.FactoryMod.FactoryModPlugin;
 
 
 import org.bukkit.Location;
@@ -8,6 +7,7 @@ import org.bukkit.block.Furnace;
 import org.bukkit.inventory.Inventory;
 
 import com.github.igotyou.FactoryMod.interfaces.Properties;
+import java.util.Date;
 
 //original file:
 /**
@@ -20,7 +20,7 @@ import com.github.igotyou.FactoryMod.interfaces.Properties;
 //edited version:
 /**
  * FactoryObject.java	 
- * Purpose basic object base for factorys to extend
+ * Purpose basic object base for factories to extend
  * @author igotyou
  *
  */
@@ -43,7 +43,6 @@ public class FactoryObject
 	protected String subFactoryType;//the SUBfactory type(the ones loaded from the config file)
 	protected Properties factoryProperties; // The properties of this factory type and tier
 	protected boolean upgraded; // Whether the tier has recently upgraded
-	protected int dateDisrepair; // The date at which the factory last reached 0 maintenance, yyyymmdd, 99999999 represents a unbroken factory
 	
 	/**
 	 * Constructor
@@ -58,7 +57,6 @@ public class FactoryObject
 		this.factoryType = factoryType;
 		this.subFactoryType = subFactoryType;
 		this.upgraded = false;
-		this.dateDisrepair=99999999;
 		if (this.isWhole())
 		{
 			initializeInventory();
@@ -79,7 +77,6 @@ public class FactoryObject
 		this.factoryType = factoryType;
 		this.subFactoryType = subFactoryType;
 		this.upgraded = false;
-		this.dateDisrepair=99999999;
 		if (this.isWhole())
 		{
 			initializeInventory();
@@ -218,13 +215,5 @@ public class FactoryObject
 		}
 	}
 	return false;
-	}
-	
-	/**
-	 * returns the date at which the factory went into disrepair
-	 */
-	public int getDateDisrepair()
-	{
-		return dateDisrepair;
 	}
 }

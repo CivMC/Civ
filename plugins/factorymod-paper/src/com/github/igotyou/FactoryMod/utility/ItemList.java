@@ -186,7 +186,7 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		String returnString="";
 		for(int i=0;i<size();i++)
 		{
-			String name=get(i).getItemMeta().hasDisplayName() ? get(i).getItemMeta().getDisplayName() : get(i).commonName;
+			String name=get(i).getItemMeta().hasDisplayName() ? get(i).getItemMeta().getDisplayName() : get(i).getCommonName();
 			returnString+=String.valueOf(get(i).getAmount())+" "+name;
 			if(i<size()-1)
 			{
@@ -252,5 +252,16 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 			}
 		}				
 		return materialsToRemove == 0;
+	}
+	public ItemList<NamedItemStack> getMultiple(int multiplier)
+	{
+		ItemList<NamedItemStack> multipliedItemList=new ItemList<>();
+		for (NamedItemStack itemStack:this)
+		{
+			NamedItemStack itemStackClone=itemStack.clone();
+			itemStackClone.setAmount(itemStack.getAmount()*multiplier);
+			multipliedItemList.add(itemStackClone);
+		}
+		return multipliedItemList;
 	}
 }

@@ -30,9 +30,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 	private int currentRecipeNumber = 0;//the array index of the current recipe
 	public static final FactoryType FACTORY_TYPE = FactoryType.PRODUCTION;//the factory's type
 	private List<ProductionRecipe> recipes;
-	private int totalMaintenance;
-	private double currentMaintenance;
-	
+	private double currentRepair;
+	private long timeDisrepair;//The time at which the factory went into disrepair
 	/**
 	 * Constructor
 	 */
@@ -43,9 +42,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 		this.productionFactoryProperties = (ProductionProperties) factoryProperties;
 		this.recipes=new ArrayList<> (productionFactoryProperties.getRecipes());
 		this.setRecipeToNumber(0);
-		updateMaintenance();
-		this.currentMaintenance=0.0;
-		this.dateDisrepair=99999999;
+		this.currentRepair=0.0;
+		this.timeDisrepair=3155692597470L;//Year 2070, default starting value
 	}
 
 	/**
@@ -53,7 +51,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	 */
 	public ProductionFactory (Location factoryLocation, Location factoryInventoryLocation, Location factoryPowerSource,
 			String subFactoryType, boolean active, int currentProductionTimer, int currentEnergyTimer,  List<ProductionRecipe> recipes,
-			int currentRecipeNumber,double currentMaintenance,int dateDisrepair)
+			int currentRecipeNumber,double currentMaintenance,long timeDisrepair)
 	{
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, ProductionFactory.FACTORY_TYPE, subFactoryType);
 		this.productionFactoryProperties = (ProductionProperties) factoryProperties;
@@ -62,9 +60,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 		this.currentProductionTimer = currentProductionTimer;
 		this.recipes=recipes;
 		this.setRecipeToNumber(currentRecipeNumber);
-		updateMaintenance();
-		this.currentMaintenance=currentMaintenance;
-		this.dateDisrepair=dateDisrepair;
+		this.currentRepair=currentMaintenance;
+		this.timeDisrepair=timeDisrepair;
 	}
 	
 	/**
@@ -125,14 +122,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 							recipes.add(currentRecipe.getOutputRecipes().get(i));
 						}
 					}
-					updateMaintenance();
 					//Repairs the factory
-					int amountRepaired=currentRecipe.getRepairs().removeMaxFrom(getInventory(),(int)currentMaintenance);
-					currentMaintenance-=amountRepaired;
-					if(currentMaintenance<0)
-					{
-						currentMaintenance=0;
-					}
+					repair(currentRecipe.getRepairs().removeMaxFrom(getInventory(),(int)currentRepair));
 					//Remove currentRecipe if it only is meant to be used once
 					if(currentRecipe.getUseOnce())
 					{
@@ -148,26 +139,6 @@ public class ProductionFactory extends FactoryObject implements Factory
 				powerOff();
 			}
 		}	
-	}
-	//Repairs the factory
-	private void repair(int amountRepaired)
-	{
-		currentMaintenance-=amountRepaired;
-		if(currentMaintenance<0)
-		{
-			currentMaintenance=0;
-		}
-		updateDateDisrepair();
-	}
-	//updates the state of disrepair of the factori
-	private void updateDateDisrepair()
-	{
-		// if the current date is smaller that the dateDisrepair this signifies the factory is broken for the first time, so record the dateDisrepair
-		int currentDate=Integer.valueOf(FactoryModPlugin.dateFormat.format(new Date()));
-		if (currentDate<dateDisrepair)
-		{
-			dateDisrepair=currentDate;
-		}
 	}
 	/**
 	 * Turns the factory on
@@ -225,7 +196,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 		if (!active)
 		{
 			//if the factory isn't broken or the current recipe can repair it
-			if(!isBroken()||currentRecipe.getMaintenance()==0)
+			if(!isBroken()||currentRecipe.getRepairs().size()!=0)
 			{
 				//is there fuel enough for at least once energy cycle?
 				if (isFuelAvailable())
@@ -264,13 +235,16 @@ public class ProductionFactory extends FactoryObject implements Factory
 				else
 				{
 					//return a error message
-					response.add(new InteractionResponse(InteractionResult.FAILURE, "Factory is missing fuel! ("+getProductionFactoryProperties().getFuel().toString()+")"));
+					int timeRequired=(int)Math.ceil(currentRecipe.getProductionTime()/(double)getProductionFactoryProperties().getEnergyTime());
+					int fuelInFurnance=getProductionFactoryProperties().getFuel().amountAvailable(getInventory());
+					int multiplesRequired=timeRequired-fuelInFurnance;
+					response.add(new InteractionResponse(InteractionResult.FAILURE, "Factory is missing fuel! ("+getProductionFactoryProperties().getFuel().getMultiple(multiplesRequired).toString()+")"));
 					return response;
 				}
 			}
 			else
 			{
-				response.add(new InteractionResponse(InteractionResult.FAILURE, "Factory is broken!"));
+				response.add(new InteractionResponse(InteractionResult.FAILURE, "Factory is in disrepair!"));
 				return response;
 			}			
 		}
@@ -409,61 +383,53 @@ public class ProductionFactory extends FactoryObject implements Factory
 				factoryLocation.getWorld().dropItemNaturally(destroyLocation, item);
 			}
 		}
-		
+		currentRepair=getProductionFactoryProperties().getRepair();
+		timeDisrepair=System.currentTimeMillis();
 		destroyLocation.getBlock().setType(Material.AIR);
 	}
+	/*
+	 * Repairs the factory 
+	 */
+	private void repair(int amountRepaired)
+	{
+		currentRepair-=amountRepaired;
+		if(currentRepair<0)
+		{
+			currentRepair=0;
+		}
+		if(currentRepair<getProductionFactoryProperties().getRepair())
+		{
+			timeDisrepair=3155692597470L;//Year 2070, default starting value
+		}
+	}
+
 	/**
 	 * Degrades the factory
 	 */
-	public void degrade(double percent)
+	public void updateRepair(double percent)
 	{
-		updateMaintenance();
-		//No need to run check if already completely degraded
-		if(currentMaintenance<totalMaintenance){
-			double degradation=0;
-			for(ProductionRecipe recipe:recipes)
+		int totalRepair=getProductionFactoryProperties().getRepair();
+		currentRepair+=totalRepair*percent;
+		if(currentRepair>=totalRepair)
+		{
+			currentRepair=totalRepair;
+			long currentTime=System.currentTimeMillis();
+			if (currentTime<timeDisrepair&&getProductionFactoryProperties().getRepair()!=0)
 			{
-				degradation+=percent*recipe.degradeAmount();
-			}
-			currentMaintenance+=degradation;
-		}
-		//If totalMaintenance was exceeded set currentMaintance back to it
-		if(currentMaintenance>=totalMaintenance)
-		{
-			currentMaintenance=totalMaintenance;
-		}
-		updateDateDisrepair();
-	}
-	/**
-	 * Recalculate the total maintenance of the factory
-	 */
-	private void updateMaintenance()
-	{
-		totalMaintenance=1;
-		for(ProductionRecipe recipe:recipes)
-		{
-			totalMaintenance+=recipe.getMaintenance();
+				timeDisrepair=currentTime;
+			}	
 		}
 	}
-	public double getCurrentMaintenance()
+	public double getCurrentRepair()
 	{
-		return currentMaintenance;
-	}
-	public double getMaintenance()
-	{
-		double percentMaintenance=1;
-		if(totalMaintenance!=0)
-		{
-			percentMaintenance=currentMaintenance/totalMaintenance;
-		}
-		return percentMaintenance;
+		return currentRepair;
 	}
 	/**
 	 * Checks that a factory hasn't degraded too much
 	 */
 	public boolean isBroken()
 	{
-		return currentMaintenance>=totalMaintenance;
+		return currentRepair>=getProductionFactoryProperties().getRepair()&&getProductionFactoryProperties().getRepair()!=0;
 	}
 	/**
 	 * Returns the production timer
@@ -507,7 +473,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	
 	public List<ProductionRecipe> getRecipes()
 	{
-	    return recipes;
+		return recipes;
 	}
 	
 	public List<InteractionResponse> getChestResponse()
@@ -516,7 +482,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 		String status=active ? "On" : "Off";
 		String percentDone=status.equals("On") ? " - "+Math.round(currentProductionTimer*100/currentRecipe.getProductionTime())+"% done." : "";
 		//Name: Status with XX% health.
-		responses.add(new InteractionResponse(InteractionResult.SUCCESS, getProductionFactoryProperties().getName()+": "+status+" with "+String.valueOf(Math.round(100*(1-currentMaintenance/totalMaintenance)))+"% health."));
+		int health =(getProductionFactoryProperties().getRepair()==0) ? 100 : (int) Math.round(100*(1-currentRepair/(getProductionFactoryProperties().getRepair())));
+		responses.add(new InteractionResponse(InteractionResult.SUCCESS, getProductionFactoryProperties().getName()+": "+status+" with "+String.valueOf(health)+"% health."));
 		//RecipeName: X seconds(Y ticks)[ - XX% done.]
 		responses.add(new InteractionResponse(InteractionResult.SUCCESS, currentRecipe.getRecipeName()+": "+currentRecipe.getProductionTime() + " seconds("+ currentRecipe.getProductionTime()*FactoryModPlugin.TICKS_PER_SECOND + " ticks)"+percentDone));
 		//[Inputs: amount Name, amount Name.]
@@ -535,13 +502,14 @@ public class ProductionFactory extends FactoryObject implements Factory
 			responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Output: "+currentRecipe.getOutputs().toString()+"."));
 		}
 		//[Will repair XX% of the factory]
-		if(!currentRecipe.getRepairs().isEmpty()&&totalMaintenance!=0)
+		if(!currentRecipe.getRepairs().isEmpty()&&getProductionFactoryProperties().getRepair()!=0)
 		{
-			int amountAvailable=currentRecipe.getRepairs().amountAvailable(getInventory());
-			int amountRepaired=amountAvailable>currentMaintenance ? (int) Math.ceil(currentMaintenance) : amountAvailable;
-			int percentRepaired=(int) (( (double) amountRepaired)/totalMaintenance*100);
-			responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Will repair "+String.valueOf(percentRepaired)+"% of the factory with "+String.valueOf(amountRepaired)+" ("+currentRecipe.getRepairs().toString()+")."));
+			int amountAvailable=currentRecipe.getRepairs().amountAvailable(getPowerSourceInventory());
+			int amountRepaired=amountAvailable>currentRepair ? (int) Math.ceil(currentRepair) : amountAvailable;
+			int percentRepaired=(int) (( (double) amountRepaired)/getProductionFactoryProperties().getRepair()*100);
+			responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Will repair "+String.valueOf(percentRepaired)+"% of the factory with "+currentRecipe.getRepairs().getMultiple(amountRepaired).toString()+"."));
 		}
+		if(getProductionFactoryProperties().getRepair()!=0)
 		if(!currentRecipe.getOutputRecipes().isEmpty())
 		{
 			List<ProductionRecipe> outputRecipes=currentRecipe.getOutputRecipes();
@@ -560,9 +528,11 @@ public class ProductionFactory extends FactoryObject implements Factory
 		return responses;
 	}
 	
-	public int getDateDisrepair()
+	/**
+	 * returns the date at which the factory went into disrepair
+	 */
+	public long getTimeDisrepair()
 	{
-		return dateDisrepair;
+		return timeDisrepair;
 	}
-	
 }

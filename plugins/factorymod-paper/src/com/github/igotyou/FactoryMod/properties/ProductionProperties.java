@@ -13,17 +13,24 @@ public class ProductionProperties implements Properties
 	private ItemList<NamedItemStack> inputs;
 	private List<ProductionRecipe> recipes;
 	private ItemList<NamedItemStack> fuel;
-	int energyTime;
-	String name;
+	private int energyTime;
+	private String name;
+	private int repair;
 	
 	public ProductionProperties(ItemList<NamedItemStack> inputs, List<ProductionRecipe> recipes,
-			ItemList<NamedItemStack> fuel, int energyTime, String name)
+			ItemList<NamedItemStack> fuel, int energyTime, String name,int repair)
 	{
 		this.inputs = inputs;
 		this.recipes = recipes;
 		this.fuel = fuel;
 		this.energyTime = energyTime;
 		this.name = name;
+		this.repair=repair;
+	}
+
+	public int getRepair()
+	{
+		return repair;
 	}
 
 	public ItemList<NamedItemStack> getInputs() 

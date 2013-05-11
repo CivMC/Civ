@@ -23,15 +23,15 @@ import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 
 
 public class FactoryModPlugin extends JavaPlugin
 {
 
 	FactoryModManager manager;
-	public static HashMap<String, ProductionProperties> production_Properties;
+	public static HashMap<String, ProductionProperties> productionProperties;
 	public static HashMap<String,ProductionRecipe> productionRecipes;
 	
 	public static final String VERSION = "v1.0"; //Current version of plugin
@@ -43,18 +43,14 @@ public class FactoryModPlugin extends JavaPlugin
 	public static int PRODUCER_UPDATE_CYCLE;
 	public static boolean PRODUCTION_ENEABLED;
 	public static int SAVE_CYCLE;
-	public static int AMOUNT_OF_PRODUCTION_RECIPES;
-	public static int AMOUNT_OF_PRODUCTION_FACTORY_TYPES;
 	public static Material CENTRAL_BLOCK_MATERIAL;
 	public static boolean RETURN_BUILD_MATERIALS;
 	public static boolean CITADEL_ENABLED;
 	public static Material FACTORY_INTERACTION_MATERIAL;
 	public static boolean DESTRUCTIBLE_FACTORIES;
 	public static boolean DISABLE_EXPERIENCE;
-	public static int DISREPAIR_LENGTH;
-	public static int MAINTENANCE_CYCLE;
-	public static double MAINTENANCE_RATE;
-	public static DateFormat dateFormat;
+	public static long DISREPAIR_PERIOD;
+	public static long REPAIR_PERIOD;
 	
 	public void onEnable()
 	{
@@ -86,8 +82,7 @@ public class FactoryModPlugin extends JavaPlugin
 	
 	public void initConfig()
 	{
-		dateFormat = new SimpleDateFormat("yyyyMMdd");		
-		production_Properties = new HashMap<String, ProductionProperties>();
+		productionProperties = new HashMap<String, ProductionProperties>();
 		productionRecipes = new HashMap<String,ProductionRecipe>();
 		FileConfiguration config = getConfig();
 		if(getConfig().getDefaults().getBoolean("copy_defaults", true))
@@ -98,7 +93,7 @@ public class FactoryModPlugin extends JavaPlugin
 		reloadConfig();
 		config = getConfig();
 		//how often should the managers save?
-		SAVE_CYCLE = config.getInt("general.save_cycle");
+		SAVE_CYCLE = config.getInt("general.save_cycle",15)*60*20;
 		//what's the material of the center block of factorys?
 		CENTRAL_BLOCK_MATERIAL = Material.getMaterial(config.getString("general.central_block"));
 		//Return the build materials upon destruction of factory.
@@ -111,17 +106,15 @@ public class FactoryModPlugin extends JavaPlugin
 		DESTRUCTIBLE_FACTORIES=config.getBoolean("general.destructible_factories",false);		
 		//Check if XP drops should be disabled
 		DISABLE_EXPERIENCE=config.getBoolean("general.disable_experience",false);
-		//Period of days before a factory is removed after it falls into disrepair
-		DISREPAIR_LENGTH=config.getInt("general.direpair_length",20);
 		//How frequently factories are updated
 		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle",20);
-		//How frequently maintenance is update
-		MAINTENANCE_CYCLE = config.getInt("production_general.maintenance_cycle",6000);
-		//How long it takes for factories to break down, modifiers upkeep costs
-		MAINTENANCE_RATE = config.getDouble("production_general.maintenance_rate",0.00000165);
-		//loop trough all the vanilla recipes we want to disable
+		//Period of days before a factory is removed after it falls into disrepair
+		DISREPAIR_PERIOD= config.getLong("general.direpair_length",14)*24*60*60*1000;
+		//The length of time it takes a factory to go to 0% health
+		REPAIR_PERIOD = config.getLong("production_general.maintenance_cycle",28)*24*60*60*1000;
+		//Disable recipes which result in the following items
 		int g = 0;
-		Iterator<String> disabledRecipes=config.getStringList("disabled_recipes").iterator();
+		Iterator<String> disabledRecipes=config.getStringList("crafting.disable").iterator();
 		while(disabledRecipes.hasNext())
 		{
 			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(disabledRecipes.next()));
@@ -133,6 +126,37 @@ public class FactoryModPlugin extends JavaPlugin
 			}
 
 		}
+		//Enable the following recipes
+		ConfigurationSection configCraftingEnable=config.getConfigurationSection("crafting.enable");
+		for (String recipeName:configCraftingEnable.getKeys(false))
+		{
+			ConfigurationSection configSection=configCraftingEnable.getConfigurationSection(recipeName);
+			Recipe recipe;
+			List<String> shape=configSection.getStringList("shape");
+			NamedItemStack output=getItems(configSection.getConfigurationSection("output")).get(0);
+			if(shape.isEmpty())
+			{
+				ShapelessRecipe shapelessRecipe=new ShapelessRecipe(output);
+				for (ItemStack input:getItems(configSection.getConfigurationSection("inputs")))
+				{
+					shapelessRecipe.addIngredient(input.getAmount(),input.getType(),input.getDurability());
+				}
+				recipe=shapelessRecipe;
+			}
+			else
+			{
+				ShapedRecipe shapedRecipe=new ShapedRecipe(output);
+				shapedRecipe.shape(shape.toArray(new String[shape.size()]));
+				for(String inputKey:configSection.getConfigurationSection("inputs").getKeys(false))
+				{
+					ItemStack input=getItems(configSection.getConfigurationSection("inputs."+inputKey)).get(0);
+					shapedRecipe.setIngredient(inputKey.charAt(0),input.getType(),input.getDurability());
+				}
+				recipe=shapedRecipe;
+			}
+			Bukkit.addRecipe(recipe);
+		}
+		
 		//Import recipes from config.yml
 		ConfigurationSection configProdRecipes=config.getConfigurationSection("production_recipes");
 		//Temporary Storage array to store where recipes should point to each other
@@ -160,8 +184,7 @@ public class FactoryModPlugin extends JavaPlugin
 			List<ProbabilisticEnchantment> enchantments=getEnchantments(configSection.getConfigurationSection("enchantments"));
 			//Whether this recipe can only be used once
 			boolean useOnce = configSection.getBoolean("use_once");
-			int maintenance = configSection.getInt("maintenance");
-			ProductionRecipe recipe = new ProductionRecipe(title,recipeName,productionTime,inputs,upgrades,outputs,enchantments,useOnce,maintenance,new ItemList<NamedItemStack>());
+			ProductionRecipe recipe = new ProductionRecipe(title,recipeName,productionTime,inputs,upgrades,outputs,enchantments,useOnce,new ItemList<NamedItemStack>());
 			productionRecipes.put(title,recipe);
 			//Store the titles of the recipes that this should point to
 			ArrayList <String> currentOutputRecipes=new ArrayList<String>();
@@ -200,18 +223,19 @@ public class FactoryModPlugin extends JavaPlugin
 			}
 			int fuelTime=configSection.getInt("fuel_time",1);
 			ItemList<NamedItemStack> inputs=getItems(configSection.getConfigurationSection("inputs"));
-			ItemList<NamedItemStack> repairs=getItems(configSection.getConfigurationSection("maintenance_inputs"));
+			ItemList<NamedItemStack> repairs=getItems(configSection.getConfigurationSection("repair_inputs"));
 			List<ProductionRecipe> factoryRecipes=new ArrayList<ProductionRecipe>();
 			Iterator<String> ouputRecipeIterator=configSection.getStringList("recipes").iterator();
 			while (ouputRecipeIterator.hasNext())
 			{
 				factoryRecipes.add(productionRecipes.get(ouputRecipeIterator.next()));
 			}
+			int repair=configSection.getInt("repair_multiple",0);
 			//Create repair recipe
 			productionRecipes.put(title+"REPAIR",new ProductionRecipe(title+"REPAIR","Repair Factory",1,repairs));
 			factoryRecipes.add(productionRecipes.get(title+"REPAIR"));
-			ProductionProperties productionProperties = new ProductionProperties(inputs, factoryRecipes, fuel, fuelTime, factoryName);
-			production_Properties.put(title, productionProperties);
+			ProductionProperties productionProperty = new ProductionProperties(inputs, factoryRecipes, fuel, fuelTime, factoryName, repair);
+			productionProperties.put(title, productionProperty);
 		}
 	}
 	private List<ProbabilisticEnchantment> getEnchantments(ConfigurationSection configEnchantments)
@@ -254,10 +278,6 @@ public class FactoryModPlugin extends JavaPlugin
 					short durability=(short)configItem.getInt("durability",0);
 					String displayName=configItem.getString("display_name");
 					String lore=configItem.getString("lore");
-					if (material == null && "NETHER_STALK".equals(materialName))
-						{
-							material = Material.getMaterial(372);
-						}
 					items.add(createItemStack(material,amount,durability,displayName,lore,commonName));
 				}
 			}
@@ -303,7 +323,7 @@ public class FactoryModPlugin extends JavaPlugin
 		switch(factoryType)
 		{
 			case PRODUCTION:
-				return FactoryModPlugin.production_Properties.get(subFactoryType);
+				return FactoryModPlugin.productionProperties.get(subFactoryType);
 			default:
 				return null;
 		}

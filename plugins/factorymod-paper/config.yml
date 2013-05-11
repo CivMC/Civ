@@ -78,12 +78,51 @@ general:
   citadel_enabled: true
   factory_interaction_material: STICK
   disable_experience: true
-  disrepair_length: 15
 production_general:
   update_cycle: 20
-  maintenance_cycle: 6000
-  maintenance_rate: 0.00000165
-disabled_recipes:
+  repair_period: 2
+  culling_period: 1
+crafting:
+  disable:
+  enable:
+    XP to Emerald:
+      inputs:
+        Exp Bottle:
+          material: EXP_BOTTLE
+          amount: 9
+      output:
+        Emerald:
+          material: EMERALD
+    Emerald to XP:
+      inputs:
+        Emerald:
+          material: EMERALD
+      output:
+        Exp Bottle:
+          material: EXP_BOTTLE
+          amount: 9
+    Stone to Double Slab:
+      inputs:
+        s:
+         Stone:
+           material: STONE
+      shape:
+        - sss
+        - sss
+      output:
+        Double Stone Slab:
+          material: DOUBLE_STEP
+    Slab to Double Slab:
+      inputs:
+        s:
+         Stone Slab:
+           material: STEP
+      shape:
+        - s
+        - s
+      output:
+        Double Stone Slab:
+          material: DOUBLE_STEP
 production_factories:
   Baked_Potato_Bakery:
     name: Baked Potato Bakery
@@ -97,10 +136,10 @@ production_factories:
         amount: 90
     recipes:
       - Baked_Potato
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 9
+    repair_inputs:
+      Potato:
+        material: POTATO_ITEM
   Black_Wool_Processing:
     name: Black Wool Processing
     fuel:
@@ -117,10 +156,10 @@ production_factories:
       - Gray_Wool_Black
       - Brown_Wool_Black
       - Pink_Wool_Black
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Ink Sack:
+        material: INK_SACK
   Blue_Wool_Processing:
     name: Blue Wool Processing
     fuel:
@@ -139,10 +178,11 @@ production_factories:
       - Black_Wool_Blue
       - Brown_Wool_Blue
       - Pink_Wool_Blue
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Lapis Lazuli:
+        material: INK_SACK
+        durability: 4
   Bread_Bakery:
     name: Bread Bakery
     fuel:
@@ -155,10 +195,10 @@ production_factories:
         amount: 270
     recipes:
       - Bread
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 27
+    repair_inputs:
+      Wheat:
+        material: WHEAT
   Brown_Wool_Processing:
     name: Brown Wool Processing
     fuel:
@@ -176,7 +216,29 @@ production_factories:
       - Gray_Wool_Brown
       - Black_Wool_Brown
       - Pink_Wool_Brown
-    maintenance_inputs:
+    repair_multiple: 3
+    repair_inputs:
+      Cocoa:
+        material: INK_SACK
+        durability: 3
+  Charcoal_Smelter:
+    name: Charcoal Burner
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Charcoal:
+        material: COAL
+        amount: 100
+        durability: 1
+    recipes:
+      - Smelt_Oak_Wood
+      - Smelt_Spruce_Wood
+      - Smelt_Birch_Wood
+      - Smelt_Jungle_Wood
+    repair_multiple: 10
+    repair_inputs:
       Charcoal:
         material: COAL
         durability: 1
@@ -192,10 +254,10 @@ production_factories:
         amount: 30
     recipes:
       - Smelt_Coal_Ore
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Coal Ore:
+        material: COAL_ORE
   Cooked_Beef_Bakery:
     name: Cooked Beef Bakery
     fuel:
@@ -208,10 +270,10 @@ production_factories:
         amount: 90
     recipes:
       - Cooked_Beef
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 9
+    repair_inputs:
+      Raw Beef:
+        material: RAW_BEEF
   Cooked_Chicken_Bakery:
     name: Cooked Chicken Bakery
     fuel:
@@ -224,10 +286,10 @@ production_factories:
         amount: 90
     recipes:
       - Cooked_Chicken
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 9
+    repair_inputs:
+      Raw Chicken:
+        material: RAW_CHICKEN
   Cooked_Fish_Bakery:
     name: Cooked Fish Bakery
     fuel:
@@ -240,10 +302,10 @@ production_factories:
         amount: 90
     recipes:
       - Cooked_Fish
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 9
+    repair_inputs:
+      Raw Fish:
+        material: RAW_FISH
   Cookie_Bakery:
     name: Cookie Bakery
     fuel:
@@ -260,10 +322,14 @@ production_factories:
         durability: 3
     recipes:
       - Cookie
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 9
+    repair_inputs:
+      Wheat:
+        material: WHEAT
+        amount: 2
+      Cocoa:
+        material: INK_SACK
+        durability: 3
   Cyan_Wool_Processing:
     name: Cyan Wool Processing
     fuel:
@@ -282,10 +348,11 @@ production_factories:
       - Black_Wool_Cyan
       - Brown_Wool_Cyan
       - Pink_Wool_Cyan
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Cyan Dye:
+        material: INK_SACK
+        durability: 6
   Diamond_Axe_Smithy:
     name: Diamond Axe Smithy
     fuel:
@@ -298,7 +365,8 @@ production_factories:
         amount: 16
     recipes:
       - Diamond_Axe
-    maintenance_inputs:
+    repair_multiple: 2
+    repair_inputs:
       Diamond:
         material: DIAMOND
   Diamond_Boots_Smithy:
@@ -313,7 +381,8 @@ production_factories:
         amount: 20
     recipes:
       - Diamond_Boots
-    maintenance_inputs:
+    repair_multiple: 2
+    repair_inputs:
       Diamond:
         material: DIAMOND
   Diamond_Cauldron:
@@ -335,10 +404,10 @@ production_factories:
       - Diamond_XP_Bottle_2_Bulk
       - Diamond_XP_Bottle_3
       - Diamond_XP_Bottle_3_Bulk
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 1
+    repair_inputs:
+      Diamond:
+        material: DIAMOND
   Diamond_Chestplate_Smithy:
     name: Diamond Chestplate Smithy
     fuel:
@@ -351,7 +420,8 @@ production_factories:
         amount: 40
     recipes:
       - Diamond_Chestplate
-    maintenance_inputs:
+    repair_multiple: 4
+    repair_inputs:
       Diamond:
         material: DIAMOND
   Diamond_Helmet_Smithy:
@@ -366,7 +436,8 @@ production_factories:
         amount: 25
     recipes:
       - Diamond_Helmet
-    maintenance_inputs:
+    repair_multiple: 3
+    repair_inputs:
       Diamond:
         material: DIAMOND
   Diamond_Hoe_Smithy:
@@ -381,7 +452,8 @@ production_factories:
         amount: 10
     recipes:
       - Diamond_Hoe
-    maintenance_inputs:
+    repair_multiple: 1
+    repair_inputs:
       Diamond:
         material: DIAMOND
   Diamond_Leggings_Smithy:
@@ -396,7 +468,8 @@ production_factories:
         amount: 35
     recipes:
       - Diamond_Leggings
-    maintenance_inputs:
+    repair_multiple: 4
+    repair_inputs:
       Diamond:
         material: DIAMOND
   Diamond_Ore_Smelter:
@@ -411,10 +484,10 @@ production_factories:
         amount: 30
     recipes:
       - Smelt_Diamond_Ore
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Diamond Ore:
+        material: DIAMOND_ORE
   Diamond_Pickaxe_Smithy:
     name: Diamond Pickaxe Smithy
     fuel:
@@ -427,7 +500,8 @@ production_factories:
         amount: 15
     recipes:
       - Diamond_Pickaxe
-    maintenance_inputs:
+    repair_multiple: 2
+    repair_inputs:
       Diamond:
         material: DIAMOND
   Diamond_Spade_Smithy:
@@ -442,7 +516,8 @@ production_factories:
         amount: 5
     recipes:
       - Diamond_Spade
-    maintenance_inputs:
+    repair_multiple: 1
+    repair_inputs:
       Diamond:
         material: DIAMOND
   Diamond_Sword_Smithy:
@@ -457,7 +532,8 @@ production_factories:
         amount: 11
     recipes:
       - Diamond_Sword
-    maintenance_inputs:
+    repair_multiple: 1
+    repair_inputs:
       Diamond:
         material: DIAMOND
   Emerald_Cauldron:
@@ -475,10 +551,10 @@ production_factories:
       - Emerald_XP_Bottle_0_Bulk
       - Emerald_XP_Bottle_1
       - Emerald_XP_Bottle_1_Bulk
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 1
+    repair_inputs:
+      Emerald:
+        material: EMERALD
   Gold_Axe_Smithy:
     name: Gold Axe Smithy
     fuel:
@@ -491,7 +567,8 @@ production_factories:
         amount: 16
     recipes:
       - Gold_Axe
-    maintenance_inputs:
+    repair_multiple: 2
+    repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
   Gold_Boots_Smithy:
@@ -506,7 +583,8 @@ production_factories:
         amount: 20
     recipes:
       - Gold_Boots
-    maintenance_inputs:
+    repair_multiple: 2
+    repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
   Gold_Chestplate_Smithy:
@@ -521,7 +599,8 @@ production_factories:
         amount: 40
     recipes:
       - Gold_Chestplate
-    maintenance_inputs:
+    repair_multiple: 4
+    repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
   Gold_Helmet_Smithy:
@@ -536,7 +615,8 @@ production_factories:
         amount: 25
     recipes:
       - Gold_Helmet
-    maintenance_inputs:
+    repair_multiple: 3
+    repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
   Gold_Hoe_Smithy:
@@ -551,7 +631,8 @@ production_factories:
         amount: 11
     recipes:
       - Gold_Hoe
-    maintenance_inputs:
+    repair_multiple: 1
+    repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
   Gold_Leggings_Smithy:
@@ -566,7 +647,8 @@ production_factories:
         amount: 35
     recipes:
       - Gold_Leggings
-    maintenance_inputs:
+    repair_multiple: 4
+    repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
   Gold_Ore_Smelter:
@@ -581,10 +663,10 @@ production_factories:
         amount: 30
     recipes:
       - Smelt_Gold_Ore
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Gold Ore:
+        material: GOLD_ORE
   Gold_Pickaxe_Smithy:
     name: Gold Pickaxe Smithy
     fuel:
@@ -597,7 +679,8 @@ production_factories:
         amount: 15
     recipes:
       - Gold_Pickaxe
-    maintenance_inputs:
+    repair_multiple: 2
+    repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
   Gold_Spade_Smithy:
@@ -612,7 +695,8 @@ production_factories:
         amount: 5
     recipes:
       - Gold_Spade
-    maintenance_inputs:
+    repair_multiple: 1
+    repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
   Gold_Sword_Smithy:
@@ -627,7 +711,8 @@ production_factories:
         amount: 10
     recipes:
       - Gold_Sword
-    maintenance_inputs:
+    repair_multiple: 1
+    repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
   Gray_Wool_Processing:
@@ -647,10 +732,11 @@ production_factories:
       - Black_Wool_Gray
       - Brown_Wool_Gray
       - Pink_Wool_Gray
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Gray Dye:
+        material: INK_SACK
+        durability: 8
   Green_Wool_Processing:
     name: Green Wool Processing
     fuel:
@@ -669,10 +755,11 @@ production_factories:
       - Black_Wool_Green
       - Brown_Wool_Green
       - Pink_Wool_Green
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Cactus Green:
+        material: INK_SACK
+        durability: 2
   Grilled_Pork_Bakery:
     name: Grilled Pork Bakery
     fuel:
@@ -685,10 +772,10 @@ production_factories:
         amount: 90
     recipes:
       - Grilled_Pork
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 9
+    repair_inputs:
+      Pork:
+        material: PORK
   Iron_Axe_Smithy:
     name: Iron Axe Smithy
     fuel:
@@ -701,7 +788,8 @@ production_factories:
         amount: 16
     recipes:
       - Iron_Axe
-    maintenance_inputs:
+    repair_multiple: 2
+    repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
   Iron_Boots_Smithy:
@@ -716,7 +804,8 @@ production_factories:
         amount: 20
     recipes:
       - Iron_Boots
-    maintenance_inputs:
+    repair_multiple: 2
+    repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
   Iron_Chestplate_Smithy:
@@ -731,7 +820,8 @@ production_factories:
         amount: 40
     recipes:
       - Iron_Chestplate
-    maintenance_inputs:
+    repair_multiple: 4
+    repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
   Iron_Helmet_Smithy:
@@ -746,7 +836,8 @@ production_factories:
         amount: 25
     recipes:
       - Iron_Helmet
-    maintenance_inputs:
+    repair_multiple: 3
+    repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
   Iron_Hoe_Smithy:
@@ -761,7 +852,8 @@ production_factories:
         amount: 10
     recipes:
       - Iron_Hoe
-    maintenance_inputs:
+    repair_multiple: 1
+    repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
   Iron_Leggings_Smithy:
@@ -776,7 +868,8 @@ production_factories:
         amount: 35
     recipes:
       - Iron_Leggings
-    maintenance_inputs:
+    repair_multiple: 4
+    repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
   Iron_Ore_Smelter:
@@ -791,10 +884,10 @@ production_factories:
         amount: 30
     recipes:
       - Smelt_Iron_Ore
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Iron Ore:
+        material: IRON_ORE
   Iron_Pickaxe_Smithy:
     name: Iron Pickaxe Smithy
     fuel:
@@ -807,7 +900,8 @@ production_factories:
         amount: 15
     recipes:
       - Iron_Pickaxe
-    maintenance_inputs:
+    repair_multiple: 2
+    repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
   Iron_Spade_Smithy:
@@ -822,7 +916,8 @@ production_factories:
         amount: 5
     recipes:
       - Iron_Spade
-    maintenance_inputs:
+    repair_multiple: 1
+    repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
   Iron_Sword_Smithy:
@@ -837,7 +932,8 @@ production_factories:
         amount: 11
     recipes:
       - Iron_Sword
-    maintenance_inputs:
+    repair_multiple: 1
+    repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
   Light_Blue_Wool_Processing:
@@ -858,10 +954,11 @@ production_factories:
       - Black_Wool_Light Blue
       - Brown_Wool_Light Blue
       - Pink_Wool_Light Blue
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Light Blue Dye:
+        material: INK_SACK
+        durability: 12
   Light_Gray_Wool_Processing:
     name: Light Gray Wool Processing
     fuel:
@@ -879,10 +976,11 @@ production_factories:
       - Black_Wool_Light Gray
       - Brown_Wool_Light Gray
       - Pink_Wool_Light Gray
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Light Gray Dye:
+        material: INK_SACK
+        durability: 7
   Lime_Wool_Processing:
     name: Lime Wool Processing
     fuel:
@@ -901,10 +999,11 @@ production_factories:
       - Black_Wool_Lime
       - Brown_Wool_Lime
       - Pink_Wool_Lime
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Lime Dye:
+        material: INK_SACK
+        durability: 10
   Magenta_Wool_Processing:
     name: Magenta Wool Processing
     fuel:
@@ -923,10 +1022,11 @@ production_factories:
       - Black_Wool_Magenta
       - Brown_Wool_Magenta
       - Pink_Wool_Magenta
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Magenta Dye:
+        material: INK_SACK
+        durability: 13
   Orange_Wool_Processing:
     name: Orange Wool Processing
     fuel:
@@ -945,10 +1045,11 @@ production_factories:
       - Black_Wool_Orange
       - Brown_Wool_Orange
       - Pink_Wool_Orange
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Orange Dye:
+        material: INK_SACK
+        durability: 14
   Pink_Wool_Processing:
     name: Pink Wool Processing
     fuel:
@@ -966,10 +1067,11 @@ production_factories:
       - Gray_Wool_Pink
       - Black_Wool_Pink
       - Brown_Wool_Pink
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Pink Dye:
+        material: INK_SACK
+        durability: 9
   Purple_Wool_Processing:
     name: Purple Wool Processing
     fuel:
@@ -988,10 +1090,27 @@ production_factories:
       - Black_Wool_Purple
       - Brown_Wool_Purple
       - Pink_Wool_Purple
-    maintenance_inputs:
+    repair_multiple: 3
+    repair_inputs:
+      Purple Dye:
+        material: INK_SACK
+        durability: 5
+  Quartz_Ore_Smelter:
+    name: Quartz Ore Smelter
+    fuel:
       Charcoal:
         material: COAL
         durability: 1
+    inputs:
+      Quartz Ore:
+        material: QUARTZ_ORE
+        amount: 30
+    recipes:
+      - Smelt_Quartz_Ore
+    repair_multiple: 3
+    repair_inputs:
+      Quartz Ore:
+        material: QUARTZ_ORE
   Red_Wool_Processing:
     name: Red Wool Processing
     fuel:
@@ -1010,9 +1129,10 @@ production_factories:
       - Black_Wool_Red
       - Brown_Wool_Red
       - Pink_Wool_Red
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
+    repair_multiple: 3
+    repair_inputs:
+      Rose Red:
+        material: INK_SACK
         durability: 1
   Stone_Smelter:
     name: Stone Smelter
@@ -1026,10 +1146,10 @@ production_factories:
         amount: 200
     recipes:
       - Smelt_Stone
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 20
+    repair_inputs:
+      Stone:
+        material: STONE
   Wood_Cauldron:
     name: Wood Cauldron
     fuel:
@@ -1049,10 +1169,10 @@ production_factories:
       - Wood_XP_Bottle_2_Bulk
       - Wood_XP_Bottle_3
       - Wood_XP_Bottle_3_Bulk
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 7
+    repair_inputs:
+      Stick:
+        material: STICK
   Yellow_Wool_Processing:
     name: Yellow Wool Processing
     fuel:
@@ -1071,10 +1191,11 @@ production_factories:
       - Black_Wool_Yellow
       - Brown_Wool_Yellow
       - Pink_Wool_Yellow
-    maintenance_inputs:
-      Charcoal:
-        material: COAL
-        durability: 1
+    repair_multiple: 3
+    repair_inputs:
+      Dandelion Yellow:
+        material: INK_SACK
+        durability: 11
 production_recipes:
   Black_Wool_Pink:
     name: Dye Black Wool Pink
@@ -1641,6 +1762,18 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 4
+  Smelt_Jungle_Wood:
+    name: Burn Jungle Wood
+    production_time: 60
+    inputs:
+      Jungle Wood:
+        material: WOOD
+        amount: 280
+        durability: 3
+    outputs:
+      Stone:
+        material: STONE
+        amount: 320
   Brown_Wool_Purple:
     name: Dye Brown Wool Purple
     inputs:
@@ -1657,6 +1790,18 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 10
+  Smelt_Spruce_Wood:
+    name: Burn Spruce Wood
+    production_time: 60
+    inputs:
+      Spruce Wood:
+        material: WOOD
+        amount: 280
+        durability: 1
+    outputs:
+      Stone:
+        material: STONE
+        amount: 320
   Pink_Wool_Green:
     name: Dye Pink Wool Green
     inputs:
@@ -1789,6 +1934,18 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 15
+  Smelt_Birch_Wood:
+    name: Burn Birch Wood
+    production_time: 60
+    inputs:
+      Birch Wood:
+        material: WOOD
+        amount: 280
+        durability: 2
+    outputs:
+      Stone:
+        material: STONE
+        amount: 320
   Diamond_Sword:
     name: Forge Diamond Sword.
     inputs:
@@ -3509,6 +3666,17 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 14
+  Smelt_Quartz_Ore:
+    name: Smelt Quartz Ore
+    production_time: 16
+    inputs:
+      Quartz Ore:
+        material: QUARTZ_ORE
+        amount: 64
+    outputs:
+      Quartz:
+        material: QUARTZ
+        amount: 160
   Gold_Boots:
     name: Forge Gold Boots.
     inputs:
@@ -3657,6 +3825,17 @@ production_recipes:
       Grilled Pork:
         material: GRILLED_PORK
         amount: 64
+  Smelt_Oak_Wood:
+    name: Burn Oak Wood
+    production_time: 60
+    inputs:
+      Oak Wood:
+        material: WOOD
+        amount: 280
+    outputs:
+      Stone:
+        material: STONE
+        amount: 320
   Wood_XP_Bottle_1_Bulk:
     name: Brew XP Bottles  - 2
     production_time: 128

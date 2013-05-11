@@ -189,13 +189,14 @@ public class FactoryModManager
 	private void periodicSaving()
 	{
 		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-		    @Override  
-		    public void run() {
-		    	FactoryModPlugin.sendConsoleMessage("Saving Factory data...");
-		    	saveManagers();
-		    }
-		}, (FactoryModPlugin.SAVE_CYCLE * FactoryModPlugin.TICKS_PER_SECOND * 60), 
-		FactoryModPlugin.SAVE_CYCLE * FactoryModPlugin.TICKS_PER_SECOND * 60);
+			@Override  
+			public void run()
+			{
+				FactoryModPlugin.sendConsoleMessage("Saving Factory data...");
+				saveManagers();
+			}
+		}, (FactoryModPlugin.SAVE_CYCLE), 
+		FactoryModPlugin.SAVE_CYCLE);
 	}
 	
 	/**

@@ -29,7 +29,7 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResu
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
-import java.util.Date;
+import java.util.Iterator;
 
 //original file:
 /**
@@ -51,24 +51,23 @@ public class ProductionManager implements Manager
 {
 	private FactoryModPlugin plugin;
 	private List<ProductionFactory> producers;
-	private int clock;
+	private long repairTime;
 	
 	public ProductionManager(FactoryModPlugin plugin)
 	{
 		this.plugin = plugin;
 		producers = new ArrayList<ProductionFactory>();
 		//Set maintenance clock to 0
-		clock=0;
-		cullFactories();
 		updateFactorys();
 	}
 	
 	public void save(File file) throws IOException 
 	{
+		//Takes difference between last repair update and current one and scales repair accordingly
+		updateRepair(System.currentTimeMillis()-repairTime);
+		repairTime=System.currentTimeMillis();
 		FileOutputStream fileOutputStream = new FileOutputStream(file);
 		BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
-		bufferedWriter.append(String.valueOf(clock));
-		bufferedWriter.append("\n");		
 		for (ProductionFactory production : producers)
 		{
 			//order: subFactoryType world recipe1,recipe2 central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
@@ -121,9 +120,9 @@ public class ProductionManager implements Manager
 			bufferedWriter.append(" ");
 			bufferedWriter.append(Integer.toString(production.getCurrentRecipeNumber()));
 			bufferedWriter.append(" ");
-			bufferedWriter.append(Double.toString(production.getCurrentMaintenance()));
+			bufferedWriter.append(Double.toString(production.getCurrentRepair()));
 			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(production.getDateDisrepair()));
+			bufferedWriter.append(String.valueOf(production.getTimeDisrepair()));
 			bufferedWriter.append("\n");
 		}
 		bufferedWriter.flush();
@@ -132,14 +131,17 @@ public class ProductionManager implements Manager
 
 	public void load(File file) throws IOException 
 	{
+		repairTime=System.currentTimeMillis();
 		FileInputStream fileInputStream = new FileInputStream(file);
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
-
-		clock=Integer.parseInt(bufferedReader.readLine());
 		String line;
 		while ((line = bufferedReader.readLine()) != null)
 		{
 			String parts[] = line.split(" ");
+			if(parts.length<2)//Removes clock from savefile
+			{
+				continue;
+			}
 			//order: subFactoryType world recipe1,recipe2 central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
 			String subFactoryType = parts[0];
 			String recipeNames[] = parts[1].split(",");
@@ -151,13 +153,17 @@ public class ProductionManager implements Manager
 			int productionTimer = Integer.parseInt(parts[13]);
 			int energyTimer = Integer.parseInt(parts[14]);
 			int currentRecipeNumber = Integer.parseInt(parts[15]);
-			double maintenance = Double.parseDouble(parts[16]);
-			int dateDisrepair  = 99999999;
-			if(parts.length==18)
+			double currentRepair = Double.parseDouble(parts[16]);
+			long timeDisrepair  = 3155692597470L;//Year 2070, default starting value
+			if(parts.length==18)//Converts from storage without disrepair times
 			{
-				dateDisrepair  = Integer.parseInt(parts[17]);
+				timeDisrepair  = Long.parseLong(parts[17]);
+				if(timeDisrepair==99999999L)//Converts from storage with disrepair dates
+				{
+					timeDisrepair=3155692597470L;//Year 2070, default starting value
+				}
 			}
-			if(FactoryModPlugin.production_Properties.containsKey(subFactoryType))
+			if(FactoryModPlugin.productionProperties.containsKey(subFactoryType))
 			{
 				List<ProductionRecipe> recipes=new ArrayList<ProductionRecipe>();
 				for(String name:recipeNames)
@@ -168,7 +174,7 @@ public class ProductionManager implements Manager
 					}
 				}
 
-				ProductionFactory production = new ProductionFactory(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, recipes, currentRecipeNumber, maintenance,dateDisrepair);
+				ProductionFactory production = new ProductionFactory(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, recipes, currentRecipeNumber, currentRepair,timeDisrepair);
 				addFactory(production);
 			}
 		}
@@ -182,30 +188,6 @@ public class ProductionManager implements Manager
 			@Override
 			public void run()
 			{
-				clock++;
-				if(clock>=FactoryModPlugin.MAINTENANCE_CYCLE)
-				{
-					//Count how many of each recipe there are
-					//Reset counters on all recipe object
-					for(ProductionRecipe recipe:FactoryModPlugin.productionRecipes.values())
-					{
-						recipe.setTotalNumber(0);
-					}
-					//Count recipes in each factory					
-					for (ProductionFactory production: producers)
-					{
-						for (ProductionRecipe recipe: production.getRecipes())
-						{
-							recipe.incrementCount();
-						}
-					}
-					//Conduct Maintenance on each factory
-					for (ProductionFactory production: producers)
-					{
-						production.degrade(FactoryModPlugin.MAINTENANCE_RATE*(FactoryModPlugin.MAINTENANCE_CYCLE/20.0));
-					}
-					clock=0;
-				}
 				for (ProductionFactory production: producers)
 				{
 					production.update();
@@ -218,7 +200,7 @@ public class ProductionManager implements Manager
 	{
 		if (!factoryExistsAt(factoryLocation))
 		{
-			HashMap<String, ProductionProperties> properties = plugin.production_Properties;
+			HashMap<String, ProductionProperties> properties = plugin.productionProperties;
 			Block inventoryBlock = inventoryLocation.getBlock();
 			Chest chest = (Chest) inventoryBlock.getState();
 			Inventory chestInventory = chest.getInventory();
@@ -250,7 +232,7 @@ public class ProductionManager implements Manager
 	{
 		if (!factoryExistsAt(factoryLocation))
 		{
-			HashMap<String, ProductionProperties> properties = plugin.production_Properties;
+			HashMap<String, ProductionProperties> properties = plugin.productionProperties;
 			Block inventoryBlock = inventoryLocation.getBlock();
 			Chest chest = (Chest) inventoryBlock.getState();
 			Inventory chestInventory = chest.getInventory();
@@ -332,18 +314,25 @@ public class ProductionManager implements Manager
 	{
 		producers.remove((ProductionFactory)factory);
 	}
-	public void cullFactories()
+	
+	public void updateRepair(long time)
 	{
-		int currentDate=Integer.valueOf(FactoryModPlugin.dateFormat.format(new Date()));
 		for (ProductionFactory production: producers)
 		{
-			if(currentDate<(production.getDateDisrepair()+FactoryModPlugin.DISREPAIR_LENGTH))
+			production.updateRepair(time/((double)FactoryModPlugin.REPAIR_PERIOD));
+		}
+		long currentTime=System.currentTimeMillis();
+		Iterator<ProductionFactory> itr=producers.iterator();
+		while(itr.hasNext())
+		{
+			ProductionFactory producer=itr.next();
+			if(currentTime>(producer.getTimeDisrepair()+FactoryModPlugin.DISREPAIR_PERIOD))
 			{
-				removeFactory(production);
+				itr.remove();
 			}
-		} 
+		}
 	}
-
+	
 	public String getSavesFileName() 
 	{
 		return FactoryModPlugin.PRODUCTION_SAVES_FILE;

@@ -8,16 +8,37 @@ defaults['probability']=1.0
 defaults['useOnce']=False
 defaults['displayName']=None
 defaults['lore']=None
-defaults['maintenance']=0
 defaults['fuelTime']=1
 defaults['level']=1
+defaults['repairMultiple']=0
 
 import pydot
 
-    
+class CraftedRecipe:
+    def __init__(self,identifier,inputs=None,shape=None,output=None):
+        self.identifier=identifier
+        self.inputs=inputs if inputs!=None else {}
+        self.shape=shape if shape!=None else []
+        self.output=output if output!=None else []
+    def cOutput(self):
+        out='\n    '+self.identifier+':'
+        out+='\n      inputs:'
+        if len(self.shape)==0:
+            for input in self.inputs.values():
+                out+=input.cOutput('\n        ')
+        else:
+            for key,input in self.inputs.items():
+                out+='\n        '+key+':'
+                out+=input.cOutput('\n         ')
+            out+='\n      shape:'
+            for string in self.shape:
+                out+='\n        - '+string
+        out+='\n      output:'
+        out+=self.output.cOutput('\n        ')
+        return out
 
 class Recipe:
-    def __init__(self,identifier,name=defaults['name'],time=defaults['time'],inputs=None,upgrades=None,outputs=None,enchantments=None,useOnce=defaults['useOnce'],outputRecipes=None,maintenance=defaults['maintenance']):
+    def __init__(self,identifier,name=defaults['name'],time=defaults['time'],inputs=None,upgrades=None,outputs=None,enchantments=None,useOnce=defaults['useOnce'],outputRecipes=None):
         self.identifier=identifier
         self.name=name
         self.time=int(time)
@@ -28,7 +49,6 @@ class Recipe:
         self.outputRecipes=outputRecipes if outputRecipes!=None else []
         self.useOnce=useOnce
         from math import ceil
-        self.maintenance=int(ceil(maintenance)) if maintenance!=None else None
         self.checkEnchantments()
     def checkEnchantments(self):
         removeEnchantments=[]
@@ -69,7 +89,6 @@ class Recipe:
             for outputRecipe in self.outputRecipes:
                 out+='\n      - '+outputRecipe.identifier
         if self.useOnce!=defaults['useOnce']:out+='\n    use_once: '+str(self.useOnce).lower()  
-        if self.maintenance!=None and self.maintenance!=0:out+='\n    maintenance: '+str(self.maintenance)
         return out
     def getShortText(self):
         #spare code: ('' if out=='' else: '\l')+
@@ -82,7 +101,6 @@ class Recipe:
             out+='O\:'+output.getShortText()+'\l'
         for enchant in self.enchantments:
             if enchant.probability!=0:out+='E\:'+enchant.getShortText()+'\l'
-        out+='' if self.maintenance==defaults['maintenance'] else 'M\:'+str(self.maintenance)+'\l'
         return out
     def getNode(self):
         return pydot.Node(name=self.identifier,label=self.getShortText())
@@ -163,16 +181,17 @@ class ItemStack:
 ItemStack.importMaterials()
         
 defaults['fuel']=ItemStack(name='Charcoal')
-defaults['maintenanceInputs']=[ItemStack(name='Charcoal')]
+defaults['repairInputs']=[ItemStack(name='Charcoal',amount=0)]
 class Factory:
-    def __init__(self,identifier,name=defaults['name'],fuel=defaults['fuel'],fuelTime=defaults['fuelTime'],inputs=None,outputRecipes=None,maintenanceInputs=None):
+    def __init__(self,identifier,name=defaults['name'],fuel=defaults['fuel'],fuelTime=defaults['fuelTime'],inputs=None,outputRecipes=None,repairMultiple=defaults['repairMultiple'],repairInputs=None):
         self.name=name
         self.identifier=identifier
         self.fuel=fuel
         self.fuelTime=int(fuelTime)
         self.inputs=inputs if inputs!=None else []
         self.outputRecipes=outputRecipes if outputRecipes!=None else []
-        self.maintenanceInputs=maintenanceInputs if maintenanceInputs!=None else defaults['maintenanceInputs']
+        self.repairMultiple=repairMultiple
+        self.repairInputs=repairInputs if repairInputs!=None else defaults['repairInputs']
     def addRecipe(self,outputRecipe):
         self.outputRecipes.append(outputRecipe)
     def cOutput(self):
@@ -186,9 +205,10 @@ class Factory:
             out+='\n    recipes:'
             for outputRecipe in self.outputRecipes:
                 out+='\n      - '+outputRecipe.identifier
-        if len(self.maintenanceInputs)>0:
-            out+='\n    maintenance_inputs:'
-            for maintenanceInput in self.maintenanceInputs:out+=maintenanceInput.cOutput('\n      ')        
+        if self.repairMultiple!=defaults['repairMultiple']:out+='\n    repair_multiple: '+str(self.repairMultiple)
+        if len(self.repairInputs)>0:
+            out+='\n    repair_inputs:'
+            for repairInput in self.repairInputs:out+=repairInput.cOutput('\n      ')        
         return out
     def getShortText(self):
         out=self.name+'\\n'
@@ -196,8 +216,8 @@ class Factory:
             out+='I\:'+input.getShortText()+'\l'
         out+='F\:'+self.fuel.getShortText()+'\l'
         out+='' if self.fuelTime==defaults['fuelTime'] else 'T\:'+str(self.fuelTime)+'\l'
-        for maintenance in self.maintenanceInputs:
-            out+='M\:'+maintenance.getShortText()+'\l'
+        for repairInput in self.repairInputs:
+            out+='M\:'+repairInput.getShortText()+'\l'
         return out
     def getNode(self):
         return pydot.Node(name=self.identifier,label=self.getShortText())

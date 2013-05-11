@@ -1,8 +1,10 @@
-from ConfigObjects import Recipe, Enchantment, ItemStack, Factory
+from ConfigObjects import Recipe, Enchantment, ItemStack, Factory, CraftedRecipe
 from ParseConfig import ParseConfig
 
 coeffs={}
 gMod=0.1
+mMod=0.1
+
 def main():
     print 'Running....'
     ItemStack.importMaterials()
@@ -10,11 +12,10 @@ def main():
 
     createConfigFile()
 
-def createConfig():
+def createFactorieAndRecipes():
     inputs={}
     outputs={}
     enchantments={}
-    maintenanceInputs={}
     recipes={}
     factories={}
     #Equipment
@@ -40,8 +41,7 @@ def createConfig():
             outputs[tech+'_'+equipment]=[ItemStack(name=tech+' '+equipment,amount=coeffs['b'][equipment])]
             recipes[tech+'_'+equipment]=Recipe(identifier=tech+'_'+equipment,name='Forge '+tech+' '+equipment+'.',inputs=inputs[tech+'_'+equipment],outputs=outputs[tech+'_'+equipment],enchantments=enchantments[tech+'_'+equipment])
             inputs[tech+'_'+equipment+'_Smithy']=[input.modifyAmount(1) for input in inputs[tech+'_'+equipment]]
-            maintenanceInputs[tech+'_'+equipment+'_Smithy']=[ItemStack(name=inputDict[tech]).modifyAmount(0.0001)]
-            factories[tech+'_'+equipment+'_Smithy']=Factory(identifier=tech+'_'+equipment+'_Smithy',name=tech+' '+equipment+' Smithy',inputs=inputs[tech+'_'+equipment+'_Smithy'],maintenanceInputs=maintenanceInputs[tech+'_'+equipment+'_Smithy'],outputRecipes=[recipes[tech+'_'+equipment]])
+            factories[tech+'_'+equipment+'_Smithy']=Factory(identifier=tech+'_'+equipment+'_Smithy',name=tech+' '+equipment+' Smithy',inputs=inputs[tech+'_'+equipment+'_Smithy'],outputRecipes=[recipes[tech+'_'+equipment]])
     #Food
     oi={('Bread',1):[('Wheat',3)],('Baked Potato',1):[('Potato',1)],('Cooked Chicken',1):[('Raw Chicken',1)],('Cooked Beef',1):[('Raw Beef',1)],('Grilled Pork',1):[('Pork',1)],('Cooked Fish',1):[('Raw Fish',1)],('Cookie',8):[('Wheat',2),('Cocoa',1)]}
     bulk=64
@@ -111,9 +111,20 @@ def createConfig():
     id='Stone_Smelter'
     inputs[id]=[ItemStack(name='Stone',amount=2000*gMod)]
     factories[id]=Factory(identifier=id,name='Stone Smelter',inputs=inputs[id],outputRecipes=[recipes['Smelt_Stone']])
+    #Charcoal
+    woods=['Oak Wood','Spruce Wood','Birch Wood','Jungle Wood']
+    id='Charcoal_Smelter'
+    inputs[id]=[ItemStack(name='Charcoal',amount=1000*gMod)]
+    factories[id]=Factory(identifier=id,name='Charcoal Burner',inputs=inputs[id])
+    for wood in woods:
+        id='Smelt_'+wood.replace(' ','_')
+        inputs[id]=[ItemStack(name=wood,amount=280)]
+        outputs[id]=[ItemStack(name='Stone',amount=320)]
+        recipes[id]=Recipe(identifier=id,name='Burn '+wood,inputs=inputs[id],outputs=outputs[id],time=60)
+        factories['Charcoal_Smelter'].addRecipe(recipes[id])
     #1:2.5 yield
-    ores={'Coal Ore':'Coal','Iron Ore':'Iron Ingot','Gold Ore':'Gold Ingot','Diamond Ore':'Diamond'}
-    mod={'Coal Ore':2.5,'Iron Ore':1.25,'Gold Ore':1.25,'Diamond Ore':2.5}
+    ores={'Coal Ore':'Coal','Iron Ore':'Iron Ingot','Gold Ore':'Gold Ingot','Diamond Ore':'Diamond','Quartz Ore':'Quartz'}
+    mod={'Coal Ore':2.5,'Iron Ore':1.25,'Gold Ore':1.25,'Diamond Ore':2.5,'Quartz Ore':2.5}
     bulk=64
     for ore in ores.keys():
         #Recipe
@@ -125,9 +136,20 @@ def createConfig():
         id=ore.replace(' ','_')+'_Smelter'
         inputs[id]=[ItemStack(name=ore,amount=300*gMod)]
         factories[id]=Factory(identifier=id,name=ore+' Smelter',inputs=inputs[id],outputRecipes=[recipes['Smelt_'+ore.replace(' ','_')]])
+    
+    #Add in repair
+    for factory in factories.values():
+        factory.repairMultiple=min([input.amount for input in [input.modifyAmount(mMod) for input in factory.inputs]])
+        factory.repairInputs=[input.modifyAmount(1.0/factory.repairMultiple) for input in [input.modifyAmount(mMod) for input in factory.inputs]]
     return (factories,recipes)
-    
-    
+
+def createCraftingRecipes():
+        enabledRecipes=[]
+        enabledRecipes.append(CraftedRecipe('XP to Emerald',inputs={'a':ItemStack('Exp Bottle',amount=9)},output=ItemStack('Emerald')))
+        enabledRecipes.append(CraftedRecipe('Emerald to XP',inputs={'a':ItemStack('Emerald')},output=ItemStack('Exp Bottle',amount=9)))
+        enabledRecipes.append(CraftedRecipe('Stone to Double Slab',inputs={'s':ItemStack('Stone')},shape=['sss','sss'],output=ItemStack('Double Stone Slab')))
+        enabledRecipes.append(CraftedRecipe('Slab to Double Slab',inputs={'s':ItemStack('Stone Slab')},shape=['s','s'],output=ItemStack('Double Stone Slab')))
+        return enabledRecipes
 def createConfigFile():
     config={}
     config['copy_defaults']='true'
@@ -138,14 +160,12 @@ def createConfigFile():
     config['factory_interaction_material']='STICK'
     config['destructible_factories']='false'
     config['disable_experience']='true'
-    config['disrepair_length']='15'
     config['update_cycle']='20'
-    config['maintenance_cycle']='6000'
-    config['maintenance_rate']='0.00000165'
-    
-    config['factories'],config['recipes']=createConfig()
-
+    config['repair_period']='2'
+    config['culling_period']='1'
+    config['factories'],config['recipes']=createFactorieAndRecipes()
     config['disabled_recipes']=[]
+    config['enabled_recipes']=createCraftingRecipes()
     checkConflicts(config['factories'])
     print 'Fixing Conflicts...'
     fixConflicts(config['factories'])

@@ -247,6 +247,9 @@ public class FactoryModListener implements Listener
 				}
 			}
 		}
+		/* Section commented out since there exists range of bugs that circumvent 
+		 * this protection and this protection should not be necessary
+		 * it will only complicate and obfuscate possible workaround bugs
 		//if the player right clicked a block
 		else if(e.getAction() == Action.RIGHT_CLICK_BLOCK)
 		{
@@ -280,6 +283,7 @@ public class FactoryModListener implements Listener
 				}
 			}
 		}
+		*/
 	}
 	@EventHandler
 	public void onPlayerExpChangeEvent(PlayerExpChangeEvent j)
@@ -354,7 +358,6 @@ public class FactoryModListener implements Listener
 				return productionMan.createFactory(loc, southLocation, northLocation);
 			}
 		}
-	        
 		if((westType.getId()== 61 || westType.getId() == 62) && ! productionMan.factoryExistsAt(westLocation))  
 		{  
 			if(eastType.getId()== 54 && ! productionMan.factoryExistsAt(eastLocation)) 
@@ -362,15 +365,13 @@ public class FactoryModListener implements Listener
 				return productionMan.createFactory(loc, eastLocation, westLocation);
 			}
 		}
-	            
 		if((southType.getId()== 61 || southType.getId()== 62) && ! productionMan.factoryExistsAt(southLocation))  
 		{
 			if(northType.getId()== 54 && ! productionMan.factoryExistsAt(northLocation)) 
 			{
 				return productionMan.createFactory(loc, northLocation, southLocation);
 			}
-		}        
-	        
+		}
 		if((eastType.getId()== 61 || eastType.getId()== 62) && ! productionMan.factoryExistsAt(eastLocation))  
 		{
 			if(westType.getId()== 54 && ! productionMan.factoryExistsAt(westLocation)) 
