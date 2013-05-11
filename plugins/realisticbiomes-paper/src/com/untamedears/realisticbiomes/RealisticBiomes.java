@@ -202,7 +202,7 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	
 	public void onDisable() {
 		LOG.info("[RealisticBiomes] saving plant growth data.");
-		plantManager.saveAll();
+		plantManager.saveAllAndStop();
 		plantManager = null;
 		LOG.info("[RealisticBiomes] is now disabled.");
 	}

@@ -30,7 +30,7 @@ public class PlantChunk {
 	private static PreparedStatement savePlantsStmt = null;
 	private static PreparedStatement getLastChunkIdStmt = null;
 	
-	public PlantChunk(RealisticBiomes plugin, Connection conn, int index) {
+	public PlantChunk(RealisticBiomes plugin, Connection readConn, Connection writeConn, int index) {
 		this.plugin = plugin;
 		plants = null;
 		this.index = index;
@@ -40,16 +40,16 @@ public class PlantChunk {
 
 		if (deleteOldDataStmt == null) {
 			try {
-			deleteOldDataStmt = conn.prepareStatement("DELETE FROM plant WHERE chunkid = ?1");
+			deleteOldDataStmt = writeConn.prepareStatement("DELETE FROM plant WHERE chunkid = ?1");
 			
-			loadPlantsStmt = conn.prepareStatement("SELECT w, x, y, z, date, growth FROM plant WHERE chunkid = ?1");
+			loadPlantsStmt = readConn.prepareStatement("SELECT w, x, y, z, date, growth FROM plant WHERE chunkid = ?1");
 			
-			addChunkStmt = conn.prepareStatement("INSERT INTO chunk (w, x, z) VALUES (?, ?, ?)");
-			getLastChunkIdStmt = conn.prepareStatement("SELECT last_insert_rowid()");	
+			addChunkStmt = writeConn.prepareStatement("INSERT INTO chunk (w, x, z) VALUES (?, ?, ?)");
+			getLastChunkIdStmt = writeConn.prepareStatement("SELECT last_insert_rowid()");	
 			
-			savePlantsStmt = conn.prepareStatement("INSERT INTO plant (chunkid, w, x, y, z, date, growth) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)");
+			savePlantsStmt = writeConn.prepareStatement("INSERT INTO plant (chunkid, w, x, y, z, date, growth) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)");
 			
-			deleteChunkStmt = conn.prepareStatement("DELETE FROM chunk WHERE id = ?1");
+			deleteChunkStmt = writeConn.prepareStatement("DELETE FROM chunk WHERE id = ?1");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -91,7 +91,7 @@ public class PlantChunk {
 		return plants.get(coords);
 	}
 
-	public boolean load(Connection conn, Coords coords) {
+	public boolean load(Coords coords) {
 		// if the data is being loaded, it is known that this chunk is in the database
 		inDatabase = true;
 		
@@ -145,7 +145,7 @@ public class PlantChunk {
 		return true;
 	}
 	
-	public void unload(Connection conn, Coords chunkCoords) {
+	public void unload(Coords chunkCoords) {
 		if (!loaded)
 			return;
 		
