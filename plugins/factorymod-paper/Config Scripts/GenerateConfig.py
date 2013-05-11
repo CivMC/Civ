@@ -119,7 +119,7 @@ def createFactorieAndRecipes():
     for wood in woods:
         id='Smelt_'+wood.replace(' ','_')
         inputs[id]=[ItemStack(name=wood,amount=280)]
-        outputs[id]=[ItemStack(name='Stone',amount=320)]
+        outputs[id]=[ItemStack(name='Charcoal',amount=320)]
         recipes[id]=Recipe(identifier=id,name='Burn '+wood,inputs=inputs[id],outputs=outputs[id],time=60)
         factories['Charcoal_Smelter'].addRecipe(recipes[id])
     #1:2.5 yield

@@ -16,7 +16,7 @@ class ParseConfig:
             for key in sortedFactoryKeys:
                 factory=config['factories'][key]
                 if name in factory.identifier:
-                    myfile.write('\n\n**'+factory.identifier+'**')
+                    myfile.write('\n\n**'+factory.name+'**')
                     for input in factory.inputs:
                         myfile.write(' - '+str(input.amount)+' '+input.name)
                     for recipe in factory.outputRecipes:

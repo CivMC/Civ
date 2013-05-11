@@ -1771,9 +1771,10 @@ production_recipes:
         amount: 280
         durability: 3
     outputs:
-      Stone:
-        material: STONE
+      Charcoal:
+        material: COAL
         amount: 320
+        durability: 1
   Brown_Wool_Purple:
     name: Dye Brown Wool Purple
     inputs:
@@ -1799,9 +1800,10 @@ production_recipes:
         amount: 280
         durability: 1
     outputs:
-      Stone:
-        material: STONE
+      Charcoal:
+        material: COAL
         amount: 320
+        durability: 1
   Pink_Wool_Green:
     name: Dye Pink Wool Green
     inputs:
@@ -1943,9 +1945,10 @@ production_recipes:
         amount: 280
         durability: 2
     outputs:
-      Stone:
-        material: STONE
+      Charcoal:
+        material: COAL
         amount: 320
+        durability: 1
   Diamond_Sword:
     name: Forge Diamond Sword.
     inputs:
@@ -3833,9 +3836,10 @@ production_recipes:
         material: WOOD
         amount: 280
     outputs:
-      Stone:
-        material: STONE
+      Charcoal:
+        material: COAL
         amount: 320
+        durability: 1
   Wood_XP_Bottle_1_Bulk:
     name: Brew XP Bottles  - 2
     production_time: 128
