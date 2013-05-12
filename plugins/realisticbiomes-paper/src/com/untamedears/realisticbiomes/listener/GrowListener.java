@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockGrowEvent;
@@ -67,7 +68,7 @@ public class GrowListener implements Listener {
 	 * Event handler for {@link StructureGrowEvent}. Checks tree growth for proper conditions
 	 * @param event The {@link StructureGrowEvent} being handled
 	 */
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onStructureGrow(StructureGrowEvent event) {
 		// disable bonemeal
 		if (event.isFromBonemeal()) {
