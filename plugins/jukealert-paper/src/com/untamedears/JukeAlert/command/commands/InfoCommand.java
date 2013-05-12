@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 import com.untamedears.JukeAlert.command.PlayerCommand;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.chat.ChatFiller;
+import com.untamedears.JukeAlert.tasks.GetSnitchInfoTask;
+import org.bukkit.Bukkit;
 
 public class InfoCommand extends PlayerCommand {
 
@@ -57,7 +59,9 @@ public class InfoCommand extends PlayerCommand {
 
     private void sendLog(CommandSender sender, Snitch snitch, int offset) {
         Player player = (Player) sender;
-        List<String> info = plugin.getJaLogger().getSnitchInfo(snitch.getId(), 10 * offset);
+        GetSnitchInfoTask task = new GetSnitchInfoTask(plugin, snitch.getId(), offset);
+        Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, task);
+        List<String> info = task.getInfo();
 
         player.sendMessage(ChatColor.WHITE + " Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------");
         player.sendMessage(ChatColor.GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 25), ChatFiller.fillString("Reason", (double) 20), ChatFiller.fillString("Details", (double) 30)));
