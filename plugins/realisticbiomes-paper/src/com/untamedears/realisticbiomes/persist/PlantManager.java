@@ -58,6 +58,11 @@ public class PlantManager {
 			e.printStackTrace();
 		}
 		
+		 String synchronousPragma = "PRAGMA synchronous=OFF";
+		 String countChangesPragma = "PRAGMA count_changes=OFF";
+		 String journalModePragma = "PRAGMA journal_mode=MEMORY";
+		 String tempStorePragma = "PRAGMA temp_store=MEMORY";
+		
 		String sJdbc = "jdbc:sqlite";
 		String sDbUrl = sJdbc + ":" + plugin.getDataFolder().getAbsolutePath() + "/" + config.databaseName;
 		int iTimeout = 30;
@@ -72,6 +77,12 @@ public class PlantManager {
 			readConn = DriverManager.getConnection(sDbUrl);
 			Statement stmt = readConn.createStatement();
 			stmt.setQueryTimeout(iTimeout);
+			
+			// set various settings for performance. Makes corruption due to bad shutdowns more common
+			stmt.executeUpdate(synchronousPragma);
+			stmt.executeUpdate(countChangesPragma);
+			stmt.executeUpdate(journalModePragma);
+			stmt.executeUpdate(tempStorePragma);
 			
 			// clean up the database
 			stmt.executeUpdate(vacuumDatabase);
