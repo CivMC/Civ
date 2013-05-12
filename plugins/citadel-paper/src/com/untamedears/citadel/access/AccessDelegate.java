@@ -18,12 +18,13 @@ import com.untamedears.citadel.entity.IReinforcement;
 public abstract class AccessDelegate<T extends MaterialData> {
 
     public static AccessDelegate getDelegate(Block block) {
+        Material mat = block.getType();
         MaterialData data = block.getState().getData();
         if (data instanceof Door) {
             return new DoorAccessDelegate(block, (Door) data);
         } else if (data instanceof Bed) {
             return new BedAccessDelegate(block, (Bed) data);
-        } else if (block.getType() == Material.CHEST) {
+        } else if (mat == Material.CHEST || mat == Material.TRAPPED_CHEST) {
             return new ChestAccessDelegate(block, data);
         } else {
             return new AccessDelegate<MaterialData>(block, data) {

@@ -49,13 +49,15 @@ public class Utility {
     }
 
     public static Block getAttachedChest(Block block) {
-        if (block.getType() == Material.CHEST)
+        Material mat = block.getType();
+        if (mat == Material.CHEST || mat == Material.TRAPPED_CHEST) {
             for (BlockFace face : new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}) {
                 Block b = block.getRelative(face);
-                if (b.getType() == Material.CHEST) {
+                if (b.getType() == mat) {
                     return b;
                 }
             }
+        }
         return null;
     }
 

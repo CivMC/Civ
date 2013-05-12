@@ -16,8 +16,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.ContainerBlock;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.Openable;
 
 import com.untamedears.citadel.Citadel;
@@ -244,7 +244,7 @@ public class PlayerReinforcement implements
 
     public boolean isSecurable() {
         Block block = getBlock();
-        return block.getState() instanceof ContainerBlock
+        return block.getState() instanceof InventoryHolder
                 || block.getState().getData() instanceof Openable
                 || SECURABLE.contains(block.getTypeId());
     }
