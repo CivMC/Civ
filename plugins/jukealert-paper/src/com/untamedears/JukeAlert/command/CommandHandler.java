@@ -15,8 +15,8 @@ public class CommandHandler {
 		String identifier = command.getIdentifier();
 		boolean correctForm = identifier.matches("^[0-9a-zA-Z\\._/]*$");
 		if(correctForm){
-			this.commands.put(identifier.toLowerCase(), command)
-		{
+			this.commands.put(identifier.toLowerCase(), command);
+                }//How the fuck did this happen?
 //		String identifier = command.getIdentifier().toLowerCase();
 //		this.commands.put(identifier, command);
 	}
