@@ -1,11 +1,10 @@
-package com.untamedears.JukeAlert.messages;
+package com.untamedears.JukeAlert.chat;
 
 import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.untamedears.JukeAlert.chat.ChatFiller;
 
 public class SendSnitchInfo implements Runnable {
 	private List<String> info;
