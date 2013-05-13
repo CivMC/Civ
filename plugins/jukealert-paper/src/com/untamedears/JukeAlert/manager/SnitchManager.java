@@ -18,8 +18,6 @@ public class SnitchManager {
     private JukeAlert plugin;
     private JukeAlertLogger logger;
     private Map<World, Map<Location, Snitch>> snitches;
-    //Stores the highest autoincrement snitch_id number
-    private Integer lastSnitchID;
 
     public SnitchManager() {
         plugin = JukeAlert.getInstance();

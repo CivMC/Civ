@@ -9,10 +9,12 @@ import org.bukkit.entity.Player;
 public class SendSnitchInfo implements Runnable {
 	private List<String> info;
 	private Player player;
+	private int offset;
    
-    public SendSnitchInfo(List<String> info, Player player) {
+    public SendSnitchInfo(List<String> info, Player player, int offset) {
         this.info = info;
         this.player = player;
+        this.offset = offset;
     }
    
     public void run() {
@@ -23,8 +25,10 @@ public class SendSnitchInfo implements Runnable {
                 player.sendMessage(dataEntry);
             }
             player.sendMessage("");
+            player.sendMessage(ChatColor.DARK_GRAY + " * Page " + offset + " ------------------------------------------");
+            player.sendMessage("");
         } else {
-            player.sendMessage(ChatColor.AQUA + " * Page is empty");
+            player.sendMessage(ChatColor.AQUA + " * Page " + offset + " is empty");
         }
 
     }

@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.command.PlayerCommand;
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.chat.ChatFiller;
 import com.untamedears.JukeAlert.tasks.GetSnitchInfoPlayerTask;
 import org.bukkit.Bukkit;
 
