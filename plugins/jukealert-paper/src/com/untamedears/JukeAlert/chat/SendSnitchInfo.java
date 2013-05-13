@@ -16,15 +16,15 @@ public class SendSnitchInfo implements Runnable {
     }
    
     public void run() {
-        player.sendMessage(ChatColor.WHITE + " Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------");
-        player.sendMessage(ChatColor.GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 25), ChatFiller.fillString("Reason", (double) 20), ChatFiller.fillString("Details", (double) 30)));
-        if (info != null) {
+        if (info != null && !info.isEmpty()) {
+            player.sendMessage(ChatColor.WHITE + " Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------");
+            player.sendMessage(ChatColor.GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 25), ChatFiller.fillString("Reason", (double) 20), ChatFiller.fillString("Details", (double) 30)));
             for (String dataEntry : info) {
                 player.sendMessage(dataEntry);
             }
             player.sendMessage("");
         } else {
-            player.sendMessage(ChatColor.AQUA + "Page is empty");
+            player.sendMessage(ChatColor.AQUA + " * Page is empty");
         }
 
     }

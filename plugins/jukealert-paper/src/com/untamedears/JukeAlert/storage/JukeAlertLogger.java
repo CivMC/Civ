@@ -351,7 +351,8 @@ public class JukeAlertLogger {
     public Boolean deleteSnitchInfo(int snitchId) {
         try {
             deleteSnitchLogStmt.setInt(1, snitchId);
-            return deleteSnitchLogStmt.execute();
+            deleteSnitchLogStmt.execute();
+            return true;
         } catch (SQLException ex) {
             this.plugin.getLogger().log(Level.SEVERE, "Could not delete Snitch Details from the snitchesDetail table using the snitch id " + snitchId, ex);
             return false;

@@ -52,7 +52,7 @@ public class ClearCommand extends PlayerCommand {
 
     private void deleteLog(CommandSender sender, Snitch snitch) {
         Player player = (Player) sender;
-        Boolean completed = plugin.getJaLogger().deleteSnitchInfo(snitch.getLoc());
+        Boolean completed = plugin.getJaLogger().deleteSnitchInfo(snitch.getId());
 
         if (completed) {
             player.sendMessage(ChatColor.AQUA + "Snitch Cleared");
