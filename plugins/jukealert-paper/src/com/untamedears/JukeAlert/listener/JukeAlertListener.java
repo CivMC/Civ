@@ -1,7 +1,5 @@
 package com.untamedears.JukeAlert.listener;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.untamedears.JukeAlert.JukeAlert;
@@ -15,7 +13,6 @@ import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;

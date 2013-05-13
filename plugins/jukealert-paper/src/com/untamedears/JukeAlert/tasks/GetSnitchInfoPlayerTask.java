@@ -5,7 +5,8 @@
 package com.untamedears.JukeAlert.tasks;
 
 import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.messages.SendSnitchInfo;
+import com.untamedears.JukeAlert.chat.SendSnitchInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +33,8 @@ public class GetSnitchInfoPlayerTask implements Runnable {
 
     @Override
     public void run() {
-        SendSnitchInfo runnable = new SendSnitchInfo(plugin.getJaLogger().getSnitchInfo(snitchId, offset * 10), this.player);
-        runnable.run();
+        SendSnitchInfo sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchInfo(snitchId, (offset-1) * 10), this.player, offset);
+        sendSnitchInfo.run();
     }
 
     public List<String> getInfo() {
