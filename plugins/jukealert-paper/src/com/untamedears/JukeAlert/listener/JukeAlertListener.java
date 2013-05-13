@@ -73,19 +73,19 @@ public class JukeAlertListener implements Listener {
             PlayerReinforcement reinforcement = (PlayerReinforcement) rei;
             Faction owner = reinforcement.getOwner();
             if (reinforcement.getSecurityLevel().equals(SecurityLevel.GROUP)) {
-                plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+                plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
                 Snitch snitch = new Snitch(loc, owner);
-                snitch.setId(plugin.getJaLogger().getLastSnitchID() + 1);
+                snitch.setId(plugin.getJaLogger().getLastSnitchID());
                 plugin.getJaLogger().increaseLastSnitchID();
                 snitchManager.addSnitch(snitch);
-                player.sendMessage(ChatColor.AQUA + "You've created a snitch block registered to the group " + owner.getName() + ".");
+                player.sendMessage(ChatColor.AQUA + "You've created a snitch block registered to the group " + owner.getName() + ".  To name your snitch, type /janame.");
             } else {
-                plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), "p:" + owner.getFounder(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+                plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getFounder(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
                 Snitch snitch = new Snitch(loc, owner);
-                snitch.setId(plugin.getJaLogger().getLastSnitchID() + 1);
+                snitch.setId(plugin.getJaLogger().getLastSnitchID());
                 plugin.getJaLogger().increaseLastSnitchID();
                 snitchManager.addSnitch(snitch);
-                player.sendMessage(ChatColor.AQUA + "You've created a private snitch block; reinforce it with a group to register others.");
+                player.sendMessage(ChatColor.AQUA + "You've created a private snitch block; reinforce it with a group to register members.  To name your snitch, type /janame.");
             }
         }
     }
@@ -128,7 +128,7 @@ public class JukeAlertListener implements Listener {
                         snitch.add(player.getName());
                         for (Player remoteplayer : playerManager.getPlayers()) {
                             if (snitch.getGroup().isMember(remoteplayer.getName()) || snitch.getGroup().isFounder(remoteplayer.getName()) || snitch.getGroup().isModerator(remoteplayer.getName())) {
-                                remoteplayer.sendMessage(ChatColor.AQUA + player.getName() + " entered snitch at [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+                                remoteplayer.sendMessage(ChatColor.AQUA + " * " + player.getName() + " entered snitch at " + snitch.getName() + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
                             }
                         }
                         plugin.getJaLogger().logSnitchEntry(snitch, location, player);

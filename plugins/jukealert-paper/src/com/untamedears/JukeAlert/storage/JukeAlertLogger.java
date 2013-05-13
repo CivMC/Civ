@@ -58,6 +58,7 @@ public class JukeAlertLogger {
     private PreparedStatement deleteSnitchStmt;
     private PreparedStatement updateGroupStmt;
     private PreparedStatement updateCuboidVolumeStmt;
+    private PreparedStatement updateSnitchNameStmt;
     private int logsPerPage;
     private int lastSnitchID;
 
@@ -100,6 +101,7 @@ public class JukeAlertLogger {
         db.execute("CREATE TABLE IF NOT EXISTS `" + snitchsTbl + "` ("
                 + "`snitch_id` int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "`snitch_world` varchar(40) NOT NULL,"
+                + "`snitch_name` varchar(40) NOT NULL,"
                 + "`snitch_x` int(10) NOT NULL,"
                 + "`snitch_y` int(10) NOT NULL,"
                 + "`snitch_z` int(10) NOT NULL,"
@@ -163,8 +165,8 @@ public class JukeAlertLogger {
 
         // 
         insertNewSnitchStmt = db.prepareStatement(String.format(
-                "INSERT INTO %s (snitch_world, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z)"
-                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO %s (snitch_world, snitch_name, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z)"
+                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 snitchsTbl));
 
         // 
@@ -186,6 +188,12 @@ public class JukeAlertLogger {
         updateCuboidVolumeStmt = db.prepareStatement(String.format(
                 "UPDATE %s SET snitch_cuboid_x=?, snitch_cuboid_y=?, snitch_cuboid_z=?"
                 + " WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
+                snitchsTbl));
+        
+        //
+        updateSnitchNameStmt = db.prepareStatement(String.format(
+                "UPDATE %s SET snitch_name=?"
+                + " WHERE snitch_id=?",
                 snitchsTbl));
     }
 
@@ -223,6 +231,7 @@ public class JukeAlertLogger {
 
                 snitch = new Snitch(location, group);
                 snitch.setId(rs.getInt("snitch_id"));
+                snitch.setName(rs.getString("snitch_name"));
                 snitches.put(location, snitch);
             }
             ResultSet rsKey = getLastSnitchID.executeQuery();
@@ -551,16 +560,17 @@ public class JukeAlertLogger {
     }
 
     //Logs the snitch being placed at World, x, y, z in the database.
-    public void logSnitchPlace(String world, String group, int x, int y, int z) {
+    public void logSnitchPlace(String world, String group, String name, int x, int y, int z) {
         try {
             insertNewSnitchStmt.setString(1, world);
-            insertNewSnitchStmt.setInt(2, x);
-            insertNewSnitchStmt.setInt(3, y);
-            insertNewSnitchStmt.setInt(4, z);
-            insertNewSnitchStmt.setString(5, group);
-            insertNewSnitchStmt.setInt(6, configManager.getDefaultCuboidSize());
+            insertNewSnitchStmt.setString(2, name);
+            insertNewSnitchStmt.setInt(3, x);
+            insertNewSnitchStmt.setInt(4, y);
+            insertNewSnitchStmt.setInt(5, z);
+            insertNewSnitchStmt.setString(6, group);
             insertNewSnitchStmt.setInt(7, configManager.getDefaultCuboidSize());
             insertNewSnitchStmt.setInt(8, configManager.getDefaultCuboidSize());
+            insertNewSnitchStmt.setInt(9, configManager.getDefaultCuboidSize());
             Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
                 @Override
                 public void run() {
@@ -645,6 +655,27 @@ public class JukeAlertLogger {
             this.plugin.getLogger().log(Level.SEVERE, "Could not update Snitch cubiod size!", ex);
         }
     }
+    
+    //Updates the name of the snitch in the database.
+    public void updateSnitchName(Snitch snitch, String name) {
+        try {
+            updateSnitchNameStmt.setString(1, name);
+        	updateSnitchNameStmt.setInt(2, snitch.getId());
+            Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        updateSnitchNameStmt.execute();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
+        } catch (SQLException ex) {
+            this.plugin.getLogger().log(Level.SEVERE, "Could not update snitch name!", ex);
+        }
+    }
+
 
     public Integer getLastSnitchID() {
         return lastSnitchID;
