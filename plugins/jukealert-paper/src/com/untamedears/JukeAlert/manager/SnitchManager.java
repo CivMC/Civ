@@ -66,6 +66,5 @@ public class SnitchManager {
 
     public void removeSnitch(Snitch snitch) {
         snitches.get(snitch.getLoc().getWorld()).remove(snitch.getLoc());
-        plugin.getJaLogger().logSnitchBreak(snitch.getLoc().getWorld().getName(), snitch.getLoc().getBlockX(), snitch.getLoc().getBlockY(), snitch.getLoc().getBlockZ());
     }
 }

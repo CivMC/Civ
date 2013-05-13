@@ -6,9 +6,12 @@ commands:
     description: Displays help
     usage: /jahelp
   jainfo:
-    description: Display information from a Snitch
+    description: Display information from a snitch
     usage: /jainfo
   jaclear:
-    description: Clear information from a Snitch
+    description: Clear information from a snitch
     usage: /jaclear
+  janame:
+    description: Name a snitch
+    usage: /janame
 depend: [Citadel]

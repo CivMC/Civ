@@ -10,6 +10,7 @@ import org.bukkit.util.Vector;
 public class Snitch {
 
     private int snitchId;
+    private String name;
     private Location location;
     private Faction group;
     private int x, y, z, minx, maxx, miny, maxy, minz, maxz, radius;
@@ -18,9 +19,8 @@ public class Snitch {
     public Snitch(Location loc, Faction group) {
         this.group = group;
         this.location = loc;
-        radius = 11;
-        
-        
+        this.name = "";
+        radius = 11; 
     }
 
     public int getX() {
@@ -48,8 +48,16 @@ public class Snitch {
     	return this.snitchId;
     }
     
+    public String getName() {
+    	return this.name;
+    }
+    
     public void setId(int newId) {
     	this.snitchId = newId;
+    }
+    
+    public void setName(String name) {
+    	this.name = name;
     }
 
     public Faction getGroup() {
