@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import com.untamedears.JukeAlert.command.PlayerCommand;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.chat.ChatFiller;
-import com.untamedears.JukeAlert.tasks.GetSnitchInfoTask;
+import com.untamedears.JukeAlert.tasks.GetSnitchInfoPlayerTask;
 import org.bukkit.Bukkit;
 
 public class InfoCommand extends PlayerCommand {
@@ -59,18 +59,9 @@ public class InfoCommand extends PlayerCommand {
 
     private void sendLog(CommandSender sender, Snitch snitch, int offset) {
         Player player = (Player) sender;
-        GetSnitchInfoTask task = new GetSnitchInfoTask(plugin, snitch.getId(), offset);
+        GetSnitchInfoPlayerTask task = new GetSnitchInfoPlayerTask(plugin, snitch.getId(), offset, player);
         Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, task);
-        List<String> info = task.getInfo();
+        //List<String> info = task.getInfo();
 
-        player.sendMessage(ChatColor.WHITE + " Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------");
-        player.sendMessage(ChatColor.GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 25), ChatFiller.fillString("Reason", (double) 20), ChatFiller.fillString("Details", (double) 30)));
-        if (info != null) {
-            for (String dataEntry : info) {
-                player.sendMessage(dataEntry);
-            }
-        } else {
-            player.sendMessage(ChatColor.AQUA + "Page " + offset + " is empty");
-        }
     }
 }
