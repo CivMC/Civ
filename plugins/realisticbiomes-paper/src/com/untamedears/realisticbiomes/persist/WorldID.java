@@ -15,10 +15,10 @@ public class WorldID {
 		WorldID.overworldID = overworld == null ? null : overworld.getUID();
 		
 		World nether = plugin.getServer().getWorld("world_nether");
-		WorldID.netherID = overworld == null ? null : nether.getUID();
+		WorldID.netherID = nether == null ? null : nether.getUID();
 		
 		World end = plugin.getServer().getWorld("world_the_end");
-		WorldID.endID = overworld == null ? null : end.getUID();
+		WorldID.endID = end == null ? null : end.getUID();
 	}
 	
 	public static UUID getMCID(int id) {
