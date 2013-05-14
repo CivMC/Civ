@@ -328,8 +328,16 @@ public class ProductionFactory extends FactoryObject implements Factory
 	 */
 	public void setRecipeToNumber(int newRecipeNumber)
 	{
-		currentRecipe = recipes.get(newRecipeNumber);
-		currentRecipeNumber = newRecipeNumber;
+		if (newRecipeNumber<recipes.size())
+		{
+			currentRecipe = recipes.get(newRecipeNumber);
+			currentRecipeNumber = newRecipeNumber;
+		}
+		else
+		{
+			currentRecipe=recipes.get(0);
+			currentRecipeNumber=0;
+		}
 	}
 
 	/**
