@@ -90,25 +90,6 @@ class Recipe:
                 out+='\n      - '+outputRecipe.identifier
         if self.useOnce!=defaults['useOnce']:out+='\n    use_once: '+str(self.useOnce).lower()  
         return out
-    def getShortText(self):
-        #spare code: ('' if out=='' else: '\l')+
-        out=self.name+'\\n'
-        for input in self.inputs:
-            out+='I\:'+input.getShortText()+'\l'
-        for upgrade in self.upgrades:
-            out+='U\:'+upgrade.getShortText()+'\l'
-        for output in self.outputs:
-            out+='O\:'+output.getShortText()+'\l'
-        for enchant in self.enchantments:
-            if enchant.probability!=0:out+='E\:'+enchant.getShortText()+'\l'
-        return out
-    def getNode(self):
-        return pydot.Node(name=self.identifier,label=self.getShortText())
-    def getEdges(self):
-        edges=[]
-        for outputRecipe in self.outputRecipes:
-            edges.append(pydot.Edge(src=self.identifier,dst=outputRecipe.identifier))
-        return edges
             
 class Enchantment:   
     enchantments={}
@@ -132,9 +113,6 @@ class Enchantment:
         out+=spacer+'level: '+str(self.level)
         if self.probability!=defaults['probability']: out+=spacer+'probability: '+str(self.probability)
         return out
-    def getShortText(self):
-        return str(int(self.probability*100))+'% '+self.name+' '+str(self.level)
-
         
 class ItemStack:
     materials={}
@@ -170,12 +148,6 @@ class ItemStack:
         if self.displayName!=defaults['displayName']:out+=spacer+'display_name: '+self.displayName
         if self.lore!=defaults['lore']:out+=spacer+'lore: '+self.lore
         return out
-    def getShortText(self):
-        out=str(self.amount)+' '+self.name
-        out+='' if self.durability==defaults['durability'] else '('+(str(self.durability))+')' 
-        out+='' if self.displayName==defaults['displayName'] else ' '+self.displayName
-        out+='' if self.lore==defaults['lore'] else ' '+self.lore
-        return out
     def equals(self,otherItemStack):
         return self.material==otherItemStack.material and self.durability==otherItemStack.durability and self.amount==otherItemStack.amount and self.displayName==otherItemStack.displayName and self.lore==otherItemStack.lore
 ItemStack.importMaterials()
@@ -210,19 +182,3 @@ class Factory:
             out+='\n    repair_inputs:'
             for repairInput in self.repairInputs:out+=repairInput.cOutput('\n      ')        
         return out
-    def getShortText(self):
-        out=self.name+'\\n'
-        for input in self.inputs:
-            out+='I\:'+input.getShortText()+'\l'
-        out+='F\:'+self.fuel.getShortText()+'\l'
-        out+='' if self.fuelTime==defaults['fuelTime'] else 'T\:'+str(self.fuelTime)+'\l'
-        for repairInput in self.repairInputs:
-            out+='M\:'+repairInput.getShortText()+'\l'
-        return out
-    def getNode(self):
-        return pydot.Node(name=self.identifier,label=self.getShortText())
-    def getEdges(self):
-        edges=[]
-        for recipe in self.outputRecipes:
-            edges.append(pydot.Edge(src=self.identifier,dst=recipe.identifier))
-        return edges
