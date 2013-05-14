@@ -32,6 +32,9 @@ realistic_biomes:
   crop:
    # the base rate of this plant as a fraction of the standard rate
    base_rate: 0.015
+   # the rate at which plants will grow in an artificial environment, disregarding all other factors
+   # greenhouse is represented by immediate proximity of a glowstone block with light level 14
+   greenhouse_rate: 0.12
    # if this flag is true, the growth rate of the grower is modulated by sunlight levels
    # ie sunlight level = 15 means full growth, while sunlight level 0 means 0 growth
    # sunlight level is disregarded is this flag is false
@@ -63,7 +66,7 @@ realistic_biomes:
    # is unloaded or the server is off. It sets the time to grow to maturity in units of real-life hours
    # if this parameter is set, then the base_rate is ignored, though the other multipliers will still be
    # in effect
-   persistent_growth_period: 24
+   persistent_growth_period: 12
    biomes:
     cold: 0.25
     hot_dry: 0.25
@@ -73,7 +76,7 @@ realistic_biomes:
 
   CARROT:
    inherit: crop
-   persistent_growth_period: 24
+   persistent_growth_period: 12
    biomes:
     hot_dry: 0.1
     hot_rainy: 1.0
@@ -83,7 +86,7 @@ realistic_biomes:
 
   POTATO:
    inherit: crop
-   persistent_growth_period: 24
+   persistent_growth_period: 12
    biomes:
     mountain: 1.0
     cold: 0.25

@@ -1,5 +1,6 @@
 package com.untamedears.realisticbiomes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.util.Vector;
 
 public class GrowthConfig {
 	// a rate of growth between 0 and 1
@@ -16,6 +18,9 @@ public class GrowthConfig {
 	// for a crop, it would be the chance to grow per tick
 	// for an animal, it would be the chance to spawn after mating
 	private double baseRate;
+	// this rate overrides all other settings if the plant is under artificial light (adjacent to glowstone)
+	private double greenhouseRate;
+	private boolean isGreenhouseEnabled;
 	
 	// flag that denotes if this crop's growth is persisted
 	private boolean isPersistent;
@@ -36,12 +41,25 @@ public class GrowthConfig {
 	// map from biome to the modulated growth rate per biome
 	private Map<Biome, Double> biomeMultipliers;
 	
+	// conversion used for persistence calculations
+	private static final int MS_PER_HOUR = 1000 * 60 * 60;
+	
 	// ------------------------------------------------------------------------
 	
 	public static Logger LOG = Logger.getLogger("RealisticBiomes");
 	
 	// ========================================================================
 	// Initialization
+	
+	// relative locations of visible adjacent blocks
+	@SuppressWarnings("serial")
+	private static List<Vector> adjacentBlocks = new ArrayList<Vector>(){{
+		this.add(new Vector(0,1,0));	// up
+		this.add(new Vector(-1,0,0));	// west
+		this.add(new Vector(1,0,0));	// east
+		this.add(new Vector(0,0,-1));	// north
+		this.add(new Vector(0,0,1));	// south
+	}};
 	
 	public static GrowthConfig get(ConfigurationSection conf, GrowthConfig parent, Map<String, Biome[]>biomeAliases) {
 		GrowthConfig growth = new GrowthConfig(parent);
@@ -52,6 +70,8 @@ public class GrowthConfig {
 	// create a new default configuration
 	GrowthConfig() {
 		baseRate = 1.0;
+		greenhouseRate = 0.66;
+		isGreenhouseEnabled = false;
 		isPersistent = false;
 		
 		needsSunlight = false;
@@ -68,6 +88,8 @@ public class GrowthConfig {
 	// make a copy of the given configuration
 	GrowthConfig(GrowthConfig parent) {
 		baseRate = parent.baseRate;
+		greenhouseRate = parent.greenhouseRate;
+		isGreenhouseEnabled = parent.isGreenhouseEnabled;
 		
 		needsSunlight = parent.needsSunlight;
 		openSkyBonus = parent.openSkyBonus;
@@ -86,6 +108,11 @@ public class GrowthConfig {
 		
 		if (config.isSet("base_rate"))
 			baseRate = config.getDouble("base_rate");
+		
+		if (config.isSet("greenhouse_rate")) {
+			isGreenhouseEnabled = true;
+			greenhouseRate = config.getDouble("greenhouse_rate");
+		}
 		
 		isPersistent = false;
 		if (config.isSet("persistent_growth_period")) {
@@ -153,11 +180,26 @@ public class GrowthConfig {
 	
 	// given a block (a location), find the growth rate using these rules
 	public double getRate(Block block) {
+		
+		// if it's fully lit, use greenhouse rate and disregard everything else
+		if(isGreenhouseEnabled && block.getLightFromBlocks() == 14) {
+			// make sure it's a glowstone/lamp
+			for( Vector vec : adjacentBlocks ) {
+				Material mat = block.getLocation().add(vec).getBlock().getType();
+				if( mat == Material.GLOWSTONE || mat == Material.REDSTONE_LAMP_ON ) {
+					if (isPersistent) {
+						return 1.0 / (greenhouseRate * persistentRate * MS_PER_HOUR);
+					}
+					return greenhouseRate;
+				}
+			}
+		}
+		
 		// rate = baseRate * sunlightLevel * biome * (1.0 + soilBonus)
 		double rate = baseRate;
 		// if persistent, the growth rate is measured in growth/millisecond
 		if (isPersistent)
-			rate = 1.0 / (persistentRate * (1000.0*60.0*60.0/*milliseconds per hour*/));
+			rate = 1.0 / (persistentRate * MS_PER_HOUR);
 		
 		// modulate the rate by the amount of sunlight recieved by this plant
 		if (needsSunlight) {

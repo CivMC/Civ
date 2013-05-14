@@ -7,7 +7,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Logger;
 
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.untamedears.realisticbiomes.PersistConfig;
@@ -18,7 +24,8 @@ public class PlantManager {
 	private PersistConfig config;
 	
 	// database connection
-	private Connection conn;
+	private Connection writeConn;
+	private Connection readConn;
 	
 	// map of chunk coordinates to plant chunk data
 	// an entry of null denotes a chunk that is in the database but is unloaded
@@ -29,6 +36,11 @@ public class PlantManager {
 	
 	// task that periodically unloads chunks in batches
 	private BukkitTask unloadBatchTask;
+	
+	// lock to be used to lock use of writeConn over multiple threads
+	private ReentrantLock writeLock;
+	// database write thread
+	ExecutorService writeService;
 	
 	////================================================================================= ////
 	
@@ -46,6 +58,11 @@ public class PlantManager {
 			e.printStackTrace();
 		}
 		
+		 String synchronousPragma = "PRAGMA synchronous=OFF";
+		 String countChangesPragma = "PRAGMA count_changes=OFF";
+		 String journalModePragma = "PRAGMA journal_mode=MEMORY";
+		 String tempStorePragma = "PRAGMA temp_store=MEMORY";
+		
 		String sJdbc = "jdbc:sqlite";
 		String sDbUrl = sJdbc + ":" + plugin.getDataFolder().getAbsolutePath() + "/" + config.databaseName;
 		int iTimeout = 30;
@@ -56,9 +73,16 @@ public class PlantManager {
 		
 		try {
 			// connect to the database
-			conn = DriverManager.getConnection(sDbUrl);
-			Statement stmt = conn.createStatement();
+			writeConn = DriverManager.getConnection(sDbUrl);
+			readConn = DriverManager.getConnection(sDbUrl);
+			Statement stmt = readConn.createStatement();
 			stmt.setQueryTimeout(iTimeout);
+			
+			// set various settings for performance. Makes corruption due to bad shutdowns more common
+			stmt.executeUpdate(synchronousPragma);
+			stmt.executeUpdate(countChangesPragma);
+			stmt.executeUpdate(journalModePragma);
+			stmt.executeUpdate(tempStorePragma);
 			
 			// clean up the database
 			stmt.executeUpdate(vacuumDatabase);
@@ -75,7 +99,7 @@ public class PlantManager {
 				int x = rs.getInt(3);
 				int z = rs.getInt(4);
 				
-				PlantChunk pChunk = new PlantChunk(plugin, conn, id);
+				PlantChunk pChunk = new PlantChunk(plugin, readConn, writeConn, id);
 				chunks.put(new Coords(w,x,0,z), pChunk);
 			}
 		}
@@ -93,31 +117,58 @@ public class PlantManager {
 				unloadBatch();
 		    }
 		}, config.unloadBatchPeriod, config.unloadBatchPeriod);
+		
+		writeLock = new ReentrantLock();
+		writeService = Executors.newSingleThreadExecutor();
+		
+		log = plugin.getLogger();
 	}
 	
-	////================================================================================= ////
+	// ============================================================================================
+	private Logger log;
+	// commit transaction in the writeConn database connection
+	private class commitRunnable implements Runnable {
+	    @Override  
+	    public void run() {
+	    	writeLock.lock();
+
+    		long start = System.nanoTime()/1000000/*ns/ms*/;
+			try {
+				writeConn.commit();
+				writeConn.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			long end = System.nanoTime()/1000000/*ns/ms*/;
+			
+			log.info("Committed data in "+(end-start)+" ms");
+			
+			writeLock.unlock();
+	    }
+	};
 	
+	// --------------------------------------------------------------------------------------------
 	private void unloadBatch() {
 		int count = chunksToUnload.size();
-		long start = System.currentTimeMillis();
-		try {
-			conn.setAutoCommit(false);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		for (Coords batchCoords:chunksToUnload) {
-			unloadChunk(batchCoords);
-		}
+		long start = System.nanoTime()/1000000/*ns/ms*/;
 		
+		// prepare a single transaction with all inserts
+		writeLock.lock();
+			try {
+				writeConn.setAutoCommit(false);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+	
+			for (Coords batchCoords:chunksToUnload) {
+				unloadChunk(batchCoords);
+			}
+		writeLock.unlock();
 		
-		try {
-			conn.commit();
-			conn.setAutoCommit(true);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		long end = System.currentTimeMillis();
+		// write the changes to the database concurrently
+		writeService.submit(new commitRunnable());
+		
+		long end = System.nanoTime()/1000000/*ns/ms*/;
 		
 		if (plugin.persistConfig.logDB)
 			plugin.getLogger().info("db save: "+count+" chunks unloaded in "+(end-start)+" ms");
@@ -125,8 +176,50 @@ public class PlantManager {
 		chunksToUnload.clear();		
 	}
 	
-	//// ================================================================================= ////
+	public void saveAllAndStop() {
+		writeLock.lock();
+			try {
+				writeConn.setAutoCommit(false);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			for (Coords coords:chunks.keySet()) {
+				PlantChunk pChunk = chunks.get(coords);
+				pChunk.unload(coords);
+			}
+			
+			try {
+				writeConn.commit();
+				writeConn.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		writeLock.unlock();
+		
+		chunksToUnload = null;
+		
+		unloadBatchTask.cancel();
+		writeService.shutdown();
+	}
 	
+	private void unloadChunk(Coords coords) {
+		// if the specified chunk does not exist in the system, or is no longer loaded, nothing needs
+		// to be done
+		if (!chunks.containsKey(coords) || !chunks.get(coords).isLoaded())
+			return;
+		
+		// if the minecraft chunk is loaded again, then don't unload the pChunk
+		if (plugin.getServer().getWorld(WorldID.getMCID(coords.w)).isChunkLoaded(coords.x, coords.z))
+			return;
+		
+		// finally, actually unload this thing
+		PlantChunk pChunk = chunks.get(coords);
+		
+		pChunk.unload(coords);
+	}
+	
+	// --------------------------------------------------------------------------------------------
 	public void minecraftChunkUnloaded(Coords coords) {
 		// if the pChunk does not exist, there is nothing to unload
 		if (!chunks.containsKey(coords))
@@ -140,8 +233,7 @@ public class PlantManager {
 		chunksToUnload.add(coords);		
 	}
 	
-	////================================================================================= ////
-	
+	////===========================================================================================
 	// load the specified chunk, return true if the pChunk is actually loaded
 	private boolean loadChunk(Coords coords) {
 		// if the specified chunk does not exist, then don't load anything
@@ -159,20 +251,20 @@ public class PlantManager {
 			return false;
 		
 		// finally, just load this thing!
-		long start = System.currentTimeMillis();
+		long start = System.nanoTime()/1000000/*ns/ms*/;
 		try {
-			conn.setAutoCommit(false);
+			readConn.setAutoCommit(false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		boolean loaded = pChunk.load(conn, coords);
+		boolean loaded = pChunk.load(coords);
 		try {
-			conn.commit();
-			conn.setAutoCommit(true);
+			readConn.commit();
+			readConn.setAutoCommit(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		long end = System.currentTimeMillis();
+		long end = System.nanoTime()/1000000/*ns/ms*/;
 		
 		if (plugin.persistConfig.logDB)
 			plugin.getLogger().info("db load chunk["+coords.x+","+coords.z+"]: "+pChunk.getPlantCount()+" entries loaded in "+(end-start)+" ms");
@@ -180,53 +272,17 @@ public class PlantManager {
 		return loaded;
 	}
 	
-	private void unloadChunk(Coords coords) {
-		// if the specified chunk does not exist in the system, or is no longer loaded, nothing needs
-		// to be done
-		if (!chunks.containsKey(coords) || !chunks.get(coords).isLoaded())
-			return;
-		
-		// if the minecraft chunk is loaded again, then don't unload the pChunk
-		if (plugin.getServer().getWorld(WorldID.getMCID(coords.w)).isChunkLoaded(coords.x, coords.z))
-			return;
-		
-		// finally, actually unload this thing
-		PlantChunk pChunk = chunks.get(coords);		
-		pChunk.unload(conn, coords);
-	}
-	
-	////================================================================================= ////
-	
-	public void saveAll() {
-		try {
-			conn.setAutoCommit(false);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		for (Coords coords:chunks.keySet()) {
-			PlantChunk pChunk = chunks.get(coords);
-			pChunk.unload(conn, coords);
-		}
-		
-		try {
-			conn.commit();
-			conn.setAutoCommit(true);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		chunksToUnload = null;
-		
-		unloadBatchTask.cancel();
-	}
-	
+	////===========================================================================================
 	public void add(Coords coords, Plant plant) {
 		Coords chunkCoords = new Coords(coords.w, coords.x/16, 0, coords.z/16);
 		
+		
 		PlantChunk pChunk = null;
-		if (!chunks.containsKey(chunkCoords))
-			pChunk = new PlantChunk(plugin, conn, -1/*dummy index until assigned when added*/);
+		if (!chunks.containsKey(chunkCoords)) {
+			writeLock.lock();
+				pChunk = new PlantChunk(plugin, readConn, writeConn, -1/*dummy index until assigned when added*/);
+			writeLock.unlock();
+		}
 		else
 			pChunk = chunks.get(chunkCoords);
 		

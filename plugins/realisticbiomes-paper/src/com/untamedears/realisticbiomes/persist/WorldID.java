@@ -2,6 +2,7 @@ package com.untamedears.realisticbiomes.persist;
 
 import java.util.UUID;
 
+import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 
 public class WorldID {
@@ -10,9 +11,14 @@ public class WorldID {
 	private static UUID endID;
 	
 	public static void init (Plugin plugin) {
-		WorldID.overworldID = plugin.getServer().getWorld("world").getUID();
-		WorldID.netherID = plugin.getServer().getWorld("world_nether").getUID();
-		WorldID.endID = plugin.getServer().getWorld("world_the_end").getUID();
+		World overworld = plugin.getServer().getWorld("world");
+		WorldID.overworldID = overworld == null ? null : overworld.getUID();
+		
+		World nether = plugin.getServer().getWorld("world_nether");
+		WorldID.netherID = nether == null ? null : nether.getUID();
+		
+		World end = plugin.getServer().getWorld("world_the_end");
+		WorldID.endID = end == null ? null : end.getUID();
 	}
 	
 	public static UUID getMCID(int id) {
