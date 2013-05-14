@@ -29,6 +29,7 @@ import com.untamedears.citadel.entity.NaturalReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.entity.ReinforcementKey;
 import com.untamedears.citadel.entity.ReinforcementMaterial;
+import com.untamedears.citadel.events.CreateReinforcementEvent;
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,7 +62,7 @@ public class Utility {
         return null;
     }
 
-    public static IReinforcement createNaturalReinforcement(Block block) {
+    public static IReinforcement createNaturalReinforcement(Block block, Player player) {
         Material material = block.getType();
         int breakCount = Citadel
             .getConfigManager()
@@ -70,6 +71,11 @@ public class Utility {
             return null;
         }
         NaturalReinforcement nr = new NaturalReinforcement(block, breakCount);
+        CreateReinforcementEvent event = new CreateReinforcementEvent(nr, block, player);
+        Citadel.getStaticServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return null;
+        }
         Citadel.getReinforcementManager().addReinforcement(nr);
         return nr;
     }
@@ -115,7 +121,12 @@ public class Utility {
                     sendMessage(player, ChatColor.RED, "You don't seem to have a personal group. Try logging out and back in first");
                 }
             }
-
+            PlayerReinforcement reinforcement = new PlayerReinforcement(block, material, group, state.getSecurityLevel());
+            CreateReinforcementEvent event = new CreateReinforcementEvent(reinforcement, block, player);
+            Citadel.getStaticServer().getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                return null;
+            }
             // workaround fix for 1.4.6, it doesnt remove the placed item if its already removed for some reason?
             if ((state.getMode() == PlacementMode.FORTIFICATION) && (blockTypeId == material.getMaterialId())) {
             	ItemStack stack = player.getItemInHand();
@@ -131,7 +142,6 @@ public class Utility {
             }
             //TODO: there will eventually be a better way to flush inventory changes to the client
             player.updateInventory();
-            PlayerReinforcement reinforcement = new PlayerReinforcement(block, material, group, state.getSecurityLevel());
             reinforcement = (PlayerReinforcement)Citadel.getReinforcementManager().addReinforcement(reinforcement);
             String securityLevelText = state.getSecurityLevel().name();
             if(securityLevelText.equalsIgnoreCase("group")){
@@ -168,8 +178,7 @@ public class Utility {
         AccessDelegate delegate = AccessDelegate.getDelegate(block);
         IReinforcement reinforcement = delegate.getReinforcement();
         if (reinforcement == null) {
-            reinforcement = (IReinforcement)createNaturalReinforcement(
-                    block);
+            reinforcement = (IReinforcement)createNaturalReinforcement(block, null);
         }
         if (reinforcement == null) {
             return false;

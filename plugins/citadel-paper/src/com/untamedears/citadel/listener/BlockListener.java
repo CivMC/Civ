@@ -165,7 +165,7 @@ public class BlockListener implements Listener {
         AccessDelegate delegate = AccessDelegate.getDelegate(block);
         IReinforcement reinforcement = delegate.getReinforcement();
         if (reinforcement == null) {
-            reinforcement = createNaturalReinforcement(block);
+            reinforcement = createNaturalReinforcement(block, player);
             if (reinforcement != null && reinforcementDamaged(reinforcement)) {
                 bbe.setCancelled(true);
                 block.getDrops().clear();
@@ -194,7 +194,7 @@ public class BlockListener implements Listener {
             }
             if (!is_cancelled) {
                 // The player reinforcement broke. Now check for natural
-                is_cancelled = createNaturalReinforcement(block) != null;
+                is_cancelled = createNaturalReinforcement(block, player) != null;
             }
         } else {
             is_cancelled = reinforcementDamaged(reinforcement);

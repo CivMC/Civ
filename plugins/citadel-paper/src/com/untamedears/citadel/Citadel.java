@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.Random;
 
+import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -214,5 +215,9 @@ public class Citadel extends JavaPlugin {
 
     public static CitadelDao getDao() {
         return (CitadelDao)dao;
+    }
+
+    public static Server getStaticServer() {
+        return plugin.getServer();
     }
 }
