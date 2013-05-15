@@ -82,7 +82,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 					if (isFuelAvailable())
 					{
 						//if the time since fuel was last consumed is equal to how often fuel needs to be consumed
-						if (currentEnergyTimer == productionFactoryProperties.getEnergyTime())
+						if (currentEnergyTimer == productionFactoryProperties.getEnergyTime()-1)
 						{
 							//remove one fuel.
 							productionFactoryProperties.getFuel().removeFrom(getPowerSourceInventory());
@@ -231,13 +231,12 @@ public class ProductionFactory extends FactoryObject implements Factory
 						return response;
 					}
 				}
-				//if there isn't enough fuel for atleast on energy cycle
+				//if there isn't enough fuel for at least one energy cycle
 				else
 				{
 					//return a error message
-					int timeRequired=(int)Math.ceil(currentRecipe.getProductionTime()/(double)getProductionFactoryProperties().getEnergyTime());
-					int fuelInFurnance=getProductionFactoryProperties().getFuel().amountAvailable(getInventory());
-					int multiplesRequired=timeRequired-fuelInFurnance;
+					FactoryModPlugin.sendConsoleMessage("Production Time:" + String.valueOf(currentRecipe.getProductionTime())+"Energy Time"+String.valueOf(getProductionFactoryProperties().getEnergyTime()+" Ratio: "+String.valueOf(Math.ceil(currentRecipe.getProductionTime()/(double)getProductionFactoryProperties().getEnergyTime()))));
+					int multiplesRequired=(int)Math.ceil(currentRecipe.getProductionTime()/(double)getProductionFactoryProperties().getEnergyTime());
 					response.add(new InteractionResponse(InteractionResult.FAILURE, "Factory is missing fuel! ("+getProductionFactoryProperties().getFuel().getMultiple(multiplesRequired).toString()+")"));
 					return response;
 				}

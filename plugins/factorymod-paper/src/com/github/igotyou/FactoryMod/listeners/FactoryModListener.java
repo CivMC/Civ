@@ -285,26 +285,6 @@ public class FactoryModListener implements Listener
 		}
 		*/
 	}
-	@EventHandler
-	public void onPlayerExpChangeEvent(PlayerExpChangeEvent j)
-	{
-		if(FactoryModPlugin.DISABLE_EXPERIENCE)
-		{
-			j.setAmount(0);			
-		}
-		return;
-	}
-	
-	@EventHandler
-	public void onExpBottleEvent(ExpBottleEvent j)
-	{
-		if(FactoryModPlugin.DISABLE_EXPERIENCE)
-		{
-			Player player=(Player)j.getEntity().getShooter();
-			player.giveExp(7);
-			j.setExperience(0);
-		}
-	}
 	private Location westLoc(Location loc)
 	{
 		Location newLoc = loc.clone();

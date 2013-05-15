@@ -9,9 +9,31 @@ def main():
     print 'Running....'
     ItemStack.importMaterials()
     Enchantment.importEnchantments()
-
     createConfigFile()
-
+    
+def createConfigFile():
+    config={}
+    config['copy_defaults']='true'
+    config['central_block']='WORKBENCH'
+    config['save_cycle']='15'
+    config['return_build_materials']='false'
+    config['citadel_enabled']='true'
+    config['factory_interaction_material']='STICK'
+    config['destructible_factories']='false'
+    config['disable_experience']='true'
+    config['update_cycle']='20'
+    config['repair_period']='1'
+    config['disrepair_period']='1'
+    config['factories'],config['recipes']=createFactorieAndRecipes()
+    config['disabled_recipes']=[]
+    config['enabled_recipes']=createCraftingRecipes()
+    checkConflicts(config['factories'])
+    print 'Fixing Conflicts...'
+    fixConflicts(config['factories'])
+    checkConflicts(config['factories'])
+    ParseConfig.saveConfig(config)
+    ParseConfig.prettyList(config)
+    
 def createFactorieAndRecipes():
     inputs={}
     outputs={}
@@ -152,28 +174,6 @@ def createCraftingRecipes():
         enabledRecipes.append(CraftedRecipe('Stone to Double Slab',inputs={'s':ItemStack('Stone')},shape=['sss','sss'],output=ItemStack('Double Stone Slab')))
         enabledRecipes.append(CraftedRecipe('Slab to Double Slab',inputs={'s':ItemStack('Stone Slab')},shape=['s','s'],output=ItemStack('Double Stone Slab')))
         return enabledRecipes
-def createConfigFile():
-    config={}
-    config['copy_defaults']='true'
-    config['central_block']='WORKBENCH'
-    config['save_cycle']='15'
-    config['return_build_materials']='false'
-    config['citadel_enabled']='true'
-    config['factory_interaction_material']='STICK'
-    config['destructible_factories']='false'
-    config['disable_experience']='true'
-    config['update_cycle']='20'
-    config['repair_period']='2'
-    config['culling_period']='1'
-    config['factories'],config['recipes']=createFactorieAndRecipes()
-    config['disabled_recipes']=[]
-    config['enabled_recipes']=createCraftingRecipes()
-    checkConflicts(config['factories'])
-    print 'Fixing Conflicts...'
-    fixConflicts(config['factories'])
-    checkConflicts(config['factories'])
-    ParseConfig.saveConfig(config)
-    ParseConfig.prettyList(config)
     
 def checkConflicts(factories):
     for factory in factories.values():

@@ -138,10 +138,7 @@ public class ProductionManager implements Manager
 		while ((line = bufferedReader.readLine()) != null)
 		{
 			String parts[] = line.split(" ");
-			if(parts.length<2)//Removes clock from savefile
-			{
-				continue;
-			}
+
 			//order: subFactoryType world recipe1,recipe2 central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
 			String subFactoryType = parts[0];
 			String recipeNames[] = parts[1].split(",");
@@ -154,15 +151,7 @@ public class ProductionManager implements Manager
 			int energyTimer = Integer.parseInt(parts[14]);
 			int currentRecipeNumber = Integer.parseInt(parts[15]);
 			double currentRepair = Double.parseDouble(parts[16]);
-			long timeDisrepair  = 3155692597470L;//Year 2070, default starting value
-			if(parts.length==18)//Converts from storage without disrepair times
-			{
-				timeDisrepair  = Long.parseLong(parts[17]);
-				if(timeDisrepair==99999999L)//Converts from storage with disrepair dates
-				{
-					timeDisrepair=3155692597470L;//Year 2070, default starting value
-				}
-			}
+			long timeDisrepair  =  Long.parseLong(parts[17]);
 			if(FactoryModPlugin.productionProperties.containsKey(subFactoryType))
 			{
 				List<ProductionRecipe> recipes=new ArrayList<ProductionRecipe>();

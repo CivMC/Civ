@@ -45,7 +45,7 @@ class ParseConfig:
         myfile.write('\nproduction_general:')
         myfile.write('\n  update_cycle: '+config['update_cycle'])
         myfile.write('\n  repair_period: '+config['repair_period'])
-        myfile.write('\n  culling_period: '+config['culling_period'])
+        myfile.write('\n  disrepair_period: '+config['disrepair_period'])
         myfile.write('\ncrafting:')
         myfile.write('\n  disable:')
         for disabled_recipe in config['disabled_recipes']:

@@ -109,9 +109,9 @@ public class FactoryModPlugin extends JavaPlugin
 		//How frequently factories are updated
 		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle",20);
 		//Period of days before a factory is removed after it falls into disrepair
-		DISREPAIR_PERIOD= config.getLong("general.direpair_length",14)*24*60*60*1000;
+		DISREPAIR_PERIOD= config.getLong("general.disrepair_period",14)*24*60*60*1000;
 		//The length of time it takes a factory to go to 0% health
-		REPAIR_PERIOD = config.getLong("production_general.maintenance_cycle",28)*24*60*60*1000;
+		REPAIR_PERIOD = config.getLong("production_general.repair_period",28)*24*60*60*1000;
 		//Disable recipes which result in the following items
 		int g = 0;
 		Iterator<String> disabledRecipes=config.getStringList("crafting.disable").iterator();
@@ -221,7 +221,7 @@ public class FactoryModPlugin extends JavaPlugin
 				fuel=new ItemList<>();
 				fuel.add(new NamedItemStack(Material.getMaterial("COAL"),1,(short)1,"Charcoal"));
 			}
-			int fuelTime=configSection.getInt("fuel_time",1);
+			int fuelTime=configSection.getInt("fuel_time",2);
 			ItemList<NamedItemStack> inputs=getItems(configSection.getConfigurationSection("inputs"));
 			ItemList<NamedItemStack> repairs=getItems(configSection.getConfigurationSection("repair_inputs"));
 			List<ProductionRecipe> factoryRecipes=new ArrayList<ProductionRecipe>();
