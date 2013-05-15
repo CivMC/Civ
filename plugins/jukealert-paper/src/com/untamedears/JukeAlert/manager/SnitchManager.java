@@ -28,7 +28,7 @@ public class SnitchManager {
     }
 
     public void loadSnitches() {
-        Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
                 snitches = logger.getAllSnitches();

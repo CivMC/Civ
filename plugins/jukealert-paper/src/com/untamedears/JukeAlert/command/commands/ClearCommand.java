@@ -29,7 +29,7 @@ public class ClearCommand extends PlayerCommand {
             for (final Snitch snitch : snitches) {
                 //Get only first snitch in cuboid
                 if (snitch.getGroup().isMember(player.getName()) || snitch.getGroup().isFounder(player.getName()) || snitch.getGroup().isModerator(player.getName())) {
-                   Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+                   Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                        @Override
                        public void run() {
                            deleteLog(sender, snitch);
