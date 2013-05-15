@@ -690,7 +690,7 @@ public class JukeAlertLogger {
         try {
             updateSnitchGroupStmt.setString(1, group);
             updateSnitchGroupStmt.setInt(2, snitch.getId());
-            Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
                     try {
