@@ -56,7 +56,7 @@ public class InfoCommand extends PlayerCommand {
     private void sendLog(CommandSender sender, Snitch snitch, int offset) {
         Player player = (Player) sender;
         GetSnitchInfoPlayerTask task = new GetSnitchInfoPlayerTask(plugin, snitch.getId(), offset, player);
-        Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, task);
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
 
     }
 }

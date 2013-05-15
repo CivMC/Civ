@@ -22,28 +22,28 @@ public class SparseQuadTree {
     add(box, false);
   }
 
-  private void add(QTBox box, boolean in_split) {
+  private void add(QTBox box, boolean inSplit) {
     ++size_;
     if (boxes_ != null) {
       boxes_.add(box);
-      if (!in_split) {
+      if (!inSplit) {
         split();
       }
       return;
     }
-    if (box.qtX1() <= mid_x_) {
-      if (box.qtY1() <= mid_y_) {
+    if (box.qtX1() <= midX_) {
+      if (box.qtY1() <= midY_) {
         nw_.add(box);
       }
-      if (box.qtY2() > mid_y_) {
+      if (box.qtY2() > midY_) {
         sw_.add(box);
       }
     }
-    if (box.qtX2() > mid_x_) {
-      if (box.qtY1() <= mid_y_) {
+    if (box.qtX2() > midX_) {
+      if (box.qtY1() <= midY_) {
         ne_.add(box);
       }
-      if (box.qtY2() > mid_y_) {
+      if (box.qtY2() > midY_) {
         se_.add(box);
       }
     }
@@ -55,19 +55,19 @@ public class SparseQuadTree {
       boxes_.remove(box);
       return;
     }
-    if (box.qtX1() <= mid_x_) {
-      if (box.qtY1() <= mid_y_) {
+    if (box.qtX1() <= midX_) {
+      if (box.qtY1() <= midY_) {
         nw_.remove(box);
       }
-      if (box.qtY2() > mid_y_) {
+      if (box.qtY2() > midY_) {
         sw_.remove(box);
       }
     }
-    if (box.qtX2() > mid_x_) {
-      if (box.qtY1() <= mid_y_) {
+    if (box.qtX2() > midX_) {
+      if (box.qtY1() <= midY_) {
         ne_.remove(box);
       }
-      if (box.qtY2() > mid_y_) {
+      if (box.qtY2() > midY_) {
         se_.remove(box);
       }
     }
@@ -88,64 +88,64 @@ public class SparseQuadTree {
       }
       return result;
     }
-    if (x <= mid_x_) {
-      if (y <= mid_y_) {
+    if (x <= midX_) {
+      if (y <= midY_) {
         return nw_.find(x, y);
       } else {
         return sw_.find(x, y);
       }
     }
-    if (y <= mid_y_) {
+    if (y <= midY_) {
       return ne_.find(x, y);
     }
     return se_.find(x, y);
   }
 
   private void split() {
-    if (boxes_ == null || boxes_.size() <= max_node_size_) {
+    if (boxes_ == null || boxes_.size() <= maxNodeSize_) {
       return;
     }
     nw_ = new SparseQuadTree();
     ne_ = new SparseQuadTree();
     sw_ = new SparseQuadTree();
     se_ = new SparseQuadTree();
-    SortedSet<Integer> x_axis = new TreeSet<Integer>();
-    SortedSet<Integer> y_axis = new TreeSet<Integer>();
+    SortedSet<Integer> xAxis = new TreeSet<Integer>();
+    SortedSet<Integer> yAxis = new TreeSet<Integer>();
     for (QTBox box : boxes_) {
-      x_axis.add(box.qtX2());
-      y_axis.add(box.qtY2());
+      xAxis.add(box.qtX2());
+      yAxis.add(box.qtY2());
     }
     int counter = 0;
-    int ender = (x_axis.size() / 2) - 1;
-    for (Integer i : x_axis) {
+    int ender = (xAxis.size() / 2) - 1;
+    for (Integer i : xAxis) {
       if (counter >= ender) {
-        mid_x_ = i + 1;
+        midX_ = i + 1;
         break;
       }
       ++counter;
     }
     counter = 0;
-    for (Integer i : y_axis) {
+    for (Integer i : yAxis) {
       if (counter >= ender) {
-        mid_y_ = i + 1;
+        midY_ = i + 1;
         break;
       }
       ++counter;
     }
     for (QTBox box : boxes_) {
-      if (box.qtX1() <= mid_x_) {
-        if (box.qtY1() <= mid_y_) {
+      if (box.qtX1() <= midX_) {
+        if (box.qtY1() <= midY_) {
           nw_.add(box, true);
         }
-        if (box.qtY2() > mid_y_) {
+        if (box.qtY2() > midY_) {
           sw_.add(box, true);
         }
       }
-      if (box.qtX2() > mid_x_) {
-        if (box.qtY1() <= mid_y_) {
+      if (box.qtX2() > midX_) {
+        if (box.qtY1() <= midY_) {
           ne_.add(box, true);
         }
-        if (box.qtY2() > mid_y_) {
+        if (box.qtY2() > midY_) {
           se_.add(box, true);
         }
       }
@@ -156,37 +156,37 @@ public class SparseQuadTree {
         || se_.size() == boxes_.size()) {
       // Splitting failed as we split into an identically sized quadrent. Update
       //  this nodes max size for next time and throw away the work we did.
-      max_node_size_ = boxes_.size() * 2;
+      maxNodeSize_ = boxes_.size() * 2;
       return;
     }
-    boolean size_adjusted = false;
-    if (nw_.size() >= max_node_size_) {
-      max_node_size_ = nw_.size() * 2;
-      size_adjusted = true;
+    boolean sizeAdjusted = false;
+    if (nw_.size() >= maxNodeSize_) {
+      maxNodeSize_ = nw_.size() * 2;
+      sizeAdjusted = true;
     }
-    if (sw_.size() >= max_node_size_) {
-      max_node_size_ = sw_.size() * 2;
-      size_adjusted = true;
+    if (sw_.size() >= maxNodeSize_) {
+      maxNodeSize_ = sw_.size() * 2;
+      sizeAdjusted = true;
     }
-    if (ne_.size() >= max_node_size_) {
-      max_node_size_ = ne_.size() * 2;
-      size_adjusted = true;
+    if (ne_.size() >= maxNodeSize_) {
+      maxNodeSize_ = ne_.size() * 2;
+      sizeAdjusted = true;
     }
-    if (se_.size() >= max_node_size_) {
-      max_node_size_ = se_.size() * 2;
-      size_adjusted = true;
+    if (se_.size() >= maxNodeSize_) {
+      maxNodeSize_ = se_.size() * 2;
+      sizeAdjusted = true;
     }
-    if (size_adjusted) {
-      nw_.set_max_node_size(max_node_size_);
-      sw_.set_max_node_size(max_node_size_);
-      ne_.set_max_node_size(max_node_size_);
-      se_.set_max_node_size(max_node_size_);
+    if (sizeAdjusted) {
+      nw_.setMaxNodeSize(maxNodeSize_);
+      sw_.setMaxNodeSize(maxNodeSize_);
+      ne_.setMaxNodeSize(maxNodeSize_);
+      se_.setMaxNodeSize(maxNodeSize_);
     }
     boxes_ = null;
   }
 
-  private void set_max_node_size(int size) {
-    max_node_size_ = size;
+  private void setMaxNodeSize(int size) {
+    maxNodeSize_ = size;
   }
 
   public String boxCoord(QTBox box) {
@@ -204,7 +204,7 @@ public class SparseQuadTree {
       sb.append(']');
       return sb.toString();
     }
-    sb.append(String.format("{{%d,%d}", mid_x_, mid_y_));
+    sb.append(String.format("{{%d,%d}", midX_, midY_));
     sb.append(nw_.toString());
     sb.append(',');
     sb.append(sw_.toString());
@@ -216,10 +216,10 @@ public class SparseQuadTree {
     return sb.toString();
   }
 
-  private Integer mid_x_ = null;
-  private Integer mid_y_ = null;
+  private Integer midX_ = null;
+  private Integer midY_ = null;
   private int size_;
-  private int max_node_size_ = 32;
+  private int maxNodeSize_ = 32;
   private Set<QTBox> boxes_;
   private SparseQuadTree nw_;
   private SparseQuadTree ne_;

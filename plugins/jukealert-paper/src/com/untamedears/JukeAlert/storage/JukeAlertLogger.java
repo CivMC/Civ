@@ -295,7 +295,7 @@ public class JukeAlertLogger {
                 this.plugin.getLogger().log(Level.SEVERE, "Didn't get any results trying to find a snitch in the snitches table at location " + loc);
             } else {
                 GetSnitchInfoTask task = new GetSnitchInfoTask(plugin, interestedSnitchId, offset);
-                Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, task);
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
                 return task.getInfo();
             }
 
@@ -433,7 +433,7 @@ public class JukeAlertLogger {
             } else {
                 insertSnitchLogStmt.setNull(9, java.sql.Types.SMALLINT);
             }
-            Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -580,7 +580,7 @@ public class JukeAlertLogger {
             insertNewSnitchStmt.setInt(7, configManager.getDefaultCuboidSize());
             insertNewSnitchStmt.setInt(8, configManager.getDefaultCuboidSize());
             insertNewSnitchStmt.setInt(9, configManager.getDefaultCuboidSize());
-            Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -602,7 +602,7 @@ public class JukeAlertLogger {
             deleteSnitchStmt.setInt(2, (int) Math.floor(x));
             deleteSnitchStmt.setInt(3, (int) Math.floor(y));
             deleteSnitchStmt.setInt(4, (int) Math.floor(z));
-            Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -625,7 +625,7 @@ public class JukeAlertLogger {
             updateGroupStmt.setInt(3, loc.getBlockX());
             updateGroupStmt.setInt(4, loc.getBlockY());
             updateGroupStmt.setInt(5, loc.getBlockZ());
-            Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -650,7 +650,7 @@ public class JukeAlertLogger {
             updateCuboidVolumeStmt.setInt(5, loc.getBlockX());
             updateCuboidVolumeStmt.setInt(6, loc.getBlockY());
             updateCuboidVolumeStmt.setInt(7, loc.getBlockZ());
-            Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -670,7 +670,7 @@ public class JukeAlertLogger {
         try {
             updateSnitchNameStmt.setString(1, name);
         	updateSnitchNameStmt.setInt(2, snitch.getId());
-            Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -690,7 +690,7 @@ public class JukeAlertLogger {
         try {
             updateSnitchGroupStmt.setString(1, group);
             updateSnitchGroupStmt.setInt(2, snitch.getId());
-            Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
                     try {
