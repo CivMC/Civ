@@ -12,6 +12,7 @@ import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
+import com.untamedears.citadel.events.CreateReinforcementEvent;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -89,6 +90,41 @@ public class JukeAlertListener implements Listener {
             }
         }
     }
+    
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void reinforceSnitchBlock(CreateReinforcementEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        Block block = event.getBlock();
+        if (!block.getType().equals(Material.JUKEBOX)) {
+            return;
+        }
+        Player player = event.getPlayer();
+        Location loc = block.getLocation();
+        AccessDelegate access = AccessDelegate.getDelegate(block);
+        IReinforcement rei = event.getReinforcement();
+        if (rei instanceof PlayerReinforcement) {
+            PlayerReinforcement reinforcement = (PlayerReinforcement) rei;
+            Faction owner = reinforcement.getOwner();
+            if (reinforcement.getSecurityLevel().equals(SecurityLevel.GROUP)) {
+                plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+                Snitch snitch = new Snitch(loc, owner);
+                snitch.setId(plugin.getJaLogger().getLastSnitchID());
+                plugin.getJaLogger().increaseLastSnitchID();
+                snitchManager.addSnitch(snitch);
+                player.sendMessage(ChatColor.AQUA + "You've created a snitch block registered to the group " + owner.getName() + ".  To name your snitch, type /janame.");
+            } else {
+                plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getFounder(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+                Snitch snitch = new Snitch(loc, owner);
+                snitch.setId(plugin.getJaLogger().getLastSnitchID());
+                plugin.getJaLogger().increaseLastSnitchID();
+                snitchManager.addSnitch(snitch);
+                player.sendMessage(ChatColor.AQUA + "You've created a private snitch block; reinforce it with a group to register members.  To name your snitch, type /janame.");
+            }
+        }
+    }
+
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void breakSnitchBlock(BlockBreakEvent event) {
@@ -100,8 +136,10 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Location loc = block.getLocation();
-        plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-        snitchManager.removeSnitch(snitchManager.getSnitch(loc.getWorld(), loc));
+        if(snitchManager.getSnitch(loc.getWorld(), loc) != null) {
+        	plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        	snitchManager.removeSnitch(snitchManager.getSnitch(loc.getWorld(), loc));
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
