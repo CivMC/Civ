@@ -60,6 +60,7 @@ public class JukeAlertLogger {
     private PreparedStatement updateGroupStmt;
     private PreparedStatement updateCuboidVolumeStmt;
     private PreparedStatement updateSnitchNameStmt;
+    private PreparedStatement updateSnitchGroupStmt;
     private int logsPerPage;
     private int lastSnitchID;
 
@@ -196,6 +197,13 @@ public class JukeAlertLogger {
                 "UPDATE %s SET snitch_name=?"
                 + " WHERE snitch_id=?",
                 snitchsTbl));
+        
+        //
+        updateSnitchGroupStmt = db.prepareStatement(String.format(
+                "UPDATE %s SET snitch_group=?"
+                + " WHERE snitch_id=?",
+                snitchsTbl));
+
     }
 
     public static String snitchKey(final Location loc) {
@@ -674,6 +682,26 @@ public class JukeAlertLogger {
             });
         } catch (SQLException ex) {
             this.plugin.getLogger().log(Level.SEVERE, "Could not update snitch name!", ex);
+        }
+    }
+
+    //Updates the group of the snitch in the database.
+    public void updateSnitchGroup(Snitch snitch, String group) {
+        try {
+            updateSnitchGroupStmt.setString(1, group);
+            updateSnitchGroupStmt.setInt(2, snitch.getId());
+            Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                    	updateSnitchGroupStmt.execute();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
+        } catch (SQLException ex) {
+            this.plugin.getLogger().log(Level.SEVERE, "Could not update snitch group!", ex);
         }
     }
 

@@ -42,9 +42,11 @@ public class InfoCommand extends PlayerCommand {
                     break;
                 }
             }
+            
+            sender.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
 
         } else {
-            sender.sendMessage(ChatColor.RED + "You do not own any snitches nearby!");
+            sender.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
             return false;
         }
         return false;
