@@ -1,6 +1,6 @@
 package com.untamedears.JukeAlert.command.commands;
 
-import java.util.List;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -25,21 +25,17 @@ public class ClearCommand extends PlayerCommand {
     public boolean execute(final CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            World world = player.getWorld();
-
-            List<Snitch> snitches = plugin.getSnitchManager().getSnitchesByWorld(world);
+            Set<Snitch> snitches = plugin.getSnitchManager().findSnitches(player.getWorld(), player.getLocation());
             for (final Snitch snitch : snitches) {
                 //Get only first snitch in cuboid
                 if (snitch.getGroup().isMember(player.getName()) || snitch.getGroup().isFounder(player.getName()) || snitch.getGroup().isModerator(player.getName())) {
-                    if (snitch.isWithinCuboid(player.getLocation())) {
-                        Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-                                deleteLog(sender, snitch);
-                            }
-                        });
-                        break;
-                    }
+                   Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+                       @Override
+                       public void run() {
+                           deleteLog(sender, snitch);
+                       }
+                   });
+                   break;
                 }
             }
 

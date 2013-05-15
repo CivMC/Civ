@@ -11,6 +11,7 @@ import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.model.LoggedAction;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.tasks.GetSnitchInfoTask;
+import com.untamedears.JukeAlert.util.SparseQuadTree;
 import com.untamedears.citadel.entity.Faction;
 
 import java.sql.PreparedStatement;
@@ -203,18 +204,18 @@ public class JukeAlertLogger {
                 loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
     }
 
-    public Map<World, Map<Location, Snitch>> getAllSnitches() {
-        Map<World, Map<Location, Snitch>> snitches = new HashMap<World, Map<Location, Snitch>>();
+    public Map<World, SparseQuadTree> getAllSnitches() {
+        Map<World, SparseQuadTree> snitches = new HashMap<World, SparseQuadTree>();
         List<World> worlds = this.plugin.getServer().getWorlds();
         for (World world : worlds) {
-            Map<Location, Snitch> snitchesByWorld = getAllSnitchesByWorld(world);
+            SparseQuadTree snitchesByWorld = getAllSnitchesByWorld(world);
             snitches.put(world, snitchesByWorld);
         }
         return snitches;
     }
 
-    public Map<Location, Snitch> getAllSnitchesByWorld(World world) {
-        Map<Location, Snitch> snitches = new HashMap<Location, Snitch>();
+    public SparseQuadTree getAllSnitchesByWorld(World world) {
+        SparseQuadTree snitches = new SparseQuadTree();
         try {
             Snitch snitch = null;
             getAllSnitchesByWorldStmt.setString(1, world.getName());
@@ -232,7 +233,7 @@ public class JukeAlertLogger {
                 snitch = new Snitch(location, group);
                 snitch.setId(rs.getInt("snitch_id"));
                 snitch.setName(rs.getString("snitch_name"));
-                snitches.put(location, snitch);
+                snitches.add(snitch);
             }
             ResultSet rsKey = getLastSnitchID.executeQuery();
             if (rsKey.next()) {
