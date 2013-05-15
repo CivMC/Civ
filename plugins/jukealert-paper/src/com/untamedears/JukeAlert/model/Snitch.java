@@ -163,8 +163,9 @@ public class Snitch implements QTBox, Comparable {
 
     public boolean at(Location loc) {
         return
-            this.location.getBlockX() == loc.getBlockX()
-	    && this.location.getBlockY() == loc.getBlockY()
-	    && this.location.getBlockZ() == loc.getBlockZ();
+            this.location.getWorld() == loc.getWorld()
+            && this.location.getBlockX() == loc.getBlockX()
+            && this.location.getBlockY() == loc.getBlockY()
+            && this.location.getBlockZ() == loc.getBlockZ();
     }
 }

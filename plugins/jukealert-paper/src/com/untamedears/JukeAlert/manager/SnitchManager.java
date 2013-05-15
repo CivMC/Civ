@@ -28,7 +28,7 @@ public class SnitchManager {
     }
 
     public void loadSnitches() {
-        Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
                 snitches = logger.getAllSnitches();
@@ -49,7 +49,7 @@ public class SnitchManager {
     }
 
     public Snitch getSnitch(World world, Location location) {
-        Set<? extends QTBox> potentials = snitches.get(world).find(location.getBlockX(), location.getBlockY());
+        Set<? extends QTBox> potentials = snitches.get(world).find(location.getBlockX(), location.getBlockZ());
         for (QTBox box : potentials) {
             Snitch sn = (Snitch)box;
             if (sn.at(location)) {

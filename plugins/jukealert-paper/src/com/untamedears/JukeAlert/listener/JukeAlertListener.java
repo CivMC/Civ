@@ -46,15 +46,15 @@ public class JukeAlertListener implements Listener {
     private JukeAlert plugin = JukeAlert.getInstance();
     SnitchManager snitchManager = plugin.getSnitchManager();
     PlayerManager playerManager = plugin.getPlayerManager();
-    private Map<String, Set<Snitch>> players_in_snitches = new TreeMap<String, Set<Snitch>>();
+    private Map<String, Set<Snitch>> playersInSnitches = new TreeMap<String, Set<Snitch>>();
 
-    private boolean checkProximity(Snitch snitch, String player_name) {
-        Set<Snitch> in_list = players_in_snitches.get(player_name);
-        if (in_list == null) {
-            in_list = new TreeSet<Snitch>();
-            players_in_snitches.put(player_name, in_list);
+    private boolean checkProximity(Snitch snitch, String playerName) {
+        Set<Snitch> inList = playersInSnitches.get(playerName);
+        if (inList == null) {
+            inList = new TreeSet<Snitch>();
+            playersInSnitches.put(playerName, inList);
         }
-        return in_list.contains(snitch);
+        return inList.contains(snitch);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -168,36 +168,36 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
-        String player_name = player.getName();
+        String playerName = player.getName();
         Location location = player.getLocation();
         World world = location.getWorld();
-        Set<Snitch> in_list = players_in_snitches.get(player_name);
-        if (in_list == null) {
-            in_list = new TreeSet<Snitch>();
-            players_in_snitches.put(player.getName(), in_list);
+        Set<Snitch> inList = playersInSnitches.get(playerName);
+        if (inList == null) {
+            inList = new TreeSet<Snitch>();
+            playersInSnitches.put(player.getName(), inList);
         }
         Set<Snitch> snitches = snitchManager.findSnitches(world, location);
         for (Snitch snitch : snitches) {
-            if (!JukeAlert.isOnSnitch(snitch, player_name)) {
-                if (!in_list.contains(snitch)) {
-                    in_list.add(snitch);
+            if (!JukeAlert.isOnSnitch(snitch, playerName)) {
+                if (!inList.contains(snitch)) {
+                    inList.add(snitch);
                     for (Player remoteplayer : playerManager.getPlayers()) {
                         if (snitch.getGroup().isMember(remoteplayer.getName()) || snitch.getGroup().isFounder(remoteplayer.getName()) || snitch.getGroup().isModerator(remoteplayer.getName())) {
-                            remoteplayer.sendMessage(ChatColor.AQUA + " * " + player_name + " entered snitch at " + snitch.getName() + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+                            remoteplayer.sendMessage(ChatColor.AQUA + " * " + playerName + " entered snitch at " + snitch.getName() + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
                         }
                     }
                     plugin.getJaLogger().logSnitchEntry(snitch, location, player);
                 }
             }
         }
-        Set<Snitch> rm_list = new TreeSet<Snitch>();
-        for (Snitch snitch : in_list) {
+        Set<Snitch> rmList = new TreeSet<Snitch>();
+        for (Snitch snitch : inList) {
             if (snitches.contains(snitch)) {
                 continue;
             }
-            rm_list.add(snitch);
+            rmList.add(snitch);
         }
-        in_list.removeAll(rm_list);
+        inList.removeAll(rmList);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
