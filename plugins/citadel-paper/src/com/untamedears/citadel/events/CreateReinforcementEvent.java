@@ -20,6 +20,7 @@ public class CreateReinforcementEvent extends Event implements Cancellable {
     private final Player player_;
     private final IReinforcement rein_;
     private final Block block_;
+    private final boolean state_update_;
 
     // player is possibly null
     public CreateReinforcementEvent(
@@ -29,6 +30,19 @@ public class CreateReinforcementEvent extends Event implements Cancellable {
         rein_ = reinforcement;
         block_ = block;
         player_ = player;
+        state_update_ = false;
+    }
+
+    // player is possibly null
+    public CreateReinforcementEvent(
+            final IReinforcement reinforcement,
+            final Block block,
+            final Player player,
+            final boolean update) {
+        rein_ = reinforcement;
+        block_ = block;
+        player_ = player;
+        state_update_ = update;
     }
 
     public HandlerList getHandlers() {
@@ -53,6 +67,10 @@ public class CreateReinforcementEvent extends Event implements Cancellable {
 
     public Block getBlock() {
         return block_;
+    }
+
+    public boolean isStateUpdate() {
+        return state_update_;
     }
 }
 

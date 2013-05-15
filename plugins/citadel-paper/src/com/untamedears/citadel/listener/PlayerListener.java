@@ -34,6 +34,7 @@ import com.untamedears.citadel.entity.Member;
 import com.untamedears.citadel.entity.PlayerState;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
+import com.untamedears.citadel.events.CreateReinforcementEvent;
 
 /**
  * Created by IntelliJ IDEA.
@@ -233,8 +234,12 @@ public class PlayerListener implements Listener {
                         }
                     }
                     if(update){
-                        Citadel.getReinforcementManager().addReinforcement(reinforcement);
-                        sendMessage(player, ChatColor.GREEN, message);
+                        CreateReinforcementEvent event = new CreateReinforcementEvent(reinforcement, block, player, true);
+                        Citadel.getStaticServer().getPluginManager().callEvent(event);
+                        if (!event.isCancelled()) {
+                            Citadel.getReinforcementManager().addReinforcement(reinforcement);
+                            sendMessage(player, ChatColor.GREEN, message);
+                        }
                     }
                 } else {
                     sendMessage(player, ChatColor.RED, "You are not permitted to modify this reinforcement");
