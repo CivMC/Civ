@@ -43,13 +43,15 @@ public class InfoCommand extends PlayerCommand {
                 if (JukeAlert.isOnSnitch(snitch, player.getName())) {
                     if (snitch.isWithinCuboid(player.getLocation())) {
                         sendLog(sender, snitch, offset);
-                        break;
+                        return false;
                     }
                 }
             }
+            
+            sender.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
 
         } else {
-            sender.sendMessage(ChatColor.RED + "You do not own any snitches nearby!");
+            sender.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
             return false;
         }
         return false;
