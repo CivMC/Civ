@@ -1,7 +1,7 @@
 package com.untamedears.JukeAlert.command.commands;
 
 import com.untamedears.JukeAlert.JukeAlert;
-import java.util.List;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -36,19 +36,17 @@ public class NameCommand extends PlayerCommand {
             	name = args[0];
             }
             
-            List<Snitch> snitches = plugin.getSnitchManager().getSnitchesByWorld(world);
+            Set<Snitch> snitches = plugin.getSnitchManager().findSnitches(player.getWorld(), player.getLocation());
             for (Snitch snitch : snitches) {
                 //Get only first snitch in cuboid
                 if (JukeAlert.isOnSnitch(snitch, player.getName())) {
-                    if (snitch.isWithinCuboid(player.getLocation())) {
-                        plugin.getJaLogger().updateSnitchName(snitch, name);
-                        Snitch newSnitch = snitch;
-                        newSnitch.setName(name);
-                        plugin.getSnitchManager().removeSnitch(snitch);
-                        plugin.getSnitchManager().addSnitch(newSnitch);
-                        sender.sendMessage(ChatColor.AQUA + " Changed snitch name to " + name);
-                        break;
-                    }
+                   plugin.getJaLogger().updateSnitchName(snitch, name);
+                   Snitch newSnitch = snitch;
+                   newSnitch.setName(name);
+                   plugin.getSnitchManager().removeSnitch(snitch);
+                   plugin.getSnitchManager().addSnitch(newSnitch);
+                   sender.sendMessage(ChatColor.AQUA + " Changed snitch name to " + name);
+                   break;
                 }
             }
 
