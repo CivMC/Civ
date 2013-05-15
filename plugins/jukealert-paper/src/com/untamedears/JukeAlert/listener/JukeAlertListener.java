@@ -150,6 +150,7 @@ public class JukeAlertListener implements Listener {
         }
         Location loc = block.getLocation();
         if(snitchManager.getSnitch(loc.getWorld(), loc) != null) {
+        	System.out.println("Deleting Snitch");
         	snitchManager.removeSnitch(snitchManager.getSnitch(loc.getWorld(), loc));
         	plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         }

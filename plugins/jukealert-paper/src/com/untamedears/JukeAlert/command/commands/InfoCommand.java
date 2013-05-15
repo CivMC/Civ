@@ -39,7 +39,7 @@ public class InfoCommand extends PlayerCommand {
                 //Get only first snitch in cuboid
                 if (JukeAlert.isOnSnitch(snitch, player.getName())) {
                     sendLog(sender, snitch, offset);
-                    break;
+                    return false;
                 }
             }
             
