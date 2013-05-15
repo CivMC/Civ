@@ -1,6 +1,8 @@
 package com.untamedears.JukeAlert.command.commands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.command.PlayerCommand;
 
@@ -16,7 +18,11 @@ public class HelpCommand extends PlayerCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		//TODO HelpCommand
+		if (sender instanceof Player){
+			Player player = (Player) sender;
+			player.sendMessage(ChatColor.AQUA+ "Commands are: \n jahelp: Gives you possible Commands. \n jainfo: Gives You information in the Snitch. \n jaclear: Clears the snitch. \n janame: Names the Snitch.");
+		}
+		
 		return true;
 	}
 
