@@ -2,7 +2,7 @@ from ConfigObjects import Recipe, Enchantment, ItemStack, Factory, CraftedRecipe
 from ParseConfig import ParseConfig
 
 coeffs={}
-gMod=0.1
+gMod=1
 mMod=0.1
 
 def main():
@@ -22,8 +22,8 @@ def createConfigFile():
     config['destructible_factories']='false'
     config['disable_experience']='true'
     config['update_cycle']='20'
-    config['repair_period']='1'
-    config['disrepair_period']='1'
+    config['repair_period']='28'
+    config['disrepair_period']='14'
     config['factories'],config['recipes']=createFactorieAndRecipes()
     config['disabled_recipes']=[]
     config['enabled_recipes']=createCraftingRecipes()
@@ -40,6 +40,38 @@ def createFactorieAndRecipes():
     enchantments={}
     recipes={}
     factories={}
+    
+    #Smelting
+    #Stone
+    id='Smelt_Stone'
+    inputs[id]=[ItemStack(name='Cobblestone',amount=640)]
+    outputs[id]=[ItemStack(name='Stone',amount=640*1.333)]
+    recipes[id]=Recipe(identifier=id,name='Smelt Stone',inputs=inputs[id],outputs=outputs[id],time=120)
+    id='Stone_Smelter'
+    inputs[id]=[ItemStack(name='Stone',amount=2048*gMod)]
+    factories[id]=Factory(identifier=id,name='Stone Smelter',inputs=inputs[id],outputRecipes=[recipes['Smelt_Stone']])
+    #Charcoal
+    woods=['Oak Wood','Spruce Wood','Birch Wood','Jungle Wood']
+    id='Charcoal_Smelter'
+    inputs[id]=[ItemStack(name='Charcoal',amount=300*gMod)]
+    factories[id]=Factory(identifier=id,name='Charcoal Burner',inputs=inputs[id])
+    for wood in woods:
+        id='Smelt_'+wood.replace(' ','_')
+        inputs[id]=[ItemStack(name=wood,amount=256)]
+        outputs[id]=[ItemStack(name='Charcoal',amount=256*1.333)]
+        recipes[id]=Recipe(identifier=id,name='Burn '+wood,inputs=inputs[id],outputs=outputs[id],time=256/8*3/4)
+        factories['Charcoal_Smelter'].addRecipe(recipes[id])
+    #Smelter
+    ores={'Coal Ore':('Coal',512,3,128),'Iron Ore':('Iron Ingot',384,1.75,128),'Gold Ore':('Gold Ingot',192,1.75,64),'Diamond Ore':('Diamond',96,3,16)}
+    inputs['Smelter']=[ItemStack(name=values[0],amount=values[1]) for ore,values in ores.items()]
+    factories['Smelter']=Factory(identifier='Smelter',name='Ore Smelter',inputs=inputs['Smelter'])
+    for ore,values in ores.items():
+        id='Smelt_'+ore.replace(' ','_')
+        inputs[id]=[ItemStack(name=ore,amount=values[3])]
+        outputs[id]=[ItemStack(name=values[0],amount=values[3]*values[2])]
+        recipes[id]=Recipe(identifier=id,name='Smelt '+ore,inputs=inputs[id],outputs=outputs[id],time=values[3]/8*3/4)
+        factories['Smelter'].addRecipe(recipes[id])
+    
     #Equipment
     enchantmentData=[]
     enchantmentData.extend([('Unbreaking',[(3,1)]),('Silk Touch',[(1,0.1)]),('Efficiency',[(1,.3),(2,.2),(3,0.1),(4,0.05),(5,0.01)])])
@@ -48,35 +80,60 @@ def createFactorieAndRecipes():
     enchantmentsInputs=sum([[Enchantment(name=name,level=level,probability=prob) for level,prob in pairs] for name,pairs in enchantmentData],[])
 
     inputDict={'Iron':'Iron Ingot','Gold':'Gold Ingot','Diamond':'Diamond'}
-    coeffs['t']={'Iron':2,'Gold':4,'Diamond':8}
     coeffs['i']={'Helmet':5,'Chestplate':8,'Leggings':7,'Boots':4,'Sword':2,'Axe':3,'Pickaxe':3,'Spade':1,'Hoe':2}# Modifier for different branches of the tree, based on vanilla costs
     coeffs['b']={'Helmet':1,'Chestplate':1,'Leggings':1,'Boots':1,'Sword':1,'Axe':1,'Pickaxe':1,'Spade':1,'Hoe':1}
-    for key,value in coeffs['b'].items():coeffs['b'][key]=value*10
-    coeffs['e']={'Helmet':1,'Chestplate':1,'Leggings':1,'Boots':1,'Sword':1,'Axe':1,'Pickaxe':1,'Spade':1,'Hoe':1}
-    for key,value in coeffs['e'].items():coeffs['e'][key]=value*0.5
-    for tech in coeffs['t'].keys():
+    for key,value in coeffs['b'].items():coeffs['b'][key]=value*5
+    coeffs['e']={'Helmet':3,'Chestplate':3,'Leggings':3,'Boots':3,'Sword':3,'Axe':6,'Pickaxe':3,'Spade':3,'Hoe':6}
+    buildCosts={'Helmet':192,'Chestplate':320,'Leggings':256,'Boots':160,'Sword':80,'Axe':64,'Pickaxe':96,'Spade':48,'Hoe':32}
+    for tech in inputDict.keys():
         for equipment in coeffs['i'].keys():
             enchantments[tech+'_'+equipment]=[]
             if tech=='Gold':
                 enchantments[tech+'_'+equipment]=list(enchantmentsInputs)
-            inputs[tech+'_'+equipment]=[ItemStack(name=inputDict[tech],amount=coeffs['i'][equipment]*coeffs['b'][equipment]*coeffs['e'][equipment])]
-            outputs[tech+'_'+equipment]=[ItemStack(name=tech+' '+equipment,amount=coeffs['b'][equipment])]
+            inputs[tech+'_'+equipment]=[ItemStack(name=inputDict[tech],amount=coeffs['i'][equipment]*coeffs['b'][equipment])]
+            outputs[tech+'_'+equipment]=[ItemStack(name=tech+' '+equipment,amount=coeffs['b'][equipment]*coeffs['e'][equipment])]
             recipes[tech+'_'+equipment]=Recipe(identifier=tech+'_'+equipment,name='Forge '+tech+' '+equipment+'.',inputs=inputs[tech+'_'+equipment],outputs=outputs[tech+'_'+equipment],enchantments=enchantments[tech+'_'+equipment])
-            inputs[tech+'_'+equipment+'_Smithy']=[input.modifyAmount(1) for input in inputs[tech+'_'+equipment]]
+            inputs[tech+'_'+equipment+'_Smithy']=[ItemStack(name=inputDict[tech],amount=buildCosts[equipment])]
             factories[tech+'_'+equipment+'_Smithy']=Factory(identifier=tech+'_'+equipment+'_Smithy',name=tech+' '+equipment+' Smithy',inputs=inputs[tech+'_'+equipment+'_Smithy'],outputRecipes=[recipes[tech+'_'+equipment]])
-    #Food
-    oi={('Bread',1):[('Wheat',3)],('Baked Potato',1):[('Potato',1)],('Cooked Chicken',1):[('Raw Chicken',1)],('Cooked Beef',1):[('Raw Beef',1)],('Grilled Pork',1):[('Pork',1)],('Cooked Fish',1):[('Raw Fish',1)],('Cookie',8):[('Wheat',2),('Cocoa',1)]}
-    bulk=64
-    eff=0.7
-    for output in oi.keys():
-        id=output[0].replace(' ','_')
-        inputs[id]=[]
-        for input in oi[output]:
-            inputs[id].append(ItemStack(name=input[0],amount=input[1]*bulk*eff))
-        outputs[id]=[ItemStack(name=output[0],amount=output[1]*bulk)]
-        recipes[id]=Recipe(identifier=id,name=output[0],inputs=inputs[id],outputs=outputs[id])
-        inputs[id+'_Bakery']=[itemStack.modifyAmount(20*gMod) for itemStack in inputs[id]]
-        factories[id+'_Bakery']=Factory(identifier=id+'_Bakery',name=output[0]+' Bakery',inputs=inputs[id+'_Bakery'],outputRecipes=[recipes[id]])
+    
+    #Food output:([inputs],build cost,efficieny,bulk)
+    #Butchers
+    oi={('Cooked Chicken',1):([('Raw Chicken',1)],192,2,64),('Grilled Pork',1):([('Pork',1)],160,2,64),('Cooked Beef',1):([('Raw Beef',1)],64,2,64),('Cooked Fish',1):([('Raw Fish',1)],16,2,64)}
+    id='Grill'
+    inputs[id]=[ItemStack(name=key[0],amount=value[1]) for key,value in oi.items()]
+    factories[id]=Factory(identifier=id,name='Bakery',inputs=inputs[id])
+    for key,value in oi.items():
+        id=key[0].replace(' ','_')
+        inputs[id]=[ItemStack(name=name,amount=amount*value[3]) for name,amount in value[0]]
+        outputs[id]=[ItemStack(name=key[0],amount=key[1]*value[2]*value[3])]
+        recipes[id]=Recipe(identifier=id,name='Grill '+name,inputs=inputs[id],outputs=outputs[id],time=inputs[id][0].amount/8*3/4)
+        factories['Grill'].addRecipe(recipes[id])
+    #Bakery
+    oi={('Bread',1):([('Wheat',3)],256,2,128),('Baked Potato',1):([('Potato',1)],512,2,192),('Cookie',8):([('Wheat',2),('Cocoa',1)],1024,2,128)}
+    id='Bakery'
+    inputs[id]=[ItemStack(name=key[0],amount=value[1]) for key,value in oi.items()]
+    factories[id]=Factory(identifier=id,name='Bakery',inputs=inputs[id])
+    for key,value in oi.items():
+        id=key[0].replace(' ','_')
+        inputs[id]=[ItemStack(name=name,amount=amount*value[3]) for name,amount in value[0]]
+        outputs[id]=[ItemStack(name=key[0],amount=key[1]*value[2]*value[3])]
+        recipes[id]=Recipe(identifier=id,name='Bake '+name,inputs=inputs[id],outputs=outputs[id],time=256/8*3/4)
+        factories['Bakery'].addRecipe(recipes[id])
+    
+    #Wool
+    inputColors=['White', 'Light Gray', 'Gray', 'Black', 'Brown', 'Pink']
+    dyes={'White':'Bone Meal','Light Gray':'Light Gray Dye','Gray':'Gray Dye','Black':'Ink Sack','Red':'Rose Red','Orange':'Orange Dye','Yellow':'Dandelion Yellow','Lime':'Lime Dye','Green':'Cactus Green','Cyan':'Cyan Dye','Light Blue':'Light Blue Dye','Blue':'Lapis Lazuli','Purple':'Purple Dye','Magenta':'Magenta Dye','Pink':'Pink Dye','Brown':'Cocoa'}
+    for inputColor in inputColors:
+        factoryId=inputColor.replace(' ','_')+'_Wool_Processing'
+        inputs[factoryId]=[ItemStack(name=dye,amount=20*gMod) for dye in dyes.values()]+[ItemStack(name=inputColor+' Wool',amount=20)]
+        factories[factoryId]=Factory(identifier=factoryId,name=inputColor+' Wool Processing',inputs=inputs[factoryId])
+        for outputColor,dye in dyes.items():
+            if inputColor!=outputColor:
+                id='Dye_'+inputColor.replace(' ','_')+'_Wool_'+outputColor.replace(' ','_')
+                inputs[id]=[ItemStack(name=inputColor+' Wool',amount=64),ItemStack(name=dyes[outputColor],amount=4)]
+                outputs[id]=[ItemStack(name=outputColor+' Wool',amount=64)]
+                recipes[id]=Recipe(identifier=id,name='Dye '+inputColor+' Wool '+outputColor,inputs=inputs[id],outputs=outputs[id])
+                factories[factoryId].addRecipe(recipes[id]) 
     
     #Enchanting
     inputs['Wood_Cauldron']=[ItemStack(name='Stick',amount=1024*gMod)]
@@ -113,53 +170,7 @@ def createFactorieAndRecipes():
             #outputs[id+'_Bulk']=[itemStack.modifyAmount(64) for itemStack in recipes[id].outputs]
             #recipes[id+'_Bulk']=Recipe(identifier=id+'_Bulk',name='Brew XP Bottles  - '+str(i),inputs=inputs[id+'_Bulk'],outputs=outputs[id+'_Bulk'],time=128)
             #factories[cauldron+'_Cauldron'].addRecipe(recipes[id+'_Bulk'])
-    #Wool
-    inputColors=['White', 'Light Gray', 'Gray', 'Black', 'Brown', 'Pink']
-    dyes={'White':'Bone Meal','Light Gray':'Light Gray Dye','Gray':'Gray Dye','Black':'Ink Sack','Red':'Rose Red','Orange':'Orange Dye','Yellow':'Dandelion Yellow','Lime':'Lime Dye','Green':'Cactus Green','Cyan':'Cyan Dye','Light Blue':'Light Blue Dye','Blue':'Lapis Lazuli','Purple':'Purple Dye','Magenta':'Magenta Dye','Pink':'Pink Dye','Brown':'Cocoa'}
-    for inputColor in inputColors:
-        factoryId=inputColor.replace(' ','_')+'_Wool_Processing'
-        inputs[factoryId]=[ItemStack(name=dye,amount=20*gMod) for dye in dyes.values()]+[ItemStack(name=inputColor+' Wool',amount=20)]
-        factories[factoryId]=Factory(identifier=factoryId,name=inputColor+' Wool Processing',inputs=inputs[factoryId])
-        for outputColor,dye in dyes.items():
-            if inputColor!=outputColor:
-                id='Dye_'+inputColor.replace(' ','_')+'_Wool_'+outputColor.replace(' ','_')
-                inputs[id]=[ItemStack(name=inputColor+' Wool',amount=64),ItemStack(name=dyes[outputColor],amount=4)]
-                outputs[id]=[ItemStack(name=outputColor+' Wool',amount=64)]
-                recipes[id]=Recipe(identifier=id,name='Dye '+inputColor+' Wool '+outputColor,inputs=inputs[id],outputs=outputs[id])
-                factories[factoryId].addRecipe(recipes[id])
-    #Smelting
-    #Stone
-    id='Smelt_Stone'
-    inputs[id]=[ItemStack(name='Cobblestone',amount=560)]
-    outputs[id]=[ItemStack(name='Stone',amount=640)]
-    recipes[id]=Recipe(identifier=id,name='Smelt Stone',inputs=inputs[id],outputs=outputs[id],time=120)
-    id='Stone_Smelter'
-    inputs[id]=[ItemStack(name='Stone',amount=2000*gMod)]
-    factories[id]=Factory(identifier=id,name='Stone Smelter',inputs=inputs[id],outputRecipes=[recipes['Smelt_Stone']])
-    #Charcoal
-    woods=['Oak Wood','Spruce Wood','Birch Wood','Jungle Wood']
-    id='Charcoal_Smelter'
-    inputs[id]=[ItemStack(name='Charcoal',amount=1000*gMod)]
-    factories[id]=Factory(identifier=id,name='Charcoal Burner',inputs=inputs[id])
-    for wood in woods:
-        id='Smelt_'+wood.replace(' ','_')
-        inputs[id]=[ItemStack(name=wood,amount=280)]
-        outputs[id]=[ItemStack(name='Charcoal',amount=320)]
-        recipes[id]=Recipe(identifier=id,name='Burn '+wood,inputs=inputs[id],outputs=outputs[id],time=60)
-        factories['Charcoal_Smelter'].addRecipe(recipes[id])
-    ores={'Coal Ore':'Coal','Iron Ore':'Iron Ingot','Gold Ore':'Gold Ingot','Diamond Ore':'Diamond','Quartz Ore':'Quartz'}
-    mod={'Coal Ore':2.5,'Iron Ore':1.25,'Gold Ore':1.25,'Diamond Ore':2.5,'Quartz Ore':2.5}
-    bulk=64
-    for ore in ores.keys():
-        #Recipe
-        id='Smelt_'+ore.replace(' ','_')
-        inputs[id]=[ItemStack(name=ore,amount=bulk)]
-        outputs[id]=[ItemStack(name=ores[ore],amount=mod[ore]*bulk)]
-        recipes[id]=Recipe(identifier=id,name='Smelt '+ore,inputs=inputs[id],outputs=outputs[id],time=bulk/8*2)
-        #Factory
-        id=ore.replace(' ','_')+'_Smelter'
-        inputs[id]=[ItemStack(name=ore,amount=300*gMod)]
-        factories[id]=Factory(identifier=id,name=ore+' Smelter',inputs=inputs[id],outputRecipes=[recipes['Smelt_'+ore.replace(' ','_')]])
+
     
     #Add in repair
     for factory in factories.values():
@@ -180,7 +191,7 @@ def checkConflicts(factories):
         for itemStack in factory.inputs:
             for otherFactory in factories.values():
                 for otherItemStack in otherFactory.inputs:
-                    if factory!=otherFactory and 'Wool' not in factory.name:#Crappy fix here, but too much beer so I can't think 
+                    if factory!=otherFactory and 'Wool' not in factory.name and 'Smelter' not in factory.name+otherFactory.name:#Crappy fix here, but too much beer so I can't think 
                         if itemStack.equals(otherItemStack):
                             print 'Conflict  of '+factory.name+' and '+otherFactory.name
 def fixConflicts(factories):
@@ -188,7 +199,7 @@ def fixConflicts(factories):
         for itemStack in factory.inputs:
             for otherFactory in factories.values():
                 for otherItemStack in otherFactory.inputs:
-                    if factory!=otherFactory and 'Wool' not in factory.name:
+                    if factory!=otherFactory and 'Wool' not in factory.name and 'Smelter' not in factory.name+otherFactory.name:
                         if itemStack.equals(otherItemStack):
                             itemStack.amount+=1
 

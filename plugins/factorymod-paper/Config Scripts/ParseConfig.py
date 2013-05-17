@@ -9,16 +9,20 @@ class ParseConfig:
         myfile.write('\n\n##Factory List')
         sortedFactoryKeys=config['factories'].keys()
         sortedFactoryKeys.sort()
-        for type,name in [('Enchanting','Cauldron'),('Smelting','Smelter'),('Food','Bakery'),('Equipment','Smithy'),('Wool','Wool')]:
+        types=[('Enchanting',['Cauldron']),('Smelting',['Smelter']),('Food',['Bakery','Grill']),('Equipment',['Smithy']),('Wool',['Wool'])]
+        for type,names in types:
             myfile.write('\n\n-  ['+type+'](https://github.com/gmlaxfanatic/FactoryMod/wiki#'+type.lower()+')')        
-        for type,name in [('Enchanting','Cauldron'),('Smelting','Smelter'),('Food','Bakery'),('Equipment','Smithy'),('Wool','Wool')]:
+        for type,names in types:
             myfile.write('\n\n###'+type)
             for key in sortedFactoryKeys:
                 factory=config['factories'][key]
-                if name in factory.identifier:
+                if sum([(name in factory.identifier) for name in names])>0:
                     myfile.write('\n\n**'+factory.name+'**')
+                    myfile.write(' - ')
                     for input in factory.inputs:
-                        myfile.write(' - '+str(input.amount)+' '+input.name)
+                        myfile.write(str(input.amount)+' '+input.name)
+                        if(factory.inputs.index(input)!=len(factory.inputs)-1):
+                                myfile.write(', ')
                     for recipe in factory.outputRecipes:
                         myfile.write('\n\n\t')
                         for output in recipe.outputs:
@@ -28,6 +32,7 @@ class ParseConfig:
                             myfile.write(str(input.amount)+' '+input.name)
                             if(recipe.inputs.index(input)!=len(recipe.inputs)-1):
                                 myfile.write(', ')
+                        myfile.write(' using '+str(recipe.time/factory.fuelTime)+' '+factory.fuel.name)
 
     @staticmethod
     def saveConfig(config,filename='config.yml'):

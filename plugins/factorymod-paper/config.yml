@@ -80,8 +80,8 @@ general:
   disable_experience: true
 production_general:
   update_cycle: 20
-  repair_period: 2
-  culling_period: 1
+  repair_period: 28
+  disrepair_period: 14
 crafting:
   disable:
   enable:
@@ -124,22 +124,36 @@ crafting:
         Double Stone Slab:
           material: DOUBLE_STEP
 production_factories:
-  Baked_Potato_Bakery:
-    name: Baked Potato Bakery
+  Bakery:
+    name: Bakery
     fuel:
       Charcoal:
         material: COAL
         durability: 1
     inputs:
-      Potato:
-        material: POTATO_ITEM
-        amount: 90
+      Baked Potato:
+        material: BAKED_POTATO
+        amount: 512
+      Cookie:
+        material: COOKIE
+        amount: 1024
+      Bread:
+        material: BREAD
+        amount: 256
     recipes:
       - Baked_Potato
-    repair_multiple: 9
+      - Cookie
+      - Bread
+    repair_multiple: 26
     repair_inputs:
-      Potato:
-        material: POTATO_ITEM
+      Baked Potato:
+        material: BAKED_POTATO
+        amount: 2
+      Cookie:
+        material: COOKIE
+        amount: 4
+      Bread:
+        material: BREAD
   Black_Wool_Processing:
     name: Black Wool Processing
     fuel:
@@ -149,66 +163,66 @@ production_factories:
     inputs:
       Lapis Lazuli:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 4
       Gray Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 8
       Cocoa:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 3
       Purple Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 5
       Dandelion Yellow:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 11
       Ink Sack:
         material: INK_SACK
-        amount: 2
+        amount: 20
       Magenta Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 13
       Pink Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 9
       Cyan Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 6
       Orange Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 14
       Cactus Green:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 2
       Bone Meal:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 15
       Light Gray Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 7
       Light Blue Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 12
       Rose Red:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 1
       Lime Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 10
       Black Wool:
         material: WOOL
@@ -230,7 +244,7 @@ production_factories:
       - Dye_Black_Wool_Light_Blue
       - Dye_Black_Wool_Red
       - Dye_Black_Wool_Lime
-    repair_multiple: 1
+    repair_multiple: 2
     repair_inputs:
       Lapis Lazuli:
         material: INK_SACK
@@ -281,24 +295,7 @@ production_factories:
         durability: 10
       Black Wool:
         material: WOOL
-        amount: 2
         durability: 15
-  Bread_Bakery:
-    name: Bread Bakery
-    fuel:
-      Charcoal:
-        material: COAL
-        durability: 1
-    inputs:
-      Wheat:
-        material: WHEAT
-        amount: 270
-    recipes:
-      - Bread
-    repair_multiple: 27
-    repair_inputs:
-      Wheat:
-        material: WHEAT
   Brown_Wool_Processing:
     name: Brown Wool Processing
     fuel:
@@ -308,66 +305,66 @@ production_factories:
     inputs:
       Lapis Lazuli:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 4
       Gray Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 8
       Cocoa:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 3
       Purple Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 5
       Dandelion Yellow:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 11
       Ink Sack:
         material: INK_SACK
-        amount: 2
+        amount: 20
       Magenta Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 13
       Pink Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 9
       Cyan Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 6
       Orange Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 14
       Cactus Green:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 2
       Bone Meal:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 15
       Light Gray Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 7
       Light Blue Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 12
       Rose Red:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 1
       Lime Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 10
       Brown Wool:
         material: WOOL
@@ -389,7 +386,7 @@ production_factories:
       - Dye_Brown_Wool_Light_Blue
       - Dye_Brown_Wool_Red
       - Dye_Brown_Wool_Lime
-    repair_multiple: 1
+    repair_multiple: 2
     repair_inputs:
       Lapis Lazuli:
         material: INK_SACK
@@ -440,7 +437,6 @@ production_factories:
         durability: 10
       Brown Wool:
         material: WOOL
-        amount: 2
         durability: 12
   Charcoal_Smelter:
     name: Charcoal Burner
@@ -451,106 +447,18 @@ production_factories:
     inputs:
       Charcoal:
         material: COAL
-        amount: 100
+        amount: 300
         durability: 1
     recipes:
       - Smelt_Oak_Wood
       - Smelt_Spruce_Wood
       - Smelt_Birch_Wood
       - Smelt_Jungle_Wood
-    repair_multiple: 10
+    repair_multiple: 30
     repair_inputs:
       Charcoal:
         material: COAL
         durability: 1
-  Coal_Ore_Smelter:
-    name: Coal Ore Smelter
-    fuel:
-      Charcoal:
-        material: COAL
-        durability: 1
-    inputs:
-      Coal Ore:
-        material: COAL_ORE
-        amount: 30
-    recipes:
-      - Smelt_Coal_Ore
-    repair_multiple: 3
-    repair_inputs:
-      Coal Ore:
-        material: COAL_ORE
-  Cooked_Beef_Bakery:
-    name: Cooked Beef Bakery
-    fuel:
-      Charcoal:
-        material: COAL
-        durability: 1
-    inputs:
-      Raw Beef:
-        material: RAW_BEEF
-        amount: 90
-    recipes:
-      - Cooked_Beef
-    repair_multiple: 9
-    repair_inputs:
-      Raw Beef:
-        material: RAW_BEEF
-  Cooked_Chicken_Bakery:
-    name: Cooked Chicken Bakery
-    fuel:
-      Charcoal:
-        material: COAL
-        durability: 1
-    inputs:
-      Raw Chicken:
-        material: RAW_CHICKEN
-        amount: 90
-    recipes:
-      - Cooked_Chicken
-    repair_multiple: 9
-    repair_inputs:
-      Raw Chicken:
-        material: RAW_CHICKEN
-  Cooked_Fish_Bakery:
-    name: Cooked Fish Bakery
-    fuel:
-      Charcoal:
-        material: COAL
-        durability: 1
-    inputs:
-      Raw Fish:
-        material: RAW_FISH
-        amount: 90
-    recipes:
-      - Cooked_Fish
-    repair_multiple: 9
-    repair_inputs:
-      Raw Fish:
-        material: RAW_FISH
-  Cookie_Bakery:
-    name: Cookie Bakery
-    fuel:
-      Charcoal:
-        material: COAL
-        durability: 1
-    inputs:
-      Wheat:
-        material: WHEAT
-        amount: 180
-      Cocoa:
-        material: INK_SACK
-        amount: 90
-        durability: 3
-    recipes:
-      - Cookie
-    repair_multiple: 9
-    repair_inputs:
-      Wheat:
-        material: WHEAT
-        amount: 2
-      Cocoa:
-        material: INK_SACK
-        durability: 3
   Diamond_Axe_Smithy:
     name: Diamond Axe Smithy
     fuel:
@@ -560,10 +468,10 @@ production_factories:
     inputs:
       Diamond:
         material: DIAMOND
-        amount: 16
+        amount: 64
     recipes:
       - Diamond_Axe
-    repair_multiple: 2
+    repair_multiple: 7
     repair_inputs:
       Diamond:
         material: DIAMOND
@@ -576,10 +484,10 @@ production_factories:
     inputs:
       Diamond:
         material: DIAMOND
-        amount: 20
+        amount: 160
     recipes:
       - Diamond_Boots
-    repair_multiple: 2
+    repair_multiple: 16
     repair_inputs:
       Diamond:
         material: DIAMOND
@@ -592,13 +500,13 @@ production_factories:
     inputs:
       Diamond:
         material: DIAMOND
-        amount: 5
+        amount: 50
     recipes:
       - Diamond_XP_Bottle_0
       - Diamond_XP_Bottle_1
       - Diamond_XP_Bottle_2
       - Diamond_XP_Bottle_3
-    repair_multiple: 1
+    repair_multiple: 5
     repair_inputs:
       Diamond:
         material: DIAMOND
@@ -611,10 +519,10 @@ production_factories:
     inputs:
       Diamond:
         material: DIAMOND
-        amount: 40
+        amount: 320
     recipes:
       - Diamond_Chestplate
-    repair_multiple: 4
+    repair_multiple: 32
     repair_inputs:
       Diamond:
         material: DIAMOND
@@ -627,10 +535,10 @@ production_factories:
     inputs:
       Diamond:
         material: DIAMOND
-        amount: 25
+        amount: 192
     recipes:
       - Diamond_Helmet
-    repair_multiple: 3
+    repair_multiple: 20
     repair_inputs:
       Diamond:
         material: DIAMOND
@@ -643,10 +551,10 @@ production_factories:
     inputs:
       Diamond:
         material: DIAMOND
-        amount: 10
+        amount: 32
     recipes:
       - Diamond_Hoe
-    repair_multiple: 1
+    repair_multiple: 4
     repair_inputs:
       Diamond:
         material: DIAMOND
@@ -659,29 +567,13 @@ production_factories:
     inputs:
       Diamond:
         material: DIAMOND
-        amount: 35
+        amount: 256
     recipes:
       - Diamond_Leggings
-    repair_multiple: 4
+    repair_multiple: 26
     repair_inputs:
       Diamond:
         material: DIAMOND
-  Diamond_Ore_Smelter:
-    name: Diamond Ore Smelter
-    fuel:
-      Charcoal:
-        material: COAL
-        durability: 1
-    inputs:
-      Diamond Ore:
-        material: DIAMOND_ORE
-        amount: 30
-    recipes:
-      - Smelt_Diamond_Ore
-    repair_multiple: 3
-    repair_inputs:
-      Diamond Ore:
-        material: DIAMOND_ORE
   Diamond_Pickaxe_Smithy:
     name: Diamond Pickaxe Smithy
     fuel:
@@ -691,10 +583,10 @@ production_factories:
     inputs:
       Diamond:
         material: DIAMOND
-        amount: 15
+        amount: 96
     recipes:
       - Diamond_Pickaxe
-    repair_multiple: 2
+    repair_multiple: 10
     repair_inputs:
       Diamond:
         material: DIAMOND
@@ -707,10 +599,10 @@ production_factories:
     inputs:
       Diamond:
         material: DIAMOND
-        amount: 6
+        amount: 48
     recipes:
       - Diamond_Spade
-    repair_multiple: 1
+    repair_multiple: 5
     repair_inputs:
       Diamond:
         material: DIAMOND
@@ -723,10 +615,10 @@ production_factories:
     inputs:
       Diamond:
         material: DIAMOND
-        amount: 11
+        amount: 80
     recipes:
       - Diamond_Sword
-    repair_multiple: 1
+    repair_multiple: 8
     repair_inputs:
       Diamond:
         material: DIAMOND
@@ -739,10 +631,10 @@ production_factories:
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
-        amount: 16
+        amount: 64
     recipes:
       - Gold_Axe
-    repair_multiple: 2
+    repair_multiple: 7
     repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -755,10 +647,10 @@ production_factories:
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
-        amount: 20
+        amount: 160
     recipes:
       - Gold_Boots
-    repair_multiple: 2
+    repair_multiple: 16
     repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -771,10 +663,10 @@ production_factories:
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
-        amount: 40
+        amount: 320
     recipes:
       - Gold_Chestplate
-    repair_multiple: 4
+    repair_multiple: 32
     repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -787,10 +679,10 @@ production_factories:
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
-        amount: 25
+        amount: 192
     recipes:
       - Gold_Helmet
-    repair_multiple: 3
+    repair_multiple: 20
     repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -803,10 +695,10 @@ production_factories:
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
-        amount: 11
+        amount: 32
     recipes:
       - Gold_Hoe
-    repair_multiple: 1
+    repair_multiple: 4
     repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -819,29 +711,13 @@ production_factories:
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
-        amount: 35
+        amount: 256
     recipes:
       - Gold_Leggings
-    repair_multiple: 4
+    repair_multiple: 26
     repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
-  Gold_Ore_Smelter:
-    name: Gold Ore Smelter
-    fuel:
-      Charcoal:
-        material: COAL
-        durability: 1
-    inputs:
-      Gold Ore:
-        material: GOLD_ORE
-        amount: 30
-    recipes:
-      - Smelt_Gold_Ore
-    repair_multiple: 3
-    repair_inputs:
-      Gold Ore:
-        material: GOLD_ORE
   Gold_Pickaxe_Smithy:
     name: Gold Pickaxe Smithy
     fuel:
@@ -851,10 +727,10 @@ production_factories:
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
-        amount: 15
+        amount: 96
     recipes:
       - Gold_Pickaxe
-    repair_multiple: 2
+    repair_multiple: 10
     repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -867,10 +743,10 @@ production_factories:
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
-        amount: 5
+        amount: 48
     recipes:
       - Gold_Spade
-    repair_multiple: 1
+    repair_multiple: 5
     repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -883,10 +759,10 @@ production_factories:
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
-        amount: 10
+        amount: 80
     recipes:
       - Gold_Sword
-    repair_multiple: 1
+    repair_multiple: 8
     repair_inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -899,66 +775,66 @@ production_factories:
     inputs:
       Lapis Lazuli:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 4
       Gray Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 8
       Cocoa:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 3
       Purple Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 5
       Dandelion Yellow:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 11
       Ink Sack:
         material: INK_SACK
-        amount: 2
+        amount: 20
       Magenta Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 13
       Pink Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 9
       Cyan Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 6
       Orange Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 14
       Cactus Green:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 2
       Bone Meal:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 15
       Light Gray Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 7
       Light Blue Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 12
       Rose Red:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 1
       Lime Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 10
       Gray Wool:
         material: WOOL
@@ -980,7 +856,7 @@ production_factories:
       - Dye_Gray_Wool_Light_Blue
       - Dye_Gray_Wool_Red
       - Dye_Gray_Wool_Lime
-    repair_multiple: 1
+    repair_multiple: 2
     repair_inputs:
       Lapis Lazuli:
         material: INK_SACK
@@ -1031,24 +907,44 @@ production_factories:
         durability: 10
       Gray Wool:
         material: WOOL
-        amount: 2
         durability: 7
-  Grilled_Pork_Bakery:
-    name: Grilled Pork Bakery
+  Grill:
+    name: Bakery
     fuel:
       Charcoal:
         material: COAL
         durability: 1
     inputs:
-      Pork:
-        material: PORK
-        amount: 90
+      Cooked Chicken:
+        material: COOKED_CHICKEN
+        amount: 192
+      Cooked Fish:
+        material: COOKED_FISH
+        amount: 16
+      Grilled Pork:
+        material: GRILLED_PORK
+        amount: 160
+      Cooked Beef:
+        material: COOKED_BEEF
+        amount: 64
     recipes:
+      - Cooked_Chicken
+      - Cooked_Fish
       - Grilled_Pork
-    repair_multiple: 9
+      - Cooked_Beef
+    repair_multiple: 2
     repair_inputs:
-      Pork:
-        material: PORK
+      Cooked Chicken:
+        material: COOKED_CHICKEN
+        amount: 10
+      Cooked Fish:
+        material: COOKED_FISH
+      Grilled Pork:
+        material: GRILLED_PORK
+        amount: 8
+      Cooked Beef:
+        material: COOKED_BEEF
+        amount: 4
   Iron_Axe_Smithy:
     name: Iron Axe Smithy
     fuel:
@@ -1058,10 +954,10 @@ production_factories:
     inputs:
       Iron Ingot:
         material: IRON_INGOT
-        amount: 16
+        amount: 64
     recipes:
       - Iron_Axe
-    repair_multiple: 2
+    repair_multiple: 7
     repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -1074,10 +970,10 @@ production_factories:
     inputs:
       Iron Ingot:
         material: IRON_INGOT
-        amount: 20
+        amount: 160
     recipes:
       - Iron_Boots
-    repair_multiple: 2
+    repair_multiple: 16
     repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -1090,11 +986,11 @@ production_factories:
     inputs:
       Iron Ingot:
         material: IRON_INGOT
-        amount: 21
+        amount: 200
     recipes:
       - Iron_XP_Bottle_0
       - Iron_XP_Bottle_1
-    repair_multiple: 2
+    repair_multiple: 20
     repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -1107,10 +1003,10 @@ production_factories:
     inputs:
       Iron Ingot:
         material: IRON_INGOT
-        amount: 40
+        amount: 320
     recipes:
       - Iron_Chestplate
-    repair_multiple: 4
+    repair_multiple: 32
     repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -1123,10 +1019,10 @@ production_factories:
     inputs:
       Iron Ingot:
         material: IRON_INGOT
-        amount: 25
+        amount: 192
     recipes:
       - Iron_Helmet
-    repair_multiple: 3
+    repair_multiple: 20
     repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -1139,10 +1035,10 @@ production_factories:
     inputs:
       Iron Ingot:
         material: IRON_INGOT
-        amount: 10
+        amount: 32
     recipes:
       - Iron_Hoe
-    repair_multiple: 1
+    repair_multiple: 4
     repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -1155,29 +1051,13 @@ production_factories:
     inputs:
       Iron Ingot:
         material: IRON_INGOT
-        amount: 35
+        amount: 256
     recipes:
       - Iron_Leggings
-    repair_multiple: 4
+    repair_multiple: 26
     repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
-  Iron_Ore_Smelter:
-    name: Iron Ore Smelter
-    fuel:
-      Charcoal:
-        material: COAL
-        durability: 1
-    inputs:
-      Iron Ore:
-        material: IRON_ORE
-        amount: 30
-    recipes:
-      - Smelt_Iron_Ore
-    repair_multiple: 3
-    repair_inputs:
-      Iron Ore:
-        material: IRON_ORE
   Iron_Pickaxe_Smithy:
     name: Iron Pickaxe Smithy
     fuel:
@@ -1187,10 +1067,10 @@ production_factories:
     inputs:
       Iron Ingot:
         material: IRON_INGOT
-        amount: 15
+        amount: 96
     recipes:
       - Iron_Pickaxe
-    repair_multiple: 2
+    repair_multiple: 10
     repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -1203,10 +1083,10 @@ production_factories:
     inputs:
       Iron Ingot:
         material: IRON_INGOT
-        amount: 5
+        amount: 48
     recipes:
       - Iron_Spade
-    repair_multiple: 1
+    repair_multiple: 5
     repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -1219,10 +1099,10 @@ production_factories:
     inputs:
       Iron Ingot:
         material: IRON_INGOT
-        amount: 11
+        amount: 80
     recipes:
       - Iron_Sword
-    repair_multiple: 1
+    repair_multiple: 8
     repair_inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -1235,66 +1115,66 @@ production_factories:
     inputs:
       Lapis Lazuli:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 4
       Gray Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 8
       Cocoa:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 3
       Purple Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 5
       Dandelion Yellow:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 11
       Ink Sack:
         material: INK_SACK
-        amount: 2
+        amount: 20
       Magenta Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 13
       Pink Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 9
       Cyan Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 6
       Orange Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 14
       Cactus Green:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 2
       Bone Meal:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 15
       Light Gray Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 7
       Light Blue Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 12
       Rose Red:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 1
       Lime Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 10
       Light Gray Wool:
         material: WOOL
@@ -1316,7 +1196,7 @@ production_factories:
       - Dye_Light_Gray_Wool_Light_Blue
       - Dye_Light_Gray_Wool_Red
       - Dye_Light_Gray_Wool_Lime
-    repair_multiple: 1
+    repair_multiple: 2
     repair_inputs:
       Lapis Lazuli:
         material: INK_SACK
@@ -1367,7 +1247,6 @@ production_factories:
         durability: 10
       Light Gray Wool:
         material: WOOL
-        amount: 2
         durability: 8
   Pink_Wool_Processing:
     name: Pink Wool Processing
@@ -1378,66 +1257,66 @@ production_factories:
     inputs:
       Lapis Lazuli:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 4
       Gray Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 8
       Cocoa:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 3
       Purple Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 5
       Dandelion Yellow:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 11
       Ink Sack:
         material: INK_SACK
-        amount: 2
+        amount: 20
       Magenta Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 13
       Pink Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 9
       Cyan Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 6
       Orange Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 14
       Cactus Green:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 2
       Bone Meal:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 15
       Light Gray Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 7
       Light Blue Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 12
       Rose Red:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 1
       Lime Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 10
       Pink Wool:
         material: WOOL
@@ -1459,7 +1338,7 @@ production_factories:
       - Dye_Pink_Wool_Light_Blue
       - Dye_Pink_Wool_Red
       - Dye_Pink_Wool_Lime
-    repair_multiple: 1
+    repair_multiple: 2
     repair_inputs:
       Lapis Lazuli:
         material: INK_SACK
@@ -1510,24 +1389,44 @@ production_factories:
         durability: 10
       Pink Wool:
         material: WOOL
-        amount: 2
         durability: 6
-  Quartz_Ore_Smelter:
-    name: Quartz Ore Smelter
+  Smelter:
+    name: Ore Smelter
     fuel:
       Charcoal:
         material: COAL
         durability: 1
     inputs:
-      Quartz Ore:
-        material: QUARTZ_ORE
-        amount: 30
+      Coal:
+        material: COAL
+        amount: 512
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 384
+      Gold Ingot:
+        material: GOLD_INGOT
+        amount: 192
+      Diamond:
+        material: DIAMOND
+        amount: 96
     recipes:
-      - Smelt_Quartz_Ore
-    repair_multiple: 3
+      - Smelt_Coal_Ore
+      - Smelt_Iron_Ore
+      - Smelt_Gold_Ore
+      - Smelt_Diamond_Ore
+    repair_multiple: 10
     repair_inputs:
-      Quartz Ore:
-        material: QUARTZ_ORE
+      Coal:
+        material: COAL
+        amount: 6
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 4
+      Gold Ingot:
+        material: GOLD_INGOT
+        amount: 2
+      Diamond:
+        material: DIAMOND
   Stone_Smelter:
     name: Stone Smelter
     fuel:
@@ -1537,10 +1436,10 @@ production_factories:
     inputs:
       Stone:
         material: STONE
-        amount: 200
+        amount: 2048
     recipes:
       - Smelt_Stone
-    repair_multiple: 20
+    repair_multiple: 205
     repair_inputs:
       Stone:
         material: STONE
@@ -1553,66 +1452,66 @@ production_factories:
     inputs:
       Lapis Lazuli:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 4
       Gray Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 8
       Cocoa:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 3
       Purple Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 5
       Dandelion Yellow:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 11
       Ink Sack:
         material: INK_SACK
-        amount: 2
+        amount: 20
       Magenta Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 13
       Pink Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 9
       Cyan Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 6
       Orange Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 14
       Cactus Green:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 2
       Bone Meal:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 15
       Light Gray Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 7
       Light Blue Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 12
       Rose Red:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 1
       Lime Dye:
         material: INK_SACK
-        amount: 2
+        amount: 20
         durability: 10
       White Wool:
         material: WOOL
@@ -1633,7 +1532,7 @@ production_factories:
       - Dye_White_Wool_Light_Blue
       - Dye_White_Wool_Red
       - Dye_White_Wool_Lime
-    repair_multiple: 1
+    repair_multiple: 2
     repair_inputs:
       Lapis Lazuli:
         material: INK_SACK
@@ -1684,7 +1583,6 @@ production_factories:
         durability: 10
       White Wool:
         material: WOOL
-        amount: 2
   Wood_Cauldron:
     name: Wood Cauldron
     fuel:
@@ -1694,13 +1592,13 @@ production_factories:
     inputs:
       Stick:
         material: STICK
-        amount: 103
+        amount: 1024
     recipes:
       - Wood_XP_Bottle_0
       - Wood_XP_Bottle_1
       - Wood_XP_Bottle_2
       - Wood_XP_Bottle_3
-    repair_multiple: 11
+    repair_multiple: 103
     repair_inputs:
       Stick:
         material: STICK
@@ -1719,15 +1617,16 @@ production_recipes:
         material: EXP_BOTTLE
         amount: 14
   Baked_Potato:
-    name: Baked Potato
+    name: Bake Potato
+    production_time: 24
     inputs:
       Potato:
         material: POTATO_ITEM
-        amount: 45
+        amount: 192
     outputs:
       Baked Potato:
         material: BAKED_POTATO
-        amount: 64
+        amount: 384
   Wood_XP_Bottle_2:
     name: Brew XP Bottles  - 3
     inputs:
@@ -1741,19 +1640,22 @@ production_recipes:
       Exp Bottle:
         material: EXP_BOTTLE
         amount: 24
-  Wood_XP_Bottle_3:
-    name: Brew XP Bottles  - 4
+  Dye_Black_Wool_Cyan:
+    name: Dye Black Wool Cyan
     inputs:
-      Glass Bottle:
-        material: GLASS_BOTTLE
-        amount: 6
-      Cookie:
-        material: COOKIE
-        amount: 1280
+      Black Wool:
+        material: WOOL
+        amount: 64
+        durability: 15
+      Cyan Dye:
+        material: INK_SACK
+        amount: 4
+        durability: 6
     outputs:
-      Exp Bottle:
-        material: EXP_BOTTLE
-        amount: 6
+      Cyan Wool:
+        material: WOOL
+        amount: 64
+        durability: 9
   Dye_Light_Gray_Wool_Purple:
     name: Dye Light Gray Wool Purple
     inputs:
@@ -1820,15 +1722,14 @@ production_recipes:
         durability: 7
   Smelt_Diamond_Ore:
     name: Smelt Diamond Ore
-    production_time: 16
     inputs:
       Diamond Ore:
         material: DIAMOND_ORE
-        amount: 64
+        amount: 16
     outputs:
       Diamond:
         material: DIAMOND
-        amount: 160
+        amount: 48
   Diamond_XP_Bottle_0:
     name: Brew XP Bottles  - 1
     inputs:
@@ -1884,16 +1785,16 @@ production_recipes:
         durability: 1
   Smelt_Jungle_Wood:
     name: Burn Jungle Wood
-    production_time: 60
+    production_time: 24
     inputs:
       Jungle Wood:
         material: LOG
-        amount: 280
+        amount: 256
         durability: 3
     outputs:
       Charcoal:
         material: COAL
-        amount: 320
+        amount: 342
         durability: 1
   Diamond_Boots:
     name: Forge Diamond Boots.
@@ -1904,7 +1805,7 @@ production_recipes:
     outputs:
       Diamond Boots:
         material: DIAMOND_BOOTS
-        amount: 10
+        amount: 15
   Dye_Gray_Wool_Black:
     name: Dye Gray Wool Black
     inputs:
@@ -1945,7 +1846,7 @@ production_recipes:
     outputs:
       Iron Boots:
         material: IRON_BOOTS
-        amount: 10
+        amount: 15
   Dye_Pink_Wool_Brown:
     name: Dye Pink Wool Brown
     inputs:
@@ -1962,22 +1863,16 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 12
-  Dye_Light_Gray_Wool_Red:
-    name: Dye Light Gray Wool Red
+  Gold_Spade:
+    name: Forge Gold Spade.
     inputs:
-      Light Gray Wool:
-        material: WOOL
-        amount: 64
-        durability: 8
-      Rose Red:
-        material: INK_SACK
-        amount: 4
-        durability: 1
+      Gold Ingot:
+        material: GOLD_INGOT
+        amount: 5
     outputs:
-      Red Wool:
-        material: WOOL
-        amount: 64
-        durability: 14
+      Gold Spade:
+        material: GOLD_SPADE
+        amount: 15
   Dye_Black_Wool_Gray:
     name: Dye Black Wool Gray
     inputs:
@@ -2010,19 +1905,21 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 8
-  Wood_XP_Bottle_1:
-    name: Brew XP Bottles  - 2
+  Dye_White_Wool_Cyan:
+    name: Dye White Wool Cyan
     inputs:
-      Glass Bottle:
-        material: GLASS_BOTTLE
-        amount: 7
-      Nether Warts:
-        material: NETHER_WARTS
-        amount: 1280
+      White Wool:
+        material: WOOL
+        amount: 64
+      Cyan Dye:
+        material: INK_SACK
+        amount: 4
+        durability: 6
     outputs:
-      Exp Bottle:
-        material: EXP_BOTTLE
-        amount: 7
+      Cyan Wool:
+        material: WOOL
+        amount: 64
+        durability: 9
   Diamond_Hoe:
     name: Forge Diamond Hoe.
     inputs:
@@ -2032,7 +1929,7 @@ production_recipes:
     outputs:
       Diamond Hoe:
         material: DIAMOND_HOE
-        amount: 10
+        amount: 30
   Gold_Chestplate:
     name: Forge Gold Chestplate.
     inputs:
@@ -2042,7 +1939,7 @@ production_recipes:
     outputs:
       Gold Chestplate:
         material: GOLD_CHESTPLATE
-        amount: 10
+        amount: 15
         durability: -218
     enchantments:
       Unbreaking 3:
@@ -2143,22 +2040,22 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 14
-  Dye_Black_Wool_Cyan:
-    name: Dye Black Wool Cyan
+  Dye_Brown_Wool_Purple:
+    name: Dye Brown Wool Purple
     inputs:
-      Black Wool:
+      Brown Wool:
         material: WOOL
         amount: 64
-        durability: 15
-      Cyan Dye:
+        durability: 12
+      Purple Dye:
         material: INK_SACK
         amount: 4
-        durability: 6
+        durability: 5
     outputs:
-      Cyan Wool:
+      Purple Wool:
         material: WOOL
         amount: 64
-        durability: 9
+        durability: 10
   Dye_White_Wool_Purple:
     name: Dye White Wool Purple
     inputs:
@@ -2240,16 +2137,16 @@ production_recipes:
         durability: 12
   Smelt_Spruce_Wood:
     name: Burn Spruce Wood
-    production_time: 60
+    production_time: 24
     inputs:
       Spruce Wood:
         material: LOG
-        amount: 280
+        amount: 256
         durability: 1
     outputs:
       Charcoal:
         material: COAL
-        amount: 320
+        amount: 342
         durability: 1
   Dye_Brown_Wool_Magenta:
     name: Dye Brown Wool Magenta
@@ -2267,21 +2164,6 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 2
-  Dye_White_Wool_Cyan:
-    name: Dye White Wool Cyan
-    inputs:
-      White Wool:
-        material: WOOL
-        amount: 64
-      Cyan Dye:
-        material: INK_SACK
-        amount: 4
-        durability: 6
-    outputs:
-      Cyan Wool:
-        material: WOOL
-        amount: 64
-        durability: 9
   Dye_White_Wool_Brown:
     name: Dye White Wool Brown
     inputs:
@@ -2328,21 +2210,6 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 15
-  Dye_White_Wool_Gray:
-    name: Dye White Wool Gray
-    inputs:
-      White Wool:
-        material: WOOL
-        amount: 64
-      Gray Dye:
-        material: INK_SACK
-        amount: 4
-        durability: 8
-    outputs:
-      Gray Wool:
-        material: WOOL
-        amount: 64
-        durability: 7
   Dye_Brown_Wool_Yellow:
     name: Dye Brown Wool Yellow
     inputs:
@@ -2376,15 +2243,15 @@ production_recipes:
         amount: 64
   Smelt_Coal_Ore:
     name: Smelt Coal Ore
-    production_time: 16
+    production_time: 12
     inputs:
       Coal Ore:
         material: COAL_ORE
-        amount: 64
+        amount: 128
     outputs:
       Coal:
         material: COAL
-        amount: 160
+        amount: 384
   Dye_Brown_Wool_Green:
     name: Dye Brown Wool Green
     inputs:
@@ -2419,16 +2286,16 @@ production_recipes:
         durability: 5
   Smelt_Birch_Wood:
     name: Burn Birch Wood
-    production_time: 60
+    production_time: 24
     inputs:
       Birch Wood:
         material: LOG
-        amount: 280
+        amount: 256
         durability: 2
     outputs:
       Charcoal:
         material: COAL
-        amount: 320
+        amount: 342
         durability: 1
   Diamond_Sword:
     name: Forge Diamond Sword.
@@ -2439,23 +2306,7 @@ production_recipes:
     outputs:
       Diamond Sword:
         material: DIAMOND_SWORD
-        amount: 10
-  Dye_Brown_Wool_Purple:
-    name: Dye Brown Wool Purple
-    inputs:
-      Brown Wool:
-        material: WOOL
-        amount: 64
-        durability: 12
-      Purple Dye:
-        material: INK_SACK
-        amount: 4
-        durability: 5
-    outputs:
-      Purple Wool:
-        material: WOOL
-        amount: 64
-        durability: 10
+        amount: 15
   Dye_Pink_Wool_Orange:
     name: Dye Pink Wool Orange
     inputs:
@@ -2513,7 +2364,7 @@ production_recipes:
     outputs:
       Iron Helmet:
         material: IRON_HELMET
-        amount: 10
+        amount: 15
   Dye_Gray_Wool_Cyan:
     name: Dye Gray Wool Cyan
     inputs:
@@ -2531,15 +2382,16 @@ production_recipes:
         amount: 64
         durability: 9
   Cooked_Chicken:
-    name: Cooked Chicken
+    name: Grill Raw Chicken
+    production_time: 6
     inputs:
       Raw Chicken:
         material: RAW_CHICKEN
-        amount: 45
+        amount: 64
     outputs:
       Cooked Chicken:
         material: COOKED_CHICKEN
-        amount: 64
+        amount: 128
   Dye_Brown_Wool_Pink:
     name: Dye Brown Wool Pink
     inputs:
@@ -2673,7 +2525,7 @@ production_recipes:
     outputs:
       Gold Pickaxe:
         material: GOLD_PICKAXE
-        amount: 10
+        amount: 15
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -2718,17 +2570,22 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 11
-  Smelt_Iron_Ore:
-    name: Smelt Iron Ore
-    production_time: 16
+  Dye_Light_Gray_Wool_Cyan:
+    name: Dye Light Gray Wool Cyan
     inputs:
-      Iron Ore:
-        material: IRON_ORE
+      Light Gray Wool:
+        material: WOOL
         amount: 64
+        durability: 8
+      Cyan Dye:
+        material: INK_SACK
+        amount: 4
+        durability: 6
     outputs:
-      Iron Ingot:
-        material: IRON_INGOT
-        amount: 80
+      Cyan Wool:
+        material: WOOL
+        amount: 64
+        durability: 9
   Dye_Pink_Wool_Magenta:
     name: Dye Pink Wool Magenta
     inputs:
@@ -2777,15 +2634,16 @@ production_recipes:
         amount: 64
         durability: 1
   Cooked_Beef:
-    name: Cooked Beef
+    name: Grill Raw Beef
+    production_time: 6
     inputs:
       Raw Beef:
         material: RAW_BEEF
-        amount: 45
+        amount: 64
     outputs:
       Cooked Beef:
         material: COOKED_BEEF
-        amount: 64
+        amount: 128
   Dye_White_Wool_Green:
     name: Dye White Wool Green
     inputs:
@@ -2810,7 +2668,7 @@ production_recipes:
     outputs:
       Iron Chestplate:
         material: IRON_CHESTPLATE
-        amount: 10
+        amount: 15
   Dye_Black_Wool_Red:
     name: Dye Black Wool Red
     inputs:
@@ -2827,81 +2685,22 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 14
-  Gold_Leggings:
-    name: Forge Gold Leggings.
+  Dye_Gray_Wool_Light_Blue:
+    name: Dye Gray Wool Light Blue
     inputs:
-      Gold Ingot:
-        material: GOLD_INGOT
-        amount: 35
+      Gray Wool:
+        material: WOOL
+        amount: 64
+        durability: 7
+      Light Blue Dye:
+        material: INK_SACK
+        amount: 4
+        durability: 12
     outputs:
-      Gold Leggings:
-        material: GOLD_LEGGINGS
-        amount: 10
-        durability: -218
-    enchantments:
-      Unbreaking 3:
-        type: DURABILITY
-        level: 3
-      Blast Protection 1:
-        type: PROTECTION_EXPLOSIONS
-        level: 1
-        probability: 0.5
-      Blast Protection 2:
-        type: PROTECTION_EXPLOSIONS
-        level: 2
-        probability: 0.4
-      Blast Protection 3:
-        type: PROTECTION_EXPLOSIONS
-        level: 3
-        probability: 0.3
-      Blast Protection 4:
-        type: PROTECTION_EXPLOSIONS
-        level: 4
-        probability: 0.4
-      Fire Protection 1:
-        type: PROTECTION_FIRE
-        level: 1
-        probability: 0.5
-      Fire Protection 2:
-        type: PROTECTION_FIRE
-        level: 2
-        probability: 0.4
-      Fire Protection 3:
-        type: PROTECTION_FIRE
-        level: 3
-        probability: 0.3
-      Fire Protection 4:
-        type: PROTECTION_FIRE
-        level: 4
-        probability: 0.4
-      Projectile Protection 1:
-        type: PROTECTION_PROJECTILE
-        level: 1
-        probability: 0.5
-      Projectile Protection 2:
-        type: PROTECTION_PROJECTILE
-        level: 2
-        probability: 0.4
-      Projectile Protection 3:
-        type: PROTECTION_PROJECTILE
-        level: 3
-        probability: 0.3
-      Projectile Protection 4:
-        type: PROTECTION_PROJECTILE
-        level: 4
-        probability: 0.4
-  Smelt_Oak_Wood:
-    name: Burn Oak Wood
-    production_time: 60
-    inputs:
-      Oak Wood:
-        material: LOG
-        amount: 280
-    outputs:
-      Charcoal:
-        material: COAL
-        amount: 320
-        durability: 1
+      Light Blue Wool:
+        material: WOOL
+        amount: 64
+        durability: 3
   Dye_White_Wool_Light_Gray:
     name: Dye White Wool Light Gray
     inputs:
@@ -2926,7 +2725,7 @@ production_recipes:
     outputs:
       Gold Hoe:
         material: GOLD_HOE
-        amount: 10
+        amount: 30
   Diamond_Chestplate:
     name: Forge Diamond Chestplate.
     inputs:
@@ -2936,7 +2735,7 @@ production_recipes:
     outputs:
       Diamond Chestplate:
         material: DIAMOND_CHESTPLATE
-        amount: 10
+        amount: 15
   Dye_Light_Gray_Wool_Magenta:
     name: Dye Light Gray Wool Magenta
     inputs:
@@ -2978,7 +2777,7 @@ production_recipes:
     outputs:
       Iron Leggings:
         material: IRON_LEGGINGS
-        amount: 10
+        amount: 15
   Diamond_XP_Bottle_1:
     name: Brew XP Bottles  - 2
     inputs:
@@ -3088,21 +2887,21 @@ production_recipes:
       Exp Bottle:
         material: EXP_BOTTLE
         amount: 64
-  Dye_Gray_Wool_White:
-    name: Dye Gray Wool White
+  Dye_White_Wool_Gray:
+    name: Dye White Wool Gray
     inputs:
+      White Wool:
+        material: WOOL
+        amount: 64
+      Gray Dye:
+        material: INK_SACK
+        amount: 4
+        durability: 8
+    outputs:
       Gray Wool:
         material: WOOL
         amount: 64
         durability: 7
-      Bone Meal:
-        material: INK_SACK
-        amount: 4
-        durability: 15
-    outputs:
-      White Wool:
-        material: WOOL
-        amount: 64
   Iron_Spade:
     name: Forge Iron Spade.
     inputs:
@@ -3112,7 +2911,7 @@ production_recipes:
     outputs:
       Iron Spade:
         material: IRON_SPADE
-        amount: 10
+        amount: 15
   Dye_Brown_Wool_Light_Blue:
     name: Dye Brown Wool Light Blue
     inputs:
@@ -3222,16 +3021,22 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 9
-  Gold_Spade:
-    name: Forge Gold Spade.
+  Dye_Light_Gray_Wool_Red:
+    name: Dye Light Gray Wool Red
     inputs:
-      Gold Ingot:
-        material: GOLD_INGOT
-        amount: 5
+      Light Gray Wool:
+        material: WOOL
+        amount: 64
+        durability: 8
+      Rose Red:
+        material: INK_SACK
+        amount: 4
+        durability: 1
     outputs:
-      Gold Spade:
-        material: GOLD_SPADE
-        amount: 10
+      Red Wool:
+        material: WOOL
+        amount: 64
+        durability: 14
   Iron_Axe:
     name: Forge Iron Axe.
     inputs:
@@ -3241,21 +3046,22 @@ production_recipes:
     outputs:
       Iron Axe:
         material: IRON_AXE
-        amount: 10
+        amount: 30
   Cookie:
-    name: Cookie
+    name: Bake Cocoa
+    production_time: 24
     inputs:
       Wheat:
         material: WHEAT
-        amount: 90
+        amount: 256
       Cocoa:
         material: INK_SACK
-        amount: 45
+        amount: 128
         durability: 3
     outputs:
       Cookie:
         material: COOKIE
-        amount: 512
+        amount: 2048
   Dye_White_Wool_Light_Blue:
     name: Dye White Wool Light Blue
     inputs:
@@ -3302,15 +3108,16 @@ production_recipes:
         material: WOOL
         amount: 64
   Bread:
-    name: Bread
+    name: Bake Wheat
+    production_time: 24
     inputs:
       Wheat:
         material: WHEAT
-        amount: 135
+        amount: 384
     outputs:
       Bread:
         material: BREAD
-        amount: 64
+        amount: 256
   Dye_Brown_Wool_Gray:
     name: Dye Brown Wool Gray
     inputs:
@@ -3336,10 +3143,10 @@ production_recipes:
     outputs:
       Diamond Helmet:
         material: DIAMOND_HELMET
-        amount: 10
+        amount: 15
   Smelt_Gold_Ore:
     name: Smelt Gold Ore
-    production_time: 16
+    production_time: 6
     inputs:
       Gold Ore:
         material: GOLD_ORE
@@ -3347,7 +3154,7 @@ production_recipes:
     outputs:
       Gold Ingot:
         material: GOLD_INGOT
-        amount: 80
+        amount: 112
   Dye_Gray_Wool_Brown:
     name: Dye Gray Wool Brown
     inputs:
@@ -3373,7 +3180,7 @@ production_recipes:
     outputs:
       Iron Pickaxe:
         material: IRON_PICKAXE
-        amount: 10
+        amount: 15
   Dye_Black_Wool_Pink:
     name: Dye Black Wool Pink
     inputs:
@@ -3472,7 +3279,7 @@ production_recipes:
     outputs:
       Diamond Leggings:
         material: DIAMOND_LEGGINGS
-        amount: 10
+        amount: 15
   Dye_Gray_Wool_Red:
     name: Dye Gray Wool Red
     inputs:
@@ -3514,7 +3321,7 @@ production_recipes:
     outputs:
       Iron Sword:
         material: IRON_SWORD
-        amount: 10
+        amount: 15
   Dye_Gray_Wool_Purple:
     name: Dye Gray Wool Purple
     inputs:
@@ -3563,6 +3370,22 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 14
+  Dye_Pink_Wool_Light_Blue:
+    name: Dye Pink Wool Light Blue
+    inputs:
+      Pink Wool:
+        material: WOOL
+        amount: 64
+        durability: 6
+      Light Blue Dye:
+        material: INK_SACK
+        amount: 4
+        durability: 12
+    outputs:
+      Light Blue Wool:
+        material: WOOL
+        amount: 64
+        durability: 3
   Dye_Gray_Wool_Green:
     name: Dye Gray Wool Green
     inputs:
@@ -3588,7 +3411,7 @@ production_recipes:
     outputs:
       Gold Sword:
         material: GOLD_SWORD
-        amount: 10
+        amount: 15
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -3654,7 +3477,7 @@ production_recipes:
     outputs:
       Diamond Pickaxe:
         material: DIAMOND_PICKAXE
-        amount: 10
+        amount: 15
   Dye_White_Wool_Magenta:
     name: Dye White Wool Magenta
     inputs:
@@ -3679,7 +3502,20 @@ production_recipes:
     outputs:
       Iron Hoe:
         material: IRON_HOE
-        amount: 10
+        amount: 30
+  Wood_XP_Bottle_1:
+    name: Brew XP Bottles  - 2
+    inputs:
+      Glass Bottle:
+        material: GLASS_BOTTLE
+        amount: 7
+      Nether Warts:
+        material: NETHER_WARTS
+        amount: 1280
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
+        amount: 7
   Dye_Pink_Wool_Gray:
     name: Dye Pink Wool Gray
     inputs:
@@ -3728,22 +3564,69 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 10
-  Dye_Gray_Wool_Light_Blue:
-    name: Dye Gray Wool Light Blue
+  Gold_Leggings:
+    name: Forge Gold Leggings.
     inputs:
-      Gray Wool:
-        material: WOOL
-        amount: 64
-        durability: 7
-      Light Blue Dye:
-        material: INK_SACK
-        amount: 4
-        durability: 12
+      Gold Ingot:
+        material: GOLD_INGOT
+        amount: 35
     outputs:
-      Light Blue Wool:
-        material: WOOL
-        amount: 64
-        durability: 3
+      Gold Leggings:
+        material: GOLD_LEGGINGS
+        amount: 15
+        durability: -218
+    enchantments:
+      Unbreaking 3:
+        type: DURABILITY
+        level: 3
+      Blast Protection 1:
+        type: PROTECTION_EXPLOSIONS
+        level: 1
+        probability: 0.5
+      Blast Protection 2:
+        type: PROTECTION_EXPLOSIONS
+        level: 2
+        probability: 0.4
+      Blast Protection 3:
+        type: PROTECTION_EXPLOSIONS
+        level: 3
+        probability: 0.3
+      Blast Protection 4:
+        type: PROTECTION_EXPLOSIONS
+        level: 4
+        probability: 0.4
+      Fire Protection 1:
+        type: PROTECTION_FIRE
+        level: 1
+        probability: 0.5
+      Fire Protection 2:
+        type: PROTECTION_FIRE
+        level: 2
+        probability: 0.4
+      Fire Protection 3:
+        type: PROTECTION_FIRE
+        level: 3
+        probability: 0.3
+      Fire Protection 4:
+        type: PROTECTION_FIRE
+        level: 4
+        probability: 0.4
+      Projectile Protection 1:
+        type: PROTECTION_PROJECTILE
+        level: 1
+        probability: 0.5
+      Projectile Protection 2:
+        type: PROTECTION_PROJECTILE
+        level: 2
+        probability: 0.4
+      Projectile Protection 3:
+        type: PROTECTION_PROJECTILE
+        level: 3
+        probability: 0.3
+      Projectile Protection 4:
+        type: PROTECTION_PROJECTILE
+        level: 4
+        probability: 0.4
   Gold_Axe:
     name: Forge Gold Axe.
     inputs:
@@ -3753,7 +3636,7 @@ production_recipes:
     outputs:
       Gold Axe:
         material: GOLD_AXE
-        amount: 10
+        amount: 30
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -3835,15 +3718,16 @@ production_recipes:
         level: 3
         probability: 0.3
   Cooked_Fish:
-    name: Cooked Fish
+    name: Grill Raw Fish
+    production_time: 6
     inputs:
       Raw Fish:
         material: RAW_FISH
-        amount: 45
+        amount: 64
     outputs:
       Cooked Fish:
         material: COOKED_FISH
-        amount: 64
+        amount: 128
   Dye_Pink_Wool_Black:
     name: Dye Pink Wool Black
     inputs:
@@ -3868,7 +3752,7 @@ production_recipes:
     outputs:
       Diamond Spade:
         material: DIAMOND_SPADE
-        amount: 10
+        amount: 15
   Dye_Pink_Wool_Yellow:
     name: Dye Pink Wool Yellow
     inputs:
@@ -3885,22 +3769,30 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 4
-  Dye_Light_Gray_Wool_Cyan:
-    name: Dye Light Gray Wool Cyan
+  Smelt_Iron_Ore:
+    name: Smelt Iron Ore
+    production_time: 12
     inputs:
-      Light Gray Wool:
-        material: WOOL
-        amount: 64
-        durability: 8
-      Cyan Dye:
-        material: INK_SACK
-        amount: 4
-        durability: 6
+      Iron Ore:
+        material: IRON_ORE
+        amount: 128
     outputs:
-      Cyan Wool:
-        material: WOOL
-        amount: 64
-        durability: 9
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 224
+  Wood_XP_Bottle_3:
+    name: Brew XP Bottles  - 4
+    inputs:
+      Glass Bottle:
+        material: GLASS_BOTTLE
+        amount: 6
+      Cookie:
+        material: COOKIE
+        amount: 1280
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
+        amount: 6
   Gold_Helmet:
     name: Forge Gold Helmet.
     inputs:
@@ -3910,7 +3802,7 @@ production_recipes:
     outputs:
       Gold Helmet:
         material: GOLD_HELMET
-        amount: 10
+        amount: 15
         durability: -218
     enchantments:
       Unbreaking 3:
@@ -4011,17 +3903,6 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 5
-  Smelt_Quartz_Ore:
-    name: Smelt Quartz Ore
-    production_time: 16
-    inputs:
-      Quartz Ore:
-        material: QUARTZ_ORE
-        amount: 64
-    outputs:
-      Quartz:
-        material: QUARTZ
-        amount: 160
   Gold_Boots:
     name: Forge Gold Boots.
     inputs:
@@ -4031,7 +3912,7 @@ production_recipes:
     outputs:
       Gold Boots:
         material: GOLD_BOOTS
-        amount: 10
+        amount: 15
         durability: -218
     enchantments:
       Unbreaking 3:
@@ -4187,21 +4068,22 @@ production_recipes:
     inputs:
       Cobblestone:
         material: COBBLESTONE
-        amount: 560
+        amount: 640
     outputs:
       Stone:
         material: STONE
-        amount: 640
+        amount: 854
   Grilled_Pork:
-    name: Grilled Pork
+    name: Grill Pork
+    production_time: 6
     inputs:
       Pork:
         material: PORK
-        amount: 45
+        amount: 64
     outputs:
       Grilled Pork:
         material: GRILLED_PORK
-        amount: 64
+        amount: 128
   Dye_Black_Wool_Light_Blue:
     name: Dye Black Wool Light Blue
     inputs:
@@ -4218,6 +4100,21 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 3
+  Dye_Gray_Wool_White:
+    name: Dye Gray Wool White
+    inputs:
+      Gray Wool:
+        material: WOOL
+        amount: 64
+        durability: 7
+      Bone Meal:
+        material: INK_SACK
+        amount: 4
+        durability: 15
+    outputs:
+      White Wool:
+        material: WOOL
+        amount: 64
   Diamond_Axe:
     name: Forge Diamond Axe.
     inputs:
@@ -4227,20 +4124,16 @@ production_recipes:
     outputs:
       Diamond Axe:
         material: DIAMOND_AXE
-        amount: 10
-  Dye_Pink_Wool_Light_Blue:
-    name: Dye Pink Wool Light Blue
+        amount: 30
+  Smelt_Oak_Wood:
+    name: Burn Oak Wood
+    production_time: 24
     inputs:
-      Pink Wool:
-        material: WOOL
-        amount: 64
-        durability: 6
-      Light Blue Dye:
-        material: INK_SACK
-        amount: 4
-        durability: 12
+      Oak Wood:
+        material: LOG
+        amount: 256
     outputs:
-      Light Blue Wool:
-        material: WOOL
-        amount: 64
-        durability: 3
+      Charcoal:
+        material: COAL
+        amount: 342
+        durability: 1
