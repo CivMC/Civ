@@ -2,6 +2,7 @@ package com.untamedears.realisticbiomes;
 
 public class PersistConfig {
 	public String databaseName;
+	public boolean enabled;
 	
 	// the period in tick at which data from unloaded chunks will be loaded into
 	// the database

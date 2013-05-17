@@ -1,6 +1,8 @@
 realistic_biomes:
  file_path: plantData.sqlite
 
+ persistence_enabled: true
+
  unload_batch_period: 300
  grow_event_load_chance: 0.1
 

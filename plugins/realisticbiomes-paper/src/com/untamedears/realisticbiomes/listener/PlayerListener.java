@@ -99,7 +99,7 @@ public class PlayerListener implements Listener {
 				}
 				
 				GrowthConfig growthConfig = growthConfigs.get(material);
-				if (growthConfig != null && growthConfig.isPersistent()) {
+				if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
 					plantGrowth = plugin.growAndPersistBlock(block, growthConfig, false);
 				}
 			}
@@ -121,7 +121,7 @@ public class PlayerListener implements Listener {
 				if (growthConfig == null)
 					return;
 
-				if (growthConfig.isPersistent()) {
+				if (plugin.persistConfig.enabled && growthConfig.isPersistent()) {
 					double growthAmount = growthConfig.getRate(block);
 					growthAmount = (1.0/(growthAmount*(1000.0*60.0*60.0/*ms per hour*/)));
 					
