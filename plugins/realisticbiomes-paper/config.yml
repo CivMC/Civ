@@ -6,7 +6,7 @@ realistic_biomes:
  unload_batch_period: 300
  grow_event_load_chance: 0.1
 
- log_db: true;
+ log_db: true
 
  # catagories of biomes
  biome_aliases:

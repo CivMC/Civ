@@ -141,7 +141,8 @@ public class PlantManager {
 			}
 			long end = System.nanoTime()/1000000/*ns/ms*/;
 			
-			log.info("Committed data in "+(end-start)+" ms");
+			if (plugin.persistConfig.logDB)
+				log.info("Committed data in "+(end-start)+" ms");
 			
 			writeLock.unlock();
 	    }
@@ -149,6 +150,10 @@ public class PlantManager {
 	
 	// --------------------------------------------------------------------------------------------
 	private void unloadBatch() {
+		// no need to do anything if the queue is empty
+		if (chunksToUnload.isEmpty())
+			return;
+		
 		int count = chunksToUnload.size();
 		long start = System.nanoTime()/1000000/*ns/ms*/;
 		
