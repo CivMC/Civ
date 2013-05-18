@@ -70,7 +70,7 @@
 #       data: 0 (data value of the item stack
 #       display_name: (display name of the item, null by default)
 #       lore: (lore of the item, null by default)
-copy_defaults: true
+copy_defaults: false
 general:
   central_block: WORKBENCH
   save_cycle: 15

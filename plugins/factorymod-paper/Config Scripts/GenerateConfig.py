@@ -13,7 +13,7 @@ def main():
     
 def createConfigFile():
     config={}
-    config['copy_defaults']='true'
+    config['copy_defaults']='false'
     config['central_block']='WORKBENCH'
     config['save_cycle']='15'
     config['return_build_materials']='false'
