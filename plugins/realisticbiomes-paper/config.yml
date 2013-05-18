@@ -34,9 +34,11 @@ realistic_biomes:
   crop:
    # the base rate of this plant as a fraction of the standard rate
    base_rate: 0.015
-   # the rate at which plants will grow in an artificial environment, disregarding all other factors
+   # the rate at which plants will grow in an artificial environment, sunlight factor will be ignored
    # greenhouse is represented by immediate proximity of a glowstone block with light level 14
-   greenhouse_rate: 0.12
+   greenhouse_rate: 3.0
+   # if this flag is true, then the greenhouse growth will also ignore biome growth rates
+   greenhouse_ignore_biome: true
    # if this flag is true, the growth rate of the grower is modulated by sunlight levels
    # ie sunlight level = 15 means full growth, while sunlight level 0 means 0 growth
    # sunlight level is disregarded is this flag is false

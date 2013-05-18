@@ -21,6 +21,7 @@ public class GrowthConfig {
 	// this rate overrides all other settings if the plant is under artificial light (adjacent to glowstone)
 	private double greenhouseRate;
 	private boolean isGreenhouseEnabled;
+	private boolean greenhouseIgnoreBiome;
 	
 	// flag that denotes if this crop's growth is persisted
 	private boolean isPersistent;
@@ -70,8 +71,11 @@ public class GrowthConfig {
 	// create a new default configuration
 	GrowthConfig() {
 		baseRate = 1.0;
-		greenhouseRate = 0.66;
+		
+		greenhouseRate = 1.0;
 		isGreenhouseEnabled = false;
+		greenhouseIgnoreBiome = false;
+		
 		isPersistent = false;
 		
 		needsSunlight = false;
@@ -88,8 +92,10 @@ public class GrowthConfig {
 	// make a copy of the given configuration
 	GrowthConfig(GrowthConfig parent) {
 		baseRate = parent.baseRate;
+		
 		greenhouseRate = parent.greenhouseRate;
 		isGreenhouseEnabled = parent.isGreenhouseEnabled;
+		greenhouseIgnoreBiome = parent.greenhouseIgnoreBiome;
 		
 		needsSunlight = parent.needsSunlight;
 		openSkyBonus = parent.openSkyBonus;
@@ -112,6 +118,10 @@ public class GrowthConfig {
 		if (config.isSet("greenhouse_rate")) {
 			isGreenhouseEnabled = true;
 			greenhouseRate = config.getDouble("greenhouse_rate");
+		}
+		
+		if (config.isSet("greenhouse_ignore_biome")) {
+			greenhouseIgnoreBiome = config.getBoolean("greenhouse_ignore_biome");
 		}
 		
 		isPersistent = false;
@@ -180,39 +190,31 @@ public class GrowthConfig {
 	
 	// given a block (a location), find the growth rate using these rules
 	public double getRate(Block block) {
-		
-		// if it's fully lit, use greenhouse rate and disregard everything else
-		if(isGreenhouseEnabled && block.getLightFromBlocks() == 14) {
-			// make sure it's a glowstone/lamp
-			for( Vector vec : adjacentBlocks ) {
-				Material mat = block.getLocation().add(vec).getBlock().getType();
-				if( mat == Material.GLOWSTONE || mat == Material.REDSTONE_LAMP_ON ) {
-					if (isPersistent) {
-						return 1.0 / (greenhouseRate * persistentRate * MS_PER_HOUR);
-					}
-					return greenhouseRate;
-				}
-			}
-		}
-		
 		// rate = baseRate * sunlightLevel * biome * (1.0 + soilBonus)
 		double rate = baseRate;
 		// if persistent, the growth rate is measured in growth/millisecond
 		if (isPersistent)
 			rate = 1.0 / (persistentRate * MS_PER_HOUR);
 		
-		// modulate the rate by the amount of sunlight recieved by this plant
-		if (needsSunlight) {
-			rate *= block.getLightFromSky() / 15.0;
-		}
+		double environmentMultiplier = 1.0;
 		
 		// biome multiplier
 		Double biomeMultiplier = biomeMultipliers.get(block.getBiome());
 		if (biomeMultiplier != null)
-			rate *= biomeMultiplier.floatValue();
+			environmentMultiplier *= biomeMultiplier.floatValue();
 		else
-			return 0; // if the biome cannot be found, assume zero
+			environmentMultiplier = 0.0; // if the biome cannot be found, assume zero
 		
+		// if the greenhouse effect does not ignore biome, fold the biome rate into the main rate directly
+		if (!greenhouseIgnoreBiome) {
+			rate *= environmentMultiplier;
+			environmentMultiplier = 1.0;
+		}
+			
+		// modulate the rate by the amount of sunlight recieved by this plant
+		if (needsSunlight) {
+			environmentMultiplier *= block.getLightFromSky() / 15.0;
+		}
 		// check if the block is directly below the sky for a bonus
 		if (openSkyBonus != 0.0) {
 			Block newBlock = block.getRelative(0, 1, 0);
@@ -224,14 +226,29 @@ public class GrowthConfig {
 				m = newBlock.getType();
 				y = newBlock.getY();
 				if (y == 255) {
-					rate *= openSkyBonus;
+					environmentMultiplier *= openSkyBonus;
 					break;
 				}
 				newBlock = newBlock.getRelative(0, 1, 0);
 			}
+		} 
+		
+		// if the crop block if fully lit, and the greenhouse rate would be an improvement
+		// over the current environment multiplier, then use the green house rate as the
+		// environment multiplier.
+		if(isGreenhouseEnabled && environmentMultiplier < greenhouseRate && block.getLightFromBlocks() == 14) {
+			// make sure it's a glowstone/lamp
+			for( Vector vec : adjacentBlocks ) {
+				Material mat = block.getLocation().add(vec).getBlock().getType();
+				if( mat == Material.GLOWSTONE || mat == Material.REDSTONE_LAMP_ON ) {
+					environmentMultiplier = greenhouseRate;
+				}
+			}
 		}
 		
-		// check the depth of the required soil and add a bonus
+		rate *= environmentMultiplier;
+		
+		// check the depth of the required 'soil' and add a bonus
 		float soilBonus = 0.0f;
 		Block newBlock = block.getRelative(0,-soilLayerOffset,0);	
 		int soilCount = 0;
