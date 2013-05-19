@@ -1,8 +1,10 @@
 package com.untamedears.JukeAlert.command.commands;
 
-import com.untamedears.JukeAlert.JukeAlert;
+import static com.untamedears.JukeAlert.util.Utility.findTargetedOwnedSnitch;
+
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -11,7 +13,6 @@ import org.bukkit.entity.Player;
 import com.untamedears.JukeAlert.command.PlayerCommand;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.tasks.GetSnitchInfoPlayerTask;
-import org.bukkit.Bukkit;
 
 public class NameCommand extends PlayerCommand {
 
@@ -35,26 +36,19 @@ public class NameCommand extends PlayerCommand {
             } else {
             	name = args[0];
             }
-            
-            Set<Snitch> snitches = plugin.getSnitchManager().findSnitches(player.getWorld(), player.getLocation());
-            for (Snitch snitch : snitches) {
-                //Get only first snitch in cuboid
-                if (JukeAlert.isOnSnitch(snitch, player.getName())) {
-                   plugin.getJaLogger().updateSnitchName(snitch, name);
-                   Snitch newSnitch = snitch;
-                   newSnitch.setName(name);
-                   plugin.getSnitchManager().removeSnitch(snitch);
-                   plugin.getSnitchManager().addSnitch(newSnitch);
-                   sender.sendMessage(ChatColor.AQUA + " Changed snitch name to " + name);
-                   break;
-                }
+            Snitch snitch = findTargetedOwnedSnitch(player);
+            if (snitch != null) {
+                plugin.getJaLogger().updateSnitchName(snitch, name);
+                Snitch newSnitch = snitch;
+                newSnitch.setName(name);
+                plugin.getSnitchManager().removeSnitch(snitch);
+                plugin.getSnitchManager().addSnitch(newSnitch);
+                sender.sendMessage(ChatColor.AQUA + " Changed snitch name to " + name);
             }
-
+            return true;
         } else {
             sender.sendMessage(ChatColor.RED + "You do not own any snitches nearby!");
             return false;
         }
-        return false;
-
     }
 }

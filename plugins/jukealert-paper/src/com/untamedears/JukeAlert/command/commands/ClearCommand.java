@@ -1,5 +1,7 @@
 package com.untamedears.JukeAlert.command.commands;
 
+import static com.untamedears.JukeAlert.util.Utility.findTargetedOwnedSnitch;
+
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -25,20 +27,16 @@ public class ClearCommand extends PlayerCommand {
     public boolean execute(final CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            Set<Snitch> snitches = plugin.getSnitchManager().findSnitches(player.getWorld(), player.getLocation());
-            for (final Snitch snitch : snitches) {
-                //Get only first snitch in cuboid
-                if (snitch.getGroup().isMember(player.getName()) || snitch.getGroup().isFounder(player.getName()) || snitch.getGroup().isModerator(player.getName())) {
-                   Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                       @Override
-                       public void run() {
-                           deleteLog(sender, snitch);
-                       }
-                   });
-                   break;
-                }
+            final Snitch snitch = findTargetedOwnedSnitch(player);
+            if (snitch != null) {
+               Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                   @Override
+                   public void run() {
+                       deleteLog(sender, snitch);
+                   }
+               });
+               return true;
             }
-
         } else {
             sender.sendMessage("You must be a player!");
             return false;

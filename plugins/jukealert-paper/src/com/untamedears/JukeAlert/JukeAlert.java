@@ -11,9 +11,7 @@ import com.untamedears.JukeAlert.listener.JukeAlertListener;
 import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.manager.PlayerManager;
-import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
-import com.untamedears.citadel.entity.Faction;
 
 import java.util.logging.Level;
 
@@ -99,13 +97,5 @@ public class JukeAlert extends JavaPlugin {
     //Logs a message with the level of Info.
     public void log(String message) {
         this.getLogger().log(Level.INFO, message);
-    }
-    
-    public static boolean isOnSnitch(Snitch snitch, String player) {
-        Faction faction = snitch.getGroup();
-        if (faction.isMember(player) || faction.isModerator(player) || faction.isFounder(player)) {
-            return true;
-        }
-        return false;
     }
 }

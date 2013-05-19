@@ -1,6 +1,6 @@
 name: JukeAlert
 main: com.untamedears.JukeAlert.JukeAlert
-version: .1
+version: 0.9.0
 commands:
   jahelp:
     description: Displays help
