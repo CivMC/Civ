@@ -12,10 +12,12 @@ realistic_biomes:
  biome_aliases:
   cold: [ICE_PLAINS, ICE_MOUNTAINS, TAIGA, TAIGA_HILLS]
   temperate: [PLAINS, FOREST, FOREST_HILLS]
+  forest: [FOREST, FOREST_HILLS]
   mountain: [EXTREME_HILLS, SMALL_MOUNTAINS]
   hot_dry: [DESERT, DESERT_HILLS]
   hot_rainy: [JUNGLE, JUNGLE_HILLS]
   water: [BEACH, OCEAN, FROZEN_OCEAN, RIVER, FROZEN_RIVER]
+  freshwater: [RIVER, FROZEN_RIVER]
   mushroom: [MUSHROOM_ISLAND, MUSHROOM_SHORE]
   other: [HELL, SKY, SWAMPLAND]
 
@@ -95,19 +97,22 @@ realistic_biomes:
     mountain: 1.0
     cold: 0.25
     temperate: 0.5
-    SKY: 1.0
+    SKY: 0.1
 
   #...................
 
   NETHER_WARTS:
-   inherit: crop
+   base_rate: 0.015
    persistent_growth_period: 4
    needs_sunlight: false
    open_sky_bonus: 0.5
    soil_material: SOUL_SAND
+   soil_max_layers: 4
+   soil_bonus_per_layer: 0.5
+   soil_layer_offset: 2
    biomes:
     HELL: 1.0
-    hot_rainy: 0.25
+    hot_dry: 0.25
     mushroom: 0.5
 
   #.....................
@@ -192,36 +197,51 @@ realistic_biomes:
   #----------------------------------------
 
   tree:
-   base_rate: 0.125
+   base_rate: 0.005
    needs_sunlight: true
    open_sky_bonus: 8.0
-   
    max_soil_layers: 0
-
    biomes:
-    temperate: 1.0
-    cold: 0.5
-    hot_dry: 0.1
-    hot_rainy: 0.5
-    mountain: 0.1
-    SWAMPLAND: 0.25
+    mushroom: 0.5
+    water: 0.1
+    freshwater: 0.5
+
   BIG_TREE:
    inherit: tree
+   biomes:
+    forest: 1.0
   BIRCH:
    inherit: tree
+   biomes:
+    forest: 1.0
+    PLAINS: 0.25
   REDWOOD:
    inherit: tree
+   biomes:
+    mountain: 0.75
+    cold: 1.0
   SWAMP:
    inherit: tree
+   biomes:
+    SWAMPLAND: 1.0
   TALL_REDWOOD:
    inherit: tree
+   biomes:
+    TAIGA: 1.0
+    TAIGA_HILLS: 1.0
+    mountain: 0.5
   TREE:
    inherit: tree
+   biomes:
+    forest: 1.0
+    PLAINS: 0.25
+    hot_rainy: 0.5
+    SKY: 0.25
 
   #......................
 
   jungle_tree:
-   base_rate: 0.125
+   base_rate: 0.00125
    needs_sunlight: true
    open_sky_bonus: 8.0
    max_soil_layers: 0
