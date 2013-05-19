@@ -2841,8 +2841,9 @@ production_recipes:
         material: SPIDER_EYE
         amount: 64
       Grass:
-        material: GRASS
+        material: LONG_GRASS
         amount: 128
+        durability: 1
       Cooked Fish:
         material: COOKED_FISH
         amount: 16
@@ -2875,8 +2876,9 @@ production_recipes:
         material: BROWN_MUSHROOM
         amount: 64
       Grass:
-        material: GRASS
+        material: LONG_GRASS
         amount: 128
+        durability: 1
       Cookie:
         material: COOKIE
         amount: 512
