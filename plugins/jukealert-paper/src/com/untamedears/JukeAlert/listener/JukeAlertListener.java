@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.external.VanishNoPacket;
 import com.untamedears.JukeAlert.manager.PlayerManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.model.Snitch;
@@ -49,6 +50,7 @@ public class JukeAlertListener implements Listener {
     SnitchManager snitchManager = plugin.getSnitchManager();
     PlayerManager playerManager = plugin.getPlayerManager();
     private Map<String, Set<Snitch>> playersInSnitches = new TreeMap<String, Set<Snitch>>();
+    private VanishNoPacket vanishNoPacket = new VanishNoPacket();
 
     private boolean checkProximity(Snitch snitch, String playerName) {
         Set<Snitch> inList = playersInSnitches.get(playerName);
@@ -150,10 +152,13 @@ public class JukeAlertListener implements Listener {
         if (!block.getType().equals(Material.JUKEBOX)) {
             return;
         }
+        if (vanishNoPacket.isPlayerInvisible(event.getPlayer())) {
+            return;
+        }
         Location loc = block.getLocation();
         if(snitchManager.getSnitch(loc.getWorld(), loc) != null) {
         	snitchManager.removeSnitch(snitchManager.getSnitch(loc.getWorld(), loc));
-        	plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         }
     }
 
@@ -170,6 +175,9 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
+        if (vanishNoPacket.isPlayerInvisible(player)) {
+            return;
+        }
         String playerName = player.getName();
         Location location = player.getLocation();
         World world = location.getWorld();
@@ -206,10 +214,14 @@ public class JukeAlertListener implements Listener {
     public void playerKillEntity(EntityDeathEvent event) {
         LivingEntity entity = event.getEntity();
         LivingEntity killer = entity.getKiller();
+        // TODO: This should never be true, bug?
         if (entity instanceof Player) {
             return;
         }
         if (!(killer instanceof Player)) {
+            return;
+        }
+        if (vanishNoPacket.isPlayerInvisible((Player)killer)) {
             return;
         }
         Player player = (Player) killer;
@@ -230,6 +242,9 @@ public class JukeAlertListener implements Listener {
         }
         Player killed = event.getEntity();
         Player killer = killed.getKiller();
+        if (vanishNoPacket.isPlayerInvisible(killer)) {
+            return;
+        }
         Set<Snitch> snitches = snitchManager.findSnitches(killed.getWorld(), killed.getLocation());
         for (Snitch snitch : snitches) {
             if (!isOnSnitch(snitch, killer.getName())) {
@@ -249,6 +264,9 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
+        if (vanishNoPacket.isPlayerInvisible(player)) {
+            return;
+        }
         Block block = event.getBlock();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
@@ -280,8 +298,11 @@ public class JukeAlertListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        Block block = event.getBlock();
         Player player = event.getPlayer();
+        if (vanishNoPacket.isPlayerInvisible(player)) {
+            return;
+        }
+        Block block = event.getBlock();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
             if (!isOnSnitch(snitch, player.getName())) {
@@ -297,8 +318,11 @@ public class JukeAlertListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        Block block = event.getBlock();
         Player player = event.getPlayer();
+        if (vanishNoPacket.isPlayerInvisible(player)) {
+            return;
+        }
+        Block block = event.getBlock();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
             if (!isOnSnitch(snitch, player.getName())) {
@@ -314,8 +338,11 @@ public class JukeAlertListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        Block block = event.getBlockClicked();
         Player player = event.getPlayer();
+        if (vanishNoPacket.isPlayerInvisible(player)) {
+            return;
+        }
+        Block block = event.getBlockClicked();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
             if (!isOnSnitch(snitch, player.getName())) {
@@ -331,8 +358,11 @@ public class JukeAlertListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        Block block = event.getBlockClicked();
         Player player = event.getPlayer();
+        if (vanishNoPacket.isPlayerInvisible(player)) {
+            return;
+        }
+        Block block = event.getBlockClicked();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
             if (!isOnSnitch(snitch, player.getName())) {
