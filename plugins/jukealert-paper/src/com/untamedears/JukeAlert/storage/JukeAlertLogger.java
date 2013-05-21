@@ -569,140 +569,117 @@ public class JukeAlertLogger {
     }
 
     //Logs the snitch being placed at World, x, y, z in the database.
-    public void logSnitchPlace(String world, String group, String name, int x, int y, int z) {
-        try {
-            insertNewSnitchStmt.setString(1, world);
-            insertNewSnitchStmt.setString(2, name);
-            insertNewSnitchStmt.setInt(3, x);
-            insertNewSnitchStmt.setInt(4, y);
-            insertNewSnitchStmt.setInt(5, z);
-            insertNewSnitchStmt.setString(6, group);
-            insertNewSnitchStmt.setInt(7, configManager.getDefaultCuboidSize());
-            insertNewSnitchStmt.setInt(8, configManager.getDefaultCuboidSize());
-            insertNewSnitchStmt.setInt(9, configManager.getDefaultCuboidSize());
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        insertNewSnitchStmt.execute();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+    public void logSnitchPlace(final String world, final String group, final String name, final int x, final int y, final int z) {
+        final ConfigManager lockedConfigManager = this.configManager;
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    insertNewSnitchStmt.setString(1, world);
+                    insertNewSnitchStmt.setString(2, name);
+                    insertNewSnitchStmt.setInt(3, x);
+                    insertNewSnitchStmt.setInt(4, y);
+                    insertNewSnitchStmt.setInt(5, z);
+                    insertNewSnitchStmt.setString(6, group);
+                    insertNewSnitchStmt.setInt(7, lockedConfigManager.getDefaultCuboidSize());
+                    insertNewSnitchStmt.setInt(8, lockedConfigManager.getDefaultCuboidSize());
+                    insertNewSnitchStmt.setInt(9, lockedConfigManager.getDefaultCuboidSize());
+                    insertNewSnitchStmt.execute();
+                } catch (SQLException ex) {
+                    Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            });
-        } catch (SQLException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not create new snitch in DB!", ex);
-        }
+            }
+        });
     }
 
     //Removes the snitch at the location of World, X, Y, Z from the database.
-    public void logSnitchBreak(String world, int x, int y, int z) {
-        try {
-            deleteSnitchStmt.setString(1, world);
-            deleteSnitchStmt.setInt(2, (int) Math.floor(x));
-            deleteSnitchStmt.setInt(3, (int) Math.floor(y));
-            deleteSnitchStmt.setInt(4, (int) Math.floor(z));
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        deleteSnitchStmt.execute();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+    public void logSnitchBreak(final String world, final int x, final int y, final int z) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    deleteSnitchStmt.setString(1, world);
+                    deleteSnitchStmt.setInt(2, (int) Math.floor(x));
+                    deleteSnitchStmt.setInt(3, (int) Math.floor(y));
+                    deleteSnitchStmt.setInt(4, (int) Math.floor(z));
+                    deleteSnitchStmt.execute();
+                } catch (SQLException ex) {
+                    Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            });
-        } catch (SQLException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not log Snitch break!", ex);
-        }
+            }
+        });
     }
 
     //Changes the group of which the snitch is registered to at the location of loc in the database.
-    public void updateGroupSnitch(Location loc, String group) {
-        try {
-            updateGroupStmt.setString(1, group);
-            updateGroupStmt.setString(2, loc.getWorld().getName());
-            updateGroupStmt.setInt(3, loc.getBlockX());
-            updateGroupStmt.setInt(4, loc.getBlockY());
-            updateGroupStmt.setInt(5, loc.getBlockZ());
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        updateGroupStmt.execute();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+    public void updateGroupSnitch(final Location loc, final String group) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    updateGroupStmt.setString(1, group);
+                    updateGroupStmt.setString(2, loc.getWorld().getName());
+                    updateGroupStmt.setInt(3, loc.getBlockX());
+                    updateGroupStmt.setInt(4, loc.getBlockY());
+                    updateGroupStmt.setInt(5, loc.getBlockZ());
+                    updateGroupStmt.execute();
+                } catch (SQLException ex) {
+                    Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            });
-        } catch (SQLException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not update Snitch group!", ex);
-        }
+            }
+        });
     }
 
     //Updates the cuboid size of the snitch in the database.
-    public void updateCubiodSize(Location loc, int x, int y, int z) {
-        try {
-            updateCuboidVolumeStmt.setInt(1, x);
-            updateCuboidVolumeStmt.setInt(2, y);
-            updateCuboidVolumeStmt.setInt(3, z);
-            updateCuboidVolumeStmt.setString(4, loc.getWorld().getName());
-            updateCuboidVolumeStmt.setInt(5, loc.getBlockX());
-            updateCuboidVolumeStmt.setInt(6, loc.getBlockY());
-            updateCuboidVolumeStmt.setInt(7, loc.getBlockZ());
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        updateCuboidVolumeStmt.execute();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+    public void updateCubiodSize(final Location loc, final int x, final int y, final int z) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    updateCuboidVolumeStmt.setInt(1, x);
+                    updateCuboidVolumeStmt.setInt(2, y);
+                    updateCuboidVolumeStmt.setInt(3, z);
+                    updateCuboidVolumeStmt.setString(4, loc.getWorld().getName());
+                    updateCuboidVolumeStmt.setInt(5, loc.getBlockX());
+                    updateCuboidVolumeStmt.setInt(6, loc.getBlockY());
+                    updateCuboidVolumeStmt.setInt(7, loc.getBlockZ());
+                    updateCuboidVolumeStmt.execute();
+                } catch (SQLException ex) {
+                    Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            });
-        } catch (SQLException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not update Snitch cubiod size!", ex);
-        }
+            }
+        });
     }
     
     //Updates the name of the snitch in the database.
-    public void updateSnitchName(Snitch snitch, String name) {
-        try {
-            updateSnitchNameStmt.setString(1, name);
-        	updateSnitchNameStmt.setInt(2, snitch.getId());
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        updateSnitchNameStmt.execute();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+    public void updateSnitchName(final Snitch snitch, final String name) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    updateSnitchNameStmt.setString(1, name);
+                    updateSnitchNameStmt.setInt(2, snitch.getId());
+                    updateSnitchNameStmt.execute();
+                } catch (SQLException ex) {
+                    Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            });
-        } catch (SQLException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not update snitch name!", ex);
-        }
+            }
+        });
     }
 
     //Updates the group of the snitch in the database.
-    public void updateSnitchGroup(Snitch snitch, String group) {
-        try {
-            updateSnitchGroupStmt.setString(1, group);
-            updateSnitchGroupStmt.setInt(2, snitch.getId());
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                    	updateSnitchGroupStmt.execute();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+    public void updateSnitchGroup(final Snitch snitch, final String group) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                  updateSnitchGroupStmt.setString(1, group);
+                  updateSnitchGroupStmt.setInt(2, snitch.getId());
+                  updateSnitchGroupStmt.execute();
+                } catch (SQLException ex) {
+                    Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            });
-        } catch (SQLException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not update snitch group!", ex);
-        }
+            }
+        });
     }
 
 
