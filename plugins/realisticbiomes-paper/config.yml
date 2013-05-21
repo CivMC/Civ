@@ -125,7 +125,7 @@ realistic_biomes:
   PUMPKIN_STEM:
    inherit: crop
    persistent_growth_period: 48
-   base_rate: 0.005
+   base_rate: 0.02
    biomes:
     temperate: 1.0
     cold: 0.25
@@ -146,8 +146,8 @@ realistic_biomes:
    soil_max_layers: 0
    base_rate: 0.2
    biomes:
-    temperate: 0.5
-    cold: 1.0
+    temperate: 1.0
+    cold: 0.25
 
   #----------------------------------------
 
@@ -177,7 +177,7 @@ realistic_biomes:
 
   COCOA:
    needs_sunlight: false
-   base_rate: 0.5
+   base_rate: 0.1
    persistent_growth_period: 120
 
    
