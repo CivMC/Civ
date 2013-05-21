@@ -575,16 +575,18 @@ public class JukeAlertLogger {
             @Override
             public void run() {
                 try {
-                    insertNewSnitchStmt.setString(1, world);
-                    insertNewSnitchStmt.setString(2, name);
-                    insertNewSnitchStmt.setInt(3, x);
-                    insertNewSnitchStmt.setInt(4, y);
-                    insertNewSnitchStmt.setInt(5, z);
-                    insertNewSnitchStmt.setString(6, group);
-                    insertNewSnitchStmt.setInt(7, lockedConfigManager.getDefaultCuboidSize());
-                    insertNewSnitchStmt.setInt(8, lockedConfigManager.getDefaultCuboidSize());
-                    insertNewSnitchStmt.setInt(9, lockedConfigManager.getDefaultCuboidSize());
-                    insertNewSnitchStmt.execute();
+                	synchronized(insertNewSnitchStmt) {
+	                    insertNewSnitchStmt.setString(1, world);
+	                    insertNewSnitchStmt.setString(2, name);
+	                    insertNewSnitchStmt.setInt(3, x);
+	                    insertNewSnitchStmt.setInt(4, y);
+	                    insertNewSnitchStmt.setInt(5, z);
+	                    insertNewSnitchStmt.setString(6, group);
+	                    insertNewSnitchStmt.setInt(7, lockedConfigManager.getDefaultCuboidSize());
+	                    insertNewSnitchStmt.setInt(8, lockedConfigManager.getDefaultCuboidSize());
+	                    insertNewSnitchStmt.setInt(9, lockedConfigManager.getDefaultCuboidSize());
+	                    insertNewSnitchStmt.execute();
+                	}
                 } catch (SQLException ex) {
                     Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -598,11 +600,13 @@ public class JukeAlertLogger {
             @Override
             public void run() {
                 try {
-                    deleteSnitchStmt.setString(1, world);
-                    deleteSnitchStmt.setInt(2, (int) Math.floor(x));
-                    deleteSnitchStmt.setInt(3, (int) Math.floor(y));
-                    deleteSnitchStmt.setInt(4, (int) Math.floor(z));
-                    deleteSnitchStmt.execute();
+                	synchronized(deleteSnitchStmt) {
+	                    deleteSnitchStmt.setString(1, world);
+	                    deleteSnitchStmt.setInt(2, (int) Math.floor(x));
+	                    deleteSnitchStmt.setInt(3, (int) Math.floor(y));
+	                    deleteSnitchStmt.setInt(4, (int) Math.floor(z));
+	                    deleteSnitchStmt.execute();
+                	}
                 } catch (SQLException ex) {
                     Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -616,12 +620,14 @@ public class JukeAlertLogger {
             @Override
             public void run() {
                 try {
-                    updateGroupStmt.setString(1, group);
-                    updateGroupStmt.setString(2, loc.getWorld().getName());
-                    updateGroupStmt.setInt(3, loc.getBlockX());
-                    updateGroupStmt.setInt(4, loc.getBlockY());
-                    updateGroupStmt.setInt(5, loc.getBlockZ());
-                    updateGroupStmt.execute();
+                	synchronized(updateGroupStmt) {
+	                    updateGroupStmt.setString(1, group);
+	                    updateGroupStmt.setString(2, loc.getWorld().getName());
+	                    updateGroupStmt.setInt(3, loc.getBlockX());
+	                    updateGroupStmt.setInt(4, loc.getBlockY());
+	                    updateGroupStmt.setInt(5, loc.getBlockZ());
+	                    updateGroupStmt.execute();
+                	}
                 } catch (SQLException ex) {
                     Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -635,14 +641,16 @@ public class JukeAlertLogger {
             @Override
             public void run() {
                 try {
-                    updateCuboidVolumeStmt.setInt(1, x);
-                    updateCuboidVolumeStmt.setInt(2, y);
-                    updateCuboidVolumeStmt.setInt(3, z);
-                    updateCuboidVolumeStmt.setString(4, loc.getWorld().getName());
-                    updateCuboidVolumeStmt.setInt(5, loc.getBlockX());
-                    updateCuboidVolumeStmt.setInt(6, loc.getBlockY());
-                    updateCuboidVolumeStmt.setInt(7, loc.getBlockZ());
-                    updateCuboidVolumeStmt.execute();
+                	synchronized(updateCuboidVolumeStmt) {
+	                    updateCuboidVolumeStmt.setInt(1, x);
+	                    updateCuboidVolumeStmt.setInt(2, y);
+	                    updateCuboidVolumeStmt.setInt(3, z);
+	                    updateCuboidVolumeStmt.setString(4, loc.getWorld().getName());
+	                    updateCuboidVolumeStmt.setInt(5, loc.getBlockX());
+	                    updateCuboidVolumeStmt.setInt(6, loc.getBlockY());
+	                    updateCuboidVolumeStmt.setInt(7, loc.getBlockZ());
+	                    updateCuboidVolumeStmt.execute();
+                	}
                 } catch (SQLException ex) {
                     Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -656,9 +664,11 @@ public class JukeAlertLogger {
             @Override
             public void run() {
                 try {
-                    updateSnitchNameStmt.setString(1, name);
-                    updateSnitchNameStmt.setInt(2, snitch.getId());
-                    updateSnitchNameStmt.execute();
+                	synchronized(updateSnitchNameStmt) {
+	                    updateSnitchNameStmt.setString(1, name);
+	                    updateSnitchNameStmt.setInt(2, snitch.getId());
+	                    updateSnitchNameStmt.execute();
+                	}
                 } catch (SQLException ex) {
                     Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -672,9 +682,11 @@ public class JukeAlertLogger {
             @Override
             public void run() {
                 try {
-                  updateSnitchGroupStmt.setString(1, group);
-                  updateSnitchGroupStmt.setInt(2, snitch.getId());
-                  updateSnitchGroupStmt.execute();
+                    synchronized(updateSnitchGroupStmt) {
+	                    updateSnitchGroupStmt.setString(1, group);
+	                    updateSnitchGroupStmt.setInt(2, snitch.getId());
+	                    updateSnitchGroupStmt.execute();
+                    }
                 } catch (SQLException ex) {
                     Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
