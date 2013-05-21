@@ -69,6 +69,9 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		persistConfig.unloadBatchPeriod = config.getInt("unload_batch_period");
 		persistConfig.growEventLoadChance = config.getDouble("grow_event_load_chance");
 		persistConfig.logDB = config.getBoolean("log_db");
+		
+		LOG.info("[RealisticBiomes] Persistence enabled: " + persistConfig.enabled);
+		LOG.info("[RealisticBiomes] Database: " + persistConfig.databaseName);
 	}
 	
 	private void loadGrowthConfigs(ConfigurationSection config) {

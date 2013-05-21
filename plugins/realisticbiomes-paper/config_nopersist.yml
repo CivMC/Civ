@@ -1,7 +1,7 @@
 realistic_biomes:
  file_path: plantData.sqlite
 
- persistence_enabled: true
+ persistence_enabled: false
 
  unload_batch_period: 300
  grow_event_load_chance: 0.1
@@ -69,7 +69,7 @@ realistic_biomes:
    # is unloaded or the server is off. It sets the time to grow to maturity in units of real-life hours
    # if this parameter is set, then the base_rate is ignored, though the other multipliers will still be
    # in effect
-   persistent_growth_period: 12
+   #persistent_growth_period: 12
    biomes:
     cold: 0.25
     hot_dry: 0.25
@@ -79,7 +79,7 @@ realistic_biomes:
 
   CARROT:
    inherit: crop
-   persistent_growth_period: 12
+   #persistent_growth_period: 12
    biomes:
     hot_dry: 0.1
     hot_rainy: 1.0
@@ -89,7 +89,7 @@ realistic_biomes:
 
   POTATO:
    inherit: crop
-   persistent_growth_period: 12
+   #persistent_growth_period: 12
    biomes:
     mountain: 1.0
     cold: 0.25
@@ -100,7 +100,7 @@ realistic_biomes:
 
   NETHER_WARTS:
    base_rate: 0.015
-   persistent_growth_period: 4
+   #persistent_growth_period: 4
    needs_sunlight: false
    soil_material: SOUL_SAND
    soil_max_layers: 4
@@ -116,7 +116,7 @@ realistic_biomes:
 
   MELON_STEM:
    inherit: crop
-   persistent_growth_period: 48
+   #persistent_growth_period: 48
    biomes:
     temperate: 0.25
     SWAMPLAND: 1.0
@@ -124,7 +124,7 @@ realistic_biomes:
 
   PUMPKIN_STEM:
    inherit: crop
-   persistent_growth_period: 48
+   #persistent_growth_period: 48
    base_rate: 0.005
    biomes:
     temperate: 1.0
@@ -178,7 +178,7 @@ realistic_biomes:
   COCOA:
    needs_sunlight: false
    base_rate: 0.5
-   persistent_growth_period: 120
+   #persistent_growth_period: 120
 
    
    # get incremental bonus from an unbroken chain of up to 25 

@@ -30,7 +30,6 @@ public class GrowthConfig {
 	// a crop's growth rate can be modulated by the amount of sunlight, not just light in general
 	// the crop's growth rate may also get a bonus if it is directly open to the sky, or underneath glowstone (not yet)
 	private boolean needsSunlight;
-	private double openSkyBonus;
 	
 	// some crops get a boost from layers of materials beneath the block the plant has been planted on
 	private Material soilMaterial;
@@ -44,6 +43,8 @@ public class GrowthConfig {
 	
 	// conversion used for persistence calculations
 	private static final int MS_PER_HOUR = 1000 * 60 * 60;
+	// maximum light level on a block
+	private static final double MAX_LIGHT_INTENSITY = 15.0;
 	
 	// ------------------------------------------------------------------------
 	
@@ -79,7 +80,6 @@ public class GrowthConfig {
 		isPersistent = false;
 		
 		needsSunlight = false;
-		openSkyBonus = 0.0;
 		
 		soilMaterial = null; /* none */
 		soilMaxLayers = 0;
@@ -98,7 +98,6 @@ public class GrowthConfig {
 		greenhouseIgnoreBiome = parent.greenhouseIgnoreBiome;
 		
 		needsSunlight = parent.needsSunlight;
-		openSkyBonus = parent.openSkyBonus;
 		
 		soilMaterial = parent.soilMaterial;
 		soilMaxLayers = parent.soilMaxLayers;
@@ -132,9 +131,6 @@ public class GrowthConfig {
 		
 		if (config.isSet("needs_sunlight"))
 			needsSunlight = config.getBoolean("needs_sunlight");
-		
-		if (config.isSet("open_sky_bonus"))
-			openSkyBonus = config.getDouble("open_sky_bonus");
 		
 		if (config.isSet("soil_material")) {
 			String materialName = config.getString("soil_material");
@@ -193,50 +189,30 @@ public class GrowthConfig {
 		// rate = baseRate * sunlightLevel * biome * (1.0 + soilBonus)
 		double rate = baseRate;
 		// if persistent, the growth rate is measured in growth/millisecond
-		if (isPersistent)
+		if (isPersistent) {
 			rate = 1.0 / (persistentRate * MS_PER_HOUR);
+		}
 		
 		double environmentMultiplier = 1.0;
 		
 		// biome multiplier
 		Double biomeMultiplier = biomeMultipliers.get(block.getBiome());
-		if (biomeMultiplier != null)
+		if (biomeMultiplier != null) {
 			environmentMultiplier *= biomeMultiplier.floatValue();
-		else
-			environmentMultiplier = 0.0; // if the biome cannot be found, assume zero
+		} else {
+			return 0.0; // if the biome cannot be found, assume zero
+		}
 		
 		// if the greenhouse effect does not ignore biome, fold the biome rate into the main rate directly
 		if (!greenhouseIgnoreBiome) {
 			rate *= environmentMultiplier;
 			environmentMultiplier = 1.0;
 		}
-			
-		// modulate the rate by the amount of sunlight recieved by this plant
-		if (needsSunlight) {
-			environmentMultiplier *= block.getLightFromSky() / 15.0;
-		}
-		// check if the block is directly below the sky for a bonus
-		if (openSkyBonus != 0.0) {
-			Block newBlock = block.getRelative(0, 1, 0);
-
-			int y = 0;
-			
-			Material m = Material.AIR;
-			while ((m == Material.AIR || m == Material.LEAVES || m == Material.VINE)) {
-				m = newBlock.getType();
-				y = newBlock.getY();
-				if (y == 255) {
-					environmentMultiplier *= openSkyBonus;
-					break;
-				}
-				newBlock = newBlock.getRelative(0, 1, 0);
-			}
-		} 
 		
 		// if the crop block if fully lit, and the greenhouse rate would be an improvement
 		// over the current environment multiplier, then use the green house rate as the
 		// environment multiplier.
-		if(isGreenhouseEnabled && environmentMultiplier < greenhouseRate && block.getLightFromBlocks() == 14) {
+		if(isGreenhouseEnabled && ( environmentMultiplier < greenhouseRate ) && ( block.getLightFromBlocks() == (MAX_LIGHT_INTENSITY - 1) ) ) {
 			// make sure it's a glowstone/lamp
 			for( Vector vec : adjacentBlocks ) {
 				Material mat = block.getLocation().add(vec).getBlock().getType();
@@ -244,6 +220,8 @@ public class GrowthConfig {
 					environmentMultiplier = greenhouseRate;
 				}
 			}
+		} else if (needsSunlight) { // modulate the rate by the amount of sunlight recieved by this plant
+			environmentMultiplier *= Math.pow((block.getLightFromSky() / MAX_LIGHT_INTENSITY), 3.0);
 		}
 		
 		rate *= environmentMultiplier;
@@ -253,8 +231,9 @@ public class GrowthConfig {
 		Block newBlock = block.getRelative(0,-soilLayerOffset,0);	
 		int soilCount = 0;
 		while (soilCount < soilMaxLayers) {
-			if (newBlock == null || !newBlock.getType().equals(soilMaterial))
+			if (newBlock == null || !newBlock.getType().equals(soilMaterial)) {
 				break;
+			}
 				
 			soilBonus += soilBonusPerLevel;
 			
@@ -263,6 +242,7 @@ public class GrowthConfig {
 		}
 		rate *= (1.0 + soilBonus);
 		
+		LOG.info("Growth rate at " + block.getLocation().toVector() + " : " + rate);
 		return rate;
 	}
 }
