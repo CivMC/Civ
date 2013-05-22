@@ -49,6 +49,9 @@ realistic_biomes:
    # multiplier that is applied to plants that are not at level 15 sunlight
    not_full_sunlight_multiplier: 0.125
 
+   # multiplier applied if the crop is: not on lvl 64 and not near a water block in a river biome
+   not_irrigated_multiplier: 0.125
+
    # material that, placed in a column beneath a crop block, may provide a bonus for each underlying
    # level of the material.
    soil_material: CLAY

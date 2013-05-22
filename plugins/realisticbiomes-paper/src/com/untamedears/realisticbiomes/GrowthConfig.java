@@ -34,6 +34,9 @@ public class GrowthConfig {
 	// multiplier that is applied if the crop is not at light level = 15
 	private double notFullSunlightMultiplier;
 	
+	// multiplier that is applied if the crop is not near "fresh water(river biome)"
+	private double notIrrigatedMultiplier;
+	
 	// some crops get a boost from layers of materials beneath the block the plant has been planted on
 	private Material soilMaterial;
 	private int soilMaxLayers;
@@ -65,6 +68,12 @@ public class GrowthConfig {
 		this.add(new Vector(0,0,-1));	// north
 		this.add(new Vector(0,0,1));	// south
 	}};
+	private static List<Vector> waterCheckBlocks = new ArrayList<Vector>(){{
+		this.add(new Vector(-5,-1,0));	// west
+		this.add(new Vector(5,-1,0));	// east
+		this.add(new Vector(0,-1,-5));	// north
+		this.add(new Vector(0,-1,5));	// south
+	}};
 	
 	public static GrowthConfig get(ConfigurationSection conf, GrowthConfig parent, Map<String, Biome[]>biomeAliases) {
 		GrowthConfig growth = new GrowthConfig(parent);
@@ -86,6 +95,8 @@ public class GrowthConfig {
 		
 		notFullSunlightMultiplier = 1.0;
 		
+		notIrrigatedMultiplier = 1.0;
+		
 		soilMaterial = null; /* none */
 		soilMaxLayers = 0;
 		soilBonusPerLevel = 0.0;
@@ -105,6 +116,8 @@ public class GrowthConfig {
 		needsSunlight = parent.needsSunlight;
 		
 		notFullSunlightMultiplier = parent.notFullSunlightMultiplier;
+		
+		notIrrigatedMultiplier = parent.notIrrigatedMultiplier;
 		
 		soilMaterial = parent.soilMaterial;
 		soilMaxLayers = parent.soilMaxLayers;
@@ -141,6 +154,9 @@ public class GrowthConfig {
 		
 		if (config.isSet("not_full_sunlight_multiplier"))
 			notFullSunlightMultiplier = config.getDouble("not_full_sunlight_multiplier");
+		
+		if (config.isSet("not_irrigated_multiplier"))
+			notIrrigatedMultiplier = config.getDouble("not_irrigated_multiplier");
 		
 		if (config.isSet("soil_material")) {
 			String materialName = config.getString("soil_material");
@@ -243,6 +259,26 @@ public class GrowthConfig {
 		}
 		
 		rate *= environmentMultiplier;
+		
+		// if the plant will be effected by irrigation, check if the block is at the correct level and
+		// check if nearby blocks are water blocks in river biomes
+		if (notIrrigatedMultiplier != 1.0) {
+			// determine if the block is near a water block in a river biome
+			boolean irrigated = false;
+			if (block.getY() == 63/*sea and river level + 1*/) {
+				for( Vector vec : waterCheckBlocks ) {
+					Block waterBlock = block.getLocation().add(vec).getBlock();
+					Material mat = waterBlock.getType();
+					Biome biome = waterBlock.getBiome();
+					if((biome == Biome.RIVER || biome == Biome.FROZEN_RIVER) && (mat == Material.STATIONARY_WATER || mat == Material.WATER)) {
+						irrigated = true;
+					}
+				}
+			}
+				
+			if (!irrigated)
+				rate *= notIrrigatedMultiplier;
+		}
 		
 		// check the depth of the required 'soil' and add a bonus
 		float soilBonus = 0.0f;
