@@ -209,6 +209,11 @@ public class GrowthConfig {
 			environmentMultiplier = 1.0;
 		}
 		
+		// modulate the rate by the amount of sunlight recieved by this plant
+		if (needsSunlight) {
+			environmentMultiplier *= Math.pow((block.getLightFromSky() / MAX_LIGHT_INTENSITY), 3.0);
+		}
+		
 		// if the crop block if fully lit, and the greenhouse rate would be an improvement
 		// over the current environment multiplier, then use the green house rate as the
 		// environment multiplier.
@@ -220,8 +225,6 @@ public class GrowthConfig {
 					environmentMultiplier = greenhouseRate;
 				}
 			}
-		} else if (needsSunlight) { // modulate the rate by the amount of sunlight recieved by this plant
-			environmentMultiplier *= Math.pow((block.getLightFromSky() / MAX_LIGHT_INTENSITY), 3.0);
 		}
 		
 		rate *= environmentMultiplier;
@@ -242,7 +245,6 @@ public class GrowthConfig {
 		}
 		rate *= (1.0 + soilBonus);
 		
-		LOG.info("Growth rate at " + block.getLocation().toVector() + " : " + rate);
 		return rate;
 	}
 }

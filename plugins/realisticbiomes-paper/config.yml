@@ -170,7 +170,6 @@ realistic_biomes:
    biomes:
     hot_dry: 0.5
     hot_rainy: 1.0
-    BEACH: 1.0
     SWAMPLAND: 1.0
 
   #----------------------------------------
