@@ -46,6 +46,8 @@ realistic_biomes:
    # ie sunlight level = 15 means full growth, while sunlight level 0 means 0 growth
    # sunlight level is disregarded is this flag is false
    needs_sunlight: true
+   # multiplier that is applied to plants that are not at level 15 sunlight
+   not_full_sunlight_multiplier: 0.125
 
    # material that, placed in a column beneath a crop block, may provide a bonus for each underlying
    # level of the material.
@@ -154,6 +156,7 @@ realistic_biomes:
   column:
    base_rate: 0.2
    needs_sunlight: true
+   not_full_sunlight_multiplier: 0.125
 
    soil_max_layers: 0
 
@@ -175,7 +178,8 @@ realistic_biomes:
   #----------------------------------------
 
   COCOA:
-   needs_sunlight: false
+   needs_sunlight: true
+   not_full_sunlight_multiplier: 0.125
    base_rate: 0.1
    persistent_growth_period: 120
 
@@ -195,6 +199,7 @@ realistic_biomes:
   tree:
    base_rate: 0.04
    needs_sunlight: true
+   not_full_sunlight_multiplier: 0.125
    max_soil_layers: 0
    biomes:
     mushroom: 0.5
@@ -236,6 +241,7 @@ realistic_biomes:
   jungle_tree:
    base_rate: 0.01
    needs_sunlight: true
+   not_full_sunlight_multiplier: 0.125
    max_soil_layers: 0
    biomes:
     hot_rainy: 1.0
@@ -275,6 +281,7 @@ realistic_biomes:
   #----------------------------------------
   animal:
    needs_sunlight: true
+   not_full_sunlight_multiplier: 0.125
    base_rate: 1.0
 
    soil_max_layers: 0

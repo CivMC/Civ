@@ -31,6 +31,9 @@ public class GrowthConfig {
 	// the crop's growth rate may also get a bonus if it is directly open to the sky, or underneath glowstone (not yet)
 	private boolean needsSunlight;
 	
+	// multiplier that is applied if the crop is not at light level = 15
+	private double notFullSunlightMultiplier;
+	
 	// some crops get a boost from layers of materials beneath the block the plant has been planted on
 	private Material soilMaterial;
 	private int soilMaxLayers;
@@ -81,6 +84,8 @@ public class GrowthConfig {
 		
 		needsSunlight = false;
 		
+		notFullSunlightMultiplier = 1.0;
+		
 		soilMaterial = null; /* none */
 		soilMaxLayers = 0;
 		soilBonusPerLevel = 0.0;
@@ -98,6 +103,8 @@ public class GrowthConfig {
 		greenhouseIgnoreBiome = parent.greenhouseIgnoreBiome;
 		
 		needsSunlight = parent.needsSunlight;
+		
+		notFullSunlightMultiplier = parent.notFullSunlightMultiplier;
 		
 		soilMaterial = parent.soilMaterial;
 		soilMaxLayers = parent.soilMaxLayers;
@@ -131,6 +138,9 @@ public class GrowthConfig {
 		
 		if (config.isSet("needs_sunlight"))
 			needsSunlight = config.getBoolean("needs_sunlight");
+		
+		if (config.isSet("not_full_sunlight_multiplier"))
+			notFullSunlightMultiplier = config.getDouble("not_full_sunlight_multiplier");
 		
 		if (config.isSet("soil_material")) {
 			String materialName = config.getString("soil_material");
@@ -210,8 +220,13 @@ public class GrowthConfig {
 		}
 		
 		// modulate the rate by the amount of sunlight recieved by this plant
+		int sunlightIntensity = block.getLightFromSky();
 		if (needsSunlight) {
-			environmentMultiplier *= Math.pow((block.getLightFromSky() / MAX_LIGHT_INTENSITY), 3.0);
+			environmentMultiplier *= Math.pow((sunlightIntensity / MAX_LIGHT_INTENSITY), 3.0);
+		}
+		// apply multiplier if the sunlight is not at maximum
+		if (sunlightIntensity < MAX_LIGHT_INTENSITY) {
+			environmentMultiplier *= notFullSunlightMultiplier;
 		}
 		
 		// if the crop block if fully lit, and the greenhouse rate would be an improvement
