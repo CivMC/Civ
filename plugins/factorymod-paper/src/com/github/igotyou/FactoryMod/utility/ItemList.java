@@ -26,9 +26,26 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 	public boolean exactlyIn(Inventory inventory)
 	{
 		boolean returnValue=true;
+		//Checks that the ItemList ItemStacks are contained in the inventory
 		for(ItemStack itemStack:this)
 		{
 			returnValue=returnValue&&(amountAvailable(inventory,itemStack)==itemStack.getAmount());
+		}
+		//Checks that inventory has not ItemStacks in addition to the ones in the itemList
+		for(ItemStack invItemStack:inventory.getContents())
+		{
+			if(invItemStack!=null)
+			{
+				boolean itemPresent=false;
+				for(ItemStack itemStack:this)
+				{
+					if(itemStack.isSimilar(invItemStack))
+					{
+						itemPresent=true;
+					}
+				}
+				returnValue=returnValue&&itemPresent;
+			}
 		}
 		return returnValue;
 	}
