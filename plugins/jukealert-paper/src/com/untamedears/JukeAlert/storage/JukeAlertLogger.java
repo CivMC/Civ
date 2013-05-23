@@ -135,7 +135,14 @@ public class JukeAlertLogger {
                 + "`snitch_logged_materialid` smallint unsigned," // can be either a block, item, etc
                 + "PRIMARY KEY (`snitch_details_id`));");
     }
-
+    
+    public PreparedStatement getNewInsertSnitchLogStmt() {
+    	 return db.prepareStatement(String.format(
+                "INSERT INTO %s (snitch_id, snitch_log_time, snitch_logged_action, snitch_logged_initiated_user,"
+                + " snitch_logged_victim_user, snitch_logged_x, snitch_logged_y, snitch_logged_z, snitch_logged_materialid) "
+                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                snitchDetailsTbl));
+    }
     private void initializeStatements() {
 
         getAllSnitchesStmt = db.prepareStatement(String.format(
@@ -255,6 +262,7 @@ public class JukeAlertLogger {
 
     public void saveAllSnitches() {
         //TODO: Save snitches.
+    	jukeinfobatch.flush();
     }
 
     /**
@@ -337,6 +345,7 @@ public class JukeAlertLogger {
         Boolean completed = false;
         // get the snitch's ID based on the location, then use that to get the snitch details from the snitchesDetail table
         int interestedSnitchId = -1;
+        jukeinfobatch.flush();
         try {
             // params are x(int), y(int), z(int), world(tinyint), column returned: snitch_id (int)
             getSnitchIdFromLocationStmt.setInt(1, loc.getBlockX());
@@ -376,7 +385,8 @@ public class JukeAlertLogger {
             return false;
         }
     }
-
+    
+    public JukeInfoBatch jukeinfobatch = new JukeInfoBatch(this);
     /**
      * Logs info to a specific snitch with a time stamp.
      *
@@ -397,7 +407,10 @@ public class JukeAlertLogger {
      * @param victimUser - the user who was victim of the event, can be null
      */
     public void logSnitchInfo(Snitch snitch, Material material, Location loc, Date date, LoggedAction action, String initiatedUser, String victimUser) {
-        try {
+    	
+    	jukeinfobatch.addSet(snitch, material, loc, date, action, initiatedUser, victimUser);
+    	
+        /*try {
             // snitchid
             insertSnitchLogStmt.setInt(1, snitch.getId());
             // snitch log time
@@ -448,7 +461,7 @@ public class JukeAlertLogger {
         } catch (SQLException ex) {
             this.plugin.getLogger().log(Level.SEVERE, String.format("Could not create snitch log entry! with snitch %s, "
                     + "material %s, date %s, initiatedUser %s, victimUser %s", snitch, material, date, initiatedUser, victimUser), ex);
-        }
+        }*/
     }
 
     /**
@@ -600,6 +613,7 @@ public class JukeAlertLogger {
             @Override
             public void run() {
                 try {
+                	jukeinfobatch.flush();
                 	synchronized(deleteSnitchStmt) {
 	                    deleteSnitchStmt.setString(1, world);
 	                    deleteSnitchStmt.setInt(2, (int) Math.floor(x));
