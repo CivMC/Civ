@@ -79,12 +79,13 @@ public class JukeInfoBatch {
 		PreparedStatement executeMe = this.currentSet;
 		this.currentSet=null;
 		batch_current=0;
-		
-		try {
-			executeMe.executeBatch();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(executeMe) {
+			try {
+				executeMe.executeBatch();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
