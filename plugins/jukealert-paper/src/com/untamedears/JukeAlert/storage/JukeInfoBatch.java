@@ -79,7 +79,7 @@ public class JukeInfoBatch {
 		PreparedStatement executeMe = this.currentSet;
 		this.currentSet=null;
 		batch_current=0;
-		if(executeMe) {
+		if(executeMe != null) {
 			try {
 				executeMe.executeBatch();
 			} catch (SQLException e) {
