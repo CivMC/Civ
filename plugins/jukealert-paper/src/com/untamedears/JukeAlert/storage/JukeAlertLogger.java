@@ -112,7 +112,8 @@ public class JukeAlertLogger {
                 + "`snitch_cuboid_y` int(10) NOT NULL,"
                 + "`snitch_cuboid_z` int(10) NOT NULL,"
                 + "`snitch_should_log` BOOL,"
-                + "PRIMARY KEY (`snitch_id`));");
+                + "PRIMARY KEY (`snitch_id`),"
+                + "INDEX `idx_y` (`snitch_y` ASC));");
         //Snitch Details
         // need to know:
         // action: (killed, block break, block place, etc), can't be null
@@ -133,7 +134,10 @@ public class JukeAlertLogger {
                 + "`snitch_logged_Y` int(10), "
                 + "`snitch_logged_z` int(10), "
                 + "`snitch_logged_materialid` smallint unsigned," // can be either a block, item, etc
-                + "PRIMARY KEY (`snitch_details_id`));");
+                + "PRIMARY KEY (`snitch_details_id`),"
+                + "INDEX `idx_snitch_id` (`snitch_id` ASC),"
+                + "CONSTRAINT `fk_snitchs_snitch_id` FOREIGN KEY (`snitch_id`)"
+                + "  REFERENCES `snitchs` (`snitch_id`) ON DELETE CASCADE ON UPDATE CASCADE);");
     }
     
     public PreparedStatement getNewInsertSnitchLogStmt() {
