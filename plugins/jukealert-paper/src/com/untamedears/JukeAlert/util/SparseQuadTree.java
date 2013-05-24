@@ -125,6 +125,7 @@ public class SparseQuadTree {
       ++counter;
     }
     counter = 0;
+    ender = (yAxis.size() / 2) - 1;
     for (Integer i : yAxis) {
       if (counter >= ender) {
         midY_ = i + 1;
