@@ -2726,6 +2726,10 @@ production_recipes:
       Gold Hoe:
         material: GOLD_HOE
         amount: 30
+    enchantments:
+      Unbreaking 3:
+        type: DURABILITY
+        level: 3
   Diamond_Chestplate:
     name: Forge Diamond Chestplate.
     inputs:
@@ -2784,8 +2788,8 @@ production_recipes:
       Glass Bottle:
         material: GLASS_BOTTLE
         amount: 64
-      Nether Warts:
-        material: NETHER_WARTS
+      Nether Wart:
+        material: NETHER_STALK
         amount: 64
       Melon:
         material: MELON
@@ -2857,8 +2861,8 @@ production_recipes:
       Glass Bottle:
         material: GLASS_BOTTLE
         amount: 64
-      Nether Warts:
-        material: NETHER_WARTS
+      Nether Wart:
+        material: NETHER_STALK
         amount: 128
       Pumpkin:
         material: PUMPKIN
@@ -3221,8 +3225,8 @@ production_recipes:
       Glass Bottle:
         material: GLASS_BOTTLE
         amount: 32
-      Nether Warts:
-        material: NETHER_WARTS
+      Nether Wart:
+        material: NETHER_STALK
         amount: 128
       Melon:
         material: MELON
@@ -3511,8 +3515,8 @@ production_recipes:
       Glass Bottle:
         material: GLASS_BOTTLE
         amount: 7
-      Nether Warts:
-        material: NETHER_WARTS
+      Nether Wart:
+        material: NETHER_STALK
         amount: 1280
     outputs:
       Exp Bottle:

@@ -136,7 +136,7 @@ Water Lily,WATER_LILY,111,0
 Nether Brick,NETHER_BRICK,112,0
 Nether Fence,NETHER_FENCE,113,0
 Nether Brick Stairs,NETHER_BRICK_STAIRS,114,0
-Nether Warts,NETHER_WARTS,115,0
+Nether Wart Block,NETHER_WARTS,115,0
 Enchantment Table,ENCHANTMENT_TABLE,116,0
 Brewing Stand,BREWING_STAND,117,0
 Cauldron,CAULDRON,118,0
@@ -312,7 +312,7 @@ Ender Pearl,ENDER_PEARL,368,0
 Blaze Rod,BLAZE_ROD,369,0
 Ghast Tear,GHAST_TEAR,370,0
 Gold Nugget,GOLD_NUGGET,371,0
-Nether Stalk,NETHER_STALK,372,0
+Nether Wart,NETHER_STALK,372,0
 Clear Potion,POTION,373,7
 Diffuse Potion,POTION,373,11
 Artless Potion,POTION,373,13
