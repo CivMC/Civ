@@ -3,6 +3,8 @@ package com.untamedears.citadel.listener;
 import static com.untamedears.citadel.Utility.createNaturalReinforcement;
 import static com.untamedears.citadel.Utility.createPlayerReinforcement;
 import static com.untamedears.citadel.Utility.isAuthorizedPlayerNear;
+import static com.untamedears.citadel.Utility.isPlant;
+import static com.untamedears.citadel.Utility.isRail;
 import static com.untamedears.citadel.Utility.isReinforced;
 import static com.untamedears.citadel.Utility.maybeReinforcementDamaged;
 import static com.untamedears.citadel.Utility.reinforcementBroken;
@@ -297,13 +299,11 @@ public class BlockListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onBlockFromToEvent(BlockFromToEvent event) {
         Block to_block = event.getToBlock();
-        Material to_material = to_block.getType();
-        if (!to_material.equals(Material.RAILS) &&
-            !to_material.equals(Material.POWERED_RAIL) &&
-            !to_material.equals(Material.DETECTOR_RAIL)) {
+        if (!isRail(to_block) && !isPlant(to_block)) {
             return;
         }
-        if (isReinforced(to_block)) {
+        AccessDelegate delegate = AccessDelegate.getDelegate(to_block);
+        if (delegate.isReinforced()) {
             event.setCancelled(true);
         }
     }

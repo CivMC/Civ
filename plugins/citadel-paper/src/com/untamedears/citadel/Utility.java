@@ -353,4 +353,87 @@ public class Utility {
 	    builder.insert(0, prefix);
 	    return builder.toString();
 	}
+
+    public static Block findPlantSoil(Block plant) {
+        Material mat = plant.getType();
+        if (isSoilPlant(mat)) {
+            return findSoilBelow(plant, Material.SOIL);
+        }
+        if (isDirtPlant(mat)) {
+            return findSoilBelow(plant, Material.DIRT);
+        }
+        if (isSandPlant(mat)) {
+            return findSoilBelow(plant, Material.SAND);
+        }
+        if (isSoulSandPlant(mat)) {
+            return findSoilBelow(plant, Material.SOUL_SAND);
+        }
+        return null;
+    }
+
+    public static boolean isSoilPlant(Material mat) {
+        return mat.equals(Material.WHEAT)
+            || mat.equals(Material.MELON_STEM)
+            || mat.equals(Material.PUMPKIN_STEM)
+            || mat.equals(Material.CARROT)
+            || mat.equals(Material.POTATO)
+            || mat.equals(Material.CROPS);
+    }
+
+    public static boolean isDirtPlant(Material mat) {
+        return mat.equals(Material.SUGAR_CANE_BLOCK)
+            || mat.equals(Material.MELON_BLOCK)
+            || mat.equals(Material.PUMPKIN);
+    }
+
+    public static boolean isSandPlant(Material mat) {
+        return mat.equals(Material.CACTUS);
+    }
+
+    public static boolean isSoulSandPlant(Material mat) {
+        return mat.equals(Material.NETHER_WARTS);
+    }
+
+    public static boolean isPlant(Block plant) {
+        return isPlant(plant.getType());
+    }
+
+    public static boolean isPlant(Material mat) {
+        return isSoilPlant(mat)
+            || isDirtPlant(mat)
+            || isSandPlant(mat)
+            || isSoulSandPlant(mat);
+    }
+
+    public static int maxPlantHeight(Block plant) {
+        switch(plant.getType()) {
+            case CACTUS:
+            case SUGAR_CANE_BLOCK:
+                return 3;
+            default:
+                return 1;
+        }
+    }
+
+    public static Block findSoilBelow(Block plant, Material desired_type) {
+        Block down = plant;
+        int max_depth = maxPlantHeight(plant);
+        for (int i = 0; i < max_depth; ++i) {
+            down = down.getRelative(BlockFace.DOWN);
+            if (down.getType().equals(desired_type)) {
+                return down;
+            }
+        }
+        return null;
+    }
+
+    public static boolean isRail(Block block) {
+        return isRail(block.getType());
+    }
+
+    public static boolean isRail(Material mat) {
+        return mat.equals(Material.RAILS)
+            || mat.equals(Material.POWERED_RAIL)
+            || mat.equals(Material.DETECTOR_RAIL);
+    }
 }

@@ -1,5 +1,7 @@
 package com.untamedears.citadel.access;
 
+import static com.untamedears.citadel.Utility.isPlant;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.material.Bed;
@@ -26,8 +28,7 @@ public abstract class AccessDelegate<T extends MaterialData> {
             return new BedAccessDelegate(block, (Bed) data);
         } else if (mat == Material.CHEST || mat == Material.TRAPPED_CHEST) {
             return new ChestAccessDelegate(block, data);
-        } else if (Citadel.getConfigManager().allowReinforcedCrops()
-                && CropAccessDelegate.isPlant(block)) {
+        } else if (Citadel.getConfigManager().allowReinforcedCrops() && isPlant(block)) {
             return new CropAccessDelegate(block, data);
         } else {
             return new AccessDelegate<MaterialData>(block, data) {
@@ -72,5 +73,9 @@ public abstract class AccessDelegate<T extends MaterialData> {
     public IReinforcement getReinforcement() {
         if (reinforcement == null) reinforcement = Citadel.getReinforcementManager().getReinforcement(block);
         return reinforcement;
+    }
+
+    public boolean isReinforced() {
+        return getReinforcement() != null;
     }
 }
