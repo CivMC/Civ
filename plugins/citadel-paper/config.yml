@@ -4,6 +4,7 @@ general:
   autoModeReset: 30
   redstoneDistance: 9
   groupsAllowed: 60
+  reinforcedCrops: true
 materials:
 - name: STONE
   strength: 25

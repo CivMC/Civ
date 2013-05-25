@@ -33,6 +33,7 @@ import com.untamedears.citadel.entity.ReinforcementKey;
 import com.untamedears.citadel.listener.BlockListener;
 import com.untamedears.citadel.listener.ChunkListener;
 import com.untamedears.citadel.listener.EntityListener;
+import com.untamedears.citadel.listener.InventoryListener;
 import com.untamedears.citadel.listener.PlayerListener;
 import com.untamedears.citadel.listener.WorldListener;
 
@@ -113,6 +114,7 @@ public class Citadel extends JavaPlugin {
             pm.registerEvents(new ChunkListener(this.dao), this);
             pm.registerEvents(new PlayerListener(), this);
             pm.registerEvents(new EntityListener(), this);
+            pm.registerEvents(new InventoryListener(), this);
             pm.registerEvents(new WorldListener(), this);
         }
         catch(Exception e)

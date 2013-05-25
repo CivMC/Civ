@@ -25,6 +25,7 @@ public class ConfigManager {
 	private int groupsAllowed;
 	private long cacheMaxAge;
 	private int cacheMaxChunks;
+	private boolean reinforcedCrops;
 
 	public void load(){
 		Citadel.getPlugin().reloadConfig();
@@ -35,6 +36,7 @@ public class ConfigManager {
         verboseLogging = config.getBoolean("general.verboseLogging");
         redstoneDistance = config.getDouble("general.redstoneDistance");
         groupsAllowed = config.getInt("general.groupsAllowed");
+        reinforcedCrops = config.getBoolean("general.reinforcedCrops", true);
         cacheMaxAge = config.getLong("caching.max_age");
         cacheMaxChunks = config.getInt("caching.max_chunks");
         for (Object obj : config.getList("materials")) {
@@ -108,7 +110,11 @@ public class ConfigManager {
 	public int getGroupsAllowed(){
 		return this.groupsAllowed;
 	}
-	
+
+	public boolean allowReinforcedCrops() {
+		return reinforcedCrops;
+	}
+
 	public void setGroupsAllowed(int ga){
 		this.groupsAllowed = ga;
 	}

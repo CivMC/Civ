@@ -26,6 +26,9 @@ public abstract class AccessDelegate<T extends MaterialData> {
             return new BedAccessDelegate(block, (Bed) data);
         } else if (mat == Material.CHEST || mat == Material.TRAPPED_CHEST) {
             return new ChestAccessDelegate(block, data);
+        } else if (Citadel.getConfigManager().allowReinforcedCrops()
+                && CropAccessDelegate.isPlant(block)) {
+            return new CropAccessDelegate(block, data);
         } else {
             return new AccessDelegate<MaterialData>(block, data) {
                 @Override
@@ -47,10 +50,15 @@ public abstract class AccessDelegate<T extends MaterialData> {
         this.block = block;
         this.data = data;
 
+        boolean show_info = !(this instanceof CropAccessDelegate);
         if (shouldDelegate()) {
-            Citadel.info("Attempted interaction with %s block at " + block.getLocation().toString());
+            if (show_info) {
+                Citadel.info("Attempted interaction with %s block at " + block.getLocation().toString());
+            }
             delegate();
-            Citadel.info("Delegated to %s block at " + block.getLocation().toString());
+            if (show_info) {
+                Citadel.info("Delegated to %s block at " + block.getLocation().toString());
+            }
         }
     }
 

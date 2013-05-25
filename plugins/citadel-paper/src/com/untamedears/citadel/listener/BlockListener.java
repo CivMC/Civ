@@ -110,33 +110,6 @@ public class BlockListener implements Listener {
                 }
             }
         }
-        if (block_mat == Material.ACTIVATOR_RAIL
-                || block_mat == Material.DETECTOR_RAIL
-                || block_mat == Material.POWERED_RAIL
-                || block_mat == Material.RAILS) {
-            Block up = block.getRelative(BlockFace.UP);
-            if ((up.getState() instanceof ContainerBlock)) {
-                IReinforcement rein = AccessDelegate.getDelegate(up).getReinforcement();
-                if (null != rein && rein instanceof PlayerReinforcement) {
-                    PlayerReinforcement pr = (PlayerReinforcement)rein;
-                    if (!pr.isAccessible(player_name)) {
-                        return false;
-                    }
-                }
-            }
-            for (BlockFace direction : planar_sides) {
-                Block adjacent = up.getRelative(direction);
-                if ((adjacent.getState() instanceof ContainerBlock)) {
-                    IReinforcement rein = AccessDelegate.getDelegate(adjacent).getReinforcement();
-                    if (null != rein && rein instanceof PlayerReinforcement) {
-                        PlayerReinforcement pr = (PlayerReinforcement)rein;
-                        if (!pr.isAccessible(player_name)) {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
         return true;
     }
 
