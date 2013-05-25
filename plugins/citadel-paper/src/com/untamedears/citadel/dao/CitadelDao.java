@@ -344,6 +344,14 @@ public class CitadelDao extends MyDatabase {
         } catch(PersistenceException e){
            	//column already exists
         }
+
+        try {
+            SqlUpdate addChunkidIdx = getDatabase().createSqlUpdate(
+                "ALTER TABLE reinforcement ADD INDEX idx_reinforcement_chunkid (chunk_id)");
+            getDatabase().execute(addChunkidIdx);
+        } catch(PersistenceException e){
+           	//index already exists
+        }
     }
 
     protected void prepareDatabaseAdditionalConfig(DataSourceConfig dataSourceConfig, ServerConfig serverConfig) {
