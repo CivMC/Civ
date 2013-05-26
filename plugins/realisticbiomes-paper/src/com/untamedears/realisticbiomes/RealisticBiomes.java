@@ -31,7 +31,7 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	public HashMap<Object, GrowthConfig> materialGrowth;
 	public BlockGrower blockGrower;
 	public PersistConfig persistConfig;
-	public PlantManager plantManager;
+	private PlantManager plantManager;
 	
 	public void onEnable() {		
 		
@@ -51,8 +51,10 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		
 		registerEvents();
 		
-		plantManager = new PlantManager(this, persistConfig);
-		blockGrower = new BlockGrower(plantManager);
+		if (persistConfig.enabled) {
+			plantManager = new PlantManager(this, persistConfig);
+			blockGrower = new BlockGrower(plantManager);
+		}
 		
 		getServer().getPluginManager().registerEvents(this, this);
 		
@@ -63,9 +65,13 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		persistConfig = new PersistConfig();
 		
 		persistConfig.databaseName = config.getString("file_path");
+		persistConfig.enabled = config.getBoolean("persistence_enabled");
 		persistConfig.unloadBatchPeriod = config.getInt("unload_batch_period");
 		persistConfig.growEventLoadChance = config.getDouble("grow_event_load_chance");
 		persistConfig.logDB = config.getBoolean("log_db");
+		
+		LOG.info("[RealisticBiomes] Persistence enabled: " + persistConfig.enabled);
+		LOG.info("[RealisticBiomes] Database: " + persistConfig.databaseName);
 	}
 	
 	private void loadGrowthConfigs(ConfigurationSection config) {
@@ -199,9 +205,11 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	}
 	
 	public void onDisable() {
-		LOG.info("[RealisticBiomes] saving plant growth data.");
-		plantManager.saveAllAndStop();
-		plantManager = null;
+		if (persistConfig.enabled) {
+			LOG.info("[RealisticBiomes] saving plant growth data.");
+			plantManager.saveAllAndStop();
+			plantManager = null;
+		}
 		LOG.info("[RealisticBiomes] is now disabled.");
 	}
 
@@ -231,6 +239,9 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	
 	// grow the specified block, return the new growth magnitude
 	public double growAndPersistBlock(Block block, GrowthConfig growthConfig, boolean naturalGrowEvent) {
+		if (!persistConfig.enabled)
+			return 0.0;
+		
 		int w = WorldID.getPID(block.getWorld().getUID());
 		Coords coords = new Coords(w, block.getX(), block.getY(), block.getZ());
 		boolean loadChunk = naturalGrowEvent ? Math.random() < persistConfig.growEventLoadChance : true;

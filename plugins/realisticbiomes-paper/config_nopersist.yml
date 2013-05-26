@@ -1,7 +1,7 @@
 realistic_biomes:
  file_path: plantData.sqlite
 
- persistence_enabled: true
+ persistence_enabled: false
 
  unload_batch_period: 300
  grow_event_load_chance: 0.1
@@ -46,11 +46,6 @@ realistic_biomes:
    # ie sunlight level = 15 means full growth, while sunlight level 0 means 0 growth
    # sunlight level is disregarded is this flag is false
    needs_sunlight: true
-   # multiplier that is applied to plants that are not at level 15 sunlight
-   not_full_sunlight_multiplier: 0.125
-
-   # multiplier applied if the crop is: not on lvl 64 and not near a water block in a river biome
-   not_irrigated_multiplier: 0.125
 
    # material that, placed in a column beneath a crop block, may provide a bonus for each underlying
    # level of the material.
@@ -74,7 +69,7 @@ realistic_biomes:
    # is unloaded or the server is off. It sets the time to grow to maturity in units of real-life hours
    # if this parameter is set, then the base_rate is ignored, though the other multipliers will still be
    # in effect
-   persistent_growth_period: 12
+   #persistent_growth_period: 12
    biomes:
     cold: 0.25
     hot_dry: 0.25
@@ -84,7 +79,7 @@ realistic_biomes:
 
   CARROT:
    inherit: crop
-   persistent_growth_period: 12
+   #persistent_growth_period: 12
    biomes:
     hot_dry: 0.1
     hot_rainy: 1.0
@@ -94,7 +89,7 @@ realistic_biomes:
 
   POTATO:
    inherit: crop
-   persistent_growth_period: 12
+   #persistent_growth_period: 12
    biomes:
     mountain: 1.0
     cold: 0.25
@@ -105,7 +100,7 @@ realistic_biomes:
 
   NETHER_WARTS:
    base_rate: 0.015
-   persistent_growth_period: 4
+   #persistent_growth_period: 4
    needs_sunlight: false
    soil_material: SOUL_SAND
    soil_max_layers: 4
@@ -121,7 +116,7 @@ realistic_biomes:
 
   MELON_STEM:
    inherit: crop
-   persistent_growth_period: 48
+   #persistent_growth_period: 48
    biomes:
     temperate: 0.25
     SWAMPLAND: 1.0
@@ -129,8 +124,8 @@ realistic_biomes:
 
   PUMPKIN_STEM:
    inherit: crop
-   persistent_growth_period: 48
-   base_rate: 0.02
+   #persistent_growth_period: 48
+   base_rate: 0.005
    biomes:
     temperate: 1.0
     cold: 0.25
@@ -151,15 +146,14 @@ realistic_biomes:
    soil_max_layers: 0
    base_rate: 0.2
    biomes:
-    temperate: 1.0
-    cold: 0.25
+    temperate: 0.5
+    cold: 1.0
 
   #----------------------------------------
 
   column:
    base_rate: 0.2
    needs_sunlight: true
-   not_full_sunlight_multiplier: 0.125
 
    soil_max_layers: 0
 
@@ -176,15 +170,15 @@ realistic_biomes:
    biomes:
     hot_dry: 0.5
     hot_rainy: 1.0
+    BEACH: 1.0
     SWAMPLAND: 1.0
 
   #----------------------------------------
 
   COCOA:
-   needs_sunlight: true
-   not_full_sunlight_multiplier: 0.125
-   base_rate: 0.1
-   persistent_growth_period: 120
+   needs_sunlight: false
+   base_rate: 0.5
+   #persistent_growth_period: 120
 
    
    # get incremental bonus from an unbroken chain of up to 25 
@@ -202,7 +196,6 @@ realistic_biomes:
   tree:
    base_rate: 0.04
    needs_sunlight: true
-   not_full_sunlight_multiplier: 0.125
    max_soil_layers: 0
    biomes:
     mushroom: 0.5
@@ -244,7 +237,6 @@ realistic_biomes:
   jungle_tree:
    base_rate: 0.01
    needs_sunlight: true
-   not_full_sunlight_multiplier: 0.125
    max_soil_layers: 0
    biomes:
     hot_rainy: 1.0
@@ -284,7 +276,6 @@ realistic_biomes:
   #----------------------------------------
   animal:
    needs_sunlight: true
-   not_full_sunlight_multiplier: 0.125
    base_rate: 1.0
 
    soil_max_layers: 0

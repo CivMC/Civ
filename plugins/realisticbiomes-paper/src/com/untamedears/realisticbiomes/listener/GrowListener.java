@@ -54,7 +54,7 @@ public class GrowListener implements Listener {
 		Block b = event.getBlock();
 		GrowthConfig growthConfig = growthMap.get(m);
 		
-		if (growthConfig != null && growthConfig.isPersistent()) {
+		if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
 			plugin.growAndPersistBlock(b, growthConfig, true);
 			
 			event.setCancelled(true);
@@ -116,6 +116,9 @@ public class GrowListener implements Listener {
 	
 	@EventHandler
 	public void onChunkUnload(ChunkUnloadEvent e) {
+		if (!plugin.persistConfig.enabled)
+			return;
+		
 		Chunk chunk = e.getChunk();
 		int w = WorldID.getPID(e.getChunk().getWorld().getUID());
 		Coords coords = new Coords(w, chunk.getX(), 0, chunk.getZ());
@@ -124,6 +127,9 @@ public class GrowListener implements Listener {
 	
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event) {
+		if (!plugin.persistConfig.enabled)
+			return;
+		
 		// if the block placed was a recognized crop, register it with the manager
 		Block block = event.getBlockPlaced();
 		GrowthConfig growthConfig = growthMap.get(block.getType());
