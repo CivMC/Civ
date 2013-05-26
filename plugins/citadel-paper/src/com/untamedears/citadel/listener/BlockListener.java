@@ -48,6 +48,7 @@ import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.PlacementMode;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.access.AccessDelegate;
+import com.untamedears.citadel.access.CropAccessDelegate;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.PlayerState;
 import com.untamedears.citadel.entity.IReinforcement;
@@ -180,7 +181,13 @@ public class BlockListener implements Listener {
             PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
             PlayerState state = PlayerState.get(player);
             boolean admin_bypass = player.hasPermission("citadel.admin.bypassmode");
-            if (state.isBypassMode() && (pr.isBypassable(player) || admin_bypass)) {
+            if ((delegate instanceof CropAccessDelegate)
+                    && (pr.isBypassable(player) || admin_bypass)) {
+                // If this is a delegated reinforcement for a crop which the
+                //  player has access to, allow the player to break the crop
+                //  without effecting the reinforcement.
+                is_cancelled = false;
+            } else if (state.isBypassMode() && (pr.isBypassable(player) || admin_bypass)) {
                 if (admin_bypass) {
                     Citadel.info(String.format(
                         "[Admin] %s bypassed reinforcement at %s",
