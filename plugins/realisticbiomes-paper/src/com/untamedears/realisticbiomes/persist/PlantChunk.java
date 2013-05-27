@@ -18,7 +18,7 @@ public class PlantChunk {
 	HashMap<Coords,Plant> plants;
 	
 	// index of this chunk in the database
-	int index;
+	long index;
 	
 	boolean loaded;
 	boolean inDatabase;
@@ -30,7 +30,7 @@ public class PlantChunk {
 	private static PreparedStatement savePlantsStmt = null;
 	private static PreparedStatement getLastChunkIdStmt = null;
 	
-	public PlantChunk(RealisticBiomes plugin, Connection readConn, Connection writeConn, int index) {
+	public PlantChunk(RealisticBiomes plugin, Connection readConn, Connection writeConn, long index) {
 		this.plugin = plugin;
 		plants = null;
 		this.index = index;
@@ -103,7 +103,7 @@ public class PlantChunk {
 		plants = new HashMap<Coords, Plant>();
 		
 		try {
-			loadPlantsStmt.setInt(1, index);
+			loadPlantsStmt.setLong(1, index);
 			loadPlantsStmt.execute();
 			ResultSet rs = loadPlantsStmt.getResultSet();
 			while (rs.next()) {
@@ -158,13 +158,13 @@ public class PlantChunk {
 				addChunkStmt.execute();
 				getLastChunkIdStmt.execute();
 				ResultSet rs = getLastChunkIdStmt.getResultSet();
-				index = rs.getInt(1);
+				index = rs.getLong(1);
 				
 				inDatabase = true;
 			}
 			
 			// first, delete the old data
-			deleteOldDataStmt.setInt(1, index);
+			deleteOldDataStmt.setLong(1, index);
 			deleteOldDataStmt.execute();
 			
 			// then replace it with all the recorded plants in this chunk
@@ -172,7 +172,7 @@ public class PlantChunk {
 				for (Coords coords: plants.keySet()) {
 					Plant plant = plants.get(coords);
 					
-					savePlantsStmt.setInt(1, index);
+					savePlantsStmt.setLong(1, index);
 					savePlantsStmt.setInt(2, coords.w);
 					savePlantsStmt.setInt(3, coords.x);
 					savePlantsStmt.setInt(4, coords.y);
@@ -185,7 +185,7 @@ public class PlantChunk {
 			}
 			else {
 				// otherwise just delete the chunk entirely
-				deleteChunkStmt.setInt(1, index);
+				deleteChunkStmt.setLong(1, index);
 				deleteChunkStmt.execute();
 			}
 		}
