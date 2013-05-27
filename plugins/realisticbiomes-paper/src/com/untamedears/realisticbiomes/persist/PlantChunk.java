@@ -171,16 +171,19 @@ public class PlantChunk {
 			if (!plants.isEmpty()) {
 				for (Coords coords: plants.keySet()) {
 					Plant plant = plants.get(coords);
+					float growth = plant.getGrowth();
 					
-					savePlantsStmt.setLong(1, index);
-					savePlantsStmt.setInt(2, coords.w);
-					savePlantsStmt.setInt(3, coords.x);
-					savePlantsStmt.setInt(4, coords.y);
-					savePlantsStmt.setInt(5, coords.z);
-					savePlantsStmt.setLong(6, plant.getUpdateTime());
-					savePlantsStmt.setFloat(7, plant.getGrowth());
-					
-					savePlantsStmt.execute();
+					if (growth > 0.0) {
+						savePlantsStmt.setLong(1, index);
+						savePlantsStmt.setInt(2, coords.w);
+						savePlantsStmt.setInt(3, coords.x);
+						savePlantsStmt.setInt(4, coords.y);
+						savePlantsStmt.setInt(5, coords.z);
+						savePlantsStmt.setLong(6, plant.getUpdateTime());
+						savePlantsStmt.setFloat(7, plant.getGrowth());
+						
+						savePlantsStmt.execute();
+					}
 				}
 			}
 			else {
