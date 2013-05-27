@@ -29,7 +29,11 @@ public class InfoCommand extends PlayerCommand {
         if (sender instanceof Player) {
             int offset = 1;
             if (args.length > 0) {
-                offset = Integer.parseInt(args[0]);
+            	try {
+            		offset = Integer.parseInt(args[0]);
+            	} catch(NumberFormatException e) {
+            		offset = 1;
+            	}
             }
             if (offset < 1) {
                 offset = 1;
