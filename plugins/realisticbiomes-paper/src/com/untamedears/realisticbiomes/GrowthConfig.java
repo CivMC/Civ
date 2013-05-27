@@ -254,6 +254,7 @@ public class GrowthConfig {
 				Material mat = block.getLocation().add(vec).getBlock().getType();
 				if( mat == Material.GLOWSTONE || mat == Material.REDSTONE_LAMP_ON ) {
 					environmentMultiplier = greenhouseRate;
+					break;
 				}
 			}
 		}
@@ -271,6 +272,7 @@ public class GrowthConfig {
 				Biome biome = waterBlock.getBiome();
 				if((biome == Biome.RIVER || biome == Biome.FROZEN_RIVER) && (mat == Material.STATIONARY_WATER || mat == Material.WATER)) {
 					irrigated = true;
+					break;
 				}
 			}
 			
