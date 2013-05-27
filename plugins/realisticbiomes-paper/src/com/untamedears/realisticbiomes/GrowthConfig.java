@@ -265,17 +265,15 @@ public class GrowthConfig {
 		if (notIrrigatedMultiplier != 1.0) {
 			// determine if the block is near a water block in a river biome
 			boolean irrigated = false;
-			if (block.getY() == 63/*sea and river level + 1*/) {
-				for( Vector vec : waterCheckBlocks ) {
-					Block waterBlock = block.getLocation().add(vec).getBlock();
-					Material mat = waterBlock.getType();
-					Biome biome = waterBlock.getBiome();
-					if((biome == Biome.RIVER || biome == Biome.FROZEN_RIVER) && (mat == Material.STATIONARY_WATER || mat == Material.WATER)) {
-						irrigated = true;
-					}
+			for( Vector vec : waterCheckBlocks ) {
+				Block waterBlock = block.getLocation().add(vec).getBlock();
+				Material mat = waterBlock.getType();
+				Biome biome = waterBlock.getBiome();
+				if((biome == Biome.RIVER || biome == Biome.FROZEN_RIVER) && (mat == Material.STATIONARY_WATER || mat == Material.WATER)) {
+					irrigated = true;
 				}
 			}
-				
+			
 			if (!irrigated)
 				rate *= notIrrigatedMultiplier;
 		}

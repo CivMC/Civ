@@ -8,6 +8,10 @@ public class PersistConfig {
 	// the database
 	public long unloadBatchPeriod;
 	
+	// the maximum time in ms that may be spent unloading data, data no unloaded will be
+	// unloaded at the next opportunity
+	public long unloadBatchMaxTime;
+	
 	// the chance that a grow_event on a block will trigger a plant chunk load
 	public double growEventLoadChance;
 	

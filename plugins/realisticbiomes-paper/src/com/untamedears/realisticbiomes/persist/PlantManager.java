@@ -35,7 +35,11 @@ public class PlantManager {
 	private ArrayList<Coords> chunksToUnload;
 	
 	// task that periodically unloads chunks in batches
+	// 'normal speed' and 'fast' speed
 	private BukkitTask unloadBatchTask;
+	private BukkitTask unloadBatchTaskFast;
+	// flag if unload is in progress
+	boolean fastUnload;
 	
 	// lock to be used to lock use of writeConn over multiple threads
 	private ReentrantLock writeLock;
@@ -123,9 +127,17 @@ public class PlantManager {
 		unloadBatchTask = plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable() {
 		    @Override  
 		    public void run() {
+		    	if (!fastUnload)
 				unloadBatch();
 		    }
 		}, config.unloadBatchPeriod, config.unloadBatchPeriod);
+		unloadBatchTaskFast = plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable() {
+		    @Override  
+		    public void run() {
+		    	if (fastUnload)
+				unloadBatch();
+		    }
+		}, 1, 1);
 		
 		writeLock = new ReentrantLock();
 		writeService = Executors.newSingleThreadExecutor();
@@ -163,31 +175,50 @@ public class PlantManager {
 		if (chunksToUnload.isEmpty())
 			return;
 		
-		int count = chunksToUnload.size();
 		long start = System.nanoTime()/1000000/*ns/ms*/;
 		
+		long end;
+		int chunksUnloadedCount = 0;
+		boolean timeOverflow = fastUnload;
+		
 		// prepare a single transaction with all inserts
-		writeLock.lock();
-			try {
-				writeConn.setAutoCommit(false);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-	
-			for (Coords batchCoords:chunksToUnload) {
-				unloadChunk(batchCoords);
-			}
-		writeLock.unlock();
+		if (!writeLock.isLocked()) {
+			timeOverflow = false;
+			
+			writeLock.lock();
+				try {
+					writeConn.setAutoCommit(false);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				
+				while (!chunksToUnload.isEmpty()) {
+					Coords batchCoords = chunksToUnload.remove(chunksToUnload.size()-1);
+					unloadChunk(batchCoords);
+					
+					chunksUnloadedCount++;
+					
+					end = System.nanoTime()/1000000/*ns/ms*/;
+					long diff = end - start;
+					if (diff > config.unloadBatchMaxTime) {
+						timeOverflow = true;
+						break;
+					}
+				}
+				writeLock.unlock();
+				
+				// write the changes to the database concurrently
+				// but only if there is nothing left to add
+				if (!timeOverflow)
+					writeService.submit(new commitRunnable());
+				
+				end = System.nanoTime()/1000000/*ns/ms*/;
+				
+				if (plugin.persistConfig.logDB)
+					plugin.getLogger().info("db save: "+chunksUnloadedCount+" chunks unloaded in "+(end-start)+" ms");
+		}
 		
-		// write the changes to the database concurrently
-		writeService.submit(new commitRunnable());
-		
-		long end = System.nanoTime()/1000000/*ns/ms*/;
-		
-		if (plugin.persistConfig.logDB)
-			plugin.getLogger().info("db save: "+count+" chunks unloaded in "+(end-start)+" ms");
-		
-		chunksToUnload.clear();		
+		fastUnload = timeOverflow;
 	}
 	
 	public void saveAllAndStop() {
