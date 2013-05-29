@@ -117,6 +117,11 @@ public class PlayerListener implements Listener {
 					block = block.getRelative(0,1,0);
 				}
 				
+				if(material == Material.SAPLING || material == TreeType.TREE) {
+					event.getPlayer().sendMessage("§7[Realistic Biomes] Growth rate undetermined, see http://goo.gl/dOUpj for details");
+					return;
+				}
+				
 				GrowthConfig growthConfig = growthConfigs.get(material);
 				if (growthConfig == null)
 					return;

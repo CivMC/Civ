@@ -3,8 +3,10 @@ realistic_biomes:
 
  persistence_enabled: false
 
- unload_batch_period: 300
+ unload_batch_period: 100
  grow_event_load_chance: 0.1
+
+ unload_batch_max_time: 20
 
  log_db: true
 
@@ -46,6 +48,8 @@ realistic_biomes:
    # ie sunlight level = 15 means full growth, while sunlight level 0 means 0 growth
    # sunlight level is disregarded is this flag is false
    needs_sunlight: true
+   # multiplier that is applied to plants that are not at level 15 sunlight
+   not_full_sunlight_multiplier: 0.25
 
    # material that, placed in a column beneath a crop block, may provide a bonus for each underlying
    # level of the material.
@@ -69,118 +73,117 @@ realistic_biomes:
    # is unloaded or the server is off. It sets the time to grow to maturity in units of real-life hours
    # if this parameter is set, then the base_rate is ignored, though the other multipliers will still be
    # in effect
-   #persistent_growth_period: 12
+   #persistent_growth_period: 3
    biomes:
+    PLAINS: 1.0
+    forest: 0.75
+    SKY: 0.5
     cold: 0.25
     hot_dry: 0.25
     mountain: 0.25
-    temperate: 1.0
-    SKY: 0.5
 
   CARROT:
    inherit: crop
-   #persistent_growth_period: 12
+   #persistent_growth_period: 3
    biomes:
-    hot_dry: 0.1
     hot_rainy: 1.0
-    temperate: 0.25
     SWAMPLAND: 0.5
+    temperate: 0.25
+    hot_dry: 0.1
     SKY: 0.1
 
   POTATO:
    inherit: crop
-   #persistent_growth_period: 12
+   #persistent_growth_period: 3
    biomes:
     mountain: 1.0
-    cold: 0.25
     temperate: 0.5
+    cold: 0.25
     SKY: 0.1
 
   #...................
 
   NETHER_WARTS:
    base_rate: 0.015
-   #persistent_growth_period: 4
+   #persistent_growth_period: 1
    needs_sunlight: false
+   not_full_sunlight_multiplier: 2.0
    soil_material: SOUL_SAND
    soil_max_layers: 4
    soil_bonus_per_layer: 0.5
    soil_layer_offset: 2
    biomes:
     HELL: 1.0
-    hot_dry: 0.25
     mushroom: 0.5
+    hot_dry: 0.25
 
   #.....................
   # stems grow super slow, while they produce blocks quite quickly
 
   MELON_STEM:
    inherit: crop
-   #persistent_growth_period: 48
+   #persistent_growth_period: 12
    biomes:
-    temperate: 0.25
     SWAMPLAND: 1.0
     hot_rainy: 0.5
+    temperate: 0.25
 
   PUMPKIN_STEM:
    inherit: crop
-   #persistent_growth_period: 48
-   base_rate: 0.005
+   #persistent_growth_period: 12
+   base_rate: 0.2
    biomes:
-    temperate: 1.0
-    cold: 0.25
+    cold: 1.0
+    temperate: 0.25
 
   #.....................
 
   MELON_BLOCK:
    inherit: crop
    soil_max_layers: 0
-   base_rate: 0.2
+   base_rate: 0.32
    biomes:
-    temperate: 0.25
     SWAMPLAND: 1.0
     hot_rainy: 0.5
+    temperate: 0.25
 
   PUMPKIN:
    inherit: crop
    soil_max_layers: 0
-   base_rate: 0.2
+   base_rate: 0.32
    biomes:
-    temperate: 0.5
     cold: 1.0
+    temperate: 0.25
 
   #----------------------------------------
 
   column:
    base_rate: 0.2
    needs_sunlight: true
-
+   not_full_sunlight_multiplier: 0.5
    soil_max_layers: 0
 
   CACTUS:
    inherit: column
-   base_rate: 0.1
    biomes:
     hot_dry: 1.0
     HELL: 0.5
 
   SUGAR_CANE_BLOCK:
    inherit: column
-   base_rate: 0.1
    biomes:
-    hot_dry: 0.5
     hot_rainy: 1.0
-    BEACH: 1.0
-    SWAMPLAND: 1.0
+    SWAMPLAND: 0.5
+    BEACH: 0.5
+    RIVER: 0.5
 
   #----------------------------------------
 
   COCOA:
-   needs_sunlight: false
-   base_rate: 0.5
-   #persistent_growth_period: 120
-
-   
+   needs_sunlight: true
+   base_rate: 0.1
+   not_full_sunlight_multiplier: 0.2
+   ##persistent_growth_period: 40
    # get incremental bonus from an unbroken chain of up to 25 
    # vines starting directly below the cocoa pod
    soil_material: VINE
@@ -196,6 +199,7 @@ realistic_biomes:
   tree:
    base_rate: 0.04
    needs_sunlight: true
+   not_full_sunlight_multiplier: 0.125
    max_soil_layers: 0
    biomes:
     mushroom: 0.5
@@ -237,6 +241,7 @@ realistic_biomes:
   jungle_tree:
    base_rate: 0.01
    needs_sunlight: true
+   not_full_sunlight_multiplier: 0.125
    max_soil_layers: 0
    biomes:
     hot_rainy: 1.0
@@ -276,6 +281,7 @@ realistic_biomes:
   #----------------------------------------
   animal:
    needs_sunlight: true
+   not_full_sunlight_multiplier: 0.125
    base_rate: 1.0
 
    soil_max_layers: 0
@@ -293,6 +299,7 @@ realistic_biomes:
   CHICKEN:
    inherit: animal
    base_rate: 0.2
+   not_full_sunlight_multiplier: 1.0
    biomes:
     temperate: 1.0
     mountain: 0.25
@@ -303,6 +310,7 @@ realistic_biomes:
 
   PIG:
    inherit: animal
+   not_full_sunlight_multiplier: 0.5
    biomes:
     temperate: 0.5
     mushroom: 1.0
@@ -311,14 +319,16 @@ realistic_biomes:
 
   SHEEP:
    inherit: animal
+   not_full_sunlight_multiplier: 0.25
    biomes:
-    temperate: 0.25
     mountain: 1.0
     cold: 0.5
     mushroom: 0.25
+    temperate: 0.25
 
   MUSHROOM_COW:
    inherit: animal
+   not_full_sunlight_multiplier: 0.5
    biomes:
     mushroom: 1.0
    
@@ -334,11 +344,8 @@ realistic_biomes:
 
   FISHING_HOOK:
    base_rate: 1.0
-
    needs_sunlight: false
-
    soil_max_layers: 0
-
    biomes:
     water: 1.0
 
