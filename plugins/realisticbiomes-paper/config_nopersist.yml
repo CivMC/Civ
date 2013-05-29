@@ -1,5 +1,10 @@
 realistic_biomes:
- file_path: plantData.sqlite
+ database_name: minecraft
+ database_host: localhost
+ database_port: 3306
+ database_user: ""
+ database_password: ""
+ database_prefix: "rb"
 
  persistence_enabled: false
 

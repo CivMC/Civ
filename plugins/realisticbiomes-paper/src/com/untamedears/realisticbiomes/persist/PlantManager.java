@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
 import com.untamedears.realisticbiomes.PersistConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 
@@ -46,6 +47,14 @@ public class PlantManager {
 	// database write thread
 	ExecutorService writeService;
 	
+	
+	// prepared statements
+	PreparedStatement makeTableChunk;
+	PreparedStatement makeTablePlant;
+	PreparedStatement selectAllFromChunk;
+	
+	private Logger log;
+	
 	////================================================================================= ////
 	
 	public PlantManager(RealisticBiomes plugin, PersistConfig config) {
@@ -55,70 +64,106 @@ public class PlantManager {
 		chunks = new HashMap<Coords, PlantChunk>();
 		
 		// open the database
-		String sDriverName = "org.sqlite.JDBC";
+		String sDriverName = "com.mysql.jdbc.Driver";
 		try {
 		Class.forName(sDriverName);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			throw new DataSourceException("Failed to initalize the com.mysql.jdbc.Driver driver class!", e);
 		}
 		
-		 String synchronousPragma = "PRAGMA synchronous=OFF";
-		 String countChangesPragma = "PRAGMA count_changes=OFF";
-		 String journalModePragma = "PRAGMA journal_mode=MEMORY";
-		 String tempStorePragma = "PRAGMA temp_store=MEMORY";
+//		 String synchronousPragma = "PRAGMA synchronous=OFF";
+//		 String countChangesPragma = "PRAGMA count_changes=OFF";
+//		 String journalModePragma = "PRAGMA journal_mode=MEMORY";
+//		 String tempStorePragma = "PRAGMA temp_store=MEMORY";
 		
-		String sJdbc = "jdbc:sqlite";
-		String sDbUrl = sJdbc + ":" + plugin.getDataFolder().getAbsolutePath() + "/" + config.databaseName;
+
+		
+//		String makeTableChunk = "CREATE TABLE IF NOT EXISTS chunk (id INTEGER PRIMARY KEY AUTOINCREMENT, w INTEGER, x INTEGER, z INTEGER)";
+//		String makeTablePlant = "CREATE TABLE IF NOT EXISTS plant (chunkid INTEGER, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER, growth REAL, FOREIGN KEY(chunkid) REFERENCES chunk(id))";
+		
+//		String makeChunkCoordsIndex = "CREATE INDEX IF NOT EXISTS chunk_coords_idx ON chunk (w, x, z)";
+//		String makePlantCoordsIndex = "CREATE INDEX IF NOT EXISTS plant_coords_idx ON plant (w, x, y, z)";
+//		String makePlantChunkIndex = "CREATE INDEX IF NOT EXISTS plant_chunk_idx ON plant(chunkid)";
+		
+		//String vacuumDatabase = "VACUUM;";
+		
+		String jdbcUrl = "jdbc:mysql://" + config.host + ":" + config.port + "/" + config.databaseName + "?user=" + config.user + "&password=" + config.password;
 		int iTimeout = 30;
 		
-		String makeTableChunk = "CREATE TABLE IF NOT EXISTS chunk (id INTEGER PRIMARY KEY AUTOINCREMENT, w INTEGER, x INTEGER, z INTEGER)";
-		String makeTablePlant = "CREATE TABLE IF NOT EXISTS plant (chunkid INTEGER, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER, growth REAL, FOREIGN KEY(chunkid) REFERENCES chunk(id))";
-		
-		String makeChunkCoordsIndex = "CREATE INDEX IF NOT EXISTS chunk_coords_idx ON chunk (w, x, z)";
-		String makePlantCoordsIndex = "CREATE INDEX IF NOT EXISTS plant_coords_idx ON plant (w, x, y, z)";
-		String makePlantChunkIndex = "CREATE INDEX IF NOT EXISTS plant_chunk_idx ON plant(chunkid)";
-		
-		String vacuumDatabase = "VACUUM;";
-		
+		// Try and connect to the database
 		try {
-			// connect to the database
-			writeConn = DriverManager.getConnection(sDbUrl);
-			readConn = DriverManager.getConnection(sDbUrl);
+			writeConn = DriverManager.getConnection(jdbcUrl);
+			readConn = DriverManager.getConnection(jdbcUrl);
 			Statement stmt = readConn.createStatement();
 			stmt.setQueryTimeout(iTimeout);
 			
+		} catch (SQLException e) {
+			throw new DataSourceException("Failed to connect to the database with the jdbcUrl " + jdbcUrl, e);
+		}
+		
+		// Create the prepared statements
+		
+		try {
+		// we need InnoDB storage engine or else we can't do foreign keys!
+		this.makeTableChunk = writeConn.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s_chunk " +
+						"(id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+						"w INTEGER, x INTEGER, z INTEGER)" +
+						"INDEX chunk_coords_idx (w, x, z))," +
+						"ENGINE INNODB", config.prefix));
+		
+		// we need InnoDB storage engine or else we can't do foreign keys!
+		this.makeTablePlant = writeConn.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s_plant" +
+						"(chunkId INTEGER, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER, growth REAL, " +
+						"INDEX plant_coords_idx (w, x, y, z), INDEX plant_chunk_idx (chunkId), " +
+						"CONSTRAINT chunkIdConstraint FOREIGN KEY (chunkId) REFERENCES %s_chunk (id))" +
+						"ENGINE INNODB", config.prefix, config.prefix));
+		
+		
+		this.selectAllFromChunk = readConn.prepareStatement("SELECT id, w, x, z FROM chunk");
+		
+		} catch (SQLException e) {
+			throw new DataSourceException("Failed to create the prepared statements!", e);
+			
+		}
+			
 			// set various settings for performance. Makes corruption due to bad shutdowns more common
-			stmt.executeUpdate(synchronousPragma);
-			stmt.executeUpdate(countChangesPragma);
-			stmt.executeUpdate(journalModePragma);
-			stmt.executeUpdate(tempStorePragma);
+//			stmt.executeUpdate(synchronousPragma);
+//			stmt.executeUpdate(countChangesPragma);
+//			stmt.executeUpdate(journalModePragma);
+//			stmt.executeUpdate(tempStorePragma);
 			
 			// clean up the database
-			stmt.executeUpdate(vacuumDatabase);
+			//stmt.executeUpdate(vacuumDatabase);
 			
 			// make tables if they don't exist
-			stmt.executeUpdate(makeTableChunk);
-                        stmt.executeUpdate(makeTablePlant);
-                        
-                        stmt.executeUpdate(makeChunkCoordsIndex);
-                        stmt.executeUpdate(makePlantCoordsIndex);
-                        stmt.executeUpdate(makePlantChunkIndex);
+//			stmt.executeUpdate(makeTableChunk);
+//                        stmt.executeUpdate(makeTablePlant);
+//                        
+//                        stmt.executeUpdate(makeChunkCoordsIndex);
+//                        stmt.executeUpdate(makePlantCoordsIndex);
+//                        stmt.executeUpdate(makePlantChunkIndex);
 				
 			// load all chunks
-			ResultSet rs = stmt.executeQuery("SELECT id, w, x, z FROM chunk");
+		
+		try {
+			ResultSet rs = this.selectAllFromChunk.executeQuery();
+			
 			while (rs.next()) {
-				int id = rs.getInt(1);
-				int w = rs.getInt(2);
-				int x = rs.getInt(3);
-				int z = rs.getInt(4);
+				int id = rs.getInt("id");
+				int w = rs.getInt("w");
+				int x = rs.getInt("x");
+				int z = rs.getInt("z");
 				
 				PlantChunk pChunk = new PlantChunk(plugin, readConn, writeConn, id);
 				chunks.put(new Coords(w,x,0,z), pChunk);
 			}
+			
+		} catch (SQLException e) {
+			throw new DataSourceException("Failed to load all of the chunks from the database! ", e);
 		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
+
+			
+
 		
 		// create unload batch
 		chunksToUnload = new ArrayList<Coords>();
@@ -146,7 +191,8 @@ public class PlantManager {
 	}
 	
 	// ============================================================================================
-	private Logger log;
+	
+
 	// commit transaction in the writeConn database connection
 	private class commitRunnable implements Runnable {
 	    @Override  
@@ -158,7 +204,7 @@ public class PlantManager {
 				writeConn.commit();
 				writeConn.setAutoCommit(true);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new DataSourceException("Failed to commit / setAutoCommit in the CommitRunnable class", e);
 			}
 			long end = System.nanoTime()/1000000/*ns/ms*/;
 			
@@ -170,6 +216,7 @@ public class PlantManager {
 	};
 	
 	// --------------------------------------------------------------------------------------------
+
 	private void unloadBatch() {
 		// no need to do anything if the queue is empty
 		if (chunksToUnload.isEmpty())
@@ -189,7 +236,7 @@ public class PlantManager {
 				try {
 					writeConn.setAutoCommit(false);
 				} catch (SQLException e) {
-					e.printStackTrace();
+					throw new DataSourceException("Failed to set autocommit to false in unloadBatch()", e);
 				}
 				
 				while (!chunksToUnload.isEmpty()) {
@@ -226,7 +273,7 @@ public class PlantManager {
 			try {
 				writeConn.setAutoCommit(false);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new DataSourceException("Failed to set autocommit to false in saveAllAndStop()", e);
 			}
 			
 			for (Coords coords:chunks.keySet()) {
@@ -238,7 +285,7 @@ public class PlantManager {
 				writeConn.commit();
 				writeConn.setAutoCommit(true);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new DataSourceException("Failed to set autocommit to true / commit in saveAllAndStop()", e);
 			}
 		writeLock.unlock();
 		
@@ -300,14 +347,15 @@ public class PlantManager {
 		try {
 			readConn.setAutoCommit(false);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DataSourceException("Failed to set Autocommit to false in loadChunk()", e);
 		}
 		boolean loaded = pChunk.load(coords);
 		try {
 			readConn.commit();
 			readConn.setAutoCommit(true);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DataSourceException("Failed to set Autocommit to true / commit in loadChunk()", e);
+
 		}
 		long end = System.nanoTime()/1000000/*ns/ms*/;
 		

@@ -1,7 +1,15 @@
 package com.untamedears.realisticbiomes;
 
 public class PersistConfig {
+	
+	// Database stuff
 	public String databaseName;
+	public String host;
+	public String port;
+	public String user;
+	public String password;
+	public String prefix;
+
 	public boolean enabled;
 	
 	// the period in tick at which data from unloaded chunks will be loaded into

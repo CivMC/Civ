@@ -64,7 +64,13 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	private void loadPersistConfig(ConfigurationSection config) {
 		persistConfig = new PersistConfig();
 		
-		persistConfig.databaseName = config.getString("file_path");
+		persistConfig.databaseName = config.getString("database_name");
+		persistConfig.host = config.getString("database_host");
+		persistConfig.port = config.getString("database_port");
+		persistConfig.user = config.getString("database_user");
+		persistConfig.password = config.getString("database_password");
+		persistConfig.prefix = config.getString("database_prefix");
+		
 		persistConfig.enabled = config.getBoolean("persistence_enabled");
 		persistConfig.unloadBatchPeriod = config.getInt("unload_batch_period");
 		persistConfig.unloadBatchMaxTime = config.getInt("unload_batch_max_time");

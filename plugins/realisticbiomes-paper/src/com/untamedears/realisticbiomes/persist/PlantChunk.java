@@ -9,6 +9,7 @@ import java.util.HashMap;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
+import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 
@@ -51,7 +52,7 @@ public class PlantChunk {
 			
 			deleteChunkStmt = writeConn.prepareStatement("DELETE FROM chunk WHERE id = ?1");
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new DataSourceException("Failed to create the prepared statements in PlantChunk", e);
 			}
 		}
 	}
@@ -107,10 +108,10 @@ public class PlantChunk {
 			loadPlantsStmt.execute();
 			ResultSet rs = loadPlantsStmt.getResultSet();
 			while (rs.next()) {
-				int w = rs.getInt(1);
-				int x = rs.getInt(2);
-				int y = rs.getInt(3);
-				int z = rs.getInt(4);
+				int w = rs.getInt("w");
+				int x = rs.getInt("x");
+				int y = rs.getInt("y");
+				int z = rs.getInt("z");
 				long date = rs.getLong(5);
 				float growth = rs.getFloat(6);
 				
@@ -138,7 +139,7 @@ public class PlantChunk {
 			} 			
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
+			throw new DataSourceException(String.format("Failed to execute/load the data from the plants table (In PlantChunk) with chunkId %s, coords %s", index, coords), e); 
 		}
 		
 		loaded = true;
@@ -193,7 +194,7 @@ public class PlantChunk {
 			}
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
+			throw new DataSourceException(String.format("Failed to unload the chunk (In PlantChunk), index %s, coords %s",  index, chunkCoords), e);
 		}
 		
 		plants = null;
