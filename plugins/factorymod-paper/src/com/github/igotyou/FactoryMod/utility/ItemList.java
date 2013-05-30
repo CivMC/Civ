@@ -109,7 +109,7 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 	}
 	public ItemList<NamedItemStack> removeOneFrom(Inventory inventory)
 	{
-		ItemList<NamedItemStack> itemList=new ItemList<>();
+		ItemList<NamedItemStack> itemList=new ItemList<NamedItemStack>();
 		for(NamedItemStack itemStack:this)
 		{
 			if(removeItemStack(inventory,itemStack))
@@ -122,7 +122,7 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 	}
 	public ItemList<NamedItemStack> getDifference(Inventory inventory)
 	{
-		ItemList<NamedItemStack> missingItems=new ItemList<>();
+		ItemList<NamedItemStack> missingItems=new ItemList<NamedItemStack>();
 		for(NamedItemStack itemStack:this)
 		{
 			int difference=itemStack.getAmount()-amountAvailable(inventory, itemStack);
@@ -272,7 +272,7 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 	}
 	public ItemList<NamedItemStack> getMultiple(int multiplier)
 	{
-		ItemList<NamedItemStack> multipliedItemList=new ItemList<>();
+		ItemList<NamedItemStack> multipliedItemList=new ItemList<NamedItemStack>();
 		for (NamedItemStack itemStack:this)
 		{
 			NamedItemStack itemStackClone=itemStack.clone();
