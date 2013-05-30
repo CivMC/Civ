@@ -172,9 +172,14 @@ public class ProductionFactory extends FactoryObject implements Factory
 		currentProductionTimer = 0;
 		
 		// Set attached lever
+		setActivationLever(true);
+	}
+
+	private void setActivationLever(boolean state) {
 		Block lever = findActivationLever();
 		if (lever != null) {
-			setLever(lever, true);
+			setLever(lever, state);
+			shotGunUpdate(factoryPowerSourceLocation.getBlock());
 		}
 	}
 
@@ -201,10 +206,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 			//reset the production timer
 			currentProductionTimer = 0;
 			
-			Block lever = findActivationLever();
-			if (lever != null) {
-				setLever(lever, false);
-			}
+			setActivationLever(false);
 		}
 	}
 
@@ -597,6 +599,14 @@ public class ProductionFactory extends FactoryObject implements Factory
     		return null;
     	}
     }
+    
+    private void shotGunUpdate(Block block) {
+    	for (BlockFace direction : REDSTONE_FACES) {
+    		block.getRelative(direction).getState().update();
+    	}
+    }
+    
+    
 	/**
 	* Sets the toggled state of a single lever<br>
 	* <b>No Lever type check is performed</b>
