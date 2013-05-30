@@ -1,14 +1,14 @@
 test=1
 defaults={}
 defaults['name']='Default Name'
-defaults['time']=1
+defaults['time']=2
 defaults['durability']=0
 defaults['amount']=1
 defaults['probability']=1.0
 defaults['useOnce']=False
 defaults['displayName']=None
 defaults['lore']=None
-defaults['fuelTime']=1
+defaults['fuelTime']=2
 defaults['level']=1
 defaults['repairMultiple']=0
 
