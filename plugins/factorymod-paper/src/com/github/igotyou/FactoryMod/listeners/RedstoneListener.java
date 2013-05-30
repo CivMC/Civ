@@ -22,7 +22,6 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 
 public class RedstoneListener implements Listener {
-	private static final BlockFace[] LEVER_FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP};
 	private FactoryModManager factoryMan;
 	//this is a lazy fix...
 	private ProductionManager productionMan;
@@ -42,74 +41,42 @@ public class RedstoneListener implements Listener {
 	 * When the furnace block is powered, starts the factory and toggles on any attached levers.
 	 * On completion, toggles off any attached levers.
 	 */
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler()
 	public void redstoneChange(BlockRedstoneEvent e)
-	{
+	{	
 		// Only trigger on transition from 0 to positive
 		if (e.getOldCurrent() > 0 || e.getNewCurrent() == 0) {
 			return;
 		}
 		
-		Block block = e.getBlock();
-		//Is the block part of a factory?
-		if(block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE)
-		{
-			if (factoryMan.factoryExistsAt(block.getLocation()))
+		Block rsBlock = e.getBlock();
+		
+		for (BlockFace direction : ProductionFactory.REDSTONE_FACES) {
+			Block block = rsBlock.getRelative(direction);
+			
+			//Is the block part of a factory?
+			if(block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE)
 			{
-				Block lever = findAttachedLever(block);
-				if (lever == null) {
-					// Not supposed to automate
-					return;
-				}
-				
-				//Is the factory a production factory?
-				if (productionMan.factoryExistsAt(block.getLocation()))
-				{
-					ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
-					
-					if (!factory.getActive()) {
-						// Try to start the factory
-						List<InteractionResponse> result = factory.togglePower();
-						if (result.size() == 1 && result.get(0).getInteractionResult() == InteractionResult.SUCCESS) {
-							// Succeeded at turning factory on
-							// Set attached lever
-							MaterialData leverData = lever.getState().getData();
-							if (leverData instanceof Lever) {
-								((Lever) leverData).setPowered(true);
-								lever.getState().update();
-							}
+				if (factoryMan.factoryExistsAt(block.getLocation()))
+				{					
+					//Is the factory a production factory?
+					if (productionMan.factoryExistsAt(block.getLocation()))
+					{
+						ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
+						
+						Block lever = factory.findActivationLever();
+						if (lever == null) {
+							// No lever - don't respond to redstone
+							return;
+						}
+						
+						if (!factory.getActive()) {
+							// Try to start the factory
+							factory.togglePower();
 						}
 					}
 				}
 			}
 		}
 	}
-    
-    public static Block findAttachedLever(Block block) {
-		// Check sides for attached lever - required for automation
-		Block lever = null;
-		for (BlockFace face : LEVER_FACES) {
-			lever = block.getRelative(face);
-			if (lever.getType() == Material.LEVER) {
-			    Block attached = getAttachedBlock(lever);
-			    if (attached != null && attached.getLocation().equals(block.getLocation())) {
-					return lever;
-			    }
-			}
-		}
-		
-		return null;
-    }
-    
-    private static Block getAttachedBlock(Block lever) {
-    	BlockState state = lever.getState();
-    	MaterialData md = state.getData();
-    	if (md instanceof Attachable) {
-    		BlockFace face = ((Attachable) md).getAttachedFace();
-    		BlockFace direction = face.getOppositeFace();
-    		return lever.getRelative(direction);
-    	} else {
-    		return null;
-    	}
-    }
 }

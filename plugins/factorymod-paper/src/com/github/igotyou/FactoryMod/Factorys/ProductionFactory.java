@@ -1,10 +1,15 @@
 package com.github.igotyou.FactoryMod.Factorys;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Attachable;
 import org.bukkit.material.Lever;
 import org.bukkit.material.MaterialData;
 
@@ -26,6 +31,7 @@ import java.util.List;
 
 public class ProductionFactory extends FactoryObject implements Factory
 {
+	public static final BlockFace[] REDSTONE_FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
 	private ProductionRecipe currentRecipe = null;//the recipe that is currently selected
 	private ProductionProperties productionFactoryProperties;//the properties of the production factory
@@ -159,10 +165,17 @@ public class ProductionFactory extends FactoryObject implements Factory
 		furnace.setRawData(data);
 		furnace.update();
 		furnace.getInventory().setContents(oldContents);
+		
 		//put active to true
 		active = true;
 		//reset the production timer
 		currentProductionTimer = 0;
+		
+		// Set attached lever
+		Block lever = findActivationLever();
+		if (lever != null) {
+			setLever(lever, true);
+		}
 	}
 
 	/**
@@ -182,18 +195,16 @@ public class ProductionFactory extends FactoryObject implements Factory
 			furnace.setRawData(data);
 			furnace.update();
 			furnace.getInventory().setContents(oldContents);
-			Block controlLever = RedstoneListener.findAttachedLever(factoryPowerSourceLocation.getBlock());
-			if (controlLever != null) {
-				MaterialData md = controlLever.getState().getData();
-				if (md instanceof Lever) {
-					((Lever) md).setPowered(false);
-					controlLever.getState().update();
-				}
-			}
+			
 			//put active to false
 			active = false;
 			//reset the production timer
 			currentProductionTimer = 0;
+			
+			Block lever = findActivationLever();
+			if (lever != null) {
+				setLever(lever, false);
+			}
 		}
 	}
 
@@ -553,5 +564,70 @@ public class ProductionFactory extends FactoryObject implements Factory
 	public long getTimeDisrepair()
 	{
 		return timeDisrepair;
+	}
+	
+	public Block findActivationLever() {
+    	Block block = getPowerSourceLocation().getBlock();
+    	return findAttachedLever(block);
+	}
+    
+    public Block findAttachedLever(Block block) {
+		// Check sides for attached lever - required for automation
+		Block lever = null;
+		for (BlockFace face : REDSTONE_FACES) {
+			lever = block.getRelative(face);
+			if (lever.getType() == Material.LEVER) {
+			    BlockFace attached = getAttachedFace(lever);
+			    if (attached != null && attached == face) {
+					return lever;
+			    }
+			}
+		}
+		
+		return null;
+    }
+    
+    private static BlockFace getAttachedFace(Block lever) {
+    	BlockState state = lever.getState();
+    	MaterialData md = state.getData();
+    	if (md instanceof Attachable) {
+    		BlockFace face = ((Attachable) md).getAttachedFace();
+    		return face.getOppositeFace();
+    	} else {
+    		return null;
+    	}
+    }
+	/**
+	* Sets the toggled state of a single lever<br>
+	* <b>No Lever type check is performed</b>
+	*
+	* @param lever block
+	* @param down state to set to
+	*/
+	private static void setLever(org.bukkit.block.Block lever, boolean down) {
+		if (lever.getType() != Material.LEVER) {
+			return;
+		}
+		
+		byte data = lever.getData();
+		int newData;
+		if (down) {
+			newData = data | 0x8;
+		} else {
+			newData = data & 0x7;
+		}
+		if (newData != data) {
+			// CraftBukkit start - Redstone event for lever
+			int old = !down ? 1 : 0;
+			int current = down ? 1 : 0;
+			BlockRedstoneEvent eventRedstone = new BlockRedstoneEvent(lever, old, current);
+			Bukkit.getServer().getPluginManager().callEvent(eventRedstone);
+			if ((eventRedstone.getNewCurrent() > 0) != down) {
+				return;
+			}
+			// CraftBukkit end
+			lever.setData((byte) newData, true);
+			lever.getState().update();
+		}
 	}
 }
