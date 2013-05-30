@@ -159,7 +159,9 @@ public class ProductionFactory extends FactoryObject implements Factory
 		active = true;
 		
 		// Set attached lever
-		setActivationLever(true);
+		if (FactoryModPlugin.LEVER_OUTPUT_ENABLED) {
+			setActivationLever(true);
+		}
 		
 		//lots of code to make the furnace light up, without loosing contents.
 		Furnace furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();
@@ -190,7 +192,9 @@ public class ProductionFactory extends FactoryObject implements Factory
 	{
 		if(active)
 		{
-			setActivationLever(false);
+			if (FactoryModPlugin.LEVER_OUTPUT_ENABLED) {
+				setActivationLever(false);
+			}
 			
 			//lots of code to make the furnace turn off, without loosing contents.
 			Furnace furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();

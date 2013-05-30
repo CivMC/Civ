@@ -78,6 +78,11 @@ public class RedstoneListener implements Listener {
 			return;
 		}
 		
+		// Allow this to be disabled with config
+		if (!FactoryModPlugin.REDSTONE_START_ENABLED) {
+			return;
+		}
+		
 		Block rsBlock = e.getBlock();
 		BlockFace[] directions = null;
 		if (rsBlock.getType() == Material.REDSTONE_WIRE) {

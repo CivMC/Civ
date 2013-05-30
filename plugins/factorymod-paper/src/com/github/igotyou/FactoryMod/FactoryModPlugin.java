@@ -52,6 +52,8 @@ public class FactoryModPlugin extends JavaPlugin
 	public static boolean DISABLE_EXPERIENCE;
 	public static long DISREPAIR_PERIOD;
 	public static long REPAIR_PERIOD;
+	public static boolean REDSTONE_START_ENABLED;
+	public static boolean LEVER_OUTPUT_ENABLED;
 	
 	public void onEnable()
 	{
@@ -115,6 +117,10 @@ public class FactoryModPlugin extends JavaPlugin
 		//The length of time it takes a factory to go to 0% health
 		REPAIR_PERIOD = config.getLong("production_general.repair_period",28)*24*60*60*1000;
 		//Disable recipes which result in the following items
+		//Do we output the running state with a lever?
+		LEVER_OUTPUT_ENABLED = config.getBoolean("general.lever_output_enabled",true);
+		//Do we allow factories to be started with redstone?
+		REDSTONE_START_ENABLED = config.getBoolean("general.redstone_start_enabled",true);
 		int g = 0;
 		Iterator<String> disabledRecipes=config.getStringList("crafting.disable").iterator();
 		while(disabledRecipes.hasNext())
