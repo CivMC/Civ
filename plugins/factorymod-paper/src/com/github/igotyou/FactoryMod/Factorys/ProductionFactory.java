@@ -2,13 +2,17 @@ package com.github.igotyou.FactoryMod.Factorys;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Lever;
+import org.bukkit.material.MaterialData;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.FactoryObject;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Recipe;
+import com.github.igotyou.FactoryMod.listeners.RedstoneListener;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
@@ -178,6 +182,14 @@ public class ProductionFactory extends FactoryObject implements Factory
 			furnace.setRawData(data);
 			furnace.update();
 			furnace.getInventory().setContents(oldContents);
+			Block controlLever = RedstoneListener.findAttachedLever(factoryPowerSourceLocation.getBlock());
+			if (controlLever != null) {
+				MaterialData md = controlLever.getState().getData();
+				if (md instanceof Lever) {
+					((Lever) md).setPowered(false);
+					controlLever.getState().update();
+				}
+			}
 			//put active to false
 			active = false;
 			//reset the production timer
