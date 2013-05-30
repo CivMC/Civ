@@ -44,7 +44,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	{
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, ProductionFactory.FACTORY_TYPE, subFactoryType);
 		this.productionFactoryProperties = (ProductionProperties) factoryProperties;
-		this.recipes=new ArrayList<> (productionFactoryProperties.getRecipes());
+		this.recipes=new ArrayList<ProductionRecipe> (productionFactoryProperties.getRecipes());
 		this.setRecipeToNumber(0);
 		this.currentRepair=0.0;
 		this.timeDisrepair=3155692597470L;//Year 2070, default starting value
@@ -203,7 +203,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	 */
 	public List<InteractionResponse> togglePower() 
 	{
-		List<InteractionResponse> response=new ArrayList<>();
+		List<InteractionResponse> response=new ArrayList<InteractionResponse>();
 		//if the factory is turned off
 		if (!active)
 		{
@@ -228,7 +228,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 						//return a failure message, containing which materials are needed for the recipe
 						//[Requires the following: Amount Name, Amount Name.]
 						//[Requires one of the following: Amount Name, Amount Name.]
-						ItemList<NamedItemStack> needAll=new ItemList<>();
+						ItemList<NamedItemStack> needAll=new ItemList<NamedItemStack>();
 						needAll.addAll(currentRecipe.getInputs().getDifference(getInventory()));
 						needAll.addAll(currentRecipe.getRepairs().getDifference(getInventory()));
 						if(!needAll.isEmpty())
@@ -276,7 +276,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	 */
 	public List<InteractionResponse> toggleRecipes()
 	{
-		List<InteractionResponse> responses=new ArrayList<>();
+		List<InteractionResponse> responses=new ArrayList<InteractionResponse>();
 		//Is the factory off
 		if (!active)
 		{
@@ -497,7 +497,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 	
 	public List<InteractionResponse> getChestResponse()
 	{
-		List<InteractionResponse> responses=new ArrayList<>();
+		List<InteractionResponse> responses=new ArrayList<InteractionResponse>();
 		String status=active ? "On" : "Off";
 		String percentDone=status.equals("On") ? " - "+Math.round(currentProductionTimer*100/currentRecipe.getProductionTime())+"% done." : "";
 		//Name: Status with XX% health.

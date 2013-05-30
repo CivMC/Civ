@@ -42,7 +42,7 @@ public class ProductionRecipe implements Recipe
 	
 	public ProductionRecipe(String title,String recipeName,int productionTime,ItemList<NamedItemStack> repairs)
 	{
-		this(title,recipeName,productionTime,new ItemList<>(),new ItemList<>(),new ItemList<>(),new ArrayList<ProbabilisticEnchantment>(),false,repairs);
+		this(title,recipeName,productionTime,new ItemList<NamedItemStack>(),new ItemList<NamedItemStack>(),new ItemList<NamedItemStack>(),new ArrayList<ProbabilisticEnchantment>(),false,repairs);
 	}
 	
 	public boolean hasMaterials(Inventory inventory)

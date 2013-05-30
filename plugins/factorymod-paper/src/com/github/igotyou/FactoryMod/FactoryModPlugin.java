@@ -220,7 +220,7 @@ public class FactoryModPlugin extends JavaPlugin
 			ItemList<NamedItemStack> fuel=getItems(configSection.getConfigurationSection("fuel"));
 			if(fuel.isEmpty())
 			{
-				fuel=new ItemList<>();
+				fuel=new ItemList<NamedItemStack>();
 				fuel.add(new NamedItemStack(Material.getMaterial("COAL"),1,(short)1,"Charcoal"));
 			}
 			int fuelTime=configSection.getInt("fuel_time",2);
@@ -242,7 +242,7 @@ public class FactoryModPlugin extends JavaPlugin
 	}
 	private List<ProbabilisticEnchantment> getEnchantments(ConfigurationSection configEnchantments)
 	{
-		List<ProbabilisticEnchantment> enchantments=new ArrayList<>();
+		List<ProbabilisticEnchantment> enchantments=new ArrayList<ProbabilisticEnchantment>();
 		if(configEnchantments!=null)
 		{
 			Iterator<String> names=configEnchantments.getKeys(false).iterator();
@@ -264,7 +264,7 @@ public class FactoryModPlugin extends JavaPlugin
 	}
 	private ItemList<NamedItemStack> getItems(ConfigurationSection configItems)
 	{
-		ItemList<NamedItemStack> items=new ItemList<>();
+		ItemList<NamedItemStack> items=new ItemList<NamedItemStack>();
 		if(configItems!=null)
 		{
 			for(String commonName:configItems.getKeys(false))
