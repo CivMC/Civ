@@ -155,6 +155,12 @@ public class ProductionFactory extends FactoryObject implements Factory
 	 */
 	public void powerOn() 
 	{
+		//put active to true
+		active = true;
+		
+		// Set attached lever
+		setActivationLever(true);
+		
 		//lots of code to make the furnace light up, without loosing contents.
 		Furnace furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();
 		byte data = furnace.getData().getData();
@@ -165,14 +171,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 		furnace.setRawData(data);
 		furnace.update();
 		furnace.getInventory().setContents(oldContents);
-		
-		//put active to true
-		active = true;
 		//reset the production timer
 		currentProductionTimer = 0;
-		
-		// Set attached lever
-		setActivationLever(true);
 	}
 
 	private void setActivationLever(boolean state) {
@@ -190,6 +190,8 @@ public class ProductionFactory extends FactoryObject implements Factory
 	{
 		if(active)
 		{
+			setActivationLever(false);
+			
 			//lots of code to make the furnace turn off, without loosing contents.
 			Furnace furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();
 			byte data = furnace.getData().getData();
@@ -205,8 +207,6 @@ public class ProductionFactory extends FactoryObject implements Factory
 			active = false;
 			//reset the production timer
 			currentProductionTimer = 0;
-			
-			setActivationLever(false);
 		}
 	}
 
@@ -602,7 +602,8 @@ public class ProductionFactory extends FactoryObject implements Factory
     
     private void shotGunUpdate(Block block) {
     	for (BlockFace direction : REDSTONE_FACES) {
-    		block.getRelative(direction).getState().update();
+    		Block neighbour = block.getRelative(direction);
+    		
     	}
     }
     
@@ -638,6 +639,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 			// CraftBukkit end
 			lever.setData((byte) newData, true);
 			lever.getState().update();
+			Block attached = lever.getRelative(((Attachable) lever.getState().getData()).getAttachedFace());
 		}
 	}
 }
