@@ -1,5 +1,8 @@
 package com.github.igotyou.FactoryMod.listeners;
 
+import static com.untamedears.citadel.Utility.getReinforcement;
+import static com.untamedears.citadel.Utility.isReinforced;
+
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -9,6 +12,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.material.Attachable;
 import org.bukkit.material.Lever;
@@ -20,6 +24,7 @@ import com.github.igotyou.FactoryMod.managers.FactoryModManager;
 import com.github.igotyou.FactoryMod.managers.ProductionManager;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
+import com.untamedears.citadel.entity.PlayerReinforcement;
 
 public class RedstoneListener implements Listener {
 	private FactoryModManager factoryMan;
@@ -33,6 +38,30 @@ public class RedstoneListener implements Listener {
 	{
 		this.factoryMan = factoryManager;
 		this.productionMan = productionManager;
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	public void leverPlaced(BlockPlaceEvent e) {
+		if (e.getBlock().getType() != Material.LEVER) {
+			return;
+		}
+		
+		Block clicked = e.getBlockAgainst();
+		//is there a factory there? and if it has all its blocks
+		if (factoryMan.factoryExistsAt(clicked.getLocation())&&factoryMan.factoryWholeAt(clicked.getLocation()))
+		{
+			//if the player is allowed to interact with that block?
+			if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
+					(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(e.getPlayer())))
+			{
+				// Allowed
+			}
+			//if the player is NOT allowed to interact with the clicked block
+			else
+			{
+				e.setCancelled(true);
+			}
+		}
 	}
 	
 
