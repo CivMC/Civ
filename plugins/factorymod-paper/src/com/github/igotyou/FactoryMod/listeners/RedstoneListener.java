@@ -50,8 +50,21 @@ public class RedstoneListener implements Listener {
 		}
 		
 		Block rsBlock = e.getBlock();
+		BlockFace[] directions = null;
+		if (rsBlock.getType() == Material.REDSTONE_WIRE) {
+			directions = ProductionFactory.REDSTONE_FACES;
+		} else if (rsBlock.getType() == Material.WOOD_BUTTON) {
+			directions = new BlockFace[] {((Attachable) rsBlock.getState().getData()).getAttachedFace()};
+		} else if (rsBlock.getType() == Material.STONE_BUTTON) {
+			directions = new BlockFace[] {((Attachable) rsBlock.getState().getData()).getAttachedFace()};
+		} else if (rsBlock.getType() == Material.LEVER) {
+			directions = new BlockFace[] {((Attachable) rsBlock.getState().getData()).getAttachedFace()};
+		} else {
+			return; // Don't care
+		}
 		
-		for (BlockFace direction : ProductionFactory.REDSTONE_FACES) {
+		
+		for (BlockFace direction : directions) {
 			Block block = rsBlock.getRelative(direction);
 			
 			//Is the block part of a factory?
