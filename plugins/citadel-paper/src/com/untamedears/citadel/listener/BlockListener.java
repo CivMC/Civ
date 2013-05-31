@@ -182,7 +182,7 @@ public class BlockListener implements Listener {
             PlayerState state = PlayerState.get(player);
             boolean admin_bypass = player.hasPermission("citadel.admin.bypassmode");
             if ((delegate instanceof CropAccessDelegate)
-                    && (pr.isBypassable(player) || admin_bypass)) {
+                    && (pr.isAccessible(player) || admin_bypass)) {
                 // If this is a delegated reinforcement for a crop which the
                 //  player has access to, allow the player to break the crop
                 //  without effecting the reinforcement.
