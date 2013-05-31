@@ -1,14 +1,23 @@
 package com.github.igotyou.FactoryMod.Factorys;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Attachable;
+import org.bukkit.material.Lever;
+import org.bukkit.material.MaterialData;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.FactoryObject;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Recipe;
+import com.github.igotyou.FactoryMod.listeners.RedstoneListener;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
@@ -22,6 +31,7 @@ import java.util.List;
 
 public class ProductionFactory extends FactoryObject implements Factory
 {
+	public static final BlockFace[] REDSTONE_FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
 	private ProductionRecipe currentRecipe = null;//the recipe that is currently selected
 	private ProductionProperties productionFactoryProperties;//the properties of the production factory
@@ -145,6 +155,14 @@ public class ProductionFactory extends FactoryObject implements Factory
 	 */
 	public void powerOn() 
 	{
+		//put active to true
+		active = true;
+		
+		// Set attached lever
+		if (FactoryModPlugin.LEVER_OUTPUT_ENABLED) {
+			setActivationLever(true);
+		}
+		
 		//lots of code to make the furnace light up, without loosing contents.
 		Furnace furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();
 		byte data = furnace.getData().getData();
@@ -155,10 +173,16 @@ public class ProductionFactory extends FactoryObject implements Factory
 		furnace.setRawData(data);
 		furnace.update();
 		furnace.getInventory().setContents(oldContents);
-		//put active to true
-		active = true;
 		//reset the production timer
 		currentProductionTimer = 0;
+	}
+
+	private void setActivationLever(boolean state) {
+		Block lever = findActivationLever();
+		if (lever != null) {
+			setLever(lever, state);
+			shotGunUpdate(factoryPowerSourceLocation.getBlock());
+		}
 	}
 
 	/**
@@ -168,6 +192,10 @@ public class ProductionFactory extends FactoryObject implements Factory
 	{
 		if(active)
 		{
+			if (FactoryModPlugin.LEVER_OUTPUT_ENABLED) {
+				setActivationLever(false);
+			}
+			
 			//lots of code to make the furnace turn off, without loosing contents.
 			Furnace furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();
 			byte data = furnace.getData().getData();
@@ -178,6 +206,7 @@ public class ProductionFactory extends FactoryObject implements Factory
 			furnace.setRawData(data);
 			furnace.update();
 			furnace.getInventory().setContents(oldContents);
+			
 			//put active to false
 			active = false;
 			//reset the production timer
@@ -541,5 +570,80 @@ public class ProductionFactory extends FactoryObject implements Factory
 	public long getTimeDisrepair()
 	{
 		return timeDisrepair;
+	}
+	
+	public Block findActivationLever() {
+    	Block block = getPowerSourceLocation().getBlock();
+    	return findAttachedLever(block);
+	}
+    
+    public Block findAttachedLever(Block block) {
+		// Check sides for attached lever - required for automation
+		Block lever = null;
+		for (BlockFace face : REDSTONE_FACES) {
+			lever = block.getRelative(face);
+			if (lever.getType() == Material.LEVER) {
+			    BlockFace attached = getAttachedFace(lever);
+			    if (attached != null && attached == face) {
+					return lever;
+			    }
+			}
+		}
+		
+		return null;
+    }
+    
+    private static BlockFace getAttachedFace(Block lever) {
+    	BlockState state = lever.getState();
+    	MaterialData md = state.getData();
+    	if (md instanceof Attachable) {
+    		BlockFace face = ((Attachable) md).getAttachedFace();
+    		return face.getOppositeFace();
+    	} else {
+    		return null;
+    	}
+    }
+    
+    private void shotGunUpdate(Block block) {
+    	for (BlockFace direction : REDSTONE_FACES) {
+    		Block neighbour = block.getRelative(direction);
+    		
+    	}
+    }
+    
+    
+	/**
+	* Sets the toggled state of a single lever<br>
+	* <b>No Lever type check is performed</b>
+	*
+	* @param lever block
+	* @param down state to set to
+	*/
+	private static void setLever(org.bukkit.block.Block lever, boolean down) {
+		if (lever.getType() != Material.LEVER) {
+			return;
+		}
+		
+		byte data = lever.getData();
+		int newData;
+		if (down) {
+			newData = data | 0x8;
+		} else {
+			newData = data & 0x7;
+		}
+		if (newData != data) {
+			// CraftBukkit start - Redstone event for lever
+			int old = !down ? 1 : 0;
+			int current = down ? 1 : 0;
+			BlockRedstoneEvent eventRedstone = new BlockRedstoneEvent(lever, old, current);
+			Bukkit.getServer().getPluginManager().callEvent(eventRedstone);
+			if ((eventRedstone.getNewCurrent() > 0) != down) {
+				return;
+			}
+			// CraftBukkit end
+			lever.setData((byte) newData, true);
+			lever.getState().update();
+			Block attached = lever.getRelative(((Attachable) lever.getState().getData()).getAttachedFace());
+		}
 	}
 }
