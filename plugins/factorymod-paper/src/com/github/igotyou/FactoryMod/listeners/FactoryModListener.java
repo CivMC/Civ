@@ -181,6 +181,10 @@ public class FactoryModListener implements Listener
 								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use this factory!" ));
 							}
 						}
+						else
+						{
+							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"Factory blocks are misplaced!" ));
+						}
 					}
 					//if no factory exists at the clicked location
 					else
@@ -203,22 +207,29 @@ public class FactoryModListener implements Listener
 				else if (clicked.getType() == Material.FURNACE || clicked.getType() == Material.BURNING_FURNACE)
 				{
 					//if there is a factory at that location and it has all its blocks
-					if (factoryMan.factoryExistsAt(clicked.getLocation())&&factoryMan.factoryWholeAt(clicked.getLocation()))
+					if (factoryMan.factoryExistsAt(clicked.getLocation()))
 					{
-						//if the player is allowed to interact with that block.
-						if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
-								(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(player)))
+						if(factoryMan.factoryWholeAt(clicked.getLocation()))
 						{
-							if (productionMan.factoryExistsAt(clicked.getLocation()))
+							//if the player is allowed to interact with that block.
+							if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
+									(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(player)))
 							{
-								InteractionResponse.messagePlayerResults(player,((ProductionFactory) productionMan.getFactory(clicked.getLocation())).togglePower());
+								if (productionMan.factoryExistsAt(clicked.getLocation()))
+								{
+									InteractionResponse.messagePlayerResults(player,((ProductionFactory) productionMan.getFactory(clicked.getLocation())).togglePower());
+								}
+							}
+							//if the player is NOT allowed to interact with the clicked block.
+							else
+							{
+								//return error message
+								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use this factory!" ));
 							}
 						}
-						//if the player is NOT allowed to interact with the clicked block.
 						else
 						{
-							//return error message
-							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use this factory!" ));
+							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"Factory blocks are misplaced!" ));
 						}
 					}
 				}
@@ -226,23 +237,31 @@ public class FactoryModListener implements Listener
 				else if (clicked.getType() == Material.CHEST)
 				{
 					//is there a factory there? and if it has all its blocks
-					if (factoryMan.factoryExistsAt(clicked.getLocation())&&factoryMan.factoryWholeAt(clicked.getLocation()))
+					if (factoryMan.factoryExistsAt(clicked.getLocation()))
 					{
-						//if the player is allowed to interact with that block?
-						if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
-								(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(player)))
+						if(factoryMan.factoryWholeAt(clicked.getLocation()))
 						{
-							if (productionMan.factoryExistsAt(clicked.getLocation()))
+							//if the player is allowed to interact with that block?
+							if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
+									(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(player)))
 							{
-								InteractionResponse.messagePlayerResults(player,((ProductionFactory) productionMan.getFactory(clicked.getLocation())).getChestResponse());
+								if (productionMan.factoryExistsAt(clicked.getLocation()))
+								{
+									InteractionResponse.messagePlayerResults(player,((ProductionFactory) productionMan.getFactory(clicked.getLocation())).getChestResponse());
+								}
+							}
+							//if the player is NOT allowed to interact with the clicked block
+							else
+							{
+								//return error message
+								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use this factory!" ));
 							}
 						}
-						//if the player is NOT allowed to interact with the clicked block
 						else
 						{
-							//return error message
-							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You do not have permission to use this factory!" ));
+							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"Factory blocks are misplaced!" ));
 						}
+						
 					}
 				}
 			}
@@ -326,40 +345,42 @@ public class FactoryModListener implements Listener
 		Material southType = southBlock.getType();
 		Material eastType = eastBlock.getType();
 		Material westType = westBlock.getType();
-		
-		//For each of the four orientations check: 1. For a furnance or burning furnance and that a factory doesn't exist there
-		//Then check for a chest and that a factory doesn't exist at the chest
+ 
+		//For each two orientations check if a factory exists at any of the locations
+		//For each of the four permutations check if the correct blocks are present
 		//This still allows a double chest to be shared between two factories, which may lead to undesirable behavior
-		
-		if((northType.getId()== 61 || northType.getId()== 62) && ! productionMan.factoryExistsAt(northLocation))  
+		InteractionResponse response=new InteractionResponse(InteractionResult.FAILURE, "Blocks are not arranged correctly for a factory.");
+		if(! productionMan.factoryExistsAt(westLocation) && ! productionMan.factoryExistsAt(eastLocation))
 		{
-			if(southType.getId()== 54 && ! productionMan.factoryExistsAt(southLocation)) 
-			{
-				return productionMan.createFactory(loc, southLocation, northLocation);
-			}
-		}
-		if((westType.getId()== 61 || westType.getId() == 62) && ! productionMan.factoryExistsAt(westLocation))  
-		{  
-			if(eastType.getId()== 54 && ! productionMan.factoryExistsAt(eastLocation)) 
+			if((westType.getId()== 61 || westType.getId() == 62) && eastType.getId()== 54)
 			{
 				return productionMan.createFactory(loc, eastLocation, westLocation);
 			}
+			else if ((eastType.getId()== 61 || eastType.getId()== 62) && westType.getId()== 54)
+			{
+				return productionMan.createFactory(loc, westLocation, eastLocation);
+			}
 		}
-		if((southType.getId()== 61 || southType.getId()== 62) && ! productionMan.factoryExistsAt(southLocation))  
+		else
 		{
-			if(northType.getId()== 54 && ! productionMan.factoryExistsAt(northLocation)) 
+			response=new InteractionResponse(InteractionResult.FAILURE, "There is already a factory there!");
+		}
+		if(! productionMan.factoryExistsAt(southLocation) && !productionMan.factoryExistsAt(northLocation))
+		{
+			if((northType.getId()== 61 || northType.getId()== 62) && southType.getId()== 54)
+			{
+				return productionMan.createFactory(loc, southLocation, northLocation);
+			}
+			else if((southType.getId()== 61 || southType.getId()== 62) && northType.getId()== 54)
 			{
 				return productionMan.createFactory(loc, northLocation, southLocation);
 			}
 		}
-		if((eastType.getId()== 61 || eastType.getId()== 62) && ! productionMan.factoryExistsAt(eastLocation))  
+		else
 		{
-			if(westType.getId()== 54 && ! productionMan.factoryExistsAt(westLocation)) 
-			{
-				return productionMan.createFactory(loc, westLocation, eastLocation);
-			}
-		} 
-		return new InteractionResponse(InteractionResult.FAILURE, "There is already a factory there!");
+			response=new InteractionResponse(InteractionResult.FAILURE, "There is already a factory there!");
+		}
+		return response;
 	 }
 	
 }
