@@ -232,12 +232,10 @@ public class JukeAlertListener implements Listener {
         } else {
         	return;
         }
-        System.out.println("Is chest");
         	Set<Snitch> snitches = snitchManager.findSnitches(player.getWorld(), player.getLocation());
         	for (Snitch snitch : snitches) {
         		if (!isOnSnitch(snitch, player.getName())) {
         			if (checkProximity(snitch, player.getName())) {
-        				System.out.println("Logging");
         				plugin.getJaLogger().logUsed(snitch, player, block);
         			}
         		}
