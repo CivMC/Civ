@@ -28,10 +28,6 @@ public class GroupManager {
 		return this.storage.isGroup(groupName);
 	}
 	
-	public FactionMember getMemberFromGroup(String groupName, String memberName){
-		return this.storage.findMemberByGroup(groupName, memberName);
-	}
-	
 	public Faction getGroup(String groupName){
 		return this.storage.findGroupByName(groupName);
 	}
@@ -45,7 +41,7 @@ public class GroupManager {
 	}
 
 	public Set<FactionMember> getMembersOfGroup(String groupName) {
-		return this.storage.findMembersOfGroup(groupName);
+		return this.storage.getMembersOfGroup(groupName);
 	}
 	
 	public boolean hasGroupMember(String groupName, String memberName){
@@ -73,11 +69,11 @@ public class GroupManager {
 	}
 	
 	public Set<Faction> getGroupsByMember(String memberName){
-		return this.storage.findGroupsByMember(memberName);
+		return this.storage.getGroupsByMember(memberName);
 	}
 	
 	public Set<Faction> getGroupsByFounder(String memberName){
-		return this.storage.findGroupsByFounder(memberName);
+		return this.storage.getGroupsByFounder(memberName);
 	}
 	
 	public boolean hasGroupModerator(String groupName, String memberName){
@@ -101,11 +97,11 @@ public class GroupManager {
 	}
 
 	public Set<Faction> getGroupsByModerator(String memberName) {
-		return this.storage.findGroupsByModerator(memberName);
+		return this.storage.getGroupsByModerator(memberName);
 	}
 
 	public Set<Moderator> getModeratorsOfGroup(String groupName) {
-		return this.storage.findModeratorsOfGroup(groupName);
+		return this.storage.getModeratorsOfGroup(groupName);
 	}
 
 	public void removeAllModeratorsFromGroup(String groupName) {
@@ -113,10 +109,10 @@ public class GroupManager {
 	}
 
 	public int getGroupsAmount() {
-		return this.storage.findGroupsAmount();
+		return this.storage.getGroupsAmount();
 	}
 	
 	public int getPlayerGroupsAmount(String playerName){
-		return this.storage.findPlayerGroupsAmount(playerName);
+		return this.storage.getPlayerGroupsAmount(playerName);
 	}
 }

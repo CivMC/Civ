@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import com.untamedears.citadel.Citadel;
 
@@ -24,6 +25,7 @@ public class Faction implements Serializable {
     public static final String kDisciplineMsg = "The group is under administrative discipline";
 
 	@Id private String name;
+	@Transient private String normalized_name;
     private String founder;
     private String password;
 
@@ -32,14 +34,23 @@ public class Faction implements Serializable {
 
     public Faction() {
         this.name = "";
+        this.normalized_name = "";
         this.founder = "";
         this.disciplineFlags = 0;
     }
 
     public Faction(String name, String founder) {
         this.name = name;
+        this.normalized_name = name.toLowerCase();
         this.founder = founder;
         this.disciplineFlags = 0;
+    }
+
+    public void Copy(Faction other) {
+        this.setName(other.getName());
+        this.setFounder(other.getFounder());
+        this.setPassword(other.getPassword());
+        this.setDisciplineFlags(other.getDisciplineFlags());
     }
 
     public String getName() {
@@ -48,6 +59,11 @@ public class Faction implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+        this.normalized_name = name.toLowerCase();
+    }
+
+    public String getNormalizedName() {
+        return this.normalized_name;
     }
 
     public String getFounder() {
@@ -142,11 +158,11 @@ public class Faction implements Serializable {
         if (!(o instanceof Faction)) return false;
 
         Faction faction = (Faction) o;
-        return this.name.equalsIgnoreCase(faction.getName());
+        return this.normalized_name.equals(faction.getNormalizedName());
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return this.normalized_name.hashCode();
     }
 }
