@@ -13,6 +13,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
+import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -334,8 +335,14 @@ public class PlantManager {
 		// make sure the chunk is loaded
 		loadChunk(chunkCoords);
 		
+		// add the plant
 		pChunk.add(coords, plant);
 		chunks.put(chunkCoords, pChunk);
+		
+		// since the chunk was loaded before the new plant was added, the state of the block
+		// may not match a previously destroyed crop. Force the block to growth state 0
+		Block block = plugin.getServer().getWorld(WorldID.getMCID(coords.w)).getBlockAt(coords.x, coords.y, coords.z);
+		plugin.getBlockGrower().growBlock(block, coords, 0.0f);
 	}
 	
 	public Plant get(Coords coords) {
