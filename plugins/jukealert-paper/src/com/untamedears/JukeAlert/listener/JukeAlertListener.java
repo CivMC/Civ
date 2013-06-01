@@ -27,6 +27,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,6 +40,7 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -209,6 +212,36 @@ public class JukeAlertListener implements Listener {
         }
         inList.removeAll(rmList);
     }
+    
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onInventoryOpenEvent(InventoryOpenEvent e){
+    	Player player = (Player) e.getPlayer();
+    	if(e.isCancelled()) {
+    		return;
+    	}
+        if (vanishNoPacket.isPlayerInvisible(player)) {
+            return;
+        }
+        Block block;
+        if (e.getInventory().getHolder() instanceof Chest) {
+			Chest chest = (Chest) e.getInventory().getHolder();
+			block = chest.getBlock();
+        } else if (e.getInventory().getHolder() instanceof DoubleChest){
+			DoubleChest chest = (DoubleChest) e.getInventory().getHolder();
+			block = chest.getLocation().getBlock();
+        } else {
+        	return;
+        }
+        	Set<Snitch> snitches = snitchManager.findSnitches(player.getWorld(), player.getLocation());
+        	for (Snitch snitch : snitches) {
+        		if (!isOnSnitch(snitch, player.getName())) {
+        			if (checkProximity(snitch, player.getName())) {
+        				plugin.getJaLogger().logUsed(snitch, player, block);
+        			}
+        		}
+        	}
+    }
+
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerKillEntity(EntityDeathEvent event) {
