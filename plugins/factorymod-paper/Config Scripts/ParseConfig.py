@@ -1,6 +1,7 @@
 from ConfigObjects import Recipe, Enchantment, ItemStack, Factory, defaults
 import ConfigObjects
 import pydot
+import math
 
 class ParseConfig:
     @staticmethod
@@ -9,7 +10,7 @@ class ParseConfig:
         myfile.write('\n\n##Factory List')
         sortedFactoryKeys=config['factories'].keys()
         sortedFactoryKeys.sort()
-        types=[('Enchanting',['Cauldron']),('Smelting',['Smelter']),('Food',['Bakery','Grill']),('Equipment',['Smithy']),('Wool',['Wool'])]
+        types=[('Enchanting',['Cauldron']),('Smelting',['Smelter']),('Food',['Bakery','Grill']),('Equipment',['Smithy']),('Items',['Wool','Rail'])]
         for type,names in types:
             myfile.write('\n\n-  ['+type+'](https://github.com/gmlaxfanatic/FactoryMod/wiki#'+type.lower()+')')        
         for type,names in types:
@@ -32,7 +33,7 @@ class ParseConfig:
                             myfile.write(str(input.amount)+' '+input.name)
                             if(recipe.inputs.index(input)!=len(recipe.inputs)-1):
                                 myfile.write(', ')
-                        myfile.write(' using '+str(recipe.time/factory.fuelTime)+' '+factory.fuel.name)
+                        myfile.write(' using '+str(int(math.ceil(recipe.time/float(factory.fuelTime))))+' '+factory.fuel.name)
 
     @staticmethod
     def saveConfig(config,filename='config.yml'):

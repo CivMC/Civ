@@ -61,8 +61,28 @@ def createFactorieAndRecipes():
         outputs[id]=[ItemStack(name='Charcoal',amount=256*1.333)]
         recipes[id]=Recipe(identifier=id,name='Burn '+wood,inputs=inputs[id],outputs=outputs[id],time=256/8*3/4)
         factories['Charcoal_Smelter'].addRecipe(recipes[id])
+    #Glass
+    id='Smelt_Glass'
+    inputs[id]=[ItemStack(name='Sand',amount=256)]
+    outputs[id]=[ItemStack(name='Glass',amount=256*3)]
+    recipes[id]=Recipe(identifier=id,name='Smelt Glass',inputs=inputs[id],outputs=outputs[id],time=48)
+    id='Glass_Smelter'
+    inputs[id]=[ItemStack(name='Sand',amount=2048*gMod),ItemStack(name='Charcoal',amount=256*gMod)]
+    factories[id]=Factory(identifier=id,name='Glass Smelter',inputs=inputs[id],outputRecipes=[recipes['Smelt_Glass']])
+    #Stone Brick Smelter
+    bricks={'Cracked':'Flint','Mossy':'Vine','Chiseled':'Gravel'}
+    id='Stone_Brick_Smelter'
+    inputs[id]=[ItemStack(name='Stone Brick',amount=512*gMod),ItemStack(name='Lapis Lazuli',amount=256*gMod)]
+    factories[id]=Factory(identifier=id,name='Fancy Stone Brick Smelter',inputs=inputs[id])
+    factoryid=id
+    for brick in bricks:
+        id='Smelt_'+brick+'_Stone_Brick'
+        inputs[id]=[ItemStack(name='Stone Brick',amount=64),ItemStack(name='Lapis Lazuli',amount=32),ItemStack(bricks[brick],amount=64)]
+        outputs[id]=[ItemStack(brick+' Stone Brick',amount=64)]
+        recipes[id]=Recipe(identifier=id,name='Smelt '+brick+' Stone Brick',inputs=inputs[id],outputs=outputs[id],time=64)
+        factories[factoryid].addRecipe(recipes[id])
     #Smelter
-    ores={'Coal Ore':('Coal',512,3,128),'Iron Ore':('Iron Ingot',384,1.75,128),'Gold Ore':('Gold Ingot',192,1.75,64),'Diamond Ore':('Diamond',96,3,16)}
+    ores={'Coal Ore':('Coal',512,3,128),'Iron Ore':('Iron Ingot',384,1.75,128),'Gold Ore':('Gold Ingot',192,7,32),'Diamond Ore':('Diamond',96,3,16)}
     inputs['Smelter']=[ItemStack(name=values[0],amount=values[1]) for ore,values in ores.items()]
     factories['Smelter']=Factory(identifier='Smelter',name='Ore Smelter',inputs=inputs['Smelter'])
     for ore,values in ores.items():
@@ -119,8 +139,8 @@ def createFactorieAndRecipes():
         outputs[id]=[ItemStack(name=key[0],amount=key[1]*value[2]*value[3])]
         recipes[id]=Recipe(identifier=id,name='Bake '+name,inputs=inputs[id],outputs=outputs[id],time=256/8*3/4)
         factories['Bakery'].addRecipe(recipes[id])
-    
-    #Wool
+    #Items
+    ##Wool
     inputColors=['White', 'Light Gray', 'Gray', 'Black', 'Brown', 'Pink']
     dyes={'White':'Bone Meal','Light Gray':'Light Gray Dye','Gray':'Gray Dye','Black':'Ink Sack','Red':'Rose Red','Orange':'Orange Dye','Yellow':'Dandelion Yellow','Lime':'Lime Dye','Green':'Cactus Green','Cyan':'Cyan Dye','Light Blue':'Light Blue Dye','Blue':'Lapis Lazuli','Purple':'Purple Dye','Magenta':'Magenta Dye','Pink':'Pink Dye','Brown':'Cocoa'}
     for inputColor in inputColors:
@@ -134,6 +154,20 @@ def createFactorieAndRecipes():
                 outputs[id]=[ItemStack(name=outputColor+' Wool',amount=64)]
                 recipes[id]=Recipe(identifier=id,name='Dye '+inputColor+' Wool '+outputColor,inputs=inputs[id],outputs=outputs[id])
                 factories[factoryId].addRecipe(recipes[id]) 
+    ##Rail
+    factoryid='Rail_Factory'
+    inputs[factoryid]=[ItemStack(name='Iron Ingot',amount=256),ItemStack(name='Stick',amount=96),ItemStack(name='Gold Ingot',amount=192),ItemStack(name='Redstone',amount=32)]
+    factories[factoryid]=Factory(identifier=factoryid,name='Rail Factory',inputs=inputs[factoryid])
+    id='Produce_Rail'
+    inputs[id]=[ItemStack(name='Iron Ingot',amount=128),ItemStack(name='Stick',amount=32)]
+    outputs[id]=[ItemStack(name='Rail',amount=528)]
+    recipes[id]=Recipe(identifier=id,name='Produce Rails',inputs=inputs[id],outputs=outputs[id])
+    factories[factoryid].addRecipe(recipes[id])
+    id='Produce_Powered_Rail'
+    inputs[id]=[ItemStack(name='Gold Ingot',amount=64),ItemStack(name='Redstone',amount=10),ItemStack(name='Stick',amount=10)]
+    outputs[id]=[ItemStack(name='Powered Rail',amount=102)]
+    recipes[id]=Recipe(identifier=id,name='Produce Powered Rails',inputs=inputs[id],outputs=outputs[id])
+    factories[factoryid].addRecipe(recipes[id])
     
     #Enchanting
     inputs['Wood_Cauldron']=[ItemStack(name='Stick',amount=1024*gMod)]
@@ -188,20 +222,30 @@ def createCraftingRecipes():
     
 def checkConflicts(factories):
     for factory in factories.values():
-        for itemStack in factory.inputs:
-            for otherFactory in factories.values():
-                for otherItemStack in otherFactory.inputs:
-                    if factory!=otherFactory and 'Wool' not in factory.name and 'Smelter' not in factory.name+otherFactory.name:#Crappy fix here, but too much beer so I can't think 
+        for otherFactory in factories.values():
+            if factory!=otherFactory:
+                sameInputs=len(factory.inputs)==len(otherFactory.inputs)
+                for itemStack in factory.inputs:
+                    inOtherFactory=False
+                    for otherItemStack in otherFactory.inputs:
                         if itemStack.equals(otherItemStack):
-                            print 'Conflict  of '+factory.name+' and '+otherFactory.name
+                            inOtherFactory=True
+                    sameInputs=sameInputs and inOtherFactory
+                if sameInputs:
+                    print 'Conflict  of '+factory.name+' and '+otherFactory.name
 def fixConflicts(factories):
     for factory in factories.values():
-        for itemStack in factory.inputs:
-            for otherFactory in factories.values():
-                for otherItemStack in otherFactory.inputs:
-                    if factory!=otherFactory and 'Wool' not in factory.name and 'Smelter' not in factory.name+otherFactory.name:
+        for otherFactory in factories.values():
+            if factory!=otherFactory:
+                sameInputs=len(factory.inputs)==len(otherFactory.inputs)
+                for itemStack in factory.inputs:
+                    inOtherFactory=False
+                    for otherItemStack in otherFactory.inputs:
                         if itemStack.equals(otherItemStack):
-                            itemStack.amount+=1
+                            inOtherFactory=True
+                    sameInputs=sameInputs and inOtherFactory
+                if sameInputs:
+                    factory.inputs[0].amount+=1
 
                             
 if __name__ == '__main__':

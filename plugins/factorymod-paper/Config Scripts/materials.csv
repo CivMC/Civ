@@ -87,7 +87,7 @@ Burning Furnace,BURNING_FURNACE,62,0
 Sign Post,SIGN_POST,63,0
 Wooden Door,WOODEN_DOOR,64,0
 Ladder,LADDER,65,0
-Rails,RAILS,66,0
+Rail,RAILS,66,0
 Cobblestone Stairs,COBBLESTONE_STAIRS,67,0
 Wall Sign,WALL_SIGN,68,0
 Lever,LEVER,69,0
@@ -119,7 +119,10 @@ Diode Block On,DIODE_BLOCK_ON,94,0
 Locked Chest,LOCKED_CHEST,95,0
 Trap Door,TRAP_DOOR,96,0
 Monster Eggs,MONSTER_EGGS,97,0
-Smooth Brick,SMOOTH_BRICK,98,0
+Stone Brick,SMOOTH_BRICK,98,0
+Cracked Stone Brick,SMOOTH_BRICK,98,1
+Mossy Stone Brick,SMOOTH_BRICK,98,2
+Chiseled Stone Brick,SMOOTH_BRICK,98,3
 Huge Mushroom 1,HUGE_MUSHROOM_1,99,0
 Huge Mushroom 2,HUGE_MUSHROOM_2,100,0
 Iron Fence,IRON_FENCE,101,0

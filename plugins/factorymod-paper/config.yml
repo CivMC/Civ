@@ -622,6 +622,30 @@ production_factories:
     repair_inputs:
       Diamond:
         material: DIAMOND
+  Glass_Smelter:
+    name: Glass Smelter
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Sand:
+        material: SAND
+        amount: 2048
+      Charcoal:
+        material: COAL
+        amount: 256
+        durability: 1
+    recipes:
+      - Smelt_Glass
+    repair_multiple: 26
+    repair_inputs:
+      Sand:
+        material: SAND
+        amount: 8
+      Charcoal:
+        material: COAL
+        durability: 1
   Gold_Axe_Smithy:
     name: Gold Axe Smithy
     fuel:
@@ -1390,6 +1414,41 @@ production_factories:
       Pink Wool:
         material: WOOL
         durability: 6
+  Rail_Factory:
+    name: Rail Factory
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 256
+      Stick:
+        material: STICK
+        amount: 96
+      Gold Ingot:
+        material: GOLD_INGOT
+        amount: 192
+      Redstone:
+        material: REDSTONE
+        amount: 32
+    recipes:
+      - Produce_Rail
+      - Produce_Powered_Rail
+    repair_multiple: 4
+    repair_inputs:
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 7
+      Stick:
+        material: STICK
+        amount: 3
+      Gold Ingot:
+        material: GOLD_INGOT
+        amount: 5
+      Redstone:
+        material: REDSTONE
   Smelter:
     name: Ore Smelter
     fuel:
@@ -1427,6 +1486,32 @@ production_factories:
         amount: 2
       Diamond:
         material: DIAMOND
+  Stone_Brick_Smelter:
+    name: Fancy Stone Brick Smelter
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Stone Brick:
+        material: SMOOTH_BRICK
+        amount: 512
+      Lapis Lazuli:
+        material: INK_SACK
+        amount: 256
+        durability: 4
+    recipes:
+      - Smelt_Cracked_Stone_Brick
+      - Smelt_Mossy_Stone_Brick
+      - Smelt_Chiseled_Stone_Brick
+    repair_multiple: 26
+    repair_inputs:
+      Stone Brick:
+        material: SMOOTH_BRICK
+        amount: 2
+      Lapis Lazuli:
+        material: INK_SACK
+        durability: 4
   Stone_Smelter:
     name: Stone Smelter
     fuel:
@@ -1722,6 +1807,7 @@ production_recipes:
         durability: 7
   Smelt_Diamond_Ore:
     name: Smelt Diamond Ore
+    production_time: 1
     inputs:
       Diamond Ore:
         material: DIAMOND_ORE
@@ -2025,6 +2111,34 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 9
+  Iron_XP_Bottle_1:
+    name: Brew XP Bottles  - 2
+    inputs:
+      Glass Bottle:
+        material: GLASS_BOTTLE
+        amount: 32
+      Nether Wart:
+        material: NETHER_STALK
+        amount: 128
+      Melon:
+        material: MELON
+        amount: 32
+      Sugar Cane:
+        material: SUGAR_CANE
+        amount: 192
+      Cookie:
+        material: COOKIE
+        amount: 256
+      Baked Potato:
+        material: BAKED_POTATO
+        amount: 64
+      Grilled Pork:
+        material: GRILLED_PORK
+        amount: 128
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
+        amount: 32
   Dye_White_Wool_Red:
     name: Dye White Wool Red
     inputs:
@@ -2659,6 +2773,19 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 13
+  Wood_XP_Bottle_3:
+    name: Brew XP Bottles  - 4
+    inputs:
+      Glass Bottle:
+        material: GLASS_BOTTLE
+        amount: 6
+      Cookie:
+        material: COOKIE
+        amount: 1280
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
+        amount: 6
   Iron_Chestplate:
     name: Forge Iron Chestplate.
     inputs:
@@ -2685,22 +2812,69 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 14
-  Dye_Gray_Wool_Light_Blue:
-    name: Dye Gray Wool Light Blue
+  Gold_Leggings:
+    name: Forge Gold Leggings.
     inputs:
-      Gray Wool:
-        material: WOOL
-        amount: 64
-        durability: 7
-      Light Blue Dye:
-        material: INK_SACK
-        amount: 4
-        durability: 12
+      Gold Ingot:
+        material: GOLD_INGOT
+        amount: 35
     outputs:
-      Light Blue Wool:
-        material: WOOL
-        amount: 64
-        durability: 3
+      Gold Leggings:
+        material: GOLD_LEGGINGS
+        amount: 15
+        durability: -218
+    enchantments:
+      Unbreaking 3:
+        type: DURABILITY
+        level: 3
+      Blast Protection 1:
+        type: PROTECTION_EXPLOSIONS
+        level: 1
+        probability: 0.5
+      Blast Protection 2:
+        type: PROTECTION_EXPLOSIONS
+        level: 2
+        probability: 0.4
+      Blast Protection 3:
+        type: PROTECTION_EXPLOSIONS
+        level: 3
+        probability: 0.3
+      Blast Protection 4:
+        type: PROTECTION_EXPLOSIONS
+        level: 4
+        probability: 0.4
+      Fire Protection 1:
+        type: PROTECTION_FIRE
+        level: 1
+        probability: 0.5
+      Fire Protection 2:
+        type: PROTECTION_FIRE
+        level: 2
+        probability: 0.4
+      Fire Protection 3:
+        type: PROTECTION_FIRE
+        level: 3
+        probability: 0.3
+      Fire Protection 4:
+        type: PROTECTION_FIRE
+        level: 4
+        probability: 0.4
+      Projectile Protection 1:
+        type: PROTECTION_PROJECTILE
+        level: 1
+        probability: 0.5
+      Projectile Protection 2:
+        type: PROTECTION_PROJECTILE
+        level: 2
+        probability: 0.4
+      Projectile Protection 3:
+        type: PROTECTION_PROJECTILE
+        level: 3
+        probability: 0.3
+      Projectile Protection 4:
+        type: PROTECTION_PROJECTILE
+        level: 4
+        probability: 0.4
   Dye_White_Wool_Light_Gray:
     name: Dye White Wool Light Gray
     inputs:
@@ -2716,20 +2890,22 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 8
-  Gold_Hoe:
-    name: Forge Gold Hoe.
+  Dye_Gray_Wool_Green:
+    name: Dye Gray Wool Green
     inputs:
-      Gold Ingot:
-        material: GOLD_INGOT
-        amount: 10
+      Gray Wool:
+        material: WOOL
+        amount: 64
+        durability: 7
+      Cactus Green:
+        material: INK_SACK
+        amount: 4
+        durability: 2
     outputs:
-      Gold Hoe:
-        material: GOLD_HOE
-        amount: 30
-    enchantments:
-      Unbreaking 3:
-        type: DURABILITY
-        level: 3
+      Green Wool:
+        material: WOOL
+        amount: 64
+        durability: 13
   Diamond_Chestplate:
     name: Forge Diamond Chestplate.
     inputs:
@@ -3124,6 +3300,17 @@ production_recipes:
       Bread:
         material: BREAD
         amount: 256
+  Smelt_Glass:
+    name: Smelt Glass
+    production_time: 48
+    inputs:
+      Sand:
+        material: SAND
+        amount: 256
+    outputs:
+      Glass:
+        material: GLASS
+        amount: 768
   Dye_Brown_Wool_Gray:
     name: Dye Brown Wool Gray
     inputs:
@@ -3150,17 +3337,30 @@ production_recipes:
       Diamond Helmet:
         material: DIAMOND_HELMET
         amount: 15
+  Produce_Rail:
+    name: Produce Rails
+    inputs:
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 128
+      Stick:
+        material: STICK
+        amount: 32
+    outputs:
+      Rail:
+        material: RAILS
+        amount: 528
   Smelt_Gold_Ore:
     name: Smelt Gold Ore
-    production_time: 6
+    production_time: 3
     inputs:
       Gold Ore:
         material: GOLD_ORE
-        amount: 64
+        amount: 32
     outputs:
       Gold Ingot:
         material: GOLD_INGOT
-        amount: 112
+        amount: 224
   Dye_Gray_Wool_Brown:
     name: Dye Gray Wool Brown
     inputs:
@@ -3219,34 +3419,25 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 1
-  Iron_XP_Bottle_1:
-    name: Brew XP Bottles  - 2
+  Smelt_Cracked_Stone_Brick:
+    name: Smelt Cracked Stone Brick
+    production_time: 64
     inputs:
-      Glass Bottle:
-        material: GLASS_BOTTLE
-        amount: 32
-      Nether Wart:
-        material: NETHER_STALK
-        amount: 128
-      Melon:
-        material: MELON
-        amount: 32
-      Sugar Cane:
-        material: SUGAR_CANE
-        amount: 192
-      Cookie:
-        material: COOKIE
-        amount: 256
-      Baked Potato:
-        material: BAKED_POTATO
+      Stone Brick:
+        material: SMOOTH_BRICK
         amount: 64
-      Grilled Pork:
-        material: GRILLED_PORK
-        amount: 128
-    outputs:
-      Exp Bottle:
-        material: EXP_BOTTLE
+      Lapis Lazuli:
+        material: INK_SACK
         amount: 32
+        durability: 4
+      Flint:
+        material: FLINT
+        amount: 64
+    outputs:
+      Cracked Stone Brick:
+        material: SMOOTH_BRICK
+        amount: 64
+        durability: 1
   Iron_XP_Bottle_0:
     name: Brew XP Bottles  - 1
     inputs:
@@ -3392,22 +3583,20 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 3
-  Dye_Gray_Wool_Green:
-    name: Dye Gray Wool Green
+  Gold_Hoe:
+    name: Forge Gold Hoe.
     inputs:
-      Gray Wool:
-        material: WOOL
-        amount: 64
-        durability: 7
-      Cactus Green:
-        material: INK_SACK
-        amount: 4
-        durability: 2
+      Gold Ingot:
+        material: GOLD_INGOT
+        amount: 10
     outputs:
-      Green Wool:
-        material: WOOL
-        amount: 64
-        durability: 13
+      Gold Hoe:
+        material: GOLD_HOE
+        amount: 30
+    enchantments:
+      Unbreaking 3:
+        type: DURABILITY
+        level: 3
   Gold_Sword:
     name: Forge Gold Sword.
     inputs:
@@ -3474,6 +3663,25 @@ production_recipes:
         type: LOOT_BONUS_MOBS
         level: 3
         probability: 0.3
+  Smelt_Chiseled_Stone_Brick:
+    name: Smelt Chiseled Stone Brick
+    production_time: 64
+    inputs:
+      Stone Brick:
+        material: SMOOTH_BRICK
+        amount: 64
+      Lapis Lazuli:
+        material: INK_SACK
+        amount: 32
+        durability: 4
+      Gravel:
+        material: GRAVEL
+        amount: 64
+    outputs:
+      Chiseled Stone Brick:
+        material: SMOOTH_BRICK
+        amount: 64
+        durability: 3
   Diamond_Pickaxe:
     name: Forge Diamond Pickaxe.
     inputs:
@@ -3484,6 +3692,25 @@ production_recipes:
       Diamond Pickaxe:
         material: DIAMOND_PICKAXE
         amount: 15
+  Smelt_Mossy_Stone_Brick:
+    name: Smelt Mossy Stone Brick
+    production_time: 64
+    inputs:
+      Stone Brick:
+        material: SMOOTH_BRICK
+        amount: 64
+      Lapis Lazuli:
+        material: INK_SACK
+        amount: 32
+        durability: 4
+      Vine:
+        material: VINE
+        amount: 64
+    outputs:
+      Mossy Stone Brick:
+        material: SMOOTH_BRICK
+        amount: 64
+        durability: 2
   Dye_White_Wool_Magenta:
     name: Dye White Wool Magenta
     inputs:
@@ -3570,69 +3797,22 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 10
-  Gold_Leggings:
-    name: Forge Gold Leggings.
+  Dye_Gray_Wool_Light_Blue:
+    name: Dye Gray Wool Light Blue
     inputs:
-      Gold Ingot:
-        material: GOLD_INGOT
-        amount: 35
+      Gray Wool:
+        material: WOOL
+        amount: 64
+        durability: 7
+      Light Blue Dye:
+        material: INK_SACK
+        amount: 4
+        durability: 12
     outputs:
-      Gold Leggings:
-        material: GOLD_LEGGINGS
-        amount: 15
-        durability: -218
-    enchantments:
-      Unbreaking 3:
-        type: DURABILITY
-        level: 3
-      Blast Protection 1:
-        type: PROTECTION_EXPLOSIONS
-        level: 1
-        probability: 0.5
-      Blast Protection 2:
-        type: PROTECTION_EXPLOSIONS
-        level: 2
-        probability: 0.4
-      Blast Protection 3:
-        type: PROTECTION_EXPLOSIONS
-        level: 3
-        probability: 0.3
-      Blast Protection 4:
-        type: PROTECTION_EXPLOSIONS
-        level: 4
-        probability: 0.4
-      Fire Protection 1:
-        type: PROTECTION_FIRE
-        level: 1
-        probability: 0.5
-      Fire Protection 2:
-        type: PROTECTION_FIRE
-        level: 2
-        probability: 0.4
-      Fire Protection 3:
-        type: PROTECTION_FIRE
-        level: 3
-        probability: 0.3
-      Fire Protection 4:
-        type: PROTECTION_FIRE
-        level: 4
-        probability: 0.4
-      Projectile Protection 1:
-        type: PROTECTION_PROJECTILE
-        level: 1
-        probability: 0.5
-      Projectile Protection 2:
-        type: PROTECTION_PROJECTILE
-        level: 2
-        probability: 0.4
-      Projectile Protection 3:
-        type: PROTECTION_PROJECTILE
-        level: 3
-        probability: 0.3
-      Projectile Protection 4:
-        type: PROTECTION_PROJECTILE
-        level: 4
-        probability: 0.4
+      Light Blue Wool:
+        material: WOOL
+        amount: 64
+        durability: 3
   Gold_Axe:
     name: Forge Gold Axe.
     inputs:
@@ -3786,19 +3966,22 @@ production_recipes:
       Iron Ingot:
         material: IRON_INGOT
         amount: 224
-  Wood_XP_Bottle_3:
-    name: Brew XP Bottles  - 4
+  Produce_Powered_Rail:
+    name: Produce Powered Rails
     inputs:
-      Glass Bottle:
-        material: GLASS_BOTTLE
-        amount: 6
-      Cookie:
-        material: COOKIE
-        amount: 1280
+      Gold Ingot:
+        material: GOLD_INGOT
+        amount: 64
+      Redstone:
+        material: REDSTONE
+        amount: 10
+      Stick:
+        material: STICK
+        amount: 10
     outputs:
-      Exp Bottle:
-        material: EXP_BOTTLE
-        amount: 6
+      Powered Rail:
+        material: POWERED_RAIL
+        amount: 102
   Gold_Helmet:
     name: Forge Gold Helmet.
     inputs:
