@@ -105,7 +105,7 @@ realistic_biomes:
 
   NETHER_WARTS:
    base_rate: 0.015
-   persistent_growth_period: 16
+   persistent_growth_period: 1
    needs_sunlight: false
    not_full_sunlight_multiplier: 2.0
    soil_material: SOUL_SAND
@@ -183,7 +183,7 @@ realistic_biomes:
    needs_sunlight: true
    base_rate: 0.1
    not_full_sunlight_multiplier: 0.2
-   #persistent_growth_period: 24
+   #persistent_growth_period: 40
    # get incremental bonus from an unbroken chain of up to 25 
    # vines starting directly below the cocoa pod
    soil_material: VINE

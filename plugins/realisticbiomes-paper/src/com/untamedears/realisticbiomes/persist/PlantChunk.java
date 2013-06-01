@@ -77,7 +77,11 @@ public class PlantChunk {
 	
 	public void add(Coords coords, Plant plant) {
 		if (!loaded) {
-			plants = new HashMap<Coords, Plant>();
+			if (!inDatabase)
+				plants = new HashMap<Coords, Plant>();
+			else
+				load(coords);
+			
 			loaded = true;
 		}
 		
@@ -171,19 +175,16 @@ public class PlantChunk {
 			if (!plants.isEmpty()) {
 				for (Coords coords: plants.keySet()) {
 					Plant plant = plants.get(coords);
-					float growth = plant.getGrowth();
 					
-					if (growth > 0.0) {
-						savePlantsStmt.setLong(1, index);
-						savePlantsStmt.setInt(2, coords.w);
-						savePlantsStmt.setInt(3, coords.x);
-						savePlantsStmt.setInt(4, coords.y);
-						savePlantsStmt.setInt(5, coords.z);
-						savePlantsStmt.setLong(6, plant.getUpdateTime());
-						savePlantsStmt.setFloat(7, plant.getGrowth());
-						
-						savePlantsStmt.execute();
-					}
+					savePlantsStmt.setLong(1, index);
+					savePlantsStmt.setInt(2, coords.w);
+					savePlantsStmt.setInt(3, coords.x);
+					savePlantsStmt.setInt(4, coords.y);
+					savePlantsStmt.setInt(5, coords.z);
+					savePlantsStmt.setLong(6, plant.getUpdateTime());
+					savePlantsStmt.setFloat(7, plant.getGrowth());
+					
+					savePlantsStmt.execute();
 				}
 			}
 			else {
