@@ -6,10 +6,14 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.bukkit.entity.Player;
+
 import com.untamedears.citadel.dao.CitadelDao;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionMember;
 import com.untamedears.citadel.entity.Moderator;
+import com.untamedears.citadel.events.GroupChangeEvent;
+import com.untamedears.citadel.events.GroupChangeType;
 
 /**
  * User: JonnyD
@@ -39,8 +43,18 @@ public class GroupStorage {
         return findGroupByName(groupName) != null;
     }
 
-    public Faction addGroup(Faction group){
-        if (isGroup(group.getName())) {
+    public Faction addGroup(Faction group, Player initiator){
+        Faction existingGroup = findGroupByName(group.getName());
+        if (existingGroup != null) {
+            // This is also used to save DB changes to the Faction
+            existingGroup.Copy(group);
+            this.dao.save(group);
+            return existingGroup;
+        }
+        GroupChangeEvent event = new GroupChangeEvent(
+            GroupChangeType.CREATE, initiator, group.getName(), null);
+        Citadel.getStaticServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
             return null;
         }
         String normalizedName = group.getNormalizedName();
@@ -51,8 +65,14 @@ public class GroupStorage {
         return group;
     }
 
-    public void removeGroup(Faction group){
+    public void removeGroup(Faction group, Player initiator){
         if (!isGroup(group.getName())) {
+            return;
+        }
+        GroupChangeEvent event = new GroupChangeEvent(
+            GroupChangeType.DELETE, initiator, group.getName(), null);
+        Citadel.getStaticServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
             return;
         }
         String normalizedName = group.getNormalizedName();
@@ -100,10 +120,16 @@ public class GroupStorage {
         return members != null && members.contains(normalizeName(playerName));
     }
 
-    public boolean addMemberToGroup(FactionMember factionMember){
+    public boolean addMemberToGroup(FactionMember factionMember, Player initiator){
         String groupName = factionMember.getFactionName();
         String playerName = factionMember.getMemberName();
         if (isMember(groupName, playerName)) {
+            return false;
+        }
+        GroupChangeEvent event = new GroupChangeEvent(
+            GroupChangeType.ADD_MEMBER, initiator, groupName, playerName);
+        Citadel.getStaticServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
             return false;
         }
         Set<String> members = this.memberStorage.get(normalizeName(groupName));
@@ -115,10 +141,16 @@ public class GroupStorage {
         return true;
     }
 
-    public boolean removeMemberFromGroup(FactionMember factionMember){
+    public boolean removeMemberFromGroup(FactionMember factionMember, Player initiator){
         String groupName = factionMember.getFactionName();
         String playerName = factionMember.getMemberName();
         if (!isMember(groupName, playerName)) {
+            return false;
+        }
+        GroupChangeEvent event = new GroupChangeEvent(
+            GroupChangeType.RM_MEMBER, initiator, groupName, playerName);
+        Citadel.getStaticServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
             return false;
         }
         Set<String> members = this.memberStorage.get(normalizeName(groupName));
@@ -180,10 +212,16 @@ public class GroupStorage {
         return isModerator(groupName, memberName);
     }
 
-    public boolean addModeratorToGroup(Moderator moderator){
+    public boolean addModeratorToGroup(Moderator moderator, Player initiator){
         String groupName = moderator.getFactionName();
         String playerName = moderator.getMemberName();
         if (isModerator(groupName, playerName)) {
+            return false;
+        }
+        GroupChangeEvent event = new GroupChangeEvent(
+            GroupChangeType.ADD_MODERATOR, initiator, groupName, playerName);
+        Citadel.getStaticServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
             return false;
         }
         Set<String> moderators = this.moderatorStorage.get(normalizeName(groupName));
@@ -195,10 +233,16 @@ public class GroupStorage {
         return true;
     }
 
-    public boolean removeModeratorToGroup(Moderator moderator){
+    public boolean removeModeratorToGroup(Moderator moderator, Player initiator){
         String groupName = moderator.getFactionName();
         String playerName = moderator.getMemberName();
         if (!isModerator(groupName, playerName)) {
+            return false;
+        }
+        GroupChangeEvent event = new GroupChangeEvent(
+            GroupChangeType.RM_MODERATOR, initiator, groupName, playerName);
+        Citadel.getStaticServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
             return false;
         }
         Set<String> moderators = this.moderatorStorage.get(normalizeName(groupName));

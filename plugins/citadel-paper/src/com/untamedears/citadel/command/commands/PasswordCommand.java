@@ -4,6 +4,7 @@ import static com.untamedears.citadel.Utility.sendMessage;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
@@ -48,7 +49,11 @@ public class PasswordCommand extends PlayerCommand {
 			return true;
 		}
 		group.setPassword(password);
-		groupManager.addGroup(group);
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player)sender;
+        }
+		groupManager.addGroup(group, player);
 		sendMessage(sender, ChatColor.GREEN, "Changed password for %s to \"%s\"", groupName, password);
 		return true;
 	}

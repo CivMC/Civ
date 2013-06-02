@@ -37,9 +37,13 @@ public class ReprieveCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.YELLOW, "Group is not disabled");
             return true;
         }
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player)sender;
+        }
 		group.setDisabled(false);
 		sendMessage(sender, ChatColor.GREEN, "Group %s is enabled", group_name);
-        group_manager.addGroup(group);
+        group_manager.addGroup(group, player);
 		return true;
 	}
 }

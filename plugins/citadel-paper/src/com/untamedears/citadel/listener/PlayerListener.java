@@ -54,7 +54,8 @@ public class PlayerListener implements Listener {
         MemberManager memberManager = Citadel.getMemberManager();
         memberManager.addOnlinePlayer(ple.getPlayer());
 
-        String playerName = ple.getPlayer().getName();
+        Player player = ple.getPlayer();
+        String playerName = player.getName();
         Member member = memberManager.getMember(playerName);
         if(member == null){
             member = new Member(playerName);
@@ -72,13 +73,13 @@ public class PlayerListener implements Listener {
                 i++;
             }
             Faction group = new Faction(groupName, playerName);
-            groupManager.addGroup(group);
+            groupManager.addGroup(group, player);
             personalGroupManager.addPersonalGroup(groupName, playerName);
         } else if(hasPersonalGroup){
             String personalGroupName = personalGroupManager.getPersonalGroup(playerName).getGroupName();
             if(!groupManager.isGroup(personalGroupName)){
                 Faction group = new Faction(personalGroupName, playerName);
-                groupManager.addGroup(group);
+                groupManager.addGroup(group, player);
             }
         }
     }

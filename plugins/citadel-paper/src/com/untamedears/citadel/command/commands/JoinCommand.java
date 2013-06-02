@@ -4,6 +4,7 @@ import static com.untamedears.citadel.Utility.sendMessage;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
@@ -62,7 +63,11 @@ public class JoinCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "Incorrect password");
 			return true;
 		}
-		groupManager.addMemberToGroup(groupName, playerName);
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player)sender;
+        }
+		groupManager.addMemberToGroup(groupName, playerName, player);
 		sendMessage(sender, ChatColor.GREEN, "You have joined %s", groupName);
 		MemberManager memberManager = Citadel.getMemberManager();
 		String founderName = group.getFounder();

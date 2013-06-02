@@ -55,7 +55,11 @@ public class DisciplineCommand extends PlayerCommand {
 			group.setDisabled(true);
 			sendMessage(sender, ChatColor.GREEN, "Group %s is disabled", group_name);
 		}
-        group_manager.addGroup(group);
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player)sender;
+        }
+        group_manager.addGroup(group, player);
 		return true;
 	}
 }

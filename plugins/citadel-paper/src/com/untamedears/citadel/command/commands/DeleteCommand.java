@@ -4,6 +4,7 @@ import static com.untamedears.citadel.Utility.sendMessage;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
@@ -49,6 +50,10 @@ public class DeleteCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "You cannot delete your default group");
 			return true;
 		}
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player)sender;
+        }
 		
 		PersonalGroupManager personalGroupManager = Citadel.getPersonalGroupManager();
 		String personalGroup = personalGroupManager.getPersonalGroup(senderName).getGroupName();
@@ -58,7 +63,7 @@ public class DeleteCommand extends PlayerCommand {
 		
 		groupManager.removeAllMembersFromGroup(groupName);
 		groupManager.removeAllModeratorsFromGroup(groupName);
-		groupManager.removeGroup(group);
+		groupManager.removeGroup(group, player);
 		
 		sendMessage(sender, ChatColor.GREEN, "Deleted group: %s", groupName);
 		return true;

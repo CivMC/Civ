@@ -2,6 +2,8 @@ package com.untamedears.citadel;
 
 import java.util.Set;
 
+import org.bukkit.entity.Player;
+
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionMember;
 import com.untamedears.citadel.entity.Moderator;
@@ -32,12 +34,12 @@ public class GroupManager {
 		return this.storage.findGroupByName(groupName);
 	}
 	
-	public void addGroup(Faction group){
-		this.storage.addGroup(group);
+	public void addGroup(Faction group, Player initiator){
+		this.storage.addGroup(group, initiator);
 	}
 	
-	public void removeGroup(Faction group){
-		this.storage.removeGroup(group);
+	public void removeGroup(Faction group, Player initiator){
+		this.storage.removeGroup(group, initiator);
 	}
 
 	public Set<FactionMember> getMembersOfGroup(String groupName) {
@@ -48,20 +50,20 @@ public class GroupManager {
 		return this.storage.hasGroupMember(groupName, memberName);
 	}
 	
-	public void addMemberToGroup(String groupName, String memberName){
-		addMemberToGroup(new FactionMember(memberName, groupName));
+	public void addMemberToGroup(String groupName, String memberName, Player initiator){
+		addMemberToGroup(new FactionMember(memberName, groupName), initiator);
 	}
 	
-	public void addMemberToGroup(FactionMember factionMember){
-		this.storage.addMemberToGroup(factionMember);
+	public void addMemberToGroup(FactionMember factionMember, Player initiator){
+		this.storage.addMemberToGroup(factionMember, initiator);
 	}
 	
-	public void removeMemberFromGroup(String groupName, String memberName){
-		removeMemberFromGroup(new FactionMember(memberName, groupName));
+	public void removeMemberFromGroup(String groupName, String memberName, Player initiator){
+		removeMemberFromGroup(new FactionMember(memberName, groupName), initiator);
 	}
 	
-	public void removeMemberFromGroup(FactionMember factionMember){
-		this.storage.removeMemberFromGroup(factionMember);
+	public void removeMemberFromGroup(FactionMember factionMember, Player initiator){
+		this.storage.removeMemberFromGroup(factionMember, initiator);
 	}
 	
 	public void removeAllMembersFromGroup(String groupName){
@@ -80,20 +82,20 @@ public class GroupManager {
 		return this.storage.hasGroupModerator(groupName, memberName);
 	}
 	
-	public void addModeratorToGroup(String groupName, String memberName){
-		addModeratorToGroup(new Moderator(memberName, groupName));
+	public void addModeratorToGroup(String groupName, String memberName, Player initiator){
+		addModeratorToGroup(new Moderator(memberName, groupName), initiator);
 	}
 	
-	public void addModeratorToGroup(Moderator moderator){
-		this.storage.addModeratorToGroup(moderator);
+	public void addModeratorToGroup(Moderator moderator, Player initiator){
+		this.storage.addModeratorToGroup(moderator, initiator);
 	}
 	
-	public void removeModeratorFromGroup(String groupName, String memberName){
-		removeModeratorFromGroup(new Moderator(memberName, groupName));
+	public void removeModeratorFromGroup(String groupName, String memberName, Player initiator){
+		removeModeratorFromGroup(new Moderator(memberName, groupName), initiator);
 	}
 	
-	public void removeModeratorFromGroup(Moderator moderator){
-		this.storage.removeModeratorToGroup(moderator);
+	public void removeModeratorFromGroup(Moderator moderator, Player initiator){
+		this.storage.removeModeratorToGroup(moderator, initiator);
 	}
 
 	public Set<Faction> getGroupsByModerator(String memberName) {
