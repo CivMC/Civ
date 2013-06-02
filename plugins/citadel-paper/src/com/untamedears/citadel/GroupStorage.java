@@ -134,7 +134,7 @@ public class GroupStorage {
         }
         Set<FactionMember> results = new TreeSet<FactionMember>();
         for (String mem : members) {
-            results.add(new FactionMember(groupName, mem));
+            results.add(new FactionMember(mem, groupName));
         }
         return results;
     }
@@ -214,7 +214,7 @@ public class GroupStorage {
         }
         Set<Moderator> results = new TreeSet<Moderator>();
         for (String mod : moderators) {
-            results.add(new Moderator(groupName, mod));
+            results.add(new Moderator(mod, groupName));
         }
         return results;
     }

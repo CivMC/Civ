@@ -14,7 +14,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name="faction_member",  uniqueConstraints={
 		   @UniqueConstraint(columnNames={"faction_name", "member_name"})})
-public class FactionMember {
+public class FactionMember implements Comparable {
 	@Id private String factionName;
 	@Id private String memberName;
 	
@@ -54,5 +54,18 @@ public class FactionMember {
         int result = factionName.hashCode();
         result = 31 * result + memberName.hashCode();
         return result;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (!(o instanceof FactionMember)) {
+            throw new ClassCastException();
+        }
+        FactionMember other = (FactionMember)o;
+        int compare = this.getFactionName().compareTo(other.getFactionName());
+        if (compare != 0) {
+            return compare;
+        }
+        return this.getMemberName().compareTo(other.getMemberName());
     }
 }

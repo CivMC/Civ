@@ -16,7 +16,7 @@ import com.untamedears.citadel.Citadel;
  * Time: 1:14 AM
  */
 @Entity
-public class Faction implements Serializable {
+public class Faction implements Serializable, Comparable {
 
 	private static final long serialVersionUID = -1660123901051487634L;
     public static final byte kDisabledFlag = 0x01;
@@ -164,5 +164,14 @@ public class Faction implements Serializable {
     @Override
     public int hashCode() {
         return this.normalized_name.hashCode();
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (!(o instanceof Faction)) {
+            throw new ClassCastException();
+        }
+        Faction other = (Faction)o;
+        return this.getNormalizedName().compareTo(other.getNormalizedName());
     }
 }
