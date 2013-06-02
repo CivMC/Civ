@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 
 import com.untamedears.citadel.Citadel;
 
@@ -29,6 +30,10 @@ public class Faction implements Serializable, Comparable {
     private String founder;
     private String password;
 
+    @Version
+    @Column(name="version")
+    private int dbRowVersion;  // Do not touch
+
     @Column(name="discipline_flags", nullable=false)
     private Integer disciplineFlags;
 
@@ -46,8 +51,12 @@ public class Faction implements Serializable, Comparable {
         this.disciplineFlags = 0;
     }
 
+    // Do not touch
+    public int getDbRowVersion() { return this.dbRowVersion; }
+    public void setDbRowVersion(int value) { this.dbRowVersion = value; }
+    // Do not touch
+
     public void Copy(Faction other) {
-        this.setName(other.getName());
         this.setFounder(other.getFounder());
         this.setPassword(other.getPassword());
         this.setDisciplineFlags(other.getDisciplineFlags());
