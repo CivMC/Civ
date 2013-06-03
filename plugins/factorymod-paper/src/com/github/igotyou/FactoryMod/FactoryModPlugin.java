@@ -19,6 +19,7 @@ import com.github.igotyou.FactoryMod.interfaces.Properties;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.listeners.RedstoneListener;
 import com.github.igotyou.FactoryMod.managers.FactoryModManager;
+import com.github.igotyou.FactoryMod.properties.PrintingPressProperties;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
@@ -34,6 +35,7 @@ public class FactoryModPlugin extends JavaPlugin
 	FactoryModManager manager;
 	public static HashMap<String, ProductionProperties> productionProperties;
 	public static HashMap<String,ProductionRecipe> productionRecipes;
+	public PrintingPressProperties printingPressProperties;
 	
 	public static final String VERSION = "v1.0"; //Current version of plugin
 	public static final String PLUGIN_NAME = "FactoryMod"; //Name of plugin
@@ -75,7 +77,7 @@ public class FactoryModPlugin extends JavaPlugin
 	{
 		try
 		{
-			getServer().getPluginManager().registerEvents(new FactoryModListener(manager, manager.getProductionManager()), this);
+			getServer().getPluginManager().registerEvents(new FactoryModListener(manager, manager.getProductionManager(), manager.getPrintingPressManager()), this);
 			getServer().getPluginManager().registerEvents(new RedstoneListener(manager, manager.getProductionManager()), this);
 		}
 		catch(Exception e)
@@ -245,7 +247,21 @@ public class FactoryModPlugin extends JavaPlugin
 			ProductionProperties productionProperty = new ProductionProperties(inputs, factoryRecipes, fuel, fuelTime, factoryName, repair);
 			productionProperties.put(title, productionProperty);
 		}
+		
+		ConfigurationSection configPrintingPresses=config.getConfigurationSection("printing_presses");
+		ItemList<NamedItemStack> ppFuel=getItems(configPrintingPresses.getConfigurationSection("fuel"));
+		if(ppFuel.isEmpty())
+		{
+			ppFuel=new ItemList<NamedItemStack>();
+			ppFuel.add(new NamedItemStack(Material.getMaterial("COAL"),1,(short)1,"Charcoal"));
+		}
+		ItemList<NamedItemStack> ppConstructionCost=getItems(configPrintingPresses.getConfigurationSection("construction"));
+		int ppEnergyTime = configPrintingPresses.getInt("fuel_time", 2);
+		int ppRepair = configPrintingPresses.getInt("repair_multiple",0);
+		String ppName = configPrintingPresses.getString("name", "Printing Press");
+		printingPressProperties = new PrintingPressProperties(ppFuel, ppConstructionCost, ppEnergyTime, ppName, ppRepair);
 	}
+	
 	private List<ProbabilisticEnchantment> getEnchantments(ConfigurationSection configEnchantments)
 	{
 		List<ProbabilisticEnchantment> enchantments=new ArrayList<ProbabilisticEnchantment>();
@@ -346,5 +362,9 @@ public class FactoryModPlugin extends JavaPlugin
 	public static void sendConsoleMessage(String message) 
 	{
 		Bukkit.getLogger().info(FactoryModPlugin.PLUGIN_PREFIX + message);	
+	}
+
+	public PrintingPressProperties getPrintingPressProperties() {
+		return printingPressProperties;
 	}
 }

@@ -18,8 +18,10 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
+import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.managers.FactoryModManager;
+import com.github.igotyou.FactoryMod.managers.PrintingPressManager;
 import com.github.igotyou.FactoryMod.managers.ProductionManager;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
@@ -32,14 +34,21 @@ public class FactoryModListener implements Listener
 	private FactoryModManager factoryMan;
 	//this is a lazy fix...
 	private ProductionManager productionMan;
+	private PrintingPressManager printingPressMan;
 	
 	/**
 	 * Constructor
 	 */
-	public FactoryModListener(FactoryModManager factoryManager, ProductionManager productionManager)
+	public FactoryModListener(FactoryModManager factoryManager, ProductionManager productionManager, PrintingPressManager printingPressManager)
 	{
 		this.factoryMan = factoryManager;
 		this.productionMan = productionManager;
+		this.printingPressMan = printingPressManager;
+	}
+	
+	private boolean isPotentialFactoryBlock(Block block) {
+		return block.getType() == FactoryModPlugin.CENTRAL_BLOCK_MATERIAL || block.getType() == Material.IRON_BLOCK || block.getType() == Material.CHEST||
+				block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE;
 	}
 	
 	/**
@@ -51,25 +60,35 @@ public class FactoryModListener implements Listener
 	{
 		Block block = e.getBlock();
 		//Is the block part of a factory?
-		if(block.getType() == FactoryModPlugin.CENTRAL_BLOCK_MATERIAL || block.getType() == Material.CHEST||
-			block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE)
+		if(isPotentialFactoryBlock(block))
 		{
 			if (factoryMan.factoryExistsAt(block.getLocation()))
 			{
-				//Is the factory a production factory?
-				if (productionMan.factoryExistsAt(block.getLocation()))
+				//if the blocks is not reinforced destroy it
+				if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 				{
-					ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
-					//if the blocks is not reinforced destroy it
-					if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
-					{
-						factory.destroy(block.getLocation());
-						if(FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
-						{
-							productionMan.removeFactory(factory);
-						}
-					}
+					destroyFactoryAt(block);
 				}
+			}
+		}
+	}
+	
+	private void destroyFactoryAt(Block block) {
+		//Is the factory a production factory?
+		if (productionMan.factoryExistsAt(block.getLocation()))
+		{
+			ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
+			factory.destroy(block.getLocation());
+			if(FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
+			{
+				productionMan.removeFactory(factory);
+			}
+		} else if (printingPressMan.factoryExistsAt(block.getLocation())) {
+			PrintingPress factory = (PrintingPress) (printingPressMan.getFactory(block.getLocation()));
+			factory.destroy(block.getLocation());
+			if(FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
+			{
+				printingPressMan.removeFactory(factory);
 			}
 		}
 	}
@@ -84,22 +103,14 @@ public class FactoryModListener implements Listener
 		List<Block> blocks = e.blockList();
 		for (Block block : blocks)
 		{
-			if(block.getType() == FactoryModPlugin.CENTRAL_BLOCK_MATERIAL || block.getType() == Material.CHEST||
-			block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE)
+			if(isPotentialFactoryBlock(block))
 			{
 				if (factoryMan.factoryExistsAt(block.getLocation()))
 				{
-					if (productionMan.factoryExistsAt(block.getLocation()))
+					ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
+					if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 					{
-						ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
-						if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
-						{
-							factory.destroy(block.getLocation());
-							if(FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
-							{		
-								productionMan.removeFactory(factory);
-							}
-						}
+						destroyFactoryAt(block);
 					}
 				}
 			}
@@ -118,15 +129,7 @@ public class FactoryModListener implements Listener
 		{
 			if (productionMan.factoryExistsAt(block.getLocation()))
 			{
-				ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
-				if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
-				{
-					factory.destroy(block.getLocation());
-					if(FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
-					{
-						productionMan.removeFactory(factory);
-					}
-				}
+				destroyFactoryAt(block);
 			}
 		}
 	}
@@ -166,6 +169,8 @@ public class FactoryModListener implements Listener
 									ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
 									//toggle the recipe, and print the returned message.
 									InteractionResponse.messagePlayerResults(player, production.toggleRecipes());
+								} else if (printingPressMan.factoryExistsAt(clicked.getLocation())) {
+									// TODO - printing press click workbench
 								}
 							}
 							//if the player does NOT have acssess to the block that was clicked
@@ -209,10 +214,7 @@ public class FactoryModListener implements Listener
 							if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
 									(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(player)))
 							{
-								if (productionMan.factoryExistsAt(clicked.getLocation()))
-								{
-									InteractionResponse.messagePlayerResults(player,((ProductionFactory) productionMan.getFactory(clicked.getLocation())).togglePower());
-								}
+								InteractionResponse.messagePlayerResults(player,(factoryMan.getFactory(clicked.getLocation())).togglePower());
 							}
 							//if the player is NOT allowed to interact with the clicked block.
 							else
