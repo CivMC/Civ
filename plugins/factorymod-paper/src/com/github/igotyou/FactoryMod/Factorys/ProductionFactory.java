@@ -264,7 +264,6 @@ public class ProductionFactory extends FactoryObject implements Factory
 				else
 				{
 					//return a error message
-					FactoryModPlugin.sendConsoleMessage("Production Time:" + String.valueOf(currentRecipe.getProductionTime())+"Energy Time"+String.valueOf(getProductionFactoryProperties().getEnergyTime()+" Ratio: "+String.valueOf(Math.ceil(currentRecipe.getProductionTime()/(double)getProductionFactoryProperties().getEnergyTime()))));
 					int multiplesRequired=(int)Math.ceil(currentRecipe.getProductionTime()/(double)getProductionFactoryProperties().getEnergyTime());
 					response.add(new InteractionResponse(InteractionResult.FAILURE, "Factory is missing fuel! ("+getProductionFactoryProperties().getFuel().getMultiple(multiplesRequired).toString()+")"));
 					return response;
@@ -407,21 +406,9 @@ public class ProductionFactory extends FactoryObject implements Factory
 	 */
 	public void destroy(Location destroyLocation)
 	{
-		//Turn the factory off.
 		powerOff();
-		//Return the build materials?
-		if (FactoryModPlugin.RETURN_BUILD_MATERIALS&&FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
-		{
-			Iterator<NamedItemStack> materialItr=productionFactoryProperties.getInputs().iterator();
-			while(materialItr.hasNext())
-			{
-				ItemStack item = materialItr.next();
-				factoryLocation.getWorld().dropItemNaturally(destroyLocation, item);
-			}
-		}
 		currentRepair=getProductionFactoryProperties().getRepair();
 		timeDisrepair=System.currentTimeMillis();
-		destroyLocation.getBlock().setType(Material.AIR);
 	}
 	/*
 	 * Repairs the factory 

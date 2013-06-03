@@ -60,8 +60,6 @@ public class FactoryModListener implements Listener
 				if (productionMan.factoryExistsAt(block.getLocation()))
 				{
 					ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
-					e.setCancelled(true);
-
 					//if the blocks is not reinforced destroy it
 					if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 					{
@@ -94,8 +92,6 @@ public class FactoryModListener implements Listener
 					if (productionMan.factoryExistsAt(block.getLocation()))
 					{
 						ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
-						e.setCancelled(true);
-
 						if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 						{
 							factory.destroy(block.getLocation());
@@ -123,8 +119,6 @@ public class FactoryModListener implements Listener
 			if (productionMan.factoryExistsAt(block.getLocation()))
 			{
 				ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
-				e.setCancelled(true);
-				
 				if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 				{
 					factory.destroy(block.getLocation());
