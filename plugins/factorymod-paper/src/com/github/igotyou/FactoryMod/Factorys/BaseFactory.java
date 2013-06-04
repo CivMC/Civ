@@ -213,6 +213,16 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 	public abstract ItemList<NamedItemStack> getInputs();
 	public abstract ItemList<NamedItemStack> getOutputs();
 	public abstract ItemList<NamedItemStack> getRepairs();
+	
+	public void consumeInputs() {
+		//Remove inputs from chest
+		getInputs().removeFrom(getInventory());
+	}
+	
+	public void produceOutputs() {
+		//Adds outputs to chest with appropriate enchantments
+		getOutputs().putIn(getInventory(),getEnchantments());
+	}
 
 	public ItemList<NamedItemStack> getAllInputs() {
 		ItemList<NamedItemStack> allInputs = new ItemList<NamedItemStack>();
@@ -245,6 +255,7 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 							getFuel().removeFrom(getPowerSourceInventory());
 							//0 seconds since last fuel consumption
 							currentEnergyTimer = 0;
+							fuelConsumed();
 						}
 						//if we don't need to consume fuel, just increment the energy timer
 						else
@@ -253,6 +264,7 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 						}
 						//increment the production timer
 						currentProductionTimer ++;
+						postUpdate();
 					}
 					//if there is no fuel Available turn off the factory
 					else
@@ -264,11 +276,8 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 				//if the production timer has reached the recipes production time remove input from chest, and add output material
 				else if (currentProductionTimer >= getProductionTime())
 				{
-					
-					//Remove inputs from chest
-					getInputs().removeFrom(getInventory());
-					//Adds outputs to chest with appropriate enchantments
-					getOutputs().putIn(getInventory(),getEnchantments());
+					consumeInputs();
+					produceOutputs();
 					//Repairs the factory
 					repair(getRepairs().removeMaxFrom(getInventory(),(int)currentRepair));
 					recipeFinished();
@@ -284,7 +293,14 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 		}	
 	}
 
-	
+	protected void postUpdate() {
+		// Hook for subtypes
+	}
+
+	protected void fuelConsumed() {
+		// Hook for subtypes
+	}
+
 	public List<ProbabilisticEnchantment> getEnchantments() {
 		return new ArrayList<ProbabilisticEnchantment>();
 	}
@@ -483,5 +499,13 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 
 	public boolean isRepairing() {
 		return false;
+	}
+	
+	public List<InteractionResponse> getChestResponse() {
+		return new ArrayList<InteractionResponse>();
+	}
+	
+	public List<InteractionResponse> getCentralBlockResponse() {
+		return new ArrayList<InteractionResponse>();
 	}
 }

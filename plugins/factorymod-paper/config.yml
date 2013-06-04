@@ -82,6 +82,40 @@ production_general:
   update_cycle: 20
   repair_period: 28
   disrepair_period: 14
+printing_presses:
+  fuel:
+    Charcoal:
+      material: 'COAL'
+      durability: 1
+  costs:
+     construction:
+        "Iron block":
+           material: 'IRON_BLOCK'
+           amount: 100
+     repair:
+        "Iron block":
+           material: 'IRON_BLOCK'
+           amount: 10
+     binding: # Each
+        Leather:
+           material: 'LEATHER'
+           amount: 1
+     page: # Per 64 pages
+        Paper:
+           material: 'PAPER'
+           amount: 64
+     pamphlet: # Per stack (64)
+        Paper:
+           material: 'PAPER'
+           amount: 48
+     security: # Per stack (64)
+        "Gold nuggets":
+           material: 'GOLD_NUGGET'
+           amount: 4
+        "Cactus green":
+           material: 'CACTUS_GREEN'
+           amount: 12
+     
 crafting:
   disable:
   enable:

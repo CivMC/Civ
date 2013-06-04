@@ -79,7 +79,8 @@ public class ProductionFactory extends BaseFactory
 	 * Returns either a success or error message.
 	 * Called by the blockListener when a player left clicks the center block, with the InteractionMaterial
 	 */
-	public List<InteractionResponse> toggleRecipes()
+	@Override
+	public List<InteractionResponse> getCentralBlockResponse()
 	{
 		List<InteractionResponse> responses=new ArrayList<InteractionResponse>();
 		//Is the factory off
@@ -189,6 +190,7 @@ public class ProductionFactory extends BaseFactory
 		return recipes;
 	}
 	
+	@Override
 	public List<InteractionResponse> getChestResponse()
 	{
 		List<InteractionResponse> responses=new ArrayList<InteractionResponse>();

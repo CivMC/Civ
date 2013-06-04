@@ -13,6 +13,8 @@ import org.bukkit.event.Listener;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
+import com.github.igotyou.FactoryMod.utility.InteractionResponse;
+import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 //original file:
 /**
  * MachinesManager.java
@@ -294,5 +296,19 @@ public class FactoryModManager
 			}
 		}	
 		return null;
+	}
+
+	public InteractionResponse createFactory(Location centralLocation,
+			Location inventoryLocation, Location powerLocation) {
+		InteractionResponse response = null;
+		for (Manager manager : managers)
+		{
+			response = manager.createFactory(centralLocation, inventoryLocation, powerLocation);
+			if (response.getInteractionResult() == InteractionResult.SUCCESS)
+			{
+				return response;
+			}
+		}
+		return response;
 	}
 }

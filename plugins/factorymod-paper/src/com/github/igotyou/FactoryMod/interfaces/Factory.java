@@ -41,6 +41,8 @@ public interface Factory
 	 * Toggles the current power state and returns interaction response
 	 */
 	public List<InteractionResponse> togglePower();
+	public List<InteractionResponse> getChestResponse();
+	public List<InteractionResponse> getCentralBlockResponse();
 	
 	/**
 	 * Returns the location of the machine

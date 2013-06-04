@@ -74,6 +74,8 @@ public class PrintingPressManager implements Manager
 		repairTime=System.currentTimeMillis();
 		FileOutputStream fileOutputStream = new FileOutputStream(file);
 		ObjectOutputStream oos = new ObjectOutputStream(fileOutputStream);
+		int version = 1;
+		oos.writeInt(version);
 		oos.writeInt(producers.size());
 		for (PrintingPress production : producers)
 		{
@@ -112,6 +114,8 @@ public class PrintingPressManager implements Manager
 		repairTime=System.currentTimeMillis();
 		FileInputStream fileInputStream = new FileInputStream(file);
 		ObjectInputStream ois = new ObjectInputStream(fileInputStream);
+		int version = ois.readInt();
+		assert(version == 1);
 		int count = ois.readInt();
 		int i = 0;
 		for (i = 0; i < count; i++)
@@ -131,7 +135,9 @@ public class PrintingPressManager implements Manager
 
 			PrintingPress production = new PrintingPress(centerLocation, inventoryLocation, powerLocation,
 					active, productionTimer,
-					energyTimer, currentRepair, timeDisrepair, plugin.getPrintingPressProperties());
+					energyTimer, currentRepair, timeDisrepair,
+					PrintingPress.OperationMode.REPAIR,
+					plugin.getPrintingPressProperties());
 			addFactory(production);
 		}
 		fileInputStream.close();
@@ -280,7 +286,7 @@ public class PrintingPressManager implements Manager
 	
 	public String getSavesFileName() 
 	{
-		return FactoryModPlugin.PRODUCTION_SAVES_FILE;
+		return FactoryModPlugin.PRINTING_PRESSES_SAVE_FILE;
 	}
 
 }

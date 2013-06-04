@@ -42,6 +42,7 @@ public class FactoryModPlugin extends JavaPlugin
 	public static final String PLUGIN_PREFIX = PLUGIN_NAME + " " + VERSION + ": ";
 	public static final String PRODUCTION_SAVES_FILE = "productionSaves"; // The production saves file name
 	public static final int TICKS_PER_SECOND = 20; //The number of ticks per second
+	public static final String PRINTING_PRESSES_SAVE_FILE = "pressSaves";
 	
 	public static int PRODUCER_UPDATE_CYCLE;
 	public static boolean PRODUCTION_ENEABLED;
@@ -77,7 +78,7 @@ public class FactoryModPlugin extends JavaPlugin
 	{
 		try
 		{
-			getServer().getPluginManager().registerEvents(new FactoryModListener(manager, manager.getProductionManager(), manager.getPrintingPressManager()), this);
+			getServer().getPluginManager().registerEvents(new FactoryModListener(manager), this);
 			getServer().getPluginManager().registerEvents(new RedstoneListener(manager, manager.getProductionManager()), this);
 		}
 		catch(Exception e)
@@ -249,17 +250,7 @@ public class FactoryModPlugin extends JavaPlugin
 		}
 		
 		ConfigurationSection configPrintingPresses=config.getConfigurationSection("printing_presses");
-		ItemList<NamedItemStack> ppFuel=getItems(configPrintingPresses.getConfigurationSection("fuel"));
-		if(ppFuel.isEmpty())
-		{
-			ppFuel=new ItemList<NamedItemStack>();
-			ppFuel.add(new NamedItemStack(Material.getMaterial("COAL"),1,(short)1,"Charcoal"));
-		}
-		ItemList<NamedItemStack> ppConstructionCost=getItems(configPrintingPresses.getConfigurationSection("construction"));
-		int ppEnergyTime = configPrintingPresses.getInt("fuel_time", 2);
-		int ppRepair = configPrintingPresses.getInt("repair_multiple",0);
-		String ppName = configPrintingPresses.getString("name", "Printing Press");
-		printingPressProperties = new PrintingPressProperties(ppFuel, ppConstructionCost, ppEnergyTime, ppName, ppRepair);
+		printingPressProperties = PrintingPressProperties.fromConfig(this, configPrintingPresses);
 	}
 	
 	private List<ProbabilisticEnchantment> getEnchantments(ConfigurationSection configEnchantments)
@@ -284,7 +275,8 @@ public class FactoryModPlugin extends JavaPlugin
 		}
 		return enchantments;
 	}
-	private ItemList<NamedItemStack> getItems(ConfigurationSection configItems)
+	
+	public ItemList<NamedItemStack> getItems(ConfigurationSection configItems)
 	{
 		ItemList<NamedItemStack> items=new ItemList<NamedItemStack>();
 		if(configItems!=null)
