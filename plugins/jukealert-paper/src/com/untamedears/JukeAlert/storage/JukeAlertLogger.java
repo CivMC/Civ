@@ -111,7 +111,7 @@ public class JukeAlertLogger {
                 + "`snitch_cuboid_x` int(10) NOT NULL,"
                 + "`snitch_cuboid_y` int(10) NOT NULL,"
                 + "`snitch_cuboid_z` int(10) NOT NULL,"
-                + "`should_log` BOOL,"
+                + "`snitch_should_log` BOOL,"
                 + "PRIMARY KEY (`snitch_id`),"
                 + "INDEX `idx_y` (`snitch_y` ASC));");
         //Snitch Details
@@ -179,7 +179,7 @@ public class JukeAlertLogger {
 
         // 
         insertNewSnitchStmt = db.prepareStatement(String.format(
-                "INSERT INTO %s (snitch_world, snitch_name, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z, should_log)"
+                "INSERT INTO %s (snitch_world, snitch_name, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z, snitch_should_log)"
                 + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 snitchsTbl));
 
@@ -245,7 +245,7 @@ public class JukeAlertLogger {
                 double y = rs.getInt("snitch_y");
                 double z = rs.getInt("snitch_z");
                 String groupName = rs.getString("snitch_group");
-                boolean shouldLog = rs.getBoolean("should_log");
+                boolean shouldLog = rs.getBoolean("snitch_should_log");
 
                 Faction group = groupMediator.getGroupByName(groupName);
 
