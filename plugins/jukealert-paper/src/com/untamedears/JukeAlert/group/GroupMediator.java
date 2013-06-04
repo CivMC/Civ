@@ -6,13 +6,13 @@ import com.untamedears.citadel.entity.Faction;
 
 public class GroupMediator {
 
-	GroupManager groupManager;
-	
-	public GroupMediator() {
-		this.groupManager = Citadel.getGroupManager();
-	}
-	
-	public Faction getGroupByName(String groupName) {
-		return groupManager.getGroup(groupName);
-	}
+    GroupManager groupManager;
+
+    public GroupMediator() {
+        this.groupManager = Citadel.getGroupManager();
+    }
+
+    public Faction getGroupByName(String groupName) {
+        return groupManager.getGroup(groupName);
+    }
 }

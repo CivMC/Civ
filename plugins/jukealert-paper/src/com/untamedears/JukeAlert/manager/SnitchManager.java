@@ -51,7 +51,7 @@ public class SnitchManager {
     public Snitch getSnitch(World world, Location location) {
         Set<? extends QTBox> potentials = snitches.get(world).find(location.getBlockX(), location.getBlockZ());
         for (QTBox box : potentials) {
-            Snitch sn = (Snitch)box;
+            Snitch sn = (Snitch) box;
             if (sn.at(location)) {
                 return sn;
             }
@@ -82,7 +82,7 @@ public class SnitchManager {
         Set<Snitch> results = new TreeSet<Snitch>();
         Set<QTBox> found = snitches.get(world).find(location.getBlockX(), location.getBlockZ());
         for (QTBox box : found) {
-            Snitch sn = (Snitch)box;
+            Snitch sn = (Snitch) box;
             if (sn.isWithinHeight(location.getBlockY())) {
                 results.add(sn);
             }
