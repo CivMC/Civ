@@ -104,6 +104,17 @@ public class PrintingPressManager implements Manager
 			oos.writeInt(production.getEnergyTimer());
 			oos.writeDouble(production.getCurrentRepair());
 			oos.writeLong(production.getTimeDisrepair());
+
+			oos.writeInt(production.getContainedPaper());
+			oos.writeInt(production.getContainedBindings());
+			oos.writeInt(production.getContainedSecurityMaterials());
+			oos.writeInt(production.getLockedResultCode());
+			
+			int[] processQueue = production.getProcessQueue();
+			oos.writeInt(processQueue.length);
+			for (int entry : processQueue) {
+				oos.writeInt(entry);
+			}
 		}
 		oos.flush();
 		fileOutputStream.close();
@@ -111,36 +122,52 @@ public class PrintingPressManager implements Manager
 
 	public void load(File file) throws IOException 
 	{
-		repairTime=System.currentTimeMillis();
-		FileInputStream fileInputStream = new FileInputStream(file);
-		ObjectInputStream ois = new ObjectInputStream(fileInputStream);
-		int version = ois.readInt();
-		assert(version == 1);
-		int count = ois.readInt();
-		int i = 0;
-		for (i = 0; i < count; i++)
-		{
-			
-			String worldName = ois.readUTF();
-			World world = plugin.getServer().getWorld(worldName);
+		try {
+			repairTime=System.currentTimeMillis();
+			FileInputStream fileInputStream = new FileInputStream(file);
+			ObjectInputStream ois = new ObjectInputStream(fileInputStream);
+			int version = ois.readInt();
+			assert(version == 1);
+			int count = ois.readInt();
+			int i = 0;
+			for (i = 0; i < count; i++)
+			{
+				String worldName = ois.readUTF();
+				World world = plugin.getServer().getWorld(worldName);
 
-			Location centerLocation = new Location(world, ois.readInt(), ois.readInt(), ois.readInt());
-			Location inventoryLocation = new Location(world, ois.readInt(), ois.readInt(), ois.readInt());
-			Location powerLocation = new Location(world, ois.readInt(), ois.readInt(), ois.readInt());
-			boolean active = ois.readBoolean();
-			int productionTimer = ois.readInt();
-			int energyTimer = ois.readInt();
-			double currentRepair = ois.readDouble();
-			long timeDisrepair  = ois.readLong();
+				Location centerLocation = new Location(world, ois.readInt(), ois.readInt(), ois.readInt());
+				Location inventoryLocation = new Location(world, ois.readInt(), ois.readInt(), ois.readInt());
+				Location powerLocation = new Location(world, ois.readInt(), ois.readInt(), ois.readInt());
+				boolean active = ois.readBoolean();
+				int productionTimer = ois.readInt();
+				int energyTimer = ois.readInt();
+				double currentRepair = ois.readDouble();
+				long timeDisrepair  = ois.readLong();
+				int containedPaper = ois.readInt();
+				int containedBindings = ois.readInt();
+				int containedSecurityMaterials = ois.readInt();
+				int lockedResultCode = ois.readInt();
+				
+				int queueLength = ois.readInt();
+				int[] processQueue = new int[queueLength];
+				int j;
+				for (j = 0; j < queueLength; j++) {
+					processQueue[j] = ois.readInt();
+				}
 
-			PrintingPress production = new PrintingPress(centerLocation, inventoryLocation, powerLocation,
-					active, productionTimer,
-					energyTimer, currentRepair, timeDisrepair,
-					PrintingPress.OperationMode.REPAIR,
-					plugin.getPrintingPressProperties());
-			addFactory(production);
+				PrintingPress production = new PrintingPress(centerLocation, inventoryLocation, powerLocation,
+						active, productionTimer,
+						energyTimer, currentRepair, timeDisrepair,
+						PrintingPress.OperationMode.REPAIR,
+						plugin.getPrintingPressProperties(),
+						containedPaper, containedBindings, containedSecurityMaterials,
+						processQueue, lockedResultCode);
+				addFactory(production);
+			}
+			fileInputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		fileInputStream.close();
 	}
 
 	public void updateFactorys() 
@@ -160,39 +187,7 @@ public class PrintingPressManager implements Manager
 
 	public InteractionResponse createFactory(Location factoryLocation, Location inventoryLocation, Location powerSourceLocation) 
 	{
-		if (!factoryExistsAt(factoryLocation))
-		{
-			HashMap<String, ProductionProperties> properties = plugin.productionProperties;
-			Block inventoryBlock = inventoryLocation.getBlock();
-			Chest chest = (Chest) inventoryBlock.getState();
-			Inventory chestInventory = chest.getInventory();
-			String subFactoryType = null;
-			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
-			{
-				ItemList<NamedItemStack> inputs = entry.getValue().getInputs();
-				if(inputs.exactlyIn(chestInventory))
-				{
-					subFactoryType = entry.getKey();
-				}
-			}
-			if (subFactoryType != null)
-			{
-				ProductionFactory production = new ProductionFactory(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
-				if (properties.get(subFactoryType).getInputs().allIn(production.getInventory()))
-				{
-					addFactory(production);
-					properties.get(subFactoryType).getInputs().removeFrom(production.getInventory());
-					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + production.getProductionFactoryProperties().getName());
-				}
-			}
-			return new InteractionResponse(InteractionResult.FAILURE, "Incorrect materials in chest! Stacks must match perfectly.");
-		}
-		return new InteractionResponse(InteractionResult.FAILURE, "There is already a factory there!");
-	}
-	
-	public InteractionResponse createFactory(Location factoryLocation, Location inventoryLocation, Location powerSourceLocation, int productionTimer, int energyTimer) 
-	{
-		PrintingPressProperties printingPressProperties = plugin.getPrintingPressProperties();
+	PrintingPressProperties printingPressProperties = plugin.getPrintingPressProperties();
 		
 		if (!factoryExistsAt(factoryLocation))
 		{

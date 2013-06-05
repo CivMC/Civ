@@ -2,6 +2,7 @@ package com.github.igotyou.FactoryMod.Factorys;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +17,6 @@ import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.FactoryObject;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.properties.PrintingPressProperties;
-import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
@@ -24,48 +24,14 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResu
 
 public class PrintingPress extends BaseFactory {
 	
-	public enum OperationMode {
-		REPAIR(0, "Repair", 200),
-		SET_PLATES(1, "Set plates", 200),
-		PRINT_BOOKS(2, "Print books", Integer.MAX_VALUE),
-		PRINT_PAMPHLETS(3, "Print pamphlets", Integer.MAX_VALUE),
-		PRINT_SECURITY(4, "Print security notes", Integer.MAX_VALUE);
-		
-		private static final int MAX_ID = 3;
-		private int id;
-		private String description;
-		private int productionTime;
-		
-		private OperationMode(int id, String description, int productionTime) {
-			this.id = id;
-			this.description = description;
-			this.productionTime = productionTime;
-		}
-		
-		public String getDescription() {
-			return description;
-		}
-
-		public static OperationMode byId(int id) {
-			for (OperationMode mode : OperationMode.values()) {
-				if (mode.getId() == id)
-					return mode;
-			}
-			return null;
-		}
-		
-		private int getId() {
-			return id;
-		}
-
-		public OperationMode getNext() {
-			int nextId = (getId() + 1) % MAX_ID;
-			return OperationMode.byId(nextId);
-		}
-	}
-	
 	private PrintingPressProperties printingPressProperties;
 	private OperationMode mode;
+	private int containedPaper;
+	private int containedBindings;
+	private int containedSecurityMaterials;
+	private int[] processQueue;
+	private int processQueueOffset;
+	private int lockedResultCode;
 
 	public PrintingPress(Location factoryLocation,
 			Location factoryInventoryLocation, Location factoryPowerSource,
@@ -74,58 +40,115 @@ public class PrintingPress extends BaseFactory {
 				FactoryType.PRINTING_PRESS, "press");
 		this.mode = OperationMode.REPAIR;
 		this.printingPressProperties = printingPressProperties;
+		this.containedPaper = 0;
+		this.containedBindings = 0;
+		this.containedSecurityMaterials = 0;
+		this.processQueue = new int[1];
+		this.processQueueOffset = 0;
+		this.lockedResultCode = 0;
 	}
-	
-	
 
 	public PrintingPress(Location factoryLocation,
 			Location factoryInventoryLocation, Location factoryPowerSource,
 			boolean active,
 			int currentProductionTimer, int currentEnergyTimer,
 			double currentMaintenance, long timeDisrepair, OperationMode mode,
-			PrintingPressProperties printingPressProperties) {
+			PrintingPressProperties printingPressProperties,
+			int containedPaper, int containedBindings, int containedSecurityMaterials,
+			int[] processQueue, int lockedResultCode) {
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource,
 				FactoryType.PRINTING_PRESS, active, "Printing Press", currentProductionTimer,
 				currentEnergyTimer, currentMaintenance, timeDisrepair);
 		this.mode = mode;
 		this.active = active;
 		this.printingPressProperties = printingPressProperties;
+		this.containedPaper = containedPaper;
+		this.containedBindings = containedBindings;
+		this.containedSecurityMaterials = containedSecurityMaterials;
+		this.containedPaper = 0;
+		this.containedBindings = 0;
+		this.containedSecurityMaterials = 0;
+		this.processQueue = processQueue;
+		this.processQueueOffset = 0;
+		this.lockedResultCode = lockedResultCode;
+	}
+
+	public int getLockedResultCode() {
+		return lockedResultCode;
 	}
 
 	@Override
 	public ItemList<NamedItemStack> getFuel() {
 		return printingPressProperties.getFuel();
 	}
+	
+	public int getContainedPaper() {
+		return containedPaper;
+	}
+
+	public int getContainedBindings() {
+		return containedBindings;
+	}
+
+	public int getContainedSecurityMaterials() {
+		return containedSecurityMaterials;
+	}
 
 	@Override
 	public double getEnergyTime() {
-		return 2;
+		return printingPressProperties.getEnergyTime();
 	}
 
 	@Override
 	public double getProductionTime() {
-		return 20;
+		if (mode == OperationMode.SET_PLATES) {
+			NamedItemStack plates = getPlateResult();
+			if (plates != null) {
+				int pageCount = ((BookMeta) plates.getItemMeta()).getPageCount();
+				return mode.getProductionTime() * pageCount;
+			}
+		}
+		return mode.getProductionTime();
 	}
 
 	@Override
 	public ItemList<NamedItemStack> getInputs() {
 		ItemList<NamedItemStack> inputs = new ItemList<NamedItemStack>();
+		switch(mode) {
+		case SET_PLATES:
+			NamedItemStack plates = getPlateResult();
+			if (plates != null) {
+				int pageCount = ((BookMeta) plates.getItemMeta()).getPageCount();
+				inputs.addAll(printingPressProperties.getPlateMaterials().getMultiple(pageCount));
+			}
+			break;
+		}
 		return inputs;
 	}
 
 	@Override
 	public ItemList<NamedItemStack> getOutputs() {
 		ItemList<NamedItemStack> outputs = new ItemList<NamedItemStack>();
-		NamedItemStack pages = new NamedItemStack(Material.PAPER, 64, (short) 0, "pages");
-		pages.getItemMeta().setDisplayName("Test Page");
-		outputs.add(pages);
+		switch(mode) {
+		case SET_PLATES:
+			NamedItemStack plates = getPlateResult();
+			if (plates != null) {
+				outputs.add(plates);
+			}
+			break;
+		}
 		return outputs;
 	}
 
 	@Override
 	public ItemList<NamedItemStack> getRepairs() {
-		// TODO Auto-generated method stub
-		return null;
+		ItemList<NamedItemStack> inputs = new ItemList<NamedItemStack>();
+		switch(mode) {
+		case REPAIR:
+			inputs.addAll(printingPressProperties.getRepairMaterials());
+			break;
+		}
+		return inputs;
 	}
 
 	@Override
@@ -138,6 +161,173 @@ public class PrintingPress extends BaseFactory {
 	public int getMaxRepair() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	@Override
+	public void powerOn() {
+		super.powerOn();
+		this.containedPaper = 0;
+		this.containedBindings = 0;
+		this.containedSecurityMaterials = 0;
+		int outputDelay = printingPressProperties.getPageLead();
+		this.processQueue = new int[outputDelay];
+		this.processQueueOffset = 0;
+		this.lockedResultCode = getPrintResult().hashCode();
+	}
+	
+	@Override
+	public void postUpdate() {
+		// Check for sneaky plate swaps, shut down
+		int expectedResultCode = getPrintResult().hashCode();
+		if (this.lockedResultCode != expectedResultCode) {
+			powerOff();
+			return;
+		}
+		
+		switch(mode) {
+		case PRINT_BOOKS:
+			printBooksUpdate();
+		case PRINT_PAMPHLETS:
+			printPamphletsUpdate();
+			break;
+		case PRINT_SECURITY:
+			printSecurityUpdate();
+			break;
+		}
+	}
+	
+	public void printBooksUpdate() {
+		// Output finished results
+		int finished = processQueue[processQueueOffset];
+		NamedItemStack result = getPrintResult().toBook();
+		ItemList<NamedItemStack> set = new ItemList<NamedItemStack>();
+		set.add(result);
+		set = set.getMultiple(finished);
+		set.putIn(getInventory());
+		
+		// Load materials
+		ItemList<NamedItemStack> pages = printingPressProperties.getPageMaterials();
+		boolean hasPages = pages.allIn(getInventory());
+		if (hasPages) {
+			pages.removeFrom(getInventory());
+			containedPaper += printingPressProperties.getPagesPerLot();
+			
+			// Load bindings if books
+			if (mode == OperationMode.PRINT_BOOKS) {
+				int expectedBindings = (int) Math.ceil((double) containedPaper / (double) getPrintResult().pageCount());
+				while (containedBindings < expectedBindings) {
+					if (printingPressProperties.getBindingMaterials().allIn(getInventory())) {
+						printingPressProperties.getBindingMaterials().removeFrom(getInventory());
+						containedBindings += 1;
+					} else {
+						break;
+					}
+				}
+			}
+			
+			// Load security materials if security notes
+			if (mode == OperationMode.PRINT_SECURITY) {
+				while (containedSecurityMaterials < containedPaper) {
+					if (printingPressProperties.getSecurityMaterials().allIn(getInventory())) {
+						printingPressProperties.getSecurityMaterials().removeFrom(getInventory());
+						containedSecurityMaterials += printingPressProperties.getSecurityNotesPerLot();
+					} else {
+						break;
+					}
+				}
+			}
+		}
+		
+		// Put materials in queue
+		int pageCount = getPrintResult().pageCount();
+		int booksInPages = containedPaper / pageCount;
+		int copiesIn = Math.min(booksInPages, containedBindings);
+		containedPaper -= copiesIn * pageCount;
+		containedBindings -= copiesIn;
+		processQueue[processQueueOffset] = copiesIn;
+		
+		// Rotate on queue
+		processQueueOffset += 1;
+		if (processQueueOffset >= processQueue.length) {
+			processQueueOffset = 0;
+		}
+	}
+	
+	public void printPamphletsUpdate() {
+		// Output finished results
+		int finished = processQueue[processQueueOffset];
+		NamedItemStack result = getPrintResult().toPamphlet();
+		ItemList<NamedItemStack> set = new ItemList<NamedItemStack>();
+		set.add(result);
+		set = set.getMultiple(finished);
+		set.putIn(getInventory());
+		
+		// Load materials
+		ItemList<NamedItemStack> pages = printingPressProperties.getPamphletMaterials();
+		boolean hasPages = pages.allIn(getInventory());
+		if (hasPages) {
+			pages.removeFrom(getInventory());
+			processQueue[processQueueOffset] = printingPressProperties.getPamphletsPerLot();
+		} else {
+			processQueue[processQueueOffset] = 0;
+		}
+		
+		// Rotate on queue
+		processQueueOffset += 1;
+		if (processQueueOffset >= processQueue.length) {
+			processQueueOffset = 0;
+		}
+	}
+	
+	public void printSecurityUpdate() {
+		// Output finished results
+		int finished = processQueue[processQueueOffset];
+		NamedItemStack result = getPrintResult().toSecurityNote();
+		ItemList<NamedItemStack> set = new ItemList<NamedItemStack>();
+		set.add(result);
+		set = set.getMultiple(finished);
+		set.putIn(getInventory());
+		
+		// Load materials
+		ItemList<NamedItemStack> pages = printingPressProperties.getPamphletMaterials();
+		boolean hasPages = pages.allIn(getInventory());
+		if (hasPages) {
+			pages.removeFrom(getInventory());
+			containedPaper += printingPressProperties.getPamphletsPerLot();
+			
+			// Load security materials if security notes
+			while (containedSecurityMaterials < containedPaper) {
+				if (printingPressProperties.getSecurityMaterials().allIn(getInventory())) {
+					printingPressProperties.getSecurityMaterials().removeFrom(getInventory());
+					containedSecurityMaterials += printingPressProperties.getSecurityNotesPerLot();
+				} else {
+					break;
+				}
+			}
+		}
+		
+		// Put materials in queue
+		int copiesIn = containedPaper;
+		containedPaper -= copiesIn;
+		containedSecurityMaterials -= copiesIn;
+		processQueue[processQueueOffset] = copiesIn;
+		
+		// Rotate on queue
+		processQueueOffset += 1;
+		if (processQueueOffset >= processQueue.length) {
+			processQueueOffset = 0;
+		}
+	}
+	
+	public int[] getProcessQueue() {
+		// Rotate so that current place in ring buffer is 0
+		int[] newQ = new int[processQueue.length];
+		int toEnd = processQueue.length - processQueueOffset;
+		System.arraycopy(processQueue, processQueueOffset, newQ, 0, toEnd);
+		if (processQueueOffset > 0) {
+			System.arraycopy(processQueue, 0, newQ, toEnd, processQueueOffset);
+		}
+		return newQ;
 	}
 	
 	/**
@@ -201,6 +391,42 @@ public class PrintingPress extends BaseFactory {
 		return responses;
 	}
 	
+	private PrintResult getPrintResult() {
+		return new PrintResult();
+	}
+	
+	private NamedItemStack getPlateResult() {
+		for (ItemStack stack : getInventory().getContents()) {
+			if (stack.getType().equals(Material.BOOK_AND_QUILL) ||
+					stack.getType().equals(Material.WRITTEN_BOOK)) {
+				ItemMeta meta = stack.getItemMeta();
+				if (meta instanceof BookMeta) {
+					// Found a book
+					BookMeta bookData = (BookMeta) meta;
+					String title = bookData.getTitle();
+					String author = bookData.getAuthor();
+					if (author == null) {
+						author = "";
+					}
+					List<String> pages = new ArrayList<String>(bookData.getPages());
+					
+					NamedItemStack plates = new NamedItemStack(Material.WRITTEN_BOOK, 1, (short) 0, "plate");
+					BookMeta plateMeta = (BookMeta) plates.getItemMeta();
+					plateMeta.setTitle(title);
+					plateMeta.setAuthor(author);
+					plateMeta.setPages(pages);
+					int watermark = new Random().nextInt(9000) + 1000;
+					List<String> lore = new ArrayList<String>();
+					lore.add("Print plates #" + Integer.toString(watermark));
+					plateMeta.setLore(lore);
+					plates.setItemMeta(plateMeta);
+					return plates;
+				}
+			}
+		}
+		return null;
+	}
+	
 	private class PrintResult {
 		private static final int PAGE_LORE_LENGTH_LIMIT = 140;
 		private List<String> pages;
@@ -224,6 +450,9 @@ public class PrintingPress extends BaseFactory {
 								BookMeta bookData = (BookMeta) meta;
 								title = bookData.getTitle();
 								author = bookData.getAuthor();
+								if (author == null) {
+									author = "";
+								}
 								watermark = Integer.parseInt(match.group(1)); 
 								pages = new ArrayList<String>(bookData.getPages());
 							}
@@ -237,8 +466,8 @@ public class PrintingPress extends BaseFactory {
 			return pages.size();
 		}
 		
-		public ItemStack toBook() {
-			ItemStack book = new ItemStack(Material.WRITTEN_BOOK, 1);
+		public NamedItemStack toBook() {
+			NamedItemStack book = new NamedItemStack(Material.WRITTEN_BOOK, 1, (short) 0, "book");
 			BookMeta meta = (BookMeta) book.getItemMeta();
 			meta.setDisplayName(title);
 			List<String> lore = new ArrayList<String>();
@@ -251,8 +480,8 @@ public class PrintingPress extends BaseFactory {
 			return book;
 		}
 		
-		public ItemStack toPamphlet() {
-			ItemStack book = new ItemStack(Material.PAPER, 1);
+		public NamedItemStack toPamphlet() {
+			NamedItemStack book = new NamedItemStack(Material.PAPER, 1, (short) 0, "pamphlet");
 			ItemMeta meta = book.getItemMeta();
 			meta.setDisplayName(title);
 			List<String> lore = new ArrayList<String>();
@@ -263,13 +492,18 @@ public class PrintingPress extends BaseFactory {
 			return book;
 		}
 		
-		public ItemStack toSecurityNote() {
-			ItemStack book = new ItemStack(Material.PAPER, 1);
+		public NamedItemStack toSecurityNote() {
+			NamedItemStack book = new NamedItemStack(Material.PAPER, 1, (short) 0, "note");
 			ItemMeta meta = book.getItemMeta();
 			meta.setDisplayName(title);
 			List<String> lore = new ArrayList<String>();
 			if (pages.size() > 0) {
-				lore.add(pages.get(0));
+				lore.add(limitPageLore(pages.get(0)));
+			}
+			if (author.equals("")) {
+				lore.add(String.format("§2#%d", watermark));
+			} else {
+				lore.add(String.format("§2%s #%d", author, watermark));
 			}
 			meta.setLore(lore);
 			return book;
@@ -282,9 +516,62 @@ public class PrintingPress extends BaseFactory {
 				return in;
 			}
 		}
+		
+		public int hashCode() {
+			int code = watermark;
+			code = code ^ title.hashCode();
+			code += 349525;
+			code = code ^ author.hashCode();
+			code += 349525;
+			for (String page : pages) {
+				code = code ^ page.hashCode();
+				code += 349525;
+			}
+			return code;
+		}
 	}
 	
-	private PrintResult getPrintResult() {
-		return new PrintResult();
+	public enum OperationMode {
+		REPAIR(0, "Repair", 200),
+		SET_PLATES(1, "Set plates", 200),
+		PRINT_BOOKS(2, "Print books", 20 * 3600 * 24),
+		PRINT_PAMPHLETS(3, "Print pamphlets", 20 * 3600 * 24),
+		PRINT_SECURITY(4, "Print security notes", 20 * 3600 * 24);
+		
+		private static final int MAX_ID = 5;
+		private int id;
+		private String description;
+		private int productionTime;
+
+		private OperationMode(int id, String description, int productionTime) {
+			this.id = id;
+			this.description = description;
+			this.productionTime = productionTime;
+		}
+		
+		public String getDescription() {
+			return description;
+		}
+
+		public static OperationMode byId(int id) {
+			for (OperationMode mode : OperationMode.values()) {
+				if (mode.getId() == id)
+					return mode;
+			}
+			return null;
+		}
+		
+		private int getId() {
+			return id;
+		}
+		
+		private int getProductionTime() {
+			return productionTime;
+		}
+
+		public OperationMode getNext() {
+			int nextId = (getId() + 1) % MAX_ID;
+			return OperationMode.byId(nextId);
+		}
 	}
 }

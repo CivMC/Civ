@@ -64,6 +64,7 @@ public class FactoryModManager
 		//if (FactoryModPlugin.PRODUCTION_ENEABLED)
 		//{
 			initializeProductionManager();
+			initializePrintingPressManager();
 		//}
 	}
 	

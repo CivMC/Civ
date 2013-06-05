@@ -100,21 +100,24 @@ printing_presses:
         Leather:
            material: 'LEATHER'
            amount: 1
-     page: # Per 64 pages
+     page_lot:
         Paper:
            material: 'PAPER'
-           amount: 64
-     pamphlet: # Per stack (64)
+           amount: 6
+     pages_per_lot: 6
+     pamphlet_lot:
         Paper:
            material: 'PAPER'
-           amount: 48
-     security: # Per stack (64)
+           amount: 4
+     pamphlets_per_lot: 6
+     security_lot:
         "Gold nuggets":
            material: 'GOLD_NUGGET'
-           amount: 4
+           amount: 1
         "Cactus green":
            material: 'CACTUS_GREEN'
-           amount: 12
+           amount: 3
+     security_notes_per_lot: 12
      
 crafting:
   disable:

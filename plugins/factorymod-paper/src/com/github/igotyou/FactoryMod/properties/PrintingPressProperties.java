@@ -14,24 +14,40 @@ public class PrintingPressProperties {
 
 	private ItemList<NamedItemStack> fuel;
 	private ItemList<NamedItemStack> constructionMaterials;
+	private ItemList<NamedItemStack> plateMaterials;
 	private ItemList<NamedItemStack> bindingMaterials;
 	private ItemList<NamedItemStack> pageMaterials;
+	private int pagesPerLot;
 	private ItemList<NamedItemStack> pamphletMaterials;
+	private int pamphletsPerLot;
 	private ItemList<NamedItemStack> securityMaterials;
+	private int securityNotesPerLot;
 	private int energyTime;
 	private String name;
 	private int maxRepair;
 	private ItemList<NamedItemStack> repairMaterials;
-	
+	private int pageLead;
+
+
+	public int getPageLead() {
+		return pageLead;
+	}
+
+
 	public PrintingPressProperties(
 			ItemList<NamedItemStack> fuel,
 			ItemList<NamedItemStack> constructionMaterials,
 			ItemList<NamedItemStack> repairMaterials,
+			ItemList<NamedItemStack> plateMaterials,
 			ItemList<NamedItemStack> bindingMaterials,
 			ItemList<NamedItemStack> pageMaterials,
+			int pagesPerLot,
 			ItemList<NamedItemStack> pamphletMaterials,
-			ItemList<NamedItemStack> securityMaterials, 
-			int energyTime, String name, int repair
+			int pamphletsPerLot,
+			ItemList<NamedItemStack> securityMaterials,
+			int securityNotesPerLot,
+			int energyTime, String name, int repair, int paperRate,
+			int pageLead
 			)
 	{
 		this.fuel = fuel;
@@ -40,10 +56,15 @@ public class PrintingPressProperties {
 		this.maxRepair=repair;
 		this.constructionMaterials = constructionMaterials;
 		this.repairMaterials = repairMaterials;
+		this.plateMaterials = plateMaterials;
 		this.bindingMaterials = bindingMaterials;
 		this.pageMaterials = pageMaterials;
+		this.pagesPerLot = pagesPerLot;
 		this.pamphletMaterials = pamphletMaterials;
+		this.pamphletsPerLot = pamphletsPerLot;
 		this.securityMaterials = securityMaterials;
+		this.securityNotesPerLot = securityNotesPerLot;
+		this.pageLead = pageLead;
 	}
 
 	
@@ -56,19 +77,16 @@ public class PrintingPressProperties {
 		return pageMaterials;
 	}
 
-
-	public ItemList<NamedItemStack> getPamphletMaterials() {
-		return pamphletMaterials;
-	}
-
-
 	public ItemList<NamedItemStack> getSecurityMaterials() {
 		return securityMaterials;
 	}
 
-
 	public ItemList<NamedItemStack> getRepairMaterials() {
 		return repairMaterials;
+	}
+	
+	public ItemList<NamedItemStack> getPlateMaterials() {
+		return plateMaterials;
 	}
 
 
@@ -80,16 +98,22 @@ public class PrintingPressProperties {
 			ppFuel.add(new NamedItemStack(Material.getMaterial("COAL"),1,(short)1,"Charcoal"));
 		}
 		ConfigurationSection costs = configPrintingPresses.getConfigurationSection("costs");
-		ItemList<NamedItemStack> ppConstructionCost=plugin.getItems(configPrintingPresses.getConfigurationSection("construction"));
-		ItemList<NamedItemStack> ppRepairCost=plugin.getItems(configPrintingPresses.getConfigurationSection("repair"));
-		ItemList<NamedItemStack> ppBindingCost=plugin.getItems(configPrintingPresses.getConfigurationSection("binding"));
-		ItemList<NamedItemStack> ppPageCost=plugin.getItems(configPrintingPresses.getConfigurationSection("page"));
-		ItemList<NamedItemStack> ppPamphletCost=plugin.getItems(configPrintingPresses.getConfigurationSection("pamphlet"));
-		ItemList<NamedItemStack> ppSecurityCost=plugin.getItems(configPrintingPresses.getConfigurationSection("security"));
+		ItemList<NamedItemStack> ppConstructionCost=plugin.getItems(costs.getConfigurationSection("construction"));
+		ItemList<NamedItemStack> ppRepairCost=plugin.getItems(costs.getConfigurationSection("repair"));
+		ItemList<NamedItemStack> ppPlateCost=plugin.getItems(costs.getConfigurationSection("plates"));
+		ItemList<NamedItemStack> ppBindingCost=plugin.getItems(costs.getConfigurationSection("binding"));
+		ItemList<NamedItemStack> ppPageCost=plugin.getItems(costs.getConfigurationSection("page"));
+		int pagesPerLot = costs.getInt("pages_per_lot",6); 
+		ItemList<NamedItemStack> ppPamphletCost=plugin.getItems(costs.getConfigurationSection("pamphlet"));
+		int pamphletsPerLot = costs.getInt("pages_per_lot",6);
+		ItemList<NamedItemStack> ppSecurityCost=plugin.getItems(costs.getConfigurationSection("security"));
+		int securityNotesPerLot = costs.getInt("pages_per_lot",6);
 		int ppEnergyTime = configPrintingPresses.getInt("fuel_time", 2);
 		int ppRepair = configPrintingPresses.getInt("max_repair",100);
 		String ppName = configPrintingPresses.getString("name", "Printing Press");
-		return new PrintingPressProperties(ppFuel, ppConstructionCost, ppRepairCost, ppBindingCost, ppPageCost, ppPamphletCost, ppSecurityCost, ppEnergyTime, ppName, ppRepair);
+		int paperRate = configPrintingPresses.getInt("paper_rate",3);
+		int pageLead = configPrintingPresses.getInt("page_lead",12);
+		return new PrintingPressProperties(ppFuel, ppConstructionCost, ppRepairCost, ppPlateCost, ppBindingCost, ppPageCost, pagesPerLot, ppPamphletCost, pamphletsPerLot, ppSecurityCost, securityNotesPerLot, ppEnergyTime, ppName, ppRepair, paperRate, pageLead);
 	}
 
 
@@ -98,6 +122,26 @@ public class PrintingPressProperties {
 		return maxRepair;
 	}
 	
+	public int getPagesPerLot() {
+		return pagesPerLot;
+	}
+
+
+	public ItemList<NamedItemStack> getPamphletMaterials() {
+		return pamphletMaterials;
+	}
+
+
+	public int getPamphletsPerLot() {
+		return pamphletsPerLot;
+	}
+
+
+	public int getSecurityNotesPerLot() {
+		return securityNotesPerLot;
+	}
+
+
 	public ItemList<NamedItemStack> getFuel()
 	{
 		return fuel;
