@@ -7,8 +7,9 @@ package com.untamedears.ItemExchange;
 import com.untamedears.ItemExchange.listeners.ItemExchangeListener;
 import com.untamedears.ItemExchange.command.CommandHandler;
 import com.untamedears.ItemExchange.utility.InteractionResponse;
-import com.untamedears.ItemExchange.utility.ItemRule;
-import com.untamedears.ItemExchange.utility.ItemRule.RuleType;
+import com.untamedears.ItemExchange.utility.InteractionResponse.InteractionResult;
+import com.untamedears.ItemExchange.utility.ExchangeRule;
+import com.untamedears.ItemExchange.utility.ExchangeRule.RuleType;
 import com.untamedears.ItemExchange.utility.Pair;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -44,159 +45,124 @@ public class ItemExchangePlugin extends JavaPlugin{
 	public static final Map<String,String> ABBRV_ENCHANTMENT=new HashMap();
 	public static final String INPUT_NAME="ItemExchange Input";
 	public static final String OUTPUT_NAME="ItemExchange Output";
-	public static final ItemStack ITEM_RULE_ITEMSTACK=new ItemStack(Material.COBBLESTONE,1);
+	public static final ItemStack ITEM_RULE_ITEMSTACK=new ItemStack(Material.STONE_BUTTON,1);
 	public static final String VERSION="v0.1";
 	
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
-	{
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
 		return commandHandler.dispatch(sender, label, args);
 	}
-	public void onEnable()
-	{
-		this.
+	public void onEnable(){
 		//load the config.yml
 		initConfig();
 		//Import CSVs
 		importCSVs();
-		for(String key:ItemExchangePlugin.ENCHANTMENT_ABBRV.keySet())
-		{
-			ItemExchangePlugin.sendConsoleMessage(key+"-"+ItemExchangePlugin.ENCHANTMENT_ABBRV.get(key));
-		}
-		ItemExchangePlugin.sendConsoleMessage(String.valueOf(ItemExchangePlugin.ENCHANTMENT_ABBRV.size()));
-		for(Pair key:ItemExchangePlugin.MATERIAL_NAME.keySet())
-		{
-			ItemExchangePlugin.sendConsoleMessage(key.getFirst()+"-"+key.getSecond()+"-"+ItemExchangePlugin.MATERIAL_NAME.get(key));
-		}
-		ItemExchangePlugin.sendConsoleMessage(String.valueOf(ItemExchangePlugin.MATERIAL_NAME.size()));
 		//register the events(this should be moved...)
 		registerEvents();
 		commandHandler.registerCommands();
-		
 	}
 	
-	public void onDisable()
-	{
+	public void onDisable(){
 
 	}
 	
-	public void registerEvents()
-	{
-		try
-		{
+	public void registerEvents(){
+		try{
 			getServer().getPluginManager().registerEvents(new ItemExchangeListener(), this);
 		}
-		catch(Exception e)
-		{
+		catch(Exception e){
 			e.printStackTrace();
 		}
 	}
 	
-	public void initConfig()
-	{
+	public void initConfig(){
 	}
-	public void importCSVs()
-	{
+	public void importCSVs(){
+		
 		this.saveResource("materials.csv", true);
 		//Read Items
-		try
-		{
-			BufferedReader CSVFile = new BufferedReader(new FileReader("ItemExchange/materials.csv"));
+		try{
+			BufferedReader CSVFile = new BufferedReader(new FileReader("Plugins/ItemExchange/materials.csv"));
 			String dataRow = CSVFile.readLine();
-			while (dataRow != null)
-			{
+			while (dataRow != null){
 				String[] dataArray = dataRow.split(",");
 				ItemExchangePlugin.NAME_MATERIAL.put(dataArray[1],new Pair(Material.getMaterial(dataArray[1]),Short.valueOf(dataArray[3])));
 				ItemExchangePlugin.MATERIAL_NAME.put(new Pair(Material.getMaterial(dataArray[1]),Short.valueOf(dataArray[3])),dataArray[1]);
+				dataRow = CSVFile.readLine();
 			}
 			CSVFile.close();
 		}
-		catch(IOException ex)
-		{
+		catch(IOException ex){
 			ex.printStackTrace();
 		}
 		//Read enchantments
 		this.saveResource("enchantments.csv", true);
-		try
-		{
-			BufferedReader CSVFile = new BufferedReader(new FileReader("ItemExchange/enchantments.csv"));
+		try{
+			BufferedReader CSVFile = new BufferedReader(new FileReader("Plugins/ItemExchange/enchantments.csv"));
 			String dataRow = CSVFile.readLine();
-			while (dataRow != null)
-			{
+			while (dataRow != null){
 				String[] dataArray = dataRow.split(",");
 				ItemExchangePlugin.ABBRV_ENCHANTMENT.put(dataArray[0],dataArray[1]);
 				ItemExchangePlugin.ENCHANTMENT_ABBRV.put(dataArray[1],dataArray[0]);
+				dataRow = CSVFile.readLine();
 			}
 			CSVFile.close();
 		}
-		catch(IOException ex)
-		{
+		catch(IOException ex){
 			ex.printStackTrace();
 		}
 	}
-	public static void sendConsoleMessage(String message) 
-	{
+	public static void sendConsoleMessage(String message){
 		Bukkit.getLogger().info("ItemExchange: " + message);	
 	}
-	public static InteractionResponse createExchange(Location location,Player player)
-	{
+	public static InteractionResponse createExchange(Location location,Player player){
 		//Bail if location doesn't contain an exchange
-		if(ItemExchangePlugin.ACCEPTABLE_BLOCKS.contains(location.getBlock().getType())&&location.getBlock().getState() instanceof InventoryHolder)
-		{
+		if(ItemExchangePlugin.ACCEPTABLE_BLOCKS.contains(location.getBlock().getType())&&location.getBlock().getState() instanceof InventoryHolder){
 			Inventory inventory=((InventoryHolder)location.getBlock().getState()).getInventory();
 			ItemStack input=null;
 			ItemStack output=null;
-			for(ItemStack itemStack:inventory)
-			{
-				if(itemStack!=null)
-				{
-					if(input==null)
-					{
+			for(ItemStack itemStack:inventory){
+				if(itemStack!=null){
+					if(input==null){
 						input=itemStack;
 					}
-					else if(itemStack.isSimilar(input))
-					{
+					else if(itemStack.isSimilar(input)){
 						input.setAmount(input.getAmount()+itemStack.getAmount());
 					}
-					else if(output==null)
-					{
+					else if(output==null){
 						output=itemStack;
 					}
-					else if(output.isSimilar(itemStack))
-					{
+					else if(output.isSimilar(itemStack)){
 						output.setAmount(output.getAmount()+itemStack.getAmount());
 					}
-					else
-					{
+					else{
 						return new InteractionResponse(InteractionResponse.InteractionResult.FAILURE,"Invetory should only contain two types of items!");
 					}
 				}
 			}
-			if(input!=null&&output!=null)
-			{
-				ItemRule inputRule=new ItemRule(input);
-				ItemRule outputRule=new ItemRule(output);
-				if(inventory.addItem(inputRule.toItemStack(RuleType.INPUT)).size()>0)
-				{
-					player.getWorld().dropItem(player.getLocation(), inputRule.toItemStack(RuleType.INPUT));
+			if(input!=null&&output!=null){
+				ExchangeRule inputRule=ExchangeRule.parseItemStack(input,RuleType.INPUT);
+				ExchangeRule outputRule=ExchangeRule.parseItemStack(output,RuleType.OUTPUT);
+				if(inventory.addItem(inputRule.toItemStack()).size()>0){
+					player.getWorld().dropItem(player.getLocation(), inputRule.toItemStack());
 				}
-				if(inventory.addItem(outputRule.toItemStack(RuleType.OUTPUT)).size()>0)
-				{
-					player.getWorld().dropItem(player.getLocation(), outputRule.toItemStack(RuleType.OUTPUT));
+				if(inventory.addItem(outputRule.toItemStack()).size()>0)	{
+					player.getWorld().dropItem(player.getLocation(), outputRule.toItemStack());
 				}
 				return new InteractionResponse(InteractionResponse.InteractionResult.SUCCESS,"Created Exchage Succesfully");
 			}
-			else
-			{
+			else{
 				return new InteractionResponse(InteractionResponse.InteractionResult.FAILURE,"Inventory should have at least two types of items");
 			}
 		}
-		else
-		{
+		else{
 			return new InteractionResponse(InteractionResponse.InteractionResult.FAILURE,"Not a valid exchange block");
 		}
 	}
-	public static InteractionResponse createItemBlock(Player player,RuleType ruleType)
-	{
-		
+	public static InteractionResponse createRuleBlock(Player player,RuleType ruleType){
+		if(player.getInventory().firstEmpty()==-1){
+			return new InteractionResponse(InteractionResult.FAILURE,"Player inventory is full!");
+		}
+		player.getInventory().addItem(ExchangeRule.parseItemStack(player.getItemInHand(),ruleType).toItemStack());
+		return new InteractionResponse(InteractionResult.SUCCESS,"Created Rule Block!");
 	}
 }

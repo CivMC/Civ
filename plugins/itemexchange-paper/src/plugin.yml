@@ -6,34 +6,8 @@ commands:
   iecreate:
     aliases: iec
     description: Automatically creates an exchange inside the chest the player is looking at
-    usage: /iecreate (or /iec)
-  iecreateinput:
-    aliases: ieci
-    description: Creates an input Rule Block based on the chest you are looking at or the ItemStack in your hand
-  iecreateoutput:
-    aliases: ieco
-    description: Creates an output Rule Block on the chest you are looking at or the ItemStack in your hand
-  iesetmaterial:
-    aliases: iesm
-    description: Sets the material of the ExchangeRule held in hand
-  iesetamount:
-    aliases: iesa
-    description: Sets the amount of the ExchangeRule held in hand
-  iesetdurability:
-    aliases: iesd
-    description: Sets the durability of the ExchangeRule held in hand
-  ieaddenchantment:
-    aliases: ieae
-    description: Adds an enchantment rule to the ExchangeRule held in hand
-  ieremoveenchantment:
-    aliases: iere
-    description: Removes an enchantment rule from the ExchangeRule held in hand
-  iesetdisplayname:
-    aliases: iesdn
-    description: Sets the DisplayName of the ExchangeRule held in hand
-  iesetlore:
-    aliases: iesl
-    description: Sets the lore of the ExchangeRule held in hand
-  ieswitchio:
-    aliases: iesio
-    description: Switches the ExchangeRule held in hand between Input and Output
+    usage: /iecreate (or /iec) [input or output]
+  ieset:
+    aliases: ies
+    description: Sets the field of the ExchangeRule held in hand
+    usage: /ieset (or /ies) <field> [value] [modifier]

@@ -6,7 +6,8 @@ package com.untamedears.ItemExchange.listeners;
 
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.utility.InventoryHelpers;
-import com.untamedears.ItemExchange.utility.ItemRule;
+import com.untamedears.ItemExchange.utility.ExchangeRule;
+import com.untamedears.ItemExchange.utility.ItemExchange;
 import java.util.List;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -47,11 +48,11 @@ public class ItemExchangeListener implements Listener{
 			{
 				//If the block contains exchangeItems
 				Inventory exchangeInventory = ((InventoryHolder) e.getClickedBlock().getState()).getInventory();
-				if(InventoryHelpers.hasIO(exchangeInventory))
+				ItemExchange itemExchange=ItemExchange.getItemExchange(exchangeInventory);
+				if(itemExchange.isValid())
 				{
-					ItemRule[] IO=InventoryHelpers.getIO(exchangeInventory);
-					ItemRule input=IO[0];
-					ItemRule output=IO[1];
+					ExchangeRule input=itemExchange.getInputs().get(0);
+					ExchangeRule output=itemExchange.getInputs().get(0);
 					PlayerInventory playerInventory=player.getInventory();
 					//Check if item in hand is the input
 					if(input.followsRules(e.getItem()))
