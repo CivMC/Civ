@@ -755,6 +755,8 @@ public class JukeAlertLogger {
                 resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.GOLD + ChatFiller.fillString("Ignited", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
             } else if (action == LoggedAction.USED.getLoggedActionId()) {
                 resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.GREEN + ChatFiller.fillString("Used", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
+            } else if (action == LoggedAction.BLOCK_USED.getLoggedActionId()) {
+                resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.GREEN + ChatFiller.fillString("Used", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
             } else if (action == LoggedAction.BUCKET_EMPTY.getLoggedActionId()) {
                 resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.DARK_RED + ChatFiller.fillString("Bucket Empty", (double) 20), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
             } else if (action == LoggedAction.BUCKET_FILL.getLoggedActionId()) {
