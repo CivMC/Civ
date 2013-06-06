@@ -447,14 +447,15 @@ production_factories:
     inputs:
       Charcoal:
         material: COAL
-        amount: 300
+        amount: 600
         durability: 1
     recipes:
       - Smelt_Oak_Wood
       - Smelt_Spruce_Wood
       - Smelt_Birch_Wood
       - Smelt_Jungle_Wood
-    repair_multiple: 30
+      - Smelt_Coal
+    repair_multiple: 60
     repair_inputs:
       Charcoal:
         material: COAL
@@ -1880,10 +1881,11 @@ production_recipes:
     outputs:
       Charcoal:
         material: COAL
-        amount: 342
+        amount: 512
         durability: 1
   Diamond_Boots:
     name: Forge Diamond Boots.
+    production_time: 20
     inputs:
       Diamond:
         material: DIAMOND
@@ -1925,6 +1927,7 @@ production_recipes:
         durability: 12
   Iron_Boots:
     name: Forge Iron Boots.
+    production_time: 20
     inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -1951,6 +1954,7 @@ production_recipes:
         durability: 12
   Gold_Spade:
     name: Forge Gold Spade.
+    production_time: 5
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -2008,6 +2012,7 @@ production_recipes:
         durability: 9
   Diamond_Hoe:
     name: Forge Diamond Hoe.
+    production_time: 10
     inputs:
       Diamond:
         material: DIAMOND
@@ -2018,6 +2023,7 @@ production_recipes:
         amount: 30
   Gold_Chestplate:
     name: Forge Gold Chestplate.
+    production_time: 40
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -2260,7 +2266,7 @@ production_recipes:
     outputs:
       Charcoal:
         material: COAL
-        amount: 342
+        amount: 512
         durability: 1
   Dye_Brown_Wool_Magenta:
     name: Dye Brown Wool Magenta
@@ -2409,10 +2415,11 @@ production_recipes:
     outputs:
       Charcoal:
         material: COAL
-        amount: 342
+        amount: 512
         durability: 1
   Diamond_Sword:
     name: Forge Diamond Sword.
+    production_time: 10
     inputs:
       Diamond:
         material: DIAMOND
@@ -2471,6 +2478,7 @@ production_recipes:
         durability: 2
   Iron_Helmet:
     name: Forge Iron Helmet.
+    production_time: 25
     inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -2632,6 +2640,7 @@ production_recipes:
         durability: 11
   Gold_Pickaxe:
     name: Forge Gold Pickaxe.
+    production_time: 15
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -2788,6 +2797,7 @@ production_recipes:
         amount: 6
   Iron_Chestplate:
     name: Forge Iron Chestplate.
+    production_time: 40
     inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -2814,6 +2824,7 @@ production_recipes:
         durability: 14
   Gold_Leggings:
     name: Forge Gold Leggings.
+    production_time: 35
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -2908,6 +2919,7 @@ production_recipes:
         durability: 13
   Diamond_Chestplate:
     name: Forge Diamond Chestplate.
+    production_time: 40
     inputs:
       Diamond:
         material: DIAMOND
@@ -2950,6 +2962,7 @@ production_recipes:
         durability: 8
   Iron_Leggings:
     name: Forge Iron Leggings.
+    production_time: 35
     inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -3086,6 +3099,7 @@ production_recipes:
         durability: 7
   Iron_Spade:
     name: Forge Iron Spade.
+    production_time: 5
     inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -3221,6 +3235,7 @@ production_recipes:
         durability: 14
   Iron_Axe:
     name: Forge Iron Axe.
+    production_time: 15
     inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -3329,6 +3344,7 @@ production_recipes:
         durability: 7
   Diamond_Helmet:
     name: Forge Diamond Helmet.
+    production_time: 25
     inputs:
       Diamond:
         material: DIAMOND
@@ -3379,6 +3395,7 @@ production_recipes:
         durability: 12
   Iron_Pickaxe:
     name: Forge Iron Pickaxe.
+    production_time: 15
     inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -3437,7 +3454,7 @@ production_recipes:
       Cracked Stone Brick:
         material: SMOOTH_BRICK
         amount: 64
-        durability: 1
+        durability: 2
   Iron_XP_Bottle_0:
     name: Brew XP Bottles  - 1
     inputs:
@@ -3469,6 +3486,7 @@ production_recipes:
         amount: 32
   Diamond_Leggings:
     name: Forge Diamond Leggings.
+    production_time: 35
     inputs:
       Diamond:
         material: DIAMOND
@@ -3511,6 +3529,7 @@ production_recipes:
         durability: 8
   Iron_Sword:
     name: Forge Iron Sword.
+    production_time: 10
     inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -3585,6 +3604,7 @@ production_recipes:
         durability: 3
   Gold_Hoe:
     name: Forge Gold Hoe.
+    production_time: 10
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -3599,6 +3619,7 @@ production_recipes:
         level: 3
   Gold_Sword:
     name: Forge Gold Sword.
+    production_time: 10
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -3684,6 +3705,7 @@ production_recipes:
         durability: 3
   Diamond_Pickaxe:
     name: Forge Diamond Pickaxe.
+    production_time: 15
     inputs:
       Diamond:
         material: DIAMOND
@@ -3710,7 +3732,7 @@ production_recipes:
       Mossy Stone Brick:
         material: SMOOTH_BRICK
         amount: 64
-        durability: 2
+        durability: 1
   Dye_White_Wool_Magenta:
     name: Dye White Wool Magenta
     inputs:
@@ -3728,6 +3750,7 @@ production_recipes:
         durability: 2
   Iron_Hoe:
     name: Forge Iron Hoe.
+    production_time: 10
     inputs:
       Iron Ingot:
         material: IRON_INGOT
@@ -3813,8 +3836,21 @@ production_recipes:
         material: WOOL
         amount: 64
         durability: 3
+  Smelt_Coal:
+    name: Burn Coal
+    production_time: 24
+    inputs:
+      Coal:
+        material: COAL
+        amount: 256
+    outputs:
+      Charcoal:
+        material: COAL
+        amount: 512
+        durability: 1
   Gold_Axe:
     name: Forge Gold Axe.
+    production_time: 15
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -3931,6 +3967,7 @@ production_recipes:
         durability: 15
   Diamond_Spade:
     name: Forge Diamond Spade.
+    production_time: 5
     inputs:
       Diamond:
         material: DIAMOND
@@ -3984,6 +4021,7 @@ production_recipes:
         amount: 102
   Gold_Helmet:
     name: Forge Gold Helmet.
+    production_time: 25
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -4094,6 +4132,7 @@ production_recipes:
         durability: 5
   Gold_Boots:
     name: Forge Gold Boots.
+    production_time: 20
     inputs:
       Gold Ingot:
         material: GOLD_INGOT
@@ -4253,7 +4292,7 @@ production_recipes:
         durability: 5
   Smelt_Stone:
     name: Smelt Stone
-    production_time: 120
+    production_time: 80
     inputs:
       Cobblestone:
         material: COBBLESTONE
@@ -4306,6 +4345,7 @@ production_recipes:
         amount: 64
   Diamond_Axe:
     name: Forge Diamond Axe.
+    production_time: 15
     inputs:
       Diamond:
         material: DIAMOND
@@ -4324,5 +4364,5 @@ production_recipes:
     outputs:
       Charcoal:
         material: COAL
-        amount: 342
+        amount: 512
         durability: 1

@@ -120,8 +120,8 @@ Locked Chest,LOCKED_CHEST,95,0
 Trap Door,TRAP_DOOR,96,0
 Monster Eggs,MONSTER_EGGS,97,0
 Stone Brick,SMOOTH_BRICK,98,0
-Cracked Stone Brick,SMOOTH_BRICK,98,1
-Mossy Stone Brick,SMOOTH_BRICK,98,2
+Mossy Stone Brick,SMOOTH_BRICK,98,1
+Cracked Stone Brick,SMOOTH_BRICK,98,2
 Chiseled Stone Brick,SMOOTH_BRICK,98,3
 Huge Mushroom 1,HUGE_MUSHROOM_1,99,0
 Huge Mushroom 2,HUGE_MUSHROOM_2,100,0
