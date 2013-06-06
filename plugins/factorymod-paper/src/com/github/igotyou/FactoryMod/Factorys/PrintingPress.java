@@ -26,6 +26,10 @@ public class PrintingPress extends BaseFactory {
 	
 	private PrintingPressProperties printingPressProperties;
 	private OperationMode mode;
+	public OperationMode getMode() {
+		return mode;
+	}
+
 	private int containedPaper;
 	private int containedBindings;
 	private int containedSecurityMaterials;
@@ -152,15 +156,8 @@ public class PrintingPress extends BaseFactory {
 	}
 
 	@Override
-	protected void recipeFinished() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public int getMaxRepair() {
-		// TODO Auto-generated method stub
-		return 0;
+		return printingPressProperties.getMaxRepair();
 	}
 	
 	@Override
@@ -172,21 +169,37 @@ public class PrintingPress extends BaseFactory {
 		int outputDelay = printingPressProperties.getPageLead();
 		this.processQueue = new int[outputDelay];
 		this.processQueueOffset = 0;
-		this.lockedResultCode = getPrintResult().hashCode();
+		
+		if (mode == OperationMode.PRINT_BOOKS ||
+				mode == OperationMode.PRINT_PAMPHLETS ||
+				mode == OperationMode.PRINT_SECURITY) {
+			// Require product
+			if (!getPrintResult().isValid()) {
+				powerOff();
+			} else {
+				this.lockedResultCode = getPrintResult().hashCode();
+			}
+		}
 	}
 	
 	@Override
 	public void postUpdate() {
 		// Check for sneaky plate swaps, shut down
-		int expectedResultCode = getPrintResult().hashCode();
-		if (this.lockedResultCode != expectedResultCode) {
-			powerOff();
-			return;
+		if (mode == OperationMode.PRINT_BOOKS ||
+				mode == OperationMode.PRINT_PAMPHLETS ||
+				mode == OperationMode.PRINT_SECURITY) {
+			// Require product
+			int expectedResultCode = getPrintResult().hashCode();
+			if (this.lockedResultCode != expectedResultCode) {
+				powerOff();
+				return;
+			}
 		}
 		
 		switch(mode) {
 		case PRINT_BOOKS:
 			printBooksUpdate();
+			break;
 		case PRINT_PAMPHLETS:
 			printPamphletsUpdate();
 			break;
@@ -199,43 +212,35 @@ public class PrintingPress extends BaseFactory {
 	public void printBooksUpdate() {
 		// Output finished results
 		int finished = processQueue[processQueueOffset];
-		NamedItemStack result = getPrintResult().toBook();
-		ItemList<NamedItemStack> set = new ItemList<NamedItemStack>();
-		set.add(result);
-		set = set.getMultiple(finished);
-		set.putIn(getInventory());
+		if (finished > 0) {
+			NamedItemStack result = getPrintResult().toBook();
+			ItemList<NamedItemStack> set = new ItemList<NamedItemStack>();
+			set.add(result);
+			set = set.getMultiple(finished);
+			set.putIn(getInventory());
+		}
 		
 		// Load materials
 		ItemList<NamedItemStack> pages = printingPressProperties.getPageMaterials();
 		boolean hasPages = pages.allIn(getInventory());
+		boolean inputStall = false;
 		if (hasPages) {
 			pages.removeFrom(getInventory());
 			containedPaper += printingPressProperties.getPagesPerLot();
 			
-			// Load bindings if books
-			if (mode == OperationMode.PRINT_BOOKS) {
-				int expectedBindings = (int) Math.ceil((double) containedPaper / (double) getPrintResult().pageCount());
-				while (containedBindings < expectedBindings) {
-					if (printingPressProperties.getBindingMaterials().allIn(getInventory())) {
-						printingPressProperties.getBindingMaterials().removeFrom(getInventory());
-						containedBindings += 1;
-					} else {
-						break;
-					}
+			// Load bindings
+			int expectedBindings = (int) Math.ceil((double) containedPaper / (double) getPrintResult().pageCount());
+			while (containedBindings < expectedBindings) {
+				if (printingPressProperties.getBindingMaterials().allIn(getInventory())) {
+					printingPressProperties.getBindingMaterials().removeFrom(getInventory());
+					containedBindings += 1;
+				} else {
+					inputStall = true;
+					break;
 				}
 			}
-			
-			// Load security materials if security notes
-			if (mode == OperationMode.PRINT_SECURITY) {
-				while (containedSecurityMaterials < containedPaper) {
-					if (printingPressProperties.getSecurityMaterials().allIn(getInventory())) {
-						printingPressProperties.getSecurityMaterials().removeFrom(getInventory());
-						containedSecurityMaterials += printingPressProperties.getSecurityNotesPerLot();
-					} else {
-						break;
-					}
-				}
-			}
+		} else {
+			inputStall = true;
 		}
 		
 		// Put materials in queue
@@ -246,6 +251,10 @@ public class PrintingPress extends BaseFactory {
 		containedBindings -= copiesIn;
 		processQueue[processQueueOffset] = copiesIn;
 		
+		if (inputStall) {
+			stopIfEmpty();
+		}
+		
 		// Rotate on queue
 		processQueueOffset += 1;
 		if (processQueueOffset >= processQueue.length) {
@@ -253,14 +262,30 @@ public class PrintingPress extends BaseFactory {
 		}
 	}
 	
+	private void stopIfEmpty() {// Check if queue is empty
+		boolean queueEmpty = true;
+		for (int amount : processQueue) {
+			if (amount > 0) {
+				queueEmpty = false;
+				break;
+			}
+		}
+		if (queueEmpty) {
+			// Stalled and empty
+			powerOff();
+		}
+	}
+
 	public void printPamphletsUpdate() {
 		// Output finished results
 		int finished = processQueue[processQueueOffset];
-		NamedItemStack result = getPrintResult().toPamphlet();
-		ItemList<NamedItemStack> set = new ItemList<NamedItemStack>();
-		set.add(result);
-		set = set.getMultiple(finished);
-		set.putIn(getInventory());
+		if (finished > 0) {
+			NamedItemStack result = getPrintResult().toPamphlet();
+			ItemList<NamedItemStack> set = new ItemList<NamedItemStack>();
+			set.add(result);
+			set = set.getMultiple(finished);
+			set.putIn(getInventory());
+		}
 		
 		// Load materials
 		ItemList<NamedItemStack> pages = printingPressProperties.getPamphletMaterials();
@@ -270,6 +295,7 @@ public class PrintingPress extends BaseFactory {
 			processQueue[processQueueOffset] = printingPressProperties.getPamphletsPerLot();
 		} else {
 			processQueue[processQueueOffset] = 0;
+			stopIfEmpty();
 		}
 		
 		// Rotate on queue
@@ -282,15 +308,18 @@ public class PrintingPress extends BaseFactory {
 	public void printSecurityUpdate() {
 		// Output finished results
 		int finished = processQueue[processQueueOffset];
-		NamedItemStack result = getPrintResult().toSecurityNote();
-		ItemList<NamedItemStack> set = new ItemList<NamedItemStack>();
-		set.add(result);
-		set = set.getMultiple(finished);
-		set.putIn(getInventory());
+		if (finished > 0) {
+			NamedItemStack result = getPrintResult().toSecurityNote();
+			ItemList<NamedItemStack> set = new ItemList<NamedItemStack>();
+			set.add(result);
+			set = set.getMultiple(finished);
+			set.putIn(getInventory());
+		}
 		
 		// Load materials
 		ItemList<NamedItemStack> pages = printingPressProperties.getPamphletMaterials();
 		boolean hasPages = pages.allIn(getInventory());
+		boolean inputStall = false;
 		if (hasPages) {
 			pages.removeFrom(getInventory());
 			containedPaper += printingPressProperties.getPamphletsPerLot();
@@ -301,9 +330,12 @@ public class PrintingPress extends BaseFactory {
 					printingPressProperties.getSecurityMaterials().removeFrom(getInventory());
 					containedSecurityMaterials += printingPressProperties.getSecurityNotesPerLot();
 				} else {
+					inputStall = true;
 					break;
 				}
 			}
+		} else {
+			inputStall = true;
 		}
 		
 		// Put materials in queue
@@ -311,6 +343,10 @@ public class PrintingPress extends BaseFactory {
 		containedPaper -= copiesIn;
 		containedSecurityMaterials -= copiesIn;
 		processQueue[processQueueOffset] = copiesIn;
+		
+		if (inputStall) {
+			stopIfEmpty();
+		}
 		
 		// Rotate on queue
 		processQueueOffset += 1;
@@ -397,6 +433,9 @@ public class PrintingPress extends BaseFactory {
 	
 	private NamedItemStack getPlateResult() {
 		for (ItemStack stack : getInventory().getContents()) {
+			if (stack == null) {
+				continue;
+			}
 			if (stack.getType().equals(Material.BOOK_AND_QUILL) ||
 					stack.getType().equals(Material.WRITTEN_BOOK)) {
 				ItemMeta meta = stack.getItemMeta();
@@ -433,16 +472,28 @@ public class PrintingPress extends BaseFactory {
 		private String title;
 		private String author;
 		private int watermark;
+		private boolean valid;
 		
 		PrintResult() {
 			Pattern printPlateRE = Pattern.compile("^Print plates #([0-9]{4})$");
 			Inventory inventory = getInventory();
+			
+			title = "";
+			author = "";
+			watermark = 0;
+			valid = false;
+			pages = new ArrayList<String>();
+			
 			for (ItemStack stack : inventory.getContents()) {
+				if (stack == null) {
+					continue;
+				}
+				
 				if (stack.getType().equals(Material.BOOK_AND_QUILL) ||
 						stack.getType().equals(Material.WRITTEN_BOOK)) {
 					ItemMeta meta = stack.getItemMeta();
 					List<String> lore = meta.getLore();
-					if (!lore.isEmpty()) {
+					if (lore != null && !lore.isEmpty()) {
 						String firstLore = lore.get(0);
 						Matcher match = printPlateRE.matcher(firstLore);
 						if (match.matches()) {
@@ -455,6 +506,8 @@ public class PrintingPress extends BaseFactory {
 								}
 								watermark = Integer.parseInt(match.group(1)); 
 								pages = new ArrayList<String>(bookData.getPages());
+								valid = true;
+								break;
 							}
 						}
 					}
@@ -462,6 +515,10 @@ public class PrintingPress extends BaseFactory {
 			}
 		}
 		
+		public boolean isValid() {
+			return valid;
+		}
+
 		public int pageCount() {
 			return pages.size();
 		}
@@ -489,6 +546,7 @@ public class PrintingPress extends BaseFactory {
 				lore.add(limitPageLore(pages.get(0)));
 			}
 			meta.setLore(lore);
+			book.setItemMeta(meta);
 			return book;
 		}
 		
@@ -506,6 +564,7 @@ public class PrintingPress extends BaseFactory {
 				lore.add(String.format("§2%s #%d", author, watermark));
 			}
 			meta.setLore(lore);
+			book.setItemMeta(meta);
 			return book;
 		}
 		
@@ -532,11 +591,11 @@ public class PrintingPress extends BaseFactory {
 	}
 	
 	public enum OperationMode {
-		REPAIR(0, "Repair", 200),
-		SET_PLATES(1, "Set plates", 200),
-		PRINT_BOOKS(2, "Print books", 20 * 3600 * 24),
-		PRINT_PAMPHLETS(3, "Print pamphlets", 20 * 3600 * 24),
-		PRINT_SECURITY(4, "Print security notes", 20 * 3600 * 24);
+		REPAIR(0, "Repair", 20),
+		SET_PLATES(1, "Set plates", 20),
+		PRINT_BOOKS(2, "Print books", 3600 * 24),
+		PRINT_PAMPHLETS(3, "Print pamphlets", 3600 * 24),
+		PRINT_SECURITY(4, "Print security notes", 3600 * 24);
 		
 		private static final int MAX_ID = 5;
 		private int id;
@@ -561,11 +620,11 @@ public class PrintingPress extends BaseFactory {
 			return null;
 		}
 		
-		private int getId() {
+		public int getId() {
 			return id;
 		}
 		
-		private int getProductionTime() {
+		public int getProductionTime() {
 			return productionTime;
 		}
 
@@ -573,5 +632,11 @@ public class PrintingPress extends BaseFactory {
 			int nextId = (getId() + 1) % MAX_ID;
 			return OperationMode.byId(nextId);
 		}
+	}
+
+	@Override
+	protected void recipeFinished() {
+		// TODO Auto-generated method stub
+		
 	}
 }

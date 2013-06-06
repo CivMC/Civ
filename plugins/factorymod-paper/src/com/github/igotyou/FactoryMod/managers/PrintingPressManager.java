@@ -25,6 +25,7 @@ import org.bukkit.inventory.Inventory;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
 import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
+import com.github.igotyou.FactoryMod.Factorys.PrintingPress.OperationMode;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
@@ -100,6 +101,7 @@ public class PrintingPressManager implements Manager
 			oos.writeInt(powerLocation.getBlockZ());
 			
 			oos.writeBoolean(production.getActive());
+			oos.writeInt(production.getMode().getId());
 			oos.writeInt(production.getProductionTimer());
 			oos.writeInt(production.getEnergyTimer());
 			oos.writeDouble(production.getCurrentRepair());
@@ -139,6 +141,7 @@ public class PrintingPressManager implements Manager
 				Location inventoryLocation = new Location(world, ois.readInt(), ois.readInt(), ois.readInt());
 				Location powerLocation = new Location(world, ois.readInt(), ois.readInt(), ois.readInt());
 				boolean active = ois.readBoolean();
+				OperationMode mode = PrintingPress.OperationMode.byId(ois.readInt());
 				int productionTimer = ois.readInt();
 				int energyTimer = ois.readInt();
 				double currentRepair = ois.readDouble();
@@ -158,7 +161,7 @@ public class PrintingPressManager implements Manager
 				PrintingPress production = new PrintingPress(centerLocation, inventoryLocation, powerLocation,
 						active, productionTimer,
 						energyTimer, currentRepair, timeDisrepair,
-						PrintingPress.OperationMode.REPAIR,
+						mode,
 						plugin.getPrintingPressProperties(),
 						containedPaper, containedBindings, containedSecurityMaterials,
 						processQueue, lockedResultCode);

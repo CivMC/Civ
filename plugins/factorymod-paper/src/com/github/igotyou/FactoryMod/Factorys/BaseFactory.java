@@ -38,6 +38,8 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 			boolean active, FactoryType factoryType, String subFactoryType) {
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, active,
 				factoryType, subFactoryType);
+		this.currentRepair = 0.0;
+		this.timeDisrepair=3155692597470L;
 	}
 
 	public BaseFactory(Location factoryLocation,
@@ -46,6 +48,8 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 			Inventory factoryInventory, String subFactoryType) {
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, active,
 				tierLevel, factoryType, factoryInventory, subFactoryType);
+		this.currentRepair = 0.0;
+		this.timeDisrepair=3155692597470L;
 	}
 
 	public BaseFactory(Location factoryLocation,

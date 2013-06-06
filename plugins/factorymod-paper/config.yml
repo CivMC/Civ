@@ -92,6 +92,10 @@ printing_presses:
         "Iron block":
            material: 'IRON_BLOCK'
            amount: 100
+     plates:
+        "Iron Ingot":
+           material: 'IRON_INGOT'
+           amount: 2
      repair:
         "Iron block":
            material: 'IRON_BLOCK'
@@ -103,21 +107,30 @@ printing_presses:
      page_lot:
         Paper:
            material: 'PAPER'
-           amount: 6
-     pages_per_lot: 6
+           amount: 4
+        Ink:
+           material: 'INK_SACK'
+           durability: 0
+           amount: 1
+     pages_per_lot: 4
      pamphlet_lot:
         Paper:
            material: 'PAPER'
            amount: 4
+        Ink:
+           material: 'INK_SACK'
+           durability: 0
+           amount: 1
      pamphlets_per_lot: 6
      security_lot:
         "Gold nuggets":
            material: 'GOLD_NUGGET'
            amount: 1
         "Cactus green":
-           material: 'CACTUS_GREEN'
-           amount: 3
-     security_notes_per_lot: 12
+           material: 'INK_SACK'
+           durability: 2
+           amount: 4
+     security_notes_per_lot: 16
      
 crafting:
   disable:
