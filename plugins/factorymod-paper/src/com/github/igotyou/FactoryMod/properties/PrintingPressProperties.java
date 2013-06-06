@@ -103,12 +103,12 @@ public class PrintingPressProperties {
 		ItemList<NamedItemStack> ppPlateCost=plugin.getItems(costs.getConfigurationSection("plates"));
 		ItemList<NamedItemStack> ppBindingCost=plugin.getItems(costs.getConfigurationSection("binding"));
 		ItemList<NamedItemStack> ppPageCost=plugin.getItems(costs.getConfigurationSection("page_lot"));
-		int pagesPerLot = costs.getInt("pages_per_lot",4); 
+		int pagesPerLot = costs.getInt("pages_per_lot",16); 
 		ItemList<NamedItemStack> ppPamphletCost=plugin.getItems(costs.getConfigurationSection("pamphlet_lot"));
-		int pamphletsPerLot = costs.getInt("pamphlets_per_lot",6);
+		int pamphletsPerLot = costs.getInt("pamphlets_per_lot",24);
 		ItemList<NamedItemStack> ppSecurityCost=plugin.getItems(costs.getConfigurationSection("security_lot"));
-		int securityNotesPerLot = costs.getInt("security_notes_per_lot",12);
-		int ppEnergyTime = configPrintingPresses.getInt("fuel_time", 2);
+		int securityNotesPerLot = costs.getInt("security_notes_per_lot",24);
+		int ppEnergyTime = configPrintingPresses.getInt("fuel_time", 10);
 		int ppRepair = configPrintingPresses.getInt("max_repair",100);
 		String ppName = configPrintingPresses.getString("name", "Printing Press");
 		int paperRate = configPrintingPresses.getInt("paper_rate",3);

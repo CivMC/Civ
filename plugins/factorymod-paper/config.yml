@@ -107,21 +107,21 @@ printing_presses:
      page_lot:
         Paper:
            material: 'PAPER'
-           amount: 4
+           amount: 16
         Ink:
            material: 'INK_SACK'
            durability: 0
-           amount: 1
-     pages_per_lot: 4
+           amount: 2
+     pages_per_lot: 16
      pamphlet_lot:
         Paper:
            material: 'PAPER'
-           amount: 4
+           amount: 16
         Ink:
            material: 'INK_SACK'
            durability: 0
-           amount: 1
-     pamphlets_per_lot: 6
+           amount: 2
+     pamphlets_per_lot: 24
      security_lot:
         "Gold nuggets":
            material: 'GOLD_NUGGET'
@@ -129,8 +129,8 @@ printing_presses:
         "Cactus green":
            material: 'INK_SACK'
            durability: 2
-           amount: 4
-     security_notes_per_lot: 16
+           amount: 6
+     security_notes_per_lot: 24
      
 crafting:
   disable:
