@@ -18,7 +18,10 @@ public enum LoggedAction {
     USED(6),
     IGNITED(7),
     BLOCK_BURN(8),
-    BLOCK_USED(9);
+    BLOCK_USED(9),
+    LOGIN(10),
+    LOGOUT(11);
+    
     private int value;
 
     // constructor, has to be private
