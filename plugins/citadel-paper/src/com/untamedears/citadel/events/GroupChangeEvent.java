@@ -35,7 +35,7 @@ public class GroupChangeEvent extends Event implements Cancellable {
     }
 
     public HandlerList getHandlers() {
-        return CreateReinforcementEvent.getHandlerList();
+        return GroupChangeEvent.getHandlerList();
     }
 
     public boolean isCancelled() {
