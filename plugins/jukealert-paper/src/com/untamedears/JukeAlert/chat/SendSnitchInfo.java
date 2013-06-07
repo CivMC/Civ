@@ -26,18 +26,19 @@ public class SendSnitchInfo implements Runnable {
 			for (String dataEntry : info) {
 				if (dataEntry.contains("["))
 				{
-					String data = dataEntry.split("\\[")[0].replace(" ", "").replaceAll("\u00A7[0-9]", "").replaceAll("[^\\d]", "");
+					String data = ChatColor.stripColor(dataEntry.split("\\[")[0]);
+					data = data.split(" ")[data.split(" ").length - 1];
 					if (Material.matchMaterial(data) != null)
 						if (!id.contains(Material.matchMaterial(data).toString()))
 							id += String.format(ChatColor.WHITE + ", $" + ChatColor.RED + "%s " + ChatColor.WHITE + "= " + ChatColor.RED + "%s", Integer.parseInt(data), Material.matchMaterial(data));
 				}
 			}
-			
-			id = id.replaceFirst(",", "") + "\n";
+		
+			id = id.replaceFirst(",", "") + (id.length() > 1 ? "\n" : "");
 
 			output += ChatColor.WHITE + " Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------" + "\n";
 			output += id;
-			output += ChatColor.GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 25), ChatFiller.fillString("Reason", (double) 20), ChatFiller.fillString("Details", (double) 30)) + "\n";
+			output += ChatColor.GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 22), ChatFiller.fillString("Reason", (double) 22), ChatFiller.fillString("Details", (double) 30)) + "\n";
 
 			for (String dataEntry : info) {
 				output += dataEntry + "\n";
