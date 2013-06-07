@@ -26,7 +26,7 @@ public class SendSnitchInfo implements Runnable {
 			for (String dataEntry : info) {
 				if (dataEntry.contains("["))
 				{
-					String data = dataEntry.split("\\[")[0].replace(" ", "").replaceAll("§[0-9]", "").replaceAll("[^\\d]", "");
+					String data = dataEntry.split("\\[")[0].replace(" ", "").replaceAll("\u00A7[0-9]", "").replaceAll("[^\\d]", "");
 					if (Material.matchMaterial(data) != null)
 						if (!id.contains(Material.matchMaterial(data).toString()))
 							id += String.format(ChatColor.WHITE + ", $" + ChatColor.RED + "%s " + ChatColor.WHITE + "= " + ChatColor.RED + "%s", Integer.parseInt(data), Material.matchMaterial(data));
