@@ -183,7 +183,7 @@ public class PrintingPress extends BaseFactory {
 	}
 	
 	@Override
-	public void postUpdate() {
+	public void fuelConsumed() {
 		// Check for sneaky plate swaps, shut down
 		if (mode == OperationMode.PRINT_BOOKS ||
 				mode == OperationMode.PRINT_PAMPHLETS ||
