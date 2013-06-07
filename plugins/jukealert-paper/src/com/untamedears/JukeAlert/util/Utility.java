@@ -20,6 +20,7 @@ public class Utility {
 
     public static boolean isOnSnitch(Snitch snitch, String playerName) {
         Faction faction = snitch.getGroup();
+        if (faction == null) return false;
         return faction.isMember(playerName)
             || faction.isModerator(playerName)
             || faction.isFounder(playerName);
