@@ -105,14 +105,20 @@ public class PrintingPress extends BaseFactory {
 
 	@Override
 	public double getProductionTime() {
-		if (mode == OperationMode.SET_PLATES) {
-			NamedItemStack plates = getPlateResult();
-			if (plates != null) {
-				int pageCount = ((BookMeta) plates.getItemMeta()).getPageCount();
-				return mode.getProductionTime() * pageCount;
-			}
+		switch(mode) {
+			case SET_PLATES:
+				NamedItemStack plates = getPlateResult();
+				int pageCount = 1;
+				if (plates != null) {
+					pageCount = Math.max(1, ((BookMeta) plates.getItemMeta()).getPageCount());
+				}
+				return printingPressProperties.getSetPlateTime() * pageCount;
+			case REPAIR:
+				return printingPressProperties.getRepairTime();
+			default:
+				// Continuous recipes -> 1 year limit at 1 update per second
+				return 3600 * 24 * 365;
 		}
-		return mode.getProductionTime();
 	}
 
 	@Override
@@ -588,21 +594,19 @@ public class PrintingPress extends BaseFactory {
 	}
 	
 	public enum OperationMode {
-		REPAIR(0, "Repair", 20),
-		SET_PLATES(1, "Set plates", 20),
-		PRINT_BOOKS(2, "Print books", 3600 * 24),
-		PRINT_PAMPHLETS(3, "Print pamphlets", 3600 * 24),
-		PRINT_SECURITY(4, "Print security notes", 3600 * 24);
+		REPAIR(0, "Repair"),
+		SET_PLATES(1, "Set plates"),
+		PRINT_BOOKS(2, "Print books"),
+		PRINT_PAMPHLETS(3, "Print pamphlets"),
+		PRINT_SECURITY(4, "Print security notes");
 		
 		private static final int MAX_ID = 5;
 		private int id;
 		private String description;
-		private int productionTime;
 
-		private OperationMode(int id, String description, int productionTime) {
+		private OperationMode(int id, String description) {
 			this.id = id;
 			this.description = description;
-			this.productionTime = productionTime;
 		}
 		
 		public String getDescription() {
@@ -619,10 +623,6 @@ public class PrintingPress extends BaseFactory {
 		
 		public int getId() {
 			return id;
-		}
-		
-		public int getProductionTime() {
-			return productionTime;
 		}
 
 		public OperationMode getNext() {

@@ -93,9 +93,12 @@ printing_presses:
            material: 'IRON_BLOCK'
            amount: 100
      plates:
-        "Iron Ingot":
+        "Iron ingot":
            material: 'IRON_INGOT'
-           amount: 2
+           amount: 4
+        "Gold nugget":
+           material: "GOLD_NUGGET"
+           amount: 1
      repair:
         "Iron block":
            material: 'IRON_BLOCK'
