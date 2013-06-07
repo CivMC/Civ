@@ -125,9 +125,9 @@ public class JukeAlertListener implements Listener {
         Set<Snitch> snitches = snitchManager.findSnitches(world, location);
         for (Snitch snitch : snitches) {
             if (!isOnSnitch(snitch, playerName)) {
-                for (Player remoteplayer : playerManager.getPlayers()) {
-                    if (snitch.getGroup().isMember(remoteplayer.getName()) || snitch.getGroup().isFounder(remoteplayer.getName()) || snitch.getGroup().isModerator(remoteplayer.getName())) {
-                        remoteplayer.sendMessage(ChatColor.AQUA + " * " + playerName + " logged out in snitch at " + snitch.getName() + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+                for (Player remotePlayer : playerManager.getPlayers()) {
+                    if (isOnSnitch(snitch, remotePlayer.getName())) {
+                        remotePlayer.sendMessage(ChatColor.AQUA + " * " + playerName + " logged out in snitch at " + snitch.getName() + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
                     }
                 }
                 plugin.getJaLogger().logSnitchLogout(snitch, location, player);
