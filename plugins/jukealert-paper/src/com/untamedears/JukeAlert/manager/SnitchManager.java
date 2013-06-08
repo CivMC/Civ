@@ -1,6 +1,7 @@
 package com.untamedears.JukeAlert.manager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -56,8 +57,8 @@ public class SnitchManager {
         this.logger.saveAllSnitches();
     }
 
-    public Map<World, SparseQuadTree> getAllSnitches() {
-        return this.snitches;
+    public Collection<Snitch> getAllSnitches() {
+        return this.snitchesById.values();
     }
 
     public void setSnitches(Map<World, SparseQuadTree> snitches) {
@@ -88,10 +89,12 @@ public class SnitchManager {
         } else {
             snitches.get(world).add(snitch);
         }
+        snitchesById.put(snitch.getId(), snitch);
     }
 
     public void removeSnitch(Snitch snitch) {
         snitches.get(snitch.getLoc().getWorld()).remove(snitch);
+        snitchesById.remove(snitch.getId());
     }
 
     public Set<Snitch> findSnitches(World world, Location location) {
