@@ -20,9 +20,11 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
@@ -42,15 +44,12 @@ import org.bukkit.inventory.ItemStack;
  */
 public class JukeAlertLogger {
 
-    private JukeAlert plugin;
     private ConfigManager configManager;
-    private GroupMediator groupMediator;
     private Database db;
     private String snitchsTbl;
     private String snitchDetailsTbl;
     private PreparedStatement getSnitchIdFromLocationStmt;
     private PreparedStatement getAllSnitchesStmt;
-    private PreparedStatement getAllSnitchesByWorldStmt;
     private PreparedStatement getLastSnitchID;
     private PreparedStatement getSnitchLogStmt;
     private PreparedStatement deleteSnitchLogStmt;
@@ -63,6 +62,10 @@ public class JukeAlertLogger {
     private PreparedStatement updateSnitchGroupStmt;
     private int logsPerPage;
     private int lastSnitchID;
+    // The following are used by SnitchEnumerator
+    protected JukeAlert plugin;
+    protected GroupMediator groupMediator;
+    protected PreparedStatement getAllSnitchesByWorldStmt;
 
     public JukeAlertLogger() {
         plugin = JukeAlert.getInstance();
@@ -84,6 +87,7 @@ public class JukeAlertLogger {
         if (connected) {
             genTables();
             initializeStatements();
+            initializeLastSnitchId();
         } else {
             this.plugin.getLogger().log(Level.SEVERE, "Could not connect to the database! Fill out your config.yml!");
         }
@@ -217,56 +221,97 @@ public class JukeAlertLogger {
 
     }
 
+    private void initializeLastSnitchId() {
+        lastSnitchID = -1;
+        try {
+            ResultSet rsKey = getLastSnitchID.executeQuery();
+            if (rsKey.next()) {
+                lastSnitchID = rsKey.getInt("Auto_increment");
+            }
+        } catch (SQLException ex) {
+            lastSnitchID = -1;
+        }
+        if (lastSnitchID == -1) {
+            this.plugin.getLogger().log(Level.SEVERE, "Could not determine the last snitch id!");
+        }
+    }
+
     public static String snitchKey(final Location loc) {
         return String.format(
                 "World: %s X: %d Y: %d Z: %d",
                 loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
     }
 
-    public Map<World, SparseQuadTree> getAllSnitches() {
-        Map<World, SparseQuadTree> snitches = new HashMap<World, SparseQuadTree>();
-        List<World> worlds = this.plugin.getServer().getWorlds();
-        for (World world : worlds) {
-            SparseQuadTree snitchesByWorld = getAllSnitchesByWorld(world);
-            snitches.put(world, snitchesByWorld);
+    protected class SnitchEnumerator implements Enumeration<Snitch> {
+        JukeAlertLogger logger_;
+        World world_;
+        ResultSet rs_;
+        Snitch next_;
+
+        public SnitchEnumerator(JukeAlertLogger logger, World world) {
+            logger_ = logger;
+            world_ = world;
+            try {
+                getAllSnitchesByWorldStmt.setString(1, world_.getName());
+                rs_ = getAllSnitchesByWorldStmt.executeQuery();
+                next_ = getNextSnitch();
+            } catch (SQLException ex) {
+                logger_.plugin.getLogger().log(Level.SEVERE, "Couldn't get first snitch in World " + world_ + "!   " + ex.toString());
+                rs_ = null;
+                next_ = null;
+            }
         }
-        return snitches;
+
+        @Override
+        public boolean hasMoreElements() {
+            return next_ != null;
+        }
+
+        private Snitch getNextSnitch() {
+            try {
+                if (rs_ == null || !rs_.next()) {
+                    rs_ = null;
+                    return null;
+                }
+                double x = rs_.getInt("snitch_x");
+                double y = rs_.getInt("snitch_y");
+                double z = rs_.getInt("snitch_z");
+                String groupName = rs_.getString("snitch_group");
+                Faction group = groupMediator.getGroupByName(groupName);
+                Location location = new Location(world_, x, y, z);
+
+                Snitch snitch = new Snitch(location, group);
+                snitch.setId(rs_.getInt("snitch_id"));
+                snitch.setName(rs_.getString("snitch_name"));
+                return snitch;
+            } catch (SQLException ex) {
+                logger_.plugin.getLogger().log(Level.SEVERE, "Could not get all Snitches from World " + world_ + "!   " + ex.toString());
+                rs_ = null;
+            }
+            return null;
+        }
+
+        @Override
+        public Snitch nextElement() {
+            if (next_ == null) {
+                throw new NoSuchElementException();
+            }
+            Snitch retval = next_;
+            next_ = getNextSnitch();
+            if (next_ != null && lastSnitchID < next_.getId()) {
+                lastSnitchID = next_.getId();
+            }
+            return retval;
+        }
     }
 
-    public SparseQuadTree getAllSnitchesByWorld(World world) {
-        SparseQuadTree snitches = new SparseQuadTree();
-        try {
-            Snitch snitch = null;
-            getAllSnitchesByWorldStmt.setString(1, world.getName());
-            ResultSet rs = getAllSnitchesByWorldStmt.executeQuery();
-            while (rs.next()) {
-                double x = rs.getInt("snitch_x");
-                double y = rs.getInt("snitch_y");
-                double z = rs.getInt("snitch_z");
-                String groupName = rs.getString("snitch_group");
-
-                Faction group = groupMediator.getGroupByName(groupName);
-
-                Location location = new Location(world, x, y, z);
-
-                snitch = new Snitch(location, group);
-                snitch.setId(rs.getInt("snitch_id"));
-                snitch.setName(rs.getString("snitch_name"));
-                snitches.add(snitch);
-            }
-            ResultSet rsKey = getLastSnitchID.executeQuery();
-            if (rsKey.next()) {
-                lastSnitchID = rsKey.getInt("Auto_increment");
-            }
-        } catch (SQLException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not get all Snitches from World " + world + "!");
-        }
-        return snitches;
+    public Enumeration<Snitch> getAllSnitches(World world) {
+        return new SnitchEnumerator(this, world);
     }
 
     public void saveAllSnitches() {
         //TODO: Save snitches.
-    	jukeinfobatch.flush();
+        jukeinfobatch.flush();
     }
 
     /**
@@ -412,7 +457,7 @@ public class JukeAlertLogger {
      */
     public void logSnitchInfo(Snitch snitch, Material material, Location loc, Date date, LoggedAction action, String initiatedUser, String victimUser) {
     	
-    	jukeinfobatch.addSet(snitch, material, loc, date, action, initiatedUser, victimUser);
+        jukeinfobatch.addSet(snitch, material, loc, date, action, initiatedUser, victimUser);
     	
         /*try {
             // snitchid
@@ -616,6 +661,7 @@ public class JukeAlertLogger {
             @Override
             public void run() {
                 try {
+                    jukeinfobatch.flush();
                 	synchronized(insertNewSnitchStmt) {
 	                    insertNewSnitchStmt.setString(1, world);
 	                    insertNewSnitchStmt.setString(2, name);
@@ -641,7 +687,7 @@ public class JukeAlertLogger {
             @Override
             public void run() {
                 try {
-                	jukeinfobatch.flush();
+                    jukeinfobatch.flush();
                 	synchronized(deleteSnitchStmt) {
 	                    deleteSnitchStmt.setString(1, world);
 	                    deleteSnitchStmt.setInt(2, (int) Math.floor(x));
