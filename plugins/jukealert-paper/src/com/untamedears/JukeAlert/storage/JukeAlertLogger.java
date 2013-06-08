@@ -287,7 +287,7 @@ public class JukeAlertLogger {
                 Faction group = groupMediator.getGroupByName(groupName);
                 Location location = new Location(world_, x, y, z);
 
-                Snitch snitch = new Snitch(location, group);
+                Snitch snitch = new Snitch(location, group, rs_.getBoolean("snitch_should_log"));
                 snitch.setId(rs_.getInt("snitch_id"));
                 snitch.setName(rs_.getString("snitch_name"));
                 return snitch;
