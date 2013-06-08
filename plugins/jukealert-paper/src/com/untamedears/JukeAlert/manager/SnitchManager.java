@@ -1,9 +1,13 @@
 package com.untamedears.JukeAlert.manager;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
@@ -20,6 +24,7 @@ public class SnitchManager {
 
     private JukeAlert plugin;
     private JukeAlertLogger logger;
+    private Map<Integer, Snitch> snitchesById;
     private Map<World, SparseQuadTree> snitches;
 
     public SnitchManager() {
@@ -31,21 +36,37 @@ public class SnitchManager {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                snitches = logger.getAllSnitches();
+                snitchesById = new TreeMap<Integer, Snitch>();
+                snitches = new HashMap<World, SparseQuadTree>();
+                List<World> worlds = plugin.getServer().getWorlds();
+                for (World world : worlds) {
+                    SparseQuadTree worldSnitches = new SparseQuadTree();
+                    Enumeration<Snitch> se = logger.getAllSnitches(world);
+                    while (se.hasMoreElements()) {
+                        Snitch snitch = se.nextElement();
+                        snitchesById.put(snitch.getId(), snitch);
+                        worldSnitches.add(snitch);
+                    }
+                    snitches.put(world, worldSnitches);
+                }
             }
         });
     }
 
     public void saveSnitches() {
-        logger.saveAllSnitches();
+        this.logger.saveAllSnitches();
     }
 
-    public Map<World, SparseQuadTree> getAllSnitches() {
-        return snitches;
+    public Collection<Snitch> getAllSnitches() {
+        return this.snitchesById.values();
     }
 
     public void setSnitches(Map<World, SparseQuadTree> snitches) {
         this.snitches = snitches;
+    }
+
+    public Snitch getSnitch(int snitch_id) {
+        return this.snitchesById.get(snitch_id);
     }
 
     public Snitch getSnitch(World world, Location location) {
@@ -68,10 +89,12 @@ public class SnitchManager {
         } else {
             snitches.get(world).add(snitch);
         }
+        snitchesById.put(snitch.getId(), snitch);
     }
 
     public void removeSnitch(Snitch snitch) {
         snitches.get(snitch.getLoc().getWorld()).remove(snitch);
+        snitchesById.remove(snitch.getId());
     }
 
     public Set<Snitch> findSnitches(World world, Location location) {

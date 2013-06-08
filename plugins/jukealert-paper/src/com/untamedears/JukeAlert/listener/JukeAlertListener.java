@@ -13,10 +13,14 @@ import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.events.CreateReinforcementEvent;
+import com.untamedears.citadel.events.GroupChangeEvent;
+import com.untamedears.citadel.events.GroupChangeType;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -246,6 +250,25 @@ public class JukeAlertListener implements Listener {
                     player.sendMessage(ChatColor.AQUA + "You've created a private entry snitch; reinforce it with a group to register members.  To name your entry snitch, type /janame.");
                 }
             }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onGroupDeletion(GroupChangeEvent event) {
+        if (event.getType() != GroupChangeType.DELETE) {
+            return;
+        }
+        String groupName = event.getFactionName();
+        Set<Snitch> removeSet = new TreeSet<Snitch>();
+        for (Snitch snitch : snitchManager.getAllSnitches()) {
+            if (snitch.getGroup().getName().equalsIgnoreCase(groupName)) {
+                removeSet.add(snitch);
+            }
+        }
+        for (Snitch snitch : removeSet) {
+            Location loc = snitch.getLoc();
+            plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            snitchManager.removeSnitch(snitch);
         }
     }
 
