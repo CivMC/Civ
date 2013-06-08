@@ -27,16 +27,19 @@ public class JukeInfoBatch {
 	
 	// Current working set is stored here
 	private PreparedStatement currentSet = null;
+	private Object currentSetLock = new Object();
 	
 	// Add a set of data
 	public void addSet(Snitch snitch, Material material, Location loc, Date date, LoggedAction action, String initiatedUser, String victimUser) {
-		// Check if starting a new batch
-		if(this.currentSet==null) {
-			this.currentSet = this.JAL.getNewInsertSnitchLogStmt();
-		}
 		
-		// Add params
 		try {
+		synchronized(currentSetLock) {
+			// Check if starting a new batch
+			if(this.currentSet==null) {
+				this.currentSet = this.JAL.getNewInsertSnitchLogStmt();
+			}
+
+			// Add params
 			currentSet.setInt(1, snitch.getId());
 			currentSet.setTimestamp(2, new java.sql.Timestamp(new java.util.Date().getTime()));
 			currentSet.setByte(3, (byte) action.getLoggedActionId());
@@ -64,6 +67,7 @@ public class JukeInfoBatch {
 			
             currentSet.addBatch();
 			
+        } // synchronized
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,8 +80,11 @@ public class JukeInfoBatch {
 		
 	}
 	public void flush() {
-		PreparedStatement executeMe = this.currentSet;
-		this.currentSet=null;
+		PreparedStatement executeMe;
+		synchronized(currentSetLock) {
+			executeMe = this.currentSet;
+			this.currentSet=null;
+		}
 		batch_current=0;
 		if(executeMe != null) {
 			try {

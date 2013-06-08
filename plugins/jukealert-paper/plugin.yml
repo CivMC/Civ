@@ -1,6 +1,6 @@
 name: JukeAlert
 main: com.untamedears.JukeAlert.JukeAlert
-version: 0.9.5
+version: 0.9.6
 commands:
   ja:
     description: Describes plugin
