@@ -181,25 +181,20 @@ def createFactorieAndRecipes():
     factories['Wood_Cauldron']=Factory(identifier='Wood_Cauldron',name='Wood Cauldron',inputs=inputs['Wood_Cauldron'])
     factories['Iron_Cauldron']=Factory(identifier='Iron_Cauldron',name='Iron Cauldron',inputs=inputs['Iron_Cauldron'])
     factories['Diamond_Cauldron']=Factory(identifier='Diamond_Cauldron',name='Diamond Cauldron',inputs=inputs['Diamond_Cauldron'])
-    ##cauldronInputs[Cauldron Type].append(([(Input Name 1,Input amount 1),(Input Name 2,Input amount 2),...],Number of XP bottles output))
     cauldronInputs={}
     cauldronInputs['Wood']=[]
-    cauldronInputs['Wood'].append(([('Glass Bottle',64),('Wheat',1280)],64))
-    cauldronInputs['Wood'].append(([('Glass Bottle',20),('Nether Wart',1280)],20))
-    cauldronInputs['Wood'].append(([('Glass Bottle',20),('Baked Potato',1280)],20))
-    cauldronInputs['Wood'].append(([('Glass Bottle',16),('Cookie',1280)],16))
-    cauldronInputs['Wood'].append(([('Glass Bottle',28),('Carrot',1280)],28))
-    cauldronInputs['Wood'].append(([('Glass Bottle',64),('Cookie',1280)],64))
+    cauldronInputs['Wood'].append(([('Glass Bottle',14),('Wheat',1280)],14))
+    cauldronInputs['Wood'].append(([('Glass Bottle',7),('Nether Wart',1280)],7))
+    cauldronInputs['Wood'].append(([('Glass Bottle',7),('Baked Potato',1280)],7))
+    cauldronInputs['Wood'].append(([('Glass Bottle',6),('Cookie',1280)],6))
     cauldronInputs['Iron']=[]
-    cauldronInputs['Iron'].append(([('Glass Bottle',70),('Carrot',256),('Cactus',256),('Pumpkin',64),('Bread',256)],70))
-    cauldronInputs['Iron'].append(([('Glass Bottle',26),('Carrot',256),('Nether Wart',256),('Baked Potato',64),('Bread',256)],26))
-    cauldronInputs['Iron'].append(([('Glass Bottle',83),('Carrot',128),('Cocoa',64),('Pumpkin',64),('Cactus',64),('Bread',64),('Cooked Beef',32)],83))
-    cauldronInputs['Iron'].append(([('Glass Bottle',83),('Nether Wart',64),('Melon',256),('Sugar Cane',64),('Cookie',128),('Baked Potato',32),('Grilled Pork',32)],83))
+    cauldronInputs['Iron'].append(([('Glass Bottle',32),('Carrot',128),('Cocoa',128),('Pumpkin',64),('Cactus',384),('Bread',64),('Cooked Beef',128)],32))
+    cauldronInputs['Iron'].append(([('Glass Bottle',32),('Nether Wart',128),('Melon',32),('Sugar Cane',192),('Cookie',256),('Baked Potato',64),('Grilled Pork',128)],32))
     cauldronInputs['Diamond']=[]
-    cauldronInputs['Diamond'].append(([('Glass Bottle',384),('Carrot',96),('Melon',32),('Cactus',256),('Red Rose',8),('Rotten Flesh',64),('Red Mushroom',32),('Vine',32),('Bread',128),('Grilled Pork',32)],384))
-    cauldronInputs['Diamond'].append(([('Glass Bottle',384),('Nether Wart',64),('Melon',32),('Sugar Cane',128),('Yellow Flower',16),('Rotten Flesh',32),('Brown Mushroom',64),('Vine',32),('Baked Potato',256),('Cooked Chicken',32)],384))
-    cauldronInputs['Diamond'].append(([('Glass Bottle',384),('Wheat',196),('Cocoa',16),('Pumpkin',128),('Cactus',256),('Red Rose',8),('Spider Eye',32),('Grass',64),('Cooked Fish',2)],384))
-    cauldronInputs['Diamond'].append(([('Glass Bottle',384),('Nether Wart',128),('Pumpkin',128),('Sugar Cane',128),('Yellow Flower',8),('Spider Eye',32),('Brown Mushroom',16),('Grass',64),('Cookie',512),('Cooked Beef',32)],384))
+    cauldronInputs['Diamond'].append(([('Glass Bottle',64),('Carrot',96),('Melon',32),('Cactus',256),('Red Rose',8),('Rotten Flesh',64),('Red Mushroom',32),('Vine',48),('Bread',128),('Grilled Pork',128)],64))
+    cauldronInputs['Diamond'].append(([('Glass Bottle',64),('Nether Wart',64),('Melon',32),('Sugar Cane',128),('Yellow Flower',16),('Spider Eye',64),('Brown Mushroom',64),('Vine',64),('Baked Potato',128),('Cooked Chicken',128)],64))
+    cauldronInputs['Diamond'].append(([('Glass Bottle',64),('Wheat',512),('Cocoa',32),('Pumpkin',128),('Cactus',256),('Red Rose',16),('Spider Eye',64),('Grass',128),('Cooked Fish',16)],64))
+    cauldronInputs['Diamond'].append(([('Glass Bottle',64),('Nether Wart',128),('Pumpkin',128),('Sugar Cane',192),('Yellow Flower',16),('Spider Eye',64),('Brown Mushroom',64),('Grass',128),('Cookie',512),('Cooked Beef',128)],64))
     for cauldron in cauldronInputs.keys():
         i=0
         for recipeInput,bottles in cauldronInputs[cauldron]:
