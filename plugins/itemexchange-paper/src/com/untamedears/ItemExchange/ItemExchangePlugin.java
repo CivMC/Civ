@@ -10,7 +10,6 @@ import com.untamedears.ItemExchange.utility.InteractionResponse;
 import com.untamedears.ItemExchange.utility.InteractionResponse.InteractionResult;
 import com.untamedears.ItemExchange.utility.ExchangeRule;
 import com.untamedears.ItemExchange.utility.ExchangeRule.RuleType;
-import com.untamedears.ItemExchange.utility.Pair;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -39,8 +38,8 @@ public class ItemExchangePlugin extends JavaPlugin{
 	public static final List<Material> ACCEPTABLE_BLOCKS= Arrays.asList(Material.CHEST, Material.DISPENSER);
 	public static final boolean CITADEL_ENABLED=false;
 	public static int INTERACTION_MATERIAL_ID=Material.STICK.getId();
-	public static final Map<Pair<Material,Short>,String> MATERIAL_NAME=new HashMap();
-	public static final Map<String,Pair<Material,Short>> NAME_MATERIAL=new HashMap();
+	public static final Map<ItemStack,String> MATERIAL_NAME=new HashMap();
+	public static final Map<String,ItemStack> NAME_MATERIAL=new HashMap();
 	public static final Map<String,String> ENCHANTMENT_ABBRV=new HashMap();
 	public static final Map<String,String> ABBRV_ENCHANTMENT=new HashMap();
 	public static final String INPUT_NAME="ItemExchange Input";
@@ -85,8 +84,8 @@ public class ItemExchangePlugin extends JavaPlugin{
 			String dataRow = CSVFile.readLine();
 			while (dataRow != null){
 				String[] dataArray = dataRow.split(",");
-				ItemExchangePlugin.NAME_MATERIAL.put(dataArray[1],new Pair(Material.getMaterial(dataArray[1]),Short.valueOf(dataArray[3])));
-				ItemExchangePlugin.MATERIAL_NAME.put(new Pair(Material.getMaterial(dataArray[1]),Short.valueOf(dataArray[3])),dataArray[1]);
+				ItemExchangePlugin.NAME_MATERIAL.put(dataArray[0],new ItemStack(Material.getMaterial(dataArray[1]),Short.valueOf(dataArray[3])));
+				ItemExchangePlugin.MATERIAL_NAME.put(new ItemStack(Material.getMaterial(dataArray[1]),Short.valueOf(dataArray[3])),dataArray[0]);
 				dataRow = CSVFile.readLine();
 			}
 			CSVFile.close();
@@ -157,12 +156,5 @@ public class ItemExchangePlugin extends JavaPlugin{
 		else{
 			return new InteractionResponse(InteractionResponse.InteractionResult.FAILURE,"Not a valid exchange block");
 		}
-	}
-	public static InteractionResponse createRuleBlock(Player player,RuleType ruleType){
-		if(player.getInventory().firstEmpty()==-1){
-			return new InteractionResponse(InteractionResult.FAILURE,"Player inventory is full!");
-		}
-		player.getInventory().addItem(ExchangeRule.parseItemStack(player.getItemInHand(),ruleType).toItemStack());
-		return new InteractionResponse(InteractionResult.SUCCESS,"Created Rule Block!");
 	}
 }

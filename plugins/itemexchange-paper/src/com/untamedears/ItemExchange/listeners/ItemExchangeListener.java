@@ -7,6 +7,8 @@ package com.untamedears.ItemExchange.listeners;
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.utility.InventoryHelpers;
 import com.untamedears.ItemExchange.utility.ExchangeRule;
+import com.untamedears.ItemExchange.utility.InteractionResponse;
+import com.untamedears.ItemExchange.utility.InteractionResponse.InteractionResult;
 import com.untamedears.ItemExchange.utility.ItemExchange;
 import java.util.List;
 import org.bukkit.block.Block;
@@ -44,7 +46,7 @@ public class ItemExchangeListener implements Listener{
 		if(e.getAction() == LEFT_CLICK_BLOCK)
 		{
 			//If block is a possible exchange
-			if(ItemExchangePlugin.ACCEPTABLE_BLOCKS.contains(e.getClickedBlock().getType())&& e.getClickedBlock() instanceof InventoryHolder)
+			if(ItemExchangePlugin.ACCEPTABLE_BLOCKS.contains(e.getClickedBlock().getType()))
 			{
 				//If the block contains exchangeItems
 				Inventory exchangeInventory = ((InventoryHolder) e.getClickedBlock().getState()).getInventory();
@@ -52,28 +54,55 @@ public class ItemExchangeListener implements Listener{
 				if(itemExchange.isValid())
 				{
 					ExchangeRule input=itemExchange.getInputs().get(0);
-					ExchangeRule output=itemExchange.getInputs().get(0);
+					ExchangeRule output=itemExchange.getOutputs().get(0);
 					PlayerInventory playerInventory=player.getInventory();
 					//Check if item in hand is the input
 					if(input.followsRules(e.getItem()))
 					{
 						//If the player has the input and the exchange has the output
-						if(input.followsRules(playerInventory) && output.followsRules(exchangeInventory))	
+						if(input.followsRules(playerInventory))	
 						{
-							List<ItemStack> playerInput=InventoryHelpers.getItemStacks(playerInventory,input);
-							List<ItemStack> exchangeOutput=InventoryHelpers.getItemStacks(exchangeInventory,output);
-							//Check if inventories hold items
-							if(InventoryHelpers.fitsIn(playerInventory, exchangeOutput) && InventoryHelpers.fitsIn(exchangeInventory, playerInput))
-							{
-								playerInventory.removeItem((ItemStack[])playerInput.toArray());
-								exchangeInventory.removeItem((ItemStack[])exchangeOutput.toArray());
-								playerInventory.addItem((ItemStack[])exchangeOutput.toArray());
-								exchangeInventory.addItem((ItemStack[])playerInput.toArray());
+							if(output.followsRules(exchangeInventory)){
+								ItemStack[] playerInput=InventoryHelpers.getItemStacks(playerInventory,input);
+								ItemStack[] exchangeOutput=InventoryHelpers.getItemStacks(exchangeInventory,output);
+								//Attempt to exchange items in the players inventory
+								ItemStack[] playerInventoryOld=InventoryHelpers.deepCopy(playerInventory);
+								playerInventory.removeItem(playerInput);
+								if(playerInventory.addItem(exchangeOutput).isEmpty()){
+									ItemStack[] exchangeInventoryOld=InventoryHelpers.deepCopy(exchangeInventory);
+									exchangeInventory.removeItem(exchangeOutput);
+									if(!exchangeInventory.addItem(playerInput).isEmpty()){
+										exchangeInventory.setContents(exchangeInventoryOld);
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"The Exchange does not have enough inventory space!"));
+									}
+								}
+								else{
+									playerInventory.setContents(playerInventoryOld);
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You don't have enough inventory space!"));
+								}
+							}
+							else {
+								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"Chest does not have enough of the output."));
 							}
 						}
+						else {
+							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You don't have enough of the input."));
+						}
+					}
+					else {
+						InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You aren't holding the input."));
 					}
 				}
+				else {
+					InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"Not and exchange!"));
+				}
 			}
+			else {
+				InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"Not Acceptable Block."));
+			}
+		}
+		else {
+			InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"Not left click."));
 		}
 	}
 }

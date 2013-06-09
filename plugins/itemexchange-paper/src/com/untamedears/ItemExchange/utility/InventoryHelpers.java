@@ -9,6 +9,7 @@ import com.untamedears.ItemExchange.utility.ExchangeRule.RuleType;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import java.util.ArrayList;
 import java.util.List;
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -20,7 +21,7 @@ public class InventoryHelpers {
 	/*
 	 * Returns an input following the ItemRules from the inventory
 	 */
-	public static List<ItemStack> getItemStacks(Inventory inventory,ExchangeRule itemRule)
+	public static ItemStack[] getItemStacks(Inventory inventory,ExchangeRule itemRule)
 	{
 		List<ItemStack> itemStacks=new ArrayList<>();
 		//Gets the ItemStacks from the inventory to be transfered
@@ -29,7 +30,7 @@ public class InventoryHelpers {
 		for(int i=0;i<contents.length && requiredAmount>0;i++)
 		{
 			ItemStack itemStack=contents[i];
-			if(itemRule.followsRules(itemStack))
+			if(itemStack!=null&&itemRule.followsRules(itemStack))
 			{
 				if(itemStack.getAmount()<=requiredAmount)
 				{
@@ -44,7 +45,8 @@ public class InventoryHelpers {
 				}
 			}
 		}
-		return itemStacks;
+		ItemStack[] itemStacksArray=itemStacks.toArray(new ItemStack[itemStacks.size()]);
+		return itemStacksArray;
 	}
 	
 	/*
@@ -65,6 +67,28 @@ public class InventoryHelpers {
 	 */
 	public static boolean fitsIn(Inventory inventory,List<ItemStack> itemStacks)
 	{
+		ItemStack[] contents=inventory.getContents();
+		ItemStack[] copy=new ItemStack[contents.length];
+		for(int i=0;i<contents.length;i++){
+			if(contents[i]!=null){
+				ItemExchangePlugin.sendConsoleMessage(contents[i].toString());
+				copy[i]=contents[i].clone();
+			}
+		}
+		inventory.addItem(new ItemStack(Material.COOKED_BEEF));
+		inventory.setContents(copy);
 		return false;
+	}
+	/*
+	 * Returns a deepCopy of an inventory.
+	 */
+	public static ItemStack[] deepCopy(Inventory inventory) {
+		ItemStack[] deepCopy=inventory.getContents();
+		for(int i=0;i<deepCopy.length;i++){
+			if(deepCopy[i]!=null){
+				deepCopy[i]=deepCopy[i].clone();
+			}
+		}
+		return deepCopy;
 	}
 }

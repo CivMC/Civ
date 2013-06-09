@@ -4,6 +4,7 @@
  */
 package com.untamedears.ItemExchange.utility;
 
+import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,27 +19,29 @@ public class ItemExchange {
 	private List<ExchangeRule> inputs;
 	private List<ExchangeRule> outputs;
 	
-	public ItemExchange(List<ExchangeRule> inputs, List<ExchangeRule> ouputs){
+	public ItemExchange(List<ExchangeRule> inputs, List<ExchangeRule> outputs){
 		this.inputs=inputs;
 		this.outputs=outputs;
 	}
 	public static ItemExchange getItemExchange(Inventory inventory)
 	{
-		ItemStack[] contents=inventory.getContents();
 		List<ExchangeRule> inputs=new ArrayList<ExchangeRule>();
 		List<ExchangeRule> outputs=new ArrayList<ExchangeRule>();
 		for(ItemStack itemStack:inventory.getContents())
 		{
-			try{
-				ExchangeRule exchangeRule=ExchangeRule.parseRuleBlock(itemStack);
-				if(exchangeRule.getType()==ExchangeRule.RuleType.INPUT){
-					inputs.add(exchangeRule);
+			if(itemStack!=null)
+			{
+				try{
+					ExchangeRule exchangeRule=ExchangeRule.parseRuleBlock(itemStack);
+					if(exchangeRule.getType()==ExchangeRule.RuleType.INPUT){
+						inputs.add(exchangeRule);
+					}
+					else if(exchangeRule.getType()==ExchangeRule.RuleType.OUTPUT){
+						outputs.add(exchangeRule);
+					}
 				}
-				else if(exchangeRule.getType()==ExchangeRule.RuleType.OUTPUT){
-					outputs.add(exchangeRule);
+				catch (ExchangeRuleParseException e){
 				}
-			}
-			catch (ExchangeRuleParseException e){
 			}
 		}
 		return new ItemExchange(inputs,outputs);

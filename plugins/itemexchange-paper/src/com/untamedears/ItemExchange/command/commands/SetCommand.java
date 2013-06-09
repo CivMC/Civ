@@ -6,9 +6,9 @@ import org.bukkit.entity.Player;
 
 import com.untamedears.ItemExchange.command.PlayerCommand;
 import com.untamedears.ItemExchange.utility.ExchangeRule;
-import com.untamedears.ItemExchange.utility.Pair;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 public class SetCommand extends PlayerCommand {
 	public SetCommand() {
@@ -24,9 +24,9 @@ public class SetCommand extends PlayerCommand {
 		try{
 			ExchangeRule exchangeRule=ExchangeRule.parseRuleBlock(((Player)sender).getItemInHand());
 			if(args[0].equalsIgnoreCase("commonname") || args[0].equalsIgnoreCase("c")) {
-				Pair<Material,Short> pair=ItemExchangePlugin.NAME_MATERIAL.get(args[1]);
-				exchangeRule.setMaterial(pair.getFirst());
-				exchangeRule.setDurability(pair.getSecond());
+				ItemStack itemStack=ItemExchangePlugin.NAME_MATERIAL.get(args[1]);
+				exchangeRule.setMaterial(itemStack.getType());
+				exchangeRule.setDurability(itemStack.getDurability());
 			}
 			else if(args[0].equalsIgnoreCase("material") || args[0].equalsIgnoreCase("m")) {
 				exchangeRule.setMaterial(Material.getMaterial(args[1]));

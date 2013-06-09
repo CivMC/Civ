@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
@@ -33,6 +34,9 @@ public class ExchangeRule {
 	{
 		INPUT,
 		OUTPUT
+	}
+	public ExchangeRule(Material material, int amount, short durability,RuleType ruleType) {
+		this(material,amount,durability,new HashMap<Enchantment,Integer>(), new HashMap<Enchantment,Integer>(), "", new String[0],ruleType);
 	}
 	public ExchangeRule(Material material, int amount, short durability,
 		Map<Enchantment,Integer> requiredEnchantments, Map<Enchantment,Integer> excludedEnchantments,
@@ -78,45 +82,47 @@ public class ExchangeRule {
 	 */
 	public static ExchangeRule parseRuleBlock(ItemStack ruleBlock) throws ExchangeRuleParseException{
 		try{
-			RuleType ruleType;
-			if(ruleBlock.getItemMeta().getDisplayName().equals("Exchange Input"))
-			{
+			RuleType ruleType=null;
+			if(ruleBlock.getItemMeta().getDisplayName().equals("Input Rule Block "+ItemExchangePlugin.VERSION)){
 				ruleType=RuleType.INPUT;
 			}
-			else
-			{
+			else if(ruleBlock.getItemMeta().getDisplayName().equals("Output Rule Block "+ItemExchangePlugin.VERSION)){
 				ruleType=RuleType.OUTPUT;
+			}
+			else {
+				throw new ExchangeRuleParseException("Invalid DisplayName");
 			}
 			List<String> savedItemRules=ruleBlock.getItemMeta().getLore();
 			String[] itemData=savedItemRules.get(0).split("§a");
-			int amount=Integer.valueOf(itemData[0].substring(0,itemData[0].length()-2));
+			int amount=Integer.valueOf(itemData[1].substring(0, itemData[1].length()-1));
 			Material material;
 			short durability;
 			//Called if ExchangeRule is dictacted by a common name
-			if(itemData.length==2)
+			if(itemData.length==3)
 			{
-				Pair<Material,Short> pair=ItemExchangePlugin.NAME_MATERIAL.get(itemData[1].substring(0,itemData[1].length()-1));
-				material=pair.getFirst();
-				durability=pair.getSecond();
+				ItemStack itemStack=ItemExchangePlugin.NAME_MATERIAL.get(itemData[2]);
+				material=itemStack.getType();
+				durability=itemStack.getDurability();
 			}
 			//Called if ExchangeRule is dicacted by a Material and durability value
 			else
 			{
-				material=Material.getMaterial(itemData[1].substring(0,itemData[1].length()-1));
-				durability=Short.valueOf(itemData[2]);
+				material=Material.getMaterial(itemData[2].substring(0,itemData[2].length()-1));
+				durability=Short.valueOf(itemData[3]);
 			}
 			//Parse Enchantments
 			Map<Enchantment,Integer> requiredEnchantments=new HashMap<Enchantment,Integer>();
 			Map<Enchantment,Integer> excludedEnchantments=new HashMap<Enchantment,Integer>();
-			for(String abbrv:savedItemRules.get(1).split("§"))
-			{
-				String abbrvEnchantment=abbrv.subSequence(1,abbrv.length()-2).toString();
-				if(abbrv.charAt(0)=='a')
-				{
-					Enchantment enchantment=Enchantment.getByName(ItemExchangePlugin.ABBRV_ENCHANTMENT.get(abbrvEnchantment));
-					Integer level=Integer.valueOf(abbrv.charAt(abbrv.length()-1));
-					requiredEnchantments.put(enchantment, level);
-
+			String[] parsedEnchantments=savedItemRules.get(1).split("§");
+			for(int i=1;i<parsedEnchantments.length;i++) {
+				String parsedEnchantment=parsedEnchantments[i];
+				Enchantment enchantment=Enchantment.getByName(ItemExchangePlugin.ABBRV_ENCHANTMENT.get(parsedEnchantment.substring(1, parsedEnchantment.length()-2)));
+				Integer level=Integer.valueOf(parsedEnchantment.charAt(parsedEnchantment.length()-1));
+				if(parsedEnchantment.charAt(0)=='a'){
+					requiredEnchantments.put(enchantment, level);					
+				}
+				else if(parsedEnchantment.charAt(0)=='b'){
+					excludedEnchantments.put(enchantment, level);
 				}
 			}
 			//Parse DisplayName
@@ -137,6 +143,49 @@ public class ExchangeRule {
 			throw new ExchangeRuleParseException("Invalid Exchange Rule");
 		}
 	}
+	/*
+	 * Parse create command
+	 */
+	public static ExchangeRule parseCreateCommand(String[] args) throws ExchangeRuleParseException{
+		try{
+			RuleType ruleType=null;
+			if(args[0].equalsIgnoreCase("input")) {
+				ruleType=ExchangeRule.RuleType.INPUT;
+			}
+			else if(args[0].equalsIgnoreCase("output")) {
+				ruleType=ExchangeRule.RuleType.INPUT;
+			}
+			if(ruleType!=null){
+				Material material=null;
+				short durability=0;
+				int amount=1;
+				if(args.length>=2) {
+					if(ItemExchangePlugin.NAME_MATERIAL.containsKey(args[2])){
+						ItemStack itemStack=ItemExchangePlugin.NAME_MATERIAL.get(args[2]);
+						material=itemStack.getType();
+						durability=itemStack.getDurability();
+					}
+					else {
+						String[] split=args[2].split(":");
+						material=Material.getMaterial(Integer.valueOf(split[0]));
+						if(split.length>1) {
+							durability=Short.valueOf(split[1]);
+						}
+					}
+					if(args.length>=3) {
+						amount=Integer.valueOf(args[3]);
+					}
+				}
+				return new ExchangeRule(material,amount,durability,ruleType);
+			}
+			else {
+				throw new ExchangeRuleParseException("Please specify and input or output.");
+			}
+		}
+		catch(Exception e){
+			throw new ExchangeRuleParseException("Invalid Exchange Rule");
+		}
+	}
 	public ItemStack toItemStack()
 	{
 		ItemStack itemStack=ItemExchangePlugin.ITEM_RULE_ITEMSTACK.clone();
@@ -147,7 +196,7 @@ public class ExchangeRule {
 		}
 		else if(ruleType==RuleType.OUTPUT)
 		{
-			itemMeta.setDisplayName("Output Rules Block "+ItemExchangePlugin.VERSION);
+			itemMeta.setDisplayName("Output Rule Block "+ItemExchangePlugin.VERSION);
 		}
 		itemMeta.setLore(Arrays.asList(saveToLore()));
 		itemStack.setItemMeta(itemMeta);
@@ -156,26 +205,21 @@ public class ExchangeRule {
 	/*
 	 * Saves the ItemRules to lore in a semi-readable fashion
 	 */
-	public String[] saveToLore()
-	{
+	public String[] saveToLore() {
 		String[] savedLore=new String[3+lore.length];
 		savedLore[0]="§a"+String.valueOf(amount)+" ";
-		if(ItemExchangePlugin.MATERIAL_NAME.containsKey(new Pair(material,Short.valueOf(durability))))
-		{
-			savedLore[0]+="§a"+ItemExchangePlugin.MATERIAL_NAME.get(new Pair(material,Short.valueOf(durability)));
+		if(ItemExchangePlugin.MATERIAL_NAME.containsKey(new ItemStack(material,Short.valueOf(durability)))) {
+			savedLore[0]+="§a"+ItemExchangePlugin.MATERIAL_NAME.get(new ItemStack(material,Short.valueOf(durability)));
 		}
-		else
-		{
+		else {
 			savedLore[0]+="§a"+material.name()+" §a"+String.valueOf(durability);
 		}
 		savedLore[1]="";
-		for(Map.Entry<Enchantment,Integer> enchantment:requiredEnchantments.entrySet())
-		{
-			savedLore[1]+="§a"+ItemExchangePlugin.ENCHANTMENT_ABBRV.get(enchantment.getKey())+enchantment.getValue().toString()+" ";
+		for(Map.Entry<Enchantment,Integer> enchantment:requiredEnchantments.entrySet()) {
+			savedLore[1]+="§a"+ItemExchangePlugin.ENCHANTMENT_ABBRV.get(enchantment.getKey().getName())+enchantment.getValue().toString()+" ";
 		}
 		savedLore[2]=displayName;
-		for(int i=0;i<lore.length;i++)
-		{
+		for(int i=0;i<lore.length;i++) {
 			savedLore[3+i]+=lore[i];
 		}
 		return savedLore;
@@ -188,7 +232,7 @@ public class ExchangeRule {
 		int invAmount=0;
 		for(ItemStack itemStack:inventory.getContents())
 		{
-			if(followsRules(itemStack))
+			if(itemStack!=null&&followsRules(itemStack))
 			{
 				invAmount+=itemStack.getAmount();
 			}
@@ -200,8 +244,19 @@ public class ExchangeRule {
 	 */
 	public boolean followsRules(ItemStack itemStack)
 	{
+		//check material type and druability
 		boolean followsRules=material.getId()==itemStack.getTypeId() && durability==itemStack.getDurability();
-		followsRules=followsRules && requiredEnchantments.entrySet().containsAll(itemStack.getEnchantments().entrySet());
+		//Check enchantments
+		if(itemStack.getEnchantments().size()>0){
+			followsRules=followsRules && requiredEnchantments.entrySet().containsAll(itemStack.getEnchantments().entrySet());
+			for(Entry<Enchantment,Integer> excludedEnchantment:excludedEnchantments.entrySet()){
+				followsRules=followsRules && !itemStack.getEnchantments().entrySet().contains(excludedEnchantment);
+			}
+		}
+		else if(requiredEnchantments.size()>0){
+			followsRules=false;
+		}
+		//Check displayName and Lore
 		if(itemStack.hasItemMeta())
 		{
 			ItemMeta itemMeta=itemStack.getItemMeta();
