@@ -10,8 +10,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,6 +25,7 @@ import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
+import com.github.igotyou.FactoryMod.interfaces.Recipe;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
@@ -154,7 +157,12 @@ public class ProductionManager implements Manager
 			long timeDisrepair  =  Long.parseLong(parts[17]);
 			if(FactoryModPlugin.productionProperties.containsKey(subFactoryType))
 			{
-				List<ProductionRecipe> recipes=new ArrayList<ProductionRecipe>();
+				Set<ProductionRecipe> recipes=new HashSet<ProductionRecipe>();
+				
+				// TODO: Give default recipes for subfactory type
+				ProductionProperties properties = FactoryModPlugin.productionProperties.get(subFactoryType);
+				recipes.addAll(properties.getRecipes());
+				
 				for(String name:recipeNames)
 				{
 					if(FactoryModPlugin.productionRecipes.containsKey(name))
@@ -163,7 +171,7 @@ public class ProductionManager implements Manager
 					}
 				}
 
-				ProductionFactory production = new ProductionFactory(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, recipes, currentRecipeNumber, currentRepair,timeDisrepair);
+				ProductionFactory production = new ProductionFactory(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, new ArrayList<ProductionRecipe>(recipes), currentRecipeNumber, currentRepair,timeDisrepair);
 				addFactory(production);
 			}
 		}
