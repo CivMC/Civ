@@ -21,14 +21,14 @@ This creates the exchange rule items required for an item exchange to function, 
 This command allows you to change specific values of the exchange rule item held in the players hand.
 
 The fields which may be set with this command are as follows:
--  commonname
--  material
--  durability
--  amount
--  enchantment
--  displayname
--  lore
--  switchio
+-  commonname (or c)
+-  material (or m)
+-  durability (or d)
+-  amount (or a)
+-  enchantment (or e)
+-  displayname (or n)
+-  lore (or l)
+-  switchio (or s)
 
 For all fields except switch io a value must be specified. switchio simply toggles the exchange rule between an input and output rule. enchantment must have also specify a modifier of "required" or "excluded", this specifies whether the enchantment is required for the exchange or prohibited from the exchange, enchantments not included in either of these categories are ignored during exchanges. Multiple lines of lore can be entered by placing a ";" at each linebreak.
 
