@@ -817,11 +817,11 @@ public class JukeAlertLogger {
             String timestamp = new SimpleDateFormat("MM-dd HH:mm").format(set.getTimestamp("snitch_log_time"));
 
             if (action == LoggedAction.ENTRY.getLoggedActionId()) {
-            	resultString = String.format("  %s %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.BLUE + ChatFiller.fillString("Entry", (double) 15), ChatColor.WHITE + ChatFiller.fillString(timestamp, (double) 15), ChatColor.WHITE + ChatFiller.fillString(String.format("[%d %d %d]", x, y, z), (double) 20));
+            	resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.BLUE + ChatFiller.fillString("Entry", (double) 15), ChatColor.WHITE + ChatFiller.fillString(timestamp, (double) 15));
             } else if (action == LoggedAction.LOGIN.getLoggedActionId()) {
-            	resultString = String.format("  %s %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.GREEN + ChatFiller.fillString("Login", (double) 15), ChatColor.WHITE + ChatFiller.fillString(timestamp, (double) 15), ChatColor.WHITE + ChatFiller.fillString(String.format("[%d %d %d]", x, y, z), (double) 20));
+            	resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.GREEN + ChatFiller.fillString("Login", (double) 15), ChatColor.WHITE + ChatFiller.fillString(timestamp, (double) 15));
             } else if (action == LoggedAction.LOGOUT.getLoggedActionId()) {
-            	resultString = String.format("  %s %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.GREEN + ChatFiller.fillString("Logout", (double) 15), ChatColor.WHITE + ChatFiller.fillString(timestamp, (double) 15), ChatColor.WHITE + ChatFiller.fillString(String.format("[%d %d %d]", x, y, z), (double) 20));
+            	resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.GREEN + ChatFiller.fillString("Logout", (double) 15), ChatColor.WHITE + ChatFiller.fillString(timestamp, (double) 15));
             } else if (action == LoggedAction.BLOCK_BREAK.getLoggedActionId()) {
                 resultString = String.format("  %s %s %s", ChatColor.GOLD + ChatFiller.fillString(initiator, (double) 25), ChatColor.DARK_RED + ChatFiller.fillString("Block Break", (double) 15), ChatColor.WHITE + ChatFiller.fillString(String.format("%d [%d %d %d]", material, x, y, z), (double) 30));
             } else if (action == LoggedAction.BLOCK_PLACE.getLoggedActionId()) {
