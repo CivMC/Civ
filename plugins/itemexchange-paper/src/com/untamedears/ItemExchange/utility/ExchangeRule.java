@@ -121,7 +121,7 @@ public class ExchangeRule {
 				if(parsedEnchantment.charAt(0)=='a'){
 					requiredEnchantments.put(enchantment, level);					
 				}
-				else if(parsedEnchantment.charAt(0)=='b'){
+				else if(parsedEnchantment.charAt(0)=='e'){
 					excludedEnchantments.put(enchantment, level);
 				}
 			}
@@ -290,6 +290,12 @@ public class ExchangeRule {
 	}
 	public void setMaterial(Material material){
 		this.material=material;
+	}
+	public void requireEnchantment(Enchantment enchantment,Integer level){
+		requiredEnchantments.put(enchantment, level);
+	}
+	public void excludeEnchantment(Enchantment enchantment, Integer level){
+		excludedEnchantments.put(enchantment, level);
 	}
 	public void setAmount(int amount){
 		this.amount=amount;
