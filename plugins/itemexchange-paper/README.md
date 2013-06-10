@@ -7,7 +7,7 @@ Item Exchange is a minecraft mod that enables different inventory blocks to perf
 ###/iecreate (or /iec) [input or output] [common name or ID:durability] [amount]
 
 This creates the exchange rule items required for an item exchange to function, the command has multiple functionalities:
--  If used when a player is looking at an acceptable inventory block it will attempt to create exchange rule items within that inventory block. The inventory block must contain only two different kind of items, although these items may be present in multiple stacks. The first item present in the inventory is assumed to be the player input and the second item the inventory block output.
+-  If used when a player is looking at an acceptable inventory block which the player has citadel governed access to it will attempt to create exchange rule items within that inventory block. The inventory block must contain only two different kind of items, although these items may be present in multiple stacks. The first item present in the inventory is assumed to be the player input and the second item the inventory block output.
 -  If an input or output is specified this command will create an item exchange rule that represents the item stack held in the players hand and place it in the players inventory.
 -  If common name* or a material ID:durability is specified in addition to an input or output an exchange rule item is generated within the players inventory representing the specified ItemStack with an amount of one.
 -  If an amount is specified this command performs similiar to the one above except with an amount set as specified.
