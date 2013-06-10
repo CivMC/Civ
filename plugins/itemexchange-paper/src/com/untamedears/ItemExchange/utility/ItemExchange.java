@@ -4,7 +4,6 @@
  */
 package com.untamedears.ItemExchange.utility;
 
-import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +40,7 @@ public class ItemExchange {
 					}
 				}
 				catch (ExchangeRuleParseException e){
+					
 				}
 			}
 		}

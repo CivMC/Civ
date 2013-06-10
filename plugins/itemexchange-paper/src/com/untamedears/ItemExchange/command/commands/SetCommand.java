@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import com.untamedears.ItemExchange.command.PlayerCommand;
 import com.untamedears.ItemExchange.utility.ExchangeRule;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
+import com.untamedears.ItemExchange.utility.InteractionResponse;
+import com.untamedears.ItemExchange.utility.InteractionResponse.InteractionResult;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -37,7 +39,7 @@ public class SetCommand extends PlayerCommand {
 			else if(args[0].equalsIgnoreCase("durability") || args[0].equalsIgnoreCase("d")) {
 				exchangeRule.setDurability(Short.valueOf(args[1]));
 			}
-			else if(args[0].equalsIgnoreCase("enchantments") || args[0].equalsIgnoreCase("e")) {
+			else if(args[0].equalsIgnoreCase("enchantment") || args[0].equalsIgnoreCase("e")) {
 				
 			}
 			else if(args[0].equalsIgnoreCase("displayname") || args[0].equalsIgnoreCase("n")) {
@@ -51,7 +53,7 @@ public class SetCommand extends PlayerCommand {
 			}
 		}
 		catch (ExchangeRuleParseException e) {
-			e.printStackTrace();
+			InteractionResponse.messagePlayerResult((Player)sender, new InteractionResponse(InteractionResult.FAILURE,"You are not holding an exchange rule."));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

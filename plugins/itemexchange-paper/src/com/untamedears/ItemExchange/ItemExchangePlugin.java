@@ -7,7 +7,6 @@ package com.untamedears.ItemExchange;
 import com.untamedears.ItemExchange.listeners.ItemExchangeListener;
 import com.untamedears.ItemExchange.command.CommandHandler;
 import com.untamedears.ItemExchange.utility.InteractionResponse;
-import com.untamedears.ItemExchange.utility.InteractionResponse.InteractionResult;
 import com.untamedears.ItemExchange.utility.ExchangeRule;
 import com.untamedears.ItemExchange.utility.ExchangeRule.RuleType;
 import java.io.BufferedReader;
@@ -35,7 +34,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class ItemExchangePlugin extends JavaPlugin{
 	
 	private static final CommandHandler commandHandler = new CommandHandler();
-	public static final List<Material> ACCEPTABLE_BLOCKS= Arrays.asList(Material.CHEST, Material.DISPENSER);
+	public static final List<Material> ACCEPTABLE_BLOCKS= Arrays.asList(Material.CHEST, Material.DISPENSER, Material.TRAPPED_CHEST);
 	public static final boolean CITADEL_ENABLED=false;
 	public static int INTERACTION_MATERIAL_ID=Material.STICK.getId();
 	public static final Map<ItemStack,String> MATERIAL_NAME=new HashMap();
@@ -122,19 +121,19 @@ public class ItemExchangePlugin extends JavaPlugin{
 			for(ItemStack itemStack:inventory){
 				if(itemStack!=null){
 					if(input==null){
-						input=itemStack;
+						input=itemStack.clone();
 					}
 					else if(itemStack.isSimilar(input)){
 						input.setAmount(input.getAmount()+itemStack.getAmount());
 					}
 					else if(output==null){
-						output=itemStack;
+						output=itemStack.clone();
 					}
 					else if(output.isSimilar(itemStack)){
 						output.setAmount(output.getAmount()+itemStack.getAmount());
 					}
 					else{
-						return new InteractionResponse(InteractionResponse.InteractionResult.FAILURE,"Invetory should only contain two types of items!");
+						return new InteractionResponse(InteractionResponse.InteractionResult.FAILURE,"Inventory should only contain two types of items!");
 					}
 				}
 			}

@@ -71,7 +71,7 @@ public class ExchangeRule {
 			}
 			if(itemMeta.hasLore())
 			{
-				lore=(String[])itemMeta.getLore().toArray();
+				lore=itemMeta.getLore().toArray(new String[itemMeta.getLore().size()]);
 			}
 		}
 		return new ExchangeRule(itemStack.getType(),itemStack.getAmount(),itemStack.getDurability(),requiredEnchantments,new HashMap<Enchantment,Integer>(),displayName,lore,ruleType);
@@ -117,7 +117,7 @@ public class ExchangeRule {
 			for(int i=1;i<parsedEnchantments.length;i++) {
 				String parsedEnchantment=parsedEnchantments[i];
 				Enchantment enchantment=Enchantment.getByName(ItemExchangePlugin.ABBRV_ENCHANTMENT.get(parsedEnchantment.substring(1, parsedEnchantment.length()-2)));
-				Integer level=Integer.valueOf(parsedEnchantment.charAt(parsedEnchantment.length()-1));
+				Integer level=Character.getNumericValue(parsedEnchantment.charAt(parsedEnchantment.length()-2));
 				if(parsedEnchantment.charAt(0)=='a'){
 					requiredEnchantments.put(enchantment, level);					
 				}
@@ -148,6 +148,7 @@ public class ExchangeRule {
 	 */
 	public static ExchangeRule parseCreateCommand(String[] args) throws ExchangeRuleParseException{
 		try{
+			//Parse ruletype
 			RuleType ruleType=null;
 			if(args[0].equalsIgnoreCase("input")) {
 				ruleType=ExchangeRule.RuleType.INPUT;
@@ -248,7 +249,7 @@ public class ExchangeRule {
 		boolean followsRules=material.getId()==itemStack.getTypeId() && durability==itemStack.getDurability();
 		//Check enchantments
 		if(itemStack.getEnchantments().size()>0){
-			followsRules=followsRules && requiredEnchantments.entrySet().containsAll(itemStack.getEnchantments().entrySet());
+			followsRules=followsRules && itemStack.getEnchantments().entrySet().containsAll(requiredEnchantments.entrySet());
 			for(Entry<Enchantment,Integer> excludedEnchantment:excludedEnchantments.entrySet()){
 				followsRules=followsRules && !itemStack.getEnchantments().entrySet().contains(excludedEnchantment);
 			}

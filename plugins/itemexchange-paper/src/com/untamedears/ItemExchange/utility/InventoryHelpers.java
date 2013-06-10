@@ -4,12 +4,8 @@
  */
 package com.untamedears.ItemExchange.utility;
 
-import com.untamedears.ItemExchange.ItemExchangePlugin;
-import com.untamedears.ItemExchange.utility.ExchangeRule.RuleType;
-import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import java.util.ArrayList;
 import java.util.List;
-import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -60,24 +56,6 @@ public class InventoryHelpers {
 			amount+=invItemStack.getAmount();
 		}
 		return amount;
-	}
-	
-	/*
-	 * Checks if a set of items fits in an inventory
-	 */
-	public static boolean fitsIn(Inventory inventory,List<ItemStack> itemStacks)
-	{
-		ItemStack[] contents=inventory.getContents();
-		ItemStack[] copy=new ItemStack[contents.length];
-		for(int i=0;i<contents.length;i++){
-			if(contents[i]!=null){
-				ItemExchangePlugin.sendConsoleMessage(contents[i].toString());
-				copy[i]=contents[i].clone();
-			}
-		}
-		inventory.addItem(new ItemStack(Material.COOKED_BEEF));
-		inventory.setContents(copy);
-		return false;
 	}
 	/*
 	 * Returns a deepCopy of an inventory.
