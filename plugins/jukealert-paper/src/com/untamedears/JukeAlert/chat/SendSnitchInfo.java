@@ -1,5 +1,7 @@
 package com.untamedears.JukeAlert.chat;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -11,11 +13,13 @@ public class SendSnitchInfo implements Runnable {
 	private List<String> info;
 	private Player player;
 	private int offset;
+	private boolean shouldCensor;
 
-	public SendSnitchInfo(List<String> info, Player player, int offset) {
+	public SendSnitchInfo(List<String> info, Player player, int offset, boolean shouldCensor) {
 		this.info = info;
 		this.player = player;
 		this.offset = offset;
+		this.shouldCensor = shouldCensor;
 	}
 
 	public void run() {
@@ -33,22 +37,28 @@ public class SendSnitchInfo implements Runnable {
 							id += String.format(ChatColor.WHITE + ", $" + ChatColor.RED + "%s " + ChatColor.WHITE + "= " + ChatColor.RED + "%s", Integer.parseInt(data), Material.matchMaterial(data));
 				}
 			}
-		
+
 			id = id.replaceFirst(",", "") + (id.length() > 1 ? "\n" : "");
 
 			output += ChatColor.WHITE + " Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------" + "\n";
 			output += id;
 			output += ChatColor.GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 22), ChatFiller.fillString("Reason", (double) 22), ChatFiller.fillString("Details", (double) 30)) + "\n";
-
-			for (String dataEntry : info) {
-				output += dataEntry + "\n";
+			
+			for (String dataEntry : info)
+			{
+				if (shouldCensor)
+				{
+					output += dataEntry.replaceAll("\\[((-)?[0-9]*( )?){3}\\]", "[*** *** ***]") + "\n";
+				}
+				else
+				{
+					output += dataEntry + "\n";
+				}
 			}
 
 			output += "\n";
 			output += ChatColor.DARK_GRAY + " * Page " + offset + " ------------------------------------------";
-			output += "\n";
-			player.sendMessage
-			(output);
+			player.sendMessage(output);
 		} else {
 			player.sendMessage(ChatColor.AQUA + " * Page " + offset + " is empty");
 		}
