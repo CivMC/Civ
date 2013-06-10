@@ -572,6 +572,7 @@ public class PrintingPress extends BaseFactory {
 		}
 		
 		private String limitPageLore(String in) {
+			in = in.replace("§2", "");
 			if (in.length() > PAGE_LORE_LENGTH_LIMIT) {
 				return in.substring(0, PAGE_LORE_LENGTH_LIMIT - 3) + "...";
 			} else {
