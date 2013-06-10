@@ -46,21 +46,26 @@ def createFactorieAndRecipes():
     id='Smelt_Stone'
     inputs[id]=[ItemStack(name='Cobblestone',amount=640)]
     outputs[id]=[ItemStack(name='Stone',amount=640*1.333)]
-    recipes[id]=Recipe(identifier=id,name='Smelt Stone',inputs=inputs[id],outputs=outputs[id],time=120)
+    recipes[id]=Recipe(identifier=id,name='Smelt Stone',inputs=inputs[id],outputs=outputs[id],time=80)
     id='Stone_Smelter'
     inputs[id]=[ItemStack(name='Stone',amount=2048*gMod)]
     factories[id]=Factory(identifier=id,name='Stone Smelter',inputs=inputs[id],outputRecipes=[recipes['Smelt_Stone']])
     #Charcoal
     woods=['Oak Wood','Spruce Wood','Birch Wood','Jungle Wood']
     id='Charcoal_Smelter'
-    inputs[id]=[ItemStack(name='Charcoal',amount=300*gMod)]
+    inputs[id]=[ItemStack(name='Charcoal',amount=600*gMod)]
     factories[id]=Factory(identifier=id,name='Charcoal Burner',inputs=inputs[id])
     for wood in woods:
         id='Smelt_'+wood.replace(' ','_')
         inputs[id]=[ItemStack(name=wood,amount=256)]
-        outputs[id]=[ItemStack(name='Charcoal',amount=256*1.333)]
+        outputs[id]=[ItemStack(name='Charcoal',amount=256*2)]
         recipes[id]=Recipe(identifier=id,name='Burn '+wood,inputs=inputs[id],outputs=outputs[id],time=256/8*3/4)
         factories['Charcoal_Smelter'].addRecipe(recipes[id])
+    id='Smelt_Coal'
+    inputs[id]=[ItemStack(name='Coal',amount=256)]
+    outputs[id]=[ItemStack(name='Charcoal',amount=256*2)]
+    recipes[id]=Recipe(identifier=id,name='Burn Coal',inputs=inputs[id],outputs=outputs[id],time=256/8*3/4)
+    factories['Charcoal_Smelter'].addRecipe(recipes[id])
     #Glass
     id='Smelt_Glass'
     inputs[id]=[ItemStack(name='Sand',amount=256)]
@@ -112,7 +117,7 @@ def createFactorieAndRecipes():
                 enchantments[tech+'_'+equipment]=list(enchantmentsInputs)
             inputs[tech+'_'+equipment]=[ItemStack(name=inputDict[tech],amount=coeffs['i'][equipment]*coeffs['b'][equipment])]
             outputs[tech+'_'+equipment]=[ItemStack(name=tech+' '+equipment,amount=coeffs['b'][equipment]*coeffs['e'][equipment])]
-            recipes[tech+'_'+equipment]=Recipe(identifier=tech+'_'+equipment,name='Forge '+tech+' '+equipment+'.',inputs=inputs[tech+'_'+equipment],outputs=outputs[tech+'_'+equipment],enchantments=enchantments[tech+'_'+equipment])
+            recipes[tech+'_'+equipment]=Recipe(identifier=tech+'_'+equipment,name='Forge '+tech+' '+equipment+'.',inputs=inputs[tech+'_'+equipment],outputs=outputs[tech+'_'+equipment],enchantments=enchantments[tech+'_'+equipment],time=inputs[tech+'_'+equipment][0].amount)
             inputs[tech+'_'+equipment+'_Smithy']=[ItemStack(name=inputDict[tech],amount=buildCosts[equipment])]
             factories[tech+'_'+equipment+'_Smithy']=Factory(identifier=tech+'_'+equipment+'_Smithy',name=tech+' '+equipment+' Smithy',inputs=inputs[tech+'_'+equipment+'_Smithy'],outputRecipes=[recipes[tech+'_'+equipment]])
     
@@ -180,7 +185,7 @@ def createFactorieAndRecipes():
     cauldronInputs['Wood']=[]
     cauldronInputs['Wood'].append(([('Glass Bottle',14),('Wheat',1280)],14))
     cauldronInputs['Wood'].append(([('Glass Bottle',7),('Nether Wart',1280)],7))
-    cauldronInputs['Wood'].append(([('Glass Bottle',24),('Baked Potato',1280)],24))
+    cauldronInputs['Wood'].append(([('Glass Bottle',7),('Baked Potato',1280)],7))
     cauldronInputs['Wood'].append(([('Glass Bottle',6),('Cookie',1280)],6))
     cauldronInputs['Iron']=[]
     cauldronInputs['Iron'].append(([('Glass Bottle',32),('Carrot',128),('Cocoa',128),('Pumpkin',64),('Cactus',384),('Bread',64),('Cooked Beef',128)],32))
