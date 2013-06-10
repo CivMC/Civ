@@ -70,3 +70,67 @@
 #       data: 0 (data value of the item stack
 #       display_name: (display name of the item, null by default)
 #       lore: (lore of the item, null by default)
+copy_defaults: false
+general:
+  central_block: WORKBENCH
+  save_cycle: 15
+  return_build_materials: false
+  citadel_enabled: true
+  factory_interaction_material: STICK
+  disable_experience: true
+production_general:
+  update_cycle: 20
+  repair_period: 28
+  disrepair_period: 14
+printing_presses:
+  fuel:
+    Charcoal:
+      material: 'COAL'
+      durability: 1
+  costs:
+     construction:
+        "Iron block":
+           material: 'IRON_BLOCK'
+           amount: 100
+     plates:
+        "Iron ingot":
+           material: 'IRON_INGOT'
+           amount: 4
+        "Gold nugget":
+           material: "GOLD_NUGGET"
+           amount: 1
+     repair:
+        "Iron block":
+           material: 'IRON_BLOCK'
+           amount: 10
+     binding: # Each
+        Leather:
+           material: 'LEATHER'
+           amount: 1
+     page_lot:
+        Paper:
+           material: 'PAPER'
+           amount: 16
+        Ink:
+           material: 'INK_SACK'
+           durability: 0
+           amount: 2
+     pages_per_lot: 16
+     pamphlet_lot:
+        Paper:
+           material: 'PAPER'
+           amount: 16
+        Ink:
+           material: 'INK_SACK'
+           durability: 0
+           amount: 2
+     pamphlets_per_lot: 24
+     security_lot:
+        "Gold nuggets":
+           material: 'GOLD_NUGGET'
+           amount: 1
+        "Cactus green":
+           material: 'INK_SACK'
+           durability: 2
+           amount: 6
+     security_notes_per_lot: 24

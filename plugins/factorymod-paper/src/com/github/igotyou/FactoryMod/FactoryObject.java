@@ -29,7 +29,8 @@ public class FactoryObject
 	//the diffrent factory types, NOTE: these are not the sub-factory types, these are the main types.
 	public enum FactoryType
 	{
-		PRODUCTION
+		PRODUCTION,
+		PRINTING_PRESS
 	}
 	
 	
@@ -150,15 +151,9 @@ public class FactoryObject
 	 */
 	public Inventory getInventory()
 	{
-		switch (factoryType)
-		{
-		case PRODUCTION:
-			Chest chestBlock = (Chest)factoryInventoryLocation.getBlock().getState();
-			factoryInventory = chestBlock.getInventory();
-			return factoryInventory;
-		default:
-			return factoryInventory;
-		}
+		Chest chestBlock = (Chest)factoryInventoryLocation.getBlock().getState();
+		factoryInventory = chestBlock.getInventory();
+		return factoryInventory;
 	}
 
 	/**
@@ -166,17 +161,9 @@ public class FactoryObject
 	 */
 	public Inventory getPowerSourceInventory()
 	{
-		switch (factoryType)
-		{
-		case PRODUCTION:
-			Furnace furnaceBlock = (Furnace)factoryPowerSourceLocation.getBlock().getState();
-			factoryPowerInventory = furnaceBlock.getInventory();
-			return factoryPowerInventory;
-		default:
-			return factoryPowerInventory;
-		}
-		
-	
+		Furnace furnaceBlock = (Furnace)factoryPowerSourceLocation.getBlock().getState();
+		factoryPowerInventory = furnaceBlock.getInventory();
+		return factoryPowerInventory;
 	}
 	
 	/**

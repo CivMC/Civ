@@ -18,8 +18,11 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
+import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
+import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.managers.FactoryModManager;
+import com.github.igotyou.FactoryMod.managers.PrintingPressManager;
 import com.github.igotyou.FactoryMod.managers.ProductionManager;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
@@ -30,16 +33,18 @@ import org.bukkit.event.player.PlayerExpChangeEvent;
 public class FactoryModListener implements Listener
 {
 	private FactoryModManager factoryMan;
-	//this is a lazy fix...
-	private ProductionManager productionMan;
 	
 	/**
 	 * Constructor
 	 */
-	public FactoryModListener(FactoryModManager factoryManager, ProductionManager productionManager)
+	public FactoryModListener(FactoryModManager factoryManager)
 	{
 		this.factoryMan = factoryManager;
-		this.productionMan = productionManager;
+	}
+	
+	private boolean isPotentialFactoryBlock(Block block) {
+		return block.getType() == FactoryModPlugin.CENTRAL_BLOCK_MATERIAL || block.getType() == Material.IRON_BLOCK || block.getType() == Material.CHEST||
+				block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE;
 	}
 	
 	/**
@@ -51,25 +56,28 @@ public class FactoryModListener implements Listener
 	{
 		Block block = e.getBlock();
 		//Is the block part of a factory?
-		if(block.getType() == FactoryModPlugin.CENTRAL_BLOCK_MATERIAL || block.getType() == Material.CHEST||
-			block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE)
+		if(isPotentialFactoryBlock(block))
 		{
 			if (factoryMan.factoryExistsAt(block.getLocation()))
 			{
-				//Is the factory a production factory?
-				if (productionMan.factoryExistsAt(block.getLocation()))
+				//if the blocks is not reinforced destroy it
+				if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 				{
-					ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
-					//if the blocks is not reinforced destroy it
-					if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
-					{
-						factory.destroy(block.getLocation());
-						if(FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
-						{
-							productionMan.removeFactory(factory);
-						}
-					}
+					destroyFactoryAt(block);
 				}
+			}
+		}
+	}
+	
+	private void destroyFactoryAt(Block block) {
+		//Is the factory a production factory?
+		if (factoryMan.factoryExistsAt(block.getLocation()))
+		{
+			Factory factory = factoryMan.getFactory(block.getLocation());
+			factory.destroy(block.getLocation());
+			if(FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
+			{
+				factoryMan.getManager(block.getLocation()).removeFactory(factory);
 			}
 		}
 	}
@@ -84,22 +92,14 @@ public class FactoryModListener implements Listener
 		List<Block> blocks = e.blockList();
 		for (Block block : blocks)
 		{
-			if(block.getType() == FactoryModPlugin.CENTRAL_BLOCK_MATERIAL || block.getType() == Material.CHEST||
-			block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE)
+			if(isPotentialFactoryBlock(block))
 			{
 				if (factoryMan.factoryExistsAt(block.getLocation()))
 				{
-					if (productionMan.factoryExistsAt(block.getLocation()))
+					Factory factory = factoryMan.getFactory(block.getLocation());
+					if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 					{
-						ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
-						if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
-						{
-							factory.destroy(block.getLocation());
-							if(FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
-							{		
-								productionMan.removeFactory(factory);
-							}
-						}
+						destroyFactoryAt(block);
 					}
 				}
 			}
@@ -116,17 +116,9 @@ public class FactoryModListener implements Listener
 		Block block = e.getBlock();
 		if (factoryMan.factoryExistsAt(block.getLocation()))
 		{
-			if (productionMan.factoryExistsAt(block.getLocation()))
+			if (factoryMan.factoryExistsAt(block.getLocation()))
 			{
-				ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
-				if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
-				{
-					factory.destroy(block.getLocation());
-					if(FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
-					{
-						productionMan.removeFactory(factory);
-					}
-				}
+				destroyFactoryAt(block);
 			}
 		}
 	}
@@ -161,11 +153,11 @@ public class FactoryModListener implements Listener
 									(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(player)))
 							{
 								//if there is a production Factory at the clicked location
-								if (productionMan.factoryExistsAt(clicked.getLocation()))
+								if (factoryMan.factoryExistsAt(clicked.getLocation()))
 								{
-									ProductionFactory production = (ProductionFactory) productionMan.getFactory(clicked.getLocation());
+									Factory factory = factoryMan.getFactory(clicked.getLocation());
 									//toggle the recipe, and print the returned message.
-									InteractionResponse.messagePlayerResults(player, production.toggleRecipes());
+									InteractionResponse.messagePlayerResults(player, factory.getCentralBlockResponse());
 								}
 							}
 							//if the player does NOT have acssess to the block that was clicked
@@ -209,10 +201,7 @@ public class FactoryModListener implements Listener
 							if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
 									(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(player)))
 							{
-								if (productionMan.factoryExistsAt(clicked.getLocation()))
-								{
-									InteractionResponse.messagePlayerResults(player,((ProductionFactory) productionMan.getFactory(clicked.getLocation())).togglePower());
-								}
+								InteractionResponse.messagePlayerResults(player,(factoryMan.getFactory(clicked.getLocation())).togglePower());
 							}
 							//if the player is NOT allowed to interact with the clicked block.
 							else
@@ -239,9 +228,9 @@ public class FactoryModListener implements Listener
 							if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
 									(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(player)))
 							{
-								if (productionMan.factoryExistsAt(clicked.getLocation()))
+								if (factoryMan.factoryExistsAt(clicked.getLocation()))
 								{
-									InteractionResponse.messagePlayerResults(player,((ProductionFactory) productionMan.getFactory(clicked.getLocation())).getChestResponse());
+									InteractionResponse.messagePlayerResults(player,(factoryMan.getFactory(clicked.getLocation())).getChestResponse());
 								}
 							}
 							//if the player is NOT allowed to interact with the clicked block
@@ -344,30 +333,30 @@ public class FactoryModListener implements Listener
 		//For each of the four permutations check if the correct blocks are present
 		//This still allows a double chest to be shared between two factories, which may lead to undesirable behavior
 		InteractionResponse response=new InteractionResponse(InteractionResult.FAILURE, "Blocks are not arranged correctly for a factory.");
-		if(! productionMan.factoryExistsAt(westLocation) && ! productionMan.factoryExistsAt(eastLocation))
+		if(! factoryMan.factoryExistsAt(westLocation) && ! factoryMan.factoryExistsAt(eastLocation))
 		{
 			if((westType.getId()== 61 || westType.getId() == 62) && eastType.getId()== 54)
 			{
-				return productionMan.createFactory(loc, eastLocation, westLocation);
+				return factoryMan.createFactory(loc, eastLocation, westLocation);
 			}
 			else if ((eastType.getId()== 61 || eastType.getId()== 62) && westType.getId()== 54)
 			{
-				return productionMan.createFactory(loc, westLocation, eastLocation);
+				return factoryMan.createFactory(loc, westLocation, eastLocation);
 			}
 		}
 		else
 		{
 			response=new InteractionResponse(InteractionResult.FAILURE, "There is already a factory there!");
 		}
-		if(! productionMan.factoryExistsAt(southLocation) && !productionMan.factoryExistsAt(northLocation))
+		if(! factoryMan.factoryExistsAt(southLocation) && !factoryMan.factoryExistsAt(northLocation))
 		{
 			if((northType.getId()== 61 || northType.getId()== 62) && southType.getId()== 54)
 			{
-				return productionMan.createFactory(loc, southLocation, northLocation);
+				return factoryMan.createFactory(loc, southLocation, northLocation);
 			}
 			else if((southType.getId()== 61 || southType.getId()== 62) && northType.getId()== 54)
 			{
-				return productionMan.createFactory(loc, northLocation, southLocation);
+				return factoryMan.createFactory(loc, northLocation, southLocation);
 			}
 		}
 		else

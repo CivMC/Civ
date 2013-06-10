@@ -11,7 +11,10 @@ import org.bukkit.Location;
 import org.bukkit.event.Listener;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
+import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
+import com.github.igotyou.FactoryMod.utility.InteractionResponse;
+import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 //original file:
 /**
  * MachinesManager.java
@@ -61,6 +64,7 @@ public class FactoryModManager
 		//if (FactoryModPlugin.PRODUCTION_ENEABLED)
 		//{
 			initializeProductionManager();
+			initializePrintingPressManager();
 		//}
 	}
 	
@@ -73,6 +77,15 @@ public class FactoryModManager
 		ProductionManager productionnMan = new ProductionManager(plugin);
 		
 		managers.add(productionnMan);
+	}
+	/**
+	 * Initializes the Printing Press Manager
+	 */
+	private void initializePrintingPressManager()
+	{
+		PrintingPressManager printingMan = new PrintingPressManager(plugin);
+		
+		managers.add(printingMan);
 	}
 	
 	/**
@@ -249,5 +262,54 @@ public class FactoryModManager
 		}
 		
 		return null;
+	}
+	
+	public PrintingPressManager getPrintingPressManager() 
+	{
+		for (Manager manager : managers)
+		{
+			if (manager.getClass() == PrintingPressManager.class)
+			{
+				return (PrintingPressManager) manager;
+			}
+		}
+		
+		return null;
+	}
+
+	public Factory getFactory(Location location) {
+		for (Manager manager : managers)
+		{
+			if (manager.factoryExistsAt(location))
+			{
+				return manager.getFactory(location);
+			}
+		}	
+		return null;
+	}
+
+	public Manager getManager(Location location) {
+		for (Manager manager : managers)
+		{
+			if (manager.factoryExistsAt(location))
+			{
+				return manager;
+			}
+		}	
+		return null;
+	}
+
+	public InteractionResponse createFactory(Location centralLocation,
+			Location inventoryLocation, Location powerLocation) {
+		InteractionResponse response = null;
+		for (Manager manager : managers)
+		{
+			response = manager.createFactory(centralLocation, inventoryLocation, powerLocation);
+			if (response.getInteractionResult() == InteractionResult.SUCCESS)
+			{
+				return response;
+			}
+		}
+		return response;
 	}
 }
