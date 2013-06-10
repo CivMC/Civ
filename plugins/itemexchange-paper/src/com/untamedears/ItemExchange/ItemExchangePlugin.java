@@ -79,7 +79,7 @@ public class ItemExchangePlugin extends JavaPlugin{
 		this.saveResource("materials.csv", true);
 		//Read Items
 		try{
-			BufferedReader CSVFile = new BufferedReader(new FileReader("Plugins/ItemExchange/materials.csv"));
+			BufferedReader CSVFile = new BufferedReader(new FileReader("plugins/ItemExchange/materials.csv"));
 			String dataRow = CSVFile.readLine();
 			while (dataRow != null){
 				String[] dataArray = dataRow.split(",");
@@ -95,7 +95,7 @@ public class ItemExchangePlugin extends JavaPlugin{
 		//Read enchantments
 		this.saveResource("enchantments.csv", true);
 		try{
-			BufferedReader CSVFile = new BufferedReader(new FileReader("Plugins/ItemExchange/enchantments.csv"));
+			BufferedReader CSVFile = new BufferedReader(new FileReader("plugins/ItemExchange/enchantments.csv"));
 			String dataRow = CSVFile.readLine();
 			while (dataRow != null){
 				String[] dataArray = dataRow.split(",");

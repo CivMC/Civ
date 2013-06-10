@@ -120,17 +120,7 @@ public class ItemExchangeListener implements Listener{
 						InteractionResponse.messagePlayerResults(player, responses);
 					}
 				}
-				else {
-					InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"Not and exchange!"));
-				}
-			}
-			else{
-				InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"Not Acceptable Block."));
 			}
 		}
-		else {
-			InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"Not left click."));
-		}
-		
 	}
 }
