@@ -13,17 +13,6 @@ def main():
     
 def createConfigFile():
     config={}
-    config['copy_defaults']='false'
-    config['central_block']='WORKBENCH'
-    config['save_cycle']='15'
-    config['return_build_materials']='false'
-    config['citadel_enabled']='true'
-    config['factory_interaction_material']='STICK'
-    config['destructible_factories']='false'
-    config['disable_experience']='true'
-    config['update_cycle']='20'
-    config['repair_period']='28'
-    config['disrepair_period']='14'
     config['factories'],config['recipes']=createFactorieAndRecipes()
     config['disabled_recipes']=[]
     config['enabled_recipes']=createCraftingRecipes()

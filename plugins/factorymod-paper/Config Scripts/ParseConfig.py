@@ -40,18 +40,6 @@ class ParseConfig:
         from shutil import copyfile
         copyfile('template.yml',filename)
         myfile=open(filename,'a')
-        myfile.write('copy_defaults: '+config['copy_defaults'])
-        myfile.write('\ngeneral:')
-        myfile.write('\n  central_block: '+config['central_block'])
-        myfile.write('\n  save_cycle: '+config['save_cycle'])
-        myfile.write('\n  return_build_materials: '+config['return_build_materials'])
-        myfile.write('\n  citadel_enabled: '+config['citadel_enabled'])
-        myfile.write('\n  factory_interaction_material: '+config['factory_interaction_material'])
-        myfile.write('\n  disable_experience: '+config['disable_experience'])
-        myfile.write('\nproduction_general:')
-        myfile.write('\n  update_cycle: '+config['update_cycle'])
-        myfile.write('\n  repair_period: '+config['repair_period'])
-        myfile.write('\n  disrepair_period: '+config['disrepair_period'])
         myfile.write('\ncrafting:')
         myfile.write('\n  disable:')
         for disabled_recipe in config['disabled_recipes']:
