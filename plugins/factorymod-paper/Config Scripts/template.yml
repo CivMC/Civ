@@ -91,7 +91,7 @@ printing_presses:
      construction:
         "Iron block":
            material: 'IRON_BLOCK'
-           amount: 100
+           amount: 50
      plates:
         "Iron ingot":
            material: 'IRON_INGOT'
@@ -102,7 +102,7 @@ printing_presses:
      repair:
         "Iron block":
            material: 'IRON_BLOCK'
-           amount: 10
+           amount: 5
      binding: # Each
         Leather:
            material: 'LEATHER'
