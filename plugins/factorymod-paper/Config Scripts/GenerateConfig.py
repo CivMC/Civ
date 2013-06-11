@@ -183,10 +183,10 @@ def createFactorieAndRecipes():
     cauldronInputs['Iron'].append(([('Glass Bottle',24),('Carrot',256),('Cactus',256),('Bread',256)],24))
     cauldronInputs['Iron'].append(([('Glass Bottle',14),('Carrot',256),('Nether Wart',256),('Baked Potato',256)],14))
     cauldronInputs['Iron'].append(([('Glass Bottle',42),('Carrot',128),('Cocoa',64),('Pumpkin',64),('Cactus',64),('Bread',64),('Cooked Beef',32)],42))
-    cauldronInputs['Iron'].append(([('Glass Bottle',42),('Nether Wart',256),('Melon',64),('Sugar Cane',64),('Cookie',512),('Baked Potato',64),('Grilled Pork',64)],42))
+    cauldronInputs['Iron'].append(([('Glass Bottle',42),('Nether Wart',256),('Melon Block',64),('Sugar Cane',64),('Cookie',512),('Baked Potato',64),('Grilled Pork',64)],42))
     cauldronInputs['Diamond']=[]
-    cauldronInputs['Diamond'].append(([('Glass Bottle',128),('Carrot',96),('Melon',32),('Cactus',256),('Red Rose',8),('Rotten Flesh',128),('Red Mushroom',32),('Vine',32),('Bread',128),('Grilled Pork',32)],128))
-    cauldronInputs['Diamond'].append(([('Glass Bottle',128),('Nether Wart',64),('Melon',32),('Sugar Cane',128),('Yellow Flower',16),('Rotten Flesh',128),('Brown Mushroom',64),('Vine',32),('Baked Potato',256),('Cooked Chicken',16)],128))
+    cauldronInputs['Diamond'].append(([('Glass Bottle',128),('Carrot',96),('Melon Block',32),('Cactus',256),('Red Rose',8),('Rotten Flesh',128),('Red Mushroom',32),('Vine',32),('Bread',128),('Grilled Pork',32)],128))
+    cauldronInputs['Diamond'].append(([('Glass Bottle',128),('Nether Wart',64),('Melon Block',32),('Sugar Cane',128),('Yellow Flower',16),('Rotten Flesh',128),('Brown Mushroom',64),('Vine',32),('Baked Potato',256),('Cooked Chicken',16)],128))
     cauldronInputs['Diamond'].append(([('Glass Bottle',128),('Wheat',128),('Cocoa',16),('Pumpkin',128),('Cactus',256),('Red Rose',8),('Spider Eye',32),('Red Mushroom',16),('Grass',32),('Cooked Fish',16)],128))
     cauldronInputs['Diamond'].append(([('Glass Bottle',128),('Nether Wart',64),('Pumpkin',128),('Sugar Cane',128),('Yellow Flower',16),('Spider Eye',32),('Brown Mushroom',64),('Grass',64),('Cookie',256),('Cooked Beef',32)],128))
     for cauldron in cauldronInputs.keys():

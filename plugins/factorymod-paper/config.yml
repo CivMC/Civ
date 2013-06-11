@@ -1882,8 +1882,8 @@ production_recipes:
       Carrot:
         material: CARROT_ITEM
         amount: 96
-      Melon:
-        material: MELON
+      Melon Block:
+        material: MELON_BLOCK
         amount: 32
       Cactus:
         material: CACTUS
@@ -3040,8 +3040,8 @@ production_recipes:
       Nether Wart:
         material: NETHER_STALK
         amount: 64
-      Melon:
-        material: MELON
+      Melon Block:
+        material: MELON_BLOCK
         amount: 32
       Sugar Cane:
         material: SUGAR_CANE
@@ -3546,8 +3546,8 @@ production_recipes:
       Nether Wart:
         material: NETHER_STALK
         amount: 256
-      Melon:
-        material: MELON
+      Melon Block:
+        material: MELON_BLOCK
         amount: 64
       Sugar Cane:
         material: SUGAR_CANE
