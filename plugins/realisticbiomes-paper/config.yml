@@ -28,6 +28,7 @@ realistic_biomes:
  # valid crop names can be any of the following:
  #  any of the bukkit.Material enum names    -- crops
  #  any of the bukkit.TreeType enum names    -- trees
+ #   TREE, REDWOOD, BIRCH, JUNGLE, RED_MUSHROOM, BROWN_MUSHROOM
  #  any of the bukkit.EntityType enum names  -- animals
  # any other name will have no effect except for inheritance
  # names with capital letters will be assumed to be official bukkit names
@@ -205,29 +206,18 @@ realistic_biomes:
     mushroom: 0.5
     freshwater: 0.5
 
-  BIG_TREE:
-   inherit: tree
-   biomes:
-    forest: 2.0
   BIRCH:
    inherit: tree
    biomes:
     forest: 2.0
     PLAINS: 0.25
+
   REDWOOD:
    inherit: tree
    biomes:
     cold_forest: 2.0
     mountain: 0.75
-  SWAMP:
-   inherit: tree
-   biomes:
-    SWAMPLAND: 1.0
-  TALL_REDWOOD:
-   inherit: tree
-   biomes:
-    cold_forest: 2.0
-    mountain: 0.5
+
   TREE:
    inherit: tree
    biomes:
@@ -238,19 +228,13 @@ realistic_biomes:
 
   #......................
 
-  jungle_tree:
+  JUNGLE:
    base_rate: 0.01
    needs_sunlight: true
    not_full_sunlight_multiplier: 0.125
    max_soil_layers: 0
    biomes:
     hot_rainy: 1.0
-  JUNGLE:
-   inherit: jungle_tree
-  JUNGLE_BUSH:
-   inherit: jungle_tree
-  SMALL_JUNGLE:
-   inherit: jungle_tree
 
   #......................
 
