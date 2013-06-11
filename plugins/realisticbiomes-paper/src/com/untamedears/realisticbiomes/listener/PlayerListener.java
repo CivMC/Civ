@@ -105,6 +105,10 @@ public class PlayerListener implements Listener {
 					material = saplingIndexMap.get(data);
 				}
 				
+				// don't do anything if the material is a dye, but not cocoa
+				if (event.getMaterial() == Material.INK_SACK && data != 3/*cocoa*/)
+					return;
+				
 				block = block.getRelative(0,1,0);
 			}
 			else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && (material == Material.STICK || material == Material.BONE)) {
