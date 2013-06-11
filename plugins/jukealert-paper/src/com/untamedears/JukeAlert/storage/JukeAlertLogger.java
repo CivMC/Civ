@@ -93,12 +93,12 @@ public class JukeAlertLogger {
         }
 
         logsPerPage = configManager.getLogsPerPage();
-        Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
                 saveAllSnitches();
             }
-        }, 40, 40); // 2 sec
+        }, 20, 20); // 1 sec
     }
 
     public Database getDb() {
