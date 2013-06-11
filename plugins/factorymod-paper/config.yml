@@ -2187,7 +2187,7 @@ production_recipes:
         amount: 256
       Baked Potato:
         material: BAKED_POTATO
-        amount: 64
+        amount: 256
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
@@ -3093,6 +3093,9 @@ production_recipes:
       Spider Eye:
         material: SPIDER_EYE
         amount: 32
+      Red Mushroom:
+        material: RED_MUSHROOM
+        amount: 16
       Grass:
         material: LONG_GRASS
         amount: 32
