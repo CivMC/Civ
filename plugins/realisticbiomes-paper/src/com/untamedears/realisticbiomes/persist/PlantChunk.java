@@ -34,24 +34,24 @@ public class PlantChunk {
 	
 	///-------------------------
 	
-	public boolean isLoaded() {
+	public synchronized boolean isLoaded() {
 		return loaded;
 	}
 	
-	public int getPlantCount() {
+	public synchronized int getPlantCount() {
 		return plants.keySet().size();
 	}
 	
 	///-------------------------
 	
-	public void remove(Coords coords) {
+	public synchronized void remove(Coords coords) {
 		if (!loaded)
 			return;
 		
 		plants.remove(coords);
 	}
 	
-	public void add(Coords coords, Plant plant, Connection writeConn) {
+	public synchronized void add(Coords coords, Plant plant, Connection writeConn) {
 		if (!loaded) {
 			if (!inDatabase)
 				plants = new HashMap<Coords, Plant>();
@@ -64,14 +64,14 @@ public class PlantChunk {
 		plants.put(coords, plant);
 	}
 	
-	public Plant get(Coords coords) {
+	public synchronized Plant get(Coords coords) {
 		if (!loaded)
 			return null;
 		
 		return plants.get(coords);
 	}
 
-	public boolean load(Coords coords, Connection readConn) {
+	public synchronized boolean load(Coords coords, Connection readConn) {
 		// if the data is being loaded, it is known that this chunk is in the database
 		inDatabase = true;
 		
@@ -131,7 +131,7 @@ public class PlantChunk {
 		return true;
 	}
 	
-	public void unload(Coords chunkCoords, ChunkWriter writeStmts) {
+	public synchronized void unload(Coords chunkCoords, ChunkWriter writeStmts) {
 		if (!loaded)
 			return;
 		
