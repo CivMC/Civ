@@ -34,6 +34,24 @@ import com.untamedears.realisticbiomes.persist.WorldID;
 public class GrowListener implements Listener {
 	public static Logger LOG = Logger.getLogger("RealisticBiomes");
 	
+	private static HashMap<TreeType, TreeType> treeTypeMap;
+	
+	static {
+		treeTypeMap = new HashMap<TreeType, TreeType>();
+		
+		treeTypeMap.put(TreeType.BIG_TREE, TreeType.TREE);
+		treeTypeMap.put(TreeType.BIRCH, TreeType.BIRCH);
+		treeTypeMap.put(TreeType.BROWN_MUSHROOM, TreeType.BROWN_MUSHROOM);
+		treeTypeMap.put(TreeType.JUNGLE, TreeType.JUNGLE);
+		treeTypeMap.put(TreeType.JUNGLE_BUSH, TreeType.JUNGLE);
+		treeTypeMap.put(TreeType.RED_MUSHROOM, TreeType.RED_MUSHROOM);
+		treeTypeMap.put(TreeType.REDWOOD, TreeType.REDWOOD);
+		treeTypeMap.put(TreeType.SMALL_JUNGLE, TreeType.JUNGLE);
+		treeTypeMap.put(TreeType.SWAMP, TreeType.TREE);
+		treeTypeMap.put(TreeType.TALL_REDWOOD, TreeType.REDWOOD);
+		treeTypeMap.put(TreeType.TREE, TreeType.TREE);
+	}
+	
 	private HashMap<Object, GrowthConfig> growthMap;
 	RealisticBiomes plugin;
 	
@@ -77,6 +95,12 @@ public class GrowListener implements Listener {
 		}
 		
 		TreeType t = event.getSpecies();
+		
+		// map the tree type down to a smaller set of tree types
+		// representing the types of saplings
+		if (treeTypeMap.containsKey(t))
+			t = treeTypeMap.get(t);
+		
 		Block b = event.getLocation().getBlock();
 		event.setCancelled(!willGrow(t, b));
 	}

@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.material.Tree;
 
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
@@ -63,6 +64,17 @@ public class PlayerListener implements Listener {
 		materialAliases.put(Material.FISHING_ROD, EntityType.FISHING_HOOK);
 	}
 	
+	private static HashMap<Integer, TreeType> saplingIndexMap;
+	
+	static {
+		saplingIndexMap = new HashMap<Integer, TreeType>();
+		
+		saplingIndexMap.put(new Integer(0), TreeType.TREE);
+		saplingIndexMap.put(new Integer(1), TreeType.REDWOOD);
+		saplingIndexMap.put(new Integer(2), TreeType.BIRCH);
+		saplingIndexMap.put(new Integer(3), TreeType.JUNGLE);
+	}
+	
 	private Map<Object, GrowthConfig> growthConfigs;
 	
 	public PlayerListener(RealisticBiomes plugin, Map<Object, GrowthConfig> growthConfigs) {
@@ -87,6 +99,16 @@ public class PlayerListener implements Listener {
 				if (material == null)
 					material = event.getMaterial();
 				
+				// handle saplings as their tree types
+				int data = event.getItem().getData().getData();
+				if (event.getItem().getTypeId() == Material.SAPLING.getId() && saplingIndexMap.containsKey(data)) {
+					material = saplingIndexMap.get(data);
+				}
+				
+				// don't do anything if the material is a dye, but not cocoa
+				if (event.getMaterial() == Material.INK_SACK && data != 3/*cocoa*/)
+					return;
+				
 				block = block.getRelative(0,1,0);
 			}
 			else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && (material == Material.STICK || material == Material.BONE)) {
@@ -94,8 +116,10 @@ public class PlayerListener implements Listener {
 				material = event.getClickedBlock().getType();
 				
 				// handle saplings as their tree types
-				if (material == Material.SAPLING) {
-					material = TreeType.TREE;
+				int index = block.getData();
+				if (material == Material.SAPLING && saplingIndexMap.containsKey(index)) {
+					
+					material = saplingIndexMap.get(index);
 				}
 				
 				GrowthConfig growthConfig = growthConfigs.get(material);
@@ -115,11 +139,6 @@ public class PlayerListener implements Listener {
 					block = block.getRelative(0,1,0);
 				else if (material == Material.PUMPKIN || material == Material.MELON_BLOCK || material == Material.CACTUS) {
 					block = block.getRelative(0,1,0);
-				}
-				
-				if(material == Material.SAPLING || material == TreeType.TREE) {
-					event.getPlayer().sendMessage("§7[Realistic Biomes] Growth rate undetermined, see http://goo.gl/dOUpj for details");
-					return;
 				}
 				
 				GrowthConfig growthConfig = growthConfigs.get(material);
