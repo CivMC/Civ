@@ -101,9 +101,12 @@ public class PlayerListener implements Listener {
 				
 				// handle saplings as their tree types
 				int data = event.getItem().getData().getData();
-				if (event.getItem().getTypeId() == Material.SAPLING.getId() && saplingIndexMap.containsKey(data)) {
-					material = saplingIndexMap.get(data);
+				if (event.getItem().getTypeId() == Material.SAPLING.getId()) {
+					if (saplingIndexMap.containsKey(data)) {
+						material = saplingIndexMap.get(data);
+					}
 				}
+				
 				
 				// don't do anything if the material is a dye, but not cocoa
 				if (event.getMaterial() == Material.INK_SACK && data != 3/*cocoa*/)
