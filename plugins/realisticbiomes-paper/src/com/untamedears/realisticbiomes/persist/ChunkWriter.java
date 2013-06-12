@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
+import com.untamedears.realisticbiomes.PersistConfig;
 
 public class ChunkWriter {
 	public static PreparedStatement deleteOldDataStmt = null;
@@ -13,17 +14,18 @@ public class ChunkWriter {
 	public static PreparedStatement savePlantsStmt = null;
 	public static PreparedStatement getLastChunkIdStmt = null;
 
-	public ChunkWriter(Connection writeConn) {
+	
+	public ChunkWriter(Connection writeConn, PersistConfig config) {
 
 		try {
-			deleteOldDataStmt = writeConn.prepareStatement("DELETE FROM plant WHERE chunkid = ?1");
+			deleteOldDataStmt = writeConn.prepareStatement(String.format("DELETE FROM %s_plant WHERE chunkid = ?1", config.prefix));
 			
-			addChunkStmt = writeConn.prepareStatement("INSERT INTO chunk (w, x, z) VALUES (?, ?, ?)");
-			getLastChunkIdStmt = writeConn.prepareStatement("SELECT last_insert_rowid()");	
+			addChunkStmt = writeConn.prepareStatement(String.format("INSERT INTO %s_chunk (w, x, z) VALUES (?, ?, ?)", config.prefix));
+			getLastChunkIdStmt = writeConn.prepareStatement("SELECT LAST_INSERT_ID()");	
 			
-			savePlantsStmt = writeConn.prepareStatement("INSERT INTO plant (chunkid, w, x, y, z, date, growth) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)");
+			savePlantsStmt = writeConn.prepareStatement(String.format("INSERT INTO %s_plant (chunkid, w, x, y, z, date, growth) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)", config.prefix));
 			
-			deleteChunkStmt = writeConn.prepareStatement("DELETE FROM chunk WHERE id = ?1");
+			deleteChunkStmt = writeConn.prepareStatement(String.format("DELETE FROM %s_chunk WHERE id = ?1", config.prefix));
 		} catch (SQLException e) {
 			throw new DataSourceException("Failed to create the prepared statements in ChunkWriter", e);
 		}

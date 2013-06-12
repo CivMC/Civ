@@ -31,6 +31,8 @@ public class PlantChunk {
 		
 		this.loaded = false;
 		this.inDatabase = false;
+		
+		
 
 	}
 	
@@ -83,10 +85,21 @@ public class PlantChunk {
 		World world = plugin.getServer().getWorld(WorldID.getMCID(coords.w));
 		
 		plants = new HashMap<Coords, Plant>();
+		PreparedStatement loadPlantsStmt;
+
+		try {
+			loadPlantsStmt = readConn.prepareStatement(String.format("SELECT w, x, y, z, date, growth FROM %s_plant WHERE chunkid = ?1", 
+					this.plugin.persistConfig.prefix)); 
+			
+			
+		} 	catch (SQLException e) {
+			throw new DataSourceException("Failed to create prepared statement in PlantChunk", e); 
+		}
+		
 
 		
 		try {
-			PreparedStatement loadPlantsStmt = readConn.prepareStatement("SELECT w, x, y, z, date, growth FROM plant WHERE chunkid = ?1"); 
+		
 			
 			loadPlantsStmt.setLong(1, index);
 			loadPlantsStmt.execute();

@@ -101,7 +101,11 @@ public class PlantManager {
 							"ENGINE INNODB", config.prefix, config.prefix));
 			
 			
-			this.selectAllFromChunk = readConn.prepareStatement("SELECT id, w, x, z FROM chunk");
+			this.selectAllFromChunk = readConn.prepareStatement(String.format("SELECT id, w, x, z FROM %s_chunk", config.prefix));
+			
+			
+			// create chunk writer
+			chunkWriter = new ChunkWriter(writeConn, config);
 			
 		} catch (SQLException e) {
 			throw new DataSourceException("Failed to create the prepared statements! (for table creation)", e);
