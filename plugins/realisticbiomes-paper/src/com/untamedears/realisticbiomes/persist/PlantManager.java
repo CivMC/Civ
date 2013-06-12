@@ -147,32 +147,9 @@ public class PlantManager {
 	}
 	
 	// ============================================================================================	
-
-	// commit transaction in the writeConn database connection
-	private class commitRunnable implements Runnable {
-	    @Override  
-	    public void run() {
-	    	writeLock.lock();
-
-    		long start = System.nanoTime()/1000000/*ns/ms*/;
-			try {
-				writeConn.commit();
-				writeConn.setAutoCommit(true);
-			} catch (SQLException e) {
-				throw new DataSourceException("Failed to commit / setAutoCommit in the CommitRunnable class", e);
-			}
-			long end = System.nanoTime()/1000000/*ns/ms*/;
-			
-			if (plugin.persistConfig.logDB)
-				log.info("Committed data in "+(end-start)+" ms");
-			
-			writeLock.unlock();
-	    }
-	};
-
 	
 	// --------------------------------------------------------------------------------------------
-
+	// --------------------------------------------------------------------------------------------
 	private void unloadBatch() {
 		// no need to do anything if the queue is empty
 		if (chunksToUnload.isEmpty())
@@ -190,7 +167,8 @@ public class PlantManager {
 				try {
 					writeConn.setAutoCommit(false);
 				} catch (SQLException e) {
-					throw new DataSourceException("Failed to set autocommit to false in unloadBatch()", e);
+					throw new DataSourceException("unable to set autocommit to false in unloadBatch", e);
+
 				}
 				
 				while (!chunksToUnload.isEmpty()) {
@@ -203,7 +181,7 @@ public class PlantManager {
 					writeConn.commit();
 					writeConn.setAutoCommit(true);
 				} catch (SQLException e) {
-					e.printStackTrace();
+					throw new DataSourceException("unable to set autocommit to true in unloadBatch", e);
 				}
 				
 				end = System.nanoTime()/1000000/*ns/ms*/;
@@ -215,23 +193,25 @@ public class PlantManager {
 	}
 	
 	public void saveAllAndStop() {
-		writeLock.lock();
-			try {
-				writeConn.setAutoCommit(false);
-			} catch (SQLException e) {
-				throw new DataSourceException("Failed to set autocommit to false in saveAllAndStop()", e);
-			}
-			
-			for (Coords coords:chunks.keySet()) {
-				PlantChunk pChunk = chunks.get(coords);
-				pChunk.unload(coords, chunkWriter);
-			}
-			
-			try {
-				writeConn.commit();
-				writeConn.setAutoCommit(true);
-			} catch (SQLException e) {
-				throw new DataSourceException("Failed to set autocommit to true / commit in saveAllAndStop()", e);
+		writeService.submit(new Runnable() {
+			public void run() {
+				try {
+					writeConn.setAutoCommit(false);
+				} catch (SQLException e) {
+					throw new DataSourceException("unable to set autocommit to false in saveAllAndStop", e);
+				}
+				
+				for (Coords coords:chunks.keySet()) {
+					PlantChunk pChunk = chunks.get(coords);
+					pChunk.unload(coords, chunkWriter);
+				}
+				
+				try {
+					writeConn.commit();
+					writeConn.setAutoCommit(true);
+				} catch (SQLException e) {
+					throw new DataSourceException("unable to set autocommit to true in saveAllAndStop", e);
+				}	
 			}
 		});
 		
@@ -300,15 +280,14 @@ public class PlantManager {
 		try {
 			readConn.setAutoCommit(false);
 		} catch (SQLException e) {
-			throw new DataSourceException("Failed to set Autocommit to false in loadChunk()", e);
+			throw new DataSourceException("unable to set autocommit to false in loadchunk", e);
 		}
 		boolean loaded = pChunk.load(coords, readConn);
 		try {
 			readConn.commit();
 			readConn.setAutoCommit(true);
 		} catch (SQLException e) {
-			throw new DataSourceException("Failed to set Autocommit to true / commit in loadChunk()", e);
-
+			throw new DataSourceException("unable to set autocommit to false in loadchunk", e);
 		}
 		long end = System.nanoTime()/1000000/*ns/ms*/;
 		

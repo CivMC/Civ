@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
+
 public class ChunkWriter {
 	public static PreparedStatement deleteOldDataStmt = null;
 	public static PreparedStatement deleteChunkStmt = null;
