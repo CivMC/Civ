@@ -1,6 +1,7 @@
 package com.untamedears.JukeAlert.command.commands;
 
 import static com.untamedears.JukeAlert.util.Utility.findTargetedOwnedSnitch;
+import static com.untamedears.JukeAlert.util.Utility.doesSnitchExist;
 
 import java.util.Set;
 
@@ -29,12 +30,15 @@ public class ClearCommand extends PlayerCommand {
             Player player = (Player) sender;
             final Snitch snitch = findTargetedOwnedSnitch(player);
             if (snitch != null) {
-               Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                   @Override
-                   public void run() {
-                       deleteLog(sender, snitch);
-                   }
-               });
+            	if (doesSnitchExist(snitch, false))
+            	{
+            		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            			@Override
+            			public void run() {
+            				deleteLog(sender, snitch);
+            			}
+            		});
+            	}
                return true;
             }
         } else {

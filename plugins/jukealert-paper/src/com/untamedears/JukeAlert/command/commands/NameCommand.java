@@ -1,5 +1,6 @@
 package com.untamedears.JukeAlert.command.commands;
 
+import static com.untamedears.JukeAlert.util.Utility.doesSnitchExist;
 import static com.untamedears.JukeAlert.util.Utility.findTargetedOwnedSnitch;
 
 import java.util.Set;
@@ -38,12 +39,13 @@ public class NameCommand extends PlayerCommand {
             }
             Snitch snitch = findTargetedOwnedSnitch(player);
             if (snitch != null) {
-                plugin.getJaLogger().updateSnitchName(snitch, name);
-                Snitch newSnitch = snitch;
-                newSnitch.setName(name);
-                plugin.getSnitchManager().removeSnitch(snitch);
-                plugin.getSnitchManager().addSnitch(newSnitch);
-                sender.sendMessage(ChatColor.AQUA + " Changed snitch name to " + name);
+            	if (!doesSnitchExist(snitch, true)) return false;
+            	plugin.getJaLogger().updateSnitchName(snitch, name);
+            	Snitch newSnitch = snitch;
+            	newSnitch.setName(name);
+            	plugin.getSnitchManager().removeSnitch(snitch);
+            	plugin.getSnitchManager().addSnitch(newSnitch);
+            	sender.sendMessage(ChatColor.AQUA + " Changed snitch name to " + name);
             }
             return true;
         } else {

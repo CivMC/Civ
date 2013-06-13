@@ -1,6 +1,7 @@
 package com.untamedears.JukeAlert.command.commands;
 
 import static com.untamedears.JukeAlert.util.Utility.findTargetedOwnedSnitch;
+import static com.untamedears.JukeAlert.util.Utility.doesSnitchExist;
 
 import java.util.Set;
 
@@ -19,8 +20,8 @@ public class InfoCommand extends PlayerCommand {
     public InfoCommand() {
         super("Info");
         setDescription("Displays information from a Snitch");
-        setUsage("/jainfo <page number>");
-        setArgumentRange(0, 1);
+        setUsage("/jainfo <page number> [censor]");
+        setArgumentRange(0, 2);
         setIdentifier("jainfo");
     }
 
@@ -40,7 +41,12 @@ public class InfoCommand extends PlayerCommand {
             }
             Snitch snitch = findTargetedOwnedSnitch((Player) sender);
             if (snitch != null) {
-                sendLog(sender, snitch, offset);
+            	if (doesSnitchExist(snitch, true))
+            	{
+            		sender.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
+            		return false;
+            	}
+                sendLog(sender, snitch, offset, args.length == 2);
             } else {
                 sender.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
             }
@@ -51,9 +57,9 @@ public class InfoCommand extends PlayerCommand {
         }
     }
 
-    private void sendLog(CommandSender sender, Snitch snitch, int offset) {
+    private void sendLog(CommandSender sender, Snitch snitch, int offset, boolean shouldCensor) {
         Player player = (Player) sender;
-        GetSnitchInfoPlayerTask task = new GetSnitchInfoPlayerTask(plugin, snitch.getId(), offset, player);
+        GetSnitchInfoPlayerTask task = new GetSnitchInfoPlayerTask(plugin, snitch.getId(), offset, player, shouldCensor);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
 
     }
