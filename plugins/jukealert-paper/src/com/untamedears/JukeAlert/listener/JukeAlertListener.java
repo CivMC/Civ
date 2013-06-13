@@ -1,15 +1,5 @@
 package com.untamedears.JukeAlert.listener;
 
-import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.external.VanishNoPacket;
 import com.untamedears.JukeAlert.manager.PlayerManager;
@@ -25,6 +15,11 @@ import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.events.CreateReinforcementEvent;
 import com.untamedears.citadel.events.GroupChangeEvent;
 import com.untamedears.citadel.events.GroupChangeType;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

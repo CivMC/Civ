@@ -462,9 +462,9 @@ public class JukeAlertLogger {
      * @param victimUser - the user who was victim of the event, can be null
      */
     public void logSnitchInfo(Snitch snitch, Material material, Location loc, Date date, LoggedAction action, String initiatedUser, String victimUser) {
-
+    	
         jukeinfobatch.addSet(snitch, material, loc, date, action, initiatedUser, victimUser);
-
+    	
         /*try {
          // snitchid
          insertSnitchLogStmt.setInt(1, snitch.getId());
