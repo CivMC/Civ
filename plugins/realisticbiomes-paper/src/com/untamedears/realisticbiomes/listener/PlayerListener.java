@@ -100,8 +100,8 @@ public class PlayerListener implements Listener {
 					material = event.getMaterial();
 				
 				// handle saplings as their tree types
-				int data = event.getItem().getData().getData();
 				if (event.getItem().getTypeId() == Material.SAPLING.getId()) {
+					int data = event.getItem().getData().getData();
 					if (saplingIndexMap.containsKey(data)) {
 						material = saplingIndexMap.get(data);
 					}
