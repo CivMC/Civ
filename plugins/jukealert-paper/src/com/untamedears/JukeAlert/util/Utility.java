@@ -13,6 +13,7 @@ import com.untamedears.JukeAlert.model.Snitch;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -44,16 +45,20 @@ public class Utility {
     }
     
     //TODO: Fix this when Notes comes out
-    public static boolean doesSnitchExist(Snitch snitch, boolean shouldCleanup)
-    {
-    	boolean exists = Bukkit.getWorld("world").getBlockAt(snitch.getX(), snitch.getY(), snitch.getZ()).getType().getId() == 84;
-    	if (!exists && shouldCleanup)
-    	{
-    		System.out.println("Removing ghost snitch '" + snitch.getName() + "' at x:" + snitch.getX() + " y:" + snitch.getY() + " z:" + snitch.getZ());
-    		JukeAlert.getInstance().getSnitchManager().removeSnitch(snitch);
-    		JukeAlert.getInstance().getJaLogger().logSnitchBreak(Bukkit.getWorld("world").getName(), snitch.getX(), snitch.getY(), snitch.getZ());
-    	}
-    	return exists;
+    public static boolean doesSnitchExist(Snitch snitch, boolean shouldCleanup) {
+        Location loc = snitch.getLoc();
+        World world = loc.getWorld();
+        int x = loc.getBlockX();
+        int y = loc.getBlockY();
+        int z = loc.getBlockZ();
+        int type_id = world.getBlockAt(x, y, z).getType().getId();
+        boolean exists = (type_id == 84);
+        if (!exists && shouldCleanup) {
+            System.out.println("Removing ghost snitch '" + snitch.getName() + "' at x:" + x + " y:" + y + " z:" + z);
+            JukeAlert.getInstance().getSnitchManager().removeSnitch(snitch);
+            JukeAlert.getInstance().getJaLogger().logSnitchBreak(world.getName(), x, y, z);
+        }
+        return exists;
     }
     
     public static Snitch findClosestOwnedSnitch(Player player) {
