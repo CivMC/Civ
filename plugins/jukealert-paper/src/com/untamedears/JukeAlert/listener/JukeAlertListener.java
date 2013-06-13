@@ -16,6 +16,7 @@ import com.untamedears.citadel.events.CreateReinforcementEvent;
 import com.untamedears.citadel.events.GroupChangeEvent;
 import com.untamedears.citadel.events.GroupChangeType;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
