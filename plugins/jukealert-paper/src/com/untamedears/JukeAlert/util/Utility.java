@@ -44,7 +44,6 @@ public class Utility {
         return null;
     }
     
-    //TODO: Fix this when Notes comes out
     public static boolean doesSnitchExist(Snitch snitch, boolean shouldCleanup) {
         Location loc = snitch.getLoc();
         World world = loc.getWorld();
@@ -52,7 +51,7 @@ public class Utility {
         int y = loc.getBlockY();
         int z = loc.getBlockZ();
         int type_id = world.getBlockAt(x, y, z).getType().getId();
-        boolean exists = (type_id == 84);
+        boolean exists = (type_id == 84 || type_id == 25);
         if (!exists && shouldCleanup) {
             System.out.println("Removing ghost snitch '" + snitch.getName() + "' at x:" + x + " y:" + y + " z:" + z);
             JukeAlert.getInstance().getSnitchManager().removeSnitch(snitch);
