@@ -109,7 +109,7 @@ public class PlayerListener implements Listener {
 				
 				
 				// don't do anything if the material is a dye, but not cocoa
-				if (event.getMaterial() == Material.INK_SACK && data != 3/*cocoa*/)
+				if (event.getMaterial() == Material.INK_SACK && event.getItem().getData().getData() != 3/*cocoa*/)
 					return;
 				
 				block = block.getRelative(0,1,0);
