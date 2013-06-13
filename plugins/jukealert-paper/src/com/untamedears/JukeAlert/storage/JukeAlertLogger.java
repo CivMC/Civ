@@ -679,7 +679,7 @@ public class JukeAlertLogger {
 	                    insertNewSnitchStmt.setInt(7, lockedConfigManager.getDefaultCuboidSize());
 	                    insertNewSnitchStmt.setInt(8, lockedConfigManager.getDefaultCuboidSize());
 	                    insertNewSnitchStmt.setInt(9, lockedConfigManager.getDefaultCuboidSize());
-                        insertNewSnitchStmt.setBoolean(10, shouldLog);
+	                    insertNewSnitchStmt.setBoolean(10, shouldLog);
 	                    insertNewSnitchStmt.execute();
                 	}
                 } catch (SQLException ex) {
