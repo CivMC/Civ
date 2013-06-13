@@ -10,6 +10,7 @@ import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.model.Snitch;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -41,7 +42,20 @@ public class Utility {
         }
         return null;
     }
-
+    
+    //TODO: Fix this when Notes comes out
+    public static boolean doesSnitchExist(Snitch snitch, boolean shouldCleanup)
+    {
+    	boolean exists = Bukkit.getWorld("world").getBlockAt(snitch.getX(), snitch.getY(), snitch.getZ()).getType().getId() == 84;
+    	if (!exists && shouldCleanup)
+    	{
+    		System.out.println("Removing ghost snitch '" + snitch.getName() + "' at x:" + snitch.getX() + " y:" + snitch.getY() + " z:" + snitch.getZ());
+    		JukeAlert.getInstance().getSnitchManager().removeSnitch(snitch);
+    		JukeAlert.getInstance().getJaLogger().logSnitchBreak(Bukkit.getWorld("world").getName(), snitch.getX(), snitch.getY(), snitch.getZ());
+    	}
+    	return exists;
+    }
+    
     public static Snitch findClosestOwnedSnitch(Player player) {
         Snitch closestSnitch = null;
         double closestDistance = Double.MAX_VALUE;
