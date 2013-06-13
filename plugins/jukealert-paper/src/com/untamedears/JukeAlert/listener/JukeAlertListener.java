@@ -57,7 +57,7 @@ public class JukeAlertListener implements Listener {
     SnitchManager snitchManager = plugin.getSnitchManager();
     PlayerManager playerManager = plugin.getPlayerManager();
     private final Map<String, Set<Snitch>> playersInSnitches = new TreeMap<String, Set<Snitch>>();
-	private final ArrayList<Location> previousLocations = new ArrayList<>();
+	private final ArrayList<Location> previousLocations = new ArrayList<Location>();
     private final VanishNoPacket vanishNoPacket = new VanishNoPacket();
 
     private boolean checkProximity(Snitch snitch, String playerName) {
