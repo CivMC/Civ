@@ -11,7 +11,6 @@ import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.model.LoggedAction;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.tasks.GetSnitchInfoTask;
-import com.untamedears.JukeAlert.util.SparseQuadTree;
 import com.untamedears.citadel.entity.Faction;
 
 import java.sql.PreparedStatement;

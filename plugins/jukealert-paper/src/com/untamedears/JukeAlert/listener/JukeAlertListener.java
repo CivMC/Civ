@@ -336,6 +336,7 @@ public class JukeAlertListener implements Listener {
                 }
             }
         }
+        snitches = snitchManager.findSnitches(world, location, true);
         Set<Snitch> rmList = new TreeSet<Snitch>();
         for (Snitch snitch : inList) {
             if (snitches.contains(snitch)) {

@@ -22,6 +22,8 @@ import com.untamedears.JukeAlert.util.SparseQuadTree;
 
 public class SnitchManager {
 
+    public static final int EXIT_PADDING = 2;
+
     private JukeAlert plugin;
     private JukeAlertLogger logger;
     private Map<Integer, Snitch> snitchesById;
@@ -37,10 +39,10 @@ public class SnitchManager {
             @Override
             public void run() {
                 snitchesById = new TreeMap<Integer, Snitch>();
-                snitches = new HashMap<World, SparseQuadTree>();
+                snitches = new HashMap<World, SparseQuadTree>(EXIT_PADDING);
                 List<World> worlds = plugin.getServer().getWorlds();
                 for (World world : worlds) {
-                    SparseQuadTree worldSnitches = new SparseQuadTree();
+                    SparseQuadTree worldSnitches = new SparseQuadTree(EXIT_PADDING);
                     Enumeration<Snitch> se = logger.getAllSnitches(world);
                     while (se.hasMoreElements()) {
                         Snitch snitch = se.nextElement();
@@ -83,7 +85,7 @@ public class SnitchManager {
     public void addSnitch(Snitch snitch) {
         World world = snitch.getLoc().getWorld();
         if (snitches.get(world) == null) {
-            SparseQuadTree map = new SparseQuadTree();
+            SparseQuadTree map = new SparseQuadTree(EXIT_PADDING);
             map.add(snitch);
             snitches.put(world, map);
         } else {
@@ -98,12 +100,17 @@ public class SnitchManager {
     }
 
     public Set<Snitch> findSnitches(World world, Location location) {
+        return findSnitches(world, location, false);
+    }
+
+    public Set<Snitch> findSnitches(World world, Location location, boolean includePaddingZone) {
         if (snitches.get(world) == null) {
             return new TreeSet<Snitch>();
         }
         int y = location.getBlockY();
         Set<Snitch> results = new TreeSet<Snitch>();
-        Set<QTBox> found = snitches.get(world).find(location.getBlockX(), location.getBlockZ());
+        Set<QTBox> found = snitches.get(world).find(
+            location.getBlockX(), location.getBlockZ(), includePaddingZone);
         for (QTBox box : found) {
             Snitch sn = (Snitch) box;
             if (sn.isWithinHeight(location.getBlockY())) {
