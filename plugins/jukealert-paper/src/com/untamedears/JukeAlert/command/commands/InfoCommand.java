@@ -41,7 +41,7 @@ public class InfoCommand extends PlayerCommand {
             }
             Snitch snitch = findTargetedOwnedSnitch((Player) sender);
             if (snitch != null) {
-            	if (doesSnitchExist(snitch, true))
+            	if (!doesSnitchExist(snitch, true))
             	{
             		sender.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
             		return false;
