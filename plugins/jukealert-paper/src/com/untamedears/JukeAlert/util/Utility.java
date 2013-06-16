@@ -20,6 +20,12 @@ import org.bukkit.entity.Player;
 // Static methods only
 public class Utility {
 
+    //TODO: ALWAYS SET THIS TO FALSE WHENEVER YOU PUSH
+    public static boolean isDebugging()
+    {
+    	return false;
+    }
+
     public static boolean isOnSnitch(Snitch snitch, String playerName) {
         Faction faction = snitch.getGroup();
         if (faction == null) return false;
@@ -43,7 +49,7 @@ public class Utility {
         }
         return null;
     }
-    
+
     //TODO: Fix this when Notes comes out
     public static boolean doesSnitchExist(Snitch snitch, boolean shouldCleanup) {
         Location loc = snitch.getLoc();
@@ -60,7 +66,7 @@ public class Utility {
         }
         return exists;
     }
-    
+
     public static Snitch findClosestOwnedSnitch(Player player) {
         Snitch closestSnitch = null;
         double closestDistance = Double.MAX_VALUE;

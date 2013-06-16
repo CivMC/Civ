@@ -44,14 +44,15 @@ import org.bukkit.inventory.ItemStack;
  */
 public class JukeAlertLogger {
 
-    private ConfigManager configManager;
-    private Database db;
-    private String snitchsTbl;
-    private String snitchDetailsTbl;
+    private final ConfigManager configManager;
+    private final Database db;
+    private final String snitchsTbl;
+    private final String snitchDetailsTbl;
     private PreparedStatement getSnitchIdFromLocationStmt;
     private PreparedStatement getAllSnitchesStmt;
     private PreparedStatement getLastSnitchID;
     private PreparedStatement getSnitchLogStmt;
+    private PreparedStatement getSnitchLogGroupStmt;
     private PreparedStatement deleteSnitchLogStmt;
     private PreparedStatement insertSnitchLogStmt;
     private PreparedStatement insertNewSnitchStmt;
@@ -60,12 +61,13 @@ public class JukeAlertLogger {
     private PreparedStatement updateCuboidVolumeStmt;
     private PreparedStatement updateSnitchNameStmt;
     private PreparedStatement updateSnitchGroupStmt;
-    private int logsPerPage;
+    private final int logsPerPage;
     private int lastSnitchID;
     // The following are used by SnitchEnumerator
     protected JukeAlert plugin;
     protected GroupMediator groupMediator;
     protected PreparedStatement getAllSnitchesByWorldStmt;
+	private PreparedStatement getAllSnitchesByGroupStmt;
 
     public JukeAlertLogger() {
         plugin = JukeAlert.getInstance();
@@ -152,7 +154,7 @@ public class JukeAlertLogger {
         db.silentExecute(String.format(
             "ALTER TABLE %s ADD INDEX idx_log_time (snitch_log_time ASC);", snitchDetailsTbl));
     }
-    
+
     public PreparedStatement getNewInsertSnitchLogStmt() {
     	 return db.prepareStatement(String.format(
                 "INSERT INTO %s (snitch_id, snitch_log_time, snitch_logged_action, snitch_logged_initiated_user,"
@@ -172,10 +174,16 @@ public class JukeAlertLogger {
                 "SHOW TABLE STATUS LIKE '%s'", snitchsTbl));
 
         // statement to get LIMIT entries OFFSET from a number from the snitchesDetailsTbl based on a snitch_id from the main snitchesTbl
-        // LIMIT ?,? means offset followed by max rows to return 
+        // LIMIT ?,? means offset followed by max rows to return
         getSnitchLogStmt = db.prepareStatement(String.format(
                 "SELECT * FROM %s"
                 + " WHERE snitch_id=? ORDER BY snitch_log_time DESC LIMIT ?,?",
+                snitchDetailsTbl));
+
+        getSnitchLogGroupStmt = db.prepareStatement(String.format(
+        		"SELECT snitchs.snitch_name, snitch_details.*"
+        		+ "FROM snitch_details INNER JOIN snitchs ON snitchs.snitch_id = snitch_details.snitch_id"
+        		+ " WHERE snitchs.snitch_group=? ORDER BY snitch_details.snitch_log_time DESC LIMIT ?,?",
                 snitchDetailsTbl));
 
         // statement to get the ID of a snitch in the main snitchsTbl based on a Location (x,y,z, world)
@@ -189,13 +197,13 @@ public class JukeAlertLogger {
                 + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 snitchDetailsTbl));
 
-        // 
+        //
         insertNewSnitchStmt = db.prepareStatement(String.format(
                 "INSERT INTO %s (snitch_world, snitch_name, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z)"
                 + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 snitchsTbl));
 
-        // 
+        //
         deleteSnitchLogStmt = db.prepareStatement(String.format(
                 "DELETE FROM %s WHERE snitch_id=?",
                 snitchDetailsTbl));
@@ -205,23 +213,23 @@ public class JukeAlertLogger {
                 "DELETE FROM %s WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
                 snitchsTbl));
 
-        // 
+        //
         updateGroupStmt = db.prepareStatement(String.format(
                 "UPDATE %s SET snitch_group=? WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
                 snitchsTbl));
 
-        // 
+        //
         updateCuboidVolumeStmt = db.prepareStatement(String.format(
                 "UPDATE %s SET snitch_cuboid_x=?, snitch_cuboid_y=?, snitch_cuboid_z=?"
                 + " WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
                 snitchsTbl));
-        
+
         //
         updateSnitchNameStmt = db.prepareStatement(String.format(
                 "UPDATE %s SET snitch_name=?"
                 + " WHERE snitch_id=?",
                 snitchsTbl));
-        
+
         //
         updateSnitchGroupStmt = db.prepareStatement(String.format(
                 "UPDATE %s SET snitch_group=?"
@@ -388,12 +396,34 @@ public class JukeAlertLogger {
                     // TODO: need a function to create a string based upon what things we have / don't have in this result set
                     // so like if we have a block place action, then we include the x,y,z, but if its a KILL action, then we just say
                     // x killed y, etc
-                    info.add(createInfoString(set));
-
+                    info.add(createInfoString(set, false));
                 }
             }
         } catch (SQLException ex) {
             this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details from the snitchesDetail table using the snitch id " + snitchId, ex);
+        }
+
+        return info;
+    }
+
+    public List<String> getSnitchGroupInfo(String group, int offset) {
+        List<String> info = new ArrayList<String>();
+
+        try {
+            getSnitchLogGroupStmt.setString(1, group);
+            getSnitchLogGroupStmt.setInt(2, offset);
+            getSnitchLogGroupStmt.setInt(3, logsPerPage);
+
+            ResultSet set = getSnitchLogGroupStmt.executeQuery();
+            if (!set.isBeforeFirst()) {
+                System.out.println("No data.");
+            } else {
+                while (set.next()) {
+                    info.add(createInfoString(set, true));
+                }
+            }
+        } catch (SQLException ex) {
+            this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details from the snitchesDetail table using the snitch group " + group, ex);
         }
 
         return info;
@@ -443,7 +473,7 @@ public class JukeAlertLogger {
             return false;
         }
     }
-    
+
     public JukeInfoBatch jukeinfobatch = new JukeInfoBatch(this);
     /**
      * Logs info to a specific snitch with a time stamp.
@@ -465,9 +495,9 @@ public class JukeAlertLogger {
      * @param victimUser - the user who was victim of the event, can be null
      */
     public void logSnitchInfo(Snitch snitch, Material material, Location loc, Date date, LoggedAction action, String initiatedUser, String victimUser) {
-    	
+
         jukeinfobatch.addSet(snitch, material, loc, date, action, initiatedUser, victimUser);
-    	
+
         /*try {
             // snitchid
             insertSnitchLogStmt.setInt(1, snitch.getId());
@@ -571,7 +601,7 @@ public class JukeAlertLogger {
         // no material or victimUser for this event
         this.logSnitchInfo(snitch, null, loc, new Date(), LoggedAction.ENTRY, player.getPlayerListName(), null);
     }
-    
+
 	/**
 	 * Logs a message that someone logged in in the snitch's field
 	 *
@@ -643,7 +673,7 @@ public class JukeAlertLogger {
      * @param block - the block that was 'put into' the bucket
      */
     public void logSnitchBucketFill(Snitch snitch, Player player, Block block) {
-        // TODO: should we take a block or a ItemStack as a parameter here? 
+        // TODO: should we take a block or a ItemStack as a parameter here?
         // JM: I think it'll be fine either way, most griefing is done with with block placement and this could be updated fairly easily
 
         // no victim user in this event
@@ -658,7 +688,7 @@ public class JukeAlertLogger {
      * @param block - the block that was used
      */
     public void logUsed(Snitch snitch, Player player, Block block) {
-        // TODO: what should we use to identify what was used? Block? Material? 
+        // TODO: what should we use to identify what was used? Block? Material?
         //JM: Let's keep this consistent with block plament
         this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_USED, player.getPlayerListName(), null);
     }
@@ -754,7 +784,7 @@ public class JukeAlertLogger {
             }
         });
     }
-    
+
     //Updates the name of the snitch in the database.
     public void updateSnitchName(final Snitch snitch, final String name) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
@@ -804,13 +834,18 @@ public class JukeAlertLogger {
         this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_BURN, null, snitchDetailsTbl);
     }
 
-    public String createInfoString(ResultSet set) {
+    public String createInfoString(ResultSet set, boolean isGroup) {
         String resultString = ChatColor.RED + "Error!";
         try {
             int id = set.getInt("snitch_details_id");
+            int snitchID = set.getInt("snitch_id");
+
+            Snitch snitch = JukeAlert.getInstance().getSnitchManager().getSnitch(snitchID);
+            String name = (snitch == null) ? "" : snitch.getName();
+
             String initiator = set.getString("snitch_logged_initiated_user");
             String victim = set.getString("snitch_logged_victim_user");
-            int action = (int) set.getByte("snitch_logged_action");
+            int action = set.getByte("snitch_logged_action");
             int material = set.getInt("snitch_logged_materialid");
 
             int x = set.getInt("snitch_logged_X");
@@ -846,6 +881,9 @@ public class JukeAlertLogger {
             } else {
                 resultString = ChatColor.RED + "Action not found. Please contact your administrator with log ID " + id;
             }
+
+            if (isGroup)
+            	resultString += ChatColor.YELLOW + " -" + name;
         } catch (SQLException ex) {
             this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details!");
         }
