@@ -142,6 +142,22 @@ public class Database {
     }
 
     /**
+     * Executes an SQL query. (No output, No exceptions reported)
+     *
+     * @param sql The SQL query as a string.
+     */
+    public void silentExecute(String sql) {
+        try {
+            if (isConnected()) {
+                connection.prepareStatement(sql).executeUpdate();
+            } else {
+                connect();
+                execute(sql);
+            }
+        } catch (SQLException ex) {}
+    }
+
+    /**
      * Gets a result set returned from an SQL query.
      *
      * @param sql

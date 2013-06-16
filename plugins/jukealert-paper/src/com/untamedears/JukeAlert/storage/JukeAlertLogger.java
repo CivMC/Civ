@@ -148,6 +148,9 @@ public class JukeAlertLogger {
                 + "INDEX `idx_snitch_id` (`snitch_id` ASC),"
                 + "CONSTRAINT `fk_snitchs_snitch_id` FOREIGN KEY (`snitch_id`)"
                 + "  REFERENCES `snitchs` (`snitch_id`) ON DELETE CASCADE ON UPDATE CASCADE);");
+
+        db.silentExecute(String.format(
+            "ALTER TABLE %s ADD INDEX idx_log_time (snitch_log_time ASC);", snitchDetailsTbl));
     }
     
     public PreparedStatement getNewInsertSnitchLogStmt() {
