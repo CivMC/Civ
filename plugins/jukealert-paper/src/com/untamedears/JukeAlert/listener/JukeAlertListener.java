@@ -43,7 +43,9 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -65,81 +67,65 @@ public class JukeAlertListener implements Listener {
         return inList.contains(snitch);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void playerJoinEvent(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-
-        playerManager.addPlayer(player);
-
-        String playerName = player.getName();
-        Location location = player.getLocation();
-        World world = location.getWorld();
-        Set<Snitch> inList = playersInSnitches.get(playerName);
-
-        if (inList == null) {
-            inList = new TreeSet<Snitch>();
-            playersInSnitches.put(player.getName(), inList);
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void playerJoinEvent(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+        if (vanishNoPacket.isPlayerInvisible(player)) {
+            return;
         }
-        Set<Snitch> snitches = snitchManager.findSnitches(world, location);
-        for (Snitch snitch : snitches) {
-            if (!isOnSnitch(snitch, playerName)) {
-                for (Player remotePlayer : playerManager.getPlayers()) {
-                    if (isOnSnitch(snitch, remotePlayer.getName())) {
-                        remotePlayer.sendMessage(ChatColor.AQUA + " * " + playerName + " logged in to snitch at " + snitch.getName() + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
-                    }
-                }
-                plugin.getJaLogger().logSnitchLogin(snitch, location, player);
-            }
-        }
+		String playerName = player.getName();
+		Set<Snitch> inList = new TreeSet<Snitch>();
+		playersInSnitches.put(player.getName(), inList);
 
-        Set<Snitch> rmList = new TreeSet<Snitch>();
-        for (Snitch snitch : inList) {
-            if (snitches.contains(snitch)) {
-                continue;
-            }
-            rmList.add(snitch);
+		Location location = player.getLocation();
+		World world = location.getWorld();
+		Set<Snitch> snitches = snitchManager.findSnitches(world, location);
+		for (Snitch snitch : snitches) {
+			if (!isOnSnitch(snitch, playerName)) {
+				inList.add(snitch);
+				for (Player remoteplayer : playerManager.getPlayers()) {
+					String remoteName = remoteplayer.getName();
+					if (isOnSnitch(snitch, remoteName)) {
+						remoteplayer.sendMessage(ChatColor.AQUA + " * " + playerName + " logged in to snitch at " + snitch.getName() + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+					}
+				}
+				plugin.getJaLogger().logSnitchLogin(snitch, location, player);
+			}
+		}
+	}
+
+    public void handlePlayerExit(PlayerEvent event) {
+    	Player player = event.getPlayer();
+        if (vanishNoPacket.isPlayerInvisible(player)) {
+            return;
         }
-        inList.removeAll(rmList);
+		String playerName = player.getName();
+		playersInSnitches.remove(playerName);
+
+		Location location = player.getLocation();
+		World world = location.getWorld();
+		Set<Snitch> snitches = snitchManager.findSnitches(world, location);
+		for (Snitch snitch : snitches) {
+			if (!isOnSnitch(snitch, playerName)) {
+				for (Player remoteplayer : playerManager.getPlayers()) {
+					if (snitch.getGroup().isMember(remoteplayer.getName()) || snitch.getGroup().isFounder(remoteplayer.getName()) || snitch.getGroup().isModerator(remoteplayer.getName())) {
+						remoteplayer.sendMessage(ChatColor.AQUA + " * " + playerName + " logged out in snitch at " + snitch.getName() + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+					}
+				}
+				plugin.getJaLogger().logSnitchLogout(snitch, location, player);
+			}
+		}
     }
-    
-    @EventHandler(priority = EventPriority.HIGH)
+
+    @EventHandler(ignoreCancelled = true)
+    public void playerKickEvent(PlayerKickEvent event) {
+		handlePlayerExit((PlayerEvent)event);
+	}
+
+    @EventHandler(ignoreCancelled = true)
     public void playerQuitEvent(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-
-        playerManager.removePlayer(player);
-
-        String playerName = player.getName();
-        Location location = player.getLocation();
-        World world = location.getWorld();
-        Set<Snitch> inList = playersInSnitches.get(playerName);
-
-        if (inList == null) {
-            inList = new TreeSet<Snitch>();
-            playersInSnitches.put(player.getName(), inList);
-        }
-
-        Set<Snitch> snitches = snitchManager.findSnitches(world, location);
-        for (Snitch snitch : snitches) {
-            if (!isOnSnitch(snitch, playerName)) {
-                for (Player remotePlayer : playerManager.getPlayers()) {
-                    if (isOnSnitch(snitch, remotePlayer.getName())) {
-                        remotePlayer.sendMessage(ChatColor.AQUA + " * " + playerName + " logged out in snitch at " + snitch.getName() + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
-                    }
-                }
-                plugin.getJaLogger().logSnitchLogout(snitch, location, player);
-            }
-        }
-
-        Set<Snitch> rmList = new TreeSet<Snitch>();
-        for (Snitch snitch : inList) {
-            if (snitches.contains(snitch)) {
-                continue;
-            }
-            rmList.add(snitch);
-        }
-        inList.removeAll(rmList);
-        playersInSnitches.remove(event.getPlayer().getName());
-    }
+		handlePlayerExit((PlayerEvent)event);
+	}
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void placeSnitchBlock(BlockPlaceEvent event) {
@@ -320,10 +306,11 @@ public class JukeAlertListener implements Listener {
         for (Snitch snitch : snitches) {
             if (!isOnSnitch(snitch, playerName)) {
                 if (!inList.contains(snitch)) {
-                    inList.add(snitch);
-                    for (Player remotePlayer : playerManager.getPlayers()) {
-                        if (isOnSnitch(snitch, remotePlayer.getName())) {
-                            remotePlayer.sendMessage(ChatColor.AQUA + " * " + playerName + " entered snitch at " + snitch.getName() + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+                	inList.add(snitch);
+                    for (Player remoteplayer : playerManager.getPlayers()) {
+                        String remoteName = remoteplayer.getName();
+                        if (isOnSnitch(snitch, remoteName)) {
+                            remoteplayer.sendMessage(ChatColor.AQUA + " * " + playerName + " entered snitch at " + snitch.getName() + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
                         }
                     }
                     if (snitch.shouldLog()) {
