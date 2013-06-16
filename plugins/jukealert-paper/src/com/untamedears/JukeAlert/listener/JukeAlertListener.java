@@ -348,16 +348,16 @@ public class JukeAlertListener implements Listener {
             DoubleChest chest = (DoubleChest) e.getInventory().getHolder();
             block = chest.getLocation().getBlock();
         } else {
-            return;
+        	return;
         }
-        Set<Snitch> snitches = snitchManager.findSnitches(player.getWorld(), player.getLocation());
-        for (Snitch snitch : snitches) {
-            if (!isOnSnitch(snitch, player.getName())) {
-                if (checkProximity(snitch, player.getName())) {
-                    plugin.getJaLogger().logUsed(snitch, player, block);
-                }
-            }
-        }
+        	Set<Snitch> snitches = snitchManager.findSnitches(player.getWorld(), player.getLocation());
+        	for (Snitch snitch : snitches) {
+        		if (!isOnSnitch(snitch, player.getName())) {
+        			if (checkProximity(snitch, player.getName())) {
+        				plugin.getJaLogger().logUsed(snitch, player, block);
+        			}
+        		}
+        	}
     }
 
     @EventHandler(priority = EventPriority.HIGH)
