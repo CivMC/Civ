@@ -39,7 +39,6 @@ public class NameCommand extends PlayerCommand {
             }
             Snitch snitch = findTargetedOwnedSnitch(player);
             if (snitch != null) {
-            	if (!doesSnitchExist(snitch, true)) return false;
             	plugin.getJaLogger().updateSnitchName(snitch, name);
             	Snitch newSnitch = snitch;
             	newSnitch.setName(name);

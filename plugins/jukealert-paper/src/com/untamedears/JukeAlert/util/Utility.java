@@ -67,7 +67,8 @@ public class Utility {
         Location playerLoc = player.getLocation();
         Set<Snitch> snitches = JukeAlert.getInstance().getSnitchManager().findSnitches(player.getWorld(), player.getLocation());
         for (final Snitch snitch : snitches) {
-            if (isOnSnitch(snitch, player.getName())) {
+            if (isOnSnitch(snitch, player.getName())
+                    && doesSnitchExist(snitch, true)) {
                 double distance = snitch.getLoc().distanceSquared(playerLoc);
                 if (distance < closestDistance) {
                     closestDistance = distance;
@@ -80,10 +81,10 @@ public class Utility {
 
     public static Snitch findTargetedOwnedSnitch(Player player) {
         Snitch cursorSnitch = getSnitchUnderCursor(player);
-        if (cursorSnitch != null) {
-            if (isOnSnitch(cursorSnitch, player.getName())) {
-                return cursorSnitch;
-            }
+        if (cursorSnitch != null
+                && isOnSnitch(cursorSnitch, player.getName())
+                && doesSnitchExist(cursorSnitch, true)) {
+            return cursorSnitch;
         }
         return findClosestOwnedSnitch(player);
     }

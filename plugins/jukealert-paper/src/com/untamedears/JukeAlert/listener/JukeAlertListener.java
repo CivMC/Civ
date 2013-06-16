@@ -1,5 +1,6 @@
 package com.untamedears.JukeAlert.listener;
 
+import static com.untamedears.JukeAlert.util.Utility.doesSnitchExist;
 import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
 
 import java.util.ArrayList;
@@ -264,7 +265,7 @@ public class JukeAlertListener implements Listener {
         }
         Set<Snitch> snitches = snitchManager.findSnitches(world, location);
         for (Snitch snitch : snitches) {
-            if (!isOnSnitch(snitch, playerName)) {
+            if (!isOnSnitch(snitch, playerName) && doesSnitchExist(snitch, true)) {
                 if (!inList.contains(snitch)) {
                 	inList.add(snitch);
                     for (Player remoteplayer : playerManager.getPlayers()) {
