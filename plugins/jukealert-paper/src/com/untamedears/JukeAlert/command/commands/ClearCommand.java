@@ -30,15 +30,12 @@ public class ClearCommand extends PlayerCommand {
             Player player = (Player) sender;
             final Snitch snitch = findTargetedOwnedSnitch(player);
             if (snitch != null) {
-            	if (doesSnitchExist(snitch, false))
-            	{
-            		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            			@Override
-            			public void run() {
-            				deleteLog(sender, snitch);
-            			}
-            		});
-            	}
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        deleteLog(sender, snitch);
+                    }
+                });
                return true;
             }
         } else {

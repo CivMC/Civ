@@ -5,6 +5,7 @@ import com.untamedears.JukeAlert.external.VanishNoPacket;
 import com.untamedears.JukeAlert.manager.PlayerManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.model.Snitch;
+import static com.untamedears.JukeAlert.util.Utility.doesSnitchExist;
 import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.Utility;
@@ -304,7 +305,7 @@ public class JukeAlertListener implements Listener {
         }
         Set<Snitch> snitches = snitchManager.findSnitches(world, location);
         for (Snitch snitch : snitches) {
-            if (!isOnSnitch(snitch, playerName)) {
+            if (!isOnSnitch(snitch, playerName) && doesSnitchExist(snitch, true)) {
                 if (!inList.contains(snitch)) {
                 	inList.add(snitch);
                     for (Player remoteplayer : playerManager.getPlayers()) {
