@@ -309,7 +309,7 @@ public class JukeAlertListener implements Listener {
         }
         	Set<Snitch> snitches = snitchManager.findSnitches(player.getWorld(), player.getLocation());
         	for (Snitch snitch : snitches) {
-        		if (!isOnSnitch(snitch, player.getName()) || true) {
+        		if (!isOnSnitch(snitch, player.getName())) {
         			if (checkProximity(snitch, player.getName())) {
         				plugin.getJaLogger().logUsed(snitch, player, block);
         			}
