@@ -24,8 +24,8 @@ public class SnitchManager {
 
     public static final int EXIT_PADDING = 2;
 
-    private JukeAlert plugin;
-    private JukeAlertLogger logger;
+    private final JukeAlert plugin;
+    private final JukeAlertLogger logger;
     private Map<Integer, Snitch> snitchesById;
     private Map<World, SparseQuadTree> snitches;
 

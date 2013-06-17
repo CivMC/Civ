@@ -9,6 +9,7 @@ package com.untamedears.JukeAlert.model;
 public enum LoggedAction {
 
     // ONCE THIS GOES INTO PRODUCTION, _NEVER_ CHANGE THESE, only mark some as not used and add more with larger values!
+    UNKNOWN(0x7FFFFFFF),
     KILL(0),
     BLOCK_PLACE(1),
     BLOCK_BREAK(2),
@@ -31,5 +32,23 @@ public enum LoggedAction {
 
     public int getLoggedActionId() {
         return this.value;
+    }
+
+    public static LoggedAction getFromId(int id) {
+        switch(id) {
+            case 0: return KILL;
+            case 1: return BLOCK_PLACE;
+            case 2: return BLOCK_BREAK;
+            case 3: return BUCKET_FILL;
+            case 4: return BUCKET_EMPTY;
+            case 5: return ENTRY;
+            case 6: return USED;
+            case 7: return IGNITED;
+            case 8: return BLOCK_BURN;
+            case 9: return BLOCK_USED;
+            case 10: return LOGIN;
+            case 11: return LOGOUT;
+            default: return UNKNOWN;
+        }
     }
 }

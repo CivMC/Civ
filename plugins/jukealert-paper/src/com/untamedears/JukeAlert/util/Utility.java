@@ -1,7 +1,5 @@
 package com.untamedears.JukeAlert.util;
 
-import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
-
 import java.util.List;
 import java.util.Set;
 
@@ -19,6 +17,16 @@ import org.bukkit.entity.Player;
 
 // Static methods only
 public class Utility {
+
+    private static boolean debugging_ = false;
+
+    public static boolean isDebugging() {
+        return debugging_;
+    }
+
+    public static void setDebugging(boolean debugging) {
+        debugging_ = debugging;
+    }
 
     public static boolean isOnSnitch(Snitch snitch, String playerName) {
         Faction faction = snitch.getGroup();
@@ -59,7 +67,7 @@ public class Utility {
         }
         return exists;
     }
-    
+
     public static Snitch findClosestOwnedSnitch(Player player) {
         Snitch closestSnitch = null;
         double closestDistance = Double.MAX_VALUE;

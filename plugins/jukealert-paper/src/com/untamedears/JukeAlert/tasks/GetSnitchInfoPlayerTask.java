@@ -18,12 +18,13 @@ import org.bukkit.entity.Player;
  */
 public class GetSnitchInfoPlayerTask implements Runnable {
 
-    private List<String> info = new ArrayList<String>();
+    private final List<String> info = new ArrayList<String>();
     private boolean shouldCensor;
-    private int offset;
+    private final int offset;
     private int snitchId;
-    private Player player;
-    private JukeAlert plugin;
+    private String group;
+    private final Player player;
+    private final JukeAlert plugin;
 
     public GetSnitchInfoPlayerTask(JukeAlert plugin, int snitchId, int offset, Player player, boolean shouldCensor) {
         this.snitchId = snitchId;
@@ -33,10 +34,22 @@ public class GetSnitchInfoPlayerTask implements Runnable {
         this.shouldCensor = shouldCensor;
     }
 
-    @Override
+    public GetSnitchInfoPlayerTask(JukeAlert plugin, String group,
+			int offset, Player player) {
+    	this.group = group;
+        this.offset = offset;
+        this.player = player;
+        this.plugin = plugin;
+	}
+
+	@Override
     public void run() {
-        SendSnitchInfo sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchInfo(snitchId, (offset-1) * 10), this.player, offset, shouldCensor);
-        sendSnitchInfo.run();
+		SendSnitchInfo sendSnitchInfo;
+		if (group == null)
+			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchInfo(snitchId, (offset-1) * 10), this.player, offset, shouldCensor);
+		else
+			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchGroupInfo(group, (offset-1) * 10), this.player, offset, false);
+		sendSnitchInfo.run();
     }
 
     public List<String> getInfo() {

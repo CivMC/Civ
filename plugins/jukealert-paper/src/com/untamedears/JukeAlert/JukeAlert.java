@@ -2,6 +2,7 @@ package com.untamedears.JukeAlert;
 
 import com.untamedears.JukeAlert.command.CommandHandler;
 import com.untamedears.JukeAlert.command.commands.ClearCommand;
+import com.untamedears.JukeAlert.command.commands.GroupCommand;
 import com.untamedears.JukeAlert.command.commands.HelpCommand;
 import com.untamedears.JukeAlert.command.commands.InfoCommand;
 import com.untamedears.JukeAlert.command.commands.JaCommand;
@@ -49,7 +50,8 @@ public class JukeAlert extends JavaPlugin {
         snitchManager.saveSnitches();
     }
 
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    @Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         return commandHandler.dispatch(sender, label, args);
     }
 
@@ -65,6 +67,7 @@ public class JukeAlert extends JavaPlugin {
         commandHandler.addCommand(new ClearCommand());
         commandHandler.addCommand(new HelpCommand());
         commandHandler.addCommand(new JaCommand());
+        commandHandler.addCommand(new GroupCommand());
     }
 
     public static JukeAlert getInstance() {
