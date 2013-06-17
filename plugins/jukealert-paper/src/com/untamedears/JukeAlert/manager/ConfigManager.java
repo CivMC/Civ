@@ -1,5 +1,7 @@
 package com.untamedears.JukeAlert.manager;
 
+import static com.untamedears.JukeAlert.util.Utility.setDebugging;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -71,6 +73,7 @@ public class ConfigManager
         setDefaultCuboidSize(loadInt("settings.defaultCuboidSize"));
         
         logsPerPage = loadInt("settings.logsPerPage");
+        setDebugging(loadBoolean("settings.debugging"));
         
         save();
 	}

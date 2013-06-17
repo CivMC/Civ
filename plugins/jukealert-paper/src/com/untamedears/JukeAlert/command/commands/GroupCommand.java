@@ -15,6 +15,7 @@ import com.untamedears.JukeAlert.command.PlayerCommand;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.tasks.GetSnitchInfoPlayerTask;
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.entity.Faction;
 
 public class GroupCommand extends PlayerCommand {
 
@@ -31,29 +32,33 @@ public class GroupCommand extends PlayerCommand {
         if (sender instanceof Player) {
             int offset = 1;
             if (args.length > 1) {
-            	try {
-            		offset = Integer.parseInt(args[1]);
-            	} catch(NumberFormatException e) {
-            		offset = 1;
-            	}
+                try {
+                    offset = Integer.parseInt(args[1]);
+                } catch(NumberFormatException e) {
+                    offset = 1;
+                }
             }
             if (offset < 1) {
                 offset = 1;
             }
-            if (Citadel.getGroupManager().getGroup(args[0]) == null) return false;
-            if (!Citadel.getGroupManager().getGroup(args[0]).isMember(sender.getName())
-            	&& !Citadel.getGroupManager().getGroup(args[0]).isModerator(sender.getName())
-            	&& !Citadel.getGroupManager().getGroup(args[0]).isFounder(sender.getName()))
+            Faction group = Citadel.getGroupManager().getGroup(args[0]);
+            if (group == null) {
+                sender.sendMessage(ChatColor.RED + "That group doesn't exist!");
+                return true;
+            }
+            String playerName = sender.getName();
+            if (!group.isMember(playerName)
+                && !group.isModerator(playerName)
+                && !group.isFounder(playerName))
             {
-            	sender.sendMessage(ChatColor.RED + " You are not part of that group!");
-            	return false;
+                sender.sendMessage(ChatColor.RED + "You are not part of that group!");
+                return true;
             }
             sendLog(sender, args[0], offset);
-            return true;
         } else {
             sender.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
-            return false;
         }
+        return true;
     }
 
     private void sendLog(CommandSender sender, String group, int offset) {
