@@ -2,6 +2,7 @@ package com.untamedears.JukeAlert.listener;
 
 import static com.untamedears.JukeAlert.util.Utility.doesSnitchExist;
 import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
+import static com.untamedears.JukeAlert.util.Utility.isDebugging;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -123,12 +124,12 @@ public class JukeAlertListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void playerKickEvent(PlayerKickEvent event) {
-		handlePlayerExit((PlayerEvent)event);
+		handlePlayerExit(event);
 	}
 
     @EventHandler(ignoreCancelled = true)
     public void playerQuitEvent(PlayerQuitEvent event) {
-		handlePlayerExit((PlayerEvent)event);
+		handlePlayerExit(event);
 	}
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -265,7 +266,7 @@ public class JukeAlertListener implements Listener {
         }
         Set<Snitch> snitches = snitchManager.findSnitches(world, location);
         for (Snitch snitch : snitches) {
-            if (!isOnSnitch(snitch, playerName) && doesSnitchExist(snitch, true)) {
+            if (!isOnSnitch(snitch, playerName) && doesSnitchExist(snitch, true) || isDebugging()) {
                 if (!inList.contains(snitch)) {
                 	inList.add(snitch);
                     for (Player remoteplayer : playerManager.getPlayers()) {
@@ -309,7 +310,7 @@ public class JukeAlertListener implements Listener {
         }
         	Set<Snitch> snitches = snitchManager.findSnitches(player.getWorld(), player.getLocation());
         	for (Snitch snitch : snitches) {
-        		if (!isOnSnitch(snitch, player.getName())) {
+        		if (!isOnSnitch(snitch, player.getName()) || isDebugging()) {
         			if (checkProximity(snitch, player.getName())) {
         				plugin.getJaLogger().logUsed(snitch, player, block);
         			}
@@ -335,7 +336,7 @@ public class JukeAlertListener implements Listener {
         Player player = (Player) killer;
         Set<Snitch> snitches = snitchManager.findSnitches(player.getWorld(), player.getLocation());
         for (Snitch snitch : snitches) {
-            if (!isOnSnitch(snitch, player.getName())) {
+            if (!isOnSnitch(snitch, player.getName()) || isDebugging()) {
                 if (checkProximity(snitch, player.getName())) {
                     plugin.getJaLogger().logSnitchEntityKill(snitch, player, entity);
                 }
@@ -355,7 +356,7 @@ public class JukeAlertListener implements Listener {
         }
         Set<Snitch> snitches = snitchManager.findSnitches(killed.getWorld(), killed.getLocation());
         for (Snitch snitch : snitches) {
-            if (!isOnSnitch(snitch, killer.getName())) {
+            if (!isOnSnitch(snitch, killer.getName()) || isDebugging()) {
                 if (checkProximity(snitch, killed.getName()) || checkProximity(snitch, killer.getName())) {
                     plugin.getJaLogger().logSnitchPlayerKill(snitch, killer, killed);
                 }
@@ -378,7 +379,7 @@ public class JukeAlertListener implements Listener {
         Block block = event.getBlock();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
-            if (!isOnSnitch(snitch, player.getName())) {
+            if (!isOnSnitch(snitch, player.getName()) || isDebugging()) {
                 if (checkProximity(snitch, player.getName())) {
                     plugin.getJaLogger().logSnitchIgnite(snitch, player, block);
                 }
@@ -413,7 +414,7 @@ public class JukeAlertListener implements Listener {
         Block block = event.getBlock();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
-            if (!isOnSnitch(snitch, player.getName())) {
+            if (!isOnSnitch(snitch, player.getName()) || isDebugging()) {
                 if (checkProximity(snitch, player.getName())) {
                     plugin.getJaLogger().logSnitchBlockBreak(snitch, player, block);
                 }
@@ -433,7 +434,7 @@ public class JukeAlertListener implements Listener {
         Block block = event.getBlock();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
-            if (!isOnSnitch(snitch, player.getName())) {
+            if (!isOnSnitch(snitch, player.getName()) || isDebugging()) {
                 if (checkProximity(snitch, player.getName())) {
                     plugin.getJaLogger().logSnitchBlockPlace(snitch, player, block);
                 }
@@ -453,7 +454,7 @@ public class JukeAlertListener implements Listener {
         Block block = event.getBlockClicked();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
-            if (!isOnSnitch(snitch, player.getName())) {
+            if (!isOnSnitch(snitch, player.getName()) || isDebugging()) {
                 if (checkProximity(snitch, player.getName())) {
                     plugin.getJaLogger().logSnitchBucketFill(snitch, player, block);
                 }
@@ -473,7 +474,7 @@ public class JukeAlertListener implements Listener {
         Block block = event.getBlockClicked();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
-            if (!isOnSnitch(snitch, player.getName())) {
+            if (!isOnSnitch(snitch, player.getName()) || isDebugging()) {
                 if (checkProximity(snitch, player.getName())) {
                     plugin.getJaLogger().logSnitchBucketEmpty(snitch, player, block.getLocation(), player.getItemInHand());
                 }

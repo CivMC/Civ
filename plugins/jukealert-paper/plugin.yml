@@ -1,6 +1,6 @@
 name: JukeAlert
 main: com.untamedears.JukeAlert.JukeAlert
-version: 1.0.5
+version: 1.0.6
 commands:
   ja:
     description: Describes plugin
@@ -11,6 +11,9 @@ commands:
   jainfo:
     description: Display information from a snitch
     usage: /jainfo
+  jagroup:
+    description: Display information from a group
+    usage: /jagroup <group> <page>
   jaclear:
     description: Clear information from a snitch
     usage: /jaclear
