@@ -113,7 +113,7 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 	}
 	
 	public boolean checkHasMaterials() {
-		return true;
+		return getAllInputs().allIn(getInventory());
 	}
 
 	/**
