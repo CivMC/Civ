@@ -231,19 +231,28 @@ public class PrintingPress extends BaseFactory {
 		boolean hasPages = pages.allIn(getInventory());
 		boolean inputStall = false;
 		if (hasPages) {
-			pages.removeFrom(getInventory());
-			containedPaper += printingPressProperties.getPagesPerLot();
+			// Check bindings
+			int expectedBindings = (int) Math.ceil((double) containedPaper + printingPressProperties.getPagesPerLot() / (double) getPrintResult().pageCount());
+			boolean hasBindings = true;
+			ItemList<NamedItemStack> allBindings = new ItemList<NamedItemStack>();
+			if (expectedBindings > containedBindings) {
+				int neededBindings = expectedBindings - containedBindings;
+				allBindings = printingPressProperties.getBindingMaterials().getMultiple(neededBindings);
+				hasBindings = allBindings.allIn(getInventory());
+			}
 			
-			// Load bindings
-			int expectedBindings = (int) Math.ceil((double) containedPaper / (double) getPrintResult().pageCount());
-			while (containedBindings < expectedBindings) {
-				if (printingPressProperties.getBindingMaterials().allIn(getInventory())) {
-					printingPressProperties.getBindingMaterials().removeFrom(getInventory());
-					containedBindings += 1;
-				} else {
-					inputStall = true;
-					break;
+			if (hasBindings) {
+				pages.removeFrom(getInventory());
+				containedPaper += printingPressProperties.getPagesPerLot();
+				
+				while (containedBindings < expectedBindings) {
+					if (printingPressProperties.getBindingMaterials().allIn(getInventory())) {
+						printingPressProperties.getBindingMaterials().removeFrom(getInventory());
+						containedBindings += 1;
+					}
 				}
+			} else {
+				inputStall = true;
 			}
 		} else {
 			inputStall = true;
@@ -327,18 +336,29 @@ public class PrintingPress extends BaseFactory {
 		boolean hasPages = pages.allIn(getInventory());
 		boolean inputStall = false;
 		if (hasPages) {
-			pages.removeFrom(getInventory());
-			containedPaper += printingPressProperties.getPamphletsPerLot();
+			// Check security materials
+			int expectedExtras = (int) Math.ceil((double) containedPaper + printingPressProperties.getPamphletsPerLot() / (double) getPrintResult().pageCount());
+			boolean hasExtras = true;
+			ItemList<NamedItemStack> allSecurityMaterials = new ItemList<NamedItemStack>();
+			if (expectedExtras > containedSecurityMaterials) {
+				int neededBindings = expectedExtras - containedSecurityMaterials;
+				allSecurityMaterials = printingPressProperties.getSecurityMaterials().getMultiple(neededBindings);
+				hasExtras = allSecurityMaterials.allIn(getInventory());
+			}
 			
-			// Load security materials if security notes
-			while (containedSecurityMaterials < containedPaper) {
-				if (printingPressProperties.getSecurityMaterials().allIn(getInventory())) {
-					printingPressProperties.getSecurityMaterials().removeFrom(getInventory());
-					containedSecurityMaterials += printingPressProperties.getSecurityNotesPerLot();
-				} else {
-					inputStall = true;
-					break;
+			if (hasExtras) {
+				pages.removeFrom(getInventory());
+				containedPaper += printingPressProperties.getPamphletsPerLot();
+				
+				// Load security materials if security notes
+				while (containedSecurityMaterials < containedPaper) {
+					if (printingPressProperties.getSecurityMaterials().allIn(getInventory())) {
+						printingPressProperties.getSecurityMaterials().removeFrom(getInventory());
+						containedSecurityMaterials += printingPressProperties.getSecurityNotesPerLot();
+					}
 				}
+			} else {
+				inputStall = true;
 			}
 		} else {
 			inputStall = true;
