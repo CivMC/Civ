@@ -1,6 +1,5 @@
 package com.untamedears.JukeAlert.command.commands;
 
-import static com.untamedears.JukeAlert.util.Utility.doesSnitchExist;
 import static com.untamedears.JukeAlert.util.Utility.findTargetedOwnedSnitch;
 
 import java.util.Set;

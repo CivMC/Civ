@@ -43,6 +43,9 @@ public class JukeAlert extends JavaPlugin {
         registerEvents();
         registerCommands();
         snitchManager.loadSnitches();
+        if (configManager.getSnitchEntryCullingEnabled()) {
+            jaLogger.cullSnitchEntries();
+        }
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.untamedears.JukeAlert.command.commands;
 
 import static com.untamedears.JukeAlert.util.Utility.findTargetedOwnedSnitch;
-import static com.untamedears.JukeAlert.util.Utility.doesSnitchExist;
 
 import java.util.Set;
 
@@ -41,18 +40,20 @@ public class GroupCommand extends PlayerCommand {
             if (offset < 1) {
                 offset = 1;
             }
-            Faction group = Citadel.getGroupManager().getGroup(args[0]);
-            if (group == null) {
-                sender.sendMessage(ChatColor.RED + "That group doesn't exist!");
-                return true;
-            }
-            String playerName = sender.getName();
-            if (!group.isMember(playerName)
-                && !group.isModerator(playerName)
-                && !group.isFounder(playerName))
-            {
-                sender.sendMessage(ChatColor.RED + "You are not part of that group!");
-                return true;
+            if (!sender.hasPermission("jukealert.admin.jagroup")) {
+                Faction group = Citadel.getGroupManager().getGroup(args[0]);
+                if (group == null) {
+                    sender.sendMessage(ChatColor.RED + "That group doesn't exist!");
+                    return true;
+                }
+                String playerName = sender.getName();
+                if (!group.isMember(playerName)
+                    && !group.isModerator(playerName)
+                    && !group.isFounder(playerName))
+                {
+                    sender.sendMessage(ChatColor.RED + "You are not part of that group!");
+                    return true;
+                }
             }
             sendLog(sender, args[0], offset);
         } else {
