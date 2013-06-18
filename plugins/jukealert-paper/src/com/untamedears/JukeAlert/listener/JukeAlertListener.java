@@ -266,7 +266,7 @@ public class JukeAlertListener implements Listener {
         }
         Set<Snitch> snitches = snitchManager.findSnitches(world, location);
         for (Snitch snitch : snitches) {
-            if (!isOnSnitch(snitch, playerName) && doesSnitchExist(snitch, true) || isDebugging()) {
+            if (doesSnitchExist(snitch, true) && (!isOnSnitch(snitch, playerName) || isDebugging())) {
                 if (!inList.contains(snitch)) {
                 	inList.add(snitch);
                     for (Player remoteplayer : playerManager.getPlayers()) {
