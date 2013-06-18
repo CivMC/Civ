@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
@@ -62,8 +64,13 @@ public class JukeAlertLogger {
     private PreparedStatement updateCuboidVolumeStmt;
     private PreparedStatement updateSnitchNameStmt;
     private PreparedStatement updateSnitchGroupStmt;
+    private PreparedStatement getAllSnitchIdsStmt;
+    private PreparedStatement cullSnitchEntriesStmt;
     private final int logsPerPage;
     private int lastSnitchID;
+    private final int maxEntryCount;
+    private final int minEntryLifetimeDays;
+    private final int maxEntryLifetimeDays;
     // The following are used by SnitchEnumerator
     protected JukeAlert plugin;
     protected GroupMediator groupMediator;
@@ -81,6 +88,9 @@ public class JukeAlertLogger {
         String username = configManager.getUsername();
         String password = configManager.getPassword();
         String prefix = configManager.getPrefix();
+        maxEntryCount = configManager.getMaxSnitchEntryCount();
+        minEntryLifetimeDays = configManager.getMinSnitchEntryLifetime();
+        maxEntryLifetimeDays = configManager.getMaxSnitchEntryLifetime();
 
         logsPerPage = configManager.getLogsPerPage();
         snitchsTbl = prefix + "snitchs";
@@ -236,6 +246,20 @@ public class JukeAlertLogger {
                 + " WHERE snitch_id=?",
                 snitchsTbl));
 
+        //
+        getAllSnitchIdsStmt = db.prepareStatement(String.format(
+                "SELECT snitch_id FROM %s;", snitchsTbl));
+
+        //
+        cullSnitchEntriesStmt = db.prepareStatement(MessageFormat.format(
+            " DELETE FROM {0} WHERE snitch_details_id IN ( "
+            + " SELECT snitch_details_id FROM ( "
+            + " SELECT snitch_details_id, snitch_log_time, @counter := @counter + 1 AS counter "
+            + " FROM {0} JOIN (SELECT @counter := 0) AS vars WHERE snitch_id = ? "
+            + " ORDER BY snitch_log_time DESC) AS t WHERE "
+            + " (counter > {1} AND snitch_log_time < DATE_SUB(NOW(), INTERVAL {2} DAY)) "
+            + " OR snitch_log_time < DATE_SUB(NOW(), INTERVAL {3} DAY));",
+            snitchDetailsTbl, maxEntryCount, minEntryLifetimeDays, maxEntryLifetimeDays));
     }
 
     private void initializeLastSnitchId() {
@@ -950,5 +974,43 @@ public class JukeAlertLogger {
         }
 
         return resultString;
+    }
+
+    public Set<Integer> getAllSnitchIds() {
+        ResultSet rsKey = null;
+        Set<Integer> snitchIds = new TreeSet<Integer>();
+        try {
+            rsKey = getAllSnitchIdsStmt.executeQuery();
+            while (rsKey.next()) {
+                int snitchId = rsKey.getInt("snitch_id");
+                snitchIds.add(snitchId);
+            }
+            return snitchIds;
+        } catch (SQLException ex) {
+            this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch IDs! " + ex.toString());
+        } finally {
+            if (rsKey != null) {
+                try { rsKey.close(); } catch (Exception ex) {}
+            }
+        }
+        return null;
+    }
+
+    public void cullSnitchEntries() {
+        int errCount = 0;
+        for (Integer snitchId : getAllSnitchIds()) {
+            try {
+                cullSnitchEntriesStmt.setInt(1, snitchId);
+                cullSnitchEntriesStmt.executeUpdate();
+            } catch (SQLException ex) {
+                this.plugin.getLogger().log(
+                    Level.SEVERE, String.format("Could not entry cull %d: %s",snitchId ,ex.toString()));
+                ++errCount;
+                if (errCount >= 5) {
+                    this.plugin.getLogger().log(Level.SEVERE, "Too many errors, aborting snitch entry culling.");
+                    return;
+                }
+            }
+        }
     }
 }

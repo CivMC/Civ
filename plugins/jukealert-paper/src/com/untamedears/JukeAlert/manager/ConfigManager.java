@@ -25,7 +25,11 @@ public class ConfigManager
 	private int defaultCuboidSize;
 	
 	private int logsPerPage;
-	
+	private boolean snitchEntryCullingEnabled;
+	private int maxEntryCount;
+	private int minEntryLifetimeDays;
+	private int maxEntryLifetimeDays;
+
 	private File main;
 	private FileConfiguration config;
 	private FileConfiguration cleanConfig;
@@ -71,14 +75,18 @@ public class ConfigManager
         port     = loadInt("mysql.port");
         
         setDefaultCuboidSize(loadInt("settings.defaultCuboidSize"));
-        
         logsPerPage = loadInt("settings.logsPerPage");
         setDebugging(loadBoolean("settings.debugging"));
         
+        snitchEntryCullingEnabled = loadBoolean("entryculling.enabled", true);
+        maxEntryCount = loadInt("entryculling.maxcount", 200);
+        minEntryLifetimeDays = loadInt("entryculling.minlifetime", 1);
+        maxEntryLifetimeDays = loadInt("entryculling.maxlifetime", 8);
+
         save();
-	}
-	
-	private Boolean loadBoolean(String path)
+    }
+
+    private Boolean loadBoolean(String path)
     {
         if (config.isBoolean(path))
         {
@@ -87,6 +95,17 @@ public class ConfigManager
             return value;
         }
         return false;
+    }
+
+    private Boolean loadBoolean(String path, boolean defaultValue)
+    {
+        if (config.isBoolean(path))
+        {
+            boolean value = config.getBoolean(path);
+            cleanConfig.set(path, value);
+            return value;
+        }
+        return defaultValue;
     }
 
     private String loadString(String path)
@@ -111,6 +130,15 @@ public class ConfigManager
         }
 
         return 0;
+    }
+
+    private int loadInt(String path, int defaultValue) {
+        if (config.isInt(path)) {
+            int value = config.getInt(path);
+            cleanConfig.set(path, value);
+            return value;
+        }
+        return defaultValue;
     }
 
     private double loadDouble(String path)
@@ -236,5 +264,21 @@ public class ConfigManager
 	public void setCleanConfig(FileConfiguration cleanConfig) {
 		this.cleanConfig = cleanConfig;
 	}
-	
+
+	public boolean getSnitchEntryCullingEnabled() {
+		return snitchEntryCullingEnabled;
+	}
+
+	public int getMaxSnitchEntryCount() {
+		return maxEntryCount;
+	}
+
+	public int getMinSnitchEntryLifetime() {
+		return minEntryLifetimeDays;
+	}
+
+	public int getMaxSnitchEntryLifetime() {
+		return maxEntryLifetimeDays;
+	}
+
 }
