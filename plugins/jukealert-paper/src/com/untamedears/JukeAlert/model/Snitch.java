@@ -57,39 +57,37 @@ public class Snitch implements QTBox, Comparable {
     // interface Comparable
     @Override
     public int compareTo(Object o) {
+      // Compare centers
+      // TODO: Deal with volume changes when applicable
+      // 1. Test X relationship
+      // 2. Test Z relationship
+      // 3. Test Y relationship
       Snitch other = (Snitch)o;
-      if (this.minx == other.minx
-          && this.maxx == other.maxx
-          && this.miny == other.miny
-          && this.maxy == other.maxy
-          && this.minz == other.minz
-          && this.maxz == other.maxz) {
-        return 0;  // Equal
-      }
-      if (this.minx >= other.minx
-          && this.maxx <= other.maxx
-          && this.miny >= other.miny
-          && this.maxy <= other.maxy
-          && this.minz >= other.minz
-          && this.maxz <= other.maxz) {
-        // This is contained within other
-        return -1;  // Less
-      }
-      if (this.minx <= other.minx
-          && this.maxx >= other.maxx
-          && this.miny <= other.miny
-          && this.maxy >= other.maxy
-          && this.minz <= other.minz
-          && this.maxz >= other.maxz) {
-        // Other is contained within this
-        return 1;  // Greater
-      }
-      if (this.minx < other.minx
-          || this.miny < other.miny
-          || this.minz < other.minz) {
+      int tx = this.getX();
+      int ty = this.getY();
+      int tz = this.getZ();
+      int ox = other.getX();
+      int oy = other.getY();
+      int oz = other.getZ();
+      if (tx < ox) {
         return -1;
       }
-      return 1;
+      if (tx > ox) {
+        return 1;
+      }
+      if (tz < oz) {
+        return -1;
+      }
+      if (tz > oz) {
+        return 1;
+      }
+      if (ty < oy) {
+        return -1;
+      }
+      if (ty > oy) {
+        return 1;
+      }
+      return 0;  // equal
     }
     // end interface Comparable
 
