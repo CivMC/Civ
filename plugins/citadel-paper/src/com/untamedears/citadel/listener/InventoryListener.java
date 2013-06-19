@@ -11,7 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.ReinforcementManager;
+import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
@@ -45,8 +45,8 @@ public class InventoryListener implements Listener {
       // Likely it's a form of minecart, which can't be reinforced so allow
       return;
     }
-    ReinforcementManager rm = Citadel.getReinforcementManager();
-    IReinforcement src_rein = rm.getReinforcement(src_loc);
+    AccessDelegate src_delegate = AccessDelegate.getDelegate(src_loc.getBlock());
+    IReinforcement src_rein = src_delegate.getReinforcement();
     if (src_rein == null || !(src_rein instanceof PlayerReinforcement)) {
       // No reinforcement on the source block, allow
       return;
@@ -57,7 +57,8 @@ public class InventoryListener implements Listener {
       event.setCancelled(true);
       return;
     }
-    IReinforcement initiator_rein = rm.getReinforcement(initiator_loc);
+    AccessDelegate initiator_delegate = AccessDelegate.getDelegate(initiator_loc.getBlock());
+    IReinforcement initiator_rein = initiator_delegate.getReinforcement();
     if (initiator_rein == null || !(initiator_rein instanceof PlayerReinforcement)) {
       // No reinforcement on the initiator block, deny
       event.setCancelled(true);
