@@ -102,7 +102,8 @@ printing_presses:
      repair:
         "Iron block":
            material: 'IRON_BLOCK'
-           amount: 5
+           amount: 1
+     repair_multiple: 5
      binding: # Each
         Leather:
            material: 'LEATHER'

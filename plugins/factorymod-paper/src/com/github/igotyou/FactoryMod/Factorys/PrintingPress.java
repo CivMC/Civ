@@ -371,6 +371,10 @@ public class PrintingPress extends BaseFactory {
 		}
 		return newQ;
 	}
+
+	public boolean isRepairing() {
+		return mode == OperationMode.REPAIR;
+	}
 	
 	/**
 	 * Returns either a success or error message.
@@ -425,7 +429,7 @@ public class PrintingPress extends BaseFactory {
 		//[Will repair XX% of the factory]
 		if(!getRepairs().isEmpty()&&maintenanceActive)
 		{
-			int amountAvailable=getRepairs().amountAvailable(getPowerSourceInventory());
+			int amountAvailable=getRepairs().amountAvailable(getInventory());
 			int amountRepaired=amountAvailable>currentRepair ? (int) Math.ceil(currentRepair) : amountAvailable;
 			int percentRepaired=(int) (( (double) amountRepaired)/printingPressProperties.getMaxRepair()*100);
 			responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Will repair "+String.valueOf(percentRepaired)+"% of the factory with "+getRepairs().getMultiple(amountRepaired).toString()+"."));
