@@ -21,6 +21,7 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
+import com.github.igotyou.FactoryMod.utility.PrettyLore;
 
 public class PrintingPress extends BaseFactory {
 	
@@ -498,6 +499,7 @@ public class PrintingPress extends BaseFactory {
 	
 	private class PrintResult {
 		private static final int PAGE_LORE_LENGTH_LIMIT = 140;
+		private static final int PAGE_LORE_LINE_LIMIT = 35;
 		private List<String> pages;
 		private String title;
 		private String author;
@@ -570,7 +572,7 @@ public class PrintingPress extends BaseFactory {
 			meta.setDisplayName(title);
 			List<String> lore = new ArrayList<String>();
 			if (pages.size() > 0) {
-				lore.add(limitPageLore(pages.get(0)));
+				lore.add(filterPageLore(pages.get(0)));
 			}
 			meta.setLore(lore);
 			book.setItemMeta(meta);
@@ -583,7 +585,7 @@ public class PrintingPress extends BaseFactory {
 			meta.setDisplayName(title);
 			List<String> lore = new ArrayList<String>();
 			if (pages.size() > 0) {
-				lore.add(limitPageLore(pages.get(0)));
+				lore.add(filterPageLore(pages.get(0)));
 			}
 			if (author.equals("")) {
 				lore.add(String.format("§2#%d", watermark));
@@ -595,13 +597,21 @@ public class PrintingPress extends BaseFactory {
 			return book;
 		}
 		
-		private String limitPageLore(String in) {
-			in = in.replace("§2", "");
-			if (in.length() > PAGE_LORE_LENGTH_LIMIT) {
-				return in.substring(0, PAGE_LORE_LENGTH_LIMIT - 3) + "...";
-			} else {
-				return in;
-			}
+		private String filterPageLore(String lore) {
+			// Remove green
+			lore = lore.replace("§2", "");
+			
+			// Remove line breaks
+			lore = lore.replace("\n", "").replace("\r", "");
+			
+			// Limit length
+			lore = PrettyLore.limitLengthEllipsis(lore, PAGE_LORE_LENGTH_LIMIT);
+			
+			// Split in to lines based on length
+			List<String> lines = PrettyLore.splitLines(lore, PAGE_LORE_LINE_LIMIT);
+			lore = PrettyLore.combineLines(lines);
+			
+			return lore;
 		}
 		
 		public int hashCode() {
