@@ -342,8 +342,9 @@ public class PrintingPress extends BaseFactory {
 			boolean hasExtras = true;
 			ItemList<NamedItemStack> allSecurityMaterials = new ItemList<NamedItemStack>();
 			if (expectedExtras > containedSecurityMaterials) {
-				int neededBindings = expectedExtras - containedSecurityMaterials;
-				allSecurityMaterials = printingPressProperties.getSecurityMaterials().getMultiple(neededBindings);
+				int neededExtras = expectedExtras - containedSecurityMaterials;
+				int neededExtraLots = (int) Math.ceil((double) neededExtras / (double) printingPressProperties.getSecurityNotesPerLot());
+				allSecurityMaterials = printingPressProperties.getSecurityMaterials().getMultiple(neededExtraLots);
 				hasExtras = allSecurityMaterials.allIn(getInventory());
 			}
 			
