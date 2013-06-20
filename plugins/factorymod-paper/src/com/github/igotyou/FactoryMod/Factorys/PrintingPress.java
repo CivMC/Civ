@@ -559,7 +559,6 @@ public class PrintingPress extends BaseFactory {
 		public NamedItemStack toBook() {
 			NamedItemStack book = new NamedItemStack(Material.WRITTEN_BOOK, 1, (short) 0, "book");
 			BookMeta meta = (BookMeta) book.getItemMeta();
-			meta.setDisplayName(title);
 			meta.setTitle(title);
 			meta.setAuthor(author);
 			meta.setPages(pages);
