@@ -142,6 +142,20 @@ public class Database {
     }
 
     /**
+     * Executes an SQL query. (No output, pass Exception along)
+     *
+     * @param sql The SQL query as a string.
+     */
+    public void executeLoud(String sql) throws java.sql.SQLException {
+        if (isConnected()) {
+            connection.prepareStatement(sql).executeUpdate();
+        } else {
+            connect();
+            execute(sql);
+        }
+    }
+
+    /**
      * Executes an SQL query. (No output, No exceptions reported)
      *
      * @param sql The SQL query as a string.

@@ -70,6 +70,9 @@ public class JukeAlertLogger {
     private final int maxEntryCount;
     private final int minEntryLifetimeDays;
     private final int maxEntryLifetimeDays;
+    private final String host;
+    private final String dbname;
+    private final String username;
     // The following are used by SnitchEnumerator
     protected JukeAlert plugin;
     protected GroupMediator groupMediator;
@@ -81,10 +84,10 @@ public class JukeAlertLogger {
         configManager = plugin.getConfigManager();
         groupMediator = plugin.getGroupMediator();
 
-        String host = configManager.getHost();
+        host = configManager.getHost();
         int port = configManager.getPort();
-        String dbname = configManager.getDatabase();
-        String username = configManager.getUsername();
+        dbname = configManager.getDatabase();
+        username = configManager.getUsername();
         String password = configManager.getPassword();
         String prefix = configManager.getPrefix();
         maxEntryCount = configManager.getMaxSnitchEntryCount();
@@ -162,6 +165,53 @@ public class JukeAlertLogger {
 
         db.silentExecute(String.format(
             "ALTER TABLE %s ADD INDEX idx_log_time (snitch_log_time ASC);", snitchDetailsTbl));
+
+        try {
+            db.executeLoud(MessageFormat.format(
+                " CREATE DEFINER=CURRENT_USER PROCEDURE CullSnitches( "
+                + " IN minDays INT, IN maxDays INT, IN maxEntries INT) SQL SECURITY INVOKER BEGIN\n"
+                + " DECLARE done BOOLEAN DEFAULT FALSE;\n"
+                + " DECLARE snId, today, minHour, maxHour INT;\n"
+                + " DECLARE snCur CURSOR FOR SELECT {0}.snitch_id FROM {0}\n"
+                + "   INNER JOIN {1} on {0}.snitch_id = {1}.snitch_id\n"
+                + "   GROUP BY {0}.snitch_id HAVING COUNT(*) > maxEntries;\n"
+                + " DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;\n"
+                + " SET today = TIMESTAMPDIFF(HOUR, ''2013-01-01 00:00:00'', CURRENT_TIMESTAMP());\n"
+                + " SET minHour = TIMESTAMPDIFF(HOUR, ''2013-01-01 00:00:00'', DATE_SUB(CURRENT_TIMESTAMP(), INTERVAL minDays DAY));\n"
+                + " SET maxHour = TIMESTAMPDIFF(HOUR, ''2013-01-01 00:00:00'', DATE_SUB(CURRENT_TIMESTAMP(), INTERVAL maxDays DAY));\n"
+                + " DELETE FROM {1} WHERE log_hour < maxHour;\n"
+                + " OPEN snCur;\n"
+                + " da_loop: LOOP\n"
+                + " FETCH snCur INTO snId;\n"
+                + " IF done THEN CLOSE snCur; LEAVE da_loop; END IF;\n"
+                + " DELETE FROM {1} WHERE snitch_id = snId AND log_hour < minHour AND snitch_details_id NOT IN ((\n"
+                + "   SELECT snitch_details_id FROM (SELECT snitch_details_id FROM {1}\n"
+                + "     WHERE snitch_id = snId ORDER BY snitch_log_time DESC LIMIT maxEntries) AS drvTbl));\n"
+                + " END LOOP da_loop; END", snitchsTbl, snitchDetailsTbl));
+
+            this.plugin.getLogger().log(Level.INFO, "Adding the log_hour column");
+            db.executeLoud(MessageFormat.format(
+                "ALTER TABLE {0} ADD COLUMN (log_hour MEDIUMINT, INDEX idx_log_hour (log_hour));",
+                snitchDetailsTbl));
+
+            this.plugin.getLogger().log(Level.INFO, "Populating the log_hour column");
+            db.executeLoud(MessageFormat.format(
+                "UPDATE {0} SET log_hour = TIMESTAMPDIFF(HOUR, ''2013-01-01 00:00:00'', snitch_log_time);",
+                snitchDetailsTbl));
+
+            this.plugin.getLogger().log(Level.INFO, "Creating the log_hour trigger");
+            db.executeLoud(MessageFormat.format(
+                "CREATE TRIGGER trig_log_hour BEFORE INSERT ON {0} FOR EACH ROW "
+                + " SET NEW.log_hour = TIMESTAMPDIFF(HOUR, ''2013-01-01 00:00:00'', NEW.snitch_log_time);",
+                snitchDetailsTbl));
+            this.plugin.getLogger().log(Level.INFO, "log_hour setup in the DB");
+        } catch (Exception ex) {
+            String exMsg = ex.toString();
+            if (!exMsg.contains("multiple triggers with the same action time and event for one table")
+                    && !exMsg.contains("PROCEDURE CullSnitches already exists")) {
+                this.plugin.getLogger().log(Level.SEVERE, exMsg);
+            }
+        }
     }
 
     public PreparedStatement getNewInsertSnitchLogStmt() {
@@ -252,14 +302,8 @@ public class JukeAlertLogger {
 
         //
         cullSnitchEntriesStmt = db.prepareStatement(MessageFormat.format(
-            " DELETE FROM {0} WHERE snitch_details_id IN ( "
-            + " SELECT snitch_details_id FROM ( "
-            + " SELECT snitch_details_id, snitch_log_time, @counter := @counter + 1 AS counter "
-            + " FROM {0} JOIN (SELECT @counter := 0) AS vars WHERE snitch_id = ? "
-            + " ORDER BY snitch_log_time DESC) AS t WHERE "
-            + " (counter > {1} AND snitch_log_time < DATE_SUB(NOW(), INTERVAL {2} DAY)) "
-            + " OR snitch_log_time < DATE_SUB(NOW(), INTERVAL {3} DAY));",
-            snitchDetailsTbl, maxEntryCount, minEntryLifetimeDays, maxEntryLifetimeDays));
+            "CALL CullSnitches({0}, {1}, {2});",
+            minEntryLifetimeDays, maxEntryLifetimeDays, maxEntryCount));
     }
 
     private void initializeLastSnitchId() {
@@ -998,20 +1042,13 @@ public class JukeAlertLogger {
     }
 
     public void cullSnitchEntries() {
-        int errCount = 0;
-        for (Integer snitchId : getAllSnitchIds()) {
-            try {
-                cullSnitchEntriesStmt.setInt(1, snitchId);
-                cullSnitchEntriesStmt.executeUpdate();
-            } catch (SQLException ex) {
-                this.plugin.getLogger().log(
-                    Level.SEVERE, String.format("Could not entry cull %d: %s",snitchId ,ex.toString()));
-                ++errCount;
-                if (errCount >= 5) {
-                    this.plugin.getLogger().log(Level.SEVERE, "Too many errors, aborting snitch entry culling.");
-                    return;
-                }
-            }
+        this.plugin.getLogger().log(Level.INFO, "Culling snitch entries...");
+        try {
+            cullSnitchEntriesStmt.executeUpdate();
+            this.plugin.getLogger().log(Level.INFO, "Snitch entry culling complete!");
+        } catch (SQLException ex) {
+            this.plugin.getLogger().log(
+                Level.SEVERE, String.format("Could not entry cull: %s", ex.toString()));
         }
     }
 }
