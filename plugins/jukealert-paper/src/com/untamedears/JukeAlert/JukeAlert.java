@@ -6,6 +6,7 @@ import com.untamedears.JukeAlert.command.commands.GroupCommand;
 import com.untamedears.JukeAlert.command.commands.HelpCommand;
 import com.untamedears.JukeAlert.command.commands.InfoCommand;
 import com.untamedears.JukeAlert.command.commands.JaCommand;
+import com.untamedears.JukeAlert.command.commands.LookupCommand;
 import com.untamedears.JukeAlert.command.commands.NameCommand;
 import com.untamedears.JukeAlert.group.GroupMediator;
 import com.untamedears.JukeAlert.listener.JukeAlertListener;
@@ -71,6 +72,7 @@ public class JukeAlert extends JavaPlugin {
         commandHandler.addCommand(new HelpCommand());
         commandHandler.addCommand(new JaCommand());
         commandHandler.addCommand(new GroupCommand());
+        commandHandler.addCommand(new LookupCommand());
     }
 
     public static JukeAlert getInstance() {

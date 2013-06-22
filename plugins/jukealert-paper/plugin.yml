@@ -22,12 +22,16 @@ commands:
   janame:
     description: Name a snitch
     usage: /janame
+  jalookup:
+    description: Look up a snitch by its coordinates
+    usage: /jalookup <x> <y> <z> [world]
 permissions:
   jukealert.admin:
     description: Grants permission to JukeAlert admin commands.
     default: op
     children:
       jukealert.admin.jagroup: true
+      jukealert.admin.lookupany: true
   jukealert.jagroup:
     description: Ability to use /jagroup
     default: op

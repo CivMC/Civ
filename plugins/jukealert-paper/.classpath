@@ -2,7 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="Citadel.jar"/>
-	<classpathentry kind="lib" path="craftbukkit-1.5.2-R0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Sam/Desktop/updateinv/JukeAlert/Citadel.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Sam/Desktop/updateinv/JukeAlert/craftbukkit-1.5.2-R0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Sam/Downloads/VanishNoPacket.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
