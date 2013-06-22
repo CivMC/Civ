@@ -37,7 +37,7 @@ public class LookupCommand extends PlayerCommand {
         		x = Integer.parseInt(args[0]);
         		y = Integer.parseInt(args[1]);
         		z = Integer.parseInt(args[2]);
-        		if(args[3] == null) {
+        		if(args.length == 3) {
         			world = "world";
         		} else {
         			world = args[3];
@@ -54,6 +54,7 @@ public class LookupCommand extends PlayerCommand {
         	Snitch match = snitchManager.getSnitch(loc.getWorld(), loc);
         	if(match == null) {
         		sender.sendMessage(ChatColor.RED + "You do not own a snitch at those coordinates!");
+        		return false;
         	}
         	if(match.getGroup().isMember(sender.getName()) || match.getGroup().isModerator(sender.getName()) || match.getGroup().isFounder(sender.getName()) || canLookupAny) {
         		sender.sendMessage(ChatColor.AQUA + "The snitch at [" + x + " " + y + " " + z + "] is owned by " + match.getGroup().getName());
