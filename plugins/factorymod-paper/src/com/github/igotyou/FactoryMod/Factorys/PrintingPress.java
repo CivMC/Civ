@@ -338,7 +338,7 @@ public class PrintingPress extends BaseFactory {
 		boolean inputStall = false;
 		if (hasPages) {
 			// Check security materials
-			int expectedExtras = (int) Math.ceil((double) containedPaper + printingPressProperties.getPamphletsPerLot() / (double) getPrintResult().pageCount());
+			int expectedExtras = (int) Math.ceil((double) containedPaper + printingPressProperties.getPamphletsPerLot());
 			boolean hasExtras = true;
 			ItemList<NamedItemStack> allSecurityMaterials = new ItemList<NamedItemStack>();
 			if (expectedExtras > containedSecurityMaterials) {
