@@ -1,5 +1,7 @@
 package com.untamedears.JukeAlert.command.commands;
 
+import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -26,10 +28,7 @@ public class LookupCommand extends PlayerCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		boolean canLookupAny = false;
-		if(sender instanceof ConsoleCommandSender || sender.hasPermission("jukealert.admin.lookupany")) {
-			canLookupAny = true;
-		}
+		boolean canLookupAny = (sender instanceof ConsoleCommandSender || sender.hasPermission("jukealert.admin.lookupany"));
         if (sender instanceof Player || canLookupAny) {
         	int x, y, z;
         	String world;
@@ -56,7 +55,7 @@ public class LookupCommand extends PlayerCommand {
         		sender.sendMessage(ChatColor.RED + "You do not own a snitch at those coordinates!");
         		return false;
         	}
-        	if(match.getGroup().isMember(sender.getName()) || match.getGroup().isModerator(sender.getName()) || match.getGroup().isFounder(sender.getName()) || canLookupAny) {
+        	if(canLookupAny || isOnSnitch(match, sender.getName())) {
         		sender.sendMessage(ChatColor.AQUA + "The snitch at [" + x + " " + y + " " + z + "] is owned by " + match.getGroup().getName());
         	} else {
         		sender.sendMessage(ChatColor.RED + "You do not own a snitch at those coordinates!");       		
