@@ -233,7 +233,7 @@ public class PrintingPress extends BaseFactory {
 		boolean inputStall = false;
 		if (hasPages) {
 			// Check bindings
-			int expectedBindings = (int) Math.floor((double) containedPaper + printingPressProperties.getPagesPerLot() / (double) getPrintResult().pageCount());
+			int expectedBindings = (int) Math.floor((double) (containedPaper + printingPressProperties.getPagesPerLot()) / (double) getPrintResult().pageCount());
 			boolean hasBindings = true;
 			ItemList<NamedItemStack> allBindings = new ItemList<NamedItemStack>();
 			if (expectedBindings > containedBindings) {
