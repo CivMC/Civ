@@ -91,7 +91,19 @@ printing_presses:
      construction:
         "Iron block":
            material: 'IRON_BLOCK'
-           amount: 50
+           amount: 60
+        "Redstone":
+           material: REDSTONE
+           amount: 256
+        "Quartz":
+           material: QUARTZ
+           amount: 64
+        "Piston":
+           material: PISTON_BASE
+           amount: 20
+        "Gold plate":
+           material: GOLD_PLATE
+           amount: 20
      plates:
         "Iron ingot":
            material: 'IRON_INGOT'
