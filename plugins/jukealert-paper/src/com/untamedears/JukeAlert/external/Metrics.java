@@ -239,8 +239,25 @@ public class Metrics {
                 return true;
             }
 
+
+            final StringBuilder data = new StringBuilder();
+            try {
+                // The plugin's description file containg all of the plugin data such as name, version, author, etc
+                final PluginDescriptionFile description = plugin.getDescription();
+
+                // Construct the post data
+                data.append(encode("guid")).append('=').append(encode(guid));
+                encodeDataPair(data, "version", description.getVersion());
+                encodeDataPair(data, "server", Bukkit.getVersion());
+                encodeDataPair(data, "players", Integer.toString(Bukkit.getServer().getOnlinePlayers().length));
+                encodeDataPair(data, "revision", String.valueOf(REVISION));
+            } catch (IOException e) {
+                Bukkit.getLogger().log(Level.INFO, "[Metrics] " + e.getMessage());
+                return true;
+            }
+
             // Begin hitting the server with glorious data
-            taskId = plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable() {
+            taskId = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
 
                 private boolean firstPost = true;
 
@@ -262,7 +279,7 @@ public class Metrics {
                         // We use the inverse of firstPost because if it is the first time we are posting,
                         // it is not a interval ping, so it evaluates to FALSE
                         // Each time thereafter it will evaluate to TRUE, i.e PING!
-                        postPlugin(!firstPost);
+                        postPlugin(data, !firstPost);
 
                         // After the first post we set firstPost to false
                         // Each post thereafter will be a ping
@@ -361,17 +378,9 @@ public class Metrics {
     /**
      * Generic method that posts a plugin to the metrics website
      */
-    private void postPlugin(final boolean isPing) throws IOException {
-        // The plugin's description file containg all of the plugin data such as name, version, author, etc
-        final PluginDescriptionFile description = plugin.getDescription();
-
-        // Construct the post data
-        final StringBuilder data = new StringBuilder();
-        data.append(encode("guid")).append('=').append(encode(guid));
-        encodeDataPair(data, "version", description.getVersion());
-        encodeDataPair(data, "server", Bukkit.getVersion());
-        encodeDataPair(data, "players", Integer.toString(Bukkit.getServer().getOnlinePlayers().length));
-        encodeDataPair(data, "revision", String.valueOf(REVISION));
+    private void postPlugin(final StringBuilder data, final boolean isPing) throws IOException {
+        // Moved initial Bukkit data gathering outside async task. The 'data' param
+        //  already contains this information.
 
         // If we're pinging, append it
         if (isPing) {
