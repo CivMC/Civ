@@ -128,7 +128,7 @@ printing_presses:
            material: 'INK_SACK'
            durability: 0
            amount: 2
-     pages_per_lot: 16
+     pages_per_lot: 24
      pamphlet_lot:
         Paper:
            material: 'PAPER'
