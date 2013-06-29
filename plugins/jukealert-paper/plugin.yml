@@ -1,6 +1,6 @@
 name: JukeAlert
 main: com.untamedears.JukeAlert.JukeAlert
-version: 1.0.12b
+version: 1.0.13a
 depend: [Citadel]
 commands:
   ja:
