@@ -65,7 +65,12 @@ public class ItemExchangeListener implements Listener{
 								if(output.followsRules(exchangeInventory)){
 									ItemStack[] playerInput=InventoryHelpers.getItemStacks(playerInventory,input);
 									ItemStack[] exchangeOutput=InventoryHelpers.getItemStacks(exchangeInventory,output);
-									//Attempt to exchange items in the players inventory
+									/*
+									 * Attempts to exchange items in the players inventory, if there ends up not being space in either of the inventories
+									 * the inventories are reset back to a copy of their prexisting inventories.
+									 * This has the potential for edge cases since efery itemstack in the players inventory is being replaced with a copy
+									 * of that item. But I haven't thought of any particular issues yet, probably should be tested in relation to prisonpearl.
+									*/
 									ItemStack[] playerInventoryOld=InventoryHelpers.deepCopy(playerInventory);
 									playerInventory.removeItem(playerInput);
 									if(playerInventory.addItem(exchangeOutput).isEmpty()){
@@ -92,6 +97,7 @@ public class ItemExchangeListener implements Listener{
 								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You don't have enough of the input."));
 							}
 						}
+						//If the item the player is holding is not that of the input of the exchange the rules of the exchange are displayed
 						else {
 							List<InteractionResponse> responses=new ArrayList<InteractionResponse>();
 							responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Input: "));
@@ -106,7 +112,9 @@ public class ItemExchangeListener implements Listener{
 							InteractionResponse.messagePlayerResults(player, responses);
 						}
 					}
+					//The rules of the item exchange are displayed
 					else {
+						//Records the player interaction with the item exchange
 						interactionRecord.put(player, clicked.getLocation());
 						List<InteractionResponse> responses=new ArrayList<InteractionResponse>();
 						responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Input: "));

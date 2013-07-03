@@ -34,17 +34,22 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class ItemExchangePlugin extends JavaPlugin{
 	
 	private static final CommandHandler commandHandler = new CommandHandler();
+	//Blocks that can be used as exchanges, any block with an inventory *should* works
 	public static final List<Material> ACCEPTABLE_BLOCKS= Arrays.asList(Material.CHEST, Material.DISPENSER, Material.TRAPPED_CHEST);
 	public static final boolean CITADEL_ENABLED=false;
-	public static int INTERACTION_MATERIAL_ID=Material.STICK.getId();
+	//Maps that provide a 1:1 relationship between commonly used/displayed item and enchantment names
+	//and their bukkit counterparts. The itemstack mapping may be incomplete, however the enchantment
+	//mapping needs to be complete
 	public static final Map<ItemStack,String> MATERIAL_NAME=new HashMap();
 	public static final Map<String,ItemStack> NAME_MATERIAL=new HashMap();
 	public static final Map<String,String> ENCHANTMENT_ABBRV=new HashMap();
 	public static final Map<String,String> ABBRV_ENCHANTMENT=new HashMap();
+	//Specifics of appeareance of ItemExchange Rules
+	//The Version system could use another look
 	public static final String INPUT_NAME="ItemExchange Input";
 	public static final String OUTPUT_NAME="ItemExchange Output";
 	public static final ItemStack ITEM_RULE_ITEMSTACK=new ItemStack(Material.STONE_BUTTON,1);
-	public static final String VERSION="v0.1";
+	public static final String VERSION="v0.2";
 	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
 		return commandHandler.dispatch(sender, label, args);
@@ -112,12 +117,15 @@ public class ItemExchangePlugin extends JavaPlugin{
 	public static void sendConsoleMessage(String message){
 		Bukkit.getLogger().info("ItemExchange: " + message);	
 	}
+	
+	//Probably makes sense to move this to the ItemExchange Class...
 	public static InteractionResponse createExchange(Location location,Player player){
-		//Bail if location doesn't contain an exchange
+		//Bail if location doesn't contain an an accpetable inventory block
 		if(ItemExchangePlugin.ACCEPTABLE_BLOCKS.contains(location.getBlock().getType())&&location.getBlock().getState() instanceof InventoryHolder){
 			Inventory inventory=((InventoryHolder)location.getBlock().getState()).getInventory();
 			ItemStack input=null;
 			ItemStack output=null;
+			//Checks for two different unique types of items in the inventory and sums up their amounts from the individual itemStacks
 			for(ItemStack itemStack:inventory){
 				if(itemStack!=null){
 					if(input==null){
@@ -137,12 +145,15 @@ public class ItemExchangePlugin extends JavaPlugin{
 					}
 				}
 			}
+			//If acceptable input and output itemStacks were found create exchange rule blocks for each and place them in the inventory blcok
 			if(input!=null&&output!=null){
 				ExchangeRule inputRule=ExchangeRule.parseItemStack(input,RuleType.INPUT);
 				ExchangeRule outputRule=ExchangeRule.parseItemStack(output,RuleType.OUTPUT);
+				//Place input in inventory, if this fails drop it on the ground
 				if(inventory.addItem(inputRule.toItemStack()).size()>0){
 					player.getWorld().dropItem(player.getLocation(), inputRule.toItemStack());
 				}
+				//place output in the inventory, if this fails drop it on the ground
 				if(inventory.addItem(outputRule.toItemStack()).size()>0)	{
 					player.getWorld().dropItem(player.getLocation(), outputRule.toItemStack());
 				}

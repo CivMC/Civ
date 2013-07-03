@@ -13,6 +13,10 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
+/*
+ * When holding an exchange rule block in the players hand allowes editing of the 
+ * different rules.
+ */
 public class SetCommand extends PlayerCommand {
 	public SetCommand() {
 		super("Set Field");

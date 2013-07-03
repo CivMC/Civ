@@ -15,6 +15,11 @@ import static com.untamedears.citadel.Utility.isReinforced;
 import com.untamedears.citadel.entity.PlayerReinforcement;
 import org.bukkit.block.Block;
 
+/*
+ * General command for creating either an entire ItemExchange or 
+ * creating an exchange rule, given the context of the player when
+ * the command is issued.
+ */
 public class CreateCommand extends PlayerCommand {
 	public CreateCommand() {
 		super("Create Exchange");
@@ -29,6 +34,7 @@ public class CreateCommand extends PlayerCommand {
 		Player player=(Player) sender;
 		Block block=player.getLastTwoTargetBlocks(null,20).get(1).getLocation().getBlock();
 		//If no input or ouptut is specified player attempt to set up ItemExchange at the block the player is looking at
+		//The player must have citadel access to the inventory block
 		if(args.length==0){
 			if(ItemExchangePlugin.ACCEPTABLE_BLOCKS.contains(block.getState().getType())) {
 					if ((!ItemExchangePlugin.CITADEL_ENABLED || ItemExchangePlugin.CITADEL_ENABLED && !isReinforced(block)) || 
@@ -45,9 +51,9 @@ public class CreateCommand extends PlayerCommand {
 		}
 		//Create a RuleBlock in the players inventory
 		else {
-			//Player much have sapce in their inventory for the RuleBlock
+			//Player must have space in their inventory for the RuleBlock
 			if(player.getInventory().firstEmpty()!=-1) {
-				//If only and input is specified create the RuleBlock based on the item held in the players hand
+				//If only an input/output is specified create the RuleBlock based on the item held in the players hand
 				if(args.length==1) {
 					//Assign a ruleType
 					RuleType ruleType=null;
@@ -67,6 +73,7 @@ public class CreateCommand extends PlayerCommand {
 					
 					}
 				}
+				//If additional arguments are specified create an exchange rule based upon the additional arguments and place it in the player's inventory
 				else if(args.length>=2){
 					try {
 						//Attemptes to create the ExchangeRule, converts it to an ItemStack and places it in the player's inventory

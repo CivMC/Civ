@@ -58,7 +58,7 @@ public class InventoryHelpers {
 		return amount;
 	}
 	/*
-	 * Returns a deepCopy of an inventory.
+	 * Returns a deepCopy of an inventory, which creates new ItemStack objects.
 	 */
 	public static ItemStack[] deepCopy(Inventory inventory) {
 		ItemStack[] deepCopy=inventory.getContents();
