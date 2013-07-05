@@ -26,6 +26,9 @@ public class ConfigManager {
 	private long cacheMaxAge;
 	private int cacheMaxChunks;
 	private boolean reinforcedCrops;
+	private boolean enableMaturation;
+	private int maturationInterval;
+	private double maturationIntervalD;
 
 	public void load(){
 		Citadel.getPlugin().reloadConfig();
@@ -37,6 +40,9 @@ public class ConfigManager {
         redstoneDistance = config.getDouble("general.redstoneDistance");
         groupsAllowed = config.getInt("general.groupsAllowed");
         reinforcedCrops = config.getBoolean("general.reinforcedCrops", true);
+        enableMaturation = config.getBoolean("general.enableMaturation", false);
+        maturationInterval = config.getInt("general.maturationInterval", 50);
+        maturationIntervalD = (double)maturationInterval;
         cacheMaxAge = config.getLong("caching.max_age");
         cacheMaxChunks = config.getInt("caching.max_chunks");
         for (Object obj : config.getList("materials")) {
@@ -81,6 +87,22 @@ public class ConfigManager {
                 NaturalReinforcement.CONFIGURATION.put(natReinCfg.getMaterialId(), natReinCfg);
             }
         }
+        ConfigurationSection materialScaling = config.getConfigurationSection("materialScaling");
+        if (materialScaling != null) {
+            for (String materialName : materialScaling.getKeys(false)) {
+                double scale = materialScaling.getDouble(materialName, 1.0);
+                Material material = Material.matchMaterial(materialName);
+                if (material != null) {
+                    PlayerReinforcement.MATERIAL_SCALING.put(material.getId(), scale);
+                } else {
+                    try {
+                        PlayerReinforcement.MATERIAL_SCALING.put(Integer.parseInt(materialName), scale);
+                    } catch (NumberFormatException e) {
+                        Citadel.warning("Invalid materialScaling material " + materialName);
+                    }
+                }
+            }
+        }
 	}
 	
 	public double getRedstoneDistance(){
@@ -113,6 +135,18 @@ public class ConfigManager {
 
 	public boolean allowReinforcedCrops() {
 		return reinforcedCrops;
+	}
+
+	public boolean maturationEnabled() {
+		return enableMaturation;
+	}
+
+	public int getMaturationInterval() {
+		return maturationInterval;
+	}
+
+	public double getMaturationIntervalD() {
+		return maturationIntervalD;
 	}
 
 	public void setGroupsAllowed(int ga){

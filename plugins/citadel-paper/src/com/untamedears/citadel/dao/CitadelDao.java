@@ -360,6 +360,14 @@ public class CitadelDao extends MyDatabase {
         } catch(PersistenceException e){
             //column already exists
         }
+
+        try {
+            SqlUpdate addReinforcementMaturationTime = getDatabase().createSqlUpdate(
+                "ALTER TABLE reinforcement ADD COLUMN maturation_time INT NOT NULL DEFAULT 0");
+            getDatabase().execute(addReinforcementMaturationTime);
+        } catch(PersistenceException e){
+            //column already exists
+        }
     }
 
     protected void prepareDatabaseAdditionalConfig(DataSourceConfig dataSourceConfig, ServerConfig serverConfig) {

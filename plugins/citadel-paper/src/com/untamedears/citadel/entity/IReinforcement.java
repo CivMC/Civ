@@ -12,4 +12,6 @@ public abstract interface IReinforcement extends
     public double getHealth();
     public String getHealthText();
     public String getStatus();
+    public int getMaturationTime();  // Minutes since the epoch (1970-Jan-1)
+    public void setMaturationTime(int time);
 }

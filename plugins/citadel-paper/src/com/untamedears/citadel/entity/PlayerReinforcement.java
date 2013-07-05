@@ -2,6 +2,8 @@ package com.untamedears.citadel.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,6 +38,7 @@ public class PlayerReinforcement implements
 
     public static final List<Integer> SECURABLE = new ArrayList<Integer>();
     public static final List<Integer> NON_REINFORCEABLE = new ArrayList<Integer>();
+    public static final Map<Integer, Double> MATERIAL_SCALING = new HashMap<Integer, Double>();
 
     @Id private ReinforcementKey id;
     private int materialId;
@@ -52,6 +55,9 @@ public class PlayerReinforcement implements
     @Column(name = "name")
     private String ownerName;
 
+    @Column(name="maturation_time")
+    private int maturationTime;
+
 
     public PlayerReinforcement() {
         this.dbAction = DbUpdateAction.NONE;
@@ -64,11 +70,25 @@ public class PlayerReinforcement implements
             SecurityLevel securityLevel) {
         this.id = new ReinforcementKey(block);
         this.materialId = material.getMaterial().getId();
-        this.durability = material.getStrength();
+        double baseDurability = (double)material.getStrength();
+        double scale = 1.00000001D;
+        int blockType = block.getTypeId();
+        if (PlayerReinforcement.MATERIAL_SCALING.containsKey(blockType)) {
+            scale = PlayerReinforcement.MATERIAL_SCALING.get(blockType);
+        }
+        this.durability = (int)(baseDurability * scale);
         this.ownerName = owner.getName();
         this.securityLevel = securityLevel;
         this.chunkId = this.id.getChunkId();
         this.dbAction = DbUpdateAction.INSERT;
+        if (this.durability < 50) {
+            this.maturationTime = 0;
+        } else {
+            final double interval = Citadel.getConfigManager().getMaturationIntervalD();
+            // Maturation time is in minutes since the epoch (Jan 1, 1970)
+            double tmpDur = (baseDurability / interval) * 60.0D;
+            this.maturationTime = (int)(System.currentTimeMillis() / 60000L + (long)tmpDur);
+        }
     }
 
     private void flagForDbUpdate() {
@@ -128,6 +148,18 @@ public class PlayerReinforcement implements
         this.durability = durability;
     }
 
+    public double getScaleFactor() {
+        int blockType = this.getBlock().getTypeId();
+        if (PlayerReinforcement.MATERIAL_SCALING.containsKey(blockType)) {
+            return PlayerReinforcement.MATERIAL_SCALING.get(blockType);
+        }
+        return 1.0000001D;
+    }
+
+    public int getScaledMaxDurability() {
+        return (int)((double)this.getMaterial().getStrength() * this.getScaleFactor());
+    }
+
     public String getChunkId() {
         return this.chunkId;
     }
@@ -166,8 +198,16 @@ public class PlayerReinforcement implements
         setOwnerName(group_name);
     }
 
+    public int getMaturationTime() {
+        return this.maturationTime;
+    }
+
+    public void setMaturationTime(int time) {
+        this.maturationTime = time;
+    }
+
     public double getHealth() {
-        return (double) durability / (double) getMaterial().getStrength();
+        return (double)durability / ((double)this.getMaterial().getStrength() * this.getScaleFactor());
     }
 
     public String getHealthText() {

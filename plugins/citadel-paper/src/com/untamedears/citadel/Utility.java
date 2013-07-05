@@ -260,9 +260,34 @@ public class Utility {
     }
 
     public static boolean reinforcementDamaged(IReinforcement reinforcement) {
-        reinforcement.setDurability(reinforcement.getDurability() - 1);
-        boolean cancelled = reinforcement.getDurability() > 0;
-        if (reinforcement.getDurability() <= 0) {
+        int durability = reinforcement.getDurability();
+        int durabilityLoss = 1;
+        if (reinforcement instanceof PlayerReinforcement && Citadel.getConfigManager().maturationEnabled()) {
+          final int maturationTime = reinforcement.getMaturationTime();
+          if (maturationTime > 0) {
+              final int curMinute = (int)(System.currentTimeMillis() / 60000L);
+              if (curMinute >= maturationTime) {
+                  reinforcement.setMaturationTime(0);
+              } else {
+                  durabilityLoss = (maturationTime - curMinute) / 60 + 1;
+              }
+          }
+          int blockType = reinforcement.getBlock().getTypeId();
+          if (PlayerReinforcement.MATERIAL_SCALING.containsKey(blockType)) {
+              final double scale = PlayerReinforcement.MATERIAL_SCALING.get(blockType);
+              durabilityLoss = (int)((double)durabilityLoss * scale);
+              if (durabilityLoss < 0) {
+                  durabilityLoss = 1;
+              }
+          }
+          if (durability < durabilityLoss) {
+              durabilityLoss = durability;
+          }
+        }
+        durability -= durabilityLoss;
+        reinforcement.setDurability(durability);
+        boolean cancelled = durability > 0;
+        if (durability <= 0) {
             cancelled = reinforcementBroken(reinforcement);
         } else {
             if (reinforcement instanceof PlayerReinforcement) {

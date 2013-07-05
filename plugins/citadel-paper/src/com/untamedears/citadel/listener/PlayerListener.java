@@ -184,7 +184,7 @@ public class PlayerListener implements Listener {
                         message = String.format(" Group%s  Durability[%d/%d]",
                             groupName,
                             reinforcement.getDurability(),
-                            reinforcement.getMaterial().getStrength());
+                            reinforcement.getScaledMaxDurability());
                         sendMessage(player, ChatColor.GREEN, message);
                     } else if(reinforcement.isAccessible(player)){
                         boolean is_personal_group = false;
