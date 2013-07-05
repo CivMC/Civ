@@ -362,6 +362,9 @@ public class Utility {
         if (isDirtPlant(mat)) {
             return findSoilBelow(plant, Material.DIRT);
         }
+        if (isGrassPlant(mat)) {
+            return findSoilBelow(plant, Material.GRASS);
+        }
         if (isSandPlant(mat)) {
             return findSoilBelow(plant, Material.SAND);
         }
@@ -386,8 +389,13 @@ public class Utility {
             || mat.equals(Material.PUMPKIN);
     }
 
+    public static boolean isGrassPlant(Material mat) {
+        return mat.equals(Material.SUGAR_CANE_BLOCK);
+    }
+
     public static boolean isSandPlant(Material mat) {
-        return mat.equals(Material.CACTUS);
+        return mat.equals(Material.CACTUS)
+            || mat.equals(Material.SUGAR_CANE_BLOCK);
     }
 
     public static boolean isSoulSandPlant(Material mat) {
@@ -401,6 +409,7 @@ public class Utility {
     public static boolean isPlant(Material mat) {
         return isSoilPlant(mat)
             || isDirtPlant(mat)
+            || isGrassPlant(mat)
             || isSandPlant(mat)
             || isSoulSandPlant(mat);
     }
