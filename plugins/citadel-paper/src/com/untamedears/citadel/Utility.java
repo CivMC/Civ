@@ -259,18 +259,32 @@ public class Utility {
         return reinforcement != null && reinforcementDamaged(reinforcement);
     }
 
+    public static int timeUntilMature(IReinforcement reinforcement) {
+        // Doesn't explicitly save the updated Maturation time into the cache.
+        //  That's the responsibility of the caller.
+        if (reinforcement instanceof PlayerReinforcement && Citadel.getConfigManager().maturationEnabled()) {
+            int maturationTime = reinforcement.getMaturationTime();
+            if (maturationTime > 0) {
+                final int curMinute = (int)(System.currentTimeMillis() / 60000L);
+                if (curMinute >= maturationTime) {
+                    maturationTime = 0;
+                    reinforcement.setMaturationTime(0);
+                } else {
+                    maturationTime = maturationTime - curMinute;
+                }
+            }
+            return maturationTime;
+        }
+        return 0;
+    }
+
     public static boolean reinforcementDamaged(IReinforcement reinforcement) {
         int durability = reinforcement.getDurability();
         int durabilityLoss = 1;
         if (reinforcement instanceof PlayerReinforcement && Citadel.getConfigManager().maturationEnabled()) {
-          final int maturationTime = reinforcement.getMaturationTime();
+          final int maturationTime = timeUntilMature(reinforcement);
           if (maturationTime > 0) {
-              final int curMinute = (int)(System.currentTimeMillis() / 60000L);
-              if (curMinute >= maturationTime) {
-                  reinforcement.setMaturationTime(0);
-              } else {
-                  durabilityLoss = (maturationTime - curMinute) / 60 + 1;
-              }
+              durabilityLoss = maturationTime / 60 + 1;
           }
           int blockType = reinforcement.getBlock().getTypeId();
           if (PlayerReinforcement.MATERIAL_SCALING.containsKey(blockType)) {

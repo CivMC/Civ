@@ -6,6 +6,7 @@ import static com.untamedears.citadel.Utility.isRail;
 import static com.untamedears.citadel.Utility.isReinforced;
 import static com.untamedears.citadel.Utility.reinforcementBroken;
 import static com.untamedears.citadel.Utility.sendMessage;
+import static com.untamedears.citadel.Utility.timeUntilMature;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -167,12 +168,10 @@ public class PlayerListener implements Listener {
                     String reinforcementStatus = reinforcement.getStatus();
                     SecurityLevel securityLevel = reinforcement.getSecurityLevel();
                     Faction group = reinforcement.getOwner();
-                    String message;
+                    StringBuilder sb;
                     if (player.hasPermission("citadel.admin.ctinfodetails")) {
-                        message = String.format("Loc[%s]  Chunk[%s]", 
-                            reinforcement.getId().toString(),
-                            reinforcement.getChunkId());
-                        sendMessage(player, ChatColor.GREEN, message);
+                        sendMessage(player, ChatColor.GREEN, String.format(
+                            "Loc[%s]  Chunk[%s]", reinforcement.getId().toString(), reinforcement.getChunkId()));
                         String groupName = "!NULL!";
                         if (group != null) {
                             if (group.isPersonalGroup()) {
@@ -181,24 +180,36 @@ public class PlayerListener implements Listener {
                                 groupName = String.format("[%s]", group.getName());
                             }
                         }
-                        message = String.format(" Group%s  Durability[%d/%d]",
+                        sb = new StringBuilder();
+                        sb.append(String.format(" Group%s  Durability[%d/%d]",
                             groupName,
                             reinforcement.getDurability(),
-                            reinforcement.getScaledMaxDurability());
-                        sendMessage(player, ChatColor.GREEN, message);
+                            reinforcement.getScaledMaxDurability()));
+                        int maturationTime = timeUntilMature(reinforcement);
+                        if (maturationTime != 0) {
+                            sb.append(" Immature[");
+                            sb.append(maturationTime);
+                            sb.append("]");
+                        }
+                        sendMessage(player, ChatColor.GREEN, sb.toString());
                     } else if(reinforcement.isAccessible(player)){
+                        sb = new StringBuilder();
+                        boolean mature = timeUntilMature(reinforcement) == 0;
                         boolean is_personal_group = false;
                         String groupName = "!NULL!";
                         if (group != null) {
                             groupName = group.getName();
                             is_personal_group = group.isPersonalGroup();
                         }
+                        sb.append(String.format("%s, security: %s, group: %s",
+                            reinforcementStatus, securityLevel, groupName));
                         if(is_personal_group){
-                            message = String.format("%s, security: %s, group: %s (Default Group)", reinforcementStatus, securityLevel, groupName);
-                        } else {
-                            message = String.format("%s, security: %s, group: %s", reinforcementStatus, securityLevel, groupName);
+                            sb.append(" (Default Group)");
                         }
-                        sendMessage(player, ChatColor.GREEN, message);
+                        if(!mature){
+                            sb.append(" (Hardening)");
+                        }
+                        sendMessage(player, ChatColor.GREEN, sb.toString());
                     } else {
                         sendMessage(player, ChatColor.RED, "%s, security: %s", reinforcementStatus, securityLevel);
                     }

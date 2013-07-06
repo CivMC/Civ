@@ -156,6 +156,10 @@ public class PlayerReinforcement implements
         return 1.0000001D;
     }
 
+    public int getMaxDurability() {
+        return this.getMaterial().getStrength();
+    }
+
     public int getScaledMaxDurability() {
         return (int)((double)this.getMaterial().getStrength() * this.getScaleFactor());
     }

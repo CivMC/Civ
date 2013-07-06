@@ -123,8 +123,12 @@ public class BlockListener implements Listener {
      */
     @EventHandler(ignoreCancelled = true)
     public void placeFortifiedBlock(BlockPlaceEvent bpe) {
-        Player player = bpe.getPlayer();
         Block block = bpe.getBlockPlaced();
+        IReinforcement existingReinforcement = Citadel.getReinforcementManager().getReinforcement(block);
+        if (existingReinforcement != null && existingReinforcement instanceof PlayerReinforcement) {
+            Citadel.getReinforcementManager().removeReinforcement(existingReinforcement);
+        }
+        Player player = bpe.getPlayer();
         if (!canPlace(block, player.getName())) {
             sendThrottledMessage(player, ChatColor.RED, "Cancelled block place, mismatched reinforcement.");
             bpe.setCancelled(true);

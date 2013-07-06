@@ -29,6 +29,7 @@ public class ConfigManager {
 	private boolean enableMaturation;
 	private int maturationInterval;
 	private double maturationIntervalD;
+    private Integer acidBlockTypeId = null;
 
 	public void load(){
 		Citadel.getPlugin().reloadConfig();
@@ -43,6 +44,19 @@ public class ConfigManager {
         enableMaturation = config.getBoolean("general.enableMaturation", false);
         maturationInterval = config.getInt("general.maturationInterval", 50);
         maturationIntervalD = (double)maturationInterval;
+        if (config.contains("general.acidBlock")) {
+            String acidBlockMaterial = config.getString("general.acidBlock");
+            Material material = Material.matchMaterial(acidBlockMaterial);
+            if (material != null) {
+                acidBlockTypeId = material.getId();
+            } else {
+                try {
+                    acidBlockTypeId = Integer.parseInt(acidBlockMaterial);
+                } catch (NumberFormatException e) {
+                    Citadel.warning("Invalid acidblock material " + acidBlockMaterial);
+                }
+            }
+        }
         cacheMaxAge = config.getLong("caching.max_age");
         cacheMaxChunks = config.getInt("caching.max_chunks");
         for (Object obj : config.getList("materials")) {
@@ -184,5 +198,9 @@ public class ConfigManager {
             return 1;
         }
         return natReinCfg.generateDurability(blockY);
+    }
+
+    public Integer getAcidBlockType() {
+        return acidBlockTypeId;
     }
 }

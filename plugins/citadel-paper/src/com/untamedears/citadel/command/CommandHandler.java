@@ -8,6 +8,7 @@ import java.util.Map;
 import org.bukkit.command.CommandSender;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.command.commands.AcidCommand;
 import com.untamedears.citadel.command.commands.AddModCommand;
 import com.untamedears.citadel.command.commands.AllowCommand;
 import com.untamedears.citadel.command.commands.BypassCommand;
@@ -52,6 +53,7 @@ public class CommandHandler {
 	private Map<String, Command> identifiers = new HashMap<String, Command>();
 
     public void registerCommands() {
+        this.addCommand(new AcidCommand());
         this.addCommand(new AddModCommand());
         this.addCommand(new AllowCommand());
         this.addCommand(new BypassCommand());
