@@ -26,6 +26,7 @@ import com.untamedears.citadel.command.commands.InfoCommand;
 import com.untamedears.citadel.command.commands.JoinCommand;
 import com.untamedears.citadel.command.commands.LeaveCommand;
 import com.untamedears.citadel.command.commands.MaterialsCommand;
+import com.untamedears.citadel.command.commands.MatureCommand;
 import com.untamedears.citadel.command.commands.MembersCommand;
 import com.untamedears.citadel.command.commands.ModeratorsCommand;
 import com.untamedears.citadel.command.commands.NonReinforceableCommand;
@@ -70,6 +71,7 @@ public class CommandHandler {
         this.addCommand(new JoinCommand());
         this.addCommand(new LeaveCommand());
         this.addCommand(new MaterialsCommand());
+        this.addCommand(new MatureCommand());
         this.addCommand(new MembersCommand());
         this.addCommand(new ModeratorsCommand());
         this.addCommand(new NonReinforceableCommand());

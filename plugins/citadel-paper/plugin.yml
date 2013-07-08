@@ -1,6 +1,6 @@
 name: Citadel
 main: com.untamedears.citadel.Citadel
-version: 2.5.1
+version: 2.5.2
 description: Reinforce your structures!
 author: chrisrico, jonnyd (aka Gu3rr1lla)
 database: false
@@ -139,6 +139,9 @@ commands:
     description: Trigger acid block to eat a reinforcement
     usage: /ctacid
     permission: citadel.ctacid
+  ctmature:
+    description: Instantly mature a reinforcement
+    usage: /ctmature
 permissions:
   citadel.console:
     description: Console commands for Citadel
