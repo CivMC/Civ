@@ -59,4 +59,10 @@ public class ItemExchange {
 	public boolean isValid(){
 		return inputs.size()>0 && outputs.size()>0;
 	}
+	/*
+	 * Reports the number of valid input/output rule sets contained within the exchange
+	 */
+	public int getNumberRules(){
+		return inputs.size()<outputs.size() ? inputs.size() : outputs.size();
+	}
 }

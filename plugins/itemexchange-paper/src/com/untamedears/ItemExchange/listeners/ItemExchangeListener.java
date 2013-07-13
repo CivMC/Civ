@@ -30,7 +30,8 @@ import org.bukkit.inventory.PlayerInventory;
  * @author Brian Landry
  */
 public class ItemExchangeListener implements Listener{
-	private Map<Player,Location> interactionRecord=new HashMap<Player,Location>(100);	
+	private Map<Player,Location> locationRecord=new HashMap<Player,Location>(100);
+	private Map<Player,Integer> ruleIndex=new HashMap<Player,Integer>(100);
 	/**
 	 * Constructor
 	 */
@@ -53,76 +54,102 @@ public class ItemExchangeListener implements Listener{
 				Inventory exchangeInventory = ((InventoryHolder) e.getClickedBlock().getState()).getInventory();
 				ItemExchange itemExchange=ItemExchange.getItemExchange(exchangeInventory);
 				if(itemExchange.isValid()){
-					ExchangeRule input=itemExchange.getInputs().get(0);
-					ExchangeRule output=itemExchange.getOutputs().get(0);
-					PlayerInventory playerInventory=player.getInventory();
-					//If the player has interacted with this exchange previously or doesn't have an itemstack in his hand
-					if(interactionRecord.containsKey(player) && clicked.getLocation().equals(interactionRecord.get(player)) && e.getItem()!=null){
-						//Check if item in hand is the input
-						if(input.followsRules(e.getItem())){
-							//If the player has the input and the exchange has the output
-							if(input.followsRules(playerInventory)){
-								if(output.followsRules(exchangeInventory)){
-									ItemStack[] playerInput=InventoryHelpers.getItemStacks(playerInventory,input);
-									ItemStack[] exchangeOutput=InventoryHelpers.getItemStacks(exchangeInventory,output);
-									/*
-									 * Attempts to exchange items in the players inventory, if there ends up not being space in either of the inventories
-									 * the inventories are reset back to a copy of their prexisting inventories.
-									 * This has the potential for edge cases since efery itemstack in the players inventory is being replaced with a copy
-									 * of that item. But I haven't thought of any particular issues yet, probably should be tested in relation to prisonpearl.
-									*/
-									ItemStack[] playerInventoryOld=InventoryHelpers.deepCopy(playerInventory);
-									playerInventory.removeItem(playerInput);
-									if(playerInventory.addItem(exchangeOutput).isEmpty()){
-										ItemStack[] exchangeInventoryOld=InventoryHelpers.deepCopy(exchangeInventory);
-										exchangeInventory.removeItem(exchangeOutput);
-										if(exchangeInventory.addItem(playerInput).isEmpty()){
-											InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS,"Succesful exchange!"));
+					//If the player has interacted with this exchange previously
+					if(locationRecord.containsKey(player) && clicked.getLocation().equals(locationRecord.get(player))){
+						//If the hand is not empty
+						if(e.getItem()!=null){
+							ExchangeRule input=itemExchange.getInputs().get(ruleIndex.get(player));
+							ExchangeRule output=itemExchange.getOutputs().get(ruleIndex.get(player));
+							//Check if item in hand is the input
+							if(input.followsRules(e.getItem())){
+								PlayerInventory playerInventory=player.getInventory();
+								//If the player has the input and the exchange has the output
+								if(input.followsRules(playerInventory)){
+									if(output.followsRules(exchangeInventory)){
+										ItemStack[] playerInput=InventoryHelpers.getItemStacks(playerInventory,input);
+										ItemStack[] exchangeOutput=InventoryHelpers.getItemStacks(exchangeInventory,output);
+										/*
+										 * Attempts to exchange items in the players inventory, if there ends up not being space in either of the inventories
+										 * the inventories are reset back to a copy of their prexisting inventories.
+										 * This has the potential for edge cases since efery itemstack in the players inventory is being replaced with a copy
+										 * of that item. But I haven't thought of any particular issues yet, probably should be tested in relation to prisonpearl.
+										*/
+										ItemStack[] playerInventoryOld=InventoryHelpers.deepCopy(playerInventory);
+										playerInventory.removeItem(playerInput);
+										if(playerInventory.addItem(exchangeOutput).isEmpty()){
+											ItemStack[] exchangeInventoryOld=InventoryHelpers.deepCopy(exchangeInventory);
+											exchangeInventory.removeItem(exchangeOutput);
+											if(exchangeInventory.addItem(playerInput).isEmpty()){
+												InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS,"Succesful exchange!"));
+											}
+											else{
+												exchangeInventory.setContents(exchangeInventoryOld);
+												InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"The Exchange does not have enough inventory space!"));
+											}
 										}
 										else{
-											exchangeInventory.setContents(exchangeInventoryOld);
-											InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"The Exchange does not have enough inventory space!"));
+											playerInventory.setContents(playerInventoryOld);
+											InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You don't have enough inventory space!"));
 										}
 									}
-									else{
-										playerInventory.setContents(playerInventoryOld);
-										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You don't have enough inventory space!"));
+									else {
+										InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"Chest does not have enough of the output."));
 									}
 								}
 								else {
-									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"Chest does not have enough of the output."));
+									InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You don't have enough of the input."));
 								}
 							}
+							//If the item the player is holding is not that of the input of the exchange the rules of the exchange are displayed
 							else {
-								InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"You don't have enough of the input."));
+								List<InteractionResponse> responses=new ArrayList<InteractionResponse>();
+								responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Input: "));
+								for(String line:input.saveToLore()){
+									responses.add(new InteractionResponse(InteractionResult.SUCCESS,line));
+								}
+								responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Output: "));
+								for(String line:output.saveToLore()){
+									responses.add(new InteractionResponse(InteractionResult.SUCCESS,line));
+								}
+								responses.add(new InteractionResponse(InteractionResult.FAILURE,"The itemstack held does not match the input."));
+								InteractionResponse.messagePlayerResults(player, responses);
 							}
 						}
-						//If the item the player is holding is not that of the input of the exchange the rules of the exchange are displayed
-						else {
+						//If the players hand is empty cycle through exchange rules
+						else{
+							int currentRuleIndex=ruleIndex.get(player);
+							if(currentRuleIndex<itemExchange.getNumberRules()-1){
+								ruleIndex.put(player,ruleIndex.get(player)+1);
+							}
+							else{
+								ruleIndex.put(player,0);
+							}
 							List<InteractionResponse> responses=new ArrayList<InteractionResponse>();
 							responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Input: "));
-							for(String line:input.saveToLore()){
+							for(String line:itemExchange.getInputs().get(ruleIndex.get(player)).saveToLore()){
 								responses.add(new InteractionResponse(InteractionResult.SUCCESS,line));
 							}
 							responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Output: "));
-							for(String line:output.saveToLore()){
+							for(String line:itemExchange.getOutputs().get(ruleIndex.get(player)).saveToLore()){
 								responses.add(new InteractionResponse(InteractionResult.SUCCESS,line));
 							}
-							responses.add(new InteractionResponse(InteractionResult.FAILURE,"The itemstack held does not match the input."));
 							InteractionResponse.messagePlayerResults(player, responses);
 						}
 					}
-					//The rules of the item exchange are displayed
+					//If the player has not interacted with this exchange previously or doesn't have an itemstack in his hand
+					//The rules of the item exchange are displayed and first recipe is selected
 					else {
 						//Records the player interaction with the item exchange
-						interactionRecord.put(player, clicked.getLocation());
+						locationRecord.put(player, clicked.getLocation());
+						//Set the exchange recipe to the first one
+						ruleIndex.put(player,0);
 						List<InteractionResponse> responses=new ArrayList<InteractionResponse>();
 						responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Input: "));
-						for(String line:input.saveToLore()){
+						for(String line:itemExchange.getInputs().get(ruleIndex.get(player)).saveToLore()){
 							responses.add(new InteractionResponse(InteractionResult.SUCCESS,line));
 						}
 						responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Output: "));
-						for(String line:output.saveToLore()){
+						for(String line:itemExchange.getOutputs().get(ruleIndex.get(player)).saveToLore()){
 							responses.add(new InteractionResponse(InteractionResult.SUCCESS,line));
 						}
 						InteractionResponse.messagePlayerResults(player, responses);
