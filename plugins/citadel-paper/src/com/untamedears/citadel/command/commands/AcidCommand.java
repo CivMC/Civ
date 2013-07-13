@@ -57,6 +57,12 @@ public class AcidCommand extends PlayerCommand {
                 continue;
             }
             PlayerReinforcement pr = (PlayerReinforcement)rein;
+            if (pr.getMaxDurability() <= Citadel.getConfigManager().getMaturationInterval()) {
+                reinforcementBroken(pr);
+                block.breakNaturally();
+                sender.sendMessage("The acid block isn't strong enough to break anything");
+                return true;
+            }
             if (!pr.isAccessible(playerName)) {
                 continue;
             }

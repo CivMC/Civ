@@ -102,6 +102,7 @@ public class PlayerReinforcement implements
         setDurability(that.getDurability());
         setOwner(that.getOwner());
         setSecurityLevel(that.getSecurityLevel());
+        setMaturationTime(that.getMaturationTime());
         if (getDbAction() == DbUpdateAction.DELETE) {
             setDbAction(DbUpdateAction.SAVE);
         }
