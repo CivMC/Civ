@@ -1,6 +1,7 @@
 package com.untamedears.citadel.command;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Material;
@@ -35,11 +36,11 @@ public final class CommandUtils {
 		return hash;
 	}
 	
-	public static void printReinforcements(CommandSender sender, String name, HashMap<Material, Integer> reinforcements) {
-		sender.sendMessage("Group name: "+name);
+	public static void formatReinforcements(List<String> output, String name, HashMap<Material, Integer> reinforcements) {
+		output.add("Group name: "+name);
 		Set<Material> mats = reinforcements.keySet();
 		for (Material m : mats) {
-			sender.sendMessage(m.name()+": "+reinforcements.get(m));
+			output.add(m.name()+": "+reinforcements.get(m));
 		}
 	}
 	
@@ -85,14 +86,14 @@ public final class CommandUtils {
 		return result;
 	}
 	
-	public static void printGroupMembers(CommandSender sender, String name) {
+	public static void formatGroupMembers(List<String> output, String name) {
 		GroupManager groupManager = Citadel.getGroupManager();
 		Faction group = groupManager.getGroup(name);
 		if (group != null) {
-			sender.sendMessage("Group name: "+name);
-			sender.sendMessage("Admin: "+group.getFounder());
-			sender.sendMessage("Moderators: "+joinModeratorSet(groupManager.getModeratorsOfGroup(name)));
-			sender.sendMessage("Members: "+joinMemberSet(groupManager.getMembersOfGroup(name)));
+			output.add("Group name: "+name);
+			output.add("Admin: "+group.getFounder());
+			output.add("Moderators: "+joinModeratorSet(groupManager.getModeratorsOfGroup(name)));
+			output.add("Members: "+joinMemberSet(groupManager.getMembersOfGroup(name)));
 		}
 	}
 }
