@@ -285,13 +285,13 @@ public class Utility {
           final int maturationTime = timeUntilMature(reinforcement);
           if (maturationTime > 0) {
               durabilityLoss = maturationTime / 60 + 1;
-          }
-          int blockType = reinforcement.getBlock().getTypeId();
-          if (PlayerReinforcement.MATERIAL_SCALING.containsKey(blockType)) {
-              final double scale = PlayerReinforcement.MATERIAL_SCALING.get(blockType);
-              durabilityLoss = (int)((double)durabilityLoss * scale);
-              if (durabilityLoss < 0) {
-                  durabilityLoss = 1;
+              int blockType = reinforcement.getBlock().getTypeId();
+              if (PlayerReinforcement.MATERIAL_SCALING.containsKey(blockType)) {
+                  final double scale = PlayerReinforcement.MATERIAL_SCALING.get(blockType);
+                  durabilityLoss = (int)((double)durabilityLoss * scale);
+                  if (durabilityLoss < 0) {
+                      durabilityLoss = 1;
+                  }
               }
           }
           if (durability < durabilityLoss) {
