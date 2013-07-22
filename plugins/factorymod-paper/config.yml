@@ -705,10 +705,35 @@ production_factories:
         durability: 1
     recipes:
       - Smelt_Glass
+      - Smelt_Sandstone
     repair_multiple: 26
     repair_inputs:
       Sand:
         material: SAND
+        amount: 8
+      Charcoal:
+        material: COAL
+        durability: 1
+  Nether_Brick_Smelter:
+    name: Nether Brick Smelter
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Netherrack:
+        material: NETHERRACK
+        amount: 2048
+      Charcoal:
+        material: COAL
+        amount: 256
+        durability: 1
+    recipes:
+      - Smelt_Nether_bricks
+    repair_multiple: 26
+    repair_inputs:
+      Netherrack:
+        material: NETHERRACK
         amount: 8
       Charcoal:
         material: COAL
@@ -1518,6 +1543,116 @@ production_factories:
         amount: 5
       Redstone:
         material: REDSTONE
+  Basic_Redstone_Factory:
+    name: Basic Redstone Mechanism Factory
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Redstone:
+        material: REDSTONE
+        amount: 960
+      Stick:
+        material: STICK
+        amount: 512
+      Stone:
+        material: STONE
+        amount: 576
+      Netherquartz:
+        material: QUARTZ
+        amount: 256
+      Glass:
+        material: GLASS
+        amount: 128
+    recipes:
+      - Produce_Redstone_Torches
+      - Produce_Repeaters
+      - Produce_Comparators
+      - Produce_Daylight_Sensors
+    repair_multiple: 10
+    repair_inputs:
+      Netherquartz:
+        material: QUARTZ
+        amount: 25
+      Glass:
+        material: GLASS
+        amount: 12
+      Redstone:
+        material: REDSTONE
+        amount: 9
+  Advanced_Redstone_Factory:
+    name: Advanced Redstone Mechanism Factory
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Redstone:
+        material: REDSTONE
+        amount: 960
+      Chest:
+        material: CHEST
+        amount: 72
+      Glowstone:
+        material: GLOWSTONE
+        amount: 256
+      Iron_Ingot:
+        material: IRON_INGOT
+        amount: 576
+      Slime ball:
+        material: SLIME_BALL
+        amount: 32
+    recipes:
+      - Produce_Noteblocks
+      - Produce_Dispensers
+      - Produce_Redstone_lamps
+      - Produce_Pistons
+      - Produce_Sticky_Pistons
+    repair_multiple: 10
+    repair_inputs:
+      Redstone:
+        material: REDSTONE
+        amount: 9
+      Glowstone:
+        material: GLOWSTONE
+        amount: 25
+      Iron_Ingot:
+        material: IRON_INGOT
+        amount: 6
+  Fancy_Ore_Smelter:
+    name: Fancy Ore Smelter
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Lapis Lazuli:
+        material: INK_SACK
+        amount: 1536
+        durability: 4
+      Redstone:
+        material: REDSTONE
+        amount: 1152
+      Netherquartz:
+        material: QUARTZ
+        amount: 576
+    recipes:
+      - Smelt_Lapis_Lazuli_Ore
+      - Smelt_Redstone_Ore
+      - Smelt_Netherquartz_Ore
+    repair_multiple: 26
+    repair_inputs:
+      Lapis Lazuli:
+        material: INK_SACK
+        amount: 6
+        durability: 4
+      Redstone:
+        material: REDSTONE
+        amount: 5
+      Netherquartz:
+        material: QUARTZ
+        amount: 2
   Smelter:
     name: Ore Smelter
     fuel:
@@ -3402,6 +3537,62 @@ production_recipes:
       Glass:
         material: GLASS
         amount: 768
+  Smelt_Nether_bricks:
+    name: Smelt Nether bricks
+    production_time: 32
+    inputs:
+      Netherrack:
+        material: NETHERRACK
+        amount: 512
+    outputs:
+      Nether bricks:
+        material: NETHER_BRICK_ITEM
+        amount: 1024
+  Smelt_Sandstone:
+    name: Smelt Sandstone
+    production_time: 32
+    inputs:
+      Sand:
+        material: SAND
+        amount: 512
+    outputs:
+      Sandstone:
+        material: SANDSTONE
+        amount: 384
+  Smelt_Lapis_Lazuli_Ore:
+    name: Smelt Lapis Lazuli Ore
+    production_time: 6
+    inputs:
+      Lapis Ore:
+        material: LAPIS_ORE
+        amount: 32
+    outputs:
+      Lapis Lazuli:
+        material: INK_SACK
+        amount: 512
+        durability: 4
+  Smelt_Redstone_Ore:
+    name: Smelt Redstone Ore
+    production_time: 16
+    inputs:
+      Redstone Ore:
+        material: REDSTONE_ORE
+        amount: 128
+    outputs:
+      Redstone:
+        material: REDSTONE
+        amount: 1024
+  Smelt_Netherquartz_Ore:
+    name: Smelt Netherquartz ore
+    production_time: 6
+    inputs:
+      Netherquartz ore:
+        material: QUARTZ_ORE
+        amount: 64
+    outputs:
+      Quartz:
+        material: QUARTZ
+        amount: 192
   Dye_Brown_Wool_Gray:
     name: Dye Brown Wool Gray
     inputs:
@@ -3442,6 +3633,150 @@ production_recipes:
       Rail:
         material: RAILS
         amount: 528
+  Produce_Redstone_Torches:
+    name: Produce Redstone Torches
+    inputs:
+      Redstone:
+        material: REDSTONE
+        amount: 128
+      Stick:
+        material: STICK
+        amount: 128
+    outputs:
+      Redstone Torches:
+        material: REDSTONE_TORCH_ON
+        amount: 256
+  Produce_Repeaters:
+    name: Produce Repeaters
+    inputs:
+      Redstone:
+        material: REDSTONE
+        amount: 128
+      Stone:
+        material: STONE
+        amount: 128
+    outputs:
+      Redstone Torches:
+        material: DIODE
+        amount: 96             
+  Produce_Comparators:
+    name: Produce Comparators
+    inputs:
+      Redstone:
+        material: REDSTONE
+        amount: 32
+      Stone:
+        material: STONE
+        amount: 128
+      Netherquartz:
+        material: QUARTZ
+        amount: 24
+    outputs:
+      Comparators:
+        material: REDSTONE_COMPARATOR
+        amount: 32
+  Produce_Daylight_Sensors:
+    name: Produce Daylight Sensors
+    inputs:
+      Chest:
+        material: CHEST
+        amount: 4
+      Glass:
+        material: GLASS
+        amount: 64
+      Netherquartz:
+        material: QUARTZ
+        amount: 64
+    outputs:
+      Daylight sensors:
+        material: DAYLIGHT_DETECTOR
+        amount: 32
+  Produce_Noteblocks:
+    name: Produce Noteblocks
+    inputs:
+      Chest:
+        material: CHEST
+        amount: 48
+      Redstone:
+        material: REDSTONE
+        amount: 32
+    outputs:
+      Noteblocks:
+        material: NOTE_BLOCK
+        amount: 64
+  Produce_Dispensers:
+    name: Produce Dispensers
+    inputs:
+      Cobblestone:
+        material: COBBLESTONE
+        amount: 320
+      Redstone:
+        material: REDSTONE
+        amount: 32
+      String:
+        material: STRING
+        amount: 128
+      Chest:
+        material: CHEST
+        amount: 4
+    outputs:
+      Dispensers:
+        material: DISPENSER
+        amount: 64
+  Produce_Redstone_lamps:
+    name: Produce Redstone lamps
+    inputs:
+      Glowstone:
+        material: GLOWSTONE
+        amount: 128
+      Redstone:
+        material: REDSTONE
+        amount: 256
+    outputs:
+      Redstone lamps:
+        material: REDSTONE_LAMP_OFF
+        amount: 128
+  Produce_Pistons:
+    name: Produce Pistons
+    inputs:
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 128
+      Chest:
+        material: CHEST
+        amount: 32
+      Cobblestone:
+        material: COBBLESTONE
+        amount: 320
+      Redstone:
+        material: REDSTONE
+        amount: 48
+    outputs:
+      Pistons:
+        material: PISTON_BASE
+        amount: 128   
+  Produce_Sticky_Pistons:
+    name: Produce Sticky Pistons
+    inputs:
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 128
+      Chest:
+        material: CHEST
+        amount: 32
+      Cobblestone:
+        material: COBBLESTONE
+        amount: 320
+      Redstone:
+        material: REDSTONE
+        amount: 48
+      Slime Ball:
+        material: SLIME_BALL
+        amount: 64
+    outputs:
+      Pistons:
+        material: PISTON_STICKY_BASE
+        amount: 128
   Smelt_Gold_Ore:
     name: Smelt Gold Ore
     production_time: 3
