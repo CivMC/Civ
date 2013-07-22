@@ -6,13 +6,13 @@ import org.bukkit.entity.Player;
 
 import com.untamedears.ItemExchange.command.PlayerCommand;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
-import com.untamedears.ItemExchange.utility.InteractionResponse;
-import com.untamedears.ItemExchange.utility.InteractionResponse.InteractionResult;
 import com.untamedears.ItemExchange.utility.ExchangeRule;
 import com.untamedears.ItemExchange.utility.ExchangeRule.RuleType;
+import com.untamedears.ItemExchange.utility.ItemExchange;
 import static com.untamedears.citadel.Utility.getReinforcement;
 import static com.untamedears.citadel.Utility.isReinforced;
 import com.untamedears.citadel.entity.PlayerReinforcement;
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 
 /*
@@ -39,14 +39,14 @@ public class CreateCommand extends PlayerCommand {
 			if(ItemExchangePlugin.ACCEPTABLE_BLOCKS.contains(block.getState().getType())) {
 					if ((!ItemExchangePlugin.CITADEL_ENABLED || ItemExchangePlugin.CITADEL_ENABLED && !isReinforced(block)) || 
 						(((PlayerReinforcement) getReinforcement(block)).isAccessible(player))){
-						InteractionResponse.messagePlayerResult(player,ItemExchangePlugin.createExchange(block.getLocation(),player));
+						player.sendMessage(ItemExchange.createExchange(block.getLocation(),player));
 					}
 					else{
-						InteractionResponse.messagePlayerResult(player,new InteractionResponse(InteractionResult.FAILURE,"You do not have access to that block."));
+						player.sendMessage(ChatColor.RED+"You do not have access to that block.");
 					}
 				}
 			else {
-				InteractionResponse.messagePlayerResult(player,new InteractionResponse(InteractionResult.FAILURE,"Block in view is not suitable for an Item Exchange."));
+				player.sendMessage(ChatColor.RED+"Block in view is not suitable for an Item Exchange.");
 			}			
 		}
 		//Create a RuleBlock in the players inventory
@@ -66,10 +66,10 @@ public class CreateCommand extends PlayerCommand {
 					if(ruleType!=null) {
 						//Creates the ExchangeRule, converts it to an ItemStack and places it in the player's inventory
 						player.getInventory().addItem(ExchangeRule.parseItemStack(player.getItemInHand(),ruleType).toItemStack());
-						InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS,"Created Rule Block!"));
+						player.sendMessage(ChatColor.GREEN+"Created Rule Block!");
 					}
 					else {
-						InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"Please specify and input or output."));
+						player.sendMessage(ChatColor.RED+"Please specify and input or output.");
 					
 					}
 				}
@@ -78,15 +78,15 @@ public class CreateCommand extends PlayerCommand {
 					try {
 						//Attemptes to create the ExchangeRule, converts it to an ItemStack and places it in the player's inventory
 						player.getInventory().addItem(ExchangeRule.parseCreateCommand(args).toItemStack());
-						InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.SUCCESS,"Created Rule Block!"));
+						player.sendMessage(ChatColor.GREEN+"Created Rule Block!");
 					}
 					catch(ExchangeRuleParseException e) {
-						InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"Incorrect entry format."));
+						player.sendMessage(ChatColor.RED+"Incorrect entry format.");
 					}
 				}
 			}
 			else {
-				InteractionResponse.messagePlayerResult(player,new InteractionResponse(InteractionResult.FAILURE,"Player inventory is full!"));
+				player.sendMessage(ChatColor.RED+"Player inventory is full!");
 			}
 		}
 		return true;

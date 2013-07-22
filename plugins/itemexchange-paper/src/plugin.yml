@@ -1,4 +1,4 @@
-name: ItemExchange
+/helpname: ItemExchange
 main: com.untamedears.ItemExchange.ItemExchangePlugin
 author: gmlaxfanatic
 version: 0.1

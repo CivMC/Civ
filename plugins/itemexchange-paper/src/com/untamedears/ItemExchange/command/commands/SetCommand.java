@@ -7,8 +7,7 @@ import org.bukkit.entity.Player;
 import com.untamedears.ItemExchange.command.PlayerCommand;
 import com.untamedears.ItemExchange.utility.ExchangeRule;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
-import com.untamedears.ItemExchange.utility.InteractionResponse;
-import com.untamedears.ItemExchange.utility.InteractionResponse.InteractionResult;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -65,7 +64,7 @@ public class SetCommand extends PlayerCommand {
 			}
 		}
 		catch (ExchangeRuleParseException e) {
-			InteractionResponse.messagePlayerResult((Player)sender, new InteractionResponse(InteractionResult.FAILURE,"You are not holding an exchange rule."));
+			sender.sendMessage(ChatColor.RED+"You are not holding an exchange rule.");
 		}
 		catch (Exception e) {
 			e.printStackTrace();
