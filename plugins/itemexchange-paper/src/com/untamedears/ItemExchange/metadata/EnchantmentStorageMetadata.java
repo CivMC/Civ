@@ -10,10 +10,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.utility.ExchangeRule;
 
 public class EnchantmentStorageMetadata implements AdditionalMetadata {
-	private static final String[] numerals = {"I", "II", "III", "IV" + "V" + "VI" + "VII" + "VIII" + "IX" + "X"};
+	private static final String[] numerals = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"};
 	
 	private Map<Enchantment, Integer> enchantments;
 	
@@ -70,12 +71,14 @@ public class EnchantmentStorageMetadata implements AdditionalMetadata {
 			while(iterator.hasNext()) {
 				Enchantment enchantment = iterator.next();
 				
-				info.append(enchantment.getName()).append(" ");
+				String name = ItemExchangePlugin.ENCHANTMENT_NAME.containsKey(enchantment.getName()) ? ItemExchangePlugin.ENCHANTMENT_NAME.get(enchantment.getName()) : enchantment.getName();
+				
+				info.append(name).append(" ");
 				
 				int level = enchantments.get(enchantment);
 				
-				if(level < numerals.length)
-					info.append(numerals[level]);
+				if(level - 1 < numerals.length)
+					info.append(numerals[level - 1]);
 				else
 					info.append(level);
 				
