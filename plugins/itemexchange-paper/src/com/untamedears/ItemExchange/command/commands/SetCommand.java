@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import java.lang.IllegalArgumentException;
 
 /*
  * When holding an exchange rule block in the players hand allowes editing of the 
@@ -62,9 +63,16 @@ public class SetCommand extends PlayerCommand {
 			else if(args[0].equalsIgnoreCase("switchio") || args[0].equalsIgnoreCase("s")) {
 				exchangeRule.switchIO();
 			}
+			else{
+				throw new IllegalArgumentException(ChatColor.RED+"Incorrect Field: "+args[0]);
+			}
+			((Player)sender).setItemInHand(exchangeRule.toItemStack());
 		}
 		catch (ExchangeRuleParseException e) {
 			sender.sendMessage(ChatColor.RED+"You are not holding an exchange rule.");
+		}
+		catch (IllegalArgumentException e) {
+			sender.sendMessage(e.getMessage());
 		}
 		catch (Exception e) {
 			e.printStackTrace();
