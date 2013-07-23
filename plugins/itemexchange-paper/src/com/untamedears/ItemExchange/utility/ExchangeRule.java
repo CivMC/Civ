@@ -274,7 +274,7 @@ public class ExchangeRule {
 		compiledRule+=catorgorySpacer+hideString(displayName);
 		compiledRule+=catorgorySpacer;
 		for(String line:lore){
-			compiledRule+=secondarySpacer+hideString(displayName);
+			compiledRule+=secondarySpacer+hideString(line);
 		}
 		compiledRule+=catorgorySpacer+"§r";
 		return compiledRule;
