@@ -67,6 +67,7 @@ public class ExchangeRule {
 		{
 			requiredEnchantments.put(enchantment, itemStack.getEnchantments().get(enchantment));
 		}
+		ItemExchangePlugin.sendConsoleMessage(String.valueOf(requiredEnchantments.size()));
 		String displayName="";
 		String[] lore=new String[0];
 		if(itemStack.hasItemMeta())
@@ -97,10 +98,10 @@ public class ExchangeRule {
 			String secondarySpacer="§&§&§r";
 			String tertiarySpacer="§&§r";
 			//[Type,Material ID,Durability,Amount,RequiredEnchantments[],ExcludedEnchantments[],UnlistedEnchantments[],DisplayName,Lore]
-			String[] compiledRule=ruleBlock.getItemMeta().getLore().get(0).split("§&§&§&§&§r")[0].split(catorgorySpacer);
+			String[] compiledRule=ruleBlock.getItemMeta().getLore().get(0).split(catorgorySpacer);
 			//Check length is correct
-			if(compiledRule.length!=10){
-				throw new ExchangeRuleParseException("Invalid Rule Type");
+			if(compiledRule.length<9){
+				throw new ExchangeRuleParseException("Compiled Rule too short: "+String.valueOf(compiledRule.length));
 			}
 			//Get Rule Type
 			RuleType ruleType;
@@ -159,6 +160,7 @@ public class ExchangeRule {
 			return new ExchangeRule(material, amount, durability, requiredEnchantments,excludedEnchantments, unlistedEnchantmentsAllowed, displayName,lore,ruleType);
 		}
 		catch(Exception e){
+			e.printStackTrace();
 			throw new ExchangeRuleParseException("Invalid Exchange Rule");
 		}
 	}
@@ -233,7 +235,7 @@ public class ExchangeRule {
 		ItemMeta itemMeta=itemStack.getItemMeta();
 		itemMeta.setDisplayName("§r"+(ruleType==RuleType.INPUT ? "Input" : "Output")+": "+String.valueOf(amount)+" "+material.name()+":"+String.valueOf(durability));
 		List<String> isLore=new ArrayList<>();
-		isLore.add(compileRule()+"TESTING");
+		isLore.add(compileRule());
 		itemMeta.setLore(isLore);
 		itemStack.setItemMeta(itemMeta);
 		return itemStack;
@@ -255,6 +257,7 @@ public class ExchangeRule {
 		//Amount
 		compiledRule+=catorgorySpacer+hideString(String.valueOf(amount));
 		compiledRule+=catorgorySpacer;
+		ItemExchangePlugin.sendConsoleMessage(String.valueOf(requiredEnchantments.size()));
 		for(Entry<Enchantment,Integer> entry:requiredEnchantments.entrySet()){
 			compiledRule+=hideString(String.valueOf(entry.getKey().getId()))+tertiarySpacer+hideString(entry.getValue().toString())+secondarySpacer;
 		}
@@ -268,7 +271,7 @@ public class ExchangeRule {
 		for(String line:lore){
 			compiledRule+=secondarySpacer+hideString(displayName);
 		}
-		compiledRule+="§&§&§&§r";
+		compiledRule+=catorgorySpacer+"§r";
 		return compiledRule;
 	}
 	/*
@@ -337,11 +340,39 @@ public class ExchangeRule {
 	public String[] display(){
 		List<String> displayed=new ArrayList<>();
 		//Material type, durability and amount
-		displayed.add(new StringBuilder().append(ChatColor.YELLOW).append((ruleType==RuleType.INPUT ? "Input" : "Output")+": "+ChatColor.WHITE).append(amount).append(" "+material.name()+":").append(durability).toString());
+		displayed.add(new StringBuilder().append(ChatColor.YELLOW).append((ruleType==RuleType.INPUT ? "Input" : "Output")+": "+ChatColor.WHITE).append(amount).append(" "+material.name()+":").append(durability).append(displayName.equals("") ? "" : "\""+displayName+"\"").toString());
 		//Enchantments
-		//DisplayName
+		displayed.add(displayedEnchantments());
 		//Lore
+		if(lore.length==1){
+			displayed.add(ChatColor.DARK_PURPLE+lore[0]);
+		}
+		else if(lore.length>1){
+			displayed.add(ChatColor.DARK_PURPLE+lore[0]+"...");
+		}
 		return displayed.toArray(new String[displayed.size()]);
+	}
+	private String displayedEnchantments(){
+		if(requiredEnchantments.size()>0||excludedEnchantments.size()>0){
+			StringBuilder stringBuilder=new StringBuilder();
+			for(Entry<Enchantment,Integer> entry:requiredEnchantments.entrySet()){
+				stringBuilder.append(ChatColor.GREEN);
+				stringBuilder.append(ItemExchangePlugin.ENCHANTMENT_ABBRV.get(entry.getKey().getName()));
+				stringBuilder.append(entry.getValue());
+				stringBuilder.append(" ");
+			}
+			for(Entry<Enchantment,Integer> entry:excludedEnchantments.entrySet()){
+				stringBuilder.append(ChatColor.RED);
+				stringBuilder.append(ItemExchangePlugin.ENCHANTMENT_ABBRV.get(entry.getKey().getName()));
+				stringBuilder.append(entry.getValue());
+				stringBuilder.append(" ");
+			}
+			stringBuilder.append(unlistedEnchantmentsAllowed ? ChatColor.GREEN+"Other Enchantments Allowed." : ChatColor.RED+"Other Enchantments Disallowed");
+			return stringBuilder.toString();
+		}
+		else{
+			return unlistedEnchantmentsAllowed ? ChatColor.GREEN+"Any enchantments allowed" : ChatColor.RED+"No enchantments allowed";
+		}
 	}
 	public void setMaterial(Material material){
 		this.material=material;
