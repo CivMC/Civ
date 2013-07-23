@@ -8,10 +8,11 @@ package com.untamedears.ItemExchange.exceptions;
  *
  * @author Brian
  */
-public class ExchangeRuleParseException extends Exception{
-	public ExchangeRuleParseException(String message){
+public class ExchangeRuleParseException extends Exception {
+	public ExchangeRuleParseException(String message) {
 		super(message);
 	}
+
 	public ExchangeRuleParseException(String message, Throwable throwable) {
 		super(message, throwable);
 	}
