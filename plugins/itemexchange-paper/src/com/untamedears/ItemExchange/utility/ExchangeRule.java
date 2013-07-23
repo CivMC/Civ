@@ -358,7 +358,15 @@ public class ExchangeRule {
 		return displayed.toArray(new String[displayed.size()]);
 	}
 	private String displayedItemStackInfo(){
-		return new StringBuilder().append(ChatColor.YELLOW).append((ruleType==RuleType.INPUT ? "Input" : "Output")+": "+ChatColor.WHITE).append(amount).append(" "+material.name()+":").append(durability).append(displayName.equals("") ? "" : "\""+displayName+"\"").toString();
+		StringBuilder stringBuilder=new StringBuilder().append(ChatColor.YELLOW).append((ruleType==RuleType.INPUT ? "Input" : "Output")+": "+ChatColor.WHITE).append(amount);
+		if(ItemExchangePlugin.MATERIAL_NAME.containsKey(new ItemStack(material,durability))){
+			stringBuilder.append(" "+ItemExchangePlugin.MATERIAL_NAME.get(new ItemStack(material,durability)));
+		}
+		else{
+			stringBuilder.append(material.name()+":").append(durability);
+		}
+		stringBuilder.append(displayName.equals("") ? "" : " \""+displayName+"\"");
+		return stringBuilder.toString();
 	}
 	private String displayedEnchantments(){
 		if(requiredEnchantments.size()>0||excludedEnchantments.size()>0){
