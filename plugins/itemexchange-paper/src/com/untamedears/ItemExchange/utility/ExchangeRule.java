@@ -14,10 +14,13 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
+import com.untamedears.ItemExchange.metadata.AdditionalMetadata;
+import com.untamedears.ItemExchange.metadata.BookMetadata;
 
 /*
  * Contains the rules pertaining to an item which can particpate in the exchange
@@ -28,6 +31,17 @@ import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
  * @author Brian Landry
  */
 public class ExchangeRule {
+	public static final String hiddenRuleSpacer = "§&§&§&§&§r";
+	public static final String hiddenCategorySpacer = "§&§&§&§r";
+	public static final String hiddenSecondarySpacer = "§&§&§r";
+	public static final String hiddenTertiarySpacer = "§&§r";
+	
+	public static final String ruleSpacer = "&&&&r";
+	public static final String categorySpacer = "&&&r";
+	public static final String secondarySpacer = "&&r";
+	public static final String tertiarySpacer = "&r";
+	
+	
 	private Material material;
 	private int amount;
 	private short durability;
@@ -37,6 +51,7 @@ public class ExchangeRule {
 	private String displayName;
 	private String[] lore;
 	private RuleType ruleType;
+	private AdditionalMetadata additional = null;
 
 	/*
 	 * Describes whether the Exchange Rule functions as an input or an output
@@ -60,6 +75,10 @@ public class ExchangeRule {
 		this.lore = lore;
 		this.ruleType = ruleType;
 	}
+	
+	public void setAdditionalMetadata(AdditionalMetadata meta) {
+		this.additional = meta;
+	}
 
 	/*
 	 * Parses an ItemStack into an ExchangeRule which represents that ItemStack
@@ -71,6 +90,7 @@ public class ExchangeRule {
 		}
 		String displayName = "";
 		String[] lore = new String[0];
+		AdditionalMetadata additional = null;
 		if (itemStack.hasItemMeta()) {
 			ItemMeta itemMeta = itemStack.getItemMeta();
 			if (itemMeta.hasDisplayName()) {
@@ -79,15 +99,22 @@ public class ExchangeRule {
 			if (itemMeta.hasLore()) {
 				lore = itemMeta.getLore().toArray(new String[itemMeta.getLore().size()]);
 			}
+			
+			if(itemMeta instanceof BookMeta) {
+				additional = new BookMetadata((BookMeta) itemMeta);
+			}
 		}
-		return new ExchangeRule(itemStack.getType(), itemStack.getAmount(), itemStack.getDurability(), requiredEnchantments, new HashMap<Enchantment, Integer>(), false, displayName, lore, ruleType);
+		
+		ExchangeRule exchangeRule = new ExchangeRule(itemStack.getType(), itemStack.getAmount(), itemStack.getDurability(), requiredEnchantments, new HashMap<Enchantment, Integer>(), false, displayName, lore, ruleType);
+		
+		exchangeRule.setAdditionalMetadata(additional);
+		
+		return exchangeRule;
 	}
 	
 	public static ExchangeRule[] parseBulkRuleBlock(ItemStack ruleBlock) throws ExchangeRuleParseException {
 		try {
-			String ruleSpacer = "§&§&§&§&§r";
-
-			String[] rules = ruleBlock.getItemMeta().getLore().get(1).split(ruleSpacer);
+			String[] rules = ruleBlock.getItemMeta().getLore().get(1).split(hiddenRuleSpacer);
 
 			List<ExchangeRule> ruleList = new ArrayList<ExchangeRule>();
 
@@ -119,12 +146,9 @@ public class ExchangeRule {
 	
 	public static ExchangeRule parseRuleString(String ruleString) throws ExchangeRuleParseException {
 		try {
-			String categorySpacer = "§&§&§&§r";
-			String secondarySpacer = "§&§&§r";
-			String tertiarySpacer = "§&§r";
 			// [Type,Material
 			// ID,Durability,Amount,RequiredEnchantments[],ExcludedEnchantments[],UnlistedEnchantments[],DisplayName,Lore]
-			String[] compiledRule = ruleString.split(categorySpacer);
+			String[] compiledRule = ruleString.split(hiddenCategorySpacer);
 			// Check length is correct
 			if (compiledRule.length < 9) {
 				throw new ExchangeRuleParseException("Compiled Rule too short: " + String.valueOf(compiledRule.length));
@@ -148,23 +172,23 @@ public class ExchangeRule {
 			int amount = Integer.parseInt(showString(compiledRule[3]));
 			// Get Required Enchantments
 			Map<Enchantment, Integer> requiredEnchantments = new HashMap<Enchantment, Integer>();
-			for (String compiledEnchant : compiledRule[4].split(secondarySpacer)) {
+			for (String compiledEnchant : compiledRule[4].split(hiddenSecondarySpacer)) {
 				if (compiledEnchant.equals("")) {
 					continue;
 				}
-				Enchantment enchantment = Enchantment.getById(Integer.valueOf(showString(compiledEnchant.split(tertiarySpacer)[0])));
-				Integer level = Integer.valueOf(showString(compiledEnchant.split(tertiarySpacer)[1]));
+				Enchantment enchantment = Enchantment.getById(Integer.valueOf(showString(compiledEnchant.split(hiddenTertiarySpacer)[0])));
+				Integer level = Integer.valueOf(showString(compiledEnchant.split(hiddenTertiarySpacer)[1]));
 				requiredEnchantments.put(enchantment, level);
 			}
 
 			// Get Excluded Enchantments
 			Map<Enchantment, Integer> excludedEnchantments = new HashMap<Enchantment, Integer>();
-			for (String compiledEnchant : compiledRule[5].split(secondarySpacer)) {
+			for (String compiledEnchant : compiledRule[5].split(hiddenSecondarySpacer)) {
 				if (compiledEnchant.equals("")) {
 					continue;
 				}
-				Enchantment enchantment = Enchantment.getById(Integer.valueOf(showString(compiledEnchant.split(tertiarySpacer)[0])));
-				Integer level = Integer.valueOf(showString(compiledEnchant.split(tertiarySpacer)[1]));
+				Enchantment enchantment = Enchantment.getById(Integer.valueOf(showString(compiledEnchant.split(hiddenTertiarySpacer)[0])));
+				Integer level = Integer.valueOf(showString(compiledEnchant.split(hiddenTertiarySpacer)[1]));
 				excludedEnchantments.put(enchantment, level);
 			}
 			// Get if unlisted enchantments are allowed
@@ -186,9 +210,20 @@ public class ExchangeRule {
 			// Get Lore
 			String[] lore = new String[0];
 			if (!compiledRule[8].equals("")) {
-				lore = showString(compiledRule[8]).split(secondarySpacer);
+				lore = showString(compiledRule[8]).split(hiddenSecondarySpacer);
 			}
-			return new ExchangeRule(material, amount, durability, requiredEnchantments, excludedEnchantments, unlistedEnchantmentsAllowed, displayName, lore, ruleType);
+			
+			AdditionalMetadata additional = null;
+			
+			if(material == Material.WRITTEN_BOOK) {
+				additional = BookMetadata.deserialize(showString(compiledRule[9]));
+			}
+			
+			ExchangeRule exchangeRule = new ExchangeRule(material, amount, durability, requiredEnchantments, excludedEnchantments, unlistedEnchantmentsAllowed, displayName, lore, ruleType);
+			
+			exchangeRule.setAdditionalMetadata(additional);
+			
+			return exchangeRule;
 		}
 		catch (Exception e) {
 			throw new ExchangeRuleParseException("Invalid Exchange Rule");
@@ -308,33 +343,34 @@ public class ExchangeRule {
 	 * Saves the exchange rule to lore in a semi-readable fashion
 	 */
 	public String compileRule() {
-		String catorgorySpacer = "§&§&§&§r";
-		String secondarySpacer = "§&§&§r";
-		String tertiarySpacer = "§&§r";
 		String compiledRule = "";
 		// RuleType
 		compiledRule += ruleType.equals(RuleType.INPUT) ? hideString("i") : hideString("o");
 		// Material ID
-		compiledRule += catorgorySpacer + hideString(String.valueOf(material.getId()));
+		compiledRule += hiddenCategorySpacer + hideString(String.valueOf(material.getId()));
 		// Durability
-		compiledRule += catorgorySpacer + hideString(String.valueOf(durability));
+		compiledRule += hiddenCategorySpacer + hideString(String.valueOf(durability));
 		// Amount
-		compiledRule += catorgorySpacer + hideString(String.valueOf(amount));
-		compiledRule += catorgorySpacer;
+		compiledRule += hiddenCategorySpacer + hideString(String.valueOf(amount));
+		compiledRule += hiddenCategorySpacer;
 		for (Entry<Enchantment, Integer> entry : requiredEnchantments.entrySet()) {
-			compiledRule += hideString(String.valueOf(entry.getKey().getId())) + tertiarySpacer + hideString(entry.getValue().toString()) + secondarySpacer;
+			compiledRule += hideString(String.valueOf(entry.getKey().getId())) + hiddenTertiarySpacer + hideString(entry.getValue().toString()) + hiddenSecondarySpacer;
 		}
-		compiledRule += catorgorySpacer;
+		compiledRule += hiddenCategorySpacer;
 		for (Entry<Enchantment, Integer> entry : excludedEnchantments.entrySet()) {
-			compiledRule += hideString(String.valueOf(entry.getKey().getId())) + tertiarySpacer + hideString(String.valueOf(entry)) + secondarySpacer;
+			compiledRule += hideString(String.valueOf(entry.getKey().getId())) + hiddenTertiarySpacer + hideString(String.valueOf(entry)) + hiddenSecondarySpacer;
 		}
-		compiledRule += catorgorySpacer + (unlistedEnchantmentsAllowed ? hideString("1") : hideString("0"));
-		compiledRule += catorgorySpacer + hideString(displayName);
-		compiledRule += catorgorySpacer;
+		compiledRule += hiddenCategorySpacer + (unlistedEnchantmentsAllowed ? hideString("1") : hideString("0"));
+		compiledRule += hiddenCategorySpacer + hideString(displayName);
+		compiledRule += hiddenCategorySpacer;
 		for (String line : lore) {
-			compiledRule += secondarySpacer + hideString(line);
+			compiledRule += hiddenSecondarySpacer + hideString(line);
 		}
-		compiledRule += catorgorySpacer + "§r";
+		compiledRule += hiddenCategorySpacer;
+		if(additional != null) {
+			compiledRule += hideString(additional.serialize());
+		}
+		compiledRule += hiddenCategorySpacer + "§r";
 		return compiledRule;
 	}
 
@@ -367,6 +403,10 @@ public class ExchangeRule {
 		else if (requiredEnchantments.size() > 0) {
 			followsRules = false;
 		}
+		
+		if(additional != null)
+			followsRules = followsRules && additional.matches(itemStack);
+		
 		// Check displayName and Lore
 		if (itemStack.hasItemMeta()) {
 			ItemMeta itemMeta = itemStack.getItemMeta();
@@ -396,6 +436,10 @@ public class ExchangeRule {
 		List<String> displayed = new ArrayList<>();
 		// Material type, durability and amount
 		displayed.add(displayedItemStackInfo());
+		// Additional metadata (books, etc.)
+		if(additional != null) {
+			displayed.add(additional.getDisplayedInfo());
+		}
 		// Enchantments
 		displayed.add(displayedEnchantments());
 		// Lore
