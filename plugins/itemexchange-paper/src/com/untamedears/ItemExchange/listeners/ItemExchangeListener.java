@@ -56,7 +56,7 @@ public class ItemExchangeListener implements Listener{
 	public void onInventoryClick(InventoryClickEvent event) {
 		if(event.isShiftClick()) {
 			try {
-				ExchangeRule exchangeRule = ExchangeRule.parseRuleBlock(event.getCursor());
+				ExchangeRule exchangeRule = ExchangeRule.parseRuleBlock(event.getCurrentItem());
 				
 				int amount = exchangeRule.getAmount();
 				
@@ -67,6 +67,8 @@ public class ItemExchangeListener implements Listener{
 					if(amount > 1)
 						exchangeRule.setAmount(amount - 1);
 				}
+				
+				event.setCurrentItem(exchangeRule.toItemStack());
 				
 				event.setCancelled(true);
 			}
