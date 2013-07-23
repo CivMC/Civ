@@ -67,7 +67,6 @@ public class ExchangeRule {
 		{
 			requiredEnchantments.put(enchantment, itemStack.getEnchantments().get(enchantment));
 		}
-		ItemExchangePlugin.sendConsoleMessage(String.valueOf(requiredEnchantments.size()));
 		String displayName="";
 		String[] lore=new String[0];
 		if(itemStack.hasItemMeta())
@@ -98,7 +97,6 @@ public class ExchangeRule {
 			String secondarySpacer="§&§&§r";
 			String tertiarySpacer="§&§r";
 			//[Type,Material ID,Durability,Amount,RequiredEnchantments[],ExcludedEnchantments[],UnlistedEnchantments[],DisplayName,Lore]
-			ItemExchangePlugin.sendConsoleMessage(ruleBlock.getItemMeta().getLore().get(0));
 			String[] compiledRule=ruleBlock.getItemMeta().getLore().get(0).split(catorgorySpacer);
 			//Check length is correct
 			if(compiledRule.length<9){
@@ -123,7 +121,6 @@ public class ExchangeRule {
 			int amount=Integer.parseInt(showString(compiledRule[3]));
 			//Get Required Enchantments
 			Map<Enchantment,Integer> requiredEnchantments=new HashMap<Enchantment,Integer>();
-			ItemExchangePlugin.sendConsoleMessage("."+StringUtils.join(compiledRule[4].split(secondarySpacer),"-")+".");
 			for(String compiledEnchant:compiledRule[4].split(secondarySpacer)){
 				if(compiledEnchant.equals("")){
 					continue;
@@ -134,7 +131,6 @@ public class ExchangeRule {
 			}
 			
 			//Get Excluded Enchantments
-			ItemExchangePlugin.sendConsoleMessage("."+StringUtils.join(compiledRule[5].split(secondarySpacer),"-")+".");
 			Map<Enchantment,Integer> excludedEnchantments=new HashMap<Enchantment,Integer>();
 			for(String compiledEnchant:compiledRule[5].split(secondarySpacer)){
 				if(compiledEnchant.equals("")){
@@ -168,7 +164,6 @@ public class ExchangeRule {
 			return new ExchangeRule(material, amount, durability, requiredEnchantments,excludedEnchantments, unlistedEnchantmentsAllowed, displayName,lore,ruleType);
 		}
 		catch(Exception e){
-			e.printStackTrace();
 			throw new ExchangeRuleParseException("Invalid Exchange Rule");
 		}
 	}
@@ -241,10 +236,13 @@ public class ExchangeRule {
 		ItemStack itemStack=ItemExchangePlugin.ITEM_RULE_ITEMSTACK.clone();
 		
 		ItemMeta itemMeta=itemStack.getItemMeta();
-		itemMeta.setDisplayName("§r"+(ruleType==RuleType.INPUT ? "Input" : "Output")+": "+String.valueOf(amount)+" "+material.name()+":"+String.valueOf(durability));
-		List<String> isLore=new ArrayList<>();
-		isLore.add(compileRule());
-		itemMeta.setLore(isLore);
+		itemMeta.setDisplayName(displayedItemStackInfo());
+		List<String> newLore=new ArrayList<>();
+		newLore.add(compileRule()+displayedEnchantments());
+		if(lore.length>0){
+			newLore.add(displayedLore());
+		}
+		itemMeta.setLore(newLore);
 		itemStack.setItemMeta(itemMeta);
 		return itemStack;
 	}
@@ -265,7 +263,6 @@ public class ExchangeRule {
 		//Amount
 		compiledRule+=catorgorySpacer+hideString(String.valueOf(amount));
 		compiledRule+=catorgorySpacer;
-		ItemExchangePlugin.sendConsoleMessage(String.valueOf(requiredEnchantments.size()));
 		for(Entry<Enchantment,Integer> entry:requiredEnchantments.entrySet()){
 			compiledRule+=hideString(String.valueOf(entry.getKey().getId()))+tertiarySpacer+hideString(entry.getValue().toString())+secondarySpacer;
 		}
@@ -348,7 +345,7 @@ public class ExchangeRule {
 	public String[] display(){
 		List<String> displayed=new ArrayList<>();
 		//Material type, durability and amount
-		displayed.add(new StringBuilder().append(ChatColor.YELLOW).append((ruleType==RuleType.INPUT ? "Input" : "Output")+": "+ChatColor.WHITE).append(amount).append(" "+material.name()+":").append(durability).append(displayName.equals("") ? "" : "\""+displayName+"\"").toString());
+		displayed.add(displayedItemStackInfo());
 		//Enchantments
 		displayed.add(displayedEnchantments());
 		//Lore
@@ -359,6 +356,9 @@ public class ExchangeRule {
 			displayed.add(ChatColor.DARK_PURPLE+lore[0]+"...");
 		}
 		return displayed.toArray(new String[displayed.size()]);
+	}
+	private String displayedItemStackInfo(){
+		return new StringBuilder().append(ChatColor.YELLOW).append((ruleType==RuleType.INPUT ? "Input" : "Output")+": "+ChatColor.WHITE).append(amount).append(" "+material.name()+":").append(durability).append(displayName.equals("") ? "" : "\""+displayName+"\"").toString();
 	}
 	private String displayedEnchantments(){
 		if(requiredEnchantments.size()>0||excludedEnchantments.size()>0){
@@ -380,6 +380,17 @@ public class ExchangeRule {
 		}
 		else{
 			return unlistedEnchantmentsAllowed ? ChatColor.GREEN+"Any enchantments allowed" : ChatColor.RED+"No enchantments allowed";
+		}
+	}
+	private String displayedLore(){
+		if(lore.length==0){
+			return "";
+		}
+		else if(lore.length==1){
+			return (ChatColor.DARK_PURPLE+lore[0]);
+		}
+		else{
+			return ChatColor.DARK_PURPLE+lore[0]+"...";
 		}
 	}
 	public void setMaterial(Material material){
