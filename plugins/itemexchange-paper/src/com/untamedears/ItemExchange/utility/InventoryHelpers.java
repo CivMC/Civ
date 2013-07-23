@@ -27,12 +27,15 @@ public class InventoryHelpers {
 			if (itemStack != null && itemRule.followsRules(itemStack)) {
 				if (itemStack.getAmount() <= requiredAmount) {
 					itemStacks.add(itemStack);
+					
 					requiredAmount -= itemStack.getAmount();
 				}
 				else {
 					ItemStack itemStackClone = itemStack.clone();
 					itemStackClone.setAmount(requiredAmount);
 					itemStacks.add(itemStackClone);
+					
+					requiredAmount = 0;
 				}
 			}
 		}
