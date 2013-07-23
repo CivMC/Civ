@@ -110,6 +110,7 @@ public class ExchangeRule {
 	 */
 	public static ExchangeRule parseRuleBlock(ItemStack ruleBlock) throws ExchangeRuleParseException {
 		try {
+<<<<<<< HEAD
 			return parseRuleString(ruleBlock.getItemMeta().getLore().get(0));
 		}
 		catch(Exception e) {
@@ -120,11 +121,18 @@ public class ExchangeRule {
 	public static ExchangeRule parseRuleString(String ruleString) throws ExchangeRuleParseException {
 		try {
 			String categorySpacer = "§&§&§&§r";
+=======
+			String catorgorySpacer = "§&§&§&§r";
+>>>>>>> upstream/master
 			String secondarySpacer = "§&§&§r";
 			String tertiarySpacer = "§&§r";
 			// [Type,Material
 			// ID,Durability,Amount,RequiredEnchantments[],ExcludedEnchantments[],UnlistedEnchantments[],DisplayName,Lore]
+<<<<<<< HEAD
 			String[] compiledRule = ruleString.split(categorySpacer);
+=======
+			String[] compiledRule = ruleBlock.getItemMeta().getLore().get(0).split(catorgorySpacer);
+>>>>>>> upstream/master
 			// Check length is correct
 			if (compiledRule.length < 9) {
 				throw new ExchangeRuleParseException("Compiled Rule too short: " + String.valueOf(compiledRule.length));
@@ -257,6 +265,7 @@ public class ExchangeRule {
 			throw new ExchangeRuleParseException("Invalid Exchange Rule");
 		}
 	}
+<<<<<<< HEAD
 	
 	public static ItemStack toBulkItemStack(Collection<ExchangeRule> rules) {
 		ItemStack itemStack = ItemExchangePlugin.ITEM_RULE_ITEMSTACK.clone();
@@ -285,6 +294,8 @@ public class ExchangeRule {
 		itemStack.setItemMeta(itemMeta);
 		return itemStack;
 	}
+=======
+>>>>>>> upstream/master
 
 	/*
 	 * Stores the exchange rule as an item stack
@@ -294,7 +305,11 @@ public class ExchangeRule {
 
 		ItemMeta itemMeta = itemStack.getItemMeta();
 		itemMeta.setDisplayName(displayedItemStackInfo());
+<<<<<<< HEAD
 		List<String> newLore = new ArrayList<String>();
+=======
+		List<String> newLore = new ArrayList<>();
+>>>>>>> upstream/master
 		newLore.add(compileRule() + displayedEnchantments());
 		if (lore.length > 0) {
 			newLore.add(displayedLore());
@@ -407,6 +422,11 @@ public class ExchangeRule {
 		}
 		return displayed.toArray(new String[displayed.size()]);
 	}
+<<<<<<< HEAD
+
+	private String displayedItemStackInfo() {
+		return new StringBuilder().append(ChatColor.YELLOW).append((ruleType == RuleType.INPUT ? "Input" : "Output") + ": " + ChatColor.WHITE).append(amount).append(" " + material.name() + ":").append(durability).append(displayName.equals("") ? "" : "\"" + displayName + "\"").toString();
+=======
 	
 	private String displayedItemStackInfo() {
 		StringBuilder stringBuilder = new StringBuilder().append(ChatColor.YELLOW).append((ruleType==RuleType.INPUT ? "Input" : "Output")+": "+ChatColor.WHITE).append(amount);
@@ -418,6 +438,7 @@ public class ExchangeRule {
 		}
 		stringBuilder.append(displayName.equals("") ? "" : " \""+displayName+"\"");
 		return stringBuilder.toString();
+>>>>>>> upstream/master
 	}
 
 	private String displayedEnchantments() {

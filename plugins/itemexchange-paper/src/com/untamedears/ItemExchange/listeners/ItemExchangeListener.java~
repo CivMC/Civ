@@ -83,6 +83,11 @@ public class ItemExchangeListener implements Listener {
 				event.setCancelled(true);
 			}
 			catch (ExchangeRuleParseException e) {
+<<<<<<< HEAD
+				
+=======
+
+>>>>>>> upstream/master
 			}
 		}
 		

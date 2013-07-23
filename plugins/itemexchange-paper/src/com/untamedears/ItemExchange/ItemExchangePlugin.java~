@@ -25,8 +25,12 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author Brian Landry
  */
 public class ItemExchangePlugin extends JavaPlugin {
+<<<<<<< HEAD
 	public static ItemExchangePlugin instance;
 	
+=======
+
+>>>>>>> upstream/master
 	private static final CommandHandler commandHandler = new CommandHandler();
 	// Blocks that can be used as exchanges, any block with an inventory
 	// *should* works
@@ -49,8 +53,11 @@ public class ItemExchangePlugin extends JavaPlugin {
 	}
 
 	public void onEnable() {
+<<<<<<< HEAD
 		instance = this;
 		
+=======
+>>>>>>> upstream/master
 		// load the config.yml
 		initConfig();
 		// Import CSVs
