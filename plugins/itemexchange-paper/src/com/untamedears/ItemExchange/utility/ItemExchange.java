@@ -4,12 +4,12 @@
  */
 package com.untamedears.ItemExchange.utility;
 
-import com.untamedears.ItemExchange.ItemExchangePlugin;
-import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -17,6 +17,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+
+import com.untamedears.ItemExchange.ItemExchangePlugin;
+import com.untamedears.ItemExchange.events.IETransactionEvent;
+import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 
 /**
  *
@@ -154,6 +158,10 @@ public class ItemExchange {
 									ItemStack[] exchangeInventoryOld=InventoryHelpers.deepCopy(inventory);
 									inventory.removeItem(exchangeOutput);
 									if(inventory.addItem(playerInput).isEmpty()){
+										IETransactionEvent event = new IETransactionEvent(player, location);
+										
+										Bukkit.getPluginManager().callEvent(event);
+										
 										player.sendMessage(ChatColor.GREEN+"Succesful exchange!");
 									}
 									else{
