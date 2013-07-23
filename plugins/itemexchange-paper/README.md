@@ -32,6 +32,11 @@ The fields which may be set with this command are as follows:
 
 For all fields except switch io a value must be specified. switchio simply toggles the exchange rule between an input and output rule. enchantment must have also specify a modifier of "required" or "excluded", this specifies whether the enchantment is required for the exchange or prohibited from the exchange, enchantments not included in either of these categories are ignored during exchanges. Multiple lines of lore can be entered by placing a ";" at each linebreak.
 
+##Bulk exchange rules
+It is possible to merge multiple exchange rules into one item by putting them all in a crafting grid together. This will create a bulk exchange rule.
+-  Any amount of exchange rules and bulk exchange rules can be put into the grid to craft a new bulk exchange rule.
+-  Dropping a bulk exchange rule will convert it into the exchange rules that it represented.
+
 ##Other Notes
 -  To increase usability where possible the english displayed name (referred to as "common name") is used in place of the bukkit material name and durability value.
 -  Current accepted inventory blocks are chests, double chests, dispensors, trapped chests and double trapped chests. Nothing prohibits additional inventory blocks from being added except for testing time.
