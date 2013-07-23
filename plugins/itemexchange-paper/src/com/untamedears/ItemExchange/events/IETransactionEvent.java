@@ -7,23 +7,23 @@ import org.bukkit.event.HandlerList;
 
 public class IETransactionEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
-	
+
 	private Player player;
 	private Location location;
-	
+
 	public IETransactionEvent(Player player, Location location) {
 		this.player = player;
 		this.location = location;
 	}
-	
+
 	public Player getPlayer() {
 		return player;
 	}
-	
+
 	public Location getExchangeLocation() {
 		return location;
 	}
-	
+
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;
