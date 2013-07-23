@@ -282,7 +282,7 @@ realistic_biomes:
 
   CHICKEN:
    inherit: animal
-   base_rate: 0.2
+   base_rate: 0.4
    not_full_sunlight_multiplier: 1.0
    biomes:
     temperate: 1.0
@@ -320,7 +320,7 @@ realistic_biomes:
 
   mat_EGG:
    inherit: CHICKEN
-   base_rate: 0.05
+   base_rate: 0.1
    biomes:
     SKY: 0.25
 
