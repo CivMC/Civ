@@ -98,6 +98,7 @@ public class ExchangeRule {
 			String secondarySpacer="§&§&§r";
 			String tertiarySpacer="§&§r";
 			//[Type,Material ID,Durability,Amount,RequiredEnchantments[],ExcludedEnchantments[],UnlistedEnchantments[],DisplayName,Lore]
+			ItemExchangePlugin.sendConsoleMessage(ruleBlock.getItemMeta().getLore().get(0));
 			String[] compiledRule=ruleBlock.getItemMeta().getLore().get(0).split(catorgorySpacer);
 			//Check length is correct
 			if(compiledRule.length<9){
@@ -122,16 +123,23 @@ public class ExchangeRule {
 			int amount=Integer.parseInt(showString(compiledRule[3]));
 			//Get Required Enchantments
 			Map<Enchantment,Integer> requiredEnchantments=new HashMap<Enchantment,Integer>();
-			for(int i=1;i<compiledRule[4].split(secondarySpacer).length;i++){
-				String compiledEnchant=compiledRule[4].split(secondarySpacer)[i];
+			ItemExchangePlugin.sendConsoleMessage("."+StringUtils.join(compiledRule[4].split(secondarySpacer),"-")+".");
+			for(String compiledEnchant:compiledRule[4].split(secondarySpacer)){
+				if(compiledEnchant.equals("")){
+					continue;
+				}
 				Enchantment enchantment=Enchantment.getById(Integer.valueOf(showString(compiledEnchant.split(tertiarySpacer)[0])));
 				Integer level=Integer.valueOf(showString(compiledEnchant.split(tertiarySpacer)[1]));
 				requiredEnchantments.put(enchantment, level);
 			}
+			
 			//Get Excluded Enchantments
+			ItemExchangePlugin.sendConsoleMessage("."+StringUtils.join(compiledRule[5].split(secondarySpacer),"-")+".");
 			Map<Enchantment,Integer> excludedEnchantments=new HashMap<Enchantment,Integer>();
-			for(int i=1;i<compiledRule[5].split(secondarySpacer).length;i++){
-				String compiledEnchant=compiledRule[4].split(secondarySpacer)[i];
+			for(String compiledEnchant:compiledRule[5].split(secondarySpacer)){
+				if(compiledEnchant.equals("")){
+					continue;
+				}
 				Enchantment enchantment=Enchantment.getById(Integer.valueOf(showString(compiledEnchant.split(tertiarySpacer)[0])));
 				Integer level=Integer.valueOf(showString(compiledEnchant.split(tertiarySpacer)[1]));
 				excludedEnchantments.put(enchantment, level);
