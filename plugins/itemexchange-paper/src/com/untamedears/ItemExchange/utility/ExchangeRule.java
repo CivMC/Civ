@@ -1,12 +1,13 @@
 package com.untamedears.ItemExchange.utility;
 
-import com.untamedears.ItemExchange.ItemExchangePlugin;
-import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,6 +15,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import com.untamedears.ItemExchange.ItemExchangePlugin;
+import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 
 /*
  * Contains the rules pertaining to an item which can particpate in the exchange
@@ -78,6 +82,25 @@ public class ExchangeRule {
 		}
 		return new ExchangeRule(itemStack.getType(), itemStack.getAmount(), itemStack.getDurability(), requiredEnchantments, new HashMap<Enchantment, Integer>(), false, displayName, lore, ruleType);
 	}
+	
+	public static ExchangeRule[] parseBulkRuleBlock(ItemStack ruleBlock) throws ExchangeRuleParseException {
+		try {
+			String ruleSpacer = "§&§&§&§&§r";
+
+			String[] rules = ruleBlock.getItemMeta().getLore().get(1).split(ruleSpacer);
+
+			List<ExchangeRule> ruleList = new ArrayList<ExchangeRule>();
+
+			for(String rule : rules) {
+				ruleList.add(parseRuleString(rule));
+			}
+
+			return ruleList.toArray(new ExchangeRule[0]);
+		}
+		catch(Exception e) {
+			throw new ExchangeRuleParseException("Invalid Exchange Rule");
+		}
+	}
 
 	/*
 	 * Parses an RuleBlock into an ExchangeRule It uses the escape character to
@@ -87,12 +110,21 @@ public class ExchangeRule {
 	 */
 	public static ExchangeRule parseRuleBlock(ItemStack ruleBlock) throws ExchangeRuleParseException {
 		try {
-			String catorgorySpacer = "§&§&§&§r";
+			return parseRuleString(ruleBlock.getItemMeta().getLore().get(0));
+		}
+		catch(Exception e) {
+			throw new ExchangeRuleParseException("Invalid Exchange Rule");
+		}
+	}
+	
+	public static ExchangeRule parseRuleString(String ruleString) throws ExchangeRuleParseException {
+		try {
+			String categorySpacer = "§&§&§&§r";
 			String secondarySpacer = "§&§&§r";
 			String tertiarySpacer = "§&§r";
 			// [Type,Material
 			// ID,Durability,Amount,RequiredEnchantments[],ExcludedEnchantments[],UnlistedEnchantments[],DisplayName,Lore]
-			String[] compiledRule = ruleBlock.getItemMeta().getLore().get(0).split(catorgorySpacer);
+			String[] compiledRule = ruleString.split(categorySpacer);
 			// Check length is correct
 			if (compiledRule.length < 9) {
 				throw new ExchangeRuleParseException("Compiled Rule too short: " + String.valueOf(compiledRule.length));
@@ -225,6 +257,34 @@ public class ExchangeRule {
 			throw new ExchangeRuleParseException("Invalid Exchange Rule");
 		}
 	}
+	
+	public static ItemStack toBulkItemStack(Collection<ExchangeRule> rules) {
+		ItemStack itemStack = ItemExchangePlugin.ITEM_RULE_ITEMSTACK.clone();
+		
+		String ruleSpacer = "§&§&§&§&§r";
+		
+		ItemMeta itemMeta = itemStack.getItemMeta();
+		itemMeta.setDisplayName(ChatColor.DARK_RED + "Bulk Rule Block");
+		List<String> newLore = new ArrayList<String>();
+		
+		StringBuilder compiledRules = new StringBuilder();
+		
+		Iterator<ExchangeRule> iterator = rules.iterator();
+		
+		while(iterator.hasNext()) {
+			compiledRules.append(iterator.next().compileRule());
+			
+			if(iterator.hasNext())
+				compiledRules.append(ruleSpacer);
+		}
+		
+		newLore.add("This rule block holds " + rules.size() + (rules.size() > 1 ? " exchange rules." : " exchange rule."));
+		newLore.add(compiledRules.toString());
+
+		itemMeta.setLore(newLore);
+		itemStack.setItemMeta(itemMeta);
+		return itemStack;
+	}
 
 	/*
 	 * Stores the exchange rule as an item stack
@@ -234,7 +294,7 @@ public class ExchangeRule {
 
 		ItemMeta itemMeta = itemStack.getItemMeta();
 		itemMeta.setDisplayName(displayedItemStackInfo());
-		List<String> newLore = new ArrayList<>();
+		List<String> newLore = new ArrayList<String>();
 		newLore.add(compileRule() + displayedEnchantments());
 		if (lore.length > 0) {
 			newLore.add(displayedLore());
