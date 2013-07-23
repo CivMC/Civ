@@ -52,7 +52,23 @@ public class ItemExchange {
 					}
 				}
 				catch (ExchangeRuleParseException e) {
+					
+				}
+				
+				try {
+					ExchangeRule[] exchangeRules = ExchangeRule.parseBulkRuleBlock(itemStack);
 
+					for(ExchangeRule exchangeRule : exchangeRules) {
+						if (exchangeRule.getType() == ExchangeRule.RuleType.INPUT) {
+							inputs.add(exchangeRule);
+						}
+						else if (exchangeRule.getType() == ExchangeRule.RuleType.OUTPUT) {
+							outputs.add(exchangeRule);
+						}
+					}
+				}
+				catch (ExchangeRuleParseException e) {
+					
 				}
 			}
 		}
