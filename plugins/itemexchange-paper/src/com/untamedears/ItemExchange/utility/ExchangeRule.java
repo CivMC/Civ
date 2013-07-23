@@ -15,12 +15,14 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import com.untamedears.ItemExchange.metadata.AdditionalMetadata;
 import com.untamedears.ItemExchange.metadata.BookMetadata;
+import com.untamedears.ItemExchange.metadata.EnchantmentStorageMetadata;
 
 /*
  * Contains the rules pertaining to an item which can particpate in the exchange
@@ -102,6 +104,9 @@ public class ExchangeRule {
 			
 			if(itemMeta instanceof BookMeta) {
 				additional = new BookMetadata((BookMeta) itemMeta);
+			}
+			else if(itemMeta instanceof EnchantmentStorageMeta) {
+				additional = new EnchantmentStorageMetadata((EnchantmentStorageMeta) itemMeta);
 			}
 		}
 		
@@ -217,6 +222,9 @@ public class ExchangeRule {
 			
 			if(material == Material.WRITTEN_BOOK) {
 				additional = BookMetadata.deserialize(showString(compiledRule[9]));
+			}
+			else if(material == Material.ENCHANTED_BOOK) {
+				additional = EnchantmentStorageMetadata.deserialize(showString(compiledRule[9]));
 			}
 			
 			ExchangeRule exchangeRule = new ExchangeRule(material, amount, durability, requiredEnchantments, excludedEnchantments, unlistedEnchantmentsAllowed, displayName, lore, ruleType);
