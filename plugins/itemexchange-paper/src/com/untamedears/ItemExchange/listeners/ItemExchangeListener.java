@@ -4,26 +4,21 @@
  */
 package com.untamedears.ItemExchange.listeners;
 
-import com.untamedears.ItemExchange.ItemExchangePlugin;
-import com.untamedears.ItemExchange.utility.InventoryHelpers;
-import com.untamedears.ItemExchange.utility.ExchangeRule;
-import com.untamedears.ItemExchange.utility.ItemExchange;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
+import static org.bukkit.event.block.Action.LEFT_CLICK_BLOCK;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import static org.bukkit.event.block.Action.LEFT_CLICK_BLOCK;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+
+import com.untamedears.ItemExchange.ItemExchangePlugin;
+import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
+import com.untamedears.ItemExchange.utility.ExchangeRule;
+import com.untamedears.ItemExchange.utility.ItemExchange;
 /**
  *
  * @author Brian Landry
@@ -53,6 +48,30 @@ public class ItemExchangeListener implements Listener{
 				if(itemExchange.isValid()){
 					itemExchange.playerResponse(player,itemStack,e.getClickedBlock().getLocation());					
 				}
+			}
+		}
+	}
+
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event) {
+		if(event.isShiftClick()) {
+			try {
+				ExchangeRule exchangeRule = ExchangeRule.parseRuleBlock(event.getCursor());
+				
+				int amount = exchangeRule.getAmount();
+				
+				if(event.isLeftClick()) {
+					exchangeRule.setAmount(amount + 1);
+				}
+				else {
+					if(amount > 1)
+						exchangeRule.setAmount(amount - 1);
+				}
+				
+				event.setCancelled(true);
+			}
+			catch(ExchangeRuleParseException e) {
+				
 			}
 		}
 	}
