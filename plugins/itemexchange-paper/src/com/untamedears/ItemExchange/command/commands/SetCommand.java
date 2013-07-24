@@ -106,7 +106,8 @@ public class SetCommand extends PlayerCommand {
 				}
 				
 				char first = args[1].charAt(0);
-				String abbrv = args[1].substring(1, args[1].length() - 1);
+				boolean requiresLevel = first == '+';
+				String abbrv = args[1].substring(1, requiresLevel ? args[1].length() - 1 : args[1].length());
 				
 				if(!ItemExchangePlugin.ABBRV_ENCHANTMENT.containsKey(abbrv)) {
 					StringBuilder enchantments = new StringBuilder();
@@ -128,7 +129,7 @@ public class SetCommand extends PlayerCommand {
 				}
 				
 				Enchantment enchantment = Enchantment.getByName(ItemExchangePlugin.ABBRV_ENCHANTMENT.get(abbrv));
-				int level = Character.getNumericValue(args[1].charAt(args[1].length() - 1));
+				int level = requiresLevel ? Character.getNumericValue(args[1].charAt(args[1].length() - 1)) : 1;
 				
 				if(level < 1) {
 					sender.sendMessage(ChatColor.RED + "Enchantment level must be at least 1.");
@@ -143,7 +144,7 @@ public class SetCommand extends PlayerCommand {
 					sender.sendMessage(ChatColor.GREEN + "Successfully added required enchantment.");
 				}
 				else if (first == '-') {
-					exchangeRule.excludeEnchantment(enchantment, level);
+					exchangeRule.excludeEnchantment(enchantment);
 					exchangeRule.removeRequiredEnchantment(enchantment);
 					
 					sender.sendMessage(ChatColor.GREEN + "Successfully added excluded enchantment.");

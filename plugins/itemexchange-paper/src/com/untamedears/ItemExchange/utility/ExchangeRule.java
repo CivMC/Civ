@@ -48,7 +48,7 @@ public class ExchangeRule {
 	private int amount;
 	private short durability;
 	private Map<Enchantment, Integer> requiredEnchantments;
-	private Map<Enchantment, Integer> excludedEnchantments;
+	private List<Enchantment> excludedEnchantments;
 	private boolean unlistedEnchantmentsAllowed;
 	private String displayName;
 	private String[] lore;
@@ -63,10 +63,10 @@ public class ExchangeRule {
 	}
 
 	public ExchangeRule(Material material, int amount, short durability, RuleType ruleType) {
-		this(material, amount, durability, new HashMap<Enchantment, Integer>(), new HashMap<Enchantment, Integer>(), false, "", new String[0], ruleType);
+		this(material, amount, durability, new HashMap<Enchantment, Integer>(), new ArrayList<Enchantment>(), false, "", new String[0], ruleType);
 	}
 
-	public ExchangeRule(Material material, int amount, short durability, Map<Enchantment, Integer> requiredEnchantments, Map<Enchantment, Integer> excludedEnchantments, boolean otherEnchantmentsAllowed, String displayName, String[] lore, RuleType ruleType) {
+	public ExchangeRule(Material material, int amount, short durability, Map<Enchantment, Integer> requiredEnchantments, List<Enchantment> excludedEnchantments, boolean otherEnchantmentsAllowed, String displayName, String[] lore, RuleType ruleType) {
 		this.material = material;
 		this.amount = amount;
 		this.durability = durability;
@@ -110,7 +110,7 @@ public class ExchangeRule {
 			}
 		}
 		
-		ExchangeRule exchangeRule = new ExchangeRule(itemStack.getType(), itemStack.getAmount(), itemStack.getDurability(), requiredEnchantments, new HashMap<Enchantment, Integer>(), false, displayName, lore, ruleType);
+		ExchangeRule exchangeRule = new ExchangeRule(itemStack.getType(), itemStack.getAmount(), itemStack.getDurability(), requiredEnchantments, new ArrayList<Enchantment>(), false, displayName, lore, ruleType);
 		
 		exchangeRule.setAdditionalMetadata(additional);
 		
@@ -187,14 +187,13 @@ public class ExchangeRule {
 			}
 
 			// Get Excluded Enchantments
-			Map<Enchantment, Integer> excludedEnchantments = new HashMap<Enchantment, Integer>();
+			List<Enchantment> excludedEnchantments = new ArrayList<Enchantment>();
 			for (String compiledEnchant : compiledRule[5].split(hiddenSecondarySpacer)) {
 				if (compiledEnchant.equals("")) {
 					continue;
 				}
-				Enchantment enchantment = Enchantment.getById(Integer.valueOf(showString(compiledEnchant.split(hiddenTertiarySpacer)[0])));
-				Integer level = Integer.valueOf(showString(compiledEnchant.split(hiddenTertiarySpacer)[1]));
-				excludedEnchantments.put(enchantment, level);
+				Enchantment enchantment = Enchantment.getById(Integer.valueOf(showString(compiledEnchant)));
+				excludedEnchantments.add(enchantment);
 			}
 			// Get if unlisted enchantments are allowed
 			boolean unlistedEnchantmentsAllowed;
@@ -365,8 +364,8 @@ public class ExchangeRule {
 			compiledRule += hideString(String.valueOf(entry.getKey().getId())) + hiddenTertiarySpacer + hideString(entry.getValue().toString()) + hiddenSecondarySpacer;
 		}
 		compiledRule += hiddenCategorySpacer;
-		for (Entry<Enchantment, Integer> entry : excludedEnchantments.entrySet()) {
-			compiledRule += hideString(String.valueOf(entry.getKey().getId())) + hiddenTertiarySpacer + hideString(String.valueOf(entry)) + hiddenSecondarySpacer;
+		for (Enchantment enchantment : excludedEnchantments) {
+			compiledRule += hideString(String.valueOf(enchantment.getId())) + hiddenSecondarySpacer;
 		}
 		compiledRule += hiddenCategorySpacer + (unlistedEnchantmentsAllowed ? hideString("1") : hideString("0"));
 		compiledRule += hiddenCategorySpacer + hideString(displayName);
@@ -404,7 +403,7 @@ public class ExchangeRule {
 		// Check enchantments
 		if (itemStack.getEnchantments().size() > 0) {
 			followsRules = followsRules && itemStack.getEnchantments().entrySet().containsAll(requiredEnchantments.entrySet());
-			for (Entry<Enchantment, Integer> excludedEnchantment : excludedEnchantments.entrySet()) {
+			for (Enchantment excludedEnchantment : excludedEnchantments) {
 				followsRules = followsRules && !itemStack.getEnchantments().entrySet().contains(excludedEnchantment);
 			}
 		}
@@ -481,10 +480,9 @@ public class ExchangeRule {
 				stringBuilder.append(entry.getValue());
 				stringBuilder.append(" ");
 			}
-			for (Entry<Enchantment, Integer> entry : excludedEnchantments.entrySet()) {
+			for (Enchantment enchantment : excludedEnchantments) {
 				stringBuilder.append(ChatColor.RED);
-				stringBuilder.append(ItemExchangePlugin.ENCHANTMENT_ABBRV.get(entry.getKey().getName()));
-				stringBuilder.append(entry.getValue());
+				stringBuilder.append(ItemExchangePlugin.ENCHANTMENT_ABBRV.get(enchantment.getName()));
 				stringBuilder.append(" ");
 			}
 			stringBuilder.append(unlistedEnchantmentsAllowed ? ChatColor.GREEN + "Other Enchantments Allowed." : ChatColor.RED + "Other Enchantments Disallowed");
@@ -519,8 +517,9 @@ public class ExchangeRule {
 		requiredEnchantments.remove(enchantment);
 	}
 
-	public void excludeEnchantment(Enchantment enchantment, Integer level) {
-		excludedEnchantments.put(enchantment, level);
+	public void excludeEnchantment(Enchantment enchantment) {
+		if(!excludedEnchantments.contains(enchantment))
+			excludedEnchantments.add(enchantment);
 	}
 	
 	public void removeExcludedEnchantment(Enchantment enchantment) {
