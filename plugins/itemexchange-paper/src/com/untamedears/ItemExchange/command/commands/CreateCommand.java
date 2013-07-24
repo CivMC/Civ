@@ -1,19 +1,22 @@
 package com.untamedears.ItemExchange.command.commands;
 
-import com.untamedears.ItemExchange.ItemExchangePlugin;
+import static com.untamedears.citadel.Utility.getReinforcement;
+import static com.untamedears.citadel.Utility.isReinforced;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
+import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.command.PlayerCommand;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import com.untamedears.ItemExchange.utility.ExchangeRule;
 import com.untamedears.ItemExchange.utility.ExchangeRule.RuleType;
 import com.untamedears.ItemExchange.utility.ItemExchange;
-import static com.untamedears.citadel.Utility.getReinforcement;
-import static com.untamedears.citadel.Utility.isReinforced;
 import com.untamedears.citadel.entity.PlayerReinforcement;
-import org.bukkit.ChatColor;
-import org.bukkit.block.Block;
 
 /*
  * General command for creating either an entire ItemExchange or 
@@ -63,8 +66,22 @@ public class CreateCommand extends PlayerCommand {
 						ruleType = ExchangeRule.RuleType.INPUT;
 					}
 					if (ruleType != null) {
+						ItemStack inHand = player.getItemInHand();
+						
+						if(inHand == null || inHand.getType() == Material.AIR) {
+							player.sendMessage(ChatColor.RED + "You are not holding anything in your hand!");
+							
+							return true;
+						}
+						
+						if(ExchangeRule.isRuleBlock(inHand)) {
+							player.sendMessage(ChatColor.RED + "You cannot exchange rule blocks!");
+							
+							return true;
+						}
+						
 						//Creates the ExchangeRule, converts it to an ItemStack and places it in the player's inventory
-						player.getInventory().addItem(ExchangeRule.parseItemStack(player.getItemInHand(), ruleType).toItemStack());
+						player.getInventory().addItem(ExchangeRule.parseItemStack(inHand, ruleType).toItemStack());
 						player.sendMessage(ChatColor.GREEN + "Created Rule Block!");
 					}
 					else {

@@ -47,6 +47,13 @@ public class SetCommand extends PlayerCommand {
 			else if ((args[0].equalsIgnoreCase("material") || args[0].equalsIgnoreCase("m")) && args.length == 2) {
 				Material m = Material.getMaterial(args[1]);
 				
+				if(m == null) {
+					try {
+						m = Material.getMaterial(Integer.parseInt(args[1]));
+					}
+					catch(NumberFormatException e) {}
+				}
+				
 				if(m != null) {
 					exchangeRule.setMaterial(m);
 					sender.sendMessage(ChatColor.GREEN + "Material changed successfully.");
@@ -91,8 +98,15 @@ public class SetCommand extends PlayerCommand {
 					return true;
 				}
 			}
-			else if ((args[0].equalsIgnoreCase("enchantment") || args[0].equalsIgnoreCase("e")) && args.length == 3) {
-				String abbrv = args[1].substring(0, args[1].length() - 1);
+			else if ((args[0].equalsIgnoreCase("enchantment") || args[0].equalsIgnoreCase("e")) && args.length == 2) {
+				if(args[1].length() < 3) {
+					sender.sendMessage(ChatColor.RED + "Usage: /ieset enchantment <+/?/-><enchantment abbrv.><level>");
+					
+					return true;
+				}
+				
+				char first = args[1].charAt(0);
+				String abbrv = args[1].substring(1, args[1].length() - 1);
 				
 				if(!ItemExchangePlugin.ABBRV_ENCHANTMENT.containsKey(abbrv)) {
 					StringBuilder enchantments = new StringBuilder();
@@ -122,15 +136,26 @@ public class SetCommand extends PlayerCommand {
 					return true;
 				}
 				
-				if (args[2].equalsIgnoreCase("required") || args[2].equalsIgnoreCase("r")) {
+				if (first == '+') {
 					exchangeRule.requireEnchantment(enchantment, level);
+					exchangeRule.removeExcludedEnchantment(enchantment);
 					
 					sender.sendMessage(ChatColor.GREEN + "Successfully added required enchantment.");
 				}
-				else if (args[2].equalsIgnoreCase("excluded") || args[2].equalsIgnoreCase("e")) {
+				else if (first == '-') {
 					exchangeRule.excludeEnchantment(enchantment, level);
+					exchangeRule.removeRequiredEnchantment(enchantment);
 					
-					sender.sendMessage(ChatColor.GREEN + "Successfully removed required enchantment.");
+					sender.sendMessage(ChatColor.GREEN + "Successfully added excluded enchantment.");
+				}
+				else if (first == '?') {
+					exchangeRule.removeRequiredEnchantment(enchantment);
+					exchangeRule.removeExcludedEnchantment(enchantment);
+					
+					sender.sendMessage(ChatColor.GREEN + "Successfully removed rules relating to enchantment.");
+				}
+				else {
+					sender.sendMessage(ChatColor.RED + "Usage: /ieset enchantment <+/?/-><enchantment abbrv.><level>");
 				}
 			}
 			else if ((args[0].equalsIgnoreCase("displayname") || args[0].equalsIgnoreCase("n")) && args.length == 2) {

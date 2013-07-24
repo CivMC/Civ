@@ -125,6 +125,10 @@ public class ItemExchange {
 			}
 			//If acceptable input and output itemStacks were found create exchange rule blocks for each and place them in the inventory blcok
 			if (input != null && output != null) {
+				if(ExchangeRule.isRuleBlock(input) || ExchangeRule.isRuleBlock(output)) {
+					return ChatColor.RED + "You cannot exchange rule blocks!";
+				}
+				
 				ExchangeRule inputRule = ExchangeRule.parseItemStack(input, ExchangeRule.RuleType.INPUT);
 				ExchangeRule outputRule = ExchangeRule.parseItemStack(output, ExchangeRule.RuleType.OUTPUT);
 				//Place input in inventory, if this fails drop it on the ground
