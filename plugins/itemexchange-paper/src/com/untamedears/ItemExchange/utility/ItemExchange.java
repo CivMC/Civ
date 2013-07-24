@@ -186,7 +186,7 @@ public class ItemExchange {
 									ItemStack[] exchangeInventoryOld = InventoryHelpers.deepCopy(inventory);
 									inventory.removeItem(exchangeOutput);
 									if (inventory.addItem(playerInput).isEmpty()) {
-										IETransactionEvent event = new IETransactionEvent(player, location);
+										IETransactionEvent event = new IETransactionEvent(player, location, playerInput, exchangeOutput);
 
 										Bukkit.getPluginManager().callEvent(event);
 										
