@@ -447,8 +447,12 @@ public class ExchangeRule {
 		if(additional != null) {
 			displayed.add(additional.getDisplayedInfo());
 		}
+		
 		// Enchantments
-		displayed.add(displayedEnchantments());
+		if(ItemExchangePlugin.ENCHANTABLE_ITEMS.contains(material)) {
+			displayed.add(displayedEnchantments());
+		}
+
 		// Lore
 		if (lore.length == 1) {
 			displayed.add(ChatColor.DARK_PURPLE + lore[0]);
@@ -507,6 +511,14 @@ public class ExchangeRule {
 
 	public void setMaterial(Material material) {
 		this.material = material;
+	}
+	
+	public void setUnlistedEnchantmentsAllowed(boolean allowed) {
+		this.unlistedEnchantmentsAllowed = allowed;
+	}
+	
+	public boolean getUnlistedEnchantmentsAllowed() {
+		return unlistedEnchantmentsAllowed;
 	}
 
 	public void requireEnchantment(Enchantment enchantment, Integer level) {

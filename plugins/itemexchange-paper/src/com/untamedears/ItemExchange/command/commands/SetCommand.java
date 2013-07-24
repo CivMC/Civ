@@ -98,9 +98,19 @@ public class SetCommand extends PlayerCommand {
 					return true;
 				}
 			}
+			else if (args[0].equalsIgnoreCase("allowenchantments")) {
+				exchangeRule.setUnlistedEnchantmentsAllowed(true);
+				
+				sender.sendMessage(ChatColor.GREEN + "Unlisted enchantments are now allowed.");
+			}
+			else if (args[0].equalsIgnoreCase("denyenchantments")) {
+				exchangeRule.setUnlistedEnchantmentsAllowed(false);
+				
+				sender.sendMessage(ChatColor.GREEN + "Unlisted enchantments are now denied.");
+			}
 			else if ((args[0].equalsIgnoreCase("enchantment") || args[0].equalsIgnoreCase("e")) && args.length == 2) {
-				if(args[1].length() < 3) {
-					sender.sendMessage(ChatColor.RED + "Usage: /ieset enchantment <+/?/-><enchantment abbrv.><level>");
+				if(args[1].length() < 2) {
+					sender.sendMessage(ChatColor.RED + "Usage: /ieset enchantment <+/?/-><enchantment abbrv.>[level]");
 					
 					return true;
 				}
@@ -156,7 +166,7 @@ public class SetCommand extends PlayerCommand {
 					sender.sendMessage(ChatColor.GREEN + "Successfully removed rules relating to enchantment.");
 				}
 				else {
-					sender.sendMessage(ChatColor.RED + "Usage: /ieset enchantment <+/?/-><enchantment abbrv.><level>");
+					sender.sendMessage(ChatColor.RED + "Usage: /ieset enchantment <+/?/-><enchantment abbrv.>[level]");
 				}
 			}
 			else if ((args[0].equalsIgnoreCase("displayname") || args[0].equalsIgnoreCase("n")) && args.length == 2) {
