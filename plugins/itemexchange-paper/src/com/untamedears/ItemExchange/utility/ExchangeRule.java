@@ -512,6 +512,14 @@ public class ExchangeRule {
 	public void setMaterial(Material material) {
 		this.material = material;
 	}
+	
+	public void setUnlistedEnchantmentsAllowed(boolean allowed) {
+		this.unlistedEnchantmentsAllowed = allowed;
+	}
+	
+	public boolean getUnlistedEnchantmentsAllowed() {
+		return unlistedEnchantmentsAllowed;
+	}
 
 	public void requireEnchantment(Enchantment enchantment, Integer level) {
 		requiredEnchantments.put(enchantment, level);
