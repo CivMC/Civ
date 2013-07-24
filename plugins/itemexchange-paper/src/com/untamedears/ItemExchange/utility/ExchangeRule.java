@@ -447,8 +447,12 @@ public class ExchangeRule {
 		if(additional != null) {
 			displayed.add(additional.getDisplayedInfo());
 		}
+		
 		// Enchantments
-		displayed.add(displayedEnchantments());
+		if(ItemExchangePlugin.ENCHANTABLE_ITEMS.contains(material)) {
+			displayed.add(displayedEnchantments());
+		}
+
 		// Lore
 		if (lore.length == 1) {
 			displayed.add(ChatColor.DARK_PURPLE + lore[0]);
