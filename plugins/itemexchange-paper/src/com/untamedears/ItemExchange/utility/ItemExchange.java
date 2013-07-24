@@ -12,6 +12,10 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -185,6 +189,24 @@ public class ItemExchange {
 										IETransactionEvent event = new IETransactionEvent(player, location);
 
 										Bukkit.getPluginManager().callEvent(event);
+										
+										// Power buttons.
+										Block block = location.getBlock();
+										ItemExchange.powerBlock(player, block);
+										
+										Material type = block.getType();
+										
+										if(type == Material.CHEST || type == Material.TRAPPED_CHEST) {
+											Block north = block.getRelative(BlockFace.NORTH);
+											Block south = block.getRelative(BlockFace.SOUTH);
+											Block east = block.getRelative(BlockFace.EAST);
+											Block west = block.getRelative(BlockFace.WEST);
+
+											if(north.getType() == type) ItemExchange.powerBlock(player, north);
+											if(south.getType() == type) ItemExchange.powerBlock(player, south);
+											if(east.getType() == type) ItemExchange.powerBlock(player, east);
+											if(west.getType() == type) ItemExchange.powerBlock(player, west);
+										}
 
 										player.sendMessage(ChatColor.GREEN + "Succesful exchange!");
 									}
@@ -236,6 +258,80 @@ public class ItemExchange {
 			//Set the exchange recipe to the first one
 			ruleIndex.put(player, 0);
 			messagePlayer(player);
+		}
+	}
+	
+	public static void powerBlock(Player p, Block b) {
+		Material type = b.getType();
+		
+		if(!(type == Material.CHEST || type == Material.TRAPPED_CHEST || type == Material.FURNACE)) {
+			return;
+		}
+		
+		byte data = b.getData();
+		
+		BlockFace face;
+		
+		if((data & 0x5) == 5) {
+			face = BlockFace.EAST;
+		}
+		else if((data & 0x4) == 4) {
+			face = BlockFace.WEST;
+		}
+		else if((data & 0x3) == 3) {
+			face = BlockFace.SOUTH;
+		}
+		else if((data & 0x2) == 2) {
+			face = BlockFace.NORTH;
+		}
+		else {
+			return;
+		}
+		
+		face = face.getOppositeFace();
+		
+		final Block b2 = b.getRelative(face, 2);
+		Material type2 = b2.getType();
+		
+		if(type2 == Material.STONE_BUTTON || type2 == Material.WOOD_BUTTON) {
+			BlockFace face2;
+			byte data2 = b2.getData();
+			
+			if((data2 & 0x4) == 4) {
+				face2 = BlockFace.NORTH;
+			}
+			else if((data2 & 0x3) == 3) {
+				face2 = BlockFace.SOUTH;
+			}
+			else if((data2 & 0x2) == 2) {
+				face2 = BlockFace.WEST;
+			}
+			else if((data2 & 0x1) == 1) {
+				face2 = BlockFace.EAST;
+			}
+			else {
+				return;
+			}
+			
+			if(face2 == face) {
+				BlockState pressed = b2.getState();
+				pressed.setRawData((byte) (pressed.getRawData() | 0x8));
+				pressed.update();
+				
+				Bukkit.getScheduler().scheduleSyncDelayedTask(ItemExchangePlugin.instance, new Runnable() {
+					public void run() {
+						BlockState pressed = b2.getState();
+						Material type = pressed.getType();
+						
+						if(!(type == Material.STONE_BUTTON || type == Material.WOOD_BUTTON)) {
+							return;
+						}
+						
+						pressed.setRawData((byte) (pressed.getRawData() & ~0x8));
+						pressed.update();
+					}
+				}, 30);
+			}
 		}
 	}
 
