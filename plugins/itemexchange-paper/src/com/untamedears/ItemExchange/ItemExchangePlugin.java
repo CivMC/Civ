@@ -37,10 +37,11 @@ public class ItemExchangePlugin extends JavaPlugin {
 	// and their bukkit counterparts. The itemstack mapping may be incomplete,
 	// however the enchantment
 	// mapping needs to be complete
-	public static final Map<ItemStack, String> MATERIAL_NAME = new HashMap();
-	public static final Map<String, ItemStack> NAME_MATERIAL = new HashMap();
-	public static final Map<String, String> ENCHANTMENT_ABBRV = new HashMap();
-	public static final Map<String, String> ABBRV_ENCHANTMENT = new HashMap();
+	public static final Map<ItemStack, String> MATERIAL_NAME = new HashMap<ItemStack, String>();
+	public static final Map<String, ItemStack> NAME_MATERIAL = new HashMap<String, ItemStack>();
+	public static final Map<String, String> ENCHANTMENT_ABBRV = new HashMap<String, String>();
+	public static final Map<String, String> ABBRV_ENCHANTMENT = new HashMap<String, String>();
+	public static final Map<String, String> ENCHANTMENT_NAME = new HashMap<String, String>();
 	// Specifics of appeareance of ItemExchange Rules
 	public static final ItemStack ITEM_RULE_ITEMSTACK = new ItemStack(Material.STONE_BUTTON, 1);
 
@@ -85,8 +86,8 @@ public class ItemExchangePlugin extends JavaPlugin {
 			String dataRow = CSVFile.readLine();
 			while (dataRow != null) {
 				String[] dataArray = dataRow.split(",");
-				ItemExchangePlugin.NAME_MATERIAL.put(dataArray[0], new ItemStack(Material.getMaterial(dataArray[1]), Short.valueOf(dataArray[3])));
-				ItemExchangePlugin.MATERIAL_NAME.put(new ItemStack(Material.getMaterial(dataArray[1]), Short.valueOf(dataArray[3])), dataArray[0]);
+				ItemExchangePlugin.NAME_MATERIAL.put(dataArray[0].toLowerCase().replace(" ", ""), new ItemStack(Material.getMaterial(dataArray[1]), 1, Short.valueOf(dataArray[3])));
+				ItemExchangePlugin.MATERIAL_NAME.put(new ItemStack(Material.getMaterial(dataArray[1]), 1, Short.valueOf(dataArray[3])), dataArray[0]);
 				dataRow = CSVFile.readLine();
 			}
 			CSVFile.close();
@@ -103,6 +104,7 @@ public class ItemExchangePlugin extends JavaPlugin {
 				String[] dataArray = dataRow.split(",");
 				ItemExchangePlugin.ABBRV_ENCHANTMENT.put(dataArray[0], dataArray[1]);
 				ItemExchangePlugin.ENCHANTMENT_ABBRV.put(dataArray[1], dataArray[0]);
+				ItemExchangePlugin.ENCHANTMENT_NAME.put(dataArray[1], dataArray[2]);
 				dataRow = CSVFile.readLine();
 			}
 			CSVFile.close();
