@@ -42,7 +42,7 @@ public class ItemExchangeListener implements Listener {
 	}
 
 	/*
-	 * Responds when a player inteacts with a shop
+	 * Responds when a player interacts with a shop
 	 */
 	@EventHandler
 	public void playerInteractionEvent(PlayerInteractEvent e) {

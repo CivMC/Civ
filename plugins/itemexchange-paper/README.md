@@ -37,6 +37,11 @@ It is possible to merge multiple exchange rules into one item by putting them al
 -  Any amount of exchange rules and bulk exchange rules can be put into the grid to craft a new bulk exchange rule.
 -  Dropping a bulk exchange rule will convert it into the exchange rules that it represented.
 
+##Redstone support
+After a successful transaction, the item exchange will power a button attached to the block behind the exchange. (only works for chests, trapped chests, and furnaces, currently)
+![Image showing a button behind a chest.](http://imgur.com/OQaoaVu)
+![Another image showing a button behind a chest.](http://imgur.com/nGnu83v)
+
 ##Other Notes
 -  To increase usability where possible the english displayed name (referred to as "common name") is used in place of the bukkit material name and durability value.
 -  Current accepted inventory blocks are chests, double chests, dispensors, trapped chests and double trapped chests. Nothing prohibits additional inventory blocks from being added except for testing time.
