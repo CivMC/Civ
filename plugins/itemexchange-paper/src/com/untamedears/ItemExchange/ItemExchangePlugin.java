@@ -41,6 +41,7 @@ public class ItemExchangePlugin extends JavaPlugin {
 	public static final Map<String, ItemStack> NAME_MATERIAL = new HashMap();
 	public static final Map<String, String> ENCHANTMENT_ABBRV = new HashMap();
 	public static final Map<String, String> ABBRV_ENCHANTMENT = new HashMap();
+	public static final Map<String, String> NAME_ENCHANTMENT = new HashMap();
 	// Specifics of appeareance of ItemExchange Rules
 	public static final ItemStack ITEM_RULE_ITEMSTACK = new ItemStack(Material.STONE_BUTTON, 1);
 
@@ -103,6 +104,7 @@ public class ItemExchangePlugin extends JavaPlugin {
 				String[] dataArray = dataRow.split(",");
 				ItemExchangePlugin.ABBRV_ENCHANTMENT.put(dataArray[0], dataArray[1]);
 				ItemExchangePlugin.ENCHANTMENT_ABBRV.put(dataArray[1], dataArray[0]);
+				ItemExchangePlugin.NAME_ENCHANTMENT.put(dataArray[2], dataArray[1]);
 				dataRow = CSVFile.readLine();
 			}
 			CSVFile.close();
