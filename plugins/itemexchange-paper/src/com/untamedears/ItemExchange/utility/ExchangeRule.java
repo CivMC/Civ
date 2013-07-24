@@ -514,9 +514,17 @@ public class ExchangeRule {
 	public void requireEnchantment(Enchantment enchantment, Integer level) {
 		requiredEnchantments.put(enchantment, level);
 	}
+	
+	public void removeRequiredEnchantment(Enchantment enchantment) {
+		requiredEnchantments.remove(enchantment);
+	}
 
 	public void excludeEnchantment(Enchantment enchantment, Integer level) {
 		excludedEnchantments.put(enchantment, level);
+	}
+	
+	public void removeExcludedEnchantment(Enchantment enchantment) {
+		excludedEnchantments.remove(enchantment);
 	}
 
 	public void setAmount(int amount) {
@@ -545,5 +553,23 @@ public class ExchangeRule {
 
 	public RuleType getType() {
 		return ruleType;
+	}
+	
+	public static boolean isRuleBlock(ItemStack item) {
+		try {
+			ExchangeRule.parseBulkRuleBlock(item);
+			
+			return true;
+		}
+		catch(ExchangeRuleParseException e) {
+			try {
+				ExchangeRule.parseRuleBlock(item);
+				
+				return true;
+			}
+			catch(ExchangeRuleParseException e2) {
+				return false;
+			}
+		}
 	}
 }
