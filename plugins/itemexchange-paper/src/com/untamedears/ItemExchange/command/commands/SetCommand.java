@@ -12,8 +12,6 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import java.lang.IllegalArgumentException;
-import java.util.regex.Pattern;
-import org.apache.commons.lang.StringUtils;
 
 /*
  * When holding an exchange rule block in the players hand allowes editing of the 
@@ -32,108 +30,35 @@ public class SetCommand extends PlayerCommand {
 	public boolean execute(CommandSender sender, String[] args) {
 		try {
 			ExchangeRule exchangeRule = ExchangeRule.parseRuleBlock(((Player) sender).getItemInHand());
-			if ((args[0].equalsIgnoreCase("commonname") || args[0].equalsIgnoreCase("c"))) {
-				try {
-					ItemStack itemStack = ItemExchangePlugin.NAME_MATERIAL.get(args[1]);
-					exchangeRule.setMaterial(itemStack.getType());
-					exchangeRule.setDurability(itemStack.getDurability());
-				}
-				catch (Exception e) {
-					throw new IllegalArgumentException(ChatColor.RED+"Invalid common name (Normally displayed name), database may need fixing :(.");
-				}
+			if ((args[0].equalsIgnoreCase("commonname") || args[0].equalsIgnoreCase("c")) && args.length == 2) {
+				ItemStack itemStack = ItemExchangePlugin.NAME_MATERIAL.get(args[1]);
+				exchangeRule.setMaterial(itemStack.getType());
+				exchangeRule.setDurability(itemStack.getDurability());
 			}
-			else if ((args[0].equalsIgnoreCase("material") || args[0].equalsIgnoreCase("m"))) {
-				try {
-					exchangeRule.setMaterial(Material.getMaterial(args[1]));
-				}
-				catch (Exception e) {
-					try {
-						exchangeRule.setMaterial(Material.getMaterial(Integer.parseInt(args[1])));
-					}
-					catch (Exception e2) {
-						throw new IllegalArgumentException(ChatColor.RED+"Invalid Material value, either use a minecraft material # or Bukkit name.");
-					}
-				}
+			else if ((args[0].equalsIgnoreCase("material") || args[0].equalsIgnoreCase("m")) && args.length == 2) {
+				exchangeRule.setMaterial(Material.getMaterial(args[1]));
 			}
-			else if ((args[0].equalsIgnoreCase("amount") || args[0].equalsIgnoreCase("a"))) {
-				try {
-					exchangeRule.setAmount(Integer.valueOf(args[1]));
-				}
-				catch (Exception e) {
-					throw new IllegalArgumentException(ChatColor.RED+"Invalid amount value.");
-				}
+			else if ((args[0].equalsIgnoreCase("amount") || args[0].equalsIgnoreCase("a")) && args.length == 2) {
+				exchangeRule.setAmount(Integer.valueOf(args[1]));
 			}
-			else if ((args[0].equalsIgnoreCase("durability") || args[0].equalsIgnoreCase("d"))) {
-				try {
-					exchangeRule.setDurability(Short.valueOf(args[1]));
-				}
-				catch (Exception e) {
-					throw new IllegalArgumentException(ChatColor.RED+"Invalid durability value.");
-				}
+			else if ((args[0].equalsIgnoreCase("durability") || args[0].equalsIgnoreCase("d")) && args.length == 2) {
+				exchangeRule.setDurability(Short.valueOf(args[1]));
 			}
-			else if ((args[0].equalsIgnoreCase("enchantment") || args[0].equalsIgnoreCase("e")) && args.length >= 2) {
-				Enchantment enchantment = null;
-				Integer level = null;
-				//Check if its an abbreviated enchantment
-				if(ItemExchangePlugin.ABBRV_ENCHANTMENT.containsKey(Pattern.compile("\\w+").matcher(args[1]).group())) {
-					enchantment = Enchantment.getByName(ItemExchangePlugin.ABBRV_ENCHANTMENT.get(args[1].substring(1, args[1].length() - 1)));
-					try {
-						level = Integer.parseInt(Pattern.compile("\\d+").matcher(args[1]).group());
-					}
-					catch (Exception e) {
-						throw new IllegalArgumentException(ChatColor.RED+"No level included, use format \"Abbr#\".");
-					}
-				}
-				//Otherwise cycle through remaining args and try to match an enchantment name
-				else {
-					for(int i=1;i<args.length;i++) {
-						if(ItemExchangePlugin.NAME_ENCHANTMENT.containsKey(StringUtils.join(args, " ", i, args.length))) {
-							enchantment = Enchantment.getByName(ItemExchangePlugin.NAME_ENCHANTMENT.get(StringUtils.join(args, " ", i, args.length)));
-							try {
-								level = Integer.parseInt(Pattern.compile("\\d+").matcher(args[i+1]).group());
-							}
-							catch (Exception e) {
-								throw new IllegalArgumentException(ChatColor.RED+"No level included, use format \"Displayed Enchantment Name #\".");
-							}
-						}
-					}
-				}
-				if(enchantment==null) {
-					throw new IllegalArgumentException(ChatColor.RED+"Invalid enchantment entry, use format  \"Abbr#\" or \"Displayed Enchantment Name #\".");
-				}
-				//Search args for a value representing required or excluded, if neither is found default to included
-				boolean enchantmentSet=false;
-				for(String arg:args){
-					if (arg.equalsIgnoreCase("required") || arg.equalsIgnoreCase("r")) {
-						exchangeRule.requireEnchantment(enchantment, level);
-						enchantmentSet = true;
-						break;
-					}
-					else if (arg.equalsIgnoreCase("excluded") || arg.equalsIgnoreCase("e")) {
-						exchangeRule.excludeEnchantment(enchantment, level);
-						enchantmentSet = true;
-						break;
-					}
-				}
-				if(!enchantmentSet) {
+			else if ((args[0].equalsIgnoreCase("enchantment") || args[0].equalsIgnoreCase("e")) && args.length == 3) {
+				Enchantment enchantment = Enchantment.getByName(ItemExchangePlugin.ABBRV_ENCHANTMENT.get(args[1].substring(1, args[1].length() - 1)));
+				Integer level = Character.getNumericValue(args[1].charAt(args[1].length() - 1));
+				if (args[2].equalsIgnoreCase("required") || args[2].equalsIgnoreCase("r")) {
 					exchangeRule.requireEnchantment(enchantment, level);
 				}
-			}
-			else if ((args[0].equalsIgnoreCase("displayname") || args[0].equalsIgnoreCase("n"))) {
-				try {
-					exchangeRule.setDisplayName(StringUtils.join(args, " ", 1, args.length));
-				}
-				catch (Exception e) {
-					throw new IllegalArgumentException(ChatColor.RED+"Include a display name.");
+				else if (args[2].equalsIgnoreCase("excluded") || args[2].equalsIgnoreCase("e")) {
+					exchangeRule.excludeEnchantment(enchantment, level);
 				}
 			}
-			else if ((args[0].equalsIgnoreCase("lore") || args[0].equalsIgnoreCase("l"))) {
-				try {
-					exchangeRule.setLore(StringUtils.join(args, " ", 1, args.length).split(";"));
-				}
-				catch (Exception e) {
-					throw new IllegalArgumentException(ChatColor.RED+"Include a lore string.");
-				}
+			else if ((args[0].equalsIgnoreCase("displayname") || args[0].equalsIgnoreCase("n")) && args.length == 2) {
+				exchangeRule.setDisplayName(args[1]);
+			}
+			else if ((args[0].equalsIgnoreCase("lore") || args[0].equalsIgnoreCase("l")) && args.length == 2) {
+				exchangeRule.setLore(args[1].split(";"));
 			}
 			else if (args[0].equalsIgnoreCase("switchio") || args[0].equalsIgnoreCase("s")) {
 				exchangeRule.switchIO();
