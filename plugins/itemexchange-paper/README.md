@@ -43,5 +43,6 @@ After a successful transaction, the item exchange will power a button attached t
 ![Another image showing a button behind a chest.](http://imgur.com/nGnu83v.png)
 
 ##Other Notes
+-  Shift left clicking and shift right clicking can respectively be used to decrease or increase the amount required by a particular RuleBlock
 -  To increase usability where possible the english displayed name (referred to as "common name") is used in place of the bukkit material name and durability value.
 -  Current accepted inventory blocks are chests, double chests, dispensors, trapped chests and double trapped chests. Nothing prohibits additional inventory blocks from being added except for testing time.
