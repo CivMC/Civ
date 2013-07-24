@@ -274,8 +274,8 @@ public class ExchangeRule {
 				short durability = 0;
 				int amount = 1;
 				if (args.length >= 2) {
-					if (ItemExchangePlugin.NAME_MATERIAL.containsKey(args[2])) {
-						ItemStack itemStack = ItemExchangePlugin.NAME_MATERIAL.get(args[2]);
+					if (ItemExchangePlugin.NAME_MATERIAL.containsKey(args[2].toLowerCase())) {
+						ItemStack itemStack = ItemExchangePlugin.NAME_MATERIAL.get(args[2].toLowerCase());
 						material = itemStack.getType();
 						durability = itemStack.getDurability();
 					}
@@ -461,14 +461,14 @@ public class ExchangeRule {
 	}
 	
 	private String displayedItemStackInfo() {
-		StringBuilder stringBuilder = new StringBuilder().append(ChatColor.YELLOW).append((ruleType==RuleType.INPUT ? "Input" : "Output")+": "+ChatColor.WHITE).append(amount);
-		if(ItemExchangePlugin.MATERIAL_NAME.containsKey(new ItemStack(material,durability))) {
-			stringBuilder.append(" "+ItemExchangePlugin.MATERIAL_NAME.get(new ItemStack(material,durability)));
+		StringBuilder stringBuilder = new StringBuilder().append(ChatColor.YELLOW).append((ruleType == RuleType.INPUT ? "Input" : "Output") + ": " + ChatColor.WHITE).append(amount);
+		if (ItemExchangePlugin.MATERIAL_NAME.containsKey(new ItemStack(material, 1, durability))) {
+			stringBuilder.append(" " + ItemExchangePlugin.MATERIAL_NAME.get(new ItemStack(material, 1, durability)));
 		}
 		else {
-			stringBuilder.append(material.name()+":").append(durability);
+			stringBuilder.append(material.name() + ":").append(durability);
 		}
-		stringBuilder.append(displayName.equals("") ? "" : " \""+displayName+"\"");
+		stringBuilder.append(displayName.equals("") ? "" : " \"" + displayName + "\"");
 		return stringBuilder.toString();
 	}
 

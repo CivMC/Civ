@@ -8,6 +8,8 @@ import java.util.Map;
 import org.bukkit.command.CommandSender;
 
 import com.untamedears.ItemExchange.command.commands.CreateCommand;
+import com.untamedears.ItemExchange.command.commands.HelpCommand;
+import com.untamedears.ItemExchange.command.commands.SetCommand;
 
 /**
  * User: JonnyD
@@ -21,6 +23,8 @@ public class CommandHandler {
 
 	public void registerCommands() {
 		this.addCommand(new CreateCommand());
+		this.addCommand(new SetCommand());
+		this.addCommand(new HelpCommand());
 	}
 
 	public void addCommand(Command command) {

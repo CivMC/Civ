@@ -86,8 +86,8 @@ public class ItemExchangePlugin extends JavaPlugin {
 			String dataRow = CSVFile.readLine();
 			while (dataRow != null) {
 				String[] dataArray = dataRow.split(",");
-				ItemExchangePlugin.NAME_MATERIAL.put(dataArray[0], new ItemStack(Material.getMaterial(dataArray[1]), Short.valueOf(dataArray[3])));
-				ItemExchangePlugin.MATERIAL_NAME.put(new ItemStack(Material.getMaterial(dataArray[1]), Short.valueOf(dataArray[3])), dataArray[0]);
+				ItemExchangePlugin.NAME_MATERIAL.put(dataArray[0].toLowerCase().replace(" ", ""), new ItemStack(Material.getMaterial(dataArray[1]), 1, Short.valueOf(dataArray[3])));
+				ItemExchangePlugin.MATERIAL_NAME.put(new ItemStack(Material.getMaterial(dataArray[1]), 1, Short.valueOf(dataArray[3])), dataArray[0]);
 				dataRow = CSVFile.readLine();
 			}
 			CSVFile.close();
