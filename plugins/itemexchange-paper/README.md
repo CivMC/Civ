@@ -16,7 +16,7 @@ This creates the exchange rule items required for an item exchange to function, 
 -  If common name* (example: Blue Wool)or a material ID:durability (example: 35:11) is specified in addition to an input or output an exchange rule item is generated within the players inventory representing the specified ItemStack with an amount of one.
 -  If an amount is specified this command performs similiar to the one above except with an amount set as specified.
 
-###/ieset (or /ies) <field> [value] [modifier]
+###/ieset (or /ies) \<field\> [value] [modifier]
 
 This command allows you to change specific values of the exchange rule item held in the players hand.
 
