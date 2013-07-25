@@ -5,7 +5,6 @@ import static com.untamedears.citadel.Utility.createPlayerReinforcement;
 import static com.untamedears.citadel.Utility.isAuthorizedPlayerNear;
 import static com.untamedears.citadel.Utility.isPlant;
 import static com.untamedears.citadel.Utility.isRail;
-import static com.untamedears.citadel.Utility.isReinforced;
 import static com.untamedears.citadel.Utility.maybeReinforcementDamaged;
 import static com.untamedears.citadel.Utility.reinforcementBroken;
 import static com.untamedears.citadel.Utility.reinforcementDamaged;
@@ -13,13 +12,10 @@ import static com.untamedears.citadel.Utility.sendMessage;
 import static com.untamedears.citadel.Utility.sendThrottledMessage;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -41,8 +37,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 import org.bukkit.material.PistonBaseMaterial;
-import org.bukkit.Effect;
-import org.bukkit.World;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.PlacementMode;
@@ -50,12 +44,11 @@ import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.access.CropAccessDelegate;
 import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.PlayerState;
 import com.untamedears.citadel.entity.IReinforcement;
-import com.untamedears.citadel.entity.NaturalReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
-import com.untamedears.citadel.entity.ReinforcementKey;
+import com.untamedears.citadel.entity.PlayerState;
 import com.untamedears.citadel.entity.ReinforcementMaterial;
+import com.untamedears.citadel.events.PlayerDamageReinforcementEvent;
 
 public class BlockListener implements Listener {
 
@@ -173,9 +166,22 @@ public class BlockListener implements Listener {
         IReinforcement reinforcement = delegate.getReinforcement();
         if (reinforcement == null) {
             reinforcement = createNaturalReinforcement(block, player);
-            if (reinforcement != null && reinforcementDamaged(reinforcement)) {
-                bbe.setCancelled(true);
-                block.getDrops().clear();
+            if (reinforcement != null) {
+            	PlayerDamageReinforcementEvent dre = new PlayerDamageReinforcementEvent(reinforcement, block, player);
+            	
+            	Bukkit.getPluginManager().callEvent(dre);
+            	
+            	if(dre.isCancelled()) {
+            		bbe.setCancelled(true);
+            		block.getDrops().clear();
+            		
+            		return;
+            	}
+
+            	if(reinforcementDamaged(reinforcement)) {
+            		bbe.setCancelled(true);
+            		block.getDrops().clear();
+            	}
             }
             return;
         }
@@ -203,14 +209,33 @@ public class BlockListener implements Listener {
                 }
                 is_cancelled = reinforcementBroken(reinforcement);
             } else {
-                is_cancelled = reinforcementDamaged(reinforcement);
+            	PlayerDamageReinforcementEvent dre = new PlayerDamageReinforcementEvent(reinforcement, block, player);
+            	
+            	Bukkit.getPluginManager().callEvent(dre);
+            	
+            	if(dre.isCancelled()) {
+            		is_cancelled = true;
+            	}
+            	else {
+            		is_cancelled = reinforcementDamaged(reinforcement);
+            	}
             }
             if (!is_cancelled) {
                 // The player reinforcement broke. Now check for natural
                 is_cancelled = createNaturalReinforcement(block, player) != null;
             }
         } else {
-            is_cancelled = reinforcementDamaged(reinforcement);
+        	PlayerDamageReinforcementEvent dre = new PlayerDamageReinforcementEvent(reinforcement, block, player);
+        	
+        	Bukkit.getPluginManager().callEvent(dre);
+        	
+        	if(dre.isCancelled()) {
+        		is_cancelled = reinforcementDamaged(reinforcement);
+        		return;
+        	}
+        	else {
+        		is_cancelled = reinforcementDamaged(reinforcement);
+        	}
         }
 
         if (is_cancelled) {
