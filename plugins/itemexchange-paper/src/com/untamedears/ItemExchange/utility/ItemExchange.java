@@ -143,14 +143,14 @@ public class ItemExchange {
 				if (inventory.addItem(outputRule.toItemStack()).size() > 0) {
 					player.getWorld().dropItem(player.getLocation(), outputRule.toItemStack());
 				}
-				return ChatColor.GREEN + "Created Exchange Succesfully";
+				return ChatColor.GREEN + "Created exchange successfully.";
 			}
 			else {
-				return ChatColor.RED + "Inventory should have at least two types of items";
+				return ChatColor.RED + "Inventory should have at least two types of items.";
 			}
 		}
 		else {
-			return ChatColor.RED + "Not a valid exchange block";
+			return ChatColor.RED + "Not a valid exchange block.";
 		}
 	}
 
@@ -168,6 +168,12 @@ public class ItemExchange {
 					ExchangeRule output = outputs.get(ruleIndex.get(player));
 					//Check if item in hand is the input
 					if (input.followsRules(itemStack)) {
+						if(!input.followsRules(player)) {
+							player.sendMessage(ChatColor.RED + "You are not allowed to use this exchange!");
+							
+							return;
+						}
+						
 						PlayerInventory playerInventory = player.getInventory();
 						//If the player has the input and the exchange has the output
 						if (input.followsRules(playerInventory)) {
@@ -208,11 +214,11 @@ public class ItemExchange {
 											if(west.getType() == type) ItemExchange.powerBlock(player, west);
 										}
 
-										player.sendMessage(ChatColor.GREEN + "Succesful exchange!");
+										player.sendMessage(ChatColor.GREEN + "Successful exchange!");
 									}
 									else {
 										inventory.setContents(exchangeInventoryOld);
-										player.sendMessage(ChatColor.RED + "The Exchange does not have enough inventory space!");
+										player.sendMessage(ChatColor.RED + "The exchange does not have enough inventory space!");
 									}
 								}
 								else {

@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -23,6 +24,8 @@ import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import com.untamedears.ItemExchange.metadata.AdditionalMetadata;
 import com.untamedears.ItemExchange.metadata.BookMetadata;
 import com.untamedears.ItemExchange.metadata.EnchantmentStorageMetadata;
+import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.entity.Faction;
 
 /*
  * Contains the rules pertaining to an item which can particpate in the exchange
@@ -54,6 +57,7 @@ public class ExchangeRule {
 	private String[] lore;
 	private RuleType ruleType;
 	private AdditionalMetadata additional = null;
+	private Faction citadelGroup = null;
 
 	/*
 	 * Describes whether the Exchange Rule functions as an input or an output
@@ -226,9 +230,19 @@ public class ExchangeRule {
 				additional = EnchantmentStorageMetadata.deserialize(showString(compiledRule[9]));
 			}
 			
+			Faction group;
+			
+			if(!compiledRule[10].equals("")) {
+				group = Citadel.getGroupManager().getGroup(compiledRule[10]);
+			}
+			else {
+				group = null;
+			}
+			
 			ExchangeRule exchangeRule = new ExchangeRule(material, amount, durability, requiredEnchantments, excludedEnchantments, unlistedEnchantmentsAllowed, displayName, lore, ruleType);
 			
 			exchangeRule.setAdditionalMetadata(additional);
+			exchangeRule.setCitadelGroup(group);
 			
 			return exchangeRule;
 		}
@@ -377,8 +391,29 @@ public class ExchangeRule {
 		if(additional != null) {
 			compiledRule += hideString(additional.serialize());
 		}
+		compiledRule += hiddenCategorySpacer;
+		if(citadelGroup != null) {
+			compiledRule += hideString(citadelGroup.getName());
+		}
 		compiledRule += hiddenCategorySpacer + "§r";
 		return compiledRule;
+	}
+	
+	public boolean followsRules(Player player) {
+		if(this.ruleType == RuleType.INPUT) {
+			if(citadelGroup != null) {
+				String playerName = player.getName();
+
+				if(citadelGroup.isMember(playerName) || citadelGroup.isModerator(playerName) || citadelGroup.isFounder(playerName)) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/*
@@ -460,6 +495,12 @@ public class ExchangeRule {
 		else if (lore.length > 1) {
 			displayed.add(ChatColor.DARK_PURPLE + lore[0] + "...");
 		}
+		
+		// Citadel group
+		if(citadelGroup != null) {
+			displayed.add(ChatColor.RED + "Restricted with Citadel.");
+		}
+		
 		return displayed.toArray(new String[displayed.size()]);
 	}
 	
@@ -560,6 +601,14 @@ public class ExchangeRule {
 
 	public int getAmount() {
 		return amount;
+	}
+	
+	public void setCitadelGroup(Faction group) {
+		this.citadelGroup = group;
+	}
+	
+	public Faction getCitadelGroup() {
+		return citadelGroup;
 	}
 
 	public RuleType getType() {

@@ -13,6 +13,9 @@ import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.command.PlayerCommand;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import com.untamedears.ItemExchange.utility.ExchangeRule;
+import com.untamedears.ItemExchange.utility.ExchangeRule.RuleType;
+import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.entity.Faction;
 
 /*
  * When holding an exchange rule block in the players hand allows editing of the 
@@ -191,6 +194,29 @@ public class SetCommand extends PlayerCommand {
 					exchangeRule.setLore(new String[0]);
 					
 					sender.sendMessage(ChatColor.GREEN + "Successfully removed lore.");
+				}
+			}
+			else if (args[0].equalsIgnoreCase("group") && (args.length == 1 || args.length == 2)) {
+				if(exchangeRule.getType() != RuleType.INPUT) {
+					sender.sendMessage(ChatColor.RED + "This command can only be run on input blocks!");
+					
+					return true;
+				}
+				
+				if(args.length == 2) {
+					Faction group = Citadel.getGroupManager().getGroup(args[1]);
+					
+					if(group != null) {
+						exchangeRule.setCitadelGroup(group);
+						sender.sendMessage(ChatColor.GREEN + "Successfully changed Citadel group.");
+					}
+					else {
+						sender.sendMessage(ChatColor.RED + "The specified Citadel group does not exist!");
+					}
+				}
+				else {
+					exchangeRule.setCitadelGroup(null);
+					sender.sendMessage(ChatColor.GREEN + "Successfully removed Citadel group.");
 				}
 			}
 			else if (args[0].equalsIgnoreCase("switchio") || args[0].equalsIgnoreCase("s")) {
