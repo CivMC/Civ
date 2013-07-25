@@ -4,10 +4,10 @@
  */
 package com.untamedears.ItemExchange.command.commands;
 
-import com.untamedears.ItemExchange.command.PlayerCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+
+import com.untamedears.ItemExchange.command.PlayerCommand;
 
 /**
  *

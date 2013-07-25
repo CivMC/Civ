@@ -9,6 +9,8 @@ package com.untamedears.ItemExchange.exceptions;
  * @author Brian
  */
 public class ExchangeRuleParseException extends Exception {
+	private static final long serialVersionUID = -8077197735510230988L;
+
 	public ExchangeRuleParseException(String message) {
 		super(message);
 	}
