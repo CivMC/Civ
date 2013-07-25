@@ -1,6 +1,6 @@
 name: Citadel
 main: com.untamedears.citadel.Citadel
-version: 2.4.7
+version: 2.5.6
 description: Reinforce your structures!
 author: chrisrico, jonnyd (aka Gu3rr1lla)
 database: false
@@ -135,6 +135,13 @@ commands:
     description: Reprieves a group
     usage: /ctreprieve <group-name>
     permission: citadel.admin.ctreprieve
+  ctacid:
+    description: Trigger acid block to eat a reinforcement
+    usage: /ctacid
+    permission: citadel.ctacid
+  ctmature:
+    description: Instantly mature a reinforcement
+    usage: /ctmature
 permissions:
   citadel.console:
     description: Console commands for Citadel
@@ -152,3 +159,6 @@ permissions:
       citadel.admin.cttransfer: true
       citadel.admin.reassignreinforcements: true
       citadel.admin.bypassmode: true
+  citadel.ctacid:
+    description: Allow /ctacid
+    default: true

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.bukkit.command.CommandSender;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.command.commands.AcidCommand;
 import com.untamedears.citadel.command.commands.AddModCommand;
 import com.untamedears.citadel.command.commands.AllowCommand;
 import com.untamedears.citadel.command.commands.BypassCommand;
@@ -25,6 +26,7 @@ import com.untamedears.citadel.command.commands.InfoCommand;
 import com.untamedears.citadel.command.commands.JoinCommand;
 import com.untamedears.citadel.command.commands.LeaveCommand;
 import com.untamedears.citadel.command.commands.MaterialsCommand;
+import com.untamedears.citadel.command.commands.MatureCommand;
 import com.untamedears.citadel.command.commands.MembersCommand;
 import com.untamedears.citadel.command.commands.ModeratorsCommand;
 import com.untamedears.citadel.command.commands.NonReinforceableCommand;
@@ -52,6 +54,7 @@ public class CommandHandler {
 	private Map<String, Command> identifiers = new HashMap<String, Command>();
 
     public void registerCommands() {
+        this.addCommand(new AcidCommand());
         this.addCommand(new AddModCommand());
         this.addCommand(new AllowCommand());
         this.addCommand(new BypassCommand());
@@ -68,6 +71,7 @@ public class CommandHandler {
         this.addCommand(new JoinCommand());
         this.addCommand(new LeaveCommand());
         this.addCommand(new MaterialsCommand());
+        this.addCommand(new MatureCommand());
         this.addCommand(new MembersCommand());
         this.addCommand(new ModeratorsCommand());
         this.addCommand(new NonReinforceableCommand());

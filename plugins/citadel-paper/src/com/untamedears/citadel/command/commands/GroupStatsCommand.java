@@ -2,6 +2,10 @@ package com.untamedears.citadel.command.commands;
 
 import static com.untamedears.citadel.Utility.sendMessage;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,6 +16,37 @@ import com.untamedears.citadel.command.PlayerCommand;
 import com.untamedears.citadel.entity.Faction;
 
 public class GroupStatsCommand extends PlayerCommand {
+
+    public class SendResultsTask implements Runnable {
+        public QueryDbTask previousTask;
+        public SendResultsTask(QueryDbTask pt) {
+            previousTask = pt;
+        }
+        @Override
+        public void run() {
+            for (String line : previousTask.results) {
+                previousTask.sender.sendMessage(line);
+            }
+        }
+    }
+
+    public class QueryDbTask implements Runnable {
+        public CommandSender sender;
+        public String groupName;
+        public List<String> results = new LinkedList<String>();
+        public QueryDbTask(CommandSender s, String gn) {
+            sender = s;
+            groupName = gn;
+        }
+        @Override
+        public void run() {
+            CommandUtils.formatGroupMembers(results, groupName);
+            CommandUtils.formatReinforcements(results, groupName,
+                CommandUtils.countReinforcements(groupName));
+            Bukkit.getScheduler().runTask(
+                Citadel.getPlugin(), new SendResultsTask(this));
+        }
+    }
 
     public GroupStatsCommand() {
         super("View Group Stats");
@@ -36,9 +71,8 @@ public class GroupStatsCommand extends PlayerCommand {
                 return true;
             }
         }
-        CommandUtils.printGroupMembers(sender, group_name);
-        CommandUtils.printReinforcements(
-            sender, group_name, CommandUtils.countReinforcements(group_name));
+        Bukkit.getScheduler().runTaskAsynchronously(
+            Citadel.getPlugin(), new QueryDbTask(sender, group_name));
         return true;
     }
 }

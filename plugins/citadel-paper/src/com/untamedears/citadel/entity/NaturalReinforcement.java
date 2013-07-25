@@ -66,6 +66,14 @@ public class NaturalReinforcement implements IReinforcement {
 
     public String getStatus() { return getHealthText(); }
 
+    public int getMaturationTime() {
+        return 0;
+    }
+
+    public void setMaturationTime(int time) {
+        return;
+    }
+
     @Override
     public String toString() {
         return String.format("%s, durability: %d of %d", id_, durability_, max_durability_);
