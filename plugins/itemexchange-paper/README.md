@@ -6,31 +6,35 @@ Item Exchange is a minecraft shop mod that enables different chests (and other i
 
 When a player left clicks an inventory block containing exchange rules it will first report the input and outputs of the exchange. If the player subsequently clicks the inventory block while holding the current input an exchange between the player and the inventory block will be conducted. An inventory block may contain multiple sets of input and output rules, if this is the case then the player can cycle through the different exchanges by clicking on the inventory block with their fist.
 
-##Commands to create and edit exchanges
+##Creating an Exchange
 
-###/iecreate (or /iec) [input or output] [common name or ID:durability] [amount]
+A single command, "/iecreate" is used to create exchanges, it can be used in a variety of ways as detailed below.
 
-This creates the exchange rule items required for an item exchange to function, the command has multiple functionalities:
--  If used when a player is looking at an acceptable inventory block (for example a chest) which the player has citadel governed access to it will attempt to create exchange rule items within that inventory block. The inventory block must contain only two different kind of items, although these items may be present in multiple stacks. The first item present in the inventory is assumed to be the player input and the second item the inventory block output.
--  If an input or output is specified this command will create an item exchange rule that represents the item stack held in the players hand and place it in the players inventory.
--  If common name* (example: Blue Wool)or a material ID:durability (example: 35:11) is specified in addition to an input or output an exchange rule item is generated within the players inventory representing the specified ItemStack with an amount of one.
--  If an amount is specified this command performs similiar to the one above except with an amount set as specified.
+###/iecreate (or /iec) [input (or i) or output (or o)] [common name* or ID:durability] [amount]
 
-###/ieset (or /ies) \<field\> [value] [modifier]
+-  "/iec": If a player is looking at an acceptable inventory block (for example a chest) which contains exactly two types of items, multiple stacks are okay, it will create an exchange with the first item as the input and the second item as the output. The player requires citadel access to the block to operate this command.
+-  "/iec [input (or i) or output (or o)]": If an input or output is specified an item exchange rule that represents the item stack held in the players hand is created and placed in the player's inventory.
+-  "/iec [input (or i) or output (or o)] [common name* or ID:durability]": If common name* (example: Blue Wool) or a material ID:durability (example: 35:11) is specified in addition to an input or output an exchange rule item is created in the player's inventory representing the specified ItemStack with an amount of one.
+-  "/iec [input (or i) or output (or o)] [common name* or ID:durability] [amount]": If an amount is specified this command performs similiar to the one above except with an amount set as specified.
 
-This command allows you to change specific values of the exchange rule item held in the players hand.
+##Editing an Exchange
 
-The fields which may be set with this command are as follows:
--  commonname (or c)
--  material (or m)
--  durability (or d)
--  amount (or a)
--  enchantment (or e)
--  displayname (or n)
--  lore (or l)
--  switchio (or s)
+After an exchange rule is created its various fields can be changed through the set command.
 
-For all fields except switch io a value must be specified. switchio simply toggles the exchange rule between an input and output rule. enchantment must have also specify a modifier of "required" or "excluded", this specifies whether the enchantment is required for the exchange or prohibited from the exchange, enchantments not included in either of these categories are ignored during exchanges. Multiple lines of lore can be entered by placing a ";" at each linebreak.
+###/ieset (or /ies) \<field\> [value]
+
+This command allows you to change specific values of an exchange rule item held in the players hand.
+
+*Fields*
+
+-  "/ies commonname (or c)": Changes the item to that specified by the given common name. 
+-  "/ies material (or m)": Changes the material of the item to that given, either a bukkit material name or a minecraft ID number may be used.
+-  "/ies durability (or d)": Changes the durability (aka data) value of the item.
+-  "/ies amount (or a)": Changes amount of the item
+-  "/ies enchantment (or e)": In the format <+/?/-><enchantment abbrv.>[level]. A "+" requires the enchantment for the item, a "-" excludes the enchantment from that item, and a "?" makes the enchantment neither required nor excluded. The enchantment abbrv. is one of the following two letter codes: "_____". The level of the enchantment is deafult of 1 but could be any level.
+-  "/ies displayname (or n)": Changes the display of the item, if no value is given removes the requirement for a DisplayName. Note: An item which has never been renamed will not have a DisplayName field, but an item renamed to its original name will have a DisplayName field.
+-  "/ies lore (or l)": Changes the lore of the item,  multiple lines of lore can be entered by placing a ";" at each linebreak, if no value is given remove the requirement for lore.
+-  "/ies switchio (or s)": Toggles the item rule between an input and an output, does not require a value.
 
 ##Bulk exchange rules
 It is possible to merge multiple exchange rules into one item by putting them all in a crafting grid together. This will create a bulk exchange rule.
