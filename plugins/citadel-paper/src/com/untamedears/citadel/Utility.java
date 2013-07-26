@@ -262,7 +262,7 @@ public class Utility {
     public static int timeUntilMature(IReinforcement reinforcement) {
         // Doesn't explicitly save the updated Maturation time into the cache.
         //  That's the responsibility of the caller.
-        if (reinforcement instanceof PlayerReinforcement && Citadel.getConfigManager().maturationEnabled()) {
+        if (reinforcement instanceof PlayerReinforcement) {
             int maturationTime = reinforcement.getMaturationTime();
             if (maturationTime > 0) {
                 final int curMinute = (int)(System.currentTimeMillis() / 60000L);
