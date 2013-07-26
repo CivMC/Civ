@@ -13,9 +13,12 @@ import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.command.PlayerCommand;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import com.untamedears.ItemExchange.utility.ExchangeRule;
+import com.untamedears.ItemExchange.utility.ExchangeRule.RuleType;
+import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.entity.Faction;
 
 /*
- * When holding an exchange rule block in the players hand allowes editing of the 
+ * When holding an exchange rule block in the players hand allows editing of the 
  * different rules.
  */
 public class SetCommand extends PlayerCommand {
@@ -169,15 +172,52 @@ public class SetCommand extends PlayerCommand {
 					sender.sendMessage(ChatColor.RED + "Usage: /ieset enchantment <+/?/-><enchantment abbrv.>[level]");
 				}
 			}
-			else if ((args[0].equalsIgnoreCase("displayname") || args[0].equalsIgnoreCase("n")) && args.length == 2) {
-				exchangeRule.setDisplayName(args[1]);
-				
-				sender.sendMessage(ChatColor.GREEN + "Successfully changed display name.");
+			else if ((args[0].equalsIgnoreCase("displayname") || args[0].equalsIgnoreCase("n")) && (args.length == 1 || args.length == 2)) {
+				if(args.length == 2) {
+					exchangeRule.setDisplayName(args[1]);
+
+					sender.sendMessage(ChatColor.GREEN + "Successfully changed display name.");
+				}
+				else {
+					exchangeRule.setDisplayName("");
+					
+					sender.sendMessage(ChatColor.GREEN + "Successfully removed display name.");
+				}
 			}
-			else if ((args[0].equalsIgnoreCase("lore") || args[0].equalsIgnoreCase("l")) && args.length == 2) {
-				exchangeRule.setLore(args[1].split(";"));
+			else if ((args[0].equalsIgnoreCase("lore") || args[0].equalsIgnoreCase("l")) && (args.length == 1 || args.length == 2)) {
+				if(args.length == 2) {
+					exchangeRule.setLore(args[1].split(";"));
+					
+					sender.sendMessage(ChatColor.GREEN + "Successfully changed lore.");
+				}
+				else {
+					exchangeRule.setLore(new String[0]);
+					
+					sender.sendMessage(ChatColor.GREEN + "Successfully removed lore.");
+				}
+			}
+			else if (args[0].equalsIgnoreCase("group") && (args.length == 1 || args.length == 2)) {
+				if(exchangeRule.getType() != RuleType.INPUT) {
+					sender.sendMessage(ChatColor.RED + "This command can only be run on input blocks!");
+					
+					return true;
+				}
 				
-				sender.sendMessage(ChatColor.GREEN + "Successfully changed lore.");
+				if(args.length == 2) {
+					Faction group = Citadel.getGroupManager().getGroup(args[1]);
+					
+					if(group != null) {
+						exchangeRule.setCitadelGroup(group);
+						sender.sendMessage(ChatColor.GREEN + "Successfully changed Citadel group.");
+					}
+					else {
+						sender.sendMessage(ChatColor.RED + "The specified Citadel group does not exist!");
+					}
+				}
+				else {
+					exchangeRule.setCitadelGroup(null);
+					sender.sendMessage(ChatColor.GREEN + "Successfully removed Citadel group.");
+				}
 			}
 			else if (args[0].equalsIgnoreCase("switchio") || args[0].equalsIgnoreCase("s")) {
 				exchangeRule.switchIO();
