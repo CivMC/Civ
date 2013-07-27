@@ -287,20 +287,20 @@ public class ExchangeRule {
 				short durability = 0;
 				int amount = 1;
 				if (args.length >= 2) {
-					if (ItemExchangePlugin.NAME_MATERIAL.containsKey(args[2].toLowerCase())) {
-						ItemStack itemStack = ItemExchangePlugin.NAME_MATERIAL.get(args[2].toLowerCase());
+					if (ItemExchangePlugin.NAME_MATERIAL.containsKey(args[1].toLowerCase())) {
+						ItemStack itemStack = ItemExchangePlugin.NAME_MATERIAL.get(args[1].toLowerCase());
 						material = itemStack.getType();
 						durability = itemStack.getDurability();
 					}
 					else {
-						String[] split = args[2].split(":");
+						String[] split = args[1].split(":");
 						material = Material.getMaterial(Integer.valueOf(split[0]));
 						if (split.length > 1) {
 							durability = Short.valueOf(split[1]);
 						}
 					}
-					if (args.length >= 3) {
-						amount = Integer.valueOf(args[3]);
+					if (args.length == 3) {
+						amount = Integer.valueOf(args[2]);
 					}
 				}
 				return new ExchangeRule(material, amount, durability, ruleType);

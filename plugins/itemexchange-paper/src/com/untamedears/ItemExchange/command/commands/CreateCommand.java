@@ -28,7 +28,7 @@ public class CreateCommand extends PlayerCommand {
 		super("Create Exchange");
 		setDescription("Automatically creates an exchange inside the chest the player is looking at");
 		setUsage("/iecreate");
-		setArgumentRange(0, 1);
+		setArgumentRange(0, 3);
 		setIdentifiers(new String[] { "iecreate", "iec" });
 	}
 
