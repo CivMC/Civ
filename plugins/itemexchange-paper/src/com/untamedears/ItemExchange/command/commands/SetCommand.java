@@ -34,6 +34,7 @@ public class SetCommand extends PlayerCommand {
 	public boolean execute(CommandSender sender, String[] args) {
 		try {
 			ExchangeRule exchangeRule = ExchangeRule.parseRuleBlock(((Player) sender).getItemInHand());
+			int itemAmount = ((Player) sender).getItemInHand().getAmount();
 			if ((args[0].equalsIgnoreCase("commonname") || args[0].equalsIgnoreCase("c")) && args.length == 2) {
 				if(!ItemExchangePlugin.NAME_MATERIAL.containsKey(args[1])) {
 					sender.sendMessage(ChatColor.RED + "Material not found.");
@@ -120,6 +121,10 @@ public class SetCommand extends PlayerCommand {
 				
 				char first = args[1].charAt(0);
 				boolean requiresLevel = first == '+';
+				
+				if(!requiresLevel)
+					args[1] = args[1].replaceAll("[0-9]", "");
+				
 				String abbrv = args[1].substring(1, requiresLevel ? args[1].length() - 1 : args[1].length());
 				
 				if(!ItemExchangePlugin.ABBRV_ENCHANTMENT.containsKey(abbrv)) {
@@ -227,7 +232,9 @@ public class SetCommand extends PlayerCommand {
 			else {
 				throw new IllegalArgumentException(ChatColor.RED + "Incorrect Field: " + args[0]);
 			}
-			((Player) sender).setItemInHand(exchangeRule.toItemStack());
+			ItemStack itemstack = exchangeRule.toItemStack();
+			itemstack.setAmount(itemAmount);
+			((Player) sender).setItemInHand(itemstack);
 		}
 		catch (ExchangeRuleParseException e) {
 			sender.sendMessage(ChatColor.RED + "You are not holding an exchange rule.");

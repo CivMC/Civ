@@ -4,7 +4,7 @@ I,ARROW_INFINITE,Infinite
 Pu,ARROW_KNOCKBACK,Punch
 S,DAMAGE_ALL,Sharpness
 BoA,DAMAGE_ARTHROPODS,Bane of Arthropods
-S,DAMAGE_UNDEAD,Smite
+Sm,DAMAGE_UNDEAD,Smite
 E,DIG_SPEED,Efficiency
 U,DURABILITY,Unbreaking
 FA,FIRE_ASPECT,Fire Aspect
@@ -17,6 +17,6 @@ BP,PROTECTION_EXPLOSIONS,Blast Protection
 FF,PROTECTION_FALL,Feather Falling
 FP,PROTECTION_FIRE,Fire Protection
 PP,PROTECTION_PROJECTILE,Projectile Protection
-S,SILK_TOUCH,Silk Touch
+ST,SILK_TOUCH,Silk Touch
 T,THORNS,Thorns
-WW,WATER_WORKER,Aqua Affinity
+AA,WATER_WORKER,Aqua Affinity
