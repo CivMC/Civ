@@ -164,6 +164,12 @@ public class ItemExchange {
 			if (itemStack != null) {
 				//If the rule index is at a reasonable index
 				if (ruleIndex.get(player) < inputs.size() && ruleIndex.get(player) < outputs.size()) {
+					if(!location.getChunk().isLoaded()) {
+						player.sendMessage(ChatColor.RED + "Error: The chunk is not loaded.");
+						
+						return;
+					}
+					
 					ExchangeRule input = inputs.get(ruleIndex.get(player));
 					ExchangeRule output = outputs.get(ruleIndex.get(player));
 					//Check if item in hand is the input
@@ -218,6 +224,7 @@ public class ItemExchange {
 									}
 									else {
 										inventory.setContents(exchangeInventoryOld);
+										playerInventory.setContents(playerInventoryOld);
 										player.sendMessage(ChatColor.RED + "The exchange does not have enough inventory space!");
 									}
 								}

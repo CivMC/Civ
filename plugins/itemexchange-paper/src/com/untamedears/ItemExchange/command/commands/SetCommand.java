@@ -102,12 +102,12 @@ public class SetCommand extends PlayerCommand {
 					return true;
 				}
 			}
-			else if (args[0].equalsIgnoreCase("allowenchantments")) {
+			else if (args[0].equalsIgnoreCase("allowenchantments") || args[0].equalsIgnoreCase("allowenchants")) {
 				exchangeRule.setUnlistedEnchantmentsAllowed(true);
 				
 				sender.sendMessage(ChatColor.GREEN + "Unlisted enchantments are now allowed.");
 			}
-			else if (args[0].equalsIgnoreCase("denyenchantments")) {
+			else if (args[0].equalsIgnoreCase("denyenchantments") || args[0].equalsIgnoreCase("denyenchants")) {
 				exchangeRule.setUnlistedEnchantmentsAllowed(false);
 				
 				sender.sendMessage(ChatColor.GREEN + "Unlisted enchantments are now denied.");
