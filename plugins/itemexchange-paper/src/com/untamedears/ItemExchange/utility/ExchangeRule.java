@@ -225,7 +225,7 @@ public class ExchangeRule {
 			// Get Lore
 			String[] lore = new String[0];
 			if (!compiledRule[9].equals("")) {
-				lore = showString(compiledRule[9]).split(hiddenSecondarySpacer);
+				lore = showString(compiledRule[9]).split(secondarySpacer);
 			}
 			
 			AdditionalMetadata additional = null;
