@@ -149,7 +149,7 @@ public class ExchangeRule {
 			return parseRuleString(ruleBlock.getItemMeta().getLore().get(0));
 		}
 		catch(Exception e) {
-			throw new ExchangeRuleParseException("Invalid Exchange Rule");
+			throw new ExchangeRuleParseException("Invalid exchange rule");
 		}
 	}
 	
@@ -159,8 +159,8 @@ public class ExchangeRule {
 			// ID,Durability,Amount,RequiredEnchantments[],ExcludedEnchantments[],UnlistedEnchantments[],DisplayName,Lore]
 			String[] compiledRule = ruleString.split(hiddenCategorySpacer);
 			// Check length is correct
-			if (compiledRule.length < 9) {
-				throw new ExchangeRuleParseException("Compiled Rule too short: " + String.valueOf(compiledRule.length));
+			if (compiledRule.length < 12) {
+				throw new ExchangeRuleParseException("Compiled rule too short: " + String.valueOf(compiledRule.length));
 			}
 			// Get Rule Type
 			RuleType ruleType;
@@ -171,17 +171,24 @@ public class ExchangeRule {
 				ruleType = RuleType.OUTPUT;
 			}
 			else {
-				throw new ExchangeRuleParseException("Invalid Rule Type");
+				throw new ExchangeRuleParseException("Invalid rule type");
 			}
+			
+			String transactionType = showString(compiledRule[1]);
+			
+			if(!transactionType.equals("item")) {
+				throw new ExchangeRuleParseException("Invalid transaction type");
+			}
+			
 			// Get Material
-			Material material = Material.getMaterial(Integer.valueOf(showString(compiledRule[1])));
+			Material material = Material.getMaterial(Integer.valueOf(showString(compiledRule[2])));
 			// Get Durability
-			short durability = Short.valueOf(showString(compiledRule[2]));
+			short durability = Short.valueOf(showString(compiledRule[3]));
 			// Get Amount
-			int amount = Integer.parseInt(showString(compiledRule[3]));
+			int amount = Integer.parseInt(showString(compiledRule[4]));
 			// Get Required Enchantments
 			Map<Enchantment, Integer> requiredEnchantments = new HashMap<Enchantment, Integer>();
-			for (String compiledEnchant : compiledRule[4].split(hiddenSecondarySpacer)) {
+			for (String compiledEnchant : compiledRule[5].split(hiddenSecondarySpacer)) {
 				if (compiledEnchant.equals("")) {
 					continue;
 				}
@@ -192,7 +199,7 @@ public class ExchangeRule {
 
 			// Get Excluded Enchantments
 			List<Enchantment> excludedEnchantments = new ArrayList<Enchantment>();
-			for (String compiledEnchant : compiledRule[5].split(hiddenSecondarySpacer)) {
+			for (String compiledEnchant : compiledRule[6].split(hiddenSecondarySpacer)) {
 				if (compiledEnchant.equals("")) {
 					continue;
 				}
@@ -201,10 +208,10 @@ public class ExchangeRule {
 			}
 			// Get if unlisted enchantments are allowed
 			boolean unlistedEnchantmentsAllowed;
-			if (showString(compiledRule[6]).equals("0")) {
+			if (showString(compiledRule[7]).equals("0")) {
 				unlistedEnchantmentsAllowed = false;
 			}
-			else if (showString(compiledRule[6]).equals("1")) {
+			else if (showString(compiledRule[7]).equals("1")) {
 				unlistedEnchantmentsAllowed = true;
 			}
 			else {
@@ -212,28 +219,28 @@ public class ExchangeRule {
 			}
 			// Get DisplayName
 			String displayName = "";
-			if (!compiledRule[7].equals("")) {
-				displayName = showString(compiledRule[7]);
+			if (!compiledRule[8].equals("")) {
+				displayName = showString(compiledRule[8]);
 			}
 			// Get Lore
 			String[] lore = new String[0];
-			if (!compiledRule[8].equals("")) {
-				lore = showString(compiledRule[8]).split(hiddenSecondarySpacer);
+			if (!compiledRule[9].equals("")) {
+				lore = showString(compiledRule[9]).split(hiddenSecondarySpacer);
 			}
 			
 			AdditionalMetadata additional = null;
 			
 			if(material == Material.WRITTEN_BOOK) {
-				additional = BookMetadata.deserialize(showString(compiledRule[9]));
+				additional = BookMetadata.deserialize(showString(compiledRule[10]));
 			}
 			else if(material == Material.ENCHANTED_BOOK) {
-				additional = EnchantmentStorageMetadata.deserialize(showString(compiledRule[9]));
+				additional = EnchantmentStorageMetadata.deserialize(showString(compiledRule[10]));
 			}
 			
 			Faction group;
 			
-			if(!compiledRule[10].equals("")) {
-				group = Citadel.getGroupManager().getGroup(compiledRule[10]);
+			if(!compiledRule[11].equals("")) {
+				group = Citadel.getGroupManager().getGroup(compiledRule[11]);
 			}
 			else {
 				group = null;
@@ -367,6 +374,8 @@ public class ExchangeRule {
 		String compiledRule = "";
 		// RuleType
 		compiledRule += ruleType.equals(RuleType.INPUT) ? hideString("i") : hideString("o");
+		// Transaction type
+		compiledRule += "item";
 		// Material ID
 		compiledRule += hiddenCategorySpacer + hideString(String.valueOf(material.getId()));
 		// Durability
