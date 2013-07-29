@@ -121,6 +121,10 @@ public class SetCommand extends PlayerCommand {
 				
 				char first = args[1].charAt(0);
 				boolean requiresLevel = first == '+';
+				
+				if(!requiresLevel)
+					args[1] = args[1].replaceAll("[0-9]", "");
+				
 				String abbrv = args[1].substring(1, requiresLevel ? args[1].length() - 1 : args[1].length());
 				
 				if(!ItemExchangePlugin.ABBRV_ENCHANTMENT.containsKey(abbrv)) {
