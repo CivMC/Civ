@@ -147,7 +147,7 @@ public class SetCommand extends PlayerCommand {
 				}
 				
 				Enchantment enchantment = Enchantment.getByName(ItemExchangePlugin.ABBRV_ENCHANTMENT.get(abbrv));
-				int level = requiresLevel ? Character.getNumericValue(args[1].charAt(args[1].length() - 1)) : 1;
+				int level = requiresLevel ? Integer.parseInt(String.valueOf((args[1].charAt(args[1].length() - 1)))) : 1;
 				
 				if(level < 1) {
 					sender.sendMessage(ChatColor.RED + "Enchantment level must be at least 1.");
@@ -238,6 +238,9 @@ public class SetCommand extends PlayerCommand {
 		}
 		catch (ExchangeRuleParseException e) {
 			sender.sendMessage(ChatColor.RED + "You are not holding an exchange rule.");
+		}
+		catch (NumberFormatException e) {
+			sender.sendMessage(ChatColor.RED + "Error when parsing number.");
 		}
 		catch (IllegalArgumentException e) {
 			sender.sendMessage(e.getMessage());
