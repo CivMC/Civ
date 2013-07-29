@@ -224,6 +224,7 @@ public class ItemExchange {
 									}
 									else {
 										inventory.setContents(exchangeInventoryOld);
+										playerInventory.setContents(playerInventoryOld);
 										player.sendMessage(ChatColor.RED + "The exchange does not have enough inventory space!");
 									}
 								}
