@@ -375,7 +375,7 @@ public class ExchangeRule {
 		// RuleType
 		compiledRule += ruleType.equals(RuleType.INPUT) ? hideString("i") : hideString("o");
 		// Transaction type
-		compiledRule += "item";
+		compiledRule += hiddenCategorySpacer + hideString("item");
 		// Material ID
 		compiledRule += hiddenCategorySpacer + hideString(String.valueOf(material.getId()));
 		// Durability
