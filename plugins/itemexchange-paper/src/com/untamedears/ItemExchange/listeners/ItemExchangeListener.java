@@ -92,7 +92,7 @@ public class ItemExchangeListener implements Listener {
 		
 		final Inventory top = event.getView().getTopInventory();
 		
-		if(top.getType() == InventoryType.CRAFTING && event.getWhoClicked() instanceof Player) {
+		if(top instanceof CraftingInventory && event.getWhoClicked() instanceof Player) {
 			final Player player = (Player) event.getWhoClicked();
 			
 			Bukkit.getScheduler().scheduleSyncDelayedTask(ItemExchangePlugin.instance, new Runnable() {
