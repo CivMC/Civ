@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.command.PlayerCommand;
+import com.untamedears.ItemExchange.exceptions.ExchangeRuleCreateException;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import com.untamedears.ItemExchange.utility.ExchangeRule;
 import com.untamedears.ItemExchange.utility.ExchangeRule.RuleType;
@@ -81,7 +82,14 @@ public class CreateCommand extends PlayerCommand {
 						}
 						
 						//Creates the ExchangeRule, converts it to an ItemStack and places it in the player's inventory
-						player.getInventory().addItem(ExchangeRule.parseItemStack(inHand, ruleType).toItemStack());
+						try {
+							player.getInventory().addItem(ExchangeRule.parseItemStack(inHand, ruleType).toItemStack());
+						}
+						catch (IllegalArgumentException | ExchangeRuleCreateException e) {
+							player.sendMessage(ChatColor.RED + e.getMessage());
+							
+							return true;
+						}
 						player.sendMessage(ChatColor.GREEN + "Created Rule Block!");
 					}
 					else {

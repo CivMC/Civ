@@ -17,9 +17,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.FireworkEffectMeta;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import com.untamedears.ItemExchange.ItemExchangePlugin;
+import com.untamedears.ItemExchange.exceptions.ExchangeRuleCreateException;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import com.untamedears.ItemExchange.metadata.AdditionalMetadata;
 import com.untamedears.ItemExchange.metadata.BookMetadata;
@@ -89,7 +96,7 @@ public class ExchangeRule {
 	/*
 	 * Parses an ItemStack into an ExchangeRule which represents that ItemStack
 	 */
-	public static ExchangeRule parseItemStack(ItemStack itemStack, RuleType ruleType) {
+	public static ExchangeRule parseItemStack(ItemStack itemStack, RuleType ruleType) throws ExchangeRuleCreateException {
 		Map<Enchantment, Integer> requiredEnchantments = new HashMap<Enchantment, Integer>();
 		for (Enchantment enchantment : itemStack.getEnchantments().keySet()) {
 			requiredEnchantments.put(enchantment, itemStack.getEnchantments().get(enchantment));
@@ -111,6 +118,10 @@ public class ExchangeRule {
 			}
 			else if(itemMeta instanceof EnchantmentStorageMeta) {
 				additional = new EnchantmentStorageMetadata((EnchantmentStorageMeta) itemMeta);
+			}
+			
+			if(itemMeta instanceof FireworkEffectMeta || itemMeta instanceof FireworkMeta || itemMeta instanceof LeatherArmorMeta || itemMeta instanceof MapMeta || itemMeta instanceof PotionMeta || itemMeta instanceof SkullMeta) {
+				throw new ExchangeRuleCreateException("This item is not yet supported by ItemExchange.");
 			}
 		}
 		
