@@ -24,6 +24,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.events.IETransactionEvent;
+import com.untamedears.ItemExchange.exceptions.ExchangeRuleCreateException;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 
 /**
@@ -133,8 +134,15 @@ public class ItemExchange {
 					return ChatColor.RED + "You cannot exchange rule blocks!";
 				}
 				
-				ExchangeRule inputRule = ExchangeRule.parseItemStack(input, ExchangeRule.RuleType.INPUT);
-				ExchangeRule outputRule = ExchangeRule.parseItemStack(output, ExchangeRule.RuleType.OUTPUT);
+				ExchangeRule inputRule;
+				ExchangeRule outputRule;
+				try {
+					inputRule = ExchangeRule.parseItemStack(input, ExchangeRule.RuleType.INPUT);
+					outputRule = ExchangeRule.parseItemStack(output, ExchangeRule.RuleType.OUTPUT);
+				}
+				catch (ExchangeRuleCreateException e) {
+					return ChatColor.RED + e.getMessage();
+				}
 				//Place input in inventory, if this fails drop it on the ground
 				if (inventory.addItem(inputRule.toItemStack()).size() > 0) {
 					player.getWorld().dropItem(player.getLocation(), inputRule.toItemStack());
