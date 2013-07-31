@@ -28,6 +28,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -386,6 +387,19 @@ public class BlockListener implements Listener {
             }
         } catch(Exception e) {
             Citadel.printStackTrace(e);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockPhysics(BlockPhysicsEvent event) {
+        final Block block = event.getBlock();
+        final AccessDelegate delegate = AccessDelegate.getDelegate(block);
+        if (delegate instanceof CropAccessDelegate
+                && block.getType().equals(Material.CROPS)
+                && event.getChangedType().equals(Material.SOIL)) {
+            event.setCancelled(true);
+            Citadel.info("Prevented reinforced crop trample at "
+                    + block.getLocation().toString());
         }
     }
 }
