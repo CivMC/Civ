@@ -32,6 +32,7 @@ import com.untamedears.citadel.PersonalGroupManager;
 import com.untamedears.citadel.PlacementMode;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.access.AccessDelegate;
+import com.untamedears.citadel.access.CropAccessDelegate;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.Member;
 import com.untamedears.citadel.entity.PlayerState;
@@ -146,6 +147,11 @@ public class PlayerListener implements Listener {
                 "%s failed to access locked reinforcement at %s",
                 player.getName(), block.getLocation().toString()));
             sendMessage(pie.getPlayer(), ChatColor.RED, "%s is locked", block.getType().name());
+            pie.setCancelled(true);
+        } else if (action == Action.PHYSICAL
+                && AccessDelegate.getDelegate(block.getRelative(BlockFace.UP)) instanceof CropAccessDelegate) {
+            Citadel.info("Prevented reinforced crop trample at "
+                    + block.getLocation().toString());
             pie.setCancelled(true);
         }
         if (pie.isCancelled()) return;

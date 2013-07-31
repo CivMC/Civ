@@ -389,17 +389,4 @@ public class BlockListener implements Listener {
             Citadel.printStackTrace(e);
         }
     }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onBlockPhysics(BlockPhysicsEvent event) {
-        final Block block = event.getBlock();
-        final AccessDelegate delegate = AccessDelegate.getDelegate(block);
-        if (delegate instanceof CropAccessDelegate
-                && block.getType().equals(Material.CROPS)
-                && event.getChangedType().equals(Material.SOIL)) {
-            event.setCancelled(true);
-            Citadel.info("Prevented reinforced crop trample at "
-                    + block.getLocation().toString());
-        }
-    }
 }
