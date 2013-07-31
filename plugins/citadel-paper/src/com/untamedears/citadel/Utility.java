@@ -482,6 +482,7 @@ public class Utility {
     public static boolean isRail(Material mat) {
         return mat.equals(Material.RAILS)
             || mat.equals(Material.POWERED_RAIL)
+            || mat.equals(Material.ACTIVATOR_RAIL)
             || mat.equals(Material.DETECTOR_RAIL);
     }
 }
