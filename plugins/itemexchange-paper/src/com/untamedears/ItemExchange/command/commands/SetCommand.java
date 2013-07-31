@@ -2,6 +2,7 @@ package com.untamedears.ItemExchange.command.commands;
 
 import java.util.Iterator;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -26,7 +27,7 @@ public class SetCommand extends PlayerCommand {
 		super("Set Field");
 		setDescription("Sets the field of the ExchangeRule held in hand");
 		setUsage("/ieset");
-		setArgumentRange(1, 3);
+		setArgumentRange(1, 200);
 		setIdentifiers(new String[] { "ieset", "ies" });
 	}
 
@@ -179,7 +180,7 @@ public class SetCommand extends PlayerCommand {
 			}
 			else if ((args[0].equalsIgnoreCase("displayname") || args[0].equalsIgnoreCase("n")) && (args.length == 1 || args.length == 2)) {
 				if(args.length == 2) {
-					exchangeRule.setDisplayName(args[1]);
+					exchangeRule.setDisplayName(StringUtils.join(args, ' ', 1, args.length));
 
 					sender.sendMessage(ChatColor.GREEN + "Successfully changed display name.");
 				}
