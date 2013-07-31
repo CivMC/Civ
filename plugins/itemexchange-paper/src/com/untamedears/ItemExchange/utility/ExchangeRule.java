@@ -35,7 +35,7 @@ import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.entity.Faction;
 
 /*
- * Contains the rules pertaining to an item which can particpate in the exchange
+ * Contains the rules pertaining to an item which can participate in the exchange
  */
 
 /**
@@ -457,6 +457,19 @@ public class ExchangeRule {
 			}
 		}
 		return invAmount >= amount;
+	}
+	
+	/*
+	 * Counts how many multiples of the specified item an inventory has.
+	 */
+	public int checkMultiples(Inventory inventory) {
+		int invAmount = 0;
+		for (ItemStack itemStack : inventory.getContents()) {
+			if (itemStack != null && followsRules(itemStack)) {
+				invAmount += itemStack.getAmount();
+			}
+		}
+		return invAmount / amount;
 	}
 
 	/*
