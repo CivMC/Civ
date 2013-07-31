@@ -44,7 +44,7 @@ This command allows you to change specific values of an exchange rule item held 
 It is possible to merge multiple exchange rules into one item by putting them all in a crafting grid together. This will create a bulk exchange rule.
 -  Any amount of exchange rules and bulk exchange rules can be put into the grid to craft a new bulk exchange rule.
 -  Dropping a bulk exchange rule will convert it into the exchange rules that it represented.
--  When an ItemExchange is interacted with bulk rules are temporarily seperated into their individual input and output rules, these are then handled like normal rule blocks, where the first input is matched to the first output.
+-  When an ItemExchange is interacted with bulk rules are "metaphorically" seperated into their individual input and output rules in the same order they were crafted in, these are then handled like normal rule blocks, where the first input is matched to the first output.
 
 ##Redstone support
 After a successful transaction, the item exchange will power a button attached to the block behind the exchange. (only works for chests, trapped chests, and furnaces, currently)
