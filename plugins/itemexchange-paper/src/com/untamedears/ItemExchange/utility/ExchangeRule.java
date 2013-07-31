@@ -298,7 +298,7 @@ public class ExchangeRule {
 				ruleType = ExchangeRule.RuleType.INPUT;
 			}
 			else if (args[0].equalsIgnoreCase("output")) {
-				ruleType = ExchangeRule.RuleType.INPUT;
+				ruleType = ExchangeRule.RuleType.OUTPUT;
 			}
 			if (ruleType != null) {
 				Material material = null;
