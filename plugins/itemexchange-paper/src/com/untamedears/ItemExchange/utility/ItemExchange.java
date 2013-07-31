@@ -249,7 +249,7 @@ public class ItemExchange {
 							player.sendMessage(ChatColor.RED + "You don't have enough of the input.");
 						}
 					}
-					//If the item the player is holding is not that of the input of the exchange the rules of the exchange are displayed
+					// If the item the player is holding is not that of the input of the exchange the rules of the exchange are displayed
 					else {
 						messagePlayer(player);
 					}
@@ -359,6 +359,8 @@ public class ItemExchange {
 	public void messagePlayer(Player player) {
 		player.sendMessage(ChatColor.YELLOW + "(" + String.valueOf(ruleIndex.get(player) + 1) + "/" + String.valueOf(getNumberRules()) + ") exchanges present.");
 		player.sendMessage(inputs.get(ruleIndex.get(player)).display());
-		player.sendMessage(outputs.get(ruleIndex.get(player)).display());
+		ExchangeRule output = outputs.get(ruleIndex.get(player));
+		player.sendMessage(output.display());
+		player.sendMessage(ChatColor.YELLOW + String.valueOf(output.checkMultiples(inventory)) + " exchanges available.");
 	}
 }
