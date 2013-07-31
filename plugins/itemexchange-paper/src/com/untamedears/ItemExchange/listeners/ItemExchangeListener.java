@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.CraftingInventory;
@@ -147,5 +147,24 @@ public class ItemExchangeListener implements Listener {
 		}
 		catch (ExchangeRuleParseException e) {
 		}
+	}
+	
+	@EventHandler
+	public void onInventoryMove(InventoryMoveItemEvent event) {
+		ItemStack item = event.getItem();
+		
+		try {
+			ExchangeRule.parseRuleBlock(item);
+		}
+		catch(ExchangeRuleParseException e) {
+			try {
+				ExchangeRule.parseBulkRuleBlock(item);
+			}
+			catch(ExchangeRuleParseException e2) {
+				return;
+			}
+		}
+		
+		event.setCancelled(true);
 	}
 }
