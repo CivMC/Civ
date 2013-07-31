@@ -358,7 +358,12 @@ public class ExchangeRule {
 		ItemMeta itemMeta = itemStack.getItemMeta();
 		itemMeta.setDisplayName(displayedItemStackInfo());
 		List<String> newLore = new ArrayList<String>();
-		newLore.add(compileRule() + displayedEnchantments());
+		if(ItemExchangePlugin.ENCHANTABLE_ITEMS.contains(material)) {
+			newLore.add(compileRule() + displayedEnchantments());
+		}
+		else {
+			newLore.add(compileRule());
+		}
 		if (lore.length > 0) {
 			newLore.add(displayedLore());
 		}
