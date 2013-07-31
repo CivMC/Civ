@@ -12,12 +12,12 @@ When a player left clicks an inventory block containing exchange rules it will f
 
 A single command, "/iecreate" is used to create exchanges, it can be used in a variety of ways as detailed below.
 
-###/iecreate (or /iec) [input (or i) or output (or o)] [common name* or ID:durability] [amount]
+###/iecreate (or /iec) [input or output] [common name* or ID:durability] [amount]
 
 -  "/iec": If a player is looking at an acceptable inventory block (for example a chest) which contains exactly two types of items, multiple stacks are okay, it will create an exchange with the first item as the input and the second item as the output. The player requires citadel access to the block to operate this command.
 -  "/iec [input (or i) or output (or o)]": If an input or output is specified an item exchange rule that represents the item stack held in the players hand is created and placed in the player's inventory.
--  "/iec [input (or i) or output (or o)] [common name* or ID:durability]": If common name* (example: Blue Wool) or a material ID:durability (example: 35:11) is specified in addition to an input or output an exchange rule item is created in the player's inventory representing the specified ItemStack with an amount of one.
--  "/iec [input (or i) or output (or o)] [common name* or ID:durability] [amount]": If an amount is specified this command performs similiar to the one above except with an amount set as specified.
+-  "/iec [input or output] [common name* or ID:durability]": If common name* (example: Blue Wool) or a material ID:durability (example: 35:11) is specified in addition to an input or output an exchange rule item is created in the player's inventory representing the specified ItemStack with an amount of one.
+-  "/iec [input or output] [common name* or ID:durability] [amount]": If an amount is specified this command performs similiar to the one above except with an amount set as specified.
 
 ##Editing an Exchange
 
@@ -33,7 +33,7 @@ This command allows you to change specific values of an exchange rule item held 
 -  "/ies material (or m)": Changes the material of the item to that given, either a bukkit material name or a minecraft ID number may be used.
 -  "/ies durability (or d)": Changes the durability (aka data) value of the item.
 -  "/ies amount (or a)": Changes amount of the item
--  "/ies enchantment (or e)": In the format <+/?/-><enchantment abbrv.>[level]. A "+" requires the enchantment for the item, a "-" excludes the enchantment from that item, and a "?" makes the enchantment neither required nor excluded. The enchantment abbrv. is one of the following two letter codes: "_____". The level of the enchantment is deafult of 1 but could be any level.
+-  "/ies enchantment (or e)": In the format \<+/?/-\>\<enchantment abbrv.\>[level]. A "+" requires the enchantment for the item, a "-" excludes the enchantment from that item, and a "?" makes the enchantment neither required nor excluded. The enchantment abbrv. is one of the following two letter codes: "_____".
 -  "/ies [allowenchantments denyenchantments]": This sets whether or not to allow enchantments not explicitly listed. For example, if you want a Looting 3 (L3) sword that doesn't have Fire Aspect 1 (FA1) or Fire Aspect 2 (FA2), but could have other enchantments like Sharpness 1 (S1), you would need the following commands: "/iec o Diamond Sword", "/ies e +L3", "/ies e -FA1", "/ies e -FA2", "/ies allowenchantments".
 -  "/ies displayname (or n)": Changes the display of the item, if no value is given removes the requirement for a DisplayName. Note: An item which has never been renamed will not have a DisplayName field, but an item renamed to its original name will have a DisplayName field.
 -  "/ies lore (or l)": Changes the lore of the item,  multiple lines of lore can be entered by placing a ";" at each linebreak, if no value is given remove the requirement for lore.
