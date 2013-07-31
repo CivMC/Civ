@@ -82,6 +82,21 @@ public class AcidCommand extends PlayerCommand {
             aboveRein.setDurability(0);
             reinforcementBroken(aboveRein);
             above.setType(Material.AIR);
+            // Damage acid block
+            Double acidDamagePercentage = 
+                Citadel.getConfigManager().getAcidBlockReinforcementTax();
+            if (acidDamagePercentage > 0.9999999D) {
+                pr.setDurability(0);
+            } else if (acidDamagePercentage > 0.0000001) {
+                int damage = (int)(
+                    (double)pr.getScaledMaxDurability() * acidDamagePercentage);
+                int durability = pr.getDurability();
+                if (durability <= damage) {
+                    pr.setDurability(0);
+                } else {
+                    pr.setDurability(durability - damage);
+                }
+            }
             // Break acid block
             reinforcementBroken(pr);
             block.breakNaturally();

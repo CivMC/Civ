@@ -30,6 +30,7 @@ public class ConfigManager {
 	private int maturationInterval;
 	private double maturationIntervalD;
     private Integer acidBlockTypeId = null;
+	private double acidBlockReinforcementTax = 0.00000001D;
 
 	public void load(){
 		Citadel.getPlugin().reloadConfig();
@@ -44,6 +45,7 @@ public class ConfigManager {
         enableMaturation = config.getBoolean("general.enableMaturation", false);
         maturationInterval = config.getInt("general.maturationInterval", 50);
         maturationIntervalD = (double)maturationInterval;
+        acidBlockReinforcementTax = config.getDouble("general.acidBlockTax", 0.00000001D);
         if (config.contains("general.acidBlock")) {
             String acidBlockMaterial = config.getString("general.acidBlock");
             Material material = Material.matchMaterial(acidBlockMaterial);
@@ -202,5 +204,9 @@ public class ConfigManager {
 
     public Integer getAcidBlockType() {
         return acidBlockTypeId;
+    }
+
+    public double getAcidBlockReinforcementTax() {
+        return acidBlockReinforcementTax;
     }
 }
