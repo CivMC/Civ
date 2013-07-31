@@ -194,7 +194,10 @@ public class PlayerListener implements Listener {
                         sendMessage(player, ChatColor.GREEN, sb.toString());
                     } else if(reinforcement.isAccessible(player)){
                         sb = new StringBuilder();
-                        boolean mature = timeUntilMature(reinforcement) == 0;
+                        boolean immature =
+                            timeUntilMature(reinforcement) != 0
+                            && (Citadel.getConfigManager().maturationEnabled()
+                                || Citadel.getConfigManager().getAcidBlockType() == block.getTypeId());
                         boolean is_personal_group = false;
                         String groupName = "!NULL!";
                         if (group != null) {
@@ -206,7 +209,7 @@ public class PlayerListener implements Listener {
                         if(is_personal_group){
                             sb.append(" (Default Group)");
                         }
-                        if(!mature){
+                        if(immature){
                             sb.append(" (Hardening)");
                         }
                         sendMessage(player, ChatColor.GREEN, sb.toString());
