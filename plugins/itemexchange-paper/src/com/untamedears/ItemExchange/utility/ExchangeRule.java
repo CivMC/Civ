@@ -1,6 +1,7 @@
 package com.untamedears.ItemExchange.utility;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,6 +44,8 @@ import com.untamedears.citadel.entity.Faction;
  * @author Brian Landry
  */
 public class ExchangeRule {
+	private static final List<Material> NOT_SUPPORTED = Arrays.asList(Material.MAP, Material.WRITTEN_BOOK, Material.ENCHANTED_BOOK, Material.FIREWORK, Material.FIREWORK_CHARGE, Material.POTION);
+	
 	public static final String hiddenRuleSpacer = "§&§&§&§&§r";
 	public static final String hiddenCategorySpacer = "§&§&§&§r";
 	public static final String hiddenSecondarySpacer = "§&§&§r";
@@ -251,7 +254,7 @@ public class ExchangeRule {
 			Faction group;
 
 			if(!compiledRule[11].equals("")) {
-				group = Citadel.getGroupManager().getGroup(compiledRule[11]);
+				group = Citadel.getGroupManager().getGroup(showString(compiledRule[11]));
 			}
 			else {
 				group = null;
@@ -321,14 +324,19 @@ public class ExchangeRule {
 						amount = Integer.valueOf(args[2]);
 					}
 				}
+				
+				if(NOT_SUPPORTED.contains(material)) {
+					throw new ExchangeRuleParseException("This material is not supported.");
+				}
+				
 				return new ExchangeRule(material, amount, durability, ruleType);
 			}
 			else {
-				throw new ExchangeRuleParseException("Please specify and input or output.");
+				throw new ExchangeRuleParseException("Please specify an input or output.");
 			}
 		}
 		catch (Exception e) {
-			throw new ExchangeRuleParseException("Invalid Exchange Rule");
+			throw new ExchangeRuleParseException("Invalid exchange rule.");
 		}
 	}
 
@@ -370,14 +378,20 @@ public class ExchangeRule {
 		itemMeta.setDisplayName(displayedItemStackInfo());
 		List<String> newLore = new ArrayList<String>();
 		if(ItemExchangePlugin.ENCHANTABLE_ITEMS.contains(material)) {
-			newLore.add(compileRule() + displayedEnchantments());
+			newLore.add(displayedEnchantments());
+		}
+		
+		for (String line : displayedLore()) {
+			newLore.add(line);
+		}
+		
+		if(newLore.size() > 0) {
+			newLore.set(0, compileRule() + newLore.get(0));
 		}
 		else {
 			newLore.add(compileRule());
 		}
-		if (lore.length > 0) {
-			newLore.add(displayedLore());
-		}
+		
 		itemMeta.setLore(newLore);
 		itemStack.setItemMeta(itemMeta);
 		return itemStack;
@@ -414,8 +428,13 @@ public class ExchangeRule {
 		compiledRule += hiddenCategorySpacer + ((unlistedEnchantmentsAllowed && enchantable) ? hideString("1") : hideString("0"));
 		compiledRule += hiddenCategorySpacer + hideString(displayName);
 		compiledRule += hiddenCategorySpacer;
-		for (String line : lore) {
-			compiledRule += hiddenSecondarySpacer + hideString(line);
+		for (int i = 0; i < lore.length; i++) {
+			String line = lore[i];
+			
+			if(i > 0)
+				compiledRule += hiddenSecondarySpacer;
+			
+			compiledRule += hideString(line);
 		}
 		compiledRule += hiddenCategorySpacer;
 		if(additional != null) {
@@ -532,11 +551,8 @@ public class ExchangeRule {
 		}
 
 		// Lore
-		if (lore.length == 1) {
-			displayed.add(ChatColor.DARK_PURPLE + lore[0]);
-		}
-		else if (lore.length > 1) {
-			displayed.add(ChatColor.DARK_PURPLE + lore[0] + "...");
+		for(String line : displayedLore()) {
+			displayed.add(line);
 		}
 
 		// Citadel group
@@ -581,15 +597,15 @@ public class ExchangeRule {
 		}
 	}
 
-	private String displayedLore() {
+	private String[] displayedLore() {
 		if (lore.length == 0) {
-			return "";
+			return new String[0];
 		}
 		else if (lore.length == 1) {
-			return (ChatColor.DARK_PURPLE + lore[0]);
+			return new String[] { ChatColor.DARK_PURPLE + lore[0] };
 		}
 		else {
-			return ChatColor.DARK_PURPLE + lore[0] + "...";
+			return new String[] { ChatColor.DARK_PURPLE + lore[0], ChatColor.DARK_PURPLE + lore[2] + "..." };
 		}
 	}
 
