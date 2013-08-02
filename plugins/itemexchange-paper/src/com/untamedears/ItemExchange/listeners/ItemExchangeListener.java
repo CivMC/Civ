@@ -165,6 +165,6 @@ public class ItemExchangeListener implements Listener {
 			}
 		}
 		
-		event.setCancelled(true);
+		event.setItem(null);
 	}
 }
