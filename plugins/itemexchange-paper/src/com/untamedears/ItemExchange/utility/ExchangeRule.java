@@ -251,7 +251,7 @@ public class ExchangeRule {
 			Faction group;
 
 			if(!compiledRule[11].equals("")) {
-				group = Citadel.getGroupManager().getGroup(compiledRule[11]);
+				group = Citadel.getGroupManager().getGroup(showString(compiledRule[11]));
 			}
 			else {
 				group = null;
@@ -370,14 +370,20 @@ public class ExchangeRule {
 		itemMeta.setDisplayName(displayedItemStackInfo());
 		List<String> newLore = new ArrayList<String>();
 		if(ItemExchangePlugin.ENCHANTABLE_ITEMS.contains(material)) {
-			newLore.add(compileRule() + displayedEnchantments());
+			newLore.add(displayedEnchantments());
+		}
+		
+		for (String line : displayedLore()) {
+			newLore.add(line);
+		}
+		
+		if(newLore.size() > 0) {
+			newLore.set(0, compileRule() + newLore.get(0));
 		}
 		else {
 			newLore.add(compileRule());
 		}
-		if (lore.length > 0) {
-			newLore.add(displayedLore());
-		}
+		
 		itemMeta.setLore(newLore);
 		itemStack.setItemMeta(itemMeta);
 		return itemStack;
@@ -537,11 +543,8 @@ public class ExchangeRule {
 		}
 
 		// Lore
-		if (lore.length == 1) {
-			displayed.add(ChatColor.DARK_PURPLE + lore[0]);
-		}
-		else if (lore.length > 1) {
-			displayed.add(ChatColor.DARK_PURPLE + lore[0] + "...");
+		for(String line : displayedLore()) {
+			displayed.add(line);
 		}
 
 		// Citadel group
@@ -586,15 +589,15 @@ public class ExchangeRule {
 		}
 	}
 
-	private String displayedLore() {
+	private String[] displayedLore() {
 		if (lore.length == 0) {
-			return "";
+			return new String[0];
 		}
 		else if (lore.length == 1) {
-			return (ChatColor.DARK_PURPLE + lore[0]);
+			return new String[] { ChatColor.DARK_PURPLE + lore[0] };
 		}
 		else {
-			return ChatColor.DARK_PURPLE + lore[0] + "...";
+			return new String[] { ChatColor.DARK_PURPLE + lore[0], ChatColor.DARK_PURPLE + lore[2] + "..." };
 		}
 	}
 
