@@ -142,7 +142,7 @@ public class SetCommand extends PlayerCommand {
 				sender.sendMessage(ChatColor.GREEN + "Unlisted enchantments are now denied.");
 			}
 			else if ((args[0].equalsIgnoreCase("enchantment") || args[0].equalsIgnoreCase("e"))) {
-				if(args[1].length() != 2) {
+				if(args.length != 2) {
 					sender.sendMessage(ChatColor.RED + "Usage: /ieset enchantment <+/?/-><enchantment abbrv.>[level]");
 
 					return true;
