@@ -1,13 +1,14 @@
 package com.untamedears.ItemExchange.command.commands;
 
-import static com.untamedears.citadel.Utility.getReinforcement;
-import static com.untamedears.citadel.Utility.isReinforced;
-
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.ItemExchange.ItemExchangePlugin;
@@ -17,7 +18,6 @@ import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import com.untamedears.ItemExchange.utility.ExchangeRule;
 import com.untamedears.ItemExchange.utility.ExchangeRule.RuleType;
 import com.untamedears.ItemExchange.utility.ItemExchange;
-import com.untamedears.citadel.entity.PlayerReinforcement;
 
 /*
  * General command for creating either an entire ItemExchange or 
@@ -41,12 +41,12 @@ public class CreateCommand extends PlayerCommand {
 		//The player must have citadel access to the inventory block
 		if (args.length == 0) {
 			if (ItemExchangePlugin.ACCEPTABLE_BLOCKS.contains(block.getState().getType())) {
-				if ((!ItemExchangePlugin.CITADEL_ENABLED || ItemExchangePlugin.CITADEL_ENABLED && !isReinforced(block)) || (((PlayerReinforcement) getReinforcement(block)).isAccessible(player))) {
+				PlayerInteractEvent event = new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, player.getItemInHand(), block, BlockFace.UP);
+				
+				Bukkit.getPluginManager().callEvent(event);
+				
+				if(!event.isCancelled())
 					player.sendMessage(ItemExchange.createExchange(block.getLocation(), player));
-				}
-				else {
-					player.sendMessage(ChatColor.RED + "You do not have access to that block.");
-				}
 			}
 			else {
 				player.sendMessage(ChatColor.RED + "Block in view is not suitable for an Item Exchange.");
