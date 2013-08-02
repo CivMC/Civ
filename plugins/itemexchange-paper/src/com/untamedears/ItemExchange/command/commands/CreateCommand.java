@@ -100,12 +100,12 @@ public class CreateCommand extends PlayerCommand {
 				//If additional arguments are specified create an exchange rule based upon the additional arguments and place it in the player's inventory
 				else if (args.length >= 2) {
 					try {
-						//Attemptes to create the ExchangeRule, converts it to an ItemStack and places it in the player's inventory
+						//Attempts to create the ExchangeRule, converts it to an ItemStack and places it in the player's inventory
 						player.getInventory().addItem(ExchangeRule.parseCreateCommand(args).toItemStack());
 						player.sendMessage(ChatColor.GREEN + "Created Rule Block!");
 					}
 					catch (ExchangeRuleParseException e) {
-						player.sendMessage(ChatColor.RED + "Incorrect entry format.");
+						player.sendMessage(ChatColor.RED + "Incorrect entry format: " + e.getMessage());
 					}
 				}
 			}

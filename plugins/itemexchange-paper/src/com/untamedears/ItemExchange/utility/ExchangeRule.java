@@ -1,6 +1,7 @@
 package com.untamedears.ItemExchange.utility;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,6 +44,8 @@ import com.untamedears.citadel.entity.Faction;
  * @author Brian Landry
  */
 public class ExchangeRule {
+	private static final List<Material> NOT_SUPPORTED = Arrays.asList(Material.MAP, Material.WRITTEN_BOOK, Material.ENCHANTED_BOOK, Material.FIREWORK, Material.FIREWORK_CHARGE, Material.POTION);
+	
 	public static final String hiddenRuleSpacer = "§&§&§&§&§r";
 	public static final String hiddenCategorySpacer = "§&§&§&§r";
 	public static final String hiddenSecondarySpacer = "§&§&§r";
@@ -321,14 +324,19 @@ public class ExchangeRule {
 						amount = Integer.valueOf(args[2]);
 					}
 				}
+				
+				if(NOT_SUPPORTED.contains(material)) {
+					throw new ExchangeRuleParseException("This material is not supported.");
+				}
+				
 				return new ExchangeRule(material, amount, durability, ruleType);
 			}
 			else {
-				throw new ExchangeRuleParseException("Please specify and input or output.");
+				throw new ExchangeRuleParseException("Please specify an input or output.");
 			}
 		}
 		catch (Exception e) {
-			throw new ExchangeRuleParseException("Invalid Exchange Rule");
+			throw new ExchangeRuleParseException("Invalid exchange rule.");
 		}
 	}
 
