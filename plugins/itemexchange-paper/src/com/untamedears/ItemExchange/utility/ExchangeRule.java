@@ -414,8 +414,13 @@ public class ExchangeRule {
 		compiledRule += hiddenCategorySpacer + ((unlistedEnchantmentsAllowed && enchantable) ? hideString("1") : hideString("0"));
 		compiledRule += hiddenCategorySpacer + hideString(displayName);
 		compiledRule += hiddenCategorySpacer;
-		for (String line : lore) {
-			compiledRule += hiddenSecondarySpacer + hideString(line);
+		for (int i = 0; i < lore.length; i++) {
+			String line = lore[i];
+			
+			if(i > 0)
+				compiledRule += hiddenSecondarySpacer;
+			
+			compiledRule += hideString(line);
 		}
 		compiledRule += hiddenCategorySpacer;
 		if(additional != null) {
