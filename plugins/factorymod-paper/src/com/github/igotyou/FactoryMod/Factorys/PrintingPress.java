@@ -21,6 +21,7 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
+import com.github.igotyou.FactoryMod.utility.PrettyLore;
 
 public class PrintingPress extends BaseFactory {
 	
@@ -231,19 +232,28 @@ public class PrintingPress extends BaseFactory {
 		boolean hasPages = pages.allIn(getInventory());
 		boolean inputStall = false;
 		if (hasPages) {
-			pages.removeFrom(getInventory());
-			containedPaper += printingPressProperties.getPagesPerLot();
+			// Check bindings
+			int expectedBindings = (int) Math.floor((double) (containedPaper + printingPressProperties.getPagesPerLot()) / (double) getPrintResult().pageCount());
+			boolean hasBindings = true;
+			ItemList<NamedItemStack> allBindings = new ItemList<NamedItemStack>();
+			if (expectedBindings > containedBindings) {
+				int neededBindings = expectedBindings - containedBindings;
+				allBindings = printingPressProperties.getBindingMaterials().getMultiple(neededBindings);
+				hasBindings = allBindings.allIn(getInventory());
+			}
 			
-			// Load bindings
-			int expectedBindings = (int) Math.ceil((double) containedPaper / (double) getPrintResult().pageCount());
-			while (containedBindings < expectedBindings) {
-				if (printingPressProperties.getBindingMaterials().allIn(getInventory())) {
-					printingPressProperties.getBindingMaterials().removeFrom(getInventory());
-					containedBindings += 1;
-				} else {
-					inputStall = true;
-					break;
+			if (hasBindings) {
+				pages.removeFrom(getInventory());
+				containedPaper += printingPressProperties.getPagesPerLot();
+				
+				while (containedBindings < expectedBindings) {
+					if (printingPressProperties.getBindingMaterials().allIn(getInventory())) {
+						printingPressProperties.getBindingMaterials().removeFrom(getInventory());
+						containedBindings += 1;
+					}
 				}
+			} else {
+				inputStall = true;
 			}
 		} else {
 			inputStall = true;
@@ -327,18 +337,30 @@ public class PrintingPress extends BaseFactory {
 		boolean hasPages = pages.allIn(getInventory());
 		boolean inputStall = false;
 		if (hasPages) {
-			pages.removeFrom(getInventory());
-			containedPaper += printingPressProperties.getPamphletsPerLot();
+			// Check security materials
+			int expectedExtras = (int) Math.ceil((double) containedPaper + printingPressProperties.getPamphletsPerLot());
+			boolean hasExtras = true;
+			ItemList<NamedItemStack> allSecurityMaterials = new ItemList<NamedItemStack>();
+			if (expectedExtras > containedSecurityMaterials) {
+				int neededExtras = expectedExtras - containedSecurityMaterials;
+				int neededExtraLots = (int) Math.ceil((double) neededExtras / (double) printingPressProperties.getSecurityNotesPerLot());
+				allSecurityMaterials = printingPressProperties.getSecurityMaterials().getMultiple(neededExtraLots);
+				hasExtras = allSecurityMaterials.allIn(getInventory());
+			}
 			
-			// Load security materials if security notes
-			while (containedSecurityMaterials < containedPaper) {
-				if (printingPressProperties.getSecurityMaterials().allIn(getInventory())) {
-					printingPressProperties.getSecurityMaterials().removeFrom(getInventory());
-					containedSecurityMaterials += printingPressProperties.getSecurityNotesPerLot();
-				} else {
-					inputStall = true;
-					break;
+			if (hasExtras) {
+				pages.removeFrom(getInventory());
+				containedPaper += printingPressProperties.getPamphletsPerLot();
+				
+				// Load security materials if security notes
+				while (containedSecurityMaterials < containedPaper) {
+					if (printingPressProperties.getSecurityMaterials().allIn(getInventory())) {
+						printingPressProperties.getSecurityMaterials().removeFrom(getInventory());
+						containedSecurityMaterials += printingPressProperties.getSecurityNotesPerLot();
+					}
 				}
+			} else {
+				inputStall = true;
 			}
 		} else {
 			inputStall = true;
@@ -370,6 +392,10 @@ public class PrintingPress extends BaseFactory {
 			System.arraycopy(processQueue, 0, newQ, toEnd, processQueueOffset);
 		}
 		return newQ;
+	}
+
+	public boolean isRepairing() {
+		return mode == OperationMode.REPAIR;
 	}
 	
 	/**
@@ -425,7 +451,7 @@ public class PrintingPress extends BaseFactory {
 		//[Will repair XX% of the factory]
 		if(!getRepairs().isEmpty()&&maintenanceActive)
 		{
-			int amountAvailable=getRepairs().amountAvailable(getPowerSourceInventory());
+			int amountAvailable=getRepairs().amountAvailable(getInventory());
 			int amountRepaired=amountAvailable>currentRepair ? (int) Math.ceil(currentRepair) : amountAvailable;
 			int percentRepaired=(int) (( (double) amountRepaired)/printingPressProperties.getMaxRepair()*100);
 			responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Will repair "+String.valueOf(percentRepaired)+"% of the factory with "+getRepairs().getMultiple(amountRepaired).toString()+"."));
@@ -474,6 +500,7 @@ public class PrintingPress extends BaseFactory {
 	
 	private class PrintResult {
 		private static final int PAGE_LORE_LENGTH_LIMIT = 140;
+		private static final int PAGE_LORE_LINE_LIMIT = 35;
 		private List<String> pages;
 		private String title;
 		private String author;
@@ -532,7 +559,6 @@ public class PrintingPress extends BaseFactory {
 		public NamedItemStack toBook() {
 			NamedItemStack book = new NamedItemStack(Material.WRITTEN_BOOK, 1, (short) 0, "book");
 			BookMeta meta = (BookMeta) book.getItemMeta();
-			meta.setDisplayName(title);
 			meta.setTitle(title);
 			meta.setAuthor(author);
 			meta.setPages(pages);
@@ -546,7 +572,7 @@ public class PrintingPress extends BaseFactory {
 			meta.setDisplayName(title);
 			List<String> lore = new ArrayList<String>();
 			if (pages.size() > 0) {
-				lore.add(limitPageLore(pages.get(0)));
+				lore.addAll(filterPageLore(pages.get(0)));
 			}
 			meta.setLore(lore);
 			book.setItemMeta(meta);
@@ -559,7 +585,7 @@ public class PrintingPress extends BaseFactory {
 			meta.setDisplayName(title);
 			List<String> lore = new ArrayList<String>();
 			if (pages.size() > 0) {
-				lore.add(limitPageLore(pages.get(0)));
+				lore.addAll(filterPageLore(pages.get(0)));
 			}
 			if (author.equals("")) {
 				lore.add(String.format("§2#%d", watermark));
@@ -571,13 +597,20 @@ public class PrintingPress extends BaseFactory {
 			return book;
 		}
 		
-		private String limitPageLore(String in) {
-			in = in.replace("§2", "");
-			if (in.length() > PAGE_LORE_LENGTH_LIMIT) {
-				return in.substring(0, PAGE_LORE_LENGTH_LIMIT - 3) + "...";
-			} else {
-				return in;
-			}
+		private List<String> filterPageLore(String lore) {
+			// Remove green
+			lore = lore.replace("§2", "");
+			
+			// Remove line breaks
+			lore = lore.replaceAll("[ \r\n]+", " ");
+			
+			// Limit length
+			lore = PrettyLore.limitLengthEllipsis(lore, PAGE_LORE_LENGTH_LIMIT);
+			
+			// Split in to lines based on length
+			List<String> lines = PrettyLore.splitLines(lore, PAGE_LORE_LINE_LIMIT);
+			
+			return lines;
 		}
 		
 		public int hashCode() {

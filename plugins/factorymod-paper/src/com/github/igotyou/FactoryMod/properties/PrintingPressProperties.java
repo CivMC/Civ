@@ -123,7 +123,7 @@ public class PrintingPressProperties {
 		ItemList<NamedItemStack> ppSecurityCost=plugin.getItems(costs.getConfigurationSection("security_lot"));
 		int securityNotesPerLot = costs.getInt("security_notes_per_lot",24);
 		int ppEnergyTime = configPrintingPresses.getInt("fuel_time", 10);
-		int ppRepair = configPrintingPresses.getInt("max_repair",100);
+		int ppRepair = costs.getInt("repair_multiple",1);
 		String ppName = configPrintingPresses.getString("name", "Printing Press");
 		int paperRate = configPrintingPresses.getInt("paper_rate",3);
 		int pageLead = configPrintingPresses.getInt("page_lead",12);
