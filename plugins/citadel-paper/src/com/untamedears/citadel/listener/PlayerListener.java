@@ -148,11 +148,14 @@ public class PlayerListener implements Listener {
                 player.getName(), block.getLocation().toString()));
             sendMessage(pie.getPlayer(), ChatColor.RED, "%s is locked", block.getType().name());
             pie.setCancelled(true);
-        } else if (action == Action.PHYSICAL
-                && AccessDelegate.getDelegate(block.getRelative(BlockFace.UP)) instanceof CropAccessDelegate) {
-            Citadel.info("Prevented reinforced crop trample at "
-                    + block.getLocation().toString());
-            pie.setCancelled(true);
+        } else if (action == Action.PHYSICAL) {
+            AccessDelegate aboveDelegate = AccessDelegate.getDelegate(block.getRelative(BlockFace.UP));
+            if (aboveDelegate instanceof CropAccessDelegate
+                    && aboveDelegate.isReinforced()) {
+                Citadel.info("Prevented reinforced crop trample at "
+                        + block.getLocation().toString());
+                pie.setCancelled(true);
+            }
         }
         if (pie.isCancelled()) return;
 
