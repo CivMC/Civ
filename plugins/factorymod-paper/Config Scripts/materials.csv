@@ -321,6 +321,12 @@ Diffuse Potion,POTION,373,11
 Artless Potion,POTION,373,13
 Bungling Potion,POTION,373,23
 Suave Potion,POTION,373,29
+Smooth Potion,POTION,373,91
+Refined Potion,POTION,373,107
+Cordial Potion,POTION,373,109
+Potent Potion,POTION,373,112
+Acrid Potion,POTION,373,123
+Gross Potion,POTION,373,125
 Potion,POTION,373,0
 Glass Bottle,GLASS_BOTTLE,374,0
 Spider Eye,SPIDER_EYE,375,0
