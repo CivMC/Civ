@@ -605,7 +605,7 @@ public class ExchangeRule {
 			return new String[] { ChatColor.DARK_PURPLE + lore[0] };
 		}
 		else {
-			return new String[] { ChatColor.DARK_PURPLE + lore[0], ChatColor.DARK_PURPLE + lore[2] + "..." };
+			return new String[] { ChatColor.DARK_PURPLE + lore[0], ChatColor.DARK_PURPLE + lore[1] + "..." };
 		}
 	}
 
