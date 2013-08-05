@@ -15,9 +15,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.CraftingInventory;
@@ -62,7 +65,7 @@ public class ItemExchangeListener implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {
 		if (event.isShiftClick()) {
 			try {
@@ -149,7 +152,7 @@ public class ItemExchangeListener implements Listener {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onInventoryMove(InventoryMoveItemEvent event) {
 		ItemStack item = event.getItem();
 		
@@ -165,6 +168,29 @@ public class ItemExchangeListener implements Listener {
 			}
 		}
 		
-		event.setItem(null);
+		event.setCancelled(true);
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	public void onInventoryPickupItem(InventoryPickupItemEvent event) {
+		if(event.getInventory().getType() != InventoryType.HOPPER) {
+			return;
+		}
+		
+		ItemStack item = event.getItem().getItemStack();
+		
+		try {
+			ExchangeRule.parseRuleBlock(item);
+		}
+		catch(ExchangeRuleParseException e) {
+			try {
+				ExchangeRule.parseBulkRuleBlock(item);
+			}
+			catch(ExchangeRuleParseException e2) {
+				return;
+			}
+		}
+		
+		event.setCancelled(true);
 	}
 }
