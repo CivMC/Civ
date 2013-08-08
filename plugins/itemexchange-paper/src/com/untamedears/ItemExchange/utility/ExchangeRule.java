@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -273,14 +272,22 @@ public class ExchangeRule {
 	}
 
 	/*
-	 * Removes § from string
+	 * Removes every other character from a string
 	 */
 	private static String showString(String string) {
-		return StringUtils.join(string.split("§"));
+		StringBuilder result = new StringBuilder();
+		
+		char[] chars = string.toCharArray();
+		
+		for(int i = 1; i < chars.length; i += 2) {
+			result.append(chars[i]);
+		}
+		
+		return result.toString();
 	}
 
 	/*
-	 * Adds a § infront of every character in a string
+	 * Adds a § in front of every character in a string
 	 */
 	private static String hideString(String string) {
 		String hiddenString = "";
