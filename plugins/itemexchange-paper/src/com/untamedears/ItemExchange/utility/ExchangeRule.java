@@ -233,12 +233,16 @@ public class ExchangeRule {
 			// Get DisplayName
 			String displayName = "";
 			if (!compiledRule[8].equals("")) {
-				displayName = showString(compiledRule[8]);
+				displayName = unescapeString(showString(compiledRule[8]));
 			}
 			// Get Lore
 			String[] lore = new String[0];
 			if (!compiledRule[9].equals("")) {
 				lore = showString(compiledRule[9]).split(secondarySpacer);
+				
+				for(String line : lore) {
+					line = unescapeString(line);
+				}
 			}
 
 			AdditionalMetadata additional = null;
@@ -253,7 +257,7 @@ public class ExchangeRule {
 			Faction group;
 
 			if(!compiledRule[11].equals("")) {
-				group = Citadel.getGroupManager().getGroup(showString(compiledRule[11]));
+				group = Citadel.getGroupManager().getGroup(unescapeString(showString(compiledRule[11])));
 			}
 			else {
 				group = null;
@@ -295,6 +299,20 @@ public class ExchangeRule {
 			hiddenString += "§" + character;
 		}
 		return hiddenString;
+	}
+	
+	/*
+	 * Escapes all 'r' and '\' characters in a string
+	 */
+	private static String escapeString(String string) {
+		return string.replaceAll("([\\\\r])", "\\\\$1");
+	}
+	
+	/*
+	 * Un-escapes all 'r' and '\' characters in a string
+	 */
+	private static String unescapeString(String string) {
+		return string.replaceAll("\\\\([\\\\r])", "$1");
 	}
 
 	/*
@@ -433,7 +451,7 @@ public class ExchangeRule {
 			}
 		}
 		compiledRule += hiddenCategorySpacer + ((unlistedEnchantmentsAllowed && enchantable) ? hideString("1") : hideString("0"));
-		compiledRule += hiddenCategorySpacer + hideString(displayName);
+		compiledRule += hiddenCategorySpacer + hideString(escapeString(displayName));
 		compiledRule += hiddenCategorySpacer;
 		for (int i = 0; i < lore.length; i++) {
 			String line = lore[i];
@@ -441,7 +459,7 @@ public class ExchangeRule {
 			if(i > 0)
 				compiledRule += hiddenSecondarySpacer;
 			
-			compiledRule += hideString(line);
+			compiledRule += hideString(escapeString(line));
 		}
 		compiledRule += hiddenCategorySpacer;
 		if(additional != null) {
@@ -449,7 +467,7 @@ public class ExchangeRule {
 		}
 		compiledRule += hiddenCategorySpacer;
 		if(citadelGroup != null) {
-			compiledRule += hideString(citadelGroup.getName());
+			compiledRule += hideString(escapeString(citadelGroup.getName()));
 		}
 		compiledRule += hiddenCategorySpacer + "§r";
 		return compiledRule;
