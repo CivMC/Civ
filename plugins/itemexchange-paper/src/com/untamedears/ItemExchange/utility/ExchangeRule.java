@@ -240,8 +240,8 @@ public class ExchangeRule {
 			if (!compiledRule[9].equals("")) {
 				lore = showString(compiledRule[9]).split(secondarySpacer);
 				
-				for(String line : lore) {
-					line = unescapeString(line);
+				for(int i = 0; i < lore.length; i++) {
+					lore[i] = unescapeString(lore[i]);
 				}
 			}
 
