@@ -219,7 +219,7 @@ public class SetCommand extends PlayerCommand {
 				}
 			}
 			else if ((args[0].equalsIgnoreCase("displayname") || args[0].equalsIgnoreCase("n"))) {
-				if(args.length == 2) {
+				if(args.length >= 2) {
 					exchangeRule.setDisplayName(StringUtils.join(args, ' ', 1, args.length));
 
 					sender.sendMessage(ChatColor.GREEN + "Successfully changed display name.");
@@ -228,11 +228,6 @@ public class SetCommand extends PlayerCommand {
 					exchangeRule.setDisplayName("");
 
 					sender.sendMessage(ChatColor.GREEN + "Successfully removed display name.");
-				}
-				else {
-					sender.sendMessage(ChatColor.RED + "Usage: /ies displayname [name]");
-					
-					return true;
 				}
 			}
 			else if ((args[0].equalsIgnoreCase("lore") || args[0].equalsIgnoreCase("l"))) {
