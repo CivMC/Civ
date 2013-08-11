@@ -88,7 +88,7 @@ public class SetCommand extends PlayerCommand {
 					try {
 						int amount = Integer.valueOf(args[1]);
 
-						if(amount < 1) {
+						if(amount < 0) {
 							sender.sendMessage(ChatColor.RED + "Invalid amount.");
 
 							return true;

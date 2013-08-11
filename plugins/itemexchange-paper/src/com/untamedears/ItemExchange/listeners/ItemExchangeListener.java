@@ -79,7 +79,7 @@ public class ItemExchangeListener implements Listener {
 					exchangeRule.setAmount(amount + 1);
 				}
 				else {
-					if (amount > 1)
+					if (amount > 0)
 						exchangeRule.setAmount(amount - 1);
 				}
 				
