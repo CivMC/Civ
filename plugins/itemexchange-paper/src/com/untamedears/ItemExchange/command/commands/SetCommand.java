@@ -143,7 +143,7 @@ public class SetCommand extends PlayerCommand {
 			}
 			else if ((args[0].equalsIgnoreCase("enchantment") || args[0].equalsIgnoreCase("e"))) {
 				if(args.length != 2) {
-					sender.sendMessage(ChatColor.RED + "Usage: /ieset enchantment <+/?/-><enchantment abbrv.>[level]");
+					sender.sendMessage(ChatColor.RED + "Usage: /ieset enchantment <+/?/-><enchantment abbrv.><level>");
 
 					return true;
 				}
