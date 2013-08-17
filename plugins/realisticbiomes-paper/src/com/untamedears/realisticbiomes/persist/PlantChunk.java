@@ -153,41 +153,41 @@ public class PlantChunk {
 		try {
 			// if this chunk was not in the database, then add it to the database
 			if (!inDatabase) {
-				ChunkWriter.addChunkStmt.setInt(1, chunkCoords.w);
-				ChunkWriter.addChunkStmt.setInt(2, chunkCoords.x);
-				ChunkWriter.addChunkStmt.setInt(3, chunkCoords.z);
-				ChunkWriter.addChunkStmt.execute();
-				ChunkWriter.getLastChunkIdStmt.execute();
-				ResultSet rs = ChunkWriter.getLastChunkIdStmt.getResultSet();
+				writeStmts.addChunkStmt.setInt(1, chunkCoords.w);
+				writeStmts.addChunkStmt.setInt(2, chunkCoords.x);
+				writeStmts.addChunkStmt.setInt(3, chunkCoords.z);
+				writeStmts.addChunkStmt.execute();
+				writeStmts.getLastChunkIdStmt.execute();
+				ResultSet rs = writeStmts.getLastChunkIdStmt.getResultSet();
 				index = rs.getLong(1);
 				
 				inDatabase = true;
 			}
 			
 			// first, delete the old data
-			ChunkWriter.deleteOldDataStmt.setLong(1, index);
-			ChunkWriter.deleteOldDataStmt.execute();
+			writeStmts.deleteOldDataStmt.setLong(1, index);
+			writeStmts.deleteOldDataStmt.execute();
 			
 			// then replace it with all the recorded plants in this chunk
 			if (!plants.isEmpty()) {
 				for (Coords coords: plants.keySet()) {
 					Plant plant = plants.get(coords);
 					
-					ChunkWriter.savePlantsStmt.setLong(1, index);
-					ChunkWriter.savePlantsStmt.setInt(2, coords.w);
-					ChunkWriter.savePlantsStmt.setInt(3, coords.x);
-					ChunkWriter.savePlantsStmt.setInt(4, coords.y);
-					ChunkWriter.savePlantsStmt.setInt(5, coords.z);
-					ChunkWriter.savePlantsStmt.setLong(6, plant.getUpdateTime());
-					ChunkWriter.savePlantsStmt.setFloat(7, plant.getGrowth());
+					writeStmts.savePlantsStmt.setLong(1, index);
+					writeStmts.savePlantsStmt.setInt(2, coords.w);
+					writeStmts.savePlantsStmt.setInt(3, coords.x);
+					writeStmts.savePlantsStmt.setInt(4, coords.y);
+					writeStmts.savePlantsStmt.setInt(5, coords.z);
+					writeStmts.savePlantsStmt.setLong(6, plant.getUpdateTime());
+					writeStmts.savePlantsStmt.setFloat(7, plant.getGrowth());
 					
-					ChunkWriter.savePlantsStmt.execute();
+					writeStmts.savePlantsStmt.execute();
 				}
 			}
 			else {
 				// otherwise just delete the chunk entirely
-				ChunkWriter.deleteChunkStmt.setLong(1, index);
-				ChunkWriter.deleteChunkStmt.execute();
+				writeStmts.deleteChunkStmt.setLong(1, index);
+				writeStmts.deleteChunkStmt.execute();
 			}
 		}
 		catch (SQLException e) {
