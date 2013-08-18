@@ -1,5 +1,0 @@
-debug: false
-messages:
-   randomspawned: "You wake up in an unfamiliar place."
-nodamagetime: 5
-rs-sign-text: "[RandomSpawn]"
