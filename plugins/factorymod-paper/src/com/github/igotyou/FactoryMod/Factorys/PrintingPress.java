@@ -113,6 +113,7 @@ public class PrintingPress extends BaseFactory {
 				if (plates != null) {
 					pageCount = Math.max(1, ((BookMeta) plates.getItemMeta()).getPageCount());
 				}
+				pageCount = Math.min(pageCount, 5);
 				return printingPressProperties.getSetPlateTime() * pageCount;
 			case REPAIR:
 				return printingPressProperties.getRepairTime();
@@ -130,6 +131,7 @@ public class PrintingPress extends BaseFactory {
 			NamedItemStack plates = getPlateResult();
 			if (plates != null) {
 				int pageCount = ((BookMeta) plates.getItemMeta()).getPageCount();
+				pageCount = Math.min(pageCount, 5);
 				inputs.addAll(printingPressProperties.getPlateMaterials().getMultiple(pageCount));
 			}
 			break;
@@ -233,7 +235,9 @@ public class PrintingPress extends BaseFactory {
 		boolean inputStall = false;
 		if (hasPages) {
 			// Check bindings
-			int expectedBindings = (int) Math.floor((double) (containedPaper + printingPressProperties.getPagesPerLot()) / (double) getPrintResult().pageCount());
+			int pageCount = getPrintResult().pageCount();
+			pageCount = Math.min(pageCount, 5);
+			int expectedBindings = (int) Math.floor((double) (containedPaper + printingPressProperties.getPagesPerLot()) / (double) pageCount);
 			boolean hasBindings = true;
 			ItemList<NamedItemStack> allBindings = new ItemList<NamedItemStack>();
 			if (expectedBindings > containedBindings) {
