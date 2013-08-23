@@ -1602,7 +1602,7 @@ production_factories:
         amount: 576
       Slime ball:
         material: SLIME_BALL
-        amount: 32
+        amount: 128
     recipes:
       - Produce_Noteblocks
       - Produce_Dispensers
@@ -1620,6 +1620,9 @@ production_factories:
       Iron_Ingot:
         material: IRON_INGOT
         amount: 6
+      Slime ball:
+        material: SLIME_BALL
+        amount: 1
   Fancy_Ore_Smelter:
     name: Fancy Ore Smelter
     fuel:
