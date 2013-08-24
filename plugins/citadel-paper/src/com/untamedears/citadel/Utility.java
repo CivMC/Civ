@@ -80,6 +80,7 @@ public class Utility {
         return nr;
     }
 
+    @SuppressWarnings("deprecation")
     public static IReinforcement createPlayerReinforcement(Player player, Block block) {
         int blockTypeId = block.getTypeId();
         if (PlayerReinforcement.NON_REINFORCEABLE.contains(blockTypeId)) return null;
@@ -178,7 +179,7 @@ public class Utility {
         AccessDelegate delegate = AccessDelegate.getDelegate(block);
         IReinforcement reinforcement = delegate.getReinforcement();
         if (reinforcement == null) {
-            reinforcement = (IReinforcement)createNaturalReinforcement(block, null);
+            reinforcement = createNaturalReinforcement(block, null);
         }
         if (reinforcement == null) {
             return false;

@@ -554,5 +554,7 @@ public class CitadelCachingDao extends CitadelDao {
         }
     }
 
-    private class RefuseToPreventThrashingException extends Exception {}
+    private class RefuseToPreventThrashingException extends Exception {
+        private static final long serialVersionUID = 763853564799286588L;
+    }
 }

@@ -87,8 +87,8 @@ public class Citadel extends JavaPlugin {
     public void onDisable() {
         //There should be some interface that CitadelCachingDao can implement that does this automatically on disable:
         //I don't want to do this as close() or finalize() because I want to make sure the database connection is still alive.
-        if( dao instanceof CitadelCachingDao ){
-            ((CitadelCachingDao)dao).shutDown();
+        if(dao instanceof CitadelCachingDao) {
+            dao.shutDown();
         }
         log.info("[Citadel] Citadel is now disabled.");
     }
