@@ -48,7 +48,7 @@ public class GrowthConfig {
 	private Map<Biome, Double> biomeMultipliers;
 	
 	// conversion used for persistence calculations
-	private static final int MS_PER_HOUR = 1000 * 60 * 60;
+	private static final int SEC_PER_HOUR = 60 * 60;
 	// maximum light level on a block
 	private static final double MAX_LIGHT_INTENSITY = 15.0;
 	
@@ -214,9 +214,9 @@ public class GrowthConfig {
 	public double getRate(Block block) {
 		// rate = baseRate * sunlightLevel * biome * (1.0 + soilBonus)
 		double rate = baseRate;
-		// if persistent, the growth rate is measured in growth/millisecond
+		// if persistent, the growth rate is measured in growth/second
 		if (isPersistent) {
-			rate = 1.0 / (persistentRate * MS_PER_HOUR);
+			rate = 1.0 / (persistentRate * SEC_PER_HOUR);
 		}
 		
 		double environmentMultiplier = 1.0;

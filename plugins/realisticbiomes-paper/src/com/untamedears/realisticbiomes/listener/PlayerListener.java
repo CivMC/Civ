@@ -100,7 +100,7 @@ public class PlayerListener implements Listener {
 					material = event.getMaterial();
 				
 				// handle saplings as their tree types
-				if (event.getItem().getTypeId() == Material.SAPLING.getId()) {
+				if (event.getItem() != null && event.getItem().getTypeId() == Material.SAPLING.getId()) {
 					int data = event.getItem().getData().getData();
 					if (saplingIndexMap.containsKey(data)) {
 						material = saplingIndexMap.get(data);
@@ -150,7 +150,9 @@ public class PlayerListener implements Listener {
 
 				if (plugin.persistConfig.enabled && growthConfig.isPersistent()) {
 					double growthAmount = growthConfig.getRate(block);
-					growthAmount = (1.0/(growthAmount*(1000.0*60.0*60.0/*ms per hour*/)));
+					RealisticBiomes.LOG.finer("PlayerListener.onPlayerInteractEvent(): growthAmount for block " + block + " is " + growthAmount);
+					growthAmount = (1.0/(growthAmount*(60.0*60.0/*seconds per hour*/)));
+					RealisticBiomes.LOG.finer("PlayerListener.onPlayerInteractEvent(): growthAmount adjusted to "  + growthAmount);
 					
 					if (plantGrowth == 1.0) {
 						String amount = new DecimalFormat("#0.00").format(growthAmount);
@@ -163,8 +165,8 @@ public class PlayerListener implements Listener {
 					}
 					
 					return;
-				}
-				else {
+				} else {
+					// Persistence is not enabled
 					double growthAmount = growthConfig.getRate(block);
 					
 					// clamp the growth value between 0 and 1 and put into percent format
