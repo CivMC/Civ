@@ -52,7 +52,7 @@ realistic_biomes:
    greenhouse_ignore_biome: true
    # if this flag is true, the growth rate of the grower is modulated by sunlight levels
    # ie sunlight level = 15 means full growth, while sunlight level 0 means 0 growth
-   # sunlight level is disregarded is this flag is false
+   # sunlight levcael is disregarded is this flag is false
    needs_sunlight: true
    # multiplier that is applied to plants that are not at level 15 sunlight
    not_full_sunlight_multiplier: 0.25
@@ -296,6 +296,17 @@ realistic_biomes:
     hot_rainy: 0.1
     SWAMPLAND: 0.1
     mushroom: 1.0
+
+HORSE:
+   inherit: animal
+   biomes:
+    temperate: 1.0
+    mountain: 0.25
+    hot_dry: 0.25
+    cold: 0.25
+    hot_rainy: 0.1
+    mushroom: 1.0
+
 
   PIG:
    inherit: animal
