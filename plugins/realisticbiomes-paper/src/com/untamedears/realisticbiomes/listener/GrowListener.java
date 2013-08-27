@@ -14,6 +14,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
@@ -139,6 +140,23 @@ public class GrowListener implements Listener {
 	}
 	
 	@EventHandler
+	public void onChunkLoad(ChunkLoadEvent e) {
+		if (!plugin.persistConfig.enabled)
+			return;
+		
+		// make sure the chunk is loaded
+		Chunk chunk = e.getChunk();
+		int w = WorldID.getPID(e.getChunk().getWorld().getUID());
+		Coords coords = new Coords(w, chunk.getX(), 0, chunk.getZ());
+		plugin.getPlantManager().loadChunk(coords);
+		
+		// TESTING
+		//this.plugin.getLogger().info("ChunkLoaded: " + coords);
+
+		
+	}
+	
+	@EventHandler
 	public void onChunkUnload(ChunkUnloadEvent e) {
 		if (!plugin.persistConfig.enabled)
 			return;
@@ -147,6 +165,10 @@ public class GrowListener implements Listener {
 		int w = WorldID.getPID(e.getChunk().getWorld().getUID());
 		Coords coords = new Coords(w, chunk.getX(), 0, chunk.getZ());
 		plugin.getPlantManager().minecraftChunkUnloaded(coords);
+		
+		// TESTING
+		//this.plugin.getLogger().info("ChunkUnLoaded: " + coords);
+
 	}
 	
 	@EventHandler
@@ -161,6 +183,6 @@ public class GrowListener implements Listener {
 			return;	
 		
 		int w = WorldID.getPID(block.getWorld().getUID());
-		plugin.getPlantManager().add(new Coords(w, block.getX(), block.getY(), block.getZ()), new Plant(System.currentTimeMillis()));
+		plugin.getPlantManager().add(new Coords(w, block.getX(), block.getY(), block.getZ()), new Plant(System.currentTimeMillis() / 1000L));
 	}
 }

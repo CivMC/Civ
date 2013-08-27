@@ -36,6 +36,33 @@ public class PlantChunk {
 
 	}
 	
+	/**
+	 * tostring override
+	 */
+	public String toString() {
+		
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("<PlantChunk: index: " + index);
+		sb.append(" loaded: " + loaded);
+		sb.append(" inDatabase: " + inDatabase);
+		sb.append(" plants: ");
+		
+		
+		if (this.plants != null) {
+			for (Coords iterCoords : plants.keySet()) {
+				
+				sb.append(" PlantHashmapEntry[coords: " + iterCoords);
+				sb.append(" = plant: " + plants.get(iterCoords));
+				sb.append(" ] ");
+			
+			}
+		}
+		
+		sb.append(" > ");
+		return sb.toString();
+	}
+	
 	///-------------------------
 	
 	public synchronized boolean isLoaded() {
@@ -57,11 +84,13 @@ public class PlantChunk {
 	
 	public synchronized void add(Coords coords, Plant plant, Connection writeConn) {
 		if (!loaded) {
-			if (!inDatabase)
+			if (!inDatabase) {
+				RealisticBiomes.LOG.finer("Plantchunk.add(): not in database, not loaded, creating new hashmap for plants");
 				plants = new HashMap<Coords, Plant>();
-			else
+			} else {
+				RealisticBiomes.LOG.finer("Plantchunk.add():in database, but not loaded, calling load()");
 				load(coords, writeConn);
-			
+			}
 			loaded = true;
 		}
 		
@@ -69,39 +98,45 @@ public class PlantChunk {
 	}
 	
 	public synchronized Plant get(Coords coords) {
-		if (!loaded)
+		if (!loaded) {
+			RealisticBiomes.LOG.finer("Plantchunk.get(): returning null cause not loaded");
 			return null;
-		
+		}
 		return plants.get(coords);
 	}
 
 	public synchronized boolean load(Coords coords, Connection readConn) {
 		// if the data is being loaded, it is known that this chunk is in the database
+		
+		plugin.getLogger().finer("Plantchunk.load() called with coords: " + coords);
 		inDatabase = true;
 		
-		if (loaded)
+		if (loaded) {
+			RealisticBiomes.LOG.finer("Plantchunk.load(): plant chunk is already loaded, returning true");
 			return true;
+		}
 		
 		World world = plugin.getServer().getWorld(WorldID.getMCID(coords.w));
 		
 		plants = new HashMap<Coords, Plant>();
 		PreparedStatement loadPlantsStmt;
 
+		// TODO: put this with the other sql prepared statements
 		try {
-			loadPlantsStmt = readConn.prepareStatement(String.format("SELECT w, x, y, z, date, growth FROM %s_plant WHERE chunkid = ?1", 
+			loadPlantsStmt = readConn.prepareStatement(String.format("SELECT w, x, y, z, date, growth FROM %s_plant WHERE chunkid = ?", 
 					this.plugin.persistConfig.prefix)); 
 			
 			
 		} 	catch (SQLException e) {
-			throw new DataSourceException("Failed to create prepared statement in PlantChunk", e); 
+			throw new DataSourceException("Failed to create prepared statement in PlantChunk.load()", e); 
 		}
 		
 
-		
+		// execute the load plant statement
 		try {
 		
-			
 			loadPlantsStmt.setLong(1, index);
+			plugin.getLogger().finer("PlantChunk.load() executing sql query: " + loadPlantsStmt.toString());
 			loadPlantsStmt.execute();
 			
 			ResultSet rs = loadPlantsStmt.getResultSet();
@@ -113,8 +148,11 @@ public class PlantChunk {
 				long date = rs.getLong(5);
 				float growth = rs.getFloat(6);
 				
+				plugin.getLogger().finer(String.format("PlantChunk.load(): got result: w:%s x:%s y:%s z:%s date:%s growth:%s", w, x, y, z, date, growth));
+				
 				// if the plant does not correspond to an actual crop, don't load it
 				if (!plugin.getGrowthConfigs().containsKey(world.getBlockAt(x, y, z).getType())) {
+					plugin.getLogger().finer("Plantchunk.load(): plant we got from db doesn't correspond to an actual crop, not loading");
 					continue;
 				}
 				
@@ -123,7 +161,7 @@ public class PlantChunk {
 				// grow the block
 				Block block = world.getBlockAt(x, y, z);
 				GrowthConfig growthConfig = plugin.getGrowthConfigs().get(block.getType());
-				double growthAmount = growthConfig.getRate(block) * plant.setUpdateTime(System.currentTimeMillis());
+				double growthAmount = growthConfig.getRate(block) * plant.setUpdateTime(System.currentTimeMillis() / 1000L);
 				plant.addGrowth((float)growthAmount);
 				
 				// and update the plant growth
@@ -133,13 +171,14 @@ public class PlantChunk {
 				// plants
 				if (!(plant.getGrowth() >= 1.0)) {
 					plants.put(new Coords(w,x,y,z), plant);
+					RealisticBiomes.LOG.finer("PlantChunk.load(): plant not finished growing, adding to plants list");
 				}
 			}
 			
 			loadPlantsStmt.close();
 		}
 		catch (SQLException e) {
-			throw new DataSourceException(String.format("Failed to execute/load the data from the plants table (In PlantChunk) with chunkId %s, coords %s", index, coords), e); 
+			throw new DataSourceException(String.format("Failed to execute/load the data from the plants table (In PlantChunk.load()) with chunkId %s, coords %s", index, coords), e); 
 		}
 		
 		loaded = true;
@@ -157,21 +196,47 @@ public class PlantChunk {
 				ChunkWriter.addChunkStmt.setInt(2, chunkCoords.x);
 				ChunkWriter.addChunkStmt.setInt(3, chunkCoords.z);
 				ChunkWriter.addChunkStmt.execute();
+				
 				ChunkWriter.getLastChunkIdStmt.execute();
 				ResultSet rs = ChunkWriter.getLastChunkIdStmt.getResultSet();
-				index = rs.getLong(1);
+				
+				// need to call rs.next() to get the first result, and make sure we get the index, and throw an exception
+				// if we don't
+				if (rs.next()) {
+					index = rs.getLong(1);
+				} else {
+					throw new DataSourceException("Trying to add the chunk to the database, but was unable to get " + 
+							"the last inserted statement to get the index");
+				}
 				
 				inDatabase = true;
 			}
 			
+		} catch (SQLException e) {
+			
+			throw new DataSourceException(String.format("Failed to unload the chunk (In PlantChunk, adding chunk to db if needed), index %s, coords %s, PlantChunk obj: %s",  index, chunkCoords, this), e);
+		}
+			
+			
+		try {
+			// TODO: MAKE THIS DO AN UPDATE RATHER THEN DELETE/INSERT
 			// first, delete the old data
 			ChunkWriter.deleteOldDataStmt.setLong(1, index);
 			ChunkWriter.deleteOldDataStmt.execute();
+		} catch (SQLException e) {
+				
+			throw new DataSourceException(String.format("Failed to unload the chunk (In PlantChunk, deleting old data), index %s, coords %s, PlantChunk obj: %s",  index, chunkCoords, this), e);
+		}
 			
+		try {
 			// then replace it with all the recorded plants in this chunk
 			if (!plants.isEmpty()) {
 				for (Coords coords: plants.keySet()) {
 					Plant plant = plants.get(coords);
+					
+					this.plugin.getLogger().finer("unloading plant: " + plant);
+					this.plugin.getLogger().finer(String.format("index: %s, w: %s x: %s, y: %s, z: %s, date: %s, growth: %s",
+							index, coords.w, coords.x, coords.y, coords.z, plant.getUpdateTime(), plant.getGrowth() ));
 					
 					ChunkWriter.savePlantsStmt.setLong(1, index);
 					ChunkWriter.savePlantsStmt.setInt(2, coords.w);
@@ -180,6 +245,8 @@ public class PlantChunk {
 					ChunkWriter.savePlantsStmt.setInt(5, coords.z);
 					ChunkWriter.savePlantsStmt.setLong(6, plant.getUpdateTime());
 					ChunkWriter.savePlantsStmt.setFloat(7, plant.getGrowth());
+					
+					//this.plugin.getLogger().info(ChunkWriter.savePlantsStmt.toString()); // TESTING
 					
 					ChunkWriter.savePlantsStmt.execute();
 				}
@@ -191,7 +258,8 @@ public class PlantChunk {
 			}
 		}
 		catch (SQLException e) {
-			throw new DataSourceException(String.format("Failed to unload the chunk (In PlantChunk), index %s, coords %s",  index, chunkCoords), e);
+			throw new DataSourceException(String.format("Failed to unload the chunk (In PlantChunk, " +
+					"replacing with new data/deleting), index %s, coords %s, PlantChunk obj: %s",  index, chunkCoords, this), e);
 		}
 		
 		plants = null;

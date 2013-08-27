@@ -33,6 +33,6 @@ public class Coords {
 	}
 	
 	public String toString() {
-		return "["+w+", "+x+", "+y+", "+z+"]";
+		return "<Coords [w: "+w+", x:"+x+", y: "+y+", z: "+z+"]>";
 	}
 }

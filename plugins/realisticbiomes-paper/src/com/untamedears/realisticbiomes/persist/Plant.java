@@ -40,4 +40,10 @@ public class Plant {
 	public float getGrowth() {
 		return growth;
 	}
+	
+	public String toString() {
+	
+		return "<Plant lastUpdateTime: " + lastUpdateTime + " growth: " + growth + ">";
+	
+	}
 }

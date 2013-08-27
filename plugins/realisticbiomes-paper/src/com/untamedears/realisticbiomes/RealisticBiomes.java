@@ -1,8 +1,10 @@
 package com.untamedears.realisticbiomes;
 
 import java.util.ArrayList;
+import net.minecraft.server.v1_5_R3.ConsoleLogManager;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
@@ -26,7 +28,7 @@ import com.untamedears.realisticbiomes.persist.WorldID;
 
 public class RealisticBiomes extends JavaPlugin implements Listener {
 
-	private static final Logger LOG = Logger.getLogger("RealisticBiomes");
+	public static Logger LOG = null;
 	
 	public HashMap<Object, GrowthConfig> materialGrowth;
 	public BlockGrower blockGrower;
@@ -34,6 +36,10 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	private PlantManager plantManager;
 	
 	public void onEnable() {		
+		
+		
+		RealisticBiomes.LOG = this.getLogger();
+		LOG.info("name of logger is: " + LOG.getName());
 		
 		WorldID.init(this);
 		
@@ -58,7 +64,7 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		
 		getServer().getPluginManager().registerEvents(this, this);
 		
-		LOG.info("[RealisticBiomes] is now enabled.");
+		LOG.info("is now enabled.");
 	}
 
 	private void loadPersistConfig(ConfigurationSection config) {
@@ -77,8 +83,8 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		persistConfig.growEventLoadChance = config.getDouble("grow_event_load_chance");
 		persistConfig.logDB = config.getBoolean("log_db");
 		
-		LOG.info("[RealisticBiomes] Persistence enabled: " + persistConfig.enabled);
-		LOG.info("[RealisticBiomes] Database: " + persistConfig.databaseName);
+		LOG.info("Persistence enabled: " + persistConfig.enabled);
+		LOG.info("Database: " + persistConfig.databaseName);
 	}
 	
 	private void loadGrowthConfigs(ConfigurationSection config) {
@@ -213,11 +219,11 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	
 	public void onDisable() {
 		if (persistConfig.enabled) {
-			LOG.info("[RealisticBiomes] saving plant growth data.");
+			LOG.info("saving plant growth data.");
 			plantManager.saveAllAndStop();
 			plantManager = null;
 		}
-		LOG.info("[RealisticBiomes] is now disabled.");
+		LOG.info("is now disabled.");
 	}
 
 	private void registerEvents() {
@@ -229,7 +235,7 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
         }
         catch(Exception e)
         {
-        	LOG.warning("[RealisticBiomes] caught an exception while attempting to register events with the PluginManager");
+        	LOG.warning("caught an exception while attempting to register events with the PluginManager");
         	e.printStackTrace();
         }
 	}
@@ -246,27 +252,44 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	
 	// grow the specified block, return the new growth magnitude
 	public double growAndPersistBlock(Block block, GrowthConfig growthConfig, boolean naturalGrowEvent) {
+		
+		LOG.finer("RealisticBiomes:growAndPersistBlock() called for block: " + block + " and is naturalGrowEvent? " + naturalGrowEvent);
 		if (!persistConfig.enabled)
 			return 0.0;
 		
 		int w = WorldID.getPID(block.getWorld().getUID());
 		Coords coords = new Coords(w, block.getX(), block.getY(), block.getZ());
 		boolean loadChunk = naturalGrowEvent ? Math.random() < persistConfig.growEventLoadChance : true;
-		if (!loadChunk && !plantManager.chunkLoaded(coords))
+		if (!loadChunk && !plantManager.chunkLoaded(coords)) {
+			LOG.finer("Realisticbiomes.growAndPersistBlock(): returning 0.0 because loadChunk = false or plantManager.chunkLoaded(" + coords + " is false");
 			return 0.0; // don't load the chunk or do anything
+			
+		}
 			
 		Plant plant = plantManager.get(coords);
 		
+		LOG.finer("Realisticbiomes.growAndPersistBlock(): plantManager.get() returned: " + plant + " for coords: " + coords);
+		
 		if (plant == null) {
-			plant = new Plant(System.currentTimeMillis());
+			LOG.finer("Realisticbiomes.growAndPersistBlock(): creating new plant and adding it");
+			
+			// divide by 1000 to get unix/epoch time, we don't need millisecond precision
+			// also fixes bug where the timestamp would be too big for the mysql rb_plant date column
+			plant = new Plant(System.currentTimeMillis()  / 1000L);
 			plant.addGrowth((float)BlockGrower.getGrowthFraction(block));
 			plantManager.add(coords, plant);
+			
 		}
 		else {
-			double growthAmount = growthConfig.getRate(block) * plant.setUpdateTime(System.currentTimeMillis());
+			double growthAmount = growthConfig.getRate(block) * plant.setUpdateTime(System.currentTimeMillis() / 1000L);
+			LOG.finer("Realisticbiomes.growAndPersistBlock(): plant existed, growthAmount was: " + plant.getGrowth());
 			plant.addGrowth((float) growthAmount);
+			LOG.finer("Realisticbiomes.growAndPersistBlock(): plant existed, adding growth: " + growthAmount + " to now be " + plant.getGrowth());
+
 		}
 		
+		// actually 'grows' the block (in minecraft terms, between the different stages of growth that you can see in game)
+		// depending on its growth value
 		blockGrower.growBlock(block,coords,plant.getGrowth());
 		if (plant.getGrowth() > 1.0)
 			plantManager.remove(coords);
