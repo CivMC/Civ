@@ -1,10 +1,11 @@
 realistic_biomes:
- database_name: minecraft
- database_host: localhost
+ database_name: "bukkit"
+ database_host: "localhost"
  database_port: 3306
- database_user: ""
+ database_user: "bukkit"
  database_password: ""
  database_prefix: "rb"
+
 
  persistence_enabled: false
 
