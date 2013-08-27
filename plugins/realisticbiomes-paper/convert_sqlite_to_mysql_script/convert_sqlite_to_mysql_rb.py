@@ -7,12 +7,16 @@
 #
 
 import argparse, sys, traceback, sqlite3, os.path
-import myconnpy_database
+
+try:
+    import myconnpy_database
+except ImportError as e:
+    sys.exit("Failed to import 'myconn_database', it should of been in the same directory as this script.... error: {}".foramt(e))
 try:
     import yaml
 except ImportError as e:
-    print("you need pyyaml! error: ".format(e))
-    sys.exit(1)
+   sys.exit("you need PyYAML! get it from https://pypi.python.org/pypi/PyYAML   error: {}".format(e))
+    
 
 
 def convertSqliteToMysql(args):
@@ -52,13 +56,12 @@ def convertSqliteToMysql(args):
     mysqlCur = mysqlDb.cursor()
 
     # create the tables in the mysql database
-    # TODO NEED YAML CONFIG FILE
-    mysqlCur.execute('''CREATE TABLE IF NOT EXISTS rb_chunk (id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    mysqlCur.execute('''CREATE TABLE IF NOT EXISTS {}_chunk (id INTEGER PRIMARY KEY AUTO_INCREMENT,
                          w INTEGER, x INTEGER, z INTEGER, 
                          INDEX chunk_coords_idx (w, x, z)) ENGINE INNODB;'''.format(dbPrefix))
 
     mysqlCur.execute('''CREATE TABLE IF NOT EXISTS {}_plant
-                        (chunkId INTEGER, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER, growth REAL, 
+                        (chunkId INTEGER, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER UNSIGNED, growth REAL, 
                         INDEX plant_coords_idx (w, x, y, z), INDEX plant_chunk_idx (chunkId), 
                         CONSTRAINT chunkIdConstraint FOREIGN KEY (chunkId) REFERENCES {}_chunk (id))
                         ENGINE INNODB;'''.format(dbPrefix,dbPrefix))
@@ -123,7 +126,7 @@ def convertSqliteToMysql(args):
 
         # execute query
         plantDict = {"1": iterResult[0], "2": iterResult[1], "3": iterResult[2], "4":iterResult[3], "5": iterResult[4], 
-            "6": iterResult[5], "7":iterResult[6]}
+            "6": iterResult[5], "7":iterResult[6] / 1000} # make sure to divide by 1000, so we go from milliseconds to seconds
         mysqlCur.execute(plantInsertStr, plantDict)
 
         counter += 1
