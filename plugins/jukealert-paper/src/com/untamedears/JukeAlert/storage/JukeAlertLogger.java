@@ -11,7 +11,6 @@ import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.model.LoggedAction;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.tasks.GetSnitchInfoTask;
-import com.untamedears.JukeAlert.util.SparseQuadTree;
 import com.untamedears.citadel.entity.Faction;
 
 import java.sql.PreparedStatement;
@@ -216,12 +215,13 @@ public class JukeAlertLogger {
     }
 
     public PreparedStatement getNewInsertSnitchLogStmt() {
-    	 return db.prepareStatement(String.format(
-                "INSERT INTO %s (snitch_id, snitch_log_time, snitch_logged_action, snitch_logged_initiated_user,"
+        return db.prepareStatement(String.format("INSERT INTO %s (snitch_id, snitch_log_time, "
+                + "snitch_logged_action, snitch_logged_initiated_user,"
                 + " snitch_logged_victim_user, snitch_logged_x, snitch_logged_y, snitch_logged_z, snitch_logged_materialid) "
                 + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 snitchDetailsTbl));
     }
+
     private void initializeStatements() {
 
         getAllSnitchesStmt = db.prepareStatement(String.format(
@@ -259,8 +259,8 @@ public class JukeAlertLogger {
 
         //
         insertNewSnitchStmt = db.prepareStatement(String.format(
-                "INSERT INTO %s (snitch_world, snitch_name, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z)"
-                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO %s (snitch_world, snitch_name, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z, snitch_should_log)"
+                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 snitchsTbl));
 
         //
@@ -365,7 +365,7 @@ public class JukeAlertLogger {
                 Faction group = groupMediator.getGroupByName(groupName);
                 Location location = new Location(world_, x, y, z);
 
-                Snitch snitch = new Snitch(location, group);
+                Snitch snitch = new Snitch(location, group, rs_.getBoolean("snitch_should_log"));
                 snitch.setId(rs_.getInt("snitch_id"));
                 snitch.setName(rs_.getString("snitch_name"));
                 return snitch;
@@ -542,6 +542,7 @@ public class JukeAlertLogger {
     }
 
     public JukeInfoBatch jukeinfobatch = new JukeInfoBatch(this);
+
     /**
      * Logs info to a specific snitch with a time stamp.
      *
@@ -566,57 +567,57 @@ public class JukeAlertLogger {
         jukeinfobatch.addSet(snitch, material, loc, date, action, initiatedUser, victimUser);
 
         /*try {
-            // snitchid
-            insertSnitchLogStmt.setInt(1, snitch.getId());
-            // snitch log time
-            insertSnitchLogStmt.setTimestamp(2, new java.sql.Timestamp(new java.util.Date().getTime()));
-            // snitch logged action
-            insertSnitchLogStmt.setByte(3, (byte) action.getLoggedActionId());
-            // initiated user
-            insertSnitchLogStmt.setString(4, initiatedUser);
+         // snitchid
+         insertSnitchLogStmt.setInt(1, snitch.getId());
+         // snitch log time
+         insertSnitchLogStmt.setTimestamp(2, new java.sql.Timestamp(new java.util.Date().getTime()));
+         // snitch logged action
+         insertSnitchLogStmt.setByte(3, (byte) action.getLoggedActionId());
+         // initiated user
+         insertSnitchLogStmt.setString(4, initiatedUser);
 
-            // These columns, victimUser, location and materialid can all be null so check if it is an insert SQL null if it is
+         // These columns, victimUser, location and materialid can all be null so check if it is an insert SQL null if it is
 
-            // victim user
-            if (victimUser != null) {
-                insertSnitchLogStmt.setString(5, victimUser);
-            } else {
-                insertSnitchLogStmt.setNull(5, java.sql.Types.VARCHAR);
-            }
+         // victim user
+         if (victimUser != null) {
+         insertSnitchLogStmt.setString(5, victimUser);
+         } else {
+         insertSnitchLogStmt.setNull(5, java.sql.Types.VARCHAR);
+         }
 
-            // location, x, y, z
-            if (loc != null) {
-                insertSnitchLogStmt.setInt(6, loc.getBlockX());
-                insertSnitchLogStmt.setInt(7, loc.getBlockY());
-                insertSnitchLogStmt.setInt(8, loc.getBlockZ());
-            } else {
-                insertSnitchLogStmt.setNull(6, java.sql.Types.INTEGER);
-                insertSnitchLogStmt.setNull(7, java.sql.Types.INTEGER);
-                insertSnitchLogStmt.setNull(8, java.sql.Types.INTEGER);
-            }
+         // location, x, y, z
+         if (loc != null) {
+         insertSnitchLogStmt.setInt(6, loc.getBlockX());
+         insertSnitchLogStmt.setInt(7, loc.getBlockY());
+         insertSnitchLogStmt.setInt(8, loc.getBlockZ());
+         } else {
+         insertSnitchLogStmt.setNull(6, java.sql.Types.INTEGER);
+         insertSnitchLogStmt.setNull(7, java.sql.Types.INTEGER);
+         insertSnitchLogStmt.setNull(8, java.sql.Types.INTEGER);
+         }
 
-            // materialid
-            if (material != null) {
-                insertSnitchLogStmt.setShort(9, (short) material.getId());
-            } else {
-                insertSnitchLogStmt.setNull(9, java.sql.Types.SMALLINT);
-            }
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        insertSnitchLogStmt.execute();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            });
-            //To change body of generated methods, choose Tools | Templates.
+         // materialid
+         if (material != null) {
+         insertSnitchLogStmt.setShort(9, (short) material.getId());
+         } else {
+         insertSnitchLogStmt.setNull(9, java.sql.Types.SMALLINT);
+         }
+         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+         @Override
+         public void run() {
+         try {
+         insertSnitchLogStmt.execute();
+         } catch (SQLException ex) {
+         Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
+         }
+         }
+         });
+         //To change body of generated methods, choose Tools | Templates.
 
-        } catch (SQLException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, String.format("Could not create snitch log entry! with snitch %s, "
-                    + "material %s, date %s, initiatedUser %s, victimUser %s", snitch, material, date, initiatedUser, victimUser), ex);
-        }*/
+         } catch (SQLException ex) {
+         this.plugin.getLogger().log(Level.SEVERE, String.format("Could not create snitch log entry! with snitch %s, "
+         + "material %s, date %s, initiatedUser %s, victimUser %s", snitch, material, date, initiatedUser, victimUser), ex);
+         }*/
     }
 
     /**
@@ -761,7 +762,7 @@ public class JukeAlertLogger {
     }
 
     //Logs the snitch being placed at World, x, y, z in the database.
-    public void logSnitchPlace(final String world, final String group, final String name, final int x, final int y, final int z) {
+    public void logSnitchPlace(final String world, final String group, final String name, final int x, final int y, final int z, final boolean shouldLog) {
         final ConfigManager lockedConfigManager = this.configManager;
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
@@ -778,6 +779,7 @@ public class JukeAlertLogger {
 	                    insertNewSnitchStmt.setInt(7, lockedConfigManager.getDefaultCuboidSize());
 	                    insertNewSnitchStmt.setInt(8, lockedConfigManager.getDefaultCuboidSize());
 	                    insertNewSnitchStmt.setInt(9, lockedConfigManager.getDefaultCuboidSize());
+	                    insertNewSnitchStmt.setBoolean(10, shouldLog);
 	                    insertNewSnitchStmt.execute();
                 	}
                 } catch (SQLException ex) {
@@ -794,13 +796,13 @@ public class JukeAlertLogger {
             public void run() {
                 try {
                     jukeinfobatch.flush();
-                	synchronized(deleteSnitchStmt) {
-	                    deleteSnitchStmt.setString(1, world);
-	                    deleteSnitchStmt.setInt(2, (int) Math.floor(x));
-	                    deleteSnitchStmt.setInt(3, (int) Math.floor(y));
-	                    deleteSnitchStmt.setInt(4, (int) Math.floor(z));
-	                    deleteSnitchStmt.execute();
-                	}
+                    synchronized (deleteSnitchStmt) {
+                        deleteSnitchStmt.setString(1, world);
+                        deleteSnitchStmt.setInt(2, (int) Math.floor(x));
+                        deleteSnitchStmt.setInt(3, (int) Math.floor(y));
+                        deleteSnitchStmt.setInt(4, (int) Math.floor(z));
+                        deleteSnitchStmt.execute();
+                    }
                 } catch (SQLException ex) {
                     Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -814,14 +816,14 @@ public class JukeAlertLogger {
             @Override
             public void run() {
                 try {
-                	synchronized(updateGroupStmt) {
-	                    updateGroupStmt.setString(1, group);
-	                    updateGroupStmt.setString(2, loc.getWorld().getName());
-	                    updateGroupStmt.setInt(3, loc.getBlockX());
-	                    updateGroupStmt.setInt(4, loc.getBlockY());
-	                    updateGroupStmt.setInt(5, loc.getBlockZ());
-	                    updateGroupStmt.execute();
-                	}
+                    synchronized (updateGroupStmt) {
+                        updateGroupStmt.setString(1, group);
+                        updateGroupStmt.setString(2, loc.getWorld().getName());
+                        updateGroupStmt.setInt(3, loc.getBlockX());
+                        updateGroupStmt.setInt(4, loc.getBlockY());
+                        updateGroupStmt.setInt(5, loc.getBlockZ());
+                        updateGroupStmt.execute();
+                    }
                 } catch (SQLException ex) {
                     Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -835,16 +837,16 @@ public class JukeAlertLogger {
             @Override
             public void run() {
                 try {
-                	synchronized(updateCuboidVolumeStmt) {
-	                    updateCuboidVolumeStmt.setInt(1, x);
-	                    updateCuboidVolumeStmt.setInt(2, y);
-	                    updateCuboidVolumeStmt.setInt(3, z);
-	                    updateCuboidVolumeStmt.setString(4, loc.getWorld().getName());
-	                    updateCuboidVolumeStmt.setInt(5, loc.getBlockX());
-	                    updateCuboidVolumeStmt.setInt(6, loc.getBlockY());
-	                    updateCuboidVolumeStmt.setInt(7, loc.getBlockZ());
-	                    updateCuboidVolumeStmt.execute();
-                	}
+                    synchronized (updateCuboidVolumeStmt) {
+                        updateCuboidVolumeStmt.setInt(1, x);
+                        updateCuboidVolumeStmt.setInt(2, y);
+                        updateCuboidVolumeStmt.setInt(3, z);
+                        updateCuboidVolumeStmt.setString(4, loc.getWorld().getName());
+                        updateCuboidVolumeStmt.setInt(5, loc.getBlockX());
+                        updateCuboidVolumeStmt.setInt(6, loc.getBlockY());
+                        updateCuboidVolumeStmt.setInt(7, loc.getBlockZ());
+                        updateCuboidVolumeStmt.execute();
+                    }
                 } catch (SQLException ex) {
                     Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -858,11 +860,11 @@ public class JukeAlertLogger {
             @Override
             public void run() {
                 try {
-                	synchronized(updateSnitchNameStmt) {
-	                    updateSnitchNameStmt.setString(1, name);
-	                    updateSnitchNameStmt.setInt(2, snitch.getId());
-	                    updateSnitchNameStmt.execute();
-                	}
+                    synchronized (updateSnitchNameStmt) {
+                        updateSnitchNameStmt.setString(1, name);
+                        updateSnitchNameStmt.setInt(2, snitch.getId());
+                        updateSnitchNameStmt.execute();
+                    }
                 } catch (SQLException ex) {
                     Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -876,10 +878,10 @@ public class JukeAlertLogger {
             @Override
             public void run() {
                 try {
-                    synchronized(updateSnitchGroupStmt) {
-	                    updateSnitchGroupStmt.setString(1, group);
-	                    updateSnitchGroupStmt.setInt(2, snitch.getId());
-	                    updateSnitchGroupStmt.execute();
+                    synchronized (updateSnitchGroupStmt) {
+                        updateSnitchGroupStmt.setString(1, group);
+                        updateSnitchGroupStmt.setInt(2, snitch.getId());
+                        updateSnitchGroupStmt.execute();
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
@@ -887,7 +889,6 @@ public class JukeAlertLogger {
             }
         });
     }
-
 
     public Integer getLastSnitchID() {
         return lastSnitchID;

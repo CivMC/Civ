@@ -29,6 +29,8 @@ public class ConfigManager
 	private int maxEntryCount;
 	private int minEntryLifetimeDays;
 	private int maxEntryLifetimeDays;
+	private boolean snitchCullingEnabled;
+	private int maxSnitchLifetimeDays;
 
 	private File main;
 	private FileConfiguration config;
@@ -82,6 +84,8 @@ public class ConfigManager
         maxEntryCount = loadInt("entryculling.maxcount", 200);
         minEntryLifetimeDays = loadInt("entryculling.minlifetime", 1);
         maxEntryLifetimeDays = loadInt("entryculling.maxlifetime", 8);
+        snitchCullingEnabled = loadBoolean("snitchculling.enabled", false);
+        maxSnitchLifetimeDays = loadInt("snitchculling.maxlifetime", 21);
 
         save();
     }
@@ -279,6 +283,14 @@ public class ConfigManager
 
 	public int getMaxSnitchEntryLifetime() {
 		return maxEntryLifetimeDays;
+	}
+
+	public boolean getSnitchCullingEnabled() {
+		return snitchCullingEnabled;
+	}
+
+	public int getMaxSnitchLifetime() {
+		return maxSnitchLifetimeDays;
 	}
 
 }

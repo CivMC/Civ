@@ -2,8 +2,6 @@ package com.untamedears.JukeAlert.model;
 
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.JukeAlert.util.QTBox;
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
@@ -14,13 +12,15 @@ public class Snitch implements QTBox, Comparable {
     private String name;
     private Location location;
     private Faction group;
+    private boolean shouldLog;
     private int minx, maxx, miny, maxy, minz, maxz, radius;
 
-    public Snitch(Location loc, Faction group) {
+    public Snitch(Location loc, Faction group, boolean shouldLog) {
         this.group = group;
+        this.shouldLog = shouldLog;
         this.location = loc;
         this.name = "";
-        radius = 11; 
+        radius = 11;
         calculateDimensions();
     }
 
@@ -37,18 +37,22 @@ public class Snitch implements QTBox, Comparable {
     }
 
     // interface QTBox
+    @Override
     public int qtX1() {
         return this.minx;
     }
 
+    @Override
     public int qtX2() {
         return this.maxx;
     }
 
+    @Override
     public int qtY1() {
         return this.minz;
     }
 
+    @Override
     public int qtY2() {
         return this.maxz;
     }
@@ -99,19 +103,19 @@ public class Snitch implements QTBox, Comparable {
         this.miny = getY() - radius;
         this.maxy = getY() + radius;
     }
-    
+
     public int getId() {
         return this.snitchId;
     }
-    
+
     public String getName() {
         return this.name;
     }
-    
+
     public void setId(int newId) {
         this.snitchId = newId;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
@@ -133,11 +137,19 @@ public class Snitch implements QTBox, Comparable {
         calculateDimensions();
     }
 
+    public boolean shouldLog() {
+        return shouldLog;
+    }
+
+    public void setShouldLog(boolean shouldLog) {
+        this.shouldLog = shouldLog;
+    }
+
     //Checks if the location is within the cuboid.
     public boolean isWithinCuboid(Location loc) {
         return isWithinCuboid(new Vector(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
     }
-    
+
     //Checks if the block is within the cuboid.
     public boolean isWithinCuboid(Block block) {
         return isWithinCuboid(new Vector(block.getX(), block.getY(), block.getZ()));
@@ -160,10 +172,9 @@ public class Snitch implements QTBox, Comparable {
     }
 
     public boolean at(Location loc) {
-        return
-            this.location.getWorld() == loc.getWorld()
-            && this.location.getBlockX() == loc.getBlockX()
-            && this.location.getBlockY() == loc.getBlockY()
-            && this.location.getBlockZ() == loc.getBlockZ();
+        return this.location.getWorld() == loc.getWorld()
+                && this.location.getBlockX() == loc.getBlockX()
+                && this.location.getBlockY() == loc.getBlockY()
+                && this.location.getBlockZ() == loc.getBlockZ();
     }
 }

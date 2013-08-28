@@ -1,6 +1,6 @@
 name: JukeAlert
 main: com.untamedears.JukeAlert.JukeAlert
-version: 1.0.13
+version: 1.0.14
 depend: [Citadel]
 commands:
   ja:
@@ -22,12 +22,26 @@ commands:
   janame:
     description: Name a snitch
     usage: /janame
+  jalookup:
+    description: Look up a snitch by its coordinates
+    usage: /jalookup <x> <y> <z> [world]
+    permission: jukealert.jalookup
 permissions:
+  jukealert.admin.jagroup:
+    description: Use /jagroup even when not the owner
+    default: false
+  jukealert.admin.lookupany:
+    description: Use /jalookup even when not the owner
+    default: false
   jukealert.admin:
     description: Grants permission to JukeAlert admin commands.
     default: op
     children:
       jukealert.admin.jagroup: true
+      jukealert.admin.lookupany: true
   jukealert.jagroup:
     description: Ability to use /jagroup
+    default: op
+  jukealert.jalookup:
+    description: Ability to use /jalookup
     default: op

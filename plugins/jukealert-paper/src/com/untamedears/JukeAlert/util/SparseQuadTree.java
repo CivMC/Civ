@@ -16,6 +16,15 @@ import com.untamedears.JukeAlert.util.QTBox;
 public class SparseQuadTree {
   public SparseQuadTree() {
     boxes_ = new TreeSet<QTBox>();
+    borderSize_ = 0;
+  }
+
+  public SparseQuadTree(Integer borderSize) {
+    boxes_ = new TreeSet<QTBox>();
+    if (borderSize == null || borderSize < 0) {
+        throw new IllegalArgumentException("borderSize == null || borderSize < 0");
+    }
+    borderSize_ = borderSize;
   }
 
   public void add(QTBox box) {
@@ -31,19 +40,19 @@ public class SparseQuadTree {
       }
       return;
     }
-    if (box.qtX1() <= midX_) {
-      if (box.qtY1() <= midY_) {
+    if (box.qtX1() - borderSize_ <= midX_) {
+      if (box.qtY1() - borderSize_ <= midY_) {
         nw_.add(box);
       }
-      if (box.qtY2() > midY_) {
+      if (box.qtY2() + borderSize_ > midY_) {
         sw_.add(box);
       }
     }
-    if (box.qtX2() > midX_) {
-      if (box.qtY1() <= midY_) {
+    if (box.qtX2() + borderSize_ > midX_) {
+      if (box.qtY1() - borderSize_ <= midY_) {
         ne_.add(box);
       }
-      if (box.qtY2() > midY_) {
+      if (box.qtY2() + borderSize_ > midY_) {
         se_.add(box);
       }
     }
@@ -55,19 +64,19 @@ public class SparseQuadTree {
       boxes_.remove(box);
       return;
     }
-    if (box.qtX1() <= midX_) {
-      if (box.qtY1() <= midY_) {
+    if (box.qtX1() - borderSize_ <= midX_) {
+      if (box.qtY1() - borderSize_ <= midY_) {
         nw_.remove(box);
       }
-      if (box.qtY2() > midY_) {
+      if (box.qtY2() + borderSize_ > midY_) {
         sw_.remove(box);
       }
     }
-    if (box.qtX2() > midX_) {
-      if (box.qtY1() <= midY_) {
+    if (box.qtX2() + borderSize_ > midX_) {
+      if (box.qtY1() - borderSize_ <= midY_) {
         ne_.remove(box);
       }
-      if (box.qtY2() > midY_) {
+      if (box.qtY2() + borderSize_ > midY_) {
         se_.remove(box);
       }
     }
@@ -78,27 +87,46 @@ public class SparseQuadTree {
   }
 
   public Set<QTBox> find(int x, int y) {
+      return this.find(x, y, false);
+  }
+
+  public Set<QTBox> find(int x, int y, boolean includeBorder) {
+    int border = 0;
+    if (includeBorder) {
+      border = borderSize_;
+    }
     if (boxes_ != null) {
       Set<QTBox> result = new TreeSet<QTBox>();
-      for (QTBox box : boxes_) {
-        if (box.qtX1() <= x && box.qtX2() >= x
-            && box.qtY1() <= y && box.qtY2() >= y) {
-          result.add(box);
+      // These two loops are the same except for the second doesn't include the
+      //  border adjustment for a little added performance.
+      if (includeBorder) {
+        for (QTBox box : boxes_) {
+          if (box.qtX1() - border <= x && box.qtX2() + border >= x
+              && box.qtY1() - border <= y && box.qtY2() + border >= y) {
+            result.add(box);
+          }
+        }
+      } else {
+        for (QTBox box : boxes_) {
+          if (box.qtX1() <= x && box.qtX2() >= x
+              && box.qtY1() <= y && box.qtY2() >= y) {
+            result.add(box);
+          }
         }
       }
       return result;
     }
     if (x <= midX_) {
       if (y <= midY_) {
-        return nw_.find(x, y);
+        return nw_.find(x, y, includeBorder);
       } else {
-        return sw_.find(x, y);
+        return sw_.find(x, y, includeBorder);
       }
     }
     if (y <= midY_) {
-      return ne_.find(x, y);
+      return ne_.find(x, y, includeBorder);
     }
-    return se_.find(x, y);
+    return se_.find(x, y, includeBorder);
   }
 
   private void split() {
@@ -134,19 +162,19 @@ public class SparseQuadTree {
       ++counter;
     }
     for (QTBox box : boxes_) {
-      if (box.qtX1() <= midX_) {
-        if (box.qtY1() <= midY_) {
+      if (box.qtX1() - borderSize_ <= midX_) {
+        if (box.qtY1() - borderSize_ <= midY_) {
           nw_.add(box, true);
         }
-        if (box.qtY2() > midY_) {
+        if (box.qtY2() + borderSize_ > midY_) {
           sw_.add(box, true);
         }
       }
-      if (box.qtX2() > midX_) {
-        if (box.qtY1() <= midY_) {
+      if (box.qtX2() + borderSize_ > midX_) {
+        if (box.qtY1() - borderSize_ <= midY_) {
           ne_.add(box, true);
         }
-        if (box.qtY2() > midY_) {
+        if (box.qtY2() + borderSize_ > midY_) {
           se_.add(box, true);
         }
       }
@@ -190,6 +218,10 @@ public class SparseQuadTree {
     maxNodeSize_ = size;
   }
 
+  public int getBorderSize() {
+    return borderSize_;
+  }
+
   public String boxCoord(QTBox box) {
     return String.format("(%d,%dx%d,%d)", box.qtX1(), box.qtY1(), box.qtX2(), box.qtY2());
   }
@@ -217,6 +249,7 @@ public class SparseQuadTree {
     return sb.toString();
   }
 
+  private Integer borderSize_ = 0;
   private Integer midX_ = null;
   private Integer midY_ = null;
   private int size_;
