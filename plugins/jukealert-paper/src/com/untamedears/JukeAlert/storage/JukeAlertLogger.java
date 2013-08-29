@@ -165,7 +165,11 @@ public class JukeAlertLogger {
 
         db.silentExecute(String.format(
             "ALTER TABLE %s ADD INDEX idx_log_time (snitch_log_time ASC);", snitchDetailsTbl));
-
+        
+        db.silentExecute(String.format("ALTER TABLE %s ADD COLUMN (last_semi_owner_visit_date DATETIME, INDEX idx_last_visit(last_semi_owner_visit_date, snitch_should_log));", snitchsTbl));
+        db.silentExecute("UPDATE SNITCHS SET last_semi_owner_visit_date = UTC_TIMESTAMP() WHERE last_semi_owner_visit_date IS NULL;");
+        db.silentExecute(String.format("ALTER TABLE %s MODIFY COLUMN last_semi_owner_visit_date DATETIME NOT NULL;", snitchsTbl));
+        
         try {
             db.executeLoud(MessageFormat.format(
                 " CREATE DEFINER=CURRENT_USER PROCEDURE CullSnitches( "
@@ -222,6 +226,10 @@ public class JukeAlertLogger {
                 snitchDetailsTbl));
     }
 
+    public PreparedStatement getNewUpdateSnitchSemiOwnerVisitStmt() {
+        return db.prepareStatement(String.format("UPDATE %s SET last_semi_owner_visit_date = UTC_TIMESTAMP() WHERE snitch_id = ?;", snitchsTbl));
+    }
+
     private void initializeStatements() {
 
         getAllSnitchesStmt = db.prepareStatement(String.format(
@@ -259,8 +267,8 @@ public class JukeAlertLogger {
 
         //
         insertNewSnitchStmt = db.prepareStatement(String.format(
-                "INSERT INTO %s (snitch_world, snitch_name, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z, snitch_should_log)"
-                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO %s (snitch_world, snitch_name, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z, snitch_should_log, last_semi_owner_visit_date)"
+                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP())",
                 snitchsTbl));
 
         //
@@ -542,6 +550,10 @@ public class JukeAlertLogger {
     }
 
     public JukeInfoBatch jukeinfobatch = new JukeInfoBatch(this);
+    
+    public void logSnitchVisit(Snitch snitch) {
+    	jukeinfobatch.addLastVisitData(snitch);
+    }
 
     /**
      * Logs info to a specific snitch with a time stamp.
