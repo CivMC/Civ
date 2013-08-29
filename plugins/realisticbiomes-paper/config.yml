@@ -87,7 +87,7 @@ realistic_biomes:
     cold: 0.25
     hot_dry: 0.25
     mountain: 0.25
-	mushroom: 0.25
+    mushroom: 0.25
 
   CARROT:
    inherit: crop
@@ -231,7 +231,7 @@ realistic_biomes:
     PLAINS: 0.25
     hot_rainy: 0.5
     SKY: 0.25
-	SWAMPLAND: 0.5
+    SWAMPLAND: 0.5
 
   #......................
 
@@ -322,7 +322,6 @@ realistic_biomes:
    not_full_sunlight_multiplier: 0.5
    biomes:
     mushroom: 1.0
-   
   #---------------------------------------
 
   #mat_EGG:
