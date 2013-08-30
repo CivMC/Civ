@@ -899,7 +899,7 @@ public class JukeAlertLogger {
     }
 
     public void logSnitchBlockBurn(Snitch snitch, Block block) {
-        this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_BURN, null, snitchDetailsTbl);
+        this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_BURN, "", snitchDetailsTbl);
     }
 
     public String createInfoString(ResultSet set, boolean isGroup) {
