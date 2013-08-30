@@ -25,6 +25,8 @@ public class ConfigManager
 	private int defaultCuboidSize;
 	
 	private int logsPerPage;
+	private int daysFromLastAdminVisitForLoggedSnitchCulling;
+	private int daysFromLastAdminVisitForNonLoggedSnitchCulling;
 	private boolean snitchEntryCullingEnabled;
 	private int maxEntryCount;
 	private int minEntryLifetimeDays;
@@ -82,6 +84,8 @@ public class ConfigManager
         
         setDefaultCuboidSize(loadInt("settings.defaultCuboidSize"));
         logsPerPage = loadInt("settings.logsPerPage");
+		daysFromLastAdminVisitForLoggedSnitchCulling = loadInt("settings.daysFromLastAdminVisitForLoggedSnitchCulling");
+		daysFromLastAdminVisitForNonLoggedSnitchCulling = loadInt("settings.daysFromLastAdminVisitForNonLoggedSnitchCulling");
         setDebugging(loadBoolean("settings.debugging"));
         if (isSet("settings.max_alert_distance")) {
             maxAlertDistanceAll = loadDouble("settings.max_alert_distance");
@@ -255,6 +259,14 @@ public class ConfigManager
 	
 	public int getLogsPerPage() {
 		return logsPerPage;
+	}
+	
+	public int getDaysFromLastAdminVisitForNonLoggedSnitchCulling() {
+		return daysFromLastAdminVisitForNonLoggedSnitchCulling;
+	}
+	
+	public int getDaysFromLastAdminVisitForLoggedSnitchCulling() {
+		return daysFromLastAdminVisitForLoggedSnitchCulling;
 	}
 
 	public void setLogsPerPage(int logsPerPage) {

@@ -29,8 +29,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.Bukkit;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -55,6 +55,7 @@ public class JukeAlertLogger {
     private PreparedStatement getLastSnitchID;
     private PreparedStatement getSnitchLogStmt;
     private PreparedStatement getSnitchLogGroupStmt;
+    private PreparedStatement getSnitchListStmt;
     private PreparedStatement deleteSnitchLogStmt;
     private PreparedStatement insertSnitchLogStmt;
     private PreparedStatement insertNewSnitchStmt;
@@ -253,6 +254,26 @@ public class JukeAlertLogger {
             + " FROM {1} INNER JOIN {0} ON {0}.snitch_id = {1}.snitch_id"
             + " WHERE {0}.snitch_group=? ORDER BY {1}.snitch_log_time DESC LIMIT ?,{2}",
             snitchsTbl, snitchDetailsTbl, logsPerPage));
+        
+        getSnitchListStmt = db.prepareStatement(MessageFormat.format(
+		"SELECT 	s.snitch_world as world"
+				+  "	, s.snitch_x as x"
+				+  "	, s.snitch_y as y"
+				+  "	, s.snitch_z as z"
+				+  "	, TIMESTAMPDIFF(SECOND, DATE_ADD(UTC_TIMESTAMP(), INTERVAL CASE WHEN s.snitch_should_log = 1 THEN ? ELSE ? end DAY) ,s.last_semi_owner_visit_date ) AS TimeLeftAliveInSeconds"
+				+  "	, s.snitch_should_log as DoesSnitchRegisterEvents"
+				+  "	, (SELECT COUNT(*) FROM {0} d WHERE d.snitch_id = s.snitch_id) AS EventCountsRegistered"
+				+  " FROM"
+				+  "	{1} s"
+				+  "	INNER JOIN faction f"
+				+  "		ON f.name = s.snitch_group"
+				+  "	LEFT JOIN moderator m"
+				+  "		ON m.faction_name = f.name"
+				+  " WHERE"
+				+  "	f.founder = ?"
+				+  "	OR m.member_name = ?"
+				+  " ORDER BY case when (s.snitch_should_log = 1 AND ? >= 1) OR (s.snitch_should_log = 0 AND ? >= 1) then 1 else 0 end desc, 5 ASC LIMIT ?, {2}"	
+        		, snitchDetailsTbl, snitchsTbl, logsPerPage));
 
         // statement to get the ID of a snitch in the main snitchsTbl based on a Location (x,y,z, world)
         getSnitchIdFromLocationStmt = db.prepareStatement(String.format("SELECT snitch_id FROM %s"
@@ -477,6 +498,44 @@ public class JukeAlertLogger {
             }
         } catch (SQLException ex) {
             this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details from the snitchesDetail table using the snitch id " + snitchId, ex);
+        }
+
+        return info;
+    }
+    public List<String> getSnitchList(String playerName, int offset, int hoursBeforeSnitchCulling) {
+        List<String> info = new ArrayList<String>();
+
+        try {
+        	getSnitchListStmt.setInt(1, -configManager.getDaysFromLastAdminVisitForLoggedSnitchCulling());
+        	getSnitchListStmt.setInt(2, -configManager.getDaysFromLastAdminVisitForNonLoggedSnitchCulling());
+        	getSnitchListStmt.setString(3, playerName);
+        	getSnitchListStmt.setString(4, playerName);
+        	getSnitchListStmt.setInt(5, configManager.getDaysFromLastAdminVisitForLoggedSnitchCulling());
+        	getSnitchListStmt.setInt(6, configManager.getDaysFromLastAdminVisitForNonLoggedSnitchCulling());
+        	getSnitchListStmt.setInt(7, offset);
+
+            ResultSet set = getSnitchListStmt.executeQuery();
+            if (!set.isBeforeFirst()) {
+                System.out.println("No data.");
+            } else {
+                while (set.next()) {
+                    info.add(
+                    		"  "
+                    		+ ChatFiller.fillString(set.getString("world"), 15.0) 
+                    		
+                    		+ ChatFiller.fillString("[" + set.getString("x") + " " + set.getString("y") + " " + set.getString("z") + "]", 25.0)
+                            
+                    		+ ChatFiller.fillString(
+                        			(((set.getInt("DoesSnitchRegisterEvents") == 1 && configManager.getDaysFromLastAdminVisitForLoggedSnitchCulling() >= 1)
+                        			|| (set.getInt("DoesSnitchRegisterEvents") == 0 && configManager.getDaysFromLastAdminVisitForNonLoggedSnitchCulling() >= 1)) ? 
+                        					 String.format("%.2f", ((set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds")) / 3600.0))  : ""), 22.0)                    		 
+                    		
+                        	+ ((set.getInt("DoesSnitchRegisterEvents") == 1) ? set.getInt("EventCountsRegistered") : "")
+                			);
+                }
+            }
+        } catch (SQLException ex) {
+            this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch List using playername " + playerName, ex);
         }
 
         return info;
