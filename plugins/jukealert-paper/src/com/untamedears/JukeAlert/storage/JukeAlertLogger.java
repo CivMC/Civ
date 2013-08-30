@@ -502,7 +502,7 @@ public class JukeAlertLogger {
 
         return info;
     }
-    public List<String> getSnitchList(String playerName, int offset, int hoursBeforeSnitchCulling) {
+    public List<String> getSnitchList(String playerName, int offset) {
         List<String> info = new ArrayList<String>();
 
         try {

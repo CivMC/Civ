@@ -25,7 +25,7 @@ public class GetSnitchListPlayerTask implements Runnable {
 	@Override
     public void run() {
 		SendSnitchList sendSnitchInfo;
-			sendSnitchInfo = new SendSnitchList(plugin.getJaLogger().getSnitchList(player.getName(), (offset-1) * 10, 5), player, offset);
+			sendSnitchInfo = new SendSnitchList(plugin.getJaLogger().getSnitchList(player.getName(), (offset-1) * 10), player, offset);
 		sendSnitchInfo.run();
     }
 
