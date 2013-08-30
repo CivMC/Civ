@@ -31,6 +31,9 @@ public class ConfigManager
 	private int maxEntryLifetimeDays;
 	private boolean snitchCullingEnabled;
 	private int maxSnitchLifetimeDays;
+    private Double maxAlertDistanceAll = null;
+    private Double maxAlertDistanceNs = null;
+    private int maxPlayerAlertCount;
 
 	private File main;
 	private FileConfiguration config;
@@ -44,7 +47,7 @@ public class ConfigManager
 		this.main        = new File(plugin.getDataFolder() + File.separator + "config.yml");
 		this.load();
 	}
-	
+
 	/**
 	 * Load configuration
 	 */
@@ -79,7 +82,14 @@ public class ConfigManager
         setDefaultCuboidSize(loadInt("settings.defaultCuboidSize"));
         logsPerPage = loadInt("settings.logsPerPage");
         setDebugging(loadBoolean("settings.debugging"));
-        
+        if (isSet("settings.max_alert_distance")) {
+            maxAlertDistanceAll = loadDouble("settings.max_alert_distance");
+        }
+        if (isSet("settings.max_alert_distance_ns")) {
+            maxAlertDistanceNs = loadDouble("settings.max_alert_distance_ns");
+        }
+        maxPlayerAlertCount = loadInt("settings.max_player_alert_count", Integer.MAX_VALUE);
+
         snitchEntryCullingEnabled = loadBoolean("entryculling.enabled", true);
         maxEntryCount = loadInt("entryculling.maxcount", 200);
         minEntryLifetimeDays = loadInt("entryculling.minlifetime", 1);
@@ -168,7 +178,11 @@ public class ConfigManager
     	
     	return null;
     }
-    
+
+    private boolean isSet(String path) {
+        return config.isSet(path);
+    }
+
     public void save()
     {
         try
@@ -293,4 +307,15 @@ public class ConfigManager
 		return maxSnitchLifetimeDays;
 	}
 
+    public Double getMaxAlertDistanceAll() {
+        return maxAlertDistanceAll;
+    }
+
+    public Double getMaxAlertDistanceNs() {
+        return maxAlertDistanceNs;
+    }
+
+    public int getMaxPlayerAlertCount() {
+        return maxPlayerAlertCount;
+    }
 }

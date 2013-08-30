@@ -5,9 +5,11 @@ import com.untamedears.JukeAlert.external.VanishNoPacket;
 import com.untamedears.JukeAlert.manager.PlayerManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.util.OnlineGroupMembers;
 import static com.untamedears.JukeAlert.util.Utility.doesSnitchExist;
 import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
 import static com.untamedears.JukeAlert.util.Utility.isDebugging;
+import static com.untamedears.JukeAlert.util.Utility.notifyGroup;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.Utility;
 import com.untamedears.citadel.access.AccessDelegate;
@@ -85,13 +87,13 @@ public class JukeAlertListener implements Listener {
 		for (Snitch snitch : snitches) {
 			if (!isOnSnitch(snitch, playerName)) {
 				inList.add(snitch);
-				for (Player remoteplayer : playerManager.getPlayers()) {
-					String remoteName = remoteplayer.getName();
-					if (isOnSnitch(snitch, remoteName)) {
-						remoteplayer.sendMessage(ChatColor.AQUA + " * " + playerName + " logged in to snitch at " + snitch.getName() + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
-					}
-				}
-				plugin.getJaLogger().logSnitchLogin(snitch, location, player);
+                notifyGroup(
+                    snitch,
+                    ChatColor.AQUA + " * " + playerName + " logged in to snitch at " + snitch.getName()
+                    + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+                if (snitch.shouldLog()) {
+                    plugin.getJaLogger().logSnitchLogin(snitch, location, player);
+                }
 			}
 		}
 	}
@@ -109,12 +111,13 @@ public class JukeAlertListener implements Listener {
 		Set<Snitch> snitches = snitchManager.findSnitches(world, location);
 		for (Snitch snitch : snitches) {
 			if (!isOnSnitch(snitch, playerName)) {
-				for (Player remoteplayer : playerManager.getPlayers()) {
-					if (snitch.getGroup().isMember(remoteplayer.getName()) || snitch.getGroup().isFounder(remoteplayer.getName()) || snitch.getGroup().isModerator(remoteplayer.getName())) {
-						remoteplayer.sendMessage(ChatColor.AQUA + " * " + playerName + " logged out in snitch at " + snitch.getName() + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
-					}
-				}
-				plugin.getJaLogger().logSnitchLogout(snitch, location, player);
+                notifyGroup(
+                    snitch,
+                    ChatColor.AQUA + " * " + playerName + " logged out in snitch at " + snitch.getName()
+                    + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+                if (snitch.shouldLog()) {
+                    plugin.getJaLogger().logSnitchLogout(snitch, location, player);
+                }
 			}
 		}
     }
@@ -256,7 +259,9 @@ public class JukeAlertListener implements Listener {
         }
         for (Snitch snitch : removeSet) {
             Location loc = snitch.getLoc();
-            plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            if (snitch.shouldLog()) {
+                plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            }
             snitchManager.removeSnitch(snitch);
         }
     }
@@ -275,8 +280,11 @@ public class JukeAlertListener implements Listener {
         }
         Location loc = block.getLocation();
         if (snitchManager.getSnitch(loc.getWorld(), loc) != null) {
-            snitchManager.removeSnitch(snitchManager.getSnitch(loc.getWorld(), loc));
-            plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            Snitch snitch = snitchManager.getSnitch(loc.getWorld(), loc);
+            if (snitch.shouldLog()) {
+                plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            }
+            snitchManager.removeSnitch(snitch);
         }
     }
 
@@ -309,12 +317,10 @@ public class JukeAlertListener implements Listener {
             if (doesSnitchExist(snitch, true) && (!isOnSnitch(snitch, playerName) || isDebugging())) {
                 if (!inList.contains(snitch)) {
                 	inList.add(snitch);
-                    for (Player remoteplayer : playerManager.getPlayers()) {
-                        String remoteName = remoteplayer.getName();
-                        if (isOnSnitch(snitch, remoteName)) {
-                            remoteplayer.sendMessage(ChatColor.AQUA + " * " + playerName + " entered snitch at " + snitch.getName() + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
-                        }
-                    }
+                    notifyGroup(
+                        snitch,
+                        ChatColor.AQUA + " * " + playerName + " entered snitch at " + snitch.getName()
+                        + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
                     if (snitch.shouldLog()) {
                         plugin.getJaLogger().logSnitchEntry(snitch, location, player);
                     }

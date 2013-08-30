@@ -7,6 +7,7 @@ import com.untamedears.citadel.entity.Faction;
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.util.OnlineGroupMembers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,6 +27,19 @@ public class Utility {
 
     public static void setDebugging(boolean debugging) {
         debugging_ = debugging;
+    }
+
+    public static void notifyGroup(Snitch snitch, String message) {
+        OnlineGroupMembers iter = OnlineGroupMembers
+            .get(snitch.getGroup().getName())
+            .reference(snitch.getLoc());
+        if (!snitch.shouldLog()) {
+            iter.maxDistance(
+                JukeAlert.getInstance().getConfigManager().getMaxAlertDistanceNs());
+        }
+        for (Player player : iter) {
+            player.sendMessage(message);
+        }
     }
 
     public static boolean isOnSnitch(Snitch snitch, String playerName) {
