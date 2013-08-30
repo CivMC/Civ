@@ -8,6 +8,7 @@ import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.util.OnlineGroupMembers;
 import static com.untamedears.JukeAlert.util.Utility.doesSnitchExist;
 import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
+import static com.untamedears.JukeAlert.util.Utility.isPartialOwnerOfSnitch;
 import static com.untamedears.JukeAlert.util.Utility.isDebugging;
 import static com.untamedears.JukeAlert.util.Utility.notifyGroup;
 import com.untamedears.citadel.SecurityLevel;
@@ -316,19 +317,32 @@ public class JukeAlertListener implements Listener {
         }
         Set<Snitch> snitches = snitchManager.findSnitches(world, location);
         for (Snitch snitch : snitches) {
-            if (doesSnitchExist(snitch, true) && (!isOnSnitch(snitch, playerName) || isDebugging())) {
-                if (!inList.contains(snitch)) {
-                    snitch.imposeSnitchTax();
-                	inList.add(snitch);
-                    notifyGroup(
-                        snitch,
-                        ChatColor.AQUA + " * " + playerName + " entered snitch at " + snitch.getName()
-                        + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
-                    if (snitch.shouldLog()) {
-                        plugin.getJaLogger().logSnitchEntry(snitch, location, player);
-                    }
-                }
-            }
+        	if (doesSnitchExist(snitch, true)) {
+        		
+        		if (isPartialOwnerOfSnitch(snitch, playerName)) {
+        			if (!inList.contains(snitch)) {
+	                	inList.add(snitch);
+                        plugin.getJaLogger().logSnitchVisit(snitch);
+        			}
+        		}
+	            
+        		if ((!isOnSnitch(snitch, playerName) || isDebugging())) {
+	                if (!inList.contains(snitch)) {
+						snitch.imposeSnitchTax();
+	                	inList.add(snitch);
+						
+						notifyGroup(
+							snitch,
+							ChatColor.AQUA + " * " + playerName + " entered snitch at " + snitch.getName()
+							+ " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+							
+	                    if (snitch.shouldLog()) {
+	                        plugin.getJaLogger().logSnitchEntry(snitch, location, player);
+	                    }
+	                }
+	            }
+        		
+        	}
         }
         snitches = snitchManager.findSnitches(world, location, true);
         Set<Snitch> rmList = new TreeSet<Snitch>();

@@ -49,6 +49,13 @@ public class Utility {
             || faction.isModerator(playerName)
             || faction.isFounder(playerName);
     }
+    
+    public static boolean isPartialOwnerOfSnitch(Snitch snitch, String playerName) {
+        Faction faction = snitch.getGroup();
+        if (faction == null) return false;
+        return faction.isModerator(playerName)
+            || faction.isFounder(playerName);
+    }
 
     public static Snitch getSnitchUnderCursor(Player player) {
         SnitchManager manager = JukeAlert.getInstance().getSnitchManager();

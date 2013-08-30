@@ -29,8 +29,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.Bukkit;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -55,6 +55,7 @@ public class JukeAlertLogger {
     private PreparedStatement getLastSnitchID;
     private PreparedStatement getSnitchLogStmt;
     private PreparedStatement getSnitchLogGroupStmt;
+    private PreparedStatement getSnitchListStmt;
     private PreparedStatement deleteSnitchLogStmt;
     private PreparedStatement insertSnitchLogStmt;
     private PreparedStatement insertNewSnitchStmt;
@@ -65,11 +66,14 @@ public class JukeAlertLogger {
     private PreparedStatement updateSnitchGroupStmt;
     private PreparedStatement getAllSnitchIdsStmt;
     private PreparedStatement cullSnitchEntriesStmt;
+    private PreparedStatement cullSnitchEntriesAndSnitchesBasedOnVisitDateStmt;
     private final int logsPerPage;
     private int lastSnitchID;
     private final int maxEntryCount;
     private final int minEntryLifetimeDays;
     private final int maxEntryLifetimeDays;
+    private final int daysFromLastAdminVisitForLoggedSnitchCulling;
+    private final int daysFromLastAdminVisitForNonLoggedSnitchCulling;
     private final String host;
     private final String dbname;
     private final String username;
@@ -93,6 +97,9 @@ public class JukeAlertLogger {
         maxEntryCount = configManager.getMaxSnitchEntryCount();
         minEntryLifetimeDays = configManager.getMinSnitchEntryLifetime();
         maxEntryLifetimeDays = configManager.getMaxSnitchEntryLifetime();
+        
+        daysFromLastAdminVisitForLoggedSnitchCulling = configManager.getDaysFromLastAdminVisitForLoggedSnitchCulling();
+        daysFromLastAdminVisitForNonLoggedSnitchCulling = configManager.getDaysFromLastAdminVisitForNonLoggedSnitchCulling();
 
         logsPerPage = configManager.getLogsPerPage();
         snitchsTbl = prefix + "snitchs";
@@ -165,7 +172,11 @@ public class JukeAlertLogger {
 
         db.silentExecute(String.format(
             "ALTER TABLE %s ADD INDEX idx_log_time (snitch_log_time ASC);", snitchDetailsTbl));
-
+        
+        db.silentExecute(String.format("ALTER TABLE %s ADD COLUMN (last_semi_owner_visit_date DATETIME, INDEX idx_last_visit(last_semi_owner_visit_date, snitch_should_log));", snitchsTbl));
+        db.silentExecute("UPDATE SNITCHS SET last_semi_owner_visit_date = UTC_TIMESTAMP() WHERE last_semi_owner_visit_date IS NULL;");
+        db.silentExecute(String.format("ALTER TABLE %s MODIFY COLUMN last_semi_owner_visit_date DATETIME NOT NULL;", snitchsTbl));
+        
         try {
             db.executeLoud(MessageFormat.format(
                 " CREATE DEFINER=CURRENT_USER PROCEDURE CullSnitches( "
@@ -212,6 +223,56 @@ public class JukeAlertLogger {
                 this.plugin.getLogger().log(Level.SEVERE, exMsg);
             }
         }
+
+        try {
+            db.executeLoud(MessageFormat.format(
+            		" CREATE DEFINER=CURRENT_USER PROCEDURE CullSnitchesBasedOnLastVisitDate(                                                                                                "
+            				+ " 	IN DaysFromLastAdminVisitForLoggedSnitchCulling INT, IN DaysFromLastAdminVisitForNonLoggedSnitchCulling INT) SQL SECURITY INVOKER BEGIN                          \n"
+            				+ "                                                                                                                                                                      \n"
+            				+ " 	DECLARE done BOOLEAN DEFAULT FALSE;                                                                                                                              \n"
+            				+ " 	DECLARE SnitchId INT;                                                                                                                                            \n"
+            				+ " 	                                                                                                                                                                 \n"
+            				+ " 	DECLARE snCursor CURSOR FOR                                                                                                                                      \n"
+            				+ " 	SELECT snitch_id                                                                                                                                                 \n"
+            				+ " 	FROM                                                                                                                                                             \n"
+            				+ " 		{0} s                                                                                                                                                    \n"
+            				+ " 	WHERE                                                                                                                                                            \n"
+            				+ " 		(                                                                                                                                                            \n"
+            				+ " 			(snitch_should_log = 1 AND DaysFromLastAdminVisitForLoggedSnitchCulling >= 1)                                                                            \n"
+            				+ " 			AND                                                                                                                                                      \n"
+            				+ " 			(TIMESTAMPDIFF(SECOND, DATE_ADD(UTC_TIMESTAMP(), INTERVAL -DaysFromLastAdminVisitForLoggedSnitchCulling DAY) ,s.last_semi_owner_visit_date) <= 0)        \n"
+            				+ " 		)                                                                                                                                                            \n"
+            				+ " 		OR                                                                                                                                                           \n"
+            				+ " 		(                                                                                                                                                            \n"
+            				+ " 			(snitch_should_log = 0 AND DaysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)                                                                         \n"
+            				+ " 			AND                                                                                                                                                      \n"
+            				+ " 			(TIMESTAMPDIFF(SECOND, DATE_ADD(UTC_TIMESTAMP(), INTERVAL -DaysFromLastAdminVisitForNonLoggedSnitchCulling DAY) ,s.last_semi_owner_visit_date) <= 0)     \n"
+            				+ " 		);                                                                                                                                                           \n"
+            				+ " 		                                                                                                                                                             \n"
+            				+ " 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;                                                                                                          \n"
+            				+ " 	                                                                                                                                                                 \n"
+            				+ " 	OPEN snCursor;                                                                                                                                                   \n"
+            				+ " 	da_loop: LOOP                                                                                                                                                    \n"
+            				+ " 		                                                                                                                                                             \n"
+            				+ " 		FETCH snCursor INTO SnitchId;                                                                                                                                \n"
+            				+ " 		IF done THEN CLOSE snCursor; LEAVE da_loop;  END IF;                                                                                                         \n"
+            				+ " 		                                                                                                                                                             \n"
+            				+ " 		DELETE FROM {1} WHERE snitch_id = SnitchId;                                                                                                       \n"
+            				+ " 		DELETE FROM {0} WHERE snitch_id = SnitchId;                                                                                                              \n"
+            				+ " 		                                                                                                                                                             \n"
+            				+ " 		                                                                                                                                                             \n"
+            				+ " 	END LOOP da_loop;                                                                                                                                                \n"
+            				+ " 		                                                                                                                                                             \n"
+            				+ "                                                                                                                                                                      \n"
+            				+ " END                                                                                                                                                                  "
+            				, snitchsTbl, snitchDetailsTbl));
+
+        } catch (Exception ex) {
+            String exMsg = ex.toString();
+            if (!exMsg.contains("PROCEDURE CullSnitchesBasedOnLastVisitDate already exists")) {
+                this.plugin.getLogger().log(Level.SEVERE, exMsg);
+            }
+        }
     }
 
     public PreparedStatement getNewInsertSnitchLogStmt() {
@@ -220,6 +281,10 @@ public class JukeAlertLogger {
                 + " snitch_logged_victim_user, snitch_logged_x, snitch_logged_y, snitch_logged_z, snitch_logged_materialid) "
                 + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 snitchDetailsTbl));
+    }
+
+    public PreparedStatement getNewUpdateSnitchSemiOwnerVisitStmt() {
+        return db.prepareStatement(String.format("UPDATE %s SET last_semi_owner_visit_date = UTC_TIMESTAMP() WHERE snitch_id = ?;", snitchsTbl));
     }
 
     private void initializeStatements() {
@@ -245,6 +310,26 @@ public class JukeAlertLogger {
             + " FROM {1} INNER JOIN {0} ON {0}.snitch_id = {1}.snitch_id"
             + " WHERE {0}.snitch_group=? ORDER BY {1}.snitch_log_time DESC LIMIT ?,{2}",
             snitchsTbl, snitchDetailsTbl, logsPerPage));
+        
+        getSnitchListStmt = db.prepareStatement(MessageFormat.format(
+		"SELECT 	s.snitch_world as world"
+				+  "	, s.snitch_x as x"
+				+  "	, s.snitch_y as y"
+				+  "	, s.snitch_z as z"
+				+  "	, TIMESTAMPDIFF(SECOND, DATE_ADD(UTC_TIMESTAMP(), INTERVAL CASE WHEN s.snitch_should_log = 1 THEN ? ELSE ? end DAY) ,s.last_semi_owner_visit_date ) AS TimeLeftAliveInSeconds"
+				+  "	, s.snitch_should_log as DoesSnitchRegisterEvents"
+				+  "	, (SELECT COUNT(*) FROM {0} d WHERE d.snitch_id = s.snitch_id) AS EventCountsRegistered"
+				+  " FROM"
+				+  "	{1} s"
+				+  "	INNER JOIN faction f"
+				+  "		ON f.name = s.snitch_group"
+				+  "	LEFT JOIN moderator m"
+				+  "		ON m.faction_name = f.name"
+				+  " WHERE"
+				+  "	f.founder = ?"
+				+  "	OR m.member_name = ?"
+				+  " ORDER BY case when (s.snitch_should_log = 1 AND ? >= 1) OR (s.snitch_should_log = 0 AND ? >= 1) then 1 else 0 end desc, 5 ASC LIMIT ?, {2}"	
+        		, snitchDetailsTbl, snitchsTbl, logsPerPage));
 
         // statement to get the ID of a snitch in the main snitchsTbl based on a Location (x,y,z, world)
         getSnitchIdFromLocationStmt = db.prepareStatement(String.format("SELECT snitch_id FROM %s"
@@ -259,8 +344,8 @@ public class JukeAlertLogger {
 
         //
         insertNewSnitchStmt = db.prepareStatement(String.format(
-                "INSERT INTO %s (snitch_world, snitch_name, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z, snitch_should_log)"
-                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO %s (snitch_world, snitch_name, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z, snitch_should_log, last_semi_owner_visit_date)"
+                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP())",
                 snitchsTbl));
 
         //
@@ -304,6 +389,11 @@ public class JukeAlertLogger {
         cullSnitchEntriesStmt = db.prepareStatement(MessageFormat.format(
             "CALL CullSnitches({0}, {1}, {2});",
             minEntryLifetimeDays, maxEntryLifetimeDays, maxEntryCount));
+        
+        cullSnitchEntriesAndSnitchesBasedOnVisitDateStmt = db.prepareStatement(MessageFormat.format(
+        		"Call CullSnitchesBasedOnLastVisitDate({0},{1});"
+        		, daysFromLastAdminVisitForLoggedSnitchCulling,daysFromLastAdminVisitForNonLoggedSnitchCulling));
+        
     }
 
     private void initializeLastSnitchId() {
@@ -473,6 +563,44 @@ public class JukeAlertLogger {
 
         return info;
     }
+    public List<String> getSnitchList(String playerName, int offset) {
+        List<String> info = new ArrayList<String>();
+
+        try {
+        	getSnitchListStmt.setInt(1, -daysFromLastAdminVisitForLoggedSnitchCulling);
+        	getSnitchListStmt.setInt(2, -daysFromLastAdminVisitForNonLoggedSnitchCulling);
+        	getSnitchListStmt.setString(3, playerName);
+        	getSnitchListStmt.setString(4, playerName);
+        	getSnitchListStmt.setInt(5, daysFromLastAdminVisitForLoggedSnitchCulling);
+        	getSnitchListStmt.setInt(6, daysFromLastAdminVisitForNonLoggedSnitchCulling);
+        	getSnitchListStmt.setInt(7, offset);
+
+            ResultSet set = getSnitchListStmt.executeQuery();
+            if (!set.isBeforeFirst()) {
+                System.out.println("No data.");
+            } else {
+                while (set.next()) {
+                    info.add(
+                    		"  "
+                    		+ ChatFiller.fillString(set.getString("world"), 15.0) 
+                    		
+                    		+ ChatFiller.fillString("[" + set.getString("x") + " " + set.getString("y") + " " + set.getString("z") + "]", 25.0)
+                            
+                    		+ ChatFiller.fillString(
+                        			(((set.getInt("DoesSnitchRegisterEvents") == 1 && daysFromLastAdminVisitForLoggedSnitchCulling >= 1)
+                        			|| (set.getInt("DoesSnitchRegisterEvents") == 0 && daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)) ? 
+                        					 String.format("%.2f", ((set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds")) / 3600.0))  : ""), 22.0)                    		 
+                    		
+                        	+ ((set.getInt("DoesSnitchRegisterEvents") == 1) ? set.getInt("EventCountsRegistered") : "")
+                			);
+                }
+            }
+        } catch (SQLException ex) {
+            this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch List using playername " + playerName, ex);
+        }
+
+        return info;
+    }
 
     public List<String> getSnitchGroupInfo(String group, int offset) {
         List<String> info = new ArrayList<String>();
@@ -542,6 +670,10 @@ public class JukeAlertLogger {
     }
 
     public JukeInfoBatch jukeinfobatch = new JukeInfoBatch(this);
+    
+    public void logSnitchVisit(Snitch snitch) {
+    	jukeinfobatch.addLastVisitData(snitch);
+    }
 
     /**
      * Logs info to a specific snitch with a time stamp.
@@ -1045,6 +1177,7 @@ public class JukeAlertLogger {
         this.plugin.getLogger().log(Level.INFO, "Culling snitch entries...");
         try {
             cullSnitchEntriesStmt.executeUpdate();
+            cullSnitchEntriesAndSnitchesBasedOnVisitDateStmt.executeUpdate();
             this.plugin.getLogger().log(Level.INFO, "Snitch entry culling complete!");
         } catch (SQLException ex) {
             this.plugin.getLogger().log(

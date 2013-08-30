@@ -9,3 +9,5 @@ mysql:
 settings:
   defaultCuboidSize: 11
   logsPerPage: 10
+  daysFromLastAdminVisitForLoggedSnitchCulling: 0
+  daysFromLastAdminVisitForNonLoggedSnitchCulling: 0  
