@@ -66,11 +66,14 @@ public class JukeAlertLogger {
     private PreparedStatement updateSnitchGroupStmt;
     private PreparedStatement getAllSnitchIdsStmt;
     private PreparedStatement cullSnitchEntriesStmt;
+    private PreparedStatement cullSnitchEntriesAndSnitchesBasedOnVisitDateStmt;
     private final int logsPerPage;
     private int lastSnitchID;
     private final int maxEntryCount;
     private final int minEntryLifetimeDays;
     private final int maxEntryLifetimeDays;
+    private final int daysFromLastAdminVisitForLoggedSnitchCulling;
+    private final int daysFromLastAdminVisitForNonLoggedSnitchCulling;
     private final String host;
     private final String dbname;
     private final String username;
@@ -94,6 +97,9 @@ public class JukeAlertLogger {
         maxEntryCount = configManager.getMaxSnitchEntryCount();
         minEntryLifetimeDays = configManager.getMinSnitchEntryLifetime();
         maxEntryLifetimeDays = configManager.getMaxSnitchEntryLifetime();
+        
+        daysFromLastAdminVisitForLoggedSnitchCulling = configManager.getDaysFromLastAdminVisitForLoggedSnitchCulling();
+        daysFromLastAdminVisitForNonLoggedSnitchCulling = configManager.getDaysFromLastAdminVisitForNonLoggedSnitchCulling();
 
         logsPerPage = configManager.getLogsPerPage();
         snitchsTbl = prefix + "snitchs";
@@ -217,6 +223,56 @@ public class JukeAlertLogger {
                 this.plugin.getLogger().log(Level.SEVERE, exMsg);
             }
         }
+
+        try {
+            db.executeLoud(MessageFormat.format(
+            		" CREATE DEFINER=CURRENT_USER PROCEDURE CullSnitchesBasedOnLastVisitDate(                                                                                                "
+            				+ " 	IN DaysFromLastAdminVisitForLoggedSnitchCulling INT, IN DaysFromLastAdminVisitForNonLoggedSnitchCulling INT) SQL SECURITY INVOKER BEGIN                          \n"
+            				+ "                                                                                                                                                                      \n"
+            				+ " 	DECLARE done BOOLEAN DEFAULT FALSE;                                                                                                                              \n"
+            				+ " 	DECLARE SnitchId INT;                                                                                                                                            \n"
+            				+ " 	                                                                                                                                                                 \n"
+            				+ " 	DECLARE snCursor CURSOR FOR                                                                                                                                      \n"
+            				+ " 	SELECT snitch_id                                                                                                                                                 \n"
+            				+ " 	FROM                                                                                                                                                             \n"
+            				+ " 		{0} s                                                                                                                                                    \n"
+            				+ " 	WHERE                                                                                                                                                            \n"
+            				+ " 		(                                                                                                                                                            \n"
+            				+ " 			(snitch_should_log = 1 AND DaysFromLastAdminVisitForLoggedSnitchCulling >= 1)                                                                            \n"
+            				+ " 			AND                                                                                                                                                      \n"
+            				+ " 			(TIMESTAMPDIFF(SECOND, DATE_ADD(UTC_TIMESTAMP(), INTERVAL -DaysFromLastAdminVisitForLoggedSnitchCulling DAY) ,s.last_semi_owner_visit_date) <= 0)        \n"
+            				+ " 		)                                                                                                                                                            \n"
+            				+ " 		OR                                                                                                                                                           \n"
+            				+ " 		(                                                                                                                                                            \n"
+            				+ " 			(snitch_should_log = 0 AND DaysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)                                                                         \n"
+            				+ " 			AND                                                                                                                                                      \n"
+            				+ " 			(TIMESTAMPDIFF(SECOND, DATE_ADD(UTC_TIMESTAMP(), INTERVAL -DaysFromLastAdminVisitForNonLoggedSnitchCulling DAY) ,s.last_semi_owner_visit_date) <= 0)     \n"
+            				+ " 		);                                                                                                                                                           \n"
+            				+ " 		                                                                                                                                                             \n"
+            				+ " 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;                                                                                                          \n"
+            				+ " 	                                                                                                                                                                 \n"
+            				+ " 	OPEN snCursor;                                                                                                                                                   \n"
+            				+ " 	da_loop: LOOP                                                                                                                                                    \n"
+            				+ " 		                                                                                                                                                             \n"
+            				+ " 		FETCH snCursor INTO SnitchId;                                                                                                                                \n"
+            				+ " 		IF done THEN CLOSE snCursor; LEAVE da_loop;  END IF;                                                                                                         \n"
+            				+ " 		                                                                                                                                                             \n"
+            				+ " 		DELETE FROM {1} WHERE snitch_id = SnitchId;                                                                                                       \n"
+            				+ " 		DELETE FROM {0} WHERE snitch_id = SnitchId;                                                                                                              \n"
+            				+ " 		                                                                                                                                                             \n"
+            				+ " 		                                                                                                                                                             \n"
+            				+ " 	END LOOP da_loop;                                                                                                                                                \n"
+            				+ " 		                                                                                                                                                             \n"
+            				+ "                                                                                                                                                                      \n"
+            				+ " END                                                                                                                                                                  "
+            				, snitchsTbl, snitchDetailsTbl));
+
+        } catch (Exception ex) {
+            String exMsg = ex.toString();
+            if (!exMsg.contains("PROCEDURE CullSnitchesBasedOnLastVisitDate already exists")) {
+                this.plugin.getLogger().log(Level.SEVERE, exMsg);
+            }
+        }
     }
 
     public PreparedStatement getNewInsertSnitchLogStmt() {
@@ -333,6 +389,11 @@ public class JukeAlertLogger {
         cullSnitchEntriesStmt = db.prepareStatement(MessageFormat.format(
             "CALL CullSnitches({0}, {1}, {2});",
             minEntryLifetimeDays, maxEntryLifetimeDays, maxEntryCount));
+        
+        cullSnitchEntriesAndSnitchesBasedOnVisitDateStmt = db.prepareStatement(MessageFormat.format(
+        		"Call CullSnitchesBasedOnLastVisitDate({0},{1});"
+        		, daysFromLastAdminVisitForLoggedSnitchCulling,daysFromLastAdminVisitForNonLoggedSnitchCulling));
+        
     }
 
     private void initializeLastSnitchId() {
@@ -506,12 +567,12 @@ public class JukeAlertLogger {
         List<String> info = new ArrayList<String>();
 
         try {
-        	getSnitchListStmt.setInt(1, -configManager.getDaysFromLastAdminVisitForLoggedSnitchCulling());
-        	getSnitchListStmt.setInt(2, -configManager.getDaysFromLastAdminVisitForNonLoggedSnitchCulling());
+        	getSnitchListStmt.setInt(1, -daysFromLastAdminVisitForLoggedSnitchCulling);
+        	getSnitchListStmt.setInt(2, -daysFromLastAdminVisitForNonLoggedSnitchCulling);
         	getSnitchListStmt.setString(3, playerName);
         	getSnitchListStmt.setString(4, playerName);
-        	getSnitchListStmt.setInt(5, configManager.getDaysFromLastAdminVisitForLoggedSnitchCulling());
-        	getSnitchListStmt.setInt(6, configManager.getDaysFromLastAdminVisitForNonLoggedSnitchCulling());
+        	getSnitchListStmt.setInt(5, daysFromLastAdminVisitForLoggedSnitchCulling);
+        	getSnitchListStmt.setInt(6, daysFromLastAdminVisitForNonLoggedSnitchCulling);
         	getSnitchListStmt.setInt(7, offset);
 
             ResultSet set = getSnitchListStmt.executeQuery();
@@ -526,8 +587,8 @@ public class JukeAlertLogger {
                     		+ ChatFiller.fillString("[" + set.getString("x") + " " + set.getString("y") + " " + set.getString("z") + "]", 25.0)
                             
                     		+ ChatFiller.fillString(
-                        			(((set.getInt("DoesSnitchRegisterEvents") == 1 && configManager.getDaysFromLastAdminVisitForLoggedSnitchCulling() >= 1)
-                        			|| (set.getInt("DoesSnitchRegisterEvents") == 0 && configManager.getDaysFromLastAdminVisitForNonLoggedSnitchCulling() >= 1)) ? 
+                        			(((set.getInt("DoesSnitchRegisterEvents") == 1 && daysFromLastAdminVisitForLoggedSnitchCulling >= 1)
+                        			|| (set.getInt("DoesSnitchRegisterEvents") == 0 && daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)) ? 
                         					 String.format("%.2f", ((set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds")) / 3600.0))  : ""), 22.0)                    		 
                     		
                         	+ ((set.getInt("DoesSnitchRegisterEvents") == 1) ? set.getInt("EventCountsRegistered") : "")
@@ -1116,6 +1177,7 @@ public class JukeAlertLogger {
         this.plugin.getLogger().log(Level.INFO, "Culling snitch entries...");
         try {
             cullSnitchEntriesStmt.executeUpdate();
+            cullSnitchEntriesAndSnitchesBasedOnVisitDateStmt.executeUpdate();
             this.plugin.getLogger().log(Level.INFO, "Snitch entry culling complete!");
         } catch (SQLException ex) {
             this.plugin.getLogger().log(
