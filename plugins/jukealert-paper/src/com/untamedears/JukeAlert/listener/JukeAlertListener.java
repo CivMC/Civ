@@ -86,6 +86,7 @@ public class JukeAlertListener implements Listener {
 		Set<Snitch> snitches = snitchManager.findSnitches(world, location);
 		for (Snitch snitch : snitches) {
 			if (!isOnSnitch(snitch, playerName)) {
+                snitch.imposeSnitchTax();
 				inList.add(snitch);
                 notifyGroup(
                     snitch,
@@ -111,6 +112,7 @@ public class JukeAlertListener implements Listener {
 		Set<Snitch> snitches = snitchManager.findSnitches(world, location);
 		for (Snitch snitch : snitches) {
 			if (!isOnSnitch(snitch, playerName)) {
+                snitch.imposeSnitchTax();
                 notifyGroup(
                     snitch,
                     ChatColor.AQUA + " * " + playerName + " logged out in snitch at " + snitch.getName()
@@ -316,6 +318,7 @@ public class JukeAlertListener implements Listener {
         for (Snitch snitch : snitches) {
             if (doesSnitchExist(snitch, true) && (!isOnSnitch(snitch, playerName) || isDebugging())) {
                 if (!inList.contains(snitch)) {
+                    snitch.imposeSnitchTax();
                 	inList.add(snitch);
                     notifyGroup(
                         snitch,

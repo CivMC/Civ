@@ -34,6 +34,7 @@ public class ConfigManager
     private Double maxAlertDistanceAll = null;
     private Double maxAlertDistanceNs = null;
     private int maxPlayerAlertCount;
+	private boolean taxReinforcementPerAlert;
 
 	private File main;
 	private FileConfiguration config;
@@ -89,6 +90,7 @@ public class ConfigManager
             maxAlertDistanceNs = loadDouble("settings.max_alert_distance_ns");
         }
         maxPlayerAlertCount = loadInt("settings.max_player_alert_count", Integer.MAX_VALUE);
+        taxReinforcementPerAlert = loadBoolean("settings.tax_reinforcement_per_alert");
 
         snitchEntryCullingEnabled = loadBoolean("entryculling.enabled", true);
         maxEntryCount = loadInt("entryculling.maxcount", 200);
@@ -317,5 +319,9 @@ public class ConfigManager
 
     public int getMaxPlayerAlertCount() {
         return maxPlayerAlertCount;
+    }
+
+    public boolean getTaxReinforcementPerAlert() {
+        return taxReinforcementPerAlert;
     }
 }

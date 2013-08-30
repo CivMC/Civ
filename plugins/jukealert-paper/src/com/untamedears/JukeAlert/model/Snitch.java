@@ -1,6 +1,10 @@
 package com.untamedears.JukeAlert.model;
 
+import static com.untamedears.citadel.Utility.maybeReinforcementDamaged;
+
 import com.untamedears.citadel.entity.Faction;
+import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.util.QTBox;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -176,5 +180,12 @@ public class Snitch implements QTBox, Comparable {
                 && this.location.getBlockX() == loc.getBlockX()
                 && this.location.getBlockY() == loc.getBlockY()
                 && this.location.getBlockZ() == loc.getBlockZ();
+    }
+
+    public void imposeSnitchTax() {
+        ConfigManager config = JukeAlert.getInstance().getConfigManager();
+        if (config.getTaxReinforcementPerAlert()) {
+            maybeReinforcementDamaged(location.getBlock());
+        }
     }
 }
