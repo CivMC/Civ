@@ -127,9 +127,12 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
             Set<Moderator> mods = manager_.getModeratorsOfGroup(groupName_);
             mods_iter_ = mods.iterator();
         }
-        if (mods_iter_.hasNext()) {
+        while (mods_iter_.hasNext()) {
             Moderator mod = mods_iter_.next();
-            return Bukkit.getPlayerExact(mod.getMemberName());
+            Player player = Bukkit.getPlayerExact(mod.getMemberName());
+            if (player != null) {
+                return player;
+            }
         }
         mods_iter_ = null;
         return null;
@@ -140,9 +143,12 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
             Set<FactionMember> members = manager_.getMembersOfGroup(groupName_);
             member_iter_ = members.iterator();
         }
-        if (member_iter_.hasNext()) {
+        while (member_iter_.hasNext()) {
             FactionMember member = member_iter_.next();
-            return Bukkit.getPlayerExact(member.getMemberName());
+            Player player = Bukkit.getPlayerExact(member.getMemberName());
+            if (player != null) {
+                return player;
+            }
         }
         member_iter_ = null;
         return null;
