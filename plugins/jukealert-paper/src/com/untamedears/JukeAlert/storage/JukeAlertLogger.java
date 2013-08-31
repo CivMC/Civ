@@ -454,7 +454,11 @@ public class JukeAlertLogger {
                 String groupName = rs_.getString("snitch_group");
                 Faction group = groupMediator.getGroupByName(groupName);
                 Location location = new Location(world_, x, y, z);
-
+                if (group == null) {
+                    JukeAlert.getInstance().log(String.format(
+                        "Group not found for (%s,%d,%d,%d): %s",
+                        world_.getName(), (int)x, (int)y, (int)z, groupName));
+                }
                 Snitch snitch = new Snitch(location, group, rs_.getBoolean("snitch_should_log"));
                 snitch.setId(rs_.getInt("snitch_id"));
                 snitch.setName(rs_.getString("snitch_name"));

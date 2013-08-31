@@ -169,6 +169,10 @@ public class JukeAlertListener implements Listener {
             if (rei instanceof PlayerReinforcement) {
                 PlayerReinforcement reinforcement = (PlayerReinforcement) rei;
                 Faction owner = reinforcement.getOwner();
+                if (owner == null) {
+                    JukeAlert.getInstance().log(String.format(
+                        "No group on rein (%s): %s", reinforcement.getId(), reinforcement.getOwnerName()));
+                }
                 if (reinforcement.getSecurityLevel().equals(SecurityLevel.GROUP)) {
                     Snitch snitch;
                     if (snitchManager.getSnitch(loc.getWorld(), loc) != null) {
@@ -211,6 +215,10 @@ public class JukeAlertListener implements Listener {
             if (rei instanceof PlayerReinforcement) {
                 PlayerReinforcement reinforcement = (PlayerReinforcement) rei;
                 Faction owner = reinforcement.getOwner();
+                if (owner == null) {
+                    JukeAlert.getInstance().log(String.format(
+                        "No group on rein (%s): %s", reinforcement.getId(), reinforcement.getOwnerName()));
+                }
                 if (reinforcement.getSecurityLevel().equals(SecurityLevel.GROUP)) {
                     Snitch snitch;
                     if (snitchManager.getSnitch(loc.getWorld(), loc) != null) {

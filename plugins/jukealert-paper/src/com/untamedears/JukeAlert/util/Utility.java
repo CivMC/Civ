@@ -30,6 +30,7 @@ public class Utility {
     }
 
     public static void notifyGroup(Snitch snitch, String message) {
+        if (snitch.getGroup() == null) return;
         OnlineGroupMembers iter = OnlineGroupMembers
             .get(snitch.getGroup().getName())
             .reference(snitch.getLoc());
