@@ -273,6 +273,9 @@ public class JukeAlertLogger {
                 this.plugin.getLogger().log(Level.SEVERE, exMsg);
             }
         }
+        db.silentExecute(String.format("ALTER TABLE %s MODIFY COLUMN `snitch_group` varchar(255) NOT NULL;", snitchsTbl));
+
+        // Let's get some DB versioning in the next plugin, ok guys?
     }
 
     public PreparedStatement getNewInsertSnitchLogStmt() {
