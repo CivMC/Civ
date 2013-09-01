@@ -21,7 +21,7 @@ public class SendSnitchList implements Runnable {
 			String output = "";
 			
 			output += ChatColor.WHITE + " Snitch List " + ChatColor.DARK_GRAY + "----------------------------------------" + "\n";
-			output += ChatColor.GRAY + String.format("%s %s %s %s", ChatFiller.fillString("MC World", (double) 19), ChatFiller.fillString("Location", (double) 18), ChatFiller.fillString("Hours to Cull", (double) 23), "Events") + "\n";
+			output += ChatColor.GRAY + String.format("%s %s %s", ChatFiller.fillString("MC World", (double) 19), ChatFiller.fillString("Location", (double) 18), ChatFiller.fillString("Hours to Cull", (double) 23)) + "\n";
 			
 			
 			output += ChatColor.WHITE;

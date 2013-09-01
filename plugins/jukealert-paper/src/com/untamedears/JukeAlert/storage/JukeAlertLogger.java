@@ -325,7 +325,6 @@ public class JukeAlertLogger {
             				+ " 			,s.last_semi_owner_visit_date                                                                      \n"
             				+ " 		) AS TimeLeftAliveInSeconds                                                                            \n"
             				+ " 		, s.snitch_should_log AS DoesSnitchRegisterEvents                                                      \n"
-            				+ " 		, (SELECT COUNT(*) FROM {1} d WHERE d.snitch_id = s.snitch_id) AS EventCountsRegistered                \n"
             				+ " 	 FROM                                                                                                      \n"
             				+ " 		{0} s                                                                                                  \n"
             				+ " 		INNER JOIN GroupNames filter                                                                           \n"
@@ -343,7 +342,7 @@ public class JukeAlertLogger {
             				+ " 		                                                                                                       \n"
             				+ "                                                                                                                \n"
             				+ " END                                                                                                            \n"
-            				, snitchsTbl, snitchDetailsTbl));
+            				, snitchsTbl));
 
         } catch (Exception ex) {
             String exMsg = ex.toString();
@@ -662,9 +661,7 @@ public class JukeAlertLogger {
                     		+ ChatFiller.fillString(
                         			(((set.getInt("DoesSnitchRegisterEvents") == 1 && daysFromLastAdminVisitForLoggedSnitchCulling >= 1)
                         			|| (set.getInt("DoesSnitchRegisterEvents") == 0 && daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)) ? 
-                        					 String.format("%.2f", ((set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds")) / 3600.0))  : ""), 22.0)                    		 
-                    		
-                        	+ ((set.getInt("DoesSnitchRegisterEvents") == 1) ? set.getInt("EventCountsRegistered") : "")
+                        					 String.format("%.2f", ((set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds")) / 3600.0))  : ""), 22.0)
                 			);
                 }
             }
