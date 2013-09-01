@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -276,6 +277,82 @@ public class JukeAlertLogger {
         db.silentExecute(String.format("ALTER TABLE %s MODIFY COLUMN `snitch_group` varchar(255) NOT NULL;", snitchsTbl));
 
         // Let's get some DB versioning in the next plugin, ok guys?
+
+        try {
+            db.executeLoud(MessageFormat.format(
+            		" CREATE DEFINER=CURRENT_USER PROCEDURE GetJukeboxListForDelimitedGroup(                                         \n"
+            				+ " 	IN ValueString LONGTEXT                                                                                    \n"
+            				+ " 	, IN DELIM VARCHAR(255)                                                                                    \n"
+            				+ " 	, IN daysFromLastAdminVisitForLoggedSnitchCulling INT                                                      \n"
+            				+ " 	, IN daysFromLastAdminVisitForNonLoggedSnitchCulling INT                                                   \n"
+            				+ " 	, IN skipRecordCount INT                                                                                   \n"
+            				+ " 	, IN itemsOnPage INT                                                                                       \n"
+            				+ " ) SQL SECURITY INVOKER BEGIN                                                                                   \n"
+            				+ "                                                                                                                \n"
+            				+ " 	DROP TEMPORARY TABLE IF EXISTS GroupNames;                                                                 \n"
+            				+ " 	CREATE TEMPORARY TABLE GroupNames(                                                                         \n"
+            				+ " 		GroupName VARCHAR(255) NOT NULL KEY                                                                    \n"
+            				+ " 	);                                                                                                         \n"
+            				+ "                                                                                                                \n"
+            				+ " 	WHILE (LOCATE(DELIM, ValueString) > 0)                                                                     \n"
+            				+ " 	DO                                                                                                         \n"
+            				+ " 		SET @Loc = LOCATE(DELIM, ValueString);                                                                 \n"
+            				+ " 		SET @NewValue = SUBSTRING(ValueString, 1, @Loc-1);                                                     \n"
+            				+ " 		                                                                                                       \n"
+            				+ " 		IF (NOT EXISTS(SELECT 1 FROM GroupNames WHERE GroupName = @NewValue)) THEN                             \n"
+            				+ " 			INSERT INTO GroupNames SELECT @NewValue;                                                           \n"
+            				+ " 		END IF;                                                                                                \n"
+            				+ " 		                                                                                                       \n"
+            				+ " 		SET ValueString = SUBSTRING(ValueString, @Loc + LENGTH(DELIM));                                        \n"
+            				+ " 		                                                                                                       \n"
+            				+ " 	END WHILE;                                                                                                 \n"
+            				+ " 	                                                                                                           \n"
+            				+ " 	IF (LENGTH(ValueString) > 0 AND NOT EXISTS(SELECT 1 FROM GroupNames WHERE GroupName = ValueString)) THEN   \n"
+            				+ " 		INSERT INTO GroupNames SELECT ValueString;                                                             \n"
+            				+ " 	END IF;                                                                                                    \n"
+            				+ "                                                                                                                \n"
+            				+ "                                                                                                                \n"
+            				+ " 	SELECT 	                                                                                                   \n"
+            				+ " 		s.snitch_world AS world                                                                                \n"
+            				+ " 		, s.snitch_x AS X                                                                                      \n"
+            				+ " 		, s.snitch_y AS Y                                                                                      \n"
+            				+ " 		, s.snitch_z AS z                                                                                      \n"
+            				+ " 		, TIMESTAMPDIFF(SECOND                                                                                 \n"
+            				+ " 			, DATE_ADD(                                                                                        \n"
+            				+ " 				UTC_TIMESTAMP()                                                                                \n"
+            				+ " 				, INTERVAL                                                                                     \n"
+            				+ " 					CASE WHEN s.snitch_should_log = 1 THEN -daysFromLastAdminVisitForLoggedSnitchCulling       \n"
+            				+ " 					ELSE -daysFromLastAdminVisitForNonLoggedSnitchCulling                                      \n"
+            				+ " 				END DAY                                                                                        \n"
+            				+ " 			)                                                                                                  \n"
+            				+ " 			,s.last_semi_owner_visit_date                                                                      \n"
+            				+ " 		) AS TimeLeftAliveInSeconds                                                                            \n"
+            				+ " 		, s.snitch_should_log AS DoesSnitchRegisterEvents                                                      \n"
+            				+ " 	 FROM                                                                                                      \n"
+            				+ " 		{0} s                                                                                                  \n"
+            				+ " 		INNER JOIN GroupNames filter                                                                           \n"
+            				+ " 			ON filter.groupname = s.snitch_group                                                               \n"
+            				+ " 	 ORDER BY CASE                                                                                             \n"
+            				+ " 		WHEN                                                                                                   \n"
+            				+ " 			(s.snitch_should_log = 1 AND daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)                 \n"
+            				+ " 			OR (s.snitch_should_log = 0 AND daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)              \n"
+            				+ " 			THEN 1                                                                                             \n"
+            				+ " 		ELSE 0                                                                                                 \n"
+            				+ " 		END DESC                                                                                               \n"
+            				+ " 		, 5 ASC, s.snitch_id asc LIMIT skipRecordCount, itemsOnPage ;                                          \n"
+            				+ "                                                                                                                \n"
+            				+ " 	DROP TEMPORARY TABLE IF EXISTS GroupNames;                                                                 \n"
+            				+ " 		                                                                                                       \n"
+            				+ "                                                                                                                \n"
+            				+ " END                                                                                                            \n"
+            				, snitchsTbl));
+
+        } catch (Exception ex) {
+            String exMsg = ex.toString();
+            if (!exMsg.contains("PROCEDURE GetJukeboxListForDelimitedGroup already exists")) {
+                this.plugin.getLogger().log(Level.SEVERE, exMsg);
+            }
+        }
     }
 
     public PreparedStatement getNewInsertSnitchLogStmt() {
@@ -315,24 +392,10 @@ public class JukeAlertLogger {
             snitchsTbl, snitchDetailsTbl, logsPerPage));
         
         getSnitchListStmt = db.prepareStatement(MessageFormat.format(
-		"SELECT 	s.snitch_world as world"
-				+  "	, s.snitch_x as x"
-				+  "	, s.snitch_y as y"
-				+  "	, s.snitch_z as z"
-				+  "	, TIMESTAMPDIFF(SECOND, DATE_ADD(UTC_TIMESTAMP(), INTERVAL CASE WHEN s.snitch_should_log = 1 THEN ? ELSE ? end DAY) ,s.last_semi_owner_visit_date ) AS TimeLeftAliveInSeconds"
-				+  "	, s.snitch_should_log as DoesSnitchRegisterEvents"
-				+  "	, (SELECT COUNT(*) FROM {0} d WHERE d.snitch_id = s.snitch_id) AS EventCountsRegistered"
-				+  " FROM"
-				+  "	{1} s"
-				+  "	INNER JOIN faction f"
-				+  "		ON f.name = s.snitch_group"
-				+  "	LEFT JOIN moderator m"
-				+  "		ON m.faction_name = f.name"
-				+  " WHERE"
-				+  "	f.founder = ?"
-				+  "	OR m.member_name = ?"
-				+  " ORDER BY case when (s.snitch_should_log = 1 AND ? >= 1) OR (s.snitch_should_log = 0 AND ? >= 1) then 1 else 0 end desc, 5 ASC LIMIT ?, {2}"	
-        		, snitchDetailsTbl, snitchsTbl, logsPerPage));
+        		"Call GetJukeboxListForDelimitedGroup(?, ?, {0}, {1}, ?, {2});"
+        		, daysFromLastAdminVisitForLoggedSnitchCulling
+        		, daysFromLastAdminVisitForNonLoggedSnitchCulling
+        		, logsPerPage));
 
         // statement to get the ID of a snitch in the main snitchsTbl based on a Location (x,y,z, world)
         getSnitchIdFromLocationStmt = db.prepareStatement(String.format("SELECT snitch_id FROM %s"
@@ -574,14 +637,19 @@ public class JukeAlertLogger {
         List<String> info = new ArrayList<String>();
 
         try {
-        	getSnitchListStmt.setInt(1, -daysFromLastAdminVisitForLoggedSnitchCulling);
-        	getSnitchListStmt.setInt(2, -daysFromLastAdminVisitForNonLoggedSnitchCulling);
-        	getSnitchListStmt.setString(3, playerName);
-        	getSnitchListStmt.setString(4, playerName);
-        	getSnitchListStmt.setInt(5, daysFromLastAdminVisitForLoggedSnitchCulling);
-        	getSnitchListStmt.setInt(6, daysFromLastAdminVisitForNonLoggedSnitchCulling);
-        	getSnitchListStmt.setInt(7, offset);
-
+        	String uuidString = java.util.UUID.randomUUID().toString();
+        	List<String> groups = groupMediator.getGroupsByPlayerName(playerName, true, true, false);
+        	
+        	StringBuilder sb = new StringBuilder();
+        	for(String group : groups) {
+        		sb.append(group);
+        		sb.append(uuidString);
+        	}
+        	
+        	getSnitchListStmt.setString(1, sb.toString());
+        	getSnitchListStmt.setString(2, uuidString);
+        	getSnitchListStmt.setInt(3, offset);
+        	
             ResultSet set = getSnitchListStmt.executeQuery();
             if (!set.isBeforeFirst()) {
                 System.out.println("No data.");
@@ -596,9 +664,7 @@ public class JukeAlertLogger {
                     		+ ChatFiller.fillString(
                         			(((set.getInt("DoesSnitchRegisterEvents") == 1 && daysFromLastAdminVisitForLoggedSnitchCulling >= 1)
                         			|| (set.getInt("DoesSnitchRegisterEvents") == 0 && daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)) ? 
-                        					 String.format("%.2f", ((set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds")) / 3600.0))  : ""), 22.0)                    		 
-                    		
-                        	+ ((set.getInt("DoesSnitchRegisterEvents") == 1) ? set.getInt("EventCountsRegistered") : "")
+                        					 String.format("%.2f", ((set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds")) / 3600.0))  : ""), 22.0)
                 			);
                 }
             }
