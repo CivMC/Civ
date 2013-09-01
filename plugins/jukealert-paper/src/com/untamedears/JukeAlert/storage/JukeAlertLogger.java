@@ -277,6 +277,9 @@ public class JukeAlertLogger {
         db.silentExecute(String.format("ALTER TABLE %s MODIFY COLUMN `snitch_group` varchar(255) NOT NULL;", snitchsTbl));
 
         // Let's get some DB versioning in the next plugin, ok guys?
+
+        try {
+            db.executeLoud(MessageFormat.format(
             		" CREATE DEFINER=CURRENT_USER PROCEDURE GetJukeboxListForDelimitedGroup(                                         \n"
             				+ " 	IN ValueString LONGTEXT                                                                                    \n"
             				+ " 	, IN DELIM VARCHAR(255)                                                                                    \n"
