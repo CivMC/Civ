@@ -279,6 +279,7 @@ public class JukeAlertLogger {
         // Let's get some DB versioning in the next plugin, ok guys?
 
         try {
+        	db.silentExecute("DROP PROCEDURE GetJukeboxListForDelimitedGroup;");
             db.executeLoud(MessageFormat.format(
             		" CREATE DEFINER=CURRENT_USER PROCEDURE GetJukeboxListForDelimitedGroup(                                         \n"
             				+ " 	IN ValueString LONGTEXT                                                                                    \n"
@@ -334,7 +335,7 @@ public class JukeAlertLogger {
             				+ " 			ON filter.groupname = s.snitch_group                                                               \n"
             				+ " 	 ORDER BY CASE                                                                                             \n"
             				+ " 		WHEN                                                                                                   \n"
-            				+ " 			(s.snitch_should_log = 1 AND daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)                 \n"
+            				+ " 			(s.snitch_should_log = 1 AND daysFromLastAdminVisitForLoggedSnitchCulling >= 1)                    \n"
             				+ " 			OR (s.snitch_should_log = 0 AND daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)              \n"
             				+ " 			THEN 1                                                                                             \n"
             				+ " 		ELSE 0                                                                                                 \n"
