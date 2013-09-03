@@ -329,6 +329,7 @@ public class JukeAlertLogger {
             				+ " 			,s.last_semi_owner_visit_date                                                                      \n"
             				+ " 		) AS TimeLeftAliveInSeconds                                                                            \n"
             				+ " 		, s.snitch_should_log AS DoesSnitchRegisterEvents                                                      \n"
+            				+ " 		, s.snitch_group AS SnitchGroup					                                                       \n"
             				+ " 	 FROM                                                                                                      \n"
             				+ " 		{0} s                                                                                                  \n"
             				+ " 		INNER JOIN GroupNames filter                                                                           \n"
@@ -656,16 +657,18 @@ public class JukeAlertLogger {
                 System.out.println("No data.");
             } else {
                 while (set.next()) {
-                    info.add(
-                    		"  "
-                    		+ ChatFiller.fillString(set.getString("world"), 15.0) 
+                    info.add(ChatColor.WHITE
+                    		+ "  "
+                    		+ ChatFiller.fillString(set.getString("world"), 11.0) 
                     		
-                    		+ ChatFiller.fillString("[" + set.getString("x") + " " + set.getString("y") + " " + set.getString("z") + "]", 25.0)
+                    		+ ChatFiller.fillString("[" + set.getString("x") + " " + set.getString("y") + " " + set.getString("z") + "]", 23.0)
                             
                     		+ ChatFiller.fillString(
                         			(((set.getInt("DoesSnitchRegisterEvents") == 1 && daysFromLastAdminVisitForLoggedSnitchCulling >= 1)
                         			|| (set.getInt("DoesSnitchRegisterEvents") == 0 && daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)) ? 
-                        					 String.format("%.2f", ((set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds")) / 3600.0))  : ""), 22.0)
+                        					 String.format("%.2f", ((set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds")) / 3600.0))  : ""), 17.0)
+                                             
+                     		+ (set.getString("SnitchGroup").length() > 20 ? set.getString("SnitchGroup").substring(0, 16) +ChatColor.GRAY + "..." + ChatColor.WHITE :   set.getString("SnitchGroup"))
                 			);
                 }
             }
