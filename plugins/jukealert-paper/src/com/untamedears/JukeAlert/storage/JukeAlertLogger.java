@@ -657,6 +657,14 @@ public class JukeAlertLogger {
                 System.out.println("No data.");
             } else {
                 while (set.next()) {
+                	
+                	String snitchGroupString = set.getString("SnitchGroup");
+                	String truncatedGroupString = ChatFiller.fillString(set.getString("SnitchGroup"), 22.0);
+                	
+                	if (!snitchGroupString.trim().equals(truncatedGroupString.trim())) {
+                		truncatedGroupString = truncatedGroupString.substring(0, truncatedGroupString.length()-4) + ChatColor.GRAY +  "..." + ChatColor.WHITE;
+                	}
+                	
                     info.add(ChatColor.WHITE
                     		+ "  "
                     		+ ChatFiller.fillString(set.getString("world"), 11.0) 
@@ -668,7 +676,7 @@ public class JukeAlertLogger {
                         			|| (set.getInt("DoesSnitchRegisterEvents") == 0 && daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)) ? 
                         					 String.format("%.2f", ((set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds")) / 3600.0))  : ""), 17.0)
                                              
-                     		+ (set.getString("SnitchGroup").length() > 20 ? set.getString("SnitchGroup").substring(0, 16) +ChatColor.GRAY + "..." + ChatColor.WHITE :   set.getString("SnitchGroup"))
+                     		+ truncatedGroupString
                 			);
                 }
             }
