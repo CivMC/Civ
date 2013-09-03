@@ -1,6 +1,6 @@
 name: JukeAlert
 main: com.untamedears.JukeAlert.JukeAlert
-version: 1.0.23
+version: 1.0.24
 depend: [Citadel]
 commands:
   ja:
@@ -47,4 +47,4 @@ permissions:
     default: op
   jukealert.jalookup:
     description: Ability to use /jalookup
-    default: op
+    default: true
