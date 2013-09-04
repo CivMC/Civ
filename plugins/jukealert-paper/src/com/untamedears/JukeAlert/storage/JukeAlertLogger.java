@@ -659,7 +659,7 @@ public class JukeAlertLogger {
                 while (set.next()) {
                 	
                 	String snitchGroupString = set.getString("SnitchGroup");
-                	String truncatedGroupString = ChatFiller.fillString(set.getString("SnitchGroup"), 22.0);
+                	String truncatedGroupString = ChatFiller.fillString(set.getString("SnitchGroup"), 20.0);
                 	
                 	if (!snitchGroupString.trim().equals(truncatedGroupString.trim())) {
                 		truncatedGroupString = truncatedGroupString.substring(0, truncatedGroupString.length()-4) + ChatColor.GRAY +  "..." + ChatColor.WHITE;
@@ -669,12 +669,12 @@ public class JukeAlertLogger {
                     		+ "  "
                     		+ ChatFiller.fillString(set.getString("world"), 11.0) 
                     		
-                    		+ ChatFiller.fillString("[" + set.getString("x") + " " + set.getString("y") + " " + set.getString("z") + "]", 23.0)
+                    		+ ChatFiller.fillString("[" + set.getString("x") + " " + set.getString("y") + " " + set.getString("z") + "]", 31.0)
                             
                     		+ ChatFiller.fillString(
                         			(((set.getInt("DoesSnitchRegisterEvents") == 1 && daysFromLastAdminVisitForLoggedSnitchCulling >= 1)
                         			|| (set.getInt("DoesSnitchRegisterEvents") == 0 && daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)) ? 
-                        					 String.format("%.2f", ((set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds")) / 3600.0))  : ""), 17.0)
+                        					 String.format("%.2f", ((set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds")) / 3600.0))  : ""), 14.0)
                                              
                      		+ truncatedGroupString
                 			);
