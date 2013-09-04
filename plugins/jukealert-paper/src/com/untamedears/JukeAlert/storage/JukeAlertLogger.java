@@ -175,7 +175,7 @@ public class JukeAlertLogger {
             "ALTER TABLE %s ADD INDEX idx_log_time (snitch_log_time ASC);", snitchDetailsTbl));
         
         db.silentExecute(String.format("ALTER TABLE %s ADD COLUMN (last_semi_owner_visit_date DATETIME, INDEX idx_last_visit(last_semi_owner_visit_date, snitch_should_log));", snitchsTbl));
-        db.silentExecute("UPDATE SNITCHS SET last_semi_owner_visit_date = UTC_TIMESTAMP() WHERE last_semi_owner_visit_date IS NULL;");
+        db.silentExecute(String.format("UPDATE %s SET last_semi_owner_visit_date = UTC_TIMESTAMP() WHERE last_semi_owner_visit_date IS NULL;", snitchsTbl));
         db.silentExecute(String.format("ALTER TABLE %s MODIFY COLUMN last_semi_owner_visit_date DATETIME NOT NULL;", snitchsTbl));
         
         try {
