@@ -738,6 +738,32 @@ production_factories:
       Charcoal:
         material: COAL
         durability: 1
+  Kiln:
+    name: Kiln
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Clay:
+        material: CLAY
+        amount: 1280
+      Charcoal:
+        material: COAL
+        amount: 256
+        durability: 1
+    recipes:
+      - Bake_clay_blocks
+      - Bake_bricks
+      - Bake_pots
+    repair_multiple: 26
+    repair_inputs:
+      Clay:
+        material: CLAY
+        amount: 8
+      Charcoal:
+        material: COAL
+        durability: 1
   Gold_Axe_Smithy:
     name: Gold Axe Smithy
     fuel:
@@ -3599,6 +3625,39 @@ production_recipes:
       Nether bricks:
         material: NETHER_BRICK_ITEM
         amount: 1024
+  Bake_clay_blocks:
+    name: Bake Clay Blocks
+    production_time: 32
+    inputs:
+      Clay:
+        material: CLAY
+        amount: 512
+    outputs:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 1024
+  Bake_bricks:
+    name: Bake Bricks
+    production_time: 32
+    inputs:
+      Clay:
+        material: CLAY_BALL
+        amount: 512
+    outputs:
+      Bricks:
+        material: CLAY_BRICK
+        amount: 1024
+  Bake_pots:
+    name: Bake Flowerpots
+    production_time: 5
+    inputs:
+      Clay:
+        material: CLAY_BALL
+        amount: 64
+    outputs:
+      Flower Pots:
+        material: FLOWER_POT
+	amount: 64
   Smelt_Sandstone:
     name: Smelt Sandstone
     production_time: 32
