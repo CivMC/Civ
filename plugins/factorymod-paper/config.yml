@@ -1925,6 +1925,7 @@ production_factories:
       - Wood_XP_Bottle_2
       - Wood_XP_Bottle_3
       - Wood_XP_Bottle_4
+      - Wood_XP_Bottle_5
     repair_multiple: 103
     repair_inputs:
       Stick:
@@ -2436,6 +2437,19 @@ production_recipes:
       Exp Bottle:
         material: EXP_BOTTLE
         amount: 14
+  Wood_XP_Bottle_5:
+    name: Brew XP Bottles  - 6
+    inputs:
+      Glass Bottle:
+        material: GLASS_BOTTLE
+        amount: 24
+      Hay Bale:
+        material: HAY_BLOCK
+        amount: 143
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
+        amount: 24
   Dye_Light_Gray_Wool_Orange:
     name: Dye Light Gray Wool Orange
     inputs:
