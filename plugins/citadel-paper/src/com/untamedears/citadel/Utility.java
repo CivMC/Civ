@@ -1,5 +1,6 @@
 package com.untamedears.citadel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Wool;
 
@@ -87,7 +89,17 @@ public class Utility {
 
         PlayerState state = PlayerState.get(player);
         Faction group = state.getFaction();
-        if (group != null && group.isDisciplined()) {
+        if(group == null) {
+            try {
+                group = Citadel.getMemberManager().getMember(player.getName()).getPersonalGroup();
+            } catch (NullPointerException e){
+                sendMessage(player, ChatColor.RED, "You don't seem to have a personal group. Try logging out and back in first");
+            }
+        }
+        if(group == null) {
+            return null;
+        }
+        if (group.isDisciplined()) {
             sendMessage(player, ChatColor.RED, Faction.kDisciplineMsg);
             return null;
         }
@@ -110,54 +122,76 @@ public class Utility {
                 return null;
         }
 
-        if (player.getInventory().contains(material.getMaterial(), material.getRequirements())) {
-            if(group == null){
-                try {
-                    group = Citadel.getMemberManager().getMember(player.getName()).getPersonalGroup();
-                    if (group.isDisciplined()) {
-                        sendMessage(player, ChatColor.RED, Faction.kDisciplineMsg);
-                        return null;
-                    }
-                } catch (NullPointerException e){
-                    sendMessage(player, ChatColor.RED, "You don't seem to have a personal group. Try logging out and back in first");
-                }
-            }
-            PlayerReinforcement reinforcement = new PlayerReinforcement(block, material, group, state.getSecurityLevel());
-            CreateReinforcementEvent event = new CreateReinforcementEvent(reinforcement, block, player);
-            Citadel.getStaticServer().getPluginManager().callEvent(event);
-            if (event.isCancelled()) {
-                return null;
-            }
-            // workaround fix for 1.4.6, it doesnt remove the placed item if its already removed for some reason?
-            if ((state.getMode() == PlacementMode.FORTIFICATION) && (blockTypeId == material.getMaterialId())) {
-            	ItemStack stack = player.getItemInHand();
-            	if (stack.getAmount() < material.getRequirements() + 1) {
-            		sendMessage(player, ChatColor.RED, "Not enough material in hand to place and fortify this block");
-            		return null;
-            	}
-            	stack.setAmount(stack.getAmount() - (material.getRequirements() + 1));
-            	player.setItemInHand(stack);
-            }
-            else {
-            	player.getInventory().removeItem(material.getRequiredMaterials());
-            }
-            //TODO: there will eventually be a better way to flush inventory changes to the client
-            player.updateInventory();
-            reinforcement = (PlayerReinforcement)Citadel.getReinforcementManager().addReinforcement(reinforcement);
-            String securityLevelText = state.getSecurityLevel().name();
-            if(securityLevelText.equalsIgnoreCase("group")){
-            	securityLevelText = securityLevelText + "-" + group.getName();
-            }
-            sendThrottledMessage(player, ChatColor.GREEN, "Reinforced with %s at security level %s", material.getMaterial().name(), securityLevelText);
-            Citadel.info(String.format("PlRein:%s:%d@%s,%d,%d,%d",
-                player.getName(), material.getMaterialId(), block.getWorld().getName(), block.getX(), block.getY(), block.getZ()));
-            // TODO: enable chained flashers, they're pretty cool
-            //new BlockFlasher(block, material.getFlasher()).start(getPlugin());
-            //new BlockFlasher(block, material.getFlasher()).chain(securityMaterial.get(state.getSecurityLevel())).start();
-            return reinforcement;
-        } else {
+        // Find necessary itemstacks
+        final PlayerInventory inv = player.getInventory();
+        final int invSize = inv.getSize();
+        final Material materialType = material.getMaterial();
+        List<Integer> slots = new ArrayList<Integer>(material.getRequirements());
+        int requirements = material.getRequirements();
+        if (requirements <= 0) {
+            Citadel.severe("Reinforcement requirements too low for " + materialType);
             return null;
         }
+        try {
+            for (int slot = 0; slot < invSize && requirements > 0; ++slot) {
+                final ItemStack slotItem = inv.getItem(slot);
+                if (slotItem == null) {
+                    continue;
+                }
+                if (!slotItem.getType().equals(materialType)) {
+                    continue;
+                }
+                requirements -= slotItem.getAmount();
+                slots.add(slot);
+            }
+        } catch (Exception ex) {
+            // Eat any inventory size mis-match exceptions, like with the Anvil
+        }
+        if (requirements > 0) {
+            // Not enough reinforcement material
+            return null;
+        }
+        // Fire the creation event
+        PlayerReinforcement reinforcement = new PlayerReinforcement(block, material, group, state.getSecurityLevel());
+        CreateReinforcementEvent event = new CreateReinforcementEvent(reinforcement, block, player);
+        Citadel.getStaticServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return null;
+        }
+        // Now eat the materials
+        requirements = material.getRequirements();
+        for (final int slot : slots) {
+            if (requirements <= 0) {
+                break;
+            }
+            final ItemStack slotItem = inv.getItem(slot);
+            final int stackSize = slotItem.getAmount();
+            final int deduction = Math.min(stackSize, requirements);
+            if (deduction < stackSize) {
+                slotItem.setAmount(stackSize - deduction);
+            } else {
+                inv.clear(slot);
+            }
+            requirements -= deduction;
+        }
+        if (requirements != 0) {
+            Citadel.warning(String.format(
+                "Reinforcement material out of sync %d vs %d", requirements, material.getRequirements()));
+        }
+        //TODO: there will eventually be a better way to flush inventory changes to the client
+        player.updateInventory();
+        reinforcement = (PlayerReinforcement)Citadel.getReinforcementManager().addReinforcement(reinforcement);
+        String securityLevelText = state.getSecurityLevel().name();
+        if(securityLevelText.equalsIgnoreCase("group")){
+        	securityLevelText = securityLevelText + "-" + group.getName();
+        }
+        sendThrottledMessage(player, ChatColor.GREEN, "Reinforced with %s at security level %s", material.getMaterial().name(), securityLevelText);
+        Citadel.info(String.format("PlRein:%s:%d@%s,%d,%d,%d",
+            player.getName(), material.getMaterialId(), block.getWorld().getName(), block.getX(), block.getY(), block.getZ()));
+        // TODO: enable chained flashers, they're pretty cool
+        //new BlockFlasher(block, material.getFlasher()).start(getPlugin());
+        //new BlockFlasher(block, material.getFlasher()).chain(securityMaterial.get(state.getSecurityLevel())).start();
+        return reinforcement;
     }
     
     public static void sendMessage(CommandSender sender, ChatColor color, String messageFormat, Object... params) {
