@@ -3657,7 +3657,7 @@ production_recipes:
     outputs:
       Flower Pots:
         material: FLOWER_POT
-	amount: 64
+        amount: 64
   Smelt_Sandstone:
     name: Smelt Sandstone
     production_time: 32
