@@ -25,7 +25,7 @@ additionalSecurable:
 - ANVIL
 nonReinforceable:
 - SAPLING
-- GRASS
+- LONG_GRASS
 - DEAD_BUSH
 - PISTON_EXTENSION
 - PISTON_MOVING_PIECE
