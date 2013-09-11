@@ -14,6 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.IReinforcement;
@@ -37,7 +38,11 @@ public class InventoryListener implements Listener {
     final AccessDelegate delegate = AccessDelegate.getDelegate(loc.getBlock());
     final IReinforcement rein = delegate.getReinforcement();
     if (rein instanceof PlayerReinforcement) {
-      return (PlayerReinforcement)rein;
+      PlayerReinforcement pr = (PlayerReinforcement)rein;
+      // Treat public reinforcements as if they don't exist
+      if (!pr.getSecurityLevel().equals(SecurityLevel.PUBLIC)) {
+        return pr;
+      }
     }
     return null;
   }
@@ -47,28 +52,48 @@ public class InventoryListener implements Listener {
     // Prevent hopper minecarts from extracting from reinforced containers or
     //  filling up reinforced containers.
     // Prevent misowned hoppers from stealing from reinforced containers.
+    //
+    // Allowed transfers:
+    //   Assertions:
+    //      Public reinforcement == Non-reinforced
+    //      Y is a member of Group X
+    //   Public -> Public
+    //   Public -> Group X
+    //   Public -> Personal Y
+    //   Group X -> Group X
+    //   Group X -> Personal Y
+    //   Personal Y -> Personal Y
+
+    // Fail safe
+    event.setCancelled(true);
+    // Source
     final Inventory src = event.getSource();
     final PlayerReinforcement srcRein = getReinforcement(src);
-    // Calculate destination
+    // Destination
     final Inventory dest = event.getDestination();
     final PlayerReinforcement destRein = getReinforcement(dest);
     if (srcRein == null) {
-      if (destRein == null) {
-        // No reinforcements, allow
-        return;
-      } else {
-        // Reinforcement mismatch, deny
-        event.setCancelled(true);
-        return;
+      if (destRein != null) {
+        final Faction destOwner = destRein.getOwner();
+        if (destOwner != null && destOwner.isDisciplined()) {
+          // Dest is disabled, deny
+          return;
+        }
       }
-    } else if (destRein == null) {  // srcRein != null
-      // Reinforcement mismatch, deny
-      event.setCancelled(true);
+      // Public can transfer into any, allow
+      // (Public -> Public, Public -> Group X, Public -> Personal Y)
+      event.setCancelled(false);
       return;
     }
-    // srcRein != null && destRein != null
+    // Assertion: srcRein != null
+    if (destRein == null) {
+      // Non-public cannot transfer into a public, deny
+      return;
+    }
+    // Assertion: srcRein != null && destRein != null
     final Faction srcOwner = srcRein.getOwner();
     final Faction destOwner = destRein.getOwner();
+    // Check for null group failure
     if (srcOwner == null || destOwner == null) {
       String msg;
       if (srcOwner == null) {
@@ -81,14 +106,26 @@ public class InventoryListener implements Listener {
         priorMessages_.add(msg);
       }
       // Unable to determine reinforcement owner match, deny
-      event.setCancelled(true);
       return;
     }
-    if (srcOwner != destOwner) {
-      // Reinforcement owners don't match, deny
-      event.setCancelled(true);
+    if (srcOwner.isDisciplined() || destOwner.isDisciplined()) {
+      // Disabled group involved, deny
       return;
     }
-    // Reinforcement owners match, allow
+    if (srcOwner == destOwner) {
+      // Reinforcement owners match, allow
+      // (Group X -> Group X, Personal Y -> Personal Y)
+      event.setCancelled(false);
+      return;
+    }
+    final boolean srcIsPersonal = srcOwner.isPersonalGroup();
+    final boolean destIsPersonal = destOwner.isPersonalGroup();
+    if (!srcIsPersonal && destIsPersonal && srcRein.isAccessible(destOwner.getFounder())) {
+      // Destination personal group owner has access to source group, allow
+      // (Group X -> Personal Y)
+      event.setCancelled(false);
+      return;
+    }
+    // Reinforcement owners don't match, deny
   }
 }
