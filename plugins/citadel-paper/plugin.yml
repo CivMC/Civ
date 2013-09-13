@@ -1,6 +1,6 @@
 name: Citadel
 main: com.untamedears.citadel.Citadel
-version: 2.5.13
+version: 2.5.14
 description: Reinforce your structures!
 author: chrisrico, jonnyd (aka Gu3rr1lla)
 database: false
@@ -29,6 +29,10 @@ commands:
     aliases: cti
     description: While in this mode, punching a block gives you information about it's reinforcement and security level.
     usage: /ctinfo (or /cti)
+  ctinsecure:
+    aliases: ctis
+    description: While in this mode, punching a reinforcement toggles its insecure status.
+    usage: /ctinsecure (or /ctis)
   ctoff:
     aliases: cto
     description: Turns off reinforcement, fortification, and info mode.

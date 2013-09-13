@@ -86,7 +86,7 @@ public class BlockListener implements Listener {
                 IReinforcement rein = AccessDelegate.getDelegate(adjacent).getReinforcement();
                 if (null != rein && rein instanceof PlayerReinforcement) {
                     PlayerReinforcement pr = (PlayerReinforcement)rein;
-                    if (!pr.isAccessible(player_name)) {
+                    if (!pr.isInsecure() && !pr.isAccessible(player_name)) {
                         return false;
                     }
                 }

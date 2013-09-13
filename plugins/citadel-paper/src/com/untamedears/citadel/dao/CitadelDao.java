@@ -368,6 +368,14 @@ public class CitadelDao extends MyDatabase {
         } catch(PersistenceException e){
             //column already exists
         }
+
+        try {
+            SqlUpdate addReinforcementInsecurity = getDatabase().createSqlUpdate(
+                "ALTER TABLE reinforcement ADD COLUMN insecure BIT NOT NULL DEFAULT 0");
+            getDatabase().execute(addReinforcementInsecurity);
+        } catch(PersistenceException e){
+            //column already exists
+        }
     }
 
     protected void prepareDatabaseAdditionalConfig(DataSourceConfig dataSourceConfig, ServerConfig serverConfig) {

@@ -375,7 +375,7 @@ public class Utility {
         return SecurityLevel.PRIVATE;
     }
     
-    private static List<PlacementMode> MULTI_MODE = Arrays.asList(PlacementMode.FORTIFICATION, PlacementMode.INFO, PlacementMode.REINFORCEMENT);
+    private static List<PlacementMode> MULTI_MODE = Arrays.asList(PlacementMode.FORTIFICATION, PlacementMode.INFO, PlacementMode.REINFORCEMENT, PlacementMode.INSECURE);
 
     public static void setMultiMode(PlacementMode mode, SecurityLevel securityLevel, String[] args, Player player, PlayerState state) {
         if (!MULTI_MODE.contains(mode)) return;
@@ -398,6 +398,7 @@ public class Utility {
                     sendMessage(player, ChatColor.GREEN, "%s mode %s, %s", mode.name(), state.getReinforcementMaterial().getMaterial().name(), securityLevel.name());
                     break;
                 case INFO:
+                case INSECURE:
                     sendMessage(player, ChatColor.GREEN, "%s mode on", mode.name());
                     break;
             }

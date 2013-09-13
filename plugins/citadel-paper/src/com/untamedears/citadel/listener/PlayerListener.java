@@ -200,6 +200,9 @@ public class PlayerListener implements Listener {
                             sb.append(maturationTime);
                             sb.append("]");
                         }
+                        if (reinforcement.isInsecure()) {
+                            sb.append(" (Insecure)");
+                        }
                         sendMessage(player, ChatColor.GREEN, sb.toString());
                     } else if(reinforcement.isAccessible(player)){
                         sb = new StringBuilder();
@@ -221,12 +224,34 @@ public class PlayerListener implements Listener {
                         if(immature){
                             sb.append(" (Hardening)");
                         }
+                        if (reinforcement.isInsecure()) {
+                            sb.append(" (Insecure)");
+                        }
                         sendMessage(player, ChatColor.GREEN, sb.toString());
                     } else {
                         sendMessage(player, ChatColor.RED, "%s, security: %s", reinforcementStatus, securityLevel);
                     }
                     if (player.getGameMode() == GameMode.CREATIVE) {
                         pie.setCancelled(true);
+                    }
+                }
+                break;
+
+            case INSECURE:
+                // did player click on a reinforced block?
+                pie.setCancelled(true);
+                if (reinforcement != null) {
+                    if (reinforcement.isBypassable(player)) {
+                        reinforcement.toggleInsecure();
+                        // Save the change
+                        Citadel.getReinforcementManager().addReinforcement(reinforcement);
+                        if (reinforcement.isInsecure()) {
+                            sendMessage(player, ChatColor.YELLOW, "Reinforcement now insecure");
+                        } else {
+                            sendMessage(player, ChatColor.GREEN, "Reinforcement secured");
+                        }
+                    } else {
+                        sendMessage(player, ChatColor.RED, "Access denied");
                     }
                 }
                 break;

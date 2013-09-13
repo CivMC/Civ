@@ -45,6 +45,7 @@ public class PlayerReinforcement implements
     private int durability;
     private SecurityLevel securityLevel;
     private String chunkId;
+    private boolean insecure;
     // @Transient == not persisted in the DB
     @Transient private DbUpdateAction dbAction;
 
@@ -209,6 +210,18 @@ public class PlayerReinforcement implements
 
     public void setMaturationTime(int time) {
         this.maturationTime = time;
+    }
+
+    public boolean isInsecure() {
+        return this.insecure;
+    }
+
+    public void setInsecure(boolean value) {
+        this.insecure = value;
+    }
+
+    public void toggleInsecure() {
+        this.setInsecure(!this.isInsecure());
     }
 
     public double getHealth() {

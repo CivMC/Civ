@@ -23,6 +23,7 @@ import com.untamedears.citadel.command.commands.GroupInfoCommand;
 import com.untamedears.citadel.command.commands.GroupStatsCommand;
 import com.untamedears.citadel.command.commands.GroupsCommand;
 import com.untamedears.citadel.command.commands.InfoCommand;
+import com.untamedears.citadel.command.commands.InsecureCommand;
 import com.untamedears.citadel.command.commands.JoinCommand;
 import com.untamedears.citadel.command.commands.LeaveCommand;
 import com.untamedears.citadel.command.commands.MaterialsCommand;
@@ -68,6 +69,7 @@ public class CommandHandler {
         this.addCommand(new GroupInfoCommand());
         this.addCommand(new GroupsCommand());
         this.addCommand(new InfoCommand());
+        this.addCommand(new InsecureCommand());
         this.addCommand(new JoinCommand());
         this.addCommand(new LeaveCommand());
         this.addCommand(new MaterialsCommand());

@@ -57,6 +57,7 @@ public class InventoryListener implements Listener {
     //   Assertions:
     //      Public reinforcement == Non-reinforced
     //      Y is a member of Group X
+    //      Insecure sources act like public reinforcements
     //   Public -> Public
     //   Public -> Group X
     //   Public -> Personal Y
@@ -82,6 +83,12 @@ public class InventoryListener implements Listener {
       }
       // Public can transfer into any, allow
       // (Public -> Public, Public -> Group X, Public -> Personal Y)
+      event.setCancelled(false);
+      return;
+    }
+    if (srcRein.isInsecure()) {
+      // Insecure source reinforcement allows transfer as if it's
+      //  a public reinforcement, allow
       event.setCancelled(false);
       return;
     }
