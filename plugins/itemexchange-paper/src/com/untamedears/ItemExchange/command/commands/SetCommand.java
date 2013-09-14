@@ -277,6 +277,10 @@ public class SetCommand extends PlayerCommand {
 			}
 			else if (args[0].equalsIgnoreCase("switchio") || args[0].equalsIgnoreCase("s")) {
 				exchangeRule.switchIO();
+				
+				if(exchangeRule.getType() == RuleType.OUTPUT) {
+					exchangeRule.setCitadelGroup(null);
+				}
 
 				sender.sendMessage(ChatColor.GREEN + "Successfully switched input/output.");
 			}
