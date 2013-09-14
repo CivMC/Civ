@@ -564,7 +564,7 @@ public class ExchangeRule {
 		return followsRules;
 	}
 
-	public String[] display() {
+	public String[] display(Player p) {
 		List<String> displayed = new ArrayList<>();
 		// Material type, durability and amount
 		displayed.add(displayedItemStackInfo());
@@ -585,7 +585,14 @@ public class ExchangeRule {
 
 		// Citadel group
 		if(citadelGroup != null) {
-			displayed.add(ChatColor.RED + "Restricted with Citadel.");
+			String playerName = p.getName();
+			
+			if(citadelGroup.isFounder(playerName) || citadelGroup.isModerator(playerName) || citadelGroup.isMember(playerName)) {
+				displayed.add(ChatColor.GREEN + "Restricted with Citadel. You have access to this shop.");
+			}
+			else {
+				displayed.add(ChatColor.RED + "Restricted with Citadel. You do not have access to this shop.");
+			}
 		}
 
 		return displayed.toArray(new String[displayed.size()]);

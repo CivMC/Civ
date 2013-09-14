@@ -362,9 +362,9 @@ public class ItemExchange {
 
 	public void messagePlayer(Player player) {
 		player.sendMessage(ChatColor.YELLOW + "(" + String.valueOf(ruleIndex.get(player) + 1) + "/" + String.valueOf(getNumberRules()) + ") exchanges present.");
-		player.sendMessage(inputs.get(ruleIndex.get(player)).display());
+		player.sendMessage(inputs.get(ruleIndex.get(player)).display(player));
 		ExchangeRule output = outputs.get(ruleIndex.get(player));
-		player.sendMessage(output.display());
+		player.sendMessage(output.display(player));
 		int multiples = output.checkMultiples(inventory);
 		player.sendMessage(ChatColor.YELLOW + String.valueOf(multiples) + (multiples == 1 ? " exchange available." : " exchanges available."));
 	}
