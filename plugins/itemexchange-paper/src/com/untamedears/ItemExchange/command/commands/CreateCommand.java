@@ -36,7 +36,7 @@ public class CreateCommand extends PlayerCommand {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
-		Block block = player.getLastTwoTargetBlocks(null, 20).get(1).getLocation().getBlock();
+		Block block = player.getLastTwoTargetBlocks(null, 5).get(1).getLocation().getBlock();
 		//If no input or ouptut is specified player attempt to set up ItemExchange at the block the player is looking at
 		//The player must have citadel access to the inventory block
 		if (args.length == 0) {
