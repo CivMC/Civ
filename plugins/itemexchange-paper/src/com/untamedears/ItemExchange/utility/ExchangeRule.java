@@ -121,6 +121,9 @@ public class ExchangeRule {
 			else if(itemMeta instanceof EnchantmentStorageMeta) {
 				additional = new EnchantmentStorageMetadata((EnchantmentStorageMeta) itemMeta);
 			}
+			else if(itemMeta instanceof PotionMeta) {
+				
+			}
 			//I've removed the PotionMeta block since it is not required if only vanilla potions are used, PotionMeta support should be added in the future
 			if(itemMeta instanceof FireworkEffectMeta || itemMeta instanceof FireworkMeta || itemMeta instanceof LeatherArmorMeta || itemMeta instanceof MapMeta || itemMeta instanceof SkullMeta) {
 				throw new ExchangeRuleCreateException("This item is not yet supported by ItemExchange.");
