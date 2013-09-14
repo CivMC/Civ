@@ -413,6 +413,10 @@ public class ExchangeRule {
 			newLore.add(line);
 		}
 		
+		if(citadelGroup != null) {
+			newLore.add(ChatColor.RED + "Restricted with Citadel.");
+		}
+		
 		if(newLore.size() > 0) {
 			newLore.set(0, compileRule() + newLore.get(0));
 		}
