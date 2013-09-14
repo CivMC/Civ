@@ -251,7 +251,7 @@ public class ItemExchange {
 					}
 					// If the item the player is holding is not that of the input of the exchange the rules of the exchange are displayed
 					else {
-						messagePlayer(player);
+						cycleExchange(player);
 					}
 				}
 				//If the rule index was out of bounds
@@ -261,14 +261,7 @@ public class ItemExchange {
 			}
 			//If the players hand is empty cycle through exchange rules
 			else {
-				int currentRuleIndex = ruleIndex.get(player);
-				if (currentRuleIndex < getNumberRules() - 1) {
-					ruleIndex.put(player, ruleIndex.get(player) + 1);
-				}
-				else {
-					ruleIndex.put(player, 0);
-				}
-				messagePlayer(player);
+				cycleExchange(player);
 			}
 		}
 		//If the player has not interacted with this exchange previously or doesn't have an itemstack in his hand
@@ -280,6 +273,17 @@ public class ItemExchange {
 			ruleIndex.put(player, 0);
 			messagePlayer(player);
 		}
+	}
+	
+	public void cycleExchange(Player player) {
+		int currentRuleIndex = ruleIndex.get(player);
+		if (currentRuleIndex < getNumberRules() - 1) {
+			ruleIndex.put(player, ruleIndex.get(player) + 1);
+		}
+		else {
+			ruleIndex.put(player, 0);
+		}
+		messagePlayer(player);
 	}
 	
 	public static void powerBlock(Player p, Block b) {
