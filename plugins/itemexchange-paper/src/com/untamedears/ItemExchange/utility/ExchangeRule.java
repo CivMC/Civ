@@ -121,6 +121,9 @@ public class ExchangeRule {
 			else if(itemMeta instanceof EnchantmentStorageMeta) {
 				additional = new EnchantmentStorageMetadata((EnchantmentStorageMeta) itemMeta);
 			}
+			else if(itemMeta instanceof PotionMeta) {
+				
+			}
 			//I've removed the PotionMeta block since it is not required if only vanilla potions are used, PotionMeta support should be added in the future
 			if(itemMeta instanceof FireworkEffectMeta || itemMeta instanceof FireworkMeta || itemMeta instanceof LeatherArmorMeta || itemMeta instanceof MapMeta || itemMeta instanceof SkullMeta) {
 				throw new ExchangeRuleCreateException("This item is not yet supported by ItemExchange.");
@@ -410,6 +413,10 @@ public class ExchangeRule {
 			newLore.add(line);
 		}
 		
+		if(citadelGroup != null) {
+			newLore.add(ChatColor.RED + "Restricted with Citadel.");
+		}
+		
 		if(newLore.size() > 0) {
 			newLore.set(0, compileRule() + newLore.get(0));
 		}
@@ -561,7 +568,7 @@ public class ExchangeRule {
 		return followsRules;
 	}
 
-	public String[] display() {
+	public String[] display(Player p) {
 		List<String> displayed = new ArrayList<>();
 		// Material type, durability and amount
 		displayed.add(displayedItemStackInfo());
@@ -582,7 +589,14 @@ public class ExchangeRule {
 
 		// Citadel group
 		if(citadelGroup != null) {
-			displayed.add(ChatColor.RED + "Restricted with Citadel.");
+			String playerName = p.getName();
+			
+			if(citadelGroup.isFounder(playerName) || citadelGroup.isModerator(playerName) || citadelGroup.isMember(playerName)) {
+				displayed.add(ChatColor.GREEN + "Restricted with Citadel. You have access to this shop.");
+			}
+			else {
+				displayed.add(ChatColor.RED + "Restricted with Citadel. You do not have access to this shop.");
+			}
 		}
 
 		return displayed.toArray(new String[displayed.size()]);

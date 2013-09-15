@@ -67,32 +67,6 @@ public class ItemExchangeListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {
-		if (event.isShiftClick()) {
-			try {
-				ItemStack currentItem = event.getCurrentItem();
-				int itemAmount = currentItem.getAmount();
-				ExchangeRule exchangeRule = ExchangeRule.parseRuleBlock(currentItem);
-
-				int amount = exchangeRule.getAmount();
-
-				if (event.isLeftClick()) {
-					exchangeRule.setAmount(amount + 1);
-				}
-				else {
-					if (amount > 0)
-						exchangeRule.setAmount(amount - 1);
-				}
-				
-				ItemStack itemstack = exchangeRule.toItemStack();
-				itemstack.setAmount(itemAmount);
-				event.setCurrentItem(itemstack);
-
-				event.setCancelled(true);
-			}
-			catch (ExchangeRuleParseException e) {
-			}
-		}
-		
 		final Inventory top = event.getView().getTopInventory();
 		
 		if(top instanceof CraftingInventory && event.getWhoClicked() instanceof Player) {
