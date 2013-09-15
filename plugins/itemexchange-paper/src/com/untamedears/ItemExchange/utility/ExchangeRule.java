@@ -31,6 +31,7 @@ import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import com.untamedears.ItemExchange.metadata.AdditionalMetadata;
 import com.untamedears.ItemExchange.metadata.BookMetadata;
 import com.untamedears.ItemExchange.metadata.EnchantmentStorageMetadata;
+import com.untamedears.ItemExchange.metadata.PotionMetadata;
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.entity.Faction;
 
@@ -122,7 +123,7 @@ public class ExchangeRule {
 				additional = new EnchantmentStorageMetadata((EnchantmentStorageMeta) itemMeta);
 			}
 			else if(itemMeta instanceof PotionMeta) {
-				
+				additional = new PotionMetadata((PotionMeta) itemMeta);
 			}
 			//I've removed the PotionMeta block since it is not required if only vanilla potions are used, PotionMeta support should be added in the future
 			if(itemMeta instanceof FireworkEffectMeta || itemMeta instanceof FireworkMeta || itemMeta instanceof LeatherArmorMeta || itemMeta instanceof MapMeta || itemMeta instanceof SkullMeta) {
@@ -255,6 +256,11 @@ public class ExchangeRule {
 			}
 			else if(material == Material.ENCHANTED_BOOK) {
 				additional = EnchantmentStorageMetadata.deserialize(showString(compiledRule[10]));
+			}
+			else if(material == Material.POTION) {
+				if(!compiledRule[10].isEmpty()) {
+					additional = PotionMetadata.deserialize(showString(compiledRule[10]));
+				}
 			}
 
 			Faction group;
