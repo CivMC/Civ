@@ -38,6 +38,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
     private int maxPlayers_;
     private Location referenceLocation_ = null;
     private boolean alreadyIterating_ = false;
+	private Set<String> skipList_= null;
 
     public OnlineGroupMembers(String groupName) {
         manager_ = Citadel.getGroupManager();
@@ -74,6 +75,17 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
         }
         referenceLocation_ = loc;
         return this;
+    }
+    
+    public OnlineGroupMembers skipList(Set<String> list) {
+
+        if (alreadyIterating_) {
+            throw new UnsupportedOperationException();
+        }
+        skipList_ = list;
+    	
+		return this;
+    	
     }
 
     @Override  // Iterator<Player>
@@ -186,6 +198,11 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
             }
             if (outOfRange(player)) {
                 player = null;
+            }
+            if (skipList_ != null && player != null) {
+            	if (skipList_.contains(player.getName().toLowerCase())) {
+            		player = null;
+            	}
             }
         } while (player == null);
         ++returnedCount_;

@@ -5,12 +5,15 @@ import com.untamedears.JukeAlert.external.VanishNoPacket;
 import com.untamedears.JukeAlert.manager.PlayerManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.util.IgnoreList;
 import com.untamedears.JukeAlert.util.OnlineGroupMembers;
+
 import static com.untamedears.JukeAlert.util.Utility.doesSnitchExist;
 import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
 import static com.untamedears.JukeAlert.util.Utility.isPartialOwnerOfSnitch;
 import static com.untamedears.JukeAlert.util.Utility.isDebugging;
 import static com.untamedears.JukeAlert.util.Utility.notifyGroup;
+
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.Utility;
 import com.untamedears.citadel.access.AccessDelegate;
@@ -102,11 +105,13 @@ public class JukeAlertListener implements Listener {
 
     public void handlePlayerExit(PlayerEvent event) {
     	Player player = event.getPlayer();
+    	
         if (vanishNoPacket.isPlayerInvisible(player)) {
             return;
         }
 		String playerName = player.getName();
 		playersInSnitches.remove(playerName);
+    	IgnoreList.removeIgnoresForPlayer(playerName);
 
 		Location location = player.getLocation();
 		World world = location.getWorld();

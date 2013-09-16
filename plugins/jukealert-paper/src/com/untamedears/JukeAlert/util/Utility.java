@@ -33,7 +33,8 @@ public class Utility {
         if (snitch.getGroup() == null) return;
         OnlineGroupMembers iter = OnlineGroupMembers
             .get(snitch.getGroup().getName())
-            .reference(snitch.getLoc());
+            .reference(snitch.getLoc())
+            .skipList(IgnoreList.GetPlayerIgnoreListByGroup(snitch.getGroup().getName()));
         if (!snitch.shouldLog()) {
             iter.maxDistance(
                 JukeAlert.getInstance().getConfigManager().getMaxAlertDistanceNs());
