@@ -14,32 +14,6 @@ public class IgnoreList {
 	private static Map<String, Set<String>> ignoresByPlayer_ = new HashMap<String, Set<String>>();
 	private static Map<String, Set<String>> ignoresByGroup_ = new HashMap<String, Set<String>>();
 	
-	public static void removeIgnoresForPlayer(String playerName) {
-
-		playerName = playerName.toLowerCase();
-		
-		// If a player has any ignores, get the ignore list for the players.
-		// For each group listed as a player ignore, remove the player from this ignore group list.
-		// For each group we modify, check to see if the group is now empty.  If so, remove it from the list.
-		// After removing the player from all ignoresByGroup lists, remove the ignore by player reference.
-		synchronized(lockObject_) {
-			if (ignoresByPlayer_.containsKey(playerName)) {
-				for(String group : ignoresByPlayer_.get(playerName)) {
-					if (ignoresByGroup_.containsKey(group)) {
-						
-						ignoresByGroup_.get(group).remove(playerName);
-
-						// Remove group if we can.
-						if (ignoresByGroup_.get(group).size() == 0) {
-							ignoresByGroup_.remove(group);
-						}
-					}
-				}
-				ignoresByPlayer_.remove(playerName);
-			}
-		}
-	}
-	
 	// Flip the ignore/unignore bit for a player-group combination.
 	// Requires quick access with lookup by player.
 	// Returns true if it adds to ignore list.
