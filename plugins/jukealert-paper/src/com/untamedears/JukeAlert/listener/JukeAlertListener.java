@@ -111,7 +111,6 @@ public class JukeAlertListener implements Listener {
         }
 		String playerName = player.getName();
 		playersInSnitches.remove(playerName);
-    	IgnoreList.removeIgnoresForPlayer(playerName);
 
 		Location location = player.getLocation();
 		World world = location.getWorld();
