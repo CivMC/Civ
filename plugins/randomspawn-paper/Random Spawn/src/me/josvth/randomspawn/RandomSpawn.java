@@ -31,6 +31,7 @@ public class RandomSpawn extends JavaPlugin{
 	@Override
 	public void onEnable() {
 
+
 		//setup handlers
 		yamlHandler = new YamlHandler(this);
 		logDebug("Yamls loaded!");
