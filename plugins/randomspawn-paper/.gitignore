@@ -1,17 +1,15 @@
-# Eclipse stuff
-/.classpath
-/.project
-/.settings
-
-# netbeans
-/nbproject
-
-# maven
-/target
-
-# ant
+/lib
+/.idea
+.settings/
+.classpath
+.project
 /bin
+*.class
+build.xml
+maven-build.xml
+maven-build.properties
+dependency-reduced-pom.xml
+target/
 /dist
-
-# vim
-.*.sw[a-p]
+*.eml
+*.iml
