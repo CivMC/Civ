@@ -42,22 +42,32 @@ public class Snitch implements QTBox, Comparable {
 
     // interface QTBox
     @Override
-    public int qtX1() {
+    public int qtXMin() {
         return this.minx;
     }
 
     @Override
-    public int qtX2() {
+    public int qtXMid() {
+        return this.getX();
+    }
+
+    @Override
+    public int qtXMax() {
         return this.maxx;
     }
 
     @Override
-    public int qtY1() {
+    public int qtYMin() {
         return this.minz;
     }
 
     @Override
-    public int qtY2() {
+    public int qtYMid() {
+        return this.getY();
+    }
+
+    @Override
+    public int qtYMax() {
         return this.maxz;
     }
     // end interface QTBox
@@ -65,6 +75,7 @@ public class Snitch implements QTBox, Comparable {
     // interface Comparable
     @Override
     public int compareTo(Object o) {
+      // This assumes that only a single snitch can exist at a given (x,y,z)
       // Compare centers
       // TODO: Deal with volume changes when applicable
       // 1. Test X relationship
