@@ -23,6 +23,8 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Wool;
 
+import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.Citadel.VerboseMsg;
 import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.PlayerState;
@@ -186,8 +188,10 @@ public class Utility {
         	securityLevelText = securityLevelText + "-" + group.getName();
         }
         sendThrottledMessage(player, ChatColor.GREEN, "Reinforced with %s at security level %s", material.getMaterial().name(), securityLevelText);
-        Citadel.info(String.format("PlRein:%s:%d@%s,%d,%d,%d",
-            player.getName(), material.getMaterialId(), block.getWorld().getName(), block.getX(), block.getY(), block.getZ()));
+        Citadel.verbose(
+            VerboseMsg.ReinCreated,
+            player.getName(), material.getMaterialId(), block.getWorld().getName(),
+            block.getX(), block.getY(), block.getZ());
         // TODO: enable chained flashers, they're pretty cool
         //new BlockFlasher(block, material.getFlasher()).start(getPlugin());
         //new BlockFlasher(block, material.getFlasher()).chain(securityMaterial.get(state.getSecurityLevel())).start();
@@ -340,7 +344,9 @@ public class Utility {
             cancelled = reinforcementBroken(reinforcement);
         } else {
             if (reinforcement instanceof PlayerReinforcement) {
-                Citadel.info("Reinforcement damaged at " + reinforcement.getBlock().getLocation().toString());
+                Citadel.verbose(
+                    VerboseMsg.ReinDmg,
+                    reinforcement.getBlock().getLocation().toString());
             }
             Citadel.getReinforcementManager().addReinforcement(reinforcement);
         }
@@ -351,8 +357,7 @@ public class Utility {
         Citadel.getReinforcementManager().removeReinforcement(reinforcement);
         if (reinforcement instanceof PlayerReinforcement) {
             PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
-            Citadel.info("Reinforcement destroyed at " + pr.getBlock().getLocation().toString());
-
+            Citadel.verbose(VerboseMsg.ReinDestroyed, pr.getBlock().getLocation().toString());
             if (rng.nextDouble() <= pr.getHealth()) {
                 Location location = pr.getBlock().getLocation();
     	        ReinforcementMaterial material = pr.getMaterial();

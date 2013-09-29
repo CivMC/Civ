@@ -40,6 +40,7 @@ import org.bukkit.material.Openable;
 import org.bukkit.material.PistonBaseMaterial;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.Citadel.VerboseMsg;
 import com.untamedears.citadel.PlacementMode;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.access.AccessDelegate;
@@ -202,13 +203,13 @@ public class BlockListener implements Listener {
                 is_cancelled = false;
             } else if (state.isBypassMode() && (pr.isBypassable(player) || admin_bypass)) {
                 if (admin_bypass) {
-                    Citadel.info(String.format(
-                        "[Admin] %s bypassed reinforcement at %s",
-                        player.getName(), pr.getBlock().getLocation().toString()));
+                    Citadel.verbose(
+                        VerboseMsg.AdminReinBypass,
+                        player.getName(), pr.getBlock().getLocation().toString());
                 } else {
-                    Citadel.info(String.format(
-                        "%s bypassed reinforcement at %s",
-                        player.getName(), pr.getBlock().getLocation().toString()));
+                    Citadel.verbose(
+                        VerboseMsg.ReinBypass,
+                        player.getName(), pr.getBlock().getLocation().toString());
                 }
                 is_cancelled = reinforcementBroken(reinforcement);
             } else {
@@ -383,8 +384,9 @@ public class BlockListener implements Listener {
             }
             double redstoneDistance = Citadel.getConfigManager().getRedstoneDistance();
             if (!isAuthorizedPlayerNear(reinforcement, redstoneDistance)) {
-                Citadel.info("Prevented redstone from opening reinforcement at "
-                        + reinforcement.getBlock().getLocation().toString());
+                Citadel.verbose(
+                    VerboseMsg.RedstoneOpen, 
+                    reinforcement.getBlock().getLocation().toString());
                 bre.setNewCurrent(bre.getOldCurrent());
             }
         } catch(Exception e) {

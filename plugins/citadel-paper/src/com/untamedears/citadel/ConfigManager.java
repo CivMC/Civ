@@ -1,11 +1,14 @@
 package com.untamedears.citadel;
 
 import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import com.untamedears.citadel.Citadel.VerboseMsg;
 import com.untamedears.citadel.NaturalReinforcementConfig;
 import com.untamedears.citadel.entity.NaturalReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
@@ -31,6 +34,7 @@ public class ConfigManager {
 	private double maturationIntervalD;
     private Integer acidBlockTypeId = null;
 	private double acidBlockReinforcementTax = 0.00000001D;
+    private Map<VerboseMsg, Boolean> verboseMessageSettings = new HashMap<VerboseMsg, Boolean>();
 
 	public void load(){
 		Citadel.getPlugin().reloadConfig();
@@ -119,8 +123,22 @@ public class ConfigManager {
                 }
             }
         }
+        for (String verboseMsg : config.getStringList("verboseMessages")) {
+            Citadel.info(String.format("verboseMessages %s", verboseMsg)); //XXX
+            try {
+                verboseMsg = verboseMsg.toLowerCase();
+                VerboseMsg setting = Citadel.INSENSITIVE_VERBOSE_MESSAGES.get(verboseMsg);
+                if (setting == null) {
+                    continue;
+                }
+                verboseMessageSettings.put(setting, true);
+                Citadel.info(String.format("%s enabled", setting.name())); //XXX
+            } catch (Exception ex) {
+                // Skip unknown value
+            }
+        }
 	}
-	
+
 	public double getRedstoneDistance(){
 		return this.redstoneDistance;
 	}
@@ -208,5 +226,13 @@ public class ConfigManager {
 
     public double getAcidBlockReinforcementTax() {
         return acidBlockReinforcementTax;
+    }
+
+    public boolean isVerboseSettingEnabled(VerboseMsg id) {
+        Boolean enabled = verboseMessageSettings.get(id);
+        if (enabled == null) {
+            return false;
+        }
+        return enabled;
     }
 }

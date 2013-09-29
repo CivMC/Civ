@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.Citadel.VerboseMsg;
 import com.untamedears.citadel.ReinforcementManager;
 
 public class WorldListener implements Listener {
@@ -15,8 +16,9 @@ public class WorldListener implements Listener {
     for (BlockState block_state : event.getBlocks()) {
       if (rm.getReinforcement(block_state.getLocation()) != null) {
         event.setCancelled(true);
-        Citadel.info("Prevented growth over reinforcement at " +
-                     block_state.getLocation().toString());
+        Citadel.verbose(
+            VerboseMsg.ReinOvergrowth,
+            block_state.getLocation().toString());
         return;
       }
     }

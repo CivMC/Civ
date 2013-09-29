@@ -9,6 +9,7 @@ import org.bukkit.material.Door;
 import org.bukkit.material.MaterialData;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.Citadel.VerboseMsg;
 import com.untamedears.citadel.entity.IReinforcement;
 
 /**
@@ -54,11 +55,15 @@ public abstract class AccessDelegate<T extends MaterialData> {
         boolean show_info = !(this instanceof CropAccessDelegate);
         if (shouldDelegate()) {
             if (show_info) {
-                Citadel.info("Attempted interaction with %s block at " + block.getLocation().toString());
+                Citadel.verbose(
+                    VerboseMsg.InteractionAttempt,
+                    block.getLocation().toString());
             }
             delegate();
             if (show_info) {
-                Citadel.info("Delegated to %s block at " + block.getLocation().toString());
+                Citadel.verbose(
+                    VerboseMsg.ReinDelegation,
+                    block.getLocation().toString());
             }
         }
     }

@@ -60,3 +60,22 @@ database:
 caching:
   max_age: 300000
   max_chunks: 10000
+
+# Possible verboseMessages:
+# - InteractionAttempt
+# - ReinDelegation
+# - AdminReinBypass
+# - ReinBypass
+# - RedstoneOpen
+# - GolemCreated
+# - NullGroup
+# - AdminReinLocked
+# - ReinLocked
+# - CropTrample
+# - ReinOvergrowth
+# - ReinCreated
+# - ReinDmg
+# - ReinDestroyed
+# - Enabled
+# - Disabled
+verboseMessages:

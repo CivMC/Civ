@@ -26,6 +26,7 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.material.Openable;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.Citadel.VerboseMsg;
 import com.untamedears.citadel.GroupManager;
 import com.untamedears.citadel.MemberManager;
 import com.untamedears.citadel.PersonalGroupManager;
@@ -143,17 +144,18 @@ public class PlayerListener implements Listener {
             && !reinforcement.isAccessible(player);
         boolean admin_can_access = player.hasPermission("citadel.admin.accesssecurable");
         if (access_reinforcement && normal_access_denied && !admin_can_access) {
-            Citadel.info(String.format(
-                "%s failed to access locked reinforcement at %s",
-                player.getName(), block.getLocation().toString()));
+            Citadel.verbose(
+                VerboseMsg.ReinLocked,
+                player.getName(), block.getLocation().toString());
             sendMessage(pie.getPlayer(), ChatColor.RED, "%s is locked", block.getType().name());
             pie.setCancelled(true);
         } else if (action == Action.PHYSICAL) {
             AccessDelegate aboveDelegate = AccessDelegate.getDelegate(block.getRelative(BlockFace.UP));
             if (aboveDelegate instanceof CropAccessDelegate
                     && aboveDelegate.isReinforced()) {
-                Citadel.info("Prevented reinforced crop trample at "
-                        + block.getLocation().toString());
+                Citadel.verbose(
+                    VerboseMsg.CropTrample,
+                    block.getLocation().toString());
                 pie.setCancelled(true);
             }
         }
@@ -164,9 +166,9 @@ public class PlayerListener implements Listener {
         switch (placementMode) {
             case NORMAL:
                 if (access_reinforcement && normal_access_denied && admin_can_access) {
-                    Citadel.info(String.format(
-                        "[Admin] %s accessed locked reinforcement at %s",
-                        player.getName(), block.getLocation().toString()));
+                    Citadel.verbose(
+                        VerboseMsg.AdminReinLocked,
+                        player.getName(), block.getLocation().toString());
                 }
                 return;
             case FORTIFICATION:

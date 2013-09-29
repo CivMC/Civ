@@ -14,6 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.Citadel.VerboseMsg;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.entity.Faction;
@@ -102,15 +103,21 @@ public class InventoryListener implements Listener {
     final Faction destOwner = destRein.getOwner();
     // Check for null group failure
     if (srcOwner == null || destOwner == null) {
-      String msg;
-      if (srcOwner == null) {
-        msg = String.format("Null group srcOwner(%s)", srcRein.getOwnerName());
-      } else {  // destOwner == null
-        msg = String.format("Null group destOwner(%s)", destRein.getOwnerName());
-      }
-      if (!priorMessages_.contains(msg)) {
-        Citadel.info(msg);
-        priorMessages_.add(msg);
+      if (Citadel.verboseEnabled(VerboseMsg.NullGroup)) {
+          String msg;
+          if (srcOwner == null) {
+            msg = Citadel.verboseFmt(
+                VerboseMsg.NullGroup,
+                "srcOwner", srcRein.getOwnerName());
+          } else {  // destOwner == null
+            msg = Citadel.verboseFmt(
+                VerboseMsg.NullGroup,
+                "dstOwner", destRein.getOwnerName());
+          }
+          if (!priorMessages_.contains(msg)) {
+            Citadel.info(msg);
+            priorMessages_.add(msg);
+          }
       }
       // Unable to determine reinforcement owner match, deny
       return;

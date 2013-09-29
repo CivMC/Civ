@@ -19,6 +19,7 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.Citadel.VerboseMsg;
 import com.untamedears.citadel.ReinforcementManager;
 import com.untamedears.citadel.entity.IReinforcement;
 
@@ -65,8 +66,9 @@ public class EntityListener implements Listener {
         for (Block block : getGolemBlocks(type, cse.getLocation().getBlock())) {
             IReinforcement reinforcement = reinforcementManager.getReinforcement(block);
             if (reinforcement != null) {
-            	Citadel.info("Reinforcement %s removed due to golem creation at " 
-            			+ reinforcement.getBlock().getLocation().toString());
+            	Citadel.verbose(
+                        VerboseMsg.GolemCreated,
+            			reinforcement.getBlock().getLocation().toString());
                 reinforcementManager.removeReinforcement(reinforcement);
             }
         }
