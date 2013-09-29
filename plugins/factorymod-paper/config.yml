@@ -2231,6 +2231,34 @@ production_recipes:
       Gold Spade:
         material: GOLD_SPADE
         amount: 15
+    enchantments:
+      Unbreaking 3:
+        type: DURABILITY
+        level: 3
+      Silk Touch 1:
+        type: SILK_TOUCH
+        level: 1
+        probability: 0.1
+      Efficiency 1:
+        type: DIG_SPEED
+        level: 1
+        probability: 0.3
+      Efficiency 2:
+        type: DIG_SPEED
+        level: 2
+        probability: 0.2
+      Efficiency 3:
+        type: DIG_SPEED
+        level: 3
+        probability: 0.1
+      Efficiency 4:
+        type: DIG_SPEED
+        level: 4
+        probability: 0.05
+      Efficiency 5:
+        type: DIG_SPEED
+        level: 5
+        probability: 0.01
   Dye_Black_Wool_Gray:
     name: Dye Black Wool Gray
     inputs:
