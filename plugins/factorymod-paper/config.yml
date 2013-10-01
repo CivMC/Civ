@@ -4643,10 +4643,6 @@ production_recipes:
         type: OXYGEN
         level: 3
         probability: 0.3
-      Respiration 4:
-        type: OXYGEN
-        level: 4
-        probability: 0.4
       Blast Protection 1:
         type: PROTECTION_EXPLOSIONS
         level: 1
