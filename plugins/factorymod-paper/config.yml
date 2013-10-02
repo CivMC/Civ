@@ -1591,17 +1591,15 @@ production_factories:
        - Produce_Diamond_Horse_Armor
        - Produce_Gold_Horse_Armor
        - Produce_Iron_Horse_Armor
-   repair_multiple: 10
+   repair_multiple: 6
    repair_inputs:
      Iron Block:
        material: IRON_BLOCK
-       amount: 6
      Hay Bale:
        material: HAY_BLOCK
-       amount: 6
      Golden Apple:
        material: GOLDEN_APPLE
-       amount: 6
+       amount: 1
        durability: 0
   Basic_Redstone_Factory:
     name: Basic Redstone Mechanism Factory
