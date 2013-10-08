@@ -204,7 +204,7 @@ realistic_biomes:
   #----------------------------------------
 
   tree:
-   base_rate: 0.04
+   base_rate: 0.08
    needs_sunlight: true
    not_full_sunlight_multiplier: 0.125
    max_soil_layers: 0

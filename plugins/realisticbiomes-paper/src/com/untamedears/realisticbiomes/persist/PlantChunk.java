@@ -192,13 +192,13 @@ public class PlantChunk {
 		try {
 			// if this chunk was not in the database, then add it to the database
 			if (!inDatabase) {
-				ChunkWriter.addChunkStmt.setInt(1, chunkCoords.w);
-				ChunkWriter.addChunkStmt.setInt(2, chunkCoords.x);
-				ChunkWriter.addChunkStmt.setInt(3, chunkCoords.z);
-				ChunkWriter.addChunkStmt.execute();
-				
-				ChunkWriter.getLastChunkIdStmt.execute();
-				ResultSet rs = ChunkWriter.getLastChunkIdStmt.getResultSet();
+				writeStmts.addChunkStmt.setInt(1, chunkCoords.w);
+				writeStmts.addChunkStmt.setInt(2, chunkCoords.x);
+				writeStmts.addChunkStmt.setInt(3, chunkCoords.z);
+				writeStmts.addChunkStmt.execute();
+				writeStmts.getLastChunkIdStmt.execute();
+				ResultSet rs = writeStmts.getLastChunkIdStmt.getResultSet();
+				index = rs.getLong(1);
 				
 				// need to call rs.next() to get the first result, and make sure we get the index, and throw an exception
 				// if we don't
@@ -221,12 +221,8 @@ public class PlantChunk {
 		try {
 			// TODO: MAKE THIS DO AN UPDATE RATHER THEN DELETE/INSERT
 			// first, delete the old data
-			ChunkWriter.deleteOldDataStmt.setLong(1, index);
-			ChunkWriter.deleteOldDataStmt.execute();
-		} catch (SQLException e) {
-				
-			throw new DataSourceException(String.format("Failed to unload the chunk (In PlantChunk, deleting old data), index %s, coords %s, PlantChunk obj: %s",  index, chunkCoords, this), e);
-		}
+			writeStmts.deleteOldDataStmt.setLong(1, index);
+			writeStmts.deleteOldDataStmt.execute();
 			
 		try {
 			// then replace it with all the recorded plants in this chunk
@@ -234,27 +230,21 @@ public class PlantChunk {
 				for (Coords coords: plants.keySet()) {
 					Plant plant = plants.get(coords);
 					
-					this.plugin.getLogger().finer("unloading plant: " + plant);
-					this.plugin.getLogger().finer(String.format("index: %s, w: %s x: %s, y: %s, z: %s, date: %s, growth: %s",
-							index, coords.w, coords.x, coords.y, coords.z, plant.getUpdateTime(), plant.getGrowth() ));
+					writeStmts.savePlantsStmt.setLong(1, index);
+					writeStmts.savePlantsStmt.setInt(2, coords.w);
+					writeStmts.savePlantsStmt.setInt(3, coords.x);
+					writeStmts.savePlantsStmt.setInt(4, coords.y);
+					writeStmts.savePlantsStmt.setInt(5, coords.z);
+					writeStmts.savePlantsStmt.setLong(6, plant.getUpdateTime());
+					writeStmts.savePlantsStmt.setFloat(7, plant.getGrowth());
 					
-					ChunkWriter.savePlantsStmt.setLong(1, index);
-					ChunkWriter.savePlantsStmt.setInt(2, coords.w);
-					ChunkWriter.savePlantsStmt.setInt(3, coords.x);
-					ChunkWriter.savePlantsStmt.setInt(4, coords.y);
-					ChunkWriter.savePlantsStmt.setInt(5, coords.z);
-					ChunkWriter.savePlantsStmt.setLong(6, plant.getUpdateTime());
-					ChunkWriter.savePlantsStmt.setFloat(7, plant.getGrowth());
-					
-					//this.plugin.getLogger().info(ChunkWriter.savePlantsStmt.toString()); // TESTING
-					
-					ChunkWriter.savePlantsStmt.execute();
+					writeStmts.savePlantsStmt.execute();
 				}
 			}
 			else {
 				// otherwise just delete the chunk entirely
-				ChunkWriter.deleteChunkStmt.setLong(1, index);
-				ChunkWriter.deleteChunkStmt.execute();
+				writeStmts.deleteChunkStmt.setLong(1, index);
+				writeStmts.deleteChunkStmt.execute();
 			}
 		}
 		catch (SQLException e) {
