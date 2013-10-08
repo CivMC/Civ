@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -52,6 +53,9 @@ public class SpawnListener implements Listener {
 	 */
 	@EventHandler(ignoreCancelled = true)
 	public void spawnItem(ItemSpawnEvent event) {
+		if (event.getEntity() instanceof Player){
+			return;
+		}
 		if(event.getEntity().getItemStack().getType() == Material.EGG) {
 			Block b = event.getLocation().getBlock();
 			Material m = Material.EGG;
