@@ -162,7 +162,7 @@ public class PlantManager {
 		    public void run() {
 				unloadBatch();
 		    }
-		}, config.unloadBatchPeriod, config.unloadBatchPeriod);
+		}, config.unloadBatchPeriod, config.unloadBatchMaxTime);
 		
 		writeService = Executors.newSingleThreadExecutor();
 		
