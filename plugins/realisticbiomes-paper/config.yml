@@ -299,7 +299,7 @@ realistic_biomes:
     SWAMPLAND: 0.1
     mushroom: 1.0
 
-HORSE:
+  HORSE:
    inherit: animal
    biomes:
     temperate: 1.0
@@ -333,7 +333,6 @@ HORSE:
    not_full_sunlight_multiplier: 0.5
    biomes:
     mushroom: 1.0
-   
   #---------------------------------------
 
   mat_EGG:
