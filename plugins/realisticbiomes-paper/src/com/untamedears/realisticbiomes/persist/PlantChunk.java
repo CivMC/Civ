@@ -108,6 +108,9 @@ public class PlantChunk {
 	public synchronized boolean load(Coords coords, Connection readConn) {
 		// if the data is being loaded, it is known that this chunk is in the
 		// database
+		
+		// TODO: plant chunk objects need to know their own coordinates, we should
+		// not be passing them in to load / unload!
 
 		plugin.getLogger().finer(
 				"Plantchunk.load() called with coords: " + coords);
@@ -216,10 +219,13 @@ public class PlantChunk {
 	 * 
 	 * Note that this is called by PlantManager.saveAllAndStop(), so that method takes
 	 * care of setting autocommit to false/true and actually committing to the database
-	 * @param chunkCoords
+	 * @param chunkCoords 
 	 * @param writeStmts
 	 */
-	public synchronized void unload(Coords chunkCoords, ChunkWriter writeStmts) {
+	public synchronized void unload(Coords chunkCoords) {
+		
+		// TODO: plant chunk objects need to know their own coordinates, we should
+		// not be passing them in to load / unload!
 		if (!loaded)
 			return;
 
@@ -227,12 +233,12 @@ public class PlantChunk {
 			// if this chunk was not in the database, then add it to the
 			// database
 			if (!inDatabase) {
-				writeStmts.addChunkStmt.setInt(1, chunkCoords.w);
-				writeStmts.addChunkStmt.setInt(2, chunkCoords.x);
-				writeStmts.addChunkStmt.setInt(3, chunkCoords.z);
-				writeStmts.addChunkStmt.execute();
-				writeStmts.getLastChunkIdStmt.execute();
-				ResultSet rs = writeStmts.getLastChunkIdStmt.getResultSet();
+				ChunkWriter.addChunkStmt.setInt(1, chunkCoords.w);
+				ChunkWriter.addChunkStmt.setInt(2, chunkCoords.x);
+				ChunkWriter.addChunkStmt.setInt(3, chunkCoords.z);
+				ChunkWriter.addChunkStmt.execute();
+				ChunkWriter.getLastChunkIdStmt.execute();
+				ResultSet rs = ChunkWriter.getLastChunkIdStmt.getResultSet();
 
 				// need to call rs.next() to get the first result, and make sure
 				// we get the index, and throw an exception
@@ -297,8 +303,8 @@ public class PlantChunk {
 				} // end for
 			} else {
 				// otherwise just delete the chunk entirely
-				writeStmts.deleteChunkStmt.setLong(1, index);
-				writeStmts.deleteChunkStmt.execute();
+				ChunkWriter.deleteChunkStmt.setLong(1, index);
+				ChunkWriter.deleteChunkStmt.execute();
 			}
 		} catch (SQLException e) {
 			throw new DataSourceException(

@@ -232,7 +232,7 @@ public class PlantManager {
 
 					PlantChunk pChunk = chunks.get(coords);
 
-					pChunk.unload(coords, chunkWriter);
+					pChunk.unload(coords);
 				}
 				
 				try {
@@ -281,7 +281,7 @@ public class PlantManager {
 		// finally, actually unload this thing
 		PlantChunk pChunk = chunks.get(coords);
 		
-		pChunk.unload(coords, chunkWriter);
+		pChunk.unload(coords);
 	}
 	
 	// --------------------------------------------------------------------------------------------
