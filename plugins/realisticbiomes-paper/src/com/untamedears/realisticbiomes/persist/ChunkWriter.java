@@ -23,8 +23,10 @@ public class ChunkWriter {
 	public static PreparedStatement deleteOldDataStmt = null;
 	public static PreparedStatement deleteChunkStmt = null;
 	public static PreparedStatement addChunkStmt = null;
-	public static PreparedStatement savePlantsStmt = null;
+	public static PreparedStatement updatePlantStmt = null;
 	public static PreparedStatement getLastChunkIdStmt = null;
+	public static PreparedStatement addPlantStmt = null;
+	public static PreparedStatement deleteOldPlantsStmt = null;
 	
 
 	
@@ -36,7 +38,9 @@ public class ChunkWriter {
 			addChunkStmt = writeConn.prepareStatement(String.format("INSERT INTO %s_chunk (w, x, z) VALUES (?, ?, ?)", config.prefix));
 			getLastChunkIdStmt = writeConn.prepareStatement("SELECT LAST_INSERT_ID()");	
 			
-			savePlantsStmt = writeConn.prepareStatement(String.format("INSERT INTO %s_plant (chunkid, w, x, y, z, date, growth) VALUES (?, ?, ?, ?, ?, ?, ?)", config.prefix));
+			addPlantStmt = writeConn.prepareStatement(String.format("INSERT INTO %s_plant (chunkid, w, x, y, z, date, growth) VALUES (?, ?, ?, ?, ?, ?, ?)", config.prefix));
+			updatePlantStmt = writeConn.prepareStatement(String.format("UPDATE %s_plant SET date = ?, growth = ? where chunkid = ?", config.prefix));
+			deleteOldPlantsStmt = writeConn.prepareStatement(String.format("DELETE FROM %s_plant WHERE growth >= 1 AND chunkid = ?", config.prefix));
 			
 			deleteChunkStmt = writeConn.prepareStatement(String.format("DELETE FROM %s_chunk WHERE id = ?", config.prefix));
 		} catch (SQLException e) {

@@ -361,6 +361,7 @@ public class PlantManager {
 		PlantChunk pChunk = null;
 		if (!chunks.containsKey(chunkCoords)) {
 			pChunk = new PlantChunk(plugin, readConn, -1/*dummy index until assigned when added*/);
+			chunks.put(chunkCoords, pChunk); 
 			this.log.finer("creating new plantchunk");
 		}
 		else {
@@ -373,7 +374,6 @@ public class PlantManager {
 		
 		// add the plant
 		pChunk.add(coords, plant, readConn);
-		chunks.put(chunkCoords, pChunk); // TODO: does this need to be here or moved up?
 		
 		// since the chunk was loaded before the new plant was added, the state of the block
 		// may not match a previously destroyed crop. Force the block to growth state 0
