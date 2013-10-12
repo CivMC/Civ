@@ -9,7 +9,7 @@ realistic_biomes:
  persistence_enabled: true
 
  unload_batch_period: 100
- grow_event_load_chance: 0.1
+ grow_event_load_chance: 0.5
 
  unload_batch_max_time: 20
 
