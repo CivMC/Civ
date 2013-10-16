@@ -56,12 +56,12 @@ def convertSqliteToMysql(args):
     mysqlCur = mysqlDb.cursor()
 
     # create the tables in the mysql database
-    mysqlCur.execute('''CREATE TABLE IF NOT EXISTS {}_chunk (id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    mysqlCur.execute('''CREATE TABLE IF NOT EXISTS {}_chunk (id BIGINT PRIMARY KEY AUTO_INCREMENT,
                          w INTEGER, x INTEGER, z INTEGER, 
                          INDEX chunk_coords_idx (w, x, z)) ENGINE INNODB;'''.format(dbPrefix))
 
     mysqlCur.execute('''CREATE TABLE IF NOT EXISTS {}_plant
-                        (chunkId INTEGER, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER UNSIGNED, growth REAL, 
+                        (chunkId BIGINT, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER UNSIGNED, growth REAL, 
                         INDEX plant_coords_idx (w, x, y, z), INDEX plant_chunk_idx (chunkId), 
                         CONSTRAINT chunkIdConstraint FOREIGN KEY (chunkId) REFERENCES {}_chunk (id))
                         ENGINE INNODB;'''.format(dbPrefix,dbPrefix))
