@@ -8,12 +8,10 @@ public class Plant {
 	// the growth amount of this plant
 	// ranges from 0.0 to 1.0
 	float growth;
-	boolean inDb;
 	
 	public Plant(long lastUpdateTime) {
 		this.lastUpdateTime = lastUpdateTime;
 		growth = 0.0f;
-		inDb = false;
 	}
 	
 	public Plant(long lastUpdateTime, float growth) {
@@ -45,7 +43,7 @@ public class Plant {
 	
 	public String toString() {
 	
-		return "<Plant lastUpdateTime: " + lastUpdateTime + " growth: " + growth + " inDb: " + inDb + ">";
+		return "<Plant lastUpdateTime: " + lastUpdateTime + " growth: " + growth + ">";
 	
 	}
 }
