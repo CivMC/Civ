@@ -27,22 +27,25 @@ public class ChunkWriter {
 	public static PreparedStatement getLastChunkIdStmt = null;
 	public static PreparedStatement addPlantStmt = null;
 	public static PreparedStatement deleteOldPlantsStmt = null;
+	public static Connection writeConnection;
 	
 
 	
 	public ChunkWriter(Connection writeConn, PersistConfig config) {
 
 		try {
+			
+			writeConnection = writeConn;
 			deleteOldDataStmt = writeConn.prepareStatement(String.format("DELETE FROM %s_plant WHERE chunkid = ?", config.prefix));
 			
 			addChunkStmt = writeConn.prepareStatement(String.format("INSERT INTO %s_chunk (w, x, z) VALUES (?, ?, ?)", config.prefix));
 			getLastChunkIdStmt = writeConn.prepareStatement("SELECT LAST_INSERT_ID()");	
 			
 			addPlantStmt = writeConn.prepareStatement(String.format("INSERT INTO %s_plant (chunkid, w, x, y, z, date, growth) VALUES (?, ?, ?, ?, ?, ?, ?)", config.prefix));
-			updatePlantStmt = writeConn.prepareStatement(String.format("UPDATE %s_plant SET date = ?, growth = ? where chunkid = ?", config.prefix));
-			deleteOldPlantsStmt = writeConn.prepareStatement(String.format("DELETE FROM %s_plant WHERE growth >= 1 AND chunkid = ?", config.prefix));
+			// don't need for now,...maybe later?
+			//updatePlantStmt = writeConn.prepareStatement(String.format("UPDATE %s_plant SET date = ?, growth = ? where chunkid = ?", config.prefix));
+			deleteOldPlantsStmt = writeConn.prepareStatement(String.format("DELETE FROM %s_plant WHERE chunkid = ?", config.prefix));
 			
-			deleteChunkStmt = writeConn.prepareStatement(String.format("DELETE FROM %s_chunk WHERE id = ?", config.prefix));
 		} catch (SQLException e) {
 			throw new DataSourceException("Failed to create the prepared statements in ChunkWriter", e);
 		}
