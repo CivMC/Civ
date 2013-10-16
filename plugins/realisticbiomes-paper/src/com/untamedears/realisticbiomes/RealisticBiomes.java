@@ -1,9 +1,13 @@
 package com.untamedears.realisticbiomes;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
@@ -234,8 +238,7 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
         }
         catch(Exception e)
         {
-        	LOG.warning("caught an exception while attempting to register events with the PluginManager");
-        	e.printStackTrace();
+        	LOG.severe("caught an exception while attempting to register events with the PluginManager: " + e);
         }
 	}
 
