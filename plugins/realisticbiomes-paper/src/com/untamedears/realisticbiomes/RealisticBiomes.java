@@ -1,10 +1,13 @@
 package com.untamedears.realisticbiomes;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
-import net.minecraft.server.v1_5_R3.ConsoleLogManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
@@ -235,8 +238,7 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
         }
         catch(Exception e)
         {
-        	LOG.warning("caught an exception while attempting to register events with the PluginManager");
-        	e.printStackTrace();
+        	LOG.severe("caught an exception while attempting to register events with the PluginManager: " + e);
         }
 	}
 
@@ -251,6 +253,7 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	// -----------------------------------
 	
 	// grow the specified block, return the new growth magnitude
+	// gets called when the user hits a block manually!!
 	public double growAndPersistBlock(Block block, GrowthConfig growthConfig, boolean naturalGrowEvent) {
 		
 		LOG.finer("RealisticBiomes:growAndPersistBlock() called for block: " + block + " and is naturalGrowEvent? " + naturalGrowEvent);
@@ -291,7 +294,7 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		// actually 'grows' the block (in minecraft terms, between the different stages of growth that you can see in game)
 		// depending on its growth value
 		blockGrower.growBlock(block,coords,plant.getGrowth());
-		if (plant.getGrowth() > 1.0)
+		if (plant.getGrowth() >= 1.0)
 			plantManager.remove(coords);
 		
 		return plant.getGrowth();

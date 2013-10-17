@@ -92,14 +92,14 @@ public class PlantManager {
 		try {
 			// we need InnoDB storage engine or else we can't do foreign keys!
 			this.makeTableChunk = writeConn.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s_chunk " +
-							"(id INTEGER PRIMARY KEY AUTO_INCREMENT, " +
+							"(id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
 							"w INTEGER, x INTEGER, z INTEGER," +
 							"INDEX chunk_coords_idx (w, x, z)) " +
 							"ENGINE INNODB", config.prefix));
 			
 			// we need InnoDB storage engine or else we can't do foreign keys!
 			this.makeTablePlant = writeConn.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s_plant" +
-							"(chunkId INTEGER, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER UNSIGNED, growth REAL, " +
+							"(chunkId BIGINT, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER UNSIGNED, growth REAL, " +
 							"INDEX plant_coords_idx (w, x, y, z), INDEX plant_chunk_idx (chunkId), " +
 							"CONSTRAINT chunkIdConstraint FOREIGN KEY (chunkId) REFERENCES %s_chunk (id))" +
 							"ENGINE INNODB", config.prefix, config.prefix));
@@ -119,8 +119,7 @@ public class PlantManager {
 		// run the prepared statements that create the tables if they do not exist in the database
 		try {
 			
-			RealisticBiomes.LOG.fine("creating chunk table (if necessary) with prepared statement:" + this.makeTableChunk.toString());
-			plugin.getLogger().fine("creating plant table (if necessary) with prepared statement:" + this.makeTablePlant.toString());
+			RealisticBiomes.LOG.finer("creating chunk table (if necessary) with prepared statement:" + this.makeTableChunk.toString());
 
 			this.makeTableChunk.execute();
 			this.makeTablePlant.execute();
@@ -133,24 +132,31 @@ public class PlantManager {
 
 		// load all chunks
 		
+		RealisticBiomes.LOG.info("loading PlantChunks");
+		long startTime = System.nanoTime()/1000000/*ns/ms*/;
+
 		try {
 			ResultSet rs = this.selectAllFromChunk.executeQuery();
 			
 			while (rs.next()) {
-				int id = rs.getInt("id");
+				long id = rs.getLong("id");
 				int w = rs.getInt("w");
 				int x = rs.getInt("x");
 				int z = rs.getInt("z");
 				
 				PlantChunk pChunk = new PlantChunk(plugin, readConn, id);
+				pChunk.loaded = true;
+				pChunk.inDatabase = true;
+				RealisticBiomes.LOG.finer("\tLoaded plantchunk " + pChunk + " at coords " + new Coords(w,x,0,z));
 				chunks.put(new Coords(w,x,0,z), pChunk);
 			}
 			
 		} catch (SQLException e) {
 			throw new DataSourceException("Failed to load all of the chunks from the database! ", e);
 		}
+		long endTime = System.nanoTime()/1000000/*ns/ms*/;
 
-			
+		RealisticBiomes.LOG.info("Finished loading PlantChunks, done in " + (endTime - startTime) + "ms");
 
 		
 		// create unload batch
@@ -162,7 +168,7 @@ public class PlantManager {
 		    public void run() {
 				unloadBatch();
 		    }
-		}, config.unloadBatchPeriod, config.unloadBatchPeriod);
+		}, config.unloadBatchPeriod, config.unloadBatchMaxTime);
 		
 		writeService = Executors.newSingleThreadExecutor();
 		
@@ -224,7 +230,7 @@ public class PlantManager {
 				try {
 					writeConn.setAutoCommit(false);
 				} catch (SQLException e) {
-					log.info("Exception in saveAllAndStop runnable!" + e);
+					log.severe("Exception in saveAllAndStop runnable!" + e);
 					throw new DataSourceException("unable to set autocommit to false in saveAllAndStop", e);
 				}				
 				
@@ -232,14 +238,14 @@ public class PlantManager {
 
 					PlantChunk pChunk = chunks.get(coords);
 
-					pChunk.unload(coords, chunkWriter);
+					pChunk.unload(coords);
 				}
 				
 				try {
 					writeConn.commit();
 					writeConn.setAutoCommit(true);
 				} catch (SQLException e) {
-					log.info("Exception in saveAllAndStop runnable!" + e);
+					log.severe("Exception in saveAllAndStop runnable!" + e);
 
 					throw new DataSourceException("unable to set autocommit to true in saveAllAndStop", e);
 				}	
@@ -281,7 +287,7 @@ public class PlantManager {
 		// finally, actually unload this thing
 		PlantChunk pChunk = chunks.get(coords);
 		
-		pChunk.unload(coords, chunkWriter);
+		pChunk.unload(coords);
 	}
 	
 	// --------------------------------------------------------------------------------------------
@@ -338,7 +344,7 @@ public class PlantManager {
 		long end = System.nanoTime()/1000000/*ns/ms*/;
 		
 		if (plugin.persistConfig.logDB) {
-			plugin.getLogger().finer("db load chunk["+coords.x+","+coords.z+"]: "+pChunk.getPlantCount()+" entries loaded in "+(end-start)+" ms");
+			plugin.getLogger().info("db load chunk["+coords.x+","+coords.z+"]: "+pChunk.getPlantCount()+" entries loaded in "+(end-start)+" ms");
 		}
 		
 		return loaded;
@@ -361,7 +367,9 @@ public class PlantManager {
 		PlantChunk pChunk = null;
 		if (!chunks.containsKey(chunkCoords)) {
 			pChunk = new PlantChunk(plugin, readConn, -1/*dummy index until assigned when added*/);
-			this.log.finer("creating new plantchunk");
+			chunks.put(chunkCoords, pChunk); 
+			pChunk.loaded = true; // its loaded because its a brand new plant chunk. 
+			this.log.finer("PlantManager.add() creating new plantchunk: " + pChunk + "at coords " + chunkCoords);
 		}
 		else {
 			pChunk = chunks.get(chunkCoords);
@@ -373,7 +381,6 @@ public class PlantManager {
 		
 		// add the plant
 		pChunk.add(coords, plant, readConn);
-		chunks.put(chunkCoords, pChunk); // TODO: does this need to be here or moved up?
 		
 		// since the chunk was loaded before the new plant was added, the state of the block
 		// may not match a previously destroyed crop. Force the block to growth state 0

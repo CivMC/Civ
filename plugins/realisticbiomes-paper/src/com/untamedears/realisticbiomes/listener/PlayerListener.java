@@ -156,12 +156,12 @@ public class PlayerListener implements Listener {
 					
 					if (plantGrowth == 1.0) {
 						String amount = new DecimalFormat("#0.00").format(growthAmount);
-						event.getPlayer().sendMessage("ง7[Realistic Biomes] \""+material.toString()+"\": "+amount+" hours to maturity");
+						event.getPlayer().sendMessage("ยง7[Realistic Biomes] \""+material.toString()+"\": "+amount+" hours to maturity");
 					}
 					else {
 						String amount = new DecimalFormat("#0.00").format(growthAmount);
 						String pAmount = new DecimalFormat("#0.00").format(growthAmount*(1.0-plantGrowth));
-						event.getPlayer().sendMessage("ง7[Realistic Biomes] \""+material.toString()+"\": "+pAmount+" of "+amount+" hours to maturity");
+						event.getPlayer().sendMessage("ยง7[Realistic Biomes] \""+material.toString()+"\": "+pAmount+" of "+amount+" hours to maturity");
 					}
 					
 					return;
@@ -176,7 +176,7 @@ public class PlayerListener implements Listener {
 						growthAmount = 0.0;
 					String amount = new DecimalFormat("#0.00").format(growthAmount*100.0)+"%";
 					// send the message out to the user!
-					event.getPlayer().sendMessage("ง7[Realistic Biomes] Growth rate \""+material.toString()+"\" = "+amount);
+					event.getPlayer().sendMessage("ยง7[Realistic Biomes] Growth rate \""+material.toString()+"\" = "+amount);
 				}
 			}
 		}
@@ -200,7 +200,7 @@ public class PlayerListener implements Listener {
 				growthAmount = 0.0;
 			String amount = new DecimalFormat("#0.00").format(growthAmount*100.0)+"%";
 			// send the message out to the user!
-			event.getPlayer().sendMessage("ง7[Realistic Biomes] Spawn rate \""+entity.getType().toString()+"\" = "+amount);
+			event.getPlayer().sendMessage("ยง7[Realistic Biomes] Spawn rate \""+entity.getType().toString()+"\" = "+amount);
 		}
 	}
 }

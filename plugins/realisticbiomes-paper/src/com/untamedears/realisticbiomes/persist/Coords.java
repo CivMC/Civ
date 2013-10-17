@@ -1,5 +1,7 @@
 package com.untamedears.realisticbiomes.persist;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 public class Coords {
 	public int w;
 	public int x;
@@ -15,7 +17,7 @@ public class Coords {
 	
 	@Override
 	public int hashCode() {
-		return (new Integer(w^((x^z)^y)).hashCode());
+		return new HashCodeBuilder(157, 13).append(w).append(x).append(y).append(z).toHashCode();
 	}
 	
 	@Override
