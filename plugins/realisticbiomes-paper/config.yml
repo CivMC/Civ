@@ -87,7 +87,6 @@ realistic_biomes:
     cold: 0.25
     hot_dry: 0.25
     mountain: 0.25
-	mushroom: 0.25
 
   CARROT:
    inherit: crop
@@ -231,7 +230,6 @@ realistic_biomes:
     PLAINS: 0.25
     hot_rainy: 0.5
     SKY: 0.25
-	SWAMPLAND: 0.5
 
   #......................
 
@@ -289,7 +287,7 @@ realistic_biomes:
 
   CHICKEN:
    inherit: animal
-   base_rate: 0.2
+   base_rate: 0.4
    not_full_sunlight_multiplier: 1.0
    biomes:
     temperate: 1.0
@@ -325,11 +323,11 @@ realistic_biomes:
    
   #---------------------------------------
 
-  #mat_EGG:
-  # inherit: CHICKEN
-  # base_rate: 0.05
-  # biomes:
-  #  SKY: 0.25
+  mat_EGG:
+   inherit: CHICKEN
+   base_rate: 0.1
+   biomes:
+    SKY: 0.25
 
   #---------------------------------------
 
