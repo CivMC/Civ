@@ -106,13 +106,12 @@ public class PlantManager {
 			
 			
 			this.selectAllFromChunk = readConn.prepareStatement(String.format("SELECT id, w, x, z FROM %s_chunk", config.prefix));
-			
-			
+						
 			// create chunk writer
-			chunkWriter = new ChunkWriter(writeConn, config);
+			chunkWriter = new ChunkWriter(writeConn, readConn, config);
 			
 		} catch (SQLException e) {
-			throw new DataSourceException("Failed to create the prepared statements! (for table creation)", e);
+			throw new DataSourceException("PlantManager constructor: Failed to create the prepared statements! (for table creation)", e);
 			
 		}
 		
@@ -126,7 +125,7 @@ public class PlantManager {
 						
 		} catch (SQLException e) {
 			
-			throw new DataSourceException("Caught exception when trying to run the " +
+			throw new DataSourceException("PlantManager constructor: Caught exception when trying to run the " +
 					"'create xx_chunk and xx_plant' tables if they don't exist!", e);
 		}
 

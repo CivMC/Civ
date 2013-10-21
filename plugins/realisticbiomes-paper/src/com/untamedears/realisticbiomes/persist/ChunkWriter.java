@@ -28,10 +28,11 @@ public class ChunkWriter {
 	public static PreparedStatement addPlantStmt = null;
 	public static PreparedStatement deleteOldPlantsStmt = null;
 	public static Connection writeConnection;
+	public static Connection readConnection;
 	
-
+	public static PreparedStatement loadPlantsStmt = null;
 	
-	public ChunkWriter(Connection writeConn, PersistConfig config) {
+	public ChunkWriter(Connection writeConn, Connection readConn,  PersistConfig config) {
 
 		try {
 			
@@ -45,7 +46,12 @@ public class ChunkWriter {
 			// don't need for now,...maybe later?
 			//updatePlantStmt = writeConn.prepareStatement(String.format("UPDATE %s_plant SET date = ?, growth = ? where chunkid = ?", config.prefix));
 			deleteOldPlantsStmt = writeConn.prepareStatement(String.format("DELETE FROM %s_plant WHERE chunkid = ?", config.prefix));
-			
+
+			loadPlantsStmt = readConn.prepareStatement(String
+								.format("SELECT w, x, y, z, date, growth FROM %s_plant WHERE chunkid = ?",
+										config.prefix));
+
+
 		} catch (SQLException e) {
 			throw new DataSourceException("Failed to create the prepared statements in ChunkWriter", e);
 		}
