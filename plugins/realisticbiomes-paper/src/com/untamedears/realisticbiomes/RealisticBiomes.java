@@ -32,6 +32,7 @@ import com.untamedears.realisticbiomes.persist.WorldID;
 public class RealisticBiomes extends JavaPlugin implements Listener {
 
 	public static Logger LOG = null;
+	public static Level minLogLevel = Level.INFO;
 	
 	public HashMap<Object, GrowthConfig> materialGrowth;
 	public BlockGrower blockGrower;
@@ -43,6 +44,7 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		
 		RealisticBiomes.LOG = this.getLogger();
 		LOG.info("name of logger is: " + LOG.getName());
+		this.getLogger().setLevel(Level.FINEST);
 		
 		WorldID.init(this);
 		
@@ -58,6 +60,23 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		loadPersistConfig(config);
 		loadGrowthConfigs(config);
 		
+		// load the max log level for our logging hack
+		// if not defined then its just initalized at INFO
+		String tmp = config.getString("minLogLevel");
+		if (tmp != null) {
+			Level newLevel = Level.INFO;
+			try {
+				newLevel = Level.parse(tmp);
+			} catch (Exception e) {
+				
+				// passed in config value is invalid..just set it to info
+				newLevel = Level.INFO;
+			}
+			minLogLevel = newLevel;
+		}
+		
+		RealisticBiomes.LOG.info("Logging hack, log level is set to: " + RealisticBiomes.minLogLevel.toString());
+		
 		registerEvents();
 		
 		if (persistConfig.enabled) {
@@ -68,6 +87,31 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(this, this);
 		
 		LOG.info("is now enabled.");
+	}
+	
+	/**
+	 * Hack to get around the shitty java logging api, where -Djava.util.logging.config=logging.properties
+	 * doesn't seem to work, or i'm not specifying the right levels for the right Logger namespaces or some 
+	 * stuff. You specify the min logging level allowed in the realistic biomes config.yml, with the 'minLogLevel' 
+	 * key, specifed to a string. Either a Level name like INFO, or an integer
+	 * 
+	 * This requires that the static Logger variable in RealisticBiomes has already been created (aka onEnable has been called)
+	 * @param level
+	 * @param message
+	 */
+	public static void doLog(Level level, String message) {
+		
+		
+		if (RealisticBiomes.LOG != null) {
+			
+			// here we make sure that we only log messages that are loggable with the given Level
+			// so if its set to INFO (800) and we try to log a FINER message (400), then it wont work
+			// However if its ALL, then its set to Integer.MIN_VALUE, so everything will get logged. etc etc
+			if (level.intValue() >= RealisticBiomes.minLogLevel.intValue() ) {
+				RealisticBiomes.LOG.info("[" + level.toString() + "] " + message);
+				
+			}	
+		}
 	}
 
 	private void loadPersistConfig(ConfigurationSection config) {
@@ -256,7 +300,7 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	// gets called when the user hits a block manually!!
 	public double growAndPersistBlock(Block block, GrowthConfig growthConfig, boolean naturalGrowEvent) {
 		
-		LOG.finer("RealisticBiomes:growAndPersistBlock() called for block: " + block + " and is naturalGrowEvent? " + naturalGrowEvent);
+		RealisticBiomes.doLog(Level.FINER, "RealisticBiomes:growAndPersistBlock() called for block: " + block + " and is naturalGrowEvent? " + naturalGrowEvent);
 		if (!persistConfig.enabled)
 			return 0.0;
 		
@@ -264,17 +308,17 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		Coords coords = new Coords(w, block.getX(), block.getY(), block.getZ());
 		boolean loadChunk = naturalGrowEvent ? Math.random() < persistConfig.growEventLoadChance : true;
 		if (!loadChunk && !plantManager.chunkLoaded(coords)) {
-			LOG.finer("Realisticbiomes.growAndPersistBlock(): returning 0.0 because loadChunk = false or plantManager.chunkLoaded(" + coords + " is false");
+			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): returning 0.0 because loadChunk = false or plantManager.chunkLoaded(" + coords + " is false");
 			return 0.0; // don't load the chunk or do anything
 			
 		}
 			
 		Plant plant = plantManager.get(coords);
 		
-		LOG.finer("Realisticbiomes.growAndPersistBlock(): plantManager.get() returned: " + plant + " for coords: " + coords);
+		RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): plantManager.get() returned: " + plant + " for coords: " + coords);
 		
 		if (plant == null) {
-			LOG.finer("Realisticbiomes.growAndPersistBlock(): creating new plant and adding it");
+			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): creating new plant and adding it");
 			
 			// divide by 1000 to get unix/epoch time, we don't need millisecond precision
 			// also fixes bug where the timestamp would be too big for the mysql rb_plant date column
@@ -285,9 +329,9 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		}
 		else {
 			double growthAmount = growthConfig.getRate(block) * plant.setUpdateTime(System.currentTimeMillis() / 1000L);
-			LOG.finer("Realisticbiomes.growAndPersistBlock(): plant existed, growthAmount was: " + plant.getGrowth());
+			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): plant existed, growthAmount was: " + plant.getGrowth());
 			plant.addGrowth((float) growthAmount);
-			LOG.finer("Realisticbiomes.growAndPersistBlock(): plant existed, adding growth: " + growthAmount + " to now be " + plant.getGrowth());
+			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): plant existed, adding growth: " + growthAmount + " to now be " + plant.getGrowth());
 
 		}
 		

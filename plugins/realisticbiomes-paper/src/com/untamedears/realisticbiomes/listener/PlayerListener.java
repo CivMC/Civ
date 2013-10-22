@@ -3,6 +3,7 @@ package com.untamedears.realisticbiomes.listener;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
@@ -150,9 +151,9 @@ public class PlayerListener implements Listener {
 
 				if (plugin.persistConfig.enabled && growthConfig.isPersistent()) {
 					double growthAmount = growthConfig.getRate(block);
-					RealisticBiomes.LOG.finer("PlayerListener.onPlayerInteractEvent(): growthAmount for block " + block + " is " + growthAmount);
+					RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): growthAmount for block " + block + " is " + growthAmount);
 					growthAmount = (1.0/(growthAmount*(60.0*60.0/*seconds per hour*/)));
-					RealisticBiomes.LOG.finer("PlayerListener.onPlayerInteractEvent(): growthAmount adjusted to "  + growthAmount);
+					RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): growthAmount adjusted to "  + growthAmount);
 					
 					if (plantGrowth == 1.0) {
 						String amount = new DecimalFormat("#0.00").format(growthAmount);

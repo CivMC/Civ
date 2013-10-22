@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -87,9 +88,9 @@ public class PlantChunk {
 	public synchronized void add(Coords coords, Plant plant,
 			Connection writeConn) {
 
-		RealisticBiomes.LOG.finer("plantchunk.add(): called with coords: "
+		RealisticBiomes.doLog(Level.FINER,"plantchunk.add(): called with coords: "
 				+ coords + " and plant " + plant);
-		RealisticBiomes.LOG.finer("plantchunk.add(): is loaded? " + loaded);
+		RealisticBiomes.doLog(Level.FINER, "plantchunk.add(): is loaded? " + loaded);
 		if (!loaded) {
 
 			load(coords, writeConn);
@@ -102,8 +103,7 @@ public class PlantChunk {
 
 	public synchronized Plant get(Coords coords) {
 		if (!loaded) {
-			RealisticBiomes.LOG
-					.finer("Plantchunk.get(): returning null cause not loaded");
+			RealisticBiomes.doLog(Level.FINER,"Plantchunk.get(): returning null cause not loaded");
 			return null;
 		}
 		return plants.get(coords);
@@ -124,12 +124,11 @@ public class PlantChunk {
 		// should
 		// not be passing them in to load / unload!
 
-		plugin.getLogger().finer(
+		RealisticBiomes.doLog(Level.FINER, 
 				"Plantchunk.load() called with coords: " + coords);
 
 		if (loaded) {
-			RealisticBiomes.LOG
-					.finer("Plantchunk.load(): plant chunk is already loaded, returning true");
+			RealisticBiomes.doLog(Level.FINER, "Plantchunk.load(): plant chunk is already loaded, returning true");
 			return true;
 		}
 
@@ -153,7 +152,7 @@ public class PlantChunk {
 		try {
 
 			loadPlantsStmt.setLong(1, index);
-			plugin.getLogger().finer(
+			RealisticBiomes.doLog(Level.FINER, 
 					"PlantChunk.load() executing sql query: "
 							+ loadPlantsStmt.toString());
 			loadPlantsStmt.execute();
@@ -167,8 +166,7 @@ public class PlantChunk {
 				long date = rs.getLong(5);
 				float growth = rs.getFloat(6);
 
-				plugin.getLogger()
-						.finer(String
+				RealisticBiomes.doLog(Level.FINER, String
 								.format("PlantChunk.load(): got result: w:%s x:%s y:%s z:%s date:%s growth:%s",
 										w, x, y, z, date, growth));
 
@@ -176,8 +174,7 @@ public class PlantChunk {
 				// load it
 				if (!plugin.getGrowthConfigs().containsKey(
 						world.getBlockAt(x, y, z).getType())) {
-					plugin.getLogger()
-							.finer("Plantchunk.load(): plant we got from db doesn't correspond to an actual crop, not loading");
+					RealisticBiomes.doLog(Level.FINER, "Plantchunk.load(): plant we got from db doesn't correspond to an actual crop, not loading");
 					continue;
 				}
 
@@ -201,8 +198,7 @@ public class PlantChunk {
 				// plants
 				if (!(plant.getGrowth() >= 1.0)) {
 					plants.put(new Coords(w, x, y, z), plant);
-					RealisticBiomes.LOG
-							.finer("PlantChunk.load(): plant not finished growing, adding to plants list");
+					RealisticBiomes.doLog(Level.FINER, "PlantChunk.load(): plant not finished growing, adding to plants list");
 				}
 
 				// END MARK TODO
@@ -233,7 +229,7 @@ public class PlantChunk {
 	 */
 	public synchronized void unload(Coords chunkCoords) {
 
-		RealisticBiomes.LOG.finest("PlantChunk.unload(): called with coords "
+		RealisticBiomes.doLog(Level.FINEST,"PlantChunk.unload(): called with coords "
 				+ chunkCoords + "plantchunk object: " + this);
 		// TODO: plant chunk objects need to know their own coordinates, we
 		// should
@@ -244,11 +240,11 @@ public class PlantChunk {
 		try {
 			// if this chunk was not in the database, then add it to the
 			// database
-			RealisticBiomes.LOG.finer("PlantChunk.unload(): is inDatabase?: "
+			RealisticBiomes.doLog(Level.FINER,"PlantChunk.unload(): is inDatabase?: "
 					+ inDatabase);
 			if (!inDatabase) {
 
-				RealisticBiomes.LOG.finer("not in database, adding new chunk");
+				RealisticBiomes.doLog(Level.FINER, "not in database, adding new chunk");
 				ChunkWriter.addChunkStmt.setInt(1, chunkCoords.w);
 				ChunkWriter.addChunkStmt.setInt(2, chunkCoords.x);
 				ChunkWriter.addChunkStmt.setInt(3, chunkCoords.z);
@@ -261,8 +257,7 @@ public class PlantChunk {
 				// if we don't
 				if (rs.next()) {
 					index = rs.getLong(1);
-					RealisticBiomes.LOG
-							.finer("plantchunk.unload(): got new autoincrement index, it is now "
+					RealisticBiomes.doLog(Level.FINER, "plantchunk.unload(): got new autoincrement index, it is now "
 									+ index);
 				} else {
 					throw new DataSourceException(
@@ -275,8 +270,7 @@ public class PlantChunk {
 				// database later in this method we dont get a Constraint
 				// Failure exception
 
-				RealisticBiomes.LOG
-						.finer("plantchunk.unload(): committing new plantchunk with index "
+				RealisticBiomes.doLog(Level.FINER, "plantchunk.unload(): committing new plantchunk with index "
 								+ this.index);
 				ChunkWriter.writeConnection.commit();
 				inDatabase = true;
@@ -318,8 +312,7 @@ public class PlantChunk {
 								plant.getUpdateTime());
 						ChunkWriter.addPlantStmt.setFloat(7,
 								plant.getGrowth());
-						RealisticBiomes.LOG
-								.finest("PlantChunk.unload(): executing add plant statement: "
+						RealisticBiomes.doLog(Level.FINEST, "PlantChunk.unload(): executing add plant statement: "
 										+ ChunkWriter.addPlantStmt);
 						ChunkWriter.addPlantStmt.execute();
 

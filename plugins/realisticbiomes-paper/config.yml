@@ -7,6 +7,8 @@ realistic_biomes:
  database_prefix: "rb"
 
  persistence_enabled: true
+ 
+ minLogLevel: "INFO"
 
  unload_batch_period: 100
  grow_event_load_chance: 0.5

@@ -119,7 +119,7 @@ public class PlantManager {
 		// run the prepared statements that create the tables if they do not exist in the database
 		try {
 			
-			RealisticBiomes.LOG.finer("creating chunk table (if necessary) with prepared statement:" + this.makeTableChunk.toString());
+			RealisticBiomes.doLog(Level.FINER, "creating chunk table (if necessary) with prepared statement:" + this.makeTableChunk.toString());
 
 			this.makeTableChunk.execute();
 			this.makeTablePlant.execute();
@@ -147,7 +147,7 @@ public class PlantManager {
 				PlantChunk pChunk = new PlantChunk(plugin, readConn, id);
 				pChunk.loaded = true;
 				pChunk.inDatabase = true;
-				RealisticBiomes.LOG.finer("\tLoaded plantchunk " + pChunk + " at coords " + new Coords(w,x,0,z));
+				RealisticBiomes.doLog(Level.FINER, "\tLoaded plantchunk " + pChunk + " at coords " + new Coords(w,x,0,z));
 				chunks.put(new Coords(w,x,0,z), pChunk);
 			}
 			
@@ -309,21 +309,21 @@ public class PlantManager {
 	public boolean loadChunk(Coords coords) {
 		// if the specified chunk does not exist, then don't load anything
 		if (!chunks.containsKey(coords)) {
-			RealisticBiomes.LOG.finer("PlantManager.loadChunk(): returning false as we don't have the plantchunk obj in chunks");
+			RealisticBiomes.doLog(Level.FINER, "PlantManager.loadChunk(): returning false as we don't have the plantchunk obj in chunks");
 			return false;
 		}
 		
 		PlantChunk pChunk = chunks.get(coords);
 		// if the plant chunk is already loaded, then there is no need to load
 		if (pChunk.isLoaded()) {
-			RealisticBiomes.LOG.finer("PlantManager.loadChunk(): plantChunk already loaded, returning true");
+			RealisticBiomes.doLog(Level.FINER, "PlantManager.loadChunk(): plantChunk already loaded, returning true");
 			return true;
 		}
 		
 		// this getWorlds().get(index) could break in the future
 		// if the minecraft chunk is unloaded again, then don't load the pChunk
 		if (!plugin.getServer().getWorld(WorldID.getMCID(coords.w)).isChunkLoaded(coords.x, coords.z)) {
-			RealisticBiomes.LOG.finer("PlantManager.loadChunk(): minecraft chunk was unloaded again... returning false");
+			RealisticBiomes.doLog(Level.FINER, "PlantManager.loadChunk(): minecraft chunk was unloaded again... returning false");
 			return false;
 		}
 		
@@ -335,7 +335,7 @@ public class PlantManager {
 			throw new DataSourceException("unable to set autocommit to false in loadchunk", e);
 		}
 		boolean loaded = pChunk.load(coords, readConn);
-		RealisticBiomes.LOG.finer("PlantManager.loadChunk(): pchunk.load() returned " + loaded);
+		RealisticBiomes.doLog(Level.FINER, "PlantManager.loadChunk(): pchunk.load() returned " + loaded);
 		try {
 			readConn.setAutoCommit(true);
 		} catch (SQLException e) {
@@ -362,18 +362,18 @@ public class PlantManager {
 		Coords chunkCoords = new Coords(coords.w, coords.x/16, 0, coords.z/16);
 		
 		// TESTING
-		this.log.finer("PlantManager.add() called at coords " + coords + " and plant " + plant);
+		RealisticBiomes.doLog(Level.FINER, "PlantManager.add() called at coords " + coords + " and plant " + plant);
 		
 		PlantChunk pChunk = null;
 		if (!chunks.containsKey(chunkCoords)) {
 			pChunk = new PlantChunk(plugin, readConn, -1/*dummy index until assigned when added*/);
 			chunks.put(chunkCoords, pChunk); 
 			pChunk.loaded = true; // its loaded because its a brand new plant chunk. 
-			this.log.finer("PlantManager.add() creating new plantchunk: " + pChunk + "at coords " + chunkCoords);
+			RealisticBiomes.doLog(Level.FINER, "PlantManager.add() creating new plantchunk: " + pChunk + "at coords " + chunkCoords);
 		}
 		else {
 			pChunk = chunks.get(chunkCoords);
-			this.log.finer("PlantManager.add(): loading existing plant chunk");
+			RealisticBiomes.doLog(Level.FINER, "PlantManager.add(): loading existing plant chunk");
 		}
 		
 		// make sure the chunk is loaded
@@ -394,7 +394,7 @@ public class PlantManager {
 		// if the coord's chunk does not have any data attached to it, then simply
 		// exit with failure
 		if (!chunks.containsKey(chunkCoords)){
-			plugin.getLogger().finer("PlantManager.get() returning null due to not containing the Plantchunk object in 'chunks'");
+			RealisticBiomes.doLog(Level.FINER, "PlantManager.get() returning null due to not containing the Plantchunk object in 'chunks'");
 
 			return null;
 		}
