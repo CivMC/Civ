@@ -328,19 +328,10 @@ public class PlantManager {
 		
 		// finally, just load this thing!
 		long start = System.nanoTime()/1000000/*ns/ms*/;
-		try {
-			readConn.setAutoCommit(false);
-		} catch (SQLException e) {
-			throw new DataSourceException("unable to set autocommit to false in loadchunk", e);
-		}
 		boolean loaded = pChunk.load(coords, readConn);
-		RealisticBiomes.doLog(Level.FINER, "PlantManager.loadChunk(): pchunk.load() returned " + loaded);
-		try {
-			readConn.setAutoCommit(true);
-		} catch (SQLException e) {
-			throw new DataSourceException("unable to set autocommit to true in loadchunk", e);
-		}
 		long end = System.nanoTime()/1000000/*ns/ms*/;
+		RealisticBiomes.doLog(Level.FINER, "PlantManager.loadChunk(): pchunk.load() returned " + loaded);
+		
 		
 		if (plugin.persistConfig.logDB) {
 			plugin.getLogger().info("db load chunk["+coords.x+","+coords.z+"]: "+pChunk.getPlantCount()+" entries loaded in "+(end-start)+" ms");
