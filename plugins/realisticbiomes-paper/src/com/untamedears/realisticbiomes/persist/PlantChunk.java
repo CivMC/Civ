@@ -133,31 +133,18 @@ public class PlantChunk {
 		}
 
 		World world = plugin.getServer().getWorld(WorldID.getMCID(coords.w));
-		PreparedStatement loadPlantsStmt;
 
-		// TODO: put this with the other sql prepared statements
-		try {
-			loadPlantsStmt = readConn
-					.prepareStatement(String
-							.format("SELECT w, x, y, z, date, growth FROM %s_plant WHERE chunkid = ?",
-									this.plugin.persistConfig.prefix));
-
-		} catch (SQLException e) {
-			throw new DataSourceException(
-					"Failed to create prepared statement in PlantChunk.load()",
-					e);
-		}
 
 		// execute the load plant statement
 		try {
 
-			loadPlantsStmt.setLong(1, index);
-			RealisticBiomes.doLog(Level.FINER, 
+			ChunkWriter.loadPlantsStmt.setLong(1, index);
+			RealisticBiomes.doLog(Level.FINER,
 					"PlantChunk.load() executing sql query: "
-							+ loadPlantsStmt.toString());
-			loadPlantsStmt.execute();
+							+ ChunkWriter.loadPlantsStmt.toString());
+			ChunkWriter.loadPlantsStmt.execute();
 
-			ResultSet rs = loadPlantsStmt.getResultSet();
+			ResultSet rs = ChunkWriter.loadPlantsStmt.getResultSet();
 			while (rs.next()) {
 				int w = rs.getInt("w");
 				int x = rs.getInt("x");
@@ -203,8 +190,6 @@ public class PlantChunk {
 
 				// END MARK TODO
 			}
-
-			loadPlantsStmt.close();
 		} catch (SQLException e) {
 			throw new DataSourceException(
 					String.format(
@@ -299,7 +284,14 @@ public class PlantChunk {
 					ChunkWriter.deleteOldPlantsStmt.setLong(1, index);
 					ChunkWriter.deleteOldPlantsStmt.execute();
 
+					int coordCounter = 0;
+					boolean needToExec = false;
+					
 					for (Coords coords : plants.keySet()) {
+						if (!needToExec) {
+							needToExec = true;
+						}
+						
 						Plant plant = plants.get(coords);
 
 						ChunkWriter.addPlantStmt.clearParameters();
@@ -312,11 +304,24 @@ public class PlantChunk {
 								plant.getUpdateTime());
 						ChunkWriter.addPlantStmt.setFloat(7,
 								plant.getGrowth());
-						RealisticBiomes.doLog(Level.FINEST, "PlantChunk.unload(): executing add plant statement: "
-										+ ChunkWriter.addPlantStmt);
-						ChunkWriter.addPlantStmt.execute();
-
+						
+						ChunkWriter.addPlantStmt.addBatch();
+						
+						// execute the statement if we hit 1000 batches
+						if ((coordCounter + 1) % 1000 == 0) {
+							
+							ChunkWriter.addPlantStmt.execute();
+							coordCounter = 0;
+							needToExec = false;
+						}
+						
 					} // end for
+					
+					// if we have left over statements afterwards, execute them
+					if (needToExec) {
+						ChunkWriter.addPlantStmt.execute();
+					}
+					
 				} 
 			}
 		} catch (SQLException e) {
