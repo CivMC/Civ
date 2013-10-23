@@ -187,6 +187,12 @@ public class PlantManager {
 		writeService.submit(new Runnable() {
 			public void run() {
 				
+				// don't do anything if the chunksToUnload is empty
+				// (maybe it got emptied after this was submitted to the write service?)
+				if (chunksToUnload.isEmpty()) {
+					return;
+				}
+				
 				long start = System.nanoTime()/1000000/*ns/ms*/;
 				long end;
 				
@@ -200,7 +206,7 @@ public class PlantManager {
 				}
 				
 				while (!chunksToUnload.isEmpty()) {
-					Coords batchCoords = chunksToUnload.remove(chunksToUnload.size()-1);
+					Coords batchCoords = chunksToUnload.remove(0);
 					unloadChunk(batchCoords);
 				}
 				
