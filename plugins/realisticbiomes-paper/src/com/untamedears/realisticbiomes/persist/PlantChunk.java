@@ -219,8 +219,10 @@ public class PlantChunk {
 		// TODO: plant chunk objects need to know their own coordinates, we
 		// should
 		// not be passing them in to load / unload!
-		if (!loaded)
+		if (!loaded) {
+			RealisticBiomes.doLog(Level.FINER, "Plantchunk.unload(): not loaded so returning");
 			return;
+		}
 
 		try {
 			// if this chunk was not in the database, then add it to the
@@ -287,6 +289,7 @@ public class PlantChunk {
 					int coordCounter = 0;
 					boolean needToExec = false;
 					
+					RealisticBiomes.doLog(Level.FINER, "PlantChunk.unload(): Unloading plantchunk with index: " + this.index);
 					for (Coords coords : plants.keySet()) {
 						if (!needToExec) {
 							needToExec = true;

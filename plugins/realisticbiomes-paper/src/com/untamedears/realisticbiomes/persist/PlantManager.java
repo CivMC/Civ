@@ -144,7 +144,7 @@ public class PlantManager {
 				int z = rs.getInt("z");
 				
 				PlantChunk pChunk = new PlantChunk(plugin, readConn, id);
-				pChunk.loaded = true;
+				pChunk.loaded = false;
 				pChunk.inDatabase = true;
 				RealisticBiomes.doLog(Level.FINER, "\tLoaded plantchunk " + pChunk + " at coords " + new Coords(w,x,0,z));
 				chunks.put(new Coords(w,x,0,z), pChunk);
@@ -308,21 +308,21 @@ public class PlantManager {
 	public boolean loadChunk(Coords coords) {
 		// if the specified chunk does not exist, then don't load anything
 		if (!chunks.containsKey(coords)) {
-			RealisticBiomes.doLog(Level.FINER, "PlantManager.loadChunk(): returning false as we don't have the plantchunk obj in chunks");
+			RealisticBiomes.doLog(Level.FINEST, "PlantManager.loadChunk(): returning false as we don't have the plantchunk obj in chunks");
 			return false;
 		}
 		
 		PlantChunk pChunk = chunks.get(coords);
 		// if the plant chunk is already loaded, then there is no need to load
 		if (pChunk.isLoaded()) {
-			RealisticBiomes.doLog(Level.FINER, "PlantManager.loadChunk(): plantChunk already loaded, returning true");
+			RealisticBiomes.doLog(Level.FINEST, "PlantManager.loadChunk(): plantChunk already loaded, returning true");
 			return true;
 		}
 		
 		// this getWorlds().get(index) could break in the future
 		// if the minecraft chunk is unloaded again, then don't load the pChunk
 		if (!plugin.getServer().getWorld(WorldID.getMCID(coords.w)).isChunkLoaded(coords.x, coords.z)) {
-			RealisticBiomes.doLog(Level.FINER, "PlantManager.loadChunk(): minecraft chunk was unloaded again... returning false");
+			RealisticBiomes.doLog(Level.FINEST, "PlantManager.loadChunk(): minecraft chunk was unloaded again... returning false");
 			return false;
 		}
 		
@@ -330,7 +330,7 @@ public class PlantManager {
 		long start = System.nanoTime()/1000000/*ns/ms*/;
 		boolean loaded = pChunk.load(coords, readConn);
 		long end = System.nanoTime()/1000000/*ns/ms*/;
-		RealisticBiomes.doLog(Level.FINER, "PlantManager.loadChunk(): pchunk.load() returned " + loaded);
+		RealisticBiomes.doLog(Level.FINER, "PlantManager.loadChunk():Had to load chunk, pchunk.load() returned " + loaded);
 		
 		
 		if (plugin.persistConfig.logDB) {
