@@ -310,7 +310,7 @@ public class PlantChunk {
 						// execute the statement if we hit 1000 batches
 						if ((coordCounter + 1) % 1000 == 0) {
 							
-							ChunkWriter.addPlantStmt.execute();
+							ChunkWriter.addPlantStmt.executeBatch();
 							coordCounter = 0;
 							needToExec = false;
 						}
@@ -319,7 +319,7 @@ public class PlantChunk {
 					
 					// if we have left over statements afterwards, execute them
 					if (needToExec) {
-						ChunkWriter.addPlantStmt.execute();
+						ChunkWriter.addPlantStmt.executeBatch();
 					}
 					
 				} 
