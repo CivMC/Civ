@@ -153,7 +153,7 @@ public class PlantChunk {
 				long date = rs.getLong(5);
 				float growth = rs.getFloat(6);
 
-				RealisticBiomes.doLog(Level.FINER, String
+				RealisticBiomes.doLog(Level.FINEST, String
 								.format("PlantChunk.load(): got result: w:%s x:%s y:%s z:%s date:%s growth:%s",
 										w, x, y, z, date, growth));
 

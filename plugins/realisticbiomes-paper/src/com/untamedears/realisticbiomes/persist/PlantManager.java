@@ -205,9 +205,10 @@ public class PlantManager {
 
 				}
 				
+				int plantCounter = 0;
 				while (!chunksToUnload.isEmpty()) {
 					Coords batchCoords = chunksToUnload.remove(0);
-					unloadChunk(batchCoords);
+					plantCounter += unloadChunk(batchCoords);
 				}
 				
 				// write the changes to the database
@@ -221,7 +222,7 @@ public class PlantManager {
 				end = System.nanoTime()/1000000/*ns/ms*/;
 				
 				if (plugin.persistConfig.logDB)
-					log.info("Committed data: Unloaded and saved  "+chunksUnloadedCount+" chunks in "+(end-start)+" ms");					
+					log.info("Committed data: Unloaded and saved  "+chunksUnloadedCount+" chunks (" + plantCounter + " plants) in "+(end-start)+" ms");					
 			}
 		});
 	}
@@ -279,20 +280,26 @@ public class PlantManager {
 		log.info("write service finished");
 	}
 	
-	private void unloadChunk(Coords coords) {
+	/**
+	 * unloads the specified chunk
+	 * @param coords - the coordinates (chunk coords) of the chunk to unload
+	 * @return an integer representing the number of plants inside the chunk that was unloaded
+	 */
+	private int unloadChunk(Coords coords) {
 		// if the specified chunk does not exist in the system, or is no longer loaded, nothing needs
 		// to be done
 		if (!chunks.containsKey(coords) || !chunks.get(coords).isLoaded())
-			return;
+			return 0;
 		
 		// if the minecraft chunk is loaded again, then don't unload the pChunk
 		if (plugin.getServer().getWorld(WorldID.getMCID(coords.w)).isChunkLoaded(coords.x, coords.z))
-			return;
+			return 0;
 		
 		// finally, actually unload this thing
 		PlantChunk pChunk = chunks.get(coords);
-		
+		int tmpCount = pChunk.getPlantCount();
 		pChunk.unload(coords);
+		return tmpCount;
 	}
 	
 	// --------------------------------------------------------------------------------------------
