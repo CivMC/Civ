@@ -271,9 +271,9 @@ public class PlayerReinforcement implements
         }
         switch (securityLevel) {
             case PRIVATE:
-                return name.equals(owner.getFounder());
+                return owner.isFounder(name);
             case GROUP:
-                return name.equals(owner.getFounder()) || owner.isMember(name) || owner.isModerator(name);
+                return owner.isFounder(name) || owner.isMember(name) || owner.isModerator(name);
             case PUBLIC:
             	return true;
         }
@@ -294,9 +294,9 @@ public class PlayerReinforcement implements
         }
         switch (securityLevel) {
             case PRIVATE:
-                return name.equals(owner.getFounder());
+                return owner.isFounder(name);
             default:
-                return name.equals(owner.getFounder()) || owner.isModerator(name);
+                return owner.isFounder(name) || owner.isModerator(name);
         }
     }
 
