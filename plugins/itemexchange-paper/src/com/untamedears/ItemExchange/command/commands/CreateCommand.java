@@ -1,5 +1,7 @@
 package com.untamedears.ItemExchange.command.commands;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -36,7 +38,16 @@ public class CreateCommand extends PlayerCommand {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
-		Block block = player.getLastTwoTargetBlocks(null, 5).get(1).getLocation().getBlock();
+
+		List<Block> blocks = player.getLastTwoTargetBlocks(null, 5);
+
+		if(blocks.size() == 0) {
+			player.sendMessage(ChatColor.RED + "No block in view.");
+
+			return true;
+		}
+
+		Block block = blocks.get(blocks.size() - 1).getLocation().getBlock();
 		//If no input or ouptut is specified player attempt to set up ItemExchange at the block the player is looking at
 		//The player must have citadel access to the inventory block
 		if (args.length == 0) {
