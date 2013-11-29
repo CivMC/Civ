@@ -3,7 +3,7 @@ package com.untamedears.citadel.command.commands;
 import static com.untamedears.citadel.Utility.reinforcementBroken;
 import static com.untamedears.citadel.Utility.timeUntilMature;
 
-import java.util.List;
+import java.util.Iterator;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,6 +12,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BlockIterator;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.command.PlayerCommand;
@@ -38,12 +39,13 @@ public class AcidCommand extends PlayerCommand {
             sender.sendMessage("Player only command");
             return true;
         }
-        boolean immature = false;
+        boolean successfulAcid = false;
         Player player = (Player)sender;
         String playerName = player.getName();
-        List<Block> lastTwo = player.getLastTwoTargetBlocks(null, 64);
-        for (Block block : lastTwo) {
-            int mat = block.getTypeId();
+        Iterator<Block> itr = new BlockIterator(player, 40); // Within 2.5 chunks
+        while (itr.hasNext()) {
+            final Block block = itr.next();
+            final int mat = block.getTypeId();
             if (mat != acidBlockType) {
                 continue;
             }
@@ -52,29 +54,27 @@ public class AcidCommand extends PlayerCommand {
                 continue;
             }
             if (timeUntilMature(rein) > 0) {
-                // Immature acid blocks
-                immature = true;
-                continue;
-            }
-            PlayerReinforcement pr = (PlayerReinforcement)rein;
-            if (pr.getMaxDurability() <= Citadel.getConfigManager().getMaturationInterval()) {
-                reinforcementBroken(pr);
-                block.breakNaturally();
-                sender.sendMessage("The acid block isn't strong enough to break anything");
+                // Immature acid block
+                sender.sendMessage("The acid block isn't ready");
                 return true;
             }
+            PlayerReinforcement pr = (PlayerReinforcement)rein;
             if (!pr.isAccessible(playerName)) {
-                continue;
+                sender.sendMessage("You cannot use this acid block");
+                return true;
+            }
+            if (pr.getMaxDurability() <= Citadel.getConfigManager().getMaturationInterval()) {
+                sender.sendMessage("The acid block isn't strong enough to break anything");
+                return true;
             }
             Block above = block.getRelative(BlockFace.UP);
             IReinforcement aboveRein = Citadel.getReinforcementManager().getReinforcement(above);
             if (!(aboveRein instanceof PlayerReinforcement)) {
+                // This isn't really an acid block as there's no reinforcement above, ignore
                 continue;
             }
             PlayerReinforcement abovePr = (PlayerReinforcement)aboveRein;
             if (abovePr.getMaxDurability() > pr.getMaxDurability()) {
-                reinforcementBroken(pr);
-                block.breakNaturally();
                 sender.sendMessage("The acid block isn't strong enough");
                 return true;
             }
@@ -100,11 +100,9 @@ public class AcidCommand extends PlayerCommand {
             // Break acid block
             reinforcementBroken(pr);
             block.breakNaturally();
-            return true;
+            successfulAcid = true;
         }
-        if (immature) {
-            sender.sendMessage("The acid block isn't ready");
-        } else {
+        if (!successfulAcid) {
             sender.sendMessage("No acid block was found");
         }
         return true;
