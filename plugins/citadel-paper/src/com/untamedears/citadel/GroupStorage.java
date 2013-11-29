@@ -10,8 +10,10 @@ import org.bukkit.entity.Player;
 
 import com.untamedears.citadel.dao.CitadelDao;
 import com.untamedears.citadel.entity.Faction;
+import com.untamedears.citadel.entity.FactionDelete;
 import com.untamedears.citadel.entity.FactionMember;
 import com.untamedears.citadel.entity.Moderator;
+import com.untamedears.citadel.entity.PersonalGroup;
 import com.untamedears.citadel.events.GroupChangeEvent;
 import com.untamedears.citadel.events.GroupChangeType;
 
@@ -26,6 +28,7 @@ public class GroupStorage {
     private Map<String, Faction> groupStorage = new TreeMap<String, Faction>();
     private Map<String, Set<String>> memberStorage = new TreeMap<String, Set<String>>();
     private Map<String, Set<String>> moderatorStorage = new TreeMap<String, Set<String>>();
+    private Map<String, String> deletedGroups = new TreeMap<String, String>();
 
     public GroupStorage(CitadelDao dao){
         this.dao = dao;
@@ -65,8 +68,9 @@ public class GroupStorage {
         return group;
     }
 
-    public void removeGroup(Faction group, Player initiator){
-        if (!isGroup(group.getName())) {
+    public void removeGroup(Faction group, PersonalGroup redirectToGroup, Player initiator){
+        final String groupName = group.getName();
+        if (!isGroup(groupName) || isDeleted(groupName)) {
             return;
         }
         GroupChangeEvent event = new GroupChangeEvent(
@@ -75,11 +79,22 @@ public class GroupStorage {
         if (event.isCancelled()) {
             return;
         }
-        String normalizedName = group.getNormalizedName();
-        this.groupStorage.remove(normalizedName);
-        this.memberStorage.remove(normalizedName);
-        this.moderatorStorage.remove(normalizedName);
-        this.dao.delete(group);
+        final String normalizedName = group.getNormalizedName();
+        removeAllModeratorsFromGroup(normalizedName);
+        removeAllMembersFromGroup(normalizedName);
+        if (redirectToGroup != null) {
+            FactionDelete facDel = new FactionDelete();
+            facDel.setDeletedFaction(group.getName());
+            facDel.setPersonalGroup(redirectToGroup.getGroupName());
+            this.dao.save(facDel);
+
+            deletedGroups.put(normalizedName, normalizeName(redirectToGroup.getGroupName()));
+            group.setDeleted(true);
+            this.dao.save(group);
+        } else {
+            this.groupStorage.remove(normalizedName);
+            this.dao.delete(group);
+        }
     }
 
     public Faction findGroupByName(String groupName){
@@ -326,5 +341,26 @@ public class GroupStorage {
 
     public int getPlayerGroupsAmount(String playerName) {
         return this.dao.countPlayerGroups(playerName);
+    }
+
+    public boolean isDeleted(String groupName) {
+        final String normalizedName = normalizeName(groupName);
+        return deletedGroups.containsKey(normalizedName);
+    }
+
+    public String mapDeletedGroup(String groupName) {
+        final String normalizedName = normalizeName(groupName);
+        if (!deletedGroups.containsKey(normalizedName)) {
+            return normalizedName;
+        }
+        return deletedGroups.get(normalizedName);
+    }
+
+    public void loadDeletedGroups() {
+        for (FactionDelete facDel : this.dao.loadFactionDeletions()) {
+            deletedGroups.put(
+                normalizeName(facDel.getDeletedFaction()),
+                normalizeName(facDel.getPersonalGroup()));
+        }
     }
 }

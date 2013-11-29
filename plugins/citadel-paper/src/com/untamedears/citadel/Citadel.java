@@ -141,7 +141,7 @@ public class Citadel extends JavaPlugin {
     
     public void setUpStorage(){
         GroupStorage groupStorage = new GroupStorage(dao);
-        groupManager.setStorage(groupStorage);
+        groupManager.initialize(groupStorage);
         
         PersonalGroupStorage personalGroupStorage = new PersonalGroupStorage(dao);
         personalGroupManager.setStorage(personalGroupStorage);

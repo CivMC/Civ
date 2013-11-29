@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionMember;
 import com.untamedears.citadel.entity.Moderator;
+import com.untamedears.citadel.entity.PersonalGroup;
 
 /**
  * User: JonnyD
@@ -17,6 +18,11 @@ public class GroupManager {
 	private GroupStorage storage;
 
 	public GroupManager(){}
+
+    public void initialize(GroupStorage storage) {
+        setStorage(storage);
+        storage.loadDeletedGroups();
+    }
 
 	public GroupStorage getStorage() {
 		return this.storage;
@@ -37,10 +43,14 @@ public class GroupManager {
 	public void addGroup(Faction group, Player initiator){
 		this.storage.addGroup(group, initiator);
 	}
-	
+
 	public void removeGroup(Faction group, Player initiator){
-		this.storage.removeGroup(group, initiator);
+		this.storage.removeGroup(group, null, initiator);
 	}
+
+    public void removeGroup(Faction group, PersonalGroup redirectToGroup, Player initiator){
+		this.storage.removeGroup(group, redirectToGroup, initiator);
+    }
 
 	public Set<FactionMember> getMembersOfGroup(String groupName) {
 		return this.storage.getMembersOfGroup(groupName);
@@ -117,4 +127,24 @@ public class GroupManager {
 	public int getPlayerGroupsAmount(String playerName){
 		return this.storage.getPlayerGroupsAmount(playerName);
 	}
+
+    public boolean isDeleted(String groupName) {
+		return this.storage.isDeleted(groupName);
+    }
+
+    public String mapDeletedGroup(String groupName) {
+		return this.storage.mapDeletedGroup(groupName);
+    }
+
+    public String getDelegatedGroupName(String groupName) {
+        final String delegatedName = mapDeletedGroup(groupName);
+        if (delegatedName != null) {
+            return delegatedName;
+        }
+        return groupName;
+    }
+
+    public Faction getDelegatedGroup(String groupName) {
+        return getGroup(getDelegatedGroupName(groupName));
+    }
 }

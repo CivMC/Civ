@@ -12,6 +12,7 @@ import com.untamedears.citadel.PersonalGroupManager;
 import com.untamedears.citadel.ReinforcementManager;
 import com.untamedears.citadel.command.PlayerCommand;
 import com.untamedears.citadel.entity.Faction;
+import com.untamedears.citadel.entity.PersonalGroup;
 
 /**
  * User: JonnyD
@@ -56,15 +57,8 @@ public class DeleteCommand extends PlayerCommand {
         }
 		
 		PersonalGroupManager personalGroupManager = Citadel.getPersonalGroupManager();
-		String personalGroup = personalGroupManager.getPersonalGroup(senderName).getGroupName();
-		
-		ReinforcementManager reinforcementManager = Citadel.getReinforcementManager();
-		reinforcementManager.moveReinforcements(groupName, personalGroup);
-		
-		groupManager.removeAllMembersFromGroup(groupName);
-		groupManager.removeAllModeratorsFromGroup(groupName);
-		groupManager.removeGroup(group, player);
-		
+		PersonalGroup personalGroup = personalGroupManager.getPersonalGroup(senderName);
+		groupManager.removeGroup(group, personalGroup, player);
 		sendMessage(sender, ChatColor.GREEN, "Deleted group: %s", groupName);
 		return true;
 	}

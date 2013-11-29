@@ -193,7 +193,7 @@ public class PlayerReinforcement implements
     }
 
     public Faction getOwner() {
-        return Citadel.getGroupManager().getGroup(getOwnerName());
+        return Citadel.getGroupManager().getDelegatedGroup(getOwnerName());
     }
 
     public void setOwner(Faction group) {
@@ -255,15 +255,22 @@ public class PlayerReinforcement implements
     }
 
     public boolean isAccessible(Player player) {
-        String name = player.getName();
-        return isAccessible(name);
+        final String name = player.getName();
+        return isAccessible(player, name);
     }
 
     public boolean isAccessible(String name) {
-        Faction owner = getOwner();
+        final Player player = Bukkit.getPlayerExact(name);
+        return isAccessible(player, name);
+    }
+
+    public boolean isAccessible(Player player, String name) {
+        final Faction owner = getOwner();
         if (owner == null) {
             Citadel.severe(String.format("isAccessible(%s) encountered unowned reinforcement: %s",
                            name, toString()));
+            sendMessage(player, ChatColor.RED,
+                "This reinforcement has an issue. Please send modmail. " + getId().toString());
             return false;
         }
         if (owner.isDisciplined()) {
@@ -281,12 +288,22 @@ public class PlayerReinforcement implements
     }
 
     public boolean isBypassable(Player player) {
-        String name = player.getName();
-        Faction owner = getOwner();
+        final String name = player.getName();
+        return isBypassable(player, name);
+    }
+
+    public boolean isBypassable(String name) {
+        final Player player = Bukkit.getPlayerExact(name);
+        return isBypassable(player, name);
+    }
+
+    public boolean isBypassable(Player player, String name) {
+        final Faction owner = getOwner();
         if (owner == null) {
             Citadel.severe(String.format("isBypassable(%s) encountered unowned reinforcement: %s",
                            name, toString()));
-            sendMessage(player, ChatColor.RED, "This reinforcement has an issue. Please send modmail.");
+            sendMessage(player, ChatColor.RED,
+                "This reinforcement has an issue. Please send modmail. " + getId().toString());
             return false;
         }
         if (owner.isDisciplined()) {
