@@ -78,8 +78,8 @@ public class Citadel extends JavaPlugin {
     public static final Map<String, VerboseMsg> INSENSITIVE_VERBOSE_MESSAGES = new HashMap<String, VerboseMsg>();
 
     static {
-        VERBOSE_MESSAGES.put(VerboseMsg.InteractionAttempt, "Attempted interaction with %s block at %s");
-        VERBOSE_MESSAGES.put(VerboseMsg.ReinDelegation, "Delegated to %s block at %s");
+        VERBOSE_MESSAGES.put(VerboseMsg.InteractionAttempt, "Attempted interaction with block at %s");
+        VERBOSE_MESSAGES.put(VerboseMsg.ReinDelegation, "Delegated to block at %s");
         VERBOSE_MESSAGES.put(VerboseMsg.AdminReinBypass, "[Admin] %s bypassed reinforcement at %s");
         VERBOSE_MESSAGES.put(VerboseMsg.ReinBypass, "%s bypassed reinforcement at %s");
         VERBOSE_MESSAGES.put(VerboseMsg.RedstoneOpen, "Prevented redstone from opening reinforcement at %s");

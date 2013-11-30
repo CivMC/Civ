@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.command.PlayerCommand;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
@@ -68,7 +69,7 @@ public class AcidCommand extends PlayerCommand {
                 return true;
             }
             Block above = block.getRelative(BlockFace.UP);
-            IReinforcement aboveRein = Citadel.getReinforcementManager().getReinforcement(above);
+            IReinforcement aboveRein = AccessDelegate.getDelegate(above).getReinforcement();
             if (!(aboveRein instanceof PlayerReinforcement)) {
                 // This isn't really an acid block as there's no reinforcement above, ignore
                 continue;
