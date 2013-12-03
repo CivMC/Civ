@@ -1,24 +1,21 @@
 package bastion.isaac;
 
 import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.ReinforcementManager;
 import com.untamedears.citadel.entity.IReinforcement;
-import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-@SuppressWarnings("unused")
 public class BastionBlock
 {
   private Location location;
-  private Player player;
+ // private Player player;
   public int strength;
 
   BastionBlock(Location nLocation, int nStrength, Player nPlacer)
   {
-    player = nPlacer;
+    //player = nPlacer;
     strength = nStrength;
     location = nLocation;
   }

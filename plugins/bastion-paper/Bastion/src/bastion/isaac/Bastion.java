@@ -1,12 +1,9 @@
 package bastion.isaac;
 
-import java.util.logging.Logger;
 
-import org.bukkit.Server;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-@SuppressWarnings("unused")
+
 public final class Bastion extends JavaPlugin
 {
   private static BastionListener listener;

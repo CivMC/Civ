@@ -1,12 +1,11 @@
 package bastion.isaac;
 
 import java.util.Vector;
-import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-@SuppressWarnings("unused")
+
 public class BastionManager
 {
   private Vector<BastionBlock> bastions;
