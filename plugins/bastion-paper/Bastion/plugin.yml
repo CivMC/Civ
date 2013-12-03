@@ -1,0 +1,4 @@
+name: Bastion
+version: 0.0.0
+main: bastion.isaac.Bastion
+depend: [Citadel]
