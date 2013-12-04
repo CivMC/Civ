@@ -40,6 +40,18 @@ public class BastionManager
 		bastions.get(location.getWorld()).add(new BastionBlock(location, strength, creator));
 		Bastion.getPlugin().getLogger().info("bastion added");
 	}
+	public BastionBlock getBastionBlock(Location loc) {
+		Set<? extends QTBox> possible=bastions.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ());
+		for(QTBox box: possible){
+			BastionBlock bastion=(BastionBlock) box;
+			if(bastion.getLocation()==loc)
+				return bastion;
+		}
+		return null;
+	}
+	public void removeBastion(Location location) {
+		bastions.get(location.getWorld()).remove(getBastionBlock(location));
+	}
 	
 	public void handleBlockPlace(BlockPlaceEvent event) {
 		Location location=event.getBlock().getLocation();
@@ -51,7 +63,7 @@ public class BastionManager
 			if (bastion.blocked(event)){
 				bastion.handlePlaced(event.getBlock());
 		        if(bastion.shouldCull())
-		        	bastions.remove(bastion);
+		        	bastions.get(bastion.getLocation().getWorld()).remove(bastion);
 		        break;
 			}
 		}

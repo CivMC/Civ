@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 public final class BastionListener
@@ -22,12 +23,18 @@ implements Listener
 	}
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event) {
-		Bastion.getPlugin().getLogger().info("block placed");
 		manager.handleBlockPlace(event);
 	}
 	@EventHandler
+	public void onBlockBreak(BlockBreakEvent event) {
+		if(event.isCancelled())
+			return;
+		if (event.getBlock().getType() == Material.GOLD_BLOCK) {
+			manager.removeBastion(event.getBlock().getLocation());
+		}
+	}
+	@EventHandler
 	public void onReinforcement(CreateReinforcementEvent event) {
-		Bastion.getPlugin().getLogger().info("block reinforced");
 
 		if (event.getBlock().getType() == Material.GOLD_BLOCK) {
 			PlayerReinforcement reinforcement = (PlayerReinforcement) event.getReinforcement();

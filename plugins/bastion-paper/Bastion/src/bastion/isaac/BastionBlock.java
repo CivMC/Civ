@@ -25,6 +25,9 @@ public class BastionBlock implements QTBox, Comparable
 		location = nLocation;
 	}
 
+	Location getLocation(){
+		return location;
+	}
 	boolean blocked(BlockPlaceEvent event)
 	{
 		String playerName=event.getPlayer().getName();
@@ -43,10 +46,10 @@ public class BastionBlock implements QTBox, Comparable
 	void handlePlaced(Block block) {
 		if (strength > 0) {
 			block.breakNaturally();
-			--strength;
 			
 			IReinforcement reinforcement = Citadel.getReinforcementManager().getReinforcement(location.getBlock());
-
+			strength=reinforcement.getDurability();
+			--strength;
 			if (reinforcement != null) {
 				reinforcement.setDurability(strength);
 				Citadel.getReinforcementManager().addReinforcement(reinforcement);
