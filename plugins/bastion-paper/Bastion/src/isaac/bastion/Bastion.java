@@ -1,4 +1,4 @@
-package bastion.isaac;
+package isaac.bastion;
 
 
 import org.bukkit.plugin.java.JavaPlugin;

@@ -1,4 +1,4 @@
-package bastion.isaac.util;
+package isaac.bastion.util;
 
 public interface QTBox {
   public int qtXMin();

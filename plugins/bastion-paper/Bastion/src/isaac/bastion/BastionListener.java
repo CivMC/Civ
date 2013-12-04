@@ -1,4 +1,4 @@
-package bastion.isaac;
+package isaac.bastion;
 
 import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.events.CreateReinforcementEvent;

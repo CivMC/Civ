@@ -1,4 +1,7 @@
-package bastion.isaac;
+package isaac.bastion;
+
+import isaac.bastion.util.QTBox;
+import isaac.bastion.util.SparseQuadTree;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -6,9 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import bastion.isaac.util.QTBox;
-import bastion.isaac.util.SparseQuadTree;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

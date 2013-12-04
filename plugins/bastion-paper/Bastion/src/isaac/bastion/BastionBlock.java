@@ -1,6 +1,6 @@
-package bastion.isaac;
+package isaac.bastion;
 
-import bastion.isaac.util.QTBox;
+import isaac.bastion.util.QTBox;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.entity.Faction;
