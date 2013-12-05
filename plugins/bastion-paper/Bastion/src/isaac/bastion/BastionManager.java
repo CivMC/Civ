@@ -1,9 +1,11 @@
 package isaac.bastion;
 
+import isaac.bastion.storage.BastionBlockStorage;
 import isaac.bastion.util.QTBox;
 import isaac.bastion.util.SparseQuadTree;
 
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,45 +14,84 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import com.untamedears.citadel.entity.Faction;
+import com.untamedears.citadel.entity.PlayerReinforcement;
 
 
 public class BastionManager
 {
-	//private Vector<BastionBlock> bastions;
 	private Map<World,SparseQuadTree> bastions;
-	private List<World> worlds;
+	private Map<Integer,BastionBlock> bastionsByID;
+	private BastionBlockStorage storage;
 	public BastionManager()
 	{
 		Bastion.getPlugin();
-		worlds=Bukkit.getWorlds();
+		
+		storage=new BastionBlockStorage();
+		
 		bastions=new HashMap<World, SparseQuadTree>();
-		for(World world : worlds){
+		bastionsByID=new HashMap<Integer,BastionBlock>();
+		
+		load();
+	}
+	
+	public boolean load() {
+		for(World world : Bukkit.getWorlds()){
+			Enumeration<BastionBlock> forWorld=storage.getAllSnitches(world);
 			SparseQuadTree bastionsForWorld=new SparseQuadTree();
+			while(forWorld.hasMoreElements()){
+				BastionBlock toAdd=forWorld.nextElement();
+				bastionsByID.put(toAdd.getID(), toAdd);
+				bastionsForWorld.add(toAdd);
+				Bastion.getPlugin().getLogger().info("Loaded Bastion");
+			}
 			bastions.put(world, bastionsForWorld);
 		}
-		//bastions = new Vector<BastionBlock>();
+		return false;
 	}
+	
+	public boolean save() {
+		storage.saveBastionBlocks(bastionsByID);
+		
+		return false;
+	}
+	
 
-	public void addBastion(Location location, int strength, Faction creator) {
-		//bastions.add(new BastionBlock(location, strength, creator));
-		bastions.get(location.getWorld()).add(new BastionBlock(location, strength, creator));
+	public void addBastion(Location location, PlayerReinforcement reinforcement) {
+		BastionBlock toAdd=new BastionBlock(location,reinforcement);
+		bastions.get(location.getWorld()).add(toAdd);
+		bastionsByID.put(toAdd.getID(),toAdd);
 		Bastion.getPlugin().getLogger().info("bastion added");
 	}
 	public BastionBlock getBastionBlock(Location loc) {
 		Set<? extends QTBox> possible=bastions.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ());
 		for(QTBox box: possible){
 			BastionBlock bastion=(BastionBlock) box;
-			if(bastion.getLocation()==loc)
+			Bastion.getPlugin().getLogger().info("found possible");
+			if(bastion.getLocation().equals(loc))
 				return bastion;
 		}
+		Bastion.getPlugin().getLogger().info("didn't find");
 		return null;
 	}
 	public void removeBastion(Location location) {
-		bastions.get(location.getWorld()).remove(getBastionBlock(location));
+		BastionBlock toRemove=getBastionBlock(location);
+		Bastion.getPlugin().getLogger().info("removeBastion calle toRemove==null"+(toRemove==null));
+		if(toRemove!=null){
+			toRemove.close();
+		
+			bastions.get(location.getWorld()).remove(toRemove);
+		}
+	}
+	public void removeBastion(BastionBlock toRemove) {
+		Bastion.getPlugin().getLogger().info("removeBastion calle toRemove==null"+(toRemove==null));
+		if(toRemove!=null){
+			toRemove.close();
+			bastions.get(toRemove.getLocation().getWorld()).remove(toRemove);
+		}
 	}
 	
 	public void handleBlockPlace(BlockPlaceEvent event) {
@@ -63,7 +104,7 @@ public class BastionManager
 			if (bastion.blocked(event)){
 				bastion.handlePlaced(event.getBlock());
 		        if(bastion.shouldCull())
-		        	bastions.get(bastion.getLocation().getWorld()).remove(bastion);
+		        	removeBastion(bastion);
 		        break;
 			}
 		}
