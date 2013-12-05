@@ -24,19 +24,8 @@ public class BastionBlock implements QTBox, Comparable
 	public boolean loaded=true;
 	public boolean ghost=false;
 	private static int highestID=-1;
-	private static Set<Integer> freeIDs;
 
 	public BastionBlock(Location nlocation, PlayerReinforcement reinforcement){
-
-		if(freeIDs==null){
-			freeIDs=new TreeSet<Integer>();
-			id=0;
-		} else if(freeIDs.size()==0){
-			id=++highestID;
-		} else{
-			id=freeIDs.iterator().next();
-			freeIDs.remove(id);
-		}
 		location = nlocation;
 
 		strength=reinforcement.getDurability();
@@ -48,6 +37,7 @@ public class BastionBlock implements QTBox, Comparable
 	public BastionBlock(Location nLocation,int nID)
 	{
 		id=nID;
+		Bastion.getPlugin().getLogger().info("created Bastion block with id "+id);
 		location = nLocation;
 
 		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
@@ -64,9 +54,7 @@ public class BastionBlock implements QTBox, Comparable
 		location.getBlock().setType(Material.AIR);
 	}
 	public void free_id(){
-		if(id!=highestID)
-			freeIDs.add(id);
-		else{
+		if(id==highestID){
 			--highestID;
 		}
 	}

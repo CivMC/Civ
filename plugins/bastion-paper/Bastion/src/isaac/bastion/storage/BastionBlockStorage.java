@@ -29,11 +29,13 @@ public class BastionBlockStorage {
 	public void createTables(){
 		//Database only needs to store the loc of each block for now
 		String toExicute="CREATE TABLE IF NOT EXISTS "+bationBlocksTable+" ("
-				+ "bastion_id int(10),"
+				+ "bastion_id int(10)  unsigned NOT NULL AUTO_INCREMENT,"
 				+ "loc_x int(10),"
 				+ "loc_y int(10),"
 				+ "loc_z int(10),"
-				+ "loc_world varchar(40) NOT NULL);";
+				+ "loc_world varchar(40) NOT NULL,"
+				+ "PRIMARY KEY (`bastion_id`)"
+				+");";
 		Bastion.getPlugin().getLogger().info(toExicute);
 		db.execute(toExicute);
 	}
@@ -51,8 +53,9 @@ public class BastionBlockStorage {
 		if(!block.loaded()){
 			db.execute("DELETE FROM "+bationBlocksTable+" WHERE bastion_id="+block.getID()+";");
 			if(!block.ghost()){
-				db.execute("INSERT INTO "+bationBlocksTable+" VALUES("
-						+block.getID()+","
+				db.execute("INSERT INTO "+bationBlocksTable+" "+
+						"(loc_x,loc_y,loc_z,loc_world)"+
+						"VALUES("
 						+block.getLocation().getBlockX()+","
 						+block.getLocation().getBlockY()+","
 						+block.getLocation().getBlockZ()+","
