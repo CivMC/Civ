@@ -1,5 +1,7 @@
-package isaac.bastion;
+package isaac.bastion.manager;
 
+import isaac.bastion.Bastion;
+import isaac.bastion.BastionBlock;
 import isaac.bastion.storage.BastionBlockStorage;
 import isaac.bastion.util.QTBox;
 import isaac.bastion.util.SparseQuadTree;
@@ -14,7 +16,6 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.event.block.BlockPlaceEvent;
 

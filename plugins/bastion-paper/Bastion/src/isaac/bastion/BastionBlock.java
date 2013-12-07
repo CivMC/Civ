@@ -1,7 +1,7 @@
 package isaac.bastion;
 
-import java.util.Set;
-import java.util.TreeSet;
+
+import java.util.Random;
 
 import isaac.bastion.util.QTBox;
 
@@ -10,35 +10,70 @@ import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
 
 @SuppressWarnings("rawtypes")
 public class BastionBlock implements QTBox, Comparable
 {
 	private Location location;
 	private int id;
-	public int strength;
-	public boolean loaded=true;
-	public boolean ghost=false;
+	private int strength;
+	private int radius;
+	private long lastPlace;
+	private int radiusSquared;
+	private boolean loaded=true;
+	private boolean ghost=false;
+
 	private static int highestID=-1;
+	private static int min_break_time;
+	private static int erosionTime;
+	private int taskID;
+	private static Random random;
 
 	public BastionBlock(Location nlocation, PlayerReinforcement reinforcement){
+		id=++highestID;
 		location = nlocation;
+		radius=Bastion.getConfigManager().getBastionBlockEffectRadius();
+		radiusSquared=radius*radius;
 
 		strength=reinforcement.getDurability();
 		loaded=false;
 		if(id>highestID){
 			highestID=id;
 		}
+
+		lastPlace=(System.currentTimeMillis()/1000);
+
+		if(random==null){
+			min_break_time=(1000*60)/Bastion.getConfigManager().getBastionBlockMaxBreaks();
+			random=new Random();
+			erosionTime=(1000*60*60*24*20)/Bastion.getConfigManager().getBastionBlockErosion();
+			Bastion.getPlugin().getLogger().info("Ticks between erosion will be "+erosionTime+" because we're doing "+Bastion.getConfigManager().getBastionBlockErosion()+" erosions a day");
+		}
+
+		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+		taskID=scheduler.scheduleSyncRepeatingTask(Bastion.getPlugin(),
+				new BukkitRunnable(){
+			public void run(){
+				erode();
+			}
+		},
+		random.nextInt(erosionTime),erosionTime);
+
 	}
 	public BastionBlock(Location nLocation,int nID)
 	{
 		id=nID;
-		Bastion.getPlugin().getLogger().info("created Bastion block with id "+id);
 		location = nLocation;
+		radius=Bastion.getConfigManager().getBastionBlockEffectRadius();
+
+		radiusSquared=radius*radius;
 
 		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
 
@@ -47,11 +82,32 @@ public class BastionBlock implements QTBox, Comparable
 		if(id>highestID){
 			highestID=id;
 		}
+
+
+		if(random==null){
+			min_break_time=(1000*60)/Bastion.getConfigManager().getBastionBlockMaxBreaks();
+			random=new Random();
+			erosionTime=(1000*60*60*24*20)/Bastion.getConfigManager().getBastionBlockErosion();
+			Bastion.getPlugin().getLogger().info("Ticks between erosion will be "+erosionTime+" because we're doing "+Bastion.getConfigManager().getBastionBlockErosion()+" erosions a day");
+		}
+
+		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+		taskID=scheduler.scheduleSyncRepeatingTask(Bastion.getPlugin(),
+				new BukkitRunnable(){
+			public void run(){
+				erode();
+			}
+		},
+		random.nextInt(erosionTime),erosionTime);
 	}
 	public void close(){
-		loaded=false;
-		ghost=true;
-		location.getBlock().setType(Material.AIR);
+		if(!ghost){
+			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+			scheduler.cancelTask(taskID);
+			loaded=false;
+			ghost=true;
+			location.getBlock().setType(Material.AIR);
+		}
 	}
 	public void free_id(){
 		if(id==highestID){
@@ -80,8 +136,8 @@ public class BastionBlock implements QTBox, Comparable
 				//return false;
 			}
 
-			if (((event.getBlock().getX() - location.getX()) * (event.getBlock().getX() - location.getX()) + 
-					(event.getBlock().getZ() - location.getZ()) * (event.getBlock().getZ() - location.getZ()) > 25.0D)
+			if (((event.getBlock().getX() - location.getX()) * (float)(event.getBlock().getX() - location.getX()) + 
+					(event.getBlock().getZ() - location.getZ()) * (float)(event.getBlock().getZ() - location.getZ()) > radiusSquared)
 					|| (event.getBlock().getY() <= location.getY())) {
 
 				Bastion.getPlugin().getLogger().info("not blocked");
@@ -94,23 +150,31 @@ public class BastionBlock implements QTBox, Comparable
 	}
 	public void handlePlaced(Block block) {
 		block.breakNaturally();
-
-		IReinforcement reinforcement = Citadel.getReinforcementManager().getReinforcement(location.getBlock());
-		if (reinforcement != null) {
-			strength=reinforcement.getDurability();
-			--strength;
-			reinforcement.setDurability(strength);
-			Citadel.getReinforcementManager().addReinforcement(reinforcement);
-		}
-
-		Bastion.getPlugin().getLogger().info("strength=" + strength);
+		erode();
 	}
 	public boolean shouldCull(){
 
-		if(strength > 0||ghost){
+		if(strength > 0){
 			return false;
 		} else{
 			return true;
+		}
+	}
+	private void erode(){
+		if(true){
+			IReinforcement reinforcement = Citadel.getReinforcementManager().getReinforcement(location.getBlock());
+
+
+			if (reinforcement != null) {
+				strength=reinforcement.getDurability();
+				--strength;
+				reinforcement.setDurability(strength);
+				Citadel.getReinforcementManager().addReinforcement(reinforcement);
+			}
+			
+		}
+		if(shouldCull()){
+			close();
 		}
 	}
 	public int getID(){
@@ -119,7 +183,7 @@ public class BastionBlock implements QTBox, Comparable
 
 	@Override
 	public int qtXMin() {
-		return location.getBlockX()-5;
+		return location.getBlockX()-radius;
 	}
 
 	@Override
@@ -129,12 +193,12 @@ public class BastionBlock implements QTBox, Comparable
 
 	@Override
 	public int qtXMax() {
-		return location.getBlockX()+5;
+		return location.getBlockX()+radius;
 	}
 
 	@Override
 	public int qtZMin() {
-		return location.getBlockZ()-5;
+		return location.getBlockZ()-radius;
 	}
 
 	@Override
@@ -144,7 +208,7 @@ public class BastionBlock implements QTBox, Comparable
 
 	@Override
 	public int qtZMax() {
-		return location.getBlockZ()+5;
+		return location.getBlockZ()+radius;
 	}
 
 	@Override
@@ -166,11 +230,11 @@ public class BastionBlock implements QTBox, Comparable
 			return -1;
 
 		if(thisX>otherX)
-			return -1;
+			return 1;
 		if(thisY>otherY)
-			return -1;
+			return 1;
 		if(thisZ>otherZ)
-			return -1;
+			return 1;
 
 		return 0;
 	}
