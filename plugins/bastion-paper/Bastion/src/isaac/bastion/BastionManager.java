@@ -1,7 +1,5 @@
-package isaac.bastion.manager;
+package isaac.bastion;
 
-import isaac.bastion.Bastion;
-import isaac.bastion.BastionBlock;
 import isaac.bastion.storage.BastionBlockStorage;
 import isaac.bastion.util.QTBox;
 import isaac.bastion.util.SparseQuadTree;
@@ -16,6 +14,7 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.event.block.BlockPlaceEvent;
 
@@ -104,10 +103,10 @@ public class BastionManager
 		for (BastionBlock bastion : possibleRandom){
 			if (bastion.blocked(event)){
 				bastion.handlePlaced(event.getBlock());
+		        if(bastion.shouldCull())
+		        	removeBastion(bastion);
+		        break;
 			}
-	        if(bastion.shouldCull())
-	        	removeBastion(bastion);
-	        break;
 		}
 	}
 }

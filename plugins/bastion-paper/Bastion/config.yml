@@ -1,0 +1,18 @@
+mysql:
+  username: ''
+  host: localhost
+  enable: false
+  password: ''
+  database: bukkit
+  port: 3306
+  prefix: ''
+BastionBlock:
+  material: GOLD_BLOCK 
+  effectRadius: 5
+  startScaleFactor: 1
+  finalScaleFactor: 1
+  warmUpTime: 0
+  maxBreaksPerMinute: 5;
+  erosionRatePerDay: 100
+  
+  
