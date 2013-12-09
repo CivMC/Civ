@@ -104,10 +104,10 @@ public class BastionManager
 		for (BastionBlock bastion : possibleRandom){
 			if (bastion.blocked(event)){
 				bastion.handlePlaced(event.getBlock());
+		        if(bastion.shouldCull())
+		        	removeBastion(bastion);
+		        break;
 			}
-	        if(bastion.shouldCull())
-	        	removeBastion(bastion);
-	        break;
 		}
 	}
 }

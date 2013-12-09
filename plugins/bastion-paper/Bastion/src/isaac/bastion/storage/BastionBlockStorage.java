@@ -33,7 +33,10 @@ public class BastionBlockStorage {
 				+ "loc_x int(10),"
 				+ "loc_y int(10),"
 				+ "loc_z int(10),"
-				+ "loc_world varchar(40) NOT NULL);";
+				+ "loc_world varchar(40) NOT NUL"
+				+ "placed long(10),"
+				+"PRIMARY KEY (bastion_id)"
+				+");";
 		Bastion.getPlugin().getLogger().info(toExicute);
 		db.execute(toExicute);
 	}
@@ -48,7 +51,7 @@ public class BastionBlockStorage {
 		}
 	}
 	public void saveBastionBlock(BastionBlock block){
-		if(!block.loaded()){
+		if(block.loaded()){
 			db.execute("DELETE FROM "+bationBlocksTable+" WHERE bastion_id="+block.getID()+";");
 			if(!block.ghost()){
 				db.execute("INSERT INTO "+bationBlocksTable+" VALUES("
@@ -56,7 +59,9 @@ public class BastionBlockStorage {
 						+block.getLocation().getBlockX()+","
 						+block.getLocation().getBlockY()+","
 						+block.getLocation().getBlockZ()+","
-						+"'"+block.getLocation().getWorld().getName()+"'"+");");
+						+"'"+block.getLocation().getWorld().getName()+"',"
+						+block.getPlaced()
+						+");");
 			}
 		}
 	}
@@ -93,6 +98,7 @@ public class BastionBlockStorage {
 		}
 		public BastionBlock nextBastionBlock() {
 			int x,y,z,id;
+			long placed;
 			try {
                 if (result == null || !result.next()) {
                 	result = null;
@@ -102,13 +108,15 @@ public class BastionBlockStorage {
 				y=result.getInt("loc_y");
 				z=result.getInt("loc_z");
 				id=result.getInt("bastion_id");
+				placed=result.getLong("placed");
+				
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return null;
 			}
 			Location loc=new Location(world, x, y, z);
-			return new BastionBlock(loc,id);
+			return new BastionBlock(loc,placed,id);
 		}
 
 
