@@ -29,14 +29,15 @@ public class BastionBlockStorage {
 	public void createTables(){
 		//Database only needs to store the loc of each block for now
 		String toExicute="CREATE TABLE IF NOT EXISTS "+bationBlocksTable+" ("
-				+ "bastion_id int(10),"
-				+ "loc_x int(10),"
-				+ "loc_y int(10),"
-				+ "loc_z int(10),"
-				+ "loc_world varchar(40) NOT NUL"
-				+ "placed long(10),"
-				+"PRIMARY KEY (bastion_id)"
-				+");";
+				+ "bastion_id int(10)  unsigned NOT NULL AUTO_INCREMENT,"
+				+ "loc_x int(10), "
+				+ "loc_y int(10), "
+				+ "loc_z int(10), "
+				+ "loc_world varchar(40) NOT NULl, "
+				+ "placed int(20) Unsigned, "
+				+ "fraction float(20) Unsigned, "
+				+ "PRIMARY KEY (`bastion_id`)"
+				+ ");";
 		Bastion.getPlugin().getLogger().info(toExicute);
 		db.execute(toExicute);
 	}
@@ -51,17 +52,20 @@ public class BastionBlockStorage {
 		}
 	}
 	public void saveBastionBlock(BastionBlock block){
-		if(block.loaded()){
+		if(!block.loaded()){
 			db.execute("DELETE FROM "+bationBlocksTable+" WHERE bastion_id="+block.getID()+";");
 			if(!block.ghost()){
-				db.execute("INSERT INTO "+bationBlocksTable+" VALUES("
+				String toExicute="INSERT INTO "+bationBlocksTable+" VALUES("
 						+block.getID()+","
 						+block.getLocation().getBlockX()+","
 						+block.getLocation().getBlockY()+","
 						+block.getLocation().getBlockZ()+","
 						+"'"+block.getLocation().getWorld().getName()+"',"
-						+block.getPlaced()
-						+");");
+						+block.getPlaced()+","
+						+block.getBalance()
+						+");";
+				Bastion.getPlugin().getLogger().info(toExicute);
+				db.execute(toExicute);
 			}
 		}
 	}
@@ -99,6 +103,7 @@ public class BastionBlockStorage {
 		public BastionBlock nextBastionBlock() {
 			int x,y,z,id;
 			long placed;
+			float balance;
 			try {
                 if (result == null || !result.next()) {
                 	result = null;
@@ -109,6 +114,7 @@ public class BastionBlockStorage {
 				z=result.getInt("loc_z");
 				id=result.getInt("bastion_id");
 				placed=result.getLong("placed");
+				balance=result.getFloat("fraction");
 				
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -116,7 +122,7 @@ public class BastionBlockStorage {
 				return null;
 			}
 			Location loc=new Location(world, x, y, z);
-			return new BastionBlock(loc,placed,id);
+			return new BastionBlock(loc,placed,balance,id);
 		}
 
 

@@ -23,10 +23,11 @@ public class BastionBlock implements QTBox, Comparable
 {
 	private Location location;
 	private int id;
+	private float balance=0;
 	private int strength;
 	private int radius;
 	private long placed;
-	
+
 	private long lastPlace;
 	private int radiusSquared;
 	private boolean loaded=true;
@@ -52,13 +53,14 @@ public class BastionBlock implements QTBox, Comparable
 		setup();
 
 	}
-	public BastionBlock(Location nLocation,long nPlaced,int nID)
+	public BastionBlock(Location nLocation,long nPlaced,float nBalance,int nID)
 	{
 		id=nID;
 		location = nLocation;
 		radius=Bastion.getConfigManager().getBastionBlockEffectRadius();
 		placed=nPlaced;
-		
+		balance=nBalance;
+
 		radiusSquared=radius*radius;
 
 		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
@@ -76,16 +78,29 @@ public class BastionBlock implements QTBox, Comparable
 		if(first){
 			intiStatic();
 		}
-
-		taskId=registerTask();
-		
+		if(erosionTime!=0){
+			taskId=registerTask();
+		}
+		balance=0;
 		lastPlace=System.currentTimeMillis();
-		
+
 	}
 	private void intiStatic(){
-		min_break_time=(1000*60)/Bastion.getConfigManager().getBastionBlockMaxBreaks();
+
+		if(Bastion.getConfigManager().getBastionBlockMaxBreaks()!=0){
+			min_break_time=(1000*60)/Bastion.getConfigManager().getBastionBlockMaxBreaks();
+		} else{
+			min_break_time=Integer.MAX_VALUE;
+		}
+
+
+		if(Bastion.getConfigManager().getBastionBlockErosion()!=0){
+			erosionTime=(1000*60*60*24*20)/Bastion.getConfigManager().getBastionBlockErosion();
+		} else{
+			erosionTime=0;
+		}
+
 		random=new Random();
-		erosionTime=(1000*60*60*24*20)/Bastion.getConfigManager().getBastionBlockErosion();
 		first=true;
 	}
 	private int registerTask(){
@@ -93,18 +108,34 @@ public class BastionBlock implements QTBox, Comparable
 		return scheduler.scheduleSyncRepeatingTask(Bastion.getPlugin(),
 				new BukkitRunnable(){
 			public void run(){
-				erode();
+				erode(1);
 			}
 		},
 		random.nextInt(erosionTime),erosionTime);
 	}
 	public void close(){
 		if(!ghost){
-			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-			scheduler.cancelTask(taskId);
+			if(erosionTime!=0){
+				BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+				scheduler.cancelTask(taskId);
+			}
 			loaded=false;
 			ghost=true;
 			location.getBlock().setType(Material.AIR);
+		}
+	}
+	private float erosionFromPlace(){
+		int scaleTime=Bastion.getConfigManager().getBastionBlockScaleTime();
+		double scaleStart=Bastion.getConfigManager().getBastionBlockScaleFacStart();
+		double scaleEnd=Bastion.getConfigManager().getBastionBlockScaleFacEnd();
+		int time=(int) (System.currentTimeMillis()-placed);
+
+		if(scaleTime==0){
+			return 1;
+		} else if(time<scaleTime){
+			return (float) (((scaleEnd-scaleStart)/(float)scaleTime)*time+scaleStart);
+		} else{
+			return (float) scaleEnd;
 		}
 	}
 	public void free_id(){
@@ -138,39 +169,48 @@ public class BastionBlock implements QTBox, Comparable
 					(event.getBlock().getZ() - location.getZ()) * (float)(event.getBlock().getZ() - location.getZ()) > radiusSquared)
 					|| (event.getBlock().getY() <= location.getY())) {
 
-				Bastion.getPlugin().getLogger().info("not blocked");
+
 				return false;
 			}
 
-			Bastion.getPlugin().getLogger().info("blocked");
 		}
 		return true;
 	}
 	public void handlePlaced(Block block) {
 		block.breakNaturally();
-		erode();
+		erode(erosionFromPlace());
 	}
 	public boolean shouldCull(){
 
-		if(strength > 0){
+		if(strength+balance> 0){
 			return false;
 		} else{
 			return true;
 		}
 	}
-	private void erode(){
+	private void erode(float amount){
 		long time=System.currentTimeMillis();
+		int whole=(int) (amount);
+		float fraction=(float) (amount-whole);
+		float sumFraction=balance+fraction;
+		whole=(int) (sumFraction+whole);
+		fraction=(float) (sumFraction-whole);
+		//Bastion.getPlugin().getLogger().info("min_break_time="+min_break_time+" Which means (time-lastPlace)>=min_break_time)="+((time-lastPlace)>=min_break_time)+" because (time-lastPlace)==("+time+"-"+lastPlace+")");
 		if((time-lastPlace)>=min_break_time){
 			IReinforcement reinforcement = Citadel.getReinforcementManager().getReinforcement(location.getBlock());
-
-
 			if (reinforcement != null) {
 				strength=reinforcement.getDurability();
-				--strength;
+				strength-=whole;
+				balance=fraction;
+				Bastion.getPlugin().getLogger().info("balance set to "+balance);
+
+				Bastion.getPlugin().getLogger().info("Bastion at: "+location+" strength is now at "+strength+" after "+amount+" was removed because balance="+balance
+						+",fraction="+fraction);
 				reinforcement.setDurability(strength);
 				Citadel.getReinforcementManager().addReinforcement(reinforcement);
 			}
-			
+			lastPlace=time;
+
 		}
 		if(shouldCull()){
 			close();
@@ -182,6 +222,9 @@ public class BastionBlock implements QTBox, Comparable
 
 	public long getPlaced(){
 		return placed;
+	}
+	public float getBalance(){
+		return balance;
 	}
 	@Override
 	public int qtXMin() {

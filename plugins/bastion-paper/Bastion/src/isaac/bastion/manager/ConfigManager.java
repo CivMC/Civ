@@ -112,7 +112,7 @@ public class ConfigManager {
 		bastionBlockMaxBreaks=loadInt("BastionBlock.maxBreaksPerMinute");
 		bastionBlockErosion=loadInt("BastionBlock.erosionRatePerDay");
 		bastionBlockScaleFacStart=loadDouble("BastionBlock.startScaleFactor");
-		bastionBlockScaleFacEnd=loadDouble("BastionBlock.endScaleFactor");
+		bastionBlockScaleFacEnd=loadDouble("BastionBlock.finalScaleFactor");
 		bastionBlockScaleTime=loadInt("BastionBlock.warmUpTime");
 		Bastion.getPlugin().saveConfig();
 		
@@ -142,6 +142,10 @@ public class ConfigManager {
 	private double loadDouble(String field){
 		if(config.isDouble(field)){
 			double value=config.getDouble(field);
+			return value;
+		}
+		if(config.isInt(field)){
+			double value=config.getInt(field);
 			return value;
 		}
 		return Double.NaN;
