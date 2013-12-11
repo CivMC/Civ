@@ -33,7 +33,7 @@ public class BastionBlock implements QTBox, Comparable
 	private boolean loaded=true;
 	private boolean ghost=false;
 
-	private static int highestId=-1;
+	private static int highestId=0;
 	private static int min_break_time;
 	private static int erosionTime;
 	private static boolean first=true;
@@ -73,8 +73,7 @@ public class BastionBlock implements QTBox, Comparable
 		if(id>highestId){
 			highestId=id;
 		}
-
-
+		Bastion.getPlugin().getLogger().info("Bastion Block created");
 		if(first){
 			intiStatic();
 		}

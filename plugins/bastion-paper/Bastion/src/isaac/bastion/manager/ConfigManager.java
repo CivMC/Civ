@@ -29,6 +29,7 @@ public class ConfigManager {
 	private int bastionBlockScaleTime;
 	private int bastionBlockMaxBreaks;
 	private int bastionBlockErosion;
+	private int saveTimeInt;
 	
 	static String file_name="config.xml";
 	
@@ -74,6 +75,9 @@ public class ConfigManager {
 	public String getPassword(){
 		return password;
 	}
+	public int getTimeBetweenSaves(){
+		return saveTimeInt;
+	}
 	
 	public Material getBastionBlockMaterial(){
 		return bastionBlockMaterial;
@@ -106,6 +110,12 @@ public class ConfigManager {
 		
 		username=loadString("mysql.username");
 		password=loadString("mysql.password");
+		int savesPerDay=loadInt("mysql.savesPerDay");
+		if(savesPerDay!=0){
+			saveTimeInt=(1000*60*60*24)/savesPerDay;
+		} else{
+			saveTimeInt=0;
+		}
 		
 		bastionBlockMaterial=Material.getMaterial(loadString("BastionBlock.material"));
 		bastionBlockEffectRadius=loadInt("BastionBlock.effectRadius");

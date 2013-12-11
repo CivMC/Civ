@@ -6,6 +6,7 @@ mysql:
   database: bukkit
   port: 3306
   prefix: ''
+  savesPerDay: 48
 BastionBlock:
   material: GOLD_BLOCK 
   effectRadius: 5

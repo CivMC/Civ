@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Enumeration;
-import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -34,44 +34,38 @@ public class BastionBlockStorage {
 				+ "loc_y int(10), "
 				+ "loc_z int(10), "
 				+ "loc_world varchar(40) NOT NULl, "
-				+ "placed int(20) Unsigned, "
+				+ "placed bigint(20) Unsigned, "
 				+ "fraction float(20) Unsigned, "
 				+ "PRIMARY KEY (`bastion_id`)"
 				+ ");";
 		Bastion.getPlugin().getLogger().info(toExicute);
 		db.execute(toExicute);
 	}
-	public void saveBastionBlocks(Map<Integer,BastionBlock> bastions){
-		Bastion.getPlugin().getLogger().info("saveBastionBlocks for "+BastionBlock.getHighestID()+1+" blocks");
-		for(int i=0;i<BastionBlock.getHighestID()+1;++i){
-			BastionBlock current=bastions.get(i);
-			if(current!=null){
-				saveBastionBlock(current);
-				Bastion.getPlugin().getLogger().info("Saved");
-			}
+	public void saveBastionBlocks(Set<BastionBlock> blocks){
+		Bastion.getPlugin().getLogger().info("saveBastionBlocks for "+blocks.size()+" blocks");
+		for(BastionBlock block: blocks){
+			saveBastionBlock(block);
 		}
 	}
 	public void saveBastionBlock(BastionBlock block){
-		if(!block.loaded()){
-			db.execute("DELETE FROM "+bationBlocksTable+" WHERE bastion_id="+block.getID()+";");
-			if(!block.ghost()){
-				String toExicute="INSERT INTO "+bationBlocksTable+" VALUES("
-						+block.getID()+","
-						+block.getLocation().getBlockX()+","
-						+block.getLocation().getBlockY()+","
-						+block.getLocation().getBlockZ()+","
-						+"'"+block.getLocation().getWorld().getName()+"',"
-						+block.getPlaced()+","
-						+block.getBalance()
-						+");";
-				Bastion.getPlugin().getLogger().info(toExicute);
-				db.execute(toExicute);
-			}
+		db.execute("DELETE FROM "+bationBlocksTable+" WHERE bastion_id="+block.getID()+";");
+		if(!block.ghost()){
+			String toExicute="INSERT INTO "+bationBlocksTable+" VALUES("
+					+block.getID()+","
+					+block.getLocation().getBlockX()+","
+					+block.getLocation().getBlockY()+","
+					+block.getLocation().getBlockZ()+","
+					+"'"+block.getLocation().getWorld().getName()+"',"
+					+block.getPlaced()+","
+					+block.getBalance()
+					+");";
+			Bastion.getPlugin().getLogger().info(toExicute);
+			db.execute(toExicute);
 		}
 	}
-    public Enumeration<BastionBlock> getAllSnitches(World world) {
-        return new BastionBlockEnumerator(world);
-    }
+	public Enumeration<BastionBlock> getAllSnitches(World world) {
+		return new BastionBlockEnumerator(world);
+	}
 	class BastionBlockEnumerator implements Enumeration<BastionBlock>{
 		World world;
 		ResultSet result;
@@ -105,17 +99,17 @@ public class BastionBlockStorage {
 			long placed;
 			float balance;
 			try {
-                if (result == null || !result.next()) {
-                	result = null;
-                    return null;
-                }
+				if (result == null || !result.next()) {
+					result = null;
+					return null;
+				}
 				x=result.getInt("loc_x");
 				y=result.getInt("loc_y");
 				z=result.getInt("loc_z");
 				id=result.getInt("bastion_id");
 				placed=result.getLong("placed");
 				balance=result.getFloat("fraction");
-				
+
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

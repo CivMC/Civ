@@ -1,7 +1,7 @@
 package isaac.bastion;
 
 
-import isaac.bastion.manager.BastionManager;
+import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.manager.ConfigManager;
 
 import com.untamedears.citadel.entity.PlayerReinforcement;
@@ -15,7 +15,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public final class BastionListener
 implements Listener
 {
-	private BastionManager bastionManager;
+	private BastionBlockManager bastionManager;
 	private ConfigManager config;
 
 	public BastionListener()
@@ -32,10 +32,7 @@ implements Listener
 		if(event.isCancelled()){
 			return;
 		}
-		if (event.getBlock().getType() == config.getBastionBlockMaterial()) {
-			Bastion.getPlugin().getLogger().info("Block break "+event.getBlock().toString());
-			bastionManager.removeBastion(event.getBlock().getLocation());
-		}
+		bastionManager.handleBlockBreakEvent(event);
 	}
 	@EventHandler
 	public void onReinforcement(CreateReinforcementEvent event) {
@@ -44,7 +41,7 @@ implements Listener
 			bastionManager.addBastion(event.getBlock().getLocation(),(PlayerReinforcement) event.getReinforcement());
 		}
 	}
-	public BastionManager getBastionManager(){
+	public BastionBlockManager getBastionManager(){
 		return bastionManager;
 	
 	}

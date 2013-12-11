@@ -2,3 +2,9 @@ name: Bastion
 version: 0.0.0
 main: isaac.bastion.Bastion
 depend: [Citadel]
+commands:
+   Bastion:
+      description: Base command for Bastion
+      usage: /Bastion <Field> Where Field is {License}
+      permission: Bastion.basic
+      permission-message: You don't have <permission>
