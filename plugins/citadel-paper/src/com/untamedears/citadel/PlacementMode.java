@@ -18,5 +18,7 @@ public enum PlacementMode {
     // optionally sets a security level
     FORTIFICATION,
     // punching blocks gives information about their reinforcement and access level
-    INFO
+    INFO,
+    // punching reinforcements toggles their insecure mode
+    INSECURE
 }

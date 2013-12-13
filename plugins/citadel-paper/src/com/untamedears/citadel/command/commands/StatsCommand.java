@@ -1,5 +1,6 @@
 package com.untamedears.citadel.command.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import com.untamedears.citadel.Citadel;
@@ -14,6 +15,40 @@ import com.untamedears.citadel.command.PlayerCommand;
  */
 public class StatsCommand extends PlayerCommand {
 
+    public class SendResultsTask implements Runnable {
+        public QueryDbTask previousTask;
+        public SendResultsTask(QueryDbTask pt) {
+            previousTask = pt;
+        }
+        @Override
+        public void run() {
+		    previousTask.sender.sendMessage(
+                new StringBuilder().append("§cTotal Reinforcements:§e " ).append(previousTask.numReinforcements).toString());
+		    previousTask.sender.sendMessage(
+                new StringBuilder().append("§cTotal Groups:§e " ).append(previousTask.numGroups).toString());
+        }
+    }
+
+    public class QueryDbTask implements Runnable {
+        public CommandSender sender;
+        public int numReinforcements;
+        public int numGroups;
+        public QueryDbTask(CommandSender s) {
+            sender = s;
+        }
+        @Override
+        public void run() {
+		    ReinforcementManager reinforcementManager = Citadel.getReinforcementManager();
+		    numReinforcements = reinforcementManager.getReinforcementsAmount();
+
+		    GroupManager groupManager = Citadel.getGroupManager();
+		    numGroups = groupManager.getGroupsAmount();
+
+            Bukkit.getScheduler().runTask(
+                Citadel.getPlugin(), new SendResultsTask(this));
+        }
+    }
+
 	public StatsCommand() {
 		super("View Stats");
 		setDescription("View citadel stats");
@@ -22,14 +57,8 @@ public class StatsCommand extends PlayerCommand {
 	}
 
 	public boolean execute(CommandSender sender, String[] args) {		
-		ReinforcementManager reinforcementManager = Citadel.getReinforcementManager();
-		int numReinforcements = reinforcementManager.getReinforcementsAmount();
-		
-		GroupManager groupManager = Citadel.getGroupManager();
-		int numGroups = groupManager.getGroupsAmount();
-		
-		sender.sendMessage(new StringBuilder().append("§cTotal Reinforcements:§e " ).append(numReinforcements).toString());
-		sender.sendMessage(new StringBuilder().append("§cTotal Groups:§e " ).append(numGroups).toString());
+        Bukkit.getScheduler().runTaskAsynchronously(
+            Citadel.getPlugin(), new QueryDbTask(sender));
 		return true;
 	}
 

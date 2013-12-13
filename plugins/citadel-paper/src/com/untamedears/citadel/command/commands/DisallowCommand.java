@@ -4,6 +4,7 @@ import static com.untamedears.citadel.Utility.sendMessage;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
@@ -51,7 +52,11 @@ public class DisallowCommand extends PlayerCommand {
         	sendMessage(sender, ChatColor.RED, "%s is not a member of this group", playerName);
         	return true;
         }
-        groupManager.removeMemberFromGroup(groupName, playerName);
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player)sender;
+        }
+        groupManager.removeMemberFromGroup(groupName, playerName, player);
         sendMessage(sender, ChatColor.GREEN, "Disallowed %s from access to %s blocks", playerName, group.getName());
 		return true;
 	}

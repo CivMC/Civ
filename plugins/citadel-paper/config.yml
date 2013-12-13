@@ -4,6 +4,7 @@ general:
   autoModeReset: 30
   redstoneDistance: 9
   groupsAllowed: 60
+  reinforcedCrops: true
 materials:
 - name: STONE
   strength: 25
@@ -24,7 +25,7 @@ additionalSecurable:
 - ANVIL
 nonReinforceable:
 - SAPLING
-- GRASS
+- LONG_GRASS
 - DEAD_BUSH
 - PISTON_EXTENSION
 - PISTON_MOVING_PIECE
@@ -59,3 +60,22 @@ database:
 caching:
   max_age: 300000
   max_chunks: 10000
+
+# Possible verboseMessages:
+# - InteractionAttempt
+# - ReinDelegation
+# - AdminReinBypass
+# - ReinBypass
+# - RedstoneOpen
+# - GolemCreated
+# - NullGroup
+# - AdminReinLocked
+# - ReinLocked
+# - CropTrample
+# - ReinOvergrowth
+# - ReinCreated
+# - ReinDmg
+# - ReinDestroyed
+# - Enabled
+# - Disabled
+verboseMessages:

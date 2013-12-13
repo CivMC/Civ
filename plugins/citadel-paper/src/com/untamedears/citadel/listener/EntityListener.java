@@ -17,9 +17,9 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreakDoorEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.world.StructureGrowEvent;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.Citadel.VerboseMsg;
 import com.untamedears.citadel.ReinforcementManager;
 import com.untamedears.citadel.entity.IReinforcement;
 
@@ -66,8 +66,9 @@ public class EntityListener implements Listener {
         for (Block block : getGolemBlocks(type, cse.getLocation().getBlock())) {
             IReinforcement reinforcement = reinforcementManager.getReinforcement(block);
             if (reinforcement != null) {
-            	Citadel.info("Reinforcement %s removed due to golem creation at " 
-            			+ reinforcement.getBlock().getLocation().toString());
+            	Citadel.verbose(
+                        VerboseMsg.GolemCreated,
+            			reinforcement.getBlock().getLocation().toString());
                 reinforcementManager.removeReinforcement(reinforcement);
             }
         }
@@ -89,16 +90,5 @@ public class EntityListener implements Listener {
         blocks.add(base);
         
         return blocks;
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void grow(StructureGrowEvent sge) {
-    	ReinforcementManager reinforcementManager = Citadel.getReinforcementManager();
-        IReinforcement reinforcement = reinforcementManager.getReinforcement(sge.getLocation());
-        if (reinforcement != null) {
-        	Citadel.info("Reinforcement %s removed due to structure growth at " 
-        			+ reinforcement.getBlock().getLocation().toString());
-            reinforcementManager.removeReinforcement(reinforcement);
-        }
     }
 }

@@ -4,6 +4,7 @@ import static com.untamedears.citadel.Utility.sendMessage;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
@@ -47,9 +48,13 @@ public class RemoveModCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "%s is not a moderator of %s", targetName, groupName);
 			return true;
 		}
-		groupManager.removeModeratorFromGroup(groupName, targetName);
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player)sender;
+        }
+		groupManager.removeModeratorFromGroup(groupName, targetName, player);
 		if(!group.isMember(targetName)){
-			groupManager.addMemberToGroup(groupName, targetName);
+			groupManager.addMemberToGroup(groupName, targetName, player);
 		}
 		sendMessage(sender, ChatColor.GREEN, "%s has been removed as moderator from %s and demoted to a member. Use /ctdisallow to remove as member", targetName, groupName);
 		return true;

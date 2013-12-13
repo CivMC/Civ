@@ -3,6 +3,7 @@ package com.untamedears.citadel.command.commands;
 import static com.untamedears.citadel.Utility.sendMessage;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.command.CommandSender;
 
 import com.untamedears.citadel.Citadel;
@@ -43,8 +44,12 @@ public class CreateCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "You already have too many groups. %s is the limit. Try deleting one first", groupsAllowed);
 			return true;
 		}
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player)sender;
+        }
 		Faction group = new Faction(groupName, senderName);
-		groupManager.addGroup(group);
+		groupManager.addGroup(group, player);
 		sendMessage(sender, ChatColor.GREEN, "Created group: %s", groupName);
 		return true;
 	}

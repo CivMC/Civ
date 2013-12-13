@@ -4,6 +4,7 @@ import static com.untamedears.citadel.Utility.sendMessage;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
@@ -64,19 +65,23 @@ public class TransferCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "User must be online");
 			return true;
 		}
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player)sender;
+        }
 		Member member = memberManager.getMember(targetName);
 		if(member == null){
 			member = new Member(targetName);
 			memberManager.addMember(member);
 		}
 		if(group.isMember(targetName)){
-			groupManager.removeMemberFromGroup(groupName, targetName);
+			groupManager.removeMemberFromGroup(groupName, targetName, player);
 		}
 		if(group.isModerator(targetName)){
-			groupManager.removeModeratorFromGroup(groupName, targetName);
+			groupManager.removeModeratorFromGroup(groupName, targetName, player);
 		}
 		group.setFounder(targetName);
-		groupManager.addGroup(group);
+		groupManager.addGroup(group, player);
 		sendMessage(sender, ChatColor.GREEN, "You have transferred %s to %s", groupName, targetName);
 		if(memberManager.isOnline(targetName)){
 			sendMessage(memberManager.getOnlinePlayer(targetName), ChatColor.YELLOW, "%s has transferred the group %s to you", 

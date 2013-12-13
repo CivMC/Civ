@@ -52,11 +52,15 @@ public class LeaveCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "You are not a member of %s", group.getName());
 			return true;
 		}
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player)sender;
+        }
 		if(group.isModerator(playerName)){
-			groupManager.removeModeratorFromGroup(groupName, playerName);
+			groupManager.removeModeratorFromGroup(groupName, playerName, player);
 		}
 		if(group.isMember(playerName)){
-			groupManager.removeMemberFromGroup(groupName, playerName);
+			groupManager.removeMemberFromGroup(groupName, playerName, player);
 		}
 		sendMessage(sender, ChatColor.GREEN, "You have left the group %s", group.getName());
 		MemberManager memberManager = Citadel.getMemberManager();
