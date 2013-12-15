@@ -1,7 +1,8 @@
 package com.untamedears.realisticbiomes.persist;
 
-// represents the growth status of a single plant
-
+/**
+represents the growth status of a single plant
+*/
 public class Plant {
 	// time of the last update, in milliseconds
 	long lastUpdateTime;
@@ -12,6 +13,7 @@ public class Plant {
 	public Plant(long lastUpdateTime) {
 		this.lastUpdateTime = lastUpdateTime;
 		growth = 0.0f;
+		
 	}
 	
 	public Plant(long lastUpdateTime, float growth) {
