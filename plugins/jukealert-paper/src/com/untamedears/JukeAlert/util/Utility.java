@@ -1,5 +1,6 @@
 package com.untamedears.JukeAlert.util;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BlockIterator;
 
 // Static methods only
 public class Utility {
@@ -62,13 +64,14 @@ public class Utility {
 
     public static Snitch getSnitchUnderCursor(Player player) {
         SnitchManager manager = JukeAlert.getInstance().getSnitchManager();
-        List<Block> lastTwo = player.getLastTwoTargetBlocks(null, 64);
-        for (Block block : lastTwo) {
-            Material mat = block.getType();
+        Iterator<Block> itr = new BlockIterator(player, 40); // Within 2.5 chunks
+        while (itr.hasNext()) {
+            final Block block = itr.next();
+            final Material mat = block.getType();
             if (mat != Material.JUKEBOX) {
                 continue;
             }
-            Snitch found = manager.getSnitch(block.getWorld(), block.getLocation());
+            final Snitch found = manager.getSnitch(block.getWorld(), block.getLocation());
             if (found != null) {
                 return found;
             }
