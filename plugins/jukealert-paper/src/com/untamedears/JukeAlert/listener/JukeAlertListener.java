@@ -266,12 +266,17 @@ public class JukeAlertListener implements Listener {
         String groupName = event.getFactionName();
         Set<Snitch> removeSet = new TreeSet<Snitch>();
         for (Snitch snitch : snitchManager.getAllSnitches()) {
-            if (snitch.getGroup().getName().equalsIgnoreCase(groupName)) {
+            final Faction snitchGroup = snitch.getGroup();
+            String snitchGroupName = null;
+            if (snitchGroup != null) {
+                snitchGroupName = snitchGroup.getName();
+            }
+            if (snitchGroupName != null && snitchGroupName.equalsIgnoreCase(groupName)) {
                 removeSet.add(snitch);
             }
         }
         for (Snitch snitch : removeSet) {
-            Location loc = snitch.getLoc();
+            final Location loc = snitch.getLoc();
             if (snitch.shouldLog()) {
                 plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
             }
