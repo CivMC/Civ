@@ -15,6 +15,7 @@ import com.untamedears.citadel.entity.FactionMember;
 import com.untamedears.citadel.entity.Moderator;
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.manager.ConfigManager;
+import com.untamedears.JukeAlert.util.IgnoreList;
 
 // An Iterator that produces the Players associated with a specific Citadel
 //  group. First the founder, then the moderators, and lastly the members.
@@ -166,44 +167,71 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
         return null;
     }
 
-    private boolean outOfRange(Player player) {
-        return player != null
-            && referenceLocation_ != null
-            && maxDistance_ != null
-            && referenceLocation_.distance(player.getLocation()) > maxDistance_;
+    private Player getPlayerByState() {
+        Player player = null;
+        if (state_ <= 0) {
+            player = getFounder();
+            state_ = 1;
+        } else if (state_ == 1) {
+            player = getNextModerator();
+            if (player == null) {
+                state_ = 2;
+            }
+        } else if (state_ == 2) {
+            player = getNextMember();
+            if (player == null) {
+                state_ = 3;
+            }
+        }
+        return player;
+    }
+
+    private boolean inFinalState() {
+        return state_ >= 3;
+    }
+
+    // If the player is out of range return null, otherwise return the player.
+    private Player outOfRange(Player player) {
+        if (player == null) {
+            return null;
+        }
+        if (referenceLocation_ != null
+                && maxDistance_ != null
+                && referenceLocation_.distance(player.getLocation()) > maxDistance_) {
+            return null;
+        }
+        return player;
+    }
+
+    // If the player is ignoring this group return null, otherwise return the player.
+    private Player playerIgnoringGroup(Player player) {
+        if (player == null) {
+            return null;
+        }
+        final String playerName = player.getName();
+        if (IgnoreList.doesPlayerIgnoreAll(playerName)) {
+            return null;
+        }
+        if (skipList_ != null
+                && skipList_.contains(playerName.toLowerCase())) {
+            return null;
+        }
+        return player;
     }
 
     private Player getNextPlayer() {
         if (returnedCount_ >= maxPlayers_) {
             return null;
         }
-        Player player = null;
+        Player player;
         do {
-            if (state_ <= 0) {
-                player = getFounder();
-                state_ = 1;
-            } else if (state_ == 1) {
-                player = getNextModerator();
-                if (player == null) {
-                    state_ = 2;
-                }
-            } else if (state_ == 2) {
-                player = getNextMember();
-                if (player == null) {
-                    state_ = 3;
-                }
-            } else if (state_ >= 3) {
+            player = getPlayerByState();
+            if (inFinalState()) {
                 returnedCount_ = maxPlayers_;
                 return null;
             }
-            if (outOfRange(player)) {
-                player = null;
-            }
-            if (skipList_ != null && player != null) {
-            	if (skipList_.contains(player.getName().toLowerCase())) {
-            		player = null;
-            	}
-            }
+            player = outOfRange(player);
+            player = playerIgnoringGroup(player);
         } while (player == null);
         ++returnedCount_;
         return player;

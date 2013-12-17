@@ -7,6 +7,7 @@ import com.untamedears.citadel.entity.Faction;
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.util.IgnoreList;
 import com.untamedears.JukeAlert.util.OnlineGroupMembers;
 
 import org.bukkit.Bukkit;

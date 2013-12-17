@@ -13,7 +13,8 @@ public class IgnoreList {
 	private static final Object lockObject_ = new Object();
 	private static Map<String, Set<String>> ignoresByPlayer_ = new HashMap<String, Set<String>>();
 	private static Map<String, Set<String>> ignoresByGroup_ = new HashMap<String, Set<String>>();
-	
+	private static Map<String, Boolean> playerIgnoreAlls_ = new HashMap<String, Boolean>();
+
 	// Flip the ignore/unignore bit for a player-group combination.
 	// Requires quick access with lookup by player.
 	// Returns true if it adds to ignore list.
@@ -113,4 +114,30 @@ public class IgnoreList {
 		
 		return returnValue;
 	}
+
+    // Toggle the global ignore flag for a specific player. If the player isn't
+    // noted in the map, enable the ignore bit.
+    public static boolean toggleIgnoreAll(String playerName) {
+        boolean newState;
+        playerName = playerName.toLowerCase();
+        synchronized(playerIgnoreAlls_) {
+            if (!playerIgnoreAlls_.containsKey(playerName)) {
+                newState = true;
+            } else {
+                newState = !playerIgnoreAlls_.get(playerName);
+            }
+            playerIgnoreAlls_.put(playerName, newState);
+        }
+        return newState;
+    }
+
+    public static boolean doesPlayerIgnoreAll(String playerName) {
+        playerName = playerName.toLowerCase();
+        synchronized(playerIgnoreAlls_) {
+            if (!playerIgnoreAlls_.containsKey(playerName)) {
+                return false;
+            }
+            return playerIgnoreAlls_.get(playerName);
+        }
+    }
 }

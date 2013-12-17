@@ -29,27 +29,41 @@ public class JaMuteCommand extends PlayerCommand {
         		toggleIgnore(sender, args[0]);
         	}
 
-            return true;
         } else {
             sender.sendMessage(ChatColor.RED + " You do not have the ability to ignore groups!");
-            return false;
         }
+        return true;
     }
    
    private void toggleIgnore(CommandSender sender, String groupName) {
-	   Boolean addedIgnore = IgnoreList.toggleIgnore(sender.getName(), groupName);
+       final Player player = (Player)sender;
+       final String playerName = player.getName();
+
+       if (groupName.equals("*")) {
+           if (IgnoreList.toggleIgnoreAll(playerName)) {
+               player.sendMessage("Ignoring all groups!");
+           } else {
+               player.sendMessage("Stopped ignoring all groups!");
+           }
+           return;
+       }
+	   Boolean addedIgnore = IgnoreList.toggleIgnore(playerName, groupName);
 	   
 	   if (addedIgnore) {
-		   sender.sendMessage("Added group \"" + groupName + "\" to ignore list!");
+		   player.sendMessage("Added group \"" + groupName + "\" to ignore list!");
 	   } else {
-		   sender.sendMessage("Removed group \"" + groupName + "\" from ignore list!");
+		   player.sendMessage("Removed group \"" + groupName + "\" from ignore list!");
 	   }
    }
 
     private void sendIgnoreGroupList(CommandSender sender) {
-        Player player = (Player) sender;	
-        
-        Set<String> groupList = IgnoreList.GetGroupIgnoreListByPlayer(player.getName());
+        final Player player = (Player) sender;
+        final String playerName = player.getName();
+        if (IgnoreList.doesPlayerIgnoreAll(playerName)) {
+            sender.sendMessage("* Ignoring all groups *");
+            return;
+        }
+        Set<String> groupList = IgnoreList.GetGroupIgnoreListByPlayer(playerName);
         StringBuilder sb = new StringBuilder();
         if (groupList == null) {
         	sb.append("* No Group Ignores *");

@@ -5,8 +5,6 @@ import com.untamedears.JukeAlert.external.VanishNoPacket;
 import com.untamedears.JukeAlert.manager.PlayerManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.util.IgnoreList;
-import com.untamedears.JukeAlert.util.OnlineGroupMembers;
 
 import static com.untamedears.JukeAlert.util.Utility.doesSnitchExist;
 import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
