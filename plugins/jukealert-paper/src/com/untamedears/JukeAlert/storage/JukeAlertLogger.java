@@ -619,9 +619,7 @@ public class JukeAlertLogger {
             getSnitchLogStmt.setInt(3, logsPerPage);
 
             ResultSet set = getSnitchLogStmt.executeQuery();
-            if (!set.isBeforeFirst()) {
-                System.out.println("No data");
-            } else {
+            if (set.isBeforeFirst()) {
                 while (set.next()) {
                     // TODO: need a function to create a string based upon what things we have / don't have in this result set
                     // so like if we have a block place action, then we include the x,y,z, but if its a KILL action, then we just say
@@ -653,9 +651,7 @@ public class JukeAlertLogger {
         	getSnitchListStmt.setInt(3, offset);
         	
             ResultSet set = getSnitchListStmt.executeQuery();
-            if (!set.isBeforeFirst()) {
-                System.out.println("No data.");
-            } else {
+            if (set.isBeforeFirst()) {
                 while (set.next()) {
                 	
                 	String snitchGroupString = set.getString("SnitchGroup");
@@ -695,9 +691,7 @@ public class JukeAlertLogger {
             getSnitchLogGroupStmt.setInt(2, offset);
 
             ResultSet set = getSnitchLogGroupStmt.executeQuery();
-            if (!set.isBeforeFirst()) {
-                System.out.println("No data.");
-            } else {
+            if (set.isBeforeFirst()) {
                 while (set.next()) {
                     info.add(createInfoString(set, true));
                 }

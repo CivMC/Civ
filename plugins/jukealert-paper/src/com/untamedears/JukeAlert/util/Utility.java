@@ -85,9 +85,10 @@ public class Utility {
         int type_id = world.getBlockAt(x, y, z).getType().getId();
         boolean exists = (type_id == 84 || type_id == 25);
         if (!exists && shouldCleanup) {
-            System.out.println("Removing ghost snitch '" + snitch.getName() + "' at x:" + x + " y:" + y + " z:" + z);
-            JukeAlert.getInstance().getSnitchManager().removeSnitch(snitch);
-            JukeAlert.getInstance().getJaLogger().logSnitchBreak(world.getName(), x, y, z);
+            final JukeAlert plugin = JukeAlert.getInstance();
+            plugin.log("Removing ghost snitch '" + snitch.getName() + "' at x:" + x + " y:" + y + " z:" + z);
+            plugin.getSnitchManager().removeSnitch(snitch);
+            plugin.getJaLogger().logSnitchBreak(world.getName(), x, y, z);
         }
         return exists;
     }
