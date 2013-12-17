@@ -13,13 +13,18 @@ public class SendSnitchInfo implements Runnable {
 	private List<String> info;
 	private Player player;
 	private int offset;
+    private String snitchName;
 	private boolean shouldCensor;
 
-	public SendSnitchInfo(List<String> info, Player player, int offset, boolean shouldCensor) {
+	public SendSnitchInfo(List<String> info, Player player, int offset, String snitchName, boolean shouldCensor) {
 		this.info = info;
 		this.player = player;
 		this.offset = offset;
+        this.snitchName = snitchName;
 		this.shouldCensor = shouldCensor;
+        if (this.snitchName != null && this.snitchName.length() > 32) {
+            this.snitchName = this.snitchName.substring(0, 32);
+        }
 	}
 
 	public void run() {
@@ -40,7 +45,12 @@ public class SendSnitchInfo implements Runnable {
 
 			id = id.replaceFirst(",", "") + (id.length() > 1 ? "\n" : "");
 
-			output += ChatColor.WHITE + " Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------" + "\n";
+            if (this.snitchName != null) {
+			    output += ChatColor.WHITE + " Snitch Log for " + this.snitchName + " "
+                       + ChatColor.DARK_GRAY + "-----------------------------------".substring(this.snitchName.length()) + "\n";
+            } else {
+			    output += ChatColor.WHITE + " Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------" + "\n";
+            }
 			output += id;
 			output += ChatColor.GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 22), ChatFiller.fillString("Reason", (double) 22), ChatFiller.fillString("Details", (double) 30)) + "\n";
 			
@@ -59,7 +69,9 @@ public class SendSnitchInfo implements Runnable {
 			output += "\n";
 			output += ChatColor.DARK_GRAY + " * Page " + offset + " ------------------------------------------";
 			player.sendMessage(output);
-		} else {
+		} else if (this.snitchName != null) {
+			player.sendMessage(ChatColor.AQUA + " * Page " + offset + " is empty for snitch " + this.snitchName);
+        } else {
 			player.sendMessage(ChatColor.AQUA + " * Page " + offset + " is empty");
 		}
 

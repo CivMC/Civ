@@ -22,16 +22,20 @@ public class GetSnitchInfoPlayerTask implements Runnable {
     private boolean shouldCensor;
     private final int offset;
     private int snitchId;
+    private String snitchName;
     private String group;
     private final Player player;
     private final JukeAlert plugin;
 
-    public GetSnitchInfoPlayerTask(JukeAlert plugin, int snitchId, int offset, Player player, boolean shouldCensor) {
+    public GetSnitchInfoPlayerTask(JukeAlert plugin, int snitchId, String snitchName, int offset, Player player, boolean shouldCensor) {
         this.snitchId = snitchId;
+        this.snitchName = snitchName;
         this.offset = offset;
         this.player = player;
         this.plugin = plugin;
         this.shouldCensor = shouldCensor;
+
+    	this.group = null;
     }
 
     public GetSnitchInfoPlayerTask(JukeAlert plugin, String group,
@@ -40,15 +44,19 @@ public class GetSnitchInfoPlayerTask implements Runnable {
         this.offset = offset;
         this.player = player;
         this.plugin = plugin;
+
+        this.snitchId = -1;
+        this.snitchName = null;
+        this.shouldCensor = false;
 	}
 
 	@Override
     public void run() {
 		SendSnitchInfo sendSnitchInfo;
 		if (group == null)
-			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchInfo(snitchId, (offset-1) * 10), this.player, offset, shouldCensor);
+			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchInfo(snitchId, (offset-1) * 10), this.player, offset, this.snitchName, shouldCensor);
 		else
-			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchGroupInfo(group, (offset-1) * 10), this.player, offset, false);
+			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchGroupInfo(group, (offset-1) * 10), this.player, offset, null, false);
 		sendSnitchInfo.run();
     }
 
