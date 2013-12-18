@@ -20,7 +20,7 @@ import com.untamedears.citadel.entity.PlayerReinforcement;
 
 public class BastionBlockManager
 {
-	private BastionBlockSet bastions;
+	public BastionBlockSet bastions;
 	private ConfigManager config;
 	public BastionBlockManager()
 	{

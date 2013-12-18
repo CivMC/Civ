@@ -130,6 +130,16 @@ public class BastionBlock implements QTBox, Comparable
 			location.getBlock().setType(Material.AIR);
 		}
 	}
+	public void silentClose(){
+		if(!ghost){
+			if(erosionTime!=0){
+				BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+				scheduler.cancelTask(taskId);
+			}
+			loaded=false;
+			ghost=true;
+		}
+	}
 	private float erosionFromPlace(){
 		int scaleTime=Bastion.getConfigManager().getBastionBlockScaleTime();
 		double scaleStart=Bastion.getConfigManager().getBastionBlockScaleFacStart();

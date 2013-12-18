@@ -158,7 +158,7 @@ Iterable<BastionBlock> {
 		if(!changed.contains(toRemove))
 			changed.add(toRemove);
 		blocksById.remove(toRemove.getID());
-		SparseQuadTree forWorld=blocks.get(toRemove.getLocation());
+		SparseQuadTree forWorld=blocks.get(toRemove.getLocation().getWorld());
 		if(forWorld!=null){
 			forWorld.remove(toRemove);
 		}
@@ -194,6 +194,25 @@ Iterable<BastionBlock> {
 	public <T> T[] toArray(T[] arg0) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	public void silentRemove(Location loc) {
+		
+		BastionBlock toRemove=getBastionBlock(loc);
+		
+		if(toRemove==null){
+			
+			return;
+		}
+		if(!changed.contains(toRemove))
+			changed.add(toRemove);
+		blocksById.remove(toRemove.getID());
+		SparseQuadTree forWorld=blocks.get(toRemove.getLocation().getWorld());
+		if(forWorld!=null){
+			forWorld.remove(toRemove);
+		} else{
+			Bastion.getPlugin().getLogger().info("forWorld was null");
+		}
+		toRemove.silentClose();
 	}
 
 }

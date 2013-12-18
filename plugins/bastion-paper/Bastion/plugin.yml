@@ -13,8 +13,12 @@ commands:
       usage: /bsi and right click on block
       permission: Bastion.normal
    bsd:
-      description: Removes Bastion Block when clicked.
+      description: Removes Bastion Block when clicked
       usage: /bsd and right click on block
+      permission: Bastion.normal
+   bso:
+      description: Returns to normal
+      usage: /bso set the mode back to normal
       permission: Bastion.normal
 permissions:
     Bastion.*:
