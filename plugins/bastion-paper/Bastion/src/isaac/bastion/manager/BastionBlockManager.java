@@ -13,7 +13,6 @@ import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.untamedears.citadel.entity.PlayerReinforcement;
@@ -37,8 +36,8 @@ public class BastionBlockManager
 		bastions.add(toAdd);
 		Bastion.getPlugin().getLogger().info("bastion added");
 	}
-	
-	public boolean handleBlockPlace(BlockPlaceEvent event) {
+
+	public boolean handleBlockPlace(BlockPlaceEvent event, boolean shouldHandle) {
 		Location location=event.getBlock().getLocation();
 		Set<? extends QTBox> possible=bastions.forLocation(location);
 		@SuppressWarnings("unchecked")
@@ -47,16 +46,17 @@ public class BastionBlockManager
 		Collections.shuffle(possibleRandom);
 		for (BastionBlock bastion : possibleRandom){
 			if (bastion.blocked(event)){
-				bastion.handlePlaced(event.getBlock());
+				if(shouldHandle)
+					bastion.handlePlaced(event.getBlock());
 				event.setCancelled(true);
-		        if(bastion.shouldCull())
-		        	bastions.remove(bastion);
-		        return true;
+				if(bastion.shouldCull())
+					bastions.remove(bastion);
+				return true;
 			}
 		}
 		return false;
 	}
-	public boolean handleBlockPlace(Location loc,Player placed) {
+	public boolean handleBlockPlace(Location loc, Player placed, boolean shouldHandle) {
 		Set<? extends QTBox> possible=bastions.forLocation(loc);
 		@SuppressWarnings("unchecked")
 		List<BastionBlock> possibleRandom=new LinkedList<BastionBlock>((Set<BastionBlock>)possible);
@@ -64,32 +64,35 @@ public class BastionBlockManager
 		Collections.shuffle(possibleRandom);
 		for (BastionBlock bastion : possibleRandom){
 			if (bastion.blocked(loc,placed)){
-				bastion.handlePlaced(loc.getBlock());
-		        if(bastion.shouldCull())
-		        	bastions.remove(bastion);
-		        return true;
+				if(shouldHandle)
+					bastion.handlePlaced(loc.getBlock());
+				if(bastion.shouldCull())
+					bastions.remove(bastion);
+				return true;
 			}
 		}
 		return false;
 	}
-	public boolean handleBlockPlace(Location loc){
+	public boolean handleBlockPlace(Location loc,boolean shouldHandle){
 		Set<? extends QTBox> possible=bastions.forLocation(loc);
-		
+
 		@SuppressWarnings("unchecked")
 		List<BastionBlock> possibleRandom=new LinkedList<BastionBlock>((Set<BastionBlock>)possible);
 		Bastion.getPlugin().getLogger().info("There are "+possibleRandom.size()+" possiblities.");
 		Collections.shuffle(possibleRandom);
-		
+
 		for (BastionBlock bastion : possibleRandom){
 			if (bastion.blocked(loc)){
-				bastion.handlePlaced(loc.getBlock());
-		        if(bastion.shouldCull())
-		        	bastions.remove(bastion);
-		        return true;
+				if(shouldHandle)
+					bastion.handlePlaced(loc.getBlock());
+				if(bastion.shouldCull())
+					bastions.remove(bastion);
+				return true;
 			}
 		}
 		return false;
 	}
+
 	public void handleBlockBreakEvent(BlockBreakEvent event){
 		if (event.getBlock().getType() == config.getBastionBlockMaterial()) {
 			Bastion.getPlugin().getLogger().info("Block break "+event.getBlock().toString());

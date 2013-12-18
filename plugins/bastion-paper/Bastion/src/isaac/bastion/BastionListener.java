@@ -8,7 +8,6 @@ import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.events.CreateReinforcementEvent;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
@@ -35,14 +34,14 @@ implements Listener
 		if(event.isCancelled()){
 			return;
 		}
-		bastionManager.handleBlockPlace(event);
+		bastionManager.handleBlockPlace(event,true);
 	}
 	@EventHandler
 	public void sandPlaced(EntityBlockFormEvent  event){
 		if(event.isCancelled()){
 			return;
 		}
-		bastionManager.handleBlockPlace(event.getBlock().getLocation());
+		bastionManager.handleBlockPlace(event.getBlock().getLocation(),false);
 	}
 	@EventHandler
 	public void pistionPushed(BlockPistonExtendEvent  event){
@@ -55,7 +54,7 @@ implements Listener
 		for(Block block : event.getBlocks()){
 			Bastion.getPlugin().getLogger().info("Triggered for "+block.getLocation());
 			
-			if(bastionManager.handleBlockPlace(block.getLocation().add(direction.getModX(),direction.getModY(),direction.getModZ()))){
+			if(bastionManager.handleBlockPlace(block.getLocation().add(direction.getModX(),direction.getModY(),direction.getModZ()),false)){
 				blocked=true;
 			}
 		}
@@ -68,7 +67,7 @@ implements Listener
 		}
 		Block placedOn=event.getBlockClicked().getRelative(event.getBlockFace());
 		Location placed=placedOn.getLocation();
-		boolean shouldCancel = bastionManager.handleBlockPlace(placed,event.getPlayer());
+		boolean shouldCancel = bastionManager.handleBlockPlace(placed,event.getPlayer(),true);
 		event.setCancelled(shouldCancel);
 
 	}

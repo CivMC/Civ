@@ -109,9 +109,9 @@ public class BastionBlockStorage {
 				id=result.getInt("bastion_id");
 				placed=result.getLong("placed");
 				balance=result.getFloat("fraction");
+				Bastion.getPlugin().getLogger().info("balance=0"+balance);
 
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return null;
 			}

@@ -29,6 +29,7 @@ Iterable<BastionBlock> {
 	private int task;
 	private ConfigManager config;
 	public BastionBlockSet() {
+		BastionBlock.set=this;
 		storage=new BastionBlockStorage();
 		changed=new TreeSet<BastionBlock>();
 		config=Bastion.getConfigManager();
@@ -46,6 +47,11 @@ Iterable<BastionBlock> {
 		},config.getTimeBetweenSaves()/500,config.getTimeBetweenSaves()/500);
 		//Bastion.getPlugin().getLogger().info("set up save for every "+config.getTimeBetweenSaves());
 	}
+	public void updated(BastionBlock updated){
+		if(!changed.contains(updated)){
+			changed.add(updated);
+		}
+	}
 	public void close(){
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 		scheduler.cancelTask(task);
@@ -62,6 +68,13 @@ Iterable<BastionBlock> {
 				Bastion.getPlugin().getLogger().info("Loaded Bastion");
 			}
 			blocks.put(world, bastionsForWorld);
+		}
+
+		for(int i=1;i<BastionBlock.getHighestID();++i){
+			BastionBlock block=blocksById.get(i);
+			if(block!=null)
+				if(block.shouldCull())
+					remove(block);
 		}
 	}
 	public Set<QTBox> forLocation(Location loc){
@@ -93,7 +106,8 @@ Iterable<BastionBlock> {
 	public boolean add(BastionBlock toAdd) {
 		blocksById.put(toAdd.getID(), toAdd);
 		blocks.get(toAdd.getLocation().getWorld()).add(toAdd);
-		changed.add(toAdd);
+		if(!changed.contains(toAdd))
+			changed.add(toAdd);
 		return false;
 	}
 	@Override
@@ -141,9 +155,13 @@ Iterable<BastionBlock> {
 		if(toRemove==null){
 			return;
 		}
-		changed.add(toRemove);
+		if(!changed.contains(toRemove))
+			changed.add(toRemove);
 		blocksById.remove(toRemove.getID());
-		blocks.get(toRemove.getLocation().getWorld()).remove(toRemove);
+		SparseQuadTree forWorld=blocks.get(toRemove.getLocation());
+		if(forWorld!=null){
+			forWorld.remove(toRemove);
+		}
 		toRemove.close();
 	}
 	@SuppressWarnings("unchecked")

@@ -3,6 +3,7 @@ package isaac.bastion;
 
 import java.util.Random;
 
+import isaac.bastion.storage.BastionBlockSet;
 import isaac.bastion.util.QTBox;
 
 import com.untamedears.citadel.Citadel;
@@ -41,6 +42,7 @@ public class BastionBlock implements QTBox, Comparable
 	private static boolean first=true;
 	private int taskId;
 	private static Random random;
+	public static BastionBlockSet set;
 
 	public BastionBlock(Location nlocation, PlayerReinforcement reinforcement){
 		id=++highestId;
@@ -66,9 +68,12 @@ public class BastionBlock implements QTBox, Comparable
 		radiusSquared=radius*radius;
 
 		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
-
-		strength=reinforcement.getDurability();
-		setup();
+		if(reinforcement!=null){
+			strength=reinforcement.getDurability();
+			setup();
+		} else{
+			strength=0;
+		}
 
 	}
 	private void setup(){
@@ -210,7 +215,7 @@ public class BastionBlock implements QTBox, Comparable
 		} else{
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -252,23 +257,24 @@ public class BastionBlock implements QTBox, Comparable
 		float sumFraction=balance+fraction;
 		whole=(int) (sumFraction+whole);
 		fraction=(float) (sumFraction-whole);
-		//Bastion.getPlugin().getLogger().info("min_break_time="+min_break_time+" Which means (time-lastPlace)>=min_break_time)="+((time-lastPlace)>=min_break_time)+" because (time-lastPlace)==("+time+"-"+lastPlace+")");
 		if((time-lastPlace)>=min_break_time){
 			IReinforcement reinforcement = Citadel.getReinforcementManager().getReinforcement(location.getBlock());
 			if (reinforcement != null) {
 				strength=reinforcement.getDurability();
-				strength-=whole;
-				balance=fraction;
-				Bastion.getPlugin().getLogger().info("balance set to "+balance);
-
-				Bastion.getPlugin().getLogger().info("Bastion at: "+location+" strength is now at "+strength+" after "+amount+" was removed because balance="+balance
-						+",fraction="+fraction);
+			}
+			
+			strength-=whole;
+			balance=fraction;
+			
+			if (reinforcement != null) {
 				reinforcement.setDurability(strength);
 				Citadel.getReinforcementManager().addReinforcement(reinforcement);
 			}
 			lastPlace=time;
 
 		}
+		Bastion.getPlugin().getLogger().info("Balance="+balance);
+		set.updated(this);
 		if(shouldCull()){
 			close();
 		}
