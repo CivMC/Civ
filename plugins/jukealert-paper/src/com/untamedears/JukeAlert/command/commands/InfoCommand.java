@@ -43,6 +43,10 @@ public class InfoCommand extends PlayerCommand {
             final Player player = (Player)sender;
             final String playerNameLc = player.getName().toLowerCase();
             final Snitch snitch = findTargetedOwnedSnitch(player);
+            if (snitch == null) {
+                player.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
+                return true;
+            }
             final int snitchId = snitch.getId();
             int offset = 1;
             if (args.length > 0) {
@@ -65,11 +69,7 @@ public class InfoCommand extends PlayerCommand {
                 offset = 1;
             }
             playerPage_.put(playerNameLc, new History(snitchId, offset));
-            if (snitch != null) {
-                sendLog(sender, snitch, offset, args.length == 2);
-            } else {
-                sender.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
-            }
+            sendLog(sender, snitch, offset, args.length == 2);
             return true;
         } else {
             sender.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
