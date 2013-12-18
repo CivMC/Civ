@@ -14,6 +14,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -154,14 +156,21 @@ public class BastionBlock implements QTBox, Comparable
 	public boolean loaded(){
 		return loaded;
 	}
-	public boolean blocked(BlockPlaceEvent event)
+	public boolean blocked(BlockEvent event)
 	{
-		String playerName=event.getPlayer().getName();
+		String playerName;
+		if(event instanceof BlockPlaceEvent){
+			playerName=((BlockPlaceEvent) event).getPlayer().getName();
+		} else{
+			playerName=null;
+		}
 		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
 		if(reinforcement instanceof PlayerReinforcement){
 			Faction owner = reinforcement.getOwner();
-			if(owner.isMember(playerName)||owner.isFounder(playerName)||owner.isModerator(playerName)){
-				//return false;
+			if(playerName!=null){
+				if(owner.isMember(playerName)||owner.isFounder(playerName)||owner.isModerator(playerName)){
+					//return false;
+				}
 			}
 
 			if (((event.getBlock().getX() - location.getX()) * (float)(event.getBlock().getX() - location.getX()) + 
@@ -172,11 +181,60 @@ public class BastionBlock implements QTBox, Comparable
 				return false;
 			}
 
+		} else{
+			return false;
 		}
 		return true;
 	}
+	public boolean blocked(Location loc,Player placed)
+	{
+		String playerName=placed.getName();
+
+		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
+
+		if(reinforcement instanceof PlayerReinforcement){
+
+			Faction owner = reinforcement.getOwner();
+			if(owner.isMember(playerName)||owner.isFounder(playerName)||owner.isModerator(playerName)){
+				//return false;
+			}
+
+			if (((loc.getBlock().getX() - location.getX()) * (float)(loc.getBlock().getX() - location.getX()) + 
+					(loc.getBlock().getZ() - location.getZ()) * (float)(loc.getBlock().getZ() - location.getZ()) > radiusSquared)
+					|| (loc.getBlock().getY() <= location.getY())) {
+
+
+				return false;
+			}
+
+		} else{
+			return false;
+		}
+		
+		return true;
+	}
+
+	public boolean blocked(Location loc){
+		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
+		if(reinforcement instanceof PlayerReinforcement){
+			if (((loc.getBlock().getX() - location.getX()) * (float)(loc.getBlock().getX() - location.getX()) + 
+					(loc.getBlock().getZ() - location.getZ()) * (float)(loc.getBlock().getZ() - location.getZ()) > radiusSquared)
+					|| (loc.getBlock().getY() <= location.getY())) {
+
+
+				return false;
+			}
+
+		}
+		return true;	
+	}
 	public void handlePlaced(Block block) {
 		block.breakNaturally();
+		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(block);
+		if(reinforcement instanceof PlayerReinforcement){
+			reinforcement.setDurability(0);
+			Citadel.getReinforcementManager().addReinforcement(reinforcement);
+		}
 		erode(erosionFromPlace());
 	}
 	public boolean shouldCull(){
