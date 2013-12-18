@@ -5,6 +5,24 @@ depend: [Citadel]
 commands:
    Bastion:
       description: Base command for Bastion
-      usage: /Bastion <Field> Where Field is {License}
-      permission: Bastion.basic
+      usage: /Bastion License
+      permission: Bastion.normal
       permission-message: You don't have <permission>
+   bsi:
+      description: Gives info on blocks that are clicked
+      usage: /bsi and right click on block
+      permission: Bastion.normal
+   bsd:
+      description: Removes Bastion Block when clicked.
+      usage: /bsd and right click on block
+      permission: Bastion.normal
+permissions:
+    Bastion.*:
+        description: Gives access to all Bastion commands
+        default: op
+    Bastion.normal:
+        description: All a normal player should ever need
+        default: true
+    Bastion.admin:
+        description: Special power for admins
+        default: op
