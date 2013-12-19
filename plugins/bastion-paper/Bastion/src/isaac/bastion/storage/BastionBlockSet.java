@@ -65,7 +65,6 @@ Iterable<BastionBlock> {
 				BastionBlock toAdd=forWorld.nextElement();
 				blocksById.put(toAdd.getID(), toAdd);
 				bastionsForWorld.add(toAdd);
-				Bastion.getPlugin().getLogger().info("Loaded Bastion");
 			}
 			blocks.put(world, bastionsForWorld);
 		}
@@ -85,7 +84,6 @@ Iterable<BastionBlock> {
 		Set<? extends QTBox> possible=forLocation(loc);
 		for(QTBox box: possible){
 			BastionBlock bastion=(BastionBlock) box;
-			Bastion.getPlugin().getLogger().info("found possible");
 			if(bastion.getLocation().equals(loc))
 				return bastion;
 		}
@@ -195,13 +193,11 @@ Iterable<BastionBlock> {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public void silentRemove(Location loc) {
-		
-		BastionBlock toRemove=getBastionBlock(loc);
+	public boolean silentRemove(BastionBlock toRemove) {
 		
 		if(toRemove==null){
 			
-			return;
+			return false;
 		}
 		if(!changed.contains(toRemove))
 			changed.add(toRemove);
@@ -213,6 +209,7 @@ Iterable<BastionBlock> {
 			Bastion.getPlugin().getLogger().info("forWorld was null");
 		}
 		toRemove.silentClose();
+		return true;
 	}
 
 }

@@ -7,20 +7,14 @@ import isaac.bastion.manager.ConfigManager;
 import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.events.CreateReinforcementEvent;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.material.Dispenser;
-import org.bukkit.material.MaterialData;
+
 
 public final class BastionListener
 implements Listener
@@ -38,41 +32,30 @@ implements Listener
 		if(event.isCancelled()){
 			return;
 		}
-		bastionManager.handleBlockPlace(event,true);
+		bastionManager.handleBlockPlace(event);
 	}
-	@EventHandler
-	public void sandPlaced(EntityBlockFormEvent  event){
+	
+	/*@EventHandler
+	public void sandPlaced(EntityChangeBlockEvent  event){
 		if(event.isCancelled()){
 			return;
 		}
-		bastionManager.handleBlockPlace(event.getBlock().getLocation(),false);
-	}
+		bastionManager.handleSandLanded(event);
+	}*/
+	
 	@EventHandler
 	public void pistionPushed(BlockPistonExtendEvent  event){
 		if(event.isCancelled()){
 			return;
 		}
-		boolean blocked=false;
-		BlockFace direction=event.getDirection();
-		
-		for(Block block : event.getBlocks()){
-			Bastion.getPlugin().getLogger().info("Triggered for "+block.getLocation());
-			
-			if(bastionManager.handleBlockPlace(block.getLocation().add(direction.getModX(),direction.getModY(),direction.getModZ()),false)){
-				blocked=true;
-			}
-		}
-		event.setCancelled(blocked);
+		bastionManager.handlePistonPush(event);
 	}
 	@EventHandler
 	public void bucketPlaced(PlayerBucketEmptyEvent  event){
 		if(event.isCancelled()){
 			return;
 		}
-		Block placedOn=event.getBlockClicked().getRelative(event.getBlockFace());
-		Location placed=placedOn.getLocation();
-		boolean shouldCancel = bastionManager.handleBlockPlace(placed,event.getPlayer(),true);
-		event.setCancelled(shouldCancel);
+		bastionManager.handleBucketPlace(event);
 
 	}
 	@EventHandler
@@ -80,20 +63,8 @@ implements Listener
 		if(event.isCancelled()){
 			return;
 		}
-		Material mat=event.getItem().getType();
-		if(mat!=Material.FLINT_AND_STEEL&&mat!=Material.WATER_BUCKET&&mat!=Material.LAVA_BUCKET){
-			return;
-		}
 		
-		MaterialData blockData = event.getBlock().getState().getData();
-		Dispenser dispenser = (Dispenser) blockData;
-		BlockFace facing=dispenser.getFacing();
-		Block block=event.getBlock().getRelative(facing);
-		
-		boolean shouldCancel = bastionManager.handleBlockPlace(block.getLocation(),false);
-		Bastion.getPlugin().getLogger().info("shouldCancel="+shouldCancel);
-		event.setCancelled(shouldCancel);
-
+		bastionManager.handleDispensed(event);
 	}
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {

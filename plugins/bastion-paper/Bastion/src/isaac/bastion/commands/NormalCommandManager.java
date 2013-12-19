@@ -1,5 +1,6 @@
 package isaac.bastion.commands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,6 +14,7 @@ public class NormalCommandManager implements CommandExecutor {
 		if(!(sender instanceof Player))
 			return false;
 		PlayersStates.setModeForPlayer((Player) sender, PlayersStates.Mode.NORMAL);
+		sender.sendMessage(ChatColor.GREEN+"NORMAL mode");
 		return true;
 	}
 

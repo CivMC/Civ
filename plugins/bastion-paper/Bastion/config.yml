@@ -6,14 +6,12 @@ mysql:
   database: bukkit
   port: 3306
   prefix: ''
-  savesPerDay: 48
+  savesPerDay: 192
 BastionBlock:
-  material: GOLD_BLOCK 
+  material: GOLD_BLOCK
   effectRadius: 5
-  startScaleFactor: 1
-  finalScaleFactor: 1
-  warmUpTime: 0
-  maxBreaksPerMinute: 5;
-  erosionRatePerDay: 100
-  
-  
+  startScaleFactor: 10
+  finalScaleFactor: 0.5
+  warmUpTime: 300000
+  maxBreaksPerMinute: 30
+  erosionRatePerDay: 0

@@ -43,9 +43,7 @@ public final class Bastion extends JavaPlugin
 
 	public void onDisable()
 	{
-		bastionManager.close();
-		getLogger().info("onDisable has been invoked!");
-		
+		bastionManager.close();		
 	}
 
 	public static BastionBlockManager getBastionManager()

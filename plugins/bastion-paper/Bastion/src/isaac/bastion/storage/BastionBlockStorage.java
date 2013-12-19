@@ -19,7 +19,6 @@ public class BastionBlockStorage {
 	public BastionBlockStorage(){
 		db=new Database("localhost", 3306, "bukkit","","","bastion_", Bastion.getPlugin().getLogger());
 		bationBlocksTable="bastion_"+"blocks";
-		Bastion.getPlugin().getLogger().info("db=  "+(db.getDb()));
 		db.connect();
 		if (db.isConnected()) {
 			createTables();
@@ -38,7 +37,6 @@ public class BastionBlockStorage {
 				+ "fraction float(20) Unsigned, "
 				+ "PRIMARY KEY (`bastion_id`)"
 				+ ");";
-		Bastion.getPlugin().getLogger().info(toExicute);
 		db.execute(toExicute);
 	}
 	public void saveBastionBlocks(Set<BastionBlock> blocks){
@@ -59,7 +57,6 @@ public class BastionBlockStorage {
 					+block.getPlaced()+","
 					+block.getBalance()
 					+");";
-			Bastion.getPlugin().getLogger().info(toExicute);
 			db.execute(toExicute);
 		}
 	}
@@ -76,9 +73,7 @@ public class BastionBlockStorage {
 				getAllBastionsForWorld.setString(1, world.getName());
 				result=getAllBastionsForWorld.executeQuery();
 				next=nextBastionBlock();
-				Bastion.getPlugin().getLogger().info("next==null "+(next==null));
 			} catch(SQLException e){
-				Bastion.getPlugin().getLogger().info("couldn't get Bastions \n"+e.getMessage());
 				next=null;
 				result=null;
 			}
@@ -109,7 +104,6 @@ public class BastionBlockStorage {
 				id=result.getInt("bastion_id");
 				placed=result.getLong("placed");
 				balance=result.getFloat("fraction");
-				Bastion.getPlugin().getLogger().info("balance=0"+balance);
 
 			} catch (SQLException e) {
 				e.printStackTrace();

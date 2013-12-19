@@ -12,6 +12,7 @@ import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,12 +22,12 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
-@SuppressWarnings("rawtypes")
-public class BastionBlock implements QTBox, Comparable
+
+public class BastionBlock implements QTBox, Comparable<BastionBlock>
 {
 	private Location location;
 	private int id;
-	private float balance=0;
+	private double balance=0;
 	private int strength;
 	private int radius;
 	private long placed;
@@ -39,6 +40,7 @@ public class BastionBlock implements QTBox, Comparable
 	private static int highestId=0;
 	private static int min_break_time;
 	private static int erosionTime;
+	private static int scaleTime;
 	private static boolean first=true;
 	private int taskId;
 	private static Random random;
@@ -99,6 +101,7 @@ public class BastionBlock implements QTBox, Comparable
 			min_break_time=Integer.MAX_VALUE;
 		}
 
+		scaleTime=Bastion.getConfigManager().getBastionBlockScaleTime();
 
 		if(Bastion.getConfigManager().getBastionBlockErosion()!=0){
 			erosionTime=(1000*60*60*24*20)/Bastion.getConfigManager().getBastionBlockErosion();
@@ -107,7 +110,7 @@ public class BastionBlock implements QTBox, Comparable
 		}
 
 		random=new Random();
-		first=true;
+		first=false;
 	}
 	private int registerTask(){
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
@@ -140,18 +143,17 @@ public class BastionBlock implements QTBox, Comparable
 			ghost=true;
 		}
 	}
-	private float erosionFromPlace(){
-		int scaleTime=Bastion.getConfigManager().getBastionBlockScaleTime();
+	private double erosionFromPlace(){
 		double scaleStart=Bastion.getConfigManager().getBastionBlockScaleFacStart();
 		double scaleEnd=Bastion.getConfigManager().getBastionBlockScaleFacEnd();
 		int time=(int) (System.currentTimeMillis()-placed);
 
 		if(scaleTime==0){
-			return 1;
+			return scaleStart;
 		} else if(time<scaleTime){
-			return (float) (((scaleEnd-scaleStart)/(float)scaleTime)*time+scaleStart);
+			return (((scaleEnd-scaleStart)/(float)scaleTime)*time+scaleStart);
 		} else{
-			return (float) scaleEnd;
+			return scaleEnd;
 		}
 	}
 	public void free_id(){
@@ -184,7 +186,7 @@ public class BastionBlock implements QTBox, Comparable
 			Faction owner = reinforcement.getOwner();
 			if(playerName!=null){
 				if(owner.isMember(playerName)||owner.isFounder(playerName)||owner.isModerator(playerName)){
-					//return false;
+					return false;
 				}
 			}
 
@@ -201,19 +203,19 @@ public class BastionBlock implements QTBox, Comparable
 		}
 		return true;
 	}
-	public boolean blocked(Location loc,Player placed)
+	public boolean blocked(Location loc,String playerName)
 	{
-		String playerName=placed.getName();
 
 		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
 
 		if(reinforcement instanceof PlayerReinforcement){
 
 			Faction owner = reinforcement.getOwner();
-			if(owner.isMember(playerName)||owner.isFounder(playerName)||owner.isModerator(playerName)){
-				//return false;
+			if(playerName!=null){
+				if(owner.isMember(playerName)||owner.isFounder(playerName)||owner.isModerator(playerName)){
+					return false;
+				}
 			}
-
 			if (((loc.getBlock().getX() - location.getX()) * (float)(loc.getBlock().getX() - location.getX()) + 
 					(loc.getBlock().getZ() - location.getZ()) * (float)(loc.getBlock().getZ() - location.getZ()) > radiusSquared)
 					|| (loc.getBlock().getY() <= location.getY())) {
@@ -260,22 +262,25 @@ public class BastionBlock implements QTBox, Comparable
 			return true;
 		}
 	}
-	private void erode(float amount){
+	private void erode(double amount){
 		long time=System.currentTimeMillis();
-		int whole=(int) (amount);
-		float fraction=(float) (amount-whole);
-		float sumFraction=balance+fraction;
-		whole=(int) (sumFraction+whole);
-		fraction=(float) (sumFraction-whole);
+		
+		int wholeFromInput=(int) (amount);
+		
+		float fractionFromInput=(float) (amount-wholeFromInput);
+		double toBeRemoved=balance+fractionFromInput+wholeFromInput;
+		
+		int wholeToRemove=(int) toBeRemoved;
+		double fractionToRemove=(double) toBeRemoved-wholeToRemove;
 		if((time-lastPlace)>=min_break_time){
 			IReinforcement reinforcement = Citadel.getReinforcementManager().getReinforcement(location.getBlock());
 			if (reinforcement != null) {
 				strength=reinforcement.getDurability();
 			}
-			
-			strength-=whole;
-			balance=fraction;
-			
+
+			strength-=wholeToRemove;
+			balance=fractionToRemove;
+
 			if (reinforcement != null) {
 				reinforcement.setDurability(strength);
 				Citadel.getReinforcementManager().addReinforcement(reinforcement);
@@ -283,7 +288,6 @@ public class BastionBlock implements QTBox, Comparable
 			lastPlace=time;
 
 		}
-		Bastion.getPlugin().getLogger().info("Balance="+balance);
 		set.updated(this);
 		if(shouldCull()){
 			close();
@@ -296,7 +300,7 @@ public class BastionBlock implements QTBox, Comparable
 	public long getPlaced(){
 		return placed;
 	}
-	public float getBalance(){
+	public double getBalance(){
 		return balance;
 	}
 	@Override
@@ -329,17 +333,86 @@ public class BastionBlock implements QTBox, Comparable
 		return location.getBlockZ()+radius;
 	}
 
+	public String toString(){
+		String result="";
+
+		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
+		//Faction fac;
+		double fractionOfMaturityTime=0;
+		if(scaleTime==0){
+			result+="Scale was 0";
+			fractionOfMaturityTime=1;
+		} else{
+			fractionOfMaturityTime=((double) (System.currentTimeMillis()-placed))/scaleTime;
+		}
+		if (reinforcement instanceof PlayerReinforcement) {
+			strength=reinforcement.getDurability();
+			//fac=reinforcement.getOwner();
+
+			result+=String.valueOf((double) strength-balance);
+
+			result+=", ";
+			result+=String.valueOf(fractionOfMaturityTime);
+			
+			result+=", ";
+			result+=String.valueOf(erosionFromPlace());
+		}
+
+
+
+		return result;
+	}
+	public String infoMessage(boolean dev,Player asking){
+		if(dev){
+			return ChatColor.GREEN+this.toString();
+		}
+		
+		String result="";
+
+		//PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
+		//Faction fac;
+		double fractionOfMaturityTime=0;
+		if(scaleTime==0){
+			fractionOfMaturityTime=1;
+		} else{
+			fractionOfMaturityTime=((double) (System.currentTimeMillis()-placed))/scaleTime;
+		}
+		if(fractionOfMaturityTime==0){
+			result=ChatColor.GREEN+"Just placed";
+		} else if(fractionOfMaturityTime<0.25){
+			result=ChatColor.GREEN+"Placed recently";
+		} else if(fractionOfMaturityTime<0.5){
+			result=ChatColor.GREEN+"Place a while ago";
+		} else if(fractionOfMaturityTime<0.75){
+			result=ChatColor.GREEN+"Placed quite a while ago";
+		} else if(fractionOfMaturityTime>=1){
+			result=ChatColor.GREEN+"Placed a long time ago";
+		}
+
+
+		return result;
+	}
+
+	public boolean canRemove(Player player){
+		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
+
+		if(reinforcement instanceof PlayerReinforcement){
+
+			Faction owner = reinforcement.getOwner();
+			return owner.isModerator(player.getName())||owner.isFounder(player.getName());
+		}
+		return true;
+	}
 	@Override
-	public int compareTo(Object o) {
-		BastionBlock other=(BastionBlock)o;
+	public int compareTo(BastionBlock other) {
 		int thisX=location.getBlockX();
 		int thisY=location.getBlockY();
 		int thisZ=location.getBlockZ();
 
 		int otherX=other.location.getBlockX();
-		int otherY=other.location.getBlockX();
-		int otherZ=other.location.getBlockX();
-
+		int otherY=other.location.getBlockY();
+		int otherZ=other.location.getBlockZ();
+		
 		if(thisX<otherX)
 			return -1;
 		if(thisY<otherY)

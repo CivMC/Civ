@@ -1,5 +1,6 @@
 package isaac.bastion.commands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,7 +14,7 @@ public class DeleteCommandManager implements CommandExecutor {
 		if(!(sender instanceof Player))
 			return false;
 		PlayersStates.setModeForPlayer((Player) sender, PlayersStates.Mode.DELETE);
-		sender.sendMessage("Delete mode active");
+		sender.sendMessage(ChatColor.GREEN+"DELETE mode");
 		return true;
 	}
 
