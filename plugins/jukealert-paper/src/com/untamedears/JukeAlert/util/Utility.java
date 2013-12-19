@@ -10,6 +10,7 @@ import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.util.IgnoreList;
 import com.untamedears.JukeAlert.util.OnlineGroupMembers;
+import com.untamedears.JukeAlert.util.RateLimiter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -43,7 +44,7 @@ public class Utility {
                 JukeAlert.getInstance().getConfigManager().getMaxAlertDistanceNs());
         }
         for (Player player : iter) {
-            player.sendMessage(message);
+            RateLimiter.sendMessage(player, message);
         }
     }
 

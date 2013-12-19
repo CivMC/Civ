@@ -37,6 +37,7 @@ public class ConfigManager
     private Double maxAlertDistanceNs = null;
     private int maxPlayerAlertCount;
 	private boolean taxReinforcementPerAlert;
+    private int alertRateLimit;
 
 	private File main;
 	private FileConfiguration config;
@@ -102,6 +103,7 @@ public class ConfigManager
         maxEntryLifetimeDays = loadInt("entryculling.maxlifetime", 8);
         snitchCullingEnabled = loadBoolean("snitchculling.enabled", false);
         maxSnitchLifetimeDays = loadInt("snitchculling.maxlifetime", 21);
+        alertRateLimit = loadInt("settings.alertratelimit", 70);
 
         save();
     }
@@ -335,5 +337,9 @@ public class ConfigManager
 
     public boolean getTaxReinforcementPerAlert() {
         return taxReinforcementPerAlert;
+    }
+
+    public int getAlertRateLimit() {
+        return alertRateLimit;
     }
 }

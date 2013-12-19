@@ -2,6 +2,7 @@ package com.untamedears.JukeAlert;
 
 import com.untamedears.JukeAlert.command.CommandHandler;
 import com.untamedears.JukeAlert.command.commands.ClearCommand;
+import com.untamedears.JukeAlert.command.commands.ConfigCommand;
 import com.untamedears.JukeAlert.command.commands.GroupCommand;
 import com.untamedears.JukeAlert.command.commands.HelpCommand;
 import com.untamedears.JukeAlert.command.commands.InfoCommand;
@@ -16,6 +17,7 @@ import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.manager.PlayerManager;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
+import com.untamedears.JukeAlert.util.RateLimiter;
 
 import java.util.logging.Level;
 
@@ -46,6 +48,7 @@ public class JukeAlert extends JavaPlugin {
         registerEvents();
         registerCommands();
         snitchManager.initialize();
+        RateLimiter.initialize(this);
     }
 
     @Override
@@ -74,6 +77,7 @@ public class JukeAlert extends JavaPlugin {
         commandHandler.addCommand(new GroupCommand());
         commandHandler.addCommand(new LookupCommand());
         commandHandler.addCommand(new JaMuteCommand());
+        commandHandler.addCommand(new ConfigCommand());
     }
 
     public static JukeAlert getInstance() {
