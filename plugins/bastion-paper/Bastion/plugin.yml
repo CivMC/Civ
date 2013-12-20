@@ -10,11 +10,11 @@ commands:
       permission-message: You don't have <permission>
    bsi:
       description: Gives info on blocks that are clicked
-      usage: /bsi and right click on block
+      usage: /bsi and right click a block
       permission: Bastion.normal
    bsd:
       description: Removes Bastion Block when clicked
-      usage: /bsd and right click on block
+      usage: /bsd and right click a block
       permission: Bastion.normal
    bso:
       description: Returns to normal
