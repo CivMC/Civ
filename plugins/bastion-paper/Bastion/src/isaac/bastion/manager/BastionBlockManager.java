@@ -15,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
@@ -23,6 +24,7 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.material.Dispenser;
 import org.bukkit.material.MaterialData;
 
@@ -150,6 +152,27 @@ public class BastionBlockManager
 
 		event.setCancelled(false);
 		return false;
+	}
+
+	public boolean handleTreeGrowth(StructureGrowEvent event){
+		Player player=event.getPlayer();
+		String playerName=null;
+		if(player!=null)
+			playerName=player.getName();
+		boolean shouldCancel=false;
+
+		for(BlockState block : event.getBlocks()){
+			BastionBlock blocking=getBlockingBastion(block.getLocation());
+			if(blocking!=null){
+				if(blocking.blocked(block.getLocation(),playerName)&&!blocking.blocked(event.getLocation())){
+					shouldCancel=true;
+					break;
+				}
+			}
+		}
+
+		event.setCancelled(shouldCancel);
+		return shouldCancel;
 	}
 
 	private boolean handleBlockPlace(Location loc, String foundersName, boolean shouldHandle) {

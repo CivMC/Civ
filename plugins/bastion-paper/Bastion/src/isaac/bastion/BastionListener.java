@@ -15,6 +15,7 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.world.StructureGrowEvent;
 
 
 public final class BastionListener
@@ -35,7 +36,7 @@ implements Listener
 		}
 		bastionManager.handleBlockPlace(event);
 	}
-	
+
 	@EventHandler
 	public void waterflowed(BlockFromToEvent  event){
 		if(event.isCancelled()){
@@ -43,7 +44,15 @@ implements Listener
 		}
 		bastionManager.handleFlowingWater(event);
 	}
-	
+
+	@EventHandler
+	public void handleTreeGrowth(StructureGrowEvent event){
+		if(event.isCancelled()){
+			return;
+		}
+		bastionManager.handleTreeGrowth(event);
+	}
+
 	@EventHandler
 	public void pistionPushed(BlockPistonExtendEvent  event){
 		if(event.isCancelled()){
@@ -64,7 +73,7 @@ implements Listener
 		if(event.isCancelled()){
 			return;
 		}
-		
+
 		bastionManager.handleDispensed(event);
 	}
 	@EventHandler
