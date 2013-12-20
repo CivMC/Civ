@@ -234,9 +234,9 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	public boolean blocked(Location loc){
 		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
 		if(reinforcement instanceof PlayerReinforcement){
-			if (((loc.getBlock().getX() - location.getX()) * (float)(loc.getBlock().getX() - location.getX()) + 
-					(loc.getBlock().getZ() - location.getZ()) * (float)(loc.getBlock().getZ() - location.getZ()) > radiusSquared)
-					|| (loc.getBlock().getY() <= location.getY())) {
+			if (((loc.getBlockX() - location.getX()) * (float)(loc.getBlockX() - location.getX()) + 
+					(loc.getBlockZ() - location.getZ()) * (float)(loc.getBlockZ() - location.getZ()) > radiusSquared)
+					|| (loc.getBlockY() <= location.getY())) {
 
 
 				return false;

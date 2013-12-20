@@ -18,6 +18,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -134,6 +135,23 @@ public class BastionBlockManager
 		event.setCancelled(shouldCancel);
 		return shouldCancel;
 	}
+
+	public boolean handleFlowingWater(BlockFromToEvent event) {
+		Block start=event.getBlock();
+		Block end=event.getToBlock();
+
+		BastionBlock blocking=getBlockingBastion(end.getLocation());
+		if(blocking!=null){
+			if(blocking.blocked(end.getLocation())&&(!blocking.blocked(start.getLocation()))){
+				event.setCancelled(true);
+				return true;
+			}
+		}
+
+		event.setCancelled(false);
+		return false;
+	}
+
 	private boolean handleBlockPlace(Location loc, String foundersName, boolean shouldHandle) {
 		BastionBlock bastion=getBlockingBastion(loc,foundersName);
 		if(bastion!=null){

@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -35,13 +36,13 @@ implements Listener
 		bastionManager.handleBlockPlace(event);
 	}
 	
-	/*@EventHandler
-	public void sandPlaced(EntityChangeBlockEvent  event){
+	@EventHandler
+	public void waterflowed(BlockFromToEvent  event){
 		if(event.isCancelled()){
 			return;
 		}
-		bastionManager.handleSandLanded(event);
-	}*/
+		bastionManager.handleFlowingWater(event);
+	}
 	
 	@EventHandler
 	public void pistionPushed(BlockPistonExtendEvent  event){
