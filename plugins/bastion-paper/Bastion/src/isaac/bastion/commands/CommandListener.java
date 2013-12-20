@@ -26,8 +26,6 @@ public class CommandListener implements Listener{
 			return;
 
 		Block block=event.getClickedBlock();
-		if(block.getType()!=Bastion.getConfigManager().getBastionBlockMaterial())
-			return;
 
 		Player player=event.getPlayer();
 		Mode mode=PlayersStates.modeForPlayer(player);
@@ -37,8 +35,10 @@ public class CommandListener implements Listener{
 		switch(mode){
 		case INFO:
 			boolean dev=player.hasPermission("Bastion.dev");
-			player.sendMessage(manager.infoMessage(dev, event));
-			event.setCancelled(true);
+			String toSend=manager.infoMessage(dev, event);
+			if(toSend!=null){
+				player.sendMessage(manager.infoMessage(dev, event));
+			}
 			break;
 		case DELETE:
 			if(bastionBlock==null){

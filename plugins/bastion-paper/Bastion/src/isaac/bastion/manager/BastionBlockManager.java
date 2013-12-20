@@ -57,7 +57,7 @@ public class BastionBlockManager
 		boolean blocked=false;
 		BlockFace direction=event.getDirection();
 		Block pistionBlock=event.getBlock();
-		
+
 		Block pistionArm=pistionBlock.getRelative(direction);
 
 		PlayerReinforcement pistionReinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(pistionBlock);
@@ -73,7 +73,7 @@ public class BastionBlockManager
 		if(handleBlockPlace(pistionArm.getLocation(),foundersName,false)){
 			blocked=true;
 		}
-		
+
 		for(Block block : event.getBlocks()){
 			Location locationAfter=block.getLocation().add(direction.getModX(),direction.getModY(),direction.getModZ());
 
@@ -161,7 +161,7 @@ public class BastionBlockManager
 		}
 		return null;
 	}
-	
+
 	private BastionBlock getBlockingBastion(Location loc){
 		Set<? extends QTBox> possible=bastions.forLocation(loc);
 
@@ -187,17 +187,20 @@ public class BastionBlockManager
 		Block clicked=event.getClickedBlock();
 		BlockFace clickedFace=event.getBlockFace();
 		Block block=clicked.getRelative(clickedFace);
-		
+
 		Player player=event.getPlayer();
 		String playerName=player.getName();
 
 		BastionBlock bastion=bastions.getBastionBlock(clicked.getLocation());
 
-		if(bastion!=null)
+		if(bastion!=null){
+			event.setCancelled(true);
 			return bastion.infoMessage(dev, player);
-		
+		}
+
 		bastion=getBlockingBastion(block.getLocation());
 		if(bastion!=null){
+			event.setCancelled(true);
 			if(bastion.blocked(block.getLocation(), playerName)){
 				return ChatColor.RED+"A Bastion Block prevents you building";
 			} else{
@@ -205,7 +208,7 @@ public class BastionBlockManager
 			}
 		}
 
-		return "";
+		return null;
 
 	}
 }

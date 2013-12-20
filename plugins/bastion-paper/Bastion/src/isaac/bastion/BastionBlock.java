@@ -334,7 +334,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	}
 
 	public String toString(){
-		String result="";
+		String result="Dev text ";
 
 		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
 		//Faction fac;
