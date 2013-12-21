@@ -208,6 +208,16 @@ public class BastionBlockManager
 				return true;
 			}
 		}
+		if(thrower instanceof Player){
+			Player player=(Player) thrower;
+			Location playerLocation=player.getLocation();
+			blocking=getBlockingBastion(playerLocation,playerName);
+			if(blocking!=null){
+				pearl.remove();
+				blocking.handleTeleport(playerLocation, (Player) thrower);
+			}
+			
+		}
 		return false;
 
 	}
