@@ -14,3 +14,4 @@ BastionBlock:
   warmUpTime: 43200000
   maxBreaksPerMinute: 30
   erosionRatePerDay: 0
+  preventEnderPearl: true 

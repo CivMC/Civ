@@ -46,7 +46,7 @@ implements Listener
 	}
 
 	@EventHandler
-	public void handleTreeGrowth(StructureGrowEvent event){
+	public void treeGrew(StructureGrowEvent event){
 		if(event.isCancelled()){
 			return;
 		}

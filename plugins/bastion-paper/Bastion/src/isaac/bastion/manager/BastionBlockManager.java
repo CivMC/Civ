@@ -16,6 +16,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.EnderPearl;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
@@ -24,7 +26,10 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dispenser;
 import org.bukkit.material.MaterialData;
 
@@ -188,6 +193,44 @@ public class BastionBlockManager
 		return false;
 	}
 
+	public boolean handleEnderPearlThrown(EnderPearl pearl){
+		LivingEntity thrower=pearl.getShooter();
+		String playerName=null;
+		if(thrower instanceof Player){
+			playerName=((Player) thrower).getName();
+		}
+		BastionBlock blocking=getBlockingBastion(pearl.getLocation(),playerName);
+		if(blocking!=null){
+			pearl.remove();
+			if(thrower instanceof Player){
+				Player shooter=(Player) thrower;
+				shooter.getInventory().addItem(new ItemStack(Material.ENDER_PEARL,1));
+			}
+			return true;
+		}
+		return false;
+		
+	}
+	
+	public boolean handleEnderPearlLanded(PlayerTeleportEvent event){
+		if(event.getCause()!=TeleportCause.ENDER_PEARL)
+			return false;
+		
+		Player player=event.getPlayer();
+		Location landing=event.getTo();
+		landing.add(0,1,0);
+		Location from=event.getFrom();
+		from.add(0,1,0);
+		BastionBlock blockingTo=getBlockingBastion(landing,player.getName());
+		BastionBlock blockingFrom=getBlockingBastion(from,player.getName());
+		if((blockingTo!=null)||(blockingFrom!=null)){
+			event.setCancelled(true);
+			player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL,1));
+			return true;
+		}
+		return false;
+	}
+	
 	private BastionBlock getBlockingBastion(Location loc, String foundersName){
 		Set<? extends QTBox> possible=bastions.forLocation(loc);
 

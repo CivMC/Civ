@@ -30,6 +30,7 @@ public class ConfigManager {
 	private int bastionBlockMaxBreaks;
 	private int bastionBlockErosion;
 	private int saveTimeInt;
+	private boolean preventEnderPearl;
 	
 	static String file_name="config.xml";
 	
@@ -54,6 +55,34 @@ public class ConfigManager {
 		
 		
 		load();
+	}
+	
+	private void load(){
+		host=loadString("mysql.host");
+		port=loadInt("mysql.port");
+		database=loadString("mysql.database");
+		prefix=loadString("mysql.prefix");
+		
+		username=loadString("mysql.username");
+		password=loadString("mysql.password");
+		int savesPerDay=loadInt("mysql.savesPerDay");
+		if(savesPerDay!=0){
+			saveTimeInt=(1000*60*60*24)/savesPerDay;
+		} else{
+			saveTimeInt=0;
+		}
+		
+		bastionBlockMaterial=Material.getMaterial(loadString("BastionBlock.material"));
+		bastionBlockEffectRadius=loadInt("BastionBlock.effectRadius");
+		bastionBlockMaxBreaks=loadInt("BastionBlock.maxBreaksPerMinute");
+		bastionBlockErosion=loadInt("BastionBlock.erosionRatePerDay");
+		bastionBlockScaleFacStart=loadDouble("BastionBlock.startScaleFactor");
+		bastionBlockScaleFacEnd=loadDouble("BastionBlock.finalScaleFactor");
+		bastionBlockScaleTime=loadInt("BastionBlock.warmUpTime");
+		preventEnderPearl=loadBool("BastionBlock.preventEnderPearl");
+		
+		Bastion.getPlugin().saveConfig();
+		
 	}
 	
 	public String getHost(){
@@ -101,32 +130,10 @@ public class ConfigManager {
 		return bastionBlockErosion;
 	}
 	
-	
-	public void load(){
-		host=loadString("mysql.host");
-		port=loadInt("mysql.port");
-		database=loadString("mysql.database");
-		prefix=loadString("mysql.prefix");
-		
-		username=loadString("mysql.username");
-		password=loadString("mysql.password");
-		int savesPerDay=loadInt("mysql.savesPerDay");
-		if(savesPerDay!=0){
-			saveTimeInt=(1000*60*60*24)/savesPerDay;
-		} else{
-			saveTimeInt=0;
-		}
-		
-		bastionBlockMaterial=Material.getMaterial(loadString("BastionBlock.material"));
-		bastionBlockEffectRadius=loadInt("BastionBlock.effectRadius");
-		bastionBlockMaxBreaks=loadInt("BastionBlock.maxBreaksPerMinute");
-		bastionBlockErosion=loadInt("BastionBlock.erosionRatePerDay");
-		bastionBlockScaleFacStart=loadDouble("BastionBlock.startScaleFactor");
-		bastionBlockScaleFacEnd=loadDouble("BastionBlock.finalScaleFactor");
-		bastionBlockScaleTime=loadInt("BastionBlock.warmUpTime");
-		Bastion.getPlugin().saveConfig();
-		
+	public boolean getEnderPearlsBlocked(){
+		return preventEnderPearl;
 	}
+	
 	private int loadInt(String field){
 		if(config.isInt(field)){
 			int value=config.getInt(field);
@@ -142,13 +149,13 @@ public class ConfigManager {
 		}
 		return null;
 	}
-	/*private boolean loadBool(String field){
+	private boolean loadBool(String field){
 		if(config.isBoolean(field)){
 			boolean value=config.getBoolean(field);
 			return value;
 		}
 		return false;
-	}*/
+	}
 	private double loadDouble(String field){
 		if(config.isDouble(field)){
 			double value=config.getDouble(field);

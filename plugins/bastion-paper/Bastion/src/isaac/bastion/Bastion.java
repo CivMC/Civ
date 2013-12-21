@@ -32,6 +32,8 @@ public final class Bastion extends JavaPlugin
 		
 		getServer().getPluginManager().registerEvents(listener, this);
 		getServer().getPluginManager().registerEvents(new CommandListener(), this);
+		if(config.getEnderPearlsBlocked())
+			getServer().getPluginManager().registerEvents(new EnderPearlListener(), this);
 		registerCommands();
 	}
 	private void registerCommands(){
