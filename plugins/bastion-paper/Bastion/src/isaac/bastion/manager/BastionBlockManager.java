@@ -233,7 +233,7 @@ public class BastionBlockManager
 
 		if(blockingFrom!=null){
 			if(blockingFrom.enderPearlBlocked(from, player.getName())){
-				blockingTo.handleTeleport(from, player);
+				blockingFrom.handleTeleport(from, player);
 				event.setCancelled(true);
 				return true;
 			}
