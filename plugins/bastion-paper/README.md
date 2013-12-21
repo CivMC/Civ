@@ -12,3 +12,8 @@ To install:
   * Relaunch the server
 
 There's only one permission that may need changed: Bastion.dev. It currently just controls the text from the info command.
+
+To compile:
+ * Download Bukkit
+ * Download Citadel
+ * Link to Bukkit and Citadel and compile
