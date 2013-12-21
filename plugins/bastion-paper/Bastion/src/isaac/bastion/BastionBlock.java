@@ -19,6 +19,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -41,7 +42,12 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	private static int min_break_time;
 	private static int erosionTime;
 	private static int scaleTime;
+	
+	private static double pearlScale;
+	private static boolean pearlNeedsMaturity;
+	
 	private static boolean first=true;
+	
 	private int taskId;
 	private static Random random;
 	public static BastionBlockSet set;
@@ -108,7 +114,10 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		} else{
 			erosionTime=0;
 		}
-
+		
+		pearlScale=Bastion.getConfigManager().getEnderPearlErosionScale();
+		pearlNeedsMaturity=Bastion.getConfigManager().getEnderPearlRequireMaturity();
+		
 		random=new Random();
 		first=false;
 	}
@@ -203,6 +212,13 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		}
 		return true;
 	}
+	
+	public boolean enderPearlBlocked(Location loc,String playerName){
+		if((scaleTime>(System.currentTimeMillis()-placed))&&pearlNeedsMaturity)
+			return false;
+		
+		return blocked(loc, playerName);
+	}
 	public boolean blocked(Location loc,String playerName)
 	{
 
@@ -253,6 +269,10 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			Citadel.getReinforcementManager().addReinforcement(reinforcement);
 		}
 		erode(erosionFromPlace());
+	}
+	public void handleTeleport(Location loc,Player player){
+		player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL,1));
+		erode(erosionFromPlace()*pearlScale);
 	}
 	public boolean shouldCull(){
 

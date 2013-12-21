@@ -31,6 +31,8 @@ public class ConfigManager {
 	private int bastionBlockErosion;
 	private int saveTimeInt;
 	private boolean preventEnderPearl;
+	private boolean enderPearlBlockingRequiresMaturity;
+	private double enderPearlErosionScale;
 	
 	static String file_name="config.xml";
 	
@@ -79,8 +81,10 @@ public class ConfigManager {
 		bastionBlockScaleFacStart=loadDouble("BastionBlock.startScaleFactor");
 		bastionBlockScaleFacEnd=loadDouble("BastionBlock.finalScaleFactor");
 		bastionBlockScaleTime=loadInt("BastionBlock.warmUpTime");
-		preventEnderPearl=loadBool("BastionBlock.preventEnderPearl");
 		
+		preventEnderPearl=loadBool("BastionBlock.EnderPearls.preventEnderPearl");
+		enderPearlBlockingRequiresMaturity=loadBool("BastionBlock.EnderPearls.requireMaturity");
+		enderPearlErosionScale=loadDouble("BastionBlock.EnderPearls.scaleFac");
 		Bastion.getPlugin().saveConfig();
 		
 	}
@@ -133,7 +137,13 @@ public class ConfigManager {
 	public boolean getEnderPearlsBlocked(){
 		return preventEnderPearl;
 	}
-	
+	public boolean getEnderPearlRequireMaturity(){
+		return enderPearlBlockingRequiresMaturity;
+	}
+	public double getEnderPearlErosionScale(){
+
+		return enderPearlErosionScale;
+	}
 	private int loadInt(String field){
 		if(config.isInt(field)){
 			int value=config.getInt(field);
