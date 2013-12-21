@@ -1,10 +1,7 @@
-package isaac.bastion;
+package spaceFountain.bastion;
 
 
 import java.util.Random;
-
-import isaac.bastion.storage.BastionBlockSet;
-import isaac.bastion.util.QTBox;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.entity.Faction;
@@ -22,6 +19,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
+
+import spaceFountain.bastion.storage.BastionBlockSet;
+import spaceFountain.bastion.util.QTBox;
 
 
 public class BastionBlock implements QTBox, Comparable<BastionBlock>

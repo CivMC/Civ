@@ -1,4 +1,4 @@
-package isaac.bastion.util;
+package spaceFountain.bastion.util;
 
 public interface QTBox {
   public int qtXMin();

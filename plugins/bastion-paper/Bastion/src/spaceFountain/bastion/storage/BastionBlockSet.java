@@ -1,10 +1,4 @@
-package isaac.bastion.storage;
-
-import isaac.bastion.Bastion;
-import isaac.bastion.BastionBlock;
-import isaac.bastion.manager.ConfigManager;
-import isaac.bastion.util.QTBox;
-import isaac.bastion.util.SparseQuadTree;
+package spaceFountain.bastion.storage;
 
 import java.util.Collection;
 import java.util.Enumeration;
@@ -19,6 +13,12 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
+
+import spaceFountain.bastion.Bastion;
+import spaceFountain.bastion.BastionBlock;
+import spaceFountain.bastion.manager.ConfigManager;
+import spaceFountain.bastion.util.QTBox;
+import spaceFountain.bastion.util.SparseQuadTree;
 
 public class BastionBlockSet implements Set<BastionBlock>,
 Iterable<BastionBlock> {

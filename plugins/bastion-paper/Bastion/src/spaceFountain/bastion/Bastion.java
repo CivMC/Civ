@@ -1,28 +1,28 @@
-package isaac.bastion;
+package spaceFountain.bastion;
 
 
 
-
-import isaac.bastion.commands.BastionCommandManager;
-import isaac.bastion.commands.CommandListener;
-import isaac.bastion.commands.DeleteCommandManager;
-import isaac.bastion.commands.InfoCommandManager;
-import isaac.bastion.commands.NormalCommandManager;
-import isaac.bastion.manager.BastionBlockManager;
-import isaac.bastion.manager.ConfigManager;
 
 import org.bukkit.plugin.java.JavaPlugin;
+
+import spaceFountain.bastion.commands.BastionCommandManager;
+import spaceFountain.bastion.commands.CommandListener;
+import spaceFountain.bastion.commands.DeleteCommandManager;
+import spaceFountain.bastion.commands.InfoCommandManager;
+import spaceFountain.bastion.commands.NormalCommandManager;
+import spaceFountain.bastion.manager.BastionBlockManager;
+import spaceFountain.bastion.manager.ConfigManager;
 
 
 
 
 public final class Bastion extends JavaPlugin
 {
-	private static BastionListener listener;
-	private static Bastion plugin;
-	private static BastionBlockManager bastionManager;
-	private static ConfigManager config;
-
+	private static BastionListener listener; ///Main listener
+	private static Bastion plugin; ///Holds the plugin
+	private static BastionBlockManager bastionManager; ///Most of the direct interaction with Bastions
+	private static ConfigManager config; ///Holds the configuration
+	
 	public void onEnable()
 	{
 		plugin = this;
@@ -36,6 +36,10 @@ public final class Bastion extends JavaPlugin
 			getServer().getPluginManager().registerEvents(new EnderPearlListener(), this);
 		registerCommands();
 	}
+	/**
+	 * registerCommands()
+	 * Sets up the command managers
+	 */
 	private void registerCommands(){
 		getCommand("Bastion").setExecutor(new BastionCommandManager());
 		getCommand("bsi").setExecutor(new InfoCommandManager());

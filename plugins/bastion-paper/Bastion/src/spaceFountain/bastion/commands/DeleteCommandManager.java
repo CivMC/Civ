@@ -1,4 +1,4 @@
-package isaac.bastion.commands;
+package spaceFountain.bastion.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

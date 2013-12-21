@@ -1,4 +1,4 @@
-package isaac.bastion.commands;
+package spaceFountain.bastion.commands;
 
 import java.io.InputStream;
 import java.util.Scanner;

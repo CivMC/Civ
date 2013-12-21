@@ -1,9 +1,4 @@
-package isaac.bastion.manager;
-
-import isaac.bastion.Bastion;
-import isaac.bastion.BastionBlock;
-import isaac.bastion.storage.BastionBlockSet;
-import isaac.bastion.util.QTBox;
+package spaceFountain.bastion.manager;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -32,6 +27,11 @@ import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.material.Dispenser;
 import org.bukkit.material.MaterialData;
 
+import spaceFountain.bastion.Bastion;
+import spaceFountain.bastion.BastionBlock;
+import spaceFountain.bastion.storage.BastionBlockSet;
+import spaceFountain.bastion.util.QTBox;
+
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.PlayerReinforcement;
@@ -49,7 +49,13 @@ public class BastionBlockManager
 	public void close(){
 		bastions.close();
 	}
-
+	/**
+	 * 
+	 * 
+	 * @param location
+	 * @param reinforcement
+	 */
+	
 	public void addBastion(Location location, PlayerReinforcement reinforcement) {
 		BastionBlock toAdd=new BastionBlock(location,reinforcement);
 		bastions.add(toAdd);

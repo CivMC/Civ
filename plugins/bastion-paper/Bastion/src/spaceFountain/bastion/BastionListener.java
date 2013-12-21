@@ -1,8 +1,5 @@
-package isaac.bastion;
+package spaceFountain.bastion;
 
-
-import isaac.bastion.manager.BastionBlockManager;
-import isaac.bastion.manager.ConfigManager;
 
 import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.events.CreateReinforcementEvent;
@@ -16,6 +13,9 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+
+import spaceFountain.bastion.manager.BastionBlockManager;
+import spaceFountain.bastion.manager.ConfigManager;
 
 
 public final class BastionListener
