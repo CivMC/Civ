@@ -1,6 +1,6 @@
 name: Bastion
 version: 0.0.0
-main: spaceFountain.bastion.Bastion
+main: isaac.bastion.Bastion
 depend: [Citadel]
 commands:
    Bastion:

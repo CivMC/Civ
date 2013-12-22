@@ -1,4 +1,8 @@
-package spaceFountain.bastion.storage;
+package isaac.bastion.storage;
+
+import isaac.bastion.Bastion;
+import isaac.bastion.BastionBlock;
+import isaac.bastion.manager.ConfigManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,10 +12,6 @@ import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-
-import spaceFountain.bastion.Bastion;
-import spaceFountain.bastion.BastionBlock;
-import spaceFountain.bastion.manager.ConfigManager;
 
 public class BastionBlockStorage {
 	private Database db;

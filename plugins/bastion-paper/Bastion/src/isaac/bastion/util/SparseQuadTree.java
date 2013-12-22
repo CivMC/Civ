@@ -1,10 +1,10 @@
-package spaceFountain.bastion.util;
+package isaac.bastion.util;
+
+import isaac.bastion.util.QTBox;
 
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import spaceFountain.bastion.util.QTBox;
 
 // This isn't designed to contain absolutely HUGE boxes. When the box sizes
 //  encompass the entirety of -MAX_INT to MAX_INT on both the x and y,

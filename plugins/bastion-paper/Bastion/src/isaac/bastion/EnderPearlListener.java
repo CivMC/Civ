@@ -1,4 +1,6 @@
-package spaceFountain.bastion;
+package isaac.bastion;
+
+import isaac.bastion.manager.BastionBlockManager;
 
 import java.util.Collection;
 
@@ -12,8 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
-
-import spaceFountain.bastion.manager.BastionBlockManager;
 
 public class EnderPearlListener implements Listener {
 	int taskId;

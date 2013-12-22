@@ -1,17 +1,17 @@
-package spaceFountain.bastion;
+package isaac.bastion;
 
 
 
+
+import isaac.bastion.commands.BastionCommandManager;
+import isaac.bastion.commands.CommandListener;
+import isaac.bastion.commands.DeleteCommandManager;
+import isaac.bastion.commands.InfoCommandManager;
+import isaac.bastion.commands.NormalCommandManager;
+import isaac.bastion.manager.BastionBlockManager;
+import isaac.bastion.manager.ConfigManager;
 
 import org.bukkit.plugin.java.JavaPlugin;
-
-import spaceFountain.bastion.commands.BastionCommandManager;
-import spaceFountain.bastion.commands.CommandListener;
-import spaceFountain.bastion.commands.DeleteCommandManager;
-import spaceFountain.bastion.commands.InfoCommandManager;
-import spaceFountain.bastion.commands.NormalCommandManager;
-import spaceFountain.bastion.manager.BastionBlockManager;
-import spaceFountain.bastion.manager.ConfigManager;
 
 
 

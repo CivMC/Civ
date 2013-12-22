@@ -1,4 +1,6 @@
-package spaceFountain.bastion.manager;
+package isaac.bastion.manager;
+
+import isaac.bastion.Bastion;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,8 +9,6 @@ import java.io.IOException;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
-
-import spaceFountain.bastion.Bastion;
 
 public class ConfigManager {
 	private FileConfiguration config;

@@ -1,4 +1,4 @@
-package spaceFountain.bastion.commands;
+package isaac.bastion.commands;
 
 import java.util.HashMap;
 import java.util.Map;

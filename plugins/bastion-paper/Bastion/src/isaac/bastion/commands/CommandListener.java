@@ -1,4 +1,9 @@
-package spaceFountain.bastion.commands;
+package isaac.bastion.commands;
+
+import isaac.bastion.Bastion;
+import isaac.bastion.BastionBlock;
+import isaac.bastion.commands.PlayersStates.Mode;
+import isaac.bastion.manager.BastionBlockManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -7,11 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-
-import spaceFountain.bastion.Bastion;
-import spaceFountain.bastion.BastionBlock;
-import spaceFountain.bastion.commands.PlayersStates.Mode;
-import spaceFountain.bastion.manager.BastionBlockManager;
 
 public class CommandListener implements Listener{
 	private static BastionBlockManager manager;

@@ -1,4 +1,9 @@
-package spaceFountain.bastion.manager;
+package isaac.bastion.manager;
+
+import isaac.bastion.Bastion;
+import isaac.bastion.BastionBlock;
+import isaac.bastion.storage.BastionBlockSet;
+import isaac.bastion.util.QTBox;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -26,11 +31,6 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.material.Dispenser;
 import org.bukkit.material.MaterialData;
-
-import spaceFountain.bastion.Bastion;
-import spaceFountain.bastion.BastionBlock;
-import spaceFountain.bastion.storage.BastionBlockSet;
-import spaceFountain.bastion.util.QTBox;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.entity.Faction;

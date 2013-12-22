@@ -1,5 +1,8 @@
-package spaceFountain.bastion;
+package isaac.bastion;
 
+
+import isaac.bastion.storage.BastionBlockSet;
+import isaac.bastion.util.QTBox;
 
 import java.util.Random;
 
@@ -19,9 +22,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
-
-import spaceFountain.bastion.storage.BastionBlockSet;
-import spaceFountain.bastion.util.QTBox;
 
 
 public class BastionBlock implements QTBox, Comparable<BastionBlock>
