@@ -11,13 +11,15 @@ import org.bukkit.World;
 
 import spaceFountain.bastion.Bastion;
 import spaceFountain.bastion.BastionBlock;
+import spaceFountain.bastion.manager.ConfigManager;
 
 public class BastionBlockStorage {
 	private Database db;
 	private String bationBlocksTable;
 	private PreparedStatement getAllBastionsForWorld; 
 	public BastionBlockStorage(){
-		db=new Database("localhost", 3306, "bukkit","","","bastion_", Bastion.getPlugin().getLogger());
+		ConfigManager config=Bastion.getConfigManager();
+		db=new Database(config.getHost(), config.getPort(), config.getDatabase(),config.getUsername(),config.getPassword(),config.getPrefix(), Bastion.getPlugin().getLogger());
 		bationBlocksTable="bastion_"+"blocks";
 		db.connect();
 		if (db.isConnected()) {

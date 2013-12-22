@@ -19,6 +19,8 @@ public class EnderPearlListener implements Listener {
 	int taskId;
 	Server server;
 	BastionBlockManager manager;
+	
+	
  	public EnderPearlListener(){
  		server=Bastion.getPlugin().getServer();
  		manager=Bastion.getBastionManager();
