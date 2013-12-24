@@ -27,4 +27,5 @@ There's only one permission that may need changed: Bastion.dev. It currently jus
 To compile:
  * Download Bukkit
  * Download Citadel
- * Link to Bukkit and Citadel and compile
+ * Download Humbug
+ * Link to Bukkit, Citadel, and Humbug then compile
