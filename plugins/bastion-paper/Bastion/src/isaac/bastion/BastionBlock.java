@@ -30,11 +30,9 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	private int id;
 	private double balance=0;
 	private int strength;
-	private int radius;
 	private long placed;
 
 	private long lastPlace;
-	private int radiusSquared;
 	private boolean loaded=true;
 	private boolean ghost=false;
 
@@ -42,12 +40,15 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	private static int min_break_time;
 	private static int erosionTime;
 	private static int scaleTime;
-	
+
+	private static int radiusSquared;
+	private static int radius;
+
 	private static double pearlScale;
 	private static boolean pearlNeedsMaturity;
-	
+
 	private static boolean first=true;
-	
+
 	private int taskId;
 	private static Random random;
 	public static BastionBlockSet set;
@@ -55,8 +56,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	public BastionBlock(Location nlocation, PlayerReinforcement reinforcement){
 		id=++highestId;
 		location = nlocation;
-		radius=Bastion.getConfigManager().getBastionBlockEffectRadius();
-		radiusSquared=radius*radius;
 		placed=System.currentTimeMillis();
 
 		strength=reinforcement.getDurability();
@@ -69,7 +68,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	{
 		id=nID;
 		location = nLocation;
-		radius=Bastion.getConfigManager().getBastionBlockEffectRadius();
+
 		placed=nPlaced;
 		balance=nBalance;
 
@@ -114,10 +113,13 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		} else{
 			erosionTime=0;
 		}
-		
+
 		pearlScale=Bastion.getConfigManager().getEnderPearlErosionScale();
 		pearlNeedsMaturity=Bastion.getConfigManager().getEnderPearlRequireMaturity();
-		
+
+		radius=Bastion.getConfigManager().getBastionBlockEffectRadius();
+		radiusSquared=radius*radius;
+
 		random=new Random();
 		first=false;
 	}
@@ -173,6 +175,14 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	static public int getHighestID(){
 		return highestId;
 	}
+	static public double getRadiusSquared(){
+		return radiusSquared;
+	}
+	static public double getRadius(){
+		return radius;
+	}
+
+
 	public Location getLocation(){
 		return location;
 	}
@@ -212,11 +222,11 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		}
 		return true;
 	}
-	
+
 	public boolean enderPearlBlocked(Location loc,String playerName){
 		if((scaleTime>(System.currentTimeMillis()-placed))&&pearlNeedsMaturity)
 			return false;
-		
+
 		return blocked(loc, playerName);
 	}
 	public boolean blocked(Location loc,String playerName)
@@ -261,6 +271,35 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		}
 		return true;	
 	}
+
+	public boolean canRemove(Player player){
+		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
+
+		if(reinforcement instanceof PlayerReinforcement){
+
+			Faction owner = reinforcement.getOwner();
+			return owner.isModerator(player.getName())||owner.isFounder(player.getName());
+		}
+		return true;
+	}
+
+	public boolean canPlace(String playerName){
+		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
+
+		if(reinforcement instanceof PlayerReinforcement){
+
+			Faction owner = reinforcement.getOwner();
+			if(playerName!=null){
+				if(owner.isMember(playerName)||owner.isFounder(playerName)||owner.isModerator(playerName)){
+					return true;
+				}
+			}
+		} else{
+			return true;
+		}
+
+		return false;
+	}
 	public void handlePlaced(Block block) {
 		block.breakNaturally();
 		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(block);
@@ -284,12 +323,12 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	}
 	private void erode(double amount){
 		long time=System.currentTimeMillis();
-		
+
 		int wholeFromInput=(int) (amount);
-		
+
 		float fractionFromInput=(float) (amount-wholeFromInput);
 		double toBeRemoved=balance+fractionFromInput+wholeFromInput;
-		
+
 		int wholeToRemove=(int) toBeRemoved;
 		double fractionToRemove=(double) toBeRemoved-wholeToRemove;
 		if((time-lastPlace)>=min_break_time){
@@ -373,7 +412,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 
 			result+=", ";
 			result+=String.valueOf(fractionOfMaturityTime);
-			
+
 			result+=", ";
 			result+=String.valueOf(erosionFromPlace());
 		}
@@ -386,7 +425,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		if(dev){
 			return ChatColor.GREEN+this.toString();
 		}
-		
+
 		String result="";
 
 		//PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
@@ -402,7 +441,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		} else if(fractionOfMaturityTime<0.25){
 			result=ChatColor.GREEN+"Placed recently";
 		} else if(fractionOfMaturityTime<0.5){
-			result=ChatColor.GREEN+"Place a while ago";
+			result=ChatColor.GREEN+"Placed a while ago";
 		} else if(fractionOfMaturityTime<0.75){
 			result=ChatColor.GREEN+"Placed quite a while ago";
 		} else if(fractionOfMaturityTime>=1){
@@ -411,17 +450,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 
 
 		return result;
-	}
-
-	public boolean canRemove(Player player){
-		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
-
-		if(reinforcement instanceof PlayerReinforcement){
-
-			Faction owner = reinforcement.getOwner();
-			return owner.isModerator(player.getName())||owner.isFounder(player.getName());
-		}
-		return true;
 	}
 	@Override
 	public int compareTo(BastionBlock other) {
@@ -432,7 +460,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		int otherX=other.location.getBlockX();
 		int otherY=other.location.getBlockY();
 		int otherZ=other.location.getBlockZ();
-		
+
 		if(thisX<otherX)
 			return -1;
 		if(thisY<otherY)

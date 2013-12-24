@@ -3,6 +3,7 @@ package isaac.bastion.storage;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.ConfigManager;
+import isaac.bastion.manager.EnderPearlManager;
 import isaac.bastion.util.QTBox;
 import isaac.bastion.util.SparseQuadTree;
 
@@ -58,9 +59,10 @@ Iterable<BastionBlock> {
 		update();
 	}
 	private void load(){
+		int enderSeachRadius=EnderPearlManager.MAX_TELEPORT+100;
 		for(World world : Bukkit.getWorlds()){
 			Enumeration<BastionBlock> forWorld=storage.getAllSnitches(world);
-			SparseQuadTree bastionsForWorld=new SparseQuadTree();
+			SparseQuadTree bastionsForWorld=new SparseQuadTree(enderSeachRadius);
 			while(forWorld.hasMoreElements()){
 				BastionBlock toAdd=forWorld.nextElement();
 				blocksById.put(toAdd.getID(), toAdd);
@@ -79,6 +81,21 @@ Iterable<BastionBlock> {
 	public Set<QTBox> forLocation(Location loc){
 		return blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ());
 
+	}
+	
+	public Set<BastionBlock> getPossibleTeleportBlocking(Location loc,String playerName){
+		Set<QTBox> all=blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ(),true);
+		Set<BastionBlock> mightBlock=new TreeSet<BastionBlock>();
+		
+		for(QTBox box : all){
+			if(box instanceof BastionBlock){
+				BastionBlock block=(BastionBlock) box;
+				if(!block.canPlace(playerName)){
+					mightBlock.add(block);
+				}
+			}
+		}
+		return mightBlock;
 	}
 	public BastionBlock getBastionBlock(Location loc) {
 		Set<? extends QTBox> possible=forLocation(loc);

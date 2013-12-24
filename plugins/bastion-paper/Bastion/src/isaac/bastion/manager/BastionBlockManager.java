@@ -55,7 +55,7 @@ public class BastionBlockManager
 	 * @param location
 	 * @param reinforcement
 	 */
-	
+
 	public void addBastion(Location location, PlayerReinforcement reinforcement) {
 		BastionBlock toAdd=new BastionBlock(location,reinforcement);
 		bastions.add(toAdd);
@@ -142,10 +142,14 @@ public class BastionBlockManager
 		BlockFace facing=dispenser.getFacing();
 		Block block=event.getBlock().getRelative(facing);
 
-		boolean shouldCancel = handleBlockPlace(block.getLocation(),foundersName,false);
+		BastionBlock wouldStop = getBlockingBastion(block.getLocation(),foundersName);
+		if(wouldStop!=null)
+			if(wouldStop.blocked(block.getLocation())&&!wouldStop.blocked(event.getBlock().getLocation())){
+				event.setCancelled(true);
+				return true;
+			}
 
-		event.setCancelled(shouldCancel);
-		return shouldCancel;
+		return false;
 	}
 
 	public boolean handleFlowingWater(BlockFromToEvent event) {
@@ -222,7 +226,7 @@ public class BastionBlockManager
 				pearl.remove();
 				blocking.handleTeleport(playerLocation, (Player) thrower);
 			}
-			
+
 		}
 		return false;
 

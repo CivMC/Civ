@@ -2,6 +2,7 @@ name: Bastion
 version: 0.0.0
 main: isaac.bastion.Bastion
 depend: [Citadel]
+softdepend: [Humbug]
 commands:
    Bastion:
       description: Base command for Bastion
