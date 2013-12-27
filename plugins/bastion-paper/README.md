@@ -7,7 +7,7 @@ Features:
  * Destroys blocks placed in a cylinder of configurable radius starting just above a reinforced target block (Bastion block) at the price of a configurable amount of reinforcement if the placer is not a member of the reinforcing group
  * Prevents dispensers dispensing water, lava, and flint and steel if the owner of there reinforcement is not allowed to place blocks
  * Prevents pistons pushing into the Bastion field (Area where block placement is restricted) if the owner of the reinforcement would not be allowed to place there.
- * Prevents teleportation through the the Bastion field by non-members
+ * Prevents teleportation through the the Bastion field by non-members (Note this is highly experimental and may be better disabled)
 
 Commands:
  * /bsi Puts the player into info mode. Right clicking a block will, if the block was a Bastion block display its maturity or dev text if the user has Bastion.dev. If the block was to a Bastion block, but the block oposite the face clicked is inside a Bastion field it will report wether block placement is allowed.
@@ -27,4 +27,5 @@ There's only one permission that may need changed: Bastion.dev. It currently jus
 To compile:
  * Download Bukkit
  * Download Citadel
- * Link to Bukkit and Citadel and compile
+ * Download Humbug
+ * Link to Bukkit, Citadel, and Humbug then compile
