@@ -3,7 +3,6 @@ package isaac.bastion;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.manager.EnderPearlManager;
 
-
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.EnderPearl;
@@ -40,7 +39,6 @@ public class EnderPearlListener implements Listener {
 	public void handleEnderPearlLanded(PlayerTeleportEvent event){
 		if(event.isCancelled())
 			return;
-
 		manager.handleEnderPearlLanded(event);
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)

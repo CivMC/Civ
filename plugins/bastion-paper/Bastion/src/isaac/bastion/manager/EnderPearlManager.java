@@ -48,7 +48,7 @@ public class EnderPearlManager {
 		Vector twoDSpeed=speed.clone();
 		twoDSpeed.setY(0);
 
-		double horizontalSpeed=twoDSpeed.length();
+		double horizontalSpeed=getLengthSigned(twoDSpeed);
 		double verticalSpeed=speed.getY();
 
 		Location loc=pearl.getLocation();
@@ -58,9 +58,11 @@ public class EnderPearlManager {
 
 
 		//check if it has any possibility of going through a bastion 
-		if(maxDistance<2){
+		if(!(maxDistance>2||maxDistance<-1)){
 			return;
 		}
+		
+		Bastion.getPlugin().getLogger().info("Not moving much "+horizontalSpeed);
 
 		LivingEntity threwE=pearl.getShooter();
 		Player threw=null;
@@ -74,7 +76,7 @@ public class EnderPearlManager {
 
 		//no need to do anything if there aren't any bastions to run into.
 		if(possible.isEmpty()){
-
+			Bastion.getPlugin().getLogger().info("There are no that we even have a chance of blocking");
 			return;
 		}
 
@@ -85,6 +87,7 @@ public class EnderPearlManager {
 		Set<BastionBlock> couldCollide=simpleCollide(possible,start.clone(),end.clone());
 
 		if(couldCollide.isEmpty()){
+			Bastion.getPlugin().getLogger().info("Simple collide didn't find any");
 			return;
 		}
 
@@ -106,7 +109,9 @@ public class EnderPearlManager {
 			Bastion.getPlugin().getLogger().info("adding collision");
 			endTimes.put(pearl, (int) collidesBy);
 			blocks.put(pearl, firstCollision);
+			return;
 		}
+		Bastion.getPlugin().getLogger().info("complicated test failed");
 
 
 	}
@@ -127,44 +132,53 @@ public class EnderPearlManager {
 
 		//Get the points were our line crosses the circle
 		List<Location>  collision_points=getCollisionPoints(startLoc,endLoc,bastion.getLocation(),BastionBlock.getRadiusSquared());
-
+		
 		//solve the quadratic equation for the equation governing the pearls y height. See if it ever reaches (bastion.getLocation().getY()+1
 		List<Double> solutions=getSolutions(-gravity/2,speed.getY(),startLoc.getY()-(bastion.getLocation().getY()+1));
-		//Bastion.getPlugin().getLogger().info("solutions="+solutions);
 		//If there aren't any results we no there are no intersections
 		if(solutions.isEmpty()){
 			return -1;
 		}
 		Location temp=startLoc.clone();
 		temp.setY(0);
-
-		double startingLength=temp.toVector().length();
 		//Solutions held the time at which the collision would happen lets change it to a position
-		for(int i=0;i<solutions.size();++i)
-			solutions.set(i, solutions.get(i)*horizontalSpeed+startingLength);
+		for(int i=0;i<solutions.size();++i){
+			solutions.set(i, solutions.get(i)*horizontalSpeed);
+			
+			/*Vector direction=vectorFromLocations(startLoc,endLoc);
+			direction.normalize();
+			Location loc=startLoc.clone();
+			loc.add(direction.multiply(solutions.get(i)));
+			loc.setY(bastion.getLocation().getY());
+			loc.getBlock().setType(Material.WATER);*/
+			
+		}
 
 		List<Double> oneDCollisions=new ArrayList<Double>();
 
 		//turn those points into scalers along the line of the pearl
 		for(Location collision_point : collision_points){
-			oneDCollisions.add(collision_point.toVector().length());
+			Location twoDStart=startLoc.clone();
+			twoDStart.setY(0);
+			oneDCollisions.add(collision_point.subtract(twoDStart).length());
 		}
+		//Bastion.getPlugin().getLogger().info("solutions="+solutions+"collision_points="+oneDCollisions);
 
 
 		double result=-1;
 		for(Double collisionPoint : oneDCollisions){
 			//if this is the solution lets convert it to a tick
 			//check if the collision point is inside between the solutions if so we no there will be a collision
-			if(solutions.get(0) > collisionPoint && solutions.get(1) < collisionPoint){
+			if((solutions.get(0) > collisionPoint && solutions.get(1) < collisionPoint)||(solutions.get(1) > collisionPoint && solutions.get(0) < collisionPoint)){
 				//solution 1 is between the two collision points
-				if(oneDCollisions.get(0)>solutions.get(1)&&oneDCollisions.get(1)<solutions.get(0)||
-						oneDCollisions.get(1)>solutions.get(1)&&oneDCollisions.get(0)<solutions.get(0)){
-					return (solutions.get(1)-startingLength)/horizontalSpeed+startLoc.getWorld().getFullTime();
+				if(!(oneDCollisions.get(0)>solutions.get(1)&&oneDCollisions.get(1)<solutions.get(0)||
+						oneDCollisions.get(1)>solutions.get(1)&&oneDCollisions.get(0)<solutions.get(0))){
+					return (solutions.get(1))/horizontalSpeed+startLoc.getWorld().getFullTime();
 				} else{
 					if(oneDCollisions.get(0)<oneDCollisions.get(1)){
-						return (oneDCollisions.get(0)-startingLength)/horizontalSpeed+startLoc.getWorld().getFullTime();
+						return (oneDCollisions.get(0))/horizontalSpeed+startLoc.getWorld().getFullTime();
 					}else{
-						return (oneDCollisions.get(1)-startingLength)/horizontalSpeed+startLoc.getWorld().getFullTime();
+						return (oneDCollisions.get(1))/horizontalSpeed+startLoc.getWorld().getFullTime();
 					}
 				}
 			}
@@ -286,6 +300,15 @@ public class EnderPearlManager {
 		}
 
 		return true;
+	}
+	
+	private double getLengthSigned(Vector vec){
+		double length=vec.length();
+		
+		//if(Math.signum(vec.getZ())==-1||Math.signum(vec.getX())==-1||Math.signum(vec.getY())==-1)
+			//length*=-1;
+		
+		return length;
 	}
 	private void flipXZ(Location a){
 		double tempX=a.getX();

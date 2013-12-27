@@ -25,7 +25,7 @@ public class BastionBlockSet implements Set<BastionBlock>,
 Iterable<BastionBlock> {
 	private Map<World,SparseQuadTree> blocks;
 	private Set<BastionBlock> changed;
-	private Map<Integer,BastionBlock> blocksById;
+	public Map<Integer,BastionBlock> blocksById;
 	private BastionBlockStorage storage;
 	private int task;
 	private ConfigManager config;
