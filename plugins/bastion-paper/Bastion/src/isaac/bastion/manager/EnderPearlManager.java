@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
+
 import org.bukkit.World;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.LivingEntity;
@@ -139,8 +139,9 @@ public class EnderPearlManager {
 		if(solutions.isEmpty()){
 			return -1;
 		}
-		for(Location loc: collision_points)
-			loc.getBlock().setType(Material.DIAMOND_BLOCK);
+		/*for(Location loc: collision_points)
+			loc.getBlock().setType(Material.DIAMOND_BLOCK);*/
+		
 		Location temp=startLoc.clone();
 		temp.setY(0);
 		//Solutions held the time at which the collision would happen lets change it to a position
