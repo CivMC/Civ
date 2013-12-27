@@ -186,6 +186,7 @@ public class EnderPearlManager {
 
 		return result;
 	}
+	//returns the solutions to the quadratic equation
 	private List<Double> getSolutions(double a, double b, double c){
 		double toTakeSquareRoot=b*b-4*a*c;
 		if(toTakeSquareRoot<0||a==0)
@@ -199,37 +200,39 @@ public class EnderPearlManager {
 
 		return  Arrays.asList(s1, s2);
 	}
-	//Code lifted with some modification from http://stackoverflow.com/a/13055116 a answer by arne-b this section is licensed under http://creativecommons.org/licenses/by-sa/3.0/ 
+	//Finds points on a line extending infinitely through the points startLoc and endLoc intersecting a circle centered at circleLoc
 	private List<Location> getCollisionPoints(Location startLoc,Location endLoc,Location circleLoc,double radiusSquared){
-		double baX = endLoc.getX() - startLoc.getX();
-		double baY = endLoc.getZ() - startLoc.getZ();
-		double caX = circleLoc.getX() - startLoc.getX();
-		double caY = circleLoc.getZ() - startLoc.getZ();
-
-		double a = baX * baX + baY * baY;
-		double bBy2 = baX * caX + baY * caY;
-		double c = caX * caX + caY * caY - radiusSquared;
-
-		double pBy2 = bBy2 / a;
-		double q = c / a;
-
-		double disc = pBy2 * pBy2 - q;
-		if (disc < 0) {
-			return Collections.emptyList();
+		Vector delta=vectorFromLocations(startLoc,endLoc);
+		Vector circleLocInTermsOfStart=vectorFromLocations(startLoc,circleLoc);
+		
+		
+		boolean flipped=false;
+		if(delta.getX()==0){
+			flipped=true;
+			flipXZ(delta);
+			flipXZ(circleLocInTermsOfStart);
 		}
-		// if disc == 0 ... dealt with later
-		double tmpSqrt = Math.sqrt(disc);
-		double abScalingFactor1 = -pBy2 + tmpSqrt;
-		double abScalingFactor2 = -pBy2 - tmpSqrt;
+		
+		double slope=delta.getZ()/delta.getX();
+		
+		double circleX=circleLocInTermsOfStart.getX();
+		double circleZ=circleLocInTermsOfStart.getZ();
+		
+		double circleXSquared=circleX*circleX;
+		double circleZSquared=circleZ*circleZ;
 
-		Location p1 = new Location(startLoc.getWorld(), startLoc.getX() - baX * abScalingFactor1,0, startLoc.getZ()
-				- baY * abScalingFactor1);
-		if (disc == 0) { // abScalingFactor1 == abScalingFactor2
-			return Collections.singletonList(p1);
+		
+		List<Double> xs=getSolutions(slope*slope+1,-(2*circleZ*slope+2*circleX),circleXSquared+circleZSquared-radiusSquared);
+		List<Location> results=new ArrayList<Location>();
+		for(double x : xs){
+			Vector offset=new Vector(x,0,x*slope);
+			if(flipped)
+				flipXZ(offset);
+			results.add(startLoc.clone().add(offset));
 		}
-		Location p2 = new Location(startLoc.getWorld(),startLoc.getX() - baX * abScalingFactor2,0, startLoc.getZ()
-				- baY * abScalingFactor2);
-		return Arrays.asList(p1, p2);
+		
+		
+		return results;
 	}
 	private double getMaxDistance(double horizontalSpeed,double maxTicks){
 		return horizontalSpeed*maxTicks;
