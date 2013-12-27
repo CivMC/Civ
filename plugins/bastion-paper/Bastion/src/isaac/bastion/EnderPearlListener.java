@@ -47,7 +47,6 @@ public class EnderPearlListener implements Listener {
 			return;
 		if(event.getEntity() instanceof EnderPearl) {
 			EnderPearl pearl=(EnderPearl) event.getEntity();
-			Bastion.getPlugin().getLogger().info("Ender pearl velocity is  "+pearl.getVelocity().length());
 			pearlMang.handlePearlLaunched(pearl);
 		}
 	}

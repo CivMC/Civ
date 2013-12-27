@@ -1,7 +1,7 @@
 mysql:
-  username: 
+  username: ''
+  password: ''
   host: localhost
-  password: 
   database: bukkit
   port: 3306
   prefix: ''

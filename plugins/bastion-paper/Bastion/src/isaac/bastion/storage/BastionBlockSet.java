@@ -104,7 +104,7 @@ Iterable<BastionBlock> {
 			if(bastion.getLocation().equals(loc))
 				return bastion;
 		}
-		Bastion.getPlugin().getLogger().info("didn't find");
+		//Bastion.getPlugin().getLogger().info("didn't find");
 		return null;
 	}
 	public int update(){

@@ -34,7 +34,7 @@ public class ConfigManager {
 	private boolean enderPearlBlockingRequiresMaturity;
 	private double enderPearlErosionScale;
 	
-	static String file_name="config.xml";
+	static String file_name="config.yml";
 	
 	public ConfigManager(){
 		config=Bastion.getPlugin().getConfig();
@@ -57,6 +57,7 @@ public class ConfigManager {
 		
 		
 		load();
+		Bastion.getPlugin().saveConfig();
 	}
 	
 	private void load(){
@@ -85,7 +86,6 @@ public class ConfigManager {
 		preventEnderPearl=loadBool("BastionBlock.EnderPearls.preventEnderPearl");
 		enderPearlBlockingRequiresMaturity=loadBool("BastionBlock.EnderPearls.requireMaturity");
 		enderPearlErosionScale=loadDouble("BastionBlock.EnderPearls.scaleFac");
-		Bastion.getPlugin().saveConfig();
 		
 	}
 	

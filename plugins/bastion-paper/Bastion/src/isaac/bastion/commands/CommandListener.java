@@ -29,6 +29,9 @@ public class CommandListener implements Listener{
 
 		Player player=event.getPlayer();
 		Mode mode=PlayersStates.modeForPlayer(player);
+		
+		if(mode==Mode.NORMAL)
+			return;
 
 		BastionBlock bastionBlock=Bastion.getBastionManager().
 				bastions.getBastionBlock(block.getLocation());

@@ -87,7 +87,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		if(id>highestId){
 			highestId=id;
 		}
-		Bastion.getPlugin().getLogger().info("Bastion Block created at "+location);
 		if(first){
 			intiStatic();
 		}

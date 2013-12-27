@@ -43,7 +43,6 @@ public class EnderPearlManager {
 		if(pearl instanceof CustomNMSEntityEnderPearl)
 			gravity=((CustomNMSEntityEnderPearl)pearl).y_adjust_;
 
-		//Bastion.getPlugin().getLogger().info("gravity="+gravity);
 		Vector speed=pearl.getVelocity();
 		Vector twoDSpeed=speed.clone();
 		twoDSpeed.setY(0);
@@ -62,7 +61,7 @@ public class EnderPearlManager {
 			return;
 		}
 		
-		Bastion.getPlugin().getLogger().info("Not moving much "+horizontalSpeed);
+		//Bastion.getPlugin().getLogger().info("Not moving much "+horizontalSpeed);
 
 		LivingEntity threwE=pearl.getShooter();
 		Player threw=null;
@@ -76,7 +75,7 @@ public class EnderPearlManager {
 
 		//no need to do anything if there aren't any bastions to run into.
 		if(possible.isEmpty()){
-			Bastion.getPlugin().getLogger().info("There are no that we even have a chance of blocking");
+			//Bastion.getPlugin().getLogger().info("There are no that we even have a chance of blocking");
 			return;
 		}
 
@@ -87,7 +86,7 @@ public class EnderPearlManager {
 		Set<BastionBlock> couldCollide=simpleCollide(possible,start.clone(),end.clone());
 
 		if(couldCollide.isEmpty()){
-			Bastion.getPlugin().getLogger().info("Simple collide didn't find any");
+			//Bastion.getPlugin().getLogger().info("Simple collide didn't find any");
 			return;
 		}
 
@@ -106,12 +105,12 @@ public class EnderPearlManager {
 			}
 		}
 		if(collidesBy!=-1){
-			Bastion.getPlugin().getLogger().info("adding collision");
+			//Bastion.getPlugin().getLogger().info("adding collision");
 			endTimes.put(pearl, (int) collidesBy);
 			blocks.put(pearl, firstCollision);
 			return;
 		}
-		Bastion.getPlugin().getLogger().info("complicated test failed");
+		//Bastion.getPlugin().getLogger().info("complicated test failed");
 
 
 	}
@@ -342,7 +341,6 @@ public class EnderPearlManager {
 		Integer endTime=endTimes.get(pearl);
 		if(endTime==null)
 			return;
-		Bastion.getPlugin().getLogger().info("endTimes.get(pearl)="+endTime+" Time="+pearl.getWorld().getFullTime());
 
 
 		if(pearl.getWorld().getFullTime()>endTime){
