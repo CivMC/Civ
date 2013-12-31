@@ -17,5 +17,5 @@ BastionBlock:
   EnderPearls:
     preventEnderPearl: true 
     scaleFac: 1
-    requireMaturity: true
+    requireMaturity: true 
   
