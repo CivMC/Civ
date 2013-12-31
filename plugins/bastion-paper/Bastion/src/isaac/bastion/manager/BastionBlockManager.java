@@ -49,12 +49,6 @@ public class BastionBlockManager
 	public void close(){
 		bastions.close();
 	}
-	/**
-	 * 
-	 * 
-	 * @param location
-	 * @param reinforcement
-	 */
 
 	public void addBastion(Location location, PlayerReinforcement reinforcement) {
 		BastionBlock toAdd=new BastionBlock(location,reinforcement);
@@ -64,7 +58,11 @@ public class BastionBlockManager
 	public boolean handleBlockPlace(BlockPlaceEvent event) {
 		Location location=event.getBlock().getLocation();
 		String playerName=event.getPlayer().getName();
-		return handleBlockPlace(location,playerName,true);
+		if(handleBlockPlace(location,playerName,true)){
+			event.setCancelled(true);
+			return true;
+		}
+		return false;
 	}
 	public boolean handlePistonPush(BlockPistonExtendEvent event) {
 		boolean blocked=false;
