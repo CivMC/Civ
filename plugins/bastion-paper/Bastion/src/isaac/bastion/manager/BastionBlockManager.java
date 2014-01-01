@@ -29,6 +29,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dispenser;
 import org.bukkit.material.MaterialData;
 
@@ -57,8 +58,7 @@ public class BastionBlockManager
 
 	public boolean handleBlockPlace(BlockPlaceEvent event) {
 		Location location=event.getBlock().getLocation();
-		String playerName=event.getPlayer().getName();
-		if(handleBlockPlace(location,playerName,true)){
+		if(handleBlockPlace(location,event.getPlayer(),true)){
 			event.setCancelled(true);
 			return true;
 		}
@@ -187,8 +187,22 @@ public class BastionBlockManager
 		return shouldCancel;
 	}
 
-	private boolean handleBlockPlace(Location loc, String foundersName, boolean shouldHandle) {
-		BastionBlock bastion=getBlockingBastion(loc,foundersName);
+	private boolean handleBlockPlace(Location loc, Player player, boolean shouldHandle) {
+		BastionBlock bastion=getBlockingBastion(loc,player.getName());
+		if(bastion!=null){
+			if(shouldHandle){
+				bastion.handlePlaced(loc.getBlock());
+				player.getInventory().remove(new ItemStack(loc.getBlock().getType()));
+			}
+			if(bastion.shouldCull())
+				bastions.remove(bastion);
+			return true;
+		}
+		return false;
+	}
+
+	private boolean handleBlockPlace(Location loc, String player, boolean shouldHandle) {
+		BastionBlock bastion=getBlockingBastion(loc,player);
 		if(bastion!=null){
 			if(shouldHandle)
 				bastion.handlePlaced(loc.getBlock());
@@ -310,16 +324,14 @@ public class BastionBlockManager
 			return bastion.infoMessage(dev, player);
 		}
 
-		bastion=getBlockingBastion(block.getLocation());
-		if(bastion!=null){
-			event.setCancelled(true);
-			if(bastion.blocked(block.getLocation(), playerName)){
-				return ChatColor.RED+"A Bastion Block prevents you building";
-			} else{
+		bastion=getBlockingBastion(block.getLocation(),playerName);
+		if(bastion==null){
+			bastion=getBlockingBastion(block.getLocation());
+			if(bastion==null)
 				return ChatColor.GREEN+"A Bastion Block prevents others from building";
-			}
+		} else{
+			return ChatColor.RED+"A Bastion Block prevents you building";
 		}
-
 		return null;
 
 	}
