@@ -40,9 +40,12 @@ public class EnderPearlManager {
 	}
 	private void getBlocking(EnderPearl pearl){
 		double gravity=0.03F;
-
+		try {
 		if(pearl instanceof CustomNMSEntityEnderPearl)
 			gravity=((CustomNMSEntityEnderPearl)pearl).y_adjust_;
+		} catch(NoClassDefFoundError e ){
+			Bastion.getPlugin().getLogger().info("Humbug not found");
+		}
 
 		Vector speed=pearl.getVelocity();
 		Vector twoDSpeed=speed.clone();
