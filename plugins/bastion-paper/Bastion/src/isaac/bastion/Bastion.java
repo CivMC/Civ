@@ -29,6 +29,8 @@ public final class Bastion extends JavaPlugin
 		config = new ConfigManager();
 		bastionManager = new BastionBlockManager();
 		listener = new BastionListener();
+		if(!this.isEnabled())
+			return;
 		
 		getServer().getPluginManager().registerEvents(listener, this);
 		getServer().getPluginManager().registerEvents(new CommandListener(), this);
@@ -49,6 +51,8 @@ public final class Bastion extends JavaPlugin
 
 	public void onDisable()
 	{
+		if(bastionManager==null)
+			return;
 		bastionManager.close();		
 	}
 

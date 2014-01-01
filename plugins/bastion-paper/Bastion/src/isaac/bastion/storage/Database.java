@@ -80,7 +80,7 @@ public class Database {
             this.logger.log(Level.INFO, "Connected to database!");
             return true;
         } catch (SQLException ex) { //Error handling below:
-            this.logger.log(Level.SEVERE, "Could not connnect to the database!");
+            this.logger.log(Level.SEVERE, "Could not connnect to the database! Because "+ex.getMessage());
             Bukkit.getPluginManager().disablePlugin(Bastion.getPlugin());
             return false;
         }
@@ -107,7 +107,9 @@ public class Database {
      */
     public boolean isConnected() {
         try {
-            return connection.isValid(5);
+        	if(connection!=null)
+        		return connection.isValid(5);
+        	return false;
         } catch (SQLException ex) {
             this.logger.log(Level.SEVERE, "isConnected error!", ex);
         }

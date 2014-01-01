@@ -39,14 +39,16 @@ Iterable<BastionBlock> {
 		blocksById=new HashMap<Integer,BastionBlock>();
 		load();
 
-		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-		task=scheduler.scheduleSyncRepeatingTask(Bastion.getPlugin(),
-				new BukkitRunnable(){
-			public void run(){
-				update();
-			}
-		},config.getTimeBetweenSaves()/500,config.getTimeBetweenSaves()/500);
-		//Bastion.getPlugin().getLogger().info("set up save for every "+config.getTimeBetweenSaves());
+
+		if(Bastion.getPlugin().isEnabled()){
+			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+			task=scheduler.scheduleSyncRepeatingTask(Bastion.getPlugin(),
+					new BukkitRunnable(){
+				public void run(){
+					update();
+				}
+			},config.getTimeBetweenSaves()/500,config.getTimeBetweenSaves()/500);
+		}
 	}
 	public void updated(BastionBlock updated){
 		if(!changed.contains(updated)){
@@ -82,11 +84,11 @@ Iterable<BastionBlock> {
 		return blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ());
 
 	}
-	
+
 	public Set<BastionBlock> getPossibleTeleportBlocking(Location loc,String playerName){
 		Set<QTBox> all=blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ(),true);
 		Set<BastionBlock> mightBlock=new TreeSet<BastionBlock>();
-		
+
 		for(QTBox box : all){
 			if(box instanceof BastionBlock){
 				BastionBlock block=(BastionBlock) box;
@@ -211,9 +213,9 @@ Iterable<BastionBlock> {
 		return null;
 	}
 	public boolean silentRemove(BastionBlock toRemove) {
-		
+
 		if(toRemove==null){
-			
+
 			return false;
 		}
 		if(!changed.contains(toRemove))

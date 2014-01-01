@@ -71,6 +71,10 @@ public class BastionBlockStorage {
 		BastionBlock next; 
 		public BastionBlockEnumerator(World nWorld){
 			world=nWorld;
+			if(!db.isConnected()){
+				next=null;
+				return;
+			}
 			try{
 				getAllBastionsForWorld.setString(1, world.getName());
 				result=getAllBastionsForWorld.executeQuery();
