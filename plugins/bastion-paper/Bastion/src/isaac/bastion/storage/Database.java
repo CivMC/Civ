@@ -1,5 +1,7 @@
 package isaac.bastion.storage; 
 
+import isaac.bastion.Bastion;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.bukkit.Bukkit;
 
 /**
  * MySql database
@@ -76,7 +80,8 @@ public class Database {
             this.logger.log(Level.INFO, "Connected to database!");
             return true;
         } catch (SQLException ex) { //Error handling below:
-            this.logger.log(Level.SEVERE, "Could not connnect to the database!", ex);
+            this.logger.log(Level.SEVERE, "Could not connnect to the database!");
+            Bukkit.getPluginManager().disablePlugin(Bastion.getPlugin());
             return false;
         }
     }
