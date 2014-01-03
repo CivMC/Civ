@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.bukkit.Location;
-
 import org.bukkit.World;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.LivingEntity;
@@ -62,6 +61,7 @@ public class EnderPearlManager {
 
 		//check if it has any possibility of going through a bastion 
 		if(!(maxDistance>2||maxDistance<-1)){
+			//Bastion.getPlugin().getLogger().info("Not moving much");
 			return;
 		}
 		
@@ -143,7 +143,7 @@ public class EnderPearlManager {
 			return -1;
 		}
 		/*for(Location loc: collision_points)
-			loc.getBlock().setType(Material.DIAMOND_BLOCK);*/
+			loc.getBlock().setType(Material.TRIPWIRE);*/
 		
 		Location temp=startLoc.clone();
 		temp.setY(0);
@@ -166,6 +166,7 @@ public class EnderPearlManager {
 		for(Location collision_point : collision_points){
 			Location twoDStart=startLoc.clone();
 			twoDStart.setY(0);
+			collision_point.setY(0);
 			oneDCollisions.add(collision_point.subtract(twoDStart).length());
 		}
 		//Bastion.getPlugin().getLogger().info("solutions="+solutions+"collision_points="+oneDCollisions);
