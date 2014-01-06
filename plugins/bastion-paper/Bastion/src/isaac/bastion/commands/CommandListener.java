@@ -28,22 +28,23 @@ public class CommandListener implements Listener{
 		Block block=event.getClickedBlock();
 
 		Player player=event.getPlayer();
-		Mode mode=PlayersStates.modeForPlayer(player);
 		
-		if(mode==Mode.NORMAL)
+		if(PlayersStates.playerInMode(player, Mode.NORMAL)){
 			return;
-
-		BastionBlock bastionBlock=Bastion.getBastionManager().
-				bastions.getBastionBlock(block.getLocation());
-		switch(mode){
-		case INFO:
+		}
+		
+		
+		if(PlayersStates.playerInMode(player, Mode.INFO)){
 			boolean dev=player.hasPermission("Bastion.dev");
 			String toSend=manager.infoMessage(dev, event);
 			if(toSend!=null){
 				player.sendMessage(manager.infoMessage(dev, event));
 			}
-			break;
-		case DELETE:
+		} else if(PlayersStates.playerInMode(player, Mode.DELETE)){
+			
+			BastionBlock bastionBlock=Bastion.getBastionManager().
+					bastions.getBastionBlock(block.getLocation());
+			
 			if(bastionBlock==null){
 				return;
 			}
@@ -53,10 +54,6 @@ public class CommandListener implements Listener{
 					event.setCancelled(true);
 				}
 			}
-			break;
-		default:
-			break;
-
 		}
 	}
 }

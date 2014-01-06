@@ -215,7 +215,6 @@ Iterable<BastionBlock> {
 	public boolean silentRemove(BastionBlock toRemove) {
 
 		if(toRemove==null){
-
 			return false;
 		}
 		if(!changed.contains(toRemove))
@@ -224,9 +223,8 @@ Iterable<BastionBlock> {
 		SparseQuadTree forWorld=blocks.get(toRemove.getLocation().getWorld());
 		if(forWorld!=null){
 			forWorld.remove(toRemove);
-		} else{
-			Bastion.getPlugin().getLogger().info("forWorld was null");
-		}
+		} else
+			
 		toRemove.silentClose();
 		return true;
 	}

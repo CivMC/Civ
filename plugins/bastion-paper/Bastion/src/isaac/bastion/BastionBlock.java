@@ -141,6 +141,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			loaded=false;
 			ghost=true;
 			location.getBlock().setType(Material.AIR);
+			set.updated(this);
 		}
 	}
 	public void silentClose(){
@@ -151,6 +152,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			}
 			loaded=false;
 			ghost=true;
+			set.updated(this);
 		}
 	}
 	private double erosionFromPlace(){

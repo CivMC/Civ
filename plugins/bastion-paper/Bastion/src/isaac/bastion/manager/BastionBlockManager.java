@@ -312,24 +312,27 @@ public class BastionBlockManager
 	public String infoMessage(boolean dev,PlayerInteractEvent event){
 		Block clicked=event.getClickedBlock();
 		BlockFace clickedFace=event.getBlockFace();
-		Block block=clicked.getRelative(clickedFace);
+		Block block=clicked.getRelative(clickedFace); //get the block above the clicked block. Kind of like you clicked air
 
 		Player player=event.getPlayer();
 		String playerName=player.getName();
 
-		BastionBlock bastion=bastions.getBastionBlock(clicked.getLocation());
+		BastionBlock bastion=bastions.getBastionBlock(clicked.getLocation()); //Get the bastion at the location clicked.
 
-		if(bastion!=null){
+		if(bastion!=null){ //See if anything was found
 			event.setCancelled(true);
-			return bastion.infoMessage(dev, player);
+			return bastion.infoMessage(dev, player); //If there is actually something there tell the player about it.
 		}
 
 		bastion=getBlockingBastion(block.getLocation(),playerName);
 		if(bastion==null){
 			bastion=getBlockingBastion(block.getLocation());
-			if(bastion==null)
+			if(bastion!=null){
+				event.setCancelled(true);
 				return ChatColor.GREEN+"A Bastion Block prevents others from building";
+			}
 		} else{
+			event.setCancelled(true);
 			return ChatColor.RED+"A Bastion Block prevents you building";
 		}
 		return null;
