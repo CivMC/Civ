@@ -223,8 +223,8 @@ Iterable<BastionBlock> {
 		SparseQuadTree forWorld=blocks.get(toRemove.getLocation().getWorld());
 		if(forWorld!=null){
 			forWorld.remove(toRemove);
-		} else
-			
+		}
+		
 		toRemove.silentClose();
 		return true;
 	}
