@@ -1,8 +1,11 @@
 package isaac.bastion.commands;
 
+import isaac.bastion.Bastion;
+
 import java.io.InputStream;
 import java.util.Scanner;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,6 +19,9 @@ public class BastionCommandManager implements CommandExecutor {
 			if(args[0].equalsIgnoreCase("License")){
 				InputStream input = getClass().getResourceAsStream("/License.txt");
 				sender.sendMessage(convertStreamToString(input));
+				return true;
+			} else if(args[0].equalsIgnoreCase("about")){
+				sender.sendMessage(ChatColor.GREEN+"Bastion version "+Bastion.getPlugin().getDescription().getVersion());
 				return true;
 			}
 		}

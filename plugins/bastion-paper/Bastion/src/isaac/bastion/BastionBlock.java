@@ -311,6 +311,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		erode(erosionFromPlace());
 	}
 	public void handleTeleport(Location loc,Player player){
+		player.sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
 		player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL,1));
 		erode(erosionFromPlace()*pearlScale);
 	}
