@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,7 +29,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dispenser;
 import org.bukkit.material.MaterialData;
 
@@ -60,7 +58,8 @@ public class BastionBlockManager
 	public boolean handleBlockPlace(BlockPlaceEvent event) {
 		Location location=event.getBlock().getLocation();
 		if(handleBlockPlace(location,event.getPlayer(),true)){
-			event.setCancelled(true);
+			final BlockState replaced=event.getBlockReplacedState();
+			replaced.update(true,false);
 			return true;
 		}
 		return false;
@@ -193,7 +192,7 @@ public class BastionBlockManager
 		if(bastion!=null){
 			if(shouldHandle){
 				bastion.handlePlaced(loc.getBlock());
-				player.getInventory().remove(new ItemStack(loc.getBlock().getType()));
+				//player.getInventory().remove(new ItemStack(loc.getBlock().getType()));
 			}
 			if(bastion.shouldCull())
 				bastions.remove(bastion);
@@ -207,7 +206,7 @@ public class BastionBlockManager
 		if(bastion!=null){
 			if(shouldHandle){
 				bastion.handlePlaced(loc.getBlock());
-				Bukkit.getServer().getPlayer(player).getInventory().remove(new ItemStack(loc.getBlock().getType()));
+				//Bukkit.getServer().getPlayer(player).getInventory().remove(new ItemStack(loc.getBlock().getType()));
 			}
 			if(bastion.shouldCull())
 				bastions.remove(bastion);
