@@ -48,10 +48,13 @@ public class PlayersStates {
 	static public void setModeForPlayer(Player player,Mode mode){
 		if(mode==null)
 			mode=Mode.NORMAL;
+		
 		Mode old=playersModes.get(player);
-		if(old!=null&&old!=mode&&old!=Mode.NORMAL)
+		
+		if(old!=null&&old!=mode&&old!=Mode.NORMAL){
 			player.sendMessage(ChatColor.YELLOW+"Bastion "+old.name()+" mode off");
-		player.sendMessage(ChatColor.YELLOW+"Bastion "+mode.name()+" mode on");
+		}
+		player.sendMessage(ChatColor.GREEN+"Bastion "+mode.name()+" mode on");
 
 		playersModes.put(player, mode);
 		registerReturnToNormal(player,mode);

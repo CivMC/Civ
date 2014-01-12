@@ -4,11 +4,11 @@ package isaac.bastion;
 
 
 import isaac.bastion.commands.BastionCommandManager;
-import isaac.bastion.commands.CommandListener;
 import isaac.bastion.commands.DeleteCommandManager;
 import isaac.bastion.commands.InfoCommandManager;
 import isaac.bastion.commands.NormalCommandManager;
 import isaac.bastion.listeners.BastionListener;
+import isaac.bastion.listeners.CommandListener;
 import isaac.bastion.listeners.EnderPearlListener;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.manager.ConfigManager;
