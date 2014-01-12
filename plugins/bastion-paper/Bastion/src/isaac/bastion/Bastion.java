@@ -8,6 +8,8 @@ import isaac.bastion.commands.CommandListener;
 import isaac.bastion.commands.DeleteCommandManager;
 import isaac.bastion.commands.InfoCommandManager;
 import isaac.bastion.commands.NormalCommandManager;
+import isaac.bastion.listeners.BastionListener;
+import isaac.bastion.listeners.EnderPearlListener;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.manager.ConfigManager;
 
@@ -25,23 +27,30 @@ public final class Bastion extends JavaPlugin
 	
 	public void onEnable()
 	{
+		//set the static variables
 		plugin = this;
 		config = new ConfigManager();
 		bastionManager = new BastionBlockManager();
 		listener = new BastionListener();
-		if(!this.isEnabled())
+		
+		if(!this.isEnabled()) //check that the plugin was not disabled in setting up any of the static variables
 			return;
 		
-		getServer().getPluginManager().registerEvents(listener, this);
-		getServer().getPluginManager().registerEvents(new CommandListener(), this);
-		if(config.getEnderPearlsBlocked())
-			getServer().getPluginManager().registerEvents(new EnderPearlListener(), this);
+		registerListeners();
 		registerCommands();
 	}
-	/**
-	 * registerCommands()
-	 * Sets up the command managers
-	 */
+	
+	//What the name says
+	private void registerListeners(){
+		getServer().getPluginManager().registerEvents(listener, this);
+		getServer().getPluginManager().registerEvents(new CommandListener(), this);
+		if(config.getEnderPearlsBlocked()) //currently everything to do with blocking pearls is part of EnderPearlListener. Needs changed
+			getServer().getPluginManager().registerEvents(new EnderPearlListener(), this);
+	}
+	
+	
+
+	//Sets up the command managers
 	private void registerCommands(){
 		getCommand("Bastion").setExecutor(new BastionCommandManager());
 		getCommand("bsi").setExecutor(new InfoCommandManager());
@@ -53,7 +62,7 @@ public final class Bastion extends JavaPlugin
 	{
 		if(bastionManager==null)
 			return;
-		bastionManager.close();		
+		bastionManager.close();//saves all Bastion Blocks
 	}
 
 	public static BastionBlockManager getBastionManager()
@@ -64,7 +73,7 @@ public final class Bastion extends JavaPlugin
 	{
 		return plugin;
 	}
-	public static BastionListener getListenerr()
+	public static BastionListener getBastionBlockListener()
 	{
 		return listener;
 	}

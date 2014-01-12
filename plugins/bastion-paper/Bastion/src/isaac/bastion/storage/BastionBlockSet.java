@@ -30,16 +30,13 @@ Iterable<BastionBlock> {
 	private int task;
 	private ConfigManager config;
 	public BastionBlockSet() {
-		BastionBlock.set=this;
 		storage=new BastionBlockStorage();
 		changed=new TreeSet<BastionBlock>();
 		config=Bastion.getConfigManager();
 
 		blocks=new HashMap<World, SparseQuadTree>();
 		blocksById=new HashMap<Integer,BastionBlock>();
-		load();
-
-
+		
 		if(Bastion.getPlugin().isEnabled()){
 			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 			task=scheduler.scheduleSyncRepeatingTask(Bastion.getPlugin(),
@@ -47,8 +44,9 @@ Iterable<BastionBlock> {
 				public void run(){
 					update();
 				}
-			},config.getTimeBetweenSaves()/500,config.getTimeBetweenSaves()/500);
+			},config.getTimeBetweenSaves(),config.getTimeBetweenSaves());
 		}
+		BastionBlock.set=this;
 	}
 	public void updated(BastionBlock updated){
 		if(!changed.contains(updated)){
@@ -60,7 +58,7 @@ Iterable<BastionBlock> {
 		scheduler.cancelTask(task);
 		update();
 	}
-	private void load(){
+	public void load(){
 		int enderSeachRadius=EnderPearlManager.MAX_TELEPORT+100;
 		for(World world : Bukkit.getWorlds()){
 			Enumeration<BastionBlock> forWorld=storage.getAllSnitches(world);

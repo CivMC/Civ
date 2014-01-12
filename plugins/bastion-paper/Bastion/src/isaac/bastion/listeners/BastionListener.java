@@ -1,6 +1,7 @@
-package isaac.bastion;
+package isaac.bastion.listeners;
 
 
+import isaac.bastion.Bastion;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.manager.ConfigManager;
 
