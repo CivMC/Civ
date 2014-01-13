@@ -50,7 +50,7 @@
 #       durability: 0 (damage value, 0 represents max durability, negative represents greater than max)
 #       data: 0 (data value of the item stack
 #       display_name: (display name of the item, null by default)
-#       lore: (lore of the item, null by default)#   fuel_time: 1 (Time that a piece of fuel lasts)
+#       lore: (lore of the item, null by default)#   
 #   fuel_time: 1 (Time which fuel lasts)
 #   inputs: (required)
 #     Common Name:
@@ -1674,7 +1674,7 @@ production_factories:
         amount: 9
       Glowstone:
         material: GLOWSTONE
-        amount: 25
+        amount: 2
       Iron_Ingot:
         material: IRON_INGOT
         amount: 6
