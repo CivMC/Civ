@@ -83,8 +83,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			silentClose();
 		}
 
-		setup();
-
 	}
 
 	//called by both constructor to do the things they shair
