@@ -4,9 +4,8 @@ package isaac.bastion;
 
 
 import isaac.bastion.commands.BastionCommandManager;
-import isaac.bastion.commands.DeleteCommandManager;
-import isaac.bastion.commands.InfoCommandManager;
-import isaac.bastion.commands.NormalCommandManager;
+import isaac.bastion.commands.ModeChangeCommand;
+import isaac.bastion.commands.PlayersStates.Mode;
 import isaac.bastion.listeners.BastionListener;
 import isaac.bastion.listeners.CommandListener;
 import isaac.bastion.listeners.EnderPearlListener;
@@ -53,9 +52,10 @@ public final class Bastion extends JavaPlugin
 	//Sets up the command managers
 	private void registerCommands(){
 		getCommand("Bastion").setExecutor(new BastionCommandManager());
-		getCommand("bsi").setExecutor(new InfoCommandManager());
-		getCommand("bsd").setExecutor(new DeleteCommandManager());
-		getCommand("bso").setExecutor(new NormalCommandManager());
+		getCommand("bsi").setExecutor(new ModeChangeCommand(Mode.INFO));
+		getCommand("bsd").setExecutor(new ModeChangeCommand(Mode.DELETE));
+		getCommand("bso").setExecutor(new ModeChangeCommand(Mode.NORMAL));
+		getCommand("bsn").setExecutor(new ModeChangeCommand(Mode.DISABLED));
 	}
 
 	public void onDisable()

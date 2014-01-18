@@ -474,15 +474,15 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			fractionOfMaturityTime=((double) (System.currentTimeMillis()-placed))/scaleTime;
 		}
 		if(fractionOfMaturityTime==0){
-			result=ChatColor.GREEN+"Just placed";
+			result=ChatColor.GREEN+"No strength";
 		} else if(fractionOfMaturityTime<0.25){
-			result=ChatColor.GREEN+"Placed recently";
+			result=ChatColor.GREEN+"Some strength";
 		} else if(fractionOfMaturityTime<0.5){
-			result=ChatColor.GREEN+"Placed a while ago";
+			result=ChatColor.GREEN+"Moderate strength";
 		} else if(fractionOfMaturityTime<0.75){
-			result=ChatColor.GREEN+"Placed quite a while ago";
+			result=ChatColor.GREEN+"High strength";
 		} else if(fractionOfMaturityTime>=1){
-			result=ChatColor.GREEN+"Placed a long time ago";
+			result=ChatColor.GREEN+"Full strength";
 		}
 
 

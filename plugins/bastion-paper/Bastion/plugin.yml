@@ -17,6 +17,10 @@ commands:
       description: Removes Bastion Block when clicked
       usage: /bsd and right click a block
       permission: Bastion.normal
+   bsn:
+      description: Turns off creation of of a Bastion Block when reinforcing the target block
+      usage: /bsn
+      permission: Bastion.normal
    bso:
       description: Returns to normal
       usage: /bso set the mode back to normal

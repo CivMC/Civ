@@ -2,12 +2,15 @@ package isaac.bastion.listeners;
 
 
 import isaac.bastion.Bastion;
+import isaac.bastion.commands.PlayersStates;
+import isaac.bastion.commands.PlayersStates.Mode;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.manager.ConfigManager;
 
 import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.events.CreateReinforcementEvent;
 
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -87,8 +90,11 @@ implements Listener
 	@EventHandler
 	public void onReinforcement(CreateReinforcementEvent event) {
 
-		if (event.getBlock().getType() == config.getBastionBlockMaterial()) {
+		if (event.getBlock().getType() == config.getBastionBlockMaterial() && 
+				!PlayersStates.playerInMode(event.getPlayer(), Mode.DISABLED)) {
+			PlayersStates.touchPlayer(event.getPlayer());
 			bastionManager.addBastion(event.getBlock().getLocation(),(PlayerReinforcement) event.getReinforcement());
+			event.getPlayer().sendMessage(ChatColor.GREEN+"Bastion block created");
 		}
 	}
 	public BastionBlockManager getBastionManager(){
