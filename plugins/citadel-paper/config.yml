@@ -24,6 +24,8 @@ additionalSecurable:
 - BEACON
 - ANVIL
 nonReinforceable:
+- BEDROCK
+- ENDER_PORTAL_FRAME
 - SAPLING
 - LONG_GRASS
 - DEAD_BUSH

@@ -80,9 +80,11 @@ public class AcidCommand extends PlayerCommand {
                 return true;
             }
             // if they try break bedrock, return
-            if (above.getType() == Material.BEDROCK || above.getType() == Material.ENDER_PORTAL || above.getType() == Material.ENDER_PORTAL_FRAME){
-            	sender.sendMessage("You cant break this block");
-            	return true;
+            if (above.getType() == Material.BEDROCK
+                    || above.getType() == Material.ENDER_PORTAL
+                    || above.getType() == Material.ENDER_PORTAL_FRAME) {
+                sender.sendMessage("You cant break this block");
+                return true;
             }
             // Break block above
             aboveRein.setDurability(0);
