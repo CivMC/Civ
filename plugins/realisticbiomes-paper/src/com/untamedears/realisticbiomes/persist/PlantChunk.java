@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
@@ -19,9 +18,6 @@ public class PlantChunk {
 	RealisticBiomes plugin;
 
 	HashMap<Coords, Plant> plants;
-	
-	// a list of what plants need to be 'updated' in the database
-	ArrayList<Coords> updatedPlants;
 
 	// index of this chunk in the database
 	long index;
@@ -35,9 +31,8 @@ public class PlantChunk {
 		this.index = index;
 
 		this.loaded = false;
-		this.inDatabase = false; // if we are already in the database, PlantManager sets this to true
+		this.inDatabase = false;
 
-		this.updatedPlants = new ArrayList<Coords>();
 	}
 
 	/**
@@ -103,7 +98,6 @@ public class PlantChunk {
 			loaded = true;
 		}
 
-		this.updatedPlants.add(coords);
 		plants.put(coords, plant);
 	}
 
@@ -189,7 +183,6 @@ public class PlantChunk {
 
 				// if the plant isn't finished growing, add it to the
 				// plants
-				// TODO MARK: should we mark this crop for removal if it is fully grown / equal to 1.0?
 				if (!(plant.getGrowth() >= 1.0)) {
 					plants.put(new Coords(w, x, y, z), plant);
 					RealisticBiomes.doLog(Level.FINER, "PlantChunk.load(): plant not finished growing, adding to plants list");
@@ -216,12 +209,11 @@ public class PlantChunk {
 	 * takes care of setting autocommit to false/true and actually committing to
 	 * the database
 	 * 
-	 * @param chunkCoords - the coordinates that this plant chunk belongs to
+	 * @param chunkCoords
 	 * @param writeStmts
 	 */
 	public synchronized void unload(Coords chunkCoords) {
 
-		boolean isNewChunk = false;
 		RealisticBiomes.doLog(Level.FINEST,"PlantChunk.unload(): called with coords "
 				+ chunkCoords + "plantchunk object: " + this);
 		// TODO: plant chunk objects need to know their own coordinates, we
@@ -238,8 +230,6 @@ public class PlantChunk {
 			RealisticBiomes.doLog(Level.FINER,"PlantChunk.unload(): is inDatabase?: "
 					+ inDatabase);
 			if (!inDatabase) {
-				
-				isNewChunk = true;
 
 				RealisticBiomes.doLog(Level.FINER, "not in database, adding new chunk");
 				ChunkWriter.addChunkStmt.setInt(1, chunkCoords.w);
@@ -285,15 +275,57 @@ public class PlantChunk {
 			// put all the plants into the database
 			// if we are already unloaded then don't do anything
 			if (loaded) {
-				
-				if(isNewChunk) {
-					unloadAsNewChunk();
+				if (!plants.isEmpty()) {
+
+					// delete plants in the database for this chunk and re-add them
+					// this is OK because rb_plant does not have a autoincrement index
+					// so it won't explode. However, does this have a negative performance impact?
+					// TODO: add listener for block break event, and if its a plant, we remove it
+					// from the correct plantchunk? Right now if a plant gets destroyed before
+					// it is fully grown then it won't get remove from the database
+					ChunkWriter.deleteOldPlantsStmt.setLong(1, index);
+					ChunkWriter.deleteOldPlantsStmt.execute();
+
+					int coordCounter = 0;
+					boolean needToExec = false;
 					
-				} else {
+					RealisticBiomes.doLog(Level.FINER, "PlantChunk.unload(): Unloading plantchunk with index: " + this.index);
+					for (Coords coords : plants.keySet()) {
+						if (!needToExec) {
+							needToExec = true;
+						}
+						
+						Plant plant = plants.get(coords);
+
+						ChunkWriter.addPlantStmt.clearParameters();
+						ChunkWriter.addPlantStmt.setLong(1, index);
+						ChunkWriter.addPlantStmt.setInt(2, coords.w);
+						ChunkWriter.addPlantStmt.setInt(3, coords.x);
+						ChunkWriter.addPlantStmt.setInt(4, coords.y);
+						ChunkWriter.addPlantStmt.setInt(5, coords.z);
+						ChunkWriter.addPlantStmt.setLong(6,
+								plant.getUpdateTime());
+						ChunkWriter.addPlantStmt.setFloat(7,
+								plant.getGrowth());
+						
+						ChunkWriter.addPlantStmt.addBatch();
+						
+						// execute the statement if we hit 1000 batches
+						if ((coordCounter + 1) % 1000 == 0) {
+							
+							ChunkWriter.addPlantStmt.executeBatch();
+							coordCounter = 0;
+							needToExec = false;
+						}
+						
+					} // end for
 					
-					unloadAsExistingChunk();
-				}
-				
+					// if we have left over statements afterwards, execute them
+					if (needToExec) {
+						ChunkWriter.addPlantStmt.executeBatch();
+					}
+					
+				} 
 			}
 		} catch (SQLException e) {
 			throw new DataSourceException(
@@ -306,123 +338,5 @@ public class PlantChunk {
 		plants = new HashMap<Coords, Plant>();
 		loaded = false;
 	}
-	
-	/**
-	 * Helper method that will unload this Plantchunk as if it was a new chunk in the database
-	 * and therefore all plants that are in this Plantchunk need to be inserted into the database. 
-	 * 
-	 * @throws SQLException
-	 */
-	private void unloadAsNewChunk() throws SQLException {
-		
-		if (!plants.isEmpty()) {
-
-			// delete plants in the database for this chunk and re-add them
-			// this is OK because rb_plant does not have a autoincrement index
-			// so it won't explode. However, does this have a negative performance impact?
-			// TODO: add listener for block break event, and if its a plant, we remove it
-			// from the correct plantchunk? Right now if a plant gets destroyed before
-			// it is fully grown then it won't get remove from the database
-			//ChunkWriter.deleteOldPlantsStmt.setLong(1, index);
-			//ChunkWriter.deleteOldPlantsStmt.execute();
-
-			int coordCounter = 0;
-			boolean needToExec = false;
-			
-			RealisticBiomes.doLog(Level.FINER, "PlantChunk.unloadAsNewChunk(): Unloading plantchunk with index: " + this.index);
-			
-			// go through all the plants that this plantchunk contains
-			for (Coords coords : plants.keySet()) {
-				if (!needToExec) {
-					needToExec = true;
-				}
-				
-				Plant plant = plants.get(coords);
-
-				ChunkWriter.addPlantStmt.clearParameters();
-				ChunkWriter.addPlantStmt.setLong(1, index);
-				ChunkWriter.addPlantStmt.setInt(2, coords.w);
-				ChunkWriter.addPlantStmt.setInt(3, coords.x);
-				ChunkWriter.addPlantStmt.setInt(4, coords.y);
-				ChunkWriter.addPlantStmt.setInt(5, coords.z);
-				ChunkWriter.addPlantStmt.setLong(6,
-						plant.getUpdateTime());
-				ChunkWriter.addPlantStmt.setFloat(7,
-						plant.getGrowth());
-				
-				ChunkWriter.addPlantStmt.addBatch();
-				
-				
-				// execute the statement if we hit 1000 batches
-				if ((coordCounter + 1) % 1000 == 0) {
-					
-					ChunkWriter.addPlantStmt.executeBatch();
-					coordCounter = 0;
-					needToExec = false;
-				}
-				
-			} // end for
-			
-			// if we have left over statements afterwards, execute them
-			if (needToExec) {
-				ChunkWriter.addPlantStmt.executeBatch();
-			}
-			
-		} 
-	
-	} // end unloadAsNewChunk()
-	
-	
-	/**
-	 * Helper method that will unload this Plantchunk as if it was an existing chunk in the database
-	 * and only 'updated' plants need to be updated in the database
-	 * 
-	 * @throws SQLException
-	 */
-	private void unloadAsExistingChunk () throws SQLException {
-		
-		int coordCounter = 0;
-		boolean needToExec = false;
-		
-		RealisticBiomes.doLog(Level.FINER, "PlantChunk.unloadAsExistingChunk(): Unloading plantchunk with index: " + this.index);
-		
-		// go through all the plants that this plantchunk contains
-		for (Coords coords : updatedPlants) {
-			if (!needToExec) {
-				needToExec = true;
-			}
-			
-			Plant plant = plants.get(coords);
-
-			RealisticBiomes.doLog(Level.FINER, String.format("PlantChunk.unloadAsExistingChunk(): \n\tunloading plant in updatedPlants: %s", plants));
-		
-			// set the parameters for the updatePlantStatement
-			
-			// the two things we are updating
-			ChunkWriter.updatePlantStmt.setLong(1, plant.getUpdateTime());
-			ChunkWriter.updatePlantStmt.setFloat(2, plant.getGrowth());
-			
-			// these are just to get the correct row
-			ChunkWriter.updatePlantStmt.setInt(3, coords.w);
-			ChunkWriter.updatePlantStmt.setInt(4, coords.x);
-			ChunkWriter.updatePlantStmt.setInt(5, coords.y);
-			ChunkWriter.updatePlantStmt.setInt(6, coords.z);
-
-			// execute the statement if we hit 1000 batches
-			if ((coordCounter + 1) % 1000 == 0) {
-				
-				ChunkWriter.updatePlantStmt.executeBatch();
-				coordCounter = 0;
-				needToExec = false;
-			}
-			
-		} // end for
-		
-		// if we have left over statements afterwards, execute them
-		if (needToExec) {
-			ChunkWriter.updatePlantStmt.executeBatch();
-		}
-	}
-	
 
 }
