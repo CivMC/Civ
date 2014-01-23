@@ -55,6 +55,48 @@ def convertSqliteToMysql(args):
     sqliteCur = sqliteDb.cursor()
     mysqlCur = mysqlDb.cursor()
 
+
+    # try and see if the old databases are there, if so, delete them!
+    # if the table does exist, then we get something like: [('rb_chunk',)]
+    # if not, we get an empty list, so we can just do bool(result) to see if 
+    # the table exists
+    # 
+    # we need to do this, since we name our foreign key constraints when we create the table
+    # and if the table exists, then it throws an error saying it cant create the table because
+    # the names of the foreign key constraints are taken!
+
+    mysqlCur.execute('''SHOW TABLES LIKE '{}_plant' '''.format(dbPrefix))
+    tmpResult2 = mysqlCur.fetchall()
+
+    if tmpResult2:
+
+        queryResult2 = query_yes_no("The table '{}_plant' already exists! We are going to execute DROP TABLE on this, are you sure?".format(dbPrefix))
+
+        if not queryResult2:
+            sys.exit("You answered no, but we need to drop the already existing {}_plant table before continuing! exiting.".format(dbPrefix))
+        else:
+            # user answered yes, drop the table
+            mysqlCur.execute("DROP TABLE {}_plant".format(dbPrefix))
+
+
+    # check for plant table
+    mysqlCur.execute('''SHOW TABLES LIKE '{}_chunk' '''.format(dbPrefix))
+    tmpResult = mysqlCur.fetchall()
+    if tmpResult:
+
+        queryResult = query_yes_no("The table '{}_chunk' already exists! We are going to execute DROP TABLE on this, are you sure?".format(dbPrefix))
+
+        if not queryResult:
+            sys.exit("You answered no, but we need to drop the already existing {}_chunk table before continuing! exiting.".format(dbPrefix))
+
+        else:
+            # user answered yes, drop the table
+            mysqlCur.execute("DROP TABLE {}_chunk".format(dbPrefix))
+
+
+
+
+
     # create the tables in the mysql database
     mysqlCur.execute('''CREATE TABLE IF NOT EXISTS {}_chunk (id BIGINT PRIMARY KEY AUTO_INCREMENT,
                          w INTEGER, x INTEGER, z INTEGER, 
@@ -118,7 +160,7 @@ def convertSqliteToMysql(args):
     plantDict = {}
     counter = 0
     plantInsertStr = "INSERT INTO {}_plant (chunkId, w, x, y, z, date, growth) VALUES (%(1)s, %(2)s, %(3)s, %(4)s, %(5)s, %(6)s, %(7)s)".format(dbPrefix)
-
+    import pdb; pdb.set_trace()
     for iterResult in result:
 
         if counter % 1000 == 0:
@@ -126,7 +168,7 @@ def convertSqliteToMysql(args):
 
         # execute query
         plantDict = {"1": iterResult[0], "2": iterResult[1], "3": iterResult[2], "4":iterResult[3], "5": iterResult[4], 
-            "6": iterResult[5], "7":iterResult[6] / 1000} # make sure to divide by 1000, so we go from milliseconds to seconds
+            "6": iterResult[5] / 1000, "7":iterResult[6] } # make sure to divide by 1000, (for iterResult[5]) so we go from milliseconds to seconds
         mysqlCur.execute(plantInsertStr, plantDict)
 
         counter += 1
@@ -143,6 +185,38 @@ def convertSqliteToMysql(args):
     mysqlDb.close()
     sqliteDb.close()
 
+
+def query_yes_no(question, default="yes"):
+    """Ask a yes/no question via input() and return their answer.
+
+    "question" is a string that is presented to the user.
+    "default" is the presumed answer if the user just hits <Enter>.
+        It must be "yes" (the default), "no" or None (meaning
+        an answer is required of the user).
+
+    The "answer" return value is one of "yes" or "no".
+    """
+    valid = {"yes":True,   "y":True,  "ye":True,
+             "no":False,     "n":False}
+    if default == None:
+        prompt = " [y/n] "
+    elif default == "yes":
+        prompt = " [Y/n] "
+    elif default == "no":
+        prompt = " [y/N] "
+    else:
+        raise ValueError("invalid default answer: '%s'" % default)
+
+    while True:
+        sys.stdout.write(question + prompt)
+        choice = input().lower()
+        if default is not None and choice == '':
+            return valid[default]
+        elif choice in valid:
+            return valid[choice]
+        else:
+            sys.stdout.write("Please respond with 'yes' or 'no' "\
+                             "(or 'y' or 'n').\n")
 
 def isYamlType(stringArg):
     ''' helper method for argparse that sees if the argument is a valid yaml file
