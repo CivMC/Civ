@@ -160,7 +160,7 @@ def convertSqliteToMysql(args):
     plantDict = {}
     counter = 0
     plantInsertStr = "INSERT INTO {}_plant (chunkId, w, x, y, z, date, growth) VALUES (%(1)s, %(2)s, %(3)s, %(4)s, %(5)s, %(6)s, %(7)s)".format(dbPrefix)
-    import pdb; pdb.set_trace()
+    
     for iterResult in result:
 
         if counter % 1000 == 0:
