@@ -155,8 +155,7 @@ public class PlantManager {
 		}
 		long endTime = System.nanoTime()/1000000/*ns/ms*/;
 
-		RealisticBiomes.LOG.info("Finished loading PlantChunks, done in " + (endTime - startTime) + "ms");
-
+		RealisticBiomes.LOG.info("Finished loading all PlantChunks - time taken: " +(endTime-startTime) + "ms");
 		
 		// create unload batch
 		chunksToUnload = new ArrayList<Coords>();
@@ -221,10 +220,61 @@ public class PlantManager {
 				
 				end = System.nanoTime()/1000000/*ns/ms*/;
 				
-				if (plugin.persistConfig.logDB)
-					log.info("Committed data: Unloaded and saved  "+chunksUnloadedCount+" chunks (" + plantCounter + " plants) in "+(end-start)+" ms");					
+				logLoadOrUnloadEvent("Unloaded " + chunksUnloadedCount + " chunks (" + plantCounter + " plants)", 
+						config, ChunkDBEvent.UnloadEvent, end-start);
+								
 			}
 		});
+	}
+	
+	/**
+	 * enum to define whether a log is for a load or unload event
+	 * @author markgrandi
+	 *
+	 */
+	private enum ChunkDBEvent {
+		
+		LoadEvent, UnloadEvent;
+		
+	}
+	
+	/**
+	 * helper method to take care of logging chunk load and unload events
+	 * This checks the PlantManager's config to see if logDb, logDbProduction and
+	 * the load/unload min times
+	 * @param prefixString - the message to write
+	 * @param whichEvent - the type of event this is for, to check with the config (if productionLogDb)
+	 * @param timeTakenInMs - the time taken in milliseconds, used to check against the 
+	 * persistConfig's load/unload mintimes
+	 */
+	private static void logLoadOrUnloadEvent(String message, PersistConfig config, ChunkDBEvent whichEvent, long timeTakenInMs) {
+		
+		// if productionLogDb is set to true, then we do production logging no matter what 
+		// logDb is set to
+		if (config.productionLogDb) {
+			
+			if (whichEvent == ChunkDBEvent.LoadEvent) {
+				if (timeTakenInMs >= config.productionLogLoadMintime) {
+					RealisticBiomes.LOG.info("[" + whichEvent.toString() + "] "+ message + " - time taken: " +  timeTakenInMs + "ms");
+				}
+				return;
+				
+			} else {
+				// UnloadEvent
+				if (timeTakenInMs >= config.productionLogUnloadMintime) {
+					RealisticBiomes.LOG.info("[" + whichEvent.toString() + "] "+ message + " - time taken: " +  timeTakenInMs + "ms");
+				}
+				return;
+			}
+		}
+		
+		// here, productionLogDb is set to false, check to see if logDb is true
+		if (config.logDB) {
+			RealisticBiomes.LOG.info("[" + whichEvent.toString() + "] "+ message + " - time taken: " +  timeTakenInMs + "ms");
+			return;
+		}
+		
+		
 	}
 	
 	public void saveAllAndStop() {
@@ -345,10 +395,7 @@ public class PlantManager {
 		long end = System.nanoTime()/1000000/*ns/ms*/;
 		RealisticBiomes.doLog(Level.FINER, "PlantManager.loadChunk():Had to load chunk, pchunk.load() returned " + loaded);
 		
-		
-		if (plugin.persistConfig.logDB) {
-			plugin.getLogger().info("db load chunk["+coords.x+","+coords.z+"]: "+pChunk.getPlantCount()+" entries loaded in "+(end-start)+" ms");
-		}
+		logLoadOrUnloadEvent("Loaded chunk ["+coords.x+","+coords.z+"]", this.config, ChunkDBEvent.LoadEvent, end-start);
 		
 		return loaded;
 	}

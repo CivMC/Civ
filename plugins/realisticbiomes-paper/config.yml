@@ -7,8 +7,10 @@ realistic_biomes:
  database_prefix: "rb"
 
  persistence_enabled: true
- 
+
  minLogLevel: "INFO"
+
+
 
  unload_batch_period: 100
  grow_event_load_chance: 0.5
@@ -16,6 +18,14 @@ realistic_biomes:
  unload_batch_max_time: 20
 
  log_db: true
+
+ # overrides log_db if set to true
+ # this will read the log_db_production_chunk_load_mintime / log_db_production_chunk_unload_mintime
+ # variable and will only log chunk unload/load times that go over the configured amount
+ # the times are specified in milliseconds
+ log_db_production: true
+ log_db_production_chunk_load_mintime: 5
+ log_db_production_chunk_unload_mintime: 5
 
  # catagories of biomes
  biome_aliases:

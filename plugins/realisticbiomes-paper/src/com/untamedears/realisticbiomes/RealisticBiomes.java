@@ -128,10 +128,21 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		persistConfig.unloadBatchPeriod = config.getInt("unload_batch_period");
 		persistConfig.unloadBatchMaxTime = config.getInt("unload_batch_max_time");
 		persistConfig.growEventLoadChance = config.getDouble("grow_event_load_chance");
-		persistConfig.logDB = config.getBoolean("log_db");
+		persistConfig.logDB = config.getBoolean("log_db", false);
+		
+		persistConfig.productionLogDb = config.getBoolean("log_db_production", false);
+		persistConfig.productionLogLoadMintime = config.getLong("log_db_production_chunk_load_mintime", 5);
+		persistConfig.productionLogUnloadMintime = config.getLong("log_db_production_chunk_unload_mintime", 5);
 		
 		LOG.info("Persistence enabled: " + persistConfig.enabled);
 		LOG.info("Database: " + persistConfig.databaseName);
+		if (persistConfig.productionLogDb || persistConfig.logDB) {
+			LOG.info("Logging enabled");
+			if (persistConfig.productionLogDb) {
+				LOG.info("\tLoad event minimum time to log: " + persistConfig.productionLogLoadMintime + "ms");
+				LOG.info("\tUnload event minimum time to log: " + persistConfig.productionLogUnloadMintime + "ms");
+			}
+		}
 	}
 	
 	private void loadGrowthConfigs(ConfigurationSection config) {

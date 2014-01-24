@@ -25,4 +25,15 @@ public class PersistConfig {
 	
 	// flag that determines if the plugin should log db load and save events.
 	public boolean logDB;
+	
+	// flag that determines if the plugin should log db load and save events
+	// this differs from logDB in that it will ONLY log db load/save events if 
+	// they go over a certain time, which is defined in the next two variables
+	// this overrides logDB (if logDB is false)
+	public boolean productionLogDb;
+	
+	// values that set the minimum amount of time (in milliseconds) that a unload or load
+	// event has to take before we log it. 
+	public long productionLogLoadMintime;
+	public long productionLogUnloadMintime;
 }
