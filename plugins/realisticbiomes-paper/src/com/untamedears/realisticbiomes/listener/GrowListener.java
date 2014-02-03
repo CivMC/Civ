@@ -7,10 +7,12 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -18,6 +20,8 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Dispenser;
+import org.bukkit.material.MaterialData;
 
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
@@ -124,6 +128,29 @@ public class GrowListener implements Listener {
             }
         }
     }
+	
+	/**
+	 * Event handler for {@link BlockDispenseEvent}. Cancels all uses of Bonemeal used by a dispenser on crops registered in the config.
+	 * @param event The {@link PlayerDispenseEvent} being handled
+	 */
+	@EventHandler(ignoreCancelled = true)
+
+	public void onBlockDispense(BlockDispenseEvent event) {
+		if (event.getItem().getTypeId() == 351 && event.getItem().getData().getData() == 15) {
+	        if (event.getBlock().getType() == Material.DISPENSER) {
+	        	MaterialData d = event.getBlock().getState().getData();
+	        	Dispenser disp = (Dispenser) d;
+	        	BlockFace face = disp.getFacing();
+	        	if(event.getBlock().getRelative(face).getType() == Material.CROPS) {
+	        		event.setCancelled(true);
+	        	}
+	        	if(event.getBlock().getRelative(face).getType() == Material.SOIL) {
+	        		event.setCancelled(true);
+	        	}
+	        }
+		}        
+    }
+	
 
 	/**
 	 * Determines if a plant {@link Material | @link TreeType} will grow, given the current conditions
