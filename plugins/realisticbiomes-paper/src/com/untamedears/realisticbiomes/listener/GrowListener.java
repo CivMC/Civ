@@ -137,9 +137,7 @@ public class GrowListener implements Listener {
 	 */
 	@EventHandler(ignoreCancelled = true)
 
-	public void onBlockDispense(BlockDispenseEvent event) {
-		//if (event.getItem().getTypeId() == 351 && event.getItem().getData().getData() == 15) {
-		
+	public void onBlockDispense(BlockDispenseEvent event) {		
 		// here we check to make sure there is a item associated with the event
 		// to make sure the item is a InkSack (the 'root' item for all dyes)
 		// and then make sure that the item is Bonemeal (different color dyes have
