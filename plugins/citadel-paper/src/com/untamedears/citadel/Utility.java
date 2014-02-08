@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -434,24 +436,32 @@ public class Utility {
 	    return builder.toString();
 	}
 
-    public static Block findPlantSoil(Block plant) {
-        Material mat = plant.getType();
+    public static Set<Material> getPlantSoilTypes(Material mat) {
+        Set<Material> soilTypes = new HashSet<Material>();
         if (isSoilPlant(mat)) {
-            return findSoilBelow(plant, Material.SOIL);
+            soilTypes.add(Material.SOIL);
         }
         if (isDirtPlant(mat)) {
-            return findSoilBelow(plant, Material.DIRT);
+            soilTypes.add(Material.DIRT);
         }
         if (isGrassPlant(mat)) {
-            return findSoilBelow(plant, Material.GRASS);
+            soilTypes.add(Material.GRASS);
         }
         if (isSandPlant(mat)) {
-            return findSoilBelow(plant, Material.SAND);
+            soilTypes.add(Material.SAND);
         }
         if (isSoulSandPlant(mat)) {
-            return findSoilBelow(plant, Material.SOUL_SAND);
+            soilTypes.add(Material.SOUL_SAND);
         }
-        return null;
+        return soilTypes;
+    }
+
+    public static Block findPlantSoil(Block plant) {
+        final Set<Material> soilTypes = getPlantSoilTypes(plant.getType());
+        if (soilTypes.size() <= 0) {
+            return null;
+        }
+        return findSoilBelow(plant, soilTypes);
     }
 
     public static boolean isSoilPlant(Material mat) {
@@ -460,7 +470,9 @@ public class Utility {
             || mat.equals(Material.PUMPKIN_STEM)
             || mat.equals(Material.CARROT)
             || mat.equals(Material.POTATO)
-            || mat.equals(Material.CROPS);
+            || mat.equals(Material.CROPS)
+            || mat.equals(Material.MELON_BLOCK)
+            || mat.equals(Material.PUMPKIN);
     }
 
     public static boolean isDirtPlant(Material mat) {
@@ -470,7 +482,9 @@ public class Utility {
     }
 
     public static boolean isGrassPlant(Material mat) {
-        return mat.equals(Material.SUGAR_CANE_BLOCK);
+        return mat.equals(Material.SUGAR_CANE_BLOCK)
+            || mat.equals(Material.MELON_BLOCK)
+            || mat.equals(Material.PUMPKIN);
     }
 
     public static boolean isSandPlant(Material mat) {
@@ -494,6 +508,13 @@ public class Utility {
             || isSoulSandPlant(mat);
     }
 
+    public static boolean isReinforceablePlant(Material mat) {
+        // If this list changes, update wouldPlantDoubleReinforce to account
+        // for the new soil types.
+        return mat.equals(Material.MELON_BLOCK)
+            || mat.equals(Material.PUMPKIN);
+    }
+
     public static int maxPlantHeight(Block plant) {
         switch(plant.getType()) {
             case CACTUS:
@@ -504,12 +525,12 @@ public class Utility {
         }
     }
 
-    public static Block findSoilBelow(Block plant, Material desired_type) {
+    public static Block findSoilBelow(Block plant, Set<Material> desiredTypes) {
         Block down = plant;
         int max_depth = maxPlantHeight(plant);
         for (int i = 0; i < max_depth; ++i) {
             down = down.getRelative(BlockFace.DOWN);
-            if (down.getType().equals(desired_type)) {
+            if (desiredTypes.contains(down.getType())) {
                 return down;
             }
         }
@@ -525,5 +546,23 @@ public class Utility {
             || mat.equals(Material.POWERED_RAIL)
             || mat.equals(Material.ACTIVATOR_RAIL)
             || mat.equals(Material.DETECTOR_RAIL);
+    }
+
+    public static boolean wouldPlantDoubleReinforce(final Block block) {
+        final Material blockMat = block.getType();
+        if (isReinforceablePlant(blockMat)
+            && AccessDelegate.getDelegate(block).getReinforcement() != null) {
+            return true;
+        }
+        final Block above = block.getRelative(BlockFace.UP);
+        final Material aboveMat = above.getType();
+        if (isReinforceablePlant(aboveMat)) {
+            final Set<Material> soilTypes = getPlantSoilTypes(aboveMat);
+            if (soilTypes.contains(blockMat)
+                    && Citadel.getReinforcementManager().getReinforcement(above) != null) {
+              return true;
+            }
+        }
+        return false;
     }
 }

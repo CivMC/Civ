@@ -7,6 +7,7 @@ import static com.untamedears.citadel.Utility.isReinforced;
 import static com.untamedears.citadel.Utility.reinforcementBroken;
 import static com.untamedears.citadel.Utility.sendMessage;
 import static com.untamedears.citadel.Utility.timeUntilMature;
+import static com.untamedears.citadel.Utility.wouldPlantDoubleReinforce;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -265,7 +266,12 @@ public class PlayerListener implements Listener {
                     if (generic_reinforcement != null) {
                         reinforcementBroken(generic_reinforcement);
                     }
-                    createPlayerReinforcement(player, block);
+                    // Don't allow double reinforcing reinforceable plants
+                    if (wouldPlantDoubleReinforce(block)) {
+                        sendMessage(player, ChatColor.RED, "Cancelled reinforcement, crop would already be reinforced.");
+                    } else {
+                        createPlayerReinforcement(player, block);
+                    }
                 } else if (reinforcement.isBypassable(player)) {
                     boolean update = false;
                     String message = "";

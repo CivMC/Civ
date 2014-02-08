@@ -10,6 +10,7 @@ import static com.untamedears.citadel.Utility.reinforcementBroken;
 import static com.untamedears.citadel.Utility.reinforcementDamaged;
 import static com.untamedears.citadel.Utility.sendMessage;
 import static com.untamedears.citadel.Utility.sendThrottledMessage;
+import static com.untamedears.citadel.Utility.wouldPlantDoubleReinforce;
 
 import java.util.Arrays;
 import java.util.List;
@@ -119,7 +120,7 @@ public class BlockListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void placeFortifiedBlock(BlockPlaceEvent bpe) {
         Block block = bpe.getBlockPlaced();
-        if (block.getType().equals(Material.AIR)) {
+        if (bpe.getBlockReplacedState().getType().equals(Material.AIR)) {
             IReinforcement existingReinforcement = Citadel.getReinforcementManager().getReinforcement(block);
             if (existingReinforcement != null && existingReinforcement instanceof PlayerReinforcement) {
                 Citadel.getReinforcementManager().removeReinforcement(existingReinforcement);
@@ -143,6 +144,12 @@ public class BlockListener implements Listener {
             // cancel event if we are not in normal mode
             if (state.getMode() == PlacementMode.REINFORCEMENT || state.getMode() == PlacementMode.REINFORCEMENT_SINGLE_BLOCK)
                 bpe.setCancelled(true);
+            return;
+        }
+        // Don't allow double reinforcing reinforceable plants
+        if (wouldPlantDoubleReinforce(block)) {
+            sendThrottledMessage(player, ChatColor.RED, "Cancelled block place, crop would already be reinforced.");
+            bpe.setCancelled(true);
             return;
         }
         PlayerInventory inventory = player.getInventory();
