@@ -6,8 +6,8 @@ import java.util.logging.Logger;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -65,28 +65,23 @@ public class SpawnListener implements Listener {
 		}
 	}
 
-
 	/**
 	 *  Event handler for {@link PlayerFishEvent}. Checks caught fish for proper biomes.
-	 *  also prevents getting item stacks from fishing
 	 * @param event The {@link PlayerFishEvent} being handled
 	 */
-    @EventHandler(ignoreCancelled = true)
-    public void fishing(PlayerFishEvent event) { 
-
-      if(event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() != null && event.getCaught() instanceof Item) {
-
-        ItemStack items = ((Item)event.getCaught()).getItemStack();
-
-        Material type = items.getType();
-
-        Block block = event.getCaught().getLocation().getBlock();
-
-        event.setCancelled(!willSpawn(type, block));
-
-      }
-
-    }
+	@EventHandler(ignoreCancelled = true)
+	public void fishing(PlayerFishEvent event) {
+		if(event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() != null && event.getCaught() instanceof Item) {
+			ItemStack items = ((Item)event.getCaught()).getItemStack();
+			Material type = items.getType();
+			Block block = event.getCaught().getLocation().getBlock();
+			boolean cancel = !willSpawn(type, block);
+			event.setCancelled(cancel);
+			if (cancel) {
+				event.getPlayer().sendMessage("Fish got away");
+			}
+		}
+	}
 
 	/**
 	 * Determines if an entity {@link EntityTypw | @link Material} will spawn, given the current conditions
