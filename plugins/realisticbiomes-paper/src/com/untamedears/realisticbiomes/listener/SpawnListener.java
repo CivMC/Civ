@@ -7,12 +7,14 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.realisticbiomes.GrowthConfig;
 
@@ -69,10 +71,15 @@ public class SpawnListener implements Listener {
 	 */
 	@EventHandler(ignoreCancelled = true)
 	public void fishing(PlayerFishEvent event) {
-		if( event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() != null ) {
-			EntityType type = EntityType.FISHING_HOOK;
+		if(event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() != null && event.getCaught() instanceof Item) {
+			ItemStack items = ((Item)event.getCaught()).getItemStack();
+			Material type = items.getType();
 			Block block = event.getCaught().getLocation().getBlock();
-			event.setCancelled(!willSpawn(type, block));
+			boolean cancel = !willSpawn(type, block);
+			event.setCancelled(cancel);
+			if (cancel) {
+				event.getPlayer().sendMessage("Fish got away");
+			}
 		}
 	}
 
