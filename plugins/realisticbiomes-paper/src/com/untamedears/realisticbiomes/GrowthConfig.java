@@ -12,53 +12,50 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
 
-public class GrowthConfig {
+public class GrowthConfig extends BaseConfig {
 	// a rate of growth between 0 and 1
 	// this usually represents a chance,
 	// for a crop, it would be the chance to grow per tick
 	// for an animal, it would be the chance to spawn after mating
-	private double baseRate;
+
 	// this rate overrides all other settings if the plant is under artificial light (adjacent to glowstone)
 	private double greenhouseRate;
 	private boolean isGreenhouseEnabled;
 	private boolean greenhouseIgnoreBiome;
-	
+
 	// flag that denotes if this crop's growth is persisted
 	private boolean isPersistent;
 	private double persistentRate;
-	
+
 	// a crop's growth rate can be modulated by the amount of sunlight, not just light in general
 	// the crop's growth rate may also get a bonus if it is directly open to the sky, or underneath glowstone (not yet)
 	private boolean needsSunlight;
-	
+
 	// multiplier that is applied if the crop is not at light level = 15
 	private double notFullSunlightMultiplier;
-	
+
 	// multiplier that is applied if the crop is not near "fresh water(river biome)"
 	private double notIrrigatedMultiplier;
-	
+
 	// some crops get a boost from layers of materials beneath the block the plant has been planted on
 	private Material soilMaterial;
 	private int soilMaxLayers;
 	private double soilBonusPerLevel;
 	// the z levels below the actual growth event location in which to start looking for the correct soil
 	private int soilLayerOffset;
-	
-	// map from biome to the modulated growth rate per biome
-	private Map<Biome, Double> biomeMultipliers;
-	
+
 	// conversion used for persistence calculations
 	private static final int SEC_PER_HOUR = 60 * 60;
 	// maximum light level on a block
 	private static final double MAX_LIGHT_INTENSITY = 15.0;
-	
+
 	// ------------------------------------------------------------------------
-	
+
 	public static Logger LOG = Logger.getLogger("RealisticBiomes");
-	
+
 	// ========================================================================
 	// Initialization
-	
+
 	// relative locations of visible adjacent blocks
 	@SuppressWarnings("serial")
 	private static List<Vector> adjacentBlocks = new ArrayList<Vector>(){{
@@ -74,16 +71,15 @@ public class GrowthConfig {
 		this.add(new Vector(0,-1,-5));	// north
 		this.add(new Vector(0,-1,5));	// south
 	}};
-	
+
 	public static GrowthConfig get(ConfigurationSection conf, GrowthConfig parent, Map<String, Biome[]>biomeAliases) {
 		GrowthConfig growth = new GrowthConfig(parent);
-		
 		return growth;
 	}
-	
+
 	// create a new default configuration
 	GrowthConfig() {
-		baseRate = 1.0;
+		super();
 		
 		greenhouseRate = 1.0;
 		isGreenhouseEnabled = false;
@@ -101,35 +97,17 @@ public class GrowthConfig {
 		soilMaxLayers = 0;
 		soilBonusPerLevel = 0.0;
 		soilLayerOffset = 1;
-		
-		biomeMultipliers = new HashMap<Biome, Double>();
 	}
 	
 	// make a copy of the given configuration
 	GrowthConfig(GrowthConfig parent) {
-		baseRate = parent.baseRate;
-		
-		greenhouseRate = parent.greenhouseRate;
-		isGreenhouseEnabled = parent.isGreenhouseEnabled;
-		greenhouseIgnoreBiome = parent.greenhouseIgnoreBiome;
-		
-		needsSunlight = parent.needsSunlight;
-		
-		notFullSunlightMultiplier = parent.notFullSunlightMultiplier;
-		
-		notIrrigatedMultiplier = parent.notIrrigatedMultiplier;
-		
-		soilMaterial = parent.soilMaterial;
-		soilMaxLayers = parent.soilMaxLayers;
-		soilBonusPerLevel = parent.soilBonusPerLevel;
-		soilLayerOffset = parent.soilLayerOffset;
-		
-		biomeMultipliers = new HashMap<Biome, Double>(parent.biomeMultipliers);
+		super();
+		copy(parent);
 	}
 	
 	// make a copy of the given configuration and modify it by loading in a YML config section
 	GrowthConfig(GrowthConfig parent, ConfigurationSection config, HashMap<String, List<Biome>> biomeAliases) {
-		this(parent);
+		copy(parent);
 		
 		if (config.isSet("base_rate"))
 			baseRate = config.getDouble("base_rate");
@@ -179,30 +157,26 @@ public class GrowthConfig {
 		if (config.isSet("biomes"))
 			loadBiomes(config.getConfigurationSection("biomes"), biomeAliases);
 	}
-	
-	private void loadBiomes(ConfigurationSection config, HashMap<String, List<Biome>> biomeAliases) {
-		for (String biomeName : config.getKeys(false)) {
-			if (biomeAliases.containsKey(biomeName)) {
-				// if there is a biome alias with the name, register all biomes of that alias with the
-				// given multiplier
-				double multiplier = config.getDouble(biomeName);
-				for (Biome biome : biomeAliases.get(biomeName)) {
-					biomeMultipliers.put(biome, multiplier);
-				}
-			}
-			else {
-				// else just register the given biome with the multiplier
-				try {
-					Biome biome = Biome.valueOf(biomeName);
-					biomeMultipliers.put(biome, config.getDouble(biomeName));
-				}
-				catch(IllegalArgumentException e) {
-					LOG.warning("loading configs: in \""+ config.getParent().getName() +"\" biomes: \"" + biomeName +"\" is not a valid biome name.");
-				}
-			}
-		}
+
+	public void copy(GrowthConfig other) {
+		super.copy(other);
+		
+		greenhouseRate = other.greenhouseRate;
+		isGreenhouseEnabled = other.isGreenhouseEnabled;
+		greenhouseIgnoreBiome = other.greenhouseIgnoreBiome;
+		
+		needsSunlight = other.needsSunlight;
+		
+		notFullSunlightMultiplier = other.notFullSunlightMultiplier;
+		
+		notIrrigatedMultiplier = other.notIrrigatedMultiplier;
+		
+		soilMaterial = other.soilMaterial;
+		soilMaxLayers = other.soilMaxLayers;
+		soilBonusPerLevel = other.soilBonusPerLevel;
+		soilLayerOffset = other.soilLayerOffset;
 	}
-	
+
 	/* ================================================================================ */
 	// Public Methods
 	
@@ -211,6 +185,7 @@ public class GrowthConfig {
 	}
 	
 	// given a block (a location), find the growth rate using these rules
+	@Override
 	public double getRate(Block block) {
 		// rate = baseRate * sunlightLevel * biome * (1.0 + soilBonus)
 		double rate = baseRate;
