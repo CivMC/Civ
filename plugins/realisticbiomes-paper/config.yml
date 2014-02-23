@@ -384,12 +384,12 @@ realistic_biomes:
 
   mat_FISHING_ROD:
    inherit: mat_RAW_FISH
-   # 1.33% * 0.0313 = 0.25%
+   # 1.33% * 0.188 = 0.25%
    base_rate: 0.188
 
   mat_NAME_TAG:
    inherit: mat_RAW_FISH
-   # 1.33% * 0.0313 = 0.25%
+   # 1.33% * 0.188 = 0.25%
    base_rate: 0.188
 
   mat_WATER_LILY:
