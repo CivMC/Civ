@@ -46,11 +46,6 @@ import com.untamedears.citadel.entity.Faction;
 public class ExchangeRule {
 	private static final List<Material> NOT_SUPPORTED = Arrays.asList(Material.MAP, Material.WRITTEN_BOOK, Material.ENCHANTED_BOOK, Material.FIREWORK, Material.FIREWORK_CHARGE, Material.POTION);
 	
-//	public static final String hiddenRuleSpacer = "ยง&ยง&ยง&ยง&ยงr";
-//	public static final String hiddenCategorySpacer = "ยง&ยง&ยง&ยงr";
-//	public static final String hiddenSecondarySpacer = "ยง&ยง&ยงr";
-//	public static final String hiddenTertiarySpacer = "ยง&ยงr";
-
 	public static final String hiddenRuleSpacer = "ง&ง&ง&ง&งr";
 	public static final String hiddenCategorySpacer = "ง&ง&ง&งr";
 	public static final String hiddenSecondarySpacer = "ง&ง&งr";
@@ -305,12 +300,11 @@ public class ExchangeRule {
 	}
 
 	/*
-	 * Adds a ยง in front of every character in a string
+	 * Adds a ง in front of every character in a string
 	 */
 	private static String hideString(String string) {
 		String hiddenString = "";
 		for (char character : string.toCharArray()) {
-			//hiddenString += "ยง" + character;
 			hiddenString += "ง" + character;
 		}
 		return hiddenString;
@@ -383,7 +377,6 @@ public class ExchangeRule {
 	public static ItemStack toBulkItemStack(Collection<ExchangeRule> rules) {
 		ItemStack itemStack = ItemExchangePlugin.ITEM_RULE_ITEMSTACK.clone();
 
-		//String ruleSpacer = "ยง&ยง&ยง&ยง&ยงr";
 		String ruleSpacer = "ง&ง&ง&ง&งr";
 
 		ItemMeta itemMeta = itemStack.getItemMeta();
