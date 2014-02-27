@@ -146,6 +146,9 @@ commands:
   ctmature:
     description: Instantly mature a reinforcement
     usage: /ctmature
+  ctblacklist:
+    description: Black lists a player from a citadel group
+    usage: /ctblacklist <group> <player>
 permissions:
   citadel.console:
     description: Console commands for Citadel
