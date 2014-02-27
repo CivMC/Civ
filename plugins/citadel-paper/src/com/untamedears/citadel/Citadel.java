@@ -23,6 +23,7 @@ import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.command.CommandHandler;
 import com.untamedears.citadel.dao.CitadelCachingDao;
 import com.untamedears.citadel.dao.CitadelDao;
+import com.untamedears.citadel.entity.BlackListing;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionMember;
 import com.untamedears.citadel.entity.Member;
@@ -36,6 +37,7 @@ import com.untamedears.citadel.listener.BlockListener;
 import com.untamedears.citadel.listener.ChunkListener;
 import com.untamedears.citadel.listener.EntityListener;
 import com.untamedears.citadel.listener.InventoryListener;
+import com.untamedears.citadel.listener.MineCartListener;
 import com.untamedears.citadel.listener.PlayerListener;
 import com.untamedears.citadel.listener.WorldListener;
 
@@ -162,6 +164,7 @@ public class Citadel extends JavaPlugin {
             pm.registerEvents(new EntityListener(), this);
             pm.registerEvents(new InventoryListener(), this);
             pm.registerEvents(new WorldListener(), this);
+            pm.registerEvents(new MineCartListener(this.dao), this);
         }
         catch(Exception e)
         {
@@ -179,6 +182,7 @@ public class Citadel extends JavaPlugin {
         classes.add(FactionMember.class);
         classes.add(PersonalGroup.class);
         classes.add(Moderator.class);
+        classes.add(BlackListing.class);
         return classes;
     }
 

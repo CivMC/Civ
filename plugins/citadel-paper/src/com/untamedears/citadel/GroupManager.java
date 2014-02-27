@@ -147,4 +147,8 @@ public class GroupManager {
     public Faction getDelegatedGroup(String groupName) {
         return getGroup(getDelegatedGroupName(groupName));
     }
+    
+    public boolean addPlayertoBlackList(Faction group, String player){
+    	return this.storage.PlayerToBlacklist(group, player);
+    }
 }

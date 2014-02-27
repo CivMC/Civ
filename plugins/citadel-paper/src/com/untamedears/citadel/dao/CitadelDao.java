@@ -28,6 +28,7 @@ import com.lennardf1989.bukkitex.MyDatabase;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.DbUpdateAction;
+import com.untamedears.citadel.entity.BlackListing;
 import com.untamedears.citadel.entity.DbVersion;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionDelete;
@@ -85,7 +86,8 @@ public class CitadelDao extends MyDatabase {
                 DbVersion.class, FactionDelete.class,
                 Faction.class, Member.class, FactionMember.class,
                 PlayerReinforcement.class, ReinforcementKey.class,
-                PersonalGroup.class, Moderator.class);
+                PersonalGroup.class, Moderator.class, 
+                BlackListing.class);
     }
 
     public Object save(Object object) {
@@ -225,6 +227,13 @@ public class CitadelDao extends MyDatabase {
     	getDatabase().execute(update);
     }
     
+    public boolean blackListPlayer(String player, Faction group){
+    	return getDatabase().createQuery(BlackListing.class, "find faction, player where faction = :faction and player = :player")
+    			.setParameter("faction", group.getName())
+    			.setParameter("player", player)
+    			.findRowCount() > 0;
+    }
+    
     public int countReinforcements(){
     	SqlRow row = getDatabase().createSqlQuery("select count(*) as count from reinforcement").findUnique();
     	return row.getInteger("count");  
@@ -263,6 +272,13 @@ public class CitadelDao extends MyDatabase {
 				.setParameter("groupName", groupName);
 		getDatabase().execute(update);		
 	}
+	
+	public void addPlayerToBlackList(String group, String Player){
+		SqlUpdate update = getDatabase().createSqlUpdate("INSERT INTO blacklist (`faction`, player) VALUES (:faction, :Player)")
+				.setParameter("faction", group)
+				.setParameter("Player", Player);
+		getDatabase().execute(update);	
+	}
 
 	public PersonalGroup findPersonalGroup(String ownerName) {
 		return getDatabase().createQuery(PersonalGroup.class, "find personalGroup where owner_name = :ownerName")
@@ -296,6 +312,14 @@ public class CitadelDao extends MyDatabase {
 		getDatabase().execute(update);
 	}
 
+	public void removePlayerFromBlackList(String groupName, String player){
+		SqlUpdate update = getDatabase().createSqlUpdate("delete from blacklist where `faction` = :groupName " +
+				"AND player = :Player")
+				.setParameter("groupName", groupName)
+				.setParameter("Player", player);
+		getDatabase().execute(update);
+	}
+	
     public Set<FactionDelete> loadFactionDeletions() {
         return getDatabase()
             .createQuery(FactionDelete.class, "find faction_delete")
@@ -444,6 +468,19 @@ public class CitadelDao extends MyDatabase {
 
             dbVersion = advanceDbVersion(dbVersion);
         }
+        
+        if (dbVersion.getDbVersion() == 3) {
+        	Citadel.info("Updating to DB v4");
+        	
+        	SqlUpdate createTable = getDatabase().createSqlUpdate(
+        			"CREATE TABLE IF NOT EXISTS blacklist " +
+        			"(`id` int(10) NOT NULL AUTO_INCREMENT, `faction` VARCHAR(255) NOT NULL, player VARCHAR(255) NOT NULL, " +
+        			"PRIMARY KEY (`id`))");
+        	getDatabase().execute(createTable);
+        	
+        	dbVersion = advanceDbVersion(dbVersion);
+        }
+        
     }
 
     protected DbVersion advanceDbVersion(DbVersion currentVersion) {

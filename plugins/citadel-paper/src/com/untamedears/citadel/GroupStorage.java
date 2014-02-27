@@ -247,6 +247,17 @@ public class GroupStorage {
         this.dao.save(moderator);
         return true;
     }
+    
+    public boolean PlayerToBlacklist(Faction groupName, String PlayerName){
+    	if (!getStorage().blackListPlayer(PlayerName, groupName)){ // player was not found adding player.
+    		getStorage().addPlayerToBlackList(groupName.getName(), PlayerName);
+    		return true; 
+    	}
+    	else{ // player was found, removing him
+    		getStorage().removePlayerFromBlackList(groupName.getName(), PlayerName);
+        	return false; 
+    	}
+    }
 
     public boolean removeModeratorToGroup(Moderator moderator, Player initiator){
         String groupName = moderator.getFactionName();

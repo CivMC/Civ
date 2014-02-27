@@ -11,6 +11,7 @@ import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.command.commands.AcidCommand;
 import com.untamedears.citadel.command.commands.AddModCommand;
 import com.untamedears.citadel.command.commands.AllowCommand;
+import com.untamedears.citadel.command.commands.BlackListCommand;
 import com.untamedears.citadel.command.commands.BypassCommand;
 import com.untamedears.citadel.command.commands.ConsoleCommands;
 import com.untamedears.citadel.command.commands.CreateCommand;
@@ -90,6 +91,7 @@ public class CommandHandler {
         this.addCommand(new PlayerStatsCommand());
         this.addCommand(new TransferCommand());
         this.addCommand(new VersionCommand());
+        this.addCommand(new BlackListCommand());
     }
 
 	public void addCommand(Command command){
