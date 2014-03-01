@@ -276,11 +276,12 @@ public class PlayerReinforcement implements
         if (owner.isDisciplined()) {
             return false;
         }
+       boolean blacklisted = Citadel.getGroupManager().getStorage().PlayerToBlacklist(owner, player.getName());
         switch (securityLevel) {
             case PRIVATE:
                 return owner.isFounder(name);
             case GROUP:
-                return owner.isFounder(name) || owner.isMember(name) || owner.isModerator(name);
+                return (owner.isFounder(name) || owner.isMember(name) || owner.isModerator(name)) && !blacklisted;
             case PUBLIC:
             	return true;
         }

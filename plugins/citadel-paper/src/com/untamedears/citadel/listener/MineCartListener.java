@@ -18,8 +18,8 @@ import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
 
-public class MineCartListener implements Listener{
-
+public class MineCartListener implements Listener {
+	/* commenting out this code as it is not needed for Civ craft. leaving it for others
 	private CitadelDao dao;
 	private Map<String, Faction> currentGroup = new HashMap<String, Faction>();
 	public MineCartListener(CitadelDao dao){
@@ -92,4 +92,5 @@ public class MineCartListener implements Listener{
 			}
 		currentGroup.remove(player.getName());
 	}
+	*/
 }

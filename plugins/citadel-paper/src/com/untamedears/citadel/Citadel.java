@@ -164,7 +164,7 @@ public class Citadel extends JavaPlugin {
             pm.registerEvents(new EntityListener(), this);
             pm.registerEvents(new InventoryListener(), this);
             pm.registerEvents(new WorldListener(), this);
-            pm.registerEvents(new MineCartListener(this.dao), this);
+            //pm.registerEvents(new MineCartListener(this.dao), this);
         }
         catch(Exception e)
         {
