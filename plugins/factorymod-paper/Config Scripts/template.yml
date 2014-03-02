@@ -114,7 +114,8 @@ printing_presses:
      repair:
         "Iron block":
            material: 'IRON_BLOCK'
-           amount: 5
+           amount: 1
+     repair_multiple: 5
      binding: # Each
         Leather:
            material: 'LEATHER'
@@ -122,21 +123,21 @@ printing_presses:
      page_lot:
         Paper:
            material: 'PAPER'
-           amount: 16
+           amount: 4
         Ink:
            material: 'INK_SACK'
            durability: 0
-           amount: 2
-     pages_per_lot: 24
+           amount: 1
+     pages_per_lot: 32
      pamphlet_lot:
         Paper:
            material: 'PAPER'
-           amount: 16
+           amount: 8
         Ink:
            material: 'INK_SACK'
            durability: 0
-           amount: 2
-     pamphlets_per_lot: 24
+           amount: 1
+     pamphlets_per_lot: 32
      security_lot:
         "Gold nuggets":
            material: 'GOLD_NUGGET'
@@ -145,4 +146,4 @@ printing_presses:
            material: 'INK_SACK'
            durability: 2
            amount: 6
-     security_notes_per_lot: 24
+     security_notes_per_lot: 64
