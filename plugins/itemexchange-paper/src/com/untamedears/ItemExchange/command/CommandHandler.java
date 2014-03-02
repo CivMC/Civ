@@ -70,9 +70,9 @@ public class CommandHandler {
 	}
 
 	private void displayCommandHelp(Command cmd, CommandSender sender) {
-		sender.sendMessage(new StringBuilder().append("Â§cCommand:Â§e ").append(cmd.getName()).toString());
-		sender.sendMessage(new StringBuilder().append("Â§cDescription:Â§e ").append(cmd.getDescription()).toString());
-		sender.sendMessage(new StringBuilder().append("Â§cUsage:Â§e ").append(cmd.getUsage()).toString());
+		sender.sendMessage(new StringBuilder().append("§cCommand:§e ").append(cmd.getName()).toString());
+		sender.sendMessage(new StringBuilder().append("§cDescription:§e ").append(cmd.getDescription()).toString());
+		sender.sendMessage(new StringBuilder().append("§cUsage:§e ").append(cmd.getUsage()).toString());
 	}
 
 	private Command getCmdFromIdent(String ident, CommandSender executor) {
