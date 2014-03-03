@@ -26,8 +26,8 @@ A single exchange rule is either an input rule, defining items that the shop acc
 The stone button items that represent the exchange rules are created using the **/iecreate** (or **/iec**) command. There are three ways of doing this.
  
 - Look at a chest or dispenser containing two different types of items (it's okay if they're spread across multiple stacks), and use **/iec**. This will create an input rule matching the first item type and its quantity, and an output rule matching the second item type and its quantity. Both are placed inside the container, so this shop is immediately ready to be stocked and used.
-- Hold an item in your hand, then use **/iec <input or output>**. This will create an input or output rule matching the held item, and its quantity
-- Use **/iec <input or output> <<i>common name</i> or <i>ID</i>:<i>durability</i>> [<i>amount</i>]**. This will create an input or output rule for the specified item, and optionally the specified amount.
+- Hold an item in your hand, then use **`/iec <input or output>`**. This will create an input or output rule matching the held item, and its quantity
+- Use **`/iec <input or output> <common name or ID:durability> [amount]`**. This will create an input or output rule for the specified item, and optionally the specified amount.
  
 For the second and third options, you need to make sure you have both an input and an output exchange rule, then place them in a suitable container to form an exchange. By adding more input and output rules, you can add more exchanges to your shop, but keep in mind how they are paired.
  
