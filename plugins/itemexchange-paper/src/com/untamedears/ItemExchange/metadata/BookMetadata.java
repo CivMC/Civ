@@ -49,7 +49,7 @@ public class BookMetadata implements AdditionalMetadata {
 		StringBuilder serialized = new StringBuilder();
 		
 		if(title != null && author != null && hasPages) {
-			serialized.append(title).append(ExchangeRule.secondarySpacer).append(author).append(ExchangeRule.hiddenSecondarySpacer).append(bookHash);
+			serialized.append(title).append(ExchangeRule.secondarySpacer).append(author).append(ExchangeRule.secondarySpacer).append(bookHash);
 		}
 		else if(hasPages) {
 			serialized.append(bookHash);
