@@ -85,7 +85,12 @@ public class CreateCommand extends PlayerCommand {
 						try {
 							player.getInventory().addItem(ExchangeRule.parseItemStack(inHand, ruleType).toItemStack());
 						}
-						catch (IllegalArgumentException | ExchangeRuleCreateException e) {
+						catch (IllegalArgumentException e) {
+							player.sendMessage(ChatColor.RED + e.getMessage());
+							
+							return true;
+						}
+						catch (ExchangeRuleCreateException e) {
 							player.sendMessage(ChatColor.RED + e.getMessage());
 							
 							return true;

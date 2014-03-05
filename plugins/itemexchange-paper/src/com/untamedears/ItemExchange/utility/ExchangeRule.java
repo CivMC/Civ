@@ -575,7 +575,7 @@ public class ExchangeRule {
 	}
 
 	public String[] display(Player p) {
-		List<String> displayed = new ArrayList<>();
+		List<String> displayed = new ArrayList<String>();
 		// Material type, durability and amount
 		displayed.add(displayedItemStackInfo());
 		// Additional metadata (books, etc.)

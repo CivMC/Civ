@@ -18,7 +18,7 @@ public class InventoryHelpers {
 	 * Returns an input following the ItemRules from the inventory
 	 */
 	public static ItemStack[] getItemStacks(Inventory inventory, ExchangeRule itemRule) {
-		List<ItemStack> itemStacks = new ArrayList<>();
+		List<ItemStack> itemStacks = new ArrayList<ItemStack>();
 		//Gets the ItemStacks from the inventory to be transfered
 		int requiredAmount = itemRule.getAmount();
 		ItemStack[] contents = inventory.getContents();
