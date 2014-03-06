@@ -1690,7 +1690,7 @@ production_factories:
         amount: 64
       Diamond:
         material: DIAMOND
-        amount:64
+        amount: 64
     recipes:
       - Produce_Noteblocks
       - Produce_Dispensers
@@ -2012,7 +2012,7 @@ production_factories:
       Stained Glass:
         material: STAINED_GLASS
         amount: 20
-        durability: 7		
+        durability: 7
       Stained Glass Pane:
         material: STAINED_GLASS_PANE
         amount: 20
@@ -2099,7 +2099,7 @@ production_factories:
         durability: 10
       Stained Glass:
         material: STAINED_GLASS
-        durability: 7		
+        durability: 7
       Stained Glass Pane:
         material: STAINED_GLASS_PANE
         durability: 7
@@ -4186,7 +4186,7 @@ production_recipes:
         amount: 54
       Milk Bucket:
         material: MILK_BUCKET
-        amount: 18	
+        amount: 18
   Bake_Pumpkin_Pie:
     name: Bake Pumpkin Pie
     production_time: 24
@@ -5766,7 +5766,7 @@ production_recipes:
         amount: 8
       Leather:
         material: LEATHER
-        amount: 48	
+        amount: 48
     outputs:
       Item Frames:
         material: ITEM_FRAMES
@@ -5780,7 +5780,7 @@ production_recipes:
         amount: 8
       Leather:
         material: LEATHER
-        amount: 48	
+        amount: 48
       Paper:
         material: STRING
         amount: 192
@@ -6680,4 +6680,4 @@ production_recipes:
       Packed_Ice:
         material: PACKED_ICE
         amount: 576
-		
+
