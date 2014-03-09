@@ -212,8 +212,8 @@ production_factories:
         amount: 192
     recipes:
       - Baked_Potato
-      - Cookie
-      - Bread
+      - Bake_Cookie
+      - Bake_Bread
       - Bake_Cake
       - Bake_Pumpkin_Pie
     repair_multiple: 26
@@ -715,9 +715,9 @@ production_factories:
     recipes:
       - Smelt_Glass
       - Smelt_Sandstone
-      - Smelt_Glass_panes
+      - Smelt_Glass_Panes
       - Smelt_Bottles
-      - Smelt_Red_sand
+      - Smelt_Red_Sand
       - Smelt_Glass_From_Sandstone
     repair_multiple: 26
     repair_inputs:
@@ -1579,7 +1579,7 @@ production_factories:
       - Produce_Powered_Rail
       - Produce_Detector_Rail
       - Produce_Activator_Rail
-      - Procuce_Minecarts
+      - Produce_Minecarts
     repair_multiple: 4
     repair_inputs:
       Iron Ingot:
@@ -1735,7 +1735,7 @@ production_factories:
       - Craft_Signs
       - Craft_Ladders
       - Craft_Trap_Doors
-      - Craft_Item_frames
+      - Craft_Item_Frames
       - Craft_Bookshelfs
     repair_multiple: 10
     repair_inputs:
@@ -2018,36 +2018,36 @@ production_factories:
         amount: 20
         durability: 7
     recipes:
-      - Dye_Stained_Glass_Blue
-      - Dye_Stained_Glass_Brown
-      - Dye_Stained_Glass_Purple
-      - Dye_Stained_Glass_Yellow
-      - Dye_Stained_Glass_Black
-      - Dye_Stained_Glass_Magenta
-      - Dye_Stained_Glass_Pink
-      - Dye_Stained_Glass_Cyan
-      - Dye_Stained_Glass_Orange
-      - Dye_Stained_Glass_Green
-      - Dye_Stained_Glass_White
-      - Dye_Stained_Glass_Light_Gray
-      - Dye_Stained_Glass_Light_Blue
-      - Dye_Stained_Glass_Red
-      - Dye_Stained_Glass_Lime
-      - Dye_Stained_Glass_Pane_Blue
-      - Dye_Stained_Glass_Pane_Brown
-      - Dye_Stained_Glass_Pane_Purple
-      - Dye_Stained_Glass_Pane_Yellow
-      - Dye_Stained_Glass_Pane_Black
-      - Dye_Stained_Glass_Pane_Magenta
-      - Dye_Stained_Glass_Pane_Pink
-      - Dye_Stained_Glass_Pane_Cyan
-      - Dye_Stained_Glass_Pane_Orange
-      - Dye_Stained_Glass_Pane_Green
-      - Dye_Stained_Glass_Pane_White
-      - Dye_Stained_Glass_Pane_Light_Gray
-      - Dye_Stained_Glass_Pane_Light_Blue
-      - Dye_Stained_Glass_Pane_Red
-      - Dye_Stained_Glass_Pane_Lime
+      - Dye_Blue_Stained_Glass
+      - Dye_Brown_Stained_Glass
+      - Dye_Purple_Stained_Glass
+      - Dye_Yellow_Stained_Glass
+      - Dye_Black_Stained_Glass
+      - Dye_Magenta_Stained_Glass
+      - Dye_Pink_Stained_Glass
+      - Dye_Cyan_Stained_Glass
+      - Dye_Orange_Stained_Glass
+      - Dye_Green_Stained_Glass
+      - Dye_White_Stained_Glass
+      - Dye_Light_Gray_Stained_Glass
+      - Dye_Light_Blue_Stained_Glass
+      - Dye_Red_Stained_Glass
+      - Dye_Lime_Stained_Glass
+      - Dye_Blue_Stained_Glass_Pane
+      - Dye_Brown_Stained_Glass_Pane
+      - Dye_Purple_Stained_Glass_Pane
+      - Dye_Yellow_Stained_Glass_Pane
+      - Dye_Black_Stained_Glass_Pane
+      - Dye_Magenta_Stained_Glass_Pane
+      - Dye_Pink_Stained_Glass_Pane
+      - Dye_Cyan_Stained_Glass_Pane
+      - Dye_Orange_Stained_Glass_Pane
+      - Dye_Green_Stained_Glass_Pane
+      - Dye_White_Stained_Glass_Pane
+      - Dye_Light_Gray_Stained_Glass_Pane
+      - Dye_Light_Blue_Stained_Glass_Pane
+      - Dye_Red_Stained_Glass_Pane
+      - Dye_Lime_Stained_Glass_Pane
     repair_multiple: 2
     repair_inputs:
       Lapis Lazuli:
@@ -2102,148 +2102,6 @@ production_factories:
         durability: 7
       Stained Glass Pane:
         material: STAINED_GLASS_PANE
-        durability: 7
-  Hard_Clay_Processing:
-    name: Hardened Clay Processing
-    fuel:
-      Charcoal:
-        material: COAL
-        durability: 1
-    inputs:
-      Lapis Lazuli:
-        material: INK_SACK
-        amount: 20
-        durability: 4
-      Gray Dye:
-        material: INK_SACK
-        amount: 20
-        durability: 8
-      Cocoa:
-        material: INK_SACK
-        amount: 20
-        durability: 3
-      Purple Dye:
-        material: INK_SACK
-        amount: 20
-        durability: 5
-      Dandelion Yellow:
-        material: INK_SACK
-        amount: 20
-        durability: 11
-      Ink Sack:
-        material: INK_SACK
-        amount: 20
-      Magenta Dye:
-        material: INK_SACK
-        amount: 20
-        durability: 13
-      Pink Dye:
-        material: INK_SACK
-        amount: 20
-        durability: 9
-      Cyan Dye:
-        material: INK_SACK
-        amount: 20
-        durability: 6
-      Orange Dye:
-        material: INK_SACK
-        amount: 20
-        durability: 14
-      Cactus Green:
-        material: INK_SACK
-        amount: 20
-        durability: 2
-      Bone Meal:
-        material: INK_SACK
-        amount: 20
-        durability: 15
-      Light Gray Dye:
-        material: INK_SACK
-        amount: 20
-        durability: 7
-      Light Blue Dye:
-        material: INK_SACK
-        amount: 20
-        durability: 12
-      Rose Red:
-        material: INK_SACK
-        amount: 20
-        durability: 1
-      Lime Dye:
-        material: INK_SACK
-        amount: 20
-        durability: 10
-      Hardened Clay:
-        material: HARD_CLAY
-        amount: 20
-        durability: 7
-    recipes:
-      - Dye_Hard_Clay_Blue
-      - Dye_Hard_Clay_Brown
-      - Dye_Hard_Clay_Purple
-      - Dye_Hard_Clay_Yellow
-      - Dye_Hard_Clay_Black
-      - Dye_Hard_Clay_Magenta
-      - Dye_Hard_Clay_Pink
-      - Dye_Hard_Clay_Cyan
-      - Dye_Hard_Clay_Orange
-      - Dye_Hard_Clay_Green
-      - Dye_Hard_Clay_White
-      - Dye_Hard_Clay_Light_Gray
-      - Dye_Hard_Clay_Light_Blue
-      - Dye_Hard_Clay_Red
-      - Dye_Hard_Clay_Lime
-    repair_multiple: 2
-    repair_inputs:
-      Lapis Lazuli:
-        material: INK_SACK
-        durability: 4
-      Gray Dye:
-        material: INK_SACK
-        durability: 8
-      Cocoa:
-        material: INK_SACK
-        durability: 3
-      Purple Dye:
-        material: INK_SACK
-        durability: 5
-      Dandelion Yellow:
-        material: INK_SACK
-        durability: 11
-      Ink Sack:
-        material: INK_SACK
-      Magenta Dye:
-        material: INK_SACK
-        durability: 13
-      Pink Dye:
-        material: INK_SACK
-        durability: 9
-      Cyan Dye:
-        material: INK_SACK
-        durability: 6
-      Orange Dye:
-        material: INK_SACK
-        durability: 14
-      Cactus Green:
-        material: INK_SACK
-        durability: 2
-      Bone Meal:
-        material: INK_SACK
-        durability: 15
-      Light Gray Dye:
-        material: INK_SACK
-        durability: 7
-      Light Blue Dye:
-        material: INK_SACK
-        durability: 12
-      Rose Red:
-        material: INK_SACK
-        durability: 1
-      Lime Dye:
-        material: INK_SACK
-        durability: 10
-      Hardened Clay:
-        material: HARD_CLAY
         durability: 7
   Crystallisation_Factory:
     name: Crystallisation Factory
@@ -4315,6 +4173,18 @@ production_recipes:
       Glass:
         material: GLASS
         amount: 768
+    production_time: 6
+    inputs:
+      Lapis Ore:
+        material: LAPIS_ORE
+        amount: 32
+    outputs:
+      Lapis Lazuli:
+        material: INK_SACK
+        amount: 512
+        durability: 4
+  Smelt_Lapis_Lazuli_Ore:
+    name: Smelt Lapis Lazuli Ore
     production_time: 6
     inputs:
       Lapis Ore:
