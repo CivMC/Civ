@@ -3476,7 +3476,7 @@ production_recipes:
         amount: 16
     outputs:
       Fire Charge:
-        material: FIRE_CHARGE
+        material: FIREBALL
         amount: 128
   Dye_White_Wool_Green:
     name: Dye White Wool Green
