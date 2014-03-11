@@ -1889,33 +1889,6 @@ production_factories:
       Grass:
         material: GRASS
         amount: 5
-  Explosives_Factory:
-    name: Explosives Factory
-    fuel:
-      Charcoal:
-        material: COAL
-        durability: 1
-    inputs:
-      Sulphur:
-        material: SULPHUR
-        amount: 384
-      Sand:
-        material: SAND
-        amount: 384
-      Blaze Powder:
-        material: BLAZE_POWDER
-        amount: 64
-    recipes:
-      - Produce_TNT
-      - Produce_Fire_Charges
-    repair_multiple: 10
-    repair_inputs:
-      Sulphur:
-        material: SULPHUR
-        amount: 4
-      Sand:
-        material: SAND
-        amount: 4
   Iron_Forge_factory:
     name: Iron Forge
     fuel:
@@ -3450,34 +3423,6 @@ production_recipes:
         material: COOKED_FISH
         amount: 128
         durability: 1
-  Produce_TNT:
-    name: Produce TNT
-    production_time: 128
-    inputs:
-      Sulphur:
-        material: SULPHUR
-        amount: 128
-      Sand:
-        material: SAND
-        amount: 128
-    outputs:
-      TNT:
-        material: TNT
-        amount: 64
-  Produce_Fire_Charges:
-    name: Produce Fire Charges
-    production_time: 128
-    inputs:
-      Sulphur:
-        material: SULPHUR
-        amount: 16
-      Blaze Powder:
-        material: BLAZE_POWDER
-        amount: 16
-    outputs:
-      Fire Charge:
-        material: FIRE_CHARGE
-        amount: 128
   Dye_White_Wool_Green:
     name: Dye White Wool Green
     inputs:
