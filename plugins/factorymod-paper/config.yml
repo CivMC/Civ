@@ -5978,8 +5978,8 @@ production_recipes:
   Dye_White_Stained_Glass_Pane:
     name: Dye White Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Bone Meal:
         material: INK_SACK
@@ -5993,8 +5993,8 @@ production_recipes:
   Dye_Orange_Stained_Glass_Pane:
     name: Dye Orange Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Orange Dye:
         material: INK_SACK
@@ -6008,8 +6008,8 @@ production_recipes:
   Dye_Magenta_Stained_Glass_Pane:
     name: Dye Magenta Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Magenta Dye:
         material: INK_SACK
@@ -6023,8 +6023,8 @@ production_recipes:
   Dye_Light_Blue_Stained_Glass_Pane:
     name: Dye Light Blue Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Light Blue Dye:
         material: INK_SACK
@@ -6038,8 +6038,8 @@ production_recipes:
   Dye_Yellow_Stained_Glass_Pane:
     name: Dye Yellow Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Dandelion Yellow:
         material: INK_SACK
@@ -6053,8 +6053,8 @@ production_recipes:
   Dye_Lime_Stained_Glass_Pane:
     name: Dye Lime Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Lime Dye:
         material: INK_SACK
@@ -6068,8 +6068,8 @@ production_recipes:
   Dye_Pink_Stained_Glass_Pane:
     name: Dye Pink Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Pink Dye:
         material: INK_SACK
@@ -6083,8 +6083,8 @@ production_recipes:
   Dye_Gray_Stained_Glass_Pane:
     name: Dye Gray Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Gray Dye:
         material: INK_SACK
@@ -6098,8 +6098,8 @@ production_recipes:
   Dye_Light_Gray_Stained_Glass_Pane:
     name: Dye Light Gray Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Light Gray Dye:
         material: INK_SACK
@@ -6113,8 +6113,8 @@ production_recipes:
   Dye_Cyan_Stained_Glass_Pane:
     name: Dye Cyan Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Cyan Dye:
         material: INK_SACK
@@ -6128,8 +6128,8 @@ production_recipes:
   Dye_Purple_Stained_Glass_Pane:
     name: Dye Purple Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Purple Dye:
         material: INK_SACK
@@ -6143,8 +6143,8 @@ production_recipes:
   Dye_Blue_Stained_Glass_Pane:
     name: Dye Blue Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Lapis Lazuli:
         material: INK_SACK
@@ -6158,8 +6158,8 @@ production_recipes:
   Dye_Brown_Stained_Glass_Pane:
     name: Dye Brown Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Coco Beans:
         material: INK_SACK
@@ -6173,8 +6173,8 @@ production_recipes:
   Dye_Green_Stained_Glass_Pane:
     name: Dye Green Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Cactus Green:
         material: INK_SACK
@@ -6188,8 +6188,8 @@ production_recipes:
   Dye_Red_Stained_Glass_Pane:
     name: Dye Red Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Rose Red:
         material: INK_SACK
@@ -6203,8 +6203,8 @@ production_recipes:
   Dye_Black_Stained_Glass_Pane:
     name: Dye Black Stained Glass Pane
     inputs:
-      Glass:
-        material: GLASS
+      Glass Pane:
+        material: THIN_GLASS
         amount: 64
       Ink Sack:
         material: INK_SACK
