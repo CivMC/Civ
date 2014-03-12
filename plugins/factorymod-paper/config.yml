@@ -5652,7 +5652,7 @@ production_recipes:
         material: LEATHER
         amount: 48
       Paper:
-        material: STRING
+        material: PAPER
         amount: 192
     outputs:
       Bookshelf:
