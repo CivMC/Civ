@@ -138,6 +138,8 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		persistConfig.productionLogLoadMintime = config.getLong("log_db_production_chunk_load_mintime", 5);
 		persistConfig.productionLogUnloadMintime = config.getLong("log_db_production_chunk_unload_mintime", 5);
 		
+		persistConfig.cacheEntireDatabase = config.getBoolean("cache_entire_database", false);
+		
 		LOG.info("Persistence enabled: " + persistConfig.enabled);
 		LOG.info("Database: " + persistConfig.databaseName);
 		if (persistConfig.productionLogDb || persistConfig.logDB) {

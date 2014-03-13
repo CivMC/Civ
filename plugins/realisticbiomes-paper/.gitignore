@@ -1,2 +1,4 @@
 bin/
 libs/craftbukkit.jar
+libs/spigot.jar
+*.class

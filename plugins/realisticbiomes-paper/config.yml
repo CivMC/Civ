@@ -9,6 +9,10 @@ realistic_biomes:
  persistence_enabled: true
 
  minLogLevel: "INFO"
+ 
+ # whether to attempt to cache the entire database into RAM and not do the delayed
+ # loading behavior. Default false
+ cache_entire_database: true
 
 
 

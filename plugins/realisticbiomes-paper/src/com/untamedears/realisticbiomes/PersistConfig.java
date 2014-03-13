@@ -36,4 +36,9 @@ public class PersistConfig {
 	// event has to take before we log it. 
 	public long productionLogLoadMintime;
 	public long productionLogUnloadMintime;
+	
+	// whether to cache the entire database into memory and not do delayed loading
+	// when this is enabled, we still unload chunks normally (but don't actually eject it from memory
+	// just to save to the database in case the server crashes...)
+	public boolean cacheEntireDatabase;
 }
