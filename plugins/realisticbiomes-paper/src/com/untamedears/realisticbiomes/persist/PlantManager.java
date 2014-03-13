@@ -100,7 +100,7 @@ public class PlantManager {
 			// we need InnoDB storage engine or else we can't do foreign keys!
 			this.makeTablePlant = writeConn.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s_plant" +
 							"(chunkId BIGINT, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER UNSIGNED, growth REAL, " +
-							"INDEX plant_coords_idx (w, x, y, z), INDEX plant_chunk_idx (chunkId), " +
+							"INDEX plant_chunk_idx (chunkId), " +
 							"CONSTRAINT chunkIdConstraint FOREIGN KEY (chunkId) REFERENCES %s_chunk (id))" +
 							"ENGINE INNODB", config.prefix, config.prefix));
 			
