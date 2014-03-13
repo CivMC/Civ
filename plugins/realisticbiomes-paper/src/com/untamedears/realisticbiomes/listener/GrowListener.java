@@ -196,8 +196,15 @@ public class GrowListener implements Listener {
 	
 	@EventHandler
 	public void onChunkLoad(ChunkLoadEvent e) {
-		if (!plugin.persistConfig.enabled)
+		if (!plugin.persistConfig.enabled) {
 			return;
+		}
+		
+		// if we are caching the entire database, just return
+		// because everything is already loaded!
+		if (plugin.persistConfig.cacheEntireDatabase) {
+			return;
+		}
 		
 		// make sure the chunk is loaded
 		Chunk chunk = e.getChunk();

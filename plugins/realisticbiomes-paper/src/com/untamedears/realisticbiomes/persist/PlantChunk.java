@@ -336,8 +336,12 @@ public class PlantChunk {
 							index, chunkCoords, this), e);
 		}
 
-		plants = new HashMap<Coords, Plant>();
-		loaded = false;
+		// only set loaded to false and reset the plants HashMap
+		// only if we are not caching the entire database
+		if (!this.plugin.persistConfig.cacheEntireDatabase) {
+			plants = new HashMap<Coords, Plant>();
+			loaded = false;
+		} 
 	}
 
 }

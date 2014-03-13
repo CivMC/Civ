@@ -80,12 +80,18 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		}
 		
 		RealisticBiomes.LOG.info("Logging hack, log level is set to: " + RealisticBiomes.minLogLevel.toString());
+		RealisticBiomes.LOG.info("Caching entire database? " + this.persistConfig.cacheEntireDatabase);
 		
 		registerEvents();
 		
 		if (persistConfig.enabled) {
 			plantManager = new PlantManager(this, persistConfig);
 			blockGrower = new BlockGrower(plantManager);
+			
+			// if we are caching the entire database, cache all the plants
+			if (this.persistConfig.cacheEntireDatabase) {
+				this.plantManager.cacheAllPlants();
+			}
 		}
 		
 		getServer().getPluginManager().registerEvents(this, this);
