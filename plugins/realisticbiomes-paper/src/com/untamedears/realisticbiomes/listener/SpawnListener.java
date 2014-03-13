@@ -16,6 +16,7 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.untamedears.realisticbiomes.BaseConfig;
 import com.untamedears.realisticbiomes.GrowthConfig;
 
 /**
@@ -28,11 +29,13 @@ import com.untamedears.realisticbiomes.GrowthConfig;
 public class SpawnListener implements Listener {
 
 	private HashMap<Object, GrowthConfig> growthMap;
+	private HashMap<Object, BaseConfig> fishMap;
 	
-	public SpawnListener(HashMap<Object, GrowthConfig> growthMap) {
+	public SpawnListener(HashMap<Object, GrowthConfig> growthMap, HashMap<Object, BaseConfig> fishMap) {
 		super();
 		
 		this.growthMap = growthMap;
+		this.fishMap = fishMap;
 	}
 
 	/**
@@ -75,7 +78,7 @@ public class SpawnListener implements Listener {
 			ItemStack items = ((Item)event.getCaught()).getItemStack();
 			Material type = items.getType();
 			Block block = event.getCaught().getLocation().getBlock();
-			boolean cancel = !willSpawn(type, block);
+			boolean cancel = !fishWillSpawn(type, block);
 			event.setCancelled(cancel);
 			if (cancel) {
 				event.getPlayer().sendMessage("Fish got away");
@@ -92,6 +95,19 @@ public class SpawnListener implements Listener {
 	private boolean willSpawn(Object e, Block b) {
 		if(growthMap.containsKey(e)) {
 			return Math.random() < growthMap.get(e).getRate(b);
+		}
+		return true;
+	}
+
+	/**
+	 * Determines if an ItemStack will spawn from fishing, given the current conditions
+	 * @param m The material type of the
+	 * @param b The block that the plant is on
+	 * @return Whether the item will spawn
+	 */
+	private boolean fishWillSpawn(Object e, Block b) {
+		if(fishMap.containsKey(e)) {
+			return Math.random() < fishMap.get(e).getRate(b);
 		}
 		return true;
 	}

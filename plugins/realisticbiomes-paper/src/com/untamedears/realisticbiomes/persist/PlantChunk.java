@@ -173,14 +173,15 @@ public class PlantChunk {
 				Block block = world.getBlockAt(x, y, z);
 				GrowthConfig growthConfig = plugin.getGrowthConfigs().get(
 						block.getType());
-				double growthAmount = growthConfig.getRate(block)
-						* plant.setUpdateTime(System.currentTimeMillis() / 1000L);
-				plant.addGrowth((float) growthAmount);
+				if (growthConfig.isPersistent()) {
+					double growthAmount = growthConfig.getRate(block)
+							* plant.setUpdateTime(System.currentTimeMillis() / 1000L);
+					plant.addGrowth((float) growthAmount);
 
-				// and update the plant growth
-				plugin.getBlockGrower().growBlock(block, coords,
-						plant.getGrowth());
-
+					// and update the plant growth
+					plugin.getBlockGrower().growBlock(block, coords,
+							plant.getGrowth());
+				}
 				// if the plant isn't finished growing, add it to the
 				// plants
 				if (!(plant.getGrowth() >= 1.0)) {

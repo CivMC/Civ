@@ -34,7 +34,9 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	public static Logger LOG = null;
 	public static Level minLogLevel = Level.INFO;
 	
+	public HashMap<String, List<Biome>> biomeAliases;
 	public HashMap<Object, GrowthConfig> materialGrowth;
+	public HashMap<Object, BaseConfig> fishDrops;
 	public BlockGrower blockGrower;
 	public PersistConfig persistConfig;
 	private PlantManager plantManager;
@@ -56,10 +58,12 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		this.reloadConfig();
 		
 		ConfigurationSection config = this.getConfig().getConfigurationSection("realistic_biomes");
-		
+
+		loadBiomeAliases(config);
 		loadPersistConfig(config);
 		loadGrowthConfigs(config);
-		
+		loadFishConfigs(config);
+
 		// load the max log level for our logging hack
 		// if not defined then its just initalized at INFO
 		String tmp = config.getString("minLogLevel");
@@ -144,12 +148,11 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 			}
 		}
 	}
-	
-	private void loadGrowthConfigs(ConfigurationSection config) {
-		
+
+	private void loadBiomeAliases(ConfigurationSection config) {
 		// load names that map to lists of biomes to be used as shorthand for those biomes
 		ConfigurationSection biomeAliasSection = config.getConfigurationSection("biome_aliases");
-		HashMap<String, List<Biome>> biomeAliases = new HashMap<String, List<Biome>>();
+		biomeAliases = new HashMap<String, List<Biome>>();
 		for (String alias : biomeAliasSection.getKeys(false)) {
 			// convert list of strings into list of biomes
 			List<String> biomeStrs = biomeAliasSection.getStringList(alias);
@@ -167,6 +170,9 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 			// map those biomes to an alias
 			biomeAliases.put(alias, biomes);
 		}
+	}
+
+	private void loadGrowthConfigs(ConfigurationSection config) {
 		
 		GrowthConfig defaultConfig = new GrowthConfig();
 		
@@ -208,6 +214,50 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 			}
 		}
 	}
+
+	private void loadFishConfigs(ConfigurationSection config) {
+		
+		BaseConfig defaultConfig = new BaseConfig();
+		
+		fishDrops = new HashMap<Object, BaseConfig>();
+		HashMap<String, BaseConfig> fishDropsNodes = new HashMap<String, BaseConfig>();
+		
+		ConfigurationSection fishDropsSection = config.getConfigurationSection("fish_drops");
+		for (String materialName : fishDropsSection.getKeys(false)) {
+			ConfigurationSection configSection = fishDropsSection.getConfigurationSection(materialName);
+			
+			BaseConfig inheritConfig = defaultConfig;
+			
+			if (configSection.isSet("inherit")) {
+				String inheritStr = configSection.getString("inherit");
+				
+				if (fishDropsNodes.containsKey(inheritStr)) {
+					inheritConfig = fishDropsNodes.get(inheritStr);
+				}
+				else {
+					Object inheritKey = getMaterialKey(inheritStr);
+					if (fishDrops.containsKey(inheritKey)) {
+						inheritConfig = fishDrops.get(inheritKey);
+					}
+				}
+			}
+			
+			BaseConfig newFishDrops = new BaseConfig(inheritConfig, configSection, biomeAliases);
+			
+			Object key = getMaterialKey(materialName);	
+			if (key == null) {
+				// if the name is partially capitalized, then warning the player that
+				// the name might be a misspelling
+				if (materialName.length() > 0 && materialName.matches(".*[A-Z].*"))
+					LOG.warning("config material name: is \""+materialName+"\" misspelled?");
+				fishDropsNodes.put(materialName, newFishDrops);
+			}
+			else {
+				fishDrops.put(key, newFishDrops);
+			}
+		}
+	}
+	
 	
 	private Object getMaterialKey(String materialName) {
 		boolean isMat = false, isTree = false, isEntity = false;
@@ -286,15 +336,15 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 
 	private void registerEvents() {
 		try {
-            PluginManager pm = getServer().getPluginManager();
-            pm.registerEvents(new GrowListener(this, materialGrowth), this);
-            pm.registerEvents(new SpawnListener(materialGrowth), this);
-            pm.registerEvents(new PlayerListener(this, materialGrowth), this);
-        }
-        catch(Exception e)
-        {
-        	LOG.severe("caught an exception while attempting to register events with the PluginManager: " + e);
-        }
+			PluginManager pm = getServer().getPluginManager();
+			pm.registerEvents(new GrowListener(this, materialGrowth), this);
+			pm.registerEvents(new SpawnListener(materialGrowth, fishDrops), this);
+			pm.registerEvents(new PlayerListener(this, materialGrowth), this);
+		}
+		catch(Exception e)
+		{
+			LOG.severe("caught an exception while attempting to register events with the PluginManager: " + e);
+		}
 	}
 
 	public HashMap<Object, GrowthConfig> getGrowthConfigs() {

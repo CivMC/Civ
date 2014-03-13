@@ -353,6 +353,7 @@ realistic_biomes:
    biomes:
     SKY: 0.25
 
+ fish_drops:
   #---------------------------------------
   # Base for all fishable
   # Three tiers of loot, (e) for enchanted items. Assume an item from the rare
@@ -368,8 +369,6 @@ realistic_biomes:
 
   mat_RAW_FISH:
    base_rate: 1.0
-   needs_sunlight: false
-   soil_max_layers: 0
    biomes:
     water: 1.0
 
@@ -385,12 +384,12 @@ realistic_biomes:
 
   mat_FISHING_ROD:
    inherit: mat_RAW_FISH
-   # 1.33% * 0.0313 = 0.25%
+   # 1.33% * 0.188 = 0.25%
    base_rate: 0.188
 
   mat_NAME_TAG:
    inherit: mat_RAW_FISH
-   # 1.33% * 0.0313 = 0.25%
+   # 1.33% * 0.188 = 0.25%
    base_rate: 0.188
 
   mat_WATER_LILY:
