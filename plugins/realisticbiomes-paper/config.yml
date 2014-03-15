@@ -254,6 +254,23 @@ realistic_biomes:
    max_soil_layers: 0
    biomes:
     hot_rainy: 1.0
+	
+  ACACIA:
+   inherit: tree
+   biomes:
+    hot_dry: 2.0
+    PLAINS: 1.0
+    mushroom: 0.0
+    freshwater: 0.0
+
+  DARK_OAK:
+   inherit: tree
+   biomes:
+    SWAMPLAND: 2.0
+    forest: 1.0
+    cold_forest: 0.5
+    mushroom: 0.0
+    freshwater: 0.0
 
   #......................
 
