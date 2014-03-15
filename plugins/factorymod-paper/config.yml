@@ -4174,15 +4174,6 @@ production_recipes:
         material: GLASS
         amount: 768
     production_time: 6
-    inputs:
-      Lapis Ore:
-        material: LAPIS_ORE
-        amount: 32
-    outputs:
-      Lapis Lazuli:
-        material: INK_SACK
-        amount: 512
-        durability: 4
   Smelt_Lapis_Lazuli_Ore:
     name: Smelt Lapis Lazuli Ore
     production_time: 6
