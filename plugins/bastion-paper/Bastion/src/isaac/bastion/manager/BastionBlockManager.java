@@ -323,7 +323,6 @@ public class BastionBlockManager
 		BastionBlock bastion=bastions.getBastionBlock(clicked.getLocation()); //Get the bastion at the location clicked.
 
 		if(bastion!=null){ //See if anything was found
-			event.setCancelled(true);
 			return bastion.infoMessage(dev, player); //If there is actually something there tell the player about it.
 		}
 
@@ -331,11 +330,9 @@ public class BastionBlockManager
 		if(bastion==null){
 			bastion=getBlockingBastion(block.getLocation());
 			if(bastion!=null){
-				event.setCancelled(true);
 				return ChatColor.GREEN+"A Bastion Block prevents others from building";
 			}
 		} else{
-			event.setCancelled(true);
 			return ChatColor.RED+"A Bastion Block prevents you building";
 		}
 		return null;

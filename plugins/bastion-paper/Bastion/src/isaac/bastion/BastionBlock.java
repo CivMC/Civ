@@ -4,6 +4,8 @@ package isaac.bastion;
 import isaac.bastion.storage.BastionBlockSet;
 import isaac.bastion.util.QTBox;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 import com.untamedears.citadel.Citadel;
@@ -280,6 +282,10 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	//checks if a player would be allowed to remove the Bastion block
 
 	public boolean canRemove(Player player){
+		
+		if(player.hasPermission("Bastion.bypass")) //let admins do whatever 
+			return true;
+		
 		PlayerReinforcement reinforcement = getReinforcement();
 
 		if(reinforcement!=null){
@@ -292,6 +298,11 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 
 	//checks if a player would be allowed to place
 	public boolean canPlace(String playerName){
+		
+		if(Bukkit.getPlayer(playerName).hasPermission("Bastion.bypass")) //let admins do whatever 
+			return true; 
+		
+		
 		PlayerReinforcement reinforcement = getReinforcement();
 
 		if(reinforcement!=null){
@@ -371,6 +382,9 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		}
 	}
 
+	public void mature(){
+		placed -= scaleTime;
+	}
 
 	public Location getLocation(){
 		return location;
@@ -428,28 +442,29 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 
 
 	public String toString(){
-		String result="Dev text ";
-
+		SimpleDateFormat dateFormator = new SimpleDateFormat("M/d/yy H:m:s");
+		String result="Dev text: ";
+		
 		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
-		//Faction fac;
-		double fractionOfMaturityTime=0;
+	
+		double scaleTime_as_hours=0;
 		if(scaleTime==0){
-			result+="Scale was 0";
-			fractionOfMaturityTime=1;
+			result+="Maturity timers are disabled \n";
 		} else{
-			fractionOfMaturityTime=((double) (System.currentTimeMillis()-placed))/scaleTime;
+			scaleTime_as_hours = ((double) scaleTime)/(1000*60);
 		}
 		if (reinforcement instanceof PlayerReinforcement) {
 			strength=reinforcement.getDurability();
-			//fac=reinforcement.getOwner();
 
-			result+=String.valueOf((double) strength-balance);
+			result+="Current Bastion reinforcement: "+String.valueOf((double) strength-balance)+'\n';
 
-			result+=", ";
-			result+=String.valueOf(fractionOfMaturityTime);
+			result+="Maturity time is ";
+			result+=String.valueOf(scaleTime_as_hours)+'\n';
 
-			result+=", ";
-			result+=String.valueOf(erosionFromPlace());
+			result+="Which means  " + String.valueOf(erosionFromPlace()) + " will removed after every blocked placeemnt"+'\n';
+			
+			result+="Placed on "+dateFormator.format(new Date(placed))+'\n';
+			result+="by group "+reinforcement.getOwner().getName();
 		}
 
 

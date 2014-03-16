@@ -25,6 +25,10 @@ commands:
       description: Returns to normal
       usage: /bso set the mode back to normal
       permission: Bastion.normal
+   bsm:
+      description: Insta matures any bastion left clicked 
+      usage: /bsm
+      permission: Bastion.admin
 permissions:
     Bastion.*:
         description: Gives access to all Bastion commands
@@ -35,6 +39,11 @@ permissions:
     Bastion.admin:
         description: Special power for admins
         default: op
+        children:
+            Bastion.bypass: true
+    Bastion.bypass:
+        description: Bastions do not effect members
+        default: false
     Bastion.dev:
         description: Special debug commands and different responses to existing commands
         default: op
