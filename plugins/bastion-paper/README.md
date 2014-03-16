@@ -9,10 +9,25 @@ Features:
  * Prevents pistons pushing into the Bastion field (Area where block placement is restricted) if the owner of the reinforcement would not be allowed to place there.
  * Prevents teleportation through the the Bastion field by non-members (Note this is highly experimental and may be better disabled)
 
+Modes:
+ * INFO
+  * When clicking a block inside a Bastion field tells you if you have access
+  * When clicking a bastion block gives some basic information on it
+ * DELETE
+  * When a Bastion block is clicked remove the bastion field while maintaing the reinforcement
+ * NORMAl
+  * Defualt clicking on blocks does nothing
+
 Commands:
  * /bsi Puts the player into info mode. Right clicking a block will, if the block was a Bastion block display its maturity or dev text if the user has Bastion.dev. If the block was to a Bastion block, but the block oposite the face clicked is inside a Bastion field it will report wether block placement is allowed.
  * /bsd Puts the player into delete mode. Right clicking a Bastion block that you could destroy removes the Field while leaving the block and the reinforcement
  * /bso Puts the player into normal mode
+
+Maturity:
+ * When a bastion is first created it starts much weaker
+ * While it matures any blocks placed within the field do much more damage
+ * Until mature ender pearls are not blocked.
+ * INFO mode gives some information on the time till maturity
 
 To install:
   * Add Bastion.jar to the server /plugins directory
