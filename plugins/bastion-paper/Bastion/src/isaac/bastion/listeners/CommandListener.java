@@ -45,7 +45,31 @@ public class CommandListener implements Listener{
 				PlayersStates.touchPlayer(player);
 				player.sendMessage(manager.infoMessage(dev, event));
 			}
-		} else if(PlayersStates.playerInMode(player, Mode.DELETE) && block.getType() == Bastion.getConfigManager().getBastionBlockMaterial()){
+		} else if(PlayersStates.playerInMode(player, Mode.DELETE)){
+			event.setCancelled(true);
+
+			BastionBlock bastionBlock=Bastion.getBastionManager().
+					bastions.getBastionBlock(block.getLocation());
+
+			if(bastionBlock==null)
+				return;
+
+			if(bastionBlock.canRemove(player)){
+				if(Bastion.getBastionManager().bastions.silentRemove(bastionBlock)){
+					player.sendMessage(ChatColor.GREEN+"Bastion Deleted");
+					PlayersStates.touchPlayer(player);
+					event.setCancelled(true);
+				}
+			}
+		} else if(PlayersStates.playerInMode(player, Mode.MATURE)){
+
+			BastionBlock bastionBlock=Bastion.getBastionManager().
+					bastions.getBastionBlock(block.getLocation());
+
+			if(bastionBlock==null)
+				return;
+			bastionBlock.mature();
+		} else if(PlayersStates.playerInMode(player, Mode.BASTION)){
 			event.setCancelled(true);
 
 			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
@@ -61,25 +85,8 @@ public class CommandListener implements Listener{
 			} else{
 				player.sendMessage(ChatColor.RED+"You don't have permissions in "+ChatColor.BLACK+reinforcement.getOwner().getName());
 			}
-
-		} else if(PlayersStates.playerInMode(player, Mode.MATURE)){
-
-			BastionBlock bastionBlock=Bastion.getBastionManager().
-					bastions.getBastionBlock(block.getLocation());
-
-			if(bastionBlock==null)
-				return;
-			bastionBlock.mature();
-		} else if(PlayersStates.playerInMode(player, Mode.BASTION)){
-
-			BastionBlock bastionBlock=Bastion.getBastionManager().
-					bastions.getBastionBlock(block.getLocation());
-
-			if(bastionBlock==null)
-				return;
-			bastionBlock.mature();
 		}
-
-
+		
+		
 	}
 }
