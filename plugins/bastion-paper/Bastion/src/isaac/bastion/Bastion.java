@@ -55,7 +55,8 @@ public final class Bastion extends JavaPlugin
 		getCommand("bsi").setExecutor(new ModeChangeCommand(Mode.INFO));
 		getCommand("bsd").setExecutor(new ModeChangeCommand(Mode.DELETE));
 		getCommand("bso").setExecutor(new ModeChangeCommand(Mode.NORMAL));
-		getCommand("bsn").setExecutor(new ModeChangeCommand(Mode.DISABLED));
+		getCommand("bsb").setExecutor(new ModeChangeCommand(Mode.BASTION));
+		getCommand("bsc").setExecutor(new ModeChangeCommand(Mode.CREATE));
 		getCommand("bsm").setExecutor(new ModeChangeCommand(Mode.MATURE));
 	}
 
