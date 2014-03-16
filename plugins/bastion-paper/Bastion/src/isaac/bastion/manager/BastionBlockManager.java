@@ -335,7 +335,7 @@ public class BastionBlockManager
 		} else{
 			return ChatColor.RED+"A Bastion Block prevents you building";
 		}
-		return null;
-
+		
+		return ChatColor.YELLOW + "No Bastion Block";
 	}
 }

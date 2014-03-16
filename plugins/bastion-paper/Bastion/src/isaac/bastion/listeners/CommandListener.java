@@ -46,8 +46,6 @@ public class CommandListener implements Listener{
 				player.sendMessage(manager.infoMessage(dev, event));
 			}
 		} else if(PlayersStates.playerInMode(player, Mode.DELETE)){
-			event.setCancelled(true);
-
 			BastionBlock bastionBlock=Bastion.getBastionManager().
 					bastions.getBastionBlock(block.getLocation());
 
@@ -62,7 +60,6 @@ public class CommandListener implements Listener{
 				}
 			}
 		} else if(PlayersStates.playerInMode(player, Mode.MATURE)){
-
 			BastionBlock bastionBlock=Bastion.getBastionManager().
 					bastions.getBastionBlock(block.getLocation());
 
@@ -70,8 +67,6 @@ public class CommandListener implements Listener{
 				return;
 			bastionBlock.mature();
 		} else if(PlayersStates.playerInMode(player, Mode.BASTION)){
-			event.setCancelled(true);
-
 			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
 					getReinforcement(block.getLocation());
 
