@@ -4137,7 +4137,7 @@ production_recipes:
         amount: 192
     outputs:
       Glass Pane:
-        material: GLASS_PANE
+        material: THIN_GLASS
         amount: 768
   Smelt_Bottles:
     name: Smelt Bottles
