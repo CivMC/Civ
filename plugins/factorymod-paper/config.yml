@@ -6209,7 +6209,7 @@ production_recipes:
   Dye_White_Stained_Clay:
     name: Dye White Stained Clay
     inputs:
-      White Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Bone Meal:
@@ -6224,7 +6224,7 @@ production_recipes:
   Dye_Orange_Stained_Clay:
     name: Dye Orange Stained Clay
     inputs:
-      Orange Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Orange Dye:
@@ -6239,7 +6239,7 @@ production_recipes:
   Dye_Magenta_Stained_Clay:
     name: Dye Magenta Stained Clay
     inputs:
-      Magenta Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Magenta Dye:
@@ -6254,7 +6254,7 @@ production_recipes:
   Dye_Light_Blue_Stained_Clay:
     name: Dye Light Blue Stained Clay
     inputs:
-      Light Blue Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Light Blue Dye:
@@ -6269,7 +6269,7 @@ production_recipes:
   Dye_Yellow_Stained_Clay:
     name: Dye Yellow Stained Clay
     inputs:
-      Yellow Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Dandelion Yellow:
@@ -6284,7 +6284,7 @@ production_recipes:
   Dye_Lime_Stained_Clay:
     name: Dye Lime Stained Clay
     inputs:
-      Lime Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Lime Dye:
@@ -6299,7 +6299,7 @@ production_recipes:
   Dye_Pink_Stained_Clay:
     name: Dye Pink Stained Clay
     inputs:
-      Pink Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Pink Dye:
@@ -6314,7 +6314,7 @@ production_recipes:
   Dye_Gray_Stained_Clay:
     name: Dye Gray Stained Clay
     inputs:
-      Gray Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Gray Dye:
@@ -6329,7 +6329,7 @@ production_recipes:
   Dye_Light_Gray_Stained_Clay:
     name: Dye Light Gray Stained Clay
     inputs:
-      Light Gray Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Light Gray Dye:
@@ -6344,7 +6344,7 @@ production_recipes:
   Dye_Cyan_Stained_Clay:
     name: Dye Cyan Stained Clay
     inputs:
-      Cyan Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Cyan Dye:
@@ -6359,7 +6359,7 @@ production_recipes:
   Dye_Purple_Stained_Clay:
     name: Dye Purple Stained Clay
     inputs:
-      Purple Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Purple Dye:
@@ -6374,7 +6374,7 @@ production_recipes:
   Dye_Blue_Stained_Clay:
     name: Dye Blue Stained Clay
     inputs:
-      Blue Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Lapis Lazuli:
@@ -6389,7 +6389,7 @@ production_recipes:
   Dye_Brown_Stained_Clay:
     name: Dye Brown Stained Clay
     inputs:
-      Brown Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Coco Beans:
@@ -6404,7 +6404,7 @@ production_recipes:
   Dye_Green_Stained_Clay:
     name: Dye Green Stained Clay
     inputs:
-      Green Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Cactus Green:
@@ -6419,7 +6419,7 @@ production_recipes:
   Dye_Red_Stained_Clay:
     name: Dye Red Stained Clay
     inputs:
-      Red Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Rose Red:
@@ -6434,7 +6434,7 @@ production_recipes:
   Dye_Black_Stained_Clay:
     name: Dye Black Stained Clay
     inputs:
-      Black Stained Clay:
+      Hardened Clay:
         material: HARD_CLAY
         amount: 64
       Ink Sack:
@@ -6467,7 +6467,7 @@ production_recipes:
         material: SAPLING
         amount: 64
     outputs:
-      Spruce Sapling:
+      Birch Sapling:
         material: SAPLING
         amount: 64
         durability: 2
@@ -6479,7 +6479,7 @@ production_recipes:
         material: SAPLING
         amount: 64
     outputs:
-      Spruce Sapling:
+      Jungle Sapling:
         material: SAPLING
         amount: 64
         durability: 3
@@ -6491,7 +6491,7 @@ production_recipes:
         material: SAPLING
         amount: 64
     outputs:
-      Spruce Sapling:
+      Acacia Sapling:
         material: SAPLING
         amount: 64
         durability: 4
@@ -6503,7 +6503,7 @@ production_recipes:
         material: SAPLING
         amount: 64
     outputs:
-      Spruce Sapling:
+      Dark Oak Sapling:
         material: SAPLING
         amount: 64
         durability: 5
