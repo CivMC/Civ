@@ -4049,6 +4049,9 @@ production_recipes:
       Cake:
         material: CAKE
         amount: 24
+      Bucket:
+        material: BUCKET
+        amount: 18
   Bake_Pumpkin_Pie:
     name: Bake Pumpkin Pie
     production_time: 24
