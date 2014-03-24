@@ -4033,7 +4033,7 @@ production_recipes:
     name: Bake Cake
     production_time: 24
     inputs:
-      Sugar:cake
+      Sugar:
         material: SUGAR
         amount: 36
       Egg:
