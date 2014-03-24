@@ -4033,7 +4033,7 @@ production_recipes:
     name: Bake Cake
     production_time: 24
     inputs:
-      Sugar:
+      Sugar:cake
         material: SUGAR
         amount: 36
       Egg:
@@ -4045,6 +4045,10 @@ production_recipes:
       Milk Bucket:
         material: MILK_BUCKET
         amount: 18
+    outputs:
+      Cake:
+        material: CAKE
+        amount: 24
   Bake_Pumpkin_Pie:
     name: Bake Pumpkin Pie
     production_time: 24
