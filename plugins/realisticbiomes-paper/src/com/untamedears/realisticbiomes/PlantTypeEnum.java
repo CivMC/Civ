@@ -17,7 +17,7 @@ public enum PlantTypeEnum {
 	POTATO(2),
 	MELON(3),
 	PUMPKIN(4),
-	SUGAR_GANE(5),
+	SUGAR_CANE(5),
 	CACTUS(6),
 	COCOA_BEANS(7),
 	NETHER_WART(8),
