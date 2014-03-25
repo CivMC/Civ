@@ -221,18 +221,18 @@ public class PlantChunk {
 		// should
 		// not be passing them in to load / unload!
 		if (!loaded) {
-			RealisticBiomes.doLog(Level.FINER, "Plantchunk.unload(): not loaded so returning");
+			RealisticBiomes.doLog(Level.FINEST, "Plantchunk.unload(): not loaded so returning");
 			return;
 		}
 
 		try {
 			// if this chunk was not in the database, then add it to the
 			// database
-			RealisticBiomes.doLog(Level.FINER,"PlantChunk.unload(): is inDatabase?: "
+			RealisticBiomes.doLog(Level.FINEST,"PlantChunk.unload(): is inDatabase?: "
 					+ inDatabase);
 			if (!inDatabase) {
 
-				RealisticBiomes.doLog(Level.FINER, "not in database, adding new chunk");
+				RealisticBiomes.doLog(Level.FINEST, "not in database, adding new chunk");
 				ChunkWriter.addChunkStmt.setInt(1, chunkCoords.w);
 				ChunkWriter.addChunkStmt.setInt(2, chunkCoords.x);
 				ChunkWriter.addChunkStmt.setInt(3, chunkCoords.z);
@@ -245,7 +245,7 @@ public class PlantChunk {
 				// if we don't
 				if (rs.next()) {
 					index = rs.getLong(1);
-					RealisticBiomes.doLog(Level.FINER, "plantchunk.unload(): got new autoincrement index, it is now "
+					RealisticBiomes.doLog(Level.FINEST, "plantchunk.unload(): got new autoincrement index, it is now "
 									+ index);
 				} else {
 					throw new DataSourceException(
@@ -258,7 +258,7 @@ public class PlantChunk {
 				// database later in this method we dont get a Constraint
 				// Failure exception
 
-				RealisticBiomes.doLog(Level.FINER, "plantchunk.unload(): committing new plantchunk with index "
+				RealisticBiomes.doLog(Level.FINEST, "plantchunk.unload(): committing new plantchunk with index "
 								+ this.index);
 				ChunkWriter.writeConnection.commit();
 				inDatabase = true;
@@ -290,7 +290,7 @@ public class PlantChunk {
 					int coordCounter = 0;
 					boolean needToExec = false;
 					
-					RealisticBiomes.doLog(Level.FINER, "PlantChunk.unload(): Unloading plantchunk with index: " + this.index);
+					RealisticBiomes.doLog(Level.FINEST, "PlantChunk.unload(): Unloading plantchunk with index: " + this.index);
 					for (Coords coords : plants.keySet()) {
 						if (!needToExec) {
 							needToExec = true;
@@ -339,6 +339,7 @@ public class PlantChunk {
 		// only set loaded to false and reset the plants HashMap
 		// only if we are not caching the entire database
 		if (!this.plugin.persistConfig.cacheEntireDatabase) {
+			RealisticBiomes.doLog(Level.FINER, String.format("PlantChunk.unload(): clearing hashmap for chunk at %s", chunkCoords));
 			plants = new HashMap<Coords, Plant>();
 			loaded = false;
 		} 

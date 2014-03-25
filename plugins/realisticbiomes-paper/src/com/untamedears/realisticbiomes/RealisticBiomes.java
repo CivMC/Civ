@@ -88,10 +88,6 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 			plantManager = new PlantManager(this, persistConfig);
 			blockGrower = new BlockGrower(plantManager);
 			
-			// if we are caching the entire database, cache all the plants
-			if (this.persistConfig.cacheEntireDatabase) {
-				this.plantManager.cacheAllPlants();
-			}
 		}
 		
 		getServer().getPluginManager().registerEvents(this, this);

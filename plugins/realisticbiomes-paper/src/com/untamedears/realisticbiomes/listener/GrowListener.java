@@ -200,12 +200,6 @@ public class GrowListener implements Listener {
 			return;
 		}
 		
-		// if we are caching the entire database, just return
-		// because everything is already loaded!
-		if (plugin.persistConfig.cacheEntireDatabase) {
-			return;
-		}
-		
 		// make sure the chunk is loaded
 		Chunk chunk = e.getChunk();
 		int w = WorldID.getPID(e.getChunk().getWorld().getUID());
