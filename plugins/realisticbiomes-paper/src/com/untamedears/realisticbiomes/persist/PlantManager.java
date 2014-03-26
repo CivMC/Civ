@@ -18,6 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -100,7 +101,7 @@ public class PlantManager {
 			// we need InnoDB storage engine or else we can't do foreign keys!
 			this.makeTablePlant = writeConn.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s_plant" +
 							"(chunkId BIGINT, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER UNSIGNED, growth REAL, " +
-							"INDEX plant_coords_idx (w, x, y, z), INDEX plant_chunk_idx (chunkId), " +
+							"INDEX plant_chunk_idx (chunkId), " +
 							"CONSTRAINT chunkIdConstraint FOREIGN KEY (chunkId) REFERENCES %s_chunk (id))" +
 							"ENGINE INNODB", config.prefix, config.prefix));
 			
@@ -157,6 +158,8 @@ public class PlantManager {
 
 		RealisticBiomes.LOG.info("Finished loading all PlantChunks - time taken: " +(endTime-startTime) + "ms");
 		
+
+		
 		// create unload batch
 		chunksToUnload = new ArrayList<Coords>();
 		
@@ -171,6 +174,49 @@ public class PlantManager {
 		writeService = Executors.newSingleThreadExecutor();
 		
 		log = plugin.getLogger();
+	}
+	
+	/**
+	 * call this to load all the plants from all our plant chunks
+	 * this should only be called if persistConfig.cacheEntireDatabase is true
+	 * 
+	 * If we hit a out of memory error here, we shut bukkit down (if we can!)
+	 */
+	public void cacheAllPlants() {
+		
+		// If we have set the option to 'cacheEntireDatabase', then after we have loaded all of
+		// the plant chunks, then we should go through all the plant chunks and load all
+		// of the plants for it.
+		// We need to be careful not to run out of memory...
+		
+		try {
+			RealisticBiomes.LOG.info("Attempting to load all of the plants for all the plant chunks!");
+
+			long startTimeOne = System.nanoTime()/1000000/*ns/ms*/;
+			
+			for (Coords iterCoord : chunks.keySet()) {
+				
+				chunks.get(iterCoord).load(iterCoord, this.readConn);
+			}
+			
+			long endTimeOne = System.nanoTime()/1000000/*ns/ms*/;
+			
+			RealisticBiomes.LOG.info("Finished loading all Plants inside the PlantChunks - time taken: " +(endTimeOne-startTimeOne) + "ms");
+
+			
+		} catch (OutOfMemoryError oome) {
+			
+			// try and free up memory so we don't really run out of memory when trying
+			// to shut down
+			this.chunks = null;
+			System.gc();
+			
+			RealisticBiomes.LOG.severe("OUT OF MEMORY ERROR WHEN LOADING ALL "
+					+ "THE PLANTS FOR ALL THE PLANT CHUNKS SHUTTING DOWN BUKKIT! ERROR: " + oome);
+			
+			// R.I.P in peaces bukkit
+			Bukkit.shutdown();
+		}
 	}
 	
 	// ============================================================================================	

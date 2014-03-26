@@ -196,8 +196,9 @@ public class GrowListener implements Listener {
 	
 	@EventHandler
 	public void onChunkLoad(ChunkLoadEvent e) {
-		if (!plugin.persistConfig.enabled)
+		if (!plugin.persistConfig.enabled) {
 			return;
+		}
 		
 		// make sure the chunk is loaded
 		Chunk chunk = e.getChunk();
