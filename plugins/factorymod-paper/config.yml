@@ -2056,7 +2056,7 @@ production_factories:
       - Dye_Light_Blue_Stained_Glass_Pane
       - Dye_Red_Stained_Glass_Pane
       - Dye_Lime_Stained_Glass_Pane
-	  _Objet_Dart
+      - Bastion_Objet_Dart
     repair_multiple: 2
     repair_inputs:
       Lapis Lazuli:
