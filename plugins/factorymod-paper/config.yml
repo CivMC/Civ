@@ -6622,25 +6622,25 @@ production_recipes:
         amount: 8
 	  Cracked Stone Brick:
 	    material: SMOOTH_BRICK
-		amount: 8
+        amount: 8
         durability: 2
 	outputs:
 	  Walls:
 	    material: INK_SACK
-		amount: 1
-		durablity: 4
-		display_name: Walls
-		lore: An item used to create a Bastion Block
+        amount: 1
+        durablity: 4
+        display_name: Walls
+        lore: An item used to create a Bastion Block
   Bastion_Base:
 	name: Base
 	production_time: 2
 	inputs:
 	  Diamond Ore:
 	    material: DIAMOND_ORE
-		amount: 16
+        amount: 16
 	  Redstone Ore:
 	    material: REDSTONE ORE
-		amount: 4
+        amount: 4
 	outputs:
 	  Base:
 	   material: IRON_INGOT
@@ -6653,10 +6653,10 @@ production_recipes:
 	inputs:
 	  Iron Ingot:
 	    material: IRON_IGNOT
-		amount: 4
+        amount: 4
 	  Gold Ore:
 	    material: GOLD_ORE
-		amount: 2
+        amount: 2
 	outputs:
 	  Gearbox:
 	   material: WATCH
@@ -6732,8 +6732,8 @@ production_recipes:
         durability: 10
 	  Red Sand:
 	    material: SAND
-		amount: 64
-		durability: 1
+        amount: 64
+        durability: 1
 	outputs:
 	  Object d'art:
 	   material: FLINT
@@ -6744,10 +6744,10 @@ production_recipes:
     inputs:
 	  Chest:
 	    material: CHEST
-		amount: 8
+        amount: 8
 	  Iron Ignot:
 	    material: IRON_IGNOT
-		amount: 4
+        amount: 4
 	outputs:
 	  Framing:
 	   material: STICK
@@ -6761,7 +6761,7 @@ production_recipes:
 	   amount: 4
 	  Nether Brick:
 	   material: NETHER_BRICK
-	   amount: 64		
+	   amount: 64        
 	outputs:
 	  Flooring:
 	   material: CLAY_BRICK
