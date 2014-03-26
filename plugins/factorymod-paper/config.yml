@@ -6617,15 +6617,15 @@ production_recipes:
 	name: Walls
 	production_time: 2
 	inputs:
-	  Lapis Ore:
+      Lapis Ore:
         material: LAPIS_ORE 
         amount: 8
-	  Cracked Stone Brick:
+      Cracked Stone Brick:
         material: SMOOTH_BRICK
         amount: 8
         durability: 2
 	outputs:
-	  Walls:
+      Walls:
         material: INK_SACK
         amount: 1
         durablity: 4
@@ -6635,34 +6635,34 @@ production_recipes:
 	name: Base
 	production_time: 2
 	inputs:
-	  Diamond Ore:
+      Diamond Ore:
         material: DIAMOND_ORE
         amount: 16
-	  Redstone Ore:
+      Redstone Ore:
         material: REDSTONE ORE
         amount: 4
 	outputs:
-	  Base:
-	   material: IRON_INGOT
-	   amount: 1
-	   display_name: Base
-	   lore: An item used to create a Bastion Block
+      Base:
+        material: IRON_INGOT
+        amount: 1
+        display_name: Base
+        lore: An item used to create a Bastion Block
   Bastion_Gearbox
     name: Gearbox
 	production_time: 2
 	inputs:
-	  Iron Ingot:
+      Iron Ingot:
         material: IRON_IGNOT
         amount: 4
-	  Gold Ore:
+      Gold Ore:
         material: GOLD_ORE
         amount: 2
 	outputs:
-	  Gearbox:
-	   material: WATCH
-	   amount: 1
-	   display_name: Gearbox
-	   lore: An item used to create a Bastion Block
+      Gearbox:
+        material: WATCH
+        amount: 1
+        display_name: Gearbox
+        lore: An item used to create a Bastion Block
   Bastion_Object_Dart
     name: Object d'art
 	production_time: 2
