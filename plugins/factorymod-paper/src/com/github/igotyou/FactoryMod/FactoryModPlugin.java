@@ -294,14 +294,15 @@ public class FactoryModPlugin extends JavaPlugin
 					short durability=(short)configItem.getInt("durability",0);
 					String displayName=configItem.getString("display_name");
 					String lore=configItem.getString("lore");
-					items.add(createItemStack(material,amount,durability,displayName,lore,commonName));
+					List<ProbabilisticEnchantment> compulsoryEnchantments = getEnchantments(configItem.getConfigurationSection("enchantments"));
+					items.add(createItemStack(material,amount,durability,displayName,lore,commonName,compulsoryEnchantments));
 				}
 			}
 		}
 		return items;
 	}
 	
-	private NamedItemStack createItemStack(Material material,int stackSize,short durability,String name,String loreString,String commonName)
+	private NamedItemStack createItemStack(Material material,int stackSize,short durability,String name,String loreString,String commonName,List<ProbabilisticEnchantment> compulsoryEnchants)
 	{
 		NamedItemStack namedItemStack= new NamedItemStack(material, stackSize, durability,commonName);
 		if(name!=null||loreString!=null)
@@ -314,6 +315,9 @@ public class FactoryModPlugin extends JavaPlugin
 				List<String> lore = new ArrayList<String>();
 				lore.add(loreString);
 				meta.setLore(lore);
+			}
+			for (ProbabilisticEnchantment enchant : compulsoryEnchants) {
+				meta.addEnchant(enchant.getEnchantment(), enchant.getLevel(), true);
 			}
 			namedItemStack.setItemMeta(meta);
 		}
