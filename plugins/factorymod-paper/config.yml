@@ -6614,8 +6614,8 @@ production_recipes:
         material: PACKED_ICE
         amount: 576
   Bastion_Walls:
-	name: Walls
-	production_time: 2
+    name: Walls
+    production_time: 2
 	inputs:
       Lapis Ore:
         material: LAPIS_ORE 
@@ -6632,8 +6632,8 @@ production_recipes:
         display_name: Walls
         lore: An item used to create a Bastion Block
   Bastion_Base:
-	name: Base
-	production_time: 2
+    name: Base
+    production_time: 2
 	inputs:
       Diamond Ore:
         material: DIAMOND_ORE
@@ -6649,7 +6649,7 @@ production_recipes:
         lore: An item used to create a Bastion Block
   Bastion_Gearbox
     name: Gearbox
-	production_time: 2
+    production_time: 2
 	inputs:
       Iron Ingot:
         material: IRON_IGNOT
@@ -6665,7 +6665,7 @@ production_recipes:
         lore: An item used to create a Bastion Block
   Bastion_Object_Dart
     name: Object d'art
-	production_time: 2
+    production_time: 2
 	inputs:      
 	  Lapis Lazuli:
         material: INK_SACK
