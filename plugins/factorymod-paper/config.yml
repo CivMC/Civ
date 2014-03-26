@@ -6730,109 +6730,109 @@ production_recipes:
         material: INK_SACK
         amount: 1
         durability: 10
-	  Red Sand:
+      Red Sand:
         material: SAND
         amount: 64
         durability: 1
-	outputs:
-	  Object d'art:
-	   material: FLINT
-	   amount: 1
-	   display_name: Object d'art
-	   lore: An item used to create a Bastion Block
+    outputs:
+      Object d'art:
+        material: FLINT
+        amount: 1
+        display_name: Object d'art
+        lore: An item used to create a Bastion Block
   Bastion_Framing:
     inputs:
-	  Chest:
+      Chest:
         material: CHEST
         amount: 8
-	  Iron Ignot:
+      Iron Ignot:
         material: IRON_IGNOT
         amount: 4
-	outputs:
-	  Framing:
-	   material: STICK
-	   amount: 1
-	   display_name: Framing
-	   lore: An item used to create a Bastion Block
+    outputs:
+      Framing:
+        material: STICK
+        amount: 1
+        display_name: Framing
+        lore: An item used to create a Bastion Block
   Bastion_Flooring:
     inputs:
-	  Clay Ball:
-	   material: CALL_BALL
-	   amount: 4
-	  Nether Brick:
-	   material: NETHER_BRICK
-	   amount: 64        
-	outputs:
-	  Flooring:
-	   material: CLAY_BRICK
-	   amount: 1
-	   display_name: Flooring
-	   lore: An item used to create a Bastion Block
+      Clay Ball:
+        material: CALL_BALL
+        amount: 4
+      Nether Brick:
+        material: NETHER_BRICK
+        amount: 64        
+    outputs:
+      Flooring:
+        material: CLAY_BRICK
+        amount: 1
+        display_name: Flooring
+        lore: An item used to create a Bastion Block
   Bastion_Rations:
     inputs:
-	  Wheat:
-	   meterial: WHEAT
-	   amount: 32
-	  Bowl:
-	   meterial: BOWL
-	   amount: 4
-	outputs:
-	  Rations:
-	   material: MUSHROOM_SOUP
-	   amount: 1
-	   display_name: Rations
-	   lore: An item used to create a Bastion Block
+      Wheat:
+        meterial: WHEAT
+        amount: 32
+      Bowl:
+        meterial: BOWL
+        amount: 4
+    outputs:
+      Rations:
+        material: MUSHROOM_SOUP
+        amount: 1
+        display_name: Rations
+        lore: An item used to create a Bastion Block
   Bastion_Smaragdus_Polisher:
-	inputs:
-	  Emerald Block:
-	   material: EMERALD_BLOCK
-	   amount: 1
-	outputs:
-	  Smaragdus:
-	   material: EMERALD
-	   amount: 1
-	   display_name: Smaragdus
-	   lore: An item used to create a Bastion Block
+    inputs:
+      Emerald Block:
+        material: EMERALD_BLOCK
+        amount: 1
+    outputs:
+      Smaragdus:
+        material: EMERALD
+        amount: 1
+        display_name: Smaragdus
+        lore: An item used to create a Bastion Block
   Bastion_Silicon_Tetranitratobihydrotrioxycarbon:
     inputs:
-	  Sulphur:
-	   material: SULPHUR
-	   amount: 8
-	  Quartz:
-       material: QUARTZ
-	   amount: 32
-	  Podzol:
-	   material: DIRT
-	   amount: 32
-	   durability: 3
-	  Coal Block:
-	   material: COAL_BLOCK
-	   amount: 8
-	  Water Bucket:
-	   material: WATER_BUCKET
-	   amount: 2
-	outputs:
-	  Silicon Tetranitratobihydrotrioxycarbon:
-	   material: FIREWORK_CHARGE
-	   amount: 1
-	   display_name: Silicon Tetranitratobihydrotrioxycarbon
-	   lore: An item used to create a Bastion Block
+      Sulphur:
+        material: SULPHUR
+        amount: 8
+      Quartz:
+        material: QUARTZ
+        amount: 32
+      Podzol:
+        material: DIRT
+        amount: 32
+        durability: 3
+      Coal Block:
+        material: COAL_BLOCK
+        amount: 8
+      Water Bucket:
+        material: WATER_BUCKET
+        amount: 2
+    outputs:
+      Silicon Tetranitratobihydrotrioxycarbon:
+        material: FIREWORK_CHARGE
+        amount: 1
+        display_name: Silicon Tetranitratobihydrotrioxycarbon
+        lore: An item used to create a Bastion Block
   Bastion_Pure_Ice:
     inputs:
-	  Compact Ice:
-	   material: COMPACT_ICE
-	   amount: 64
-	  Leather:
-	   material: LEATHER
-	   amount: 4
-	outputs:
-	  Pure Ice:
-	   material: QUARTZ
-	   amount: 1
-	   display_name: Pure Ice
-	   lore: An item used to repair the Bastion Factory
+      Compact Ice:
+        material: COMPACT_ICE
+        amount: 64
+      Leather:
+        material: LEATHER
+        amount: 4
+    outputs:
+      Pure Ice:
+        material: QUARTZ
+        amount: 1
+        display_name: Pure Ice
+        lore: An item used to repair the Bastion Factory
   Bastion_Factory:
-      inputs:
+    inputs:
       Silicon Tetranitratobihydrotrioxycarbon:
         material: FIREWORK_CHARGE
         amount: 1
@@ -6881,6 +6881,6 @@ production_recipes:
         lore: An item used to create a Bastion Block
     outputs:
       Sponge:
-      material: SPONGE
-      amount: 64     
+        material: SPONGE
+        amount: 64     
 	   
