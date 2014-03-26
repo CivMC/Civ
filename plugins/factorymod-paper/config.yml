@@ -1914,6 +1914,13 @@ production_factories:
         material: MONSTER_EGG
         durability: 100
         amount: 16
+      Silk_touch_book:
+        material: ENCHANTED_BOOK
+        amount: 1
+        enchantments:
+          Silk Touch 1:
+            type: SILK_TOUCH
+            level: 1
     recipes:
       - Mutate_Pigmen
       - Infect_Zombies
