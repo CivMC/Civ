@@ -1092,7 +1092,7 @@ production_factories:
       - Grilled_Pork
       - Cooked_Beef
       - Cook_Salmon
-	  - Bastion_Rations
+      - Bastion_Rations
     repair_multiple: 2
     repair_inputs:
       Cooked Chicken:
@@ -1156,7 +1156,7 @@ production_factories:
       - Iron_XP_Bottle_1
       - Iron_XP_Bottle_2
       - Iron_XP_Bottle_3
-	  - Bastion_Smaragdus_Polisher
+      - Bastion_Smaragdus_Polisher
     repair_multiple: 20
     repair_inputs:
       Iron Ingot:
@@ -1739,7 +1739,7 @@ production_factories:
       - Craft_Trap_Doors
       - Craft_Item_Frames
       - Craft_Bookshelfs
-	  - Bastion_Framing
+      - Bastion_Framing
     repair_multiple: 10
     repair_inputs:
       Paper:
@@ -1772,7 +1772,7 @@ production_factories:
       - Smelt_Lapis_Lazuli_Ore
       - Smelt_Redstone_Ore
       - Smelt_Netherquartz_Ore
-	  - Bastion_Walls
+      - Bastion_Walls
     repair_multiple: 26
     repair_inputs:
       Lapis Lazuli:
@@ -1809,7 +1809,7 @@ production_factories:
       - Smelt_Iron_Ore
       - Smelt_Gold_Ore
       - Smelt_Diamond_Ore
-	  - Bastion_Base
+      - Bastion_Base
     repair_multiple: 10
     repair_inputs:
       Coal:
@@ -1841,7 +1841,7 @@ production_factories:
       - Smelt_Cracked_Stone_Brick
       - Smelt_Mossy_Stone_Brick
       - Smelt_Chiseled_Stone_Brick
-	  - Bastion_Flooring
+      - Bastion_Flooring
     repair_multiple: 26
     repair_inputs:
       Stone Brick:
@@ -1914,7 +1914,7 @@ production_factories:
     recipes:
       - Produce_TNT
       - Produce_Fire_Charges
-	  - Bastion_Silicon_Tetranitratobihydrotrioxycarbon
+      - Bastion_Silicon_Tetranitratobihydrotrioxycarbon
     repair_multiple: 10
     repair_inputs:
       Sulphur:
@@ -1941,7 +1941,7 @@ production_factories:
       - Forge_Buckets
       - Forge_Iron_Doors
       - Forge_Flint_And_Steel
-	  - Bastion_Gearbox
+      - Bastion_Gearbox
     repair_multiple: 10
     repair_inputs:
       IRON_INGOT:
@@ -2056,7 +2056,7 @@ production_factories:
       - Dye_Light_Blue_Stained_Glass_Pane
       - Dye_Red_Stained_Glass_Pane
       - Dye_Lime_Stained_Glass_Pane
-	  - Bastion_Objet_Dart
+	  _Objet_Dart
     repair_multiple: 2
     repair_inputs:
       Lapis Lazuli:
@@ -2351,7 +2351,7 @@ production_factories:
 	   display_name: Walls
 	   lore: An item used to create a Bastion Block
     recipes:
-      - Bastion_Block
+	   - Bastion_Block
     repair_multiple: 10
     repair_inputs:
 	  Pure Ice:
