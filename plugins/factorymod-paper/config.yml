@@ -6621,12 +6621,12 @@ production_recipes:
         material: LAPIS_ORE 
         amount: 8
 	  Cracked Stone Brick:
-	    material: SMOOTH_BRICK
+        material: SMOOTH_BRICK
         amount: 8
         durability: 2
 	outputs:
 	  Walls:
-	    material: INK_SACK
+        material: INK_SACK
         amount: 1
         durablity: 4
         display_name: Walls
@@ -6636,10 +6636,10 @@ production_recipes:
 	production_time: 2
 	inputs:
 	  Diamond Ore:
-	    material: DIAMOND_ORE
+        material: DIAMOND_ORE
         amount: 16
 	  Redstone Ore:
-	    material: REDSTONE ORE
+        material: REDSTONE ORE
         amount: 4
 	outputs:
 	  Base:
@@ -6652,10 +6652,10 @@ production_recipes:
 	production_time: 2
 	inputs:
 	  Iron Ingot:
-	    material: IRON_IGNOT
+        material: IRON_IGNOT
         amount: 4
 	  Gold Ore:
-	    material: GOLD_ORE
+        material: GOLD_ORE
         amount: 2
 	outputs:
 	  Gearbox:
@@ -6731,7 +6731,7 @@ production_recipes:
         amount: 1
         durability: 10
 	  Red Sand:
-	    material: SAND
+        material: SAND
         amount: 64
         durability: 1
 	outputs:
@@ -6743,10 +6743,10 @@ production_recipes:
   Bastion_Framing:
     inputs:
 	  Chest:
-	    material: CHEST
+        material: CHEST
         amount: 8
 	  Iron Ignot:
-	    material: IRON_IGNOT
+        material: IRON_IGNOT
         amount: 4
 	outputs:
 	  Framing:
