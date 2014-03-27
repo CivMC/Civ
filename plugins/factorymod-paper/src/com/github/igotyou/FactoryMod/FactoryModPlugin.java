@@ -12,6 +12,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
@@ -292,28 +293,35 @@ public class FactoryModPlugin extends JavaPlugin
 				{
 					int amount=configItem.getInt("amount",1);
 					short durability=(short)configItem.getInt("durability",0);
+					int repairCost=(short)configItem.getInt("repair_cost",0);
 					String displayName=configItem.getString("display_name");
 					String lore=configItem.getString("lore");
-					items.add(createItemStack(material,amount,durability,displayName,lore,commonName));
+					List<ProbabilisticEnchantment> compulsoryEnchantments = getEnchantments(configItem.getConfigurationSection("enchantments"));
+					items.add(createItemStack(material,amount,durability,displayName,lore,commonName,repairCost,compulsoryEnchantments));
 				}
 			}
 		}
 		return items;
 	}
 	
-	private NamedItemStack createItemStack(Material material,int stackSize,short durability,String name,String loreString,String commonName)
+	private NamedItemStack createItemStack(Material material,int stackSize,short durability,String name,String loreString,String commonName,int repairCost,List<ProbabilisticEnchantment> compulsoryEnchants)
 	{
 		NamedItemStack namedItemStack= new NamedItemStack(material, stackSize, durability,commonName);
-		if(name!=null||loreString!=null)
+		if(name!=null||loreString!=null||compulsoryEnchants.size()>0||repairCost > 0)
 		{
 			ItemMeta meta=namedItemStack.getItemMeta();
 			if (name!=null)
 				meta.setDisplayName(name);
+			if (meta instanceof Repairable && repairCost > 0)
+				((Repairable) meta).setRepairCost(repairCost);
 			if (loreString!=null)
 			{
 				List<String> lore = new ArrayList<String>();
 				lore.add(loreString);
 				meta.setLore(lore);
+			}
+			for (ProbabilisticEnchantment enchant : compulsoryEnchants) {
+				meta.addEnchant(enchant.getEnchantment(), enchant.getLevel(), false);
 			}
 			namedItemStack.setItemMeta(meta);
 		}

@@ -1895,6 +1895,68 @@ production_factories:
       Grass:
         material: GRASS
         amount: 5
+  Mad_Scientist_Lab:
+    name: Mad Scientist Lab
+    fuel:
+      Emeralds:
+        material: EMERALD
+    inputs:
+      Glass bottles:
+        material: GLASS_BOTTLE
+        amount: 512
+      Pig eggs:
+        material: MONSTER_EGG
+        durability: 90
+        amount: 16
+      Villager eggs:
+        material: MONSTER_EGG
+        durability: 120
+        amount: 16
+      Squid eggs:
+        material: MONSTER_EGG
+        durability: 94
+        amount: 16
+      Horse eggs:
+        material: MONSTER_EGG
+        durability: 100
+        amount: 16
+      Silk touch shears:
+        material: SILK_TOUCH
+        amount: 1
+        repair_cost: 2
+        enchantments:
+          Silk Touch 1:
+            type: SILK_TOUCH
+            level: 1
+    recipes:
+      - Mutate_Pigmen
+      - Infect_Zombies
+      - Mutate_Skeletons
+      - Mutate_Creepers
+      - Mutate_Witches
+      - Mutate_Spiders
+      - Mutate_Cave_Spiders
+    repair_multiple: 2
+    repair_inputs:
+      Glass_bottles:
+        material: GLASS_BOTTLE
+        amount: 32
+      Pig_eggs:
+        material: MONSTER_EGG
+        durability: 90
+        amount: 1
+      Villager_eggs:
+        material: MONSTER_EGG
+        durability: 120
+        amount: 1
+      Squid_eggs:
+        material: MONSTER_EGG
+        durability: 94
+        amount: 1
+      Horse_eggs:
+        material: MONSTER_EGG
+        durability: 100
+        amount: 1
   Explosives_Factory:
     name: Explosives Factory
     fuel:
@@ -6602,6 +6664,136 @@ production_recipes:
         material: DIRT
         amount: 64
         durability: 2
+  Mutate_Pigmen:
+    name: Mutate Pigmen
+    production_time: 4
+    inputs:
+      Pig eggs:
+        material: MONSTER_EGG
+        durability: 90
+        amount: 16
+      Villager eggs:
+        material: MONSTER_EGG
+        durability: 120
+        amount: 16
+    outputs:
+      Pigman eggs:
+        material: MONSTER_EGG
+        durability: 57
+        amount: 16
+  Infect_Zombies:
+    name: Infect Zombies
+    production_time: 4
+    inputs:
+      Villager eggs:
+        material: MONSTER_EGG
+        durability: 120
+        amount: 16
+      Rotten flesh:
+        material: ROTTEN_FLESH
+        amount: 512
+    outputs:
+      Zombie eggs:
+        material: MONSTER_EGG
+        durability: 54
+        amount: 8
+  Mutate_Skeletons:
+    name: Mutate Skeletons
+    production_time: 4
+    inputs:
+      Zombie eggs:
+        material: MONSTER_EGG
+        durability: 54
+        amount: 16
+      Bones:
+        material: BONE
+        amount: 256
+      Blaze powder:
+        material: BLAZE_POWDER
+        amount: 64
+    outputs:
+      Skeleton eggs:
+        material: MONSTER_EGG
+        durability: 51
+        amount: 8
+  Mutate_Creepers:
+    name: Mutate Creepers
+    production_time: 4
+    inputs:
+      Skeleton eggs:
+        material: MONSTER_EGG
+        durability: 51
+        amount: 16
+      Blaze powder:
+        material: BLAZE_POWDER
+        amount: 32
+      TNT:
+        material: TNT
+        amount: 16
+      Lime wool:
+        material: WOOL
+        durability: 5
+        amount: 32
+    outputs:
+      Creeper eggs:
+        material: MONSTER_EGG
+        durability: 50
+        amount: 8
+  Mutate_Witches:
+    name: Mutate Witches
+    production_time: 32
+    inputs:
+      Villager eggs:
+        material: MONSTER_EGG
+        durability: 120
+        amount: 16
+      Ghast tears:
+        material: GHAST_TEAR
+        amount: 16
+    outputs:
+      Witch eggs:
+        material: MONSTER_EGG
+        durability: 66
+        amount: 4
+  Mutate_Spiders:
+    name: Mutate Spiders
+    production_time: 16
+    inputs:
+      Squid eggs: # For the legs
+        material: MONSTER_EGG
+        durability: 94
+        amount: 16
+      Cow eggs: # For food
+        material: MONSTER_EGG
+        durability: 92
+        amount: 16
+      Spider eyes:
+        material: SPIDER_EYE
+        amount: 256
+    outputs:
+      Spider eggs:
+        material: MONSTER_EGG
+        durability: 52
+        amount: 4
+  Mutate_Cave_Spiders:
+    name: Mutate Cave Spiders
+    production_time: 16
+    inputs:
+      Spider eggs:
+        material: MONSTER_EGG
+        durability: 52
+        amount: 16
+      Poison potatoes:
+        material: POISONOUS_POTATO
+        amount: 128
+      Spider eyes:
+        material: SPIDER_EYE
+        amount: 256
+    outputs:
+      Cave spider eggs:
+        material: MONSTER_EGG
+        durability: 59
+        amount: 8
   Compact_Ice:
     name: Compact Ice
     production_time: 32

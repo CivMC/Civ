@@ -219,7 +219,7 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		for(ItemStack currentItemStack:inventory)
 		{
 			if(currentItemStack!=null)
-			{
+			{	
 				/*For some reason I can't fathom the orientaion of the comparison
 				 * of the two ItemStacks in the following statement matters.
 				 * It likely has to do with the fact that itemStack is a NamedItemStack
