@@ -6839,11 +6839,11 @@ production_recipes:
         amount: 1
         display_name: Base
         lore: An item used to create a Bastion Block
-  Bastion_Gearbox
+  Bastion_Gearbox:
     name: Gearbox
     production_time: 2
     inputs:
-      Iron Block:a
+      Iron Block:
         material: IRON_BLOCK
         amount: 4
       Gold Ore:
@@ -6855,7 +6855,7 @@ production_recipes:
         amount: 1
         display_name: Gearbox
         lore: An item used to create a Bastion Block
-  Bastion_Objet_Dart
+  Bastion_Objet_Dart:
     name: "Objet d'art"
     production_time: 2
     inputs:      
