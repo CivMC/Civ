@@ -2304,61 +2304,61 @@ production_factories:
         material: COAL
         durability: 1
     inputs:
-	  Silicon Tetranitratobihydrotrioxycarbon:
-	   material: FIREWORK_CHARGE
-	   amount: 1
-	   display_name: Silicon Tetranitratobihydrotrioxycarbon
-	   lore: An item used to create a Bastion Block
-	  Smaragdus:
-	   material: EMERALD
-	   amount: 1
-	   display_name: Smaragdus
-	   lore: An item used to create a Bastion Block
-	  Rations:
-	   material: MUSHROOM_SOUP
-	   amount: 1
-	   display_name: Rations
-	   lore: An item used to create a Bastion Block
-	  Flooring:
-	   material: CLAY_BRICK
-	   amount: 1
-	   display_name: Flooring
-	   lore: An item used to create a Bastion Block
-	  Framing:
-	   material: STICK
-	   amount: 1
-	   display_name: Framing
-	   lore: An item used to create a Bastion Block
-	  Object d'art:
-	   material: FLINT
-	   amount: 1
-	   display_name: Object d'art
-	   lore: An item used to create a Bastion Block
-	  Gearbox:
-	   material: WATCH
-	   amount: 1
-	   display_name: Gearbox
-	   lore: An item used to create a Bastion Block
-	  Base:
-	   material: IRON_INGOT
-	   amount: 1
-	   display_name: Base
-	   lore: An item used to create a Bastion Block
-	  Walls:
-	   material: INK_SACK
-	   amount: 1
-	   durablity: 4
-	   display_name: Walls
-	   lore: An item used to create a Bastion Block
+      Silicon Tetranitratobihydrotrioxycarbon:
+        material: FIREWORK_CHARGE
+        amount: 64
+        display_name: Silicon Tetranitratobihydrotrioxycarbon
+        lore: An item used to create a Bastion Block
+      Smaragdus:
+        material: EMERALD
+        amount: 64
+        display_name: Smaragdus
+        lore: An item used to create a Bastion Block
+      Flooring:
+        material: CLAY_BRICK
+        amount: 8
+        display_name: Flooring
+        lore: An item used to create a Bastion Block
+      Framing:
+        material: STICK
+        amount: 8
+        display_name: Framing
+        lore: An item used to create a Bastion Block
+      Gearbox:
+        material: WATCH
+        amount: 8
+        display_name: Gearbox
+        lore: An item used to create a Bastion Block
+      Base:
+        material: IRON_INGOT
+        amount: 8
+        display_name: Base
+        lore: An item used to create a Bastion Block
+      Walls:
+        material: INK_SACK
+        amount: 32
+        durablity: 4
+        display_name: Walls
+        lore: An item used to create a Bastion Block
     recipes:
-	   - Bastion_Block
-    repair_multiple: 10
+       - Bastion_Block
+    repair_multiple: 16
     repair_inputs:
-	  Pure Ice:
-	   material: QUARTZ
-	   amount: 1
-	   display_name: Pure Ice
-	   lore: An item used to repair the Bastion Factory
+      Pure Ice:
+        material: QUARTZ
+        amount: 1
+        display_name: Pure Ice
+        lore: An item used to repair the Bastion Factory
+      Silicon Tetranitratobihydrotrioxycarbon:
+        material: FIREWORK_CHARGE
+        amount: 1
+        display_name: Silicon Tetranitratobihydrotrioxycarbon
+        lore: An item used to create a Bastion Block
+      Smaragdus:
+        material: EMERALD
+        amount: 1
+        display_name: Smaragdus
+        lore: An item used to create a Bastion Block
 production_recipes:
   Wood_XP_Bottle_0:
     name: Brew XP Bottles  - 1
@@ -6616,32 +6616,32 @@ production_recipes:
   Bastion_Walls:
     name: Walls
     production_time: 2
-	inputs:
+    inputs:
       Lapis Ore:
         material: LAPIS_ORE 
         amount: 8
       Cracked Stone Brick:
         material: SMOOTH_BRICK
-        amount: 8
+        amount: 32
         durability: 2
-	outputs:
+    outputs:
       Walls:
         material: INK_SACK
-        amount: 1
+        amount: 4
         durablity: 4
         display_name: Walls
         lore: An item used to create a Bastion Block
   Bastion_Base:
     name: Base
     production_time: 2
-	inputs:
+    inputs:
       Diamond Ore:
         material: DIAMOND_ORE
         amount: 16
       Redstone Ore:
         material: REDSTONE ORE
-        amount: 4
-	outputs:
+        amount: 32
+    outputs:
       Base:
         material: IRON_INGOT
         amount: 1
@@ -6650,103 +6650,103 @@ production_recipes:
   Bastion_Gearbox
     name: Gearbox
     production_time: 2
-	inputs:
-      Iron Ingot:
-        material: IRON_IGNOT
+    inputs:
+      Iron Block:a
+        material: IRON_BLOCK
         amount: 4
       Gold Ore:
         material: GOLD_ORE
-        amount: 2
-	outputs:
+        amount: 8
+    outputs:
       Gearbox:
         material: WATCH
         amount: 1
         display_name: Gearbox
         lore: An item used to create a Bastion Block
-  Bastion_Object_Dart
-    name: Object d'art
+  Bastion_Objet_Dart
+    name: "Objet d'art"
     production_time: 2
-	inputs:      
-	  Lapis Lazuli:
+    inputs:      
+      Lapis Lazuli:
         material: INK_SACK
-        amount: 1
+        amount: 16
         durability: 4
       Gray Dye:
         material: INK_SACK
-        amount: 1
+        amount: 16
         durability: 8
       Cocoa:
         material: INK_SACK
-        amount: 1
+        amount: 16
         durability: 3
       Purple Dye:
         material: INK_SACK
-        amount: 1
+        amount: 16
         durability: 5
       Dandelion Yellow:
         material: INK_SACK
-        amount: 1
+        amount: 16
         durability: 11
       Ink Sack:
         material: INK_SACK
-        amount: 1
+        amount: 16
       Magenta Dye:
         material: INK_SACK
-        amount: 1
+        amount: 16
         durability: 13
       Pink Dye:
         material: INK_SACK
-        amount: 1
+        amount: 16
         durability: 9
       Cyan Dye:
         material: INK_SACK
-        amount: 1
+        amount: 16
         durability: 6
       Orange Dye:
         material: INK_SACK
-        amount: 1
+        amount: 16
         durability: 14
       Cactus Green:
         material: INK_SACK
-        amount: 1
+        amount: 16
         durability: 2
       Bone Meal:
         material: INK_SACK
-        amount: 1
+        amount: 16
         durability: 15
       Light Gray Dye:
         material: INK_SACK
-        amount: 1
+        amount: 16
         durability: 7
       Light Blue Dye:
         material: INK_SACK
-        amount: 1
+        amount: 16
         durability: 12
       Rose Red:
         material: INK_SACK
-        amount: 1
+        amount: 16
         durability: 1
       Lime Dye:
         material: INK_SACK
-        amount: 1
+        amount: 16
         durability: 10
       Red Sand:
         material: SAND
-        amount: 64
+        amount: 256
         durability: 1
     outputs:
-      Object d'art:
+      "Objet d'art":
         material: FLINT
         amount: 1
-        display_name: Object d'art
+        display_name: "Objet d'art"
         lore: An item used to create a Bastion Block
   Bastion_Framing:
     inputs:
       Chest:
         material: CHEST
-        amount: 8
-      Iron Ignot:
-        material: IRON_IGNOT
+        amount: 64
+      Iron Block:
+        material: IRON_BLOCK
         amount: 4
     outputs:
       Framing:
@@ -6757,11 +6757,11 @@ production_recipes:
   Bastion_Flooring:
     inputs:
       Clay Ball:
-        material: CALL_BALL
-        amount: 4
+        material: CLAY_BALL
+        amount: 32
       Nether Brick:
         material: NETHER_BRICK
-        amount: 64        
+        amount: 64
     outputs:
       Flooring:
         material: CLAY_BRICK
@@ -6772,25 +6772,26 @@ production_recipes:
     inputs:
       Wheat:
         meterial: WHEAT
-        amount: 32
+        amount: 256
       Bowl:
         meterial: BOWL
-        amount: 4
+        amount: 32
     outputs:
       Rations:
         material: MUSHROOM_SOUP
-        amount: 1
+        amount: 32
         display_name: Rations
         lore: An item used to create a Bastion Block
   Bastion_Smaragdus_Polisher:
+    production_time: 32
     inputs:
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 1
+        amount: 16
     outputs:
       Smaragdus:
         material: EMERALD
-        amount: 1
+        amount: 16
         display_name: Smaragdus
         lore: An item used to create a Bastion Block
   Bastion_Silicon_Tetranitratobihydrotrioxycarbon:
@@ -6814,38 +6815,38 @@ production_recipes:
     outputs:
       Silicon Tetranitratobihydrotrioxycarbon:
         material: FIREWORK_CHARGE
-        amount: 1
+        amount: 8
         display_name: Silicon Tetranitratobihydrotrioxycarbon
         lore: An item used to create a Bastion Block
   Bastion_Pure_Ice:
     inputs:
       Compact Ice:
         material: COMPACT_ICE
-        amount: 64
+        amount: 512
       Leather:
         material: LEATHER
-        amount: 4
+        amount: 32
     outputs:
       Pure Ice:
         material: QUARTZ
-        amount: 1
+        amount: 8
         display_name: Pure Ice
         lore: An item used to repair the Bastion Factory
   Bastion_Factory:
     inputs:
       Silicon Tetranitratobihydrotrioxycarbon:
         material: FIREWORK_CHARGE
-        amount: 1
+        amount: 16
         display_name: Silicon Tetranitratobihydrotrioxycarbon
        lore: An item used to create a Bastion Block
       Smaragdus:
         material: EMERALD
-        amount: 1
+        amount: 2
         display_name: Smaragdus
         lore: An item used to create a Bastion Block
       Rations:
         material: MUSHROOM_SOUP
-        amount: 1
+        amount: 16
         display_name: Rations
         lore: An item used to create a Bastion Block
       Flooring:
@@ -6858,10 +6859,10 @@ production_recipes:
         amount: 1
         display_name: Framing
         lore: An item used to create a Bastion Block
-      Object d'art:
+      "Objet d'art":
         material: FLINT
         amount: 1
-        display_name: Object d'art
+        display_name: "Objet d'art"
         lore: An item used to create a Bastion Block
       Gearbox:
         material: WATCH
@@ -6875,12 +6876,12 @@ production_recipes:
         lore: An item used to create a Bastion Block
       Walls:
         material: INK_SACK
-        amount: 1
+        amount: 4
         durablity: 4
         display_name: Walls
         lore: An item used to create a Bastion Block
     outputs:
       Sponge:
         material: SPONGE
-        amount: 64     
-	   
+        amount: 32
+       
