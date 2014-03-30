@@ -1921,7 +1921,7 @@ production_factories:
         durability: 100
         amount: 16
       Silk touch shears:
-        material: SILK_TOUCH
+        material: SHEARS
         amount: 1
         repair_cost: 2
         enchantments:
