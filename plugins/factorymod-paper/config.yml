@@ -2006,7 +2006,7 @@ production_factories:
       - Bastion_Gearbox
     repair_multiple: 10
     repair_inputs:
-      Iron Ignot:
+      Iron Ingot:
         material: IRON_INGOT
         amount: 12
   Stained_Glass_Processing:
