@@ -40,6 +40,24 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	public BlockGrower blockGrower;
 	public PersistConfig persistConfig;
 	private PlantManager plantManager;
+
+	private static HashMap<TreeType, TreeType> treeTypeMap;
+	
+	static {
+		treeTypeMap = new HashMap<TreeType, TreeType>();
+		
+		treeTypeMap.put(TreeType.BIG_TREE, TreeType.TREE);
+		treeTypeMap.put(TreeType.BIRCH, TreeType.BIRCH);
+		treeTypeMap.put(TreeType.BROWN_MUSHROOM, TreeType.BROWN_MUSHROOM);
+		treeTypeMap.put(TreeType.JUNGLE, TreeType.JUNGLE);
+		treeTypeMap.put(TreeType.JUNGLE_BUSH, TreeType.JUNGLE);
+		treeTypeMap.put(TreeType.RED_MUSHROOM, TreeType.RED_MUSHROOM);
+		treeTypeMap.put(TreeType.REDWOOD, TreeType.REDWOOD);
+		treeTypeMap.put(TreeType.SMALL_JUNGLE, TreeType.JUNGLE);
+		treeTypeMap.put(TreeType.SWAMP, TreeType.TREE);
+		treeTypeMap.put(TreeType.TALL_REDWOOD, TreeType.REDWOOD);
+		treeTypeMap.put(TreeType.TREE, TreeType.TREE);
+	}
 	
 	public void onEnable() {		
 		
@@ -341,7 +359,7 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	private void registerEvents() {
 		try {
 			PluginManager pm = getServer().getPluginManager();
-			pm.registerEvents(new GrowListener(this, materialGrowth), this);
+			pm.registerEvents(new GrowListener(this), this);
 			pm.registerEvents(new SpawnListener(materialGrowth, fishDrops), this);
 			pm.registerEvents(new PlayerListener(this, materialGrowth), this);
 		}
@@ -349,10 +367,6 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		{
 			LOG.severe("caught an exception while attempting to register events with the PluginManager: " + e);
 		}
-	}
-
-	public HashMap<Object, GrowthConfig> getGrowthConfigs() {
-		return materialGrowth;
 	}
 	
 	public BlockGrower getBlockGrower() {
@@ -363,7 +377,8 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	
 	// grow the specified block, return the new growth magnitude
 	// gets called when the user hits a block manually!!
-	public double growAndPersistBlock(Block block, GrowthConfig growthConfig, boolean naturalGrowEvent) {
+	public double growAndPersistBlock(Block block, boolean naturalGrowEvent) {
+		GrowthConfig growthConfig = getGrowthConfig(block);
 		
 		RealisticBiomes.doLog(Level.FINER, "RealisticBiomes:growAndPersistBlock() called for block: " + block + " and is naturalGrowEvent? " + naturalGrowEvent);
 		if (!persistConfig.enabled)
@@ -411,5 +426,27 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	
 	public PlantManager getPlantManager() {
 		return plantManager;
+	}
+
+	public static HashMap<TreeType, TreeType> getTreeTypes() {
+		return treeTypeMap;
+	}
+	
+	public GrowthConfig getGrowthConfig(TreeType species) {
+		return materialGrowth.get(treeTypeMap.get(species));
+	}
+	
+	public GrowthConfig getGrowthConfig(Block block) {
+		Material m = block.getType();
+		return materialGrowth.get(m);
+	}
+	
+	public boolean hasGrowthConfig(Block block) {
+		Material m = block.getType();
+		return materialGrowth.containsKey(m);
+	}
+	
+	public boolean hasGrowthConfig(TreeType species) {
+		return materialGrowth.containsKey(treeTypeMap.get(species));
 	}
 }
