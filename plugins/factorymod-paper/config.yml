@@ -7083,4 +7083,4 @@ production_recipes:
       Bastion:
         material: SPONGE
         amount: 32
-        display name: Bastion
+        display_name: Bastion
