@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.World;
@@ -108,6 +109,10 @@ public class PlantChunk {
 		}
 		return plants.get(coords);
 	}
+	
+	public synchronized Set<Coords> getPlantCoords() {
+		return plants.keySet();
+	}
 
 	/**
 	 * Loads the plants from the database into this PlantChunk object.
@@ -159,8 +164,7 @@ public class PlantChunk {
 
 				// if the plant does not correspond to an actual crop, don't
 				// load it
-				if (!plugin.getGrowthConfigs().containsKey(
-						world.getBlockAt(x, y, z).getType())) {
+				if (plugin.getGrowthConfig(world.getBlockAt(x, y, z)) == null) {
 					RealisticBiomes.doLog(Level.FINER, "Plantchunk.load(): plant we got from db doesn't correspond to an actual crop, not loading");
 					continue;
 				}
@@ -171,8 +175,7 @@ public class PlantChunk {
 				// RealisticBiomes.growAndPersistBlock()
 				// grow the block
 				Block block = world.getBlockAt(x, y, z);
-				GrowthConfig growthConfig = plugin.getGrowthConfigs().get(
-						block.getType());
+				GrowthConfig growthConfig = plugin.getGrowthConfig(block);
 				if (growthConfig.isPersistent()) {
 					double growthAmount = growthConfig.getRate(block)
 							* plant.setUpdateTime(System.currentTimeMillis() / 1000L);

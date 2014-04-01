@@ -40,33 +40,12 @@ import com.untamedears.realisticbiomes.persist.WorldID;
  */
 public class GrowListener implements Listener {
 	public static Logger LOG = Logger.getLogger("RealisticBiomes");
-	
-	private static HashMap<TreeType, TreeType> treeTypeMap;
-	
-	static {
-		treeTypeMap = new HashMap<TreeType, TreeType>();
-		
-		treeTypeMap.put(TreeType.BIG_TREE, TreeType.TREE);
-		treeTypeMap.put(TreeType.BIRCH, TreeType.BIRCH);
-		treeTypeMap.put(TreeType.BROWN_MUSHROOM, TreeType.BROWN_MUSHROOM);
-		treeTypeMap.put(TreeType.JUNGLE, TreeType.JUNGLE);
-		treeTypeMap.put(TreeType.JUNGLE_BUSH, TreeType.JUNGLE);
-		treeTypeMap.put(TreeType.RED_MUSHROOM, TreeType.RED_MUSHROOM);
-		treeTypeMap.put(TreeType.REDWOOD, TreeType.REDWOOD);
-		treeTypeMap.put(TreeType.SMALL_JUNGLE, TreeType.JUNGLE);
-		treeTypeMap.put(TreeType.SWAMP, TreeType.TREE);
-		treeTypeMap.put(TreeType.TALL_REDWOOD, TreeType.REDWOOD);
-		treeTypeMap.put(TreeType.TREE, TreeType.TREE);
-	}
-	
-	private HashMap<Object, GrowthConfig> growthMap;
 	RealisticBiomes plugin;
 	
-	public GrowListener(RealisticBiomes plugin, HashMap<Object, GrowthConfig> growthMap) {
+	public GrowListener(RealisticBiomes plugin) {
 		super();
 		
 		this.plugin = plugin;
-		this.growthMap = growthMap;
 	}
 
 	/**
@@ -77,15 +56,15 @@ public class GrowListener implements Listener {
 	public void onBlockGrow(BlockGrowEvent event) {
 		Material m = event.getNewState().getType();
 		Block b = event.getBlock();
-		GrowthConfig growthConfig = growthMap.get(m);
 		
+		GrowthConfig growthConfig = plugin.getGrowthConfig(b);
 		if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
-			plugin.growAndPersistBlock(b, growthConfig, true);
+			plugin.growAndPersistBlock(b, true);
 			
 			event.setCancelled(true);
 		}
 		else {
-			event.setCancelled(!willGrow(m, b));
+			event.setCancelled(!willGrow(b));
 		}
 	}
 
@@ -103,11 +82,6 @@ public class GrowListener implements Listener {
 		
 		TreeType t = event.getSpecies();
 		
-		// map the tree type down to a smaller set of tree types
-		// representing the types of saplings
-		if (treeTypeMap.containsKey(t))
-			t = treeTypeMap.get(t);
-		
 		Block b = event.getLocation().getBlock();
 		event.setCancelled(!willGrow(t, b));
 	}
@@ -124,7 +98,7 @@ public class GrowListener implements Listener {
             // Ink Sack with data 15  == Bone Meal
             if (item.getTypeId() == 351 && item.getData().getData() == 15) {
             	Material material = event.getClickedBlock().getType();
-    			if (material != Material.SAPLING && growthMap.containsKey(material)) {
+    			if (material != Material.SAPLING && plugin.hasGrowthConfig(event.getClickedBlock())) {
         			event.setCancelled(true);
     			}
             }
@@ -186,9 +160,24 @@ public class GrowListener implements Listener {
 	 * @param b The block that the plant is on
 	 * @return Whether the plant will grow this tick
 	 */
-	private boolean willGrow(Object m, Block b) {
-		if(growthMap.containsKey(m)) {
-			boolean willGrow = Math.random() < growthMap.get(m).getRate(b);
+	private boolean willGrow(Block b) {
+		if(plugin.hasGrowthConfig(b)) {
+			boolean willGrow = Math.random() < plugin.getGrowthConfig(b).getRate(b);
+			return willGrow;
+		}
+		return true;
+	}
+	
+
+	/**
+	 * Determines if a plant {@link Material | @link TreeType} will grow, given the current conditions
+	 * @param m The material type of the plant
+	 * @param b The block that the plant is on
+	 * @return Whether the plant will grow this tick
+	 */
+	private boolean willGrow(TreeType m, Block b) {
+		if(plugin.hasGrowthConfig(m)) {
+			boolean willGrow = Math.random() < plugin.getGrowthConfig(m).getRate(b);
 			return willGrow;
 		}
 		return true;
@@ -204,7 +193,11 @@ public class GrowListener implements Listener {
 		Chunk chunk = e.getChunk();
 		int w = WorldID.getPID(e.getChunk().getWorld().getUID());
 		Coords coords = new Coords(w, chunk.getX(), 0, chunk.getZ());
-		plugin.getPlantManager().loadChunk(coords);
+		if (plugin.getPlantManager().chunkLoaded(coords)) {
+			plugin.getPlantManager().growChunk(coords);
+		} else {
+			plugin.getPlantManager().loadChunk(coords);
+		}
 		
 		// TESTING
 		//this.plugin.getLogger().info("ChunkLoaded: " + coords);
@@ -234,7 +227,7 @@ public class GrowListener implements Listener {
 		
 		// if the block placed was a recognized crop, register it with the manager
 		Block block = event.getBlockPlaced();
-		GrowthConfig growthConfig = growthMap.get(block.getType());
+		GrowthConfig growthConfig = plugin.getGrowthConfig(block);
 		if (growthConfig == null)
 			return;	
 		

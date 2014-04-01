@@ -19,11 +19,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
+import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.PersistConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 
@@ -507,6 +510,25 @@ public class PlantManager {
 	public boolean chunkLoaded(Coords coords) {
 		Coords chunkCoords = new Coords(coords.w, coords.x/16, 0, coords.z/16);
 		return (chunks.containsKey(chunkCoords) && chunks.get(chunkCoords).isLoaded());
+	}
+	
+	public void growChunk(Coords coords) {
+		
+		
+		if (!chunkLoaded(coords)) {
+			loadChunk(coords);
+		}
+		
+		PlantChunk chunk = chunks.get(coords);
+		if (chunk.isLoaded()) {
+			for (Coords position : chunk.getPlantCoords()) {
+				Block block = plugin.getServer().getWorld(WorldID.getMCID(position.w)).getBlockAt(position.x, position.y, position.z);
+				
+				plugin.growAndPersistBlock(block, false);
+			}
+		} else {
+			// Still loading - ignore
+		}
 	}
 	
 	public void remove(Coords coords) {
