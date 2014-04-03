@@ -258,7 +258,7 @@ realistic_biomes:
    max_soil_layers: 0
    biomes:
     hot_rainy: 1.0
-	
+  
   ACACIA:
    inherit: tree
    biomes:
