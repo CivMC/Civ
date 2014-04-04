@@ -1,35 +1,25 @@
 realistic_biomes:
- database_name: "bukkit"
+ database_name: "tekkit"
  database_host: "localhost"
  database_port: 3306
- database_user: "bukkit"
+ database_user: "tekkit"
  database_password: ""
  database_prefix: "rb"
 
+ cache_entire_database: true
  persistence_enabled: true
 
- minLogLevel: "INFO"
- 
- # whether to attempt to cache the entire database into RAM and not do the delayed
- # loading behavior. Default false
- cache_entire_database: true
-
-
-
  unload_batch_period: 100
- grow_event_load_chance: 0.5
+ grow_event_load_chance: 0.1
 
  unload_batch_max_time: 20
 
- log_db: true
-
- # overrides log_db if set to true
- # this will read the log_db_production_chunk_load_mintime / log_db_production_chunk_unload_mintime
- # variable and will only log chunk unload/load times that go over the configured amount
- # the times are specified in milliseconds
+ log_db: false
+ minLogLevel: "INFO"
  log_db_production: true
  log_db_production_chunk_load_mintime: 5
  log_db_production_chunk_unload_mintime: 5
+
 
  # catagories of biomes
  biome_aliases:
@@ -49,7 +39,6 @@ realistic_biomes:
  # valid crop names can be any of the following:
  #  any of the bukkit.Material enum names    -- crops
  #  any of the bukkit.TreeType enum names    -- trees
- #   TREE, REDWOOD, BIRCH, JUNGLE, RED_MUSHROOM, BROWN_MUSHROOM
  #  any of the bukkit.EntityType enum names  -- animals
  # any other name will have no effect except for inheritance
  # names with capital letters will be assumed to be official bukkit names
@@ -68,7 +57,7 @@ realistic_biomes:
    greenhouse_ignore_biome: true
    # if this flag is true, the growth rate of the grower is modulated by sunlight levels
    # ie sunlight level = 15 means full growth, while sunlight level 0 means 0 growth
-   # sunlight levcael is disregarded is this flag is false
+   # sunlight level is disregarded is this flag is false
    needs_sunlight: true
    # multiplier that is applied to plants that are not at level 15 sunlight
    not_full_sunlight_multiplier: 0.25
@@ -103,7 +92,6 @@ realistic_biomes:
     cold: 0.25
     hot_dry: 0.25
     mountain: 0.25
-    mushroom: 0.25
 
   CARROT:
    inherit: crop
@@ -128,7 +116,7 @@ realistic_biomes:
 
   NETHER_WARTS:
    base_rate: 0.015
-   persistent_growth_period: 1
+   persistent_growth_period: 16
    needs_sunlight: false
    not_full_sunlight_multiplier: 2.0
    soil_material: SOUL_SAND
@@ -206,7 +194,7 @@ realistic_biomes:
    needs_sunlight: true
    base_rate: 0.1
    not_full_sunlight_multiplier: 0.2
-   #persistent_growth_period: 40
+   #persistent_growth_period: 24
    # get incremental bonus from an unbroken chain of up to 25 
    # vines starting directly below the cocoa pod
    soil_material: VINE
@@ -220,7 +208,7 @@ realistic_biomes:
   #----------------------------------------
 
   tree:
-   base_rate: 0.08
+   base_rate: 0.04
    needs_sunlight: true
    not_full_sunlight_multiplier: 0.125
    max_soil_layers: 0
@@ -228,18 +216,29 @@ realistic_biomes:
     mushroom: 0.5
     freshwater: 0.5
 
+  BIG_TREE:
+   inherit: tree
+   biomes:
+    forest: 2.0
   BIRCH:
    inherit: tree
    biomes:
     forest: 2.0
     PLAINS: 0.25
-
   REDWOOD:
    inherit: tree
    biomes:
     cold_forest: 2.0
     mountain: 0.75
-
+  SWAMP:
+   inherit: tree
+   biomes:
+    SWAMPLAND: 1.0
+  TALL_REDWOOD:
+   inherit: tree
+   biomes:
+    cold_forest: 2.0
+    mountain: 0.5
   TREE:
    inherit: tree
    biomes:
@@ -247,18 +246,22 @@ realistic_biomes:
     PLAINS: 0.25
     hot_rainy: 0.5
     SKY: 0.25
-    SWAMPLAND: 0.5
 
   #......................
 
-  JUNGLE:
+  jungle_tree:
    base_rate: 0.01
    needs_sunlight: true
    not_full_sunlight_multiplier: 0.125
    max_soil_layers: 0
    biomes:
     hot_rainy: 1.0
-  
+  JUNGLE:
+   inherit: jungle_tree
+  JUNGLE_BUSH:
+   inherit: jungle_tree
+  SMALL_JUNGLE:
+   inherit: jungle_tree
   ACACIA:
    inherit: tree
    biomes:
