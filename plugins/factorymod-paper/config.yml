@@ -6844,7 +6844,7 @@ production_recipes:
     name: Gearbox
     production_time: 2
     inputs:
-      Iron Block:a
+      Iron Block:
         material: IRON_BLOCK
         amount: 4
       Gold Ore:
