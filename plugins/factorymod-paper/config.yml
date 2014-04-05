@@ -7038,7 +7038,7 @@ production_recipes:
         material: FIREWORK_CHARGE
         amount: 16
         display_name: Silicon Tetranitratobihydrotrioxycarbon
-       lore: An item used to create a Bastion Block
+        lore: An item used to create a Bastion Block
       Smaragdus:
         material: EMERALD
         amount: 2
@@ -7077,7 +7077,7 @@ production_recipes:
       Walls:
         material: INK_SACK
         amount: 4
-        durablity: 4
+        durability: 4
         display_name: Walls
         lore: An item used to create a Bastion Block
     outputs:
