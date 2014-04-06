@@ -2009,6 +2009,148 @@ production_factories:
       IRON_INGOT:
         material: IRON_INGOT
         amount: 12
+  Stained_Clay_Processing:
+    name: Stained Clay Processing
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Lapis Lazuli:
+        material: INK_SACK
+        amount: 20
+        durability: 4
+      Gray Dye:
+        material: INK_SACK
+        amount: 20
+        durability: 8
+      Cocoa:
+        material: INK_SACK
+        amount: 20
+        durability: 3
+      Purple Dye:
+        material: INK_SACK
+        amount: 20
+        durability: 5
+      Dandelion Yellow:
+        material: INK_SACK
+        amount: 20
+        durability: 11
+      Ink Sack:
+        material: INK_SACK
+        amount: 20
+      Magenta Dye:
+        material: INK_SACK
+        amount: 20
+        durability: 13
+      Pink Dye:
+        material: INK_SACK
+        amount: 20
+        durability: 9
+      Cyan Dye:
+        material: INK_SACK
+        amount: 20
+        durability: 6
+      Orange Dye:
+        material: INK_SACK
+        amount: 20
+        durability: 14
+      Cactus Green:
+        material: INK_SACK
+        amount: 20
+        durability: 2
+      Bone Meal:
+        material: INK_SACK
+        amount: 20
+        durability: 15
+      Light Gray Dye:
+        material: INK_SACK
+        amount: 20
+        durability: 7
+      Light Blue Dye:
+        material: INK_SACK
+        amount: 20
+        durability: 12
+      Rose Red:
+        material: INK_SACK
+        amount: 20
+        durability: 1
+      Lime Dye:
+        material: INK_SACK
+        amount: 20
+        durability: 10
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 20
+        durability: 7
+    recipes:
+      - Dye_Blue_Stained_Clay
+      - Dye_Brown_Stained_Clay
+      - Dye_Purple_Stained_Clay
+      - Dye_Yellow_Stained_Clay
+      - Dye_Black_Stained_Clay
+      - Dye_Magenta_Stained_Clay
+      - Dye_Pink_Stained_Clay
+      - Dye_Cyan_Stained_Clay
+      - Dye_Orange_Stained_Clay
+      - Dye_Green_Stained_Clay
+      - Dye_White_Stained_Clay
+      - Dye_Light_Gray_Stained_Clay
+      - Dye_Light_Blue_Stained_Clay
+      - Dye_Red_Stained_Clay
+      - Dye_Lime_Stained_Clay
+    repair_multiple: 2
+    repair_inputs:
+      Lapis Lazuli:
+        material: INK_SACK
+        durability: 4
+      Gray Dye:
+        material: INK_SACK
+        durability: 8
+      Cocoa:
+        material: INK_SACK
+        durability: 3
+      Purple Dye:
+        material: INK_SACK
+        durability: 5
+      Dandelion Yellow:
+        material: INK_SACK
+        durability: 11
+      Ink Sack:
+        material: INK_SACK
+      Magenta Dye:
+        material: INK_SACK
+        durability: 13
+      Pink Dye:
+        material: INK_SACK
+        durability: 9
+      Cyan Dye:
+        material: INK_SACK
+        durability: 6
+      Orange Dye:
+        material: INK_SACK
+        durability: 14
+      Cactus Green:
+        material: INK_SACK
+        durability: 2
+      Bone Meal:
+        material: INK_SACK
+        durability: 15
+      Light Gray Dye:
+        material: INK_SACK
+        durability: 7
+      Light Blue Dye:
+        material: INK_SACK
+        durability: 12
+      Rose Red:
+        material: INK_SACK
+        durability: 1
+      Lime Dye:
+        material: INK_SACK
+        durability: 10
+      Hardened Clay:
+        material: HARD_CLAY
+        durability: 7
   Stained_Glass_Processing:
     name: Stained Glass Processing
     fuel:
