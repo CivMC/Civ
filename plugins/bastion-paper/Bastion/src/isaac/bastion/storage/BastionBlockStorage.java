@@ -16,7 +16,8 @@ import org.bukkit.World;
 public class BastionBlockStorage {
 	private Database db;
 	private String bationBlocksTable;
-	private PreparedStatement getAllBastionsForWorld; 
+	private PreparedStatement getAllBastionsForWorld;
+	private PreparedStatement saveBastion;
 	public BastionBlockStorage(){
 		ConfigManager config=Bastion.getConfigManager();
 		db=new Database(config.getHost(), config.getPort(), config.getDatabase(),config.getUsername(),config.getPassword(),config.getPrefix(), Bastion.getPlugin().getLogger());
@@ -24,7 +25,8 @@ public class BastionBlockStorage {
 		db.connect();
 		if (db.isConnected()) {
 			createTables();
-			getAllBastionsForWorld=db.prepareStatement("SELECT * FROM "+bationBlocksTable+" WHERE loc_world=?;");
+			getAllBastionsForWorld = db.prepareStatement("SELECT * FROM "+bationBlocksTable+" WHERE loc_world=?;");
+			saveBastion            = db.prepareStatement("INSERT INTO "+bationBlocksTable+" VALUES(?,?,?,?,?,?,?);");
 		}
 	}
 	public void createTables(){
@@ -59,6 +61,19 @@ public class BastionBlockStorage {
 					+block.getPlaced()+","
 					+block.getBalance()
 					+");";
+			try {
+				saveBastion.setInt   (1, block.getID());
+				saveBastion.setInt   (2, block.getLocation().getBlockX());
+				saveBastion.setInt   (3, block.getLocation().getBlockY());
+				saveBastion.setInt   (4, block.getLocation().getBlockZ());
+				saveBastion.setString(5, block.getLocation().getWorld().getName());
+				saveBastion.setLong  (6, block.getPlaced());
+				saveBastion.setDouble(7, block.getBalance());
+				saveBastion.execute();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			db.execute(toExicute);
 		}
 	}

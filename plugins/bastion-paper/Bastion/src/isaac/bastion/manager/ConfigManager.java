@@ -22,6 +22,8 @@ public class ConfigManager {
 	private String username;
 	private String password;
 	
+	private String meta;
+	
 	private Material bastionBlockMaterial;
 	private int bastionBlockEffectRadius;
 	private double bastionBlockScaleFacStart;
@@ -115,6 +117,11 @@ public class ConfigManager {
 	public Material getBastionBlockMaterial(){
 		return bastionBlockMaterial;
 	}
+	
+	public String getNeededMeta(){
+		return meta;
+	}
+	
 	public int getBastionBlockEffectRadius(){
 		return bastionBlockEffectRadius;
 	}

@@ -513,15 +513,16 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 
 		if(thisX<otherX)
 			return -1;
-		if(thisY<otherY)
-			return -1;
-		if(thisZ<otherZ)
-			return -1;
-
 		if(thisX>otherX)
 			return 1;
+		
+		if(thisY<otherY)
+			return -1;
 		if(thisY>otherY)
 			return 1;
+		
+		if(thisZ<otherZ)
+			return -1;
 		if(thisZ>otherZ)
 			return 1;
 

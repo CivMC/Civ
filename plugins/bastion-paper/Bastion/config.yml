@@ -8,6 +8,7 @@ mysql:
   savesPerDay: 192
 BastionBlock:
   material: DIAMOND_BLOCK
+  meta: NULL
   effectRadius: 5
   startScaleFactor: 100
   finalScaleFactor: 0.5
