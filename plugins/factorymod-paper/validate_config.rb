@@ -1,7 +1,15 @@
 require 'yaml'
 
-data = YAML.load(STDIN.read)
 ok = true
+
+raw = STDIN.read
+
+if raw[/\t/]
+  ok = false
+  puts "Contains tabs"
+end
+
+data = YAML.load(raw)
 
 factories = data['production_factories']
 recipes = data['production_recipes']
