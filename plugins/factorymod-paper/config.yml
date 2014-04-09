@@ -7036,6 +7036,7 @@ production_recipes:
       Ink Sack:
         material: INK_SACK
         amount: 16
+        durability: 0
       Magenta Dye:
         material: INK_SACK
         amount: 16
