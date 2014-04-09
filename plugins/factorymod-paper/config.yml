@@ -6750,7 +6750,7 @@ production_recipes:
         material: SAPLING
         amount: 64
     outputs:
-      Spruce Sapling:
+      Birch Sapling:
         material: SAPLING
         amount: 64
         durability: 2
@@ -6762,7 +6762,7 @@ production_recipes:
         material: SAPLING
         amount: 64
     outputs:
-      Spruce Sapling:
+      Jungle Sapling:
         material: SAPLING
         amount: 64
         durability: 3
@@ -6774,7 +6774,7 @@ production_recipes:
         material: SAPLING
         amount: 64
     outputs:
-      Spruce Sapling:
+      Acacia Sapling:
         material: SAPLING
         amount: 64
         durability: 4
@@ -6786,7 +6786,7 @@ production_recipes:
         material: SAPLING
         amount: 64
     outputs:
-      Spruce Sapling:
+      Dark Oak Sapling:
         material: SAPLING
         amount: 64
         durability: 5
