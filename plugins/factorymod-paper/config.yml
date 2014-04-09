@@ -4321,6 +4321,13 @@ production_recipes:
       Milk Bucket:
         material: MILK_BUCKET
         amount: 18
+    outputs:
+      Cake:
+        material: CAKE
+        amount: 24
+      Bucket:
+        material: BUCKET
+        amount: 18
   Bake_Pumpkin_Pie:
     name: Bake Pumpkin Pie
     production_time: 24
