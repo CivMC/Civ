@@ -530,6 +530,7 @@ production_factories:
       - Smelt_Jungle_Wood
       - Burn_Acacia_Wood
       - Burn_Dark_Oak_Wood
+      - Smelt_Coal
     repair_multiple: 60
     repair_inputs:
       Charcoal:
@@ -1611,7 +1612,7 @@ production_factories:
      Golden Apple:
        material: GOLDEN_APPLE
        amount: 64
-     Slime_ball:
+     Slime ball:
        material: SLIME_BALL
        amount: 16
    recipes:
@@ -1684,7 +1685,7 @@ production_factories:
       Glowstone:
         material: GLOWSTONE
         amount: 256
-      Iron_Ingot:
+      Iron Ingot:
         material: IRON_INGOT
         amount: 576
       Slime ball:
@@ -1709,7 +1710,7 @@ production_factories:
       Glowstone:
         material: GLOWSTONE
         amount: 2
-      Iron_Ingot:
+      Iron Ingot:
         material: IRON_INGOT
         amount: 6
       Slime ball:
@@ -1941,19 +1942,19 @@ production_factories:
       Glass_bottles:
         material: GLASS_BOTTLE
         amount: 32
-      Pig_eggs:
+      Pig eggs:
         material: MONSTER_EGG
         durability: 90
         amount: 1
-      Villager_eggs:
+      Villager eggs:
         material: MONSTER_EGG
         durability: 120
         amount: 1
-      Squid_eggs:
+      Squid eggs:
         material: MONSTER_EGG
         durability: 94
         amount: 1
-      Horse_eggs:
+      Horse eggs:
         material: MONSTER_EGG
         durability: 100
         amount: 1
@@ -2006,7 +2007,7 @@ production_factories:
       - Bastion_Gearbox
     repair_multiple: 10
     repair_inputs:
-      IRON_INGOT:
+      Iron Ingot:
         material: IRON_INGOT
         amount: 12
   Stained_Clay_Processing:
@@ -2093,6 +2094,7 @@ production_factories:
       - Dye_Pink_Stained_Clay
       - Dye_Cyan_Stained_Clay
       - Dye_Orange_Stained_Clay
+      - Dye_Gray_Stained_Clay
       - Dye_Green_Stained_Clay
       - Dye_White_Stained_Clay
       - Dye_Light_Gray_Stained_Clay
@@ -2239,6 +2241,7 @@ production_factories:
       - Dye_Pink_Stained_Glass
       - Dye_Cyan_Stained_Glass
       - Dye_Orange_Stained_Glass
+      - Dye_Gray_Stained_Glass
       - Dye_Green_Stained_Glass
       - Dye_White_Stained_Glass
       - Dye_Light_Gray_Stained_Glass
@@ -2254,6 +2257,7 @@ production_factories:
       - Dye_Pink_Stained_Glass_Pane
       - Dye_Cyan_Stained_Glass_Pane
       - Dye_Orange_Stained_Glass_Pane
+      - Dye_Gray_Stained_Glass_Pane
       - Dye_Green_Stained_Glass_Pane
       - Dye_White_Stained_Glass_Pane
       - Dye_Light_Gray_Stained_Glass_Pane
@@ -5836,7 +5840,7 @@ production_recipes:
   Produce_Leads:
     name: Produce Leads
     inputs:
-      Slime_Ball:
+      Slime Ball:
         material: SLIME_BALL
         amount: 4
       String:
@@ -5913,7 +5917,7 @@ production_recipes:
         amount: 48
     outputs:
       Item Frames:
-        material: ITEM_FRAMES
+        material: ITEM_FRAME
         amount: 64
   Craft_Bookshelfs:
     name: Craft Bookshelfs
@@ -6981,7 +6985,7 @@ production_recipes:
         material: DIAMOND_ORE
         amount: 16
       Redstone Ore:
-        material: REDSTONE ORE
+        material: REDSTONE_ORE
         amount: 32
     outputs:
       Base:
@@ -7169,7 +7173,7 @@ production_recipes:
     name: Pure Ice
     inputs:
       Compact Ice:
-        material: COMPACT_ICE
+        material: PACKED_ICE
         amount: 512
       Leather:
         material: LEATHER
@@ -7180,7 +7184,7 @@ production_recipes:
         amount: 8
         display_name: Pure Ice
         lore: An item used to repair the Bastion Factory
-  Bastion_Factory:
+  Bastion_Block:
     name: Craft Bastions
     inputs:
       Silicon Tetranitratobihydrotrioxycarbon:
