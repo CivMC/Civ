@@ -2,7 +2,7 @@ require 'yaml'
 
 ok = true
 
-raw = STDIN.read
+raw = File.read('config.yml')
 
 if raw[/\t/]
   ok = false
