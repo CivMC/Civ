@@ -7036,6 +7036,7 @@ production_recipes:
       Ink Sack:
         material: INK_SACK
         amount: 16
+        durability: 0
       Magenta Dye:
         material: INK_SACK
         amount: 16
@@ -7230,7 +7231,7 @@ production_recipes:
       Walls:
         material: INK_SACK
         amount: 4
-        durability: 4
+        durability: 0
         display_name: Walls
         lore: An item used to create a Bastion Block
     outputs:
