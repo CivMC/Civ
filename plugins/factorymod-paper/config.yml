@@ -2574,14 +2574,14 @@ production_recipes:
     inputs:
       Glass Bottle:
         material: GLASS_BOTTLE
-        amount: 24
+        amount: 8
       Wheat:
         material: WHEAT
         amount: 1280
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
-        amount: 24
+        amount: 8
   Baked_Potato:
     name: Bake Potato
     production_time: 24
@@ -2598,14 +2598,14 @@ production_recipes:
     inputs:
       Glass Bottle:
         material: GLASS_BOTTLE
-        amount: 10
+        amount: 5
       Baked Potato:
         material: BAKED_POTATO
         amount: 1280
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
-        amount: 10
+        amount: 5
   Dye_Black_Wool_Cyan:
     name: Dye Black Wool Cyan
     inputs:
@@ -3120,27 +3120,27 @@ production_recipes:
     inputs:
       Glass Bottle:
         material: GLASS_BOTTLE
-        amount: 14
+        amount: 6
       Carrot:
         material: CARROT_ITEM
         amount: 1280
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
-        amount: 14
+        amount: 6
   Wood_XP_Bottle_5:
     name: Brew XP Bottles  - 6
     inputs:
       Glass Bottle:
         material: GLASS_BOTTLE
-        amount: 24
+        amount: 8
       Hay Bale:
         material: HAY_BLOCK
         amount: 143
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
-        amount: 24
+        amount: 8
   Dye_Light_Gray_Wool_Orange:
     name: Dye Light Gray Wool Orange
     inputs:
@@ -3778,14 +3778,14 @@ production_recipes:
     inputs:
       Glass Bottle:
         material: GLASS_BOTTLE
-        amount: 8
+        amount: 4
       Cookie:
         material: COOKIE
         amount: 1280
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
-        amount: 8
+        amount: 4
   Iron_Chestplate:
     name: Forge Iron Chestplate.
     production_time: 40
@@ -5149,14 +5149,14 @@ production_recipes:
     inputs:
       Glass Bottle:
         material: GLASS_BOTTLE
-        amount: 10
+        amount: 4
       Nether Wart:
         material: NETHER_STALK
         amount: 1280
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
-        amount: 10
+        amount: 4
   Dye_Pink_Wool_Gray:
     name: Dye Pink Wool Gray
     inputs:
