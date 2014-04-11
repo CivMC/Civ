@@ -7,7 +7,7 @@ mysql:
   prefix: ''
   savesPerDay: 192
 BastionBlock:
-  material: DIAMOND_BLOCK
+  material: SPONGE
   meta: NULL
   effectRadius: 5
   startScaleFactor: 100

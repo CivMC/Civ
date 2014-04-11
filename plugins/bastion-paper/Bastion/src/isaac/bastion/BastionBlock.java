@@ -245,7 +245,9 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	//Checks if location is in the bastion's field
 	public boolean blocked(Location loc,String playerName)
 	{
-
+		if(Bukkit.getPlayer(playerName).hasPermission("Bastion.bypass")) //let admins do whatever 
+			return false; 
+		
 		PlayerReinforcement reinforcement = getReinforcement();
 
 		if(reinforcement!=null){
