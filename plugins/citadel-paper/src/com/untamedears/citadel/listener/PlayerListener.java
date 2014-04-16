@@ -29,14 +29,12 @@ import org.bukkit.material.Openable;
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.Citadel.VerboseMsg;
 import com.untamedears.citadel.GroupManager;
-import com.untamedears.citadel.MemberManager;
 import com.untamedears.citadel.PersonalGroupManager;
 import com.untamedears.citadel.PlacementMode;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.access.CropAccessDelegate;
 import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.Member;
 import com.untamedears.citadel.entity.PlayerState;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
@@ -55,16 +53,8 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void login(PlayerLoginEvent ple) {
-        MemberManager memberManager = Citadel.getMemberManager();
-        memberManager.addOnlinePlayer(ple.getPlayer());
-
         Player player = ple.getPlayer();
         String playerName = player.getName();
-        Member member = memberManager.getMember(playerName);
-        if(member == null){
-            member = new Member(playerName);
-            memberManager.addMember(member);
-        }
 
         PersonalGroupManager personalGroupManager = Citadel.getPersonalGroupManager();
         boolean hasPersonalGroup = personalGroupManager.hasPersonalGroup(playerName);
@@ -91,8 +81,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void quit(PlayerQuitEvent pqe) {
         Player player = pqe.getPlayer();
-        MemberManager memberManager = Citadel.getMemberManager();
-        memberManager.removeOnlinePlayer(player);
         PlayerState.remove(player);
     }
 

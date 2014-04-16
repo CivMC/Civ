@@ -134,14 +134,7 @@ public class Faction implements Serializable, Comparable {
     }
 
     public boolean isFounder(String memberName){
-    	return isFounder(new Member(memberName));
-    }
-    
-    public boolean isFounder(Member member){
-    	if(member.getMemberName().equalsIgnoreCase(this.founder)){
-    		return true;
-    	}
-    	return false;
+    	return memberName.equalsIgnoreCase(this.founder);
     }
 
     public boolean isMember(String memberName) {
@@ -182,5 +175,13 @@ public class Faction implements Serializable, Comparable {
         }
         Faction other = (Faction)o;
         return this.getNormalizedName().compareTo(other.getNormalizedName());
+    }
+
+    public static Faction getPersonalGroup(String player_name) {
+       final PersonalGroup personalGroup =
+           Citadel.getPersonalGroupManager().getPersonalGroup(player_name);
+       final String personalGroupName = personalGroup.getGroupName();
+       final Faction group = Citadel.getGroupManager().getGroup(personalGroupName);
+       return group;
     }
 }

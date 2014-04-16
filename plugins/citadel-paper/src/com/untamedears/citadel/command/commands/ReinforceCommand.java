@@ -70,7 +70,7 @@ public class ReinforceCommand extends PlayerCommand {
 			}
 			state.setFaction(group);
 		} else {
-			state.setFaction(Citadel.getMemberManager().getMember(player).getPersonalGroup());
+			state.setFaction(Faction.getPersonalGroup(player.getName()));
 		}
 		
 		SecurityLevel securityLevel = getSecurityLevel(args, player);

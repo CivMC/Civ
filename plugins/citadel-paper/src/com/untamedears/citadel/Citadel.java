@@ -25,7 +25,6 @@ import com.untamedears.citadel.dao.CitadelCachingDao;
 import com.untamedears.citadel.dao.CitadelDao;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionMember;
-import com.untamedears.citadel.entity.Member;
 import com.untamedears.citadel.entity.Moderator;
 import com.untamedears.citadel.entity.PersonalGroup;
 import com.untamedears.citadel.entity.IReinforcement;
@@ -114,9 +113,6 @@ public class Citadel extends JavaPlugin {
         commandHandler.registerCommands();
         // Events must register after dao is available
         registerEvents();
-        for(Player player : getServer().getOnlinePlayers()){
-            memberManager.addOnlinePlayer(player);
-        }
         try {
             Metrics metrics = new Metrics(this);
             metrics.start();
@@ -146,9 +142,6 @@ public class Citadel extends JavaPlugin {
         PersonalGroupStorage personalGroupStorage = new PersonalGroupStorage(dao);
         personalGroupManager.setStorage(personalGroupStorage);
         
-        MemberStorage memberStorage = new MemberStorage(dao);
-        memberManager.setStorage(memberStorage);
-        
         ReinforcementStorage reinforcementStorage = new ReinforcementStorage(dao);
         reinforcementManager.setStorage(reinforcementStorage);
     }
@@ -173,7 +166,6 @@ public class Citadel extends JavaPlugin {
     public List<Class<?>> getDatabaseClasses() {
         ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
         classes.add(Faction.class);
-        classes.add(Member.class);
         classes.add(PlayerReinforcement.class);
         classes.add(ReinforcementKey.class);
         classes.add(FactionMember.class);

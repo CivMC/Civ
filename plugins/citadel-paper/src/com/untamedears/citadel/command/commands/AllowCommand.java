@@ -11,7 +11,6 @@ import com.untamedears.citadel.GroupManager;
 import com.untamedears.citadel.MemberManager;
 import com.untamedears.citadel.command.PlayerCommand;
 import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.Member;
 
 /**
  * User: JonnyD
@@ -74,11 +73,6 @@ public class AllowCommand extends PlayerCommand {
             player = (Player)sender;
         }
         MemberManager memberManager = Citadel.getMemberManager();
-        Member member = memberManager.getMember(targetName);
-        if(member == null){
-        	member = new Member(targetName);
-        	memberManager.addMember(member);
-        }
         groupManager.addMemberToGroup(groupName, targetName, player);
         sendMessage(sender, ChatColor.GREEN, "Allowed %s access to %s blocks", targetName, groupName);
         if(memberManager.isOnline(targetName)){

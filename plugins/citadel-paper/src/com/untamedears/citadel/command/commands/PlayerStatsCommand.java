@@ -12,7 +12,6 @@ import com.untamedears.citadel.GroupManager;
 import com.untamedears.citadel.command.CommandUtils;
 import com.untamedears.citadel.command.PlayerCommand;
 import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.Member;
 
 public class PlayerStatsCommand extends PlayerCommand {
 
@@ -51,11 +50,7 @@ public class PlayerStatsCommand extends PlayerCommand {
             if (memberGroups.size() > 0)
                 results.add("Member of groups: "+CommandUtils.joinFactionSet(memberGroups));
 
-            Faction group = null;
-            Member member = Citadel.getMemberManager().getMember(playerName);
-            if (member != null) {
-                group = member.getPersonalGroup();
-            }
+            Faction group = Faction.getPersonalGroup(playerName);
             if (group != null) {
                 String personalGroupName = group.getName();
                 results.add("Personal group reinforcements: ");

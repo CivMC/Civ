@@ -14,7 +14,6 @@ import com.untamedears.citadel.GroupManager;
 import com.untamedears.citadel.MemberManager;
 import com.untamedears.citadel.command.PlayerCommand;
 import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.Member;
 
 /**
  * User: JonnyD
@@ -37,8 +36,7 @@ public class GroupsCommand extends PlayerCommand {
 		GroupManager groupManager = Citadel.getGroupManager();
 		MemberManager memberManager = Citadel.getMemberManager();
 		
-		Member member = memberManager.getMember(memberName);
-		Faction personalGroup = member.getPersonalGroup();
+		Faction personalGroup = Faction.getPersonalGroup(memberName);
 		String personalGroupName = personalGroup.getName();
 		
 		List<Faction> groups = new ArrayList<Faction>();

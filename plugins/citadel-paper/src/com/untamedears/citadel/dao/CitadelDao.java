@@ -32,7 +32,6 @@ import com.untamedears.citadel.entity.DbVersion;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionDelete;
 import com.untamedears.citadel.entity.FactionMember;
-import com.untamedears.citadel.entity.Member;
 import com.untamedears.citadel.entity.Moderator;
 import com.untamedears.citadel.entity.PersonalGroup;
 import com.untamedears.citadel.entity.IReinforcement;
@@ -83,7 +82,7 @@ public class CitadelDao extends MyDatabase {
     protected List<Class<?>> getDatabaseClasses() {
         return Arrays.asList(
                 DbVersion.class, FactionDelete.class,
-                Faction.class, Member.class, FactionMember.class,
+                Faction.class, FactionMember.class,
                 PlayerReinforcement.class, ReinforcementKey.class,
                 PersonalGroup.class, Moderator.class);
     }
@@ -240,17 +239,6 @@ public class CitadelDao extends MyDatabase {
     			.setParameter("founder", playerName)
     			.findUnique();
     	return row.getInteger("count"); 
-	}
-
-	public Set<Member> findAllMembers() {
-		return getDatabase().createQuery(Member.class, "find member")
-    			.findSet();
-	}
-	
-	public Member findMember(String memberName){
-		return getDatabase().createQuery(Member.class, "find member where member_name = :memberName")
-				.setParameter("memberName", memberName)
-				.findUnique();
 	}
 
 	public Set<PersonalGroup> findAllPersonalGroups() {
@@ -510,6 +498,15 @@ public class CitadelDao extends MyDatabase {
                 + "(deleted_faction VARCHAR(255) NOT NULL, personal_group VARCHAR(255), "
                 + "PRIMARY KEY (deleted_faction))");
             getDatabase().execute(createTable);
+
+            dbVersion = advanceDbVersion(dbVersion);
+        }
+
+        if (dbVersion.getDbVersion() == 3) {
+            Citadel.info("Updating to DB v4");
+
+            SqlUpdate dropTable = getDatabase().createSqlUpdate("DROP TABLE member;");
+            getDatabase().execute(dropTable);
 
             dbVersion = advanceDbVersion(dbVersion);
         }

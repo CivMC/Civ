@@ -11,7 +11,6 @@ import com.untamedears.citadel.GroupManager;
 import com.untamedears.citadel.MemberManager;
 import com.untamedears.citadel.command.PlayerCommand;
 import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.Member;
 
 /**
  * User: JonnyD
@@ -69,11 +68,6 @@ public class AddModCommand extends PlayerCommand {
 			groupManager.removeMemberFromGroup(groupName, targetName, player);
 		}
         MemberManager memberManager = Citadel.getMemberManager();
-        Member member = memberManager.getMember(targetName);
-        if(member == null){
-        	member = new Member(targetName);
-        	memberManager.addMember(member);
-        }
 		groupManager.addModeratorToGroup(groupName, targetName, player);
 		sendMessage(sender, ChatColor.GREEN, "%s has been added as a moderator to %s", targetName, groupName);
 		if(memberManager.isOnline(targetName)){

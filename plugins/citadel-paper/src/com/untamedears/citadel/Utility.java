@@ -95,7 +95,7 @@ public class Utility {
         Faction group = state.getFaction();
         if(group == null) {
             try {
-                group = Citadel.getMemberManager().getMember(player.getName()).getPersonalGroup();
+                group = Faction.getPersonalGroup(player.getName());
             } catch (NullPointerException e){
                 sendMessage(player, ChatColor.RED, "You don't seem to have a personal group. Try logging out and back in first");
             }

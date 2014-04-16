@@ -83,7 +83,7 @@ public class FortifyCommand extends PlayerCommand {
 			}
 			state.setFaction(group);
 		} else {
-			state.setFaction(Citadel.getMemberManager().getMember(player).getPersonalGroup());
+			state.setFaction(Faction.getPersonalGroup(player.getName()));
 		}
 
         ReinforcementMaterial material = ReinforcementMaterial.get(player.getItemInHand().getType());

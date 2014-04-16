@@ -11,7 +11,6 @@ import com.untamedears.citadel.GroupManager;
 import com.untamedears.citadel.MemberManager;
 import com.untamedears.citadel.command.PlayerCommand;
 import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.Member;
 
 /**
  * User: JonnyD
@@ -69,11 +68,6 @@ public class TransferCommand extends PlayerCommand {
         if (sender instanceof Player) {
             player = (Player)sender;
         }
-		Member member = memberManager.getMember(targetName);
-		if(member == null){
-			member = new Member(targetName);
-			memberManager.addMember(member);
-		}
 		if(group.isMember(targetName)){
 			groupManager.removeMemberFromGroup(groupName, targetName, player);
 		}
