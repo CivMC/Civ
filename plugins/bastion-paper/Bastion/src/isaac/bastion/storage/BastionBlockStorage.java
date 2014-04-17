@@ -17,6 +17,7 @@ public class BastionBlockStorage {
 	private Database db;
 	private String bationBlocksTable;
 	private PreparedStatement getAllBastionsForWorld;
+	private PreparedStatement removeBastion;
 	private PreparedStatement saveBastion;
 	public BastionBlockStorage(){
 		ConfigManager config=Bastion.getConfigManager();
@@ -26,6 +27,7 @@ public class BastionBlockStorage {
 		if (db.isConnected()) {
 			createTables();
 			getAllBastionsForWorld = db.prepareStatement("SELECT * FROM "+bationBlocksTable+" WHERE loc_world=?;");
+			removeBastion          = db.prepareStatement("DELETE FROM "+bationBlocksTable+" WHERE bastion_id=?;");
 			saveBastion            = db.prepareStatement("INSERT INTO "+bationBlocksTable+" VALUES(?,?,?,?,?,?,?);");
 		}
 	}
@@ -50,17 +52,16 @@ public class BastionBlockStorage {
 		}
 	}
 	public void saveBastionBlock(BastionBlock block){
-		db.execute("DELETE FROM "+bationBlocksTable+" WHERE bastion_id="+block.getID()+";");
+		
+		try {
+			removeBastion.setInt(1, block.getID());
+			removeBastion.execute();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		if(!block.ghost()){
-			String toExicute="INSERT INTO "+bationBlocksTable+" VALUES("
-					+block.getID()+","
-					+block.getLocation().getBlockX()+","
-					+block.getLocation().getBlockY()+","
-					+block.getLocation().getBlockZ()+","
-					+"'"+block.getLocation().getWorld().getName()+"',"
-					+block.getPlaced()+","
-					+block.getBalance()
-					+");";
 			try {
 				saveBastion.setInt   (1, block.getID());
 				saveBastion.setInt   (2, block.getLocation().getBlockX());
@@ -74,7 +75,6 @@ public class BastionBlockStorage {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			db.execute(toExicute);
 		}
 	}
 	public Enumeration<BastionBlock> getAllSnitches(World world) {

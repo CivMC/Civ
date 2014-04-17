@@ -133,8 +133,6 @@ public class EnderPearlManager {
 		if(solutions.isEmpty()){
 			return -1;
 		}
-		/*for(Location loc: collision_points)
-			loc.getBlock().setType(Material.TRIPWIRE);*/
 		
 		Location temp=startLoc.clone();
 		temp.setY(0);
@@ -328,6 +326,10 @@ public class EnderPearlManager {
 		
 		void manage(Flight flight){
 			inFlight.add(flight);
+			if(onTask == null){
+				next();
+				return;
+			}
 			if(onTask.compareTo(flight)==1 || onTask == null){
 				this.next();
 			}
@@ -340,6 +342,8 @@ public class EnderPearlManager {
 				inFlight.add(onTask);
 			
 			onTask = inFlight.poll();
+			if(onTask == null)
+				return;
 			
 			if(onTask.timeToEnd() <= 0){
 				onTask.cancel();
@@ -353,20 +357,10 @@ public class EnderPearlManager {
 
 				@Override
 				public void run() {
-					if(!onTask.cancelIfInBlocking()){
-						Bastion.getPlugin().getLogger().info("Pearl was not where it should have been regristering for next 5 ticks");
-						if(onTask.timeToEnd() < -20){
-							onTask.cancel();
-							onTask = null;
-							next();
-						}
-						else
-							currentTask = Bukkit.getScheduler().scheduleSyncDelayedTask(Bastion.getPlugin(),this,5);
-						
-					} else{
-						onTask = null;
-						next();
-					}
+					onTask.cancel();
+					onTask = null;
+					currentTask = -1;
+					next();
 				}
 				
 			}, onTask.timeToEnd());
@@ -385,17 +379,13 @@ public class EnderPearlManager {
 			this.blocking = blocking;
 		}
 		
-		public boolean cancelIfInBlocking(){
-			if(blocking.inField(pearl.getLocation())){
-				pearl.remove();
-				return true;
-			}
-			
-			return false;
-		}
 		
 		public void cancel(){
+			if(pearl.getShooter() instanceof Player){
+				blocking.handleTeleport(pearl.getLocation(), (Player) pearl.getShooter());
+			}
 			pearl.remove();
+			
 		}
 		
 		public long timeToEnd(){
