@@ -394,7 +394,7 @@ public class EnderPearlManager {
 
 		@Override
 		public int compareTo(Flight o) {
-			return (int) Math.signum(o.endTime - o.endTime);
+			return (int) Math.signum(o.endTime - endTime);
 		}
 	}
 }
