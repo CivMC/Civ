@@ -4,7 +4,6 @@ import isaac.bastion.Bastion;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.manager.EnderPearlManager;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.event.EventHandler;
@@ -12,8 +11,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 
 public class EnderPearlListener implements Listener {
 	int taskId;
@@ -24,15 +21,7 @@ public class EnderPearlListener implements Listener {
 	public EnderPearlListener(){
 		server=Bastion.getPlugin().getServer();
 		manager=Bastion.getBastionManager();
-
-		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-		taskId=scheduler.scheduleSyncRepeatingTask(Bastion.getPlugin(),
-				new BukkitRunnable(){
-			public void run(){
-				pearlMang.tick();
-			}
-		},
-		1,1);
+		
 		pearlMang=new EnderPearlManager();
 	}
 
