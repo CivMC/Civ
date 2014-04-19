@@ -4882,9 +4882,6 @@ production_recipes:
       Exp Bottle:
         material: EXP_BOTTLE
         amount: 24
-      Exp Bottle:
-        material: EXP_BOTTLE
-        amount: 24
       Shreads of Iron:
         material: GRAVEL
         amount: 12
