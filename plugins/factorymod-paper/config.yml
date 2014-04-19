@@ -3118,7 +3118,7 @@ production_recipes:
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
-        amount: 14 
+        amount: 14
       Shreads of Iron:
         material: GRAVEL
         amount: 7
