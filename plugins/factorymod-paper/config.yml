@@ -2568,6 +2568,43 @@ production_factories:
         amount: 1
         display_name: Smaragdus
         lore: An item used to create a Bastion Block
+  Nether_Compactor:
+    name: Nether Compactor
+    fuel: 
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Shards of a Diamond:
+        material: GRAVEL
+        amount: 128
+        display_name: Shards of a Diamond
+        lore: Item used to create the Nether Compressor      
+      Shreads of Iron:
+        material: GRAVEL
+        amount: 3328
+        display_name: Shreads of Iron
+        lore: Item used to create the Nether Compressor
+    recipes:
+      - Nether_Craft_Pork
+      - Nether_Craft_Melons
+      - Nether_Craft_Sugar
+      - Nether_Craft_Nether_Warts
+      - Nether_Craft_Cookies
+      - Nether_Craft_Potatoes
+      - Nether_Craft_Carrots
+      - Nether_Craft_Cocoa
+      - Nether_Craft_Pumpkins
+      - Nether_Craft_Cacti
+      - Nether_Craft_Bread
+      - Nether_Craft_Beef
+      - Nether_Craft_Wheat
+      - Nether_Craft_Fish
+    repair_multiple: 2
+    repair_inputs:
+      Bastion:
+        material: SPONGE
+        amount: 1
 production_recipes:
   Wood_XP_Bottle_0:
     name: Brew XP Bottles  - 1
@@ -7239,4 +7276,510 @@ production_recipes:
         material: SPONGE
         amount: 32
         display_name: Bastion
+  Iron_XP_Bottle_4:
+    name: Brew XP Bottles  - 5
+    inputs:
+      Create of Carrots:
+        material: WOOD
+        durability: 0
+        amount: 128
+        display_name: Create of Carrots
+      Create of Nether Warts:
+        material: WOOD
+        durability: 0
+        amount: 128
+        display_name: Create of Nether Warts
+      Create of Potatos:
+        material: WOOD
+        durability: 0
+        amount: 128
+        display_name: Create of Potatos
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
+        amount: 538
+  Iron_XP_Bottle_5:
+    name: Brew XP Bottles  - 6
+    inputs:
+      Create of Carrots:
+        material: WOOD
+        durability: 0
+        amount: 128
+        display_name: Create of Carrots
+      Create of Cacti:
+        material: WOOD
+        durability: 0
+        amount: 128
+        display_name: Create of Cacti
+      Create of Bread:
+        material: WOOD
+        durability: 0
+        amount: 128
+        display_name: Create of Bread
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
+        amount: 922
+  Iron_XP_Bottle_6:
+    name: Brew XP Bottles  - 7
+    inputs:
+      Create of Nether Warts:
+        material: WOOD
+        durability: 0
+        amount: 128
+        display_name: Create of Nether Warts
+      Create of Melons:
+        material: WOOD
+        durability: 0
+        amount: 32
+        display_name: Create of Melons
+      Create of Sugar:
+        material: WOOD
+        durability: 0
+        amount: 32
+        display_name: Create of Sugar
+      Create of Cookies:
+        material: WOOD
+        durability: 0
+        amount: 256
+        display_name: Create of Cookies
+      Create of Potatos:
+        material: WOOD
+        durability: 0
+        amount: 32
+        display_name: Create of Potatos
+      Create of Pork:
+        material: WOOD
+        durability: 0
+        amount: 32
+        display_name: Create of Pork
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
+        amount: 1613
+  Iron_XP_Bottle_7:
+    name: Brew XP Bottles  - 8
+    inputs:
+      Create of Carrots:
+        material: WOOD
+        durability: 0
+        amount: 64
+        display_name: Create of Carrots
+      Create of Cocoa:
+        material: WOOD
+        durability: 0
+        amount: 32
+        display_name: Create of Cocoa
+      Create of Pumpkins:
+        material: WOOD
+        durability: 0
+        amount: 32
+        display_name: Create of Pumpkins
+      Create of Cacti:
+        material: WOOD
+        durability: 0
+        amount: 32
+        display_name: Create of Cacti
+      Create of Bread:
+        material: WOOD
+        durability: 0
+        amount: 32
+        display_name: Create of Bread
+      Create of Beef:
+        material: WOOD
+        durability: 0
+        amount: 16
+        display_name: Create of Beef
+    outputs:
+      Exp Bottle:
+        material: EXP_BOTTLE
+        amount: 1613
+  Diamond_XP_Bottle_4:
+    name: Brew XP Bottles  - 5
+    inputs:
+      Create of Carrots:
+        material: WOOD
+        durability: 0
+        amount: 48
+        display_name: Create of Carrots
+      Create of Melons:
+        material: WOOD
+        durability: 0
+        amount: 16
+        display_name: Create of Melons
+      Create of Cacti:
+        material: WOOD
+        durability: 0
+        amount: 128
+        display_name: Create of Cacti
+      Create of Red Roses:
+        material: WOOD
+        durability: 0
+        amount: 4
+        display_name: Create of Red Roses
+      Create of Rotten Flesh:
+        material: WOOD
+        durability: 0
+        amount: 64
+        display_name: Create of Rotten Flesh
+      Create of Red Mushrooms:
+        material: WOOD
+        durability: 0
+        amount: 16
+        display_name: Create of Red Mushrooms
+      Create of Vines:
+        material: WOOD
+        durability: 0
+        amount: 16
+        display_name: Create of Vines
+      Create of Bread:
+        material: WOOD
+        durability: 0
+        amount: 64
+        display_name: Create of Bread
+      Create of Pork:
+        material: WOOD
+        durability: 0
+        amount: 16
+        display_name: Create of Pork
+    outputs:
+      Emerald Block:
+        material: EMERALD_BLOCK 
+        amount: 81
+  Diamond_XP_Bottle_5:
+    name: Brew XP Bottles  - 6
+    inputs:
+      Create of Nether Warts:
+        material: WOOD
+        durability: 0
+        amount: 32
+        display_name: Create of Nether Warts
+      Create of Melons:
+        material: WOOD
+        durability: 0
+        amount: 16
+        display_name: Create of Melons
+      Create of Sugar:
+        material: WOOD
+        durability: 0
+        amount: 64
+        display_name: Create of Sugar
+      Create of Yellow Flowers:
+        material: WOOD
+        durability: 0
+        amount: 8
+        display_name: Create of Yellow Flowers
+      Create of Rotten Flesh:
+        material: WOOD
+        durability: 0
+        amount: 64
+        display_name: Create of Rotten Flesh
+      Create of Brown Mushrooms:
+        material: WOOD
+        durability: 0
+        amount: 32
+        display_name: Create of Brown Mushrooms
+      Create of Vines:
+        material: WOOD
+        durability: 0
+        amount: 16
+        display_name: Create of Vines
+      Create of Potatoes:
+        material: WOOD
+        durability: 0
+        amount: 128
+        display_name: Create of Potatoes
+      Create of Chicken:
+        material: WOOD
+        durability: 0
+        amount: 8
+        display_name: Create of Chicken
+    outputs:
+      Emerald Block:
+        material: EMERALD_BLOCK 
+        amount: 81
+  Diamond_XP_Bottle_6:
+    name: Brew XP Bottles  - 7
+    inputs:
+      Create of Wheat:
+        material: WOOD
+        durability: 0
+        amount: 64
+        display_name: Create of Wheat
+      Create of Cocoa:
+        material: WOOD
+        durability: 0
+        amount: 8
+        display_name: Create of Cocoa
+      Create of Pumpkins:
+        material: WOOD
+        durability: 0
+        amount: 64
+        display_name: Create of Pumpkins
+      Create of Cacti:
+        material: WOOD
+        durability: 0
+        amount: 128
+        display_name: Create of Cacti
+      Create of Red Roses:
+        material: WOOD
+        durability: 0
+        amount: 4
+        display_name: Create of Red Roses
+      Create of Spider Eyes:
+        material: WOOD
+        durability: 0
+        amount: 16
+        display_name: Create of Spider Eyes
+      Create of Red Mushrooms:
+        material: WOOD
+        durability: 0
+        amount: 8
+        display_name: Create of Red Mushrooms
+      Create of Grass:
+        material: WOOD
+        durability: 0
+        amount: 16
+        display_name: Create of Grass
+      Create of Fish:
+        material: WOOD
+        durability: 0
+        amount: 8
+        display_name: Create of Fish
+    outputs:
+      Emerald Block:
+        material: EMERALD_BLOCK 
+        amount: 81
+  Diamond_XP_Bottle_7:
+    name: Brew XP Bottles  - 8
+    inputs:
+      Create of Nether Warts:
+        material: WOOD
+        durability: 0
+        amount: 32
+        display_name: Create of Nether Warts
+      Create of Pumpkins:
+        material: WOOD
+        durability: 0
+        amount: 64
+        display_name: Create of Pumpkins
+      Create of Sugar:
+        material: WOOD
+        durability: 0
+        amount: 64
+        display_name: Create of Sugar
+      Create of Yellow Flowers:
+        material: WOOD
+        durability: 0
+        amount: 8
+        display_name: Create of Yellow Flowers
+      Create of Spider Eyes:
+        material: WOOD
+        durability: 0
+        amount: 16
+        display_name: Create of Spider Eyes
+      Create of Brown Mushrooms:
+        material: WOOD
+        durability: 0
+        amount: 32
+        display_name: Create of Brown Mushrooms
+      Create of Grass:
+        material: WOOD
+        durability: 0
+        amount: 32
+        display_name: Create of Grass
+      Create of Cookies:
+        material: WOOD
+        durability: 0
+        amount: 128
+        display_name: Create of Cookies
+      Create of Beef:
+        material: WOOD
+        durability: 0
+        amount: 16
+        display_name: Create of Beef
+    outputs:
+      Emerald Block:
+        material: EMERALD_BLOCK 
+        amount: 81
+  Nether_Craft_Beef:
+    name: Craft Create of Beef
+    inputs: 
+       Cooked Beef:
+         material: COOKED_BEEF
+         amount: 64
+    outputs:
+       Create of Beef:
+         material: WOOD
+         durability: 0
+         amount: 1
+         display_name: Create of Beef
+  Nether_Craft_Pork:
+    name: Craft Create of Pork
+    inputs: 
+       Grilled Pork:
+         material: GRILLED_PORK
+         amount: 64
+    outputs:
+       Create of Pork:
+         material: WOOD
+         durability: 0
+         amount: 1
+         display_name: Create of Pork
+  Nether_Craft_Melons:
+    name: Craft Create of Melons
+    inputs: 
+       Melon Blocks:
+         material: MELON_BLOCK
+         amount: 64
+    outputs:
+       Create of Melons:
+         material: WOOD
+         durability: 0
+         amount: 1
+         display_name: Create of Melons
+  Nether_Craft_Sugar:
+    name: Craft Create of Sugar
+    inputs: 
+       Sugar:
+         material: SUGAR
+         amount: 64
+    outputs:
+       Create of Sugar:
+         material: WOOD
+         durability: 0
+         amount: 1
+         display_name: Create of Sugar
+  Nether_Craft_Nether_Warts:
+    name: Craft Create of Nether Warts
+    inputs: 
+       Nether Wart:
+         material: NETHER_WARTS
+         amount: 64
+    outputs:
+       Create of Nether Warts:
+         material: WOOD
+         durability: 0
+         amount: 1
+         display_name: Create of Nether Warts
+  Nether_Craft_Cookies:
+    name: Craft Create of Cookies
+    inputs: 
+       Cookie:
+         material: COOKIE
+         amount: 64
+    outputs:
+       Create of Cookies:
+         material: WOOD
+         durability: 0
+         amount: 1
+         display_name: Create of Cookies
+  Nether_Craft_Potatoes:
+    name: Craft Create of Potatoes
+    inputs: 
+       Potato:
+         material: BAKED_POTATO
+         amount: 64
+    outputs:
+       Create of Potatoes:
+         material: WOOD
+         durability: 0
+         amount: 1
+         display_name: Create of Potatoes
+  Nether_Craft_Carrots:
+    name: Craft Create of Carrots
+    inputs: 
+       Carrot:
+         material: CARROT
+         amount: 64
+    outputs:
+       Create of Carrots:
+         material: WOOD
+         durability: 0
+         amount: 1
+         display_name: Create of Carrots
+  Nether_Craft_Cocoa:
+    name: Craft Create of Cocoa
+    inputs: 
+       Cocoa:
+         material: COCOA
+         amount: 64
+    outputs:
+       Create of Cocoa:
+         material: WOOD
+         durability: 0
+         amount: 1
+         display_name: Create of Cocoa
+  Nether_Craft_Pumpkins:
+    name: Craft Create of Pumpkinss
+    inputs: 
+       Pumpkin:
+         material: PUMPKIN
+         amount: 64
+    outputs:
+       Create of Pumpkinss:
+         material: WOOD
+         durability: 0
+         amount: 1
+         display_name: Create of Pumpkinss
+  Nether_Craft_Cacti:
+    name: Craft Create of Cacti
+    inputs: 
+       Catus:
+         material: CACTUS
+         amount: 64
+    outputs:
+       Create of Cacti:
+         material: WOOD
+         durability: 0
+         amount: 1
+         display_name: Create of Cacti
+  Nether_Craft_Bread:
+    name: Craft Create of Bread
+    inputs: 
+       Bread:
+         material: BREAD
+         amount: 64
+    outputs:
+       Create of Bread:
+         material: WOOD
+         durability: 0
+         amount: 1
+         display_name: Create of Bread
+  Nether_Craft_Wheat:
+    name: Craft Create of Wheat
+    inputs: 
+       Wheat:
+         material: WHEAT
+         amount: 64
+    outputs:
+       Create of Bread:
+         material: WOOD
+         durability: 0
+         amount: 1
+         display_name: Create of Wheat
+  Nether_Craft_Grass:
+    name: Craft Create of Grass
+    inputs: 
+       Grass:
+         material: GRASS
+         amount: 64
+    outputs:
+       Create of Grass:
+         material: WOOD
+         durability: 0
+         amount: 1
+         display_name: Create of Grass
+  Nether_Craft_Fish:
+    name: Craft Create of Fish
+    inputs: 
+       Fish:
+         material: COOKED_FISH
+         amount: 64
+    outputs:
+       Create of Fish:
+         material: WOOD
+         durability: 0
+         amount: 1
+         display_name: Create of Fish
         
