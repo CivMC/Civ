@@ -583,6 +583,10 @@ production_factories:
       - Diamond_XP_Bottle_1
       - Diamond_XP_Bottle_2
       - Diamond_XP_Bottle_3
+      - Diamond_XP_Bottle_4
+      - Diamond_XP_Bottle_5
+      - Diamond_XP_Bottle_6
+      - Diamond_XP_Bottle_7
     repair_multiple: 5
     repair_inputs:
       Diamond:
@@ -1157,6 +1161,10 @@ production_factories:
       - Iron_XP_Bottle_1
       - Iron_XP_Bottle_2
       - Iron_XP_Bottle_3
+      - Iron_XP_Bottle_4
+      - Iron_XP_Bottle_5
+      - Iron_XP_Bottle_6
+      - Iron_XP_Bottle_7
       - Bastion_Smaragdus_Polisher
     repair_multiple: 20
     repair_inputs:
@@ -2771,6 +2779,11 @@ production_recipes:
       Exp Bottle:
         material: EXP_BOTTLE
         amount: 128
+      Shards of a Diamond:
+        material: GRAVEL
+        amount: 1
+        display_name: Shards of a Diamond
+        lore: Item used to create the Nether Compressor 
   Dye_Brown_Wool_Orange:
     name: Dye Brown Wool Orange
     inputs:
@@ -3105,7 +3118,12 @@ production_recipes:
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
-        amount: 14
+        amount: 14 
+      Shreads of Iron:
+        material: GRAVEL
+        amount: 7
+        display_name: Shreads of Iron
+        lore: Item used to create the Nether Compressor
   Dye_White_Wool_Red:
     name: Dye White Wool Red
     inputs:
@@ -4036,6 +4054,11 @@ production_recipes:
       Exp Bottle:
         material: EXP_BOTTLE
         amount: 128
+      Shards of a Diamond:
+        material: GRAVEL
+        amount: 1
+        display_name: Shards of a Diamond
+        lore: Item used to create the Nether Compressor 
   Diamond_XP_Bottle_2:
     name: Brew XP Bottles  - 3
     inputs:
@@ -4075,6 +4098,11 @@ production_recipes:
       Exp Bottle:
         material: EXP_BOTTLE
         amount: 128
+      Shards of a Diamond:
+        material: GRAVEL
+        amount: 1
+        display_name: Shards of a Diamond
+        lore: Item used to create the Nether Compressor    
   Diamond_XP_Bottle_3:
     name: Brew XP Bottles  - 4
     inputs:
@@ -4113,6 +4141,11 @@ production_recipes:
       Exp Bottle:
         material: EXP_BOTTLE
         amount: 128
+      Shards of a Diamond:
+        material: GRAVEL
+        amount: 1
+        display_name: Shards of a Diamond
+        lore: Item used to create the Nether Compressor    
   Dye_White_Wool_Gray:
     name: Dye White Wool Gray
     inputs:
@@ -4849,6 +4882,14 @@ production_recipes:
       Exp Bottle:
         material: EXP_BOTTLE
         amount: 24
+      Exp Bottle:
+        material: EXP_BOTTLE
+        amount: 24
+      Shreads of Iron:
+        material: GRAVEL
+        amount: 12
+        display_name: Shreads of Iron
+        lore: Item used to create the Nether Compressor
   Iron_XP_Bottle_3:
     name: Brew XP Bottles  - 4
     inputs:
@@ -4877,6 +4918,11 @@ production_recipes:
       Exp Bottle:
         material: EXP_BOTTLE
         amount: 42
+      Shreads of Iron:
+        material: GRAVEL
+        amount: 21
+        display_name: Shreads of Iron
+        lore: Item used to create the Nether Compressor
   Iron_XP_Bottle_2:
     name: Brew XP Bottles  - 3
     inputs:
@@ -4906,6 +4952,11 @@ production_recipes:
       Exp Bottle:
         material: EXP_BOTTLE
         amount: 42
+      Shreads of Iron:
+        material: GRAVEL
+        amount: 21
+        display_name: Shreads of Iron
+        lore: Item used to create the Nether Compressor
   Diamond_Leggings:
     name: Forge Diamond Leggings.
     production_time: 35
