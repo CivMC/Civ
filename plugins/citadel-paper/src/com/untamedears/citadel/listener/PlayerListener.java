@@ -9,6 +9,8 @@ import static com.untamedears.citadel.Utility.sendMessage;
 import static com.untamedears.citadel.Utility.timeUntilMature;
 import static com.untamedears.citadel.Utility.wouldPlantDoubleReinforce;
 
+import java.util.UUID;
+
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -53,11 +55,13 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void login(PlayerLoginEvent ple) {
-        Player player = ple.getPlayer();
-        String playerName = player.getName();
-
-        PersonalGroupManager personalGroupManager = Citadel.getPersonalGroupManager();
-        boolean hasPersonalGroup = personalGroupManager.hasPersonalGroup(playerName);
+        final Player player = ple.getPlayer();
+        final String playerName = player.getName();
+        final UUID accountId = player.getUniqueId();
+        final PersonalGroupManager personalGroupManager =
+            Citadel.getPersonalGroupManager();
+        final boolean hasPersonalGroup =
+            personalGroupManager.hasPersonalGroup(accountId);
         GroupManager groupManager = Citadel.getGroupManager();
         if(!hasPersonalGroup){
             String groupName = playerName;
@@ -66,13 +70,13 @@ public class PlayerListener implements Listener {
                 groupName = playerName + i;
                 i++;
             }
-            Faction group = new Faction(groupName, playerName);
+            Faction group = new Faction(groupName, accountId);
             groupManager.addGroup(group, player);
-            personalGroupManager.addPersonalGroup(groupName, playerName);
+            personalGroupManager.addPersonalGroup(groupName, accountId);
         } else if(hasPersonalGroup){
-            String personalGroupName = personalGroupManager.getPersonalGroup(playerName).getGroupName();
+            String personalGroupName = personalGroupManager.getPersonalGroup(accountId).getGroupName();
             if(!groupManager.isGroup(personalGroupName)){
-                Faction group = new Faction(personalGroupName, playerName);
+                Faction group = new Faction(personalGroupName, accountId);
                 groupManager.addGroup(group, player);
             }
         }
@@ -135,7 +139,7 @@ public class PlayerListener implements Listener {
         if (access_reinforcement && normal_access_denied && !admin_can_access) {
             Citadel.verbose(
                 VerboseMsg.ReinLocked,
-                player.getName(), block.getLocation().toString());
+                player.getDisplayName(), block.getLocation().toString());
             sendMessage(pie.getPlayer(), ChatColor.RED, "%s is locked", block.getType().name());
             pie.setCancelled(true);
         } else if (action == Action.PHYSICAL) {
@@ -157,7 +161,7 @@ public class PlayerListener implements Listener {
                 if (access_reinforcement && normal_access_denied && admin_can_access) {
                     Citadel.verbose(
                         VerboseMsg.AdminReinLocked,
-                        player.getName(), block.getLocation().toString());
+                        player.getDisplayName(), block.getLocation().toString());
                 }
                 return;
             case FORTIFICATION:

@@ -4,9 +4,11 @@ import static com.untamedears.citadel.Utility.sendMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
@@ -34,6 +36,10 @@ public class MembersCommand extends PlayerCommand {
 	}
 
 	public boolean execute(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+			sender.sendMessage("Console curently isn't supported");
+			return true;
+        }
 		GroupManager groupManager = Citadel.getGroupManager();
 		String groupName = args[0];
 		Faction group = groupManager.getGroup(groupName);
@@ -45,8 +51,9 @@ public class MembersCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, Faction.kDisciplineMsg);
 			return true;
 		}
-		String senderName = sender.getName();
-		if(!group.isFounder(senderName) && !group.isModerator(senderName)){
+        Player player = (Player)sender;
+        UUID accountId = player.getUniqueId();
+		if(!group.isFounder(accountId) && !group.isModerator(accountId)){
 			sendMessage(sender, ChatColor.RED, "Invalid permission to access this group");
 			return true;
 		}
@@ -81,7 +88,7 @@ public class MembersCommand extends PlayerCommand {
 		}
 		for(int m = start; m < end; m++){
 			FactionMember member = members.get(m);
-			String line = member.getMemberName();
+			String line = member.getPlayerName();
 			sendMessage(sender, ChatColor.WHITE, line);
 		}
 		if(page + 1 < numPages){

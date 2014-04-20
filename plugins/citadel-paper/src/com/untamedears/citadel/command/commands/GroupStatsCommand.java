@@ -4,6 +4,7 @@ import static com.untamedears.citadel.Utility.sendMessage;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -65,8 +66,8 @@ public class GroupStatsCommand extends PlayerCommand {
         }
         if (sender instanceof Player && !sender.hasPermission("citadel.admin.ctgstats")) {
             Player player = (Player)sender;
-            String player_name = player.getName();
-            if (!player_name.equals(group.getFounder()) && !group.isModerator(player_name)) {
+            UUID accountId = player.getUniqueId();
+            if (!group.isFounder(accountId) && !group.isModerator(accountId)) {
                 sendMessage(sender, ChatColor.RED, "You do not have access to this group's stats");
                 return true;
             }

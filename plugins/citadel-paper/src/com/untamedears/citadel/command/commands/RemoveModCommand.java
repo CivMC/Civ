@@ -1,6 +1,9 @@
 package com.untamedears.citadel.command.commands;
 
 import static com.untamedears.citadel.Utility.sendMessage;
+import static com.untamedears.citadel.Utility.toAccountId;
+
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -27,9 +30,13 @@ public class RemoveModCommand extends PlayerCommand {
 	}
 
 	public boolean execute(CommandSender sender, String[] args) {
-		String groupName = args[0];
-		GroupManager groupManager = Citadel.getGroupManager();
-		Faction group = groupManager.getGroup(groupName);
+        if (!(sender instanceof Player)) {
+			sender.sendMessage("Console curently isn't supported");
+			return true;
+        }
+		final String groupName = args[0];
+		final GroupManager groupManager = Citadel.getGroupManager();
+		final Faction group = groupManager.getGroup(groupName);
 		if(group == null){
 			sendMessage(sender, ChatColor.RED, "Group doesn't exist");
 			return true;
@@ -38,23 +45,24 @@ public class RemoveModCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, Faction.kDisciplineMsg);
 			return true;
 		}
-		String senderName = sender.getName();
-		if(!group.isFounder(senderName)){
+        final Player player = (Player)sender;
+		if(!group.isFounder(player.getUniqueId())){
 			sendMessage(sender, ChatColor.RED, "Invalid permission to modify this group");
 			return true;
 		}
-		String targetName = args[1];
-		if(!group.isModerator(targetName)){
+        final String targetName = args[1];
+        final UUID targetId = toAccountId(targetName);
+        if (targetId == null) {
+			sendMessage(sender, ChatColor.RED, "Unknown player: " + targetName);
+			return true;
+        }
+		if(!group.isModerator(targetId)){
 			sendMessage(sender, ChatColor.RED, "%s is not a moderator of %s", targetName, groupName);
 			return true;
 		}
-        Player player = null;
-        if (sender instanceof Player) {
-            player = (Player)sender;
-        }
-		groupManager.removeModeratorFromGroup(groupName, targetName, player);
-		if(!group.isMember(targetName)){
-			groupManager.addMemberToGroup(groupName, targetName, player);
+		groupManager.removeModeratorFromGroup(groupName, targetId, player);
+		if(!group.isMember(targetId)){
+			groupManager.addMemberToGroup(groupName, targetId, player);
 		}
 		sendMessage(sender, ChatColor.GREEN, "%s has been removed as moderator from %s and demoted to a member. Use /ctdisallow to remove as member", targetName, groupName);
 		return true;

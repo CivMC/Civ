@@ -9,12 +9,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -95,7 +98,7 @@ public class Utility {
         Faction group = state.getFaction();
         if(group == null) {
             try {
-                group = Faction.getPersonalGroup(player.getName());
+                group = Faction.getPersonalGroup(player.getUniqueId());
             } catch (NullPointerException e){
                 sendMessage(player, ChatColor.RED, "You don't seem to have a personal group. Try logging out and back in first");
             }
@@ -192,7 +195,7 @@ public class Utility {
         sendThrottledMessage(player, ChatColor.GREEN, "Reinforced with %s at security level %s", material.getMaterial().name(), securityLevelText);
         Citadel.verbose(
             VerboseMsg.ReinCreated,
-            player.getName(), material.getMaterialId(), block.getWorld().getName(),
+            player.getDisplayName(), material.getMaterialId(), block.getWorld().getName(),
             block.getX(), block.getY(), block.getZ());
         // TODO: enable chained flashers, they're pretty cool
         //new BlockFlasher(block, material.getFlasher()).start(getPlugin());
@@ -278,8 +281,8 @@ public class Utility {
                         player_z < min_z || player_z > max_z) {
                     continue;
                 }
-                if (!reinforcement.isAccessible(player) &&
-                        !player.hasPermission("citadel.admin.accesssecurable")) {
+                if (!reinforcement.isAccessible(player)
+                        && !player.hasPermission("citadel.admin.accesssecurable")) {
                     continue;
                 }
                 double distanceSquared = playerLocation.distance(reinLocation);
@@ -564,5 +567,23 @@ public class Utility {
             }
         }
         return false;
+    }
+
+    // Given either a UUID or name, return the corresponding player's
+    //  account ID or null.
+    public static UUID toAccountId(String uuidOrName) {
+        // See if it is a player UUID
+        try {
+            UUID id = UUID.fromString(uuidOrName);
+            if (Citadel.getAccountIdManager().getPlayerName(id) != null) {
+                return id;
+            }
+        } catch (Exception ex) {}
+        // Maybe it's a name
+        OfflinePlayer player = Bukkit.getOfflinePlayer(uuidOrName);
+        if (player != null) {
+            return player.getUniqueId();
+        }
+        return null;
     }
 }

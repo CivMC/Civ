@@ -6,12 +6,17 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
 import javax.persistence.PersistenceException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -96,15 +101,6 @@ public class CitadelDao extends MyDatabase {
         getDatabase().delete(object);
     }
 
-    public Faction getOrCreateFaction(String name, String founder) {
-        Faction faction = findGroupByName(name);
-        if (faction == null) {
-            faction = new Faction(name, founder);
-            save(faction);
-        }
-        return faction;
-    }
-    
     public Set<Faction> findGroupsByFounder(String founder){
     	return getDatabase().createQuery(Faction.class, "find faction where founder = :founder")
     			.setParameter("founder", founder)
@@ -234,9 +230,10 @@ public class CitadelDao extends MyDatabase {
     	return row.getInteger("count");  
     }
 
-	public int countPlayerGroups(String playerName) {
-    	SqlRow row = getDatabase().createSqlQuery("select count(*) as count from faction where founder = :founder")
-    			.setParameter("founder", playerName)
+	public int countPlayerGroups(UUID accountId) {
+    	SqlRow row = getDatabase().createSqlQuery(
+                "select count(*) as count from faction where founder = :founder and (discipline_flags & 0x02) = 0")
+    			.setParameter("founder", accountId.toString())
     			.findUnique();
     	return row.getInteger("count"); 
 	}
@@ -357,6 +354,38 @@ public class CitadelDao extends MyDatabase {
 	        	getDatabase().commitTransaction();
     		}
     	}
+    }
+
+    public Map<UUID, String> loadAccountIdMap() {
+        final String sql = "SELECT account, name FROM citadel_account_id_map;";
+        Map<UUID, String> result = new TreeMap<UUID, String>();
+        List<SqlRow> resultSet = getDatabase().createSqlQuery(sql).findList();
+        for (SqlRow row : resultSet) {
+            final String accountIdStr = row.getString("account");
+            final String playerName = row.getString("name");
+            UUID accountId;
+            try {
+                accountId = UUID.fromString(accountIdStr);
+            } catch (Exception ex) {
+                Citadel.info(String.format("Invalid accountId for %s: %s", playerName, accountIdStr));
+                continue;
+            }
+            result.put(accountId, playerName);
+        }
+        return result;
+    }
+
+    public void associatePlayerAccount(UUID accountId, String playerName) {
+        SqlUpdate sql = getDatabase().createSqlUpdate(
+            "DELETE FROM citadel_account_id_map WHERE accountId = :uuid")
+            .setParameter("uuid", accountId.toString());
+        getDatabase().execute(sql);
+
+        sql = getDatabase().createSqlUpdate(
+            "INSERT INTO citadel_account_id_map (account, name) VALUES (:uuid, :pname)")
+            .setParameter("uuid", accountId.toString())
+            .setParameter("pname", playerName);
+        getDatabase().execute(sql);
     }
 
     public void updateDatabase() {
@@ -510,6 +539,127 @@ public class CitadelDao extends MyDatabase {
 
             dbVersion = advanceDbVersion(dbVersion);
         }
+
+        if (dbVersion.getDbVersion() == 4) {
+            Citadel.info("Updating to DB v5");
+            performAccountIdUpdate();
+            dbVersion = advanceDbVersion(dbVersion);
+        }
+    }
+
+    private void performAccountIdUpdate() {
+        SqlUpdate sql;
+
+        Citadel.info("WARNING: This will take a while. Citadel is converting");
+        Citadel.info("account names to account UUIDs.");
+
+        final Map<UUID, String> account_id_map = retrieveKnownAccountIdMap();
+
+        Citadel.info("Importing player name -> account ID mappings");
+        sql = getDatabase().createSqlUpdate(
+            "CREATE TABLE IF NOT EXISTS citadel_account_id_map "
+            + "(account CHAR(36) NOT NULL, name VARCHAR(16) NOT NULL, "
+            + "PRIMARY KEY (account), UNIQUE KEY ix_name (name))");
+        getDatabase().execute(sql);
+        ArrayList<Map.Entry<UUID, String>> batch = new ArrayList<Map.Entry<UUID, String>>(50);
+        for (Map.Entry<UUID, String> account : account_id_map.entrySet()) {
+            batch.add(account);
+            if (batch.size() >= 50) {
+                insertAccountsIntoTmpAccountTbl(batch);
+                batch.clear();
+                batch.ensureCapacity(50);
+            }
+        }
+
+        Citadel.info("Converting faction table");
+        sql = getDatabase().createSqlUpdate(
+            "UPDATE faction AS f "
+            + "JOIN citadel_account_id_map AS m ON m.name = LOWER(f.founder) "
+            + "SET founder=m.account");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "ALTER TABLE faction MODIFY founder CHAR(36) NOT NULL");
+        getDatabase().execute(sql);
+
+        Citadel.info("Converting moderator table");
+        sql = getDatabase().createSqlUpdate(
+            "DROP INDEX uq_moderator_1 ON moderator");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "UPDATE moderator AS f "
+            + "JOIN citadel_account_id_map AS m ON m.name = LOWER(f.member_name) "
+            + "SET member_name=m.account");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "DELETE FROM moderator WHERE member_name NOT REGEXP "
+            + "'[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}'");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "ALTER TABLE moderator MODIFY member_name CHAR(36) NOT NULL");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "CREATE UNIQUE INDEX uq_moderator_1 ON moderator (`faction_name`,`member_name`);");
+        getDatabase().execute(sql);
+
+        Citadel.info("Converting faction_member table");
+        sql = getDatabase().createSqlUpdate(
+            "DROP INDEX uq_faction_member_1 ON faction_member");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "UPDATE faction_member AS f "
+            + "JOIN citadel_account_id_map AS m ON m.name = LOWER(f.member_name) "
+            + "SET member_name=m.account");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "DELETE FROM faction_member WHERE member_name NOT REGEXP "
+            + "'[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}'");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "ALTER TABLE faction_member MODIFY member_name CHAR(36) NOT NULL");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "CREATE UNIQUE INDEX uq_faction_member_1 ON faction_member (`faction_name`,`member_name`);");
+        getDatabase().execute(sql);
+
+        Citadel.info("Converting personal_group table");
+        sql = getDatabase().createSqlUpdate(
+            "UPDATE personal_group AS f "
+            + "JOIN citadel_account_id_map AS m ON m.name = LOWER(f.owner_name) "
+            + "SET owner_name=m.account");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "ALTER TABLE personal_group MODIFY owner_name CHAR(36) NOT NULL");
+        getDatabase().execute(sql);
+    }
+
+    protected void insertAccountsIntoTmpAccountTbl(final List<Map.Entry<UUID, String>> batch) {
+        // As the Mojang ID format is the UUID string without dashes and the
+        //  MySql binary value format is '0x' prepended to a string of hexadecimal
+        //  chars, this will just the Mojang UUID converter.
+        final StringBuilder sb = new StringBuilder();
+        sb.append("INSERT IGNORE INTO citadel_account_id_map (account, name) VALUES ");
+        boolean first = true;
+        for (Map.Entry<UUID, String> account : batch) {
+            if (first) {
+                sb.append(String.format(
+                    "(UPPER('%s'),LOWER('%s'))", account.getKey().toString(), account.getValue()));
+                first = false;
+            } else {
+                sb.append(String.format(
+                    ",(UPPER('%s'),LOWER('%s'))", account.getKey().toString(), account.getValue()));
+            }
+        }
+        sb.append(";");
+        SqlUpdate batchInsert = getDatabase().createSqlUpdate(sb.toString());
+        getDatabase().execute(batchInsert);
+    }
+
+    public Map<UUID, String> retrieveKnownAccountIdMap() {
+        Map<UUID, String> map = new TreeMap<UUID, String>();
+        for (final OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+            map.put(player.getUniqueId(), player.getName());
+        }
+        return map;
     }
 
     protected DbVersion advanceDbVersion(DbVersion currentVersion) {

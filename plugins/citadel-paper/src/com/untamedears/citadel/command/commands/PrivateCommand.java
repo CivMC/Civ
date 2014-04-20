@@ -28,7 +28,7 @@ public class PrivateCommand extends PlayerCommand {
 	public boolean execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
 		PlayerState state = PlayerState.get(player);
-		state.setFaction(Faction.getPersonalGroup(player.getName()));
+		state.setFaction(Faction.getPersonalGroup(player.getUniqueId()));
 		setSingleMode(SecurityLevel.PRIVATE, state, player);
 		return true;
 	}

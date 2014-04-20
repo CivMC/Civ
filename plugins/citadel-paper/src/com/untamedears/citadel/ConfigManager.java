@@ -128,7 +128,6 @@ public class ConfigManager {
             }
         }
         for (String verboseMsg : config.getStringList("verboseMessages")) {
-            Citadel.info(String.format("verboseMessages %s", verboseMsg)); //XXX
             try {
                 verboseMsg = verboseMsg.toLowerCase();
                 VerboseMsg setting = Citadel.INSENSITIVE_VERBOSE_MESSAGES.get(verboseMsg);
@@ -136,7 +135,6 @@ public class ConfigManager {
                     continue;
                 }
                 verboseMessageSettings.put(setting, true);
-                Citadel.info(String.format("%s enabled", setting.name())); //XXX
             } catch (Exception ex) {
                 // Skip unknown value
             }

@@ -1,5 +1,8 @@
 package com.untamedears.citadel;
 
+import java.util.UUID;
+
+import com.untamedears.citadel.dao.CitadelDao;
 import com.untamedears.citadel.entity.PersonalGroup;
 
 /**
@@ -9,40 +12,33 @@ import com.untamedears.citadel.entity.PersonalGroup;
  */
 public class PersonalGroupManager {
 
-	private PersonalGroupStorage storage;
+	private CitadelDao dao_;
+
+    public void initialize(CitadelDao dao) {
+        dao_ = dao;
+    }
 	
-	public void setStorage(PersonalGroupStorage storage){
-		this.storage = storage;
+	public PersonalGroup getPersonalGroup(UUID accountId){
+		return this.dao_.findPersonalGroup(accountId.toString());
 	}
 	
-	public PersonalGroupStorage getStorage(){
-		return this.storage;
-	}
-	
-	public PersonalGroup getPersonalGroup(String ownerName){
-		return this.storage.findPersonalGroup(ownerName);
-	}
-	
-	public void addPersonalGroup(String groupName, String ownerName){
-		addPersonalGroup(new PersonalGroup(groupName, ownerName));
+	public void addPersonalGroup(String groupName, UUID ownerAccountId){
+		addPersonalGroup(new PersonalGroup(groupName, ownerAccountId.toString()));
 	}
 	
 	public void addPersonalGroup(PersonalGroup group){
-		this.storage.addPersonalGroup(group);
+		this.dao_.save(group);	
 	}
 	
-	public void removePersonalGroup(String groupName, String ownerName){
-		removePersonalGroup(new PersonalGroup(groupName, ownerName));
+	public void removePersonalGroup(String groupName, UUID ownerAccountId){
+		removePersonalGroup(new PersonalGroup(groupName, ownerAccountId.toString()));
 	}
 	
 	public void removePersonalGroup(PersonalGroup group){
-		this.storage.removePersonalGroup(group);
+		this.dao_.delete(group);
 	}
-	
-	public boolean hasPersonalGroup(String memberName){
-		if(getPersonalGroup(memberName) != null){
-			return true;
-		}
-		return false;
+
+	public boolean hasPersonalGroup(UUID accountId){
+		return getPersonalGroup(accountId) != null;
 	}
 }

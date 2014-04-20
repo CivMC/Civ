@@ -1,9 +1,15 @@
 package com.untamedears.citadel.entity;
 
+import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import com.untamedears.citadel.Citadel;
 
 /**
  * User: JonnyD
@@ -16,6 +22,7 @@ import javax.persistence.UniqueConstraint;
 		   @UniqueConstraint(columnNames={"faction_name", "member_name"})})
 public class Moderator implements Comparable {
 
+    // memberName now refers to the account UUID
 	@Id private String memberName;
 	@Id private String factionName;
 	
@@ -29,11 +36,20 @@ public class Moderator implements Comparable {
 	public String getMemberName(){
 		return this.memberName;
 	}
-	
+
+    // This is the account ID for the player (in UUID.toString format)
 	public void setMemberName(String memberName){
 		this.memberName = memberName;
 	}
+
+    public String getPlayerName() {
+        return Citadel.getAccountIdManager().getPlayerName(this.memberName);
+    }
 	
+    public Player getPlayer() {
+        return Bukkit.getPlayerExact(getPlayerName());
+    }
+
 	public String getFactionName(){
 		return factionName;
 	}
