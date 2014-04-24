@@ -7345,7 +7345,7 @@ production_recipes:
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
-        amount: 538
+        amount: 516
   Iron_XP_Bottle_5:
     name: Brew XP Bottles  - 6
     inputs:
@@ -7367,7 +7367,7 @@ production_recipes:
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
-        amount: 922
+        amount: 884
   Iron_XP_Bottle_6:
     name: Brew XP Bottles  - 7
     inputs:
@@ -7404,7 +7404,7 @@ production_recipes:
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
-        amount: 1613
+        amount: 1546
   Iron_XP_Bottle_7:
     name: Brew XP Bottles  - 8
     inputs:
@@ -7441,7 +7441,7 @@ production_recipes:
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
-        amount: 1613
+        amount: 1546
   Diamond_XP_Bottle_4:
     name: Brew XP Bottles  - 5
     inputs:
@@ -7493,7 +7493,7 @@ production_recipes:
     outputs:
       Emerald Block:
         material: EMERALD_BLOCK 
-        amount: 81
+        amount: 66
   Diamond_XP_Bottle_5:
     name: Brew XP Bottles  - 6
     inputs:
@@ -7545,7 +7545,7 @@ production_recipes:
     outputs:
       Emerald Block:
         material: EMERALD_BLOCK 
-        amount: 81
+        amount: 66
   Diamond_XP_Bottle_6:
     name: Brew XP Bottles  - 7
     inputs:
@@ -7597,7 +7597,7 @@ production_recipes:
     outputs:
       Emerald Block:
         material: EMERALD_BLOCK 
-        amount: 81
+        amount: 66
   Diamond_XP_Bottle_7:
     name: Brew XP Bottles  - 8
     inputs:
@@ -7649,185 +7649,185 @@ production_recipes:
     outputs:
       Emerald Block:
         material: EMERALD_BLOCK 
-        amount: 81
+        amount: 66
   Nether_Craft_Beef:
     name: Craft Create of Beef
     inputs: 
        Cooked Beef:
          material: COOKED_BEEF
-         amount: 64
+         amount: 2048
     outputs:
        Create of Beef:
          material: WOOD
          durability: 0
-         amount: 1
+         amount: 32
          display_name: Create of Beef
   Nether_Craft_Pork:
     name: Craft Create of Pork
     inputs: 
        Grilled Pork:
          material: GRILLED_PORK
-         amount: 64
+         amount: 2048
     outputs:
        Create of Pork:
          material: WOOD
          durability: 0
-         amount: 1
+         amount: 32
          display_name: Create of Pork
   Nether_Craft_Melons:
     name: Craft Create of Melons
     inputs: 
        Melon Blocks:
          material: MELON_BLOCK
-         amount: 64
+         amount: 2048
     outputs:
        Create of Melons:
          material: WOOD
          durability: 0
-         amount: 1
+         amount: 32
          display_name: Create of Melons
   Nether_Craft_Sugar:
     name: Craft Create of Sugar
     inputs: 
        Sugar:
          material: SUGAR
-         amount: 64
+         amount: 2048
     outputs:
        Create of Sugar:
          material: WOOD
          durability: 0
-         amount: 1
+         amount: 32
          display_name: Create of Sugar
   Nether_Craft_Nether_Warts:
     name: Craft Create of Nether Warts
     inputs: 
        Nether Wart:
          material: NETHER_WARTS
-         amount: 64
+         amount: 2048
     outputs:
        Create of Nether Warts:
          material: WOOD
          durability: 0
-         amount: 1
+         amount: 32
          display_name: Create of Nether Warts
   Nether_Craft_Cookies:
     name: Craft Create of Cookies
     inputs: 
        Cookie:
          material: COOKIE
-         amount: 64
+         amount: 2048
     outputs:
        Create of Cookies:
          material: WOOD
          durability: 0
-         amount: 1
+         amount: 32
          display_name: Create of Cookies
   Nether_Craft_Potatoes:
     name: Craft Create of Potatoes
     inputs: 
        Potato:
          material: BAKED_POTATO
-         amount: 64
+         amount: 2048
     outputs:
        Create of Potatoes:
          material: WOOD
          durability: 0
-         amount: 1
+         amount: 32
          display_name: Create of Potatoes
   Nether_Craft_Carrots:
     name: Craft Create of Carrots
     inputs: 
        Carrot:
          material: CARROT
-         amount: 64
+         amount: 2048
     outputs:
        Create of Carrots:
          material: WOOD
          durability: 0
-         amount: 1
+         amount: 32
          display_name: Create of Carrots
   Nether_Craft_Cocoa:
     name: Craft Create of Cocoa
     inputs: 
        Cocoa:
          material: COCOA
-         amount: 64
+         amount: 2048
     outputs:
        Create of Cocoa:
          material: WOOD
          durability: 0
-         amount: 1
+         amount: 32
          display_name: Create of Cocoa
   Nether_Craft_Pumpkins:
     name: Craft Create of Pumpkinss
     inputs: 
        Pumpkin:
          material: PUMPKIN
-         amount: 64
+         amount: 2048
     outputs:
        Create of Pumpkinss:
          material: WOOD
          durability: 0
-         amount: 1
+         amount: 32
          display_name: Create of Pumpkinss
   Nether_Craft_Cacti:
     name: Craft Create of Cacti
     inputs: 
        Catus:
          material: CACTUS
-         amount: 64
+         amount: 2048
     outputs:
        Create of Cacti:
          material: WOOD
          durability: 0
-         amount: 1
+         amount: 32
          display_name: Create of Cacti
   Nether_Craft_Bread:
     name: Craft Create of Bread
     inputs: 
        Bread:
          material: BREAD
-         amount: 64
+         amount: 2048
     outputs:
        Create of Bread:
          material: WOOD
          durability: 0
-         amount: 1
+         amount: 32
          display_name: Create of Bread
   Nether_Craft_Wheat:
     name: Craft Create of Wheat
     inputs: 
        Wheat:
          material: WHEAT
-         amount: 64
+         amount: 2048
     outputs:
        Create of Bread:
          material: WOOD
          durability: 0
-         amount: 1
+         amount: 32
          display_name: Create of Wheat
   Nether_Craft_Grass:
     name: Craft Create of Grass
     inputs: 
        Grass:
          material: GRASS
-         amount: 64
+         amount: 2048
     outputs:
        Create of Grass:
          material: WOOD
          durability: 0
-         amount: 1
+         amount: 32
          display_name: Create of Grass
   Nether_Craft_Fish:
     name: Craft Create of Fish
     inputs: 
        Fish:
          material: COOKED_FISH
-         amount: 64
+         amount: 2048
     outputs:
        Create of Fish:
          material: WOOD
          durability: 0
-         amount: 1
+         amount: 32
          display_name: Create of Fish
         
