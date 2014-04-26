@@ -295,11 +295,19 @@ public class CitadelDao extends MyDatabase {
 				.setParameter("groupName", groupName);
 		getDatabase().execute(update);
 	}
-
-    public Set<FactionDelete> loadFactionDeletions() {
-        return getDatabase()
-            .createQuery(FactionDelete.class, "find faction_delete")
-            .findSet();
+    
+    /**
+     * @author GFQ
+     * @date 4/25/2014
+     *
+     * @brief Removes factions from the database that are marked as deleted
+     */
+    public void removeDeletedFactions() {
+		SqlUpdate update = getDatabase().createSqlUpdate(String.format("delete from faction where discipline_flags = %d", Faction.kDeletedFlag));
+		getDatabase().execute(update);
+		
+		update = getDatabase().createSqlUpdate("delete from faction_delete");
+		getDatabase().execute(update);
     }
 
     public void updateDatabase() {
