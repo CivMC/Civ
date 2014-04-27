@@ -17,9 +17,9 @@ Modes:
  * When a Bastion block is clicked remove the bastion field while maintaing the reinforcement
 * NORMAl
  * Defualt clicking on blocks does nothing
-* CREATE
- * Any target block reinforced will become a Bastion Block
 * BASTION
+ * Any target block reinforced will become a Bastion Block
+* CREATE
  * Any reinforced target block clicked will becomea  Bastion if you have access
 
 
