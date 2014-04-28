@@ -2605,7 +2605,7 @@ production_factories:
       - Nether_Craft_Pumpkins
       - Nether_Craft_Cacti
       - Nether_Craft_Bread
-      - Nether_Craft_Beef
+      - Nether_Craft_Steak
       - Nether_Craft_Wheat
       - Nether_Craft_Fish
     repair_multiple: 2
@@ -7433,11 +7433,11 @@ production_recipes:
         durability: 0
         amount: 32
         display_name: Create of Bread
-      Create of Beef:
+      Create of Steak:
         material: WOOD
         durability: 0
         amount: 16
-        display_name: Create of Beef
+        display_name: Create of Steak
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
@@ -7641,27 +7641,27 @@ production_recipes:
         durability: 0
         amount: 128
         display_name: Create of Cookies
-      Create of Beef:
+      Create of Steak:
         material: WOOD
         durability: 0
         amount: 16
-        display_name: Create of Beef
+        display_name: Create of Steak
     outputs:
       Emerald Block:
         material: EMERALD_BLOCK 
         amount: 66
-  Nether_Craft_Beef:
-    name: Craft Create of Beef
+  Nether_Craft_Steak:
+    name: Craft Create of Steak
     inputs: 
        Cooked Beef:
          material: COOKED_BEEF
          amount: 2048
     outputs:
-       Create of Beef:
+       Create of Steak:
          material: WOOD
          durability: 0
          amount: 32
-         display_name: Create of Beef
+         display_name: Create of Steak
   Nether_Craft_Pork:
     name: Craft Create of Pork
     inputs: 
@@ -7702,7 +7702,7 @@ production_recipes:
     name: Craft Create of Nether Warts
     inputs: 
        Nether Wart:
-         material: NETHER_WARTS
+         material: NETHER_STALK
          amount: 2048
     outputs:
        Create of Nether Warts:
@@ -7738,7 +7738,7 @@ production_recipes:
     name: Craft Create of Carrots
     inputs: 
        Carrot:
-         material: CARROT
+         material: CARROT_ITEM 
          amount: 2048
     outputs:
        Create of Carrots:
@@ -7750,7 +7750,8 @@ production_recipes:
     name: Craft Create of Cocoa
     inputs: 
        Cocoa:
-         material: COCOA
+         material: INK_SACK 
+         durability: 3
          amount: 2048
     outputs:
        Create of Cocoa:
@@ -7759,17 +7760,17 @@ production_recipes:
          amount: 32
          display_name: Create of Cocoa
   Nether_Craft_Pumpkins:
-    name: Craft Create of Pumpkinss
+    name: Craft Create of Pumpkins
     inputs: 
        Pumpkin:
          material: PUMPKIN
          amount: 2048
     outputs:
-       Create of Pumpkinss:
+       Create of Pumpkins:
          material: WOOD
          durability: 0
          amount: 32
-         display_name: Create of Pumpkinss
+         display_name: Create of Pumpkins
   Nether_Craft_Cacti:
     name: Craft Create of Cacti
     inputs: 
