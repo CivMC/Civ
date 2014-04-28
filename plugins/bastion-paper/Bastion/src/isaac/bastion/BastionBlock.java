@@ -156,6 +156,11 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			ghost=true;
 			location.getBlock().setType(Material.AIR);
 			set.updated(this);
+			
+			Bastion.getPlugin().getLogger().info("Removed bastion "+id);
+			Bastion.getPlugin().getLogger().info("Had been placed on "+placed);
+			Bastion.getPlugin().getLogger().info("At "+location);
+			
 		}
 	}
 	public void silentClose(){
@@ -180,11 +185,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			return (((scaleEnd-scaleStart)/(float)scaleTime)*time+scaleStart);
 		} else{
 			return scaleEnd;
-		}
-	}
-	public void free_id(){
-		if(id==highestId){
-			--highestId;
 		}
 	}
 	static public int getHighestID(){
@@ -245,8 +245,11 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	//Checks if location is in the bastion's field
 	public boolean blocked(Location loc,String playerName)
 	{
-		if(Bukkit.getPlayer(playerName).hasPermission("Bastion.bypass")) //let admins do whatever 
-			return false; 
+		
+		Player bastion_owner  = Bukkit.getPlayer(playerName);
+		if(bastion_owner instanceof Player)
+			if(bastion_owner.hasPermission("Bastion.bypass")) //let admins do whatever 
+				return false; 
 		
 		PlayerReinforcement reinforcement = getReinforcement();
 
@@ -301,8 +304,10 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	//checks if a player would be allowed to place
 	public boolean canPlace(String playerName){
 		
-		if(Bukkit.getPlayer(playerName).hasPermission("Bastion.bypass")) //let admins do whatever 
-			return true; 
+		Player bastion_owner  = Bukkit.getPlayer(playerName);
+		if(bastion_owner instanceof Player)
+			if(bastion_owner.hasPermission("Bastion.bypass")) //let admins do whatever 
+				return true; 
 		
 		
 		PlayerReinforcement reinforcement = getReinforcement();
@@ -453,7 +458,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		if(scaleTime==0){
 			result+="Maturity timers are disabled \n";
 		} else{
-			scaleTime_as_hours = ((double) scaleTime)/(1000*60);
+			scaleTime_as_hours = ((double) scaleTime)/(1000*60*60);
 		}
 		if (reinforcement instanceof PlayerReinforcement) {
 			strength=reinforcement.getDurability();
@@ -489,15 +494,17 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			fractionOfMaturityTime=((double) (System.currentTimeMillis()-placed))/scaleTime;
 		}
 		if(fractionOfMaturityTime==0){
-			result=ChatColor.GREEN+"No strength";
-		} else if(fractionOfMaturityTime<0.25){
-			result=ChatColor.GREEN+"Some strength";
-		} else if(fractionOfMaturityTime<0.5){
-			result=ChatColor.GREEN+"Moderate strength";
-		} else if(fractionOfMaturityTime<0.75){
-			result=ChatColor.GREEN+"High strength";
+			result = ChatColor.GREEN+"No strength";
+		} else if(fractionOfMaturityTime < 0.25){
+			result = ChatColor.GREEN+"Some strength";
+		} else if(fractionOfMaturityTime < 0.5){
+			result = ChatColor.GREEN+"Low strength";
+		} else if(fractionOfMaturityTime < 0.75){
+			result = ChatColor.GREEN+"Moderate strength";
+		} else if(fractionOfMaturityTime < 1){
+			result = ChatColor.GREEN+"High strength";
 		} else if(fractionOfMaturityTime>=1){
-			result=ChatColor.GREEN+"Full strength";
+			result = ChatColor.GREEN+"Full strength";
 		}
 
 

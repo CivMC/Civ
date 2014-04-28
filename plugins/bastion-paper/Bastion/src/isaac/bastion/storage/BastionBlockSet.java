@@ -83,19 +83,21 @@ Iterable<BastionBlock> {
 
 	}
 
-	public Set<BastionBlock> getPossibleTeleportBlocking(Location loc,String playerName){
-		Set<QTBox> all=blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ(),true);
-		Set<BastionBlock> mightBlock=new TreeSet<BastionBlock>();
-
-		for(QTBox box : all){
+	public Set<BastionBlock> getPossibleTeleportBlocking(Location loc, double maxDistance){
+		Set<QTBox> boxes = blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ(),true);
+		
+		double maxDistanceSquared = maxDistance * maxDistance;
+		
+		Set<BastionBlock> result = new TreeSet<BastionBlock>();
+		
+		for(QTBox box : boxes){
 			if(box instanceof BastionBlock){
-				BastionBlock block=(BastionBlock) box;
-				if(!block.canPlace(playerName)){
-					mightBlock.add(block);
-				}
+				BastionBlock bastion = (BastionBlock)box;
+				if(bastion.getLocation().distanceSquared(loc) < maxDistanceSquared)
+					result.add(bastion);
 			}
 		}
-		return mightBlock;
+		return result;
 	}
 	public BastionBlock getBastionBlock(Location loc) {
 		Set<? extends QTBox> possible=forLocation(loc);

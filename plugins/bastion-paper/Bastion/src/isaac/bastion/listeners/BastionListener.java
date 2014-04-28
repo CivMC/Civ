@@ -91,7 +91,7 @@ implements Listener
 	public void onReinforcement(CreateReinforcementEvent event) {
 
 		if (event.getBlock().getType() == config.getBastionBlockMaterial() && 
-				PlayersStates.playerInMode(event.getPlayer(), Mode.CREATE)) {
+				PlayersStates.playerInMode(event.getPlayer(), Mode.CREATE) && event.getReinforcement() instanceof PlayerReinforcement) {
 			PlayersStates.touchPlayer(event.getPlayer());
 			bastionManager.addBastion(event.getBlock().getLocation(),(PlayerReinforcement) event.getReinforcement());
 			event.getPlayer().sendMessage(ChatColor.GREEN+"Bastion block created");

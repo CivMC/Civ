@@ -52,17 +52,20 @@ public class BastionBlockStorage {
 		}
 	}
 	public void saveBastionBlock(BastionBlock block){
-		
 		try {
-			removeBastion.setInt(1, block.getID());
-			removeBastion.execute();
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		if(!block.ghost()){
 			try {
+				removeBastion.setInt(1, block.getID());
+				removeBastion.execute();
+			} catch (SQLException e) {
+				Bastion.getPlugin().getLogger().info("Failed to delete " + block.getID());
+				Bastion.getPlugin().getLogger().info("Location was " + block.getLocation());
+				Bastion.getPlugin().getLogger().info("It was placed on " + block.getPlaced());
+				Bastion.getPlugin().getLogger().info("Its balance is " + block.getBalance() + "\n\n");
+				
+				e.printStackTrace();
+				throw e;
+			}
+			if(!block.ghost()){
 				saveBastion.setInt   (1, block.getID());
 				saveBastion.setInt   (2, block.getLocation().getBlockX());
 				saveBastion.setInt   (3, block.getLocation().getBlockY());
@@ -70,11 +73,16 @@ public class BastionBlockStorage {
 				saveBastion.setString(5, block.getLocation().getWorld().getName());
 				saveBastion.setLong  (6, block.getPlaced());
 				saveBastion.setDouble(7, block.getBalance());
+
 				saveBastion.execute();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+		} catch (SQLException e) {
+			Bastion.getPlugin().getLogger().info("Failed to save " + block.getID());
+			Bastion.getPlugin().getLogger().info("Location was " + block.getLocation());
+			Bastion.getPlugin().getLogger().info("It was placed on " + block.getPlaced());
+			Bastion.getPlugin().getLogger().info("Its balance is " + block.getBalance() + "\n\n");
+			
+			e.printStackTrace();
 		}
 	}
 	public Enumeration<BastionBlock> getAllSnitches(World world) {

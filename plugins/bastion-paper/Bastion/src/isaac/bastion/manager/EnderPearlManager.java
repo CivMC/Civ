@@ -40,7 +40,11 @@ public class EnderPearlManager {
 		try {
 		if(pearl instanceof CustomNMSEntityEnderPearl)
 			gravity=((CustomNMSEntityEnderPearl)pearl).y_adjust_;
-		} catch(NoClassDefFoundError e ){
+		else
+			Bastion.getPlugin().getLogger().info("Humbug not found");
+		
+		} 
+		catch(NoClassDefFoundError e ){
 			Bastion.getPlugin().getLogger().info("Humbug not found");
 		}
 
@@ -70,7 +74,7 @@ public class EnderPearlManager {
 			playerName = threw.getName();
 		}
 
-		Set<BastionBlock> possible = bastions.getPossibleTeleportBlocking(pearl.getLocation(),playerName); //all the bastion blocks within range of the pearl
+		Set<BastionBlock> possible = bastions.getPossibleTeleportBlocking(pearl.getLocation(), maxDistance); //all the bastion blocks within range of the pearl
 
 		//no need to do anything if there aren't any bastions to run into.
 		if(possible.isEmpty()){
@@ -81,7 +85,7 @@ public class EnderPearlManager {
 		Location end=start.clone();
 		end.add(twoDSpeed.multiply(maxTicks)); 
 
-		Set<BastionBlock> couldCollide=simpleCollide(possible, start.clone(), end.clone()); //all the bastions where the pearl passes over or under their shadow
+		Set<BastionBlock> couldCollide=simpleCollide(possible, start.clone(), end.clone(), playerName); //all the bastions where the pearl passes over or under their shadow
 
 		if(couldCollide.isEmpty()){
 			return;
@@ -109,12 +113,13 @@ public class EnderPearlManager {
 		}
 
 	}
-	private Set<BastionBlock> simpleCollide(Set<BastionBlock> possible,Location start,Location end){
+	private Set<BastionBlock> simpleCollide(Set<BastionBlock> possible,Location start,Location end, String playerName){
 		Set<BastionBlock> couldCollide=new TreeSet<BastionBlock>();
 		for(BastionBlock bastion : possible){
 			Location loc=bastion.getLocation().clone();
 			loc.setY(0);
-			if(circleLineCollide(start,end,loc,BastionBlock.getRadiusSquared()))
+			
+			if(circleLineCollide(start,end,loc,BastionBlock.getRadiusSquared()) &&  !bastion.canPlace(playerName))
 				couldCollide.add(bastion);
 		}
 

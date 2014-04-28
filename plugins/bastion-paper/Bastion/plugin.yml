@@ -1,5 +1,5 @@
 name: Bastion
-version: 0.5.0
+version: 0.5.2
 main: isaac.bastion.Bastion
 depend: [Citadel]
 softdepend: [Humbug]
@@ -26,7 +26,7 @@ commands:
       permission: Bastion.normal
    bsb:
       description: Turns mode to Bastion mode
-      usage: /bsc set the mode back to bastion when clicking a reinforced target block it becomes a Bastion 
+      usage: /bsb set the mode back to bastion when clicking a reinforced target block it becomes a Bastion 
       permission: Bastion.normal
    bsm:
       description: Insta matures any bastion left clicked 
