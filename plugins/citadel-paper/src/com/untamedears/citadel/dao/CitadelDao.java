@@ -303,9 +303,9 @@ public class CitadelDao extends MyDatabase {
      * @brief Performs batch reinforcement updates for deleted factions
      * 
      * When a faction is deleted, there could potentially be millions of reinforcement records
-     * that would need to be updated with a new group name. This is handled by marking the
-     * group as disciplined, adding it to a separate faction_delete table, and setting the
-     * delete flag for that faction. This batch function is then run on plugin startup.
+     * that would need to be updated with a new group name. This is handled by adding it 
+     * to a separate faction_delete table, and setting the delete flag for that faction. 
+     * This batch method is then run on plugin startup.
      * 
      * This function gets a set of all factions that are marked as deleted and performs
      * a series of reinforcement update queries. If the group no longer has any existing
