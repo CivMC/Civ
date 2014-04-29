@@ -331,15 +331,14 @@ public class CitadelDao extends MyDatabase {
     		String personalGroup = groupRow.getString("personal_group");
     		int recordsLeft = 1;
     		
-    		// Do batch deletes in groups of 500 while there are records remaining and we're inside our time limit
+    		// Do batch deletes in groups of BATCH_UPDATE_SIZE while there are records remaining and we're inside our time limit
     		while (recordsLeft > 0 && System.currentTimeMillis() - startTime <= BATCH_TIMEOUT_MS) {
-	    		// Get how many records need to be transferred from deleted group to private group still    			
+	    		// Get how many records still need to be updated from the deleted group name to the private group name    			
     	    	SqlRow row = getDatabase().createSqlQuery("select count(*) as count from reinforcement where name = :name")
     	    			.setParameter("name", groupName)
     	    			.findUnique();
     	    	recordsLeft = row.getInteger("count"); 
 	        	
-
     	    	getDatabase().beginTransaction();
 	        	
 	        	if (recordsLeft > 0) {
