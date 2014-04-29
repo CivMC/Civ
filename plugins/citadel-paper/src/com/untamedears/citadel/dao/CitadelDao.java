@@ -314,16 +314,16 @@ public class CitadelDao extends MyDatabase {
      * restart. 
      */
     public void batchRemoveDeletedGroups() {
-    	
-    	final int MAX_BATCH_TIME_MS = 60000; // 1 min max batch time
-    	final int TRANSACTION_LIMIT = 500;
+
+    	final int BATCH_UPDATE_SIZE = Citadel.getConfigManager().getBatchUpdateSize();
+    	final int BATCH_TIMEOUT_MS = Citadel.getConfigManager().getBatchUpdateTimeoutMs();
     	
     	// Mark the start time
     	long startTime = System.currentTimeMillis();    	
     	
     	// Get all the groups that are in the faction_delete table and marked as delete in the main faction able
     	String joinQuery = String.format("select * from faction_delete left join (faction) "
-    			+ "on (faction.name = faction_delete.deleted_faction and faction.discipline_flags = %d)", Faction.kDeletedFlag);
+    			+ "on (faction.name = faction_delete.deleted_faction and faction.discipline_flags & %d = %d)", Faction.kDeletedFlag, Faction.kDeletedFlag);
     	Set<SqlRow> groups = getDatabase().createSqlQuery(joinQuery).findSet();
     	
     	for (SqlRow groupRow : groups) {
@@ -332,7 +332,7 @@ public class CitadelDao extends MyDatabase {
     		int recordsLeft = 1;
     		
     		// Do batch deletes in groups of 500 while there are records remaining and we're inside our time limit
-    		while (recordsLeft > 0 && System.currentTimeMillis() - startTime <= MAX_BATCH_TIME_MS) {
+    		while (recordsLeft > 0 && System.currentTimeMillis() - startTime <= BATCH_TIMEOUT_MS) {
 	    		// Get how many records need to be transferred from deleted group to private group still    			
     	    	SqlRow row = getDatabase().createSqlQuery("select count(*) as count from reinforcement where name = :name")
     	    			.setParameter("name", groupName)
@@ -346,7 +346,7 @@ public class CitadelDao extends MyDatabase {
 	        		getDatabase().createSqlUpdate("update reinforcement set name = :newName where name = :oldName limit :limit")
 	        		.setParameter("newName", personalGroup)
 	        		.setParameter("oldName",groupName)
-	        		.setParameter("limit", TRANSACTION_LIMIT)
+	        		.setParameter("limit", BATCH_UPDATE_SIZE)
 	        		.execute();
 	        	} else {
 	        		// No more records to update, now we can safely delete the group

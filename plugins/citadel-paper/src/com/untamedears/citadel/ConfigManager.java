@@ -35,6 +35,8 @@ public class ConfigManager {
     private Integer acidBlockTypeId = null;
 	private double acidBlockReinforcementTax = 0.00000001D;
     private Map<VerboseMsg, Boolean> verboseMessageSettings = new HashMap<VerboseMsg, Boolean>();
+    private int batchUpdateSize;
+    private int batchUpdateTimeoutMs;
 
 	public void load(){
 		Citadel.getPlugin().reloadConfig();
@@ -46,6 +48,8 @@ public class ConfigManager {
         redstoneDistance = config.getDouble("general.redstoneDistance");
         groupsAllowed = config.getInt("general.groupsAllowed");
         reinforcedCrops = config.getBoolean("general.reinforcedCrops", true);
+        batchUpdateSize = config.getInt("general.batchUpdateSize", 500);
+        batchUpdateTimeoutMs = config.getInt("general.batchUpdateTimeoutMs", 600000);
         enableMaturation = config.getBoolean("general.enableMaturation", false);
         maturationInterval = config.getInt("general.maturationInterval", 50);
         maturationIntervalD = (double)maturationInterval;
@@ -169,6 +173,14 @@ public class ConfigManager {
 
 	public boolean allowReinforcedCrops() {
 		return reinforcedCrops;
+	}
+	
+	public int getBatchUpdateSize(){
+		return this.batchUpdateSize;
+	}
+	
+	public int getBatchUpdateTimeoutMs(){
+		return this.batchUpdateTimeoutMs;
 	}
 
 	public boolean maturationEnabled() {
