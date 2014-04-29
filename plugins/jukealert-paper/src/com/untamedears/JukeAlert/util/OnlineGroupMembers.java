@@ -3,6 +3,7 @@ package com.untamedears.JukeAlert.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -39,7 +40,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
     private int maxPlayers_;
     private Location referenceLocation_ = null;
     private boolean alreadyIterating_ = false;
-	private Set<String> skipList_= null;
+	private Set<UUID> skipList_= null;
 
     public OnlineGroupMembers(String groupName) {
         manager_ = Citadel.getGroupManager();
@@ -78,7 +79,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
         return this;
     }
     
-    public OnlineGroupMembers skipList(Set<String> list) {
+    public OnlineGroupMembers skipList(Set<UUID> list) {
 
         if (alreadyIterating_) {
             throw new UnsupportedOperationException();
@@ -208,12 +209,11 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
         if (player == null) {
             return null;
         }
-        final String playerName = player.getName();
-        if (IgnoreList.doesPlayerIgnoreAll(playerName)) {
+        final UUID accountId = player.getUniqueId();
+        if (IgnoreList.doesPlayerIgnoreAll(accountId)) {
             return null;
         }
-        if (skipList_ != null
-                && skipList_.contains(playerName.toLowerCase())) {
+        if (skipList_ != null && skipList_.contains(accountId)) {
             return null;
         }
         return player;

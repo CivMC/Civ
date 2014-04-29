@@ -3,6 +3,7 @@ package com.untamedears.JukeAlert.util;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.JukeAlert.JukeAlert;
@@ -48,19 +49,19 @@ public class Utility {
         }
     }
 
-    public static boolean isOnSnitch(Snitch snitch, String playerName) {
+    public static boolean isOnSnitch(Snitch snitch, UUID accountId) {
         Faction faction = snitch.getGroup();
         if (faction == null) return false;
-        return faction.isMember(playerName)
-            || faction.isModerator(playerName)
-            || faction.isFounder(playerName);
+        return faction.isMember(accountId)
+            || faction.isModerator(accountId)
+            || faction.isFounder(accountId);
     }
     
-    public static boolean isPartialOwnerOfSnitch(Snitch snitch, String playerName) {
+    public static boolean isPartialOwnerOfSnitch(Snitch snitch, UUID accountId) {
         Faction faction = snitch.getGroup();
         if (faction == null) return false;
-        return faction.isModerator(playerName)
-            || faction.isFounder(playerName);
+        return faction.isModerator(accountId)
+            || faction.isFounder(accountId);
     }
 
     public static Snitch getSnitchUnderCursor(Player player) {
@@ -101,10 +102,11 @@ public class Utility {
         Snitch closestSnitch = null;
         double closestDistance = Double.MAX_VALUE;
         Location playerLoc = player.getLocation();
+        UUID accountId = player.getUniqueId();
         Set<Snitch> snitches = JukeAlert.getInstance().getSnitchManager().findSnitches(player.getWorld(), player.getLocation());
         for (final Snitch snitch : snitches) {
             if (doesSnitchExist(snitch, true)
-                    && isOnSnitch(snitch, player.getName())) {
+                    && isOnSnitch(snitch, accountId)) {
                 double distance = snitch.getLoc().distanceSquared(playerLoc);
                 if (distance < closestDistance) {
                     closestDistance = distance;
@@ -119,7 +121,7 @@ public class Utility {
         Snitch cursorSnitch = getSnitchUnderCursor(player);
         if (cursorSnitch != null
                 && doesSnitchExist(cursorSnitch, true)
-                && isOnSnitch(cursorSnitch, player.getName())) {
+                && isOnSnitch(cursorSnitch, player.getUniqueId())) {
             return cursorSnitch;
         }
         return findClosestOwnedSnitch(player);

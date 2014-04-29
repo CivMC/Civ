@@ -1,6 +1,7 @@
 package com.untamedears.JukeAlert.command.commands;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -37,17 +38,17 @@ public class JaMuteCommand extends PlayerCommand {
    
    private void toggleIgnore(CommandSender sender, String groupName) {
        final Player player = (Player)sender;
-       final String playerName = player.getName();
+       final UUID accountId = player.getUniqueId();
 
        if (groupName.equals("*")) {
-           if (IgnoreList.toggleIgnoreAll(playerName)) {
+           if (IgnoreList.toggleIgnoreAll(accountId)) {
                player.sendMessage("Ignoring all groups!");
            } else {
                player.sendMessage("Stopped ignoring all groups!");
            }
            return;
        }
-	   Boolean addedIgnore = IgnoreList.toggleIgnore(playerName, groupName);
+	   Boolean addedIgnore = IgnoreList.toggleIgnore(accountId, groupName);
 	   
 	   if (addedIgnore) {
 		   player.sendMessage("Added group \"" + groupName + "\" to ignore list!");
@@ -58,12 +59,12 @@ public class JaMuteCommand extends PlayerCommand {
 
     private void sendIgnoreGroupList(CommandSender sender) {
         final Player player = (Player) sender;
-        final String playerName = player.getName();
-        if (IgnoreList.doesPlayerIgnoreAll(playerName)) {
+        final UUID accountId = player.getUniqueId();
+        if (IgnoreList.doesPlayerIgnoreAll(accountId)) {
             sender.sendMessage("* Ignoring all groups *");
             return;
         }
-        Set<String> groupList = IgnoreList.GetGroupIgnoreListByPlayer(playerName);
+        Set<String> groupList = IgnoreList.GetGroupIgnoreListByPlayer(accountId);
         StringBuilder sb = new StringBuilder();
         if (groupList == null) {
         	sb.append("* No Group Ignores *");
