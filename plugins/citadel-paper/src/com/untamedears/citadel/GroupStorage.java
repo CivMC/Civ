@@ -356,7 +356,7 @@ public class GroupStorage {
         return deletedGroups.get(normalizedName);
     }
     
-    public void removeDeletedFactions() {
-    	this.dao.removeDeletedFactions();
+    public void batchRemoveDeletedGroups() {
+    	this.dao.batchRemoveDeletedGroups();
     }
 }

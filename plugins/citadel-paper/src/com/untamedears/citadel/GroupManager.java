@@ -21,7 +21,7 @@ public class GroupManager {
 
     public void initialize(GroupStorage storage) {
         setStorage(storage);
-        storage.removeDeletedFactions();
+        storage.batchRemoveDeletedGroups();
     }
 
 	public GroupStorage getStorage() {
