@@ -1,6 +1,6 @@
 name: Citadel
 main: com.untamedears.citadel.Citadel
-version: 2.5.23
+version: 2.5.24
 description: Reinforce your structures!
 author: chrisrico, jonnyd (aka Gu3rr1lla)
 database: false
