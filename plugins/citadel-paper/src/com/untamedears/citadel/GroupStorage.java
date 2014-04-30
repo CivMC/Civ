@@ -356,6 +356,14 @@ public class GroupStorage {
         return deletedGroups.get(normalizedName);
     }
     
+    public void loadDeletedGroups() {
+    	for (FactionDelete facDel : this.dao.loadFactionDeletions()) {
+    		deletedGroups.put(
+    				normalizeName(facDel.getDeletedFaction()),
+    				normalizeName(facDel.getPersonalGroup()));
+    	}
+    }
+    
     public void batchRemoveDeletedGroups() {
     	this.dao.batchRemoveDeletedGroups();
     }

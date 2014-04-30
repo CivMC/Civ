@@ -295,6 +295,14 @@ public class CitadelDao extends MyDatabase {
 				.setParameter("groupName", groupName);
 		getDatabase().execute(update);
 	}
+	
+
+	public Set<FactionDelete> loadFactionDeletions() {
+		return getDatabase()
+				.createQuery(FactionDelete.class, "find faction_delete")
+				.findSet();
+	}
+ 
     
     /**
      * @author GFQ
@@ -344,7 +352,7 @@ public class CitadelDao extends MyDatabase {
 	        	if (recordsLeft > 0) {
 	        		getDatabase().createSqlUpdate("update reinforcement set name = :newName where name = :oldName limit :limit")
 	        		.setParameter("newName", personalGroup)
-	        		.setParameter("oldName",groupName)
+	        		.setParameter("oldName", groupName)
 	        		.setParameter("limit", BATCH_UPDATE_SIZE)
 	        		.execute();
 	        	} else {

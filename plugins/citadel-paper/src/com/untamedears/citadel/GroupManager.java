@@ -22,6 +22,9 @@ public class GroupManager {
     public void initialize(GroupStorage storage) {
         setStorage(storage);
         storage.batchRemoveDeletedGroups();
+        
+        // If the batch update times out, this will load the remaining deleted groups
+        storage.loadDeletedGroups();
     }
 
 	public GroupStorage getStorage() {
