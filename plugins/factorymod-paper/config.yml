@@ -4472,7 +4472,7 @@ production_recipes:
         amount: 64
     outputs:
       Flower Pots:
-        material: FLOWER_POT
+        material: FLOWER_POT_ITEM
         amount: 64
   Smelt_Sandstone:
     name: Smelt Sandstone
