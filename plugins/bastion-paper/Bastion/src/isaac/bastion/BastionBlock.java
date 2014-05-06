@@ -225,8 +225,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			if (((event.getBlock().getX() - location.getX()) * (float)(event.getBlock().getX() - location.getX()) + 
 					(event.getBlock().getZ() - location.getZ()) * (float)(event.getBlock().getZ() - location.getZ()) > radiusSquared)
 					|| (event.getBlock().getY() <= location.getY())) {
-
-
 				return false;
 			}
 
@@ -264,8 +262,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			if (((loc.getBlock().getX() - location.getX()) * (float)(loc.getBlock().getX() - location.getX()) + 
 					(loc.getBlock().getZ() - location.getZ()) * (float)(loc.getBlock().getZ() - location.getZ()) > radiusSquared)
 					|| (loc.getBlock().getY() <= location.getY())) {
-
-
 				return false;
 			}
 

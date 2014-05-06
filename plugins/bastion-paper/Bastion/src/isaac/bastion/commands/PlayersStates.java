@@ -14,7 +14,7 @@ import com.untamedears.citadel.Citadel;
 
 public class PlayersStates {
 	static public enum Mode {
-		NORMAL,INFO,DELETE,CREATE,BASTION,MATURE
+		NORMAL,INFO,DELETE,OFF,BASTION,MATURE
 	}
 	static private Map<Player,Mode> playersModes=new HashMap<Player,Mode>();
 	static private Map<Player,Integer> playersCallback=new HashMap<Player,Integer>();

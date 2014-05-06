@@ -72,7 +72,7 @@ public class ConfigManager {
 		password=loadString("mysql.password");
 		int savesPerDay=loadInt("mysql.savesPerDay");
 		if(savesPerDay!=0){
-			saveTimeInt=(1000*60*60*24)/savesPerDay;
+			saveTimeInt=(20*60*60*24)/savesPerDay;
 		} else{
 			saveTimeInt=0;
 		}

@@ -5,13 +5,13 @@ mysql:
   database: bukkit
   port: 3306
   prefix: ''
-  savesPerDay: 192
+  savesPerDay: 64
 BastionBlock:
   material: SPONGE
   effectRadius: 5
   startScaleFactor: 100
-  finalScaleFactor: 0.5
-  warmUpTime: 43200000
+  finalScaleFactor: 0.2
+  warmUpTime: 86400000
   maxBreaksPerMinute: 30
   erosionRatePerDay: 0
   EnderPearls:
