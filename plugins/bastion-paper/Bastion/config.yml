@@ -8,7 +8,7 @@ mysql:
   savesPerDay: 64
 BastionBlock:
   material: SPONGE
-  effectRadius: 5
+  effectRadius: 10
   startScaleFactor: 100
   finalScaleFactor: 0.2
   warmUpTime: 86400000

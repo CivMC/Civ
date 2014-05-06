@@ -223,7 +223,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			}
 
 			if (((event.getBlock().getX() - location.getX()) * (float)(event.getBlock().getX() - location.getX()) + 
-					(event.getBlock().getZ() - location.getZ()) * (float)(event.getBlock().getZ() - location.getZ()) > radiusSquared)
+					(event.getBlock().getZ() - location.getZ()) * (float)(event.getBlock().getZ() - location.getZ()) >= radiusSquared)
 					|| (event.getBlock().getY() <= location.getY())) {
 				return false;
 			}
@@ -260,7 +260,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 				}
 			}
 			if (((loc.getBlock().getX() - location.getX()) * (float)(loc.getBlock().getX() - location.getX()) + 
-					(loc.getBlock().getZ() - location.getZ()) * (float)(loc.getBlock().getZ() - location.getZ()) > radiusSquared)
+					(loc.getBlock().getZ() - location.getZ()) * (float)(loc.getBlock().getZ() - location.getZ()) >= radiusSquared)
 					|| (loc.getBlock().getY() <= location.getY())) {
 				return false;
 			}
@@ -274,7 +274,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 
 	public boolean inField(Location loc){
 		if (((loc.getBlockX() - location.getX()) * (float)(loc.getBlockX() - location.getX()) + 
-				(loc.getBlockZ() - location.getZ()) * (float)(loc.getBlockZ() - location.getZ()) > radiusSquared)
+				(loc.getBlockZ() - location.getZ()) * (float)(loc.getBlockZ() - location.getZ()) >= radiusSquared)
 				|| (loc.getBlockY() <= location.getY())) {
 			return false;
 		}
