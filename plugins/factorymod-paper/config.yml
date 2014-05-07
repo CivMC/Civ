@@ -3783,7 +3783,7 @@ production_recipes:
     outputs:
       Cooked Salmon:
         material: COOKED_FISH
-        amount: 128
+        amount: 192
         durability: 1
   Produce_TNT:
     name: Produce TNT
