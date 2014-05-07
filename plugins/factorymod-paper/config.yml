@@ -88,6 +88,7 @@ printing_presses:
     Charcoal:
       material: 'COAL'
       durability: 1
+  fuel_time: 5
   costs:
      construction:
         "Iron block":
@@ -108,10 +109,11 @@ printing_presses:
      plates:
         "Iron ingot":
            material: 'IRON_INGOT'
-           amount: 4
+           amount: 1
         "Gold nugget":
            material: "GOLD_NUGGET"
            amount: 1
+     set_page_time: 5
      repair:
         "Iron block":
            material: 'IRON_BLOCK'
@@ -130,10 +132,11 @@ printing_presses:
            durability: 0
            amount: 1
      pages_per_lot: 32
+     page_lead: 6
      pamphlet_lot:
         Paper:
            material: 'PAPER'
-           amount: 8
+           amount: 4
         Ink:
            material: 'INK_SACK'
            durability: 0
@@ -147,7 +150,7 @@ printing_presses:
            material: 'INK_SACK'
            durability: 2
            amount: 6
-     security_notes_per_lot: 64
+     security_notes_per_lot: 128
 
 crafting:
   disable:
