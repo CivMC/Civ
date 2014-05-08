@@ -3783,7 +3783,7 @@ production_recipes:
     outputs:
       Cooked Salmon:
         material: COOKED_FISH
-        amount: 192
+        amount: 128
         durability: 1
   Produce_TNT:
     name: Produce TNT
@@ -5419,7 +5419,7 @@ production_recipes:
     outputs:
       Cooked Fish:
         material: COOKED_FISH
-        amount: 128
+        amount: 192
   Dye_Pink_Wool_Black:
     name: Dye Pink Wool Black
     inputs:
