@@ -43,10 +43,13 @@ permissions:
         description: Special power for admins
         default: op
         children:
-            Bastion.bypass: true
+        Bastion.bypass: true
     Bastion.bypass:
         description: Bastions do not effect members
         default: false
     Bastion.dev:
         description: Special debug commands and different responses to existing commands
+        default: op
+    Bastion.particle:
+        description: Currently debuging only for showing the border of Bastions with particles.
         default: op

@@ -28,7 +28,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 public class BastionBlock implements QTBox, Comparable<BastionBlock>
 {
-	private Location location; 
+	public Location location; 
 	private int id;
 	private double balance=0; //the amount remaining still to be eroded after the whole part has been removed
 	private int strength; //current durability

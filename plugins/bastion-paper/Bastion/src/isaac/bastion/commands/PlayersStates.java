@@ -55,6 +55,9 @@ public class PlayersStates {
 			player.sendMessage(ChatColor.YELLOW+"Bastion "+old.name()+" mode off");
 		}
 		player.sendMessage(ChatColor.GREEN+"Bastion "+mode.name()+" mode on");
+		
+		if(mode == Mode.INFO)
+			Bastion.getBastionManager().registerParticleTask(player);
 
 		playersModes.put(player, mode);
 		registerReturnToNormal(player,mode);

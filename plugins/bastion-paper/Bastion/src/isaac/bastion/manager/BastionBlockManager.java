@@ -2,6 +2,8 @@ package isaac.bastion.manager;
 
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
+import isaac.bastion.commands.PlayersStates;
+import isaac.bastion.commands.PlayersStates.Mode;
 import isaac.bastion.storage.BastionBlockSet;
 import isaac.bastion.util.QTBox;
 
@@ -12,6 +14,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,6 +33,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.material.Dispenser;
 import org.bukkit.material.MaterialData;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.entity.Faction;
@@ -40,7 +44,8 @@ public class BastionBlockManager
 {
 	public BastionBlockSet bastions;
 	private ConfigManager config;
-
+	
+	private LinkedList<ParticleTask> tasks = new LinkedList<ParticleTask>();
 
 	public BastionBlockManager(){
 		config=Bastion.getConfigManager();
@@ -312,6 +317,10 @@ public class BastionBlockManager
 		}
 	}
 
+	public void registerParticleTask(Player player){
+		tasks.add(new ParticleTask(player));
+		tasks.getLast().runTaskTimer(Bastion.getPlugin(), 5, 5);
+	}
 	public String infoMessage(boolean dev,PlayerInteractEvent event){
 		Block clicked=event.getClickedBlock();
 		BlockFace clickedFace=event.getBlockFace();
@@ -337,5 +346,43 @@ public class BastionBlockManager
 		}
 		
 		return ChatColor.YELLOW + "No Bastion Block";
+	}
+
+	private class ParticleTask extends BukkitRunnable{
+		static final int samplesCircle = 10;
+		static final int samplesY = 5;
+		private Player affecting;
+		
+		public ParticleTask(Player player){
+			affecting = player;
+		}
+		
+		@Override
+		public void run() {
+			if(!PlayersStates.playerInMode(affecting, Mode.INFO)){
+				this.cancel();
+				tasks.remove(this);
+				return;
+			}
+				
+			
+			Set<BastionBlock> toDraw = getBlockingBastions(affecting.getLocation());
+			for(BastionBlock b:toDraw)
+				draw(b);
+		}
+		
+		private void draw(BastionBlock bastion){
+			Location basLoc = bastion.getLocation();
+			for(int i = 0; i < samplesCircle; ++i){
+				double x = BastionBlock.getRadius() * Math.cos( ((double) i/samplesCircle) * 2*Math.PI) + basLoc.getBlockX();
+				double z = BastionBlock.getRadius() * Math.sin(((double)i/samplesCircle)*2*Math.PI) + basLoc.getBlockZ();;
+				for(int j = 0; j < samplesY; ++j){
+					Location pixel = new Location(basLoc.getWorld(), x, (double)j/samplesY*20+basLoc.getBlockY(), z);
+					affecting.playEffect(pixel, Effect.STEP_SOUND, 152);
+					affecting.
+				}
+			}
+		}
+		
 	}
 }
