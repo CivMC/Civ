@@ -5422,7 +5422,7 @@ production_recipes:
     outputs:
       Cooked Fish:
         material: COOKED_FISH
-        amount: 128
+        amount: 192
   Dye_Pink_Wool_Black:
     name: Dye Pink Wool Black
     inputs:
