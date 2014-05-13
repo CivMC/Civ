@@ -1,10 +1,7 @@
 package com.untamedears.realisticbiomes.listener;
 
-import java.util.HashMap;
 import java.util.logging.Logger;
 
-import org.bukkit.Chunk;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
@@ -20,14 +17,14 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dispenser;
-import org.bukkit.material.Dye;
 import org.bukkit.material.MaterialData;
 
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.realisticbiomes.persist.Coords;
+import com.untamedears.realisticbiomes.persist.ChunkCoords;
 import com.untamedears.realisticbiomes.persist.Plant;
 import com.untamedears.realisticbiomes.persist.WorldID;
 
@@ -39,8 +36,9 @@ import com.untamedears.realisticbiomes.persist.WorldID;
  *
  */
 public class GrowListener implements Listener {
+	
 	public static Logger LOG = Logger.getLogger("RealisticBiomes");
-	RealisticBiomes plugin;
+	private final RealisticBiomes plugin;
 	
 	public GrowListener(RealisticBiomes plugin) {
 		super();
@@ -54,7 +52,6 @@ public class GrowListener implements Listener {
 	 */
 	@EventHandler(ignoreCancelled = true)
 	public void onBlockGrow(BlockGrowEvent event) {
-		Material m = event.getNewState().getType();
 		Block b = event.getBlock();
 		
 		GrowthConfig growthConfig = plugin.getGrowthConfig(b);
@@ -189,20 +186,9 @@ public class GrowListener implements Listener {
 			return;
 		}
 		
-		// make sure the chunk is loaded
-		Chunk chunk = e.getChunk();
-		int w = WorldID.getPID(e.getChunk().getWorld().getUID());
-		Coords coords = new Coords(w, chunk.getX(), 0, chunk.getZ());
-		if (plugin.getPlantManager().chunkLoaded(coords)) {
-			plugin.getPlantManager().growChunk(coords);
-		} else {
-			plugin.getPlantManager().loadChunk(coords);
-		}
-		
-		// TESTING
-		//this.plugin.getLogger().info("ChunkLoaded: " + coords);
-
-		
+		// Force a grow operation on all the plant records for this chunk
+		// growChunk() will also verify that the chunk is loaded
+		plugin.getPlantManager().growChunk(e.getChunk());		
 	}
 	
 	@EventHandler
@@ -210,9 +196,7 @@ public class GrowListener implements Listener {
 		if (!plugin.persistConfig.enabled)
 			return;
 		
-		Chunk chunk = e.getChunk();
-		int w = WorldID.getPID(e.getChunk().getWorld().getUID());
-		Coords coords = new Coords(w, chunk.getX(), 0, chunk.getZ());
+		ChunkCoords coords = new ChunkCoords(e.getChunk());
 		plugin.getPlantManager().minecraftChunkUnloaded(coords);
 		
 		// TESTING
@@ -231,7 +215,12 @@ public class GrowListener implements Listener {
 		if (growthConfig == null)
 			return;	
 		
-		int w = WorldID.getPID(block.getWorld().getUID());
-		plugin.getPlantManager().add(new Coords(w, block.getX(), block.getY(), block.getZ()), new Plant(System.currentTimeMillis() / 1000L));
+		plugin.getPlantManager().addPlant(block, new Plant(System.currentTimeMillis() / 1000L));
+	}
+	
+	@EventHandler
+	public void onWorldLoadEvent(WorldInitEvent e) {
+		WorldID.init(plugin);
+
 	}
 }

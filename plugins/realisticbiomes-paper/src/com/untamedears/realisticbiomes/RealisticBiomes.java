@@ -1,13 +1,9 @@
 package com.untamedears.realisticbiomes;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
@@ -24,10 +20,10 @@ import com.untamedears.realisticbiomes.listener.GrowListener;
 import com.untamedears.realisticbiomes.listener.PlayerListener;
 import com.untamedears.realisticbiomes.listener.SpawnListener;
 import com.untamedears.realisticbiomes.persist.BlockGrower;
+import com.untamedears.realisticbiomes.persist.ChunkCoords;
 import com.untamedears.realisticbiomes.persist.Coords;
 import com.untamedears.realisticbiomes.persist.Plant;
 import com.untamedears.realisticbiomes.persist.PlantManager;
-import com.untamedears.realisticbiomes.persist.WorldID;
 
 public class RealisticBiomes extends JavaPlugin implements Listener {
 
@@ -66,7 +62,8 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		LOG.info("name of logger is: " + LOG.getName());
 		this.getLogger().setLevel(Level.FINEST);
 		
-		WorldID.init(this);
+		// This is done when the world loads now
+		//WorldID.init(this);
 		
 		// perform check for config file, if it doesn't exist, then create it using the default config file
 		if (!this.getConfig().isSet("realistic_biomes")) {
@@ -384,18 +381,26 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		if (!persistConfig.enabled)
 			return 0.0;
 		
-		int w = WorldID.getPID(block.getWorld().getUID());
-		Coords coords = new Coords(w, block.getX(), block.getY(), block.getZ());
+		Coords blockCoords = new Coords(block);
+		ChunkCoords chunckCoords = new ChunkCoords(block.getChunk()); 
+		
 		boolean loadChunk = naturalGrowEvent ? Math.random() < persistConfig.growEventLoadChance : true;
-		if (!loadChunk && !plantManager.chunkLoaded(coords)) {
-			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): returning 0.0 because loadChunk = false or plantManager.chunkLoaded(" + coords + " is false");
+		if (!loadChunk && !plantManager.isChunkLoaded(chunckCoords)) {
+			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): returning 0.0 because loadChunk = false or plantManager.chunkLoaded(" + chunckCoords + " is false");
 			return 0.0; // don't load the chunk or do anything
 			
 		}
 			
-		Plant plant = plantManager.get(coords);
+		Plant plant = plantManager.getPlantFromBlock(block);
 		
-		RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): plantManager.get() returned: " + plant + " for coords: " + coords);
+		
+		if (growthConfig == null) {
+			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): returning 0.0 because growthConfig = null");
+			plantManager.removePlant(block);
+			return 0.0;
+		}
+		
+		RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): plantManager.get() returned: " + plant + " for coords: " + blockCoords);
 		
 		if (plant == null) {
 			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): creating new plant and adding it");
@@ -404,7 +409,7 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 			// also fixes bug where the timestamp would be too big for the mysql rb_plant date column
 			plant = new Plant(System.currentTimeMillis()  / 1000L);
 			plant.addGrowth((float)BlockGrower.getGrowthFraction(block));
-			plantManager.add(coords, plant);
+			plantManager.addPlant(block, plant);
 			
 		}
 		else {
@@ -417,9 +422,9 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		
 		// actually 'grows' the block (in minecraft terms, between the different stages of growth that you can see in game)
 		// depending on its growth value
-		blockGrower.growBlock(block,coords,plant.getGrowth());
+		blockGrower.growBlock(block, plant.getGrowth());
 		if (plant.getGrowth() >= 1.0)
-			plantManager.remove(coords);
+			plantManager.removePlant(block);
 		
 		return plant.getGrowth();
 	}

@@ -197,7 +197,8 @@ public class GrowthConfig extends BaseConfig {
 		double environmentMultiplier = 1.0;
 		
 		// biome multiplier
-		Double biomeMultiplier = biomeMultipliers.get(block.getBiome());
+		Biome biome = block.getBiome();
+		Double biomeMultiplier = biomeMultipliers.get(biome);
 		if (biomeMultiplier != null) {
 			environmentMultiplier *= biomeMultiplier.floatValue();
 		} else {
@@ -244,7 +245,6 @@ public class GrowthConfig extends BaseConfig {
 			for( Vector vec : waterCheckBlocks ) {
 				Block waterBlock = block.getLocation().add(vec).getBlock();
 				Material mat = waterBlock.getType();
-				Biome biome = waterBlock.getBiome();
 				if((biome == Biome.RIVER || biome == Biome.FROZEN_RIVER) && (mat == Material.STATIONARY_WATER || mat == Material.WATER)) {
 					irrigated = true;
 					break;
