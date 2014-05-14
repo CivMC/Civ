@@ -2163,7 +2163,6 @@ production_factories:
         durability: 10
       Hardened Clay:
         material: HARD_CLAY
-        durability: 7
   Stained_Glass_Processing:
     name: Stained Glass Processing
     fuel:
