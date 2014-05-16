@@ -218,9 +218,7 @@ public class PlantChunk {
 
 		RealisticBiomes.doLog(Level.FINEST,"PlantChunk.unload(): called with coords "
 				+ coords + "plantchunk object: " + this);
-		// TODO: plant chunk objects need to know their own coordinates, we
-		// should
-		// not be passing them in to load / unload!
+		
 		if (!loaded) {
 			RealisticBiomes.doLog(Level.FINEST, "Plantchunk.unload(): not loaded so returning");
 			return;
