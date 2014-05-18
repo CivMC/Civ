@@ -1,7 +1,6 @@
 package com.untamedears.realisticbiomes.persist;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -16,20 +15,21 @@ import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 
 public class PlantChunk {
-	RealisticBiomes plugin;
-
-	HashMap<Coords, Plant> plants;
-
+	private final RealisticBiomes plugin;
+	private final ChunkCoords coords;
 	// index of this chunk in the database
-	long index;
+	private long index;
+	
+	private HashMap<Coords, Plant> plants;
 
 	boolean loaded;
 	boolean inDatabase;
 
-	public PlantChunk(RealisticBiomes plugin, Connection readConn, long index) {
+	public PlantChunk(RealisticBiomes plugin, Connection readConn, long index, ChunkCoords coords) {
 		this.plugin = plugin;
 		plants = new HashMap<Coords, Plant>();
 		this.index = index;
+		this.coords = coords;
 
 		this.loaded = false;
 		this.inDatabase = false;
@@ -60,6 +60,11 @@ public class PlantChunk {
 		sb.append(" > ");
 		return sb.toString();
 	}
+	
+	
+	public ChunkCoords getChunkCoord() {
+		return coords;
+	}
 
 	// /-------------------------
 
@@ -86,15 +91,14 @@ public class PlantChunk {
 		plants.remove(coords);
 	}
 
-	public synchronized void add(Coords coords, Plant plant,
-			Connection writeConn) {
+	public synchronized void addPlant(Coords coords, Plant plant, Connection writeConn) {
 
 		RealisticBiomes.doLog(Level.FINER,"plantchunk.add(): called with coords: "
 				+ coords + " and plant " + plant);
 		RealisticBiomes.doLog(Level.FINER, "plantchunk.add(): is loaded? " + loaded);
 		if (!loaded) {
 
-			load(coords, writeConn);
+			load(writeConn);
 
 			loaded = true;
 		}
@@ -121,13 +125,9 @@ public class PlantChunk {
 	 * @param readConn
 	 * @return
 	 */
-	public synchronized boolean load(Coords coords, Connection readConn) {
+	public synchronized boolean load(Connection readConn) {
 		// if the data is being loaded, it is known that this chunk is in the
 		// database
-
-		// TODO: plant chunk objects need to know their own coordinates, we
-		// should
-		// not be passing them in to load / unload!
 
 		RealisticBiomes.doLog(Level.FINER, 
 				"Plantchunk.load() called with coords: " + coords);
@@ -182,8 +182,7 @@ public class PlantChunk {
 					plant.addGrowth((float) growthAmount);
 
 					// and update the plant growth
-					plugin.getBlockGrower().growBlock(block, coords,
-							plant.getGrowth());
+					plugin.getBlockGrower().growBlock(block, plant.getGrowth());
 				}
 				// if the plant isn't finished growing, add it to the
 				// plants
@@ -212,17 +211,14 @@ public class PlantChunk {
 	 * Note that this is called by PlantManager.saveAllAndStop(), so that method
 	 * takes care of setting autocommit to false/true and actually committing to
 	 * the database
-	 * 
-	 * @param chunkCoords
+
 	 * @param writeStmts
 	 */
-	public synchronized void unload(Coords chunkCoords) {
+	public synchronized void unload() {
 
 		RealisticBiomes.doLog(Level.FINEST,"PlantChunk.unload(): called with coords "
-				+ chunkCoords + "plantchunk object: " + this);
-		// TODO: plant chunk objects need to know their own coordinates, we
-		// should
-		// not be passing them in to load / unload!
+				+ coords + "plantchunk object: " + this);
+		
 		if (!loaded) {
 			RealisticBiomes.doLog(Level.FINEST, "Plantchunk.unload(): not loaded so returning");
 			return;
@@ -236,9 +232,9 @@ public class PlantChunk {
 			if (!inDatabase) {
 
 				RealisticBiomes.doLog(Level.FINEST, "not in database, adding new chunk");
-				ChunkWriter.addChunkStmt.setInt(1, chunkCoords.w);
-				ChunkWriter.addChunkStmt.setInt(2, chunkCoords.x);
-				ChunkWriter.addChunkStmt.setInt(3, chunkCoords.z);
+				ChunkWriter.addChunkStmt.setInt(1, coords.w);
+				ChunkWriter.addChunkStmt.setInt(2, coords.x);
+				ChunkWriter.addChunkStmt.setInt(3, coords.z);
 				ChunkWriter.addChunkStmt.execute();
 				ChunkWriter.getLastChunkIdStmt.execute();
 				ResultSet rs = ChunkWriter.getLastChunkIdStmt.getResultSet();
@@ -272,7 +268,7 @@ public class PlantChunk {
 			throw new DataSourceException(
 					String.format(
 							"Failed to unload the chunk (In PlantChunk, adding chunk to db if needed), index %s, coords %s, PlantChunk obj: %s",
-							index, chunkCoords, this), e);
+							index, coords, this), e);
 		}
 
 		try {
@@ -336,13 +332,13 @@ public class PlantChunk {
 					String.format(
 							"Failed to unload the chunk (In PlantChunk, "
 									+ "replacing with new data/deleting), index %s, coords %s, PlantChunk obj: %s",
-							index, chunkCoords, this), e);
+							index, coords, this), e);
 		}
 
 		// only set loaded to false and reset the plants HashMap
 		// only if we are not caching the entire database
 		if (!this.plugin.persistConfig.cacheEntireDatabase) {
-			RealisticBiomes.doLog(Level.FINER, String.format("PlantChunk.unload(): clearing hashmap for chunk at %s", chunkCoords));
+			RealisticBiomes.doLog(Level.FINER, String.format("PlantChunk.unload(): clearing hashmap for chunk at %s", coords));
 			plants = new HashMap<Coords, Plant>();
 			loaded = false;
 		} 

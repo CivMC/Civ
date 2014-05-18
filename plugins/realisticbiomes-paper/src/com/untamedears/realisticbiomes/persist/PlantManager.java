@@ -1,49 +1,66 @@
 package com.untamedears.realisticbiomes.persist;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
-import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.PersistConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 
 public class PlantManager {
-	private RealisticBiomes plugin;
-	private PersistConfig config;
+	private final RealisticBiomes plugin;
+	private final PersistConfig config;
 	
 	// database connection
 	private Connection writeConn;
 	private Connection readConn;
 	
+	public class PlantChunks {
+		private final HashMap<ChunkCoords, PlantChunk> map;
+		
+		public PlantChunks() {
+			map = new HashMap<ChunkCoords, PlantChunk>();
+		}
+		
+		PlantChunk get(ChunkCoords coords) {
+			return map.get(coords);
+		}
+		
+		void addChunk(PlantChunk chunk) {
+			map.put(chunk.getChunkCoord(), chunk);
+		}
+		
+		Set<ChunkCoords> getCoordsSet() {
+			return map.keySet();
+		}
+	}
+	
+	
 	// map of chunk coordinates to plant chunk data
 	// an entry of null denotes a chunk that is in the database but is unloaded
-	private HashMap<Coords, PlantChunk> chunks;
+	private PlantChunks chunks;
 	
 	// plants chunks to be unloaded in batches
-	private ArrayList<Coords> chunksToUnload;
+	private LinkedBlockingQueue<ChunkCoords> chunksToUnload;
 	
 	// task that periodically unloads chunks in batches
 	private BukkitTask unloadBatchTask;
@@ -66,7 +83,7 @@ public class PlantManager {
 		this.plugin = plugin;
 		this.config = config;
 		
-		chunks = new HashMap<Coords, PlantChunk>();
+		chunks = new PlantChunks();
 		
 		// open the database
 		String sDriverName = "com.mysql.jdbc.Driver";
@@ -147,11 +164,11 @@ public class PlantManager {
 				int x = rs.getInt("x");
 				int z = rs.getInt("z");
 				
-				PlantChunk pChunk = new PlantChunk(plugin, readConn, id);
+				PlantChunk pChunk = new PlantChunk(plugin, readConn, id, new ChunkCoords(w, x, z));
 				pChunk.loaded = false;
 				pChunk.inDatabase = true;
 				RealisticBiomes.doLog(Level.FINER, "\tLoaded plantchunk " + pChunk + " at coords " + new Coords(w,x,0,z));
-				chunks.put(new Coords(w,x,0,z), pChunk);
+				chunks.addChunk(pChunk);
 			}
 			
 		} catch (SQLException e) {
@@ -164,7 +181,7 @@ public class PlantManager {
 
 		
 		// create unload batch
-		chunksToUnload = new ArrayList<Coords>();
+		chunksToUnload = new LinkedBlockingQueue<ChunkCoords>();
 		
 		//register the batchTask
 		unloadBatchTask = plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable() {
@@ -197,9 +214,9 @@ public class PlantManager {
 
 			long startTimeOne = System.nanoTime()/1000000/*ns/ms*/;
 			
-			for (Coords iterCoord : chunks.keySet()) {
+			for (ChunkCoords coords : chunks.getCoordsSet()) {
 				
-				chunks.get(iterCoord).load(iterCoord, this.readConn);
+				loadChunk(coords);
 			}
 			
 			long endTimeOne = System.nanoTime()/1000000/*ns/ms*/;
@@ -255,8 +272,11 @@ public class PlantManager {
 				
 				int plantCounter = 0;
 				while (!chunksToUnload.isEmpty()) {
-					Coords batchCoords = chunksToUnload.remove(0);
-					plantCounter += unloadChunk(batchCoords);
+					ChunkCoords batchCoords = chunksToUnload.poll();
+					
+					if (batchCoords != null) {
+						plantCounter += unloadChunk(batchCoords);
+					}
 				}
 				
 				// write the changes to the database
@@ -339,11 +359,11 @@ public class PlantManager {
 					throw new DataSourceException("unable to set autocommit to false in saveAllAndStop", e);
 				}				
 				
-				for (Coords coords:chunks.keySet()) {
+				for (ChunkCoords coords : chunks.getCoordsSet()) {
 
 					PlantChunk pChunk = chunks.get(coords);
 
-					pChunk.unload(coords);
+					pChunk.unload();
 				}
 				
 				try {
@@ -384,69 +404,96 @@ public class PlantManager {
 	 * @param coords - the coordinates (chunk coords) of the chunk to unload
 	 * @return an integer representing the number of plants inside the chunk that was unloaded
 	 */
-	private int unloadChunk(Coords coords) {
+	private int unloadChunk(ChunkCoords coords) {
 		// if the specified chunk does not exist in the system, or is no longer loaded, nothing needs
 		// to be done
-		if (!chunks.containsKey(coords) || !chunks.get(coords).isLoaded())
+		
+		// Only query the chunks map once!
+		PlantChunk pChunk = chunks.get(coords);
+		
+		if (pChunk == null || pChunk.isLoaded() == false) {
 			return 0;
+		}
 		
 		// if the minecraft chunk is loaded again, then don't unload the pChunk
 		if (plugin.getServer().getWorld(WorldID.getMCID(coords.w)).isChunkLoaded(coords.x, coords.z))
 			return 0;
 		
 		// finally, actually unload this thing
-		PlantChunk pChunk = chunks.get(coords);
 		int tmpCount = pChunk.getPlantCount();
-		pChunk.unload(coords);
+		pChunk.unload();
 		return tmpCount;
 	}
 	
 	// --------------------------------------------------------------------------------------------
-	public void minecraftChunkUnloaded(Coords coords) {
+	public void minecraftChunkUnloaded(ChunkCoords coords) {
 		// if the pChunk does not exist, there is nothing to unload
-		if (!chunks.containsKey(coords))
-			return;
 		
+		// Only query the chunks map once!
 		PlantChunk pChunk = chunks.get(coords);
-		// if the pChunk is already unloaded then it should stay unloaded -- do nothing
-		if (!pChunk.isLoaded())
+		if (pChunk == null) {
 			return;
+		}
 		
-		chunksToUnload.add(coords);		
+		// if the pChunk is already unloaded then it should stay unloaded -- do nothing
+		if (!pChunk.isLoaded()) {
+			return;
+		}
+		
+		// Adds the chunk location to a queue to be unloaded asynchronously
+		chunksToUnload.add(coords);
 	}
 	
 	////===========================================================================================
 	// load the specified chunk, return true if the pChunk is actually loaded
-	public boolean loadChunk(Coords coords) {
-		// if the specified chunk does not exist, then don't load anything
-		if (!chunks.containsKey(coords)) {
-			RealisticBiomes.doLog(Level.FINEST, "PlantManager.loadChunk(): returning false as we don't have the plantchunk obj in chunks");
-			return false;
-		}
+	/**
+	 * @brief Loads a PlantChunk instance of the given chunk coordinates
+	 * @param coords The chunk coordinates to load
+	 * @return The chunk instance that was loaded, otherwise null
+	 * 
+	 * Returning the actual chunk instance reduces the amount of map queries we need to execute
+	 * to get our desired instance
+	 */
+	public PlantChunk loadChunk(ChunkCoords coords) {
 		
+		// Limit the query to a 
 		PlantChunk pChunk = chunks.get(coords);
+		
+		if (pChunk == null) {
+			//RealisticBiomes.doLog(Level.FINEST, "PlantManager.loadChunk(): returning false as we don't have the plantchunk obj in chunks");
+			return null;
+		}
 		// if the plant chunk is already loaded, then there is no need to load
 		if (pChunk.isLoaded()) {
 			RealisticBiomes.doLog(Level.FINEST, "PlantManager.loadChunk(): plantChunk already loaded, returning true");
-			return true;
+			return pChunk;
 		}
 		
 		// this getWorlds().get(index) could break in the future
 		// if the minecraft chunk is unloaded again, then don't load the pChunk
-		if (!plugin.getServer().getWorld(WorldID.getMCID(coords.w)).isChunkLoaded(coords.x, coords.z)) {
+		UUID id = WorldID.getMCID(coords.w);
+		World world = plugin.getServer().getWorld(id);
+		Chunk c = world.getChunkAt(pChunk.getChunkCoord().x, pChunk.getChunkCoord().z);
+		
+		if (!world.isChunkLoaded(c)) {
 			RealisticBiomes.doLog(Level.FINEST, "PlantManager.loadChunk(): minecraft chunk was unloaded again... returning false");
-			return false;
+			return null;
 		}
 		
 		// finally, just load this thing!
 		long start = System.nanoTime()/1000000/*ns/ms*/;
-		boolean loaded = pChunk.load(coords, readConn);
+		boolean loaded = pChunk.load(readConn);
 		long end = System.nanoTime()/1000000/*ns/ms*/;
 		RealisticBiomes.doLog(Level.FINER, "PlantManager.loadChunk():Had to load chunk, pchunk.load() returned " + loaded);
 		
 		logLoadOrUnloadEvent("Loaded chunk ["+coords.x+","+coords.z+"]", this.config, ChunkDBEvent.LoadEvent, end-start);
 		
-		return loaded;
+		// Return the valid instance if success
+		if (loaded == true) {
+			return pChunk;
+		}
+		
+		return null;
 	}
 	
 	////===========================================================================================
@@ -457,82 +504,95 @@ public class PlantManager {
 	 * @param coords - the coordinates of the plant
 	 * @param plant - the plant object itself
 	 */
-	public void add(Coords coords, Plant plant) {
-		Coords chunkCoords = new Coords(coords.w, coords.x/16, 0, coords.z/16);
+	public void addPlant(Block block, Plant plant) {
+		ChunkCoords chunkCoords = new ChunkCoords(block.getChunk());
+		Coords blockCoords = new Coords(block);
 		
 		// TESTING
-		RealisticBiomes.doLog(Level.FINER, "PlantManager.add() called at coords " + coords + " and plant " + plant);
+		RealisticBiomes.doLog(Level.FINER, "PlantManager.add() called at coords " + blockCoords + " and plant " + plant);
 		
-		PlantChunk pChunk = null;
-		if (!chunks.containsKey(chunkCoords)) {
-			pChunk = new PlantChunk(plugin, readConn, -1/*dummy index until assigned when added*/);
-			chunks.put(chunkCoords, pChunk); 
+		// Only query the map a single time, optimize !!!
+		PlantChunk pChunk = loadChunk(chunkCoords);
+		
+		if (pChunk == null) {
+			pChunk = new PlantChunk(plugin, readConn, -1/*dummy index until assigned when added*/, chunkCoords);
+			chunks.addChunk(pChunk); 
 			pChunk.loaded = true; // its loaded because its a brand new plant chunk. 
 			RealisticBiomes.doLog(Level.FINER, "PlantManager.add() creating new plantchunk: " + pChunk + "at coords " + chunkCoords);
 		}
 		else {
-			pChunk = chunks.get(chunkCoords);
 			RealisticBiomes.doLog(Level.FINER, "PlantManager.add(): loading existing plant chunk");
 		}
 		
-		// make sure the chunk is loaded
-		loadChunk(chunkCoords);
-		
 		// add the plant
-		pChunk.add(coords, plant, readConn);
+		pChunk.addPlant(blockCoords, plant, readConn);
 		
-		// since the chunk was loaded before the new plant was added, the state of the block
-		// may not match a previously destroyed crop. Force the block to growth state 0
-		Block block = plugin.getServer().getWorld(WorldID.getMCID(coords.w)).getBlockAt(coords.x, coords.y, coords.z);
-		plugin.getBlockGrower().growBlock(block, coords, 0.0f);
+		plugin.getBlockGrower().growBlock(block, 0.0f);
 	}
 	
-	public Plant get(Coords coords) {
-		Coords chunkCoords = new Coords(coords.w, coords.x/16, 0, coords.z/16);
+	public Plant getPlantFromBlock(Block block) {
+		ChunkCoords chunkCoord = new ChunkCoords(block.getChunk());
 		
-		// if the coord's chunk does not have any data attached to it, then simply
-		// exit with failure
-		if (!chunks.containsKey(chunkCoords)){
+		// if the coords's chunk does not have any data attached to it, then simply
+		// exit with failure		
+		PlantChunk pChunk = chunks.get(chunkCoord);
+		if (pChunk == null) {
 			RealisticBiomes.doLog(Level.FINER, "PlantManager.get() returning null due to not containing the Plantchunk object in 'chunks'");
-
 			return null;
 		}
 		
-		PlantChunk pChunk = chunks.get(chunkCoords);
-		
 		// load the plant data if it is not yet loaded
-		loadChunk(chunkCoords);
-		
-		return pChunk.get(coords);
-	}
-	
-	// determine if the chunk corresponding to the given block coords is loaded
-	public boolean chunkLoaded(Coords coords) {
-		Coords chunkCoords = new Coords(coords.w, coords.x/16, 0, coords.z/16);
-		return (chunks.containsKey(chunkCoords) && chunks.get(chunkCoords).isLoaded());
-	}
-	
-	public void growChunk(Coords coords) {
-		
-		
-		if (!chunkLoaded(coords)) {
-			loadChunk(coords);
+		if (pChunk.isLoaded() == false) {
+			pChunk.load(readConn);
 		}
 		
-		PlantChunk chunk = chunks.get(coords);
-		if (chunk.isLoaded()) {
-			for (Coords position : chunk.getPlantCoords()) {
-				Block block = plugin.getServer().getWorld(WorldID.getMCID(position.w)).getBlockAt(position.x, position.y, position.z);
-				
-				plugin.growAndPersistBlock(block, false);
-			}
-		} else {
-			// Still loading - ignore
+		return pChunk.get(new Coords(block));
+	}
+	
+	
+	/**
+	 * @brief Determines if a particular chunk has been loaded
+	 * @param chunk The chunk instance to check
+	 * @return true if the chunk is already loaded
+	 */
+	public boolean isChunkLoaded(ChunkCoords coords) {
+		PlantChunk pChunk = chunks.get(coords);
+		
+		if (pChunk != null && pChunk.isLoaded()) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public void growChunk(Chunk chunk) {
+		ChunkCoords coords = new ChunkCoords(chunk);
+		
+		// Verify the chunk is loaded first and bugger out if there's no data to work with
+		PlantChunk pChunk = loadChunk(coords);
+		if (pChunk == null) {
+			return;
+		}
+
+		// We can assume the chunk will be loaded at this point
+		
+		// Create a deep copy of the plant set to iterate over so we don't run into problems when
+		// trying to remove fully-grown crops.
+		// growAndPersistBlock() will remove records from the set when the crops are fully grown
+		for (Coords position : new HashSet<Coords>(pChunk.getPlantCoords())) {
+			Block block = chunk.getBlock(position.x,  position.y,  position.z);
+			
+			plugin.growAndPersistBlock(block, false);
 		}
 	}
 	
-	public void remove(Coords coords) {
-		Coords chunkCoords = new Coords(coords.w, coords.x/16, 0, coords.z/16);
+	
+	/**
+	 * @brief Removes a plant record from the PlantChunk storage
+	 * @param block The targeted block location
+	 */
+	public void removePlant(Block block) {
+		ChunkCoords chunkCoords = new ChunkCoords(block.getChunk());
 		PlantChunk pChunk = chunks.get(chunkCoords);
 
 		if (pChunk == null)
@@ -541,6 +601,6 @@ public class PlantManager {
 		// make sure the chunk is loaded
 		loadChunk(chunkCoords);
 		
-		pChunk.remove(coords);		
+		pChunk.remove(new Coords(block));		
 	}
 }

@@ -36,7 +36,7 @@ public class BlockGrower {
 	
 	// grow the crop found at the given block/coordinates, with the amount or growth
 	// between 0 and 1, with 1 being totally mature
-	public void growBlock(Block block, Coords coords, float growth) {
+	public void growBlock(Block block, float growth) {
 		Integer stages = growthStages.get(block.getType());
 		if (stages == null)
 			return;

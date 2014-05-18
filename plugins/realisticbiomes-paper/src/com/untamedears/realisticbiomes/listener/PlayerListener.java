@@ -16,7 +16,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.material.Tree;
 
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
@@ -128,6 +127,7 @@ public class PlayerListener implements Listener {
 				
 				GrowthConfig growthConfig = growthConfigs.get(material);
 				if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
+					
 					plantGrowth = plugin.growAndPersistBlock(block, false);
 				}
 			}

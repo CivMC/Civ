@@ -1,6 +1,7 @@
 package com.untamedears.realisticbiomes.persist;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.bukkit.block.Block;
 
 public class Coords {
 	public int w;
@@ -13,6 +14,13 @@ public class Coords {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+	
+	public Coords(Block block) {
+		this.w = WorldID.getPID(block.getWorld().getUID());
+		this.x = block.getX();
+		this.y = block.getY();
+		this.z = block.getZ();
 	}
 	
 	@Override

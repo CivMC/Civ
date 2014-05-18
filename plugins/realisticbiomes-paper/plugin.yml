@@ -1,3 +1,4 @@
 name: RealisticBiomes
 main: com.untamedears.realisticbiomes.RealisticBiomes
-version: 0.6.3.123
+load: STARTUP
+version: 0.6.4.0

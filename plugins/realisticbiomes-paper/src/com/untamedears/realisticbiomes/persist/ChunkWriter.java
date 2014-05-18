@@ -3,13 +3,10 @@ package com.untamedears.realisticbiomes.persist;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.logging.Level;
 
-import org.bukkit.plugin.java.JavaPlugin;
 
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
 import com.untamedears.realisticbiomes.PersistConfig;
-import com.untamedears.realisticbiomes.RealisticBiomes;
 
 /**
  * basically a container class that holds most of the prepared statements that we will be using often
