@@ -1160,10 +1160,6 @@ production_factories:
       - Iron_XP_Bottle_1
       - Iron_XP_Bottle_2
       - Iron_XP_Bottle_3
-      - Iron_XP_Bottle_4
-      - Iron_XP_Bottle_5
-      - Iron_XP_Bottle_6
-      - Iron_XP_Bottle_7
       - Bastion_Smaragdus_Polisher
     repair_multiple: 20
     repair_inputs:
