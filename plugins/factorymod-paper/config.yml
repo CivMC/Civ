@@ -4420,7 +4420,7 @@ production_recipes:
     name: Smelt Glass Panes
     production_time: 32
     inputs:
-      Sand:
+      Glass:
         material: GLASS
         amount: 192
     outputs:
