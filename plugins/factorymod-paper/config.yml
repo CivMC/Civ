@@ -6506,7 +6506,7 @@ production_recipes:
         durability: 15
     outputs:
       White Stained Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
         durability: 0
   Dye_Orange_Stained_Clay:
@@ -6521,7 +6521,7 @@ production_recipes:
         durability: 14
     outputs:
       Orange Stained Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
         durability: 1
   Dye_Magenta_Stained_Clay:
@@ -6536,7 +6536,7 @@ production_recipes:
         durability: 13
     outputs:
       Hardened Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
         durability: 2
   Dye_Light_Blue_Stained_Clay:
@@ -6551,7 +6551,7 @@ production_recipes:
         durability: 12
     outputs:
       Light Blue Stained Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
         durability: 3
   Dye_Yellow_Stained_Clay:
@@ -6566,7 +6566,7 @@ production_recipes:
         durability: 11
     outputs:
       Hardened Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
         durability: 4
   Dye_Lime_Stained_Clay:
@@ -6581,7 +6581,7 @@ production_recipes:
         durability: 10
     outputs:
       Hardened Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
         durability: 5
   Dye_Pink_Stained_Clay:
@@ -6596,7 +6596,7 @@ production_recipes:
         durability: 9
     outputs:
       Pink Stained Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
         durability: 6
   Dye_Gray_Stained_Clay:
@@ -6611,7 +6611,7 @@ production_recipes:
         durability: 8
     outputs:
       Gray Stained Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
         durability: 7
   Dye_Light_Gray_Stained_Clay:
@@ -6626,7 +6626,7 @@ production_recipes:
         durability: 7
     outputs:
       Light Gray Stained Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
         durability: 8
   Dye_Cyan_Stained_Clay:
@@ -6641,7 +6641,7 @@ production_recipes:
         durability: 6
     outputs:
       Cyan Stained Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
         durability: 9
   Dye_Purple_Stained_Clay:
@@ -6656,7 +6656,7 @@ production_recipes:
         durability: 5
     outputs:
       Purple Stained Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
         durability: 10
   Dye_Blue_Stained_Clay:
@@ -6671,7 +6671,7 @@ production_recipes:
         durability: 4
     outputs:
       Blue Stained Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
         durability: 11
   Dye_Brown_Stained_Clay:
@@ -6686,7 +6686,7 @@ production_recipes:
         durability: 3
     outputs:
       Brown Stained Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
         durability: 12
   Dye_Green_Stained_Clay:
@@ -6701,7 +6701,7 @@ production_recipes:
         durability: 2
     outputs:
       Green Stained Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
         durability: 13
   Dye_Red_Stained_Clay:
@@ -6716,7 +6716,7 @@ production_recipes:
         durability: 1
     outputs:
       Red Stained Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
         durability: 14
   Dye_Black_Stained_Clay:
@@ -6731,9 +6731,8 @@ production_recipes:
         durability: 0
     outputs:
       Black Stained Clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         amount: 64
-        durability: 15
         durability: 15
   Mutate_Spruce_Saplings:
     name: Mutate Spruce Saplings
