@@ -1,7 +1,5 @@
 package com.untamedears.realisticbiomes.listener;
 
-import java.util.logging.Logger;
-
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
@@ -37,7 +35,6 @@ import com.untamedears.realisticbiomes.persist.WorldID;
  */
 public class GrowListener implements Listener {
 	
-	public static Logger LOG = Logger.getLogger("RealisticBiomes");
 	private final RealisticBiomes plugin;
 	
 	public GrowListener(RealisticBiomes plugin) {
@@ -60,8 +57,8 @@ public class GrowListener implements Listener {
 			
 			event.setCancelled(true);
 		}
-		else {
-			event.setCancelled(!willGrow(b));
+		else if (!willGrow(b)) {
+			event.setCancelled(true);
 		}
 	}
 
@@ -69,7 +66,7 @@ public class GrowListener implements Listener {
 	 * Event handler for {@link StructureGrowEvent}. Checks tree growth for proper conditions
 	 * @param event The {@link StructureGrowEvent} being handled
 	 */
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onStructureGrow(StructureGrowEvent event) {
 		// disable bonemeal
 		if (event.isFromBonemeal()) {
@@ -80,7 +77,10 @@ public class GrowListener implements Listener {
 		TreeType t = event.getSpecies();
 		
 		Block b = event.getLocation().getBlock();
-		event.setCancelled(!willGrow(t, b));
+		
+		if (!willGrow(t, b)) {
+			event.setCancelled(true);
+		}
 	}
 
 	/**
