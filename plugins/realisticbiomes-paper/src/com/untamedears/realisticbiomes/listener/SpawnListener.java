@@ -1,7 +1,6 @@
 package com.untamedears.realisticbiomes.listener;
 
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -28,8 +27,8 @@ import com.untamedears.realisticbiomes.GrowthConfig;
  */
 public class SpawnListener implements Listener {
 
-	private HashMap<Object, GrowthConfig> growthMap;
-	private HashMap<Object, BaseConfig> fishMap;
+	private final HashMap<Object, GrowthConfig> growthMap;
+	private final HashMap<Object, BaseConfig> fishMap;
 	
 	public SpawnListener(HashMap<Object, GrowthConfig> growthMap, HashMap<Object, BaseConfig> fishMap) {
 		super();
@@ -47,11 +46,14 @@ public class SpawnListener implements Listener {
 		if(event.getSpawnReason() == SpawnReason.BREEDING) {
 			EntityType type = event.getEntityType();
 			Block block = event.getLocation().getBlock();
-			event.setCancelled(!willSpawn(type, block));
+			
+			if (!willSpawn(type, block)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
-	public static Logger LOG = Logger.getLogger("RealisticBiomes");
+	
 	/**
 	 *  Event handler for {@link ItemSpawnEvent}. Reduces the chance of a chicken egg being spawned.
 	 * @param event The {@link ItemSpawnEvent} being handled
@@ -64,7 +66,10 @@ public class SpawnListener implements Listener {
 		if(event.getEntity().getItemStack().getType() == Material.EGG) {
 			Block b = event.getLocation().getBlock();
 			Material m = Material.EGG;
-			event.setCancelled(!willSpawn(m , b));
+			
+			if (!willSpawn(m , b)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
@@ -78,9 +83,9 @@ public class SpawnListener implements Listener {
 			ItemStack items = ((Item)event.getCaught()).getItemStack();
 			Material type = items.getType();
 			Block block = event.getCaught().getLocation().getBlock();
-			boolean cancel = !fishWillSpawn(type, block);
-			event.setCancelled(cancel);
-			if (cancel) {
+			
+			if (!fishWillSpawn(type, block)) {
+				event.setCancelled(true);
 				event.getPlayer().sendMessage("Fish got away");
 			}
 		}
