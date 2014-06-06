@@ -9,9 +9,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -28,7 +31,7 @@ public class EnderPearlManager {
 	private FlightTask task;
 	
 	public EnderPearlManager(){
-		bastions=Bastion.getBastionManager().bastions;
+		bastions=Bastion.getBastionManager().set;
 
 		task = new FlightTask();
 	}
@@ -62,7 +65,7 @@ public class EnderPearlManager {
 
 
 		//check if it has any possibility of going through a bastion 
-		if(!(maxDistance>BastionBlock.getRadius()/2||maxDistance<-1)){
+		if(!(maxDistance>Bastion.getConfigManager().getBastionBlockEffectRadius()/2||maxDistance<-1)){
 			return;
 		}
 		
@@ -387,7 +390,7 @@ public class EnderPearlManager {
 		
 		public void cancel(){
 			if(pearl.getShooter() instanceof Player){
-				blocking.handleTeleport(pearl.getLocation(), (Player) pearl.getShooter());
+				handleTeleport(blocking, pearl.getLocation(), (Player) pearl.getShooter());
 			}
 			pearl.remove();
 			
@@ -401,5 +404,12 @@ public class EnderPearlManager {
 		public int compareTo(Flight o) {
 			return (int) Math.signum(o.endTime - endTime);
 		}
+	}
+	
+	private void handleTeleport(BastionBlock blocking ,Location loc, Player player){
+		if (!Bastion.getBastionManager().onCooldown(player.getName())) blocking.erode(blocking.erosionFromPearl());
+		
+		player.sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
+		player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
 	}
 }

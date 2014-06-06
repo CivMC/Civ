@@ -47,13 +47,13 @@ public class CommandListener implements Listener{
 			}
 		} else if(PlayersStates.playerInMode(player, Mode.DELETE)){
 			BastionBlock bastionBlock=Bastion.getBastionManager().
-					bastions.getBastionBlock(block.getLocation());
+					set.getBastionBlock(block.getLocation());
 
 			if(bastionBlock==null)
 				return;
 
 			if(bastionBlock.canRemove(player)){
-				if(Bastion.getBastionManager().bastions.silentRemove(bastionBlock)){
+				if(Bastion.getBastionManager().set.silentRemove(bastionBlock)){
 					player.sendMessage(ChatColor.GREEN+"Bastion Deleted");
 					PlayersStates.touchPlayer(player);
 					event.setCancelled(true);
@@ -61,7 +61,7 @@ public class CommandListener implements Listener{
 			}
 		} else if(PlayersStates.playerInMode(player, Mode.MATURE)){
 			BastionBlock bastionBlock=Bastion.getBastionManager().
-					bastions.getBastionBlock(block.getLocation());
+					set.getBastionBlock(block.getLocation());
 
 			if(bastionBlock==null)
 				return;
