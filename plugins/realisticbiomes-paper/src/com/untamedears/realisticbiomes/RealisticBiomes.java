@@ -441,14 +441,20 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		return materialGrowth.get(treeTypeMap.get(species));
 	}
 	
-	public GrowthConfig getGrowthConfig(Block block) {
-		Material m = block.getType();
+	public GrowthConfig getGrowthConfig(Material m) {
 		return materialGrowth.get(m);
 	}
 	
-	public boolean hasGrowthConfig(Block block) {
-		Material m = block.getType();
+	public GrowthConfig getGrowthConfig(Block b) {
+		return materialGrowth.get(b.getType());
+	}
+	
+	public boolean hasGrowthConfig(Material m) {
 		return materialGrowth.containsKey(m);
+	}
+	
+	public boolean hasGrowthConfig(Block b) {
+		return materialGrowth.containsKey(b.getType());
 	}
 	
 	public boolean hasGrowthConfig(TreeType species) {
