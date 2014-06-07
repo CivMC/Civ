@@ -237,10 +237,11 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		if (reinforcement == null)
 			return true; 
 
-		for (String player: players)
+		for (String player: players){
 			if (player != null)
 				if (reinforcement.isAccessible(player))
 					return true;
+		}
 
 		return false;
 	}
@@ -300,7 +301,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	}
 
 	public String getOwner(){
-		return getReinforcement().getOwnerName();
+		return getReinforcement().getOwner().getFounder();
 	}
 
 	public Location getLocation(){

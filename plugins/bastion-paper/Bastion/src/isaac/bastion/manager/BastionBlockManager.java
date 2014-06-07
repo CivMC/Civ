@@ -1,5 +1,6 @@
 package isaac.bastion.manager;
 
+import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.storage.BastionBlockSet;
 import isaac.bastion.util.QTBox;
@@ -90,16 +91,14 @@ public class BastionBlockManager
 	}
 	
 
-	//handles are block based events in a general way
+	//handles all block based events in a general way
 	public Set<BastionBlock> shouldStopBlock(Block orrigin, Set<Block> result, String player){
 		Set<BastionBlock> toReturn = new HashSet<BastionBlock>();
 		Set<String> accessors = new HashSet<String>();
-		if(player == null)
+		if(player != null)
 			accessors.add(player);
 		
 		if(orrigin != null){
-			
-			
 			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
 			getReinforcement(orrigin);
 			if(reinforcement instanceof PlayerReinforcement)
@@ -111,7 +110,7 @@ public class BastionBlockManager
 		
 		
 		for(Block block: result)
-			toReturn.addAll(this.getBlockingBastions(block.getLocation(),accessors));
+			toReturn.addAll(getBlockingBastions(block.getLocation(),accessors));
 		
 		
 		return toReturn;
@@ -191,16 +190,17 @@ public class BastionBlockManager
 		Set<? extends QTBox> boxes = set.forLocation(loc);
 		Set<BastionBlock> bastions = null;
 		
-		if(boxes.size() > 0 && boxes.iterator().next() instanceof BastionBlock)
+		if(boxes.size() != 0)
 			bastions = (Set<BastionBlock>) boxes;
 
 		if(bastions == null)
 			return new CopyOnWriteArraySet<BastionBlock>();
 		
 		
-		for(BastionBlock bastion: bastions)
+		for(BastionBlock bastion: bastions){
 			if(!bastion.inField(loc) || bastion.oneCanPlace(players))
 				bastions.remove(bastion);
+		}
 		
 		
 		return bastions;
@@ -253,8 +253,9 @@ public class BastionBlockManager
 		blocks.add(event.getToBlock());
 		Set<BastionBlock> blocking = shouldStopBlock(event.getBlock(),blocks, null);
 		
-		if(blocking.size() != 0)
+		if(blocking.size() != 0){
 			event.setCancelled(true);
+		}
 		
 	}
 	public void handleTreeGrowth(StructureGrowEvent event) {
@@ -288,7 +289,7 @@ public class BastionBlockManager
 			event.setCancelled(true);
 	}
 	public void handleDispensed(BlockDispenseEvent event) {
-		if (event.getItem().getType() == Material.WATER_BUCKET || event.getItem().getType() == Material.LAVA_BUCKET || event.getItem().getType() == Material.FLINT_AND_STEEL) return;
+		if (!(event.getItem().getType() == Material.WATER_BUCKET || event.getItem().getType() == Material.LAVA_BUCKET || event.getItem().getType() == Material.FLINT_AND_STEEL)) return;
 		
 		
 		
