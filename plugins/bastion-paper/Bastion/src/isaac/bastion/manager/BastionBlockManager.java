@@ -329,7 +329,6 @@ public class BastionBlockManager
 		if(event.getPlayer().hasPermission("Bastion.bypass")) return;
 		
 		Set<BastionBlock> blocking = this.getBlockingBastions(event.getTo(), event.getPlayer().getName());
-		Bastion.getPlugin().getLogger().info(event.getPlayer().getName());
 		
 		if (blocking.size() > 0){
 			this.erodeFromTeleoprt(event.getTo(), event.getPlayer().getName(), blocking);

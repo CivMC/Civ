@@ -439,7 +439,9 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 			scheduler.cancelTask(taskId);
 		}
-		location.getBlock().setType(Material.AIR);
+		if (Bastion.getConfigManager().getDestroy())
+			location.getBlock().setType(Material.AIR);
+		
 		set.remove(this);
 
 		//logging TODO add option to config to toggle verbose and turn this off
