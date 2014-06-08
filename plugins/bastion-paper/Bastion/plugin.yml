@@ -1,5 +1,5 @@
 name: Bastion
-version: 0.5.3
+version: 0.6.0
 main: isaac.bastion.Bastion
 depend: [Citadel]
 softdepend: [Humbug]
@@ -41,9 +41,10 @@ permissions:
         default: true
     Bastion.admin:
         description: Special power for admins
-        default: op
+        default: false
         children:
             Bastion.bypass: true
+            Bastion.dev: true
     Bastion.bypass:
         description: Bastions do not effect members
         default: false

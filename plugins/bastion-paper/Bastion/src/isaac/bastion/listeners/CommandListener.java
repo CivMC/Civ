@@ -40,6 +40,7 @@ public class CommandListener implements Listener{
 
 		if(PlayersStates.playerInMode(player, Mode.INFO)){
 			boolean dev=player.hasPermission("Bastion.dev");
+			Bastion.getPlugin().getLogger().info("Bastion.dev ="+dev);
 			String toSend=manager.infoMessage(dev, event);
 			if(toSend!=null){
 				PlayersStates.touchPlayer(player);
@@ -78,7 +79,7 @@ public class CommandListener implements Listener{
 				player.sendMessage(ChatColor.GREEN+"Bastion block created");
 				PlayersStates.touchPlayer(player);
 			} else{
-				player.sendMessage(ChatColor.RED+"You don't have permissions in "+ChatColor.BLACK+reinforcement.getOwner().getName());
+				player.sendMessage(ChatColor.RED+"You don't have permissions");
 			}
 		}
 		

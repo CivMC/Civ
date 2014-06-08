@@ -199,9 +199,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 
 	public boolean canRemove(Player player){
 
-		if(player.hasPermission("Bastion.bypass")) //let admins do whatever 
-			return true;
-
 		PlayerReinforcement reinforcement = getReinforcement();
 
 		if(reinforcement!=null){
@@ -214,12 +211,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 
 	//checks if a player would be allowed to place
 	public boolean canPlace(String playerName){
-
-		Player bastion_owner  = Bukkit.getPlayer(playerName);
-		if(bastion_owner instanceof Player)
-			if(bastion_owner.hasPermission("Bastion.bypass")) //let admins do whatever 
-				return true; 
-
 
 		PlayerReinforcement reinforcement = getReinforcement();
 

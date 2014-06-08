@@ -8,6 +8,7 @@ import isaac.bastion.util.QTBox;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,6 +33,7 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dispenser;
 
 import com.untamedears.citadel.Citadel;
@@ -93,6 +96,11 @@ public class BastionBlockManager
 
 	//handles all block based events in a general way
 	public Set<BastionBlock> shouldStopBlock(Block orrigin, Set<Block> result, String player){
+		if(player != null) {
+			Player playerB = Bukkit.getPlayer(player);
+			if (playerB != null && playerB.hasPermission("Bastion.bypass")) return new CopyOnWriteArraySet<BastionBlock>();
+		}
+		
 		Set<BastionBlock> toReturn = new HashSet<BastionBlock>();
 		Set<String> accessors = new HashSet<String>();
 		if(player != null)
@@ -117,6 +125,8 @@ public class BastionBlockManager
 	}
 
 	private BastionBlock getBlockingBastion(Location loc, String player){
+		
+		
 		Set<? extends QTBox> possible=set.forLocation(loc);
 
 		@SuppressWarnings("unchecked")
@@ -157,11 +167,14 @@ public class BastionBlockManager
 		if(bastions == null)
 			return new CopyOnWriteArraySet<BastionBlock>();
 		
-		for (BastionBlock bastion : bastions){
+		Iterator<BastionBlock> i = bastions.iterator();
+		
+		while (i.hasNext()){
+			BastionBlock bastion = i.next();
 			if (!bastion.inField(loc)){
-				bastions.remove(bastion);
+				i.remove();
 			}
-		}
+		};
 		return bastions;
 	}
 	
@@ -176,11 +189,14 @@ public class BastionBlockManager
 		if(bastions == null)
 			return new CopyOnWriteArraySet<BastionBlock>();
 		
-		for (BastionBlock bastion : bastions){
+		Iterator<BastionBlock> i = bastions.iterator();
+		while (i.hasNext()){
+			BastionBlock bastion = i.next();
 			if (!bastion.inField(loc) || bastion.canPlace(player)){
-				bastions.remove(bastion);
+				i.remove();
 			}
 		}
+		
 		return bastions;
 	}
 	
@@ -197,10 +213,12 @@ public class BastionBlockManager
 			return new CopyOnWriteArraySet<BastionBlock>();
 		
 		
-		for(BastionBlock bastion: bastions){
+		Iterator<BastionBlock> i = bastions.iterator();
+		while (i.hasNext()){
+			BastionBlock bastion = i.next();
 			if(!bastion.inField(loc) || bastion.oneCanPlace(players))
-				bastions.remove(bastion);
-		}
+				i.remove();
+		};
 		
 		
 		return bastions;
@@ -308,16 +326,27 @@ public class BastionBlockManager
 			bastion.silentClose();
 	}
 	public void handleEnderPearlLanded(PlayerTeleportEvent event) {
-		Set<BastionBlock> blocking = this.getBlockingBastions(event.getTo(), event.getPlayer().getName());
+		if(event.getPlayer().hasPermission("Bastion.bypass")) return;
 		
-		if (blocking.size() < 0){
+		Set<BastionBlock> blocking = this.getBlockingBastions(event.getTo(), event.getPlayer().getName());
+		Bastion.getPlugin().getLogger().info(event.getPlayer().getName());
+		
+		if (blocking.size() > 0){
 			this.erodeFromTeleoprt(event.getTo(), event.getPlayer().getName(), blocking);
+			event.getPlayer().sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
+			event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+			
+			event.setCancelled(true);
 		}
 		
 		blocking = this.getBlockingBastions(event.getFrom(), event.getPlayer().getName());
 		
-		if (blocking.size() < 0){
-			this.erodeFromTeleoprt(event.getFrom(), event.getPlayer().getName(), blocking);
+		if (blocking.size() > 0){
+			this.erodeFromTeleoprt(event.getTo(), event.getPlayer().getName(), blocking);
+			event.getPlayer().sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
+			event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+			
+			event.setCancelled(true);
 		}
 		
 	}
