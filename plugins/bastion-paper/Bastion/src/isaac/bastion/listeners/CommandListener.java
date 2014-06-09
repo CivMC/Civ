@@ -40,6 +40,7 @@ public class CommandListener implements Listener{
 
 		if(PlayersStates.playerInMode(player, Mode.INFO)){
 			boolean dev=player.hasPermission("Bastion.dev");
+			Bastion.getPlugin().getLogger().info("Bastion.dev ="+dev);
 			String toSend=manager.infoMessage(dev, event);
 			if(toSend!=null){
 				PlayersStates.touchPlayer(player);
@@ -47,13 +48,13 @@ public class CommandListener implements Listener{
 			}
 		} else if(PlayersStates.playerInMode(player, Mode.DELETE)){
 			BastionBlock bastionBlock=Bastion.getBastionManager().
-					bastions.getBastionBlock(block.getLocation());
+					set.getBastionBlock(block.getLocation());
 
 			if(bastionBlock==null)
 				return;
 
 			if(bastionBlock.canRemove(player)){
-				if(Bastion.getBastionManager().bastions.silentRemove(bastionBlock)){
+				if(Bastion.getBastionManager().set.silentRemove(bastionBlock)){
 					player.sendMessage(ChatColor.GREEN+"Bastion Deleted");
 					PlayersStates.touchPlayer(player);
 					event.setCancelled(true);
@@ -61,7 +62,7 @@ public class CommandListener implements Listener{
 			}
 		} else if(PlayersStates.playerInMode(player, Mode.MATURE)){
 			BastionBlock bastionBlock=Bastion.getBastionManager().
-					bastions.getBastionBlock(block.getLocation());
+					set.getBastionBlock(block.getLocation());
 
 			if(bastionBlock==null)
 				return;
@@ -78,7 +79,7 @@ public class CommandListener implements Listener{
 				player.sendMessage(ChatColor.GREEN+"Bastion block created");
 				PlayersStates.touchPlayer(player);
 			} else{
-				player.sendMessage(ChatColor.RED+"You don't have permissions in "+ChatColor.BLACK+reinforcement.getOwner().getName());
+				player.sendMessage(ChatColor.RED+"You don't have permissions");
 			}
 		}
 		

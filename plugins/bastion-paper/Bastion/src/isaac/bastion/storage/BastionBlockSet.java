@@ -25,7 +25,7 @@ public class BastionBlockSet implements Set<BastionBlock>,
 Iterable<BastionBlock> {
 	private Map<World,SparseQuadTree> blocks;
 	private Set<BastionBlock> changed;
-	public Map<Integer,BastionBlock> blocksById;
+	public Map<Long,BastionBlock> blocksById;
 	private BastionBlockStorage storage;
 	private int task;
 	private ConfigManager config;
@@ -35,7 +35,7 @@ Iterable<BastionBlock> {
 		config=Bastion.getConfigManager();
 
 		blocks=new HashMap<World, SparseQuadTree>();
-		blocksById=new HashMap<Integer,BastionBlock>();
+		blocksById=new HashMap<Long,BastionBlock>();
 		
 		if(Bastion.getPlugin().isEnabled()){
 			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
@@ -65,17 +65,10 @@ Iterable<BastionBlock> {
 			SparseQuadTree bastionsForWorld=new SparseQuadTree(enderSeachRadius);
 			while(forWorld.hasMoreElements()){
 				BastionBlock toAdd=forWorld.nextElement();
-				blocksById.put(toAdd.getID(), toAdd);
+				blocksById.put(toAdd.getId(), toAdd);
 				bastionsForWorld.add(toAdd);
 			}
 			blocks.put(world, bastionsForWorld);
-		}
-
-		for(int i=1;i<BastionBlock.getHighestID();++i){
-			BastionBlock block=blocksById.get(i);
-			if(block!=null)
-				if(block.shouldCull())
-					remove(block);
 		}
 	}
 	public Set<QTBox> forLocation(Location loc){
@@ -83,19 +76,21 @@ Iterable<BastionBlock> {
 
 	}
 
-	public Set<BastionBlock> getPossibleTeleportBlocking(Location loc,String playerName){
-		Set<QTBox> all=blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ(),true);
-		Set<BastionBlock> mightBlock=new TreeSet<BastionBlock>();
-
-		for(QTBox box : all){
+	public Set<BastionBlock> getPossibleTeleportBlocking(Location loc, double maxDistance){
+		Set<QTBox> boxes = blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ(),true);
+		
+		double maxDistanceSquared = maxDistance * maxDistance;
+		
+		Set<BastionBlock> result = new TreeSet<BastionBlock>();
+		
+		for(QTBox box : boxes){
 			if(box instanceof BastionBlock){
-				BastionBlock block=(BastionBlock) box;
-				if(!block.canPlace(playerName)){
-					mightBlock.add(block);
-				}
+				BastionBlock bastion = (BastionBlock)box;
+				if(bastion.getLocation().distanceSquared(loc) < maxDistanceSquared)
+					result.add(bastion);
 			}
 		}
-		return mightBlock;
+		return result;
 	}
 	public BastionBlock getBastionBlock(Location loc) {
 		Set<? extends QTBox> possible=forLocation(loc);
@@ -104,7 +99,6 @@ Iterable<BastionBlock> {
 			if(bastion.getLocation().equals(loc))
 				return bastion;
 		}
-		//Bastion.getPlugin().getLogger().info("didn't find");
 		return null;
 	}
 	public int update(){
@@ -114,21 +108,24 @@ Iterable<BastionBlock> {
 	}
 	@Override
 	public Iterator<BastionBlock> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return blocksById.values().iterator();
 	}
 	@Override
 	public boolean add(BastionBlock toAdd) {
-		blocksById.put(toAdd.getID(), toAdd);
+		blocksById.put(toAdd.getId(), toAdd);
 		blocks.get(toAdd.getLocation().getWorld()).add(toAdd);
 		if(!changed.contains(toAdd))
 			changed.add(toAdd);
+		else
+			return true;
 		return false;
 	}
 	@Override
-	public boolean addAll(Collection<? extends BastionBlock> arg0) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean addAll(Collection<? extends BastionBlock> toAdd) {
+		for(BastionBlock out: toAdd)
+			if(!add(out))
+				return false;
+		return true;
 	}
 	@Override
 	public void clear() {
@@ -137,15 +134,18 @@ Iterable<BastionBlock> {
 		changed.clear();
 	}
 	@Override
-	public boolean contains(Object in) {
+	public boolean contains(Object in) { //compares by id not by pointer
 		if(!(in instanceof BastionBlock))
 			throw new IllegalArgumentException("contains only excepts a BastionBlock");
 		BastionBlock toTest=(BastionBlock) in;
-		return blocksById.containsKey(toTest.getID());
+		return blocksById.values().contains(toTest);
 	}
 	@Override
 	public boolean containsAll(Collection<?> arg0) {
-		return blocksById.isEmpty();
+		for(Object in: blocksById.values())
+			if(!contains(in))
+				return false;
+		return true;
 	}
 	@Override
 	public boolean isEmpty() {
@@ -155,41 +155,33 @@ Iterable<BastionBlock> {
 	public boolean remove(Object in) {
 		if(in==null){
 			return true;
-		}
-		if(in instanceof BastionBlock){
-			removeBastionBlock((BastionBlock) in);
+		} else if(in instanceof BastionBlock){
+			return remove((BastionBlock) in);
 		} else if(in instanceof Location){
-			Location loc=(Location) in;
-			removeBastionBlock(getBastionBlock(loc));
+			return remove(getBastionBlock((Location) in));
 		} else{
 			throw new IllegalArgumentException("remove only excepts a BastionBlock");
 		}
-		return false;
 	}
-	private void removeBastionBlock(BastionBlock toRemove){
+	private boolean remove(BastionBlock toRemove){
 		if(toRemove==null){
-			return;
+			return true;
 		}
 		if(!changed.contains(toRemove))
 			changed.add(toRemove);
-		blocksById.remove(toRemove.getID());
+		blocksById.remove(toRemove.getId());
 		SparseQuadTree forWorld=blocks.get(toRemove.getLocation().getWorld());
 		if(forWorld!=null){
 			forWorld.remove(toRemove);
 		}
-		toRemove.close();
+		return false;
 	}
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean removeAll(Collection<?> toRemove) {
 		if(toRemove.size()==0)
 			return true;
-		if((toRemove.iterator().next() instanceof BastionBlock)){
-			for(BastionBlock block : (Collection<BastionBlock>) toRemove){
-				remove(block);
-			}
-		} else{
-			throw new IllegalArgumentException("remove only excepts a BastionBlock");
+		for(Object block : toRemove){
+			remove(block);
 		}
 		return false;
 	}
@@ -203,28 +195,29 @@ Iterable<BastionBlock> {
 	}
 	@Override
 	public Object[] toArray() {
-		return null;
+		return blocksById.values().toArray();
 	}
 	@Override
 	public <T> T[] toArray(T[] arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		return blocksById.values().toArray(arg0);
 	}
-	public boolean silentRemove(BastionBlock toRemove) {
-
+	public boolean silentRemove(Location loc) {
+			return silentRemove(getBastionBlock(loc));
+	}
+	public boolean silentRemove(BastionBlock toRemove){
 		if(toRemove==null){
 			return false;
 		}
+		
 		if(!changed.contains(toRemove))
 			changed.add(toRemove);
-		blocksById.remove(toRemove.getID());
+		
+		blocksById.remove(toRemove.getId());
 		SparseQuadTree forWorld=blocks.get(toRemove.getLocation().getWorld());
 		if(forWorld!=null){
 			forWorld.remove(toRemove);
 		}
 		
-		toRemove.silentClose();
 		return true;
 	}
-
 }

@@ -2,19 +2,20 @@ package isaac.bastion.manager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.Material;
 import org.bukkit.entity.EnderPearl;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import com.untamedears.humbug.CustomNMSEntityEnderPearl;
@@ -26,13 +27,13 @@ import isaac.bastion.storage.BastionBlockSet;
 public class EnderPearlManager {
 	public static final int MAX_TELEPORT=800;
 	private BastionBlockSet bastions;
-	private Map<EnderPearl,Integer> endTimes;
-	private Map<EnderPearl,BastionBlock> blocks;
+	
+	private FlightTask task;
+	
 	public EnderPearlManager(){
-		bastions=Bastion.getBastionManager().bastions;
+		bastions=Bastion.getBastionManager().set;
 
-		endTimes=new HashMap<EnderPearl,Integer>();
-		blocks=new HashMap<EnderPearl,BastionBlock>();
+		task = new FlightTask();
 	}
 	public void handlePearlLaunched(EnderPearl pearl){
 		getBlocking(pearl);
@@ -42,7 +43,11 @@ public class EnderPearlManager {
 		try {
 		if(pearl instanceof CustomNMSEntityEnderPearl)
 			gravity=((CustomNMSEntityEnderPearl)pearl).y_adjust_;
-		} catch(NoClassDefFoundError e ){
+		else
+			Bastion.getPlugin().getLogger().info("Humbug not found");
+		
+		} 
+		catch(NoClassDefFoundError e ){
 			Bastion.getPlugin().getLogger().info("Humbug not found");
 		}
 
@@ -60,70 +65,64 @@ public class EnderPearlManager {
 
 
 		//check if it has any possibility of going through a bastion 
-		if(!(maxDistance>2||maxDistance<-1)){
-			//Bastion.getPlugin().getLogger().info("Not moving much");
+		if(!(maxDistance>Bastion.getConfigManager().getBastionBlockEffectRadius()/2||maxDistance<-1)){
 			return;
 		}
 		
-		//Bastion.getPlugin().getLogger().info("Not moving much "+horizontalSpeed);
-
-		LivingEntity threwE=pearl.getShooter();
+		
 		Player threw=null;
 		String playerName=null;
-		if(threwE instanceof Player){
-			threw=(Player) threwE;
-			playerName=threw.getName();
+		if(pearl.getShooter() instanceof Player){
+			threw=(Player) pearl.getShooter();
+			playerName = threw.getName();
 		}
 
-		Set<BastionBlock> possible=bastions.getPossibleTeleportBlocking(pearl.getLocation(),playerName);
+		Set<BastionBlock> possible = bastions.getPossibleTeleportBlocking(pearl.getLocation(), maxDistance); //all the bastion blocks within range of the pearl
 
 		//no need to do anything if there aren't any bastions to run into.
 		if(possible.isEmpty()){
-			//Bastion.getPlugin().getLogger().info("There are no that we even have a chance of blocking");
 			return;
 		}
 
 		Location start=pearl.getLocation();
 		Location end=start.clone();
-		end.add(twoDSpeed.multiply(maxTicks));
+		end.add(twoDSpeed.multiply(maxTicks)); 
 
-		Set<BastionBlock> couldCollide=simpleCollide(possible,start.clone(),end.clone());
+		Set<BastionBlock> couldCollide=simpleCollide(possible, start.clone(), end.clone(), playerName); //all the bastions where the pearl passes over or under their shadow
 
 		if(couldCollide.isEmpty()){
-			//Bastion.getPlugin().getLogger().info("Simple collide didn't find any");
 			return;
 		}
 
 
 		BastionBlock firstCollision=null;
-		double collidesBy=-1;
+		long firstCollisionTime=-1;
 		for(BastionBlock bastion : couldCollide){
-			double currentCollidesBy=collidesBy(bastion, start.clone(), end.clone(), speed, gravity, horizontalSpeed);
-			if(currentCollidesBy!=-1&&currentCollidesBy<collidesBy){
-				collidesBy=currentCollidesBy;
+			long currentCollidesBy=(long) collidesBy(bastion, start.clone(), end.clone(), speed, gravity, horizontalSpeed);
+			if(currentCollidesBy!=-1&&currentCollidesBy<firstCollisionTime){
+				firstCollisionTime=currentCollidesBy;
 				firstCollision=bastion;
 			}
-			if(collidesBy==-1&&currentCollidesBy!=-1){
-				collidesBy=currentCollidesBy;
+			
+			//make sure there is at least a starting value Probably better ways of doing this
+			if(firstCollisionTime==-1 && currentCollidesBy!=-1){
+				firstCollisionTime=currentCollidesBy;
 				firstCollision=bastion;
 			}
 		}
-		if(collidesBy!=-1){
-			//Bastion.getPlugin().getLogger().info("adding collision");
-			endTimes.put(pearl, (int) collidesBy);
-			blocks.put(pearl, firstCollision);
+		if(firstCollisionTime!=-1){ //if we found something add it
+			task.manage(new Flight(pearl, firstCollisionTime, firstCollision));
 			return;
 		}
-		//Bastion.getPlugin().getLogger().info("complicated test failed");
-
 
 	}
-	private Set<BastionBlock> simpleCollide(Set<BastionBlock> possible,Location start,Location end){
+	private Set<BastionBlock> simpleCollide(Set<BastionBlock> possible,Location start,Location end, String playerName){
 		Set<BastionBlock> couldCollide=new TreeSet<BastionBlock>();
 		for(BastionBlock bastion : possible){
 			Location loc=bastion.getLocation().clone();
 			loc.setY(0);
-			if(circleLineCollide(start,end,loc,BastionBlock.getRadiusSquared()))
+			
+			if(circleLineCollide(start,end,loc,BastionBlock.getRadiusSquared()) &&  !bastion.canPlace(playerName))
 				couldCollide.add(bastion);
 		}
 
@@ -142,22 +141,12 @@ public class EnderPearlManager {
 		if(solutions.isEmpty()){
 			return -1;
 		}
-		/*for(Location loc: collision_points)
-			loc.getBlock().setType(Material.TRIPWIRE);*/
 		
 		Location temp=startLoc.clone();
 		temp.setY(0);
 		//Solutions held the time at which the collision would happen lets change it to a position
 		for(int i=0;i<solutions.size();++i){
 			solutions.set(i, solutions.get(i)*horizontalSpeed);
-			
-			/*Vector direction=vectorFromLocations(startLoc,endLoc);
-			direction.normalize();
-			Location loc=startLoc.clone();
-			loc.add(direction.multiply(solutions.get(i)));
-			loc.setY(bastion.getLocation().getY());
-			loc.getBlock().setType(Material.WATER);*/
-			
 		}
 
 		List<Double> oneDCollisions=new ArrayList<Double>();
@@ -172,7 +161,6 @@ public class EnderPearlManager {
 		//Bastion.getPlugin().getLogger().info("solutions="+solutions+"collision_points="+oneDCollisions);
 
 
-		double result=-1;
 		for(Double collisionPoint : oneDCollisions){
 			//if this is the solution lets convert it to a tick
 			//check if the collision point is inside between the solutions if so we no there will be a collision
@@ -192,7 +180,7 @@ public class EnderPearlManager {
 
 		}
 
-		return result;
+		return -1;
 	}
 	//returns the solutions to the quadratic equation
 	private List<Double> getSolutions(double a, double b, double c){
@@ -337,42 +325,91 @@ public class EnderPearlManager {
 		return new Vector(end.getX()-start.getX(),end.getY()-start.getY(),end.getZ()-start.getZ());
 	}
 
-
-	public void tick(){
-		for(World world : Bastion.getPlugin().getServer().getWorlds()){
-			worldTick(world);
-		}
-	}
-	private void worldTick(World world){
-		Collection<EnderPearl> flying=world.getEntitiesByClass(EnderPearl.class);
-		for(EnderPearl pearl : flying){
-			pearlTick(pearl);
-		}
-	}
-	private void pearlTick(EnderPearl pearl){
-		Integer endTime=endTimes.get(pearl);
-		if(endTime==null)
-			return;
-
-
-		if(pearl.getWorld().getFullTime()>endTime){
-			String playerName=null;
-			Player player=null;
-			if(pearl.getShooter() instanceof Player){
-				player=(Player)pearl.getShooter();
-				playerName=player.getName();
+	
+	
+	private class FlightTask{
+		PriorityQueue<Flight> inFlight = new PriorityQueue<Flight>();
+		Flight onTask = null;
+		int currentTask = -1;
+		
+		void manage(Flight flight){
+			inFlight.add(flight);
+			if(onTask == null){
+				next();
+				return;
 			}
+			if(onTask.compareTo(flight)==1 || onTask == null){
+				this.next();
+			}
+		}
+		private void next(){
+			if(currentTask != -1)
+				Bukkit.getScheduler().cancelTask(currentTask);
+			
+			if (onTask != null)
+				inFlight.add(onTask);
+			
+			onTask = inFlight.poll();
+			if(onTask == null)
+				return;
+			
+			if(onTask.timeToEnd() <= 0){
+				onTask.cancel();
+				currentTask = -1;
+				onTask = null;
+				next();
+				return;
+			}
+			
+			currentTask = Bukkit.getScheduler().scheduleSyncDelayedTask(Bastion.getPlugin(),new BukkitRunnable(){
 
-			BastionBlock bastion=blocks.get(pearl);
-			if(bastion!=null)
-				if(bastion.enderPearlBlocked(pearl.getLocation(), playerName)){
-					bastion.handleTeleport(pearl.getLocation(), player);
-					pearl.remove();
-					blocks.remove(pearl);
-					endTimes.remove(pearl);
+				@Override
+				public void run() {
+					onTask.cancel();
+					onTask = null;
+					currentTask = -1;
+					next();
 				}
+				
+			}, onTask.timeToEnd());
 		}
 	}
+	
+	
+	private class Flight implements Comparable<Flight>{
+		private EnderPearl   pearl;
+		private Long         endTime;
+		private BastionBlock blocking;
+		
+		public Flight(EnderPearl pearl, long endTime, BastionBlock blocking){
+			this.pearl    = pearl;
+			this.endTime  = endTime;
+			this.blocking = blocking;
+		}
+		
+		
+		public void cancel(){
+			if(pearl.getShooter() instanceof Player){
+				handleTeleport(blocking, pearl.getLocation(), (Player) pearl.getShooter());
+			}
+			pearl.remove();
+			
+		}
+		
+		public long timeToEnd(){
+			return endTime - pearl.getWorld().getFullTime();
+		}
 
-
+		@Override
+		public int compareTo(Flight o) {
+			return (int) Math.signum(o.endTime - endTime);
+		}
+	}
+	
+	private void handleTeleport(BastionBlock blocking ,Location loc, Player player){
+		if (!Bastion.getBastionManager().onCooldown(player.getName())) blocking.erode(blocking.erosionFromPearl());
+		
+		player.sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
+		player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+	}
 }

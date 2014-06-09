@@ -15,9 +15,8 @@ import org.bukkit.World;
 
 public class BastionBlockStorage {
 	private Database db;
-	private String bationBlocksTable;
+	static public String bationBlocksTable;
 	private PreparedStatement getAllBastionsForWorld;
-	private PreparedStatement saveBastion;
 	public BastionBlockStorage(){
 		ConfigManager config=Bastion.getConfigManager();
 		db=new Database(config.getHost(), config.getPort(), config.getDatabase(),config.getUsername(),config.getPassword(),config.getPrefix(), Bastion.getPlugin().getLogger());
@@ -26,7 +25,6 @@ public class BastionBlockStorage {
 		if (db.isConnected()) {
 			createTables();
 			getAllBastionsForWorld = db.prepareStatement("SELECT * FROM "+bationBlocksTable+" WHERE loc_world=?;");
-			saveBastion            = db.prepareStatement("INSERT INTO "+bationBlocksTable+" VALUES(?,?,?,?,?,?,?);");
 		}
 	}
 	public void createTables(){
@@ -46,35 +44,7 @@ public class BastionBlockStorage {
 	public void saveBastionBlocks(Set<BastionBlock> blocks){
 		Bastion.getPlugin().getLogger().info("saveBastionBlocks for "+blocks.size()+" blocks");
 		for(BastionBlock block: blocks){
-			saveBastionBlock(block);
-		}
-	}
-	public void saveBastionBlock(BastionBlock block){
-		db.execute("DELETE FROM "+bationBlocksTable+" WHERE bastion_id="+block.getID()+";");
-		if(!block.ghost()){
-			String toExicute="INSERT INTO "+bationBlocksTable+" VALUES("
-					+block.getID()+","
-					+block.getLocation().getBlockX()+","
-					+block.getLocation().getBlockY()+","
-					+block.getLocation().getBlockZ()+","
-					+"'"+block.getLocation().getWorld().getName()+"',"
-					+block.getPlaced()+","
-					+block.getBalance()
-					+");";
-			try {
-				saveBastion.setInt   (1, block.getID());
-				saveBastion.setInt   (2, block.getLocation().getBlockX());
-				saveBastion.setInt   (3, block.getLocation().getBlockY());
-				saveBastion.setInt   (4, block.getLocation().getBlockZ());
-				saveBastion.setString(5, block.getLocation().getWorld().getName());
-				saveBastion.setLong  (6, block.getPlaced());
-				saveBastion.setDouble(7, block.getBalance());
-				saveBastion.execute();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			db.execute(toExicute);
+			block.save(db);
 		}
 	}
 	public Enumeration<BastionBlock> getAllSnitches(World world) {
