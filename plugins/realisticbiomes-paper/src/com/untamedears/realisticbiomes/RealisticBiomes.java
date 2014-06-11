@@ -400,6 +400,11 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 			return 0.0;
 		}
 		
+		// Only persistent crops should be grown in this manner
+		if (!growthConfig.isPersistent()) {
+			return 0.0;
+		}
+		
 		RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): plantManager.get() returned: " + plant + " for coords: " + blockCoords);
 		
 		if (plant == null) {
