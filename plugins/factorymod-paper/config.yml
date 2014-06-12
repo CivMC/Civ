@@ -1980,6 +1980,7 @@ production_factories:
     recipes:
       - Produce_TNT
       - Produce_Fire_Charges
+      - Produce_Eyes_of_Ender
       - Bastion_Silicon_Tetranitratobihydrotrioxycarbon
     repair_multiple: 10
     repair_inputs:
@@ -3759,6 +3760,20 @@ production_recipes:
       Fire Charge:
         material: FIREBALL
         amount: 128
+  Produce_Eyes_of_Ender:
+    name: Produce Eyes of Ender
+    production_time: 8
+    inputs:
+      Ender pearls:
+        material: ENDER_PEARL
+        amount: 32
+      Blaze Powder:
+        material: BLAZE_POWDER
+        amount: 16
+    outputs:
+      Eyes of Ender:
+        material: EYE_OF_ENDER
+        amount: 32
   Dye_White_Wool_Green:
     name: Dye White Wool Green
     inputs:
