@@ -1940,6 +1940,7 @@ production_factories:
       - Mutate_Witches
       - Mutate_Spiders
       - Mutate_Cave_Spiders
+      - Mutate_Ghasts
     repair_multiple: 2
     repair_inputs:
       Glass_bottles:
@@ -6948,6 +6949,38 @@ production_recipes:
         material: MONSTER_EGG
         durability: 59
         amount: 8
+  Mutate_Ghasts:
+    name: Mutate Ghasts
+    production_time: 32
+    inputs:
+      Ghast tears:
+        material: GHAST_TEAR
+        amount: 8
+      Fire charges: # Ammunition
+        material: FIREBALL
+        amount: 64
+      Dispensers: # Fire!
+        material: DISPENSER
+        amount: 4
+      White carpets: # To make a balloon
+        material: CARPET
+        amount: 256
+      Furnaces: # To heat air
+        material: FURNACE
+        amount: 4
+      Charcoal: # To fuel the furnace
+        material: COAL
+        durability: 1
+        amount: 256
+      Villager eggs: # Operator
+        material: MONSTER_EGG
+        durability: 120
+        amount: 4
+    outputs:
+      Ghast eggs:
+        material: MONSTER_EGG
+        durability: 56
+        amount: 4
   Compact_Ice:
     name: Compact Ice
     production_time: 32
