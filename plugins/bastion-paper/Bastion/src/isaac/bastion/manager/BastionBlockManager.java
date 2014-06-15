@@ -328,7 +328,7 @@ public class BastionBlockManager
 	}
 	public void handleEnderPearlLanded(PlayerTeleportEvent event) {
 		if(event.getPlayer().hasPermission("Bastion.bypass")) return;
-		if (event.getCause() == TeleportCause.PLUGIN) return; // incase its a plugin teleporting
+		if (event.getCause() != TeleportCause.ENDER_PEARL) return; // Only handle enderpearl cases
 		
 		Set<BastionBlock> blocking = this.getBlockingBastions(event.getTo(), event.getPlayer().getName());
 		
