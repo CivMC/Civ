@@ -32,6 +32,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dispenser;
@@ -327,6 +328,7 @@ public class BastionBlockManager
 	}
 	public void handleEnderPearlLanded(PlayerTeleportEvent event) {
 		if(event.getPlayer().hasPermission("Bastion.bypass")) return;
+		if (event.getCause() == TeleportCause.PLUGIN) return; // incase its a plugin teleporting
 		
 		Set<BastionBlock> blocking = this.getBlockingBastions(event.getTo(), event.getPlayer().getName());
 		
@@ -337,17 +339,6 @@ public class BastionBlockManager
 			
 			event.setCancelled(true);
 		}
-		
-		blocking = this.getBlockingBastions(event.getFrom(), event.getPlayer().getName());
-		
-		if (blocking.size() > 0){
-			this.erodeFromTeleoprt(event.getTo(), event.getPlayer().getName(), blocking);
-			event.getPlayer().sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
-			event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
-			
-			event.setCancelled(true);
-		}
-		
 	}
 
 }
