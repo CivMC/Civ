@@ -40,7 +40,6 @@ public class CommandListener implements Listener{
 
 		if(PlayersStates.playerInMode(player, Mode.INFO)){
 			boolean dev=player.hasPermission("Bastion.dev");
-			Bastion.getPlugin().getLogger().info("Bastion.dev ="+dev);
 			String toSend=manager.infoMessage(dev, event);
 			if(toSend!=null){
 				PlayersStates.touchPlayer(player);
@@ -67,6 +66,7 @@ public class CommandListener implements Listener{
 			if(bastionBlock==null)
 				return;
 			bastionBlock.mature();
+			player.sendMessage(ChatColor.GREEN + "Matured");
 		} else if(PlayersStates.playerInMode(player, Mode.BASTION)){
 			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
 					getReinforcement(block.getLocation());

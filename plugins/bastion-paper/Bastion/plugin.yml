@@ -1,5 +1,5 @@
 name: Bastion
-version: 0.6.0
+version: 0.6.1
 main: isaac.bastion.Bastion
 depend: [Citadel]
 softdepend: [Humbug]
@@ -35,7 +35,7 @@ commands:
 permissions:
     Bastion.*:
         description: Gives access to all Bastion commands
-        default: op
+        default: false
     Bastion.normal:
         description: All a normal player should ever need
         default: true

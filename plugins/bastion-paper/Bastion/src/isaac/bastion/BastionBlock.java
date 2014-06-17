@@ -278,6 +278,10 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	public void mature(){
 		placed -= SCALING_TIME;
 	}
+	
+	public boolean isMature(){
+		return System.currentTimeMillis() - placed >= SCALING_TIME;
+	}
 
 	private PlayerReinforcement getReinforcement(){
 		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().

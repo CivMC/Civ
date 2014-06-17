@@ -32,6 +32,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dispenser;
@@ -80,13 +81,16 @@ public class BastionBlockManager
 	}
 	
 	public boolean onCooldown(String player){
-		boolean result = false;
 		Long last_placed = playerLastEroded.get(player);
-		if(last_placed != null && (System.currentTimeMillis() - playerLastEroded.get(player)) < BastionBlock.MIN_BREAK_TIME) result = true;
+		if (last_placed == null){
+			playerLastEroded.put(player, System.currentTimeMillis());
+			return false;
+		}
 		
-		playerLastEroded.put(player, System.currentTimeMillis());
+		if ((System.currentTimeMillis() - playerLastEroded.get(player)) < BastionBlock.MIN_BREAK_TIME) return true;
+		else playerLastEroded.put(player, System.currentTimeMillis());
 		
-		return result;
+		return false;
 	}
 
 	public Set<BastionBlock> shouldStopLocation(Location loc, String player){
@@ -326,9 +330,22 @@ public class BastionBlockManager
 			bastion.silentClose();
 	}
 	public void handleEnderPearlLanded(PlayerTeleportEvent event) {
-		if(event.getPlayer().hasPermission("Bastion.bypass")) return;
+		if (!Bastion.getConfigManager().getEnderPearlsBlocked()) return; //don't block if the feature isn't enabled.
+		if (event.getPlayer().hasPermission("Bastion.bypass")) return; //I'm not totally sure about the implications of this combined with humbug. It might cause some exceptions. Bukkit will catch.
+		if (event.getCause() != TeleportCause.ENDER_PEARL) return; // Only handle enderpearl cases
 		
 		Set<BastionBlock> blocking = this.getBlockingBastions(event.getTo(), event.getPlayer().getName());
+		
+		if(Bastion.getConfigManager().getEnderPearlRequireMaturity()){
+			Iterator<BastionBlock> i = blocking.iterator();
+		
+			while (i.hasNext()){
+				BastionBlock bastion = i.next();
+				if (!bastion.isMature()){
+					i.remove();
+				}
+			};
+		}
 		
 		if (blocking.size() > 0){
 			this.erodeFromTeleoprt(event.getTo(), event.getPlayer().getName(), blocking);
@@ -336,18 +353,31 @@ public class BastionBlockManager
 			event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
 			
 			event.setCancelled(true);
+			return;
 		}
 		
 		blocking = this.getBlockingBastions(event.getFrom(), event.getPlayer().getName());
 		
+		if(Bastion.getConfigManager().getEnderPearlRequireMaturity()){
+			Iterator<BastionBlock> i = blocking.iterator();
+		
+			while (i.hasNext()){
+				BastionBlock bastion = i.next();
+				if (!bastion.isMature()){
+					i.remove();
+				}
+			};
+		}
+		
+		
 		if (blocking.size() > 0){
 			this.erodeFromTeleoprt(event.getTo(), event.getPlayer().getName(), blocking);
 			event.getPlayer().sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
 			event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
 			
 			event.setCancelled(true);
-		}
-		
+			return;
+		}	
 	}
 
 }

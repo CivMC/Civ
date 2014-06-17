@@ -158,7 +158,6 @@ public class EnderPearlManager {
 			collision_point.setY(0);
 			oneDCollisions.add(collision_point.subtract(twoDStart).length());
 		}
-		//Bastion.getPlugin().getLogger().info("solutions="+solutions+"collision_points="+oneDCollisions);
 
 
 		for(Double collisionPoint : oneDCollisions){
