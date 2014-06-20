@@ -296,7 +296,13 @@ public class BastionBlockManager
 			event.setCancelled(true);
 	}
 	public void handlePistonPush(BlockPistonExtendEvent event) {
-		Set<BastionBlock> blocking = shouldStopBlock(null,new HashSet<Block>(event.getBlocks()), null);
+		Block pistion = event.getBlock();
+		Set<Block> involved = new HashSet<Block>(event.getBlocks());
+		involved.add(pistion.getRelative(event.getDirection()));
+
+		
+		Set<BastionBlock> blocking = shouldStopBlock (pistion, involved, null);
+		
 		
 		if(blocking.size() != 0)
 			event.setCancelled(true);
