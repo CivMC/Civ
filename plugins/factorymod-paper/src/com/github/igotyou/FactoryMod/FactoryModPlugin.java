@@ -18,6 +18,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
 import com.github.igotyou.FactoryMod.interfaces.Properties;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
+import com.github.igotyou.FactoryMod.listeners.NoteStackListener;
 import com.github.igotyou.FactoryMod.listeners.RedstoneListener;
 import com.github.igotyou.FactoryMod.managers.FactoryModManager;
 import com.github.igotyou.FactoryMod.properties.PrintingPressProperties;
@@ -81,6 +82,7 @@ public class FactoryModPlugin extends JavaPlugin
 		{
 			getServer().getPluginManager().registerEvents(new FactoryModListener(manager), this);
 			getServer().getPluginManager().registerEvents(new RedstoneListener(manager, manager.getProductionManager()), this);
+			getServer().getPluginManager().registerEvents(new NoteStackListener(this), this);
 		}
 		catch(Exception e)
 		{
