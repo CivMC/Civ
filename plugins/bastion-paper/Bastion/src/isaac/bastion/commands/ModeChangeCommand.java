@@ -1,10 +1,15 @@
 package isaac.bastion.commands;
 
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class ModeChangeCommand implements CommandExecutor {
 	
@@ -15,11 +20,23 @@ public class ModeChangeCommand implements CommandExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command arg1, String arg2,
-			String[] arg3) {
+	public boolean onCommand(CommandSender sender, Command command, String arg2,
+			String[] arguments) {
 		if(!(sender instanceof Player))
 			return false;
 		PlayersStates.toggleModeForPlayer((Player) sender, mode);
+		
+		if(sender.hasPermission("Bastion.dev"))
+			if(arguments.length >= 3){
+				Integer x = Integer.parseInt(arguments[0]);
+				Integer y = Integer.parseInt(arguments[1]);
+				Integer z = Integer.parseInt(arguments[2]);
+				Player player = (Player) sender;
+				if(x != null && y != null && z != null){
+					Bukkit.getServer().getPluginManager().callEvent(new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, player.getItemInHand(), new Location(player.getLocation().getWorld(), x, y - 1, z).getBlock(), BlockFace.UP ));
+				}
+			}
+			
 		return true;
 	}
 

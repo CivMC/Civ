@@ -21,7 +21,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -30,7 +29,6 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
@@ -229,28 +227,21 @@ public class BastionBlockManager
 	}
 	
 
-	public String infoMessage(boolean dev,PlayerInteractEvent event){
-		Block clicked=event.getClickedBlock();
-		BlockFace clickedFace=event.getBlockFace();
-		Block block=clicked.getRelative(clickedFace); //get the block above the clicked block. Kind of like you clicked air
-
-		Player player=event.getPlayer();
-		String playerName=player.getName();
-
+	public String infoMessage(boolean dev, Block block, Block clicked, Player player){
 		BastionBlock bastion=set.getBastionBlock(clicked.getLocation()); //Get the bastion at the location clicked.
 
 		if(bastion!=null){ //See if anything was found
 			return bastion.infoMessage(dev, player); //If there is actually something there tell the player about it.
 		}
 
-		bastion=getBlockingBastion(block.getLocation(),playerName);
+		bastion=getBlockingBastion(block.getLocation(),player.getName());
 		if(bastion==null){
 			bastion=getBlockingBastion(block.getLocation());
 			if(bastion!=null){
-				return ChatColor.GREEN+"A Bastion Block prevents others from building";
+				return ChatColor.GREEN+"A Bastion Block prevents others from building" + ( (dev) ? (ChatColor.BLACK + "\n" +  bastion.toString()) : "" );
 			}
 		} else{
-			return ChatColor.RED+"A Bastion Block prevents you building";
+			return ChatColor.RED+"A Bastion Block prevents you building" + ( (dev) ? (ChatColor.BLACK + "\n" +  bastion.toString()) : "" );
 		}
 		
 		return ChatColor.YELLOW + "No Bastion Block";
@@ -266,8 +257,12 @@ public class BastionBlockManager
 		
 		if(blocking.size() != 0){
 			erodeFromPlace(null, blocks,event.getPlayer().getName(),blocking);
-			event.getBlock().breakNaturally();
-			event.getBlockReplacedState().update(true, false);
+			
+			event.setCancelled(true);
+			event.getPlayer().sendMessage(ChatColor.RED + "Bastion removed block");
+			
+			//event.getBlock().breakNaturally();
+			//event.getBlockReplacedState().update(true, false); //most likely source of random blocks being removed. Only one I can think of.
 		}
 	}
 	public void handleFlowingWater(BlockFromToEvent event) {

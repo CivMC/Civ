@@ -40,10 +40,10 @@ public class CommandListener implements Listener{
 
 		if(PlayersStates.playerInMode(player, Mode.INFO)){
 			boolean dev=player.hasPermission("Bastion.dev");
-			String toSend=manager.infoMessage(dev, event);
+			String toSend=manager.infoMessage(dev, event.getClickedBlock().getRelative(event.getBlockFace()), event.getClickedBlock(), event.getPlayer());
 			if(toSend!=null){
 				PlayersStates.touchPlayer(player);
-				player.sendMessage(manager.infoMessage(dev, event));
+				player.sendMessage(toSend);
 			}
 		} else if(PlayersStates.playerInMode(player, Mode.DELETE)){
 			BastionBlock bastionBlock=Bastion.getBastionManager().
