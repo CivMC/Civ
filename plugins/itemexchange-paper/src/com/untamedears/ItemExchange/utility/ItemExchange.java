@@ -162,8 +162,8 @@ public class ItemExchange {
 		}
 	}
 
-	private static Map<Player, Location> locationRecord = new HashMap<>(100);
-	private static Map<Player, Integer> ruleIndex = new HashMap<>(100);
+	private static Map<Player, Location> locationRecord = new HashMap<Player, Location>(100);
+	private static Map<Player, Integer> ruleIndex = new HashMap<Player, Integer>(100);
 
 	public void playerResponse(Player player, ItemStack itemStack, Location location) {
 		//If the player has interacted with this exchange previously
