@@ -340,7 +340,7 @@ public class FactoryModPlugin extends JavaPlugin
 	private NamedItemStack createItemStack(Material material,int stackSize,short durability,String name,String loreString,String commonName,int repairCost,List<ProbabilisticEnchantment> compulsoryEnchants,List<ProbabilisticEnchantment> storedEnchants, List<PotionEffect> potionEffects)
 	{
 		NamedItemStack namedItemStack= new NamedItemStack(material, stackSize, durability,commonName);
-		if(name!=null||loreString!=null||compulsoryEnchants.size()>0||repairCost > 0)
+		if(name!=null||loreString!=null||compulsoryEnchants.size()>0||storedEnchants.size()>0||repairCost > 0)
 		{
 			ItemMeta meta=namedItemStack.getItemMeta();
 			if (name!=null)
