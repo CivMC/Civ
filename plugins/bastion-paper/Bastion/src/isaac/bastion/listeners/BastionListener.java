@@ -33,7 +33,7 @@ implements Listener
 		bastionManager = Bastion.getBastionManager();
 		config=Bastion.getConfigManager();
 	}
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOW)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if(event.isCancelled()){
 			return;
