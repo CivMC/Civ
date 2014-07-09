@@ -320,7 +320,11 @@ public class FactoryModPlugin extends JavaPlugin
 				String materialName=configItem.getString("material");
 				Material material = Material.getMaterial(materialName);
 				//only proceeds if an acceptable material name was provided
-				if(material!=null)
+				if (material == null)
+				{
+					getLogger().severe(configItems.getCurrentPath() + " requires invalid material " + materialName);
+				}
+				else
 				{
 					int amount=configItem.getInt("amount",1);
 					short durability=(short)configItem.getInt("durability",0);
