@@ -320,7 +320,11 @@ public class FactoryModPlugin extends JavaPlugin
 				String materialName=configItem.getString("material");
 				Material material = Material.getMaterial(materialName);
 				//only proceeds if an acceptable material name was provided
-				if(material!=null)
+				if (material == null)
+				{
+					getLogger().severe(configItems.getCurrentPath() + " requires invalid material " + materialName);
+				}
+				else
 				{
 					int amount=configItem.getInt("amount",1);
 					short durability=(short)configItem.getInt("durability",0);
@@ -340,7 +344,7 @@ public class FactoryModPlugin extends JavaPlugin
 	private NamedItemStack createItemStack(Material material,int stackSize,short durability,String name,String loreString,String commonName,int repairCost,List<ProbabilisticEnchantment> compulsoryEnchants,List<ProbabilisticEnchantment> storedEnchants, List<PotionEffect> potionEffects)
 	{
 		NamedItemStack namedItemStack= new NamedItemStack(material, stackSize, durability,commonName);
-		if(name!=null||loreString!=null||compulsoryEnchants.size()>0||repairCost > 0)
+		if(name!=null||loreString!=null||compulsoryEnchants.size()>0||storedEnchants.size()>0||potionEffects.size()>0||repairCost > 0)
 		{
 			ItemMeta meta=namedItemStack.getItemMeta();
 			if (name!=null)
