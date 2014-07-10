@@ -6,10 +6,14 @@ Oak Wood Planks,,5,0
 Spruce Wood Planks,,5,1
 Birch Wood Planks,,5,2
 Jungle Wood Planks,,5,3
+Acacia Wood Planks,,5,4
+Dark Oak Wood Planks,,5,5
 Oak Sapling,,6,0
 Spruce Sapling,,6,1
 Birch Sapling,,6,2
 Jungle Sapling,,6,3
+Acacia Sapling,,6,4
+Dark Oak Sapling,,6,5
 Bedrock,,7,0
 Water,,8,0
 Water,,9,0
@@ -28,6 +32,8 @@ Oak Leaves,,18,0
 Spruce Wood,,18,1
 Birch Leaves,,18,2
 Jungle Leaves,,18,3
+Acacia Leaves,,18,4
+Dark Oak Leaves,,18,5
 Sponge,,19,0
 Glass,,20,0
 Lapis Lazuli Ore,,21,0
@@ -178,10 +184,14 @@ Double Oak Wood Slab,,125,0
 Double Spruce Wood Slab,,125,1
 Double Birch Wood Slab,,125,2
 Double Jungle Wood Slab,,125,3
+Double Acacia Wood Slab,,125,4
+Double Dark Oak Wood Slab,,125,5
 Oak Slab,,126,0
 Spruce Slab,,126,1
 Birch Slab,,126,2
 Jungle Slab,,126,3
+Acacia Slab,,126,4
+Dark Oak Slab,,126,5
 Cocoa Plant,,127,0
 Sandstone Stairs,,128,0
 Emerald Ore,,129,0
@@ -239,6 +249,10 @@ Brown Stained Clay,,159,12
 Green Stained Clay,,159,13
 Red Stained Clay,,159,14
 Black Stained Clay,,159,15
+Acacia Wood,,162,0
+Dark Oak Wood,,162,1
+Acacia Stairs,,163,0
+Dark Oak Stairs,,164,0
 Hay Bale,,170,0
 White Carpet,,171,0
 Orange Carpet,,171,1
