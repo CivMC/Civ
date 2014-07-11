@@ -17,12 +17,13 @@
   
   <build>
     <sourceDirectory>${basedir}/src</sourceDirectory>
+    
     <resources>
       <resource>
-        <directory>${basedir}/src</directory>
+        <directory>${basedir}</directory>
         <includes>
-          <include>*.yml</include>
-          <include>*.csv</include>
+          <include>**/*.yml</include>
+          <include>**/*.csv</include>
           <include>license.txt</include>
         </includes>
       </resource>
