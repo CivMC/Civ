@@ -10,21 +10,12 @@
   <name>RealisticBiomes</name>
   <url>https://github.com/ttk2/RealisticBiomes</url>
   
+  <properties>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+  </properties>
+  
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.3.2</version>
-          <configuration>
-            <source>1.7</source>
-            <target>1.7</target>
-            <compilerArgument></compilerArgument>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    
     <sourceDirectory>${basedir}/src</sourceDirectory>
     
     <resources>
@@ -41,16 +32,15 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>craftbukkit</artifactId>
-      <version>1.7.2</version>
+      <version>1.7.2-R0.3</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
   
   <repositories>
     <repository>
-      <id>lib</id>
-      <name>lib</name>
-      <url>${project.baseUri}lib</url>
+      <id>bukkit-repo</id>
+      <url>http://repo.bukkit.org/content/groups/public/</url>
     </repository>
   </repositories>
 </project>
