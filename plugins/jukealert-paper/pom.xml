@@ -24,6 +24,7 @@
         <directory>${basedir}</directory>
         <includes>
           <include>*.yml</include>
+          <include>LICENSE.txt</include>
         </includes>
       </resource>
     </resources>
