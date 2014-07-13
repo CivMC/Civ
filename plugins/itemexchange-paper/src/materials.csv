@@ -32,8 +32,6 @@ Oak Leaves,,18,0
 Spruce Wood,,18,1
 Birch Leaves,,18,2
 Jungle Leaves,,18,3
-Acacia Leaves,,18,4
-Dark Oak Leaves,,18,5
 Sponge,,19,0
 Glass,,20,0
 Lapis Lazuli Ore,,21,0
@@ -249,6 +247,8 @@ Brown Stained Clay,,159,12
 Green Stained Clay,,159,13
 Red Stained Clay,,159,14
 Black Stained Clay,,159,15
+Acacia Leaves,,161,0
+Dark Oak Leaves,,161,1
 Acacia Wood,,162,0
 Dark Oak Wood,,162,1
 Acacia Stairs,,163,0
