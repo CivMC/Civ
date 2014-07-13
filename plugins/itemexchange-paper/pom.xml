@@ -22,9 +22,12 @@
       <resource>
         <directory>${basedir}</directory>
         <includes>
+          <include>license.txt</include>
+        </includes>
+        <directory>${basedir}/src</directory>
+        <includes>
           <include>*.yml</include>
           <include>*.csv</include>
-          <include>license.txt</include>
         </includes>
       </resource>
     </resources>
