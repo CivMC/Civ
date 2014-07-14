@@ -1,0 +1,4 @@
+name: NameTracker
+main: com.valadian.nametracker.NameTrackerPlugin
+version: 1.0
+author: Rourke750, Valadian

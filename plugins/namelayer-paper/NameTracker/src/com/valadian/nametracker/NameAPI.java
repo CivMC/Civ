@@ -11,8 +11,4 @@ public class NameAPI {
 	public static String getCurrentName(UUID uuid) {
 		return NameTrackerPlugin.associations.getCurrentName(uuid);
 	}
-
-	public static Set<String> getAllName(UUID uuid) {
-		return NameTrackerPlugin.associations.getAllNames(uuid);
-	}
 }
