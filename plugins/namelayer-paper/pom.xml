@@ -16,7 +16,7 @@
   </properties>
   
   <build>
-    <sourceDirectory>${basedir}/NameTracker/src</sourceDirectory>
+    <sourceDirectory>${basedir}/src</sourceDirectory>
     
     <resources>
       <resource>
