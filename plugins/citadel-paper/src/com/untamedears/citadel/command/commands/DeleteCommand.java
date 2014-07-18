@@ -2,6 +2,8 @@ package com.untamedears.citadel.command.commands;
 
 import static com.untamedears.citadel.Utility.sendMessage;
 
+import java.util.UUID;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -30,6 +32,10 @@ public class DeleteCommand extends PlayerCommand {
 	}
 
 	public boolean execute(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+			sender.sendMessage("Console curently isn't supported");
+			return true;
+        }
 		String groupName = args[0];
 		
 		GroupManager groupManager = Citadel.getGroupManager();
@@ -42,8 +48,9 @@ public class DeleteCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, Faction.kDisciplineMsg);
 			return true;
 		}
-		String senderName = sender.getName();		
-		if(!group.isFounder(senderName)){
+        Player player = (Player)sender;
+        UUID accountId = player.getUniqueId();
+		if(!group.isFounder(accountId)){
 			sendMessage(sender, ChatColor.RED, "Invalid permission to delete this group");
 			return true;
 		}
@@ -51,13 +58,9 @@ public class DeleteCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "You cannot delete your default group");
 			return true;
 		}
-        Player player = null;
-        if (sender instanceof Player) {
-            player = (Player)sender;
-        }
 		
 		PersonalGroupManager personalGroupManager = Citadel.getPersonalGroupManager();
-		PersonalGroup personalGroup = personalGroupManager.getPersonalGroup(senderName);
+		PersonalGroup personalGroup = personalGroupManager.getPersonalGroup(accountId);
 		groupManager.removeGroup(group, personalGroup, player);
 		sendMessage(sender, ChatColor.GREEN, "Deleted group: %s", groupName);
 		return true;

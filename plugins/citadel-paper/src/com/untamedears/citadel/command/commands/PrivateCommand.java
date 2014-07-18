@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.command.PlayerCommand;
+import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.PlayerState;
 
 /**
@@ -27,7 +28,7 @@ public class PrivateCommand extends PlayerCommand {
 	public boolean execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
 		PlayerState state = PlayerState.get(player);
-		state.setFaction(Citadel.getMemberManager().getMember(player).getPersonalGroup());
+		state.setFaction(Faction.getPersonalGroup(player.getUniqueId()));
 		setSingleMode(SecurityLevel.PRIVATE, state, player);
 		return true;
 	}

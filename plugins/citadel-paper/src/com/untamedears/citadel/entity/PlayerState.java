@@ -3,7 +3,10 @@ package com.untamedears.citadel.entity;
 import static com.untamedears.citadel.Utility.sendMessage;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -14,22 +17,23 @@ import com.untamedears.citadel.SecurityLevel;
 
 public class PlayerState {
 
-    private static final HashMap<Player, PlayerState> PLAYER_STATES = new HashMap<Player, PlayerState>();
+    private static final Map<UUID, PlayerState> PLAYER_STATES = new HashMap<UUID, PlayerState>();
 
     public static PlayerState get(Player player) {
-        PlayerState state = PLAYER_STATES.get(player);
+        UUID id = player.getUniqueId();
+        PlayerState state = PLAYER_STATES.get(id);
         if (state == null) {
             state = new PlayerState(player);
-            PLAYER_STATES.put(player, state);
+            PLAYER_STATES.put(id, state);
         }
         return state;
     }
 
     public static void remove(Player player) {
-        PLAYER_STATES.remove(player);
+        PLAYER_STATES.remove(player.getUniqueId());
     }
 
-    private Player player;
+    private UUID accountId;
     private PlacementMode mode;
     private ReinforcementMaterial fortificationMaterial;
     private SecurityLevel securityLevel;
@@ -40,10 +44,10 @@ public class PlayerState {
 
     public PlayerState(Player player) {
         reset();
-        this.player = player;
+        this.accountId = player.getUniqueId();
         bypassMode = false;
     }
-    
+
     /**
      * Sets the placement mode to NORMAL and resets other properties.
      */
@@ -116,7 +120,10 @@ public class PlayerState {
         
         cancelModePid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
             public void run() {
-                sendMessage(player, ChatColor.YELLOW, "%s mode off", mode.name());
+                Player player = Bukkit.getPlayer(accountId);
+                if (player != null) {
+                    sendMessage(player, ChatColor.YELLOW, "%s mode off", mode.name());
+                }
                 reset();
             }
         }, 20L * Citadel.getConfigManager().getAutoModeReset());

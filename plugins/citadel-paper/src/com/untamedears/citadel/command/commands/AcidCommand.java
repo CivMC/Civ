@@ -42,7 +42,6 @@ public class AcidCommand extends PlayerCommand {
         }
         boolean successfulAcid = false;
         Player player = (Player)sender;
-        String playerName = player.getName();
         Iterator<Block> itr = new BlockIterator(player, 40); // Within 2.5 chunks
         while (itr.hasNext()) {
             final Block block = itr.next();
@@ -60,7 +59,7 @@ public class AcidCommand extends PlayerCommand {
                 return true;
             }
             PlayerReinforcement pr = (PlayerReinforcement)rein;
-            if (!pr.isAccessible(playerName)) {
+            if (!pr.isAccessible(player)) {
                 sender.sendMessage("You cannot use this acid block");
                 return true;
             }
@@ -80,9 +79,11 @@ public class AcidCommand extends PlayerCommand {
                 return true;
             }
             // if they try break bedrock, return
-            if (above.getType() == Material.BEDROCK || above.getType() == Material.ENDER_PORTAL || above.getType() == Material.ENDER_PORTAL_FRAME){
-            	sender.sendMessage("You cant break this block");
-            	return true;
+            if (above.getType() == Material.BEDROCK
+                    || above.getType() == Material.ENDER_PORTAL
+                    || above.getType() == Material.ENDER_PORTAL_FRAME) {
+                sender.sendMessage("You cant break this block");
+                return true;
             }
             // Break block above
             aboveRein.setDurability(0);

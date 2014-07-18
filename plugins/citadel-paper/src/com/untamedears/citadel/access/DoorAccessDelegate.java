@@ -3,6 +3,7 @@ package com.untamedears.citadel.access;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.material.Door;
+import org.bukkit.material.MaterialData;
 /**
  * Created by IntelliJ IDEA.
  * User: chrisrico
@@ -10,6 +11,10 @@ import org.bukkit.material.Door;
  * Time: 3:26 PM
  */
 public class DoorAccessDelegate extends AccessDelegate<Door> {
+    public static boolean canDelegate(Block block, MaterialData data) {
+        return (data instanceof Door);
+    }
+
     public DoorAccessDelegate(Block block, Door data) {
         super(block, data);
     }

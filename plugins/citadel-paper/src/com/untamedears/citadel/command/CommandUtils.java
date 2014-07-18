@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
-import com.untamedears.citadel.MemberManager;
 import com.untamedears.citadel.ReinforcementManager;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionMember;
@@ -50,7 +49,7 @@ public final class CommandUtils {
 		int i = 0;
 		for (Moderator m : set) {
 			i++;
-			result+=m.getMemberName();
+			result+=m.getPlayerName();
 			if (i < size) {
 				result+= ", ";
 			}
@@ -64,7 +63,7 @@ public final class CommandUtils {
 		int i = 0;
 		for (FactionMember m : set) {
 			i++;
-			result+=m.getMemberName();
+			result+=m.getPlayerName();
 			if (i < size) {
 				result+= ", ";
 			}
@@ -91,7 +90,7 @@ public final class CommandUtils {
 		Faction group = groupManager.getGroup(name);
 		if (group != null) {
 			output.add("Group name: "+name);
-			output.add("Admin: "+group.getFounder());
+			output.add("Admin: "+group.getFounderName());
 			output.add("Moderators: "+joinModeratorSet(groupManager.getModeratorsOfGroup(name)));
 			output.add("Members: "+joinMemberSet(groupManager.getMembersOfGroup(name)));
 		}

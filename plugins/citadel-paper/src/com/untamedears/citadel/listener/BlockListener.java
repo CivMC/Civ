@@ -10,9 +10,11 @@ import static com.untamedears.citadel.Utility.reinforcementBroken;
 import static com.untamedears.citadel.Utility.reinforcementDamaged;
 import static com.untamedears.citadel.Utility.sendMessage;
 import static com.untamedears.citadel.Utility.sendThrottledMessage;
+import static com.untamedears.citadel.Utility.wouldPlantDoubleReinforce;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -61,7 +63,7 @@ public class BlockListener implements Listener {
     public static final List<BlockFace> planar_sides = Arrays.asList(
         BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST);
 
-    private boolean canPlace(Block block, String player_name) {
+    private boolean canPlace(Block block, Player player) {
         Material block_mat = block.getType();
         // See if block is a sign over a chest indicating it's a shop.
         // Check to see if we need to worry about physical shop interaction.
@@ -72,7 +74,7 @@ public class BlockListener implements Listener {
                 IReinforcement rein = AccessDelegate.getDelegate(below).getReinforcement();
                 if (null != rein
                         && rein instanceof PlayerReinforcement
-                        && !((PlayerReinforcement)rein).isAccessible(player_name)) {
+                        && !((PlayerReinforcement)rein).isAccessible(player)) {
                     // Don't allow another player to access the chest by creating a shop
                     return false;
                 }
@@ -87,7 +89,7 @@ public class BlockListener implements Listener {
                 IReinforcement rein = AccessDelegate.getDelegate(adjacent).getReinforcement();
                 if (null != rein && rein instanceof PlayerReinforcement) {
                     PlayerReinforcement pr = (PlayerReinforcement)rein;
-                    if (!pr.isInsecure() && !pr.isAccessible(player_name)) {
+                    if (!pr.isInsecure() && !pr.isAccessible(player)) {
                         return false;
                     }
                 }
@@ -102,7 +104,7 @@ public class BlockListener implements Listener {
                 IReinforcement rein = AccessDelegate.getDelegate(adjacent).getReinforcement();
                 if (null != rein && rein instanceof PlayerReinforcement) {
                     PlayerReinforcement pr = (PlayerReinforcement)rein;
-                    if (!pr.isAccessible(player_name)) {
+                    if (!pr.isAccessible(player)) {
                         return false;
                     }
                 }
@@ -119,14 +121,14 @@ public class BlockListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void placeFortifiedBlock(BlockPlaceEvent bpe) {
         Block block = bpe.getBlockPlaced();
-        if (block.getType().equals(Material.AIR)) {
+        if (bpe.getBlockReplacedState().getType().equals(Material.AIR)) {
             IReinforcement existingReinforcement = Citadel.getReinforcementManager().getReinforcement(block);
             if (existingReinforcement != null && existingReinforcement instanceof PlayerReinforcement) {
                 Citadel.getReinforcementManager().removeReinforcement(existingReinforcement);
             }
         }
         Player player = bpe.getPlayer();
-        if (!canPlace(block, player.getName())) {
+        if (!canPlace(block, player)) {
             sendThrottledMessage(player, ChatColor.RED, "Cancelled block place, mismatched reinforcement.");
             bpe.setCancelled(true);
             return;
@@ -143,6 +145,12 @@ public class BlockListener implements Listener {
             // cancel event if we are not in normal mode
             if (state.getMode() == PlacementMode.REINFORCEMENT || state.getMode() == PlacementMode.REINFORCEMENT_SINGLE_BLOCK)
                 bpe.setCancelled(true);
+            return;
+        }
+        // Don't allow double reinforcing reinforceable plants
+        if (wouldPlantDoubleReinforce(block)) {
+            sendThrottledMessage(player, ChatColor.RED, "Cancelled block place, crop would already be reinforced.");
+            bpe.setCancelled(true);
             return;
         }
         PlayerInventory inventory = player.getInventory();
@@ -205,11 +213,11 @@ public class BlockListener implements Listener {
                 if (admin_bypass) {
                     Citadel.verbose(
                         VerboseMsg.AdminReinBypass,
-                        player.getName(), pr.getBlock().getLocation().toString());
+                        player.getDisplayName(), pr.getBlock().getLocation().toString());
                 } else {
                     Citadel.verbose(
                         VerboseMsg.ReinBypass,
-                        player.getName(), pr.getBlock().getLocation().toString());
+                        player.getDisplayName(), pr.getBlock().getLocation().toString());
                 }
                 is_cancelled = reinforcementBroken(reinforcement);
             } else {
