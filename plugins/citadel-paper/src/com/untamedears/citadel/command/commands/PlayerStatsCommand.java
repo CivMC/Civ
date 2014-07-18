@@ -1,8 +1,11 @@
 package com.untamedears.citadel.command.commands;
 
+import static com.untamedears.citadel.Utility.toAccountId;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -12,7 +15,6 @@ import com.untamedears.citadel.GroupManager;
 import com.untamedears.citadel.command.CommandUtils;
 import com.untamedears.citadel.command.PlayerCommand;
 import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.Member;
 
 public class PlayerStatsCommand extends PlayerCommand {
 
@@ -39,10 +41,11 @@ public class PlayerStatsCommand extends PlayerCommand {
         }
         @Override
         public void run() {
+            UUID accountId = toAccountId(playerName);
             GroupManager groupManager = Citadel.getGroupManager();
-            Set<Faction> memberGroups = groupManager.getGroupsByMember(playerName);
-            Set<Faction> moderatorGroups = groupManager.getGroupsByModerator(playerName);
-            Set<Faction> founderGroups = groupManager.getGroupsByFounder(playerName);
+            Set<Faction> memberGroups = groupManager.getGroupsByMember(accountId);
+            Set<Faction> moderatorGroups = groupManager.getGroupsByModerator(accountId);
+            Set<Faction> founderGroups = groupManager.getGroupsByFounder(accountId);
             results.add("Player name: "+playerName);
             if (founderGroups.size() > 0)
                 results.add("Admin of groups: "+CommandUtils.joinFactionSet(founderGroups));
@@ -51,11 +54,7 @@ public class PlayerStatsCommand extends PlayerCommand {
             if (memberGroups.size() > 0)
                 results.add("Member of groups: "+CommandUtils.joinFactionSet(memberGroups));
 
-            Faction group = null;
-            Member member = Citadel.getMemberManager().getMember(playerName);
-            if (member != null) {
-                group = member.getPersonalGroup();
-            }
+            Faction group = Faction.getPersonalGroup(accountId);
             if (group != null) {
                 String personalGroupName = group.getName();
                 results.add("Personal group reinforcements: ");

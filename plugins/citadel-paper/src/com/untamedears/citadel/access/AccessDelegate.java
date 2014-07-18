@@ -21,27 +21,28 @@ import com.untamedears.citadel.entity.IReinforcement;
 public abstract class AccessDelegate<T extends MaterialData> {
 
     public static AccessDelegate getDelegate(Block block) {
-        Material mat = block.getType();
         MaterialData data = block.getState().getData();
-        if (data instanceof Door) {
+        if (DoorAccessDelegate.canDelegate(block, data)) {
             return new DoorAccessDelegate(block, (Door) data);
-        } else if (data instanceof Bed) {
+
+        } else if (BedAccessDelegate.canDelegate(block, data)) {
             return new BedAccessDelegate(block, (Bed) data);
-        } else if (mat == Material.CHEST || mat == Material.TRAPPED_CHEST) {
+
+        } else if (ChestAccessDelegate.canDelegate(block, data)) {
             return new ChestAccessDelegate(block, data);
-        } else if (Citadel.getConfigManager().allowReinforcedCrops() && isPlant(block)) {
+
+        } else if (CropAccessDelegate.canDelegate(block, data)) {
             return new CropAccessDelegate(block, data);
-        } else {
-            return new AccessDelegate<MaterialData>(block, data) {
-                @Override
-                protected boolean shouldDelegate() {
-                    return false;
-                }
-                @Override
-                protected void delegate() {
-                }
-            };
         }
+        return new AccessDelegate<MaterialData>(block, data) {
+            @Override
+            protected boolean shouldDelegate() {
+                return false;
+            }
+            @Override
+            protected void delegate() {
+            }
+        };
     }
     
     protected Block block;

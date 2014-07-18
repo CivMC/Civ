@@ -7,6 +7,9 @@ import static com.untamedears.citadel.Utility.isReinforced;
 import static com.untamedears.citadel.Utility.reinforcementBroken;
 import static com.untamedears.citadel.Utility.sendMessage;
 import static com.untamedears.citadel.Utility.timeUntilMature;
+import static com.untamedears.citadel.Utility.wouldPlantDoubleReinforce;
+
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -28,14 +31,12 @@ import org.bukkit.material.Openable;
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.Citadel.VerboseMsg;
 import com.untamedears.citadel.GroupManager;
-import com.untamedears.citadel.MemberManager;
 import com.untamedears.citadel.PersonalGroupManager;
 import com.untamedears.citadel.PlacementMode;
 import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.access.CropAccessDelegate;
 import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.Member;
 import com.untamedears.citadel.entity.PlayerState;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
@@ -54,19 +55,13 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void login(PlayerLoginEvent ple) {
-        MemberManager memberManager = Citadel.getMemberManager();
-        memberManager.addOnlinePlayer(ple.getPlayer());
-
-        Player player = ple.getPlayer();
-        String playerName = player.getName();
-        Member member = memberManager.getMember(playerName);
-        if(member == null){
-            member = new Member(playerName);
-            memberManager.addMember(member);
-        }
-
-        PersonalGroupManager personalGroupManager = Citadel.getPersonalGroupManager();
-        boolean hasPersonalGroup = personalGroupManager.hasPersonalGroup(playerName);
+        final Player player = ple.getPlayer();
+        final String playerName = player.getName();
+        final UUID accountId = player.getUniqueId();
+        final PersonalGroupManager personalGroupManager =
+            Citadel.getPersonalGroupManager();
+        final boolean hasPersonalGroup =
+            personalGroupManager.hasPersonalGroup(accountId);
         GroupManager groupManager = Citadel.getGroupManager();
         if(!hasPersonalGroup){
             String groupName = playerName;
@@ -75,13 +70,13 @@ public class PlayerListener implements Listener {
                 groupName = playerName + i;
                 i++;
             }
-            Faction group = new Faction(groupName, playerName);
+            Faction group = new Faction(groupName, accountId);
             groupManager.addGroup(group, player);
-            personalGroupManager.addPersonalGroup(groupName, playerName);
+            personalGroupManager.addPersonalGroup(groupName, accountId);
         } else if(hasPersonalGroup){
-            String personalGroupName = personalGroupManager.getPersonalGroup(playerName).getGroupName();
+            String personalGroupName = personalGroupManager.getPersonalGroup(accountId).getGroupName();
             if(!groupManager.isGroup(personalGroupName)){
-                Faction group = new Faction(personalGroupName, playerName);
+                Faction group = new Faction(personalGroupName, accountId);
                 groupManager.addGroup(group, player);
             }
         }
@@ -90,8 +85,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void quit(PlayerQuitEvent pqe) {
         Player player = pqe.getPlayer();
-        MemberManager memberManager = Citadel.getMemberManager();
-        memberManager.removeOnlinePlayer(player);
         PlayerState.remove(player);
     }
 
@@ -146,7 +139,7 @@ public class PlayerListener implements Listener {
         if (access_reinforcement && normal_access_denied && !admin_can_access) {
             Citadel.verbose(
                 VerboseMsg.ReinLocked,
-                player.getName(), block.getLocation().toString());
+                player.getDisplayName(), block.getLocation().toString());
             sendMessage(pie.getPlayer(), ChatColor.RED, "%s is locked", block.getType().name());
             pie.setCancelled(true);
         } else if (action == Action.PHYSICAL) {
@@ -168,7 +161,7 @@ public class PlayerListener implements Listener {
                 if (access_reinforcement && normal_access_denied && admin_can_access) {
                     Citadel.verbose(
                         VerboseMsg.AdminReinLocked,
-                        player.getName(), block.getLocation().toString());
+                        player.getDisplayName(), block.getLocation().toString());
                 }
                 return;
             case FORTIFICATION:
@@ -265,7 +258,12 @@ public class PlayerListener implements Listener {
                     if (generic_reinforcement != null) {
                         reinforcementBroken(generic_reinforcement);
                     }
-                    createPlayerReinforcement(player, block);
+                    // Don't allow double reinforcing reinforceable plants
+                    if (wouldPlantDoubleReinforce(block)) {
+                        sendMessage(player, ChatColor.RED, "Cancelled reinforcement, crop would already be reinforced.");
+                    } else {
+                        createPlayerReinforcement(player, block);
+                    }
                 } else if (reinforcement.isBypassable(player)) {
                     boolean update = false;
                     String message = "";

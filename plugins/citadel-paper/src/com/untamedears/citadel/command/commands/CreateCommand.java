@@ -2,6 +2,8 @@ package com.untamedears.citadel.command.commands;
 
 import static com.untamedears.citadel.Utility.sendMessage;
 
+import java.util.UUID;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.command.CommandSender;
@@ -27,12 +29,17 @@ public class CreateCommand extends PlayerCommand {
 	}
 
 	public boolean execute(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+			sender.sendMessage("Player only command");
+			return true;
+        }
 		GroupManager groupManager = Citadel.getGroupManager();
 		String groupName = args[0];
-		String senderName = sender.getName();
+        Player player = (Player)sender;
+        UUID playerAccountId = player.getUniqueId();
 		if(groupManager.isGroup(groupName)){
 			Faction group = groupManager.getGroup(groupName);
-			if(group.isFounder(senderName)){
+			if(group.isFounder(playerAccountId)){
 				sendMessage(sender, ChatColor.RED, "You already own this group");
 			} else {
 				sendMessage(sender, ChatColor.RED, "Group name already taken. Try another");
@@ -40,15 +47,11 @@ public class CreateCommand extends PlayerCommand {
 			return true;
 		}
 		int groupsAllowed = Citadel.getConfigManager().getGroupsAllowed();
-		if(groupManager.getPlayerGroupsAmount(senderName) >= groupsAllowed){
+		if(groupManager.getPlayerGroupsAmount(playerAccountId) >= groupsAllowed){
 			sendMessage(sender, ChatColor.RED, "You already have too many groups. %s is the limit. Try deleting one first", groupsAllowed);
 			return true;
 		}
-        Player player = null;
-        if (sender instanceof Player) {
-            player = (Player)sender;
-        }
-		Faction group = new Faction(groupName, senderName);
+		Faction group = new Faction(groupName, playerAccountId);
 		groupManager.addGroup(group, player);
 		sendMessage(sender, ChatColor.GREEN, "Created group: %s", groupName);
 		return true;

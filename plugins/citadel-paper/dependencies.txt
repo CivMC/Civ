@@ -1,0 +1,5 @@
+This is meant to be a running list of dependencies which force Citadel to
+specific build levels. Keep this ordered with the most recent build at the top.
+
+- OfflinePlayer.getUniqueId()
+  - Bukkit 1.7.5 build 3034 / Spigot 1.7.5 build 1364

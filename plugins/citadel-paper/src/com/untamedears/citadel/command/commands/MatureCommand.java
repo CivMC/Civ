@@ -34,7 +34,6 @@ public class MatureCommand extends PlayerCommand {
             sender.sendMessage("Access denied");
             return true;
         }
-        String playerName = player.getName();
         List<Block> lastTwo = player.getLastTwoTargetBlocks(null, 64);
         for (Block block : lastTwo) {
             IReinforcement rein = Citadel.getReinforcementManager().getReinforcement(block);

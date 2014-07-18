@@ -2,8 +2,11 @@ package com.untamedears.citadel.command.commands;
 
 import static com.untamedears.citadel.Utility.sendMessage;
 
+import java.util.UUID;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
@@ -28,8 +31,10 @@ public class GroupInfoCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "Group doesn't exist");
 			return true;
 		}
-		String senderName = sender.getName();
-		if(!group.isFounder(senderName) && !group.isModerator(senderName) && !group.isMember(senderName)){
+        Player player = (Player)sender;
+        UUID accountId = player.getUniqueId();
+        boolean founderOrModerator = group.isFounder(accountId) || group.isModerator(accountId);
+		if(!founderOrModerator && !group.isMember(accountId)){
 			sendMessage(sender, ChatColor.RED, "Invalid permission to access this group");
 			return true;
 		}
@@ -37,7 +42,7 @@ public class GroupInfoCommand extends PlayerCommand {
 		sender.sendMessage(new StringBuilder().append("§cOwner:§e ").append(group.getFounder()).toString());
 		sender.sendMessage(new StringBuilder().append("§cModerators:§e ").append(groupManager.getModeratorsOfGroup(groupName).size()).toString());
 		sender.sendMessage(new StringBuilder().append("§cMembers:§e ").append(groupManager.getMembersOfGroup(groupName).size()).toString());
-		if(group.isFounder(senderName) || group.isModerator(senderName)){
+		if(founderOrModerator){
 			String password = group.getPassword();
 			sender.sendMessage(new StringBuilder().append("§cPassword:§e ").append(password).toString());
 			String joinable = "";
