@@ -444,6 +444,8 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 			scheduler.cancelTask(taskId);
 		}
+		Database db = BastionBlockStorage.db;
+		delete(db);
 		if (Bastion.getConfigManager().getDestroy())
 			location.getBlock().setType(Material.AIR);
 		
@@ -466,6 +468,8 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 			scheduler.cancelTask(taskId);
 		}
+		Database db = BastionBlockStorage.db;
+		delete(db);
 		set.remove(this);
 
 		Bastion.getPlugin().getLogger().info("Removed bastion "+id);
