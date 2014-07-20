@@ -3,6 +3,8 @@ package isaac.bastion;
 
 
 
+import java.util.logging.Level;
+
 import isaac.bastion.commands.BastionCommandManager;
 import isaac.bastion.commands.ModeChangeCommand;
 import isaac.bastion.commands.PlayersStates.Mode;
@@ -11,7 +13,10 @@ import isaac.bastion.listeners.CommandListener;
 import isaac.bastion.listeners.EnderPearlListener;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.manager.ConfigManager;
+import isaac.bastion.storage.BastionBlockStorage;
+import isaac.bastion.storage.Database;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
@@ -31,6 +36,8 @@ public final class Bastion extends JavaPlugin
 		config = new ConfigManager();
 		bastionManager = new BastionBlockManager();
 		listener = new BastionListener();
+		
+		removeGhostBlocks();
 		
 		if(!this.isEnabled()) //check that the plugin was not disabled in setting up any of the static variables
 			return;
@@ -81,6 +88,17 @@ public final class Bastion extends JavaPlugin
 	}
 	public static ConfigManager getConfigManager(){
 		return config;
+	}
+	
+	public void removeGhostBlocks(){
+		Database db = BastionBlockStorage.db;
+		for (BastionBlock block: bastionManager.set){
+			if (block.getLocation().getBlock().getType() != config.getBastionBlockMaterial()){
+				Bukkit.getLogger().log(Level.INFO, "Bastion removed a block at: " + block.getLocation() + ". If it is still"
+						+ " there, there is a problem...");
+				block.delete(db);
+			}
+		}
 	}
 
 }
