@@ -14,7 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 public class BastionBlockStorage {
-	private Database db;
+	public static Database db;
 	static public String bationBlocksTable;
 	private PreparedStatement getAllBastionsForWorld;
 	public BastionBlockStorage(){
@@ -104,6 +104,9 @@ public class BastionBlockStorage {
 			return new BastionBlock(loc,placed,balance,id);
 		}
 
+		public Database getDatabase(){
+			return db;
+		}
 
 	}
 }
