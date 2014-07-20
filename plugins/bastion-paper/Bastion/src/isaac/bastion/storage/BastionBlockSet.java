@@ -86,7 +86,7 @@ Iterable<BastionBlock> {
 		for(QTBox box : boxes){
 			if(box instanceof BastionBlock){
 				BastionBlock bastion = (BastionBlock)box;
-				if(bastion.getLocation().distanceSquared(loc) < maxDistanceSquared)
+				if(bastion.getLocation().distanceSquared(loc) < maxDistanceSquared && (!config.getEnderPearlRequireMaturity() || bastion.isMature()))
 					result.add(bastion);
 			}
 		}
@@ -112,12 +112,15 @@ Iterable<BastionBlock> {
 	}
 	@Override
 	public boolean add(BastionBlock toAdd) {
-		blocksById.put(toAdd.getId(), toAdd);
-		blocks.get(toAdd.getLocation().getWorld()).add(toAdd);
 		if(!changed.contains(toAdd))
 			changed.add(toAdd);
 		else
 			return true;
+		
+		this.update(); //possibly not the best way to do things, but MySQL is fairly fast and this should fix some ghosting
+		
+		blocksById.put(toAdd.getId(), toAdd);
+		blocks.get(toAdd.getLocation().getWorld()).add(toAdd);
 		return false;
 	}
 	@Override
@@ -160,13 +163,13 @@ Iterable<BastionBlock> {
 		} else if(in instanceof Location){
 			return remove(getBastionBlock((Location) in));
 		} else{
-			throw new IllegalArgumentException("remove only excepts a BastionBlock");
+			throw new IllegalArgumentException("you didn't provide a BastionBlock or Location");
 		}
 	}
 	private boolean remove(BastionBlock toRemove){
-		if(toRemove==null){
+		if(toRemove==null)
 			return true;
-		}
+		
 		if(!changed.contains(toRemove))
 			changed.add(toRemove);
 		blocksById.remove(toRemove.getId());
@@ -174,6 +177,7 @@ Iterable<BastionBlock> {
 		if(forWorld!=null){
 			forWorld.remove(toRemove);
 		}
+		Bastion.getPlugin().getLogger().info("removed");
 		return false;
 	}
 	@Override

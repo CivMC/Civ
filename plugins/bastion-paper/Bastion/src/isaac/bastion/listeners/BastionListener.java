@@ -12,6 +12,7 @@ import com.untamedears.citadel.events.CreateReinforcementEvent;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
@@ -33,7 +34,7 @@ implements Listener
 		bastionManager = Bastion.getBastionManager();
 		config=Bastion.getConfigManager();
 	}
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOW)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if(event.isCancelled()){
 			return;

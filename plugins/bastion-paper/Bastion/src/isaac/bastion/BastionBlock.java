@@ -278,6 +278,10 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	public void mature(){
 		placed -= SCALING_TIME;
 	}
+	
+	public boolean isMature(){
+		return System.currentTimeMillis() - placed >= SCALING_TIME;
+	}
 
 	private PlayerReinforcement getReinforcement(){
 		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
@@ -342,7 +346,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		SimpleDateFormat dateFormator = new SimpleDateFormat("M/d/yy H:m:s");
 		String result="Dev text: ";
 
-		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().getReinforcement(location.getBlock());
+		PlayerReinforcement reinforcement = getReinforcement();
 
 		double scaleTime_as_hours=0;
 		if(SCALING_TIME==0){
@@ -361,7 +365,8 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			result+="Which means  " + String.valueOf(erosionFromBlock()) + " will removed after every blocked placeemnt"+'\n';
 
 			result+="Placed on "+dateFormator.format(new Date(placed))+'\n';
-			result+="by group "+reinforcement.getOwner().getName();
+			result+="by group "+reinforcement.getOwner().getName() + '\n';
+			result+="At: "+location.toString();
 		}
 
 
@@ -444,7 +449,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		
 		set.remove(this);
 
-		//logging TODO add option to config to toggle verbose and turn this off
+		// TODO add option to config to toggle verbose and turn this off
 		Bastion.getPlugin().getLogger().info("Removed bastion "+id);
 		Bastion.getPlugin().getLogger().info("Had been placed on "+placed);
 		Bastion.getPlugin().getLogger().info("At "+location);

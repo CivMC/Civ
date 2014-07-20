@@ -21,7 +21,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -30,7 +29,6 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
@@ -81,13 +79,16 @@ public class BastionBlockManager
 	}
 	
 	public boolean onCooldown(String player){
-		boolean result = false;
 		Long last_placed = playerLastEroded.get(player);
-		if(last_placed != null && (System.currentTimeMillis() - playerLastEroded.get(player)) < BastionBlock.MIN_BREAK_TIME) result = true;
+		if (last_placed == null){
+			playerLastEroded.put(player, System.currentTimeMillis());
+			return false;
+		}
 		
-		playerLastEroded.put(player, System.currentTimeMillis());
+		if ((System.currentTimeMillis() - playerLastEroded.get(player)) < BastionBlock.MIN_BREAK_TIME) return true;
+		else playerLastEroded.put(player, System.currentTimeMillis());
 		
-		return result;
+		return false;
 	}
 
 	public Set<BastionBlock> shouldStopLocation(Location loc, String player){
@@ -226,28 +227,21 @@ public class BastionBlockManager
 	}
 	
 
-	public String infoMessage(boolean dev,PlayerInteractEvent event){
-		Block clicked=event.getClickedBlock();
-		BlockFace clickedFace=event.getBlockFace();
-		Block block=clicked.getRelative(clickedFace); //get the block above the clicked block. Kind of like you clicked air
-
-		Player player=event.getPlayer();
-		String playerName=player.getName();
-
+	public String infoMessage(boolean dev, Block block, Block clicked, Player player){
 		BastionBlock bastion=set.getBastionBlock(clicked.getLocation()); //Get the bastion at the location clicked.
 
 		if(bastion!=null){ //See if anything was found
 			return bastion.infoMessage(dev, player); //If there is actually something there tell the player about it.
 		}
 
-		bastion=getBlockingBastion(block.getLocation(),playerName);
+		bastion=getBlockingBastion(block.getLocation(),player.getName());
 		if(bastion==null){
 			bastion=getBlockingBastion(block.getLocation());
 			if(bastion!=null){
-				return ChatColor.GREEN+"A Bastion Block prevents others from building";
+				return ChatColor.GREEN+"A Bastion Block prevents others from building" + ( (dev) ? (ChatColor.BLACK + "\n" +  bastion.toString()) : "" );
 			}
 		} else{
-			return ChatColor.RED+"A Bastion Block prevents you building";
+			return ChatColor.RED+"A Bastion Block prevents you building" + ( (dev) ? (ChatColor.BLACK + "\n" +  bastion.toString()) : "" );
 		}
 		
 		return ChatColor.YELLOW + "No Bastion Block";
@@ -263,8 +257,12 @@ public class BastionBlockManager
 		
 		if(blocking.size() != 0){
 			erodeFromPlace(null, blocks,event.getPlayer().getName(),blocking);
-			event.getBlock().breakNaturally();
-			event.getBlockReplacedState().update(true, false);
+			
+			event.setCancelled(true);
+			event.getPlayer().sendMessage(ChatColor.RED + "Bastion removed block");
+			
+			//event.getBlock().breakNaturally();
+			//event.getBlockReplacedState().update(true, false); //most likely source of random blocks being removed. Only one I can think of.
 		}
 	}
 	public void handleFlowingWater(BlockFromToEvent event) {
@@ -293,7 +291,13 @@ public class BastionBlockManager
 			event.setCancelled(true);
 	}
 	public void handlePistonPush(BlockPistonExtendEvent event) {
-		Set<BastionBlock> blocking = shouldStopBlock(null,new HashSet<Block>(event.getBlocks()), null);
+		Block pistion = event.getBlock();
+		Set<Block> involved = new HashSet<Block>(event.getBlocks());
+		involved.add(pistion.getRelative(event.getDirection()));
+
+		
+		Set<BastionBlock> blocking = shouldStopBlock (pistion, involved, null);
+		
 		
 		if(blocking.size() != 0)
 			event.setCancelled(true);
@@ -327,10 +331,22 @@ public class BastionBlockManager
 			bastion.silentClose();
 	}
 	public void handleEnderPearlLanded(PlayerTeleportEvent event) {
-		if(event.getPlayer().hasPermission("Bastion.bypass")) return;
+		if (!Bastion.getConfigManager().getEnderPearlsBlocked()) return; //don't block if the feature isn't enabled.
+		if (event.getPlayer().hasPermission("Bastion.bypass")) return; //I'm not totally sure about the implications of this combined with humbug. It might cause some exceptions. Bukkit will catch.
 		if (event.getCause() != TeleportCause.ENDER_PEARL) return; // Only handle enderpearl cases
 		
 		Set<BastionBlock> blocking = this.getBlockingBastions(event.getTo(), event.getPlayer().getName());
+		
+		if(Bastion.getConfigManager().getEnderPearlRequireMaturity()){
+			Iterator<BastionBlock> i = blocking.iterator();
+		
+			while (i.hasNext()){
+				BastionBlock bastion = i.next();
+				if (!bastion.isMature()){
+					i.remove();
+				}
+			};
+		}
 		
 		if (blocking.size() > 0){
 			this.erodeFromTeleoprt(event.getTo(), event.getPlayer().getName(), blocking);
@@ -338,7 +354,31 @@ public class BastionBlockManager
 			event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
 			
 			event.setCancelled(true);
+			return;
 		}
+		
+		blocking = this.getBlockingBastions(event.getFrom(), event.getPlayer().getName());
+		
+		if(Bastion.getConfigManager().getEnderPearlRequireMaturity()){
+			Iterator<BastionBlock> i = blocking.iterator();
+		
+			while (i.hasNext()){
+				BastionBlock bastion = i.next();
+				if (!bastion.isMature()){
+					i.remove();
+				}
+			};
+		}
+		
+		
+		if (blocking.size() > 0){
+			this.erodeFromTeleoprt(event.getTo(), event.getPlayer().getName(), blocking);
+			event.getPlayer().sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
+			event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+			
+			event.setCancelled(true);
+			return;
+		}	
 	}
 
 }
