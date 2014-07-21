@@ -1068,7 +1068,7 @@ production_factories:
         material: WOOL
         durability: 7
   Grill:
-    name: Bakery
+    name: Grill
     fuel:
       Charcoal:
         material: COAL
