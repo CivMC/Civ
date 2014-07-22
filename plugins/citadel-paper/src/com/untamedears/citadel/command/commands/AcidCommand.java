@@ -20,7 +20,7 @@ import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.command.PlayerCommand;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
-import com.untamedears.citadel.events.AcidBlockDestroy;
+import com.untamedears.citadel.events.AcidBlockDestroyEvent;
 
 public class AcidCommand extends PlayerCommand {
 
@@ -107,7 +107,7 @@ public class AcidCommand extends PlayerCommand {
                 }
             }
             // Break acid block
-            AcidBlockDestroy event = new AcidBlockDestroy(block);
+            AcidBlockDestroyEvent event = new AcidBlockDestroyEvent(block);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()){
             	sender.sendMessage(event.getReasonForCancel());
