@@ -35,10 +35,9 @@ public class AssociationList {
 	public void genTables(){
 		// creates the player table
 		// Where uuid and host names will be stored
-		db.execute("CREATE TABLE IF NOT EXISTS `player` (" + 
+		db.execute("CREATE TABLE IF NOT EXISTS `Name_player` (" + 
 				"`uuid` varchar(40) NOT NULL," +
-				"`player` varchar(40) NOT NULL," +
-				"PRIMARY KEY(`id`), "
+				"`player` varchar(40) NOT NULL,"
 				+ "UNIQUE KEY `uuid_player_combo` (`uuid`, `player`));");
 		
 		// this creates the table needed for when a player changes there name to a prexisting name before joining the server
@@ -54,9 +53,9 @@ public class AssociationList {
 	
 	public void initializeStatements(){
 		addPlayer = db.prepareStatement("call addplayertotable(?, ?)"); // order player name, uuid 
-		getUUIDfromPlayer = db.prepareStatement("select uuid from player " +
+		getUUIDfromPlayer = db.prepareStatement("select uuid from Name_player " +
 				"where player=?");
-		getPlayerfromUUID = db.prepareStatement("select player from player " +
+		getPlayerfromUUID = db.prepareStatement("select player from Name_player " +
 				"where uuid=?");
 	}
 	
@@ -70,10 +69,10 @@ public class AssociationList {
 				+ "declare nameamount int(10);"
 				+ ""
 				+ "set amount=0;"
-				+ "set amount=(select count(*) from player p where p.uuid=uu);"
+				+ "set amount=(select count(*) from Name_player p where p.uuid=uu);"
 				+ ""
 				+ "if (amount < 1) then"
-				+ "		set account =(select uuid from player p where p.player=pl);"
+				+ "		set account =(select uuid from Name_player p where p.player=pl);"
 				+ "		if (account not like uu) then"
 				+ "			insert ignore into playercountnames (player, amount) values (pl, 0);"
 				+ ""
@@ -81,9 +80,9 @@ public class AssociationList {
 				+ ""
 				+ "			set nameamount=(select amount from playercountnames where player=pl);"
 				+ ""
-				+ "			insert into player (player, uuid) values ((select concat (pl,nameamount)), uu);"
+				+ "			insert into Name_player (player, uuid) values ((select concat (pl,nameamount)), uu);"
 				+ "		else"
-				+ "			insert ignore into player (player, uuid) values (pl, uu);"
+				+ "			insert ignore into Name_player (player, uuid) values (pl, uu);"
 				+ "		end if;"
 				+ "end if;"
 				+ "end");
