@@ -377,7 +377,7 @@ public class CitadelDao extends MyDatabase {
 
     public void associatePlayerAccount(UUID accountId, String playerName) {
         SqlUpdate sql = getDatabase().createSqlUpdate(
-            "DELETE FROM citadel_account_id_map WHERE accountId = :uuid")
+            "DELETE FROM citadel_account_id_map WHERE account = :uuid")
             .setParameter("uuid", accountId.toString());
         getDatabase().execute(sql);
 
@@ -570,6 +570,8 @@ public class CitadelDao extends MyDatabase {
                 batch.ensureCapacity(50);
             }
         }
+        if (batch.size() > 0)
+        	insertAccountsIntoTmpAccountTbl(batch);
 
         Citadel.info("Converting faction table");
         sql = getDatabase().createSqlUpdate(

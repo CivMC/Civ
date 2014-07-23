@@ -39,4 +39,8 @@ public class AcidBlockDestroyEvent extends Event implements Cancellable {
 	public Block getAcidBlock() {
 		return acidBlock;
 	}
+	
+	public static HandlerList getHandlerList() {
+        return handlers;
+    }
 }

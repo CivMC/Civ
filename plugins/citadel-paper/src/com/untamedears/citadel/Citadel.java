@@ -153,6 +153,7 @@ public class Citadel extends JavaPlugin {
             pm.registerEvents(new EntityListener(), this);
             pm.registerEvents(new InventoryListener(), this);
             pm.registerEvents(new WorldListener(), this);
+            pm.registerEvents(accountIdManager, this);
         }
         catch(Exception e)
         {
