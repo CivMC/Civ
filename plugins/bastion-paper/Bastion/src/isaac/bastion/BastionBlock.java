@@ -204,7 +204,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		if(reinforcement!=null){
 
 			Faction owner = reinforcement.getOwner();
-			return owner.isModerator(player.getName())||owner.isFounder(player.getName());
+			return owner.isModerator(player.getUniqueId())||owner.isFounder(player.getUniqueId());
 		}
 		return true;
 	}
