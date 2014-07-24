@@ -7,6 +7,7 @@ import isaac.bastion.commands.PlayersStates.Mode;
 import isaac.bastion.manager.BastionBlockManager;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +20,7 @@ import com.untamedears.citadel.entity.PlayerReinforcement;
 
 public class CommandListener implements Listener{
 	private static BastionBlockManager manager;
+	private Material bastionBlock = Bastion.getConfigManager().getBastionBlockMaterial();
 	public CommandListener(){
 		manager=Bastion.getBastionManager();
 	}
@@ -67,7 +69,7 @@ public class CommandListener implements Listener{
 				return;
 			bastionBlock.mature();
 			player.sendMessage(ChatColor.GREEN + "Matured");
-		} else if(PlayersStates.playerInMode(player, Mode.BASTION)){
+		} else if(event.getClickedBlock().getType() == bastionBlock && PlayersStates.playerInMode(player, Mode.BASTION)){
 			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
 					getReinforcement(block.getLocation());
 
