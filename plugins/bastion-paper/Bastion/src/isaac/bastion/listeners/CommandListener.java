@@ -70,6 +70,7 @@ public class CommandListener implements Listener{
 			bastionBlock.mature();
 			player.sendMessage(ChatColor.GREEN + "Matured");
 		} else if(event.getClickedBlock().getType() == bastionBlock && PlayersStates.playerInMode(player, Mode.BASTION)){
+			event.getPlayer().sendMessage(bastionBlock.name());
 			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
 					getReinforcement(block.getLocation());
 
