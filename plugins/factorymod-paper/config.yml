@@ -1891,6 +1891,11 @@ production_factories:
       - Mutate_Dark_Oak_Saplings
       - Mutate_Podzol
       - Mutate_Grassless_Dirt 
+      - Sequencing_Sunflower
+      - Sequencing_Lilac
+      - Sequencing_Double_Tallgrass
+      - Sequencing_Large_Fern
+      - Sequencing_Peony
     repair_multiple: 10
     repair_inputs:
       Oak Saplings:
@@ -7287,3 +7292,81 @@ production_recipes:
         material: SPONGE
         amount: 32
         display_name: Bastion
+  Sequencing_Sunflower:
+    name: Sequencing Sunflower
+    inputs:
+      Dandelion:
+        material: YELLOW_FLOWER
+        amount: 8
+      Sugar Cane:
+        material: SUGAR_CANE_BLOCK
+        amount: 8
+    outputs:
+      Sunflower:
+        material: DOUBLE_PLANT
+        amount: 4
+        durability: 0
+  Sequencing_Lilac:
+    name: Sequencing Lilac
+    inputs:
+      Poppy:
+        material: RED_ROSE
+        amount: 8
+      Oak Sapling:
+        material: SAPLING
+        amount: 8
+    outputs:
+      Lilac:
+        material: DOUBLE_PLANT
+        amount: 4
+        durability: 1
+  Sequencing_Double_Tallgrass:
+    name: Sequencing Double Tallgrass
+    inputs:
+      Grass:
+        material: LONG_GRASS
+        amount: 16
+    outputs:
+      Double Tallgrass:
+        material: DOUBLE_PLANT
+        amount: 4
+        durability: 2
+  Sequencing_Large_Fern:
+    name: Sequencing Large Fern
+    inputs:
+      Grass:
+        material: LONG_GRASS
+        amount: 16
+    outputs:
+      Large Fern:
+        material: DOUBLE_PLANT
+        amount: 4
+        durability: 3
+  Sequencing_Rose_Bush:
+    name: Sequencing Rose Bush
+    inputs:
+      Poppy:
+        material: RED_ROSE
+        amount: 8
+      Cactus:
+        material: CACTUS
+        amount: 8
+    outputs:
+      Rose Bush:
+        material: DOUBLE_PLANT
+        amount: 4
+        durability: 4
+  Sequencing_Peony:
+    name: Sequencing Peony
+    inputs:
+      Poppy:
+        material: RED_ROSE
+        amount: 8
+      Oak Leaves:
+        material: LEAVES
+        amount: 8
+    outputs:
+      Peony:
+        material: DOUBLE_PLANT
+        amount: 4
+        durability: 5
