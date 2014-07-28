@@ -1895,6 +1895,7 @@ production_factories:
       - Sequencing_Lilac
       - Sequencing_Double_Tallgrass
       - Sequencing_Large_Fern
+      - Sequencing_Rose_Bush
       - Sequencing_Peony
     repair_multiple: 10
     repair_inputs:
@@ -7299,7 +7300,7 @@ production_recipes:
         material: YELLOW_FLOWER
         amount: 8
       Sugar Cane:
-        material: SUGAR_CANE_BLOCK
+        material: SUGAR_CANE
         amount: 8
     outputs:
       Sunflower:
@@ -7326,6 +7327,7 @@ production_recipes:
       Grass:
         material: LONG_GRASS
         amount: 16
+        durability: 1
     outputs:
       Double Tallgrass:
         material: DOUBLE_PLANT
@@ -7337,6 +7339,7 @@ production_recipes:
       Grass:
         material: LONG_GRASS
         amount: 16
+        durability: 1
     outputs:
       Large Fern:
         material: DOUBLE_PLANT
