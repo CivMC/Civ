@@ -6,7 +6,7 @@
   <groupId>isaac</groupId>
   <artifactId>Bastion</artifactId>
   <packaging>jar</packaging>
-  <version>0.6.4-SNAPSHOT</version>
+  <version>0.6.7-SNAPSHOT</version>
   <name>Bastion</name>
   <url>https://github.com/ttk2/Bastion</url>
   
