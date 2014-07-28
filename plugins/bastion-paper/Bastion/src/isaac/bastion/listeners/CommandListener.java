@@ -55,7 +55,7 @@ public class CommandListener implements Listener{
 				return;
 
 			if(bastionBlock.canRemove(player)){
-				if(Bastion.getBastionManager().set.silentRemove(bastionBlock)){
+				if(Bastion.getBastionManager().set.remove(bastionBlock)){
 					player.sendMessage(ChatColor.GREEN+"Bastion Deleted");
 					PlayersStates.touchPlayer(player);
 					event.setCancelled(true);
