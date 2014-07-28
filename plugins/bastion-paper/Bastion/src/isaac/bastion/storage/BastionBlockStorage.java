@@ -8,7 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Enumeration;
-import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -41,13 +40,7 @@ public class BastionBlockStorage {
 				+ ");";
 		db.execute(toExicute);
 	}
-	public void saveBastionBlocks(Set<BastionBlock> blocks){
-		Bastion.getPlugin().getLogger().info("saveBastionBlocks for "+blocks.size()+" blocks");
-		for(BastionBlock block: blocks){
-			block.save(db);
-		}
-	}
-	public Enumeration<BastionBlock> getAllSnitches(World world) {
+	public Enumeration<BastionBlock> getAllBastions(World world) {
 		return new BastionBlockEnumerator(world);
 	}
 	class BastionBlockEnumerator implements Enumeration<BastionBlock>{

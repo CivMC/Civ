@@ -25,17 +25,19 @@ public class BastionBlockSet implements Set<BastionBlock>,
 Iterable<BastionBlock> {
 	private Map<World,SparseQuadTree> blocks;
 	private Set<BastionBlock> changed;
-	public Map<Long,BastionBlock> blocksById;
+	public Set<BastionBlock> bastionBlocks;
 	private BastionBlockStorage storage;
 	private int task;
 	private ConfigManager config;
+	
+	
 	public BastionBlockSet() {
 		storage=new BastionBlockStorage();
 		changed=new TreeSet<BastionBlock>();
 		config=Bastion.getConfigManager();
 
 		blocks=new HashMap<World, SparseQuadTree>();
-		blocksById=new HashMap<Long,BastionBlock>();
+		bastionBlocks=new TreeSet<BastionBlock>();
 		
 		if(Bastion.getPlugin().isEnabled()){
 			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
@@ -48,34 +50,40 @@ Iterable<BastionBlock> {
 		}
 		BastionBlock.set=this;
 	}
+	
+	//note only for BastionBlocks already in db
 	public void updated(BastionBlock updated){
 		if(!changed.contains(updated)){
 			changed.add(updated);
 		}
 	}
+	
 	public void close(){
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 		scheduler.cancelTask(task);
 		update();
 	}
+	
 	public void load(){
 		int enderSeachRadius=EnderPearlManager.MAX_TELEPORT+100;
 		for(World world : Bukkit.getWorlds()){
-			Enumeration<BastionBlock> forWorld=storage.getAllSnitches(world);
+			Enumeration<BastionBlock> forWorld=storage.getAllBastions(world);
 			SparseQuadTree bastionsForWorld=new SparseQuadTree(enderSeachRadius);
 			while(forWorld.hasMoreElements()){
 				BastionBlock toAdd=forWorld.nextElement();
-				blocksById.put(toAdd.getId(), toAdd);
+				bastionBlocks.add(toAdd);
 				bastionsForWorld.add(toAdd);
 			}
 			blocks.put(world, bastionsForWorld);
 		}
 	}
+	
 	public Set<QTBox> forLocation(Location loc){
 		return blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ());
 
 	}
 
+	
 	public Set<BastionBlock> getPossibleTeleportBlocking(Location loc, double maxDistance){
 		Set<QTBox> boxes = blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ(),true);
 		
@@ -101,27 +109,44 @@ Iterable<BastionBlock> {
 		}
 		return null;
 	}
+	
 	public int update(){
-		storage.saveBastionBlocks(changed);
+		int count = changed.size();
+		for(BastionBlock toUpdate: changed) toUpdate.update(BastionBlockStorage.db);
 		changed.clear();
-		return 0;
+		Bastion.getPlugin().getLogger().info("updated " + count + " blocks");
+		return count;
 	}
-	@Override
-	public Iterator<BastionBlock> iterator() {
-		return blocksById.values().iterator();
-	}
+	
 	@Override
 	public boolean add(BastionBlock toAdd) {
-		if(!changed.contains(toAdd))
-			changed.add(toAdd);
-		else
-			return true;
+		toAdd.save(BastionBlockStorage.db); //maybe should cache and run in different thread
 		
-		this.update(); //possibly not the best way to do things, but MySQL is fairly fast and this should fix some ghosting
-		
-		blocksById.put(toAdd.getId(), toAdd);
+		bastionBlocks.add(toAdd);
 		blocks.get(toAdd.getLocation().getWorld()).add(toAdd);
 		return false;
+	}
+	
+	public boolean remove(BastionBlock toRemove){
+		boolean in_set = false;
+		if(toRemove==null)
+			return false;
+		toRemove.delete(BastionBlockStorage.db); //maybe should cache and run in different thread
+		
+		in_set = bastionBlocks.remove(toRemove);
+		changed.remove(toRemove);
+		
+		SparseQuadTree forWorld=blocks.get(toRemove.getLocation().getWorld());
+		if(forWorld!=null){
+			forWorld.remove(toRemove);
+		}
+		return in_set;
+	}
+	
+	
+	@Override
+	public Iterator<BastionBlock> iterator() {
+		return bastionBlocks.iterator();
 	}
 	@Override
 	public boolean addAll(Collection<? extends BastionBlock> toAdd) {
@@ -133,7 +158,7 @@ Iterable<BastionBlock> {
 	@Override
 	public void clear() {
 		blocks.clear();
-		blocksById.clear();
+		bastionBlocks.clear();
 		changed.clear();
 	}
 	@Override
@@ -141,18 +166,18 @@ Iterable<BastionBlock> {
 		if(!(in instanceof BastionBlock))
 			throw new IllegalArgumentException("contains only excepts a BastionBlock");
 		BastionBlock toTest=(BastionBlock) in;
-		return blocksById.values().contains(toTest);
+		return bastionBlocks.contains(toTest);
 	}
 	@Override
 	public boolean containsAll(Collection<?> arg0) {
-		for(Object in: blocksById.values())
+		for(Object in: bastionBlocks)
 			if(!contains(in))
 				return false;
 		return true;
 	}
 	@Override
 	public boolean isEmpty() {
-		return blocksById.isEmpty();
+		return bastionBlocks.isEmpty();
 	}
 	@Override
 	public boolean remove(Object in) {
@@ -166,20 +191,7 @@ Iterable<BastionBlock> {
 			throw new IllegalArgumentException("you didn't provide a BastionBlock or Location");
 		}
 	}
-	private boolean remove(BastionBlock toRemove){
-		if(toRemove==null)
-			return true;
-		
-		if(!changed.contains(toRemove))
-			changed.add(toRemove);
-		blocksById.remove(toRemove.getId());
-		SparseQuadTree forWorld=blocks.get(toRemove.getLocation().getWorld());
-		if(forWorld!=null){
-			forWorld.remove(toRemove);
-		}
-		Bastion.getPlugin().getLogger().info("removed");
-		return false;
-	}
+
 	@Override
 	public boolean removeAll(Collection<?> toRemove) {
 		if(toRemove.size()==0)
@@ -195,33 +207,17 @@ Iterable<BastionBlock> {
 	}
 	@Override
 	public int size() {
-		return blocksById.size();
+		return bastionBlocks.size();
 	}
 	@Override
 	public Object[] toArray() {
-		return blocksById.values().toArray();
+		return bastionBlocks.toArray();
 	}
 	@Override
 	public <T> T[] toArray(T[] arg0) {
-		return blocksById.values().toArray(arg0);
+		return bastionBlocks.toArray(arg0);
 	}
-	public boolean silentRemove(Location loc) {
-			return silentRemove(getBastionBlock(loc));
-	}
-	public boolean silentRemove(BastionBlock toRemove){
-		if(toRemove==null){
-			return false;
-		}
-		
-		if(!changed.contains(toRemove))
-			changed.add(toRemove);
-		
-		blocksById.remove(toRemove.getId());
-		SparseQuadTree forWorld=blocks.get(toRemove.getLocation().getWorld());
-		if(forWorld!=null){
-			forWorld.remove(toRemove);
-		}
-		
-		return true;
-	}
+
+
+
 }

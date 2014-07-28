@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
 
@@ -51,7 +50,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	private int strength; //current durability
 	private long placed; //time when the bastion block was created
 	private boolean inDB = false;
-	private boolean inWorld = true;
 	private int taskId; //the id of the task associated with erosion
 	private static Random random; //used only to offset the erosion tasks
 	public static BastionBlockSet set; 
@@ -82,12 +80,12 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			setup();
 		} else{
 			strength=0;
-			silentClose();
+			close();
 		}
 
 	}
 
-	//called by both constructor to do the things they shair
+	//called by both constructor to do the things they share
 	private void setup(){
 		if(first){
 			firstime_setup();
@@ -96,8 +94,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		if(EROSION_TIME!=0){
 			taskId=registerTask();
 		}
-
-		balance=0;
 
 	}
 	//called if this is the first Bastion block created to set up the static variables
@@ -142,9 +138,9 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		random.nextInt(EROSION_TIME),EROSION_TIME);
 	}
 
+	//saves a new bastion into the database note will create double entries if bastion already exists
 	public void save(Database db){
-		if(inDB) delete(db);
-		if(inWorld){
+		if(!inDB){
 			PreparedStatement addBastion = db.prepareStatement("INSERT INTO "+BastionBlockStorage.bationBlocksTable+" (loc_x,loc_y,loc_z,loc_world,placed,fraction) VALUES(?,?,?,?,?,?);");
 			try {
 				addBastion.setInt   (1, location.getBlockX());
@@ -159,6 +155,27 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+		} else {
+			Bastion.getPlugin().getLogger().warning("tried to save BastionBlock that was in DB\n " + toString());
+			
+		}
+	}
+	
+	//updates placed and balance in db
+	public void update(Database db){
+		if(inDB){
+			PreparedStatement updateBastion = db.prepareStatement("UPDATE "+BastionBlockStorage.bationBlocksTable+" set placed=?,fraction=? where bastion_id=?;");
+			try {
+				updateBastion.setLong(1, placed);
+				updateBastion.setDouble(2, balance);
+				updateBastion.setInt(3, id);
+				updateBastion.execute();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Bastion.getPlugin().getLogger().warning("tried to update BastionBlock that was not in DB\n " + toString());
+			save(db);
 		}
 	}
 
@@ -202,9 +219,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		PlayerReinforcement reinforcement = getReinforcement();
 
 		if(reinforcement!=null){
-
-			Faction owner = reinforcement.getOwner();
-			return owner.isModerator(player.getUniqueId())||owner.isFounder(player.getUniqueId());
+			return reinforcement.isBypassable(player); //should return true if founder or moderator, but I feel this is more consistant
 		}
 		return true;
 	}
@@ -240,7 +255,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 
 	//returns if the Bastion's strength is at zero and it should be removed
 	public boolean shouldCull(){
-		if(strength+balance> 0){
+		if(strength-balance > 0){
 			return false;
 		} else{
 			return true;
@@ -268,9 +283,8 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 
 		set.updated(this);
 
-		if(shouldCull()){
-			close();
-		}
+		if(shouldCull())
+			destroy();
 	}
 
 
@@ -289,7 +303,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		if(reinforcement instanceof PlayerReinforcement){
 			return reinforcement;
 		} else {
-			silentClose();
+			close();
 			Bastion.getPlugin().getLogger().log(Level.SEVERE, "Reinforcement removed without removing Bastion. Fixed");
 		}
 		return null;
@@ -433,43 +447,25 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		return 0;
 	}
 
-
+	
 	//removes Bastion from database and destroys the block at the location
-	public void close(){
-		if(!set.contains(this)) return; //already not in don't need to remove
-
-		inWorld = false;
-
-		if(EROSION_TIME!=0){
-			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-			scheduler.cancelTask(taskId);
-		}
-		Database db = BastionBlockStorage.db;
-		delete(db);
+	public void destroy(){
 		if (Bastion.getConfigManager().getDestroy())
 			location.getBlock().setType(Material.AIR);
-		
-		set.remove(this);
-
-		// TODO add option to config to toggle verbose and turn this off
-		Bastion.getPlugin().getLogger().info("Removed bastion "+id);
-		Bastion.getPlugin().getLogger().info("Had been placed on "+placed);
-		Bastion.getPlugin().getLogger().info("At "+location);
-
+		close();
 	}
 
 	//removes Bastion from 
-	public void silentClose(){
-		if(!set.contains(this)) return; //already not in don't need to remove
-
-		inWorld = false;
+	public void close(){
+		if(!set.contains(this)){
+			Bastion.getPlugin().getLogger().warning("tried to close already closed Bastion");
+			//return; //already not in don't need to remove
+		}
 
 		if(EROSION_TIME!=0){
 			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 			scheduler.cancelTask(taskId);
 		}
-		Database db = BastionBlockStorage.db;
-		delete(db);
 		set.remove(this);
 
 		Bastion.getPlugin().getLogger().info("Removed bastion "+id);

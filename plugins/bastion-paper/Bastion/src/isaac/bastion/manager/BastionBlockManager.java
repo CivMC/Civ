@@ -328,7 +328,7 @@ public class BastionBlockManager
 	public void handleBlockBreakEvent(BlockBreakEvent event) {
 		BastionBlock bastion = set.getBastionBlock(event.getBlock().getLocation());
 		if (bastion != null)
-			bastion.silentClose();
+			bastion.close();
 	}
 	public void handleEnderPearlLanded(PlayerTeleportEvent event) {
 		if (!Bastion.getConfigManager().getEnderPearlsBlocked()) return; //don't block if the feature isn't enabled.
