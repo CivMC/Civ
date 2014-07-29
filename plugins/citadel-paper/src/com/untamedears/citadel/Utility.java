@@ -581,7 +581,7 @@ public class Utility {
         } catch (Exception ex) {}
         // Maybe it's a name
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuidOrName);
-        if (player != null) {
+        if (player != null && player.hasPlayedBefore()) { // Some reason getting a player even if they don't exist...  This is better anyways
             return player.getUniqueId();
         }
         return null;

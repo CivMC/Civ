@@ -72,7 +72,7 @@ public class TransferCommand extends PlayerCommand {
                 sendMessage(sender, ChatColor.RED, "This player has already reached the maximum amount of groups allowed");
                 return true;
             }
-            if (targetPlayer != null) {
+            if (targetPlayer == null) {
                 sendMessage(sender, ChatColor.RED, "User must be online");
                 return true;
             }
