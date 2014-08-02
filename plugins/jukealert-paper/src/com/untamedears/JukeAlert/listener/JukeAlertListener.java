@@ -393,6 +393,10 @@ public class JukeAlertListener implements Listener {
         UUID accountId = player.getUniqueId();
         	Set<Snitch> snitches = snitchManager.findSnitches(player.getWorld(), player.getLocation());
         	for (Snitch snitch : snitches) {
+                if (!snitch.shouldLog()) {
+                    continue;
+                }
+
         		if (!isOnSnitch(snitch, accountId) || isDebugging()) {
         			if (checkProximity(snitch, accountId)) {
         				plugin.getJaLogger().logUsed(snitch, player, block);
