@@ -196,12 +196,12 @@ public class JukeAlertListener implements Listener {
                     Snitch snitch;
                     if (snitchManager.getSnitch(loc.getWorld(), loc) != null) {
                         snitch = snitchManager.getSnitch(loc.getWorld(), loc);
-                        plugin.getJaLogger().updateSnitchGroup(snitchManager.getSnitch(loc.getWorld(), loc), owner.getFounder());
+                        plugin.getJaLogger().updateSnitchGroup(snitchManager.getSnitch(loc.getWorld(), loc), owner.getName());
                         snitchManager.removeSnitch(snitch);
                         snitch.setGroup(owner);
                     } else {
                         snitch = new Snitch(loc, owner, true);
-                        plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getFounder(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), true);
+                        plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), true);
                         snitch.setId(plugin.getJaLogger().getLastSnitchID());
                         plugin.getJaLogger().increaseLastSnitchID();
                     }
@@ -396,7 +396,6 @@ public class JukeAlertListener implements Listener {
                 if (!snitch.shouldLog()) {
                     continue;
                 }
-
         		if (!isOnSnitch(snitch, accountId) || isDebugging()) {
         			if (checkProximity(snitch, accountId)) {
         				plugin.getJaLogger().logUsed(snitch, player, block);
