@@ -201,11 +201,11 @@ public class ItemExchange {
 								 * of that item. But I haven't thought of any particular issues yet, probably should be tested in relation to prisonpearl.
 								*/
 								ItemStack[] playerInventoryOld = InventoryHelpers.deepCopy(playerInventory);
-								playerInventory.removeItem(playerInput);
-								if (playerInventory.addItem(exchangeOutput).isEmpty()) {
+								playerInventory.removeItem(InventoryHelpers.deepCopy(playerInput));
+								if (playerInventory.addItem(InventoryHelpers.deepCopy(exchangeOutput)).isEmpty()) {
 									ItemStack[] exchangeInventoryOld = InventoryHelpers.deepCopy(inventory);
-									inventory.removeItem(exchangeOutput);
-									if (inventory.addItem(playerInput).isEmpty()) {
+									inventory.removeItem(InventoryHelpers.deepCopy(exchangeOutput));
+									if (inventory.addItem(InventoryHelpers.deepCopy(playerInput)).isEmpty()) {
 										IETransactionEvent event = new IETransactionEvent(player, location, playerInput, exchangeOutput);
 
 										Bukkit.getPluginManager().callEvent(event);

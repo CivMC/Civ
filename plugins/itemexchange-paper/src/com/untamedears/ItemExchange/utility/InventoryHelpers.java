@@ -66,4 +66,17 @@ public class InventoryHelpers {
 		}
 		return deepCopy;
 	}
+
+	/*
+	 * Returns a deepCopy of an ItemStack array, which creates new ItemStack objects.
+	 */
+	public static ItemStack[] deepCopy(ItemStack[] items) {
+		ItemStack[] deepCopy = new ItemStack[items.length];
+		for (int i = 0; i < items.length; i++) {
+			if (items[i] != null) {
+				deepCopy[i] = items[i].clone();
+			}
+		}
+		return deepCopy;
+	}
 }
