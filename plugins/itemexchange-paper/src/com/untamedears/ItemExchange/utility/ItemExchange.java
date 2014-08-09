@@ -89,17 +89,24 @@ public class ItemExchange {
 	}
 
 	/*
-	 * Checks if the exchange has both at least one input and one output
+	 * Checks if the exchange has at least one input and an input for each output
 	 */
 	public boolean isValid() {
-		return inputs.size() > 0 && outputs.size() > 0;
+		// Need at least 1 input, reject negative sizes
+		if (inputs.size() <= 0 || outputs.size() < 0) {
+			return false;
+		}
+		if (outputs.size() > 0 && inputs.size() < outputs.size()) {
+			return false;
+		}
+		return true;
 	}
 
 	/*
 	 * Reports the number of valid input/output rule sets contained within the exchange
 	 */
 	public int getNumberRules() {
-		return inputs.size() < outputs.size() ? inputs.size() : outputs.size();
+		return inputs.size();
 	}
 
 	public static String createExchange(Location location, Player player) {
@@ -129,16 +136,14 @@ public class ItemExchange {
 				}
 			}
 			//If acceptable input and output itemStacks were found create exchange rule blocks for each and place them in the inventory blcok
-			if (input != null && output != null) {
-				if(ExchangeRule.isRuleBlock(input) || ExchangeRule.isRuleBlock(output)) {
+			//Allow an input without an output for creating redstone trigger/donation boxes
+			if (input != null) {
+				if(ExchangeRule.isRuleBlock(input)) {
 					return ChatColor.RED + "You cannot exchange rule blocks!";
 				}
-				
 				ExchangeRule inputRule;
-				ExchangeRule outputRule;
 				try {
 					inputRule = ExchangeRule.parseItemStack(input, ExchangeRule.RuleType.INPUT);
-					outputRule = ExchangeRule.parseItemStack(output, ExchangeRule.RuleType.OUTPUT);
 				}
 				catch (ExchangeRuleCreateException e) {
 					return ChatColor.RED + e.getMessage();
@@ -147,14 +152,26 @@ public class ItemExchange {
 				if (inventory.addItem(inputRule.toItemStack()).size() > 0) {
 					player.getWorld().dropItem(player.getLocation(), inputRule.toItemStack());
 				}
-				//place output in the inventory, if this fails drop it on the ground
-				if (inventory.addItem(outputRule.toItemStack()).size() > 0) {
-					player.getWorld().dropItem(player.getLocation(), outputRule.toItemStack());
+				if (output != null) {
+					if(ExchangeRule.isRuleBlock(output)) {
+						return ChatColor.RED + "You cannot exchange rule blocks!";
+					}
+					ExchangeRule outputRule;
+					try {
+						outputRule = ExchangeRule.parseItemStack(output, ExchangeRule.RuleType.OUTPUT);
+					}
+					catch (ExchangeRuleCreateException e) {
+						return ChatColor.RED + e.getMessage();
+					}
+					//place output in the inventory, if this fails drop it on the ground
+					if (inventory.addItem(outputRule.toItemStack()).size() > 0) {
+						player.getWorld().dropItem(player.getLocation(), outputRule.toItemStack());
+					}
 				}
 				return ChatColor.GREEN + "Created exchange successfully.";
 			}
 			else {
-				return ChatColor.RED + "Inventory should have at least two types of items.";
+				return ChatColor.RED + "Inventory should have at least one type of item.";
 			}
 		}
 		else {
@@ -184,18 +201,19 @@ public class ItemExchange {
 			return;
 		}
 		//If the rule index is at a reasonable index
-		if (ruleIndex.get(player) >= inputs.size() || ruleIndex.get(player) >= outputs.size()) {
+		if (ruleIndex.get(player) >= inputs.size()) {
 			//If the rule index was out of bounds
 			ruleIndex.put(player, 0);
 			return;
 		}
+		final boolean hasOutput = ruleIndex.get(player) < outputs.size();
 		if(!location.getChunk().isLoaded()) {
 			player.sendMessage(ChatColor.RED + "Error: The chunk is not loaded.");
 			return;
 		}
 
 		ExchangeRule input = inputs.get(ruleIndex.get(player));
-		ExchangeRule output = outputs.get(ruleIndex.get(player));
+		ExchangeRule output = hasOutput ? outputs.get(ruleIndex.get(player)) : null;
 		//Check if item in hand is the input
 		if (!input.followsRules(itemStack)) {
 			// If the item the player is holding is not that of the input of the exchange the rules of the exchange are displayed
@@ -208,17 +226,20 @@ public class ItemExchange {
 		}
 
 		PlayerInventory playerInventory = player.getInventory();
-		//If the player has the input and the exchange has the output
+		//If the player has the input
 		if (!input.followsRules(playerInventory)) {
 			player.sendMessage(ChatColor.RED + "You don't have enough of the input.");
 			return;
 		}
-		if (!output.followsRules(inventory)) {
-			player.sendMessage(ChatColor.RED + "Chest does not have enough of the output.");
-			return;
+		ItemStack[] exchangeOutput = null;
+		if (output != null) {
+			if (!output.followsRules(inventory)) {
+				player.sendMessage(ChatColor.RED + "Chest does not have enough of the output.");
+				return;
+			}
+			exchangeOutput = InventoryHelpers.getItemStacks(inventory, output);
 		}
 		ItemStack[] playerInput = InventoryHelpers.getItemStacks(playerInventory, input);
-		ItemStack[] exchangeOutput = InventoryHelpers.getItemStacks(inventory, output);
 		/*
 		 * Attempts to exchange items in the players inventory, if there ends up not being space in either of the inventories
 		 * the inventories are reset back to a copy of their prexisting inventories.
@@ -226,21 +247,10 @@ public class ItemExchange {
 		 * of that item. But I haven't thought of any particular issues yet, probably should be tested in relation to prisonpearl.
 		*/
 		ItemStack[] playerInventoryOld = InventoryHelpers.deepCopy(playerInventory);
+		ItemStack[] exchangeInventoryOld = InventoryHelpers.deepCopy(inventory);
 		if (!playerInventory.removeItem(InventoryHelpers.deepCopy(playerInput)).isEmpty()) {
 			playerInventory.setContents(playerInventoryOld);
 			player.sendMessage(ChatColor.RED + "Failed to remove the item from your inventory.");
-			return;
-		}
-		if (!playerInventory.addItem(InventoryHelpers.deepCopy(exchangeOutput)).isEmpty()) {
-			playerInventory.setContents(playerInventoryOld);
-			player.sendMessage(ChatColor.RED + "You don't have enough inventory space!");
-			return;
-		}
-		ItemStack[] exchangeInventoryOld = InventoryHelpers.deepCopy(inventory);
-		if (!inventory.removeItem(InventoryHelpers.deepCopy(exchangeOutput)).isEmpty()) {
-			inventory.setContents(exchangeInventoryOld);
-			playerInventory.setContents(playerInventoryOld);
-			player.sendMessage(ChatColor.RED + "Failed to remove the item from the shop.");
 			return;
 		}
 		if (!inventory.addItem(InventoryHelpers.deepCopy(playerInput)).isEmpty()) {
@@ -248,6 +258,19 @@ public class ItemExchange {
 			playerInventory.setContents(playerInventoryOld);
 			player.sendMessage(ChatColor.RED + "The exchange does not have enough inventory space!");
 			return;
+		}
+		if (exchangeOutput != null) {
+			if (!playerInventory.addItem(InventoryHelpers.deepCopy(exchangeOutput)).isEmpty()) {
+				playerInventory.setContents(playerInventoryOld);
+				player.sendMessage(ChatColor.RED + "You don't have enough inventory space!");
+				return;
+			}
+			if (!inventory.removeItem(InventoryHelpers.deepCopy(exchangeOutput)).isEmpty()) {
+				inventory.setContents(exchangeInventoryOld);
+				playerInventory.setContents(playerInventoryOld);
+				player.sendMessage(ChatColor.RED + "Failed to remove the item from the shop.");
+				return;
+			}
 		}
 
 		IETransactionEvent event = new IETransactionEvent(player, location, playerInput, exchangeOutput);
@@ -270,7 +293,11 @@ public class ItemExchange {
 			if(west.getType() == type) ItemExchange.powerBlock(player, west);
 		}
 
-		player.sendMessage(ChatColor.GREEN + "Successful exchange!");
+		if (exchangeOutput != null) {
+			player.sendMessage(ChatColor.GREEN + "Successful exchange!");
+		} else {
+			player.sendMessage(ChatColor.GREEN + "Successful donation!");
+		}
 	}
 	
 	public void cycleExchange(Player player) {
@@ -361,9 +388,11 @@ public class ItemExchange {
 	public void messagePlayer(Player player) {
 		player.sendMessage(ChatColor.YELLOW + "(" + String.valueOf(ruleIndex.get(player) + 1) + "/" + String.valueOf(getNumberRules()) + ") exchanges present.");
 		player.sendMessage(inputs.get(ruleIndex.get(player)).display(player));
-		ExchangeRule output = outputs.get(ruleIndex.get(player));
-		player.sendMessage(output.display(player));
-		int multiples = output.checkMultiples(inventory);
-		player.sendMessage(ChatColor.YELLOW + String.valueOf(multiples) + (multiples == 1 ? " exchange available." : " exchanges available."));
+		if (ruleIndex.get(player) < outputs.size()) {
+			ExchangeRule output = outputs.get(ruleIndex.get(player));
+			player.sendMessage(output.display(player));
+			int multiples = output.checkMultiples(inventory);
+			player.sendMessage(ChatColor.YELLOW + String.valueOf(multiples) + (multiples == 1 ? " exchange available." : " exchanges available."));
+		}
 	}
 }
