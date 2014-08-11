@@ -245,61 +245,66 @@ public class ItemExchange {
 		 * the inventories are reset back to a copy of their prexisting inventories.
 		 * This has the potential for edge cases since efery itemstack in the players inventory is being replaced with a copy
 		 * of that item. But I haven't thought of any particular issues yet, probably should be tested in relation to prisonpearl.
+		 * A try/finally is used to reset the inventories in the event of an error to remove the chance for copy/paste errors
+		 * which cause item dup bugs.
 		*/
 		ItemStack[] playerInventoryOld = InventoryHelpers.deepCopy(playerInventory);
 		ItemStack[] exchangeInventoryOld = InventoryHelpers.deepCopy(inventory);
-		if (!playerInventory.removeItem(InventoryHelpers.deepCopy(playerInput)).isEmpty()) {
-			playerInventory.setContents(playerInventoryOld);
-			player.sendMessage(ChatColor.RED + "Failed to remove the item from your inventory.");
-			return;
-		}
-		if (!inventory.addItem(InventoryHelpers.deepCopy(playerInput)).isEmpty()) {
-			inventory.setContents(exchangeInventoryOld);
-			playerInventory.setContents(playerInventoryOld);
-			player.sendMessage(ChatColor.RED + "The exchange does not have enough inventory space!");
-			return;
-		}
-		if (exchangeOutput != null) {
-			if (!playerInventory.addItem(InventoryHelpers.deepCopy(exchangeOutput)).isEmpty()) {
-				playerInventory.setContents(playerInventoryOld);
-				player.sendMessage(ChatColor.RED + "You don't have enough inventory space!");
+		boolean successfulTransfer = false;
+		try {
+			if (!playerInventory.removeItem(InventoryHelpers.deepCopy(playerInput)).isEmpty()) {
+				player.sendMessage(ChatColor.RED + "Failed to remove the item from your inventory.");
 				return;
 			}
-			if (!inventory.removeItem(InventoryHelpers.deepCopy(exchangeOutput)).isEmpty()) {
+			if (!inventory.addItem(InventoryHelpers.deepCopy(playerInput)).isEmpty()) {
+				player.sendMessage(ChatColor.RED + "The exchange does not have enough inventory space!");
+				return;
+			}
+			if (exchangeOutput != null) {
+				if (!playerInventory.addItem(InventoryHelpers.deepCopy(exchangeOutput)).isEmpty()) {
+					player.sendMessage(ChatColor.RED + "You don't have enough inventory space!");
+					return;
+				}
+				if (!inventory.removeItem(InventoryHelpers.deepCopy(exchangeOutput)).isEmpty()) {
+					player.sendMessage(ChatColor.RED + "Failed to remove the item from the shop.");
+					return;
+				}
+			}
+
+			IETransactionEvent event = new IETransactionEvent(player, location, playerInput, exchangeOutput);
+			Bukkit.getPluginManager().callEvent(event);
+
+			// Power buttons.
+			Block block = location.getBlock();
+			ItemExchange.powerBlock(player, block);
+
+			Material type = block.getType();
+			if(type == Material.CHEST || type == Material.TRAPPED_CHEST) {
+				Block north = block.getRelative(BlockFace.NORTH);
+				Block south = block.getRelative(BlockFace.SOUTH);
+				Block east = block.getRelative(BlockFace.EAST);
+				Block west = block.getRelative(BlockFace.WEST);
+
+				if(north.getType() == type) ItemExchange.powerBlock(player, north);
+				if(south.getType() == type) ItemExchange.powerBlock(player, south);
+				if(east.getType() == type) ItemExchange.powerBlock(player, east);
+				if(west.getType() == type) ItemExchange.powerBlock(player, west);
+			}
+
+			if (exchangeOutput != null) {
+				player.sendMessage(ChatColor.GREEN + "Successful exchange!");
+			} else {
+				player.sendMessage(ChatColor.GREEN + "Successful donation!");
+			}
+			successfulTransfer = true;
+		} finally {
+			if (!successfulTransfer) {
 				inventory.setContents(exchangeInventoryOld);
 				playerInventory.setContents(playerInventoryOld);
-				player.sendMessage(ChatColor.RED + "Failed to remove the item from the shop.");
-				return;
 			}
 		}
-
-		IETransactionEvent event = new IETransactionEvent(player, location, playerInput, exchangeOutput);
-		Bukkit.getPluginManager().callEvent(event);
-
-		// Power buttons.
-		Block block = location.getBlock();
-		ItemExchange.powerBlock(player, block);
-
-		Material type = block.getType();
-		if(type == Material.CHEST || type == Material.TRAPPED_CHEST) {
-			Block north = block.getRelative(BlockFace.NORTH);
-			Block south = block.getRelative(BlockFace.SOUTH);
-			Block east = block.getRelative(BlockFace.EAST);
-			Block west = block.getRelative(BlockFace.WEST);
-
-			if(north.getType() == type) ItemExchange.powerBlock(player, north);
-			if(south.getType() == type) ItemExchange.powerBlock(player, south);
-			if(east.getType() == type) ItemExchange.powerBlock(player, east);
-			if(west.getType() == type) ItemExchange.powerBlock(player, west);
-		}
-
-		if (exchangeOutput != null) {
-			player.sendMessage(ChatColor.GREEN + "Successful exchange!");
-		} else {
-			player.sendMessage(ChatColor.GREEN + "Successful donation!");
-		}
 	}
-	
+
 	public void cycleExchange(Player player) {
 		int currentRuleIndex = ruleIndex.get(player);
 		if (currentRuleIndex < getNumberRules() - 1) {

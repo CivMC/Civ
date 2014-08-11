@@ -6,7 +6,7 @@
   <groupId>com.untamedears</groupId>
   <artifactId>ItemExchange</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.3-SNAPSHOT</version>
+  <version>0.1.4-SNAPSHOT</version>
   <name>ItemExchange</name>
   <url>https://github.com/ttk2/ItemExchange</url>
   
