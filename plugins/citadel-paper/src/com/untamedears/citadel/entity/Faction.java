@@ -94,10 +94,7 @@ public class Faction implements Serializable, Comparable {
             this.founder = accountId;
         } catch (Exception ex) {
             Citadel.severe(
-                "Invalid UUID sent to Faction.setFounder: " + accountId +"\nGrabbing uuid from Mojang.");
-            this.founder = accountId;
-            UUID uuid = Bukkit.getOfflinePlayer(accountId).getUniqueId();
-            this.founderId = uuid;
+                "Invalid UUID sent to Faction.setFounder: " + accountId);
         }
     }
 
