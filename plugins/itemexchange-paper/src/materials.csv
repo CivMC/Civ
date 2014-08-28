@@ -71,6 +71,10 @@ Black Wool,,35,15
 Extended Piston,,36,0
 Dandelion,,37,0
 Rose,,38,0
+Blue Orchid,,38,1
+Allium,,38,2
+Azure Bluet,,38,3
+Oxeye Daisy,,38,8
 Brown Mushroom,,39,0
 Red Mushroom,,40,0
 Gold Block,,41,0
@@ -272,6 +276,12 @@ Red Carpet,,171,14
 Black Carpet,,171,15
 Hardened Clay,,172,0
 Coal Block,,173,0
+Sunflower,,175,0
+Lilac,,175,1
+Double Tallgrass,,175,2
+Large Fern,,175,3
+Rose Bush,,175,4
+Peony,,175,5
 Iron Shovel,,256,0
 Iron Pickaxe,,257,0
 Iron Axe,,258,0
@@ -368,7 +378,11 @@ Fishing Rod,,346,0
 Watch,,347,0
 Glowstone Dust,,348,0
 Raw Fish,,349,0
+Raw Salmon,,349,1
+Clownfish,,349,2
+Pufferfish,,349,3
 Cooked Fish,,350,0
+Cooked Salmon,,350,1
 Ink Sack,,351,0
 Rose Red Dye,,351,1
 Cactus Green Dye,,351,2
