@@ -15,6 +15,7 @@ BastionBlock:
   maxBreaksPerMinute: 30
   erosionRatePerDay: 0
   destroyOnRemove: true
+  blocksToErode: 1
   EnderPearls:
     preventEnderPearl: true 
     scaleFac: 1
