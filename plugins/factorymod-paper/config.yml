@@ -2576,6 +2576,39 @@ production_factories:
         amount: 1
         display_name: Smaragdus
         lore: An item used to create a Bastion Block
+  nether_factory:
+  name: Nether Factory
+  fuel:
+    Charcoal:
+      material: COAL
+      durability: 1
+  costs:
+    construction:
+      Aspect of Nether:
+        material: MAGMA_CREAM
+        amount: 8
+        display_name: Aspect of Nether
+        lore: A concentrated essence of the Nether
+      Aspect of Terra:
+        material: DIAMOND
+        amount: 8
+        display_name: Aspect of Terra
+        lore: A concentrated essence of Terra
+      Aspect of END:
+        material: FLINT
+        amount: 8
+        display_name: Aspect of End
+        lore: A concentrated essence of the End
+    repair:
+       Diamond block:
+         material: DIAMOND_BLOCK
+         amount: 1
+    repair_multiple: 1    
+  fuel_time: 10
+  repair_time: 12
+  scaling_radius: 5000
+  cost_scaling_radius: 5000
+  use_fuel_on_teleport: false
 production_recipes:
   Wood_XP_Bottle_0:
     name: Brew XP Bottles  - 1
@@ -7373,3 +7406,112 @@ production_recipes:
         material: DOUBLE_PLANT
         amount: 4
         durability: 5
+  Aspect_Factory:
+    name: Arcane Elementizer
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Netherbrick:
+        material: NETHER_BRICK
+        amount: 1536
+      Redstone:
+        material: REDSTONE
+        amount: 1152
+      Netherquartz:
+        material: QUARTZ
+        amount: 576
+    recipes:
+      - Forge_Aspect_of_Terra
+      - Forge_Aspect_of_End
+      - Forge_Aspect_of_Nether
+      - Craft_Eye_of_Ender
+    repair_multiple: 26
+    repair_inputs:
+      Nether Brick:
+        material: NETHER_BRICK
+        amount: 6
+      Redstone:
+        material: REDSTONE
+        amount: 5
+      Netherquartz:
+        material: QUARTZ
+        amount: 2
+  Forge_Aspect_of_Terra:
+    name: Forge Aspect of Terra
+    production_time: 64
+    inputs:
+      Emerald Block:
+        material: EMERALD_BLOCK
+        amount: 24
+      Diamond Block:
+        material: DIAMOND_BLOCK
+        amount: 24
+      Gold Ore:
+        material: GOLD_ORE
+        amount: 8
+      Slime Ball:
+        material: SLIME_BALL
+        amount: 8
+      Anvil:
+        material: ANVIL
+        amount: 8
+    outputs:
+      Aspect of Terra:
+        material: DIAMOND
+        amount: 1
+        display_name: Aspect of Terra
+        lore: A concentrated essence of Terra
+  Forge_Aspect_of_End:
+    name: Forge Aspect of End
+    production_time: 64
+    inputs:
+      Ender Pearl:
+        material: ENDER_PEARL
+        amount: 256
+      Ender Chest:
+        material: ENDER_CHEST
+        amount: 256
+      Endstone:
+        material: ENDER_STONE
+        amount: 1024
+    outputs:
+      Aspect of End:
+        material: FLINT
+        amount: 1
+        display_name: Aspect of End
+        lore: A concentrated essence of the End
+  Forge_Aspect_of_Nether:
+    name: Forge Aspect of Nether
+    production_time: 64
+    inputs:
+      Ghast Tears:
+        material: GHAST_TEAR
+        amount: 16
+      Quartz Ore:
+        material: QUARTZ_ORE
+        amount: 512
+      Glowstone:
+        material: GLOWSTONE
+        amount: 512
+    outputs:
+      Aspect of Nether:
+        material: MAGMA_CREAM
+        amount: 1
+        display_name: Aspect of Nether
+        lore: A concentrated essence of the Nether
+  Craft_Eye_of_Ender:
+    name: Craft Eye of Ender
+    production_time: 1
+    inputs:
+       Blaze Powder:
+         material: BLAZE_POWDER
+         amount: 265
+       Ender Pearl:
+         material: ENDER_PEARL
+         amount: 265
+    outputs:
+       Eye of Ender:
+         material: EYE_OF_ENDER
+         amount: 256
