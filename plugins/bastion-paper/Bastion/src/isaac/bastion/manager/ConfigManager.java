@@ -31,6 +31,7 @@ public class ConfigManager {
 	private int bastionBlockScaleTime;
 	private int bastionBlockMaxBreaks;
 	private int bastionBlockErosion;
+	private int bastionBlocksToErode;
 	private int saveTimeInt;
 	private boolean preventEnderPearl;
 	private boolean enderPearlBlockingRequiresMaturity;
@@ -86,6 +87,7 @@ public class ConfigManager {
 		bastionBlockScaleFacEnd=loadDouble("BastionBlock.finalScaleFactor");
 		bastionBlockScaleTime=loadInt("BastionBlock.warmUpTime");
 		destroy=loadBool("BastionBlock.destroyOnRemove");
+		bastionBlocksToErode=loadInt("BastionBlock.blocksToErode");
 		
 		preventEnderPearl=loadBool("BastionBlock.EnderPearls.preventEnderPearl");
 		enderPearlBlockingRequiresMaturity=loadBool("BastionBlock.EnderPearls.requireMaturity");
@@ -141,6 +143,9 @@ public class ConfigManager {
 	}
 	public int getBastionBlockErosion(){
 		return bastionBlockErosion;
+	}
+	public int getBastionBlocksToErode(){
+		return bastionBlocksToErode;
 	}
 	public boolean getDestroy(){
 		return destroy;
