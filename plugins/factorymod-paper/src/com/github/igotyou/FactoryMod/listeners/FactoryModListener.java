@@ -18,6 +18,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
+import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
 import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
@@ -27,6 +28,7 @@ import com.github.igotyou.FactoryMod.managers.ProductionManager;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.untamedears.citadel.entity.PlayerReinforcement;
+
 import org.bukkit.event.entity.ExpBottleEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 
@@ -245,6 +247,49 @@ public class FactoryModListener implements Listener
 							InteractionResponse.messagePlayerResult(player, new InteractionResponse(InteractionResult.FAILURE,"Factory blocks are misplaced!" ));
 						}
 						
+					}
+				}
+				else if (clicked.getType() == FactoryModPlugin.NETHER_FACTORY_TELEPORT_PLATFORM_MATERIAL)
+				{
+					if (factoryMan.factoryExistsAt(clicked.getLocation()))
+					{
+						if(factoryMan.getFactory(clicked.getLocation()).getClass() == NetherFactory.class)
+						{
+							NetherFactory netherFactory = (NetherFactory) factoryMan.getFactory(clicked.getLocation());
+							if (FactoryModPlugin.REGENERATE_TELEPORT_BLOCK_ON_TELEPORT)
+							{
+								netherFactory.regenerateTeleportBlock(clicked.getLocation());
+							}
+							if(factoryMan.factoryWholeAt(clicked.getLocation()))
+							{						
+								//toggle the recipe, and print the returned message.
+								InteractionResponse.messagePlayerResults(player, netherFactory.getTeleportationBlockResponse(player, clicked.getLocation()));
+								e.setCancelled(true);
+							}
+						}
+					}
+				}
+			}
+			else if (player.getItemInHand().getType() == Material.PAPER)
+			{
+				if (clicked.getType() == FactoryModPlugin.NETHER_FACTORY_TELEPORT_PLATFORM_MATERIAL)
+				{
+					if (factoryMan.factoryExistsAt(clicked.getLocation()))
+					{
+						if(factoryMan.getFactory(clicked.getLocation()).getClass() == NetherFactory.class)
+						{
+							NetherFactory netherFactory = (NetherFactory) factoryMan.getFactory(clicked.getLocation());
+							if (FactoryModPlugin.REGENERATE_TELEPORT_BLOCK_ON_TELEPORT)
+							{
+								netherFactory.regenerateTeleportBlock(clicked.getLocation());
+							}
+							if(factoryMan.factoryWholeAt(clicked.getLocation()))
+							{						
+								//toggle the recipe, and print the returned message.
+								InteractionResponse.messagePlayerResults(player, netherFactory.getTeleportationBlockResponse(player, clicked.getLocation()));
+								e.setCancelled(true);
+							}
+						}
 					}
 				}
 			}

@@ -441,7 +441,7 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 	/*
 	 * Repairs the factory 
 	 */
-	private void repair(int amountRepaired)
+	protected void repair(int amountRepaired)
 	{
 		currentRepair-=amountRepaired;
 		if(currentRepair<0)
