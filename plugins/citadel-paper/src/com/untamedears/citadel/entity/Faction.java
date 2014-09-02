@@ -1,12 +1,16 @@
 package com.untamedears.citadel.entity;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.Version;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import com.untamedears.citadel.Citadel;
 
@@ -28,6 +32,7 @@ public class Faction implements Serializable, Comparable {
 	@Id private String name;
 	@Transient private String normalized_name;
     private String founder;
+    @Transient private UUID founderId;
     private String password;
 
     @Version
@@ -44,10 +49,11 @@ public class Faction implements Serializable, Comparable {
         this.disciplineFlags = 0;
     }
 
-    public Faction(String name, String founder) {
+    public Faction(String name, UUID accountId) {
         this.name = name;
         this.normalized_name = name.toLowerCase();
-        this.founder = founder;
+        this.founderId = accountId;
+        this.founder = accountId.toString();
         this.disciplineFlags = 0;
     }
 
@@ -75,14 +81,39 @@ public class Faction implements Serializable, Comparable {
         return this.normalized_name;
     }
 
+    // eBean will hook get/setFounder and expect a string. With the UUID
+    //  conversion, this will now be a stringified UUID. Prefer
+    //  get/setFounderId.
     public String getFounder() {
         return founder;
     }
 
-    public void setFounder(String founder) {
-        this.founder = founder;
+    public void setFounder(String accountId) {
+        try {
+            this.founderId = UUID.fromString(accountId);
+            this.founder = accountId;
+        } catch (Exception ex) {
+            Citadel.severe(
+                "Invalid UUID sent to Faction.setFounder: " + accountId);
+        }
     }
-    
+
+    public UUID getFounderId() {
+        return this.founderId;
+    }
+
+    public void setFounderId(UUID accountId) {
+        setFounder(accountId.toString());
+    }
+
+    public String getFounderName() {
+        return Citadel.getAccountIdManager().getPlayerName(this.founderId);
+    }
+
+    public Player getFounderPlayer() {
+        return Bukkit.getPlayerExact(getFounderName());
+    }
+
     public String getPassword(){
     	return password;
     }
@@ -133,27 +164,23 @@ public class Faction implements Serializable, Comparable {
         return getDisciplineFlags() != 0;
     }
 
-    public boolean isFounder(String memberName){
-    	return isFounder(new Member(memberName));
-    }
-    
-    public boolean isFounder(Member member){
-    	if(member.getMemberName().equalsIgnoreCase(this.founder)){
-    		return true;
-    	}
-    	return false;
+    public boolean isFounder(UUID accountId){
+    	return accountId != null
+            && this.founderId.equals(accountId);
     }
 
-    public boolean isMember(String memberName) {
-    	return Citadel.getGroupManager().hasGroupMember(this.name, memberName);
+    public boolean isMember(UUID accountId) {
+    	return accountId != null
+            && Citadel.getGroupManager().hasGroupMember(this.name, accountId);
     }
     
-    public boolean isModerator(String memberName){
-    	return Citadel.getGroupManager().hasGroupModerator(this.name, memberName);
+    public boolean isModerator(UUID accountId){
+    	return accountId != null
+            && Citadel.getGroupManager().hasGroupModerator(this.name, accountId);
     }
     
     public boolean isPersonalGroup(){
-    	PersonalGroup personalGroup = Citadel.getPersonalGroupManager().getPersonalGroup(this.founder);
+    	PersonalGroup personalGroup = Citadel.getPersonalGroupManager().getPersonalGroup(this.founderId);
     	if(personalGroup != null && personalGroup.getGroupName().equals(this.name)){
     		return true;
     	}
@@ -182,5 +209,16 @@ public class Faction implements Serializable, Comparable {
         }
         Faction other = (Faction)o;
         return this.getNormalizedName().compareTo(other.getNormalizedName());
+    }
+
+    public static Faction getPersonalGroup(UUID accountId) {
+        if (accountId == null) {
+            return null;
+        }
+        final PersonalGroup personalGroup =
+            Citadel.getPersonalGroupManager().getPersonalGroup(accountId);
+        final String personalGroupName = personalGroup.getGroupName();
+        final Faction group = Citadel.getGroupManager().getGroup(personalGroupName);
+        return group;
     }
 }

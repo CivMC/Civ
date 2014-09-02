@@ -3,6 +3,8 @@ package com.untamedears.citadel.command.commands;
 import static com.untamedears.citadel.Utility.sendMessage;
 import static com.untamedears.citadel.Utility.setSingleMode;
 
+import java.util.UUID;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -29,6 +31,10 @@ public class GroupCommand extends PlayerCommand {
 	}
 
 	public boolean execute(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+			sender.sendMessage("Player only command");
+			return true;
+        }
 		String groupName = args[0];
 		Faction group = Citadel.getGroupManager().getGroup(groupName);
 		if(group == null){
@@ -39,8 +45,9 @@ public class GroupCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, Faction.kDisciplineMsg);
 			return true;
 		}
-		String senderName = sender.getName();
-		if(!group.isFounder(senderName) && !group.isModerator(senderName)){
+        Player player = (Player)sender;
+        UUID accountId = player.getUniqueId();
+		if(!group.isFounder(accountId) && !group.isModerator(accountId)){
 			sendMessage(sender, ChatColor.RED, "Invalid permission to use this group");
 			return true;
 		}
@@ -48,7 +55,6 @@ public class GroupCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "You cannot share your default group");
 			return true;
 		}
-		Player player = (Player) sender;
 		PlayerState state = PlayerState.get(player);
 		state.setFaction(group);
 		setSingleMode(SecurityLevel.GROUP, state, player);

@@ -5,16 +5,16 @@ import static com.untamedears.citadel.Utility.sendMessage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
-import com.untamedears.citadel.MemberManager;
 import com.untamedears.citadel.command.PlayerCommand;
 import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.Member;
 
 /**
  * User: JonnyD
@@ -32,19 +32,22 @@ public class GroupsCommand extends PlayerCommand {
 	}
 
 	public boolean execute(CommandSender sender, String[] args) {
-		String memberName = sender.getName();
-		
+        if (!(sender instanceof Player)) {
+			sender.sendMessage("Console curently isn't supported");
+			return true;
+        }
+        Player player = (Player)sender;
+        UUID accountId = player.getUniqueId();
+
 		GroupManager groupManager = Citadel.getGroupManager();
-		MemberManager memberManager = Citadel.getMemberManager();
 		
-		Member member = memberManager.getMember(memberName);
-		Faction personalGroup = member.getPersonalGroup();
+		Faction personalGroup = Faction.getPersonalGroup(accountId);
 		String personalGroupName = personalGroup.getName();
 		
 		List<Faction> groups = new ArrayList<Faction>();
-		Set<Faction> memberGroups = groupManager.getGroupsByMember(memberName);
-		Set<Faction> moderatedGroups = groupManager.getGroupsByModerator(memberName);
-		Set<Faction> ownedGroups = groupManager.getGroupsByFounder(memberName);
+		Set<Faction> memberGroups = groupManager.getGroupsByMember(accountId);
+		Set<Faction> moderatedGroups = groupManager.getGroupsByModerator(accountId);
+		Set<Faction> ownedGroups = groupManager.getGroupsByFounder(accountId);
 		
 		groups.addAll(ownedGroups);
 		groups.addAll(moderatedGroups);

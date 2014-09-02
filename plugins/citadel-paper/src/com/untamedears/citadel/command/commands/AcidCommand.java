@@ -5,6 +5,7 @@ import static com.untamedears.citadel.Utility.timeUntilMature;
 
 import java.util.Iterator;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,6 +20,7 @@ import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.command.PlayerCommand;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
+import com.untamedears.citadel.events.AcidBlockDestroyEvent;
 
 public class AcidCommand extends PlayerCommand {
 
@@ -42,7 +44,6 @@ public class AcidCommand extends PlayerCommand {
         }
         boolean successfulAcid = false;
         Player player = (Player)sender;
-        String playerName = player.getName();
         Iterator<Block> itr = new BlockIterator(player, 40); // Within 2.5 chunks
         while (itr.hasNext()) {
             final Block block = itr.next();
@@ -60,7 +61,7 @@ public class AcidCommand extends PlayerCommand {
                 return true;
             }
             PlayerReinforcement pr = (PlayerReinforcement)rein;
-            if (!pr.isAccessible(playerName)) {
+            if (!pr.isAccessible(player)) {
                 sender.sendMessage("You cannot use this acid block");
                 return true;
             }
@@ -80,9 +81,11 @@ public class AcidCommand extends PlayerCommand {
                 return true;
             }
             // if they try break bedrock, return
-            if (above.getType() == Material.BEDROCK || above.getType() == Material.ENDER_PORTAL || above.getType() == Material.ENDER_PORTAL_FRAME){
-            	sender.sendMessage("You cant break this block");
-            	return true;
+            if (above.getType() == Material.BEDROCK
+                    || above.getType() == Material.ENDER_PORTAL
+                    || above.getType() == Material.ENDER_PORTAL_FRAME) {
+                sender.sendMessage("You cant break this block");
+                return true;
             }
             // Break block above
             aboveRein.setDurability(0);
@@ -104,6 +107,12 @@ public class AcidCommand extends PlayerCommand {
                 }
             }
             // Break acid block
+            AcidBlockDestroyEvent event = new AcidBlockDestroyEvent(block);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()){
+            	sender.sendMessage(event.getReasonForCancel());
+            	return true;
+            }
             reinforcementBroken(pr);
             block.breakNaturally();
             successfulAcid = true;

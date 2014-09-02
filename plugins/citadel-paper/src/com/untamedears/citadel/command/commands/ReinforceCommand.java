@@ -4,6 +4,8 @@ import static com.untamedears.citadel.Utility.getSecurityLevel;
 import static com.untamedears.citadel.Utility.sendMessage;
 import static com.untamedears.citadel.Utility.setMultiMode;
 
+import java.util.UUID;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -32,7 +34,12 @@ public class ReinforceCommand extends PlayerCommand {
 	}
 
 	public boolean execute(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+			sender.sendMessage("Console curently isn't supported");
+			return true;
+        }
 		Player player = (Player) sender;
+        UUID accountId = player.getUniqueId();
 		PlayerState state = PlayerState.get(player);
 		
 		String secLevel = null;
@@ -59,8 +66,7 @@ public class ReinforceCommand extends PlayerCommand {
 				sendMessage(sender, ChatColor.RED, Faction.kDisciplineMsg);
 				return true;
 			}
-			String senderName = sender.getName();
-			if(!group.isFounder(senderName) && !group.isModerator(senderName)){
+			if(!group.isFounder(accountId) && !group.isModerator(accountId)){
 				sendMessage(sender, ChatColor.RED, "Invalid permission to use this group");
 				return true;
 			}
@@ -70,7 +76,7 @@ public class ReinforceCommand extends PlayerCommand {
 			}
 			state.setFaction(group);
 		} else {
-			state.setFaction(Citadel.getMemberManager().getMember(player).getPersonalGroup());
+			state.setFaction(Faction.getPersonalGroup(accountId));
 		}
 		
 		SecurityLevel securityLevel = getSecurityLevel(args, player);

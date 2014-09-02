@@ -27,6 +27,10 @@ public class PasswordCommand extends PlayerCommand {
 	}
 
 	public boolean execute(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+			sender.sendMessage("Console curently isn't supported");
+			return true;
+        }
 		String groupName = args[0];
 		GroupManager groupManager = Citadel.getGroupManager();
 		Faction group = groupManager.getGroup(groupName);
@@ -38,8 +42,8 @@ public class PasswordCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, Faction.kDisciplineMsg);
 			return true;
 		}
-		String playerName = sender.getName();
-		if(!group.isFounder(playerName)){
+        Player player = (Player)sender;
+		if(!group.isFounder(player.getUniqueId())){
 			sendMessage(sender, ChatColor.RED, "Invalid permission to modify this group");
 			return true;
 		}
@@ -49,10 +53,6 @@ public class PasswordCommand extends PlayerCommand {
 			return true;
 		}
 		group.setPassword(password);
-        Player player = null;
-        if (sender instanceof Player) {
-            player = (Player)sender;
-        }
 		groupManager.addGroup(group, player);
 		sendMessage(sender, ChatColor.GREEN, "Changed password for %s to \"%s\"", groupName, password);
 		return true;

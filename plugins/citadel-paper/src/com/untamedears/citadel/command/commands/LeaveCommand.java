@@ -2,13 +2,14 @@ package com.untamedears.citadel.command.commands;
 
 import static com.untamedears.citadel.Utility.sendMessage;
 
+import java.util.UUID;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
-import com.untamedears.citadel.MemberManager;
 import com.untamedears.citadel.command.PlayerCommand;
 import com.untamedears.citadel.entity.Faction;
 
@@ -28,6 +29,10 @@ public class LeaveCommand extends PlayerCommand {
 	}
 
 	public boolean execute(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+			sender.sendMessage("Player only command");
+			return true;
+        }
 		String groupName = args[0];
 		GroupManager groupManager = Citadel.getGroupManager();
 		Faction group = groupManager.getGroup(groupName);
@@ -39,8 +44,9 @@ public class LeaveCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, Faction.kDisciplineMsg);
 			return true;
 		}
-		String playerName = sender.getName();
-		if(group.isFounder(playerName)){
+        Player player = (Player)sender;
+        UUID accountId = player.getUniqueId();
+		if(group.isFounder(accountId)){
 			sendMessage(sender, ChatColor.RED, "You are the owner. If you wish to leave you must either delete or transfer the group");
 			return true;
 		}
@@ -48,25 +54,20 @@ public class LeaveCommand extends PlayerCommand {
 			sendMessage(sender, ChatColor.RED, "You cannot leave your default group");
 			return true;
 		}
-		if(!group.isMember(playerName) && !group.isModerator(playerName)){
+		if(!group.isMember(accountId) && !group.isModerator(accountId)){
 			sendMessage(sender, ChatColor.RED, "You are not a member of %s", group.getName());
 			return true;
 		}
-        Player player = null;
-        if (sender instanceof Player) {
-            player = (Player)sender;
-        }
-		if(group.isModerator(playerName)){
-			groupManager.removeModeratorFromGroup(groupName, playerName, player);
+		if(group.isModerator(accountId)){
+			groupManager.removeModeratorFromGroup(groupName, accountId, player);
 		}
-		if(group.isMember(playerName)){
-			groupManager.removeMemberFromGroup(groupName, playerName, player);
+		if(group.isMember(accountId)){
+			groupManager.removeMemberFromGroup(groupName, accountId, player);
 		}
 		sendMessage(sender, ChatColor.GREEN, "You have left the group %s", group.getName());
-		MemberManager memberManager = Citadel.getMemberManager();
-		if(memberManager.isOnline(group.getFounder())){
-			Player founder = memberManager.getOnlinePlayer(group.getFounder());
-			sendMessage(founder, ChatColor.YELLOW, "%s has left the group %s", playerName, group.getName());
+        Player founder = group.getFounderPlayer();
+		if(founder != null){
+			sendMessage(founder, ChatColor.YELLOW, "%s has left the group %s", player.getDisplayName(), group.getName());
 		}
 		return true;
 	}

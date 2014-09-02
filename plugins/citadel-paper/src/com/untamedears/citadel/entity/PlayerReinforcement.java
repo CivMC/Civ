@@ -1,9 +1,12 @@
 package com.untamedears.citadel.entity;
 
+import static com.untamedears.citadel.Utility.toAccountId;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -254,57 +257,64 @@ public class PlayerReinforcement implements
                 getMaterial().getMaterial().name());
     }
 
+    public boolean isAccessible(String playerOrAccount) {
+        final UUID accountId = toAccountId(playerOrAccount);
+        if (accountId == null) {
+            return false;
+        }
+        return isAccessible(accountId, Bukkit.getPlayer(accountId));
+    }
+
     public boolean isAccessible(Player player) {
-        final String name = player.getName();
-        return isAccessible(player, name);
+        return isAccessible(player.getUniqueId(), player);
     }
 
-    public boolean isAccessible(String name) {
-        final Player player = Bukkit.getPlayerExact(name);
-        return isAccessible(player, name);
-    }
-
-    public boolean isAccessible(Player player, String name) {
+    private boolean isAccessible(UUID accountId, Player player) {
         final Faction owner = getOwner();
         if (owner == null) {
-            Citadel.severe(String.format("isAccessible(%s) encountered unowned reinforcement: %s",
-                           name, toString()));
-            sendMessage(player, ChatColor.RED,
-                "This reinforcement has an issue. Please send modmail. " + getId().toString());
+            Citadel.severe("isAccessible encountered unowned reinforcement: " + toString());
+            if (player != null) {
+                sendMessage(player, ChatColor.RED,
+                    "This reinforcement has an issue. Please send modmail. " + getId().toString());
+            }
             return false;
         }
         if (owner.isDisciplined()) {
             return false;
         }
-       boolean blacklisted = Citadel.getGroupManager().getStorage().PlayerToBlacklist(owner, player.getName());
         switch (securityLevel) {
             case PRIVATE:
-                return owner.isFounder(name);
+                return owner.isFounder(accountId);
             case GROUP:
-                return (owner.isFounder(name) || owner.isMember(name) || owner.isModerator(name)) && !blacklisted;
+                return owner.isFounder(accountId)
+                    || owner.isMember(accountId)
+                    || owner.isModerator(accountId);
             case PUBLIC:
             	return true;
         }
         return false;
     }
 
+    public boolean isBypassable(String playerOrAccount) {
+        final UUID accountId = toAccountId(playerOrAccount);
+        if (accountId == null) {
+            return false;
+        }
+        return isBypassable(accountId, Bukkit.getPlayer(accountId));
+    }
+
     public boolean isBypassable(Player player) {
-        final String name = player.getName();
-        return isBypassable(player, name);
+        return isBypassable(player.getUniqueId(), player);
     }
 
-    public boolean isBypassable(String name) {
-        final Player player = Bukkit.getPlayerExact(name);
-        return isBypassable(player, name);
-    }
-
-    public boolean isBypassable(Player player, String name) {
+    private boolean isBypassable(UUID accountId, Player player) {
         final Faction owner = getOwner();
         if (owner == null) {
-            Citadel.severe(String.format("isBypassable(%s) encountered unowned reinforcement: %s",
-                           name, toString()));
-            sendMessage(player, ChatColor.RED,
-                "This reinforcement has an issue. Please send modmail. " + getId().toString());
+            Citadel.severe("isBypassable encountered unowned reinforcement: %s" + toString());
+            if (player != null) {
+                sendMessage(player, ChatColor.RED,
+                    "This reinforcement has an issue. Please send modmail. " + getId().toString());
+            }
             return false;
         }
         if (owner.isDisciplined()) {
@@ -312,9 +322,9 @@ public class PlayerReinforcement implements
         }
         switch (securityLevel) {
             case PRIVATE:
-                return owner.isFounder(name);
+                return owner.isFounder(accountId);
             default:
-                return owner.isFounder(name) || owner.isModerator(name);
+                return owner.isFounder(accountId) || owner.isModerator(accountId);
         }
     }
 

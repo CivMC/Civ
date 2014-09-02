@@ -6,12 +6,17 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
 import javax.persistence.PersistenceException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,12 +33,10 @@ import com.lennardf1989.bukkitex.MyDatabase;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.DbUpdateAction;
-import com.untamedears.citadel.entity.BlackListing;
 import com.untamedears.citadel.entity.DbVersion;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionDelete;
 import com.untamedears.citadel.entity.FactionMember;
-import com.untamedears.citadel.entity.Member;
 import com.untamedears.citadel.entity.Moderator;
 import com.untamedears.citadel.entity.PersonalGroup;
 import com.untamedears.citadel.entity.IReinforcement;
@@ -84,10 +87,9 @@ public class CitadelDao extends MyDatabase {
     protected List<Class<?>> getDatabaseClasses() {
         return Arrays.asList(
                 DbVersion.class, FactionDelete.class,
-                Faction.class, Member.class, FactionMember.class,
+                Faction.class, FactionMember.class,
                 PlayerReinforcement.class, ReinforcementKey.class,
-                PersonalGroup.class, Moderator.class, 
-                BlackListing.class);
+                PersonalGroup.class, Moderator.class);
     }
 
     public Object save(Object object) {
@@ -99,15 +101,6 @@ public class CitadelDao extends MyDatabase {
         getDatabase().delete(object);
     }
 
-    public Faction getOrCreateFaction(String name, String founder) {
-        Faction faction = findGroupByName(name);
-        if (faction == null) {
-            faction = new Faction(name, founder);
-            save(faction);
-        }
-        return faction;
-    }
-    
     public Set<Faction> findGroupsByFounder(String founder){
     	return getDatabase().createQuery(Faction.class, "find faction where founder = :founder")
     			.setParameter("founder", founder)
@@ -227,13 +220,6 @@ public class CitadelDao extends MyDatabase {
     	getDatabase().execute(update);
     }
     
-    public boolean blackListPlayer(String player, Faction group){
-    	return getDatabase().createQuery(BlackListing.class, "find faction, player where faction = :faction and player = :player")
-    			.setParameter("faction", group.getName())
-    			.setParameter("player", player)
-    			.findRowCount() > 0;
-    }
-    
     public int countReinforcements(){
     	SqlRow row = getDatabase().createSqlQuery("select count(*) as count from reinforcement").findUnique();
     	return row.getInteger("count");  
@@ -244,22 +230,12 @@ public class CitadelDao extends MyDatabase {
     	return row.getInteger("count");  
     }
 
-	public int countPlayerGroups(String playerName) {
-    	SqlRow row = getDatabase().createSqlQuery("select count(*) as count from faction where founder = :founder")
-    			.setParameter("founder", playerName)
+	public int countPlayerGroups(UUID accountId) {
+    	SqlRow row = getDatabase().createSqlQuery(
+                "select count(*) as count from faction where founder = :founder and (discipline_flags & 0x02) = 0")
+    			.setParameter("founder", accountId.toString())
     			.findUnique();
     	return row.getInteger("count"); 
-	}
-
-	public Set<Member> findAllMembers() {
-		return getDatabase().createQuery(Member.class, "find member")
-    			.findSet();
-	}
-	
-	public Member findMember(String memberName){
-		return getDatabase().createQuery(Member.class, "find member where member_name = :memberName")
-				.setParameter("memberName", memberName)
-				.findUnique();
 	}
 
 	public Set<PersonalGroup> findAllPersonalGroups() {
@@ -271,13 +247,6 @@ public class CitadelDao extends MyDatabase {
 		SqlUpdate update = getDatabase().createSqlUpdate("INSERT INTO faction (name, founder) VALUES (:groupName, 'Gu3rr1lla')")
 				.setParameter("groupName", groupName);
 		getDatabase().execute(update);		
-	}
-	
-	public void addPlayerToBlackList(String group, String Player){
-		SqlUpdate update = getDatabase().createSqlUpdate("INSERT INTO blacklist (`faction`, player) VALUES (:faction, :Player)")
-				.setParameter("faction", group)
-				.setParameter("Player", Player);
-		getDatabase().execute(update);	
 	}
 
 	public PersonalGroup findPersonalGroup(String ownerName) {
@@ -311,19 +280,112 @@ public class CitadelDao extends MyDatabase {
 				.setParameter("groupName", groupName);
 		getDatabase().execute(update);
 	}
-
-	public void removePlayerFromBlackList(String groupName, String player){
-		SqlUpdate update = getDatabase().createSqlUpdate("delete from blacklist where `faction` = :groupName " +
-				"AND player = :Player")
-				.setParameter("groupName", groupName)
-				.setParameter("Player", player);
-		getDatabase().execute(update);
-	}
 	
-    public Set<FactionDelete> loadFactionDeletions() {
-        return getDatabase()
-            .createQuery(FactionDelete.class, "find faction_delete")
-            .findSet();
+
+	public Set<FactionDelete> loadFactionDeletions() {
+		return getDatabase()
+				.createQuery(FactionDelete.class, "find faction_delete")
+				.findSet();
+	}
+ 
+    
+    /**
+     * @author GFQ
+     * @date 4/25/2014
+     *
+     * @brief Performs batch reinforcement updates for deleted factions
+     * 
+     * When a faction is deleted, there could potentially be millions of reinforcement records
+     * that would need to be updated with a new group name. This is handled by adding it 
+     * to a separate faction_delete table, and setting the delete flag for that faction. 
+     * This batch method is then run on plugin startup.
+     * 
+     * This function gets a set of all factions that are marked as deleted and performs
+     * a series of reinforcement update queries. If the group no longer has any existing
+     * reinforcement records then the group is deleted. If the total batch time exceeds
+     * the given time limit then the loop exits and more work will be done on the next
+     * restart. 
+     */
+    public void batchRemoveDeletedGroups() {
+
+    	final int BATCH_UPDATE_SIZE = Citadel.getConfigManager().getBatchUpdateSize();
+    	final int BATCH_TIMEOUT_MS = Citadel.getConfigManager().getBatchUpdateTimeoutMs();
+    	
+    	// Mark the start time
+    	long startTime = System.currentTimeMillis();    	
+    	
+    	// Get all the groups that are in the faction_delete table and marked as delete in the main faction able
+    	String joinQuery = String.format("select * from faction_delete left join (faction) "
+    			+ "on (faction.name = faction_delete.deleted_faction and faction.discipline_flags & %d = %d)", Faction.kDeletedFlag, Faction.kDeletedFlag);
+    	Set<SqlRow> groups = getDatabase().createSqlQuery(joinQuery).findSet();
+    	
+    	for (SqlRow groupRow : groups) {
+    		String groupName = groupRow.getString("deleted_faction");
+    		String personalGroup = groupRow.getString("personal_group");
+    		int recordsLeft = 1;
+    		
+    		// Do batch deletes in groups of BATCH_UPDATE_SIZE while there are records remaining and we're inside our time limit
+    		while (recordsLeft > 0 && System.currentTimeMillis() - startTime <= BATCH_TIMEOUT_MS) {
+	    		// Get how many records still need to be updated from the deleted group name to the private group name    			
+    	    	SqlRow row = getDatabase().createSqlQuery("select count(*) as count from reinforcement where name = :name")
+    	    			.setParameter("name", groupName)
+    	    			.findUnique();
+    	    	recordsLeft = row.getInteger("count"); 
+	        	
+    	    	getDatabase().beginTransaction();
+	        	
+	        	if (recordsLeft > 0) {
+	        		getDatabase().createSqlUpdate("update reinforcement set name = :newName where name = :oldName limit :limit")
+	        		.setParameter("newName", personalGroup)
+	        		.setParameter("oldName", groupName)
+	        		.setParameter("limit", BATCH_UPDATE_SIZE)
+	        		.execute();
+	        	} else {
+	        		// No more records to update, now we can safely delete the group
+	        		getDatabase().createSqlUpdate("delete from faction_delete where deleted_faction = :name")
+        				.setParameter("name",groupName)
+        				.execute();
+	        		
+	        		getDatabase().createSqlUpdate("delete from faction where name = :name")
+	        			.setParameter("name", groupName)
+	        			.execute();
+	        	}
+	        	
+	        	getDatabase().commitTransaction();
+    		}
+    	}
+    }
+
+    public Map<UUID, String> loadAccountIdMap() {
+        final String sql = "SELECT account, name FROM citadel_account_id_map;";
+        Map<UUID, String> result = new TreeMap<UUID, String>();
+        List<SqlRow> resultSet = getDatabase().createSqlQuery(sql).findList();
+        for (SqlRow row : resultSet) {
+            final String accountIdStr = row.getString("account");
+            final String playerName = row.getString("name");
+            UUID accountId;
+            try {
+                accountId = UUID.fromString(accountIdStr);
+            } catch (Exception ex) {
+                Citadel.info(String.format("Invalid accountId for %s: %s", playerName, accountIdStr));
+                continue;
+            }
+            result.put(accountId, playerName);
+        }
+        return result;
+    }
+
+    public void associatePlayerAccount(UUID accountId, String playerName) {
+        SqlUpdate sql = getDatabase().createSqlUpdate(
+            "DELETE FROM citadel_account_id_map WHERE account = :uuid")
+            .setParameter("uuid", accountId.toString());
+        getDatabase().execute(sql);
+
+        sql = getDatabase().createSqlUpdate(
+            "INSERT INTO citadel_account_id_map (account, name) VALUES (:uuid, :pname)")
+            .setParameter("uuid", accountId.toString())
+            .setParameter("pname", playerName);
+        getDatabase().execute(sql);
     }
 
     public void updateDatabase() {
@@ -468,19 +530,138 @@ public class CitadelDao extends MyDatabase {
 
             dbVersion = advanceDbVersion(dbVersion);
         }
-        
+
         if (dbVersion.getDbVersion() == 3) {
-        	Citadel.info("Updating to DB v4");
-        	
-        	SqlUpdate createTable = getDatabase().createSqlUpdate(
-        			"CREATE TABLE IF NOT EXISTS blacklist " +
-        			"(`id` int(10) NOT NULL AUTO_INCREMENT, `faction` VARCHAR(255) NOT NULL, player VARCHAR(255) NOT NULL, " +
-        			"PRIMARY KEY (`id`))");
-        	getDatabase().execute(createTable);
-        	
-        	dbVersion = advanceDbVersion(dbVersion);
+            Citadel.info("Updating to DB v4");
+
+            SqlUpdate dropTable = getDatabase().createSqlUpdate("DROP TABLE member;");
+            getDatabase().execute(dropTable);
+
+            dbVersion = advanceDbVersion(dbVersion);
         }
-        
+
+        if (dbVersion.getDbVersion() == 4) {
+            Citadel.info("Updating to DB v5");
+            performAccountIdUpdate();
+            dbVersion = advanceDbVersion(dbVersion);
+        }
+    }
+
+    private void performAccountIdUpdate() {
+        SqlUpdate sql;
+
+        Citadel.info("WARNING: This will take a while. Citadel is converting");
+        Citadel.info("account names to account UUIDs.");
+
+        final Map<UUID, String> account_id_map = retrieveKnownAccountIdMap();
+
+        Citadel.info("Importing player name -> account ID mappings");
+        sql = getDatabase().createSqlUpdate(
+            "CREATE TABLE IF NOT EXISTS citadel_account_id_map "
+            + "(account CHAR(36) NOT NULL, name VARCHAR(16) NOT NULL, "
+            + "PRIMARY KEY (account), UNIQUE KEY ix_name (name))");
+        getDatabase().execute(sql);
+        ArrayList<Map.Entry<UUID, String>> batch = new ArrayList<Map.Entry<UUID, String>>(50);
+        for (Map.Entry<UUID, String> account : account_id_map.entrySet()) {
+            batch.add(account);
+            if (batch.size() >= 50) {
+                insertAccountsIntoTmpAccountTbl(batch);
+                batch.clear();
+                batch.ensureCapacity(50);
+            }
+        }
+        if (batch.size() > 0)
+        	insertAccountsIntoTmpAccountTbl(batch);
+
+        Citadel.info("Converting faction table");
+        sql = getDatabase().createSqlUpdate(
+            "UPDATE faction AS f "
+            + "JOIN citadel_account_id_map AS m ON m.name = LOWER(f.founder) "
+            + "SET founder=m.account");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "ALTER TABLE faction MODIFY founder CHAR(36) NOT NULL");
+        getDatabase().execute(sql);
+
+        Citadel.info("Converting moderator table");
+        sql = getDatabase().createSqlUpdate(
+            "DROP INDEX uq_moderator_1 ON moderator");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "UPDATE moderator AS f "
+            + "JOIN citadel_account_id_map AS m ON m.name = LOWER(f.member_name) "
+            + "SET member_name=m.account");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "DELETE FROM moderator WHERE member_name NOT REGEXP "
+            + "'[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}'");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "ALTER TABLE moderator MODIFY member_name CHAR(36) NOT NULL");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "CREATE UNIQUE INDEX uq_moderator_1 ON moderator (`faction_name`,`member_name`);");
+        getDatabase().execute(sql);
+
+        Citadel.info("Converting faction_member table");
+        sql = getDatabase().createSqlUpdate(
+            "DROP INDEX uq_faction_member_1 ON faction_member");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "UPDATE faction_member AS f "
+            + "JOIN citadel_account_id_map AS m ON m.name = LOWER(f.member_name) "
+            + "SET member_name=m.account");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "DELETE FROM faction_member WHERE member_name NOT REGEXP "
+            + "'[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}'");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "ALTER TABLE faction_member MODIFY member_name CHAR(36) NOT NULL");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "CREATE UNIQUE INDEX uq_faction_member_1 ON faction_member (`faction_name`,`member_name`);");
+        getDatabase().execute(sql);
+
+        Citadel.info("Converting personal_group table");
+        sql = getDatabase().createSqlUpdate(
+            "UPDATE personal_group AS f "
+            + "JOIN citadel_account_id_map AS m ON m.name = LOWER(f.owner_name) "
+            + "SET owner_name=m.account");
+        getDatabase().execute(sql);
+        sql = getDatabase().createSqlUpdate(
+            "ALTER TABLE personal_group MODIFY owner_name CHAR(36) NOT NULL");
+        getDatabase().execute(sql);
+    }
+
+    protected void insertAccountsIntoTmpAccountTbl(final List<Map.Entry<UUID, String>> batch) {
+        // As the Mojang ID format is the UUID string without dashes and the
+        //  MySql binary value format is '0x' prepended to a string of hexadecimal
+        //  chars, this will just the Mojang UUID converter.
+        final StringBuilder sb = new StringBuilder();
+        sb.append("INSERT IGNORE INTO citadel_account_id_map (account, name) VALUES ");
+        boolean first = true;
+        for (Map.Entry<UUID, String> account : batch) {
+            if (first) {
+                sb.append(String.format(
+                    "(UPPER('%s'),LOWER('%s'))", account.getKey().toString(), account.getValue()));
+                first = false;
+            } else {
+                sb.append(String.format(
+                    ",(UPPER('%s'),LOWER('%s'))", account.getKey().toString(), account.getValue()));
+            }
+        }
+        sb.append(";");
+        SqlUpdate batchInsert = getDatabase().createSqlUpdate(sb.toString());
+        getDatabase().execute(batchInsert);
+    }
+
+    public Map<UUID, String> retrieveKnownAccountIdMap() {
+        Map<UUID, String> map = new TreeMap<UUID, String>();
+        for (final OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+            map.put(player.getUniqueId(), player.getName());
+        }
+        return map;
     }
 
     protected DbVersion advanceDbVersion(DbVersion currentVersion) {

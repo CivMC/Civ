@@ -23,10 +23,8 @@ import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.command.CommandHandler;
 import com.untamedears.citadel.dao.CitadelCachingDao;
 import com.untamedears.citadel.dao.CitadelDao;
-import com.untamedears.citadel.entity.BlackListing;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionMember;
-import com.untamedears.citadel.entity.Member;
 import com.untamedears.citadel.entity.Moderator;
 import com.untamedears.citadel.entity.PersonalGroup;
 import com.untamedears.citadel.entity.IReinforcement;
@@ -37,7 +35,6 @@ import com.untamedears.citadel.listener.BlockListener;
 import com.untamedears.citadel.listener.ChunkListener;
 import com.untamedears.citadel.listener.EntityListener;
 import com.untamedears.citadel.listener.InventoryListener;
-import com.untamedears.citadel.listener.MineCartListener;
 import com.untamedears.citadel.listener.PlayerListener;
 import com.untamedears.citadel.listener.WorldListener;
 
@@ -52,9 +49,9 @@ public class Citadel extends JavaPlugin {
     private static final ReinforcementManager reinforcementManager = new ReinforcementManager();
     private static final GroupManager groupManager = new GroupManager();
     private static final PersonalGroupManager personalGroupManager = new PersonalGroupManager();
-    private static final MemberManager memberManager = new MemberManager();
     private static final ConfigManager configManager = new ConfigManager();
     private static final Random randomGenerator = new Random();
+    private static final AccountIdManager accountIdManager = new AccountIdManager();
     private static CitadelCachingDao dao;
     private static Citadel plugin;
 
@@ -116,9 +113,6 @@ public class Citadel extends JavaPlugin {
         commandHandler.registerCommands();
         // Events must register after dao is available
         registerEvents();
-        for(Player player : getServer().getOnlinePlayers()){
-            memberManager.addOnlinePlayer(player);
-        }
         try {
             Metrics metrics = new Metrics(this);
             metrics.start();
@@ -142,14 +136,9 @@ public class Citadel extends JavaPlugin {
     }
     
     public void setUpStorage(){
-        GroupStorage groupStorage = new GroupStorage(dao);
-        groupManager.initialize(groupStorage);
-        
-        PersonalGroupStorage personalGroupStorage = new PersonalGroupStorage(dao);
-        personalGroupManager.setStorage(personalGroupStorage);
-        
-        MemberStorage memberStorage = new MemberStorage(dao);
-        memberManager.setStorage(memberStorage);
+        groupManager.initialize(dao);
+        accountIdManager.initialize(dao);
+        personalGroupManager.initialize(dao);
         
         ReinforcementStorage reinforcementStorage = new ReinforcementStorage(dao);
         reinforcementManager.setStorage(reinforcementStorage);
@@ -164,7 +153,7 @@ public class Citadel extends JavaPlugin {
             pm.registerEvents(new EntityListener(), this);
             pm.registerEvents(new InventoryListener(), this);
             pm.registerEvents(new WorldListener(), this);
-            //pm.registerEvents(new MineCartListener(this.dao), this);
+            pm.registerEvents(accountIdManager, this);
         }
         catch(Exception e)
         {
@@ -176,13 +165,11 @@ public class Citadel extends JavaPlugin {
     public List<Class<?>> getDatabaseClasses() {
         ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
         classes.add(Faction.class);
-        classes.add(Member.class);
         classes.add(PlayerReinforcement.class);
         classes.add(ReinforcementKey.class);
         classes.add(FactionMember.class);
         classes.add(PersonalGroup.class);
         classes.add(Moderator.class);
-        classes.add(BlackListing.class);
         return classes;
     }
 
@@ -235,16 +222,16 @@ public class Citadel extends JavaPlugin {
         return personalGroupManager;
     }
     
-    public static MemberManager getMemberManager(){
-        return memberManager;
-    }
-    
     public static ReinforcementManager getReinforcementManager(){
         return reinforcementManager;
     }
     
     public static ConfigManager getConfigManager(){
         return configManager;
+    }
+
+    public static AccountIdManager getAccountIdManager() {
+        return accountIdManager;
     }
     
     public static Citadel getPlugin(){
@@ -280,18 +267,6 @@ public class Citadel extends JavaPlugin {
       severe("");
     }
     
-    public boolean playerCanAccessBlock(Block block, String name) {
-        AccessDelegate accessDelegate = AccessDelegate.getDelegate(block);
-        IReinforcement reinforcement = accessDelegate.getReinforcement();
-        
-    	if (reinforcement == null)
-    		return true;
-        if (reinforcement instanceof NaturalReinforcement)
-            return false;
-        PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
-    	return pr.isAccessible(name);
-    }
-
     public static CitadelDao getDao() {
         return (CitadelDao)dao;
     }
