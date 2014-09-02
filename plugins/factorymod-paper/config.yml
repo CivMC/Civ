@@ -83,6 +83,19 @@ production_general:
   update_cycle: 20
   repair_period: 28
   disrepair_period: 14
+nether_general:
+  disable_portals: true
+  nether_scale: 8
+  world_name: world
+  nether_name: world_nether
+  teleport_platform_material_nether_factory: OBSIDIAN
+  marker_material_nether_factory: COAL_BLOCK
+  marker_max_distance: 64
+  allow_reinforcement_creation_above_teleport_platform: false
+  allow_block_placement_above_teleport_platform: true
+  teleport_platform_invunerable: false
+  regenerate_teleport_block_on_teleport: false
+  remove_blocks_above_teleport_platform_on_teleport: true
 printing_presses:
   fuel:
     Charcoal:
