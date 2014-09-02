@@ -2,11 +2,13 @@ package com.github.igotyou.FactoryMod;
 
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
 import org.bukkit.inventory.Inventory;
 
 import com.github.igotyou.FactoryMod.interfaces.Properties;
+
 import java.util.Date;
 
 //original file:
@@ -30,7 +32,8 @@ public class FactoryObject
 	public enum FactoryType
 	{
 		PRODUCTION,
-		PRINTING_PRESS
+		PRINTING_PRESS,
+		NETHER_FACTORY
 	}
 	
 	
@@ -58,7 +61,7 @@ public class FactoryObject
 		this.factoryType = factoryType;
 		this.subFactoryType = subFactoryType;
 		this.upgraded = false;
-		if (this.isWhole())
+		if (this.isWhole(true))
 		{
 			initializeInventory();
 		}
@@ -78,7 +81,7 @@ public class FactoryObject
 		this.factoryType = factoryType;
 		this.subFactoryType = subFactoryType;
 		this.upgraded = false;
-		if (this.isWhole())
+		if (this.isWhole(true))
 		{
 			initializeInventory();
 		}
@@ -161,6 +164,10 @@ public class FactoryObject
 	 */
 	public Inventory getPowerSourceInventory()
 	{
+		if (!(factoryPowerSourceLocation.getBlock().getType() == Material.FURNACE || factoryPowerSourceLocation.getBlock().getType() == Material.BURNING_FURNACE))
+		{
+			return null;
+		}
 		Furnace furnaceBlock = (Furnace)factoryPowerSourceLocation.getBlock().getState();
 		factoryPowerInventory = furnaceBlock.getInventory();
 		return factoryPowerInventory;
@@ -186,7 +193,7 @@ public class FactoryObject
 	/**
 	 * returns true if all factory blocks are occupied with the correct blocks
 	 */
-	public boolean isWhole()
+	public boolean isWhole(boolean initCall)
 	{
 	//Check if power source exists
 	if(factoryPowerSourceLocation.getBlock().getType().getId()== 61 || factoryPowerSourceLocation.getBlock().getType().getId()== 62)
