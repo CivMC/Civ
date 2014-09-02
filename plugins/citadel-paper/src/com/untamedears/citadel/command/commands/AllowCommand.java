@@ -69,13 +69,17 @@ public class AllowCommand extends PlayerCommand {
         	sendMessage(sender, ChatColor.RED, "%s is already a member of %s", targetName, group.getName());
         	return true;
         }
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player)sender;
+        }
         MemberManager memberManager = Citadel.getMemberManager();
         Member member = memberManager.getMember(targetName);
         if(member == null){
         	member = new Member(targetName);
         	memberManager.addMember(member);
         }
-        groupManager.addMemberToGroup(groupName, targetName);
+        groupManager.addMemberToGroup(groupName, targetName, player);
         sendMessage(sender, ChatColor.GREEN, "Allowed %s access to %s blocks", targetName, groupName);
         if(memberManager.isOnline(targetName)){
         	sendMessage(memberManager.getOnlinePlayer(targetName), ChatColor.GREEN, 

@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Map;
 import java.util.Random;
+import java.util.logging.Logger;
 
+import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -20,6 +23,7 @@ import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.command.CommandHandler;
 import com.untamedears.citadel.dao.CitadelCachingDao;
 import com.untamedears.citadel.dao.CitadelDao;
+import com.untamedears.citadel.entity.BlackListing;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionMember;
 import com.untamedears.citadel.entity.Member;
@@ -32,7 +36,10 @@ import com.untamedears.citadel.entity.ReinforcementKey;
 import com.untamedears.citadel.listener.BlockListener;
 import com.untamedears.citadel.listener.ChunkListener;
 import com.untamedears.citadel.listener.EntityListener;
+import com.untamedears.citadel.listener.InventoryListener;
+import com.untamedears.citadel.listener.MineCartListener;
 import com.untamedears.citadel.listener.PlayerListener;
+import com.untamedears.citadel.listener.WorldListener;
 
 /**
  * User: JonnyD
@@ -50,13 +57,58 @@ public class Citadel extends JavaPlugin {
     private static final Random randomGenerator = new Random();
     private static CitadelCachingDao dao;
     private static Citadel plugin;
-    
+
+    public enum VerboseMsg {
+        InteractionAttempt,
+        ReinDelegation,
+        AdminReinBypass,
+        ReinBypass,
+        RedstoneOpen,
+        GolemCreated,
+        NullGroup,
+        AdminReinLocked,
+        ReinLocked,
+        CropTrample,
+        ReinOvergrowth,
+        ReinCreated,
+        ReinDmg,
+        ReinDestroyed,
+        Enabled,
+        Disabled
+    };
+    public static final Map<VerboseMsg, String> VERBOSE_MESSAGES = new HashMap<VerboseMsg, String>();
+    public static final Map<String, VerboseMsg> INSENSITIVE_VERBOSE_MESSAGES = new HashMap<String, VerboseMsg>();
+
+    static {
+        VERBOSE_MESSAGES.put(VerboseMsg.InteractionAttempt, "Attempted interaction with block at %s");
+        VERBOSE_MESSAGES.put(VerboseMsg.ReinDelegation, "Delegated to block at %s");
+        VERBOSE_MESSAGES.put(VerboseMsg.AdminReinBypass, "[Admin] %s bypassed reinforcement at %s");
+        VERBOSE_MESSAGES.put(VerboseMsg.ReinBypass, "%s bypassed reinforcement at %s");
+        VERBOSE_MESSAGES.put(VerboseMsg.RedstoneOpen, "Prevented redstone from opening reinforcement at %s");
+        VERBOSE_MESSAGES.put(VerboseMsg.GolemCreated, "Reinforcement removed due to golem creation at %s");
+        VERBOSE_MESSAGES.put(VerboseMsg.NullGroup, "Null group %s(%s)");
+        VERBOSE_MESSAGES.put(VerboseMsg.AdminReinLocked, "[Admin] %s accessed locked reinforcement at %s");
+        VERBOSE_MESSAGES.put(VerboseMsg.ReinLocked, "%s failed to access locked reinforcement at %s");
+        VERBOSE_MESSAGES.put(VerboseMsg.CropTrample, "Prevented reinforced crop trample at %s");
+        VERBOSE_MESSAGES.put(VerboseMsg.ReinOvergrowth, "Prevented growth over reinforcement at %s");
+        VERBOSE_MESSAGES.put(VerboseMsg.ReinCreated, "PlRein:%s:%d@%s,%d,%d,%d");
+        VERBOSE_MESSAGES.put(VerboseMsg.ReinDmg, "Reinforcement damaged at %s");
+        VERBOSE_MESSAGES.put(VerboseMsg.ReinDestroyed, "Reinforcement destroyed at %s");
+        VERBOSE_MESSAGES.put(VerboseMsg.Enabled, "Citadel is now enabled.");
+        VERBOSE_MESSAGES.put(VerboseMsg.Disabled, "Citadel is now disabled.");
+
+        for (VerboseMsg msg : VerboseMsg.values()) {
+            INSENSITIVE_VERBOSE_MESSAGES.put(msg.name().toLowerCase(), msg);
+        }
+    }
+
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
         return commandHandler.dispatch(sender, label, args);
     }
 
     public void onEnable() {
         plugin = this;
+        saveDefaultConfig();
         configManager.load();
         dao = new CitadelCachingDao(this);
         dao.updateDatabase();
@@ -77,21 +129,21 @@ public class Citadel extends JavaPlugin {
         ConsoleCommandSender console = getServer().getConsoleSender();
         console.addAttachment(this, "citadel.admin", true);
         console.addAttachment(this, "citadel.console", true);
-        log.info("[Citadel] Citadel is now enabled.");
+        Citadel.verbose(VerboseMsg.Enabled);
     }
 
     public void onDisable() {
         //There should be some interface that CitadelCachingDao can implement that does this automatically on disable:
         //I don't want to do this as close() or finalize() because I want to make sure the database connection is still alive.
-        if( dao instanceof CitadelCachingDao ){
-            ((CitadelCachingDao)dao).shutDown();
+        if(dao instanceof CitadelCachingDao) {
+            dao.shutDown();
         }
-        log.info("[Citadel] Citadel is now disabled.");
+        Citadel.verbose(VerboseMsg.Disabled);
     }
     
     public void setUpStorage(){
         GroupStorage groupStorage = new GroupStorage(dao);
-        groupManager.setStorage(groupStorage);
+        groupManager.initialize(groupStorage);
         
         PersonalGroupStorage personalGroupStorage = new PersonalGroupStorage(dao);
         personalGroupManager.setStorage(personalGroupStorage);
@@ -110,6 +162,9 @@ public class Citadel extends JavaPlugin {
             pm.registerEvents(new ChunkListener(this.dao), this);
             pm.registerEvents(new PlayerListener(), this);
             pm.registerEvents(new EntityListener(), this);
+            pm.registerEvents(new InventoryListener(), this);
+            pm.registerEvents(new WorldListener(), this);
+            //pm.registerEvents(new MineCartListener(this.dao), this);
         }
         catch(Exception e)
         {
@@ -127,15 +182,43 @@ public class Citadel extends JavaPlugin {
         classes.add(FactionMember.class);
         classes.add(PersonalGroup.class);
         classes.add(Moderator.class);
+        classes.add(BlackListing.class);
         return classes;
     }
-    
-    public static void info(String message){
-        if(configManager.getVerboseLogging()){
-            log.info("[Citadel] " + message);
+
+    public static boolean verboseEnabled(VerboseMsg id) {
+        return configManager.getVerboseLogging()
+            && configManager.isVerboseSettingEnabled(id);
+    }
+
+    public static String verboseFmt(VerboseMsg id, Object... args) {
+        String fmt = VERBOSE_MESSAGES.get(id);
+        if (fmt == null) {
+            return "Invalid verbose setting: " + id;
+        }
+        return String.format(fmt, args);
+    }
+
+    public static void verbose(VerboseMsg id) {
+        if (Citadel.verboseEnabled(id)) {
+            String msg = VERBOSE_MESSAGES.get(id);
+            if (msg == null) {
+                Citadel.info("Invalid verbose setting: " + id);
+            }
+            Citadel.info(msg);
         }
     }
-    
+
+    public static void verbose(VerboseMsg id, Object... args) {
+        if (Citadel.verboseEnabled(id)) {
+            Citadel.info(Citadel.verboseFmt(id, args));
+        }
+    }
+
+    public static void info(String message){
+        log.info("[Citadel] " + message);
+    }
+
     public static void severe(String message){
         log.severe("[Citadel] " + message);
     }
@@ -211,5 +294,9 @@ public class Citadel extends JavaPlugin {
 
     public static CitadelDao getDao() {
         return (CitadelDao)dao;
+    }
+
+    public static Server getStaticServer() {
+        return plugin.getServer();
     }
 }

@@ -1,6 +1,6 @@
 name: Citadel
 main: com.untamedears.citadel.Citadel
-version: 2.2.0
+version: 2.5.22
 description: Reinforce your structures!
 author: chrisrico, jonnyd (aka Gu3rr1lla)
 database: false
@@ -29,6 +29,10 @@ commands:
     aliases: cti
     description: While in this mode, punching a block gives you information about it's reinforcement and security level.
     usage: /ctinfo (or /cti)
+  ctinsecure:
+    aliases: ctis
+    description: While in this mode, punching a reinforcement toggles its insecure status.
+    usage: /ctinsecure (or /ctis)
   ctoff:
     aliases: cto
     description: Turns off reinforcement, fortification, and info mode.
@@ -112,15 +116,14 @@ commands:
     aliases: ctgi
     description: Displays information about a group.
     usage: /ctgroupinfo (or /ctgi) <group-name>
+  ctgstats:
+    aliases: ctgst
+    description: Displays group statistics
+    usage: /ctgstats <group-name>
   ctcon:
     description: Restricted console commands
     usage: /ctcon
     permission: citadel.console
-  ctgstats:
-    aliases: ctgst
-    description: Displayers group statistics
-    usage: /ctgstats <group-name>
-    permission: citadel.admin.ctgstats
   ctpstats:
     aliases: ctpst
     description: Displayers player statistics
@@ -136,6 +139,16 @@ commands:
     description: Reprieves a group
     usage: /ctreprieve <group-name>
     permission: citadel.admin.ctreprieve
+  ctacid:
+    description: Trigger acid block to eat a reinforcement
+    usage: /ctacid
+    permission: citadel.ctacid
+  ctmature:
+    description: Instantly mature a reinforcement
+    usage: /ctmature
+  ctblacklist:
+    description: Black lists a player from a citadel group
+    usage: /ctblacklist <group> <player>
 permissions:
   citadel.console:
     description: Console commands for Citadel
@@ -153,3 +166,6 @@ permissions:
       citadel.admin.cttransfer: true
       citadel.admin.reassignreinforcements: true
       citadel.admin.bypassmode: true
+  citadel.ctacid:
+    description: Allow /ctacid
+    default: true

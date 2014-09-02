@@ -8,8 +8,10 @@ import java.util.Map;
 import org.bukkit.command.CommandSender;
 
 import com.untamedears.citadel.Citadel;
+import com.untamedears.citadel.command.commands.AcidCommand;
 import com.untamedears.citadel.command.commands.AddModCommand;
 import com.untamedears.citadel.command.commands.AllowCommand;
+import com.untamedears.citadel.command.commands.BlackListCommand;
 import com.untamedears.citadel.command.commands.BypassCommand;
 import com.untamedears.citadel.command.commands.ConsoleCommands;
 import com.untamedears.citadel.command.commands.CreateCommand;
@@ -22,9 +24,11 @@ import com.untamedears.citadel.command.commands.GroupInfoCommand;
 import com.untamedears.citadel.command.commands.GroupStatsCommand;
 import com.untamedears.citadel.command.commands.GroupsCommand;
 import com.untamedears.citadel.command.commands.InfoCommand;
+import com.untamedears.citadel.command.commands.InsecureCommand;
 import com.untamedears.citadel.command.commands.JoinCommand;
 import com.untamedears.citadel.command.commands.LeaveCommand;
 import com.untamedears.citadel.command.commands.MaterialsCommand;
+import com.untamedears.citadel.command.commands.MatureCommand;
 import com.untamedears.citadel.command.commands.MembersCommand;
 import com.untamedears.citadel.command.commands.ModeratorsCommand;
 import com.untamedears.citadel.command.commands.NonReinforceableCommand;
@@ -52,6 +56,7 @@ public class CommandHandler {
 	private Map<String, Command> identifiers = new HashMap<String, Command>();
 
     public void registerCommands() {
+        this.addCommand(new AcidCommand());
         this.addCommand(new AddModCommand());
         this.addCommand(new AllowCommand());
         this.addCommand(new BypassCommand());
@@ -65,9 +70,11 @@ public class CommandHandler {
         this.addCommand(new GroupInfoCommand());
         this.addCommand(new GroupsCommand());
         this.addCommand(new InfoCommand());
+        this.addCommand(new InsecureCommand());
         this.addCommand(new JoinCommand());
         this.addCommand(new LeaveCommand());
         this.addCommand(new MaterialsCommand());
+        this.addCommand(new MatureCommand());
         this.addCommand(new MembersCommand());
         this.addCommand(new ModeratorsCommand());
         this.addCommand(new NonReinforceableCommand());
@@ -84,6 +91,7 @@ public class CommandHandler {
         this.addCommand(new PlayerStatsCommand());
         this.addCommand(new TransferCommand());
         this.addCommand(new VersionCommand());
+        this.addCommand(new BlackListCommand());
     }
 
 	public void addCommand(Command command){
@@ -104,7 +112,7 @@ public class CommandHandler {
 			if(cmd == null){
 				continue;
 			}
-			String[] realArgs = (String[])Arrays.copyOfRange(args, argsIncluded, args.length);
+			String[] realArgs = Arrays.copyOfRange(args, argsIncluded, args.length);
 
 			if(!cmd.isInProgress(sender)){
 				if((realArgs.length < cmd.getMinArguments()) || (realArgs.length > cmd.getMaxArguments())){
@@ -136,7 +144,7 @@ public class CommandHandler {
 	private Command getCmdFromIdent(String ident, CommandSender executor) {
 		ident = ident.toLowerCase();
 		if(this.identifiers.containsKey(ident)){
-			return (Command)this.identifiers.get(ident);
+			return this.identifiers.get(ident);
 		}
 		
 		for(Command cmd : this.commands.values()){
