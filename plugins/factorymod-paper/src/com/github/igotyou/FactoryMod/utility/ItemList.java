@@ -1,338 +1,305 @@
-package com.github.igotyou.FactoryMod.managers;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.inventory.Inventory;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.github.igotyou.FactoryMod.utility;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
-import com.github.igotyou.FactoryMod.interfaces.Factory;
-import com.github.igotyou.FactoryMod.interfaces.Manager;
-import com.github.igotyou.FactoryMod.interfaces.Recipe;
-import com.github.igotyou.FactoryMod.properties.ProductionProperties;
-import com.github.igotyou.FactoryMod.utility.InteractionResponse;
-import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
+import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
-import com.github.igotyou.FactoryMod.utility.ItemList;
-import com.github.igotyou.FactoryMod.utility.NamedItemStack;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Random;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
-//original file:
 /**
-* Manager.java
-* Purpose: Interface for Manager objects for basic manager functionality
-*
-* @author MrTwiggy
-* @version 0.1 1/08/13
-*/
-//edited version:
-/**
-* Manager.java	 
-* Purpose: Interface for Manager objects for basic manager functionality
-* @author igotyou
-*
-*/
-
-public class ProductionManager implements Manager
-{
-	private FactoryModPlugin plugin;
-	private List<ProductionFactory> producers;
-	private long repairTime;
-	
-	public ProductionManager(FactoryModPlugin plugin)
+ *
+ * @author Brian Landry
+ */
+public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
+	public boolean exactlyIn(Inventory inventory)
 	{
-		this.plugin = plugin;
-		producers = new ArrayList<ProductionFactory>();
-		//Set maintenance clock to 0
-		updateFactorys();
-	}
-	
-	public void save(File file) throws IOException 
-	{
-		//Takes difference between last repair update and current one and scales repair accordingly
-		updateRepair(System.currentTimeMillis()-repairTime);
-		repairTime=System.currentTimeMillis();
-		FileOutputStream fileOutputStream = new FileOutputStream(file);
-		BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
-		for (ProductionFactory production : producers)
+		boolean returnValue=true;
+		//Checks that the ItemList ItemStacks are contained in the inventory
+		for(ItemStack itemStack:this)
 		{
-			//order: subFactoryType world recipe1,recipe2 central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
-			
-			Location centerlocation = production.getCenterLocation();
-			Location inventoryLoctation = production.getInventoryLocation();
-			Location powerLocation = production.getPowerSourceLocation();
-			
-			
-			
-			bufferedWriter.append(production.getSubFactoryType());
-			bufferedWriter.append(" ");
-			
-			List<ProductionRecipe> recipes=production.getRecipes();
-			for (int i = 0; i < recipes.size(); i++)
-			{
-				bufferedWriter.append(String.valueOf(recipes.get(i).getTitle()));
-				bufferedWriter.append(",");
-			}
-			bufferedWriter.append(" ");
-			
-			bufferedWriter.append(centerlocation.getWorld().getName());
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(centerlocation.getBlockX()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(centerlocation.getBlockY()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(centerlocation.getBlockZ()));
-			bufferedWriter.append(" ");
-			
-			bufferedWriter.append(Integer.toString(inventoryLoctation.getBlockX()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(inventoryLoctation.getBlockY()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(inventoryLoctation.getBlockZ()));
-			bufferedWriter.append(" ");
-			
-			bufferedWriter.append(Integer.toString(powerLocation.getBlockX()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(powerLocation.getBlockY()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(powerLocation.getBlockZ()));
-			bufferedWriter.append(" ");
-			
-			bufferedWriter.append(Boolean.toString(production.getActive()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(production.getProductionTimer()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(production.getEnergyTimer()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(production.getCurrentRecipeNumber()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Double.toString(production.getCurrentRepair()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(String.valueOf(production.getTimeDisrepair()));
-			bufferedWriter.append("\n");
+			returnValue=returnValue&&(amountAvailable(inventory,itemStack)==itemStack.getAmount());
 		}
-		bufferedWriter.flush();
-		fileOutputStream.close();
-	}
-
-	public void load(File file) throws IOException 
-	{
-		repairTime=System.currentTimeMillis();
-		FileInputStream fileInputStream = new FileInputStream(file);
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
-		String line;
-		while ((line = bufferedReader.readLine()) != null)
+		//Checks that inventory has not ItemStacks in addition to the ones in the itemList
+		for(ItemStack invItemStack:inventory.getContents())
 		{
-			String parts[] = line.split(" ");
-
-			//order: subFactoryType world recipe1,recipe2 central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
-			String subFactoryType = parts[0];
-			String recipeNames[] = parts[1].split(",");
-
-			Location centerLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
-			Location inventoryLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[6]), Integer.parseInt(parts[7]), Integer.parseInt(parts[8]));
-			Location powerLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[9]), Integer.parseInt(parts[10]), Integer.parseInt(parts[11]));
-			boolean active = Boolean.parseBoolean(parts[12]);
-			int productionTimer = Integer.parseInt(parts[13]);
-			int energyTimer = Integer.parseInt(parts[14]);
-			int currentRecipeNumber = Integer.parseInt(parts[15]);
-			double currentRepair = Double.parseDouble(parts[16]);
-			long timeDisrepair  =  Long.parseLong(parts[17]);
-			if(FactoryModPlugin.productionProperties.containsKey(subFactoryType))
+			if(invItemStack!=null)
 			{
-				Set<ProductionRecipe> recipes=new HashSet<ProductionRecipe>();
-				
-				// TODO: Give default recipes for subfactory type
-				ProductionProperties properties = FactoryModPlugin.productionProperties.get(subFactoryType);
-				recipes.addAll(properties.getRecipes());
-				
-				for(String name:recipeNames)
+				boolean itemPresent=false;
+				for(ItemStack itemStack:this)
 				{
-					if(FactoryModPlugin.productionRecipes.containsKey(name))
+					if(itemStack.isSimilar(invItemStack))
 					{
-						recipes.add(FactoryModPlugin.productionRecipes.get(name));
+						itemPresent=true;
 					}
 				}
-
-				ProductionFactory production = new ProductionFactory(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, new ArrayList<ProductionRecipe>(recipes), currentRecipeNumber, currentRepair,timeDisrepair);
-				addFactory(production);
+				returnValue=returnValue&&itemPresent;
 			}
 		}
-		fileInputStream.close();
+		return returnValue;
 	}
-
-	public void updateFactorys() 
+	public boolean oneIn(Inventory inventory)
 	{
-		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
+		if(this.isEmpty())
 		{
-			@Override
-			public void run()
-			{
-				for (ProductionFactory production: producers)
-				{
-					production.update();
-				}
-			}
-		}, 0L, FactoryModPlugin.PRODUCER_UPDATE_CYCLE);
-	}
-
-	public InteractionResponse createFactory(Location factoryLocation, Location inventoryLocation, Location powerSourceLocation) 
-	{
-		if (!factoryExistsAt(factoryLocation))
-		{
-			HashMap<String, ProductionProperties> properties = plugin.productionProperties;
-			Block inventoryBlock = inventoryLocation.getBlock();
-			Chest chest = (Chest) inventoryBlock.getState();
-			Inventory chestInventory = chest.getInventory();
-			String subFactoryType = null;
-			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
-			{
-				ItemList<NamedItemStack> inputs = entry.getValue().getInputs();
-				if(inputs.exactlyIn(chestInventory))
-				{
-					subFactoryType = entry.getKey();
-				}
-			}
-			if (subFactoryType != null)
-			{
-				ProductionFactory production = new ProductionFactory(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
-				if (properties.get(subFactoryType).getInputs().allIn(production.getInventory()))
-				{
-					addFactory(production);
-					properties.get(subFactoryType).getInputs().removeFrom(production.getInventory());
-					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + production.getProductionFactoryProperties().getName());
-				}
-			}
-			return new InteractionResponse(InteractionResult.FAILURE, "Incorrect materials in chest! Stacks must match perfectly.");
-		}
-		return new InteractionResponse(InteractionResult.FAILURE, "There is already a factory there!");
-	}
-	
-	public InteractionResponse createFactory(Location factoryLocation, Location inventoryLocation, Location powerSourceLocation, int productionTimer, int energyTimer) 
-	{
-		if (!factoryExistsAt(factoryLocation))
-		{
-			HashMap<String, ProductionProperties> properties = plugin.productionProperties;
-			Block inventoryBlock = inventoryLocation.getBlock();
-			Chest chest = (Chest) inventoryBlock.getState();
-			Inventory chestInventory = chest.getInventory();
-			String subFactoryType = null;
-			boolean hasMaterials = true;
-			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
-			{
-				ItemList<NamedItemStack> inputs = entry.getValue().getInputs();
-				if(!inputs.allIn(chestInventory))
-				{
-					hasMaterials = false;
-				}
-				if (hasMaterials == true)
-				{
-					subFactoryType = entry.getKey();
-				}
-			}
-			if (hasMaterials && subFactoryType != null)
-			{
-				ProductionFactory production = new ProductionFactory(factoryLocation, inventoryLocation, powerSourceLocation,subFactoryType);
-				if (properties.get(subFactoryType).getInputs().removeFrom(production.getInventory()))
-				{
-					addFactory(production);
-					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + subFactoryType + " production factory");
-				}
-			}
-			return new InteractionResponse(InteractionResult.FAILURE, "Not enough materials in chest!");
-		}
-		return new InteractionResponse(InteractionResult.FAILURE, "There is already a factory there!");
-	}
-
-	public InteractionResponse addFactory(Factory factory) 
-	{
-		ProductionFactory production = (ProductionFactory) factory;
-		if (production.getCenterLocation().getBlock().getType().equals(Material.WORKBENCH) && (!factoryExistsAt(production.getCenterLocation()))
-				|| !factoryExistsAt(production.getInventoryLocation()) || !factoryExistsAt(production.getPowerSourceLocation()))
-		{
-			producers.add(production);
-			return new InteractionResponse(InteractionResult.SUCCESS, "");
+			return true;
 		}
 		else
 		{
-			return new InteractionResponse(InteractionResult.FAILURE, "");
-		}
-	}
-
-	public ProductionFactory getFactory(Location factoryLocation) 
-	{
-		for (ProductionFactory production : producers)
-		{
-			if (production.getCenterLocation().equals(factoryLocation) || production.getInventoryLocation().equals(factoryLocation)
-					|| production.getPowerSourceLocation().equals(factoryLocation))
-				return production;
-		}
-		return null;
-	}
-	
-	public boolean factoryExistsAt(Location factoryLocation) 
-	{
-		boolean returnValue = false;
-		if (getFactory(factoryLocation) != null)
-		{
-			returnValue = true;
-		}
-		return returnValue;
-	}
-	
-	public boolean factoryWholeAt(Location factoryLocation) 
-	{
-		boolean returnValue = false;
-		if (getFactory(factoryLocation) != null)
-		{
-			returnValue = getFactory(factoryLocation).isWhole(false);
-		}
-		return returnValue;
-	}
-
-	public void removeFactory(Factory factory) 
-	{
-		producers.remove((ProductionFactory)factory);
-	}
-	
-	public void updateRepair(long time)
-	{
-		for (ProductionFactory production: producers)
-		{
-			production.updateRepair(time/((double)FactoryModPlugin.REPAIR_PERIOD));
-		}
-		long currentTime=System.currentTimeMillis();
-		Iterator<ProductionFactory> itr=producers.iterator();
-		while(itr.hasNext())
-		{
-			ProductionFactory producer=itr.next();
-			if(currentTime>(producer.getTimeDisrepair()+FactoryModPlugin.DISREPAIR_PERIOD))
+			for(ItemStack itemStack:this)
 			{
-				itr.remove();
+				if (amountAvailable(inventory, itemStack)>=itemStack.getAmount())
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+	public boolean allIn(Inventory inventory)
+	{
+		for(ItemStack itemStack:this)
+		{
+			if (amountAvailable(inventory, itemStack)<itemStack.getAmount())
+			{
+				return false;
 			}
 		}
-	}
-	
-	public String getSavesFileName() 
-	{
-		return FactoryModPlugin.PRODUCTION_SAVES_FILE;
+		return true;
 	}
 
+	public boolean removeFrom(Inventory inventory)
+	{
+		boolean returnValue=true;
+		if(allIn(inventory))
+		{
+			for(ItemStack itemStack:this)
+			{
+				returnValue=returnValue&&removeItemStack(inventory,itemStack);
+			}
+		}
+		else
+		{
+			returnValue=false;
+		}
+		return returnValue;
+	}
+	public int removeMaxFrom(Inventory inventory,int maxAmount)
+	{
+		int amountRemoved=0;
+		while(size()!=0&&allIn(inventory)&&amountRemoved<=maxAmount)
+		{
+			if(removeFrom(inventory))
+			{
+				amountRemoved++;
+			}
+		}
+		return amountRemoved;
+	}
+	public ItemList<NamedItemStack> removeOneFrom(Inventory inventory)
+	{
+		ItemList<NamedItemStack> itemList=new ItemList<NamedItemStack>();
+		for(NamedItemStack itemStack:this)
+		{
+			if(removeItemStack(inventory,itemStack))
+			{
+				itemList.add(itemStack.clone());
+				break;
+			}
+		}
+		return itemList;
+	}
+	public ItemList<NamedItemStack> getDifference(Inventory inventory)
+	{
+		ItemList<NamedItemStack> missingItems=new ItemList<NamedItemStack>();
+		for(NamedItemStack itemStack:this)
+		{
+			int difference=itemStack.getAmount()-amountAvailable(inventory, itemStack);
+			if (difference>0)
+			{
+				NamedItemStack clonedItemStack=itemStack.clone();
+				clonedItemStack.setAmount(difference);
+				missingItems.add(clonedItemStack);
+			}
+		}
+		return missingItems;
+	}
+	public int amountAvailable(Inventory inventory)
+	{
+		int amountAvailable=0;
+		for(ItemStack itemStack:this)
+		{
+			int currentAmountAvailable=amountAvailable(inventory,itemStack);
+			amountAvailable=amountAvailable>currentAmountAvailable ? amountAvailable : currentAmountAvailable;
+		}
+		return amountAvailable;
+	}
+	public void putIn(Inventory inventory)
+	{
+		putIn(inventory,new ArrayList<ProbabilisticEnchantment>());
+	}
+	public void putIn(Inventory inventory,List<ProbabilisticEnchantment> probabilisticEnchaments)
+	{
+		for(ItemStack itemStack:this)
+		{
+			int maxStackSize=itemStack.getMaxStackSize();
+			int amount=itemStack.getAmount();
+			while(amount>maxStackSize)
+			{
+				ItemStack itemClone=itemStack.clone();
+				Map<Enchantment,Integer> enchantments=getEnchantments(probabilisticEnchaments);
+				for(Enchantment enchantment:enchantments.keySet())
+				{
+					if(enchantment.canEnchantItem(itemStack))
+					{
+						itemClone.addUnsafeEnchantment(enchantment,enchantments.get(enchantment));
+					}
+				}
+				itemClone.setAmount(maxStackSize);
+				inventory.addItem(itemClone);
+				amount-=maxStackSize;
+			}
+			ItemStack itemClone=itemStack.clone();
+			Map<Enchantment,Integer> enchantments=getEnchantments(probabilisticEnchaments);
+			for(Enchantment enchantment:enchantments.keySet())
+			{
+				if(enchantment.canEnchantItem(itemStack))
+				{
+					itemClone.addUnsafeEnchantment(enchantment,enchantments.get(enchantment));
+				}
+			}
+			itemClone.setAmount(amount);
+			inventory.addItem(itemClone);
+		}
+	}
+	
+	public HashMap<Enchantment, Integer> getEnchantments(List<ProbabilisticEnchantment> probabilisticEnchaments)
+	{
+		HashMap<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
+		Random rand = new Random();
+		for(int i=0;i<probabilisticEnchaments.size();i++)
+		{
+			if(probabilisticEnchaments.get(i).getProbability()>=rand.nextDouble())
+			{
+				enchantments.put(probabilisticEnchaments.get(i).getEnchantment(),probabilisticEnchaments.get(i).getLevel());
+			}
+		}
+		return enchantments;
+	}
+	
+	public String toString()
+	{
+		String returnString="";
+		for(int i=0;i<size();i++)
+		{
+			String name=get(i).getItemMeta().hasDisplayName() ? get(i).getItemMeta().getDisplayName() : get(i).getCommonName();
+			returnString+=String.valueOf(get(i).getAmount())+" "+name;
+			if(i<size()-1)
+			{
+				returnString+=", ";
+			}
+		}
+		return returnString;
+	}
+	//Returns the number of multiples of an ItemStack that are availible
+	private int amountAvailable(Inventory inventory, ItemStack itemStack)
+	{
+		int totalMaterial = 0;
+		for(ItemStack currentItemStack:inventory)
+		{
+			if(currentItemStack!=null)
+			{	
+				/*For some reason I can't fathom the orientaion of the comparison
+				 * of the two ItemStacks in the following statement matters.
+				 * It likely has to do with the fact that itemStack is a NamedItemStack
+				 * but I don't see why this should change its behavior...
+				*/
+				if (itemStack.isSimilar(currentItemStack) ||
+					(itemStack.getType() == Material.NETHER_WARTS && currentItemStack.getType() == Material.NETHER_WARTS))
+				{		
+					totalMaterial += currentItemStack.getAmount();
+				}
+			}
+		}
+		return totalMaterial;
+	}
+	//Removes an itemstacks worth of material from an inventory
+	private boolean removeItemStack(Inventory inventory,ItemStack itemStack)
+	{		
+		int materialsToRemove = itemStack.getAmount();
+		ListIterator<ItemStack> iterator = inventory.iterator();
+		while(iterator.hasNext())
+		{
+			ItemStack currentItemStack = iterator.next();
+			if (itemStack.isSimilar(currentItemStack))
+			{
+				if (materialsToRemove <= 0)
+				{
+					break;
+				}
+				if(currentItemStack.getAmount() == materialsToRemove)
+				{
+					iterator.set(new ItemStack(Material.AIR, 0));
+					materialsToRemove = 0;
+				}
+				else if(currentItemStack.getAmount() > materialsToRemove)
+				{
+					ItemStack temp = currentItemStack.clone();
+					temp.setAmount(currentItemStack.getAmount() - materialsToRemove);
+					iterator.set(temp);
+					materialsToRemove = 0;
+				}
+				else
+				{
+					int inStack = currentItemStack.getAmount();
+					iterator.set(new ItemStack(Material.AIR, 0));
+					materialsToRemove -= inStack;
+				}
+			}
+		}				
+		return materialsToRemove == 0;
+	}
+	public ItemList<NamedItemStack> getMultiple(int multiplier)
+	{
+		ItemList<NamedItemStack> multipliedItemList=new ItemList<NamedItemStack>();
+		for (NamedItemStack itemStack:this)
+		{
+			NamedItemStack itemStackClone=itemStack.clone();
+			itemStackClone.setAmount(itemStack.getAmount()*multiplier);
+			multipliedItemList.add(itemStackClone);
+		}
+		return multipliedItemList;
+	}
+	public ItemList<NamedItemStack> getMultiple(double multiplier) 
+	{
+		ItemList<NamedItemStack> multipliedItemList=new ItemList<NamedItemStack>();
+		for (NamedItemStack itemStack:this)
+		{
+			NamedItemStack itemStackClone=itemStack.clone();
+			long newAmount = (long) Math.round(itemStackClone.getAmount()*multiplier);
+			if (newAmount > 64)
+			{
+				for (;newAmount > 64; newAmount = newAmount-64)
+				{
+					NamedItemStack newItemStack = itemStack.clone();
+					newItemStack.setAmount(64);
+					multipliedItemList.add(newItemStack);
+				}
+			}
+			itemStackClone.setAmount((int) newAmount);
+			multipliedItemList.add(itemStackClone);
+		}
+		return multipliedItemList;
+	}
 }
