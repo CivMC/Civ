@@ -2589,7 +2589,7 @@ production_factories:
         amount: 1
         display_name: Smaragdus
         lore: An item used to create a Bastion Block
-  nether_factory:
+nether_factory:
   name: Nether Factory
   fuel:
     Charcoal:
