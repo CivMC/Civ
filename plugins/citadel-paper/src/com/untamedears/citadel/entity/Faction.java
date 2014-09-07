@@ -166,7 +166,7 @@ public class Faction implements Serializable, Comparable {
 
     public boolean isFounder(UUID accountId){
     	return accountId != null
-            && this.founder.equals(accountId);
+            && this.founderId.equals(accountId);
     }
 
     public boolean isMember(UUID accountId) {

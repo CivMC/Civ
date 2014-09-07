@@ -1,6 +1,6 @@
 name: Citadel
 main: com.untamedears.citadel.Citadel
-version: 2.6.1
+version: 2.6.6
 description: Reinforce your structures!
 author: chrisrico, jonnyd (aka Gu3rr1lla)
 database: false
@@ -146,6 +146,9 @@ commands:
   ctmature:
     description: Instantly mature a reinforcement
     usage: /ctmature
+  ctblacklist:
+    description: Black lists a player from a citadel group
+    usage: /ctblacklist <group> <player>
 permissions:
   citadel.console:
     description: Console commands for Citadel
