@@ -3,3 +3,6 @@ specific build levels. Keep this ordered with the most recent build at the top.
 
 - OfflinePlayer.getUniqueId()
   - Bukkit 1.7.5 build 3034 / Spigot 1.7.5 build 1364
+- This Bukkit patch is now required to fix the stone dup bug.
+  - https://github.com/Bukkit/CraftBukkit-Bleeding/commit/586b70418294
+  - As of yet there is no Bukkit build containing this patch.
