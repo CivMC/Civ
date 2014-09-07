@@ -45,8 +45,8 @@ public abstract class ABergMod extends JavaPlugin implements Listener  {
         Command command,
         String label,
         String[] args) {
-      if (!(sender instanceof ConsoleCommandSender) ||
-          !command.getName().equals("bergecraft") ||
+      if (//!(sender instanceof ConsoleCommandSender) ||
+          !command.getName().equals(pluginName) ||
           args.length < 1) {
         return false;
       }
@@ -114,7 +114,7 @@ public abstract class ABergMod extends JavaPlugin implements Listener  {
 
     public void registerCommands() {
       ConsoleCommandSender console = getServer().getConsoleSender();
-      console.addAttachment(this, "bergmod.console", true);
+      console.addAttachment(this, pluginName+".console", true);
     }
     public boolean isInitiaized() {
       return global_instance_ != null;
