@@ -6,16 +6,23 @@
   <groupId>com.untamedears</groupId>
   <artifactId>Citadel</artifactId>
   <packaging>jar</packaging>
-  <version>2.6.6-SNAPSHOT</version>
+  <version>2.5.23-SNAPSHOT</version>
   <name>Citadel</name>
-  <url>https://github.com/rourke750/Citadel/tree/uuid</url>
-    
-  <properties>
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
-  </properties>
-    
+  <url>https://github.com/ttk2/Citadel</url>
+  
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.3.2</version>
+          <configuration>
+            <source>1.6</source>
+            <target>1.6</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     
     <sourceDirectory>${basedir}/src</sourceDirectory>
     
