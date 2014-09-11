@@ -256,10 +256,6 @@ public class ItemExchange {
 				player.sendMessage(ChatColor.RED + "Failed to remove the item from your inventory.");
 				return;
 			}
-			if (!inventory.addItem(InventoryHelpers.deepCopy(playerInput)).isEmpty()) {
-				player.sendMessage(ChatColor.RED + "The exchange does not have enough inventory space!");
-				return;
-			}
 			if (exchangeOutput != null) {
 				if (!playerInventory.addItem(InventoryHelpers.deepCopy(exchangeOutput)).isEmpty()) {
 					player.sendMessage(ChatColor.RED + "You don't have enough inventory space!");
@@ -269,6 +265,10 @@ public class ItemExchange {
 					player.sendMessage(ChatColor.RED + "Failed to remove the item from the shop.");
 					return;
 				}
+			}
+			if (!inventory.addItem(InventoryHelpers.deepCopy(playerInput)).isEmpty()) {
+				player.sendMessage(ChatColor.RED + "The exchange does not have enough inventory space!");
+				return;
 			}
 
 			IETransactionEvent event = new IETransactionEvent(player, location, playerInput, exchangeOutput);
