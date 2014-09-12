@@ -13,40 +13,41 @@ import com.valadian.bergecraft.annotations.*;
 import com.valadian.bergecraft.interfaces.ApiManager;
 
 public abstract class ABergMod extends JavaPlugin implements Listener  {
-	protected static String pluginName = "BergMod";
-	public static void severe(String message) {
-	    log_.severe("["+pluginName+"] " + message);
+	protected abstract String getPluginName();
+	public void severe(String message) {
+	    log_.severe("["+getPluginName()+"] " + message);
 	}
 	
-	public static void warning(String message) {
-	    log_.warning("["+pluginName+"] " + message);
+	public void warning(String message) {
+	    log_.warning("["+getPluginName()+"] " + message);
 	}
-	public static void info(String message) {
-	    log_.info("["+pluginName+"] " + message);
+	public void info(String message) {
+	    log_.info("["+getPluginName()+"] " + message);
 	}
 	
-	public static void debug(String message) {
-	    if (Config.DebugLog) {
-	      log_.info("["+pluginName+"] " + message);
+	public void debug(String message) {
+	    if (config_.DebugLog) {
+	      log_.info("["+getPluginName()+"] " + message);
 	    }
 	}
 
-    public static Config config_ = null;
+    public Config config_ = null;
 		  
     //private File configFile;
-    private static final Logger log_ = Logger.getLogger(pluginName);
-    private static ABergMod global_instance_ = null;
-    //private static String mainDirectory = "plugins/"+pluginName;
+    private final Logger log_ = Logger.getLogger(getPluginName());
+    //private static ABergMod global_instance_ = null;
+    //private static String mainDirectory = "plugins/"+getPluginName();
     
     public ApiManager apis;    
     
+    @Override
     public boolean onCommand(
         CommandSender sender,
         Command command,
         String label,
         String[] args) {
       if (//!(sender instanceof ConsoleCommandSender) ||
-          !command.getName().equals(pluginName) ||
+          !command.getName().equals(getPluginName().toLowerCase()) ||
           args.length < 1) {
         return false;
       }
@@ -72,7 +73,7 @@ public abstract class ABergMod extends JavaPlugin implements Listener  {
         msg = String.format("%s = %s", option, opt.getString());
       } else if (option.equals("debug")) {
         if (set) {
-          Config.DebugLog = toBool(value);
+        	config_.DebugLog = toBool(value);
         }
         msg = String.format("debug = %s", config_.DebugLog);
       } else if (option.equals("save")) {
@@ -90,6 +91,7 @@ public abstract class ABergMod extends JavaPlugin implements Listener  {
     // ================================================
     // General
 
+    @Override
     public void onLoad()
     {
       loadConfiguration();
@@ -97,15 +99,17 @@ public abstract class ABergMod extends JavaPlugin implements Listener  {
       info("Loaded");
     }
     private void loadConfiguration() {
-        config_ = Config.initialize(this);
+        config_ = new Config(this);
+        System.out.println("loaded config for: "+getPluginName() + "Config: "+ (config_!=null));
       }
-    protected void loadApis() {
+    public void loadApis() {
     	  //ApiManager.disablerApis.add(new CompatGimmickApi());
     }
+    @Override
     public void onEnable() {
       registerEvents();
       registerCommands();
-      global_instance_ = this;
+      //global_instance_ = this;
       info("Enabled");
     }
     private void registerEvents() {
@@ -114,11 +118,11 @@ public abstract class ABergMod extends JavaPlugin implements Listener  {
 
     public void registerCommands() {
       ConsoleCommandSender console = getServer().getConsoleSender();
-      console.addAttachment(this, pluginName+".console", true);
+      console.addAttachment(this, getPluginName().toLowerCase()+".console", true);
     }
-    public boolean isInitiaized() {
-      return global_instance_ != null;
-    }
+//    public boolean isInitiaized() {
+//      return global_instance_ != null;
+//    }
 
     public boolean toBool(String value) {
       if (value.equals("1") || value.equalsIgnoreCase("true")) {

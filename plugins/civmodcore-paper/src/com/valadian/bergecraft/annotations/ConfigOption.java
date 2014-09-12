@@ -5,12 +5,14 @@ import com.valadian.bergecraft.annotations.Bergification;
 import com.valadian.bergecraft.annotations.OptType;
 
 public class ConfigOption {
+  private final Config config_;
   private final String name_;
   private final OptType type_;
   private final Object default_;
   private Object value_;
 
-  public ConfigOption(Bergification bug) {
+  public ConfigOption(Config config, Bergification bug) {
+	config_ = config;
     name_ = bug.opt();
     type_ = bug.type();
     Object failure = new Object();
@@ -25,21 +27,21 @@ public class ConfigOption {
   }
 
   public void load() {
-    if (!Config.getStorage().isSet(name_)) {
+    if (!config_.getStorage().isSet(name_)) {
       return;
     }
     switch(type_) {
       case Bool:
-        set(Config.getStorage().getBoolean(name_, (Boolean)value_));
+        set(config_.getStorage().getBoolean(name_, (Boolean)value_));
         break;
       case Int:
-        set(Config.getStorage().getInt(name_, (Integer)value_));
+        set(config_.getStorage().getInt(name_, (Integer)value_));
         break;
       case Double:
-        set(Config.getStorage().getDouble(name_, (Double)value_));
+        set(config_.getStorage().getDouble(name_, (Double)value_));
         break;
       case String:
-        set(Config.getStorage().getString(name_, (String)value_));
+        set(config_.getStorage().getString(name_, (String)value_));
         break;
       default:
         throw new Error("Unknown OptType");
@@ -112,12 +114,12 @@ public class ConfigOption {
       default:
         throw new Error("Unknown OptType");
     }
-    Config.getStorage().set(name_, value_);
+    config_.getStorage().set(name_, value_);
   }
 
   public void setString(String value) {
     value_ = convert(value, value_);
-    Config.getStorage().set(name_, value_);
+    config_.getStorage().set(name_, value_);
   }
 
   public String getName() {

@@ -21,26 +21,26 @@ import com.valadian.bergecraft.annotations.Bergifications;
 import com.valadian.bergecraft.annotations.ConfigOption;
 
 public class Config {
-  private static Config global_instance_ = null;
+  //private static Config global_instance_ = null;
 
   // ================================================
   // Configuration defaults
-  public static boolean DebugLog = false;
+  public boolean DebugLog = false;
 
-  private static FileConfiguration config_ = null;
+  private FileConfiguration config_ = null;
 
-  public static Config initialize(ABergMod plugin) {
-    if (global_instance_ == null) {
-      plugin.reloadConfig();
-      config_ = plugin.getConfig();
+  public void initialize() {
+//    if (global_instance_ == null) {
+    	plugin_.reloadConfig();
+      config_ = plugin_.getConfig();
       config_.options().copyDefaults(true);
-      global_instance_ = new Config(plugin);
-      global_instance_.load();
-    }
-    return global_instance_;
+//      global_instance_ = new Config(plugin);
+      load();
+//    }
+//    return global_instance_;
   }
 
-  public static ConfigurationSection getStorage() {
+  public ConfigurationSection getStorage() {
     return config_;
   }
 
@@ -48,38 +48,48 @@ public class Config {
   private Set<Integer> remove_item_drops_ = null;
 
   public Config(ABergMod plugin) {
-    plugin_ = plugin;
-    scanAnnotations();
+
+	    plugin_ = plugin;
+	    initialize();
+	    scanAnnotations();
+    
   }
 
   private Map<String, ConfigOption> dynamicOptions_ = new TreeMap<String, ConfigOption>();
 
   private void addToConfig(Bergification bug) {
     if (dynamicOptions_.containsKey(bug.opt())) {
-    	ABergMod.info("Duplicate configuration option detected: " + bug.opt());
+    	plugin_.info("Duplicate configuration option detected: " + bug.opt());
       return;
     }
-    dynamicOptions_.put(bug.opt(), new ConfigOption(bug));
+    dynamicOptions_.put(bug.opt(), new ConfigOption(this, bug));
   }
 
   private void scanAnnotations() {
     try {
-      for (Method method : ABergMod.class.getMethods()) {
+//    	plugin_.info("loading annotations");
+      for (Method method : plugin_.getClass().getMethods()) {
+
+//      	plugin_.info("scanning: "+method.getName());
         Bergification bug = method.getAnnotation(Bergification.class);
         if (bug != null) {
+
+//          plugin_.info("adding: "+bug.toString());
           addToConfig(bug);
           continue;
         }
         Bergifications bugs = method.getAnnotation(Bergifications.class);
         if (bugs != null) {
           for (Bergification drone : bugs.value()) {
+
+//            plugin_.info("adding: "+drone.toString());
             addToConfig(drone);
           }
           continue;
         }
       }
     } catch(Exception ex) {
-    	ABergMod.info(ex.toString());
+    	plugin_.info(ex.toString());
     }
   }
 
