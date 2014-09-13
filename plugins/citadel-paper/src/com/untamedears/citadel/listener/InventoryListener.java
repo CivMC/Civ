@@ -134,7 +134,7 @@ public class InventoryListener implements Listener {
     }
     final boolean srcIsPersonal = srcOwner.isPersonalGroup();
     final boolean destIsPersonal = destOwner.isPersonalGroup();
-    if (!srcIsPersonal && destIsPersonal && srcRein.isAccessible(destOwner.getFounder())) {
+    if (!srcIsPersonal && destIsPersonal && srcRein.isAccessible(destOwner.getFounderId())) {
       // Destination personal group owner has access to source group, allow
       // (Group X -> Personal Y)
       event.setCancelled(false);

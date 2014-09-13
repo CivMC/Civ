@@ -257,8 +257,8 @@ public class PlayerReinforcement implements
                 getMaterial().getMaterial().name());
     }
 
-    public boolean isAccessible(String playerOrAccount) {
-        final UUID accountId = toAccountId(playerOrAccount);
+    public boolean isAccessible(UUID id) {
+        final UUID accountId = toAccountId(id);
         if (accountId == null) {
             return false;
         }
@@ -295,8 +295,8 @@ public class PlayerReinforcement implements
         return false;
     }
 
-    public boolean isBypassable(String playerOrAccount) {
-        final UUID accountId = toAccountId(playerOrAccount);
+    public boolean isBypassable(UUID id) {
+        final UUID accountId = toAccountId(id);
         if (accountId == null) {
             return false;
         }

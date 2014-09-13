@@ -4,6 +4,7 @@ version: 2.6.6
 description: Reinforce your structures!
 author: chrisrico, jonnyd (aka Gu3rr1lla)
 database: false
+depend: [NameLayer]
 commands:
   ctmaterials:
     aliases: ctmat

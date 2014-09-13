@@ -39,6 +39,7 @@ import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.entity.ReinforcementKey;
 import com.untamedears.citadel.entity.ReinforcementMaterial;
 import com.untamedears.citadel.events.CreateReinforcementEvent;
+import com.valadian.nametracker.NameAPI;
 
 /**
  * Created by IntelliJ IDEA.
@@ -571,19 +572,20 @@ public class Utility {
 
     // Given either a UUID or name, return the corresponding player's
     //  account ID or null.
-    public static UUID toAccountId(String uuidOrName) {
+    public static UUID toAccountId(UUID id) {
         // See if it is a player UUID
         try {
-            UUID id = UUID.fromString(uuidOrName);
             if (Citadel.getAccountIdManager().getPlayerName(id) != null) {
                 return id;
             }
         } catch (Exception ex) {}
-        // Maybe it's a name
-        OfflinePlayer player = Bukkit.getOfflinePlayer(uuidOrName);
-        if (player != null && player.hasPlayedBefore()) { // Some reason getting a player even if they don't exist...  This is better anyways
-            return player.getUniqueId();
-        }
         return null;
+    }
+    
+    public static UUID toAccountId(String name){
+    	UUID uuid = NameAPI.getUUID(name);
+    	if (uuid == null)
+    		return null;
+    	return uuid;
     }
 }

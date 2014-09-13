@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
+
 import javax.persistence.PersistenceException;
 
 import org.bukkit.Bukkit;
@@ -30,7 +31,6 @@ import com.avaje.ebean.SqlUpdate;
 import com.avaje.ebean.config.DataSourceConfig;
 import com.avaje.ebean.config.ServerConfig;
 import com.lennardf1989.bukkitex.MyDatabase;
-
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.DbUpdateAction;
 import com.untamedears.citadel.entity.DbVersion;
@@ -42,6 +42,7 @@ import com.untamedears.citadel.entity.PersonalGroup;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.entity.ReinforcementKey;
+import com.valadian.nametracker.NameAPI;
 
 /**
  * Created by IntelliJ IDEA.
@@ -657,10 +658,7 @@ public class CitadelDao extends MyDatabase {
     }
 
     public Map<UUID, String> retrieveKnownAccountIdMap() {
-        Map<UUID, String> map = new TreeMap<UUID, String>();
-        for (final OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-            map.put(player.getUniqueId(), player.getName());
-        }
+        Map<UUID, String> map = NameAPI.getAllAccounts();
         return map;
     }
 

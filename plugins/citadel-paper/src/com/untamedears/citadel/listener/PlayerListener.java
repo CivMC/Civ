@@ -273,15 +273,7 @@ public class PlayerListener implements Listener {
                         message = String.format("Changed security level %s", reinforcement.getSecurityLevel().name());
                     }
                     Faction group = state.getFaction();
-                    if (group == null) {
-                        state.reset();
-                        if (state.isBypassMode()) state.toggleBypassMode();
-                        // Hack to bypass calling checkResetMode below
-                        state.setMode(PlacementMode.REINFORCEMENT_SINGLE_BLOCK);
-                        update = false;
-                        message = String.format(
-                            "No group for reinforcement, all Citadel modes set to normal");
-                    } else if(!reinforcement.getOwner().equals(group)) {
+                    if(!reinforcement.getOwner().equals(group)) {
                         reinforcement.setOwner(group);
                         update = true;
                         if(!message.equals("")){
