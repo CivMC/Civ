@@ -96,7 +96,7 @@ public class FactoryModManager
 	{
 		NetherFactoryManager netherMan = new NetherFactoryManager(plugin);
 		
-		manager.add(netherMan);
+		managers.add(netherMan);
 	}
 	
 	/**
