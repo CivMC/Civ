@@ -264,6 +264,14 @@ public class PlayerReinforcement implements
         }
         return isAccessible(accountId, Bukkit.getPlayer(accountId));
     }
+    
+    public boolean isAccessible(String name){
+    	final UUID accountId = toAccountId(name);
+    	if (accountId == null) {
+            return false;
+        }
+    	return isAccessible(accountId, Bukkit.getPlayer(accountId));
+    }
 
     public boolean isAccessible(Player player) {
         return isAccessible(player.getUniqueId(), player);
