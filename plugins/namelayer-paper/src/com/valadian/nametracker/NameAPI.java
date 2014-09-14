@@ -1,7 +1,6 @@
 package com.valadian.nametracker;
 
-import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 
 public class NameAPI {
@@ -11,5 +10,9 @@ public class NameAPI {
 	
 	public static String getCurrentName(UUID uuid) {
 		return NameTrackerPlugin.associations.getCurrentName(uuid);
+	}
+	
+	public static Map<UUID, String> getAllAccounts(){
+		return NameTrackerPlugin.associations.getAllUUIDSNames();
 	}
 }

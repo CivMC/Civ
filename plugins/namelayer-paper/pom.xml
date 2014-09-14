@@ -6,7 +6,7 @@
   <groupId>com.valadian</groupId>
   <artifactId>NameTracker</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.2-SNAPSHOT</version>
   <name>NameTracker</name>
   <url>https://github.com/rourke750/NameLayer</url>
   

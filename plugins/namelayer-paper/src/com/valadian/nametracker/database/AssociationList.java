@@ -3,6 +3,10 @@ package com.valadian.nametracker.database;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -50,6 +54,7 @@ public class AssociationList {
 	private PreparedStatement addPlayer;
     private PreparedStatement getUUIDfromPlayer;
     private PreparedStatement getPlayerfromUUID;
+    private PreparedStatement getAllPlayerUUIDs;
 	
 	public void initializeStatements(){
 		addPlayer = db.prepareStatement("call addplayertotable(?, ?)"); // order player name, uuid 
@@ -57,6 +62,7 @@ public class AssociationList {
 				"where player=?");
 		getPlayerfromUUID = db.prepareStatement("select player from Name_player " +
 				"where uuid=?");
+		getAllPlayerUUIDs = db.prepareStatement("select * from Name_player");
 	}
 	
 	public void initializeProcedures(){
@@ -127,5 +133,18 @@ public class AssociationList {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public Map<UUID, String> getAllUUIDSNames(){
+		Map<UUID, String> uuids = new HashMap<UUID, String>();
+		try {
+			ResultSet set = getAllPlayerUUIDs.executeQuery();
+			while (set.next())
+				uuids.put(UUID.fromString(set.getString("uuid")), "player");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return uuids;
 	}
 }
