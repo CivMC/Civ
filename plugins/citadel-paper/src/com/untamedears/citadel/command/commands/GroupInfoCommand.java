@@ -39,7 +39,7 @@ public class GroupInfoCommand extends PlayerCommand {
 			return true;
 		}
 		sender.sendMessage(new StringBuilder().append("§cGroup Name:§e ").append(groupName).toString());
-		sender.sendMessage(new StringBuilder().append("§cOwner:§e ").append(group.getFounder()).toString());
+		sender.sendMessage(new StringBuilder().append("§cOwner:§e ").append(group.getFounderName()).toString());
 		sender.sendMessage(new StringBuilder().append("§cModerators:§e ").append(groupManager.getModeratorsOfGroup(groupName).size()).toString());
 		sender.sendMessage(new StringBuilder().append("§cMembers:§e ").append(groupManager.getMembersOfGroup(groupName).size()).toString());
 		if(founderOrModerator){
