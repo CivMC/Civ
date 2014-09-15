@@ -1637,6 +1637,7 @@ production_factories:
        - Produce_Gold_Horse_Armor
        - Produce_Iron_Horse_Armor
        - Produce_Leads
+       - Produce_Donkey_Chest
    repair_multiple: 6
    repair_inputs:
      Iron Block:
@@ -5919,6 +5920,20 @@ production_recipes:
       Lead:
         material: LEASH
         amount: 8
+  Produce_Donkey_Chest:
+    name: Produce Donkey Chest
+    inputs:
+      Ender Chest:
+        material: ENDER_CHEST
+        amount: 8
+      Saddle:
+        material: SADDLE
+        amount: 4
+    outputs:
+      Donkey Double Chest:
+        material: CHEST
+        amount: 4
+        lore: Donkey double chest
   Craft_Fences:
     name: Craft Fences
     production_time: 16
