@@ -1,4 +1,4 @@
-package com.valadian.nametracker.database;
+package vg.civcraft.mc.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,7 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
-class Database {
+public class Database {
 	private String host;
     private int port;
     private String db;

@@ -1,52 +1,23 @@
-package com.valadian.nametracker;
+package vg.civcraft.mc.misc;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.UUID;
 
 import net.minecraft.server.v1_7_R4.EntityHuman;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftHumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import com.valadian.nametracker.database.AssociationList;
+import vg.civcraft.mc.NameAPI;
+import vg.civcraft.mc.NameTrackerPlugin;
+import vg.civcraft.mc.database.AssociationList;
 
-public class NameTrackerPlugin extends JavaPlugin implements Listener {
-	public static AssociationList associations;
+public class GameProfileModifier {
 
-	@Override
-	public void onEnable() {
-		FileConfiguration config = getConfig();
-		new ConfigManager().setConfigOptions(config);;
-		saveConfig();
-		associations = new AssociationList(this, config);
-	    getServer().getPluginManager().registerEvents(this, this);
-	} 
+	private AssociationList associations = NameAPI.getAssociationList();
 	
-	public void onDisable() {
-	}
-	
-	
-	@EventHandler(priority=EventPriority.LOWEST)
-	public void OnPlayerLogin(AsyncPlayerPreLoginEvent event)
-	{
-		String playername = event.getName();
-		UUID uuid = event.getUniqueId();
-		associations.addPlayer(playername, uuid);
-	}
-	
-	// sets the player name in the gameprofile
-	@EventHandler(priority=EventPriority.LOWEST)
-	public void loginEvent(PlayerLoginEvent event){
-		Player player = event.getPlayer();
+	public void setPlayerProfile(Player player) {
 		String name = associations.getCurrentName(player.getUniqueId());
 		try {
 			// start of getting the GameProfile
@@ -79,7 +50,7 @@ public class NameTrackerPlugin extends JavaPlugin implements Listener {
 		player.setPlayerListName(name);
 		player.setCustomName(name);
 	}
-	
+
 	static void setFinalStatic(Field field, Object newValue, GameProfile prof) {
 		try {
 			field.setAccessible(true);

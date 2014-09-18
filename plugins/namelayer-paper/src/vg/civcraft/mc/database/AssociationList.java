@@ -1,35 +1,21 @@
-package com.valadian.nametracker.database;
+package vg.civcraft.mc.database;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-import com.valadian.nametracker.NameTrackerPlugin;
+import vg.civcraft.mc.NameTrackerPlugin;
+
 
 public class AssociationList {
 	private Database db;
-    private final String host;
-    private final String dbname;
-    private final String username;
-    private final int port;
-    private final String password;
 
-	public AssociationList(NameTrackerPlugin plugin, FileConfiguration config_){
-		host = config_.getString("sql.hostname");
-		port = config_.getInt("sql.port");
-		dbname = config_.getString("sql.dbname");
-		username = config_.getString("sql.username");
-		password = config_.getString("sql.password");
-		db = new Database(host, port, dbname, username, password, plugin.getLogger());
-		boolean connected = db.connect();
-		if (connected){
+	public AssociationList(Database db){
+		this.db = db;
+		if (db.isConnected()){
 			genTables();
 			initializeProcedures();
 			initializeStatements();
@@ -54,7 +40,6 @@ public class AssociationList {
 	private PreparedStatement addPlayer;
     private PreparedStatement getUUIDfromPlayer;
     private PreparedStatement getPlayerfromUUID;
-    private PreparedStatement getAllPlayerUUIDs;
 	
 	public void initializeStatements(){
 		addPlayer = db.prepareStatement("call addplayertotable(?, ?)"); // order player name, uuid 
@@ -62,7 +47,6 @@ public class AssociationList {
 				"where player=?");
 		getPlayerfromUUID = db.prepareStatement("select player from Name_player " +
 				"where uuid=?");
-		getAllPlayerUUIDs = db.prepareStatement("select * from Name_player");
 	}
 	
 	public void initializeProcedures(){
@@ -133,18 +117,5 @@ public class AssociationList {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	public Map<UUID, String> getAllUUIDSNames(){
-		Map<UUID, String> uuids = new HashMap<UUID, String>();
-		try {
-			ResultSet set = getAllPlayerUUIDs.executeQuery();
-			while (set.next())
-				uuids.put(UUID.fromString(set.getString("uuid")), "player");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return uuids;
 	}
 }
