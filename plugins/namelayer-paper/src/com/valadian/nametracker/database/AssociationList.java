@@ -76,7 +76,7 @@ public class AssociationList {
 				+ "set nameamount=0;"
 				+ "set nameamount=(select count(*) from Name_player p where p.uuid=uu);"
 				+ ""
-				+ "if (amount < 1) then"
+				+ "if (nameamount < 1) then"
 				+ "		set account =(select uuid from Name_player p where p.player=pl);"
 				+ "		if (account not like uu) then"
 				+ "			insert ignore into playercountnames (player, amount) values (pl, 0);"
