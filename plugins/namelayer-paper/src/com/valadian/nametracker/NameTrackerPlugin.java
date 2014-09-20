@@ -38,15 +38,14 @@ public class NameTrackerPlugin extends JavaPlugin implements Listener {
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void OnPlayerLogin(AsyncPlayerPreLoginEvent event)
 	{
-		String playername = event.getName();
-		UUID uuid = event.getUniqueId();
-		associations.addPlayer(playername, uuid);
+		
 	}
 	
 	// sets the player name in the gameprofile
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void loginEvent(PlayerLoginEvent event){
 		Player player = event.getPlayer();
+		associations.addPlayer(player.getName(), player.getUniqueId());
 		String name = associations.getCurrentName(player.getUniqueId());
 		try {
 			// start of getting the GameProfile
