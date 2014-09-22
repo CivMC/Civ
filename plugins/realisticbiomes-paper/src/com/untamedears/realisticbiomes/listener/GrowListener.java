@@ -49,6 +49,7 @@ public class GrowListener implements Listener {
 	 */
 	@EventHandler(ignoreCancelled = true)
 	public void onBlockGrow(BlockGrowEvent event) {
+		Material m = event.getNewState().getType();
 		Block b = event.getBlock();
 		
 		GrowthConfig growthConfig = plugin.getGrowthConfig(b);
@@ -57,7 +58,7 @@ public class GrowListener implements Listener {
 			
 			event.setCancelled(true);
 		}
-		else if (!willGrow(b)) {
+		else if (!willGrow(m, b)) {
 			event.setCancelled(true);
 		}
 	}
@@ -155,14 +156,18 @@ public class GrowListener implements Listener {
 	 * Determines if a plant {@link Material | @link TreeType} will grow, given the current conditions
 	 * @param m The material type of the plant
 	 * @param b The block that the plant is on
-	 * @return Whether the plant will grow this tick
+	 * @return true if the block should grow this material, otherwise false
 	 */
-	private boolean willGrow(Block b) {
-		if(plugin.hasGrowthConfig(b)) {
-			boolean willGrow = Math.random() < plugin.getGrowthConfig(b).getRate(b);
-			return willGrow;
+	private boolean willGrow(Material m, Block b) {
+		GrowthConfig config = plugin.getGrowthConfig(m);
+		
+		// Returns true if the random value is within the growth rate
+		if (config != null) {
+			return Math.random() < config.getRate(b);
 		}
-		return true;
+		
+		// Default to no growth
+		return false;
 	}
 	
 
