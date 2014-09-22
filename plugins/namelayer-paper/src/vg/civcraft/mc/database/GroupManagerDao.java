@@ -5,7 +5,9 @@ import static vg.civcraft.mc.NameTrackerPlugin.log;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +47,11 @@ public class GroupManagerDao {
 			db.execute("alter table faction drop `version`;");
 			db.execute("alter table faction add type int default 0;");
 			db.execute("drop table personal_group;");
+			db.execute("alter table faction_member add role varchar(10) not null default \"MEMBER\"");
+			db.execute("insert into faction_member (faction_name, member_name, role)" +
+					"select m.faction_name m.member_name \"MOD\" from moderator m;");
+			db.execute("drop table moderator;");
+			updateVersion(ver);
 			ver++;
 		}
 		if (ver == 6){
@@ -58,13 +65,9 @@ public class GroupManagerDao {
 					"primary key(name));");
 			db.execute("create table if not exists faction_member(" +
 					"faction_name varchar(255) not null," +
-					"member_name varchar(36) not null);");
-			db.execute("create table if not exists moderator(" +
-					"member_name varchar(36) not null," +
-					"faction_name varchar(255) not null);");
-			db.execute("create table if not exists admins(" +
-					"member_name varchar(36) not null," +
-					"faction_name varchar(255) not null);");
+					"member_name varchar(36) not null)," +
+					"role varchar(10) not null default \"MEMBER\"," +
+					"unique key (faction_name, member_name));");
 			db.execute("create table if not exists blacklist(" +
 					"member_name varchar(36) not null," +
 					"faction_name varchar(255) not null);");
@@ -77,6 +80,11 @@ public class GroupManagerDao {
 					"faction varchar(255) not null," +
 					"sub_faction varchar(255) not null," +
 					"unique key (faction, sub_faction));");
+			db.execute("create table if not exists db_version (db_version int not null," +
+					"update_time varchar(24)," +
+					"primary key (db_version));");
+			updateVersion(ver);
+			ver++;
 		}
 	}
 
@@ -87,30 +95,27 @@ public class GroupManagerDao {
 				") sql security invoker begin " +
 				"delete from faction where `name` = groupName;" +
 				"delete from faction_member where faction_name = groupName;" +
-				"delete from moderator where faction_name = groupName;" +
-				"delete from admins where faction_name = groupName;" +
 				"delete from blacklist where faction_name = groupName;" +
 				"delete from subgroup where faction = groupName;" +
 				"delete from permissions where faction = groupName;" +
 				"end;");
 	}
 	
-	private PreparedStatement version;
+	private PreparedStatement version, updateVersion;
 	
 	private PreparedStatement createGroup, getGroup, deleteGroup;
 	
 	private PreparedStatement addMember, getMembers, removeMember;
 	
-	private PreparedStatement addMod, getMods, removeMod;
-	
-	private PreparedStatement addAdmin, getAdmins, removeAdmin;
-	
 	private PreparedStatement addSubGroup, getSubGroups, getSuperGroup, removeSubGroup;
 	
 	private PreparedStatement addPerm, getPerms, updatePerm;
 	
+	private PreparedStatement countGroups;
+	
 	public void initializeStatements(){
 		version = db.prepareStatement("select max(db_version) as db_version from db_version");
+		updateVersion = db.prepareStatement("insert into db_version (db_version, update_time) values (?,?)"); 
 		
 		createGroup = db.prepareStatement("insert into faction(name, founder, password, disipline_flags," +
 				"type) values (?,?,?,?,?)");
@@ -119,19 +124,9 @@ public class GroupManagerDao {
 		deleteGroup = db.prepareStatement("call deletegroupfromtable(?)");
 		
 		addMember = db.prepareStatement("insert into faction_member(" +
-				"faction_name, member_name) values (?, ?)");
-		getMembers = db.prepareStatement("select member_name from faction_member where faction_name = ?");
+				"faction_name, member_name, role) values (?, ?, ?)");
+		getMembers = db.prepareStatement("select member_name from faction_member where faction_name = ? and role = ?");
 		removeMember = db.prepareStatement("delete from faction_member where member_name = ? and faction_name = ?");
-		
-		addMod = db.prepareStatement("insert into moderator(" +
-				"faction_name, member_name) values (?, ?)");
-		getMods = db.prepareStatement("select member_name from moderator where faction_name = ?");
-		removeMod = db.prepareStatement("delete from moderator where faction_name = ? and member_name = ?");
-		
-		addAdmin = db.prepareStatement("insert into admins(" +
-				"faction_name, member_name) values (?, ?)");
-		getAdmins = db.prepareStatement("select member_name from admins where faction_name = ?");
-		removeAdmin = db.prepareStatement("delete from admins where faction_name = ? and member_name = ?");
 		
 		addSubGroup = db.prepareStatement("insert into subgroup (faction, sub_faction) " +
 				"values (?,?)");
@@ -142,6 +137,8 @@ public class GroupManagerDao {
 		addPerm = db.prepareStatement("insert into permissions (faction, role, tier) values (?, ?, ?)");
 		getPerms = db.prepareStatement("select role, tier from permissions where faction = ?");
 		updatePerm = db.prepareStatement("update permissions set tier = ? where faction = ? and role = ?");
+		
+		countGroups = db.prepareStatement("select count(*) as count from faction");
 	}
 	
 	public int checkVersion(){
@@ -154,6 +151,19 @@ public class GroupManagerDao {
 			// table doesnt exist
 			return 6;
 		}
+	}
+	
+	private void updateVersion(int version){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			updateVersion.setInt(1, version+ 1);
+			updateVersion.setString(2, sdf.format(new Date()));
+			updateVersion.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public void createGroup(String faction, UUID owner, String password, GroupType type){
@@ -196,12 +206,13 @@ public class GroupManagerDao {
 	}
 	
 	private int memberCount = 0;
-	public void addMember(UUID member, String faction){
+	public void addMember(UUID member, String faction, PlayerType role){
 		try {
 			if (memberCount >= maxCountForExecuting)
 				flushAddMember();
 			addMember.setString(1, faction);
 			addMember.setString(2, member.toString());
+			addMember.setString(3,role.name());
 			addMember.addBatch();
 			memberCount++;
 		} catch (SQLException e) {
@@ -220,10 +231,11 @@ public class GroupManagerDao {
 		}
 	}
 	
-	public List<UUID> getAllMembers(String groupName){
+	public List<UUID> getAllMembers(String groupName, PlayerType role){
 		List<UUID> members = new ArrayList<UUID>();
 		try {
 			getMembers.setString(1, groupName);
+			getMembers.setString(2, role.name());
 			ResultSet set = getMembers.executeQuery();
 			while(set.next())
 				members.add(UUID.fromString(set.getString("faction_member")));
@@ -254,134 +266,6 @@ public class GroupManagerDao {
 		try {
 			removeMember.executeQuery();
 			removeMemberCount = 0;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	private int addModCount = 0;
-	public void addMod(UUID mod, String group){
-		try {
-			if (addModCount >= maxCountForExecuting)
-				flushAddMod();
-			addMod.setString(1, group);
-			addMod.setString(2, mod.toString());
-			addMod.addBatch();
-			addModCount++;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	protected void flushAddMod(){
-		try {
-			addMod.executeBatch();
-			addModCount = 0;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public List<UUID> getAllMods(String group){
-		List<UUID> mods = new ArrayList<UUID>();
-		try {
-			getMods.setString(1, group);
-			ResultSet set = getMods.executeQuery();
-			while (set.next())
-				mods.add(UUID.fromString(set.getString("faction_member")));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return mods;
-	}
-	
-	private int removeModCount = 0;
-	public void removeMod(String group, UUID mod){
-		try {
-			if (removeModCount >= maxCountForExecuting)
-				flushRemoveMod();
-			removeMod.setString(1, group);
-			removeMod.setString(2, mod.toString());
-			removeMod.addBatch();
-			removeModCount++;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	protected void flushRemoveMod(){
-		try {
-			removeMod.executeBatch();
-			removeModCount = 0;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	private int addAdminCount = 0;
-	public void addAdmin(String group, UUID admin){
-		try {
-			if (addAdminCount >= maxCountForExecuting)
-				flushAddAdmins();
-			addAdmin.setString(1, group);
-			addAdmin.setString(2, admin.toString());
-			addAdmin.addBatch();
-			addAdminCount++;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	protected void flushAddAdmins(){
-		try {
-			addAdmin.executeBatch();
-			addAdminCount = 0;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public List<UUID> getAdmins(String group){
-		List<UUID> admins = new ArrayList<UUID>();
-		try {
-			getAdmins.setString(1, group);
-			ResultSet set = getAdmins.executeQuery();
-			while (set.next())
-				admins.add(UUID.fromString(set.getString("member_name")));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return admins;
-	}
-	
-	private int removeAdminCount = 0;
-	public void removeAdmin(String group, UUID admin){
-		try {
-			if (removeAdminCount >= maxCountForExecuting)
-				flushRemoveAdmin();
-			removeAdmin.setString(1, group);
-			removeAdmin.setString(2, admin.toString());
-			removeAdmin.addBatch();
-			removeAdminCount++;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	protected void flushRemoveAdmin(){
-		try {
-			removeAdmin.executeBatch();
-			removeAdminCount = 0;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -513,6 +397,41 @@ public class GroupManagerDao {
 		}
 		return perms;
 	}
-	updatePerm = db.prepareStatement("update permissions set tier = ? where faction = ? and role = ?");
-	public void updatePermissions(String group, )
+	
+	private int countUpdatePerm = 0;
+	public void updatePermissions(String group, PlayerType pType, String perms){
+		try {
+			if (countUpdatePerm >= maxCountForExecuting)
+				flushUpdatePermissions();
+			updatePerm.setString(1, perms);
+			updatePerm.setString(2, group);
+			updatePerm.setString(3, pType.name());
+			updatePerm.addBatch();
+			countUpdatePerm++;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	protected void flushUpdatePermissions(){
+		try {
+			updatePerm.executeBatch();
+			countUpdatePerm = 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public int countGroups(){
+		try {
+			ResultSet set = countGroups.executeQuery();
+			return set.next() ? set.getInt("count") : 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
 }

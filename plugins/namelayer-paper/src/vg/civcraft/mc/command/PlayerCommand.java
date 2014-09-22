@@ -57,7 +57,7 @@ public abstract class PlayerCommand implements Command{
 		this.identifier = identifier;
 	}
 	
-	public void setMinMax(int min, int max){
+	public void setArguments(int min, int max){
 		this.min = min;
 		this.max = max;
 	}

@@ -28,5 +28,35 @@ public class GroupPermission {
 		return perms.get(ptype).contains(type);
 	}
 	
-	public void 
+	public boolean addPermission(PlayerType pType, PermissionType permType){
+		if (perms.get(pType).contains(permType))
+			return false;
+		List<PermissionType> types = perms.get(pType);
+		types.add(permType);
+		String info = "";
+		for (PermissionType t: types)
+			info += t.name() + " ";
+		db.updatePermissions(group.getName(), pType, info);
+		return true;
+	}
+	
+	public boolean removePermission(PlayerType pType, PermissionType permType){
+		if (!perms.get(pType).contains(permType))
+			return false;
+		List<PermissionType> types = perms.get(pType);
+		types.remove(permType);
+		String info = "";
+		for (PermissionType t: types)
+			info += t.name() + " ";
+		db.updatePermissions(group.getName(), pType, info);
+		return true;
+	}
+	
+	public PlayerType getFirstWithPerm(PermissionType type){
+		for (PlayerType pType: perms.keySet()){
+			if (perms.get(pType).contains(type))
+				return pType;
+		}
+		return null;
+	}
 }

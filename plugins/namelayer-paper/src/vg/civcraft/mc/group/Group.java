@@ -1,14 +1,18 @@
 package vg.civcraft.mc.group;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import vg.civcraft.mc.GroupManager.PlayerType;
 import vg.civcraft.mc.NameTrackerPlugin;
 import vg.civcraft.mc.database.SaveManager;
 
 public class Group {
 	
-	private String groupName;
+	protected String groupName;
 	private UUID ownerUUID;
 	private boolean isDisiplined;
 	private String password;
@@ -16,9 +20,9 @@ public class Group {
 	
 	protected SaveManager db = NameTrackerPlugin.getSaveManager();
 	
-	private List<UUID> members;
-	private List<UUID> mods;
-	private List<UUID> admins;
+	protected Map<PlayerType, List<UUID>> players = new HashMap<PlayerType, List<UUID>>();
+	
+	public Map<UUID, PlayerType> invitations = new HashMap<UUID, PlayerType>();
 	
 	public Group(String name, UUID owner, boolean disiplined, String password, GroupType type){
 		groupName = name;
@@ -26,58 +30,46 @@ public class Group {
 		isDisiplined = disiplined;
 		this.password = password;
 		this.type = type;
-		members = db.getAllMembers(name);
-		mods = db.getAllMods(name);
-		admins = db.getAdmins(name);
-	}
-
-	// Everything dealing with members
-	public void addMember(UUID uuid){
-		db.addMember(uuid, groupName);
-		members.add(uuid);
-	}
-	
-	public boolean isMember(UUID uuid){
-		return members.contains(uuid);
-	}
-	
-	public void removeMember(UUID uuid){
-		db.removeMember(uuid, groupName);
-		members.remove(uuid);
+		for (PlayerType t: PlayerType.values()){
+			List<UUID> list;
+			list = db.getAllMembers(name, t);
+			players.put(t, list);
+		}
 	}
 	
 	public List<UUID> getAllMembers(){
-		return members;
+		List<UUID> uuids = new ArrayList<UUID>();
+		for (PlayerType type: players.keySet())
+			uuids.addAll(players.get(type));
+		return uuids;
 	}
 	
-	// Everything dealing with admins
-	public void addAdmin(UUID uuid){
-		db.addAdmin(groupName, uuid);
-		admins.add(uuid);
+	public void addInvite(UUID uuid, PlayerType type){
+		invitations.put(uuid, type);
 	}
 	
-	public boolean isAdmin(UUID uuid){
-		return admins.contains(uuid);
+	public PlayerType getInvite(UUID uuid){
+		if (!invitations.containsKey(uuid))
+			return null;
+		return invitations.get(uuid);
 	}
 	
-	public void removeAdmin(UUID uuid){
-		db.removeAdmin(groupName, uuid);
-		admins.remove(uuid);
+	public void removeRemoveInvite(UUID uuid){
+		invitations.remove(uuid);
+	}
+
+	public void addMember(UUID uuid, PlayerType type){
+		db.addMember(uuid, groupName, type);
+		players.get(type).add(uuid);
 	}
 	
-	// Everything dealing with mods
-	public void addMod(UUID uuid){
-		db.addMod(uuid, groupName);
-		mods.add(uuid);
+	public boolean isMember(UUID uuid, PlayerType type){
+		return players.get(type).contains(uuid);
 	}
 	
-	public boolean isMod(UUID uuid){
-		return mods.contains(uuid);
-	}
-	
-	public void removeMod(UUID uuid){
-		db.removeMod(groupName, uuid);
-		mods.remove(uuid);
+	public void removeMember(UUID uuid, PlayerType type){
+		db.removeMember(uuid, groupName);
+		players.get(type).remove(uuid);
 	}
 	
 	public boolean isOwner(UUID uuid){
@@ -122,5 +114,13 @@ public class Group {
 	
 	public GroupType getType(){
 		return type;
+	}
+	
+	public PlayerType getPlayerType(UUID uuid){
+		for (PlayerType t: players.keySet()){
+			if (players.get(t).contains(uuid))
+				return t;
+		}
+		return null;
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import vg.civcraft.mc.GroupManager.PlayerType;
 import vg.civcraft.mc.group.Group;
 import vg.civcraft.mc.group.GroupType;
 
@@ -22,6 +23,13 @@ public class Private extends Group{
 		super(name, owner, disiplined, password, GroupType.PRIVATE);
 		subGroups.put(this, db.getSubGroups(name));
 		superGroup.put(this, db.getSuperGroup(name));
+	}
+	
+	public void addMember(UUID uuid, PlayerType type){
+		db.addMember(uuid, groupName, type);
+		players.get(type).add(uuid);
+		for (Group g: subGroups.get(this))
+			g.addMember(uuid, PlayerType.SUBGROUP);
 	}
 	
 	public List<Group> getSubGroups(){

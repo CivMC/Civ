@@ -20,12 +20,10 @@ public class SaveManager extends GroupManagerDao{
 	public void flushDataToDB(){
 		flushAddMember();
 		flushRemoveMember();
-		flushAddMod();
-		flushRemoveMod();
-		flushAddAdmins();
-		flushRemoveAdmin();
 		flushAddSubGroup();
 		flushRemoveSubGroup();
+		flushAddPermission();
+		flushUpdatePermissions();
 	}
 	
 	private void autoFlushDataToDB(){

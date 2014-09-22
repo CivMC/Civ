@@ -70,8 +70,8 @@ public class GroupManager{
 	
 	private void initiateDefaultPerms(String group){
 		// for perms follow the order that they are in the enum PlayerType
-		String[] perms = {"DOORS CHESTS", "DOORS CHESTS BLOCKS", "DOORS CHESTS BLOCKS MODS MEMBERS PASSWORD",
-				"DOORS CHESTS BLOCKS ADMINS MODS MEMBERS PASSWORD"};
+		String[] perms = {"DOORS CHESTS", "DOORS CHESTS BLOCKS MEMBERs", "DOORS CHESTS BLOCKS MODS MEMBERS PASSWORD",
+				"DOORS CHESTS BLOCKS ADMINS MODS MEMBERS PASSWORD SUBGROUP PERMS DELETE", ""};
 		int x = 0;
 		for (PlayerType role: PlayerType.values()){
 			groupManagerDao.addPermission(group, role.name(), perms[x]);
@@ -85,9 +85,10 @@ public class GroupManager{
 	 * roles.
 	 */
 	public enum PlayerType{
-		MEMBER,
-		MOD,
-		ADMIN,
-		OWNER;
+		MEMBERS,
+		MODS,
+		ADMINS,
+		OWNER,
+		SUBGROUP;// The perm players get when they are added from a super group.
 	}
 }

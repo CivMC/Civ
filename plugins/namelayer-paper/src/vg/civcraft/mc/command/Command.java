@@ -8,6 +8,6 @@ public interface Command {
 	public String getDescription();
 	public String getUsage();
 	public String getIdentifier();
-	public int getMinArguments();
 	public int getMaxArguments();
+	public int getMinArguments();
 }
