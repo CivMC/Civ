@@ -166,8 +166,8 @@ public class GrowListener implements Listener {
 			return Math.random() < config.getRate(b);
 		}
 		
-		// Default to no growth
-		return false;
+		// Default to growth if not cofigured
+		return true;
 	}
 	
 
