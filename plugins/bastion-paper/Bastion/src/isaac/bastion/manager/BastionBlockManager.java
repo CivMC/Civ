@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.bukkit.Bukkit;
@@ -106,14 +107,14 @@ public class BastionBlockManager
 	
 
 	//handles all block based events in a general way
-	public Set<BastionBlock> shouldStopBlock(Block orrigin, Set<Block> result, String player){
+	public Set<BastionBlock> shouldStopBlock(Block orrigin, Set<Block> result, UUID player){
 		if(player != null) {
 			Player playerB = Bukkit.getPlayer(player);
 			if (playerB != null && playerB.hasPermission("Bastion.bypass")) return new CopyOnWriteArraySet<BastionBlock>();
 		}
 		
 		Set<BastionBlock> toReturn = new HashSet<BastionBlock>();
-		Set<String> accessors = new HashSet<String>();
+		Set<UUID> accessors = new HashSet<UUID>();
 		if(player != null)
 			accessors.add(player);
 		
@@ -121,7 +122,7 @@ public class BastionBlockManager
 			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
 			getReinforcement(orrigin);
 			if(reinforcement instanceof PlayerReinforcement)
-				accessors.add(reinforcement.getOwner().getFounder());
+				accessors.add(reinforcement.getOwner().getFounderId());
 			
 			for(BastionBlock bastion: this.getBlockingBastions(orrigin.getLocation()))
 				accessors.add(bastion.getOwner());
@@ -213,7 +214,7 @@ public class BastionBlockManager
 	
 	
 	@SuppressWarnings("unchecked")
-	private Set<BastionBlock> getBlockingBastions(Location loc, Set<String> players){
+	private Set<BastionBlock> getBlockingBastions(Location loc, Set<UUID> players){
 		Set<? extends QTBox> boxes = set.forLocation(loc);
 		Set<BastionBlock> bastions = null;
 		
@@ -262,7 +263,7 @@ public class BastionBlockManager
 	public void handleBlockPlace(BlockPlaceEvent event) {
 		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 		blocks.add(event.getBlock());
-		Set<BastionBlock> blocking = shouldStopBlock(null, blocks,event.getPlayer().getName());
+		Set<BastionBlock> blocking = shouldStopBlock(null, blocks,event.getPlayer().getUniqueId());
 		
 		if(blocking.size() != 0){
 			erodeFromPlace(null, blocks,event.getPlayer().getName(),blocking);
@@ -290,9 +291,9 @@ public class BastionBlockManager
 			blocks.add(state.getBlock());
 		
 		Player player = event.getPlayer();
-		String playerName = null;
+		UUID playerName = null;
 		if(player != null)
-			playerName = player.getName();
+			playerName = player.getUniqueId();
 		
 		Set<BastionBlock> blocking = shouldStopBlock(event.getLocation().getBlock(),blocks, playerName);
 		
@@ -315,7 +316,7 @@ public class BastionBlockManager
 		Set<Block> blocks = new HashSet<Block>();
 		blocks.add(event.getBlockClicked().getRelative(event.getBlockFace()));
 		
-		Set<BastionBlock> blocking = shouldStopBlock(null,blocks, event.getPlayer().getName());
+		Set<BastionBlock> blocking = shouldStopBlock(null,blocks, event.getPlayer().getUniqueId());
 		
 		if(blocking.size() != 0)
 			event.setCancelled(true);

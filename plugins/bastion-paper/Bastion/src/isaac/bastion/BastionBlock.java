@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import com.untamedears.citadel.Citadel;
@@ -237,13 +238,13 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		return false;
 	}
 
-	public boolean oneCanPlace(Set<String> players){
+	public boolean oneCanPlace(Set<UUID> players){
 		PlayerReinforcement reinforcement = getReinforcement();
 		//the object will have been closed if null but we still don't want things to crash
 		if (reinforcement == null)
 			return true; 
 
-		for (String player: players){
+		for (UUID player: players){
 			if (player != null)
 				if (reinforcement.isAccessible(player))
 					return true;
@@ -309,8 +310,8 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		return null;
 	}
 
-	public String getOwner(){
-		return getReinforcement().getOwner().getFounder();
+	public UUID getOwner(){
+		return getReinforcement().getOwner().getFounderId();
 	}
 
 	public Location getLocation(){
