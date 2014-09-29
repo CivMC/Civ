@@ -121,7 +121,7 @@ public class BastionBlockManager
 			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
 			getReinforcement(orrigin);
 			if(reinforcement instanceof PlayerReinforcement)
-				accessors.add(reinforcement.getOwnerName());
+				accessors.add(reinforcement.getOwner().getFounder());
 			
 			for(BastionBlock bastion: this.getBlockingBastions(orrigin.getLocation()))
 				accessors.add(bastion.getOwner());
