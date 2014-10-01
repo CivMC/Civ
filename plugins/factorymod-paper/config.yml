@@ -4627,7 +4627,7 @@ production_recipes:
         material: STONE
         amount: 128
     outputs:
-      Redstone Torches:
+      Redstone Repeaters:
         material: DIODE
         amount: 96             
   Produce_Comparators:
