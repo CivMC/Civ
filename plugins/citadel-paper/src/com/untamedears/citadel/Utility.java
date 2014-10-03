@@ -380,7 +380,7 @@ public class Utility {
     	        	if (inv.firstEmpty() == -1 && !given)
     	        		location.getWorld().dropItem(location, material.getRequiredMaterials());
     	        	else if (!given)
-    	        		inv.addItem(new ItemStack(material.getMaterial(), 1));
+    	        		inv.addItem(new ItemStack(material.getMaterial(), material.getRequirements()));
     	        }
     	        else
     	        	location.getWorld().dropItem(location, material.getRequiredMaterials());
