@@ -367,16 +367,20 @@ public class Utility {
     	        if (player != null){
     	        	Inventory inv = player.getInventory();
     	        	boolean given = false;
+    	        	
     	        	for (ItemStack stack: inv.getContents()){
-    	        		if (stack.getTypeId() == material.getMaterialId() && 
+    	        		if (stack != null && stack.getTypeId() == material.getMaterialId() && 
     	        				stack.getAmount() + material.getRequirements() <= stack.getMaxStackSize()){
     	        			stack.setAmount(stack.getAmount() + material.getRequirements());
     	        			given = true;
     	        			break;
     	        		}
     	        	}
-    	        	if (!given)
+    	        	int first = inv.firstEmpty();
+    	        	if (!given && first == -1)
     	        		location.getWorld().dropItem(location, material.getRequiredMaterials());
+    	        	else 
+    	        		inv.setItem(first, new ItemStack(material.getMaterial(), 1));
     	        }
     	        else
     	        	location.getWorld().dropItem(location, material.getRequiredMaterials());
