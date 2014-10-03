@@ -3,7 +3,6 @@ package com.untamedears.citadel.listener;
 import static com.untamedears.citadel.Utility.createPlayerReinforcement;
 import static com.untamedears.citadel.Utility.isPlant;
 import static com.untamedears.citadel.Utility.isRail;
-import static com.untamedears.citadel.Utility.isReinforced;
 import static com.untamedears.citadel.Utility.reinforcementBroken;
 import static com.untamedears.citadel.Utility.sendMessage;
 import static com.untamedears.citadel.Utility.timeUntilMature;
@@ -17,16 +16,14 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.material.Openable;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.Citadel.VerboseMsg;
@@ -37,9 +34,9 @@ import com.untamedears.citadel.SecurityLevel;
 import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.access.CropAccessDelegate;
 import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.PlayerState;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
+import com.untamedears.citadel.entity.PlayerState;
 import com.untamedears.citadel.events.CreateReinforcementEvent;
 
 /**
@@ -256,7 +253,7 @@ public class PlayerListener implements Listener {
                 if (reinforcement == null) {
                     // Break any natural reinforcement before placing the player reinforcement
                     if (generic_reinforcement != null) {
-                        reinforcementBroken(generic_reinforcement);
+                        reinforcementBroken(null, generic_reinforcement);
                     }
                     // Don't allow double reinforcing reinforceable plants
                     if (wouldPlantDoubleReinforce(block)) {

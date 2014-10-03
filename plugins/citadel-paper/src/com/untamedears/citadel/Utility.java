@@ -11,31 +11,28 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Server;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Wool;
 
-import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.Citadel.VerboseMsg;
 import com.untamedears.citadel.access.AccessDelegate;
 import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.PlayerState;
 import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.NaturalReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
+import com.untamedears.citadel.entity.PlayerState;
 import com.untamedears.citadel.entity.ReinforcementKey;
 import com.untamedears.citadel.entity.ReinforcementMaterial;
 import com.untamedears.citadel.events.CreateReinforcementEvent;
@@ -347,7 +344,7 @@ public class Utility {
         reinforcement.setDurability(durability);
         boolean cancelled = durability > 0;
         if (durability <= 0) {
-            cancelled = reinforcementBroken(reinforcement);
+            cancelled = reinforcementBroken(null, reinforcement);
         } else {
             if (reinforcement instanceof PlayerReinforcement) {
                 Citadel.verbose(
@@ -359,7 +356,7 @@ public class Utility {
         return cancelled;
     }
 
-    public static boolean reinforcementBroken(IReinforcement reinforcement) {
+    public static boolean reinforcementBroken(Player player, IReinforcement reinforcement) {
         Citadel.getReinforcementManager().removeReinforcement(reinforcement);
         if (reinforcement instanceof PlayerReinforcement) {
             PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
@@ -367,7 +364,22 @@ public class Utility {
             if (rng.nextDouble() <= pr.getHealth()) {
                 Location location = pr.getBlock().getLocation();
     	        ReinforcementMaterial material = pr.getMaterial();
-                location.getWorld().dropItem(location, material.getRequiredMaterials());
+    	        if (player != null){
+    	        	Inventory inv = player.getInventory();
+    	        	boolean given = false;
+    	        	for (ItemStack stack: inv.getContents()){
+    	        		if (stack.getTypeId() == material.getMaterialId() && 
+    	        				stack.getAmount() + material.getRequirements() <= stack.getMaxStackSize()){
+    	        			stack.setAmount(stack.getAmount() + material.getRequirements());
+    	        			given = true;
+    	        			break;
+    	        		}
+    	        	}
+    	        	if (!given)
+    	        		location.getWorld().dropItem(location, material.getRequiredMaterials());
+    	        }
+    	        else
+    	        	location.getWorld().dropItem(location, material.getRequiredMaterials());
             }
             return pr.isSecurable();
         }

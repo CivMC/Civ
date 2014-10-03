@@ -6,13 +6,11 @@ import static com.untamedears.citadel.Utility.timeUntilMature;
 import java.util.Iterator;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 
 import com.untamedears.citadel.Citadel;
@@ -89,7 +87,7 @@ public class AcidCommand extends PlayerCommand {
             }
             // Break block above
             aboveRein.setDurability(0);
-            reinforcementBroken(aboveRein);
+            reinforcementBroken(null, aboveRein);
             above.setType(Material.AIR);
             // Damage acid block
             Double acidDamagePercentage = 
@@ -113,7 +111,7 @@ public class AcidCommand extends PlayerCommand {
             	sender.sendMessage(event.getReasonForCancel());
             	return true;
             }
-            reinforcementBroken(pr);
+            reinforcementBroken(null, pr);
             block.breakNaturally();
             successfulAcid = true;
         }
