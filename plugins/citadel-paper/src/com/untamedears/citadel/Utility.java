@@ -376,11 +376,11 @@ public class Utility {
     	        			break;
     	        		}
     	        	}
-    	        	int first = inv.firstEmpty();
-    	        	if (!given && first == -1)
+
+    	        	if (inv.firstEmpty() == -1 && !given)
     	        		location.getWorld().dropItem(location, material.getRequiredMaterials());
-    	        	else 
-    	        		inv.setItem(first, new ItemStack(material.getMaterial(), 1));
+    	        	else if (!given)
+    	        		inv.addItem(new ItemStack(material.getMaterial(), 1));
     	        }
     	        else
     	        	location.getWorld().dropItem(location, material.getRequiredMaterials());
