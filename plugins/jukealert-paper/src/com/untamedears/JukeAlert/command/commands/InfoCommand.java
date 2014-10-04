@@ -5,6 +5,7 @@ import static com.untamedears.JukeAlert.util.Utility.findTargetedOwnedSnitch;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,7 +28,7 @@ public class InfoCommand extends PlayerCommand {
         public int page;
     }
 
-    private static Map<String, History> playerPage_ = new TreeMap<String, History>();
+    private static Map<UUID, History> playerPage_ = new TreeMap<UUID, History>();
 
     public InfoCommand() {
         super("Info");
@@ -41,7 +42,7 @@ public class InfoCommand extends PlayerCommand {
     public boolean execute(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             final Player player = (Player)sender;
-            final String playerNameLc = player.getName().toLowerCase();
+            final UUID accountId = player.getUniqueId();
             final Snitch snitch = findTargetedOwnedSnitch(player);
             if (snitch == null) {
                 player.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
@@ -53,8 +54,8 @@ public class InfoCommand extends PlayerCommand {
                 try {
                     offset = Integer.parseInt(args[0]);
                 } catch (NumberFormatException e) {
-                    if (playerPage_.containsKey(playerNameLc)) {
-                        final History hist = playerPage_.get(playerNameLc);
+                    if (playerPage_.containsKey(accountId)) {
+                        final History hist = playerPage_.get(accountId);
                         if (hist != null && hist.snitchId == snitchId) {
                             offset = hist.page + 1;
                         } else {
@@ -68,7 +69,7 @@ public class InfoCommand extends PlayerCommand {
             if (offset < 1) {
                 offset = 1;
             }
-            playerPage_.put(playerNameLc, new History(snitchId, offset));
+            playerPage_.put(accountId, new History(snitchId, offset));
             sendLog(sender, snitch, offset, args.length == 2);
             return true;
         } else {

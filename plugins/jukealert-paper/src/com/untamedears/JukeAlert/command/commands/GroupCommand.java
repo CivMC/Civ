@@ -3,6 +3,7 @@ package com.untamedears.JukeAlert.command.commands;
 import static com.untamedears.JukeAlert.util.Utility.findTargetedOwnedSnitch;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,6 +30,7 @@ public class GroupCommand extends PlayerCommand {
     @Override
     public boolean execute(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
+            Player player = (Player)sender;
             int offset = 1;
             if (args.length > 1) {
                 try {
@@ -46,10 +48,10 @@ public class GroupCommand extends PlayerCommand {
                     sender.sendMessage(ChatColor.RED + "That group doesn't exist!");
                     return true;
                 }
-                String playerName = sender.getName();
-                if (!group.isMember(playerName)
-                    && !group.isModerator(playerName)
-                    && !group.isFounder(playerName))
+                UUID accountId = player.getUniqueId();
+                if (!group.isMember(accountId)
+                    && !group.isModerator(accountId)
+                    && !group.isFounder(accountId))
                 {
                     sender.sendMessage(ChatColor.RED + "You are not part of that group!");
                     return true;

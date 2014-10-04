@@ -633,12 +633,13 @@ public class JukeAlertLogger {
 
         return info;
     }
-    public List<String> getSnitchList(String playerName, int offset) {
+    public List<String> getSnitchList(Player player, int offset) {
         List<String> info = new ArrayList<String>();
 
         try {
         	String uuidString = java.util.UUID.randomUUID().toString();
-        	List<String> groups = groupMediator.getGroupsByPlayerName(playerName, true, true, false);
+            UUID accountId = player.getUniqueId();
+        	List<String> groups = groupMediator.getGroupsByAccount(accountId, true, true, false);
         	
         	StringBuilder sb = new StringBuilder();
         	for(String group : groups) {
@@ -677,7 +678,7 @@ public class JukeAlertLogger {
                 }
             }
         } catch (SQLException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch List using playername " + playerName, ex);
+            this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch List using playername " + player.getDisplayName(), ex);
         }
 
         return info;

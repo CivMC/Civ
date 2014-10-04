@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -60,15 +61,15 @@ public class JukeAlertListener implements Listener {
     private final JukeAlert plugin = JukeAlert.getInstance();
     SnitchManager snitchManager = plugin.getSnitchManager();
     PlayerManager playerManager = plugin.getPlayerManager();
-    private final Map<String, Set<Snitch>> playersInSnitches = new TreeMap<String, Set<Snitch>>();
+    private final Map<UUID, Set<Snitch>> playersInSnitches = new TreeMap<UUID, Set<Snitch>>();
 	private final ArrayList<Location> previousLocations = new ArrayList<Location>();
     private final VanishNoPacket vanishNoPacket = new VanishNoPacket();
 
-    private boolean checkProximity(Snitch snitch, String playerName) {
-        Set<Snitch> inList = playersInSnitches.get(playerName);
+    private boolean checkProximity(Snitch snitch, UUID accountId) {
+        Set<Snitch> inList = playersInSnitches.get(accountId);
         if (inList == null) {
             inList = new TreeSet<Snitch>();
-            playersInSnitches.put(playerName, inList);
+            playersInSnitches.put(accountId, inList);
         }
         return inList.contains(snitch);
     }
@@ -79,20 +80,20 @@ public class JukeAlertListener implements Listener {
         if (vanishNoPacket.isPlayerInvisible(player)) {
             return;
         }
-		String playerName = player.getName();
+		UUID accountId = player.getUniqueId();
 		Set<Snitch> inList = new TreeSet<Snitch>();
-		playersInSnitches.put(player.getName(), inList);
+		playersInSnitches.put(accountId, inList);
 
 		Location location = player.getLocation();
 		World world = location.getWorld();
 		Set<Snitch> snitches = snitchManager.findSnitches(world, location);
 		for (Snitch snitch : snitches) {
-			if (!isOnSnitch(snitch, playerName)) {
+			if (!isOnSnitch(snitch, accountId)) {
                 snitch.imposeSnitchTax();
 				inList.add(snitch);
                 notifyGroup(
                     snitch,
-                    ChatColor.AQUA + " * " + playerName + " logged in to snitch at " + snitch.getName()
+                    ChatColor.AQUA + " * " + player.getDisplayName() + " logged in to snitch at " + snitch.getName()
                     + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
                 if (snitch.shouldLog()) {
                     plugin.getJaLogger().logSnitchLogin(snitch, location, player);
@@ -107,18 +108,18 @@ public class JukeAlertListener implements Listener {
         if (vanishNoPacket.isPlayerInvisible(player)) {
             return;
         }
-		String playerName = player.getName();
-		playersInSnitches.remove(playerName);
+		UUID accountId = player.getUniqueId();
+		playersInSnitches.remove(accountId);
 
 		Location location = player.getLocation();
 		World world = location.getWorld();
 		Set<Snitch> snitches = snitchManager.findSnitches(world, location);
 		for (Snitch snitch : snitches) {
-			if (!isOnSnitch(snitch, playerName)) {
+			if (!isOnSnitch(snitch, accountId)) {
                 snitch.imposeSnitchTax();
                 notifyGroup(
                     snitch,
-                    ChatColor.AQUA + " * " + playerName + " logged out in snitch at " + snitch.getName()
+                    ChatColor.AQUA + " * " + player.getDisplayName() + " logged out in snitch at " + snitch.getName()
                     + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
                 if (snitch.shouldLog()) {
                     plugin.getJaLogger().logSnitchLogout(snitch, location, player);
@@ -195,12 +196,12 @@ public class JukeAlertListener implements Listener {
                     Snitch snitch;
                     if (snitchManager.getSnitch(loc.getWorld(), loc) != null) {
                         snitch = snitchManager.getSnitch(loc.getWorld(), loc);
-                        plugin.getJaLogger().updateSnitchGroup(snitchManager.getSnitch(loc.getWorld(), loc), owner.getFounder());
+                        plugin.getJaLogger().updateSnitchGroup(snitchManager.getSnitch(loc.getWorld(), loc), owner.getName());
                         snitchManager.removeSnitch(snitch);
                         snitch.setGroup(owner);
                     } else {
                         snitch = new Snitch(loc, owner, true);
-                        plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getFounder(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), true);
+                        plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), true);
                         snitch.setId(plugin.getJaLogger().getLastSnitchID());
                         plugin.getJaLogger().increaseLastSnitchID();
                     }
@@ -322,33 +323,33 @@ public class JukeAlertListener implements Listener {
         if (vanishNoPacket.isPlayerInvisible(player)) {
             return;
         }
-        String playerName = player.getName();
+        UUID accountId = player.getUniqueId();
         Location location = player.getLocation();
         World world = location.getWorld();
-        Set<Snitch> inList = playersInSnitches.get(playerName);
+        Set<Snitch> inList = playersInSnitches.get(accountId);
         if (inList == null) {
             inList = new TreeSet<Snitch>();
-            playersInSnitches.put(player.getName(), inList);
+            playersInSnitches.put(accountId, inList);
         }
         Set<Snitch> snitches = snitchManager.findSnitches(world, location);
         for (Snitch snitch : snitches) {
         	if (doesSnitchExist(snitch, true)) {
         		
-        		if (isPartialOwnerOfSnitch(snitch, playerName)) {
+        		if (isPartialOwnerOfSnitch(snitch, accountId)) {
         			if (!inList.contains(snitch)) {
 	                	inList.add(snitch);
                         plugin.getJaLogger().logSnitchVisit(snitch);
         			}
         		}
 	            
-        		if ((!isOnSnitch(snitch, playerName) || isDebugging())) {
+        		if ((!isOnSnitch(snitch, accountId) || isDebugging())) {
 	                if (!inList.contains(snitch)) {
 						snitch.imposeSnitchTax();
 	                	inList.add(snitch);
 						
 						notifyGroup(
 							snitch,
-							ChatColor.AQUA + " * " + playerName + " entered snitch at " + snitch.getName()
+							ChatColor.AQUA + " * " + player.getDisplayName() + " entered snitch at " + snitch.getName()
 							+ " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
 							
 	                    if (snitch.shouldLog()) {
@@ -389,14 +390,14 @@ public class JukeAlertListener implements Listener {
         } else {
         	return;
         }
+        UUID accountId = player.getUniqueId();
         	Set<Snitch> snitches = snitchManager.findSnitches(player.getWorld(), player.getLocation());
         	for (Snitch snitch : snitches) {
                 if (!snitch.shouldLog()) {
                     continue;
                 }
-                
-        		if (!isOnSnitch(snitch, player.getName()) || isDebugging()) {
-        			if (checkProximity(snitch, player.getName())) {
+        		if (!isOnSnitch(snitch, accountId) || isDebugging()) {
+        			if (checkProximity(snitch, accountId)) {
         				plugin.getJaLogger().logUsed(snitch, player, block);
         			}
         		}
@@ -418,13 +419,14 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Player player = (Player) killer;
+        UUID accountId = player.getUniqueId();
         Set<Snitch> snitches = snitchManager.findSnitches(player.getWorld(), player.getLocation());
         for (Snitch snitch : snitches) {
             if (!snitch.shouldLog()) {
                 continue;
             }
-            if (!isOnSnitch(snitch, player.getName()) || isDebugging()) {
-                if (checkProximity(snitch, player.getName())) {
+            if (!isOnSnitch(snitch, accountId) || isDebugging()) {
+                if (checkProximity(snitch, accountId)) {
                     plugin.getJaLogger().logSnitchEntityKill(snitch, player, entity);
                 }
             }
@@ -441,13 +443,14 @@ public class JukeAlertListener implements Listener {
         if (vanishNoPacket.isPlayerInvisible(killer)) {
             return;
         }
+        UUID accountId = killer.getUniqueId();
         Set<Snitch> snitches = snitchManager.findSnitches(killed.getWorld(), killed.getLocation());
         for (Snitch snitch : snitches) {
             if (!snitch.shouldLog()) {
                 continue;
             }
-            if (!isOnSnitch(snitch, killer.getName()) || isDebugging()) {
-                if (checkProximity(snitch, killed.getName()) || checkProximity(snitch, killer.getName())) {
+            if (!isOnSnitch(snitch, accountId) || isDebugging()) {
+                if (checkProximity(snitch, accountId) || checkProximity(snitch, accountId)) {
                     plugin.getJaLogger().logSnitchPlayerKill(snitch, killer, killed);
                 }
             }
@@ -467,13 +470,14 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Block block = event.getBlock();
+        UUID accountId = player.getUniqueId();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
             if (!snitch.shouldLog()) {
                 continue;
             }
-            if (!isOnSnitch(snitch, player.getName()) || isDebugging()) {
-                if (checkProximity(snitch, player.getName())) {
+            if (!isOnSnitch(snitch, accountId) || isDebugging()) {
+                if (checkProximity(snitch, accountId)) {
                     plugin.getJaLogger().logSnitchIgnite(snitch, player, block);
                 }
             }
@@ -508,13 +512,14 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Block block = event.getBlock();
+        UUID accountId = player.getUniqueId();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
             if (!snitch.shouldLog()) {
                 continue;
             }
-            if (!isOnSnitch(snitch, player.getName()) || isDebugging()) {
-                if (checkProximity(snitch, player.getName())) {
+            if (!isOnSnitch(snitch, accountId) || isDebugging()) {
+                if (checkProximity(snitch, accountId)) {
                     plugin.getJaLogger().logSnitchBlockBreak(snitch, player, block);
                 }
             }
@@ -531,13 +536,14 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Block block = event.getBlock();
+        UUID accountId = player.getUniqueId();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
             if (!snitch.shouldLog()) {
                 continue;
             }
-            if (!isOnSnitch(snitch, player.getName()) || isDebugging()) {
-                if (checkProximity(snitch, player.getName())) {
+            if (!isOnSnitch(snitch, accountId) || isDebugging()) {
+                if (checkProximity(snitch, accountId)) {
                     plugin.getJaLogger().logSnitchBlockPlace(snitch, player, block);
                 }
             }
@@ -554,13 +560,14 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Block block = event.getBlockClicked();
+        UUID accountId = player.getUniqueId();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
             if (!snitch.shouldLog()) {
                 continue;
             }
-            if (!isOnSnitch(snitch, player.getName()) || isDebugging()) {
-                if (checkProximity(snitch, player.getName())) {
+            if (!isOnSnitch(snitch, accountId) || isDebugging()) {
+                if (checkProximity(snitch, accountId)) {
                     plugin.getJaLogger().logSnitchBucketFill(snitch, player, block);
                 }
             }
@@ -577,13 +584,14 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Block block = event.getBlockClicked();
+        UUID accountId = player.getUniqueId();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
             if (!snitch.shouldLog()) {
                 continue;
             }
-            if (!isOnSnitch(snitch, player.getName()) || isDebugging()) {
-                if (checkProximity(snitch, player.getName())) {
+            if (!isOnSnitch(snitch, accountId) || isDebugging()) {
+                if (checkProximity(snitch, accountId)) {
                     plugin.getJaLogger().logSnitchBucketEmpty(snitch, player, block.getLocation(), player.getItemInHand());
                 }
             }

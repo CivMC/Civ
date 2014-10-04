@@ -1,7 +1,11 @@
 package com.untamedears.JukeAlert.group;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
@@ -18,12 +22,11 @@ public class GroupMediator {
     public Faction getGroupByName(String groupName) {
         return groupManager.getGroup(groupName);
     }
-    
-    public List<String> getGroupsByPlayerName(String playerName, boolean includeFounders, boolean includeModerators, boolean includeMembers) {
+
+    public List<String> getGroupsByAccount(UUID accountId, boolean includeFounders, boolean includeModerators, boolean includeMembers) {
     	List<String> returnValue = new ArrayList<String>();
-    	
     	if (includeFounders) {
-    		for(Faction f : groupManager.getGroupsByFounder(playerName)) {
+    		for(Faction f : groupManager.getGroupsByFounder(accountId)) {
     			if (!returnValue.contains(f.getName())) {
     				returnValue.add(f.getName());
     			}
@@ -31,7 +34,7 @@ public class GroupMediator {
     	}
     	
     	if (includeModerators) {
-    		for(Faction f : groupManager.getGroupsByModerator(playerName)) {
+    		for(Faction f : groupManager.getGroupsByModerator(accountId)) {
     			if (!returnValue.contains(f.getName())) {
     				returnValue.add(f.getName());
     			}
@@ -39,7 +42,7 @@ public class GroupMediator {
     	}
     	
     	if (includeMembers) {
-    		for(Faction f : groupManager.getGroupsByMember(playerName)) {
+    		for(Faction f : groupManager.getGroupsByMember(accountId)) {
     			if (!returnValue.contains(f.getName())) {
     				returnValue.add(f.getName());
     			}
