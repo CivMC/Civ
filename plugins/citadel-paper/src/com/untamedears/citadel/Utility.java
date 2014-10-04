@@ -366,24 +366,12 @@ public class Utility {
     	        ReinforcementMaterial material = pr.getMaterial();
     	        if (player != null){
     	        	Inventory inv = player.getInventory();
-    	        	boolean given = false;
-    	        	
-    	        	for (ItemStack stack: inv.getContents()){
-    	        		if (stack != null && stack.getTypeId() == material.getMaterialId() && 
-    	        				stack.getAmount() + material.getRequirements() <= stack.getMaxStackSize()){
-    	        			stack.setAmount(stack.getAmount() + material.getRequirements());
-    	        			given = true;
-    	        			break;
-    	        		}
-    	        	}
 
-    	        	if (inv.firstEmpty() == -1 && !given)
-    	        		location.getWorld().dropItem(location, material.getRequiredMaterials());
-    	        	else if (!given)
-    	        		inv.addItem(new ItemStack(material.getMaterial(), material.getRequirements()));
+    	        	for(ItemStack leftover : inv.addItem(
+    	        			material.getRequiredMaterials()).values()) {
+    	                location.getWorld().dropItem(location, leftover);
+    	            };
     	        }
-    	        else
-    	        	location.getWorld().dropItem(location, material.getRequiredMaterials());
             }
             return pr.isSecurable();
         }
