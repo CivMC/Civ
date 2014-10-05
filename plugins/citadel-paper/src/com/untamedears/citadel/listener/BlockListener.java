@@ -14,7 +14,6 @@ import static com.untamedears.citadel.Utility.wouldPlantDoubleReinforce;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,7 +29,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -219,7 +217,7 @@ public class BlockListener implements Listener {
                         VerboseMsg.ReinBypass,
                         player.getDisplayName(), pr.getBlock().getLocation().toString());
                 }
-                is_cancelled = reinforcementBroken(reinforcement);
+                is_cancelled = reinforcementBroken(player, reinforcement);
             } else {
             	PlayerDamageReinforcementEvent dre = new PlayerDamageReinforcementEvent(reinforcement, block, player);
             	
