@@ -1,10 +1,26 @@
 package com.untamedears.JukeAlert.listener;
 
+import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.external.VanishNoPacket;
+import com.untamedears.JukeAlert.manager.PlayerManager;
+import com.untamedears.JukeAlert.manager.SnitchManager;
+import com.untamedears.JukeAlert.model.Snitch;
+
 import static com.untamedears.JukeAlert.util.Utility.doesSnitchExist;
-import static com.untamedears.JukeAlert.util.Utility.isDebugging;
 import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
 import static com.untamedears.JukeAlert.util.Utility.isPartialOwnerOfSnitch;
+import static com.untamedears.JukeAlert.util.Utility.isDebugging;
 import static com.untamedears.JukeAlert.util.Utility.notifyGroup;
+
+import com.untamedears.citadel.SecurityLevel;
+import com.untamedears.citadel.Utility;
+import com.untamedears.citadel.access.AccessDelegate;
+import com.untamedears.citadel.entity.Faction;
+import com.untamedears.citadel.entity.IReinforcement;
+import com.untamedears.citadel.entity.PlayerReinforcement;
+import com.untamedears.citadel.events.CreateReinforcementEvent;
+import com.untamedears.citadel.events.GroupChangeEvent;
+import com.untamedears.citadel.events.GroupChangeType;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -39,21 +55,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.external.VanishNoPacket;
-import com.untamedears.JukeAlert.manager.PlayerManager;
-import com.untamedears.JukeAlert.manager.SnitchManager;
-import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.citadel.SecurityLevel;
-import com.untamedears.citadel.Utility;
-import com.untamedears.citadel.access.AccessDelegate;
-import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.IReinforcement;
-import com.untamedears.citadel.entity.PlayerReinforcement;
-import com.untamedears.citadel.events.CreateReinforcementEvent;
-import com.untamedears.citadel.events.GroupChangeEvent;
-import com.untamedears.citadel.events.GroupChangeType;
 
 public class JukeAlertListener implements Listener {
 
@@ -241,12 +242,12 @@ public class JukeAlertListener implements Listener {
                     Snitch snitch;
                     if (snitchManager.getSnitch(loc.getWorld(), loc) != null) {
                         snitch = snitchManager.getSnitch(loc.getWorld(), loc);
-                        plugin.getJaLogger().updateSnitchGroup(snitchManager.getSnitch(loc.getWorld(), loc), owner.getName());
+                        plugin.getJaLogger().updateSnitchGroup(snitchManager.getSnitch(loc.getWorld(), loc), owner.getFounder());
                         snitchManager.removeSnitch(snitch);
                         snitch.setGroup(owner);
                     } else {
                         snitch = new Snitch(loc, owner, false);
-                        plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), false);
+                        plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getFounder(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), false);
                         snitch.setId(plugin.getJaLogger().getLastSnitchID());
                         plugin.getJaLogger().increaseLastSnitchID();
                     }

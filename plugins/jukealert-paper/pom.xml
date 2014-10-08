@@ -6,7 +6,7 @@
   <groupId>com.untamedears</groupId>
   <artifactId>JukeAlert</artifactId>
   <packaging>jar</packaging>
-  <version>1.2.3-SNAPSHOT</version>
+  <version>1.2.2-SNAPSHOT</version>
   <name>JukeAlert</name>
   <url>https://github.com/erocs/JukeAlert</url>
 
