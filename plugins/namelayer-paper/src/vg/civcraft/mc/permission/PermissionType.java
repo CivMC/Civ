@@ -1,5 +1,8 @@
 package vg.civcraft.mc.permission;
 
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
 /*
  * To add or remove perms add them to this list.
  * Then either modify or leave the default perms given to players
@@ -22,5 +25,24 @@ public enum PermissionType {
 	SUBGROUP, // Add subgroup
 	PERMS, // Have control to modify permissions
 	DELETE, // Delete the current group
-	JOIN_PASSWORD; // Give this permission to the PlayerType you want to give players when they join with a password
+	JOIN_PASSWORD, // Give this permission to the PlayerType you want to give players when they join with a password
+	MERGE, // Gives the player permission to merge the group.
+	LIST_PERMS, // Allows the player to use the command to list the perms of a PlayerType
+	TRANSFER; // Allows the player to transfer the group
+	
+	public static PermissionType getPermissionType(String type){
+		PermissionType pType = null;
+		try{
+			pType = PermissionType.valueOf(type.toUpperCase());
+		} catch(IllegalArgumentException ex){}
+		return pType;
+	}
+	
+	public static void displayPermissionTypes(Player p){
+		String types = "";
+		for (PermissionType type: PermissionType.values())
+			types += type.name() + " ";
+		p.sendMessage(ChatColor.RED +"That PermissionType does not exists.\n" +
+				"The current types are: " + types);
+	}
 }

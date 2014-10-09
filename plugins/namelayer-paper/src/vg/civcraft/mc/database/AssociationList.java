@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-import vg.civcraft.mc.NameTrackerPlugin;
+import vg.civcraft.mc.NameLayerPlugin;
 
 
 public class AssociationList {

@@ -6,7 +6,7 @@ import vg.civcraft.mc.database.AssociationList;
 
 public class NameAPI {
 	private static GroupManager groupManager;
-	private static AssociationList associations = NameTrackerPlugin.getAssociationList();
+	private static AssociationList associations = NameLayerPlugin.getAssociationList();
 	
 	public NameAPI(GroupManager man){
 		groupManager = man;

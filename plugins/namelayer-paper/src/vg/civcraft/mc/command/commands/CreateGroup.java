@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.NameAPI;
+import vg.civcraft.mc.GroupManager.PlayerType;
 import vg.civcraft.mc.command.PlayerCommand;
 import vg.civcraft.mc.group.Group;
 import vg.civcraft.mc.group.GroupType;
@@ -30,13 +31,6 @@ public class CreateGroup extends PlayerCommand{
 			return true;
 		}
 		Player p = (Player) sender;
-		if (GroupType.valueOf(args[1]) == null){
-			String types = "";
-			for (GroupType gt: GroupType.values())
-				types += gt.name() + " ";
-			p.sendMessage(ChatColor.RED + "That is not a valid GroupType. The current GroupTypes are: " + types);
-			return true;
-		}
 		String name = args[0];
 		if (gm.getGroup(name) != null){
 			p.sendMessage(ChatColor.RED + "That group is already taken.");
@@ -47,7 +41,11 @@ public class CreateGroup extends PlayerCommand{
 			password = args[2];
 		else
 			password = null;
-		GroupType type = GroupType.valueOf(args[1]);
+		GroupType type = GroupType.getGroupType(args[1]);
+		if (type == null){
+			GroupType.displayGroupTypes(p);
+			return true;
+		}
 		UUID uuid = NameAPI.getUUID(p.getName());
 		Group g = null;
 		switch(type){

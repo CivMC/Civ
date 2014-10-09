@@ -2,20 +2,21 @@ package vg.civcraft.mc;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
 import vg.civcraft.mc.database.SaveManager;
 import vg.civcraft.mc.events.GroupCreateEvent;
 import vg.civcraft.mc.events.GroupDeleteEvent;
 import vg.civcraft.mc.group.Group;
-import vg.civcraft.mc.group.GroupType;
 import vg.civcraft.mc.permission.GroupPermission;
 import vg.civcraft.mc.permission.PermissionHandler;
 
 public class GroupManager{
-	private static SaveManager groupManagerDao = NameTrackerPlugin.getSaveManager();
+	private static SaveManager groupManagerDao = NameLayerPlugin.getSaveManager();
 	private PermissionHandler permhandle = new PermissionHandler();
 	
 	private static Map<String, Group> groups = new HashMap<String, Group>();
@@ -25,7 +26,7 @@ public class GroupManager{
 				group.getPassword(), group.getType());
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()){
-			NameTrackerPlugin.log(Level.INFO, "Group create event was cancelled for group: " + group.getName());
+			NameLayerPlugin.log(Level.INFO, "Group create event was cancelled for group: " + group.getName());
 			return;
 		}
 		groupManagerDao.createGroup(event.getGroupName(), event.getOwner(), 
@@ -42,6 +43,10 @@ public class GroupManager{
 		groupManagerDao.deleteGroup(groupName);
 		groups.remove(groupName);
 		return true;
+	}
+	
+	public void mergeGroup(String group, String toMerge){
+		groupManagerDao.mergeGroup(group, toMerge);
 	}
 	
 	/*
@@ -70,8 +75,8 @@ public class GroupManager{
 	
 	private void initiateDefaultPerms(String group){
 		// for perms follow the order that they are in the enum PlayerType
-		String[] perms = {"DOORS CHESTS", "DOORS CHESTS BLOCKS MEMBERs", "DOORS CHESTS BLOCKS MODS MEMBERS PASSWORD",
-				"DOORS CHESTS BLOCKS ADMINS MODS MEMBERS PASSWORD SUBGROUP PERMS DELETE", ""};
+		String[] perms = {"DOORS CHESTS", "DOORS CHESTS BLOCKS MEMBERs", "DOORS CHESTS BLOCKS MODS MEMBERS PASSWORD LIST_PERMS",
+				"DOORS CHESTS BLOCKS ADMINS MODS MEMBERS PASSWORD SUBGROUP PERMS DELETE MERGE LIST_PERMS TRANSFER", ""};
 		int x = 0;
 		for (PlayerType role: PlayerType.values()){
 			groupManagerDao.addPermission(group, role.name(), perms[x]);
@@ -90,5 +95,21 @@ public class GroupManager{
 		ADMINS,
 		OWNER,
 		SUBGROUP;// The perm players get when they are added from a super group.
+		
+		public static PlayerType getPlayerType(String type){
+			PlayerType pType = null;
+			try{
+				pType = PlayerType.valueOf(type.toUpperCase());
+			} catch(IllegalArgumentException ex){}
+			return pType;
+		}
+		
+		public static void displayPlayerTypes(Player p){
+			String types = "";
+			for (PlayerType type: PlayerType.values())
+				types += type.name() + " ";
+			p.sendMessage(ChatColor.RED +"That PlayerType does not exists.\n" +
+					"The current types are: " + types);
+		}
 	}
 }

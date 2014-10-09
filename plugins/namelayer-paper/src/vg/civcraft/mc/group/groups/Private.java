@@ -27,7 +27,7 @@ public class Private extends Group{
 	
 	public void addMember(UUID uuid, PlayerType type){
 		db.addMember(uuid, groupName, type);
-		players.get(type).add(uuid);
+		players.put(uuid, type);
 		for (Group g: subGroups.get(this))
 			g.addMember(uuid, PlayerType.SUBGROUP);
 	}
@@ -69,10 +69,14 @@ public class Private extends Group{
 	}
 	
 	public boolean setSuperGroup(Group group){
-		if (!(group instanceof Private))
-			return false;
 		superGroup.remove(this);
+		superGroup.put(this, group);
 		db.addSubGroup(group.getName(), getName());
 		return true;
+	}
+	
+	public void removeSuperGroup(Group group){
+		superGroup.remove(this);
+		superGroup.put(this, null);
 	}
 }

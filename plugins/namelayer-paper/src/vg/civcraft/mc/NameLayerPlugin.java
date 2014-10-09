@@ -1,32 +1,29 @@
 package vg.civcraft.mc;
 
-import java.util.UUID;
+import java.io.File;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.command.CommandHandler;
 import vg.civcraft.mc.database.AssociationList;
 import vg.civcraft.mc.database.Database;
-import vg.civcraft.mc.database.GroupManagerDao;
 import vg.civcraft.mc.database.SaveManager;
 import vg.civcraft.mc.listeners.AssociationListener;
 import vg.civcraft.mc.misc.GameProfileModifier;
 
 
-public class NameTrackerPlugin extends JavaPlugin{
+public class NameLayerPlugin extends JavaPlugin{
 	private static AssociationList associations;
 	private static SaveManager saveManager;
-	private static NameTrackerPlugin instance;
+	private static NameLayerPlugin instance;
 	private CommandHandler handle;
 	private Database db;
 	private GameProfileModifier game= new GameProfileModifier();
@@ -36,6 +33,8 @@ public class NameTrackerPlugin extends JavaPlugin{
 	public void onEnable() {
 		instance = this;
 		config = getConfig();
+		if (!new File(this.getDataFolder() + "config.yml").exists())
+			this.saveDefaultConfig();
 		new ConfigManager();
 		loadDatabases();
 		new NameAPI(new GroupManager());
@@ -56,7 +55,7 @@ public class NameTrackerPlugin extends JavaPlugin{
 		saveManager.flushDataToDB();
 	}
 	
-	public static NameTrackerPlugin getInstance(){
+	public static NameLayerPlugin getInstance(){
 		return instance;
 	}
 	
@@ -69,7 +68,7 @@ public class NameTrackerPlugin extends JavaPlugin{
 		db = new Database(host, port, dbname, username, password, getLogger());
 		db.connect();
 		if (!db.isConnected()){
-			NameTrackerPlugin.log(Level.WARNING, "Could not connect to DataBase, shutting down!");
+			NameLayerPlugin.log(Level.WARNING, "Could not connect to DataBase, shutting down!");
 			Bukkit.getPluginManager().disablePlugin(this); // Why have it try connect, it can't
 		}
 		associations = new AssociationList(db);
@@ -105,5 +104,13 @@ public class NameTrackerPlugin extends JavaPlugin{
 			Bukkit.getLogger().log(level, "[NameTracker:] Stack Trace follows\n --------------------------------------\n" +
 					message +
 					"\n --------------------------------------");
+	}
+	
+	public static void insertVersionNum(int version, String pluginName){
+		saveManager.updateVersion(version, pluginName);
+	}
+	
+	public static int getVersionNum(String pluginName){
+		return saveManager.checkVersion();
 	}
 }

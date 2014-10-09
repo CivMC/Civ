@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import vg.civcraft.mc.GroupManager.PlayerType;
-import vg.civcraft.mc.NameTrackerPlugin;
+import vg.civcraft.mc.NameLayerPlugin;
 import vg.civcraft.mc.database.SaveManager;
 
 public class Group {
@@ -18,9 +18,9 @@ public class Group {
 	private String password;
 	private GroupType type;
 	
-	protected SaveManager db = NameTrackerPlugin.getSaveManager();
+	protected SaveManager db = NameLayerPlugin.getSaveManager();
 	
-	protected Map<PlayerType, List<UUID>> players = new HashMap<PlayerType, List<UUID>>();
+	protected Map<UUID, PlayerType> players = new HashMap<UUID, PlayerType>();
 	
 	public Map<UUID, PlayerType> invitations = new HashMap<UUID, PlayerType>();
 	
@@ -33,14 +33,22 @@ public class Group {
 		for (PlayerType t: PlayerType.values()){
 			List<UUID> list;
 			list = db.getAllMembers(name, t);
-			players.put(t, list);
+			for (UUID uuid: list)
+				players.put(uuid, t);
 		}
 	}
 	
 	public List<UUID> getAllMembers(){
 		List<UUID> uuids = new ArrayList<UUID>();
-		for (PlayerType type: players.keySet())
-			uuids.addAll(players.get(type));
+		uuids.addAll(players.keySet());
+		return uuids;
+	}
+	
+	public List<UUID> getAllMembers(PlayerType type){
+		List<UUID> uuids = new ArrayList<UUID>();
+		for (UUID uu: players.keySet())
+			if (players.get(uu) == type)
+				uuids.add(uu);
 		return uuids;
 	}
 	
@@ -60,16 +68,22 @@ public class Group {
 
 	public void addMember(UUID uuid, PlayerType type){
 		db.addMember(uuid, groupName, type);
-		players.get(type).add(uuid);
+		players.put(uuid, type);
+	}
+	
+	public boolean isMember(UUID uuid){
+		return players.get(uuid) != null;
 	}
 	
 	public boolean isMember(UUID uuid, PlayerType type){
-		return players.get(type).contains(uuid);
+		if (players.get(uuid) != null)
+			return players.get(uuid).equals(type);
+		return false;
 	}
 	
-	public void removeMember(UUID uuid, PlayerType type){
+	public void removeMember(UUID uuid){
 		db.removeMember(uuid, groupName);
-		players.get(type).remove(uuid);
+		players.remove(uuid);
 	}
 	
 	public boolean isOwner(UUID uuid){
@@ -117,10 +131,6 @@ public class Group {
 	}
 	
 	public PlayerType getPlayerType(UUID uuid){
-		for (PlayerType t: players.keySet()){
-			if (players.get(t).contains(uuid))
-				return t;
-		}
-		return null;
+		return players.get(uuid);
 	}
 }

@@ -15,13 +15,13 @@ import vg.civcraft.mc.group.groups.Private;
 import vg.civcraft.mc.permission.GroupPermission;
 import vg.civcraft.mc.permission.PermissionType;
 
-public class AddSubGroup extends PlayerCommand{
+public class AddSuperGroup extends PlayerCommand{
 
-	public AddSubGroup(String name) {
+	public AddSuperGroup(String name) {
 		super(name);
-		setDescription("This command is used to add a subgroup to a group.");
-		setUsage("/groupsaddsubgroup <main group> <sub group>");
-		setIdentifier("groupsaddsubgroup");
+		setDescription("This command is used to add a supergroup to a group.");
+		setUsage("/groupsaddsupergroup <main group> <super group>");
+		setIdentifier("groupsaddsupergroup");
 		setArguments(2,2);
 	}
 
@@ -33,43 +33,48 @@ public class AddSubGroup extends PlayerCommand{
 		}
 		Player p = (Player) sender;
 		Group main = gm.getGroup(args[0]);
-		Group sub = gm.getGroup(args[1]);
+		Group superGroup = gm.getGroup(args[1]);
 		if (main == null){
 			p.sendMessage(ChatColor.RED + "The group " + args[0] + " does not exist.");
 			return true;
 		}
-		if (sub == null){
+		if (superGroup == null){
 			p.sendMessage(ChatColor.RED + "The group " + args[1] + " does not exist.");
 			return true;
 		}
-		GroupPermission perm = gm.getPermissionforGroup(main);
+		
+		GroupPermission superGroupPerm = gm.getPermissionforGroup(superGroup);
 		UUID uuid = NameAPI.getUUID(p.getName());
 		PlayerType type = main.getPlayerType(uuid);
-		if (!perm.isAccessible(PermissionType.SUBGROUP, type)){
-			p.sendMessage(ChatColor.RED + "You dont have permission for that group.");
+		PlayerType superType = superGroup.getPlayerType(uuid);
+		if (type == null || superType == null){
+			p.sendMessage(ChatColor.RED + "You are not on one of the groups.");
 			return true;
 		}
-		if (main.isDisiplined() || sub.isDisiplined()){
+		if (!superGroupPerm.isAccessible(PermissionType.SUBGROUP, superType)){
+			p.sendMessage(ChatColor.RED + "You dont have permission for a group.");
+			return true;
+		}
+		if (main.isDisiplined() || superGroup.isDisiplined()){
 			p.sendMessage(ChatColor.RED + "One of the groups is disiplined.");
 			return true;
 		}
 		if (main.getType() != GroupType.PRIVATE){
-			p.sendMessage(ChatColor.RED + "This group is not the right grouptype for adding subgroups.");
+			p.sendMessage(ChatColor.RED + "This group is not the right grouptype for adding superGroupgroups.");
 			return true;
 		}
 		Private pri = (Private) main;
-		pri.addSubGroup(sub);
+		pri.setSuperGroup(superGroup);
 		
-		if (sub instanceof Private){
-			Private subGroup = (Private) sub;
-			subGroup.setSuperGroup(pri);
-			for (Group g: subGroup.getSubGroups()){
-				pri.addSubGroup(g);
-				for (UUID uu: pri.getAllMembers())
-				pri.addMember(uu, PlayerType.SUBGROUP);
+		if (superGroup instanceof Private){
+			Private Super = (Private) superGroup;
+			for (Group g: pri.getSubGroups()){
+				Super.addSubGroup(g);
+				for (UUID superMember: Super.getAllMembers())
+					g.addMember(superMember, PlayerType.SUBGROUP);
 			}
 		}
-		p.sendMessage(ChatColor.GREEN + "The subgroup has successfully been added.");
+		p.sendMessage(ChatColor.GREEN + "The super group has successfully been added.");
 		return true;
 	}
 

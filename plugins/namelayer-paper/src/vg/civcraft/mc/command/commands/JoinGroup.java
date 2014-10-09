@@ -21,7 +21,7 @@ public class JoinGroup extends PlayerCommand{
 		setDescription("This command is used to join a password protected group.");
 		setUsage("/groupsjoin <group> <password>");
 		setIdentifier("groupsjoin");
-		setArguments(3,3);
+		setArguments(2,2);
 	}
 
 	@Override
@@ -37,8 +37,16 @@ public class JoinGroup extends PlayerCommand{
 			p.sendMessage(ChatColor.RED + "Group is null.");
 			return true;
 		}
+		if (g.isDisiplined()){
+			p.sendMessage(ChatColor.RED + "This group is disiplined.");
+			return true;
+		}
 		if (g.getPassword() == null){
 			p.sendMessage(ChatColor.GREEN + "This group does not have a password, so you can't join it.");
+			return true;
+		}
+		if (!g.getPassword().equals(args[1])){
+			p.sendMessage(ChatColor.RED + "That password is incorrect");
 			return true;
 		}
 		UUID uuid = NameAPI.getUUID(p.getName());

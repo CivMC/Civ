@@ -1,6 +1,6 @@
 package vg.civcraft.mc.database;
 
-import static vg.civcraft.mc.NameTrackerPlugin.log;
+import static vg.civcraft.mc.NameLayerPlugin.log;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,14 +18,15 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import vg.civcraft.mc.GroupManager;
 import vg.civcraft.mc.GroupManager.PlayerType;
-import vg.civcraft.mc.NameTrackerPlugin;
+import vg.civcraft.mc.NameLayerPlugin;
 import vg.civcraft.mc.group.Group;
 import vg.civcraft.mc.group.GroupType;
+import vg.civcraft.mc.group.groups.Private;
 import vg.civcraft.mc.permission.PermissionType;
 
 public class GroupManagerDao {
 	private Database db;
-	protected NameTrackerPlugin plugin = NameTrackerPlugin.getInstance();
+	protected NameLayerPlugin plugin = NameLayerPlugin.getInstance();
 	protected FileConfiguration config = plugin.getConfig();
 	
 	private int maxCountForExecuting = config.getInt("groups.database.maxflushcount");
@@ -41,20 +42,21 @@ public class GroupManagerDao {
 	public void checkUpdate(){
 		log(Level.INFO, "Checking Database to see if update is needed!");
 		int ver = checkVersion();
-		if (ver == 5){
-			log(Level.INFO, "Performing database update to version 6!\n" +
+		if (ver == 0){
+			log(Level.INFO, "Performing database update to version 1!\n" +
 					"This may take a long time depending on how big your database is.");
 			db.execute("alter table faction drop `version`;");
 			db.execute("alter table faction add type int default 0;");
 			db.execute("drop table personal_group;");
 			db.execute("alter table faction_member add role varchar(10) not null default \"MEMBER\"");
 			db.execute("insert into faction_member (faction_name, member_name, role)" +
-					"select m.faction_name m.member_name \"MOD\" from moderator m;");
+					"select m.faction_name, m.member_name, \"MOD\" from moderator m;");
 			db.execute("drop table moderator;");
-			updateVersion(ver);
-			ver++;
+			db.execute("alter table db_version add plugin_name varchar(40);");
+			db.execute("alter table db_version drop primary key;");
+			ver = updateVersion(ver, plugin.getName());
 		}
-		if (ver == 6){
+		if (ver == 1){
 			log(Level.INFO, "Performing database creation!");
 			db.execute("create table if not exists faction(" +
 					"name varchar(255) not null," +
@@ -65,7 +67,7 @@ public class GroupManagerDao {
 					"primary key(name));");
 			db.execute("create table if not exists faction_member(" +
 					"faction_name varchar(255) not null," +
-					"member_name varchar(36) not null)," +
+					"member_name varchar(36) not null," +
 					"role varchar(10) not null default \"MEMBER\"," +
 					"unique key (faction_name, member_name));");
 			db.execute("create table if not exists blacklist(" +
@@ -81,10 +83,10 @@ public class GroupManagerDao {
 					"sub_faction varchar(255) not null," +
 					"unique key (faction, sub_faction));");
 			db.execute("create table if not exists db_version (db_version int not null," +
-					"update_time varchar(24)," +
+					"update_time varchar(24),"
+					+ "plugin_name varchar(40)," +
 					"primary key (db_version));");
-			updateVersion(ver);
-			ver++;
+			ver = updateVersion(ver, plugin.getName());
 		}
 	}
 
@@ -99,6 +101,13 @@ public class GroupManagerDao {
 				"delete from subgroup where faction = groupName;" +
 				"delete from permissions where faction = groupName;" +
 				"end;");
+		db.execute("drop procedure if exists mergeintogroup;");
+		db.execute("create definer=current_user procedure mergeintogroup(" +
+				"in groupName varchar(255), in tomerge varchar(255)) " +
+				"sql security invoker begin " +
+				"update ignore faction_member set faction_name = tomerge where faction_name = groupName;" +
+				"delete from faction where name = groupName;"
+				+ "end;");
 	}
 	
 	private PreparedStatement version, updateVersion;
@@ -111,11 +120,13 @@ public class GroupManagerDao {
 	
 	private PreparedStatement addPerm, getPerms, updatePerm;
 	
+	private PreparedStatement mergeGroup;
+	
 	private PreparedStatement countGroups;
 	
 	public void initializeStatements(){
-		version = db.prepareStatement("select max(db_version) as db_version from db_version");
-		updateVersion = db.prepareStatement("insert into db_version (db_version, update_time) values (?,?)"); 
+		version = db.prepareStatement("select max(db_version) as db_version from db_version where plugin_name=?");
+		updateVersion = db.prepareStatement("insert into db_version (db_version, update_time, plugin_name) values (?,?,?)"); 
 		
 		createGroup = db.prepareStatement("insert into faction(name, founder, password, disipline_flags," +
 				"type) values (?,?,?,?,?)");
@@ -139,31 +150,35 @@ public class GroupManagerDao {
 		updatePerm = db.prepareStatement("update permissions set tier = ? where faction = ? and role = ?");
 		
 		countGroups = db.prepareStatement("select count(*) as count from faction");
+		
+		mergeGroup = db.prepareStatement("call mergeintogroup(?,?)");
 	}
 	
 	public int checkVersion(){
 		try {
+			version.setString(1, plugin.getName());
 			ResultSet set = version.executeQuery();
 			if (!set.next()) 
-				return 6;
+				return 0;
 			return set.getInt("db_version");
 		} catch (SQLException e) {
 			// table doesnt exist
-			return 6;
+			return 0;
 		}
 	}
 	
-	private void updateVersion(int version){
+	public int updateVersion(int version, String pluginname){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
 			updateVersion.setInt(1, version+ 1);
 			updateVersion.setString(2, sdf.format(new Date()));
+			updateVersion.setString(3, pluginname);
 			updateVersion.execute();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		return version++;
 	}
 	
 	public void createGroup(String faction, UUID owner, String password, GroupType type){
@@ -185,8 +200,20 @@ public class GroupManagerDao {
 			getGroup.setString(1, groupName);
 			ResultSet set = getGroup.executeQuery();
 			if (!set.next()) return null;
-			return new Group(set.getString(1), UUID.fromString(set.getString(2)), set.getInt(4) == 0,
-					set.getString(3), GroupType.valueOf(set.getString(5)));
+			String name = set.getString(1);
+			UUID owner = UUID.fromString(set.getString(2));
+			boolean dis = set.getInt(4) == 0;
+			String password = set.getString(3);
+			GroupType type = GroupType.valueOf(set.getString(5));
+			Group g = null;
+			switch(type){
+			case PRIVATE:
+				g = new Private(name, owner, dis, password);
+				break;
+			default:
+				g = new Group(name, owner, dis, password, type);
+			}
+			return g;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -264,7 +291,7 @@ public class GroupManagerDao {
 	
 	protected void flushRemoveMember(){
 		try {
-			removeMember.executeQuery();
+			removeMember.executeBatch();
 			removeMemberCount = 0;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -433,5 +460,16 @@ public class GroupManagerDao {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+	
+	public void mergeGroup(String groupName, String toMerge){
+		try {
+			mergeGroup.setString(1, groupName);
+			mergeGroup.setString(2, groupName);
+			mergeGroup.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

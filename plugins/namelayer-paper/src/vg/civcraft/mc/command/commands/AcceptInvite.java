@@ -46,6 +46,11 @@ public class AcceptInvite extends PlayerCommand{
 			p.sendMessage(ChatColor.RED + "That Group is disiplined.");
 			return true;
 		}
+		if (group.isMember(uuid)){
+			p.sendMessage(ChatColor.RED + "You are already a member you cannot join again.");
+			group.removeRemoveInvite(uuid);
+			return true;
+		}
 		group.addMember(uuid, type);
 		group.removeRemoveInvite(uuid);
 		p.sendMessage(ChatColor.GREEN + "You have successfully been added to the group as a " + type.name() +".");

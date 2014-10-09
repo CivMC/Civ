@@ -2,9 +2,7 @@ package vg.civcraft.mc.command.commands;
 
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -15,14 +13,15 @@ import vg.civcraft.mc.group.Group;
 import vg.civcraft.mc.permission.GroupPermission;
 import vg.civcraft.mc.permission.PermissionType;
 
-public class InvitePlayer extends PlayerCommand{
+public class RemoveMember extends PlayerCommand {
 
-	public InvitePlayer(String name) {
+	public RemoveMember(String name) {
 		super(name);
-		setDescription("This command is used to invite a player to the PlayerType of a group.");
-		setUsage("/groupsinviteplayer <group> <PlayerType> <player>");
-		setIdentifier("groupsinviteplayer");
-		setArguments(3,3);
+		setDescription("This command is used to remove a member from a group.");
+		setUsage("/groupsremovemember <group> <member>");
+		setIdentifier("groupsremovemember");
+		setArguments(2,2);
+		
 	}
 
 	@Override
@@ -42,21 +41,22 @@ public class InvitePlayer extends PlayerCommand{
 			return true;
 		}
 		UUID executor = NameAPI.getUUID(p.getName());
-		PlayerType pType = PlayerType.valueOf(args[1]);
-		if (pType == null){
-			PlayerType.displayPlayerTypes(p);
-			return true;
-		}
-		UUID uuid = NameAPI.getUUID(args[2]);
+		UUID uuid = NameAPI.getUUID(args[0]);
 		if (uuid == null){
 			p.sendMessage(ChatColor.RED + "The player has never played before.");
 			return true;
 		}
 		
+		if (!group.isMember(uuid)){
+			p.sendMessage(ChatColor.RED + "That player is not on the group.");
+			return true;
+		}
+		
 		GroupPermission perm = gm.getPermissionforGroup(group);
 		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
+		PlayerType toBeRemoved = group.getPlayerType(uuid);
 		boolean allowed = false;
-		switch (pType){ // depending on the type the executor wants to add the player to
+		switch (toBeRemoved){ // depending on the type the executor wants to add the player to
 		case MEMBERS:
 			allowed = perm.isAccessible(PermissionType.MEMBERS, t);
 			break;
@@ -77,14 +77,8 @@ public class InvitePlayer extends PlayerCommand{
 			p.sendMessage(ChatColor.RED + "You do not have permissions to modify this group.");
 			return true;
 		}
-		
-		group.addInvite(uuid, pType);
-		OfflinePlayer invitee = Bukkit.getOfflinePlayer(uuid);
-		if (!invitee.isOnline())
-			return true;
-		Player oInvitee = (Player) invitee;
-		oInvitee.sendMessage(ChatColor.GREEN + "You have been invited to the group " + group.getName() +" by " + p.getName() +".\n" +
-				"Use the command /groupsacceptinvite <group> to accept.");
+		p.sendMessage(ChatColor.GREEN + "Player has been removed from the group.");
+		group.removeMember(uuid);
 		return true;
 	}
 

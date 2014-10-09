@@ -10,7 +10,7 @@ import org.bukkit.craftbukkit.v1_7_R4.entity.CraftHumanEntity;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.NameAPI;
-import vg.civcraft.mc.NameTrackerPlugin;
+import vg.civcraft.mc.NameLayerPlugin;
 import vg.civcraft.mc.database.AssociationList;
 
 public class GameProfileModifier {

@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import vg.civcraft.mc.NameTrackerPlugin;
+import vg.civcraft.mc.NameLayerPlugin;
 import vg.civcraft.mc.command.PlayerCommand;
 
 public class GlobalStats extends PlayerCommand{
@@ -13,8 +13,8 @@ public class GlobalStats extends PlayerCommand{
 	public GlobalStats(String name) {
 		super(name);
 		setDescription("This command is used to get stats about groups and the sorts.");
-		setUsage("/groupsstats");
-		setIdentifier("groupsstats");
+		setUsage("/groupsglobalstats");
+		setIdentifier("groupsglobalstats");
 		setArguments(0,0);
 	}
 
@@ -25,11 +25,11 @@ public class GlobalStats extends PlayerCommand{
 			return true;
 		}
 		isRunning = true;
-		Bukkit.getScheduler().runTaskAsynchronously(NameTrackerPlugin.getInstance(), new Runnable(){
+		Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), new Runnable(){
 
 			@Override
 			public void run() {
-				int count = NameTrackerPlugin.getSaveManager().countGroups();
+				int count = NameLayerPlugin.getSaveManager().countGroups();
 				sender.sendMessage(ChatColor.GREEN + "The amount of groups are: " + count);
 			}
 			
