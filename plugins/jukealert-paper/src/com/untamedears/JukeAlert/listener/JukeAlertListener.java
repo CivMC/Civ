@@ -1,26 +1,10 @@
 package com.untamedears.JukeAlert.listener;
 
-import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.external.VanishNoPacket;
-import com.untamedears.JukeAlert.manager.PlayerManager;
-import com.untamedears.JukeAlert.manager.SnitchManager;
-import com.untamedears.JukeAlert.model.Snitch;
-
 import static com.untamedears.JukeAlert.util.Utility.doesSnitchExist;
+import static com.untamedears.JukeAlert.util.Utility.isDebugging;
 import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
 import static com.untamedears.JukeAlert.util.Utility.isPartialOwnerOfSnitch;
-import static com.untamedears.JukeAlert.util.Utility.isDebugging;
 import static com.untamedears.JukeAlert.util.Utility.notifyGroup;
-
-import com.untamedears.citadel.SecurityLevel;
-import com.untamedears.citadel.Utility;
-import com.untamedears.citadel.access.AccessDelegate;
-import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.IReinforcement;
-import com.untamedears.citadel.entity.PlayerReinforcement;
-import com.untamedears.citadel.events.CreateReinforcementEvent;
-import com.untamedears.citadel.events.GroupChangeEvent;
-import com.untamedears.citadel.events.GroupChangeType;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -55,6 +39,22 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffectType;
+
+import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.external.VanishNoPacket;
+import com.untamedears.JukeAlert.manager.PlayerManager;
+import com.untamedears.JukeAlert.manager.SnitchManager;
+import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.citadel.SecurityLevel;
+import com.untamedears.citadel.Utility;
+import com.untamedears.citadel.access.AccessDelegate;
+import com.untamedears.citadel.entity.Faction;
+import com.untamedears.citadel.entity.IReinforcement;
+import com.untamedears.citadel.entity.PlayerReinforcement;
+import com.untamedears.citadel.events.CreateReinforcementEvent;
+import com.untamedears.citadel.events.GroupChangeEvent;
+import com.untamedears.citadel.events.GroupChangeType;
 
 public class JukeAlertListener implements Listener {
 
@@ -62,7 +62,7 @@ public class JukeAlertListener implements Listener {
     SnitchManager snitchManager = plugin.getSnitchManager();
     PlayerManager playerManager = plugin.getPlayerManager();
     private final Map<UUID, Set<Snitch>> playersInSnitches = new TreeMap<UUID, Set<Snitch>>();
-	private final ArrayList<Location> previousLocations = new ArrayList<Location>();
+    private final ArrayList<Location> previousLocations = new ArrayList<Location>();
     private final VanishNoPacket vanishNoPacket = new VanishNoPacket();
 
     private boolean checkProximity(Snitch snitch, UUID accountId) {
@@ -74,69 +74,69 @@ public class JukeAlertListener implements Listener {
         return inList.contains(snitch);
     }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void playerJoinEvent(PlayerJoinEvent event) {
-		Player player = event.getPlayer();
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void playerJoinEvent(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
         if (vanishNoPacket.isPlayerInvisible(player)) {
             return;
         }
-		UUID accountId = player.getUniqueId();
-		Set<Snitch> inList = new TreeSet<Snitch>();
-		playersInSnitches.put(accountId, inList);
+        UUID accountId = player.getUniqueId();
+        Set<Snitch> inList = new TreeSet<Snitch>();
+        playersInSnitches.put(accountId, inList);
 
-		Location location = player.getLocation();
-		World world = location.getWorld();
-		Set<Snitch> snitches = snitchManager.findSnitches(world, location);
-		for (Snitch snitch : snitches) {
-			if (!isOnSnitch(snitch, accountId)) {
+        Location location = player.getLocation();
+        World world = location.getWorld();
+        Set<Snitch> snitches = snitchManager.findSnitches(world, location);
+        for (Snitch snitch : snitches) {
+            if (!isOnSnitch(snitch, accountId)) {
                 snitch.imposeSnitchTax();
-				inList.add(snitch);
+                inList.add(snitch);
                 notifyGroup(
-                    snitch,
-                    ChatColor.AQUA + " * " + player.getDisplayName() + " logged in to snitch at " + snitch.getName()
-                    + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+                        snitch,
+                        ChatColor.AQUA + " * " + player.getDisplayName() + " logged in to snitch at " + snitch.getName()
+                        + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
                 if (snitch.shouldLog()) {
                     plugin.getJaLogger().logSnitchLogin(snitch, location, player);
                 }
-			}
-		}
-	}
+            }
+        }
+    }
 
     public void handlePlayerExit(PlayerEvent event) {
-    	Player player = event.getPlayer();
-    	
+        Player player = event.getPlayer();
+
         if (vanishNoPacket.isPlayerInvisible(player)) {
             return;
         }
-		UUID accountId = player.getUniqueId();
-		playersInSnitches.remove(accountId);
+        UUID accountId = player.getUniqueId();
+        playersInSnitches.remove(accountId);
 
-		Location location = player.getLocation();
-		World world = location.getWorld();
-		Set<Snitch> snitches = snitchManager.findSnitches(world, location);
-		for (Snitch snitch : snitches) {
-			if (!isOnSnitch(snitch, accountId)) {
+        Location location = player.getLocation();
+        World world = location.getWorld();
+        Set<Snitch> snitches = snitchManager.findSnitches(world, location);
+        for (Snitch snitch : snitches) {
+            if (!isOnSnitch(snitch, accountId)) {
                 snitch.imposeSnitchTax();
                 notifyGroup(
-                    snitch,
-                    ChatColor.AQUA + " * " + player.getDisplayName() + " logged out in snitch at " + snitch.getName()
-                    + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+                        snitch,
+                        ChatColor.AQUA + " * " + player.getDisplayName() + " logged out in snitch at " + snitch.getName()
+                        + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
                 if (snitch.shouldLog()) {
                     plugin.getJaLogger().logSnitchLogout(snitch, location, player);
                 }
-			}
-		}
+            }
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void playerKickEvent(PlayerKickEvent event) {
-		handlePlayerExit(event);
-	}
+        handlePlayerExit(event);
+    }
 
     @EventHandler(ignoreCancelled = true)
     public void playerQuitEvent(PlayerQuitEvent event) {
-		handlePlayerExit(event);
-	}
+        handlePlayerExit(event);
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void placeSnitchBlock(BlockPlaceEvent event) {
@@ -174,7 +174,7 @@ public class JukeAlertListener implements Listener {
                 Faction owner = reinforcement.getOwner();
                 if (owner == null) {
                     JukeAlert.getInstance().log(String.format(
-                        "No group on rein (%s): %s", reinforcement.getId(), reinforcement.getOwnerName()));
+                            "No group on rein (%s): %s", reinforcement.getId(), reinforcement.getOwnerName()));
                 }
                 if (reinforcement.getSecurityLevel().equals(SecurityLevel.GROUP)) {
                     Snitch snitch;
@@ -220,7 +220,7 @@ public class JukeAlertListener implements Listener {
                 Faction owner = reinforcement.getOwner();
                 if (owner == null) {
                     JukeAlert.getInstance().log(String.format(
-                        "No group on rein (%s): %s", reinforcement.getId(), reinforcement.getOwnerName()));
+                            "No group on rein (%s): %s", reinforcement.getId(), reinforcement.getOwnerName()));
                 }
                 if (reinforcement.getSecurityLevel().equals(SecurityLevel.GROUP)) {
                     Snitch snitch;
@@ -242,12 +242,12 @@ public class JukeAlertListener implements Listener {
                     Snitch snitch;
                     if (snitchManager.getSnitch(loc.getWorld(), loc) != null) {
                         snitch = snitchManager.getSnitch(loc.getWorld(), loc);
-                        plugin.getJaLogger().updateSnitchGroup(snitchManager.getSnitch(loc.getWorld(), loc), owner.getFounder());
+                        plugin.getJaLogger().updateSnitchGroup(snitchManager.getSnitch(loc.getWorld(), loc), owner.getName());
                         snitchManager.removeSnitch(snitch);
                         snitch.setGroup(owner);
                     } else {
                         snitch = new Snitch(loc, owner, false);
-                        plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getFounder(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), false);
+                        plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), false);
                         snitch.setId(plugin.getJaLogger().getLastSnitchID());
                         plugin.getJaLogger().increaseLastSnitchID();
                     }
@@ -333,32 +333,34 @@ public class JukeAlertListener implements Listener {
         }
         Set<Snitch> snitches = snitchManager.findSnitches(world, location);
         for (Snitch snitch : snitches) {
-        	if (doesSnitchExist(snitch, true)) {
-        		
-        		if (isPartialOwnerOfSnitch(snitch, accountId)) {
-        			if (!inList.contains(snitch)) {
-	                	inList.add(snitch);
+            if (doesSnitchExist(snitch, true)) {
+
+                if (isPartialOwnerOfSnitch(snitch, accountId)) {
+                    if (!inList.contains(snitch)) {
+                        inList.add(snitch);
                         plugin.getJaLogger().logSnitchVisit(snitch);
-        			}
-        		}
-	            
-        		if ((!isOnSnitch(snitch, accountId) || isDebugging())) {
-	                if (!inList.contains(snitch)) {
-						snitch.imposeSnitchTax();
-	                	inList.add(snitch);
-						
-						notifyGroup(
-							snitch,
-							ChatColor.AQUA + " * " + player.getDisplayName() + " entered snitch at " + snitch.getName()
-							+ " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
-							
-	                    if (snitch.shouldLog()) {
-	                        plugin.getJaLogger().logSnitchEntry(snitch, location, player);
-	                    }
-	                }
-	            }
-        		
-        	}
+                    }
+                }
+
+                if ((!isOnSnitch(snitch, accountId) || isDebugging())) {
+                    if (!inList.contains(snitch)) {
+                        snitch.imposeSnitchTax();
+                        inList.add(snitch);
+                        if (player.hasPotionEffect(PotionEffectType.INVISIBILITY)  && !snitch.shouldLog()) 
+                        	continue;
+                        else{
+                            notifyGroup(
+                                    snitch,
+                                    ChatColor.AQUA + " * " + player.getDisplayName() + " entered snitch at " + snitch.getName()
+                                    + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+                        }
+                        if (snitch.shouldLog()){
+                        	plugin.getJaLogger().logSnitchEntry(snitch, location, player);
+                        }
+                    }
+                }
+
+            }
         }
         snitches = snitchManager.findSnitches(world, location, true);
         Set<Snitch> rmList = new TreeSet<Snitch>();
@@ -388,20 +390,20 @@ public class JukeAlertListener implements Listener {
             DoubleChest chest = (DoubleChest) e.getInventory().getHolder();
             block = chest.getLocation().getBlock();
         } else {
-        	return;
+            return;
         }
         UUID accountId = player.getUniqueId();
-        	Set<Snitch> snitches = snitchManager.findSnitches(player.getWorld(), player.getLocation());
-        	for (Snitch snitch : snitches) {
-                if (!snitch.shouldLog()) {
-                    continue;
+        Set<Snitch> snitches = snitchManager.findSnitches(player.getWorld(), player.getLocation());
+        for (Snitch snitch : snitches) {
+            if (!snitch.shouldLog()) {
+                continue;
+            }
+            if (!isOnSnitch(snitch, accountId) || isDebugging()) {
+                if (checkProximity(snitch, accountId)) {
+                    plugin.getJaLogger().logUsed(snitch, player, block);
                 }
-        		if (!isOnSnitch(snitch, accountId) || isDebugging()) {
-        			if (checkProximity(snitch, accountId)) {
-        				plugin.getJaLogger().logUsed(snitch, player, block);
-        			}
-        		}
-        	}
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
