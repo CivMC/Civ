@@ -1,7 +1,9 @@
 package vg.civcraft.mc;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -71,6 +73,10 @@ public class GroupManager{
 	
 	private void deleteGroupPerms(Group group){
 		permhandle.deletePerms(group);
+	}
+	
+	public List<String> getAllGroupNames(UUID uuid){
+		return groupManagerDao.getGroupNames(uuid);
 	}
 	
 	private void initiateDefaultPerms(String group){

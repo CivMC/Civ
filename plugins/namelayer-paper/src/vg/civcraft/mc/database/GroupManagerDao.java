@@ -14,8 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import org.bukkit.configuration.file.FileConfiguration;
-
+import vg.civcraft.mc.ConfigManager;
 import vg.civcraft.mc.GroupManager;
 import vg.civcraft.mc.GroupManager.PlayerType;
 import vg.civcraft.mc.NameLayerPlugin;
@@ -27,9 +26,8 @@ import vg.civcraft.mc.permission.PermissionType;
 public class GroupManagerDao {
 	private Database db;
 	protected NameLayerPlugin plugin = NameLayerPlugin.getInstance();
-	protected FileConfiguration config = plugin.getConfig();
 	
-	private int maxCountForExecuting = config.getInt("groups.database.maxflushcount");
+	private int maxCountForExecuting = ConfigManager.getMaxFlushCount();
 	public GroupManagerDao(Database db){
 		this.db = db;
 		if (db.isConnected()){
@@ -112,7 +110,7 @@ public class GroupManagerDao {
 	
 	private PreparedStatement version, updateVersion;
 	
-	private PreparedStatement createGroup, getGroup, deleteGroup;
+	private PreparedStatement createGroup, getGroup, getAllGroupsNames, deleteGroup;
 	
 	private PreparedStatement addMember, getMembers, removeMember;
 	
@@ -132,6 +130,7 @@ public class GroupManagerDao {
 				"type) values (?,?,?,?,?)");
 		getGroup = db.prepareStatement("select name, founder, password, disipline_flags, type " +
 				"from faction where name = ?");
+		getAllGroupsNames = db.prepareStatement("select faction_name from faction_member where member_name = ?");
 		deleteGroup = db.prepareStatement("call deletegroupfromtable(?)");
 		
 		addMember = db.prepareStatement("insert into faction_member(" +
@@ -219,6 +218,20 @@ public class GroupManagerDao {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public List<String> getGroupNames(UUID uuid){
+		List<String> groups = new ArrayList<String>();
+		try {
+			getAllGroupsNames.setString(1, uuid.toString());
+			ResultSet set = getAllGroupsNames.executeQuery();
+			while(set.next())
+				groups.add(set.getString("faction_name"));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return groups;
 	}
 	
 	// Remember to come back and make it remove members, mods, admins, ect from the group too

@@ -33,7 +33,7 @@ public class GroupStats extends PlayerCommand {
 		Group g = gm.getGroup(args[0]);
 		UUID uuid = NameAPI.getUUID(p.getName());
 		
-		if (!g.isMember(uuid)){
+		if (!g.isMember(uuid) && !(p.isOp() || p.hasPermission("namelayer.admin"))){
 			p.sendMessage(ChatColor.RED + "You are not on this group.");
 			return true;
 		}

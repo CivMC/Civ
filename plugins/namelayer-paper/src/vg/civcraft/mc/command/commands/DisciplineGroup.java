@@ -22,9 +22,15 @@ public class DisciplineGroup extends PlayerCommand{
 		if (!(sender instanceof Player))
 			sender.sendMessage(ChatColor.AQUA + "Meh, fine, just this one.");
 		// checks and stuff should be in plugin.yml so going to assume that sender has perms
+		// naaaaaaa
+		Player p = (Player) sender;
 		Group g = gm.getGroup(args[0]);
 		if (g == null){
 			sender.sendMessage(ChatColor.RED + "Group does not exist.");
+			return true;
+		}
+		if (!p.isOp() || !p.hasPermission("namelayer.admin")){
+			p.sendMessage(ChatColor.RED + "You do not have permission for this op command.");
 			return true;
 		}
 		if (g.isDisiplined()){

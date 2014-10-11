@@ -1,14 +1,8 @@
 package vg.civcraft.mc.database;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 
-import vg.civcraft.mc.NameLayerPlugin;
-import vg.civcraft.mc.group.Group;
+import vg.civcraft.mc.ConfigManager;
 
 public class SaveManager extends GroupManagerDao{
 	
@@ -35,6 +29,6 @@ public class SaveManager extends GroupManagerDao{
 						flushDataToDB();
 					}
 			
-		}, config.getInt("groups.database.autoflush"));
+		}, ConfigManager.getAutoFlush());
 	}
 }

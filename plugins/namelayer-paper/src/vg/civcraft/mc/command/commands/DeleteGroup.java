@@ -47,7 +47,7 @@ public class DeleteGroup extends PlayerCommand{
 			return true;
 		}
 		GroupPermission gPerm = gm.getPermissionforGroup(g);
-		if (!gPerm.isAccessible(PermissionType.DELETE, pType)){
+		if (!gPerm.isAccessible(PermissionType.DELETE, pType) && !(p.isOp() || p.hasPermission("namelayer.admin"))){
 			p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
 			return true;
 		}

@@ -6,7 +6,6 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -28,11 +27,9 @@ public class NameLayerPlugin extends JavaPlugin{
 	private Database db;
 	private GameProfileModifier game= new GameProfileModifier();
 
-	private FileConfiguration config;
 	@Override
 	public void onEnable() {
 		instance = this;
-		config = getConfig();
 		if (!new File(this.getDataFolder() + "config.yml").exists())
 			this.saveDefaultConfig();
 		new ConfigManager();
@@ -40,7 +37,7 @@ public class NameLayerPlugin extends JavaPlugin{
 		new NameAPI(new GroupManager());
 		registerListeners();
 	    handle = new CommandHandler();
-	    handle.addCommands();
+	    handle.registerCommands();
 	}
 	
 	public void registerListeners(){
@@ -60,11 +57,11 @@ public class NameLayerPlugin extends JavaPlugin{
 	}
 	
 	public void loadDatabases(){
-		String host = config.getString("sql.hostname");
-		int port = config.getInt("sql.port");
-		String dbname = config.getString("sql.dbname");
-		String username = config.getString("sql.username");
-		String password = config.getString("sql.password");
+		String host = ConfigManager.getMySQLHostName();
+		int port = ConfigManager.getMySQLPort();
+		String dbname = ConfigManager.getMySQLDbname();
+		String username = ConfigManager.getMySQLUsername();
+		String password = ConfigManager.getMySQLPassword();
 		db = new Database(host, port, dbname, username, password, getLogger());
 		db.connect();
 		if (!db.isConnected()){
