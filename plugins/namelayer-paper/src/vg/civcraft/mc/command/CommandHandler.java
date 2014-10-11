@@ -3,6 +3,7 @@ package vg.civcraft.mc.command;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import vg.civcraft.mc.command.commands.AcceptInvite;
@@ -63,8 +64,8 @@ public class CommandHandler {
 	}
 	
 	public void helpPlayer(Command command, CommandSender sender){
-		sender.sendMessage(new StringBuilder().append("§cCommand:§e " ).append(command.getName()).toString());
-		sender.sendMessage(new StringBuilder().append("§cDescription:§e " ).append(command.getDescription()).toString());
-		sender.sendMessage(new StringBuilder().append("§cUsage:§e ").append(command.getUsage()).toString());
+		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Command: " ).append(command.getName()).toString());
+		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Description: " ).append(command.getDescription()).toString());
+		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "§cUsage: ").append(command.getUsage()).toString());
 	}
 }
