@@ -66,6 +66,6 @@ public class CommandHandler {
 	public void helpPlayer(Command command, CommandSender sender){
 		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Command: " ).append(command.getName()).toString());
 		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Description: " ).append(command.getDescription()).toString());
-		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "§cUsage: ").append(command.getUsage()).toString());
+		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Usage: ").append(command.getUsage()).toString());
 	}
 }
