@@ -46,6 +46,7 @@ public class GroupStatsCommand extends PlayerCommand {
                 CommandUtils.countReinforcements(groupName));
             Bukkit.getScheduler().runTask(
                 Citadel.getPlugin(), new SendResultsTask(this));
+            isRunning = false;
         }
     }
 
@@ -57,6 +58,7 @@ public class GroupStatsCommand extends PlayerCommand {
         setIdentifiers(new String[] {"ctgstats", "ctgst"});
     }
 
+    private boolean isRunning = false;
     public boolean execute(CommandSender sender, String[] args) {
         String group_name = args[0];
         Faction group = Citadel.getGroupManager().getGroup(group_name);
@@ -64,6 +66,12 @@ public class GroupStatsCommand extends PlayerCommand {
             sendMessage(sender, ChatColor.RED, "Group not found");
             return true;
         }
+        if (isRunning){
+        	sendMessage(sender, ChatColor.RED, "Please wait as a group is already being search for.");
+        	return true;
+        }
+        else
+        	isRunning = true;
         if (sender instanceof Player && !sender.hasPermission("citadel.admin.ctgstats")) {
             Player player = (Player)sender;
             UUID accountId = player.getUniqueId();
