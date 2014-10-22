@@ -1,0 +1,463 @@
+realistic_biomes:
+ database_name: "tekkit"
+ database_host: "localhost"
+ database_port: 3306
+ database_user: "tekkit"
+ database_password: ""
+ database_prefix: "rb"
+
+ cache_entire_database: true
+ persistence_enabled: true
+
+ unload_batch_period: 100
+ grow_event_load_chance: 0.1
+
+ unload_batch_max_time: 20
+
+ log_db: false
+ minLogLevel: "INFO"
+ log_db_production: true
+ log_db_production_chunk_load_mintime: 5
+ log_db_production_chunk_unload_mintime: 5
+
+
+ # catagories of biomes
+ biome_aliases:
+  cold: [ICE_PLAINS, ICE_MOUNTAINS, TAIGA, TAIGA_HILLS]
+  cold_forest: [TAIGA, TAIGA_HILLS]
+  temperate: [PLAINS, FOREST, FOREST_HILLS]
+  forest: [FOREST, FOREST_HILLS]
+  mountain: [EXTREME_HILLS, SMALL_MOUNTAINS]
+  hot_dry: [DESERT, DESERT_HILLS]
+  hot_rainy: [JUNGLE, JUNGLE_HILLS]
+  water: [BEACH, OCEAN, FROZEN_OCEAN, RIVER, FROZEN_RIVER]
+  freshwater: [RIVER, FROZEN_RIVER]
+  mushroom: [MUSHROOM_ISLAND, MUSHROOM_SHORE]
+  other: [HELL, SKY, SWAMPLAND]
+
+ # list of crops to be effected by the plugin
+ # valid crop names can be any of the following:
+ #  any of the bukkit.Material enum names    -- crops
+ #  any of the bukkit.TreeType enum names    -- trees
+ #  any of the bukkit.EntityType enum names  -- animals
+ # any other name will have no effect except for inheritance
+ # names with capital letters will be assumed to be official bukkit names
+ # the plugin will give you a warning if you use a name with any capital letters
+ # that does not map to a bukkit material, tree type, or entity type
+
+ growth:
+  #----------------------------------------
+  crop:
+   # the base rate of this plant as a fraction of the standard rate
+   base_rate: 0.06
+   # the rate at which plants will grow in an artificial environment, sunlight factor will be ignored
+   # greenhouse is represented by immediate proximity of a glowstone block with light level 14
+   greenhouse_rate: 0.75
+   # if this flag is true, then the greenhouse growth will also ignore biome growth rates
+   greenhouse_ignore_biome: true
+   # if this flag is true, the growth rate of the grower is modulated by sunlight levels
+   # ie sunlight level = 15 means full growth, while sunlight level 0 means 0 growth
+   # sunlight level is disregarded is this flag is false
+   needs_sunlight: true
+   # multiplier that is applied to plants that are not at level 15 sunlight
+   not_full_sunlight_multiplier: 0.25
+
+   # material that, placed in a column beneath a crop block, may provide a bonus for each underlying
+   # level of the material.
+   soil_material: CLAY
+   # the maximum number of layers to count towards the bonus
+   soil_max_layers: 4
+   # the bonus per level. The total multiplier to the overall growth rate will be:
+   #   100%  +  soil_bonus_per_layer * number_of_layers
+   soil_bonus_per_layer: 0.5
+   # the relative z-level at which to start looking for soil blocks, in this example the column will start
+   # 2 blocks below the crop block, ie beneath both itself and the farmland block
+   soil_layer_offset: 2
+
+  # wheat
+  CROPS:
+   # CROPS will take on any parameters from the "crop" growth configuration that are
+   # not specified in the CROPS definition (so CROPS will "inherit" the base_rate, needs_sunlight ... etc
+   # from "crop")
+   inherit: crop
+   # if this parameter is set for a crop, then it is "persisted" to grow even when the chunk it is in
+   # is unloaded or the server is off. It sets the time to grow to maturity in units of real-life hours
+   # if this parameter is set, then the base_rate is ignored, though the other multipliers will still be
+   # in effect
+   persistent_growth_period: 3
+   biomes:
+    PLAINS: 1.0
+    forest: 0.75
+    SKY: 0.5
+    cold: 0.25
+    hot_dry: 0.25
+    mountain: 0.25
+
+  CARROT:
+   inherit: crop
+   persistent_growth_period: 3
+   biomes:
+    hot_rainy: 1.0
+    SWAMPLAND: 0.5
+    temperate: 0.25
+    hot_dry: 0.1
+    SKY: 0.1
+
+  POTATO:
+   inherit: crop
+   persistent_growth_period: 3
+   biomes:
+    mountain: 1.0
+    temperate: 0.5
+    cold: 0.25
+    SKY: 0.1
+
+  #...................
+
+  NETHER_WARTS:
+   base_rate: 0.015
+   persistent_growth_period: 16
+   needs_sunlight: false
+   not_full_sunlight_multiplier: 2.0
+   soil_material: SOUL_SAND
+   soil_max_layers: 4
+   soil_bonus_per_layer: 0.5
+   soil_layer_offset: 2
+   biomes:
+    HELL: 1.0
+    mushroom: 0.5
+    hot_dry: 0.25
+
+  #.....................
+  # stems grow super slow, while they produce blocks quite quickly
+
+  MELON_STEM:
+   inherit: crop
+   persistent_growth_period: 12
+   biomes:
+    SWAMPLAND: 1.0
+    hot_rainy: 0.5
+    temperate: 0.25
+
+  PUMPKIN_STEM:
+   inherit: crop
+   persistent_growth_period: 12
+   base_rate: 0.2
+   biomes:
+    cold: 1.0
+    temperate: 0.25
+
+  #.....................
+
+  MELON_BLOCK:
+   inherit: crop
+   soil_max_layers: 0
+   base_rate: 0.32
+   biomes:
+    SWAMPLAND: 1.0
+    hot_rainy: 0.5
+    temperate: 0.25
+
+  PUMPKIN:
+   inherit: crop
+   soil_max_layers: 0
+   base_rate: 0.32
+   biomes:
+    cold: 1.0
+    temperate: 0.25
+
+  #----------------------------------------
+
+  column:
+   base_rate: 0.2
+   needs_sunlight: true
+   not_full_sunlight_multiplier: 0.5
+   soil_max_layers: 0
+
+  CACTUS:
+   inherit: column
+   biomes:
+    hot_dry: 1.0
+    HELL: 0.5
+
+  SUGAR_CANE_BLOCK:
+   inherit: column
+   biomes:
+    hot_rainy: 1.0
+    SWAMPLAND: 0.5
+    BEACH: 0.5
+    RIVER: 0.5
+
+  #----------------------------------------
+
+  COCOA:
+   needs_sunlight: true
+   base_rate: 0.1
+   not_full_sunlight_multiplier: 0.2
+   #persistent_growth_period: 24
+   # get incremental bonus from an unbroken chain of up to 25 
+   # vines starting directly below the cocoa pod
+   soil_material: VINE
+   soil_max_layers: 25
+   soil_bonus_per_layer: 0.3
+   soil_layer_offset: 1
+
+   biomes:
+    hot_rainy: 1.0
+
+  #----------------------------------------
+
+  tree:
+   base_rate: 0.04
+   needs_sunlight: true
+   not_full_sunlight_multiplier: 0.125
+   max_soil_layers: 0
+   biomes:
+    mushroom: 0.5
+    freshwater: 0.5
+
+  BIG_TREE:
+   inherit: tree
+   biomes:
+    forest: 2.0
+  BIRCH:
+   inherit: tree
+   biomes:
+    forest: 2.0
+    PLAINS: 0.25
+  REDWOOD:
+   inherit: tree
+   biomes:
+    cold_forest: 2.0
+    mountain: 0.75
+  SWAMP:
+   inherit: tree
+   biomes:
+    SWAMPLAND: 1.0
+  TALL_REDWOOD:
+   inherit: tree
+   biomes:
+    cold_forest: 2.0
+    mountain: 0.5
+  TREE:
+   inherit: tree
+   biomes:
+    forest: 2.0
+    PLAINS: 0.25
+    hot_rainy: 0.5
+    SKY: 0.25
+
+  #......................
+
+  jungle_tree:
+   base_rate: 0.01
+   needs_sunlight: true
+   not_full_sunlight_multiplier: 0.125
+   max_soil_layers: 0
+   biomes:
+    hot_rainy: 1.0
+  JUNGLE:
+   inherit: jungle_tree
+  JUNGLE_BUSH:
+   inherit: jungle_tree
+  SMALL_JUNGLE:
+   inherit: jungle_tree
+  ACACIA:
+   inherit: tree
+   biomes:
+    hot_dry: 2.0
+    PLAINS: 1.0
+    mushroom: 0.0
+    freshwater: 0.0
+
+  DARK_OAK:
+   inherit: tree
+   biomes:
+    SWAMPLAND: 2.0
+    forest: 1.0
+    cold_forest: 0.5
+    mushroom: 0.0
+    freshwater: 0.0
+
+  #......................
+
+  mushroom:
+   base_rate: 1.0
+   needs_sunlight: false
+   max_soil_layers: 0
+   biomes:
+    mushroom: 1.0
+    hot_rainy: 0.1
+    HELL: 0.1
+    SWAMPLAND: 0.1
+    temperate: 0.1
+    water: 0.1
+  tree_BROWN_MUSHROOM:
+   inherit: mushroom
+   biomes:
+    SWAMPLAND: 1.0
+  mat_BROWN_MUSHROOM:
+   inherit: tree_BROWN_MUSHROOM
+  tree_RED_MUSHROOM:
+   inherit: mushroom
+   biomes:
+    HELL: 1.0
+  mat_RED_MUSHROOM:
+   inherit: tree_RED_MUSHROOM
+
+  #----------------------------------------
+  animal:
+   needs_sunlight: true
+   not_full_sunlight_multiplier: 0.125
+   base_rate: 1.0
+
+   soil_max_layers: 0
+
+  COW:
+   inherit: animal
+   biomes:
+    temperate: 1.0
+    mountain: 0.25
+    hot_dry: 0.1
+    cold: 0.5
+    hot_rainy: 0.1
+    mushroom: 1.0
+
+  CHICKEN:
+   inherit: animal
+   base_rate: 0.4
+   not_full_sunlight_multiplier: 1.0
+   biomes:
+    temperate: 1.0
+    mountain: 0.25
+    hot_dry: 0.25
+    hot_rainy: 0.1
+    SWAMPLAND: 0.1
+    mushroom: 1.0
+
+  HORSE:
+   inherit: animal
+   biomes:
+    temperate: 1.0
+    mountain: 0.25
+    hot_dry: 0.25
+    cold: 0.25
+    hot_rainy: 0.1
+    mushroom: 1.0
+
+
+  PIG:
+   inherit: animal
+   not_full_sunlight_multiplier: 0.5
+   biomes:
+    temperate: 0.5
+    mushroom: 1.0
+    SWAMPLAND: 1.0
+    hot_rainy: 1.0
+
+  SHEEP:
+   inherit: animal
+   not_full_sunlight_multiplier: 0.25
+   biomes:
+    mountain: 1.0
+    cold: 0.5
+    mushroom: 0.25
+    temperate: 0.25
+
+  MUSHROOM_COW:
+   inherit: animal
+   not_full_sunlight_multiplier: 0.5
+   biomes:
+    mushroom: 1.0
+  #---------------------------------------
+
+  mat_EGG:
+   inherit: CHICKEN
+   base_rate: 0.1
+   biomes:
+    SKY: 0.25
+
+ fish_drops:
+  #---------------------------------------
+  # Base for all fishable
+  # Three tiers of loot, (e) for enchanted items. Assume an item from the rare
+  #   group will drop 8% of the time and 10% for the uncommon group. When the
+  #   rare group is chosen, each item within has a 16.67% chance of being
+  #   selected. Uncommon group percentages are listed below.
+  # Common: RAW_FISH
+  # Uncommon: LEATHER_BOOTS (10.87%), LEATHER (10.87%), BONE (10.87%),
+  #   POTION (10.87%), STRING (5.43%), FISHING_ROD (2.17%), BOWL (10.87%),
+  #   STICK (5.43%), INK_SACK (10.87%), ROTTEN_FLESH (10.87%),
+  #   TRIPWIRE_HOOK (10.87%)
+  # Rare: NAME_TAG, SADDLE, WATER_LILY, BOW(e), FISHING_ROD(e), BOOK(e)
+
+  mat_RAW_FISH:
+   base_rate: 1.0
+   biomes:
+    water: 1.0
+
+  mat_ENCHANTED_BOOK:
+   base_rate: 0.0
+   biomes:
+    water: 0.0
+
+  mat_BOW:
+   inherit: mat_RAW_FISH
+   # 1.33% * 0.188 = 0.25%
+   base_rate: 0.188
+
+  mat_FISHING_ROD:
+   inherit: mat_RAW_FISH
+   # 1.33% * 0.188 = 0.25%
+   base_rate: 0.188
+
+  mat_NAME_TAG:
+   inherit: mat_RAW_FISH
+   # 1.33% * 0.188 = 0.25%
+   base_rate: 0.188
+
+  mat_WATER_LILY:
+   inherit: mat_RAW_FISH
+   # 1.33% * 0.752 = 1%
+   base_rate: 0.752
+
+  mat_SADDLE:
+   inherit: mat_RAW_FISH
+   # 1.33% * 0.752 = 1%
+   base_rate: 0.752
+
+  mat_POTION:
+   inherit: mat_RAW_FISH
+   # 1.087% * 0.92 = 1%
+   base_rate: 0.92
+
+  mat_TRIPWIRE_HOOK:
+   inherit: mat_RAW_FISH
+   # 1.087% * 0.92 = 1%
+   base_rate: 0.92
+
+  mat_LEATHER:
+   inherit: mat_RAW_FISH
+
+  mat_BOWL:
+   inherit: mat_RAW_FISH
+
+  mat_LEATHER_BOOTS:
+   inherit: mat_RAW_FISH
+
+  mat_ROTTEN_FLESH:
+   inherit: mat_RAW_FISH
+
+  mat_STICK:
+   inherit: mat_RAW_FISH
+
+  mat_STRING:
+   inherit: mat_RAW_FISH
+
+  mat_BONE:
+   inherit: mat_RAW_FISH
+
+  mat_INK_SACK:
+   inherit: mat_RAW_FISH
+
+  #---------------------------------------
