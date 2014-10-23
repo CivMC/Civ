@@ -372,6 +372,8 @@ public class Utility {
     	                location.getWorld().dropItem(location, leftover);
     	            };
     	        }
+    	        else
+    	        	location.getWorld().dropItem(location, material.getRequiredMaterials());
             }
             return pr.isSecurable();
         }
