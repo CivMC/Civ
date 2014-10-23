@@ -4,7 +4,7 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.valadian</groupId>
-  <artifactId>NameTracker</artifactId>
+  <artifactId>NameLayer</artifactId>
   <packaging>jar</packaging>
   <version>1.0.5-SNAPSHOT</version>
   <name>NameTracker</name>
