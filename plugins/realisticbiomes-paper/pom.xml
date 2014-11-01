@@ -6,13 +6,14 @@
   <groupId>com.untamedears</groupId>
   <artifactId>RealisticBiomes</artifactId>
   <packaging>jar</packaging>
-  <version>0.6.4.1-SNAPSHOT</version>
+  <version>0.6.4.2-${build.number}</version>
   <name>RealisticBiomes</name>
-  <url>https://github.com/ttk2/RealisticBiomes</url>
+  <url>https://github.com/Civcraft/RealisticBiomes</url>
   
   <properties>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
+    <build.number>SNAPSHOT</build.number>
   </properties>
   
   <build>
@@ -22,6 +23,7 @@
       <resource>
         <directory>${basedir}</directory>
         <includes>
+          <include>**/*.java</include>
           <include>*.yml</include>
         </includes>
       </resource>
