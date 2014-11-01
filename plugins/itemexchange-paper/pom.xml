@@ -6,13 +6,14 @@
   <groupId>com.untamedears</groupId>
   <artifactId>ItemExchange</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.4-SNAPSHOT</version>
+  <version>0.2.0-${build.number}</version>
   <name>ItemExchange</name>
-  <url>https://github.com/ttk2/ItemExchange</url>
+  <url>https://github.com/Civcraft/ItemExchange</url>
   
   <properties>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
+    <build.number>SNAPSHOT</build.number>
   </properties>
   
   <build>
@@ -25,9 +26,10 @@
           <include>license.txt</include>
         </includes>
       </resource>
-      <resource>      
+      <resource>
         <directory>${basedir}/src</directory>
         <includes>
+          <include>**/*.java</include>
           <include>*.yml</include>
           <include>*.csv</include>
         </includes>

@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -495,9 +496,9 @@ public class ExchangeRule {
 	public boolean followsRules(Player player) {
 		if(this.ruleType == RuleType.INPUT) {
 			if(citadelGroup != null) {
-				String playerName = player.getName();
+				UUID playerId = player.getUniqueId();
 
-				if(citadelGroup.isMember(playerName) || citadelGroup.isModerator(playerName) || citadelGroup.isFounder(playerName)) {
+				if(citadelGroup.isMember(playerId) || citadelGroup.isModerator(playerId) || citadelGroup.isFounder(playerId)) {
 					return true;
 				}
 				else {
@@ -604,9 +605,9 @@ public class ExchangeRule {
 
 		// Citadel group
 		if(citadelGroup != null) {
-			String playerName = p.getName();
+			UUID playerId = p.getUniqueId();
 			
-			if(citadelGroup.isFounder(playerName) || citadelGroup.isModerator(playerName) || citadelGroup.isMember(playerName)) {
+			if(citadelGroup.isFounder(playerId) || citadelGroup.isModerator(playerId) || citadelGroup.isMember(playerId)) {
 				displayed.add(ChatColor.GREEN + "Restricted with Citadel. You have access to this shop.");
 			}
 			else {
