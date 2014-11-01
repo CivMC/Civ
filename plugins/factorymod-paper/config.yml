@@ -2589,6 +2589,38 @@ production_factories:
         amount: 1
         display_name: Smaragdus
         lore: An item used to create a Bastion Block
+  Aspect_Factory:
+    name: Arcane Elementizer
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Netherbrick:
+        material: NETHER_BRICK
+        amount: 1536
+      Redstone:
+        material: REDSTONE
+        amount: 1152
+      Netherquartz:
+        material: QUARTZ
+        amount: 576
+    recipes:
+      - Forge_Aspect_of_Terra
+      - Forge_Aspect_of_End
+      - Forge_Aspect_of_Nether
+      - Craft_Eye_of_Ender
+    repair_multiple: 26
+    repair_inputs:
+      Nether Brick:
+        material: NETHER_BRICK
+        amount: 6
+      Redstone:
+        material: REDSTONE
+        amount: 5
+      Netherquartz:
+        material: QUARTZ
+        amount: 2
 nether_factory:
   name: Nether Factory
   fuel:
@@ -7419,38 +7451,6 @@ production_recipes:
         material: DOUBLE_PLANT
         amount: 4
         durability: 5
-  Aspect_Factory:
-    name: Arcane Elementizer
-    fuel:
-      Charcoal:
-        material: COAL
-        durability: 1
-    inputs:
-      Netherbrick:
-        material: NETHER_BRICK
-        amount: 1536
-      Redstone:
-        material: REDSTONE
-        amount: 1152
-      Netherquartz:
-        material: QUARTZ
-        amount: 576
-    recipes:
-      - Forge_Aspect_of_Terra
-      - Forge_Aspect_of_End
-      - Forge_Aspect_of_Nether
-      - Craft_Eye_of_Ender
-    repair_multiple: 26
-    repair_inputs:
-      Nether Brick:
-        material: NETHER_BRICK
-        amount: 6
-      Redstone:
-        material: REDSTONE
-        amount: 5
-      Netherquartz:
-        material: QUARTZ
-        amount: 2
   Forge_Aspect_of_Terra:
     name: Forge Aspect of Terra
     production_time: 64
