@@ -203,6 +203,9 @@ public class ExchangeRule {
 			short durability = Short.valueOf(showString(compiledRule[3]));
 			// Get Amount
 			int amount = Integer.parseInt(showString(compiledRule[4]));
+			if (amount <= 0) {
+				amount = 1;
+			}
 			// Get Required Enchantments
 			Map<Enchantment, Integer> requiredEnchantments = new HashMap<Enchantment, Integer>();
 			for (String compiledEnchant : compiledRule[5].split(hiddenSecondarySpacer)) {
@@ -356,6 +359,9 @@ public class ExchangeRule {
 					}
 					if (args.length == 3) {
 						amount = Integer.valueOf(args[2]);
+						if (amount <= 0) {
+							amount = 1;
+						}
 					}
 				}
 				
@@ -526,6 +532,9 @@ public class ExchangeRule {
 				invAmount += itemStack.getAmount();
 			}
 		}
+		if (amount <= 0) {
+			return 0;
+		}
 		return invAmount / amount;
 	}
 
@@ -575,7 +584,7 @@ public class ExchangeRule {
 	}
 
 	public String[] display(Player p) {
-		List<String> displayed = new ArrayList<>();
+		List<String> displayed = new ArrayList<String>();
 		// Material type, durability and amount
 		displayed.add(displayedItemStackInfo());
 		// Additional metadata (books, etc.)

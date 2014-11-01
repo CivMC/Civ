@@ -18,7 +18,7 @@ public class InventoryHelpers {
 	 * Returns an input following the ItemRules from the inventory
 	 */
 	public static ItemStack[] getItemStacks(Inventory inventory, ExchangeRule itemRule) {
-		List<ItemStack> itemStacks = new ArrayList<>();
+		List<ItemStack> itemStacks = new ArrayList<ItemStack>();
 		//Gets the ItemStacks from the inventory to be transfered
 		int requiredAmount = itemRule.getAmount();
 		ItemStack[] contents = inventory.getContents();
@@ -62,6 +62,19 @@ public class InventoryHelpers {
 		for (int i = 0; i < deepCopy.length; i++) {
 			if (deepCopy[i] != null) {
 				deepCopy[i] = deepCopy[i].clone();
+			}
+		}
+		return deepCopy;
+	}
+
+	/*
+	 * Returns a deepCopy of an ItemStack array, which creates new ItemStack objects.
+	 */
+	public static ItemStack[] deepCopy(ItemStack[] items) {
+		ItemStack[] deepCopy = new ItemStack[items.length];
+		for (int i = 0; i < items.length; i++) {
+			if (items[i] != null) {
+				deepCopy[i] = items[i].clone();
 			}
 		}
 		return deepCopy;

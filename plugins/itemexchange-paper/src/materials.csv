@@ -6,10 +6,14 @@ Oak Wood Planks,,5,0
 Spruce Wood Planks,,5,1
 Birch Wood Planks,,5,2
 Jungle Wood Planks,,5,3
+Acacia Wood Planks,,5,4
+Dark Oak Wood Planks,,5,5
 Oak Sapling,,6,0
 Spruce Sapling,,6,1
 Birch Sapling,,6,2
 Jungle Sapling,,6,3
+Acacia Sapling,,6,4
+Dark Oak Sapling,,6,5
 Bedrock,,7,0
 Water,,8,0
 Water,,9,0
@@ -25,7 +29,7 @@ Spruce Wood,,17,1
 Birch Wood,,17,2
 Jungle Wood,,17,3
 Oak Leaves,,18,0
-Spruce Wood,,18,1
+Spruce Leaves,,18,1
 Birch Leaves,,18,2
 Jungle Leaves,,18,3
 Sponge,,19,0
@@ -67,6 +71,10 @@ Black Wool,,35,15
 Extended Piston,,36,0
 Dandelion,,37,0
 Rose,,38,0
+Blue Orchid,,38,1
+Allium,,38,2
+Azure Bluet,,38,3
+Oxeye Daisy,,38,8
 Brown Mushroom,,39,0
 Red Mushroom,,40,0
 Gold Block,,41,0
@@ -178,10 +186,14 @@ Double Oak Wood Slab,,125,0
 Double Spruce Wood Slab,,125,1
 Double Birch Wood Slab,,125,2
 Double Jungle Wood Slab,,125,3
+Double Acacia Wood Slab,,125,4
+Double Dark Oak Wood Slab,,125,5
 Oak Slab,,126,0
 Spruce Slab,,126,1
 Birch Slab,,126,2
 Jungle Slab,,126,3
+Acacia Slab,,126,4
+Dark Oak Slab,,126,5
 Cocoa Plant,,127,0
 Sandstone Stairs,,128,0
 Emerald Ore,,129,0
@@ -239,6 +251,12 @@ Brown Stained Clay,,159,12
 Green Stained Clay,,159,13
 Red Stained Clay,,159,14
 Black Stained Clay,,159,15
+Acacia Leaves,,161,0
+Dark Oak Leaves,,161,1
+Acacia Wood,,162,0
+Dark Oak Wood,,162,1
+Acacia Stairs,,163,0
+Dark Oak Stairs,,164,0
 Hay Bale,,170,0
 White Carpet,,171,0
 Orange Carpet,,171,1
@@ -258,6 +276,12 @@ Red Carpet,,171,14
 Black Carpet,,171,15
 Hardened Clay,,172,0
 Coal Block,,173,0
+Sunflower,,175,0
+Lilac,,175,1
+Double Tallgrass,,175,2
+Large Fern,,175,3
+Rose Bush,,175,4
+Peony,,175,5
 Iron Shovel,,256,0
 Iron Pickaxe,,257,0
 Iron Axe,,258,0
@@ -354,11 +378,15 @@ Fishing Rod,,346,0
 Watch,,347,0
 Glowstone Dust,,348,0
 Raw Fish,,349,0
+Raw Salmon,,349,1
+Clownfish,,349,2
+Pufferfish,,349,3
 Cooked Fish,,350,0
+Cooked Salmon,,350,1
 Ink Sack,,351,0
 Rose Red Dye,,351,1
 Cactus Green Dye,,351,2
-Coca Bean,,351,3
+Cocoa Beans,,351,3
 Lapis Lazuli,,351,4
 Purple Dye,,351,5
 Cyan Dye,,351,6
