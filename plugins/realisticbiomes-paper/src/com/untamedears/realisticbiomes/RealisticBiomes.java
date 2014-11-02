@@ -38,23 +38,27 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 	private PlantManager plantManager;
 
 	private static HashMap<TreeType, TreeType> treeTypeMap;
-	
-	//Review this code when ever a new treeType is added to bukkit.
-	static {
-		    treeTypeMap = new HashMap<TreeType, TreeType>();
 
-		   for (TreeType t : TreeType.values()){
-			   if(t==TreeType.BIG_TREE)
-			          treeTypeMap.put(t,TreeType.TREE);
-			   else if(t==TreeType.JUNGLE_BUSH)
-			          treeTypeMap.put(t,TreeType.JUNGLE);
-			   else if(t==TreeType.SMALL_JUNGLE)
-			          treeTypeMap.put(t,TreeType.JUNGLE);
-			   else if(t==TreeType.TALL_REDWOOD)
-			          treeTypeMap.put(t,TreeType.REDWOOD);
-			   else 
-			          treeTypeMap.put(t,t);
-		   }
+	// Review this code when ever a new treeType is added to bukkit.
+	static {
+		treeTypeMap = new HashMap<TreeType, TreeType>();
+
+		for (TreeType t : TreeType.values()) {
+			if (t == TreeType.BIG_TREE)
+				treeTypeMap.put(t, TreeType.TREE);
+			else if (t == TreeType.JUNGLE_BUSH)
+				treeTypeMap.put(t, TreeType.JUNGLE);
+			else if (t == TreeType.SMALL_JUNGLE)
+				treeTypeMap.put(t, TreeType.JUNGLE);
+			else if (t == TreeType.TALL_REDWOOD)
+				treeTypeMap.put(t, TreeType.REDWOOD);
+			else if (t == TreeType.MEGA_REDWOOD)
+				treeTypeMap.put(t, TreeType.REDWOOD);
+			else if (t == TreeType.TALL_BIRCH)
+				treeTypeMap.put(t, TreeType.BIRCH);
+			else
+				treeTypeMap.put(t, t);
+		}
 	}
 	
 	public void onEnable() {		
