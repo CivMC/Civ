@@ -222,34 +222,44 @@ realistic_biomes:
    inherit: tree
    biomes:
     forest: 2.0
+    
   BIRCH:
    inherit: tree
    biomes:
     forest: 2.0
     PLAINS: 0.25
+  
+  TALL_BIRCH:
+   inherit: BIRCH
+   
   REDWOOD:
    inherit: tree
    biomes:
     cold_forest: 2.0
     mountain: 0.75
+    
   SWAMP:
    inherit: tree
    biomes:
     SWAMPLAND: 1.0
+    
   TALL_REDWOOD:
    inherit: tree
    biomes:
     cold_forest: 2.0
     mountain: 0.5
+  
+  MEGA_REDWOOD:
+   inherit: TALL_REDWOOD
+   
   TREE:
    inherit: tree
    biomes:
+    SWAMPLAND: 0.5
     forest: 2.0
     PLAINS: 0.25
     hot_rainy: 0.5
     SKY: 0.25
-
-  #......................
 
   jungle_tree:
    base_rate: 0.01
@@ -258,12 +268,16 @@ realistic_biomes:
    max_soil_layers: 0
    biomes:
     hot_rainy: 1.0
+  
   JUNGLE:
    inherit: jungle_tree
+  
   JUNGLE_BUSH:
    inherit: jungle_tree
+  
   SMALL_JUNGLE:
    inherit: jungle_tree
+   
   ACACIA:
    inherit: tree
    biomes:
@@ -271,7 +285,7 @@ realistic_biomes:
     PLAINS: 1.0
     mushroom: 0.0
     freshwater: 0.0
-
+    
   DARK_OAK:
    inherit: tree
    biomes:
@@ -327,15 +341,8 @@ realistic_biomes:
 
   CHICKEN:
    inherit: animal
-   base_rate: 0.4
+   base_rate: 0.0
    not_full_sunlight_multiplier: 1.0
-   biomes:
-    temperate: 1.0
-    mountain: 0.25
-    hot_dry: 0.25
-    hot_rainy: 0.1
-    SWAMPLAND: 0.1
-    mushroom: 1.0
 
   HORSE:
    inherit: animal
@@ -372,12 +379,6 @@ realistic_biomes:
    biomes:
     mushroom: 1.0
   #---------------------------------------
-
-  mat_EGG:
-   inherit: CHICKEN
-   base_rate: 0.1
-   biomes:
-    SKY: 0.25
 
  fish_drops:
   #---------------------------------------

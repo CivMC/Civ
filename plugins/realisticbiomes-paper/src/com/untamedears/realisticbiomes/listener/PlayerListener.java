@@ -73,6 +73,8 @@ public class PlayerListener implements Listener {
 		saplingIndexMap.put(new Integer(1), TreeType.REDWOOD);
 		saplingIndexMap.put(new Integer(2), TreeType.BIRCH);
 		saplingIndexMap.put(new Integer(3), TreeType.JUNGLE);
+		saplingIndexMap.put(new Integer(4), TreeType.ACACIA);
+		saplingIndexMap.put(new Integer(5), TreeType.DARK_OAK);
 	}
 	
 	private Map<Object, GrowthConfig> growthConfigs;
