@@ -42,11 +42,11 @@ public class GroupStatsCommand extends PlayerCommand {
         @Override
         public void run() {
             CommandUtils.formatGroupMembers(results, groupName);
-            CommandUtils.formatReinforcements(results, groupName,
-                CommandUtils.countReinforcements(groupName));
+            //CommandUtils.formatReinforcements(results, groupName,
+            //    CommandUtils.countReinforcements(groupName));
             Bukkit.getScheduler().runTask(
                 Citadel.getPlugin(), new SendResultsTask(this));
-            isRunning = false;
+            //isRunning = false;
         }
     }
 
@@ -71,7 +71,7 @@ public class GroupStatsCommand extends PlayerCommand {
         	return true;
         }
         else
-        	isRunning = true;
+        	//isRunning = true;
         if (sender instanceof Player && !sender.hasPermission("citadel.admin.ctgstats")) {
             Player player = (Player)sender;
             UUID accountId = player.getUniqueId();
