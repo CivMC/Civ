@@ -6,7 +6,7 @@
   <groupId>com.untamedears</groupId>
   <artifactId>Citadel</artifactId>
   <packaging>jar</packaging>
-  <version>2.6.11-SNAPSHOT</version>
+  <version>2.6.12-SNAPSHOT</version>
   <name>Citadel</name>
   <url>https://github.com/ttk2/Citadel</url>
   

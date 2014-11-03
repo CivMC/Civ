@@ -42,8 +42,9 @@ public class GroupStatsCommand extends PlayerCommand {
         @Override
         public void run() {
             CommandUtils.formatGroupMembers(results, groupName);
-            //CommandUtils.formatReinforcements(results, groupName,
-            //    CommandUtils.countReinforcements(groupName));
+            if (sender.hasPermission("citadel.admin.ctgstats"))
+            	CommandUtils.formatReinforcements(results, groupName,
+            			CommandUtils.countReinforcements(groupName));
             Bukkit.getScheduler().runTask(
                 Citadel.getPlugin(), new SendResultsTask(this));
             //isRunning = false;
