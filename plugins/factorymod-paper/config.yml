@@ -1719,6 +1719,7 @@ production_factories:
       - Produce_Sticky_Pistons
       - Produce_Jukeboxes
       - Produce_Hoppers
+      - Produce_Droppers
     repair_multiple: 10
     repair_inputs:
       Redstone:
@@ -4805,6 +4806,19 @@ production_recipes:
     outputs:
       Hopper:
         material: HOPPER
+        amount: 64
+  Produce_Droppers:
+    name: Produce Droppers
+    inputs:
+      Cobblestone:
+        material: COBBLESTONE
+        amount: 320
+      Redstone:
+        material: REDSTONE
+        amount: 32
+    outputs:
+      Droppers:
+        material: DROPPER
         amount: 64
   Smelt_Gold_Ore:
     name: Smelt Gold Ore
