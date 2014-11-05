@@ -57,5 +57,9 @@
       <id>bukkit-repo</id>
       <url>http://repo.bukkit.org/content/groups/public/</url>
     </repository>
+    <repository>
+      <id>citadel-repo</id>
+      <url>http://192.99.169.83:8080/plugin/repository/project/Citadel-master/LastSuccessful/repository/</url>
+    </repository>
   </repositories>
 </project>
