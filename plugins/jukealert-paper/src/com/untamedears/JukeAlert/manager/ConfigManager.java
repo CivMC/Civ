@@ -38,6 +38,7 @@ public class ConfigManager
     private int maxPlayerAlertCount;
 	private boolean taxReinforcementPerAlert;
     private int alertRateLimit;
+    private boolean enableInvisibility;
 
 	private File main;
 	private FileConfiguration config;
@@ -104,7 +105,7 @@ public class ConfigManager
         snitchCullingEnabled = loadBoolean("snitchculling.enabled", false);
         maxSnitchLifetimeDays = loadInt("snitchculling.maxlifetime", 21);
         alertRateLimit = loadInt("settings.alertratelimit", 70);
-
+        enableInvisibility = loadBoolean("settings.enableinvisiblity", false);
         save();
     }
 
@@ -341,5 +342,9 @@ public class ConfigManager
 
     public int getAlertRateLimit() {
         return alertRateLimit;
+    }
+    
+    public boolean getInvisibilityEnabled(){
+    	return enableInvisibility;
     }
 }

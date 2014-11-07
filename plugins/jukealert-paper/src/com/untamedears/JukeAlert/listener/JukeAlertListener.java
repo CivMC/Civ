@@ -346,7 +346,8 @@ public class JukeAlertListener implements Listener {
                     if (!inList.contains(snitch)) {
                         snitch.imposeSnitchTax();
                         inList.add(snitch);
-                        if (player.hasPotionEffect(PotionEffectType.INVISIBILITY)  && !snitch.shouldLog()) 
+                        if ((plugin.getConfigManager().getInvisibilityEnabled() && player.hasPotionEffect(PotionEffectType.INVISIBILITY))
+                        		&& !snitch.shouldLog()) 
                         	continue;
                         else{
                             notifyGroup(

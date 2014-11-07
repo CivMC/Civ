@@ -5,18 +5,16 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.citadel.Citadel;
 import com.untamedears.citadel.GroupManager;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionMember;
 import com.untamedears.citadel.entity.Moderator;
-import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.manager.ConfigManager;
-import com.untamedears.JukeAlert.util.IgnoreList;
 
 // An Iterator that produces the Players associated with a specific Citadel
 //  group. First the founder, then the moderators, and lastly the members.
@@ -131,7 +129,9 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
     private Player getFounder() {
         Faction group = manager_.getGroup(groupName_);
         if (group != null) {
-            return Bukkit.getPlayerExact(group.getFounderName());
+            Player player = group.getFounderPlayer();
+            if (player != null)
+            	return player;
         }
         return null;
     }
@@ -143,7 +143,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
         }
         while (mods_iter_.hasNext()) {
             Moderator mod = mods_iter_.next();
-            Player player = Bukkit.getPlayerExact(mod.getPlayerName());
+            Player player = mod.getPlayer();
             if (player != null) {
                 return player;
             }
@@ -159,7 +159,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
         }
         while (member_iter_.hasNext()) {
             FactionMember member = member_iter_.next();
-            Player player = Bukkit.getPlayerExact(member.getPlayerName());
+            Player player = member.getPlayer();
             if (player != null) {
                 return player;
             }
