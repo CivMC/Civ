@@ -17,12 +17,14 @@ public class Snitch implements QTBox, Comparable {
     private Location location;
     private Faction group;
     private boolean shouldLog;
+    private boolean shouldToggleLevers;
     private int minx, maxx, miny, maxy, minz, maxz, radius;
 
-    public Snitch(Location loc, Faction group, boolean shouldLog) {
+    public Snitch(Location loc, Faction group, boolean shouldLog, boolean shouldToggleLevers) {
         this.group = group;
         this.shouldLog = shouldLog;
         this.location = loc;
+        this.shouldToggleLevers = shouldToggleLevers;
         this.name = "";
         radius = 11;
         calculateDimensions();
@@ -158,6 +160,14 @@ public class Snitch implements QTBox, Comparable {
 
     public void setShouldLog(boolean shouldLog) {
         this.shouldLog = shouldLog;
+    }
+    
+    public boolean shouldToggleLevers() {
+    	return shouldToggleLevers;
+    }
+    
+    public void setShouldToggleLevers(boolean shouldToggleLevers) {
+    	this.shouldToggleLevers = shouldToggleLevers;
     }
 
     //Checks if the location is within the cuboid.

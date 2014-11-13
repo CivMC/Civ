@@ -28,6 +28,7 @@ public class ConfigManager
 	private int daysFromLastAdminVisitForLoggedSnitchCulling;
 	private int daysFromLastAdminVisitForNonLoggedSnitchCulling;
 	private boolean snitchEntryCullingEnabled;
+	private boolean allowTriggeringLevers;
 	private int maxEntryCount;
 	private int minEntryLifetimeDays;
 	private int maxEntryLifetimeDays;
@@ -88,6 +89,7 @@ public class ConfigManager
         logsPerPage = loadInt("settings.logsPerPage");
 		daysFromLastAdminVisitForLoggedSnitchCulling = loadInt("settings.daysFromLastAdminVisitForLoggedSnitchCulling");
 		daysFromLastAdminVisitForNonLoggedSnitchCulling = loadInt("settings.daysFromLastAdminVisitForNonLoggedSnitchCulling");
+        allowTriggeringLevers = loadBoolean("settings.allowTriggeringLevers",false);
         setDebugging(loadBoolean("settings.debugging"));
         if (isSet("settings.max_alert_distance")) {
             maxAlertDistanceAll = loadDouble("settings.max_alert_distance");
@@ -270,6 +272,10 @@ public class ConfigManager
 	
 	public int getDaysFromLastAdminVisitForLoggedSnitchCulling() {
 		return daysFromLastAdminVisitForLoggedSnitchCulling;
+	}
+	
+	public Boolean getAllowTriggeringLevers() {
+		return allowTriggeringLevers;
 	}
 
 	public void setLogsPerPage(int logsPerPage) {

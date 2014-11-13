@@ -18,6 +18,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.LivingEntity;
@@ -39,7 +40,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.material.Lever;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.external.VanishNoPacket;
@@ -97,6 +100,9 @@ public class JukeAlertListener implements Listener {
                         + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
                 if (snitch.shouldLog()) {
                     plugin.getJaLogger().logSnitchLogin(snitch, location, player);
+
+                	Location north = new Location(world, snitch.getX(), snitch.getY(), snitch.getZ()-1);
+                	toggleLeverIfApplicable(snitch, north, true);
                 }
             }
         }
@@ -184,7 +190,7 @@ public class JukeAlertListener implements Listener {
                         snitchManager.removeSnitch(snitch);
                         snitch.setGroup(owner);
                     } else {
-                        snitch = new Snitch(loc, owner, true);
+                        snitch = new Snitch(loc, owner, true, false);
                         plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), true);
                         snitch.setId(plugin.getJaLogger().getLastSnitchID());
                         plugin.getJaLogger().increaseLastSnitchID();
@@ -200,7 +206,7 @@ public class JukeAlertListener implements Listener {
                         snitchManager.removeSnitch(snitch);
                         snitch.setGroup(owner);
                     } else {
-                        snitch = new Snitch(loc, owner, true);
+                        snitch = new Snitch(loc, owner, true, false);
                         plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), true);
                         snitch.setId(plugin.getJaLogger().getLastSnitchID());
                         plugin.getJaLogger().increaseLastSnitchID();
@@ -230,7 +236,7 @@ public class JukeAlertListener implements Listener {
                         snitchManager.removeSnitch(snitch);
                         snitch.setGroup(owner);
                     } else {
-                        snitch = new Snitch(loc, owner, false);
+                        snitch = new Snitch(loc, owner, false, false);
                         plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), false);
                         snitch.setId(plugin.getJaLogger().getLastSnitchID());
                         plugin.getJaLogger().increaseLastSnitchID();
@@ -246,7 +252,7 @@ public class JukeAlertListener implements Listener {
                         snitchManager.removeSnitch(snitch);
                         snitch.setGroup(owner);
                     } else {
-                        snitch = new Snitch(loc, owner, false);
+                        snitch = new Snitch(loc, owner, false, false);
                         plugin.getJaLogger().logSnitchPlace(player.getWorld().getName(), owner.getName(), "", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), false);
                         snitch.setId(plugin.getJaLogger().getLastSnitchID());
                         plugin.getJaLogger().increaseLastSnitchID();
@@ -357,6 +363,8 @@ public class JukeAlertListener implements Listener {
                         }
                         if (snitch.shouldLog()){
                         	plugin.getJaLogger().logSnitchEntry(snitch, location, player);
+                        	Location north = new Location(world, snitch.getX(), snitch.getY(), snitch.getZ()-1);
+                        	toggleLeverIfApplicable(snitch, north, true);
                         }
                     }
                 }
@@ -372,6 +380,54 @@ public class JukeAlertListener implements Listener {
             rmList.add(snitch);
         }
         inList.removeAll(rmList);
+    }
+    
+    // Exceptions:  No exceptions must be raised from this for any reason.
+    private void toggleLeverIfApplicable(final Snitch snitch, final Location blockToPossiblyToggle, final Boolean leverShouldEnable)
+    {
+    	try
+    	{
+    		if(!JukeAlert.getInstance().getConfigManager().getAllowTriggeringLevers()) return;
+	    	if (null == snitch) return;
+	    	
+	    	World world = snitch.getLoc().getWorld();
+	    	if(snitch.shouldToggleLevers())
+	        {
+	        	if (world.getBlockAt(blockToPossiblyToggle).getType() == Material.LEVER)
+	        	{
+	        		BlockState leverState = world.getBlockAt(blockToPossiblyToggle).getState();
+	        		Lever lever = ((Lever)leverState.getData());
+	        		
+	        		if(leverShouldEnable && !lever.isPowered())
+	        		{
+	        			lever.setPowered(true);
+		        		leverState.setData(lever);
+		        		leverState.update();
+	        		}
+	        		else if (!leverShouldEnable && lever.isPowered())
+	        		{
+	        			lever.setPowered(false);
+		        		leverState.setData(lever);
+		        		leverState.update();
+	        		}
+	        		
+	        		if (leverShouldEnable)
+	        		{
+		        		BukkitScheduler scheduler = plugin.getServer().getScheduler();
+			        	scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
+		                    public void run() {
+		                    	toggleLeverIfApplicable(snitch, blockToPossiblyToggle, false);
+		                    }
+		                }, 15L);
+	        		}
+	        	}
+	        }
+    	}
+    	catch(Exception ex)
+    	{
+    		// eat.
+    		return;
+    	}
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -402,6 +458,9 @@ public class JukeAlertListener implements Listener {
             if (!isOnSnitch(snitch, accountId) || isDebugging()) {
                 if (checkProximity(snitch, accountId)) {
                     plugin.getJaLogger().logUsed(snitch, player, block);
+                    
+                	Location south = new Location(block.getWorld(), snitch.getX(), snitch.getY(), snitch.getZ()+1);
+                	toggleLeverIfApplicable(snitch, south, true);
                 }
             }
         }
@@ -524,6 +583,8 @@ public class JukeAlertListener implements Listener {
             if (!isOnSnitch(snitch, accountId) || isDebugging()) {
                 if (checkProximity(snitch, accountId)) {
                     plugin.getJaLogger().logSnitchBlockBreak(snitch, player, block);
+                	Location west = new Location(block.getWorld(), snitch.getX()-1, snitch.getY(), snitch.getZ());
+                	toggleLeverIfApplicable(snitch, west, true);
                 }
             }
         }
@@ -542,12 +603,16 @@ public class JukeAlertListener implements Listener {
         UUID accountId = player.getUniqueId();
         Set<Snitch> snitches = snitchManager.findSnitches(block.getWorld(), block.getLocation());
         for (Snitch snitch : snitches) {
+
             if (!snitch.shouldLog()) {
                 continue;
             }
             if (!isOnSnitch(snitch, accountId) || isDebugging()) {
                 if (checkProximity(snitch, accountId)) {
                     plugin.getJaLogger().logSnitchBlockPlace(snitch, player, block);
+
+                    Location east = new Location(block.getWorld(), snitch.getX()+1, snitch.getY(), snitch.getZ());
+                	toggleLeverIfApplicable(snitch, east, true);
                 }
             }
         }
