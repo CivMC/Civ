@@ -1,5 +1,7 @@
 package com.untamedears.citadel.entity;
 
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -41,11 +43,11 @@ public class FactionMember implements Comparable {
 	}
 
     public String getPlayerName() {
-        return Citadel.getAccountIdManager().getPlayerName(this.memberName);
+        return Citadel.getAccountIdManager().getPlayerName(UUID.fromString(this.memberName));
     }
 
     public Player getPlayer() {
-        return Bukkit.getPlayerExact(getPlayerName());
+        return Bukkit.getPlayer(UUID.fromString(memberName));
     }
 
 	public String getFactionName(){
