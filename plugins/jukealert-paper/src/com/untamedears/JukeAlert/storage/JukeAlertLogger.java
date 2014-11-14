@@ -64,6 +64,7 @@ public class JukeAlertLogger {
     private PreparedStatement updateGroupStmt;
     private PreparedStatement updateCuboidVolumeStmt;
     private PreparedStatement updateSnitchNameStmt;
+    private PreparedStatement updateSnitchToggleLeversStmt;
     private PreparedStatement updateSnitchGroupStmt;
     private PreparedStatement getAllSnitchIdsStmt;
     private PreparedStatement cullSnitchEntriesStmt;
@@ -177,6 +178,10 @@ public class JukeAlertLogger {
         db.silentExecute(String.format("ALTER TABLE %s ADD COLUMN (last_semi_owner_visit_date DATETIME, INDEX idx_last_visit(last_semi_owner_visit_date, snitch_should_log));", snitchsTbl));
         db.silentExecute(String.format("UPDATE %s SET last_semi_owner_visit_date = UTC_TIMESTAMP() WHERE last_semi_owner_visit_date IS NULL;", snitchsTbl));
         db.silentExecute(String.format("ALTER TABLE %s MODIFY COLUMN last_semi_owner_visit_date DATETIME NOT NULL;", snitchsTbl));
+
+        db.silentExecute(String.format("ALTER TABLE %s ADD COLUMN (allow_triggering_lever bit);", snitchsTbl));
+        db.silentExecute(String.format("UPDATE %s SET allow_triggering_lever = 0 WHERE allow_triggering_lever IS NULL;", snitchsTbl));
+        db.silentExecute(String.format("ALTER TABLE %s MODIFY COLUMN allow_triggering_lever bit NOT NULL;", snitchsTbl));
         
         try {
             db.executeLoud(MessageFormat.format(
@@ -412,8 +417,8 @@ public class JukeAlertLogger {
 
         //
         insertNewSnitchStmt = db.prepareStatement(String.format(
-                "INSERT INTO %s (snitch_world, snitch_name, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z, snitch_should_log, last_semi_owner_visit_date)"
-                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP())",
+                "INSERT INTO %s (snitch_world, snitch_name, snitch_x, snitch_y, snitch_z, snitch_group, snitch_cuboid_x, snitch_cuboid_y, snitch_cuboid_z, snitch_should_log, last_semi_owner_visit_date,allow_triggering_lever)"
+                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP(),0)",
                 snitchsTbl));
 
         //
@@ -443,6 +448,12 @@ public class JukeAlertLogger {
                 + " WHERE snitch_id=?",
                 snitchsTbl));
 
+        //
+        updateSnitchToggleLeversStmt = db.prepareStatement(String.format(
+                "UPDATE %s SET allow_triggering_lever=?"
+                + " WHERE snitch_id=?",
+                snitchsTbl));
+        
         //
         updateSnitchGroupStmt = db.prepareStatement(String.format(
                 "UPDATE %s SET snitch_group=?"
@@ -527,7 +538,7 @@ public class JukeAlertLogger {
                         "Group not found for (%s,%d,%d,%d): %s",
                         world_.getName(), (int)x, (int)y, (int)z, groupName));
                 }
-                Snitch snitch = new Snitch(location, group, rs_.getBoolean("snitch_should_log"));
+                Snitch snitch = new Snitch(location, group, rs_.getBoolean("snitch_should_log"), rs_.getBoolean("allow_triggering_lever"));
                 snitch.setId(rs_.getInt("snitch_id"));
                 snitch.setName(rs_.getString("snitch_name"));
                 return snitch;
@@ -1076,6 +1087,24 @@ public class JukeAlertLogger {
                         updateSnitchNameStmt.setString(1, name);
                         updateSnitchNameStmt.setInt(2, snitch.getId());
                         updateSnitchNameStmt.execute();
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+    }
+
+    //Updates the ToggleLevers of the snitch in the database.
+    public void updateSnitchToggleLevers(final Snitch snitch, final Boolean isEnabled) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    synchronized (updateSnitchToggleLeversStmt) {
+                    	updateSnitchToggleLeversStmt.setBoolean(1, isEnabled);
+                    	updateSnitchToggleLeversStmt.setInt(2, snitch.getId());
+                    	updateSnitchToggleLeversStmt.execute();
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);

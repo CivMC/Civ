@@ -1,6 +1,6 @@
 name: JukeAlert
 main: com.untamedears.JukeAlert.JukeAlert
-version: 1.2.4
+version: 1.2.5
 depend: [Citadel]
 commands:
   ja:
@@ -36,6 +36,9 @@ commands:
     description: Run-time configuration
     usage: /jaconfig <option> <value> 
     permission: jukealert.admin.jaconfig
+  jatogglelevers:
+    description:  Sets flag that indicates if a juke should trigger a lever.
+    usage: /jatogglelevers <0|1>
 permissions:
   jukealert.admin.jagroup:
     description: Use /jagroup even when not the owner
