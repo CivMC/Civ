@@ -170,7 +170,7 @@ public class JukeAlertLogger {
                 + "PRIMARY KEY (`snitch_details_id`),"
                 + "INDEX `idx_snitch_id` (`snitch_id` ASC),"
                 + "CONSTRAINT `fk_snitchs_snitch_id` FOREIGN KEY (`snitch_id`)"
-                + "  REFERENCES `snitchs` (`snitch_id`) ON DELETE CASCADE ON UPDATE CASCADE);");
+                + "  REFERENCES `" + snitchsTbl + "` (`snitch_id`) ON DELETE CASCADE ON UPDATE CASCADE);");
 
         db.silentExecute(String.format(
             "ALTER TABLE %s ADD INDEX idx_log_time (snitch_log_time ASC);", snitchDetailsTbl));
@@ -184,6 +184,17 @@ public class JukeAlertLogger {
         db.silentExecute(String.format("ALTER TABLE %s MODIFY COLUMN allow_triggering_lever bit NOT NULL;", snitchsTbl));
         
         try {
+
+            this.plugin.getLogger().log(Level.INFO, "Adding the log_hour column");
+            db.executeLoud(MessageFormat.format(
+                "ALTER TABLE {0} ADD COLUMN (log_hour MEDIUMINT, INDEX idx_log_hour (log_hour));",
+                snitchDetailsTbl));
+
+            this.plugin.getLogger().log(Level.INFO, "Populating the log_hour column");
+            db.executeLoud(MessageFormat.format(
+                "UPDATE {0} SET log_hour = TIMESTAMPDIFF(HOUR, ''2013-01-01 00:00:00'', snitch_log_time);",
+                snitchDetailsTbl));
+        	
             db.executeLoud(MessageFormat.format(
                 " CREATE DEFINER=CURRENT_USER PROCEDURE CullSnitches( "
                 + " IN minDays INT, IN maxDays INT, IN maxEntries INT) SQL SECURITY INVOKER BEGIN\n"
@@ -206,16 +217,6 @@ public class JukeAlertLogger {
                 + "     WHERE snitch_id = snId ORDER BY snitch_log_time DESC LIMIT maxEntries) AS drvTbl));\n"
                 + " END LOOP da_loop; END", snitchsTbl, snitchDetailsTbl));
 
-            this.plugin.getLogger().log(Level.INFO, "Adding the log_hour column");
-            db.executeLoud(MessageFormat.format(
-                "ALTER TABLE {0} ADD COLUMN (log_hour MEDIUMINT, INDEX idx_log_hour (log_hour));",
-                snitchDetailsTbl));
-
-            this.plugin.getLogger().log(Level.INFO, "Populating the log_hour column");
-            db.executeLoud(MessageFormat.format(
-                "UPDATE {0} SET log_hour = TIMESTAMPDIFF(HOUR, ''2013-01-01 00:00:00'', snitch_log_time);",
-                snitchDetailsTbl));
-
             this.plugin.getLogger().log(Level.INFO, "Creating the log_hour trigger");
             db.executeLoud(MessageFormat.format(
                 "CREATE TRIGGER trig_log_hour BEFORE INSERT ON {0} FOR EACH ROW "
@@ -225,7 +226,8 @@ public class JukeAlertLogger {
         } catch (Exception ex) {
             String exMsg = ex.toString();
             if (!exMsg.contains("multiple triggers with the same action time and event for one table")
-                    && !exMsg.contains("PROCEDURE CullSnitches already exists")) {
+                    && !exMsg.contains("PROCEDURE CullSnitches already exists")
+                    && !exMsg.contains("Duplicate column name")) {
                 this.plugin.getLogger().log(Level.SEVERE, exMsg);
             }
         }
