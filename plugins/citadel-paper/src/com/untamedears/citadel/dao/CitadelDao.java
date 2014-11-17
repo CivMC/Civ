@@ -3,7 +3,6 @@ package com.untamedears.citadel.dao;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +13,8 @@ import java.util.UUID;
 
 import javax.persistence.PersistenceException;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -37,9 +34,9 @@ import com.untamedears.citadel.entity.DbVersion;
 import com.untamedears.citadel.entity.Faction;
 import com.untamedears.citadel.entity.FactionDelete;
 import com.untamedears.citadel.entity.FactionMember;
+import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.Moderator;
 import com.untamedears.citadel.entity.PersonalGroup;
-import com.untamedears.citadel.entity.IReinforcement;
 import com.untamedears.citadel.entity.PlayerReinforcement;
 import com.untamedears.citadel.entity.ReinforcementKey;
 import com.valadian.nametracker.NameAPI;
@@ -586,7 +583,8 @@ public class CitadelDao extends MyDatabase {
 
         Citadel.info("Converting moderator table");
         sql = getDatabase().createSqlUpdate(
-            "DROP INDEX uq_moderator_1 ON moderator");
+                "CREATE UNIQUE INDEX uq_moderator_1 ON moderator (`faction_name`,`member_name`);");
+            getDatabase().execute(sql);
         getDatabase().execute(sql);
         sql = getDatabase().createSqlUpdate(
             "UPDATE moderator AS f "
@@ -601,8 +599,7 @@ public class CitadelDao extends MyDatabase {
             "ALTER TABLE moderator MODIFY member_name CHAR(36) NOT NULL");
         getDatabase().execute(sql);
         sql = getDatabase().createSqlUpdate(
-            "CREATE UNIQUE INDEX uq_moderator_1 ON moderator (`faction_name`,`member_name`);");
-        getDatabase().execute(sql);
+                "DROP INDEX uq_moderator_1 ON moderator");
 
         Citadel.info("Converting faction_member table");
         sql = getDatabase().createSqlUpdate(
