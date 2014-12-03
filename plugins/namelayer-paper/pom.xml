@@ -3,12 +3,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>vg.civcraft.mc</groupId>
+  <groupId>vg.civcraft.mc.namelayer</groupId>
   <artifactId>NameLayer</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.1.0</version>
   <name>NameTracker</name>
-  <url>https://github.com/rourke750/NameLayer</url>
+  <url>https://github.com/Civcraft/NameLayer/</url>
   
   <properties>
     <maven.compiler.source>1.7</maven.compiler.source>
