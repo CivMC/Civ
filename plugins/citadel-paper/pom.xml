@@ -3,10 +3,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.untamedears</groupId>
+  <groupId>vg.civcraft.mc.citadel</groupId>
   <artifactId>Citadel</artifactId>
   <packaging>jar</packaging>
-  <version>2.5.23-SNAPSHOT</version>
+  <version>3.0</version>
   <name>Citadel</name>
   <url>https://github.com/ttk2/Citadel</url>
   
