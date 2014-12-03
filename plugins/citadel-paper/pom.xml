@@ -44,6 +44,12 @@
       <version>1.7.10-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>vg.civcraft.mc.namelayer</groupId>
+      <artifactId>NameLayer</artifactId>
+      <version>1.1.0</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   
   <repositories>
@@ -51,6 +57,9 @@
       <id>bukkit-repo</id>
       <url>http://repo.bukkit.org/content/groups/public/</url>
     </repository>
+    <repository>
+      <id>citadel-repo</id>
+      <url>http://192.99.169.83:8080/plugin/repository/project/NameLayer-Groups/Build/11/repository/<url>
   </repositories>
   
 </project>
