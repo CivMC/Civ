@@ -56,7 +56,7 @@ public class RemoveSuperGroup extends PlayerCommand{
 		if (g1 instanceof PrivateGroup){
 			PrivateGroup priv = (PrivateGroup) g1;
 			Group g2 = priv.getSuperGroup();
-			priv.removeSuperGroup(g1);
+			priv.removeSuperGroup();
 			while (g2 != null && g2 instanceof PrivateGroup){
 				PrivateGroup priv2 = (PrivateGroup) g2;
 				priv2.removeSubGroup(g1);

@@ -4,12 +4,3 @@ sql:
   dbname: nametracker
   username: ''
   password: ''
-groups:
-  database:
-# The amount of time it takes to auto flush data into the mysql data
-# base in ticks.
-    autoflush: 300
-# The amount of querries it takes to flush the data before reaching
-# the inteded flush time. If you have a high autoflush time and
-# use a lot of mysql keep this number around 50
-    maxflushcount: 50

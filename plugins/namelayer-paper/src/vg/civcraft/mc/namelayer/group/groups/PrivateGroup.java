@@ -90,18 +90,18 @@ public class PrivateGroup extends Group{
 		return subGroups.get(this).contains(group);
 	}
 	/**
-	 * Sets a 
-	 * @param group
-	 * @return
+	 * Sets a super Group to the group.
+	 * @param group- The superGroup to be set.
 	 */
-	public boolean setSuperGroup(Group group){
+	public void setSuperGroup(Group group){
 		superGroup.remove(this);
 		superGroup.put(this, group);
 		db.addSubGroup(group.getName(), getName());
-		return true;
 	}
-	
-	public void removeSuperGroup(Group group){
+	/**
+	 * Removes the Super Group from this group.
+	 */
+	public void removeSuperGroup(){
 		superGroup.remove(this);
 		superGroup.put(this, null);
 	}
