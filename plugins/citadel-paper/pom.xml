@@ -60,6 +60,7 @@
     <repository>
       <id>citadel-repo</id>
       <url>http://192.99.169.83:8080/plugin/repository/project/NameLayer-Groups/Build/11/repository/</url>
+    </repository>
   </repositories>
   
 </project>
