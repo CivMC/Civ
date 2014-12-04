@@ -6,9 +6,9 @@
   <groupId>vg.civcraft.mc.citadel</groupId>
   <artifactId>Citadel</artifactId>
   <packaging>jar</packaging>
-  <version>3.0</version>
+  <version>3.0.1</version>
   <name>Citadel</name>
-  <url>https://github.com/ttk2/Citadel</url>
+  <url>https://github.com/Civcraft/Citadel/tree/Citadel3.0</url>
   
   <build>
     <pluginManagement>

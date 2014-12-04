@@ -23,7 +23,7 @@ import vg.civcraft.mc.namelayer.group.Group;
 public class CitadelReinforcementData {
 
 	private Database db;
-	private Citadel plugin;
+	private Citadel plugin = Citadel.getInstance();
 	public CitadelReinforcementData(Database db){
 		this.db = db;
 		if (db.connect()){
@@ -41,9 +41,9 @@ public class CitadelReinforcementData {
 				+ " "
 				+ "begin "
 				+ "declare group_idd int; "
-				+ "set group_idd = (select g.group_id from faction_id g where g.group_name = deleteGroup;"
-				+ "delete from reinforcement r "
-				+ "where r.group_id = group_idd limit 50;"
+				+ "set group_idd = (select g.group_id from faction_id g where g.group_name = deleteGroup);"
+				+ "delete from reinforcement "
+				+ "where group_id = group_idd limit 50;"
 				+ "select count(*) as count from reinforcement "
 				+ "where group_name = deleteGroup;"
 				+ "end;");
@@ -54,8 +54,8 @@ public class CitadelReinforcementData {
 	private void createTables(){
 		int ver = NameLayerPlugin.getVersionNum(plugin.getName());
 		if (ver == 0){
-			db.execute("update db_version set plugin_name = ? " +
-					"where plugin_name = null");
+			db.execute(String.format("update db_version set plugin_name = '%s' " +
+					"where plugin_name is null", plugin.getName()));
 			ver = NameLayerPlugin.getVersionNum(plugin.getName());
 			if (ver == 0){
 				Citadel.Log("Creating tables from scratch, this is a new " +
@@ -79,8 +79,7 @@ public class CitadelReinforcementData {
 						"in process.");
 				db.execute("create table if not exists material_mapping(" +
 						"material varchar(40) not null," +
-						"material_id int not null," +
-						"primary key (id));");
+						"material_id int not null);");
 				for (Material mat: Material.values()){
 					PreparedStatement insert = db.prepareStatement
 							("insert into material_mapping(" +
@@ -101,14 +100,11 @@ public class CitadelReinforcementData {
 						"set r.material = m.material;");
 				db.execute("alter table reinforcement drop material_id;");
 				db.execute("drop table material_mapping;");
-				db.execute("alter table reinforcement add group_id int;");
-				db.execute("update reinforcement ");
 				db.execute("insert into faction_id (group_name) values (null);"); // For natural reinforcements
 				db.execute("alter table reinforcement add group_id int not null;");
-				db.execute("update reinfrocement r set r.group_id = (select f.group_id from "
+				db.execute("update reinforcement r set r.group_id = (select f.group_id from "
 						+ "faction_id f where f.group_name = r.`name`);");
 				db.execute("alter table reinforcement drop `name`;");
-				db.execute("delete from reinforcement where name = null;");
 				db.execute("alter table reinforcement add " +
 						"rein_type varchar(30) not null default 'PlayerReinforcement';");
 				db.execute("alter table reinforcement add " +

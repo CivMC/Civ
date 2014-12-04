@@ -22,6 +22,8 @@ public class CitadelConfigManager {
 	
 	public static List<String> getNaturalReinforcementTypes(){
 		List<String> naturalReinforcementTypes = new ArrayList<String>();
+		if (config.getConfigurationSection("natural_reinforcements") == null)
+			return naturalReinforcementTypes;
 		for (String sect: config.getConfigurationSection
 				("natural_reinforcements").getKeys(false))
 			naturalReinforcementTypes.add(sect);
