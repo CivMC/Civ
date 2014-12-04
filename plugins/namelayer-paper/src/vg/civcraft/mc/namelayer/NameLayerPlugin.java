@@ -96,13 +96,13 @@ public class NameLayerPlugin extends JavaPlugin{
 	
 	public static void log(Level level, String message){
 		if (level == Level.INFO)
-			Bukkit.getLogger().log(level, "[NameTracker:] Info follows\n" +
+			Bukkit.getLogger().log(level, "[NameLayer:] Info follows\n" +
 			message);
 		else if (level == Level.WARNING)
-			Bukkit.getLogger().log(level, "[NameTracker:] Warning follows\n" +
+			Bukkit.getLogger().log(level, "[NameLayer:] Warning follows\n" +
 					message);
 		else if (level == Level.SEVERE)
-			Bukkit.getLogger().log(level, "[NameTracker:] Stack Trace follows\n --------------------------------------\n" +
+			Bukkit.getLogger().log(level, "[NameLayer:] Stack Trace follows\n --------------------------------------\n" +
 					message +
 					"\n --------------------------------------");
 	}

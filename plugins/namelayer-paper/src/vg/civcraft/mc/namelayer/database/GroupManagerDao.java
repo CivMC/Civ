@@ -73,6 +73,7 @@ public class GroupManagerDao {
 					+ "inner join faction_id g on g.group_name = m.faction_name");
 			db.execute("drop table moderator;");
 			db.execute("alter table faction change `type` group_type varchar(40) not null;");
+			db.execute("alter table faction change founder founder varchar(36);");
 			db.execute("alter table db_version add plugin_name varchar(40);");
 			db.execute("alter table db_version drop primary key;");
 			ver = updateVersion(ver, plugin.getName());
@@ -89,16 +90,16 @@ public class GroupManagerDao {
 			 */
 			db.execute("create table if not exists faction(" +
 					"group_name varchar(255)," +
-					"founder varchar(36) not null," +
+					"founder varchar(36)," +
 					"password varchar(255) default null," +
 					"discipline_flags int(11) not null," +
 					"group_type varchar(40) not null," +
-					"primary key(name));");
+					"primary key(group_name));");
 			db.execute("create table if not exists faction_member(" +
 					"group_id int not null," +
 					"member_name varchar(36) not null," +
 					"role varchar(10) not null default 'MEMBER'," +
-					"unique key (faction_name, member_name));");
+					"unique key (group_id, member_name));");
 			db.execute("create table if not exists blacklist(" +
 					"member_name varchar(36) not null," +
 					"group_id varchar(255) not null);");
@@ -106,7 +107,7 @@ public class GroupManagerDao {
 					"group_id varchar(255) not null," +
 					"role varchar(40) not null," +
 					"tier varchar(255) not null," +
-					"unique key (faction, role));");
+					"unique key (group_id, role));");
 			db.execute("create table if not exists subgroup(" +
 					"group_id varchar(255) not null," +
 					"sub_group_id varchar(255) not null," +
@@ -160,7 +161,7 @@ public class GroupManagerDao {
 				"in group_type varchar(40))"
 				+ "sql security invoker begin "
 				+ "insert into faction_id(group_name) values (group_name);"
-				+ "insert into faction(group_name, founder, password, disipline_flags," +
+				+ "insert into faction(group_name, founder, password, discipline_flags," +
 				"group_type) values (group_name, founder, password, discipline_flags, group_type);"
 				+ "end;");
 	}
@@ -265,13 +266,16 @@ public class GroupManagerDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return version++;
+		return ++version;
 	}
 	
 	public void createGroup(String group, UUID owner, String password, GroupType type){
 		try {
+			String own = null;
+			if (owner != null)
+				own = owner.toString();
 			createGroup.setString(1, group);
-			createGroup.setString(2, owner.toString());
+			createGroup.setString(2, own);
 			createGroup.setString(3, password);
 			createGroup.setInt(4, 0);
 			createGroup.setString(5, type.name());

@@ -37,8 +37,13 @@ public class GroupDeleteEvent extends Event implements Cancellable{
 	public void setCancelled(boolean value) {
 		cancelled = value;
 	}
-
+	
+	@Override
 	public HandlerList getHandlers() {
 		return handlers;
+	}
+	
+	public static HandlerList getHandlerList() {
+	    return handlers;
 	}
 }

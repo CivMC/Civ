@@ -55,10 +55,13 @@ public class GroupCreateEvent extends Event implements Cancellable{
 	public boolean isCancelled(){
 		return cancelled;
 	}
-
+	@Override
 	public HandlerList getHandlers() {
-		// TODO Auto-generated method stub
 		return handlers;
+	}
+	
+	public static HandlerList getHandlerList() {
+	    return handlers;
 	}
 
 	public void setCancelled(boolean cancel) {
