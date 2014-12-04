@@ -6,7 +6,7 @@ public class NameLayerConfigManager {
 
 	private static FileConfiguration config;
 	public void setConfigOptions(FileConfiguration config){
-		this.config = config;
+		NameLayerConfigManager.config = config;
 	}
 	
 	public static String getMySQLHostName(){

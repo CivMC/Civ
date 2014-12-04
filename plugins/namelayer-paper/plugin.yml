@@ -1,8 +1,8 @@
 name: NameLayer
 main: vg.civcraft.mc.namelayer.NameLayerPlugin
-version: 2.0
+version: 2.0.1
 load: startup
-author: Rourke750, Valadian
+author: Rourke750
 commands:
    groupsaccept:
       aliases: [ga, groupsa]

@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
+
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -31,14 +33,18 @@ public class GroupManagerDao {
 		this.db = db;
 		if (db.isConnected()){
 			initializeStatements();
-			initializeProcedures();
 			checkUpdate();
+			initializeProcedures();
 		}
 	}
 	
 	public void checkUpdate(){
 		log(Level.INFO, "Checking Database to see if update is needed!");
 		int ver = checkVersion(plugin.getName());
+		db.execute("create table if not exists db_version (db_version int not null," +
+				"update_time varchar(24),"
+				+ "plugin_name varchar(40)," +
+				"primary key (db_version));");
 		if (ver == 0){
 			log(Level.INFO, "Performing database update to version 1!\n" +
 					"This may take a long time depending on how big your database is.");
@@ -50,11 +56,18 @@ public class GroupManagerDao {
 					+ "primary key(group_id));");
 			
 			db.execute("insert into faction_id (group_name) select `name` from faction;");
-			db.execute("alter table faction add group_name varchar(255) default null;");
-			db.execute("update faction g set g.group_name = `g.name`;");
+			db.execute("alter table faction add group_name varchar(255) default null");
+			db.execute("update faction g set g.group_name = g.name;");
 			db.execute("alter table faction drop `name`");
+			db.execute("alter table faction add primary key group_primary_key (group_name);");
 			db.execute("drop table personal_group;");
 			db.execute("alter table faction_member add role varchar(10) not null default 'MEMBER'");
+			db.execute("alter table faction_member add group_id int not null;");
+			db.execute("update faction_member fm set fm.group_id = (select fi.group_id from faction_id fi "
+					+ "where fi.group_name = fm.faction_name);");
+			db.execute("alter table faction_member add unique key uq_meber_faction(member_name, group_id);");
+			db.execute("alter table faction_member drop index uq_faction_member_1;");
+			db.execute("alter table faction_member drop faction_name;");
 			db.execute("insert into faction_member (group_id, member_name, role)" +
 					"select g.group_id, m.member_name, 'MOD' from moderator m "
 					+ "inner join faction_id g on g.group_name = m.faction_name");
@@ -66,7 +79,7 @@ public class GroupManagerDao {
 		}
 		if (ver == 1){
 			log(Level.INFO, "Performing database creation!");
-			db.execute("create table faction_id("
+			db.execute("create table if not exists faction_id("
 					+ "group_id int not null AUTO_INCREMENT,"
 					+ "group_name varchar(255),"
 					+ "primary key(group_id));");
@@ -82,7 +95,7 @@ public class GroupManagerDao {
 					"group_type varchar(40) not null," +
 					"primary key(name));");
 			db.execute("create table if not exists faction_member(" +
-					"group_id varchar(255) not null," +
+					"group_id int not null," +
 					"member_name varchar(36) not null," +
 					"role varchar(10) not null default 'MEMBER'," +
 					"unique key (faction_name, member_name));");
@@ -98,11 +111,15 @@ public class GroupManagerDao {
 					"group_id varchar(255) not null," +
 					"sub_group_id varchar(255) not null," +
 					"unique key (group_id, sub_group_id));");
-			db.execute("create table if not exists db_version (db_version int not null," +
-					"update_time varchar(24),"
-					+ "plugin_name varchar(40)," +
-					"primary key (db_version));");
-			createGroup(NameLayerPlugin.getSpecialAdminGroup(), null, null, GroupType.PRIVATE);
+			// Procedures may not be initialized yet.
+			Bukkit.getScheduler().scheduleSyncDelayedTask(NameLayerPlugin.getInstance(), new Runnable(){
+
+				@Override
+				public void run() {
+					createGroup(NameLayerPlugin.getSpecialAdminGroup(), null, null, GroupType.PRIVATE);
+				}
+				
+			}, 1);
 			ver = updateVersion(ver, plugin.getName());
 		}
 	}
@@ -112,14 +129,14 @@ public class GroupManagerDao {
 		db.execute("create definer=current_user procedure deletegroupfromtable(" +
 				"in groupName varchar(36)" +
 				") sql security invoker begin "
-				+ "declare group_id int;"
-				+ "set group_id = (select f.group_id from faction_id f where f.group_name = groupName);" +
-				"delete from faction f where f.group_id = group_id;" +
-				"delete from faction_member fm where fm.group_id = group_id;" +
-				"delete from blacklist b where b.group_id = group_id;" +
-				"delete from subgroup s where s.group_id = group_id;" +
-				"delete from permissions p where p.group_id = group_id;"
-				+ "delete from faction_id f where f.group_name = groupName;" +
+				+ "declare group_idd int;"
+				+ "set group_idd = (select f.group_id from faction_id f where f.group_name = groupName);" +
+				"delete from faction where group_name = groupName;" +
+				"delete from faction_member where group_id = group_idd;" +
+				"delete from blacklist where group_id = group_idd;" +
+				"delete from subgroup where group_id = group_idd;" +
+				"delete from permissions where group_id = group_idd;"
+				+ "delete from faction_id where group_name = groupName;" +
 				"end;");
 		db.execute("drop procedure if exists mergeintogroup;");
 		db.execute("create definer=current_user procedure mergeintogroup(" +
@@ -130,7 +147,7 @@ public class GroupManagerDao {
 				+ "set group_id = (select f.group_id from faction_id f where f.group_name = groupName);"
 				+ "set merge_group_id = (select f.group_id from faction_id f where f.group_name = mergeintogroup);" +
 				"update ignore faction_member fm set fm.group_id = group_id where fm.group_id = merge_group_id;" +
-				"delete from faction_member f where f.group_id = merge_group_id;"
+				"delete from faction_member where group_id = merge_group_id;"
 				+ "delete from faction where group_name = tomerge;"
 				+ "update faction_id set group_name = groupName where group_id = merge_group_id;"
 				+ "end;");
@@ -142,9 +159,10 @@ public class GroupManagerDao {
 				"in discipline_flags int(11)," +
 				"in group_type varchar(40))"
 				+ "sql security invoker begin "
-				+ "insert into faction_id(group_name);"
+				+ "insert into faction_id(group_name) values (group_name);"
 				+ "insert into faction(group_name, founder, password, disipline_flags," +
-				"group_type) values (group_name, founder, password, discipline_flags, group_type);");
+				"group_type) values (group_name, founder, password, discipline_flags, group_type);"
+				+ "end;");
 	}
 	
 	private PreparedStatement version, updateVersion;

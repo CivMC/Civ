@@ -32,7 +32,7 @@ public class NameLayerPlugin extends JavaPlugin{
 		instance = this;
 		if (!new File(this.getDataFolder() + "config.yml").exists())
 			this.saveDefaultConfig();
-		new NameLayerConfigManager();
+		new NameLayerConfigManager().setConfigOptions(getConfig());;
 		loadDatabases();
 		new NameAPI(new GroupManager());
 		registerListeners();
