@@ -36,7 +36,7 @@ public class InventoryListener implements Listener {
 			return null;
 		}
 		Reinforcement rein = rm.getReinforcement(loc);
-		if (rein instanceof PlayerReinforcement) {
+		if (rein != null && rein instanceof PlayerReinforcement) {
 			PlayerReinforcement pr = (PlayerReinforcement) rein;
 			return pr;
 		}
