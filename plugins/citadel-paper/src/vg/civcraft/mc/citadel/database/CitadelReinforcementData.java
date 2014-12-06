@@ -151,7 +151,7 @@ public class CitadelReinforcementData {
 		// update all these statements for group_ids
 		getRein = db.prepareStatement("select r.material, r.durability, " +
 				"r.insecure, f.group_name, r.maturation_time from reinforcement r "
-				+ "inner join faction_id f on f.group_id = r.group_id" +
+				+ "inner join faction_id f on f.group_id = r.group_id " +
 				"where r.x = ? and r.y = ? and r.z = ?");
 		getReins = db.prepareStatement("select r.material, r.durability, " +
 				"r.insecure, f.group_name, r.maturation_time from reinforcement r "
