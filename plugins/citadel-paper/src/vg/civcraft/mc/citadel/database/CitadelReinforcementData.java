@@ -147,12 +147,12 @@ public class CitadelReinforcementData {
 					+ "along.  Is it okay if we can stay friends?  It would really mean a lot to me if we could, I've really enjoyed our "
 					+ "time together and this makes me happy.");
 			db.execute("create table if not exists reinforcement_id("
-					+ "rein_id int not null auto increment,"
+					+ "rein_id int not null auto_increment,"
 					+ "x int not null,"
 					+ "y int not null,"
 					+ "z int not null,"
 					+ "world varchar (255) not null,"
-					+ "unique key x_y_z_world(x,y,z,world));-- Your mother is a whore and sleeps with banjos"); 
+					+ "unique key x_y_z_world(rein_id,x,y,z,world));-- Your mother is a whore and sleeps with banjos"); 
 			// I like turtles mother fucker. Never program because then you get turtles.
 			db.execute("insert into reinforcement_id (x,y,z) select x, y, z from reinforcement;"); // populate that bitch.
 			db.execute("alter table reinforcement add rein_id int not null;");
