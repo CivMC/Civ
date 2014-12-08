@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 
 import vg.civcraft.mc.citadel.database.SaveDatabaseManager;
+import vg.civcraft.mc.citadel.misc.LoadingCacheNullException;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
 public class ReinforcementManager {
@@ -34,7 +35,10 @@ public class ReinforcementManager {
 			.build(
 					new CacheLoader<Location, Reinforcement>(){
 						public Reinforcement load(Location loc){
-							return db.getReinforcement(loc);
+							Reinforcement rein = db.getReinforcement(loc);
+							if (rein == null)
+								throw new LoadingCacheNullException();
+							return rein;
 						}
 					});
 	
@@ -66,7 +70,10 @@ public class ReinforcementManager {
 	 * @return Reinforcement
 	 */
 	public Reinforcement getReinforcement(Location loc){
-		return reinforcements.getUnchecked(loc);
+		try{
+			return reinforcements.getUnchecked(loc);
+		} catch(LoadingCacheNullException e){}
+		return null;
 	}
 	/**
 	 * Returns the Reinforcement from the specified block.

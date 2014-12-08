@@ -1,7 +1,6 @@
 package vg.civcraft.mc.citadel.database;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,46 +26,10 @@ public class SaveDatabaseManager extends CitadelReinforcementData {
 
 					@Override
 					public void run() {
-						if (reins.isEmpty())
-							return;
 						for (DBAction action : reins.keySet()) {
-							List<Reinforcement> reinforcements = reins
-									.get(action);
-							synchronized (reinforcements) {
-								Iterator<Reinforcement> irt = reinforcements
-										.iterator();
-								int count = 0;
-								int max = 50; // 
-								if (action == DBAction.INSERT)
-									while (irt.hasNext() && count < max) {
-										Reinforcement rein = irt.next();
-										insertReinforcement(rein,
-												!irt.hasNext()
-														|| count == max - 1);
-										count++;
-										reinforcements.remove(rein);
-									}
-								else if (action == DBAction.DELETE)
-									while (irt.hasNext() && count < max) {
-										Reinforcement rein = irt.next();
-										deleteReinforcement(rein,
-												!irt.hasNext()
-														|| count == max - 1);
-										count++;
-										reinforcements.remove(rein);
-									}
-								else if (action == DBAction.UPDATE)
-									while (irt.hasNext() && count < max) {
-										Reinforcement rein = irt.next();
-										if (reins.get(DBAction.INSERT)
-												.contains(rein))
-											continue;
-										saveReinforcement(rein, !irt.hasNext()
-												|| count == max - 1);
-										count++;
-										reinforcements.remove(rein);
-									}
-							}
+							if (action == DBAction.INSERT)
+								for (Reinforcement rein: reins.get(action))
+									insertReinforcement(rein);
 						}
 					}
 
@@ -143,20 +106,17 @@ public class SaveDatabaseManager extends CitadelReinforcementData {
 			int current = 0;
 			if (db == DBAction.INSERT){
 				for (Reinforcement rein: list)
-					insertReinforcement(rein, current >= maxSize-1 || 
-					current%50 == 0);
+					insertReinforcement(rein);
 				current++;
 			}
 			else if (db == DBAction.UPDATE){
 				for (Reinforcement rein: list)
-					saveReinforcement(rein, current >= maxSize-1 || 
-					current%50 == 0);
+					saveReinforcement(rein);
 				current++;
 			}
 			else if (db == DBAction.DELETE){
 				for (Reinforcement rein: list)
-					deleteReinforcement(rein, current >= maxSize-1 || 
-					current%50 == 0);
+					deleteReinforcement(rein);
 				current++;
 			}
 			int timeTook = (int) ((System.currentTimeMillis()*1000) /currentTime);
