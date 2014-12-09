@@ -21,6 +21,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
+import vg.civcraft.mc.citadel.reinforcement.MultiBlockReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.NaturalReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
@@ -504,6 +505,27 @@ public class Utility {
             return false;
         }
         return reinforcementDamaged(reinforcement);
+    }
+    
+    /**
+     * Creates a MultiBlockReinforcement and saves it to the db. This method is to be used only be other plugins. Citadel 
+     * will not use this anywhere. 
+     * @param locs- The locations that make up the structure.
+     * @param g- The group this will belong too.
+     * @param dur- The durability this structure will have.
+     * @param mature- The amount of time until it is mature.
+     * @return
+     */
+    public static MultiBlockReinforcement createMultiBlockReinforcement(List<Location> locs, Group g, int dur, int mature){
+    	int nextID = rm.getNextReinforcementID();
+    	MultiBlockReinforcement rein = new MultiBlockReinforcement(locs, g, dur, mature, nextID);
+    	ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, rein.getLocation().getBlock(), null);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return null;
+        }
+        rm.saveInitialReinforcement(rein);
+        return rein;
     }
 
 }

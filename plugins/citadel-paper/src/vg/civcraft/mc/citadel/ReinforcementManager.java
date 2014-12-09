@@ -34,7 +34,7 @@ public class ReinforcementManager {
 			.removalListener(removalListener)
 			.build(
 					new CacheLoader<Location, Reinforcement>(){
-						public Reinforcement load(Location loc){
+						public Reinforcement load(Location loc) throws Exception{
 							Reinforcement rein = db.getReinforcement(loc);
 							if (rein == null)
 								throw new LoadingCacheNullException();
@@ -71,8 +71,8 @@ public class ReinforcementManager {
 	 */
 	public Reinforcement getReinforcement(Location loc){
 		try{
-			return reinforcements.getUnchecked(loc);
-		} catch(LoadingCacheNullException e){}
+			return reinforcements.get(loc);
+		} catch(Exception e){}
 		return null;
 	}
 	/**
@@ -98,5 +98,11 @@ public class ReinforcementManager {
 	 */
 	public void invalidateAllReinforcements(){
 		reinforcements.invalidateAll();
+	}
+	/**
+	 * @return Returns the next reinforcement Id for reinforcements.
+	 */
+	public int getNextReinforcementID(){
+		return db.getLastReinId();
 	}
 }

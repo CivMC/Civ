@@ -135,7 +135,7 @@ public class CitadelReinforcementData {
 					"maturation_time int not null," +
 					"rein_type varchar(30) not null," +
 					"lore varchar(255),"
-					+ "unique key (x, y, z, world))");
+					+ "primary key (x,y,z,world));");
 			db.execute("create table if not exists toDeleteReinforcments("
 					+ "group_id int not null,"
 					+ "primary key (group_id));");
@@ -154,11 +154,13 @@ public class CitadelReinforcementData {
 					+ "world varchar (255) not null,"
 					+ "unique key x_y_z_world(rein_id,x,y,z,world));-- Your mother is a whore and sleeps with banjos"); 
 			// I like turtles mother fucker. Never program because then you get turtles.
-			db.execute("insert into reinforcement_id (x,y,z) select x, y, z from reinforcement;"); // populate that bitch.
+			db.execute("insert into reinforcement_id (x,y,z, world) select x, y, z, world from reinforcement;"); // populate that bitch.
 			db.execute("alter table reinforcement add rein_id int not null;");
-			db.execute("update reinforcement r set rein_id = (select ri.rein_id from reinforcement_id ri where ri.x = r.x and "
+			db.execute("alter table reinforcement_id add index (x);");
+			db.execute("update reinforcement r set r.rein_id = (select ri.rein_id from reinforcement_id ri where ri.x = r.x and "
 					+ "ri.y = r.y and ri.z = r.z and ri.world = r.world);");
-			db.execute("alter table reinforcement add primary key rein_id_key(rein_id);");
+			db.execute("alter table reinforcement DROP PRIMARY KEY, "
+					+ "add primary key rein_id_key(rein_id);");
 			db.execute("alter table reinforcement drop x;");
 			db.execute("alter table reinforcement drop y;");
 			db.execute("alter table reinforcement drop z;");
@@ -194,12 +196,13 @@ public class CitadelReinforcementData {
 				+ "inner join faction_id f on f.group_id = r.group_id " +
 				"where chunk_id = ?");
 		addRein = db.prepareStatement("insert into reinforcement ("
-				+ "x, y, z, world, material, durability, chunk_id,"
+				+ "material, durability, chunk_id,"
 				+ "insecure, group_id, maturation_time, rein_type,"
-				+ "lore, rein_id) select ?, ?, ?, ?, ?, ?, ?, ?, f.group_id, ?, ?, ?, ? from faction_id f "
+				+ "lore, rein_id) select ?, ?, ?, ?, ?, ?, ?, f.group_id, ? from faction_id f "
 				+ "where f.group_name = ?");
-		removeRein = db.prepareStatement("delete from reinforcement "
-				+ "where x = ? and y = ? and z = ? and world = ?");
+		removeRein = db.prepareStatement("delete from reinforcement r "
+				+ "where r.rein_id = (select ri.rein_id from reinforcement_id ri "
+				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.world = ?)");
 		updateRein = db.prepareStatement("update reinforcements set durability = ?,"
 				+ "insecure = ?, group_id = (select f.group_id from faction_id f where f.group_name = ?), maturation_time = ? "
 				+ "where x = ? and y = ? and z = ? and world = ?");
@@ -211,7 +214,7 @@ public class CitadelReinforcementData {
 		getDeleteGroup = db.prepareStatement("select f.group_name from faction_id f "
 				+ "inner join toDeleteReinforcments d on f.group_id = d.group_id");
 		
-		insertReinID = db.prepareStatement("insert into reinforcement_id(rein_id, x, y, z, world) values (?, ?, ?, ?, ?)");
+		insertReinID = db.prepareStatement("insert ignore into reinforcement_id(rein_id, x, y, z, world) values (?, ?, ?, ?, ?)");
 		getLastReinID = db.prepareStatement("select LAST_INSERT_ID() as id from reinforcement_id");
 		getCordsbyReinID = db.prepareStatement("select x, y, z, world from reinforcement_id where rein_id = ?");
 	}
@@ -333,19 +336,15 @@ public class CitadelReinforcementData {
 				insertReinID.setString(5, world);
 				insertReinID.execute();
 				
-				addRein.setInt(1, x);
-				addRein.setInt(2, y);
-				addRein.setInt(3, z);
-				addRein.setString(4, world);
-				addRein.setString(5, mat.name());
-				addRein.setInt(6, dur);
-				addRein.setString(7, chunk_id);
-				addRein.setBoolean(8, insecure);
-				addRein.setInt(9, maturationTime);
-				addRein.setString(10, reinType);
-				addRein.setString(11, lore);
-				addRein.setInt(12, id);
-				addRein.setString(13, group);
+				addRein.setString(1, mat.name());
+				addRein.setInt(2, dur);
+				addRein.setString(3, chunk_id);
+				addRein.setBoolean(4, insecure);
+				addRein.setInt(5, maturationTime);
+				addRein.setString(6, reinType);
+				addRein.setString(7, lore);
+				addRein.setInt(8, id);
+				addRein.setString(9, group);
 				addRein.execute();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -373,19 +372,15 @@ public class CitadelReinforcementData {
 				insertReinID.setString(5, world);
 				insertReinID.execute();
 				
-				addRein.setInt(1, x);
-				addRein.setInt(2, y);
-				addRein.setInt(3, z);
-				addRein.setString(4, world);
-				addRein.setString(5, mat.name());
-				addRein.setInt(6, dur);
-				addRein.setString(7, chunk_id);
-				addRein.setBoolean(8, insecure);
-				addRein.setInt(9, maturationTime);
-				addRein.setString(10, reinType);
-				addRein.setString(11, lore);
-				addRein.setInt(12, id);
-				addRein.setString(13, group);
+				addRein.setString(1, mat.name());
+				addRein.setInt(2, dur);
+				addRein.setString(3, chunk_id);
+				addRein.setBoolean(4, insecure);
+				addRein.setInt(5, maturationTime);
+				addRein.setString(6, reinType);
+				addRein.setString(7, lore);
+				addRein.setInt(8, id);
+				addRein.setString(9, group);
 				addRein.execute();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -407,19 +402,15 @@ public class CitadelReinforcementData {
 				}
 				insertReinID.executeBatch();
 				
-				addRein.setInt(1, loc.getBlockX());
-				addRein.setInt(2, loc.getBlockY());
-				addRein.setInt(3, loc.getBlockZ());
-				addRein.setString(4, loc.getWorld().getName());
-				addRein.setString(5, null);
-				addRein.setInt(6, mbRein.getDurability());
+				addRein.setString(1, null);
+				addRein.setInt(2, mbRein.getDurability());
+				addRein.setString(3, null);
+				addRein.setBoolean(4, false);
+				addRein.setInt(5, mbRein.getMaturationTime());
+				addRein.setString(6, "MultiBlockReinforcement");
 				addRein.setString(7, null);
-				addRein.setBoolean(8, false);
-				addRein.setInt(9, mbRein.getMaturationTime());
-				addRein.setString(10, "MultiBlockReinforcement");
-				addRein.setString(11, null);
-				addRein.setInt(12, id);
-				addRein.setString(13, mbRein.getGroup().getName());
+				addRein.setInt(8, id);
+				addRein.setString(9, mbRein.getGroup().getName());
 				addRein.execute();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -545,7 +536,7 @@ public class CitadelReinforcementData {
 		}
 	}
 	
-	private int getLastReinId(){
+	public int getLastReinId(){
 		reconnectAndReinitialize();
 		
 		try {
