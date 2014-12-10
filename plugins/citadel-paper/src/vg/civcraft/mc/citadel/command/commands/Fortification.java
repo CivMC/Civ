@@ -9,6 +9,8 @@ import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.command.PlayerCommand;
+import vg.civcraft.mc.citadel.misc.ReinforcementMode;
+import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -52,7 +54,23 @@ public class Fortification extends PlayerCommand{
 		}
 		ItemStack stack = p.getItemInHand();
 		PlayerState state = PlayerState.get(p);
-
+		ReinforcementType reinType = ReinforcementType.getReinforcementType(stack);
+		if (state.getMode() == ReinforcementMode.NORMAL){
+			if (reinType == null){
+				p.sendMessage(ChatColor.RED + "That is not a ReinforcementType.");
+				return true;
+			}
+			p.sendMessage(ChatColor.GREEN + "Your mode has been set to " + 
+					ReinforcementMode.REINFOREMENT_FORTIFICATION.name() + ".");
+			state.setMode(ReinforcementMode.REINFOREMENT_FORTIFICATION);
+			state.setFortificationItemStack(reinType.getItemStack());
+			state.setGroup(g);
+		}
+		else{
+			p.sendMessage(ChatColor.GREEN + state.getMode().name() + " has been"
+					+ " disabled.\nReinforcement mode has been reset.");
+			state.reset();
+		}
 		return true;
 	}
 

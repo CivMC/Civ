@@ -1,5 +1,6 @@
 package vg.civcraft.mc.citadel.reinforcementtypes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,5 +117,11 @@ public class ReinforcementType {
 	 */
 	public ItemStack getItemStack(){
 		return stack;
+	}
+	
+	public static List<ReinforcementType> getReinforcementTypes(){
+		List<ReinforcementType> type = new ArrayList<ReinforcementType>();
+		type.addAll(types.values());
+		return type;
 	}
 }

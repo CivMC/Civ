@@ -86,7 +86,7 @@ public class Utility {
         }
         // Fire the creation event
         PlayerReinforcement rein = new PlayerReinforcement(block.getLocation(), 
-        		type.getHitPoints(), System.currentTimeMillis() / 60000, 
+        		type.getHitPoints(), System.currentTimeMillis(), 
         		g, type.getItemStack());
         ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, block, player);
         Bukkit.getPluginManager().callEvent(event);
@@ -249,7 +249,6 @@ public class Utility {
           PlayerReinforcement rein = (PlayerReinforcement) reinforcement;
     	  ReinforcementType type = ReinforcementType.getReinforcementType(rein.getStackRepresentation());
           if (maturationTime > 0 && type.getMaturationScale() != 0) {
-        	  
         	  // the default amount of minutes it takes to mature
               int normal = type.getMaturationTime();
               int percentTo = maturationTime / normal; // the percent of time left of maturation
@@ -322,7 +321,7 @@ public class Utility {
     	        	}
     	        	else {
     	        		for(ItemStack leftover : inv.addItem(
-    	        				new ItemStack(material.getMaterial(), material.getReturnValue()))
+    	        				material.getItemStack())
     	        				.values()) {
     	                	location.getWorld().dropItem(location, leftover);
     	            	}
@@ -430,7 +429,7 @@ public class Utility {
     public static ItemStack createDroppedReinforcementBlock(Block block, PlayerReinforcement rein){
     	ItemStack reinBlock = new ItemStack(block.getType(), 1);
     	ItemMeta lore = reinBlock.getItemMeta();
-    	List<String> info = lore.getLore();
+    	List<String> info = new ArrayList<String>();
     	String reinMat = rein.getMaterial().name();
     	String amount = "" + rein.getStackRepresentation().getAmount();
     	String dur = "" + rein.getDurability();
@@ -439,8 +438,10 @@ public class Utility {
     	info.add(amount);
     	info.add(dur);
     	info.add(group);
-    	info.addAll(rein.getStackRepresentation().getItemMeta().getLore());
+    	if (rein.getStackRepresentation().hasItemMeta())
+    		info.addAll(rein.getStackRepresentation().getItemMeta().getLore());
     	lore.setLore(info);
+    	reinBlock.setItemMeta(lore);
     	return reinBlock;
     }
     /**
@@ -456,7 +457,7 @@ public class Utility {
     	ItemMeta meta = stack.getItemMeta();
     	List<String> lore = meta.getLore();
     	try{
-    	if (lore.isEmpty())
+    	if (!meta.hasLore())
     		return null;
     	Iterator<String> value = lore.iterator();
     	if (!value.hasNext())
@@ -475,10 +476,14 @@ public class Utility {
     	while(value.hasNext())
     		itemStackInfo.add(value.next());
     	ItemStack newStack = new ItemStack(mat, amount);
-    	newStack.getItemMeta().setLore(itemStackInfo);
-    	
+    	meta.setLore(itemStackInfo);
+    	newStack.setItemMeta(meta);
+    	ReinforcementType reinType = ReinforcementType.getReinforcementType(newStack);
+    	if (reinType == null)
+    		return null;
+    	Group g = GroupManager.getSpecialCircumstanceGroup(group);
     	PlayerReinforcement rein = new PlayerReinforcement(loc, dur, System.currentTimeMillis()
-    			, GroupManager.getSpecialCircumstanceGroup(group), newStack);
+    			, g, reinType.getItemStack());
     	ReinforcementCreationEvent event = 
     			new ReinforcementCreationEvent(rein, loc.getBlock(), p);
     	Bukkit.getPluginManager().callEvent(event);
@@ -486,6 +491,7 @@ public class Utility {
     		return null;
     	return rein;
     	} catch(Exception ex){
+    		ex.printStackTrace();
     		return null;
     	}
     }

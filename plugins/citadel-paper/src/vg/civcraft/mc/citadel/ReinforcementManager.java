@@ -36,8 +36,9 @@ public class ReinforcementManager {
 					new CacheLoader<Location, Reinforcement>(){
 						public Reinforcement load(Location loc) throws Exception{
 							Reinforcement rein = db.getReinforcement(loc);
-							if (rein == null)
+							if (rein == null){
 								throw new LoadingCacheNullException();
+							}
 							return rein;
 						}
 					});
@@ -72,7 +73,9 @@ public class ReinforcementManager {
 	public Reinforcement getReinforcement(Location loc){
 		try{
 			return reinforcements.get(loc);
-		} catch(Exception e){}
+		} catch(Exception e){
+			//e.printStackTrace();
+		}
 		return null;
 	}
 	/**

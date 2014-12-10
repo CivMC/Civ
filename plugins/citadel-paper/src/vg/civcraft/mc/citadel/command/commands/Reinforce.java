@@ -10,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.command.PlayerCommand;
 import vg.civcraft.mc.citadel.misc.ReinforcementMode;
-import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -22,7 +21,7 @@ public class Reinforce extends PlayerCommand {
 	public Reinforce(String name) {
 		super(name);
 		setDescription("Reinforce blocks under a group.");
-		setUsage("/ctr <group>");
+		setUsage("/ctreinforce <group>");
 		setIdentifier("ctreinforce");
 		setArguments(1,1);
 	}
@@ -59,8 +58,6 @@ public class Reinforce extends PlayerCommand {
 			p.sendMessage(ChatColor.GREEN + "Your mode has been set to " + 
 					ReinforcementMode.REINFORCEMENT_SINGLE.name() + ".");
 			state.setMode(ReinforcementMode.REINFORCEMENT_SINGLE);
-			state.setFortificationItemStack(ReinforcementType.
-					getReinforcementType(stack).getItemStack());
 			state.setGroup(g);
 		}
 		else{

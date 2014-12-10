@@ -11,6 +11,7 @@ import vg.civcraft.mc.citadel.command.commands.Bypass;
 import vg.civcraft.mc.citadel.command.commands.Fortification;
 import vg.civcraft.mc.citadel.command.commands.Information;
 import vg.civcraft.mc.citadel.command.commands.Insecure;
+import vg.civcraft.mc.citadel.command.commands.Materials;
 import vg.civcraft.mc.citadel.command.commands.Reinforce;
 
 public class CommandHandler {
@@ -25,6 +26,7 @@ public class CommandHandler {
 		addCommands(new Information("Information"));
 		addCommands(new Insecure("Insecure"));
 		addCommands(new Reinforce("Reinforce"));
+		addCommands(new Materials("Materials"));
 	}
 	
 	private void addCommands(Command command){
@@ -34,13 +36,13 @@ public class CommandHandler {
 	 * Is called when a command is executed.  Should not be touched by any outside
 	 * plugin.
 	 * @param sender
-	 * @param label
+	 * @param cmd
 	 * @param args
 	 * @return
 	 */
-	public boolean execute(CommandSender sender, String label, String[] args){
-		if (commands.containsKey(label)){
-			Command command = commands.get(label);
+	public boolean execute(CommandSender sender, org.bukkit.command.Command cmd, String[] args){
+		if (commands.containsKey(cmd.getName().toLowerCase())){
+			Command command = commands.get(cmd.getName().toLowerCase());
 			if (args.length < command.getMinArguments() || args.length > command.getMaxArguments()){
 				helpPlayer(command, sender);
 				return true;

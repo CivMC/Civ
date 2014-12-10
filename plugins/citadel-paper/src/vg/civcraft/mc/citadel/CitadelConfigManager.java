@@ -47,7 +47,7 @@ public class CitadelConfigManager {
 	}
 	
 	public static int getHitPoints(String type){
-		return config.getInt("reinforcements." + type + ".materials");
+		return config.getInt("reinforcements." + type + ".hit_points");
 	}
 	
 	public static int getMaturationTime(String type){

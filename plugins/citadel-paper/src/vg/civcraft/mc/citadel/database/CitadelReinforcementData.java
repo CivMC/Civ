@@ -118,6 +118,7 @@ public class CitadelReinforcementData {
 						"rein_type varchar(30) not null default 'PlayerReinforcement';");
 				db.execute("alter table reinforcement add " +
 						"lore varchar(255);");
+				db.execute("drop table citadel_account_id_map;");
 			}
 		}
 		if (ver == 5 || ver == 0){
@@ -136,7 +137,7 @@ public class CitadelReinforcementData {
 					"rein_type varchar(30) not null," +
 					"lore varchar(255),"
 					+ "primary key (x,y,z,world));");
-			db.execute("create table if not exists toDeleteReinforcments("
+			db.execute("create table if not exists toDeleteReinforecments("
 					+ "group_id int not null,"
 					+ "primary key (group_id));");
 			NameLayerPlugin.insertVersionNum(5, plugin.getName());
@@ -152,11 +153,11 @@ public class CitadelReinforcementData {
 					+ "y int not null,"
 					+ "z int not null,"
 					+ "world varchar (255) not null,"
-					+ "unique key x_y_z_world(rein_id,x,y,z,world));-- Your mother is a whore and sleeps with banjos"); 
+					+ "primary key rein_id_key (rein_id),"
+					+ "unique key x_y_z_world(x,y,z,world));-- Your mother is a whore and sleeps with banjos"); 
 			// I like turtles mother fucker. Never program because then you get turtles.
 			db.execute("insert into reinforcement_id (x,y,z, world) select x, y, z, world from reinforcement;"); // populate that bitch.
 			db.execute("alter table reinforcement add rein_id int not null;");
-			db.execute("alter table reinforcement_id add index (x);");
 			db.execute("update reinforcement r set r.rein_id = (select ri.rein_id from reinforcement_id ri where ri.x = r.x and "
 					+ "ri.y = r.y and ri.z = r.z and ri.world = r.world);");
 			db.execute("alter table reinforcement DROP PRIMARY KEY, "
@@ -187,7 +188,8 @@ public class CitadelReinforcementData {
 	 */
 	private void initalizePreparedStatements(){
 		getRein = db.prepareStatement("select r.material, r.durability, " +
-				"r.insecure, f.group_name, r.maturation_time, r.rein_id from reinforcement r "
+				"r.insecure, f.group_name, r.maturation_time, r.rein_type, "
+				+ "r.lore, r.rein_id from reinforcement r "
 				+ "inner join faction_id f on f.group_id = r.group_id " +
 				"inner join reinforcement_id ri on r.rein_id = ri.rein_id "
 				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.world = ?");
@@ -198,23 +200,23 @@ public class CitadelReinforcementData {
 		addRein = db.prepareStatement("insert into reinforcement ("
 				+ "material, durability, chunk_id,"
 				+ "insecure, group_id, maturation_time, rein_type,"
-				+ "lore, rein_id) select ?, ?, ?, ?, ?, ?, ?, f.group_id, ? from faction_id f "
+				+ "lore, rein_id) select ?, ?, ?, ?, f.group_id, ?, ?, ?, ? from faction_id f "
 				+ "where f.group_name = ?");
-		removeRein = db.prepareStatement("delete from reinforcement r "
-				+ "where r.rein_id = (select ri.rein_id from reinforcement_id ri "
-				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.world = ?)");
+		removeRein = db.prepareStatement("delete r.*, ri.* from reinforcement r "
+				+ "left join reinforcement_id ri on r.rein_id = ri.rein_id "
+				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.world = ?");
 		updateRein = db.prepareStatement("update reinforcements set durability = ?,"
 				+ "insecure = ?, group_id = (select f.group_id from faction_id f where f.group_name = ?), maturation_time = ? "
 				+ "where x = ? and y = ? and z = ? and world = ?");
 		deleteGroup = db.prepareStatement("call deleteGroup(?)");
-		insertDeleteGroup = db.prepareStatement("insert into toDeleteReinforcments(group_id) select g.group_id from faction_id g "
+		insertDeleteGroup = db.prepareStatement("insert into toDeleteReinforecments(group_id) select g.group_id from faction_id g "
 				+ "where g.group_name = ?");
-		removeDeleteGroup = db.prepareStatement("delete from toDeleteReinforcments where group_id = (select f.group_id from "
+		removeDeleteGroup = db.prepareStatement("delete from toDeleteReinforecments where group_id = (select f.group_id from "
 				+ "faction_id f where f.group_name = ?)");
 		getDeleteGroup = db.prepareStatement("select f.group_name from faction_id f "
-				+ "inner join toDeleteReinforcments d on f.group_id = d.group_id");
+				+ "inner join toDeleteReinforecments d on f.group_id = d.group_id");
 		
-		insertReinID = db.prepareStatement("insert ignore into reinforcement_id(rein_id, x, y, z, world) values (?, ?, ?, ?, ?)");
+		insertReinID = db.prepareStatement("insert ignore into reinforcement_id(x, y, z, world) values (?, ?, ?, ?)");
 		getLastReinID = db.prepareStatement("select LAST_INSERT_ID() as id from reinforcement_id");
 		getCordsbyReinID = db.prepareStatement("select x, y, z, world from reinforcement_id where rein_id = ?");
 	}
@@ -256,6 +258,7 @@ public class CitadelReinforcementData {
 					ItemMeta meta = stack.getItemMeta();
 					List<String> array = Arrays.asList(lore.split("\n"));
 					meta.setLore(array);
+					stack.setItemMeta(meta);
 				}
 				PlayerReinforcement rein =
 						new PlayerReinforcement(loc, durability,
@@ -303,10 +306,9 @@ public class CitadelReinforcementData {
 	 * SaveManager.
 	 * @param The Reinforcement to save.
 	 */
-	protected void insertReinforcement(Reinforcement rein){
+	public void insertReinforcement(Reinforcement rein){
 		reconnectAndReinitialize();
 		
-		int id = getLastReinId();
 		if (rein instanceof PlayerReinforcement){
 			Location loc = rein.getLocation();
 			int x = loc.getBlockX(), y = loc.getBlockY(), z = loc.getBlockZ();
@@ -322,19 +324,21 @@ public class CitadelReinforcementData {
 			PlayerReinforcement pRein = (PlayerReinforcement) rein;
 			insecure = pRein.isInsecure();
 			ItemMeta meta = pRein.getStackRepresentation().getItemMeta();
-			for (String xx: meta.getLore())
-				lore += xx + "\n";
-			if (lore.equals(""))
+			if (meta.hasLore())
+				for (String xx: meta.getLore())
+					lore += xx + "\n";
+			else
 				lore = null;
 			group = pRein.getGroup().getName();
 			reinType = "PlayerReinforcement";
 			try {
-				insertReinID.setInt(1, id);
-				insertReinID.setInt(2, x);
-				insertReinID.setInt(3, y);
-				insertReinID.setInt(4, z);
-				insertReinID.setString(5, world);
+				insertReinID.setInt(1, x);
+				insertReinID.setInt(2, y);
+				insertReinID.setInt(3, z);
+				insertReinID.setString(4, world);
 				insertReinID.execute();
+				
+				int id = getLastReinId();
 				
 				addRein.setString(1, mat.name());
 				addRein.setInt(2, dur);
@@ -365,12 +369,13 @@ public class CitadelReinforcementData {
 			String lore = "";
 			lore = null;
 			try {
-				insertReinID.setInt(1, id);
-				insertReinID.setInt(2, x);
-				insertReinID.setInt(3, y);
-				insertReinID.setInt(4, z);
-				insertReinID.setString(5, world);
+				insertReinID.setInt(1, x);
+				insertReinID.setInt(2, y);
+				insertReinID.setInt(3, z);
+				insertReinID.setString(4, world);
 				insertReinID.execute();
+				
+				int id = getLastReinId();
 				
 				addRein.setString(1, mat.name());
 				addRein.setInt(2, dur);
@@ -393,14 +398,15 @@ public class CitadelReinforcementData {
 			try {
 				// add all the locations into the db.
 				for (Location lo: mbRein.getLocations()){
-					insertReinID.setInt(1, id);
-					insertReinID.setInt(2, lo.getBlockX());
-					insertReinID.setInt(3, lo.getBlockY());
-					insertReinID.setInt(4, lo.getBlockZ());
-					insertReinID.setString(5, lo.getWorld().getName());
+					insertReinID.setInt(1, lo.getBlockX());
+					insertReinID.setInt(2, lo.getBlockY());
+					insertReinID.setInt(3, lo.getBlockZ());
+					insertReinID.setString(4, lo.getWorld().getName());
 					insertReinID.addBatch();
 				}
 				insertReinID.executeBatch();
+				
+				int id = getLastReinId();
 				
 				addRein.setString(1, null);
 				addRein.setInt(2, mbRein.getDurability());
@@ -424,7 +430,7 @@ public class CitadelReinforcementData {
 	 * within SaveManager
 	 * @param The Reinforcement to delete.
 	 */
-	protected void deleteReinforcement(Reinforcement rein){
+	public void deleteReinforcement(Reinforcement rein){
 		reconnectAndReinitialize();
 		
 		Location loc = rein.getLocation();
@@ -446,7 +452,7 @@ public class CitadelReinforcementData {
 	 * from SaveManager.
 	 * @param The Reinforcement to save.
 	 */
-	protected void saveReinforcement(Reinforcement rein){
+	public void saveReinforcement(Reinforcement rein){
 		reconnectAndReinitialize();
 		
 		int dur = rein.getDurability();
@@ -497,7 +503,7 @@ public class CitadelReinforcementData {
 		return true;
 	}
 	
-	protected void insertDeleteGroup(String group){
+	public void insertDeleteGroup(String group){
 		reconnectAndReinitialize();
 		
 		try {
@@ -509,7 +515,7 @@ public class CitadelReinforcementData {
 		}
 	}
 	
-	protected List<Group> getDeleteGroups(){
+	public List<Group> getDeleteGroups(){
 		reconnectAndReinitialize();
 		
 		List<Group> groups = new ArrayList<Group>();
@@ -524,7 +530,7 @@ public class CitadelReinforcementData {
 		return groups;
 	}
 	
-	protected void removeDeleteGroup(String group){
+	public void removeDeleteGroup(String group){
 		reconnectAndReinitialize();
 		
 		try {

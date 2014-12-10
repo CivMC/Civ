@@ -69,18 +69,6 @@ public class BlockListener implements Listener{
 	
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	
-	@EventHandler(priority = EventPriority.HIGH)
-	public void blockReinforced(BlockPlaceEvent event){
-		// Check and see if the block placed is reinforced.
-		Player player = event.getPlayer();
-		Location loc = event.getBlockPlaced().getLocation();
-		ItemStack stack = event.getItemInHand();
-		PlayerReinforcement rein = isDroppedReinforcementBlock(player, stack, loc);
-		if (rein == null)
-			return;
-		rm.saveInitialReinforcement(rein);
-	}
-	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onFortificationMode(BlockPlaceEvent event){
 		Player p = event.getPlayer();
@@ -88,12 +76,16 @@ public class BlockListener implements Listener{
 		Inventory inv = p.getInventory();
 		if (event.getBlockReplacedState().getType().equals(Material.AIR)) {
 			Reinforcement rein = rm.getReinforcement(b.getLocation());
-			if (rein != null && rein instanceof PlayerReinforcement) 
+			if (rein != null && rein instanceof PlayerReinforcement){
 				rm.deleteReinforcement(rein);
-		}
-		else if (rm.getReinforcement(event.getBlockPlaced()) != null){
-			// block placed was a reinforced block before hand
+			}
+			Location loc = event.getBlockPlaced().getLocation();
+			ItemStack stack = event.getItemInHand();
+			rein = isDroppedReinforcementBlock(p, stack, loc);
+			if (rein != null){
+			rm.saveInitialReinforcement(rein);
 			return;
+			}
 		}
 		PlayerState state = PlayerState.get(p);
 		if (state.getMode() != ReinforcementMode.REINFOREMENT_FORTIFICATION)
@@ -151,11 +143,11 @@ public class BlockListener implements Listener{
             PlayerReinforcement pr = (PlayerReinforcement) rein;
             PlayerState state = PlayerState.get(player);
             boolean admin_bypass = player.hasPermission("citadel.admin.bypassmode");
-            if (pr.isAccessible(PermissionType.CROPS, player) || admin_bypass) {
+            if (isPlant(block) && (pr.isAccessible(PermissionType.CROPS, player) || admin_bypass)) {
                 // If this is a delegated reinforcement for a crop which the
                 //  player has access to, allow the player to break the crop
                 //  without effecting the reinforcement.
-                is_cancelled = false;
+            		is_cancelled = false;
             } else if (state.isBypassMode() && (pr.isBypassable(player) || admin_bypass)) {
                 if (admin_bypass) {
                 	/*
@@ -172,6 +164,7 @@ public class BlockListener implements Listener{
                 }
                 is_cancelled = reinforcementBroken(player, rein);
             } else {
+            	
             	ReinforcementDamageEvent dre = new ReinforcementDamageEvent(rein, player, block);
             	
             	Bukkit.getPluginManager().callEvent(dre);
@@ -480,7 +473,6 @@ public class BlockListener implements Listener{
                             timeUntilMature(reinforcement) != 0
                             && (CitadelConfigManager.isMaturationEnabled()
                                 || CitadelConfigManager.getAcidBlock() == block.getType());
-                        boolean is_personal_group = false;
                         String groupName = "!NULL!";
                         if (group != null) {
                             groupName = group.getName();
@@ -525,6 +517,15 @@ public class BlockListener implements Listener{
             case REINFORCEMENT_SINGLE:
                 // player is in reinforcement mode
                 if (reinforcement == null) {
+                	// set the reinforcemet material to what the player is holding
+                	ItemStack stack = player.getItemInHand();
+                	ReinforcementType type = ReinforcementType.getReinforcementType(stack);
+                	if (type == null){
+                		player.sendMessage(ChatColor.RED + stack.getType().name() + " is not a reinforcable material.");
+                		state.reset();
+                		return;
+                	}
+                	state.setFortificationItemStack(type.getItemStack());
                     // Break any natural reinforcement before placing the player reinforcement
                     if (generic_reinforcement != null) {
                         reinforcementBroken(null, generic_reinforcement);
@@ -540,7 +541,7 @@ public class BlockListener implements Listener{
                     boolean update = false;
                     String message = "";
                     Group group = state.getGroup();
-                    if(!reinforcement.getGroup().getName().equals(group)) {
+                    if(!reinforcement.getGroup().getName().equals(group.getName())) {
                         reinforcement.setGroup(group);
                         update = true;
                         if(!message.equals("")){
@@ -559,11 +560,7 @@ public class BlockListener implements Listener{
                     player.sendMessage(ChatColor.RED + "You are not permitted to modify this reinforcement");
                 }
                 pie.setCancelled(true);
-                if (state.getMode() == ReinforcementMode.REINFORCEMENT_SINGLE) {
-                    state.reset();
-                } else {
-                    state.checkResetMode();
-                }
+                state.checkResetMode();
             default:
             	break;
         }
@@ -571,7 +568,7 @@ public class BlockListener implements Listener{
         }
         catch(Exception e)
         {
-            //Citadel.printStackTrace(e);
+            e.printStackTrace();
         }
     }
 }

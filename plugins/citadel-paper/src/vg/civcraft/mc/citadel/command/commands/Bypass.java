@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.command.PlayerCommand;
-import vg.civcraft.mc.citadel.misc.ReinforcementMode;
 
 public class Bypass extends PlayerCommand{
 
@@ -26,16 +25,11 @@ public class Bypass extends PlayerCommand{
 		}
 		Player p = (Player) sender;
 		PlayerState state = PlayerState.get(p);
-		if (state.getMode() == ReinforcementMode.NORMAL){
-			p.sendMessage(ChatColor.GREEN + "Reinforcement mode changed to "
-					+ ReinforcementMode.BYPASS.name() + ".");
-			state.setMode(ReinforcementMode.BYPASS);
+		if (state.toggleBypassMode()){
+			p.sendMessage(ChatColor.GREEN + "Bypass mode has been enabled.");
 		}
-		else{
-			p.sendMessage(ChatColor.GREEN + state.getMode().name() + " has been"
-					+ " disabled.\nReinforcement mode has been reset.");
-			state.reset();
-		}
+		else 
+			p.sendMessage(ChatColor.GREEN + "Bypass mode has been disabled.");
 		return true;
 	}
 

@@ -53,8 +53,6 @@ public class Citadel extends JavaPlugin{
 	public void onDisable(){
 		// Pushes all reinforcements loaded to be saved to db.
 		rm.invalidateAllReinforcements();
-		// Save the memory to db.
-		db.flushAllReinforcements();
 	}
 	/**
 	 * Initializes the database.
@@ -113,6 +111,6 @@ public class Citadel extends JavaPlugin{
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		return cHandle.execute(sender, label, args);
+		return cHandle.execute(sender, cmd, args);
 	}
 }
