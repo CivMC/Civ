@@ -51,9 +51,9 @@ public class CommandHandler {
 			commands.put(command.getIdentifier().toLowerCase(), command);
 	}
 	
-	public boolean execute(CommandSender sender, String label, String[] args){
-		if (commands.containsKey(label)){
-			Command command = commands.get(label);
+	public boolean execute(CommandSender sender, org.bukkit.command.Command cmd, String[] args){
+		if (commands.containsKey(cmd.getName().toLowerCase())){
+			Command command = commands.get(cmd.getName().toLowerCase());
 			if (args.length < command.getMinArguments() || args.length > command.getMaxArguments()){
 				helpPlayer(command, sender);
 				return true;

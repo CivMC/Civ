@@ -30,11 +30,11 @@ public class ListGroups extends PlayerCommand {
 		UUID uuid = NameAPI.getUUID(p.getName());
 		List<String> groups = gm.getAllGroupNames(uuid);
 		
-		int pages = groups.size() / 10;
+		int pages = (groups.size() / 10) + 1;
 		String names = ChatColor.GREEN + "";
 		int start = 0;
 		try {
-			start = Integer.parseInt(args[1]);
+			start = Integer.parseInt(args[0]);
 		} catch(NumberFormatException e){
 			p.sendMessage(ChatColor.RED + "The page must be an integer.");
 			return true;

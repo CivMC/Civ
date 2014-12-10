@@ -6,10 +6,11 @@ import vg.civcraft.mc.namelayer.database.AssociationList;
 
 public class NameAPI {
 	private static GroupManager groupManager;
-	private static AssociationList associations = NameLayerPlugin.getAssociationList();
+	private static AssociationList associations;
 	
-	public NameAPI(GroupManager man){
+	public NameAPI(GroupManager man, AssociationList ass){
 		groupManager = man;
+		associations =  ass;
 	}
 	/**
 	 * Returns the UUID of the player on the given server.

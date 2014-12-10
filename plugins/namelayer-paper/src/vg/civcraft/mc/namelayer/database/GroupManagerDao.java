@@ -54,6 +54,12 @@ public class GroupManagerDao {
 					+ "group_id int not null AUTO_INCREMENT,"
 					+ "group_name varchar(255),"
 					+ "primary key(group_id));");
+
+			db.execute("create table if not exists permissions(" +
+					"group_id varchar(255) not null," +
+					"role varchar(40) not null," +
+					"tier varchar(255) not null," +
+					"unique key (group_id, role));");
 			
 			db.execute("insert into faction_id (group_name) select `name` from faction;");
 			db.execute("alter table faction add group_name varchar(255) default null");
@@ -61,6 +67,7 @@ public class GroupManagerDao {
 			db.execute("alter table faction drop `name`");
 			db.execute("alter table faction add primary key group_primary_key (group_name);");
 			db.execute("drop table personal_group;");
+			db.execute("alter table faction_member change member_name member_name varchar(36);");
 			db.execute("alter table faction_member add role varchar(10) not null default 'MEMBER'");
 			db.execute("alter table faction_member add group_id int not null;");
 			db.execute("update faction_member fm set fm.group_id = (select fi.group_id from faction_id fi "
@@ -72,10 +79,27 @@ public class GroupManagerDao {
 					"select g.group_id, m.member_name, 'MOD' from moderator m "
 					+ "inner join faction_id g on g.group_name = m.faction_name");
 			db.execute("drop table moderator;");
-			db.execute("alter table faction change `type` group_type varchar(40) not null;");
+			db.execute("alter table faction change `type` group_type varchar(40) not null default 'PRIVATE';");
+			db.execute("update faction set group_type = 'PRIVATE';");
 			db.execute("alter table faction change founder founder varchar(36);");
 			db.execute("alter table db_version add plugin_name varchar(40);");
 			db.execute("alter table db_version drop primary key;");
+			db.execute("insert into permissions (group_id, role, tier) "
+					+ "select f.group_id, 'OWNER', "
+					+ "'DOORS CHESTS BLOCKS ADMINS MODS MEMBERS PASSWORD SUBGROUP PERMS DELETE MERGE LIST_PERMS TRANSFER CROPS' "
+					+ "from faction_id f;");
+			db.execute("insert into permissions (group_id, role, tier) "
+					+ "select f.group_id, 'ADMINS', "
+					+ "'DOORS CHESTS BLOCKS MODS MEMBERS PASSWORD LIST_PERMS CROPS' "
+					+ "from faction_id f;");	
+			db.execute("insert into permissions (group_id, role, tier) "
+					+ "select f.group_id, 'MODS', "
+					+ "'DOORS CHESTS BLOCKS MEMBERS CROPS' "
+					+ "from faction_id f;");
+			db.execute("insert into permissions (group_id, role, tier) "
+					+ "select f.group_id, 'MEMBERS', "
+					+ "'DOORS CHESTS' "
+					+ "from faction_id f;");
 			ver = updateVersion(ver, plugin.getName());
 		}
 		if (ver == 1){
@@ -93,11 +117,11 @@ public class GroupManagerDao {
 					"founder varchar(36)," +
 					"password varchar(255) default null," +
 					"discipline_flags int(11) not null," +
-					"group_type varchar(40) not null," +
+					"group_type varchar(40) not null default 'PRIVATE'," +
 					"primary key(group_name));");
 			db.execute("create table if not exists faction_member(" +
 					"group_id int not null," +
-					"member_name varchar(36) not null," +
+					"member_name varchar(36)," +
 					"role varchar(10) not null default 'MEMBER'," +
 					"unique key (group_id, member_name));");
 			db.execute("create table if not exists blacklist(" +
@@ -163,6 +187,8 @@ public class GroupManagerDao {
 				+ "insert into faction_id(group_name) values (group_name);"
 				+ "insert into faction(group_name, founder, password, discipline_flags," +
 				"group_type) values (group_name, founder, password, discipline_flags, group_type);"
+				+ "insert into faction_member (member_name, role, group_id) "
+				+ "select founder, 'OWNER', f.group_id from faction_id f where f.group_name = group_name;"
 				+ "end;");
 	}
 	
@@ -185,7 +211,7 @@ public class GroupManagerDao {
 		updateVersion = db.prepareStatement("insert into db_version (db_version, update_time, plugin_name) values (?,?,?)"); 
 		
 		createGroup = db.prepareStatement("call createGroup(?,?,?,?,?)");
-		getGroup = db.prepareStatement("select group_name, founder, password, disipline_flags, group_type " +
+		getGroup = db.prepareStatement("select group_name, founder, password, discipline_flags, group_type " +
 				"from faction where group_name = ?");
 		getAllGroupsNames = db.prepareStatement("select f.group_name from faction_id f "
 				+ "inner join faction_member fm on f.group_id = fm.group_id "
@@ -210,7 +236,7 @@ public class GroupManagerDao {
 				+ "inner join subgroup sg on sg.group_id = sf.group_id "
 				+ "where f.group_id = sg.sub_group_id");
 		getSuperGroup = db.prepareStatement("select f.group_name from faction_id f "
-				+ "inner join faction_id sf on sf.sub_group_id = ? "
+				+ "inner join faction_id sf on sf.group_name = ? "
 				+ "inner join subgroup sg on sg.sub_group_id = sf.group_id "
 				+ "where f.group_id = sg.group_id");
 		removeSubGroup = db.prepareStatement("delete from subgroup "
@@ -293,9 +319,9 @@ public class GroupManagerDao {
 			if (!set.next()) return null;
 			String name = set.getString(1);
 			UUID owner = UUID.fromString(set.getString(2));
-			boolean dis = set.getInt(4) == 0;
+			boolean dis = set.getInt(4) != 0;
 			String password = set.getString(3);
-			GroupType type = GroupType.valueOf(set.getString(5));
+			GroupType type = GroupType.getGroupType(set.getString(5));
 			Group g = null;
 			switch(type){
 			case PRIVATE:
@@ -321,7 +347,7 @@ public class GroupManagerDao {
 			getAllGroupsNames.setString(1, uuid.toString());
 			ResultSet set = getAllGroupsNames.executeQuery();
 			while(set.next())
-				groups.add(set.getString("faction_name"));
+				groups.add(set.getString(1));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -359,7 +385,7 @@ public class GroupManagerDao {
 			getMembers.setString(2, role.name());
 			ResultSet set = getMembers.executeQuery();
 			while(set.next())
-				members.add(UUID.fromString(set.getString("faction_member")));
+				members.add(UUID.fromString(set.getString(1)));
 			return members;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -449,12 +475,12 @@ public class GroupManagerDao {
 			getPerms.setString(1, group);
 			ResultSet set = getPerms.executeQuery();
 			while(set.next()){
-				PlayerType type = PlayerType.valueOf(set.getString("role"));
-				String length = set.getString("tier");
+				PlayerType type = PlayerType.getPlayerType(set.getString(1));
+				String length = set.getString(2);
 				String[] multiPerms = length.split(" ");
 				List<PermissionType> listPerm = new ArrayList<PermissionType>();
 				for (String x: multiPerms)
-					listPerm.add(PermissionType.valueOf(x));
+					listPerm.add(PermissionType.getPermissionType(x));
 				perms.put(type, listPerm);
 			}
 		} catch (SQLException e) {

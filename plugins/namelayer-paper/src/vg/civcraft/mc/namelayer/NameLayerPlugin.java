@@ -34,7 +34,7 @@ public class NameLayerPlugin extends JavaPlugin{
 			this.saveDefaultConfig();
 		new NameLayerConfigManager().setConfigOptions(getConfig());;
 		loadDatabases();
-		new NameAPI(new GroupManager());
+		new NameAPI(new GroupManager(), associations);
 		registerListeners();
 	    handle = new CommandHandler();
 	    handle.registerCommands();
@@ -45,7 +45,7 @@ public class NameLayerPlugin extends JavaPlugin{
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		return handle.execute(sender, label, args);
+		return handle.execute(sender, cmd, args);
 	}
 	
 	public void onDisable() {
