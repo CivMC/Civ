@@ -38,11 +38,11 @@ public class DeleteGroup extends PlayerCommand{
 		}
 		UUID uuid = NameAPI.getUUID(p.getName());
 		PlayerType pType = g.getPlayerType(uuid);
-		if (pType == null){
+		if (pType == null && !p.hasPermission("namelayer.admin")){
 			p.sendMessage(ChatColor.RED + "You are not on that group.");
 			return true;
 		}
-		if (g.isDisciplined()){
+		if (g.isDisciplined() && !p.hasPermission("namelayer.admin")){
 			p.sendMessage(ChatColor.RED + "Group is disiplined.");
 			return true;
 		}

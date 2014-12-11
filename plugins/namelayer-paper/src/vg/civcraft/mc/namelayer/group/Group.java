@@ -33,8 +33,10 @@ public class Group {
 		for (PlayerType t: PlayerType.values()){
 			List<UUID> list;
 			list = db.getAllMembers(name, t);
-			for (UUID uuid: list)
+			for (UUID uuid: list){
+				System.out.println("Player added was: " + uuid);
 				players.put(uuid, t);
+			}
 		}
 	}
 	/**

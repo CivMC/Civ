@@ -34,12 +34,13 @@ public class DisciplineGroup extends PlayerCommand{
 			return true;
 		}
 		if (g.isDisciplined()){
-			g.setDisciplined(true);
-			sender.sendMessage(ChatColor.GREEN + "Group has been disabled.");
-		}
-		else
 			g.setDisciplined(false);
-		sender.sendMessage(ChatColor.GREEN + "Group has been enabled.");
+			sender.sendMessage(ChatColor.GREEN + "Group has been enabled.");
+		}
+		else{
+			g.setDisciplined(true);
+		sender.sendMessage(ChatColor.GREEN + "Group has been disabled.");
+		}
 		return true;
 	}
 }

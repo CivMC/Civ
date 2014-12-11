@@ -68,7 +68,7 @@ public class GroupManagerDao {
 			db.execute("alter table faction add primary key group_primary_key (group_name);");
 			db.execute("drop table personal_group;");
 			db.execute("alter table faction_member change member_name member_name varchar(36);");
-			db.execute("alter table faction_member add role varchar(10) not null default 'MEMBER'");
+			db.execute("alter table faction_member add role varchar(10) not null default 'MEMBERS'");
 			db.execute("alter table faction_member add group_id int not null;");
 			db.execute("update faction_member fm set fm.group_id = (select fi.group_id from faction_id fi "
 					+ "where fi.group_name = fm.faction_name);");
@@ -76,7 +76,7 @@ public class GroupManagerDao {
 			db.execute("alter table faction_member drop index uq_faction_member_1;");
 			db.execute("alter table faction_member drop faction_name;");
 			db.execute("insert into faction_member (group_id, member_name, role)" +
-					"select g.group_id, m.member_name, 'MOD' from moderator m "
+					"select g.group_id, m.member_name, 'MODS' from moderator m "
 					+ "inner join faction_id g on g.group_name = m.faction_name");
 			db.execute("drop table moderator;");
 			db.execute("alter table faction change `type` group_type varchar(40) not null default 'PRIVATE';");
@@ -122,7 +122,7 @@ public class GroupManagerDao {
 			db.execute("create table if not exists faction_member(" +
 					"group_id int not null," +
 					"member_name varchar(36)," +
-					"role varchar(10) not null default 'MEMBER'," +
+					"role varchar(10) not null default 'MEMBERS'," +
 					"unique key (group_id, member_name));");
 			db.execute("create table if not exists blacklist(" +
 					"member_name varchar(36) not null," +
@@ -152,16 +152,23 @@ public class GroupManagerDao {
 	public void initializeProcedures(){
 		db.execute("drop procedure if exists deletegroupfromtable;");
 		db.execute("create definer=current_user procedure deletegroupfromtable(" +
-				"in groupName varchar(36)" +
-				") sql security invoker begin "
-				+ "declare group_idd int;"
-				+ "set group_idd = (select f.group_id from faction_id f where f.group_name = groupName);" +
-				"delete from faction where group_name = groupName;" +
-				"delete from faction_member where group_id = group_idd;" +
-				"delete from blacklist where group_id = group_idd;" +
-				"delete from subgroup where group_id = group_idd;" +
-				"delete from permissions where group_id = group_idd;"
-				+ "delete from faction_id where group_name = groupName;" +
+				"in groupName varchar(36),"
+				+ "in specialAdminGroup varchar(36)" +
+				") sql security invoker begin " +
+				"delete fm.* from faction_member fm "
+				+ "inner join faction_id fi on fm.group_id = fi.group_id "
+				+ "where fi.group_name = groupName;" +
+				"delete b.* from blacklist b "
+				+ "inner join faction_id fi on b.group_id = fi.group_id "
+				+ "where fi.group_name = groupName;" +
+				"delete s.* from subgroup s "
+				+ "inner join faction_id fi on s.group_id = fi.group_id "
+				+ "where fi.group_name = groupName;" +
+				"delete p.* from permissions p "
+				+ "inner join faction_id fi on p.group_id = fi.group_id "
+				+ "where fi.group_name = groupName;"
+				+ "update faction f set f.group_name = specialAdminGroup "
+				+ "where f.group_name = specialAdminGroup;" +
 				"end;");
 		db.execute("drop procedure if exists mergeintogroup;");
 		db.execute("create definer=current_user procedure mergeintogroup(" +
@@ -216,13 +223,13 @@ public class GroupManagerDao {
 		getAllGroupsNames = db.prepareStatement("select f.group_name from faction_id f "
 				+ "inner join faction_member fm on f.group_id = fm.group_id "
 				+ "where fm.member_name = ?");
-		deleteGroup = db.prepareStatement("call deletegroupfromtable(?)");
+		deleteGroup = db.prepareStatement("call deletegroupfromtable(?, ?)");
 
 		addMember = db.prepareStatement("insert into faction_member(" +
 				"group_id, member_name, role) select group_id, ?, ? from "
 				+ "faction_id where group_name = ?");
 		getMembers = db.prepareStatement("select member_name from faction_member fm "
-				+ "where fm.group_id = (select f.group_id from faction_id f where group_name = ?) "
+				+ "where fm.group_id = (select f.group_id from faction_id f where f.group_name = ?) "
 				+ "and fm.role = ?");
 		removeMember = db.prepareStatement("delete from faction_member where member_name = ? and "
 				+ "group_id = (select group_id from faction_id where group_name = ?)");
@@ -355,10 +362,10 @@ public class GroupManagerDao {
 		return groups;
 	}
 	
-	// Remember to come back and make it remove members, mods, admins, ect from the group too
 	public void deleteGroup(String groupName){
 		try {
 			deleteGroup.setString(1, groupName);
+			deleteGroup.setString(2, NameLayerPlugin.getSpecialAdminGroup());
 			deleteGroup.execute();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -384,8 +391,10 @@ public class GroupManagerDao {
 			getMembers.setString(1, groupName);
 			getMembers.setString(2, role.name());
 			ResultSet set = getMembers.executeQuery();
-			while(set.next())
-				members.add(UUID.fromString(set.getString(1)));
+			while(set.next()){
+				String uuid = set.getString(1);
+				members.add(UUID.fromString(uuid));
+			}
 			return members;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
