@@ -18,7 +18,7 @@ reinforcements:
 # after lore. You can add multiple lines by adding -
 #   - Some string representation required for this reinforcement.
  iron:
-  material: IRON
+  material: IRON_INGOT
   requirements: 1
   return: 1
   percent_chance: 100
@@ -35,7 +35,7 @@ reinforcements:
   mature_time: 10
   scale_amount: 0
   lore:
-natural_reinforcements:
+#natural_reinforcements:
  #diamond_ore:
   #material: DIAMOND_ORE
   #hit_points: 60
