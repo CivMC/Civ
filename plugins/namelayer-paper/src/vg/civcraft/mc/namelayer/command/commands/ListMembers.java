@@ -49,7 +49,7 @@ public class ListMembers extends PlayerCommand{
 			uuids = g.getAllMembers();
 		String x = "Members are as follows: ";
 		for (UUID uu: uuids)
-			x += uu.toString() + " ";
+			x += NameAPI.getCurrentName(uu) + " ";
 		p.sendMessage(ChatColor.GREEN + x);
 		return true;
 	}

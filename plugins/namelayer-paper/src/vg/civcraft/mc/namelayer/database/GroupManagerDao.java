@@ -78,11 +78,15 @@ public class GroupManagerDao {
 			db.execute("insert into faction_member (group_id, member_name, role)" +
 					"select g.group_id, m.member_name, 'MODS' from moderator m "
 					+ "inner join faction_id g on g.group_name = m.faction_name");
+			db.execute("insert into faction_member (group_id, member_name, role)"
+					+ "select fi.group_id, f.founder, 'OWNER' from faction f "
+					+ "inner join faction_id fi on fi.group_name = f.group_name;");
 			db.execute("drop table moderator;");
 			db.execute("alter table faction change `type` group_type varchar(40) not null default 'PRIVATE';");
 			db.execute("update faction set group_type = 'PRIVATE';");
 			db.execute("alter table faction change founder founder varchar(36);");
 			db.execute("alter table db_version add plugin_name varchar(40);");
+			db.execute("alter table db_version change db_version db_version int not null;"); // for some reason db_version may have an auto increment on it.
 			db.execute("alter table db_version drop primary key;");
 			db.execute("insert into permissions (group_id, role, tier) "
 					+ "select f.group_id, 'OWNER', "
