@@ -20,7 +20,6 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.group.Group;
 
 public class CitadelReinforcementData {
 
@@ -36,26 +35,7 @@ public class CitadelReinforcementData {
 	}
 
 	private void intitializeProcedures(){
-		db.execute("drop procedure if exists deleteGroup;");
-		db.execute("create definer=current_user procedure deleteGroup("
-				+ "in deleteGroup varchar(36)"
-				+ ") sql security invoker "
-				+ " "
-				+ "begin "
-				+ "declare group_idd int; "
-				+ "declare rein_idd int;"
-				+ "set group_idd = (select g.group_id from faction_id g where g.group_name = deleteGroup);"
-				+ "set rein_idd = (select r.rein_id from reinforcement r where r.group_id = group_idd);"
-				+ "delete from reinforcment_id "
-				+ "where rein_id = rein_idd limit 50;"
-				+ "delete from reinforcement "
-				+ "where group_id = group_idd limit 50;"
-				+ "select (select count(*) from reinforcement "
-				+ "where group_name = deleteGroup) + "
-				+ "(select count(*) from reinforcement_id "
-				+ "where rein_id = rein_idd) "
-				+ "as count;"
-				+ "end;");
+		// :( empty
 	}
 	/**
 	 * Creates the required mysql tables and updates the db if needed.
@@ -89,6 +69,7 @@ public class CitadelReinforcementData {
 				db.execute("create table if not exists material_mapping(" +
 						"material varchar(40) not null," +
 						"material_id int not null);");
+				db.execute("create index x on material_mapping (material_id);");
 				for (Material mat: Material.values()){
 					PreparedStatement insert = db.prepareStatement
 							("insert into material_mapping(" +
@@ -137,9 +118,6 @@ public class CitadelReinforcementData {
 					"rein_type varchar(30) not null," +
 					"lore varchar(255),"
 					+ "primary key (x,y,z,world));");
-			db.execute("create table if not exists toDeleteReinforecments("
-					+ "group_id int not null,"
-					+ "primary key (group_id));");
 			NameLayerPlugin.insertVersionNum(5, plugin.getName());
 			ver = NameLayerPlugin.getVersionNum(plugin.getName());
 		}
@@ -180,7 +158,7 @@ public class CitadelReinforcementData {
 	}
 	
 	private PreparedStatement getRein, getReins, addRein, removeRein, updateRein;
-	private PreparedStatement deleteGroup, insertDeleteGroup, removeDeleteGroup, getDeleteGroup;
+	//private PreparedStatement deleteGroup, insertDeleteGroup, removeDeleteGroup, getDeleteGroup;
 	private PreparedStatement insertReinID, getLastReinID, getCordsbyReinID;
 	/**
 	 * Initializes the PreparedStatements. Gets called on db connect or
@@ -208,6 +186,7 @@ public class CitadelReinforcementData {
 		updateRein = db.prepareStatement("update reinforcements set durability = ?,"
 				+ "insecure = ?, group_id = (select f.group_id from faction_id f where f.group_name = ?), maturation_time = ? "
 				+ "where x = ? and y = ? and z = ? and world = ?");
+		/*
 		deleteGroup = db.prepareStatement("call deleteGroup(?)");
 		insertDeleteGroup = db.prepareStatement("insert into toDeleteReinforecments(group_id) select g.group_id from faction_id g "
 				+ "where g.group_name = ?");
@@ -215,6 +194,7 @@ public class CitadelReinforcementData {
 				+ "faction_id f where f.group_name = ?)");
 		getDeleteGroup = db.prepareStatement("select f.group_name from faction_id f "
 				+ "inner join toDeleteReinforecments d on f.group_id = d.group_id");
+		*/
 		
 		insertReinID = db.prepareStatement("insert ignore into reinforcement_id(x, y, z, world) values (?, ?, ?, ?)");
 		getLastReinID = db.prepareStatement("select LAST_INSERT_ID() as id from reinforcement_id");
@@ -481,13 +461,15 @@ public class CitadelReinforcementData {
 			e.printStackTrace();
 		}
 	}
+	
+	/*
 	/**
 	 * Begins deleting the reinforcements at a group. Once this is executed
 	 * the specified group loses all reinforcements. They are removed from map,
 	 * no longer able to be bypassed or broken.
 	 * @param The Group name that is being removed.
 	 * @return Returns true if there are more records to remove, false otherwise.
-	 */
+	 *
 	public boolean deleteGroup(String group){
 		reconnectAndReinitialize();
 		
@@ -541,6 +523,7 @@ public class CitadelReinforcementData {
 			e.printStackTrace();
 		}
 	}
+	*/
 	
 	public int getLastReinId(){
 		reconnectAndReinitialize();

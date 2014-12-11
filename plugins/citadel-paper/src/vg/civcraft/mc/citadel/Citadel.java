@@ -10,8 +10,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.citadel.command.CommandHandler;
+import vg.civcraft.mc.citadel.database.CitadelReinforcementData;
 import vg.civcraft.mc.citadel.database.Database;
-import vg.civcraft.mc.citadel.database.SaveDatabaseManager;
 import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.listener.EntityListener;
 import vg.civcraft.mc.citadel.listener.GroupsListener;
@@ -24,7 +24,7 @@ import vg.civcraft.mc.namelayer.NameLayerPlugin;
 public class Citadel extends JavaPlugin{
 	private static Logger logger;
 	
-	private static SaveDatabaseManager db;
+	private static CitadelReinforcementData db;
 	private static ReinforcementManager rm;
 	private CommandHandler cHandle;
 	private static Citadel instance;
@@ -65,7 +65,7 @@ public class Citadel extends JavaPlugin{
 		int port = nameConfig.getInt("sql.port");
 		String dbName = nameConfig.getString("sql.dbname");
 		Database data = new Database(host, port, dbName, user, password, getLogger());
-		db = new SaveDatabaseManager(data);
+		db = new CitadelReinforcementData(data);
 	}
 	/**
 	 * Registers the listeners for Citadel.
@@ -106,7 +106,7 @@ public class Citadel extends JavaPlugin{
 	/**
 	 * @return The Database Manager for Citadel.
 	 */
-	public static SaveDatabaseManager getCitadelDatabase(){
+	public static CitadelReinforcementData getCitadelDatabase(){
 		return db;
 	}
 	

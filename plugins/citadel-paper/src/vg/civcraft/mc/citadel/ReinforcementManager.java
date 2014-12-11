@@ -11,13 +11,13 @@ import net.minecraft.util.com.google.common.cache.RemovalNotification;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
-import vg.civcraft.mc.citadel.database.SaveDatabaseManager;
+import vg.civcraft.mc.citadel.database.CitadelReinforcementData;
 import vg.civcraft.mc.citadel.misc.LoadingCacheNullException;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
 public class ReinforcementManager {
 
-	private SaveDatabaseManager db;
+	private CitadelReinforcementData db;
 	
 	// This shit is cool
 	private RemovalListener<Location, Reinforcement> removalListener = 
@@ -43,7 +43,7 @@ public class ReinforcementManager {
 						}
 					});
 	
-	public ReinforcementManager(SaveDatabaseManager db){
+	public ReinforcementManager(CitadelReinforcementData db){
 		this.db = db;
 	}
 	/**
