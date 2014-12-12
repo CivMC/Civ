@@ -56,8 +56,8 @@ public class Reinforce extends PlayerCommand {
 		PlayerState state = PlayerState.get(p);
 		if (state.getMode() == ReinforcementMode.NORMAL){
 			p.sendMessage(ChatColor.GREEN + "Your mode has been set to " + 
-					ReinforcementMode.REINFORCEMENT_SINGLE.name() + ".");
-			state.setMode(ReinforcementMode.REINFORCEMENT_SINGLE);
+					ReinforcementMode.REINFORCEMENT.name() + ".");
+			state.setMode(ReinforcementMode.REINFORCEMENT);
 			state.setGroup(g);
 		}
 		else{

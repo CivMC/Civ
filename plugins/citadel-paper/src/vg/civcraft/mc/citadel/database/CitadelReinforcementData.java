@@ -64,9 +64,11 @@ public class CitadelReinforcementData {
 				}
 				db.execute("alter table reinforcement drop security_level;");
 				db.execute("alter table reinforcement drop version");
+				/*
 				Citadel.Log("Remapping from material id to material name " +
 						"in process.");
-				db.execute("create table if not exists material_mapping(" +
+				db.execute("create table if not exists material_mapping("
+						+ "" +
 						"material varchar(40) not null," +
 						"material_id int not null);");
 				db.execute("create index x on material_mapping (material_id);");
@@ -90,6 +92,7 @@ public class CitadelReinforcementData {
 						"set r.material = m.material;");
 				db.execute("alter table reinforcement drop material_id;");
 				db.execute("drop table material_mapping;");
+				*/
 				db.execute("insert into faction_id (group_name) values (null);"); // For natural reinforcements
 				db.execute("alter table reinforcement add group_id int not null;");
 				db.execute("update reinforcement r set r.group_id = (select f.group_id from "
@@ -109,7 +112,7 @@ public class CitadelReinforcementData {
 					"y int not null," +
 					"z int not null," +
 					"world varchar(10) not null," +
-					"material varchar(10) not null," +
+					"material_id int not null," +
 					"durability varchar(10) not null," +
 					"chunk_id varchar(255) not null," +
 					"insecure tinyint(1) not null," +
@@ -122,9 +125,7 @@ public class CitadelReinforcementData {
 			ver = NameLayerPlugin.getVersionNum(plugin.getName());
 		}
 		if (ver == 6){
-			Citadel.Log("Updating to version 6, I don't care if you don't like it, it has to be this way. I'm sorry we couldn't get "
-					+ "along.  Is it okay if we can stay friends?  It would really mean a lot to me if we could, I've really enjoyed our "
-					+ "time together and this makes me happy.");
+			Citadel.Log("Updating to version 7. No fun message for you :(");
 			db.execute("create table if not exists reinforcement_id("
 					+ "rein_id int not null auto_increment,"
 					+ "x int not null,"
@@ -165,26 +166,26 @@ public class CitadelReinforcementData {
 	 * reconnect.
 	 */
 	private void initalizePreparedStatements(){
-		getRein = db.prepareStatement("select r.material, r.durability, " +
+		getRein = db.prepareStatement("select r.material_id, r.durability, " +
 				"r.insecure, f.group_name, r.maturation_time, r.rein_type, "
 				+ "r.lore, r.rein_id from reinforcement r "
 				+ "inner join faction_id f on f.group_id = r.group_id " +
 				"inner join reinforcement_id ri on r.rein_id = ri.rein_id "
 				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.world = ?");
-		getReins = db.prepareStatement("select r.material, r.durability, " + // this wont work
+		getReins = db.prepareStatement("select r.material_id, r.durability, " + // this wont work
 				"r.insecure, f.group_name, r.maturation_time from reinforcement r "
 				+ "inner join faction_id f on f.group_id = r.group_id " +
 				"where chunk_id = ?");
 		addRein = db.prepareStatement("insert into reinforcement ("
-				+ "material, durability, chunk_id,"
+				+ "material_id, durability, chunk_id,"
 				+ "insecure, group_id, maturation_time, rein_type,"
 				+ "lore, rein_id) select ?, ?, ?, ?, f.group_id, ?, ?, ?, ? from faction_id f "
-				+ "where f.group_name = ?");
+				+ "where f.group_name = ? limit 1");
 		removeRein = db.prepareStatement("delete r.*, ri.* from reinforcement r "
 				+ "left join reinforcement_id ri on r.rein_id = ri.rein_id "
 				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.world = ?");
 		updateRein = db.prepareStatement("update reinforcements set durability = ?,"
-				+ "insecure = ?, group_id = (select f.group_id from faction_id f where f.group_name = ?), maturation_time = ? "
+				+ "insecure = ?, group_id = (select f.group_id from faction_id f where f.group_name = ? limit 1), maturation_time = ? "
 				+ "where x = ? and y = ? and z = ? and world = ?");
 		/*
 		deleteGroup = db.prepareStatement("call deleteGroup(?)");
@@ -221,9 +222,10 @@ public class CitadelReinforcementData {
 			getRein.setInt(3, z);
 			getRein.setString(4, loc.getWorld().getName());
 			ResultSet set = getRein.executeQuery();
-			if (!set.next())
+			if (!set.next()){
 				return null;
-			Material mat = Material.valueOf(set.getString(1));
+			}
+			Material mat = Material.getMaterial(set.getInt(1));
 			int durability = set.getInt(2);
 			boolean inSecure = set.getBoolean(3);
 			String group = set.getString(4);
@@ -320,7 +322,7 @@ public class CitadelReinforcementData {
 				
 				int id = getLastReinId();
 				
-				addRein.setString(1, mat.name());
+				addRein.setInt(1, mat.getId());
 				addRein.setInt(2, dur);
 				addRein.setString(3, chunk_id);
 				addRein.setBoolean(4, insecure);
@@ -357,7 +359,7 @@ public class CitadelReinforcementData {
 				
 				int id = getLastReinId();
 				
-				addRein.setString(1, mat.name());
+				addRein.setInt(1, mat.getId());
 				addRein.setInt(2, dur);
 				addRein.setString(3, chunk_id);
 				addRein.setBoolean(4, insecure);
@@ -388,7 +390,7 @@ public class CitadelReinforcementData {
 				
 				int id = getLastReinId();
 				
-				addRein.setString(1, null);
+				addRein.setInt(1, -1);
 				addRein.setInt(2, mbRein.getDurability());
 				addRein.setString(3, null);
 				addRein.setBoolean(4, false);

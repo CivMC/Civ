@@ -432,7 +432,7 @@ public class Utility {
     	List<String> info = new ArrayList<String>();
     	String reinMat = rein.getMaterial().name();
     	String amount = "" + rein.getStackRepresentation().getAmount();
-    	String dur = "" + rein.getDurability();
+    	String dur = "" + ReinforcementType.getReinforcementType(rein.getStackRepresentation()).getHitPoints();
     	String group = rein.getGroup().getName();
     	info.add(reinMat);
     	info.add(amount);

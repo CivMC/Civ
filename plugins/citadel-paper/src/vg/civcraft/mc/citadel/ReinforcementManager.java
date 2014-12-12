@@ -74,7 +74,8 @@ public class ReinforcementManager {
 		try{
 			return reinforcements.get(loc);
 		} catch(Exception e){
-			//e.printStackTrace();
+			if (!(e instanceof LoadingCacheNullException)); // i dont get why this doesnt work
+					//e.printStackTrace();
 		}
 		return null;
 	}

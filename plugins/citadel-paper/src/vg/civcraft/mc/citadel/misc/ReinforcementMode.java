@@ -2,7 +2,7 @@ package vg.civcraft.mc.citadel.misc;
 
 public enum ReinforcementMode {
 
-	REINFORCEMENT_SINGLE,
+	REINFORCEMENT,
 	REINFOREMENT_FORTIFICATION,
 	REINFORCEMENT_INFORMATION,
 	NORMAL,

@@ -467,7 +467,9 @@ public class BlockListener implements Listener{
                             sb.append(" (Insecure)");
                         }
                         player.sendMessage(ChatColor.GREEN + sb.toString());
-                    } else if(reinforcement.isAccessible(PermissionType.BLOCKS, player)){
+                    } else if(reinforcement.isAccessible(PermissionType.BLOCKS, player) || 
+                    		reinforcement.isAccessible(PermissionType.DOORS, player) ||
+                    		reinforcement.isAccessible(PermissionType.CHESTS, player)){
                         sb = new StringBuilder();
                         boolean immature =
                             timeUntilMature(reinforcement) != 0
@@ -514,7 +516,7 @@ public class BlockListener implements Listener{
                 }
                 break;
 
-            case REINFORCEMENT_SINGLE:
+            case REINFORCEMENT:
                 // player is in reinforcement mode
                 if (reinforcement == null) {
                 	// set the reinforcemet material to what the player is holding
