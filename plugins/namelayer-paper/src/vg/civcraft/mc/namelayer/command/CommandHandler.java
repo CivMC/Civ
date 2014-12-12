@@ -16,6 +16,7 @@ import vg.civcraft.mc.namelayer.command.commands.InvitePlayer;
 import vg.civcraft.mc.namelayer.command.commands.JoinGroup;
 import vg.civcraft.mc.namelayer.command.commands.ListGroups;
 import vg.civcraft.mc.namelayer.command.commands.ListMembers;
+import vg.civcraft.mc.namelayer.command.commands.ListPermissions;
 import vg.civcraft.mc.namelayer.command.commands.MergeGroups;
 import vg.civcraft.mc.namelayer.command.commands.ModifyPermissions;
 import vg.civcraft.mc.namelayer.command.commands.RemoveMember;
@@ -39,6 +40,7 @@ public class CommandHandler {
 		addCommands(new JoinGroup("JoinGroup"));
 		addCommands(new ListGroups("ListGroups"));
 		addCommands(new ListMembers("ListMembers"));
+		addCommands(new ListPermissions("ListPermissions"));
 		addCommands(new MergeGroups("MergeGroups"));
 		addCommands(new ModifyPermissions("ModifyPermissions"));
 		addCommands(new RemoveMember("RemoveMember"));

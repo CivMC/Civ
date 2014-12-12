@@ -42,7 +42,7 @@ public class InvitePlayer extends PlayerCommand{
 			return true;
 		}
 		UUID executor = NameAPI.getUUID(p.getName());
-		PlayerType pType = PlayerType.valueOf(args[1]);
+		PlayerType pType = PlayerType.getPlayerType(args[1]);
 		if (pType == null){
 			PlayerType.displayPlayerTypes(p);
 			return true;
@@ -80,11 +80,14 @@ public class InvitePlayer extends PlayerCommand{
 		
 		group.addInvite(uuid, pType);
 		OfflinePlayer invitee = Bukkit.getOfflinePlayer(uuid);
-		if (!invitee.isOnline())
-			return true;
-		Player oInvitee = (Player) invitee;
-		oInvitee.sendMessage(ChatColor.GREEN + "You have been invited to the group " + group.getName() +" by " + p.getName() +".\n" +
-				"Use the command /groupsacceptinvite <group> to accept.");
+		if (invitee.isOnline()){
+			Player oInvitee = (Player) invitee;
+			oInvitee.sendMessage(ChatColor.GREEN + "You have been invited to the group " + group.getName() +" by " + p.getName() +".\n" +
+					"Use the command /groupsaccept <group> to accept.");
+			p.sendMessage(ChatColor.GREEN + "Invite sent.");
+		}
+		else
+			p.sendMessage(ChatColor.GREEN + "Player is offline and cannot be added right now.");
 		return true;
 	}
 

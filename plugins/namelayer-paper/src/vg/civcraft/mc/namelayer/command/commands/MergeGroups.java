@@ -21,7 +21,7 @@ public class MergeGroups extends PlayerCommand{
 	public MergeGroups(String name) {
 		super(name);
 		setDescription("This command is used to merge two groups together.");
-		setUsage("/groupsmerge <group> <group to merge to>");
+		setUsage("/groupsmerge <The group left> <The group that will be gone>");
 		setIdentifier("groupsmerge");
 		setArguments(2,2);
 	}

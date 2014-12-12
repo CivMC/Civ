@@ -42,13 +42,16 @@ public class GroupManager{
 	}
 	
 	public boolean deleteGroup(String groupName){
-		GroupDeleteEvent event = new GroupDeleteEvent(getGroup(groupName));
+		Group g = getGroup(groupName);
+		GroupDeleteEvent event = new GroupDeleteEvent(g, false);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled())
 			return false;
 		deleteGroupPerms(groups.get(groupName));
 		groupManagerDao.deleteGroup(groupName);
 		groups.remove(groupName);
+		event = new GroupDeleteEvent(g, true);
+		Bukkit.getPluginManager().callEvent(event);
 		return true;
 	}
 	
@@ -65,7 +68,8 @@ public class GroupManager{
 	}
 	
 	public void mergeGroup(final Group group, final Group toMerge){
-		GroupMergeEvent event = new GroupMergeEvent(group, toMerge);
+		GroupMergeEvent event = new GroupMergeEvent(group, toMerge, false);
+		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()){
 			NameLayerPlugin.log(Level.INFO, "Group merge event was cancelled for groups: " +
 					group.getName() + " and " + toMerge.getName());
@@ -80,11 +84,14 @@ public class GroupManager{
 						if (!group.isMember(uuid))
 							group.addMember(uuid, type);
 				groups.remove(toMerge.getName());
+				mergeGroupInstances(group, toMerge);
 			}
 			
 		});
 		groupManagerDao.mergeGroup(group.getName(), toMerge.getName());
 		deleteGroup(toMerge.getName());
+		event = new GroupMergeEvent(group, toMerge, true);
+		Bukkit.getPluginManager().callEvent(event);
 	}
 	
 	/*
@@ -172,5 +179,9 @@ public class GroupManager{
 			p.sendMessage(ChatColor.RED +"That PlayerType does not exists.\n" +
 					"The current types are: " + types);
 		}
+	}
+	
+	private void mergeGroupInstances(Group g1, Group g2){
+		g2 = g1;
 	}
 }

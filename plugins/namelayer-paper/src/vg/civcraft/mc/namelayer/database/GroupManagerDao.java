@@ -172,20 +172,28 @@ public class GroupManagerDao {
 				+ "inner join faction_id fi on p.group_id = fi.group_id "
 				+ "where fi.group_name = groupName;"
 				+ "update faction f set f.group_name = specialAdminGroup "
-				+ "where f.group_name = specialAdminGroup;" +
+				+ "where f.group_name = specialAdminGroup;"
+				+ "update faction_id set group_name = specialAdminGroup where group_name = groupName;"
+				+ "delete from faction where group_name = groupName;" +
 				"end;");
 		db.execute("drop procedure if exists mergeintogroup;");
+		// needs to be set with inner jons
 		db.execute("create definer=current_user procedure mergeintogroup(" +
 				"in groupName varchar(255), in tomerge varchar(255)) " +
-				"sql security invoker begin "
-				+ "declare group_id int;"
-				+ "declare merge_group_id int;"
-				+ "set group_id = (select f.group_id from faction_id f where f.group_name = groupName);"
-				+ "set merge_group_id = (select f.group_id from faction_id f where f.group_name = mergeintogroup);" +
-				"update ignore faction_member fm set fm.group_id = group_id where fm.group_id = merge_group_id;" +
-				"delete from faction_member where group_id = merge_group_id;"
+				"sql security invoker begin " +
+				"update ignore faction_member fm "
+				+ "inner join faction_id fi on fi.group_name = groupName "
+				+ "inner join faction_id fii on fii.group_name = tomerge "
+				+ "set fm.group_id = fi.group_name "
+				+ "where fm.group_id = fii.group_id;" +
+				"delete fm.* from faction_member fm "
+				+ "inner join faction_id fi on fi.group_name = tomerge "
+				+ "where fm.group_id = fi.group_id;"
 				+ "delete from faction where group_name = tomerge;"
-				+ "update faction_id set group_name = groupName where group_id = merge_group_id;"
+				+ "update faction_id fi "
+				+ "inner join faction_id fii on fii.group_name = tomerge "
+				+ "set fi.group_name = groupName "
+				+ "where fi.group_id = fii.group_id;"
 				+ "end;");
 		db.execute("drop procedure if exists createGroup;");
 		db.execute("create definer=current_user procedure createGroup("
@@ -232,11 +240,12 @@ public class GroupManagerDao {
 		addMember = db.prepareStatement("insert into faction_member(" +
 				"group_id, member_name, role) select group_id, ?, ? from "
 				+ "faction_id where group_name = ?");
-		getMembers = db.prepareStatement("select member_name from faction_member fm "
-				+ "where fm.group_id = (select f.group_id from faction_id f where f.group_name = ?) "
-				+ "and fm.role = ?");
-		removeMember = db.prepareStatement("delete from faction_member where member_name = ? and "
-				+ "group_id = (select group_id from faction_id where group_name = ?)");
+		getMembers = db.prepareStatement("select fm.member_name from faction_member fm "
+				+ "inner join faction_id id on id.group_name = ? "
+				+ "where fm.group_id = id.group_id and fm.role = ?");
+		removeMember = db.prepareStatement("delete fm.* from faction_member fm "
+				+ "inner join faction_id fi on fi.group_name = ?"
+				+ "where fm.group_id = fi.group_id and fm.member_name = ?");
 		
 		addSubGroup = db.prepareStatement("insert into subgroup (group_id, sub_group_id) " +
 				"select g.group_id, sg.group_id from faction_id g "
@@ -256,8 +265,9 @@ public class GroupManagerDao {
 
 		addPerm = db.prepareStatement("insert into permissions (group_id, role, tier) "
 				+ "select g.group_id, ?, ? from faction_id g where g.group_name = ?");
-		getPerms = db.prepareStatement("select role, tier from permissions "
-				+ "where group_id = (select g.group_id from faction_id g where g.group_name = ?)");
+		getPerms = db.prepareStatement("select p.role, p.tier from permissions p "
+				+ "inner join faction_id fi on fi.group_name = ? "
+				+ "where p.group_id = fi.group_id");
 		updatePerm = db.prepareStatement("update permissions set tier = ? "
 				+ "where group_id = (select g.group_id from faction_id where group_name = ?) and role = ?");
 		
@@ -329,7 +339,10 @@ public class GroupManagerDao {
 			ResultSet set = getGroup.executeQuery();
 			if (!set.next()) return null;
 			String name = set.getString(1);
-			UUID owner = UUID.fromString(set.getString(2));
+			String uuid = set.getString(2);
+			UUID owner = null;
+			if (uuid != null)
+				owner = UUID.fromString(uuid);
 			boolean dis = set.getInt(4) != 0;
 			String password = set.getString(3);
 			GroupType type = GroupType.getGroupType(set.getString(5));
@@ -397,6 +410,8 @@ public class GroupManagerDao {
 			ResultSet set = getMembers.executeQuery();
 			while(set.next()){
 				String uuid = set.getString(1);
+				if (uuid == null)
+					continue;
 				members.add(UUID.fromString(uuid));
 			}
 			return members;
@@ -529,7 +544,7 @@ public class GroupManagerDao {
 	public void mergeGroup(String groupName, String toMerge){
 		try {
 			mergeGroup.setString(1, groupName);
-			mergeGroup.setString(2, groupName);
+			mergeGroup.setString(2, toMerge);
 			mergeGroup.execute();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -34,7 +34,6 @@ public class Group {
 			List<UUID> list;
 			list = db.getAllMembers(name, t);
 			for (UUID uuid: list){
-				System.out.println("Player added was: " + uuid);
 				players.put(uuid, t);
 			}
 		}

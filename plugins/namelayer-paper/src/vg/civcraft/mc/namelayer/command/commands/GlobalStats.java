@@ -9,7 +9,6 @@ import vg.civcraft.mc.namelayer.command.PlayerCommand;
 
 public class GlobalStats extends PlayerCommand{
 
-	private boolean isRunning = false;
 	public GlobalStats(String name) {
 		super(name);
 		setDescription("This command is used to get stats about groups and the sorts.");
@@ -20,11 +19,6 @@ public class GlobalStats extends PlayerCommand{
 
 	@Override
 	public boolean execute(final CommandSender sender, String[] args) {
-		if (isRunning){
-			sender.sendMessage(ChatColor.GREEN + "This command is already being run.  Try again later.");
-			return true;
-		}
-		isRunning = true;
 		Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), new Runnable(){
 
 			@Override

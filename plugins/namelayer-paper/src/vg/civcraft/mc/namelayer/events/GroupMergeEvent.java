@@ -12,9 +12,12 @@ public class GroupMergeEvent extends Event implements Cancellable{
 	private boolean isCancelled = false;
 	private Group beingMerged; // the group that will join into another
 	private Group mergingInto; // the group that is receiving the other
-	public GroupMergeEvent(Group group, Group toBeMerged){
+	private boolean finished;
+	
+	public GroupMergeEvent(Group group, Group toBeMerged, boolean finished){
 		mergingInto = group;
 		beingMerged = toBeMerged;
+		this.finished = finished;
 	}
 	/**
 	 * @return Returns the group to be merged.
@@ -46,6 +49,14 @@ public class GroupMergeEvent extends Event implements Cancellable{
 	
 	public static HandlerList getHandlerList() {
 	    return handlers;
+	}
+	
+	public void setHasFinished(boolean value){
+		finished = value;
+	}
+	
+	public boolean hasFinished(){
+		return finished;
 	}
 
 }
