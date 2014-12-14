@@ -52,6 +52,7 @@ public class GroupManager{
 		groups.remove(groupName);
 		event = new GroupDeleteEvent(g, true);
 		Bukkit.getPluginManager().callEvent(event);
+		g.setDisciplined(true);
 		return true;
 	}
 	
@@ -84,7 +85,6 @@ public class GroupManager{
 						if (!group.isMember(uuid))
 							group.addMember(uuid, type);
 				groups.remove(toMerge.getName());
-				mergeGroupInstances(group, toMerge);
 			}
 			
 		});
@@ -92,6 +92,10 @@ public class GroupManager{
 		deleteGroup(toMerge.getName());
 		event = new GroupMergeEvent(group, toMerge, true);
 		Bukkit.getPluginManager().callEvent(event);
+		toMerge.setDisciplined(true); 
+		/* Objects that are referencing this class won't get updated so disciplining the group and on restart 
+		 * they will get the correct group
+		 */
 	}
 	
 	/*
@@ -179,9 +183,5 @@ public class GroupManager{
 			p.sendMessage(ChatColor.RED +"That PlayerType does not exists.\n" +
 					"The current types are: " + types);
 		}
-	}
-	
-	private void mergeGroupInstances(Group g1, Group g2){
-		g2 = g1;
 	}
 }

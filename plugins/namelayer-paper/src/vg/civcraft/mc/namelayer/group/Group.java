@@ -22,7 +22,7 @@ public class Group {
 	
 	protected Map<UUID, PlayerType> players = new HashMap<UUID, PlayerType>();
 	
-	public Map<UUID, PlayerType> invitations = new HashMap<UUID, PlayerType>();
+	private Map<UUID, PlayerType> invitations = new HashMap<UUID, PlayerType>();
 	
 	public Group(String name, UUID owner, boolean disiplined, String password, GroupType type){
 		groupName = name;
@@ -43,8 +43,7 @@ public class Group {
 	 * @return Returns all the uuids.
 	 */
 	public List<UUID> getAllMembers(){
-		List<UUID> uuids = new ArrayList<UUID>();
-		uuids.addAll(players.keySet());
+		List<UUID> uuids = new ArrayList<UUID>(players.keySet());
 		return uuids;
 	}
 	/**
