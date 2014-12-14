@@ -14,15 +14,9 @@ public class GroupsListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void deleteGroupEvent(GroupDeleteEvent event){
-		if (!event.hasFinished()) // deletion only just began
-			return;
-		rm.invalidateAllReinforcements();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void mergeGroupEvent(GroupMergeEvent event){
-		if (!event.hasFinished()) // merge just began
-			return;
-		rm.invalidateAllReinforcements();
 	}
 }

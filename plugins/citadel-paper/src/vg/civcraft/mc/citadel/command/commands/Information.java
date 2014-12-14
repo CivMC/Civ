@@ -26,15 +26,14 @@ public class Information extends PlayerCommand{
 		}
 		Player p = (Player) sender;
 		PlayerState state = PlayerState.get(p);
-		if (state.getMode() == ReinforcementMode.NORMAL){
+		if (state.getMode() == ReinforcementMode.REINFORCEMENT_INFORMATION){
+			p.sendMessage(ChatColor.GREEN + state.getMode().name() + " has been disabled");
+			state.reset();
+		}
+		else{
 			p.sendMessage(ChatColor.GREEN + "Reinforcement mode changed to "
 					+ ReinforcementMode.REINFORCEMENT_INFORMATION.name() + ".");
 			state.setMode(ReinforcementMode.REINFORCEMENT_INFORMATION);
-		}
-		else{
-			p.sendMessage(ChatColor.GREEN + state.getMode().name() + " has been"
-					+ " disabled.\nReinforcement mode has been reset.");
-			state.reset();
 		}
 		return true;
 	}

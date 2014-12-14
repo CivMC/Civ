@@ -26,15 +26,14 @@ public class Insecure extends PlayerCommand{
 		}
 		Player p = (Player) sender;
 		PlayerState state = PlayerState.get(p);
-		if (state.getMode() == ReinforcementMode.NORMAL){
+		if (state.getMode() == ReinforcementMode.INSECURE){
+			p.sendMessage(ChatColor.GREEN + state.getMode().name() + " has been disabled");
+			state.reset();
+		}
+		else{
 			p.sendMessage(ChatColor.GREEN + "Reinforcement mode changed to "
 					+ ReinforcementMode.INSECURE.name() + ".");
 			state.setMode(ReinforcementMode.INSECURE);
-		}
-		else{
-			p.sendMessage(ChatColor.GREEN + state.getMode().name() + " has been"
-					+ " disabled.\nReinforcement mode has been reset.");
-			state.reset();
 		}
 		return true;
 	}

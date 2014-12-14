@@ -5,7 +5,6 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.command.PlayerCommand;
@@ -51,19 +50,16 @@ public class Reinforce extends PlayerCommand {
 					+ "place a reinforcement on this group.");
 			return true;
 		}
-		ItemStack stack = p.getItemInHand(); // The item the player is holding,
-		// not what is required.
 		PlayerState state = PlayerState.get(p);
 		if (state.getMode() == ReinforcementMode.NORMAL){
+			p.sendMessage(ChatColor.GREEN + state.getMode().name() + " has been disabled");
+			state.reset();
+		}
+		else{
 			p.sendMessage(ChatColor.GREEN + "Your mode has been set to " + 
 					ReinforcementMode.REINFORCEMENT.name() + ".");
 			state.setMode(ReinforcementMode.REINFORCEMENT);
 			state.setGroup(g);
-		}
-		else{
-			p.sendMessage(ChatColor.GREEN + state.getMode().name() + " has been"
-					+ " disabled.\nReinforcement mode has been reset.");
-			state.reset();
 		}
 		return true;
 	}
