@@ -109,4 +109,20 @@ public class ReinforcementManager {
 	public int getNextReinforcementID(){
 		return db.getLastReinId();
 	}
+	/**
+	 * Returns if the location is reinforced or not.
+	 * @param loc- The location of the potential reinforcement.
+	 * @return Returns true if one was found.
+	 */
+	public boolean isReinforced(Location loc){
+		return getReinforcement(loc) != null;
+	}
+	/**
+	 * Returns if the block is reinforced or not.
+	 * @param block- The block of the potential reinforcement.
+	 * @return Returns true if one was found.
+	 */
+	public boolean isReinforced(Block block){
+		return isReinforced(block.getLocation());
+	}
 }
