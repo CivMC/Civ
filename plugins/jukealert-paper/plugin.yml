@@ -1,7 +1,7 @@
 name: JukeAlert
 main: com.untamedears.JukeAlert.JukeAlert
-version: 1.2.5
-depend: [Citadel]
+version: 1.2.6
+depend: [Citadel, NameLayer]
 commands:
   ja:
     description: Describes plugin

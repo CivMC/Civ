@@ -4,15 +4,6 @@
  */
 package com.untamedears.JukeAlert.storage;
 
-import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.chat.ChatFiller;
-import com.untamedears.JukeAlert.group.GroupMediator;
-import com.untamedears.JukeAlert.manager.ConfigManager;
-import com.untamedears.JukeAlert.model.LoggedAction;
-import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.tasks.GetSnitchInfoTask;
-import com.untamedears.citadel.entity.Faction;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,15 +12,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -40,6 +29,16 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import vg.civcraft.mc.namelayer.group.Group;
+
+import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.chat.ChatFiller;
+import com.untamedears.JukeAlert.group.GroupMediator;
+import com.untamedears.JukeAlert.manager.ConfigManager;
+import com.untamedears.JukeAlert.model.LoggedAction;
+import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.tasks.GetSnitchInfoTask;
 
 /**
  *
@@ -533,7 +532,7 @@ public class JukeAlertLogger {
                 double y = rs_.getInt("snitch_y");
                 double z = rs_.getInt("snitch_z");
                 String groupName = rs_.getString("snitch_group");
-                Faction group = groupMediator.getGroupByName(groupName);
+                Group group = groupMediator.getGroupByName(groupName);
                 Location location = new Location(world_, x, y, z);
                 if (group == null) {
                     JukeAlert.getInstance().log(String.format(
