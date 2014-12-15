@@ -96,8 +96,9 @@ public class JukeAlertListener implements Listener {
                 inList.add(snitch);
                 notifyGroup(
                         snitch,
-                        ChatColor.AQUA + " * " + player.getDisplayName() + " logged in to snitch at " + snitch.getName()
-                        + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+                        ChatColor.AQUA + " * " + player.getDisplayName() + " logged in to snitch at " 
+                        + snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
+                        " " + snitch.getY() + " " + snitch.getZ() + "]");
                 if (snitch.shouldLog()) {
                     plugin.getJaLogger().logSnitchLogin(snitch, location, player);
 
@@ -125,8 +126,9 @@ public class JukeAlertListener implements Listener {
                 snitch.imposeSnitchTax();
                 notifyGroup(
                         snitch,
-                        ChatColor.AQUA + " * " + player.getDisplayName() + " logged out in snitch at " + snitch.getName()
-                        + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+                        ChatColor.AQUA + " * " + player.getDisplayName() + " logged out in snitch at " 
+                        		+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
+                                " " + snitch.getY() + " " + snitch.getZ() + "]");
                 if (snitch.shouldLog()) {
                     plugin.getJaLogger().logSnitchLogout(snitch, location, player);
                 }
@@ -317,8 +319,9 @@ public class JukeAlertListener implements Listener {
                         else{
                             notifyGroup(
                                     snitch,
-                                    ChatColor.AQUA + " * " + player.getDisplayName() + " entered snitch at " + snitch.getName()
-                                    + " [" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+                                    ChatColor.AQUA + " * " + player.getDisplayName() + " entered snitch at " 
+                                    		+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
+                                            " " + snitch.getY() + " " + snitch.getZ() + "]");
                         }
                         if (snitch.shouldLog()){
                         	plugin.getJaLogger().logSnitchEntry(snitch, location, player);
