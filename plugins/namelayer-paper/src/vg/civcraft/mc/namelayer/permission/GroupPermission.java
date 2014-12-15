@@ -30,6 +30,8 @@ public class GroupPermission {
 	 * @return
 	 */
 	public boolean isAccessible(PlayerType ptype, PermissionType... type){
+		if (type == null)
+			return true; // If the player is even a member return true
 		if (group instanceof PublicGroup){
 			switch (type[0]){
 			case DOORS:
