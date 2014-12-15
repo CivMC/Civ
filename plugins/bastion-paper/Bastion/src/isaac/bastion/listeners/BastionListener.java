@@ -7,9 +7,6 @@ import isaac.bastion.commands.PlayersStates.Mode;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.manager.ConfigManager;
 
-import com.untamedears.citadel.entity.PlayerReinforcement;
-import com.untamedears.citadel.events.CreateReinforcementEvent;
-
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,6 +18,9 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+
+import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
 
 public final class BastionListener
@@ -89,7 +89,7 @@ implements Listener
 		bastionManager.handleBlockBreakEvent(event);
 	}
 	@EventHandler
-	public void onReinforcement(CreateReinforcementEvent event) {
+	public void onReinforcement(ReinforcementCreationEvent event) {
 
 		if (event.getBlock().getType() == config.getBastionBlockMaterial() && 
 				!PlayersStates.playerInMode(event.getPlayer(), Mode.OFF) && event.getReinforcement() instanceof PlayerReinforcement) {

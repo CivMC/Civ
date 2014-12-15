@@ -36,8 +36,8 @@ import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dispenser;
 
-import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.entity.PlayerReinforcement;
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
 
 public class BastionBlockManager
@@ -101,7 +101,7 @@ public class BastionBlockManager
 		return false;
 	}
 
-	public Set<BastionBlock> shouldStopLocation(Location loc, String player){
+	public Set<BastionBlock> shouldStopLocation(Location loc, Player player){
 		return getBlockingBastions(loc, player);
 	}
 	
@@ -122,7 +122,7 @@ public class BastionBlockManager
 			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
 			getReinforcement(orrigin);
 			if(reinforcement instanceof PlayerReinforcement)
-				accessors.add(reinforcement.getOwner().getFounderId());
+				accessors.add(reinforcement.getGroup().getOwner());
 			
 			for(BastionBlock bastion: this.getBlockingBastions(orrigin.getLocation()))
 				accessors.add(bastion.getOwner());
@@ -136,7 +136,7 @@ public class BastionBlockManager
 		return toReturn;
 	}
 
-	private BastionBlock getBlockingBastion(Location loc, String player){
+	private BastionBlock getBlockingBastion(Location loc, Player player){
 		
 		
 		Set<? extends QTBox> possible=set.forLocation(loc);
@@ -191,7 +191,7 @@ public class BastionBlockManager
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Set<BastionBlock> getBlockingBastions(Location loc, String player){
+	private Set<BastionBlock> getBlockingBastions(Location loc, Player player){
 		Set<? extends QTBox> boxes = set.forLocation(loc);
 		Set<BastionBlock> bastions = null;
 		
@@ -244,7 +244,7 @@ public class BastionBlockManager
 			return bastion.infoMessage(dev, player); //If there is actually something there tell the player about it.
 		}
 
-		bastion=getBlockingBastion(block.getLocation(),player.getName());
+		bastion=getBlockingBastion(block.getLocation(),player);
 		if(bastion==null){
 			bastion=getBlockingBastion(block.getLocation());
 			if(bastion!=null){
@@ -345,7 +345,7 @@ public class BastionBlockManager
 		if (event.getPlayer().hasPermission("Bastion.bypass")) return; //I'm not totally sure about the implications of this combined with humbug. It might cause some exceptions. Bukkit will catch.
 		if (event.getCause() != TeleportCause.ENDER_PEARL) return; // Only handle enderpearl cases
 		
-		Set<BastionBlock> blocking = this.getBlockingBastions(event.getTo(), event.getPlayer().getName());
+		Set<BastionBlock> blocking = this.getBlockingBastions(event.getTo(), event.getPlayer());
 		
 		if(Bastion.getConfigManager().getEnderPearlRequireMaturity()){
 			Iterator<BastionBlock> i = blocking.iterator();
@@ -367,7 +367,7 @@ public class BastionBlockManager
 			return;
 		}
 		
-		blocking = this.getBlockingBastions(event.getFrom(), event.getPlayer().getName());
+		blocking = this.getBlockingBastions(event.getFrom(), event.getPlayer());
 		
 		if(Bastion.getConfigManager().getEnderPearlRequireMaturity()){
 			Iterator<BastionBlock> i = blocking.iterator();

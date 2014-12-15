@@ -15,8 +15,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.entity.PlayerReinforcement;
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
 public class CommandListener implements Listener{
 	private static BastionBlockManager manager;
