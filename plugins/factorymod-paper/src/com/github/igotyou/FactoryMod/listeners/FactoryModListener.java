@@ -1,8 +1,5 @@
 package com.github.igotyou.FactoryMod.listeners;
 
-import static com.untamedears.citadel.Utility.isReinforced;
-import static com.untamedears.citadel.Utility.getReinforcement;
-
 import java.util.List;
 
 import org.bukkit.Location;
@@ -17,24 +14,21 @@ import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.ReinforcementManager;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
-import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
-import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.managers.FactoryModManager;
-import com.github.igotyou.FactoryMod.managers.PrintingPressManager;
-import com.github.igotyou.FactoryMod.managers.ProductionManager;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
-import com.untamedears.citadel.entity.PlayerReinforcement;
-
-import org.bukkit.event.entity.ExpBottleEvent;
-import org.bukkit.event.player.PlayerExpChangeEvent;
 
 public class FactoryModListener implements Listener
 {
 	private FactoryModManager factoryMan;
+	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	
 	/**
 	 * Constructor
@@ -63,7 +57,7 @@ public class FactoryModListener implements Listener
 			if (factoryMan.factoryExistsAt(block.getLocation()))
 			{
 				//if the blocks is not reinforced destroy it
-				if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
+				if ((FactoryModPlugin.CITADEL_ENABLED && !rm.isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 				{
 					destroyFactoryAt(block);
 				}
@@ -99,7 +93,7 @@ public class FactoryModListener implements Listener
 				if (factoryMan.factoryExistsAt(block.getLocation()))
 				{
 					Factory factory = factoryMan.getFactory(block.getLocation());
-					if ((FactoryModPlugin.CITADEL_ENABLED && !isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
+					if ((FactoryModPlugin.CITADEL_ENABLED && !rm.isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 					{
 						destroyFactoryAt(block);
 					}
@@ -151,8 +145,8 @@ public class FactoryModListener implements Listener
 						if(factoryMan.factoryWholeAt(clicked.getLocation()))
 						{
 							//if the player is allowed to interact with that block.
-							if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
-									(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(player)))
+							if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !rm.isReinforced(clicked)) || 
+									(((PlayerReinforcement) rm.getReinforcement(clicked)).isAccessible(player)))
 							{
 								//if there is a production Factory at the clicked location
 								if (factoryMan.factoryExistsAt(clicked.getLocation()))
@@ -178,8 +172,8 @@ public class FactoryModListener implements Listener
 					else
 					{
 						//if the player is allowed to interact with that block.
-						if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
-								(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(player)))
+						if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !rm.isReinforced(clicked)) || 
+								(((PlayerReinforcement) rm.getReinforcement(clicked)).isAccessible(player)))
 						{
 							InteractionResponse.messagePlayerResult(player, createFactory(clicked.getLocation(), player));
 						}
@@ -200,8 +194,8 @@ public class FactoryModListener implements Listener
 						if(factoryMan.factoryWholeAt(clicked.getLocation()))
 						{
 							//if the player is allowed to interact with that block.
-							if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
-									(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(player)))
+							if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !rm.isReinforced(clicked)) || 
+									(((PlayerReinforcement) rm.getReinforcement(clicked)).isAccessible(player)))
 							{
 								InteractionResponse.messagePlayerResults(player,(factoryMan.getFactory(clicked.getLocation())).togglePower());
 							}
@@ -227,8 +221,8 @@ public class FactoryModListener implements Listener
 						if(factoryMan.factoryWholeAt(clicked.getLocation()))
 						{
 							//if the player is allowed to interact with that block?
-							if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
-									(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(player)))
+							if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !rm.isReinforced(clicked)) || 
+									(((PlayerReinforcement) rm.getReinforcement(clicked)).isAccessible(player)))
 							{
 								if (factoryMan.factoryExistsAt(clicked.getLocation()))
 								{

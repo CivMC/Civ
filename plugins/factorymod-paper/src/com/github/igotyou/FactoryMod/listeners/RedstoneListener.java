@@ -1,33 +1,26 @@
 package com.github.igotyou.FactoryMod.listeners;
 
-import static com.untamedears.citadel.Utility.getReinforcement;
-import static com.untamedears.citadel.Utility.isReinforced;
-
-import java.util.List;
-
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.material.Attachable;
-import org.bukkit.material.Lever;
-import org.bukkit.material.MaterialData;
+
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.ReinforcementManager;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.managers.FactoryModManager;
 import com.github.igotyou.FactoryMod.managers.ProductionManager;
-import com.github.igotyou.FactoryMod.utility.InteractionResponse;
-import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
-import com.untamedears.citadel.entity.PlayerReinforcement;
 
 public class RedstoneListener implements Listener {
 	private FactoryModManager factoryMan;
+	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	//this is a lazy fix...
 	private ProductionManager productionMan;
 	
@@ -51,8 +44,8 @@ public class RedstoneListener implements Listener {
 		if (factoryMan.factoryExistsAt(clicked.getLocation())&&factoryMan.factoryWholeAt(clicked.getLocation()))
 		{
 			//if the player is allowed to interact with that block?
-			if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(clicked)) || 
-					(((PlayerReinforcement) getReinforcement(clicked)).isAccessible(e.getPlayer())))
+			if ((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !rm.isReinforced(clicked)) || 
+					(((PlayerReinforcement) rm.getReinforcement(clicked)).isAccessible(e.getPlayer())))
 			{
 				// Allowed
 			}

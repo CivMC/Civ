@@ -1,12 +1,16 @@
 package com.github.igotyou.FactoryMod.Factorys;
 
-import static com.untamedears.citadel.Utility.getReinforcement;
-import static com.untamedears.citadel.Utility.isReinforced;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.ReinforcementManager;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.managers.NetherFactoryManager;
@@ -15,14 +19,11 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
-import com.untamedears.citadel.entity.PlayerReinforcement;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class NetherFactory extends BaseFactory
 {
 
+	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	private NetherFactoryProperties netherFactoryProperties;//the properties of the production factory
 	private Location netherTeleportPlatform;
 	private Location overworldTeleportPlatform;
@@ -160,8 +161,8 @@ public class NetherFactory extends BaseFactory
 	{
 		List<InteractionResponse> responses=new ArrayList<InteractionResponse>();
 		//does the player have acsess to the nether factory via ciatdel?
-		if ((!FactoryModPlugin.CITADEL_ENABLED || (FactoryModPlugin.CITADEL_ENABLED && !isReinforced(factoryLocation))) || 
-				(((PlayerReinforcement) getReinforcement(factoryLocation)).isAccessible(player)))
+		if ((!FactoryModPlugin.CITADEL_ENABLED || (FactoryModPlugin.CITADEL_ENABLED && rm.getReinforcement(factoryLocation) != null)) || 
+				(((PlayerReinforcement) rm.getReinforcement(factoryLocation)).isAccessible(player)))
 		{
 			if (mode == NetherOperationMode.TELEPORT)
 			{
