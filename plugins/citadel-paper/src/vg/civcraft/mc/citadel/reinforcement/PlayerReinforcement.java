@@ -47,7 +47,7 @@ public class PlayerReinforcement extends Reinforcement{
 	 * doesn't have access to that specified permission or isn't on the
 	 * group.
 	 */
-	public boolean isAccessible(PermissionType pType, Player p){
+	public boolean isAccessible(Player p, PermissionType... pType){
 		PlayerType type = g.getPlayerType(p.getUniqueId());
 		// if it is a public group we want it to check even if no
 		// PlayerType

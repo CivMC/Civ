@@ -382,7 +382,7 @@ public class Utility {
                         player_z < min_z || player_z > max_z) {
                     continue;
                 }
-                if (!reinforcement.isAccessible(PermissionType.DOORS, player)
+                if (!reinforcement.isAccessible(player, PermissionType.DOORS)
                         && !player.hasPermission("citadel.admin.accesssecurable")) {
                     continue;
                 }

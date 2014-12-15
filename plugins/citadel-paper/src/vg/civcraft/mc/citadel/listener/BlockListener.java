@@ -143,7 +143,7 @@ public class BlockListener implements Listener{
             PlayerReinforcement pr = (PlayerReinforcement) rein;
             PlayerState state = PlayerState.get(player);
             boolean admin_bypass = player.hasPermission("citadel.admin.bypassmode");
-            if (isPlant(block) && (pr.isAccessible(PermissionType.CROPS, player) || admin_bypass)) {
+            if (isPlant(block) && (pr.isAccessible(player, PermissionType.CROPS) || admin_bypass)) {
                 // If this is a delegated reinforcement for a crop which the
                 //  player has access to, allow the player to break the crop
                 //  without effecting the reinforcement.
@@ -354,7 +354,7 @@ public class BlockListener implements Listener{
                 Reinforcement rein = rm.getReinforcement(adjacent);
                 if (null != rein && rein instanceof PlayerReinforcement) {
                     PlayerReinforcement pr = (PlayerReinforcement)rein;
-                    if (pr.isInsecure() && !pr.isAccessible(PermissionType.CHESTS, player)) {
+                    if (pr.isInsecure() && !pr.isAccessible(player, PermissionType.CHESTS)) {
                         return false;
                     }
                 }
@@ -369,7 +369,7 @@ public class BlockListener implements Listener{
                 Reinforcement rein = rm.getReinforcement(adjacent);
                 if (null != rein && rein instanceof PlayerReinforcement) {
                     PlayerReinforcement pr = (PlayerReinforcement)rein;
-                    if (!pr.isAccessible(PermissionType.CHESTS, player)) {
+                    if (!pr.isAccessible(player, PermissionType.CHESTS)) {
                         return false;
                     }
                 }
@@ -398,8 +398,7 @@ public class BlockListener implements Listener{
             && reinforcement.isSecurable();
         boolean normal_access_denied =
             reinforcement != null
-            && !(reinforcement.isAccessible(PermissionType.CHESTS, player) ||
-            		reinforcement.isAccessible(PermissionType.DOORS, player));
+            && !(reinforcement.isAccessible(player, PermissionType.CHESTS, PermissionType.DOORS));
         boolean admin_can_access = player.hasPermission("citadel.admin.accesssecurable");
         if (access_reinforcement && normal_access_denied && !admin_can_access) {
             /*Citadel.verbose(
@@ -467,9 +466,7 @@ public class BlockListener implements Listener{
                             sb.append(" (Insecure)");
                         }
                         player.sendMessage(ChatColor.GREEN + sb.toString());
-                    } else if(reinforcement.isAccessible(PermissionType.BLOCKS, player) || 
-                    		reinforcement.isAccessible(PermissionType.DOORS, player) ||
-                    		reinforcement.isAccessible(PermissionType.CHESTS, player)){
+                    } else if(reinforcement.isAccessible(player, PermissionType.BLOCKS, PermissionType.DOORS, PermissionType.CHESTS)){
                         sb = new StringBuilder();
                         boolean immature =
                             timeUntilMature(reinforcement) != 0
