@@ -26,6 +26,7 @@ import vg.civcraft.mc.citadel.reinforcement.NaturalReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.NaturalReinforcementType;
+import vg.civcraft.mc.citadel.reinforcementtypes.NonReinforceableType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -54,7 +55,10 @@ public class Utility {
             player.sendMessage(ChatColor.RED + "This group is disiplined.");
             return null;
         }
-
+        if (NonReinforceableType.isNonReinforceable(block.getType())){
+        	player.sendMessage(ChatColor.RED + "That block cannot be reinforced.");
+        	return null;
+        }
         // Find necessary itemstacks
         final PlayerInventory inv = player.getInventory();
         final int invSize = inv.getSize();

@@ -30,6 +30,15 @@ public class CitadelConfigManager {
 		return naturalReinforcementTypes;
 	}
 	
+	public static List<String> getNonReinforceableTypes(){
+		List<String> nonReinforcementTypes = new ArrayList<String>();
+		if (config.getConfigurationSection("non_reinforceables") == null)
+			return nonReinforcementTypes;
+		for (String sect: config.getConfigurationSection("non_reinforceables").getKeys(false))
+			nonReinforcementTypes.add(sect);
+		return nonReinforcementTypes;
+	}
+	
 	public static int getRequireMents(String type){
 		return config.getInt("reinforcements." + type + ".requirements");
 	}

@@ -18,6 +18,7 @@ import vg.civcraft.mc.citadel.listener.GroupsListener;
 import vg.civcraft.mc.citadel.listener.InventoryListener;
 import vg.civcraft.mc.citadel.listener.WorldListener;
 import vg.civcraft.mc.citadel.reinforcementtypes.NaturalReinforcementType;
+import vg.civcraft.mc.citadel.reinforcementtypes.NonReinforceableType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
@@ -42,6 +43,7 @@ public class Citadel extends JavaPlugin{
 		// Grab the values from config
 		ReinforcementType.initializeReinforcementTypes();
 		NaturalReinforcementType.initializeNaturalReinforcementsTypes();
+		NonReinforceableType.initializeNonReinforceableTypes();
 		initializeDatabase();
 		
 		rm = new ReinforcementManager(db);

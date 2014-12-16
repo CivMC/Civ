@@ -39,6 +39,32 @@ reinforcements:
  #diamond_ore:
   #material: DIAMOND_ORE
   #hit_points: 60
+non_reinforceables:
+ - BEDROCK
+ - ENDER_PORTAL_FRAME
+ - SAPLING
+ - LONG_GRASS
+ - DEAD_BUSH
+ - PISTON_EXTENSION
+ - PISTON_MOVING_PIECE
+ - RED_ROSE
+ - YELLOW_FLOWER
+ - BROWN_MUSHROOM
+ - RED_MUSHROOM
+ - TNT
+ - FIRE
+ - CROPS
+ - SNOW
+ - ICE
+ - CACTUS
+ - SUGAR_CANE_BLOCK
+ - PORTAL
+ - CAKE_BLOCK
+ - PUMPKIN_STEM
+ - MELON_STEM
+ - VINE
+ - NETHER_WARTS
+ - ENDER_PORTAL
 reset_player_state: 300
 enable_maturation: true
 # The max amount of reinforcements to keep loaded
