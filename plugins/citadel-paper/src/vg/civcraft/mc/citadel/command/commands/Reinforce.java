@@ -51,7 +51,7 @@ public class Reinforce extends PlayerCommand {
 			return true;
 		}
 		PlayerState state = PlayerState.get(p);
-		if (state.getMode() == ReinforcementMode.NORMAL){
+		if (state.getMode() == ReinforcementMode.REINFORCEMENT){
 			p.sendMessage(ChatColor.GREEN + state.getMode().name() + " has been disabled");
 			state.reset();
 		}
