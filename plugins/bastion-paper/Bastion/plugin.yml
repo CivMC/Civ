@@ -1,7 +1,7 @@
 name: Bastion
 version: 0.7.0
 main: isaac.bastion.Bastion
-depend: [Citadel, Namelayer]
+depend: [Citadel, NameLayer]
 softdepend: [Humbug]
 commands:
    Bastion:
