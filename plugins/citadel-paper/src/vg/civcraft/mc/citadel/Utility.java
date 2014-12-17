@@ -537,5 +537,18 @@ public class Utility {
         rm.saveInitialReinforcement(rein);
         return rein;
     }
+    
+    public static Block getAttachedChest(Block block) {
+        Material mat = block.getType();
+        if (mat == Material.CHEST || mat == Material.TRAPPED_CHEST) {
+            for (BlockFace face : new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}) {
+                Block b = block.getRelative(face);
+                if (b.getType() == mat) {
+                    return b;
+                }
+            }
+        }
+        return null;
+    }
 
 }

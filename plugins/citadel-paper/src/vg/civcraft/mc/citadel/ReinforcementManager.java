@@ -72,7 +72,14 @@ public class ReinforcementManager {
 	 */
 	public Reinforcement getReinforcement(Location loc){
 		try{
-			return reinforcements.get(loc);
+			Reinforcement rein = reinforcements.get(loc);
+			if (rein == null){
+				Block b = Utility.getAttachedChest(loc.getBlock());
+				if (b == null)
+					return null;
+				rein = reinforcements.get(b.getLocation());
+			}
+			return rein;
 		} catch(Exception e){
 			if (!(e instanceof LoadingCacheNullException)); // i dont get why this doesnt work
 					//e.printStackTrace();

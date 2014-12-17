@@ -8,7 +8,7 @@ import org.bukkit.event.HandlerList;
 
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
-public class ReinforcementCreationEvent extends Event implements Cancellable{
+public class ReinforcementCreationEvent extends Event implements Cancellable{	
 	private static final HandlerList handlers = new HandlerList();
 	
 	private Reinforcement rein;
@@ -51,11 +51,14 @@ public class ReinforcementCreationEvent extends Event implements Cancellable{
 	@Override
 	public void setCancelled(boolean value) {
 		isCancelled = value;
-		
 	}
 
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}
+	
+	public static HandlerList getHandlerList() {
+		return handlers;
+		}
 }
