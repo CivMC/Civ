@@ -268,8 +268,8 @@ public class GroupManagerDao {
 		getPerms = db.prepareStatement("select p.role, p.tier from permissions p "
 				+ "inner join faction_id fi on fi.group_name = ? "
 				+ "where p.group_id = fi.group_id");
-		updatePerm = db.prepareStatement("update permissions set tier = ? "
-				+ "where group_id = (select g.group_id from faction_id where group_name = ?) and role = ?");
+		updatePerm = db.prepareStatement("update permissions p set p.tier = ? "
+				+ "where p.group_id = (select g.group_id from faction_id g where g.group_name = ? limit 1) and p.role = ?");
 		
 		countGroups = db.prepareStatement("select count(*) as count from faction");
 		
