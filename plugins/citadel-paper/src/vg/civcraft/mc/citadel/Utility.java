@@ -309,9 +309,9 @@ public class Utility {
         Citadel.getReinforcementManager().deleteReinforcement(reinforcement);
         if (reinforcement instanceof PlayerReinforcement) {
             PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
-            if (rng.nextDouble() <= pr.getHealth()) {
+	        ReinforcementType material = ReinforcementType.getReinforcementType(pr.getStackRepresentation());
+            if (rng.nextDouble() <= pr.getHealth() * material.getPercentReturn()) {
                 Location location = pr.getLocation();
-    	        ReinforcementType material = ReinforcementType.getReinforcementType(pr.getStackRepresentation());
     	        if (player != null){
 	        		Inventory inv = player.getInventory();
     	        	if (CitadelConfigManager.shouldDropReinforcedBlock()){

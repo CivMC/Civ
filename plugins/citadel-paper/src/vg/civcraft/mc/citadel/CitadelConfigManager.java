@@ -52,7 +52,7 @@ public class CitadelConfigManager {
 	}
 	
 	public static int getPercentReturn(String type){
-		return config.getInt("reinforcements." + type + ".material");
+		return config.getInt("reinforcements." + type + ".percent_chance");
 	}
 	
 	public static int getHitPoints(String type){
