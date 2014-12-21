@@ -4472,8 +4472,8 @@ production_recipes:
         amount: 512
     outputs:
       Nether bricks:
-        material: NETHER_BRICK_ITEM
-        amount: 1024
+        material: NETHER_BRICK
+        amount: 256
   Bake_clay_blocks:
     name: Bake Clay Blocks
     production_time: 32
