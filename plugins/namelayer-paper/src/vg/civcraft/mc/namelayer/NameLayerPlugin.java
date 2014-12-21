@@ -6,9 +6,6 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.namelayer.command.CommandHandler;
@@ -16,7 +13,6 @@ import vg.civcraft.mc.namelayer.database.AssociationList;
 import vg.civcraft.mc.namelayer.database.Database;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.listeners.AssociationListener;
-import vg.civcraft.mc.namelayer.misc.GameProfileModifier;
 
 
 public class NameLayerPlugin extends JavaPlugin{
@@ -25,7 +21,6 @@ public class NameLayerPlugin extends JavaPlugin{
 	private static NameLayerPlugin instance;
 	private CommandHandler handle;
 	private Database db;
-	private GameProfileModifier game= new GameProfileModifier();
 
 	@Override
 	public void onEnable() {
@@ -72,15 +67,6 @@ public class NameLayerPlugin extends JavaPlugin{
 		groupManagerDao = new GroupManagerDao(db);
 	}
 	
-	private String packageName = getClass().getPackage().getName();
-	private String version = packageName.substring(packageName.lastIndexOf('.') + 1);
-	// sets the player name in the gameprofile
-	@EventHandler(priority=EventPriority.LOWEST)
-	public void loginEvent(PlayerLoginEvent event){
-		if (!version.equals("v1_7_R4"))
-			return;
-		game.setPlayerProfile(event.getPlayer());
-	}
 	/**
 	 * @return Returns the AssocationList.
 	 */

@@ -41,22 +41,11 @@ public class RemoveMember extends PlayerCommand {
 			return true;
 		}
 		UUID executor = NameAPI.getUUID(p.getName());
-		UUID uuid = NameAPI.getUUID(args[1]);
-		
-		if (uuid == null){
-			p.sendMessage(ChatColor.RED + "That player does not exist.");
-			return true;
-		}
+		UUID uuid = NameAPI.getUUID(args[0]);
 		
 		GroupPermission perm = gm.getPermissionforGroup(group);
 		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
 		PlayerType toBeRemoved = group.getPlayerType(uuid);
-		
-		if (toBeRemoved == null){
-			p.sendMessage(ChatColor.RED + "That player is not on the group.");
-			return true;
-		}
-		
 		boolean allowed = false;
 		switch (toBeRemoved){ // depending on the type the executor wants to add the player to
 		case MEMBERS:
@@ -90,6 +79,13 @@ public class RemoveMember extends PlayerCommand {
 			p.sendMessage(ChatColor.RED + "That player is not on the group.");
 			return true;
 		}
+		
+		if (group.isOwner(uuid)){
+			p.sendMessage(ChatColor.RED + "That player owns the group, you cannot "
+					+ "remove the player.");
+			return true;
+		}
+		
 		p.sendMessage(ChatColor.GREEN + "Player has been removed from the group.");
 		group.removeMember(uuid);
 		return true;

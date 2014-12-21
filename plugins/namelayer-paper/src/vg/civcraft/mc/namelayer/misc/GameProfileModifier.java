@@ -2,6 +2,7 @@ package vg.civcraft.mc.namelayer.misc;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.logging.Level;
 
 import net.minecraft.server.v1_7_R4.EntityHuman;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
@@ -17,8 +18,14 @@ public class GameProfileModifier {
 
 	private AssociationList associations = NameAPI.getAssociationList();
 	
-	public void setPlayerProfile(Player player) {
+	public void setPlayerProfle(Player player) {
 		String name = associations.getCurrentName(player.getUniqueId());
+		if (name.length() > 16){
+			NameLayerPlugin.log(Level.INFO, String.format(
+					"The player %s (%s) was kicked from the server due to his "
+					+ "name already existing but now becoming over 16 characters.",
+					name, player.getUniqueId().toString()));
+		}
 		try {
 			// start of getting the GameProfile
 			CraftHumanEntity craftHuman = (CraftHumanEntity) player;

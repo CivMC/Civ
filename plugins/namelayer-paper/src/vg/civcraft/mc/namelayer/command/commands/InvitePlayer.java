@@ -78,8 +78,16 @@ public class InvitePlayer extends PlayerCommand{
 			return true;
 		}
 		
+		if (group.isMember(uuid)){ // So a player can't demote someone who is above them.
+			p.sendMessage(ChatColor.RED + "Player is already a member. They "
+					+ "must be removed first before they can be change PlayerTypes.");
+			return true;
+		}
+		
 		group.addInvite(uuid, pType);
 		OfflinePlayer invitee = Bukkit.getOfflinePlayer(uuid);
+		p.sendMessage(ChatColor.GREEN + "The invitation has been sent.");
+		
 		if (invitee.isOnline()){
 			Player oInvitee = (Player) invitee;
 			oInvitee.sendMessage(ChatColor.GREEN + "You have been invited to the group " + group.getName() +" by " + p.getName() +".\n" +
