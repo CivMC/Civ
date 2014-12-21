@@ -1,4 +1,4 @@
-package vg.civcraft.mc.citadel.misc;
+package vg.civcraft.mc.citadel;
 
 public enum ReinforcementMode {
 

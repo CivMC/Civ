@@ -7,8 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.PlayerState;
+import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.command.PlayerCommand;
-import vg.civcraft.mc.citadel.misc.ReinforcementMode;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;

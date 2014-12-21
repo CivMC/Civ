@@ -47,9 +47,9 @@ import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelConfigManager;
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementManager;
+import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
-import vg.civcraft.mc.citadel.misc.ReinforcementMode;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
@@ -148,7 +148,7 @@ public class BlockListener implements Listener{
                 //  player has access to, allow the player to break the crop
                 //  without effecting the reinforcement.
             		is_cancelled = false;
-            } else if (state.isBypassMode() && (pr.isBypassable(player) || admin_bypass)) {
+            } else if (state.isBypassMode() && ((pr.isBypassable(player) && !pr.getGroup().isDisciplined()) || admin_bypass)) {
                 if (admin_bypass) {
                 	/*
                     Citadel.verbose(
