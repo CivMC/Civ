@@ -12,6 +12,7 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -94,8 +95,10 @@ public class InvitePlayer extends PlayerCommand{
 					"Use the command /groupsaccept <group> to accept.");
 			p.sendMessage(ChatColor.GREEN + "Invite sent.");
 		}
-		else
-			p.sendMessage(ChatColor.GREEN + "Player is offline and cannot be added right now.");
+		else{
+			p.sendMessage(ChatColor.GREEN + "Player is offline and will be notified on log in.");
+			PlayerListener.addNotification(uuid, group);
+		}
 		return true;
 	}
 

@@ -13,6 +13,7 @@ import vg.civcraft.mc.namelayer.database.AssociationList;
 import vg.civcraft.mc.namelayer.database.Database;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.listeners.AssociationListener;
+import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 
 
 public class NameLayerPlugin extends JavaPlugin{
@@ -37,6 +38,7 @@ public class NameLayerPlugin extends JavaPlugin{
 	
 	public void registerListeners(){
 		getServer().getPluginManager().registerEvents(new AssociationListener(), this);
+		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

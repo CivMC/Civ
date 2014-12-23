@@ -12,6 +12,7 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
+import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 
 public class AcceptInvite extends PlayerCommand{
 
@@ -53,6 +54,7 @@ public class AcceptInvite extends PlayerCommand{
 		}
 		group.addMember(uuid, type);
 		group.removeRemoveInvite(uuid);
+		PlayerListener.removeNotification(uuid, group);
 		p.sendMessage(ChatColor.GREEN + "You have successfully been added to the group as a " + type.name() +".");
 		if (group instanceof PrivateGroup){
 			PrivateGroup priv = (PrivateGroup) group;
