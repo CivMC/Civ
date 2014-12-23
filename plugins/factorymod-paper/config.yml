@@ -2641,11 +2641,16 @@ nether_factory:
         amount: 8
         display_name: Aspect of Terra
         lore: A concentrated essence of Terra
-      Aspect of END:
+      Aspect of End:
         material: FLINT
         amount: 8
         display_name: Aspect of End
         lore: A concentrated essence of the End
+      Aspect of NOPE:
+        material: BEDROCK
+        amount: 8
+        display_name: Aspect of NOPE
+        lore: A concentrated essence of the Nope
     repair:
        Diamond block:
          material: DIAMOND_BLOCK
