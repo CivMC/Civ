@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
+
 
 public class AssociationList {
 	private Database db;
@@ -75,6 +77,7 @@ public class AssociationList {
 	
 	// returns null if no uuid was found
 	public UUID getUUID(String playername){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			getUUIDfromPlayer.setString(1, playername);
 			ResultSet set = getUUIDfromPlayer.executeQuery();
@@ -90,6 +93,7 @@ public class AssociationList {
 	
 	// returns null if no playername was found
 	public String getCurrentName(UUID uuid){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			getPlayerfromUUID.setString(1, uuid.toString());
 			ResultSet set = getPlayerfromUUID.executeQuery();
@@ -104,6 +108,7 @@ public class AssociationList {
 	}
 	
 	public void addPlayer(String playername, UUID uuid){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			addPlayer.setString(1, playername);
 			addPlayer.setString(2, uuid.toString());

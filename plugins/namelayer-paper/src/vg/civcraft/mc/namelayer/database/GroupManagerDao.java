@@ -284,6 +284,7 @@ public class GroupManagerDao {
 	 * @return Returns the version of the plugin or 0 if none was found.
 	 */
 	public int checkVersion(String name){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			version.setString(1, name);
 			ResultSet set = version.executeQuery();
@@ -303,6 +304,7 @@ public class GroupManagerDao {
 	 * @return Returns the new version of the db.
 	 */
 	public int updateVersion(int version, String pluginname){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
 			updateVersion.setInt(1, version+ 1);
@@ -317,6 +319,7 @@ public class GroupManagerDao {
 	}
 	
 	public void createGroup(String group, UUID owner, String password, GroupType type){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			String own = null;
 			if (owner != null)
@@ -334,6 +337,7 @@ public class GroupManagerDao {
 	}
 	
 	public Group getGroup(String groupName){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			getGroup.setString(1, groupName);
 			ResultSet set = getGroup.executeQuery();
@@ -366,6 +370,7 @@ public class GroupManagerDao {
 	}
 	
 	public List<String> getGroupNames(UUID uuid){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		List<String> groups = new ArrayList<String>();
 		try {
 			getAllGroupsNames.setString(1, uuid.toString());
@@ -380,6 +385,7 @@ public class GroupManagerDao {
 	}
 	
 	public void deleteGroup(String groupName){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			deleteGroup.setString(1, groupName);
 			deleteGroup.setString(2, NameLayerPlugin.getSpecialAdminGroup());
@@ -391,6 +397,7 @@ public class GroupManagerDao {
 	}
 	
 	public void addMember(UUID member, String faction, PlayerType role){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			addMember.setString(1, member.toString());
 			addMember.setString(2,role.name());
@@ -403,6 +410,7 @@ public class GroupManagerDao {
 	}
 	
 	public List<UUID> getAllMembers(String groupName, PlayerType role){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		List<UUID> members = new ArrayList<UUID>();
 		try {
 			getMembers.setString(1, groupName);
@@ -423,6 +431,7 @@ public class GroupManagerDao {
 	}
 	
 	public void removeMember(UUID member, String group){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			removeMember.setString(1, member.toString());
 			removeMember.setString(2, group);
@@ -434,6 +443,7 @@ public class GroupManagerDao {
 	}
 	
 	public void addSubGroup(String group, String subGroup){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			addSubGroup.setString(1, group);
 			addSubGroup.setString(2, subGroup);
@@ -445,6 +455,7 @@ public class GroupManagerDao {
 	}
 	
 	public List<Group> getSubGroups(String group){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		List<Group> groups = new ArrayList<Group>();
 		try {
 			getSubGroups.setString(1, group);
@@ -461,6 +472,7 @@ public class GroupManagerDao {
 	}
 	
 	public Group getSuperGroup(String subGroup){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			getSuperGroup.setString(1, subGroup);
 			ResultSet set = getSuperGroup.executeQuery();
@@ -475,6 +487,7 @@ public class GroupManagerDao {
 	}
 	
 	public void removeSubGroup(String group, String subGroup){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			removeSubGroup.setString(1, group);
 			removeSubGroup.setString(2, subGroup);
@@ -486,6 +499,7 @@ public class GroupManagerDao {
 	}
 
 	public void addPermission(String groupName, String role, String values){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			addPerm.setString(1, role);
 			addPerm.setString(2, values);
@@ -498,6 +512,7 @@ public class GroupManagerDao {
 	}
 	
 	public Map<PlayerType, List<PermissionType>> getPermissions(String group){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		Map<PlayerType, List<PermissionType>> perms = new HashMap<PlayerType, List<PermissionType>>();
 		try {
 			getPerms.setString(1, group);
@@ -519,6 +534,7 @@ public class GroupManagerDao {
 	}
 	
 	public void updatePermissions(String group, PlayerType pType, String perms){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			updatePerm.setString(1, perms);
 			updatePerm.setString(2, group);
@@ -531,6 +547,7 @@ public class GroupManagerDao {
 	}
 	
 	public int countGroups(){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			ResultSet set = countGroups.executeQuery();
 			return set.next() ? set.getInt("count") : 0;
@@ -542,6 +559,7 @@ public class GroupManagerDao {
 	}
 	
 	public void mergeGroup(String groupName, String toMerge){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			mergeGroup.setString(1, groupName);
 			mergeGroup.setString(2, toMerge);
@@ -553,6 +571,7 @@ public class GroupManagerDao {
 	}
 	
 	public void updatePassword(String groupName, String password){
+		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			updatePassword.setString(1, password);
 			updatePassword.setString(2, groupName);

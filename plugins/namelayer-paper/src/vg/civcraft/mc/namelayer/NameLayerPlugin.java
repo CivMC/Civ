@@ -21,7 +21,7 @@ public class NameLayerPlugin extends JavaPlugin{
 	private static GroupManagerDao groupManagerDao;
 	private static NameLayerPlugin instance;
 	private CommandHandler handle;
-	private Database db;
+	private static Database db;
 
 	@Override
 	public void onEnable() {
@@ -67,6 +67,14 @@ public class NameLayerPlugin extends JavaPlugin{
 		}
 		associations = new AssociationList(db);
 		groupManagerDao = new GroupManagerDao(db);
+	}
+	
+	public static void reconnectAndReintializeStatements(){
+		if (db.isConnected())
+			return;
+		db.connect();
+		associations.initializeStatements();
+		groupManagerDao.initializeStatements();
 	}
 	
 	/**
