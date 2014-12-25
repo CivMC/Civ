@@ -94,7 +94,7 @@ nether_general:
   allow_reinforcement_creation_above_teleport_platform: false
   allow_block_placement_above_teleport_platform: true
   teleport_platform_invunerable: false
-  regenerate_teleport_block_on_teleport: false
+  regenerate_teleport_block_on_teleport: true
   remove_blocks_above_teleport_platform_on_teleport: true
 printing_presses:
   fuel:
@@ -2646,11 +2646,6 @@ nether_factory:
         amount: 8
         display_name: Aspect of End
         lore: A concentrated essence of the End
-      Aspect of NOPE:
-        material: BEDROCK
-        amount: 8
-        display_name: Aspect of NOPE
-        lore: A concentrated essence of the Nope
     repair:
        Diamond block:
          material: DIAMOND_BLOCK
