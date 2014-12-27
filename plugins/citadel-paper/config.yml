@@ -1,83 +1,77 @@
-general:
-  flashLength: 1
-  verboseLogging: false
-  autoModeReset: 30
-  redstoneDistance: 9
-  groupsAllowed: 60
-  reinforcedCrops: true
-materials:
-- name: STONE
-  strength: 25
+# material is the bukkit name for the material.
+# requirements is the amount of the material needed to create a reinforcement.
+# return is the amount of material to return.
+# percent_chance is the chance to return the block. Scales with damage.
+# scale_amount is, if maturation is enabled, the amount extra to damage a block if it is not fully matured.  The forumla for calculating the extra damage is 1/((time left of maturation) / (default amount of time for maturation)) * scale.  So if a block has 5 minutes left of maturation on a 10 minute default period with a scale of 3 we do 1/(5 / 10) * 3 = 6 damage. Setting scale amount to 0 disables this function.
+reinforcements:
+ diamond:
+  material: DIAMOND
   requirements: 1
-  flasher: STONE
-- name: IRON_INGOT
-  strength: 250
+  return: 1
+  percent_chance: 100
+  hit_points: 1800
+# mature time is in minutes
+  mature_time: 1440
+  scale_amount: 0
+  lore:
+# Delete the comment char to use lore.  Three spaces are required 
+# after lore. You can add multiple lines by adding -
+#   - Some string representation required for this reinforcement.
+ iron:
+  material: IRON_INGOT
   requirements: 1
-  flasher: IRON_BLOCK
-- name: DIAMOND
-  strength: 1800
+  return: 1
+  percent_chance: 100
+  hit_points: 250
+  mature_time: 60
+  scale_amount: 0
+  lore:
+ stone:
+  material: STONE
   requirements: 1
-  flasher: DIAMOND_BLOCK
-additionalSecurable:
-- BED_BLOCK
-- BOOKSHELF
-- BEACON
-- ANVIL
-nonReinforceable:
-- BEDROCK
-- ENDER_PORTAL_FRAME
-- SAPLING
-- LONG_GRASS
-- DEAD_BUSH
-- PISTON_EXTENSION
-- PISTON_MOVING_PIECE
-- RED_ROSE
-- YELLOW_FLOWER
-- BROWN_MUSHROOM
-- RED_MUSHROOM
-- TNT
-- FIRE
-- CROPS
-- SNOW
-- ICE
-- CACTUS
-- SUGAR_CANE_BLOCK
-- PORTAL
-- CAKE_BLOCK
-- PUMPKIN_STEM
-- MELON_STEM
-- VINE
-- NETHER_WARTS
-- ENDER_PORTAL
-naturalReinforcements:
-database:
-  driver: com.mysql.jdbc.Driver
-  url: jdbc:mysql://localhost:3306/bukkit
-  username: bukkit
-  password: ''
-  isolation: SERIALIZABLE
-  logging: false
-  rebuild: false
-  enablefilelog: false
-caching:
-  max_age: 300000
-  max_chunks: 10000
-
-# Possible verboseMessages:
-# - InteractionAttempt
-# - ReinDelegation
-# - AdminReinBypass
-# - ReinBypass
-# - RedstoneOpen
-# - GolemCreated
-# - NullGroup
-# - AdminReinLocked
-# - ReinLocked
-# - CropTrample
-# - ReinOvergrowth
-# - ReinCreated
-# - ReinDmg
-# - ReinDestroyed
-# - Enabled
-# - Disabled
-verboseMessages:
+  return: 1
+  percent_chance: 100
+  hit_points: 25
+  mature_time: 10
+  scale_amount: 0
+  lore:
+#natural_reinforcements:
+ #diamond_ore:
+  #material: DIAMOND_ORE
+  #hit_points: 60
+non_reinforceables:
+ - BEDROCK
+ - ENDER_PORTAL_FRAME
+ - SAPLING
+ - LONG_GRASS
+ - DEAD_BUSH
+ - PISTON_EXTENSION
+ - PISTON_MOVING_PIECE
+ - RED_ROSE
+ - YELLOW_FLOWER
+ - BROWN_MUSHROOM
+ - RED_MUSHROOM
+ - TNT
+ - FIRE
+ - CROPS
+ - SNOW
+ - ICE
+ - CACTUS
+ - SUGAR_CANE_BLOCK
+ - PORTAL
+ - CAKE_BLOCK
+ - PUMPKIN_STEM
+ - MELON_STEM
+ - VINE
+ - NETHER_WARTS
+ - ENDER_PORTAL
+reset_player_state: 300
+enable_maturation: true
+# The max amount of reinforcements to keep loaded
+max_cache_size: 20000
+# The amount of minutes to keep a reinforcement loaded
+max_cache_load_time: 10
+redstone_distance: 7
+acidblock_material: GOLD_BLOCK
+# If set to true then instead of dropping the reinforcement a block with the specified reinforcement value will be dropped.
+drop_reinforced_block: false
