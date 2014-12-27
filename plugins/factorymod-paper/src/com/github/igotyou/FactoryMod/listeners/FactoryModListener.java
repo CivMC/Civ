@@ -4,18 +4,24 @@ import static com.untamedears.citadel.Utility.isReinforced;
 import static com.untamedears.citadel.Utility.getReinforcement;
 
 import java.util.List;
+import java.util.Set;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
@@ -31,6 +37,7 @@ import com.untamedears.citadel.entity.PlayerReinforcement;
 
 import org.bukkit.event.entity.ExpBottleEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class FactoryModListener implements Listener
 {
@@ -411,4 +418,15 @@ public class FactoryModListener implements Listener
 		return response;
 	 }
 	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void handlePortalTelportEvent(PlayerPortalEvent e) {
+		if (e.isCancelled()) {
+			return;
+		}
+		
+		// Disable normal nether portal teleportation
+		if (FactoryModPlugin.DISABLE_PORTALS) {
+			e.setCancelled(true);
+		}
+	}
 }
