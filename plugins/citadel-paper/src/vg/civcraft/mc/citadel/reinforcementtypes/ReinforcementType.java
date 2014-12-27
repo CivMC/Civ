@@ -14,7 +14,7 @@ import vg.civcraft.mc.citadel.CitadelConfigManager;
 public class ReinforcementType {
 
 	private int amount;
-	private int percentReturn;
+	private double percentReturn;
 	private int returnValue;
 	private int hitpoints;
 	private Material mat;
@@ -25,12 +25,12 @@ public class ReinforcementType {
 	private static Map<ItemStack, ReinforcementType> types = 
 			new HashMap<ItemStack, ReinforcementType>();
 	
-	public ReinforcementType(Material mat, int amount, int percentReturn,
+	public ReinforcementType(Material mat, int amount, double percentReturn,
 			int returnValue, int hitpoints, int maturationTime, int scale,
 			List<String> lore) {
 		this.mat = mat;
 		this.amount = amount;
-		this.percentReturn = percentReturn;
+		this.percentReturn = percentReturn/100;
 		this.returnValue = returnValue;
 		this.hitpoints = hitpoints;
 		this.maturationTime = maturationTime;
@@ -71,9 +71,9 @@ public class ReinforcementType {
 		return amount;
 	}
 	/**
-	 * @return The percent chance that a block will return the reinforcements. Scales with damage.
+	 * @return The percent chance that a block will return the reinforcements. Scales with damage.  1 means it is 100% and .5 means 50%
 	 */
-	public int getPercentReturn() {
+	public double getPercentReturn() {
 		return percentReturn;
 	}
 	/**
