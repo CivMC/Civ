@@ -186,7 +186,7 @@ public class NetherFactoryManager implements Manager
 					if (!factoryExistsAt(factoryLocation))
 					{
 						double scalingFactor = getScalingFactor(factoryLocation);
-						if (scalingFactor < 10000)
+						if (scalingFactor < 500)
 						{
 							constructionMaterials = constructionMaterials.getMultiple(scalingFactor);
 							boolean hasMaterials = constructionMaterials.allIn(chestInventory);
