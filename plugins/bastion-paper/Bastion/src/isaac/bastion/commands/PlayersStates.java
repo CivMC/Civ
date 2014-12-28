@@ -10,7 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.untamedears.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelConfigManager;
 
 public class PlayersStates {
 	static public enum Mode {
@@ -76,7 +76,7 @@ public class PlayersStates {
 			Integer id=Bukkit.getScheduler().scheduleSyncDelayedTask(
 					Bastion.getPlugin(),
 					new CallBack(player,Mode.NORMAL),
-					20L * Citadel.getConfigManager().getAutoModeReset());
+					20L * CitadelConfigManager.getPlayerStateReset());
 
 			playersCallback.put(player, id);
 		}

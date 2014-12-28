@@ -1,5 +1,9 @@
 package isaac.bastion.manager;
 
+import isaac.bastion.Bastion;
+import isaac.bastion.BastionBlock;
+import isaac.bastion.storage.BastionBlockSet;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,10 +23,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import com.untamedears.humbug.CustomNMSEntityEnderPearl;
-
-import isaac.bastion.Bastion;
-import isaac.bastion.BastionBlock;
-import isaac.bastion.storage.BastionBlockSet;
 
 public class EnderPearlManager {
 	public static final int MAX_TELEPORT=800;
@@ -71,10 +71,8 @@ public class EnderPearlManager {
 		
 		
 		Player threw=null;
-		String playerName=null;
 		if(pearl.getShooter() instanceof Player){
 			threw=(Player) pearl.getShooter();
-			playerName = threw.getName();
 		}
 
 		Set<BastionBlock> possible = bastions.getPossibleTeleportBlocking(pearl.getLocation(), maxDistance); //all the bastion blocks within range of the pearl
@@ -88,7 +86,7 @@ public class EnderPearlManager {
 		Location end=start.clone();
 		end.add(twoDSpeed.multiply(maxTicks)); 
 
-		Set<BastionBlock> couldCollide=simpleCollide(possible, start.clone(), end.clone(), playerName); //all the bastions where the pearl passes over or under their shadow
+		Set<BastionBlock> couldCollide=simpleCollide(possible, start.clone(), end.clone(), threw); //all the bastions where the pearl passes over or under their shadow
 
 		if(couldCollide.isEmpty()){
 			return;
@@ -116,13 +114,13 @@ public class EnderPearlManager {
 		}
 
 	}
-	private Set<BastionBlock> simpleCollide(Set<BastionBlock> possible,Location start,Location end, String playerName){
+	private Set<BastionBlock> simpleCollide(Set<BastionBlock> possible,Location start,Location end, Player player){
 		Set<BastionBlock> couldCollide=new TreeSet<BastionBlock>();
 		for(BastionBlock bastion : possible){
 			Location loc=bastion.getLocation().clone();
 			loc.setY(0);
 			
-			if(circleLineCollide(start,end,loc,BastionBlock.getRadiusSquared()) &&  !bastion.canPlace(playerName))
+			if(circleLineCollide(start,end,loc,BastionBlock.getRadiusSquared()) &&  !bastion.canPlace(player))
 				couldCollide.add(bastion);
 		}
 

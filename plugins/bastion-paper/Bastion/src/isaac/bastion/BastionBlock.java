@@ -15,10 +15,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.entity.IReinforcement;
-import com.untamedears.citadel.entity.PlayerReinforcement;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -26,6 +22,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
+
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
 
 public class BastionBlock implements QTBox, Comparable<BastionBlock>
@@ -226,14 +226,14 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	}
 
 	//checks if a player would be allowed to place
-	public boolean canPlace(String playerName){
+	public boolean canPlace(Player player){
 
 		PlayerReinforcement reinforcement = getReinforcement();
 
 		if (reinforcement == null) return true;
-		if (playerName == null) return false;
+		if (player == null) return false;
 
-		if (reinforcement.isAccessible(playerName)) return true;
+		if (reinforcement.isAccessible(player)) return true;
 
 		return false;
 	}
@@ -246,7 +246,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 
 		for (UUID player: players){
 			if (player != null)
-				if (reinforcement.isAccessible(player))
+				if (reinforcement.isAccessible(Bukkit.getPlayer(player)))
 					return true;
 		}
 
@@ -270,7 +270,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		int wholeToRemove=(int) toBeRemoved;
 		double fractionToRemove=(double) toBeRemoved-wholeToRemove;
 
-		IReinforcement reinforcement =  getReinforcement();
+		Reinforcement reinforcement = getReinforcement();
 
 		if (reinforcement != null) {
 			strength=reinforcement.getDurability();
@@ -280,7 +280,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 		balance=fractionToRemove;
 
 		reinforcement.setDurability(strength);
-		Citadel.getReinforcementManager().addReinforcement(reinforcement);
 
 		set.updated(this);
 
@@ -311,7 +310,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	}
 
 	public UUID getOwner(){
-		return getReinforcement().getOwner().getFounderId();
+		return getReinforcement().getGroup().getOwner();
 	}
 
 	public Location getLocation(){
@@ -380,7 +379,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 			result+="Which means  " + String.valueOf(erosionFromBlock()) + " will removed after every blocked placeemnt"+'\n';
 
 			result+="Placed on "+dateFormator.format(new Date(placed))+'\n';
-			result+="by group "+reinforcement.getOwner().getName() + '\n';
+			result+="by group "+reinforcement.getGroup().getName() + '\n';
 			result+="At: "+location.toString();
 		}
 
