@@ -18,7 +18,25 @@ public class GameProfileModifier {
 
 	private AssociationList associations = NameAPI.getAssociationList();
 	
+<<<<<<< HEAD:src/vg/civcraft/mc/namelayer/misc/GameProfileModifier.java
 	public void setPlayerProfle(Player player) {
+=======
+	public void onDisable() {
+	}
+	
+	
+	@EventHandler(priority=EventPriority.LOWEST)
+	public void OnPlayerLogin(AsyncPlayerPreLoginEvent event)
+	{
+		
+	}
+	
+	// sets the player name in the gameprofile
+	@EventHandler(priority=EventPriority.LOWEST)
+	public void loginEvent(PlayerLoginEvent event){
+		Player player = event.getPlayer();
+		associations.addPlayer(player.getName(), player.getUniqueId());
+>>>>>>> master:src/com/valadian/nametracker/NameTrackerPlugin.java
 		String name = associations.getCurrentName(player.getUniqueId());
 		if (name.length() > 16){
 			NameLayerPlugin.log(Level.INFO, String.format(
