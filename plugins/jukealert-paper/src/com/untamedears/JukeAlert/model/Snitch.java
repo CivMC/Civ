@@ -1,26 +1,27 @@
 package com.untamedears.JukeAlert.model;
 
-import static com.untamedears.citadel.Utility.maybeReinforcementDamaged;
-
-import com.untamedears.citadel.entity.Faction;
-import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.manager.ConfigManager;
-import com.untamedears.JukeAlert.util.QTBox;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
+
+import vg.civcraft.mc.citadel.Utility;
+import vg.civcraft.mc.namelayer.group.Group;
+
+import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.manager.ConfigManager;
+import com.untamedears.JukeAlert.util.QTBox;
 
 public class Snitch implements QTBox, Comparable {
 
     private int snitchId;
     private String name;
     private Location location;
-    private Faction group;
+    private Group group;
     private boolean shouldLog;
     private boolean shouldToggleLevers;
     private int minx, maxx, miny, maxy, minz, maxz, radius;
 
-    public Snitch(Location loc, Faction group, boolean shouldLog, boolean shouldToggleLevers) {
+    public Snitch(Location loc, Group group, boolean shouldLog, boolean shouldToggleLevers) {
         this.group = group;
         this.shouldLog = shouldLog;
         this.location = loc;
@@ -137,11 +138,11 @@ public class Snitch implements QTBox, Comparable {
         this.name = name;
     }
 
-    public Faction getGroup() {
+    public Group getGroup() {
         return group;
     }
 
-    public void setGroup(Faction group) {
+    public void setGroup(Group group) {
         this.group = group;
     }
 
@@ -206,7 +207,7 @@ public class Snitch implements QTBox, Comparable {
     public void imposeSnitchTax() {
         ConfigManager config = JukeAlert.getInstance().getConfigManager();
         if (config.getTaxReinforcementPerAlert()) {
-            maybeReinforcementDamaged(location.getBlock());
+            Utility.maybeReinforcementDamaged(location.getBlock());
         }
     }
 }

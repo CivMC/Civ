@@ -1,6 +1,5 @@
 package com.untamedears.JukeAlert.manager;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -9,20 +8,24 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.GroupPermission;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
+
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
 import com.untamedears.JukeAlert.util.QTBox;
 import com.untamedears.JukeAlert.util.SparseQuadTree;
-import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.Moderator;
 
 public class SnitchManager {
 
@@ -72,35 +75,39 @@ public class SnitchManager {
         //  calculated.
         plugin.log("Culling snitches...");
         Map<String, Boolean> cullGroups = new HashMap<String, Boolean>();
-        Map<String, Long> players = new TreeMap<String, Long>();
+        Map<UUID, Long> uuids = new TreeMap<UUID, Long>();
         long timeThreshold = System.currentTimeMillis() - (
             86400000L * (long)plugin.getConfigManager().getMaxSnitchLifetime());
         for (Snitch snitch : getAllSnitches()) {
-            final Faction group = snitch.getGroup();
-            final String groupName = group.getNormalizedName();
+            final Group group = snitch.getGroup();
+            final String groupName = group.getName();
             Boolean performCull = cullGroups.get(groupName);
             if (performCull == null) {
-                String playerName = group.getFounder().toLowerCase();
-                if (!players.containsKey(playerName)) {
+                UUID playerName = group.getOwner();
+                if (!uuids.containsKey(playerName)) {
                     OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
                     if (player != null) {
-                        players.put(playerName, player.getLastPlayed());
+                    	uuids.put(playerName, player.getLastPlayed());
                     } else {
-                        players.put(playerName, null);
+                    	uuids.put(playerName, null);
                     }
                 }
-                Long maxLastPlayed = players.get(playerName);
-                for (Moderator mod : Citadel.getGroupManager().getModeratorsOfGroup(group.getName())) {
-                    playerName = mod.getMemberName().toLowerCase();
-                    if (!players.containsKey(playerName)) {
+                Long maxLastPlayed = uuids.get(playerName);
+                GroupPermission perm = NameAPI.getGroupManager().getPermissionforGroup(group);
+                for (UUID mod : group.getAllMembers()) {
+                    playerName = mod;
+                    PlayerType type = group.getPlayerType(playerName);
+                    if (!perm.isAccessible(type, PermissionType.BLOCKS)) // If they have permission to break blocks.
+                    	continue;
+                    if (!uuids.containsKey(playerName)) {
                         OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
                         if (player != null) {
-                            players.put(playerName, player.getLastPlayed());
+                        	uuids.put(playerName, player.getLastPlayed());
                         } else {
-                            players.put(playerName, null);
+                        	uuids.put(playerName, null);
                         }
                     }
-                    Long lastPlayed = players.get(playerName);
+                    Long lastPlayed = uuids.get(playerName);
                     if (maxLastPlayed == null || (lastPlayed != null && lastPlayed > maxLastPlayed)) {
                         maxLastPlayed = lastPlayed;
                     }

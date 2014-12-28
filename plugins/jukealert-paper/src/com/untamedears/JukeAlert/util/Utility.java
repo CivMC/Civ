@@ -1,25 +1,25 @@
 package com.untamedears.JukeAlert.util;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import com.untamedears.citadel.entity.Faction;
-import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.manager.SnitchManager;
-import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.util.IgnoreList;
-import com.untamedears.JukeAlert.util.OnlineGroupMembers;
-import com.untamedears.JukeAlert.util.RateLimiter;
-
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
+
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.GroupPermission;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
+
+import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.manager.SnitchManager;
+import com.untamedears.JukeAlert.model.Snitch;
 
 // Static methods only
 public class Utility {
@@ -50,18 +50,18 @@ public class Utility {
     }
 
     public static boolean isOnSnitch(Snitch snitch, UUID accountId) {
-        Faction faction = snitch.getGroup();
+        Group faction = snitch.getGroup();
         if (faction == null) return false;
-        return faction.isMember(accountId)
-            || faction.isModerator(accountId)
-            || faction.isFounder(accountId);
+        return faction.isMember(accountId);
     }
     
     public static boolean isPartialOwnerOfSnitch(Snitch snitch, UUID accountId) {
-        Faction faction = snitch.getGroup();
+        Group faction = snitch.getGroup();
         if (faction == null) return false;
-        return faction.isModerator(accountId)
-            || faction.isFounder(accountId);
+        PlayerType type = faction.getPlayerType(accountId);
+        GroupPermission perm = NameAPI.getGroupManager().getPermissionforGroup(faction);
+        return faction.isOwner(accountId)
+            || perm.isAccessible(type, PermissionType.BLOCKS);
     }
 
     public static Snitch getSnitchUnderCursor(Player player) {

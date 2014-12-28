@@ -1,20 +1,25 @@
 package com.untamedears.JukeAlert.util;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.GroupPermission;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.manager.ConfigManager;
-import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.GroupManager;
-import com.untamedears.citadel.entity.Faction;
-import com.untamedears.citadel.entity.FactionMember;
-import com.untamedears.citadel.entity.Moderator;
 
 // An Iterator that produces the Players associated with a specific Citadel
 //  group. First the founder, then the moderators, and lastly the members.
@@ -29,8 +34,8 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
 
     private GroupManager manager_;
     private String groupName_;
-    private Iterator<Moderator> mods_iter_ = null;
-    private Iterator<FactionMember> member_iter_ = null;
+    private Iterator<OfflinePlayer> mods_iter_ = null;
+    private Iterator<OfflinePlayer> member_iter_ = null;
     private Player next_ = null;
     private int state_ = 0;
     private int returnedCount_ = 0;
@@ -41,7 +46,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
 	private Set<UUID> skipList_= null;
 
     public OnlineGroupMembers(String groupName) {
-        manager_ = Citadel.getGroupManager();
+        manager_ = NameAPI.getGroupManager();
         groupName_ = groupName;
 
         ConfigManager config = JukeAlert.getInstance().getConfigManager();
@@ -127,9 +132,9 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
     }
 
     private Player getFounder() {
-        Faction group = manager_.getGroup(groupName_);
+        Group group = manager_.getGroup(groupName_);
         if (group != null) {
-            Player player = group.getFounderPlayer();
+            Player player = Bukkit.getPlayer(group.getOwner());
             if (player != null)
             	return player;
         }
@@ -138,11 +143,16 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
 
     private Player getNextModerator() {
         if (mods_iter_ == null) {
-            Set<Moderator> mods = manager_.getModeratorsOfGroup(groupName_);
+            List<UUID> uuids = manager_.getGroup(groupName_).getAllMembers();
+            GroupPermission perm = manager_.getPermissionforGroup(manager_.getGroup(groupName_));
+            Set<OfflinePlayer> mods = new TreeSet<OfflinePlayer>();
+            for (UUID uuid: uuids)
+            	if (perm.isAccessible(manager_.getGroup(groupName_).getPlayerType(uuid), PermissionType.BLOCKS))
+            		mods.add(Bukkit.getOfflinePlayer(uuid));
             mods_iter_ = mods.iterator();
         }
         while (mods_iter_.hasNext()) {
-            Moderator mod = mods_iter_.next();
+            OfflinePlayer mod = mods_iter_.next();
             Player player = mod.getPlayer();
             if (player != null) {
                 return player;
@@ -154,11 +164,15 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
 
     private Player getNextMember() {
         if (member_iter_ == null) {
-            Set<FactionMember> members = manager_.getMembersOfGroup(groupName_);
+        	List<UUID> uuids = manager_.getGroup(groupName_).getAllMembers();
+            Set<OfflinePlayer> members = new TreeSet<OfflinePlayer>();
+            for (UUID uuid: uuids)
+            	if (manager_.getGroup(groupName_).isMember(uuid))
+            		members.add(Bukkit.getOfflinePlayer(uuid));
             member_iter_ = members.iterator();
         }
         while (member_iter_.hasNext()) {
-            FactionMember member = member_iter_.next();
+            OfflinePlayer member = member_iter_.next();
             Player player = member.getPlayer();
             if (player != null) {
                 return player;

@@ -1,21 +1,17 @@
 package com.untamedears.JukeAlert.command.commands;
 
-import static com.untamedears.JukeAlert.util.Utility.findTargetedOwnedSnitch;
-
-import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
+
 import com.untamedears.JukeAlert.command.PlayerCommand;
-import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.tasks.GetSnitchInfoPlayerTask;
-import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.entity.Faction;
 
 public class GroupCommand extends PlayerCommand {
 
@@ -43,15 +39,13 @@ public class GroupCommand extends PlayerCommand {
                 offset = 1;
             }
             if (!sender.hasPermission("jukealert.admin.jagroup")) {
-                Faction group = Citadel.getGroupManager().getGroup(args[0]);
+                Group group = NameAPI.getGroupManager().getGroup(args[0]);
                 if (group == null) {
                     sender.sendMessage(ChatColor.RED + "That group doesn't exist!");
                     return true;
                 }
                 UUID accountId = player.getUniqueId();
-                if (!group.isMember(accountId)
-                    && !group.isModerator(accountId)
-                    && !group.isFounder(accountId))
+                if (!group.isMember(accountId))
                 {
                     sender.sendMessage(ChatColor.RED + "You are not part of that group!");
                     return true;
