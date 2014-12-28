@@ -144,10 +144,11 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
     private Player getNextModerator() {
         if (mods_iter_ == null) {
             List<UUID> uuids = manager_.getGroup(groupName_).getAllMembers();
-            GroupPermission perm = manager_.getPermissionforGroup(manager_.getGroup(groupName_));
+            Group g = manager_.getGroup(groupName_);
+            GroupPermission perm = manager_.getPermissionforGroup(g);
             List<OfflinePlayer> mods = new ArrayList<OfflinePlayer>();
             for (UUID uuid: uuids)
-            	if (perm.isAccessible(manager_.getGroup(groupName_).getPlayerType(uuid), PermissionType.BLOCKS))
+            	if (perm.isAccessible(g.getPlayerType(uuid), PermissionType.BLOCKS) && !g.isOwner(uuid))
             		mods.add(Bukkit.getOfflinePlayer(uuid));
             mods_iter_ = mods.iterator();
         }
@@ -166,10 +167,14 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
         if (member_iter_ == null) {
         	List<UUID> uuids = manager_.getGroup(groupName_).getAllMembers();
         	List<OfflinePlayer> members = new ArrayList<OfflinePlayer>();
-            for (UUID uuid: uuids)
-            	if (manager_.getGroup(groupName_).isMember(uuid))
+            for (UUID uuid: uuids){
+            	Group g = manager_.getGroup(groupName_);
+            	GroupPermission perm = manager_.getPermissionforGroup(g);
+            	if (g.isMember(uuid) && !g.getOwner().equals(uuid) && 
+            			!perm.isAccessible(g.getPlayerType(uuid), PermissionType.BLOCKS))
             		members.add(Bukkit.getOfflinePlayer(uuid));
             member_iter_ = members.iterator();
+            }
         }
         while (member_iter_.hasNext()) {
             OfflinePlayer member = member_iter_.next();
