@@ -1,5 +1,45 @@
 name: NameLayer
-main: com.valadian.nametracker.NameTrackerPlugin
-version: 1.0.5
+main: vg.civcraft.mc.namelayer.NameLayerPlugin
+version: 2.1.1
 load: startup
-author: Rourke750, Valadian
+author: Rourke750
+commands:
+   groupsaccept:
+      aliases: [ga, groupsa]
+   groupsaddsupergroup:
+      aliases: [gasg, groupsasg, groupsaddsg, groupsaddsuperg]
+   groupscreate:
+      aliases: [gc, groupsc]
+   groupsdeletegroup:
+      aliases: [gdg, groupsdg, groupsdeleteg]
+   groupsdiscipline:
+      aliases: [gd, groupsd]
+   groupsglobalstats:
+      aliases: [ggs, groupsgs, groupsglobals]
+   groupsstats:
+      aliases: [gs, groupss]
+   groupsinviteplayer:
+      aliases: [gip, groupsip, groupsinvitep]
+   groupsjoin:
+      aliases: [gj, groupsj]
+   groupslist:
+      aliases: [gl, groupsl]
+   groupslistmembers:
+      aliases: [glm, groupslm, groupslistm]
+   groupslistpermissions:
+      aliases: [glp, groupslp, groupslistp]
+   groupsmerge:
+      aliases: [gm, groupsm]
+   groupsmodifyperms:
+      aliases: [gmp, groupsmp, groupsmodifyp]
+   groupsremovemember:
+      aliases: [grm, groupsrm, groupsremovem]
+   groupsremovesuper:
+      alaises: [grs, groupsrs, groupsremoves]
+   groupspassword:
+      aliases: [gp, groupsp]
+   groupstransfer:
+      aliases: [gt, groupst]
+permissions:
+   namelayer.admin:
+      default: op

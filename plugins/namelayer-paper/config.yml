@@ -1,0 +1,6 @@
+sql:
+  hostname: localhost
+  port: 3306
+  dbname: nametracker
+  username: ''
+  password: ''
