@@ -3,8 +3,10 @@ package com.github.igotyou.FactoryMod.Factorys;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -157,7 +159,7 @@ public class NetherFactory extends BaseFactory
 		}
 	}
 	
-	public List<InteractionResponse> getTeleportationBlockResponse(Player player, Location clickedBlock)
+	public List<InteractionResponse> getTeleportationBlockResponse(final Player player, Location clickedBlock)
 	{
 		List<InteractionResponse> responses=new ArrayList<InteractionResponse>();
 		//does the player have acsess to the nether factory via ciatdel?
@@ -199,6 +201,17 @@ public class NetherFactory extends BaseFactory
 								Location destination = new Location(overworldTeleportPlatform.getWorld(), overworldTeleportPlatform.getX(), overworldTeleportPlatform.getY(), overworldTeleportPlatform.getZ(), playerLocation.getYaw(), playerLocation.getPitch());
 								destination.add(0.5, 1.5, 0.5);
 								player.teleport(destination);
+								final Entity ent = player.getVehicle();
+								if (ent != null){
+									ent.teleport(destination);
+									Bukkit.getScheduler().runTask(FactoryModPlugin.getPlugin(), new Runnable(){
+
+										@Override
+										public void run() {
+											ent.setPassenger(player);
+										}
+									});
+								}
 								if (netherFactoryProperties.getUseFuelOnTeleport())
 								{
 									getFuel().removeFrom(getPowerSourceInventory());
