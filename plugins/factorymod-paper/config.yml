@@ -94,7 +94,7 @@ nether_general:
   allow_reinforcement_creation_above_teleport_platform: false
   allow_block_placement_above_teleport_platform: true
   teleport_platform_invunerable: false
-  regenerate_teleport_block_on_teleport: false
+  regenerate_teleport_block_on_teleport: true
   remove_blocks_above_teleport_platform_on_teleport: true
 printing_presses:
   fuel:
@@ -2641,7 +2641,7 @@ nether_factory:
         amount: 8
         display_name: Aspect of Terra
         lore: A concentrated essence of Terra
-      Aspect of END:
+      Aspect of End:
         material: FLINT
         amount: 8
         display_name: Aspect of End
@@ -4472,8 +4472,8 @@ production_recipes:
         amount: 512
     outputs:
       Nether bricks:
-        material: NETHER_BRICK_ITEM
-        amount: 1024
+        material: NETHER_BRICK
+        amount: 256
   Bake_clay_blocks:
     name: Bake Clay Blocks
     production_time: 32

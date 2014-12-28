@@ -7,12 +7,14 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
@@ -404,5 +406,17 @@ public class FactoryModListener implements Listener
 		}
 		return response;
 	 }
+	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void handlePortalTelportEvent(PlayerPortalEvent e) {
+		if (e.isCancelled()) {
+			return;
+		}
+		
+		// Disable normal nether portal teleportation
+		if (FactoryModPlugin.DISABLE_PORTALS) {
+			e.setCancelled(true);
+		}
+	}
 	
 }
