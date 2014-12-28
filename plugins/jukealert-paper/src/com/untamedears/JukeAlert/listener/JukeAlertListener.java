@@ -50,6 +50,7 @@ import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
+import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
 import vg.civcraft.mc.namelayer.group.Group;
 
 import com.untamedears.JukeAlert.JukeAlert;
@@ -249,6 +250,27 @@ public class JukeAlertListener implements Listener {
                 plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
             }
             snitchManager.removeSnitch(snitch);
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onGroupMergeEvent(GroupMergeEvent event){
+    	Group g1 = event.getMergingInto();
+    	Group g2 = event.getToBeMerged();
+    	String groupName = g2.getName();
+        Set<Snitch> mergeSet = new TreeSet<Snitch>();
+        for (Snitch snitch : snitchManager.getAllSnitches()) {
+            final Group snitchGroup = snitch.getGroup();
+            String snitchGroupName = null;
+            if (snitchGroup != null) {
+                snitchGroupName = snitchGroup.getName();
+            }
+            if (snitchGroupName != null && snitchGroupName.equalsIgnoreCase(groupName)) {
+            	mergeSet.add(snitch);
+            }
+        }
+        for (Snitch snitch : mergeSet) {
+        	snitch.setGroup(g1);
         }
     }
 
