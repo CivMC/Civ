@@ -6,7 +6,7 @@
   <groupId>vg.civcraft.mc.citadel</groupId>
   <artifactId>Citadel</artifactId>
   <packaging>jar</packaging>
-  <version>3.0.12</version>
+  <version>3.0.12-${build.number}</version>
   <name>Citadel</name>
   <url>https://github.com/Civcraft/Citadel</url>
   
@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.7.10-R0.1</version>
+      <version>1.7.9-R0.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
