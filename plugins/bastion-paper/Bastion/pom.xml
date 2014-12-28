@@ -40,13 +40,13 @@
     <dependency>
       <groupId>vg.civcraft.mc.namelayer</groupId>
       <artifactId>NameLayer</artifactId>
-      <version>2.0.8</version>
+      <version>2.1.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>vg.civcraft.mc.citadel</groupId>
       <artifactId>Citadel</artifactId>
-      <version>3.0.8</version>
+      <version>3.0.12-40</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -63,12 +63,12 @@
       <url>http://repo.bukkit.org/content/groups/public/</url>
     </repository>
     <repository>
-      <id>name-layer</id>
-      <url>http://192.99.169.83:8080/plugin/repository/project/NameLayer-Groups/Build/19/repository/</url>
+      <id>NameLayer-repo</id>
+      <url>http://192.99.169.83:8080/plugin/repository/project/NameLayer-master/Build/20/repository/</url>
     </repository>
-	<repository>
-	  <id>citadel</id>
-	  <url>http://192.99.169.83:8080/plugin/repository/project/Citadel-Dev/Build/21/repository/</url>
-	</repository>
+    <repository>
+      <id>Citadel-repo</id>
+      <url>http://192.99.169.83:8080/plugin/repository/project/Citadel-master/Build/40/repository/</url>
+    </repository>
   </repositories>
 </project>
