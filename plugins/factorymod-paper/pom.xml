@@ -43,7 +43,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>vg.civcraft.mc.civcraft</groupId>
+      <groupId>vg.civcraft.mc.citadel</groupId>
       <artifactId>Citadel</artifactId>
       <version>3.0.12-40</version>
       <scope>provided</scope>
