@@ -60,8 +60,7 @@ public class Utility {
         if (faction == null) return false;
         PlayerType type = faction.getPlayerType(accountId);
         GroupPermission perm = NameAPI.getGroupManager().getPermissionforGroup(faction);
-        return faction.isOwner(accountId)
-            || perm.isAccessible(type, PermissionType.BLOCKS);
+        return faction.isOwner(accountId) || (type != null && perm.isAccessible(type, PermissionType.BLOCKS));
     }
 
     public static Snitch getSnitchUnderCursor(Player player) {
