@@ -40,8 +40,8 @@
   <dependencies>
     <dependency>
       <groupId>org.bukkit</groupId>
-      <artifactId>bukkit</artifactId>
-      <version>1.7.9-R0.1</version>
+      <artifactId>craftbukkit</artifactId>
+      <version>1.7.10-R0.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
