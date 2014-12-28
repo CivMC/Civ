@@ -1,10 +1,10 @@
 package com.untamedears.JukeAlert.util;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -145,7 +145,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
         if (mods_iter_ == null) {
             List<UUID> uuids = manager_.getGroup(groupName_).getAllMembers();
             GroupPermission perm = manager_.getPermissionforGroup(manager_.getGroup(groupName_));
-            Set<OfflinePlayer> mods = new TreeSet<OfflinePlayer>();
+            List<OfflinePlayer> mods = new ArrayList<OfflinePlayer>();
             for (UUID uuid: uuids)
             	if (perm.isAccessible(manager_.getGroup(groupName_).getPlayerType(uuid), PermissionType.BLOCKS))
             		mods.add(Bukkit.getOfflinePlayer(uuid));
@@ -165,7 +165,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
     private Player getNextMember() {
         if (member_iter_ == null) {
         	List<UUID> uuids = manager_.getGroup(groupName_).getAllMembers();
-            Set<OfflinePlayer> members = new TreeSet<OfflinePlayer>();
+        	List<OfflinePlayer> members = new ArrayList<OfflinePlayer>();
             for (UUID uuid: uuids)
             	if (manager_.getGroup(groupName_).isMember(uuid))
             		members.add(Bukkit.getOfflinePlayer(uuid));
