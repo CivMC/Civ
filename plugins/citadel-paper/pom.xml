@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
   <version>3.0.12</version>
   <name>Citadel</name>
-  <url>https://github.com/Civcraft/Citadel/tree/Citadel3.0</url>
+  <url>https://github.com/Civcraft/Citadel</url>
   
   <build>
     <pluginManagement>
@@ -40,14 +40,14 @@
   <dependencies>
     <dependency>
       <groupId>org.bukkit</groupId>
-      <artifactId>craftbukkit</artifactId>
-      <version>1.7.10-R0.1-SNAPSHOT</version>
+      <artifactId>bukkit</artifactId>
+      <version>1.7.10-R0.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>vg.civcraft.mc.namelayer</groupId>
       <artifactId>NameLayer</artifactId>
-      <version>2.0.8</version>
+      <version>2.1.1</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -58,8 +58,8 @@
       <url>http://repo.bukkit.org/content/groups/public/</url>
     </repository>
     <repository>
-      <id>citadel-repo</id>
-      <url>http://192.99.169.83:8080/plugin/repository/project/NameLayer-Groups/Build/19/repository/</url>
+      <id>NameLayer-repo</id>
+      <url>http://192.99.169.83:8080/plugin/repository/project/NameLayer-master/Build/20/repository/</url>
     </repository>
   </repositories>
   
