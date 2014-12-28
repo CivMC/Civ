@@ -1,5 +1,6 @@
 name: FactoryMod
 main: com.github.igotyou.FactoryMod.FactoryModPlugin
 author: igotyou
+
 version: ${project.version}
 depend: [NameLayer, Citadel]
