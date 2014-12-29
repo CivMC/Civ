@@ -39,6 +39,7 @@ public class GroupManagerDao {
 	}
 	
 	public void checkUpdate(){
+		long begin_time = System.currentTimeMillis();
 		log(Level.INFO, "Checking Database to see if update is needed!");
 		int ver = checkVersion(plugin.getName());
 		db.execute("create table if not exists db_version (db_version int not null," +
@@ -46,6 +47,7 @@ public class GroupManagerDao {
 				+ "plugin_name varchar(40)," +
 				"primary key (db_version));");
 		if (ver == 0){
+			long first_time = System.currentTimeMillis();
 			log(Level.INFO, "Performing database update to version 1!\n" +
 					"This may take a long time depending on how big your database is.");
 			db.execute("alter table faction drop `version`;");
@@ -105,8 +107,10 @@ public class GroupManagerDao {
 					+ "'DOORS CHESTS' "
 					+ "from faction_id f;");
 			ver = updateVersion(ver, plugin.getName());
+			log(Level.INFO, "Database update to Version one took " + (System.currentTimeMillis() / first_time) * 1000 + " seconds.");
 		}
 		if (ver == 1){
+			long first_time = System.currentTimeMillis();
 			log(Level.INFO, "Performing database creation!");
 			db.execute("create table if not exists faction_id("
 					+ "group_id int not null AUTO_INCREMENT,"
@@ -150,7 +154,9 @@ public class GroupManagerDao {
 				
 			}, 1);
 			ver = updateVersion(ver, plugin.getName());
+			log(Level.INFO, "Database update to Version two took " + (System.currentTimeMillis() / first_time) * 1000 + " seconds.");
 		}
+		log(Level.INFO, "Database update took " + (System.currentTimeMillis() / begin_time) * 1000 + " seconds.");
 	}
 
 	public void initializeProcedures(){
