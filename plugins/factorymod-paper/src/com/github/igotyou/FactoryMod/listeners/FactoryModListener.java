@@ -416,7 +416,7 @@ public class FactoryModListener implements Listener
 		}
 		
 		// Disable normal nether portal teleportation
-		if (FactoryModPlugin.DISABLE_PORTALS) {
+		if (e.getCause() == TeleportCause.NETHER_PORTAL && FactoryModPlugin.DISABLE_PORTALS) {
 			e.setCancelled(true);
 		}
 	}
