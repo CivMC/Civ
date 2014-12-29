@@ -42,6 +42,7 @@ public class CitadelReinforcementData {
 	 */
 	private void createTables(){
 		int ver = NameLayerPlugin.getVersionNum(plugin.getName());
+		long begin_time = System.currentTimeMillis();
 		if (ver == 0){
 			db.execute(String.format("update db_version set plugin_name = '%s' " +
 					"where plugin_name is null", plugin.getName()));
@@ -62,6 +63,7 @@ public class CitadelReinforcementData {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+				long first_time = System.currentTimeMillis();
 				db.execute("alter table reinforcement drop security_level;");
 				db.execute("alter table reinforcement drop version");
 				/*
@@ -103,9 +105,11 @@ public class CitadelReinforcementData {
 				db.execute("alter table reinforcement add " +
 						"lore varchar(255);");
 				db.execute("drop table citadel_account_id_map;");
+				Citadel.Log("The update to new format took " + (System.currentTimeMillis() / first_time) * 1000 + " seconds.");
 			}
 		}
 		if (ver == 5 || ver == 0){
+			long first_time = System.currentTimeMillis();
 			Citadel.Log("Updating to Citadel Version 6.");
 			db.execute("create table if not exists reinforcement(" +
 					"x int not null," +
@@ -131,8 +135,10 @@ public class CitadelReinforcementData {
 						+ "values('%s');", x));
 			NameLayerPlugin.insertVersionNum(5, plugin.getName());
 			ver = NameLayerPlugin.getVersionNum(plugin.getName());
+			Citadel.Log("The update to Version 6 took " + (System.currentTimeMillis() / first_time) * 1000 + " seconds.");
 		}
 		if (ver == 6){
+			long first_time = System.currentTimeMillis();
 			Citadel.Log("Updating to version 7. No fun message for you :(");
 			db.execute("create table if not exists reinforcement_id("
 					+ "rein_id int not null auto_increment,"
@@ -154,7 +160,10 @@ public class CitadelReinforcementData {
 			db.execute("alter table reinforcement drop z;");
 			db.execute("alter table reinforcement drop world;");
 			NameLayerPlugin.insertVersionNum(ver, plugin.getName());
+			Citadel.Log("The update to Version 7 took " + (System.currentTimeMillis() / first_time) * 1000 + " seconds.");
 		}
+		Citadel.Log("The total time it took Citadel to update was " + 
+				(System.currentTimeMillis() / begin_time) * 1000 + " seconds.");
 	}
 	/**
 	 * Reconnects and reinitializes the mysql connection and preparedstatements.
