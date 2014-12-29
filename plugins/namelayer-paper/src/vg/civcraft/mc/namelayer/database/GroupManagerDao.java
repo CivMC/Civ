@@ -62,7 +62,7 @@ public class GroupManagerDao {
 					"role varchar(40) not null," +
 					"tier varchar(255) not null," +
 					"unique key (group_id, role));");
-			
+			db.execute("delete from faction where `name` is null");
 			db.execute("insert into faction_id (group_name) select `name` from faction;");
 			db.execute("alter table faction add group_name varchar(255) default null");
 			db.execute("update faction g set g.group_name = g.name;");
@@ -73,7 +73,7 @@ public class GroupManagerDao {
 			db.execute("alter table faction_member add role varchar(10) not null default 'MEMBERS'");
 			db.execute("alter table faction_member add group_id int not null;");
 			db.execute("update faction_member fm set fm.group_id = (select fi.group_id from faction_id fi "
-					+ "where fi.group_name = fm.faction_name);");
+					+ "where fi.group_name = fm.faction_name limit 1);");
 			db.execute("alter table faction_member add unique key uq_meber_faction(member_name, group_id);");
 			db.execute("alter table faction_member drop index uq_faction_member_1;");
 			db.execute("alter table faction_member drop faction_name;");
