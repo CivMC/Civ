@@ -2,8 +2,6 @@ package com.untamedears.JukeAlert.command.commands;
 
 import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
 
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -43,7 +41,7 @@ public class LookupCommand extends PlayerCommand {
                 y = Integer.parseInt(args[1]);
                 z = Integer.parseInt(args[2]);
                 if(args.length == 3) {
-                    world = "world";
+                    world = player.getLocation().getWorld().getName();
                 } else {
                     world = args[3];
                 }
