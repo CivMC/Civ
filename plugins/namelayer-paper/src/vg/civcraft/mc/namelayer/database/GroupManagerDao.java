@@ -63,8 +63,8 @@ public class GroupManagerDao {
 					"tier varchar(255) not null," +
 					"unique key (group_id, role));");
 			db.execute("delete from faction where `name` is null;");
-			db.execute("delete from faction_member where faction_name is `null`;");
-			db.execute("delete from moderator where faction_name is `null`;");
+			db.execute("delete from faction_member where faction_name is null;");
+			db.execute("delete from moderator where faction_name is null;");
 			db.execute("insert into faction_id (group_name) select `name` from faction;");
 			db.execute("alter table faction add group_name varchar(255) default null");
 			db.execute("update faction g set g.group_name = g.name;");
