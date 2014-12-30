@@ -66,14 +66,17 @@ public class GroupManagerDao {
 			db.execute("delete from faction_member where faction_name is null;");
 			db.execute("delete from moderator where faction_name is null;");
 			db.execute("insert into faction_id (group_name) select `name` from faction;");
-			db.execute("alter table faction add group_name varchar(255) default null");
+			db.execute("alter table faction add group_name varchar(255) default null;");
 			db.execute("update faction g set g.group_name = g.name;");
-			db.execute("alter table faction drop `name`");
+			db.execute("alter table faction drop `name`;");
 			db.execute("alter table faction add primary key group_primary_key (group_name);");
 			db.execute("drop table personal_group;");
 			db.execute("alter table faction_member change member_name member_name varchar(36);");
-			db.execute("alter table faction_member add role varchar(10) not null default 'MEMBERS'");
+			db.execute("alter table faction_member add role varchar(10) not null default 'MEMBERS';");
 			db.execute("alter table faction_member add group_id int not null;");
+			db.execute("delete fm.* from faction_member fm where not exists " // deletes any non faction_id entries.
+					+ "(select fi.group_id from faction_id fi "
+					+ "where fi.group_name = fm.faction_name limit 1);");
 			db.execute("update faction_member fm set fm.group_id = (select fi.group_id from faction_id fi "
 					+ "where fi.group_name = fm.faction_name limit 1);");
 			db.execute("alter table faction_member add unique key uq_meber_faction(member_name, group_id);");
@@ -109,7 +112,7 @@ public class GroupManagerDao {
 					+ "'DOORS CHESTS' "
 					+ "from faction_id f;");
 			ver = updateVersion(ver, plugin.getName());
-			log(Level.INFO, "Database update to Version one took " + (System.currentTimeMillis() / first_time) * 1000 + " seconds.");
+			log(Level.INFO, "Database update to Version one took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
 		}
 		if (ver == 1){
 			long first_time = System.currentTimeMillis();
@@ -156,9 +159,9 @@ public class GroupManagerDao {
 				
 			}, 1);
 			ver = updateVersion(ver, plugin.getName());
-			log(Level.INFO, "Database update to Version two took " + (System.currentTimeMillis() / first_time) * 1000 + " seconds.");
+			log(Level.INFO, "Database update to Version two took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
 		}
-		log(Level.INFO, "Database update took " + (System.currentTimeMillis() / begin_time) * 1000 + " seconds.");
+		log(Level.INFO, "Database update took " + (System.currentTimeMillis() / begin_time) / 1000 + " seconds.");
 	}
 
 	public void initializeProcedures(){
