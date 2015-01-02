@@ -7549,10 +7549,10 @@ production_recipes:
     inputs:
        Blaze Powder:
          material: BLAZE_POWDER
-         amount: 265
+         amount: 256
        Ender Pearl:
          material: ENDER_PEARL
-         amount: 265
+         amount: 256
     outputs:
        Eye of Ender:
          material: EYE_OF_ENDER
