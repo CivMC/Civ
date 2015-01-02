@@ -186,15 +186,21 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	}
 
 
+	/**
+	 * @brief Gets the percentage of the reinforcement that should erode from the block
+	 * @return The percentage that should erode
+	 */
 	public double erosionFromBlock(){
 		double scaleStart=Bastion.getConfigManager().getBastionBlockScaleFacStart();
 		double scaleEnd=Bastion.getConfigManager().getBastionBlockScaleFacEnd();
-		int time=(int) (System.currentTimeMillis()-placed);
+		
+		// This needs to be a long or it will roll over after 21 days!
+		long time = System.currentTimeMillis() - placed;
 
-		if(SCALING_TIME==0){
+		if(SCALING_TIME == 0){
 			return scaleStart;
-		} else if(time<SCALING_TIME){
-			return (((scaleEnd-scaleStart)/(float)SCALING_TIME)*time+scaleStart);
+		} else if(time < SCALING_TIME){
+			return (((scaleEnd - scaleStart) / (float)SCALING_TIME) * time + scaleStart);
 		} else{
 			return scaleEnd;
 		}
