@@ -154,7 +154,13 @@ public class GroupManagerDao {
 
 				@Override
 				public void run() {
-					createGroup(NameLayerPlugin.getSpecialAdminGroup(), null, null, GroupType.PRIVATE);
+					Group g = getGroup(NameLayerPlugin.getSpecialAdminGroup());
+					if (g == null)
+						createGroup(NameLayerPlugin.getSpecialAdminGroup(), null, null, GroupType.PRIVATE);
+					else {
+						for (UUID uuid: g.getAllMembers())
+							g.removeMember(uuid);
+					}
 				}
 				
 			}, 1);
