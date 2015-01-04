@@ -105,7 +105,7 @@ public class CitadelReinforcementData {
 				db.execute("alter table reinforcement add " +
 						"lore varchar(255);");
 				db.execute("drop table citadel_account_id_map;");
-				Citadel.Log("The update to new format took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
+				Citadel.Log("The update to new format took " + (System.currentTimeMillis() - first_time) / 1000 + " seconds.");
 			}
 		}
 		if (ver == 5 || ver == 0){
@@ -135,7 +135,7 @@ public class CitadelReinforcementData {
 						+ "values('%s');", x));
 			NameLayerPlugin.insertVersionNum(5, plugin.getName());
 			ver = NameLayerPlugin.getVersionNum(plugin.getName());
-			Citadel.Log("The update to Version 6 took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
+			Citadel.Log("The update to Version 6 took " + (System.currentTimeMillis() - first_time) / 1000 + " seconds.");
 		}
 		if (ver == 6){
 			long first_time = System.currentTimeMillis();
@@ -163,7 +163,7 @@ public class CitadelReinforcementData {
 			Citadel.Log("The update to Version 7 took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
 		}
 		Citadel.Log("The total time it took Citadel to update was " + 
-				(System.currentTimeMillis() / begin_time) / 1000 + " seconds.");
+				(System.currentTimeMillis() - begin_time) / 1000 + " seconds.");
 	}
 	/**
 	 * Reconnects and reinitializes the mysql connection and preparedstatements.
