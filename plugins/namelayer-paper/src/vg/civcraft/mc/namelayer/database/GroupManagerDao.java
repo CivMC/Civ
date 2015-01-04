@@ -112,7 +112,7 @@ public class GroupManagerDao {
 					+ "'DOORS CHESTS' "
 					+ "from faction_id f;");
 			ver = updateVersion(ver, plugin.getName());
-			log(Level.INFO, "Database update to Version one took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
+			log(Level.INFO, "Database update to Version one took " + (System.currentTimeMillis() - first_time) / 1000 + " seconds.");
 		}
 		if (ver == 1){
 			long first_time = System.currentTimeMillis();
@@ -165,9 +165,9 @@ public class GroupManagerDao {
 				
 			}, 1);
 			ver = updateVersion(ver, plugin.getName());
-			log(Level.INFO, "Database update to Version two took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
+			log(Level.INFO, "Database update to Version two took " + (System.currentTimeMillis() - first_time) / 1000 + " seconds.");
 		}
-		log(Level.INFO, "Database update took " + (System.currentTimeMillis() / begin_time) / 1000 + " seconds.");
+		log(Level.INFO, "Database update took " + (System.currentTimeMillis() - begin_time) / 1000 + " seconds.");
 	}
 
 	public void initializeProcedures(){
