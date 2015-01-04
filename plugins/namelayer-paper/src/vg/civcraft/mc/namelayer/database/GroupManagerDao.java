@@ -82,7 +82,7 @@ public class GroupManagerDao {
 			db.execute("alter table faction_member add unique key uq_meber_faction(member_name, group_id);");
 			db.execute("alter table faction_member drop index uq_faction_member_1;");
 			db.execute("alter table faction_member drop faction_name;");
-			db.execute("insert into faction_member (group_id, member_name, role)" +
+			db.execute("insert ignore into faction_member (group_id, member_name, role)" +
 					"select g.group_id, m.member_name, 'MODS' from moderator m "
 					+ "inner join faction_id g on g.group_name = m.faction_name");
 			db.execute("insert into faction_member (group_id, member_name, role)"
