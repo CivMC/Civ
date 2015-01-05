@@ -1,5 +1,7 @@
 package vg.civcraft.mc.citadel.reinforcement;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -48,9 +50,14 @@ public class PlayerReinforcement extends Reinforcement{
 	 * group.
 	 */
 	public boolean isAccessible(Player p, PermissionType... pType){
-		PlayerType type = g.getPlayerType(p.getUniqueId());
+		return isAccessible(p.getUniqueId(), pType);
+	}
+	
+	public boolean isAccessible(UUID u, PermissionType... pType){
+		PlayerType type = g.getPlayerType(u);
 		// if it is a public group we want it to check even if no
-		// PlayerType
+				// PlayerType
+				
 		if (type == null && !(g instanceof PublicGroup))
 			return false;
 		return gp.isAccessible(type, pType);
