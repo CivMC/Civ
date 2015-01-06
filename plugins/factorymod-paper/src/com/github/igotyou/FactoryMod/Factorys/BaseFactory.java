@@ -425,7 +425,12 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 	 */
 	public boolean isFuelAvailable()
 	{
-		return getFuel().allIn(getPowerSourceInventory());
+		Inventory inv = getPowerSourceInventory();
+		if (inv == null) {
+			return false;
+		} else {
+			return getFuel().allIn(inv);
+		}
 	}
 
 	/**
