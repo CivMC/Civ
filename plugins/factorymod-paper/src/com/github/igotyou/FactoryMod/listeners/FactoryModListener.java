@@ -437,7 +437,7 @@ public class FactoryModListener implements Listener
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void entityTeleportEvent(EntityPortalEvent event){
 		if (FactoryModPlugin.DISABLE_PORTALS) {
-			e.setCancelled(true);
+			event.setCancelled(true);
 		}
 	}
 	
