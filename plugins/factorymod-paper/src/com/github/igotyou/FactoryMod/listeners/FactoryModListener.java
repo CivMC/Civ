@@ -13,6 +13,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -428,6 +429,13 @@ public class FactoryModListener implements Listener
 		}
 		
 		// Disable normal nether portal teleportation
+		if (FactoryModPlugin.DISABLE_PORTALS) {
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void entityTeleportEvent(EntityPortalEvent event){
 		if (FactoryModPlugin.DISABLE_PORTALS) {
 			e.setCancelled(true);
 		}
