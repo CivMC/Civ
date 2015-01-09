@@ -856,6 +856,10 @@ public class JukeAlertLogger {
         // There is no material or location involved in this event
         this.logSnitchInfo(snitch, null, null, new Date(), LoggedAction.KILL, player.getPlayerListName(), entity.getType().toString());
     }
+    
+    public void logSnitchExchangeEvent(Snitch snitch, Player player, Location loc){
+    	this.logSnitchInfo(snitch, null, loc, new Date(), LoggedAction.EXCHANGE, player.getPlayerListName(), null);
+    }
 
     /**
      * Logs a message that someone killed another player
@@ -1226,6 +1230,11 @@ public class JukeAlertLogger {
                     actionColor = ChatColor.DARK_RED;
                     actionTextType = 3;
                     break;
+                case EXCHANGE:
+                	actionString = "Exchanged";
+                	actionColor = ChatColor.DARK_GRAY;
+                	actionTextType = 2;
+                	break;
                 default:
                 case UNKNOWN:
                     this.plugin.getLogger().log(Level.SEVERE, String.format(

@@ -1,5 +1,12 @@
 package com.untamedears.JukeAlert;
 
+import java.util.logging.Level;
+
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import com.untamedears.JukeAlert.command.CommandHandler;
 import com.untamedears.JukeAlert.command.commands.ClearCommand;
 import com.untamedears.JukeAlert.command.commands.ConfigCommand;
@@ -9,23 +16,17 @@ import com.untamedears.JukeAlert.command.commands.InfoCommand;
 import com.untamedears.JukeAlert.command.commands.JaCommand;
 import com.untamedears.JukeAlert.command.commands.JaListCommand;
 import com.untamedears.JukeAlert.command.commands.JaMuteCommand;
+import com.untamedears.JukeAlert.command.commands.JaToggleLeversCommand;
 import com.untamedears.JukeAlert.command.commands.LookupCommand;
 import com.untamedears.JukeAlert.command.commands.NameCommand;
-import com.untamedears.JukeAlert.command.commands.JaToggleLeversCommand;
 import com.untamedears.JukeAlert.group.GroupMediator;
+import com.untamedears.JukeAlert.listener.ItemExchangeListener;
 import com.untamedears.JukeAlert.listener.JukeAlertListener;
 import com.untamedears.JukeAlert.manager.ConfigManager;
-import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.manager.PlayerManager;
+import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
 import com.untamedears.JukeAlert.util.RateLimiter;
-
-import java.util.logging.Level;
-
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class JukeAlert extends JavaPlugin {
 
@@ -65,6 +66,8 @@ public class JukeAlert extends JavaPlugin {
     private void registerEvents() {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new JukeAlertListener(), this);
+        if (pm.isPluginEnabled("ItemExchange"))
+        	pm.registerEvents(new ItemExchangeListener(), this);
     }
 
     private void registerCommands() {

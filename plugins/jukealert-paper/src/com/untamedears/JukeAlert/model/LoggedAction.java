@@ -21,7 +21,8 @@ public enum LoggedAction {
     BLOCK_BURN(8),
     BLOCK_USED(9),
     LOGIN(10),
-    LOGOUT(11);
+    LOGOUT(11),
+    EXCHANGE(12);
     
     private int value;
 
@@ -48,6 +49,7 @@ public enum LoggedAction {
             case 9: return BLOCK_USED;
             case 10: return LOGIN;
             case 11: return LOGOUT;
+            case 12: return EXCHANGE;
             default: return UNKNOWN;
         }
     }
