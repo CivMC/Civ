@@ -10,13 +10,14 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
+
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.command.PlayerCommand;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
 import com.untamedears.ItemExchange.utility.ExchangeRule;
 import com.untamedears.ItemExchange.utility.ExchangeRule.RuleType;
-import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.entity.Faction;
 
 /*
  * When holding an exchange rule block in the players hand allows editing of the 
@@ -255,7 +256,7 @@ public class SetCommand extends PlayerCommand {
 				}
 
 				if(args.length == 2) {
-					Faction group = Citadel.getGroupManager().getGroup(args[1]);
+					Group group = NameAPI.getGroupManager().getGroup(args[1]);
 
 					if(group != null) {
 						exchangeRule.setCitadelGroup(group);

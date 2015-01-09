@@ -26,6 +26,9 @@ import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
+
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleCreateException;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
@@ -33,8 +36,6 @@ import com.untamedears.ItemExchange.metadata.AdditionalMetadata;
 import com.untamedears.ItemExchange.metadata.BookMetadata;
 import com.untamedears.ItemExchange.metadata.EnchantmentStorageMetadata;
 import com.untamedears.ItemExchange.metadata.PotionMetadata;
-import com.untamedears.citadel.Citadel;
-import com.untamedears.citadel.entity.Faction;
 
 /*
  * Contains the rules pertaining to an item which can participate in the exchange
@@ -68,7 +69,7 @@ public class ExchangeRule {
 	private String[] lore;
 	private RuleType ruleType;
 	private AdditionalMetadata additional = null;
-	private Faction citadelGroup = null;
+	private Group citadelGroup = null;
 
 	/*
 	 * Describes whether the Exchange Rule functions as an input or an output
@@ -267,10 +268,10 @@ public class ExchangeRule {
 				}
 			}
 
-			Faction group;
+			Group group;
 
 			if(!compiledRule[11].equals("")) {
-				group = Citadel.getGroupManager().getGroup(unescapeString(showString(compiledRule[11])));
+				group = NameAPI.getGroupManager().getGroup(unescapeString(showString(compiledRule[11])));
 			}
 			else {
 				group = null;
@@ -498,7 +499,7 @@ public class ExchangeRule {
 			if(citadelGroup != null) {
 				UUID playerId = player.getUniqueId();
 
-				if(citadelGroup.isMember(playerId) || citadelGroup.isModerator(playerId) || citadelGroup.isFounder(playerId)) {
+				if(citadelGroup.isMember(playerId)) {
 					return true;
 				}
 				else {
@@ -607,7 +608,7 @@ public class ExchangeRule {
 		if(citadelGroup != null) {
 			UUID playerId = p.getUniqueId();
 			
-			if(citadelGroup.isFounder(playerId) || citadelGroup.isModerator(playerId) || citadelGroup.isMember(playerId)) {
+			if(citadelGroup.isMember(playerId)) {
 				displayed.add(ChatColor.GREEN + "Restricted with Citadel. You have access to this shop.");
 			}
 			else {
@@ -717,11 +718,11 @@ public class ExchangeRule {
 		return amount;
 	}
 
-	public void setCitadelGroup(Faction group) {
+	public void setCitadelGroup(Group group) {
 		this.citadelGroup = group;
 	}
 
-	public Faction getCitadelGroup() {
+	public Group getCitadelGroup() {
 		return citadelGroup;
 	}
 
