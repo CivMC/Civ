@@ -81,8 +81,8 @@ public class ReinforcementManager {
 			}
 			return rein;
 		} catch(Exception e){
-			if (!(e instanceof LoadingCacheNullException)); // i dont get why this doesnt work
-					//e.printStackTrace();
+			if (!(e.getCause() instanceof LoadingCacheNullException))
+				e.printStackTrace();
 		}
 		return null;
 	}

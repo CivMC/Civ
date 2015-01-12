@@ -523,7 +523,7 @@ public class Utility {
      * @param locs- The locations that make up the structure.
      * @param g- The group this will belong too.
      * @param dur- The durability this structure will have.
-     * @param mature- The amount of time until it is mature.
+     * @param mature- The amount of time until it is mature (in minutes).
      * @return
      */
     public static MultiBlockReinforcement createMultiBlockReinforcement(List<Location> locs, Group g, int dur, int mature){
