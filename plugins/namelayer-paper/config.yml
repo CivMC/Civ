@@ -4,3 +4,5 @@ sql:
   dbname: nametracker
   username: ''
   password: ''
+groups:
+  enable: false

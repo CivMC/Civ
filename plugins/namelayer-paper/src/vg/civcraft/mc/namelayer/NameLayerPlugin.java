@@ -23,18 +23,22 @@ public class NameLayerPlugin extends JavaPlugin{
 	private static NameLayerPlugin instance;
 	private CommandHandler handle;
 	private static Database db;
+	private static boolean loadGroups = false;
 
 	@Override
 	public void onEnable() {
 		instance = this;
 		if (!new File(this.getDataFolder() + "config.yml").exists())
 			this.saveDefaultConfig();
-		new NameLayerConfigManager().setConfigOptions(getConfig());;
+		new NameLayerConfigManager().setConfigOptions(getConfig());
+		loadGroups = NameLayerConfigManager.getShouldLoadGroups();
 		loadDatabases();
 		new NameAPI(new GroupManager(), associations);
 		registerListeners();
-	    handle = new CommandHandler();
-	    handle.registerCommands();
+		if (loadGroups){
+			handle = new CommandHandler();
+			handle.registerCommands();
+		}
 	    ClassHandler.Initialize(Bukkit.getServer());
 	}
 	
@@ -68,7 +72,8 @@ public class NameLayerPlugin extends JavaPlugin{
 			Bukkit.getPluginManager().disablePlugin(this); // Why have it try connect, it can't
 		}
 		associations = new AssociationList(db);
-		groupManagerDao = new GroupManagerDao(db);
+		if (loadGroups)
+			groupManagerDao = new GroupManagerDao(db);
 	}
 	
 	public static void reconnectAndReintializeStatements(){
@@ -76,7 +81,8 @@ public class NameLayerPlugin extends JavaPlugin{
 			return;
 		db.connect();
 		associations.initializeStatements();
-		groupManagerDao.initializeStatements();
+		if (loadGroups)
+			groupManagerDao.initializeStatements();
 	}
 	
 	/**

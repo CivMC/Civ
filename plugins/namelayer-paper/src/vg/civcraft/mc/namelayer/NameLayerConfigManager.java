@@ -28,4 +28,8 @@ public class NameLayerConfigManager {
 	public static String getMySQLPassword(){
 		return config.getString("sql.password");
 	}
+	
+	public static boolean getShouldLoadGroups(){
+		return config.getBoolean("groups.enable", false);
+	}
 }
