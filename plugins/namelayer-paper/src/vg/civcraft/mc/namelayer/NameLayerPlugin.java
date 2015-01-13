@@ -23,7 +23,7 @@ public class NameLayerPlugin extends JavaPlugin{
 	private static NameLayerPlugin instance;
 	private CommandHandler handle;
 	private static Database db;
-	private static boolean loadGroups = false;
+	private static boolean loadGroups = true;
 
 	@Override
 	public void onEnable() {

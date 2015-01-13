@@ -30,6 +30,6 @@ public class NameLayerConfigManager {
 	}
 	
 	public static boolean getShouldLoadGroups(){
-		return config.getBoolean("groups.enable", false);
+		return config.getBoolean("groups.enable", true);
 	}
 }
