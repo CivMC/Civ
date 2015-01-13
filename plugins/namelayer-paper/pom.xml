@@ -35,13 +35,13 @@
       <version>1.7.10-R0.1</version>
       <scope>provided</scope>
     </dependency>
-  </dependencies>
-  <dependency>
+    <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot</artifactId>
       <version>1.8-R0.1</version>
       <scope>provided</scope>
     </dependency>
+  </dependencies>
   <repositories>
     <repository>
       <id>bukkit-repo</id>
