@@ -14,6 +14,7 @@ import vg.civcraft.mc.namelayer.database.Database;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.listeners.AssociationListener;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
+import vg.civcraft.mc.namelayer.misc.ClassHandler;
 
 
 public class NameLayerPlugin extends JavaPlugin{
@@ -34,6 +35,7 @@ public class NameLayerPlugin extends JavaPlugin{
 		registerListeners();
 	    handle = new CommandHandler();
 	    handle.registerCommands();
+	    ClassHandler.Initialize(Bukkit.getServer());
 	}
 	
 	public void registerListeners(){

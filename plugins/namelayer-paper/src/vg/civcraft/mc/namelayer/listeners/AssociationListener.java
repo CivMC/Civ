@@ -10,12 +10,19 @@ import org.bukkit.event.player.PlayerLoginEvent;
 
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.database.AssociationList;
-import vg.civcraft.mc.namelayer.misc.GameProfileModifier;
+import vg.civcraft.mc.namelayer.misc.ClassHandler;
+import vg.civcraft.mc.namelayer.misc.ProfileInterface;
 
 public class AssociationListener implements Listener{
 	
 	private AssociationList associations = NameAPI.getAssociationList();
-	private GameProfileModifier game= new GameProfileModifier();
+	private ClassHandler ch = ClassHandler.ch;
+	private ProfileInterface game;
+	
+	public AssociationListener(){
+		if (ch != null)
+			game = ch.getProfileClass();
+	}
 	
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void OnPlayerLogin(PlayerJoinEvent event)
@@ -30,8 +37,7 @@ public class AssociationListener implements Listener{
 	// sets the player name in the gameprofile
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void loginEvent(PlayerLoginEvent event){
-		if (!version.equals("v1_7_R4"))
-			return;
-		game.setPlayerProfle(event.getPlayer());
+		if (game != null)
+			game.setPlayerProfle(event.getPlayer());
 	}
 }

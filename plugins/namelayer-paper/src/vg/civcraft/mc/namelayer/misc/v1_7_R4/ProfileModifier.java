@@ -1,4 +1,4 @@
-package vg.civcraft.mc.namelayer.misc;
+package vg.civcraft.mc.namelayer.misc.v1_7_R4;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -13,18 +13,21 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.AssociationList;
+import vg.civcraft.mc.namelayer.misc.ProfileInterface;
 
-public class GameProfileModifier {
-
-	private AssociationList associations = NameAPI.getAssociationList();
+public class ProfileModifier implements ProfileInterface{
 	
+	private AssociationList associations = NameAPI.getAssociationList();
+
 	public void setPlayerProfle(Player player) {
 		String name = associations.getCurrentName(player.getUniqueId());
-		if (name.length() > 16){
-			NameLayerPlugin.log(Level.INFO, String.format(
-					"The player %s (%s) was kicked from the server due to his "
-					+ "name already existing but now becoming over 16 characters.",
-					name, player.getUniqueId().toString()));
+		if (name.length() > 16) {
+			NameLayerPlugin
+					.log(Level.INFO,
+							String.format(
+									"The player %s (%s) was kicked from the server due to his "
+											+ "name already existing but now becoming over 16 characters.",
+									name, player.getUniqueId().toString()));
 		}
 		try {
 			// start of getting the GameProfile
@@ -58,7 +61,7 @@ public class GameProfileModifier {
 		player.setCustomName(name);
 	}
 
-	static void setFinalStatic(Field field, Object newValue, GameProfile prof) {
+	public void setFinalStatic(Field field, Object newValue, GameProfile prof) {
 		try {
 			field.setAccessible(true);
 
