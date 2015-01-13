@@ -33,7 +33,7 @@ public class ProfileModifier implements ProfileInterface{
 			// start of getting the GameProfile
 			CraftHumanEntity craftHuman = (CraftHumanEntity) player;
 			EntityHuman human = craftHuman.getHandle();
-			Field fieldName = EntityHuman.class.getDeclaredField("i");
+			Field fieldName = EntityHuman.class.getDeclaredField("bF");
 			fieldName.setAccessible(true);
 			GameProfile prof = (GameProfile) fieldName.get(human);
 			// End
