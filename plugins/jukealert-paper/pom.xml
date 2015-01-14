@@ -78,7 +78,7 @@
     </repository>
     <repository>
       <id>ItemExchange-repo</id>
-      <url>http://192.99.169.83:8080/plugin/repository/project/ItemExchange-master/Build/58/repository/com/untamedears/ItemExchange/</url>
+      <url>http://192.99.169.83:8080/plugin/repository/project/ItemExchange-master/Build/58/repository/</url>
     </repository>
   </repositories>
 </project>
