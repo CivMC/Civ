@@ -56,7 +56,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.untamedears.ItemExchange</groupId>
+      <groupId>com.untamedears</groupId>
       <artifactId>ItemExchange</artifactId>
       <version>1.0.0-58</version>
       <scope>provided</scope>
