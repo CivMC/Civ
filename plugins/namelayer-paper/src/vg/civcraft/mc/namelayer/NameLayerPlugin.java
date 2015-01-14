@@ -34,12 +34,12 @@ public class NameLayerPlugin extends JavaPlugin{
 		loadGroups = NameLayerConfigManager.getShouldLoadGroups();
 		loadDatabases();
 		new NameAPI(new GroupManager(), associations);
+	    ClassHandler.Initialize(Bukkit.getServer());
 		registerListeners();
 		if (loadGroups){
 			handle = new CommandHandler();
 			handle.registerCommands();
 		}
-	    ClassHandler.Initialize(Bukkit.getServer());
 	}
 	
 	public void registerListeners(){

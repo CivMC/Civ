@@ -15,9 +15,10 @@ public class ClassHandler {
 		String packageName = server.getClass().getPackage().getName();
 		ch.version = packageName.substring(packageName.lastIndexOf('.') + 1);
 		try {
-			Class.forName("com.sandislandserv.rourke750.Misc." + ch.version + ".ProfileModifier");
+			Class.forName("vg.civcraft.mc.namelayer.misc." + ch.version + ".ProfileModifier");
 			return true;
 		} catch (Exception e){
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -28,7 +29,7 @@ public class ClassHandler {
 	
 	private Object getObject(Class<? extends Object> Class, String name){
 		try {
-			Class<?> internalClass = Class.forName("com.sandislandserv.rourke750.Misc." + ch.version + "." + name);
+			Class<?> internalClass = Class.forName("vg.civcraft.mc.namelayer.misc." + ch.version + "." + name);
 			if (internalClass.isAssignableFrom(internalClass)) 
 				return internalClass.getConstructor().newInstance();
 		} catch (Exception e) {

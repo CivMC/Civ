@@ -5,7 +5,6 @@ import java.lang.reflect.Modifier;
 import java.util.logging.Level;
 
 import net.minecraft.server.v1_8_R1.EntityHuman;
-import net.minecraft.util.com.mojang.authlib.GameProfile;
 
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftHumanEntity;
 import org.bukkit.entity.Player;
@@ -15,7 +14,9 @@ import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.AssociationList;
 import vg.civcraft.mc.namelayer.misc.ProfileInterface;
 
-public class ProfileModifier implements ProfileInterface{
+import com.mojang.authlib.GameProfile;
+
+public abstract class ProfileModifier implements ProfileInterface{ // meh package change, when i get rid of 1.7 compatibility come here
 
 	private AssociationList associations = NameAPI.getAssociationList();
 
