@@ -4794,7 +4794,7 @@ production_recipes:
         material: JUKEBOX
         amount: 64
   Produce_Hoppers:
-    name: Produce_Hoppers
+    name: Produce Hoppers
     production_time: 16
     inputs:
       Chest:
