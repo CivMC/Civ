@@ -17,8 +17,8 @@ public class ListMembers extends PlayerCommand{
 	public ListMembers(String name) {
 		super(name);
 		setDescription("This command is used to list the members in a group");
-		setUsage("/groupslistmembers <group> (PlayerType)");
-		setIdentifier("groupslistmembers");
+		setUsage("/nlgroupslistmembers <group> (PlayerType)");
+		setIdentifier("nlgroupslistmembers");
 		setArguments(1,2);
 	}
 

@@ -48,6 +48,8 @@ public class NameLayerPlugin extends JavaPlugin{
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (!loadGroups)
+			return false;
 		return handle.execute(sender, cmd, args);
 	}
 	

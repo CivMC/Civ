@@ -17,8 +17,8 @@ public class CreateGroup extends PlayerCommand{
 	public CreateGroup(String name) {
 		super(name);
 		setDescription("This command is used to create a group.");
-		setUsage("/groupscreate <name> <GroupType> (password)");
-		setIdentifier("groupscreate");
+		setUsage("/nlgroupscreate <name> <GroupType> (password)");
+		setIdentifier("nlgroupscreate");
 		setArguments(2,3);
 	}
 

@@ -16,7 +16,7 @@ import vg.civcraft.mc.namelayer.misc.ProfileInterface;
 
 import com.mojang.authlib.GameProfile;
 
-public abstract class ProfileModifier implements ProfileInterface{ // meh package change, when i get rid of 1.7 compatibility come here
+public class ProfileModifier implements ProfileInterface{ // meh package change, when i get rid of 1.7 compatibility come here
 
 	private AssociationList associations = NameAPI.getAssociationList();
 
@@ -62,7 +62,8 @@ public abstract class ProfileModifier implements ProfileInterface{ // meh packag
 		player.setCustomName(name);
 	}
 
-	public void setFinalStatic(Field field, Object newValue, GameProfile prof) {
+	public void setFinalStatic(Field field, Object newValue, Object profile) {
+		GameProfile prof = (GameProfile) profile;
 		try {
 			field.setAccessible(true);
 

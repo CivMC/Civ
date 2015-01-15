@@ -61,7 +61,8 @@ public class ProfileModifier implements ProfileInterface{
 		player.setCustomName(name);
 	}
 
-	public void setFinalStatic(Field field, Object newValue, GameProfile prof) {
+	public void setFinalStatic(Field field, Object newValue, Object profile) {
+		GameProfile prof = (GameProfile) profile;
 		try {
 			field.setAccessible(true);
 

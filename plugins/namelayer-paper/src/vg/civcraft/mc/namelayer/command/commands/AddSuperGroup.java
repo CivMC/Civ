@@ -20,8 +20,8 @@ public class AddSuperGroup extends PlayerCommand{
 	public AddSuperGroup(String name) {
 		super(name);
 		setDescription("This command is used to add a supergroup to a group.");
-		setUsage("/groupsaddsupergroup <main group> <super group>");
-		setIdentifier("groupsaddsupergroup");
+		setUsage("/nlgroupsaddsupergroup <main group> <super group>");
+		setIdentifier("nlgroupsaddsupergroup");
 		setArguments(2,2);
 	}
 

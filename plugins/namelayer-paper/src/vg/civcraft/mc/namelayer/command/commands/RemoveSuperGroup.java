@@ -19,8 +19,8 @@ public class RemoveSuperGroup extends PlayerCommand{
 	public RemoveSuperGroup(String name) {
 		super(name);
 		setDescription("This command is used to remove a super group from a group.");
-		setUsage("/groupsremovesuper <group>");
-		setIdentifier("groupsremovesuper");
+		setUsage("/nlgroupsremovesuper <group>");
+		setIdentifier("nlgroupsremovesuper");
 		setArguments(1,1);
 	}
 

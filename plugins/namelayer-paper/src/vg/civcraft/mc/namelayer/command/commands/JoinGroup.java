@@ -6,8 +6,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
@@ -19,8 +19,8 @@ public class JoinGroup extends PlayerCommand{
 	public JoinGroup(String name) {
 		super(name);
 		setDescription("This command is used to join a password protected group.");
-		setUsage("/groupsjoin <group> <password>");
-		setIdentifier("groupsjoin");
+		setUsage("/nlgroupsjoin <group> <password>");
+		setIdentifier("nlgroupsjoin");
 		setArguments(2,2);
 	}
 

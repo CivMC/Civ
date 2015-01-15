@@ -21,8 +21,8 @@ public class InvitePlayer extends PlayerCommand{
 	public InvitePlayer(String name) {
 		super(name);
 		setDescription("This command is used to invite a player to the PlayerType of a group.");
-		setUsage("/groupsinviteplayer <group> <PlayerType> <player>");
-		setIdentifier("groupsinviteplayer");
+		setUsage("/nlgroupsinviteplayer <group> <PlayerType> <player>");
+		setIdentifier("nlgroupsinviteplayer");
 		setArguments(3,3);
 	}
 

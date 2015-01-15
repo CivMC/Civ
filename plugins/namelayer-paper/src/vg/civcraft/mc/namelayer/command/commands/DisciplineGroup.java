@@ -12,8 +12,8 @@ public class DisciplineGroup extends PlayerCommand{
 	public DisciplineGroup(String name) {
 		super(name);
 		setDescription("This command is used to disable a group from working.");
-		setUsage("/groupsdiscipline <group>");
-		setIdentifier("groupsdiscipline");
+		setUsage("/nlgroupsdiscipline <group>");
+		setIdentifier("nlgroupsdiscipline");
 		setArguments(1,1);
 	}
 

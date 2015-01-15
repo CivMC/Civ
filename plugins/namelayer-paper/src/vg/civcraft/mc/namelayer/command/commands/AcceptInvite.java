@@ -19,8 +19,8 @@ public class AcceptInvite extends PlayerCommand{
 	public AcceptInvite(String name) {
 		super(name);
 		setDescription("This command is used to accept an invitation to a group.");
-		setUsage("/groupsaccept <group>");
-		setIdentifier("groupsaccept");
+		setUsage("/nlgroupsaccept <group>");
+		setIdentifier("nlgroupsaccept");
 		setArguments(1,1);
 	}
 
