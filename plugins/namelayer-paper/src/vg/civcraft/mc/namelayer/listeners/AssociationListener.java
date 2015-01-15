@@ -35,7 +35,7 @@ public class AssociationListener implements Listener{
 	private String packageName = getClass().getPackage().getName();
 	private String version = packageName.substring(packageName.lastIndexOf('.') + 1);
 	// sets the player name in the gameprofile
-	@EventHandler(priority=EventPriority.LOWEST)
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void loginEvent(PlayerLoginEvent event){
 		if (game != null)
 			game.setPlayerProfle(event.getPlayer());
