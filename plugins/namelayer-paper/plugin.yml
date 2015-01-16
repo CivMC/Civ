@@ -40,6 +40,8 @@ commands:
       aliases: [nlgp, nlgroupsp]
    nlgroupstransfer:
       aliases: [nlgt, nlgroupst]
+   nlgroupsleave:
+      aliases: [nlgleave, nlgle]
 permissions:
    namelayer.admin:
       default: op

@@ -17,7 +17,7 @@ public class ListGroups extends PlayerCommand {
 		setDescription("This command is used to list groups.");
 		setUsage("/nlgroupslist <page>");
 		setIdentifier("nlgroupslist");
-		setArguments(1,1);
+		setArguments(0,1);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class ListGroups extends PlayerCommand {
 		
 		int pages = (groups.size() / 10) + 1;
 		String names = ChatColor.GREEN + "";
-		int start = 0;
+		int start = 1;
 		try {
 			start = Integer.parseInt(args[0]);
 		} catch(NumberFormatException e){
