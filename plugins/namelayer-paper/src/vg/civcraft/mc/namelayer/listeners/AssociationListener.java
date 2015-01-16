@@ -6,7 +6,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.database.AssociationList;
@@ -24,19 +23,14 @@ public class AssociationListener implements Listener{
 			game = ch.getProfileClass();
 	}
 	
+	private String packageName = getClass().getPackage().getName();
+	private String version = packageName.substring(packageName.lastIndexOf('.') + 1);
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void OnPlayerLogin(PlayerJoinEvent event)
 	{
 		String playername = event.getPlayer().getName();
 		UUID uuid = event.getPlayer().getUniqueId();
 		associations.addPlayer(playername, uuid);
-	}
-	
-	private String packageName = getClass().getPackage().getName();
-	private String version = packageName.substring(packageName.lastIndexOf('.') + 1);
-	// sets the player name in the gameprofile
-	@EventHandler(priority=EventPriority.HIGHEST)
-	public void loginEvent(PlayerLoginEvent event){
 		if (game != null)
 			game.setPlayerProfle(event.getPlayer());
 	}
