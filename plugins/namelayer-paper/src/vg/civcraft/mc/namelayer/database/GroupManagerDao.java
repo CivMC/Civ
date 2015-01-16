@@ -97,7 +97,7 @@ public class GroupManagerDao {
 			db.execute("alter table db_version drop primary key;");
 			db.execute("insert into permissions (group_id, role, tier) "
 					+ "select f.group_id, 'OWNER', "
-					+ "'DOORS CHESTS BLOCKS ADMINS MODS MEMBERS PASSWORD SUBGROUP PERMS DELETE MERGE LIST_PERMS TRANSFER CROPS' "
+					+ "'DOORS CHESTS BLOCKS OWNER ADMINS MODS MEMBERS PASSWORD SUBGROUP PERMS DELETE MERGE LIST_PERMS TRANSFER CROPS' "
 					+ "from faction_id f;");
 			db.execute("insert into permissions (group_id, role, tier) "
 					+ "select f.group_id, 'ADMINS', "

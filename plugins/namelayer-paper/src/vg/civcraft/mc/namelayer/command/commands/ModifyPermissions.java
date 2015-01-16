@@ -46,7 +46,7 @@ public class ModifyPermissions extends PlayerCommand{
 			return true;
 		}
 		GroupPermission gPerm = gm.getPermissionforGroup(g);
-		if (!gPerm.isAccessible(type, PermissionType.PERMS)){
+		if (!gPerm.isAccessible(type, PermissionType.PERMS) || !g.isOwner(uuid)){
 			p.sendMessage(ChatColor.RED + "You do not have permission for this command.");
 			return true;
 		}
