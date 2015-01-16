@@ -20,7 +20,7 @@ public class InvitePlayer extends PlayerCommand{
 
 	public InvitePlayer(String name) {
 		super(name);
-		setDescription("This command is used to invite a player to the PlayerType (Member, mod, admin, or subgroup) of a group.");
+		setDescription("This command is used to invite a player to the PlayerType " + PlayerType.toStringName() + " of a group.");
 		setUsage("/nlgroupsinviteplayer <group> <PlayerType> <player>");
 		setIdentifier("nlgroupsinviteplayer");
 		setArguments(3,3);

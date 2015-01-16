@@ -148,7 +148,7 @@ public class GroupManager{
 	private void initiateDefaultPerms(String group){
 		// for perms follow the order that they are in the enum PlayerType
 		String[] perms = {"DOORS CHESTS", "DOORS CHESTS BLOCKS MEMBERS CROPS", "DOORS CHESTS BLOCKS MODS MEMBERS PASSWORD LIST_PERMS CROPS",
-				"DOORS CHESTS BLOCKS ADMINS MODS MEMBERS PASSWORD SUBGROUP PERMS DELETE MERGE LIST_PERMS TRANSFER CROPS", ""};
+				"DOORS CHESTS BLOCKS ADMINS OWNER MODS MEMBERS PASSWORD SUBGROUP PERMS DELETE MERGE LIST_PERMS TRANSFER CROPS", ""};
 		int x = 0;
 		for (PlayerType role: PlayerType.values()){
 			groupManagerDao.addPermission(group, role.name(), perms[x]);
@@ -182,6 +182,13 @@ public class GroupManager{
 				types += type.name() + " ";
 			p.sendMessage(ChatColor.RED +"That PlayerType does not exists.\n" +
 					"The current types are: " + types);
+		}
+		
+		public static String toStringName(){
+			String x = "";
+			for (PlayerType name: PlayerType.values())
+				x += name.name() + " ";
+			return x;
 		}
 	}
 }
