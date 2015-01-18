@@ -17,9 +17,9 @@ public class CreateGroup extends PlayerCommand{
 	public CreateGroup(String name) {
 		super(name);
 		setDescription("This command is used to create a group (Public or Private). Password is optional.");
-		setUsage("/nlgroupscreate <name> <GroupType> (password)");
-		setIdentifier("nlgroupscreate");
-		setArguments(2,3);
+		setUsage("/nlcg <name> (GroupType- default PRIVATE) (password)");
+		setIdentifier("nlcg");
+		setArguments(1,3);
 	}
 
 	@Override
@@ -40,11 +40,10 @@ public class CreateGroup extends PlayerCommand{
 			password = args[2];
 		else
 			password = null;
-		GroupType type = GroupType.getGroupType(args[1]);
-		if (type == null){
-			GroupType.displayGroupTypes(p);
-			return true;
-		}
+		GroupType type = GroupType.PRIVATE;
+		if (args.length == 2)
+			type = GroupType.getGroupType(args[1]);
+		
 		UUID uuid = NameAPI.getUUID(p.getName());
 		Group g = null;
 		switch(type){

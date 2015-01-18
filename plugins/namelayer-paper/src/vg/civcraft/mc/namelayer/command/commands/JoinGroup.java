@@ -19,8 +19,8 @@ public class JoinGroup extends PlayerCommand{
 	public JoinGroup(String name) {
 		super(name);
 		setDescription("This command is used to join a password protected group.");
-		setUsage("/nlgroupsjoin <group> <password>");
-		setIdentifier("nlgroupsjoin");
+		setUsage("/nljg <group> <password>");
+		setIdentifier("nljg");
 		setArguments(2,2);
 	}
 

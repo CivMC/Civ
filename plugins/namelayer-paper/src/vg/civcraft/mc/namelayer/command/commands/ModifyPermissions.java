@@ -18,8 +18,8 @@ public class ModifyPermissions extends PlayerCommand{
 	public ModifyPermissions(String name) {
 		super(name);
 		setDescription("This command is used to modify the permissions of a group.");
-		setUsage("/nlgroupsmodifyperms <group> <add/remove> <PlayerType> <PermissionType>");
-		setIdentifier("nlgroupsmodifyperms");
+		setUsage("/nlmp <group> <add/remove> <PlayerType> <PermissionType>");
+		setIdentifier("nlmp");
 		setArguments(4,4);
 	}
 

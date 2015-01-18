@@ -18,8 +18,8 @@ public class SetPassword extends PlayerCommand{
 	public SetPassword(String name) {
 		super(name);
 		setDescription("This command is used to set a password on a group.");
-		setUsage("/nlgroupspassword <group> <password>");
-		setIdentifier("nlgroupspassword");
+		setUsage("/nlsp <group> <password>");
+		setIdentifier("nlsp");
 		setArguments(1,2);
 	}
 

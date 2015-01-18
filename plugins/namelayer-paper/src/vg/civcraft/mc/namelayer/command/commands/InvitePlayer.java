@@ -21,9 +21,9 @@ public class InvitePlayer extends PlayerCommand{
 	public InvitePlayer(String name) {
 		super(name);
 		setDescription("This command is used to invite a player to the PlayerType " + PlayerType.toStringName() + " of a group.");
-		setUsage("/nlgroupsinviteplayer <group> <PlayerType> <player>");
-		setIdentifier("nlgroupsinviteplayer");
-		setArguments(3,3);
+		setUsage("/nlip <group> <player> (PlayerType- default MEMBERS)");
+		setIdentifier("nlip");
+		setArguments(2,3);
 	}
 
 	@Override
@@ -43,12 +43,10 @@ public class InvitePlayer extends PlayerCommand{
 			return true;
 		}
 		UUID executor = NameAPI.getUUID(p.getName());
-		PlayerType pType = PlayerType.getPlayerType(args[1]);
-		if (pType == null){
-			PlayerType.displayPlayerTypes(p);
-			return true;
-		}
-		UUID uuid = NameAPI.getUUID(args[2]);
+		PlayerType pType = PlayerType.MEMBERS;
+		if (args.length == 3)
+			pType = PlayerType.getPlayerType(args[2]);
+		UUID uuid = NameAPI.getUUID(args[1]);
 		if (uuid == null){
 			p.sendMessage(ChatColor.RED + "The player has never played before.");
 			return true;
@@ -87,13 +85,12 @@ public class InvitePlayer extends PlayerCommand{
 		
 		group.addInvite(uuid, pType);
 		OfflinePlayer invitee = Bukkit.getOfflinePlayer(uuid);
-		p.sendMessage(ChatColor.GREEN + "The invitation has been sent.");
 		
 		if (invitee.isOnline()){
 			Player oInvitee = (Player) invitee;
 			oInvitee.sendMessage(ChatColor.GREEN + "You have been invited to the group " + group.getName() +" by " + p.getName() +".\n" +
-					"Use the command /groupsaccept <group> to accept.");
-			p.sendMessage(ChatColor.GREEN + "Invite sent.");
+					"Use the command /nlgroupsaccept <group> to accept.");
+			p.sendMessage(ChatColor.GREEN + "The invitation has been sent.");
 		}
 		else{
 			p.sendMessage(ChatColor.GREEN + "Player is offline and will be notified on log in.");

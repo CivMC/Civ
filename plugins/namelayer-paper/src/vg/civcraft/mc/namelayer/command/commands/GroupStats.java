@@ -18,8 +18,8 @@ public class GroupStats extends PlayerCommand {
 	public GroupStats(String name) {
 		super(name);
 		setDescription("This command is used to get stats about a group.");
-		setUsage("/nlgroupsstats <group>");
-		setIdentifier("nlgroupsstats");
+		setUsage("/nlgs <group>");
+		setIdentifier("nlgs");
 		setArguments(1, 1);
 	}
 

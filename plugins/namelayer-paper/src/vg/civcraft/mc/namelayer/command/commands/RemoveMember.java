@@ -18,8 +18,8 @@ public class RemoveMember extends PlayerCommand {
 	public RemoveMember(String name) {
 		super(name);
 		setDescription("This command is used to remove a member from a group.");
-		setUsage("/nlgroupsremovemember <group> <member>");
-		setIdentifier("nlgroupsremovemember");
+		setUsage("/nlrm <group> <member>");
+		setIdentifier("nlrm");
 		setArguments(2,2);
 		
 	}
@@ -46,6 +46,10 @@ public class RemoveMember extends PlayerCommand {
 		GroupPermission perm = gm.getPermissionforGroup(group);
 		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
 		PlayerType toBeRemoved = group.getPlayerType(uuid);
+		if (toBeRemoved == null){
+			p.sendMessage(ChatColor.RED + "That player is not on the group.");
+			return true;
+		}
 		boolean allowed = false;
 		switch (toBeRemoved){ // depending on the type the executor wants to add the player to
 		case MEMBERS:

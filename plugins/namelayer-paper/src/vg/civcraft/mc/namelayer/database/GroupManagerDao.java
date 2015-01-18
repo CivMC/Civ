@@ -292,7 +292,7 @@ public class GroupManagerDao {
 		
 		mergeGroup = db.prepareStatement("call mergeintogroup(?,?)");
 		
-		updatePassword = db.prepareStatement("update from faction set password = ? "
+		updatePassword = db.prepareStatement("update faction set `password` = ? "
 				+ "where group_name = ?");
 	}
 	/**

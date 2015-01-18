@@ -30,7 +30,7 @@ public class GroupPermission {
 	 * @return
 	 */
 	public boolean isAccessible(PlayerType ptype, PermissionType... type){
-		if (type == null)
+		if (type == null || type.length == 0)
 			return true; // If the player is even a member return true
 		if (group instanceof PublicGroup){
 			switch (type[0]){
