@@ -48,6 +48,7 @@ import vg.civcraft.mc.citadel.CitadelConfigManager;
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.ReinforcementMode;
+import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
@@ -119,14 +120,13 @@ public class BlockListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void blockBreakEvent(BlockBreakEvent event){
-		Location loc = event.getBlock().getLocation();
-		Player player = event.getPlayer();
-		Reinforcement rein = rm.getReinforcement(loc);
 		Block block = event.getBlock();
+		Player player = event.getPlayer();
+		Reinforcement rein = rm.getReinforcement(Utility.getRealBlock(block));
 		if (rein == null){
 			rein = createNaturalReinforcement(event.getBlock(), player);
 			if (rein != null){
-				ReinforcementDamageEvent e = new ReinforcementDamageEvent(rein, player, event.getBlock());
+				ReinforcementDamageEvent e = new ReinforcementDamageEvent(rein, player, block);
 				Bukkit.getPluginManager().callEvent(e);
 				if (e.isCancelled()){
 					event.setCancelled(true);
@@ -334,8 +334,8 @@ public class BlockListener implements Listener{
             }
             double redstoneDistance = CitadelConfigManager.getMaxRedstoneDistance();
             if (!isAuthorizedPlayerNear(reinforcement, redstoneDistance)) {
-                Citadel.Log( 
-                    reinforcement.getLocation().toString());
+               // Citadel.Log( 
+                //    reinforcement.getLocation().toString());
                 bre.setNewCurrent(bre.getOldCurrent());
             }
         } catch(Exception e) {
@@ -384,7 +384,7 @@ public class BlockListener implements Listener{
         if (!pie.hasBlock()) return;
 
         Player player = pie.getPlayer();
-        Block block = pie.getClickedBlock();
+        Block block = Utility.getRealBlock(pie.getClickedBlock());
         Reinforcement generic_reinforcement = rm.getReinforcement(block);
         PlayerReinforcement reinforcement = null;
         if (generic_reinforcement instanceof PlayerReinforcement) {
@@ -399,7 +399,7 @@ public class BlockListener implements Listener{
         boolean normal_access_denied =
             reinforcement != null
             && !(reinforcement.isAccessible(player, PermissionType.CHESTS, PermissionType.DOORS));
-        boolean admin_can_access = player.hasPermission("citadel.admin.accesssecurable");
+        boolean admin_can_access = player.hasPermission("citadel.admin");
         if (access_reinforcement && normal_access_denied && !admin_can_access) {
             /*Citadel.verbose(
                 VerboseMsg.ReinLocked,

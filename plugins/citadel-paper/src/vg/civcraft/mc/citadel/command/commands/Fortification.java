@@ -23,7 +23,7 @@ public class Fortification extends PlayerCommand{
 		super(name);
 		setDescription("Allows you to place already reinforced blocks.");
 		setUsage("/ctf <group>");
-		setIdentifier("ctfortify");
+		setIdentifier("ctf");
 		setArguments(1,1);
 	}
 

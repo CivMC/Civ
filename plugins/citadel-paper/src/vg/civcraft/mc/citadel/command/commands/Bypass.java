@@ -13,7 +13,7 @@ public class Bypass extends PlayerCommand{
 		super(name);
 		setDescription("Used to bypass block reinforcements.");
 		setUsage("/ctb");
-		setIdentifier("ctbypass");
+		setIdentifier("ctb");
 		setArguments(0,0);
 	}
 

@@ -20,8 +20,8 @@ public class Reinforce extends PlayerCommand {
 	public Reinforce(String name) {
 		super(name);
 		setDescription("Reinforce blocks under a group.");
-		setUsage("/ctreinforce <group>");
-		setIdentifier("ctreinforce");
+		setUsage("/ctr <group>");
+		setIdentifier("ctr");
 		setArguments(1,1);
 	}
 

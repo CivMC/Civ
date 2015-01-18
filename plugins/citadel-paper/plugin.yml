@@ -1,24 +1,26 @@
 name: Citadel
 main: vg.civcraft.mc.citadel.Citadel
-version: 3.0.15
+version: 3.0.16
 author: Rourke750
 depend: [NameLayer]
 commands:
- ctreinforce:
-  aliases: [ctr]
+ ctr:
+  aliases: [ctreinforce]
  ctacid:
- ctfortify:
-  aliases: [ctf]
- ctbypass:
-  aliases: [ctb]
- ctinformation:
-  aliases: [cti]
- ctinsecure:
-  aliases: [ctin]
- ctmaterials:
-  aliases: [ctm]
- ctoff:
-  aliases: [cto]
+ ctf:
+  aliases: [ctfortify]
+ ctb:
+  aliases: [ctbypass]
+ cti:
+  aliases: [ctinformation]
+ ctin:
+  aliases: [ctinsecure]
+ ctm:
+  aliases: [ctmaterials:]
+ cto:
+  aliases: [ctoff]
 permissions:
  citadel.admin:
+  default: op
+ citadel.admin.accesssecurable:
   default: op

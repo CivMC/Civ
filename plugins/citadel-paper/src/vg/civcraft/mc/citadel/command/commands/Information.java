@@ -14,7 +14,7 @@ public class Information extends PlayerCommand{
 		super(name);
 		setDescription("Get information about a clicked block.");
 		setUsage("/cti");
-		setIdentifier("ctinformation");
+		setIdentifier("cti");
 		setArguments(0,0);
 	}
 

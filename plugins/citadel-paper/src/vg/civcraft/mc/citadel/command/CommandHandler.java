@@ -12,6 +12,7 @@ import vg.civcraft.mc.citadel.command.commands.Fortification;
 import vg.civcraft.mc.citadel.command.commands.Information;
 import vg.civcraft.mc.citadel.command.commands.Insecure;
 import vg.civcraft.mc.citadel.command.commands.Materials;
+import vg.civcraft.mc.citadel.command.commands.Off;
 import vg.civcraft.mc.citadel.command.commands.Reinforce;
 
 public class CommandHandler {
@@ -27,6 +28,7 @@ public class CommandHandler {
 		addCommands(new Insecure("Insecure"));
 		addCommands(new Reinforce("Reinforce"));
 		addCommands(new Materials("Materials"));
+		addCommands(new Off("Off"));
 	}
 	
 	private void addCommands(Command command){

@@ -19,6 +19,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Bed;
+import org.bukkit.material.Door;
 
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.reinforcement.MultiBlockReinforcement;
@@ -550,5 +552,34 @@ public class Utility {
         }
         return null;
     }
-
+    
+    /**
+     * Returns the block the Citadel is looking at, example: for ebds, doors we want the bottom half.
+     * @param block
+     * @return Returns the block we want.
+     */
+    public static Block getRealBlock(Block block){
+    	Block b = block;
+    	switch (block.getType()){
+    	case CHEST:
+    	case TRAPPED_CHEST:
+    		if (!rm.isReinforced(block))
+    			b = getAttachedChest(block);
+    		if (b == null)
+    			b = block;
+    		break;
+		case WOODEN_DOOR:
+		case IRON_DOOR_BLOCK:
+			if (((Door) block.getState().getData()).isTopHalf())
+				b = block.getRelative(BlockFace.DOWN);
+			break;
+		case BED_BLOCK:
+			if (((Bed) block.getState().getData()).isHeadOfBed())
+				b = block.getRelative(((Bed) block.getState().getData()).getFacing().getOppositeFace());
+			break;
+		default:
+			return block;
+		}
+    	return b;
+    }
 }
