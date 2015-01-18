@@ -89,7 +89,7 @@ public class InvitePlayer extends PlayerCommand{
 		if (invitee.isOnline()){
 			Player oInvitee = (Player) invitee;
 			oInvitee.sendMessage(ChatColor.GREEN + "You have been invited to the group " + group.getName() +" by " + p.getName() +".\n" +
-					"Use the command /nlgroupsaccept <group> to accept.");
+					"Use the command /nlag <group> to accept.");
 			p.sendMessage(ChatColor.GREEN + "The invitation has been sent.");
 		}
 		else{
