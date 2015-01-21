@@ -26,6 +26,7 @@ public class PlayerListener implements Listener{
 		if (!notifications.containsKey(uuid))
 			return;
 		String x = "You have been invited to the following groups while you were away: ";
+		
 		for (Group g: notifications.get(uuid)){
 			x += g.getName() + ", ";
 		}
@@ -44,5 +45,18 @@ public class PlayerListener implements Listener{
 		if (!notifications.containsKey(u))
 			notifications.put(u, new ArrayList<Group>());
 		notifications.get(u).remove(g);
+	}
+	
+	public static String getNotificationsInStringForm(UUID u){
+		if (!notifications.containsKey(u))
+			notifications.put(u, new ArrayList<Group>());
+		String groups = "";
+		for (Group g: notifications.get(u))
+			groups += g.getName() + ", ";
+		if (groups.length() == 0)
+			return ChatColor.GREEN + "You have no notifications.";
+		groups = groups.substring(0, groups.length()- 2);
+		groups = ChatColor.GREEN + "Your current groups are: " + groups + ".";
+		return groups;
 	}
 }

@@ -15,6 +15,7 @@ import vg.civcraft.mc.namelayer.command.commands.GroupStats;
 import vg.civcraft.mc.namelayer.command.commands.InvitePlayer;
 import vg.civcraft.mc.namelayer.command.commands.JoinGroup;
 import vg.civcraft.mc.namelayer.command.commands.LeaveGroup;
+import vg.civcraft.mc.namelayer.command.commands.ListCurrentInvites;
 import vg.civcraft.mc.namelayer.command.commands.ListGroupTypes;
 import vg.civcraft.mc.namelayer.command.commands.ListGroups;
 import vg.civcraft.mc.namelayer.command.commands.ListMembers;
@@ -25,6 +26,7 @@ import vg.civcraft.mc.namelayer.command.commands.ModifyPermissions;
 import vg.civcraft.mc.namelayer.command.commands.RemoveMember;
 import vg.civcraft.mc.namelayer.command.commands.RemoveSuperGroup;
 import vg.civcraft.mc.namelayer.command.commands.SetPassword;
+import vg.civcraft.mc.namelayer.command.commands.ToggleAutoAcceptInvites;
 import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
 
 public class CommandHandler {
@@ -53,6 +55,8 @@ public class CommandHandler {
 		addCommands(new LeaveGroup("LeaveGroup"));
 		addCommands(new ListGroupTypes("ListGroupTypes"));
 		addCommands(new ListPlayerTypes("ListPlayerTypes"));
+		addCommands(new ListCurrentInvites("ListCurrentInvites"));
+		addCommands(new ToggleAutoAcceptInvites("AutoAcceptInvites"));
 	}
 	
 	public void addCommands(Command command){

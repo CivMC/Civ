@@ -1,5 +1,6 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -10,14 +11,18 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class InvitePlayer extends PlayerCommand{
 
+	private GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
 	public InvitePlayer(String name) {
 		super(name);
 		setDescription("This command is used to invite a player to the PlayerType " + PlayerType.toStringName() + " of a group.");
@@ -94,7 +99,19 @@ public class InvitePlayer extends PlayerCommand{
 		}
 		else{
 			p.sendMessage(ChatColor.GREEN + "Player is offline and will be notified on log in.");
-			PlayerListener.addNotification(uuid, group);
+		}
+		PlayerListener.addNotification(uuid, group);
+		if (db.shouldAutoAcceptGroups(invitee.getUniqueId())){
+			group.addMember(uuid, pType);
+			group.removeRemoveInvite(uuid);
+			PlayerListener.removeNotification(uuid, group);
+			if (group instanceof PrivateGroup){
+				PrivateGroup priv = (PrivateGroup) group;
+				List<Group> groups = priv.getSubGroups();
+				for (Group g: groups){
+					g.addMember(uuid, PlayerType.SUBGROUP);
+				}
+			}
 		}
 		return true;
 	}

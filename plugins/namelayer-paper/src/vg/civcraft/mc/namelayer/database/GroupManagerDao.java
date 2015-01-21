@@ -167,6 +167,17 @@ public class GroupManagerDao {
 			ver = updateVersion(ver, plugin.getName());
 			log(Level.INFO, "Database update to Version two took " + (System.currentTimeMillis() - first_time) / 1000 + " seconds.");
 		}
+		if (ver == 2){
+			long first_time = System.currentTimeMillis();
+			log(Level.INFO, "Database updating to Version three.");
+			
+			db.execute("create table if not exists toggleAutoAccept("
+					+ "uuid varchar(36) not null,"
+					+ "primary key key_uuid(uuid));");
+			
+			ver = updateVersion(ver, plugin.getName());
+			log(Level.INFO, "Database update to Version two took " + (System.currentTimeMillis() - first_time) / 1000 + " seconds.");
+		}
 		log(Level.INFO, "Database update took " + (System.currentTimeMillis() - begin_time) / 1000 + " seconds.");
 	}
 
@@ -242,6 +253,8 @@ public class GroupManagerDao {
 	
 	private PreparedStatement countGroups;
 	
+	private PreparedStatement addAutoAcceptGroup, getAutoAcceptGroup, removeAutoAcceptGroup;
+	
 	public void initializeStatements(){
 		version = db.prepareStatement("select max(db_version) as db_version from db_version where plugin_name=?");
 		updateVersion = db.prepareStatement("insert into db_version (db_version, update_time, plugin_name) values (?,?,?)"); 
@@ -294,6 +307,12 @@ public class GroupManagerDao {
 		
 		updatePassword = db.prepareStatement("update faction set `password` = ? "
 				+ "where group_name = ?");
+		
+		addAutoAcceptGroup = db.prepareStatement("insert into toggleAutoAccept(uuid)"
+				+ "values(?)");
+		getAutoAcceptGroup = db.prepareStatement("select count(*) from toggleAutoAccept "
+				+ "where uuid = ?");
+		removeAutoAcceptGroup = db.prepareStatement("delete from toggleAutoAccept where uuid = ?");
 	}
 	/**
 	 * Checks the version of a specific plugin's db.
@@ -593,6 +612,46 @@ public class GroupManagerDao {
 			updatePassword.setString(1, password);
 			updatePassword.setString(2, groupName);
 			updatePassword.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Adds the uuid to the db if they should auto accept groups when invited.
+	 * @param uuid
+	 */
+	public void autoAcceptGroups(UUID uuid){
+		try {
+			addAutoAcceptGroup.setString(1, uuid.toString());
+			addAutoAcceptGroup.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * @param uuid- The UUID of the player.
+	 * @return Returns true if they should auto accept.
+	 */
+	public boolean shouldAutoAcceptGroups(UUID uuid){
+		try {
+			getAutoAcceptGroup.setString(1, uuid.toString());
+			ResultSet set = getAutoAcceptGroup.executeQuery();
+			return set.next();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public void removeAutoAcceptGroup(UUID uuid){
+		try {
+			removeAutoAcceptGroup.setString(1, uuid.toString());
+			removeAutoAcceptGroup.execute();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
