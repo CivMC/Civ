@@ -17,9 +17,9 @@ public class TransferGroup extends PlayerCommand{
 
 	public TransferGroup(String name) {
 		super(name);
+		setIdentifier("nltg");
 		setDescription("This command is used to transfer one group to another person.");
 		setUsage("/nltg <group> <player>");
-		setIdentifier("nltg");
 		setArguments(2,2);
 	}
 

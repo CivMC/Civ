@@ -14,9 +14,9 @@ public class ListGroups extends PlayerCommand {
 
 	public ListGroups(String name) {
 		super(name);
+		setIdentifier("nllg");
 		setDescription("This command is used to list groups.");
 		setUsage("/nllg <page>");
-		setIdentifier("nllg");
 		setArguments(0,1);
 	}
 

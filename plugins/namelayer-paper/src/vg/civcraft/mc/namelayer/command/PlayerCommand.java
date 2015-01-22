@@ -1,5 +1,7 @@
 package vg.civcraft.mc.namelayer.command;
 
+import org.bukkit.Bukkit;
+
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 
@@ -46,10 +48,12 @@ public abstract class PlayerCommand implements Command{
 	}
 	
 	public void setDescription(String description){
+		Bukkit.getPluginCommand(identifier).setDescription(description);
 		this.description = description;
 	}
 	
 	public void setUsage(String usage){
+		Bukkit.getPluginCommand(identifier).setUsage(usage);
 		this.usage = usage;
 	}
 	

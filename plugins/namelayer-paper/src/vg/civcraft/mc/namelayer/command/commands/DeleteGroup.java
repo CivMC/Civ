@@ -17,9 +17,9 @@ public class DeleteGroup extends PlayerCommand{
 
 	public DeleteGroup(String name) {
 		super(name);
+		setIdentifier("nldg");
 		setDescription("This command is used to delete a group.");
 		setUsage("/nldg <group>");
-		setIdentifier("nldg");
 		setArguments(1,1);
 	}
 

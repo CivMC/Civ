@@ -25,9 +25,9 @@ public class InvitePlayer extends PlayerCommand{
 	private GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
 	public InvitePlayer(String name) {
 		super(name);
+		setIdentifier("nlip");
 		setDescription("This command is used to invite a player to the PlayerType " + PlayerType.toStringName() + " of a group.");
 		setUsage("/nlip <group> <player> (PlayerType- default MEMBERS)");
-		setIdentifier("nlip");
 		setArguments(2,3);
 	}
 

@@ -17,9 +17,9 @@ public class ToggleAutoAcceptInvites extends PlayerCommand{
 	private GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
 	public ToggleAutoAcceptInvites(String name) {
 		super(name);
+		setIdentifier("nltaai");
 		setDescription("This command is used to toggle the acceptance of invites.");
 		setUsage("/nltaai");
-		setIdentifier("nltaai");
 		setArguments(1,1);
 	}
 

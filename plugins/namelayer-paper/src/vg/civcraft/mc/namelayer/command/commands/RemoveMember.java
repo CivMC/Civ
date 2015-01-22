@@ -17,9 +17,9 @@ public class RemoveMember extends PlayerCommand {
 
 	public RemoveMember(String name) {
 		super(name);
+		setIdentifier("nlrm");
 		setDescription("This command is used to remove a member from a group.");
 		setUsage("/nlrm <group> <member>");
-		setIdentifier("nlrm");
 		setArguments(2,2);
 		
 	}

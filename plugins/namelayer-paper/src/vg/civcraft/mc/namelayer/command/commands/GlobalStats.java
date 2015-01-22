@@ -11,9 +11,9 @@ public class GlobalStats extends PlayerCommand{
 
 	public GlobalStats(String name) {
 		super(name);
+		setIdentifier("nlgls");
 		setDescription("This command is used to get stats about groups and the sorts.");
 		setUsage("/nlgls");
-		setIdentifier("nlgls");
 		setArguments(0,0);
 	}
 

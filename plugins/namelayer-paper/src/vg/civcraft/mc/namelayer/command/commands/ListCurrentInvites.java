@@ -11,9 +11,9 @@ public class ListCurrentInvites extends PlayerCommand{
 
 	public ListCurrentInvites(String name) {
 		super(name);
+		setIdentifier("nllci");
 		setDescription("This command is used to list your current invites.");
 		setUsage("/nllci <group>");
-		setIdentifier("nllci");
 		setArguments(1,1);
 	}
 

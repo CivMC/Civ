@@ -20,9 +20,9 @@ public class MergeGroups extends PlayerCommand{
 	private boolean active = false;
 	public MergeGroups(String name) {
 		super(name);
+		setIdentifier("nlmg");
 		setDescription("This command is used to merge two groups together.");
 		setUsage("/nlmg <The group left> <The group that will be gone>");
-		setIdentifier("nlmg");
 		setArguments(2,2);
 	}
 
