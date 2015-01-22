@@ -17,6 +17,7 @@ import vg.civcraft.mc.citadel.listener.EntityListener;
 import vg.civcraft.mc.citadel.listener.GroupsListener;
 import vg.civcraft.mc.citadel.listener.InventoryListener;
 import vg.civcraft.mc.citadel.listener.WorldListener;
+import vg.civcraft.mc.citadel.misc.CitadelStatics;
 import vg.civcraft.mc.citadel.reinforcementtypes.NaturalReinforcementType;
 import vg.civcraft.mc.citadel.reinforcementtypes.NonReinforceableType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
@@ -55,6 +56,7 @@ public class Citadel extends JavaPlugin{
 	public void onDisable(){
 		// Pushes all reinforcements loaded to be saved to db.
 		rm.invalidateAllReinforcements();
+		CitadelStatics.displayStatisticsToConsole();
 	}
 	/**
 	 * Initializes the database.
@@ -91,7 +93,7 @@ public class Citadel extends JavaPlugin{
 	 * @param message
 	 */
 	public static void Log(String message){
-		logger.log(Level.INFO, message);
+		logger.log(Level.INFO, "[Citadel] " + message);
 	}
 	/**
 	 * @return The ReinforcementManager of Citadel.

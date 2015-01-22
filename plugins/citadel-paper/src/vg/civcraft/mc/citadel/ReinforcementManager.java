@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 
 import vg.civcraft.mc.citadel.database.CitadelReinforcementData;
+import vg.civcraft.mc.citadel.misc.CitadelStatics;
 import vg.civcraft.mc.citadel.misc.LoadingCacheNullException;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
@@ -37,6 +38,9 @@ public class ReinforcementManager {
 					if (rein == null) {
 						throw new LoadingCacheNullException();
 					}
+					CitadelStatics.updateHitStat(CitadelStatics.LOAD);
+					// decrement cache because it gets increased from getReinforcement()
+					CitadelStatics.decrementHitStat(CitadelStatics.CACHE);
 					return rein;
 				}
 			});
@@ -48,24 +52,22 @@ public class ReinforcementManager {
 	/**
 	 * Saves the reinforcement to the database. If the reinforcement durability
 	 * is less than or equal to zero it will delete it from the database.
-	 * 
-	 * @param The
-	 *            Reinforcement to save
+	 * @param The Reinforcement to save
 	 */
 	public void saveReinforcement(Reinforcement rein) {
 		if (rein.getDurability() <= 0)
 			deleteReinforcement(rein);
+		CitadelStatics.updateHitStat(CitadelStatics.UPDATE);
 		db.saveReinforcement(rein);
 	}
 
 	/**
 	 * Saves the initial reinforcement into the database.
-	 * 
-	 * @param The
-	 *            Reinforcement to save
+	 * @param The Reinforcement to save
 	 */
 	public void saveInitialReinforcement(Reinforcement rein) {
 		reinforcements.put(rein.getLocation(), rein);
+		CitadelStatics.updateHitStat(CitadelStatics.INSERT);
 		db.insertReinforcement(rein);
 	}
 
@@ -78,6 +80,7 @@ public class ReinforcementManager {
 	public Reinforcement getReinforcement(Location loc) {
 		try {
 			Reinforcement rein = reinforcements.get(loc);
+			CitadelStatics.updateHitStat(CitadelStatics.CACHE);
 			return rein;
 		} catch (Exception e) {
 			if (!(e.getCause() instanceof LoadingCacheNullException))
@@ -104,6 +107,7 @@ public class ReinforcementManager {
 	 */
 	public void deleteReinforcement(Reinforcement rein) {
 		reinforcements.invalidate(rein.getLocation());
+		CitadelStatics.updateHitStat(CitadelStatics.DELETE);
 		db.deleteReinforcement(rein);
 	}
 
