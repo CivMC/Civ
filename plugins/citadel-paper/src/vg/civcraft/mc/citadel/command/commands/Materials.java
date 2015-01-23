@@ -13,9 +13,9 @@ public class Materials extends PlayerCommand{
 
 	public Materials(String name) {
 		super(name);
+		setIdentifier("ctm");
 		setDescription("Shows a list of all the ReinforcementTypes.");
 		setUsage("/ctm");
-		setIdentifier("ctm");
 		setArguments(0,0);
 	}
 

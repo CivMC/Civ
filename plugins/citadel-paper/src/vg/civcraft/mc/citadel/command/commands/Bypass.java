@@ -11,9 +11,9 @@ public class Bypass extends PlayerCommand{
 
 	public Bypass(String name) {
 		super(name);
+		setIdentifier("ctb");
 		setDescription("Used to bypass block reinforcements.");
 		setUsage("/ctb");
-		setIdentifier("ctb");
 		setArguments(0,0);
 	}
 

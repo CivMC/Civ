@@ -25,9 +25,9 @@ public class Acid extends PlayerCommand{
 
 	public Acid(String name) {
 		super(name);
+		setIdentifier("ctacid");
 		setDescription("Removes the block above it if using an acid block.");
 		setUsage("/ctacid");
-		setIdentifier("ctacid");
 		setArguments(0,0);
 	}
 

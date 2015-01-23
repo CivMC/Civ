@@ -11,9 +11,9 @@ public class Off extends PlayerCommand{
 
 	public Off(String name) {
 		super(name);
+		setIdentifier("cto");
 		setDescription("Turns all Reinforcement Modes off.");
 		setUsage("/cto");
-		setIdentifier("cto");
 		setArguments(0,0);
 	}
 

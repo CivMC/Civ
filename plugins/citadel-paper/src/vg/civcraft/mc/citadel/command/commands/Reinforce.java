@@ -19,9 +19,9 @@ public class Reinforce extends PlayerCommand {
 
 	public Reinforce(String name) {
 		super(name);
+		setIdentifier("ctr");
 		setDescription("Reinforce blocks under a group.");
 		setUsage("/ctr <group>");
-		setIdentifier("ctr");
 		setArguments(1,1);
 	}
 

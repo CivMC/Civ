@@ -12,9 +12,9 @@ public class Information extends PlayerCommand{
 
 	public Information(String name) {
 		super(name);
+		setIdentifier("cti");
 		setDescription("Get information about a clicked block.");
 		setUsage("/cti");
-		setIdentifier("cti");
 		setArguments(0,0);
 	}
 

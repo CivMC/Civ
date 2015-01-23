@@ -21,9 +21,9 @@ public class Fortification extends PlayerCommand{
 
 	public Fortification(String name) {
 		super(name);
+		setIdentifier("ctf");
 		setDescription("Allows you to place already reinforced blocks.");
 		setUsage("/ctf <group>");
-		setIdentifier("ctf");
 		setArguments(1,1);
 	}
 

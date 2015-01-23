@@ -1,5 +1,7 @@
 package vg.civcraft.mc.citadel.command;
 
+import org.bukkit.Bukkit;
+
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -49,6 +51,7 @@ public abstract class PlayerCommand implements Command{
 	}
 	
 	public void setDescription(String description){
+		Bukkit.getPluginCommand(identifier).setDescription(description);
 		this.description = description;
 	}
 	

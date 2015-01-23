@@ -12,9 +12,9 @@ public class Insecure extends PlayerCommand{
 
 	public Insecure(String name) {
 		super(name);
+		setIdentifier("ctin");
 		setDescription("Set a block to an insecure reinforcement.");
 		setUsage("/ctin");
-		setIdentifier("ctin");
 		setArguments(0,0);
 	}
 
