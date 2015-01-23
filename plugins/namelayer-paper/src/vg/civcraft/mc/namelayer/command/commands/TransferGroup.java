@@ -56,7 +56,13 @@ public class TransferGroup extends PlayerCommand{
 			return true;
 		}
 		
+		if (oPlayer == null){
+			p.sendMessage(ChatColor.RED + "This player has never played before and cannot be given the group.");
+			return true;
+		}
+		
 		g.addMember(oPlayer, PlayerType.OWNER);
+		g.setOwner(oPlayer);
 		p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(oPlayer) + " has been given ownership of the group.");
 		return true;
 	}
