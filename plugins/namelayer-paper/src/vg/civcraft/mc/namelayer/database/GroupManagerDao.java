@@ -310,7 +310,7 @@ public class GroupManagerDao {
 		
 		addAutoAcceptGroup = db.prepareStatement("insert into toggleAutoAccept(uuid)"
 				+ "values(?)");
-		getAutoAcceptGroup = db.prepareStatement("select count(*) from toggleAutoAccept "
+		getAutoAcceptGroup = db.prepareStatement("select uuid from toggleAutoAccept "
 				+ "where uuid = ?");
 		removeAutoAcceptGroup = db.prepareStatement("delete from toggleAutoAccept where uuid = ?");
 	}
