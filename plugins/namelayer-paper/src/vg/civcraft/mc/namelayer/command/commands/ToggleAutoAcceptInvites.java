@@ -20,7 +20,7 @@ public class ToggleAutoAcceptInvites extends PlayerCommand{
 		setIdentifier("nltaai");
 		setDescription("This command is used to toggle the acceptance of invites.");
 		setUsage("/nltaai");
-		setArguments(1,1);
+		setArguments(0,0);
 	}
 
 	@Override
