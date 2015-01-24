@@ -375,6 +375,15 @@ public class BlockListener implements Listener{
                 }
             }
         }
+        //stops players from modifying the reinforcement on a half slab by placing another block on top
+        Reinforcement reinforcement_on_block = Citadel.getReinforcementManager().getReinforcement(block);
+        if (reinforcement_on_block instanceof PlayerReinforcement) {
+            PlayerReinforcement reinforcement = (PlayerReinforcement) reinforcement_on_block;
+            if (!reinforcement.isBypassable(player))
+                return false;
+        } else if (reinforcement_on_block != null)
+            return false; //not really sure when this could happen but just in case
+
         return true;
     }
 	
