@@ -97,6 +97,7 @@ public class CitadelReinforcementData {
 				*/
 				db.execute("insert into faction_id (group_name) values (null);"); // For natural reinforcements
 				db.execute("alter table reinforcement add group_id int not null;");
+				db.execute("delete from reinforcement where `name` is null;");
 				db.execute("update reinforcement r set r.group_id = (select f.group_id from "
 						+ "faction_id f where f.group_name = r.`name`);");
 				db.execute("alter table reinforcement drop `name`;");
