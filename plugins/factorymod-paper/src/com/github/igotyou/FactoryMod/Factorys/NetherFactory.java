@@ -162,9 +162,8 @@ public class NetherFactory extends BaseFactory
 	public List<InteractionResponse> getTeleportationBlockResponse(final Player player, Location clickedBlock)
 	{
 		List<InteractionResponse> responses=new ArrayList<InteractionResponse>();
-		//does the player have acsess to the nether factory via ciatdel?
-		if ((!FactoryModPlugin.CITADEL_ENABLED || (FactoryModPlugin.CITADEL_ENABLED && rm.getReinforcement(factoryLocation) != null)) || 
-				(((PlayerReinforcement) rm.getReinforcement(factoryLocation)).isAccessible(player)))
+		//does the player have access to the nether factory via Citadel?
+		if (!FactoryModPlugin.CITADEL_ENABLED || rm.getReinforcement(factoryLocation) == null || (((PlayerReinforcement) rm.getReinforcement(factoryLocation)).isAccessible(player)))
 		{
 			if (mode == NetherOperationMode.TELEPORT)
 			{
@@ -241,7 +240,7 @@ public class NetherFactory extends BaseFactory
 		}
 		else
 		{
-			//is the player potentialy holding a security note/ticket?
+			//is the player potentially holding a security note/ticket?
 			ItemStack itemInHand = player.getItemInHand();
 			if (itemInHand.getType() == Material.PAPER)
 			{
