@@ -64,8 +64,7 @@ public class CitadelReinforcementData {
 					e1.printStackTrace();
 				}
 				long first_time = System.currentTimeMillis();
-				db.execute("alter table reinforcement drop security_level;");
-				db.execute("alter table reinforcement drop version");
+				db.execute("alter table reinforcement drop security_level, drop version, add group_id int not null;");
 				/*
 				Citadel.Log("Remapping from material id to material name " +
 						"in process.");
@@ -96,15 +95,11 @@ public class CitadelReinforcementData {
 				db.execute("drop table material_mapping;");
 				*/
 				db.execute("insert into faction_id (group_name) values (null);"); // For natural reinforcements
-				db.execute("alter table reinforcement add group_id int not null;");
 				db.execute("delete from reinforcement where `name` is null;");
-				db.execute("update reinforcement r set r.group_id = (select f.group_id from "
+				db.execute("update ignore reinforcement r set r.group_id = (select f.group_id from "
 						+ "faction_id f where f.group_name = r.`name`);");
-				db.execute("alter table reinforcement drop `name`;");
-				db.execute("alter table reinforcement add " +
-						"rein_type_id int not null default 1;");
-				db.execute("alter table reinforcement add " +
-						"lore varchar(255);");
+				db.execute("alter table reinforcement drop `name`, add rein_type_id int not null default 1, "
+						+ "add lore varchar(255);");
 				db.execute("drop table citadel_account_id_map;");
 				Citadel.Log("The update to new format took " + (System.currentTimeMillis() - first_time) / 1000 + " seconds.");
 			}
@@ -155,11 +150,11 @@ public class CitadelReinforcementData {
 			db.execute("update reinforcement r set r.rein_id = (select ri.rein_id from reinforcement_id ri where ri.x = r.x and "
 					+ "ri.y = r.y and ri.z = r.z and ri.world = r.world);");
 			db.execute("alter table reinforcement DROP PRIMARY KEY, "
-					+ "add primary key rein_id_key(rein_id);");
-			db.execute("alter table reinforcement drop x;");
-			db.execute("alter table reinforcement drop y;");
-			db.execute("alter table reinforcement drop z;");
-			db.execute("alter table reinforcement drop world;");
+					+ "add primary key rein_id_key(rein_id), "
+					+ "drop x,"
+					+ "drop y,"
+					+ "drop z,"
+					+ "drop world;");
 			NameLayerPlugin.insertVersionNum(ver, plugin.getName());
 			Citadel.Log("The update to Version 7 took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
 		}
