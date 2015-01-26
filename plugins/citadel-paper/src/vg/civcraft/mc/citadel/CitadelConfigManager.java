@@ -32,9 +32,10 @@ public class CitadelConfigManager {
 	
 	public static List<String> getNonReinforceableTypes(){
 		List<String> nonReinforcementTypes = new ArrayList<String>();
-		if (config.getConfigurationSection("non_reinforceables") == null)
+		if (config.getStringList("non_reinforceables") == null){
 			return nonReinforcementTypes;
-		for (String sect: config.getConfigurationSection("non_reinforceables").getKeys(false))
+		}
+		for (String sect: config.getStringList("non_reinforceables"))
 			nonReinforcementTypes.add(sect);
 		return nonReinforcementTypes;
 	}

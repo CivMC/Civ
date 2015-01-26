@@ -13,8 +13,9 @@ public class NonReinforceableType {
 	
 	public static void initializeNonReinforceableTypes(){
 		List<String> materials = CitadelConfigManager.getNonReinforceableTypes();
-		for (String x: materials)
+		for (String x: materials){
 			mats.add(Material.getMaterial(x));
+		}
 	}
 	
 	public static boolean isNonReinforceable(Material mat){
