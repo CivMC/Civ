@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -96,8 +98,8 @@ public class CitadelReinforcementData {
 				*/
 				db.execute("insert into faction_id (group_name) values (null);"); // For natural reinforcements
 				db.execute("delete from reinforcement where `name` is null;");
-				db.execute("update ignore reinforcement r set r.group_id = (select f.group_id from "
-						+ "faction_id f where f.group_name = r.`name`);");
+				db.execute("update ignore reinforcement r inner join faction_id f on f.group_name = r.`name` "
+						+ "set r.group_id = f.group_id;");
 				db.execute("alter table reinforcement drop `name`, add rein_type_id int not null default 1, "
 						+ "add lore varchar(255);");
 				db.execute("drop table citadel_account_id_map;");
@@ -141,21 +143,25 @@ public class CitadelReinforcementData {
 					+ "x int not null,"
 					+ "y int not null,"
 					+ "z int not null,"
+					+ "chunk_id varchar(255),"
 					+ "world varchar (255) not null,"
 					+ "primary key rein_id_key (rein_id),"
 					+ "unique key x_y_z_world(x,y,z,world));-- Your mother is a whore and sleeps with banjos"); 
 			// I like turtles mother fucker. Never program because then you get turtles.
-			db.execute("insert into reinforcement_id (x,y,z, world) select x, y, z, world from reinforcement;"); // populate that bitch.
-			db.execute("alter table reinforcement add rein_id int not null;");
-			db.execute("update reinforcement r set r.rein_id = (select ri.rein_id from reinforcement_id ri where ri.x = r.x and "
-					+ "ri.y = r.y and ri.z = r.z and ri.world = r.world);");
+			db.execute("insert into reinforcement_id (x, y, z, chunk_id, world) select x, y, z, chunk_id, world from reinforcement;"); // populate that bitch.
+			db.execute("alter table reinforcement add rein_id int not null, drop chunk_id;");
+			db.execute("update reinforcement r inner join reinforcement_id ri on "
+					+ "ri.x = r.x and ri.y = r.y and ri.z = r.z and ri.world = r.world "
+					+ "set r.rein_id = ri.rein_id");
 			db.execute("alter table reinforcement DROP PRIMARY KEY, "
 					+ "add primary key rein_id_key(rein_id), "
 					+ "drop x,"
 					+ "drop y,"
 					+ "drop z,"
 					+ "drop world;");
+			db.execute("alter table reinforcement_id add index `chunk_id_index` (chunk_id);");
 			NameLayerPlugin.insertVersionNum(ver, plugin.getName());
+			ver = NameLayerPlugin.getVersionNum(plugin.getName());
 			Citadel.Log("The update to Version 7 took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
 		}
 		Citadel.Log("The total time it took Citadel to update was " + 
@@ -185,15 +191,15 @@ public class CitadelReinforcementData {
 				+ "inner join faction_id f on f.group_id = r.group_id " +
 				"inner join reinforcement_id ri on r.rein_id = ri.rein_id "
 				+ "inner join reinforcement_type rt on rt.rein_type_id = r.rein_type_id "
-				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.world = ?");
+				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.chunk_id = ? and ri.world = ?");
 		getReins = db.prepareStatement("select r.material_id, r.durability, " + // this wont work
 				"r.insecure, f.group_name, r.maturation_time from reinforcement r "
 				+ "inner join faction_id f on f.group_id = r.group_id " +
 				"where chunk_id = ?");
 		addRein = db.prepareStatement("insert into reinforcement ("
-				+ "material_id, durability, chunk_id,"
+				+ "material_id, durability, "
 				+ "insecure, group_id, maturation_time, rein_type_id,"
-				+ "lore, rein_id) select ?, ?, ?, ?, f.group_id, ?, rt.rein_type_id, ?, ? from faction_id f "
+				+ "lore, rein_id) select ?, ?, ?, f.group_id, ?, rt.rein_type_id, ?, ? from faction_id f "
 				+ "inner join reinforcement_type rt on rt.rein_type = ? "
 				+ "where f.group_name = ? limit 1");
 		removeRein = db.prepareStatement("delete r.*, ri.* from reinforcement r "
@@ -212,7 +218,7 @@ public class CitadelReinforcementData {
 				+ "inner join toDeleteReinforecments d on f.group_id = d.group_id");
 		*/
 		
-		insertReinID = db.prepareStatement("insert ignore into reinforcement_id(x, y, z, world) values (?, ?, ?, ?)");
+		insertReinID = db.prepareStatement("insert ignore into reinforcement_id(x, y, z, chunk_id, world) values (?, ?, ?, ?, ?)");
 		getLastReinID = db.prepareStatement("select LAST_INSERT_ID() as id from reinforcement_id");
 		getCordsbyReinID = db.prepareStatement("select x, y, z, world from reinforcement_id where rein_id = ?");
 	}
@@ -235,7 +241,9 @@ public class CitadelReinforcementData {
 			getRein.setInt(1, x);
 			getRein.setInt(2, y);
 			getRein.setInt(3, z);
-			getRein.setString(4, loc.getWorld().getName());
+			String formatChunk = formatChunk(loc);
+			getRein.setString(4, formatChunk);
+			getRein.setString(5, loc.getWorld().getName());
 			ResultSet set = getRein.executeQuery();
 			if (!set.next()){
 				return null;
@@ -332,20 +340,21 @@ public class CitadelReinforcementData {
 				insertReinID.setInt(1, x);
 				insertReinID.setInt(2, y);
 				insertReinID.setInt(3, z);
-				insertReinID.setString(4, world);
+				String formatChunk = formatChunk(loc);
+				insertReinID.setString(4, formatChunk);
+				insertReinID.setString(5, world);
 				insertReinID.execute();
 				
 				int id = getLastReinId();
 				
 				addRein.setInt(1, mat.getId());
 				addRein.setInt(2, dur);
-				addRein.setString(3, chunk_id);
-				addRein.setBoolean(4, insecure);
-				addRein.setInt(5, maturationTime);
-				addRein.setString(6, lore);
-				addRein.setInt(7, id);
-				addRein.setString(8, reinType);
-				addRein.setString(9, group);
+				addRein.setBoolean(3, insecure);
+				addRein.setInt(4, maturationTime);
+				addRein.setString(5, lore);
+				addRein.setInt(6, id);
+				addRein.setString(7, reinType);
+				addRein.setString(8, group);
 				addRein.execute();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -369,20 +378,21 @@ public class CitadelReinforcementData {
 				insertReinID.setInt(1, x);
 				insertReinID.setInt(2, y);
 				insertReinID.setInt(3, z);
-				insertReinID.setString(4, world);
+				String formatChunk = formatChunk(loc);
+				insertReinID.setString(4, formatChunk);
+				insertReinID.setString(5, world);
 				insertReinID.execute();
 				
 				int id = getLastReinId();
 				
 				addRein.setInt(1, mat.getId());
 				addRein.setInt(2, dur);
-				addRein.setString(3, chunk_id);
-				addRein.setBoolean(4, insecure);
-				addRein.setInt(5, maturationTime);
-				addRein.setString(6, lore);
-				addRein.setInt(7, id);
-				addRein.setString(8, reinType);
-				addRein.setString(9, group);
+				addRein.setBoolean(3, insecure);
+				addRein.setInt(4, maturationTime);
+				addRein.setString(5, lore);
+				addRein.setInt(6, id);
+				addRein.setString(7, reinType);
+				addRein.setString(8, group);
 				addRein.execute();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -398,7 +408,9 @@ public class CitadelReinforcementData {
 					insertReinID.setInt(1, lo.getBlockX());
 					insertReinID.setInt(2, lo.getBlockY());
 					insertReinID.setInt(3, lo.getBlockZ());
-					insertReinID.setString(4, lo.getWorld().getName());
+					String formatChunk = formatChunk(lo);
+					insertReinID.setString(4, formatChunk);
+					insertReinID.setString(5, lo.getWorld().getName());
 					insertReinID.addBatch();
 				}
 				insertReinID.executeBatch();
@@ -407,13 +419,12 @@ public class CitadelReinforcementData {
 				
 				addRein.setInt(1, -1);
 				addRein.setInt(2, mbRein.getDurability());
-				addRein.setString(3, null);
-				addRein.setBoolean(4, false);
-				addRein.setInt(5, mbRein.getMaturationTime());
-				addRein.setString(6, null);
-				addRein.setInt(7, id);
-				addRein.setString(8, "MultiBlockReinforcement");
-				addRein.setString(9, mbRein.getGroup().getName());
+				addRein.setBoolean(3, false);
+				addRein.setInt(4, mbRein.getMaturationTime());
+				addRein.setString(5, null);
+				addRein.setInt(6, id);
+				addRein.setString(7, "MultiBlockReinforcement");
+				addRein.setString(8, mbRein.getGroup().getName());
 				addRein.execute();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -554,5 +565,12 @@ public class CitadelReinforcementData {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+	
+	private String formatChunk(Location loc){
+		String chunk = loc.getWorld().getName();
+		Chunk c = loc.getChunk();
+		chunk += ":" + c.getX() + ":" + c.getZ();
+		return chunk;
 	}
 }
