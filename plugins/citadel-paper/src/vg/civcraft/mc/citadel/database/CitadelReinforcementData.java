@@ -219,7 +219,7 @@ public class CitadelReinforcementData {
 		*/
 		
 		insertReinID = db.prepareStatement("insert ignore into reinforcement_id(x, y, z, chunk_id, world) values (?, ?, ?, ?, ?)");
-		getLastReinID = db.prepareStatement("select LAST_INSERT_ID() as id from reinforcement_id");
+		getLastReinID = db.prepareStatement("select LAST_INSERT_ID() as id");
 		getCordsbyReinID = db.prepareStatement("select x, y, z, world from reinforcement_id where rein_id = ?");
 	}
 	
