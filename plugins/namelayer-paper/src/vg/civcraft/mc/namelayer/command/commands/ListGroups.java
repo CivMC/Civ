@@ -35,7 +35,7 @@ public class ListGroups extends PlayerCommand {
 		int start = 1;
 		try {
 			start = Integer.parseInt(args[0]);
-		} catch(NumberFormatException | NullPointerException e){
+		} catch(NumberFormatException | ArrayIndexOutOfBoundsException e){
 			if (e.getCause() instanceof NumberFormatException){
 				p.sendMessage(ChatColor.RED + "The page must be an integer.");
 				return true;
