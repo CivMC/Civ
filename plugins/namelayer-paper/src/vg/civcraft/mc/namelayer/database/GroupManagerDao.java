@@ -176,12 +176,14 @@ public class GroupManagerDao {
 					+ "primary key key_uuid(uuid));");
 			
 			ver = updateVersion(ver, plugin.getName());
-			log(Level.INFO, "Database update to Version two took " + (System.currentTimeMillis() - first_time) / 1000 + " seconds.");
+			log(Level.INFO, "Database update to Version three took " + (System.currentTimeMillis() - first_time) / 1000 + " seconds.");
 		}
 		if (ver == 3){
 			long first_time = System.currentTimeMillis();
 			log(Level.INFO, "Database updating to Version four.");
 			db.execute("alter table faction_id add index `faction_id_index` (group_name);");
+			ver = updateVersion(ver, plugin.getName());
+			log(Level.INFO, "Database update to Version four took " + (System.currentTimeMillis() - first_time) / 1000 + " seconds.");
 		}
 		log(Level.INFO, "Database update took " + (System.currentTimeMillis() - begin_time) / 1000 + " seconds.");
 	}
