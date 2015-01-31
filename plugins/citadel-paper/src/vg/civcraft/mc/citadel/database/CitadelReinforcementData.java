@@ -553,13 +553,16 @@ public class CitadelReinforcementData {
 	}
 	*/
 	
+	private int lastId = 0;
 	public int getLastReinId(){
 		reconnectAndReinitialize();
-		
+		if (lastId != 0)
+			return lastId;
 		try {
 			ResultSet set = getLastReinID.executeQuery();
 			set.next();
-			return set.getInt(1);
+			lastId = set.getInt(1);
+			return lastId;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
