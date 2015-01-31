@@ -252,7 +252,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 
 		for (UUID player: players){
 			if (player != null)
-				if (reinforcement.isAccessible(Bukkit.getPlayer(player)))
+				if (reinforcement.isAccessible(player))
 					return true;
 		}
 
