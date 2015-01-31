@@ -41,7 +41,7 @@ public class RemoveMember extends PlayerCommand {
 			return true;
 		}
 		UUID executor = NameAPI.getUUID(p.getName());
-		UUID uuid = NameAPI.getUUID(args[0]);
+		UUID uuid = NameAPI.getUUID(args[1]);
 		
 		GroupPermission perm = gm.getPermissionforGroup(group);
 		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
