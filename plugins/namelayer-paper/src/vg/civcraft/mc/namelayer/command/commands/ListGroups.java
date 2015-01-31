@@ -35,10 +35,13 @@ public class ListGroups extends PlayerCommand {
 		int start = 1;
 		try {
 			start = Integer.parseInt(args[0]);
-		} catch(NumberFormatException e){
-			p.sendMessage(ChatColor.RED + "The page must be an integer.");
-			return true;
+		} catch(NumberFormatException | NullPointerException e){
+			if (e.getCause() instanceof NumberFormatException){
+				p.sendMessage(ChatColor.RED + "The page must be an integer.");
+				return true;
+			}
 		}
+		
 		names += "Page " + start + " of " + pages + ".\n"
 				+ "Groups are as follows: \n";
 		for (int x = (start-1) * 10, z = 1; x < groups.size() && z <= 10; x++, z++){
