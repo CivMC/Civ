@@ -13,8 +13,8 @@ public class ListCurrentInvites extends PlayerCommand{
 		super(name);
 		setIdentifier("nllci");
 		setDescription("This command is used to list your current invites.");
-		setUsage("/nllci <group>");
-		setArguments(1,1);
+		setUsage("/nllci");
+		setArguments(0,0);
 	}
 
 	@Override
