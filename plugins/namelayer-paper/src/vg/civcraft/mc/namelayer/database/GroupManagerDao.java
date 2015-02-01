@@ -188,7 +188,7 @@ public class GroupManagerDao {
 		if (ver == 4){
 			long first_time = System.currentTimeMillis();
 			log(Level.INFO, "Database updating to Version five.");
-			db.execute("alter table faction_member add index `faction_member_index` (faction_id);");
+			db.execute("alter table faction_member add index `faction_member_index` (group_id);");
 			ver = updateVersion(ver, plugin.getName());
 			log(Level.INFO, "Database update to Version five took " + (System.currentTimeMillis() - first_time) / 1000 + " seconds.");
 		}
