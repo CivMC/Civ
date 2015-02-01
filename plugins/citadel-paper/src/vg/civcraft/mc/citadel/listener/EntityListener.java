@@ -11,14 +11,18 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreakDoorEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
@@ -84,5 +88,12 @@ public class EntityListener implements Listener{
         blocks.add(base);
         
         return blocks;
+    }
+    
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void playerQuitEvent(PlayerQuitEvent event){
+    	Player p = event.getPlayer();
+    	PlayerState state = PlayerState.get(p);
+    	state.reset();
     }
 }
