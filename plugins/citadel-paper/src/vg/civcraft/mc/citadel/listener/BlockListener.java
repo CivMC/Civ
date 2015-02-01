@@ -249,7 +249,7 @@ public class BlockListener implements Listener{
         // the block that the piston moved
         Block moved = piston.getRelative(direction, 2);
         
-        Reinforcement reinforcement = rm.getReinforcement(piston.getLocation());
+        Reinforcement reinforcement = rm.getReinforcement(moved.getLocation());
 
         if (reinforcement != null) {
             bpre.setCancelled(true);
