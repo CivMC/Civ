@@ -6,7 +6,7 @@
   <groupId>com.github.igotyou</groupId>
   <artifactId>FactoryMod</artifactId>
   <packaging>jar</packaging>
-  <version>1.3.3-${build.number}</version>
+  <version>1.3.4-${build.number}</version>
   <name>FactoryMod</name>
   <url>https://github.com/Civcraft/FactoryMod</url>
    

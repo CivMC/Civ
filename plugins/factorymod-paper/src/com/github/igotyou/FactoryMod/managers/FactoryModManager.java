@@ -45,12 +45,14 @@ public class FactoryModManager
 	 */
 	public FactoryModManager(FactoryModPlugin plugin)
 	{
+		FactoryModPlugin.sendConsoleMessage("Initiaiting FactoryMod Managers.");
 		this.plugin = plugin;
 		FactoryModManager.factoryMan = this;
 		
 		initializeManagers();
 		loadManagers();
 		periodicSaving();
+		FactoryModPlugin.sendConsoleMessage("Finished initializing FactoryMod Managers.");
 	}
 	
 	/**

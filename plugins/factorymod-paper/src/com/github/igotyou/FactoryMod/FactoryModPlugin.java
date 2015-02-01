@@ -113,6 +113,7 @@ public class FactoryModPlugin extends JavaPlugin
 	
 	public void initConfig()
 	{
+		sendConsoleMessage("Initiaiting FactoryMod Config.");
 		productionProperties = new HashMap<String, ProductionProperties>();
 		productionRecipes = new HashMap<String,ProductionRecipe>();
 		FileConfiguration config = getConfig();
@@ -301,6 +302,7 @@ public class FactoryModPlugin extends JavaPlugin
 		ConfigurationSection configNetherFactory=config.getConfigurationSection("nether_factory");
 		printingPressProperties = PrintingPressProperties.fromConfig(this, configPrintingPresses);
 		netherFactoryProperties = NetherFactoryProperties.fromConfig(this, configNetherFactory);
+		sendConsoleMessage("Finished initializing FactoryMod Config.");
 	}
 	
 	private List<ProbabilisticEnchantment> getEnchantments(ConfigurationSection configEnchantments)
