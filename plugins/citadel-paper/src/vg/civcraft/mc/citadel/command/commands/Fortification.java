@@ -60,7 +60,11 @@ public class Fortification extends PlayerCommand{
 			state.reset();
 		}
 		else{
-			if (reinType == null){
+			if (stack == null){
+				p.sendMessage(ChatColor.RED + "You need to be holding an ItemStack.");
+				return true;
+			}
+			else if (reinType == null){
 				p.sendMessage(ChatColor.RED + "That is not a ReinforcementType.");
 				return true;
 			}

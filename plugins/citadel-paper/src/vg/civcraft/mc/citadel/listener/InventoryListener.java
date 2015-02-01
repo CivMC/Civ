@@ -121,13 +121,6 @@ public class InventoryListener implements Listener {
 			event.setCancelled(false);
 			return;
 		}
-		if (srcRein.getGroup().isMember(destOwner.getOwner())) {
-			// Destination personal group owner has access to source group,
-			// allow
-			// (Group X -> Personal Y)
-			event.setCancelled(false);
-			return;
-		}
 		// Reinforcement owners don't match, deny
 	}
 }
