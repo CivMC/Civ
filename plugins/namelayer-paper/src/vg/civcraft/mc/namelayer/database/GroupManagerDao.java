@@ -226,7 +226,7 @@ public class GroupManagerDao {
 				"update ignore faction_member fm "
 				+ "inner join faction_id fi on fi.group_name = groupName "
 				+ "inner join faction_id fii on fii.group_name = tomerge "
-				+ "set fm.group_id = fi.group_name "
+				+ "set fm.group_id = fi.group_id "
 				+ "where fm.group_id = fii.group_id;" +
 				"delete fm.* from faction_member fm "
 				+ "inner join faction_id fi on fi.group_name = tomerge "

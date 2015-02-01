@@ -94,13 +94,16 @@ public class InvitePlayer extends PlayerCommand{
 		
 		group.addInvite(uuid, pType);
 		OfflinePlayer invitee = Bukkit.getOfflinePlayer(uuid);
-		
-		if (invitee.isOnline()){
+		boolean shouldAutoAccept = db.shouldAutoAcceptGroups(invitee.getUniqueId());
+		if (invitee.isOnline() && !shouldAutoAccept){
 			Player oInvitee = (Player) invitee;
 			oInvitee.sendMessage(ChatColor.GREEN + "You have been invited to the group " + group.getName() +" by " + p.getName() +".\n" +
 					"Use the command /nlag <group> to accept.\n"
 					+ "If you wish to toggle invites so they always are accepted please run /nltaai");
 			p.sendMessage(ChatColor.GREEN + "The invitation has been sent.");
+		}
+		else if(shouldAutoAccept){
+			p.sendMessage(ChatColor.GREEN + "Player has auto accepted into the group.");
 		}
 		else{
 			p.sendMessage(ChatColor.GREEN + "Player is offline and will be notified on log in.");

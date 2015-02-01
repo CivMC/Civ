@@ -26,6 +26,8 @@ public class PrivateGroup extends Group{
 	}
 	@Override
 	public void addMember(UUID uuid, PlayerType type){
+		if (players.containsKey(uuid))
+			db.removeMember(uuid, super.groupName);
 		db.addMember(uuid, groupName, type);
 		players.put(uuid, type);
 		for (Group g: subGroups.get(this))
