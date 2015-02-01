@@ -23,7 +23,7 @@ public class Stats extends PlayerCommand{
 		setIdentifier("cts");
 		setDescription("Lists the stats about a certain group.");
 		setUsage("/cts <group>");
-		setArguments(1,1);
+		setArguments(0,1);
 	}
 
 	@Override
@@ -33,6 +33,14 @@ public class Stats extends PlayerCommand{
 			return true;
 		}
 		Player p = (Player) sender;
+		if (!(p.isOp() || p.hasPermission("citadel.admin"))){
+			p.sendMessage(ChatColor.RED + "You do not have permission for this command.");
+			return true;
+		}
+		if (args.length == 0){
+			Bukkit.getScheduler().runTaskAsynchronously(Citadel.getInstance(), new StatsMessageAllGroups(p));
+			return true;
+		}
 		Group g = gm.getGroup(args[0]);
 		
 		if (g == null){
@@ -68,7 +76,7 @@ public class Stats extends PlayerCommand{
 		@Override
 		public void run() {
 			String message = ChatColor.GREEN + "The amount of reinforcements on this group are: ";
-			int count = Citadel.getCitadelDatabase().getReinCount(g.getName());
+			int count = Citadel.getCitadelDatabase().getReinCountForGroup(g.getName());
 			message += count;
 			synchronized(run){
 				run.remove(g);
@@ -78,6 +86,24 @@ public class Stats extends PlayerCommand{
 			p.sendMessage(message);
 		}
 		
+	}
+	
+	public class StatsMessageAllGroups implements Runnable{
+		
+		private final Player p;
+		public StatsMessageAllGroups(Player p){
+			this.p = p;
+		}
+		
+		@Override
+		public void run() {
+			String message = ChatColor.GREEN + "The amount of reinforcements on the server are: ";
+			int count = Citadel.getCitadelDatabase().getReinCountForAllGroups();
+			message += count;
+			if (p != null && !p.isOnline()) // meh be safe
+				return;
+			p.sendMessage(message);
+		}
 	}
 
 }

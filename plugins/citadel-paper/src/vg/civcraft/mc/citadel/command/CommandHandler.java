@@ -14,6 +14,7 @@ import vg.civcraft.mc.citadel.command.commands.Insecure;
 import vg.civcraft.mc.citadel.command.commands.Materials;
 import vg.civcraft.mc.citadel.command.commands.Off;
 import vg.civcraft.mc.citadel.command.commands.Reinforce;
+import vg.civcraft.mc.citadel.command.commands.Stats;
 
 public class CommandHandler {
 	public Map<String, Command> commands = new HashMap<String, Command>();
@@ -29,6 +30,7 @@ public class CommandHandler {
 		addCommands(new Reinforce("Reinforce"));
 		addCommands(new Materials("Materials"));
 		addCommands(new Off("Off"));
+		addCommands(new Stats("Stats"));
 	}
 	
 	private void addCommands(Command command){
