@@ -21,6 +21,7 @@ import org.bukkit.event.world.StructureGrowEvent;
 
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.namelayer.group.groups.PublicGroup;
 
 
 public final class BastionListener
@@ -94,8 +95,15 @@ implements Listener
 		if (event.getBlock().getType() == config.getBastionBlockMaterial() && 
 				!PlayersStates.playerInMode(event.getPlayer(), Mode.OFF) && event.getReinforcement() instanceof PlayerReinforcement) {
 			PlayersStates.touchPlayer(event.getPlayer());
-			bastionManager.addBastion(event.getBlock().getLocation(),(PlayerReinforcement) event.getReinforcement());
-			event.getPlayer().sendMessage(ChatColor.GREEN+"Bastion block created");
+			PlayerReinforcement rein = (PlayerReinforcement) event.getReinforcement();
+			if (rein.getGroup() instanceof PublicGroup){
+				event.setCancelled(true);
+				event.getPlayer().sendMessage(ChatColor.GREEN + "Bastion's cannot be reinforced under a PublicGroup.");
+			}
+			else{
+				bastionManager.addBastion(event.getBlock().getLocation(), rein);
+				event.getPlayer().sendMessage(ChatColor.GREEN+"Bastion block created");
+			}
 		}
 	}
 	public BastionBlockManager getBastionManager(){

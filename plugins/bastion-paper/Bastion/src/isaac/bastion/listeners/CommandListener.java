@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.namelayer.group.groups.PublicGroup;
 
 public class CommandListener implements Listener{
 	private static BastionBlockManager manager;
@@ -78,9 +79,14 @@ public class CommandListener implements Listener{
 				return;
 
 			if(reinforcement.isBypassable(player)){
-				Bastion.getBastionManager().addBastion(block.getLocation(),reinforcement);
-				player.sendMessage(ChatColor.GREEN+"Bastion block created");
-				PlayersStates.touchPlayer(player);
+				if (((PlayerReinforcement) reinforcement).getGroup() instanceof PublicGroup){
+					player.sendMessage(ChatColor.RED + "Bastion's cannot be reinforced under a PublicGroup.");
+				}
+				else{
+					Bastion.getBastionManager().addBastion(block.getLocation(),reinforcement);
+					player.sendMessage(ChatColor.GREEN+"Bastion block created");
+					PlayersStates.touchPlayer(player);
+				}
 			} else{
 				player.sendMessage(ChatColor.RED+"You don't have permissions");
 			}
