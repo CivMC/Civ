@@ -51,6 +51,10 @@ public class InvitePlayer extends PlayerCommand{
 		PlayerType pType = PlayerType.MEMBERS;
 		if (args.length == 3)
 			pType = PlayerType.getPlayerType(args[2]);
+		if (pType == null){
+			PlayerType.displayPlayerTypes(p);
+			return true;
+		}
 		UUID uuid = NameAPI.getUUID(args[1]);
 		if (uuid == null){
 			p.sendMessage(ChatColor.RED + "The player has never played before.");
