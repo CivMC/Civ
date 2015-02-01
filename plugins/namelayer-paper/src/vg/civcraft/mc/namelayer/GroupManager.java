@@ -42,6 +42,7 @@ public class GroupManager{
 	}
 	
 	public boolean deleteGroup(String groupName){
+		groupName = groupName.toLowerCase();
 		Group g = getGroup(groupName);
 		GroupDeleteEvent event = new GroupDeleteEvent(g, false);
 		Bukkit.getPluginManager().callEvent(event);
@@ -103,6 +104,7 @@ public class GroupManager{
 	 * Saves me code so I can always grab a group if it is already loaded while not needing to check db.
 	 */
 	public static Group getGroup(String groupName){
+		groupName = groupName.toLowerCase();
 		if (groups.containsKey(groupName))
 			return groups.get(groupName);
 		else{ 

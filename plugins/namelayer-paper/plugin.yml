@@ -1,6 +1,6 @@
 name: NameLayer
 main: vg.civcraft.mc.namelayer.NameLayerPlugin
-version: 2.2.9
+version: 2.2.91
 load: startup
 author: Rourke750
 commands:
