@@ -179,7 +179,7 @@ public class CitadelReinforcementData {
 	
 	private PreparedStatement getRein, getReins, addRein, removeRein, updateRein;
 	//private PreparedStatement deleteGroup, insertDeleteGroup, removeDeleteGroup, getDeleteGroup;
-	private PreparedStatement insertReinID, getLastReinID, getCordsbyReinID;
+	private PreparedStatement insertReinID, getLastReinID, getCordsbyReinID, selectReinCount;
 	/**
 	 * Initializes the PreparedStatements. Gets called on db connect or
 	 * reconnect.
@@ -221,6 +221,9 @@ public class CitadelReinforcementData {
 		insertReinID = db.prepareStatement("insert ignore into reinforcement_id(x, y, z, chunk_id, world) values (?, ?, ?, ?, ?)");
 		getLastReinID = db.prepareStatement("select LAST_INSERT_ID() as id");
 		getCordsbyReinID = db.prepareStatement("select x, y, z, world from reinforcement_id where rein_id = ?");
+		selectReinCount = db.prepareStatement("select count(*) as count from reinforcement r "
+				+ "inner join faction_id f on f.group_id = r.group_id "
+				+ "where f.group_name = ?");
 	}
 	
 	/**
@@ -577,5 +580,18 @@ public class CitadelReinforcementData {
 		Chunk c = loc.getChunk();
 		chunk += ":" + c.getX() + ":" + c.getZ();
 		return chunk;
+	}
+	
+	public int getReinCount(String group){
+		try {
+			selectReinCount.setString(1, group);
+			ResultSet set = selectReinCount.executeQuery();
+			set.next();
+			return set.getInt(1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
 	}
 }

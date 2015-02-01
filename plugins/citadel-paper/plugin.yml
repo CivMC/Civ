@@ -16,9 +16,11 @@ commands:
  ctin:
   aliases: [ctinsecure]
  ctm:
-  aliases: [ctmaterials:]
+  aliases: [ctmaterials]
  cto:
   aliases: [ctoff]
+ cts:
+  aliases: [ctstats]
 permissions:
  citadel.admin:
   default: op
