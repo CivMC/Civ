@@ -92,6 +92,7 @@ public final class Bastion extends JavaPlugin
 	
 	public void removeGhostBlocks(){
 		Database db = BastionBlockStorage.db;
+		Bukkit.getLogger().log(Level.INFO, "Bastion is beginning ghost block check.");
 		for (BastionBlock block: bastionManager.set){
 			if (block.getLocation().getBlock().getType() != config.getBastionBlockMaterial()){
 				Bukkit.getLogger().log(Level.INFO, "Bastion removed a block at: " + block.getLocation() + ". If it is still"
@@ -99,6 +100,7 @@ public final class Bastion extends JavaPlugin
 				block.delete(db);
 			}
 		}
+		Bukkit.getLogger().log(Level.INFO, "Bastion has ended ghost block check.");
 	}
 
 }
