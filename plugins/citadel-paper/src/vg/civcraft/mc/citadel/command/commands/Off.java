@@ -26,6 +26,8 @@ public class Off extends PlayerCommand{
 		Player p = (Player) sender;
 		PlayerState state = PlayerState.get(p);
 		state.reset();
+		if (state.isBypassMode())
+			state.toggleBypassMode();
 		p.sendMessage(ChatColor.GREEN + "Reinforcement mode has been set to Normal.");
 		return true;
 	}

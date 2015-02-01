@@ -34,7 +34,7 @@ public class PlayerReinforcement extends Reinforcement{
 	}
 	
 	private static int getIntFormofMaturation(long creation, ItemStack stack){
-		int maturation = (int)(creation / 60000) - 
+		int maturation = (int)(creation / 60000) + 
 				ReinforcementType.
 				getReinforcementType(stack)
 				.getMaturationTime();

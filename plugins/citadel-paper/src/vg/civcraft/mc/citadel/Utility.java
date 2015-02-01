@@ -286,7 +286,7 @@ public class Utility {
         // Doesn't explicitly save the updated Maturation time into the cache.
         //  That's the responsibility of the caller.
         if (reinforcement instanceof PlayerReinforcement){
-            long maturationTime = reinforcement.getMaturationTime();
+            int maturationTime = reinforcement.getMaturationTime();
             if (maturationTime > 0) {
                 final int curMinute = (int)(System.currentTimeMillis() / 60000L);
                 if (curMinute >= maturationTime) {
