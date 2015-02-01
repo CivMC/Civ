@@ -23,6 +23,7 @@ import org.bukkit.material.Bed;
 import org.bukkit.material.Door;
 
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
+import vg.civcraft.mc.citadel.misc.ReinforcemnetFortificationCancelException;
 import vg.civcraft.mc.citadel.reinforcement.MultiBlockReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.NaturalReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
@@ -50,6 +51,7 @@ public class Utility {
 	 * @param The Block this reinforcement is occurring on.
 	 * @param The ReinforcementType that is being reinforced on the block.
 	 * @return The PlayerReinforcement that comes from these parameters or null if certain checks failed.
+	 * @throws ReinforcemnetFortificationCancelException
 	 */
 	public static PlayerReinforcement createPlayerReinforcement(Player player, Group g, Block block,
 			ReinforcementType type) {
@@ -97,7 +99,7 @@ public class Utility {
         ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, block, player);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
-            return null;
+        	throw new ReinforcemnetFortificationCancelException();
         }
         // Now eat the materials
         requirements = type.getRequiredAmount();

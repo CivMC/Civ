@@ -51,6 +51,7 @@ import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
+import vg.civcraft.mc.citadel.misc.ReinforcemnetFortificationCancelException;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
@@ -105,11 +106,15 @@ public class BlockListener implements Listener{
         }
         
 		if (inv.contains(type.getMaterial(), type.getRequiredAmount())) {
-            if (createPlayerReinforcement(p, state.getGroup(), b, type) == null) {
-                p.sendMessage(ChatColor.RED + "%s is not a reinforcible material " + b.getType().name());
-            } else {
-                state.checkResetMode();
-            }
+			try {
+				if (createPlayerReinforcement(p, state.getGroup(), b, type) == null) {
+					p.sendMessage(ChatColor.RED + String.format("%s is not a reinforcible material " + b.getType().name()));
+				} else {
+					state.checkResetMode();
+				}	
+			}
+			catch(ReinforcemnetFortificationCancelException ex){
+			}
         } else {
             p.sendMessage(ChatColor.YELLOW + "%s depleted, left fortification mode " + 
             		state.getReinforcementType().getMaterial().name());
@@ -542,25 +547,28 @@ public class BlockListener implements Listener{
                     if (wouldPlantDoubleReinforce(block)) {
                         player.sendMessage(ChatColor.RED + "Cancelled reinforcement, crop would already be reinforced.");
                     } else {
+                    	try {
                         createPlayerReinforcement(player, state.getGroup(),
                         		block, state.getReinforcementType());
+                    	}catch(ReinforcemnetFortificationCancelException e){
+                    		
+                    	}
                     }
                 } else if (reinforcement.isBypassable(player)) {
-                    boolean update = false;
                     String message = "";
                     Group group = state.getGroup();
-                    if(!reinforcement.getGroup().getName().equals(group.getName())) {
+                    Group old_group = reinforcement.getGroup();
+                    if(!old_group.getName().equals(group.getName())) {
                         reinforcement.setGroup(group);
-                        update = true;
-                        message = ChatColor.GREEN + "Group has been changed to: " + group.getName() + ".";
-                    }
-                    if(update){
                     	ReinforcementCreationEvent event = new ReinforcementCreationEvent(reinforcement, block, player);
                         Bukkit.getPluginManager().callEvent(event);
                         if (!event.isCancelled()) {
                             rm.saveReinforcement(reinforcement);
                             player.sendMessage(ChatColor.GREEN + message);
+                            message = ChatColor.GREEN + "Group has been changed to: " + group.getName() + ".";
                         }
+                        else
+                            reinforcement.setGroup(old_group);
                     }
                 } else {
                     player.sendMessage(ChatColor.RED + "You are not permitted to modify this reinforcement");

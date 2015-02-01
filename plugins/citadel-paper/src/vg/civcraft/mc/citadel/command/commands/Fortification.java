@@ -3,6 +3,7 @@ package vg.civcraft.mc.citadel.command.commands;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -60,7 +61,7 @@ public class Fortification extends PlayerCommand{
 			state.reset();
 		}
 		else{
-			if (stack == null){
+			if (stack.getType() == Material.AIR){
 				p.sendMessage(ChatColor.RED + "You need to be holding an ItemStack.");
 				return true;
 			}
