@@ -23,7 +23,9 @@ public class PlayerListener implements Listener{
 	public void playerJoinEvent(PlayerJoinEvent event){
 		Player p = event.getPlayer();
 		UUID uuid = p.getUniqueId();
-		if (!notifications.containsKey(uuid) && !notifications.get(uuid).isEmpty())
+		if (!notifications.containsKey(uuid) || notifications.get(uuid).isEmpty())
+			return;
+		if (notifications.get(uuid).isEmpty())
 			return;
 		String x = "You have been invited to the following groups while you were away: ";
 		
