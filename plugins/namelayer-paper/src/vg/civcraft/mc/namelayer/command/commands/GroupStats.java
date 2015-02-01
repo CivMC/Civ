@@ -67,7 +67,7 @@ public class GroupStats extends PlayerCommand {
 					message += "No members for the PlayerType " + type.name() + ".\n";
 			}
 			message += "That makes " + g.getAllMembers().size() + " members total.";
-			if (!p.isOnline()) // meh be safe
+			if (p != null && !p.isOnline()) // meh be safe
 				return;
 			p.sendMessage(message);
 		}

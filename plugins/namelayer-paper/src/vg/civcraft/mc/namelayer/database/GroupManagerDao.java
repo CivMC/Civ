@@ -450,7 +450,7 @@ public class GroupManagerDao {
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			addMember.setString(1, member.toString());
-			addMember.setString(2,role.name());
+			addMember.setString(2, role.name());
 			addMember.setString(3, faction);
 			addMember.execute();
 		} catch (SQLException e) {

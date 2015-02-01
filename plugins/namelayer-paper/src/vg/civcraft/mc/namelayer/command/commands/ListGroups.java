@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.group.Group;
 
 public class ListGroups extends PlayerCommand {
 
@@ -45,7 +46,8 @@ public class ListGroups extends PlayerCommand {
 		names += "Page " + start + " of " + pages + ".\n"
 				+ "Groups are as follows: \n";
 		for (int x = (start-1) * 10, z = 1; x < groups.size() && z <= 10; x++, z++){
-			names += groups.get(x) + "\n";
+			Group g = gm.getGroup(groups.get(x));
+			names += g.getName() + ": (PlayerType) " + g.getPlayerType(uuid).toString() + "\n";
 		}
 		p.sendMessage(names);
 		return true;
