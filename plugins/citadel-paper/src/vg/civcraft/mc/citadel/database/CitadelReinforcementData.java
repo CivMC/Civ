@@ -556,8 +556,10 @@ public class CitadelReinforcementData {
 	private int lastId = 0;
 	public int getLastReinId(){
 		reconnectAndReinitialize();
-		if (lastId != 0)
+		if (lastId != 0){
+			lastId++;
 			return lastId;
+		}
 		try {
 			ResultSet set = getLastReinID.executeQuery();
 			set.next();
