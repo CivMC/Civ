@@ -552,9 +552,7 @@ public class BlockListener implements Listener{
                     if(!reinforcement.getGroup().getName().equals(group.getName())) {
                         reinforcement.setGroup(group);
                         update = true;
-                        if(!message.equals("")){
-                            message = message + ". ";
-                        }
+                        message = ChatColor.GREEN + "Group has been changed to: " + group.getName() + ".";
                     }
                     if(update){
                     	ReinforcementCreationEvent event = new ReinforcementCreationEvent(reinforcement, block, player);
