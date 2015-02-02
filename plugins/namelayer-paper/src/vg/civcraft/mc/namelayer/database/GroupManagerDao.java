@@ -353,7 +353,7 @@ public class GroupManagerDao {
 	 * @param pluginname- The plugin name.
 	 * @return Returns the new version of the db.
 	 */
-	public int updateVersion(int version, String pluginname){
+	public synchronized int updateVersion(int version, String pluginname){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
@@ -368,7 +368,7 @@ public class GroupManagerDao {
 		return ++version;
 	}
 	
-	public void createGroup(String group, UUID owner, String password, GroupType type){
+	public synchronized void createGroup(String group, UUID owner, String password, GroupType type){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			String own = null;
@@ -419,7 +419,7 @@ public class GroupManagerDao {
 		return null;
 	}
 	
-	public List<String> getGroupNames(UUID uuid){
+	public synchronized List<String> getGroupNames(UUID uuid){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		List<String> groups = new ArrayList<String>();
 		try {
@@ -434,7 +434,7 @@ public class GroupManagerDao {
 		return groups;
 	}
 	
-	public void deleteGroup(String groupName){
+	public synchronized void deleteGroup(String groupName){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			deleteGroup.setString(1, groupName);
@@ -446,7 +446,7 @@ public class GroupManagerDao {
 		}
 	}
 	
-	public void addMember(UUID member, String faction, PlayerType role){
+	public synchronized void addMember(UUID member, String faction, PlayerType role){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			addMember.setString(1, member.toString());
@@ -459,7 +459,7 @@ public class GroupManagerDao {
 		}
 	}
 	
-	public List<UUID> getAllMembers(String groupName, PlayerType role){
+	public synchronized List<UUID> getAllMembers(String groupName, PlayerType role){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		List<UUID> members = new ArrayList<UUID>();
 		try {
@@ -480,7 +480,7 @@ public class GroupManagerDao {
 		return members;
 	}
 	
-	public void removeMember(UUID member, String group){
+	public synchronized void removeMember(UUID member, String group){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			removeMember.setString(1, member.toString());
@@ -492,7 +492,7 @@ public class GroupManagerDao {
 		}
 	}
 	
-	public void addSubGroup(String group, String subGroup){
+	public synchronized void addSubGroup(String group, String subGroup){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			addSubGroup.setString(1, group);
@@ -504,7 +504,7 @@ public class GroupManagerDao {
 		}
 	}
 	
-	public List<Group> getSubGroups(String group){
+	public synchronized List<Group> getSubGroups(String group){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		List<Group> groups = new ArrayList<Group>();
 		try {
@@ -521,7 +521,7 @@ public class GroupManagerDao {
 		return groups;
 	}
 	
-	public Group getSuperGroup(String subGroup){
+	public synchronized Group getSuperGroup(String subGroup){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			getSuperGroup.setString(1, subGroup);
@@ -536,7 +536,7 @@ public class GroupManagerDao {
 		return null;
 	}
 	
-	public void removeSubGroup(String group, String subGroup){
+	public synchronized void removeSubGroup(String group, String subGroup){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			removeSubGroup.setString(1, group);
@@ -548,7 +548,7 @@ public class GroupManagerDao {
 		}
 	}
 
-	public void addPermission(String groupName, String role, String values){
+	public synchronized void addPermission(String groupName, String role, String values){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			addPerm.setString(1, role);
@@ -561,7 +561,7 @@ public class GroupManagerDao {
 		}
 	}
 	
-	public Map<PlayerType, List<PermissionType>> getPermissions(String group){
+	public synchronized Map<PlayerType, List<PermissionType>> getPermissions(String group){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		Map<PlayerType, List<PermissionType>> perms = new HashMap<PlayerType, List<PermissionType>>();
 		try {
@@ -583,7 +583,7 @@ public class GroupManagerDao {
 		return perms;
 	}
 	
-	public void updatePermissions(String group, PlayerType pType, String perms){
+	public synchronized void updatePermissions(String group, PlayerType pType, String perms){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			updatePerm.setString(1, perms);
@@ -596,7 +596,7 @@ public class GroupManagerDao {
 		}
 	}
 	
-	public int countGroups(){
+	public synchronized int countGroups(){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			ResultSet set = countGroups.executeQuery();
@@ -608,7 +608,7 @@ public class GroupManagerDao {
 		return 0;
 	}
 	
-	public void mergeGroup(String groupName, String toMerge){
+	public synchronized void mergeGroup(String groupName, String toMerge){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			mergeGroup.setString(1, groupName);
@@ -620,7 +620,7 @@ public class GroupManagerDao {
 		}
 	}
 	
-	public void updatePassword(String groupName, String password){
+	public synchronized void updatePassword(String groupName, String password){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			updatePassword.setString(1, password);
@@ -636,7 +636,7 @@ public class GroupManagerDao {
 	 * Adds the uuid to the db if they should auto accept groups when invited.
 	 * @param uuid
 	 */
-	public void autoAcceptGroups(UUID uuid){
+	public synchronized void autoAcceptGroups(UUID uuid){
 		try {
 			addAutoAcceptGroup.setString(1, uuid.toString());
 			addAutoAcceptGroup.execute();
@@ -650,7 +650,7 @@ public class GroupManagerDao {
 	 * @param uuid- The UUID of the player.
 	 * @return Returns true if they should auto accept.
 	 */
-	public boolean shouldAutoAcceptGroups(UUID uuid){
+	public synchronized boolean shouldAutoAcceptGroups(UUID uuid){
 		try {
 			getAutoAcceptGroup.setString(1, uuid.toString());
 			ResultSet set = getAutoAcceptGroup.executeQuery();
@@ -662,7 +662,7 @@ public class GroupManagerDao {
 		return false;
 	}
 	
-	public void removeAutoAcceptGroup(UUID uuid){
+	public synchronized void removeAutoAcceptGroup(UUID uuid){
 		try {
 			removeAutoAcceptGroup.setString(1, uuid.toString());
 			removeAutoAcceptGroup.execute();
