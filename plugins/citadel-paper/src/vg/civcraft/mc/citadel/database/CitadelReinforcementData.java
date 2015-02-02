@@ -205,9 +205,12 @@ public class CitadelReinforcementData {
 		removeRein = db.prepareStatement("delete r.*, ri.* from reinforcement r "
 				+ "left join reinforcement_id ri on r.rein_id = ri.rein_id "
 				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.world = ?");
-		updateRein = db.prepareStatement("update reinforcements set durability = ?,"
-				+ "insecure = ?, group_id = (select f.group_id from faction_id f where f.group_name = ? limit 1), maturation_time = ? "
-				+ "where x = ? and y = ? and z = ? and world = ?");
+		updateRein = db.prepareStatement("update reinforcement r "
+				+ "inner join reinforcement_id ri on ri.rein_id = r.rein_id "
+				+ "set r.durability = ?, r.insecure = ?, r.group_id = "
+				+ "(select f.group_id from faction_id f where f.group_name = ? limit 1), "
+				+ "maturation_time = ? "
+				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.world =?");
 		/*
 		deleteGroup = db.prepareStatement("call deleteGroup(?)");
 		insertDeleteGroup = db.prepareStatement("insert into toDeleteReinforecments(group_id) select g.group_id from faction_id g "
@@ -488,6 +491,7 @@ public class CitadelReinforcementData {
 			updateRein.setInt(6, y);
 			updateRein.setInt(7, z);
 			updateRein.setString(8, world);
+			updateRein.execute();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

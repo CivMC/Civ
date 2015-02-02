@@ -564,8 +564,8 @@ public class BlockListener implements Listener{
                         Bukkit.getPluginManager().callEvent(event);
                         if (!event.isCancelled()) {
                             rm.saveReinforcement(reinforcement);
-                            player.sendMessage(ChatColor.GREEN + message);
                             message = ChatColor.GREEN + "Group has been changed to: " + group.getName() + ".";
+                            player.sendMessage(ChatColor.GREEN + message);
                         }
                         else
                             reinforcement.setGroup(old_group);
