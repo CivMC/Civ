@@ -29,7 +29,7 @@ public class PlayerListener implements Listener{
 			return;
 		String x = "You have been invited to the following groups while you were away: ";
 		
-		for (Group g: notifications.get(uuid)){
+		for (Group g:notifications .get(uuid)){
 			x += g.getName() + ", ";
 		}
 		x = x.substring(0, x.length()- 2);
@@ -41,6 +41,10 @@ public class PlayerListener implements Listener{
 		if (!notifications.containsKey(u))
 			notifications.put(u, new ArrayList<Group>());
 		notifications.get(u).add(g);
+	}
+
+	public static List<Group> getNotifications(UUID player) {
+		return notifications.get(player);
 	}
 	
 	public static void removeNotification(UUID u, Group g){

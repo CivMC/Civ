@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
 
+import java.util.List;
+
 public class ListPlayerTypes extends PlayerCommand{
 
 	public ListPlayerTypes(String name) {
@@ -27,4 +29,7 @@ public class ListPlayerTypes extends PlayerCommand{
 		return true;
 	}
 
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
+	}
 }

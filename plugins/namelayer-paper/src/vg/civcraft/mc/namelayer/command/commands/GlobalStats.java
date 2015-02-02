@@ -7,6 +7,8 @@ import org.bukkit.command.CommandSender;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
 
+import java.util.List;
+
 public class GlobalStats extends PlayerCommand{
 
 	public GlobalStats(String name) {
@@ -32,4 +34,8 @@ public class GlobalStats extends PlayerCommand{
 		return true;
 	}
 
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
+	}
 }

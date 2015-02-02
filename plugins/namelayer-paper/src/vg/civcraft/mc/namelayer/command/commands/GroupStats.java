@@ -1,5 +1,6 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -11,7 +12,9 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class GroupStats extends PlayerCommand {
 
@@ -45,6 +48,19 @@ public class GroupStats extends PlayerCommand {
 		Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), new StatsMessage(p, g));
 		
 		return true;
+	}
+
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		if (!(sender instanceof Player))
+			return null;
+
+		if (args.length > 0)
+			return GroupTabCompleter.complete(args[args.length - 1], null, (Player) sender);
+		else {
+			return GroupTabCompleter.complete(null, null, (Player) sender);
+		}
 	}
 
 	public class StatsMessage implements Runnable{

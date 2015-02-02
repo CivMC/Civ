@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.group.Group;
 
+import java.util.List;
+
 public class DisciplineGroup extends PlayerCommand{
 
 	public DisciplineGroup(String name) {
@@ -42,5 +44,10 @@ public class DisciplineGroup extends PlayerCommand{
 		sender.sendMessage(ChatColor.GREEN + "Group has been disabled.");
 		}
 		return true;
+	}
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
 	}
 }

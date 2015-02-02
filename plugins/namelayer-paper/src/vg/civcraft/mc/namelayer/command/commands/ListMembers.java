@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
+import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class ListMembers extends PlayerCommand{
@@ -58,4 +60,18 @@ public class ListMembers extends PlayerCommand{
 		return true;
 	}
 
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		if (!(sender instanceof Player))
+			return null;
+
+		if (args.length == 0)
+			return GroupTabCompleter.complete(null, null, (Player) sender);
+		else if (args.length == 1)
+			return GroupTabCompleter.complete(args[0], null, (Player)sender);
+		else if (args.length == 2)
+			return MemberTypeCompleter.complete(args[1]);
+
+		return null;
+	}
 }
