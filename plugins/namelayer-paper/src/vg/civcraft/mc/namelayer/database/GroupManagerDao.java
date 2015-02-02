@@ -386,7 +386,7 @@ public class GroupManagerDao {
 		}
 	}
 	
-	public Group getGroup(String groupName){
+	public synchronized Group getGroup(String groupName){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			getGroup.setString(1, groupName);
