@@ -63,6 +63,10 @@ public class InvitePlayer extends PlayerCommand{
 		
 		GroupPermission perm = gm.getPermissionforGroup(group);
 		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
+		if (t == null){
+			p.sendMessage(ChatColor.RED + "You are not on that group.");
+			return true;
+		}
 		boolean allowed = false;
 		switch (pType){ // depending on the type the executor wants to add the player to
 		case MEMBERS:
