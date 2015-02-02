@@ -1,5 +1,6 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
@@ -58,4 +59,7 @@ public class CreateGroup extends PlayerCommand{
 		return true;
 	}
 
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
+	}
 }

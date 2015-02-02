@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.TabCompleters.InviteTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
@@ -64,5 +65,16 @@ public class AcceptInvite extends PlayerCommand{
 			}
 		}
 		return true;
+	}
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		if (!(sender instanceof Player)){
+			return null;
+		}
+
+		if (args.length > 0)
+			return InviteTabCompleter.complete(args[0], (Player) sender);
+		else
+			return InviteTabCompleter.complete(null, (Player)sender);
 	}
 }

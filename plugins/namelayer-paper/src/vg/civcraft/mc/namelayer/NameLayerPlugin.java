@@ -1,6 +1,7 @@
 package vg.civcraft.mc.namelayer;
 
 import java.io.File;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -52,7 +53,13 @@ public class NameLayerPlugin extends JavaPlugin{
 			return false;
 		return handle.execute(sender, cmd, args);
 	}
-	
+
+	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args){
+		if (!loadGroups)
+			return null;
+		return handle.complete(sender, cmd, args);
+	}
+
 	public void onDisable() {
 		
 	}

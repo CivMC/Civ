@@ -1,5 +1,6 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
@@ -67,5 +68,10 @@ public class JoinGroup extends PlayerCommand{
 		p.sendMessage(ChatColor.GREEN + "You have successfully been added to this group.");
 		return true;
 	}
+
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
+	}
+
 
 }

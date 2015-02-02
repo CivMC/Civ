@@ -13,6 +13,8 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
+import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
@@ -128,4 +130,24 @@ public class InvitePlayer extends PlayerCommand{
 		return true;
 	}
 
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		if (!(sender instanceof Player)){
+			sender.sendMessage(ChatColor.RED + "I'm sorry baby, please run this as a player :)");
+			return null;
+		}
+		if (args.length < 2) {
+			if (args.length == 0)
+				return GroupTabCompleter.complete(null, null, (Player) sender);
+			else
+				return GroupTabCompleter.complete(args[0], null, (Player)sender);
+
+		} else if (args.length == 2)
+			return null;
+
+		else if (args.length == 3)
+			return MemberTypeCompleter.complete(args[2]);
+
+		else return null;
+	}
 }

@@ -1,6 +1,7 @@
 package vg.civcraft.mc.namelayer.command;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
@@ -74,6 +75,15 @@ public class CommandHandler {
 		}
 		return true;
 	}
+
+	public List<String> complete(CommandSender sender, org.bukkit.command.Command cmd, String[] args){
+		if (commands.containsKey(cmd.getName().toLowerCase())){
+			Command command = commands.get(cmd.getName().toLowerCase());
+			return command.tabComplete(sender, args);
+		}
+		return null;
+	}
+
 	
 	public void helpPlayer(Command command, CommandSender sender){
 		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Command: " ).append(command.getName()).toString());

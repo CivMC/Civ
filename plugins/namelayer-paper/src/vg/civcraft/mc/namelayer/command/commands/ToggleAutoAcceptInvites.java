@@ -1,5 +1,6 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
@@ -39,6 +40,10 @@ public class ToggleAutoAcceptInvites extends PlayerCommand{
 			p.sendMessage(ChatColor.GREEN + "You will automatically accept group requests.");
 		}
 		return true;
+	}
+
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
 	}
 
 }

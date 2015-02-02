@@ -52,5 +52,8 @@ public class ListGroups extends PlayerCommand {
 		p.sendMessage(names);
 		return true;
 	}
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
+	}
 
 }

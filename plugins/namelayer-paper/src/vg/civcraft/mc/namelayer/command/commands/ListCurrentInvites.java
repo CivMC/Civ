@@ -7,6 +7,8 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 
+import java.util.List;
+
 public class ListCurrentInvites extends PlayerCommand{
 
 	public ListCurrentInvites(String name) {
@@ -26,6 +28,9 @@ public class ListCurrentInvites extends PlayerCommand{
 		Player p = (Player) sender;
 		p.sendMessage(PlayerListener.getNotificationsInStringForm(NameAPI.getUUID(p.getName())));
 		return true;
+	}
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
 	}
 
 }
