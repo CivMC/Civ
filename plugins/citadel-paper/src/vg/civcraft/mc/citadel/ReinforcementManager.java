@@ -14,6 +14,7 @@ import org.bukkit.block.Block;
 import vg.civcraft.mc.citadel.database.CitadelReinforcementData;
 import vg.civcraft.mc.citadel.misc.CitadelStatics;
 import vg.civcraft.mc.citadel.misc.LoadingCacheNullException;
+import vg.civcraft.mc.citadel.reinforcement.NullReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
 public class ReinforcementManager {
@@ -25,6 +26,9 @@ public class ReinforcementManager {
 		public void onRemoval(
 				RemovalNotification<Location, Reinforcement> removal) {
 			Reinforcement rein = removal.getValue();
+			if (rein instanceof NullReinforcement){
+				return;
+			}
 			saveReinforcement(rein);
 		}
 	};
@@ -36,7 +40,7 @@ public class ReinforcementManager {
 				public Reinforcement load(Location loc) throws Exception {
 					Reinforcement rein = db.getReinforcement(loc);
 					if (rein == null) {
-						throw new LoadingCacheNullException();
+						return new NullReinforcement(loc);
 					}
 					CitadelStatics.updateHitStat(CitadelStatics.LOAD);
 					// decrement cache because it gets increased from getReinforcement()
@@ -44,7 +48,7 @@ public class ReinforcementManager {
 					return rein;
 				}
 			});
-
+	
 	public ReinforcementManager(CitadelReinforcementData db) {
 		this.db = db;
 	}
@@ -80,6 +84,8 @@ public class ReinforcementManager {
 	public Reinforcement getReinforcement(Location loc) {
 		try {
 			Reinforcement rein = reinforcements.get(loc);
+			if (rein instanceof NullReinforcement)
+				return null;
 			CitadelStatics.updateHitStat(CitadelStatics.CACHE);
 			return rein;
 		} catch (Exception e) {
