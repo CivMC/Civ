@@ -288,8 +288,8 @@ public class GroupManagerDao {
 				+ "inner join faction_id id on id.group_name = ? "
 				+ "where fm.group_id = id.group_id and fm.role = ?");
 		removeMember = db.prepareStatement("delete fm.* from faction_member fm "
-				+ "inner join faction_id fi on fi.group_name = ?"
-				+ "where fm.group_id = fi.group_id and fm.member_name = ?");
+				+ "inner join faction_id fi on fi.group_id = fm.group_id "
+				+ "where fm.member_name = ? and fi.group_name =?");
 		
 		addSubGroup = db.prepareStatement("insert into subgroup (group_id, sub_group_id) " +
 				"select g.group_id, sg.group_id from faction_id g "

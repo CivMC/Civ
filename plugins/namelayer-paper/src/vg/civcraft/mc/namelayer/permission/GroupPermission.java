@@ -33,7 +33,8 @@ public class GroupPermission {
 		if (type == null || type.length == 0)
 			return true; // If the player is even a member return true
 		if (group instanceof PublicGroup){
-			switch (type[0]){
+			for (int x = 0; x < type.length; x++)
+			switch (type[x]){
 			case DOORS:
 			case CHESTS:
 				return true;
