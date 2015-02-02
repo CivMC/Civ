@@ -94,7 +94,7 @@ public class Utility {
         }
         // Fire the creation event
         PlayerReinforcement rein = new PlayerReinforcement(block.getLocation(), 
-        		type.getHitPoints(), System.currentTimeMillis(), 
+        		type.getHitPoints(), getIntFormofMaturation(System.currentTimeMillis(),type.getItemStack()), 
         		g, type.getItemStack());
         ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, block, player);
         Bukkit.getPluginManager().callEvent(event);
@@ -490,7 +490,8 @@ public class Utility {
     	if (reinType == null)
     		return null;
     	Group g = GroupManager.getSpecialCircumstanceGroup(group);
-    	PlayerReinforcement rein = new PlayerReinforcement(loc, dur, System.currentTimeMillis()
+    	PlayerReinforcement rein = new PlayerReinforcement(loc, dur, 
+    			getIntFormofMaturation(System.currentTimeMillis(),reinType.getItemStack())
     			, g, reinType.getItemStack());
     	ReinforcementCreationEvent event = 
     			new ReinforcementCreationEvent(rein, loc.getBlock(), p);
@@ -584,4 +585,12 @@ public class Utility {
 		}
     	return b;
     }
+    
+    private static int getIntFormofMaturation(long creation, ItemStack stack){
+		int maturation = (int)(creation / 60000) + 
+				ReinforcementType.
+				getReinforcementType(stack)
+				.getMaturationTime();
+		return maturation;
+	}
 }

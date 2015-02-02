@@ -25,21 +25,13 @@ public class PlayerReinforcement extends Reinforcement{
 	private ItemStack stack;
 	
 	public PlayerReinforcement(Location loc, int health,
-			long creation, Group g, ItemStack stack) {
-		super(loc, stack.getType(), health, 
-				getIntFormofMaturation(creation, stack));
+			int creation, Group g, ItemStack stack) {
+		super(loc, stack.getType(), health, creation);
 		this.g = g;
 		this.stack = stack;
 		gp = NameAPI.getGroupManager().getPermissionforGroup(g);
 	}
 	
-	private static int getIntFormofMaturation(long creation, ItemStack stack){
-		int maturation = (int)(creation / 60000) + 
-				ReinforcementType.
-				getReinforcementType(stack)
-				.getMaturationTime();
-		return maturation;
-	}
 	/**
 	 * Returns true if the player has access to do the specified 
 	 * PermissionType on this reinforcement.

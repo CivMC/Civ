@@ -38,7 +38,7 @@ public class Citadel extends JavaPlugin{
 			Log("Citadel is shutting down because it could not find NameLayer");
 			this.getPluginLoader().disablePlugin(this); // shut down
 		}
-		this.saveDefaultConfig();
+		saveDefaultConfig();
 		new CitadelConfigManager(getConfig());
 		
 		// Grab the values from config
