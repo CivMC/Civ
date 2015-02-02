@@ -51,10 +51,14 @@ public class ListMembers extends PlayerCommand{
 		}
 		else
 			uuids = g.getAllMembers();
-		String x = "Members are as follows: ";
-		for (UUID uu: uuids)
-			x += NameAPI.getCurrentName(uu) + " ";
-		p.sendMessage(ChatColor.GREEN + x);
+		StringBuilder sb = new StringBuilder();
+		sb.append("Members are as follows: ");
+		for (UUID uu: uuids){
+			sb.append(NameAPI.getCurrentName(uu));
+			sb.append(" ");
+		}
+		
+		p.sendMessage(ChatColor.GREEN + sb.toString());
 		return true;
 	}
 
