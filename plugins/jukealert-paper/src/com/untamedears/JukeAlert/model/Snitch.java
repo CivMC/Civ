@@ -144,6 +144,7 @@ public class Snitch implements QTBox, Comparable {
 
     public void setGroup(Group group) {
         this.group = group;
+        JukeAlert.getInstance().getJaLogger().updateSnitchGroup(this, group.getName());
     }
 
     public Location getLoc() {
