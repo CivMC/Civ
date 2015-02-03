@@ -1,6 +1,7 @@
 package vg.civcraft.mc.citadel.command;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
@@ -54,6 +55,23 @@ public class CommandHandler {
 			command.execute(sender, args);
 		}
 		return true;
+	}
+
+	/**
+	 * Is called when a tab is pressed.  Should not be touched by any outside
+	 * plugin.
+	 * @param sender
+	 * @param cmd
+	 * @param args
+	 * @return
+	 */
+
+	public List<String> complete(CommandSender sender, org.bukkit.command.Command cmd, String[] args){
+		if (commands.containsKey(cmd.getName().toLowerCase())){
+			Command command = commands.get(cmd.getName().toLowerCase());
+			return command.tabComplete(sender, args);
+		}
+		return null;
 	}
 	/**
 	 * Sends a player help message.

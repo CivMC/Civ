@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.command.PlayerCommand;
-import vg.civcraft.mc.citadel.command.commands.tabCompleters.GroupTabCompleter;
+import vg.civcraft.mc.citadel.command.tabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
