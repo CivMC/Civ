@@ -93,8 +93,8 @@ public class CitadelConfigManager {
 		return config.getInt("max_cache_size");
 	}
 	
-	public static int getMaxCacheMinutes(){
-		return config.getInt("max_cache_load_time");
+	public static long getMaxCacheMinutes(){
+		return config.getLong("max_cache_load_time");
 	}
 	
 	public static int getMaxRedstoneDistance(){

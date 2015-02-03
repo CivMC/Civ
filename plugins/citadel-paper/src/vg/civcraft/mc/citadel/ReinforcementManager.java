@@ -34,7 +34,7 @@ public class ReinforcementManager {
 	};
 	private LoadingCache<Location, Reinforcement> reinforcements = CacheBuilder
 			.newBuilder().maximumSize(CitadelConfigManager.getMaxCacheSize())
-			.expireAfterAccess(10, TimeUnit.MINUTES)
+			.expireAfterAccess(CitadelConfigManager.getMaxCacheMinutes(), TimeUnit.MINUTES)
 			.removalListener(removalListener)
 			.build(new CacheLoader<Location, Reinforcement>() {
 				public Reinforcement load(Location loc) throws Exception {
