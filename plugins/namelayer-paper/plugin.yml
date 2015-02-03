@@ -25,6 +25,8 @@ commands:
    nlleg:
    nllgt:
    nllpt:
+   nllci:
+   nltaai:
 permissions:
    namelayer.admin:
       default: op
