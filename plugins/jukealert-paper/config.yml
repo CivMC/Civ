@@ -12,3 +12,4 @@ settings:
   daysFromLastAdminVisitForLoggedSnitchCulling: 0
   daysFromLastAdminVisitForNonLoggedSnitchCulling: 0  
   allowTriggeringLevers: false
+  togglerestartgroupcheck: false

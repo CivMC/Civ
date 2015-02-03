@@ -1,6 +1,6 @@
 name: JukeAlert
 main: com.untamedears.JukeAlert.JukeAlert
-version: 1.2.8
+version: 1.2.9
 depend: [Citadel, NameLayer]
 softdepend: [vanishnopacket, ItemExchange]
 commands:

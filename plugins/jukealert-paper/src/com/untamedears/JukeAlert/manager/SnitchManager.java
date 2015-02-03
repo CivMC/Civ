@@ -15,6 +15,9 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -60,6 +63,18 @@ public class SnitchManager {
         }
         if (plugin.getConfigManager().getSnitchEntryCullingEnabled()) {
             logger.cullSnitchEntries();
+        }
+        if (plugin.getConfigManager().getToggleRestartCheckGroup()){
+        	for (Snitch snitch: snitchesById.values()){
+        		Location loc = snitch.getLoc();
+        		Reinforcement rein = Citadel.getReinforcementManager().getReinforcement(loc);
+        		if (rein == null || !(rein instanceof PlayerReinforcement))
+        			continue;
+        		PlayerReinforcement pRein = (PlayerReinforcement) rein;
+        		if (!pRein.getGroup().getName().equals(snitch.getGroup().getName())){
+        			snitch.setGroup(pRein.getGroup());
+        		}
+        	}
         }
     }
 

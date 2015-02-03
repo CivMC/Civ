@@ -40,6 +40,7 @@ public class ConfigManager
 	private boolean taxReinforcementPerAlert;
     private int alertRateLimit;
     private boolean enableInvisibility;
+    private boolean toggleRestartCheckGroup;
 
 	private File main;
 	private FileConfiguration config;
@@ -108,6 +109,7 @@ public class ConfigManager
         maxSnitchLifetimeDays = loadInt("snitchculling.maxlifetime", 21);
         alertRateLimit = loadInt("settings.alertratelimit", 70);
         enableInvisibility = loadBoolean("settings.enableinvisiblity", false);
+        toggleRestartCheckGroup = loadBoolean("settings.togglerestartgroupcheck", false);
         save();
     }
 
@@ -352,5 +354,9 @@ public class ConfigManager
     
     public boolean getInvisibilityEnabled(){
     	return enableInvisibility;
+    }
+    
+    public boolean getToggleRestartCheckGroup(){
+    	return toggleRestartCheckGroup;
     }
 }
