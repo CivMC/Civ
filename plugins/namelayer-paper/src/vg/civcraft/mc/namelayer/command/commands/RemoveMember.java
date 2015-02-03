@@ -45,6 +45,7 @@ public class RemoveMember extends PlayerCommand {
 		UUID executor = NameAPI.getUUID(p.getName());
 		UUID uuid = NameAPI.getUUID(args[1]);
 		
+		String playerName = NameAPI.getCurrentName(uuid);
 		GroupPermission perm = gm.getPermissionforGroup(group);
 		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
 		PlayerType toBeRemoved = group.getPlayerType(uuid);
@@ -92,7 +93,7 @@ public class RemoveMember extends PlayerCommand {
 			return true;
 		}
 		
-		p.sendMessage(ChatColor.GREEN + "Player has been removed from the group.");
+		p.sendMessage(ChatColor.GREEN + playerName + " has been removed from the group.");
 		group.removeMember(uuid);
 		return true;
 	}
