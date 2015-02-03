@@ -1,8 +1,6 @@
 package vg.civcraft.mc.citadel.command.commands;
 
-import java.util.Iterator;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -116,6 +114,11 @@ public class Acid extends PlayerCommand {
 			block.breakNaturally();
 		}
 		return true;
+	}
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return new ArrayList<String>();
 	}
 
 }

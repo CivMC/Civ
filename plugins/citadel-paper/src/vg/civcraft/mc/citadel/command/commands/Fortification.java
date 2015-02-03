@@ -1,5 +1,7 @@
 package vg.civcraft.mc.citadel.command.commands;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
@@ -11,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.command.PlayerCommand;
+import vg.civcraft.mc.citadel.command.commands.tabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -76,6 +79,20 @@ public class Fortification extends PlayerCommand{
 			state.setGroup(g);
 		}
 		return true;
+	}
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		if (!(sender instanceof Player))
+			return null;
+
+		if (args.length == 0)
+			return GroupTabCompleter.complete(null, PermissionType.BLOCKS, (Player)sender);
+		else if (args.length == 1)
+			return GroupTabCompleter.complete(args[0], PermissionType.BLOCKS, (Player)sender);
+		else{
+			return new ArrayList<String>();
+		}
 	}
 
 }

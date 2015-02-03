@@ -8,6 +8,9 @@ import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.command.PlayerCommand;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Information extends PlayerCommand{
 
 	public Information(String name) {
@@ -36,6 +39,11 @@ public class Information extends PlayerCommand{
 			state.setMode(ReinforcementMode.REINFORCEMENT_INFORMATION);
 		}
 		return true;
+	}
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return new ArrayList<String>();
 	}
 
 }
