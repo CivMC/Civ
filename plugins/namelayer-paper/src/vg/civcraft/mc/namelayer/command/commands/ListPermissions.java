@@ -23,7 +23,7 @@ public class ListPermissions extends PlayerCommand{
 		setIdentifier("nllp");
 		setDescription("This command is used to show permissions for a PlayerType in a specific group.");
 		setUsage("/nllp <group> <PlayerType>");
-		setArguments(2,2);
+		setArguments(1,2);
 	}
 
 	@Override
@@ -46,17 +46,25 @@ public class ListPermissions extends PlayerCommand{
 		}
 		
 		GroupPermission gPerm = gm.getPermissionforGroup(g);
-		if (!gPerm.isAccessible(playerType, PermissionType.LIST_PERMS)){
+		if ((!gPerm.isAccessible(playerType, PermissionType.LIST_PERMS)) && (args.length != 1)){
 			p.sendMessage(ChatColor.RED + "You do not have permission in this group to run this command.");
 			return true;
 		}
 		
-		PlayerType check = PlayerType.getPlayerType(args[1]);
-		if (check == null){
-			PlayerType.displayPlayerTypes(p);
-			return true;
+		String types;
+		if(args.length == 2)
+		{
+			PlayerType check = PlayerType.getPlayerType(args[1]);
+			if (check == null){
+				PlayerType.displayPlayerTypes(p);
+				return true;
+			}
+			types = gPerm.listPermsforPlayerType(check);
 		}
-		String types = gPerm.listPermsforPlayerType(check);
+		else
+		{
+			types = gPerm.listPermsforPlayerType(playerType);
+		}
 		p.sendMessage(ChatColor.GREEN + types);
 		return true;
 	}
