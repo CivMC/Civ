@@ -6,13 +6,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class PlayerListener implements Listener{
@@ -27,7 +31,16 @@ public class PlayerListener implements Listener{
 			return;
 		if (notifications.get(uuid).isEmpty())
 			return;
-		String x = "You have been invited to the following groups while you were away: ";
+		
+		String x = null;
+		GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
+		boolean shouldAutoAccept = db.shouldAutoAcceptGroups(uuid);
+		if(shouldAutoAccept){
+			x = "You have auto-accepted invitation from the following groups while you were away: ";
+		}
+		else{
+			x = "You have been invited to the following groups while you were away: ";
+		}			
 		
 		for (Group g:notifications .get(uuid)){
 			x += g.getName() + ", ";
