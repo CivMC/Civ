@@ -493,7 +493,8 @@ public class CitadelReinforcementData {
 			updateRein.setString(8, world);
 			updateRein.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			Citadel.Log(String.format("The Null Group Exception that is being followed has to deal with the group name: %s,"
+					+ " at location: %d, %d, %d, at world: %s", groupName, x, y, z, world));
 			e.printStackTrace();
 		}
 	}

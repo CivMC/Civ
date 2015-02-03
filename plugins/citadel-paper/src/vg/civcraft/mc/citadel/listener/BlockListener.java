@@ -479,6 +479,10 @@ public class BlockListener implements Listener{
                         if (reinforcement.isInsecure()) {
                             sb.append(" (Insecure)");
                         }
+                        if (group.isDisciplined()) {
+                            sb.append(" (Disciplined)");
+                        }
+                        
                         player.sendMessage(ChatColor.GREEN + sb.toString());
                     } else if(reinforcement.isAccessible(player, PermissionType.BLOCKS, PermissionType.DOORS, PermissionType.CHESTS)){
                         sb = new StringBuilder();
