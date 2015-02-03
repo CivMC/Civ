@@ -479,12 +479,15 @@ public class PrintingPress extends BaseFactory {
 				if (meta instanceof BookMeta) {
 					// Found a book
 					BookMeta bookData = (BookMeta) meta;
-					String title = bookData.getTitle();
-					String author = bookData.getAuthor();
+					String title = bookData.hasTitle() ? bookData.getTitle() : "";
+					String author = bookData.hasAuthor() ? bookData.getAuthor() : "";
 					if (author == null) {
 						author = "";
 					}
-					List<String> pages = new ArrayList<String>(bookData.getPages());
+					if (title == null) {
+						title = "";
+					}
+					List<String> pages = new ArrayList<String>((int)(bookData.hasPages() ? bookData.getPages() : 0));
 					
 					NamedItemStack plates = new NamedItemStack(Material.WRITTEN_BOOK, 1, (short) 0, "plate");
 					BookMeta plateMeta = (BookMeta) plates.getItemMeta();
@@ -537,13 +540,22 @@ public class PrintingPress extends BaseFactory {
 						if (match.matches()) {
 							if (meta instanceof BookMeta) {
 								BookMeta bookData = (BookMeta) meta;
-								title = bookData.getTitle();
-								author = bookData.getAuthor();
+								if (bookData.hasTitle())
+									title = bookData.getTitle();
+								if (title == null)
+									title = "";
+
+								if (bookData.hasAuthor())
+									author = bookData.getAuthor();
 								if (author == null) {
 									author = "";
 								}
-								watermark = Integer.parseInt(match.group(1)); 
-								pages = new ArrayList<String>(bookData.getPages());
+								watermark = Integer.parseInt(match.group(1));
+								if (bookData.hasPages())
+									pages = new ArrayList<String>(bookData.getPages());
+								else {
+									pages = new ArrayList<String>(0);
+								}
 								valid = true;
 								break;
 							}
