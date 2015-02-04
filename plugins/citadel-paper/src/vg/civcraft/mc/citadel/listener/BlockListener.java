@@ -108,7 +108,7 @@ public class BlockListener implements Listener{
 		if (inv.contains(type.getMaterial(), type.getRequiredAmount())) {
 			try {
 				if (createPlayerReinforcement(p, state.getGroup(), b, type) == null) {
-					p.sendMessage(ChatColor.RED + String.format("%s is not a reinforcible material " + b.getType().name()));
+					p.sendMessage(ChatColor.RED + String.format("%s is not a reinforcible material ", b.getType().name()));
 				} else {
 					state.checkResetMode();
 				}	
@@ -116,8 +116,8 @@ public class BlockListener implements Listener{
 			catch(ReinforcemnetFortificationCancelException ex){
 			}
         } else {
-            p.sendMessage(ChatColor.YELLOW + "%s depleted, left fortification mode " + 
-            		state.getReinforcementType().getMaterial().name());
+            p.sendMessage(ChatColor.YELLOW + String.format("%s depleted, left fortification mode ",  
+            		state.getReinforcementType().getMaterial().name()));
             state.reset();
             event.setCancelled(true);
         }
