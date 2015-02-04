@@ -25,7 +25,7 @@ public class ListPlayerTypes extends PlayerCommand{
 			return true;
 		}
 		Player p = (Player) sender;
-		PlayerType.displayPlayerTypes(p);
+		PlayerType.displayPlayerTypesnllpt(p);
 		return true;
 	}
 
