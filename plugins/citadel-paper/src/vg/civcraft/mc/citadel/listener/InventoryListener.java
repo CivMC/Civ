@@ -14,6 +14,7 @@ import org.bukkit.inventory.InventoryHolder;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
+import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -28,9 +29,9 @@ public class InventoryListener implements Listener {
 		final InventoryHolder holder = inv.getHolder();
 		Location loc;
 		if (holder instanceof DoubleChest) {
-			loc = ((DoubleChest) holder).getLocation();
+			loc = Utility.getRealBlock(((DoubleChest) holder).getLocation().getBlock()).getLocation();
 		} else if (holder instanceof BlockState) {
-			loc = ((BlockState) holder).getLocation();
+			loc = Utility.getRealBlock(((BlockState) holder).getLocation().getBlock()).getLocation();
 		} else {
 			// Entity or Vehicle inventories
 			return null;
