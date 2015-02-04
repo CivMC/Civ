@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.command.PlayerCommand;
+import vg.civcraft.mc.citadel.command.tabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
@@ -62,7 +63,20 @@ public class Stats extends PlayerCommand{
 		Bukkit.getScheduler().runTaskAsynchronously(Citadel.getInstance(), new StatsMessage(p, g));
 		return true;
 	}
-	
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		if (!(sender instanceof Player))
+			return new ArrayList<String>();
+
+		if (args.length == 0)
+			return GroupTabCompleter.complete(null, null, (Player)sender);
+		else if (args.length == 1)
+			return GroupTabCompleter.complete(args[0], null, (Player)sender);
+		else return  new ArrayList<String>();
+
+	}
+
 	public class StatsMessage implements Runnable{
 
 		private final Player p;

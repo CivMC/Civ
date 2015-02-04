@@ -1,5 +1,6 @@
 package vg.civcraft.mc.citadel.command.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -42,6 +43,11 @@ public class Materials extends PlayerCommand{
 		}
 		p.sendMessage(ChatColor.GREEN + t);
 		return true;
+	}
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return new ArrayList<String>();
 	}
 
 }

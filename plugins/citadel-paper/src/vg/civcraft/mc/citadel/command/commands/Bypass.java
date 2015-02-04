@@ -7,6 +7,9 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.command.PlayerCommand;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Bypass extends PlayerCommand{
 
 	public Bypass(String name) {
@@ -31,6 +34,11 @@ public class Bypass extends PlayerCommand{
 		else 
 			p.sendMessage(ChatColor.GREEN + "Bypass mode has been disabled.");
 		return true;
+	}
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return new ArrayList<String>();
 	}
 
 }

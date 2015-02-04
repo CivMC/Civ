@@ -1,5 +1,6 @@
 package vg.civcraft.mc.citadel;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -116,5 +117,9 @@ public class Citadel extends JavaPlugin{
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		return cHandle.execute(sender, cmd, args);
+	}
+
+	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args){
+		return cHandle.complete(sender, cmd, args);
 	}
 }
