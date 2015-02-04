@@ -108,8 +108,9 @@ public class InvitePlayer extends PlayerCommand{
 					+ "If you wish to toggle invites so they always are accepted please run /nltaai");
 			p.sendMessage(ChatColor.GREEN + "The invitation has been sent.");
 		}
-		else if(shouldAutoAccept){
-			p.sendMessage(ChatColor.GREEN + "Player has auto accepted into the group.");
+		else if(shouldAutoAccept && !invitee.isOnline()){
+			PlayerListener.addNotification(uuid, group);
+			p.sendMessage(ChatColor.GREEN + "Player is offline and will be notified on log in.");
 		}
 		else{
 			p.sendMessage(ChatColor.GREEN + "Player is offline and will be notified on log in.");
