@@ -108,7 +108,12 @@ public class BlockListener implements Listener{
 		if (inv.contains(type.getMaterial(), type.getRequiredAmount())) {
 			try {
 				if (createPlayerReinforcement(p, state.getGroup(), b, type) == null) {
-					p.sendMessage(ChatColor.RED + String.format("%s is not a reinforcible material ", b.getType().name()));
+					if(b.getType().name() == null){
+							String binfo = "MissingFormatArgumentException, Block for block: " + b.getType().getId();
+						Citadel.Log(binfo);
+						return;
+					}
+						p.sendMessage(ChatColor.RED + String.format("%s is not a reinforcible material ", b.getType().name()));
 				} else {
 					state.checkResetMode();
 				}	
