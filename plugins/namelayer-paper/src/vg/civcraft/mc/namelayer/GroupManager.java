@@ -186,6 +186,13 @@ public class GroupManager{
 					"The current types are: " + types);
 		}
 		
+		public static void displayPlayerTypesnllpt(Player p){
+			String types = "";
+			for (PlayerType type: PlayerType.values())
+				types += type.name() + " ";
+			p.sendMessage(ChatColor.GREEN + "The current types are: " + types); //dont yell at player for nllpt
+		}
+		
 		public static String toStringName(){
 			String x = "";
 			for (PlayerType name: PlayerType.values())
