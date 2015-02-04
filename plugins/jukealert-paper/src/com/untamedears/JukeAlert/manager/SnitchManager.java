@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -72,6 +73,8 @@ public class SnitchManager {
         			continue;
         		PlayerReinforcement pRein = (PlayerReinforcement) rein;
         		if (!pRein.getGroup().getName().equals(snitch.getGroup().getName())){
+        			plugin.getLogger().log(Level.INFO, "Found mismatched juke at " + snitch.getLoc().toString() + " correcting from "
+        					+ snitch.getGroup().getName() + " to " + pRein.getGroup().getName());
         			snitch.setGroup(pRein.getGroup());
         		}
         	}
