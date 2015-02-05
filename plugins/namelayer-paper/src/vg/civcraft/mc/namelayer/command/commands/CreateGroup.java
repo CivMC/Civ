@@ -7,6 +7,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.avaje.ebean.validation.Pattern;
+
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -43,8 +45,13 @@ public class CreateGroup extends PlayerCommand{
 			password = null;
 		GroupType type = GroupType.PRIVATE;
 		if (args.length == 2)
+		{
+			if(GroupType.getGroupType(args[1]) == null){
+				p.sendMessage(ChatColor.RED + "You have entered an invalid GroupType, use /nllgt to list GroupTypes.");
+				return true;
+			}
 			type = GroupType.getGroupType(args[1]);
-		
+		}
 		UUID uuid = NameAPI.getUUID(p.getName());
 		Group g = null;
 		switch(type){
