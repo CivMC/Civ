@@ -13,6 +13,7 @@ import vg.civcraft.mc.namelayer.command.commands.DeleteGroup;
 import vg.civcraft.mc.namelayer.command.commands.DisciplineGroup;
 import vg.civcraft.mc.namelayer.command.commands.GlobalStats;
 import vg.civcraft.mc.namelayer.command.commands.GroupStats;
+import vg.civcraft.mc.namelayer.command.commands.InfoDump;
 import vg.civcraft.mc.namelayer.command.commands.InvitePlayer;
 import vg.civcraft.mc.namelayer.command.commands.JoinGroup;
 import vg.civcraft.mc.namelayer.command.commands.LeaveGroup;
@@ -58,6 +59,7 @@ public class CommandHandler {
 		addCommands(new ListPlayerTypes("ListPlayerTypes"));
 		addCommands(new ListCurrentInvites("ListCurrentInvites"));
 		addCommands(new ToggleAutoAcceptInvites("AutoAcceptInvites"));
+		addCommands(new InfoDump("InfoDump"));
 	}
 	
 	public void addCommands(Command command){
