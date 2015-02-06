@@ -43,13 +43,13 @@ public class PromotePlayer extends PlayerCommand{
 		
 		UUID promotee = NameAPI.getUUID(args[1]);
 		
-		if(promotee == executor){
-			p.sendMessage(ChatColor.RED + "You cannot promote yourself");
+		if(promotee ==null){
+			p.sendMessage(ChatColor.RED + "That player does not exist");
 			return true;
 		}
 		
-		if(promotee ==null){
-			p.sendMessage(ChatColor.RED + "That player does not exist");
+		if(promotee.equals(executor)){
+			p.sendMessage(ChatColor.RED + "You cannot promote yourself");
 			return true;
 		}
 		
