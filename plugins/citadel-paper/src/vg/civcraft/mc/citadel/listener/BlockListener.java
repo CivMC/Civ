@@ -123,7 +123,7 @@ public class BlockListener implements Listener{
         }
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void blockBreakEvent(BlockBreakEvent event){
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
