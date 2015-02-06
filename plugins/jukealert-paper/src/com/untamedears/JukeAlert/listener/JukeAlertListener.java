@@ -274,7 +274,7 @@ public class JukeAlertListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void breakSnitchBlock(BlockBreakEvent event) {
         if (event.isCancelled()) {
             return;
