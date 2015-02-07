@@ -1,5 +1,6 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
@@ -32,9 +33,10 @@ public class ChangePlayerName  extends PlayerCommand {
             return false;
         }
 
-        String newName = args[1].substring(0,16);
+        String newName = args[1].length() >= 16 ? args[1].substring(0, 16) : args[1];
         NameAPI.getAssociationList().changePlayer(newName, player);
 
+        sender.sendMessage("player name changed have them relog for it to take affect");
         return true;
     }
 
