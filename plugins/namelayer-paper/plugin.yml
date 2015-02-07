@@ -1,6 +1,6 @@
 name: NameLayer
 main: vg.civcraft.mc.namelayer.NameLayerPlugin
-version: 2.3.0
+version: 2.2.30
 load: startup
 author: Rourke750
 commands:
@@ -11,6 +11,7 @@ commands:
    nldig:
    nlgls:
    nlgs:
+   nlid:
    nlip:
    nljg:
    nllg:

@@ -13,6 +13,7 @@ import vg.civcraft.mc.namelayer.command.commands.DeleteGroup;
 import vg.civcraft.mc.namelayer.command.commands.DisciplineGroup;
 import vg.civcraft.mc.namelayer.command.commands.GlobalStats;
 import vg.civcraft.mc.namelayer.command.commands.GroupStats;
+import vg.civcraft.mc.namelayer.command.commands.InfoDump;
 import vg.civcraft.mc.namelayer.command.commands.InvitePlayer;
 import vg.civcraft.mc.namelayer.command.commands.JoinGroup;
 import vg.civcraft.mc.namelayer.command.commands.LeaveGroup;
@@ -24,13 +25,13 @@ import vg.civcraft.mc.namelayer.command.commands.ListPermissions;
 import vg.civcraft.mc.namelayer.command.commands.ListPlayerTypes;
 import vg.civcraft.mc.namelayer.command.commands.MergeGroups;
 import vg.civcraft.mc.namelayer.command.commands.ModifyPermissions;
+import vg.civcraft.mc.namelayer.command.commands.PromotePlayer;
 import vg.civcraft.mc.namelayer.command.commands.RemoveMember;
 import vg.civcraft.mc.namelayer.command.commands.RemoveSuperGroup;
+import vg.civcraft.mc.namelayer.command.commands.RevokeInvite;
 import vg.civcraft.mc.namelayer.command.commands.SetPassword;
 import vg.civcraft.mc.namelayer.command.commands.ToggleAutoAcceptInvites;
 import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
-import vg.civcraft.mc.namelayer.command.commands.PromotePlayer;
-import vg.civcraft.mc.namelayer.command.commands.RevokeInvite;
 
 public class CommandHandler {
 	public Map<String, Command> commands = new HashMap<String, Command>();
@@ -44,6 +45,7 @@ public class CommandHandler {
 		addCommands(new DisciplineGroup("DisiplineGroup"));
 		addCommands(new GlobalStats("GlobalStats"));
 		addCommands(new GroupStats("GroupStats"));
+		addCommands(new InfoDump("InfoDump"));
 		addCommands(new InvitePlayer("InvitePlayer"));
 		addCommands(new JoinGroup("JoinGroup"));
 		addCommands(new ListGroups("ListGroups"));
