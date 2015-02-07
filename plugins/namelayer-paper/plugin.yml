@@ -1,0 +1,34 @@
+name: NameLayer
+main: vg.civcraft.mc.namelayer.NameLayerPlugin
+version: 2.3.0
+load: startup
+author: Rourke750
+commands:
+   nlag:
+   nlasg:
+   nlcg:
+   nldg:
+   nldig:
+   nlgls:
+   nlgs:
+   nlip:
+   nljg:
+   nllg:
+   nllm:
+   nllp:
+   nlpp:
+   nlmg:
+   nlmp:
+   nlrm:
+   nlri:
+   nlrsg:
+   nlsp:
+   nltg:
+   nlleg:
+   nllgt:
+   nllpt:
+   nllci:
+   nltaai:
+permissions:
+   namelayer.admin:
+      default: op
