@@ -20,6 +20,8 @@ import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
+import vg.civcraft.mc.namelayer.events.PromotePlayerEvent;
+
 public class PromotePlayer extends PlayerCommand{
 
 	public PromotePlayer(String name) {
@@ -64,7 +66,7 @@ public class PromotePlayer extends PlayerCommand{
 		}
 		
 		PlayerType pType = group.getPlayerType(executor);
-		
+		PlayerType promoteecurrentType = group.getPlayerType(promotee);
 		PlayerType promoteeType = PlayerType.getPlayerType(args[2]);
 		if(promoteeType == null){
 			PlayerType.displayPlayerTypes(p);
@@ -110,8 +112,16 @@ public class PromotePlayer extends PlayerCommand{
 		
 		OfflinePlayer prom = Bukkit.getOfflinePlayer(promotee);
 		if(prom.isOnline()){
-			//player is online switch perms
 			Player oProm = (Player) prom;
+			if(promoteecurrentType == PlayerType.MODS || promoteecurrentType == PlayerType.ADMINS || promoteecurrentType == PlayerType.OWNER){
+				if(promoteeType == PlayerType.MEMBERS || promoteeType == PlayerType.SUBGROUP){
+					PromotePlayerEvent event = new PromotePlayerEvent(oProm);
+					Bukkit.getPluginManager().callEvent(event);
+					if(event.isCancelled()){
+						return false;
+					}
+				}				
+			}
 			group.removeMember(promotee);
 			group.addMember(promotee, promoteeType);
 			p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
