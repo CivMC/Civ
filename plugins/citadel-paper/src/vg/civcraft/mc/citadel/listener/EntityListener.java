@@ -26,6 +26,8 @@ import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
+import vg.civcraft.mc.namelayer.events.PromotePlayerEvent;
+
 public class EntityListener implements Listener{
     @EventHandler(ignoreCancelled = true)
     public void explode(EntityExplodeEvent eee) {
@@ -92,6 +94,13 @@ public class EntityListener implements Listener{
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void playerQuitEvent(PlayerQuitEvent event){
+    	Player p = event.getPlayer();
+    	PlayerState state = PlayerState.get(p);
+    	state.reset();
+    }
+    
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void PlayerPromoteEvent(PromotePlayerEvent event){
     	Player p = event.getPlayer();
     	PlayerState state = PlayerState.get(p);
     	state.reset();
