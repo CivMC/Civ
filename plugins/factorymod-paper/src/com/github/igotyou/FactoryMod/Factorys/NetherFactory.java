@@ -169,6 +169,7 @@ public class NetherFactory extends BaseFactory
 			{
 				if (active)
 				{
+					if (!isBroken()||isRepairing()){
 					if (isFuelAvailable() || !netherFactoryProperties.getUseFuelOnTeleport())
 					{
 						Location playerLocation = player.getLocation();
@@ -225,6 +226,9 @@ public class NetherFactory extends BaseFactory
 					else
 					{
 						responses.add(new InteractionResponse(InteractionResult.FAILURE, "Can't teleport, factory is missing fuel! ("+getFuel().getMultiple(1).toString()+")"));
+					}
+					}else{
+						responses.add(new InteractionResponse(InteractionResult.FAILURE, "Can't teleport, factory is in disrepair."));
 					}
 				}
 				else
