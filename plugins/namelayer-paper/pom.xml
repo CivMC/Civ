@@ -6,11 +6,7 @@
   <groupId>vg.civcraft.mc.namelayer</groupId>
   <artifactId>NameLayer</artifactId>
   <packaging>jar</packaging>
-<<<<<<< HEAD
-  <version>2.3.0-${build.number}</version>
-=======
   <version>2.3.1-${build.number}</version>
->>>>>>> 4c1121976411ec26141d43fd89820950eec34914
   <name>NameLayer</name>
   <url>https://github.com/Civcraft/NameLayer/</url>
   
