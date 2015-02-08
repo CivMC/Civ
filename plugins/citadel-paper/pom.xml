@@ -47,7 +47,7 @@
     <dependency>
       <groupId>vg.civcraft.mc.namelayer</groupId>
       <artifactId>NameLayer</artifactId>
-      <version>2.3.1-80</version>
+      <version>2.3.1-81</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -59,7 +59,7 @@
     </repository>
     <repository>
       <id>NameLayer-repo</id>
-      <url>http://192.99.169.83:8080/plugin/repository/project/NameLayer-master/Build/80/repository/</url>
+      <url>http://192.99.169.83:8080/plugin/repository/project/NameLayer-master/Build/81/repository/</url>
     </repository>
   </repositories>
   
