@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -24,11 +25,20 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementManager;
+import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
-
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.events.PromotePlayerEvent;
+import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.GroupPermission;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
+
 
 public class EntityListener implements Listener{
+	protected GroupManager gm = NameAPI.getGroupManager();	
+	
     @EventHandler(ignoreCancelled = true)
     public void explode(EntityExplodeEvent eee) {
         Iterator<Block> iterator = eee.blockList().iterator();
@@ -99,10 +109,37 @@ public class EntityListener implements Listener{
     	state.reset();
     }
     
+    
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void PlayerPromoteEvent(PromotePlayerEvent event){
     	Player p = event.getPlayer();
+    	Group g = event.getGroup();
+    	PlayerType currentType = event.getCurrentPlayerType();
+    	PlayerType futureType = event.getFuturePlayerType();
     	PlayerState state = PlayerState.get(p);
-    	state.reset();
-    }
+    	GroupPermission gPerm = gm.getPermissionforGroup(g);
+    	if(state.getMode() == ReinforcementMode.NORMAL){
+    		//player is in NORMAL mode don't need to do anything
+    		return;
+    	}
+    	if(gPerm.isAccessible(currentType, PermissionType.BLOCKS)){
+    		//see if they can access blocks current state
+    		if (!gPerm.isAccessible(futureType, PermissionType.BLOCKS)){
+    			//if they will no longer be able to access blocks
+    			Group citadelGroup = state.getGroup();
+    			if(citadelGroup.getName() == g.getName()){
+    				//Player is Actively Reinforcing in that group
+    				state.reset();
+        			String msg = "Your PlayerType in group (" + g.getName() + ") changed you no longer have access to reinforce/bypass";
+        			p.sendMessage(ChatColor.RED + msg);
+        			p.sendMessage(ChatColor.GREEN + "Your mode has been set to " + 
+        					ReinforcementMode.REINFORCEMENT.name() + ".");
+    			}
+    			
+    			
+    		}
+    	}
+    }   	
+ 
 }
