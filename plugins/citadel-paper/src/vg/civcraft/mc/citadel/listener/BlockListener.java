@@ -558,7 +558,7 @@ public class BlockListener implements Listener{
                     		
                     	}
                     }
-                } else if (reinforcement.isBypassable(player)) {
+                } else if (reinforcement.isBypassable(player) || (player.isOp() || player.hasPermission("citadel.admin"))) {
                     String message = "";
                     Group group = state.getGroup();
                     Group old_group = reinforcement.getGroup();
