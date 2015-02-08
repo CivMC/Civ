@@ -65,6 +65,7 @@ public class TransferGroup extends PlayerCommand{
 		
 		g.addMember(oPlayer, PlayerType.OWNER);
 		g.setOwner(oPlayer);
+		g.removeMember(uuid);
 		p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(oPlayer) + " has been given ownership of the group.");
 		return true;
 	}

@@ -17,6 +17,7 @@ public class Group {
 	private boolean isDisciplined;
 	private String password;
 	private GroupType type;
+	private boolean valid = true;
 	
 	protected GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
 	
@@ -203,5 +204,20 @@ public class Group {
 	 */
 	public PlayerType getPlayerType(UUID uuid){
 		return players.get(uuid);
+	}
+	/**
+	 * Sets whether this group is valid or not.  Should only be called when a group is deleted so other plugins know
+	 * that this group is no longer accurate. 
+	 * @param valid
+	 */
+	public void setValid(boolean valid){
+		this.valid = valid;
+	}
+	/**
+	 * Checks whether or not a group is valid.
+	 * @return True if it is valid false if recently deleted.
+	 */
+	public boolean isValid(){
+		return valid;
 	}
 }

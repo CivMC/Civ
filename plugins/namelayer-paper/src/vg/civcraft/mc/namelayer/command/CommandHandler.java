@@ -32,6 +32,8 @@ import vg.civcraft.mc.namelayer.command.commands.RevokeInvite;
 import vg.civcraft.mc.namelayer.command.commands.SetPassword;
 import vg.civcraft.mc.namelayer.command.commands.ToggleAutoAcceptInvites;
 import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
+import vg.civcraft.mc.namelayer.command.commands.PromotePlayer;
+import vg.civcraft.mc.namelayer.command.commands.RevokeInvite;
 
 public class CommandHandler {
 	public Map<String, Command> commands = new HashMap<String, Command>();
