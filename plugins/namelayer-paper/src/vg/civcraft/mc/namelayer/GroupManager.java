@@ -54,6 +54,7 @@ public class GroupManager{
 		event = new GroupDeleteEvent(g, true);
 		Bukkit.getPluginManager().callEvent(event);
 		g.setDisciplined(true);
+		g.setInvalidValid(true);
 		return true;
 	}
 	
