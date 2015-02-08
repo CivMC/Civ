@@ -113,14 +113,10 @@ public class PromotePlayer extends PlayerCommand{
 		OfflinePlayer prom = Bukkit.getOfflinePlayer(promotee);
 		if(prom.isOnline()){
 			Player oProm = (Player) prom;
-			if(promoteecurrentType == PlayerType.MODS || promoteecurrentType == PlayerType.ADMINS || promoteecurrentType == PlayerType.OWNER){
-				if(promoteeType == PlayerType.MEMBERS || promoteeType == PlayerType.SUBGROUP){
-					PromotePlayerEvent event = new PromotePlayerEvent(oProm);
-					Bukkit.getPluginManager().callEvent(event);
-					if(event.isCancelled()){
-						return false;
-					}
-				}				
+			PromotePlayerEvent event = new PromotePlayerEvent(oProm, group, promoteecurrentType, promoteeType);
+			Bukkit.getPluginManager().callEvent(event);
+			if(event.isCancelled()){
+				return false;
 			}
 			group.removeMember(promotee);
 			group.addMember(promotee, promoteeType);
