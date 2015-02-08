@@ -30,6 +30,8 @@ commands:
    nllpt:
    nllci:
    nltaai:
+   nlcpn:
+      permission: namelayer.admin
 permissions:
    namelayer.admin:
       default: op
