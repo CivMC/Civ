@@ -210,7 +210,7 @@ public class Group {
 	 * that this group is no longer accurate. 
 	 * @param valid
 	 */
-	public void setInvalidValid(boolean valid){
+	public void setValid(boolean valid){
 		this.valid = valid;
 	}
 	/**
