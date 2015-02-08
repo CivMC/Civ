@@ -2,6 +2,7 @@ package vg.civcraft.mc.namelayer.listeners;
 
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -33,5 +34,6 @@ public class AssociationListener implements Listener{
 		associations.addPlayer(playername, uuid);
 		if (game != null)
 			game.setPlayerProfle(event.getPlayer());
+		event.setJoinMessage(ChatColor.YELLOW + NameAPI.getCurrentName(uuid) + " joined the game");
 	}
 }

@@ -38,12 +38,16 @@ public class AssociationList {
 	private PreparedStatement addPlayer;
     private PreparedStatement getUUIDfromPlayer;
     private PreparedStatement getPlayerfromUUID;
+	private PreparedStatement changePlayerName;
 	
 	public void initializeStatements(){
 		addPlayer = db.prepareStatement("call addplayertotable(?, ?)"); // order player name, uuid 
 		getUUIDfromPlayer = db.prepareStatement("select uuid from Name_player " +
 				"where player=?");
 		getPlayerfromUUID = db.prepareStatement("select player from Name_player " +
+				"where uuid=?");
+
+		changePlayerName = db.prepareStatement("delete from Name_player " +
 				"where uuid=?");
 	}
 	
@@ -129,6 +133,17 @@ public class AssociationList {
 			addPlayer.setString(1, playername);
 			addPlayer.setString(2, uuid.toString());
 			addPlayer.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void changePlayer(String newName, UUID uuid) {
+		NameLayerPlugin.reconnectAndReintializeStatements();
+		try {
+			changePlayerName.setString(1, uuid.toString());
+			changePlayerName.execute();
+			addPlayer(newName, uuid);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
