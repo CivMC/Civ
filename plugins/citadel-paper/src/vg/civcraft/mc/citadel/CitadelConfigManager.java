@@ -108,4 +108,8 @@ public class CitadelConfigManager {
 	public static boolean shouldDropReinforcedBlock(){
 		return config.getBoolean("drop_reinforced_block");
 	}
+	
+	public static int getTickRepeatingSave(){
+		return config.getInt("save_interval_ticks", 500);
+	}
 }

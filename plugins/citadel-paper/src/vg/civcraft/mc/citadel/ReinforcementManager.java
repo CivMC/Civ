@@ -1,5 +1,7 @@
 package vg.civcraft.mc.citadel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import net.minecraft.util.com.google.common.cache.CacheBuilder;
@@ -8,6 +10,7 @@ import net.minecraft.util.com.google.common.cache.LoadingCache;
 import net.minecraft.util.com.google.common.cache.RemovalListener;
 import net.minecraft.util.com.google.common.cache.RemovalNotification;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
@@ -51,6 +54,7 @@ public class ReinforcementManager {
 	
 	public ReinforcementManager(CitadelReinforcementData db) {
 		this.db = db;
+		scheduleSave();
 	}
 
 	/**
@@ -70,7 +74,9 @@ public class ReinforcementManager {
 	 * @param The Reinforcement to save
 	 */
 	public void saveInitialReinforcement(Reinforcement rein) {
-		reinforcements.put(rein.getLocation(), rein);
+		synchronized(reinforcements){
+			reinforcements.put(rein.getLocation(), rein);
+		}
 		CitadelStatics.updateHitStat(CitadelStatics.INSERT);
 		db.insertReinforcement(rein);
 	}
@@ -83,7 +89,10 @@ public class ReinforcementManager {
 	 */
 	public Reinforcement getReinforcement(Location loc) {
 		try {
-			Reinforcement rein = reinforcements.get(loc);
+			Reinforcement rein;
+			synchronized(reinforcements){
+				rein = reinforcements.get(loc);
+			}
 			if (rein instanceof NullReinforcement)
 				return null;
 			CitadelStatics.updateHitStat(CitadelStatics.CACHE);
@@ -112,9 +121,11 @@ public class ReinforcementManager {
 	 * @param rein
 	 */
 	public void deleteReinforcement(Reinforcement rein) {
-		reinforcements.invalidate(rein.getLocation());
-		CitadelStatics.updateHitStat(CitadelStatics.DELETE);
-		db.deleteReinforcement(rein);
+		synchronized(reinforcements){
+			reinforcements.invalidate(rein.getLocation());
+			CitadelStatics.updateHitStat(CitadelStatics.DELETE);
+			db.deleteReinforcement(rein);
+		}
 	}
 
 	/**
@@ -122,7 +133,9 @@ public class ReinforcementManager {
 	 * else where if too a manual flush is wanted.
 	 */
 	public void invalidateAllReinforcements() {
-		reinforcements.invalidateAll();
+		synchronized(reinforcements){
+			reinforcements.invalidateAll();
+		}
 	}
 
 	/**
@@ -152,5 +165,23 @@ public class ReinforcementManager {
 	 */
 	public boolean isReinforced(Block block) {
 		return isReinforced(block.getLocation());
+	}
+	
+	// Saves periodicly all the reinforcements.
+	private void scheduleSave(){
+		Bukkit.getScheduler().runTaskLaterAsynchronously(Citadel.getInstance(), new Runnable(){
+
+			@Override
+			public void run() {
+				List<Reinforcement> reins = new ArrayList<Reinforcement>();
+				synchronized(reinforcements){
+					for (Reinforcement r: reinforcements.asMap().values())
+						reins.add(r);
+				}
+				for (Reinforcement r: reins)
+					saveReinforcement(r);
+			}
+			
+		}, CitadelConfigManager.getTickRepeatingSave());
 	}
 }
