@@ -242,7 +242,7 @@ public class CitadelReinforcementData {
 	 * @return Returns the Reinforcement of the location.
 	 * @return Returns null if there is no reinforcement.
 	 */
-	public Reinforcement getReinforcement(Location loc){
+	public synchronized Reinforcement getReinforcement(Location loc){
 		reconnectAndReinitialize();
 		
 		try {
@@ -322,7 +322,7 @@ public class CitadelReinforcementData {
 	 * SaveManager.
 	 * @param The Reinforcement to save.
 	 */
-	public void insertReinforcement(Reinforcement rein){
+	public synchronized void insertReinforcement(Reinforcement rein){
 		reconnectAndReinitialize();
 		
 		if (rein instanceof PlayerReinforcement){
@@ -449,7 +449,7 @@ public class CitadelReinforcementData {
 	 * within SaveManager
 	 * @param The Reinforcement to delete.
 	 */
-	public void deleteReinforcement(Reinforcement rein){
+	public synchronized void deleteReinforcement(Reinforcement rein){
 		reconnectAndReinitialize();
 		
 		Location loc = rein.getLocation();
@@ -471,7 +471,7 @@ public class CitadelReinforcementData {
 	 * from SaveManager.
 	 * @param The Reinforcement to save.
 	 */
-	public void saveReinforcement(Reinforcement rein){
+	public synchronized void saveReinforcement(Reinforcement rein){
 		reconnectAndReinitialize();
 		
 		int dur = rein.getDurability();
@@ -567,7 +567,7 @@ public class CitadelReinforcementData {
 	*/
 	
 	private int lastId = 0;
-	public int getLastReinId(){
+	public synchronized int getLastReinId(){
 		reconnectAndReinitialize();
 		if (lastId != 0){
 			lastId++;
@@ -592,7 +592,7 @@ public class CitadelReinforcementData {
 		return chunk;
 	}
 	
-	public int getReinCountForGroup(String group){
+	public synchronized int getReinCountForGroup(String group){
 		try {
 			selectReinCountForGroup.setString(1, group);
 			ResultSet set = selectReinCountForGroup.executeQuery();
@@ -605,7 +605,7 @@ public class CitadelReinforcementData {
 		return 0;
 	}
 	
-	public int getReinCountForAllGroups(){
+	public synchronized int getReinCountForAllGroups(){
 		try {
 			ResultSet set = selectReinCount.executeQuery();
 			set.next();
@@ -617,7 +617,7 @@ public class CitadelReinforcementData {
 		return 0;
 	}
 	
-	public String getSavedGroupName(PlayerReinforcement rein){
+	public synchronized String getSavedGroupName(PlayerReinforcement rein){
 		Location loc = rein.getLocation();
 		try {
 			getGroupFromRein.setInt(1, loc.getBlockX());
