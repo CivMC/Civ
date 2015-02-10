@@ -220,4 +220,17 @@ public class Group {
 	public boolean isValid(){
 		return valid;
 	}
+	/**
+	 * Sets the default group for a player
+	 * @param uuid- The UUID of the player.
+	 */
+	public String setDefaultGroup(UUID uuid){
+		db.setDefaultGroup(uuid,  groupName);
+		return groupName;
+	}
+	
+	public String changeDefaultGroup(UUID uuid){
+		db.changeDefaultGroup(uuid, groupName);
+		return groupName;
+	}
 }
