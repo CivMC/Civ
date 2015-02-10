@@ -15,6 +15,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.libs.jline.internal.Log;
 
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
@@ -192,6 +193,16 @@ public class GroupManagerDao {
 			ver = updateVersion(ver, plugin.getName());
 			log(Level.INFO, "Database update to Version five took " + (System.currentTimeMillis() - first_time) / 1000 + " seconds.");
 		}
+		if (ver == 5){
+			long first_time = System.currentTimeMillis();
+			log(Level.INFO, "Database upadting to version six.");
+			db.execute("create table if not exists default_group(" + 
+					"uuid varchar(40) NOT NULL," +
+					"defaultgroup varchar(255) NOT NULL,"+
+					"primary key key_uuid(uuid))");
+			ver = updateVersion(ver, plugin.getName());
+			log(Level.INFO, "Database update to Version five took " + (System.currentTimeMillis() - first_time) /1000 + " seconds.");
+		}
 		log(Level.INFO, "Database update took " + (System.currentTimeMillis() - begin_time) / 1000 + " seconds.");
 	}
 
@@ -269,6 +280,8 @@ public class GroupManagerDao {
 	
 	private PreparedStatement addAutoAcceptGroup, getAutoAcceptGroup, removeAutoAcceptGroup;
 	
+	private PreparedStatement setDefaultGroup, changeDefaultGroup, getDefaultGroup;
+	
 	public void initializeStatements(){
 		version = db.prepareStatement("select max(db_version) as db_version from db_version where plugin_name=?");
 		updateVersion = db.prepareStatement("insert into db_version (db_version, update_time, plugin_name) values (?,?,?)"); 
@@ -327,6 +340,14 @@ public class GroupManagerDao {
 		getAutoAcceptGroup = db.prepareStatement("select uuid from toggleAutoAccept "
 				+ "where uuid = ?");
 		removeAutoAcceptGroup = db.prepareStatement("delete from toggleAutoAccept where uuid = ?");
+		
+		setDefaultGroup = db.prepareStatement("insert into default_group values(?, ?)");
+		
+		changeDefaultGroup = db.prepareStatement("update default_group set defaultgroup = ? where uuid = ?");
+	
+		
+		getDefaultGroup = db.prepareStatement("select defaultgroup from default_group "
+				+ "where uuid = ?");
 	}
 	/**
 	 * Checks the version of a specific plugin's db.
@@ -670,5 +691,41 @@ public class GroupManagerDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public synchronized void setDefaultGroup(UUID uuid, String groupName){
+		try {
+			setDefaultGroup.setString(1, uuid.toString());
+			setDefaultGroup.setString(2, groupName );
+			setDefaultGroup.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void changeDefaultGroup(UUID uuid, String groupName){
+		try {
+			changeDefaultGroup.setString(1, groupName);
+			changeDefaultGroup.setString(2, uuid.toString());
+			changeDefaultGroup.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public String getDefaultGroup(UUID uuid) {
+		try {
+			getDefaultGroup.setString(1, uuid.toString());
+			ResultSet set = getDefaultGroup.executeQuery();
+			if(!set.next()) return null;
+			String group = set.getString(1);
+			return group;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
