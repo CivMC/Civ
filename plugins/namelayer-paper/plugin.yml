@@ -30,13 +30,10 @@ commands:
    nllpt:
    nllci:
    nltaai:
-<<<<<<< HEAD
    nlcpn:
       permission: namelayer.admin
-=======
    nlsdg:
    nlgdg:
->>>>>>> f6df037ee498f25ebcd5912299d0afe598d1aae2
 permissions:
    namelayer.admin:
       default: op
