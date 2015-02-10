@@ -34,6 +34,7 @@ import vg.civcraft.mc.namelayer.command.commands.RevokeInvite;
 import vg.civcraft.mc.namelayer.command.commands.SetDefaultGroup;
 import vg.civcraft.mc.namelayer.command.commands.GetDefaultGroup;
 
+
 public class CommandHandler {
 	public Map<String, Command> commands = new HashMap<String, Command>();
 	
@@ -46,6 +47,7 @@ public class CommandHandler {
 		addCommands(new DisciplineGroup("DisiplineGroup"));
 		addCommands(new GlobalStats("GlobalStats"));
 		addCommands(new GroupStats("GroupStats"));
+		addCommands(new InfoDump("InfoDump"));
 		addCommands(new InvitePlayer("InvitePlayer"));
 		addCommands(new JoinGroup("JoinGroup"));
 		addCommands(new ListGroups("ListGroups"));
