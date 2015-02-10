@@ -28,7 +28,7 @@ public class Fortification extends PlayerCommand{
 		setIdentifier("ctf");
 		setDescription("Allows you to place already reinforced blocks.");
 		setUsage("/ctf <group>");
-		setArguments(1,1);
+		setArguments(0,1);
 	}
 
 	@Override
@@ -37,14 +37,21 @@ public class Fortification extends PlayerCommand{
 			sender.sendMessage("Must be a player to perform this command.");
 			return true;
 		}
-		String groupName = args[0];
-		Group g = gm.getGroup(groupName);
 		Player p = (Player) sender;
+		UUID uuid = NameAPI.getUUID(p.getName());
+		String groupName = null;
+		if(args.length == 0){
+			groupName = gm.getDefaultGroup(uuid);
+		}
+		else{
+			groupName = args[0];
+		}
+		Group g = gm.getGroup(groupName);	
 		if (g == null){
 			p.sendMessage(ChatColor.RED + "That group does not exist.");
 			return true;
 		}
-		UUID uuid = NameAPI.getUUID(p.getName());
+		
 		PlayerType type = g.getPlayerType(uuid);
 		if (type == null){
 			p.sendMessage(ChatColor.RED + "You are not on this group.");
