@@ -29,7 +29,8 @@ public enum PermissionType {
 	MERGE, // Gives the player permission to merge the group.
 	LIST_PERMS, // Allows the player to use the command to list the perms of a PlayerType
 	TRANSFER, // Allows the player to transfer the group
-	CROPS; // Allows access to crops, mainly used for citadel.
+	CROPS, // Allows access to crops, mainly used for citadel.
+	GROUPSTATS; //Allows access to nlgs command for group
 	
 	public static PermissionType getPermissionType(String type){
 		PermissionType pType = null;

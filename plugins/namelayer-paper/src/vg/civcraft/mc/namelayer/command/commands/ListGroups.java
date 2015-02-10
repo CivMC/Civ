@@ -23,12 +23,22 @@ public class ListGroups extends PlayerCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)){
-			sender.sendMessage("Nope.");
-			return true;
+		Player p = null;
+		UUID uuid = null;
+		Boolean autopages = false;
+		if ((sender.isOp() && sender.hasPermission("namelayer.admin"))) {
+            uuid = NameAPI.getUUID(args[0]);
+            if(uuid == null){
+            	sender.sendMessage(ChatColor.RED + "UUID is NULL,  OP Usage is /nllg <playername>");
+            	return true;
+            }
+            autopages = true;
+        }
+		else{
+			p = (Player) sender;
+			uuid = NameAPI.getUUID(p.getName());
 		}
-		Player p = (Player) sender;
-		UUID uuid = NameAPI.getUUID(p.getName());
+		
 		List<String> groups = gm.getAllGroupNames(uuid);
 		
 		int pages = (groups.size() / 10) + 1;
@@ -43,13 +53,29 @@ public class ListGroups extends PlayerCommand {
 			}
 		}
 		
-		names += "Page " + start + " of " + pages + ".\n"
-				+ "Groups are as follows: \n";
-		for (int x = (start-1) * 10, z = 1; x < groups.size() && z <= 10; x++, z++){
-			Group g = gm.getGroup(groups.get(x));
-			names += g.getName() + ": (PlayerType) " + g.getPlayerType(uuid).toString() + "\n";
+		
+		if(autopages){
+			for(int curPage = 1; curPage <= pages; curPage++)
+				{
+					start = curPage;
+					names += "Page " + start + " of " + pages + ".\n"
+							+ "Groups are as follows: \n";
+					for (int x = (start-1) * 10, z = 1; x < groups.size() && z <= 10; x++, z++){
+						Group g = gm.getGroup(groups.get(x));
+						names += g.getName() + ": (PlayerType) " + g.getPlayerType(uuid).toString() + "\n";
+					}
+				}
+			sender.sendMessage(names);
 		}
-		p.sendMessage(names);
+		else{
+			names += "Page " + start + " of " + pages + ".\n"
+					+ "Groups are as follows: \n";
+			for (int x = (start-1) * 10, z = 1; x < groups.size() && z <= 10; x++, z++){
+				Group g = gm.getGroup(groups.get(x));
+				names += g.getName() + ": (PlayerType) " + g.getPlayerType(uuid).toString() + "\n";
+			}
+			p.sendMessage(names);
+		}
 		return true;
 	}
 	public List<String> tabComplete(CommandSender sender, String[] args) {
