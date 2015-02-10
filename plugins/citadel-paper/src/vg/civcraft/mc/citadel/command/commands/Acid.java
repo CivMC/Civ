@@ -11,18 +11,21 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 
+import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelConfigManager;
+import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.Utility;
-import vg.civcraft.mc.citadel.command.PlayerCommand;
 import vg.civcraft.mc.citadel.events.AcidBlockEvent;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.command.PlayerCommand;
 
 public class Acid extends PlayerCommand {
 	private Random rand = new Random();
-
+	private ReinforcementManager rm = Citadel.getReinforcementManager();
+	
 	public Acid(String name) {
 		super(name);
 		setIdentifier("ctacid");
