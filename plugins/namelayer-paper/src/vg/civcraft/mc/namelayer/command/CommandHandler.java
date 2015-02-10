@@ -8,11 +8,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import vg.civcraft.mc.namelayer.command.commands.AcceptInvite;
+import vg.civcraft.mc.namelayer.command.commands.ChangePlayerName;
 import vg.civcraft.mc.namelayer.command.commands.CreateGroup;
 import vg.civcraft.mc.namelayer.command.commands.DeleteGroup;
 import vg.civcraft.mc.namelayer.command.commands.DisciplineGroup;
 import vg.civcraft.mc.namelayer.command.commands.GlobalStats;
 import vg.civcraft.mc.namelayer.command.commands.GroupStats;
+import vg.civcraft.mc.namelayer.command.commands.InfoDump;
 import vg.civcraft.mc.namelayer.command.commands.InvitePlayer;
 import vg.civcraft.mc.namelayer.command.commands.JoinGroup;
 import vg.civcraft.mc.namelayer.command.commands.LeaveGroup;
@@ -33,7 +35,6 @@ import vg.civcraft.mc.namelayer.command.commands.PromotePlayer;
 import vg.civcraft.mc.namelayer.command.commands.RevokeInvite;
 import vg.civcraft.mc.namelayer.command.commands.SetDefaultGroup;
 import vg.civcraft.mc.namelayer.command.commands.GetDefaultGroup;
-
 
 public class CommandHandler {
 	public Map<String, Command> commands = new HashMap<String, Command>();
