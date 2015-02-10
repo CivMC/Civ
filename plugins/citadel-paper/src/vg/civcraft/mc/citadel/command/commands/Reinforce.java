@@ -25,7 +25,7 @@ public class Reinforce extends PlayerCommand {
 		setIdentifier("ctr");
 		setDescription("Reinforce blocks under a group.");
 		setUsage("/ctr <group>");
-		setArguments(1,1);
+		setArguments(0,1);
 	}
 
 	@Override
@@ -34,14 +34,20 @@ public class Reinforce extends PlayerCommand {
 			sender.sendMessage("Must be a player to use that command.");
 			return true;
 		}
-		String groupName = args[0];
-		Group g = gm.getGroup(groupName);
+		String groupName = null;
 		Player p = (Player) sender;
+		UUID uuid = NameAPI.getUUID(p.getName());
+		if(args.length == 0){
+			groupName = gm.getDefaultGroup(uuid);
+		}
+		else{
+			groupName = args[0];
+		}
+		Group g = gm.getGroup(groupName);
 		if (g == null){
 			p.sendMessage(ChatColor.RED + "That group does not exist.");
 			return true;
 		}
-		UUID uuid = NameAPI.getUUID(p.getName());
 		PlayerType type = g.getPlayerType(uuid);
 		if (type == null){
 			p.sendMessage(ChatColor.RED + "You are not on this group.");
