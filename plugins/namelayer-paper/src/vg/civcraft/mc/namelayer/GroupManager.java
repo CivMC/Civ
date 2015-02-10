@@ -200,4 +200,8 @@ public class GroupManager{
 			return x;
 		}
 	}
+	
+	public String getDefaultGroup(UUID uuid){
+		return groupManagerDao.getDefaultGroup(uuid);
+	}
 }

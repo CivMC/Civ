@@ -31,6 +31,8 @@ import vg.civcraft.mc.namelayer.command.commands.ToggleAutoAcceptInvites;
 import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
 import vg.civcraft.mc.namelayer.command.commands.PromotePlayer;
 import vg.civcraft.mc.namelayer.command.commands.RevokeInvite;
+import vg.civcraft.mc.namelayer.command.commands.SetDefaultGroup;
+import vg.civcraft.mc.namelayer.command.commands.GetDefaultGroup;
 
 public class CommandHandler {
 	public Map<String, Command> commands = new HashMap<String, Command>();
@@ -62,6 +64,8 @@ public class CommandHandler {
 		addCommands(new ToggleAutoAcceptInvites("AutoAcceptInvites"));
 		addCommands(new PromotePlayer("PromotePlayer"));
 		addCommands(new RevokeInvite("RevokeInvite"));
+		addCommands(new SetDefaultGroup("SetDefaultGroup"));
+		addCommands(new GetDefaultGroup("GetDefaultGroup"));
 	}
 	
 	public void addCommands(Command command){
