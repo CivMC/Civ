@@ -23,7 +23,7 @@ public class InfoDump extends PlayerCommand
 		super(name);
 		setIdentifier("nlid");
 		setDescription("This command dumps group info for CitadelGUI.");
-		setUsage("/nlid");
+		setUsage("/nlid (page)");
 		setArguments(0, 1);
 	}
 	
@@ -62,15 +62,19 @@ public class InfoDump extends PlayerCommand
 			Group group;
 			try
 			{
-				group = gm.getGroup(groupNames.get(page));
+				group = gm.getGroup(groupNames.get(page-1));
 			}
 			catch(Exception e)
 			{
 				player.sendMessage(ChatColor.RED + "No such Group");
 				return true;
 			}
+			PlayerType pType = group.getPlayerType(playerUUID);
 			GroupPermission permissions = gm.getPermissionforGroup(group);
-
+			if (!permissions.isAccessible(pType, PermissionType.GROUPSTATS) && !(player.isOp() || player.hasPermission("namelayer.admin"))){
+				player.sendMessage(ChatColor.RED + "You do not have permission from this group to run this command.");
+				return true;
+			}
 
 			String output = "[NLID]: [GROUPNAME] " + group.getName() + " : [MEMBERSHIPLEVEL] " + group.getPlayerType(playerUUID) + " : [PERMS] " + permissions.listPermsforPlayerType(group.getPlayerType(playerUUID));
 
@@ -98,7 +102,7 @@ public class InfoDump extends PlayerCommand
 				output += " " + NameAPI.getCurrentName(memberUUID);
 			}
 
-			if(permissions.isAccessible(group.getPlayerType(playerUUID), PermissionType.LIST_PERMS))
+			if(permissions.isAccessible(pType, PermissionType.LIST_PERMS))
 			{
 				output += " : [OWNER-PERMS] " + permissions.listPermsforPlayerType(PlayerType.OWNER);
 				output += " : [ADMIN-PERMS] " + permissions.listPermsforPlayerType(PlayerType.ADMINS);

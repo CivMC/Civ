@@ -67,7 +67,10 @@ public class PromotePlayer extends PlayerCommand{
 		
 		PlayerType pType = group.getPlayerType(executor);
 		PlayerType promoteecurrentType = group.getPlayerType(promotee);
+<<<<<<< HEAD
 		
+=======
+>>>>>>> origin/master
 		PlayerType promoteeType = PlayerType.getPlayerType(args[2]);
 		if(promoteeType == null){
 			PlayerType.displayPlayerTypes(p);
