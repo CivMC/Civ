@@ -7,16 +7,16 @@ import java.util.Set;
 import java.util.UUID;
 
 public class IgnoreList {
-	
+	//only going to be used for /jamute when they mute all groups for a small amount of time
 	
 	private IgnoreList() { }
 
-	private static final Object lockObject_ = new Object();
-	private static Map<UUID, Set<String>> ignoresByPlayer_ = new HashMap<UUID, Set<String>>();
-	private static Map<String, Set<UUID>> ignoresByGroup_ = new HashMap<String, Set<UUID>>();
+	//private static final Object lockObject_ = new Object();
+	//private static Map<UUID, Set<String>> ignoresByPlayer_ = new HashMap<UUID, Set<String>>();
+	//private static Map<String, Set<UUID>> ignoresByGroup_ = new HashMap<String, Set<UUID>>();
 	private static Map<UUID, Boolean> playerIgnoreAlls_ = new HashMap<UUID, Boolean>();
 
-	// Flip the ignore/unignore bit for a player-group combination.
+/*	// Flip the ignore/unignore bit for a player-group combination.
 	// Requires quick access with lookup by player.
 	// Returns true if it adds to ignore list.
 	public static Boolean toggleIgnore(UUID accountId, String groupName) {
@@ -74,9 +74,11 @@ public class IgnoreList {
 		}
 		
 		return returnValue;
-	}
+	}*/
 	
-	// Obtain list of all player ignores for a given group.
+	//Not used due to ignored groups being in db now
+	
+	/*// Obtain list of all player ignores for a given group.
 	// Requires quick accesss by group name.
 	// !!IMPORTANT!!:  Returns null if there exists no player ignores for a given group.
 	// !!IMPORTANT!!:  This will return a reference value for a set for this group for speed reasons.
@@ -91,9 +93,9 @@ public class IgnoreList {
 		}
 		
 		return returnValue;
-	}
+	}*/
 	
-	// Obtain list of all group ignores for an account.
+/*	// Obtain list of all group ignores for an account.
 	// Requires quick accesss by account ID
 	// !!IMPORTANT!!:  Returns null if there exists no group ignores for a given player.
 	// !!IMPORTANT!!:  This will return a reference value for a set for this group for speed reasons.
@@ -107,7 +109,7 @@ public class IgnoreList {
 		}
 		
 		return returnValue;
-	}
+	}*/
 
     // Toggle the global ignore flag for a specific account. If the player isn't
     // noted in the map, enable the ignore bit.

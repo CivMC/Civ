@@ -23,7 +23,6 @@ import com.untamedears.JukeAlert.model.Snitch;
 
 // Static methods only
 public class Utility {
-
     private static boolean debugging_ = false;
 
     public static boolean isDebugging() {
@@ -36,10 +35,11 @@ public class Utility {
 
     public static void notifyGroup(Snitch snitch, String message) {
         if (snitch.getGroup() == null) return;
+        final JukeAlert plugin = JukeAlert.getInstance();
         OnlineGroupMembers iter = OnlineGroupMembers
             .get(snitch.getGroup().getName())
             .reference(snitch.getLoc())
-            .skipList(IgnoreList.GetPlayerIgnoreListByGroup(snitch.getGroup().getName()));
+            .skipList(plugin.getJaLogger().getIgnoreUUIDs(snitch.getGroup().getName()));
         if (!snitch.shouldLog()) {
             iter.maxDistance(
                 JukeAlert.getInstance().getConfigManager().getMaxAlertDistanceNs());

@@ -10,8 +10,11 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -20,6 +23,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -31,6 +35,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.NameAPI;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.chat.ChatFiller;
@@ -50,6 +55,7 @@ public class JukeAlertLogger {
     private final Database db;
     private final String snitchsTbl;
     private final String snitchDetailsTbl;
+    private final String mutedGroupsTbl;
     private PreparedStatement getSnitchIdFromLocationStmt;
     private PreparedStatement getAllSnitchesStmt;
     private PreparedStatement getLastSnitchID;
@@ -68,6 +74,12 @@ public class JukeAlertLogger {
     private PreparedStatement getAllSnitchIdsStmt;
     private PreparedStatement cullSnitchEntriesStmt;
     private PreparedStatement cullSnitchEntriesAndSnitchesBasedOnVisitDateStmt;
+    private PreparedStatement muteGroupsStmt;
+    private PreparedStatement getMutedGroupsStmt;
+    private PreparedStatement updateMutedGroupsStmt;
+    private PreparedStatement getIgnoreUUIDSStmt;
+    private PreparedStatement removeIgnoredGroupStmt;
+    private PreparedStatement removeUUIDMutedStmt;
     private final int logsPerPage;
     private int lastSnitchID;
     private final int maxEntryCount;
@@ -83,6 +95,7 @@ public class JukeAlertLogger {
     protected GroupMediator groupMediator;
     protected PreparedStatement getAllSnitchesByWorldStmt;
 	private PreparedStatement getAllSnitchesByGroupStmt;
+	
 
     public JukeAlertLogger() {
         plugin = JukeAlert.getInstance();
@@ -105,6 +118,7 @@ public class JukeAlertLogger {
         logsPerPage = configManager.getLogsPerPage();
         snitchsTbl = prefix + "snitchs";
         snitchDetailsTbl = prefix + "snitch_details";
+        mutedGroupsTbl = prefix + "muted_groups";
 
         db = new Database(host, port, dbname, username, password, prefix, this.plugin.getLogger());
         boolean connected = db.connect();
@@ -170,6 +184,15 @@ public class JukeAlertLogger {
                 + "INDEX `idx_snitch_id` (`snitch_id` ASC),"
                 + "CONSTRAINT `fk_snitchs_snitch_id` FOREIGN KEY (`snitch_id`)"
                 + "  REFERENCES `" + snitchsTbl + "` (`snitch_id`) ON DELETE CASCADE ON UPDATE CASCADE);");
+        
+        //Snitch Mute Table
+        //Small table to contain User and the muted groups, 2 columns 
+        // column1 = uuid varchar(40) (no null)
+        // column2 = mutedgroups varchar(255) can be null (no groups to ignore)
+        db.execute("CREATE TABLE IF NOT EXISTS `" + mutedGroupsTbl +"`("
+        		+ "uuid varchar(40) NOT NULL,"
+        		+ "muted_groups varchar(255),"
+        		+ "PRIMARY KEY key_uuid(uuid))");
 
         db.silentExecute(String.format(
             "ALTER TABLE %s ADD INDEX idx_log_time (snitch_log_time ASC);", snitchDetailsTbl));
@@ -474,6 +497,17 @@ public class JukeAlertLogger {
         		"Call CullSnitchesBasedOnLastVisitDate({0},{1});"
         		, daysFromLastAdminVisitForLoggedSnitchCulling,daysFromLastAdminVisitForNonLoggedSnitchCulling));
         
+        muteGroupsStmt = db.prepareStatement(String.format("INSERT INTO %s values(?,?);", mutedGroupsTbl));
+        
+        getMutedGroupsStmt = db.prepareStatement(String.format("SELECT muted_groups FROM %s WHERE uuid=?;", mutedGroupsTbl));
+        
+        updateMutedGroupsStmt = db.prepareStatement(String.format("UPDATE %s SET muted_groups=? WHERE uuid =? ;", mutedGroupsTbl));
+        
+        getIgnoreUUIDSStmt = db.prepareStatement(String.format("SELECT `uuid` FROM %s WHERE muted_groups LIKE ? ;", mutedGroupsTbl));
+        
+        removeIgnoredGroupStmt = db.prepareStatement(String.format("UPDATE %s SET muted_groups=? WHERE uuid=?;", mutedGroupsTbl)); 
+        
+        removeUUIDMutedStmt = db.prepareStatement(String.format("DELETE FROM %s WHERE uuid=? ;", mutedGroupsTbl));
     }
 
     private void initializeLastSnitchId() {
@@ -1303,4 +1337,107 @@ public class JukeAlertLogger {
                 Level.SEVERE, String.format("Could not entry cull: %s", ex.toString()));
         }
     }
+    
+    
+    public boolean muteGroups(UUID uuid, String group2Mute){
+		try {
+			muteGroupsStmt.setString(1, uuid.toString());
+			muteGroupsStmt.setString(2, group2Mute);
+			if(muteGroupsStmt.execute()) return true;
+		} catch (SQLException e) {
+			this.plugin.getLogger().log(Level.SEVERE, 
+					String.format("Could not add muted_group: %s", e.toString()));
+		}
+    	
+    	return false;
+    }
+
+	public String getMutedGroups(UUID uuid){
+		try{
+    		getMutedGroupsStmt.setString(1, uuid.toString());
+    		ResultSet set = getMutedGroupsStmt.executeQuery();
+    		if(!set.next()) return null;
+    		return set.getString(1);
+    	} catch (SQLException e){
+    		this.plugin.getLogger().log(Level.SEVERE, 
+					String.format("Could not retreive muted_group: %s", e.toString()));
+    	}
+		return null;
+    }
+	
+	public boolean updateMutedGroups(UUID uuid, String group2Mute){
+		String curGroups = getMutedGroups(uuid);
+		String newGroups = curGroups + " " + group2Mute;
+		try{
+			updateMutedGroupsStmt.setString(1, newGroups);
+			updateMutedGroupsStmt.setString(2, uuid.toString());
+			if(updateMutedGroupsStmt.execute()){ 
+				return true;
+				}
+		}catch (SQLException e){
+    		this.plugin.getLogger().log(Level.SEVERE, 
+					String.format("Could not update muted_groups: %s", e.toString()));
+		}
+		return false;
+	}
+   
+	
+	public Set<UUID> getIgnoreUUIDs(String ignoredGroup){
+		try{
+			getIgnoreUUIDSStmt.setString(1, "%" + ignoredGroup + "%");
+			ResultSet set = getIgnoreUUIDSStmt.executeQuery();
+			List<UUID> ignoringUsers = new ArrayList<UUID>();
+			if(!set.next()){
+				this.plugin.getLogger().log(Level.INFO,String.format("Set did not have next getUUID:"));
+				return null;
+			}
+			while(set.next()){
+				//create set of uuids
+				ignoringUsers.add(UUID.fromString(set.getString(0)));
+				this.plugin.getLogger().log(Level.INFO,String.format("UUID list for ignoredGroup: %s", set.getString("uuid").toString()));
+			}
+			return new HashSet<UUID>(ignoringUsers);
+		}catch (Exception e){
+			this.plugin.getLogger().log(Level.SEVERE, 
+					String.format("Could not retrieve ignoring users: %s", e.toString()));
+		}
+		this.plugin.getLogger().log(Level.INFO,String.format("GETUUID RETURNING NULL"));
+		return null;
+	}
+	
+	public boolean removeIgnoredGroup(String removeGroup, UUID uuid){
+		String curGroups = getMutedGroups(uuid);
+		if(curGroups.equals(removeGroup)){
+			removeUUIDMuted(uuid);
+			return true;
+		}
+		String[] curGroupA = curGroups.split("\\s+");
+		List<String> groupList = new ArrayList<String>(Arrays.asList(curGroupA));
+		groupList.remove(removeGroup);
+		//back to string
+		String newGroups = StringUtils.join(groupList, " ");
+		try{
+			removeIgnoredGroupStmt.setString(1, newGroups);
+			removeIgnoredGroupStmt.setString(2, uuid.toString());
+			if(removeIgnoredGroupStmt.execute()){
+				return true;
+			}
+		}catch (SQLException e){
+			this.plugin.getLogger().log(Level.SEVERE, 
+					String.format("Could not remove Ignored Group: %s", e.toString()));
+		}
+		return false;
+	}
+	
+	 
+	 public void removeUUIDMuted(UUID uuid){
+		 try{
+			 removeUUIDMutedStmt.setString(1, uuid.toString());
+			 removeUUIDMutedStmt.execute();
+		 }catch (SQLException e){
+			 this.plugin.getLogger().log(Level.SEVERE, 
+						String.format("Could not remove UUID Row: %s", e.toString()));
+		 }
+		 return;
+	 }
 }
