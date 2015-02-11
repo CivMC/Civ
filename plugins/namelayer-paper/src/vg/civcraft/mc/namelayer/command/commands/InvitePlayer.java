@@ -93,7 +93,7 @@ public class InvitePlayer extends PlayerCommand{
 		}
 		
 		if (group.isMember(uuid)){ // So a player can't demote someone who is above them.
-			p.sendMessage(ChatColor.RED + "Player is already a member. They "
+			p.sendMessage(ChatColor.RED + "Player is already a member."
 					+ "Use /nlpp to change their PlayerType.");
 			return true;
 		}

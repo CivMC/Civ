@@ -14,6 +14,7 @@ import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class GroupStats extends PlayerCommand {
@@ -34,14 +35,20 @@ public class GroupStats extends PlayerCommand {
 		}
 		Player p = (Player) sender;
 		Group g = gm.getGroup(args[0]);
-		UUID uuid = NameAPI.getUUID(p.getName());
+		UUID uuid = NameAPI.getUUID(p.getName());	
 		
 		if (g == null){
 			p.sendMessage(ChatColor.RED + "That group does not exist.");
 			return true;
 		}
+		PlayerType pType = g.getPlayerType(uuid);
 		if (!g.isMember(uuid) && !(p.isOp() || p.hasPermission("namelayer.admin"))){
 			p.sendMessage(ChatColor.RED + "You are not on this group.");
+			return true;
+		}
+		GroupPermission gPerm = gm.getPermissionforGroup(g);
+		if (!gPerm.isAccessible(pType, PermissionType.GROUPSTATS) && !(p.isOp() || p.hasPermission("namelayer.admin"))){
+			p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
 			return true;
 		}
 		

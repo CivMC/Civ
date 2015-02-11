@@ -150,8 +150,8 @@ public class GroupManager{
 	
 	private void initiateDefaultPerms(String group){
 		// for perms follow the order that they are in the enum PlayerType
-		String[] perms = {"DOORS CHESTS", "DOORS CHESTS BLOCKS MEMBERS CROPS", "DOORS CHESTS BLOCKS MODS MEMBERS PASSWORD LIST_PERMS CROPS",
-				"DOORS CHESTS BLOCKS ADMINS OWNER MODS MEMBERS PASSWORD SUBGROUP PERMS DELETE MERGE LIST_PERMS TRANSFER CROPS", ""};
+		String[] perms = {"DOORS CHESTS", "DOORS CHESTS BLOCKS MEMBERS CROPS", "DOORS CHESTS BLOCKS MODS MEMBERS PASSWORD LIST_PERMS CROPS GROUPSTATS",
+				"DOORS CHESTS BLOCKS ADMINS OWNER MODS MEMBERS PASSWORD SUBGROUP PERMS DELETE MERGE LIST_PERMS TRANSFER CROPS GROUPSTATS", ""};
 		int x = 0;
 		for (PlayerType role: PlayerType.values()){
 			groupManagerDao.addPermission(group, role.name(), perms[x]);
