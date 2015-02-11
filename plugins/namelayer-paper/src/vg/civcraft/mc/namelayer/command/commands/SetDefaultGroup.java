@@ -36,6 +36,7 @@ public class SetDefaultGroup extends PlayerCommand{
 		Group g = gm.getGroup(args[0]);
 		if (g == null){
 			p.sendMessage(ChatColor.RED + "That group does not exist.");
+			return true;
 		}
 		
 		PlayerType pType = g.getPlayerType(uuid);
@@ -53,7 +54,7 @@ public class SetDefaultGroup extends PlayerCommand{
 		String x = gm.getDefaultGroup(uuid);
 		if(x == null){
 			g.setDefaultGroup(uuid);
-			p.sendMessage(ChatColor.GREEN + "You have set your default group to " + x);
+			p.sendMessage(ChatColor.GREEN + "You have set your default group to " + g.getName());
 		}
 		else{
 			g.changeDefaultGroup(uuid);
