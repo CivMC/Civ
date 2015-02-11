@@ -7,8 +7,34 @@ import java.util.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import vg.civcraft.mc.namelayer.command.commands.*;
-
+import vg.civcraft.mc.namelayer.command.commands.AcceptInvite;
+import vg.civcraft.mc.namelayer.command.commands.ChangePlayerName;
+import vg.civcraft.mc.namelayer.command.commands.CreateGroup;
+import vg.civcraft.mc.namelayer.command.commands.DeleteGroup;
+import vg.civcraft.mc.namelayer.command.commands.DisciplineGroup;
+import vg.civcraft.mc.namelayer.command.commands.GlobalStats;
+import vg.civcraft.mc.namelayer.command.commands.GroupStats;
+import vg.civcraft.mc.namelayer.command.commands.InfoDump;
+import vg.civcraft.mc.namelayer.command.commands.InvitePlayer;
+import vg.civcraft.mc.namelayer.command.commands.JoinGroup;
+import vg.civcraft.mc.namelayer.command.commands.LeaveGroup;
+import vg.civcraft.mc.namelayer.command.commands.ListCurrentInvites;
+import vg.civcraft.mc.namelayer.command.commands.ListGroupTypes;
+import vg.civcraft.mc.namelayer.command.commands.ListGroups;
+import vg.civcraft.mc.namelayer.command.commands.ListMembers;
+import vg.civcraft.mc.namelayer.command.commands.ListPermissions;
+import vg.civcraft.mc.namelayer.command.commands.ListPlayerTypes;
+import vg.civcraft.mc.namelayer.command.commands.MergeGroups;
+import vg.civcraft.mc.namelayer.command.commands.ModifyPermissions;
+import vg.civcraft.mc.namelayer.command.commands.RemoveMember;
+import vg.civcraft.mc.namelayer.command.commands.RemoveSuperGroup;
+import vg.civcraft.mc.namelayer.command.commands.SetPassword;
+import vg.civcraft.mc.namelayer.command.commands.ToggleAutoAcceptInvites;
+import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
+import vg.civcraft.mc.namelayer.command.commands.PromotePlayer;
+import vg.civcraft.mc.namelayer.command.commands.RevokeInvite;
+import vg.civcraft.mc.namelayer.command.commands.SetDefaultGroup;
+import vg.civcraft.mc.namelayer.command.commands.GetDefaultGroup;
 
 public class CommandHandler {
 	public Map<String, Command> commands = new HashMap<String, Command>();
@@ -42,6 +68,8 @@ public class CommandHandler {
 		addCommands(new PromotePlayer("PromotePlayer"));
 		addCommands(new RevokeInvite("RevokeInvite"));
 		addCommands(new ChangePlayerName("ChangePlayerName"));
+		addCommands(new SetDefaultGroup("SetDefaultGroup"));
+		addCommands(new GetDefaultGroup("GetDefaultGroup"));
 	}
 	
 	public void addCommands(Command command){
