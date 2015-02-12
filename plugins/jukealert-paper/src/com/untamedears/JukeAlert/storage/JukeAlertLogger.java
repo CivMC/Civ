@@ -503,7 +503,7 @@ public class JukeAlertLogger {
         
         updateMutedGroupsStmt = db.prepareStatement(String.format("UPDATE %s SET muted_groups=? WHERE uuid =? ;", mutedGroupsTbl));
         
-        getIgnoreUUIDSStmt = db.prepareStatement(String.format("SELECT `uuid` FROM %s WHERE muted_groups LIKE ? ;", mutedGroupsTbl));
+        getIgnoreUUIDSStmt = db.prepareStatement(String.format("SELECT * FROM %s WHERE muted_groups LIKE ? ;", mutedGroupsTbl));
         
         removeIgnoredGroupStmt = db.prepareStatement(String.format("UPDATE %s SET muted_groups=? WHERE uuid=?;", mutedGroupsTbl)); 
         
@@ -1382,27 +1382,26 @@ public class JukeAlertLogger {
 	}
    
 	
-	public Set<UUID> getIgnoreUUIDs(String ignoredGroup){
-		try{
-			getIgnoreUUIDSStmt.setString(1, "%" + ignoredGroup + "%");
-			ResultSet set = getIgnoreUUIDSStmt.executeQuery();
-			List<UUID> ignoringUsers = new ArrayList<UUID>();
-			if(!set.next()){
-				this.plugin.getLogger().log(Level.INFO,String.format("Set did not have next getUUID:"));
-				return null;
-			}
+	public Set<String> getIgnoreUUIDs(String ignoredGroup) throws SQLException{
+		Set<String> ignoringUsers = new HashSet<String>();
+		String sql = "%" + ignoredGroup + "%";
+		getIgnoreUUIDSStmt.setString(1, sql);
+		ResultSet set = getIgnoreUUIDSStmt.executeQuery();
+
+		if(!set.next()){
+			return null;
+		}
+		else{
+			//add the first value
+			ignoringUsers.add(set.getString(1));
+			//now if there is more loop through them
 			while(set.next()){
 				//create set of uuids
-				ignoringUsers.add(UUID.fromString(set.getString(0)));
-				this.plugin.getLogger().log(Level.INFO,String.format("UUID list for ignoredGroup: %s", set.getString("uuid").toString()));
+				ignoringUsers.add(set.getString(1));
 			}
-			return new HashSet<UUID>(ignoringUsers);
-		}catch (Exception e){
-			this.plugin.getLogger().log(Level.SEVERE, 
-					String.format("Could not retrieve ignoring users: %s", e.toString()));
 		}
-		this.plugin.getLogger().log(Level.INFO,String.format("GETUUID RETURNING NULL"));
-		return null;
+		return ignoringUsers;
+
 	}
 	
 	public boolean removeIgnoredGroup(String removeGroup, UUID uuid){

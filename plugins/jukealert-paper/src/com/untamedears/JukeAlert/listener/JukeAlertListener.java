@@ -6,6 +6,7 @@ import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
 import static com.untamedears.JukeAlert.util.Utility.isPartialOwnerOfSnitch;
 import static com.untamedears.JukeAlert.util.Utility.notifyGroup;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
@@ -95,11 +96,16 @@ public class JukeAlertListener implements Listener {
             if (!isOnSnitch(snitch, accountId)) {
                 snitch.imposeSnitchTax();
                 inList.add(snitch);
-                notifyGroup(
-                        snitch,
-                        ChatColor.AQUA + " * " + player.getDisplayName() + " logged in to snitch at " 
-                        + snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
-                        " " + snitch.getY() + " " + snitch.getZ() + "]");
+                try {
+					notifyGroup(
+					        snitch,
+					        ChatColor.AQUA + " * " + player.getDisplayName() + " logged in to snitch at " 
+					        + snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
+					        " " + snitch.getY() + " " + snitch.getZ() + "]");
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
                 if (snitch.shouldLog()) {
                     plugin.getJaLogger().logSnitchLogin(snitch, location, player);
 
@@ -125,11 +131,16 @@ public class JukeAlertListener implements Listener {
         for (Snitch snitch : snitches) {
             if (!isOnSnitch(snitch, accountId)) {
                 snitch.imposeSnitchTax();
-                notifyGroup(
-                        snitch,
-                        ChatColor.AQUA + " * " + player.getDisplayName() + " logged out in snitch at " 
-                        		+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
-                                " " + snitch.getY() + " " + snitch.getZ() + "]");
+                try {
+					notifyGroup(
+					        snitch,
+					        ChatColor.AQUA + " * " + player.getDisplayName() + " logged out in snitch at " 
+					        		+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
+					                " " + snitch.getY() + " " + snitch.getZ() + "]");
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
                 if (snitch.shouldLog()) {
                     plugin.getJaLogger().logSnitchLogout(snitch, location, player);
                 }
@@ -339,11 +350,16 @@ public class JukeAlertListener implements Listener {
                         		&& !snitch.shouldLog()) 
                         	continue;
                         else{
-                            notifyGroup(
-                                    snitch,
-                                    ChatColor.AQUA + " * " + player.getDisplayName() + " entered snitch at " 
-                                    		+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
-                                            " " + snitch.getY() + " " + snitch.getZ() + "]");
+                            try {
+								notifyGroup(
+								        snitch,
+								        ChatColor.AQUA + " * " + player.getDisplayName() + " entered snitch at " 
+								        		+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
+								                " " + snitch.getY() + " " + snitch.getZ() + "]");
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
                         }
                         if (snitch.shouldLog()){
                         	plugin.getJaLogger().logSnitchEntry(snitch, location, player);

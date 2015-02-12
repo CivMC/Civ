@@ -43,7 +43,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
     private int maxPlayers_;
     private Location referenceLocation_ = null;
     private boolean alreadyIterating_ = false;
-	private Set<UUID> skipList_= null;
+	private Set<String> skipList_= null;
 
     public OnlineGroupMembers(String groupName) {
         manager_ = NameAPI.getGroupManager();
@@ -82,7 +82,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
         return this;
     }
     
-    public OnlineGroupMembers skipList(Set<UUID> list) {
+    public OnlineGroupMembers skipList(Set<String> list) {
 
         if (alreadyIterating_) {
             throw new UnsupportedOperationException();
@@ -232,7 +232,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
         if (IgnoreList.doesPlayerIgnoreAll(accountId)) {
             return null;
         }
-        if (skipList_ != null && skipList_.contains(accountId)) {
+        if (skipList_ != null && skipList_.contains(accountId.toString())) {
             return null;
         }
         return player;
