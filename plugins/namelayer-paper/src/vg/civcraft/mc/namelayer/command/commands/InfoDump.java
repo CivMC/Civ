@@ -76,41 +76,80 @@ public class InfoDump extends PlayerCommand
 				return true;
 			}
 
-			String output = "[NLID]: [GROUPNAME] " + group.getName() + " : [MEMBERSHIPLEVEL] " + group.getPlayerType(playerUUID) + " : [PERMS] " + permissions.listPermsforPlayerType(group.getPlayerType(playerUUID));
+			StringBuilder outputBuilder = new StringBuilder();
+			outputBuilder.append("[NLID] : [GROUPNAME] ");
+			outputBuilder.append(group.getName());
+			outputBuilder.append(" : [MEMBERSHIPLEVEL] ");
+			outputBuilder.append(group.getPlayerType(playerUUID));
+			outputBuilder.append(" : [PERMS] ");
+			outputBuilder.append(permissions.listPermsforPlayerType(group.getPlayerType(playerUUID)));
+			
 
-			output += " : [OWNERS]";
-			for(UUID ownerUUID : group.getAllMembers(PlayerType.OWNER))
+			outputBuilder.append(" : [OWNDERS]");
+			if(permissions.isAccessible(pType, PermissionType.OWNER))
 			{
-				output += " " + NameAPI.getCurrentName(ownerUUID);
+				for(UUID ownerUUID : group.getAllMembers(PlayerType.OWNER))
+				{
+					outputBuilder.append(" " + NameAPI.getCurrentName(ownerUUID));
+				}
+			}
+			else
+			{
+				outputBuilder.append(" accounts-");
+				outputBuilder.append(group.getAllMembers(PlayerType.OWNER).size());
 			}
 
-			output += " : [ADMINS]";
-			for(UUID adminUUID : group.getAllMembers(PlayerType.ADMINS))
+			outputBuilder.append(" : [ADMINS]");
+			if(permissions.isAccessible(pType, PermissionType.ADMINS))
 			{
-				output += " " + NameAPI.getCurrentName(adminUUID);
+				for(UUID adminUUID : group.getAllMembers(PlayerType.ADMINS))
+				{
+					outputBuilder.append(" " + NameAPI.getCurrentName(adminUUID));
+				}
+			}
+			else
+			{
+				outputBuilder.append(" accounts-");
+				outputBuilder.append(group.getAllMembers(PlayerType.ADMINS).size());
 			}
 
-			output += " : [MODS]";
-			for(UUID modUUID : group.getAllMembers(PlayerType.MODS))
+			outputBuilder.append(" : [MODS]");
+			if(permissions.isAccessible(pType, PermissionType.MODS))
 			{
-				output += " " + NameAPI.getCurrentName(modUUID);
+				for(UUID modUUID : group.getAllMembers(PlayerType.MODS))
+				{
+					outputBuilder.append(" " + NameAPI.getCurrentName(modUUID));
+				}
+			}
+			else
+			{
+				outputBuilder.append(" accounts-");
+				outputBuilder.append(group.getAllMembers(PlayerType.MODS).size());
 			}
 
-			output += " : [MEMBERS]";
-			for(UUID memberUUID : group.getAllMembers(PlayerType.MEMBERS))
+			outputBuilder.append(" : [MEMBERS]");
+			if(permissions.isAccessible(pType, PermissionType.MEMBERS))
 			{
-				output += " " + NameAPI.getCurrentName(memberUUID);
+				for(UUID memberUUID : group.getAllMembers(PlayerType.MEMBERS))
+				{
+					outputBuilder.append(" " + NameAPI.getCurrentName(memberUUID));
+				}
+			}
+			else
+			{
+				outputBuilder.append(" accounts-");
+				outputBuilder.append(group.getAllMembers(PlayerType.MEMBERS).size());
 			}
 
 			if(permissions.isAccessible(pType, PermissionType.LIST_PERMS))
 			{
-				output += " : [OWNER-PERMS] " + permissions.listPermsforPlayerType(PlayerType.OWNER);
-				output += " : [ADMIN-PERMS] " + permissions.listPermsforPlayerType(PlayerType.ADMINS);
-				output += " : [MOD-PERMS] " + permissions.listPermsforPlayerType(PlayerType.MODS);
-				output += " : [MEMBER-PERMS] " + permissions.listPermsforPlayerType(PlayerType.MEMBERS);
+				outputBuilder.append(" : [OWNER-PERMS] " + permissions.listPermsforPlayerType(PlayerType.OWNER));
+				outputBuilder.append(" : [ADMIN-PERMS] " + permissions.listPermsforPlayerType(PlayerType.ADMINS));
+				outputBuilder.append(" : [MOD-PERMS] " + permissions.listPermsforPlayerType(PlayerType.MODS));
+				outputBuilder.append(" : [MEMBER-PERMS] " + permissions.listPermsforPlayerType(PlayerType.MEMBERS));
 			}
 
-			player.sendMessage(ChatColor.GREEN + output);
+			player.sendMessage(ChatColor.GREEN + outputBuilder.toString());
 			return true;
 		}
 	}
