@@ -71,10 +71,6 @@ public class InfoDump extends PlayerCommand
 			}
 			PlayerType pType = group.getPlayerType(playerUUID);
 			GroupPermission permissions = gm.getPermissionforGroup(group);
-			if (!permissions.isAccessible(pType, PermissionType.GROUPSTATS) && !(player.isOp() || player.hasPermission("namelayer.admin"))){
-				player.sendMessage(ChatColor.RED + "You do not have permission from this group to run this command.");
-				return true;
-			}
 
 			StringBuilder outputBuilder = new StringBuilder();
 			outputBuilder.append("[NLID] : [GROUPNAME] ");
