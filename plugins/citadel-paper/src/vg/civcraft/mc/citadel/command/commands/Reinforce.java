@@ -39,6 +39,10 @@ public class Reinforce extends PlayerCommand {
 		UUID uuid = NameAPI.getUUID(p.getName());
 		if(args.length == 0){
 			groupName = gm.getDefaultGroup(uuid);
+			if(groupName == null){
+				p.sendMessage(ChatColor.RED + "You need to set a default group \n Use /nlsdg to do so");
+				return true;
+			}
 		}
 		else{
 			groupName = args[0];
