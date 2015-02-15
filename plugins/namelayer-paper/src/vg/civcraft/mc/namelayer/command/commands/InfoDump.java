@@ -81,7 +81,7 @@ public class InfoDump extends PlayerCommand
 			outputBuilder.append(permissions.listPermsforPlayerType(group.getPlayerType(playerUUID)));
 			
 
-			outputBuilder.append(" : [OWNDERS]");
+			outputBuilder.append(" : [OWNERS]");
 			if(permissions.isAccessible(pType, PermissionType.OWNER))
 			{
 				for(UUID ownerUUID : group.getAllMembers(PlayerType.OWNER))
