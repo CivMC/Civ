@@ -45,6 +45,11 @@ public class RemoveMember extends PlayerCommand {
 		UUID executor = NameAPI.getUUID(p.getName());
 		UUID uuid = NameAPI.getUUID(args[1]);
 		
+		if (uuid == null){
+			p.sendMessage(ChatColor.RED + "The player has never played before.");
+			return true;
+		}
+		
 		String playerName = NameAPI.getCurrentName(uuid);
 		GroupPermission perm = gm.getPermissionforGroup(group);
 		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
@@ -74,11 +79,6 @@ public class RemoveMember extends PlayerCommand {
 		
 		if (!allowed && !(p.isOp() || p.hasPermission("namelayer.admin"))){
 			p.sendMessage(ChatColor.RED + "You do not have permissions to modify this group.");
-			return true;
-		}
-		
-		if (uuid == null){
-			p.sendMessage(ChatColor.RED + "The player has never played before.");
 			return true;
 		}
 		
