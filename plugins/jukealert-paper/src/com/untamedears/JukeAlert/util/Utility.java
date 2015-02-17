@@ -1,8 +1,10 @@
 package com.untamedears.JukeAlert.util;
 
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,7 +25,6 @@ import com.untamedears.JukeAlert.model.Snitch;
 
 // Static methods only
 public class Utility {
-
     private static boolean debugging_ = false;
 
     public static boolean isDebugging() {
@@ -34,12 +35,18 @@ public class Utility {
         debugging_ = debugging;
     }
 
-    public static void notifyGroup(Snitch snitch, String message) {
+    public static void notifyGroup(Snitch snitch, String message) throws SQLException {
         if (snitch.getGroup() == null) return;
+        final JukeAlert plugin = JukeAlert.getInstance();
+        Set<String> skipUUID = plugin.getJaLogger().getIgnoreUUIDs(snitch.getGroup().getName());
+        if(skipUUID == null){
+        	//this should be fine as it is how it used to be done
+        	skipUUID = null;
+        }
         OnlineGroupMembers iter = OnlineGroupMembers
             .get(snitch.getGroup().getName())
             .reference(snitch.getLoc())
-            .skipList(IgnoreList.GetPlayerIgnoreListByGroup(snitch.getGroup().getName()));
+            .skipList(skipUUID);
         if (!snitch.shouldLog()) {
             iter.maxDistance(
                 JukeAlert.getInstance().getConfigManager().getMaxAlertDistanceNs());
