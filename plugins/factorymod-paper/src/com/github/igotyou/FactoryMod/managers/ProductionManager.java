@@ -11,6 +11,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,14 +26,12 @@ import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
-import com.github.igotyou.FactoryMod.interfaces.Recipe;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
+import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
-import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
-import java.util.Iterator;
 
 //original file:
 /**
@@ -197,7 +196,7 @@ public class ProductionManager implements Manager
 	{
 		if (!factoryExistsAt(factoryLocation))
 		{
-			HashMap<String, ProductionProperties> properties = plugin.productionProperties;
+			HashMap<String, ProductionProperties> properties = FactoryModPlugin.productionProperties;
 			Block inventoryBlock = inventoryLocation.getBlock();
 			Chest chest = (Chest) inventoryBlock.getState();
 			Inventory chestInventory = chest.getInventory();
@@ -229,7 +228,7 @@ public class ProductionManager implements Manager
 	{
 		if (!factoryExistsAt(factoryLocation))
 		{
-			HashMap<String, ProductionProperties> properties = plugin.productionProperties;
+			HashMap<String, ProductionProperties> properties = FactoryModPlugin.productionProperties;
 			Block inventoryBlock = inventoryLocation.getBlock();
 			Chest chest = (Chest) inventoryBlock.getState();
 			Inventory chestInventory = chest.getInventory();
@@ -268,10 +267,12 @@ public class ProductionManager implements Manager
 				|| !factoryExistsAt(production.getInventoryLocation()) || !factoryExistsAt(production.getPowerSourceLocation()))
 		{
 			producers.add(production);
+			FactoryModPlugin.sendConsoleMessage("Production factory created: " + production.factoryName() + " at " + production.getCenterLocation());
 			return new InteractionResponse(InteractionResult.SUCCESS, "");
 		}
 		else
 		{
+			FactoryModPlugin.sendConsoleMessage("Production factory failed to create: " + production.factoryName() + " at " + production.getCenterLocation());
 			return new InteractionResponse(InteractionResult.FAILURE, "");
 		}
 	}
@@ -309,23 +310,31 @@ public class ProductionManager implements Manager
 
 	public void removeFactory(Factory factory) 
 	{
-		producers.remove((ProductionFactory)factory);
+		if(!(factory instanceof ProductionFactory)) {
+			FactoryModPlugin.sendConsoleMessage("Could not remove unexpected factory type: " + factory.getClass().getName());
+			return;
+		}
+		
+		ProductionFactory producer = (ProductionFactory)factory;
+		producers.remove(producer);
+		FactoryModPlugin.sendConsoleMessage("Production factory removed: " + producer.factoryName() + " at " + producer.getCenterLocation());
 	}
 	
 	public void updateRepair(long time)
 	{
-		for (ProductionFactory production: producers)
+		for (ProductionFactory production : producers)
 		{
-			production.updateRepair(time/((double)FactoryModPlugin.REPAIR_PERIOD));
+			production.updateRepair(time / ((double)FactoryModPlugin.REPAIR_PERIOD));
 		}
-		long currentTime=System.currentTimeMillis();
-		Iterator<ProductionFactory> itr=producers.iterator();
+		long currentTime = System.currentTimeMillis();
+		Iterator<ProductionFactory> itr = producers.iterator();
 		while(itr.hasNext())
 		{
-			ProductionFactory producer=itr.next();
-			if(currentTime>(producer.getTimeDisrepair()+FactoryModPlugin.DISREPAIR_PERIOD))
+			ProductionFactory producer = itr.next();
+			if(currentTime > (producer.getTimeDisrepair() + FactoryModPlugin.DISREPAIR_PERIOD))
 			{
 				itr.remove();
+				FactoryModPlugin.sendConsoleMessage("Production factory removed due to disrepair: " + producer.factoryName() + " at " + producer.getCenterLocation());
 			}
 		}
 	}

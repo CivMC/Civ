@@ -1,42 +1,31 @@
 package com.github.igotyou.FactoryMod.managers;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
 import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
 import com.github.igotyou.FactoryMod.Factorys.PrintingPress.OperationMode;
-import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
 import com.github.igotyou.FactoryMod.properties.PrintingPressProperties;
-import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
-import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
-import java.util.Iterator;
 
 //original file:
 /**
@@ -57,13 +46,13 @@ import java.util.Iterator;
 public class PrintingPressManager implements Manager
 {
 	private FactoryModPlugin plugin;
-	private List<PrintingPress> producers;
+	private List<PrintingPress> presses;
 	private long repairTime;
 	
 	public PrintingPressManager(FactoryModPlugin plugin)
 	{
 		this.plugin = plugin;
-		producers = new ArrayList<PrintingPress>();
+		presses = new ArrayList<PrintingPress>();
 		//Set maintenance clock to 0
 		updateFactorys();
 	}
@@ -77,8 +66,8 @@ public class PrintingPressManager implements Manager
 		ObjectOutputStream oos = new ObjectOutputStream(fileOutputStream);
 		int version = 1;
 		oos.writeInt(version);
-		oos.writeInt(producers.size());
-		for (PrintingPress production : producers)
+		oos.writeInt(presses.size());
+		for (PrintingPress production : presses)
 		{
 			//order: subFactoryType world recipe1,recipe2 central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
 			
@@ -180,7 +169,7 @@ public class PrintingPressManager implements Manager
 			@Override
 			public void run()
 			{
-				for (PrintingPress production: producers)
+				for (PrintingPress production: presses)
 				{
 					production.update();
 				}
@@ -215,22 +204,24 @@ public class PrintingPressManager implements Manager
 
 	public InteractionResponse addFactory(Factory factory) 
 	{
-		PrintingPress production = (PrintingPress) factory;
-		if (production.getCenterLocation().getBlock().getType().equals(FactoryModPlugin.CENTRAL_BLOCK_MATERIAL) && (!factoryExistsAt(production.getCenterLocation()))
-				|| !factoryExistsAt(production.getInventoryLocation()) || !factoryExistsAt(production.getPowerSourceLocation()))
+		PrintingPress press = (PrintingPress) factory;
+		if (press.getCenterLocation().getBlock().getType().equals(FactoryModPlugin.CENTRAL_BLOCK_MATERIAL) && (!factoryExistsAt(press.getCenterLocation()))
+				|| !factoryExistsAt(press.getInventoryLocation()) || !factoryExistsAt(press.getPowerSourceLocation()))
 		{
-			producers.add(production);
+			presses.add(press);
+			FactoryModPlugin.sendConsoleMessage("Printing press created: " + press.factoryName() + " at " + press.getCenterLocation());
 			return new InteractionResponse(InteractionResult.SUCCESS, "");
 		}
 		else
 		{
+			FactoryModPlugin.sendConsoleMessage("Printing press failed to create: " + press.factoryName() + " at " + press.getCenterLocation());
 			return new InteractionResponse(InteractionResult.FAILURE, "");
 		}
 	}
 
 	public PrintingPress getFactory(Location factoryLocation) 
 	{
-		for (PrintingPress production : producers)
+		for (PrintingPress production : presses)
 		{
 			if (production.getCenterLocation().equals(factoryLocation) || production.getInventoryLocation().equals(factoryLocation)
 					|| production.getPowerSourceLocation().equals(factoryLocation))
@@ -261,23 +252,31 @@ public class PrintingPressManager implements Manager
 
 	public void removeFactory(Factory factory) 
 	{
-		producers.remove((ProductionFactory)factory);
+		if(!(factory instanceof PrintingPress)) {
+			FactoryModPlugin.sendConsoleMessage("Could not remove unexpected factory type: " + factory.getClass().getName());
+			return;
+		}
+		
+		PrintingPress press = (PrintingPress)factory;
+		presses.remove(press);
+		FactoryModPlugin.sendConsoleMessage("Printing press removed: " + press.factoryName() + " at " + press.getCenterLocation());
 	}
 	
 	public void updateRepair(long time)
 	{
-		for (PrintingPress production: producers)
+		for (PrintingPress press : presses)
 		{
-			production.updateRepair(time/((double)FactoryModPlugin.REPAIR_PERIOD));
+			press.updateRepair(time / ((double)FactoryModPlugin.REPAIR_PERIOD));
 		}
-		long currentTime=System.currentTimeMillis();
-		Iterator<PrintingPress> itr=producers.iterator();
+		long currentTime = System.currentTimeMillis();
+		Iterator<PrintingPress> itr = presses.iterator();
 		while(itr.hasNext())
 		{
-			PrintingPress producer=itr.next();
-			if(currentTime>(producer.getTimeDisrepair()+FactoryModPlugin.DISREPAIR_PERIOD))
+			PrintingPress press = itr.next();
+			if(currentTime > (press.getTimeDisrepair() + FactoryModPlugin.DISREPAIR_PERIOD))
 			{
 				itr.remove();
+				FactoryModPlugin.sendConsoleMessage("Printing press removed due to disrepair: " + press.factoryName() + " at " + press.getCenterLocation());
 			}
 		}
 	}

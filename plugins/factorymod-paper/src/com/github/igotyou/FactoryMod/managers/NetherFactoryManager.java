@@ -196,7 +196,7 @@ public class NetherFactoryManager implements Manager
 								boolean markerFound = false;
 								Location markerLocation = factoryLocation.clone();
 								int blockY = markerLocation.getBlockY();
-								for (int centerY = blockY-plugin.NETHER_MARKER_MAX_DISTANCE; centerY <= blockY+plugin.NETHER_MARKER_MAX_DISTANCE && !markerFound; centerY++)
+								for (int centerY = blockY - FactoryModPlugin.NETHER_MARKER_MAX_DISTANCE; centerY <= blockY + FactoryModPlugin.NETHER_MARKER_MAX_DISTANCE && !markerFound; centerY++)
 								{
 									markerLocation.setY(centerY);
 									Location oneUp = markerLocation.clone();
@@ -308,10 +308,12 @@ public class NetherFactoryManager implements Manager
 				|| !factoryExistsAt(netherFactory.getOverworldTeleportPlatform()) ))
 		{
 			netherFactorys.add(netherFactory);
+			FactoryModPlugin.sendConsoleMessage("Nether factory created: " + netherFactory.factoryName() + " at " + netherFactory.getCenterLocation());
 			return new InteractionResponse(InteractionResult.SUCCESS, "");
 		}
 		else
 		{
+			FactoryModPlugin.sendConsoleMessage("Nether factory failed to create: " + netherFactory.factoryName() + " at " + netherFactory.getCenterLocation());
 			return new InteractionResponse(InteractionResult.FAILURE, "");
 		}
 	}
@@ -352,23 +354,31 @@ public class NetherFactoryManager implements Manager
 
 	public void removeFactory(Factory factory) 
 	{
-		netherFactorys.remove((NetherFactory)factory);
+		if(!(factory instanceof NetherFactory)) {
+			FactoryModPlugin.sendConsoleMessage("Could not remove unexpected factory type: " + factory.getClass().getName());
+			return;
+		}
+		
+		NetherFactory netherFactory = (NetherFactory)factory;
+		netherFactorys.remove(netherFactory);
+		FactoryModPlugin.sendConsoleMessage("Nether factory removed: " + netherFactory.factoryName() + " at " + netherFactory.getCenterLocation());
 	}
 	
 	public void updateRepair(long time)
 	{
-		for (NetherFactory factory: netherFactorys)
+		for (NetherFactory factory : netherFactorys)
 		{
-			factory.updateRepair(time/((double)FactoryModPlugin.REPAIR_PERIOD));
+			factory.updateRepair(time / ((double)FactoryModPlugin.REPAIR_PERIOD));
 		}
-		long currentTime=System.currentTimeMillis();
-		Iterator<NetherFactory> itr=netherFactorys.iterator();
+		long currentTime = System.currentTimeMillis();
+		Iterator<NetherFactory> itr = netherFactorys.iterator();
 		while(itr.hasNext())
 		{
-			NetherFactory factory=itr.next();
-			if(currentTime>(factory.getTimeDisrepair()+FactoryModPlugin.DISREPAIR_PERIOD))
+			NetherFactory factory = itr.next();
+			if(currentTime > (factory.getTimeDisrepair() + FactoryModPlugin.DISREPAIR_PERIOD))
 			{
 				itr.remove();
+				FactoryModPlugin.sendConsoleMessage("Nether factory removed due to disrepair: " + factory.factoryName() + " at " + factory.getCenterLocation());
 			}
 		}
 	}
