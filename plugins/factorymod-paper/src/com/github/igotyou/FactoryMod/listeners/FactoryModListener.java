@@ -64,6 +64,17 @@ public class FactoryModListener implements Listener
 				//if the blocks is not reinforced destroy it
 				if ((FactoryModPlugin.CITADEL_ENABLED && !rm.isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 				{
+					if(e.getPlayer() == null) {
+						FactoryModPlugin.sendConsoleMessage(new StringBuilder("Factory block broken: ")
+							.append(e.getEventName()).append(" at ").append(block.getLocation())
+							.toString());
+					} 
+					else
+					{
+						FactoryModPlugin.sendConsoleMessage(new StringBuilder("Factory block broken: ")
+							.append(e.getEventName()).append(" by ").append(e.getPlayer().getUniqueId()).append(" at ").append(block.getLocation())
+							.toString());
+					}
 					destroyFactoryAt(block);
 				}
 			}
@@ -97,9 +108,11 @@ public class FactoryModListener implements Listener
 			{
 				if (factoryMan.factoryExistsAt(block.getLocation()))
 				{
-					Factory factory = factoryMan.getFactory(block.getLocation());
 					if ((FactoryModPlugin.CITADEL_ENABLED && !rm.isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 					{
+						FactoryModPlugin.sendConsoleMessage(new StringBuilder("Factory block exploded: ")
+							.append(e.getEventName()).append(" by ").append(e.getEntityType()).append(" at ").append(block.getLocation())
+							.toString());
 						destroyFactoryAt(block);
 					}
 				}
@@ -119,6 +132,9 @@ public class FactoryModListener implements Listener
 		{
 			if (factoryMan.factoryExistsAt(block.getLocation()))
 			{
+				FactoryModPlugin.sendConsoleMessage(new StringBuilder("Factory block burned: ")
+					.append(e.getEventName()).append(" at ").append(block.getLocation())
+					.toString());
 				destroyFactoryAt(block);
 			}
 		}
@@ -379,13 +395,13 @@ public class FactoryModListener implements Listener
 		InteractionResponse response=new InteractionResponse(InteractionResult.FAILURE, "Blocks are not arranged correctly for a factory.");
 		if(! factoryMan.factoryExistsAt(westLocation) && ! factoryMan.factoryExistsAt(eastLocation))
 		{
-			if((westType.getId()== 61 || westType.getId() == 62) && eastType.getId()== 54)
+			if((westType == Material.FURNACE || westType == Material.BURNING_FURNACE) && eastType == Material.CHEST)
 			{
-				return factoryMan.createFactory(loc, eastLocation, westLocation);
+				return createFactory(player, loc, eastLocation, westLocation);
 			}
-			else if ((eastType.getId()== 61 || eastType.getId()== 62) && westType.getId()== 54)
+			else if ((eastType == Material.FURNACE || eastType == Material.BURNING_FURNACE) && westType == Material.CHEST)
 			{
-				return factoryMan.createFactory(loc, westLocation, eastLocation);
+				return createFactory(player, loc, westLocation, eastLocation);
 			}
 		}
 		else
@@ -394,13 +410,14 @@ public class FactoryModListener implements Listener
 		}
 		if(! factoryMan.factoryExistsAt(southLocation) && !factoryMan.factoryExistsAt(northLocation))
 		{
-			if((northType.getId()== 61 || northType.getId()== 62) && southType.getId()== 54)
+			
+			if((northType == Material.FURNACE || northType == Material.BURNING_FURNACE) && southType == Material.CHEST)
 			{
-				return factoryMan.createFactory(loc, southLocation, northLocation);
+				return createFactory(player, loc, southLocation, northLocation);
 			}
-			else if((southType.getId()== 61 || southType.getId()== 62) && northType.getId()== 54)
+			else if((southType == Material.FURNACE || southType == Material.BURNING_FURNACE) && northType == Material.CHEST)
 			{
-				return factoryMan.createFactory(loc, northLocation, southLocation);
+				return createFactory(player, loc, northLocation, southLocation);
 			}
 		}
 		else
@@ -409,6 +426,14 @@ public class FactoryModListener implements Listener
 		}
 		return response;
 	 }
+	
+	private InteractionResponse createFactory(Player player, Location center, Location inventory, Location power) {
+
+		FactoryModPlugin.sendConsoleMessage(new StringBuilder("Factory creation attempted: ")
+			.append(player.getUniqueId()).append(" at ").append(center)
+			.toString());
+		return factoryMan.createFactory(center, inventory, power);
+	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void handlePortalTelportEvent(PlayerPortalEvent e) {
