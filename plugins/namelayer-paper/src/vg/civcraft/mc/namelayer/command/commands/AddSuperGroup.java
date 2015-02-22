@@ -74,8 +74,10 @@ public class AddSuperGroup extends PlayerCommand{
 				Super.addSubGroup(g);
 				for (UUID superMember: Super.getAllMembers())
 					g.addMember(superMember, PlayerType.SUBGROUP);
+				checkRecacheGroup(g);
 			}
 		}
+		checkRecacheGroup(pri);
 		p.sendMessage(ChatColor.GREEN + "The super group has successfully been added.");
 		return true;
 	}

@@ -9,11 +9,13 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.command.TabCompleters.InviteTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
+import vg.civcraft.mc.namelayer.misc.Mercury;
 
 public class AcceptInvite extends PlayerCommand{
 
@@ -55,6 +57,7 @@ public class AcceptInvite extends PlayerCommand{
 		}
 		group.addMember(uuid, type);
 		group.removeRemoveInvite(uuid);
+		checkRecacheGroup(group);
 		PlayerListener.removeNotification(uuid, group);
 		p.sendMessage(ChatColor.GREEN + "You have successfully been added to the group as a " + type.name() +".");
 		if (group instanceof PrivateGroup){
@@ -62,6 +65,7 @@ public class AcceptInvite extends PlayerCommand{
 			List<Group> groups = priv.getSubGroups();
 			for (Group g: groups){
 				g.addMember(uuid, PlayerType.SUBGROUP);
+				checkRecacheGroup(g);
 			}
 		}
 		return true;

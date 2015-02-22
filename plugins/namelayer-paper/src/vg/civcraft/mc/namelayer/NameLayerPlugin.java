@@ -14,6 +14,7 @@ import vg.civcraft.mc.namelayer.database.AssociationList;
 import vg.civcraft.mc.namelayer.database.Database;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.listeners.AssociationListener;
+import vg.civcraft.mc.namelayer.listeners.MercuryMessageListener;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.misc.ClassHandler;
 
@@ -25,10 +26,12 @@ public class NameLayerPlugin extends JavaPlugin{
 	private CommandHandler handle;
 	private static Database db;
 	private static boolean loadGroups = true;
+	private static boolean isMercuryEnabled = false;
 
 	@Override
 	public void onEnable() {
 		instance = this;
+		isMercuryEnabled = Bukkit.getPluginManager().isPluginEnabled("Mercury");
 		if (!new File(this.getDataFolder() + "config.yml").exists())
 			this.saveDefaultConfig();
 		new NameLayerConfigManager().setConfigOptions(getConfig());
@@ -46,6 +49,8 @@ public class NameLayerPlugin extends JavaPlugin{
 	public void registerListeners(){
 		getServer().getPluginManager().registerEvents(new AssociationListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+		if (isMercuryEnabled)
+			getServer().getPluginManager().registerEvents(new MercuryMessageListener(), this);
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -140,5 +145,9 @@ public class NameLayerPlugin extends JavaPlugin{
 	
 	public static String getSpecialAdminGroup(){
 		return "Name_Layer_Special";
+	}
+	
+	public static boolean isMercuryEnabled(){
+		return isMercuryEnabled;
 	}
 }

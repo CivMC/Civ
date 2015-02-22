@@ -73,6 +73,7 @@ public class ModifyPermissions extends PlayerCommand{
 				gPerm.addPermission(playerType, pType);
 				sender.sendMessage(ChatColor.GREEN + "The PermissionType: " + pType.name() + " was successfully added to the PlayerType: " +
 				playerType.name());
+				checkRecacheGroup(g);
 			}
 		}
 		else if (info.equalsIgnoreCase("remove")){
@@ -80,6 +81,7 @@ public class ModifyPermissions extends PlayerCommand{
 				gPerm.removePermission(playerType, pType);
 				sender.sendMessage(ChatColor.GREEN + "The PermissionType: " + pType.name() + " was successfully removed from" +
 						" the PlayerType: " + playerType.name());
+				checkRecacheGroup(g);
 			}
 			else
 				sender.sendMessage(ChatColor.RED + "This PlayerType does not have the PermissionType: " + pType.name());

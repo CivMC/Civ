@@ -3,6 +3,7 @@ main: vg.civcraft.mc.namelayer.NameLayerPlugin
 version: 2.3.3
 load: startup
 author: Rourke750
+softdepend: [Mercury]
 commands:
    nlag:
    nlasg:

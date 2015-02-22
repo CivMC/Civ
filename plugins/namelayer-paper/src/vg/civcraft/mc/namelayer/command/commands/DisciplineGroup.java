@@ -43,6 +43,7 @@ public class DisciplineGroup extends PlayerCommand{
 			g.setDisciplined(true);
 		sender.sendMessage(ChatColor.GREEN + "Group has been disabled.");
 		}
+		checkRecacheGroup(g);
 		return true;
 	}
 
