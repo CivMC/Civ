@@ -185,8 +185,19 @@ public class NetherFactory extends BaseFactory
 									removeBlocksAboveTeleportPlatform(netherTeleportPlatform);
 								}
 								Location destination = new Location(netherTeleportPlatform.getWorld(), netherTeleportPlatform.getX(), netherTeleportPlatform.getY(), netherTeleportPlatform.getZ(), playerLocation.getYaw(), playerLocation.getPitch());
-								destination.add(0.5, 1.5, 0.5);								
+								destination.add(0.5, 1.5, 0.5);
+								final Entity ent = player.getVehicle();
 								player.teleport(destination);
+								if (ent != null){
+									ent.teleport(destination);
+									Bukkit.getScheduler().runTask(FactoryModPlugin.getPlugin(), new Runnable(){
+
+										@Override
+										public void run() {
+											ent.setPassenger(player);
+										}
+									});
+								}
 								if (netherFactoryProperties.getUseFuelOnTeleport())
 								{
 									getFuel().removeFrom(getPowerSourceInventory());
@@ -200,8 +211,8 @@ public class NetherFactory extends BaseFactory
 								}
 								Location destination = new Location(overworldTeleportPlatform.getWorld(), overworldTeleportPlatform.getX(), overworldTeleportPlatform.getY(), overworldTeleportPlatform.getZ(), playerLocation.getYaw(), playerLocation.getPitch());
 								destination.add(0.5, 1.5, 0.5);
-								player.teleport(destination);
 								final Entity ent = player.getVehicle();
+								player.teleport(destination);
 								if (ent != null){
 									ent.teleport(destination);
 									Bukkit.getScheduler().runTask(FactoryModPlugin.getPlugin(), new Runnable(){
