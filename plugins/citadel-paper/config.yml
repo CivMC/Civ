@@ -52,8 +52,8 @@ non_reinforceables:
  - BROWN_MUSHROOM
  - RED_MUSHROOM
  - TNT
- - FIRE
  - CROPS
+ - FIRE
  - SNOW
  - ICE
  - CACTUS

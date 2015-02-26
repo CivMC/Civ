@@ -126,8 +126,16 @@ public class BlockListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void blockBreakEvent(BlockBreakEvent event){
 		Block block = event.getBlock();
-		Player player = event.getPlayer();
+		Player player = event.getPlayer();	
+		Block reinforcingBlock = null;
 		Reinforcement rein = rm.getReinforcement(Utility.getRealBlock(block));
+		
+		//if block is a plant check reinforcement on soil block
+		if(isPlant(block)){
+        	reinforcingBlock = Utility.findPlantSoil(block);
+        	rein = (PlayerReinforcement) rm.getReinforcement(reinforcingBlock);
+		}
+
 		if (rein == null){
 			rein = createNaturalReinforcement(event.getBlock(), player);
 			if (rein != null){
@@ -143,16 +151,16 @@ public class BlockListener implements Listener{
             }
             return;
 		}
+		
 		boolean is_cancelled = true;
         if (rein instanceof PlayerReinforcement) {
             PlayerReinforcement pr = (PlayerReinforcement) rein;
             PlayerState state = PlayerState.get(player);
-            boolean admin_bypass = player.hasPermission("citadel.admin.bypassmode");
-            if (isPlant(block) && (pr.isAccessible(player, PermissionType.CROPS) || admin_bypass)) {
-                // If this is a delegated reinforcement for a crop which the
-                //  player has access to, allow the player to break the crop
-                //  without effecting the reinforcement.
-            		is_cancelled = false;
+            boolean admin_bypass = player.hasPermission("citadel.admin.bypassmode");   
+            Citadel.Log("Checking if block is plant");
+            if (isPlant(block) && (pr.isAccessible(player, PermissionType.CROPS)) || admin_bypass) {
+                //player has CROPS access to the soil block, allow them to break without affecting reinforcement
+            	is_cancelled = false;
             } else if (state.isBypassMode() && ((pr.isBypassable(player) && !pr.getGroup().isDisciplined()) || admin_bypass)) {
                 if (admin_bypass) {
                 	/*

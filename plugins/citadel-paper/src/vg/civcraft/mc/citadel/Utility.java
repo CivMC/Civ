@@ -21,6 +21,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Bed;
 import org.bukkit.material.Door;
+import org.bukkit.material.MaterialData;
 
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.misc.ReinforcemnetFortificationCancelException;
@@ -229,6 +230,7 @@ public class Utility {
     private static int maxPlantHeight(Block plant) {
         switch(plant.getType()) {
             case CACTUS:
+            	return 3;
             case SUGAR_CANE_BLOCK:
                 return 3;
             default:
@@ -593,4 +595,23 @@ public class Utility {
 				.getMaturationTime();
 		return maturation;
 	}
+    
+    public static Block findPlantSoil(Block block){
+    	final Set<Material> soilTypes = getPlantSoilTypes(block.getType());
+    	if(soilTypes.size() <= 0){
+    		Citadel.Log("Soil types did not contain soil");
+    		return null;
+    	}
+    	//find the plants soil below it
+    	Block down = block;
+    	int max_depth = maxPlantHeight(block);
+    	for(int i =0; i < max_depth; ++i){
+    		down = down.getRelative(BlockFace.DOWN);
+    		if(soilTypes.contains(down.getType())){
+    			return down;
+    		}
+    	}
+    	Citadel.Log("Returning null from findPlantSoil");
+    	return null;
+    }
 }
