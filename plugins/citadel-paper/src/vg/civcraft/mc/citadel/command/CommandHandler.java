@@ -16,6 +16,7 @@ import vg.civcraft.mc.citadel.command.commands.Materials;
 import vg.civcraft.mc.citadel.command.commands.Off;
 import vg.civcraft.mc.citadel.command.commands.Reinforce;
 import vg.civcraft.mc.citadel.command.commands.Stats;
+import vg.civcraft.mc.namelayer.command.Command;
 
 public class CommandHandler {
 	public Map<String, Command> commands = new HashMap<String, Command>();

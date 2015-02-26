@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.PlayerState;
-import vg.civcraft.mc.citadel.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.PlayerCommand;
 
 import java.util.ArrayList;
 import java.util.List;

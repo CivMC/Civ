@@ -10,9 +10,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.command.PlayerCommand;
-import vg.civcraft.mc.citadel.command.tabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class Stats extends PlayerCommand{

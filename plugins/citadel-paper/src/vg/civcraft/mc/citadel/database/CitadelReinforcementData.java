@@ -177,7 +177,7 @@ public class CitadelReinforcementData {
 		initalizePreparedStatements();
 	}
 	
-	private PreparedStatement getRein, getReins, addRein, removeRein, updateRein;
+	private PreparedStatement getRein, getReins, addRein, removeRein, updateRein, getGroupFromRein;
 	//private PreparedStatement deleteGroup, insertDeleteGroup, removeDeleteGroup, getDeleteGroup;
 	private PreparedStatement insertReinID, getLastReinID, getCordsbyReinID, selectReinCountForGroup, selectReinCount;
 	/**
@@ -211,6 +211,10 @@ public class CitadelReinforcementData {
 				+ "(select f.group_id from faction_id f where f.group_name = ? limit 1), "
 				+ "maturation_time = ? "
 				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.world =?");
+		getGroupFromRein = db.prepareStatement("select fi.group_name from faction_id fi "
+				+ "inner join reinforcement r on fi.group_id = r.group_id "
+				+ "inner join reinforcement_id ri on r.rein_id = ri.rein_id "
+				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.world = ? and ri.chunk_id = ?");
 		/*
 		deleteGroup = db.prepareStatement("call deleteGroup(?)");
 		insertDeleteGroup = db.prepareStatement("insert into toDeleteReinforecments(group_id) select g.group_id from faction_id g "
@@ -238,7 +242,7 @@ public class CitadelReinforcementData {
 	 * @return Returns the Reinforcement of the location.
 	 * @return Returns null if there is no reinforcement.
 	 */
-	public Reinforcement getReinforcement(Location loc){
+	public synchronized Reinforcement getReinforcement(Location loc){
 		reconnectAndReinitialize();
 		
 		try {
@@ -318,7 +322,7 @@ public class CitadelReinforcementData {
 	 * SaveManager.
 	 * @param The Reinforcement to save.
 	 */
-	public void insertReinforcement(Reinforcement rein){
+	public synchronized void insertReinforcement(Reinforcement rein){
 		reconnectAndReinitialize();
 		
 		if (rein instanceof PlayerReinforcement){
@@ -445,7 +449,7 @@ public class CitadelReinforcementData {
 	 * within SaveManager
 	 * @param The Reinforcement to delete.
 	 */
-	public void deleteReinforcement(Reinforcement rein){
+	public synchronized void deleteReinforcement(Reinforcement rein){
 		reconnectAndReinitialize();
 		
 		Location loc = rein.getLocation();
@@ -467,7 +471,7 @@ public class CitadelReinforcementData {
 	 * from SaveManager.
 	 * @param The Reinforcement to save.
 	 */
-	public void saveReinforcement(Reinforcement rein){
+	public synchronized void saveReinforcement(Reinforcement rein){
 		reconnectAndReinitialize();
 		
 		int dur = rein.getDurability();
@@ -563,7 +567,7 @@ public class CitadelReinforcementData {
 	*/
 	
 	private int lastId = 0;
-	public int getLastReinId(){
+	public synchronized int getLastReinId(){
 		reconnectAndReinitialize();
 		if (lastId != 0){
 			lastId++;
@@ -588,7 +592,7 @@ public class CitadelReinforcementData {
 		return chunk;
 	}
 	
-	public int getReinCountForGroup(String group){
+	public synchronized int getReinCountForGroup(String group){
 		try {
 			selectReinCountForGroup.setString(1, group);
 			ResultSet set = selectReinCountForGroup.executeQuery();
@@ -601,7 +605,7 @@ public class CitadelReinforcementData {
 		return 0;
 	}
 	
-	public int getReinCountForAllGroups(){
+	public synchronized int getReinCountForAllGroups(){
 		try {
 			ResultSet set = selectReinCount.executeQuery();
 			set.next();
@@ -611,5 +615,23 @@ public class CitadelReinforcementData {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+	
+	public synchronized String getSavedGroupName(PlayerReinforcement rein){
+		Location loc = rein.getLocation();
+		try {
+			getGroupFromRein.setInt(1, loc.getBlockX());
+			getGroupFromRein.setInt(2, loc.getBlockY());
+			getGroupFromRein.setInt(3, loc.getBlockZ());
+			getGroupFromRein.setString(4, loc.getWorld().getName());
+			getGroupFromRein.setString(5, formatChunk(loc));
+			ResultSet set = getGroupFromRein.executeQuery();
+			set.next();
+			return set.getString(1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

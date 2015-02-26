@@ -75,3 +75,4 @@ redstone_distance: 7
 acidblock_material: GOLD_BLOCK
 # If set to true then instead of dropping the reinforcement a block with the specified reinforcement value will be dropped.
 drop_reinforced_block: false
+save_interval_ticks: 500

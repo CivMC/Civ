@@ -9,6 +9,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Openable;
 
+import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -46,6 +47,7 @@ public class PlayerReinforcement extends Reinforcement{
 	}
 	
 	public boolean isAccessible(UUID u, PermissionType... pType){
+		checkValid();
 		PlayerType type = g.getPlayerType(u);
 		// if it is a public group we want it to check even if no
 				// PlayerType
@@ -60,6 +62,7 @@ public class PlayerReinforcement extends Reinforcement{
 	 * @return Returns if the Player can or not.
 	 */
 	public boolean isBypassable(Player p){
+		checkValid();
 		PlayerType type = g.getPlayerType(p.getUniqueId());
 		if (type == null)
 			return false;
@@ -123,6 +126,7 @@ public class PlayerReinforcement extends Reinforcement{
      * @return group
      */
     public Group getGroup(){
+    	checkValid();
     	return g;
     }
     /**
@@ -153,5 +157,13 @@ public class PlayerReinforcement extends Reinforcement{
                 verb,
                 getHealthText(),
                 getMaterial().name());
+    }
+    
+    private void checkValid(){
+    	if (!g.isValid()){ // incase it was recently merged/ deleted.
+    		String group = Citadel.getCitadelDatabase().getSavedGroupName(this);
+    		g = NameAPI.getGroupManager().getGroup(group);
+    		gp = NameAPI.getGroupManager().getPermissionforGroup(g);
+    	}
     }
 }

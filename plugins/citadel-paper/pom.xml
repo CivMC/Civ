@@ -6,7 +6,7 @@
   <groupId>vg.civcraft.mc.citadel</groupId>
   <artifactId>Citadel</artifactId>
   <packaging>jar</packaging>
-  <version>3.2.1-${build.number}</version>
+  <version>3.2.3-${build.number}</version>
   <name>Citadel</name>
   <url>https://github.com/Civcraft/Citadel</url>
   
@@ -47,7 +47,7 @@
     <dependency>
       <groupId>vg.civcraft.mc.namelayer</groupId>
       <artifactId>NameLayer</artifactId>
-      <version>2.1.1</version>
+      <version>2.3.1-85</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -59,7 +59,7 @@
     </repository>
     <repository>
       <id>NameLayer-repo</id>
-      <url>http://192.99.169.83:8080/plugin/repository/project/NameLayer-master/Build/20/repository/</url>
+      <url>http://192.99.169.83:8080/plugin/repository/project/NameLayer-master/Build/85/repository/</url>
     </repository>
   </repositories>
   
