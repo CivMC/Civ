@@ -26,6 +26,7 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.StringUtils;
 
 //original file:
 /**
@@ -209,12 +210,12 @@ public class PrintingPressManager implements Manager
 				|| !factoryExistsAt(press.getInventoryLocation()) || !factoryExistsAt(press.getPowerSourceLocation()))
 		{
 			presses.add(press);
-			FactoryModPlugin.sendConsoleMessage("Printing press created: " + press.factoryName() + " at " + press.getCenterLocation());
+			FactoryModPlugin.sendConsoleMessage("Printing press created: " + press.getProperties().getName());
 			return new InteractionResponse(InteractionResult.SUCCESS, "");
 		}
 		else
 		{
-			FactoryModPlugin.sendConsoleMessage("Printing press failed to create: " + press.factoryName() + " at " + press.getCenterLocation());
+			FactoryModPlugin.sendConsoleMessage("Printing press failed to create: " + press.getProperties().getName());
 			return new InteractionResponse(InteractionResult.FAILURE, "");
 		}
 	}
@@ -258,8 +259,14 @@ public class PrintingPressManager implements Manager
 		}
 		
 		PrintingPress press = (PrintingPress)factory;
+
+		FactoryModPlugin.sendConsoleMessage(new StringBuilder("Printing press removed: ")
+		.append(press.getProperties().getName())
+		.append(" at ")
+		.append(StringUtils.formatCoords(press.getCenterLocation()))
+		.toString());
+		
 		presses.remove(press);
-		FactoryModPlugin.sendConsoleMessage("Printing press removed: " + press.factoryName() + " at " + press.getCenterLocation());
 	}
 	
 	public void updateRepair(long time)
@@ -275,8 +282,13 @@ public class PrintingPressManager implements Manager
 			PrintingPress press = itr.next();
 			if(currentTime > (press.getTimeDisrepair() + FactoryModPlugin.DISREPAIR_PERIOD))
 			{
+				FactoryModPlugin.sendConsoleMessage(new StringBuilder("Printing press removed due to disrepair: ")
+				.append(press.getProperties().getName())
+				.append(" at ")
+				.append(StringUtils.formatCoords(press.getCenterLocation()))
+				.toString());
+				
 				itr.remove();
-				FactoryModPlugin.sendConsoleMessage("Printing press removed due to disrepair: " + press.factoryName() + " at " + press.getCenterLocation());
 			}
 		}
 	}

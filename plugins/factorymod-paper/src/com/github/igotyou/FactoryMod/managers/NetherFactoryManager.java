@@ -31,6 +31,7 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.StringUtils;
 
 //original file:
 /**
@@ -308,12 +309,12 @@ public class NetherFactoryManager implements Manager
 				|| !factoryExistsAt(netherFactory.getOverworldTeleportPlatform()) ))
 		{
 			netherFactorys.add(netherFactory);
-			FactoryModPlugin.sendConsoleMessage("Nether factory created: " + netherFactory.factoryName() + " at " + netherFactory.getCenterLocation());
+			FactoryModPlugin.sendConsoleMessage("Nether factory created: " + netherFactory.getProperties().getName());
 			return new InteractionResponse(InteractionResult.SUCCESS, "");
 		}
 		else
 		{
-			FactoryModPlugin.sendConsoleMessage("Nether factory failed to create: " + netherFactory.factoryName() + " at " + netherFactory.getCenterLocation());
+			FactoryModPlugin.sendConsoleMessage("Nether factory failed to create: " + netherFactory.getProperties().getName());
 			return new InteractionResponse(InteractionResult.FAILURE, "");
 		}
 	}
@@ -360,8 +361,15 @@ public class NetherFactoryManager implements Manager
 		}
 		
 		NetherFactory netherFactory = (NetherFactory)factory;
+		
+		FactoryModPlugin.sendConsoleMessage(new StringBuilder("Nether factory removed: ")
+			.append(netherFactory.getProperties().getName())
+			.append(" at ")
+			.append(StringUtils.formatCoords(netherFactory.getCenterLocation()))
+			.toString());
+		
 		netherFactorys.remove(netherFactory);
-		FactoryModPlugin.sendConsoleMessage("Nether factory removed: " + netherFactory.factoryName() + " at " + netherFactory.getCenterLocation());
+		
 	}
 	
 	public void updateRepair(long time)
@@ -377,8 +385,14 @@ public class NetherFactoryManager implements Manager
 			NetherFactory factory = itr.next();
 			if(currentTime > (factory.getTimeDisrepair() + FactoryModPlugin.DISREPAIR_PERIOD))
 			{
+				FactoryModPlugin.sendConsoleMessage(new StringBuilder("Nether factory removed due to disrepair: ")
+					.append(factory.getProperties().getName())
+					.append(" at ")
+					.append(StringUtils.formatCoords(factory.getCenterLocation()))
+					.toString());
+				
 				itr.remove();
-				FactoryModPlugin.sendConsoleMessage("Nether factory removed due to disrepair: " + factory.factoryName() + " at " + factory.getCenterLocation());
+				
 			}
 		}
 	}

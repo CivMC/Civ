@@ -13,20 +13,23 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.FactoryObject;
-import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.properties.PrintingPressProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
+import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
-import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
-import com.github.igotyou.FactoryMod.utility.PrettyLore;
+import com.github.igotyou.FactoryMod.utility.StringUtils;
 
 public class PrintingPress extends BaseFactory {
 	
 	private PrintingPressProperties printingPressProperties;
+	
+	public PrintingPressProperties getProperties() {
+		return printingPressProperties;
+	}
+	
 	private OperationMode mode;
+	
 	public OperationMode getMode() {
 		return mode;
 	}
@@ -135,6 +138,8 @@ public class PrintingPress extends BaseFactory {
 				inputs.addAll(printingPressProperties.getPlateMaterials().getMultiple(pageCount));
 			}
 			break;
+		default:
+			break;
 		}
 		return inputs;
 	}
@@ -149,6 +154,8 @@ public class PrintingPress extends BaseFactory {
 				outputs.add(plates);
 			}
 			break;
+		default:
+			break;
 		}
 		return outputs;
 	}
@@ -159,6 +166,8 @@ public class PrintingPress extends BaseFactory {
 		switch(mode) {
 		case REPAIR:
 			inputs.addAll(printingPressProperties.getRepairMaterials());
+			break;
+		default:
 			break;
 		}
 		return inputs;
@@ -214,6 +223,8 @@ public class PrintingPress extends BaseFactory {
 			break;
 		case PRINT_SECURITY:
 			printSecurityUpdate();
+			break;
+		default:
 			break;
 		}
 	}
@@ -622,10 +633,10 @@ public class PrintingPress extends BaseFactory {
 			lore = lore.replaceAll("[ \r\n]+", " ");
 			
 			// Limit length
-			lore = PrettyLore.limitLengthEllipsis(lore, PAGE_LORE_LENGTH_LIMIT);
+			lore = StringUtils.limitLengthEllipsis(lore, PAGE_LORE_LENGTH_LIMIT);
 			
 			// Split in to lines based on length
-			List<String> lines = PrettyLore.splitLines(lore, PAGE_LORE_LINE_LIMIT);
+			List<String> lines = StringUtils.splitLines(lore, PAGE_LORE_LINE_LIMIT);
 			
 			return lines;
 		}
