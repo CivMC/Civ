@@ -28,6 +28,7 @@ import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.managers.FactoryModManager;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
+import com.github.igotyou.FactoryMod.utility.StringUtils;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 
 public class FactoryModListener implements Listener
@@ -429,9 +430,21 @@ public class FactoryModListener implements Listener
 	
 	private InteractionResponse createFactory(Player player, Location center, Location inventory, Location power) {
 
-		FactoryModPlugin.sendConsoleMessage(new StringBuilder("Factory creation attempted: ")
-			.append(player.getUniqueId()).append(" at ").append(center)
-			.toString());
+		if(rm.isReinforced(center)) {
+			FactoryModPlugin.sendConsoleMessage(new StringBuilder("Factory creation attempted: ")
+				.append(player.getUniqueId())
+				.append(" with group ")
+				.append(((PlayerReinforcement)rm.getReinforcement(center)).getGroup().getName())
+				.append(" at ")
+				.append(StringUtils.formatCoords(center))
+				.toString());
+		} else {
+			FactoryModPlugin.sendConsoleMessage(new StringBuilder("Factory creation attempted: ")
+				.append(player.getUniqueId())
+				.append(" at ")
+				.append(StringUtils.formatCoords(center))
+				.toString());
+		}
 		return factoryMan.createFactory(center, inventory, power);
 	}
 	
