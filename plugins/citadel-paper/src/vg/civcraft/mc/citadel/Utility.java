@@ -599,7 +599,6 @@ public class Utility {
     public static Block findPlantSoil(Block block){
     	final Set<Material> soilTypes = getPlantSoilTypes(block.getType());
     	if(soilTypes.size() <= 0){
-    		Citadel.Log("Soil types did not contain soil");
     		return null;
     	}
     	//find the plants soil below it
@@ -611,7 +610,6 @@ public class Utility {
     			return down;
     		}
     	}
-    	Citadel.Log("Returning null from findPlantSoil");
     	return null;
     }
 }
