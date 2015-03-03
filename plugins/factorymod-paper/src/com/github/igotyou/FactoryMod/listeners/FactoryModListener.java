@@ -67,13 +67,19 @@ public class FactoryModListener implements Listener
 				{
 					if(e.getPlayer() == null) {
 						FactoryModPlugin.sendConsoleMessage(new StringBuilder("Factory block broken: ")
-							.append(e.getEventName()).append(" at ").append(block.getLocation())
+							.append(e.getBlock().getType())
+							.append(" at ")
+							.append(StringUtils.formatCoords(block.getLocation()))
 							.toString());
 					} 
 					else
 					{
 						FactoryModPlugin.sendConsoleMessage(new StringBuilder("Factory block broken: ")
-							.append(e.getEventName()).append(" by ").append(e.getPlayer().getUniqueId()).append(" at ").append(block.getLocation())
+							.append(e.getBlock().getType())
+							.append(" by ")
+							.append(e.getPlayer().getUniqueId())
+							.append(" at ")
+							.append(StringUtils.formatCoords(block.getLocation()))
 							.toString());
 					}
 					destroyFactoryAt(block);
@@ -112,7 +118,11 @@ public class FactoryModListener implements Listener
 					if ((FactoryModPlugin.CITADEL_ENABLED && !rm.isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)
 					{
 						FactoryModPlugin.sendConsoleMessage(new StringBuilder("Factory block exploded: ")
-							.append(e.getEventName()).append(" by ").append(e.getEntityType()).append(" at ").append(block.getLocation())
+							.append(block.getType())
+							.append(" by ")
+							.append(e.getEntityType())
+							.append(" at ")
+							.append(StringUtils.formatCoords(block.getLocation()))
 							.toString());
 						destroyFactoryAt(block);
 					}
@@ -134,7 +144,9 @@ public class FactoryModListener implements Listener
 			if (factoryMan.factoryExistsAt(block.getLocation()))
 			{
 				FactoryModPlugin.sendConsoleMessage(new StringBuilder("Factory block burned: ")
-					.append(e.getEventName()).append(" at ").append(block.getLocation())
+					.append(block.getType())
+					.append(" at ")
+					.append(StringUtils.formatCoords(block.getLocation()))
 					.toString());
 				destroyFactoryAt(block);
 			}

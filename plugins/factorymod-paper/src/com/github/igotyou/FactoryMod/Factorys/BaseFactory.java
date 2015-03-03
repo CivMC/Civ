@@ -23,6 +23,7 @@ import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.StringUtils;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 
 public abstract class BaseFactory extends FactoryObject implements Factory {
@@ -434,14 +435,20 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 	}
 
 	/**
-	 * Called by the block listener when the player(or a entity) destroys the fatory
-	 * Drops the build materials if the config says it shouls
+	 * Called by the block listener when the player(or a entity) destroys the factory
+	 * Drops the build materials if the config says it should
 	 */
 	public void destroy(Location destroyLocation)
 	{
+		FactoryModPlugin.sendConsoleMessage(new StringBuilder("Factory destroyed: ")
+			.append(subFactoryType)
+			.append(" at ")
+			.append(StringUtils.formatCoords(getCenterLocation()))
+			.toString());
+	
 		powerOff();
-		currentRepair=getMaxRepair();
-		timeDisrepair=System.currentTimeMillis();
+		currentRepair = getMaxRepair();
+		timeDisrepair = System.currentTimeMillis();
 	}
 	/*
 	 * Repairs the factory 
