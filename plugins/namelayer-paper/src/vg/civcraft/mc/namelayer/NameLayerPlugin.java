@@ -1,7 +1,10 @@
 package vg.civcraft.mc.namelayer;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -25,6 +28,7 @@ public class NameLayerPlugin extends JavaPlugin{
 	private CommandHandler handle;
 	private static Database db;
 	private static boolean loadGroups = true;
+	
 
 	@Override
 	public void onEnable() {
