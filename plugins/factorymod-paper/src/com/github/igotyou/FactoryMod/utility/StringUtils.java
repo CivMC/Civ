@@ -3,7 +3,17 @@ package com.github.igotyou.FactoryMod.utility;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrettyLore {
+import org.bukkit.Location;
+
+public class StringUtils {
+	
+	/**
+	 * Formats a Location's coordinates as "world (x y z)"
+	 */
+	public static String formatCoords(Location loc) {
+		return String.format("%s (%d %d %d)", loc.getWorld().getName(), loc.getBlockX(), loc.getBlockX(), loc.getBlockZ());
+	}
+	
 	public static List<String> splitLines(String paragraph, int lineLength) {
 		List<String> lines = new ArrayList<String>();
 		int lineStart = 0;

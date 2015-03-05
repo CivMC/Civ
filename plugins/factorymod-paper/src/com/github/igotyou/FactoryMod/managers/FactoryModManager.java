@@ -153,7 +153,6 @@ public class FactoryModManager
 	 */
 	private static void load(Manager managerInterface, File file) 
 	{
-		FactoryModPlugin.sendConsoleMessage("Loading factory manager interface " + Manager.class.getName() + " from file " + file.getPath());
 		try
 		{
 			managerInterface.load(file);
@@ -182,7 +181,6 @@ public class FactoryModManager
 	 */
 	private static void save(Manager manager, File file) 
 	{	
-		FactoryModPlugin.sendConsoleMessage("Saving factory manager interface " + Manager.class.getName() + " to file " + file.getPath());
 		
 		try
 		{
@@ -317,7 +315,6 @@ public class FactoryModManager
 
 	public InteractionResponse createFactory(Location centralLocation,
 			Location inventoryLocation, Location powerLocation) {
-		FactoryModPlugin.sendConsoleMessage("Attempting to create factory centered at " + centralLocation);
 		InteractionResponse response = null;
 		for (Manager manager : managers)
 		{
@@ -327,6 +324,8 @@ public class FactoryModManager
 				return response;
 			}
 		}
+		
+		FactoryModPlugin.sendConsoleMessage("The factory could not be created: " + response.getInteractionMessage());
 		return response;
 	}
 }

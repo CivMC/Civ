@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +31,7 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.StringUtils;
 
 //original file:
 /**
@@ -196,7 +196,7 @@ public class ProductionManager implements Manager
 	{
 		if (!factoryExistsAt(factoryLocation))
 		{
-			HashMap<String, ProductionProperties> properties = FactoryModPlugin.productionProperties;
+			Map<String, ProductionProperties> properties = FactoryModPlugin.productionProperties;
 			Block inventoryBlock = inventoryLocation.getBlock();
 			Chest chest = (Chest) inventoryBlock.getState();
 			Inventory chestInventory = chest.getInventory();
@@ -228,7 +228,7 @@ public class ProductionManager implements Manager
 	{
 		if (!factoryExistsAt(factoryLocation))
 		{
-			HashMap<String, ProductionProperties> properties = FactoryModPlugin.productionProperties;
+			Map<String, ProductionProperties> properties = FactoryModPlugin.productionProperties;
 			Block inventoryBlock = inventoryLocation.getBlock();
 			Chest chest = (Chest) inventoryBlock.getState();
 			Inventory chestInventory = chest.getInventory();
@@ -267,12 +267,12 @@ public class ProductionManager implements Manager
 				|| !factoryExistsAt(production.getInventoryLocation()) || !factoryExistsAt(production.getPowerSourceLocation()))
 		{
 			producers.add(production);
-			FactoryModPlugin.sendConsoleMessage("Production factory created: " + production.factoryName() + " at " + production.getCenterLocation());
+			FactoryModPlugin.sendConsoleMessage("Production factory created: " + production.getProductionFactoryProperties().getName());
 			return new InteractionResponse(InteractionResult.SUCCESS, "");
 		}
 		else
 		{
-			FactoryModPlugin.sendConsoleMessage("Production factory failed to create: " + production.factoryName() + " at " + production.getCenterLocation());
+			FactoryModPlugin.sendConsoleMessage("Production factory failed to create: " + production.getProductionFactoryProperties().getName());
 			return new InteractionResponse(InteractionResult.FAILURE, "");
 		}
 	}
@@ -316,8 +316,14 @@ public class ProductionManager implements Manager
 		}
 		
 		ProductionFactory producer = (ProductionFactory)factory;
+		
+		FactoryModPlugin.sendConsoleMessage(new StringBuilder("Production factory removed: ")
+				.append(producer.getProductionFactoryProperties().getName())
+				.append(" at ")
+				.append(StringUtils.formatCoords(producer.getCenterLocation()))
+				.toString());
+		
 		producers.remove(producer);
-		FactoryModPlugin.sendConsoleMessage("Production factory removed: " + producer.factoryName() + " at " + producer.getCenterLocation());
 	}
 	
 	public void updateRepair(long time)
@@ -333,8 +339,13 @@ public class ProductionManager implements Manager
 			ProductionFactory producer = itr.next();
 			if(currentTime > (producer.getTimeDisrepair() + FactoryModPlugin.DISREPAIR_PERIOD))
 			{
-				itr.remove();
-				FactoryModPlugin.sendConsoleMessage("Production factory removed due to disrepair: " + producer.factoryName() + " at " + producer.getCenterLocation());
+				FactoryModPlugin.sendConsoleMessage(new StringBuilder("Production factory removed due to disrepair: ")
+					.append(producer.getProductionFactoryProperties().getName())
+					.append(" at ")
+					.append(StringUtils.formatCoords(producer.getCenterLocation()))
+					.toString());
+				
+				itr.remove();				
 			}
 		}
 	}
