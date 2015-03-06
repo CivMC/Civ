@@ -25,6 +25,7 @@ public class NameLayerPlugin extends JavaPlugin{
 	private CommandHandler handle;
 	private static Database db;
 	private static boolean loadGroups = true;
+	
 
 	@Override
 	public void onEnable() {
