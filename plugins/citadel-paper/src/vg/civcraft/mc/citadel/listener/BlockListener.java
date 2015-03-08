@@ -133,6 +133,10 @@ public class BlockListener implements Listener{
 		//if block is a plant check reinforcement on soil block
 		if(isPlant(block)){
         	reinforcingBlock = Utility.findPlantSoil(block);
+        	if (reinforcingBlock == null){
+        		Citadel.Log("A plant was found but not on a soil block. Info as follows: Block was: " + block.getType().name() 
+        				+ " and was at location " + block.getLocation().toString());
+        	}
         	rein = (PlayerReinforcement) rm.getReinforcement(reinforcingBlock);
 		}
 

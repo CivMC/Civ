@@ -43,9 +43,14 @@ public class EntityListener implements Listener{
     @EventHandler(ignoreCancelled = true)
     public void explode(EntityExplodeEvent eee) {
         Iterator<Block> iterator = eee.blockList().iterator();
+        List<Block> blocks = new ArrayList<Block>();
         while (iterator.hasNext()) {
             Block b = iterator.next();
             Block block = Utility.getRealBlock(b);
+            // getRealBlock should return the block we care about so if its already in the list we know it is a double block and was already handled.
+            if (blocks.contains(block))
+            	continue;
+            blocks.add(block);
             try {
 	            if (explodeReinforcement(block)) {
 	                block.getDrops().clear();
