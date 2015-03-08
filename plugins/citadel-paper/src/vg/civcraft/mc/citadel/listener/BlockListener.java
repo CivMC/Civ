@@ -5,7 +5,6 @@ import static vg.civcraft.mc.citadel.Utility.createPlayerReinforcement;
 import static vg.civcraft.mc.citadel.Utility.isAuthorizedPlayerNear;
 import static vg.civcraft.mc.citadel.Utility.isDroppedReinforcementBlock;
 import static vg.civcraft.mc.citadel.Utility.isPlant;
-import static vg.civcraft.mc.citadel.Utility.isRail;
 import static vg.civcraft.mc.citadel.Utility.maybeReinforcementDamaged;
 import static vg.civcraft.mc.citadel.Utility.reinforcementBroken;
 import static vg.civcraft.mc.citadel.Utility.reinforcementDamaged;
@@ -51,6 +50,7 @@ import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
+import vg.civcraft.mc.citadel.misc.NonWashableType;
 import vg.civcraft.mc.citadel.misc.ReinforcemnetFortificationCancelException;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
@@ -300,7 +300,7 @@ public class BlockListener implements Listener{
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onBlockFromToEvent(BlockFromToEvent event) {
         Block to_block = event.getToBlock();
-        if (!isRail(to_block) && !isPlant(to_block)) {
+        if (!NonWashableType.isNonWashable(to_block.getType()) && !isPlant(to_block)) {
             return;
         }
         Reinforcement rein = rm.getReinforcement(event.getToBlock());
