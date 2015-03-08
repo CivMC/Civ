@@ -1,6 +1,6 @@
 name: Citadel
 main: vg.civcraft.mc.citadel.Citadel
-version: 3.2.3
+version: 3.2.4
 author: Rourke750
 depend: [NameLayer]
 commands:

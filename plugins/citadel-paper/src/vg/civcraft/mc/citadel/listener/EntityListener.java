@@ -26,6 +26,7 @@ import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.ReinforcementMode;
+import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -43,7 +44,8 @@ public class EntityListener implements Listener{
     public void explode(EntityExplodeEvent eee) {
         Iterator<Block> iterator = eee.blockList().iterator();
         while (iterator.hasNext()) {
-            Block block = iterator.next();
+            Block b = iterator.next();
+            Block block = Utility.getRealBlock(b);
             try {
 	            if (explodeReinforcement(block)) {
 	                block.getDrops().clear();
