@@ -1,0 +1,118 @@
+# Don't touch this. It's here to determine whether you need to refresh your config.
+config-version: 1
+
+# The duration in seconds that both the attacker and victim should be tagged in combat.
+tag-duration: 15
+
+# This message is displayed to both the attacker and victim when newly tagged. Set this to '' to display nothing.
+tag-message: '&cYou have engaged in combat. Type &b/ct &cto check your timer.'
+
+# Plays an effect when a player logs off during combat.
+play-effect: true
+
+# The duration in seconds to despawn the combat logger's NPC if it hasn't died.
+npc-despawn-time: 60
+
+# This message is displayed when a player is killed by another player. Set this to '' to display nothing.
+kill-message: '&8&l>> &c{victim} was slain by {attacker}'
+
+# Enables BarAPI integration for displaying a boss bar counting down with the remaining tag time.
+barapi: true
+
+# This is a list of worlds where combat tagging should be disabled.
+disabled-worlds: [world_the_end]
+
+# These commands are unusable by players who are combat tagged.
+disabled-commands:
+
+  # Factions
+  - f home
+  - f leave
+  - f warp
+  - f w
+
+  # mcMMO
+  - ptp
+  - 'mcmmo:ptp'
+
+  # BattleArena
+  - arena
+  - a
+  - 'battlearena:arena'
+  - 'battlearena:a'
+
+  # MobArena
+  - mobarena
+  - ma
+  - 'mobarena:mobarena'
+  - 'mobarena:ma'
+
+  # PlotMe
+  - plotme
+  - plot
+  - p
+  - 'plotme:plotme'
+  - 'plotme:plot'
+  - 'plotme:p'
+
+  # Essentials
+  - spawn
+  - home
+  - warp
+  - warps
+  - back
+  - return
+  - call
+  - tpa
+  - tpask
+  - clearinventory
+  - clearinvent
+  - clean
+  - clear
+  - ci
+  - suicide
+  - espawn
+  - ehome
+  - ewarp
+  - ewarps
+  - eback
+  - ereturn
+  - ecall
+  - etpa
+  - etpask
+  - eclearinventory
+  - eclearinvent
+  - eclean
+  - eclear
+  - eci
+  - esuicide
+  - 'essentials:spawn'
+  - 'essentials:home'
+  - 'essentials:warp'
+  - 'essentials:warps'
+  - 'essentials:back'
+  - 'essentials:return'
+  - 'essentials:call'
+  - 'essentials:tpa'
+  - 'essentials:tpask'
+  - 'essentials:clearinventory'
+  - 'essentials:clearinvent'
+  - 'essentials:clean'
+  - 'essentials:clear'
+  - 'essentials:ci'
+  - 'essentials:suicide'
+  - 'essentials:espawn'
+  - 'essentials:ehome'
+  - 'essentials:ewarp'
+  - 'essentials:ewarps'
+  - 'essentials:eback'
+  - 'essentials:ereturn'
+  - 'essentials:ecall'
+  - 'essentials:etpa'
+  - 'essentials:etpask'
+  - 'essentials:eclearinventory'
+  - 'essentials:eclearinvent'
+  - 'essentials:eclean'
+  - 'essentials:eclear'
+  - 'essentials:eci'
+  - 'essentials:esuicide'

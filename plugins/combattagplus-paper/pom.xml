@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>net.minelink</groupId>
+  <artifactId>CombatTagPlusParent</artifactId>
+  <packaging>pom</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <modules>
+    <module>CombatTagPlusCompat-API</module>
+    <module>CombatTagPlusCompat-v1_7_R4</module>
+    <module>CombatTagPlusCompat-v1_8_R1</module>
+    <module>CombatTagPlus</module>
+  </modules>
+
+  <distributionManagement>
+    <repository>
+      <id>minelink-releases</id>
+      <url>http://repo.minelink.net/content/repositories/releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>minelink-snapshots</id>
+      <url>http://repo.minelink.net/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+</project>
