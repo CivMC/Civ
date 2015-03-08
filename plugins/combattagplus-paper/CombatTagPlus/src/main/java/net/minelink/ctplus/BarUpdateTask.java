@@ -73,7 +73,7 @@ public final class BarUpdateTask extends BukkitRunnable {
                     return;
                 }
 
-                taskId = new BarUpdateTask(plugin, p).runTaskTimer(plugin, 0, 10).getTaskId();
+                taskId = new BarUpdateTask(plugin, p).runTaskTimer(plugin, 0, 5).getTaskId();
                 tasks.put(playerId, taskId);
             }
         });
