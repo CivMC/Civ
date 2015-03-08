@@ -138,8 +138,10 @@ public class PrintingPress extends BaseFactory {
 			NamedItemStack plates = getPlateResult();
 			if (plates != null) {
 				int pageCount = ((BookMeta) plates.getItemMeta()).getPageCount();
-				pageCount = Math.min(pageCount, printingPressProperties.getBookPagesCap());
-				inputs.addAll(printingPressProperties.getPlateMaterials().getMultiple(pageCount));
+				if (pageCount > 0) {
+					pageCount = Math.min(pageCount, printingPressProperties.getBookPagesCap());
+					inputs.addAll(printingPressProperties.getPlateMaterials().getMultiple(pageCount));
+				}
 			} else {
 				log.info("getInputs(): plates == null");
 			}
@@ -239,9 +241,12 @@ public class PrintingPress extends BaseFactory {
 	
 	public void printBooksUpdate() {
 		// Output finished results
+
+		PrintResult printResult = getPrintResult();
+		
 		int finished = processQueue[processQueueOffset];
 		if (finished > 0) {
-			NamedItemStack result = getPrintResult().toBook();
+			NamedItemStack result = printResult.toBook();
 			ItemList<NamedItemStack> set = new ItemList<NamedItemStack>();
 			set.add(result);
 			set = set.getMultiple(finished);
@@ -253,12 +258,12 @@ public class PrintingPress extends BaseFactory {
 		boolean hasPages = pages.allIn(getInventory());
 		boolean inputStall = false;
 		
-		int pageCount = getPrintResult().pageCount();
+		int pageCount = printResult.pageCount();
 		pageCount = Math.min(pageCount, printingPressProperties.getBookPagesCap());
 		
 		if (hasPages) {
 			// Check bindings
-			int expectedBindings = (int) Math.floor((double) (containedPaper + printingPressProperties.getPagesPerLot()) / (double) pageCount);
+			int expectedBindings = pageCount == 0 ? containedPaper + printingPressProperties.getPagesPerLot() : (int) Math.floor((double) (containedPaper + printingPressProperties.getPagesPerLot()) / (double) pageCount);
 			boolean hasBindings = true;
 			ItemList<NamedItemStack> allBindings = new ItemList<NamedItemStack>();
 			if (expectedBindings > containedBindings) {
@@ -285,7 +290,7 @@ public class PrintingPress extends BaseFactory {
 		}
 		
 		// Put materials in queue
-		int booksInPages = containedPaper / pageCount;
+		int booksInPages = pageCount == 0 ? containedPaper : containedPaper / pageCount;
 		int copiesIn = Math.min(booksInPages, containedBindings);
 		containedPaper -= copiesIn * pageCount;
 		containedBindings -= copiesIn;
@@ -545,7 +550,8 @@ public class PrintingPress extends BaseFactory {
 					if (bookData.hasPages()) {
 						pages.addAll(bookData.getPages());
 					} else {
-						log.info("getPlateResult(): Book found has no pages.");
+						pages.add("");
+						log.info("getPlateResult(): Book found has no pages; adding blank.");
 					}
 					
 					NamedItemStack plates = new NamedItemStack(Material.WRITTEN_BOOK, 1, (short) 0, "plate");
@@ -627,6 +633,7 @@ public class PrintingPress extends BaseFactory {
 									pages = new ArrayList<String>(bookData.getPages());
 								else {
 									pages = new ArrayList<String>(0);
+									pages.add(""); // Blank page.
 								}
 								valid = true;
 								break;
