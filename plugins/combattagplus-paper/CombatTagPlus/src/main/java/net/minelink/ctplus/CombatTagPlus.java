@@ -402,7 +402,7 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void disableCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if (player.hasPermission("ctplus.bypass.command")) return;
