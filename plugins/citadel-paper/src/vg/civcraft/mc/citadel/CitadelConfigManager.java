@@ -40,6 +40,16 @@ public class CitadelConfigManager {
 		return nonReinforcementTypes;
 	}
 	
+	public static List<String> getNonWashableTypes() {
+		List<String> nonWashableTypes = new ArrayList<String>();
+		if(config.getStringList("non_washables") != null) {
+			for(String sect : config.getStringList("non_washables")) {
+				nonWashableTypes.add(sect);
+			}
+		}
+		return nonWashableTypes;
+	}
+	
 	public static int getRequireMents(String type){
 		return config.getInt("reinforcements." + type + ".requirements");
 	}

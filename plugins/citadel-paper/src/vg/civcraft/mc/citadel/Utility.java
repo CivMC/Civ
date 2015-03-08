@@ -345,21 +345,7 @@ public class Utility {
         }
         return false;  // implicit isSecureable() == false
     }
-    /**
-     * Checks if it is a rail.
-     * @param The block in question.
-     * @return Returns true if it is a rail block.
-     */
-    public static boolean isRail(Block block) {
-        return isRail(block.getType());
-    }
-
-    private static boolean isRail(Material mat) {
-        return mat.equals(Material.RAILS)
-            || mat.equals(Material.POWERED_RAIL)
-            || mat.equals(Material.ACTIVATOR_RAIL)
-            || mat.equals(Material.DETECTOR_RAIL);
-    }
+    
     /**
      * Checks if a Redstone player is trying to power a block.
      * @param The Reinforcement in question.
