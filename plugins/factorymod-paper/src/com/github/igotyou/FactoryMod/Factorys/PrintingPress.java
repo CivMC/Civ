@@ -541,7 +541,12 @@ public class PrintingPress extends BaseFactory {
 					if (title == null) {
 						title = "";
 					}
-					List<String> pages = new ArrayList<String>((int)(bookData.hasPages() ? bookData.getPages() : 0));
+					List<String> pages = new ArrayList<String>();
+					if (bookData.hasPages()) {
+						pages.addAll(bookData.getPages());
+					} else {
+						log.info("getPlateResult(): Book found has no pages.");
+					}
 					
 					NamedItemStack plates = new NamedItemStack(Material.WRITTEN_BOOK, 1, (short) 0, "plate");
 					BookMeta plateMeta = (BookMeta) plates.getItemMeta();
