@@ -48,8 +48,11 @@ public class EntityListener implements Listener{
             Block b = iterator.next();
             Block block = Utility.getRealBlock(b);
             // getRealBlock should return the block we care about so if its already in the list we know it is a double block and was already handled.
-            if (blocks.contains(block))
+            if (blocks.contains(block)){
+            	block.getDrops().clear();
+                iterator.remove();
             	continue;
+            }
             blocks.add(block);
             try {
 	            if (explodeReinforcement(block)) {
