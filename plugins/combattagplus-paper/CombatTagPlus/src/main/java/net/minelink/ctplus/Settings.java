@@ -46,6 +46,14 @@ public final class Settings {
         return plugin.getConfig().getBoolean("play-effect");
     }
 
+    public boolean alwaysSpawn() {
+        return plugin.getConfig().getBoolean("always-spawn");
+    }
+
+    public boolean instantlyKill() {
+        return plugin.getConfig().getBoolean("instantly-kill");
+    }
+
     public int getNpcDespawnTime() {
         return plugin.getConfig().getInt("npc-despawn-time", 60);
     }
