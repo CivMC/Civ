@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -328,8 +329,12 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
 
         // Find attacker
         if (attackerEntity instanceof Projectile) {
-            ProjectileSource source = ((Projectile) attackerEntity).getShooter();
+            Projectile p = (Projectile) attackerEntity;
+            ProjectileSource source = p.getShooter();
             if (!(source instanceof Player)) return;
+
+            // Ignore self inflicted ender pearl damage
+            if (p.getType() == EntityType.ENDER_PEARL && victim == source) return;
 
             // Attacker is a projectile
             attacker = (Player) source;
