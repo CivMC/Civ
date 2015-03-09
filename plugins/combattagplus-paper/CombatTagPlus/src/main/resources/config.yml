@@ -58,6 +58,7 @@ disabled-commands:
   # Essentials
   - spawn
   - home
+  - homes
   - warp
   - warps
   - back
@@ -73,6 +74,7 @@ disabled-commands:
   - suicide
   - espawn
   - ehome
+  - ehomes
   - ewarp
   - ewarps
   - eback
@@ -88,6 +90,7 @@ disabled-commands:
   - esuicide
   - 'essentials:spawn'
   - 'essentials:home'
+  - 'essentials:homes'
   - 'essentials:warp'
   - 'essentials:warps'
   - 'essentials:back'
@@ -103,6 +106,7 @@ disabled-commands:
   - 'essentials:suicide'
   - 'essentials:espawn'
   - 'essentials:ehome'
+  - 'essentials:ehomes'
   - 'essentials:ewarp'
   - 'essentials:ewarps'
   - 'essentials:eback'
