@@ -199,9 +199,15 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
 
     @EventHandler
     public void spawnNpc(PlayerQuitEvent event) {
-        // Do nothing if player is not combat tagged
+        // Do nothing if player is not combat tagged and NPCs only spawn if tagged
         Player player = event.getPlayer();
-        if (!getTagManager().isTagged(player.getUniqueId())) return;
+        if (!getTagManager().isTagged(player.getUniqueId()) && !getSettings().alwaysSpawn()) return;
+
+        // Kill player if configuration states so
+        if (getTagManager().isTagged(player.getUniqueId()) && getSettings().instantlyKill()) {
+            player.setHealth(0);
+            return;
+        }
 
         // Do nothing if NPC already exists
         final Npc npc = getNpcManager().spawn(player);
