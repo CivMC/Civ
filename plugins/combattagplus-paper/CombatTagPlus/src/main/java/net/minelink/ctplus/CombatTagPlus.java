@@ -204,7 +204,7 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         if (!getTagManager().isTagged(player.getUniqueId()) && !getSettings().alwaysSpawn()) return;
 
         // Kill player if configuration states so
-        if (getSettings().instantlyKill()) {
+        if (getTagManager().isTagged(player.getUniqueId()) && getSettings().instantlyKill()) {
             player.setHealth(0);
             return;
         }
