@@ -1,8 +1,13 @@
 package net.minelink.ctplus;
 
+import net.minelink.ctplus.compat.api.NpcIdentity;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.shininet.bukkit.playerheads.events.PlayerDropHeadEvent;
 
 public class PlayerHeadsListener implements Listener {
@@ -13,11 +18,26 @@ public class PlayerHeadsListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void discardNpcHeads(PlayerDropHeadEvent event) {
-        if (plugin.getNpcPlayerHelper().isNpc(event.getEntity())) {
-            event.setCancelled(true);
-        }
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void setOwner(PlayerDropHeadEvent event) {
+        Player player = event.getEntity();
+
+        // Do nothing if player is not a NPC
+        if (!plugin.getNpcPlayerHelper().isNpc(player)) return;
+
+        // Get NPC identity
+        NpcIdentity identity = plugin.getNpcPlayerHelper().getIdentity(player);
+        if (identity == null) return;
+
+        ItemStack item = event.getDrop();
+        item.setType(Material.SKULL_ITEM);
+
+        // Set skull owner to actual player's name
+        SkullMeta meta = (SkullMeta) item.getItemMeta();
+        meta.setOwner(identity.getName());
+
+        // Save meta
+        item.setItemMeta(meta);
     }
 
 }
