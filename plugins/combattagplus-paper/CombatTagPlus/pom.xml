@@ -85,6 +85,12 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>net.minelink</groupId>
+      <artifactId>CombatTagPlusCompat-v1_8_R2</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>me.confuser</groupId>
       <artifactId>BarAPI</artifactId>
       <version>3.3</version>
