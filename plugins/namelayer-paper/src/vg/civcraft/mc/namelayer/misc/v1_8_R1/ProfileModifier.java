@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.logging.Level;
 
+import net.minecraft.server.v1_8_R1.MinecraftServer;
 import net.minecraft.server.v1_8_R1.EntityHuman;
 
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftHumanEntity;
@@ -22,6 +23,7 @@ public class ProfileModifier implements ProfileInterface{ // meh package change,
 
 	public void setPlayerProfle(Player player) {
 		String name = associations.getCurrentName(player.getUniqueId());
+		String oldName = player.getName();
 		if (name.length() > 16) {
 			NameLayerPlugin
 					.log(Level.INFO,
@@ -43,6 +45,8 @@ public class ProfileModifier implements ProfileInterface{ // meh package change,
 			Field nameUpdate = prof.getClass().getDeclaredField("name");
 
 			setFinalStatic(nameUpdate, name, prof);
+			
+			MinecraftServer.getServer().getUserCache().a(prof);
 			// end
 		} catch (NoSuchFieldException e) {
 			// TODO Auto-generated catch block
@@ -60,6 +64,7 @@ public class ProfileModifier implements ProfileInterface{ // meh package change,
 		player.setDisplayName(name);
 		player.setPlayerListName(name);
 		player.setCustomName(name);
+		NameLayerPlugin.log(Level.INFO, String.format("The player %s has had his name changed to %s.", oldName, name));
 	}
 
 	public void setFinalStatic(Field field, Object newValue, Object profile) {
