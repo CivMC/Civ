@@ -22,8 +22,11 @@ public final class TagManager {
     public void purgeExpired() {
         Iterator<Tag> iterator = tags.values().iterator();
 
+        // Loop tags
         while (iterator.hasNext()) {
             Tag tag = iterator.next();
+
+            // Remove expired tag
             if (tag.isExpired()) iterator.remove();
         }
     }
@@ -31,6 +34,7 @@ public final class TagManager {
     public void tag(Player victim, Player attacker) {
         NpcPlayerHelper helper = plugin.getNpcPlayerHelper();
 
+        // Determine victim identity
         UUID victimId = null;
         if (victim != null) {
             if (helper.isNpc(victim)) {
@@ -42,6 +46,7 @@ public final class TagManager {
             }
         }
 
+        // Determine attacker identity
         UUID attackerId = null;
         if (attacker != null) {
             if (helper.isNpc(attacker)) {
@@ -53,21 +58,27 @@ public final class TagManager {
             }
         }
 
+        // Do nothing if both victim and attacker are blank
         if (victim == null && attacker == null) return;
 
+        // Call tag event
         int tagDuration = plugin.getSettings().getTagDuration();
         PlayerCombatTagEvent event = new PlayerCombatTagEvent(victim, attacker, tagDuration);
-
         Bukkit.getPluginManager().callEvent(event);
+
+        // Do nothing if event was cancelled
         if (event.isCancelled()) return;
 
+        // Create new tag
         long expireTime = System.currentTimeMillis() + (event.getTagDuration() * 1000);
         Tag tag = new Tag(helper, expireTime, victim, attacker);
 
+        // Add victim to tagged players
         if (victim != null) {
             tags.put(victimId, tag);
         }
 
+        // Add attacker to tagged players
         if (attacker != null) {
             tags.put(attackerId, tag);
         }

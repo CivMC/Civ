@@ -34,14 +34,17 @@ public final class NpcManager {
     }
 
     public Npc spawn(Player player) {
+        // Do nothing if player already has a NPC
         Npc npc = getSpawnedNpc(player.getUniqueId());
         if (npc != null) return null;
 
+        // Spawn fake player entity
         npc = new Npc(plugin.getNpcPlayerHelper(), plugin.getNpcPlayerHelper().spawn(player));
         spawnedNpcs.put(player.getUniqueId(), npc);
 
         Player entity = npc.getEntity();
 
+        // Copy player data to fake player
         entity.setCanPickupItems(false);
         entity.setHealth(player.getHealth());
         entity.setHealthScale(player.getHealthScale());
@@ -54,6 +57,7 @@ public final class NpcManager {
         copyInventory(player, entity);
         copyPotionEffects(player, entity);
 
+        // Play a nice little effect indicating the NPC was spawned
         if (plugin.getSettings().playEffect()) {
             Location l = entity.getLocation();
             l.getWorld().playEffect(l, Effect.MOBSPAWNER_FLAMES, 0, 64);
@@ -67,6 +71,7 @@ public final class NpcManager {
         ItemStack[] contents = from.getInventory().getContents();
         ItemStack[] armorContents = from.getInventory().getArmorContents();
 
+        // Clone inventory contents
         for (int i = 0; i < contents.length; ++i) {
             ItemStack item = contents[i];
             if (item != null) {
@@ -74,6 +79,7 @@ public final class NpcManager {
             }
         }
 
+        // Clone player equipment
         for (int i = 0; i < armorContents.length; ++i) {
             ItemStack item = armorContents[i];
             if (item != null) {
@@ -84,6 +90,7 @@ public final class NpcManager {
         to.getInventory().setContents(contents);
         to.getInventory().setArmorContents(armorContents);
 
+        // Send equipment packets to nearby players
         if (plugin.getNpcPlayerHelper().isNpc(to)) {
             plugin.getNpcPlayerHelper().updateEquipment(to);
         }
@@ -93,6 +100,7 @@ public final class NpcManager {
         for (PotionEffect e : from.getActivePotionEffects()) {
             PotionEffect effect;
 
+            // 1.8+ vs 1.7
             if (doHasParticles) {
                 effect = new PotionEffect(e.getType(), e.getDuration(), e.getAmplifier(), e.isAmbient(), e.hasParticles());
             } else {
@@ -104,12 +112,15 @@ public final class NpcManager {
     }
 
     public void despawn(Npc npc) {
+        // Do nothing if NPC isn't spawned or if it's a different NPC
         Npc other = getSpawnedNpc(npc.getIdentity().getId());
         if (other == null || other != npc) return;
 
+        // Call NPC despawn event
         NpcDespawnEvent event = new NpcDespawnEvent(npc);
         Bukkit.getPluginManager().callEvent(event);
 
+        // Remove the NPC entity from the world
         plugin.getNpcPlayerHelper().despawn(npc.getEntity());
         spawnedNpcs.remove(npc.getIdentity().getId());
     }
