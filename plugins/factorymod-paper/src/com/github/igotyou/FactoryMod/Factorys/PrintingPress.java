@@ -118,7 +118,7 @@ public class PrintingPress extends BaseFactory {
 				if (plates != null) {
 					pageCount = Math.max(1, ((BookMeta) plates.getItemMeta()).getPageCount());
 				} else {
-					log.info("getProductionTime(): plates == null");
+					log.finer("getProductionTime(): plates == null");
 				}
 				pageCount = Math.min(pageCount, printingPressProperties.getBookPagesCap());
 				return printingPressProperties.getSetPlateTime() * pageCount;
@@ -143,7 +143,7 @@ public class PrintingPress extends BaseFactory {
 					inputs.addAll(printingPressProperties.getPlateMaterials().getMultiple(pageCount));
 				}
 			} else {
-				log.info("getInputs(): plates == null");
+				log.finer("getInputs(): plates == null");
 			}
 			break;
 		default:
@@ -161,7 +161,7 @@ public class PrintingPress extends BaseFactory {
 			if (plates != null) {
 				outputs.add(plates);
 			} else {
-				log.info("getOutputs(): Plates results are null!");
+				log.finer("getOutputs(): Plates results are null!");
 			}
 			break;
 		default:
@@ -481,7 +481,7 @@ public class PrintingPress extends BaseFactory {
 		if(getInputs != null && !getInputs.isEmpty()) {
 			responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Input: "+getInputs.toString()+"."));
 		} else {
-			log.log(Level.WARNING, "getChestResponse(): Inputs is null or empty!");
+			log.fine("getChestResponse(): Inputs is null or empty!");
 		}
 
 		//[Outputs: amount Name, amount Name.]
@@ -489,7 +489,7 @@ public class PrintingPress extends BaseFactory {
 		if(getOutputs != null && !getOutputs.isEmpty()) {
 			responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Output: "+getOutputs.toString()+"."));
 		} else {
-			log.log(Level.WARNING, "getChestResponse(): Outputs is null or empty!");
+			log.fine("getChestResponse(): Outputs is null or empty!");
 		}
 
 		//[Will repair XX% of the factory]
@@ -532,10 +532,10 @@ public class PrintingPress extends BaseFactory {
 			}
 			if (stack.getType().equals(Material.BOOK_AND_QUILL) ||
 					stack.getType().equals(Material.WRITTEN_BOOK)) {
-				log.info("getPlateResult(): Found a book in the factory to use as plate source.");
+				log.finer("getPlateResult(): Found a book in the factory to use as plate source.");
 				ItemMeta meta = stack.getItemMeta();
 				if (meta instanceof BookMeta) {
-					log.info("getPlateResult(): Book found has Metadata associated.");
+					log.finer("getPlateResult(): Book found has Metadata associated.");
 					// Found a book
 					BookMeta bookData = (BookMeta) meta;
 					String title = bookData.hasTitle() ? bookData.getTitle() : "";
@@ -551,7 +551,7 @@ public class PrintingPress extends BaseFactory {
 						pages.addAll(bookData.getPages());
 					} else {
 						pages.add("");
-						log.info("getPlateResult(): Book found has no pages; adding blank.");
+						log.finer("getPlateResult(): Book found has no pages; adding blank.");
 					}
 					
 					NamedItemStack plates = new NamedItemStack(Material.WRITTEN_BOOK, 1, (short) 0, "plate");
@@ -566,11 +566,11 @@ public class PrintingPress extends BaseFactory {
 					plates.setItemMeta(plateMeta);
 					return plates;
 				} else {
-					log.log(Level.WARNING, "getPlateResult(): Book found, but no associated metadata.");
+					log.warning("getPlateResult(): Book found, but no associated metadata.");
 				}
 			}
 		}
-		log.log(Level.WARNING, "getPlateResult(): No book found for plate source.");
+		log.warning("getPlateResult(): No book found for plate source.");
 		return null;
 	}
 	
@@ -606,17 +606,17 @@ public class PrintingPress extends BaseFactory {
 				
 				if (stack.getType().equals(Material.BOOK_AND_QUILL) ||
 						stack.getType().equals(Material.WRITTEN_BOOK)) {
-					log.info("PrintResult(): Found a book item.");
+					log.finer("PrintResult(): Found a book item.");
 					ItemMeta meta = stack.getItemMeta();
 					List<String> lore = meta.getLore();
 					if (lore != null && !lore.isEmpty()) {
-						log.info("PrintResult(): Found a lore item attached to the book.");
+						log.finer("PrintResult(): Found a lore item attached to the book.");
 						String firstLore = lore.get(0);
 						Matcher match = printPlateRE.matcher(firstLore);
 						if (match.matches()) {
-							log.info("PrintResult(): Lore matches a print plate.");
+							log.finer("PrintResult(): Lore matches a print plate.");
 							if (meta instanceof BookMeta) {
-								log.info("PrintResult(): Book has Associated Book Meta.");
+								log.finer("PrintResult(): Book has Associated Book Meta.");
 								BookMeta bookData = (BookMeta) meta;
 								if (bookData.hasTitle())
 									title = bookData.getTitle();
@@ -638,19 +638,19 @@ public class PrintingPress extends BaseFactory {
 								valid = true;
 								break;
 							} else {
-								log.log(Level.WARNING, "PrintResult(): No Book Meta found!");
+								log.fine("PrintResult(): No Book Meta found!");
 							}
 						} else {
-							log.log(Level.WARNING, "PrintResult(): Lore indicates the book is not a print plate.");
+							log.fine("PrintResult(): Lore indicates the book is not a print plate.");
 						}
 					} else {
-						log.log(Level.WARNING, "PrintResult(): No lore item found with the book.");
+						log.fine("PrintResult(): No lore item found with the book.");
 					}
 				}
 			}
 
 			if (!valid) {
-				log.log(Level.WARNING, "PrintResult(): No valid plate found in the factory.");
+				log.fine("PrintResult(): No valid plate found in the factory.");
 			}
 		}
 		

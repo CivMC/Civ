@@ -188,7 +188,7 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 						{
 							response.add(new InteractionResponse(InteractionResult.FAILURE,"You need all of the following: "+needAll.toString()+"."));
 						} else if (allInputs == null || allInputs.isEmpty()) {
-							log.log(Level.WARNING, "getAllInputs() returned null or empty; recipe is returning no expectation of input!");
+							log.warning("getAllInputs() returned null or empty; recipe is returning no expectation of input!");
 						}
 						return response;
 					}
