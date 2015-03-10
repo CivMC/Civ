@@ -5,7 +5,7 @@ import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import net.minelink.ctplus.worldguard.api.WorldGuardHelper;
 import org.bukkit.Location;
 
-public class WorldGuardHelperImpl implements WorldGuardHelper {
+public final class WorldGuardHelperImpl implements WorldGuardHelper {
 
     @Override
     public boolean isPvpEnabledAt(Location loc) {
