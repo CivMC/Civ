@@ -3,7 +3,7 @@ description: Tag players in combat
 version: ${version}
 author: Byteflux
 main: net.minelink.ctplus.CombatTagPlus
-softdepend: [BarAPI, PlayerHeads]
+softdepend: [BarAPI, PlayerHeads, WorldGuard]
 commands:
   combattagplus:
     aliases: [ctplus, ct, combattag]

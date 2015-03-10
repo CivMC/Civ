@@ -1,6 +1,7 @@
 package net.minelink.ctplus;
 
 import net.minelink.ctplus.compat.api.NpcPlayerHelper;
+import net.minelink.ctplus.worldguard.api.WorldGuardHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -23,6 +24,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -52,6 +54,8 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
 
     private NpcManager npcManager;
 
+    private WorldGuardManager worldGuardManager;
+
     public Settings getSettings() {
         return settings;
     }
@@ -66,6 +70,10 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
 
     public NpcManager getNpcManager() {
         return npcManager;
+    }
+
+    public WorldGuardManager getWorldGuardManager() {
+        return worldGuardManager;
     }
 
     public Player getPlayer(UUID playerId) {
@@ -93,6 +101,8 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         // Initialize plugin state
         npcManager = new NpcManager(this);
         tagManager = new TagManager(this);
+
+        integrateWorldGuard();
 
         // Build player cache from currently online players
         Map<UUID, Player> playerMap = new HashMap<>();
@@ -155,6 +165,40 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         return true;
     }
 
+    private void integrateWorldGuard() {
+        // Do nothing if WorldGuard integration is disabled
+        if (!getSettings().useWorldGuard()) return;
+
+        // Determine if WorldGuard is loaded
+        Plugin plugin = Bukkit.getPluginManager().getPlugin("WorldGuard");
+        if (plugin == null) {
+            getLogger().info("WorldGuard integration is disabled because it is not loaded.");
+            return;
+        }
+
+        WorldGuardHelper helper = null;
+        String v = plugin.getDescription().getVersion();
+
+        // Determine which helper class implementation to use
+        String className = "net.minelink.ctplus.worldguard.v" + (v.startsWith("5") ? 5 : 6) + ".WorldGuardHelperImpl";
+
+        try {
+            // Try to create a new helper instance
+            helper = (WorldGuardHelper) Class.forName(className).newInstance();
+        } catch (Exception e) {
+            // Something went wrong, chances are it's a newer, incompatible WorldGuard
+            getLogger().warning("**WARNING**");
+            getLogger().warning("Failed to enable WorldGuard integration due to errors.");
+            getLogger().warning("This is most likely due to a newer WorldGuard.");
+
+            // Let's leave a stack trace in console for reporting
+            e.printStackTrace();
+        }
+
+        // Create the manager which is what the plugin will interact with
+        worldGuardManager = new WorldGuardManager(this, helper);
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equals("ctplusreload")) {
@@ -204,6 +248,9 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         // Do nothing if player is not combat tagged and NPCs only spawn if tagged
         Player player = event.getPlayer();
         if (!getTagManager().isTagged(player.getUniqueId()) && !getSettings().alwaysSpawn()) return;
+
+        // Do nothing if a player logs off in combat in a WorldGuard protected region
+        if (!getWorldGuardManager().isPvpEnabledAt(player.getLocation())) return;
 
         // Kill player if configuration states so
         if (getTagManager().isTagged(player.getUniqueId()) && getSettings().instantlyKill()) {
@@ -491,14 +538,18 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         BarUpdateTask.run(this, event.getPlayer());
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void disableWorld(PlayerCombatTagEvent event) {
-        // Doesn't matter who, just determine who got tagged
-        Player player = event.getVictim();
-        if (player == null) player = event.getAttacker();
-
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void disableInWorld(PlayerCombatTagEvent event) {
         // Don't tag if player is in a disabled world
-        if (getSettings().getDisabledWorlds().contains(player.getWorld().getName())) {
+        if (getSettings().getDisabledWorlds().contains(event.getPlayer().getWorld().getName())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void disableInProtectedRegion(PlayerCombatTagEvent event) {
+        // Don't tag if player is in a protected region
+        if (!getWorldGuardManager().isPvpEnabledAt(event.getPlayer().getLocation())) {
             event.setCancelled(true);
         }
     }
@@ -582,4 +633,5 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         event.setCancelled(true);
         player.sendMessage(AQUA + "Enderpearls " + RED + " are disabled in combat.");
     }
+
 }

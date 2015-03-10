@@ -83,6 +83,10 @@ public final class Settings {
         return plugin.getConfig().getBoolean("barapi");
     }
 
+    public boolean useWorldGuard() {
+        return plugin.getConfig().getBoolean("worldguard");
+    }
+
     public List<String> getDisabledWorlds() {
         return plugin.getConfig().getStringList("disabled-worlds");
     }

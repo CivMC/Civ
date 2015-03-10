@@ -91,6 +91,24 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>net.minelink</groupId>
+      <artifactId>CombatTagPlusWG-API</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.minelink</groupId>
+      <artifactId>CombatTagPlusWG-v5</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.minelink</groupId>
+      <artifactId>CombatTagPlusWG-v6</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>me.confuser</groupId>
       <artifactId>BarAPI</artifactId>
       <version>3.3</version>
