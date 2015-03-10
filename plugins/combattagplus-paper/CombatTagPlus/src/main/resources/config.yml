@@ -37,6 +37,28 @@ disabled-commands:
   - f warp
   - f w
 
+  # LibsDisguises
+  - d
+  - disguise
+  - 'libsdisguises:d'
+  - 'libsdisguises:disguise'
+
+  # PlayerVaults
+  - pv
+  - vault
+  - chest
+  - playervaults
+  - 'playervaults:pv'
+  - 'playervaults:vault'
+  - 'playervaults:chest'
+  - 'playervaults:playervaults'
+
+  # FBasics
+  - wild
+  - wilderness
+  - 'fbasics:wild'
+  - 'fbasics:wilderness'
+
   # mcMMO
   - ptp
   - 'mcmmo:ptp'
@@ -72,13 +94,22 @@ disabled-commands:
   - call
   - tpa
   - tpask
+  - tpahere
+  - tpaccept
+  - tpyes
   - clearinventory
   - clearinvent
   - clean
   - clear
   - ci
+  - fix
+  - repair
   - suicide
   - espawn
+  - ec
+  - enderchest
+  - endersee
+  - echest
   - ehome
   - ehomes
   - ewarp
@@ -88,12 +119,21 @@ disabled-commands:
   - ecall
   - etpa
   - etpask
+  - etpahere
+  - etpaccept
+  - etpyes
   - eclearinventory
   - eclearinvent
   - eclean
   - eclear
   - eci
   - esuicide
+  - efix
+  - erepair
+  - eec
+  - eenderchest
+  - eechest
+  - eendersee
   - 'essentials:spawn'
   - 'essentials:home'
   - 'essentials:homes'
@@ -104,12 +144,21 @@ disabled-commands:
   - 'essentials:call'
   - 'essentials:tpa'
   - 'essentials:tpask'
+  - 'essentials:tpahere'
+  - 'essentials:tpaccept'
+  - 'essentials:tpyes'
   - 'essentials:clearinventory'
   - 'essentials:clearinvent'
   - 'essentials:clean'
   - 'essentials:clear'
   - 'essentials:ci'
+  - 'essentials:fix'
+  - 'essentials:repair'
   - 'essentials:suicide'
+  - 'essentials:ec'
+  - 'essentials:enderchest'
+  - 'essentials:endersee'
+  - 'essentials:echest'
   - 'essentials:espawn'
   - 'essentials:ehome'
   - 'essentials:ehomes'
@@ -120,9 +169,18 @@ disabled-commands:
   - 'essentials:ecall'
   - 'essentials:etpa'
   - 'essentials:etpask'
+  - 'essentials:etpahere'
+  - 'essentials:etpaccept'
+  - 'essentials:etpyes'
   - 'essentials:eclearinventory'
   - 'essentials:eclearinvent'
   - 'essentials:eclean'
   - 'essentials:eclear'
   - 'essentials:eci'
   - 'essentials:esuicide'
+  - 'essentials:efix'
+  - 'essentials:erepair'
+  - 'essentials:eec'
+  - 'essentials:eenderchest'
+  - 'essentials:eechest'
+  - 'essentials:eendersee'
