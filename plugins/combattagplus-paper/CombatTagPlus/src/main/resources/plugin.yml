@@ -9,12 +9,12 @@ commands:
     aliases: [ctplus, ct, combattag]
     description: Check combat tag timer
     permission: ctplus.check
-    permission-message: 'Â§cYou do not have permission to use that command.'
+    permission-message: '§cYou do not have permission to use that command.'
   ctplusreload:
     aliases: [ctreload]
     description: Reload CombatTagPlus config
     permission: ctplus.reload
-    permission-message: 'Â§cYou do not have permission to use that command.'
+    permission-message: '§cYou do not have permission to use that command.'
 permissions:
   ctplus.reload: {default: op}
   ctplus.bypass.tag: {default: op}
