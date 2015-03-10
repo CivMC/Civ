@@ -559,7 +559,7 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         player.sendMessage(AQUA + "Block editing " + RED + " is disabled in combat.");
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW)
     public void disableEnderpearls(PlayerInteractEvent event) {
         // Do nothing if enderpearls are allowed in combat
         if (!getSettings().disableEnderpearls()) return;
