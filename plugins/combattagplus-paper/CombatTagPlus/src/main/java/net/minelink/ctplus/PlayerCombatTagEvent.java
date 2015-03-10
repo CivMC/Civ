@@ -16,7 +16,7 @@ public final class PlayerCombatTagEvent extends PlayerEvent implements Cancellab
     private int tagDuration;
 
     public PlayerCombatTagEvent(Player victim, Player attacker, int tagDuration) {
-        super(victim);
+        super(victim != null ? victim : attacker);
         this.attacker = attacker;
         this.tagDuration = tagDuration;
     }
