@@ -13,6 +13,7 @@
 * Broadcast a PVP kill/death message
 * Disable combat tagging for specific worlds
 * Deny specific commands while player is in combat
+* Supports WorldGuard PVP deny flag (WorldGuard 5.x and 6.x both supported)
 * Works with BarAPI to show a boss bar counting down with the player's remaining combat timer
   * _These custom BarAPI builds by @vemacs are more compatible than the official ones:_
   * Spigot 1.8.0: [Download](http://ci.minelink.net/job/BarAPI/5/artifact/target/BarAPI.jar)
