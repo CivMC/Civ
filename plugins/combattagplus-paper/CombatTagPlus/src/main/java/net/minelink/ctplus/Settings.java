@@ -54,6 +54,18 @@ public final class Settings {
         return plugin.getConfig().getBoolean("instantly-kill");
     }
 
+    public boolean disableBlockEdit() {
+        return plugin.getConfig().getBoolean("disable-block-edit");
+    }
+
+    public boolean disableCreativeTags() {
+        return plugin.getConfig().getBoolean("disable-creative-tags");
+    }
+
+    public boolean disableEnderpearls() {
+        return plugin.getConfig().getBoolean("disable-enderpearls");
+    }
+
     public int getNpcDespawnTime() {
         return plugin.getConfig().getInt("npc-despawn-time", 60);
     }

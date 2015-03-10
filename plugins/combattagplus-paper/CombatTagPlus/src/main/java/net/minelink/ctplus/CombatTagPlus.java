@@ -2,6 +2,8 @@ package net.minelink.ctplus;
 
 import net.minelink.ctplus.compat.api.NpcPlayerHelper;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AnimalTamer;
@@ -14,13 +16,13 @@ import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -359,6 +361,12 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
             return;
         }
 
+        // Do nothing if either player is in creative and config disables creative tags
+        if ((attacker.getGameMode().equals(GameMode.CREATIVE) || victim.getGameMode().equals(GameMode.CREATIVE)) &&
+                getSettings().disableCreativeTags()) {
+            return;
+        }
+
         // Combat tag victim and player
         getTagManager().tag(victim, attacker);
     }
@@ -517,4 +525,61 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void disableBlockEdit(BlockBreakEvent event) {
+        // Do nothing if block edits are allowed in combat
+        if (!getSettings().disableBlockEdit()) return;
+
+        // Do nothing if player has bypass permission
+        Player player = event.getPlayer();
+        if (player.hasPermission("ctplus.bypass.blockedit")) return;
+
+        // Do nothing if player isn't even combat tagged
+        if (!getTagManager().isTagged(player.getUniqueId())) return;
+
+        // Cancel block edit
+        event.setCancelled(true);
+        player.sendMessage(AQUA + "Block editing " + RED + " is disabled in combat.");
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void disableBlockEdit(BlockPlaceEvent event) {
+        // Do nothing if block edits are allowed in combat
+        if (!getSettings().disableBlockEdit()) return;
+
+        // Do nothing if player has bypass permission
+        Player player = event.getPlayer();
+        if (player.hasPermission("ctplus.bypass.blockedit")) return;
+
+        // Do nothing if player isn't even combat tagged
+        if (!getTagManager().isTagged(player.getUniqueId())) return;
+
+        // Cancel block edit
+        event.setCancelled(true);
+        player.sendMessage(AQUA + "Block editing " + RED + " is disabled in combat.");
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void disableEnderpearls(PlayerInteractEvent event) {
+        // Do nothing if enderpearls are allowed in combat
+        if (!getSettings().disableEnderpearls()) return;
+
+        // Do nothing if player has bypass permission
+        Player player = event.getPlayer();
+        if (player.hasPermission("ctplus.bypass.enderpearl")) return;
+
+        // Do nothing if player isn't even combat tagged
+        if (!getTagManager().isTagged(player.getUniqueId())) return;
+
+        // Do nothing if player is not right clicking
+        Action action = event.getAction();
+        if (!(action.equals(Action.RIGHT_CLICK_BLOCK) || action.equals(Action.RIGHT_CLICK_AIR))) return;
+
+        // Do nothing if player is not holding an enderpearl
+        if (!player.getItemInHand().getType().equals(Material.ENDER_PEARL)) return;
+
+        // Cancel enderpearl throw
+        event.setCancelled(true);
+        player.sendMessage(AQUA + "Enderpearls " + RED + " are disabled in combat.");
+    }
 }
