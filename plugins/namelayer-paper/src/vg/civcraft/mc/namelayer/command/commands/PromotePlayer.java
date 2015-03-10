@@ -65,7 +65,6 @@ public class PromotePlayer extends PlayerCommand{
 			return true;
 		}
 		
-		PlayerType pType = group.getPlayerType(executor);
 		PlayerType promoteecurrentType = group.getPlayerType(promotee);
 		PlayerType promoteeType = PlayerType.getPlayerType(args[2]);
 		if(promoteeType == null){
@@ -82,7 +81,7 @@ public class PromotePlayer extends PlayerCommand{
 		}
 		
 		boolean allowed = false;
-		switch (pType){ // depending on the type the executor wants to add the player to
+		switch (promoteeType){ // depending on the type the executor wants to add the player to
 		case MEMBERS:
 			allowed = perm.isAccessible(t, PermissionType.MEMBERS);
 			break;
