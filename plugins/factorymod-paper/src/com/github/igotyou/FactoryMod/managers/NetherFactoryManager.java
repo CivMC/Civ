@@ -55,6 +55,7 @@ public class NetherFactoryManager implements Manager
 	private FactoryModPlugin plugin;
 	private List<NetherFactory> netherFactorys;
 	private long repairTime;
+	private boolean isLogging = true;
 	
 	public NetherFactoryManager(FactoryModPlugin plugin)
 	{
@@ -117,6 +118,7 @@ public class NetherFactoryManager implements Manager
 
 	public void load(File file) throws IOException 
 	{
+		isLogging = false;
 		try {
 			repairTime=System.currentTimeMillis();
 			FileInputStream fileInputStream = new FileInputStream(file);
@@ -155,6 +157,7 @@ public class NetherFactoryManager implements Manager
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		isLogging = true;
 	}
 
 	public void updateFactorys() 
@@ -309,7 +312,7 @@ public class NetherFactoryManager implements Manager
 				|| !factoryExistsAt(netherFactory.getOverworldTeleportPlatform()) ))
 		{
 			netherFactorys.add(netherFactory);
-			FactoryModPlugin.sendConsoleMessage("Nether factory created: " + netherFactory.getProperties().getName());
+			if (isLogging) { FactoryModPlugin.sendConsoleMessage("Nether factory created: " + netherFactory.getProperties().getName()); }
 			return new InteractionResponse(InteractionResult.SUCCESS, "");
 		}
 		else

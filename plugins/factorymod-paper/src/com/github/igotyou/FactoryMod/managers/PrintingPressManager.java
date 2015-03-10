@@ -49,6 +49,7 @@ public class PrintingPressManager implements Manager
 	private FactoryModPlugin plugin;
 	private List<PrintingPress> presses;
 	private long repairTime;
+	private boolean isLogging = true;
 	
 	public PrintingPressManager(FactoryModPlugin plugin)
 	{
@@ -114,6 +115,7 @@ public class PrintingPressManager implements Manager
 
 	public void load(File file) throws IOException 
 	{
+		isLogging = false;
 		try {
 			repairTime=System.currentTimeMillis();
 			FileInputStream fileInputStream = new FileInputStream(file);
@@ -161,6 +163,7 @@ public class PrintingPressManager implements Manager
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		isLogging = true;
 	}
 
 	public void updateFactorys() 
@@ -210,7 +213,7 @@ public class PrintingPressManager implements Manager
 				|| !factoryExistsAt(press.getInventoryLocation()) || !factoryExistsAt(press.getPowerSourceLocation()))
 		{
 			presses.add(press);
-			FactoryModPlugin.sendConsoleMessage("Printing press created: " + press.getProperties().getName());
+			if (isLogging) { FactoryModPlugin.sendConsoleMessage("Printing press created: " + press.getProperties().getName()); }
 			return new InteractionResponse(InteractionResult.SUCCESS, "");
 		}
 		else
