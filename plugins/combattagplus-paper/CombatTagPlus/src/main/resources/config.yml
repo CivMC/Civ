@@ -16,6 +16,15 @@ always-spawn: false
 # Instantly kills the player when logged in PvP.
 instantly-kill: false
 
+# Prevent block editing while tagged.
+disable-block-edit: false
+
+# Prevent players in creative from getting tagged.
+disable-creative-tags: true
+
+# Prevent tagged players throwing enderpearls while tagged.
+disable-enderpearls: false
+
 # The duration in seconds to despawn the combat logger's NPC if it hasn't died.
 npc-despawn-time: 60
 
