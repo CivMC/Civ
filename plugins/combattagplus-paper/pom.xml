@@ -7,7 +7,11 @@
   <groupId>net.minelink</groupId>
   <artifactId>CombatTagPlusParent</artifactId>
   <packaging>pom</packaging>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>${ctplus.version}</version>
+
+  <properties>
+    <ctplus.version>0.0.1-SNAPSHOT</ctplus.version>
+  </properties>
 
   <modules>
     <module>CombatTagPlusCompat-API</module>

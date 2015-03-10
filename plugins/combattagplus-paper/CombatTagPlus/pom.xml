@@ -5,7 +5,7 @@
   <parent>
     <artifactId>CombatTagPlusParent</artifactId>
     <groupId>net.minelink</groupId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${ctplus.version}</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -69,43 +69,43 @@
     <dependency>
       <groupId>net.minelink</groupId>
       <artifactId>CombatTagPlusCompat-API</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${ctplus.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>net.minelink</groupId>
       <artifactId>CombatTagPlusCompat-v1_7_R4</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${ctplus.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>net.minelink</groupId>
       <artifactId>CombatTagPlusCompat-v1_8_R1</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${ctplus.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>net.minelink</groupId>
       <artifactId>CombatTagPlusCompat-v1_8_R2</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${ctplus.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>net.minelink</groupId>
       <artifactId>CombatTagPlusWG-API</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${ctplus.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>net.minelink</groupId>
       <artifactId>CombatTagPlusWG-v5</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${ctplus.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>net.minelink</groupId>
       <artifactId>CombatTagPlusWG-v6</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${ctplus.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
