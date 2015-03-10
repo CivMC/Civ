@@ -94,7 +94,7 @@ public final class BarUpdateTask extends BukkitRunnable {
         });
     }
 
-    public static void purgeFinished() {
+    static void purgeFinished() {
         Iterator<Integer> iterator = tasks.values().iterator();
         BukkitScheduler s = Bukkit.getScheduler();
 

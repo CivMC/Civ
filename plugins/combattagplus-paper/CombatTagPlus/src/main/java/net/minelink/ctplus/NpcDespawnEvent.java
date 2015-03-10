@@ -3,7 +3,7 @@ package net.minelink.ctplus;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class NpcDespawnEvent extends Event {
+public final class NpcDespawnEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 

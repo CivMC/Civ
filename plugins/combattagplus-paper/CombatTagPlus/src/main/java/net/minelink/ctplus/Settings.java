@@ -10,7 +10,7 @@ public final class Settings {
 
     private final CombatTagPlus plugin;
 
-    public Settings(CombatTagPlus plugin) {
+    Settings(CombatTagPlus plugin) {
         this.plugin = plugin;
         load();
     }

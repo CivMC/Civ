@@ -11,7 +11,7 @@ import net.minecraft.server.v1_8_R2.PacketListener;
 import javax.crypto.SecretKey;
 import java.net.SocketAddress;
 
-public class NpcNetworkManager extends NetworkManager {
+public final class NpcNetworkManager extends NetworkManager {
 
     public NpcNetworkManager() {
         super(EnumProtocolDirection.SERVERBOUND);

@@ -10,11 +10,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.shininet.bukkit.playerheads.events.PlayerDropHeadEvent;
 
-public class PlayerHeadsListener implements Listener {
+public final class PlayerHeadsListener implements Listener {
 
     private final CombatTagPlus plugin;
 
-    public PlayerHeadsListener(CombatTagPlus plugin) {
+    PlayerHeadsListener(CombatTagPlus plugin) {
         this.plugin = plugin;
     }
 

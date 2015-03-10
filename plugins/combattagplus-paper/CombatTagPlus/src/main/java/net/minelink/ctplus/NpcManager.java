@@ -29,7 +29,7 @@ public final class NpcManager {
         }
     }
 
-    public NpcManager(CombatTagPlus plugin) {
+    NpcManager(CombatTagPlus plugin) {
         this.plugin = plugin;
     }
 

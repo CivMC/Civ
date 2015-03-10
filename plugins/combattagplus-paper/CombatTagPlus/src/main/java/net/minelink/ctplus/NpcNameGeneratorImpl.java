@@ -6,13 +6,13 @@ import org.bukkit.entity.Player;
 
 import java.util.Random;
 
-public class NpcNameGeneratorImpl implements NpcNameGenerator {
+public final class NpcNameGeneratorImpl implements NpcNameGenerator {
 
     private static final Random random = new Random();
 
     private final CombatTagPlus plugin;
 
-    public NpcNameGeneratorImpl(CombatTagPlus plugin) {
+    NpcNameGeneratorImpl(CombatTagPlus plugin) {
         this.plugin = plugin;
     }
 

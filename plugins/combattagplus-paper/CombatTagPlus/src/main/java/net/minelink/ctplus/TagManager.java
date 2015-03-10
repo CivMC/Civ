@@ -15,11 +15,11 @@ public final class TagManager {
 
     private final Map<UUID, Tag> tags = new HashMap<>();
 
-    public TagManager(CombatTagPlus plugin) {
+    TagManager(CombatTagPlus plugin) {
         this.plugin = plugin;
     }
 
-    public void purgeExpired() {
+    void purgeExpired() {
         Iterator<Tag> iterator = tags.values().iterator();
 
         // Loop tags

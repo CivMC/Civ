@@ -9,7 +9,7 @@ import net.minecraft.util.io.netty.util.concurrent.GenericFutureListener;
 import javax.crypto.SecretKey;
 import java.net.SocketAddress;
 
-public class NpcNetworkManager extends NetworkManager {
+public final class NpcNetworkManager extends NetworkManager {
 
     public NpcNetworkManager() {
         super(false);

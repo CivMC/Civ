@@ -9,7 +9,7 @@ public final class WorldGuardManager {
 
     private final WorldGuardHelper helper;
 
-    public WorldGuardManager(CombatTagPlus plugin, WorldGuardHelper helper) {
+    WorldGuardManager(CombatTagPlus plugin, WorldGuardHelper helper) {
         this.plugin = plugin;
         this.helper = helper;
     }
