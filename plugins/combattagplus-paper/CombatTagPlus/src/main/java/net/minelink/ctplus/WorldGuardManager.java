@@ -15,7 +15,7 @@ public final class WorldGuardManager {
     }
 
     public boolean isPvpEnabledAt(Location loc) {
-        return helper != null && helper.isPvpEnabledAt(loc);
+        return helper.isPvpEnabledAt(loc);
     }
 
 }

@@ -2,6 +2,7 @@ package net.minelink.ctplus;
 
 import net.minelink.ctplus.compat.api.NpcPlayerHelper;
 import net.minelink.ctplus.worldguard.api.WorldGuardHelper;
+import net.minelink.ctplus.worldguard.api.WorldGuardHelperImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -166,13 +167,19 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
     }
 
     private void integrateWorldGuard() {
-        // Do nothing if WorldGuard integration is disabled
-        if (!getSettings().useWorldGuard()) return;
+        // Use a dummy implementation if WG is disabled
+        if (!getSettings().useWorldGuard()) {
+            worldGuardManager = new WorldGuardManager(this, new WorldGuardHelperImpl());
+            return;
+        }
 
         // Determine if WorldGuard is loaded
         Plugin plugin = Bukkit.getPluginManager().getPlugin("WorldGuard");
         if (plugin == null) {
             getLogger().info("WorldGuard integration is disabled because it is not loaded.");
+
+            // Use the dummy helper implementation if WG isn't loaded
+            worldGuardManager = new WorldGuardManager(this, new WorldGuardHelperImpl());
             return;
         }
 
@@ -185,18 +192,21 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         try {
             // Try to create a new helper instance
             helper = (WorldGuardHelper) Class.forName(className).newInstance();
+
+            // Create the manager which is what the plugin will interact with
+            worldGuardManager = new WorldGuardManager(this, helper);
         } catch (Exception e) {
             // Something went wrong, chances are it's a newer, incompatible WorldGuard
             getLogger().warning("**WARNING**");
             getLogger().warning("Failed to enable WorldGuard integration due to errors.");
             getLogger().warning("This is most likely due to a newer WorldGuard.");
 
+            // Use the dummy helper implementation since WG isn't supported
+            worldGuardManager = new WorldGuardManager(this, new WorldGuardHelperImpl());
+
             // Let's leave a stack trace in console for reporting
             e.printStackTrace();
         }
-
-        // Create the manager which is what the plugin will interact with
-        worldGuardManager = new WorldGuardManager(this, helper);
     }
 
     @Override
