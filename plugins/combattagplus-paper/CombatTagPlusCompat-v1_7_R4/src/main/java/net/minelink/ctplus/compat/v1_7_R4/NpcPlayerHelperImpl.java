@@ -79,6 +79,7 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
 
         for (Object o : MinecraftServer.getServer().getPlayerList().players) {
             if (!(o instanceof EntityPlayer) || o instanceof NpcPlayer) continue;
+            if (addPlayer == null) break;
 
             try {
                 ((EntityPlayer) o).playerConnection.sendPacket((Packet) removePlayer.invoke(null, npcPlayer));
