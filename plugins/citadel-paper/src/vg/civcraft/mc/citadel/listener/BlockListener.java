@@ -137,7 +137,8 @@ public class BlockListener implements Listener{
         		Citadel.Log("A plant was found but not on a soil block. Info as follows: Block was: " + block.getType().name() 
         				+ " and was at location " + block.getLocation().toString());
         	}
-        	rein = (PlayerReinforcement) rm.getReinforcement(reinforcingBlock);
+        	else
+        		rein = (PlayerReinforcement) rm.getReinforcement(reinforcingBlock);
 		}
 
 		if (rein == null){
