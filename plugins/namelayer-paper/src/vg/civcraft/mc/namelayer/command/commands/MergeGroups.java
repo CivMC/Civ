@@ -55,6 +55,11 @@ public class MergeGroups extends PlayerCommand{
 			return true;
 		}
 		
+		if(g == toMerge){
+			p.sendMessage(ChatColor.RED + "You cannot merge a group into itself");
+			return true;
+		}
+		
 		GroupPermission gPerm = gm.getPermissionforGroup(g);
 		GroupPermission mPerm = gm.getPermissionforGroup(toMerge);
 		
