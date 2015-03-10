@@ -74,6 +74,14 @@ public final class Settings {
         return getNpcDespawnTime() * 20;
     }
 
+    public boolean generateRandomName() {
+        return plugin.getConfig().getBoolean("generate-random-name");
+    }
+
+    public String getRandomNamePrefix() {
+        return plugin.getConfig().getString("random-name-prefix");
+    }
+
     public String getKillMessage() {
         String message = plugin.getConfig().getString("kill-message");
         return message != null ? ChatColor.translateAlternateColorCodes('&', message) : null;

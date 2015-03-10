@@ -7,7 +7,7 @@ import net.minecraft.server.v1_8_R1.WorldServer;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minelink.ctplus.compat.api.NpcIdentity;
-import net.minelink.ctplus.compat.api.NpcNameGenerator;
+import net.minelink.ctplus.compat.api.NpcNameGeneratorFactory;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -30,7 +30,7 @@ public final class NpcPlayer extends EntityPlayer {
         MinecraftServer minecraftServer = MinecraftServer.getServer();
         WorldServer worldServer = minecraftServer.getWorldServer(0);
         PlayerInteractManager playerInteractManager = new PlayerInteractManager(worldServer);
-        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), NpcNameGenerator.generate());
+        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), NpcNameGeneratorFactory.getNameGenerator().generate(player));
 
         for (Map.Entry<String, Property> entry: ((CraftPlayer) player).getProfile().getProperties().entries()) {
             gameProfile.getProperties().put(entry.getKey(), entry.getValue());

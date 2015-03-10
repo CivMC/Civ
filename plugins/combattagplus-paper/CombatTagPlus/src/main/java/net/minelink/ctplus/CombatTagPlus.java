@@ -1,5 +1,6 @@
 package net.minelink.ctplus;
 
+import net.minelink.ctplus.compat.api.NpcNameGeneratorFactory;
 import net.minelink.ctplus.compat.api.NpcPlayerHelper;
 import net.minelink.ctplus.worldguard.api.WorldGuardHelper;
 import net.minelink.ctplus.worldguard.api.WorldGuardHelperImpl;
@@ -102,6 +103,8 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         // Initialize plugin state
         npcManager = new NpcManager(this);
         tagManager = new TagManager(this);
+
+        NpcNameGeneratorFactory.setNameGenerator(new NpcNameGeneratorImpl(this));
 
         integrateWorldGuard();
 

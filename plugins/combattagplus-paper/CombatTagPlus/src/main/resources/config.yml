@@ -1,5 +1,5 @@
 # Don't touch this. It's here to determine whether you need to refresh your config.
-config-version: 4
+config-version: 5
 
 # The duration in seconds that both the attacker and victim should be tagged in combat.
 tag-duration: 15
@@ -27,6 +27,12 @@ disable-enderpearls: false
 
 # The duration in seconds to despawn the combat logger's NPC if it hasn't died.
 npc-despawn-time: 60
+
+# Generates a random name for the NPC. Turn this off to use the player name (potentially unsafe!)
+generate-random-name: true
+
+# This is the prefix to use for the random name. 12 characters max.
+random-name-prefix: PvPLogger
 
 # This message is displayed when a player is killed by another player. Set this to '' to display nothing.
 kill-message: '&8&l>> &c{victim} was slain by {attacker}'
