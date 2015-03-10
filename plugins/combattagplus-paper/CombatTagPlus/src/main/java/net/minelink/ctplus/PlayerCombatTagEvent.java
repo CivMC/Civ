@@ -11,12 +11,15 @@ public final class PlayerCombatTagEvent extends PlayerEvent implements Cancellab
 
     private boolean cancelled;
 
+    private final Player victim;
+
     private final Player attacker;
 
     private int tagDuration;
 
     public PlayerCombatTagEvent(Player victim, Player attacker, int tagDuration) {
         super(victim != null ? victim : attacker);
+        this.victim = victim;
         this.attacker = attacker;
         this.tagDuration = tagDuration;
     }
@@ -41,7 +44,7 @@ public final class PlayerCombatTagEvent extends PlayerEvent implements Cancellab
     }
 
     public Player getVictim() {
-        return getPlayer();
+        return victim;
     }
 
     public Player getAttacker() {
