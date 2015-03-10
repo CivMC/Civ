@@ -161,10 +161,10 @@ public class BlockListener implements Listener{
             PlayerReinforcement pr = (PlayerReinforcement) rein;
             PlayerState state = PlayerState.get(player);
             boolean admin_bypass = player.hasPermission("citadel.admin.bypassmode");   
-            if (isPlant(block) && (pr.isAccessible(player, PermissionType.CROPS)) || admin_bypass) {
+            if (isPlant(block) && (pr.isAccessible(player, PermissionType.CROPS) || admin_bypass)) {
                 //player has CROPS access to the soil block, allow them to break without affecting reinforcement
             	is_cancelled = false;
-            } else if (state.isBypassMode() && ((pr.isBypassable(player) && !pr.getGroup().isDisciplined()) || admin_bypass)) {
+            } else if (state.isBypassMode() && (pr.isBypassable(player) || admin_bypass) && !pr.getGroup().isDisciplined()) {
                 if (admin_bypass) {
                 	/*
                     Citadel.verbose(
