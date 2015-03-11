@@ -210,7 +210,6 @@ public class BlockListener implements Listener{
         		is_cancelled = reinforcementDamaged(rein);
         	}
         }
-        System.out.println(is_cancelled);
 
         if (is_cancelled) {
             event.setCancelled(true);
