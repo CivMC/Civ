@@ -1,5 +1,5 @@
 # Don't touch this. It's here to determine whether you need to refresh your config.
-config-version: 5
+config-version: 6
 
 # The duration in seconds that both the attacker and victim should be tagged in combat.
 tag-duration: 15
@@ -12,6 +12,9 @@ play-effect: true
 
 # Always spawns the NPC even without combat tagged to prevent any chance of running away.
 always-spawn: false
+
+# Duration in seconds the player must wait without movement to safely logout using the /logout command.
+logout-wait-time: 10
 
 # Instantly kills the player when logged in PvP.
 instantly-kill: false

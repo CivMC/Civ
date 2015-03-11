@@ -50,6 +50,10 @@ public final class Settings {
         return plugin.getConfig().getBoolean("always-spawn");
     }
 
+    public int getLogoutWaitTime() {
+        return plugin.getConfig().getInt("logout-wait-time", 10);
+    }
+
     public boolean instantlyKill() {
         return plugin.getConfig().getBoolean("instantly-kill");
     }

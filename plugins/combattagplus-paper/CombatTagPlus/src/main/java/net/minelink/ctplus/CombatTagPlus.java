@@ -25,7 +25,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -130,6 +134,7 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
             public void run() {
                 getTagManager().purgeExpired();
                 BarUpdateTask.purgeFinished();
+                SafeLogoutTask.purgeFinished();
             }
         }, 3600, 3600);
     }
@@ -229,6 +234,15 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
 
             String duration = DurationUtils.format(tag.getTagDuration());
             sender.sendMessage(RED + duration + GRAY + " remaining on your combat timer.");
+        } else if (cmd.getName().equals("ctpluslogout")) {
+            if (!(sender instanceof Player)) return false;
+
+            // Do nothing if player is already logging out
+            Player player = (Player) sender;
+            if (SafeLogoutTask.hasTask(player)) return true;
+
+            // Attempt to start a new logout task
+            SafeLogoutTask.run(this, player);
         }
 
         return true;
@@ -645,6 +659,16 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         // Cancel enderpearl throw
         event.setCancelled(true);
         player.sendMessage(AQUA + "Enderpearls " + RED + " are disabled in combat.");
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void cancelSafeLogout(PlayerCombatTagEvent event) {
+        // Cancel safe logout attempt if player was just combat tagged
+        Player player = event.getPlayer();
+        if (!SafeLogoutTask.cancel(player)) return;
+
+        // Inform player
+        player.sendMessage(RED + "Logout cancelled due to being combat tagged.");
     }
 
 }
