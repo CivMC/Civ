@@ -142,6 +142,9 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	//saves a new bastion into the database note will create double entries if bastion already exists
 	public void save(Database db){
 		if(!inDB){
+			if(!db.isConnected()) {
+				db.connect();
+			}
 			PreparedStatement addBastion = db.prepareStatement("INSERT INTO "+BastionBlockStorage.bationBlocksTable+" (loc_x,loc_y,loc_z,loc_world,placed,fraction) VALUES(?,?,?,?,?,?);");
 			try {
 				addBastion.setInt   (1, location.getBlockX());
@@ -165,6 +168,9 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	//updates placed and balance in db
 	public void update(Database db){
 		if(inDB){
+			if(!db.isConnected()) {
+				db.connect();
+			}
 			PreparedStatement updateBastion = db.prepareStatement("UPDATE "+BastionBlockStorage.bationBlocksTable+" set placed=?,fraction=? where bastion_id=?;");
 			try {
 				updateBastion.setLong(1, placed);
@@ -181,6 +187,9 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	}
 
 	public void delete(Database db){
+		if(!db.isConnected()) {
+			db.connect();
+		}
 		db.execute("DELETE FROM "+BastionBlockStorage.bationBlocksTable+" WHERE bastion_id="+id+";");
 		inDB = false;
 	}
