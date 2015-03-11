@@ -133,12 +133,12 @@ public class BlockListener implements Listener{
 		//if block is a plant check reinforcement on soil block
 		if(isPlant(block)){
         	reinforcingBlock = Utility.findPlantSoil(block);
-        	if (reinforcingBlock == null){
-        		Citadel.Log("A plant was found but not on a soil block. Info as follows: Block was: " + block.getType().name() 
-        				+ " and was at location " + block.getLocation().toString());
-        	}
+        	Reinforcement plant = rm.getReinforcement(reinforcingBlock);
+        	if (plant != null)
+        		rein = plant;
         	else
-        		rein = (PlayerReinforcement) rm.getReinforcement(reinforcingBlock);
+        		reinforcingBlock = null;
+        		
 		}
 
 		if (rein == null){
@@ -162,7 +162,7 @@ public class BlockListener implements Listener{
             PlayerReinforcement pr = (PlayerReinforcement) rein;
             PlayerState state = PlayerState.get(player);
             boolean admin_bypass = player.hasPermission("citadel.admin.bypassmode");   
-            if (isPlant(block) && (pr.isAccessible(player, PermissionType.CROPS) || admin_bypass)) {
+            if (reinforcingBlock != null && isPlant(block) && (pr.isAccessible(player, PermissionType.CROPS) || admin_bypass)) {
                 //player has CROPS access to the soil block, allow them to break without affecting reinforcement
             	is_cancelled = false;
             } else if (state.isBypassMode() && (pr.isBypassable(player) || admin_bypass) && !pr.getGroup().isDisciplined()) {
@@ -210,6 +210,7 @@ public class BlockListener implements Listener{
         		is_cancelled = reinforcementDamaged(rein);
         	}
         }
+        System.out.println(is_cancelled);
 
         if (is_cancelled) {
             event.setCancelled(true);
