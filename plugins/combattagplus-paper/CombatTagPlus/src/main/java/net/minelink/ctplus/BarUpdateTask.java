@@ -41,6 +41,11 @@ public final class BarUpdateTask extends BukkitRunnable {
             return;
         }
 
+        // Remove bar before displaying the next one
+        if (BarAPI.hasBar(player)) {
+            BarAPI.removeBar(player);
+        }
+
         // Cancel if player is no longer tagged
         Tag tag = plugin.getTagManager().getTag(playerId);
         if (tag == null || tag.isExpired()) {
