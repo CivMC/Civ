@@ -92,6 +92,36 @@
     </dependency>
     <dependency>
       <groupId>net.minelink</groupId>
+      <artifactId>CombatTagPlusFactions-API</artifactId>
+      <version>${ctplus.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.minelink</groupId>
+      <artifactId>CombatTagPlusFactions-v1_6</artifactId>
+      <version>${ctplus.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.minelink</groupId>
+      <artifactId>CombatTagPlusFactions-v1_8</artifactId>
+      <version>${ctplus.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.minelink</groupId>
+      <artifactId>CombatTagPlusFactions-v2_6</artifactId>
+      <version>${ctplus.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.minelink</groupId>
+      <artifactId>CombatTagPlusFactions-v2_7</artifactId>
+      <version>${ctplus.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.minelink</groupId>
       <artifactId>CombatTagPlusWG-API</artifactId>
       <version>${ctplus.version}</version>
       <scope>compile</scope>
