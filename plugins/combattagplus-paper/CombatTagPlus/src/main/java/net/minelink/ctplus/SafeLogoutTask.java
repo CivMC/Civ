@@ -16,7 +16,7 @@ import static org.bukkit.ChatColor.*;
 
 public final class SafeLogoutTask extends BukkitRunnable {
 
-    private final static Map<UUID, Integer> tasks = new HashMap<>();
+    private final static Map<UUID, SafeLogoutTask> tasks = new HashMap<>();
 
     private final CombatTagPlus plugin;
 
@@ -27,6 +27,8 @@ public final class SafeLogoutTask extends BukkitRunnable {
     private final long logoutTime;
 
     private int remainingSeconds = Integer.MAX_VALUE;
+
+    private boolean finished;
 
     SafeLogoutTask(CombatTagPlus plugin, Player player, long logoutTime) {
         this.plugin = plugin;
@@ -59,6 +61,7 @@ public final class SafeLogoutTask extends BukkitRunnable {
         // Safely logout the player once timer is up
         int remainingSeconds = getRemainingSeconds();
         if (remainingSeconds <= 0) {
+            finished = true;
             plugin.getTagManager().untag(playerId);
             player.kickPlayer(GREEN + "You were logged out safely.");
             cancel();
@@ -87,18 +90,28 @@ public final class SafeLogoutTask extends BukkitRunnable {
         long logoutTime = System.currentTimeMillis() + (plugin.getSettings().getLogoutWaitTime() * 1000);
 
         // Run the task every few ticks for accuracy
-        int taskId = new SafeLogoutTask(plugin, player, logoutTime).runTaskTimer(plugin, 0, 5).getTaskId();
+        SafeLogoutTask task = new SafeLogoutTask(plugin, player, logoutTime);
+        task.runTaskTimer(plugin, 0, 5);
 
-        // Cache the task ID
-        tasks.put(player.getUniqueId(), taskId);
+        // Cache the task
+        tasks.put(player.getUniqueId(), task);
     }
 
     static boolean hasTask(Player player) {
-        Integer taskId = tasks.get(player.getUniqueId());
-        if (taskId == null) return false;
+        SafeLogoutTask task = tasks.get(player.getUniqueId());
+        if (task == null) return false;
 
         BukkitScheduler s = Bukkit.getScheduler();
-        return s.isQueued(taskId) || s.isCurrentlyRunning(taskId);
+        if (s.isQueued(task.getTaskId()) || s.isCurrentlyRunning(task.getTaskId())) {
+            return true;
+        }
+
+        tasks.remove(player.getUniqueId());
+        return false;
+    }
+
+    static boolean isFinished(Player player) {
+        return hasTask(player) && tasks.get(player.getUniqueId()).finished;
     }
 
     static boolean cancel(Player player) {
@@ -106,17 +119,21 @@ public final class SafeLogoutTask extends BukkitRunnable {
         if (!hasTask(player)) return false;
 
         // Cancel logout task
-        Bukkit.getScheduler().cancelTask(tasks.get(player.getUniqueId()));
+        Bukkit.getScheduler().cancelTask(tasks.get(player.getUniqueId()).getTaskId());
+
+        // Remove task early to prevent exploits
+        tasks.remove(player.getUniqueId());
+
         return true;
     }
 
     static void purgeFinished() {
-        Iterator<Integer> iterator = tasks.values().iterator();
+        Iterator<SafeLogoutTask> iterator = tasks.values().iterator();
         BukkitScheduler s = Bukkit.getScheduler();
 
         // Loop over each task
         while (iterator.hasNext()) {
-            int taskId = iterator.next();
+            int taskId = iterator.next().getTaskId();
 
             // Remove entry if task isn't running anymore
             if (!s.isQueued(taskId) && !s.isCurrentlyRunning(taskId)) {

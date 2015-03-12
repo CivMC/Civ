@@ -239,7 +239,7 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
 
             // Do nothing if player is already logging out
             Player player = (Player) sender;
-            if (SafeLogoutTask.hasTask(player)) return true;
+            if (SafeLogoutTask.hasTask(player)) return false;
 
             // Attempt to start a new logout task
             SafeLogoutTask.run(this, player);
@@ -278,6 +278,9 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
 
         // Do nothing if a player logs off in combat in a WorldGuard protected region
         if (!getWorldGuardManager().isPvpEnabledAt(player.getLocation())) return;
+
+        // Do nothing if player has safely logged out
+        if (SafeLogoutTask.isFinished(player)) return;
 
         // Kill player if configuration states so
         if (getTagManager().isTagged(player.getUniqueId()) && getSettings().instantlyKill()) {
