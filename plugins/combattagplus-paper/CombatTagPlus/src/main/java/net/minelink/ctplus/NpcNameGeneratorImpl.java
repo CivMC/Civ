@@ -2,6 +2,7 @@ package net.minelink.ctplus;
 
 import net.minelink.ctplus.compat.api.NpcNameGenerator;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Random;
@@ -22,11 +23,17 @@ public final class NpcNameGeneratorImpl implements NpcNameGenerator {
             return player.getName();
         }
 
-        String name = plugin.getSettings().getRandomNamePrefix();
-        name = name.length() > 12 ? name.substring(0, 12) : name;
+        String prefix = plugin.getSettings().getRandomNamePrefix();
+        prefix = prefix.length() > 12 ? prefix.substring(0, 12) : prefix;
 
-        int maxRandom = Integer.valueOf("1" + StringUtils.repeat("0", Math.min(4, 16 - name.length() - 1)));
-        return name + random.nextInt(maxRandom);
+        int max = Integer.valueOf("1" + StringUtils.repeat("0", Math.min(4, 16 - prefix.length() - 1)));
+        String name = null;
+
+        while (name == null || Bukkit.getPlayerExact(name) != null) {
+            name = prefix + random.nextInt(max);
+        }
+
+        return name;
     }
 
 }
