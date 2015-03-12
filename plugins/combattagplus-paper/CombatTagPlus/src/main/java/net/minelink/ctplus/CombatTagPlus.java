@@ -279,6 +279,9 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         // Do nothing if a player logs off in combat in a WorldGuard protected region
         if (!getWorldGuardManager().isPvpEnabledAt(player.getLocation())) return;
 
+        // Do nothing if player has permission
+        if (player.hasPermission("ctplus.bypass.tag")) return;
+
         // Do nothing if player has safely logged out
         if (SafeLogoutTask.isFinished(player)) return;
 
