@@ -74,6 +74,12 @@
     </dependency>
     <dependency>
       <groupId>net.minelink</groupId>
+      <artifactId>CombatTagPlusCompat-v1_7_R3</artifactId>
+      <version>${ctplus.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.minelink</groupId>
       <artifactId>CombatTagPlusCompat-v1_7_R4</artifactId>
       <version>${ctplus.version}</version>
       <scope>compile</scope>
