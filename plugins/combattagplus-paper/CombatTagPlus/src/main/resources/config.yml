@@ -1,5 +1,5 @@
 # Don't touch this. It's here to determine whether you need to refresh your config.
-config-version: 6
+config-version: 7
 
 # The duration in seconds that both the attacker and victim should be tagged in combat.
 tag-duration: 15
@@ -42,6 +42,9 @@ kill-message: '&8&l>> &c{victim} was slain by {attacker}'
 
 # Enables BarAPI integration for displaying a boss bar counting down with the remaining tag time.
 barapi: true
+
+# Enables Factions integration for disabling combat tagging in regions with PVP disabled.
+factions: true
 
 # Enables WorldGuard integration for disabling combat tagging in regions with PVP disabled.
 worldguard: true

@@ -95,6 +95,10 @@ public final class Settings {
         return plugin.getConfig().getBoolean("barapi");
     }
 
+    public boolean useFactions() {
+        return plugin.getConfig().getBoolean("factions");
+    }
+
     public boolean useWorldGuard() {
         return plugin.getConfig().getBoolean("worldguard");
     }

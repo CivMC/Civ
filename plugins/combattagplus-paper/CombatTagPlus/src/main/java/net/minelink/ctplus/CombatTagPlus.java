@@ -2,6 +2,8 @@ package net.minelink.ctplus;
 
 import net.minelink.ctplus.compat.api.NpcNameGeneratorFactory;
 import net.minelink.ctplus.compat.api.NpcPlayerHelper;
+import net.minelink.ctplus.factions.api.FactionsHelper;
+import net.minelink.ctplus.factions.api.FactionsHelperImpl;
 import net.minelink.ctplus.worldguard.api.WorldGuardHelper;
 import net.minelink.ctplus.worldguard.api.WorldGuardHelperImpl;
 import org.bukkit.Bukkit;
@@ -60,6 +62,8 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
 
     private NpcManager npcManager;
 
+    private FactionsManager factionsManager;
+
     private WorldGuardManager worldGuardManager;
 
     public Settings getSettings() {
@@ -76,6 +80,10 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
 
     public NpcManager getNpcManager() {
         return npcManager;
+    }
+
+    public FactionsManager getFactionsManager() {
+        return factionsManager;
     }
 
     public WorldGuardManager getWorldGuardManager() {
@@ -110,6 +118,7 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
 
         NpcNameGeneratorFactory.setNameGenerator(new NpcNameGeneratorImpl(this));
 
+        integrateFactions();
         integrateWorldGuard();
 
         // Build player cache from currently online players
@@ -172,6 +181,50 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
 
         // Yay, we're compatible! (hopefully)
         return true;
+    }
+
+    private void integrateFactions() {
+        // Use a dummy implementation if Factions is disabled
+        if (!getSettings().useFactions()) {
+            factionsManager = new FactionsManager(this, new FactionsHelperImpl());
+            return;
+        }
+
+        // Determine if Factions is loaded
+        Plugin plugin = Bukkit.getPluginManager().getPlugin("Factions");
+        if (plugin == null) {
+            getLogger().info("Factions integration is disabled because it is not loaded.");
+
+            // Use the dummy helper implementation if Factions isn't loaded
+            factionsManager = new FactionsManager(this, new FactionsHelperImpl());
+            return;
+        }
+
+        FactionsHelper helper = null;
+        String[] v = plugin.getDescription().getVersion().split(".");
+        String version = v[0] + "_" + v[1];
+
+        // Determine which helper class implementation to use
+        String className = "net.minelink.ctplus.factions.v" + version + ".FactionsHelperImpl";
+
+        try {
+            // Try to create a new helper instance
+            helper = (FactionsHelper) Class.forName(className).newInstance();
+
+            // Create the manager which is what the plugin will interact with
+            factionsManager = new FactionsManager(this, helper);
+        } catch (Exception e) {
+            // Something went wrong, chances are it's a newer, incompatible WorldGuard
+            getLogger().warning("**WARNING**");
+            getLogger().warning("Failed to enable Factions integration due to errors.");
+            getLogger().warning("This is most likely due to a newer Factions.");
+
+            // Use the dummy helper implementation since WG isn't supported
+            factionsManager = new FactionsManager(this, new FactionsHelperImpl());
+
+            // Let's leave a stack trace in console for reporting
+            e.printStackTrace();
+        }
     }
 
     private void integrateWorldGuard() {
