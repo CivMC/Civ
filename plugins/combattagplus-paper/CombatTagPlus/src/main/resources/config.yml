@@ -52,6 +52,16 @@ disabled-worlds: [world_the_end]
 # These commands are unusable by players who are combat tagged.
 disabled-commands:
 
+  # CombatTagPlus
+  - ctlog
+  - logout
+  - ctlogout
+  - ctpluslogout
+  - 'combattagplus:ctlog'
+  - 'combattagplus:logout'
+  - 'combattagplus:ctlogout'
+  - 'combattagplus:ctpluslogout'
+
   # Factions
   - f home
   - f leave
