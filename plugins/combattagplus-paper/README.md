@@ -7,6 +7,7 @@
 * Spawn a NPC when a player logs off in combat
 * Play an effect when NPC spawns
 * Force NPC to always spawn when the player logs off, even out of combat
+* Command to log out safely after waiting out a configurable timer without moving
 * Can instantly kill player when they log off in combat
 * Disallow block editing while player is in combat
 * Disallow enderpearls while player is in combat
@@ -42,6 +43,7 @@ You can acquire development builds of CombatTagPlus from the [Minelink Network C
 | ctplus.bypass.blockedit  | Bypass block edit restrictions in combat | operator    |
 | ctplus.bypass.enderpearl | Bypass enderpearl restrictions in combat | operator    |
 | ctplus.check             | Check remaining combat timer             | everyone    |
+| ctplus.logout            | Initiate a safe logout                   | everyone    |
 | ctplus.notify.kill       | Receive kill/death message broadcast     | everyone    |
 
 ## Contributing
