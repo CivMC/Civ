@@ -26,6 +26,7 @@ permissions:
   ctplus.bypass.command: {default: op}
   ctplus.bypass.blockedit: {default: op}
   ctplus.bypass.enderpearl: {default: op}
+  ctplus.bypass.flying: {default: op}
   ctplus.check: {default: true}
   ctplus.logout: {default: true}
   ctplus.notify.kill: {default: true}

@@ -32,11 +32,13 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -718,6 +720,51 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         // Cancel enderpearl throw
         event.setCancelled(true);
         player.sendMessage(AQUA + "Enderpearls " + RED + " are disabled in combat.");
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void disableFlying(PlayerCombatTagEvent event) {
+        // Do nothing if flying is allowed in combat
+        if (!getSettings().disableFlying()) return;
+
+        Player p;
+
+        // Disable flying for victim
+        p = event.getVictim();
+        if (p != null && p.isFlying() && !p.hasPermission("ctplus.bypass.flying")) {
+            p.setAllowFlight(false);
+            p.sendMessage(AQUA + "Flying " + RED + "is disabled in combat.");
+        }
+
+        // Disable flying for attacker
+        p = event.getAttacker();
+        if (p != null && p.isFlying() && !p.hasPermission("ctplus.bypass.flying")) {
+            p.setAllowFlight(false);
+            p.sendMessage(AQUA + "Flying " + RED + "is disabled in combat.");
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void disableFlying(PlayerToggleFlightEvent event) {
+        // Do nothing if flying is allowed in combat
+        if (!getSettings().disableFlying()) return;
+
+        // Do nothing if player is flying
+        final Player player = event.getPlayer();
+        if (player.isFlying()) return;
+
+        // Do nothing if player isn't even combat tagged
+        if (!getTagManager().isTagged(player.getUniqueId())) return;
+
+        // Do nothing if player has bypass permission
+        if (player.hasPermission("ctplus.bypass.flying")) return;
+
+        // Cancel player's flight
+        player.setAllowFlight(false);
+
+        // Cancel the event and inform the player
+        event.setCancelled(true);
+        player.sendMessage(AQUA + "Flying " + RED + "is disabled in combat.");
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

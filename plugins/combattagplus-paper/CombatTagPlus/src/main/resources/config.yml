@@ -1,5 +1,5 @@
 # Don't touch this. It's here to determine whether you need to refresh your config.
-config-version: 7
+config-version: 8
 
 # The duration in seconds that both the attacker and victim should be tagged in combat.
 tag-duration: 15
@@ -27,6 +27,9 @@ disable-creative-tags: true
 
 # Prevent tagged players throwing enderpearls while tagged.
 disable-enderpearls: false
+
+# Prevent tagged players from flying during combat.
+disable-flying: false
 
 # The duration in seconds to despawn the combat logger's NPC if it hasn't died.
 npc-despawn-time: 60

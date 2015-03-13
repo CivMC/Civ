@@ -70,6 +70,10 @@ public final class Settings {
         return plugin.getConfig().getBoolean("disable-enderpearls");
     }
 
+    public boolean disableFlying() {
+        return plugin.getConfig().getBoolean("disable-flying");
+    }
+
     public int getNpcDespawnTime() {
         return plugin.getConfig().getInt("npc-despawn-time", 60);
     }
