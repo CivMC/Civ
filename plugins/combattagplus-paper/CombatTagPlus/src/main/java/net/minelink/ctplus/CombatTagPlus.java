@@ -1,5 +1,6 @@
 package net.minelink.ctplus;
 
+import com.google.common.collect.ImmutableList;
 import net.minelink.ctplus.compat.api.NpcNameGeneratorFactory;
 import net.minelink.ctplus.compat.api.NpcPlayerHelper;
 import net.minelink.ctplus.factions.api.FactionsHelper;
@@ -8,7 +9,9 @@ import net.minelink.ctplus.worldguard.api.WorldGuardHelper;
 import net.minelink.ctplus.worldguard.api.WorldGuardHelperImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AnimalTamer;
@@ -27,12 +30,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -40,12 +38,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -775,6 +768,90 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
 
         // Inform player
         player.sendMessage(RED + "Logout cancelled due to being combat tagged.");
+    }
+
+    public static final ImmutableList<BlockFace> ALL_DIRECTIONS =
+            ImmutableList.of(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST);
+
+    @EventHandler
+    public void updateViewedBlocks(PlayerMoveEvent event) {
+        // Do nothing if check is not active
+        if (!getSettings().useForceFields()) return;
+
+        // Do nothing if player is not tagged
+        Player player = event.getPlayer();
+        if (!getTagManager().isTagged(player.getUniqueId())) return;
+
+        // Do nothing if player hasn't moved over a whole block
+        Location t = event.getTo();
+        Location f = event.getFrom();
+        if (!(t.getBlockX() != f.getBlockX() ||
+                t.getBlockY() != f.getBlockY() ||
+                t.getBlockZ() != f.getBlockZ())) {
+            return;
+        }
+
+        // Update the players force field perspective
+        for (Location location : getChangedBlocks(player)) {
+            player.sendBlockChange(location, Material.STAINED_GLASS, (byte) 14);
+        }
+    }
+
+    private List<Location> getChangedBlocks(Player player) {
+        List<Location> locations = new ArrayList<>();
+        Location l = player.getLocation();
+
+        // Find the radius around the player
+        Location loc1 = player.getLocation().add(3, 0, 3);
+        Location loc2 = player.getLocation().subtract(3, 0, 3);
+        int topBlockX = loc1.getBlockX() < loc2.getBlockX() ? loc2.getBlockX() : loc1.getBlockX();
+        int bottomBlockX = loc1.getBlockX() > loc2.getBlockX() ? loc2.getBlockX() : loc1.getBlockX();
+        int topBlockZ = loc1.getBlockZ() < loc2.getBlockZ() ? loc2.getBlockZ() : loc1.getBlockZ();
+        int bottomBlockZ = loc1.getBlockZ() > loc2.getBlockZ() ? loc2.getBlockZ() : loc1.getBlockZ();
+
+        // Iterate through all blocks surrounding the player
+        for (int x = bottomBlockX; x <= topBlockX; x++) {
+            for (int z = bottomBlockZ; z <= topBlockZ; z++) {
+                // Location corresponding to current loop
+                Location location = new Location(l.getWorld(), (double) x, l.getY(), (double) z);
+
+                // PvP is enabled here, no need to do anything else
+                if (isPvpEnabledAt(location)) continue;
+
+                // Check if PvP is enabled in a location surrounding this
+                if (!isPvpSurrounding(location)) continue;
+
+                for (int i = -3; i < 3; i++) {
+                    Location loc = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
+
+                    loc.setY(loc.getY() + i);
+
+                    // Do nothing if the block at the location is not air
+                    if (!loc.getBlock().getType().equals(Material.AIR)) continue;
+
+                    // Add this location to locations
+                    locations.add(loc);
+                }
+            }
+        }
+
+        return locations;
+    }
+
+    private boolean isPvpEnabledAt(Location location) {
+        return getFactionsManager().isPvpEnabledAt(location) && getWorldGuardManager().isPvpEnabledAt(location);
+    }
+
+    private boolean isPvpSurrounding(Location loc1) {
+        for (BlockFace direction : ALL_DIRECTIONS) {
+            Location loc2 = loc1.getBlock().getRelative(direction).getLocation();
+
+            if (isPvpEnabledAt(loc2)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

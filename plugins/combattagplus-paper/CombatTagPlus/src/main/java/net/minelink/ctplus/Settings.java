@@ -99,6 +99,10 @@ public final class Settings {
         return plugin.getConfig().getBoolean("barapi");
     }
 
+    public boolean useForceFields() {
+        return plugin.getConfig().getBoolean("force-fields");
+    }
+
     public boolean useFactions() {
         return plugin.getConfig().getBoolean("factions");
     }
