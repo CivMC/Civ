@@ -38,7 +38,7 @@ public final class Settings {
     }
 
     public String getTagMessage() {
-        String message = plugin.getConfig().getString("tag-message");
+        String message = plugin.getConfig().getString("tag-message", null);
         return message != null ? ChatColor.translateAlternateColorCodes('&', message) : null;
     }
 
@@ -87,7 +87,7 @@ public final class Settings {
     }
 
     public String getKillMessage() {
-        String message = plugin.getConfig().getString("kill-message");
+        String message = plugin.getConfig().getString("kill-message", null);
         return message != null ? ChatColor.translateAlternateColorCodes('&', message) : null;
     }
 
