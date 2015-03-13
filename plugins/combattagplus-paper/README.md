@@ -17,6 +17,7 @@
 * Force NPC to always spawn when the player logs off, even out of combat
 * Command to log out safely after waiting out a configurable timer without moving
 * Can instantly kill player when they log off in combat
+* Disallow flying while player is in combat
 * Disallow block editing while player is in combat
 * Disallow enderpearls while player is in combat
 * Broadcast a PVP kill/death message
