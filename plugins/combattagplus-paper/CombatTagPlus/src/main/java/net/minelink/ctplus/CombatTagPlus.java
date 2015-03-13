@@ -201,7 +201,7 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         }
 
         FactionsHelper helper = null;
-        String[] v = plugin.getDescription().getVersion().split(".");
+        String[] v = plugin.getDescription().getVersion().split("\\.");
         String version = v[0] + "_" + v[1];
 
         // Determine which helper class implementation to use
