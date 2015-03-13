@@ -2,6 +2,14 @@
 
 *CombatTagPlus is the last plugin you'll ever need to stop those dirty combat loggers!*
 
+## Supports
+
+* CraftBukkit & Spigot 1.7.9
+* CraftBukkit & Spigot 1.7.10
+* Spigot 1.7.10 / 1.8 Protocol Patch
+* CraftBukkit & Spigot 1.8.0
+* CraftBukkit & Spigot 1.8.3
+
 ## Features
 
 * Spawn a NPC when a player logs off in combat
@@ -15,10 +23,16 @@
 * Disable combat tagging for specific worlds
 * Deny specific commands while player is in combat
 * Supports WorldGuard PVP deny flag (WorldGuard 5.x and 6.x both supported)
+* Support Factions PVP flag
+  * _Most mainstream Faction builds are supported:_
+  * Factions 2.7 (MassiveCore 2.7)
+  * Factions 2.6 (MassiveCore 7.4)
+  * FactionsUUID 1.6 by drtshock
+  * FactionsUUID 1.8 by externo6
 * Works with BarAPI to show a boss bar counting down with the player's remaining combat timer
   * _These custom BarAPI builds by @vemacs are more compatible than the official ones:_
   * Spigot 1.8.0: [Download](http://ci.minelink.net/job/BarAPI/5/artifact/target/BarAPI.jar)
-  * Spigot 1.7/1.8 Protocol Patch: [Download](http://ci.minelink.net/job/BarAPI/4/artifact/target/BarAPI.jar)
+  * Spigot 1.7.10/1.8 Protocol Patch: [Download](http://ci.minelink.net/job/BarAPI/4/artifact/target/BarAPI.jar)
 
 ## Development Builds
 
@@ -42,6 +56,7 @@ You can acquire development builds of CombatTagPlus from the [Minelink Network C
 | ctplus.bypass.command    | Bypass command restrictions in combat    | operator    |
 | ctplus.bypass.blockedit  | Bypass block edit restrictions in combat | operator    |
 | ctplus.bypass.enderpearl | Bypass enderpearl restrictions in combat | operator    |
+| ctplus.bypass.flying     | Bypass flying restriction in combat      | operator    |
 | ctplus.check             | Check remaining combat timer             | everyone    |
 | ctplus.logout            | Initiate a safe logout                   | everyone    |
 | ctplus.notify.kill       | Receive kill/death message broadcast     | everyone    |
