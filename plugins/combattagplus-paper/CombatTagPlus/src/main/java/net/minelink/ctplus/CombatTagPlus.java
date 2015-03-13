@@ -325,7 +325,7 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         if (!getTagManager().isTagged(player.getUniqueId()) && !getSettings().alwaysSpawn()) return;
 
         // Do nothing if a player logs off in combat in a WorldGuard protected region
-        if (!getWorldGuardManager().isPvpEnabledAt(player.getLocation())) return;
+        if (!isPvpEnabledAt(player.getLocation())) return;
 
         // Do nothing if player has permission
         if (player.hasPermission("ctplus.bypass.tag")) return;
@@ -630,7 +630,7 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void disableInProtectedRegion(PlayerCombatTagEvent event) {
         // Don't tag if player is in a protected region
-        if (!getWorldGuardManager().isPvpEnabledAt(event.getPlayer().getLocation())) {
+        if (!isPvpEnabledAt(event.getPlayer().getLocation())) {
             event.setCancelled(true);
         }
     }
