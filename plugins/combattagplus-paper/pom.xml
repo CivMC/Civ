@@ -10,7 +10,7 @@
   <version>${ctplus.version}</version>
 
   <properties>
-    <ctplus.version>1.0.1-SNAPSHOT</ctplus.version>
+    <ctplus.version>1.1.0-SNAPSHOT</ctplus.version>
   </properties>
 
   <modules>
