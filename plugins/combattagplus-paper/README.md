@@ -15,7 +15,6 @@
 * Spawn a NPC when a player logs off in combat
 * Play an effect when NPC spawns
 * Force NPC to always spawn when the player logs off, even out of combat
-* Command to log out safely after waiting out a configurable timer without moving
 * Can instantly kill player when they log off in combat
 * Safe Logout that optionally lets tagged player wait a timer without moving to safely log off
 * Disallow flying while player is in combat
