@@ -3,7 +3,7 @@ package net.minelink.ctplus;
 import net.minelink.ctplus.factions.api.FactionsHelper;
 import org.bukkit.Location;
 
-public class FactionsManager {
+public final class FactionsManager {
 
     private final CombatTagPlus plugin;
 

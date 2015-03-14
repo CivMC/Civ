@@ -1,5 +1,6 @@
-package net.minelink.ctplus;
+package net.minelink.ctplus.listener;
 
+import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.compat.api.NpcIdentity;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,7 +15,7 @@ public final class PlayerHeadsListener implements Listener {
 
     private final CombatTagPlus plugin;
 
-    PlayerHeadsListener(CombatTagPlus plugin) {
+    public PlayerHeadsListener(CombatTagPlus plugin) {
         this.plugin = plugin;
     }
 

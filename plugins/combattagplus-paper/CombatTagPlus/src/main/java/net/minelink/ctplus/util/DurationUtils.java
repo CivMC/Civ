@@ -1,4 +1,4 @@
-package net.minelink.ctplus;
+package net.minelink.ctplus.util;
 
 import org.apache.commons.lang.StringUtils;
 

@@ -1,5 +1,7 @@
-package net.minelink.ctplus;
+package net.minelink.ctplus.task;
 
+import net.minelink.ctplus.CombatTagPlus;
+import net.minelink.ctplus.util.DurationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -82,7 +84,7 @@ public final class SafeLogoutTask extends BukkitRunnable {
                 loc.getBlockY() != l.getBlockY() || loc.getBlockZ() != l.getBlockZ();
     }
 
-    static void run(CombatTagPlus plugin, Player player) {
+    public static void run(CombatTagPlus plugin, Player player) {
         // Do nothing if player already has a task
         if (hasTask(player)) return;
 
@@ -97,7 +99,7 @@ public final class SafeLogoutTask extends BukkitRunnable {
         tasks.put(player.getUniqueId(), task);
     }
 
-    static boolean hasTask(Player player) {
+    public static boolean hasTask(Player player) {
         SafeLogoutTask task = tasks.get(player.getUniqueId());
         if (task == null) return false;
 
@@ -110,11 +112,11 @@ public final class SafeLogoutTask extends BukkitRunnable {
         return false;
     }
 
-    static boolean isFinished(Player player) {
+    public static boolean isFinished(Player player) {
         return hasTask(player) && tasks.get(player.getUniqueId()).finished;
     }
 
-    static boolean cancel(Player player) {
+    public static boolean cancel(Player player) {
         // Do nothing if player has no logout task
         if (!hasTask(player)) return false;
 
@@ -127,7 +129,7 @@ public final class SafeLogoutTask extends BukkitRunnable {
         return true;
     }
 
-    static void purgeFinished() {
+    public static void purgeFinished() {
         Iterator<SafeLogoutTask> iterator = tasks.values().iterator();
         BukkitScheduler s = Bukkit.getScheduler();
 

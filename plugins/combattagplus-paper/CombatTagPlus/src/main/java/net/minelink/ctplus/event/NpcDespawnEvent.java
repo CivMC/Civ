@@ -1,5 +1,6 @@
-package net.minelink.ctplus;
+package net.minelink.ctplus.event;
 
+import net.minelink.ctplus.Npc;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

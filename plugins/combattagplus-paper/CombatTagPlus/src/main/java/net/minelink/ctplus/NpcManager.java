@@ -1,5 +1,6 @@
 package net.minelink.ctplus;
 
+import net.minelink.ctplus.event.NpcDespawnEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;

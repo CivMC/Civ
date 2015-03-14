@@ -1,4 +1,4 @@
-package net.minelink.ctplus;
+package net.minelink.ctplus.event;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;

@@ -1,6 +1,7 @@
 package net.minelink.ctplus;
 
 import net.minelink.ctplus.compat.api.NpcPlayerHelper;
+import net.minelink.ctplus.event.PlayerCombatTagEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

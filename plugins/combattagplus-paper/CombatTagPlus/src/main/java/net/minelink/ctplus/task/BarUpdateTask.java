@@ -1,6 +1,9 @@
-package net.minelink.ctplus;
+package net.minelink.ctplus.task;
 
 import me.confuser.barapi.BarAPI;
+import net.minelink.ctplus.CombatTagPlus;
+import net.minelink.ctplus.Tag;
+import net.minelink.ctplus.util.DurationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -99,7 +102,7 @@ public final class BarUpdateTask extends BukkitRunnable {
         });
     }
 
-    static void purgeFinished() {
+    public static void purgeFinished() {
         Iterator<Integer> iterator = tasks.values().iterator();
         BukkitScheduler s = Bukkit.getScheduler();
 
