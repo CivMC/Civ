@@ -17,12 +17,14 @@
 * Force NPC to always spawn when the player logs off, even out of combat
 * Command to log out safely after waiting out a configurable timer without moving
 * Can instantly kill player when they log off in combat
+* Safe Logout that optionally lets tagged player wait a timer without moving to safely log off
 * Disallow flying while player is in combat
 * Disallow block editing while player is in combat
 * Disallow enderpearls while player is in combat
 * Broadcast a PVP kill/death message
 * Disable combat tagging for specific worlds
 * Deny specific commands while player is in combat
+* Disallow running back to safety while in combat (can also render a forcefield)
 * Supports WorldGuard PVP deny flag (WorldGuard 5.x and 6.x both supported)
 * Supports Factions PVP flag
   * _Most mainstream Faction builds are supported:_
