@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -782,17 +783,15 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         player.sendMessage(RED + "Logout cancelled due to being combat tagged.");
     }
 
-    public static final ImmutableList<BlockFace> ALL_DIRECTIONS =
+    private static final ImmutableList<BlockFace> ALL_DIRECTIONS =
             ImmutableList.of(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST);
+
+    private HashMap<UUID, List<Location>> previousUpdates = new HashMap<>();
 
     @EventHandler
     public void updateViewedBlocks(PlayerMoveEvent event) {
         // Do nothing if check is not active
         if (!getSettings().useForceFields()) return;
-
-        // Do nothing if player is not tagged
-        Player player = event.getPlayer();
-        if (!getTagManager().isTagged(player.getUniqueId())) return;
 
         // Do nothing if player hasn't moved over a whole block
         Location t = event.getTo();
@@ -803,13 +802,28 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
             return;
         }
 
+        // Revert spoofed blocks (I know, I'm a genius)
+        Player player = event.getPlayer();
+        UUID uuid = player.getUniqueId();
+        if (previousUpdates.containsKey(uuid)) {
+            for (Location location : previousUpdates.get(uuid)) {
+                Block block = location.getBlock();
+                player.sendBlockChange(location, block.getType(), block.getData());
+            }
+        }
+
+        // Do nothing if player is not tagged
+        if (!getTagManager().isTagged(uuid)) return;
+
         // Prevent sneaky players crossing the force field
         if (!isPvpEnabledAt(t) && isPvpEnabledAt(f)) {
             event.setTo(f.setDirection(t.getDirection()));
         }
 
         // Update the players force field perspective
-        for (Location location : getChangedBlocks(player)) {
+        List<Location> changedBlocks = getChangedBlocks(player);
+        previousUpdates.put(uuid, changedBlocks);
+        for (Location location : changedBlocks) {
             player.sendBlockChange(location, Material.STAINED_GLASS, (byte) 14);
         }
     }
