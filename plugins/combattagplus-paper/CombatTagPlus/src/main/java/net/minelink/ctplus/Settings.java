@@ -103,6 +103,10 @@ public final class Settings {
         return plugin.getConfig().getBoolean("force-fields");
     }
 
+    public int getForceFieldRadius() {
+        return plugin.getConfig().getInt("force-field-radius");
+    }
+
     public boolean useFactions() {
         return plugin.getConfig().getBoolean("factions");
     }

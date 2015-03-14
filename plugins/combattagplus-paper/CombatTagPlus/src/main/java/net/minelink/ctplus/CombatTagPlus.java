@@ -819,8 +819,9 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
         Location l = player.getLocation();
 
         // Find the radius around the player
-        Location loc1 = player.getLocation().add(3, 0, 3);
-        Location loc2 = player.getLocation().subtract(3, 0, 3);
+        int r = getSettings().getForceFieldRadius();
+        Location loc1 = player.getLocation().add(r, 0, r);
+        Location loc2 = player.getLocation().subtract(r, 0, r);
         int topBlockX = loc1.getBlockX() < loc2.getBlockX() ? loc2.getBlockX() : loc1.getBlockX();
         int bottomBlockX = loc1.getBlockX() > loc2.getBlockX() ? loc2.getBlockX() : loc1.getBlockX();
         int topBlockZ = loc1.getBlockZ() < loc2.getBlockZ() ? loc2.getBlockZ() : loc1.getBlockZ();
@@ -838,7 +839,7 @@ public final class CombatTagPlus extends JavaPlugin implements Listener {
                 // Check if PvP is enabled in a location surrounding this
                 if (!isPvpSurrounding(location)) continue;
 
-                for (int i = -3; i < 3; i++) {
+                for (int i = -r; i < r; i++) {
                     Location loc = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
 
                     loc.setY(loc.getY() + i);

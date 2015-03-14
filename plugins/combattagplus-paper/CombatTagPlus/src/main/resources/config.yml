@@ -1,5 +1,5 @@
 # Don't touch this. It's here to determine whether you need to refresh your config.
-config-version: 9
+config-version: 10
 
 # The duration in seconds that both the attacker and victim should be tagged in combat.
 tag-duration: 15
@@ -48,6 +48,9 @@ barapi: true
 
 # Enables force fields around Anti-PvP zones while in combat
 force-fields: true
+
+# Radius in blocks around the player that should be checked for forcefields (Higher numbers = more laggy)
+force-field-radius: 3
 
 # Enables Factions integration for disabling combat tagging in regions with PVP disabled.
 factions: true
