@@ -108,7 +108,6 @@ public final class CombatTagPlus extends JavaPlugin {
         // Register event listeners
         Bukkit.getPluginManager().registerEvents(new ForceFieldListener(this), this);
         Bukkit.getPluginManager().registerEvents(new NpcListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerHeadsListener(this), this);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
         Bukkit.getPluginManager().registerEvents(new TagListener(this), this);
 
