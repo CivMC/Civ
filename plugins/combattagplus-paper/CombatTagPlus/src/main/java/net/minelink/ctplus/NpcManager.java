@@ -38,9 +38,9 @@ public final class NpcManager {
         entity.setCanPickupItems(false);
 
         // Copy player data to fake player
+        entity.setHealthScale(player.getHealthScale());
         entity.setMaxHealth(player.getMaxHealth());
         entity.setHealth(player.getHealth());
-        entity.setHealthScale(player.getHealthScale());
         entity.setTotalExperience(player.getTotalExperience());
         entity.setFoodLevel(player.getFoodLevel());
         entity.setExhaustion(player.getExhaustion());
