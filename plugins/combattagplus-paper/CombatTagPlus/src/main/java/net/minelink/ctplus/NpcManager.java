@@ -6,6 +6,7 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
@@ -48,6 +49,7 @@ public final class NpcManager {
         entity.setCanPickupItems(false);
 
         // Copy player data to fake player
+        entity.setMaxHealth(player.getMaxHealth());
         entity.setHealth(player.getHealth());
         entity.setHealthScale(player.getHealthScale());
         entity.setTotalExperience(player.getTotalExperience());
@@ -58,6 +60,9 @@ public final class NpcManager {
 
         copyInventory(player, entity);
         copyPotionEffects(player, entity);
+
+        // Should fix some visual glitches, such as health bars displaying zero
+        entity.teleport(player, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
         // Play a nice little effect indicating the NPC was spawned
         if (plugin.getSettings().playEffect()) {
