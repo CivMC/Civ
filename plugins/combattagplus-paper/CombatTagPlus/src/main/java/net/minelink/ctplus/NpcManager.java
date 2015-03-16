@@ -20,17 +20,6 @@ public final class NpcManager {
 
     private final Map<UUID, Npc> spawnedNpcs = new HashMap<>();
 
-    private static boolean doHasParticles = false;
-
-    static {
-        try {
-            PotionEffect.class.getMethod("hasParticles");
-            doHasParticles = true;
-        } catch (NoSuchMethodException ignored) {
-
-        }
-    }
-
     NpcManager(CombatTagPlus plugin) {
         this.plugin = plugin;
     }
@@ -57,12 +46,15 @@ public final class NpcManager {
         entity.setExhaustion(player.getExhaustion());
         entity.setSaturation(player.getSaturation());
         entity.setFireTicks(player.getFireTicks());
-
-        copyInventory(player, entity);
-        copyPotionEffects(player, entity);
+        entity.getInventory().setContents(player.getInventory().getContents());
+        entity.getInventory().setArmorContents(player.getInventory().getArmorContents());
+        entity.addPotionEffects(player.getActivePotionEffects());
 
         // Should fix some visual glitches, such as health bars displaying zero
         entity.teleport(player, PlayerTeleportEvent.TeleportCause.PLUGIN);
+
+        // Send equipment packets to nearby players
+        plugin.getNpcPlayerHelper().updateEquipment(entity);
 
         // Play a nice little effect indicating the NPC was spawned
         if (plugin.getSettings().playEffect()) {
@@ -72,50 +64,6 @@ public final class NpcManager {
         }
 
         return npc;
-    }
-
-    private void copyInventory(Player from, Player to) {
-        ItemStack[] contents = from.getInventory().getContents();
-        ItemStack[] armorContents = from.getInventory().getArmorContents();
-
-        // Clone inventory contents
-        for (int i = 0; i < contents.length; ++i) {
-            ItemStack item = contents[i];
-            if (item != null) {
-                contents[i] = item.clone();
-            }
-        }
-
-        // Clone player equipment
-        for (int i = 0; i < armorContents.length; ++i) {
-            ItemStack item = armorContents[i];
-            if (item != null) {
-                armorContents[i] = item.clone();
-            }
-        }
-
-        to.getInventory().setContents(contents);
-        to.getInventory().setArmorContents(armorContents);
-
-        // Send equipment packets to nearby players
-        if (plugin.getNpcPlayerHelper().isNpc(to)) {
-            plugin.getNpcPlayerHelper().updateEquipment(to);
-        }
-    }
-
-    private void copyPotionEffects(Player from, Player to) {
-        for (PotionEffect e : from.getActivePotionEffects()) {
-            PotionEffect effect;
-
-            // 1.8+ vs 1.7
-            if (doHasParticles) {
-                effect = new PotionEffect(e.getType(), e.getDuration(), e.getAmplifier(), e.isAmbient(), e.hasParticles());
-            } else {
-                effect = new PotionEffect(e.getType(), e.getDuration(), e.getAmplifier(), e.isAmbient());
-            }
-
-            to.addPotionEffect(effect);
-        }
     }
 
     public void despawn(Npc npc) {
