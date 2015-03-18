@@ -64,6 +64,9 @@ public class PrintingPressManager implements Manager
 		//Takes difference between last repair update and current one and scales repair accordingly
 		updateRepair(System.currentTimeMillis()-repairTime);
 		repairTime=System.currentTimeMillis();
+		
+		BackupManager.backup(file);
+		
 		FileOutputStream fileOutputStream = new FileOutputStream(file);
 		ObjectOutputStream oos = new ObjectOutputStream(fileOutputStream);
 		int version = 1;
@@ -299,6 +302,11 @@ public class PrintingPressManager implements Manager
 	public String getSavesFileName() 
 	{
 		return FactoryModPlugin.PRINTING_PRESSES_SAVE_FILE;
+	}
+
+	@Override
+	public FactoryModPlugin getPlugin() {
+		return plugin;
 	}
 
 }

@@ -1,19 +1,10 @@
 package com.github.igotyou.FactoryMod.managers;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,13 +16,15 @@ import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
+import com.github.igotyou.FactoryMod.persistence.FactoryDao;
+import com.github.igotyou.FactoryMod.persistence.PersistenceFactory;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
-import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 import com.github.igotyou.FactoryMod.utility.StringUtils;
+import com.google.common.collect.Lists;
 
 //original file:
 /**
@@ -53,130 +46,40 @@ public class ProductionManager implements Manager
 {
 	private FactoryModPlugin plugin;
 	private List<ProductionFactory> producers;
+	private FactoryDao<ProductionFactory> mDao;
+	private File mSaveFile;
 	private long repairTime;
 	private boolean isLogging = true;
 	
+	@SuppressWarnings("unchecked")
 	public ProductionManager(FactoryModPlugin plugin)
 	{
 		this.plugin = plugin;
-		producers = new ArrayList<ProductionFactory>();
+		mSaveFile = new File(plugin.getDataFolder(), "productionSaves.txt");
+		producers = Lists.newArrayList();
 		//Set maintenance clock to 0
 		updateFactorys();
+		//TODO: use type inference to avoid cast
+		mDao = (FactoryDao<ProductionFactory>) PersistenceFactory.getFactoryDao(this, mSaveFile, "txt");
 	}
 	
 	public void save(File file) throws IOException 
 	{
 		//Takes difference between last repair update and current one and scales repair accordingly
-		updateRepair(System.currentTimeMillis()-repairTime);
-		repairTime=System.currentTimeMillis();
-		FileOutputStream fileOutputStream = new FileOutputStream(file);
-		BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
-		for (ProductionFactory production : producers)
-		{
-			//order: subFactoryType world recipe1,recipe2 central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
-			
-			Location centerlocation = production.getCenterLocation();
-			Location inventoryLoctation = production.getInventoryLocation();
-			Location powerLocation = production.getPowerSourceLocation();
-			
-			
-			
-			bufferedWriter.append(production.getSubFactoryType());
-			bufferedWriter.append(" ");
-			
-			List<ProductionRecipe> recipes=production.getRecipes();
-			for (int i = 0; i < recipes.size(); i++)
-			{
-				bufferedWriter.append(String.valueOf(recipes.get(i).getTitle()));
-				bufferedWriter.append(",");
-			}
-			bufferedWriter.append(" ");
-			
-			bufferedWriter.append(centerlocation.getWorld().getName());
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(centerlocation.getBlockX()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(centerlocation.getBlockY()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(centerlocation.getBlockZ()));
-			bufferedWriter.append(" ");
-			
-			bufferedWriter.append(Integer.toString(inventoryLoctation.getBlockX()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(inventoryLoctation.getBlockY()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(inventoryLoctation.getBlockZ()));
-			bufferedWriter.append(" ");
-			
-			bufferedWriter.append(Integer.toString(powerLocation.getBlockX()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(powerLocation.getBlockY()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(powerLocation.getBlockZ()));
-			bufferedWriter.append(" ");
-			
-			bufferedWriter.append(Boolean.toString(production.getActive()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(production.getProductionTimer()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(production.getEnergyTimer()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Integer.toString(production.getCurrentRecipeNumber()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(Double.toString(production.getCurrentRepair()));
-			bufferedWriter.append(" ");
-			bufferedWriter.append(String.valueOf(production.getTimeDisrepair()));
-			bufferedWriter.append("\n");
-		}
-		bufferedWriter.flush();
-		fileOutputStream.close();
+		updateRepair(System.currentTimeMillis() - repairTime);
+		repairTime = System.currentTimeMillis();
+		
+		BackupManager.backup(mSaveFile);
+		mDao.writeFactories(producers);
 	}
 
 	public void load(File file) throws IOException 
 	{
 		isLogging = false;
 		repairTime = System.currentTimeMillis();
-		FileInputStream fileInputStream = new FileInputStream(file);
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
-		String line;
-		while ((line = bufferedReader.readLine()) != null)
-		{
-			String parts[] = line.split(" ");
-
-			//order: subFactoryType world recipe1,recipe2 central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
-			String subFactoryType = parts[0];
-			String recipeNames[] = parts[1].split(",");
-
-			Location centerLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
-			Location inventoryLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[6]), Integer.parseInt(parts[7]), Integer.parseInt(parts[8]));
-			Location powerLocation = new Location(plugin.getServer().getWorld(parts[2]), Integer.parseInt(parts[9]), Integer.parseInt(parts[10]), Integer.parseInt(parts[11]));
-			boolean active = Boolean.parseBoolean(parts[12]);
-			int productionTimer = Integer.parseInt(parts[13]);
-			int energyTimer = Integer.parseInt(parts[14]);
-			int currentRecipeNumber = Integer.parseInt(parts[15]);
-			double currentRepair = Double.parseDouble(parts[16]);
-			long timeDisrepair  =  Long.parseLong(parts[17]);
-			if(FactoryModPlugin.productionProperties.containsKey(subFactoryType))
-			{
-				Set<ProductionRecipe> recipes=new HashSet<ProductionRecipe>();
-				
-				// TODO: Give default recipes for subfactory type
-				ProductionProperties properties = FactoryModPlugin.productionProperties.get(subFactoryType);
-				recipes.addAll(properties.getRecipes());
-				
-				for(String name:recipeNames)
-				{
-					if(FactoryModPlugin.productionRecipes.containsKey(name))
-					{
-						recipes.add(FactoryModPlugin.productionRecipes.get(name));
-					}
-				}
-
-				ProductionFactory production = new ProductionFactory(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, new ArrayList<ProductionRecipe>(recipes), currentRecipeNumber, currentRepair,timeDisrepair);
-				addFactory(production);
-			}
+		for(ProductionFactory factory : mDao.readFactories()) {
+			addFactory(factory);
 		}
-		fileInputStream.close();
 		isLogging = true;
 	}
 
@@ -355,7 +258,12 @@ public class ProductionManager implements Manager
 	
 	public String getSavesFileName() 
 	{
-		return FactoryModPlugin.PRODUCTION_SAVES_FILE;
+		return mSaveFile.getName();
+	}
+
+	@Override
+	public FactoryModPlugin getPlugin() {
+		return plugin;
 	}
 
 }

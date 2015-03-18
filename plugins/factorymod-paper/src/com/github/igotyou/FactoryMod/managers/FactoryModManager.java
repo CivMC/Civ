@@ -1,20 +1,18 @@
 package com.github.igotyou.FactoryMod.managers;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.event.Listener;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
+import com.google.common.collect.Lists;
 //original file:
 /**
  * MachinesManager.java
@@ -32,13 +30,12 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResu
  */
 public class FactoryModManager 
 {
-	List<Listener> listeners;
 	List<Manager> managers;
 	
-	FactoryModPlugin plugin; //The plugin object
-	
-	public static FactoryModManager factoryMan;
-	
+	/**
+	 * The plugin instance
+	 */
+	FactoryModPlugin plugin;
 	
 	/**
 	 * Constructor
@@ -46,59 +43,13 @@ public class FactoryModManager
 	public FactoryModManager(FactoryModPlugin plugin)
 	{
 		FactoryModPlugin.sendConsoleMessage("Initiaiting FactoryMod Managers.");
-		this.plugin = plugin;
-		FactoryModManager.factoryMan = this;
 		
-		initializeManagers();
+		this.plugin = plugin;
+		managers = Lists.newArrayList( new ProductionManager(plugin), new PrintingPressManager(plugin), new NetherFactoryManager(plugin) );
 		loadManagers();
 		periodicSaving();
+		
 		FactoryModPlugin.sendConsoleMessage("Finished initializing FactoryMod Managers.");
-	}
-	
-	/**
-	 * Initializes the necassary managers for enabled factorys
-	 */
-	private void initializeManagers()
-	{
-		managers = new ArrayList<Manager>();
-		listeners = new ArrayList<Listener>();
-		
-		//if (FactoryModPlugin.PRODUCTION_ENEABLED)
-		//{
-			initializeProductionManager();
-			initializePrintingPressManager();
-			initializeNetherFactoryManager();
-		//}
-	}
-	
-
-	/**
-	 * Initializes the Ore Gin Manager
-	 */
-	private void initializeProductionManager()
-	{
-		ProductionManager productionnMan = new ProductionManager(plugin);
-		
-		managers.add(productionnMan);
-	}
-	/**
-	 * Initializes the Printing Press Manager
-	 */
-	private void initializePrintingPressManager()
-	{
-		PrintingPressManager printingMan = new PrintingPressManager(plugin);
-		
-		managers.add(printingMan);
-	}
-	
-	/**
-	 * Initialized the NetherFactory manager
-	 */
-	private void initializeNetherFactoryManager()
-	{
-		NetherFactoryManager netherMan = new NetherFactoryManager(plugin);
-		
-		managers.add(netherMan);
 	}
 	
 	/**
@@ -157,22 +108,9 @@ public class FactoryModManager
 		{
 			managerInterface.load(file);
 		}
-		catch (FileNotFoundException exception)
-		{
-			FactoryModPlugin.sendConsoleMessage(file.getName() + " does not exist! Creating file!");
-		}
 		catch (IOException exception)
 		{
 			throw new RuntimeException("Failed to load " + file.getPath(), exception);
-		}
-		
-		try
-		{
-			managerInterface.save(file);
-		}
-		catch (IOException exception)
-		{
-			throw new RuntimeException("Failed to create " + file.getPath(), exception);
 		}
 	}
 
@@ -181,28 +119,9 @@ public class FactoryModManager
 	 */
 	private static void save(Manager manager, File file) 
 	{	
-		
 		try
 		{
-			File newFile = new File(file.getAbsolutePath() + ".new");
-			File bakFile = new File(file.getAbsolutePath() + ".bak");
-			
-			manager.save(newFile);
-			
-			if (bakFile.exists())
-			{
-				bakFile.delete();
-			}
-			
-			if (file.exists() && !file.renameTo(bakFile))
-			{
-				throw new IOException("Failed to rename " + file.getAbsolutePath() + " to " + bakFile.getAbsolutePath());
-			}
-			
-			if (!newFile.renameTo(file))
-			{
-				throw new IOException("Failed to rename " + newFile.getAbsolutePath() + " to " + file.getAbsolutePath());
-			}
+			manager.save(file);
 		}
 		catch (IOException exception)
 		{

@@ -4,25 +4,28 @@
  */
 package com.github.igotyou.FactoryMod.utility;
 
-import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
-import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Random;
+
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 
 /**
  *
  * @author Brian Landry
  */
 public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
+	
+	private static final long serialVersionUID = -5975973806251278120L;
+	
 	public boolean exactlyIn(Inventory inventory)
 	{
 		boolean returnValue=true;

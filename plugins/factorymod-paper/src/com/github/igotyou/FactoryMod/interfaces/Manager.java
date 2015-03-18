@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.bukkit.Location;
 
+import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 
 //original file:
@@ -22,9 +23,14 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 * @author igotyou
 *
 */
-
+//TODO: use generic <T extends Factory> for better type inference
 public interface Manager
 {
+	
+	/**
+	 * @return the plugin instance
+	 */
+	public FactoryModPlugin getPlugin();
 
 /**
 * Saves the machine objects list of this manager to file
