@@ -1,11 +1,9 @@
 package com.untamedears.JukeAlert.command.commands;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -14,8 +12,8 @@ import org.bukkit.entity.Player;
 import com.untamedears.JukeAlert.command.PlayerCommand;
 import com.untamedears.JukeAlert.util.IgnoreList;
 
-
 public class JaMuteCommand extends PlayerCommand {
+	
 	public JaMuteCommand() {
 		super("jamute");
 		setDescription("Mutes/Unmutes notifications from a given snitch group.");
@@ -26,7 +24,8 @@ public class JaMuteCommand extends PlayerCommand {
 	
    @Override
     public boolean execute(CommandSender sender, String[] args) {
-        if (sender instanceof Player) {   	
+        if (sender instanceof Player) {
+        	
         	if (args.length == 0) {
         		sendIgnoreGroupList(sender);
         	} else {
@@ -42,6 +41,7 @@ public class JaMuteCommand extends PlayerCommand {
    private void toggleIgnore(CommandSender sender, String groupName) {
        final Player player = (Player)sender;
        final UUID accountId = player.getUniqueId();
+
        if (groupName.equals("*")) {
            if (IgnoreList.toggleIgnoreAll(accountId)) {
                player.sendMessage("Ignoring all groups!");
@@ -50,7 +50,7 @@ public class JaMuteCommand extends PlayerCommand {
            }
            return;
        }
-
+       
        if(plugin.getJaLogger().getMutedGroups(accountId) == null){
     	   //no groups mute first group
     	   plugin.getJaLogger().muteGroups(accountId, groupName);
@@ -81,7 +81,7 @@ public class JaMuteCommand extends PlayerCommand {
             sender.sendMessage("* Ignoring all groups *");
             return;
         }
-         //IgnoreList.GetGroupIgnoreListByPlayer(accountId);
+        //IgnoreList.GetGroupIgnoreListByPlayer(accountId);
         //new pull from db to get ignored groups
         String ignoredGroups = this.plugin.getJaLogger().getMutedGroups(accountId);
         this.plugin.log("Ignored Groups for Player is: " + ignoredGroups);
@@ -103,10 +103,10 @@ public class JaMuteCommand extends PlayerCommand {
         		}
         	}
         	sb.delete(sb.length()-2, sb.length());
-	        
-	        sb.insert(0,  "Ignore List:  ");
-	        
-	        sender.sendMessage(sb.toString());
+        	
+        	sb.insert(0,  "Ignore List:  ");
+            
+            sender.sendMessage(sb.toString());
         }
     }
 }

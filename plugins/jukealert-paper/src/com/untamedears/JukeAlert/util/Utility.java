@@ -34,6 +34,22 @@ public class Utility {
     public static void setDebugging(boolean debugging) {
         debugging_ = debugging;
     }
+    
+    public static void notifyGroup(Group g, String message) throws SQLException{
+        if (g == null) return;
+        final JukeAlert plugin = JukeAlert.getInstance();
+        Set<String> skipUUID = plugin.getJaLogger().getIgnoreUUIDs(g.getName());
+        if(skipUUID == null){
+        	//this should be fine as it is how it used to be done
+        	skipUUID = null;
+        }
+        OnlineGroupMembers iter = OnlineGroupMembers
+            .get(g.getName())
+            .skipList(skipUUID);
+        for (Player player : iter) {
+            RateLimiter.sendMessage(player, message);
+        }
+    }
 
     public static void notifyGroup(Snitch snitch, String message) throws SQLException {
         if (snitch.getGroup() == null) return;

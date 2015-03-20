@@ -74,7 +74,7 @@ public class IgnoreList {
 		}
 		
 		return returnValue;
-	}*/
+	} */
 	
 	//Not used due to ignored groups being in db now
 	
@@ -95,7 +95,7 @@ public class IgnoreList {
 		return returnValue;
 	}*/
 	
-/*	// Obtain list of all group ignores for an account.
+	/* // Obtain list of all group ignores for an account.
 	// Requires quick accesss by account ID
 	// !!IMPORTANT!!:  Returns null if there exists no group ignores for a given player.
 	// !!IMPORTANT!!:  This will return a reference value for a set for this group for speed reasons.

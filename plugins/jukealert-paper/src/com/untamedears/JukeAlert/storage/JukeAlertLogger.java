@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -35,7 +34,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.NameAPI;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.chat.ChatFiller;
@@ -95,7 +93,6 @@ public class JukeAlertLogger {
     protected GroupMediator groupMediator;
     protected PreparedStatement getAllSnitchesByWorldStmt;
 	private PreparedStatement getAllSnitchesByGroupStmt;
-	
 
     public JukeAlertLogger() {
         plugin = JukeAlert.getInstance();
@@ -508,6 +505,7 @@ public class JukeAlertLogger {
         removeIgnoredGroupStmt = db.prepareStatement(String.format("UPDATE %s SET muted_groups=? WHERE uuid=?;", mutedGroupsTbl)); 
         
         removeUUIDMutedStmt = db.prepareStatement(String.format("DELETE FROM %s WHERE uuid=? ;", mutedGroupsTbl));
+        
     }
 
     private void initializeLastSnitchId() {
@@ -1338,7 +1336,6 @@ public class JukeAlertLogger {
         }
     }
     
-    
     public boolean muteGroups(UUID uuid, String group2Mute){
 		try {
 			muteGroupsStmt.setString(1, uuid.toString());
@@ -1381,7 +1378,6 @@ public class JukeAlertLogger {
 		return false;
 	}
    
-	
 	public Set<String> getIgnoreUUIDs(String ignoredGroup) throws SQLException{
 		Set<String> ignoringUsers = new HashSet<String>();
 		String sql = "%" + ignoredGroup + "%";
@@ -1401,7 +1397,6 @@ public class JukeAlertLogger {
 			}
 		}
 		return ignoringUsers;
-
 	}
 	
 	public boolean removeIgnoredGroup(String removeGroup, UUID uuid){

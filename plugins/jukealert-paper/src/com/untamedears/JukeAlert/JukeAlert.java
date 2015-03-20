@@ -22,6 +22,7 @@ import com.untamedears.JukeAlert.command.commands.NameCommand;
 import com.untamedears.JukeAlert.group.GroupMediator;
 import com.untamedears.JukeAlert.listener.ItemExchangeListener;
 import com.untamedears.JukeAlert.listener.JukeAlertListener;
+import com.untamedears.JukeAlert.listener.MercuryListener;
 import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.manager.PlayerManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
@@ -68,6 +69,8 @@ public class JukeAlert extends JavaPlugin {
         pm.registerEvents(new JukeAlertListener(), this);
         if (pm.isPluginEnabled("ItemExchange"))
         	pm.registerEvents(new ItemExchangeListener(), this);
+        if (pm.isPluginEnabled("Mercury"))
+			pm.registerEvents(new MercuryListener(), this);
     }
 
     private void registerCommands() {

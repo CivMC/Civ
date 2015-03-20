@@ -43,7 +43,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
     private int maxPlayers_;
     private Location referenceLocation_ = null;
     private boolean alreadyIterating_ = false;
-	private Set<String> skipList_= null;
+    private Set<String> skipList_= null;
 
     public OnlineGroupMembers(String groupName) {
         manager_ = NameAPI.getGroupManager();
