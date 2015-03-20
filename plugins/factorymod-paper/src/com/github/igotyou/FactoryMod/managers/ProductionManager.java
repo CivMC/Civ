@@ -54,6 +54,7 @@ public class ProductionManager implements Manager
 	private FactoryModPlugin plugin;
 	private List<ProductionFactory> producers;
 	private long repairTime;
+	private boolean isLogging = true;
 	
 	public ProductionManager(FactoryModPlugin plugin)
 	{
@@ -133,7 +134,8 @@ public class ProductionManager implements Manager
 
 	public void load(File file) throws IOException 
 	{
-		repairTime=System.currentTimeMillis();
+		isLogging = false;
+		repairTime = System.currentTimeMillis();
 		FileInputStream fileInputStream = new FileInputStream(file);
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 		String line;
@@ -175,6 +177,7 @@ public class ProductionManager implements Manager
 			}
 		}
 		fileInputStream.close();
+		isLogging = true;
 	}
 
 	public void updateFactorys() 
@@ -267,7 +270,7 @@ public class ProductionManager implements Manager
 				|| !factoryExistsAt(production.getInventoryLocation()) || !factoryExistsAt(production.getPowerSourceLocation()))
 		{
 			producers.add(production);
-			FactoryModPlugin.sendConsoleMessage("Production factory created: " + production.getProductionFactoryProperties().getName());
+			if(isLogging) { FactoryModPlugin.sendConsoleMessage("Production factory created: " + production.getProductionFactoryProperties().getName()); }
 			return new InteractionResponse(InteractionResult.SUCCESS, "");
 		}
 		else
