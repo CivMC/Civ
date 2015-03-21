@@ -80,11 +80,20 @@ public final class PlayerListener implements Listener {
         String victim = tag.getVictimName();
         String attacker = tag.getAttackerName();
 
-        // Broadcast kill message
-        if (victim != null && attacker != null) {
-            message = message.replace("{victim}", victim).replace("{attacker}", attacker);
-            Bukkit.broadcast(message, "ctplus.notify.kill");
+        // Do nothing if there is one player missing
+        if (victim == null || attacker == null) return;
+
+        // Sometimes the victim tags the attacker and then dies by another cause like fire
+        // In these cases, the tag manager sees the attacker as the victim
+        // This should fix it by swapping victim/attacker when victim doesn't match dead player
+        if (!tag.getVictimId().equals(playerId)) {
+            victim = tag.getAttackerName();
+            attacker = tag.getVictimName();
         }
+
+        // Broadcast kill message
+        message = message.replace("{victim}", victim).replace("{attacker}", attacker);
+        Bukkit.broadcast(message, "ctplus.notify.kill");
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
