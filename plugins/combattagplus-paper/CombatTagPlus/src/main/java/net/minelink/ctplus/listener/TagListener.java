@@ -94,6 +94,9 @@ public final class TagListener implements Listener {
             return;
         }
 
+        // Do nothing if damage is self-inflicted
+        if (victim == attacker) return;
+
         // Do nothing if either player is in creative and config disables creative tags
         if ((attacker.getGameMode() == GameMode.CREATIVE || victim.getGameMode() == GameMode.CREATIVE) &&
                 plugin.getSettings().disableCreativeTags()) {
