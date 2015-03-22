@@ -11,7 +11,7 @@ public class StringUtils {
 	 * Formats a Location's coordinates as "world (x y z)"
 	 */
 	public static String formatCoords(Location loc) {
-		return String.format("%s (%d %d %d)", loc.getWorld().getName(), loc.getBlockX(), loc.getBlockX(), loc.getBlockZ());
+		return String.format("%s (%d %d %d)", loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 	}
 	
 	public static List<String> splitLines(String paragraph, int lineLength) {
