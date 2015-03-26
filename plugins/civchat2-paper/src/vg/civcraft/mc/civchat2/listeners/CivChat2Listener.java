@@ -1,4 +1,4 @@
-package com.jjj5311.minecraft.civchat2.listener;
+package vg.civcraft.mc.civchat2.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,9 +12,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import vg.civcraft.mc.civchat2.CivChat2;
+import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.namelayer.group.Group;
-
-import com.jjj5311.minecraft.civchat2.CivChat2Manager;
 
 /*
  * @author jjj5311
@@ -22,6 +22,7 @@ import com.jjj5311.minecraft.civchat2.CivChat2Manager;
  */
 
 public class CivChat2Listener implements Listener {
+	
 	private CivChat2Manager chatman;
 	
 	public CivChat2Listener(CivChat2Manager instance){
@@ -30,38 +31,42 @@ public class CivChat2Listener implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerDeath(PlayerDeathEvent playerDeathEvent){
+		CivChat2.debugmessage("PlayerDeathEvent occured");
 		playerDeathEvent.setDeathMessage(null);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerQuit(PlayerQuitEvent playerQuitEvent){
+		CivChat2.debugmessage("playerQuitEvent occured");
 		playerQuitEvent.setQuitMessage(null);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerJoin(PlayerJoinEvent playerJoinEvent){
+		CivChat2.debugmessage("playerJoinEvent occured");
 		playerJoinEvent.setJoinMessage(null);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerKick(PlayerKickEvent playerKickEvent){
+		CivChat2.debugmessage("playerKickEvent occured");
 		playerKickEvent.setLeaveMessage(null);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void PlayerChatEvent(AsyncPlayerChatEvent asyncPlayerChatEvent){
+		CivChat2.debugmessage("PlayerChatEvent occured");
 		asyncPlayerChatEvent.setCancelled(true);
 		
 		String chatMessage = asyncPlayerChatEvent.getMessage();
 		Player sender = asyncPlayerChatEvent.getPlayer();
 		String chatChannel = chatman.getChannel(sender.getName());
-		Group chatGroup = chatman.getGroupChat(sender.getName());
 		
 		if(!(chatChannel == null)){
 			Player receive = Bukkit.getPlayerExact(chatChannel);
 			
 			if(!(receive == null)){
-				if(chatman.isIgnoring(sender.getName(), chatChannel)){
+				if(chatman.isIgnoringGroup(sender.getName(), chatChannel)){
 					String muteMessage = ChatColor.YELLOW + chatChannel + ChatColor.RED + " has muted you";
 					sender.sendMessage(muteMessage);
 					return;
@@ -78,10 +83,6 @@ public class CivChat2Listener implements Listener {
 				sender.sendMessage(offlineMessage);
 				return;
 			}
-		}
-		if(!(chatGroup == null)){
-			chatman.groupChat(chatGroup, chatMessage, sender.getName());
-			return;
 		}
 		
 		chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getRecipients());

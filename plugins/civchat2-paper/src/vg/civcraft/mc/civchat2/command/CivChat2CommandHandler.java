@@ -1,4 +1,4 @@
-package com.jjj5311.minecraft.civchat2.command;
+package vg.civcraft.mc.civchat2.command;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,8 +7,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import com.jjj5311.minecraft.civchat2.command.CivChat2Command;
-import com.jjj5311.minecraft.civchat2.command.commands.Tell;
+import vg.civcraft.mc.civchat2.command.CivChat2Command;
+import vg.civcraft.mc.civchat2.command.commands.Tell;
 
 public class CivChat2CommandHandler {
 	
@@ -34,9 +34,9 @@ public class CivChat2CommandHandler {
 	}
 	
 	public void helpPlayer(CivChat2Command command, CommandSender sender){
-		String cmd = ChatColor.RED + "Command: " + command.getName();
-		String desc = ChatColor.RED + "Description: " + command.getDescription();
-		String usage = ChatColor.RED + "Usage: " + command.getUsage();
+		String cmd = ChatColor.RED + "Command: " + command.getName().toString();
+		String desc = ChatColor.RED + "Description: " + command.getDescription().toString();
+		String usage = ChatColor.RED + "Usage: " + command.getUsage().toString();
 		sender.sendMessage(cmd);
 		sender.sendMessage(desc);
 		sender.sendMessage(usage);

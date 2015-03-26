@@ -1,4 +1,4 @@
-package com.jjj5311.minecraft.civchat2.command;
+package vg.civcraft.mc.civchat2.command;
 
 import org.bukkit.command.CommandSender;
 

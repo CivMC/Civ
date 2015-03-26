@@ -1,3 +1,8 @@
 name: CivChat2
-main: com.jjj5311.minecraft.civchat2.CivChat2
+main: vg.civcraft.mc.civchat2.CivChat2
 version: 1.0.0
+load: startup
+author: jjj5311
+depend: [NameLayer]
+commands:
+    tell:

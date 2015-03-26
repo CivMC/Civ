@@ -1,10 +1,10 @@
-package com.jjj5311.minecraft.civchat2.utility;
+package vg.civcraft.mc.civchat2.utility;
 
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.jjj5311.minecraft.civchat2.CivChat2;
+import vg.civcraft.mc.civchat2.CivChat2;
 
 public class CivChat2Log {
 	private String pluginName = "[CivChat2] ";

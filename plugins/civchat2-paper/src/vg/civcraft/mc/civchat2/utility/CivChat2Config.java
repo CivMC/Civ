@@ -1,4 +1,4 @@
-package com.jjj5311.minecraft.civchat2.utility;
+package vg.civcraft.mc.civchat2.utility;
 
 import org.bukkit.configuration.file.FileConfiguration;
 

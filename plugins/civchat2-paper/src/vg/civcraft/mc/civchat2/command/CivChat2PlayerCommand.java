@@ -1,11 +1,11 @@
-package com.jjj5311.minecraft.civchat2.command;
+package vg.civcraft.mc.civchat2.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
-import com.jjj5311.minecraft.civchat2.CivChat2;
-import com.jjj5311.minecraft.civchat2.CivChat2Manager;
-import com.jjj5311.minecraft.civchat2.utility.CivChat2Log;
+import vg.civcraft.mc.civchat2.CivChat2;
+import vg.civcraft.mc.civchat2.CivChat2Manager;
+import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 
 
 public abstract class CivChat2PlayerCommand implements CivChat2Command{

@@ -1,4 +1,4 @@
-package com.jjj5311.minecraft.civchat2.zipper;
+package vg.civcraft.mc.civchat2.zipper;
 
 
 /*
