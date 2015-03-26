@@ -677,7 +677,7 @@ public class JukeAlertLogger {
 
         return info;
     }
-    public List<String> getSnitchList(Player player, int offset) {
+    public synchronized List<String> getSnitchList(Player player, int offset) {
         List<String> info = new ArrayList<String>();
 
         try {
