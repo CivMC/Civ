@@ -2689,7 +2689,7 @@ production_recipes:
         amount: 5
       Baked Potato:
         material: BAKED_POTATO
-        amount: 1280
+        amount: 1920
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
