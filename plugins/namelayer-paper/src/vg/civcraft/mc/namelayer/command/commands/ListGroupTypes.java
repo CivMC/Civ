@@ -13,7 +13,7 @@ public class ListGroupTypes extends PlayerCommand{
 	public ListGroupTypes(String name) {
 		super(name);
 		setIdentifier("nllgt");
-		setDescription("This command is used to list GroupTypes.");
+		setDescription("List GroupTypes.");
 		setUsage("/nllgt");
 		setArguments(0,0);
 	}
