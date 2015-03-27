@@ -13,7 +13,7 @@ public class ListPlayerTypes extends PlayerCommand{
 	public ListPlayerTypes(String name) {
 		super(name);
 		setIdentifier("nllpt");
-		setDescription("This command is used to list PlayerTypes.");
+		setDescription("List PlayerTypes.");
 		setUsage("/nllpt");
 		setArguments(0,0);
 	}
