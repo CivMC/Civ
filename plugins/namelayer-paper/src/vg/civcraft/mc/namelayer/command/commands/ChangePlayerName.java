@@ -15,7 +15,7 @@ public class ChangePlayerName  extends PlayerCommand {
     public ChangePlayerName(String name) {
         super(name);
         setIdentifier("nlcpn");
-        setDescription("This command is used by ops to change a players name");
+        setDescription("Used by ops to change a players name");
         setUsage("/nlcpn <old name> <new name>");
         setArguments(2,2);
     }
