@@ -134,7 +134,7 @@ public class BlockListener implements Listener{
 		if(isPlant(block)){
         	reinforcingBlock = Utility.findPlantSoil(block);
         	Reinforcement plant = null;
-        	if (reinforcingBlock == null)
+        	if (reinforcingBlock != null)
         		plant = rm.getReinforcement(reinforcingBlock);
         	if (plant != null)
         		rein = plant;        		
