@@ -28,7 +28,7 @@ public class InvitePlayer extends PlayerCommand{
 	public InvitePlayer(String name) {
 		super(name);
 		setIdentifier("nlip");
-		setDescription("This command is used to invite a player to the PlayerType " + PlayerType.toStringName() + " of a group.");
+		setDescription("Invite a player to the PlayerType " + PlayerType.toStringName() + " of a group.");
 		setUsage("/nlip <group> <player> (PlayerType- default MEMBERS)");
 		setArguments(2,3);
 	}

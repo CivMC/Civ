@@ -20,7 +20,7 @@ public class GetDefaultGroup extends PlayerCommand{
 	public GetDefaultGroup(String name) {
 		super(name);
 		setIdentifier("nlgdg");
-		setDescription("This command is used to get players default group");
+		setDescription("Get a players default group");
 		setUsage("/nlgdg");
 		setArguments(0,0);
 	}

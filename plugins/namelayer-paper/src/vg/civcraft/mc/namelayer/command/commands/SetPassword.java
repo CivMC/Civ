@@ -20,7 +20,7 @@ public class SetPassword extends PlayerCommand{
 	public SetPassword(String name) {
 		super(name);
 		setIdentifier("nlsp");
-		setDescription("This command is used to set a password on a group.");
+		setDescription("Set a password on a group.");
 		setUsage("/nlsp <group> <password>");
 		setArguments(1,2);
 	}

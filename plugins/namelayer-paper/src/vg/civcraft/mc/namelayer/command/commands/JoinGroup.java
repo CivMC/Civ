@@ -20,7 +20,7 @@ public class JoinGroup extends PlayerCommand{
 	public JoinGroup(String name) {
 		super(name);
 		setIdentifier("nljg");
-		setDescription("This command is used to join a password protected group.");
+		setDescription("Join a password protected group.");
 		setUsage("/nljg <group> <password>");
 		setArguments(2,2);
 	}
