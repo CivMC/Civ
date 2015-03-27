@@ -27,7 +27,7 @@ public class PromotePlayer extends PlayerCommand{
 	public PromotePlayer(String name) {
 		super(name);
 		setIdentifier("nlpp");
-		setDescription("This command is used to Promote/Demote a Player in a Group");
+		setDescription("Promote/Demote a Player in a Group");
 		setUsage("/nlpp <group> <player> <playertype>");
 		setArguments(3,3);
 	}
