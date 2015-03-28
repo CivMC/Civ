@@ -4,7 +4,9 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
+import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.Utility;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.namelayer.group.Group;
 
 import com.untamedears.JukeAlert.JukeAlert;

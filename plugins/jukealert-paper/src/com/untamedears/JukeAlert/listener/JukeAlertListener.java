@@ -55,6 +55,7 @@ import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
 import vg.civcraft.mc.namelayer.group.Group;
 
 import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.external.Mercury;
 import com.untamedears.JukeAlert.external.VanishNoPacket;
 import com.untamedears.JukeAlert.manager.PlayerManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
@@ -69,6 +70,7 @@ public class JukeAlertListener implements Listener {
     private final Map<UUID, Set<Snitch>> playersInSnitches = new TreeMap<UUID, Set<Snitch>>();
     private final ArrayList<Location> previousLocations = new ArrayList<Location>();
     private final VanishNoPacket vanishNoPacket = new VanishNoPacket();
+    private final Mercury mercury = new Mercury();
 
     private boolean checkProximity(Snitch snitch, UUID accountId) {
         Set<Snitch> inList = playersInSnitches.get(accountId);
@@ -97,12 +99,14 @@ public class JukeAlertListener implements Listener {
                 snitch.imposeSnitchTax();
                 inList.add(snitch);
                 try {
-					notifyGroup(
-					        snitch,
-					        ChatColor.AQUA + " * " + player.getDisplayName() + " logged in to snitch at " 
-					        + snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
-					        " " + snitch.getY() + " " + snitch.getZ() + "]");
-				} catch (SQLException e) {
+                String message = ChatColor.AQUA + " * " + player.getDisplayName() + " logged in to snitch at " 
+				        + snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
+				        " " + snitch.getY() + " " + snitch.getZ() + "]";
+                notifyGroup(snitch, message);
+                                
+                if (mercury.isEnabled())
+                	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "login");
+                } catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -132,12 +136,14 @@ public class JukeAlertListener implements Listener {
             if (!isOnSnitch(snitch, accountId)) {
                 snitch.imposeSnitchTax();
                 try {
-					notifyGroup(
-					        snitch,
-					        ChatColor.AQUA + " * " + player.getDisplayName() + " logged out in snitch at " 
-					        		+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
-					                " " + snitch.getY() + " " + snitch.getZ() + "]");
-				} catch (SQLException e) {
+                String message = ChatColor.AQUA + " * " + player.getDisplayName() + " logged out in snitch at " 
+		        		+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
+		                " " + snitch.getY() + " " + snitch.getZ() + "]";
+                notifyGroup(snitch, message);
+                
+                if (mercury.isEnabled())
+                	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "logout");
+                } catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -350,13 +356,15 @@ public class JukeAlertListener implements Listener {
                         		&& !snitch.shouldLog()) 
                         	continue;
                         else{
-                            try {
-								notifyGroup(
-								        snitch,
-								        ChatColor.AQUA + " * " + player.getDisplayName() + " entered snitch at " 
-								        		+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
-								                " " + snitch.getY() + " " + snitch.getZ() + "]");
-							} catch (SQLException e) {
+                        	try {
+                        	String message = ChatColor.AQUA + " * " + player.getDisplayName() + " entered snitch at " 
+					        		+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
+					                " " + snitch.getY() + " " + snitch.getZ() + "]";
+                            notifyGroup(snitch, message);
+                            
+                            if (mercury.isEnabled())
+                            	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "entry");
+                        	} catch (SQLException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
