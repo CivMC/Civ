@@ -206,6 +206,33 @@ crafting:
       output:
         Double Stone Slab:
           material: DOUBLE_STEP
+    Slab to Smooth Double Stone Slab:
+      inputs:
+        s:
+          Stone Slab:
+            material: STEP
+      shape:
+        - ss
+        - ss
+      output:
+        Smooth Slab:
+          material: DOUBLE_STEP
+          durability: 8
+          amount: 2
+    Sandstone Slab to Smooth Double Sandstone Slab:
+      inputs:
+        s:
+          Sandstone Slab:
+            material: STEP
+            durability: 1
+      shape:
+        - ss
+        - ss
+      output:
+        Smooth Double Sandstone Slab:
+          material: DOUBLE_STEP
+          durability: 9
+          amount: 2
 production_factories:
   Bakery:
     name: Bakery
