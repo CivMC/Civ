@@ -23,7 +23,7 @@ public class MergeGroups extends PlayerCommand{
 	public MergeGroups(String name) {
 		super(name);
 		setIdentifier("nlmg");
-		setDescription("This command is used to merge two groups together.");
+		setDescription("Merge two groups together.");
 		setUsage("/nlmg <The group left> <The group that will be gone>");
 		setArguments(2,2);
 	}
@@ -52,6 +52,11 @@ public class MergeGroups extends PlayerCommand{
 		
 		if (g.isDisciplined() || toMerge.isDisciplined()){
 			p.sendMessage(ChatColor.RED + "One of the groups is disiplined.");
+			return true;
+		}
+		
+		if(g == toMerge){
+			p.sendMessage(ChatColor.RED + "You cannot merge a group into itself");
 			return true;
 		}
 		

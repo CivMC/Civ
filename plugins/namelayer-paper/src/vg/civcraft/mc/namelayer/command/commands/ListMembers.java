@@ -19,7 +19,7 @@ public class ListMembers extends PlayerCommand{
 	public ListMembers(String name) {
 		super(name);
 		setIdentifier("nllm");
-		setDescription("This command is used to list the members in a group");
+		setDescription("List the members in a group");
 		setUsage("/nllm <group> (PlayerType)");
 		setArguments(1,2);
 	}

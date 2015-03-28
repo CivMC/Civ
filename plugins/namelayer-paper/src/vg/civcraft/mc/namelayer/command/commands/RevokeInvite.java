@@ -28,7 +28,7 @@ public class RevokeInvite extends PlayerCommand{
 	public RevokeInvite(String name) {
 		super(name);
 		setIdentifier("nlri");
-		setDescription("This command is used to Revoke an Invite.");
+		setDescription("Revoke an Invite.");
 		setUsage("/nlri <group> <player>");
 		setArguments(2,2);
 	}

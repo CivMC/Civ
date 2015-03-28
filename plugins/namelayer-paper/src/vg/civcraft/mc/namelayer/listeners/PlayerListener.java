@@ -29,8 +29,6 @@ public class PlayerListener implements Listener{
 		UUID uuid = p.getUniqueId();
 		if (!notifications.containsKey(uuid) || notifications.get(uuid).isEmpty())
 			return;
-		if (notifications.get(uuid).isEmpty())
-			return;
 		
 		String x = null;
 		GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();

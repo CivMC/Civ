@@ -22,7 +22,7 @@ public class AcceptInvite extends PlayerCommand{
 	public AcceptInvite(String name) {
 		super(name);
 		setIdentifier("nlag");
-		setDescription("This command is used to accept an invitation to a group.");
+		setDescription("Accept an invitation to a group.");
 		setUsage("/nlag <group>");
 		setArguments(1,1);
 	}

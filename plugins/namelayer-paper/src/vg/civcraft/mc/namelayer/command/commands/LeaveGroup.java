@@ -17,7 +17,7 @@ public class LeaveGroup extends PlayerCommand{
 	public LeaveGroup(String name) {
 		super(name);
 		setIdentifier("nlleg");
-		setDescription("This command is to leave a group");
+		setDescription("Leave a group");
 		setUsage("/nlleg <group>");
 		setArguments(1,1);
 	}

@@ -71,46 +71,81 @@ public class InfoDump extends PlayerCommand
 			}
 			PlayerType pType = group.getPlayerType(playerUUID);
 			GroupPermission permissions = gm.getPermissionforGroup(group);
-			if (!permissions.isAccessible(pType, PermissionType.GROUPSTATS) && !(player.isOp() || player.hasPermission("namelayer.admin"))){
-				player.sendMessage(ChatColor.RED + "You do not have permission from this group to run this command.");
-				return true;
+
+			StringBuilder outputBuilder = new StringBuilder();
+			outputBuilder.append("[NLID] : [GROUPNAME] ");
+			outputBuilder.append(group.getName());
+			outputBuilder.append(" : [MEMBERSHIPLEVEL] ");
+			outputBuilder.append(group.getPlayerType(playerUUID));
+			outputBuilder.append(" : [PERMS] ");
+			outputBuilder.append(permissions.listPermsforPlayerType(group.getPlayerType(playerUUID)));
+			
+
+			outputBuilder.append(" : [OWNERS]");
+			if(permissions.isAccessible(pType, PermissionType.OWNER))
+			{
+				for(UUID ownerUUID : group.getAllMembers(PlayerType.OWNER))
+				{
+					outputBuilder.append(" " + NameAPI.getCurrentName(ownerUUID));
+				}
+			}
+			else
+			{
+				outputBuilder.append(" accounts-");
+				outputBuilder.append(group.getAllMembers(PlayerType.OWNER).size());
 			}
 
-			String output = "[NLID]: [GROUPNAME] " + group.getName() + " : [MEMBERSHIPLEVEL] " + group.getPlayerType(playerUUID) + " : [PERMS] " + permissions.listPermsforPlayerType(group.getPlayerType(playerUUID));
-
-			output += " : [OWNERS]";
-			for(UUID ownerUUID : group.getAllMembers(PlayerType.OWNER))
+			outputBuilder.append(" : [ADMINS]");
+			if(permissions.isAccessible(pType, PermissionType.ADMINS))
 			{
-				output += " " + NameAPI.getCurrentName(ownerUUID);
+				for(UUID adminUUID : group.getAllMembers(PlayerType.ADMINS))
+				{
+					outputBuilder.append(" " + NameAPI.getCurrentName(adminUUID));
+				}
+			}
+			else
+			{
+				outputBuilder.append(" accounts-");
+				outputBuilder.append(group.getAllMembers(PlayerType.ADMINS).size());
 			}
 
-			output += " : [ADMINS]";
-			for(UUID adminUUID : group.getAllMembers(PlayerType.ADMINS))
+			outputBuilder.append(" : [MODS]");
+			if(permissions.isAccessible(pType, PermissionType.MODS))
 			{
-				output += " " + NameAPI.getCurrentName(adminUUID);
+				for(UUID modUUID : group.getAllMembers(PlayerType.MODS))
+				{
+					outputBuilder.append(" " + NameAPI.getCurrentName(modUUID));
+				}
+			}
+			else
+			{
+				outputBuilder.append(" accounts-");
+				outputBuilder.append(group.getAllMembers(PlayerType.MODS).size());
 			}
 
-			output += " : [MODS]";
-			for(UUID modUUID : group.getAllMembers(PlayerType.MODS))
+			outputBuilder.append(" : [MEMBERS]");
+			if(permissions.isAccessible(pType, PermissionType.MEMBERS))
 			{
-				output += " " + NameAPI.getCurrentName(modUUID);
+				for(UUID memberUUID : group.getAllMembers(PlayerType.MEMBERS))
+				{
+					outputBuilder.append(" " + NameAPI.getCurrentName(memberUUID));
+				}
 			}
-
-			output += " : [MEMBERS]";
-			for(UUID memberUUID : group.getAllMembers(PlayerType.MEMBERS))
+			else
 			{
-				output += " " + NameAPI.getCurrentName(memberUUID);
+				outputBuilder.append(" accounts-");
+				outputBuilder.append(group.getAllMembers(PlayerType.MEMBERS).size());
 			}
 
 			if(permissions.isAccessible(pType, PermissionType.LIST_PERMS))
 			{
-				output += " : [OWNER-PERMS] " + permissions.listPermsforPlayerType(PlayerType.OWNER);
-				output += " : [ADMIN-PERMS] " + permissions.listPermsforPlayerType(PlayerType.ADMINS);
-				output += " : [MOD-PERMS] " + permissions.listPermsforPlayerType(PlayerType.MODS);
-				output += " : [MEMBER-PERMS] " + permissions.listPermsforPlayerType(PlayerType.MEMBERS);
+				outputBuilder.append(" : [OWNER-PERMS] " + permissions.listPermsforPlayerType(PlayerType.OWNER));
+				outputBuilder.append(" : [ADMIN-PERMS] " + permissions.listPermsforPlayerType(PlayerType.ADMINS));
+				outputBuilder.append(" : [MOD-PERMS] " + permissions.listPermsforPlayerType(PlayerType.MODS));
+				outputBuilder.append(" : [MEMBER-PERMS] " + permissions.listPermsforPlayerType(PlayerType.MEMBERS));
 			}
 
-			player.sendMessage(ChatColor.GREEN + output);
+			player.sendMessage(ChatColor.GREEN + outputBuilder.toString());
 			return true;
 		}
 	}

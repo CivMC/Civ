@@ -21,7 +21,7 @@ public class ListPermissions extends PlayerCommand{
 	public ListPermissions(String name) {
 		super(name);
 		setIdentifier("nllp");
-		setDescription("This command is used to show permissions for a PlayerType in a specific group.");
+		setDescription("Show permissions for a PlayerType in a specific group.");
 		setUsage("/nllp <group> <PlayerType>");
 		setArguments(1,2);
 	}

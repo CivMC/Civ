@@ -20,7 +20,7 @@ public class SetDefaultGroup extends PlayerCommand{
 	public SetDefaultGroup(String name) {
 		super(name);
 		setIdentifier("nlsdg");
-		setDescription("This command is used to set or change a default group");
+		setDescription("Set or change a default group");
 		setUsage("/nlsdg <group>");
 		setArguments(1,1);
 	}

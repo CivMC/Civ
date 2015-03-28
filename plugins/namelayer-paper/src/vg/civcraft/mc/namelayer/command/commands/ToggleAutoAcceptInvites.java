@@ -18,7 +18,7 @@ public class ToggleAutoAcceptInvites extends PlayerCommand{
 	public ToggleAutoAcceptInvites(String name) {
 		super(name);
 		setIdentifier("nltaai");
-		setDescription("This command is used to toggle the acceptance of invites.");
+		setDescription("Toggle the acceptance of invites.");
 		setUsage("/nltaai");
 		setArguments(0,0);
 	}
