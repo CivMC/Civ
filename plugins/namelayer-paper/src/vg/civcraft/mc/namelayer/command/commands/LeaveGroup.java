@@ -45,6 +45,7 @@ public class LeaveGroup extends PlayerCommand{
 		}
 		g.removeMember(uuid);
 		p.sendMessage(ChatColor.GREEN + "You have been removed from the group.");
+		checkRecacheGroup(g);
 		return true;
 	}
 

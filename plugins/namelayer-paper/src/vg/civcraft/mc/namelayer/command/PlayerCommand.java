@@ -4,6 +4,9 @@ import org.bukkit.Bukkit;
 
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.misc.Mercury;
 
 public abstract class PlayerCommand implements Command{
 
@@ -64,5 +67,12 @@ public abstract class PlayerCommand implements Command{
 	public void setArguments(int min, int max){
 		this.min = min;
 		this.max = max;
+	}
+	
+	public void checkRecacheGroup(Group g){
+		if (NameLayerPlugin.isMercuryEnabled()){
+			String message = "recache " + g.getName();
+			Mercury.invalidateGroup(message);
+		}
 	}
 }

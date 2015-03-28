@@ -55,6 +55,7 @@ public class SetPassword extends PlayerCommand{
 			password = args[1];
 		g.setPassword(password);
 		p.sendMessage(ChatColor.GREEN + "Password has been successfully set to: " + g.getPassword());
+		checkRecacheGroup(g);
 		return true;
 	}
 

@@ -131,7 +131,7 @@ public class PromotePlayer extends PlayerCommand{
 			p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
 					promoteeType.toString() + " in (Group) " + group.getName());
 		}
-		
+		checkRecacheGroup(group);
 		return true;
 	}
 

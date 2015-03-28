@@ -16,6 +16,7 @@ import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
 import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
 import vg.civcraft.mc.namelayer.events.GroupTransferEvent;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionHandler;
 
@@ -55,6 +56,10 @@ public class GroupManager{
 		Bukkit.getPluginManager().callEvent(event);
 		g.setDisciplined(true);
 		g.setValid(false);
+		if (NameLayerPlugin.isMercuryEnabled()){
+			String message = "delete " + groupName;
+			Mercury.invalidateGroup(message);
+		}
 		return true;
 	}
 	
@@ -68,6 +73,10 @@ public class GroupManager{
 		}
 		g.addMember(uuid, PlayerType.OWNER);
 		g.setOwner(uuid);
+		if (NameLayerPlugin.isMercuryEnabled()){
+			String message = "transfer " + g.getName();
+			Mercury.invalidateGroup(message);
+		}
 	}
 	
 	public void mergeGroup(final Group group, final Group toMerge){
@@ -94,10 +103,12 @@ public class GroupManager{
 		deleteGroup(toMerge.getName());
 		event = new GroupMergeEvent(group, toMerge, true);
 		Bukkit.getPluginManager().callEvent(event);
-		toMerge.setDisciplined(true); 
-		/* Objects that are referencing this class won't get updated so disciplining the group and on restart 
-		 * they will get the correct group
-		 */
+		toMerge.setDisciplined(true);
+		// Fail safe for plugins that dont check if the group is valid or not.
+		if (NameLayerPlugin.isMercuryEnabled()){
+			String message = "merge " + group.getName() + " " + toMerge.getName();
+			Mercury.invalidateGroup(message);
+		}
 	}
 	
 	/*
@@ -204,5 +215,13 @@ public class GroupManager{
 	
 	public String getDefaultGroup(UUID uuid){
 		return groupManagerDao.getDefaultGroup(uuid);
+	}
+	/**
+	 * Invalidates a group from cache.
+	 * @param group
+	 */
+	public void invalidateCache(String group){
+		groups.get(group).setValid(false);
+		groups.remove(group);
 	}
 }
