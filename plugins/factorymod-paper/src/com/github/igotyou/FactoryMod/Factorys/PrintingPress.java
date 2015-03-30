@@ -460,6 +460,8 @@ public class PrintingPress extends BaseFactory {
 	 * On interaction with the factory chest, return context-appropriate information
 	 * concerning the current mode, relative to the inputs and outputs.
 	 * 
+	 * Adding detailed state on the active recipe now, if factory is on.
+	 *
 	 * @return A {@link List} of {@link InteractionResponse} objects containing
 	 *   details on the current mode.
 	 */
@@ -502,6 +504,49 @@ public class PrintingPress extends BaseFactory {
 					String.valueOf(percentRepaired) + "% of the factory with " + 
 					getRepairs.getMultiple(amountRepaired).toString() + "."));
 		}
+
+
+		//[% done if plates; queue status else]
+		if (active && mode != REPAIR) {
+			int readyCopies = 0;
+			StringBuffer queueContents;
+			if (mode == PRINT_BOOKS || mode == PRINT_PAMPHLETS || mode == PRINT_SECURITY) {
+				queueContents = new StringBuffer();
+				queueContents.append("Queue Contents: ");
+				for (int i = 0; i < processQueue.length; i++) {
+					readyCopies += processQueue[i];
+					queueContents.append("[");
+					queueContents.append(processQueue[i]);
+					queueContents.append("]");
+				}
+			}
+			switch(mode) {
+			case PRINT_BOOKS:
+				responses.add(new InteractionResponse(InteractionResult.SUCCESS, "Printing Books with " +
+						String.valueOf(readyCopies) + " in the queue."));
+				responses.add(new InteractionResponse(InteractionResult.SUCCESS, queueContents.toString()));
+				break;
+			case PRINT_PAMPHLETS:
+				responses.add(new InteractionResponse(InteractionResult.SUCCESS, "Printing Pamphlets with " +
+						String.valueOf(readyCopies) + " in the queue."));
+				responses.add(new InteractionResponse(InteractionResult.SUCCESS, queueContents.toString()));
+				break;
+			case PRINT_SECURITY:
+				responses.add(new InteractionResponse(InteractionResult.SUCCESS, "Printing Security Notes with " +
+						String.valueOf(readyCopies) + " in the queue."));
+				responses.add(new InteractionResponse(InteractionResult.SUCCESS, queueContents.toString()));
+				break;
+			case SET_PLATES:
+				int setTime = printingPressProperties.getSetPlateTime() * getBookInventoryPages();
+				int percentComplete = (int) (( (double) currentProductionTimer) / setTime * 100);
+				responses.add(new InteractionResponse(InteractionResult.SUCCESS, "Set Plates is " + 
+						String.valueOf(percentComplete) + "% complete"));
+				break;
+			default:
+				log.debug("getChestResponse(): Active set, but unknown mode: critical error.");
+				break;
+		}
+
 		return responses;
 	}
 	
@@ -517,6 +562,30 @@ public class PrintingPress extends BaseFactory {
 		return new PrintResult();
 	}
 	
+	/**
+	 * Lightweight page count function, for active recipes only. Useful for measuring current 
+	 * progress in a recipe, for instance.
+	 */
+	private int getBookInventoryPages() {
+		if (ItemStack stack : getInventory().getContents() {
+			if (stack == null) {
+				continue;
+			}
+			if (stack.getType().equals(Material.BOOK_AND_QUILL) ||
+					stack.getType().equals(Material.WRITTEN_BOOK)) {
+				log.finer("getPlateResult(): Found a book in the factory.");
+				ItemMeta meta = stack.getItemMeta();
+				if (meta instanceof BookMeta) {
+					BookMeta bookData = (BookMeta) meta;
+					if (bookData.hasPages()) {
+						return Math.max(1, bookData.getPageCount());
+					}
+				}
+			}
+		}
+		return 0;
+	}
+
 	/**
 	 * Generates a NamedItemStack containing a 'plate' -- a signed book with lore that
 	 *   uniquely reflects the book given as input. This plate can then be used to produce
