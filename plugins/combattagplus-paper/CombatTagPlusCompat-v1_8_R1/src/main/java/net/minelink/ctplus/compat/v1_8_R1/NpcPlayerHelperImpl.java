@@ -36,6 +36,7 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
         npcPlayer.spawnIn(worldServer);
         npcPlayer.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
         npcPlayer.playerInteractManager.a(worldServer);
+        npcPlayer.invulnerableTicks = 0;
 
         for (Object o : minecraftServer.getPlayerList().players) {
             if (!(o instanceof EntityPlayer) || o instanceof NpcPlayer) continue;
