@@ -304,9 +304,6 @@ public class BlockListener implements Listener{
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onBlockFromToEvent(BlockFromToEvent event) {
         Block to_block = event.getToBlock();
-        if (!NonWashableType.isNonWashable(to_block.getType()) && !isPlant(to_block)) {
-            return;
-        }
         Reinforcement rein = rm.getReinforcement(event.getToBlock());
         if (rein != null) {
             event.setCancelled(true);

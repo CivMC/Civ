@@ -47,7 +47,6 @@ public class Citadel extends JavaPlugin{
 		ReinforcementType.initializeReinforcementTypes();
 		NaturalReinforcementType.initializeNaturalReinforcementsTypes();
 		NonReinforceableType.initializeNonReinforceableTypes();
-		NonWashableType.initializeNonWashableTypes();
 		initializeDatabase();
 		
 		rm = new ReinforcementManager(db);
