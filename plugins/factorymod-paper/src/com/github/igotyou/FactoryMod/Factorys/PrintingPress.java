@@ -507,11 +507,12 @@ public class PrintingPress extends BaseFactory {
 
 
 		//[% done if plates; queue status else]
-		if (active && mode != REPAIR) {
+		if (active && mode != OperationMode.REPAIR) {
 			int readyCopies = 0;
-			StringBuffer queueContents;
-			if (mode == PRINT_BOOKS || mode == PRINT_PAMPHLETS || mode == PRINT_SECURITY) {
-				queueContents = new StringBuffer();
+			StringBuffer queueContents = new StringBuffer();
+			if (mode == OperationMode.PRINT_BOOKS ||
+				 mode == OperationMode.PRINT_PAMPHLETS ||
+				 mode == OperationMode.PRINT_SECURITY) {
 				queueContents.append("Queue Contents: ");
 				for (int i = 0; i < processQueue.length; i++) {
 					readyCopies += processQueue[i];
@@ -543,8 +544,9 @@ public class PrintingPress extends BaseFactory {
 						String.valueOf(percentComplete) + "% complete"));
 				break;
 			default:
-				log.debug("getChestResponse(): Active set, but unknown mode: critical error.");
+				log.severe("getChestResponse(): Active set, but unknown mode: critical error.");
 				break;
+			}
 		}
 
 		return responses;
@@ -567,7 +569,7 @@ public class PrintingPress extends BaseFactory {
 	 * progress in a recipe, for instance.
 	 */
 	private int getBookInventoryPages() {
-		if (ItemStack stack : getInventory().getContents() {
+		for (ItemStack stack : getInventory().getContents()) {
 			if (stack == null) {
 				continue;
 			}
