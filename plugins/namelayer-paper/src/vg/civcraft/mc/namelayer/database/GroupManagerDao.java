@@ -291,12 +291,12 @@ public class GroupManagerDao {
 				"from faction where group_name = ?");
 		getAllGroupsNames = db.prepareStatement("select f.group_name from faction_id f "
 				+ "inner join faction_member fm on f.group_id = fm.group_id "
-				+ "where fm.member_name = ?");
+				+ "where fm.member_name = ? group by group_name");
 		deleteGroup = db.prepareStatement("call deletegroupfromtable(?, ?)");
 
 		addMember = db.prepareStatement("insert into faction_member(" +
 				"group_id, member_name, role) select group_id, ?, ? from "
-				+ "faction_id where group_name = ?");
+				+ "faction_id where group_name = ? limit 1");
 		getMembers = db.prepareStatement("select fm.member_name from faction_member fm "
 				+ "inner join faction_id id on id.group_name = ? "
 				+ "where fm.group_id = id.group_id and fm.role = ?");
