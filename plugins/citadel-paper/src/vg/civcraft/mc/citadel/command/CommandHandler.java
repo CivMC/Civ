@@ -16,6 +16,7 @@ import vg.civcraft.mc.citadel.command.commands.Materials;
 import vg.civcraft.mc.citadel.command.commands.Off;
 import vg.civcraft.mc.citadel.command.commands.Reinforce;
 import vg.civcraft.mc.citadel.command.commands.Stats;
+import vg.civcraft.mc.citadel.command.commands.UpdateReinforcements;
 import vg.civcraft.mc.namelayer.command.Command;
 
 public class CommandHandler {
@@ -33,6 +34,7 @@ public class CommandHandler {
 		addCommands(new Materials("Materials"));
 		addCommands(new Off("Off"));
 		addCommands(new Stats("Stats"));
+		addCommands(new UpdateReinforcements("UpdateReinforcements"));
 	}
 	
 	private void addCommands(Command command){

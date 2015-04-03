@@ -30,7 +30,7 @@ public class UpdateReinforcements extends PlayerCommand{
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		if (sender instanceof Player){
+		if (!(sender instanceof Player)){
 			sender.sendMessage("How would this even work.");
 			return true;
 		}
@@ -42,6 +42,7 @@ public class UpdateReinforcements extends PlayerCommand{
 		if (args.length == 0){
 			p.sendMessage(ChatColor.GREEN + "Searching for groups in current chunk.");
 			Bukkit.getScheduler().runTaskAsynchronously(Citadel.getInstance(), new FindGroups(p, p.getLocation()));
+			return true;
 		}
 		else if (args.length == 1){
 			p.sendMessage(ChatColor.RED + "Please enter two groups.");
@@ -51,8 +52,13 @@ public class UpdateReinforcements extends PlayerCommand{
 		Group old = gm.getGroup(args[0]);
 		Group n = gm.getGroup(args[1]);
 		
-		Bukkit.getScheduler().runTaskAsynchronously(Citadel.getInstance(), new UpdateGroups(p, p.getLocation().getChunk(), old, n));
+		if (old == null || n == null){
+			p.sendMessage(ChatColor.RED + "One of the groups does not exist.");
+			return true;
+		}
 		
+		Bukkit.getScheduler().runTaskAsynchronously(Citadel.getInstance(), new UpdateGroups(p, p.getLocation().getChunk(), old, n));
+		p.sendMessage(ChatColor.GREEN + "Beginning to change groups.");
 		return true;
 	}
 
