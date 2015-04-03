@@ -65,14 +65,6 @@ non_reinforceables:
  - VINE
  - NETHER_WARTS
  - ENDER_PORTAL
-non_washables:
- - RAILS
- - POWERED_RAIL
- - ACTIVATOR_RAIL
- - DETECTOR_RAIL
- - REDSTONE_WIRE
- - TRIPWIRE
- - WEB
 reset_player_state: 300
 enable_maturation: true
 # The max amount of reinforcements to keep loaded
