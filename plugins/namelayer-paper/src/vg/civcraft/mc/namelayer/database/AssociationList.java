@@ -96,7 +96,7 @@ public class AssociationList {
 	}
 	
 	// returns null if no uuid was found
-	public UUID getUUID(String playername){
+	public synchronized UUID getUUID(String playername){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			getUUIDfromPlayer.setString(1, playername);
@@ -112,7 +112,7 @@ public class AssociationList {
 	}
 	
 	// returns null if no playername was found
-	public String getCurrentName(UUID uuid){
+	public synchronized String getCurrentName(UUID uuid){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			getPlayerfromUUID.setString(1, uuid.toString());
@@ -127,7 +127,7 @@ public class AssociationList {
 		return null;
 	}
 	
-	public void addPlayer(String playername, UUID uuid){
+	public synchronized void addPlayer(String playername, UUID uuid){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			addPlayer.setString(1, playername);
@@ -138,7 +138,7 @@ public class AssociationList {
 			e.printStackTrace();
 		}
 	}
-	public void changePlayer(String newName, UUID uuid) {
+	public synchronized void changePlayer(String newName, UUID uuid) {
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			changePlayerName.setString(1, uuid.toString());
