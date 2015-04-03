@@ -21,6 +21,7 @@ commands:
   aliases: [ctoff]
  cts:
   aliases: [ctstats]
+ ctur:
 permissions:
  citadel.admin:
   default: op

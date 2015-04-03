@@ -22,6 +22,7 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.group.Group;
 
 public class CitadelReinforcementData {
 
@@ -192,10 +193,13 @@ public class CitadelReinforcementData {
 				"inner join reinforcement_id ri on r.rein_id = ri.rein_id "
 				+ "inner join reinforcement_type rt on rt.rein_type_id = r.rein_type_id "
 				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.chunk_id = ? and ri.world = ?");
-		getReins = db.prepareStatement("select r.material_id, r.durability, " + // this wont work
-				"r.insecure, f.group_name, r.maturation_time from reinforcement r "
+		getReins = db.prepareStatement("select ri.x, ri.y, ri.z, ri.world, r.material_id, r.durability, " +
+				"r.insecure, f.group_name, r.maturation_time, rt.rein_type, "
+				+ "r.lore, r.rein_id from reinforcement r "
 				+ "inner join faction_id f on f.group_id = r.group_id " +
-				"where chunk_id = ?");
+				"inner join reinforcement_id ri on r.rein_id = ri.rein_id "
+				+ "inner join reinforcement_type rt on rt.rein_type_id = r.rein_type_id "
+				+ "where ri.chunk_id = ?");
 		addRein = db.prepareStatement("insert into reinforcement ("
 				+ "material_id, durability, "
 				+ "insecure, group_id, maturation_time, rein_type_id,"
@@ -311,12 +315,75 @@ public class CitadelReinforcementData {
 		return null;
 	}
 	
-	/*
-	public List<Reinforcement> getReinforcements(Location loc){
-		String chunkId = loc.getChunk().toString();
-		
+	/**
+	 * Returns a list of reinforcements in a given chunk.
+	 * @param The chunk you want the reinforcements about.
+	 * @return A list of reinforcements in a chunk
+	 */
+	public synchronized List<Reinforcement> getReinforcements(Chunk chunk){
+		String formatChunk = formatChunk(chunk);
+		List<Reinforcement> reins = new ArrayList<Reinforcement>();
+		try {
+			getReins.setString(1, formatChunk);
+			ResultSet set = getReins.executeQuery();
+			while (set.next()){
+				int x = set.getInt(1), y = set.getInt(2), z = set.getInt(3);
+				String world = set.getString(4);
+				Material mat = Material.getMaterial(set.getInt(5));
+				int durability = set.getInt(6);
+				boolean inSecure = set.getBoolean(7);
+				Group g = GroupManager.getGroup(set.getString(8));
+				int mature = set.getInt(9);
+				String rein_type = set.getString(10);
+				String lore = set.getString(11);
+				
+				Location loc = new Location(Bukkit.getWorld(world), x, y, z);
+				
+				if (rein_type.equals("PlayerReinforcement")){
+					ItemStack stack = new ItemStack(mat);
+					if (lore != null){
+						ItemMeta meta = stack.getItemMeta();
+						List<String> array = Arrays.asList(lore.split("\n"));
+						meta.setLore(array);
+						stack.setItemMeta(meta);
+					}
+					PlayerReinforcement rein =
+							new PlayerReinforcement(loc, durability,
+									mature, g,
+									stack);
+					rein.setInsecure(inSecure);
+					reins.add(rein);
+				}
+				else if(rein_type.equals("NaturalReinforcement")){
+					NaturalReinforcement rein = 
+							new NaturalReinforcement(loc.getBlock(), durability);
+					reins.add(rein);
+				}
+				else if (rein_type.equals("MultiBlockReinforcement")){
+					int id = set.getInt(8);
+					MultiBlockReinforcement rein = MultiBlockReinforcement.getMultiRein(id);
+					if (rein != null)
+						reins.add(rein);
+					getCordsbyReinID.setInt(1, id);
+					set = getCordsbyReinID.executeQuery();
+					List<Location> locs = new ArrayList<Location>();
+					while (set.next()){
+						int xx = set.getInt(1), yy = set.getInt(2), zz = set.getInt(3);
+						String w = set.getString(4);
+						locs.add(new Location(Bukkit.getWorld(w), xx, yy, zz));
+					}
+					
+					rein = new MultiBlockReinforcement(locs, g, durability, mature, id);
+					reins.add(rein);
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return reins;
 	}
-	*/
+	
 	/**
 	 * Inserts a reinforcement into the Database.  Should only be called from
 	 * SaveManager.
@@ -331,7 +398,6 @@ public class CitadelReinforcementData {
 			String world = loc.getWorld().getName();
 			Material mat = rein.getMaterial();
 			int dur = rein.getDurability();
-			String chunk_id = loc.getChunk().toString();
 			int maturationTime = rein.getMaturationTime();
 			boolean insecure = false;
 			String group = null;
@@ -588,6 +654,12 @@ public class CitadelReinforcementData {
 	private String formatChunk(Location loc){
 		String chunk = loc.getWorld().getName();
 		Chunk c = loc.getChunk();
+		chunk += ":" + c.getX() + ":" + c.getZ();
+		return chunk;
+	}
+	
+	private String formatChunk(Chunk c){
+		String chunk = c.getWorld().getName();
 		chunk += ":" + c.getX() + ":" + c.getZ();
 		return chunk;
 	}

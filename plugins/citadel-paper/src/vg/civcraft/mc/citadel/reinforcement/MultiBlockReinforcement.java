@@ -35,6 +35,10 @@ public class MultiBlockReinforcement extends Reinforcement{
 		return locs;
 	}
 	
+	public void setGroup(Group g){
+		this.g = g;
+	}
+	
 	public Group getGroup(){
 		return g;
 	}

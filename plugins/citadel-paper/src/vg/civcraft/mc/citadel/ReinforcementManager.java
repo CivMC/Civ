@@ -2,6 +2,7 @@ package vg.civcraft.mc.citadel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import net.minecraft.util.com.google.common.cache.CacheBuilder;
@@ -11,6 +12,7 @@ import net.minecraft.util.com.google.common.cache.RemovalListener;
 import net.minecraft.util.com.google.common.cache.RemovalNotification;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
@@ -183,5 +185,33 @@ public class ReinforcementManager {
 			}
 			
 		}, CitadelConfigManager.getTickRepeatingSave());
+	}
+	
+	/**
+	 * This gets all reinforcements in a chunk.  This should not be called regularly synchronously as this will call the database first.
+	 * After it grabs the reinforcements it checks if they are already in the cache and if they are it skips it and if not it puts it in there.
+	 * Then returns the list of reinforcements in the Chunk.
+	 */
+	public List<Reinforcement> getReinforcementsByChunk(Chunk chunk){
+		List<Reinforcement> reins = db.getReinforcements(chunk);
+		synchronized(reinforcements){
+			for (Reinforcement rein: reins){
+				if (reinforcements.getIfPresent(rein.getLocation()) == null){
+					reinforcements.put(rein.getLocation(), rein);
+				}
+				else {
+					Reinforcement r = null;
+					try {
+						r = reinforcements.get(rein.getLocation());
+					} catch (ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					reins.remove(rein);
+					reins.add(r);
+				}
+			}
+		}
+		return reins;
 	}
 }
