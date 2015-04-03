@@ -195,7 +195,6 @@ public class ReinforcementManager {
 	public List<Reinforcement> getReinforcementsByChunk(Chunk chunk){
 		List<Reinforcement> reins = db.getReinforcements(chunk);
 		List<Reinforcement> reins_new = new ArrayList<Reinforcement>();
-		reins_new.addAll(reins);
 		synchronized(reinforcements){
 			for (Reinforcement rein: reins){
 				if (reinforcements.getIfPresent(rein.getLocation()) == null){

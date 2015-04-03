@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.bukkit.Location;
 
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class MultiBlockReinforcement extends Reinforcement{
