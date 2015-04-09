@@ -51,17 +51,18 @@ You can acquire development builds of CombatTagPlus from the [Minelink Network C
 
 ## Permissions
 
-| **Permission**           | **Description**                          | **Default** |
-| -------------------------| ---------------------------------------- | ----------- |
-| ctplus.reload            | Reload CombatTagPlus configuration       | operator    |
-| ctplus.bypass.tag        | Bypass combat tagging                    | operator    |
-| ctplus.bypass.command    | Bypass command restrictions in combat    | operator    |
-| ctplus.bypass.blockedit  | Bypass block edit restrictions in combat | operator    |
-| ctplus.bypass.enderpearl | Bypass enderpearl restrictions in combat | operator    |
-| ctplus.bypass.flying     | Bypass flying restriction in combat      | operator    |
-| ctplus.check             | Check remaining combat timer             | everyone    |
-| ctplus.logout            | Initiate a safe logout                   | everyone    |
-| ctplus.notify.kill       | Receive kill/death message broadcast     | everyone    |
+| **Permission**           | **Description**                            | **Default** |
+| -------------------------| ------------------------------------------ | ----------- |
+| ctplus.reload            | Reload CombatTagPlus configuration         | operator    |
+| ctplus.bypass.tag        | Bypass combat tagging                      | operator    |
+| ctplus.bypass.command    | Bypass command restrictions in combat      | operator    |
+| ctplus.bypass.blockedit  | Bypass block edit restrictions in combat   | operator    |
+| ctplus.bypass.enderpearl | Bypass enderpearl restrictions in combat   | operator    |
+| ctplus.bypass.flying     | Bypass flying restriction in combat        | operator    |
+| ctplus.bypass.teleport   | Bypass teleportation restriction in combat | operator    |
+| ctplus.check             | Check remaining combat timer               | everyone    |
+| ctplus.logout            | Initiate a safe logout                     | everyone    |
+| ctplus.notify.kill       | Receive kill/death message broadcast       | everyone    |
 
 ## Contributing
 

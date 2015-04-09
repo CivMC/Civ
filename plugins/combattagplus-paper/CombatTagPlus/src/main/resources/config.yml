@@ -31,6 +31,9 @@ disable-enderpearls: false
 # Prevent tagged players from flying during combat.
 disable-flying: false
 
+# Prevent tagged players from teleporting during combat.
+disable-teleportation: false
+
 # The duration in seconds to despawn the combat logger's NPC if it hasn't died.
 npc-despawn-time: 60
 

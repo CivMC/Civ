@@ -74,6 +74,10 @@ public final class Settings {
         return plugin.getConfig().getBoolean("disable-flying");
     }
 
+    public boolean disableTeleportation() {
+        return plugin.getConfig().getBoolean("disable-teleportation");
+    }
+
     public int getNpcDespawnTime() {
         return plugin.getConfig().getInt("npc-despawn-time", 60);
     }

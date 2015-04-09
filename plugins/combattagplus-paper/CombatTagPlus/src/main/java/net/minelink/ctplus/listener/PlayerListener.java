@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
 import java.util.UUID;
@@ -219,6 +220,26 @@ public final class PlayerListener implements Listener {
         // Cancel the event and inform the player
         event.setCancelled(true);
         player.sendMessage(AQUA + "Flying " + RED + "is disabled in combat.");
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void disableTeleportation(PlayerTeleportEvent event) {
+        // Do nothing if teleportation is allowed in combat
+        if (!plugin.getSettings().disableTeleportation()) return;
+
+        // Do nothing if teleportation caused by enderpearl
+        if (event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) return;
+
+        // Do nothing if player isn't even combat tagged
+        final Player player = event.getPlayer();
+        if (!plugin.getTagManager().isTagged(player.getUniqueId())) return;
+
+        // Do nothing if player has bypass permission
+        if (player.hasPermission("ctplus.bypass.teleport")) return;
+
+        // Cancel the event and inform the player
+        event.setCancelled(true);
+        player.sendMessage(AQUA + "Teleportation " + RED + "is disabled in combat.");
     }
 
 }
