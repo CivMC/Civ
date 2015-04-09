@@ -17,4 +17,8 @@ public class CivChat2Config {
 		return config.getBoolean("info.debug");
 	}
 	
+	public String getAfkMessage(){
+		return config.getString("info.afkmessage");
+	}
+	
 }

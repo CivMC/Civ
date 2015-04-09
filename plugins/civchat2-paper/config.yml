@@ -1,3 +1,4 @@
 info:
   debug: true
   groups: true
+  afkmessage: Player is currently AFK

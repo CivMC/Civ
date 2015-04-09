@@ -61,17 +61,21 @@ public class CivChat2Listener implements Listener {
 		String chatMessage = asyncPlayerChatEvent.getMessage();
 		Player sender = asyncPlayerChatEvent.getPlayer();
 		String chatChannel = chatman.getChannel(sender.getName());
+		Group group = chatman.getGroupChatting(sender.getName());
 		
 		if(!(chatChannel == null)){
+			CivChat2.debugmessage("PlayerChatEvent chatChannel does not equal null");
 			Player receive = Bukkit.getPlayerExact(chatChannel);
 			
 			if(!(receive == null)){
 				if(chatman.isIgnoringGroup(sender.getName(), chatChannel)){
+					CivChat2.debugmessage("PlayerChatEvent receive != null isIgnoringGroups is true");
 					String muteMessage = ChatColor.YELLOW + chatChannel + ChatColor.RED + " has muted you";
 					sender.sendMessage(muteMessage);
 					return;
 				}
 				else{
+					CivChat2.debugmessage("PlayerChatEvent chatman.sendPrivateMessage being sent");
 					chatman.sendPrivateMsg(sender, receive, chatMessage);
 					return;
 				}
@@ -84,7 +88,7 @@ public class CivChat2Listener implements Listener {
 				return;
 			}
 		}
-		
+		CivChat2.debugmessage("PlayerChatEvent calling chatman.broadcastMessage()");
 		chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getRecipients());
 	}
 	

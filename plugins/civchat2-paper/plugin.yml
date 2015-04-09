@@ -6,3 +6,9 @@ author: jjj5311
 depend: [NameLayer]
 commands:
     tell:
+      aliases: [message, msg, m, pm]
+    afk:
+    reply:
+      aliases: [r]
+    groupchat:
+      aliases: [gc, groupc, gchat]

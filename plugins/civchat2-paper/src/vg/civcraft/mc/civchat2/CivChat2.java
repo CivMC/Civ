@@ -25,7 +25,7 @@ public class CivChat2 extends JavaPlugin{
 	private static boolean debug = false;
 	private static CivChat2Manager chatMan;
 	private CivChat2Listener chatListener;
-	private CivChat2CommandHandler handle;
+	private static CivChat2CommandHandler handle;
 	
 	public void onEnable(){
 		//onEnable stuff
@@ -76,6 +76,14 @@ public class CivChat2 extends JavaPlugin{
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 		return handle.execute(sender, cmd, args);
+	}
+
+	public static CivChat2CommandHandler getCivChat2CommandHandler() {
+		return handle;
+	}
+
+	public static void warningMessage(String errorMsg) {
+		log_.warning(errorMsg);		
 	}
 
 	

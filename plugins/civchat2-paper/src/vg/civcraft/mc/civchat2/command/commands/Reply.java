@@ -15,17 +15,17 @@ import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
 
-public class Tell extends PlayerCommand{
+public class Reply extends PlayerCommand{
 	private CivChat2Manager chatMan = CivChat2.getCivChat2Manager();
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
 	private CivChat2CommandHandler handler = CivChat2.getCivChat2CommandHandler();
 	
-	public Tell(String name) {
+	public Reply(String name) {
 		super(name);
-		setIdentifier("tell");
-		setDescription("This command is used to send a message or chat with another player");
-		setUsage("/tell <PlayerName> (message)");
-		setArguments(1,2);
+		setIdentifier("reply");
+		setDescription("This command is used to reply to a message");
+		setUsage("/reply <message>)");
+		setArguments(0,100);
 	}
 	
 	@Override
@@ -37,10 +37,11 @@ public class Tell extends PlayerCommand{
 		}
 		
 		Player player = (Player) sender;
-		UUID receiverUUID = chatMan.getPlayerUUID(args[0].trim());
+		String senderName = player.getName();
+		UUID receiverUUID = chatMan.getPlayerReply(player);
 		Player receiver = Bukkit.getPlayer(receiverUUID);
 		if(receiver == null){
-			sender.sendMessage(ChatColor.RED + "There is no player with that name.");
+			sender.sendMessage(ChatColor.RED + "You have no one to reply too");
 			return true;
 		}
 		
@@ -52,23 +53,30 @@ public class Tell extends PlayerCommand{
 		}
 		
 		if(player.getName().equals(receiver.getName())){
+			CivChat2.warningMessage("Reply Command, Player Replying to themself??? Player: [" + senderName +"]");
 			sender.sendMessage(ChatColor.RED + "Error: You cannot send a message to yourself.");
 			return true;
 		}
-		if(args.length == 2){
-			//player and message
-			chatMan.addChatChannel(player.getName(), receiver.getName());
-			player.sendMessage(ChatColor.GREEN + "You are now chatting with " + receiver.getName() + ".");
-			chatMan.sendPrivateMsg(player, receiver, args[1]);
-			return true;
-		}
-		else if(args.length == 1){
-			chatMan.addChatChannel(player.getName(), receiver.getName());
-			player.sendMessage(ChatColor.GREEN + "You are now chatting with " + receiver.getName() + ".");
-			return true;
-		}
-		handler.helpPlayer(this, sender);
 		
+		if(args.length > 0){			
+			StringBuilder sb = new StringBuilder();
+			for(String s: args){
+				sb.append(s);
+			}
+			chatMan.sendPrivateMsg(player, receiver, args[0]);
+			return true;
+		}
+		else if (args.length == 0)
+		{
+			//player to chat with reply user
+			String chatstart = ChatColor.LIGHT_PURPLE + "You are now chatting with " + ChatColor.YELLOW + receiver.getName();
+			player.sendMessage(chatstart);
+			chatMan.removeChannel(senderName);
+			chatMan.addChatChannel(senderName, receiver.getName());
+			return true;
+		}
+		
+		handler.helpPlayer(this, sender);
 		return true;
 		
 	}

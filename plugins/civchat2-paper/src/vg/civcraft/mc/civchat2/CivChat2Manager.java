@@ -15,19 +15,29 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class CivChat2Manager {	
+	
 	private CivChat2 plugin;
-	
-	
 	//chatChannels in hashmap with (Player 1 name, player 2 name)
 	private HashMap<String, String> chatChannels = new HashMap<String, String>();
+	
 	//groupChatChannels have (Message, GroupName)
 	private HashMap<String, Group> groupChatChannels = new HashMap<String, Group>();
+	
 	//ignoreChannels have (Name, List of ignored groups)
 	private HashMap<String, List<String>> ignoreChannels = new HashMap<String, List<String>>();
 	
-	//afk has player names in a list of who is afk
-	private List<String> afkPlayerName = new ArrayList<String>();
+	//ignorePlayers have (recieversname, list of players they are ignoring
+	private HashMap<String, List<String>> ignorePlayers = new HashMap<String, List<String>>();
 	
+	//replyList has (playerName, whotoreplyto)
+	private HashMap<String, String> replyList = new HashMap<String, String>();
+	
+	
+	//afk has player names in a list of who is afk
+	private List<String> afk_player = new ArrayList<String>();
+	
+	private String afkMsg = ChatColor.AQUA + "That Player is currently AFK";
+	private String ignoreMsg = ChatColor.YELLOW + "That Player is ignoring you";
 	protected GroupManager gm = NameAPI.getGroupManager();
 
 	
@@ -111,9 +121,7 @@ public class CivChat2Manager {
 				String whiteMessage = ChatColor.WHITE + chatMessage;
 				p.sendMessage(grayMessage + whiteMessage);
 			}
-		}
-		// TODO log chat
-		
+		}		
 	}
 	
 
@@ -145,12 +153,52 @@ public class CivChat2Manager {
 	}
 
 	public void sendPrivateMsg(Player sender, Player receive, String chatMessage) {
-		// TODO Auto-generated method stub
+		String senderName = sender.getName();
+		String receiverName = receive.getName();
 		
+		String senderMessage = ChatColor.LIGHT_PURPLE + "To " + receiverName + ": "
+				+ chatMessage;
+		
+		String receiverMessage = ChatColor.LIGHT_PURPLE + "From " + senderName
+				+ ": " + chatMessage;
+		
+		CivChat2.debugmessage("ChatManager.sendPrivateMsg Sender: " + senderName + 
+				" receiver: " + receiverName + " Message: " + chatMessage);
+		if(isAfk(receive.getName())){
+			receive.sendMessage(receiverMessage);
+			sender.sendMessage(afkMsg);
+			return;
+		}
+		else if(isIgnoringPlayer(receiverName, senderName)){
+			//player is ignoring the sender
+			sender.sendMessage(ignoreMsg);
+			return;
+		}
+		CivChat2.debugmessage("Sending private chat message");
+		replyList.put(receiverName, senderName);		
+		sender.sendMessage(senderMessage);
+		receive.sendMessage(receiverMessage);
 	}
 
 	
-
+	/**
+	 * Check to see if a receiver is ignoring a sender (P2P chat only)
+	 * @param receiverName
+	 * @param senderName
+	 * @return True if they are ignored, False if not
+	 */
+	private boolean isIgnoringPlayer(String receiverName, String senderName){
+		if(ignorePlayers.containsKey(receiverName)){
+			//they are ignoring people lets check who
+			List<String> ignoredPlayers = ignorePlayers.get(receiverName);
+			if(ignoredPlayers.contains(senderName)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
 	public void broadcastMessage(Player sender, String chatMessage,
 			Set<Player> recipients) {
 		// TODO Auto-generated method stub
@@ -163,7 +211,7 @@ public class CivChat2Manager {
 	 * @return True if player is afk, false if they are not
 	 */
 	public boolean isAfk(String playername){
-		if(afkPlayerName.contains(playername)){
+		if(afk_player.contains(playername)){
 			return true;
 		}
 		else{
@@ -172,16 +220,61 @@ public class CivChat2Manager {
 	}
 	
 	public void toggleAfk(String playername){
-		if(afkPlayerName.contains(playername)){
+		Player p = Bukkit.getPlayer(NameAPI.getUUID(playername));
+		if(afk_player.contains(playername)){
 			//Player was afk bring them back now
-			afkPlayerName.remove(playername);
+			afk_player.remove(playername);
+			String afkNoMoreMessage = ChatColor.BLUE + "You are no longer in AFK status";
+			p.sendMessage(afkNoMoreMessage);
 		}
 		else{
-			afkPlayerName.add(playername);
-			Player p = Bukkit.getPlayer(NameAPI.getUUID(playername));
-			String afkMessage = ChatColor.BLUE + "You are now AFK, type /afk to remove afk status";
+			afk_player.add(playername);
+			String afkMessage = ChatColor.BLUE + "You have enabled AFK, type /afk to remove afk status";
 			p.sendMessage(afkMessage);
 		}
+	}
+	
+	/**
+	 * Get a players UUID 
+	 * @param name	Players Name
+	 * @return Returns the players UUID
+	 */
+	public UUID getPlayerUUID(String name) {
+		UUID uuid = NameAPI.getUUID(name);
+		if(uuid == null){
+			return null;
+		}
+		else{
+			return uuid;
+		}
+	}
+	public Group getGroupChatting(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/**
+	 * Gets the player to send reply to
+	 * @param sender the person sending reply command
+	 * @return the UUID of the person to reply to, null if none
+	 */
+	public UUID getPlayerReply(Player sender) {
+		String senderName = sender.getName();
+		if(replyList.containsKey(senderName)){
+			//sender has someone to reply too
+			String replyeeName = replyList.get(senderName);
+			UUID uuid = NameAPI.getUUID(replyeeName);
+			if(uuid == null){
+				String errorMsg = "This should not be occuring... ERROR INFO: sender: [" 
+						+ senderName + "] replyList Value: [" + replyeeName +"]";
+				CivChat2.warningMessage(errorMsg);
+				sender.sendMessage(ChatColor.RED + "Internal Error while performing reply");
+			}
+			else{
+				return uuid;
+			}
+		}
+		return null;
 	}
 
 }
