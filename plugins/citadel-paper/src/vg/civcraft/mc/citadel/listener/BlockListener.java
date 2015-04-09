@@ -475,9 +475,12 @@ public class BlockListener implements Listener{
                         	groupName = String.format("[%s] (%s)", group.getName(),
                         			group.getType().name());
                         }
+                        String groupID = "!NULL!";
+                        groupID = group.getGroupID();
                         sb = new StringBuilder();
-                        sb.append(String.format(" Group%s  Durability[%d/%d]",
+                        sb.append(String.format(" Group: %s GroupID: %s  Durability[%d/%d]",
                             groupName,
+                            groupID,
                             reinforcement.getDurability(),
                             ReinforcementType.getReinforcementType
                             (reinforcement.getStackRepresentation()).getHitPoints()));
