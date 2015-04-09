@@ -45,40 +45,48 @@ public final class ForceFieldListener implements Listener {
             return;
         }
 
-        // Revert spoofed blocks (I know, I'm a genius)
+        // Update the players force field perspective and find all blocks to stop spoofing
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
+        List<Location> removeBlocks;
+        List<Location> changedBlocks = getChangedBlocks(player);
+
         if (previousUpdates.containsKey(uuid)) {
-            for (Location location : previousUpdates.get(uuid)) {
-                Block block = location.getBlock();
-                player.sendBlockChange(location, block.getType(), block.getData());
-            }
+            removeBlocks = previousUpdates.get(uuid);
+        } else {
+            removeBlocks = new ArrayList<>();
         }
 
-        // Do nothing if player is not tagged
-        if (!plugin.getTagManager().isTagged(uuid)) return;
+        for (Location location : changedBlocks) {
+            player.sendBlockChange(location, Material.STAINED_GLASS, (byte) 14);
+            removeBlocks.remove(location);
+        }
 
         // Prevent sneaky players crossing the force field
-        if (!plugin.isPvpEnabledAt(t) && plugin.isPvpEnabledAt(f)) {
+        if (!changedBlocks.isEmpty() && !plugin.isPvpEnabledAt(t) && plugin.isPvpEnabledAt(f)) {
             event.setTo(f.setDirection(t.getDirection()));
         }
 
-        // Update the players force field perspective
-        List<Location> changedBlocks = getChangedBlocks(player);
-        previousUpdates.put(uuid, changedBlocks);
-        for (Location location : changedBlocks) {
-            player.sendBlockChange(location, Material.STAINED_GLASS, (byte) 14);
+        // Remove no longer used spoofed blocks
+        for (Location location : removeBlocks) {
+            Block block = location.getBlock();
+            player.sendBlockChange(location, block.getType(), block.getData());
         }
+
+        previousUpdates.put(uuid, changedBlocks);
     }
 
     private List<Location> getChangedBlocks(Player player) {
         List<Location> locations = new ArrayList<>();
-        Location l = player.getLocation();
+
+        // Do nothing if player is not tagged
+        if (!plugin.getTagManager().isTagged(player.getUniqueId())) return locations;
 
         // Find the radius around the player
         int r = plugin.getSettings().getForceFieldRadius();
-        Location loc1 = player.getLocation().add(r, 0, r);
-        Location loc2 = player.getLocation().subtract(r, 0, r);
+        Location l = player.getLocation();
+        Location loc1 = l.clone().add(r, 0, r);
+        Location loc2 = l.clone().subtract(r, 0, r);
         int topBlockX = loc1.getBlockX() < loc2.getBlockX() ? loc2.getBlockX() : loc1.getBlockX();
         int bottomBlockX = loc1.getBlockX() > loc2.getBlockX() ? loc2.getBlockX() : loc1.getBlockX();
         int topBlockZ = loc1.getBlockZ() < loc2.getBlockZ() ? loc2.getBlockZ() : loc1.getBlockZ();
@@ -105,7 +113,7 @@ public final class ForceFieldListener implements Listener {
                     if (!loc.getBlock().getType().equals(Material.AIR)) continue;
 
                     // Add this location to locations
-                    locations.add(loc);
+                    locations.add(new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
                 }
             }
         }
@@ -113,13 +121,10 @@ public final class ForceFieldListener implements Listener {
         return locations;
     }
 
-    private boolean isPvpSurrounding(Location loc1) {
+    private boolean isPvpSurrounding(Location loc) {
         for (BlockFace direction : ALL_DIRECTIONS) {
-            Location loc2 = loc1.getBlock().getRelative(direction).getLocation();
-
-            if (plugin.isPvpEnabledAt(loc2)) {
-                return true;
-            }
+            if (!plugin.isPvpEnabledAt(loc.getBlock().getRelative(direction).getLocation())) continue;
+            return true;
         }
 
         return false;
