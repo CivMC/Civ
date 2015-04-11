@@ -302,8 +302,12 @@ public class BlockListener implements Listener{
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onBlockFromToEvent(BlockFromToEvent event) {
-        Block to_block = event.getToBlock();
-        Reinforcement rein = rm.getReinforcement(event.getToBlock());
+        Block reinforcementBlock = event.getToBlock();
+        if(isPlant(reinforcementBlock)){
+        	//block to is as plant check block under it for reinforcement
+        	reinforcementBlock = Utility.findPlantSoil(reinforcementBlock);
+        }
+        Reinforcement rein = rm.getReinforcement(reinforcementBlock);
         if (rein != null) {
             event.setCancelled(true);
         }
@@ -472,7 +476,7 @@ public class BlockListener implements Listener{
                         			group.getType().name());
                         }
                         sb = new StringBuilder();
-                        sb.append(String.format(" Group%s  Durability[%d/%d]",
+                        sb.append(String.format(" Group%s Durability[%d/%d]",
                             groupName,
                             reinforcement.getDurability(),
                             ReinforcementType.getReinforcementType
