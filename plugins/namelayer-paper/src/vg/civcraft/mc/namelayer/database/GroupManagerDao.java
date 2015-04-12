@@ -287,16 +287,18 @@ public class GroupManagerDao {
 		updateVersion = db.prepareStatement("insert into db_version (db_version, update_time, plugin_name) values (?,?,?)"); 
 		
 		createGroup = db.prepareStatement("call createGroup(?,?,?,?,?)");
-		getGroup = db.prepareStatement("select group_name, founder, password, discipline_flags, group_type " +
-				"from faction where group_name = ?");
+		getGroup = db.prepareStatement("select f.group_name, f.founder, f.password, f.discipline_flags, f.group_type, fi.group_id " +
+				"from faction f "
+				+ "inner join faction_id fi on fi.group_name = f.group_name "
+				+ "where f.group_name = ?");
 		getAllGroupsNames = db.prepareStatement("select f.group_name from faction_id f "
 				+ "inner join faction_member fm on f.group_id = fm.group_id "
-				+ "where fm.member_name = ? group by group_name");
+				+ "where fm.member_name = ?");
 		deleteGroup = db.prepareStatement("call deletegroupfromtable(?, ?)");
 
 		addMember = db.prepareStatement("insert into faction_member(" +
 				"group_id, member_name, role) select group_id, ?, ? from "
-				+ "faction_id where group_name = ? limit 1");
+				+ "faction_id where group_name = ?");
 		getMembers = db.prepareStatement("select fm.member_name from faction_member fm "
 				+ "inner join faction_id id on id.group_name = ? "
 				+ "where fm.group_id = id.group_id and fm.role = ?");
@@ -389,7 +391,7 @@ public class GroupManagerDao {
 		return ++version;
 	}
 	
-	public synchronized void createGroup(String group, UUID owner, String password, GroupType type){
+	public synchronized int createGroup(String group, UUID owner, String password, GroupType type){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			String own = null;
@@ -400,11 +402,13 @@ public class GroupManagerDao {
 			createGroup.setString(3, password);
 			createGroup.setInt(4, 0);
 			createGroup.setString(5, type.name());
-			createGroup.execute();
+			ResultSet set = createGroup.executeQuery();
+			return set.next() ? set.getInt("f.group_id") : -1;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return -1;
 	}
 	
 	public synchronized Group getGroup(String groupName){
@@ -421,16 +425,17 @@ public class GroupManagerDao {
 			boolean dis = set.getInt(4) != 0;
 			String password = set.getString(3);
 			GroupType type = GroupType.getGroupType(set.getString(5));
+			int id = set.getInt(6);
 			Group g = null;
 			switch(type){
 			case PRIVATE:
-				g = new PrivateGroup(name, owner, dis, password);
+				g = new PrivateGroup(name, owner, dis, password, id);
 				break;
 			case PUBLIC:
-				g = new PublicGroup(name, owner, dis);
+				g = new PublicGroup(name, owner, dis, password, id);
 				break;
 			default:
-				g = new Group(name, owner, dis, password, type);
+				g = new Group(name, owner, dis, password, type, id);
 			}
 			return g;
 		} catch (SQLException e) {

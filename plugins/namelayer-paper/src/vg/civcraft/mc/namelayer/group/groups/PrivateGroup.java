@@ -19,8 +19,8 @@ public class PrivateGroup extends Group{
 	private static Map<Group, Group> superGroup = new HashMap<Group, Group>();
 	
 	public PrivateGroup(String name, UUID owner, boolean disiplined,
-			String password) {
-		super(name, owner, disiplined, password, GroupType.PRIVATE);
+			String password, int id) {
+		super(name, owner, disiplined, password, GroupType.PRIVATE, id);
 		subGroups.put(this, db.getSubGroups(name));
 		superGroup.put(this, db.getSuperGroup(name));
 	}

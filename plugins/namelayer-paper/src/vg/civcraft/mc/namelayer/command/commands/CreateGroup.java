@@ -12,6 +12,7 @@ import vg.civcraft.mc.namelayer.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.group.GroupType;
 import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
+import vg.civcraft.mc.namelayer.group.groups.PublicGroup;
 
 public class CreateGroup extends PlayerCommand{
 
@@ -54,12 +55,15 @@ public class CreateGroup extends PlayerCommand{
 		Group g = null;
 		switch(type){
 		case PRIVATE:
-			g = new PrivateGroup(name, uuid, false, password);
+			g = new PrivateGroup(name, uuid, false, password, -1);
 			break;
+		case PUBLIC:
+			g = new PublicGroup(name, uuid, false, password, -1);
 		default:
-			g = new Group(name, uuid, false, password, type);
+			g = new Group(name, uuid, false, password, type, -1);
 		}
-		gm.createGroup(g);
+		int id = gm.createGroup(g);
+		g.setId(id);
 		p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
 		return true;
 	}

@@ -18,6 +18,7 @@ public class Group {
 	private String password;
 	private GroupType type;
 	private boolean valid = true;
+	private int id;
 	
 	protected GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
 	
@@ -25,7 +26,7 @@ public class Group {
 	
 	private Map<UUID, PlayerType> invitations = new HashMap<UUID, PlayerType>();
 	
-	public Group(String name, UUID owner, boolean disiplined, String password, GroupType type){
+	public Group(String name, UUID owner, boolean disiplined, String password, GroupType type, int id){
 		groupName = name;
 		ownerUUID = owner;
 		isDisciplined = disiplined;
@@ -38,6 +39,7 @@ public class Group {
 				players.put(uuid, t);
 			}
 		}
+		this.id = id;
 	}
 	/**
 	 * Returns all the uuids of the members in this group.
@@ -232,5 +234,17 @@ public class Group {
 	public String changeDefaultGroup(UUID uuid){
 		db.changeDefaultGroup(uuid, groupName);
 		return groupName;
+	}
+	/**
+	 * Gets the id for a group.  Keep in mind though if you are trying to get a group_id from a GroupCreateEvent event
+	 * it will not be accurate.  You must have a delay for 1 tick for it to work correctly.
+	 * @return Returns the group id for a group.
+	 */
+	public int getGroupId(){
+		return id;
+	}
+	
+	public void setId(int id){
+		this.id = id;
 	}
 }

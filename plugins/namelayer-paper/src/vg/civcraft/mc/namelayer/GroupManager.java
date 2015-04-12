@@ -29,17 +29,18 @@ public class GroupManager{
 	 * Saves the group into caching and saves it into the db. Also fires the GroupCreateEvent.
 	 * @param The group to create to db.
 	 */
-	public void createGroup(Group group){
+	public int createGroup(Group group){
 		GroupCreateEvent event = new GroupCreateEvent(group.getName(), group.getOwner(),
 				group.getPassword(), group.getType());
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()){
 			NameLayerPlugin.log(Level.INFO, "Group create event was cancelled for group: " + group.getName());
-			return;
+			return -1;
 		}
-		groupManagerDao.createGroup(event.getGroupName(), event.getOwner(), 
+		int id = groupManagerDao.createGroup(event.getGroupName(), event.getOwner(), 
 				event.getPassword(), event.getType());
 		initiateDefaultPerms(event.getGroupName()); // give default perms to a newly create group
+		return id;
 	}
 	
 	public boolean deleteGroup(String groupName){
