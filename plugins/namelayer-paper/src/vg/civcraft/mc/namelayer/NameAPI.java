@@ -2,15 +2,18 @@ package vg.civcraft.mc.namelayer;
 
 import java.util.UUID;
 
+import vg.civcraft.mc.namelayer.config.NameConfigManager;
 import vg.civcraft.mc.namelayer.database.AssociationList;
 
 public class NameAPI {
 	private static GroupManager groupManager;
 	private static AssociationList associations;
+	private static NameConfigManager configManager;
 	
 	public NameAPI(GroupManager man, AssociationList ass){
 		groupManager = man;
 		associations =  ass;
+		configManager = new NameConfigManager();
 	}
 	/**
 	 * Returns the UUID of the player on the given server.
@@ -39,5 +42,11 @@ public class NameAPI {
 	 */
 	public static AssociationList getAssociationList(){
 		return associations;
+	}
+	/**
+	 * @return Returns the NameConfigManager to allow other plugins to use annotations for their config options.
+	 */
+	public static NameConfigManager getNameConfigManager(){
+		return configManager;
 	}
 }
