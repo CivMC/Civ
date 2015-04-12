@@ -20,17 +20,19 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class PlayerReinforcement extends Reinforcement{
 
+	private int group_id;
 	private Group g;
 	private GroupPermission gp;
 	private boolean isInsecure = false;
 	private ItemStack stack;
 	
 	public PlayerReinforcement(Location loc, int health,
-			int creation, Group g, ItemStack stack) {
+			int creation, Group g, ItemStack stack, int group_id) {
 		super(loc, stack.getType(), health, creation);
 		this.g = g;
 		this.stack = stack;
 		gp = NameAPI.getGroupManager().getPermissionforGroup(g);
+		this.group_id = group_id;
 	}
 	
 	/**
@@ -165,5 +167,14 @@ public class PlayerReinforcement extends Reinforcement{
     		g = NameAPI.getGroupManager().getGroup(group);
     		gp = NameAPI.getGroupManager().getPermissionforGroup(g);
     	}
+    }
+    /**
+     * Note this is different to the group id of a Group.
+     * If a reinforcement is made with Group 1 and then is merged into Group 0 then this will return the group_id
+     * of Group 1.
+     * @return Returns the value of the group_id from the group it was created with.
+     */
+    public int getGroupId(){
+    	return group_id;
     }
 }
