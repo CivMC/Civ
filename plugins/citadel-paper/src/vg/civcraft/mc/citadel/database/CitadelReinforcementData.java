@@ -188,14 +188,14 @@ public class CitadelReinforcementData {
 	private void initalizePreparedStatements(){
 		getRein = db.prepareStatement("select r.material_id, r.durability, " +
 				"r.insecure, f.group_name, r.maturation_time, rt.rein_type, "
-				+ "r.lore, r.rein_id from reinforcement r "
+				+ "r.lore, r.group_id, r.rein_id from reinforcement r "
 				+ "inner join faction_id f on f.group_id = r.group_id " +
 				"inner join reinforcement_id ri on r.rein_id = ri.rein_id "
 				+ "inner join reinforcement_type rt on rt.rein_type_id = r.rein_type_id "
 				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.chunk_id = ? and ri.world = ?");
 		getReins = db.prepareStatement("select ri.x, ri.y, ri.z, ri.world, r.material_id, r.durability, " +
 				"r.insecure, f.group_name, r.maturation_time, rt.rein_type, "
-				+ "r.lore, r.rein_id from reinforcement r "
+				+ "r.lore, r.group_id, r.rein_id from reinforcement r "
 				+ "inner join faction_id f on f.group_id = r.group_id " +
 				"inner join reinforcement_id ri on r.rein_id = ri.rein_id "
 				+ "inner join reinforcement_type rt on rt.rein_type_id = r.rein_type_id "
@@ -270,6 +270,7 @@ public class CitadelReinforcementData {
 			int mature = set.getInt(5);
 			String rein_type = set.getString(6);
 			String lore = set.getString(7);
+			int group_id = set.getInt(8);
 			// Check for what type of reinforcement and return the one
 			// needed.
 			if (rein_type.equals("PlayerReinforcement")){
@@ -283,7 +284,7 @@ public class CitadelReinforcementData {
 				PlayerReinforcement rein =
 						new PlayerReinforcement(loc, durability,
 								mature, GroupManager.getGroup(group),
-								stack);
+								stack, group_id);
 				rein.setInsecure(inSecure);
 				return rein;
 			}
@@ -293,7 +294,7 @@ public class CitadelReinforcementData {
 				return rein;
 			}
 			else if (rein_type.equals("MultiBlockReinforcement")){
-				int id = set.getInt(8);
+				int id = set.getInt(9);
 				MultiBlockReinforcement rein = MultiBlockReinforcement.getMultiRein(id);
 				if (rein != null)
 					return rein;
@@ -336,6 +337,7 @@ public class CitadelReinforcementData {
 				int mature = set.getInt(9);
 				String rein_type = set.getString(10);
 				String lore = set.getString(11);
+				int group_id = set.getInt(12);
 				
 				Location loc = new Location(Bukkit.getWorld(world), x, y, z);
 				
@@ -350,7 +352,7 @@ public class CitadelReinforcementData {
 					PlayerReinforcement rein =
 							new PlayerReinforcement(loc, durability,
 									mature, g,
-									stack);
+									stack, group_id);
 					rein.setInsecure(inSecure);
 					reins.add(rein);
 				}
@@ -360,7 +362,7 @@ public class CitadelReinforcementData {
 					reins.add(rein);
 				}
 				else if (rein_type.equals("MultiBlockReinforcement")){
-					int id = set.getInt(8);
+					int id = set.getInt(13);
 					MultiBlockReinforcement rein = MultiBlockReinforcement.getMultiRein(id);
 					if (rein != null)
 						reins.add(rein);

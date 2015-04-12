@@ -96,7 +96,7 @@ public class Utility {
         // Fire the creation event
         PlayerReinforcement rein = new PlayerReinforcement(block.getLocation(), 
         		type.getHitPoints(), getIntFormofMaturation(System.currentTimeMillis(),type.getItemStack()), 
-        		g, type.getItemStack());
+        		g, type.getItemStack(), g.getGroupId());
         ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, block, player);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -480,7 +480,7 @@ public class Utility {
     	Group g = GroupManager.getSpecialCircumstanceGroup(group);
     	PlayerReinforcement rein = new PlayerReinforcement(loc, dur, 
     			getIntFormofMaturation(System.currentTimeMillis(),reinType.getItemStack())
-    			, g, reinType.getItemStack());
+    			, g, reinType.getItemStack(), g.getGroupId());
     	ReinforcementCreationEvent event = 
     			new ReinforcementCreationEvent(rein, loc.getBlock(), p);
     	Bukkit.getPluginManager().callEvent(event);
