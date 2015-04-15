@@ -22,6 +22,9 @@ instantly-kill: false
 # Untags the player if they are kicked from combat rather than logging
 untag-on-kick: false
 
+# Only the attacker will be tagged if this is set to true.
+only-tag-attacker: false
+
 # Prevent block editing while tagged.
 disable-block-edit: false
 

@@ -62,6 +62,10 @@ public final class Settings {
         return plugin.getConfig().getBoolean("untag-on-kick");
     }
 
+    public boolean onlyTagAttacker() {
+        return plugin.getConfig().getBoolean("only-tag-attacker");
+    }
+
     public boolean disableBlockEdit() {
         return plugin.getConfig().getBoolean("disable-block-edit");
     }
