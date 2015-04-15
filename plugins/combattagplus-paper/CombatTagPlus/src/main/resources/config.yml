@@ -19,6 +19,9 @@ logout-wait-time: 10
 # Instantly kills the player when logged in PvP.
 instantly-kill: false
 
+# Untags the player if they are kicked from combat rather than logging
+untag-on-kick: false
+
 # Prevent block editing while tagged.
 disable-block-edit: false
 

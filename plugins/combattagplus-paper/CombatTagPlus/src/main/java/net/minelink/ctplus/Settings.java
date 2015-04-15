@@ -58,6 +58,10 @@ public final class Settings {
         return plugin.getConfig().getBoolean("instantly-kill");
     }
 
+    public boolean untagOnKick() {
+        return plugin.getConfig().getBoolean("untag-on-kick");
+    }
+
     public boolean disableBlockEdit() {
         return plugin.getConfig().getBoolean("disable-block-edit");
     }
