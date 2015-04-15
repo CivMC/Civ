@@ -58,6 +58,14 @@ public final class Settings {
         return plugin.getConfig().getBoolean("instantly-kill");
     }
 
+    public boolean untagOnKick() {
+        return plugin.getConfig().getBoolean("untag-on-kick");
+    }
+
+    public boolean onlyTagAttacker() {
+        return plugin.getConfig().getBoolean("only-tag-attacker");
+    }
+
     public boolean disableBlockEdit() {
         return plugin.getConfig().getBoolean("disable-block-edit");
     }
@@ -109,6 +117,14 @@ public final class Settings {
 
     public int getForceFieldRadius() {
         return plugin.getConfig().getInt("force-field-radius");
+    }
+
+    public String getForceFieldMaterial() {
+        return plugin.getConfig().getString("force-field-material");
+    }
+
+    public byte getForceFieldMaterialDamage() {
+        return (byte) plugin.getConfig().getInt("force-field-material-damage");
     }
 
     public boolean useFactions() {

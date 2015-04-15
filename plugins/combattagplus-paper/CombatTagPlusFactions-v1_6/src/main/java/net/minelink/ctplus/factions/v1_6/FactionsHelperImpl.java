@@ -12,7 +12,7 @@ public class FactionsHelperImpl implements FactionsHelper {
     public boolean isPvpEnabledAt(Location location) {
         FLocation fLocation = new FLocation(location);
         Faction faction = Board.getInstance().getFactionAt(fLocation);
-        return true;
+        return !faction.isSafeZone();
     }
 
 }

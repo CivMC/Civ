@@ -75,7 +75,7 @@ public final class TagManager {
         Tag tag = new Tag(helper, expireTime, victim, attacker);
 
         // Add victim to tagged players
-        if (victim != null) {
+        if (victim != null && !plugin.getSettings().onlyTagAttacker()) {
             tags.put(victimId, tag);
         }
 

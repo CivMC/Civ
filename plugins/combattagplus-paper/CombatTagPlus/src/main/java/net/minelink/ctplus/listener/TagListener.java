@@ -19,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
@@ -146,6 +147,16 @@ public final class TagListener implements Listener {
         if (!plugin.getNpcPlayerHelper().isNpc(player)) {
             plugin.getTagManager().untag(player.getUniqueId());
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void untagPlayer(PlayerKickEvent event) {
+        // Do nothing if user has not specified to kill on kick
+        if (!plugin.getSettings().untagOnKick()) return;
+
+        // Remove the players tag
+        Player player = event.getPlayer();
+        plugin.getTagManager().untag(player.getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
