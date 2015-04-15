@@ -111,6 +111,14 @@ public final class Settings {
         return plugin.getConfig().getInt("force-field-radius");
     }
 
+    public String getForceFieldMaterial() {
+        return plugin.getConfig().getString("force-field-material");
+    }
+
+    public byte getForceFieldMaterialDamage() {
+        return (byte) plugin.getConfig().getInt("force-field-material-damage");
+    }
+
     public boolean useFactions() {
         return plugin.getConfig().getBoolean("factions");
     }

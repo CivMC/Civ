@@ -50,6 +50,8 @@ public final class ForceFieldListener implements Listener {
         UUID uuid = player.getUniqueId();
         List<Location> removeBlocks;
         List<Location> changedBlocks = getChangedBlocks(player);
+        Material forceFieldMaterial = Material.getMaterial(plugin.getSettings().getForceFieldMaterial());
+        byte forceFieldMaterialDamage = plugin.getSettings().getForceFieldMaterialDamage();
 
         if (previousUpdates.containsKey(uuid)) {
             removeBlocks = previousUpdates.get(uuid);
@@ -58,7 +60,7 @@ public final class ForceFieldListener implements Listener {
         }
 
         for (Location location : changedBlocks) {
-            player.sendBlockChange(location, Material.STAINED_GLASS, (byte) 14);
+            player.sendBlockChange(location, forceFieldMaterial, forceFieldMaterialDamage);
             removeBlocks.remove(location);
         }
 

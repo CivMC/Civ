@@ -55,6 +55,12 @@ force-fields: true
 # Radius in blocks around the player that should be checked for forcefields (Higher numbers = more laggy)
 force-field-radius: 3
 
+# Material of the forcefield block type
+force-field-material: STAINED_GLASS
+
+# Damage value of the material specified above
+force-field-material-damage: 14
+
 # Enables Factions integration for disabling combat tagging in regions with PVP disabled.
 factions: true
 
