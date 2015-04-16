@@ -1,4 +1,10 @@
+chat:
+  globalChatRange: 1000
+  defaultChatColor: BLUE
 info:
   debug: true
   groups: true
   afkmessage: Player is currently AFK
+file:
+  filesToZip: 15
+  maxNumberofZips: 4

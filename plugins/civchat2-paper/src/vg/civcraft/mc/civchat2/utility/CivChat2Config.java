@@ -20,5 +20,21 @@ public class CivChat2Config {
 	public String getAfkMessage(){
 		return config.getString("info.afkmessage");
 	}
+
+	public int getFilesToZip() {
+		return config.getInt("file.filesToZip");
+	}
+
+	public int getMaxNumberofZips() {
+		return config.getInt("file.maxNumberofZips");
+	}
+
+	public int getChatRange() {
+		return config.getInt("chat.globalChatRange");
+	}
+
+	public String getDefaultColor() {
+		return config.getString("chat.defaultChatColor");
+	}
 	
 }

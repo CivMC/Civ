@@ -8,6 +8,8 @@ import org.bukkit.command.CommandSender;
 
 import vg.civcraft.mc.namelayer.command.Command;
 import vg.civcraft.mc.civchat2.command.commands.GroupChat;
+import vg.civcraft.mc.civchat2.command.commands.Ignore;
+import vg.civcraft.mc.civchat2.command.commands.IgnoreGroup;
 import vg.civcraft.mc.civchat2.command.commands.Reply;
 import vg.civcraft.mc.civchat2.command.commands.Tell;
 import vg.civcraft.mc.civchat2.command.commands.Afk;
@@ -21,6 +23,8 @@ public class CivChat2CommandHandler {
 		addCommands(new Afk("afk"));
 		addCommands(new Reply("reply"));
 		addCommands(new GroupChat("groupchat"));
+		addCommands(new Ignore("ignore"));
+		addCommands(new IgnoreGroup("ignoregroup"));
 	}
 	
 	public void addCommands(Command command){

@@ -11,6 +11,7 @@ import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
+import vg.civcraft.mc.civchat2.zipper.CivChat2FileLogger;
 
 /**
  * @author jjj5311
@@ -26,6 +27,7 @@ public class CivChat2 extends JavaPlugin{
 	private static CivChat2Manager chatMan;
 	private CivChat2Listener chatListener;
 	private static CivChat2CommandHandler handle;
+	private static CivChat2FileLogger fileLog;
 	
 	public void onEnable(){
 		//onEnable stuff
@@ -43,15 +45,18 @@ public class CivChat2 extends JavaPlugin{
 		groupsEnabled = config_.getGroupsEnabled();
 		log_.info("groupsEnabled is set to: " + groupsEnabled);
 		log_.debug("Debug Enabled");
+		handle = new CivChat2CommandHandler();
+		handle.registerCommands();
+		fileLog = new CivChat2FileLogger();
+		fileLog.Init();
 		chatMan = new CivChat2Manager(instance);
 		chatListener = new CivChat2Listener(chatMan);
 		registerEvents();
-		handle = new CivChat2CommandHandler();
-		handle.registerCommands();
 	}
 	
 	public void onDisable(){
 		//onDisable stuff
+		fileLog.serverShutdown();
 	}
 	
 	public static CivChat2Manager getCivChat2Manager(){
@@ -84,6 +89,26 @@ public class CivChat2 extends JavaPlugin{
 
 	public static void warningMessage(String errorMsg) {
 		log_.warning(errorMsg);		
+	}
+	
+	public static void infoMessage(String infoMsg){
+		log_.info(infoMsg);
+	}
+
+	public static CivChat2 getInstance() {
+		return instance;
+	}
+
+	public static void severeMessage(String severeMsg) {
+		log_.severe(severeMsg);
+	}
+
+	public static CivChat2Config getPluginConfig() {
+		return config_;
+	}
+
+	public static CivChat2FileLogger getCivChat2FileLogger() {
+		return fileLog;
 	}
 
 	

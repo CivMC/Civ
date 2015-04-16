@@ -1,9 +1,7 @@
 package vg.civcraft.mc.civchat2.command.commands;
 
 import java.util.List;
-import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,19 +13,20 @@ import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.commands.GroupStats;
 import vg.civcraft.mc.namelayer.group.Group;
 
-public class GroupChat extends PlayerCommand{
+public class IgnoreGroup extends PlayerCommand{
 	private CivChat2Manager chatMan = CivChat2.getCivChat2Manager();
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
 	private CivChat2CommandHandler handler = CivChat2.getCivChat2CommandHandler();
 	
-	public GroupChat(String name) {
+	public IgnoreGroup(String name) {
 		super(name);
-		setIdentifier("groupchat");
-		setDescription("This command is used to join a citadel groupchat");
-		setUsage("/groupchat <groupname> (message)");
-		setArguments(1,2);
+		setIdentifier("ignoregroup");
+		setDescription("This command is used to toggle ignoring a group");
+		setUsage("/ignoregroup <GroupName>");
+		setArguments(1,1);
 	}
 	
 	@Override
@@ -38,22 +37,36 @@ public class GroupChat extends PlayerCommand{
 			return true;
 		}
 		
+		if(!(args.length == 1)){
+			handler.helpPlayer(this, sender); 
+			return true;
+		}
+		
 		Group group = null;
 		Player player = (Player) sender;
 		GroupManager gm = NameAPI.getGroupManager();
 		group = gm.getGroup(args[0]);
-		if(args.length == 1){
-			//player just joining group chat
-			if(group == null){
-				sender.sendMessage(ChatColor.RED + "There is no group with that name.");
-				return true;
-			}
-		// TODO a whole bunch	
+		if(group == null){
+			//no player exists with that name
+			sender.sendMessage(ChatColor.RED + "No Group exists with that name");
+			return true;
 		}
-		handler.helpPlayer(this, sender);
+		String ignore = group.getName();
 		
-		return true;
-		
+		String name = NameAPI.getCurrentName(player.getUniqueId());
+		if(chatMan.addIgnoringGroup(name, ignore)){
+			//Player added to list
+			String debugMessage = "Player ignored Group, Player: " + name + " Group: " + ignore;
+			logger.debug(debugMessage);
+			sender.sendMessage(ChatColor.YELLOW + "You have ignored: " + ignore);
+			return true;
+		} else{
+			//player removed from list
+			String debugMessage = "Player un-ignored Group, Player: " + name + " Group: " + ignore;
+			logger.debug(debugMessage);
+			sender.sendMessage(ChatColor.YELLOW + "You have removed: " + ignore + " from ignoring list");
+			return true;
+		}		
 	}
 
 	@Override

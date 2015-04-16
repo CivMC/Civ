@@ -12,3 +12,7 @@ commands:
       aliases: [r]
     groupchat:
       aliases: [gc, groupc, gchat]
+    ignore:
+      aliases: [i]
+    ignoregroup:
+      aliases: [ig, igroup, ignoreg]
