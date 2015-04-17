@@ -10,10 +10,10 @@ public class NameAPI {
 	private static AssociationList associations;
 	private static NameConfigManager configManager;
 	
-	public NameAPI(GroupManager man, AssociationList ass){
+	public NameAPI(GroupManager man, AssociationList ass, NameConfigManager config){
 		groupManager = man;
 		associations =  ass;
-		configManager = new NameConfigManager();
+		configManager = config;
 	}
 	/**
 	 * Returns the UUID of the player on the given server.

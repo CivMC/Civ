@@ -33,6 +33,8 @@ public class NameConfigManager {
 	 * Register your class that hosts annotations with this method.  It will scan your class and input your variables.
 	 */
 	public void registerListener(JavaPlugin plugin, NameConfigListener l){
+		if (!conf.containsKey(plugin))
+			conf.put(plugin, new HashMap<String, NameConfigNode>());
 		scanMethods(plugin, l);
 		setConfig(plugin);
 	}
@@ -69,7 +71,7 @@ public class NameConfigManager {
 				
 				NameConfigs cs = method.getAnnotation(NameConfigs.class);
 				if (cs != null){
-					for (NameConfig cc: cs.values()){
+					for (NameConfig cc: cs.value()){
 						addToConfig(plugin, cc);
 					}
 					continue;
