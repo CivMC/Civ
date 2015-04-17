@@ -42,6 +42,12 @@
       <scope>provided</scope>
     </dependency>
 	<dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>Spigot1.8.3</artifactId>
+      <version>1.8.3</version>
+      <scope>provided</scope>
+    </dependency>
+	<dependency>
 		<groupId>vg.civcraft.mc.mercury</groupId>
 		<artifactId>Mercury</artifactId>
 		<version>1.0.1-11</version>
