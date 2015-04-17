@@ -13,11 +13,11 @@ import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
-import vg.civcraft.mc.namelayer.command.commands.GroupStats;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class IgnoreGroup extends PlayerCommand{
-	private CivChat2Manager chatMan = CivChat2.getCivChat2Manager();
+	private CivChat2 plugin = CivChat2.getInstance();
+	private CivChat2Manager chatMan;
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
 	private CivChat2CommandHandler handler = CivChat2.getCivChat2CommandHandler();
 	
@@ -31,6 +31,7 @@ public class IgnoreGroup extends PlayerCommand{
 	
 	@Override
 	public boolean execute(CommandSender sender, String[] args){
+		chatMan = plugin.getCivChat2Manager();
 		if(!(sender instanceof Player)){
 			//console man sending chat... 
 			sender.sendMessage(ChatColor.YELLOW + "You must be a player to perform that command.");

@@ -1,6 +1,5 @@
 package vg.civcraft.mc.civchat2;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,11 +22,12 @@ public class CivChat2Manager {
 	private CivChat2 plugin;
 	private CivChat2Config config;
 	private CivChat2FileLogger chatLog;
+	
+	
 	//chatChannels in hashmap with (Player 1 name, player 2 name)
 	private HashMap<String, String> chatChannels = new HashMap<String, String>();
-	
-	//groupChatChannels have (Message, GroupName)
-	private HashMap<String, Group> groupChatChannels = new HashMap<String, Group>();
+	//groupChatChannels have (Player, Group)
+	private HashMap<String, String> groupChatChannels  = new HashMap<String, String>();
 	
 	//ignorePlayers have (recieversname, list of players they are ignoring
 	private HashMap<String, List<String>> ignorePlayers = new HashMap<String, List<String>>();
@@ -48,6 +48,7 @@ public class CivChat2Manager {
 	
 	public CivChat2Manager(CivChat2 pluginInstance){
 		this.plugin = pluginInstance;
+		plugin.debugmessage("CivChat2Manager Initialized");
 		config = CivChat2.getPluginConfig();
 		chatLog = CivChat2.getCivChat2FileLogger();
 		defaultColor = config.getDefaultColor();
@@ -124,7 +125,7 @@ public class CivChat2Manager {
 				//player is afk do not include
 				continue;
 			}
-			if(isIgnoringGroup(playerName, groupName)){
+			if(isIgnoringGroup(playerName, gm.getGroup(groupName))){
 				//player is ignoring group do not include			
 				continue;
 			}
@@ -139,16 +140,6 @@ public class CivChat2Manager {
 		}		
 	}
 	
-
-	/**
-	 * Method to remove player from groupchat
-	 * @param name Playername to remove from chat
-	 */
-	public void removeGroupChat(String name) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 	/**
 	 * Method to Send private message between to players
@@ -192,7 +183,7 @@ public class CivChat2Manager {
 	 * @param senderName
 	 * @return True if they are ignored, False if not
 	 */
-	private boolean isIgnoringPlayer(String receiverName, String senderName){
+	public boolean isIgnoringPlayer(String receiverName, String senderName){
 		if(ignorePlayers.containsKey(receiverName)){
 			//they are ignoring people lets check who
 			List<String> ignoredPlayers = ignorePlayers.get(receiverName);
@@ -293,16 +284,6 @@ public class CivChat2Manager {
 	}
 	
 	/**
-	 * Method to get Group player is chatting in
-	 * @param name Player to get Group for
-	 * @return Group that the player is chatting in
-	 */
-	public Group getGroupChatting(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	/**
 	 * Gets the player to send reply to
 	 * @param sender the person sending reply command
 	 * @return the UUID of the person to reply to, null if none
@@ -350,11 +331,14 @@ public class CivChat2Manager {
 	 * @param chatChannel Groupname to check
 	 * @return true if ignoring, false otherwise
 	 */
-	public boolean isIgnoringGroup(String name, String chatChannel) {
-		String ignoreGroupName = "GROUP:" + chatChannel;
+	public boolean isIgnoringGroup(String name, Group group) {
+		String ignoreGroupName = "GROUP:" + group;
 		if(!ignorePlayers.containsKey(name)){
 			//player is ignoring something
 			List<String> ignored = ignorePlayers.get(name);
+			if(ignored == null){
+				return false;
+			}
 			if(ignored.contains(ignoreGroupName)){
 				//player is ignoring the groupchat
 				return true;
@@ -425,6 +409,80 @@ public class CivChat2Manager {
 			ignorePlayers.put(name, newIgnoree);
 			return true;
 		}
+	}
+
+	/**
+	 * Method to add a groupchat channel
+	 * @param name Player sending the message
+	 * @param group Group sending the message to
+	 */
+	public void addGroupChat(String name, String groupName) {
+		groupChatChannels.put(name, groupName);
+	}
+
+	/**
+	 * Method to send a message to a group
+	 * @param name Player sending the message
+	 * @param groupMsg Message to send to the group
+	 * @param group Group to send the message too
+	 */
+	public void sendGroupMsg(String name, String groupMsg, Group group) {
+		Player msgSender = Bukkit.getPlayer(NameAPI.getUUID(name));
+		List<Player> members = new ArrayList<Player>();
+		List<UUID> membersUUID = group.getAllMembers();
+		for(UUID uuid : membersUUID){
+			//only add online players to members
+			Player toAdd = Bukkit.getPlayer(uuid);
+			if(toAdd.isOnline()){
+				members.add(toAdd);
+			}
+		}
+		msgSender.sendMessage(ChatColor.GRAY + "[" + group.getName() + "] " + name + ": " + ChatColor.WHITE + groupMsg);
+		for(Player receiver: members){
+			if(isIgnoringGroup(receiver.getName(), group)){
+				continue;
+			}
+			if(isIgnoringPlayer(receiver.getName(), name)){
+				continue;
+			}
+			if(receiver.getName().equals(name)){
+				continue;
+			} else {
+				receiver.sendMessage(ChatColor.GRAY + "[" + group.getName() + "] " + name + ": " + ChatColor.WHITE + groupMsg);
+			}
+		}
+		
+		chatLog.writeToChatLog(msgSender, groupMsg, "GROUP MSG");
+	}
+	
+	/**
+	 * Method to remove player from groupchat
+	 * @param name Playername to remove from chat
+	 */
+	public void removeGroupChat(String name) {
+		if(groupChatChannels.containsKey(name)){
+			groupChatChannels.remove(name);
+			return;
+		}
+		CivChat2.severeMessage("Should not have reached this code  removeGroupChat method");
+	}
+
+	/**
+	 * Method to get the group player is currently chatting in
+	 * @param name Players name
+	 * @return Group they are currently chatting in
+	 */
+	public String getGroupChatting(String name) {
+		if(groupChatChannels.containsKey(name)){
+			return groupChatChannels.get(name);
+		} else {
+			return null;
+		}
+	}
+
+
+	public void test() {
+		plugin.debugmessage("Testing chatman was created");		
 	}
 
 }

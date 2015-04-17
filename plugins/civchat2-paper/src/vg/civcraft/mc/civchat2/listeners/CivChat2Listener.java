@@ -14,6 +14,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 /*
@@ -24,9 +26,11 @@ import vg.civcraft.mc.namelayer.group.Group;
 public class CivChat2Listener implements Listener {
 	
 	private CivChat2Manager chatman;
+	private GroupManager gm;
 	
 	public CivChat2Listener(CivChat2Manager instance){
 		chatman = instance;
+		gm = NameAPI.getGroupManager();
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -61,14 +65,14 @@ public class CivChat2Listener implements Listener {
 		String chatMessage = asyncPlayerChatEvent.getMessage();
 		Player sender = asyncPlayerChatEvent.getPlayer();
 		String chatChannel = chatman.getChannel(sender.getName());
-		Group group = chatman.getGroupChatting(sender.getName());
+		String groupChat = chatman.getGroupChatting(sender.getName());
 		
 		if(!(chatChannel == null)){
 			CivChat2.debugmessage("PlayerChatEvent chatChannel does not equal null");
 			Player receive = Bukkit.getPlayerExact(chatChannel);
 			
 			if(!(receive == null)){
-				if(chatman.isIgnoringGroup(sender.getName(), chatChannel)){
+				if(chatman.isIgnoringPlayer(sender.getName(), chatChannel)){
 					CivChat2.debugmessage("PlayerChatEvent receive != null isIgnoringGroups is true");
 					String muteMessage = ChatColor.YELLOW + chatChannel + ChatColor.RED + " has muted you";
 					sender.sendMessage(muteMessage);
@@ -87,6 +91,10 @@ public class CivChat2Listener implements Listener {
 				sender.sendMessage(offlineMessage);
 				return;
 			}
+		}
+		if(!(groupChat == null)){
+			//player is group chatting
+			chatman.sendGroupMsg(sender.getName(), chatMessage, gm.getGroup(groupChat));
 		}
 		CivChat2.debugmessage("PlayerChatEvent calling chatman.broadcastMessage()");
 		chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getRecipients());

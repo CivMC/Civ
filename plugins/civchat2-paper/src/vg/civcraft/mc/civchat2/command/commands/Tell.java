@@ -12,11 +12,11 @@ import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
-import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommand;
 
 public class Tell extends PlayerCommand{
-	private CivChat2Manager chatMan = CivChat2.getCivChat2Manager();
+	private CivChat2 plugin = CivChat2.getInstance();
+	private CivChat2Manager chatMan;
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
 	private CivChat2CommandHandler handler = CivChat2.getCivChat2CommandHandler();
 	
@@ -30,6 +30,7 @@ public class Tell extends PlayerCommand{
 	
 	@Override
 	public boolean execute(CommandSender sender, String[] args){
+		chatMan = plugin.getCivChat2Manager();
 		if(!(sender instanceof Player)){
 			//console man sending chat... 
 			sender.sendMessage(ChatColor.YELLOW + "You must be a player to perform that command.");

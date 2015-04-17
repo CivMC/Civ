@@ -7,7 +7,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civchat2.CivChat2;
 
 public class CivChat2Log {
-	private String pluginName = "[CivChat2] ";
 	private Logger log;
 	
 	public void initializeLogger(JavaPlugin jp){

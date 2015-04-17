@@ -22,7 +22,7 @@ public class CivChat2CommandHandler {
 		addCommands(new Tell("tell"));
 		addCommands(new Afk("afk"));
 		addCommands(new Reply("reply"));
-		addCommands(new GroupChat("groupchat"));
+		addCommands(new GroupChat("groupc"));
 		addCommands(new Ignore("ignore"));
 		addCommands(new IgnoreGroup("ignoregroup"));
 	}

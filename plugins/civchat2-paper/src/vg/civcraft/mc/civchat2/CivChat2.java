@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civchat2;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -23,11 +22,11 @@ public class CivChat2 extends JavaPlugin{
 	private static CivChat2Log log_;
 	private static boolean groupsEnabled;
 	private static CivChat2Config config_;
-	private static boolean debug = false;
 	private static CivChat2Manager chatMan;
 	private CivChat2Listener chatListener;
 	private static CivChat2CommandHandler handle;
 	private static CivChat2FileLogger fileLog;
+	private static boolean debug = false;
 	
 	public void onEnable(){
 		//onEnable stuff
@@ -50,6 +49,7 @@ public class CivChat2 extends JavaPlugin{
 		fileLog = new CivChat2FileLogger();
 		fileLog.Init();
 		chatMan = new CivChat2Manager(instance);
+		chatMan.test();
 		chatListener = new CivChat2Listener(chatMan);
 		registerEvents();
 	}
@@ -60,6 +60,7 @@ public class CivChat2 extends JavaPlugin{
 	}
 	
 	public static CivChat2Manager getCivChat2Manager(){
+		debugmessage("Returning CivChat2Manager");
 		return chatMan;
 	}
 

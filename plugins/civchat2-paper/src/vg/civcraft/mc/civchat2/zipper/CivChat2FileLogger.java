@@ -59,9 +59,27 @@ public class CivChat2FileLogger {
 		dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		chatDirectory = instance.getDataFolder() + File.separator + "ChatLogs" + File.separator;
 		ignoreDirectory = instance.getDataFolder() + File.separator + "IgnoredLogs" + File.separator;
+		checkDirectories(chatDirectory);
+		checkDirectories(ignoreDirectory);
 		initchatLog(chatDirectory + dateString + ".txt");
 		initIgnoreLog(ignoreDirectory + "ignorelist.txt");
 		serverStartup();
+	}
+	/**
+	 * Method to create/check if directory exists
+	 * @param chatDirectory2
+	 */
+	private void checkDirectories(String dir) {
+		File directory = new File(dir);
+		if(!directory.exists()){
+			//directory does not exist create it
+			instance.infoMessage("Creating new Directory for CivChat2");
+			try{
+				directory.mkdir();
+			} catch (SecurityException e){
+				instance.severeMessage("Error creating directory: " + e);
+			}
+		}
 	}
 	/**
 	 * Method to create/get chat log text file
@@ -69,6 +87,7 @@ public class CivChat2FileLogger {
 	 */
 	public void initchatLog(String filename){
 		File existing = new File(filename);
+		instance.debugmessage("Initializing chatlog... filename=[" + filename.toString() + "]");
 		//first create chatlog file
 		try{
 			if(existing.exists()){
@@ -78,8 +97,10 @@ public class CivChat2FileLogger {
 				fileWriter = new BufferedWriter(fw);
 			} else {
 				instance.infoMessage("Creating new File" + existing.getAbsolutePath());
+				existing.createNewFile();
 				PrintWriter fStream = new PrintWriter(existing);
 				fileWriter = new BufferedWriter(fStream);
+				toRecord = existing;
 			}
 		
 		} catch (IOException ex){
@@ -93,7 +114,7 @@ public class CivChat2FileLogger {
 	 */
 	public void initIgnoreLog(String filename){
 		File existing = new File(filename);
-		
+		instance.debugmessage("Initializing IgnoreLog...");
 		try{
 			if(existing.exists()){
 				//ignore file exists load it
@@ -105,6 +126,7 @@ public class CivChat2FileLogger {
 			} else {
 				//create new ignore file
 				instance.infoMessage("Creating new Ignore file: " + existing.getAbsolutePath());
+				existing.createNewFile();
 				PrintWriter pw = new PrintWriter(existing);
 				writer = new BufferedWriter(pw);
 				ignoredPlayers = existing;
@@ -133,7 +155,12 @@ public class CivChat2FileLogger {
 				}
 				ignoreListForChatMan.put(owner, participants);
 			}
-			chatMan.setIgnoredPlayer(ignoreListForChatMan);
+			if(ignoreListForChatMan != null){
+				instance.debugmessage("Loaded ignore list... [" + ignoreListForChatMan.size() + "] ignore entries");
+				if(ignoreListForChatMan.size() != 0){
+					chatMan.setIgnoredPlayer(ignoreListForChatMan);
+				}
+			}
 		br.close();
 		fis.close();
 		} catch (IOException ex){
@@ -199,10 +226,10 @@ public class CivChat2FileLogger {
 	 */
 	private void serverStartup(){
 		try{
-			writer.write("Chat log created at " + new Date());
-            writer.newLine();
-            writer.newLine();
-            writer.flush();
+			fileWriter.write("Chat log created at " + new Date());
+			fileWriter.newLine();
+			fileWriter.newLine();
+			fileWriter.flush();
 		} catch (IOException ex){
 			instance.severeMessage("Could not write to chatlog file " + ex);
 		}
@@ -213,6 +240,11 @@ public class CivChat2FileLogger {
 	 * @param toSave the File to save to
 	 */
 	public void saveIgnoredFile(File toSave){
+		if(toSave == null){
+			instance.debugmessage("toSave file is null.....");
+			return;
+		}
+		instance.debugmessage("Saving ignoredFile [" + toSave.toString() + "]");
 		try{
 			FileOutputStream fos = new FileOutputStream(toSave);
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));			
