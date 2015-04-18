@@ -7,12 +7,11 @@
   <groupId>net.minelink</groupId>
   <artifactId>CombatTagPlusParent</artifactId>
   <packaging>pom</packaging>
-  <version>${ctplus.version}</version>
+  <version>1.1.2-SNAPSHOT</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <ctplus.version>1.1.1-SNAPSHOT</ctplus.version>
   </properties>
 
   <modules>
