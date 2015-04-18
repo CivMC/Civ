@@ -39,9 +39,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>craftbukkit</artifactId>
-      <version>1.7.10-R0.1</version>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>Spigot1.8.3</artifactId>
+      <version>1.8.3</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -53,10 +53,6 @@
   </dependencies>
   
   <repositories>
-    <repository>
-      <id>bukkit-repo</id>
-      <url>http://repo.bukkit.org/content/groups/public/</url>
-    </repository>
     <repository>
       <id>NameLayer-repo</id>
       <url>http://192.99.169.83:8080/plugin/repository/project/NameLayer-master/Build/117/repository/</url>
