@@ -42,7 +42,6 @@ public class JukeAlert extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        com.untamedears.JukeAlert.external.Metrics.install(this);
         configManager = new ConfigManager();
         groupMediator = new GroupMediator();
         jaLogger = new JukeAlertLogger();
