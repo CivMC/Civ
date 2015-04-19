@@ -49,8 +49,7 @@ public class GroupManagerDao {
 			try {
 				db.execute("create table db_version (db_version int not null," +
 						"update_time varchar(24),"
-						+ "plugin_name varchar(40)," +
-						"primary key (db_version));", true);
+						+ "plugin_name varchar(40));", true);
 				ver = 1;
 			} catch (SQLException e) {
 			}
