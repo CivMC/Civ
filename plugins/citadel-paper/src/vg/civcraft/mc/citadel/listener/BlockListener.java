@@ -493,7 +493,7 @@ public class BlockListener implements Listener{
                         if (group.isDisciplined()) {
                             sb.append(" (Disciplined)");
                         }
-                        sb.append("\nGroup id: " + reinforcement);
+                        sb.append("\nGroup id: " + reinforcement.getGroupId());
                         
                         player.sendMessage(ChatColor.GREEN + sb.toString());
                     } else if(reinforcement.isAccessible(player, PermissionType.BLOCKS, PermissionType.DOORS, PermissionType.CHESTS)){
