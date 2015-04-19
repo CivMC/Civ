@@ -27,7 +27,10 @@ public class ListGroups extends PlayerCommand {
 		UUID uuid = null;
 		Boolean autopages = false;
 		if ((sender.isOp() && sender.hasPermission("namelayer.admin"))) {
-            uuid = NameAPI.getUUID(args[0]);
+			if (args.length == 0)
+				uuid = NameAPI.getUUID(sender.getName());
+			else if (args.length == 1)
+				uuid = NameAPI.getUUID(args[0]);
             if(uuid == null){
             	sender.sendMessage(ChatColor.RED + "UUID is NULL,  OP Usage is /nllg <playername>");
             	return true;

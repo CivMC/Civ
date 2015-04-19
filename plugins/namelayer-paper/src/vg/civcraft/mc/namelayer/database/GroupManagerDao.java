@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.jline.internal.Log;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException;
+
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -43,10 +45,15 @@ public class GroupManagerDao {
 		long begin_time = System.currentTimeMillis();
 		log(Level.INFO, "Checking Database to see if update is needed!");
 		int ver = checkVersion(plugin.getName());
-		db.execute("create table if not exists db_version (db_version int not null," +
-				"update_time varchar(24),"
-				+ "plugin_name varchar(40)," +
-				"primary key (db_version));");
+		if (ver == 0)
+			try {
+				db.execute("create table db_version (db_version int not null," +
+						"update_time varchar(24),"
+						+ "plugin_name varchar(40)," +
+						"primary key (db_version));", true);
+				ver = 1;
+			} catch (SQLException e) {
+			}
 		if (ver == 0){
 			long first_time = System.currentTimeMillis();
 			log(Level.INFO, "Performing database update to version 1!\n" +
@@ -261,6 +268,7 @@ public class GroupManagerDao {
 				"group_type) values (group_name, founder, password, discipline_flags, group_type);"
 				+ "insert into faction_member (member_name, role, group_id) "
 				+ "select founder, 'OWNER', f.group_id from faction_id f where f.group_name = group_name;"
+				+ "select f.group_id from faction_id f where f.group_name = group_name;"
 				+ "end;");
 	}
 	
