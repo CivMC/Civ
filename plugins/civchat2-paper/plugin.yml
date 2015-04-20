@@ -16,4 +16,5 @@ commands:
       aliases: [ig, igroup, ignoreg]
     groupc:
       aliases: [groupchat, gchat, gc]
+    ignorelist:
     

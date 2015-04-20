@@ -10,6 +10,7 @@ import vg.civcraft.mc.namelayer.command.Command;
 import vg.civcraft.mc.civchat2.command.commands.GroupChat;
 import vg.civcraft.mc.civchat2.command.commands.Ignore;
 import vg.civcraft.mc.civchat2.command.commands.IgnoreGroup;
+import vg.civcraft.mc.civchat2.command.commands.IgnoreList;
 import vg.civcraft.mc.civchat2.command.commands.Reply;
 import vg.civcraft.mc.civchat2.command.commands.Tell;
 import vg.civcraft.mc.civchat2.command.commands.Afk;
@@ -25,6 +26,7 @@ public class CivChat2CommandHandler {
 		addCommands(new GroupChat("groupc"));
 		addCommands(new Ignore("ignore"));
 		addCommands(new IgnoreGroup("ignoregroup"));
+		addCommands(new IgnoreList("ignorelist"));
 	}
 	
 	public void addCommands(Command command){

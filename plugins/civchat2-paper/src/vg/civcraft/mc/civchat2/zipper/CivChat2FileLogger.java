@@ -1,6 +1,5 @@
 package vg.civcraft.mc.civchat2.zipper;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,19 +7,18 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -38,8 +36,7 @@ import vg.civcraft.mc.namelayer.NameAPI;
 public class CivChat2FileLogger {
 	
 	private CivChat2 instance;
-	private FileConfiguration fConfig;
-	private static CivChat2Manager chatMan;
+	private CivChat2Manager chatMan;
 	private CivChat2Config config;
 	private File toRecord;
 	private File ignoredPlayers;
@@ -59,11 +56,13 @@ public class CivChat2FileLogger {
 		dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		chatDirectory = instance.getDataFolder() + File.separator + "ChatLogs" + File.separator;
 		ignoreDirectory = instance.getDataFolder() + File.separator + "IgnoredLogs" + File.separator;
+		toRecord = new File(chatDirectory);
+		chatMan = instance.getCivChat2Manager();
 		checkDirectories(chatDirectory);
 		checkDirectories(ignoreDirectory);
 		initchatLog(chatDirectory + dateString + ".txt");
 		initIgnoreLog(ignoreDirectory + "ignorelist.txt");
-		serverStartup();
+		fileManagement(dateString, chatDirectory);
 	}
 	/**
 	 * Method to create/check if directory exists
@@ -73,11 +72,11 @@ public class CivChat2FileLogger {
 		File directory = new File(dir);
 		if(!directory.exists()){
 			//directory does not exist create it
-			instance.infoMessage("Creating new Directory for CivChat2");
+			CivChat2.infoMessage("Creating new Directory...");
 			try{
 				directory.mkdir();
 			} catch (SecurityException e){
-				instance.severeMessage("Error creating directory: " + e);
+				CivChat2.severeMessage("Error creating directory: " + e);
 			}
 		}
 	}
@@ -87,24 +86,24 @@ public class CivChat2FileLogger {
 	 */
 	public void initchatLog(String filename){
 		File existing = new File(filename);
-		instance.debugmessage("Initializing chatlog... filename=[" + filename.toString() + "]");
+		CivChat2.debugmessage("Initializing chatlog... filename=[" + filename.toString() + "]");
 		//first create chatlog file
 		try{
 			if(existing.exists()){
 				//directory already exists
-				instance.infoMessage("Existing Chat File: " + existing.getAbsolutePath());
+				CivChat2.infoMessage("Existing Chat File: " + existing.getAbsolutePath());
 				FileWriter fw = new FileWriter(existing.getAbsolutePath(), true);
 				fileWriter = new BufferedWriter(fw);
 			} else {
-				instance.infoMessage("Creating new File" + existing.getAbsolutePath());
+				CivChat2.infoMessage("Creating new File" + existing.getAbsolutePath());
 				existing.createNewFile();
 				PrintWriter fStream = new PrintWriter(existing);
 				fileWriter = new BufferedWriter(fStream);
-				toRecord = existing;
+				addHeader();
 			}
 		
 		} catch (IOException ex){
-			instance.warningMessage("File Failed" + ex);
+			CivChat2.warningMessage("File Failed" + ex);
 		}
 	}
 	
@@ -114,61 +113,40 @@ public class CivChat2FileLogger {
 	 */
 	public void initIgnoreLog(String filename){
 		File existing = new File(filename);
-		instance.debugmessage("Initializing IgnoreLog...");
+		CivChat2.debugmessage("Initializing IgnoreLog...");
 		try{
 			if(existing.exists()){
 				//ignore file exists load it
-				instance.infoMessage("Existing Ignore file: " + existing.getAbsolutePath());
+				CivChat2.infoMessage("Existing Ignore file: " + existing.getAbsolutePath());
 				FileWriter fw = new FileWriter(existing, true);
 				writer = new BufferedWriter(fw);
 				ignoredPlayers = existing;
-				loadIgnoredPlayers(ignoredPlayers);
+				chatMan.loadIgnoredPlayers(ignoredPlayers);
 			} else {
 				//create new ignore file
-				instance.infoMessage("Creating new Ignore file: " + existing.getAbsolutePath());
+				CivChat2.infoMessage("Creating new Ignore file: " + existing.getAbsolutePath());
 				existing.createNewFile();
 				PrintWriter pw = new PrintWriter(existing);
 				writer = new BufferedWriter(pw);
 				ignoredPlayers = existing;
+				addIgnoreHeader();
 			}
 		} catch (IOException ex){
-			instance.warningMessage("File Failed: " + ex);
-		}
-	}
-	
-	/**
-	 * Method to pass ignoredFile Contents to ChatManager
-	 * @param file ignoredPlayers file
-	 */
-	private void loadIgnoredPlayers(File file) {
-		try{
-			FileInputStream fis = new FileInputStream(file);
-			BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-			String line;
-			HashMap<String, List<String>> ignoreListForChatMan = new HashMap<String, List<String>>();
-			while ((line = br.readLine()) != null) {
-				String parts[] = line.split(",");
-				String owner = parts[0];
-				List<String> participants = new ArrayList<>();
-				for (int x = 1; x < parts.length; x++) {
-					participants.add(parts[x]);
-				}
-				ignoreListForChatMan.put(owner, participants);
-			}
-			if(ignoreListForChatMan != null){
-				instance.debugmessage("Loaded ignore list... [" + ignoreListForChatMan.size() + "] ignore entries");
-				if(ignoreListForChatMan.size() != 0){
-					chatMan.setIgnoredPlayer(ignoreListForChatMan);
-				}
-			}
-		br.close();
-		fis.close();
-		} catch (IOException ex){
-			instance.severeMessage("Could not read ignore file " + ex);
+			CivChat2.warningMessage("File Failed: " + ex);
 		}
 	}
 	
 	
+	private void addIgnoreHeader() {
+		try {
+			writer.write("Ignore List Format: <OwnerName>,<Ignoree1>,<Ignoree....>,...,<GROUP(groupname)>");
+			writer.flush();
+		} catch (IOException e) {
+			CivChat2.severeMessage("Error writing to file " + e);
+		}
+		
+		
+	}
 	/**
 	 * Method to write text to the current chatlog
 	 * @param sender Player sending the message
@@ -197,10 +175,12 @@ public class CivChat2FileLogger {
 		sb.append("[");
 		sb.append(msg);
 		sb.append("] ");
+		sb.append("\n");
+		String writeMsg = sb.toString();
 		try{
-			fileWriter.write(msg);
+			fileWriter.write(writeMsg);
 		} catch (IOException ex){
-			instance.severeMessage("Could not write to chatlog file " + ex);
+			CivChat2.severeMessage("Could not write to chatlog file " + ex);
 		}
 	}
 	
@@ -215,23 +195,23 @@ public class CivChat2FileLogger {
 			fileWriter.newLine();
 			fileWriter.flush();
 			fileWriter.close();
-			saveIgnoredFile(ignoredPlayers);
+			chatMan.saveIgnoredFile(ignoredPlayers);
 		} catch (IOException ex){
-			instance.severeMessage("Could not write to chatlog file " + ex);
+			CivChat2.severeMessage("Could not write to chatlog file " + ex);
 		}
 	}
 	
 	/**
-	 * Method to run at init
+	 * Method to run to add header info to chatlog
 	 */
-	private void serverStartup(){
+	private void addHeader(){
 		try{
 			fileWriter.write("Chat log created at " + new Date());
 			fileWriter.newLine();
 			fileWriter.newLine();
 			fileWriter.flush();
 		} catch (IOException ex){
-			instance.severeMessage("Could not write to chatlog file " + ex);
+			CivChat2.severeMessage("Could not write to chatlog file " + ex);
 		}
 	}
 	
@@ -240,27 +220,16 @@ public class CivChat2FileLogger {
 	 * @param toSave the File to save to
 	 */
 	public void saveIgnoredFile(File toSave){
+		CivChat2.debugmessage("Trying to saveIgnoredFile");
 		if(toSave == null){
-			instance.debugmessage("toSave file is null.....");
+			CivChat2.debugmessage("toSave file is null.....");
 			return;
 		}
-		instance.debugmessage("Saving ignoredFile [" + toSave.toString() + "]");
-		try{
-			FileOutputStream fos = new FileOutputStream(toSave);
-			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));			
-			HashMap<String, List<String>> ignoredList = chatMan.getIgnoredPlayer();
-			Set<String> players = ignoredList.keySet();
-			for(String player : players){
-				bw.append(player + ",");
-				for(String ignoredUser : ignoredList.get(player)){	
-					bw.append(ignoredUser + ",");
-				}
-				bw.newLine();
-			}
-			bw.flush();
-			fos.close();
-		}catch (IOException ex){
-			instance.severeMessage("Could not write to ignore file " + ex);
+		CivChat2.debugmessage("Saving ignoredFile [" + toSave.toString() + "]");
+		try {
+			chatMan.saveIgnoredFile(toSave);
+		} catch (IOException e) {
+			CivChat2.severeMessage("Error writing ignorelist file: " + e);
 		}
 	}
 	
@@ -274,36 +243,63 @@ public class CivChat2FileLogger {
 			public boolean accept(File dir, String name) {
 				return name.toLowerCase().endsWith(".txt"); 
 				}
-			});
+			});	
 		
 		if(filtered != null && filtered.length > config.getFilesToZip()){
-			instance.infoMessage("Zipping [" + filtered.length + "] Files");
+			//get oldest file first
+			List<String> fileDates = new ArrayList<String>();
+			for(File f : filtered){
+				fileDates.add(f.getName());
+			}
+			
+			Collections.sort(fileDates, new Comparator<String>(){
+				DateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+				@Override
+				public int compare(String s1, String s2){
+					try{
+						return f.parse(s1).compareTo(f.parse(s2));
+					} catch (ParseException e){
+						throw new IllegalArgumentException(e);
+					}
+				}
+			});
+			
+			int numToZip = filtered.length - config.getFilesToZip();
+			int zipCount = 1;
+			CivChat2.infoMessage("Zipping [" + numToZip + "] Files");
 			byte[] buffer = new byte[1024];
 			try{
-				instance.debugmessage("Currently Zipping Files");
+				CivChat2.debugmessage("Currently Zipping Files");
 				FileOutputStream fos = new FileOutputStream(chatDirectory + date + ".zip");
                 ZipOutputStream zos = new ZipOutputStream(fos);
                 for (File file : filtered) {
-                    ZipEntry ze = new ZipEntry(file.toString());
-                    zos.putNextEntry(ze);
-                    int length;
-                    FileInputStream in = new FileInputStream(file);
-                    while ((length = in.read(buffer)) > 0){
-                    	zos.write(buffer, 0 , length);
-                    }
-                    zos.closeEntry();
-                    file.delete();
-                    in.close();
+                	if(zipCount >= numToZip){
+                		//done zipping now
+                	}
+                	else{
+	                    ZipEntry ze = new ZipEntry(file.toString());
+	                    zos.putNextEntry(ze);
+	                    int length;
+	                    FileInputStream in = new FileInputStream(file);
+	                    while ((length = in.read(buffer)) > 0){
+	                    	zos.write(buffer, 0 , length);
+	                    }
+	                    zos.closeEntry();
+	                    in.close();
+	                    //close the file and then delete
+	                    file.delete();
+                	}
+                    zipCount++;
+                    
                 }
                 zos.close();
 			} catch (Exception e) {
-            	instance.severeMessage("Error Zipping Files" + e);
+            	CivChat2.severeMessage("Error Zipping Files" + e);
             	return;
             }
 			
 			zipFile();
 		}
-		instance.debugmessage("Nothing to Zip");
 	}
 	
 	private void zipFile(){
@@ -312,9 +308,9 @@ public class CivChat2FileLogger {
                 return name.toLowerCase().endsWith(".zip");
             }
         });
-        instance.infoMessage("zipList.length = " + zipList.length);
+        CivChat2.infoMessage("zipList.length = " + zipList.length);
         if (zipList != null && zipList.length > config.getMaxNumberofZips()) {
-            instance.infoMessage("Deleting zips...");
+            CivChat2.infoMessage("Deleting zips...");
             long holder = 0;
             long tester;
             File toDelete = zipList[0];
@@ -326,7 +322,7 @@ public class CivChat2FileLogger {
                 }
             }
             toDelete.delete();
-            instance.infoMessage("Deleted: " + toDelete.getName());
+            CivChat2.infoMessage("Deleted: " + toDelete.getName());
         }
 	}
 	

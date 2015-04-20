@@ -1,10 +1,23 @@
 chat:
+  #globalChatRange: The base chat distance that people will message across def=1000
   globalChatRange: 1000
+  #defaultChatColor: The default chatcolor to use for global chat def=BLUE
   defaultChatColor: BLUE
+  #yIncreaseDist: The Y-Level to increase chat at def=100
+  yIncreaseDist: 100
+  #yIncreaseScale: They scale to increase chat distance after YIncreaseDist def=5
+  #Scale value should be between 1-10 (10 = 100 extra blocks per 1 y block) 
+  yIncreaseScale: 5
 info:
+  #debug: lots of debugging logging will show up in the console def=false
   debug: true
+  #groups: if NameLayer groups is enabled def=true
   groups: true
+  #afkmessage: The default afk message people will get when player has afk toggled def=Player is currently AFK
   afkmessage: Player is currently AFK
 file:
-  filesToZip: 15
+  #filesToZip: The number of chatlog files to zip together
+  filesToZip: 10
+  #maxNumberofZips: The number of chatlog zips to keep
   maxNumberofZips: 4
+  

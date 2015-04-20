@@ -42,15 +42,24 @@ public class Ignore extends PlayerCommand{
 			handler.helpPlayer(this, sender); 
 			return true;
 		}
+		String ignore = null;
+		try{
+			ignore = NameAPI.getCurrentName(NameAPI.getUUID(args[0].trim()));
+		} catch (Exception e){
+			sender.sendMessage(ChatColor.RED + "No player exists with that name");
+			return true;
+		}
 		
-		String ignore = NameAPI.getCurrentName(NameAPI.getUUID(args[0]));
 		if(ignore == null){
-			//no player exists with that name
 			sender.sendMessage(ChatColor.RED + "No player exists with that name");
 			return true;
 		}
 		
 		String name = NameAPI.getCurrentName(player.getUniqueId());
+		if(ignore == name){
+			sender.sendMessage(ChatColor.RED + "You cannot ignore yourself");
+			return true;
+		}
 		if(chatMan.addIgnoringPlayer(name, ignore)){
 			//Player added to list
 			String debugMessage = "Player ignored another Player, Player: " + name + " IgnoredPlayer: " + ignore;

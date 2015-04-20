@@ -11,6 +11,7 @@ import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civchat2.zipper.CivChat2FileLogger;
+import vg.civcraft.mc.civchat2.CivChat2Manager;
 
 /**
  * @author jjj5311
@@ -22,11 +23,10 @@ public class CivChat2 extends JavaPlugin{
 	private static CivChat2Log log_;
 	private static boolean groupsEnabled;
 	private static CivChat2Config config_;
-	private static CivChat2Manager chatMan;
+	private CivChat2Manager chatMan;
 	private CivChat2Listener chatListener;
 	private static CivChat2CommandHandler handle;
 	private static CivChat2FileLogger fileLog;
-	private static boolean debug = false;
 	
 	public void onEnable(){
 		//onEnable stuff
@@ -37,10 +37,10 @@ public class CivChat2 extends JavaPlugin{
 			//config.yml does not exist save the default
 			this.saveDefaultConfig();
 		}
-		debug = config_.getDebug();
+		config_.getDebug();
 		log_ = new CivChat2Log();
 		log_.initializeLogger(instance);
-		
+		chatMan = new CivChat2Manager(instance);
 		groupsEnabled = config_.getGroupsEnabled();
 		log_.info("groupsEnabled is set to: " + groupsEnabled);
 		log_.debug("Debug Enabled");
@@ -48,8 +48,6 @@ public class CivChat2 extends JavaPlugin{
 		handle.registerCommands();
 		fileLog = new CivChat2FileLogger();
 		fileLog.Init();
-		chatMan = new CivChat2Manager(instance);
-		chatMan.test();
 		chatListener = new CivChat2Listener(chatMan);
 		registerEvents();
 	}
@@ -59,9 +57,8 @@ public class CivChat2 extends JavaPlugin{
 		fileLog.serverShutdown();
 	}
 	
-	public static CivChat2Manager getCivChat2Manager(){
-		debugmessage("Returning CivChat2Manager");
-		return chatMan;
+	public CivChat2Manager getCivChat2Manager(){
+		return this.chatMan;
 	}
 
 	public static boolean debugEnabled() {
