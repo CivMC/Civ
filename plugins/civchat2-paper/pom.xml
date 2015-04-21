@@ -4,7 +4,7 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>vg.civcraft.mc.civchat2</groupId>
-  <artifactId>NameLayer</artifactId>
+  <artifactId>CivChat2</artifactId>
   <packaging>jar</packaging>
   <version>1.0.0-${build.number}</version>
   <name>CivChat2</name>
