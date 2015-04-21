@@ -26,7 +26,7 @@ public class CivChat2 extends JavaPlugin{
 	private CivChat2Manager chatMan;
 	private CivChat2Listener chatListener;
 	private static CivChat2CommandHandler handle;
-	private static CivChat2FileLogger fileLog;
+	private CivChat2FileLogger fileLog;
 	
 	public void onEnable(){
 		//onEnable stuff
@@ -40,14 +40,15 @@ public class CivChat2 extends JavaPlugin{
 		config_.getDebug();
 		log_ = new CivChat2Log();
 		log_.initializeLogger(instance);
+		fileLog = new CivChat2FileLogger();
 		chatMan = new CivChat2Manager(instance);
+		fileLog.Init();
 		groupsEnabled = config_.getGroupsEnabled();
 		log_.info("groupsEnabled is set to: " + groupsEnabled);
 		log_.debug("Debug Enabled");
 		handle = new CivChat2CommandHandler();
 		handle.registerCommands();
-		fileLog = new CivChat2FileLogger();
-		fileLog.Init();
+		
 		chatListener = new CivChat2Listener(chatMan);
 		registerEvents();
 	}
@@ -101,11 +102,11 @@ public class CivChat2 extends JavaPlugin{
 		log_.severe(severeMsg);
 	}
 
-	public static CivChat2Config getPluginConfig() {
+	public CivChat2Config getPluginConfig() {
 		return config_;
 	}
 
-	public static CivChat2FileLogger getCivChat2FileLogger() {
+	public CivChat2FileLogger getCivChat2FileLogger() {
 		return fileLog;
 	}
 

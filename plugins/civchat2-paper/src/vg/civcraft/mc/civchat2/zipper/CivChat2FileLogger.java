@@ -52,7 +52,7 @@ public class CivChat2FileLogger {
 	 */
 	public void Init(){
 		instance = CivChat2.getInstance();
-		config = CivChat2.getPluginConfig();
+		config = instance.getPluginConfig();
 		dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		chatDirectory = instance.getDataFolder() + File.separator + "ChatLogs" + File.separator;
 		ignoreDirectory = instance.getDataFolder() + File.separator + "IgnoredLogs" + File.separator;
@@ -324,6 +324,9 @@ public class CivChat2FileLogger {
             toDelete.delete();
             CivChat2.infoMessage("Deleted: " + toDelete.getName());
         }
+	}
+	public void test() {
+		CivChat2.debugmessage("CivChat2FileLogger being accessed successfully");
 	}
 	
 	

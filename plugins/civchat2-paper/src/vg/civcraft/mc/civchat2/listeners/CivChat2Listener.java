@@ -8,6 +8,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -68,9 +69,14 @@ public class CivChat2Listener implements Listener {
 		
 		if(!(chatChannel == null)){
 			CivChat2.debugmessage("PlayerChatEvent chatChannel does not equal null");
-			Player receive = Bukkit.getPlayerExact(chatChannel);
+			Player receive = Bukkit.getPlayer(NameAPI.getUUID(chatChannel));
 			
 			if(!(receive == null)){
+				if(!(groupChat == null)){
+					//player is group chatting
+					chatman.sendGroupMsg(sender.getName(), chatMessage, gm.getGroup(groupChat));
+					return;
+				}
 				if(chatman.isIgnoringPlayer(sender.getName(), chatChannel)){
 					CivChat2.debugmessage("PlayerChatEvent receive != null isIgnoringGroups is true");
 					String muteMessage = ChatColor.YELLOW + chatChannel + ChatColor.RED + " has muted you";
@@ -91,10 +97,7 @@ public class CivChat2Listener implements Listener {
 				return;
 			}
 		}
-		if(!(groupChat == null)){
-			//player is group chatting
-			chatman.sendGroupMsg(sender.getName(), chatMessage, gm.getGroup(groupChat));
-		}
+		
 		CivChat2.debugmessage("PlayerChatEvent calling chatman.broadcastMessage()");
 		chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getRecipients());
 	}

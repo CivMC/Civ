@@ -29,6 +29,7 @@ public class CivChat2Manager {
 	
 	private CivChat2Config config;
 	private CivChat2FileLogger chatLog;
+	private CivChat2 instance;
 	
 	
 	//chatChannels in hashmap with (Player 1 name, player 2 name)
@@ -54,9 +55,10 @@ public class CivChat2Manager {
 	
 	
 	public CivChat2Manager(CivChat2 pluginInstance){
-		CivChat2.debugmessage("CivChat2Manager Initialized");
-		config = CivChat2.getPluginConfig();
-		chatLog = CivChat2.getCivChat2FileLogger();
+		instance = pluginInstance;
+		config = instance.getPluginConfig();
+		chatLog = instance.getCivChat2FileLogger();
+		chatLog.test();
 		defaultColor = config.getDefaultColor();
 	}
 	
@@ -171,7 +173,7 @@ public class CivChat2Manager {
 		}
 		else if(isIgnoringPlayer(receiverName, senderName)){
 			//player is ignoring the sender
-			//sender.sendMessage(ignoreMsg);
+			sender.sendMessage(ignoreMsg);
 			return;
 		}
 		CivChat2.debugmessage("Sending private chat message");
@@ -209,9 +211,7 @@ public class CivChat2Manager {
 	public void broadcastMessage(Player sender, String chatMessage, Set<Player> recipients) {
 		int range = config.getChatRange();
 		int height = config.getYInc();
-		double scale = (config.getYScale())/100;
-		CivChat2.debugmessage("broadcast config values: range: " + range + " height: " + height + " scale: " + scale);
-		
+		double scale = (config.getYScale())/1000;		
 		chatLog.writeToChatLog(sender, chatMessage, "GLOBAL");
 		Location location = sender.getLocation();
 		int x = location.getBlockX();
@@ -226,8 +226,9 @@ public class CivChat2Manager {
 			//player is above chat increase range
 			CivChat2.debugmessage("Player is above Y chat increase range");
 			int above = y - height;
-			double newRange = range + (range * (scale*above));
-			CivChat2.debugmessage("New chatrange=[" + newRange + "]");
+			int newRange = (int) (range + (range * (scale*above)));
+			range = newRange;
+			CivChat2.debugmessage("New chatrange = [" + range + "]");
 		}
 		
 		for (Player receiver : recipients){
@@ -330,7 +331,7 @@ public class CivChat2Manager {
 	 * @return true if ignoring, false otherwise
 	 */
 	public boolean isIgnoringGroup(String name, Group group) {
-		String ignoreGroupName = "GROUP:" + group;
+		String ignoreGroupName = "GROUP" + group;
 		if(!ignorePlayers.containsKey(name)){
 			//player is ignoring something
 			List<String> ignored = ignorePlayers.get(name);
@@ -358,6 +359,11 @@ public class CivChat2Manager {
 			List<String> ignored = ignorePlayers.get(name);
 			if(ignored.contains(ignore)){
 				//take player out of list
+				if(ignored.size() == 1){
+					//take owner out of ignorePlayers
+					ignorePlayers.remove(name);
+					return false;
+				}
 				ignored.remove(ignore);
 				ignorePlayers.put(name, ignored);
 				return false;
@@ -437,6 +443,8 @@ public class CivChat2Manager {
 		}
 		msgSender.sendMessage(ChatColor.GRAY + "[" + group.getName() + "] " + name + ": " + ChatColor.WHITE + groupMsg);
 		for(Player receiver: members){
+			CivChat2.debugmessage("Checking if player is ignoring group or player.. Receiver: " + receiver.getName() 
+					+ " Group: " + group.getName() + " Sender: " + name);
 			if(isIgnoringGroup(receiver.getName(), group)){
 				continue;
 			}
@@ -478,11 +486,6 @@ public class CivChat2Manager {
 		}
 	}
 
-
-	public void test() {
-		CivChat2.debugmessage("Testing chatman was created");		
-	}
-
 	
 	/**
 	 * Method to pass ignoredFile Contents to ChatManager
@@ -502,7 +505,7 @@ public class CivChat2Manager {
 			CivChat2.debugmessage("Reading Ignore List curLine: " + line);
 			String parts[] = line.split(",");
 			String owner = parts[0];
-			CivChat2.debugmessage("Owner=" + owner + " # of Ignorees: " + parts.length);
+			CivChat2.debugmessage("Owner=" + owner + " # of Ignorees: " + (parts.length - 1));
 			List<String> participants = new ArrayList<>();
 			for (int x = 0; x < parts.length; x++) {
 				if(x == 0){

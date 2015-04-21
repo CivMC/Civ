@@ -5,9 +5,10 @@ chat:
   defaultChatColor: BLUE
   #yIncreaseDist: The Y-Level to increase chat at def=100
   yIncreaseDist: 100
-  #yIncreaseScale: They scale to increase chat distance after YIncreaseDist def=5
-  #Scale value should be between 1-10 (10 = 100 extra blocks per 1 y block) 
-  yIncreaseScale: 5
+  #yIncreaseScale: Scale to increase chat distance.. this value divided by 1000
+  #so yIncreaseScale=10 will be 10 extra radius per block they go up, 1 would be 1 extra radius per block
+  #Coded formula globalChatRange = globalChatRange + (globalChatRange * ((yIncreaseScale/1000) * #blocksaboveydist)))
+  yIncreaseScale: 1
 info:
   #debug: lots of debugging logging will show up in the console def=false
   debug: true
