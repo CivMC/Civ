@@ -35,7 +35,7 @@ public class NameLayerPlugin extends JavaPlugin implements NameConfigListener{
 	
 	private NameConfigManager config;
 	
-	@NameConfig(name = "groups.enable", def = "false", type = NameConfigType.Bool)
+	@NameConfig(name = "groups.enable", def = "true", type = NameConfigType.Bool)
 	@Override
 	public void onEnable() {
 		instance = this;
