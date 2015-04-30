@@ -1,10 +1,23 @@
 package net.minelink.ctplus;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class Settings {
 
@@ -19,6 +32,131 @@ public final class Settings {
         Configuration defaults = plugin.getConfig().getDefaults();
         defaults.set("disabled-worlds", new ArrayList<>());
         defaults.set("disabled-commands", new ArrayList<>());
+    }
+
+    public void update() {
+        // Initialize the new config cache
+        List<Map<String, Object>> config = new ArrayList<>();
+
+        // Default config path
+        Path path = Paths.get(plugin.getDataFolder().getAbsolutePath() + File.separator + "config.yml");
+
+        // Iterate through new config
+        YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(plugin.getResource("config.yml"));
+        for (String key : defaultConfig.getKeys(true)) {
+            // Convert key to correct format for a single line
+            String oneLineKey = StringUtils.repeat("  ", key.split(".").length) + key + ": ";
+
+            // Generate new config section
+            Map<String, Object> section = new HashMap<>();
+            section.put("key", oneLineKey);
+
+            // Attempt to save value from old configuration
+            if (key.equals("config-version")) {
+                section.put("value", defaultConfig.get(key));
+            } else if (plugin.getConfig().get(key) != null) {
+                section.put("value", plugin.getConfig().get(key));
+            } else {
+                section.put("value", defaultConfig.get(key));
+            }
+
+            // Save section to cache
+            config.add(section);
+        }
+
+        // Attempt to open the default config
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(plugin.getResource("config.yml")))) {
+            // Iterate through all lines in this config
+            String current;
+            String previous = null;
+            while ((current = br.readLine()) != null) {
+                // Iterate through current config cache
+                for (Map<String, Object> section : config) {
+                    // Do nothing if key is not valid
+                    if (section.get("key") == null) continue;
+
+                    // Do nothing if previous line was null
+                    if (previous == null) continue;
+
+                    // Do nothing if previous line was not a comment
+                    if (!previous.matches("(| +)#.*")) continue;
+
+                    // Do nothing if current line doesn't start with this key
+                    if (!current.startsWith(section.get("key").toString())) continue;
+
+                    // Add comment to config cache
+                    section.put("comment", previous);
+                }
+
+                // Set the previous line
+                previous = current;
+            }
+        } catch (IOException e) {
+            // Failed to read from default config within plugin jar
+            plugin.getLogger().severe("**CONFIG ERROR**");
+            plugin.getLogger().severe("Failed to read from default config within plugin jar.");
+
+            // Leave a stack trace in console
+            e.printStackTrace();
+        }
+
+        // Attempt to open the new config
+        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+            // Iterate through new cached config
+            for (int i = 0; i < config.size(); i++) {
+                // Get section of the config at this index
+                Map<String, Object> section = config.get(i);
+
+                // Do nothing if key is invalid
+                if (section.get("key") == null) continue;
+
+                // Do nothing if value is invalid
+                if (section.get("value") == null) continue;
+
+                // Write the comment if it is valid
+                if (section.get("comment") != null) {
+                    writer.write(section.get("comment").toString());
+                    writer.newLine();
+                }
+
+                // Write the key
+                String key = section.get("key").toString();
+                writer.write(key);
+
+                // Write the value
+                Object value = section.get("value");
+
+                if (value instanceof String) {
+                    writer.write("'" + value.toString() + "'");
+                } else if (value instanceof List) {
+                    List list = (List) value;
+                    int indent = key.length() - key.replace(" ", "").length() - 1;
+                    for (Object s : list) {
+                        writer.newLine();
+                        writer.write(StringUtils.repeat(" ", indent) + "  - '" + s.toString() + "'");
+                    }
+                } else {
+                    writer.write(value.toString());
+                }
+
+                // Write a couple more lines for extra space ;-)
+                if (config.size() > i + 1) {
+                    writer.newLine();
+                    writer.newLine();
+                }
+            }
+        } catch (IOException e) {
+            // Failed to write new config file to the disk
+            plugin.getLogger().severe("**CONFIG ERROR**");
+            plugin.getLogger().severe("Failed to write an updated config to the disk.");
+
+            // Leave a stack trace in console
+            e.printStackTrace();
+        }
+
+        // Reload the updated configuration
+        plugin.reloadConfig();
+        load();
     }
 
     public int getConfigVersion() {

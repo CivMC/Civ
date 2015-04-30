@@ -82,9 +82,8 @@ public final class CombatTagPlus extends JavaPlugin {
 
         settings = new Settings(this);
         if (settings.isOutdated()) {
-            getLogger().warning("**WARNING**");
-            getLogger().warning("Your CombatTagPlus configuration file is outdated.");
-            getLogger().warning("Backup your old file and then delete it to generate a new copy.");
+            settings.update();
+            getLogger().info("Configuration file has been updated.");
         }
 
         // Initialize plugin state
