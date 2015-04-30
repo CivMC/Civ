@@ -78,9 +78,10 @@ public final class PlayerListener implements Listener {
 
         String victim = tag.getVictimName();
         String attacker = tag.getAttackerName();
+        Player attackerPlayer = Bukkit.getPlayer(tag.getAttackerId());
 
         // Do nothing if there is one player missing
-        if (victim == null || attacker == null) return;
+        if (victim == null || attacker == null || attackerPlayer == null) return;
 
         // Sometimes the victim tags the attacker and then dies by another cause like fire
         // In these cases, the tag manager sees the attacker as the victim
@@ -91,7 +92,8 @@ public final class PlayerListener implements Listener {
         }
 
         // Broadcast kill message
-        message = message.replace("{victim}", victim).replace("{attacker}", attacker);
+        String item = attackerPlayer.getItemInHand().getType().toString().toLowerCase().replace("_", " ");
+        message = message.replace("{victim}", victim).replace("{attacker}", attacker).replace("{item}", item);
         Bukkit.broadcast(message, "ctplus.notify.kill");
     }
 

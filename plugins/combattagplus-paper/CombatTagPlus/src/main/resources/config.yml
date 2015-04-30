@@ -71,7 +71,7 @@ generate-random-name: true
 random-name-prefix: PvPLogger
 
 # This message is displayed when a player is killed by another player. Set this to '' to display nothing.
-kill-message: '&8&l>> &c{victim} was slain by {attacker}'
+kill-message: '&8&l>> &c{victim} was slain by {attacker} with a(n) {item}'
 
 # Enables BarAPI integration for displaying a boss bar counting down with the remaining tag time.
 barapi: true
