@@ -256,8 +256,9 @@ public final class CombatTagPlus extends JavaPlugin {
         } else if (cmd.getName().equals("combattagplus")) {
             if (!(sender instanceof Player)) return false;
 
-            Tag tag = getTagManager().getTag(((Player) sender).getUniqueId());
-            if (tag == null || tag.isExpired()) {
+            UUID uniqueId = ((Player) sender).getUniqueId();
+            Tag tag = getTagManager().getTag(uniqueId);
+            if (tag == null || tag.isExpired() || !getTagManager().isTagged(uniqueId)) {
                 sender.sendMessage(GREEN + "You are not in combat.");
                 return true;
             }

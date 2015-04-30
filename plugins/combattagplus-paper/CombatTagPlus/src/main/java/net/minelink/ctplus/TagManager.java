@@ -75,7 +75,7 @@ public final class TagManager {
         Tag tag = new Tag(helper, expireTime, victim, attacker);
 
         // Add victim to tagged players
-        if (victim != null && !plugin.getSettings().onlyTagAttacker()) {
+        if (victim != null && !(plugin.getSettings().onlyTagAttacker() && isTagged(victimId))) {
             tags.put(victimId, tag);
         }
 
@@ -96,7 +96,9 @@ public final class TagManager {
     }
 
     public boolean isTagged(UUID playerId) {
-        return getTag(playerId) != null;
+        Tag tag = tags.get(playerId);
+        return ((tag != null && !tag.isExpired()) &&
+                (plugin.getSettings().onlyTagAttacker() && !tag.getVictimId().equals(playerId)));
     }
 
 }
