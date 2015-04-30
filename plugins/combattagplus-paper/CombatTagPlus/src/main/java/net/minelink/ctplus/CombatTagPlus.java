@@ -9,7 +9,7 @@ import net.minelink.ctplus.listener.NpcListener;
 import net.minelink.ctplus.listener.PlayerHeadsListener;
 import net.minelink.ctplus.listener.PlayerListener;
 import net.minelink.ctplus.listener.TagListener;
-import net.minelink.ctplus.task.BarUpdateTask;
+import net.minelink.ctplus.task.TagUpdateTask;
 import net.minelink.ctplus.task.SafeLogoutTask;
 import net.minelink.ctplus.util.DurationUtils;
 import net.minelink.ctplus.util.ReflectionUtils;
@@ -119,7 +119,7 @@ public final class CombatTagPlus extends JavaPlugin {
             @Override
             public void run() {
                 getTagManager().purgeExpired();
-                BarUpdateTask.purgeFinished();
+                TagUpdateTask.purgeFinished();
                 SafeLogoutTask.purgeFinished();
             }
         }, 3600, 3600);

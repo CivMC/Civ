@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-public final class BarUpdateTask extends BukkitRunnable {
+public final class TagUpdateTask extends BukkitRunnable {
 
     private final static Map<UUID, Integer> tasks = new HashMap<>();
 
@@ -22,19 +22,13 @@ public final class BarUpdateTask extends BukkitRunnable {
 
     private final UUID playerId;
 
-    private BarUpdateTask(CombatTagPlus plugin, Player player) {
+    private TagUpdateTask(CombatTagPlus plugin, Player player) {
         this.plugin = plugin;
         this.playerId = player.getUniqueId();
     }
 
     @Override
     public void run() {
-        // Cancel if BarAPI option was disabled
-        if (!plugin.getSettings().useBarApi()) {
-            cancel();
-            return;
-        }
-
         // Cancel if player went offline
         Player player = plugin.getPlayer(playerId);
         if (player == null) {
@@ -43,37 +37,39 @@ public final class BarUpdateTask extends BukkitRunnable {
         }
 
         // Remove bar before displaying the next one
-        if (BarAPI.hasBar(player)) {
+        if (plugin.getSettings().useBarApi() && BarAPI.hasBar(player)) {
             BarAPI.removeBar(player);
         }
 
         // Cancel if player is no longer tagged
         Tag tag = plugin.getTagManager().getTag(playerId);
         if (tag == null || tag.isExpired()) {
-            BarAPI.setMessage(player, plugin.getSettings().getBarAPIEndedMessage(), 1);
+            if (plugin.getSettings().useBarApi()) {
+                BarAPI.setMessage(player, plugin.getSettings().getBarAPIEndedMessage(), 1);
+            }
+
+            if (!plugin.getSettings().getUntagMessage().isEmpty()) {
+                player.sendMessage(plugin.getSettings().getUntagMessage());
+            }
             cancel();
             return;
         }
 
-        int remainingDuration = tag.getTagDuration();
-        int tagDuration = plugin.getSettings().getTagDuration();
-        float percent = ((float) remainingDuration / tagDuration) * 100;
-        String remaining = DurationUtils.format(remainingDuration);
+        if (plugin.getSettings().useBarApi()) {
+            int remainingDuration = tag.getTagDuration();
+            int tagDuration = plugin.getSettings().getTagDuration();
+            float percent = ((float) remainingDuration / tagDuration) * 100;
+            String remaining = DurationUtils.format(remainingDuration);
 
-        // Display remaining timer in boss bar
-        String message = plugin.getSettings().getBarAPICountdownMessage().replace("{remaining}", remaining);
-        BarAPI.setMessage(player, message, percent);
+            // Display remaining timer in boss bar
+            String message = plugin.getSettings().getBarAPICountdownMessage().replace("{remaining}", remaining);
+            BarAPI.setMessage(player, message, percent);
+        }
     }
 
     public static void run(final CombatTagPlus plugin, final Player p) {
-        // Do nothing if BarAPI option is disabled
-        if (!plugin.getSettings().useBarApi()) return;
-
         // Do nothing if player is a NPC
         if (plugin.getNpcPlayerHelper().isNpc(p)) return;
-
-        // Do nothing if BarAPI isn't even enabled
-        if (!Bukkit.getPluginManager().isPluginEnabled("BarAPI")) return;
 
         final BukkitScheduler s = Bukkit.getScheduler();
 
@@ -95,7 +91,7 @@ public final class BarUpdateTask extends BukkitRunnable {
                 }
 
                 // Create new repeating task
-                taskId = new BarUpdateTask(plugin, p).runTaskTimer(plugin, 0, 5).getTaskId();
+                taskId = new TagUpdateTask(plugin, p).runTaskTimer(plugin, 0, 5).getTaskId();
                 tasks.put(playerId, taskId);
             }
         });

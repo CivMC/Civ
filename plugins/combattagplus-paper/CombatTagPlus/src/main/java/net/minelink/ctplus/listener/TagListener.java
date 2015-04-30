@@ -3,7 +3,7 @@ package net.minelink.ctplus.listener;
 import com.google.common.collect.ImmutableSet;
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.event.PlayerCombatTagEvent;
-import net.minelink.ctplus.task.BarUpdateTask;
+import net.minelink.ctplus.task.TagUpdateTask;
 import net.minelink.ctplus.task.SafeLogoutTask;
 import org.bukkit.GameMode;
 import org.bukkit.entity.AnimalTamer;
@@ -178,17 +178,17 @@ public final class TagListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void showBar(PlayerCombatTagEvent event) {
+    public void updateTag(PlayerCombatTagEvent event) {
         // Update victim's combat bar
         Player victim = event.getVictim();
         if (victim != null) {
-            BarUpdateTask.run(plugin, victim);
+            TagUpdateTask.run(plugin, victim);
         }
 
         // Update attacker's combat bar
         Player attacker = event.getAttacker();
         if (attacker != null) {
-            BarUpdateTask.run(plugin, attacker);
+            TagUpdateTask.run(plugin, attacker);
         }
     }
 

@@ -1,6 +1,7 @@
 package net.minelink.ctplus;
 
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -189,6 +190,11 @@ public final class Settings {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
+    public String getUntagMessage() {
+        String message = plugin.getConfig().getString("untag-message", "");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
     public boolean playEffect() {
         return plugin.getConfig().getBoolean("play-effect");
     }
@@ -290,7 +296,7 @@ public final class Settings {
     }
 
     public boolean useBarApi() {
-        return plugin.getConfig().getBoolean("barapi");
+        return plugin.getConfig().getBoolean("barapi") && Bukkit.getPluginManager().isPluginEnabled("BarAPI");
     }
 
     public String getBarAPIEndedMessage() {

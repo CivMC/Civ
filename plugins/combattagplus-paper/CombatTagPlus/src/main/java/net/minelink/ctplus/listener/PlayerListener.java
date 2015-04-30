@@ -3,7 +3,7 @@ package net.minelink.ctplus.listener;
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.Tag;
 import net.minelink.ctplus.event.PlayerCombatTagEvent;
-import net.minelink.ctplus.task.BarUpdateTask;
+import net.minelink.ctplus.task.TagUpdateTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -54,8 +54,8 @@ public final class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void showBar(PlayerJoinEvent event) {
-        BarUpdateTask.run(plugin, event.getPlayer());
+    public void updateTag(PlayerJoinEvent event) {
+        TagUpdateTask.run(plugin, event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
