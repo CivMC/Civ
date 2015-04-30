@@ -69,23 +69,29 @@ public final class Settings {
             // Iterate through all lines in this config
             String current;
             String previous = null;
+            List<String> comments = new ArrayList<>();
             while ((current = br.readLine()) != null) {
+                // If previous line is a comment add it, else clear the comments
+                if (previous != null && previous.matches("(| +)#.*")) {
+                    comments.add(previous);
+                } else {
+                    comments.clear();
+                }
+
                 // Iterate through current config cache
                 for (Map<String, Object> section : config) {
                     // Do nothing if key is not valid
                     if (section.get("key") == null) continue;
 
-                    // Do nothing if previous line was null
-                    if (previous == null) continue;
-
-                    // Do nothing if previous line was not a comment
-                    if (!previous.matches("(| +)#.*")) continue;
+                    // Do nothing if there are no comments to assign
+                    if (comments.isEmpty()) continue;
 
                     // Do nothing if current line doesn't start with this key
-                    if (!current.startsWith(section.get("key").toString())) continue;
+                    String key = section.get("key").toString();
+                    if (!current.startsWith(key.substring(0, key.length() - 1))) continue;
 
                     // Add comment to config cache
-                    section.put("comment", previous);
+                    section.put("comments", new ArrayList<>(comments));
                 }
 
                 // Set the previous line
@@ -113,10 +119,13 @@ public final class Settings {
                 // Do nothing if value is invalid
                 if (section.get("value") == null) continue;
 
-                // Write the comment if it is valid
-                if (section.get("comment") != null) {
-                    writer.write(section.get("comment").toString());
-                    writer.newLine();
+                // Write the comments if they are valid
+                Object comments = section.get("comments");
+                if (comments != null && comments instanceof List) {
+                    for (Object o : (List) comments) {
+                        writer.write(o.toString());
+                        writer.newLine();
+                    }
                 }
 
                 // Write the key
