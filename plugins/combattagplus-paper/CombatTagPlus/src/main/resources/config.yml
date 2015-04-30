@@ -1,5 +1,5 @@
 # Don't touch this. It's here to determine whether you need to refresh your config.
-config-version: 11
+config-version: 12
 
 # The duration in seconds that both the attacker and victim should be tagged in combat.
 tag-duration: 15
@@ -16,10 +16,19 @@ always-spawn: false
 # Duration in seconds the player must wait without movement to safely logout using the /logout command.
 logout-wait-time: 10
 
+# This message is displayed when the player has attempted to safely log out but moved or entered pvp.
+logout-cancelled-message: '&cLogout cancelled due to movement or pvping.'
+
+# This message is displayed when the player has successfully performed a safe logout.
+logout-success-message: '&aYou were logged out safely.'
+
+# This message is displayed every second when the player is pending a logout. {remaining} is the time remaining.
+logout-pending-message: '&7Logging out safely in &b{remaining}&7...'
+
 # Instantly kills the player when logged in PvP.
 instantly-kill: false
 
-# Untags the player if they are kicked from combat rather than logging
+# Untags the player if they are kicked from combat rather than logging.
 untag-on-kick: false
 
 # Only the attacker will be tagged if this is set to true.
@@ -28,17 +37,29 @@ only-tag-attacker: false
 # Prevent block editing while tagged.
 disable-block-edit: false
 
+# This message is displayed when a player attempts to edit blocks within pvp if block editing is disabled in pvp.
+disable-block-edit-message: '&bBlock editing &cis disabled in combat.'
+
 # Prevent players in creative from getting tagged.
 disable-creative-tags: true
 
 # Prevent tagged players throwing enderpearls while tagged.
 disable-enderpearls: false
 
+# This message is displayed when a player attempts to enderpearl within pvp if enderpearls are disabled in pvp.
+disable-enderpearls-message: '&bEnderpearls &care disabled in combat.'
+
 # Prevent tagged players from flying during combat.
 disable-flying: false
 
+# This message is displayed when a player attempts to fly within pvp if flying is disabled in pvp.
+disable-flying-message: '&bFlying &cis disabled in combat.'
+
 # Prevent tagged players from teleporting during combat.
 disable-teleportation: false
+
+# This message is displayed when a player attempts to teleport within pvp if teleportation is disabled in pvp.
+disable-teleportation-message: '&bTeleportation &cis disabled in combat.'
 
 # The duration in seconds to despawn the combat logger's NPC if it hasn't died.
 npc-despawn-time: 60
@@ -55,16 +76,22 @@ kill-message: '&8&l>> &c{victim} was slain by {attacker}'
 # Enables BarAPI integration for displaying a boss bar counting down with the remaining tag time.
 barapi: true
 
-# Enables force fields around Anti-PvP zones while in combat
+# Message to be displayed on BarAPI when players' pvp timer has ended.
+barapi-ended-message: '&aYou are no longer in combat!'
+
+# Message to be displayed on BarAPI when the player is still in pvp.
+barapi-countdown-message: '&eCombatTag: &f{remaining}'
+
+# Enables force fields around Anti-PvP zones while in combat.
 force-fields: true
 
 # Radius in blocks around the player that should be checked for forcefields (Higher numbers = more laggy)
 force-field-radius: 3
 
-# Material of the forcefield block type
+# Material of the forcefield block type.
 force-field-material: STAINED_GLASS
 
-# Damage value of the material specified above
+# Damage value of the material specified above.
 force-field-material-damage: 14
 
 # Enables Factions integration for disabling combat tagging in regions with PVP disabled.
@@ -75,6 +102,9 @@ worldguard: true
 
 # This is a list of worlds where combat tagging should be disabled.
 disabled-worlds: [world_the_end]
+
+# This message is displayed when the player tries to execute a disabled command whilst in combat.
+disabled-command-message: '&b{command}&c is disabled in combat.'
 
 # These commands are unusable by players who are combat tagged.
 disabled-commands:

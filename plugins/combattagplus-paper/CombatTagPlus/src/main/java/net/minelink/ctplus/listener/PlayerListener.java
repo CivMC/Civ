@@ -23,8 +23,6 @@ import org.bukkit.event.player.PlayerToggleFlightEvent;
 
 import java.util.UUID;
 
-import static org.bukkit.ChatColor.*;
-
 public final class PlayerListener implements Listener {
 
     private final CombatTagPlus plugin;
@@ -64,7 +62,7 @@ public final class PlayerListener implements Listener {
     public void broadcastKill(PlayerDeathEvent event) {
         // Do nothing with kill message is blank
         String message = plugin.getSettings().getKillMessage();
-        if (message == null || message.isEmpty()) return;
+        if (message.isEmpty()) return;
 
         Player player = event.getEntity();
         UUID playerId = player.getUniqueId();
@@ -115,7 +113,9 @@ public final class PlayerListener implements Listener {
 
             // Cancel command
             event.setCancelled(true);
-            player.sendMessage(AQUA + c + RED + " is disabled in combat.");
+            if (!plugin.getSettings().getDisabledCommandMessage().isEmpty()) {
+                player.sendMessage(plugin.getSettings().getDisabledCommandMessage());
+            }
         }
     }
 
@@ -133,7 +133,9 @@ public final class PlayerListener implements Listener {
 
         // Cancel block edit
         event.setCancelled(true);
-        player.sendMessage(AQUA + "Block editing " + RED + " is disabled in combat.");
+        if (!plugin.getSettings().getDisableBlockEditMessage().isEmpty()) {
+            player.sendMessage(plugin.getSettings().getDisableBlockEditMessage());
+        }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -150,7 +152,9 @@ public final class PlayerListener implements Listener {
 
         // Cancel block edit
         event.setCancelled(true);
-        player.sendMessage(AQUA + "Block editing " + RED + " is disabled in combat.");
+        if (!plugin.getSettings().getDisableBlockEditMessage().isEmpty()) {
+            player.sendMessage(plugin.getSettings().getDisableBlockEditMessage());
+        }
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -174,7 +178,9 @@ public final class PlayerListener implements Listener {
 
         // Cancel enderpearl throw
         event.setCancelled(true);
-        player.sendMessage(AQUA + "Enderpearls " + RED + " are disabled in combat.");
+        if (!plugin.getSettings().getDisableEnderpearlsMessage().isEmpty()) {
+            player.sendMessage(plugin.getSettings().getDisableEnderpearlsMessage());
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -188,14 +194,18 @@ public final class PlayerListener implements Listener {
         p = event.getVictim();
         if (p != null && p.isFlying() && !p.hasPermission("ctplus.bypass.flying")) {
             p.setAllowFlight(false);
-            p.sendMessage(AQUA + "Flying " + RED + "is disabled in combat.");
+            if (!plugin.getSettings().getDisableFlyingMessage().isEmpty()) {
+                p.sendMessage(plugin.getSettings().getDisableFlyingMessage());
+            }
         }
 
         // Disable flying for attacker
         p = event.getAttacker();
         if (p != null && p.isFlying() && !p.hasPermission("ctplus.bypass.flying")) {
             p.setAllowFlight(false);
-            p.sendMessage(AQUA + "Flying " + RED + "is disabled in combat.");
+            if (!plugin.getSettings().getDisableFlyingMessage().isEmpty()) {
+                p.sendMessage(plugin.getSettings().getDisableFlyingMessage());
+            }
         }
     }
 
@@ -219,7 +229,9 @@ public final class PlayerListener implements Listener {
 
         // Cancel the event and inform the player
         event.setCancelled(true);
-        player.sendMessage(AQUA + "Flying " + RED + "is disabled in combat.");
+        if (!plugin.getSettings().getDisableFlyingMessage().isEmpty()) {
+            player.sendMessage(plugin.getSettings().getDisableFlyingMessage());
+        }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -239,7 +251,9 @@ public final class PlayerListener implements Listener {
 
         // Cancel the event and inform the player
         event.setCancelled(true);
-        player.sendMessage(AQUA + "Teleportation " + RED + "is disabled in combat.");
+        if (!plugin.getSettings().getDisableTeleportationMessage().isEmpty()) {
+            player.sendMessage(plugin.getSettings().getDisableTeleportationMessage());
+        }
     }
 
 }

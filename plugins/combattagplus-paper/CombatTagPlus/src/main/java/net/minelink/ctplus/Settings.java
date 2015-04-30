@@ -185,8 +185,8 @@ public final class Settings {
     }
 
     public String getTagMessage() {
-        String message = plugin.getConfig().getString("tag-message", null);
-        return message != null ? ChatColor.translateAlternateColorCodes('&', message) : null;
+        String message = plugin.getConfig().getString("tag-message", "");
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public boolean playEffect() {
@@ -199,6 +199,21 @@ public final class Settings {
 
     public int getLogoutWaitTime() {
         return plugin.getConfig().getInt("logout-wait-time", 10);
+    }
+
+    public String getLogoutCancelledMessage() {
+        String message = plugin.getConfig().getString("logout-cancelled-message", "");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public String getLogoutSuccessMessage() {
+        String message = plugin.getConfig().getString("logout-success-message", "");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public String getLogoutPendingMessage() {
+        String message = plugin.getConfig().getString("logout-pending-message", "");
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public boolean instantlyKill() {
@@ -217,6 +232,11 @@ public final class Settings {
         return plugin.getConfig().getBoolean("disable-block-edit");
     }
 
+    public String getDisableBlockEditMessage() {
+        String message = plugin.getConfig().getString("disable-block-edit-message", "");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
     public boolean disableCreativeTags() {
         return plugin.getConfig().getBoolean("disable-creative-tags");
     }
@@ -225,12 +245,27 @@ public final class Settings {
         return plugin.getConfig().getBoolean("disable-enderpearls");
     }
 
+    public String getDisableEnderpearlsMessage() {
+        String message = plugin.getConfig().getString("disable-enderpearls-message", "");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
     public boolean disableFlying() {
         return plugin.getConfig().getBoolean("disable-flying");
     }
 
+    public String getDisableFlyingMessage() {
+        String message = plugin.getConfig().getString("disable-flying-message", "");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
     public boolean disableTeleportation() {
         return plugin.getConfig().getBoolean("disable-teleportation");
+    }
+
+    public String getDisableTeleportationMessage() {
+        String message = plugin.getConfig().getString("disable-teleportation-message", "");
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public int getNpcDespawnTime() {
@@ -250,12 +285,22 @@ public final class Settings {
     }
 
     public String getKillMessage() {
-        String message = plugin.getConfig().getString("kill-message", null);
-        return message != null ? ChatColor.translateAlternateColorCodes('&', message) : null;
+        String message = plugin.getConfig().getString("kill-message", "");
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public boolean useBarApi() {
         return plugin.getConfig().getBoolean("barapi");
+    }
+
+    public String getBarAPIEndedMessage() {
+        String message = plugin.getConfig().getString("barapi-ended-message", "&aYou are no longer in combat!");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public String getBarAPICountdownMessage() {
+        String message = plugin.getConfig().getString("barapi-countdown-message", "&eCombatTag: &f{remaining}");
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public boolean useForceFields() {
@@ -284,6 +329,11 @@ public final class Settings {
 
     public List<String> getDisabledWorlds() {
         return plugin.getConfig().getStringList("disabled-worlds");
+    }
+
+    public String getDisabledCommandMessage() {
+        String message = plugin.getConfig().getString("disabled-command-message", "");
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public List<String> getDisabledCommands() {

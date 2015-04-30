@@ -26,8 +26,6 @@ import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.Set;
 
-import static org.bukkit.ChatColor.*;
-
 public final class TagListener implements Listener {
 
     private static final Set<PotionEffectType> harmfulEffects = ImmutableSet.of(
@@ -163,7 +161,7 @@ public final class TagListener implements Listener {
     public void sendTagMessage(PlayerCombatTagEvent event) {
         // DO nothing if tag message is blank
         String message = plugin.getSettings().getTagMessage();
-        if (message == null || message.isEmpty()) return;
+        if (message.isEmpty()) return;
 
         // Send combat tag notification to victim
         Player victim = event.getVictim();
@@ -200,7 +198,9 @@ public final class TagListener implements Listener {
         if (!SafeLogoutTask.cancel(player)) return;
 
         // Inform player
-        player.sendMessage(RED + "Logout cancelled due to being combat tagged.");
+        if (!plugin.getSettings().getLogoutCancelledMessage().isEmpty()) {
+            player.sendMessage(plugin.getSettings().getLogoutCancelledMessage());
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

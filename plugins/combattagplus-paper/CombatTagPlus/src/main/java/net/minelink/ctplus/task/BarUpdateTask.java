@@ -14,8 +14,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.bukkit.ChatColor.*;
-
 public final class BarUpdateTask extends BukkitRunnable {
 
     private final static Map<UUID, Integer> tasks = new HashMap<>();
@@ -52,7 +50,7 @@ public final class BarUpdateTask extends BukkitRunnable {
         // Cancel if player is no longer tagged
         Tag tag = plugin.getTagManager().getTag(playerId);
         if (tag == null || tag.isExpired()) {
-            BarAPI.setMessage(player, GREEN + "You are no longer in combat!", 1);
+            BarAPI.setMessage(player, plugin.getSettings().getBarAPIEndedMessage(), 1);
             cancel();
             return;
         }
@@ -63,7 +61,8 @@ public final class BarUpdateTask extends BukkitRunnable {
         String remaining = DurationUtils.format(remainingDuration);
 
         // Display remaining timer in boss bar
-        BarAPI.setMessage(player, YELLOW + "CombatTag: " + WHITE + remaining, percent);
+        String message = plugin.getSettings().getBarAPICountdownMessage().replace("{remaining}", remaining);
+        BarAPI.setMessage(player, message, percent);
     }
 
     public static void run(final CombatTagPlus plugin, final Player p) {

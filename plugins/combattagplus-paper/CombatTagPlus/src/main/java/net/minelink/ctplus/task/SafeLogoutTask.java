@@ -14,8 +14,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.bukkit.ChatColor.*;
-
 public final class SafeLogoutTask extends BukkitRunnable {
 
     private final static Map<UUID, SafeLogoutTask> tasks = new HashMap<>();
@@ -55,7 +53,10 @@ public final class SafeLogoutTask extends BukkitRunnable {
 
         // Cancel the task if player has moved
         if (hasMoved(player)) {
-            player.sendMessage(RED + "Logout cancelled due to movement.");
+            if (!plugin.getSettings().getLogoutCancelledMessage().isEmpty()) {
+                player.sendMessage(plugin.getSettings().getLogoutCancelledMessage());
+            }
+
             cancel();
             return;
         }
@@ -65,7 +66,11 @@ public final class SafeLogoutTask extends BukkitRunnable {
         if (remainingSeconds <= 0) {
             finished = true;
             plugin.getTagManager().untag(playerId);
-            player.kickPlayer(GREEN + "You were logged out safely.");
+
+            if (!plugin.getSettings().getLogoutSuccessMessage().isEmpty()) {
+                player.kickPlayer(plugin.getSettings().getLogoutSuccessMessage());
+            }
+
             cancel();
             return;
         }
@@ -73,7 +78,11 @@ public final class SafeLogoutTask extends BukkitRunnable {
         // Inform player
         if (remainingSeconds < this.remainingSeconds) {
             String remaining = DurationUtils.format(remainingSeconds);
-            player.sendMessage(GRAY + "Logging out safely in " + AQUA + remaining + GRAY + " ...");
+
+            if (!plugin.getSettings().getLogoutPendingMessage().isEmpty()) {
+                player.sendMessage(plugin.getSettings().getLogoutPendingMessage().replace("{remaining}", remaining));
+            }
+
             this.remainingSeconds = remainingSeconds;
         }
     }
