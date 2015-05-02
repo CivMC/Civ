@@ -37,7 +37,7 @@ public class PlayerListener implements Listener{
 			x = "You have auto-accepted invitation from the following groups while you were away: ";
 		}
 		else{
-			x = "You have been invited to the following groups while you were away: ";
+			x = "You have been invited to the following groups while you were away. You can accept each invitaion by using the command: /nlag [groupname].  ";
 		}			
 		
 		for (Group g:notifications .get(uuid)){
