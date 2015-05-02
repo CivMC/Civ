@@ -73,7 +73,7 @@ public final class PlayerListener implements Listener {
         }
 
         // Do nothing if player isn't tagged
-        Tag tag = plugin.getTagManager().getTag(playerId);
+        Tag tag = plugin.getTagManager().getTag(playerId, true);
         if (tag == null) return;
 
         String victim = tag.getVictimName();

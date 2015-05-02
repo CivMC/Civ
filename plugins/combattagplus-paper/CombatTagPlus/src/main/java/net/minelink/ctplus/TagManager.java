@@ -75,7 +75,7 @@ public final class TagManager {
         Tag tag = new Tag(helper, expireTime, victim, attacker);
 
         // Add victim to tagged players
-        if (victim != null && !(plugin.getSettings().onlyTagAttacker() && isTagged(victimId))) {
+        if (victim != null) {
             tags.put(victimId, tag);
         }
 
@@ -91,14 +91,30 @@ public final class TagManager {
     }
 
     public Tag getTag(UUID playerId) {
+        return getTag(playerId, false);
+    }
+
+    public Tag getTag(UUID playerId, boolean includeHidden) {
         Tag tag = tags.get(playerId);
-        return tag != null && !tag.isExpired() ? tag : null;
+
+        if (tag == null || tag.isExpired() ||
+                (!includeHidden && plugin.getSettings().onlyTagAttacker() &&
+                        tag.getVictimId().equals(playerId))) {
+            return null;
+        }
+
+        return tag;
     }
 
     public boolean isTagged(UUID playerId) {
         Tag tag = tags.get(playerId);
-        return ((tag != null && !tag.isExpired()) &&
-                (plugin.getSettings().onlyTagAttacker() && !tag.getVictimId().equals(playerId)));
+        boolean tagged = (tag != null && !tag.isExpired());
+
+        if (tagged && plugin.getSettings().onlyTagAttacker()) {
+            return !tag.getVictimId().equals(playerId);
+        }
+
+        return tagged;
     }
 
 }
