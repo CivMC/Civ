@@ -18,24 +18,24 @@ import vg.civcraft.mc.namelayer.misc.ProfileInterface;
 public class AssociationListener implements Listener{
 	
 	private AssociationList associations;
-	private ClassHandler ch = ClassHandler.ch;
+	private ClassHandler ch;
 	private ProfileInterface game;
 	
 	public AssociationListener(){
-		if (ch != null)
-			game = ch.getProfileClass();
 		Bukkit.getScheduler().runTaskLater(NameLayerPlugin.getInstance(), new Runnable(){
 
 			@Override
 			public void run() {
-				associations =  NameAPI.getAssociationList();
+				ch = ClassHandler.ch;
+				if (ch != null)
+					game = ch.getProfileClass();
+				
+				associations = NameAPI.getAssociationList();
 			}
 			
 		}, 1);
 	}
 	
-	private String packageName = getClass().getPackage().getName();
-	private String version = packageName.substring(packageName.lastIndexOf('.') + 1);
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void OnPlayerLogin(PlayerJoinEvent event)
 	{

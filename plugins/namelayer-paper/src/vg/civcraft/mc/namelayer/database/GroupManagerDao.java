@@ -207,7 +207,7 @@ public class GroupManagerDao {
 					"defaultgroup varchar(255) NOT NULL,"+
 					"primary key key_uuid(uuid))");
 			ver = updateVersion(ver, plugin.getName());
-			log(Level.INFO, "Database update to Version five took " + (System.currentTimeMillis() - first_time) /1000 + " seconds.");
+			log(Level.INFO, "Database update to Version six took " + (System.currentTimeMillis() - first_time) /1000 + " seconds.");
 		}
 		log(Level.INFO, "Database update took " + (System.currentTimeMillis() - begin_time) / 1000 + " seconds.");
 	}

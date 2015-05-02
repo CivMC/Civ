@@ -43,8 +43,8 @@ public class NameLayerPlugin extends JavaPlugin implements NameConfigListener{
 		config = new NameConfigManager();
 		registerListeners();
 		loadDatabases();
-		new NameAPI(new GroupManager(), associations, config);
 	    ClassHandler.Initialize(Bukkit.getServer());
+		new NameAPI(new GroupManager(), associations, config);
 		loadGroups = config.get(this, "groups.enable").getBool();
 		if (loadGroups){
 			handle = new CommandHandler();
