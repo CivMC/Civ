@@ -64,7 +64,7 @@ public class Reply extends PlayerCommand{
 			for(String s: args){
 				sb.append(s);
 			}
-			chatMan.sendPrivateMsg(player, receiver, args[0]);
+			chatMan.sendPrivateMsg(player, receiver, sb.toString());
 			return true;
 		}
 		else if (args.length == 0)
