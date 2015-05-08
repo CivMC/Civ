@@ -25,7 +25,7 @@ public class Tell extends PlayerCommand{
 		setIdentifier("tell");
 		setDescription("This command is used to send a message or chat with another player");
 		setUsage("/tell <PlayerName> (message)");
-		setArguments(1,2);
+		setArguments(1,100);
 	}
 	
 	@Override
@@ -58,9 +58,11 @@ public class Tell extends PlayerCommand{
 		}
 		if(args.length == 2){
 			//player and message
-			chatMan.addChatChannel(player.getName(), receiver.getName());
-			player.sendMessage(ChatColor.GREEN + "You are now chatting with " + receiver.getName() + ".");
-			chatMan.sendPrivateMsg(player, receiver, args[1]);
+			StringBuilder builder = new StringBuilder();
+			for (int x = 1; x < args.length; x++)
+				builder.append(args[x] + " ");
+				
+			chatMan.sendPrivateMsg(player, receiver, builder.toString());
 			return true;
 		}
 		else if(args.length == 1){
