@@ -25,7 +25,7 @@ public class Tell extends PlayerCommand{
 		setIdentifier("tell");
 		setDescription("This command is used to send a message or chat with another player");
 		setUsage("/tell <PlayerName> (message)");
-		setArguments(1,100);
+		setArguments(0,100);
 	}
 	
 	@Override
@@ -38,6 +38,13 @@ public class Tell extends PlayerCommand{
 		}
 		
 		Player player = (Player) sender;
+		
+		if (args.length == 0){
+			chatMan.removeChannel(player.getName());
+			player.sendMessage(ChatColor.GREEN + "You have been removed from private chat.");
+			return true;
+		}
+		
 		UUID receiverUUID = chatMan.getPlayerUUID(args[0].trim());
 		Player receiver = Bukkit.getPlayer(receiverUUID);
 		if(receiver == null){
