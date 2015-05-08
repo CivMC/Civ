@@ -545,7 +545,7 @@ public class Utility {
     }
     
     /**
-     * Returns the block the Citadel is looking at, example: for ebds, doors we want the bottom half.
+     * Returns the block the Citadel is looking at, example: for beds, doors we want the bottom half.
      * @param block
      * @return Returns the block we want.
      */
@@ -561,6 +561,12 @@ public class Utility {
     		break;
 		case WOODEN_DOOR:
 		case IRON_DOOR_BLOCK:
+		case ACACIA_DOOR:
+		case BIRCH_DOOR:
+		case DARK_OAK_DOOR:
+		case JUNGLE_DOOR:
+		case SPRUCE_DOOR:
+		case WOOD_DOOR:
 			if (((Door) block.getState().getData()).isTopHalf())
 				b = block.getRelative(BlockFace.DOWN);
 			break;
