@@ -63,7 +63,7 @@ public class Tell extends PlayerCommand{
 			sender.sendMessage(ChatColor.RED + "Error: You cannot send a message to yourself.");
 			return true;
 		}
-		if(args.length == 2){
+		if(args.length >= 2){
 			//player and message
 			StringBuilder builder = new StringBuilder();
 			for (int x = 1; x < args.length; x++)
