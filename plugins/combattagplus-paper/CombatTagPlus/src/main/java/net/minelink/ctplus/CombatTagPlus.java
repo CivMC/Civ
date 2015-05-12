@@ -3,6 +3,7 @@ package net.minelink.ctplus;
 import net.minelink.ctplus.compat.api.NpcNameGeneratorFactory;
 import net.minelink.ctplus.compat.api.NpcPlayerHelper;
 import net.minelink.ctplus.hook.Hook;
+import net.minelink.ctplus.hook.TownyHook;
 import net.minelink.ctplus.listener.ForceFieldListener;
 import net.minelink.ctplus.listener.NpcListener;
 import net.minelink.ctplus.listener.PlayerHeadsListener;
@@ -82,6 +83,7 @@ public final class CombatTagPlus extends JavaPlugin {
         NpcNameGeneratorFactory.setNameGenerator(new NpcNameGeneratorImpl(this));
 
         integrateFactions();
+        integrateTowny();
         integrateWorldGuard();
 
         // Build player cache from currently online players
@@ -145,7 +147,6 @@ public final class CombatTagPlus extends JavaPlugin {
     }
 
     private void integrateFactions() {
-        // Use a dummy implementation if Factions is disabled
         if (!getSettings().useFactions()) {
             return;
         }
@@ -183,8 +184,22 @@ public final class CombatTagPlus extends JavaPlugin {
         }
     }
 
+    private void integrateTowny() {
+        if (!getSettings().useTowny()) {
+            return;
+        }
+
+        // Determine if Towny is loaded
+        if (Bukkit.getPluginManager().isPluginEnabled("Towny")) {
+            Hook hook = new TownyHook();
+            addHook(hook);
+            getLogger().info("Added Towny hook: " + hook.getClass().getCanonicalName());
+        } else {
+            getLogger().info("Towny integration is disabled because it is not loaded.");
+        }
+    }
+
     private void integrateWorldGuard() {
-        // Use a dummy implementation if WG is disabled
         if (!getSettings().useWorldGuard()) {
             return;
         }

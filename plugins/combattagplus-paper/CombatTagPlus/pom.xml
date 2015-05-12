@@ -150,5 +150,11 @@
       <version>3.9</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>com.palmergames</groupId>
+      <artifactId>Towny</artifactId>
+      <version>0.89.2.0</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 </project>

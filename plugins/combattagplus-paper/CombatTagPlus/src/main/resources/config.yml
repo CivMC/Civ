@@ -103,6 +103,9 @@ factions: true
 # Enables WorldGuard integration for disabling combat tagging in regions with PVP disabled.
 worldguard: true
 
+# Enables Towny integration for disabling combat tagging in regions with PVP disabled.
+towny: true
+
 # This is a list of worlds where combat tagging should be disabled.
 disabled-worlds: [world_the_end]
 
