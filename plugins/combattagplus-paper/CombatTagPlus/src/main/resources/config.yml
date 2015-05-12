@@ -1,5 +1,5 @@
 # Don't touch this. It's here to determine whether you need to refresh your config.
-config-version: 12
+config-version: 13
 
 # The duration in seconds that both the attacker and victim should be tagged in combat.
 tag-duration: 15
