@@ -45,7 +45,7 @@ public final class TagUpdateTask extends BukkitRunnable {
         Tag tag = plugin.getTagManager().getTag(playerId);
         if (tag == null || tag.isExpired()) {
             if (plugin.getSettings().useBarApi()) {
-                BarAPI.setMessage(player, plugin.getSettings().getBarAPIEndedMessage(), 1);
+                BarAPI.setMessage(player, plugin.getSettings().getBarApiEndedMessage(), 1);
             }
 
             if (!plugin.getSettings().getUntagMessage().isEmpty()) {
@@ -62,7 +62,7 @@ public final class TagUpdateTask extends BukkitRunnable {
             String remaining = DurationUtils.format(remainingDuration);
 
             // Display remaining timer in boss bar
-            String message = plugin.getSettings().getBarAPICountdownMessage().replace("{remaining}", remaining);
+            String message = plugin.getSettings().getBarApiCountdownMessage().replace("{remaining}", remaining);
             BarAPI.setMessage(player, message, percent);
         }
     }

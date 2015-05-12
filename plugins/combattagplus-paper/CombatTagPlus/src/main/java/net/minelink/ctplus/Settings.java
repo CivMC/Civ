@@ -299,12 +299,12 @@ public final class Settings {
         return plugin.getConfig().getBoolean("barapi") && Bukkit.getPluginManager().isPluginEnabled("BarAPI");
     }
 
-    public String getBarAPIEndedMessage() {
+    public String getBarApiEndedMessage() {
         String message = plugin.getConfig().getString("barapi-ended-message", "&aYou are no longer in combat!");
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
-    public String getBarAPICountdownMessage() {
+    public String getBarApiCountdownMessage() {
         String message = plugin.getConfig().getString("barapi-countdown-message", "&eCombatTag: &f{remaining}");
         return ChatColor.translateAlternateColorCodes('&', message);
     }
