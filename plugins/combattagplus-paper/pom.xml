@@ -20,12 +20,11 @@
     <module>CombatTagPlusCompat-v1_7_R4</module>
     <module>CombatTagPlusCompat-v1_8_R1</module>
     <module>CombatTagPlusCompat-v1_8_R2</module>
-    <module>CombatTagPlusFactions-API</module>
+    <module>CombatTagPlusHook</module>
     <module>CombatTagPlusFactions-v1_6</module>
     <module>CombatTagPlusFactions-v1_8</module>
     <module>CombatTagPlusFactions-v2_6</module>
     <module>CombatTagPlusFactions-v2_7</module>
-    <module>CombatTagPlusWG-API</module>
     <module>CombatTagPlusWG-v5</module>
     <module>CombatTagPlusWG-v6</module>
     <module>CombatTagPlus</module>

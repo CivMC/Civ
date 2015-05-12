@@ -2,19 +2,16 @@ package net.minelink.ctplus;
 
 import net.minelink.ctplus.compat.api.NpcNameGeneratorFactory;
 import net.minelink.ctplus.compat.api.NpcPlayerHelper;
-import net.minelink.ctplus.factions.api.FactionsHelper;
-import net.minelink.ctplus.factions.api.FactionsHelperImpl;
+import net.minelink.ctplus.hook.Hook;
 import net.minelink.ctplus.listener.ForceFieldListener;
 import net.minelink.ctplus.listener.NpcListener;
 import net.minelink.ctplus.listener.PlayerHeadsListener;
 import net.minelink.ctplus.listener.PlayerListener;
 import net.minelink.ctplus.listener.TagListener;
-import net.minelink.ctplus.task.TagUpdateTask;
 import net.minelink.ctplus.task.SafeLogoutTask;
+import net.minelink.ctplus.task.TagUpdateTask;
 import net.minelink.ctplus.util.DurationUtils;
 import net.minelink.ctplus.util.ReflectionUtils;
-import net.minelink.ctplus.worldguard.api.WorldGuardHelper;
-import net.minelink.ctplus.worldguard.api.WorldGuardHelperImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -23,7 +20,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -31,7 +30,9 @@ import static org.bukkit.ChatColor.*;
 
 public final class CombatTagPlus extends JavaPlugin {
 
-    private Map<UUID, Player> players;
+    private final Map<UUID, Player> players = new HashMap<>();
+
+    private final List<Hook> hooks = new ArrayList<>();
 
     private Settings settings;
 
@@ -40,10 +41,6 @@ public final class CombatTagPlus extends JavaPlugin {
     private NpcPlayerHelper npcPlayerHelper;
 
     private NpcManager npcManager;
-
-    private FactionsManager factionsManager;
-
-    private WorldGuardManager worldGuardManager;
 
     public Settings getSettings() {
         return settings;
@@ -59,14 +56,6 @@ public final class CombatTagPlus extends JavaPlugin {
 
     public NpcManager getNpcManager() {
         return npcManager;
-    }
-
-    public FactionsManager getFactionsManager() {
-        return factionsManager;
-    }
-
-    public WorldGuardManager getWorldGuardManager() {
-        return worldGuardManager;
     }
 
     @Override
@@ -96,13 +85,9 @@ public final class CombatTagPlus extends JavaPlugin {
         integrateWorldGuard();
 
         // Build player cache from currently online players
-        Map<UUID, Player> playerMap = new HashMap<>();
-
         for (Player player : Bukkit.getOnlinePlayers()) {
-            playerMap.put(player.getUniqueId(), player);
+            players.put(player.getUniqueId(), player);
         }
-
-        players = playerMap;
 
         // Register event listeners
         Bukkit.getPluginManager().registerEvents(new ForceFieldListener(this), this);
@@ -131,7 +116,6 @@ public final class CombatTagPlus extends JavaPlugin {
         // This also happens for individual players when they disconnect.
         if (players != null) {
             players.clear();
-            players = null;
         }
     }
 
@@ -163,7 +147,6 @@ public final class CombatTagPlus extends JavaPlugin {
     private void integrateFactions() {
         // Use a dummy implementation if Factions is disabled
         if (!getSettings().useFactions()) {
-            factionsManager = new FactionsManager(this, new FactionsHelperImpl());
             return;
         }
 
@@ -171,38 +154,29 @@ public final class CombatTagPlus extends JavaPlugin {
         Plugin plugin = Bukkit.getPluginManager().getPlugin("Factions");
         if (plugin == null) {
             getLogger().info("Factions integration is disabled because it is not loaded.");
-
-            // Use the dummy helper implementation if Factions isn't loaded
-            factionsManager = new FactionsManager(this, new FactionsHelperImpl());
             return;
         }
 
-        FactionsHelper helper = null;
         String[] v = plugin.getDescription().getVersion().split("\\.");
         String version = v[0] + "_" + v[1];
 
-        // Special case for HCF. Use FactionsUUID 1.6 compatibility helper
+        // Special case for HCF. Use FactionsUUID 1.6 hook
         if (version.compareTo("1_6") < 0) {
             version = "1_6";
         }
 
-        // Determine which helper class implementation to use
-        String className = "net.minelink.ctplus.factions.v" + version + ".FactionsHelperImpl";
+        // Determine which hook implementation to use
+        String className = "net.minelink.ctplus.factions.v" + version + ".FactionsHook";
 
         try {
-            // Try to create a new helper instance
-            helper = (FactionsHelper) Class.forName(className).newInstance();
-
-            // Create the manager which is what the plugin will interact with
-            factionsManager = new FactionsManager(this, helper);
+            // Create and add FactionsHook
+            addHook((Hook) Class.forName(className).newInstance());
+            getLogger().info("Added Factions hook: " + className);
         } catch (Exception e) {
-            // Something went wrong, chances are it's a newer, incompatible WorldGuard
+            // Something went wrong, chances are it's a newer, incompatible Factions
             getLogger().warning("**WARNING**");
             getLogger().warning("Failed to enable Factions integration due to errors.");
             getLogger().warning("This is most likely due to a newer Factions.");
-
-            // Use the dummy helper implementation since WG isn't supported
-            factionsManager = new FactionsManager(this, new FactionsHelperImpl());
 
             // Let's leave a stack trace in console for reporting
             e.printStackTrace();
@@ -212,7 +186,6 @@ public final class CombatTagPlus extends JavaPlugin {
     private void integrateWorldGuard() {
         // Use a dummy implementation if WG is disabled
         if (!getSettings().useWorldGuard()) {
-            worldGuardManager = new WorldGuardManager(this, new WorldGuardHelperImpl());
             return;
         }
 
@@ -220,32 +193,23 @@ public final class CombatTagPlus extends JavaPlugin {
         Plugin plugin = Bukkit.getPluginManager().getPlugin("WorldGuard");
         if (plugin == null) {
             getLogger().info("WorldGuard integration is disabled because it is not loaded.");
-
-            // Use the dummy helper implementation if WG isn't loaded
-            worldGuardManager = new WorldGuardManager(this, new WorldGuardHelperImpl());
             return;
         }
 
-        WorldGuardHelper helper = null;
         String v = plugin.getDescription().getVersion();
 
-        // Determine which helper class implementation to use
-        String className = "net.minelink.ctplus.worldguard.v" + (v.startsWith("5") ? 5 : 6) + ".WorldGuardHelperImpl";
+        // Determine which hook implementation to use
+        String className = "net.minelink.ctplus.worldguard.v" + (v.startsWith("5") ? 5 : 6) + ".WorldGuardHook";
 
         try {
-            // Try to create a new helper instance
-            helper = (WorldGuardHelper) Class.forName(className).newInstance();
-
-            // Create the manager which is what the plugin will interact with
-            worldGuardManager = new WorldGuardManager(this, helper);
+            // Create and add WorldGuardHook
+            addHook((Hook) Class.forName(className).newInstance());
+            getLogger().info("Added WorldGuard hook: " + className);
         } catch (Exception e) {
             // Something went wrong, chances are it's a newer, incompatible WorldGuard
             getLogger().warning("**WARNING**");
             getLogger().warning("Failed to enable WorldGuard integration due to errors.");
             getLogger().warning("This is most likely due to a newer WorldGuard.");
-
-            // Use the dummy helper implementation since WG isn't supported
-            worldGuardManager = new WorldGuardManager(this, new WorldGuardHelperImpl());
 
             // Let's leave a stack trace in console for reporting
             e.printStackTrace();
@@ -296,8 +260,21 @@ public final class CombatTagPlus extends JavaPlugin {
         return players.get(playerId);
     }
 
+    public boolean addHook(Hook hook) {
+        return hooks.add(hook);
+    }
+
+    public boolean removeHook(Hook hook) {
+        return hooks.remove(hook);
+    }
+
     public boolean isPvpEnabledAt(Location location) {
-        return getFactionsManager().isPvpEnabledAt(location) && getWorldGuardManager().isPvpEnabledAt(location);
+        for (Hook hook : hooks) {
+            if (!hook.isPvpEnabledAt(location)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

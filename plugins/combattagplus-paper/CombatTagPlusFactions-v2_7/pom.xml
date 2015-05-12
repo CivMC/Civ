@@ -32,7 +32,7 @@
     </dependency>
     <dependency>
       <groupId>net.minelink</groupId>
-      <artifactId>CombatTagPlusFactions-API</artifactId>
+      <artifactId>CombatTagPlusHook</artifactId>
       <version>1.1.2-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>

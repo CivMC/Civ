@@ -4,10 +4,10 @@ import com.massivecraft.factions.FFlag;
 import com.massivecraft.factions.entity.BoardColls;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.massivecore.ps.PS;
-import net.minelink.ctplus.factions.api.FactionsHelper;
+import net.minelink.ctplus.hook.Hook;
 import org.bukkit.Location;
 
-public class FactionsHelperImpl implements FactionsHelper {
+public class FactionsHook implements Hook {
 
     @Override
     public boolean isPvpEnabledAt(Location location) {
