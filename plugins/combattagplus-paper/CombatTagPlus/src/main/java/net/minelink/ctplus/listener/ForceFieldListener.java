@@ -66,7 +66,7 @@ public final class ForceFieldListener implements Listener {
 
         // Prevent sneaky players crossing the force field
         if (!changedBlocks.isEmpty() && !plugin.isPvpEnabledAt(t) && plugin.isPvpEnabledAt(f)) {
-            event.setTo(f.setDirection(t.getDirection()));
+            event.setCancelled(true);
         }
 
         // Remove no longer used spoofed blocks

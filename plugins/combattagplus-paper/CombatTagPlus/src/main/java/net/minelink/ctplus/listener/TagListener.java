@@ -132,7 +132,7 @@ public final class TagListener implements Listener {
 
             // Do nothing if the affected player is the thrower
             Player victim = (Player) entity;
-            if (victim.getUniqueId().equals(attacker.getUniqueId())) continue;
+            if (victim == attacker) continue;
 
             if (!plugin.getNpcPlayerHelper().isNpc(victim)) {
                 plugin.getTagManager().tag(victim, attacker);
