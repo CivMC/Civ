@@ -203,6 +203,10 @@ public final class Settings {
         return plugin.getConfig().getBoolean("always-spawn");
     }
 
+    public boolean mobTagging() {
+        return plugin.getConfig().getBoolean("mob-tagging");
+    }
+
     public int getLogoutWaitTime() {
         return plugin.getConfig().getInt("logout-wait-time", 10);
     }

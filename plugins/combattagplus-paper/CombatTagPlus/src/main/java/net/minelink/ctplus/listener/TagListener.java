@@ -67,8 +67,15 @@ public final class TagListener implements Listener {
             return;
         }
 
+        // Do not tag the victim if they are in creative mode
+        if (victim.getGameMode() == GameMode.CREATIVE && plugin.getSettings().disableCreativeTags()) {
+            victim = null;
+        }
+
         // Find attacker
-        if (attackerEntity instanceof Projectile) {
+        if (attackerEntity instanceof LivingEntity && plugin.getSettings().mobTagging()) {
+            attacker = null;
+        } else if (attackerEntity instanceof Projectile) {
             Projectile p = (Projectile) attackerEntity;
             ProjectileSource source = p.getShooter();
             if (!(source instanceof Player)) return;
@@ -88,6 +95,12 @@ public final class TagListener implements Listener {
 
             // Attacker is a player
             attacker = (Player) attackerEntity;
+
+            // Do not tag the attacker if they are in creative mode
+            if (attacker.getGameMode() == GameMode.CREATIVE && plugin.getSettings().disableCreativeTags()) {
+                attacker = null;
+            }
+
         } else {
             // Attacker is not a player
             return;
@@ -95,12 +108,6 @@ public final class TagListener implements Listener {
 
         // Do nothing if damage is self-inflicted
         if (victim == attacker) return;
-
-        // Do nothing if either player is in creative and config disables creative tags
-        if ((attacker.getGameMode() == GameMode.CREATIVE || victim.getGameMode() == GameMode.CREATIVE) &&
-                plugin.getSettings().disableCreativeTags()) {
-            return;
-        }
 
         // Combat tag victim and player
         plugin.getTagManager().tag(victim, attacker);
