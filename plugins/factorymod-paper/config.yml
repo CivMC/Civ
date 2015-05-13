@@ -1933,6 +1933,7 @@ production_factories:
       - Mutate_Dark_Oak_Saplings
       - Mutate_Podzol
       - Mutate_Grassless_Dirt 
+      - Sequencing_Allium
       - Sequencing_Sunflower
       - Sequencing_Lilac
       - Sequencing_Double_Tallgrass
@@ -7427,6 +7428,21 @@ production_recipes:
         material: SPONGE
         amount: 32
         display_name: Bastion
+  Sequencing_Allium:
+    name: Sequencing Allium
+     inputs:
+      Poppy:
+        material: RED_ROSE
+         amount: 8
+      Blue Orchid:
+        material: RED_ROSE
+         amount: 8
+        durablity: 1
+    outputs:
+      Allium:
+        material: RED_ROSE
+        amount: 4
+        durability: 2
   Sequencing_Sunflower:
     name: Sequencing Sunflower
     inputs:
