@@ -34,7 +34,8 @@ public class ReinforcementManager {
 			if (rein instanceof NullReinforcement){
 				return;
 			}
-			saveReinforcement(rein);
+			if (rein.isDirty())
+				saveReinforcement(rein);
 		}
 	};
 	private LoadingCache<Location, Reinforcement> reinforcements = CacheBuilder
@@ -69,6 +70,7 @@ public class ReinforcementManager {
 			deleteReinforcement(rein);
 		CitadelStatics.updateHitStat(CitadelStatics.UPDATE);
 		db.saveReinforcement(rein);
+		rein.setDirty(false);
 	}
 
 	/**

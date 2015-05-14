@@ -92,6 +92,7 @@ public class PlayerReinforcement extends Reinforcement{
 	 */
 	public void setInsecure(boolean bool){
 		isInsecure = bool;
+		isDirty = true;
 	}
 	/**
 	 * @return Returns the percent of the reinforcement.
@@ -139,6 +140,7 @@ public class PlayerReinforcement extends Reinforcement{
     public void setGroup(Group g){
     	this.g = g;
     	this.gp = NameAPI.getGroupManager().getPermissionforGroup(g);
+    	isDirty = true;
     }
     /**
      * @return ItemStack associated with this reinforcement
@@ -167,6 +169,7 @@ public class PlayerReinforcement extends Reinforcement{
     		String group = Citadel.getCitadelDatabase().getSavedGroupName(this);
     		g = NameAPI.getGroupManager().getGroup(group);
     		gp = NameAPI.getGroupManager().getPermissionforGroup(g);
+    		isDirty = true;
     	}
     }
     /**
