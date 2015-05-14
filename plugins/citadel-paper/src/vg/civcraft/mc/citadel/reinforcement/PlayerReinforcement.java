@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Openable;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -121,7 +122,7 @@ public class PlayerReinforcement extends Reinforcement{
     public boolean isSecurable() {
         Block block = getLocation().getBlock();
         return block.getState() instanceof InventoryHolder
-                || block.getState().getData() instanceof Openable;
+                || block.getState().getData() instanceof Openable || Utility.doorTypes.contains(block.getType());
     }
     /**
      * Returns the group this PlayerReinforcement is associated with.

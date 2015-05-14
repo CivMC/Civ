@@ -544,7 +544,7 @@ public class Utility {
         return null;
     }
     
-    private static List<Material> doorTypes = new ArrayList<Material>(Arrays.asList(
+    public static List<Material> doorTypes = new ArrayList<Material>(Arrays.asList(
     		Material.WOODEN_DOOR, Material.IRON_DOOR_BLOCK,
     		Material.ACACIA_DOOR, Material.BIRCH_DOOR,
     		Material.DARK_OAK_DOOR, Material.JUNGLE_DOOR,
