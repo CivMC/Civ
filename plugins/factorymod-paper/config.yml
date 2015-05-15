@@ -79,6 +79,8 @@ general:
   citadel_enabled: true
   factory_interaction_material: STICK
   disable_experience: true
+  should_default_anvil_cost: false
+  set_default_anvil_cost: 37
 production_general:
   update_cycle: 20
   repair_period: 28
