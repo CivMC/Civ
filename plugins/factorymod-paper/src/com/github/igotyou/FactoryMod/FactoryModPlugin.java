@@ -79,6 +79,8 @@ public class FactoryModPlugin extends JavaPlugin
 	public static long REPAIR_PERIOD;
 	public static boolean REDSTONE_START_ENABLED;
 	public static boolean LEVER_OUTPUT_ENABLED;
+	public static boolean SHOULD_SET_ANVIL_COST;
+	public static int GET_SET_ANVIL_COST;
 	
 	public void onEnable()
 	{
@@ -173,6 +175,9 @@ public class FactoryModPlugin extends JavaPlugin
 				LEVER_OUTPUT_ENABLED = config.getBoolean("general.lever_output_enabled",true);
 				//Do we allow factories to be started with redstone?
 				REDSTONE_START_ENABLED = config.getBoolean("general.redstone_start_enabled",true);
+				//Set anvil repair cost
+				SHOULD_SET_ANVIL_COST = config.getBoolean("general.should_default_anvil_cost", false);
+				GET_SET_ANVIL_COST = config.getInt("general.set_default_anvil_cost", 37);
 		int g = 0;
 		Iterator<String> disabledRecipes=config.getStringList("crafting.disable").iterator();
 		while(disabledRecipes.hasNext())
