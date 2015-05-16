@@ -92,7 +92,7 @@ barapi-countdown-message: '&eCombatTag: &f{remaining}'
 force-fields: true
 
 # Radius in blocks around the player that should be checked for forcefields (Higher numbers = more laggy)
-force-field-radius: 3
+force-field-radius: 10
 
 # Material of the forcefield block type.
 force-field-material: STAINED_GLASS

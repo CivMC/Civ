@@ -1,6 +1,7 @@
 package net.minelink.ctplus.listener;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.minelink.ctplus.CombatTagPlus;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,13 +10,20 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.bukkit.block.BlockFace.*;
 
@@ -23,12 +31,29 @@ public final class ForceFieldListener implements Listener {
 
     private static final List<BlockFace> ALL_DIRECTIONS = ImmutableList.of(NORTH, EAST, SOUTH, WEST);
 
+    private static final int NUM_THREADS = Math.max(2, Runtime.getRuntime().availableProcessors() - 2);
+
     private final CombatTagPlus plugin;
 
-    private Map<UUID, List<Location>> previousUpdates = new HashMap<>();
+    private final Map<UUID, Set<Location>> previousUpdates = new HashMap<>();
+
+    private final ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS,
+            new ThreadFactoryBuilder().setNameFormat("CombatTagPlus ForceField Thread #%d").build());
+
+    private final Map<UUID, Lock> playerLocks = new HashMap<>();
 
     public ForceFieldListener(CombatTagPlus plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler
+    public void addPlayer(PlayerJoinEvent event) {
+        playerLocks.put(event.getPlayer().getUniqueId(), new ReentrantLock());
+    }
+
+    @EventHandler
+    public void removePlayer(PlayerQuitEvent event) {
+        playerLocks.remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
@@ -39,48 +64,69 @@ public final class ForceFieldListener implements Listener {
         // Do nothing if player hasn't moved over a whole block
         Location t = event.getTo();
         Location f = event.getFrom();
-        if (!(t.getBlockX() != f.getBlockX() ||
-                t.getBlockY() != f.getBlockY() ||
-                t.getBlockZ() != f.getBlockZ())) {
+        if (t.getBlockX() == f.getBlockX() && t.getBlockY() == f.getBlockY() &&
+                t.getBlockZ() == f.getBlockZ()) {
             return;
         }
 
-        // Update the players force field perspective and find all blocks to stop spoofing
-        Player player = event.getPlayer();
-        UUID uuid = player.getUniqueId();
-        List<Location> removeBlocks;
-        List<Location> changedBlocks = getChangedBlocks(player);
-        Material forceFieldMaterial = Material.getMaterial(plugin.getSettings().getForceFieldMaterial());
-        byte forceFieldMaterialDamage = plugin.getSettings().getForceFieldMaterialDamage();
-
-        if (previousUpdates.containsKey(uuid)) {
-            removeBlocks = previousUpdates.get(uuid);
-        } else {
-            removeBlocks = new ArrayList<>();
-        }
-
-        for (Location location : changedBlocks) {
-            player.sendBlockChange(location, forceFieldMaterial, forceFieldMaterialDamage);
-            removeBlocks.remove(location);
-        }
+        final Player player = event.getPlayer();
 
         // Prevent sneaky players crossing the force field
-        if (!changedBlocks.isEmpty() && !plugin.getHookManager().isPvpEnabledAt(t) &&
+        if (plugin.getTagManager().isTagged(player.getUniqueId()) &&
+                !plugin.getHookManager().isPvpEnabledAt(t) &&
                 plugin.getHookManager().isPvpEnabledAt(f)) {
             event.setCancelled(true);
         }
 
-        // Remove no longer used spoofed blocks
-        for (Location location : removeBlocks) {
-            Block block = location.getBlock();
-            player.sendBlockChange(location, block.getType(), block.getData());
-        }
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                // Update the players force field perspective and find all blocks to stop spoofing
+                UUID uuid = player.getUniqueId();
 
-        previousUpdates.put(uuid, changedBlocks);
+                // Stop processing if player has logged off
+                if (!plugin.getPlayerCache().isOnline(uuid)) {
+                    previousUpdates.remove(uuid);
+                    return;
+                }
+
+                Set<Location> removeBlocks;
+                Set<Location> changedBlocks = getChangedBlocks(player);
+                Material forceFieldMaterial = Material.getMaterial(plugin.getSettings().getForceFieldMaterial());
+                byte forceFieldMaterialDamage = plugin.getSettings().getForceFieldMaterialDamage();
+
+                Lock lock = playerLocks.get(uuid);
+                if (lock == null) return;
+
+                lock.lock();
+                try {
+                    if (previousUpdates.containsKey(uuid)) {
+                        removeBlocks = previousUpdates.get(uuid);
+                    } else {
+                        removeBlocks = new HashSet<>();
+                    }
+
+                    for (Location location : changedBlocks) {
+                        player.sendBlockChange(location, forceFieldMaterial, forceFieldMaterialDamage);
+                        removeBlocks.remove(location);
+                    }
+
+                    // Remove no longer used spoofed blocks
+                    for (Location location : removeBlocks) {
+                        Block block = location.getBlock();
+                        player.sendBlockChange(location, block.getType(), block.getData());
+                    }
+
+                    previousUpdates.put(uuid, changedBlocks);
+                } finally {
+                    lock.unlock();
+                }
+            }
+        });
     }
 
-    private List<Location> getChangedBlocks(Player player) {
-        List<Location> locations = new ArrayList<>();
+    private Set<Location> getChangedBlocks(Player player) {
+        Set<Location> locations = new HashSet<>();
 
         // Do nothing if player is not tagged
         if (!plugin.getTagManager().isTagged(player.getUniqueId())) return locations;
