@@ -147,7 +147,7 @@ public final class NpcListener implements Listener {
         Npc npc = event.getNpc();
 
         // Save player data when the NPC despawns
-        if (plugin.getPlayerCache().getPlayer(npc.getIdentity().getId()) != null) {
+        if (!plugin.getPlayerCache().isOnline(npc.getIdentity().getId())) {
             plugin.getNpcPlayerHelper().syncOffline(npc.getEntity());
         }
     }
