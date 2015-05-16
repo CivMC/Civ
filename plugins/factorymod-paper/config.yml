@@ -169,6 +169,15 @@ printing_presses:
 
 crafting:
   disable:
+    CHISSELED_STONE_BRICK:
+      material: SMOOTH_BRICK
+      durability: 3
+    MOSSY_COBBLE:
+      material: SMOOTH_BRICK
+      durability: 1
+    CRACKED_STONE_BRICK:
+      material: SMOOTH_BRICK
+      durability: 2
   enable:
     XP to Emerald:
       inputs:
