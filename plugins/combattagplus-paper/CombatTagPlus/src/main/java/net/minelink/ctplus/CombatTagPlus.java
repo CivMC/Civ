@@ -3,6 +3,7 @@ package net.minelink.ctplus;
 import net.minelink.ctplus.compat.api.NpcNameGeneratorFactory;
 import net.minelink.ctplus.compat.api.NpcPlayerHelper;
 import net.minelink.ctplus.hook.Hook;
+import net.minelink.ctplus.hook.HookManager;
 import net.minelink.ctplus.hook.TownyHook;
 import net.minelink.ctplus.listener.ForceFieldListener;
 import net.minelink.ctplus.listener.NpcListener;
@@ -14,28 +15,23 @@ import net.minelink.ctplus.task.TagUpdateTask;
 import net.minelink.ctplus.util.DurationUtils;
 import net.minelink.ctplus.util.ReflectionUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static org.bukkit.ChatColor.*;
 
 public final class CombatTagPlus extends JavaPlugin {
 
-    private final Map<UUID, Player> players = new HashMap<>();
-
-    private final List<Hook> hooks = new ArrayList<>();
+    private final PlayerCache playerCache = new PlayerCache();
 
     private Settings settings;
+
+    private HookManager hookManager;
 
     private TagManager tagManager;
 
@@ -43,8 +39,16 @@ public final class CombatTagPlus extends JavaPlugin {
 
     private NpcManager npcManager;
 
+    public PlayerCache getPlayerCache() {
+        return playerCache;
+    }
+
     public Settings getSettings() {
         return settings;
+    }
+
+    public HookManager getHookManager() {
+        return hookManager;
     }
 
     public TagManager getTagManager() {
@@ -77,6 +81,7 @@ public final class CombatTagPlus extends JavaPlugin {
         }
 
         // Initialize plugin state
+        hookManager = new HookManager(this);
         npcManager = new NpcManager(this);
         tagManager = new TagManager(this);
 
@@ -88,7 +93,7 @@ public final class CombatTagPlus extends JavaPlugin {
 
         // Build player cache from currently online players
         for (Player player : Bukkit.getOnlinePlayers()) {
-            players.put(player.getUniqueId(), player);
+            getPlayerCache().addPlayer(player);
         }
 
         // Register event listeners
@@ -112,21 +117,12 @@ public final class CombatTagPlus extends JavaPlugin {
         }, 3600, 3600);
     }
 
-    @Override
-    public void onDisable() {
-        // Clean up player references
-        // This also happens for individual players when they disconnect.
-        if (players != null) {
-            players.clear();
-        }
-    }
-
     private boolean checkVersionCompatibility() {
         // Load NMS compatibility helper class
-        Class<?> dummyPlayerHelperClass = ReflectionUtils.getCompatClass("NpcPlayerHelperImpl");
+        Class<?> helperClass = ReflectionUtils.getCompatClass("NpcPlayerHelperImpl");
 
         // Warn about incompatibility and return false indicating failure
-        if (dummyPlayerHelperClass == null) {
+        if (helperClass == null) {
             getLogger().severe("**VERSION ERROR**");
             getLogger().severe("Server API version detected: " + ReflectionUtils.API_VERSION);
             getLogger().severe("This version of CombatTagPlus is not compatible with your CraftBukkit.");
@@ -136,7 +132,7 @@ public final class CombatTagPlus extends JavaPlugin {
         // Helper class was found
         try {
             // Attempt to create a new helper
-            npcPlayerHelper = (NpcPlayerHelper) dummyPlayerHelperClass.newInstance();
+            npcPlayerHelper = (NpcPlayerHelper) helperClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             // Fail miserably
             throw new RuntimeException(e);
@@ -171,7 +167,7 @@ public final class CombatTagPlus extends JavaPlugin {
 
         try {
             // Create and add FactionsHook
-            addHook((Hook) Class.forName(className).newInstance());
+            getHookManager().addHook((Hook) Class.forName(className).newInstance());
             getLogger().info("Added Factions hook: " + className);
         } catch (Exception e) {
             // Something went wrong, chances are it's a newer, incompatible Factions
@@ -192,7 +188,7 @@ public final class CombatTagPlus extends JavaPlugin {
         // Determine if Towny is loaded
         if (Bukkit.getPluginManager().isPluginEnabled("Towny")) {
             Hook hook = new TownyHook();
-            addHook(hook);
+            getHookManager().addHook(hook);
             getLogger().info("Added Towny hook: " + hook.getClass().getCanonicalName());
         } else {
             getLogger().info("Towny integration is disabled because it is not loaded.");
@@ -218,7 +214,7 @@ public final class CombatTagPlus extends JavaPlugin {
 
         try {
             // Create and add WorldGuardHook
-            addHook((Hook) Class.forName(className).newInstance());
+            getHookManager().addHook((Hook) Class.forName(className).newInstance());
             getLogger().info("Added WorldGuard hook: " + className);
         } catch (Exception e) {
             // Something went wrong, chances are it's a newer, incompatible WorldGuard
@@ -260,35 +256,6 @@ public final class CombatTagPlus extends JavaPlugin {
             SafeLogoutTask.run(this, player);
         }
 
-        return true;
-    }
-
-    public boolean addPlayer(Player player) {
-        return players.put(player.getUniqueId(), player) != null;
-    }
-
-    public boolean removePlayer(Player player) {
-        return players.remove(player.getUniqueId()) != null;
-    }
-
-    public Player getPlayer(UUID playerId) {
-        return players.get(playerId);
-    }
-
-    public boolean addHook(Hook hook) {
-        return hooks.add(hook);
-    }
-
-    public boolean removeHook(Hook hook) {
-        return hooks.remove(hook);
-    }
-
-    public boolean isPvpEnabledAt(Location location) {
-        for (Hook hook : hooks) {
-            if (!hook.isPvpEnabledAt(location)) {
-                return false;
-            }
-        }
         return true;
     }
 

@@ -30,7 +30,7 @@ public final class TagUpdateTask extends BukkitRunnable {
     @Override
     public void run() {
         // Cancel if player went offline
-        Player player = plugin.getPlayer(playerId);
+        Player player = plugin.getPlayerCache().getPlayer(playerId);
         if (player == null) {
             cancel();
             return;

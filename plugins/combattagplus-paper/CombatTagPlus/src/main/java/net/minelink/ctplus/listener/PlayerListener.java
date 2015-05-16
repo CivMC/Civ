@@ -39,7 +39,7 @@ public final class PlayerListener implements Listener {
         plugin.getNpcPlayerHelper().createPlayerList(player);
 
         // Add player to cache
-        plugin.addPlayer(player);
+        plugin.getPlayerCache().addPlayer(player);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -50,7 +50,7 @@ public final class PlayerListener implements Listener {
         plugin.getNpcPlayerHelper().removePlayerList(player);
 
         // Remove player from cache
-        plugin.removePlayer(player);
+        plugin.getPlayerCache().removePlayer(player);
     }
 
     @EventHandler

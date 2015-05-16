@@ -45,7 +45,7 @@ public final class SafeLogoutTask extends BukkitRunnable {
     @Override
     public void run() {
         // Cancel the task if player is no longer online
-        Player player = plugin.getPlayer(playerId);
+        Player player = plugin.getPlayerCache().getPlayer(playerId);
         if (player == null) {
             cancel();
             return;

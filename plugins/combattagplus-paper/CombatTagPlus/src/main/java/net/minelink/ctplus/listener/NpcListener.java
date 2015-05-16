@@ -35,7 +35,7 @@ public final class NpcListener implements Listener {
         if (!isTagged && !plugin.getSettings().alwaysSpawn()) return;
 
         // Do nothing if a player logs off in combat in a WorldGuard protected region
-        if (!plugin.isPvpEnabledAt(player.getLocation())) return;
+        if (!plugin.getHookManager().isPvpEnabledAt(player.getLocation())) return;
 
         // Do nothing if player has permission
         if (player.hasPermission("ctplus.bypass.tag")) return;
@@ -147,7 +147,7 @@ public final class NpcListener implements Listener {
         Npc npc = event.getNpc();
 
         // Save player data when the NPC despawns
-        if (plugin.getPlayer(npc.getIdentity().getId()) != null) {
+        if (plugin.getPlayerCache().getPlayer(npc.getIdentity().getId()) != null) {
             plugin.getNpcPlayerHelper().syncOffline(npc.getEntity());
         }
     }

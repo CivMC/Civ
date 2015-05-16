@@ -2,7 +2,6 @@ package net.minelink.ctplus.compat.v1_8_R2;
 
 import net.minecraft.server.v1_8_R2.EntityPlayer;
 import net.minecraft.server.v1_8_R2.FoodMetaData;
-import net.minecraft.server.v1_8_R2.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 import net.minecraft.server.v1_8_R2.ItemStack;
 import net.minecraft.server.v1_8_R2.MinecraftServer;
 import net.minecraft.server.v1_8_R2.NBTCompressedStreamTools;
@@ -11,6 +10,7 @@ import net.minecraft.server.v1_8_R2.NBTTagList;
 import net.minecraft.server.v1_8_R2.Packet;
 import net.minecraft.server.v1_8_R2.PacketPlayOutEntityEquipment;
 import net.minecraft.server.v1_8_R2.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_8_R2.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 import net.minecraft.server.v1_8_R2.WorldNBTStorage;
 import net.minecraft.server.v1_8_R2.WorldServer;
 import net.minelink.ctplus.compat.api.NpcIdentity;

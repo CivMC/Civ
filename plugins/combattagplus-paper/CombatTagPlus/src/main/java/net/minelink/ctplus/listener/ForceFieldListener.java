@@ -65,7 +65,8 @@ public final class ForceFieldListener implements Listener {
         }
 
         // Prevent sneaky players crossing the force field
-        if (!changedBlocks.isEmpty() && !plugin.isPvpEnabledAt(t) && plugin.isPvpEnabledAt(f)) {
+        if (!changedBlocks.isEmpty() && !plugin.getHookManager().isPvpEnabledAt(t) &&
+                plugin.getHookManager().isPvpEnabledAt(f)) {
             event.setCancelled(true);
         }
 
@@ -101,7 +102,7 @@ public final class ForceFieldListener implements Listener {
                 Location location = new Location(l.getWorld(), (double) x, l.getY(), (double) z);
 
                 // PvP is enabled here, no need to do anything else
-                if (plugin.isPvpEnabledAt(location)) continue;
+                if (plugin.getHookManager().isPvpEnabledAt(location)) continue;
 
                 // Check if PvP is enabled in a location surrounding this
                 if (!isPvpSurrounding(location)) continue;
@@ -125,8 +126,9 @@ public final class ForceFieldListener implements Listener {
 
     private boolean isPvpSurrounding(Location loc) {
         for (BlockFace direction : ALL_DIRECTIONS) {
-            if (!plugin.isPvpEnabledAt(loc.getBlock().getRelative(direction).getLocation())) continue;
-            return true;
+            if (plugin.getHookManager().isPvpEnabledAt(loc.getBlock().getRelative(direction).getLocation())) {
+                return true;
+            }
         }
 
         return false;

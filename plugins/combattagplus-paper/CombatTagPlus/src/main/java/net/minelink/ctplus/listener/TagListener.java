@@ -3,8 +3,8 @@ package net.minelink.ctplus.listener;
 import com.google.common.collect.ImmutableSet;
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.event.PlayerCombatTagEvent;
-import net.minelink.ctplus.task.TagUpdateTask;
 import net.minelink.ctplus.task.SafeLogoutTask;
+import net.minelink.ctplus.task.TagUpdateTask;
 import org.bukkit.GameMode;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Entity;
@@ -226,7 +226,7 @@ public final class TagListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void disableInSafeRegion(PlayerCombatTagEvent event) {
         // Don't tag if player is in a protected region
-        if (!plugin.isPvpEnabledAt(event.getPlayer().getLocation())) {
+        if (!plugin.getHookManager().isPvpEnabledAt(event.getPlayer().getLocation())) {
             event.setCancelled(true);
         }
     }
