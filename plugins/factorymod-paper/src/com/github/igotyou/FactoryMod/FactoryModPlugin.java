@@ -179,12 +179,13 @@ public class FactoryModPlugin extends JavaPlugin
 				SHOULD_SET_ANVIL_COST = config.getBoolean("general.should_default_anvil_cost", false);
 				GET_SET_ANVIL_COST = config.getInt("general.set_default_anvil_cost", 37);
 		int g = 0;
-		Iterator<String> disabledRecipes=config.getStringList("crafting.disable").iterator();
-		while(disabledRecipes.hasNext())
+		Set<String> disabledRecipes=config.getConfigurationSection("crafting.disable").getKeys(false);
+		Iterator<String> ir = disabledRecipes.iterator();
+		while(ir.hasNext())
 		{
-			String mat = disabledRecipes.next();
-			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(mat));
-			int dur = config.getInt("crafting.disable." + mat + ".durability", 0);
+			String con = ir.next();
+			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(config.getString(con + ".material")));
+			int dur = config.getInt("crafting.disable." + con + ".durability", 0);
 			short s = (short) dur;
 			recipeItemStack.setDurability(s);
 			List<Recipe> tempList = getServer().getRecipesFor(recipeItemStack);
