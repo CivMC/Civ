@@ -185,7 +185,8 @@ public class FactoryModPlugin extends JavaPlugin
 		while(ir.hasNext())
 		{
 			String con = ir.next();
-			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(config.getString(con + ".material")));
+			String mat = config.getString("crafting.disable." + con + ".material");
+			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(mat));
 			int dur = config.getInt("crafting.disable." + con + ".durability", 0);
 			short s = (short) dur;
 			recipeItemStack.setDurability(s);
