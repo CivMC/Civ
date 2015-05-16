@@ -182,7 +182,11 @@ public class FactoryModPlugin extends JavaPlugin
 		Iterator<String> disabledRecipes=config.getStringList("crafting.disable").iterator();
 		while(disabledRecipes.hasNext())
 		{
-			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(disabledRecipes.next()));
+			String mat = disabledRecipes.next();
+			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(mat));
+			int dur = config.getInt("crafting.disable." + mat + ".durability", 0);
+			short s = (short) dur;
+			recipeItemStack.setDurability(s);
 			List<Recipe> tempList = getServer().getRecipesFor(recipeItemStack);
 			for (int itterator = 0; itterator < tempList.size(); itterator ++)
 			{
