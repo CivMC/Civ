@@ -33,7 +33,7 @@ public final class PlayerListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void addPlayer(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 

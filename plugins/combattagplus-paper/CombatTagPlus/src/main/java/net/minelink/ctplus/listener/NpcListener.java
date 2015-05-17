@@ -147,9 +147,27 @@ public final class NpcListener implements Listener {
         Npc npc = event.getNpc();
 
         // Save player data when the NPC despawns
-        if (!plugin.getPlayerCache().isOnline(npc.getIdentity().getId())) {
+        Player player = plugin.getPlayerCache().getPlayer(npc.getIdentity().getId());
+        if (player == null) {
             plugin.getNpcPlayerHelper().syncOffline(npc.getEntity());
+            return;
         }
+
+        // Copy NPC player data to online player
+        Player npcPlayer = npc.getEntity();
+        player.setMaximumAir(npcPlayer.getMaximumAir());
+        player.setRemainingAir(npcPlayer.getRemainingAir());
+        player.setHealthScale(npcPlayer.getHealthScale());
+        player.setMaxHealth(npcPlayer.getMaxHealth());
+        player.setHealth(npcPlayer.getHealth());
+        player.setTotalExperience(npcPlayer.getTotalExperience());
+        player.setFoodLevel(npcPlayer.getFoodLevel());
+        player.setExhaustion(npcPlayer.getExhaustion());
+        player.setSaturation(npcPlayer.getSaturation());
+        player.setFireTicks(npcPlayer.getFireTicks());
+        player.getInventory().setContents(npcPlayer.getInventory().getContents());
+        player.getInventory().setArmorContents(npcPlayer.getInventory().getArmorContents());
+        player.addPotionEffects(npcPlayer.getActivePotionEffects());
     }
 
 }
