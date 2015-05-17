@@ -83,7 +83,8 @@ public final class ForceFieldListener implements Listener {
         if (plugin.getSettings().useForceFields() &&
                 plugin.getTagManager().isTagged(event.getPlayer().getUniqueId()) &&
                 event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL &&
-                !plugin.getHookManager().isPvpEnabledAt(event.getTo())) {
+                !plugin.getHookManager().isPvpEnabledAt(event.getTo()) &&
+                plugin.getHookManager().isPvpEnabledAt(event.getFrom())) {
             event.setCancelled(true);
         }
     }
