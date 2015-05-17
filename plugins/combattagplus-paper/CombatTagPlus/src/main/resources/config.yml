@@ -1,5 +1,5 @@
 # Don't touch this. It's here to determine whether you need to refresh your config.
-config-version: 14
+config-version: 15
 
 # The duration in seconds that both the attacker and victim should be tagged in combat.
 tag-duration: 15
@@ -87,6 +87,12 @@ barapi-ended-message: '&aYou are no longer in combat!'
 
 # Message to be displayed on BarAPI when the player is still in pvp.
 barapi-countdown-message: '&eCombatTag: &f{remaining}'
+
+# Deny movement into safezones from PVP enabled areas while combat tagged.
+deny-safezone: true
+
+# Deny teleporting with enderpearls into safezones from PVP enabled areas while combat tagged.
+deny-safezone-enderpearl: true
 
 # Enables force fields around Anti-PvP zones while in combat.
 force-fields: true

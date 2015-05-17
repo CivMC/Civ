@@ -313,6 +313,14 @@ public final class Settings {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
+    public boolean denySafezone() {
+        return plugin.getConfig().getBoolean("deny-safezone");
+    }
+
+    public boolean denySafezoneEnderpearl() {
+        return plugin.getConfig().getBoolean("deny-safezone-enderpearl");
+    }
+
     public boolean useForceFields() {
         return plugin.getConfig().getBoolean("force-fields");
     }

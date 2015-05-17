@@ -14,7 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,37 +55,6 @@ public final class ForceFieldListener implements Listener {
     @EventHandler
     public void removePlayer(PlayerQuitEvent event) {
         playerLocks.remove(event.getPlayer().getUniqueId());
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void denySafeZoneEntry(PlayerMoveEvent event) {
-        // Do nothing if check is not active
-        if (!plugin.getSettings().useForceFields()) return;
-
-        // Do nothing if player hasn't moved over a whole block
-        Location t = event.getTo();
-        Location f = event.getFrom();
-        if (t.getBlockX() == f.getBlockX() && t.getBlockY() == f.getBlockY() &&
-                t.getBlockZ() == f.getBlockZ()) {
-            return;
-        }
-
-        // Prevent sneaky players crossing the force field
-        if (plugin.getTagManager().isTagged(event.getPlayer().getUniqueId()) &&
-                !plugin.getHookManager().isPvpEnabledAt(t) && plugin.getHookManager().isPvpEnabledAt(f)) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void denySafeZoneEntry(PlayerTeleportEvent event) {
-        if (plugin.getSettings().useForceFields() &&
-                plugin.getTagManager().isTagged(event.getPlayer().getUniqueId()) &&
-                event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL &&
-                !plugin.getHookManager().isPvpEnabledAt(event.getTo()) &&
-                plugin.getHookManager().isPvpEnabledAt(event.getFrom())) {
-            event.setCancelled(true);
-        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

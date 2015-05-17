@@ -5,6 +5,7 @@ import net.minelink.ctplus.Tag;
 import net.minelink.ctplus.event.PlayerCombatTagEvent;
 import net.minelink.ctplus.task.TagUpdateTask;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,6 +18,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
@@ -255,6 +257,36 @@ public final class PlayerListener implements Listener {
         event.setCancelled(true);
         if (!plugin.getSettings().getDisableTeleportationMessage().isEmpty()) {
             player.sendMessage(plugin.getSettings().getDisableTeleportationMessage());
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void denySafeZoneEntry(PlayerMoveEvent event) {
+        // Do nothing if check is not active
+        if (!plugin.getSettings().denySafezone()) return;
+
+        // Do nothing if player hasn't moved over a whole block
+        Location t = event.getTo();
+        Location f = event.getFrom();
+        if (t.getBlockX() == f.getBlockX() && t.getBlockY() == f.getBlockY() &&
+                t.getBlockZ() == f.getBlockZ()) {
+            return;
+        }
+
+        if (plugin.getTagManager().isTagged(event.getPlayer().getUniqueId()) &&
+                !plugin.getHookManager().isPvpEnabledAt(t) && plugin.getHookManager().isPvpEnabledAt(f)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void denySafeZoneEntry(PlayerTeleportEvent event) {
+        if (plugin.getSettings().denySafezoneEnderpearl() &&
+                plugin.getTagManager().isTagged(event.getPlayer().getUniqueId()) &&
+                event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL &&
+                !plugin.getHookManager().isPvpEnabledAt(event.getTo()) &&
+                plugin.getHookManager().isPvpEnabledAt(event.getFrom())) {
+            event.setCancelled(true);
         }
     }
 
