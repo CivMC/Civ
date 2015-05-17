@@ -440,7 +440,7 @@ public class FactoryModPlugin extends JavaPlugin
 		while (itterator.hasNext())
 		{
 			Recipe recipe = itterator.next();
-			if (recipe.getResult().getType() == removalRecipe.getResult().getType())
+			if (recipe.getResult().equals(removalRecipe.getResult()))
 			{
 				itterator.remove();
 			}
