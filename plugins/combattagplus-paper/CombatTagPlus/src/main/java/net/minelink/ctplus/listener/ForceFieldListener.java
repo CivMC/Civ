@@ -9,10 +9,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,7 +58,37 @@ public final class ForceFieldListener implements Listener {
         playerLocks.remove(event.getPlayer().getUniqueId());
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
+    public void denySafeZoneEntry(PlayerMoveEvent event) {
+        // Do nothing if check is not active
+        if (!plugin.getSettings().useForceFields()) return;
+
+        // Do nothing if player hasn't moved over a whole block
+        Location t = event.getTo();
+        Location f = event.getFrom();
+        if (t.getBlockX() == f.getBlockX() && t.getBlockY() == f.getBlockY() &&
+                t.getBlockZ() == f.getBlockZ()) {
+            return;
+        }
+
+        // Prevent sneaky players crossing the force field
+        if (plugin.getTagManager().isTagged(event.getPlayer().getUniqueId()) &&
+                !plugin.getHookManager().isPvpEnabledAt(t) && plugin.getHookManager().isPvpEnabledAt(f)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void denySafeZoneEntry(PlayerTeleportEvent event) {
+        if (plugin.getSettings().useForceFields() &&
+                plugin.getTagManager().isTagged(event.getPlayer().getUniqueId()) &&
+                event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL &&
+                !plugin.getHookManager().isPvpEnabledAt(event.getTo())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void updateViewedBlocks(PlayerMoveEvent event) {
         // Do nothing if check is not active
         if (!plugin.getSettings().useForceFields()) return;
@@ -70,14 +102,6 @@ public final class ForceFieldListener implements Listener {
         }
 
         final Player player = event.getPlayer();
-
-        // Prevent sneaky players crossing the force field
-        if (plugin.getTagManager().isTagged(player.getUniqueId()) &&
-                !plugin.getHookManager().isPvpEnabledAt(t) &&
-                plugin.getHookManager().isPvpEnabledAt(f)) {
-            event.setCancelled(true);
-        }
-
         executorService.submit(new Runnable() {
             @Override
             public void run() {
