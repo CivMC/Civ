@@ -25,9 +25,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static org.bukkit.block.BlockFace.*;
 
@@ -44,20 +43,20 @@ public final class ForceFieldListener implements Listener {
     private final ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS,
             new ThreadFactoryBuilder().setNameFormat("CombatTagPlus ForceField Thread #%d").build());
 
-    private final Map<UUID, Lock> playerLocks = new HashMap<>();
+    private final Map<UUID, Semaphore> playerLocks = new HashMap<>();
 
     public ForceFieldListener(CombatTagPlus plugin) {
         this.plugin = plugin;
 
         // Create lock instances for currently online players
         for (Player player : Bukkit.getOnlinePlayers()) {
-            playerLocks.put(player.getUniqueId(), new ReentrantLock());
+            playerLocks.put(player.getUniqueId(), new Semaphore(1));
         }
     }
 
     @EventHandler
     public void addPlayer(PlayerJoinEvent event) {
-        playerLocks.put(event.getPlayer().getUniqueId(), new ReentrantLock());
+        playerLocks.put(event.getPlayer().getUniqueId(), new Semaphore(1));
     }
 
     @EventHandler
@@ -105,28 +104,35 @@ public final class ForceFieldListener implements Listener {
         }
 
         final Player player = event.getPlayer();
+        final Semaphore lock = playerLocks.get(player.getUniqueId());
+
+        // Attempt to acquire a player lock
+        final boolean locked = lock.tryAcquire();
+
+        // Asynchronously send block changes around player
         executorService.submit(new Runnable() {
             @Override
             public void run() {
-                // Update the players force field perspective and find all blocks to stop spoofing
-                UUID uuid = player.getUniqueId();
-
-                // Stop processing if player has logged off
-                if (!plugin.getPlayerCache().isOnline(uuid)) {
-                    previousUpdates.remove(uuid);
-                    return;
-                }
-
-                Set<Location> removeBlocks;
-                Set<Location> changedBlocks = getChangedBlocks(player);
-                Material forceFieldMaterial = Material.getMaterial(plugin.getSettings().getForceFieldMaterial());
-                byte forceFieldMaterialDamage = plugin.getSettings().getForceFieldMaterialDamage();
-
-                Lock lock = playerLocks.get(uuid);
-                if (lock == null) return;
-
-                lock.lock();
                 try {
+                    // Wait until lock becomes available if we couldn't lock earlier
+                    if (!locked) {
+                        lock.acquire();
+                    }
+
+                    // Update the players force field perspective and find all blocks to stop spoofing
+                    UUID uuid = player.getUniqueId();
+
+                    // Stop processing if player has logged off
+                    if (!plugin.getPlayerCache().isOnline(uuid)) {
+                        previousUpdates.remove(uuid);
+                        return;
+                    }
+
+                    Set<Location> removeBlocks;
+                    Set<Location> changedBlocks = getChangedBlocks(player);
+                    Material forceFieldMaterial = Material.getMaterial(plugin.getSettings().getForceFieldMaterial());
+                    byte forceFieldMaterialDamage = plugin.getSettings().getForceFieldMaterialDamage();
+
                     if (previousUpdates.containsKey(uuid)) {
                         removeBlocks = previousUpdates.get(uuid);
                     } else {
@@ -145,8 +151,10 @@ public final class ForceFieldListener implements Listener {
                     }
 
                     previousUpdates.put(uuid, changedBlocks);
+                } catch (InterruptedException ignore) {
+
                 } finally {
-                    lock.unlock();
+                    lock.release();
                 }
             }
         });
