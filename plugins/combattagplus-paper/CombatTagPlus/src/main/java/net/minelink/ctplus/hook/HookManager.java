@@ -1,6 +1,8 @@
 package net.minelink.ctplus.hook;
 
+import net.minelink.ctplus.BlockPosition;
 import net.minelink.ctplus.CombatTagPlus;
+import net.minelink.ctplus.util.LruCache;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
@@ -10,6 +12,8 @@ import java.util.List;
 public final class HookManager {
 
     private final List<Hook> hooks = new ArrayList<>();
+
+    private final LruCache<BlockPosition, PvpBlock> pvpBlocks = new LruCache<>(1000000);
 
     private final CombatTagPlus plugin;
 
@@ -30,12 +34,37 @@ public final class HookManager {
     }
 
     public boolean isPvpEnabledAt(Location location) {
+        long currentTime = System.currentTimeMillis();
+        BlockPosition position = new BlockPosition(location);
+        PvpBlock pvpBlock = pvpBlocks.get(position);
+
+        if (pvpBlock != null && pvpBlock.expiry > currentTime) {
+            return pvpBlock.enabled;
+        }
+
+        boolean result = true;
         for (Hook hook : hooks) {
             if (!hook.isPvpEnabledAt(location)) {
-                return false;
+                result = false;
+                break;
             }
         }
-        return true;
+
+        pvpBlocks.put(position, new PvpBlock(result, currentTime + 60000));
+        return result;
+    }
+
+    private static class PvpBlock {
+
+        private final boolean enabled;
+
+        private final long expiry;
+
+        PvpBlock(boolean enabled, long expiry) {
+            this.enabled = enabled;
+            this.expiry = expiry;
+        }
+
     }
 
 }
