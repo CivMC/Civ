@@ -155,7 +155,6 @@ public final class CombatTagPlus extends JavaPlugin {
         // Determine if Factions is loaded
         Plugin plugin = Bukkit.getPluginManager().getPlugin("Factions");
         if (plugin == null) {
-            getLogger().info("Factions integration is disabled because it is not loaded.");
             return;
         }
 
@@ -173,7 +172,6 @@ public final class CombatTagPlus extends JavaPlugin {
         try {
             // Create and add FactionsHook
             getHookManager().addHook((Hook) Class.forName(className).newInstance());
-            getLogger().info("Added Factions hook: " + className);
         } catch (Exception e) {
             // Something went wrong, chances are it's a newer, incompatible Factions
             getLogger().warning("**WARNING**");
@@ -194,9 +192,6 @@ public final class CombatTagPlus extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("Towny")) {
             Hook hook = new TownyHook();
             getHookManager().addHook(hook);
-            getLogger().info("Added Towny hook: " + hook.getClass().getCanonicalName());
-        } else {
-            getLogger().info("Towny integration is disabled because it is not loaded.");
         }
     }
 
@@ -208,7 +203,6 @@ public final class CombatTagPlus extends JavaPlugin {
         // Determine if WorldGuard is loaded
         Plugin plugin = Bukkit.getPluginManager().getPlugin("WorldGuard");
         if (plugin == null) {
-            getLogger().info("WorldGuard integration is disabled because it is not loaded.");
             return;
         }
 
@@ -220,7 +214,6 @@ public final class CombatTagPlus extends JavaPlugin {
         try {
             // Create and add WorldGuardHook
             getHookManager().addHook((Hook) Class.forName(className).newInstance());
-            getLogger().info("Added WorldGuard hook: " + className);
         } catch (Exception e) {
             // Something went wrong, chances are it's a newer, incompatible WorldGuard
             getLogger().warning("**WARNING**");
