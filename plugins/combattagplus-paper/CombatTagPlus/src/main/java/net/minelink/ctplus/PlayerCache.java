@@ -14,12 +14,12 @@ public final class PlayerCache {
 
     public void addPlayer(Player player) {
         uuidCache.put(player.getUniqueId(), player);
-        nameCache.put(player.getName(), player);
+        nameCache.put(player.getName().toLowerCase(), player);
     }
 
     public void removePlayer(Player player) {
         uuidCache.remove(player.getUniqueId());
-        nameCache.remove(player.getName());
+        nameCache.remove(player.getName().toLowerCase());
     }
 
     public boolean isOnline(UUID id) {
@@ -27,7 +27,7 @@ public final class PlayerCache {
     }
 
     public boolean isOnline(String name) {
-        return nameCache.containsKey(name);
+        return nameCache.containsKey(name.toLowerCase());
     }
 
     public Player getPlayer(UUID id) {
@@ -35,7 +35,7 @@ public final class PlayerCache {
     }
 
     public Player getPlayer(String name) {
-        return nameCache.get(name);
+        return nameCache.get(name.toLowerCase());
     }
 
 }
