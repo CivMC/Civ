@@ -3,6 +3,7 @@ package net.minelink.ctplus.listener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.minelink.ctplus.CombatTagPlus;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.PluginDisableEvent;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +25,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -45,6 +48,11 @@ public final class ForceFieldListener implements Listener {
 
     public ForceFieldListener(CombatTagPlus plugin) {
         this.plugin = plugin;
+
+        // Create lock instances for currently online players
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            playerLocks.put(player.getUniqueId(), new ReentrantLock());
+        }
     }
 
     @EventHandler
@@ -55,6 +63,32 @@ public final class ForceFieldListener implements Listener {
     @EventHandler
     public void removePlayer(PlayerQuitEvent event) {
         playerLocks.remove(event.getPlayer().getUniqueId());
+    }
+
+    @EventHandler
+    public void shutdown(PluginDisableEvent event) {
+        // Do nothing if plugin being disabled isn't CombatTagPlus
+        if (event.getPlugin() != plugin) return;
+
+        // Shutdown executor service and clean up threads
+        executorService.shutdown();
+        try {
+            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            plugin.getLogger().warning("ForceField ExecutorService was interrupted during shutdown!");
+            e.printStackTrace();
+        }
+
+        // Go through all previous updates and revert spoofed blocks
+        for (UUID uuid : previousUpdates.keySet()) {
+            Player player = plugin.getPlayerCache().getPlayer(uuid);
+            if (player == null) continue;
+
+            for (Location location : previousUpdates.get(uuid)) {
+                Block block = location.getBlock();
+                player.sendBlockChange(location, block.getType(), block.getData());
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

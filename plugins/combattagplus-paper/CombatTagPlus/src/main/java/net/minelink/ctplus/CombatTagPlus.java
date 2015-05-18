@@ -117,6 +117,11 @@ public final class CombatTagPlus extends JavaPlugin {
         }, 3600, 3600);
     }
 
+    @Override
+    public void onDisable() {
+        TagUpdateTask.cancelTasks(this);
+    }
+
     private boolean checkVersionCompatibility() {
         // Load NMS compatibility helper class
         Class<?> helperClass = ReflectionUtils.getCompatClass("NpcPlayerHelperImpl");

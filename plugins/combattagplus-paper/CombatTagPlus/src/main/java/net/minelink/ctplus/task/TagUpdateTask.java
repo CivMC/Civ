@@ -112,4 +112,24 @@ public final class TagUpdateTask extends BukkitRunnable {
         }
     }
 
+    public static void cancelTasks(CombatTagPlus plugin) {
+        Iterator<UUID> iterator = tasks.keySet().iterator();
+        while (iterator.hasNext()) {
+            UUID uuid = iterator.next();
+            Player player = plugin.getPlayerCache().getPlayer(uuid);
+            if (player != null && plugin.getSettings().useBarApi() && BarAPI.hasBar(player)) {
+                BarAPI.removeBar(player);
+            }
+
+            int taskId = tasks.get(uuid);
+            BukkitScheduler s = Bukkit.getScheduler();
+
+            if (s.isQueued(taskId) || s.isCurrentlyRunning(taskId)) {
+                s.cancelTask(taskId);
+            }
+
+            iterator.remove();
+        }
+    }
+
 }
