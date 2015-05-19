@@ -13,7 +13,7 @@ public final class HookManager {
 
     private final List<Hook> hooks = new ArrayList<>();
 
-    private final LruCache<BlockPosition, PvpBlock> pvpBlocks = new LruCache<>(1000000);
+    private final LruCache<BlockPosition, PvpBlock> pvpBlocks = new LruCache<>(100000);
 
     private final CombatTagPlus plugin;
 
