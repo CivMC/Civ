@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import vg.civcraft.mc.namelayer.command.Command;
+import vg.civcraft.mc.civchat2.command.commands.Exit;
 import vg.civcraft.mc.civchat2.command.commands.GroupChat;
 import vg.civcraft.mc.civchat2.command.commands.Ignore;
 import vg.civcraft.mc.civchat2.command.commands.IgnoreGroup;
@@ -27,6 +28,7 @@ public class CivChat2CommandHandler {
 		addCommands(new Ignore("ignore"));
 		addCommands(new IgnoreGroup("ignoregroup"));
 		addCommands(new IgnoreList("ignorelist"));
+		addCommands(new Exit("exit"));
 	}
 	
 	public void addCommands(Command command){

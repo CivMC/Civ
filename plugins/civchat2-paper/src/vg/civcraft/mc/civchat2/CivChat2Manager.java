@@ -11,6 +11,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,6 +35,7 @@ public class CivChat2Manager {
 	
 	//chatChannels in hashmap with (Player 1 name, player 2 name)
 	private HashMap<String, String> chatChannels = new HashMap<String, String>();
+	
 	//groupChatChannels have (Player, Group)
 	private HashMap<String, String> groupChatChannels  = new HashMap<String, String>();
 	
@@ -437,7 +439,10 @@ public class CivChat2Manager {
 		for(UUID uuid : membersUUID){
 			//only add online players to members
 			Player toAdd = Bukkit.getPlayer(uuid);
-			if(toAdd.isOnline()){
+			if(toAdd == null){
+				//null getplayer return just ignore
+			}
+			else if(toAdd.isOnline()){
 				members.add(toAdd);
 			}
 		}
@@ -470,7 +475,6 @@ public class CivChat2Manager {
 			groupChatChannels.remove(name);
 			return;
 		}
-		CivChat2.severeMessage("Should not have reached this code  removeGroupChat method");
 	}
 
 	/**
@@ -479,6 +483,7 @@ public class CivChat2Manager {
 	 * @return Group they are currently chatting in
 	 */
 	public String getGroupChatting(String name) {
+		CivChat2.debugmessage("Checking if user is groupchatting name=[" + name + "]");
 		if(groupChatChannels.containsKey(name)){
 			return groupChatChannels.get(name);
 		} else {
