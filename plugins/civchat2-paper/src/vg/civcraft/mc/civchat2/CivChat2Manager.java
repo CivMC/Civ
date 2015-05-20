@@ -247,7 +247,7 @@ public class CivChat2Manager {
 					//reciever is in differnt world dont send
 					continue;
 				} else {
-					receiver.sendMessage(color + NameAPI.getCurrentName(uuid) + ":" + chatMessage);
+					receiver.sendMessage(color + NameAPI.getCurrentName(uuid) + ": " + chatMessage);
 				}
 			}
 		}

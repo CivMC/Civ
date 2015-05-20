@@ -1,7 +1,11 @@
 name: CivChat2
 main: vg.civcraft.mc.civchat2.CivChat2
+<<<<<<< HEAD
 version: 1.0.3
 load: startup
+=======
+version: 1.0.2
+>>>>>>> origin/master
 author: jjj5311
 depend: [NameLayer]
 commands:
@@ -17,5 +21,9 @@ commands:
     groupc:
       aliases: [groupchat, gchat, gc]
     ignorelist:
+<<<<<<< HEAD
     exit:
     
+=======
+    
+>>>>>>> origin/master
