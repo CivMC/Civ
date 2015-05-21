@@ -7441,14 +7441,14 @@ production_recipes:
         display_name: Bastion
   Sequencing_Allium:
     name: Sequencing Allium
-     inputs:
+    inputs:
       Poppy:
         material: RED_ROSE
-         amount: 8
+        amount: 8
       Blue Orchid:
         material: RED_ROSE
-         amount: 8
-        durablity: 1
+        amount: 8
+        durability: 1
     outputs:
       Allium:
         material: RED_ROSE
