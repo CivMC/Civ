@@ -31,6 +31,7 @@ import com.github.igotyou.FactoryMod.managers.FactoryModManager;
 import com.github.igotyou.FactoryMod.properties.NetherFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.PrintingPressProperties;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
+import com.github.igotyou.FactoryMod.properties.RepairFactoryProperties;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.ItemList;
@@ -45,6 +46,7 @@ public class FactoryModPlugin extends JavaPlugin
 	public static HashMap<String,ProductionRecipe> productionRecipes;
 	public PrintingPressProperties printingPressProperties;
 	public NetherFactoryProperties netherFactoryProperties;
+	public RepairFactoryProperties repairFactoryProperties;
 	
 	public static final String VERSION = "v1.0"; //Current version of plugin
 	public static final String PLUGIN_NAME = "FactoryMod"; //Name of plugin
@@ -54,6 +56,7 @@ public class FactoryModPlugin extends JavaPlugin
 	public static final String PRINTING_PRESSES_SAVE_FILE = "pressSaves";
 	
 	public static final String NETHER_FACTORY_SAVE_FILE = "netherSaves";
+	public static final String REPAIR_FACTORY_SAVE_FILE = "repairSaves";
 	public static boolean DISABLE_PORTALS;
 	public static int NETHER_SCALE;
 	public static boolean ALLOW_REINFORCEMENT_CREATION_ABOVE_TELEPORT_PLATFORM;
@@ -196,7 +199,6 @@ public class FactoryModPlugin extends JavaPlugin
 				removeRecipe(tempList.get(itterator));
 				g++;
 			}
-
 		}
 		//Enable the following recipes
 		ConfigurationSection configCraftingEnable=config.getConfigurationSection("crafting.enable");
@@ -312,8 +314,10 @@ public class FactoryModPlugin extends JavaPlugin
 		
 		ConfigurationSection configPrintingPresses=config.getConfigurationSection("printing_presses");
 		ConfigurationSection configNetherFactory=config.getConfigurationSection("nether_factory");
+		ConfigurationSection configRepairFactory=config.getConfigurationSection("repair_factory");
 		printingPressProperties = PrintingPressProperties.fromConfig(this, configPrintingPresses);
 		netherFactoryProperties = NetherFactoryProperties.fromConfig(this, configNetherFactory);
+		repairFactoryProperties = RepairFactoryProperties.fromConfig(this, configRepairFactory);
 		sendConsoleMessage("Finished initializing FactoryMod Config.");
 	}
 	
@@ -475,6 +479,10 @@ public class FactoryModPlugin extends JavaPlugin
 	
 	public NetherFactoryProperties getNetherFactoryProperties() {
 		return netherFactoryProperties;
+	}
+	
+	public RepairFactoryProperties getRepairFactoryProperties() {
+		return repairFactoryProperties;
 	}
 	
 	private static FactoryModPlugin plugin;

@@ -67,6 +67,7 @@ public class FactoryModManager
 		//{
 			initializeProductionManager();
 			initializePrintingPressManager();
+			initializeRepairFactoryManager();
 			initializeNetherFactoryManager();
 		//}
 	}
@@ -99,6 +100,15 @@ public class FactoryModManager
 		NetherFactoryManager netherMan = new NetherFactoryManager(plugin);
 		
 		managers.add(netherMan);
+	}
+	
+	/**
+	 * Initializes the RepairFactory manager
+	 */
+	private void initializeRepairFactoryManager(){
+		RepairFactoryManager repairMan = new RepairFactoryManager(plugin);
+		
+		managers.add(repairMan);
 	}
 	
 	/**

@@ -71,6 +71,56 @@
 #       data: 0 (data value of the item stack
 #       display_name: (display name of the item, null by default)
 #       lore: (lore of the item, null by default)
+#########################################################################
+#Example for RepairFactory
+#repair_factory:
+#  fuel:
+#    Charcoal:
+#      material: 'COAL'
+#      amount: 1
+#      durability: 1
+#    fuel_time: 5
+#    repair_multiple: 1
+#    name: 'Repair Factory'
+#    production_time: 20
+#    costs:
+#      construction:
+#        A_DIAMOND:
+#          material: 'DIAMOND_BLOCK'
+#          amount: 1
+#      repair:
+#        AA_DIAMOND:
+#          material: 'DIAMOND_BLOCK'
+#          amount: 1
+#      RECIPE:
+#        AA_DIAMOND:
+#          material: 'DIAMOND_BLOCK'
+#          amount: 1
+
+
+repair_factory:
+  fuel:
+    Charcoal:
+      material: 'COAL'
+      amount: 1
+      durability: 1
+    fuel_time: 5
+    repair_multiple: 1
+    name: 'Repair Factory'
+    production_time: 20
+    costs:
+      construction:
+        A_DIAMOND:
+          material: 'DIAMOND_BLOCK'
+          amount: 1
+      repair:
+        AA_DIAMOND:
+          material: 'DIAMOND_BLOCK'
+          amount: 1
+      RECIPE:
+        AAA_DIAMOND:
+          material: 'DIAMOND_BLOCK'
+          amount: 1
 copy_defaults: false
 general:
   central_block: WORKBENCH
