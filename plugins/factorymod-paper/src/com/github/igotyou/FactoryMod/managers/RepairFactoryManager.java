@@ -12,6 +12,9 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.inventory.Inventory;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
@@ -21,7 +24,10 @@ import com.github.igotyou.FactoryMod.Factorys.RepairFactory;
 import com.github.igotyou.FactoryMod.Factorys.RepairFactory.RepairFactoryMode;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
+import com.github.igotyou.FactoryMod.properties.RepairFactoryProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
+import com.github.igotyou.FactoryMod.utility.ItemList;
+import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 import com.github.igotyou.FactoryMod.utility.StringUtils;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 
@@ -110,14 +116,37 @@ public class RepairFactoryManager implements Manager{
 
 	@Override
 	public void updateFactorys() {
-		
+		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				for (RepairFactory factory: repairFactories)
+				{
+					factory.update();
+				}
+			}
+		}, 0L, FactoryModPlugin.PRODUCER_UPDATE_CYCLE);
 	}
 
 	@Override
 	public InteractionResponse createFactory(Location factoryLocation,
 			Location inventoryLocation, Location powerLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		RepairFactoryProperties repairFactoryProperties = plugin.getRepairFactoryProperties();
+		Block inventoryBlock = inventoryLocation.getBlock();
+		Chest chest = (Chest) inventoryBlock.getState();
+		Inventory chestInventory = chest.getInventory();
+		ItemList<NamedItemStack> constructionMaterials = repairFactoryProperties.getConstructionMaterials();
+		if(!factoryExistsAt(factoryLocation)) {
+			if (constructionMaterials.oneIn(chestInventory)){
+				RepairFactory factory = new RepairFactory(factoryLocation, inventoryLocation, powerLocation, false, repairFactoryProperties,
+						this);
+				return addFactory(factory);
+			}
+			else
+				return new InteractionResponse(InteractionResult.FAILURE, "Incorrect materials in chest! Stacks must match perfectly.");
+		}
+		return new InteractionResponse(InteractionResult.FAILURE, "There is already a factory there!");
 	}
 
 	@Override
@@ -153,8 +182,7 @@ public class RepairFactoryManager implements Manager{
 
 	@Override
 	public boolean factoryExistsAt(Location factoryLocation) {
-		// TODO Auto-generated method stub
-		return false;
+		return getFactory(factoryLocation) != null;
 	}
 
 	@Override
