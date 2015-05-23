@@ -5725,6 +5725,10 @@ production_recipes:
         type: PROTECTION_PROJECTILE
         level: 4
         probability: 0.4
+      Aqua Affinity 1:
+        type: WATER_WORKER
+        level: 1
+        probability: 0.3
   Dye_Brown_Wool_Black:
     name: Dye Brown Wool Black
     inputs:
@@ -5836,6 +5840,18 @@ production_recipes:
         type: PROTECTION_PROJECTILE
         level: 4
         probability: 0.4
+      Depth Strider 1:
+        type: DEPTH_STRIDER
+        level: 1
+        probability: 0.5
+      Depth Strider 2:
+        type: DEPTH_STRIDER
+        level: 2
+        probability: 0.4
+      Depth Strider 3:
+        type: DEPTH_STRIDER
+        level: 3
+        probability: 0.3
   Dye_Gray_Wool_Yellow:
     name: Dye Gray Wool Yellow
     inputs:
