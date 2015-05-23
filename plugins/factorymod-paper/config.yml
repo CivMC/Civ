@@ -4579,8 +4579,8 @@ production_recipes:
     production_time: 32
     inputs:
       Clay:
-        material: CLAY_BALL
-        amount: 512
+        material: CLAY
+        amount: 128
     outputs:
       Bricks:
         material: CLAY_BRICK
@@ -4590,8 +4590,8 @@ production_recipes:
     production_time: 5
     inputs:
       Clay:
-        material: CLAY_BALL
-        amount: 64
+        material: CLAY
+        amount: 16
     outputs:
       Flower Pots:
         material: FLOWER_POT_ITEM
