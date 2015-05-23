@@ -512,10 +512,7 @@ public class CivChat2Manager {
 			String owner = parts[0];
 			CivChat2.debugmessage("Owner=" + owner + " # of Ignorees: " + (parts.length - 1));
 			List<String> participants = new ArrayList<>();
-			for (int x = 0; x < parts.length; x++) {
-				if(x == 0){
-					x=1;
-				}
+			for (int x = 1; x < parts.length; x++) {
 				participants.add(parts[x]);
 				CivChat2.debugmessage("Adding ignoree name=" + parts[x]);
 			}
