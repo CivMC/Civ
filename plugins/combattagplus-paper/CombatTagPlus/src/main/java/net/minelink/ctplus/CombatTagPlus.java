@@ -122,10 +122,7 @@ public final class CombatTagPlus extends JavaPlugin {
         try {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
-        } catch (IOException e) {
-            getLogger().warning("Failed to start Metrics");
-            e.printStackTrace();
-        }
+        } catch (IOException ignore) {}
     }
 
     @Override
