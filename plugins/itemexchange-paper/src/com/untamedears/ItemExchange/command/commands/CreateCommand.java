@@ -1,5 +1,6 @@
 package com.untamedears.ItemExchange.command.commands;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -39,7 +40,7 @@ public class CreateCommand extends PlayerCommand {
 	public boolean execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
 
-		List<Block> blocks = player.getLastTwoTargetBlocks(null, 5);
+		List<Block> blocks = player.getLastTwoTargetBlocks(new HashSet<Byte>(), 5);
 
 		if(blocks.size() == 0) {
 			player.sendMessage(ChatColor.RED + "No block in view.");

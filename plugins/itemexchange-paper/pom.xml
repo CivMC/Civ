@@ -39,9 +39,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>bukkit</artifactId>
-      <version>1.7.2-R0.3</version>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>Spigot1.8.3</artifactId>
+      <version>1.8.3</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -59,10 +59,6 @@
   </dependencies>
   
   <repositories>
-    <repository>
-      <id>bukkit-repo</id>
-      <url>http://repo.bukkit.org/content/groups/public/</url>
-    </repository>
     <repository>
       <id>citadel-repo</id>
       <url>http://192.99.169.83:8080/plugin/repository/project/Citadel-master/Build/40/repository/</url>
