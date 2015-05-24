@@ -2,18 +2,18 @@ package vg.civcraft.mc.civmodcore.annotations;
 
 import vg.civcraft.mc.civmodcore.Config;
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
-import vg.civcraft.mc.civmodcore.annotations.OptType;
+import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
 
 public class ConfigOption {
   private final Config config_;
   private final String name_;
-  private final OptType type_;
+  private final CivConfigType type_;
   private final Object default_;
   private Object value_;
 
   public ConfigOption(Config config, CivConfig bug) {
 	config_ = config;
-    name_ = bug.opt();
+    name_ = bug.name();
     type_ = bug.type();
     Object failure = new Object();
     default_ = convert(bug.def(), failure);
@@ -126,12 +126,12 @@ public class ConfigOption {
     return name_;
   }
 
-  public OptType getType() {
+  public CivConfigType getType() {
     return type_;
   }
 
   public Boolean getBool() {
-    if (type_ != OptType.Bool) {
+    if (type_ != CivConfigType.Bool) {
       throw new Error(String.format(
           "Config option %s not of type Boolean", name_));
     }
@@ -139,7 +139,7 @@ public class ConfigOption {
   }
 
   public Integer getInt() {
-    if (type_ != OptType.Int) {
+    if (type_ != CivConfigType.Int) {
       throw new Error(String.format(
           "Config option %s not of type Integer", name_));
     }
@@ -147,7 +147,7 @@ public class ConfigOption {
   }
 
   public Double getDouble() {
-    if (type_ != OptType.Double) {
+    if (type_ != CivConfigType.Double) {
       throw new Error(String.format(
           "Config option %s not of type Double", name_));
     }

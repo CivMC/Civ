@@ -1,6 +1,6 @@
 package vg.civcraft.mc.civmodcore.annotations;
 
-public enum OptType {
+public enum CivConfigType {
   Bool,
   Double,
   Int,

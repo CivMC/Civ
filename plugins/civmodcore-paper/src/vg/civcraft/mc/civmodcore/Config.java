@@ -58,11 +58,11 @@ public class Config {
   private Map<String, ConfigOption> dynamicOptions_ = new TreeMap<String, ConfigOption>();
 
   private void addToConfig(CivConfig bug) {
-    if (dynamicOptions_.containsKey(bug.opt())) {
-    	plugin_.info("Duplicate configuration option detected: " + bug.opt());
+    if (dynamicOptions_.containsKey(bug.name())) {
+    	plugin_.info("Duplicate configuration option detected: " + bug.name());
       return;
     }
-    dynamicOptions_.put(bug.opt(), new ConfigOption(this, bug));
+    dynamicOptions_.put(bug.name(), new ConfigOption(this, bug));
   }
 
   private void scanAnnotations() {
