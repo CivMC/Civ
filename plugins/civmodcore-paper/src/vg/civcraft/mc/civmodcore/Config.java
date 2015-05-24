@@ -1,4 +1,4 @@
-package com.valadian.bergecraft;
+package vg.civcraft.mc.civmodcore;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -16,9 +16,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
 import com.google.common.base.Splitter;
-import com.valadian.bergecraft.annotations.Bergification;
-import com.valadian.bergecraft.annotations.Bergifications;
-import com.valadian.bergecraft.annotations.ConfigOption;
+import vg.civcraft.mc.civmodcore.annotations.CivConfig;
+import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
+import vg.civcraft.mc.civmodcore.annotations.ConfigOption;
 
 public class Config {
   //private static Config global_instance_ = null;
@@ -44,10 +44,10 @@ public class Config {
     return config_;
   }
 
-  private ABergMod plugin_ = null;
+  private ACivMod plugin_ = null;
   private Set<Integer> remove_item_drops_ = null;
 
-  public Config(ABergMod plugin) {
+  public Config(ACivMod plugin) {
 
 	    plugin_ = plugin;
 	    initialize();
@@ -57,7 +57,7 @@ public class Config {
 
   private Map<String, ConfigOption> dynamicOptions_ = new TreeMap<String, ConfigOption>();
 
-  private void addToConfig(Bergification bug) {
+  private void addToConfig(CivConfig bug) {
     if (dynamicOptions_.containsKey(bug.opt())) {
     	plugin_.info("Duplicate configuration option detected: " + bug.opt());
       return;
@@ -71,16 +71,16 @@ public class Config {
       for (Method method : plugin_.getClass().getMethods()) {
 
 //      	plugin_.info("scanning: "+method.getName());
-        Bergification bug = method.getAnnotation(Bergification.class);
+        CivConfig bug = method.getAnnotation(CivConfig.class);
         if (bug != null) {
 
 //          plugin_.info("adding: "+bug.toString());
           addToConfig(bug);
           continue;
         }
-        Bergifications bugs = method.getAnnotation(Bergifications.class);
+        CivConfigs bugs = method.getAnnotation(CivConfigs.class);
         if (bugs != null) {
-          for (Bergification drone : bugs.value()) {
+          for (CivConfig drone : bugs.value()) {
 
 //            plugin_.info("adding: "+drone.toString());
             addToConfig(drone);

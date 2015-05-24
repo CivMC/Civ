@@ -1,4 +1,4 @@
-package com.valadian.bergecraft.interfaces;
+package vg.civcraft.mc.civmodcore.interfaces;
 
 public interface ICompat
 {

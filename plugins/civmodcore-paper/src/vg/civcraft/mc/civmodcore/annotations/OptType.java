@@ -1,4 +1,4 @@
-package com.valadian.bergecraft.annotations;
+package vg.civcraft.mc.civmodcore.annotations;
 
 public enum OptType {
   Bool,

@@ -1,8 +1,8 @@
-package com.valadian.bergecraft.annotations;
+package vg.civcraft.mc.civmodcore.annotations;
 
-import com.valadian.bergecraft.Config;
-import com.valadian.bergecraft.annotations.Bergification;
-import com.valadian.bergecraft.annotations.OptType;
+import vg.civcraft.mc.civmodcore.Config;
+import vg.civcraft.mc.civmodcore.annotations.CivConfig;
+import vg.civcraft.mc.civmodcore.annotations.OptType;
 
 public class ConfigOption {
   private final Config config_;
@@ -11,7 +11,7 @@ public class ConfigOption {
   private final Object default_;
   private Object value_;
 
-  public ConfigOption(Config config, Bergification bug) {
+  public ConfigOption(Config config, CivConfig bug) {
 	config_ = config;
     name_ = bug.opt();
     type_ = bug.type();

@@ -1,8 +1,8 @@
-import com.valadian.bergecraft.ABergMod;
+import vg.civcraft.mc.civmodcore.ACivMod;
 
-public class Dummy extends ABergMod{
+public class Dummy extends ACivMod{
 	protected String getPluginName(){
-		return "BergModCore";
+		return "CivModCore";
 	}
 
 }

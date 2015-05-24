@@ -1,4 +1,4 @@
-package com.valadian.bergecraft;
+package vg.civcraft.mc.civmodcore;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -9,10 +9,10 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.valadian.bergecraft.annotations.*;
-import com.valadian.bergecraft.interfaces.ApiManager;
+import vg.civcraft.mc.civmodcore.annotations.*;
+import vg.civcraft.mc.civmodcore.interfaces.ApiManager;
 
-public abstract class ABergMod extends JavaPlugin implements Listener  {
+public abstract class ACivMod extends JavaPlugin implements Listener  {
 	protected abstract String getPluginName();
 	public void severe(String message) {
 	    log_.severe("["+getPluginName()+"] " + message);
