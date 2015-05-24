@@ -39,6 +39,7 @@ public class MultiBlockReinforcement extends Reinforcement{
 	
 	public void setGroup(Group g){
 		this.g = g;
+		isDirty = true;
 	}
 	
 	public Group getGroup(){

@@ -9,12 +9,14 @@ public class Reinforcement {
 	private Location loc;
 	private Material mat;
 	private int dur;
+	protected boolean isDirty;
 	
 	public Reinforcement(Location loc, Material mat, int dur, int creation){
 		this.loc = loc;
 		this.mat = mat;
 		this.dur = dur;
 		this.creation = creation;
+		isDirty = false;
 	}
 	/**
 	 * Sets the durability of a reinforcement.
@@ -22,6 +24,7 @@ public class Reinforcement {
 	 */
 	public void setDurability(int dur){
 		this.dur = dur;
+		isDirty = true;
 	}
 	/**
 	 * @return Returns what the current durability is.
@@ -53,5 +56,19 @@ public class Reinforcement {
 	 */
 	public void setMaturationTime(int time){
 		creation = time;
+		isDirty = true;
+	}
+	/**
+	 * @return Returns if this reinforcement needs to be saved.
+	 */
+	public boolean isDirty(){
+		return isDirty;
+	}
+	/**
+	 * Sets if this reinforcement needs to be saved or not.
+	 * @param dirty
+	 */
+	public void setDirty(boolean dirty){
+		isDirty = dirty;
 	}
 }

@@ -6,7 +6,7 @@
   <groupId>vg.civcraft.mc.citadel</groupId>
   <artifactId>Citadel</artifactId>
   <packaging>jar</packaging>
-  <version>3.2.7-${build.number}</version>
+  <version>3.2.8-${build.number}</version>
   <name>Citadel</name>
   <url>https://github.com/Civcraft/Citadel</url>
   
@@ -39,9 +39,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>craftbukkit</artifactId>
-      <version>1.7.10-R0.1</version>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>Spigot1.8.3</artifactId>
+      <version>1.8.3</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -53,10 +53,6 @@
   </dependencies>
   
   <repositories>
-    <repository>
-      <id>bukkit-repo</id>
-      <url>http://repo.bukkit.org/content/groups/public/</url>
-    </repository>
     <repository>
       <id>civcraft-repo</id>
       <url>http://civcraft.co:8080/plugin/repository/everything/</url>

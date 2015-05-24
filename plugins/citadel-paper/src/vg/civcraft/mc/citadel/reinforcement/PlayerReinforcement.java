@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Openable;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -91,6 +92,7 @@ public class PlayerReinforcement extends Reinforcement{
 	 */
 	public void setInsecure(boolean bool){
 		isInsecure = bool;
+		isDirty = true;
 	}
 	/**
 	 * @return Returns the percent of the reinforcement.
@@ -121,7 +123,7 @@ public class PlayerReinforcement extends Reinforcement{
     public boolean isSecurable() {
         Block block = getLocation().getBlock();
         return block.getState() instanceof InventoryHolder
-                || block.getState().getData() instanceof Openable;
+                || block.getState().getData() instanceof Openable || Utility.doorTypes.contains(block.getType());
     }
     /**
      * Returns the group this PlayerReinforcement is associated with.
@@ -138,6 +140,7 @@ public class PlayerReinforcement extends Reinforcement{
     public void setGroup(Group g){
     	this.g = g;
     	this.gp = NameAPI.getGroupManager().getPermissionforGroup(g);
+    	isDirty = true;
     }
     /**
      * @return ItemStack associated with this reinforcement
@@ -166,6 +169,7 @@ public class PlayerReinforcement extends Reinforcement{
     		String group = Citadel.getCitadelDatabase().getSavedGroupName(this);
     		g = NameAPI.getGroupManager().getGroup(group);
     		gp = NameAPI.getGroupManager().getPermissionforGroup(g);
+    		isDirty = true;
     	}
     }
     /**

@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import net.minecraft.util.com.google.common.cache.CacheBuilder;
-import net.minecraft.util.com.google.common.cache.CacheLoader;
-import net.minecraft.util.com.google.common.cache.LoadingCache;
-import net.minecraft.util.com.google.common.cache.RemovalListener;
-import net.minecraft.util.com.google.common.cache.RemovalNotification;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -34,7 +34,8 @@ public class ReinforcementManager {
 			if (rein instanceof NullReinforcement){
 				return;
 			}
-			saveReinforcement(rein);
+			if (rein.isDirty())
+				saveReinforcement(rein);
 		}
 	};
 	private LoadingCache<Location, Reinforcement> reinforcements = CacheBuilder
@@ -69,6 +70,7 @@ public class ReinforcementManager {
 			deleteReinforcement(rein);
 		CitadelStatics.updateHitStat(CitadelStatics.UPDATE);
 		db.saveReinforcement(rein);
+		rein.setDirty(false);
 	}
 
 	/**

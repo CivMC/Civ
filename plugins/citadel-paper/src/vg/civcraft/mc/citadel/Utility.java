@@ -1,6 +1,7 @@
 package vg.civcraft.mc.citadel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,7 +22,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Bed;
 import org.bukkit.material.Door;
-import org.bukkit.material.MaterialData;
 
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.misc.ReinforcemnetFortificationCancelException;
@@ -544,8 +544,13 @@ public class Utility {
         return null;
     }
     
+    public static List<Material> doorTypes = new ArrayList<Material>(Arrays.asList(
+    		Material.WOODEN_DOOR, Material.IRON_DOOR_BLOCK,
+    		Material.ACACIA_DOOR, Material.BIRCH_DOOR,
+    		Material.DARK_OAK_DOOR, Material.JUNGLE_DOOR,
+    		Material.SPRUCE_DOOR, Material.WOOD_DOOR));
     /**
-     * Returns the block the Citadel is looking at, example: for ebds, doors we want the bottom half.
+     * Returns the block the Citadel is looking at, example: for beds, doors we want the bottom half.
      * @param block
      * @return Returns the block we want.
      */
@@ -561,7 +566,13 @@ public class Utility {
     		break;
 		case WOODEN_DOOR:
 		case IRON_DOOR_BLOCK:
-			if (((Door) block.getState().getData()).isTopHalf())
+		case ACACIA_DOOR:
+		case BIRCH_DOOR:
+		case DARK_OAK_DOOR:
+		case JUNGLE_DOOR:
+		case SPRUCE_DOOR:
+		case WOOD_DOOR:
+			if (!doorTypes.contains(block.getRelative(BlockFace.UP).getType()))
 				b = block.getRelative(BlockFace.DOWN);
 			break;
 		case BED_BLOCK:
