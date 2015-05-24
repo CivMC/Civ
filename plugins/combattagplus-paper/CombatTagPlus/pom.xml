@@ -31,6 +31,12 @@
         <version>2.2</version>
         <configuration>
           <createDependencyReducedPom>false</createDependencyReducedPom>
+          <relocations>
+            <relocation>
+              <pattern>org.mcstats</pattern>
+              <shadedPattern>net.minelink.ctplus.mcstats</shadedPattern>
+            </relocation>
+          </relocations>
         </configuration>
         <executions>
           <execution>
@@ -45,6 +51,10 @@
   </build>
 
   <repositories>
+    <repository>
+      <id>metrics-repo</id>
+      <url>http://repo.mcstats.org/content/repositories/public</url>
+    </repository>
     <repository>
       <id>minelink-thirdparty</id>
       <url>http://repo.minelink.net/content/repositories/thirdparty</url>
@@ -65,6 +75,12 @@
       <artifactId>bukkit</artifactId>
       <version>1.8-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mcstats.bukkit</groupId>
+      <artifactId>metrics-lite</artifactId>
+      <version>LATEST</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>net.minelink</groupId>
