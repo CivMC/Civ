@@ -9,6 +9,7 @@
 * Spigot 1.7.10 / 1.8 Protocol Patch
 * CraftBukkit & Spigot 1.8.0
 * CraftBukkit & Spigot 1.8.3
+* CraftBukkit & Spigot 1.8.4 / 1.8.5
 
 ## Features
 
@@ -20,6 +21,7 @@
 * Disallow flying while player is in combat
 * Disallow block editing while player is in combat
 * Disallow enderpearls while player is in combat
+* Disallow teleporting while player is in combat
 * Broadcast a PVP kill/death message
 * Disable combat tagging for specific worlds
 * Deny specific commands while player is in combat
@@ -29,8 +31,9 @@
   * _Most mainstream Faction builds are supported:_
   * Factions 2.7 (MassiveCore 2.7)
   * Factions 2.6 (MassiveCore 7.4)
-  * FactionsUUID 1.6 by @drtshock
+  * FactionsUUID 1.6 (and HCFactions) by @drtshock
   * FactionsUUID 1.8 by @externo6
+* Supports Towny PVP permission
 * Works with BarAPI to show a boss bar counting down with the player's remaining combat timer
   * _These custom BarAPI builds by @vemacs are more compatible than the official ones:_
   * Spigot 1.8.0: [Download](http://ci.minelink.net/job/BarAPI/5/artifact/target/BarAPI.jar)
