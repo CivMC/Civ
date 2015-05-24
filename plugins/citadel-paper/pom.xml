@@ -54,8 +54,8 @@
   
   <repositories>
     <repository>
-      <id>NameLayer-repo</id>
-      <url>http://192.99.169.83:8080/plugin/repository/project/NameLayer-master/Build/117/repository/</url>
+      <id>civcraft-repo</id>
+      <url>http://civcraft.co:8080/plugin/repository/everything/</url>
     </repository>
   </repositories>
   
