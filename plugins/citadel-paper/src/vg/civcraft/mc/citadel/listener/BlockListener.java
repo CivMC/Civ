@@ -217,30 +217,11 @@ public class BlockListener implements Listener{
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void pistonExtend(BlockPistonExtendEvent bpee) {
-        Block piston = bpee.getBlock();
-        BlockState state = piston.getState();
-        MaterialData data = state.getData();
-        BlockFace direction = null;
-
-        if (data instanceof PistonBaseMaterial) {
-            direction = ((PistonBaseMaterial) data).getFacing();
-        }
-
-        // if no direction was found, no point in going on
-        if (direction == null)
-            return;
-
-        // Check the affected blocks
-        for (int i = 1; i < bpee.getLength() + 2; i++) {
-            Block block = piston.getRelative(direction, i);
-
-            if (block.getType() == Material.AIR){
-                break;
-            }
-
-            Reinforcement reinforcement = rm.getReinforcement(block.getLocation());
+        for (Block block : bpee.getBlocks())
+        {
+        	Reinforcement reinforcement = rm.getReinforcement(block.getLocation());
             if (reinforcement != null){
-                bpee.setCancelled(true);
+            	bpee.setCancelled(true);
                 break;
             }
         }
@@ -248,26 +229,13 @@ public class BlockListener implements Listener{
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void pistonRetract(BlockPistonRetractEvent bpre) {
-        Block piston = bpre.getBlock();
-        BlockState state = piston.getState();
-        MaterialData data = state.getData();
-        BlockFace direction = null;
-
-        // Check the block it pushed directly
-        if (data instanceof PistonBaseMaterial) {
-            direction = ((PistonBaseMaterial) data).getFacing();
-        }
-
-        if (direction == null)
-            return;
-
-        // the block that the piston moved
-        Block moved = piston.getRelative(direction, 2);
-        
-        Reinforcement reinforcement = rm.getReinforcement(moved.getLocation());
-
-        if (reinforcement != null) {
-            bpre.setCancelled(true);
+        for (Block block : bpre.getBlocks())
+        {
+        	Reinforcement reinforcement = rm.getReinforcement(block.getLocation());
+            if (reinforcement != null){
+            	bpre.setCancelled(true);
+                break;
+            }
         }
     }
 
