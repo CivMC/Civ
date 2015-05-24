@@ -148,6 +148,80 @@ public class RepairFactory extends BaseFactory{
 			}
 		}
 	}
+	
+	@Override
+	public List<InteractionResponse> togglePower(){
+		List<InteractionResponse> response=new ArrayList<InteractionResponse>();
+		//if the factory is turned off
+		if (!active)
+		{
+			//if the factory isn't broken or the current recipe can repair it
+			if(!isBroken()||isRepairing())
+			{
+				//is there fuel enough for at least once energy cycle?
+				if (isFuelAvailable())
+				{
+					//are there enough materials for the current recipe in the chest?
+					if (checkHasMaterials())
+					{
+						//turn the factory on
+						powerOn();
+						//return a success message
+						response.add(new InteractionResponse(InteractionResult.SUCCESS, "Factory activated!"));
+						return response;
+					}
+					//there are not enough materials for the recipe!
+					else
+					{
+						//return a failure message, containing which materials are needed for the recipe
+						//[Requires the following: Amount Name, Amount Name.]
+						//[Requires one of the following: Amount Name, Amount Name.]
+						
+						ItemList<NamedItemStack> needAll=new ItemList<NamedItemStack>();
+						ItemList<NamedItemStack> allInputs = null;
+						
+						if (mode.equals(RepairFactoryMode.REPAIR)){
+							allInputs = rfp.getRepairMaterials();
+						}
+						else if (mode.equals(RepairFactoryMode.RESET_ITEMS)){
+							allInputs = rfp.getRecipeMaterials();
+						}
+						
+						needAll.addAll(allInputs.getDifference(getInventory()));
+						if(!needAll.isEmpty())
+						{
+							response.add(new InteractionResponse(InteractionResult.FAILURE,"You need all of the following: "+needAll.toString()+"."));
+						} else if (allInputs == null || allInputs.isEmpty()) {
+							System.out.println("getAllInputs() returned null or empty; recipe is returning no expectation of input!");
+						}
+						return response;
+					}
+				}
+				//if there isn't enough fuel for at least one energy cycle
+				else
+				{
+					//return a error message
+					int multiplesRequired=(int)Math.ceil(getProductionTime()/(double)getEnergyTime());
+					response.add(new InteractionResponse(InteractionResult.FAILURE, "Factory is missing fuel! ("+getFuel().getMultiple(multiplesRequired).toString()+")"));
+					return response;
+				}
+			}
+			else
+			{
+				response.add(new InteractionResponse(InteractionResult.FAILURE, "Factory is in disrepair!"));
+				return response;
+			}			
+		}
+		//if the factory is on already
+		else
+		{
+			//turn the factory off
+			powerOff();
+			//return success message
+			response.add(new InteractionResponse(InteractionResult.FAILURE, "Factory has been deactivated!"));
+			return response;
+		}
+	}
 
 	@Override
 	public double getEnergyTime() {
@@ -230,7 +304,7 @@ public class RepairFactory extends BaseFactory{
 		responses.add(new InteractionResponse(InteractionResult.SUCCESS, response));
 		responses.add(new InteractionResponse(InteractionResult.SUCCESS, percentDone));
 		
-		if(!getRepairs().isEmpty()&&maintenanceActive)
+		if(!getRepairs().isEmpty()&&maintenanceActive&& mode == RepairFactoryMode.REPAIR)
 		{
 			int amountAvailable=getRepairs().amountAvailable(getInventory());
 			int amountRepaired=amountAvailable>currentRepair ? (int) Math.ceil(currentRepair) : amountAvailable;

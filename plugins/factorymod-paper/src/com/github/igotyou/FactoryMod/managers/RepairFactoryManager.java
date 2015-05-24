@@ -141,6 +141,7 @@ public class RepairFactoryManager implements Manager{
 			if (constructionMaterials.oneIn(chestInventory)){
 				RepairFactory factory = new RepairFactory(factoryLocation, inventoryLocation, powerLocation, false, repairFactoryProperties,
 						this);
+				repairFactoryProperties.getConstructionMaterials().removeFrom(chestInventory);
 				return addFactory(factory);
 			}
 			else
@@ -159,9 +160,9 @@ public class RepairFactoryManager implements Manager{
 		{
 			repairFactories.add(repairFactory);
 			if (isLogging){
-				FactoryModPlugin.sendConsoleMessage("Repair Factory crreated: " + repairFactory.getProperties().getName());
+				FactoryModPlugin.sendConsoleMessage("Repair Factory created: " + repairFactory.getProperties().getName());
 			}
-			return new InteractionResponse(InteractionResult.SUCCESS, "");
+			return new InteractionResponse(InteractionResult.SUCCESS, "You have successfully created a Repair Factory.");
 		}
 		else {
 			FactoryModPlugin.sendConsoleMessage("Repair Factory failed to create: " + repairFactory.getProperties().getName());

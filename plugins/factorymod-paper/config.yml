@@ -91,7 +91,7 @@ repair_factory:
       AA_DIAMOND:
         material: 'DIAMOND_BLOCK'
         amount: 1
-    RECIPE:
+    recipe:
       AAA_DIAMOND:
         material: 'DIAMOND_BLOCK'
         amount: 1
