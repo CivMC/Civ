@@ -35,20 +35,19 @@ public class AssociationList {
 				+ "primary key (player));");
 	}
 	
-	private PreparedStatement addPlayer;
-    private PreparedStatement getUUIDfromPlayer;
-    private PreparedStatement getPlayerfromUUID;
-	private PreparedStatement changePlayerName;
+	private String addPlayer;
+    private String getUUIDfromPlayer;
+    private String getPlayerfromUUID;
+	private String changePlayerName;
 	
 	public void initializeStatements(){
-		addPlayer = db.prepareStatement("call addplayertotable(?, ?)"); // order player name, uuid 
-		getUUIDfromPlayer = db.prepareStatement("select uuid from Name_player " +
-				"where player=?");
-		getPlayerfromUUID = db.prepareStatement("select player from Name_player " +
-				"where uuid=?");
-
-		changePlayerName = db.prepareStatement("delete from Name_player " +
-				"where uuid=?");
+		addPlayer = "call addplayertotable(?, ?)"; // order player name, uuid 
+		getUUIDfromPlayer = "select uuid from Name_player " +
+				"where player=?";
+		getPlayerfromUUID = "select player from Name_player " +
+				"where uuid=?";
+		changePlayerName = "delete from Name_player " +
+				"where uuid=?";
 	}
 	
 	public void initializeProcedures(){
@@ -98,6 +97,7 @@ public class AssociationList {
 	// returns null if no uuid was found
 	public UUID getUUID(String playername){
 		NameLayerPlugin.reconnectAndReintializeStatements();
+		PreparedStatement getUUIDfromPlayer = db.prepareStatement(this.getUUIDfromPlayer);
 		try {
 			getUUIDfromPlayer.setString(1, playername);
 			ResultSet set = getUUIDfromPlayer.executeQuery();
@@ -114,6 +114,7 @@ public class AssociationList {
 	// returns null if no playername was found
 	public String getCurrentName(UUID uuid){
 		NameLayerPlugin.reconnectAndReintializeStatements();
+		PreparedStatement getPlayerfromUUID = db.prepareStatement(this.getPlayerfromUUID);
 		try {
 			getPlayerfromUUID.setString(1, uuid.toString());
 			ResultSet set = getPlayerfromUUID.executeQuery();
@@ -129,6 +130,7 @@ public class AssociationList {
 	
 	public void addPlayer(String playername, UUID uuid){
 		NameLayerPlugin.reconnectAndReintializeStatements();
+		PreparedStatement addPlayer = db.prepareStatement(this.addPlayer);
 		try {
 			addPlayer.setString(1, playername);
 			addPlayer.setString(2, uuid.toString());
@@ -140,6 +142,7 @@ public class AssociationList {
 	}
 	public void changePlayer(String newName, UUID uuid) {
 		NameLayerPlugin.reconnectAndReintializeStatements();
+		PreparedStatement changePlayerName = db.prepareStatement(this.changePlayerName);
 		try {
 			changePlayerName.setString(1, uuid.toString());
 			changePlayerName.execute();

@@ -42,7 +42,7 @@ public class InfoDump extends PlayerCommand
 		
 		if(args.length == 0)
 		{
-			player.sendMessage(ChatColor.GREEN + "[NLID] " + groupNames.size());
+			player.sendMessage(ChatColor.GREEN + "[NLID]: " + groupNames.size());
 			return true;
 		}
 		else

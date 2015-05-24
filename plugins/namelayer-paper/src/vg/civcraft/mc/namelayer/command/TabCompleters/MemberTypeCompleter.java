@@ -24,7 +24,7 @@ public class MemberTypeCompleter {
 
         if (lastArg != null) {
             for(String type: type_strings){
-                if (type.startsWith(lastArg))
+                if (type.toLowerCase().startsWith(lastArg.toLowerCase()))
                     result.add(type);
             }
         } else {

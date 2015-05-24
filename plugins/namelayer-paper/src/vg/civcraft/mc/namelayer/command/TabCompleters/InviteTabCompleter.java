@@ -20,12 +20,12 @@ public class InviteTabCompleter {
         UUID uuid = NameAPI.getUUID(sender.getName());
         List<Group> groups = PlayerListener.getNotifications(uuid);
         List<String> result = new LinkedList<>();
-
+        
         if (groups == null)
             return new ArrayList<>();
 
         for (Group group : groups){
-            if (lastArg == null || group.getName().startsWith(lastArg)){
+            if (lastArg == null || group.getName().toLowerCase().startsWith(lastArg.toLowerCase())){
                 result.add(group.getName());
             }
         }

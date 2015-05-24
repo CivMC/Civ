@@ -25,7 +25,7 @@ public class GroupTabCompleter {
 
         if (lastArg != null){
             for (String group : groups){
-                if (group.startsWith(lastArg)){
+                if (group.toLowerCase().startsWith(lastArg.toLowerCase())){
                     fitting_groups.add(group);
                 } else {
                 }
