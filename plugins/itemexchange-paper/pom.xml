@@ -60,15 +60,8 @@
   
   <repositories>
     <repository>
-      <id>citadel-repo</id>
-      <url>http://192.99.169.83:8080/plugin/repository/project/Citadel-master/Build/40/repository/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>NameLayer-repo</id>
-      <url>http://192.99.169.83:8080/plugin/repository/project/NameLayer-master/Build/20/repository/</url>
+      <id>civcraft-repo</id>
+      <url>http://civcraft.co:8080/plugin/repository/everything/</url>
     </repository>
   </repositories>
 </project>
