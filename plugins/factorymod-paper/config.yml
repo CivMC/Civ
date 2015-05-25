@@ -2091,6 +2091,7 @@ production_factories:
       - Forge_Iron_Bars
       - Forge_Buckets
       - Forge_Iron_Doors
+      - Forge_Iron_Trapdoors
       - Forge_Flint_And_Steel
       - Bastion_Gearbox
     repair_multiple: 10
@@ -6211,6 +6212,17 @@ production_recipes:
       Iron Door:
         material: IRON_DOOR
         amount: 18
+  Forge_Iron_Trapdoors:
+    name: Forge Iron Trapdoors
+    production_time: 16
+    inputs:
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 54
+    outputs:
+      Iron Trapdoor:
+        material: IRON_TRAPDOOR
+        amount: 36
   Forge_Flint_And_Steel:
     name: Forge Flint and Steel
     production_time: 8
