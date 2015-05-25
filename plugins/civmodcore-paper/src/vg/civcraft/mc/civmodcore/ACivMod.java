@@ -38,7 +38,7 @@ public abstract class ACivMod extends JavaPlugin implements Listener{
 	}
 
     public Config config_ = null;
-		  
+    public ClassLoader classLoader = null;
     //private File configFile;
     private final Logger log_ = Logger.getLogger(getPluginName());
     //private static ABergMod global_instance_ = null;
@@ -100,6 +100,7 @@ public abstract class ACivMod extends JavaPlugin implements Listener{
     @Override
     public void onLoad()
     {
+      classLoader = getClassLoader();
       loadConfiguration();
       loadApis();
       info("Loaded");
