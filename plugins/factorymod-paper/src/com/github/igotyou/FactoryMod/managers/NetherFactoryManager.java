@@ -424,7 +424,7 @@ public class NetherFactoryManager implements Manager
 					double distance = location.distance(factoryLoc);
 					if (distance <= properties.getScalingRadius())
 					{
-						scalingFactor = scalingFactor * Math.exp(1/(distance/properties.getCostScalingRadius()));
+						scalingFactor = scalingFactor * ( Math.exp(1/(distance/properties.getCostScalingRadius())) - Math.exp(1.0) + 1.0 );
 					}
 				}
 			}
