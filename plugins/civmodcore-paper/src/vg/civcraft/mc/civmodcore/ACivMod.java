@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore;
 
 import java.io.File;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.command.Command;
@@ -10,10 +11,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmodcore.annotations.*;
+import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.interfaces.ApiManager;
 
-public abstract class ACivMod extends JavaPlugin implements Listener  {
+public abstract class ACivMod extends JavaPlugin implements Listener{
+	
+	protected CommandHandler handle;
+	
 	protected abstract String getPluginName();
+	protected abstract void setCommandHandler(CommandHandler handle);
 	public void severe(String message) {
 	    log_.severe("["+getPluginName()+"] " + message);
 	}
@@ -49,7 +55,7 @@ public abstract class ACivMod extends JavaPlugin implements Listener  {
       if (//!(sender instanceof ConsoleCommandSender) ||
           !command.getName().equals(getPluginName().toLowerCase()) ||
           args.length < 1) {
-        return false;
+    	  return handle.execute(sender, command, args);
       }
       String option = args[0];
       String value = null;
@@ -115,7 +121,6 @@ public abstract class ACivMod extends JavaPlugin implements Listener  {
     private void registerEvents() {
       getServer().getPluginManager().registerEvents(this, this);
     }
-
     public void registerCommands() {
       ConsoleCommandSender console = getServer().getConsoleSender();
       console.addAttachment(this, getPluginName().toLowerCase()+".console", true);
@@ -129,5 +134,12 @@ public abstract class ACivMod extends JavaPlugin implements Listener  {
         return true;
       }
       return false;
+    }
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args){
+    	return handle.complete(sender, cmd, args);
+    }
+    public CommandHandler getCommandHandler(){
+    	return handle;
     }
 }
