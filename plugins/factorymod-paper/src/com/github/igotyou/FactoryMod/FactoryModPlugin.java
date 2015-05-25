@@ -28,6 +28,7 @@ import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.listeners.NoteStackListener;
 import com.github.igotyou.FactoryMod.listeners.RedstoneListener;
 import com.github.igotyou.FactoryMod.managers.FactoryModManager;
+import com.github.igotyou.FactoryMod.properties.CompactorProperties;
 import com.github.igotyou.FactoryMod.properties.NetherFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.PrintingPressProperties;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
@@ -47,6 +48,7 @@ public class FactoryModPlugin extends JavaPlugin
 	public PrintingPressProperties printingPressProperties;
 	public NetherFactoryProperties netherFactoryProperties;
 	public RepairFactoryProperties repairFactoryProperties;
+	public CompactorProperties compactorProperties;
 	
 	public static final String VERSION = "v1.0"; //Current version of plugin
 	public static final String PLUGIN_NAME = "FactoryMod"; //Name of plugin
@@ -57,6 +59,7 @@ public class FactoryModPlugin extends JavaPlugin
 	
 	public static final String NETHER_FACTORY_SAVE_FILE = "netherSaves";
 	public static final String REPAIR_FACTORY_SAVE_FILE = "repairSaves";
+	public static final String COMPACTOR_SAVE_FILE = "compactorSaves";
 	public static boolean DISABLE_PORTALS;
 	public static int NETHER_SCALE;
 	public static boolean ALLOW_REINFORCEMENT_CREATION_ABOVE_TELEPORT_PLATFORM;
@@ -315,9 +318,11 @@ public class FactoryModPlugin extends JavaPlugin
 		ConfigurationSection configPrintingPresses=config.getConfigurationSection("printing_presses");
 		ConfigurationSection configNetherFactory=config.getConfigurationSection("nether_factory");
 		ConfigurationSection configRepairFactory=config.getConfigurationSection("repair_factory");
+		ConfigurationSection configCompactor=config.getConfigurationSection("compactor");
 		printingPressProperties = PrintingPressProperties.fromConfig(this, configPrintingPresses);
 		netherFactoryProperties = NetherFactoryProperties.fromConfig(this, configNetherFactory);
 		repairFactoryProperties = RepairFactoryProperties.fromConfig(this, configRepairFactory);
+		compactorProperties = CompactorProperties.fromConfig(this, configCompactor);
 		sendConsoleMessage("Finished initializing FactoryMod Config.");
 	}
 	
@@ -483,6 +488,10 @@ public class FactoryModPlugin extends JavaPlugin
 	
 	public RepairFactoryProperties getRepairFactoryProperties() {
 		return repairFactoryProperties;
+	}
+	
+	public CompactorProperties getCompactorProperties() {
+	    return compactorProperties;
 	}
 	
 	private static FactoryModPlugin plugin;

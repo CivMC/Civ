@@ -69,6 +69,7 @@ public class FactoryModManager
 			initializePrintingPressManager();
 			initializeRepairFactoryManager();
 			initializeNetherFactoryManager();
+			initializeCompactorManager();
 		//}
 	}
 	
@@ -109,6 +110,15 @@ public class FactoryModManager
 		RepairFactoryManager repairMan = new RepairFactoryManager(plugin);
 		
 		managers.add(repairMan);
+	}
+	
+	/**
+	 * Initializes the Compactor manager
+	 */
+	private void initializeCompactorManager() {
+	    CompactorManager compactMan = new CompactorManager(plugin);
+	    
+	    managers.add(compactMan);
 	}
 	
 	/**
