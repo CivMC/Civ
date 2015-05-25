@@ -60,22 +60,23 @@ public class Config {
 	    
 	    try {
 	    	Package pack= plugin_.getClass().getPackage();
-	    	String packageName = pack.getName();
-	        //plugin_.info("Package Name: "+packageName);
-	        
-	        ClassLoader classloader = plugin_.classLoader;//ClassLoader.getSystemClassLoader();
-	        ClassPath path = ClassPath.from(classloader);
-	        
-	        //plugin_.info("Matching Classes Found: "+path.getTopLevelClassesRecursive(packageName).size());
-	        for (ClassPath.ClassInfo info : path.getTopLevelClassesRecursive(packageName)) {
-	            Class clazz = Class.forName(info.getName(), true, classloader);
-	            scanAnnotations(clazz);
-	        }
+	    	if(pack==null){
+	    		plugin_.info("Package name REQUIRED for annotation loading");
+	    	}
+	    	else{
+
+		    	String packageName = pack.getName();		        
+		        ClassLoader classloader = plugin_.classLoader;
+		        ClassPath path = ClassPath.from(classloader);
+		        
+		        for (ClassPath.ClassInfo info : path.getTopLevelClassesRecursive(packageName)) {
+		            Class clazz = Class.forName(info.getName(), true, classloader);
+		            scanAnnotations(clazz);
+		        }
+	    	}
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
-		}
-	    //scanAnnotations();
-    
+		}    
   }
   private Map<String, ConfigOption> dynamicOptions_ = new TreeMap<String, ConfigOption>();
 
