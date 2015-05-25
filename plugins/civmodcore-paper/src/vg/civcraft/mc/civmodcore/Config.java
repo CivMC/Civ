@@ -65,18 +65,18 @@ public class Config {
 	    	}
 	    	else{
 
-		    	String packageName = pack.getName();		        
-		        ClassLoader classloader = plugin_.classLoader;
+	    		String packageName = pack.getName();		        
+		    	ClassLoader classloader = plugin_.classLoader;
 		        ClassPath path = ClassPath.from(classloader);
-		        
+
 		        for (ClassPath.ClassInfo info : path.getTopLevelClassesRecursive(packageName)) {
-		            Class clazz = Class.forName(info.getName(), true, classloader);
+		        	Class clazz = Class.forName(info.getName(), true, classloader);
 		            scanAnnotations(clazz);
 		        }
 	    	}
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-		}    
+	    } catch (ClassNotFoundException | IOException e) {
+	    	e.printStackTrace();
+	    }    
   }
   private Map<String, ConfigOption> dynamicOptions_ = new TreeMap<String, ConfigOption>();
 
