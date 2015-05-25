@@ -1,27 +1,14 @@
 package vg.civcraft.mc.civmodcore;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import net.minecraft.util.com.google.common.reflect.ClassPath;
-import net.minecraft.util.com.google.common.reflect.ClassPath.ClassInfo;
-import net.minecraft.util.com.google.common.collect.ImmutableSet;
-
-import org.bukkit.Material;
+import com.google.common.reflect.ClassPath;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.Plugin;
-
-import com.google.common.base.Splitter;
-
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
 import vg.civcraft.mc.civmodcore.annotations.ConfigOption;

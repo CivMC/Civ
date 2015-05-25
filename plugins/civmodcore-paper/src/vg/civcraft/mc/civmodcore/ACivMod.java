@@ -1,6 +1,5 @@
 package vg.civcraft.mc.civmodcore;
 
-import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -19,7 +18,7 @@ public abstract class ACivMod extends JavaPlugin implements Listener{
 	protected CommandHandler handle;
 	
 	protected abstract String getPluginName();
-	protected abstract void setCommandHandler(CommandHandler handle);
+	
 	public void severe(String message) {
 	    log_.severe("["+getPluginName()+"] " + message);
 	}
@@ -55,7 +54,7 @@ public abstract class ACivMod extends JavaPlugin implements Listener{
       if (//!(sender instanceof ConsoleCommandSender) ||
           !command.getName().equals(getPluginName().toLowerCase()) ||
           args.length < 1) {
-    	  return handle.execute(sender, command, args);
+    	  return handle == null ? false : handle.execute(sender, command, args);
       }
       String option = args[0];
       String value = null;
@@ -138,9 +137,12 @@ public abstract class ACivMod extends JavaPlugin implements Listener{
     }
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args){
-    	return handle.complete(sender, cmd, args);
+    	return handle == null ? null : handle.complete(sender, cmd, args);
     }
     public CommandHandler getCommandHandler(){
     	return handle;
+    }
+    protected void setCommandHandler(CommandHandler handle){
+    	this.handle = handle;
     }
 }
