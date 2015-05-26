@@ -36,12 +36,15 @@ public abstract class ACivMod extends JavaPlugin implements Listener{
 	    }
 	}
 
-    public Config config_ = null;
+	public Config GetConfig(){
+		if(config_==null){
+			log_.info("Config not initialized. Most likely due to overriding onLoad and not calling super.onLoad()");
+		}
+		return config_;
+	}
+    private Config config_ = null;
     public ClassLoader classLoader = null;
-    //private File configFile;
     private final Logger log_ = Logger.getLogger(getPluginName());
-    //private static ABergMod global_instance_ = null;
-    //private static String mainDirectory = "plugins/"+getPluginName();
     
     public ApiManager apis;    
     
@@ -101,22 +104,18 @@ public abstract class ACivMod extends JavaPlugin implements Listener{
     {
       classLoader = getClassLoader();
       loadConfiguration();
-      loadApis();
-      info("Loaded");
+      info("Configuration Loaded");
     }
     private void loadConfiguration() {
         config_ = new Config(this);
         System.out.println("loaded config for: "+getPluginName() + "Config: "+ (config_!=null));
-      }
-    public void loadApis() {
-    	  //ApiManager.disablerApis.add(new CompatGimmickApi());
     }
     @Override
     public void onEnable() {
       registerEvents();
       registerCommands();
       //global_instance_ = this;
-      info("Enabled");
+      info("Main Plugin Events and Config Command registered");
     }
     private void registerEvents() {
       getServer().getPluginManager().registerEvents(this, this);
