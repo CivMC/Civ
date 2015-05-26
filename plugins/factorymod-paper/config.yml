@@ -196,12 +196,14 @@ crafting:
     CHISSELED_STONE_BRICK:
       material: SMOOTH_BRICK
       durability: 3
-    MOSSY_COBBLE:
+    MOSSY_STONE:
       material: SMOOTH_BRICK
       durability: 1
     CRACKED_STONE_BRICK:
       material: SMOOTH_BRICK
       durability: 2
+    MOSSY_COBBLE:
+      material: MOSSY_COBBLESTONE
   enable:
     XP to Emerald:
       inputs:
