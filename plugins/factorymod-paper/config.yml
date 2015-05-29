@@ -1895,7 +1895,11 @@ production_factories:
         amount: 256
         durability: 4
     recipes:
+      - Smelt Prismarine
+      - Smelt Prismarine Bricks
+      - Smelt Dark Prismarine
       - Smelt_Cracked_Stone_Brick
+      - Craft Sea Lanterns
       - Smelt_Mossy_Stone_Brick
       - Smelt_Chiseled_Stone_Brick
       - Bastion_Flooring
@@ -7595,3 +7599,57 @@ production_recipes:
        Eye of Ender:
          material: EYE_OF_ENDER
          amount: 256
+  Smelt Prismarine:
+    name: Smelt Prismarine
+    production_time: 16
+    inputs:
+      Prismarine Shard:
+        material: PRISMARINE_SHARD
+        amount: 128
+    outputs:
+      Prismarine
+        material: PRISMARINE
+        amount: 64
+        durability: 0
+  Smelt Prismarine Bricks:
+    name: Smelt Prismarine Bricks
+    production_time: 16
+    inputs:
+      Prismarine Shard:
+        material: PRISMARINE_SHARD
+        amount: 288
+    outputs:
+      Prismarine
+        material: PRISMARINE
+        amount: 64
+        durability: 1
+  Smelt Dark Prismarine:
+    name: Smelt Dark Prismarine
+    production_time: 16
+    inputs:
+      Prismarine Shard:
+        material: PRISMARINE_SHARD
+        amount: 256
+      Ink Sack:
+        material: INK_SACK
+        amount: 32
+        durability: 0
+    outputs:
+      Prismarine
+        material: PRISMARINE
+        amount: 64
+        durability: 2
+  Craft Sea Lanterns:
+    name: Craft Sea Lanterns
+    production_time: 8
+    inputs:
+      Prismarine Shard:
+        material: PRISMARINE_SHARD
+        amount: 32
+      Prismarine Crystals:
+        material: PRISMARINE_CRYSTALS
+        amount: 64
+    outputs:
+      Prismarine
+        material: SEA_LANTERN
+        amount: 16
