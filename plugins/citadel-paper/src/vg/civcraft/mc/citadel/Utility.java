@@ -487,10 +487,11 @@ public class Utility {
     	if (event.isCancelled())
     		return null;
     	return rein;
+    	} catch (IllegalArgumentException iae){
     	} catch(Exception ex){
     		ex.printStackTrace();
-    		return null;
     	}
+		return null;
     }
     /**
      * If a reinforcement is exploded checks if it has a reinforcement on it
