@@ -17,6 +17,7 @@ import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
 import com.github.igotyou.FactoryMod.persistence.FactoryDao;
+import com.github.igotyou.FactoryMod.persistence.FileBackup;
 import com.github.igotyou.FactoryMod.persistence.PersistenceFactory;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
@@ -69,7 +70,7 @@ public class ProductionManager implements Manager
 		updateRepair(System.currentTimeMillis() - repairTime);
 		repairTime = System.currentTimeMillis();
 		
-		BackupManager.backup(mSaveFile);
+		FileBackup.backup(mSaveFile);
 		mDao.writeFactories(producers);
 	}
 

@@ -26,12 +26,16 @@ import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory.NetherOperationMode;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
+import com.github.igotyou.FactoryMod.persistence.FactoryDao;
+import com.github.igotyou.FactoryMod.persistence.FileBackup;
+import com.github.igotyou.FactoryMod.persistence.PersistenceFactory;
 import com.github.igotyou.FactoryMod.properties.NetherFactoryProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 import com.github.igotyou.FactoryMod.utility.StringUtils;
+import com.google.common.collect.Lists;
 
 //original file:
 /**
@@ -54,26 +58,35 @@ public class NetherFactoryManager implements Manager
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	private FactoryModPlugin plugin;
 	private List<NetherFactory> netherFactorys;
+	private FactoryDao<NetherFactory> mDao;
+	private File mSaveFile;
 	private long repairTime;
 	private boolean isLogging = true;
 	
+	@SuppressWarnings("unchecked")
 	public NetherFactoryManager(FactoryModPlugin plugin)
 	{
 		this.plugin = plugin;
-		netherFactorys = new ArrayList<NetherFactory>();
+		mSaveFile = new File(plugin.getDataFolder(), "netherSaves.txt");
+		netherFactorys = Lists.newArrayList();
 		//Set maintenance clock to 0
 		updateFactorys();
+		//TODO: use type inference to avoid cast
+		mDao = (FactoryDao<NetherFactory>) PersistenceFactory.getFactoryDao(this, mSaveFile, "txt");
 	}
 	
-	public void save(File file) throws IOException 
+	@Override
+	public void save()
 	{
 		//Takes difference between last repair update and current one and scales repair accordingly
-		updateRepair(System.currentTimeMillis()-repairTime);
-		repairTime=System.currentTimeMillis();
+		updateRepair(System.currentTimeMillis() - repairTime);
+		repairTime = System.currentTimeMillis();
 
-		BackupManager.backup(file);
+		FileBackup.backup(mSaveFile);
+		mDao.writeFactories(netherFactorys);
 		
-		FileOutputStream fileOutputStream = new FileOutputStream(file);
+		//TODO: migrate
+		FileOutputStream fileOutputStream = new FileOutputStream(mSaveFile);
 		ObjectOutputStream oos = new ObjectOutputStream(fileOutputStream);
 		int version = 1;
 		oos.writeInt(version);
@@ -119,7 +132,8 @@ public class NetherFactoryManager implements Manager
 		fileOutputStream.close();
 	}
 
-	public void load(File file) throws IOException 
+	@Override
+	public void load()
 	{
 		isLogging = false;
 		try {

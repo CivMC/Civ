@@ -18,9 +18,12 @@ import org.bukkit.inventory.Inventory;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
+import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.Factorys.PrintingPress.OperationMode;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
+import com.github.igotyou.FactoryMod.persistence.FactoryDao;
+import com.github.igotyou.FactoryMod.persistence.FileBackup;
 import com.github.igotyou.FactoryMod.properties.PrintingPressProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
@@ -48,6 +51,8 @@ public class PrintingPressManager implements Manager
 {
 	private FactoryModPlugin plugin;
 	private List<PrintingPress> presses;
+	private FactoryDao<PrintingPress> mDao;
+	private File mSaveFile;
 	private long repairTime;
 	private boolean isLogging = true;
 	
@@ -59,112 +64,21 @@ public class PrintingPressManager implements Manager
 		updateFactorys();
 	}
 	
-	public void save(File file) throws IOException 
+	public void save() 
 	{
 		//Takes difference between last repair update and current one and scales repair accordingly
-		updateRepair(System.currentTimeMillis()-repairTime);
-		repairTime=System.currentTimeMillis();
+		updateRepair(System.currentTimeMillis() - repairTime);
+		repairTime = System.currentTimeMillis();
 		
-		BackupManager.backup(file);
-		
-		FileOutputStream fileOutputStream = new FileOutputStream(file);
-		ObjectOutputStream oos = new ObjectOutputStream(fileOutputStream);
-		int version = 1;
-		oos.writeInt(version);
-		oos.writeInt(presses.size());
-		for (PrintingPress production : presses)
-		{
-			//order: subFactoryType world recipe1,recipe2 central_x central_y central_z inventory_x inventory_y inventory_z power_x power_y power_z active productionTimer energyTimer current_Recipe_number 
-			
-			Location centerlocation = production.getCenterLocation();
-			Location inventoryLocation = production.getInventoryLocation();
-			Location powerLocation = production.getPowerSourceLocation();
-			
-			oos.writeUTF(centerlocation.getWorld().getName());
-			
-			oos.writeInt(centerlocation.getBlockX());
-			oos.writeInt(centerlocation.getBlockY());
-			oos.writeInt(centerlocation.getBlockZ());
-
-			oos.writeInt(inventoryLocation.getBlockX());
-			oos.writeInt(inventoryLocation.getBlockY());
-			oos.writeInt(inventoryLocation.getBlockZ());
-
-			oos.writeInt(powerLocation.getBlockX());
-			oos.writeInt(powerLocation.getBlockY());
-			oos.writeInt(powerLocation.getBlockZ());
-			
-			oos.writeBoolean(production.getActive());
-			oos.writeInt(production.getMode().getId());
-			oos.writeInt(production.getProductionTimer());
-			oos.writeInt(production.getEnergyTimer());
-			oos.writeDouble(production.getCurrentRepair());
-			oos.writeLong(production.getTimeDisrepair());
-
-			oos.writeInt(production.getContainedPaper());
-			oos.writeInt(production.getContainedBindings());
-			oos.writeInt(production.getContainedSecurityMaterials());
-			oos.writeInt(production.getLockedResultCode());
-			
-			int[] processQueue = production.getProcessQueue();
-			oos.writeInt(processQueue.length);
-			for (int entry : processQueue) {
-				oos.writeInt(entry);
-			}
-		}
-		oos.flush();
-		fileOutputStream.close();
+		FileBackup.backup(mSaveFile);
+		mDao.writeFactories(presses);		
 	}
 
-	public void load(File file) throws IOException 
+	public void load()
 	{
 		isLogging = false;
-		try {
-			repairTime=System.currentTimeMillis();
-			FileInputStream fileInputStream = new FileInputStream(file);
-			ObjectInputStream ois = new ObjectInputStream(fileInputStream);
-			int version = ois.readInt();
-			assert(version == 1);
-			int count = ois.readInt();
-			int i = 0;
-			for (i = 0; i < count; i++)
-			{
-				String worldName = ois.readUTF();
-				World world = plugin.getServer().getWorld(worldName);
-
-				Location centerLocation = new Location(world, ois.readInt(), ois.readInt(), ois.readInt());
-				Location inventoryLocation = new Location(world, ois.readInt(), ois.readInt(), ois.readInt());
-				Location powerLocation = new Location(world, ois.readInt(), ois.readInt(), ois.readInt());
-				boolean active = ois.readBoolean();
-				OperationMode mode = PrintingPress.OperationMode.byId(ois.readInt());
-				int productionTimer = ois.readInt();
-				int energyTimer = ois.readInt();
-				double currentRepair = ois.readDouble();
-				long timeDisrepair  = ois.readLong();
-				int containedPaper = ois.readInt();
-				int containedBindings = ois.readInt();
-				int containedSecurityMaterials = ois.readInt();
-				int lockedResultCode = ois.readInt();
-				
-				int queueLength = ois.readInt();
-				int[] processQueue = new int[queueLength];
-				int j;
-				for (j = 0; j < queueLength; j++) {
-					processQueue[j] = ois.readInt();
-				}
-
-				PrintingPress production = new PrintingPress(centerLocation, inventoryLocation, powerLocation,
-						active, productionTimer,
-						energyTimer, currentRepair, timeDisrepair,
-						mode,
-						plugin.getPrintingPressProperties(),
-						containedPaper, containedBindings, containedSecurityMaterials,
-						processQueue, lockedResultCode);
-				addFactory(production);
-			}
-			fileInputStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		for(PrintingPress press : mDao.readFactories()) {
+			addFactory(press);
 		}
 		isLogging = true;
 	}

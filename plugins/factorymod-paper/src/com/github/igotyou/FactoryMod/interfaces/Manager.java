@@ -35,12 +35,12 @@ public interface Manager
 /**
 * Saves the machine objects list of this manager to file
 */
-	public void save(File file) throws IOException;
+	public void save();
 
 /**
 * Loads machine objects list of this manager from file
 */
-	public void load(File file) throws IOException;
+	public void load();
 
 /**
 * Updates all the machines from this manager's machine object list

@@ -79,71 +79,17 @@ public class ProductionCsvReader implements FactoryReader<ProductionFactory>{
 				.append(mFile.getName()).append("for reading: ").append(e.getMessage()).toString());
 			return factories;
 		}
-		String line;
+		
 		int lineNum = 0;
 		
 		try {
-			for (; (line = reader.readLine()) != null; ++lineNum)
+			for (String line; (line = reader.readLine()) != null; ++lineNum)
 			{
-				String[] tokens = line.split(" ");
-				
-				if(tokens.length != LineTokens.MAX.ordinal()) {
-					logFactoryError(lineNum, "Unexpected number of tokens: " + tokens.length);
-					break;
-				}
- 
 				try {
-					String subFactoryType = tokens[LineTokens.SUBTYPE.ordinal()];
-					String recipeNames[] = tokens[LineTokens.RECIPE_LIST.ordinal()].split(",");
-	
-					World world = mPlugin.getServer().getWorld(tokens[LineTokens.WORLD.ordinal()]);
-					Location centerLocation = new Location(world, 
-							Integer.parseInt(tokens[LineTokens.CENTER_X.ordinal()]), 
-							Integer.parseInt(tokens[LineTokens.CENTER_Y.ordinal()]), 
-							Integer.parseInt(tokens[LineTokens.CENTER_Z.ordinal()]));
-					Location inventoryLocation = new Location(world, 
-							Integer.parseInt(tokens[LineTokens.INV_X.ordinal()]), 
-							Integer.parseInt(tokens[LineTokens.INV_Y.ordinal()]), 
-							Integer.parseInt(tokens[LineTokens.INV_Z.ordinal()]));
-					Location powerLocation = new Location(world, 
-							Integer.parseInt(tokens[LineTokens.POWER_X.ordinal()]), 
-							Integer.parseInt(tokens[LineTokens.POWER_Y.ordinal()]), 
-							Integer.parseInt(tokens[LineTokens.POWER_Z.ordinal()]));
-					
-					boolean active = Boolean.parseBoolean(tokens[LineTokens.IS_ACTIVE.ordinal()]);
-					int productionTimer = Integer.parseInt(tokens[LineTokens.PROD_TIMER.ordinal()]);
-					int energyTimer = Integer.parseInt(tokens[LineTokens.ENERGY_TIMER.ordinal()]);
-					int currentRecipeNumber = Integer.parseInt(tokens[LineTokens.RECIPE_NUMBER.ordinal()]);
-					double currentRepair = Double.parseDouble(tokens[LineTokens.REPAIR.ordinal()]);
-					long timeDisrepair  =  Long.parseLong(tokens[LineTokens.DISREPAIR_TIME.ordinal()]);
-					
-					if(FactoryModPlugin.productionProperties.containsKey(subFactoryType))
-					{
-						Set<ProductionRecipe> recipes = Sets.newHashSet();
-						
-						// TODO: Give default recipes for subfactory type
-						ProductionProperties properties = FactoryModPlugin.productionProperties.get(subFactoryType);
-						recipes.addAll(properties.getRecipes());
-						
-						for(String name : recipeNames)
-						{
-							if(FactoryModPlugin.productionRecipes.containsKey(name))
-							{
-								recipes.add(FactoryModPlugin.productionRecipes.get(name));
-							}
-						}
-	
-						factories.add(new ProductionFactory(
-								centerLocation, inventoryLocation, powerLocation, 
-								subFactoryType, active, productionTimer, energyTimer, 
-								new ArrayList<ProductionRecipe>(recipes), 
-								currentRecipeNumber, currentRepair, timeDisrepair));
-					} else {
-						logFactoryError(lineNum, "Unexpected factory type: " + subFactoryType);
-						break;
-					}
-				} catch (NumberFormatException e) {
-					logFactoryError(lineNum, "Expected token was not an integer");
+					factories.add(read(line));
+				} catch(Exception e) {
+					logFactoryError(lineNum, "Factory parse error: " + e.getMessage());
+					break;
 				}
 			}
 		} catch (IOException e) {
@@ -156,8 +102,71 @@ public class ProductionCsvReader implements FactoryReader<ProductionFactory>{
 			FactoryModPlugin.sendConsoleMessage(new StringBuilder("ERROR: Could not close stream reading from ")
 				.append(mFile.getName()).append(": ").append(e.getMessage()).toString());
 		}
-		
+		//TODO: ensure everything is closed
 		return factories;
+	}
+	
+	//TODO: split into common csv file handler and factory type parser
+	public ProductionFactory read(String decode) throws Exception {
+		String[] tokens = decode.split(" ");
+		
+		if(tokens.length != LineTokens.MAX.ordinal()) {
+			throw new Exception("Unexpected number of tokens: " + tokens.length);
+		}
+
+		try {
+			String subFactoryType = tokens[LineTokens.SUBTYPE.ordinal()];
+			String recipeNames[] = tokens[LineTokens.RECIPE_LIST.ordinal()].split(",");
+
+			World world = mPlugin.getServer().getWorld(tokens[LineTokens.WORLD.ordinal()]);
+			Location centerLocation = new Location(world, 
+					Integer.parseInt(tokens[LineTokens.CENTER_X.ordinal()]), 
+					Integer.parseInt(tokens[LineTokens.CENTER_Y.ordinal()]), 
+					Integer.parseInt(tokens[LineTokens.CENTER_Z.ordinal()]));
+			Location inventoryLocation = new Location(world, 
+					Integer.parseInt(tokens[LineTokens.INV_X.ordinal()]), 
+					Integer.parseInt(tokens[LineTokens.INV_Y.ordinal()]), 
+					Integer.parseInt(tokens[LineTokens.INV_Z.ordinal()]));
+			Location powerLocation = new Location(world, 
+					Integer.parseInt(tokens[LineTokens.POWER_X.ordinal()]), 
+					Integer.parseInt(tokens[LineTokens.POWER_Y.ordinal()]), 
+					Integer.parseInt(tokens[LineTokens.POWER_Z.ordinal()]));
+			
+			boolean active = Boolean.parseBoolean(tokens[LineTokens.IS_ACTIVE.ordinal()]);
+			int productionTimer = Integer.parseInt(tokens[LineTokens.PROD_TIMER.ordinal()]);
+			int energyTimer = Integer.parseInt(tokens[LineTokens.ENERGY_TIMER.ordinal()]);
+			int currentRecipeNumber = Integer.parseInt(tokens[LineTokens.RECIPE_NUMBER.ordinal()]);
+			double currentRepair = Double.parseDouble(tokens[LineTokens.REPAIR.ordinal()]);
+			long timeDisrepair  =  Long.parseLong(tokens[LineTokens.DISREPAIR_TIME.ordinal()]);
+			
+			if(FactoryModPlugin.productionProperties.containsKey(subFactoryType))
+			{
+				Set<ProductionRecipe> recipes = Sets.newHashSet();
+				
+				// TODO: Give default recipes for subfactory type
+				ProductionProperties properties = FactoryModPlugin.productionProperties.get(subFactoryType);
+				recipes.addAll(properties.getRecipes());
+				
+				for(String name : recipeNames)
+				{
+					if(FactoryModPlugin.productionRecipes.containsKey(name))
+					{
+						recipes.add(FactoryModPlugin.productionRecipes.get(name));
+					}
+				}
+
+				return new ProductionFactory(
+						centerLocation, inventoryLocation, powerLocation, 
+						subFactoryType, active, productionTimer, energyTimer, 
+						new ArrayList<ProductionRecipe>(recipes), 
+						currentRecipeNumber, currentRepair, timeDisrepair);
+			} else {
+				throw new Exception("Unexpected factory type: " + subFactoryType);
+			}
+		} catch (NumberFormatException e) {
+			throw new Exception("Expected token was not an integer");
+		}
+		
 	}
 	
 	private void logFactoryError(int lineNum, String error) {
