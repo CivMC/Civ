@@ -75,8 +75,11 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 		if (!this.getConfig().isSet("realistic_biomes")) {
 			this.saveDefaultConfig();
 			this.getLogger().warning("Config did not exist or was invalid, default config saved.");
+			
+			// Reload the config into memory from the newly created default file.
+			this.reloadConfig();
 		}
-		this.reloadConfig();
+		
 		
 		ConfigurationSection config = this.getConfig().getConfigurationSection("realistic_biomes");
 
