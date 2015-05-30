@@ -45,6 +45,7 @@ public class Config {
 	    for(Class clazz:ClassUtility.GetClassesForPlugin(plugin)){
 	    	scanAnnotations(clazz);
 	    }   
+	    setConfig();
   }
   private Map<String, ConfigOption> dynamicOptions_ = new TreeMap<String, ConfigOption>();
 
@@ -132,4 +133,24 @@ public class Config {
     }
     return false;
   }
+  
+  private void setConfig(){
+		for (ConfigOption c : dynamicOptions_.values()){
+			switch (c.getType()){
+			case Bool:
+				config_.set(c.getName(), c.getBool());
+				break;
+			case String:
+				config_.set(c.getName(), c.getString());
+				break;
+			case Int:
+				config_.set(c.getName(), c.getInt());
+				break;
+			case Double:
+				config_.set(c.getName(), c.getDouble());
+				break;
+			}
+		}
+		plugin_.saveConfig();
+	}
 }

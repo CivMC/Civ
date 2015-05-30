@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -12,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.annotations.*;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.interfaces.ApiManager;
+import vg.civcraft.mc.civmodcore.util.ClassUtility;
 
 public abstract class ACivMod extends JavaPlugin implements Listener{
 	
@@ -118,7 +120,7 @@ public abstract class ACivMod extends JavaPlugin implements Listener{
       info("Main Plugin Events and Config Command registered");
     }
     private void registerEvents() {
-      getServer().getPluginManager().registerEvents(this, this);
+    	getServer().getPluginManager().registerEvents(this, this);
     }
     public void registerCommands() {
       ConsoleCommandSender console = getServer().getConsoleSender();
