@@ -513,13 +513,21 @@ public class PrintingPress extends BaseFactory {
 			if (mode == OperationMode.PRINT_BOOKS ||
 				 mode == OperationMode.PRINT_PAMPHLETS ||
 				 mode == OperationMode.PRINT_SECURITY) {
-				queueContents.append("Queue Contents: ");
+				queueContents.append("Queue Contents: [");
 				for (int i = 0; i < processQueue.length; i++) {
 					readyCopies += processQueue[i];
-					queueContents.append("[");
+					if (i > 0) {
+						queueContents.append(",");
+					}
+					if (i == processQueueOffset) {
+						queueContents.append("{");
+					}
 					queueContents.append(processQueue[i]);
-					queueContents.append("]");
+					if (i == processQueueOffset) {
+						queueContents.append("}");
+					}
 				}
+				queueContents.append("]");
 			}
 			switch(mode) {
 			case PRINT_BOOKS:
