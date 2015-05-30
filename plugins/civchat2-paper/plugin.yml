@@ -12,9 +12,9 @@ commands:
     ignore:
       aliases: [i]
     ignoregroup:
-      aliases: [ig, igroup, ignoreg, g]
+      aliases: [ig, igroup, ignoreg]
     groupc:
-      aliases: [groupchat, gchat, gc]
+      aliases: [groupchat, gchat, gc, g]
     ignorelist:
     exit:
       aliases: [e]
