@@ -60,6 +60,7 @@ public class RealisticBiomes extends JavaPlugin {
 		}
 	}
 	
+	@Override
 	public void onEnable() {		
 		
 		
@@ -347,6 +348,7 @@ public class RealisticBiomes extends JavaPlugin {
 		return null;
 	}
 	
+	@Override
 	public void onDisable() {
 		if (persistConfig.enabled) {
 			LOG.info("saving plant growth data.");
