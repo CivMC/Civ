@@ -12,7 +12,6 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,7 +24,7 @@ import com.untamedears.realisticbiomes.persist.Coords;
 import com.untamedears.realisticbiomes.persist.Plant;
 import com.untamedears.realisticbiomes.persist.PlantManager;
 
-public class RealisticBiomes extends JavaPlugin implements Listener {
+public class RealisticBiomes extends JavaPlugin {
 
 	public static Logger LOG = null;
 	public static Level minLogLevel = Level.INFO;
@@ -110,9 +109,7 @@ public class RealisticBiomes extends JavaPlugin implements Listener {
 			blockGrower = new BlockGrower(plantManager);
 			
 		}
-		
-		getServer().getPluginManager().registerEvents(this, this);
-		
+				
 		LOG.info("is now enabled.");
 	}
 	
