@@ -7607,7 +7607,7 @@ production_recipes:
         material: PRISMARINE_SHARD
         amount: 128
     outputs:
-      Prismarine
+      Prismarine:
         material: PRISMARINE
         amount: 64
         durability: 0
@@ -7619,7 +7619,7 @@ production_recipes:
         material: PRISMARINE_SHARD
         amount: 288
     outputs:
-      Prismarine
+      Prismarine:
         material: PRISMARINE
         amount: 64
         durability: 1
@@ -7635,7 +7635,7 @@ production_recipes:
         amount: 32
         durability: 0
     outputs:
-      Prismarine
+      Prismarine:
         material: PRISMARINE
         amount: 64
         durability: 2
@@ -7650,6 +7650,6 @@ production_recipes:
         material: PRISMARINE_CRYSTALS
         amount: 64
     outputs:
-      Prismarine
+      Sea Lantern:
         material: SEA_LANTERN
         amount: 16
