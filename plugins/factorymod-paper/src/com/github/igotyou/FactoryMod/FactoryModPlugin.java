@@ -48,7 +48,7 @@ public class FactoryModPlugin extends JavaPlugin
 	public NetherFactoryProperties netherFactoryProperties;
 	public RepairFactoryProperties repairFactoryProperties;
 	
-	public static final String VERSION = "v1.3.4"; //Current version of plugin
+	public static final String VERSION = "v1.3.5"; //Current version of plugin
 	public static final String PLUGIN_NAME = "FactoryMod"; //Name of plugin
 	public static final String PLUGIN_PREFIX = PLUGIN_NAME + " " + VERSION + ": ";
 	public static final String PRODUCTION_SAVES_FILE = "productionSaves"; // The production saves file name
