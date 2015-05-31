@@ -38,7 +38,9 @@ public final class TagManager {
         // Determine victim identity
         UUID victimId = null;
         if (victim != null) {
-            if (helper.isNpc(victim)) {
+            if (victim.getHealth() <= 0 || victim.isDead()) {
+                victim = null;
+            } else if (helper.isNpc(victim)) {
                 victimId = helper.getIdentity(victim).getId();
             } else if (!victim.hasPermission("ctplus.bypass.tag")) {
                 victimId = victim.getUniqueId();
@@ -50,7 +52,9 @@ public final class TagManager {
         // Determine attacker identity
         UUID attackerId = null;
         if (attacker != null) {
-            if (helper.isNpc(attacker)) {
+            if (attacker.getHealth() <= 0 || attacker.isDead()) {
+                attacker = null;
+            } else if (helper.isNpc(attacker)) {
                 attackerId = helper.getIdentity(attacker).getId();
             } else if (!attacker.hasPermission("ctplus.bypass.tag")) {
                 attackerId = attacker.getUniqueId();
