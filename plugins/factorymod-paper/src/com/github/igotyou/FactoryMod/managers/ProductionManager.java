@@ -1,7 +1,6 @@
 package com.github.igotyou.FactoryMod.managers;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,6 @@ import org.bukkit.inventory.Inventory;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
-import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
 import com.github.igotyou.FactoryMod.persistence.FactoryDao;
 import com.github.igotyou.FactoryMod.persistence.FileBackup;
@@ -43,7 +41,7 @@ import com.google.common.collect.Lists;
 *
 */
 
-public class ProductionManager implements Manager
+public class ProductionManager implements Manager<ProductionFactory>
 {
 	private FactoryModPlugin plugin;
 	private List<ProductionFactory> producers;
@@ -52,7 +50,6 @@ public class ProductionManager implements Manager
 	private long repairTime;
 	private boolean isLogging = true;
 	
-	@SuppressWarnings("unchecked")
 	public ProductionManager(FactoryModPlugin plugin)
 	{
 		this.plugin = plugin;
@@ -60,11 +57,10 @@ public class ProductionManager implements Manager
 		producers = Lists.newArrayList();
 		//Set maintenance clock to 0
 		updateFactorys();
-		//TODO: use type inference to avoid cast
-		mDao = (FactoryDao<ProductionFactory>) PersistenceFactory.getFactoryDao(this, mSaveFile, "txt");
+		mDao = PersistenceFactory.getFactoryDao(this, mSaveFile, "txt");
 	}
 	
-	public void save(File file) throws IOException 
+	public void save()
 	{
 		//Takes difference between last repair update and current one and scales repair accordingly
 		updateRepair(System.currentTimeMillis() - repairTime);
@@ -74,7 +70,7 @@ public class ProductionManager implements Manager
 		mDao.writeFactories(producers);
 	}
 
-	public void load(File file) throws IOException 
+	public void load()
 	{
 		isLogging = false;
 		repairTime = System.currentTimeMillis();
@@ -84,6 +80,7 @@ public class ProductionManager implements Manager
 		isLogging = true;
 	}
 
+	@Override
 	public void updateFactorys() 
 	{
 		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
@@ -99,6 +96,7 @@ public class ProductionManager implements Manager
 		}, 0L, FactoryModPlugin.PRODUCER_UPDATE_CYCLE);
 	}
 
+	@Override
 	public InteractionResponse createFactory(Location factoryLocation, Location inventoryLocation, Location powerSourceLocation) 
 	{
 		if (!factoryExistsAt(factoryLocation))
@@ -167,23 +165,24 @@ public class ProductionManager implements Manager
 		return new InteractionResponse(InteractionResult.FAILURE, "There is already a factory there!");
 	}
 
-	public InteractionResponse addFactory(Factory factory) 
+	@Override
+	public InteractionResponse addFactory(ProductionFactory factory) 
 	{
-		ProductionFactory production = (ProductionFactory) factory;
-		if (production.getCenterLocation().getBlock().getType().equals(Material.WORKBENCH) && (!factoryExistsAt(production.getCenterLocation()))
-				|| !factoryExistsAt(production.getInventoryLocation()) || !factoryExistsAt(production.getPowerSourceLocation()))
+		if (factory.getCenterLocation().getBlock().getType().equals(Material.WORKBENCH) && (!factoryExistsAt(factory.getCenterLocation()))
+				|| !factoryExistsAt(factory.getInventoryLocation()) || !factoryExistsAt(factory.getPowerSourceLocation()))
 		{
-			producers.add(production);
-			if(isLogging) { FactoryModPlugin.sendConsoleMessage("Production factory created: " + production.getProductionFactoryProperties().getName()); }
+			producers.add(factory);
+			if(isLogging) { FactoryModPlugin.sendConsoleMessage("Production factory created: " + factory.getProductionFactoryProperties().getName()); }
 			return new InteractionResponse(InteractionResult.SUCCESS, "");
 		}
 		else
 		{
-			FactoryModPlugin.sendConsoleMessage("Production factory failed to create: " + production.getProductionFactoryProperties().getName());
+			FactoryModPlugin.sendConsoleMessage("Production factory failed to create: " + factory.getProductionFactoryProperties().getName());
 			return new InteractionResponse(InteractionResult.FAILURE, "");
 		}
 	}
 
+	@Override
 	public ProductionFactory getFactory(Location factoryLocation) 
 	{
 		for (ProductionFactory production : producers)
@@ -195,6 +194,7 @@ public class ProductionManager implements Manager
 		return null;
 	}
 	
+	@Override
 	public boolean factoryExistsAt(Location factoryLocation) 
 	{
 		boolean returnValue = false;
@@ -205,6 +205,7 @@ public class ProductionManager implements Manager
 		return returnValue;
 	}
 	
+	@Override
 	public boolean factoryWholeAt(Location factoryLocation) 
 	{
 		boolean returnValue = false;
@@ -215,22 +216,16 @@ public class ProductionManager implements Manager
 		return returnValue;
 	}
 
-	public void removeFactory(Factory factory) 
+	@Override
+	public void removeFactory(ProductionFactory factory) 
 	{
-		if(!(factory instanceof ProductionFactory)) {
-			FactoryModPlugin.sendConsoleMessage("Could not remove unexpected factory type: " + factory.getClass().getName());
-			return;
-		}
-		
-		ProductionFactory producer = (ProductionFactory)factory;
-		
 		FactoryModPlugin.sendConsoleMessage(new StringBuilder("Production factory removed: ")
-				.append(producer.getProductionFactoryProperties().getName())
+				.append(factory.getProductionFactoryProperties().getName())
 				.append(" at ")
-				.append(StringUtils.formatCoords(producer.getCenterLocation()))
+				.append(StringUtils.formatCoords(factory.getCenterLocation()))
 				.toString());
 		
-		producers.remove(producer);
+		producers.remove(factory);
 	}
 	
 	public void updateRepair(long time)
@@ -257,6 +252,7 @@ public class ProductionManager implements Manager
 		}
 	}
 	
+	@Override
 	public String getSavesFileName() 
 	{
 		return mSaveFile.getName();
@@ -265,6 +261,11 @@ public class ProductionManager implements Manager
 	@Override
 	public FactoryModPlugin getPlugin() {
 		return plugin;
+	}
+
+	@Override
+	public Class<ProductionFactory> getFactoryType() {
+		return ProductionFactory.class;
 	}
 
 }

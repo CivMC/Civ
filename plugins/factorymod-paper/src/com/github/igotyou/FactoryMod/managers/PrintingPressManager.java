@@ -1,35 +1,27 @@
 package com.github.igotyou.FactoryMod.managers;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
-import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
-import com.github.igotyou.FactoryMod.Factorys.PrintingPress.OperationMode;
-import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
 import com.github.igotyou.FactoryMod.persistence.FactoryDao;
 import com.github.igotyou.FactoryMod.persistence.FileBackup;
+import com.github.igotyou.FactoryMod.persistence.PersistenceFactory;
 import com.github.igotyou.FactoryMod.properties.PrintingPressProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 import com.github.igotyou.FactoryMod.utility.StringUtils;
+import com.google.common.collect.Lists;
 
 //original file:
 /**
@@ -47,7 +39,7 @@ import com.github.igotyou.FactoryMod.utility.StringUtils;
 *
 */
 
-public class PrintingPressManager implements Manager
+public class PrintingPressManager implements Manager<PrintingPress>
 {
 	private FactoryModPlugin plugin;
 	private List<PrintingPress> presses;
@@ -59,9 +51,11 @@ public class PrintingPressManager implements Manager
 	public PrintingPressManager(FactoryModPlugin plugin)
 	{
 		this.plugin = plugin;
-		presses = new ArrayList<PrintingPress>();
+		presses = Lists.newArrayList();
+		mSaveFile = new File(plugin.getDataFolder(), "pressSaves.txt");
 		//Set maintenance clock to 0
 		updateFactorys();
+		mDao = PersistenceFactory.getFactoryDao(this, mSaveFile, "txt");
 	}
 	
 	public void save() 
@@ -77,12 +71,14 @@ public class PrintingPressManager implements Manager
 	public void load()
 	{
 		isLogging = false;
+		repairTime = System.currentTimeMillis();
 		for(PrintingPress press : mDao.readFactories()) {
 			addFactory(press);
 		}
 		isLogging = true;
 	}
 
+	@Override
 	public void updateFactorys() 
 	{
 		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
@@ -98,6 +94,7 @@ public class PrintingPressManager implements Manager
 		}, 0L, FactoryModPlugin.PRODUCER_UPDATE_CYCLE);
 	}
 
+	@Override
 	public InteractionResponse createFactory(Location factoryLocation, Location inventoryLocation, Location powerSourceLocation) 
 	{
 	PrintingPressProperties printingPressProperties = plugin.getPrintingPressProperties();
@@ -123,9 +120,9 @@ public class PrintingPressManager implements Manager
 		return new InteractionResponse(InteractionResult.FAILURE, "There is already a " + printingPressProperties.getName() + " there!");
 	}
 
-	public InteractionResponse addFactory(Factory factory) 
+	@Override
+	public InteractionResponse addFactory(PrintingPress press) 
 	{
-		PrintingPress press = (PrintingPress) factory;
 		if (press.getCenterLocation().getBlock().getType().equals(FactoryModPlugin.CENTRAL_BLOCK_MATERIAL) && (!factoryExistsAt(press.getCenterLocation()))
 				|| !factoryExistsAt(press.getInventoryLocation()) || !factoryExistsAt(press.getPowerSourceLocation()))
 		{
@@ -140,6 +137,7 @@ public class PrintingPressManager implements Manager
 		}
 	}
 
+	@Override
 	public PrintingPress getFactory(Location factoryLocation) 
 	{
 		for (PrintingPress production : presses)
@@ -150,7 +148,8 @@ public class PrintingPressManager implements Manager
 		}
 		return null;
 	}
-	
+
+	@Override
 	public boolean factoryExistsAt(Location factoryLocation) 
 	{
 		boolean returnValue = false;
@@ -160,7 +159,8 @@ public class PrintingPressManager implements Manager
 		}
 		return returnValue;
 	}
-	
+
+	@Override
 	public boolean factoryWholeAt(Location factoryLocation) 
 	{
 		boolean returnValue = false;
@@ -171,15 +171,9 @@ public class PrintingPressManager implements Manager
 		return returnValue;
 	}
 
-	public void removeFactory(Factory factory) 
+	@Override
+	public void removeFactory(PrintingPress press) 
 	{
-		if(!(factory instanceof PrintingPress)) {
-			FactoryModPlugin.sendConsoleMessage("Could not remove unexpected factory type: " + factory.getClass().getName());
-			return;
-		}
-		
-		PrintingPress press = (PrintingPress)factory;
-
 		FactoryModPlugin.sendConsoleMessage(new StringBuilder("Printing press removed: ")
 		.append(press.getProperties().getName())
 		.append(" at ")
@@ -188,7 +182,7 @@ public class PrintingPressManager implements Manager
 		
 		presses.remove(press);
 	}
-	
+
 	public void updateRepair(long time)
 	{
 		for (PrintingPress press : presses)
@@ -212,7 +206,8 @@ public class PrintingPressManager implements Manager
 			}
 		}
 	}
-	
+
+	@Override
 	public String getSavesFileName() 
 	{
 		return FactoryModPlugin.PRINTING_PRESSES_SAVE_FILE;
@@ -221,6 +216,11 @@ public class PrintingPressManager implements Manager
 	@Override
 	public FactoryModPlugin getPlugin() {
 		return plugin;
+	}
+
+	@Override
+	public Class<PrintingPress> getFactoryType() {
+		return PrintingPress.class;
 	}
 
 }

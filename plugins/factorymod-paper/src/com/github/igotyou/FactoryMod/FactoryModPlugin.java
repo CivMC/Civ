@@ -21,11 +21,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
+import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.interfaces.Properties;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.listeners.NoteStackListener;
 import com.github.igotyou.FactoryMod.listeners.RedstoneListener;
 import com.github.igotyou.FactoryMod.managers.FactoryModManager;
+import com.github.igotyou.FactoryMod.managers.ProductionManager;
 import com.github.igotyou.FactoryMod.properties.NetherFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.PrintingPressProperties;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
@@ -184,7 +186,7 @@ public class FactoryModPlugin extends JavaPlugin
 		try
 		{
 			getServer().getPluginManager().registerEvents(new FactoryModListener(manager), this);
-			getServer().getPluginManager().registerEvents(new RedstoneListener(manager, manager.getProductionManager()), this);
+			getServer().getPluginManager().registerEvents(new RedstoneListener(manager, (ProductionManager) manager.getManager(ProductionFactory.class)), this);
 			getServer().getPluginManager().registerEvents(new NoteStackListener(this), this);
 		}
 		catch(Exception e)
@@ -523,6 +525,11 @@ public class FactoryModPlugin extends JavaPlugin
 	public static void sendConsoleMessage(String message) 
 	{
 		Bukkit.getLogger().info(FactoryModPlugin.PLUGIN_PREFIX + message);	
+	}
+
+	public static void logFileError(String fileName, int lineNum, String error) {
+		sendConsoleMessage(new StringBuilder("ERROR at line ")
+			.append(lineNum).append(" of ").append(fileName).append(": ").append(error).toString());
 	}
 
 	public PrintingPressProperties getPrintingPressProperties() {

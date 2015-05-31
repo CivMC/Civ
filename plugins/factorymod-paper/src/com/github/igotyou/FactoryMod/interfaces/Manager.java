@@ -1,8 +1,5 @@
 package com.github.igotyou.FactoryMod.interfaces;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.bukkit.Location;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
@@ -23,9 +20,10 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 * @author igotyou
 *
 */
-//TODO: use generic <T extends Factory> for better type inference
-public interface Manager
+public interface Manager<T extends Factory>
 {
+	
+	public Class<T> getFactoryType();
 	
 	/**
 	 * @return the plugin instance
@@ -55,12 +53,12 @@ public interface Manager
 /**
 * Creates a machine from an existing machine data object
 */
-	public InteractionResponse addFactory(Factory factory);
+	public InteractionResponse addFactory(T factory);
 
 /**
 * Returns the machine (if any exists) at the given location from this manager
 */
-	public Factory getFactory(Location factoryLocation);
+	public T getFactory(Location factoryLocation);
 
 /**
 * Returns whether a machine exists at the given location
@@ -75,7 +73,7 @@ public interface Manager
 /**
 * Removes the given machine from the object list
 */
-	public void removeFactory(Factory factory);
+	public void removeFactory(T factory);
 
 /**
 * Returns the saves file name for this manager

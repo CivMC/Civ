@@ -80,7 +80,7 @@ public class ProductionCsvReader implements FactoryReader<ProductionFactory>{
 			return factories;
 		}
 		
-		int lineNum = 0;
+		int lineNum = 1;
 		
 		try {
 			for (String line; (line = reader.readLine()) != null; ++lineNum)
@@ -88,12 +88,12 @@ public class ProductionCsvReader implements FactoryReader<ProductionFactory>{
 				try {
 					factories.add(read(line));
 				} catch(Exception e) {
-					logFactoryError(lineNum, "Factory parse error: " + e.getMessage());
+					FactoryModPlugin.logFileError(mFile.getName(), lineNum, "Factory parse error: " + e.getMessage());
 					break;
 				}
 			}
 		} catch (IOException e) {
-			logFactoryError(lineNum, "Could not read file, aborting");
+			FactoryModPlugin.logFileError(mFile.getName(), lineNum, "Could not read file, aborting");
 		}
 		
 		try {
@@ -167,11 +167,6 @@ public class ProductionCsvReader implements FactoryReader<ProductionFactory>{
 			throw new Exception("Expected token was not an integer");
 		}
 		
-	}
-	
-	private void logFactoryError(int lineNum, String error) {
-		FactoryModPlugin.sendConsoleMessage(new StringBuilder("ERROR: Parse error at line ")
-			.append(lineNum).append(" of ").append(mFile.getName()).append(": ").append(error).toString());
 	}
 
 }

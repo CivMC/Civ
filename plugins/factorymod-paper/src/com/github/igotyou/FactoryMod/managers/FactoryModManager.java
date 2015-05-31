@@ -1,13 +1,13 @@
 package com.github.igotyou.FactoryMod.managers;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
+import com.github.igotyou.FactoryMod.Factorys.BaseFactory;
 import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.interfaces.Manager;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
@@ -30,7 +30,7 @@ import com.google.common.collect.Lists;
  */
 public class FactoryModManager 
 {
-	List<Manager> managers;
+	List<Manager<? extends BaseFactory>> managers;
 	
 	/**
 	 * The plugin instance
@@ -45,7 +45,10 @@ public class FactoryModManager
 		FactoryModPlugin.sendConsoleMessage("Initiaiting FactoryMod Managers.");
 		
 		this.plugin = plugin;
-		managers = Lists.newArrayList( new ProductionManager(plugin), new PrintingPressManager(plugin), new NetherFactoryManager(plugin) );
+		managers = Lists.newArrayList();
+		managers.add(new ProductionManager(plugin));
+		managers.add(new PrintingPressManager(plugin));
+		managers.add(new NetherFactoryManager(plugin));
 		loadManagers();
 		periodicSaving();
 		
@@ -65,9 +68,9 @@ public class FactoryModManager
 	 */
 	private void saveManagers()
 	{
-		for (Manager manager : managers)
+		for (Manager<?> manager : managers)
 		{
-			save(manager, getSavesFile(manager.getSavesFileName()));
+			manager.save();
 		}
 	}
 	
@@ -76,57 +79,27 @@ public class FactoryModManager
 	 */
 	private void loadManagers()
 	{
-		for (Manager manager : managers)
+		for (Manager<?> manager : managers)
 		{
-			load(manager, getSavesFile(manager.getSavesFileName()));
+			manager.load();
 		}
 	}
 	
 	/**
 	 * Returns the appropriate manager depending on the given Manager Type
+	 * @param <T>
 	 */
-	@SuppressWarnings("rawtypes")
-	public Manager getManager(Class managerType)
+	public <T> Manager<?> getManager(Class<T> factoryClass)
 	{
-		for (Manager manager : managers)
+		for (Manager<?> manager : managers)
 		{
-			if (managerType.isInstance(manager))
+			if (manager.getFactoryType() == factoryClass)
 			{
 				return manager;
 			}
 		}
 		
 		return null;
-	}
-		
-	/**
-	 * Load file
-	 */
-	private static void load(Manager managerInterface, File file) 
-	{
-		try
-		{
-			managerInterface.load(file);
-		}
-		catch (IOException exception)
-		{
-			throw new RuntimeException("Failed to load " + file.getPath(), exception);
-		}
-	}
-
-	/**
-	 * Save file
-	 */
-	private static void save(Manager manager, File file) 
-	{	
-		try
-		{
-			manager.save(file);
-		}
-		catch (IOException exception)
-		{
-			throw new RuntimeException("Failed to save to " + file.getAbsolutePath(), exception);
-		}
 	}
 	
 	/**
@@ -158,7 +131,7 @@ public class FactoryModManager
 	 */
 	public boolean factoryExistsAt(Location location)
 	{
-		for (Manager manager : managers)
+		for (Manager<?> manager : managers)
 		{
 			if (manager.factoryExistsAt(location))
 			{
@@ -173,7 +146,7 @@ public class FactoryModManager
 	 */
 	public boolean factoryWholeAt(Location location)
 	{
-		for (Manager manager : managers)
+		for (Manager<?> manager : managers)
 		{
 			if (manager.factoryWholeAt(location))
 			{
@@ -181,37 +154,10 @@ public class FactoryModManager
 			}
 		}	
 		return false;
-	}	
-	
-
-	public ProductionManager getProductionManager() 
-	{
-		for (Manager manager : managers)
-		{
-			if (manager.getClass() == ProductionManager.class)
-			{
-				return (ProductionManager) manager;
-			}
-		}
-		
-		return null;
-	}
-	
-	public PrintingPressManager getPrintingPressManager() 
-	{
-		for (Manager manager : managers)
-		{
-			if (manager.getClass() == PrintingPressManager.class)
-			{
-				return (PrintingPressManager) manager;
-			}
-		}
-		
-		return null;
 	}
 
 	public Factory getFactory(Location location) {
-		for (Manager manager : managers)
+		for (Manager<?> manager : managers)
 		{
 			if (manager.factoryExistsAt(location))
 			{
@@ -221,8 +167,8 @@ public class FactoryModManager
 		return null;
 	}
 
-	public Manager getManager(Location location) {
-		for (Manager manager : managers)
+	public Manager<?> getManager(Location location) {
+		for (Manager<?> manager : managers)
 		{
 			if (manager.factoryExistsAt(location))
 			{
@@ -235,7 +181,7 @@ public class FactoryModManager
 	public InteractionResponse createFactory(Location centralLocation,
 			Location inventoryLocation, Location powerLocation) {
 		InteractionResponse response = null;
-		for (Manager manager : managers)
+		for (Manager<?> manager : managers)
 		{
 			response = manager.createFactory(centralLocation, inventoryLocation, powerLocation);
 			if (response.getInteractionResult() == InteractionResult.SUCCESS)
