@@ -15,22 +15,23 @@ import org.bukkit.material.MaterialData;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.FactoryObject;
-import com.github.igotyou.FactoryMod.interfaces.Factory;
-import com.github.igotyou.FactoryMod.interfaces.Recipe;
 import com.github.igotyou.FactoryMod.listeners.RedstoneListener;
+import com.github.igotyou.FactoryMod.properties.IFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
+import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-public class ProductionFactory extends BaseFactory
+public class ProductionFactory extends ABaseFactory
 {
 
 	private ProductionRecipe currentRecipe = null;//the recipe that is currently selected
@@ -136,7 +137,7 @@ public class ProductionFactory extends BaseFactory
 	 * Sets the factories current recipe.
 	 * @param newRecipe the desired recipe
 	 */
-	public void setRecipe(Recipe newRecipe)
+	public void setRecipe(IRecipe newRecipe)
 	{
 		if (newRecipe instanceof ProductionRecipe)
 		{
@@ -297,5 +298,10 @@ public class ProductionFactory extends BaseFactory
 	@Override
 	public int getMaxRepair() {
 		return productionFactoryProperties.getRepair();
+	}
+
+	@Override
+	public IFactoryProperties getProperties() {
+		return productionFactoryProperties;
 	}
 }

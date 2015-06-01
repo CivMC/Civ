@@ -7,12 +7,12 @@ import java.util.List;
 
 import org.bukkit.enchantments.Enchantment;
 
-import com.github.igotyou.FactoryMod.interfaces.Recipe;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+
 import org.bukkit.inventory.Inventory;
 
-public class ProductionRecipe implements Recipe
+public class ProductionRecipe implements IRecipe
 {
 	private String title;
 	private String recipeName;

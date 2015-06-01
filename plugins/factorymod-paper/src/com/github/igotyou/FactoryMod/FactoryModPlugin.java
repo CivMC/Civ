@@ -22,12 +22,12 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
-import com.github.igotyou.FactoryMod.interfaces.Properties;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.listeners.NoteStackListener;
 import com.github.igotyou.FactoryMod.listeners.RedstoneListener;
-import com.github.igotyou.FactoryMod.managers.FactoryModManager;
-import com.github.igotyou.FactoryMod.managers.ProductionManager;
+import com.github.igotyou.FactoryMod.managers.FactoryManagerService;
+import com.github.igotyou.FactoryMod.managers.ProductionFactoryManager;
+import com.github.igotyou.FactoryMod.properties.IFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.NetherFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.PrintingPressProperties;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
@@ -160,7 +160,7 @@ public class FactoryModPlugin extends JavaPlugin
 	public static Map<String, ProductionProperties> productionProperties;
 	public static Map<String,ProductionRecipe> productionRecipes;
 	
-	public FactoryModManager manager;
+	public FactoryManagerService manager;
 	public PrintingPressProperties printingPressProperties;
 	public NetherFactoryProperties netherFactoryProperties;
 	
@@ -170,7 +170,7 @@ public class FactoryModPlugin extends JavaPlugin
 		//load the config.yml
 		initConfig();
 		//create the main manager
-		manager = new FactoryModManager(this);
+		manager = new FactoryManagerService(this);
 		//register the events(this should be moved...)
 		registerEvents();
 	}
@@ -186,7 +186,7 @@ public class FactoryModPlugin extends JavaPlugin
 		try
 		{
 			getServer().getPluginManager().registerEvents(new FactoryModListener(manager), this);
-			getServer().getPluginManager().registerEvents(new RedstoneListener(manager, (ProductionManager) manager.getManager(ProductionFactory.class)), this);
+			getServer().getPluginManager().registerEvents(new RedstoneListener(manager, (ProductionFactoryManager) manager.getManager(ProductionFactory.class)), this);
 			getServer().getPluginManager().registerEvents(new NoteStackListener(this), this);
 		}
 		catch(Exception e)
@@ -505,7 +505,7 @@ public class FactoryModPlugin extends JavaPlugin
 		}
 	}
 
-	public static Properties getProperties(FactoryType factoryType, String subFactoryType)
+	public static IFactoryProperties getProperties(FactoryType factoryType, String subFactoryType)
 	{
 		switch(factoryType)
 		{

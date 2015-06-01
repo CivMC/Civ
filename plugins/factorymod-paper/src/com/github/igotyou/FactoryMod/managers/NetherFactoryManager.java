@@ -16,7 +16,6 @@ import vg.civcraft.mc.citadel.ReinforcementManager;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
-import com.github.igotyou.FactoryMod.interfaces.Manager;
 import com.github.igotyou.FactoryMod.persistence.FactoryDao;
 import com.github.igotyou.FactoryMod.persistence.FileBackup;
 import com.github.igotyou.FactoryMod.persistence.PersistenceFactory;
@@ -44,61 +43,19 @@ import com.google.common.collect.Lists;
 *
 */
 
-public class NetherFactoryManager implements Manager<NetherFactory>
+public class NetherFactoryManager extends AManager<NetherFactory>
 {
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
-	private FactoryModPlugin plugin;
-	private List<NetherFactory> netherFactorys;
-	private FactoryDao<NetherFactory> mDao;
-	private File mSaveFile;
-	private long repairTime;
-	private boolean isLogging = true;
+	//private List<NetherFactory> netherFactorys;
 	
 	public NetherFactoryManager(FactoryModPlugin plugin)
 	{
 		this.plugin = plugin;
 		mSaveFile = new File(plugin.getDataFolder(), "netherSaves.txt");
-		netherFactorys = Lists.newArrayList();
+		//netherFactorys = Lists.newArrayList();
 		//Set maintenance clock to 0
 		updateFactorys();
 		mDao = PersistenceFactory.getFactoryDao(this, mSaveFile, "txt");
-	}
-	
-	@Override
-	public void save()
-	{
-		updateRepair(System.currentTimeMillis() - repairTime);
-		repairTime = System.currentTimeMillis();
-
-		FileBackup.backup(mSaveFile);
-		mDao.writeFactories(netherFactorys);
-	}
-
-	@Override
-	public void load()
-	{
-		isLogging = false;
-		repairTime = System.currentTimeMillis();
-		for(NetherFactory factory : mDao.readFactories()) {
-			addFactory(factory);
-		}
-		isLogging = true;
-	}
-
-	@Override
-	public void updateFactorys() 
-	{
-		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				for (NetherFactory factory: netherFactorys)
-				{
-					factory.update();
-				}
-			}
-		}, 0L, FactoryModPlugin.PRODUCER_UPDATE_CYCLE);
 	}
 
 	@Override
@@ -228,31 +185,19 @@ public class NetherFactoryManager implements Manager<NetherFactory>
 		return new InteractionResponse(InteractionResult.FAILURE, "No factory was identified!");
 	}
 
-	@Override
-	public InteractionResponse addFactory(NetherFactory factory) 
-	{
-		if (factory.getCenterLocation().getBlock().getType().equals(FactoryModPlugin.CENTRAL_BLOCK_MATERIAL) && 
+	public boolean isClear(NetherFactory factory){
+		return factory.getCenterLocation().getBlock().getType().equals(FactoryModPlugin.CENTRAL_BLOCK_MATERIAL) && 
 				(!factoryExistsAt(factory.getCenterLocation())
 				|| !factoryExistsAt(factory.getInventoryLocation()) 
 				|| !factoryExistsAt(factory.getPowerSourceLocation())
 				|| !factoryExistsAt(factory.getNetherTeleportPlatform())
-				|| !factoryExistsAt(factory.getOverworldTeleportPlatform()) ))
-		{
-			netherFactorys.add(factory);
-			if (isLogging) { FactoryModPlugin.sendConsoleMessage("Nether factory created: " + factory.getProperties().getName()); }
-			return new InteractionResponse(InteractionResult.SUCCESS, "");
-		}
-		else
-		{
-			FactoryModPlugin.sendConsoleMessage("Nether factory failed to create: " + factory.getProperties().getName());
-			return new InteractionResponse(InteractionResult.FAILURE, "");
-		}
+				|| !factoryExistsAt(factory.getOverworldTeleportPlatform()) );
 	}
 
 	@Override
 	public NetherFactory getFactory(Location factoryLocation) 
 	{
-		for (NetherFactory factory : netherFactorys)
+		for (NetherFactory factory : factories)
 		{
 			if (factory.getCenterLocation().equals(factoryLocation) 
 					|| factory.getInventoryLocation().equals(factoryLocation)
@@ -265,66 +210,6 @@ public class NetherFactoryManager implements Manager<NetherFactory>
 	}
 
 	@Override
-	public boolean factoryExistsAt(Location factoryLocation) 
-	{
-		boolean returnValue = false;
-		if (getFactory(factoryLocation) != null)
-		{
-			returnValue = true;
-		}
-		return returnValue;
-	}
-
-	@Override
-	public boolean factoryWholeAt(Location factoryLocation) 
-	{
-		boolean returnValue = false;
-		if (getFactory(factoryLocation) != null)
-		{
-			returnValue = getFactory(factoryLocation).isWhole(false);
-		}
-		return returnValue;
-	}
-
-	@Override
-	public void removeFactory(NetherFactory factory) 
-	{		
-		FactoryModPlugin.sendConsoleMessage(new StringBuilder("Nether factory removed: ")
-			.append(factory.getProperties().getName())
-			.append(" at ")
-			.append(StringUtils.formatCoords(factory.getCenterLocation()))
-			.toString());
-		
-		netherFactorys.remove(factory);
-		
-	}
-
-	public void updateRepair(long time)
-	{
-		for (NetherFactory factory : netherFactorys)
-		{
-			factory.updateRepair(time / ((double)FactoryModPlugin.REPAIR_PERIOD));
-		}
-		long currentTime = System.currentTimeMillis();
-		Iterator<NetherFactory> itr = netherFactorys.iterator();
-		while(itr.hasNext())
-		{
-			NetherFactory factory = itr.next();
-			if(currentTime > (factory.getTimeDisrepair() + FactoryModPlugin.DISREPAIR_PERIOD))
-			{
-				FactoryModPlugin.sendConsoleMessage(new StringBuilder("Nether factory removed due to disrepair: ")
-					.append(factory.getProperties().getName())
-					.append(" at ")
-					.append(StringUtils.formatCoords(factory.getCenterLocation()))
-					.toString());
-				
-				itr.remove();
-				
-			}
-		}
-	}
-
-	@Override
 	public String getSavesFileName() 
 	{
 		return FactoryModPlugin.NETHER_FACTORY_SAVE_FILE;
@@ -334,7 +219,7 @@ public class NetherFactoryManager implements Manager<NetherFactory>
 	{
 		double scalingFactor = 1;
 		NetherFactoryProperties properties = plugin.getNetherFactoryProperties();
-		for (NetherFactory factory : netherFactorys)
+		for (NetherFactory factory : factories)
 		{
 			Location factoryLoc = factory.getCenterLocation();
 			if(factory.getCenterLocation().equals(location))
@@ -355,11 +240,6 @@ public class NetherFactoryManager implements Manager<NetherFactory>
 			}
 		}
 		return scalingFactor;
-	}
-
-	@Override
-	public FactoryModPlugin getPlugin() {
-		return plugin;
 	}
 
 	@Override

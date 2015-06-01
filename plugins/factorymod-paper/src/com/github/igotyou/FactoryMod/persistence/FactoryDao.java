@@ -2,9 +2,9 @@ package com.github.igotyou.FactoryMod.persistence;
 
 import java.util.List;
 
-import com.github.igotyou.FactoryMod.interfaces.Factory;
+import com.github.igotyou.FactoryMod.Factorys.IFactory;
 
-public class FactoryDao<T extends Factory> {
+public class FactoryDao<T extends IFactory> {
 
 	private FactoryReader<T> mReader;
 	private FactoryWriter<T> mWriter;

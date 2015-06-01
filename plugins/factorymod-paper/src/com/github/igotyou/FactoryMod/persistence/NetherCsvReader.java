@@ -106,10 +106,11 @@ public class NetherCsvReader implements FactoryReader<NetherFactory> {
 		double currentRepair = input.readDouble();
 		long timeDisrepair  = input.readLong();
 		
-		return new NetherFactory(centerLocation, inventoryLocation, powerLocation, netherTeleportPlatformLocation, overworldTeleportPlatformLocation,
-				active, currentRepair, timeDisrepair,
-				mode,
-				mPlugin.getNetherFactoryProperties(), this);
+		return null;
+//		return new NetherFactory(centerLocation, inventoryLocation, powerLocation, netherTeleportPlatformLocation, overworldTeleportPlatformLocation,
+//				active, currentRepair, timeDisrepair,
+//				mode,
+//				mPlugin.getNetherFactoryProperties(), this);
 	}
 
 }
