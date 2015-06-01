@@ -73,10 +73,7 @@ public final class ForceFieldListener implements Listener {
         executorService.shutdown();
         try {
             executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        } catch (InterruptedException e) {
-            plugin.getLogger().warning("ForceField ExecutorService was interrupted during shutdown!");
-            e.printStackTrace();
-        }
+        } catch (InterruptedException ignore) {}
 
         // Go through all previous updates and revert spoofed blocks
         for (UUID uuid : previousUpdates.keySet()) {
@@ -106,28 +103,22 @@ public final class ForceFieldListener implements Listener {
         final Player player = event.getPlayer();
         final Semaphore lock = playerLocks.get(player.getUniqueId());
 
-        // Attempt to acquire a player lock
-        final boolean locked = lock.tryAcquire();
-
         // Asynchronously send block changes around player
         executorService.submit(new Runnable() {
             @Override
             public void run() {
                 try {
-                    // Wait until lock becomes available if we couldn't lock earlier
-                    if (!locked) {
-                        lock.acquire();
-                    }
-
-                    // Update the players force field perspective and find all blocks to stop spoofing
-                    UUID uuid = player.getUniqueId();
+                    // Wait until lock is available
+                    lock.acquire();
 
                     // Stop processing if player has logged off
+                    UUID uuid = player.getUniqueId();
                     if (!plugin.getPlayerCache().isOnline(uuid)) {
                         previousUpdates.remove(uuid);
                         return;
                     }
 
+                    // Update the players force field perspective and find all blocks to stop spoofing
                     Set<Location> removeBlocks;
                     Set<Location> changedBlocks = getChangedBlocks(player);
                     Material forceFieldMaterial = Material.getMaterial(plugin.getSettings().getForceFieldMaterial());
