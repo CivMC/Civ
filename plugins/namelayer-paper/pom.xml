@@ -69,9 +69,15 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-        <groupId>vg.civcraft.mc.mercury</groupId>
+    <groupId>vg.civcraft.mc.mercury</groupId>
 	<artifactId>Mercury</artifactId>
 	<version>1.0.1-13</version>
+	<scope>provided</scope>
+    </dependency>
+	<dependency>
+    <groupId>vg.civcraft.mc.civmodcore</groupId>
+	<artifactId>CivModCore</artifactId>
+	<version>1.0.5</version>
 	<scope>provided</scope>
     </dependency>
   </dependencies>
