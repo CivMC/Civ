@@ -6,8 +6,9 @@
   <groupId>vg.civcraft.mc.namelayer</groupId>
   <artifactId>NameLayer</artifactId>
   <packaging>jar</packaging>
-  <version>2.3.5-${build.number}</version>
-  <name>NameLayer</name>
+  <version>${yaml.plugin.version}</version>
+  <name>${yaml.plugin.name}</name>
+  <description>${yaml.plugin.version}</description>
   <url>https://github.com/Civcraft/NameLayer/</url>
   
   <properties>
@@ -16,6 +17,26 @@
   </properties>
   
   <build>
+  <plugins>
+    <plugin>
+      <groupId>com.comphenix.maven</groupId>
+      <artifactId>yaml-properties-plugin</artifactId>
+      <version>0.1.0</version>
+      <executions>
+        <execution>
+          <goals>
+            <goal>read-yaml-properties</goal>
+          </goals>
+          <configuration>
+            <files>
+              <!-- YAML files that will be loaded. The element name is the file ID. -->
+              <plugin>${basedir}/plugin.yml</plugin>
+            </files>
+          </configuration> 
+        </execution>
+      </executions>  
+    </plugin>
+   </plugins>
     <sourceDirectory>${basedir}/src</sourceDirectory>
     
     <resources>
@@ -47,21 +68,25 @@
       <version>1.8.3</version>
       <scope>provided</scope>
     </dependency>
-	<dependency>
-		<groupId>vg.civcraft.mc.mercury</groupId>
-		<artifactId>Mercury</artifactId>
-		<version>1.0.1-11</version>
-		<scope>provided</scope>
-	</dependency>
+    <dependency>
+        <groupId>vg.civcraft.mc.mercury</groupId>
+	<artifactId>Mercury</artifactId>
+	<version>1.0.1-13</version>
+	<scope>provided</scope>
+    </dependency>
   </dependencies>
   <repositories>
     <repository>
-      <id>bukkit-repo</id>
-      <url>http://repo.bukkit.org/content/groups/public/</url>
-    </repository>
-	<repository>
-      <id>mercury-repo</id>
-      <url>http://192.99.169.83:8080/plugin/repository/project/Mercury/Build/11/repository/</url>
+      <id>Jenkins-repo</id>
+      <url>http://civcraft.co:8080/plugin/repository/everything/</url>
     </repository>
   </repositories>
+
+<pluginRepositories>
+  <pluginRepository>
+    <id>comphenix-rep</id>
+    <name>Comphenix Maven Releases</name>
+    <url>http://repo.comphenix.net/content/groups/public</url>
+  </pluginRepository>
+</pluginRepositories>
 </project>

@@ -9,12 +9,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.Config;
+import vg.civcraft.mc.civmodcore.annotations.CivConfig;
+import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
+import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
 import vg.civcraft.mc.namelayer.command.CommandHandler;
-import vg.civcraft.mc.namelayer.config.NameConfigListener;
-import vg.civcraft.mc.namelayer.config.NameConfigManager;
-import vg.civcraft.mc.namelayer.config.annotations.NameConfig;
-import vg.civcraft.mc.namelayer.config.annotations.NameConfigType;
-import vg.civcraft.mc.namelayer.config.annotations.NameConfigs;
 import vg.civcraft.mc.namelayer.database.AssociationList;
 import vg.civcraft.mc.namelayer.database.Database;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
@@ -24,7 +24,7 @@ import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.misc.ClassHandler;
 
 
-public class NameLayerPlugin extends JavaPlugin implements NameConfigListener{
+public class NameLayerPlugin extends ACivMod{
 	private static AssociationList associations;
 	private static GroupManagerDao groupManagerDao;
 	private static NameLayerPlugin instance;
@@ -32,24 +32,30 @@ public class NameLayerPlugin extends JavaPlugin implements NameConfigListener{
 	private static Database db;
 	private static boolean loadGroups = true;
 	private static boolean isMercuryEnabled = false;
+	private Config config;
 	
-	private NameConfigManager config;
-	
-	@NameConfig(name = "groups.enable", def = "true", type = NameConfigType.Bool)
+	@CivConfig(name = "groups.enable", def = "true", type = CivConfigType.Bool)
 	@Override
 	public void onEnable() {
+		super.onEnable(); // Need to call this to properly initialize this mod
+		config = GetConfig();
 		instance = this;
 		isMercuryEnabled = Bukkit.getPluginManager().isPluginEnabled("Mercury");
-		config = new NameConfigManager();
 		registerListeners();
 		loadDatabases();
 	    ClassHandler.Initialize(Bukkit.getServer());
-		new NameAPI(new GroupManager(), associations, config);
-		loadGroups = config.get(this, "groups.enable").getBool();
+		new NameAPI(new GroupManager(), associations);
+		loadGroups = config.get("groups.enable").getBool();
 		if (loadGroups){
 			handle = new CommandHandler();
 			handle.registerCommands();
 		}
+	}
+	
+	// Calling this for ACivMod
+	@Override
+	public void onLoad(){
+		super.onLoad();
 	}
 	
 	public void registerListeners(){
@@ -57,7 +63,6 @@ public class NameLayerPlugin extends JavaPlugin implements NameConfigListener{
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		if (isMercuryEnabled)
 			getServer().getPluginManager().registerEvents(new MercuryMessageListener(), this);
-		config.registerListener(this, this);
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -80,19 +85,19 @@ public class NameLayerPlugin extends JavaPlugin implements NameConfigListener{
 		return instance;
 	}
 	
-	@NameConfigs({
-		@NameConfig(name = "sql.hostname", def = "localhost", type = NameConfigType.String),
-		@NameConfig(name = "sql.username"),
-		@NameConfig(name = "sql.password"),
-		@NameConfig(name = "sql.port", def = "3306", type = NameConfigType.Int),
-		@NameConfig(name = "sql.dbname", def = "namelayer")
+	@CivConfigs({
+		@CivConfig(name = "sql.hostname", def = "localhost", type = CivConfigType.String),
+		@CivConfig(name = "sql.username"),
+		@CivConfig(name = "sql.password"),
+		@CivConfig(name = "sql.port", def = "3306", type = CivConfigType.Int),
+		@CivConfig(name = "sql.dbname", def = "namelayer")
 	})
 	public void loadDatabases(){
-		String host = config.get(this, "sql.hostname").getString();
-		int port = config.get(this, "sql.port").getInt();
-		String dbname = config.get(this, "sql.dbname").getString();
-		String username = config.get(this, "sql.username").getString();
-		String password = config.get(this, "sql.password").getString();
+		String host = config.get("sql.hostname").getString();
+		int port = config.get("sql.port").getInt();
+		String dbname = config.get("sql.dbname").getString();
+		String username = config.get("sql.username").getString();
+		String password = config.get("sql.password").getString();
 		db = new Database(host, port, dbname, username, password, getLogger());
 		db.connect();
 		if (!db.isConnected()){
@@ -163,5 +168,10 @@ public class NameLayerPlugin extends JavaPlugin implements NameConfigListener{
 	
 	public static boolean isMercuryEnabled(){
 		return isMercuryEnabled;
+	}
+
+	@Override
+	protected String getPluginName() {
+		return "NameLayerPlugin";
 	}
 }
