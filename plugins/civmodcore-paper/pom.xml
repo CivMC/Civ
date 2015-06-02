@@ -6,8 +6,9 @@
   <groupId>vg.civcraft.mc.civmodcore</groupId>
   <artifactId>CivModCore</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-${build.number}</version>
-  <name>CivModCore</name>
+  <description>${yaml.plugin.version}</description>
+  <version>${yaml.plugin.version}</version>
+  <name>${yaml.plugin.name}</name>
   <url>https://github.com/Civcraft/CivModCore/</url>
   
   <properties>
@@ -16,6 +17,26 @@
   </properties>
   
   <build>
+  <plugins>
+    <plugin>
+      <groupId>com.comphenix.maven</groupId>
+      <artifactId>yaml-properties-plugin</artifactId>
+      <version>0.1.0</version>
+      <executions>
+        <execution>
+          <goals>
+            <goal>read-yaml-properties</goal>
+          </goals>
+          <configuration>
+            <files>
+              <!-- YAML files that will be loaded. The element name is the file ID. -->
+              <plugin>${basedir}/plugin.yml</plugin>
+            </files>
+          </configuration> 
+        </execution>
+      </executions>  
+    </plugin>
+	</plugins>
     <sourceDirectory>${basedir}/src</sourceDirectory>
     
     <resources>
@@ -38,4 +59,11 @@
   </dependencies>
   <repositories>
   </repositories>
+  <pluginRepositories>
+  <pluginRepository>
+    <id>comphenix-rep</id>
+    <name>Comphenix Maven Releases</name>
+    <url>http://repo.comphenix.net/content/groups/public</url>
+  </pluginRepository>
+</pluginRepositories>
 </project>
