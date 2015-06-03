@@ -7,6 +7,7 @@ import java.util.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import vg.civcraft.mc.civmodcore.command.Command;
 import vg.civcraft.mc.namelayer.command.commands.AcceptInvite;
 import vg.civcraft.mc.namelayer.command.commands.ChangePlayerName;
 import vg.civcraft.mc.namelayer.command.commands.CreateGroup;

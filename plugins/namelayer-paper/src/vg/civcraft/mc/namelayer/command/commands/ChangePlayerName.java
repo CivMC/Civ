@@ -2,8 +2,9 @@ package vg.civcraft.mc.namelayer.command.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,7 +12,7 @@ import java.util.UUID;
 /**
  * Created by isaac on 2/6/15.
  */
-public class ChangePlayerName  extends PlayerCommand {
+public class ChangePlayerName  extends PlayerCommandMiddle {
     public ChangePlayerName(String name) {
         super(name);
         setIdentifier("nlcpn");

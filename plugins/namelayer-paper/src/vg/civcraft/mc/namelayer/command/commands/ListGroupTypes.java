@@ -3,12 +3,12 @@ package vg.civcraft.mc.namelayer.command.commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.group.GroupType;
 
 import java.util.List;
 
-public class ListGroupTypes extends PlayerCommand{
+public class ListGroupTypes extends PlayerCommandMiddle{
 
 	public ListGroupTypes(String name) {
 		super(name);

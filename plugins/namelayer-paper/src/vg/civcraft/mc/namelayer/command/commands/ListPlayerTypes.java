@@ -4,11 +4,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 
 import java.util.List;
 
-public class ListPlayerTypes extends PlayerCommand{
+public class ListPlayerTypes extends PlayerCommandMiddle{
 
 	public ListPlayerTypes(String name) {
 		super(name);

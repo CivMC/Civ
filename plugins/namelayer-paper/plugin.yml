@@ -1,9 +1,9 @@
 name: NameLayer
 main: vg.civcraft.mc.namelayer.NameLayerPlugin
-version: 2.3.5
+version: 2.3.6
 load: startup
 author: Rourke750
-softdepend: [Mercury]
+softdepend: [Mercury, CivModCore]
 commands:
    nlag:
    nlasg:

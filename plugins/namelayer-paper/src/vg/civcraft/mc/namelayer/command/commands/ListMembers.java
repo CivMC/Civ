@@ -9,12 +9,12 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 
-public class ListMembers extends PlayerCommand{
+public class ListMembers extends PlayerCommandMiddle{
 
 	public ListMembers(String name) {
 		super(name);

@@ -5,22 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class DeleteGroup extends PlayerCommand{
+public class DeleteGroup extends PlayerCommandMiddle{
 	
 	private Map<UUID, String[]> confirmDeleteGroup;
 

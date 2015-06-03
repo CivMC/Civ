@@ -9,14 +9,14 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class ListPermissions extends PlayerCommand{
+public class ListPermissions extends PlayerCommandMiddle{
 
 	public ListPermissions(String name) {
 		super(name);

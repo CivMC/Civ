@@ -9,15 +9,13 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.InviteTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 
-public class AcceptInvite extends PlayerCommand{
+public class AcceptInvite extends PlayerCommandMiddle{
 
 	public AcceptInvite(String name) {
 		super(name);

@@ -8,10 +8,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 
-public class ListGroups extends PlayerCommand {
+public class ListGroups extends PlayerCommandMiddle {
 
 	public ListGroups(String name) {
 		super(name);

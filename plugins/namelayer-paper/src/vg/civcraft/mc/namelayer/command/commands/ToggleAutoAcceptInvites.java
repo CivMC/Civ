@@ -9,10 +9,10 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 
-public class ToggleAutoAcceptInvites extends PlayerCommand{
+public class ToggleAutoAcceptInvites extends PlayerCommandMiddle{
 
 	private GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
 	public ToggleAutoAcceptInvites(String name) {

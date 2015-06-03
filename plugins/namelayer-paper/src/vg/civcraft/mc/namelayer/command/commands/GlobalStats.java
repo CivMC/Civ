@@ -5,11 +5,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 
 import java.util.List;
 
-public class GlobalStats extends PlayerCommand{
+public class GlobalStats extends PlayerCommandMiddle{
 
 	public GlobalStats(String name) {
 		super(name);

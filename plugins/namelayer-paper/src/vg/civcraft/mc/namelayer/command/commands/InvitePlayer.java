@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
@@ -22,7 +22,7 @@ import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class InvitePlayer extends PlayerCommand{
+public class InvitePlayer extends PlayerCommandMiddle{
 
 	private GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
 	public InvitePlayer(String name) {
