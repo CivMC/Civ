@@ -151,6 +151,5 @@ public class Config {
 				break;
 			}
 		}
-		plugin_.saveConfig();
 	}
 }
