@@ -65,11 +65,12 @@ public class FactoryModManager
 		
 		//if (FactoryModPlugin.PRODUCTION_ENEABLED)
 		//{
+		//NetherFactoryManager must ALWAYS BE LAST!!!!
 			initializeProductionManager();
 			initializePrintingPressManager();
 			initializeRepairFactoryManager();
-			initializeNetherFactoryManager();
 			initializeCompactorManager();
+			initializeNetherFactoryManager();
 		//}
 	}
 	
