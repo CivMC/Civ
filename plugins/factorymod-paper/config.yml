@@ -79,22 +79,34 @@ repair_factory:
       amount: 1
       durability: 1
   fuel_time: 5
-  repair_multiple: 1
+  repair_multiple: 10
   name: 'Repair Factory'
   production_time: 20
   costs:
     construction:
-      A_DIAMOND:
-        material: 'DIAMOND_BLOCK'
-        amount: 1
+      Coal Ore:
+        material: 'COAL_ORE'
+        amount: 256
+      Iron Ore:
+        material: 'IRON_ORE'
+        amount: 8
+      Redstone Ore:
+        material: 'REDSTONE_ORE'
+        amount: 8
+      Gold Ore:
+        material: 'GOLD_ORE'
+        amount: 8
     repair:
-      AA_DIAMOND:
-        material: 'DIAMOND_BLOCK'
-        amount: 1
+      Coal Ore:
+        material: 'COAL_ORE'
+        amount: 3
     recipe:
-      AAA_DIAMOND:
-        material: 'DIAMOND_BLOCK'
-        amount: 1
+      Coal Ore:
+        material: 'COAL_ORE'
+        amount: 64
+      Emerald Blocks:
+        material: 'EMERALD_BLOCK'
+        amount: 8
 compactor:
   fuel:
     Charcoal:
