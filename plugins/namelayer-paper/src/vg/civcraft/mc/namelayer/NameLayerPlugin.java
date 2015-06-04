@@ -1,6 +1,7 @@
 package vg.civcraft.mc.namelayer;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -8,12 +9,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.Config;
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
+import vg.civcraft.mc.mercury.MercuryPlugin;
 import vg.civcraft.mc.namelayer.command.CommandHandler;
 import vg.civcraft.mc.namelayer.database.AssociationList;
 import vg.civcraft.mc.namelayer.database.Database;
@@ -28,6 +31,7 @@ public class NameLayerPlugin extends ACivMod{
 	private static AssociationList associations;
 	private static GroupManagerDao groupManagerDao;
 	private static NameLayerPlugin instance;
+	public static ArrayList<String> onlineAllServers;
 	private CommandHandler handle;
 	private static Database db;
 	private static boolean loadGroups = true;
@@ -58,11 +62,21 @@ public class NameLayerPlugin extends ACivMod{
 		super.onLoad();
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void registerListeners(){
 		getServer().getPluginManager().registerEvents(new AssociationListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		if (isMercuryEnabled)
 			getServer().getPluginManager().registerEvents(new MercuryMessageListener(), this);
+			onlineAllServers = new ArrayList<String>();
+			//For some reason, if there is no delay before send message is called, namelayer crashes with null pointer exception.
+			//Once that is corrected, the runnable can be removed, but for now it works.
+			this.getServer().getScheduler().scheduleSyncDelayedTask(this, new BukkitRunnable(){
+				public void run(){
+					MercuryPlugin.handler.sendMessage("all", "name_layer", "whoonline "+MercuryPlugin.name);
+					NameLayerPlugin.getInstance().getLogger().info("Requested player lists");
+				}
+			}, 20L);
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
