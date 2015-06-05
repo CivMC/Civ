@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
+import vg.civcraft.mc.civchat2.listeners.MercuryMessageListener;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civchat2.zipper.CivChat2FileLogger;
@@ -23,10 +24,11 @@ public class CivChat2 extends JavaPlugin{
 	private static CivChat2Log log_;
 	private static boolean groupsEnabled;
 	private static CivChat2Config config_;
-	private CivChat2Manager chatMan;
+	private static CivChat2Manager chatMan;
 	private CivChat2Listener chatListener;
 	private static CivChat2CommandHandler handle;
 	private CivChat2FileLogger fileLog;
+	private boolean isMercuryEnabled = false;
 	
 	public void onEnable(){
 		//onEnable stuff
@@ -76,6 +78,9 @@ public class CivChat2 extends JavaPlugin{
 	
 	public void registerEvents(){
 		getServer().getPluginManager().registerEvents(chatListener, instance);
+		
+		//Change once Mercury loading is updated
+		getServer().getScheduler().scheduleSyncDelayedTask(this, new MercuryMessageListener(), 20L);
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
@@ -108,6 +113,14 @@ public class CivChat2 extends JavaPlugin{
 
 	public CivChat2FileLogger getCivChat2FileLogger() {
 		return fileLog;
+	}
+
+	public boolean isMercuryEnabled() {
+		return isMercuryEnabled;
+	}
+
+	public void setMercuryEnabled(boolean isMercuryEnabled) {
+		this.isMercuryEnabled = isMercuryEnabled;
 	}
 
 	

@@ -12,6 +12,8 @@ import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
+import vg.civcraft.mc.mercury.MercuryPlugin;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 
 public class Tell extends PlayerCommandMiddle{
@@ -42,6 +44,16 @@ public class Tell extends PlayerCommandMiddle{
 		if (args.length == 0){
 			chatMan.removeChannel(player.getName());
 			player.sendMessage(ChatColor.GREEN + "You have been removed from private chat.");
+			return true;
+		}
+		
+		//I have no idea why this isn't working. Errors on .getOnlineAllServers(). It works in the Namelayer project for not this
+		// one for some reason.
+		if (args.length >2 && NameLayerPlugin.getInstance().getOnlineAllServers().contains(args[0].trim())){
+			StringBuilder builder = new StringBuilder();
+			for (int x = 1; x < args.length; x++)
+				builder.append(args[x] + " ");
+			MercuryPlugin.instance.sendMessage("all", "pm~|"+player.getName()+"~|"+args[0].trim()+"~|"+builder.toString(), "civchat2");
 			return true;
 		}
 		
