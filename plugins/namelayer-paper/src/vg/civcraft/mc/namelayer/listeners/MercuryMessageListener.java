@@ -46,18 +46,18 @@ public class MercuryMessageListener extends BukkitRunnable implements Listener{
 			NameLayerPlugin.getInstance().getLogger().info("Responded to server '"+message[1]+"' sync request");
 			return;
 		} else if (reason.equals("login")){
-			NameLayerPlugin.onlineAllServers.add(message[1]);
+			NameLayerPlugin.getOnlineAllServers().add(message[1]);
 			NameLayerPlugin.getInstance().getLogger().info("Player "+message[1]+" has logged in on other server");
 			return;
 		} else if (reason.equals("logoff")){
-			NameLayerPlugin.onlineAllServers.remove(message[1]);
+			NameLayerPlugin.getOnlineAllServers().remove(message[1]);
 			NameLayerPlugin.getInstance().getLogger().info("Player "+message[1]+" has logged off on other server");
 			return;
 		} else if (reason.equals("sync")){
 			String[] players = message[1].split(";");
 			String allsynced = "";
 			for (String player : players){
-				NameLayerPlugin.onlineAllServers.add(player);
+				NameLayerPlugin.getOnlineAllServers().add(player);
 				allsynced = allsynced+player+" ,";
 			}
 			if (allsynced.isEmpty()){return;}
@@ -107,7 +107,7 @@ public class MercuryMessageListener extends BukkitRunnable implements Listener{
 		nl.isMercuryEnabled = Bukkit.getPluginManager().isPluginEnabled("Mercury");
 		if (nl.isMercuryEnabled){
 			nl.getServer().getPluginManager().registerEvents(this, nl);
-			nl.onlineAllServers = new ArrayList<String>();
+			nl.setOnlineAllServers(new ArrayList<String>());
 			MercuryPlugin.handler.sendMessage("all", "name_layer", "whoonline "+MercuryPlugin.name);
 			nl.getLogger().info("Requested player lists");
 		}

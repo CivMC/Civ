@@ -31,7 +31,7 @@ public class NameLayerPlugin extends ACivMod{
 	private static AssociationList associations;
 	private static GroupManagerDao groupManagerDao;
 	private static NameLayerPlugin instance;
-	public static ArrayList<String> onlineAllServers;
+	private static ArrayList<String> onlineAllServers;
 	private CommandHandler handle;
 	private static Database db;
 	private static boolean loadGroups = true;
@@ -179,5 +179,13 @@ public class NameLayerPlugin extends ACivMod{
 	@Override
 	protected String getPluginName() {
 		return "NameLayerPlugin";
+	}
+
+	public synchronized static ArrayList<String> getOnlineAllServers() {
+		return onlineAllServers;
+	}
+
+	public synchronized static void setOnlineAllServers(ArrayList<String> onlineAllServers) {
+		NameLayerPlugin.onlineAllServers = onlineAllServers;
 	}
 }
