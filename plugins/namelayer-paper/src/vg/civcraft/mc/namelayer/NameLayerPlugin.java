@@ -35,7 +35,7 @@ public class NameLayerPlugin extends ACivMod{
 	private CommandHandler handle;
 	private static Database db;
 	private static boolean loadGroups = true;
-	private static boolean isMercuryEnabled = false;
+	public static boolean isMercuryEnabled = false;
 	private Config config;
 	
 	@CivConfig(name = "groups.enable", def = "true", type = CivConfigType.Bool)
@@ -44,7 +44,6 @@ public class NameLayerPlugin extends ACivMod{
 		super.onEnable(); // Need to call this to properly initialize this mod
 		config = GetConfig();
 		instance = this;
-		isMercuryEnabled = Bukkit.getPluginManager().isPluginEnabled("Mercury");
 		registerListeners();
 		loadDatabases();
 	    ClassHandler.Initialize(Bukkit.getServer());
@@ -66,17 +65,9 @@ public class NameLayerPlugin extends ACivMod{
 	public void registerListeners(){
 		getServer().getPluginManager().registerEvents(new AssociationListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-		if (isMercuryEnabled)
-			getServer().getPluginManager().registerEvents(new MercuryMessageListener(), this);
-			onlineAllServers = new ArrayList<String>();
-			//For some reason, if there is no delay before send message is called, namelayer crashes with null pointer exception.
-			//Once that is corrected, the runnable can be removed, but for now it works.
-			this.getServer().getScheduler().scheduleSyncDelayedTask(this, new BukkitRunnable(){
-				public void run(){
-					MercuryPlugin.handler.sendMessage("all", "name_layer", "whoonline "+MercuryPlugin.name);
-					NameLayerPlugin.getInstance().getLogger().info("Requested player lists");
-				}
-			}, 20L);
+		//needed for delay init since NameLayer likes to enable before mercury
+		//when fixed also see line 174 and change isMercuryEnabled to private
+		this.getServer().getScheduler().scheduleSyncDelayedTask(this, new MercuryMessageListener(), 20L);
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -179,10 +170,11 @@ public class NameLayerPlugin extends ACivMod{
 	public static String getSpecialAdminGroup(){
 		return "Name_Layer_Special";
 	}
-	
-	public static boolean isMercuryEnabled(){
-		return isMercuryEnabled;
-	}
+
+	// Disabled while the runnable is needed.
+//	public static boolean isMercuryEnabled(){
+//		return isMercuryEnabled;
+//	}
 
 	@Override
 	protected String getPluginName() {

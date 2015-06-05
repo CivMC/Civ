@@ -16,7 +16,7 @@ public abstract class PlayerCommandMiddle extends PlayerCommand{
 	protected GroupManager gm = NameAPI.getGroupManager();
 	
 	public void checkRecacheGroup(Group g){
-		if (NameLayerPlugin.isMercuryEnabled()){
+		if (NameLayerPlugin.isMercuryEnabled){
 			String message = "recache " + g.getName();
 			Mercury.invalidateGroup(message);
 		}
