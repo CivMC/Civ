@@ -1,6 +1,7 @@
 package vg.civcraft.mc.namelayer;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -8,12 +9,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.Config;
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
+import vg.civcraft.mc.mercury.MercuryPlugin;
 import vg.civcraft.mc.namelayer.command.CommandHandler;
 import vg.civcraft.mc.namelayer.database.AssociationList;
 import vg.civcraft.mc.namelayer.database.Database;
@@ -28,10 +31,11 @@ public class NameLayerPlugin extends ACivMod{
 	private static AssociationList associations;
 	private static GroupManagerDao groupManagerDao;
 	private static NameLayerPlugin instance;
+	private static ArrayList<String> onlineAllServers;
 	private CommandHandler handle;
 	private static Database db;
 	private static boolean loadGroups = true;
-	private static boolean isMercuryEnabled = false;
+	public static boolean isMercuryEnabled = false;
 	private Config config;
 	
 	@CivConfig(name = "groups.enable", def = "true", type = CivConfigType.Bool)
@@ -40,7 +44,6 @@ public class NameLayerPlugin extends ACivMod{
 		super.onEnable(); // Need to call this to properly initialize this mod
 		config = GetConfig();
 		instance = this;
-		isMercuryEnabled = Bukkit.getPluginManager().isPluginEnabled("Mercury");
 		registerListeners();
 		loadDatabases();
 	    ClassHandler.Initialize(Bukkit.getServer());
@@ -58,11 +61,13 @@ public class NameLayerPlugin extends ACivMod{
 		super.onLoad();
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void registerListeners(){
 		getServer().getPluginManager().registerEvents(new AssociationListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-		if (isMercuryEnabled)
-			getServer().getPluginManager().registerEvents(new MercuryMessageListener(), this);
+		//needed for delay init since NameLayer likes to enable before mercury
+		//when fixed also see line 174 and change isMercuryEnabled to private
+		this.getServer().getScheduler().scheduleSyncDelayedTask(this, new MercuryMessageListener(), 20L);
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -165,13 +170,22 @@ public class NameLayerPlugin extends ACivMod{
 	public static String getSpecialAdminGroup(){
 		return "Name_Layer_Special";
 	}
-	
-	public static boolean isMercuryEnabled(){
-		return isMercuryEnabled;
-	}
+
+	// Disabled while the runnable is needed.
+//	public static boolean isMercuryEnabled(){
+//		return isMercuryEnabled;
+//	}
 
 	@Override
 	protected String getPluginName() {
 		return "NameLayerPlugin";
+	}
+
+	public synchronized static ArrayList<String> getOnlineAllServers() {
+		return onlineAllServers;
+	}
+
+	public synchronized static void setOnlineAllServers(ArrayList<String> onlineAllServers) {
+		NameLayerPlugin.onlineAllServers = onlineAllServers;
 	}
 }

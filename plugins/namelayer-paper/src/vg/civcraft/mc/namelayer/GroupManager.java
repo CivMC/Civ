@@ -57,7 +57,7 @@ public class GroupManager{
 		Bukkit.getPluginManager().callEvent(event);
 		g.setDisciplined(true);
 		g.setValid(false);
-		if (NameLayerPlugin.isMercuryEnabled()){
+		if (NameLayerPlugin.isMercuryEnabled){
 			String message = "delete " + groupName;
 			Mercury.invalidateGroup(message);
 		}
@@ -74,7 +74,7 @@ public class GroupManager{
 		}
 		g.addMember(uuid, PlayerType.OWNER);
 		g.setOwner(uuid);
-		if (NameLayerPlugin.isMercuryEnabled()){
+		if (NameLayerPlugin.isMercuryEnabled){
 			String message = "transfer " + g.getName();
 			Mercury.invalidateGroup(message);
 		}
@@ -106,7 +106,7 @@ public class GroupManager{
 		Bukkit.getPluginManager().callEvent(event);
 		toMerge.setDisciplined(true);
 		// Fail safe for plugins that dont check if the group is valid or not.
-		if (NameLayerPlugin.isMercuryEnabled()){
+		if (NameLayerPlugin.isMercuryEnabled){
 			String message = "merge " + group.getName() + " " + toMerge.getName();
 			Mercury.invalidateGroup(message);
 		}
