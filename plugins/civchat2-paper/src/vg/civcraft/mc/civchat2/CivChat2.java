@@ -13,6 +13,7 @@ import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civchat2.zipper.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
 /**
  * @author jjj5311
@@ -78,9 +79,10 @@ public class CivChat2 extends JavaPlugin{
 	
 	public void registerEvents(){
 		getServer().getPluginManager().registerEvents(chatListener, instance);
-		
-		//Change once Mercury loading is updated
-		getServer().getScheduler().scheduleSyncDelayedTask(this, new MercuryMessageListener(), 20L);
+		setMercuryEnabled(getServer().getPluginManager().isPluginEnabled("Mercury"));
+		if (isMercuryEnabled()){
+			this.getServer().getPluginManager().registerEvents(new MercuryMessageListener(this), this);
+		}
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){

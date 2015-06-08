@@ -47,13 +47,14 @@ public class Tell extends PlayerCommandMiddle{
 			return true;
 		}
 		
-		//I have no idea why this isn't working. Errors on .getOnlineAllServers(). It works in the Namelayer project for not this
-		// one for some reason.
-		if (args.length >2 && NameLayerPlugin.getInstance().getOnlineAllServers().contains(args[0].trim())){
+		if (args.length >=2 && NameLayerPlugin.getOnlineAllServers().contains(args[0].toLowerCase())){
 			StringBuilder builder = new StringBuilder();
 			for (int x = 1; x < args.length; x++)
 				builder.append(args[x] + " ");
-			MercuryPlugin.instance.sendMessage("all", "pm~|"+player.getName()+"~|"+args[0].trim()+"~|"+builder.toString(), "civchat2");
+			//This separator needs to be changed to load from config.
+			String sep = "|";
+			MercuryPlugin.handler.sendMessage("all","civchat2", "pm"+sep+player.getName()+sep+args[0].trim()+sep+builder.toString());
+			player.sendMessage(ChatColor.LIGHT_PURPLE+"To "+args[0]+": "+builder.toString());
 			return true;
 		}
 		
