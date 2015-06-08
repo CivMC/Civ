@@ -35,7 +35,7 @@ public class NameLayerPlugin extends ACivMod{
 	private CommandHandler handle;
 	private static Database db;
 	private static boolean loadGroups = true;
-	public static boolean isMercuryEnabled = false;
+	private static boolean isMercuryEnabled = false;
 	private Config config;
 	
 	@CivConfig(name = "groups.enable", def = "true", type = CivConfigType.Bool)
@@ -187,5 +187,13 @@ public class NameLayerPlugin extends ACivMod{
 
 	public synchronized static void setOnlineAllServers(ArrayList<String> onlineAllServers) {
 		NameLayerPlugin.onlineAllServers = onlineAllServers;
+	}
+
+	public static boolean isMercuryEnabled() {
+		return isMercuryEnabled;
+	}
+
+	public static void setMercuryEnabled(boolean isMercuryEnabled) {
+		NameLayerPlugin.isMercuryEnabled = isMercuryEnabled;
 	}
 }

@@ -103,8 +103,8 @@ public class MercuryMessageListener extends BukkitRunnable implements Listener{
 	@Override
 	public void run() {
 		NameLayerPlugin nl = NameLayerPlugin.getInstance();
-		NameLayerPlugin.isMercuryEnabled = Bukkit.getPluginManager().isPluginEnabled("Mercury");
-		if (NameLayerPlugin.isMercuryEnabled){
+		NameLayerPlugin.setMercuryEnabled(Bukkit.getPluginManager().isPluginEnabled("Mercury"));
+		if (NameLayerPlugin.isMercuryEnabled()){
 			nl.getServer().getPluginManager().registerEvents(this, nl);
 			NameLayerPlugin.setOnlineAllServers(new ArrayList<String>());
 			MercuryPlugin.handler.sendMessage("all", "name_layer", "whoonline "+MercuryPlugin.name);
