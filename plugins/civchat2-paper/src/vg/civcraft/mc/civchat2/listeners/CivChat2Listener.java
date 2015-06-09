@@ -69,13 +69,19 @@ public class CivChat2Listener implements Listener {
 		
 		CivChat2.debugmessage(String.format("ChatEvent properties: chatMessage =[ %s ], sender = [ %s ], chatChannel = [ %s ], groupchatting = [ %s ];", chatMessage, sender.getName(), chatChannel, groupChat));
 		if(!(chatChannel == null)){
+			StringBuilder sb = new StringBuilder();
 			CivChat2.debugmessage("PlayerChatEvent chatChannel does not equal null");
 			Player receive = Bukkit.getPlayer(NameAPI.getUUID(chatChannel));
 			CivChat2.debugmessage("player chat event receive = [" + receive + "]");
 			if(!(receive == null)){	
 				if(chatman.isIgnoringPlayer(sender.getName(), chatChannel)){
 					CivChat2.debugmessage("PlayerChatEvent receive != null isIgnoringGroups is true");
-					String muteMessage = ChatColor.YELLOW + chatChannel + ChatColor.RED + " has muted you";
+					String muteMessage = sb.append(ChatColor.YELLOW) 
+											.append( chatChannel) 
+											.append( ChatColor.RED) 
+											.append( " has muted you")
+											.toString();
+					sb.delete(0, sb.length());
 					sender.sendMessage(muteMessage);
 					return;
 				}
@@ -87,8 +93,10 @@ public class CivChat2Listener implements Listener {
 			}
 			else{
 				chatman.removeChannel(sender.getName());
-				String offlineMessage = ChatColor.GOLD + "The player you were chatting with has gone offline,"
-						+ " you have been moved to regular chat";
+				String offlineMessage = sb.append(ChatColor.GOLD )
+											.append( "The player you were chatting with has gone offline,")
+											.append(" you have been moved to regular chat").toString();
+				sb.delete(0, sb.length());
 				sender.sendMessage(offlineMessage);
 				return;
 			}
