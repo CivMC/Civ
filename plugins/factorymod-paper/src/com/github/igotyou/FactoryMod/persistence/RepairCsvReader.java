@@ -7,20 +7,24 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
 import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
-import com.github.igotyou.FactoryMod.Factorys.NetherFactory.NetherOperationMode;
+import com.github.igotyou.FactoryMod.Factorys.RepairFactory;
+import com.github.igotyou.FactoryMod.Factorys.RepairFactory.RepairFactoryMode;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
-public class NetherCsvReader implements IFactoryReader<NetherFactory> {
-
+public class RepairCsvReader implements IFactoryReader<RepairFactory>{
+	
 	/**
 	 * The plugin instance
 	 */
@@ -33,20 +37,21 @@ public class NetherCsvReader implements IFactoryReader<NetherFactory> {
 	
 	static final int VERSION = 1;
 	
-	public NetherCsvReader(FactoryModPlugin plugin, File file) {
+	public RepairCsvReader(FactoryModPlugin plugin, File file) {
 		mPlugin = plugin;
 		mFile = file;
 	}
-	
+
 	@Override
-	public synchronized List<NetherFactory> read() {
+	public synchronized List<RepairFactory> read() {
 		
-		List<NetherFactory> factories = Lists.newArrayList();
+		List<RepairFactory> factory = Lists.newArrayList();
+
 
 		if(!mFile.exists() || mFile.isDirectory()) {
 			FactoryModPlugin.sendConsoleMessage(new StringBuilder("ERROR: ")
 				.append(mFile.getName()).append(" is not a valid file!").toString());
-			return factories;
+			return factory;
 		}
 		
 		ObjectInputStream ois;
@@ -57,7 +62,7 @@ public class NetherCsvReader implements IFactoryReader<NetherFactory> {
 		} catch (Exception e) {
 			FactoryModPlugin.sendConsoleMessage(new StringBuilder("ERROR: Could not open file ")
 				.append(mFile.getName()).append("for reading: ").append(e.getMessage()).toString());
-			return factories;
+			return factory;
 		}
 
 		int lineNum = 1;
@@ -67,14 +72,14 @@ public class NetherCsvReader implements IFactoryReader<NetherFactory> {
 			if(version != VERSION) {
 				FactoryModPlugin.logFileError(mFile.getName(), lineNum, "Factory file version did not match expected value");
 				ois.close();
-				return factories;
+				return factory;
 			}
 			
 			int count = ois.readInt();
 			for (int i = 0; i < count; i++)
 			{
 				try {
-					factories.add(read(ois));
+					factory.add(read(ois));
 				} catch (Exception ex) {
 					FactoryModPlugin.logFileError(mFile.getName(), lineNum, "Factory parse error: " + ex.getMessage());
 					break;
@@ -83,34 +88,25 @@ public class NetherCsvReader implements IFactoryReader<NetherFactory> {
 		} catch (IOException ex) {
 			FactoryModPlugin.logFileError(mFile.getName(), lineNum, "Could not read file, aborting");
 		}
-		
-		return factories;
+		//TODO: ensure everything is closed
+		return factory;
 	}
 	
-	public NetherFactory read(ObjectInputStream input) throws Exception {
-		String worldName = input.readUTF();
-		World world = mPlugin.getServer().getWorld(worldName);
-
-		Location centerLocation = new Location(world, input.readInt(), input.readInt(), input.readInt());
-		Location inventoryLocation = new Location(world, input.readInt(), input.readInt(), input.readInt());
-		Location powerLocation = new Location(world, input.readInt(), input.readInt(), input.readInt());
-		Location overworldTeleportPlatformLocation = new Location(world, input.readInt(), input.readInt(), input.readInt());
+	//TODO: split into common csv file handler and factory type parser
+	public RepairFactory read(ObjectInputStream ois) throws Exception {
+		String worldName = ois.readUTF();
+		World world = Bukkit.getWorld(worldName);
 		
-		String worldName2 = input.readUTF();
-		World world2 = mPlugin.getServer().getWorld(worldName2);
+		Location centerLocation = new Location(world, ois.readInt(), ois.readInt(), ois.readInt());
+		Location inventoryLocation = new Location(world, ois.readInt(), ois.readInt(), ois.readInt());
+		Location powerLocation = new Location(world, ois.readInt(), ois.readInt(), ois.readInt());
 		
-		Location netherTeleportPlatformLocation = new Location(world2, input.readInt(), input.readInt(), input.readInt());
+		RepairFactoryMode mode = RepairFactoryMode.byId(ois.readInt());
+		double currentRepair = ois.readDouble();
+		long timeDisrepair  = ois.readLong();
 		
-		boolean active = input.readBoolean();
-		NetherOperationMode mode = NetherFactory.NetherOperationMode.byId(input.readInt());
-		double currentRepair = input.readDouble();
-		long timeDisrepair  = input.readLong();
-		
-		return null;
-//		return new NetherFactory(centerLocation, inventoryLocation, powerLocation, netherTeleportPlatformLocation, overworldTeleportPlatformLocation,
-//				active, currentRepair, timeDisrepair,
-//				mode,
-//				mPlugin.getNetherFactoryProperties(), this);
+		return new RepairFactory(centerLocation, inventoryLocation, powerLocation, false, mPlugin.getRepairFactoryProperties(), 
+				mode, currentRepair, timeDisrepair);
 	}
 
 }

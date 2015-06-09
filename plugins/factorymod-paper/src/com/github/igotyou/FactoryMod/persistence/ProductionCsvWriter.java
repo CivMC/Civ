@@ -14,7 +14,7 @@ import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.google.common.io.Files;
 
-public class ProductionCsvWriter implements FactoryWriter<ProductionFactory> {
+public class ProductionCsvWriter implements IFactoryWriter<ProductionFactory> {
 	
 	File mFile;
 	
@@ -24,7 +24,8 @@ public class ProductionCsvWriter implements FactoryWriter<ProductionFactory> {
 
 	@Override
 	public synchronized void write(List<ProductionFactory> factories) {
-
+		FileBackup.backup(mFile);
+		
 		if(!mFile.exists()) {
 			try {
 				mFile.createNewFile();

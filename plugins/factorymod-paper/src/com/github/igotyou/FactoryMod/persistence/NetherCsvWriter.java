@@ -12,7 +12,7 @@ import org.bukkit.Location;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
 
-public class NetherCsvWriter implements FactoryWriter<NetherFactory> {
+public class NetherCsvWriter implements IFactoryWriter<NetherFactory> {
 	
 	static final int VERSION = 1;
 	
@@ -24,7 +24,8 @@ public class NetherCsvWriter implements FactoryWriter<NetherFactory> {
 	
 	@Override
 	public void write(List<NetherFactory> factories) {
-
+		FileBackup.backup(mFile);
+		
 		if(!mFile.exists()) {
 			try {
 				mFile.createNewFile();

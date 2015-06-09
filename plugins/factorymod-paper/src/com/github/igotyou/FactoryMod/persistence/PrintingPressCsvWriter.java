@@ -12,7 +12,7 @@ import org.bukkit.Location;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
 
-public class PrintingPressCsvWriter implements FactoryWriter<PrintingPress> {
+public class PrintingPressCsvWriter implements IFactoryWriter<PrintingPress> {
 	
 	static final int VERSION = 1;
 	
@@ -25,6 +25,8 @@ public class PrintingPressCsvWriter implements FactoryWriter<PrintingPress> {
 	@Override
 	public synchronized void write(List<PrintingPress> presses) {
 
+		FileBackup.backup(mFile);
+		
 		if(!mFile.exists()) {
 			try {
 				mFile.createNewFile();

@@ -3,33 +3,41 @@ package com.github.igotyou.FactoryMod.persistence;
 import java.io.File;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
+import com.github.igotyou.FactoryMod.Factorys.IFactory;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
 import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
-import com.github.igotyou.FactoryMod.interfaces.Factory;
-import com.github.igotyou.FactoryMod.interfaces.Manager;
+import com.github.igotyou.FactoryMod.Factorys.RepairFactory;
+import com.github.igotyou.FactoryMod.managers.IManager;
 import com.github.igotyou.FactoryMod.managers.NetherFactoryManager;
 import com.github.igotyou.FactoryMod.managers.PrintingPressManager;
-import com.github.igotyou.FactoryMod.managers.ProductionManager;
+import com.github.igotyou.FactoryMod.managers.ProductionFactoryManager;
+import com.github.igotyou.FactoryMod.managers.RepairFactoryManager;
 
 public class PersistenceFactory {
 	
 	//TODO: use type inference for return
-	public static <T extends Factory> FactoryDao<T> getFactoryDao(Manager<T> factoryManager, File saveFile, String saveFormat) {
+	public static <T extends IFactory> FactoryDao<T> getFactoryDao(IManager<T> factoryManager) {
 		
-		if(saveFormat.toLowerCase().equals("txt")) {
-			if(factoryManager instanceof ProductionManager) {
+		if(FactoryModPlugin.PERSISTENCE_FORMAT.toLowerCase().equals("txt")) {
+			if(factoryManager instanceof ProductionFactoryManager) {
+				File saveFile = new File(factoryManager.getPlugin().getDataFolder(), FactoryModPlugin.PRODUCTION_FACTORY_SAVE_FILE+".txt");
 				return (FactoryDao<T>) new FactoryDao<ProductionFactory>(new ProductionCsvReader(factoryManager.getPlugin(), saveFile), new ProductionCsvWriter(saveFile));
 			} else if(factoryManager instanceof PrintingPressManager) {
+				File saveFile = new File(factoryManager.getPlugin().getDataFolder(), FactoryModPlugin.PRINTING_PRESSES_SAVE_FILE+".txt");
 				return (FactoryDao<T>) new FactoryDao<PrintingPress>(new PrintingPressCsvReader(factoryManager.getPlugin(), saveFile), new PrintingPressCsvWriter(saveFile));
 			} else if(factoryManager instanceof NetherFactoryManager) {
+				File saveFile = new File(factoryManager.getPlugin().getDataFolder(), FactoryModPlugin.NETHER_FACTORY_SAVE_FILE+".txt");
 				return (FactoryDao<T>) new FactoryDao<NetherFactory>(new NetherCsvReader(factoryManager.getPlugin(), saveFile), new NetherCsvWriter(saveFile));
+			} else if(factoryManager instanceof RepairFactoryManager) {
+				File saveFile = new File(factoryManager.getPlugin().getDataFolder(), FactoryModPlugin.REPAIR_FACTORY_SAVE_FILE+".txt");
+				return (FactoryDao<T>) new FactoryDao<RepairFactory>(new RepairCsvReader(factoryManager.getPlugin(), saveFile), new RepairCsvWriter(saveFile));
 			}
 			FactoryModPlugin.sendConsoleMessage("ERROR: Unsupported factory manager: " + factoryManager.getClass().getName());
 			return null;
 		}
 		
-		FactoryModPlugin.sendConsoleMessage("ERROR: Unsupported file format: " + saveFormat);
+		FactoryModPlugin.sendConsoleMessage("ERROR: Unsupported file format: " + FactoryModPlugin.PERSISTENCE_FORMAT);
 		return null;
 	}
 

@@ -9,13 +9,12 @@ import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 
 
-public class NetherFactoryProperties
+public class NetherFactoryProperties extends AFactoryProperties
 {
 	private ItemList<NamedItemStack> constructionMaterials;
 	private ItemList<NamedItemStack> fuel;
 	private ItemList<NamedItemStack> repairMaterials;
 	private int energyTime;
-	private String name;
 	private int repair;
 	private double repairTime;
 	private int scalingMode;
@@ -79,10 +78,6 @@ public class NetherFactoryProperties
 		return energyTime;
 	}
 	
-	public String getName()
-	{
-		return name;
-	}
 
 	public static NetherFactoryProperties fromConfig(FactoryModPlugin plugin, ConfigurationSection configNetherFactory) 
 	{

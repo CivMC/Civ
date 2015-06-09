@@ -2,19 +2,17 @@ package com.github.igotyou.FactoryMod.properties;
 
 import java.util.List;
 
-import com.github.igotyou.FactoryMod.interfaces.Properties;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 
 
-public class ProductionProperties implements Properties
+public class ProductionProperties extends AFactoryProperties
 {
 	private ItemList<NamedItemStack> inputs;
 	private List<ProductionRecipe> recipes;
 	private ItemList<NamedItemStack> fuel;
 	private int energyTime;
-	private String name;
 	private int repair;
 	
 	public ProductionProperties(ItemList<NamedItemStack> inputs, List<ProductionRecipe> recipes,
@@ -53,8 +51,4 @@ public class ProductionProperties implements Properties
 		return energyTime;
 	}
 	
-	public String getName()
-	{
-		return name;
-	}
 }

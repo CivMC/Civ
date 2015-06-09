@@ -14,7 +14,7 @@ import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
 import com.github.igotyou.FactoryMod.Factorys.PrintingPress.OperationMode;
 import com.google.common.collect.Lists;
 
-public class PrintingPressCsvReader implements FactoryReader<PrintingPress> {
+public class PrintingPressCsvReader implements IFactoryReader<PrintingPress> {
 
 	/**
 	 * The plugin instance

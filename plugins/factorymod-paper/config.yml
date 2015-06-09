@@ -71,6 +71,30 @@
 #       data: 0 (data value of the item stack
 #       display_name: (display name of the item, null by default)
 #       lore: (lore of the item, null by default)
+#########################################################################
+repair_factory:
+  fuel:
+    Charcoal:
+      material: 'COAL'
+      amount: 1
+      durability: 1
+  fuel_time: 5
+  repair_multiple: 1
+  name: 'Repair Factory'
+  production_time: 20
+  costs:
+    construction:
+      A_DIAMOND:
+        material: 'DIAMOND_BLOCK'
+        amount: 1
+    repair:
+      AA_DIAMOND:
+        material: 'DIAMOND_BLOCK'
+        amount: 1
+    recipe:
+      AAA_DIAMOND:
+        material: 'DIAMOND_BLOCK'
+        amount: 1
 copy_defaults: false
 general:
   central_block: WORKBENCH
@@ -79,6 +103,8 @@ general:
   citadel_enabled: true
   factory_interaction_material: STICK
   disable_experience: true
+  should_default_anvil_cost: false
+  set_default_anvil_cost: 37
 production_general:
   update_cycle: 20
   repair_period: 28
@@ -167,6 +193,17 @@ printing_presses:
 
 crafting:
   disable:
+    CHISSELED_STONE_BRICK:
+      material: SMOOTH_BRICK
+      durability: 3
+    MOSSY_STONE:
+      material: SMOOTH_BRICK
+      durability: 1
+    CRACKED_STONE_BRICK:
+      material: SMOOTH_BRICK
+      durability: 2
+    MOSSY_COBBLE:
+      material: MOSSY_COBBLESTONE
   enable:
     XP to Emerald:
       inputs:
@@ -206,6 +243,33 @@ crafting:
       output:
         Double Stone Slab:
           material: DOUBLE_STEP
+    Slab to Smooth Double Stone Slab:
+      inputs:
+        s:
+          Stone Slab:
+            material: STEP
+      shape:
+        - ss
+        - ss
+      output:
+        Smooth Slab:
+          material: DOUBLE_STEP
+          durability: 8
+          amount: 2
+    Sandstone Slab to Smooth Double Sandstone Slab:
+      inputs:
+        s:
+          Sandstone Slab:
+            material: STEP
+            durability: 1
+      shape:
+        - ss
+        - ss
+      output:
+        Smooth Double Sandstone Slab:
+          material: DOUBLE_STEP
+          durability: 9
+          amount: 2
 production_factories:
   Bakery:
     name: Bakery
@@ -1906,6 +1970,7 @@ production_factories:
       - Mutate_Dark_Oak_Saplings
       - Mutate_Podzol
       - Mutate_Grassless_Dirt 
+      - Sequencing_Allium
       - Sequencing_Sunflower
       - Sequencing_Lilac
       - Sequencing_Double_Tallgrass
@@ -2028,6 +2093,7 @@ production_factories:
       - Forge_Iron_Bars
       - Forge_Buckets
       - Forge_Iron_Doors
+      - Forge_Iron_Trapdoors
       - Forge_Flint_And_Steel
       - Bastion_Gearbox
     repair_multiple: 10
@@ -2689,7 +2755,7 @@ production_recipes:
         amount: 5
       Baked Potato:
         material: BAKED_POTATO
-        amount: 1280
+        amount: 1920
     outputs:
       Exp Bottle:
         material: EXP_BOTTLE
@@ -4490,8 +4556,8 @@ production_recipes:
     production_time: 32
     inputs:
       Clay:
-        material: CLAY_BALL
-        amount: 512
+        material: CLAY
+        amount: 128
     outputs:
       Bricks:
         material: CLAY_BRICK
@@ -4501,8 +4567,8 @@ production_recipes:
     production_time: 5
     inputs:
       Clay:
-        material: CLAY_BALL
-        amount: 64
+        material: CLAY
+        amount: 16
     outputs:
       Flower Pots:
         material: FLOWER_POT_ITEM
@@ -5636,6 +5702,10 @@ production_recipes:
         type: PROTECTION_PROJECTILE
         level: 4
         probability: 0.4
+      Aqua Affinity 1:
+        type: WATER_WORKER
+        level: 1
+        probability: 0.3
   Dye_Brown_Wool_Black:
     name: Dye Brown Wool Black
     inputs:
@@ -5747,6 +5817,18 @@ production_recipes:
         type: PROTECTION_PROJECTILE
         level: 4
         probability: 0.4
+      Depth Strider 1:
+        type: DEPTH_STRIDER
+        level: 1
+        probability: 0.5
+      Depth Strider 2:
+        type: DEPTH_STRIDER
+        level: 2
+        probability: 0.4
+      Depth Strider 3:
+        type: DEPTH_STRIDER
+        level: 3
+        probability: 0.3
   Dye_Gray_Wool_Yellow:
     name: Dye Gray Wool Yellow
     inputs:
@@ -6132,6 +6214,17 @@ production_recipes:
       Iron Door:
         material: IRON_DOOR
         amount: 18
+  Forge_Iron_Trapdoors:
+    name: Forge Iron Trapdoors
+    production_time: 16
+    inputs:
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 54
+    outputs:
+      Iron Trapdoor:
+        material: IRON_TRAPDOOR
+        amount: 36
   Forge_Flint_And_Steel:
     name: Forge Flint and Steel
     production_time: 8
@@ -7400,6 +7493,21 @@ production_recipes:
         material: SPONGE
         amount: 32
         display_name: Bastion
+  Sequencing_Allium:
+    name: Sequencing Allium
+    inputs:
+      Poppy:
+        material: RED_ROSE
+        amount: 8
+      Blue Orchid:
+        material: RED_ROSE
+        amount: 8
+        durability: 1
+    outputs:
+      Allium:
+        material: RED_ROSE
+        amount: 4
+        durability: 2
   Sequencing_Sunflower:
     name: Sequencing Sunflower
     inputs:
