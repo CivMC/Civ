@@ -31,12 +31,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.bukkit.craftbukkit</groupId>
-      <artifactId>craftbukkit</artifactId>
-      <version>1.8.3</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot</artifactId>
       <version>1.8.3</version>
