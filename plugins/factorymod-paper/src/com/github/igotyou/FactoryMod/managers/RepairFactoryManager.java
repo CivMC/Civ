@@ -47,6 +47,7 @@ public class RepairFactoryManager extends AManager<RepairFactory>{
 	}
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
 
+	//SEE RepairCsvReader.java
 //	@Override
 //	public void save(File file) throws IOException {
 //		repairTime=System.currentTimeMillis();
@@ -81,7 +82,8 @@ public class RepairFactoryManager extends AManager<RepairFactory>{
 //		oos.flush();
 //		fileOutputStream.close();
 //	}
-
+	
+	//SEE RepairCsvWriter.java
 //	@Override
 //	public void load(File file) throws IOException {
 //		isLogging = false;
