@@ -6,7 +6,7 @@
   <groupId>com.github.igotyou</groupId>
   <artifactId>FactoryMod</artifactId>
   <packaging>jar</packaging>
-  <version>1.3.4-${build.number}</version>
+  <version>1.3.5-${build.number}</version>
   <name>FactoryMod</name>
   <url>https://github.com/Civcraft/FactoryMod</url>
    
@@ -31,9 +31,15 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>bukkit</artifactId>
-      <version>1.7.9-R0.1</version>
+      <groupId>org.bukkit.craftbukkit</groupId>
+      <artifactId>craftbukkit</artifactId>
+      <version>1.8.3</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot</artifactId>
+      <version>1.8.3</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -56,12 +62,12 @@
       <url>http://repo.bukkit.org/content/groups/public/</url>
     </repository>
     <repository>
-      <id>NameLayer-repo</id>
-      <url>http://192.99.169.83:8080/plugin/repository/project/NameLayer-master/Build/20/repository/</url>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
     </repository>
-    <repository>
-      <id>Citadel-repo</id>
-      <url>http://192.99.169.83:8080/plugin/repository/project/Citadel-master/Build/40/repository/</url>
+     <repository>
+      <id>Jenkins-repo</id>
+      <url>http://civcraft.co:8080/plugin/repository/everything/</url>
     </repository>
   </repositories>
 </project>

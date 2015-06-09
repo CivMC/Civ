@@ -43,16 +43,16 @@ import com.google.common.collect.Lists;
 
 public class ProductionFactoryManager extends AManager<ProductionFactory>
 {
+	@Override
+	public Class<ProductionFactory> getFactoryType() {
+		return ProductionFactory.class;
+	}
 	//private List<ProductionFactory> producers;
 	
 	public ProductionFactoryManager(FactoryModPlugin plugin)
 	{
-		this.plugin = plugin;
+		super(plugin);
 		mSaveFile = new File(plugin.getDataFolder(), "productionSaves.txt");
-		//producers = Lists.newArrayList();
-		//Set maintenance clock to 0
-		updateFactorys();
-		mDao = PersistenceFactory.getFactoryDao(this, mSaveFile, "txt");
 	}
 
 	@Override
@@ -145,11 +145,6 @@ public class ProductionFactoryManager extends AManager<ProductionFactory>
 	public String getSavesFileName() 
 	{
 		return mSaveFile.getName();
-	}
-
-	@Override
-	public Class<ProductionFactory> getFactoryType() {
-		return ProductionFactory.class;
 	}
 
 }

@@ -50,4 +50,5 @@ public class ProductionProperties extends AFactoryProperties
 	{
 		return energyTime;
 	}
+	
 }

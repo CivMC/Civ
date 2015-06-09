@@ -31,6 +31,7 @@ import com.github.igotyou.FactoryMod.properties.IFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.NetherFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.PrintingPressProperties;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
+import com.github.igotyou.FactoryMod.properties.RepairFactoryProperties;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.ItemList;
@@ -41,13 +42,14 @@ import com.google.common.collect.Maps;
 
 public class FactoryModPlugin extends JavaPlugin
 {
-
+	
 	/* Special Values */
 	public static final String VERSION = "v1.0"; //Current version of plugin
 	public static final String PLUGIN_NAME = "FactoryMod"; //Name of plugin
 	public static final String PLUGIN_PREFIX = PLUGIN_NAME + " " + VERSION + ": ";
 	public static final String PRINTING_PRESSES_SAVE_FILE = "pressSaves"; // The printing press saves file name
 	public static final String NETHER_FACTORY_SAVE_FILE = "netherSaves"; // The nether saves file name
+	public static final String REPAIR_FACTORY_SAVE_FILE = "repairSaves";
 	public static final int TICKS_PER_SECOND = 20; //ideal number of ticks per second
 	public static final int TICKS_PER_MIN = 20; //ideal number of ticks per minute
 	public static final int MILLIS_PER_DAY =  24 * 60 * 60 * 1000; // number of milliseconds per day (86.4M)
@@ -105,6 +107,9 @@ public class FactoryModPlugin extends JavaPlugin
 	 * Whether factory running state is output to a lever (Default true)
 	 */
 	public static boolean LEVER_OUTPUT_ENABLED;
+
+	public static boolean SHOULD_SET_ANVIL_COST;
+	public static int GET_SET_ANVIL_COST;
 	
 	/* Nether Properties */
 	
@@ -163,6 +168,7 @@ public class FactoryModPlugin extends JavaPlugin
 	public FactoryManagerService manager;
 	public PrintingPressProperties printingPressProperties;
 	public NetherFactoryProperties netherFactoryProperties;
+	public RepairFactoryProperties repairFactoryProperties;
 	
 	public void onEnable()
 	{
@@ -210,36 +216,67 @@ public class FactoryModPlugin extends JavaPlugin
 		this.saveDefaultConfig();
 		reloadConfig();
 		config = getConfig();
-		
-		NETHER_SCALE = config.getInt("nether_general.nether_scale", 8);
+		//what should the nether scaling be for the nether factorys?
+		NETHER_SCALE = config.getInt("nether_general.nether_scale",8);
+		//Should we Disable regular portals?
 		DISABLE_PORTALS = config.getBoolean("nether_general.disable_portals", true);
+		//Allow reinforcement above nether factory teleport platforms.
 		ALLOW_REINFORCEMENT_CREATION_ABOVE_TELEPORT_PLATFORM = config.getBoolean("nether_general.allow_reinforcement_creation_above_teleport_platform", false);
+		//Allow people to place blocks above nether factory teleport platforms.
 		ALLOW_BLOCK_PLACEMENT_ABOVE_TELEPORT_PLATFORM = config.getBoolean("nether_general.allow_block_placement_above_teleport_platform", false);
-		TELEPORT_PLATFORM_INVUNERABLE = config.getBoolean("nether_general.teleport_platform_invunerable", false);
+		//Make teleport platforms unbreakable
+		TELEPORT_PLATFORM_INVUNERABLE = config.getBoolean("nether_general.teleport_platform_invunerable",false);
+		//Right before a player get's teleported, should the teleport platform be regenerated?
 		REGENERATE_TELEPORT_BLOCK_ON_TELEPORT = config.getBoolean("nether_general.regenerate_teleport_block_on_teleport", false);
+		//Right before a player get's teleported, should the blocks above the portal be destroyed(ignotes citadel)?
 		REMOVE_BLOCK_ABOVE_TELEPORT_PLATFORM_ON_TELEPORT = config.getBoolean("nether_general.remove_blocks_above_teleport_platform_on_teleport", false);
+		//what's the name of the overworld?
 		WORLD_NAME = config.getString("nether_general.world_name", "world");
+		//what's the name of the overworld?
 		NETHER_NAME = config.getString("nether_general.nether_name", "world_nether");
-		SAVE_CYCLE = config.getInt("general.save_cycle", 15) * TICKS_PER_MIN;
-		CENTRAL_BLOCK_MATERIAL = Material.getMaterial(config.getString("general.central_block", Material.WORKBENCH.name()));
-		NETHER_FACTORY_TELEPORT_PLATFORM_MATERIAL = Material.getMaterial(config.getString("nether_general.teleport_platform_material_nether_factory", Material.OBSIDIAN.name()));
-		NETHER_FACTORY_MARKER_MATERIAL = Material.getMaterial(config.getString("nether_general.marker_material_nether_factory", Material.COAL_BLOCK.name()));
-		NETHER_MARKER_MAX_DISTANCE = config.getInt("nether_general.marker_max_distance", 64);
-		RETURN_BUILD_MATERIALS = config.getBoolean("general.return_build_materials", false);
-		CITADEL_ENABLED = config.getBoolean("general.citadel_enabled", true);
-		FACTORY_INTERACTION_MATERIAL = Material.getMaterial(config.getString("general.factory_interaction_material", Material.STICK.name()));
-		DESTRUCTIBLE_FACTORIES = config.getBoolean("general.destructible_factories", false);		
-		DISABLE_EXPERIENCE = config.getBoolean("general.disable_experience", false);
-		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle", 20);
-		DISREPAIR_PERIOD = config.getLong("general.disrepair_period", 14) * MILLIS_PER_DAY;
-		REPAIR_PERIOD = config.getLong("production_general.repair_period", 28) * MILLIS_PER_DAY;
-		LEVER_OUTPUT_ENABLED = config.getBoolean("general.lever_output_enabled", true);
-		REDSTONE_START_ENABLED = config.getBoolean("general.redstone_start_enabled", true);
+		//how often should the managers save?
+		SAVE_CYCLE = config.getInt("general.save_cycle",15)*60*20;
+		//what's the material of the center block of factorys?
+		CENTRAL_BLOCK_MATERIAL = Material.getMaterial(config.getString("general.central_block"));
+		//what's the material of the nether portal teleportation platforms?
+		NETHER_FACTORY_TELEPORT_PLATFORM_MATERIAL = Material.getMaterial(config.getString("nether_general.teleport_platform_material_nether_factory"));
+		//what's the material of the marker blocks for nether factorys?
+		NETHER_FACTORY_MARKER_MATERIAL = Material.getMaterial(config.getString("nether_general.marker_material_nether_factory"));
+		//how far from the factory can the marker be?
+		NETHER_MARKER_MAX_DISTANCE = config.getInt("nether_general.marker_max_distance");
+		//Return the build materials upon destruction of factory.
+		RETURN_BUILD_MATERIALS = config.getBoolean("general.return_build_materials",false);
+		//is citadel enabled?
+		CITADEL_ENABLED = config.getBoolean("general.citadel_enabled",true);
+		//what's the tool that we use to interact with the factorys?
+		FACTORY_INTERACTION_MATERIAL = Material.getMaterial(config.getString("general.factory_interaction_material","STICK"));
+		//If factories are removed upon destruction of their blocks
+		DESTRUCTIBLE_FACTORIES=config.getBoolean("general.destructible_factories",false);		
+		//Check if XP drops should be disabled
+		DISABLE_EXPERIENCE=config.getBoolean("general.disable_experience",false);
+		//How frequently factories are updated
+		PRODUCER_UPDATE_CYCLE = config.getInt("production_general.update_cycle",20);
+		//Period of days before a factory is removed after it falls into disrepair
+		DISREPAIR_PERIOD= config.getLong("general.disrepair_period",14)*24*60*60*1000;
+		//The length of time it takes a factory to go to 0% health
+		REPAIR_PERIOD = config.getLong("production_general.repair_period",28)*24*60*60*1000;
+		//Disable recipes which result in the following items
+		//Do we output the running state with a lever?
+		LEVER_OUTPUT_ENABLED = config.getBoolean("general.lever_output_enabled",true);
+		//Do we allow factories to be started with redstone?
+		REDSTONE_START_ENABLED = config.getBoolean("general.redstone_start_enabled",true);
+		//Set anvil repair cost
+		SHOULD_SET_ANVIL_COST = config.getBoolean("general.should_default_anvil_cost", false);
+		GET_SET_ANVIL_COST = config.getInt("general.set_default_anvil_cost", 37);
 
 		List<String> disabledRecipes = config.getStringList("crafting.disable");
 		for (String disable : disabledRecipes)
 		{
+			String mat = config.getString("crafting.disable." + disable + ".material",disable);
 			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(disable));
+			int dur = config.getInt("crafting.disable." + disable + ".durability", 0);
+			short s = (short) dur;
+			recipeItemStack.setDurability(s);
 			List<Recipe> tempList = getServer().getRecipesFor(recipeItemStack);
 			for (Recipe rec : tempList)
 			{
@@ -538,6 +575,9 @@ public class FactoryModPlugin extends JavaPlugin
 	
 	public NetherFactoryProperties getNetherFactoryProperties() {
 		return netherFactoryProperties;
+	}
+	public RepairFactoryProperties getRepairFactoryProperties() {
+		return repairFactoryProperties;
 	}
 	
 	private static FactoryModPlugin plugin;

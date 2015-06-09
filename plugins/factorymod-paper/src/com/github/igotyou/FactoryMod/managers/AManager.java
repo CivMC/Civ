@@ -11,6 +11,7 @@ import com.github.igotyou.FactoryMod.Factorys.IFactory;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
 import com.github.igotyou.FactoryMod.persistence.FactoryDao;
 import com.github.igotyou.FactoryMod.persistence.FileBackup;
+import com.github.igotyou.FactoryMod.persistence.PersistenceFactory;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.StringUtils;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
@@ -25,7 +26,14 @@ public abstract class AManager<T extends IFactory> implements IManager<T>{
 	protected long repairTime;
 	protected boolean isLogging = true;
 	
-
+	public AManager(FactoryModPlugin plugin)
+	{
+		this.plugin = plugin;
+		//mSaveFile = new File(plugin.getDataFolder(), "productionSaves.txt");
+		updateFactorys();
+		mDao = PersistenceFactory.getFactoryDao(this, mSaveFile, "txt");
+	}
+	
 	public String getFactoryName(){
 		return getFactoryType().getName();
 		//return this.getClass().getName().replace("Manager", "");
@@ -115,12 +123,7 @@ public abstract class AManager<T extends IFactory> implements IManager<T>{
 	@Override
 	public boolean factoryExistsAt(Location factoryLocation) 
 	{
-		boolean returnValue = false;
-		if (getFactory(factoryLocation) != null)
-		{
-			returnValue = true;
-		}
-		return returnValue;
+		return getFactory(factoryLocation) != null;
 	}
 	
 	@Override

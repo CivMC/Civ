@@ -1,10 +1,12 @@
 package com.github.igotyou.FactoryMod.managers;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.event.Listener;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.ABaseFactory;
@@ -29,12 +31,15 @@ import com.google.common.collect.Lists;
  */
 public class FactoryManagerService 
 {
-	List<IManager<? extends ABaseFactory>> managers;
+	List<Listener> listeners;
+	List<AManager<? extends ABaseFactory>> managers;
 	
 	/**
 	 * The plugin instance
 	 */
 	FactoryModPlugin plugin;
+
+	public static FactoryManagerService factoryMan;
 	
 	/**
 	 * Constructor
@@ -44,16 +49,30 @@ public class FactoryManagerService
 		FactoryModPlugin.sendConsoleMessage("Initiaiting FactoryMod Managers.");
 		
 		this.plugin = plugin;
-		managers = Lists.newArrayList();
-		managers.add(new ProductionFactoryManager(plugin));
-		managers.add(new PrintingPressManager(plugin));
-		managers.add(new NetherFactoryManager(plugin));
+		FactoryManagerService.factoryMan = this;
+		
+		initializeManagers();
 		loadManagers();
 		periodicSaving();
-		
 		FactoryModPlugin.sendConsoleMessage("Finished initializing FactoryMod Managers.");
 	}
-	
+
+	/**
+	 * Initializes the necassary managers for enabled factorys
+	 */
+	private void initializeManagers()
+	{
+		//managers = new ArrayList<AManager<? extends IFactory>>();
+		listeners = new ArrayList<Listener>();
+		
+		//if (FactoryModPlugin.PRODUCTION_ENEABLED)
+		//{
+		managers.add(new ProductionFactoryManager(plugin));
+		managers.add(new PrintingPressManager(plugin));
+		managers.add(new RepairFactoryManager(plugin));
+		managers.add(new NetherFactoryManager(plugin));
+		//}
+	}
 	/**
 	 * When plugin disabled, this is called.
 	 */

@@ -50,12 +50,8 @@ public class NetherFactoryManager extends AManager<NetherFactory>
 	
 	public NetherFactoryManager(FactoryModPlugin plugin)
 	{
-		this.plugin = plugin;
+		super(plugin);
 		mSaveFile = new File(plugin.getDataFolder(), "netherSaves.txt");
-		//netherFactorys = Lists.newArrayList();
-		//Set maintenance clock to 0
-		updateFactorys();
-		mDao = PersistenceFactory.getFactoryDao(this, mSaveFile, "txt");
 	}
 
 	@Override
@@ -234,7 +230,7 @@ public class NetherFactoryManager extends AManager<NetherFactory>
 					double distance = location.distance(factoryLoc);
 					if (distance <= properties.getScalingRadius())
 					{
-						scalingFactor = scalingFactor * Math.exp(1/(distance/properties.getCostScalingRadius()));
+						scalingFactor = scalingFactor * ( Math.exp(1/(distance/properties.getCostScalingRadius())) - Math.exp(1.0) + 1.0 );
 					}
 				}
 			}

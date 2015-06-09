@@ -18,7 +18,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
@@ -490,5 +489,4 @@ public class FactoryModListener implements Listener
 			event.setCancelled(true);
 		}
 	}
-	
 }

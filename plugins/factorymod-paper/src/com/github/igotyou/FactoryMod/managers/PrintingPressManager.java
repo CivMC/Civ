@@ -45,12 +45,8 @@ public class PrintingPressManager extends AManager<PrintingPress>
 	
 	public PrintingPressManager(FactoryModPlugin plugin)
 	{
-		this.plugin = plugin;
-		//presses = Lists.newArrayList();
+		super(plugin);
 		mSaveFile = new File(plugin.getDataFolder(), "pressSaves.txt");
-		//Set maintenance clock to 0
-		updateFactorys();
-		mDao = PersistenceFactory.getFactoryDao(this, mSaveFile, "txt");
 	}
 
 	@Override
