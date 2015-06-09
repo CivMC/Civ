@@ -19,7 +19,7 @@ import com.github.igotyou.FactoryMod.Factorys.NetherFactory.NetherOperationMode;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
-public class NetherCsvReader implements FactoryReader<NetherFactory> {
+public class NetherCsvReader implements IFactoryReader<NetherFactory> {
 
 	/**
 	 * The plugin instance

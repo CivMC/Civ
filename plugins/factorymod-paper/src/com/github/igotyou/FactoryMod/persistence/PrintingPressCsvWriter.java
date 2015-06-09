@@ -12,7 +12,7 @@ import org.bukkit.Location;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
 
-public class PrintingPressCsvWriter implements FactoryWriter<PrintingPress> {
+public class PrintingPressCsvWriter implements IFactoryWriter<PrintingPress> {
 	
 	static final int VERSION = 1;
 	

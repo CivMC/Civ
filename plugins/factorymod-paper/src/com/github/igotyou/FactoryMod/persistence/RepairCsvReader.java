@@ -23,7 +23,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
-public class RepairCsvReader implements FactoryReader<RepairFactory>{
+public class RepairCsvReader implements IFactoryReader<RepairFactory>{
 	
 	/**
 	 * The plugin instance

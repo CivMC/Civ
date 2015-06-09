@@ -17,7 +17,7 @@ import com.github.igotyou.FactoryMod.Factorys.RepairFactory;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.google.common.io.Files;
 
-public class RepairCsvWriter implements FactoryWriter<RepairFactory> {
+public class RepairCsvWriter implements IFactoryWriter<RepairFactory> {
 	
 	File mFile;
 	

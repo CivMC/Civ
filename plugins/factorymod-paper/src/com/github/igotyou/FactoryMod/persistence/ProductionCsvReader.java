@@ -20,7 +20,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
-public class ProductionCsvReader implements FactoryReader<ProductionFactory>{
+public class ProductionCsvReader implements IFactoryReader<ProductionFactory>{
 	
 	/**
 	 * The plugin instance

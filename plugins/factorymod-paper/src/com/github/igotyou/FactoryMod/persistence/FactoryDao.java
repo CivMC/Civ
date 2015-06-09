@@ -6,10 +6,10 @@ import com.github.igotyou.FactoryMod.Factorys.IFactory;
 
 public class FactoryDao<T extends IFactory> {
 
-	private FactoryReader<T> mReader;
-	private FactoryWriter<T> mWriter;
+	private IFactoryReader<T> mReader;
+	private IFactoryWriter<T> mWriter;
 	
-	FactoryDao(FactoryReader<T> reader, FactoryWriter<T> writer) {
+	FactoryDao(IFactoryReader<T> reader, IFactoryWriter<T> writer) {
 		mReader = reader;
 		mWriter = writer;
 	}

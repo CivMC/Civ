@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.github.igotyou.FactoryMod.Factorys.IFactory;
 
-public interface FactoryWriter<T extends IFactory> {
+public interface IFactoryReader<T extends IFactory> {
 	
-	public void write(List<T> factories);
+	public List<T> read();
 
 }
