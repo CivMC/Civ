@@ -6,7 +6,7 @@
   <groupId>com.github.igotyou</groupId>
   <artifactId>FactoryMod</artifactId>
   <packaging>jar</packaging>
-  <version>1.3.5-${build.number}</version>
+  <version>1.4.0-${build.number}</version>
   <name>FactoryMod</name>
   <url>https://github.com/Civcraft/FactoryMod</url>
    
@@ -52,8 +52,8 @@
   
   <repositories>
     <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+      <id>spigot-repo</id>
+      <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
     </repository>
      <repository>
       <id>Jenkins-repo</id>

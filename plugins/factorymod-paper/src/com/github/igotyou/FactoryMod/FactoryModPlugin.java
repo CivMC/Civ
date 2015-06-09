@@ -44,7 +44,7 @@ public class FactoryModPlugin extends JavaPlugin
 {
 	
 	/* Special Values */
-	public static final String VERSION = "v1.0"; //Current version of plugin
+	public static final String VERSION = "v1.4.0"; //Current version of plugin
 	public static final String PLUGIN_NAME = "FactoryMod"; //Name of plugin
 	public static final String PLUGIN_PREFIX = PLUGIN_NAME + " " + VERSION + ": ";
 	public static final String PRINTING_PRESSES_SAVE_FILE = "pressSaves"; // The printing press saves file name
