@@ -222,12 +222,14 @@ crafting:
     CHISSELED_STONE_BRICK:
       material: SMOOTH_BRICK
       durability: 3
-    MOSSY_COBBLE:
+    MOSSY_STONE:
       material: SMOOTH_BRICK
       durability: 1
     CRACKED_STONE_BRICK:
       material: SMOOTH_BRICK
       durability: 2
+    MOSSY_COBBLE:
+      material: MOSSY_COBBLESTONE
   enable:
     XP to Emerald:
       inputs:
@@ -1945,7 +1947,11 @@ production_factories:
         amount: 256
         durability: 4
     recipes:
+      - Smelt_Prismarine
+      - Smelt_Prismarine_Bricks
+      - Smelt_Dark_Prismarine
       - Smelt_Cracked_Stone_Brick
+      - Craft_Sea_Lanterns
       - Smelt_Mossy_Stone_Brick
       - Smelt_Chiseled_Stone_Brick
       - Bastion_Flooring
@@ -2117,6 +2123,7 @@ production_factories:
       - Forge_Iron_Bars
       - Forge_Buckets
       - Forge_Iron_Doors
+      - Forge_Iron_Trapdoors
       - Forge_Flint_And_Steel
       - Bastion_Gearbox
     repair_multiple: 10
@@ -6237,6 +6244,17 @@ production_recipes:
       Iron Door:
         material: IRON_DOOR
         amount: 18
+  Forge_Iron_Trapdoors:
+    name: Forge Iron Trapdoors
+    production_time: 16
+    inputs:
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 54
+    outputs:
+      Iron Trapdoor:
+        material: IRON_TRAPDOOR
+        amount: 36
   Forge_Flint_And_Steel:
     name: Forge Flint and Steel
     production_time: 8
@@ -7677,3 +7695,57 @@ production_recipes:
        Eye of Ender:
          material: EYE_OF_ENDER
          amount: 256
+  Smelt_Prismarine:
+    name: Smelt Prismarine
+    production_time: 16
+    inputs:
+      Prismarine Shard:
+        material: PRISMARINE_SHARD
+        amount: 128
+    outputs:
+      Prismarine:
+        material: PRISMARINE
+        amount: 64
+        durability: 0
+  Smelt_Prismarine_Bricks:
+    name: Smelt Prismarine Bricks
+    production_time: 16
+    inputs:
+      Prismarine Shard:
+        material: PRISMARINE_SHARD
+        amount: 288
+    outputs:
+      Prismarine:
+        material: PRISMARINE
+        amount: 64
+        durability: 1
+  Smelt_Dark_Prismarine:
+    name: Smelt Dark Prismarine
+    production_time: 16
+    inputs:
+      Prismarine Shard:
+        material: PRISMARINE_SHARD
+        amount: 256
+      Ink Sack:
+        material: INK_SACK
+        amount: 32
+        durability: 0
+    outputs:
+      Prismarine:
+        material: PRISMARINE
+        amount: 64
+        durability: 2
+  Craft_Sea_Lanterns:
+    name: Craft Sea Lanterns
+    production_time: 8
+    inputs:
+      Prismarine Shard:
+        material: PRISMARINE_SHARD
+        amount: 32
+      Prismarine Crystals:
+        material: PRISMARINE_CRYSTALS
+        amount: 64
+    outputs:
+      Sea Lantern:
+        material: SEA_LANTERN
+        amount: 16
