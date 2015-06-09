@@ -22,7 +22,6 @@ public abstract class AManager<T extends IFactory> implements IManager<T>{
 	ArrayList<T> factories = new ArrayList<T>();
 
 	protected FactoryDao<T> mDao;
-	protected File mSaveFile;
 	protected long repairTime;
 	protected boolean isLogging = true;
 	
@@ -31,7 +30,7 @@ public abstract class AManager<T extends IFactory> implements IManager<T>{
 		this.plugin = plugin;
 		//mSaveFile = new File(plugin.getDataFolder(), "productionSaves.txt");
 		updateFactorys();
-		mDao = PersistenceFactory.getFactoryDao(this, mSaveFile, "txt");
+		mDao = PersistenceFactory.getFactoryDao(this);
 	}
 	
 	public String getFactoryName(){
@@ -67,7 +66,6 @@ public abstract class AManager<T extends IFactory> implements IManager<T>{
 		updateRepair(System.currentTimeMillis() - repairTime);
 		repairTime = System.currentTimeMillis();
 		
-		FileBackup.backup(mSaveFile);
 		mDao.writeFactories(factories);		
 	}
 

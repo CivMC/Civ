@@ -24,7 +24,8 @@ public class ProductionCsvWriter implements FactoryWriter<ProductionFactory> {
 
 	@Override
 	public synchronized void write(List<ProductionFactory> factories) {
-
+		FileBackup.backup(mFile);
+		
 		if(!mFile.exists()) {
 			try {
 				mFile.createNewFile();

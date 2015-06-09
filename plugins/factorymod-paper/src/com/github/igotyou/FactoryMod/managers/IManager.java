@@ -76,10 +76,6 @@ public interface IManager<T extends IFactory>
 */
 	public void removeFactory(T factory);
 
-/**
-* Returns the saves file name for this manager
-*/
-	public String getSavesFileName();
 	
 	public boolean isClear(T factory);
 

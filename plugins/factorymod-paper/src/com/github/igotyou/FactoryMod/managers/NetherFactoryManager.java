@@ -51,7 +51,6 @@ public class NetherFactoryManager extends AManager<NetherFactory>
 	public NetherFactoryManager(FactoryModPlugin plugin)
 	{
 		super(plugin);
-		mSaveFile = new File(plugin.getDataFolder(), "netherSaves.txt");
 	}
 
 	@Override
@@ -203,12 +202,6 @@ public class NetherFactoryManager extends AManager<NetherFactory>
 				return factory;
 		}
 		return null;
-	}
-
-	@Override
-	public String getSavesFileName() 
-	{
-		return FactoryModPlugin.NETHER_FACTORY_SAVE_FILE;
 	}
 
 	public double getScalingFactor(Location location)

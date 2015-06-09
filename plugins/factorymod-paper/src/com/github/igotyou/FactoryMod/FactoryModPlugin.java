@@ -50,6 +50,8 @@ public class FactoryModPlugin extends JavaPlugin
 	public static final String PRINTING_PRESSES_SAVE_FILE = "pressSaves"; // The printing press saves file name
 	public static final String NETHER_FACTORY_SAVE_FILE = "netherSaves"; // The nether saves file name
 	public static final String REPAIR_FACTORY_SAVE_FILE = "repairSaves";
+	public static final String PRODUCTION_FACTORY_SAVE_FILE = "productionSaves";
+	public static final String PERSISTENCE_FORMAT = "txt";
 	public static final int TICKS_PER_SECOND = 20; //ideal number of ticks per second
 	public static final int TICKS_PER_MIN = 20; //ideal number of ticks per minute
 	public static final int MILLIS_PER_DAY =  24 * 60 * 60 * 1000; // number of milliseconds per day (86.4M)

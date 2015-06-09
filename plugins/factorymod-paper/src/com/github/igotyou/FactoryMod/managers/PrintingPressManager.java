@@ -46,7 +46,6 @@ public class PrintingPressManager extends AManager<PrintingPress>
 	public PrintingPressManager(FactoryModPlugin plugin)
 	{
 		super(plugin);
-		mSaveFile = new File(plugin.getDataFolder(), "pressSaves.txt");
 	}
 
 	@Override
@@ -91,13 +90,6 @@ public class PrintingPressManager extends AManager<PrintingPress>
 		}
 		return null;
 	}
-
-	@Override
-	public String getSavesFileName() 
-	{
-		return FactoryModPlugin.PRINTING_PRESSES_SAVE_FILE;
-	}
-
 
 	@Override
 	public Class<PrintingPress> getFactoryType() {

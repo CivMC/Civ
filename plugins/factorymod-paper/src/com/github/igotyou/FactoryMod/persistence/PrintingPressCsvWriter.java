@@ -25,6 +25,8 @@ public class PrintingPressCsvWriter implements FactoryWriter<PrintingPress> {
 	@Override
 	public synchronized void write(List<PrintingPress> presses) {
 
+		FileBackup.backup(mFile);
+		
 		if(!mFile.exists()) {
 			try {
 				mFile.createNewFile();

@@ -155,9 +155,4 @@ public class RepairFactoryManager extends AManager<RepairFactory>{
 		return null;
 	}
 
-	@Override
-	public String getSavesFileName() {
-		return FactoryModPlugin.REPAIR_FACTORY_SAVE_FILE;
-	}
-
 }

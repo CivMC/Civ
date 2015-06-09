@@ -52,7 +52,6 @@ public class ProductionFactoryManager extends AManager<ProductionFactory>
 	public ProductionFactoryManager(FactoryModPlugin plugin)
 	{
 		super(plugin);
-		mSaveFile = new File(plugin.getDataFolder(), "productionSaves.txt");
 	}
 
 	@Override
@@ -139,12 +138,6 @@ public class ProductionFactoryManager extends AManager<ProductionFactory>
 				return production;
 		}
 		return null;
-	}
-	
-	@Override
-	public String getSavesFileName() 
-	{
-		return mSaveFile.getName();
 	}
 
 }
