@@ -8,15 +8,16 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
+import vg.civcraft.mc.mercury.MercuryPlugin;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
 /*
  * @author jjj5311
@@ -86,6 +87,15 @@ public class CivChat2Listener implements Listener {
 				}
 			}
 			else{
+				if (CivChat2.getInstance().isMercuryEnabled()){
+					if (NameLayerPlugin.getOnlineAllServers().containsKey(chatChannel)){
+						//This separator needs to be changed to load from config.
+						String sep = "|";
+						MercuryPlugin.handler.sendMessage(NameLayerPlugin.getOnlineAllServers().get(chatChannel.toLowerCase()), "civchat2", "pm"+sep+sender.getName()+sep+chatChannel+sep+chatMessage.replace(sep, ""));
+						sender.sendMessage(ChatColor.LIGHT_PURPLE+"To "+chatChannel+": "+chatMessage);
+						return;
+					}
+				}
 				chatman.removeChannel(sender.getName());
 				String offlineMessage = ChatColor.GOLD + "The player you were chatting with has gone offline,"
 						+ " you have been moved to regular chat";
@@ -95,7 +105,7 @@ public class CivChat2Listener implements Listener {
 		}
 		if(!(groupChat == null)){
 			//player is group chatting
-			chatman.sendGroupMsg(sender.getName(), chatMessage, gm.getGroup(groupChat));
+			chatman.sendGroupMsg(sender.getName(), chatMessage, GroupManager.getGroup(groupChat));
 			return;
 		}
 		

@@ -46,7 +46,7 @@ public class IgnoreGroup extends PlayerCommandMiddle{
 		Group group = null;
 		Player player = (Player) sender;
 		GroupManager gm = NameAPI.getGroupManager();
-		group = gm.getGroup(args[0]);
+		group = GroupManager.getGroup(args[0]);
 		if(group == null){
 			//no player exists with that name
 			sender.sendMessage(ChatColor.RED + "No Group exists with that name");

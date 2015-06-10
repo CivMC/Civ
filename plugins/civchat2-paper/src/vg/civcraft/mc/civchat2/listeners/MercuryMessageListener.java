@@ -7,12 +7,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.mercury.events.AsyncPluginBroadcastMessageEvent;
-import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
 public class MercuryMessageListener implements Listener {
 	private static CivChat2 cc;

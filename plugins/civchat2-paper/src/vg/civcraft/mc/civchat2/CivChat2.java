@@ -13,7 +13,6 @@ import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civchat2.zipper.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
 /**
  * @author jjj5311
@@ -62,7 +61,7 @@ public class CivChat2 extends JavaPlugin{
 	}
 	
 	public CivChat2Manager getCivChat2Manager(){
-		return this.chatMan;
+		return CivChat2.chatMan;
 	}
 
 	public static boolean debugEnabled() {

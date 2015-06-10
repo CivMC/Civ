@@ -1,9 +1,6 @@
 package vg.civcraft.mc.civchat2.command.commands;
 
 import java.util.List;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
