@@ -48,9 +48,26 @@ public class CivChat2CommandHandler {
 	}
 	
 	public void helpPlayer(Command command, CommandSender sender){
-		String cmd = ChatColor.RED + "Command: " + command.getName().toString();
-		String desc = ChatColor.RED + "Description: " + command.getDescription().toString();
-		String usage = ChatColor.RED + "Usage: " + command.getUsage().toString();
+		StringBuilder sb = new StringBuilder();
+		
+		String cmd = sb.append(ChatColor.RED)
+						.append("Command: ")
+						.append(command.getName().toString())
+						.toString();
+		sb.delete(0, sb.length());
+		
+		String desc = sb.append(ChatColor.RED)
+						.append("Description: ")
+						.append(command.getDescription().toString())
+						.toString();
+		sb.delete(0, sb.length());
+		
+		String usage = sb.append(ChatColor.RED)
+						.append("Usage: ")
+						.append(command.getUsage().toString())
+						.toString();
+		sb.delete(0, sb.length());
+		
 		sender.sendMessage(cmd);
 		sender.sendMessage(desc);
 		sender.sendMessage(usage);

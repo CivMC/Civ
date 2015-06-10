@@ -30,13 +30,15 @@ public class CivChat2 extends JavaPlugin{
 	
 	public void onEnable(){
 		//onEnable stuff
+		StringBuilder sb = new StringBuilder();
 		instance = this;
 		config_ = new CivChat2Config();
 		config_.setConfigOptions(getConfig());
-		if(!new File(this.getDataFolder() + "config.yml").exists()){
+		if(!new File(sb.append(this.getDataFolder()).append("config.yml").toString()).exists()){
 			//config.yml does not exist save the default
 			this.saveDefaultConfig();
 		}
+		sb.delete(0, sb.length());
 		config_.getDebug();
 		log_ = new CivChat2Log();
 		log_.initializeLogger(instance);
@@ -44,7 +46,10 @@ public class CivChat2 extends JavaPlugin{
 		chatMan = new CivChat2Manager(instance);
 		fileLog.Init();
 		groupsEnabled = config_.getGroupsEnabled();
-		log_.info("groupsEnabled is set to: " + groupsEnabled);
+		log_.info(sb.append("groupsEnabled is set to: ")
+					.append(groupsEnabled)
+					.toString());
+		sb.delete(0, sb.length());
 		log_.debug("Debug Enabled");
 		handle = new CivChat2CommandHandler();
 		handle.registerCommands();

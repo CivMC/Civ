@@ -85,17 +85,28 @@ public class CivChat2FileLogger {
 	 * @return true if file was created successfully, false if failed
 	 */
 	public void initchatLog(String filename){
+		StringBuilder sb = new StringBuilder();
 		File existing = new File(filename);
-		CivChat2.debugmessage("Initializing chatlog... filename=[" + filename.toString() + "]");
+		CivChat2.debugmessage(sb.append("Initializing chatlog... filename=[" )
+								.append( filename.toString()) 
+								.append( "]")
+								.toString());
+		sb.delete(0, sb.length());
 		//first create chatlog file
 		try{
 			if(existing.exists()){
 				//directory already exists
-				CivChat2.infoMessage("Existing Chat File: " + existing.getAbsolutePath());
+				CivChat2.infoMessage(sb.append("Existing Chat File: ")
+										.append( existing.getAbsolutePath())
+										.toString());
+				sb.delete(0, sb.length());
 				FileWriter fw = new FileWriter(existing.getAbsolutePath(), true);
 				fileWriter = new BufferedWriter(fw);
 			} else {
-				CivChat2.infoMessage("Creating new File" + existing.getAbsolutePath());
+				CivChat2.infoMessage(sb.append("Creating new File")
+										.append( existing.getAbsolutePath())
+										.toString());
+				sb.delete(0, sb.length());
 				existing.createNewFile();
 				PrintWriter fStream = new PrintWriter(existing);
 				fileWriter = new BufferedWriter(fStream);
@@ -112,19 +123,26 @@ public class CivChat2FileLogger {
 	 * @param filename
 	 */
 	public void initIgnoreLog(String filename){
+		StringBuilder sb = new StringBuilder();
 		File existing = new File(filename);
 		CivChat2.debugmessage("Initializing IgnoreLog...");
 		try{
 			if(existing.exists()){
 				//ignore file exists load it
-				CivChat2.infoMessage("Existing Ignore file: " + existing.getAbsolutePath());
+				CivChat2.infoMessage(sb.append("Existing Ignore file: ") 
+										.append( existing.getAbsolutePath())
+										.toString());
+				sb.delete(0, sb.length());
 				FileWriter fw = new FileWriter(existing, true);
 				writer = new BufferedWriter(fw);
 				ignoredPlayers = existing;
 				chatMan.loadIgnoredPlayers(ignoredPlayers);
 			} else {
 				//create new ignore file
-				CivChat2.infoMessage("Creating new Ignore file: " + existing.getAbsolutePath());
+				CivChat2.infoMessage(sb.append("Creating new Ignore file: ")
+										.append(existing.getAbsolutePath())
+										.toString());
+				sb.delete(0, sb.length());
 				existing.createNewFile();
 				PrintWriter pw = new PrintWriter(existing);
 				writer = new BufferedWriter(pw);

@@ -34,24 +34,24 @@ public class CivChat2Manager {
 	
 	
 	//chatChannels in hashmap with (Player 1 name, player 2 name)
-	private HashMap<String, String> chatChannels = new HashMap<String, String>();
+	private HashMap<String, String> chatChannels;
 	
 	//groupChatChannels have (Player, Group)
-	private HashMap<String, String> groupChatChannels  = new HashMap<String, String>();
+	private HashMap<String, String> groupChatChannels;
 	
 	//ignorePlayers have (recieversname, list of players they are ignoring
-	private HashMap<String, List<String>> ignorePlayers = new HashMap<String, List<String>>();
+	private HashMap<String, List<String>> ignorePlayers;
 	
 	//replyList has (playerName, whotoreplyto)
-	private HashMap<String, String> replyList = new HashMap<String, String>();
+	private HashMap<String, String> replyList;
 	
 	
 	//afk has player names in a list of who is afk
-	private List<String> afk_player = new ArrayList<String>();
+	private List<String> afk_player;
 	
-	private String afkMsg = ChatColor.AQUA + "That Player is currently AFK";
-	private String ignoreMsg = ChatColor.YELLOW + "That Player is ignoring you";
-	protected GroupManager gm = NameAPI.getGroupManager();
+	private static final String AFKMSG = ChatColor.AQUA + "That Player is currently AFK";
+	private static final String IGNOREMSG = ChatColor.YELLOW + "That Player is ignoring you";
+	protected static final GroupManager GM = NameAPI.getGroupManager();
 
 	private String defaultColor;
 	
@@ -62,6 +62,11 @@ public class CivChat2Manager {
 		chatLog = instance.getCivChat2FileLogger();
 		chatLog.test();
 		defaultColor = config.getDefaultColor();
+		chatChannels = new HashMap<String, String>();
+		groupChatChannels  = new HashMap<String, String>();
+		ignorePlayers = new HashMap<String, List<String>>();
+		replyList = new HashMap<String, String>();
+		afk_player = new ArrayList<String>();
 	}
 	
 	
@@ -117,11 +122,18 @@ public class CivChat2Manager {
 	 * @param msgSender Player that sent the message
 	 */
 	public void groupChat(String chatGroupName, String chatMessage, String msgSender) {
+		StringBuilder sb = new StringBuilder();
 		Player sender = Bukkit.getPlayer(NameAPI.getUUID(msgSender));
 		Group chatGroup = GroupManager.getGroup(chatGroupName);
 		if(chatGroup == null){
-			CivChat2.debugmessage("groupChat tried chatting to a group that doesn't exist: GroupName" + chatGroupName + 
-					" Message: " + chatMessage + " Sender: " + msgSender);
+			CivChat2.debugmessage(sb.append("groupChat tried chatting to a group that doesn't exist: GroupName" )
+									.append( chatGroupName ) 
+									.append(" Message: ") 
+									.append( chatMessage) 
+									.append( " Sender: ") 
+									.append( msgSender)
+									.toString());
+			sb.delete(0, sb.length());
 			return;
 		}
 		String groupName = chatGroup.getName();
@@ -142,9 +154,22 @@ public class CivChat2Manager {
 				continue;
 			}
 			else{
-				String grayMessage = ChatColor.GRAY + "[" + groupName + "] " + msgSender + ": ";
-				String whiteMessage = ChatColor.WHITE + chatMessage;
-				p.sendMessage(grayMessage + whiteMessage);
+				String grayMessage = sb.append(ChatColor.GRAY)
+										.append( "[")
+										.append(groupName)
+										.append( "] ")
+										.append( msgSender)
+										.append( ": ")
+										.toString();
+				sb.delete(0, sb.length());
+				String whiteMessage = sb.append(ChatColor.WHITE)
+										.append(chatMessage)
+										.toString();
+				sb.delete(0, sb.length());
+				p.sendMessage(sb.append(grayMessage)
+								.append(whiteMessage)
+								.toString());
+				sb.delete(0, sb.length());
 			}
 		}		
 	}
@@ -156,26 +181,45 @@ public class CivChat2Manager {
 	 * @param receive Player Receiving the message
 	 * @param chatMessage Message to send from sender to receive
 	 */
-	public void sendPrivateMsg(Player sender, Player receive, String chatMessage) {	
+	public void sendPrivateMsg(Player sender, Player receive, String chatMessage) {		
+		StringBuilder sb = new StringBuilder();
+	
 		String senderName = sender.getName();
 		String receiverName = receive.getName();
 		
-		String senderMessage = ChatColor.LIGHT_PURPLE + "To " + receiverName + ": "
-				+ chatMessage;
+		String senderMessage = sb.append(ChatColor.LIGHT_PURPLE)
+								.append("To ")
+								.append(receiverName) 
+								.append(": ")
+								.append(chatMessage)
+								.toString();
+		sb.delete(0, sb.length());
 		
-		String receiverMessage = ChatColor.LIGHT_PURPLE + "From " + senderName
-				+ ": " + chatMessage;
+		String receiverMessage = sb.append(ChatColor.LIGHT_PURPLE) 
+									.append("From ") 
+									.append(senderName)
+									.append(": ") 
+									.append(chatMessage)
+									.toString();
+		sb.delete(0, sb.length());
 		
-		CivChat2.debugmessage("ChatManager.sendPrivateMsg Sender: " + senderName + 
-				" receiver: " + receiverName + " Message: " + chatMessage);
+		CivChat2.debugmessage(sb.append("ChatManager.sendPrivateMsg Sender: " )
+								.append( senderName)  
+								.append(" receiver: ")
+								.append( receiverName) 
+								.append( " Message: ") 
+								.append(chatMessage)
+								.toString());
+		sb.delete(0, sb.length());
+		
 		if(isAfk(receive.getName())){
 			receive.sendMessage(receiverMessage);
-			sender.sendMessage(afkMsg);
+			sender.sendMessage(AFKMSG);
 			return;
 		}
 		else if(isIgnoringPlayer(receiverName, senderName)){
 			//player is ignoring the sender
-			sender.sendMessage(ignoreMsg);
+			sender.sendMessage(IGNOREMSG);
 			return;
 		}
 		CivChat2.debugmessage("Sending private chat message");
@@ -212,16 +256,17 @@ public class CivChat2Manager {
 	 */
 	public void broadcastMessage(Player sender, String chatMessage, Set<Player> recipients) {
 		int range = config.getChatRange();
-		int height = config.getYInc();
-		double scale = (config.getYScale())/1000;		
-		chatLog.writeToChatLog(sender, chatMessage, "GLOBAL");
+		int height = config.getYInc();	
 		Location location = sender.getLocation();
 		int x = location.getBlockX();
 		int y = location.getBlockY();
 		int z = location.getBlockZ();
-		
+		double scale = (config.getYScale())/1000;			
 		double chatdist = 0;
+		
 		UUID uuid = NameAPI.getUUID(sender.getName());
+		StringBuilder sb = new StringBuilder();
+		chatLog.writeToChatLog(sender, chatMessage, "GLOBAL");
 
 		//do height check
 		if(y > height){
@@ -230,7 +275,11 @@ public class CivChat2Manager {
 			int above = y - height;
 			int newRange = (int) (range + (range * (scale*above)));
 			range = newRange;
-			CivChat2.debugmessage("New chatrange = [" + range + "]");
+			CivChat2.debugmessage(sb.append("New chatrange = [" )
+									.append(range) 
+									.append("]")
+									.toString());
+			sb.delete(0, sb.length());
 		}
 		
 		for (Player receiver : recipients){
@@ -247,7 +296,12 @@ public class CivChat2Manager {
 					//reciever is in differnt world dont send
 					continue;
 				} else {
-					receiver.sendMessage(color + NameAPI.getCurrentName(uuid) + ": " + chatMessage);
+					receiver.sendMessage(sb.append(color) 
+											.append( NameAPI.getCurrentName(uuid)) 
+											.append(": ") 
+											.append( chatMessage)
+											.toString());
+					sb.delete(0, sb.length());
 				}
 			}
 		}
@@ -293,13 +347,7 @@ public class CivChat2Manager {
 	 * @return Returns the players UUID
 	 */
 	public UUID getPlayerUUID(String name) {
-		UUID uuid = NameAPI.getUUID(name);
-		if(uuid == null){
-			return null;
-		}
-		else{
-			return uuid;
-		}
+		return NameAPI.getUUID(name);
 	}
 	
 	/**
@@ -313,11 +361,20 @@ public class CivChat2Manager {
 			//sender has someone to reply too
 			String replyeeName = replyList.get(senderName);
 			UUID uuid = NameAPI.getUUID(replyeeName);
+			StringBuilder sb = new StringBuilder();
 			if(uuid == null){
-				String errorMsg = "This should not be occuring... ERROR INFO: sender: [" 
-						+ senderName + "] replyList Value: [" + replyeeName +"]";
+				String errorMsg = sb.append("This should not be occuring... ERROR INFO: sender: [" )
+									.append(senderName) 
+									.append("] replyList Value: [")
+									.append( replyeeName) 
+									.append("]")
+									.toString();
+				sb.delete(0, sb.length());
 				CivChat2.warningMessage(errorMsg);
-				sender.sendMessage(ChatColor.RED + "Internal Error while performing reply");
+				sender.sendMessage(sb.append(ChatColor.RED )
+									.append( "Internal Error while performing reply")
+									.toString());
+				sb.delete(0, sb.length());
 			}
 			else{
 				return uuid;
@@ -433,6 +490,7 @@ public class CivChat2Manager {
 	 * @param group Group to send the message too
 	 */
 	public void sendGroupMsg(String name, String groupMsg, Group group) {
+		StringBuilder sb = new StringBuilder();
 		Player msgSender = Bukkit.getPlayer(NameAPI.getUUID(name));
 		List<Player> members = new ArrayList<Player>();
 		List<UUID> membersUUID = group.getAllMembers();
@@ -446,10 +504,25 @@ public class CivChat2Manager {
 				members.add(toAdd);
 			}
 		}
-		msgSender.sendMessage(ChatColor.GRAY + "[" + group.getName() + "] " + name + ": " + ChatColor.WHITE + groupMsg);
+		msgSender.sendMessage(sb.append(ChatColor.GRAY )
+								.append("[" )
+								.append( group.getName() )
+								.append( "] ")
+								.append( name )
+								.append(": " )
+								.append(ChatColor.WHITE)
+								.append( groupMsg)
+								.toString());
+		sb.delete(0, sb.length());
 		for(Player receiver: members){
-			CivChat2.debugmessage("Checking if player is ignoring group or player.. Receiver: " + receiver.getName() 
-					+ " Group: " + group.getName() + " Sender: " + name);
+			CivChat2.debugmessage(sb.append("Checking if player is ignoring group or player.. Receiver: " )
+									.append( receiver.getName() )
+									.append(" Group: ") 
+									.append( group.getName()) 
+									.append( " Sender: ")
+									.append( name)
+									.toString());
+			sb.delete(0, sb.length());
 			if(isIgnoringGroup(receiver.getName(), group)){
 				continue;
 			}
@@ -459,7 +532,16 @@ public class CivChat2Manager {
 			if(receiver.getName().equals(name)){
 				continue;
 			} else {
-				receiver.sendMessage(ChatColor.GRAY + "[" + group.getName() + "] " + name + ": " + ChatColor.WHITE + groupMsg);
+				receiver.sendMessage(sb.append(ChatColor.GRAY )
+										.append( "[" )
+										.append( group.getName() )
+										.append( "] ") 
+										.append( name) 
+										.append( ": " )
+										.append( ChatColor.WHITE) 
+										.append( groupMsg)
+										.toString());
+				sb.delete(0, sb.length());
 			}
 		}
 		
@@ -473,7 +555,6 @@ public class CivChat2Manager {
 	public void removeGroupChat(String name) {
 		if(groupChatChannels.containsKey(name)){
 			groupChatChannels.remove(name);
-			return;
 		}
 	}
 
@@ -497,6 +578,7 @@ public class CivChat2Manager {
 	 * @throws IOException 
 	 */
 	public void loadIgnoredPlayers(File file) throws IOException {
+		StringBuilder sb = new StringBuilder();
 		CivChat2.debugmessage("ChatMan is trying to loadignoredplayers file");
 		FileInputStream fis = new FileInputStream(file);
 		BufferedReader br = new BufferedReader(new InputStreamReader(fis));
@@ -507,19 +589,34 @@ public class CivChat2Manager {
 		}
 		String line;
 		while ((line = br.readLine()) != null) {
-			CivChat2.debugmessage("Reading Ignore List curLine: " + line);
+			CivChat2.debugmessage(sb.append("Reading Ignore List curLine: ")
+									.append(line)
+									.toString());
+			sb.delete(0, sb.length());
 			String parts[] = line.split(",");
 			String owner = parts[0];
-			CivChat2.debugmessage("Owner=" + owner + " # of Ignorees: " + (parts.length - 1));
+			CivChat2.debugmessage(sb.append("Owner=" )
+									.append( owner )
+									.append( " # of Ignorees: ") 
+									.append( (parts.length - 1))
+									.toString());
+			sb.delete(0, sb.length());
 			List<String> participants = new ArrayList<>();
 			for (int x = 1; x < parts.length; x++) {
 				participants.add(parts[x]);
-				CivChat2.debugmessage("Adding ignoree name=" + parts[x]);
+				CivChat2.debugmessage(sb.append("Adding ignoree name=" )
+										.append(parts[x])
+										.toString());
+				sb.delete(0, sb.length());
 			}
 			ignorePlayers.put(owner, participants);
 		}
 		if(ignorePlayers != null){
-			CivChat2.debugmessage("Loaded ignore list... [" + ignorePlayers.size() + "] ignore entries");
+			CivChat2.debugmessage(sb.append("Loaded ignore list... [" )
+									.append( ignorePlayers.size()) 
+									.append( "] ignore entries")
+									.toString());
+			sb.delete(0, sb.length());
 		}
 		br.close();
 		fis.close();
@@ -555,10 +652,7 @@ public class CivChat2Manager {
 			List<String> ignorees = new ArrayList<String>();
 			List<String> temp = ignorePlayers.get(name);
 			for(String s : temp){
-				if(s.contains("GROUP")){
-					//this is a group
-				}
-				else{
+				if(!s.contains("GROUP")){
 					ignorees.add(s);
 				}
 			}
