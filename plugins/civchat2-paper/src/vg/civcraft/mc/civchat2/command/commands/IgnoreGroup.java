@@ -12,10 +12,10 @@ import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 
-public class IgnoreGroup extends PlayerCommand{
+public class IgnoreGroup extends PlayerCommandMiddle{
 	private CivChat2 plugin = CivChat2.getInstance();
 	private CivChat2Manager chatMan;
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
@@ -46,7 +46,7 @@ public class IgnoreGroup extends PlayerCommand{
 		Group group = null;
 		Player player = (Player) sender;
 		GroupManager gm = NameAPI.getGroupManager();
-		group = gm.getGroup(args[0]);
+		group = GroupManager.getGroup(args[0]);
 		if(group == null){
 			//no player exists with that name
 			sender.sendMessage(ChatColor.RED + "No Group exists with that name");

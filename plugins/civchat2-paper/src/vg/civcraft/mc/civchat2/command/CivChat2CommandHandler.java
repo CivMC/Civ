@@ -6,7 +6,7 @@ import java.util.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import vg.civcraft.mc.namelayer.command.Command;
+import vg.civcraft.mc.civmodcore.command.Command;
 import vg.civcraft.mc.civchat2.command.commands.Exit;
 import vg.civcraft.mc.civchat2.command.commands.GroupChat;
 import vg.civcraft.mc.civchat2.command.commands.Ignore;

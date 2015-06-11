@@ -12,9 +12,11 @@ import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.mercury.MercuryPlugin;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 
-public class Tell extends PlayerCommand{
+public class Tell extends PlayerCommandMiddle{
 	private CivChat2 plugin = CivChat2.getInstance();
 	private CivChat2Manager chatMan;
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
@@ -43,6 +45,23 @@ public class Tell extends PlayerCommand{
 			chatMan.removeChannel(player.getName());
 			player.sendMessage(ChatColor.GREEN + "You have been removed from private chat.");
 			return true;
+		}
+		
+		if (CivChat2.getInstance().isMercuryEnabled() && NameLayerPlugin.getOnlineAllServers().containsKey(args[0].toLowerCase())){
+			if(args.length == 1){
+				chatMan.addChatChannel(player.getName(), args[0].toLowerCase());
+				player.sendMessage(ChatColor.GREEN + "You are now chatting with " + args[0] + " on another server.");
+				return true;
+			} else if(args.length >=2){
+				StringBuilder builder = new StringBuilder();
+				for (int x = 1; x < args.length; x++)
+					builder.append(args[x] + " ");
+				//This separator needs to be changed to load from config.
+				String sep = "|";
+				MercuryPlugin.handler.sendMessage(NameLayerPlugin.getOnlineAllServers().get(args[0].toLowerCase()),"civchat2", "pm"+sep+player.getName()+sep+args[0].trim()+sep+builder.toString().replace(sep, ""));
+				player.sendMessage(ChatColor.LIGHT_PURPLE+"To "+args[0]+": "+builder.toString());
+				return true;
+			}
 		}
 		
 		UUID receiverUUID = chatMan.getPlayerUUID(args[0].trim());

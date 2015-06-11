@@ -13,10 +13,10 @@ import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 
-public class GroupChat extends PlayerCommand{
+public class GroupChat extends PlayerCommandMiddle{
 	private CivChat2 plugin = CivChat2.getInstance();
 	private CivChat2Manager chatMan;
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
@@ -61,7 +61,7 @@ public class GroupChat extends PlayerCommand{
 				return true;
 			}
 		}
-		Group group = gm.getGroup(args[0]);
+		Group group = GroupManager.getGroup(args[0]);
 		if(group == null){
 			sender.sendMessage(ChatColor.RED + "There is no group with that name.");
 			return true;
@@ -73,7 +73,7 @@ public class GroupChat extends PlayerCommand{
 		if(args.length == 1){	
 			if(isGroupChatting){
 				//player already groupchatting check if its this group
-				Group curGroup = gm.getGroup(chatMan.getGroupChatting(playerName));
+				Group curGroup = GroupManager.getGroup(chatMan.getGroupChatting(playerName));
 				if(curGroup == group){
 					sender.sendMessage(ChatColor.RED + "You are already chatting in that group.");
 					return true;
@@ -100,7 +100,7 @@ public class GroupChat extends PlayerCommand{
 			logger.debug("checking if name=[" + playerName + "] is groupchatting");
 			if(isGroupChatting){
 				//player already groupchatting check if its this group
-				Group curGroup = gm.getGroup(chatMan.getGroupChatting(playerName));
+				Group curGroup = GroupManager.getGroup(chatMan.getGroupChatting(playerName));
 				if(curGroup == group){
 					chatMan.sendGroupMsg(playerName, chatMsg.toString(), group);
 					return true;

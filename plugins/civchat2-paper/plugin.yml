@@ -2,7 +2,8 @@ name: CivChat2
 main: vg.civcraft.mc.civchat2.CivChat2
 version: 1.0.3
 author: jjj5311
-depend: [NameLayer]
+depend: [NameLayer, CivModCore]
+softdepend: [Mercury]
 commands:
     tell:
       aliases: [message, msg, m, pm]
