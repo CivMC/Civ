@@ -70,6 +70,7 @@ public class FactoryManagerService
 		managers.add(new ProductionFactoryManager(plugin));
 		managers.add(new PrintingPressManager(plugin));
 		managers.add(new RepairFactoryManager(plugin));
+		managers.add(new CompactorManager(plugin));
 		managers.add(new NetherFactoryManager(plugin));
 		//}
 	}

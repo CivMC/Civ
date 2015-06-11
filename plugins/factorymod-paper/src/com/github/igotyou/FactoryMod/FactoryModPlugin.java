@@ -28,6 +28,7 @@ import com.github.igotyou.FactoryMod.listeners.RedstoneListener;
 import com.github.igotyou.FactoryMod.managers.FactoryManagerService;
 import com.github.igotyou.FactoryMod.managers.ProductionFactoryManager;
 import com.github.igotyou.FactoryMod.properties.IFactoryProperties;
+import com.github.igotyou.FactoryMod.properties.CompactorProperties;
 import com.github.igotyou.FactoryMod.properties.NetherFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.PrintingPressProperties;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
@@ -42,6 +43,7 @@ import com.google.common.collect.Maps;
 
 public class FactoryModPlugin extends JavaPlugin
 {
+	public CompactorProperties compactorProperties;
 	
 	/* Special Values */
 	public static final String VERSION = "v1.4.0"; //Current version of plugin
@@ -50,6 +52,7 @@ public class FactoryModPlugin extends JavaPlugin
 	public static final String PRINTING_PRESSES_SAVE_FILE = "pressSaves"; // The printing press saves file name
 	public static final String NETHER_FACTORY_SAVE_FILE = "netherSaves"; // The nether saves file name
 	public static final String REPAIR_FACTORY_SAVE_FILE = "repairSaves";
+	public static final String COMPACTOR_SAVE_FILE = "compactorSaves";
 	public static final String PRODUCTION_FACTORY_SAVE_FILE = "productionSaves";
 	public static final String PERSISTENCE_FORMAT = "txt";
 	public static final int TICKS_PER_SECOND = 20; //ideal number of ticks per second
@@ -403,8 +406,10 @@ public class FactoryModPlugin extends JavaPlugin
 		
 		ConfigurationSection configPrintingPresses = config.getConfigurationSection("printing_presses");
 		ConfigurationSection configNetherFactory = config.getConfigurationSection("nether_factory");
+		ConfigurationSection configCompactor=config.getConfigurationSection("compactor");
 		printingPressProperties = PrintingPressProperties.fromConfig(this, configPrintingPresses);
 		netherFactoryProperties = NetherFactoryProperties.fromConfig(this, configNetherFactory);
+		compactorProperties = CompactorProperties.fromConfig(this, configCompactor);
 		sendConsoleMessage("Finished initializing FactoryMod Config.");
 	}
 	
@@ -580,6 +585,10 @@ public class FactoryModPlugin extends JavaPlugin
 	}
 	public RepairFactoryProperties getRepairFactoryProperties() {
 		return repairFactoryProperties;
+	}
+	
+	public CompactorProperties getCompactorProperties() {
+	    return compactorProperties;
 	}
 	
 	private static FactoryModPlugin plugin;

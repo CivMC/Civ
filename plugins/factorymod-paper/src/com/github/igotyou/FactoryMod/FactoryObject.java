@@ -34,7 +34,8 @@ public class FactoryObject
 		PRODUCTION,
 		PRINTING_PRESS,
 		REPAIR_FACTORY,
-		NETHER_FACTORY
+		NETHER_FACTORY,
+		COMPACTOR
 	}
 	
 	

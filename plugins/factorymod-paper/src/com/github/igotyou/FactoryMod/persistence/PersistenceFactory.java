@@ -3,11 +3,13 @@ package com.github.igotyou.FactoryMod.persistence;
 import java.io.File;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
+import com.github.igotyou.FactoryMod.Factorys.Compactor;
 import com.github.igotyou.FactoryMod.Factorys.IFactory;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
 import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.Factorys.RepairFactory;
+import com.github.igotyou.FactoryMod.managers.CompactorManager;
 import com.github.igotyou.FactoryMod.managers.IManager;
 import com.github.igotyou.FactoryMod.managers.NetherFactoryManager;
 import com.github.igotyou.FactoryMod.managers.PrintingPressManager;
@@ -32,6 +34,9 @@ public class PersistenceFactory {
 			} else if(factoryManager instanceof RepairFactoryManager) {
 				File saveFile = new File(factoryManager.getPlugin().getDataFolder(), FactoryModPlugin.REPAIR_FACTORY_SAVE_FILE+".txt");
 				return (FactoryDao<T>) new FactoryDao<RepairFactory>(new RepairCsvReader(factoryManager.getPlugin(), saveFile), new RepairCsvWriter(saveFile));
+			} else if(factoryManager instanceof CompactorManager) {
+				File saveFile = new File(factoryManager.getPlugin().getDataFolder(), FactoryModPlugin.COMPACTOR_SAVE_FILE+".txt");
+				return (FactoryDao<T>) new FactoryDao<Compactor>(new CompactorCsvReader(factoryManager.getPlugin(), saveFile), new CompactorCsvWriter(saveFile));
 			}
 			FactoryModPlugin.sendConsoleMessage("ERROR: Unsupported factory manager: " + factoryManager.getClass().getName());
 			return null;
