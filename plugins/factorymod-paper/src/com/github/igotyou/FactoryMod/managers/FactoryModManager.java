@@ -65,9 +65,11 @@ public class FactoryModManager
 		
 		//if (FactoryModPlugin.PRODUCTION_ENEABLED)
 		//{
+		//NetherFactoryManager must ALWAYS BE LAST!!!!
 			initializeProductionManager();
 			initializePrintingPressManager();
 			initializeRepairFactoryManager();
+			initializeCompactorManager();
 			initializeNetherFactoryManager();
 		//}
 	}
@@ -109,6 +111,15 @@ public class FactoryModManager
 		RepairFactoryManager repairMan = new RepairFactoryManager(plugin);
 		
 		managers.add(repairMan);
+	}
+	
+	/**
+	 * Initializes the Compactor manager
+	 */
+	private void initializeCompactorManager() {
+	    CompactorManager compactMan = new CompactorManager(plugin);
+	    
+	    managers.add(compactMan);
 	}
 	
 	/**
