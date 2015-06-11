@@ -1,22 +1,17 @@
 package vg.civcraft.mc.namelayer;
 
-import java.io.File;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.Config;
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
-import vg.civcraft.mc.mercury.MercuryPlugin;
 import vg.civcraft.mc.namelayer.command.CommandHandler;
 import vg.civcraft.mc.namelayer.database.AssociationList;
 import vg.civcraft.mc.namelayer.database.Database;
@@ -31,7 +26,7 @@ public class NameLayerPlugin extends ACivMod{
 	private static AssociationList associations;
 	private static GroupManagerDao groupManagerDao;
 	private static NameLayerPlugin instance;
-	private static ArrayList<String> onlineAllServers;
+	private static HashMap<String, String> onlineAllServers;
 	private CommandHandler handle;
 	private static Database db;
 	private static boolean loadGroups = true;
@@ -181,11 +176,11 @@ public class NameLayerPlugin extends ACivMod{
 		return "NameLayerPlugin";
 	}
 
-	public synchronized static ArrayList<String> getOnlineAllServers() {
+	public synchronized static HashMap<String,String> getOnlineAllServers() {
 		return onlineAllServers;
 	}
 
-	public synchronized static void setOnlineAllServers(ArrayList<String> onlineAllServers) {
+	public synchronized static void setOnlineAllServers(HashMap<String,String> onlineAllServers) {
 		NameLayerPlugin.onlineAllServers = onlineAllServers;
 	}
 

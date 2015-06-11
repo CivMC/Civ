@@ -1,6 +1,6 @@
 package vg.civcraft.mc.namelayer.listeners;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -16,12 +16,10 @@ import vg.civcraft.mc.mercury.MercuryPlugin;
 import vg.civcraft.mc.mercury.events.AsyncPluginBroadcastMessageEvent;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
 import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
 import vg.civcraft.mc.namelayer.events.GroupTransferEvent;
-import vg.civcraft.mc.namelayer.events.PromotePlayerEvent;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class MercuryMessageListener extends BukkitRunnable implements Listener{
@@ -29,6 +27,7 @@ public class MercuryMessageListener extends BukkitRunnable implements Listener{
 	private GroupManager gm = NameAPI.getGroupManager();
 
 
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onMercuryMessage(AsyncPluginBroadcastMessageEvent event){
 		if (!event.getChannel().equalsIgnoreCase("name_layer"))
@@ -42,28 +41,28 @@ public class MercuryMessageListener extends BukkitRunnable implements Listener{
 			}
 			if (playerlist.isEmpty()){return;}
 			playerlist = playerlist.substring(0, playerlist.length()-1);
-			MercuryPlugin.handler.sendMessage(message[1], "name_layer", "sync "+playerlist);
+			MercuryPlugin.handler.sendMessage(message[1], "name_layer", "sync "+MercuryPlugin.name+" "+playerlist);
 			NameLayerPlugin.getInstance().getLogger().info("Responded to server '"+message[1]+"' sync request");
 			return;
 		} else if (reason.equals("login")){
-			NameLayerPlugin.getOnlineAllServers().add(message[1].toLowerCase());
-			NameLayerPlugin.getInstance().getLogger().info("Player "+message[1]+" has logged in on other server");
+			NameLayerPlugin.getOnlineAllServers().put(message[2].toLowerCase(),message[1]);
+			NameLayerPlugin.getInstance().getLogger().info("Player "+message[2]+" has logged in on server: "+message[1]);
 			return;
 		} else if (reason.equals("logoff")){
-			NameLayerPlugin.getOnlineAllServers().remove(message[1]);
-			NameLayerPlugin.getInstance().getLogger().info("Player "+message[1]+" has logged off on other server");
+			NameLayerPlugin.getOnlineAllServers().remove(message[2]);
+			NameLayerPlugin.getInstance().getLogger().info("Player "+message[2]+" has logged off on server: "+message[1]);
 			return;
 		} else if (reason.equals("sync")){
-			String[] players = message[1].split(";");
+			String[] players = message[2].split(";");
 			String allsynced = "";
 			for (String player : players){
-				if (!NameLayerPlugin.getOnlineAllServers().contains(player))
-					NameLayerPlugin.getOnlineAllServers().add(player.toLowerCase());
+				if (!NameLayerPlugin.getOnlineAllServers().containsKey(player))
+					NameLayerPlugin.getOnlineAllServers().put(player.toLowerCase(), message[1]);
 				allsynced = allsynced+player+" ,";
 			}
 			if (allsynced.isEmpty()){return;}
 			allsynced = allsynced.substring(0, allsynced.length()-2);
-			NameLayerPlugin.getInstance().getLogger().info("Synced players: "+allsynced);
+			NameLayerPlugin.getInstance().getLogger().info("Synced players from '"+message[1]+"': "+allsynced);
 			return;
 		}
 		
@@ -92,12 +91,12 @@ public class MercuryMessageListener extends BukkitRunnable implements Listener{
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onLogin(PlayerJoinEvent event){
-		MercuryPlugin.handler.sendMessage("all", "name_layer", "login "+event.getPlayer().getDisplayName());
+		MercuryPlugin.handler.sendMessage("all", "name_layer", "login "+MercuryPlugin.name+" "+event.getPlayer().getDisplayName());
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onLogoff(PlayerQuitEvent event){
-		MercuryPlugin.handler.sendMessage("all", "name_layer", "logoff "+event.getPlayer().getDisplayName());
+		MercuryPlugin.handler.sendMessage("all", "name_layer", "logoff "+MercuryPlugin.name+" "+event.getPlayer().getDisplayName());
 	}
 
 	@Override
@@ -106,7 +105,7 @@ public class MercuryMessageListener extends BukkitRunnable implements Listener{
 		NameLayerPlugin.setMercuryEnabled(Bukkit.getPluginManager().isPluginEnabled("Mercury"));
 		if (NameLayerPlugin.isMercuryEnabled()){
 			nl.getServer().getPluginManager().registerEvents(this, nl);
-			NameLayerPlugin.setOnlineAllServers(new ArrayList<String>());
+			NameLayerPlugin.setOnlineAllServers(new HashMap<String,String>());
 			MercuryPlugin.handler.sendMessage("all", "name_layer", "whoonline "+MercuryPlugin.name);
 			nl.getLogger().info("Requested player lists");
 		}
