@@ -2,6 +2,9 @@ package com.github.igotyou.FactoryMod.listeners;
 
 import java.util.List;
 
+import net.minecraft.server.v1_8_R2.ItemStack;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,6 +21,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCreativeEvent;
+import org.bukkit.event.inventory.InventoryInteractEvent;
+import org.bukkit.inventory.AnvilInventory;
+import org.bukkit.inventory.Inventory;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
@@ -488,5 +496,24 @@ public class FactoryModListener implements Listener
 		if (FactoryModPlugin.DISABLE_PORTALS) {
 			event.setCancelled(true);
 		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void anvilRepairEvent(InventoryClickEvent event){
+		if (!FactoryModPlugin.SHOULD_SET_ANVIL_COST)
+			return;
+		if (event instanceof InventoryCreativeEvent)
+			return;
+		Inventory inv = event.getClickedInventory();
+		if (!(inv instanceof AnvilInventory))
+			return;
+		
+		org.bukkit.inventory.ItemStack stack = inv.getItem(2);
+		if (stack == null)
+			return;
+		
+		ItemStack s = CraftItemStack.asNMSCopy(stack);
+		s.setRepairCost(FactoryModPlugin.GET_SET_ANVIL_COST);
+		inv.setItem(3, (CraftItemStack.asBukkitCopy(s)));
 	}
 }
