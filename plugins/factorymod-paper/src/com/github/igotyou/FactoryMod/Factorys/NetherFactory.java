@@ -22,7 +22,7 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResu
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 
-public class NetherFactory extends BaseFactory
+public class NetherFactory extends ABaseFactory
 {
 
 	private ReinforcementManager rm = Citadel.getReinforcementManager();

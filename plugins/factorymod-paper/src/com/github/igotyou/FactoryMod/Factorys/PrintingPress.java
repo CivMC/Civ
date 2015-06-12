@@ -23,7 +23,7 @@ import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 import com.github.igotyou.FactoryMod.utility.StringUtils;
 
-public class PrintingPress extends BaseFactory {
+public class PrintingPress extends ABaseFactory {
 	
 	private PrintingPressProperties printingPressProperties;
 

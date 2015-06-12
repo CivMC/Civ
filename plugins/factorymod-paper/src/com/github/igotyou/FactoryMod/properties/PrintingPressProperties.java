@@ -10,7 +10,7 @@ import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 
-public class PrintingPressProperties {
+public class PrintingPressProperties extends AFactoryProperties{
 
 	private ItemList<NamedItemStack> fuel;
 	private ItemList<NamedItemStack> constructionMaterials;
@@ -23,7 +23,6 @@ public class PrintingPressProperties {
 	private ItemList<NamedItemStack> securityMaterials;
 	private int securityNotesPerLot;
 	private int energyTime;
-	private String name;
 	private int maxRepair;
 	private ItemList<NamedItemStack> repairMaterials;
 	private int pageLead;
@@ -169,11 +168,6 @@ public class PrintingPressProperties {
 	public int getEnergyTime()
 	{
 		return energyTime;
-	}
-	
-	public String getName()
-	{
-		return name;
 	}
 
 	public ItemList<NamedItemStack> getConstructionMaterials() {

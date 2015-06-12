@@ -7,7 +7,7 @@ import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 
-public class RepairFactoryProperties {
+public class RepairFactoryProperties implements IFactoryProperties{
 
 	private ItemList<NamedItemStack> constructionMaterials;
 	private ItemList<NamedItemStack> fuel;

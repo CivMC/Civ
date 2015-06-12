@@ -7,7 +7,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
 import org.bukkit.inventory.Inventory;
 
-import com.github.igotyou.FactoryMod.interfaces.Properties;
+import com.github.igotyou.FactoryMod.properties.IFactoryProperties;
 
 import java.util.Date;
 
@@ -34,7 +34,8 @@ public class FactoryObject
 		PRODUCTION,
 		PRINTING_PRESS,
 		REPAIR_FACTORY,
-		NETHER_FACTORY
+		NETHER_FACTORY,
+		COMPACTOR
 	}
 	
 	
@@ -46,7 +47,7 @@ public class FactoryObject
 	protected Inventory factoryPowerInventory;//The inventory of the power source.
 	protected FactoryType factoryType; // The type this factory is
 	protected String subFactoryType;//the SUBfactory type(the ones loaded from the config file)
-	protected Properties factoryProperties; // The properties of this factory type and tier
+	protected IFactoryProperties factoryProperties; // The properties of this factory type and tier
 	protected boolean upgraded; // Whether the tier has recently upgraded
 	
 	/**

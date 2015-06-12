@@ -15,13 +15,14 @@ import vg.civcraft.mc.citadel.ReinforcementManager;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory.NetherOperationMode;
 import com.github.igotyou.FactoryMod.managers.RepairFactoryManager;
+import com.github.igotyou.FactoryMod.properties.IFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.RepairFactoryProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 
-public class RepairFactory extends BaseFactory{
+public class RepairFactory extends ABaseFactory{
 
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	private RepairFactoryProperties rfp;
@@ -30,7 +31,7 @@ public class RepairFactory extends BaseFactory{
 	// Constructor for when initial creation of factory.
 	public RepairFactory(Location factoryLocation,
 			Location factoryInventoryLocation, Location factoryPowerSource,
-			boolean active, RepairFactoryProperties repairFactoryProperties, RepairFactoryManager repairFactoryManager) {
+			boolean active, RepairFactoryProperties repairFactoryProperties) {
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, active,
 				FactoryType.REPAIR_FACTORY, "Repair Factory");
 		this.rfp = repairFactoryProperties;
@@ -39,7 +40,7 @@ public class RepairFactory extends BaseFactory{
 	
 	public RepairFactory(Location factoryLocation,
 			Location factoryInventoryLocation, Location factoryPowerSource,
-			boolean active, RepairFactoryProperties repairFactoryProperties, RepairFactoryManager repairFactoryManager,
+			boolean active, RepairFactoryProperties repairFactoryProperties, 
 			RepairFactoryMode mode, double currentRepair, long timeDisrepair) {
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, FactoryType.REPAIR_FACTORY, active,
 				"Repair Factory", 0, 0, currentRepair, timeDisrepair);
@@ -353,7 +354,7 @@ public class RepairFactory extends BaseFactory{
 		return mode;
 	}
 	
-	public RepairFactoryProperties getProperties(){
+	public IFactoryProperties getProperties(){
 		return rfp;
 	}
 }

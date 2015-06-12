@@ -15,19 +15,19 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
-import com.github.igotyou.FactoryMod.managers.FactoryModManager;
-import com.github.igotyou.FactoryMod.managers.ProductionManager;
+import com.github.igotyou.FactoryMod.managers.FactoryManagerService;
+import com.github.igotyou.FactoryMod.managers.ProductionFactoryManager;
 
 public class RedstoneListener implements Listener {
-	private FactoryModManager factoryMan;
+	private FactoryManagerService factoryMan;
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	//this is a lazy fix...
-	private ProductionManager productionMan;
+	private ProductionFactoryManager productionMan;
 	
 	/**
 	 * Constructor
 	 */
-	public RedstoneListener(FactoryModManager factoryManager, ProductionManager productionManager)
+	public RedstoneListener(FactoryManagerService factoryManager, ProductionFactoryManager productionManager)
 	{
 		this.factoryMan = factoryManager;
 		this.productionMan = productionManager;

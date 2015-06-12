@@ -31,22 +31,22 @@ import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
+import com.github.igotyou.FactoryMod.Factorys.IFactory;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
-import com.github.igotyou.FactoryMod.interfaces.Factory;
-import com.github.igotyou.FactoryMod.managers.FactoryModManager;
+import com.github.igotyou.FactoryMod.managers.FactoryManagerService;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.StringUtils;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 
 public class FactoryModListener implements Listener
 {
-	private FactoryModManager factoryMan;
+	private FactoryManagerService factoryMan;
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	
 	/**
 	 * Constructor
 	 */
-	public FactoryModListener(FactoryModManager factoryManager)
+	public FactoryModListener(FactoryManagerService factoryManager)
 	{
 		this.factoryMan = factoryManager;
 	}
@@ -99,11 +99,11 @@ public class FactoryModListener implements Listener
 		//Is the factory a production factory?
 		if (factoryMan.factoryExistsAt(block.getLocation()))
 		{
-			Factory factory = factoryMan.getFactory(block.getLocation());
+			IFactory factory = factoryMan.getFactory(block.getLocation());
 			factory.destroy(block.getLocation());
 			if(FactoryModPlugin.DESTRUCTIBLE_FACTORIES)
 			{
-				factoryMan.getManager(block.getLocation()).removeFactory(factory);
+				//TODO: factoryMan.getManager(block.getLocation()).removeFactory(factory);
 			}
 		}
 	}
@@ -192,7 +192,7 @@ public class FactoryModListener implements Listener
 								//if there is a production Factory at the clicked location
 								if (factoryMan.factoryExistsAt(clicked.getLocation()))
 								{
-									Factory factory = factoryMan.getFactory(clicked.getLocation());
+									IFactory factory = factoryMan.getFactory(clicked.getLocation());
 									//toggle the recipe, and print the returned message.
 									InteractionResponse.messagePlayerResults(player, factory.getCentralBlockResponse());
 								}

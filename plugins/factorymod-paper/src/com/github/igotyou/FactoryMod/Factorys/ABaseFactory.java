@@ -2,7 +2,6 @@ package com.github.igotyou.FactoryMod.Factorys;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -21,7 +20,6 @@ import org.bukkit.material.MaterialData;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.FactoryObject;
-import com.github.igotyou.FactoryMod.interfaces.Factory;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.ItemList;
@@ -29,7 +27,7 @@ import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 import com.github.igotyou.FactoryMod.utility.StringUtils;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 
-public abstract class BaseFactory extends FactoryObject implements Factory {
+public abstract class ABaseFactory extends FactoryObject implements IFactory {
 	public static final BlockFace[] REDSTONE_FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
 	protected int currentProductionTimer = 0;//The "production timer", which trachs for how long the factory has been producing the selected recipe
@@ -37,9 +35,9 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 	protected double currentRepair;
 	protected long timeDisrepair;//The time at which the factory went into disrepair
 
-	private Logger log = Logger.getLogger(BaseFactory.class.getName());
+	private Logger log = Logger.getLogger(ABaseFactory.class.getName());
 
-	public BaseFactory(Location factoryLocation,
+	public ABaseFactory(Location factoryLocation,
 			Location factoryInventoryLocation, Location factoryPowerSource,
 			boolean active, FactoryType factoryType, String subFactoryType) {
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, active,
@@ -48,7 +46,7 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 		this.timeDisrepair=3155692597470L;
 	}
 
-	public BaseFactory(Location factoryLocation,
+	public ABaseFactory(Location factoryLocation,
 			Location factoryInventoryLocation, Location factoryPowerSource,
 			boolean active, int tierLevel, FactoryType factoryType,
 			Inventory factoryInventory, String subFactoryType) {
@@ -58,7 +56,7 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 		this.timeDisrepair=3155692597470L;
 	}
 
-	public BaseFactory(Location factoryLocation,
+	public ABaseFactory(Location factoryLocation,
 			Location factoryInventoryLocation, Location factoryPowerSource,
 			FactoryType factoryType, String subFactoryType) {
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource,
@@ -67,7 +65,7 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 		this.timeDisrepair=3155692597470L;//Year 2070, default starting value
 	}
 	
-	public BaseFactory(Location factoryLocation,
+	public ABaseFactory(Location factoryLocation,
 			Location factoryInventoryLocation, Location factoryPowerSource,
 			FactoryType factoryType, boolean active, String subFactoryType,
 			int currentProductionTimer, int currentEnergyTimer,
