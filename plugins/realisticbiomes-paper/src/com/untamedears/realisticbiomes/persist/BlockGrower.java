@@ -5,6 +5,10 @@ import java.util.logging.Logger;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.material.CocoaPlant;
+import org.bukkit.material.CocoaPlant.CocoaPlantSize;
+import org.bukkit.material.MaterialData;
 
 // handles force-growing of crop-type blocks based on a fractional growth amount
 public class BlockGrower {
@@ -41,29 +45,46 @@ public class BlockGrower {
 		if (stages == null)
 			return;
 		
-		byte stage = (byte)(((float)(stages-1))*growth);
-		if (block.getType() == Material.COCOA) {
-			stage = (byte)((block.getData()%4) + stage*4);
+		if (growth > 1.0f) {
+			growth = 1.0f;
 		}
-		block.setData(stage);
 		
-		// if the plant is finished growing, then remove it from the manager
-		if (growth >= 1.0) {
-			stage = (byte)(stages - 1);
-			if (block.getType() == Material.COCOA)
-				stage = (byte)((block.getData()%4) + stage*4);
-			
-			block.setData((byte) stage);
+		byte stage = (byte)(((float)(stages-1))*growth);
+		BlockState state = block.getState();
+		MaterialData data = state.getData();
+		if (data instanceof CocoaPlant) {
+			// trust that enum order is sanely declared in order SMALL, MEDIUM, LARGE
+			CocoaPlantSize cocoaSize = CocoaPlantSize.values()[stage]; 
+			((CocoaPlant)data).setSize(cocoaSize);
+		} else {
+			data.setData(stage);
 		}
+		state.setData(data);
+		state.update(true, false);
 	}
 	
 	public static double getGrowthFraction(Block block) {
 		if (!growthStages.containsKey(block.getType()))
 			return 0.0;
 		
-		byte stage = block.getData();
-		if (block.getType() == Material.COCOA) {
-			stage = (byte)(block.getData()/4);
+		byte stage;
+		MaterialData data = block.getState().getData();
+		if (data instanceof CocoaPlant) {
+			CocoaPlantSize cocoaSize = ((CocoaPlant) data).getSize();
+			switch (cocoaSize) {
+				case SMALL:
+					stage = 0;
+					break;
+				case MEDIUM:
+					stage = 1;
+					break;
+				case LARGE:
+				default:
+					stage = 2;
+					break;
+			}
+		} else {
+			stage = data.getData();
 		}
 		return (double)stage/(double)(growthStages.get(block.getType())-1);
 	}
