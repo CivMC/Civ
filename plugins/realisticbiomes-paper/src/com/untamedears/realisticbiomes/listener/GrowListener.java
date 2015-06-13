@@ -54,7 +54,7 @@ public class GrowListener implements Listener {
 		
 		GrowthConfig growthConfig = plugin.getGrowthConfig(b);
 		if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
-			plugin.growAndPersistBlock(b, true);
+			plugin.growAndPersistBlock(b, true, growthConfig);
 			
 			event.setCancelled(true);
 		}

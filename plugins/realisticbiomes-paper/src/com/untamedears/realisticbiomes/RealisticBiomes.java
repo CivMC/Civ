@@ -383,8 +383,10 @@ public class RealisticBiomes extends JavaPlugin {
 	// grow the specified block, return the new growth magnitude
 	// gets called when the user hits a block manually!!
 	public double growAndPersistBlock(Block block, boolean naturalGrowEvent) {
-		GrowthConfig growthConfig = getGrowthConfig(block);
-		
+		return growAndPersistBlock(block, naturalGrowEvent, getGrowthConfig(block));
+	}
+	
+	public double growAndPersistBlock(Block block, boolean naturalGrowEvent, GrowthConfig growthConfig) {
 		RealisticBiomes.doLog(Level.FINER, "RealisticBiomes:growAndPersistBlock() called for block: " + block + " and is naturalGrowEvent? " + naturalGrowEvent);
 		if (!persistConfig.enabled)
 			return 0.0;
