@@ -406,9 +406,11 @@ public class FactoryModPlugin extends JavaPlugin
 		
 		ConfigurationSection configPrintingPresses = config.getConfigurationSection("printing_presses");
 		ConfigurationSection configNetherFactory = config.getConfigurationSection("nether_factory");
+		ConfigurationSection configRepairFactory=config.getConfigurationSection("repair_factory");
 		ConfigurationSection configCompactor=config.getConfigurationSection("compactor");
 		printingPressProperties = PrintingPressProperties.fromConfig(this, configPrintingPresses);
 		netherFactoryProperties = NetherFactoryProperties.fromConfig(this, configNetherFactory);
+		repairFactoryProperties = RepairFactoryProperties.fromConfig(this, configRepairFactory);
 		compactorProperties = CompactorProperties.fromConfig(this, configCompactor);
 		sendConsoleMessage("Finished initializing FactoryMod Config.");
 	}
