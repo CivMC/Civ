@@ -101,25 +101,25 @@ compactor:
       material: 'COAL'
       amount: 1
       durability: 1
-    fuel_time: 5
-    repair_multiple: 1
-    name: 'Compactor'
-    production_time: 20
-    costs:
-      construction:
-        DIAMOND:
-          material: 'DIAMOND_BLOCK'
-          amount: 64
-      repair:
-        EMERALD:
-          material: 'EMERALD_BLOCK'
-          amount: 16
-      recipe:
-        CRATE:
-          material: 'CHEST'
-          amount: 1
-          display_name: Crate
-          lore: A crate for compacting items
+  fuel_time: 5
+  repair_multiple: 1
+  name: 'Compactor'
+  production_time: 20
+  costs:
+    construction:
+      DIAMOND:
+        material: 'DIAMOND_BLOCK'
+        amount: 64
+    repair:
+      EMERALD:
+        material: 'EMERALD_BLOCK'
+        amount: 16
+    recipe:
+      CRATE:
+        material: 'CHEST'
+        amount: 1
+        display_name: Crate
+        lore: A crate for compacting items
   compact_lore: Compacted Item
 copy_defaults: false
 general:
