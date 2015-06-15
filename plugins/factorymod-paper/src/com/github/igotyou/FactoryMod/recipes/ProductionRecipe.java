@@ -1,16 +1,12 @@
 package com.github.igotyou.FactoryMod.recipes;
 
-import java.util.HashMap;
-import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.Inventory;
 
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
-
-import org.bukkit.inventory.Inventory;
 
 public class ProductionRecipe implements IRecipe
 {

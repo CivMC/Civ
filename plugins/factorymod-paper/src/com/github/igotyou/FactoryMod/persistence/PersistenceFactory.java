@@ -19,6 +19,7 @@ import com.github.igotyou.FactoryMod.managers.RepairFactoryManager;
 public class PersistenceFactory {
 	
 	//TODO: use type inference for return
+	@SuppressWarnings("unchecked")
 	public static <T extends IFactory> FactoryDao<T> getFactoryDao(IManager<T> factoryManager) {
 		
 		if(FactoryModPlugin.PERSISTENCE_FORMAT.toLowerCase().equals("txt")) {

@@ -1,8 +1,5 @@
 package com.github.igotyou.FactoryMod.managers;
 
-import java.io.File;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
@@ -12,18 +9,12 @@ import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
-import com.github.igotyou.FactoryMod.persistence.FactoryDao;
-import com.github.igotyou.FactoryMod.persistence.FileBackup;
-import com.github.igotyou.FactoryMod.persistence.PersistenceFactory;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
-import com.github.igotyou.FactoryMod.utility.StringUtils;
-import com.google.common.collect.Lists;
 
 //original file:
 /**

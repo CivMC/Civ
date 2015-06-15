@@ -1,12 +1,9 @@
 package com.github.igotyou.FactoryMod.persistence;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.nio.charset.Charset;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -14,10 +11,8 @@ import org.bukkit.World;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
-import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory.NetherOperationMode;
 import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 
 public class NetherCsvReader implements IFactoryReader<NetherFactory> {
 
@@ -106,11 +101,10 @@ public class NetherCsvReader implements IFactoryReader<NetherFactory> {
 		double currentRepair = input.readDouble();
 		long timeDisrepair  = input.readLong();
 		
-		return null;
-//		return new NetherFactory(centerLocation, inventoryLocation, powerLocation, netherTeleportPlatformLocation, overworldTeleportPlatformLocation,
-//				active, currentRepair, timeDisrepair,
-//				mode,
-//				mPlugin.getNetherFactoryProperties(), this);
+		return new NetherFactory(centerLocation, inventoryLocation, powerLocation, netherTeleportPlatformLocation, overworldTeleportPlatformLocation,
+				active, currentRepair, timeDisrepair,
+				mode,
+				mPlugin.getNetherFactoryProperties(), this);
 	}
 
 }

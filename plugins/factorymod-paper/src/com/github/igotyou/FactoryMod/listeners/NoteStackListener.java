@@ -13,25 +13,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
-
 //import sun.misc.Regexp;
-
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 
 public class NoteStackListener implements Listener {
-	private FactoryModPlugin plugin;
+
 	private static final Pattern stackableRegexp = Pattern.compile("^(§2.*?)( \\(x([1-9][0-9]*)\\))?$");
 	private static final Pattern nameRegexp = Pattern.compile("^(.*?)( §2x([1-9][0-9]*))?$");
 	private static final int SCALE_FACTOR = 4;
 	private static final int MAX_SCALE = 64;
 
 	public NoteStackListener(FactoryModPlugin plugin) {
-		this.plugin = plugin;
 	}
 	
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)

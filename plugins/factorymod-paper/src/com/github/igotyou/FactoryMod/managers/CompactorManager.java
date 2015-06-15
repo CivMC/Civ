@@ -2,16 +2,11 @@ package com.github.igotyou.FactoryMod.managers;
 
 import org.bukkit.Location;
 
-import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.ReinforcementManager;
-
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.Compactor;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 
 public class CompactorManager extends AManager<Compactor> {
-
-    private ReinforcementManager rm = Citadel.getReinforcementManager();
     
     public CompactorManager(FactoryModPlugin plugin) {
     	super(plugin);

@@ -11,14 +11,12 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 
-import com.github.igotyou.FactoryMod.Factorys.RepairFactory.RepairFactoryMode;
-import com.github.igotyou.FactoryMod.managers.CompactorManager;
 import com.github.igotyou.FactoryMod.properties.CompactorProperties;
 import com.github.igotyou.FactoryMod.properties.IFactoryProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
+import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
-import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 
 public class Compactor extends ABaseFactory {
 

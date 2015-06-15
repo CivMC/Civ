@@ -3,11 +3,11 @@ package com.github.igotyou.FactoryMod.listeners;
 import java.util.List;
 
 import net.minecraft.server.v1_8_R2.ItemStack;
-import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,15 +17,15 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCreativeEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.Inventory;
+
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
@@ -35,8 +35,8 @@ import com.github.igotyou.FactoryMod.Factorys.IFactory;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
 import com.github.igotyou.FactoryMod.managers.FactoryManagerService;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
-import com.github.igotyou.FactoryMod.utility.StringUtils;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
+import com.github.igotyou.FactoryMod.utility.StringUtils;
 
 public class FactoryModListener implements Listener
 {

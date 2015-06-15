@@ -1,22 +1,16 @@
 package com.github.igotyou.FactoryMod.persistence;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.nio.charset.Charset;
 import java.util.List;
 
 import org.bukkit.Location;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.Compactor;
-import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
-import com.github.igotyou.FactoryMod.Factorys.RepairFactory;
-import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
-import com.google.common.io.Files;
 
 public class CompactorCsvWriter implements IFactoryWriter<Compactor> {
 	

@@ -6,15 +6,11 @@ import java.util.List;
 import net.minecraft.server.v1_8_R2.ItemStack;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 
-import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.Factorys.NetherFactory.NetherOperationMode;
-import com.github.igotyou.FactoryMod.managers.RepairFactoryManager;
 import com.github.igotyou.FactoryMod.properties.IFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.RepairFactoryProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;

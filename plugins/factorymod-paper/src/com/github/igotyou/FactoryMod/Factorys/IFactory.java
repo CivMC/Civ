@@ -1,12 +1,11 @@
 package com.github.igotyou.FactoryMod.Factorys;
 
+import java.util.List;
+
 import org.bukkit.Location;
 
-import com.github.igotyou.FactoryMod.properties.AFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.IFactoryProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
-
-import java.util.List;
 //original file:
 /**
  * Machine.java

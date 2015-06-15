@@ -3,7 +3,6 @@ package com.github.igotyou.FactoryMod.Factorys;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,10 +21,10 @@ import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.FactoryObject;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
+import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 import com.github.igotyou.FactoryMod.utility.StringUtils;
-import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 
 public abstract class ABaseFactory extends FactoryObject implements IFactory {
 	public static final BlockFace[] REDSTONE_FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};

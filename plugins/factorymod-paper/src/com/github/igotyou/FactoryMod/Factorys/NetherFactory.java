@@ -492,32 +492,24 @@ public class NetherFactory extends ABaseFactory
 	public boolean isWhole(boolean initCall)
 	{
 		//Check if power source exists
-		if(factoryPowerSourceLocation.getBlock().getType().getId()== 61 || factoryPowerSourceLocation.getBlock().getType().getId()== 62)
+		if(super.isWhole(initCall))
 		{
-			//Check inventory location
-			if(factoryInventoryLocation.getBlock().getType().getId()== 54) 	
+			if (netherTeleportPlatform == null && overworldTeleportPlatform == null && initCall)
 			{
-				//Check Interaction block location
-				if(factoryLocation.getBlock().getType()==FactoryModPlugin.CENTRAL_BLOCK_MATERIAL)
+				return true;
+			}
+			else
+			{
+				if (netherTeleportPlatform.getBlock().getType() == FactoryModPlugin.NETHER_FACTORY_TELEPORT_PLATFORM_MATERIAL)
 				{
-					if (netherTeleportPlatform == null && overworldTeleportPlatform == null && initCall)
+					if (overworldTeleportPlatform.getBlock().getType() == FactoryModPlugin.NETHER_FACTORY_TELEPORT_PLATFORM_MATERIAL)
 					{
 						return true;
 					}
-					else
-					{
-						if (netherTeleportPlatform.getBlock().getType() == FactoryModPlugin.NETHER_FACTORY_TELEPORT_PLATFORM_MATERIAL)
-						{
-							if (overworldTeleportPlatform.getBlock().getType() == FactoryModPlugin.NETHER_FACTORY_TELEPORT_PLATFORM_MATERIAL)
-							{
-								return true;
-							}
-						}	
-					}
-				}
+				}	
 			}
 		}
-	return false;
+		return false;
 	}
 	
 	public boolean isInTicketMode()

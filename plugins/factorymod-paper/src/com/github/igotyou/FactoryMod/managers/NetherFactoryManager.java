@@ -1,9 +1,5 @@
 package com.github.igotyou.FactoryMod.managers;
 
-import java.io.File;
-import java.util.Iterator;
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,16 +12,11 @@ import vg.civcraft.mc.citadel.ReinforcementManager;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
-import com.github.igotyou.FactoryMod.persistence.FactoryDao;
-import com.github.igotyou.FactoryMod.persistence.FileBackup;
-import com.github.igotyou.FactoryMod.persistence.PersistenceFactory;
 import com.github.igotyou.FactoryMod.properties.NetherFactoryProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
-import com.github.igotyou.FactoryMod.utility.StringUtils;
-import com.google.common.collect.Lists;
 
 //original file:
 /**

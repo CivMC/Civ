@@ -1,38 +1,17 @@
 package com.github.igotyou.FactoryMod.managers;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
 
-import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.ReinforcementManager;
-
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
-import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.Factorys.RepairFactory;
-import com.github.igotyou.FactoryMod.Factorys.RepairFactory.RepairFactoryMode;
-import com.github.igotyou.FactoryMod.Factorys.IFactory;
-import com.github.igotyou.FactoryMod.managers.IManager;
 import com.github.igotyou.FactoryMod.properties.RepairFactoryProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
+import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
-import com.github.igotyou.FactoryMod.utility.StringUtils;
-import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 
 public class RepairFactoryManager extends AManager<RepairFactory>{
 
@@ -45,7 +24,6 @@ public class RepairFactoryManager extends AManager<RepairFactory>{
 	public Class<RepairFactory> getFactoryType() {
 		return RepairFactory.class;
 	}
-	private ReinforcementManager rm = Citadel.getReinforcementManager();
 
 	//SEE RepairCsvReader.java
 //	@Override

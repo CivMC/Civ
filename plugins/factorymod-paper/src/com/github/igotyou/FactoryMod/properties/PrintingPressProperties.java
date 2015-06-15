@@ -1,12 +1,9 @@
 package com.github.igotyou.FactoryMod.properties;
 
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 

@@ -1,6 +1,5 @@
 package com.github.igotyou.FactoryMod.managers;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -8,13 +7,11 @@ import org.bukkit.Location;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.IFactory;
-import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
 import com.github.igotyou.FactoryMod.persistence.FactoryDao;
-import com.github.igotyou.FactoryMod.persistence.FileBackup;
 import com.github.igotyou.FactoryMod.persistence.PersistenceFactory;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
-import com.github.igotyou.FactoryMod.utility.StringUtils;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
+import com.github.igotyou.FactoryMod.utility.StringUtils;
 
 public abstract class AManager<T extends IFactory> implements IManager<T>{
 

@@ -1,27 +1,19 @@
 package com.github.igotyou.FactoryMod.persistence;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
 import com.github.igotyou.FactoryMod.Factorys.RepairFactory;
 import com.github.igotyou.FactoryMod.Factorys.RepairFactory.RepairFactoryMode;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.common.io.Files;
 
 public class RepairCsvReader implements IFactoryReader<RepairFactory>{
 	

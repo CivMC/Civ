@@ -1,8 +1,5 @@
 package com.github.igotyou.FactoryMod.properties;
 
-import com.github.igotyou.FactoryMod.utility.ItemList;
-import com.github.igotyou.FactoryMod.utility.NamedItemStack;
-
 //original file:
 /**
  * Properties.java
