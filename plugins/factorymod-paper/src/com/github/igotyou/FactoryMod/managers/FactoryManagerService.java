@@ -13,7 +13,7 @@ import com.github.igotyou.FactoryMod.Factorys.ABaseFactory;
 import com.github.igotyou.FactoryMod.Factorys.IFactory;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
-import com.google.common.collect.Lists;
+
 //original file:
 /**
  * MachinesManager.java
@@ -62,18 +62,16 @@ public class FactoryManagerService
 	 */
 	private void initializeManagers()
 	{
-		//managers = new ArrayList<AManager<? extends IFactory>>();
+		managers = new ArrayList<AManager<? extends ABaseFactory>>();
 		listeners = new ArrayList<Listener>();
 		
-		//if (FactoryModPlugin.PRODUCTION_ENEABLED)
-		//{
 		managers.add(new ProductionFactoryManager(plugin));
 		managers.add(new PrintingPressManager(plugin));
 		managers.add(new RepairFactoryManager(plugin));
 		managers.add(new CompactorManager(plugin));
 		managers.add(new NetherFactoryManager(plugin));
-		//}
 	}
+	
 	/**
 	 * When plugin disabled, this is called.
 	 */
