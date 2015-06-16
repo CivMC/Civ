@@ -25,17 +25,12 @@ import vg.civcraft.mc.namelayer.group.Group;
 public class MercuryMessageListener implements Listener{
 	
 	private GroupManager gm = NameAPI.getGroupManager();
-
+	private NameLayerPlugin nl = NameLayerPlugin.getInstance();
+	
 	public MercuryMessageListener() {
-		NameLayerPlugin nl = NameLayerPlugin.getInstance();
-		NameLayerPlugin.setMercuryEnabled(Bukkit.getPluginManager().isPluginEnabled("Mercury"));
-		if (NameLayerPlugin.isMercuryEnabled()){
-			nl.getServer().getPluginManager().registerEvents(this, nl);
-			NameLayerPlugin.setOnlineAllServers(new HashMap<String,String>());
-			MercuryPlugin.handler.sendMessage("all", "name_layer", "whoonline "+MercuryPlugin.name);
-			nl.getLogger().info("Requested player lists");
-		}
-		
+		NameLayerPlugin.setOnlineAllServers(new HashMap<String,String>());
+		MercuryPlugin.handler.sendMessage("all", "name_layer", "whoonline "+MercuryPlugin.name);
+		nl.getLogger().info("Requested player lists");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -47,7 +42,7 @@ public class MercuryMessageListener implements Listener{
 		String reason = message[0];
 		if (reason.equals("whoonline")){
 			String playerlist = "";
-			for(Player p : NameLayerPlugin.getInstance().getServer().getOnlinePlayers()){
+			for(Player p : Bukkit.getOnlinePlayers()){
 				playerlist = playerlist+p.getDisplayName()+";";
 			}
 			if (playerlist.isEmpty()){return;}
