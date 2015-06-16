@@ -83,7 +83,7 @@
 		</repository>
 		<repository>
 			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/service/local/repositories</url>
+			<url>https://hub.spigotmc.org/nexus/service/local/repositories/snapshots/content/org/spigotmc/spigot-api/1.8.3-R0.1-SNAPSHOT/spigot-api-1.8.3-R0.1-20150517.094637-69.jar</url>
 		</repository>
 	</repositories>
 
