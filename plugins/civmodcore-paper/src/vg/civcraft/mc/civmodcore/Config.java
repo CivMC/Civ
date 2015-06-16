@@ -27,8 +27,6 @@ public class Config {
   public void initialize() {
 	  plugin_.reloadConfig();
       config_ = plugin_.getConfig();
-      config_.options().copyDefaults(true);
-      load();
   }
 
   public ConfigurationSection getStorage() {
@@ -44,7 +42,7 @@ public class Config {
 	    
 	    for(Class clazz:ClassUtility.GetClassesForPlugin(plugin)){
 	    	scanAnnotations(clazz);
-	    }   
+	    }
 	    setConfig();
   }
   private Map<String, ConfigOption> dynamicOptions_ = new TreeMap<String, ConfigOption>();
@@ -78,6 +76,8 @@ public class Config {
           continue;
         }
       }
+    } catch(NoClassDefFoundError e){
+    	// We want to ignore any errors found from this because it could be a soft dependency that is not loaded for a plugin.
     } catch(Exception ex) {
     	plugin_.info(ex.toString());
     }
@@ -151,5 +151,6 @@ public class Config {
 				break;
 			}
 		}
+		plugin_.saveConfig();
 	}
 }
