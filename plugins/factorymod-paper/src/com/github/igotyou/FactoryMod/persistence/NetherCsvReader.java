@@ -12,6 +12,7 @@ import org.bukkit.World;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
 import com.github.igotyou.FactoryMod.Factorys.NetherFactory.NetherOperationMode;
+import com.github.igotyou.FactoryMod.managers.NetherFactoryManager;
 import com.google.common.collect.Lists;
 
 public class NetherCsvReader implements IFactoryReader<NetherFactory> {
@@ -102,9 +103,8 @@ public class NetherCsvReader implements IFactoryReader<NetherFactory> {
 		long timeDisrepair  = input.readLong();
 		
 		return new NetherFactory(centerLocation, inventoryLocation, powerLocation, netherTeleportPlatformLocation, overworldTeleportPlatformLocation,
-				active, currentRepair, timeDisrepair,
-				mode,
-				mPlugin.getNetherFactoryProperties(), this);
+				active, currentRepair, timeDisrepair, mode, mPlugin.getNetherFactoryProperties(),
+				(NetherFactoryManager) mPlugin.manager.getManager(NetherFactoryManager.class));
 	}
 
 }
