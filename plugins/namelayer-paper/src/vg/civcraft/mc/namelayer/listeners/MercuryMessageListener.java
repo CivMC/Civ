@@ -29,7 +29,7 @@ public class MercuryMessageListener implements Listener{
 	
 	public MercuryMessageListener() {
 		NameLayerPlugin.setOnlineAllServers(new HashMap<String,String>());
-		MercuryPlugin.handler.sendMessage("all", "name_layer", "whoonline "+MercuryPlugin.name);
+		MercuryPlugin.handler.sendMessage("all", "whoonline "+MercuryPlugin.name, "namelayer");
 		nl.getLogger().info("Requested player lists");
 	}
 
@@ -105,16 +105,4 @@ public class MercuryMessageListener implements Listener{
 		MercuryPlugin.handler.sendMessage("all", "logoff "+MercuryPlugin.name+" "+event.getPlayer().getDisplayName(), "namelayer");
 	}
 
-	@Override
-	public void run() {
-		NameLayerPlugin nl = NameLayerPlugin.getInstance();
-		NameLayerPlugin.setMercuryEnabled(Bukkit.getPluginManager().isPluginEnabled("Mercury"));
-		if (NameLayerPlugin.isMercuryEnabled()){
-			nl.getServer().getPluginManager().registerEvents(this, nl);
-			NameLayerPlugin.setOnlineAllServers(new HashMap<String,String>());
-			MercuryPlugin.handler.sendMessage("all", "whoonline "+MercuryPlugin.name, "namelayer");
-			nl.getLogger().info("Requested player lists");
-		}
-		
-	}
 }
