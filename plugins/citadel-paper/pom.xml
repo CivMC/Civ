@@ -2,61 +2,97 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>vg.civcraft.mc.citadel</groupId>
-  <artifactId>Citadel</artifactId>
-  <packaging>jar</packaging>
-  <version>3.2.9-${build.number}</version>
-  <name>Citadel</name>
-  <url>https://github.com/Civcraft/Citadel</url>
-  
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.3.2</version>
-          <configuration>
-            <source>1.6</source>
-            <target>1.6</target>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    
-    <sourceDirectory>${basedir}/src</sourceDirectory>
-    
-    <resources>
-      <resource>
-        <directory>${basedir}</directory>
-        <includes>
-          <include>LICENSE.txt</include>
-          <include>*.yml</include>
-        </includes>
-      </resource>
-    </resources>
-  </build>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>vg.civcraft.mc.citadel</groupId>
+	<artifactId>Citadel</artifactId>
+	<packaging>jar</packaging>
+	<version>${yaml.plugin.version}</version>
+	<name>${yaml.plugin.name}</name>
+	<description>${yaml.plugin.version}</description>
+	<url>https://github.com/Civcraft/Citadel</url>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>Spigot1.8.3</artifactId>
-      <version>1.8.3</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>vg.civcraft.mc.namelayer</groupId>
-      <artifactId>NameLayer</artifactId>
-      <version>2.3.4-117</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-  
-  <repositories>
-    <repository>
-      <id>civcraft-repo</id>
-      <url>http://civcraft.co:8080/plugin/repository/everything/</url>
-    </repository>
-  </repositories>
-  
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>com.comphenix.maven</groupId>
+					<artifactId>yaml-properties-plugin</artifactId>
+					<version>0.1.0</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>read-yaml-properties</goal>
+							</goals>
+							<configuration>
+								<files>
+									<!-- YAML files that will be loaded. The element name is the file ID. -->
+									<plugin>${basedir}/plugin.yml</plugin>
+								</files>
+							</configuration> 
+						</execution>
+					</executions>  
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<sourceDirectory>${basedir}/src</sourceDirectory>
+
+		<resources>
+			<resource>
+				<directory>${basedir}</directory>
+				<includes>
+					<include>LICENSE.txt</include>
+					<include>*.yml</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>1.8.3-R0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>vg.civcraft.mc.civmodcore</groupId>
+			<artifactId>CivModCore</artifactId>
+			<version>[1.0.1,)</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>vg.civcraft.mc.namelayer</groupId>
+			<artifactId>NameLayer</artifactId>
+			<version>[2.3.6,)</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>civcraft-repo</id>
+			<url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
+		</repository>
+		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/service/local/repositories</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>comphenix-rep</id>
+			<name>Comphenix Maven Releases</name>
+			<url>http://repo.comphenix.net/content/groups/public</url>
+		</pluginRepository>
+	</pluginRepositories>
+
 </project>

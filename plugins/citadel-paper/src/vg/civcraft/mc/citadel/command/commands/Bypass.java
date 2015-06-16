@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementManager;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
 import java.util.ArrayList;
 import java.util.List;

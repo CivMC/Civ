@@ -15,11 +15,15 @@ import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.MultiBlockReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class UpdateReinforcements extends PlayerCommand{
 
+	private GroupManager gm = NameAPI.getGroupManager();
+	
 	public UpdateReinforcements(String name) {
 		super(name);
 		setIdentifier("ctur");

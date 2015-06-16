@@ -10,9 +10,10 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementMode;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
@@ -20,6 +21,8 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class Reinforce extends PlayerCommand {
 
+	private GroupManager gm = NameAPI.getGroupManager();
+	
 	public Reinforce(String name) {
 		super(name);
 		setIdentifier("ctr");

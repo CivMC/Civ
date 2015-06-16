@@ -15,9 +15,10 @@ import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.command.PlayerCommand;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
@@ -25,6 +26,7 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class Fortification extends PlayerCommand{
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
+	private GroupManager gm = NameAPI.getGroupManager();
 
 	public Fortification(String name) {
 		super(name);

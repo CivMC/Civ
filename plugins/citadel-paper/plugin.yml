@@ -1,8 +1,8 @@
 name: Citadel
 main: vg.civcraft.mc.citadel.Citadel
-version: 3.2.9
+version: 3.3.0
 author: Rourke750
-depend: [NameLayer]
+depend: [NameLayer, CivModCore]
 commands:
  ctr:
   aliases: [ctreinforce]

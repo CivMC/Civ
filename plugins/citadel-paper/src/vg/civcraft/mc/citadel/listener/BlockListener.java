@@ -70,7 +70,7 @@ public class BlockListener implements Listener{
 	
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onFortificationMode(BlockPlaceEvent event){
 		Player p = event.getPlayer();
 		Block b = event.getBlock();
