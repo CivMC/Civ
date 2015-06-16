@@ -9,6 +9,7 @@ public class ClassHandler {
 
 	public static ClassHandler ch;
 	private String version;
+	public static boolean properlyEnabled;
 	
 	public static boolean Initialize(Server server){
 		ch = new ClassHandler();
@@ -16,10 +17,10 @@ public class ClassHandler {
 		ch.version = packageName.substring(packageName.lastIndexOf('.') + 1);
 		try {
 			Class.forName("vg.civcraft.mc.namelayer.misc." + ch.version + ".ProfileModifier");
-			return true;
+			return properlyEnabled = true;
 		} catch (Exception e){
 			e.printStackTrace();
-			return false;
+			return properlyEnabled = false;
 		}
 	}
 	

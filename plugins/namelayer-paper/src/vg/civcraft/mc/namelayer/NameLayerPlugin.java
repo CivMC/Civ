@@ -60,9 +60,9 @@ public class NameLayerPlugin extends ACivMod{
 	public void registerListeners(){
 		getServer().getPluginManager().registerEvents(new AssociationListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-		//needed for delay init since NameLayer likes to enable before mercury
-		//when fixed also see line 174 and change isMercuryEnabled to private
-		this.getServer().getScheduler().scheduleSyncDelayedTask(this, new MercuryMessageListener(), 20L);
+		if (isMercuryEnabled){
+			getServer().getPluginManager().registerEvents(new MercuryMessageListener(), this);
+		}
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -87,10 +87,10 @@ public class NameLayerPlugin extends ACivMod{
 	
 	@CivConfigs({
 		@CivConfig(name = "sql.hostname", def = "localhost", type = CivConfigType.String),
-		@CivConfig(name = "sql.username"),
-		@CivConfig(name = "sql.password"),
+		@CivConfig(name = "sql.username", def = "", type = CivConfigType.String),
+		@CivConfig(name = "sql.password", def = "", type = CivConfigType.String),
 		@CivConfig(name = "sql.port", def = "3306", type = CivConfigType.Int),
-		@CivConfig(name = "sql.dbname", def = "namelayer")
+		@CivConfig(name = "sql.dbname", def = "namelayer", type = CivConfigType.String)
 	})
 	public void loadDatabases(){
 		String host = config.get("sql.hostname").getString();
@@ -180,10 +180,6 @@ public class NameLayerPlugin extends ACivMod{
 	}
 
 	public static boolean isMercuryEnabled() {
-		return isMercuryEnabled;
-	}
-
-	public static void setMercuryEnabled(boolean isMercuryEnabled) {
-		NameLayerPlugin.isMercuryEnabled = isMercuryEnabled;
+		return Bukkit.getPluginManager().isPluginEnabled("Mercury");
 	}
 }
