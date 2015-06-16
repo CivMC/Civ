@@ -74,6 +74,11 @@
 			<version>[2.3.6,)</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>1.8.7-R0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -83,7 +88,7 @@
 		</repository>
 		<repository>
 			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/service/local/repositories/snapshots/content/org/spigotmc/spigot-api/1.8.3-R0.1-SNAPSHOT/spigot-api-1.8.3-R0.1-20150517.094637-69.jar</url>
+			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
 
