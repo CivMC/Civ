@@ -166,11 +166,6 @@ public class NameLayerPlugin extends ACivMod{
 		return "Name_Layer_Special";
 	}
 
-	// Disabled while the runnable is needed.
-//	public static boolean isMercuryEnabled(){
-//		return isMercuryEnabled;
-//	}
-
 	@Override
 	protected String getPluginName() {
 		return "NameLayerPlugin";
