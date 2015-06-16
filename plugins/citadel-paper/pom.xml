@@ -52,6 +52,7 @@
 					<include>LICENSE.txt</include>
 					<include>*.yml</include>
 				</includes>
+				<filtering>true</filtering>
 			</resource>
 		</resources>
 	</build>
