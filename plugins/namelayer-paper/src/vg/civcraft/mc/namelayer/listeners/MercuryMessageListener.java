@@ -22,10 +22,21 @@ import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
 import vg.civcraft.mc.namelayer.events.GroupTransferEvent;
 import vg.civcraft.mc.namelayer.group.Group;
 
-public class MercuryMessageListener extends BukkitRunnable implements Listener{
+public class MercuryMessageListener implements Listener{
 	
 	private GroupManager gm = NameAPI.getGroupManager();
 
+	public MercuryMessageListener() {
+		NameLayerPlugin nl = NameLayerPlugin.getInstance();
+		NameLayerPlugin.setMercuryEnabled(Bukkit.getPluginManager().isPluginEnabled("Mercury"));
+		if (NameLayerPlugin.isMercuryEnabled()){
+			nl.getServer().getPluginManager().registerEvents(this, nl);
+			NameLayerPlugin.setOnlineAllServers(new HashMap<String,String>());
+			MercuryPlugin.handler.sendMessage("all", "name_layer", "whoonline "+MercuryPlugin.name);
+			nl.getLogger().info("Requested player lists");
+		}
+		
+	}
 
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -97,18 +108,5 @@ public class MercuryMessageListener extends BukkitRunnable implements Listener{
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onLogoff(PlayerQuitEvent event){
 		MercuryPlugin.handler.sendMessage("all", "name_layer", "logoff "+MercuryPlugin.name+" "+event.getPlayer().getDisplayName());
-	}
-
-	@Override
-	public void run() {
-		NameLayerPlugin nl = NameLayerPlugin.getInstance();
-		NameLayerPlugin.setMercuryEnabled(Bukkit.getPluginManager().isPluginEnabled("Mercury"));
-		if (NameLayerPlugin.isMercuryEnabled()){
-			nl.getServer().getPluginManager().registerEvents(this, nl);
-			NameLayerPlugin.setOnlineAllServers(new HashMap<String,String>());
-			MercuryPlugin.handler.sendMessage("all", "name_layer", "whoonline "+MercuryPlugin.name);
-			nl.getLogger().info("Requested player lists");
-		}
-		
 	}
 }

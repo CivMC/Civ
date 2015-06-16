@@ -52,6 +52,10 @@
 			</resource>
 		</resources>
 	</build>
+	
+	<modules>
+		<module>NameLayerNMS</module>
+	</modules>
 
 	<dependencies>
 		<dependency>

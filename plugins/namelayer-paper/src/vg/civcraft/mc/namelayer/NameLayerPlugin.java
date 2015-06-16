@@ -60,9 +60,7 @@ public class NameLayerPlugin extends ACivMod{
 	public void registerListeners(){
 		getServer().getPluginManager().registerEvents(new AssociationListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-		//needed for delay init since NameLayer likes to enable before mercury
-		//when fixed also see line 174 and change isMercuryEnabled to private
-		this.getServer().getScheduler().scheduleSyncDelayedTask(this, new MercuryMessageListener(), 20L);
+		new MercuryMessageListener();
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -165,11 +163,6 @@ public class NameLayerPlugin extends ACivMod{
 	public static String getSpecialAdminGroup(){
 		return "Name_Layer_Special";
 	}
-
-	// Disabled while the runnable is needed.
-//	public static boolean isMercuryEnabled(){
-//		return isMercuryEnabled;
-//	}
 
 	@Override
 	protected String getPluginName() {

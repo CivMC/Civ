@@ -27,7 +27,7 @@ public class AssociationListener implements Listener{
 			@Override
 			public void run() {
 				ch = ClassHandler.ch;
-				if (ch != null)
+				if (ClassHandler.properlyEnabled)
 					game = ch.getProfileClass();
 				
 				associations = NameAPI.getAssociationList();
