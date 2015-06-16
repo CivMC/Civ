@@ -1,5 +1,5 @@
-name: CivModCore
-version: 1.0.1
+name: ${project.name}
+version: ${project.version}
 authors: [valadian, rourke750]
 main: Dummy
 dev-url: null
