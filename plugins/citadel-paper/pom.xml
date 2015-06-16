@@ -6,9 +6,9 @@
 	<groupId>vg.civcraft.mc.citadel</groupId>
 	<artifactId>Citadel</artifactId>
 	<packaging>jar</packaging>
-	<version>${yaml.plugin.version}</version>
-	<name>${yaml.plugin.name}</name>
-	<description>${yaml.plugin.version}</description>
+	<version>3.3.1</version>
+	<name>Citadel</name>
+	<description></description>
 	<url>https://github.com/Civcraft/Citadel</url>
 
 	<build>
