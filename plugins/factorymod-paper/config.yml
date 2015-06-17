@@ -119,13 +119,38 @@ compactor:
   production_time: 20
   costs:
     construction:
-      DIAMOND:
-        material: 'DIAMOND_BLOCK'
+      Crate:
+        material: CHEST
         amount: 64
+        display_name: Crate
+        lore: A crate for compacting items
+      Redstone:
+        material: REDSTONE
+        amount: 320
+      Piston:
+        material: PISTON_BASE
+        amount: 64
+      Diamond:
+        material: DIAMOND
+        amount: 8
+      'Civtest Lock':
+        material: BEDROCK
+        amount: 1
     repair:
-      EMERALD:
-        material: 'EMERALD_BLOCK'
-        amount: 16
+      Crate:
+        material: CHEST
+        amount: 6
+        display_name: Crate
+        lore: A crate for compacting items
+      Redstone:
+        material: REDSTONE
+        amount: 32
+      Piston:
+        material: PISTON_BASE
+        amount: 6
+      Diamond:
+        material: DIAMOND
+        amount: 1
     recipe:
       CRATE:
         material: 'CHEST'
@@ -1861,6 +1886,7 @@ production_factories:
       - Craft_Item_Frames
       - Craft_Bookshelfs
       - Bastion_Framing
+      - Craft_Crate
     repair_multiple: 10
     repair_inputs:
       Paper:
@@ -7761,3 +7787,25 @@ production_recipes:
       Sea Lantern:
         material: SEA_LANTERN
         amount: 16
+  Craft_Crate:
+    name: Craft Compactor Crate
+    production_time: 16
+    inputs:
+      Chest:
+        material: CHEST
+        amount: 16
+      Piston:
+        material: PISTON_BASE
+        amount: 8
+      Redstone:
+        Material: REDSTONE
+        amount: 32
+      'Civtest Lock':
+        material: BEDROCK
+        amount: 1
+    outputs:
+      Crate:
+        material: CHEST
+        amount: 16
+        display_name: Crate
+        lore: A crate for compacting items
