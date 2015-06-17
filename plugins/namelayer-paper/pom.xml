@@ -6,7 +6,7 @@
 	<groupId>vg.civcraft.mc.namelayer</groupId>
 	<artifactId>NameLayer</artifactId>
 	<packaging>jar</packaging>
-	<version>2.3.8</version>
+	<version>2.3.9</version>
 	<name>NameLayer</name>
 	<url>https://github.com/Civcraft/NameLayer/</url>
 
@@ -55,14 +55,10 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>1.8.7-R0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>1.8.3-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.mercury</groupId>
@@ -80,6 +76,7 @@
 			<groupId>ovg.civcraft.mc.namelayernms</groupId>
 			<artifactId>NameLayerNMS</artifactId>
 			<version>[1.0.0,)</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 	<repositories>
