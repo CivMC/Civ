@@ -52,7 +52,7 @@
 			</resource>
 		</resources>
 	</build>
-	
+
 	<modules>
 		<module>NameLayerNMS</module>
 	</modules>
@@ -60,21 +60,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>1.7.10-R0.1</version>
-			<scope>provided</scope>
+			<artifactId>bukkit</artifactId>
+			<version>1.8.7-R0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot</artifactId>
-			<version>1.8-R0.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>Spigot1.8.3</artifactId>
-			<version>1.8.3</version>
-			<scope>provided</scope>
+			<artifactId>spigot-api</artifactId>
+			<version>1.8.3-R0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.mercury</groupId>
@@ -93,6 +85,10 @@
 		<repository>
 			<id>Jenkins-repo</id>
 			<url>http://civcraft.co:8080/plugin/repository/everything/</url>
+		</repository>
+		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
 </project>
