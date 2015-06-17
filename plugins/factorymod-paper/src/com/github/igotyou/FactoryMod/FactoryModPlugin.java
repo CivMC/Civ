@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
@@ -286,7 +285,7 @@ public class FactoryModPlugin extends JavaPlugin
 			List<Recipe> tempList = getServer().getRecipesFor(recipeItemStack);
 			for (Recipe rec : tempList)
 			{
-				Log.info("Disabling recipe " + disable + " - " + rec.getResult().getType().name());
+				sendConsoleMessage("Disabling recipe " + disable + " - " + rec.getResult().getType().name());
 				removeRecipe(rec);
 			}
 		}
@@ -311,7 +310,7 @@ public class FactoryModPlugin extends JavaPlugin
 				}
 				
 				recipe = shapelessRecipe;
-				Log.info("Enabling shapeless recipe " + recipeName + " - " + recipe.getResult().getType().name());
+				sendConsoleMessage("Enabling shapeless recipe " + recipeName + " - " + recipe.getResult().getType().name());
 			}
 			else
 			{
@@ -326,7 +325,7 @@ public class FactoryModPlugin extends JavaPlugin
 				}
 				
 				recipe = shapedRecipe;
-				Log.info("Enabling shaped recipe " + recipeName + " - " + recipe.getResult().getType().name());
+				sendConsoleMessage("Enabling shaped recipe " + recipeName + " - " + recipe.getResult().getType().name());
 			}
 			
 			Bukkit.addRecipe(recipe);
