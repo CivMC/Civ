@@ -58,7 +58,7 @@ public class Tell extends PlayerCommandMiddle{
 					builder.append(args[x] + " ");
 				//This separator needs to be changed to load from config.
 				String sep = "|";
-				MercuryPlugin.handler.sendMessage(NameLayerPlugin.getOnlineAllServers().get(args[0].toLowerCase()),"civchat2", "pm"+sep+player.getName()+sep+args[0].trim()+sep+builder.toString().replace(sep, ""));
+				MercuryPlugin.handler.sendMessage(NameLayerPlugin.getOnlineAllServers().get(args[0].toLowerCase()), "pm"+sep+player.getName()+sep+args[0].trim()+sep+builder.toString().replace(sep, ""), "civchat2");
 				player.sendMessage(ChatColor.LIGHT_PURPLE+"To "+args[0]+": "+builder.toString());
 				return true;
 			}
