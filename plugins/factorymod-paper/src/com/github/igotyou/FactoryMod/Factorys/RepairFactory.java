@@ -2,6 +2,7 @@ package com.github.igotyou.FactoryMod.Factorys;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import net.minecraft.server.v1_8_R2.ItemStack;
 
@@ -23,6 +24,8 @@ public class RepairFactory extends ABaseFactory{
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	private RepairFactoryProperties rfp;
 	private RepairFactoryMode mode;
+	
+	private static Logger log = Logger.getLogger(RepairFactory.class.getName());
 	
 	// Constructor for when initial creation of factory.
 	public RepairFactory(Location factoryLocation,
@@ -148,28 +151,22 @@ public class RepairFactory extends ABaseFactory{
 	
 	@Override
 	public List<InteractionResponse> togglePower(){
+		log.info("Repair factory at " + this.factoryLocation.toString() + " power toggle attempt");
 		List<InteractionResponse> response=new ArrayList<InteractionResponse>();
 		//if the factory is turned off
-		if (!active)
-		{
+		if (!active) {
 			//if the factory isn't broken or the current recipe can repair it
-			if(!isBroken()||isRepairing())
-			{
+			if ( !isBroken() || isRepairing() ) {
 				//is there fuel enough for at least once energy cycle?
-				if (isFuelAvailable())
-				{
+				if ( isFuelAvailable() ) {
 					//are there enough materials for the current recipe in the chest?
-					if (checkHasMaterials())
-					{
+					if ( checkHasMaterials() ) {
 						//turn the factory on
 						powerOn();
 						//return a success message
 						response.add(new InteractionResponse(InteractionResult.SUCCESS, "Factory activated!"));
 						return response;
-					}
-					//there are not enough materials for the recipe!
-					else
-					{
+					} else { //there are not enough materials for the recipe!
 						//return a failure message, containing which materials are needed for the recipe
 						//[Requires the following: Amount Name, Amount Name.]
 						//[Requires one of the following: Amount Name, Amount Name.]
@@ -232,7 +229,11 @@ public class RepairFactory extends ABaseFactory{
 
 	@Override
 	public ItemList<NamedItemStack> getInputs() {
-		return rfp.getRecipeMaterials();
+		if (mode == RepairFactoryMode.RESET_ITEMS) {
+			return rfp.getRecipeMaterials();
+		} else {
+			return new ItemList<NamedItemStack>();
+		}
 	}
 
 	@Override
@@ -242,7 +243,11 @@ public class RepairFactory extends ABaseFactory{
 
 	@Override
 	public ItemList<NamedItemStack> getRepairs() {
-		return rfp.getRepairMaterials();
+		if (mode == RepairFactoryMode.REPAIR) {
+			return rfp.getRepairMaterials();
+		} else {
+			return new ItemList<NamedItemStack>();
+		}
 	}
 
 	@Override

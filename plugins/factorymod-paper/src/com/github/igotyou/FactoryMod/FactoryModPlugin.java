@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
@@ -278,13 +279,14 @@ public class FactoryModPlugin extends JavaPlugin
 		for (String disable : disabledRecipes)
 		{
 			String mat = config.getString("crafting.disable." + disable + ".material",disable);
-			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(disable));
+			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(mat));
 			int dur = config.getInt("crafting.disable." + disable + ".durability", 0);
 			short s = (short) dur;
 			recipeItemStack.setDurability(s);
 			List<Recipe> tempList = getServer().getRecipesFor(recipeItemStack);
 			for (Recipe rec : tempList)
 			{
+				Log.info("Disabling recipe " + disable + " - " + rec.getResult().getType().name());
 				removeRecipe(rec);
 			}
 		}
@@ -304,10 +306,12 @@ public class FactoryModPlugin extends JavaPlugin
 				
 				for (ItemStack input:getItems(configSection.getConfigurationSection("inputs")))
 				{
-					shapelessRecipe.addIngredient(input.getAmount(), input.getType(), input.getDurability());
+					shapelessRecipe.addIngredient(input.getAmount(), input.getType());
+					//shapelessRecipe.addIngredient(input.getAmount(), input.getType(), input.getDurability());
 				}
 				
 				recipe = shapelessRecipe;
+				Log.info("Enabling shapeless recipe " + recipeName + " - " + recipe.getResult().getType().name());
 			}
 			else
 			{
@@ -317,11 +321,14 @@ public class FactoryModPlugin extends JavaPlugin
 				for(String inputKey : configSection.getConfigurationSection("inputs").getKeys(false))
 				{
 					ItemStack input = getItems(configSection.getConfigurationSection("inputs." + inputKey)).get(0);
-					shapedRecipe.setIngredient(inputKey.charAt(0),input.getType(),input.getDurability());
+					shapedRecipe.setIngredient(inputKey.charAt(0),input.getType());
+					//shapedRecipe.setIngredient(inputKey.charAt(0),input.getType(),input.getDurability());
 				}
 				
 				recipe = shapedRecipe;
+				Log.info("Enabling shaped recipe " + recipeName + " - " + recipe.getResult().getType().name());
 			}
+			
 			Bukkit.addRecipe(recipe);
 		}
 		

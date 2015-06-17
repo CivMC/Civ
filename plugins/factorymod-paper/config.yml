@@ -7798,7 +7798,7 @@ production_recipes:
         material: PISTON_BASE
         amount: 8
       Redstone:
-        Material: REDSTONE
+        material: REDSTONE
         amount: 32
       'Civtest Lock':
         material: BEDROCK
