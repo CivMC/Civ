@@ -21,22 +21,21 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.1</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
 						<goals>
-							<goal>shade</goal>
-						</goals>                        
-						<configuration>
-							<minimizeJar>true</minimizeJar>    
-							<artifactSet>
-							</artifactSet>
-						</configuration>
+							<goal>shade</goal> 
+						</goals>
 					</execution>
 				</executions>
 				<configuration>
 					<finalName>${project.artifactId}.${project.version}</finalName>
+					<filters>
+						<filter>
+						<artifact>namelayernms</artifact>
+						</filter>
+					</filters>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -76,6 +75,7 @@
 			<groupId>vg.civcraft.mc.namelayernms</groupId>
 			<artifactId>NameLayerNMS</artifactId>
 			<version>1.0.0</version>
+			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
