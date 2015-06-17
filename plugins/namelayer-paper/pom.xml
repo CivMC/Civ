@@ -53,10 +53,6 @@
 		</resources>
 	</build>
 
-	<modules>
-		<module>NameLayerNMS</module>
-	</modules>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.bukkit</groupId>
@@ -79,6 +75,11 @@
 			<artifactId>CivModCore</artifactId>
 			<version>[1.0.1,)</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>ovg.civcraft.mc.namelayernms</groupId>
+			<artifactId>NameLayerNMS</artifactId>
+			<version>[1.0.0,)</version>
 		</dependency>
 	</dependencies>
 	<repositories>
