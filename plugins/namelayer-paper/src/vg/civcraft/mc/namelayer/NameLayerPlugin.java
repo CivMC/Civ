@@ -30,7 +30,6 @@ public class NameLayerPlugin extends ACivMod{
 	private CommandHandler handle;
 	private static Database db;
 	private static boolean loadGroups = true;
-	private static boolean isMercuryEnabled = false;
 	private Config config;
 	
 	@CivConfig(name = "groups.enable", def = "true", type = CivConfigType.Bool)
@@ -60,7 +59,7 @@ public class NameLayerPlugin extends ACivMod{
 	public void registerListeners(){
 		getServer().getPluginManager().registerEvents(new AssociationListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-		if (isMercuryEnabled){
+		if (isMercuryEnabled()){
 			getServer().getPluginManager().registerEvents(new MercuryMessageListener(), this);
 		}
 	}

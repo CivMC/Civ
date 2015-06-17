@@ -1,7 +1,6 @@
 name: ${project.name}
 main: vg.civcraft.mc.namelayer.NameLayerPlugin
 version: ${project.version}
-load: startup
 author: Rourke750
 softdepend: [Mercury, CivModCore]
 commands:
