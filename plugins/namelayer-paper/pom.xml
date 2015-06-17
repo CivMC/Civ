@@ -6,7 +6,7 @@
 	<groupId>vg.civcraft.mc.namelayer</groupId>
 	<artifactId>NameLayer</artifactId>
 	<packaging>jar</packaging>
-	<version>2.3.8</version>
+	<version>2.3.9</version>
 	<name>NameLayer</name>
 	<url>https://github.com/Civcraft/NameLayer/</url>
 
@@ -21,22 +21,21 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.1</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
 						<goals>
-							<goal>shade</goal>
-						</goals>                        
-						<configuration>
-							<minimizeJar>true</minimizeJar>    
-							<artifactSet>
-							</artifactSet>
-						</configuration>
+							<goal>shade</goal> 
+						</goals>
 					</execution>
 				</executions>
 				<configuration>
 					<finalName>${project.artifactId}.${project.version}</finalName>
+					<filters>
+						<filter>
+						<artifact>namelayernms</artifact>
+						</filter>
+					</filters>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -52,28 +51,12 @@
 			</resource>
 		</resources>
 	</build>
-	
-	<modules>
-		<module>NameLayerNMS</module>
-	</modules>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>1.7.10-R0.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot</artifactId>
-			<version>1.8-R0.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>Spigot1.8.3</artifactId>
-			<version>1.8.3</version>
+			<artifactId>spigot-api</artifactId>
+			<version>1.8.3-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -88,11 +71,40 @@
 			<version>[1.0.1,)</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>vg.civcraft.mc.namelayernms</groupId>
+			<artifactId>NameLayerNMS</artifactId>
+			<version>1.0.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.35</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>jline</groupId>
+			<artifactId>jline</artifactId>
+			<version>2.12.1</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
 			<id>Jenkins-repo</id>
 			<url>http://civcraft.co:8080/plugin/repository/everything/</url>
+		</repository>
+		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
 </project>
