@@ -73,7 +73,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>ovg.civcraft.mc.namelayernms</groupId>
+			<groupId>vg.civcraft.mc.namelayernms</groupId>
 			<artifactId>NameLayerNMS</artifactId>
 			<version>[1.0.0,)</version>
 			<scope>compile</scope>
