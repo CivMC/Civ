@@ -109,101 +109,101 @@ repair_factory:
         amount: 8
   repairable:
     WOODEN_PICKAXE:
-      material: wooden_pickaxe
+      material: WOOD_PICKAXE
     STONE_PICKAXE:
-      material: stone_pickaxe
+      material: STONE_PICKAXE
     IRON_PICKAXE:
-      material: iron_pickaxe
+      material: IRON_PICKAXE
     GOLDEN_PICKAXE:
-      material: golden_pickaxe
+      material: GOLD_PICKAXE
     DIAMOND_PICKAXE:
-      material: diamond_pickaxe
+      material: DIAMOND_PICKAXE
     WOODEN_AXE:
-      material: wooden_axe
+      material: WOOD_AXE
     STONE_AXE:
-      material: stone_axe
+      material: STONE_AXE
     IRON_AXE:
-      material: iron_axe
+      material: IRON_AXE
     GOLDEN_AXE:
-      material: golden_axe
+      material: GOLD_AXE
     DIAMOND_AXE:
-      material: diamond_axe
+      material: DIAMOND_AXE
     WOODEN_SHOVEL:
-      material: wooden_shovel
+      material: WOOD_SPADE
     STONE_SHOVEL:
-      material: stone_shovel
+      material: STONE_SPADE
     IRON_SHOVEL:
-      material: iron_shovel
+      material: IRON_SPADE
     GOLDEN_SHOVEL:
-      material: golden_shovel
+      material: GOLD_SPADE
     DIAMOND_SHOVEL:
-      material: diamond_shovel
+      material: DIAMOND_SPADE
     WOODEN_HOE:
-      material: wooden_hoe
+      material: WOOD_HOE
     STONE_HOE:
-      material: stone_hoe
+      material: STONE_HOE
     IRON_HOE:
-      material: iron_hoe
+      material: IRON_HOE
     GOLDEN_HOE:
-      material: golden_hoe
+      material: GOLD_HOE
     DIAMOND_HOE:
-      material: diamond_hoe
+      material: DIAMOND_HOE
     WOODEN_SWORD:
-      material: wooden_sword
+      material: WOOD_SWORD
     STONE_SWORD:
-      material: stone_sword
+      material: STONE_SWORD
     IRON_SWORD:
-      material: iron_sword
+      material: IRON_SWORD
     GOLDEN_SWORD:
-      material: golden_sword
+      material: GOLD_SWORD
     DIAMOND_SWORD:
-      material: diamond_sword
+      material: DIAMOND_SWORD
     BOW:
-      material: bow
+      material: BOW
     FISHING_ROD:
-      material: fishing_rod
+      material: FISHING_ROD
     SHEARS:
-      material: shears
+      material: SHEARS
     LEATHER_BOOTS:
-      material: leather_boots
+      material: LEATHER_BOOTS
     CHAIN_BOOTS:
-      material: chainmail_boots
+      material: CHAINMAIL_BOOTS
     IRON_BOOTS:
-      material: iron_boots
+      material: IRON_BOOTS
     GOLDEN_BOOTS:
-      material: golden_boots
+      material: GOLD_BOOTS
     DIAMOND_BOOTS:
-      material: diamond_boots
+      material: DIAMOND_BOOTS
     LEATHER_PANTS:
-      material: leather_leggings
+      material: LEATHER_LEGGINGS
     CHAIN_LEGGINGS:
-      material: chainmail_leggings
+      material: CHAINMAIL_LEGGINGS
     IRON_LEGGINGS:
-      material: iron_leggings
+      material: IRON_LEGGINGS
     GOLDEN_LEGGINGS:
-      material: golden_leggings
+      material: GOLD_LEGGINGS
     DIAMOND_LEGGINGS:
-      material: diamond_leggings
+      material: DIAMOND_LEGGINGS
     LEATHER_TUNIC:
-      material: leather_chestplate
+      material: LEATHER_CHESTPLATE
     CHAIN_CHESTPLATE:
-      material: chainmail_chestplate
+      material: CHAINMAIL_CHESTPLATE
     IRON_CHESTPLATE:
-      material: iron_chestplate
+      material: IRON_CHESTPLATE
     GOLDEN_CHESTPLATE:
-      material: golden_chestplate
+      material: GOLD_CHESTPLATE
     DIAMOND_CHESTPLATE:
-      material: diamond_chestplate
+      material: DIAMOND_CHESTPLATE
     LEATHER_CAP:
-      material: leather_helmet
+      material: LEATHER_HELMET
     CHAIN_HELMET:
-      material: chainmail_helmet
+      material: CHAINMAIL_HELMET
     IRON_HELMET:
-      material: iron_helmet
+      material: IRON_HELMET
     GOLDEN_HELMET:
-      material: golden_helmet
+      material: GOLD_HELMET
     DIAMOND_HELMET:
-      material: diamond_helmet
+      material: DIAMOND_HELMET
 compactor:
   fuel:
     Charcoal:

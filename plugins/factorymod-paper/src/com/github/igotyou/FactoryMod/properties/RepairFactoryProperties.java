@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.craftbukkit.libs.jline.internal.Log;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.utility.ItemList;
@@ -92,7 +93,7 @@ public class RepairFactoryProperties implements IFactoryProperties{
 		ItemList<NamedItemStack> rfConstructionCost = plugin.getItems(costs.getConfigurationSection("construction"));
 		ItemList<NamedItemStack> rfRepairCost = plugin.getItems(costs.getConfigurationSection("repair"));
 		ItemList<NamedItemStack> rfRecipeUse = plugin.getItems(costs.getConfigurationSection("recipe"));
-		ItemList<NamedItemStack> rfAllowed = plugin.getItems(costs.getConfigurationSection("repairable"));
+		ItemList<NamedItemStack> rfAllowed = plugin.getItems(section.getConfigurationSection("repairable"));
 		int rfEnergyTime = section.getInt("fuel_time");
 		int rfRepair = costs.getInt("repair_multiple", 1);
 		String rfName = section.getString("name", "Repair Factory");
@@ -107,6 +108,8 @@ public class RepairFactoryProperties implements IFactoryProperties{
 			NamedItemStack repair = canRepair.next();
 			
 			repairable.add(repair.getType());
+			
+			Log.info("Adding repairable: " + repair.getType());
 		}
 		return new RepairFactoryProperties(rfConstructionCost, rfFuel, rfRepairCost, rfEnergyTime, rfName, rfRepair, repairTime, productionTime, rfRecipeUse, repairable);
 	}
