@@ -100,21 +100,26 @@ public class RepairFactoryManager extends AManager<RepairFactory>{
 	public InteractionResponse createFactory(Location factoryLocation,
 			Location inventoryLocation, Location powerLocation) {
 		RepairFactoryProperties repairFactoryProperties = plugin.getRepairFactoryProperties();
-		Block inventoryBlock = inventoryLocation.getBlock();
-		Chest chest = (Chest) inventoryBlock.getState();
-		Inventory chestInventory = chest.getInventory();
-		ItemList<NamedItemStack> constructionMaterials = repairFactoryProperties.getConstructionMaterials();
+		
 		if(!factoryExistsAt(factoryLocation)) {
+			Block inventoryBlock = inventoryLocation.getBlock();
+			Chest chest = (Chest) inventoryBlock.getState();
+			Inventory chestInventory = chest.getInventory();
+			ItemList<NamedItemStack> constructionMaterials = repairFactoryProperties.getConstructionMaterials();
+			
 			if (constructionMaterials.oneIn(chestInventory)){
-				RepairFactory factory = new RepairFactory(factoryLocation, inventoryLocation, powerLocation, false, repairFactoryProperties/*,
-						this*/);
-				repairFactoryProperties.getConstructionMaterials().removeFrom(chestInventory);
-				return addFactory(factory);
+				RepairFactory factory = new RepairFactory(factoryLocation, inventoryLocation, powerLocation, false, repairFactoryProperties);
+				constructionMaterials.removeFrom(chestInventory);
+
+				if (addFactory(factory).getInteractionResult() == InteractionResult.FAILURE) {
+					return new InteractionResponse(InteractionResult.FAILURE, "Unable to construct a " + repairFactoryProperties.getName());
+				} else {
+					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created a " + repairFactoryProperties.getName());
+				}
 			}
-			else
-				return new InteractionResponse(InteractionResult.FAILURE, "Incorrect materials in chest! Stacks must match perfectly.");
+			return new InteractionResponse(InteractionResult.FAILURE, "Incorrect materials in chest! Stacks must match perfectly to create a " + repairFactoryProperties.getName());
 		}
-		return new InteractionResponse(InteractionResult.FAILURE, "There is already a factory there!");
+		return new InteractionResponse(InteractionResult.FAILURE, "There is already a " + repairFactoryProperties.getName() + " there!");
 	}
 
 	public boolean isClear(RepairFactory factory){

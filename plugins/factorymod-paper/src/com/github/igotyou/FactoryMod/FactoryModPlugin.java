@@ -277,6 +277,7 @@ public class FactoryModPlugin extends JavaPlugin
 		List<String> disabledRecipes = config.getStringList("crafting.disable");
 		for (String disable : disabledRecipes)
 		{
+			sendConsoleMessage("Attempting to disable recipes for " + disable);
 			String mat = config.getString("crafting.disable." + disable + ".material",disable);
 			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(mat));
 			int dur = config.getInt("crafting.disable." + disable + ".durability", 0);
@@ -285,7 +286,7 @@ public class FactoryModPlugin extends JavaPlugin
 			List<Recipe> tempList = getServer().getRecipesFor(recipeItemStack);
 			for (Recipe rec : tempList)
 			{
-				sendConsoleMessage("Disabling recipe " + disable + " - " + rec.getResult().getType().name());
+				sendConsoleMessage("Disabling recipe " + rec.getResult().getType().name());
 				removeRecipe(rec);
 			}
 		}

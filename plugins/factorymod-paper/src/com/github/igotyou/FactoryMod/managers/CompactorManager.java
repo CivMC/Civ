@@ -22,25 +22,25 @@ public class CompactorManager extends AManager<Compactor> {
     @Override
     public InteractionResponse createFactory(Location factoryLocation,
             Location inventoryLocation, Location powerLocation) {
-    	CompactorProperties compactorProperties = plugin.getCompactorProperties();
-		
-		if (!factoryExistsAt(factoryLocation))
-		{
-			Block inventoryBlock = inventoryLocation.getBlock();
-			Chest chest = (Chest) inventoryBlock.getState();
-			Inventory chestInventory = chest.getInventory();
-			ItemList<NamedItemStack> inputs = compactorProperties.getConstructionMaterials();
-			boolean hasMaterials = inputs.allIn(chestInventory);
-			if (hasMaterials)
-			{
+        CompactorProperties compactorProperties = plugin.getCompactorProperties();
+    	
+        if (!factoryExistsAt(factoryLocation)) {
+            Block inventoryBlock = inventoryLocation.getBlock();
+            Chest chest = (Chest) inventoryBlock.getState();
+            Inventory chestInventory = chest.getInventory();
+            ItemList<NamedItemStack> inputs = compactorProperties.getConstructionMaterials();
+
+			if (inputs.oneIn(chestInventory)) {
 				Compactor production = new Compactor(factoryLocation, inventoryLocation, powerLocation, false, plugin.getCompactorProperties());
-				if (compactorProperties.getConstructionMaterials().removeFrom(production.getInventory()))
-				{
-					addFactory(production);
+				inputs.removeFrom(production.getInventory());
+				
+				if (addFactory(production).getInteractionResult() == InteractionResult.FAILURE) {
+					return new InteractionResponse(InteractionResult.FAILURE, "Unable to create a " + compactorProperties.getName());
+				} else {
 					return new InteractionResponse(InteractionResult.SUCCESS, "Successfully created " + compactorProperties.getName());
 				}
 			}
-			return new InteractionResponse(InteractionResult.FAILURE, "Not enough materials in chest!");
+			return new InteractionResponse(InteractionResult.FAILURE, "Not enough materials in chest to create a " + compactorProperties.getName());
 		}
 		return new InteractionResponse(InteractionResult.FAILURE, "There is already a " + compactorProperties.getName() + " there!");
     }
