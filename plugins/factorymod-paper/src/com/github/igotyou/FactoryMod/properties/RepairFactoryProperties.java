@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.libs.jline.internal.Log;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.utility.ItemList;
@@ -109,7 +108,7 @@ public class RepairFactoryProperties implements IFactoryProperties{
 			
 			repairable.add(repair.getType());
 			
-			Log.info("Adding repairable: " + repair.getType());
+			FactoryModPlugin.sendConsoleMessage("Adding repairable: " + repair.getType());
 		}
 		return new RepairFactoryProperties(rfConstructionCost, rfFuel, rfRepairCost, rfEnergyTime, rfName, rfRepair, repairTime, productionTime, rfRecipeUse, repairable);
 	}

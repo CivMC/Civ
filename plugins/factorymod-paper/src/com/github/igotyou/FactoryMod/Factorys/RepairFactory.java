@@ -1,18 +1,13 @@
 package com.github.igotyou.FactoryMod.Factorys;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
 import net.minecraft.server.v1_8_R2.ItemStack;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
-
-import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.ReinforcementManager;
 
 import com.github.igotyou.FactoryMod.properties.IFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.RepairFactoryProperties;
@@ -23,7 +18,6 @@ import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 
 public class RepairFactory extends ABaseFactory{
 
-	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	private RepairFactoryProperties rfp;
 	private RepairFactoryMode mode;
 	
@@ -254,7 +248,7 @@ public class RepairFactory extends ABaseFactory{
 
 	@Override
 	protected void recipeFinished() {
-		Log.info("Recipe Finished");
+		log.finer("Recipe Finished");
 		//getInputs().removeOneFrom(getInventory()); // Don't double dip! Parent consume already ate recipe costs.
 		org.bukkit.inventory.ItemStack[] contents = getInventory().getContents();
 		for (int x = 0; x < contents.length; x++){
@@ -263,12 +257,12 @@ public class RepairFactory extends ABaseFactory{
 				continue;
 			}
 			if (repairable(stack)) {
-				Log.info("Found repairable: " + stack.getType());
+				log.fine("Found repairable: " + stack.getType());
 				ItemStack s = CraftItemStack.asNMSCopy(stack);
 				s.setRepairCost(1);
 				getInventory().setItem(x, CraftItemStack.asBukkitCopy(s));
 			} else {
-				Log.info("Found non-repairable: " + stack.getType());
+				log.fine("Found non-repairable: " + stack.getType());
 			}
 		}
 	}
