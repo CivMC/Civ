@@ -107,6 +107,103 @@ repair_factory:
       Emerald Blocks:
         material: 'EMERALD_BLOCK'
         amount: 8
+  repairable:
+    WOODEN_PICKAXE:
+      material: wooden_pickaxe
+    STONE_PICKAXE:
+      material: stone_pickaxe
+    IRON_PICKAXE:
+      material: iron_pickaxe
+    GOLDEN_PICKAXE:
+      material: golden_pickaxe
+    DIAMOND_PICKAXE:
+      material: diamond_pickaxe
+    WOODEN_AXE:
+      material: wooden_axe
+    STONE_AXE:
+      material: stone_axe
+    IRON_AXE:
+      material: iron_axe
+    GOLDEN_AXE:
+      material: golden_axe
+    DIAMOND_AXE:
+      material: diamond_axe
+    WOODEN_SHOVEL:
+      material: wooden_shovel
+    STONE_SHOVEL:
+      material: stone_shovel
+    IRON_SHOVEL:
+      material: iron_shovel
+    GOLDEN_SHOVEL:
+      material: golden_shovel
+    DIAMOND_SHOVEL:
+      material: diamond_shovel
+    WOODEN_HOE:
+      material: wooden_hoe
+    STONE_HOE:
+      material: stone_hoe
+    IRON_HOE:
+      material: iron_hoe
+    GOLDEN_HOE:
+      material: golden_hoe
+    DIAMOND_HOE:
+      material: diamond_hoe
+    WOODEN_SWORD:
+      material: wooden_sword
+    STONE_SWORD:
+      material: stone_sword
+    IRON_SWORD:
+      material: iron_sword
+    GOLDEN_SWORD:
+      material: golden_sword
+    DIAMOND_SWORD:
+      material: diamond_sword
+    BOW:
+      material: bow
+    FISHING_ROD:
+      material: fishing_rod
+    SHEARS:
+      material: shears
+    LEATHER_BOOTS:
+      material: leather_boots
+    CHAIN_BOOTS:
+      material: chainmail_boots
+    IRON_BOOTS:
+      material: iron_boots
+    GOLDEN_BOOTS:
+      material: golden_boots
+    DIAMOND_BOOTS:
+      material: diamond_boots
+    LEATHER_PANTS:
+      material: leather_leggings
+    CHAIN_LEGGINGS:
+      material: chainmail_leggings
+    IRON_LEGGINGS:
+      material: iron_leggings
+    GOLDEN_LEGGINGS:
+      material: golden_leggings
+    DIAMOND_LEGGINGS:
+      material: diamond_leggings
+    LEATHER_TUNIC:
+      material: leather_chestplate
+    CHAIN_CHESTPLATE:
+      material: chainmail_chestplate
+    IRON_CHESTPLATE:
+      material: iron_chestplate
+    GOLDEN_CHESTPLATE:
+      material: golden_chestplate
+    DIAMOND_CHESTPLATE:
+      material: diamond_chestplate
+    LEATHER_CAP:
+      material: leather_helmet
+    CHAIN_HELMET:
+      material: chainmail_helmet
+    IRON_HELMET:
+      material: iron_helmet
+    GOLDEN_HELMET:
+      material: golden_helmet
+    DIAMOND_HELMET:
+      material: diamond_helmet
 compactor:
   fuel:
     Charcoal:

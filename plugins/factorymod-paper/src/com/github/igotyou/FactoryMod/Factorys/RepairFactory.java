@@ -1,12 +1,14 @@
 package com.github.igotyou.FactoryMod.Factorys;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
 import net.minecraft.server.v1_8_R2.ItemStack;
 
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
@@ -252,18 +254,29 @@ public class RepairFactory extends ABaseFactory{
 
 	@Override
 	protected void recipeFinished() {
-		getInputs().removeOneFrom(getInventory());
+		Log.info("Recipe Finished");
+		//getInputs().removeOneFrom(getInventory()); // Don't double dip! Parent consume already ate recipe costs.
 		org.bukkit.inventory.ItemStack[] contents = getInventory().getContents();
 		for (int x = 0; x < contents.length; x++){
 			org.bukkit.inventory.ItemStack stack = contents[x];
-			if (stack == null)
+			if (stack == null) {
 				continue;
-			ItemStack s = CraftItemStack.asNMSCopy(stack);
-			s.setRepairCost(1);
-			getInventory().setItem(x, CraftItemStack.asBukkitCopy(s));
+			}
+			if (repairable(stack)) {
+				Log.info("Found repairable: " + stack.getType());
+				ItemStack s = CraftItemStack.asNMSCopy(stack);
+				s.setRepairCost(1);
+				getInventory().setItem(x, CraftItemStack.asBukkitCopy(s));
+			} else {
+				Log.info("Found non-repairable: " + stack.getType());
+			}
 		}
 	}
 
+	private boolean repairable(org.bukkit.inventory.ItemStack stack) {
+		return rfp.getAllowedRepairable().contains(stack.getType());		
+	}
+	
 	@Override
 	public int getMaxRepair() {
 		return rfp.getRepair();

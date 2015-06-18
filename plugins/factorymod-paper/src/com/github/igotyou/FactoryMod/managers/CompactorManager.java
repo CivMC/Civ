@@ -30,7 +30,7 @@ public class CompactorManager extends AManager<Compactor> {
             Inventory chestInventory = chest.getInventory();
             ItemList<NamedItemStack> inputs = compactorProperties.getConstructionMaterials();
 
-			if (inputs.oneIn(chestInventory)) {
+			if (inputs.exactlyIn(chestInventory)) {
 				Compactor production = new Compactor(factoryLocation, inventoryLocation, powerLocation, false, plugin.getCompactorProperties());
 				inputs.removeFrom(production.getInventory());
 				

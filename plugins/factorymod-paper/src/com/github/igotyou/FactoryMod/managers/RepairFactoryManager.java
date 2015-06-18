@@ -107,9 +107,9 @@ public class RepairFactoryManager extends AManager<RepairFactory>{
 			Inventory chestInventory = chest.getInventory();
 			ItemList<NamedItemStack> constructionMaterials = repairFactoryProperties.getConstructionMaterials();
 			
-			if (constructionMaterials.oneIn(chestInventory)){
+			if (constructionMaterials.exactlyIn(chestInventory)){
 				RepairFactory factory = new RepairFactory(factoryLocation, inventoryLocation, powerLocation, false, repairFactoryProperties);
-				constructionMaterials.removeFrom(chestInventory);
+				constructionMaterials.removeFrom(factory.getInventory());
 
 				if (addFactory(factory).getInteractionResult() == InteractionResult.FAILURE) {
 					return new InteractionResponse(InteractionResult.FAILURE, "Unable to construct a " + repairFactoryProperties.getName());
