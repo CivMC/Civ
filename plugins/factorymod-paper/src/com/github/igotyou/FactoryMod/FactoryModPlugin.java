@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -274,21 +275,33 @@ public class FactoryModPlugin extends JavaPlugin
 		SHOULD_SET_ANVIL_COST = config.getBoolean("general.should_default_anvil_cost", false);
 		GET_SET_ANVIL_COST = config.getInt("general.set_default_anvil_cost", 37);
 
-		List<String> disabledRecipes = config.getStringList("crafting.disable");
-		for (String disable : disabledRecipes)
-		{
-			String mat = config.getString("crafting.disable." + disable + ".material",disable);
-			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(disable));
-			int dur = config.getInt("crafting.disable." + disable + ".durability", 0);
-			short s = (short) dur;
-			recipeItemStack.setDurability(s);
-			List<Recipe> tempList = getServer().getRecipesFor(recipeItemStack);
-			for (Recipe rec : tempList)
-			{
-				removeRecipe(rec);
+		// Disable the following recipes
+		List<Recipe> toDisable = new ArrayList<Recipe>();
+		ItemList<NamedItemStack> disabledRecipes = getItems(config.getConfigurationSection("crafting.disable"));		
+		for (NamedItemStack recipe : disabledRecipes) {
+			sendConsoleMessage("Attempting to disable recipes for " + recipe.getCommonName());
+			
+			List<Recipe> tempList = getServer().getRecipesFor(recipe);
+			
+			for (Recipe potential : tempList) {
+				if (potential.getResult().isSimilar(recipe)) {
+					sendConsoleMessage("Found a disable recipe match " + potential.toString());
+					toDisable.add(potential);
+				}
 			}
 		}
-		
+
+		Iterator<Recipe> it = getServer().recipeIterator();
+		while (it.hasNext()) {
+			Recipe recipe = it.next();
+			for (Recipe disable : toDisable) { // why can't they just override equality tests?!
+				if (disable.getResult().isSimilar(recipe.getResult())) {
+					it.remove();
+					sendConsoleMessage("Disabling recipe " + recipe.getResult().toString());
+				}
+			}
+		}
+				
 		//Enable the following recipes
 		ConfigurationSection configCraftingEnable = config.getConfigurationSection("crafting.enable");
 		for (String recipeName : configCraftingEnable.getKeys(false))
@@ -304,10 +317,12 @@ public class FactoryModPlugin extends JavaPlugin
 				
 				for (ItemStack input:getItems(configSection.getConfigurationSection("inputs")))
 				{
-					shapelessRecipe.addIngredient(input.getAmount(), input.getType(), input.getDurability());
+					shapelessRecipe.addIngredient(input.getAmount(), input.getType());
+					//shapelessRecipe.addIngredient(input.getAmount(), input.getType(), input.getDurability());
 				}
 				
 				recipe = shapelessRecipe;
+				sendConsoleMessage("Enabling shapeless recipe " + recipeName + " - " + recipe.getResult().getType().name());
 			}
 			else
 			{
@@ -317,11 +332,14 @@ public class FactoryModPlugin extends JavaPlugin
 				for(String inputKey : configSection.getConfigurationSection("inputs").getKeys(false))
 				{
 					ItemStack input = getItems(configSection.getConfigurationSection("inputs." + inputKey)).get(0);
-					shapedRecipe.setIngredient(inputKey.charAt(0),input.getType(),input.getDurability());
+					shapedRecipe.setIngredient(inputKey.charAt(0),input.getType());
+					//shapedRecipe.setIngredient(inputKey.charAt(0),input.getType(),input.getDurability());
 				}
 				
 				recipe = shapedRecipe;
+				sendConsoleMessage("Enabling shaped recipe " + recipeName + " - " + recipe.getResult().getType().name());
 			}
+			
 			Bukkit.addRecipe(recipe);
 		}
 		

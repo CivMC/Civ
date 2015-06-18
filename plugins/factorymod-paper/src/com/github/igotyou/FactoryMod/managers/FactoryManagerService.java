@@ -207,6 +207,10 @@ public class FactoryManagerService
 			}
 		}
 		
+		if (response == null) {
+			response = new InteractionResponse(InteractionResult.FAILURE, "Couldn't create a factory, invalid ingredients");
+		}
+		
 		FactoryModPlugin.sendConsoleMessage("The factory could not be created: " + response.getInteractionMessage());
 		return response;
 	}

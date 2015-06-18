@@ -107,6 +107,103 @@ repair_factory:
       Emerald Blocks:
         material: 'EMERALD_BLOCK'
         amount: 8
+  repairable:
+    WOODEN_PICKAXE:
+      material: WOOD_PICKAXE
+    STONE_PICKAXE:
+      material: STONE_PICKAXE
+    IRON_PICKAXE:
+      material: IRON_PICKAXE
+    GOLDEN_PICKAXE:
+      material: GOLD_PICKAXE
+    DIAMOND_PICKAXE:
+      material: DIAMOND_PICKAXE
+    WOODEN_AXE:
+      material: WOOD_AXE
+    STONE_AXE:
+      material: STONE_AXE
+    IRON_AXE:
+      material: IRON_AXE
+    GOLDEN_AXE:
+      material: GOLD_AXE
+    DIAMOND_AXE:
+      material: DIAMOND_AXE
+    WOODEN_SHOVEL:
+      material: WOOD_SPADE
+    STONE_SHOVEL:
+      material: STONE_SPADE
+    IRON_SHOVEL:
+      material: IRON_SPADE
+    GOLDEN_SHOVEL:
+      material: GOLD_SPADE
+    DIAMOND_SHOVEL:
+      material: DIAMOND_SPADE
+    WOODEN_HOE:
+      material: WOOD_HOE
+    STONE_HOE:
+      material: STONE_HOE
+    IRON_HOE:
+      material: IRON_HOE
+    GOLDEN_HOE:
+      material: GOLD_HOE
+    DIAMOND_HOE:
+      material: DIAMOND_HOE
+    WOODEN_SWORD:
+      material: WOOD_SWORD
+    STONE_SWORD:
+      material: STONE_SWORD
+    IRON_SWORD:
+      material: IRON_SWORD
+    GOLDEN_SWORD:
+      material: GOLD_SWORD
+    DIAMOND_SWORD:
+      material: DIAMOND_SWORD
+    BOW:
+      material: BOW
+    FISHING_ROD:
+      material: FISHING_ROD
+    SHEARS:
+      material: SHEARS
+    LEATHER_BOOTS:
+      material: LEATHER_BOOTS
+    CHAIN_BOOTS:
+      material: CHAINMAIL_BOOTS
+    IRON_BOOTS:
+      material: IRON_BOOTS
+    GOLDEN_BOOTS:
+      material: GOLD_BOOTS
+    DIAMOND_BOOTS:
+      material: DIAMOND_BOOTS
+    LEATHER_PANTS:
+      material: LEATHER_LEGGINGS
+    CHAIN_LEGGINGS:
+      material: CHAINMAIL_LEGGINGS
+    IRON_LEGGINGS:
+      material: IRON_LEGGINGS
+    GOLDEN_LEGGINGS:
+      material: GOLD_LEGGINGS
+    DIAMOND_LEGGINGS:
+      material: DIAMOND_LEGGINGS
+    LEATHER_TUNIC:
+      material: LEATHER_CHESTPLATE
+    CHAIN_CHESTPLATE:
+      material: CHAINMAIL_CHESTPLATE
+    IRON_CHESTPLATE:
+      material: IRON_CHESTPLATE
+    GOLDEN_CHESTPLATE:
+      material: GOLD_CHESTPLATE
+    DIAMOND_CHESTPLATE:
+      material: DIAMOND_CHESTPLATE
+    LEATHER_CAP:
+      material: LEATHER_HELMET
+    CHAIN_HELMET:
+      material: CHAINMAIL_HELMET
+    IRON_HELMET:
+      material: IRON_HELMET
+    GOLDEN_HELMET:
+      material: GOLD_HELMET
+    DIAMOND_HELMET:
+      material: DIAMOND_HELMET
 compactor:
   fuel:
     Charcoal:
@@ -119,13 +216,38 @@ compactor:
   production_time: 20
   costs:
     construction:
-      DIAMOND:
-        material: 'DIAMOND_BLOCK'
+      Crate:
+        material: CHEST
         amount: 64
+        display_name: Crate
+        lore: A crate for compacting items
+      Redstone:
+        material: REDSTONE
+        amount: 320
+      Piston:
+        material: PISTON_BASE
+        amount: 64
+      Diamond:
+        material: DIAMOND
+        amount: 8
+      'Civtest Lock':
+        material: BEDROCK
+        amount: 1
     repair:
-      EMERALD:
-        material: 'EMERALD_BLOCK'
-        amount: 16
+      Crate:
+        material: CHEST
+        amount: 6
+        display_name: Crate
+        lore: A crate for compacting items
+      Redstone:
+        material: REDSTONE
+        amount: 32
+      Piston:
+        material: PISTON_BASE
+        amount: 6
+      Diamond:
+        material: DIAMOND
+        amount: 1
     recipe:
       CRATE:
         material: 'CHEST'
@@ -1861,6 +1983,7 @@ production_factories:
       - Craft_Item_Frames
       - Craft_Bookshelfs
       - Bastion_Framing
+      - Craft_Crate
     repair_multiple: 10
     repair_inputs:
       Paper:
@@ -7761,3 +7884,25 @@ production_recipes:
       Sea Lantern:
         material: SEA_LANTERN
         amount: 16
+  Craft_Crate:
+    name: Craft Compactor Crate
+    production_time: 16
+    inputs:
+      Chest:
+        material: CHEST
+        amount: 16
+      Piston:
+        material: PISTON_BASE
+        amount: 8
+      Redstone:
+        material: REDSTONE
+        amount: 32
+      'Civtest Lock':
+        material: BEDROCK
+        amount: 1
+    outputs:
+      Crate:
+        material: CHEST
+        amount: 16
+        display_name: Crate
+        lore: A crate for compacting items
