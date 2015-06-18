@@ -21,8 +21,13 @@ import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionHandler;
 
 public class GroupManager{
-	private static GroupManagerDao groupManagerDao = NameLayerPlugin.getGroupManagerDao();
-	private PermissionHandler permhandle = new PermissionHandler();
+	private static GroupManagerDao groupManagerDao;
+	private PermissionHandler permhandle;
+	
+	public GroupManager(){
+		groupManagerDao = NameLayerPlugin.getGroupManagerDao();
+		permhandle = new PermissionHandler();
+	}
 	
 	private static Map<String, Group> groups = new HashMap<String, Group>();
 	/**
