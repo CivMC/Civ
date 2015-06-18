@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -274,23 +275,33 @@ public class FactoryModPlugin extends JavaPlugin
 		SHOULD_SET_ANVIL_COST = config.getBoolean("general.should_default_anvil_cost", false);
 		GET_SET_ANVIL_COST = config.getInt("general.set_default_anvil_cost", 37);
 
-		List<String> disabledRecipes = config.getStringList("crafting.disable");
-		for (String disable : disabledRecipes)
-		{
-			sendConsoleMessage("Attempting to disable recipes for " + disable);
-			String mat = config.getString("crafting.disable." + disable + ".material",disable);
-			ItemStack recipeItemStack = new ItemStack(Material.getMaterial(mat));
-			int dur = config.getInt("crafting.disable." + disable + ".durability", 0);
-			short s = (short) dur;
-			recipeItemStack.setDurability(s);
-			List<Recipe> tempList = getServer().getRecipesFor(recipeItemStack);
-			for (Recipe rec : tempList)
-			{
-				sendConsoleMessage("Disabling recipe " + rec.getResult().getType().name());
-				removeRecipe(rec);
+		// Disable the following recipes
+		List<Recipe> toDisable = new ArrayList<Recipe>();
+		ItemList<NamedItemStack> disabledRecipes = getItems(config.getConfigurationSection("crafting.disable"));		
+		for (NamedItemStack recipe : disabledRecipes) {
+			sendConsoleMessage("Attempting to disable recipes for " + recipe.getCommonName());
+			
+			List<Recipe> tempList = getServer().getRecipesFor(recipe);
+			
+			for (Recipe potential : tempList) {
+				if (potential.getResult().isSimilar(recipe)) {
+					sendConsoleMessage("Found a disable recipe match " + potential.toString());
+					toDisable.add(potential);
+				}
 			}
 		}
-		
+
+		Iterator<Recipe> it = getServer().recipeIterator();
+		while (it.hasNext()) {
+			Recipe recipe = it.next();
+			for (Recipe disable : toDisable) { // why can't they just override equality tests?!
+				if (disable.getResult().isSimilar(recipe.getResult())) {
+					it.remove();
+					sendConsoleMessage("Disabling recipe " + recipe.getResult().toString());
+				}
+			}
+		}
+				
 		//Enable the following recipes
 		ConfigurationSection configCraftingEnable = config.getConfigurationSection("crafting.enable");
 		for (String recipeName : configCraftingEnable.getKeys(false))
