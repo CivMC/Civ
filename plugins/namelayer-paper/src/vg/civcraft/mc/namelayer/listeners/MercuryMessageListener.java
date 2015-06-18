@@ -29,14 +29,14 @@ public class MercuryMessageListener implements Listener{
 	
 	public MercuryMessageListener() {
 		NameLayerPlugin.setOnlineAllServers(new HashMap<String,String>());
-		MercuryPlugin.handler.sendMessage("all", "name_layer", "whoonline "+MercuryPlugin.name);
+		MercuryPlugin.handler.sendMessage("all", "whoonline "+MercuryPlugin.name, "namelayer");
 		nl.getLogger().info("Requested player lists");
 	}
 
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onMercuryMessage(AsyncPluginBroadcastMessageEvent event){
-		if (!event.getChannel().equalsIgnoreCase("name_layer"))
+		if (!event.getChannel().equalsIgnoreCase("namelayer"))
 			return;
 		String[] message = event.getMessage().split(" ");
 		String reason = message[0];
@@ -47,7 +47,7 @@ public class MercuryMessageListener implements Listener{
 			}
 			if (playerlist.isEmpty()){return;}
 			playerlist = playerlist.substring(0, playerlist.length()-1);
-			MercuryPlugin.handler.sendMessage(message[1], "name_layer", "sync "+MercuryPlugin.name+" "+playerlist);
+			MercuryPlugin.handler.sendMessage(message[1], "sync "+MercuryPlugin.name+" "+playerlist, "namelayer");
 			NameLayerPlugin.getInstance().getLogger().info("Responded to server '"+message[1]+"' sync request");
 			return;
 		} else if (reason.equals("login")){
@@ -97,11 +97,12 @@ public class MercuryMessageListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onLogin(PlayerJoinEvent event){
-		MercuryPlugin.handler.sendMessage("all", "name_layer", "login "+MercuryPlugin.name+" "+event.getPlayer().getDisplayName());
+		MercuryPlugin.handler.sendMessage("all", "login "+MercuryPlugin.name+" "+event.getPlayer().getDisplayName(), "namelayer");
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onLogoff(PlayerQuitEvent event){
-		MercuryPlugin.handler.sendMessage("all", "name_layer", "logoff "+MercuryPlugin.name+" "+event.getPlayer().getDisplayName());
+		MercuryPlugin.handler.sendMessage("all", "logoff "+MercuryPlugin.name+" "+event.getPlayer().getDisplayName(), "namelayer");
 	}
+
 }
