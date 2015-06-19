@@ -28,6 +28,8 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 	
 	public boolean exactlyIn(Inventory inventory)
 	{
+		//TODO: This is pretty broken too; won't handle split stacks right, a number of
+		//     other edge cases; we've been very lucky so far.
 		boolean returnValue=true;
 		//Checks that the ItemList ItemStacks are contained in the inventory
 		for(ItemStack itemStack:this)
@@ -52,6 +54,7 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		}
 		return returnValue;
 	}
+	// TODO: Same issues exist here, I need to fix these.
 	public boolean oneIn(Inventory inventory)
 	{
 		if(this.isEmpty())
@@ -74,6 +77,9 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 	{
 		for(ItemStack itemStack:this)
 		{
+			// TODO: Naive check. What about if you have 2 stacks of the same item,
+			//    but only 1 in the chest? This test will return true for both stacks, 
+			//    which is the wrong answer.
 			if (amountAvailable(inventory, itemStack)<itemStack.getAmount())
 			{
 				return false;
@@ -123,6 +129,7 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		}
 		return itemList;
 	}
+	// TODO: Same risks here; these need to be addressed. 
 	public ItemList<NamedItemStack> getDifference(Inventory inventory)
 	{
 		ItemList<NamedItemStack> missingItems=new ItemList<NamedItemStack>();
@@ -140,6 +147,8 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 	}
 	public int amountAvailable(Inventory inventory)
 	{
+		//TODO This is a very broken, so review:
+		//   basically won't count correctly for repairs where a single-item repair cost is greater than a stack.
 		int amountAvailable=0;
 		for(ItemStack itemStack:this)
 		{
@@ -215,7 +224,8 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		}
 		return returnString;
 	}
-	//Returns the number of multiples of an ItemStack that are availible
+	//Returns the number of an ItemStack's MATERIAL that are available. 
+	//  TODO: Does not return multiple as previously advertised.
 	private int amountAvailable(Inventory inventory, ItemStack itemStack)
 	{
 		int totalMaterial = 0;
@@ -230,8 +240,9 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 				*/
 				if (itemStack.isSimilar(currentItemStack) ||
 					(itemStack.getType() == Material.NETHER_WARTS && currentItemStack.getType() == Material.NETHER_WARTS))
-				{		
-					totalMaterial += currentItemStack.getAmount();
+				{
+					totalMaterial += currentItemStack.getAmount(); // not multiples
+					//totalMaterial += (int) Math.floor((double)currentItemStack.getAmount() / (double)itemStack.getAmount()); // return the actual number of multiples ...
 				}
 			}
 		}
@@ -273,6 +284,7 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		}				
 		return materialsToRemove == 0;
 	}
+	/* TODO: int version is just wrong. Use double version. */
 	public ItemList<NamedItemStack> getMultiple(int multiplier)
 	{
 		ItemList<NamedItemStack> multipliedItemList=new ItemList<NamedItemStack>();

@@ -84,13 +84,14 @@ public class RepairFactory extends ABaseFactory{
 						else {
 							powerOff();
 						}
-					}
-					//if the production timer has reached the recipes production time remove input from chest, and add output material
+					}	//if the production timer has reached the recipes production time remove input from chest, and add output material
 					else if (currentProductionTimer >= getProductionTime()){
 						//Repairs the factory
+						
 						repair(getRepairs().removeMaxFrom(getInventory(),(int)currentRepair));
 						
 						currentProductionTimer = 0;
+						currentEnergyTimer = 0;
 						powerOff();
 					}
 				}
@@ -220,12 +221,16 @@ public class RepairFactory extends ABaseFactory{
 
 	@Override
 	public double getProductionTime() {
-		return rfp.getProductionTime();
+		if (mode.equals(RepairFactoryMode.REPAIR)) {
+			return rfp.getRepairTime();
+		} else {
+			return rfp.getProductionTime();
+		}
 	}
 
 	@Override
 	public ItemList<NamedItemStack> getInputs() {
-		if (mode == RepairFactoryMode.RESET_ITEMS) {
+		if (mode.equals(RepairFactoryMode.RESET_ITEMS)) {
 			return rfp.getRecipeMaterials();
 		} else {
 			return new ItemList<NamedItemStack>();
@@ -239,7 +244,7 @@ public class RepairFactory extends ABaseFactory{
 
 	@Override
 	public ItemList<NamedItemStack> getRepairs() {
-		if (mode == RepairFactoryMode.REPAIR) {
+		if (mode.equals( RepairFactoryMode.REPAIR)) {
 			return rfp.getRepairMaterials();
 		} else {
 			return new ItemList<NamedItemStack>();
@@ -259,7 +264,7 @@ public class RepairFactory extends ABaseFactory{
 			if (repairable(stack)) {
 				log.fine("Found repairable: " + stack.getType());
 				ItemStack s = CraftItemStack.asNMSCopy(stack);
-				s.setRepairCost(1);
+				s.setRepairCost(rfp.getResetLevel());
 				getInventory().setItem(x, CraftItemStack.asBukkitCopy(s));
 			} else {
 				log.fine("Found non-repairable: " + stack.getType());
@@ -294,19 +299,19 @@ public class RepairFactory extends ABaseFactory{
 	public List<InteractionResponse> getChestResponse(){
 		List<InteractionResponse> responses=new ArrayList<InteractionResponse>();
 		String status=active ? "On" : "Off";
-		double time = 0;
+		//double time = 0;
 		int maxRepair = getMaxRepair();
 		boolean maintenanceActive = maxRepair!=0;
 		String response = "Current costs are : "; // the response specific to the mode.
-		if (mode.getId() == 0){
-			time = getEnergyTime();
+		if (mode.equals(RepairFactoryMode.REPAIR)){
+			//time = getEnergyTime();
 			response += getRepairs().toString();
-		}
-		else if (mode.getId() == 1){
-			time = getProductionTime();
+		} else if (mode.equals(RepairFactoryMode.RESET_ITEMS)){
+			//time = getProductionTime();
 			response += getInputs().toString();
 		}
-		String percentDone=status.equals("On") ? " - "+Math.round(currentProductionTimer*100/time)+"% done." : "";
+		
+		String percentDone=status.equals("On") ? " - "+Math.round(currentProductionTimer*100/getProductionTime())+"% done." : "";
 		int health =(!maintenanceActive) ? 100 : (int) Math.round(100*(1-currentRepair/(maxRepair)));
 		responses.add(new InteractionResponse(InteractionResult.SUCCESS, rfp.getName()+": "+status+" with "+String.valueOf(health)+"% health."));
 		responses.add(new InteractionResponse(InteractionResult.SUCCESS, "Current mode: " + mode.getDescription()));
@@ -315,9 +320,11 @@ public class RepairFactory extends ABaseFactory{
 		
 		if(!getRepairs().isEmpty()&&maintenanceActive&& mode == RepairFactoryMode.REPAIR)
 		{
-			int amountAvailable=getRepairs().amountAvailable(getInventory());
+			// amountAvailable() is pretty broken, so addressing it in config for now.
+			int amountAvailable= getRepairs().amountAvailable(getInventory());
 			int amountRepaired=amountAvailable>currentRepair ? (int) Math.ceil(currentRepair) : amountAvailable;
 			int percentRepaired=(int) (( (double) amountRepaired)/maxRepair*100);
+			log.info(String.format("Repair mode: available %d repaired %d maxrepair %d percentRepaired %d", amountAvailable, amountRepaired, maxRepair, percentRepaired));
 			responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Will repair "+String.valueOf(percentRepaired)+"% of the factory with "+getRepairs().getMultiple(amountRepaired).toString()+"."));
 		}
 		

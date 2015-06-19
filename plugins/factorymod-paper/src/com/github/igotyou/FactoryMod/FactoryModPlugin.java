@@ -309,6 +309,7 @@ public class FactoryModPlugin extends JavaPlugin
 			ConfigurationSection configSection=configCraftingEnable.getConfigurationSection(recipeName);
 			Recipe recipe;
 			List<String> shape = configSection.getStringList("shape");
+
 			NamedItemStack output = getItems(configSection.getConfigurationSection("output")).get(0);
 			
 			if(shape.isEmpty())
@@ -326,6 +327,12 @@ public class FactoryModPlugin extends JavaPlugin
 			}
 			else
 			{
+				for (String line : shape) {
+					sendConsoleMessage("New Shape Line: [" + line + "]");
+				}
+				
+				sendConsoleMessage("output: " + output.toString());
+				
 				ShapedRecipe shapedRecipe = new ShapedRecipe(output);
 				shapedRecipe.shape(shape.toArray(new String[shape.size()]));
 				
@@ -556,19 +563,6 @@ public class FactoryModPlugin extends JavaPlugin
 		return namedItemStack;
 	}
 	
-	private void removeRecipe(Recipe removalRecipe)
-	{
-		Iterator<Recipe> it = getServer().recipeIterator();
-		while (it.hasNext())
-		{
-			Recipe recipe = it.next();
-			if (recipe.getResult().getType() == removalRecipe.getResult().getType())
-			{
-				it.remove();
-			}
-		}
-	}
-
 	public static IFactoryProperties getProperties(FactoryType factoryType, String subFactoryType)
 	{
 		switch(factoryType)
