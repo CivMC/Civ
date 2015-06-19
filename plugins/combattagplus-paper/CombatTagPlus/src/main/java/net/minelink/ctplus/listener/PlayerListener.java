@@ -267,11 +267,11 @@ public final class PlayerListener implements Listener {
         // Do nothing if check is not active
         if (!plugin.getSettings().denySafezone()) return;
 
-        // Do nothing if player hasn't moved over a whole block
+        // Do nothing if player's X/Y/Z hasn't changed
         Location t = event.getTo();
         Location f = event.getFrom();
-        if (t.getBlockX() == f.getBlockX() && t.getBlockY() == f.getBlockY() &&
-                t.getBlockZ() == f.getBlockZ()) {
+        if (Double.compare(t.getX(), f.getX()) == 0 && Double.compare(t.getY(), f.getY()) == 0 &&
+                Double.compare(t.getZ(), f.getZ()) == 0) {
             return;
         }
 
