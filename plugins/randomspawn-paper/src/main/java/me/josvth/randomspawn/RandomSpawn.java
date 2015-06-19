@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -79,17 +80,38 @@ public class RandomSpawn extends JavaPlugin{
 		if( yamlHandler.worlds.contains( worldName + ".spawnblacklist") )
 			blacklist = yamlHandler.worlds.getIntegerList(worldName + ".spawnblacklist");
 		else
-			blacklist = Arrays.asList(new Integer[]{8,9,10,11,18,51,81});			
+			blacklist = Arrays.asList(new Integer[]{8,9,10,11,18,51,81});
 	
 		double xmin = yamlHandler.worlds.getDouble(worldName +".spawnarea.x-min", -100);
 		double xmax = yamlHandler.worlds.getDouble(worldName +".spawnarea.x-max", 100);
 		double zmin = yamlHandler.worlds.getDouble(worldName +".spawnarea.z-min", -100);
 		double zmax = yamlHandler.worlds.getDouble(worldName +".spawnarea.z-max", 100);
-				
+		
 		// Spawn area thickness near border. If 0 spawns whole area
 		int thickness = yamlHandler.worlds.getInt(worldName +".spawnarea.thickness", 0);
 
 		String type = yamlHandler.worlds.getString(worldName +".spawnarea.type", "square");
+		
+		if(yamlHandler.worlds.getBoolean(worldName + ".spawnbyplayer")) {
+			
+			Player[] playersOnline = Bukkit.getOnlinePlayers();
+			
+			if(playersOnline.length > 0) {
+				Player randomPlayer = playersOnline[(int)(Math.random() * playersOnline.length)];
+				Location spawnNear = randomPlayer.getLocation();
+				double xcenter = spawnNear.getX();
+				double zcenter = spawnNear.getZ();
+				
+				xmin = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.x-min", -100);
+				xmax = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.x-max", 100);
+				zmin = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.z-min", -100);
+				zmax = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.z-max", 100);
+				
+				thickness = yamlHandler.worlds.getInt(worldName + ".spawnbyplayerarea.thickness", 0);
+				
+				type = yamlHandler.worlds.getString(worldName + ".spawnbyplayerarea.type", "circle");
+			}
+		}
 				
 		double xrand = 0;
 		double zrand = 0;

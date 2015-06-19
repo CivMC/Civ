@@ -6,6 +6,12 @@ exampleworld:
   - bedrespawn
   - firstjoin
   keeprandomspawns: false
+  spawnbyplayer: true
+  spawnbyplayerarea:
+    x-min: -500
+    x-max: 500
+    z-min: -500
+    z-max: 500
   spawnarea:
     type: "square"
     x-min: -100
