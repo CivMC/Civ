@@ -53,16 +53,21 @@ public class GrowListener implements Listener {
 	 */
 	@EventHandler(ignoreCancelled = true)
 	public void onBlockGrow(BlockGrowEvent event) {
-		Material m = event.getNewState().getType();
-		Block b = event.getBlock();
+		Material material = event.getNewState().getType();
+		Block block = event.getBlock();
 		
-		GrowthConfig growthConfig = plugin.getGrowthConfig(b);
+		if (growFruit(block, material)) {
+			event.setCancelled(true);
+			return;
+		}
+		
+		GrowthConfig growthConfig = plugin.getGrowthConfig(block);
 		if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
-			plugin.growAndPersistBlock(b, true, growthConfig, null);
+			plugin.growAndPersistBlock(block, true, growthConfig, null);
 			
 			event.setCancelled(true);
 		}
-		else if (!willGrow(m, b)) {
+		else if (!willGrow(material, block)) {
 			event.setCancelled(true);
 		}
 	}
@@ -258,14 +263,22 @@ public class GrowListener implements Listener {
 	/**
 	 * Get all touching stems and attempt to restart their fruit growth
 	 */
-	private void growFruit(Block block) {
-		if (!Fruits.isFruit(block.getType())) {
-			return;
+	private boolean growFruit(Block block) {
+		return growFruit(block, block.getType());
+	}
+	
+	private boolean growFruit(Block block, Material material) {
+		if (!Fruits.isFruit(material)) {
+			return false;
 		}
 		
-		for (Block stem: Fruits.getStems(block)) {
-			plugin.growAndPersistBlock(stem, true, null, block);
+		// only ignore block if it comes from a break event 
+		Block ignoreBlock = block.getType() == Material.AIR ? null : block;
+		
+		for (Block stem: Fruits.getStems(block, material)) {
+			plugin.growAndPersistBlock(stem, true, null, ignoreBlock);
 		}
+		return true;
 	}
 
 	@EventHandler

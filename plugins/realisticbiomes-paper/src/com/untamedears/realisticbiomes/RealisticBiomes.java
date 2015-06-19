@@ -427,7 +427,7 @@ public class RealisticBiomes extends JavaPlugin {
 			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): creating new plant and adding it");
 			
 			plant = new Plant((float)BlockGrower.getGrowthFraction(block),
-					(float)BlockGrower.getFruitGrowthFraction(block));
+					(float)BlockGrower.getFruitGrowthFraction(block, fruitBlockToIgnore));
 			plantManager.addPlant(block, plant);
 		}
 		
@@ -435,6 +435,7 @@ public class RealisticBiomes extends JavaPlugin {
 		
 		if (plant.isFullyGrown()) {
 			// if plant is fully grown and either has no fruits or fruit has fully grown, stop tracking it
+			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): removing fully grown plant: " + plant);
 			plantManager.removePlant(block);
 		}
 		

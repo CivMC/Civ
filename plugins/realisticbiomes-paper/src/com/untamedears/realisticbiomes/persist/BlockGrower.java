@@ -128,7 +128,7 @@ public class BlockGrower {
 		return (double)stage/(double)(growthStages.get(block.getType())-1);
 	}
 
-	public static float getFruitGrowthFraction(Block block) {
-		return Fruits.hasFruit(block) ? 1.0f : 0.0f;
+	public static float getFruitGrowthFraction(Block block, Block fruitBlockToIgnore) {
+		return Fruits.hasFruit(block, fruitBlockToIgnore) ? 1.0f : 0.0f;
 	}
 }

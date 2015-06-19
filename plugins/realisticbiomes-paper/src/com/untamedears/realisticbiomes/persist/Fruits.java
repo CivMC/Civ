@@ -2,6 +2,8 @@ package com.untamedears.realisticbiomes.persist;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -96,12 +98,12 @@ public class Fruits {
 	}
 
 	/**
-	 * Get a list of stems adjacent to given block
+	 * Get a list of stems adjacent to given block that do not have any other fruits adjacent to them
 	 * @param block
 	 * @return List of stems, can have from zero to four entries
 	 */
-	public static List<Block> getStems(Block block) {
-		Material stem = getStem(block.getType());
+	public static List<Block> getStems(Block block, Material fruitMaterial) {
+		Material stem = getStem(fruitMaterial);
 		ArrayList<Block> candidates = new ArrayList<Block>();
 		for( Vector vec : surroundingBlocks ) {
 			Block candidate = block.getLocation().add(vec).getBlock();
