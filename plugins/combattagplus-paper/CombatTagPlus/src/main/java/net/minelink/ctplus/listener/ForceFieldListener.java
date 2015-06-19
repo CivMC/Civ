@@ -3,7 +3,6 @@ package net.minelink.ctplus.listener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.minelink.ctplus.CombatTagPlus;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,9 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 
 import java.util.HashMap;
@@ -25,7 +22,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import static org.bukkit.block.BlockFace.*;
@@ -34,34 +30,14 @@ public final class ForceFieldListener implements Listener {
 
     private static final List<BlockFace> ALL_DIRECTIONS = ImmutableList.of(NORTH, EAST, SOUTH, WEST);
 
-    private static final int NUM_THREADS = Math.max(2, Runtime.getRuntime().availableProcessors() - 2);
-
     private final CombatTagPlus plugin;
 
     private final Map<UUID, Set<Location>> previousUpdates = new HashMap<>();
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS,
-            new ThreadFactoryBuilder().setNameFormat("CombatTagPlus ForceField Thread #%d").build());
-
-    private final Map<UUID, Semaphore> playerLocks = new HashMap<>();
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("CombatTagPlus ForceField Thread").build());
 
     public ForceFieldListener(CombatTagPlus plugin) {
         this.plugin = plugin;
-
-        // Create lock instances for currently online players
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            playerLocks.put(player.getUniqueId(), new Semaphore(1));
-        }
-    }
-
-    @EventHandler
-    public void addPlayer(PlayerJoinEvent event) {
-        playerLocks.put(event.getPlayer().getUniqueId(), new Semaphore(1));
-    }
-
-    @EventHandler
-    public void removePlayer(PlayerQuitEvent event) {
-        playerLocks.remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
@@ -101,52 +77,42 @@ public final class ForceFieldListener implements Listener {
         }
 
         final Player player = event.getPlayer();
-        final Semaphore lock = playerLocks.get(player.getUniqueId());
 
         // Asynchronously send block changes around player
         executorService.submit(new Runnable() {
             @Override
             public void run() {
-                try {
-                    // Wait until lock is available
-                    lock.acquire();
-
-                    // Stop processing if player has logged off
-                    UUID uuid = player.getUniqueId();
-                    if (!plugin.getPlayerCache().isOnline(uuid)) {
-                        previousUpdates.remove(uuid);
-                        return;
-                    }
-
-                    // Update the players force field perspective and find all blocks to stop spoofing
-                    Set<Location> removeBlocks;
-                    Set<Location> changedBlocks = getChangedBlocks(player);
-                    Material forceFieldMaterial = Material.getMaterial(plugin.getSettings().getForceFieldMaterial());
-                    byte forceFieldMaterialDamage = plugin.getSettings().getForceFieldMaterialDamage();
-
-                    if (previousUpdates.containsKey(uuid)) {
-                        removeBlocks = previousUpdates.get(uuid);
-                    } else {
-                        removeBlocks = new HashSet<>();
-                    }
-
-                    for (Location location : changedBlocks) {
-                        player.sendBlockChange(location, forceFieldMaterial, forceFieldMaterialDamage);
-                        removeBlocks.remove(location);
-                    }
-
-                    // Remove no longer used spoofed blocks
-                    for (Location location : removeBlocks) {
-                        Block block = location.getBlock();
-                        player.sendBlockChange(location, block.getType(), block.getData());
-                    }
-
-                    previousUpdates.put(uuid, changedBlocks);
-                } catch (InterruptedException ignore) {
-
-                } finally {
-                    lock.release();
+                // Stop processing if player has logged off
+                UUID uuid = player.getUniqueId();
+                if (!plugin.getPlayerCache().isOnline(uuid)) {
+                    previousUpdates.remove(uuid);
+                    return;
                 }
+
+                // Update the players force field perspective and find all blocks to stop spoofing
+                Set<Location> changedBlocks = getChangedBlocks(player);
+                Material forceFieldMaterial = Material.getMaterial(plugin.getSettings().getForceFieldMaterial());
+                byte forceFieldMaterialDamage = plugin.getSettings().getForceFieldMaterialDamage();
+
+                Set<Location> removeBlocks;
+                if (previousUpdates.containsKey(uuid)) {
+                    removeBlocks = previousUpdates.get(uuid);
+                } else {
+                    removeBlocks = new HashSet<>();
+                }
+
+                for (Location location : changedBlocks) {
+                    player.sendBlockChange(location, forceFieldMaterial, forceFieldMaterialDamage);
+                    removeBlocks.remove(location);
+                }
+
+                // Remove no longer used spoofed blocks
+                for (Location location : removeBlocks) {
+                    Block block = location.getBlock();
+                    player.sendBlockChange(location, block.getType(), block.getData());
+                }
+
+                previousUpdates.put(uuid, changedBlocks);
             }
         });
     }
