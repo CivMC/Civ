@@ -19,6 +19,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.persist.Fruits;
+import com.untamedears.realisticbiomes.persist.Plant;
 
 public class PlayerListener implements Listener {
 	
@@ -86,7 +88,7 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler(ignoreCancelled = true)
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {	
-		double plantGrowth = 1.0;
+		Plant plant = null;
 		
 		// right click block with the seeds or plant in hand to see what the status is
 		if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -130,7 +132,7 @@ public class PlayerListener implements Listener {
 				GrowthConfig growthConfig = growthConfigs.get(material);
 				if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
 					
-					plantGrowth = plugin.growAndPersistBlock(block, false, growthConfig);
+					plant = plugin.growAndPersistBlock(block, false, growthConfig, null);
 				}
 			}
 			else {
@@ -152,22 +154,47 @@ public class PlayerListener implements Listener {
 					return;
 
 				if (plugin.persistConfig.enabled && growthConfig.isPersistent()) {
-					double growthAmount = growthConfig.getRate(block);
-					RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): growthAmount for block " + block + " is " + growthAmount);
-					growthAmount = (1.0/(growthAmount*(60.0*60.0/*seconds per hour*/)));
-					RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): growthAmount adjusted to "  + growthAmount);
+					double rate = growthConfig.getRate(block);
+					RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): rate for block " + block + " is " + rate);
+					rate = (1.0/(rate*(60.0*60.0/*seconds per hour*/)));
+					RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): rate adjusted to "  + rate);
 					
-					if (plantGrowth == 1.0) {
-						String amount = new DecimalFormat("#0.00").format(growthAmount);
+					if (plant == null) {
+						String amount = new DecimalFormat("#0.00").format(rate);
 						event.getPlayer().sendMessage("§7[Realistic Biomes] \""+material.toString()+"\": "+amount+" hours to maturity");
-					}
-					else {
-						String amount = new DecimalFormat("#0.00").format(growthAmount);
-						String pAmount = new DecimalFormat("#0.00").format(growthAmount*(1.0-plantGrowth));
+						
+					} else if (plant.getGrowth() == 1.0) {
+						if (Fruits.isFruitFul(block.getType())) {
+							
+							if (!Fruits.hasFruit(block)) {
+								Material fruitMaterial = Fruits.getFruit(event.getClickedBlock().getType());
+								growthConfig = growthConfigs.get(fruitMaterial);
+								block = Fruits.getFreeBlock(event.getClickedBlock(), null);
+								if (block != null) {
+									double fruitRate = growthConfig.getRate(block);
+									RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): fruit rate for block " + block + " is " + fruitRate);
+									fruitRate = (1.0/(fruitRate*(60.0*60.0/*seconds per hour*/)));
+									RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): fruit rate adjusted to "  + fruitRate);
+									
+									String amount = new DecimalFormat("#0.00").format(fruitRate);
+									String pAmount = new DecimalFormat("#0.00").format(fruitRate*(1.0-plant.getFruitGrowth()));
+									event.getPlayer().sendMessage("§7[Realistic Biomes] \""+fruitMaterial.toString()+"\": "+pAmount+" of "+amount+" hours to maturity");
+									return;
+								}
+							}
+							
+						}
+						
+						
+						String amount = new DecimalFormat("#0.00").format(rate);
+						event.getPlayer().sendMessage("§7[Realistic Biomes] \""+material.toString()+"\": "+amount+" hours to maturity");
+
+					} else {
+						String amount = new DecimalFormat("#0.00").format(rate);
+						String pAmount = new DecimalFormat("#0.00").format(rate*(1.0-plant.getGrowth()));
 						event.getPlayer().sendMessage("§7[Realistic Biomes] \""+material.toString()+"\": "+pAmount+" of "+amount+" hours to maturity");
 					}
 					
-					return;
 				} else {
 					// Persistence is not enabled
 					double growthAmount = growthConfig.getRate(block);

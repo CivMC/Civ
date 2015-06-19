@@ -120,11 +120,10 @@ public class PlantManager {
 			
 			// we need InnoDB storage engine or else we can't do foreign keys!
 			this.makeTablePlant = writeConn.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s_plant" +
-							"(chunkId BIGINT, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER UNSIGNED, growth REAL, " +
+							"(chunkId BIGINT, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER UNSIGNED, growth REAL, fruitGrowth REAL, " +
 							"INDEX plant_chunk_idx (chunkId), " +
 							"CONSTRAINT chunkIdConstraint FOREIGN KEY (chunkId) REFERENCES %s_chunk (id))" +
 							"ENGINE INNODB", config.prefix, config.prefix));
-			
 			
 			this.selectAllFromChunk = readConn.prepareStatement(String.format("SELECT id, w, x, z FROM %s_chunk", config.prefix));
 						
@@ -148,6 +147,15 @@ public class PlantManager {
 			
 			throw new DataSourceException("PlantManager constructor: Caught exception when trying to run the " +
 					"'create xx_chunk and xx_plant' tables if they don't exist!", e);
+		}
+		
+		try {
+			// update database schema: try and catch
+			PreparedStatement upgradeTablePlant = writeConn.prepareStatement(String.format("ALTER TABLE %s_plant " +
+				"ADD fruitGrowth REAL AFTER growth", config.prefix));
+			upgradeTablePlant.execute();
+		} catch (SQLException e) {
+			RealisticBiomes.LOG.info("Could not update table - ignore if already updated. Error code: " + e.getErrorCode() + ", error message: " + e.getMessage());
 		}
 
 		// load all chunks
@@ -526,8 +534,6 @@ public class PlantManager {
 		
 		// add the plant
 		pChunk.addPlant(blockCoords, plant, readConn);
-		
-		plugin.getBlockGrower().growBlock(block, 0.0f);
 	}
 	
 	public Plant getPlantFromBlock(Block block) {
@@ -582,7 +588,7 @@ public class PlantManager {
 		for (Coords position : new HashSet<Coords>(pChunk.getPlantCoords())) {
 			Block block = chunk.getBlock(position.x,  position.y,  position.z);
 			
-			plugin.growAndPersistBlock(block, false);
+			plugin.growAndPersistBlock(block, false, null, null);
 		}
 	}
 	

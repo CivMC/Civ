@@ -39,13 +39,13 @@ public class ChunkWriter {
 			addChunkStmt = writeConn.prepareStatement(String.format("INSERT INTO %s_chunk (w, x, z) VALUES (?, ?, ?)", config.prefix));
 			getLastChunkIdStmt = writeConn.prepareStatement("SELECT LAST_INSERT_ID()");	
 			
-			addPlantStmt = writeConn.prepareStatement(String.format("INSERT INTO %s_plant (chunkid, w, x, y, z, date, growth) VALUES (?, ?, ?, ?, ?, ?, ?)", config.prefix));
+			addPlantStmt = writeConn.prepareStatement(String.format("INSERT INTO %s_plant (chunkid, w, x, y, z, date, growth, fruitGrowth) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", config.prefix));
 			// don't need for now,...maybe later?
 			//updatePlantStmt = writeConn.prepareStatement(String.format("UPDATE %s_plant SET date = ?, growth = ? where chunkid = ?", config.prefix));
 			deleteOldPlantsStmt = writeConn.prepareStatement(String.format("DELETE FROM %s_plant WHERE chunkid = ?", config.prefix));
 
 			loadPlantsStmt = readConn.prepareStatement(String
-								.format("SELECT w, x, y, z, date, growth FROM %s_plant WHERE chunkid = ?",
+								.format("SELECT w, x, y, z, date, growth, fruitGrowth FROM %s_plant WHERE chunkid = ?",
 										config.prefix));
 
 

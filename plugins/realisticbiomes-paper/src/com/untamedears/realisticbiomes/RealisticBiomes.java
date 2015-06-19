@@ -21,6 +21,7 @@ import com.untamedears.realisticbiomes.listener.SpawnListener;
 import com.untamedears.realisticbiomes.persist.BlockGrower;
 import com.untamedears.realisticbiomes.persist.ChunkCoords;
 import com.untamedears.realisticbiomes.persist.Coords;
+import com.untamedears.realisticbiomes.persist.Fruits;
 import com.untamedears.realisticbiomes.persist.Plant;
 import com.untamedears.realisticbiomes.persist.PlantManager;
 
@@ -380,16 +381,21 @@ public class RealisticBiomes extends JavaPlugin {
 	
 	// -----------------------------------
 	
-	// grow the specified block, return the new growth magnitude
-	// gets called when the user hits a block manually!!
-	public double growAndPersistBlock(Block block, boolean naturalGrowEvent) {
-		return growAndPersistBlock(block, naturalGrowEvent, getGrowthConfig(block));
-	}
-	
-	public double growAndPersistBlock(Block block, boolean naturalGrowEvent, GrowthConfig growthConfig) {
+	/**
+	 * grow the specified block, return the new growth magnitude
+	 * @param block The block to grow
+	 * @param naturalGrowEvent False if from player interaction (stick/block hit info)
+	 * @param growthConfig Growth config, will be looked up if null
+	 * @param fruitBlockToIgnore When checking for fruits, ignore this block. BlockBreak event needs this, since the block being broken is still in world until event has completed.
+	 * @return Plant or null, to report growth back to player on interaction
+	 */
+	public Plant growAndPersistBlock(Block block, boolean naturalGrowEvent, GrowthConfig growthConfig, Block fruitBlockToIgnore) {
+		if (growthConfig == null) {
+			growthConfig = getGrowthConfig(block);
+		}
 		RealisticBiomes.doLog(Level.FINER, "RealisticBiomes:growAndPersistBlock() called for block: " + block + " and is naturalGrowEvent? " + naturalGrowEvent);
 		if (!persistConfig.enabled)
-			return 0.0;
+			return null;
 		
 		Coords blockCoords = new Coords(block);
 		ChunkCoords chunckCoords = new ChunkCoords(block.getChunk()); 
@@ -397,7 +403,7 @@ public class RealisticBiomes extends JavaPlugin {
 		boolean loadChunk = naturalGrowEvent ? Math.random() < persistConfig.growEventLoadChance : true;
 		if (!loadChunk && !plantManager.isChunkLoaded(chunckCoords)) {
 			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): returning 0.0 because loadChunk = false or plantManager.chunkLoaded(" + chunckCoords + " is false");
-			return 0.0; // don't load the chunk or do anything
+			return null; // don't load the chunk or do anything
 			
 		}
 			
@@ -407,12 +413,12 @@ public class RealisticBiomes extends JavaPlugin {
 		if (growthConfig == null) {
 			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): returning 0.0 because growthConfig = null");
 			plantManager.removePlant(block);
-			return 0.0;
+			return null;
 		}
 		
 		// Only persistent crops should be grown in this manner
 		if (!growthConfig.isPersistent()) {
-			return 0.0;
+			return null;
 		}
 		
 		RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): plantManager.get() returned: " + plant + " for coords: " + blockCoords);
@@ -420,28 +426,58 @@ public class RealisticBiomes extends JavaPlugin {
 		if (plant == null) {
 			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): creating new plant and adding it");
 			
-			// divide by 1000 to get unix/epoch time, we don't need millisecond precision
-			// also fixes bug where the timestamp would be too big for the mysql rb_plant date column
-			plant = new Plant(System.currentTimeMillis()  / 1000L);
-			plant.addGrowth((float)BlockGrower.getGrowthFraction(block));
+			plant = new Plant((float)BlockGrower.getGrowthFraction(block),
+					(float)BlockGrower.getFruitGrowthFraction(block));
 			plantManager.addPlant(block, plant);
-			
-		}
-		else {
-			double growthAmount = growthConfig.getRate(block) * plant.setUpdateTime(System.currentTimeMillis() / 1000L);
-			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): plant existed, growthAmount was: " + plant.getGrowth());
-			plant.addGrowth((float) growthAmount);
-			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): plant existed, adding growth: " + growthAmount + " to now be " + plant.getGrowth());
-
 		}
 		
-		// actually 'grows' the block (in minecraft terms, between the different stages of growth that you can see in game)
-		// depending on its growth value
-		blockGrower.growBlock(block, plant.getGrowth());
-		if (plant.getGrowth() >= 1.0)
+		growPlant(plant, block, growthConfig, fruitBlockToIgnore);
+		
+		if (plant.isFullyGrown()) {
+			// if plant is fully grown and either has no fruits or fruit has fully grown, stop tracking it
 			plantManager.removePlant(block);
+		}
 		
-		return plant.getGrowth();
+		return plant;
+	}
+	
+	/**
+	 * Grow the plant
+	 * @param plant
+	 * @param block
+	 * @param growthConfig
+	 * @param fruitBlockToIgnore When checking for fruits, ignore this block. BlockBreak event needs this, since the block being broken is still in world until event has completed.
+	 */
+	public void growPlant(Plant plant, Block block, GrowthConfig growthConfig, Block fruitBlockToIgnore) {
+		double rate = growthConfig.getRate(block);
+		double fruitRate = -1.0;
+		
+		RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growPlant(): plant existed, growthAmount was: " + plant.getGrowth());
+		double updateTime = plant.grow(rate);
+		
+		if (Fruits.isFruitFul(block.getType()) && plant.getGrowth() >= 1.0 && !Fruits.hasFruit(block, fruitBlockToIgnore)) {
+			if (plant.getFruitGrowth() == -1.0) {
+				// first time a stem is fully grown, reset fruit to zero
+				plant.setFruitGrowth(0.0f);
+			}
+			
+			Block freeBlock = Fruits.getFreeBlock(block, fruitBlockToIgnore);
+			if (freeBlock != null) {
+				// got a free spot, now grow a fruit there with the fruit's conditions
+				GrowthConfig fruitGrowthConfig = getGrowthConfig(Fruits.getFruit(block.getType()));
+				fruitRate = fruitGrowthConfig.getRate(freeBlock);
+				
+				RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growPlant(): fruit rate: " + fruitRate);
+				
+				plant.growFruit(updateTime, fruitRate);
+			} else {
+				RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growPlant(): no free block for fruit");
+			}
+		}
+		
+		// actually 'grows' the block or fruit (in minecraft terms, between the different stages of growth that you can see in game)
+		// depending on its growth value
+		blockGrower.growBlock(block, plant.getGrowth(), plant.getFruitGrowth());
 	}
 	
 	public PlantManager getPlantManager() {
