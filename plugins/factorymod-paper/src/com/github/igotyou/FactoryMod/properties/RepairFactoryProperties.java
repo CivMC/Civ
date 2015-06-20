@@ -101,10 +101,10 @@ public class RepairFactoryProperties implements IFactoryProperties{
 		ItemList<NamedItemStack> rfAllowed = plugin.getItems(section.getConfigurationSection("repairable"));
 		int rfEnergyTime = section.getInt("fuel_time");
 		int rfRepair = costs.getInt("repair_multiple", 1);
-		String rfName = section.getString("name", "Repair Factory");
+		String rfName = section.getString("name", "Reset Factory");
 		int repairTime = section.getInt("repair_time", 12);
 		int productionTime = section.getInt("production_time");
-		int resetLevel = section.getInt("reset_level");
+		int resetLevel = section.getInt("reset_level", 1);
 		
 		// We only care about raw material types for repair purposes.
 		Iterator<NamedItemStack> canRepair = rfAllowed.iterator();
