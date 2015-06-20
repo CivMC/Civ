@@ -29,7 +29,10 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 	public boolean exactlyIn(Inventory inventory)
 	{
 		//TODO: This is pretty broken too; won't handle split stacks right, a number of
-		//     other edge cases; we've been very lucky so far.
+		//     other edge cases; we've been very lucky so far. Basically only lucky b/c
+		//     the "stack size" of input items is not divided, the requirement comes in as 
+		//     a single "stack" of say 96 items, etc. so this works.
+		//     So not exactly "broken" but not clean, either.
 		boolean returnValue=true;
 		//Checks that the ItemList ItemStacks are contained in the inventory
 		for(ItemStack itemStack:this)

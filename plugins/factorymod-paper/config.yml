@@ -223,7 +223,7 @@ compactor:
         display_name: Crate
         lore: A crate for compacting items
       'Redstone Blocks':
-        material: REDSTONE
+        material: REDSTONE_BLOCK
         amount: 64
       Piston:
         material: PISTON_BASE
