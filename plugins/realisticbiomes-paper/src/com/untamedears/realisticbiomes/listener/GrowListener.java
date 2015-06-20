@@ -272,11 +272,16 @@ public class GrowListener implements Listener {
 			return false;
 		}
 		
+		GrowthConfig growthConfig = plugin.getGrowthConfig(material);
+		if (!growthConfig.isPersistent()) {
+			return false;
+		}
+		
 		// only ignore block if it comes from a break event 
 		Block ignoreBlock = block.getType() == Material.AIR ? null : block;
 		
 		for (Block stem: Fruits.getStems(block, material)) {
-			plugin.growAndPersistBlock(stem, true, null, ignoreBlock);
+			plugin.growAndPersistBlock(stem, true, growthConfig, ignoreBlock);
 		}
 		return true;
 	}
