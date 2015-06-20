@@ -10652,8 +10652,8 @@ production_recipes:
       Endstone:
         material: ENDER_STONE
         amount: 16
-      Nether Warts:
-        material: NETHER_WARTS
+      Nether Wart:
+        material: NETHER_WART
         amount: 25
       Glass Bottle:
         material: GLASS_BOTTLE
@@ -10667,7 +10667,7 @@ production_recipes:
     production_time: 80
     inputs:
       Carrot:
-        material: CARROT
+        material: CARROT_ITEM
         amount: 64
       Soul Sand:
         material: SOUL_SAND
@@ -10802,7 +10802,7 @@ production_recipes:
          amount: 128
          display_name: Crate of Pumpkins
          lore: Crate of Pumpkins
-       Crate of Grass Blocks:
+       Crate of Grass:
          material: WOOD
          durability: 0
          amount: 64
@@ -10917,7 +10917,7 @@ production_recipes:
          amount: 16
          display_name: Crate of Yellow Flower
          lore: Crate of Yellow Flower
-       Crate of Grass:
+       Crate of Grass Blocks:
          material: WOOD
          durability: 0
          amount: 16
