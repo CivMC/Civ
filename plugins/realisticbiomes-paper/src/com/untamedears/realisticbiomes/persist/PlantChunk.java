@@ -157,6 +157,7 @@ public class PlantChunk {
 				int z = rs.getInt("z");
 				long date = rs.getLong(5);
 				float growth = rs.getFloat(6);
+				float fruitGrowth = rs.getFloat(7);
 
 				RealisticBiomes.doLog(Level.FINEST, String
 								.format("PlantChunk.load(): got result: w:%s x:%s y:%s z:%s date:%s growth:%s",
@@ -169,7 +170,7 @@ public class PlantChunk {
 					continue;
 				}
 
-				Plant plant = new Plant(date, growth);
+				Plant plant = new Plant(date, growth, fruitGrowth);
 
 				// TODO MARK: this code seems very similar to
 				// RealisticBiomes.growAndPersistBlock()
@@ -177,16 +178,12 @@ public class PlantChunk {
 				Block block = world.getBlockAt(x, y, z);
 				GrowthConfig growthConfig = plugin.getGrowthConfig(block);
 				if (growthConfig.isPersistent()) {
-					double growthAmount = growthConfig.getRate(block)
-							* plant.setUpdateTime(System.currentTimeMillis() / 1000L);
-					plant.addGrowth((float) growthAmount);
-
-					// and update the plant growth
-					plugin.getBlockGrower().growBlock(block, plant.getGrowth());
+					plugin.growPlant(plant, block, growthConfig, null);
 				}
+
 				// if the plant isn't finished growing, add it to the
 				// plants
-				if (!(plant.getGrowth() >= 1.0)) {
+				if (!plant.isFullyGrown()) {
 					plants.put(new Coords(w, x, y, z), plant);
 					RealisticBiomes.doLog(Level.FINER, "PlantChunk.load(): plant not finished growing, adding to plants list");
 				}
@@ -307,6 +304,8 @@ public class PlantChunk {
 								plant.getUpdateTime());
 						ChunkWriter.addPlantStmt.setFloat(7,
 								plant.getGrowth());
+						ChunkWriter.addPlantStmt.setFloat(8,
+								plant.getFruitGrowth());
 						
 						ChunkWriter.addPlantStmt.addBatch();
 						

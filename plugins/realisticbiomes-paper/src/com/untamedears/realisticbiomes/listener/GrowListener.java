@@ -8,8 +8,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -23,6 +26,7 @@ import org.bukkit.material.MaterialData;
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.persist.ChunkCoords;
+import com.untamedears.realisticbiomes.persist.Fruits;
 import com.untamedears.realisticbiomes.persist.Plant;
 import com.untamedears.realisticbiomes.persist.WorldID;
 
@@ -49,16 +53,21 @@ public class GrowListener implements Listener {
 	 */
 	@EventHandler(ignoreCancelled = true)
 	public void onBlockGrow(BlockGrowEvent event) {
-		Material m = event.getNewState().getType();
-		Block b = event.getBlock();
+		Material material = event.getNewState().getType();
+		Block block = event.getBlock();
 		
-		GrowthConfig growthConfig = plugin.getGrowthConfig(b);
+		if (growFruit(block, material)) {
+			event.setCancelled(true);
+			return;
+		}
+		
+		GrowthConfig growthConfig = plugin.getGrowthConfig(block);
 		if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
-			plugin.growAndPersistBlock(b, true, growthConfig);
+			plugin.growAndPersistBlock(block, true, growthConfig, null);
 			
 			event.setCancelled(true);
 		}
-		else if (!willGrow(m, b)) {
+		else if (!willGrow(material, block)) {
 			event.setCancelled(true);
 		}
 	}
@@ -215,14 +224,63 @@ public class GrowListener implements Listener {
 			return;
 		
 		// if the block placed was a recognized crop, register it with the manager
+		// unless it is a fruit, then it's persistence is handled by the stem
 		Block block = event.getBlockPlaced();
+		if (Fruits.isFruit(block.getType())) {
+			return;
+		}
 		GrowthConfig growthConfig = plugin.getGrowthConfig(block);
 		if (growthConfig == null)
 			return;	
 		
-		plugin.getPlantManager().addPlant(block, new Plant(System.currentTimeMillis() / 1000L));
+		plugin.getPlantManager().addPlant(block, new Plant(0.0f, -1.0f));
 	}
 	
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent event) {
+		if (!plugin.persistConfig.enabled)
+			return;
+		
+		growFruit(event.getBlock());
+	}
+	
+	@EventHandler
+	public void on(BlockPistonExtendEvent event) {
+		if (!plugin.persistConfig.enabled)
+			return;
+		for (Block block: event.getBlocks()) {
+			growFruit(block);
+		}
+	}
+	
+	@EventHandler
+	public void on(BlockPistonRetractEvent event) {
+		if (!plugin.persistConfig.enabled)
+			return;
+		growFruit(event.getBlock());
+	}
+	
+	/**
+	 * Get all touching stems and attempt to restart their fruit growth
+	 */
+	private boolean growFruit(Block block) {
+		return growFruit(block, block.getType());
+	}
+	
+	private boolean growFruit(Block block, Material material) {
+		if (!Fruits.isFruit(material)) {
+			return false;
+		}
+		
+		// only ignore block if it comes from a break event 
+		Block ignoreBlock = block.getType() == Material.AIR ? null : block;
+		
+		for (Block stem: Fruits.getStems(block, material)) {
+			plugin.growAndPersistBlock(stem, true, null, ignoreBlock);
+		}
+		return true;
+	}
+
 	@EventHandler
 	public void onWorldLoadEvent(WorldInitEvent e) {
 		WorldID.init(plugin);

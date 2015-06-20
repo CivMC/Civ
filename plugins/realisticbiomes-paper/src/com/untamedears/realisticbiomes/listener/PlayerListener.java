@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
@@ -16,9 +17,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.material.Dye;
+import org.bukkit.material.MaterialData;
 
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.persist.Fruits;
+import com.untamedears.realisticbiomes.persist.Plant;
 
 public class PlayerListener implements Listener {
 	
@@ -86,102 +91,138 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler(ignoreCancelled = true)
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {	
-		double plantGrowth = 1.0;
+		Plant plant = null;
 		
 		// right click block with the seeds or plant in hand to see what the status is
-		if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			Object material = event.getMaterial()/*in hand*/;
-			Block block = event.getClickedBlock();
+		if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
 			
-			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-				// hit the ground with a seed, or other farm product: get the adjusted crop growth
-				// rate as if that crop was planted on top of the block
-				material = materialAliases.get(material);
-				// if the material isn't aliased, just use the material
-				if (material == null)
-					material = event.getMaterial();
-				
-				// handle saplings as their tree types
-				if (event.getItem() != null && event.getItem().getTypeId() == Material.SAPLING.getId()) {
-					int data = event.getItem().getData().getData();
-					if (saplingIndexMap.containsKey(data)) {
-						material = saplingIndexMap.get(data);
-					}
+		Object material = event.getMaterial()/*in hand*/;
+		Block block = event.getClickedBlock();
+		
+		if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+			// hit the ground with a seed, or other farm product: get the adjusted crop growth
+			// rate as if that crop was planted on top of the block
+			material = materialAliases.get(material);
+			// if the material isn't aliased, just use the material
+			if (material == null)
+				material = event.getMaterial();
+			
+			// handle saplings as their tree types
+			if (event.getItem() != null && event.getItem().getTypeId() == Material.SAPLING.getId()) {
+				int data = event.getItem().getData().getData();
+				if (saplingIndexMap.containsKey(data)) {
+					material = saplingIndexMap.get(data);
 				}
-				
-				
-				// don't do anything if the material is a dye, but not cocoa
-				if (event.getMaterial() == Material.INK_SACK && event.getItem().getData().getData() != 3/*cocoa*/)
+			}
+			
+//			RealisticBiomes.doLog(Level.FINER, "CLICKY: " + event.getItem().getData());
+			
+			// don't do anything if the material is a dye, but not cocoa brown
+			if (event.getMaterial() == Material.INK_SACK) {
+				MaterialData data = event.getItem().getData();
+				if ((data instanceof Dye) && ((Dye)data).getColor() != DyeColor.BROWN) {
 					return;
+				}
+			}
+			
+		}
+		else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && (material == Material.STICK || material == Material.BONE)) {
+			// right click on a growing crop with a stick: get information about that crop
+			material = event.getClickedBlock().getType();
+			
+			// handle saplings as their tree types
+			int index = block.getData();
+			if (material == Material.SAPLING && saplingIndexMap.containsKey(index)) {
 				
+				material = saplingIndexMap.get(index);
+			}
+			
+			GrowthConfig growthConfig = growthConfigs.get(material);
+			if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
+				
+				plant = plugin.growAndPersistBlock(block, false, growthConfig, null);
+			}
+		}
+		else {
+			// right clicked without stick or bone, do nothing
+			return;
+		}
+		
+		// show growth rate information if the item in the player's hand is not a bone
+		if (event.getMaterial() == Material.BONE) {
+			return;
+		}
+		
+		block = event.getClickedBlock();
+		if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+			// from hitting something with material in hand
+			if (material == Material.COCOA) {
+				block = block.getRelative(event.getBlockFace());
+			} else {
 				block = block.getRelative(0,1,0);
 			}
-			else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && (material == Material.STICK || material == Material.BONE)) {
-				// right click on a growing crop with a stick: get information about that crop
-				material = event.getClickedBlock().getType();
+		}
+		
+		GrowthConfig growthConfig = growthConfigs.get(material);
+		if (growthConfig == null)
+			return;
+
+		if (plugin.persistConfig.enabled && growthConfig.isPersistent()) {
+			double rate = growthConfig.getRate(block);
+			RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): rate for " + material + " at block " + block + " is " + rate);
+			rate = (1.0/(rate*(60.0*60.0/*seconds per hour*/)));
+			RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): rate adjusted to "  + rate);
+			
+			if (plant == null) {
+				String amount = new DecimalFormat("#0.00").format(rate);
+				event.getPlayer().sendMessage("§7[Realistic Biomes] \""+material.toString()+"\": "+amount+" hours to maturity");
 				
-				// handle saplings as their tree types
-				int index = block.getData();
-				if (material == Material.SAPLING && saplingIndexMap.containsKey(index)) {
+			} else if (plant.getGrowth() == 1.0) {
+				if (Fruits.isFruitFul(block.getType())) {
 					
-					material = saplingIndexMap.get(index);
+					if (!Fruits.hasFruit(block)) {
+						Material fruitMaterial = Fruits.getFruit(event.getClickedBlock().getType());
+						growthConfig = growthConfigs.get(fruitMaterial);
+						block = Fruits.getFreeBlock(event.getClickedBlock(), null);
+						if (block != null) {
+							double fruitRate = growthConfig.getRate(block);
+							RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): fruit rate for block " + block + " is " + fruitRate);
+							fruitRate = (1.0/(fruitRate*(60.0*60.0/*seconds per hour*/)));
+							RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): fruit rate adjusted to "  + fruitRate);
+							
+							String amount = new DecimalFormat("#0.00").format(fruitRate);
+							String pAmount = new DecimalFormat("#0.00").format(fruitRate*(1.0-plant.getFruitGrowth()));
+							event.getPlayer().sendMessage("§7[Realistic Biomes] \""+fruitMaterial.toString()+"\": "+pAmount+" of "+amount+" hours to maturity");
+							return;
+						}
+					}
+					
 				}
 				
-				GrowthConfig growthConfig = growthConfigs.get(material);
-				if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
-					
-					plantGrowth = plugin.growAndPersistBlock(block, false, growthConfig);
-				}
-			}
-			else {
-				// right clicked without stick, do nothing
-				return;
+				
+				String amount = new DecimalFormat("#0.00").format(rate);
+				event.getPlayer().sendMessage("§7[Realistic Biomes] \""+material.toString()+"\": "+amount+" hours to maturity");
+
+			} else {
+				String amount = new DecimalFormat("#0.00").format(rate);
+				String pAmount = new DecimalFormat("#0.00").format(rate*(1.0-plant.getGrowth()));
+				event.getPlayer().sendMessage("§7[Realistic Biomes] \""+material.toString()+"\": "+pAmount+" of "+amount+" hours to maturity");
 			}
 			
-			// show growth rate information if the item in the player's hand is not a bone
-			if (event.getMaterial() != Material.BONE) {
-				block = event.getClickedBlock();
-				if (event.getAction() == Action.LEFT_CLICK_BLOCK) 
-					block = block.getRelative(0,1,0);
-				else if (material == Material.PUMPKIN || material == Material.MELON_BLOCK || material == Material.CACTUS) {
-					block = block.getRelative(0,1,0);
-				}
-				
-				GrowthConfig growthConfig = growthConfigs.get(material);
-				if (growthConfig == null)
-					return;
-
-				if (plugin.persistConfig.enabled && growthConfig.isPersistent()) {
-					double growthAmount = growthConfig.getRate(block);
-					RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): growthAmount for block " + block + " is " + growthAmount);
-					growthAmount = (1.0/(growthAmount*(60.0*60.0/*seconds per hour*/)));
-					RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): growthAmount adjusted to "  + growthAmount);
-					
-					if (plantGrowth == 1.0) {
-						String amount = new DecimalFormat("#0.00").format(growthAmount);
-						event.getPlayer().sendMessage("§7[Realistic Biomes] \""+material.toString()+"\": "+amount+" hours to maturity");
-					}
-					else {
-						String amount = new DecimalFormat("#0.00").format(growthAmount);
-						String pAmount = new DecimalFormat("#0.00").format(growthAmount*(1.0-plantGrowth));
-						event.getPlayer().sendMessage("§7[Realistic Biomes] \""+material.toString()+"\": "+pAmount+" of "+amount+" hours to maturity");
-					}
-					
-					return;
-				} else {
-					// Persistence is not enabled
-					double growthAmount = growthConfig.getRate(block);
-					
-					// clamp the growth value between 0 and 1 and put into percent format
-					if (growthAmount > 1.0)
-						growthAmount = 1.0;
-					else if (growthAmount < 0.0)
-						growthAmount = 0.0;
-					String amount = new DecimalFormat("#0.00").format(growthAmount*100.0)+"%";
-					// send the message out to the user!
-					event.getPlayer().sendMessage("§7[Realistic Biomes] Growth rate \""+material.toString()+"\" = "+amount);
-				}
-			}
+		} else {
+			// Persistence is not enabled
+			double growthAmount = growthConfig.getRate(block);
+			
+			// clamp the growth value between 0 and 1 and put into percent format
+			if (growthAmount > 1.0)
+				growthAmount = 1.0;
+			else if (growthAmount < 0.0)
+				growthAmount = 0.0;
+			String amount = new DecimalFormat("#0.00").format(growthAmount*100.0)+"%";
+			// send the message out to the user!
+			event.getPlayer().sendMessage("§7[Realistic Biomes] Growth rate \""+material.toString()+"\" = "+amount);
 		}
 	}
 	

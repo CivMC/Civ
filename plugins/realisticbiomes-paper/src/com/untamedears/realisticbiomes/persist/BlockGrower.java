@@ -3,12 +3,16 @@ package com.untamedears.realisticbiomes.persist;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+import org.bukkit.CropState;
 import org.bukkit.Material;
+import org.bukkit.NetherWartsState;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.CocoaPlant;
 import org.bukkit.material.CocoaPlant.CocoaPlantSize;
+import org.bukkit.material.Crops;
 import org.bukkit.material.MaterialData;
+import org.bukkit.material.NetherWarts;
 
 // handles force-growing of crop-type blocks based on a fractional growth amount
 public class BlockGrower {
@@ -38,9 +42,15 @@ public class BlockGrower {
 		this.plantManager = plantManager;
 	}
 	
-	// grow the crop found at the given block/coordinates, with the amount or growth
-	// between 0 and 1, with 1 being totally mature
-	public void growBlock(Block block, float growth) {
+	/**
+	 * grow the crop or stem found at the given block's coordinates with the amount
+	 * between 0 and 1, with 1 being totally mature
+	 * @param block Block to grow
+	 * @param growth Block's growth, between 0 and 1
+	 * @param fruitGrowth Fruit growth, -1 if fruitless of 0 - 1 if stem
+	 */
+	@SuppressWarnings("deprecation")
+	public void growBlock(Block block, float growth, float fruitGrowth) {
 		Integer stages = growthStages.get(block.getType());
 		if (stages == null)
 			return;
@@ -56,13 +66,41 @@ public class BlockGrower {
 			// trust that enum order is sanely declared in order SMALL, MEDIUM, LARGE
 			CocoaPlantSize cocoaSize = CocoaPlantSize.values()[stage]; 
 			((CocoaPlant)data).setSize(cocoaSize);
+		} else if (data instanceof Crops) {
+			// trust that enum order is sanely declared in order
+			CropState cropSize = CropState.values()[stage]; 
+			((Crops)data).setState(cropSize);
+		} else if (data instanceof NetherWarts) {
+			// trust that enum order is sanely declared in order
+			NetherWartsState cropSize = NetherWartsState.values()[stage]; 
+			((NetherWarts)data).setState(cropSize);
 		} else {
 			data.setData(stage);
 		}
 		state.setData(data);
 		state.update(true, false);
+		
+		if (fruitGrowth != -1.0) {
+			this.growFruit(block, fruitGrowth);
+		}
 	}
 	
+	private void growFruit(Block block, float fruitGrowth) {
+		if (Fruits.hasFruit(block)) {
+			return;
+		}
+		
+		if (fruitGrowth < 1.0) {
+			return;
+		}
+		
+		Block freeBlock = Fruits.getFreeBlock(block, null);
+		if (freeBlock != null) {
+			freeBlock.setType(Fruits.getFruit(block.getType()));
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
 	public static double getGrowthFraction(Block block) {
 		if (!growthStages.containsKey(block.getType()))
 			return 0.0;
@@ -83,9 +121,14 @@ public class BlockGrower {
 					stage = 2;
 					break;
 			}
+			
 		} else {
 			stage = data.getData();
 		}
 		return (double)stage/(double)(growthStages.get(block.getType())-1);
+	}
+
+	public static float getFruitGrowthFraction(Block block, Block fruitBlockToIgnore) {
+		return Fruits.hasFruit(block, fruitBlockToIgnore) ? 1.0f : 0.0f;
 	}
 }

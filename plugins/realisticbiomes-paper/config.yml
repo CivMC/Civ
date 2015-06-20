@@ -152,6 +152,7 @@ realistic_biomes:
 
   MELON_BLOCK:
    inherit: crop
+   persistent_growth_period: 3
    soil_max_layers: 0
    base_rate: 0.32
    biomes:
@@ -161,6 +162,7 @@ realistic_biomes:
 
   PUMPKIN:
    inherit: crop
+   persistent_growth_period: 3
    soil_max_layers: 0
    base_rate: 0.32
    biomes:
