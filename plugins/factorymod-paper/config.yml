@@ -10282,7 +10282,6 @@ production_recipes:
         material: IRON_CHESTPLATE
         amount: 1
     enchantments:
-    enchantments:
       Unbreaking 3:
         type: DURABILITY
         level: 3
