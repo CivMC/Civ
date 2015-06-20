@@ -4,6 +4,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.md_5.bungee.api.ChatColor;
+
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -36,10 +39,10 @@ public class MercuryListener implements Listener{
 		// They are all realistically the same effect except that how it gets sent to player.
 		StringBuilder message = new StringBuilder();
 		for (int x = 1; x < comp.length; x++)
-			message.append(comp[x]);
+			message.append(comp[x]+" ");
 		
 		try {
-			Utility.notifyGroup(gm.getGroup(comp[0]), message.toString());
+			Utility.notifyGroup(gm.getGroup(comp[0]), ChatColor.AQUA+message.toString());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

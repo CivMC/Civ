@@ -99,13 +99,13 @@ public class JukeAlertListener implements Listener {
                 snitch.imposeSnitchTax();
                 inList.add(snitch);
                 try {
-                String message = ChatColor.AQUA + " * " + player.getDisplayName() + " logged in to snitch at " 
+                String message = " * " + player.getDisplayName() + " logged in to snitch at " 
 				        + snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
 				        " " + snitch.getY() + " " + snitch.getZ() + "]";
-                notifyGroup(snitch, message);
+                notifyGroup(snitch, ChatColor.AQUA+message);
                                 
-                if (mercury.isEnabled())
-                	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "login");
+                if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers())
+                	mercury.sendMessage("all", snitch.getGroup().getName() + " " + message, "jukealert-login");
                 } catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -136,13 +136,13 @@ public class JukeAlertListener implements Listener {
             if (!isOnSnitch(snitch, accountId)) {
                 snitch.imposeSnitchTax();
                 try {
-                String message = ChatColor.AQUA + " * " + player.getDisplayName() + " logged out in snitch at " 
+                String message = " * " + player.getDisplayName() + " logged out in snitch at " 
 		        		+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
 		                " " + snitch.getY() + " " + snitch.getZ() + "]";
-                notifyGroup(snitch, message);
+                notifyGroup(snitch, ChatColor.AQUA+message);
                 
-                if (mercury.isEnabled())
-                	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "logout");
+                if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers())
+                	mercury.sendMessage("all", snitch.getGroup().getName() + " " + message, "jukealert-logout");
                 } catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -357,13 +357,13 @@ public class JukeAlertListener implements Listener {
                         	continue;
                         else{
                         	try {
-                        	String message = ChatColor.AQUA + " * " + player.getDisplayName() + " entered snitch at " 
+                        	String message = " * " + player.getDisplayName() + " entered snitch at " 
 					        		+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
 					                " " + snitch.getY() + " " + snitch.getZ() + "]";
-                            notifyGroup(snitch, message);
+                            notifyGroup(snitch, ChatColor.AQUA+message);
                             
-                            if (mercury.isEnabled())
-                            	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "entry");
+                            if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers())
+                            	mercury.sendMessage("all", snitch.getGroup().getName() + " " + message, "jukealert-entry");
                         	} catch (SQLException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
