@@ -138,10 +138,12 @@ public class PlayerListener implements Listener {
 				material = saplingIndexMap.get(index);
 			}
 			
-			GrowthConfig growthConfig = growthConfigs.get(material);
-			if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
-				
-				plant = plugin.growAndPersistBlock(block, false, growthConfig, null);
+			if (!Fruits.isFruit((Material) material)) {
+				GrowthConfig growthConfig = growthConfigs.get(material);
+				if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
+					
+					plant = plugin.growAndPersistBlock(block, false, growthConfig, null);
+				}
 			}
 			
 		} else {
@@ -154,7 +156,6 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
-		block = event.getClickedBlock();
 		if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			// from hitting something with material in hand
 			if (material == Material.COCOA) {
