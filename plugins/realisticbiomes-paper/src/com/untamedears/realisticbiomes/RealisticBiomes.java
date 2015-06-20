@@ -444,10 +444,12 @@ public class RealisticBiomes extends JavaPlugin {
 	
 	/**
 	 * Grow the plant
+	 * If not `fruitBlockToIgnore` is not null, this comes from BlockBreak. The event needs this, since
+	 * the block being broken is still in world until event has completed.
 	 * @param plant
 	 * @param block
 	 * @param growthConfig
-	 * @param fruitBlockToIgnore When checking for fruits, ignore this block. BlockBreak event needs this, since the block being broken is still in world until event has completed.
+	 * @param fruitBlockToIgnore When checking for fruits, ignore this block
 	 */
 	public void growPlant(Plant plant, Block block, GrowthConfig growthConfig, Block fruitBlockToIgnore) {
 		double rate = growthConfig.getRate(block);
@@ -456,23 +458,31 @@ public class RealisticBiomes extends JavaPlugin {
 		RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growPlant(): plant existed, growthAmount was: " + plant.getGrowth());
 		double updateTime = plant.grow(rate);
 		
-		if (Fruits.isFruitFul(block.getType()) && plant.getGrowth() >= 1.0 && !Fruits.hasFruit(block, fruitBlockToIgnore)) {
-			if (plant.getFruitGrowth() == -1.0) {
-				// first time a stem is fully grown, reset fruit to zero
-				plant.setFruitGrowth(0.0f);
-			}
-			
-			Block freeBlock = Fruits.getFreeBlock(block, fruitBlockToIgnore);
-			if (freeBlock != null) {
-				// got a free spot, now grow a fruit there with the fruit's conditions
-				GrowthConfig fruitGrowthConfig = getGrowthConfig(Fruits.getFruit(block.getType()));
-				fruitRate = fruitGrowthConfig.getRate(freeBlock);
-				
-				RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growPlant(): fruit rate: " + fruitRate);
-				
-				plant.growFruit(updateTime, fruitRate);
-			} else {
-				RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growPlant(): no free block for fruit");
+		if (Fruits.isFruitFul(block.getType())) {
+			boolean hasFruit = Fruits.hasFruit(block, fruitBlockToIgnore);
+			GrowthConfig fruitGrowthConfig = getGrowthConfig(Fruits.getFruit(block.getType()));
+			if (fruitGrowthConfig.isPersistent()) {	
+				if (!hasFruit && plant.getGrowth() >= 1.0) {	
+					if (plant.getFruitGrowth() == -1.0) {
+						// first time a stem is fully grown, reset fruit to zero
+						plant.setFruitGrowth(0.0f);
+					}
+					
+					Block freeBlock = Fruits.getFreeBlock(block, fruitBlockToIgnore);
+					if (freeBlock != null) {
+						// got a free spot, now grow a fruit there with the fruit's conditions
+						fruitRate = fruitGrowthConfig.getRate(freeBlock);
+						
+						RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growPlant(): fruit rate: " + fruitRate);
+						
+						plant.growFruit(updateTime, fruitRate);
+					} else {
+						RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growPlant(): no free block for fruit");
+					}
+
+				} else if (hasFruit) {
+					plant.setFruitGrowth(0.0f);
+				}
 			}
 		}
 		

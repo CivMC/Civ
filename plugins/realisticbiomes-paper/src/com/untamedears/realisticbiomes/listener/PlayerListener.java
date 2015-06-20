@@ -127,8 +127,7 @@ public class PlayerListener implements Listener {
 				}
 			}
 			
-		}
-		else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && (material == Material.STICK || material == Material.BONE)) {
+		} else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && (material == Material.STICK || material == Material.BONE)) {
 			// right click on a growing crop with a stick: get information about that crop
 			material = event.getClickedBlock().getType();
 			
@@ -139,13 +138,15 @@ public class PlayerListener implements Listener {
 				material = saplingIndexMap.get(index);
 			}
 			
-			GrowthConfig growthConfig = growthConfigs.get(material);
-			if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
-				
-				plant = plugin.growAndPersistBlock(block, false, growthConfig, null);
+			if (!Fruits.isFruit((Material) material)) {
+				GrowthConfig growthConfig = growthConfigs.get(material);
+				if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
+					
+					plant = plugin.growAndPersistBlock(block, false, growthConfig, null);
+				}
 			}
-		}
-		else {
+			
+		} else {
 			// right clicked without stick or bone, do nothing
 			return;
 		}
@@ -155,7 +156,6 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
-		block = event.getClickedBlock();
 		if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			// from hitting something with material in hand
 			if (material == Material.COCOA) {
@@ -166,8 +166,9 @@ public class PlayerListener implements Listener {
 		}
 		
 		GrowthConfig growthConfig = growthConfigs.get(material);
-		if (growthConfig == null)
+		if (growthConfig == null) {
 			return;
+		}
 
 		if (plugin.persistConfig.enabled && growthConfig.isPersistent()) {
 			double rate = growthConfig.getRate(block);
@@ -185,17 +186,19 @@ public class PlayerListener implements Listener {
 					if (!Fruits.hasFruit(block)) {
 						Material fruitMaterial = Fruits.getFruit(event.getClickedBlock().getType());
 						growthConfig = growthConfigs.get(fruitMaterial);
-						block = Fruits.getFreeBlock(event.getClickedBlock(), null);
-						if (block != null) {
-							double fruitRate = growthConfig.getRate(block);
-							RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): fruit rate for block " + block + " is " + fruitRate);
-							fruitRate = (1.0/(fruitRate*(60.0*60.0/*seconds per hour*/)));
-							RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): fruit rate adjusted to "  + fruitRate);
-							
-							String amount = new DecimalFormat("#0.00").format(fruitRate);
-							String pAmount = new DecimalFormat("#0.00").format(fruitRate*(1.0-plant.getFruitGrowth()));
-							event.getPlayer().sendMessage("§7[Realistic Biomes] \""+fruitMaterial.toString()+"\": "+pAmount+" of "+amount+" hours to maturity");
-							return;
+						if (growthConfig.isPersistent()) {
+							block = Fruits.getFreeBlock(event.getClickedBlock(), null);
+							if (block != null) {
+								double fruitRate = growthConfig.getRate(block);
+								RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): fruit rate for block " + block + " is " + fruitRate);
+								fruitRate = (1.0/(fruitRate*(60.0*60.0/*seconds per hour*/)));
+								RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): fruit rate adjusted to "  + fruitRate);
+								
+								String amount = new DecimalFormat("#0.00").format(fruitRate);
+								String pAmount = new DecimalFormat("#0.00").format(fruitRate*(1.0-plant.getFruitGrowth()));
+								event.getPlayer().sendMessage("§7[Realistic Biomes] \""+fruitMaterial.toString()+"\": "+pAmount+" of "+amount+" hours to maturity");
+								return;
+							}
 						}
 					}
 					

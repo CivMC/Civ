@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
 
@@ -211,7 +212,12 @@ public class GrowthConfig extends BaseConfig {
 		}
 		
 		// modulate the rate by the amount of sunlight recieved by this plant
-		int sunlightIntensity = block.getLightFromSky();
+		int sunlightIntensity;
+		if (block.getType().isTransparent()) {
+			sunlightIntensity = block.getLightFromSky();
+		} else {
+			sunlightIntensity = block.getRelative(BlockFace.UP).getLightFromSky();
+		}
 		if (needsSunlight) {
 			environmentMultiplier *= Math.pow((sunlightIntensity / MAX_LIGHT_INTENSITY), 3.0);
 		}
