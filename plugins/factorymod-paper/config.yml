@@ -846,12 +846,9 @@ production_factories:
         material: COAL
         durability: 1
     inputs:
-      Iron Block:
-        material: IRON_BLOCK
-        amount: 64   
-      Emerald Blocks:
-        material: EMERALD_BLOCK
-        amount: 64   
+      Diamonds:
+        material: DIAMOND
+        amount: 64 
     recipes:
       - Nether_Craft_Crate_of_Acacia_Sapling
       - Nether_Craft_Crate_of_Baked_Potatoes
@@ -882,11 +879,8 @@ production_factories:
       - Nether_Craft_Crate_of_Yellow_Flower
     repair_multiple: 3
     repair_inputs:
-      Iron Block:
-        material: IRON_BLOCK
-        amount: 2   
-      Emerald Blocks:
-        material: EMERALD_BLOCK
+      Diamond:
+        material: DIAMOND
         amount: 2
   Nether_Decompactor:
     name: Nether Decompactor
@@ -897,10 +891,7 @@ production_factories:
     inputs:
       Diamonds:
         material: DIAMOND
-        amount: 64   
-      Emeralds Blocks:
-        material: EMERALD_BLOCK
-        amount: 128   
+        amount: 128
     recipes:
       - Nether_Decraft_Crate_of_Acacia_Sapling
       - Nether_Decraft_Crate_of_Baked_Potatoes
@@ -933,9 +924,6 @@ production_factories:
     repair_inputs:
       Diamonds:
         material: DIAMOND
-        amount: 1
-      Emerald Blocks:
-        material: EMERALD_BLOCK
         amount: 2
   Diamond_Cauldron:
     name: Diamond Cauldron
