@@ -13,7 +13,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import com.untamedears.realisticbiomes.GrowthConfig;
-import com.untamedears.realisticbiomes.GrowthConfig.Type;
 import com.untamedears.realisticbiomes.GrowthMap;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.persist.Plant;
@@ -62,7 +61,7 @@ public class PlayerListener implements Listener {
 			RealisticBiomes.doLog(Level.FINER, "LEFT CLICK: " + event.getItem() + ", " + growthConfig);
 			
 			if (event.getItem().getType() == Material.INK_SACK) {
-				// if dye assume cocoa, otherwise would have exited earlier
+				// if dye assume cocoa, otherwise would have exited earlier when growthConfig was null
 				block = block.getRelative(event.getBlockFace());
 			} else {
 				block = block.getRelative(0,1,0);

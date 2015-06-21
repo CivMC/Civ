@@ -29,6 +29,7 @@ import com.untamedears.realisticbiomes.persist.ChunkCoords;
 import com.untamedears.realisticbiomes.persist.Plant;
 import com.untamedears.realisticbiomes.persist.WorldID;
 import com.untamedears.utils.Fruits;
+import com.untamedears.utils.MaterialAliases;
 
 /**
  * Event listener for all plant growth related events. Whenever a crop, plant block, or sapling attempts to grow, its type
@@ -103,7 +104,7 @@ public class GrowListener implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             ItemStack item = event.getPlayer().getItemInHand();
             // Ink Sack with data 15  == Bone Meal
-            if (item.getTypeId() == 351 && item.getData().getData() == 15) {
+            if (MaterialAliases.isCocoa(item.getType(), item.getData())) {
             	Material material = event.getClickedBlock().getType();
     			if (material != Material.SAPLING && plugin.hasGrowthConfig(event.getClickedBlock())) {
         			event.setCancelled(true);

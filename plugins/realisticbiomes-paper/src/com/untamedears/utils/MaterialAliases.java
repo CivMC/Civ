@@ -97,15 +97,8 @@ public class MaterialAliases {
 			}
 
 		} else {
-			if (material == Material.INK_SACK) {
-				// special case inksack/dye: ignore all but brown (cocoa seeds)
-				MaterialData data = item.getData();
-				RealisticBiomes.doLog(Level.FINER, "Special case ink sack: "
-						+ data);
-				if ((data instanceof Dye)
-						&& ((Dye) data).getColor() != DyeColor.BROWN) {
-					return null;
-				}
+			if (!isCocoa(material, item.getData())) {
+				return null;
 			}
 			
 			if (materialAliases.containsKey(material)) {
@@ -114,5 +107,9 @@ public class MaterialAliases {
 		}
 		// if not aliased try to get config directly from itemStack
 		return growthConfigs.get(material);
+	}
+
+	public static boolean isCocoa(Material material, MaterialData data) {
+		return material == Material.INK_SACK && data instanceof Dye && ((Dye)data).getColor() == DyeColor.BROWN;
 	}
 }
