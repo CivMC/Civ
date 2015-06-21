@@ -31,7 +31,7 @@ public class RealisticBiomes extends JavaPlugin {
 	public static Level minLogLevel = Level.INFO;
 	
 	public HashMap<String, List<Biome>> biomeAliases;
-	public HashMap<Object, GrowthConfig> materialGrowth;
+	public GrowthMap materialGrowth;
 	public HashMap<Object, BaseConfig> fishDrops;
 	public BlockGrower blockGrower;
 	public PersistConfig persistConfig;
@@ -203,7 +203,7 @@ public class RealisticBiomes extends JavaPlugin {
 		
 		GrowthConfig defaultConfig = new GrowthConfig();
 		
-		materialGrowth = new HashMap<Object, GrowthConfig>();
+		materialGrowth = new GrowthMap();
 		HashMap<String, GrowthConfig> growthConfigNodes = new HashMap<String, GrowthConfig>();
 		
 		ConfigurationSection growthConfigSection = config.getConfigurationSection("growth");
@@ -220,8 +220,14 @@ public class RealisticBiomes extends JavaPlugin {
 				}
 				else {
 					Object inheritKey = getMaterialKey(inheritStr);
-					if (materialGrowth.containsKey(inheritKey)) {
-						inheritConfig = materialGrowth.get(inheritKey);
+					if (inheritKey != null) {
+						if ((inheritKey instanceof Material) && materialGrowth.containsKey((Material) inheritKey)) {
+							inheritConfig = materialGrowth.get((Material) inheritKey);
+						} else if ((inheritKey instanceof EntityType) && materialGrowth.containsKey((EntityType) inheritKey)) {
+							inheritConfig = materialGrowth.get((EntityType) inheritKey);
+						} else if ((inheritKey instanceof TreeType) && materialGrowth.containsKey((TreeType) inheritKey)) {
+							inheritConfig = materialGrowth.get((TreeType) inheritKey);
+						}
 					}
 				}
 			}
@@ -235,9 +241,13 @@ public class RealisticBiomes extends JavaPlugin {
 				if (materialName.length() > 0 && materialName.matches(".*[A-Z].*"))
 					LOG.warning("config material name: is \""+materialName+"\" misspelled?");
 				growthConfigNodes.put(materialName, newGrowthConfig);
-			}
-			else {
-				materialGrowth.put(key, newGrowthConfig);
+
+			} else if (key instanceof Material){
+				materialGrowth.put((Material)key, newGrowthConfig);
+			} else if (key instanceof EntityType){
+				materialGrowth.put((EntityType)key, newGrowthConfig);
+			} else if (key instanceof TreeType){
+				materialGrowth.put((TreeType)key, newGrowthConfig);
 			}
 		}
 	}
@@ -508,7 +518,7 @@ public class RealisticBiomes extends JavaPlugin {
 	}
 	
 	public GrowthConfig getGrowthConfig(Block b) {
-		return materialGrowth.get(b.getType());
+		return getGrowthConfig(b.getType());
 	}
 	
 	public boolean hasGrowthConfig(Material m) {

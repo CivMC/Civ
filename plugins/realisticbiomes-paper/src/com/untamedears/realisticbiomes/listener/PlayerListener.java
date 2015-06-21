@@ -21,70 +21,24 @@ import org.bukkit.material.Dye;
 import org.bukkit.material.MaterialData;
 
 import com.untamedears.realisticbiomes.GrowthConfig;
+import com.untamedears.realisticbiomes.GrowthMap;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.persist.Plant;
 import com.untamedears.utils.Fruits;
+import com.untamedears.utils.MaterialAliases;
 
 public class PlayerListener implements Listener {
 	
 	public static Logger LOG = Logger.getLogger("RealisticBiomes");
 	
 	private RealisticBiomes plugin;
-	// map Material that a user uses to hit the ground to a Material, TreeType, or EntityType
-	// that is specified. (ie, hit the ground with some wheat seeds and get a message corresponding
-	// to the wheat plant's growth rate
-	private static Map<Material, Object> materialAliases = new HashMap<Material, Object>();
 	
-	static {
-		materialAliases.put(Material.SEEDS, Material.CROPS);
-		materialAliases.put(Material.WHEAT, Material.CROPS);
-		materialAliases.put(Material.CARROT_ITEM, Material.CARROT);
-		materialAliases.put(Material.POTATO_ITEM, Material.POTATO);
-		materialAliases.put(Material.POISONOUS_POTATO, Material.POTATO);
-		
-		materialAliases.put(Material.MELON_SEEDS, Material.MELON_STEM);
-		materialAliases.put(Material.MELON, Material.MELON_BLOCK);
-		materialAliases.put(Material.MELON_BLOCK, Material.MELON_BLOCK);
-		materialAliases.put(Material.PUMPKIN_SEEDS, Material.PUMPKIN_STEM);
-		materialAliases.put(Material.PUMPKIN, Material.PUMPKIN);
-		
-		materialAliases.put(Material.INK_SACK ,Material.COCOA);
-		
-		materialAliases.put(Material.CACTUS, Material.CACTUS);
-		
-		materialAliases.put(Material.SUGAR_CANE, Material.SUGAR_CANE_BLOCK);
-		
-		materialAliases.put(Material.NETHER_STALK, Material.NETHER_WARTS);
-		
-		// ----------------- //
-		
-		materialAliases.put(Material.SAPLING, TreeType.TREE);
-		
-		materialAliases.put(Material.RED_MUSHROOM, TreeType.RED_MUSHROOM);
-		materialAliases.put(Material.BROWN_MUSHROOM, TreeType.BROWN_MUSHROOM);
-		
-		// ----------------- //
-		
-		materialAliases.put(Material.EGG, Material.EGG);
-		materialAliases.put(Material.FISHING_ROD, EntityType.FISHING_HOOK);
-	}
 	
-	private static HashMap<Integer, TreeType> saplingIndexMap;
 	
-	static {
-		saplingIndexMap = new HashMap<Integer, TreeType>();
-		
-		saplingIndexMap.put(new Integer(0), TreeType.TREE);
-		saplingIndexMap.put(new Integer(1), TreeType.REDWOOD);
-		saplingIndexMap.put(new Integer(2), TreeType.BIRCH);
-		saplingIndexMap.put(new Integer(3), TreeType.JUNGLE);
-		saplingIndexMap.put(new Integer(4), TreeType.ACACIA);
-		saplingIndexMap.put(new Integer(5), TreeType.DARK_OAK);
-	}
 	
-	private Map<Object, GrowthConfig> growthConfigs;
+	private GrowthMap growthConfigs;
 	
-	public PlayerListener(RealisticBiomes plugin, Map<Object, GrowthConfig> growthConfigs) {
+	public PlayerListener(RealisticBiomes plugin, GrowthMap growthConfigs) {
 		this.plugin = plugin;
 		this.growthConfigs = growthConfigs;
 	}
@@ -97,51 +51,32 @@ public class PlayerListener implements Listener {
 		if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
-			
-		Object material = event.getMaterial()/*in hand*/;
+		
+		String materialName = event.getMaterial().toString();
 		Block block = event.getClickedBlock();
+		
+		GrowthConfig growthConfig;
 		
 		if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			// hit the ground with a seed, or other farm product: get the adjusted crop growth
 			// rate as if that crop was planted on top of the block
-			material = materialAliases.get(material);
-			// if the material isn't aliased, just use the material
-			if (material == null)
-				material = event.getMaterial();
 			
-			// handle saplings as their tree types
-			if (event.getItem() != null && event.getItem().getTypeId() == Material.SAPLING.getId()) {
-				int data = event.getItem().getData().getData();
-				if (saplingIndexMap.containsKey(data)) {
-					material = saplingIndexMap.get(data);
-				}
+			growthConfig = MaterialAliases.getConfig(growthConfigs, event.getItem());
+			
+			if (event.getItem().getType() == Material.INK_SACK) {
+				// if dye assume cocoa, otherwise function will exit early anyway below
+				block = block.getRelative(event.getBlockFace());
+			} else {
+				block = block.getRelative(0,1,0);
 			}
 			
-//			RealisticBiomes.doLog(Level.FINER, "CLICKY: " + event.getItem().getData());
-			
-			// don't do anything if the material is a dye, but not cocoa brown
-			if (event.getMaterial() == Material.INK_SACK) {
-				MaterialData data = event.getItem().getData();
-				if ((data instanceof Dye) && ((Dye)data).getColor() != DyeColor.BROWN) {
-					return;
-				}
-			}
-			
-		} else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && (material == Material.STICK || material == Material.BONE)) {
+		} else if (event.getAction() == Action.RIGHT_CLICK_BLOCK
+				&& (event.getItem().getType() == Material.STICK || event.getItem().getType() == Material.BONE)) {
 			// right click on a growing crop with a stick: get information about that crop
-			material = event.getClickedBlock().getType();
+			growthConfig = MaterialAliases.getConfig(growthConfigs, event.getItem());
 			
-			// handle saplings as their tree types
-			int index = block.getData();
-			if (material == Material.SAPLING && saplingIndexMap.containsKey(index)) {
-				
-				material = saplingIndexMap.get(index);
-			}
-			
-			if (!Fruits.isFruit((Material) material)) {
-				GrowthConfig growthConfig = growthConfigs.get(material);
-				if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
-					
+			if (!Fruits.isFruit(event.getClickedBlock().getType())) {
+				if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {				
 					plant = plugin.growAndPersistBlock(block, false, growthConfig, null);
 				}
 			}
@@ -156,29 +91,19 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
-		if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-			// from hitting something with material in hand
-			if (material == Material.COCOA) {
-				block = block.getRelative(event.getBlockFace());
-			} else {
-				block = block.getRelative(0,1,0);
-			}
-		}
-		
-		GrowthConfig growthConfig = growthConfigs.get(material);
 		if (growthConfig == null) {
 			return;
 		}
 
 		if (plugin.persistConfig.enabled && growthConfig.isPersistent()) {
 			double rate = growthConfig.getRate(block);
-			RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): rate for " + material + " at block " + block + " is " + rate);
+			RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): rate for " + materialName + " at block " + block + " is " + rate);
 			rate = (1.0/(rate*(60.0*60.0/*seconds per hour*/)));
 			RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): rate adjusted to "  + rate);
 			
 			if (plant == null) {
 				String amount = new DecimalFormat("#0.00").format(rate);
-				event.getPlayer().sendMessage("§7[Realistic Biomes] \""+material.toString()+"\": "+amount+" hours to maturity");
+				event.getPlayer().sendMessage("§7[Realistic Biomes] \"" + materialName + "\": "+amount+" hours to maturity");
 				
 			} else if (plant.getGrowth() == 1.0) {
 				if (Fruits.isFruitFul(block.getType())) {
@@ -206,12 +131,12 @@ public class PlayerListener implements Listener {
 				
 				
 				String amount = new DecimalFormat("#0.00").format(rate);
-				event.getPlayer().sendMessage("§7[Realistic Biomes] \""+material.toString()+"\": "+amount+" hours to maturity");
+				event.getPlayer().sendMessage("§7[Realistic Biomes] \"" + materialName + "\": "+amount+" hours to maturity");
 
 			} else {
 				String amount = new DecimalFormat("#0.00").format(rate);
 				String pAmount = new DecimalFormat("#0.00").format(rate*(1.0-plant.getGrowth()));
-				event.getPlayer().sendMessage("§7[Realistic Biomes] \""+material.toString()+"\": "+pAmount+" of "+amount+" hours to maturity");
+				event.getPlayer().sendMessage("§7[Realistic Biomes] \"" + materialName + "\": "+pAmount+" of "+amount+" hours to maturity");
 			}
 			
 		} else {
@@ -225,7 +150,7 @@ public class PlayerListener implements Listener {
 				growthAmount = 0.0;
 			String amount = new DecimalFormat("#0.00").format(growthAmount*100.0)+"%";
 			// send the message out to the user!
-			event.getPlayer().sendMessage("§7[Realistic Biomes] Growth rate \""+material.toString()+"\" = "+amount);
+			event.getPlayer().sendMessage("§7[Realistic Biomes] Growth rate \"" + materialName + "\" = "+amount);
 		}
 	}
 	

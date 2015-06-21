@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.realisticbiomes.BaseConfig;
 import com.untamedears.realisticbiomes.GrowthConfig;
+import com.untamedears.realisticbiomes.GrowthMap;
 
 /**
  * Event listeners for animal spawn related events. Whenever animals breed or a fish is caught, the species is checked against
@@ -27,10 +28,10 @@ import com.untamedears.realisticbiomes.GrowthConfig;
  */
 public class SpawnListener implements Listener {
 
-	private final HashMap<Object, GrowthConfig> growthMap;
+	private final GrowthMap growthMap;
 	private final HashMap<Object, BaseConfig> fishMap;
 	
-	public SpawnListener(HashMap<Object, GrowthConfig> growthMap, HashMap<Object, BaseConfig> fishMap) {
+	public SpawnListener(GrowthMap growthMap, HashMap<Object, BaseConfig> fishMap) {
 		super();
 		
 		this.growthMap = growthMap;
@@ -93,11 +94,24 @@ public class SpawnListener implements Listener {
 
 	/**
 	 * Determines if an entity {@link EntityTypw | @link Material} will spawn, given the current conditions
+	 * @param e The entity type
+	 * @param b The block that the plant is on
+	 * @return Whether the plant will grow this tick
+	 */
+	private boolean willSpawn(Material m, Block b) {
+		if(growthMap.containsKey(m)) {
+			return Math.random() < growthMap.get(m).getRate(b);
+		}
+		return true;
+	}
+	
+	/**
+	 * Determines if a material {@link Material} will spawn an entity, given the current conditions
 	 * @param m The material type of the
 	 * @param b The block that the plant is on
 	 * @return Whether the plant will grow this tick
 	 */
-	private boolean willSpawn(Object e, Block b) {
+	private boolean willSpawn(EntityType e, Block b) {
 		if(growthMap.containsKey(e)) {
 			return Math.random() < growthMap.get(e).getRate(b);
 		}
