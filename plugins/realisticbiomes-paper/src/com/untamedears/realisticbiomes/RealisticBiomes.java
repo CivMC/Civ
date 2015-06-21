@@ -32,7 +32,6 @@ public class RealisticBiomes extends JavaPlugin {
 	
 	public HashMap<String, List<Biome>> biomeAliases;
 	public GrowthMap materialGrowth;
-	public HashMap<Object, BaseConfig> fishDrops;
 	public BlockGrower blockGrower;
 	public PersistConfig persistConfig;
 	private PlantManager plantManager;
@@ -86,8 +85,8 @@ public class RealisticBiomes extends JavaPlugin {
 
 		loadBiomeAliases(config);
 		loadPersistConfig(config);
-		loadGrowthConfigs(config);
-		loadFishConfigs(config);
+		materialGrowth = loadGrowthConfigs(config.getConfigurationSection("growth"), null);
+		materialGrowth.putAll(loadGrowthConfigs(config.getConfigurationSection("fish_drops"), GrowthConfig.Type.FISHING_DROP));
 
 		// load the max log level for our logging hack
 		// if not defined then its just initalized at INFO
@@ -198,17 +197,20 @@ public class RealisticBiomes extends JavaPlugin {
 			biomeAliases.put(alias, biomes);
 		}
 	}
-
-	private void loadGrowthConfigs(ConfigurationSection config) {
-		
-		GrowthConfig defaultConfig = new GrowthConfig();
-		
-		materialGrowth = new GrowthMap();
+	
+	/**
+	 * Load growth config into GrowthMap
+	 * @param config Configuration section, e.g. "growth"
+	 * @param type Force a type or null to guess
+	 * @return the growth map
+	 */
+	private GrowthMap loadGrowthConfigs(ConfigurationSection config, GrowthConfig.Type type) {
+		GrowthConfig defaultConfig = new GrowthConfig("default", type);
+		GrowthMap materialGrowth = new GrowthMap();
 		HashMap<String, GrowthConfig> growthConfigNodes = new HashMap<String, GrowthConfig>();
 		
-		ConfigurationSection growthConfigSection = config.getConfigurationSection("growth");
-		for (String materialName : growthConfigSection.getKeys(false)) {
-			ConfigurationSection configSection = growthConfigSection.getConfigurationSection(materialName);
+		for (String materialName : config.getKeys(false)) {
+			ConfigurationSection configSection = config.getConfigurationSection(materialName);
 			
 			GrowthConfig inheritConfig = defaultConfig;
 			
@@ -227,14 +229,20 @@ public class RealisticBiomes extends JavaPlugin {
 							inheritConfig = materialGrowth.get((EntityType) inheritKey);
 						} else if ((inheritKey instanceof TreeType) && materialGrowth.containsKey((TreeType) inheritKey)) {
 							inheritConfig = materialGrowth.get((TreeType) inheritKey);
+						} else {
+							LOG.warning(configSection.getName() + " inherits unknown key: " + inheritKey);
+							LOG.finest("keys: " + materialGrowth.keySet());
 						}
 					}
 				}
 			}
 			
-			GrowthConfig newGrowthConfig = new GrowthConfig(inheritConfig, configSection, biomeAliases);
+			GrowthConfig newGrowthConfig = GrowthConfig.get(materialName, (GrowthConfig)inheritConfig, configSection, biomeAliases);
 			
-			Object key = getMaterialKey(materialName);	
+			Object key = getMaterialKey(materialName);
+			
+			newGrowthConfig.setName(key);
+			
 			if (key == null) {
 				// if the name is partially capitalized, then warning the player that
 				// the name might be a misspelling
@@ -243,56 +251,17 @@ public class RealisticBiomes extends JavaPlugin {
 				growthConfigNodes.put(materialName, newGrowthConfig);
 
 			} else if (key instanceof Material){
-				materialGrowth.put((Material)key, newGrowthConfig);
+				materialGrowth.put((Material)key, newGrowthConfig, type);
 			} else if (key instanceof EntityType){
 				materialGrowth.put((EntityType)key, newGrowthConfig);
 			} else if (key instanceof TreeType){
 				materialGrowth.put((TreeType)key, newGrowthConfig);
+			} else {
+				LOG.warning("unknown key: " + key);
 			}
 		}
-	}
-
-	private void loadFishConfigs(ConfigurationSection config) {
 		
-		BaseConfig defaultConfig = new BaseConfig();
-		
-		fishDrops = new HashMap<Object, BaseConfig>();
-		HashMap<String, BaseConfig> fishDropsNodes = new HashMap<String, BaseConfig>();
-		
-		ConfigurationSection fishDropsSection = config.getConfigurationSection("fish_drops");
-		for (String materialName : fishDropsSection.getKeys(false)) {
-			ConfigurationSection configSection = fishDropsSection.getConfigurationSection(materialName);
-			
-			BaseConfig inheritConfig = defaultConfig;
-			
-			if (configSection.isSet("inherit")) {
-				String inheritStr = configSection.getString("inherit");
-				
-				if (fishDropsNodes.containsKey(inheritStr)) {
-					inheritConfig = fishDropsNodes.get(inheritStr);
-				}
-				else {
-					Object inheritKey = getMaterialKey(inheritStr);
-					if (fishDrops.containsKey(inheritKey)) {
-						inheritConfig = fishDrops.get(inheritKey);
-					}
-				}
-			}
-			
-			BaseConfig newFishDrops = new BaseConfig(inheritConfig, configSection, biomeAliases);
-			
-			Object key = getMaterialKey(materialName);	
-			if (key == null) {
-				// if the name is partially capitalized, then warning the player that
-				// the name might be a misspelling
-				if (materialName.length() > 0 && materialName.matches(".*[A-Z].*"))
-					LOG.warning("config material name: is \""+materialName+"\" misspelled?");
-				fishDropsNodes.put(materialName, newFishDrops);
-			}
-			else {
-				fishDrops.put(key, newFishDrops);
-			}
-		}
+		return materialGrowth;
 	}
 	
 	
@@ -376,7 +345,7 @@ public class RealisticBiomes extends JavaPlugin {
 		try {
 			PluginManager pm = getServer().getPluginManager();
 			pm.registerEvents(new GrowListener(this), this);
-			pm.registerEvents(new SpawnListener(materialGrowth, fishDrops), this);
+			pm.registerEvents(new SpawnListener(materialGrowth), this);
 			pm.registerEvents(new PlayerListener(this, materialGrowth), this);
 		}
 		catch(Exception e)

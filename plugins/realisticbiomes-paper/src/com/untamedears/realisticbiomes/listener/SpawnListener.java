@@ -1,7 +1,5 @@
 package com.untamedears.realisticbiomes.listener;
 
-import java.util.HashMap;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -15,8 +13,6 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.untamedears.realisticbiomes.BaseConfig;
-import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.GrowthMap;
 
 /**
@@ -29,13 +25,11 @@ import com.untamedears.realisticbiomes.GrowthMap;
 public class SpawnListener implements Listener {
 
 	private final GrowthMap growthMap;
-	private final HashMap<Object, BaseConfig> fishMap;
 	
-	public SpawnListener(GrowthMap growthMap, HashMap<Object, BaseConfig> fishMap) {
+	public SpawnListener(GrowthMap growthMap) {
 		super();
 		
 		this.growthMap = growthMap;
-		this.fishMap = fishMap;
 	}
 
 	/**
@@ -83,6 +77,7 @@ public class SpawnListener implements Listener {
 		if(event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() != null && event.getCaught() instanceof Item) {
 			ItemStack items = ((Item)event.getCaught()).getItemStack();
 			Material type = items.getType();
+			// short fishType = items.getDurability(); // fish type has no MaterialData subclass... need to change GrowthMap to key this
 			Block block = event.getCaught().getLocation().getBlock();
 			
 			if (!fishWillSpawn(type, block)) {
@@ -93,7 +88,7 @@ public class SpawnListener implements Listener {
 	}
 
 	/**
-	 * Determines if an entity {@link EntityTypw | @link Material} will spawn, given the current conditions
+	 * Determines if an entity {@link Material} will spawn, given the current conditions
 	 * @param e The entity type
 	 * @param b The block that the plant is on
 	 * @return Whether the plant will grow this tick
@@ -106,7 +101,7 @@ public class SpawnListener implements Listener {
 	}
 	
 	/**
-	 * Determines if a material {@link Material} will spawn an entity, given the current conditions
+	 * Determines if a material {@link EntityType} will spawn an entity, given the current conditions
 	 * @param m The material type of the
 	 * @param b The block that the plant is on
 	 * @return Whether the plant will grow this tick
@@ -120,13 +115,14 @@ public class SpawnListener implements Listener {
 
 	/**
 	 * Determines if an ItemStack will spawn from fishing, given the current conditions
+	 * @param fishType 
 	 * @param m The material type of the
 	 * @param b The block that the plant is on
 	 * @return Whether the item will spawn
 	 */
-	private boolean fishWillSpawn(Object e, Block b) {
-		if(fishMap.containsKey(e)) {
-			return Math.random() < fishMap.get(e).getRate(b);
+	private boolean fishWillSpawn(Material e, Block b) {
+		if(growthMap.containsKey(e)) {
+			return Math.random() < growthMap.get(e).getRate(b);
 		}
 		return true;
 	}

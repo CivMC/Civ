@@ -1,11 +1,16 @@
 package com.untamedears.realisticbiomes;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.entity.EntityType;
 
+/**
+ * Would probably be best to have box type as key, with material + data or entity
+ */
 public class GrowthMap {
 	
 	private HashMap<Material, GrowthConfig> materialMap = new HashMap<Material, GrowthConfig>();
@@ -20,8 +25,11 @@ public class GrowthMap {
 		return materialMap.get(material);
 	}
 	
-	public GrowthConfig put(Material material, GrowthConfig config) {
-		return materialMap.put(material, config);
+	public GrowthConfig put(Material material, GrowthConfig config, GrowthConfig.Type type) {
+		if (type == null) {
+			type = GrowthConfig.Type.PLANT;
+		}
+		return materialMap.put(material, config.setType(type));
 	}
 	
 	public boolean containsKey(EntityType entity) {
@@ -33,7 +41,7 @@ public class GrowthMap {
 	}
 
 	public GrowthConfig put(EntityType entity, GrowthConfig config) {
-		return entityMap.put(entity, config);
+		return entityMap.put(entity, config.setType(GrowthConfig.Type.ENTITY));
 	}
 	
 	public boolean containsKey(TreeType treeType) {
@@ -45,6 +53,23 @@ public class GrowthMap {
 	}
 	
 	public GrowthConfig put(TreeType treeType, GrowthConfig config) {
-		return treeTypeMap.put(treeType, config);
+		return treeTypeMap.put(treeType, config.setType(GrowthConfig.Type.PLANT));
+	}
+
+	/**
+	 * For debugging purposes only
+	 */
+	public Set<Object> keySet() {
+		Set<Object> sets = new HashSet<Object>();
+		sets.addAll(materialMap.keySet());
+		sets.addAll(entityMap.keySet());
+		sets.addAll(treeTypeMap.keySet());
+		return sets;
+	}
+
+	public void putAll(GrowthMap other) {
+		materialMap.putAll(other.materialMap);
+		entityMap.putAll(other.entityMap);
+		treeTypeMap.putAll(other.treeTypeMap);
 	}
 }

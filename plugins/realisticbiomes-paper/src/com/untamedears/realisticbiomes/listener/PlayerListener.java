@@ -1,26 +1,19 @@
 package com.untamedears.realisticbiomes.listener;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.TreeType;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.material.Dye;
-import org.bukkit.material.MaterialData;
-
 import com.untamedears.realisticbiomes.GrowthConfig;
+import com.untamedears.realisticbiomes.GrowthConfig.Type;
 import com.untamedears.realisticbiomes.GrowthMap;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.persist.Plant;
@@ -52,7 +45,6 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
-		String materialName = event.getMaterial().toString();
 		Block block = event.getClickedBlock();
 		
 		GrowthConfig growthConfig;
@@ -62,9 +54,15 @@ public class PlayerListener implements Listener {
 			// rate as if that crop was planted on top of the block
 			
 			growthConfig = MaterialAliases.getConfig(growthConfigs, event.getItem());
+			if (growthConfig == null) {
+				RealisticBiomes.doLog(Level.FINER, "No config found: " + growthConfigs.keySet());
+				return;
+			}
+			
+			RealisticBiomes.doLog(Level.FINER, "LEFT CLICK: " + event.getItem() + ", " + growthConfig);
 			
 			if (event.getItem().getType() == Material.INK_SACK) {
-				// if dye assume cocoa, otherwise function will exit early anyway below
+				// if dye assume cocoa, otherwise would have exited earlier
 				block = block.getRelative(event.getBlockFace());
 			} else {
 				block = block.getRelative(0,1,0);
@@ -72,8 +70,13 @@ public class PlayerListener implements Listener {
 			
 		} else if (event.getAction() == Action.RIGHT_CLICK_BLOCK
 				&& (event.getItem().getType() == Material.STICK || event.getItem().getType() == Material.BONE)) {
+			
 			// right click on a growing crop with a stick: get information about that crop
-			growthConfig = MaterialAliases.getConfig(growthConfigs, event.getItem());
+			growthConfig = growthConfigs.get(event.getClickedBlock().getType());
+			if (growthConfig == null) {
+				RealisticBiomes.doLog(Level.FINER, "No config found: " + growthConfigs.keySet());
+				return;
+			}
 			
 			if (!Fruits.isFruit(event.getClickedBlock().getType())) {
 				if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {				
@@ -91,9 +94,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
-		if (growthConfig == null) {
-			return;
-		}
+		String materialName = growthConfig.getName();
 
 		if (plugin.persistConfig.enabled && growthConfig.isPersistent()) {
 			double rate = growthConfig.getRate(block);
@@ -121,7 +122,7 @@ public class PlayerListener implements Listener {
 								
 								String amount = new DecimalFormat("#0.00").format(fruitRate);
 								String pAmount = new DecimalFormat("#0.00").format(fruitRate*(1.0-plant.getFruitGrowth()));
-								event.getPlayer().sendMessage("§7[Realistic Biomes] \""+fruitMaterial.toString()+"\": "+pAmount+" of "+amount+" hours to maturity");
+								event.getPlayer().sendMessage("§7[Realistic Biomes] \""+growthConfig.getName()+"\": "+pAmount+" of "+amount+" hours to maturity");
 								return;
 							}
 						}
@@ -149,8 +150,17 @@ public class PlayerListener implements Listener {
 			else if (growthAmount < 0.0)
 				growthAmount = 0.0;
 			String amount = new DecimalFormat("#0.00").format(growthAmount*100.0)+"%";
+			
+			String rateType;
+			if (growthConfig.getType() == GrowthConfig.Type.ENTITY) {
+				rateType = "Spawn rate";
+			} else if (growthConfig.getType() == GrowthConfig.Type.FISHING_DROP) {
+					rateType = "Fishing rate";
+			} else {
+				rateType = "Growth rate";
+			}
 			// send the message out to the user!
-			event.getPlayer().sendMessage("§7[Realistic Biomes] Growth rate \"" + materialName + "\" = "+amount);
+			event.getPlayer().sendMessage("§7[Realistic Biomes] " + rateType + " \"" + materialName + "\" = "+amount);
 		}
 	}
 	
@@ -172,7 +182,7 @@ public class PlayerListener implements Listener {
 				growthAmount = 0.0;
 			String amount = new DecimalFormat("#0.00").format(growthAmount*100.0)+"%";
 			// send the message out to the user!
-			event.getPlayer().sendMessage("§7[Realistic Biomes] Spawn rate \""+entity.getType().toString()+"\" = "+amount);
+			event.getPlayer().sendMessage("§7[Realistic Biomes] Spawn rate \""+growthConfig.getName()+"\" = "+amount);
 		}
 	}
 }
