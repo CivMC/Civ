@@ -80,7 +80,7 @@ repair_factory:
       durability: 1
   fuel_time: 5
   name: 'Reset Factory'
-  production_time: 20
+  production_time: 10
   reset_level: 1
   costs:
     construction:
@@ -89,25 +89,37 @@ repair_factory:
         amount: 256
       Iron Ore:
         material: 'IRON_ORE'
-        amount: 8
+        amount: 16
       Redstone Ore:
         material: 'REDSTONE_ORE'
-        amount: 8
-      Gold Ore:
-        material: 'GOLD_ORE'
-        amount: 8
-    repair_multiple: 30        
+        amount: 16
+      Diamond Ore:
+        material: 'DIAMOND_ORE'
+        amount: 16
+      Emerald Blocks:
+        material: 'EMERALD_BLOCK'
+        amount: 16
+    repair_multiple: 2
     repair:
       Coal Ore:
         material: 'COAL_ORE'
+        amount: 10
+      Iron Ore:
+        material: 'IRON_ORE'
         amount: 1
-    recipe:
-      Coal Ore:
-        material: 'COAL_ORE'
-        amount: 64
+      Redstone Ore:
+        material: 'REDSTONE_ORE'
+        amount: 1
+      Diamond Ore:
+        material: 'DIAMOND_ORE'
+        amount: 1
       Emerald Blocks:
         material: 'EMERALD_BLOCK'
-        amount: 8
+        amount: 1
+    recipe:
+      Emerald Blocks:
+        material: 'EMERALD_BLOCK'
+        amount: 7
   repairable:
     WOODEN_PICKAXE:
       material: WOOD_PICKAXE
@@ -211,10 +223,10 @@ compactor:
       material: 'COAL'
       amount: 1
       durability: 1
-  fuel_time: 5
+  fuel_time: 1
   repair_multiple: 1
   name: 'Compactor'
-  production_time: 20
+  production_time: 1
   costs:
     construction:
       Crate:

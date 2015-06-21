@@ -11,6 +11,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
@@ -168,7 +169,11 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 	{
 		for(ItemStack itemStack:this)
 		{
-			int maxStackSize=itemStack.getMaxStackSize();
+			// Terrifying hardcode, but I think sometimes itemStack.maxsize == 0, yikes!
+			if (itemStack.getMaxStackSize() <= 0) {
+				Bukkit.getLogger().warning("Item Stack has maxsize of 0, something is very wrong.");
+			}
+			int maxStackSize=(itemStack.getMaxStackSize() == 0 ? 64 : itemStack.getMaxStackSize());
 			int amount=itemStack.getAmount();
 			while(amount>maxStackSize)
 			{

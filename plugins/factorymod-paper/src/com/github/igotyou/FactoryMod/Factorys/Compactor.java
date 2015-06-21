@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.properties.CompactorProperties;
 import com.github.igotyou.FactoryMod.properties.IFactoryProperties;
@@ -63,24 +63,24 @@ public class Compactor extends ABaseFactory {
         if(mode.equals(CompactorMode.DECOMPACT)) {
             for(ItemStack is : inv.getContents()) {
                 if(is != null && is.getItemMeta().hasLore() && is.getItemMeta().getLore().contains(cp.getCompactLore())) {
-                    NamedItemStack cloned = new NamedItemStack(is.getType(), 1 /*is.getAmount()*/, is.getDurability(), is.getItemMeta().getDisplayName());
-                    cloned.getItemMeta().setLore(is.getItemMeta().getLore());
-                    inputs.add(cloned); 
+                	NamedItemStack clone = new NamedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
+                	clone.setAmount(1);
+                	inputs.add(clone);
+
                     return inputs;
                 }
             }
-            inputs.add(new NamedItemStack(Material.AIR, 1, (short)1, "Decompacted Item"));
         } else if (mode.equals(CompactorMode.COMPACT)) {
             for(ItemStack is : inv.getContents()) {
-                if(is != null && is.getAmount() == is.getMaxStackSize()) {
-                    if(!is.getItemMeta().hasLore()) {
-                        inputs.add(new NamedItemStack(is.getType(), is.getAmount(), is.getDurability(), is.getItemMeta().getDisplayName()));
-                        inputs.addAll(cp.getRecipeMaterials());
-                        return inputs;
-                    }
+                if(is != null && is.getAmount() == is.getMaxStackSize() && !is.getItemMeta().hasLore()) {
+                	NamedItemStack clone = new NamedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
+                    inputs.add(clone); 
+
+
+                    inputs.addAll(cp.getRecipeMaterials());
+                    return inputs;
                 }
             }
-            return cp.getRecipeMaterials();
         }
         return inputs;
     }
@@ -91,21 +91,31 @@ public class Compactor extends ABaseFactory {
         if (mode.equals( CompactorMode.DECOMPACT )) {
             for(ItemStack is : inv.getContents()) {
                 if(is != null && is.getItemMeta().hasLore() && is.getItemMeta().getLore().contains(cp.getCompactLore())) {
-                    outputs.add(new NamedItemStack(is.getType(), is.getMaxStackSize(), is.getDurability(), is.getItemMeta().getDisplayName()));
+                	NamedItemStack clone = new NamedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
+                	clone.setAmount(clone.getMaxStackSize());
+                    ItemMeta cloneMeta = clone.getItemMeta();
+                    cloneMeta.setLore(null);
+                    clone.setItemMeta(cloneMeta);
+                    outputs.add(clone); 
+                	
                     return outputs;
                 }
             }
-            outputs.add(new NamedItemStack(Material.AIR, 64, (short)1, "Decompacted Items"));
         } else if (mode.equals( CompactorMode.COMPACT )) {
             for (ItemStack is : inv.getContents()) {
-                if(is != null && is.getAmount() == is.getMaxStackSize()) {
-                    NamedItemStack compactedItemStack = new NamedItemStack(is.getType(), 1, is.getDurability(), is.getItemMeta().getDisplayName());
-                    compactedItemStack.getItemMeta().getLore().add(cp.getCompactLore());
-                    outputs.add(compactedItemStack);
+                if(is != null && is.getAmount() == is.getMaxStackSize() && !is.getItemMeta().hasLore()) {
+                	NamedItemStack clone = new NamedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
+                	clone.setAmount(1);
+                    ItemMeta cloneMeta = clone.getItemMeta();
+                    List<String> lore = new ArrayList<String>();
+                    lore.add(cp.getCompactLore());
+                    cloneMeta.setLore(lore);
+                    clone.setItemMeta(cloneMeta);
+                    
+                    outputs.add(clone);
                     return outputs;
                 }
             }
-            outputs.add(new NamedItemStack(Material.AIR, 1, (short)1, "Compacted Item"));
         }
         return outputs;
     }
@@ -139,7 +149,7 @@ public class Compactor extends ABaseFactory {
                 	if (mode.equals(CompactorMode.REPAIR)) { 
                 		repair(getRepairs().removeMaxFrom(getInventory(), (int)currentRepair));
                 	} else if (mode.equals(CompactorMode.COMPACT) || mode.equals(CompactorMode.DECOMPACT)) {
-                        consumeInputs();
+                        // consumeInputs(); one or the other :(
                         
                         recipeFinished();
                 	}
@@ -153,9 +163,22 @@ public class Compactor extends ABaseFactory {
         }
     }
     
+    @Override
+	public boolean checkHasMaterials() {
+    	if (mode.equals(CompactorMode.REPAIR)) {
+    		return getAllInputs().allIn(getInventory());
+    	} else {
+    		if (getInputs().isEmpty()) {
+    			return false;
+    		} else {
+    			return true;
+    		}
+    	}
+	}
+    
     protected void recipeFinished() {
     	ItemList<NamedItemStack> output = getOutputs(); //.putIn(getInventory());
-        getInputs().removeOneFrom(getInventory());
+        getInputs().removeFrom(getInventory());
         output.putIn(getInventory());
         
     }
@@ -185,9 +208,10 @@ public class Compactor extends ABaseFactory {
         String response = "Current costs are : "; // the response specific to the mode.
         if (mode.equals(CompactorMode.REPAIR)){
             response += getRepairs().toString();
-        }
-        else if (mode.equals(CompactorMode.COMPACT) || mode.equals(CompactorMode.DECOMPACT)){
-            response += getInputs().toString();
+        } else if (mode.equals(CompactorMode.COMPACT) ) {
+        	response += (getInputs().isEmpty() ? "Nothing to compact." : getInputs().toString() );
+        } else if (mode.equals(CompactorMode.DECOMPACT)){
+            response += (getInputs().isEmpty() ? "Nothing to decompact." : getInputs().toString() + " " + cp.getCompactLore() );
         }
         
         String percentDone=status.equals("On") ? " - "+Math.round(currentProductionTimer*100/getProductionTime())+"% done." : "";
