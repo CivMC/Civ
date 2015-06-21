@@ -224,7 +224,6 @@ compactor:
       amount: 1
       durability: 1
   fuel_time: 1
-  repair_multiple: 1
   name: 'Compactor'
   production_time: 1
   costs:
@@ -249,24 +248,25 @@ compactor:
       'Civtest Lock':
         material: BEDROCK
         amount: 1
+    repair_multiple: 3
     repair:
       Crate:
         material: CHEST
-        amount: 6
+        amount: 2
         display_name: Crate
         lore: A crate for compacting items
       Redstone:
         material: REDSTONE
-        amount: 58
+        amount: 19
       Piston:
         material: PISTON_BASE
-        amount: 6
+        amount: 2
       Diamond:
         material: DIAMOND
-        amount: 7
+        amount: 3
       Emerald:
         material: EMERALD
-        amount: 14
+        amount: 4
     recipe:
       CRATE:
         material: 'CHEST'
