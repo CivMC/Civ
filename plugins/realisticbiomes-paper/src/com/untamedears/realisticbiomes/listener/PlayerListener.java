@@ -22,8 +22,8 @@ import org.bukkit.material.MaterialData;
 
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.realisticbiomes.persist.Fruits;
 import com.untamedears.realisticbiomes.persist.Plant;
+import com.untamedears.utils.Fruits;
 
 public class PlayerListener implements Listener {
 	

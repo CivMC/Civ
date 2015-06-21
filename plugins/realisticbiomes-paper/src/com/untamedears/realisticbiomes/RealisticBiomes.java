@@ -21,9 +21,9 @@ import com.untamedears.realisticbiomes.listener.SpawnListener;
 import com.untamedears.realisticbiomes.persist.BlockGrower;
 import com.untamedears.realisticbiomes.persist.ChunkCoords;
 import com.untamedears.realisticbiomes.persist.Coords;
-import com.untamedears.realisticbiomes.persist.Fruits;
 import com.untamedears.realisticbiomes.persist.Plant;
 import com.untamedears.realisticbiomes.persist.PlantManager;
+import com.untamedears.utils.Fruits;
 
 public class RealisticBiomes extends JavaPlugin {
 

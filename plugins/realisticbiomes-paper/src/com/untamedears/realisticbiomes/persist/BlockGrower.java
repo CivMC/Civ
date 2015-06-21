@@ -14,6 +14,8 @@ import org.bukkit.material.Crops;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.NetherWarts;
 
+import com.untamedears.utils.Fruits;
+
 // handles force-growing of crop-type blocks based on a fractional growth amount
 public class BlockGrower {
 	
