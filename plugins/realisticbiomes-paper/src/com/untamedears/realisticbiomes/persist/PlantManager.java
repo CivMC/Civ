@@ -67,8 +67,7 @@ public class PlantManager {
 	
 	// database write thread
 	ExecutorService writeService;
-	private ChunkWriter chunkWriter;
-	
+
 	
 	// prepared statements
 	PreparedStatement makeTableChunk;
@@ -128,7 +127,7 @@ public class PlantManager {
 			this.selectAllFromChunk = readConn.prepareStatement(String.format("SELECT id, w, x, z FROM %s_chunk", config.prefix));
 						
 			// create chunk writer
-			chunkWriter = new ChunkWriter(writeConn, readConn, config);
+			ChunkWriter.init(writeConn, readConn, config);
 			
 		} catch (SQLException e) {
 			throw new DataSourceException("PlantManager constructor: Failed to create the prepared statements! (for table creation)", e);

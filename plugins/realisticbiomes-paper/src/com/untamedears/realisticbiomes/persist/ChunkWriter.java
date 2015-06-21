@@ -29,7 +29,7 @@ public class ChunkWriter {
 	
 	public static PreparedStatement loadPlantsStmt = null;
 	
-	public ChunkWriter(Connection writeConn, Connection readConn,  PersistConfig config) {
+	public static void init(Connection writeConn, Connection readConn,  PersistConfig config) {
 
 		try {
 			
