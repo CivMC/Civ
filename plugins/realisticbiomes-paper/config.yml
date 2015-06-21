@@ -382,7 +382,7 @@ realistic_biomes:
    biomes:
     mushroom: 1.0
 
-  RABBIT:
+  entity_RABBIT:
    inherit: animal
    biomes:
     temperate: 1.0
