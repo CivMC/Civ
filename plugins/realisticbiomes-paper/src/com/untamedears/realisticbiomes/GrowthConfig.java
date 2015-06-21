@@ -66,21 +66,21 @@ public class GrowthConfig extends BaseConfig {
 		this.add(new Vector(0,0,-1));	// north
 		this.add(new Vector(0,0,1));	// south
 	}};
+	@SuppressWarnings("serial")
 	private static List<Vector> waterCheckBlocks = new ArrayList<Vector>(){{
 		this.add(new Vector(-5,-1,0));	// west
 		this.add(new Vector(5,-1,0));	// east
 		this.add(new Vector(0,-1,-5));	// north
 		this.add(new Vector(0,-1,5));	// south
 	}};
-
-	public static GrowthConfig get(ConfigurationSection conf, GrowthConfig parent, Map<String, Biome[]>biomeAliases) {
-		GrowthConfig growth = new GrowthConfig(parent);
-		return growth;
+	
+	public static GrowthConfig get(String name, GrowthConfig parent, ConfigurationSection conf, HashMap<String, List<Biome>> biomeAliases) {
+		return new GrowthConfig(name, parent, conf, biomeAliases);
 	}
 
 	// create a new default configuration
-	GrowthConfig() {
-		super();
+	GrowthConfig(String name) {
+		super(name);
 		
 		greenhouseRate = 1.0;
 		isGreenhouseEnabled = false;
@@ -101,13 +101,14 @@ public class GrowthConfig extends BaseConfig {
 	}
 	
 	// make a copy of the given configuration
-	GrowthConfig(GrowthConfig parent) {
-		super();
+	GrowthConfig(String name, GrowthConfig parent) {
+		super(name);
 		copy(parent);
 	}
 	
 	// make a copy of the given configuration and modify it by loading in a YML config section
-	GrowthConfig(GrowthConfig parent, ConfigurationSection config, HashMap<String, List<Biome>> biomeAliases) {
+	GrowthConfig(String name, GrowthConfig parent, ConfigurationSection config, HashMap<String, List<Biome>> biomeAliases) {
+		super(name);
 		copy(parent);
 		
 		if (config.isSet("base_rate"))

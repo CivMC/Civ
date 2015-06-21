@@ -10,6 +10,9 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class BaseConfig {
+	
+	protected String name;
+	
 	// a rate of growth between 0 and 1
 	// this represents a chance,
 	// for a fishing reward, it's an additional chance of the item dropping once Minecraft has already chosen to drop it
@@ -25,31 +28,43 @@ public class BaseConfig {
 	// ========================================================================
 	// Initialization
 
-	public static BaseConfig get(ConfigurationSection conf, BaseConfig parent, Map<String, Biome[]>biomeAliases) {
-		BaseConfig config = new BaseConfig(parent);
-		return config;
+	public static BaseConfig get(String name, BaseConfig parent, ConfigurationSection conf, HashMap<String, List<Biome>> biomeAliases) {
+		return new BaseConfig(name, parent, conf, biomeAliases);
 	}
 
 	// create a new default configuration
-	public BaseConfig() {
+	public BaseConfig(String name) {
+		setName(name);
 		baseRate = 1.0;
 		biomeMultipliers = new HashMap<Biome, Double>();
 	}
 
 	// make a copy of the given configuration
-	public BaseConfig(BaseConfig parent) {
+	public BaseConfig(String name, BaseConfig parent) {
+		setName(name);
 		copy(parent);
 		baseRate = parent.baseRate;
 		biomeMultipliers = new HashMap<Biome, Double>(parent.biomeMultipliers);
 	}
 
 	// make a copy of the given configuration and modify it by loading in a YML config section
-	public BaseConfig(BaseConfig parent, ConfigurationSection config, HashMap<String, List<Biome>> biomeAliases) {
+	public BaseConfig(String name, BaseConfig parent, ConfigurationSection config, HashMap<String, List<Biome>> biomeAliases) {
+		setName(name);
 		copy(parent);
 		if (config.isSet("base_rate"))
 			baseRate = config.getDouble("base_rate");
 		if (config.isSet("biomes"))
 			loadBiomes(config.getConfigurationSection("biomes"), biomeAliases);
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(Object name) {
+		if (name != null) {
+			this.name = name.toString().toLowerCase().replaceAll("_", " ");
+		}
 	}
 
 	public void copy(BaseConfig other) {
@@ -95,5 +110,10 @@ public class BaseConfig {
 			rate = 0.0D; // if the biome cannot be found, assume zero
 		}
 		return rate;
+	}
+	
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "." + this.name;
 	}
 }
