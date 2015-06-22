@@ -17,6 +17,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.igotyou.FactoryMod.recipes.EnchantmentOptions;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 
 /**
@@ -161,12 +162,12 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		}
 		return amountAvailable;
 	}
-	public void putIn(Inventory inventory)
-	{
-		putIn(inventory,new ArrayList<ProbabilisticEnchantment>());
+	
+	public void putIn(Inventory inventory) {
+		putIn(inventory,new ArrayList<ProbabilisticEnchantment>(), EnchantmentOptions.DEFAULT);
 	}
-	public void putIn(Inventory inventory,List<ProbabilisticEnchantment> probabilisticEnchaments)
-	{
+	
+	public void putIn(Inventory inventory,List<ProbabilisticEnchantment> probabilisticEnchaments, EnchantmentOptions enchantmentOptions) {
 		for(ItemStack itemStack:this)
 		{
 			// Terrifying hardcode, but I think sometimes itemStack.maxsize == 0, yikes!
