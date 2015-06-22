@@ -20,6 +20,7 @@ public class Compactor extends ABaseFactory {
     private CompactorProperties cp;
     private CompactorMode mode;
     
+   
     public Compactor(Location factoryLocation, Location factoryInventoryLocation, Location factoryPowerSource,
                 boolean active, CompactorProperties compactorProperties) {
         super(factoryLocation, factoryInventoryLocation, factoryPowerSource, active, FactoryType.COMPACTOR, "Compactor");
@@ -62,7 +63,7 @@ public class Compactor extends ABaseFactory {
         Inventory inv = getInventory();
         if(mode.equals(CompactorMode.DECOMPACT)) {
             for(ItemStack is : inv.getContents()) {
-                if(is != null && is.getItemMeta().hasLore() && is.getItemMeta().getLore().contains(cp.getCompactLore())) {
+                if(canDecompact(is)) {
                 	NamedItemStack clone = new NamedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
                 	clone.setAmount(1);
                 	inputs.add(clone);
@@ -72,10 +73,9 @@ public class Compactor extends ABaseFactory {
             }
         } else if (mode.equals(CompactorMode.COMPACT)) {
             for(ItemStack is : inv.getContents()) {
-                if(is != null && is.getAmount() == is.getMaxStackSize() && !is.getItemMeta().hasLore()) {
+                if(canCompact(is)) {
                 	NamedItemStack clone = new NamedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
                     inputs.add(clone); 
-
 
                     inputs.addAll(cp.getRecipeMaterials());
                     return inputs;
@@ -85,12 +85,42 @@ public class Compactor extends ABaseFactory {
         return inputs;
     }
     
+    /**
+     * Returns true is the item stack is not null, if the item is a full sized stack, with size
+     * more than one (to prevent simply adding lore to single items), that the item does NOT have
+     * lore, and that the item has simple metadata (not a book, fireworks, banners, beacons, other
+     * "special" items that generate a host of edge cases like duplication and cheap dye and other
+     * problems.)
+     * 
+     * @param is the ItemStack to check validity of compaction
+     * @return true if can be compacted, false otherwise
+     */
+    private boolean canCompact(ItemStack is) {
+    	return is != null && is.getAmount() == is.getMaxStackSize() && is.getAmount() > 1 && 
+    			!is.getItemMeta().hasLore() && is.getItemMeta().getClass().getSuperclass().equals(java.lang.Object.class);
+    	
+    	/* bit of a hack at the end, but effectively only items with "simple" meta, where the implementation
+    	 * is strictly a subclass of Object, and not a subclass of bukkit's CraftMetaItem. */    	
+    }
+    
+    /**
+     * Returns true if the item stack is not null, and has lore where the lore contains
+     * the special lore of this factory, and where the item has simple metadata (see canCompact).
+     * @param is the ItemStack to check validity of decompaction
+     * @return true if can be decompacted, false otherwise
+     */
+    private boolean canDecompact(ItemStack is) {
+    	return is != null && is.getItemMeta().hasLore() && 
+    			is.getItemMeta().getLore().contains(cp.getCompactLore()) &&
+    			is.getItemMeta().getClass().getSuperclass().equals(java.lang.Object.class);
+    }
+    
     public ItemList<NamedItemStack> getOutputs() {
         ItemList<NamedItemStack> outputs = new ItemList<NamedItemStack>();
         Inventory inv = getInventory();
         if (mode.equals( CompactorMode.DECOMPACT )) {
             for(ItemStack is : inv.getContents()) {
-                if(is != null && is.getItemMeta().hasLore() && is.getItemMeta().getLore().contains(cp.getCompactLore())) {
+                if(canDecompact(is)) {
                 	NamedItemStack clone = new NamedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
                 	clone.setAmount(clone.getMaxStackSize());
                     ItemMeta cloneMeta = clone.getItemMeta();
@@ -103,7 +133,7 @@ public class Compactor extends ABaseFactory {
             }
         } else if (mode.equals( CompactorMode.COMPACT )) {
             for (ItemStack is : inv.getContents()) {
-                if(is != null && is.getAmount() == is.getMaxStackSize() && !is.getItemMeta().hasLore()) {
+                if(canCompact(is)) {
                 	NamedItemStack clone = new NamedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
                 	clone.setAmount(1);
                     ItemMeta cloneMeta = clone.getItemMeta();
@@ -209,9 +239,11 @@ public class Compactor extends ABaseFactory {
         if (mode.equals(CompactorMode.REPAIR)){
             response += getRepairs().toString();
         } else if (mode.equals(CompactorMode.COMPACT) ) {
-        	response += (getInputs().isEmpty() ? "Nothing to compact." : getInputs().toString() );
+        	ItemList<NamedItemStack> inputs = getInputs();
+        	response += (inputs.isEmpty() ? "Nothing to compact." : inputs.toString() );
         } else if (mode.equals(CompactorMode.DECOMPACT)){
-            response += (getInputs().isEmpty() ? "Nothing to decompact." : getInputs().toString() + " " + cp.getCompactLore() );
+        	ItemList<NamedItemStack> inputs = getInputs();
+            response += (inputs.isEmpty() ? "Nothing to decompact." : inputs.toString() + " " + cp.getCompactLore() );
         }
         
         String percentDone=status.equals("On") ? " - "+Math.round(currentProductionTimer*100/getProductionTime())+"% done." : "";
