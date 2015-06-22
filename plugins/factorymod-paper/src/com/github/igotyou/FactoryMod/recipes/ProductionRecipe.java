@@ -19,10 +19,11 @@ public class ProductionRecipe implements IRecipe
 	private ItemList<NamedItemStack> repairs;
 	private List<ProductionRecipe> outputRecipes;
 	private List<ProbabilisticEnchantment> enchantments;
+	private EnchantmentOptions enchantmentOptions;
 	private boolean useOnce;
 	
 	public ProductionRecipe(String title,String recipeName,int productionTime,ItemList<NamedItemStack> inputs,ItemList<NamedItemStack> upgrades,
-		ItemList<NamedItemStack> outputs,List<ProbabilisticEnchantment> enchantments,boolean useOnce, ItemList<NamedItemStack> repairs)
+		ItemList<NamedItemStack> outputs, EnchantmentOptions enchantmentOptions, List<ProbabilisticEnchantment> enchantments,boolean useOnce, ItemList<NamedItemStack> repairs)
 	{
 		this.title=title;
 		this.recipeName = recipeName;
@@ -31,6 +32,7 @@ public class ProductionRecipe implements IRecipe
 		this.upgrades=upgrades;
 		this.outputs = outputs;
 		this.outputRecipes=new ArrayList<ProductionRecipe>();
+		this.enchantmentOptions = enchantmentOptions;
 		this.enchantments=enchantments;
 		this.useOnce=useOnce;
 		this.repairs=repairs;
@@ -38,7 +40,7 @@ public class ProductionRecipe implements IRecipe
 	
 	public ProductionRecipe(String title,String recipeName,int productionTime,ItemList<NamedItemStack> repairs)
 	{
-		this(title,recipeName,productionTime,new ItemList<NamedItemStack>(),new ItemList<NamedItemStack>(),new ItemList<NamedItemStack>(),new ArrayList<ProbabilisticEnchantment>(),false,repairs);
+		this(title,recipeName,productionTime,new ItemList<NamedItemStack>(),new ItemList<NamedItemStack>(),new ItemList<NamedItemStack>(),null,new ArrayList<ProbabilisticEnchantment>(),false,repairs);
 	}
 	
 	public boolean hasMaterials(Inventory inventory)
@@ -102,5 +104,13 @@ public class ProductionRecipe implements IRecipe
 	public boolean getUseOnce()
 	{
 		return useOnce;
+	}
+
+	public EnchantmentOptions getEnchantmentOptions() {
+		if (enchantmentOptions == null) {
+			return EnchantmentOptions.DEFAULT;
+		} else {
+			return enchantmentOptions;
+		}
 	}
 }
