@@ -60,6 +60,13 @@ public class IgnoreGroup extends PlayerCommandMiddle{
 			String debugMessage = "Player ignored Group, Player: " + name + " Group: " + ignore;
 			logger.debug(debugMessage);
 			sender.sendMessage(ChatColor.YELLOW + "You have ignored: " + ignore);
+			String gchat = chatMan.getGroupChatting(name);
+			if (gchat != null){
+				if (gchat.equals(ignore)){
+					chatMan.removeGroupChat(name);
+					sender.sendMessage(ChatColor.RED + "You have been moved to global chat");
+				}
+			}
 			return true;
 		} else{
 			//player removed from list

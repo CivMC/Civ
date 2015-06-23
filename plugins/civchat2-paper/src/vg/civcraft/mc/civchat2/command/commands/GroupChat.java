@@ -70,6 +70,10 @@ public class GroupChat extends PlayerCommandMiddle{
 			sender.sendMessage(ChatColor.RED + "You are not a member of that group.");
 			return true;
 		}
+		if (chatMan.isIgnoringGroup(sender.getName(), group)){
+			sender.sendMessage(ChatColor.RED + "You need to unignore group: "+group.getName());
+			return true;
+		}
 		if(args.length == 1){	
 			if(isGroupChatting){
 				//player already groupchatting check if its this group
