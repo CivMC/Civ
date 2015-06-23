@@ -153,7 +153,7 @@ public class BastionBlockManager
 		return null;
 	}
 
-	private BastionBlock getBlockingBastion(Location loc){
+	public BastionBlock getBlockingBastion(Location loc){
 		Set<? extends QTBox> possible=set.forLocation(loc);
 
 		@SuppressWarnings("unchecked")
@@ -169,7 +169,7 @@ public class BastionBlockManager
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Set<BastionBlock> getBlockingBastions(Location loc){
+	public Set<BastionBlock> getBlockingBastions(Location loc){
 		Set<? extends QTBox> boxes = set.forLocation(loc);
 		Set<BastionBlock> bastions = null;
 		
