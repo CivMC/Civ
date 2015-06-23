@@ -9382,6 +9382,9 @@ production_recipes:
       Enchanted Diamond Axe:
         material: DIAMOND_AXE
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Efficiency 4:
         type: DIG_SPEED
@@ -9421,6 +9424,9 @@ production_recipes:
       Enchanted Diamond Pickaxe:
         material: DIAMOND_PICKAXE
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Efficiency 4:
         type: DIG_SPEED
@@ -9460,6 +9466,9 @@ production_recipes:
       Enchanted Diamond Spade:
         material: DIAMOND_SPADE
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Efficiency 4:
         type: DIG_SPEED
@@ -9499,6 +9508,9 @@ production_recipes:
       Enchanted Iron Axe:
         material: IRON_AXE
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Efficiency 4:
         type: DIG_SPEED
@@ -9538,6 +9550,9 @@ production_recipes:
       Enchanted Iron Pickaxe:
         material: IRON_PICKAXE
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Efficiency 4:
         type: DIG_SPEED
@@ -9577,6 +9592,9 @@ production_recipes:
       Enchanted Iron Spade:
         material: IRON_SPADE
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Efficiency 4:
         type: DIG_SPEED
@@ -9616,6 +9634,9 @@ production_recipes:
       Enchanted Wooden Axe:
         material: WOOD_PICKAXE
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Efficiency 4:
         type: DIG_SPEED
@@ -9655,6 +9676,9 @@ production_recipes:
       Enchanted Wooden Spade:
         material: WOOD_SPADE
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Efficiency 4:
         type: DIG_SPEED
@@ -9694,6 +9718,9 @@ production_recipes:
       Enchanted Wooden Axe:
         material: WOOD_AXE
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Efficiency 4:
         type: DIG_SPEED
@@ -9733,6 +9760,9 @@ production_recipes:
       Enchanted Fishing Rod:
         material: FISHING_ROD
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -9768,6 +9798,9 @@ production_recipes:
       Enchanted Bow:
         material: BOW
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -9811,6 +9844,9 @@ production_recipes:
       Enchanted Diamond Sword:
         material: DIAMOND_SWORD
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -9882,6 +9918,9 @@ production_recipes:
       Enchanted Diamond Leggings:
         material: DIAMOND_LEGGINGS
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -9925,6 +9964,9 @@ production_recipes:
       Enchanted Diamond Boots:
         material: DIAMOND_BOOTS
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -9972,6 +10014,9 @@ production_recipes:
       Enchanted Diamond Chestplate:
         material: DIAMOND_CHESTPLATE
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -10023,6 +10068,9 @@ production_recipes:
       Enchanted Diamond Helmet:
         material: DIAMOND_HELMET
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -10078,6 +10126,9 @@ production_recipes:
       Enchanted Iron Sword:
         material: IRON_SWORD
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -10149,6 +10200,9 @@ production_recipes:
       Enchanted Iron Leggings:
         material: IRON_LEGGINGS
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -10192,6 +10246,9 @@ production_recipes:
       Enchanted Iron Boots:
         material: IRON_BOOTS
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -10239,6 +10296,9 @@ production_recipes:
       Enchanted Iron Chestplate:
         material: IRON_CHESTPLATE
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -10290,6 +10350,9 @@ production_recipes:
       Enchanted Iron Helmet:
         material: IRON_HELMET
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -10345,6 +10408,9 @@ production_recipes:
       Enchanted Wooden Sword:
         material: WOOD_SWORD
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -10416,6 +10482,9 @@ production_recipes:
       Enchanted Leather Leggings:
         material: LEATHER_LEGGINGS
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -10459,6 +10528,9 @@ production_recipes:
       Enchanted Leather Boots:
         material: LEATHER_BOOTS
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -10506,6 +10578,9 @@ production_recipes:
       Enchanted Leather Chestplate:
         material: LEATHER_CHESTPLATE
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
@@ -10557,6 +10632,9 @@ production_recipes:
       Enchanted Leather Helmet:
         material: LEATHER_HELMET
         amount: 1
+    enchantment_options:
+      safe_only: true
+      ensure_one: true
     enchantments:
       Unbreaking 3:
         type: DURABILITY
