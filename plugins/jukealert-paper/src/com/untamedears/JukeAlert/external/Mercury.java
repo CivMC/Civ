@@ -4,14 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 import vg.civcraft.mc.mercury.MercuryAPI;
-import vg.civcraft.mc.mercury.MercuryPlugin;
 
 public class Mercury {
 
 	private PluginManager pluginManager_;
 	private boolean isEnabled = false;
 	private static String[] chans = {
-			"jukealert-login", "jukealert-logout", "jukealert-entry"
+			"login", "logout", "entry"
 	};
 	
 	public Mercury(){
@@ -23,8 +22,8 @@ public class Mercury {
 		return isEnabled;
 	}
 	
-	public void sendMessage(String server, String message, String... channels){
-		MercuryPlugin.handler.sendMessage(server, message, channels);
+	public void sendMessage(String message, String... channels){
+		MercuryAPI.instance.sendMessage(message, channels);
 	}
 	
 	public static String[] getChannels(){
