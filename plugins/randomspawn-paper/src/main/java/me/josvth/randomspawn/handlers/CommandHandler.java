@@ -54,7 +54,6 @@ public class CommandHandler implements CommandExecutor{
 		}
 	}
 
-	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {	
 					
 		if (args.length == 0 || !commands.containsKey(args[0])) return false;

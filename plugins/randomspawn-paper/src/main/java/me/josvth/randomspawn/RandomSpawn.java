@@ -3,7 +3,6 @@ package me.josvth.randomspawn;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -106,8 +105,8 @@ public class RandomSpawn extends JavaPlugin{
 				
 				xmin = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.x-min", -500);
 				xmax = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.x-max", 500);
-				zmin = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.z-min", -500);
-				zmax = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.z-max", 500);
+				zmin = zcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.z-min", -500);
+				zmax = zcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.z-max", 500);
 				
 				exclusionZone = yamlHandler.worlds.getDouble(worldName + ".spawnbyplayerarea.exclusionzone", 0);
 				
