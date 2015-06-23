@@ -8,6 +8,7 @@ exampleworld:
   keeprandomspawns: false
   spawnbyplayer: true
   spawnbyplayerarea:
+    exclusionzone: 200
     x-min: -500
     x-max: 500
     z-min: -500

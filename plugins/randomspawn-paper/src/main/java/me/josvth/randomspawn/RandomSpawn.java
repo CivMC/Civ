@@ -87,6 +87,8 @@ public class RandomSpawn extends JavaPlugin{
 		double zmin = yamlHandler.worlds.getDouble(worldName +".spawnarea.z-min", -100);
 		double zmax = yamlHandler.worlds.getDouble(worldName +".spawnarea.z-max", 100);
 		
+		double exclusionZone = yamlHandler.worlds.getDouble(worldName + ".spawnarea.exclusionzone", 0);
+		
 		// Spawn area thickness near border. If 0 spawns whole area
 		int thickness = yamlHandler.worlds.getInt(worldName +".spawnarea.thickness", 0);
 
@@ -102,10 +104,12 @@ public class RandomSpawn extends JavaPlugin{
 				double xcenter = spawnNear.getX();
 				double zcenter = spawnNear.getZ();
 				
-				xmin = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.x-min", -100);
-				xmax = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.x-max", 100);
-				zmin = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.z-min", -100);
-				zmax = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.z-max", 100);
+				xmin = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.x-min", -500);
+				xmax = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.x-max", 500);
+				zmin = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.z-min", -500);
+				zmax = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.z-max", 500);
+				
+				exclusionZone = yamlHandler.worlds.getDouble(worldName + ".spawnbyplayerarea.exclusionzone", 0);
 				
 				thickness = yamlHandler.worlds.getInt(worldName + ".spawnbyplayerarea.thickness", 0);
 				
@@ -124,11 +128,17 @@ public class RandomSpawn extends JavaPlugin{
 			
 			do {
 
-				double r = Math.random() * (xmax - xcenter);
+				double r = Math.random() * (xmax - xcenter) - exclusionZone;
 				double phi = Math.random() * 2 * Math.PI;
 
 				xrand = xcenter + Math.cos(phi) * r;
 				zrand = zcenter + Math.sin(phi) * r;
+				
+				if(Math.cos(phi) > 0) xrand += exclusionZone;
+				else if(Math.cos(phi) < 0) xrand -= exclusionZone;
+				
+				if(Math.sin(phi) > 0) zrand += exclusionZone;
+				else if(Math.sin(phi) < 0) zrand -= exclusionZone;
 
 				y = getValidHighestY(world, xrand, zrand, blacklist);
 								
@@ -137,7 +147,7 @@ public class RandomSpawn extends JavaPlugin{
 
 		} else {
 
-			if(thickness <= 0){
+			if(thickness <= 0) {
 
 				do {
 					
