@@ -25,13 +25,13 @@ public class EnderPearlListener implements Listener {
 		pearlMang=new EnderPearlManager();
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void handleEnderPearlLanded(PlayerTeleportEvent event){
 		if(event.isCancelled())
 			return;
 		manager.handleEnderPearlLanded(event);
 	}
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onProjectileThrownEvent(ProjectileLaunchEvent event) {
 		if(event.isCancelled())
 			return;
