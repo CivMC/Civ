@@ -70,6 +70,7 @@ public class Acid extends PlayerCommand {
 				p.sendMessage(ChatColor.RED
 						+ "You do not have sufficient permission "
 						+ "to use acid blocks.");
+				return true;
 			}
 			int time = Utility.timeUntilMature(pRein);
 			if (time != 0) {
