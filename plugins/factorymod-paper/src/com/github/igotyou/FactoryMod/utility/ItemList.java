@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -168,22 +169,18 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 	}
 	
 	public void putIn(Inventory inventory,List<ProbabilisticEnchantment> probabilisticEnchaments, EnchantmentOptions enchantmentOptions) {
-		for(ItemStack itemStack:this)
-		{
+		for(ItemStack itemStack:this) {
 			// Terrifying hardcode, but I think sometimes itemStack.maxsize == 0, yikes!
 			if (itemStack.getMaxStackSize() <= 0) {
 				Bukkit.getLogger().warning("Item Stack has maxsize of 0, something is very wrong.");
 			}
 			int maxStackSize=(itemStack.getMaxStackSize() == 0 ? 64 : itemStack.getMaxStackSize());
 			int amount=itemStack.getAmount();
-			while(amount>maxStackSize)
-			{
+			while(amount>maxStackSize) {
 				ItemStack itemClone=itemStack.clone();
-				Map<Enchantment,Integer> enchantments=getEnchantments(probabilisticEnchaments);
-				for(Enchantment enchantment:enchantments.keySet())
-				{
-					if(enchantment.canEnchantItem(itemStack))
-					{
+				Map<Enchantment,Integer> enchantments=getEnchantments(probabilisticEnchaments, enchantmentOptions);
+				for(Enchantment enchantment:enchantments.keySet()) {
+					if(enchantment.canEnchantItem(itemStack)) {
 						itemClone.addUnsafeEnchantment(enchantment,enchantments.get(enchantment));
 					}
 				}
@@ -192,11 +189,9 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 				amount-=maxStackSize;
 			}
 			ItemStack itemClone=itemStack.clone();
-			Map<Enchantment,Integer> enchantments=getEnchantments(probabilisticEnchaments);
-			for(Enchantment enchantment:enchantments.keySet())
-			{
-				if(enchantment.canEnchantItem(itemStack))
-				{
+			Map<Enchantment,Integer> enchantments=getEnchantments(probabilisticEnchaments, enchantmentOptions);
+			for(Enchantment enchantment:enchantments.keySet()) {
+				if(enchantment.canEnchantItem(itemStack)) {
 					itemClone.addUnsafeEnchantment(enchantment,enchantments.get(enchantment));
 				}
 			}
@@ -205,19 +200,67 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		}
 	}
 	
-	public HashMap<Enchantment, Integer> getEnchantments(List<ProbabilisticEnchantment> probabilisticEnchaments)
+	/**
+	 * Attempts to pick a subset from available enchantments, using independent probabilities.
+	 * If enchantment_options:ensure_one is set on the recipe, will pick one using 
+	 * cumulative probabilities if the independent probability selection fails to pick any.
+	 * if *that* fails, it picks one at random from the full set.
+	 *  
+	 * @param probabilisticEnchantments The set of applicable enchantments.
+	 * @param enchantmentOptions The options for applying enchantments
+	 * @return a set of enchantments to apply.
+	 */
+	public HashMap<Enchantment, Integer> getEnchantments(List<ProbabilisticEnchantment> probabilisticEnchantments, EnchantmentOptions enchantmentOptions)
 	{
 		HashMap<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
 		Random rand = new Random();
-		for(int i=0;i<probabilisticEnchaments.size();i++)
-		{
-			if(probabilisticEnchaments.get(i).getProbability()>=rand.nextDouble())
-			{
-				enchantments.put(probabilisticEnchaments.get(i).getEnchantment(),probabilisticEnchaments.get(i).getLevel());
+		double sum = 0.0d;
+		for(ProbabilisticEnchantment pe : probabilisticEnchantments) {
+			sum += pe.getProbability(); 
+			if(pe.getProbability()>=rand.nextDouble()) {
+				// Logic fun: go ahead and add if safe only is false, otherwise check if safe.
+				if (!enchantmentOptions.getSafeOnly() || checkSafe(enchantments.keySet(), pe.getEnchantment())) {
+					enchantments.put(pe.getEnchantment(),pe.getLevel());
+				}
+			}
+		}
+		// Force at least one, try to pick fairly (based on cumulative distribution first)
+		if (enchantmentOptions.getEnsureOne() && enchantments.size() == 0) {
+			double which = rand.nextDouble() * sum;
+			double sofar = 0.0d;
+			for (ProbabilisticEnchantment pe : probabilisticEnchantments) {
+				if (pe.getProbability() + sofar >= which) {
+					enchantments.put(pe.getEnchantment(), pe.getLevel());
+					break;
+				} else {
+					sofar += pe.getProbability();
+				}
+			}
+			if (enchantments.size() == 0) { // someone forgot to give any probabilities?
+				int i = rand.nextInt(probabilisticEnchantments.size());
+				enchantments.put(probabilisticEnchantments.get(i).getEnchantment(),probabilisticEnchantments.get(i).getLevel());
 			}
 		}
 		return enchantments;
 	}
+	
+	/**
+	 * Test function to ensure "safe" enchantment sets. Call before adding a new enchantment to a set
+	 * of enchantments.
+	 * 
+	 * @param current The current safe set
+	 * @param test The new enchantment to test
+	 * @return True if this new enchantment does not conflict with any prior enchantments, false otherwise.
+	 */
+	private boolean checkSafe(Set<Enchantment> current, Enchantment test) {
+		for (Enchantment ench : current) {
+			if (test.conflictsWith(ench)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	
 	public String toString()
 	{
