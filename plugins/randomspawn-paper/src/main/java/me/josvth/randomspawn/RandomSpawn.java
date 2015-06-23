@@ -1,6 +1,5 @@
 package me.josvth.randomspawn;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -64,154 +63,139 @@ public class RandomSpawn extends JavaPlugin{
 	}
 
 	// *------------------------------------------------------------------------------------------------------------*
-	// | The following chooseSpawn method contains code made by NuclearW                                            |
+	// | The following chooseSpawn methods contains code made by NuclearW                                            |
 	// | based on his SpawnArea plugin:                                                                             |
 	// | http://forums.bukkit.org/threads/tp-spawnarea-v0-1-spawns-targetPlayers-in-a-set-area-randomly-1060.20408/ |
 	// *------------------------------------------------------------------------------------------------------------*
 
 	public Location chooseSpawn(World world){
-
 		String worldName = world.getName();
 
 		// I don't like this method
-		List<Integer> blacklist = new ArrayList<Integer>();
+		// Nah man this method is pretty good. Any better ideas though?
 		
+		List<Integer> blacklist = Arrays.asList(new Integer[]{8,9,10,11,18,51,81});
 		if( yamlHandler.worlds.contains( worldName + ".spawnblacklist") )
 			blacklist = yamlHandler.worlds.getIntegerList(worldName + ".spawnblacklist");
-		else
-			blacklist = Arrays.asList(new Integer[]{8,9,10,11,18,51,81});
-	
-		double xmin = yamlHandler.worlds.getDouble(worldName +".spawnarea.x-min", -100);
-		double xmax = yamlHandler.worlds.getDouble(worldName +".spawnarea.x-max", 100);
-		double zmin = yamlHandler.worlds.getDouble(worldName +".spawnarea.z-min", -100);
-		double zmax = yamlHandler.worlds.getDouble(worldName +".spawnarea.z-max", 100);
-		
-		double exclusionZone = yamlHandler.worlds.getDouble(worldName + ".spawnarea.exclusionzone", 0);
-		
-		// Spawn area thickness near border. If 0 spawns whole area
-		int thickness = yamlHandler.worlds.getInt(worldName +".spawnarea.thickness", 0);
-
-		String type = yamlHandler.worlds.getString(worldName +".spawnarea.type", "square");
 		
 		if(yamlHandler.worlds.getBoolean(worldName + ".spawnbyplayer")) {
-			
 			Player[] playersOnline = Bukkit.getOnlinePlayers();
 			
 			if(playersOnline.length > 0) {
 				Player randomPlayer = playersOnline[(int)(Math.random() * playersOnline.length)];
 				Location spawnNear = randomPlayer.getLocation();
-				double xcenter = spawnNear.getX();
-				double zcenter = spawnNear.getZ();
 				
-				xmin = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.x-min", -500);
-				xmax = xcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.x-max", 500);
-				zmin = zcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.z-min", -500);
-				zmax = zcenter + yamlHandler.worlds.getDouble(worldName +".spawnbyplayerarea.z-max", 500);
+				double radius = yamlHandler.worlds.getDouble(worldName + ".spawnbyplayerarea.radius", 500);
 				
-				exclusionZone = yamlHandler.worlds.getDouble(worldName + ".spawnbyplayerarea.exclusionzone", 0);
+				double exclusionRadius = yamlHandler.worlds.getDouble(worldName + ".spawnbyplayerarea.exclusionradius", 0);
 				
-				thickness = yamlHandler.worlds.getInt(worldName + ".spawnbyplayerarea.thickness", 0);
-				
-				type = yamlHandler.worlds.getString(worldName + ".spawnbyplayerarea.type", "circle");
+				return chooseSpawn(radius, exclusionRadius, spawnNear, blacklist);
 			}
 		}
-				
-		double xrand = 0;
-		double zrand = 0;
-		double y = -1;
 		
-		if(type.equalsIgnoreCase("circle")){
-
-			double xcenter = xmin + (xmax - xmin)/2;
-			double zcenter = zmin + (zmax - zmin)/2;
+		String type = yamlHandler.worlds.getString(worldName +".spawnarea.type", "square");
+		
+		if(type.equalsIgnoreCase("square")) {
+			double xmin = yamlHandler.worlds.getDouble(worldName +".spawnarea.x-min", -100);
+			double xmax = yamlHandler.worlds.getDouble(worldName +".spawnarea.x-max", 100);
+			double zmin = yamlHandler.worlds.getDouble(worldName +".spawnarea.z-min", -100);
+			double zmax = yamlHandler.worlds.getDouble(worldName +".spawnarea.z-max", 100);
+			// Spawn area thickness near border. If 0 spawns whole area
+			int thickness = yamlHandler.worlds.getInt(worldName +".spawnarea.thickness", 0);
 			
-			do {
-
-				double r = Math.random() * (xmax - xcenter) - exclusionZone;
-				double phi = Math.random() * 2 * Math.PI;
-
-				xrand = xcenter + Math.cos(phi) * r;
-				zrand = zcenter + Math.sin(phi) * r;
-				
-				if(Math.cos(phi) > 0) xrand += exclusionZone;
-				else if(Math.cos(phi) < 0) xrand -= exclusionZone;
-				
-				if(Math.sin(phi) > 0) zrand += exclusionZone;
-				else if(Math.sin(phi) < 0) zrand -= exclusionZone;
-
-				y = getValidHighestY(world, xrand, zrand, blacklist);
-								
-			} while (y == -1);
-
-
-		} else {
-
-			if(thickness <= 0) {
-
-				do {
-					
-					xrand = xmin + Math.random()*(xmax - xmin + 1);
-					zrand = zmin + Math.random()*(zmax - zmin + 1);
-
-					y = getValidHighestY(world, xrand, zrand, blacklist);
-
-				} while (y == -1);
-
-			}else {
-
-				do {
-					
-					int side = (int) (Math.random() * 4d);
-					double borderOffset = Math.random() * (double) thickness;
-					if (side == 0) {
-						xrand = xmin + borderOffset;
-						// Also balancing probability considering thickness
-						zrand = zmin + Math.random() * (zmax - zmin + 1 - 2*thickness) + thickness;
-					}
-					else if (side == 1) {
-						xrand = xmax - borderOffset;
-						zrand = zmin + Math.random() * (zmax - zmin + 1 - 2*thickness) + thickness;
-					}
-					else if (side == 2) {
-						xrand = xmin + Math.random() * (xmax - xmin + 1);
-						zrand = zmin + borderOffset;
-					}
-					else {
-						xrand = xmin + Math.random() * (xmax - xmin + 1);
-						zrand = zmax - borderOffset;
-					}
-
-					y = getValidHighestY(world, xrand, zrand, blacklist);
-
-				} while (y == -1);
-				
-			}
+			return chooseSpawn(world, xmin, xmax, zmin, zmax, thickness, blacklist);
 		}
+		
+		if(type.equalsIgnoreCase("circle")) {
+			double exclusionRadius = yamlHandler.worlds.getDouble(worldName + ".spawnarea.exclusionradius", 0);
+			double radius = yamlHandler.worlds.getDouble(worldName + ".spawnarea.radius", 100);
+			double xcenter = yamlHandler.worlds.getDouble(worldName + ".spawnarea.xcenter", 0);
+			double zcenter = yamlHandler.worlds.getDouble(worldName + ".spawnarea.zcenter", 0);
+			
+			return chooseSpawn(radius, exclusionRadius, new Location(world, xcenter, 0, zcenter), blacklist);
+		}
+		
+		return null;
+	}
 	
-		Location location = new Location(world, xrand, y, zrand);
-				
-		return location;
+	private Location chooseSpawn(double radius, double exclusionRadius, Location center, List<Integer> blacklist) {
+		Location result = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ());
+		
+		do {
+			double r = exclusionRadius + Math.random() * (radius - exclusionRadius);
+			double phi = Math.random() * 2 * Math.PI;
+
+			double x = center.getX() + Math.cos(phi) * r;
+			double z = center.getZ() + Math.sin(phi) * r;
+
+			result.setX(x);
+			result.setZ(z);
+			result.setY(getValidHighestY(center.getWorld(), x, z, blacklist));
+		} while (result.getY() == -1);
+		return result;
+	}
+	
+	private Location chooseSpawn(World world, double xmin, double xmax, double zmin, double zmax, double thickness, List<Integer> blacklist) {
+		Location result = new Location(world, xmin, 0, zmin);
+		
+		if(thickness <= 0) {
+			do {
+				double x = xmin + Math.random()*(xmax - xmin + 1);
+				double z = zmin + Math.random()*(zmax - zmin + 1);
+
+				result.setX(x);
+				result.setZ(z);
+				result.setY(getValidHighestY(world, x, z, blacklist));
+			} while(result.getY() == -1);
+		}else {
+			do {
+				double x = 0, z = 0;
+				int side = (int) (Math.random() * 4d);
+				double borderOffset = Math.random() * (double) thickness;
+				if (side == 0) {
+					x = xmin + borderOffset;
+					// Also balancing probability considering thickness
+					z = zmin + Math.random() * (zmax - zmin + 1 - 2*thickness) + thickness;
+				}
+				else if (side == 1) {
+					x = xmax - borderOffset;
+					z = zmin + Math.random() * (zmax - zmin + 1 - 2*thickness) + thickness;
+				}
+				else if (side == 2) {
+					x = xmin + Math.random() * (xmax - xmin + 1);
+					z = zmin + borderOffset;
+				}
+				else {
+					x = xmin + Math.random() * (xmax - xmin + 1);
+					z = zmax - borderOffset;
+				}
+
+				result.setX(x);
+				result.setZ(z);
+				result.setY(getValidHighestY(world, x, z, blacklist));
+			} while (result.getY() == -1);
+		}
+		return result;
 	}
 
 	private double getValidHighestY(World world, double x, double z, List<Integer> blacklist) {
-		
 		world.getChunkAt(new Location(world, x, 0, z)).load();
 
 		double y = 0;
 		int blockid = 0;
 
-		if(world.getEnvironment().equals(Environment.NETHER)){
+		if(world.getEnvironment().equals(Environment.NETHER)) {
 			int blockYid = world.getBlockTypeIdAt((int) x, (int) y, (int) z);
 			int blockY2id = world.getBlockTypeIdAt((int) x, (int) (y+1), (int) z);
-			while(y < 128 && !(blockYid == 0 && blockY2id == 0)){				
+			while(y < 128 && !(blockYid == 0 && blockY2id == 0)) {				
 				y++;
 				blockYid = blockY2id;
 				blockY2id = world.getBlockTypeIdAt((int) x, (int) (y+1), (int) z);
 			}
 			if(y == 127) return -1;
-		}else{
+		}else {
 			y = 257;
-			while(y >= 0 && blockid == 0){
+			while(y >= 0 && blockid == 0) {
 				y--;
 				blockid = world.getBlockTypeIdAt((int) x, (int) y, (int) z);
 			}
@@ -224,10 +208,8 @@ public class RandomSpawn extends JavaPlugin{
 		return y;
 	}
 
-	// Methods for a save landing :)
-
-	public void sendGround(Player player, Location location){
-
+	// Methods for a safe landing :)
+	public void sendGround(Player player, Location location) {
 		location.getChunk().load();
 
 		World world = location.getWorld();
@@ -236,6 +218,5 @@ public class RandomSpawn extends JavaPlugin{
 			Block block = world.getBlockAt(location.getBlockX(), y, location.getBlockZ());
 			player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
 		}
-
 	}
 }
