@@ -23,10 +23,11 @@ public class RepairFactoryProperties implements IFactoryProperties{
 	private int repair;
 	private double repairTime;
 	private double productionTime;
+	private int resetLevel;
 	
 	public RepairFactoryProperties(ItemList<NamedItemStack> constructionMaterials, ItemList<NamedItemStack> fuel,
 			ItemList<NamedItemStack> repairMaterials, int energyTime, String name,int repair, double repairTime,
-			double productionTime, ItemList<NamedItemStack> recipeMaterials, List<Material> allowedRepairable){
+			double productionTime, int resetLevel, ItemList<NamedItemStack> recipeMaterials, List<Material> allowedRepairable){
 		this.constructionMaterials = constructionMaterials;
 		this.fuel = fuel;
 		this.repairMaterials = repairMaterials;
@@ -35,6 +36,7 @@ public class RepairFactoryProperties implements IFactoryProperties{
 		this.repair = repair;
 		this.repairTime = repairTime;
 		this.productionTime = productionTime;
+		this.resetLevel = resetLevel;
 		this.recipeMaterials = recipeMaterials;
 		this.allowedRepairable = allowedRepairable;
 	}
@@ -82,6 +84,10 @@ public class RepairFactoryProperties implements IFactoryProperties{
 		return productionTime;
 	}
 	
+	public int getResetLevel() {
+		return resetLevel;
+	}
+	
 	public static RepairFactoryProperties fromConfig(FactoryModPlugin plugin, ConfigurationSection section){
 		ItemList<NamedItemStack> rfFuel = plugin.getItems(section.getConfigurationSection("fuel"));
 		if (rfFuel.isEmpty()){
@@ -95,9 +101,10 @@ public class RepairFactoryProperties implements IFactoryProperties{
 		ItemList<NamedItemStack> rfAllowed = plugin.getItems(section.getConfigurationSection("repairable"));
 		int rfEnergyTime = section.getInt("fuel_time");
 		int rfRepair = costs.getInt("repair_multiple", 1);
-		String rfName = section.getString("name", "Repair Factory");
+		String rfName = section.getString("name", "Reset Factory");
 		int repairTime = section.getInt("repair_time", 12);
 		int productionTime = section.getInt("production_time");
+		int resetLevel = section.getInt("reset_level", 1);
 		
 		// We only care about raw material types for repair purposes.
 		Iterator<NamedItemStack> canRepair = rfAllowed.iterator();
@@ -110,6 +117,7 @@ public class RepairFactoryProperties implements IFactoryProperties{
 			
 			FactoryModPlugin.sendConsoleMessage("Adding repairable: " + repair.getType());
 		}
-		return new RepairFactoryProperties(rfConstructionCost, rfFuel, rfRepairCost, rfEnergyTime, rfName, rfRepair, repairTime, productionTime, rfRecipeUse, repairable);
+		return new RepairFactoryProperties(rfConstructionCost, rfFuel, rfRepairCost, rfEnergyTime, rfName,
+				rfRepair, repairTime, productionTime, resetLevel, rfRecipeUse, repairable);
 	}
 }

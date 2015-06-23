@@ -79,9 +79,9 @@ repair_factory:
       amount: 1
       durability: 1
   fuel_time: 5
-  repair_multiple: 10
-  name: 'Repair Factory'
-  production_time: 20
+  name: 'Reset Factory'
+  production_time: 10
+  reset_level: 1
   costs:
     construction:
       Coal Ore:
@@ -89,24 +89,37 @@ repair_factory:
         amount: 256
       Iron Ore:
         material: 'IRON_ORE'
-        amount: 8
+        amount: 16
       Redstone Ore:
         material: 'REDSTONE_ORE'
-        amount: 8
-      Gold Ore:
-        material: 'GOLD_ORE'
-        amount: 8
+        amount: 16
+      Diamond Ore:
+        material: 'DIAMOND_ORE'
+        amount: 16
+      Emerald Blocks:
+        material: 'EMERALD_BLOCK'
+        amount: 16
+    repair_multiple: 2
     repair:
       Coal Ore:
         material: 'COAL_ORE'
-        amount: 3
-    recipe:
-      Coal Ore:
-        material: 'COAL_ORE'
-        amount: 64
+        amount: 10
+      Iron Ore:
+        material: 'IRON_ORE'
+        amount: 1
+      Redstone Ore:
+        material: 'REDSTONE_ORE'
+        amount: 1
+      Diamond Ore:
+        material: 'DIAMOND_ORE'
+        amount: 1
       Emerald Blocks:
         material: 'EMERALD_BLOCK'
-        amount: 8
+        amount: 1
+    recipe:
+      Emerald Blocks:
+        material: 'EMERALD_BLOCK'
+        amount: 7
   repairable:
     WOODEN_PICKAXE:
       material: WOOD_PICKAXE
@@ -210,10 +223,9 @@ compactor:
       material: 'COAL'
       amount: 1
       durability: 1
-  fuel_time: 5
-  repair_multiple: 1
+  fuel_time: 1
   name: 'Compactor'
-  production_time: 20
+  production_time: 1
   costs:
     construction:
       Crate:
@@ -221,33 +233,40 @@ compactor:
         amount: 64
         display_name: Crate
         lore: A crate for compacting items
-      Redstone:
-        material: REDSTONE
-        amount: 320
+      'Redstone Blocks':
+        material: REDSTONE_BLOCK
+        amount: 64
       Piston:
         material: PISTON_BASE
         amount: 64
-      Diamond:
-        material: DIAMOND
+      'Diamond Blocks':
+        material: DIAMOND_BLOCK
         amount: 8
+      'Emerald Blocks':
+        material: EMERALD_BLOCK
+        amount: 16
       'Civtest Lock':
         material: BEDROCK
         amount: 1
+    repair_multiple: 3
     repair:
       Crate:
         material: CHEST
-        amount: 6
+        amount: 2
         display_name: Crate
         lore: A crate for compacting items
       Redstone:
         material: REDSTONE
-        amount: 32
+        amount: 19
       Piston:
         material: PISTON_BASE
-        amount: 6
+        amount: 2
       Diamond:
         material: DIAMOND
-        amount: 1
+        amount: 3
+      Emerald:
+        material: EMERALD
+        amount: 4
     recipe:
       CRATE:
         material: 'CHEST'
@@ -380,55 +399,6 @@ crafting:
         Exp Bottle:
           material: EXP_BOTTLE
           amount: 9
-    Stone to Double Slab:
-      inputs:
-        s:
-         Stone:
-           material: STONE
-      shape:
-        - sss
-        - sss
-      output:
-        Double Stone Slab:
-          material: DOUBLE_STEP
-    Slab to Double Slab:
-      inputs:
-        s:
-         Stone Slab:
-           material: STEP
-      shape:
-        - s
-        - s
-      output:
-        Double Stone Slab:
-          material: DOUBLE_STEP
-    Slab to Smooth Double Stone Slab:
-      inputs:
-        s:
-          Stone Slab:
-            material: STEP
-      shape:
-        - ss
-        - ss
-      output:
-        Smooth Slab:
-          material: DOUBLE_STEP
-          durability: 8
-          amount: 2
-    Sandstone Slab to Smooth Double Sandstone Slab:
-      inputs:
-        s:
-          Sandstone Slab:
-            material: STEP
-            durability: 1
-      shape:
-        - ss
-        - ss
-      output:
-        Smooth Double Sandstone Slab:
-          material: DOUBLE_STEP
-          durability: 9
-          amount: 2
 production_factories:
   Bakery:
     name: Bakery
