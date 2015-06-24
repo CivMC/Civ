@@ -101,7 +101,7 @@ public class AssociationList {
 		try {
 			getUUIDfromPlayer.setString(1, playername);
 			ResultSet set = getUUIDfromPlayer.executeQuery();
-			if (!set.next()) return null;
+			if (!set.next() || set.wasNull()) return null;
 			String uuid = set.getString("uuid");
 			return UUID.fromString(uuid);
 		} catch (SQLException e) {
