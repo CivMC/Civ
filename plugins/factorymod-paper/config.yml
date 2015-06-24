@@ -8590,7 +8590,7 @@ production_recipes:
     name: Craft Crate of Fish
     production_time: 4
     inputs: 
-       Fish:
+       Cooked Fish:
          material: COOKED_FISH
          amount: 1024
     outputs:
@@ -8646,7 +8646,7 @@ production_recipes:
     name: Craft Crate of Baked Potatoes
     production_time: 4
     inputs: 
-       Potato:
+       Baked Potato:
          material: BAKED_POTATO
          amount: 1024
     outputs:
@@ -8703,7 +8703,7 @@ production_recipes:
     name: Craft Crate of Cacti
     production_time: 4
     inputs: 
-       Catus:
+       Cactus:
          material: CACTUS
          amount: 1024
     outputs:
@@ -8984,7 +8984,7 @@ production_recipes:
          display_name: Crate of Fish
          lore: Crate of Fish
     outputs: 
-       Fish:
+       Cooked Fish:
          material: COOKED_FISH
          amount: 1024
   Nether_Decraft_Crate_of_Sugar_Cane:
@@ -9040,7 +9040,7 @@ production_recipes:
          display_name: Crate of Potatoes
          lore: Crate of Potatoes
     outputs: 
-       Potato:
+       Baked Potato:
          material: BAKED_POTATO
          amount: 1024
   Nether_Decraft_Crate_of_Carrots:
@@ -9097,7 +9097,7 @@ production_recipes:
          display_name: Crate of Cacti
          lore: Crate of Cacti
     outputs: 
-       Catus:
+       Cactus:
          material: CACTUS
          amount: 1024
   Nether_Decraft_Crate_of_Bread:
