@@ -6,13 +6,13 @@ exampleworld:
   - bedrespawn
   - firstjoin
   keeprandomspawns: false
+  spawnbyplayer: true
+  spawnbyplayerarea:
+    exclusionradius: 200
+    radius: 500
   spawnarea:
-    type: "square"
-    x-min: -100
-    x-max: 100
-    z-min: -100
-    z-max: 100
-    thickness: 0
+    type: "circle"
+    radius: 10000
   spawnblacklist:
     - 8
     - 9
