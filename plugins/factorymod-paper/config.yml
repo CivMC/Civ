@@ -818,7 +818,7 @@ production_factories:
     inputs:
       Diamonds:
         material: DIAMOND
-        amount: 64 
+        amount: 70 
     recipes:
       - Nether_Craft_Crate_of_Acacia_Sapling
       - Nether_Craft_Crate_of_Baked_Potatoes
@@ -861,7 +861,7 @@ production_factories:
     inputs:
       Diamonds:
         material: DIAMOND
-        amount: 128
+        amount: 130
     recipes:
       - Nether_Decraft_Crate_of_Acacia_Sapling
       - Nether_Decraft_Crate_of_Baked_Potatoes
@@ -1140,11 +1140,11 @@ production_factories:
         amount: 32  
     recipes:
       - Create_Iron_Sword
-    repair_multiple: 2
+    repair_multiple: 3
     repair_inputs:
       Iron Blocks:
         material: IRON_BLOCK
-        amount: 3  
+        amount: 1
   Random_Diamond_Tool_Factory:
     name: Random Diamond Tool Factory
     fuel: 
@@ -1159,11 +1159,10 @@ production_factories:
       - Create_Diamond_Axe
       - Create_Diamond_Pickaxe
       - Create_Diamond_Spade
-    repair_multiple: 2
+    repair_multiple: 9
     repair_inputs:
       Emerald Blocks:
         material: EMERALD_BLOCK
-        amount: 9  
   Random_Diamond_Armor_Factory:
     name: Random Diamond Armor Factory
     fuel: 
@@ -1179,11 +1178,10 @@ production_factories:
       - Create_Diamond_Boots
       - Create_Diamond_Chestplate
       - Create_Diamond_Helmet
-    repair_multiple: 2
+    repair_multiple: 6
     repair_inputs:
       Emerald Blocks:
         material: EMERALD_BLOCK
-        amount: 6 
   Random_Diamond_Weapon_Factory:
     name: Random Diamond Weapon Factory
     fuel: 
@@ -1197,11 +1195,10 @@ production_factories:
     recipes:
       - Create_Bow
       - Create_Diamond_Sword
-    repair_multiple: 2
+    repair_multiple: 3
     repair_inputs:
       Emerald Blocks:
         material: EMERALD_BLOCK
-        amount: 3  
   Sword_Enchantment_Factory:
     name: Sword Enchantment Factory
     fuel:
@@ -1219,14 +1216,13 @@ production_factories:
       - Enchant_Sharpness
       - Enchant_Fire_Aspect
       - Enchant_Looting
-      - Enchant_Bane_Of_Arthropods
     repair_multiple: 10
     repair_inputs:
-      Diamond Block:
-        material: DIAMOND_BLOCK
+      Diamonds:
+        material: DIAMOND
         amount: 3  
-      Emerald Block:
-        material: EMERALD_BLOCK
+      Emeralds:
+        material: EMERALD
         amount: 6  
   Armour_Enchantment_Factory:
     name: Armour Enchantment Factory
@@ -1252,11 +1248,11 @@ production_factories:
       - Enchant_U3_Helmet
     repair_multiple: 10
     repair_inputs:
-      Diamond Block:
-        material: DIAMOND_BLOCK
+      Diamonds:
+        material: DIAMOND
         amount: 6  
-      Emerald Block:
-        material: EMERALD_BLOCK
+      Emeralds:
+        material: EMERALD
         amount: 9  
   Tool_Enchantment_Factory:
     name: Tool Enchantment Factory
@@ -1286,11 +1282,11 @@ production_factories:
       - Enchant_Spades_F3
     repair_multiple: 10
     repair_inputs:
-      Diamond Block:
-        material: DIAMOND_BLOCK
+      Diamonds:
+        material: DIAMOND
         amount: 9  
-      Emerald Block:
-        material: EMERALD_BLOCK
+      Emeralds:
+        material: EMERALD
         amount: 12
   Glass_Smelter:
     name: Glass Smelter
@@ -8216,24 +8212,6 @@ production_recipes:
       Looting:
         type: LOOT_BONUS_MOBS
         level: 3
-  Enchant_Bane_Of_Arthropods:
-    name: Enchant With Bane of Arthropods 5.
-    production_time: 10
-    inputs:
-      Diamond Sword:
-        material: DIAMOND_SWORD
-        amount: 5
-      Emerald Block:
-        material: EMERALD_BLOCK
-        amount: 50
-    outputs:
-      Diamond Sword:
-        material: DIAMOND_SWORD
-        amount: 5
-    enchantments:
-      Bane of Arthropods 5:
-        type: DAMAGE_ARTHROPODS
-        level: 5
   Enchant_P4_Chest:
     name: Enchant Chest with Prot 4
     production_time: 40
@@ -10701,7 +10679,7 @@ production_recipes:
         material: ENDER_STONE
         amount: 16
       Nether Wart:
-        material: NETHER_WART
+        material: NETHER_STALK
         amount: 25
       Glass Bottle:
         material: GLASS_BOTTLE
