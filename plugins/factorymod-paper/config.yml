@@ -9602,14 +9602,14 @@ production_recipes:
     name: Create Wooden Pickaxe
     production_time: 40
     inputs:
-      Wooden Axe:
+      Wooden Pickaxe:
         material: WOOD_PICKAXE
         amount: 1
       Emerald Blocks:
         material: EMERALD_BLOCK
         amount: 2
     outputs:
-      Enchanted Wooden Axe:
+      Enchanted Wooden Pickaxe:
         material: WOOD_PICKAXE
         amount: 1
     enchantment_options:
