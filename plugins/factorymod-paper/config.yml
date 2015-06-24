@@ -9598,18 +9598,18 @@ production_recipes:
         type: LOOT_BONUS_BLOCKS
         level: 2
         probability: 0.36
-  Create_Wooden_Axe:
-    name: Create Wooden_Axe
+  Create_Wooden_Pickaxe:
+    name: Create Wooden Pickaxe
     production_time: 40
     inputs:
-      Wooden Axe:
+      Wooden Pickaxe:
         material: WOOD_PICKAXE
         amount: 1
       Emerald Blocks:
         material: EMERALD_BLOCK
         amount: 2
     outputs:
-      Enchanted Wooden Axe:
+      Enchanted Wooden Pickaxe:
         material: WOOD_PICKAXE
         amount: 1
     enchantment_options:
@@ -9641,7 +9641,7 @@ production_recipes:
         level: 2
         probability: 0.36
   Create_Wooden_Spade:
-    name: Create Wooded Spade
+    name: Create Wooden Spade
     production_time: 40
     inputs:
       Wooden Spade:
