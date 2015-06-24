@@ -92,6 +92,10 @@ public class Tell extends PlayerCommandMiddle{
 			return true;
 		}
 		else if(args.length == 1){
+			if (chatMan.isIgnoringPlayer(player.getName(), receiver.getName()) ){
+				player.sendMessage(ChatColor.YELLOW+"You need to unignore "+receiver.getName());
+				return true;
+			}
 			chatMan.addChatChannel(player.getName(), receiver.getName());
 			player.sendMessage(ChatColor.GREEN + "You are now chatting with " + receiver.getName() + ".");
 			return true;
