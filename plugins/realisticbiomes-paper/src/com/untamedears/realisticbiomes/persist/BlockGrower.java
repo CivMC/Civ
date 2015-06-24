@@ -104,8 +104,11 @@ public class BlockGrower {
 	
 	@SuppressWarnings("deprecation")
 	public static double getGrowthFraction(Block block) {
-		if (!growthStages.containsKey(block.getType()))
+		if (block.getType() == Material.SAPLING) {
 			return 0.0;
+		} else if (!growthStages.containsKey(block.getType())) {
+			return 0.0;
+		}
 		
 		byte stage;
 		MaterialData data = block.getState().getData();
