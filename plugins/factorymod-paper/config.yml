@@ -10728,7 +10728,7 @@ production_recipes:
        Crate of Glass Bottles:
          material: WOOD
          durability: 0
-         amount: 128
+         amount: 32
          display_name: Crate of Glass Bottles
          lore: Crate of Glass Bottles
        Crate of Carrots:
@@ -10807,7 +10807,7 @@ production_recipes:
        Crate of Glass Bottles:
          material: WOOD
          durability: 0
-         amount: 128
+         amount: 32
          display_name: Crate of Glass Bottles
          lore: Crate of Glass Bottles
        Crate of Cacti:
@@ -10886,7 +10886,7 @@ production_recipes:
        Crate of Glass Bottles:
          material: WOOD
          durability: 0
-         amount: 128
+         amount: 32
          display_name: Crate of Glass Bottles
          lore: Crate of Glass Bottles
        Crate of Cookies:
