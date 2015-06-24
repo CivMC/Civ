@@ -13,3 +13,5 @@ settings:
   daysFromLastAdminVisitForNonLoggedSnitchCulling: 0  
   allowTriggeringLevers: false
   togglerestartgroupcheck: false
+mercury:
+  broadcastallservers: false

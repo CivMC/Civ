@@ -41,6 +41,8 @@ public class ConfigManager
     private int alertRateLimit;
     private boolean enableInvisibility;
     private boolean toggleRestartCheckGroup;
+    
+    private boolean broadcastAllServers;
 
 	private File main;
 	private FileConfiguration config;
@@ -110,6 +112,9 @@ public class ConfigManager
         alertRateLimit = loadInt("settings.alertratelimit", 70);
         enableInvisibility = loadBoolean("settings.enableinvisiblity", false);
         toggleRestartCheckGroup = loadBoolean("settings.togglerestartgroupcheck", false);
+        
+        broadcastAllServers = loadBoolean("mercury.broadcastallservers", false);
+        
         save();
     }
 
@@ -359,4 +364,9 @@ public class ConfigManager
     public boolean getToggleRestartCheckGroup(){
     	return toggleRestartCheckGroup;
     }
+
+	public boolean getBroadcastAllServers() {
+		return broadcastAllServers;
+	}
+
 }
