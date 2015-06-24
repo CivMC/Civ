@@ -103,12 +103,15 @@ public class GrowListener implements Listener {
 	public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             ItemStack item = event.getPlayer().getItemInHand();
-            // Ink Sack with data 15  == Bone Meal
-            if (MaterialAliases.isCocoa(item.getType(), item.getData())) {
-            	Material material = event.getClickedBlock().getType();
-    			if (material != Material.SAPLING && plugin.hasGrowthConfig(event.getClickedBlock())) {
-        			event.setCancelled(true);
-    			}
+            // Ink Sack with white dye is Bone Meal
+            if (item.getType() == Material.INK_SACK) {
+            	MaterialData data = item.getData();
+            	if (data instanceof Dye && ((Dye)data).getColor() == DyeColor.WHITE) {
+            		Material material = event.getClickedBlock().getType();
+        			if (material != Material.SAPLING && plugin.hasGrowthConfig(event.getClickedBlock())) {
+            			event.setCancelled(true);
+        			}
+            	}
             }
         }
     }
