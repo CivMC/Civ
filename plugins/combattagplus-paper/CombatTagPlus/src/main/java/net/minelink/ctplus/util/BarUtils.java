@@ -20,11 +20,16 @@ public final class BarUtils {
         }
     }
 
-    public static void setMessage(Player player, String message) {
+    public static boolean hasBar(Player player) {
+        return handler != null && handler.hasBar(player);
+    }
+
+    public static void setMessage(Player player, String message, int timeout) {
         if (handler != null) {
-            handler.setMessage(player, message);
+            handler.setMessage(player, message, timeout);
         }
     }
+
 
     public static void setMessage(Player player, String message, float percent) {
         if (handler != null) {
@@ -41,8 +46,8 @@ public final class BarUtils {
     private enum Handler {
         ACTIONBAR_API {
             @Override
-            public void setMessage(Player player, String message) {
-                ActionBarAPI.sendActionBar(player, message);
+            public boolean hasBar(Player player) {
+                return false;
             }
 
             @Override
@@ -63,8 +68,8 @@ public final class BarUtils {
 
         CONFUSER_BAR_API {
             @Override
-            public void setMessage(Player player, String message) {
-                BarAPI.setMessage(player, message);
+            public boolean hasBar(Player player) {
+                return BarAPI.hasBar(player);
             }
 
             @Override
@@ -85,13 +90,13 @@ public final class BarUtils {
 
         BOSSBAR_API {
             @Override
-            public void setMessage(Player player, String message) {
-                BossBarAPI.setMessage(player, message);
+            public boolean hasBar(Player player) {
+                return BossBarAPI.hasBar(player);
             }
 
             @Override
             public void setMessage(Player player, String message, int timeout) {
-                BossBarAPI.setMessage(player, message, timeout);
+                BossBarAPI.setMessage(player, message, 100, timeout);
             }
 
             @Override
@@ -106,7 +111,7 @@ public final class BarUtils {
             }
         };
 
-        public abstract void setMessage(Player player, String message);
+        public abstract boolean hasBar(Player player);
         public abstract void setMessage(Player player, String message, int timeout);
         public abstract void setMessage(Player player, String message, float percent);
         public abstract void removeBar(Player player);

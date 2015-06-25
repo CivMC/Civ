@@ -37,7 +37,7 @@ public final class TagUpdateTask extends BukkitRunnable {
         }
 
         // Remove bar before displaying the next one
-        if (plugin.getSettings().useBarApi()) {
+        if (plugin.getSettings().useBarApi() && BarUtils.hasBar(player)) {
             BarUtils.removeBar(player);
         }
 
@@ -117,7 +117,7 @@ public final class TagUpdateTask extends BukkitRunnable {
         while (iterator.hasNext()) {
             UUID uuid = iterator.next();
             Player player = plugin.getPlayerCache().getPlayer(uuid);
-            if (player != null && plugin.getSettings().useBarApi()) {
+            if (player != null && plugin.getSettings().useBarApi() && BarUtils.hasBar(player)) {
                 BarUtils.removeBar(player);
             }
 
