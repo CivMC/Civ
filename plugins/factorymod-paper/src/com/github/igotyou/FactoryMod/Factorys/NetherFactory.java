@@ -445,7 +445,7 @@ public class NetherFactory extends ABaseFactory
 		switch(mode) {
 		case REPAIR:
 			repairMaterials.addAll(netherFactoryProperties.getRepairMaterials());
-			repairMaterials.getMultiple(((NetherFactoryManager) FactoryModPlugin.getPlugin().manager.getManager(NetherFactoryManager.class)).getScalingFactor(factoryLocation));
+			repairMaterials = repairMaterials.getMultiple(((NetherFactoryManager) FactoryModPlugin.getPlugin().manager.getManager(NetherFactoryManager.class)).getScalingFactor(factoryLocation));
 			break;
 		default:
 			break;
