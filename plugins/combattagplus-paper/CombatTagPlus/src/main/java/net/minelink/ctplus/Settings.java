@@ -300,7 +300,7 @@ public final class Settings {
     }
 
     public boolean useBarApi() {
-        return plugin.getConfig().getBoolean("barapi") && Bukkit.getPluginManager().isPluginEnabled("BarAPI");
+        return plugin.getConfig().getBoolean("barapi");
     }
 
     public String getBarApiEndedMessage() {

@@ -167,6 +167,18 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>com.connorlinfoot</groupId>
+      <artifactId>ActionBarAPI</artifactId>
+      <version>1.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.inventivetalent</groupId>
+      <artifactId>BossBarAPI</artifactId>
+      <version>1.0.5</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.shininet.bukkit</groupId>
       <artifactId>PlayerHeads</artifactId>
       <version>3.9</version>

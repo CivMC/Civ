@@ -12,6 +12,7 @@ import net.minelink.ctplus.listener.PlayerListener;
 import net.minelink.ctplus.listener.TagListener;
 import net.minelink.ctplus.task.SafeLogoutTask;
 import net.minelink.ctplus.task.TagUpdateTask;
+import net.minelink.ctplus.util.BarUtils;
 import net.minelink.ctplus.util.DurationUtils;
 import net.minelink.ctplus.util.ReflectionUtils;
 import org.bukkit.Bukkit;
@@ -92,6 +93,8 @@ public final class CombatTagPlus extends JavaPlugin {
         integrateFactions();
         integrateTowny();
         integrateWorldGuard();
+
+        BarUtils.init();
 
         // Build player cache from currently online players
         for (Player player : Bukkit.getOnlinePlayers()) {
