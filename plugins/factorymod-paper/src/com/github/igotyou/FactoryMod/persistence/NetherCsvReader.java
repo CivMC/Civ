@@ -103,8 +103,7 @@ public class NetherCsvReader implements IFactoryReader<NetherFactory> {
 		long timeDisrepair  = input.readLong();
 		
 		return new NetherFactory(centerLocation, inventoryLocation, powerLocation, netherTeleportPlatformLocation, overworldTeleportPlatformLocation,
-				active, currentRepair, timeDisrepair, mode, mPlugin.getNetherFactoryProperties(),
-				(NetherFactoryManager) mPlugin.manager.getManager(NetherFactoryManager.class));
+				active, currentRepair, timeDisrepair, mode, mPlugin.getNetherFactoryProperties());
 	}
 
 }
