@@ -198,7 +198,7 @@ public class Compactor extends ABaseFactory {
     	if (mode.equals(CompactorMode.REPAIR)) {
     		return getAllInputs().allIn(getInventory());
     	} else {
-    		if (getInputs().isEmpty()) {
+    		if (getInputs().isEmpty() || !getInputs().allIn(getInventory())) {
     			return false;
     		} else {
     			return true;
