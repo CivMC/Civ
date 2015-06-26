@@ -30,7 +30,6 @@ public class NetherFactory extends ABaseFactory
 	private Location netherTeleportPlatform;
 	private Location overworldTeleportPlatform;
 	private NetherOperationMode mode;
-	private NetherFactoryManager netherManager;
 	public NetherOperationMode getMode() {
 		return mode;
 	}
@@ -39,14 +38,13 @@ public class NetherFactory extends ABaseFactory
 	 * Constructor called when creating portal
 	 */
 	public NetherFactory (Location factoryLocation, Location factoryInventoryLocation, Location factoryPowerSource, Location nTeleportPlatform, Location oTeleportPlatform,
-			NetherFactoryProperties netherFactoryProperties, NetherFactoryManager netherManager)
+			NetherFactoryProperties netherFactoryProperties)
 	{
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, FactoryType.NETHER_FACTORY, "Nether factory");
 		this.netherTeleportPlatform = nTeleportPlatform;
 		this.overworldTeleportPlatform = oTeleportPlatform;
 		this.netherFactoryProperties = netherFactoryProperties;
 		this.mode = NetherOperationMode.REPAIR;
-		this.netherManager = netherManager;
 	}
 
 	/**
@@ -54,15 +52,13 @@ public class NetherFactory extends ABaseFactory
 	 */
 	public NetherFactory (Location factoryLocation, Location factoryInventoryLocation, Location factoryPowerSource, Location nTeleportPlatform, Location oTeleportPlatform,
 			boolean active, double currentMaintenance,
-			long timeDisrepair, NetherOperationMode mode, NetherFactoryProperties netherFactoryProperties,
-			NetherFactoryManager netherManager)
+			long timeDisrepair, NetherOperationMode mode, NetherFactoryProperties netherFactoryProperties)
 	{
 		super(factoryLocation, factoryInventoryLocation, factoryPowerSource, FactoryType.NETHER_FACTORY, active, "Nether factory", 0 , 0, currentMaintenance, timeDisrepair);
 		this.netherFactoryProperties = netherFactoryProperties;
 		this.netherTeleportPlatform = nTeleportPlatform;
 		this.overworldTeleportPlatform = oTeleportPlatform;
 		this.mode = mode;
-		this.netherManager = netherManager;
 	}
 		
 	@Override
@@ -449,7 +445,7 @@ public class NetherFactory extends ABaseFactory
 		switch(mode) {
 		case REPAIR:
 			repairMaterials.addAll(netherFactoryProperties.getRepairMaterials());
-			repairMaterials = repairMaterials.getMultiple(netherManager.getScalingFactor(factoryLocation));
+			repairMaterials = repairMaterials.getMultiple(((NetherFactoryManager) FactoryModPlugin.getPlugin().manager.getManager(NetherFactoryManager.class)).getScalingFactor(factoryLocation));
 			break;
 		default:
 			break;

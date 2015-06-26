@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.properties.IFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
+import com.github.igotyou.FactoryMod.recipes.EnchantmentOptions;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
@@ -231,7 +232,7 @@ public class ProductionFactory extends ABaseFactory
 	
 	protected void recipeFinished() {
 		//Remove upgrade and replace it with its upgraded form
-		currentRecipe.getUpgrades().removeOneFrom(getInventory()).putIn(getInventory(),currentRecipe.getEnchantments());
+		currentRecipe.getUpgrades().removeOneFrom(getInventory()).putIn(getInventory(),currentRecipe.getEnchantments(), currentRecipe.getEnchantmentOptions());
 		//Adds new recipes to the factory
 
 		for (int i = 0; i < currentRecipe.getOutputRecipes().size();i++)
@@ -278,6 +279,11 @@ public class ProductionFactory extends ABaseFactory
 	@Override
 	public double getProductionTime() {
 		return currentRecipe.getProductionTime();
+	}
+	
+	@Override
+	public EnchantmentOptions getEnchantmentOptions() {
+		return currentRecipe.getEnchantmentOptions();
 	}
 
 	@Override

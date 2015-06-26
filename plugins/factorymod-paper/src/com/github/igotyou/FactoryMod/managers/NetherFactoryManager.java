@@ -132,7 +132,7 @@ public class NetherFactoryManager extends AManager<NetherFactory>
 										}
 										Location oneUp = markerLocation.clone();
 										oneUp.add(0,1,0);
-										NetherFactory netherFactory = new NetherFactory(factoryLocation, inventoryLocation, powerSourceLocation, netherLocation, oneUp, plugin.getNetherFactoryProperties(), this);
+										NetherFactory netherFactory = new NetherFactory(factoryLocation, inventoryLocation, powerSourceLocation, netherLocation, oneUp, plugin.getNetherFactoryProperties());
 										if (constructionMaterials.removeFrom(netherFactory.getInventory()))
 										{
 											addFactory(netherFactory);

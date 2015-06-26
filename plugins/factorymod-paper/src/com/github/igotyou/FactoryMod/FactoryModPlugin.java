@@ -34,6 +34,7 @@ import com.github.igotyou.FactoryMod.properties.NetherFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.PrintingPressProperties;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.properties.RepairFactoryProperties;
+import com.github.igotyou.FactoryMod.recipes.EnchantmentOptions;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.ItemList;
@@ -309,6 +310,7 @@ public class FactoryModPlugin extends JavaPlugin
 			ConfigurationSection configSection=configCraftingEnable.getConfigurationSection(recipeName);
 			Recipe recipe;
 			List<String> shape = configSection.getStringList("shape");
+
 			NamedItemStack output = getItems(configSection.getConfigurationSection("output")).get(0);
 			
 			if(shape.isEmpty())
@@ -326,6 +328,12 @@ public class FactoryModPlugin extends JavaPlugin
 			}
 			else
 			{
+				for (String line : shape) {
+					sendConsoleMessage("New Shape Line: [" + line + "]");
+				}
+				
+				sendConsoleMessage("output: " + output.toString());
+				
 				ShapedRecipe shapedRecipe = new ShapedRecipe(output);
 				shapedRecipe.shape(shape.toArray(new String[shape.size()]));
 				
@@ -366,11 +374,20 @@ public class FactoryModPlugin extends JavaPlugin
 			ItemList<NamedItemStack> upgrades = getItems(configSection.getConfigurationSection("upgrades"));
 			//Outputs of the recipe, empty of there are no inputs
 			ItemList<NamedItemStack> outputs = getItems(configSection.getConfigurationSection("outputs"));
+			//EnchantmentOptions of the recipe, all false if nothing set.
+			ConfigurationSection configEnchant = configSection.getConfigurationSection("enchantment_options");
+			EnchantmentOptions enchantmentOptions = null;
+			if (configEnchant != null) {
+				enchantmentOptions = new EnchantmentOptions(configEnchant.getBoolean("safe_only", false), 
+						configEnchant.getBoolean("ensure_one", false));
+			} else {
+				enchantmentOptions = EnchantmentOptions.DEFAULT;
+			}
 			//Enchantments of the recipe, empty of there are no inputs
 			List<ProbabilisticEnchantment> enchantments = getEnchantments(configSection.getConfigurationSection("enchantments"));
 			//Whether this recipe can only be used once
 			boolean useOnce = configSection.getBoolean("use_once");
-			ProductionRecipe recipe = new ProductionRecipe(title, recipeName, productionTime, inputs, upgrades, outputs, enchantments, useOnce, new ItemList<NamedItemStack>());
+			ProductionRecipe recipe = new ProductionRecipe(title, recipeName, productionTime, inputs, upgrades, outputs, enchantmentOptions, enchantments, useOnce, new ItemList<NamedItemStack>());
 			productionRecipes.put(title, recipe);
 			//Store the titles of the recipes that this should point to
 			List <String> currentOutputRecipes = Lists.newArrayList();
@@ -556,19 +573,6 @@ public class FactoryModPlugin extends JavaPlugin
 		return namedItemStack;
 	}
 	
-	private void removeRecipe(Recipe removalRecipe)
-	{
-		Iterator<Recipe> it = getServer().recipeIterator();
-		while (it.hasNext())
-		{
-			Recipe recipe = it.next();
-			if (recipe.getResult().getType() == removalRecipe.getResult().getType())
-			{
-				it.remove();
-			}
-		}
-	}
-
 	public static IFactoryProperties getProperties(FactoryType factoryType, String subFactoryType)
 	{
 		switch(factoryType)

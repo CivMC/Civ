@@ -10,12 +10,15 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.igotyou.FactoryMod.recipes.EnchantmentOptions;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 
 /**
@@ -28,6 +31,11 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 	
 	public boolean exactlyIn(Inventory inventory)
 	{
+		//TODO: This is pretty broken too; won't handle split stacks right, a number of
+		//     other edge cases; we've been very lucky so far. Basically only lucky b/c
+		//     the "stack size" of input items is not divided, the requirement comes in as 
+		//     a single "stack" of say 96 items, etc. so this works.
+		//     So not exactly "broken" but not clean, either.
 		boolean returnValue=true;
 		//Checks that the ItemList ItemStacks are contained in the inventory
 		for(ItemStack itemStack:this)
@@ -52,6 +60,7 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		}
 		return returnValue;
 	}
+	// TODO: Same issues exist here, I need to fix these.
 	public boolean oneIn(Inventory inventory)
 	{
 		if(this.isEmpty())
@@ -74,6 +83,9 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 	{
 		for(ItemStack itemStack:this)
 		{
+			// TODO: Naive check. What about if you have 2 stacks of the same item,
+			//    but only 1 in the chest? This test will return true for both stacks, 
+			//    which is the wrong answer.
 			if (amountAvailable(inventory, itemStack)<itemStack.getAmount())
 			{
 				return false;
@@ -123,6 +135,7 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		}
 		return itemList;
 	}
+	// TODO: Same risks here; these need to be addressed. 
 	public ItemList<NamedItemStack> getDifference(Inventory inventory)
 	{
 		ItemList<NamedItemStack> missingItems=new ItemList<NamedItemStack>();
@@ -140,6 +153,8 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 	}
 	public int amountAvailable(Inventory inventory)
 	{
+		//TODO This is a very broken, so review:
+		//   basically won't count correctly for repairs where a single-item repair cost is greater than a stack.
 		int amountAvailable=0;
 		for(ItemStack itemStack:this)
 		{
@@ -148,24 +163,24 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		}
 		return amountAvailable;
 	}
-	public void putIn(Inventory inventory)
-	{
-		putIn(inventory,new ArrayList<ProbabilisticEnchantment>());
+	
+	public void putIn(Inventory inventory) {
+		putIn(inventory,new ArrayList<ProbabilisticEnchantment>(), EnchantmentOptions.DEFAULT);
 	}
-	public void putIn(Inventory inventory,List<ProbabilisticEnchantment> probabilisticEnchaments)
-	{
-		for(ItemStack itemStack:this)
-		{
-			int maxStackSize=itemStack.getMaxStackSize();
+	
+	public void putIn(Inventory inventory,List<ProbabilisticEnchantment> probabilisticEnchaments, EnchantmentOptions enchantmentOptions) {
+		for(ItemStack itemStack:this) {
+			// Terrifying hardcode, but I think sometimes itemStack.maxsize == 0, yikes!
+			if (itemStack.getMaxStackSize() <= 0) {
+				Bukkit.getLogger().warning("Item Stack has maxsize of 0, something is very wrong.");
+			}
+			int maxStackSize=(itemStack.getMaxStackSize() == 0 ? 64 : itemStack.getMaxStackSize());
 			int amount=itemStack.getAmount();
-			while(amount>maxStackSize)
-			{
+			while(amount>maxStackSize) {
 				ItemStack itemClone=itemStack.clone();
-				Map<Enchantment,Integer> enchantments=getEnchantments(probabilisticEnchaments);
-				for(Enchantment enchantment:enchantments.keySet())
-				{
-					if(enchantment.canEnchantItem(itemStack))
-					{
+				Map<Enchantment,Integer> enchantments=getEnchantments(probabilisticEnchaments, enchantmentOptions);
+				for(Enchantment enchantment:enchantments.keySet()) {
+					if(enchantment.canEnchantItem(itemStack)) {
 						itemClone.addUnsafeEnchantment(enchantment,enchantments.get(enchantment));
 					}
 				}
@@ -174,11 +189,9 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 				amount-=maxStackSize;
 			}
 			ItemStack itemClone=itemStack.clone();
-			Map<Enchantment,Integer> enchantments=getEnchantments(probabilisticEnchaments);
-			for(Enchantment enchantment:enchantments.keySet())
-			{
-				if(enchantment.canEnchantItem(itemStack))
-				{
+			Map<Enchantment,Integer> enchantments=getEnchantments(probabilisticEnchaments, enchantmentOptions);
+			for(Enchantment enchantment:enchantments.keySet()) {
+				if(enchantment.canEnchantItem(itemStack)) {
 					itemClone.addUnsafeEnchantment(enchantment,enchantments.get(enchantment));
 				}
 			}
@@ -187,19 +200,67 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		}
 	}
 	
-	public HashMap<Enchantment, Integer> getEnchantments(List<ProbabilisticEnchantment> probabilisticEnchaments)
+	/**
+	 * Attempts to pick a subset from available enchantments, using independent probabilities.
+	 * If enchantment_options:ensure_one is set on the recipe, will pick one using 
+	 * cumulative probabilities if the independent probability selection fails to pick any.
+	 * if *that* fails, it picks one at random from the full set.
+	 *  
+	 * @param probabilisticEnchantments The set of applicable enchantments.
+	 * @param enchantmentOptions The options for applying enchantments
+	 * @return a set of enchantments to apply.
+	 */
+	public HashMap<Enchantment, Integer> getEnchantments(List<ProbabilisticEnchantment> probabilisticEnchantments, EnchantmentOptions enchantmentOptions)
 	{
 		HashMap<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
 		Random rand = new Random();
-		for(int i=0;i<probabilisticEnchaments.size();i++)
-		{
-			if(probabilisticEnchaments.get(i).getProbability()>=rand.nextDouble())
-			{
-				enchantments.put(probabilisticEnchaments.get(i).getEnchantment(),probabilisticEnchaments.get(i).getLevel());
+		double sum = 0.0d;
+		for(ProbabilisticEnchantment pe : probabilisticEnchantments) {
+			sum += pe.getProbability(); 
+			if(pe.getProbability()>=rand.nextDouble()) {
+				// Logic fun: go ahead and add if safe only is false, otherwise check if safe.
+				if (!enchantmentOptions.getSafeOnly() || checkSafe(enchantments.keySet(), pe.getEnchantment())) {
+					enchantments.put(pe.getEnchantment(),pe.getLevel());
+				}
+			}
+		}
+		// Force at least one, try to pick fairly (based on cumulative distribution first)
+		if (enchantmentOptions.getEnsureOne() && enchantments.size() == 0) {
+			double which = rand.nextDouble() * sum;
+			double sofar = 0.0d;
+			for (ProbabilisticEnchantment pe : probabilisticEnchantments) {
+				if (pe.getProbability() + sofar >= which) {
+					enchantments.put(pe.getEnchantment(), pe.getLevel());
+					break;
+				} else {
+					sofar += pe.getProbability();
+				}
+			}
+			if (enchantments.size() == 0) { // someone forgot to give any probabilities?
+				int i = rand.nextInt(probabilisticEnchantments.size());
+				enchantments.put(probabilisticEnchantments.get(i).getEnchantment(),probabilisticEnchantments.get(i).getLevel());
 			}
 		}
 		return enchantments;
 	}
+	
+	/**
+	 * Test function to ensure "safe" enchantment sets. Call before adding a new enchantment to a set
+	 * of enchantments.
+	 * 
+	 * @param current The current safe set
+	 * @param test The new enchantment to test
+	 * @return True if this new enchantment does not conflict with any prior enchantments, false otherwise.
+	 */
+	private boolean checkSafe(Set<Enchantment> current, Enchantment test) {
+		for (Enchantment ench : current) {
+			if (test.conflictsWith(ench)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	
 	public String toString()
 	{
@@ -215,7 +276,8 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		}
 		return returnString;
 	}
-	//Returns the number of multiples of an ItemStack that are availible
+	//Returns the number of an ItemStack's MATERIAL that are available. 
+	//  TODO: Does not return multiple as previously advertised.
 	private int amountAvailable(Inventory inventory, ItemStack itemStack)
 	{
 		int totalMaterial = 0;
@@ -230,8 +292,9 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 				*/
 				if (itemStack.isSimilar(currentItemStack) ||
 					(itemStack.getType() == Material.NETHER_WARTS && currentItemStack.getType() == Material.NETHER_WARTS))
-				{		
-					totalMaterial += currentItemStack.getAmount();
+				{
+					totalMaterial += currentItemStack.getAmount(); // not multiples
+					//totalMaterial += (int) Math.floor((double)currentItemStack.getAmount() / (double)itemStack.getAmount()); // return the actual number of multiples ...
 				}
 			}
 		}
@@ -273,6 +336,7 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		}				
 		return materialsToRemove == 0;
 	}
+	/* TODO: int version is just wrong. Use double version. */
 	public ItemList<NamedItemStack> getMultiple(int multiplier)
 	{
 		ItemList<NamedItemStack> multipliedItemList=new ItemList<NamedItemStack>();

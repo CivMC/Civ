@@ -25,6 +25,10 @@ public class NamedItemStack extends ItemStack{
 		super(type,amount,damage);
 		this.commonName=commonName;
 	}
+	public NamedItemStack(final ItemStack itemStack, final String commonName) {
+		super(itemStack);
+		this.commonName = commonName;
+	}
 	public NamedItemStack clone()
 	{
 		try{

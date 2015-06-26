@@ -19,6 +19,7 @@ import org.bukkit.material.MaterialData;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.FactoryObject;
+import com.github.igotyou.FactoryMod.recipes.EnchantmentOptions;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
@@ -229,9 +230,18 @@ public abstract class ABaseFactory extends FactoryObject implements IFactory {
 		getInputs().removeFrom(getInventory());
 	}
 	
+	/**
+	 * Implementations should override this to define any controls on enchantment.
+	 * 
+	 * @return an instance of EnchantmentOptions
+	 */
+	public EnchantmentOptions getEnchantmentOptions() {
+		return EnchantmentOptions.DEFAULT;
+	}
+	
 	public void produceOutputs() {
 		//Adds outputs to chest with appropriate enchantments
-		getOutputs().putIn(getInventory(),getEnchantments());
+		getOutputs().putIn(getInventory(),getEnchantments(), getEnchantmentOptions());
 	}
 
 	public ItemList<NamedItemStack> getAllInputs() {
