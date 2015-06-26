@@ -36,13 +36,16 @@ public class PlayerListener implements Listener {
 	}
 	
 	@EventHandler(ignoreCancelled = true)
-	public void onPlayerInteractEvent(PlayerInteractEvent event) {	
-		Plant plant = null;
-		
+	public void onPlayerInteractEvent(PlayerInteractEvent event) {
 		// right click block with the seeds or plant in hand to see what the status is
 		if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
+		if (event.getItem() == null) {
+			return;
+		}
+		
+		Plant plant = null;
 		
 		Block block = event.getClickedBlock();
 		
@@ -54,7 +57,7 @@ public class PlayerListener implements Listener {
 			
 			growthConfig = MaterialAliases.getConfig(growthConfigs, event.getItem());
 			if (growthConfig == null) {
-				RealisticBiomes.doLog(Level.FINER, "No config found: " + growthConfigs.keySet());
+				RealisticBiomes.doLog(Level.FINER, "No config found for \"" + event.getItem() + "\" : " + growthConfigs.keySet());
 				return;
 			}
 			
@@ -71,7 +74,7 @@ public class PlayerListener implements Listener {
 				&& (event.getItem().getType() == Material.STICK || event.getItem().getType() == Material.BONE)) {
 			
 			// right click on a growing crop with a stick: get information about that crop
-			growthConfig = growthConfigs.get(event.getClickedBlock().getType());
+			growthConfig = MaterialAliases.getConfig(growthConfigs, event.getClickedBlock());
 			if (growthConfig == null) {
 				RealisticBiomes.doLog(Level.FINER, "No config found: " + growthConfigs.keySet());
 				return;
@@ -129,11 +132,13 @@ public class PlayerListener implements Listener {
 					
 				}
 				
-				
+				RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): plant fruit is: " + plant.getFruitGrowth());
 				String amount = new DecimalFormat("#0.00").format(rate);
 				event.getPlayer().sendMessage("§7[Realistic Biomes] \"" + materialName + "\": "+amount+" hours to maturity");
 
 			} else {
+				
+				RealisticBiomes.doLog(Level.FINER, "PlayerListener.onPlayerInteractEvent(): plant growth is: " + plant.getGrowth());
 				String amount = new DecimalFormat("#0.00").format(rate);
 				String pAmount = new DecimalFormat("#0.00").format(rate*(1.0-plant.getGrowth()));
 				event.getPlayer().sendMessage("§7[Realistic Biomes] \"" + materialName + "\": "+pAmount+" of "+amount+" hours to maturity");

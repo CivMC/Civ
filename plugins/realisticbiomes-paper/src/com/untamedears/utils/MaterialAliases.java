@@ -2,22 +2,17 @@ package com.untamedears.utils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.TreeSpecies;
 import org.bukkit.TreeType;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dye;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.SpawnEgg;
-import org.bukkit.material.Tree;
-
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.GrowthMap;
-import com.untamedears.realisticbiomes.RealisticBiomes;
 
 public class MaterialAliases {
 	// map Material that a user uses to hit the ground to a Material, TreeType,
@@ -51,40 +46,56 @@ public class MaterialAliases {
 		materialAliases.put(Material.FISHING_ROD, Material.RAW_FISH);
 	}
 
-	private static HashMap<TreeSpecies, TreeType> speciesMap = new HashMap<TreeSpecies, TreeType>();
-	static {
-		speciesMap.put(TreeSpecies.ACACIA, TreeType.ACACIA);
-		speciesMap.put(TreeSpecies.BIRCH, TreeType.BIRCH);
-		speciesMap.put(TreeSpecies.DARK_OAK, TreeType.DARK_OAK);
-		speciesMap.put(TreeSpecies.GENERIC, TreeType.TREE);
-		speciesMap.put(TreeSpecies.JUNGLE, TreeType.JUNGLE);
-		speciesMap.put(TreeSpecies.REDWOOD, TreeType.REDWOOD);
-	}
+	/**
+	 * There is a bug in spigot/bukkit, where the species of a sapling is retrieved the
+	 * same way as from a log, which is wrong.
+	 * A log can be of two distinct material types, and
+	 * carries the species in the first two bits of its data, 3rd and 4th carry the
+	 * direction.
+	 * A sapling, either as item or block, has only one possible material type and
+	 * carries its species in the first three bits. It also has a "ready" flag if it
+	 * is a block, so it actually has two invisible growth stages.
+	 */
+	private static TreeType[] speciesMap = new TreeType[]{
+		TreeType.TREE,
+		TreeType.REDWOOD,
+		TreeType.BIRCH,
+		TreeType.JUNGLE,
+		TreeType.ACACIA,
+		TreeType.DARK_OAK
+	};
 	
-//	private static HashMap<EntityMaterialAlias, EntityType> entityMap = new HashMap<EntityMaterialAlias, EntityType>();
-//	static {
-//		entityMap.put(new EntityMaterialAlias(Material.EGG, null), EntityType.CHICKEN);
-//		entityMap.put(new EntityMaterialAlias(Material.MONSTER_EGG, new SpawnEgg(EntityType.WOLF)), EntityType.CHICKEN);
-//	}
-
-	public static Material get(ItemStack itemStack) {
-		// if the material isn't aliased, just use the material
-		return itemStack.getType();
+	private static TreeType getTreeType(byte data) {
+		int index = data & 7;
+		if (speciesMap.length > index) {
+			return speciesMap[index];
+		} else {
+			return null;
+		}
 	}
 
+	/**
+	 * Returns correct TreeType if block material is sapling
+	 * @param candidate
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	public static TreeType getTreeType(Block candidate) {
+		return getTreeType(candidate.getData());
+	}
+
+	/**
+	 * Get config for an item
+	 * @param growthConfigs
+	 * @param item
+	 * @return config or null
+	 */
+	@SuppressWarnings("deprecation")
 	public static GrowthConfig getConfig(GrowthMap growthConfigs,
 			ItemStack item) {
 		Material material = item.getType();
 		if (material == Material.SAPLING) {
-			MaterialData data = item.getData();
-			RealisticBiomes.doLog(Level.FINER, "Special case sapling: " + data);
-			if (data instanceof Tree) {
-				if (!growthConfigs.containsKey(speciesMap.get(((Tree) data).getSpecies()))) {
-					RealisticBiomes.doLog(Level.FINER, "No such tree: " + speciesMap.get(((Tree) data).getSpecies()));
-				}
-				return growthConfigs.get(speciesMap.get(((Tree) data)
-						.getSpecies()));
-			}
+			return growthConfigs.get(getTreeType(item.getData().getData()));
 		
 		} else if (material == Material.EGG) {
 			// special case egg maps to chicken (not a spawn egg)
@@ -97,8 +108,8 @@ public class MaterialAliases {
 			}
 
 		} else {
-			if (!isCocoa(material, item.getData())) {
-				return null;
+			if (isCocoa(material, item.getData())) {
+				return growthConfigs.get(Material.COCOA);
 			}
 			
 			if (materialAliases.containsKey(material)) {
@@ -111,5 +122,16 @@ public class MaterialAliases {
 
 	public static boolean isCocoa(Material material, MaterialData data) {
 		return material == Material.INK_SACK && data instanceof Dye && ((Dye)data).getColor() == DyeColor.BROWN;
+	}
+
+	@SuppressWarnings("deprecation")
+	public static GrowthConfig getConfig(GrowthMap growthConfigs, Block block) {
+		Material material = block.getType();
+		
+		if (material == Material.SAPLING) {
+			return growthConfigs.get(getTreeType(block.getData()));
+		}
+
+		return growthConfigs.get(material);
 	}
 }

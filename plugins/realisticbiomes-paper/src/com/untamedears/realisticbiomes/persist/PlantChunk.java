@@ -13,6 +13,7 @@ import org.bukkit.block.Block;
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.utils.MaterialAliases;
 
 public class PlantChunk {
 	private final RealisticBiomes plugin;
@@ -165,7 +166,7 @@ public class PlantChunk {
 
 				// if the plant does not correspond to an actual crop, don't
 				// load it
-				if (plugin.getGrowthConfig(world.getBlockAt(x, y, z)) == null) {
+				if (MaterialAliases.getConfig(plugin.materialGrowth, world.getBlockAt(x, y, z)) == null) {
 					RealisticBiomes.doLog(Level.FINER, "Plantchunk.load(): plant we got from db doesn't correspond to an actual crop, not loading");
 					continue;
 				}
@@ -176,7 +177,7 @@ public class PlantChunk {
 				// RealisticBiomes.growAndPersistBlock()
 				// grow the block
 				Block block = world.getBlockAt(x, y, z);
-				GrowthConfig growthConfig = plugin.getGrowthConfig(block);
+				GrowthConfig growthConfig = MaterialAliases.getConfig(plugin.materialGrowth, block);
 				if (growthConfig.isPersistent()) {
 					plugin.growPlant(plant, block, growthConfig, null);
 				}

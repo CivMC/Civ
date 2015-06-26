@@ -1,5 +1,6 @@
 package com.untamedears.realisticbiomes.listener;
 
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
@@ -21,6 +22,7 @@ import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dispenser;
+import org.bukkit.material.Dye;
 import org.bukkit.material.MaterialData;
 
 import com.untamedears.realisticbiomes.GrowthConfig;
@@ -62,7 +64,7 @@ public class GrowListener implements Listener {
 			return;
 		}
 		
-		GrowthConfig growthConfig = plugin.getGrowthConfig(block);
+		GrowthConfig growthConfig = plugin.materialGrowth.get(block.getType());
 		if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
 			plugin.growAndPersistBlock(block, true, growthConfig, null);
 			
@@ -89,7 +91,12 @@ public class GrowListener implements Listener {
 		
 		Block b = event.getLocation().getBlock();
 		
-		if (!willGrow(t, b)) {
+		GrowthConfig growthConfig = plugin.materialGrowth.get(t);
+		if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
+			plugin.growAndPersistBlock(b, true, growthConfig, null);
+			event.setCancelled(true);
+			
+		} else if (!willGrow(t, b)) {
 			event.setCancelled(true);
 		}
 	}
@@ -108,7 +115,8 @@ public class GrowListener implements Listener {
             	MaterialData data = item.getData();
             	if (data instanceof Dye && ((Dye)data).getColor() == DyeColor.WHITE) {
             		Material material = event.getClickedBlock().getType();
-        			if (material != Material.SAPLING && plugin.hasGrowthConfig(event.getClickedBlock())) {
+        			if (material != Material.SAPLING
+        					&& MaterialAliases.getConfig(plugin.materialGrowth, event.getClickedBlock()) != null) {
             			event.setCancelled(true);
         			}
             	}
@@ -147,8 +155,6 @@ public class GrowListener implements Listener {
 		//
 		if (event.getItem() != null 
 				&& event.getItem().getType() == Material.INK_SACK) {// if its a ink_sack we know that it has a MaterialData and that has 'data' for type of dye
-
-			
 			
 	        if (event.getBlock().getType() == Material.DISPENSER) {
 	        	MaterialData d = event.getBlock().getState().getData();
@@ -172,7 +178,7 @@ public class GrowListener implements Listener {
 	 * @return true if the block should grow this material, otherwise false
 	 */
 	private boolean willGrow(Material m, Block b) {
-		GrowthConfig config = plugin.getGrowthConfig(m);
+		GrowthConfig config = plugin.materialGrowth.get(m);
 		
 		// Returns true if the random value is within the growth rate
 		if (config != null) {
@@ -191,8 +197,8 @@ public class GrowListener implements Listener {
 	 * @return Whether the plant will grow this tick
 	 */
 	private boolean willGrow(TreeType m, Block b) {
-		if(plugin.hasGrowthConfig(m)) {
-			boolean willGrow = Math.random() < plugin.getGrowthConfig(m).getRate(b);
+		if(plugin.materialGrowth.containsKey(m)) {
+			boolean willGrow = Math.random() < plugin.materialGrowth.get(m).getRate(b);
 			return willGrow;
 		}
 		return true;
@@ -234,9 +240,10 @@ public class GrowListener implements Listener {
 			growFruit(block, false);
 			return;
 		}
-		GrowthConfig growthConfig = plugin.getGrowthConfig(block);
-		if (growthConfig == null)
+		GrowthConfig growthConfig = MaterialAliases.getConfig(plugin.materialGrowth, block);
+		if (growthConfig == null) {
 			return;	
+		}
 		
 		plugin.getPlantManager().addPlant(block, new Plant(0.0f, -1.0f));
 	}
@@ -276,7 +283,7 @@ public class GrowListener implements Listener {
 			return false;
 		}
 		
-		GrowthConfig growthConfig = plugin.getGrowthConfig(material);
+		GrowthConfig growthConfig = plugin.materialGrowth.get(material);
 		if (!growthConfig.isPersistent()) {
 			return false;
 		}

@@ -24,6 +24,7 @@ import com.untamedears.realisticbiomes.persist.Coords;
 import com.untamedears.realisticbiomes.persist.Plant;
 import com.untamedears.realisticbiomes.persist.PlantManager;
 import com.untamedears.utils.Fruits;
+import com.untamedears.utils.MaterialAliases;
 
 public class RealisticBiomes extends JavaPlugin {
 
@@ -36,29 +37,6 @@ public class RealisticBiomes extends JavaPlugin {
 	public PersistConfig persistConfig;
 	private PlantManager plantManager;
 
-	private static HashMap<TreeType, TreeType> treeTypeMap;
-
-	// Review this code when ever a new treeType is added to bukkit.
-	static {
-		treeTypeMap = new HashMap<TreeType, TreeType>();
-
-		for (TreeType t : TreeType.values()) {
-			if (t == TreeType.BIG_TREE)
-				treeTypeMap.put(t, TreeType.TREE);
-			else if (t == TreeType.JUNGLE_BUSH)
-				treeTypeMap.put(t, TreeType.JUNGLE);
-			else if (t == TreeType.SMALL_JUNGLE)
-				treeTypeMap.put(t, TreeType.JUNGLE);
-			else if (t == TreeType.TALL_REDWOOD)
-				treeTypeMap.put(t, TreeType.REDWOOD);
-			else if (t == TreeType.MEGA_REDWOOD)
-				treeTypeMap.put(t, TreeType.REDWOOD);
-			else if (t == TreeType.TALL_BIRCH)
-				treeTypeMap.put(t, TreeType.BIRCH);
-			else
-				treeTypeMap.put(t, t);
-		}
-	}
 	
 	@Override
 	public void onEnable() {		
@@ -354,10 +332,6 @@ public class RealisticBiomes extends JavaPlugin {
 		}
 	}
 	
-	public BlockGrower getBlockGrower() {
-		return blockGrower;
-	}
-	
 	// -----------------------------------
 	
 	/**
@@ -370,7 +344,7 @@ public class RealisticBiomes extends JavaPlugin {
 	 */
 	public Plant growAndPersistBlock(Block block, boolean naturalGrowEvent, GrowthConfig growthConfig, Block fruitBlockToIgnore) {
 		if (growthConfig == null) {
-			growthConfig = getGrowthConfig(block);
+			growthConfig = MaterialAliases.getConfig(materialGrowth, block);
 		}
 		RealisticBiomes.doLog(Level.FINER, "RealisticBiomes:growAndPersistBlock() called for block: " + block + " and is naturalGrowEvent? " + naturalGrowEvent);
 		if (!persistConfig.enabled)
@@ -410,11 +384,13 @@ public class RealisticBiomes extends JavaPlugin {
 			plantManager.addPlant(block, plant);
 		}
 		
-		growPlant(plant, block, growthConfig, fruitBlockToIgnore);
+		boolean growthPrevented = growPlant(plant, block, growthConfig, fruitBlockToIgnore);
+		if (growthPrevented) {
+			plant.setGrowth(0.0);
+		}
 		
 		if (plant.isFullyGrown()) {
 			// if plant is fully grown and either has no fruits or fruit has fully grown, stop tracking it
-			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): removing fully grown plant: " + plant);
 			plantManager.removePlant(block);
 		}
 		
@@ -430,7 +406,7 @@ public class RealisticBiomes extends JavaPlugin {
 	 * @param growthConfig
 	 * @param fruitBlockToIgnore When checking for fruits, ignore this block
 	 */
-	public void growPlant(Plant plant, Block block, GrowthConfig growthConfig, Block fruitBlockToIgnore) {
+	public boolean growPlant(Plant plant, Block block, GrowthConfig growthConfig, Block fruitBlockToIgnore) {
 		double rate = growthConfig.getRate(block);
 		double fruitRate = -1.0;
 		
@@ -439,7 +415,7 @@ public class RealisticBiomes extends JavaPlugin {
 		
 		if (Fruits.isFruitFul(block.getType())) {
 			boolean hasFruit = Fruits.hasFruit(block, fruitBlockToIgnore);
-			GrowthConfig fruitGrowthConfig = getGrowthConfig(Fruits.getFruit(block.getType()));
+			GrowthConfig fruitGrowthConfig = materialGrowth.get(Fruits.getFruit(block.getType()));
 			if (fruitGrowthConfig.isPersistent()) {	
 				if (!hasFruit && plant.getGrowth() >= 1.0) {	
 					if (plant.getFruitGrowth() == -1.0) {
@@ -467,38 +443,10 @@ public class RealisticBiomes extends JavaPlugin {
 		
 		// actually 'grows' the block or fruit (in minecraft terms, between the different stages of growth that you can see in game)
 		// depending on its growth value
-		blockGrower.growBlock(block, plant.getGrowth(), plant.getFruitGrowth());
+		return blockGrower.growBlock(block, plant.getGrowth(), plant.getFruitGrowth());
 	}
 	
 	public PlantManager getPlantManager() {
 		return plantManager;
-	}
-
-	public static HashMap<TreeType, TreeType> getTreeTypes() {
-		return treeTypeMap;
-	}
-	
-	public GrowthConfig getGrowthConfig(TreeType species) {
-		return materialGrowth.get(treeTypeMap.get(species));
-	}
-	
-	public GrowthConfig getGrowthConfig(Material m) {
-		return materialGrowth.get(m);
-	}
-	
-	public GrowthConfig getGrowthConfig(Block b) {
-		return getGrowthConfig(b.getType());
-	}
-	
-	public boolean hasGrowthConfig(Material m) {
-		return materialGrowth.containsKey(m);
-	}
-	
-	public boolean hasGrowthConfig(Block b) {
-		return materialGrowth.containsKey(b.getType());
-	}
-	
-	public boolean hasGrowthConfig(TreeType species) {
-		return materialGrowth.containsKey(treeTypeMap.get(species));
 	}
 }
