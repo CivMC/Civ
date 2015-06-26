@@ -8378,7 +8378,7 @@ production_recipes:
     name: Enchant Spade with Efficiency 5
     production_time: 10
     inputs:
-      Diamond Pick:
+      Diamond Spade:
         material: DIAMOND_SPADE
         amount: 5
       Emerald Block:
@@ -8432,7 +8432,7 @@ production_recipes:
     name: Enchant Spade with Unbreaking 3
     production_time: 10
     inputs:
-      Diamond Pick:
+      Diamond Spade:
         material: DIAMOND_SPADE
         amount: 5
       Emerald Block:
@@ -8486,7 +8486,7 @@ production_recipes:
     name: Enchant Spade with Silk Touch
     production_time: 10
     inputs:
-      Diamond Pick:
+      Diamond Spade:
         material: DIAMOND_SPADE
         amount: 5
       Emerald Block:
@@ -8540,7 +8540,7 @@ production_recipes:
     name: Enchant Spade with Fortune 3
     production_time: 10
     inputs:
-      Diamond Pick:
+      Diamond Spade:
         material: DIAMOND_SPADE
         amount: 5
       Emerald Block:
