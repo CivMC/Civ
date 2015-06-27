@@ -116,6 +116,11 @@ public abstract class ABaseFactory extends FactoryObject implements IFactory {
 		}
 	}
 	
+    public boolean checkHasSpace() {
+    	ItemList<NamedItemStack> output = getOutputs();
+    	return output.testPutIn(getInventory());
+    }
+
 	public boolean checkHasMaterials() {
 		return getAllInputs().allIn(getInventory());
 	}

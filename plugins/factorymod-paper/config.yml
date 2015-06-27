@@ -272,6 +272,22 @@ compactor:
         lore: A crate for compacting items
   compact_lore: Compacted Item
   continuous: true
+  specific_exclusions:
+  excluded_types:
+    Written Book:
+      material: WRITTEN_BOOK
+    Book:
+      material: BOOK
+    Book and Quill:
+      material: BOOK_AND_QUILL
+    Enchanted Book:
+      material: ENCHANTED_BOOK
+    Paper:
+      material: PAPER
+    Map:
+      material: EMPTY_MAP
+    Filled Map:
+      material: MAP
 copy_defaults: false
 general:
   central_block: WORKBENCH
