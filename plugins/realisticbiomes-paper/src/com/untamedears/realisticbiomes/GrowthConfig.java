@@ -55,6 +55,7 @@ protected String name;
 
 	// some crops get a boost from layers of materials beneath the block the plant has been planted on
 	private Material soilMaterial;
+	private byte soilData;
 	private int soilMaxLayers;
 	private double soilBonusPerLevel;
 	// the z levels below the actual growth event location in which to start looking for the correct soil
@@ -121,6 +122,7 @@ protected String name;
 		notIrrigatedMultiplier = 1.0;
 		
 		soilMaterial = null; /* none */
+		soilData = -1;
 		soilMaxLayers = 0;
 		soilBonusPerLevel = 0.0;
 		soilLayerOffset = 1;
@@ -162,11 +164,19 @@ protected String name;
 		
 		if (config.isSet("soil_material")) {
 			String materialName = config.getString("soil_material");
+			byte data = -1;
+			if (materialName.contains(":")) {
+				String[] parts = materialName.split(":");
+				materialName = parts[0];
+				data = Byte.parseByte(parts[1]);
+			}
 			Material material = Material.getMaterial(materialName);
-			if (material == null)
+			if (material == null) {
 				LOG.warning("loading configs: \""+ config.getName() +"\" soil_material: \"" + materialName +"\" is not a valid material name.");
-			else
+			} else {
 				soilMaterial = material;
+				soilData = data;
+			}
 		}
 		
 		if (config.isSet("soil_max_layers"))
@@ -212,6 +222,7 @@ protected String name;
 		notIrrigatedMultiplier = other.notIrrigatedMultiplier;
 		
 		soilMaterial = other.soilMaterial;
+		soilData = other.soilData;
 		soilMaxLayers = other.soilMaxLayers;
 		soilBonusPerLevel = other.soilBonusPerLevel;
 		soilLayerOffset = other.soilLayerOffset;
@@ -333,6 +344,9 @@ protected String name;
 		int soilCount = 0;
 		while (soilCount < soilMaxLayers) {
 			if (newBlock == null || !newBlock.getType().equals(soilMaterial)) {
+				break;
+			}
+			if (soilData != -1 && newBlock.getData() != soilData) {
 				break;
 			}
 				
