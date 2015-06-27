@@ -18,12 +18,13 @@ public class CompactorProperties extends AFactoryProperties{
     private double repairTime;
     private double productionTime;
     private String compactLore;
+    private boolean continuous;
 
     public CompactorProperties(ItemList<NamedItemStack> constructionMaterials,
-            ItemList<NamedItemStack> fuel,
-            ItemList<NamedItemStack> repairMaterials,
-            ItemList<NamedItemStack> recipeMaterials, int energyTime,
-            int repair, String name, double repairTime, double productionTime, String compactLore) {
+            ItemList<NamedItemStack> fuel, ItemList<NamedItemStack> repairMaterials,
+            ItemList<NamedItemStack> recipeMaterials, int energyTime, int repair, 
+            String name, double repairTime, double productionTime, String compactLore,
+            boolean continuous) {
         this.constructionMaterials = constructionMaterials;
         this.fuel = fuel;
         this.repairMaterials = repairMaterials;
@@ -34,6 +35,7 @@ public class CompactorProperties extends AFactoryProperties{
         this.repairTime = repairTime;
         this.productionTime = productionTime;
         this.compactLore = compactLore;
+        this.continuous = continuous;
     }
 
     public ItemList<NamedItemStack> getConstructionMaterials() {
@@ -72,6 +74,10 @@ public class CompactorProperties extends AFactoryProperties{
         return compactLore;
     }
     
+    public boolean getContinuous() {
+		return continuous;
+    }
+    
     public static CompactorProperties fromConfig(FactoryModPlugin plugin, ConfigurationSection config) {
         ItemList<NamedItemStack> cFuel = plugin.getItems(config.getConfigurationSection("fuel"));
         if(cFuel.isEmpty()) {
@@ -88,7 +94,8 @@ public class CompactorProperties extends AFactoryProperties{
         int repairTime = config.getInt("repair_time", 12);
         int productionTime = config.getInt("production_time");
         String compactLore = config.getString("compact_lore", "Compacted Item");
-        return new CompactorProperties(constructionCost, cFuel, repairCost, recipeUse, energyTime, repair, name, repairTime, productionTime, compactLore);
+        boolean continuous = config.getBoolean("continuous", false);
+        return new CompactorProperties(constructionCost, cFuel, repairCost, recipeUse, energyTime, repair, name, repairTime, productionTime, compactLore, continuous);
     }
 
 }

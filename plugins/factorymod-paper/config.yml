@@ -235,35 +235,35 @@ compactor:
         lore: A crate for compacting items
       'Redstone Blocks':
         material: REDSTONE_BLOCK
-        amount: 64
+        amount: 16
       Piston:
         material: PISTON_BASE
+        amount: 128
+      'Iron Ingots':
+        material: IRON_INGOT
         amount: 64
-      'Diamond Blocks':
-        material: DIAMOND_BLOCK
-        amount: 8
-      'Emerald Blocks':
-        material: EMERALD_BLOCK
-        amount: 16
-    repair_multiple: 3
+      'Slime Balls':
+        material: SLIME_BALL
+        amount: 48
+    repair_multiple: 6
     repair:
       Crate:
         material: CHEST
-        amount: 2
+        amount: 1
         display_name: Crate
         lore: A crate for compacting items
       Redstone:
         material: REDSTONE
-        amount: 19
+        amount: 2
       Piston:
         material: PISTON_BASE
         amount: 2
-      Diamond:
-        material: DIAMOND
-        amount: 3
-      Emerald:
-        material: EMERALD
-        amount: 4
+      'Iron Ingots':
+        material: IRON_INGOT
+        amount: 1
+      'Slime Balls':
+        material: SLIME_BALL
+        amount: 1
     recipe:
       CRATE:
         material: 'CHEST'
@@ -271,6 +271,7 @@ compactor:
         display_name: Crate
         lore: A crate for compacting items
   compact_lore: Compacted Item
+  continuous: true
 copy_defaults: false
 general:
   central_block: WORKBENCH
@@ -813,9 +814,10 @@ production_factories:
         material: COAL
         durability: 1
     inputs:
-      Diamonds:
-        material: DIAMOND
-        amount: 70 
+      Bedrock:
+        material: BEDROCK
+        amount: 3456
+        lore: 'Admin Crimes Only'     
     recipes:
       - Nether_Craft_Crate_of_Acacia_Sapling
       - Nether_Craft_Crate_of_Baked_Potatoes
@@ -844,11 +846,12 @@ production_factories:
       - Nether_Craft_Crate_of_Vine
       - Nether_Craft_Crate_of_Wheat
       - Nether_Craft_Crate_of_Yellow_Flower
-    repair_multiple: 3
+    repair_multiple: 54
     repair_inputs:
-      Diamond:
-        material: DIAMOND
-        amount: 2
+      Bedrock:
+        material: BEDROCK
+        amount: 64
+        lore: 'Admin Crimes Only'
   Nether_Decompactor:
     name: Nether Decompactor
     fuel: 
@@ -8139,17 +8142,17 @@ production_recipes:
     inputs:
       Chest:
         material: CHEST
-        amount: 16
-      Piston:
-        material: PISTON_BASE
-        amount: 8
-      Redstone:
-        material: REDSTONE
-        amount: 32
+        amount: 27
+      'Iron Ingot':
+        material: IRON_INGOT
+        amount: 4
+      Fence:
+        material: FENCE
+        amount: 256
     outputs:
       Crate:
         material: CHEST
-        amount: 16
+        amount: 54
         display_name: Crate
         lore: A crate for compacting items
   Enchant_Sharpness:
@@ -10719,55 +10722,53 @@ production_recipes:
   Emerald_XP_0:
     name: Emerald XP Block 1
     inputs: 
-       Crate of Glass Bottles:
+       Compacted Glass Bottles:
          material: GLASS_BOTTLE
-         amount: 32
+         amount: 96
          lore: Compacted Item
-       Crate of Carrots:
+       Compacted Carrots:
          material: CARROT_ITEM
          amount: 256
          lore: Compacted Item
-       Crate of Sugar Cane:
+       Compacted Sugar Cane:
          material: SUGAR_CANE
          amount: 256
          lore: Compacted Item
-       Crate of Bread:
+       Compacted Bread:
          material: BREAD
          amount: 64
          lore: Compacted Item
-       Crate of Grass Blocks:
+       Compacted Grass Blocks:
          material: GRASS
-         durability: 2
          amount: 64
          lore: Compacted Item
-       Crate of Brown Mushrooms:
+       Compacted Brown Mushrooms:
          material: BROWN_MUSHROOM
          amount: 64
          lore: Compacted Item
-       Crate of Cocoa:
+       Compacted Cocoa:
          material: INK_SACK
          durability: 3
          amount: 32
          lore: Compacted Item
-       Crate of Melons:
+       Compacted Melons:
          material: MELON_BLOCK
          amount: 32
          lore: Compacted Item
-       Crate of Dandelions:
+       Compacted Yellow Flowers:
          material: YELLOW_FLOWER
          amount: 16
          lore: Compacted Item
-       Crate of Oak Sapling:
+       Compacted Oak Sapling:
          material: SAPLING
-         durability: 0
          amount: 4
          lore: Compacted Item
-       Crate of Jungle Sapling:
+       Compacted Jungle Sapling:
          material: SAPLING
          durability: 3
          amount: 4
          lore: Compacted Item
-       Crate of Acacia Sapling:
+       Compacted Acacia Sapling:
          material: SAPLING
          durability: 4
          amount: 4
@@ -10779,57 +10780,55 @@ production_recipes:
   Emerald_XP_1:
     name: Emerald XP Block 2
     inputs: 
-       Crate of Glass Bottles:
+       Compacted Glass Bottles:
          material: GLASS_BOTTLE
-         amount: 32
+         amount: 96
          lore: Compacted Item
-       Crate of Cacti:
+       Compacted Cacti:
          material: CACTUS
          amount: 256
          lore: Compacted Item
-       Crate of Wheat:
+       Compacted Wheat:
          material: WHEAT
          amount: 192
          lore: Compacted Item
-       Crate of Pumpkins:
+       Compacted Pumpkins:
          material: PUMPKIN
          amount: 128
          lore: Compacted Item
-       Crate of Grass:
+       Compacted Grass:
          material: LONG_GRASS
          durability: 1
          amount: 64
          lore: Compacted Item
-       Crate of Cocoa:
+       Compacted Cocoa:
          material: INK_SACK
          durability: 3
          amount: 32
          lore: Compacted Item
-       Crate of Red Mushrooms:
+       Compacted Red Mushrooms:
          material: RED_MUSHROOM
          amount: 64
          lore: Compacted Item
-       Crate of Fish:
+       Compacted Cooked Fish:
          material: COOKED_FISH
-         durability: 0
          amount: 8
          lore: Compacted Item
-       Crate of Salmon:
+       Compacted Cooked Salmon:
          material: COOKED_FISH
          durability: 1
          amount: 4
          lore: Compacted Item
-       Crate of Poppies:
+       Compacted Red Rose:
          material: RED_ROSE
-         durability: 0
          amount: 8
          lore: Compacted Item
-       Crate of Spruce Sapling:
+       Compacted Spruce Sapling:
          material: SAPLING
          durability: 1
          amount: 4
          lore: Compacted Item
-       Crate of Dark Oak Sapling:
+       Compacted Dark Oak Sapling:
          material: SAPLING
          durability: 5
          amount: 4
@@ -10841,52 +10840,51 @@ production_recipes:
   Emerald_XP_2:
     name: Emerald XP Block 3
     inputs: 
-       Crate of Glass Bottles:
+       Compacted Glass Bottles:
          material: GLASS_BOTTLE
-         amount: 32
+         amount: 96
          lore: Compacted Item
-       Crate of Cookies:
+       Compacted Cookies:
          material: COOKIE
          amount: 384
          lore: Compacted Item
-       Crate of Potatoes:
-         material: POTATO_ITEM
+       Compacted Baked Potatoes:
+         material: BAKED_POTATO
          amount: 256
          lore: Compacted Item
-       Crate of Sugar Cane:
+       Compacted Sugar Cane:
          material: SUGAR_CANE
          amount: 256
          lore: Compacted Item
-       Crate of Pumpkins:
+       Compacted Pumpkins:
          material: PUMPKIN
          amount: 128
          lore: Compacted Item
-       Crate of Nether Warts:
+       Compacted Nether Warts:
          material: NETHER_STALK
          amount: 64
          lore: Compacted Item
-       Crate of Vine:
+       Compacted Vine:
          material: VINE
          amount: 64
          lore: Compacted Item
-       Crate of Melons:
+       Compacted Melons:
          material: MELON_BLOCK
          amount: 32
          lore: Compacted Item
-       Crate of Red Mushrooms:
+       Compacted Red Mushrooms:
          material: RED_MUSHROOM
          amount: 64
          lore: Compacted Item
-       Crate of Dandelions:
+       Compacted Yellow Flower:
          material: YELLOW_FLOWER
          amount: 16
          lore: Compacted Item
-       Crate of Grass Blocks:
+       Compacted Grass Blocks:
          material: GRASS
-         durability: 2
          amount: 16
          lore: Compacted Item
-       Crate of Birch Sapling:
+       Compacted Birch Sapling:
          material: SAPLING
          durability: 2
          amount: 4

@@ -179,13 +179,16 @@ public class Compactor extends ABaseFactory {
                 	if (mode.equals(CompactorMode.REPAIR)) { 
                 		repair(getRepairs().removeMaxFrom(getInventory(), (int)currentRepair));
                 	} else if (mode.equals(CompactorMode.COMPACT) || mode.equals(CompactorMode.DECOMPACT)) {
-                        // consumeInputs(); one or the other :(
-                        
                         recipeFinished();
                 	}
-                    currentProductionTimer = 0;
-                    currentEnergyTimer = 0;
-                    powerOff();
+                	
+            		currentProductionTimer = 0;
+            		currentEnergyTimer = 0;
+
+            		// keep going?
+                	if (!cp.getContinuous() || mode.equals(CompactorMode.REPAIR)) {
+                		powerOff();
+                	}
                 }
             } else {
                 powerOff();
@@ -196,21 +199,16 @@ public class Compactor extends ABaseFactory {
     @Override
 	public boolean checkHasMaterials() {
     	if (mode.equals(CompactorMode.REPAIR)) {
-    		return getAllInputs().allIn(getInventory());
+    		return super.checkHasMaterials();
     	} else {
-    		if (getInputs().isEmpty() || !getInputs().allIn(getInventory())) {
-    			return false;
-    		} else {
-    			return true;
-    		}
+    		return super.checkHasMaterials() && !getInputs().isEmpty();
     	}
 	}
     
     protected void recipeFinished() {
-    	ItemList<NamedItemStack> output = getOutputs(); //.putIn(getInventory());
+    	ItemList<NamedItemStack> output = getOutputs();
         getInputs().removeFrom(getInventory());
         output.putIn(getInventory());
-        
     }
  
     public int getMaxRepair() {

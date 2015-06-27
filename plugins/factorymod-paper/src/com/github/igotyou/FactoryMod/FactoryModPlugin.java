@@ -45,8 +45,6 @@ import com.google.common.collect.Maps;
 
 public class FactoryModPlugin extends JavaPlugin
 {
-	public CompactorProperties compactorProperties;
-	
 	/* Special Values */
 	public static final String VERSION = "v1.4.0"; //Current version of plugin
 	public static final String PLUGIN_NAME = "FactoryMod"; //Name of plugin
@@ -176,6 +174,7 @@ public class FactoryModPlugin extends JavaPlugin
 	public PrintingPressProperties printingPressProperties;
 	public NetherFactoryProperties netherFactoryProperties;
 	public RepairFactoryProperties repairFactoryProperties;
+	public CompactorProperties compactorProperties;
 	
 	public void onEnable()
 	{
