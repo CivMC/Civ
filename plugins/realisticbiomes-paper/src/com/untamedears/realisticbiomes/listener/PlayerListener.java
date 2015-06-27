@@ -159,7 +159,10 @@ public class PlayerListener implements Listener {
 			if (growthConfig.getType() == GrowthConfig.Type.ENTITY) {
 				rateType = "Spawn rate";
 			} else if (growthConfig.getType() == GrowthConfig.Type.FISHING_DROP) {
-					rateType = "Fishing rate";
+				if (growthAmount == 0.0) {
+					return; // don't spam players clicking things unless it can actually be fished
+				}
+				rateType = "Fishing rate";
 			} else {
 				rateType = "Growth rate";
 			}
