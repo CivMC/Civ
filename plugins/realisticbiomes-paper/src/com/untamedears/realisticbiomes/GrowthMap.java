@@ -8,6 +8,8 @@ import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.entity.EntityType;
 
+import com.untamedears.realisticbiomes.GrowthConfig.Type;
+
 /**
  * Would probably be best to have box type as key, with material + data or entity
  */
@@ -53,7 +55,9 @@ public class GrowthMap {
 	}
 	
 	public GrowthConfig put(TreeType treeType, GrowthConfig config) {
-		return treeTypeMap.put(treeType, config.setType(GrowthConfig.Type.PLANT));
+		config.setType(Type.TREE);
+		config.setTreeType(treeType);
+		return treeTypeMap.put(treeType, config);
 	}
 
 	/**

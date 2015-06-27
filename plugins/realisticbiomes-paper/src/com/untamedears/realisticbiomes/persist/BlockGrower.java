@@ -19,6 +19,7 @@ import org.bukkit.material.NetherWarts;
 import org.bukkit.material.Tree;
 import org.bukkit.util.Vector;
 
+import com.untamedears.realisticbiomes.GrowthMap;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.utils.Fruits;
 import com.untamedears.utils.MaterialAliases;
@@ -42,14 +43,15 @@ public class BlockGrower {
 		growthStages.put(Material.COCOA, 3);
 		
 		growthStages.put(Material.NETHER_WARTS, 4);
-		
-		growthStages.put(Material.SAPLING, 2);
 	}
 	
 	private PlantManager plantManager;
+
+	private GrowthMap growthMap;
 	
-	public BlockGrower(PlantManager plantManager) {
+	public BlockGrower(PlantManager plantManager, GrowthMap growthMap) {
 		this.plantManager = plantManager;
+		this.growthMap = growthMap;
 	}
 
 	/**
@@ -86,18 +88,6 @@ public class BlockGrower {
 			// trust that enum order is sanely declared in order
 			NetherWartsState cropSize = NetherWartsState.values()[stage]; 
 			((NetherWarts)data).setState(cropSize);
-
-		} else if (data instanceof Tree) {
-			RealisticBiomes.doLog(Level.FINER, "BlockGrower.growBlock(): grow a " + MaterialAliases.getTreeType(block) + " tree to " + growth);
-			if (stage == 1) {
-				// MUST return after generation to avoid updating blockstate below
-				if (generateTree(block)) {
-					return false;
-				} else {
-					RealisticBiomes.doLog(Level.FINER, "BlockGrower.growBlock() could not generate a tree");
-					return true;
-				}
-			}
 			
 		} else {
 			data.setData(stage);
@@ -111,13 +101,21 @@ public class BlockGrower {
 		return false;
 	}
 	
-	private boolean generateTree(Block block) {
-		TreeType type = Trees.getTreeType(block);
-		
-		if (type == null) {
+	/**
+	 * Generate tree
+	 * @param block
+	 * @param growth
+	 * @param type
+	 * @return true if growth was prevented
+	 */
+	public boolean generateTree(Block block, float growth, TreeType type) {
+		RealisticBiomes.doLog(Level.FINER, "BlockGrower.generateTree(): " + type);
+		if (growth < 1.0f) {
 			return false;
 		}
-
+		
+		type = Trees.getAlternativeTree(type, block, growthMap);
+		
 		ArrayList<BlockState> states = new ArrayList<BlockState>();
 		states.add(block.getState());
 		block.setType(Material.AIR);
@@ -141,7 +139,7 @@ public class BlockGrower {
 			for (BlockState state: states) {
 				state.update(true, false);
 			}
-			return false;
+			return true;
 		}
 	}
 

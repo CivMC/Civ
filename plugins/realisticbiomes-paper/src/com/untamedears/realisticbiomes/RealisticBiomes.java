@@ -15,6 +15,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.untamedears.realisticbiomes.GrowthConfig.Type;
 import com.untamedears.realisticbiomes.listener.GrowListener;
 import com.untamedears.realisticbiomes.listener.PlayerListener;
 import com.untamedears.realisticbiomes.listener.SpawnListener;
@@ -88,7 +89,7 @@ public class RealisticBiomes extends JavaPlugin {
 		
 		if (persistConfig.enabled) {
 			plantManager = new PlantManager(this, persistConfig);
-			blockGrower = new BlockGrower(plantManager);
+			blockGrower = new BlockGrower(plantManager, materialGrowth);
 			
 		}
 				
@@ -443,7 +444,11 @@ public class RealisticBiomes extends JavaPlugin {
 		
 		// actually 'grows' the block or fruit (in minecraft terms, between the different stages of growth that you can see in game)
 		// depending on its growth value
-		return blockGrower.growBlock(block, plant.getGrowth(), plant.getFruitGrowth());
+		if (growthConfig.getType() == Type.TREE) {
+			return blockGrower.generateTree(block, plant.getGrowth(), growthConfig.getTreeType());
+		} else {
+			return blockGrower.growBlock(block, plant.getGrowth(), plant.getFruitGrowth());
+		}
 	}
 	
 	public PlantManager getPlantManager() {

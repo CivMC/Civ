@@ -124,12 +124,14 @@ public class MaterialAliases {
 		return material == Material.INK_SACK && data instanceof Dye && ((Dye)data).getColor() == DyeColor.BROWN;
 	}
 
-	@SuppressWarnings("deprecation")
+	/**
+	 * Get growthConfig for given block, may need to look up surrounding blocks for e.g. saplings
+	 */
 	public static GrowthConfig getConfig(GrowthMap growthConfigs, Block block) {
 		Material material = block.getType();
 		
 		if (material == Material.SAPLING) {
-			return growthConfigs.get(getTreeType(block.getData()));
+			return growthConfigs.get(Trees.getTreeType(block, growthConfigs));
 		}
 
 		return growthConfigs.get(material);

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
+import org.bukkit.TreeType;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -61,13 +62,15 @@ protected String name;
 
 	private Type type;
 
+	private TreeType treeType;
+
 	// conversion used for persistence calculations
 	private static final int SEC_PER_HOUR = 60 * 60;
 	// maximum light level on a block
 	private static final double MAX_LIGHT_INTENSITY = 15.0;
 
 	public enum Type {
-		PLANT, ENTITY, FISHING_DROP
+		PLANT, TREE, ENTITY, FISHING_DROP
 	}
 
 	// ------------------------------------------------------------------------
@@ -121,6 +124,8 @@ protected String name;
 		soilMaxLayers = 0;
 		soilBonusPerLevel = 0.0;
 		soilLayerOffset = 1;
+		
+		treeType = null;
 	}
 	
 	// make a copy of the given configuration and modify it by loading in a YML config section
@@ -210,6 +215,8 @@ protected String name;
 		soilMaxLayers = other.soilMaxLayers;
 		soilBonusPerLevel = other.soilBonusPerLevel;
 		soilLayerOffset = other.soilLayerOffset;
+		
+		treeType = other.treeType;
 	}
 	
 	public void loadBiomes(ConfigurationSection config, HashMap<String, List<Biome>> biomeAliases) {
@@ -361,5 +368,13 @@ protected String name;
 	public GrowthConfig setType(Type type) {
 		this.type = type;
 		return this;
+	}
+
+	public void setTreeType(TreeType treeType) {
+		this.treeType = treeType;
+	}
+	
+	public TreeType getTreeType() {
+		return treeType;
 	}
 }
