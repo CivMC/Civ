@@ -266,7 +266,7 @@ public class Compactor extends ABaseFactory {
 
         if (mode.equals(CompactorMode.COMPACT) ) {
         	ItemList<NamedItemStack> inputs = getInputs();
-        	response = (inputs.isEmpty() ? "Nothing to compact." : "Next stack to compact: " + inputs.toString() );
+        	response = (inputs.isEmpty() ? "Nothing to compact." : "Next up to compact: " + inputs.toString() );
         } else if (mode.equals(CompactorMode.DECOMPACT)){
         	ItemList<NamedItemStack> inputs = getInputs();
         	if (inputs.isEmpty()) {
