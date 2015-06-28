@@ -232,7 +232,7 @@ realistic_biomes:
 
   TREE:
    inherit: tree
-   persistent_growth_period: 3
+   persistent_growth_period: 6
    biomes:
     SWAMPLAND: 0.5
     forest: 2.0
@@ -247,7 +247,7 @@ realistic_biomes:
 
   BIRCH:
    inherit: tree
-   persistent_growth_period: 3
+   persistent_growth_period: 6
    biomes:
     forest: 2.0
     PLAINS: 0.25
@@ -259,7 +259,7 @@ realistic_biomes:
    
   REDWOOD:
    inherit: tree
-   persistent_growth_period: 3
+   persistent_growth_period: 6
    biomes:
     cold_forest: 2.0
     mountain: 0.75
@@ -271,12 +271,12 @@ realistic_biomes:
   # 2x2 array of redwood saplings
   MEGA_REDWOOD:
    inherit: REDWOOD
-   persistent_growth_period: 3
+   persistent_growth_period: 6
   
   # generic sapling grows into this version ONLY in swampland:
   SWAMP:
    inherit: tree
-   persistent_growth_period: 3
+   persistent_growth_period: 6
    biomes:
     SWAMPLAND: 1.0
 
@@ -284,14 +284,14 @@ realistic_biomes:
    base_rate: 1.0
    needs_sunlight: true
    not_full_sunlight_multiplier: 0.125
-   persistent_growth_period: 3
+   persistent_growth_period: 6
    biomes:
     hot_rainy: 1.0
   
   # 2x2 array of jungle saplings
   JUNGLE:
    inherit: SMALL_JUNGLE
-   persistent_growth_period: 3
+   persistent_growth_period: 6
   
   # SMALL_JUNGLE has a (rate) chance of growing into this (rather annoying) bush:
   JUNGLE_BUSH:
@@ -300,7 +300,7 @@ realistic_biomes:
    
   ACACIA:
    inherit: tree
-   persistent_growth_period: 3
+   persistent_growth_period: 6
    biomes:
     hot_dry: 2.0
     PLAINS: 1.0
@@ -309,7 +309,7 @@ realistic_biomes:
     
   DARK_OAK:
    inherit: tree
-   persistent_growth_period: 3
+   persistent_growth_period: 6
    biomes:
     SWAMPLAND: 2.0
     forest: 1.0
