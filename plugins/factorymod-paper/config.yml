@@ -288,6 +288,8 @@ compactor:
       material: EMPTY_MAP
     Filled Map:
       material: MAP
+    Banner:
+      material: BANNER
 copy_defaults: false
 general:
   central_block: WORKBENCH
