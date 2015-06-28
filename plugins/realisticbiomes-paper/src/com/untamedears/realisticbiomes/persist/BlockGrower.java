@@ -133,7 +133,7 @@ public class BlockGrower {
 			for (int i = 1; i < states.size(); i++) {
 				plantManager.removePlant(states.get(i).getBlock());
 			}
-			return true;
+			return false;
 		} else {
 			RealisticBiomes.doLog(Level.FINER, "generateTree reset data: " + states.size());
 			for (BlockState state: states) {
