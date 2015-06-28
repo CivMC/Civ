@@ -102,17 +102,23 @@ public class Trees {
 		}
 	}
 
-	private static boolean isPartOfLargeTree(Block block, TreeType type) {
+	public static Block getLargeTreeOrigin(Block block, TreeType type) {
+		type = getSmallType(type);
 		for (Vector vec: largeTreeOriginBlocks) {
 			Block candidate = block.getLocation().add(vec).getBlock();
 			if (MaterialAliases.getTreeType(candidate) == type && canGrowLArge(candidate, type)) {
-				return true;
+				return candidate;
 			}
 		}
-		return false;
+		return null;
 	}
 
-	private static boolean canGrowLArge(Block block, TreeType type) {
+	private static boolean isPartOfLargeTree(Block block, TreeType type) {
+		return getLargeTreeOrigin(block, type) != null;
+	}
+
+	public static boolean canGrowLArge(Block block, TreeType type) {
+		type = getSmallType(type);
 		for (Vector vec: largeTreeBlocks) {
 			Block candidate = block.getLocation().add(vec).getBlock();
 			if (MaterialAliases.getTreeType(candidate) != type) {
@@ -120,5 +126,15 @@ public class Trees {
 			}
 		}
 		return true;
+	}
+
+	private static TreeType getSmallType(TreeType type) {
+		if (type == TreeType.MEGA_REDWOOD) {
+			return TreeType.REDWOOD;
+		} else if (type == TreeType.JUNGLE) {
+			return TreeType.SMALL_JUNGLE;
+		} else {
+			return type;
+		}
 	}
 }

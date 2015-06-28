@@ -32,6 +32,7 @@ import com.untamedears.realisticbiomes.persist.Plant;
 import com.untamedears.realisticbiomes.persist.WorldID;
 import com.untamedears.utils.Fruits;
 import com.untamedears.utils.MaterialAliases;
+import com.untamedears.utils.Trees;
 
 /**
  * Event listener for all plant growth related events. Whenever a crop, plant block, or sapling attempts to grow, its type
@@ -87,16 +88,16 @@ public class GrowListener implements Listener {
 			return;
 		}
 		
-		TreeType t = event.getSpecies();
+		TreeType type = event.getSpecies();
 		
-		Block b = event.getLocation().getBlock();
+		Block block = event.getLocation().getBlock();
 		
-		GrowthConfig growthConfig = plugin.materialGrowth.get(t);
+		GrowthConfig growthConfig = plugin.materialGrowth.get(type);
 		if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
-			plugin.growAndPersistBlock(b, true, growthConfig, null);
+			growTree(block, type, growthConfig);
 			event.setCancelled(true);
 			
-		} else if (!willGrow(t, b)) {
+		} else if (!willGrow(type, block)) {
 			event.setCancelled(true);
 		}
 	}
@@ -295,6 +296,16 @@ public class GrowListener implements Listener {
 			plugin.growAndPersistBlock(stem, true, growthConfig, ignoreBlock);
 		}
 		return true;
+	}
+
+	public void growTree(Block block, TreeType type, GrowthConfig growthConfig) {
+		if (!Trees.canGrowLArge(block, type)) {
+			block = Trees.getLargeTreeOrigin(block, type);
+			if (block == null) {
+				return;
+			}
+		}
+		plugin.growAndPersistBlock(block, true, growthConfig, null);
 	}
 
 	@EventHandler
