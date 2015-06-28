@@ -398,25 +398,14 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		// Instead, we'll create a temporary "merged" inventory, and
 		// see if we can add everything into it without overflowing
 		Inventory merger = FactoryModPlugin.getPlugin().getServer().createInventory(null, inventory.getSize());
-		for (ItemStack slot : inventory) {
-			if (slot != null) {
-				HashMap<Integer, ItemStack> k = merger.addItem(slot);
+		for (int i = 0; i < inventory.getSize(); i++) {
+			ItemStack slot = inventory.getItem(i);
 			
-				if (!k.isEmpty()) {
-					// big problem. Try to find out where; someone has an overloaded chest/inventory
-					// that violates MC's stacking rules.
-					Location loc = null;
-					InventoryHolder held = inventory.getHolder();
-					if (held instanceof DoubleChest) {
-						loc = ((DoubleChest) held).getLocation();
-					} else if (held instanceof BlockState) {
-						loc = ((BlockState) held).getLocation();
-					} else if (held instanceof Entity) {
-						loc = ((Entity) held).getLocation();
-					}
-					Bukkit.getLogger().severe("Factory inventory cannot fit into itself, SEVERE at " + StringUtils.formatCoords(loc));
-					return false;
-				}
+			// duplicate exactly, otherwise get weird edge effects
+			if (slot != null) {
+				merger.setItem(i, slot);
+			} else {
+				merger.clear(i);
 			}
 		}
 		return this.putIn(merger, probabilisticEnchantments, enchantmentOptions);
