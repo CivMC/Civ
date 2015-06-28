@@ -179,12 +179,14 @@ realistic_biomes:
 
   CACTUS:
    inherit: column
+   persistent_growth_period: 3
    biomes:
     hot_dry: 1.0
     HELL: 0.5
 
   SUGAR_CANE_BLOCK:
    inherit: column
+   persistent_growth_period: 3
    biomes:
     hot_rainy: 1.0
     SWAMPLAND: 0.5

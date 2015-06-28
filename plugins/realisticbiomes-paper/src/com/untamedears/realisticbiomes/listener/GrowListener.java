@@ -67,11 +67,14 @@ public class GrowListener implements Listener {
 		
 		GrowthConfig growthConfig = plugin.materialGrowth.get(block.getType());
 		if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
-			plugin.growAndPersistBlock(block, true, growthConfig, null);
-			
 			event.setCancelled(true);
-		}
-		else if (!willGrow(material, block)) {
+
+			block = MaterialAliases.getOriginBlock(block);
+			if (block != null) {
+				plugin.growAndPersistBlock(block, true, growthConfig, null, null);
+			}
+
+		} else if (!willGrow(material, block)) {
 			event.setCancelled(true);
 		}
 	}
@@ -293,7 +296,7 @@ public class GrowListener implements Listener {
 		Block ignoreBlock = ignore ? block : null;
 		
 		for (Block stem: Fruits.getStems(block, material)) {
-			plugin.growAndPersistBlock(stem, true, growthConfig, ignoreBlock);
+			plugin.growAndPersistBlock(stem, true, growthConfig, ignoreBlock, null);
 		}
 		return true;
 	}
@@ -305,7 +308,7 @@ public class GrowListener implements Listener {
 				return;
 			}
 		}
-		plugin.growAndPersistBlock(block, true, growthConfig, null);
+		plugin.growAndPersistBlock(block, true, growthConfig, null, null);
 	}
 
 	@EventHandler

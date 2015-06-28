@@ -71,7 +71,7 @@ protected String name;
 	private static final double MAX_LIGHT_INTENSITY = 15.0;
 
 	public enum Type {
-		PLANT, TREE, ENTITY, FISHING_DROP
+		PLANT, TREE, COLUMN, ENTITY, FISHING_DROP
 	}
 
 	// ------------------------------------------------------------------------

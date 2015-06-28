@@ -76,13 +76,12 @@ public class PlayerListener implements Listener {
 			// right click on a growing crop with a stick: get information about that crop
 			growthConfig = MaterialAliases.getConfig(growthConfigs, event.getClickedBlock());
 			if (growthConfig == null) {
-				RealisticBiomes.doLog(Level.FINER, "No config found: " + growthConfigs.keySet());
 				return;
 			}
 			
 			if (!Fruits.isFruit(event.getClickedBlock().getType())) {
 				if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {				
-					plant = plugin.growAndPersistBlock(block, false, growthConfig, null);
+					plant = plugin.growAndPersistBlock(block, false, growthConfig, null, null);
 				}
 			}
 			

@@ -2,6 +2,7 @@ package com.untamedears.realisticbiomes.persist;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,19 +11,19 @@ import org.bukkit.Material;
 import org.bukkit.NetherWartsState;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.CocoaPlant;
 import org.bukkit.material.CocoaPlant.CocoaPlantSize;
 import org.bukkit.material.Crops;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.NetherWarts;
-import org.bukkit.material.Tree;
 import org.bukkit.util.Vector;
 
+import com.untamedears.realisticbiomes.DropGrouper;
 import com.untamedears.realisticbiomes.GrowthMap;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.utils.Fruits;
-import com.untamedears.utils.MaterialAliases;
 import com.untamedears.utils.Trees;
 
 // handles force-growing of crop-type blocks based on a fractional growth amount
@@ -48,6 +49,14 @@ public class BlockGrower {
 	private PlantManager plantManager;
 
 	private GrowthMap growthMap;
+	
+	static List<Vector> surroundingBlocks = new ArrayList<Vector>();
+	static {
+		surroundingBlocks.add(new Vector(-1,0,0));	// west
+		surroundingBlocks.add(new Vector(1,0,0));	// east
+		surroundingBlocks.add(new Vector(0,0,-1));	// north
+		surroundingBlocks.add(new Vector(0,0,1));	// south
+	}
 	
 	public BlockGrower(PlantManager plantManager, GrowthMap growthMap) {
 		this.plantManager = plantManager;
@@ -141,6 +150,63 @@ public class BlockGrower {
 			}
 			return true;
 		}
+	}
+
+	public boolean growColumn(Block block, float growth, DropGrouper dropGrouper) {
+		RealisticBiomes.doLog(Level.FINER, "BlockGrower.growColumn(): " + growth);
+		if (growth < 1.0f) {
+			return false;
+		}
+		
+		
+		Material type = block.getType();
+		
+		if (block.getRelative(BlockFace.DOWN).getType() == type) {
+			// if this is not the bottom block, just ignore it. it will grow to 1.0 and get removed eventually
+			// TODO: do not allow column blocks other than bottom to be added as Plant, to begin with.
+			// would need a check in all places where RealisticBiomes.growPlant is called.
+			RealisticBiomes.doLog(Level.WARNING, "BlockGrower.growColumn(): is not bottom block");
+			return false;
+		}
+		
+		int stage = (int)(((float)(2))*growth);
+		for (int i = 0; i < stage; i++) {
+			block = block.getRelative(BlockFace.UP);
+			
+			RealisticBiomes.doLog(Level.FINE, "BlockGrower.growColumn(): stage " + i);
+			if (block.getType() == type) {
+				RealisticBiomes.doLog(Level.FINE, "BlockGrower.growColumn(): block above is already " + type);
+				// continue to looke for a free spot above
+				continue;
+			} else if (block.getType() != Material.AIR) {
+				RealisticBiomes.doLog(Level.FINE, "BlockGrower.growColumn(): block above blocking, prevented growth");
+				// block was prevented from growth, will reset cycle
+				return true;
+			} else if (type == Material.CACTUS && instaBreakCactus(block, dropGrouper)) {
+				// broken and prevented from growing, keep tracking
+				return true;
+			} else {
+				// grown successfully
+				block.setType(type);
+			}
+		}
+		return false;
+	}
+
+	private boolean instaBreakCactus(Block topBlock, DropGrouper dropGrouper) {
+		for (Vector victor: surroundingBlocks) {
+			Block candidate = topBlock.getLocation().add(victor).getBlock();
+			if (candidate.getType() != Material.AIR) {
+				if (dropGrouper != null) {
+					dropGrouper.add(topBlock.getLocation(), Material.CACTUS);
+				} else {
+					topBlock.setType(Material.CACTUS);
+					topBlock.breakNaturally();
+				}
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void growFruit(Block block, float fruitGrowth) {

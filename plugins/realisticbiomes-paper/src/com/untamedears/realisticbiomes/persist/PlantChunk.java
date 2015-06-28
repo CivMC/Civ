@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
+import com.untamedears.realisticbiomes.DropGrouper;
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.utils.MaterialAliases;
@@ -34,7 +35,7 @@ public class PlantChunk {
 
 		this.loaded = false;
 		this.inDatabase = false;
-
+		RealisticBiomes.doLog(Level.FINER,"PlantChunk() called with coords: " + coords);
 	}
 
 	/**
@@ -89,6 +90,8 @@ public class PlantChunk {
 		if (!loaded)
 			return;
 
+		RealisticBiomes.doLog(Level.FINER,"plantchunk.remove(): called with coords: " + coords);
+		
 		plants.remove(coords);
 	}
 
@@ -134,12 +137,12 @@ public class PlantChunk {
 				"Plantchunk.load() called with coords: " + coords);
 
 		if (loaded) {
-			RealisticBiomes.doLog(Level.FINER, "Plantchunk.load(): plant chunk is already loaded, returning true");
 			return true;
 		}
 
 		World world = plugin.getServer().getWorld(WorldID.getMCID(coords.w));
 
+		DropGrouper dropGrouper = new DropGrouper(plugin, world);
 
 		// execute the load plant statement
 		try {
@@ -173,13 +176,10 @@ public class PlantChunk {
 
 				Plant plant = new Plant(date, growth, fruitGrowth);
 
-				// TODO MARK: this code seems very similar to
-				// RealisticBiomes.growAndPersistBlock()
-				// grow the block
 				Block block = world.getBlockAt(x, y, z);
 				GrowthConfig growthConfig = MaterialAliases.getConfig(plugin.materialGrowth, block);
 				if (growthConfig.isPersistent()) {
-					plugin.growPlant(plant, block, growthConfig, null);
+					plugin.growPlant(plant, block, growthConfig, null, dropGrouper);
 				}
 
 				// if the plant isn't finished growing, add it to the
@@ -188,8 +188,6 @@ public class PlantChunk {
 					plants.put(new Coords(w, x, y, z), plant);
 					RealisticBiomes.doLog(Level.FINER, "PlantChunk.load(): plant not finished growing, adding to plants list");
 				}
-
-				// END MARK TODO
 			}
 		} catch (SQLException e) {
 			throw new DataSourceException(
@@ -198,6 +196,8 @@ public class PlantChunk {
 							index, coords), e);
 		}
 
+		dropGrouper.done();
+		
 		// TODO: this always returns true...refactor that!
 		loaded = true;
 		return true;

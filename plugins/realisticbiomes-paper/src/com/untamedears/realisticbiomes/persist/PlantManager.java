@@ -20,11 +20,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
+import com.untamedears.realisticbiomes.DropGrouper;
 import com.untamedears.realisticbiomes.PersistConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.utils.MaterialAliases;
 
 public class PlantManager {
 	private final RealisticBiomes plugin;
@@ -579,6 +582,9 @@ public class PlantManager {
 			return;
 		}
 
+		RealisticBiomes.doLog(Level.FINER, "PlantManager.growChunk() group: " + pChunk.getPlantCoords().size());
+		DropGrouper dropGrouper = new DropGrouper(plugin, chunk.getWorld());
+		
 		// We can assume the chunk will be loaded at this point
 		
 		// Create a deep copy of the plant set to iterate over so we don't run into problems when
@@ -587,8 +593,14 @@ public class PlantManager {
 		for (Coords position : new HashSet<Coords>(pChunk.getPlantCoords())) {
 			Block block = chunk.getBlock(position.x,  position.y,  position.z);
 			
-			plugin.growAndPersistBlock(block, false, null, null);
+			block = MaterialAliases.getOriginBlock(block);
+			
+			if (block != null) {
+				plugin.growAndPersistBlock(block, false, null, null, dropGrouper);
+			}
 		}
+		
+		dropGrouper.done();
 	}
 	
 	
@@ -606,7 +618,7 @@ public class PlantManager {
 		// make sure the chunk is loaded
 		loadChunk(chunkCoords);
 		
-		RealisticBiomes.doLog(Level.FINER, "PlantManager.removePlant(): removing plant: " + block.getLocation());
+		RealisticBiomes.doLog(Level.WARNING, "PlantManager.removePlant(): removing plant: " + block.getLocation());
 		
 		pChunk.remove(new Coords(block));		
 	}

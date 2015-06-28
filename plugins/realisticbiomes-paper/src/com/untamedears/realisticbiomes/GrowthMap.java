@@ -9,6 +9,7 @@ import org.bukkit.TreeType;
 import org.bukkit.entity.EntityType;
 
 import com.untamedears.realisticbiomes.GrowthConfig.Type;
+import com.untamedears.utils.MaterialAliases;
 
 /**
  * Would probably be best to have box type as key, with material + data or entity
@@ -29,7 +30,11 @@ public class GrowthMap {
 	
 	public GrowthConfig put(Material material, GrowthConfig config, GrowthConfig.Type type) {
 		if (type == null) {
-			type = GrowthConfig.Type.PLANT;
+			if (MaterialAliases.isColumnBlock(material)) {
+				type = GrowthConfig.Type.COLUMN;
+			} else {
+				type = GrowthConfig.Type.PLANT;
+			}
 		}
 		return materialMap.put(material, config.setType(type));
 	}

@@ -6,6 +6,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dye;
@@ -126,14 +127,47 @@ public class MaterialAliases {
 
 	/**
 	 * Get growthConfig for given block, may need to look up surrounding blocks for e.g. saplings
+	 * or column-type blocks. Column type blocks will return null if they are not the bottom block.
 	 */
 	public static GrowthConfig getConfig(GrowthMap growthConfigs, Block block) {
 		Material material = block.getType();
 		
 		if (material == Material.SAPLING) {
 			return growthConfigs.get(Trees.getTreeType(block, growthConfigs));
+		} else if (isColumnBlock(block.getType()) && !isBottomColumnBlock(block)) {
+			return null;
 		}
 
 		return growthConfigs.get(material);
+	}
+	
+	/**
+	 * Return true if column type
+	 */
+	public static boolean isColumnBlock(Material type) {
+		return type == Material.CACTUS || type == Material.SUGAR_CANE_BLOCK;
+	}
+	
+	/**
+	 * If column type return the bottom block, else the same block
+	 */
+	public static Block getOriginBlock(Block block) {
+		if (isColumnBlock(block.getType())) {
+			// only grow bottom-most block of columns
+			while (!MaterialAliases.isBottomColumnBlock(block)) {
+				block = block.getRelative(BlockFace.DOWN);
+				if (block == null) {
+					return null;
+				}
+			}
+		}
+		return block;
+	}
+
+	/**
+	 * Return true if block below is of different material
+	 */
+	private static boolean isBottomColumnBlock(Block block) {
+		return block.getRelative(BlockFace.DOWN).getType() != block.getType();
 	}
 }

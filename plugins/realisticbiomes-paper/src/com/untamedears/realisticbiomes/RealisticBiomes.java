@@ -343,15 +343,14 @@ public class RealisticBiomes extends JavaPlugin {
 	 * @param fruitBlockToIgnore When checking for fruits, ignore this block. BlockBreak event needs this, since the block being broken is still in world until event has completed.
 	 * @return Plant or null, to report growth back to player on interaction
 	 */
-	public Plant growAndPersistBlock(Block block, boolean naturalGrowEvent, GrowthConfig growthConfig, Block fruitBlockToIgnore) {
+	public Plant growAndPersistBlock(Block block, boolean naturalGrowEvent, GrowthConfig growthConfig, Block fruitBlockToIgnore, DropGrouper dropGrouper) {
 		if (growthConfig == null) {
 			growthConfig = MaterialAliases.getConfig(materialGrowth, block);
 		}
 		RealisticBiomes.doLog(Level.FINER, "RealisticBiomes:growAndPersistBlock() called for block: " + block + " and is naturalGrowEvent? " + naturalGrowEvent);
 		if (!persistConfig.enabled)
 			return null;
-		
-		Coords blockCoords = new Coords(block);
+
 		ChunkCoords chunckCoords = new ChunkCoords(block.getChunk()); 
 		
 		boolean loadChunk = naturalGrowEvent ? Math.random() < persistConfig.growEventLoadChance : true;
@@ -375,8 +374,6 @@ public class RealisticBiomes extends JavaPlugin {
 			return null;
 		}
 		
-		RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): plantManager.get() returned: " + plant + " for coords: " + blockCoords);
-		
 		if (plant == null) {
 			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): creating new plant and adding it");
 			
@@ -385,10 +382,7 @@ public class RealisticBiomes extends JavaPlugin {
 			plantManager.addPlant(block, plant);
 		}
 		
-		boolean growthPrevented = growPlant(plant, block, growthConfig, fruitBlockToIgnore);
-		if (growthPrevented) {
-			plant.setGrowth(0.0);
-		}
+		growPlant(plant, block, growthConfig, fruitBlockToIgnore, dropGrouper);
 		
 		if (plant.isFullyGrown()) {
 			// if plant is fully grown and either has no fruits or fruit has fully grown, stop tracking it
@@ -406,12 +400,12 @@ public class RealisticBiomes extends JavaPlugin {
 	 * @param block
 	 * @param growthConfig
 	 * @param fruitBlockToIgnore When checking for fruits, ignore this block
+	 * @param dropGrouper 
 	 */
-	public boolean growPlant(Plant plant, Block block, GrowthConfig growthConfig, Block fruitBlockToIgnore) {
+	public void growPlant(Plant plant, Block block, GrowthConfig growthConfig, Block fruitBlockToIgnore, DropGrouper dropGrouper) {
 		double rate = growthConfig.getRate(block);
 		double fruitRate = -1.0;
 		
-		RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growPlant(): plant existed, growthAmount was: " + plant.getGrowth());
 		double updateTime = plant.grow(rate);
 		
 		if (Fruits.isFruitFul(block.getType())) {
@@ -444,10 +438,17 @@ public class RealisticBiomes extends JavaPlugin {
 		
 		// actually 'grows' the block or fruit (in minecraft terms, between the different stages of growth that you can see in game)
 		// depending on its growth value
+		boolean growthPrevented = false;
 		if (growthConfig.getType() == Type.TREE) {
-			return blockGrower.generateTree(block, plant.getGrowth(), growthConfig.getTreeType());
+			growthPrevented = blockGrower.generateTree(block, plant.getGrowth(), growthConfig.getTreeType());
+		} else if (growthConfig.getType() == Type.COLUMN) {
+			growthPrevented = blockGrower.growColumn(block, plant.getGrowth(), dropGrouper);
 		} else {
-			return blockGrower.growBlock(block, plant.getGrowth(), plant.getFruitGrowth());
+			growthPrevented = blockGrower.growBlock(block, plant.getGrowth(), plant.getFruitGrowth());
+		}
+		if (growthPrevented) {
+			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growPlant(): growth prevented");
+			plant.setGrowth(0.0);
 		}
 	}
 	
