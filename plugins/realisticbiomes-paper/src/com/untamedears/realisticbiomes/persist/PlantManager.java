@@ -20,7 +20,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
@@ -583,7 +582,7 @@ public class PlantManager {
 		}
 
 		RealisticBiomes.doLog(Level.FINER, "PlantManager.growChunk() group: " + pChunk.getPlantCoords().size());
-		DropGrouper dropGrouper = new DropGrouper(plugin, chunk.getWorld());
+		DropGrouper dropGrouper = new DropGrouper(chunk.getWorld());
 		
 		// We can assume the chunk will be loaded at this point
 		

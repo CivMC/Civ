@@ -142,7 +142,7 @@ public class PlantChunk {
 
 		World world = plugin.getServer().getWorld(WorldID.getMCID(coords.w));
 
-		DropGrouper dropGrouper = new DropGrouper(plugin, world);
+		DropGrouper dropGrouper = new DropGrouper(world);
 
 		// execute the load plant statement
 		try {
