@@ -13,11 +13,17 @@ import java.util.Random;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.recipes.EnchantmentOptions;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 
@@ -164,11 +170,12 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 		return amountAvailable;
 	}
 	
-	public void putIn(Inventory inventory) {
-		putIn(inventory,new ArrayList<ProbabilisticEnchantment>(), EnchantmentOptions.DEFAULT);
+	public boolean putIn(Inventory inventory) {
+		return putIn(inventory, new ArrayList<ProbabilisticEnchantment>(), EnchantmentOptions.DEFAULT);
 	}
 	
-	public void putIn(Inventory inventory,List<ProbabilisticEnchantment> probabilisticEnchaments, EnchantmentOptions enchantmentOptions) {
+	public boolean putIn(Inventory inventory,List<ProbabilisticEnchantment> probabilisticEnchaments, EnchantmentOptions enchantmentOptions) {
+		boolean putFailed = false;
 		for(ItemStack itemStack:this) {
 			// Terrifying hardcode, but I think sometimes itemStack.maxsize == 0, yikes!
 			if (itemStack.getMaxStackSize() <= 0) {
@@ -185,7 +192,10 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 					}
 				}
 				itemClone.setAmount(maxStackSize);
-				inventory.addItem(itemClone);
+				HashMap<Integer, ItemStack> leftover = inventory.addItem(itemClone);
+				if (!leftover.isEmpty()) {
+					putFailed = true;
+				}
 				amount-=maxStackSize;
 			}
 			ItemStack itemClone=itemStack.clone();
@@ -196,8 +206,12 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 				}
 			}
 			itemClone.setAmount(amount);
-			inventory.addItem(itemClone);
+			HashMap<Integer, ItemStack> leftover = inventory.addItem(itemClone);
+			if (!leftover.isEmpty()) {
+				putFailed = true;
+			}
 		}
+		return !putFailed;
 	}
 	
 	/**
@@ -368,5 +382,32 @@ public class ItemList<E extends NamedItemStack> extends ArrayList<E> {
 			multipliedItemList.add(itemStackClone);
 		}
 		return multipliedItemList;
+	}
+	
+	public boolean testPutIn(Inventory inventory) {
+		return testPutIn(inventory, new ArrayList<ProbabilisticEnchantment>(), EnchantmentOptions.DEFAULT);
+	}
+	
+	public boolean testPutIn(Inventory inventory, List<ProbabilisticEnchantment> probabilisticEnchantments,
+			EnchantmentOptions enchantmentOptions) {
+		if (this.isEmpty()) { // "fail" fast.
+			return true;
+		}
+		
+		// Bukkit API lacks a way to test adding stuff. That sucks.
+		// Instead, we'll create a temporary "merged" inventory, and
+		// see if we can add everything into it without overflowing
+		Inventory merger = FactoryModPlugin.getPlugin().getServer().createInventory(null, inventory.getSize());
+		for (int i = 0; i < inventory.getSize(); i++) {
+			ItemStack slot = inventory.getItem(i);
+			
+			// duplicate exactly, otherwise get weird edge effects
+			if (slot != null) {
+				merger.setItem(i, slot);
+			} else {
+				merger.clear(i);
+			}
+		}
+		return this.putIn(merger, probabilisticEnchantments, enchantmentOptions);
 	}
 }

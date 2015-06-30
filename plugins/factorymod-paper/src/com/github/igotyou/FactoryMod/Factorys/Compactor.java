@@ -88,31 +88,53 @@ public class Compactor extends ABaseFactory {
     /**
      * Returns true is the item stack is not null, if the item is a full sized stack, with size
      * more than one (to prevent simply adding lore to single items), that the item does NOT have
-     * lore, and that the item has simple metadata (not a book, fireworks, banners, beacons, other
-     * "special" items that generate a host of edge cases like duplication and cheap dye and other
-     * problems.)
+     * lore, and that the item type isn't on the general exclusions nor is the item similar
+     * to any specific exclusions. 
+     * 
+     * Logic is structure to fail fast; e.g. quickest test is first, down in order to slowest test
+     * with success at each gate resulting in a slower test, so failure is fast and success is
+     * comprehensive.
      * 
      * @param is the ItemStack to check validity of compaction
      * @return true if can be compacted, false otherwise
      */
     private boolean canCompact(ItemStack is) {
-    	return is != null && is.getAmount() == is.getMaxStackSize() && is.getAmount() > 1 && 
-    			!is.getItemMeta().hasLore() && is.getItemMeta().getClass().getSuperclass().equals(java.lang.Object.class);
-    	
-    	/* bit of a hack at the end, but effectively only items with "simple" meta, where the implementation
-    	 * is strictly a subclass of Object, and not a subclass of bukkit's CraftMetaItem. */    	
+    	if (is != null && is.getAmount() == is.getMaxStackSize() && 
+    			is.getAmount() > 1 && !is.getItemMeta().hasLore()) {
+    		if (!cp.getGeneralExclusions().contains(is.getType())) {
+    			for (ItemStack specExclude : cp.getSpecificExclusions()) {
+    				if (specExclude.isSimilar(is)) {
+    					return false;
+    				}
+    			}
+    			return true;
+    		} // else return false
+    	}
+    	return false;
     }
     
     /**
      * Returns true if the item stack is not null, and has lore where the lore contains
-     * the special lore of this factory, and where the item has simple metadata (see canCompact).
+     * the special lore of this factory, and where the item is not excluded. See canCompact.
+     * 
+     * This is also fail-fast. 
+     * 
      * @param is the ItemStack to check validity of decompaction
      * @return true if can be decompacted, false otherwise
      */
     private boolean canDecompact(ItemStack is) {
-    	return is != null && is.getItemMeta().hasLore() && 
-    			is.getItemMeta().getLore().contains(cp.getCompactLore()) &&
-    			is.getItemMeta().getClass().getSuperclass().equals(java.lang.Object.class);
+    	if (is != null && is.getItemMeta().hasLore() && 
+    			is.getItemMeta().getLore().contains(cp.getCompactLore()) ) {
+    		if (!cp.getGeneralExclusions().contains(is.getType())) {
+    			for (ItemStack specExclude : cp.getSpecificExclusions()) {
+    				if (specExclude.isSimilar(is)) {
+    					return false;
+    				}
+    			}
+    			return true;
+    		} // else return false
+    	}
+    	return false;
     }
     
     public ItemList<NamedItemStack> getOutputs() {
@@ -176,16 +198,26 @@ public class Compactor extends ABaseFactory {
                         powerOff();
                     }
                 } else if(currentProductionTimer >= getProductionTime()) {
-                	if (mode.equals(CompactorMode.REPAIR)) { 
-                		repair(getRepairs().removeMaxFrom(getInventory(), (int)currentRepair));
-                	} else if (mode.equals(CompactorMode.COMPACT) || mode.equals(CompactorMode.DECOMPACT)) {
-                        // consumeInputs(); one or the other :(
-                        
-                        recipeFinished();
+                	if (checkHasSpace()) {
+	                	if (mode.equals(CompactorMode.REPAIR)) { 
+	                		repair(getRepairs().removeMaxFrom(getInventory(), (int)currentRepair));
+	                	} else if (mode.equals(CompactorMode.COMPACT) || mode.equals(CompactorMode.DECOMPACT)) {
+	                        recipeFinished();
+	                	}
+
+		            	currentProductionTimer = 0;
+		            	currentEnergyTimer = 0;
+
+	                	// keep going?
+		                if (!cp.getContinuous() || mode.equals(CompactorMode.REPAIR)) {
+		                	powerOff();
+		                }
+                	} else { // No room, shut off.
+    	            	currentProductionTimer = 0;
+    	            	currentEnergyTimer = 0;
+
+                		powerOff();
                 	}
-                    currentProductionTimer = 0;
-                    currentEnergyTimer = 0;
-                    powerOff();
                 }
             } else {
                 powerOff();
@@ -196,21 +228,16 @@ public class Compactor extends ABaseFactory {
     @Override
 	public boolean checkHasMaterials() {
     	if (mode.equals(CompactorMode.REPAIR)) {
-    		return getAllInputs().allIn(getInventory());
+    		return super.checkHasMaterials();
     	} else {
-    		if (getInputs().isEmpty() || !getInputs().allIn(getInventory())) {
-    			return false;
-    		} else {
-    			return true;
-    		}
+    		return super.checkHasMaterials() && !getInputs().isEmpty();
     	}
 	}
     
     protected void recipeFinished() {
-    	ItemList<NamedItemStack> output = getOutputs(); //.putIn(getInventory());
+    	ItemList<NamedItemStack> output = getOutputs();
         getInputs().removeFrom(getInventory());
         output.putIn(getInventory());
-        
     }
  
     public int getMaxRepair() {
@@ -235,23 +262,28 @@ public class Compactor extends ABaseFactory {
         String status=active ? "On" : "Off";
         int maxRepair = getMaxRepair();
         boolean maintenanceActive = maxRepair!=0;
-        String response = "Current costs are : "; // the response specific to the mode.
-        if (mode.equals(CompactorMode.REPAIR)){
-            response += getRepairs().toString();
-        } else if (mode.equals(CompactorMode.COMPACT) ) {
+        String response = ""; // the response specific to the mode.
+
+        if (mode.equals(CompactorMode.COMPACT) ) {
         	ItemList<NamedItemStack> inputs = getInputs();
-        	response += (inputs.isEmpty() ? "Nothing to compact." : inputs.toString() );
+        	response = (inputs.isEmpty() ? "Nothing to compact." : "Next up to compact: " + inputs.toString() );
         } else if (mode.equals(CompactorMode.DECOMPACT)){
         	ItemList<NamedItemStack> inputs = getInputs();
-            response += (inputs.isEmpty() ? "Nothing to decompact." : inputs.toString() + " " + cp.getCompactLore() );
+        	if (inputs.isEmpty()) {
+        		response = "Nothing to decompact.";
+        	} else {
+        		if (checkHasSpace()) {
+        			response = "Next up for decompact: " + inputs.toString() + " " + cp.getCompactLore();
+        		} else {
+        			response = "Make room in the chest to decompact";
+        		}
+        	}      
         }
         
         String percentDone=status.equals("On") ? " - "+Math.round(currentProductionTimer*100/getProductionTime())+"% done." : "";
         int health =(!maintenanceActive) ? 100 : (int) Math.round(100*(1-currentRepair/(maxRepair)));
         responses.add(new InteractionResponse(InteractionResult.SUCCESS, cp.getName()+": "+status+" with "+String.valueOf(health)+"% health."));
         responses.add(new InteractionResponse(InteractionResult.SUCCESS, "Current mode: " + mode.getDescription()));
-        responses.add(new InteractionResponse(InteractionResult.SUCCESS, response));
-        responses.add(new InteractionResponse(InteractionResult.SUCCESS, percentDone));
         
         if(!getRepairs().isEmpty()&&maintenanceActive&& mode == CompactorMode.REPAIR)
         {
@@ -259,7 +291,11 @@ public class Compactor extends ABaseFactory {
             int amountRepaired=amountAvailable>currentRepair ? (int) Math.ceil(currentRepair) : amountAvailable;
             int percentRepaired=(int) (( (double) amountRepaired)/maxRepair*100);
             responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Will repair "+String.valueOf(percentRepaired)+"% of the factory with "+getRepairs().getMultiple(amountRepaired).toString()+"."));
+        } else {
+            responses.add(new InteractionResponse(InteractionResult.SUCCESS, response));
         }
+
+        responses.add(new InteractionResponse(InteractionResult.SUCCESS, percentDone));
         
         return responses;
     }
