@@ -2,6 +2,7 @@ name: Random Spawn
 version: 2.6
 main: me.josvth.randomspawn.RandomSpawn
 author: Josvth
+softdepend: [WorldBorder, Bastion]
 commands:
   randomspawn:
     description: The main command.
