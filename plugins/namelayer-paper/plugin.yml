@@ -5,35 +5,61 @@ author: Rourke750
 softdepend: [Mercury, CivModCore]
 commands:
    nlag:
+    aliases: [nlacceptinvite, nlacceptgroup]
    nlasg:
    nlcg:
+    aliases: [nlcreategroup]
    nldg:
+    aliases: [nldeletegroup]
    nldig:
+    aliases: [nldisiplinegroup, nldisablegroup, nldisable]
    nlgls:
+    aliases: [nlglobalstats]
    nlgs:
+    aliases: [nlgroupstats]
    nlid:
+    aliases: [nlinfodump]
    nlip:
+    aliases: [nlinviteplayer, nlinvite]
    nljg:
+    aliases: [nljoingroup, nljoin]
    nllg:
+    aliases: [nllistgroups, nllistg]
    nllm:
+    aliases: [nllistmembers, nllistm]
    nllp:
+    aliases: [nllistpermissions, nllistperms]
    nlpp:
+    aliases: [nlpromoteplayer, nlpromote]
    nlmg:
+    aliases: [nlmergegroups, nlmerge]
    nlmp:
+    aliases: [nlmodifyperms, nlmodifypermissions, nlmodperms]
    nlrm:
+    aliases: [nlremovemember, nlremove, nlkick]
    nlri:
+    aliases: [nlrevokeinvite, nluninvite]
    nlrsg:
    nlsp:
+    aliases: [nlsetpassword, nlsetpass]
    nltg:
+    aliases: [nltransfergroup, nltransfer]
    nlleg:
+    aliases: [nlleavegroup, nlleave]
    nllgt:
+    aliases: [nllistgrouptypes, nllistgtypes]
    nllpt:
+    aliases: [nllistplayertypes, nllistptypes]
    nllci:
+    aliases: [nllistcurrentinvites, nllistinvites]
    nltaai:
+    aliases: [nlautoacceptinvites, nlautoaccept]
    nlcpn:
       permission: namelayer.admin
    nlsdg:
+    aliases: [nlsetdefaultgroup, nlsetdefault]
    nlgdg:
+    aliases: [nlgetdefaultgroup, nlgetdefault]
 permissions:
    namelayer.admin:
       default: op
