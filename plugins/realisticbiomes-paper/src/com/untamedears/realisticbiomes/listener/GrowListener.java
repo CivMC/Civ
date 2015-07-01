@@ -1,5 +1,6 @@
 package com.untamedears.realisticbiomes.listener;
 
+
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
@@ -65,11 +66,11 @@ public class GrowListener implements Listener {
 			return;
 		}
 		
-		GrowthConfig growthConfig = plugin.materialGrowth.get(block.getType());
+		GrowthConfig growthConfig = plugin.materialGrowth.get(material);
 		if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
 			event.setCancelled(true);
 
-			block = MaterialAliases.getOriginBlock(block);
+			block = MaterialAliases.getOriginBlock(block, material);
 			if (block != null) {
 				plugin.growAndPersistBlock(block, true, growthConfig, null, null);
 			}

@@ -151,8 +151,8 @@ public class MaterialAliases {
 	/**
 	 * If column type return the bottom block, else the same block
 	 */
-	public static Block getOriginBlock(Block block) {
-		if (isColumnBlock(block.getType())) {
+	public static Block getOriginBlock(Block block, Material material) {
+		if (isColumnBlock(material)) {
 			// only grow bottom-most block of columns
 			while (!MaterialAliases.isBottomColumnBlock(block)) {
 				block = block.getRelative(BlockFace.DOWN);

@@ -592,7 +592,7 @@ public class PlantManager {
 		for (Coords position : new HashSet<Coords>(pChunk.getPlantCoords())) {
 			Block block = chunk.getBlock(position.x,  position.y,  position.z);
 			
-			block = MaterialAliases.getOriginBlock(block);
+			block = MaterialAliases.getOriginBlock(block, block.getType());
 			
 			if (block != null) {
 				plugin.growAndPersistBlock(block, false, null, null, dropGrouper);
