@@ -25,20 +25,20 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-		<depdency>
+		<dependency>
 			<groupId>com.wimbli</groupId>
 			<artifactId>WorldBorder</artifactId>
 			<version>1.8.3</version>
 			<type>jar</type>
 			<scope>compile</scope>
-		</depdency>
-		<depdency>
+		</dependency>
+		<dependency>
 			<groupId>isaac</groupId>
 			<artifactId>Bastion</artifactId>
 			<version>1.0.1</version>
 			<type>jar</type>
 			<scope>compile</scope>
-		</depdency>
+		</dependency>
 	</dependencies>
 
 	<build>
