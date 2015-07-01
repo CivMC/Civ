@@ -69,7 +69,10 @@ public class GrowListener implements Listener {
 		GrowthConfig growthConfig = plugin.materialGrowth.get(material);
 		if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
 			event.setCancelled(true);
-
+			
+			if (MaterialAliases.isColumnBlock(material)) {
+				block = block.getRelative(BlockFace.DOWN);
+			}
 			block = MaterialAliases.getOriginBlock(block, material);
 			if (block != null) {
 				plugin.growAndPersistBlock(block, true, growthConfig, null, null);

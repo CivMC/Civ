@@ -2,6 +2,7 @@ package com.untamedears.utils;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
@@ -154,7 +155,7 @@ public class MaterialAliases {
 	public static Block getOriginBlock(Block block, Material material) {
 		if (isColumnBlock(material)) {
 			// only grow bottom-most block of columns
-			while (!MaterialAliases.isBottomColumnBlock(block)) {
+			while (!isBottomColumnBlock(block)) {
 				block = block.getRelative(BlockFace.DOWN);
 				if (block == null) {
 					return null;
