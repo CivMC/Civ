@@ -1,5 +1,8 @@
 package me.josvth.randomspawn;
 
+import isaac.bastion.Bastion;
+import isaac.bastion.manager.BastionBlockManager;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,6 +15,9 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.wimbli.WorldBorder.BorderData;
+import com.wimbli.WorldBorder.WorldBorder;
+
 import me.josvth.randomspawn.handlers.CommandHandler;
 import me.josvth.randomspawn.handlers.YamlHandler;
 import me.josvth.randomspawn.listeners.*;
@@ -20,12 +26,13 @@ public class RandomSpawn extends JavaPlugin{
 
 	public YamlHandler yamlHandler;
 	CommandHandler commandHandler;
-
 	RespawnListener respawnListener;
 	JoinListener joinListener;
 	WorldChangeListener worldChangeListener;
 	SignListener signListener;
 	DamageListener damageListener;
+	private boolean isWorldBorderEnabled = false;
+	private boolean isBastionsEnabled = false;
 
 	@Override
 	public void onEnable() {
@@ -43,6 +50,9 @@ public class RandomSpawn extends JavaPlugin{
 		worldChangeListener = new WorldChangeListener(this);
 		signListener = new SignListener(this);
 		damageListener = new DamageListener(this);
+		
+		isWorldBorderEnabled = getServer().getPluginManager().isPluginEnabled("WorldBorder");
+		isBastionsEnabled = getServer().getPluginManager().isPluginEnabled("Bastion");
 
 	}
 
@@ -94,7 +104,7 @@ public class RandomSpawn extends JavaPlugin{
 		}
 		
 		String type = yamlHandler.worlds.getString(worldName +".spawnarea.type", "square");
-		
+		Location ret;
 		if(type.equalsIgnoreCase("square")) {
 			double xmin = yamlHandler.worlds.getDouble(worldName +".spawnarea.x-min", -100);
 			double xmax = yamlHandler.worlds.getDouble(worldName +".spawnarea.x-max", 100);
@@ -103,19 +113,37 @@ public class RandomSpawn extends JavaPlugin{
 			// Spawn area thickness near border. If 0 spawns whole area
 			int thickness = yamlHandler.worlds.getInt(worldName +".spawnarea.thickness", 0);
 			
-			return chooseSpawn(world, xmin, xmax, zmin, zmax, thickness, blacklist);
-		}
-		
-		if(type.equalsIgnoreCase("circle")) {
+			ret = chooseSpawn(world, xmin, xmax, zmin, zmax, thickness, blacklist);
+		}else if(type.equalsIgnoreCase("circle")) {
 			double exclusionRadius = yamlHandler.worlds.getDouble(worldName + ".spawnarea.exclusionradius", 0);
 			double radius = yamlHandler.worlds.getDouble(worldName + ".spawnarea.radius", 100);
 			double xcenter = yamlHandler.worlds.getDouble(worldName + ".spawnarea.xcenter", 0);
 			double zcenter = yamlHandler.worlds.getDouble(worldName + ".spawnarea.zcenter", 0);
 			
-			return chooseSpawn(radius, exclusionRadius, new Location(world, xcenter, 0, zcenter), blacklist);
+			ret =  chooseSpawn(radius, exclusionRadius, new Location(world, xcenter, 0, zcenter), blacklist);
+		} else{		
+			return null;
 		}
 		
-		return null;
+		if (isWorldBorderEnabled){
+			BorderData border = WorldBorder.plugin.getWorldBorder(world.getName());
+			if (border != null){
+				if (border.insideBorder(ret) == false){
+					return chooseSpawn(world);
+				}
+			}
+		}
+		if (isBastionsEnabled){
+			BastionBlockManager bm = Bastion.getBastionManager(); 
+			if (bm != null){
+				if (bm.getBlockingBastion(ret) != null){
+					return chooseSpawn(world);
+				}
+			}
+		}
+		
+		return ret;
+		
 	}
 	
 	private Location chooseSpawn(double radius, double exclusionRadius, Location center, List<Integer> blacklist) {
