@@ -2,7 +2,9 @@ chat:
   #globalChatRange: The base chat distance that people will message across def=1000
   globalChatRange: 1000
   #defaultChatColor: The default chatcolor to use for global chat def=BLUE
-  defaultChatColor: BLUE
+  defaultChatColor: WHITE
+  #color for console and OP "say" command
+  opChatColor: LIGHT_PURPLE
   #yIncreaseDist: The Y-Level to increase chat at def=100
   yIncreaseDist: 100
   #yIncreaseScale: Scale to increase chat distance.. this value divided by 1000

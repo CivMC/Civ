@@ -220,6 +220,9 @@ public class CivChat2Manager {
 			//player is ignoring the sender
 			sender.sendMessage(IGNOREMSG);
 			return;
+		} else if (isIgnoringPlayer(senderName, receiverName)){
+			sender.sendMessage(ChatColor.YELLOW+"You need to unignore "+receiverName);
+			return;
 		}
 		CivChat2.debugmessage("Sending private chat message");
 		chatLog.writeToChatLog(sender, chatMessage, "P MSG");
@@ -385,12 +388,12 @@ public class CivChat2Manager {
 	/**
 	 * Method to see if a user is ignoring a group
 	 * @param name Player to check
-	 * @param chatChannel Groupname to check
+	 * @param chatChannel Groupname to check... format is GROUP<groupname>
 	 * @return true if ignoring, false otherwise
 	 */
 	public boolean isIgnoringGroup(String name, Group group) {
-		String ignoreGroupName = "GROUP" + group;
-		if(!ignorePlayers.containsKey(name)){
+		String ignoreGroupName = "GROUP" + group.getName();
+		if(ignorePlayers.containsKey(name)){
 			//player is ignoring something
 			List<String> ignored = ignorePlayers.get(name);
 			if(ignored == null){

@@ -34,6 +34,7 @@ public class CivChat2Listener implements Listener {
 		gm = NameAPI.getGroupManager();
 	}
 	
+	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerDeath(PlayerDeathEvent playerDeathEvent){
 		CivChat2.debugmessage("PlayerDeathEvent occured");
