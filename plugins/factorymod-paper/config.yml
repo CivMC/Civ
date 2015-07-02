@@ -8162,17 +8162,14 @@ production_recipes:
         amount: 16
   Craft_Crate:
     name: Craft Compactor Crate
-    production_time: 16
+    production_time: 4
     inputs:
       Chest:
         material: CHEST
-        amount: 27
+        amount: 39
       'Iron Ingot':
         material: IRON_INGOT
         amount: 4
-      Oak Fence:
-        material: FENCE
-        amount: 256
     outputs:
       Crate:
         material: CHEST
