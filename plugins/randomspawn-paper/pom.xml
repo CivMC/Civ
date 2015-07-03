@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.josvth.randomspawn.randomspawn</groupId>
 	<artifactId>Random-Spawn</artifactId>
@@ -19,11 +20,10 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>1.6.2-R0.1</version>
-			<type>jar</type>
-			<scope>compile</scope>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>Spigot1.8.3</artifactId>
+			<version>1.8.3</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.wimbli</groupId>
