@@ -89,7 +89,7 @@ public class RandomSpawn extends JavaPlugin{
 			blacklist = yamlHandler.worlds.getIntegerList(worldName + ".spawnblacklist");
 		
 		if(yamlHandler.worlds.getBoolean(worldName + ".spawnbyplayer")) {
-			Player[] playersOnline = Bukkit.getOnlinePlayers();
+			Player[] playersOnline = Bukkit.getOnlinePlayers().toArray(new Player[]{});
 			
 			if(playersOnline.length > 0) {
 				Player randomPlayer = playersOnline[(int)(Math.random() * playersOnline.length)];
@@ -240,11 +240,11 @@ public class RandomSpawn extends JavaPlugin{
 	public void sendGround(Player player, Location location) {
 		location.getChunk().load();
 
-		World world = location.getWorld();
-
-		for(int y = 0 ; y <= location.getBlockY() + 2; y++){
-			Block block = world.getBlockAt(location.getBlockX(), y, location.getBlockZ());
-			player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
-		}
+//		World world = location.getWorld();
+//
+//		for(int y = 0 ; y <= location.getBlockY() + 2; y++){
+//			Block block = world.getBlockAt(location.getBlockX(), y, location.getBlockZ());
+//			player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
+//		}
 	}
 }
