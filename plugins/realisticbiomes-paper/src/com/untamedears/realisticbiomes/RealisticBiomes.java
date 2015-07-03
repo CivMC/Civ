@@ -23,8 +23,8 @@ import com.untamedears.realisticbiomes.persist.BlockGrower;
 import com.untamedears.realisticbiomes.persist.ChunkCoords;
 import com.untamedears.realisticbiomes.persist.Plant;
 import com.untamedears.realisticbiomes.persist.PlantManager;
-import com.untamedears.utils.Fruits;
-import com.untamedears.utils.MaterialAliases;
+import com.untamedears.realisticbiomes.utils.Fruits;
+import com.untamedears.realisticbiomes.utils.MaterialAliases;
 
 public class RealisticBiomes extends JavaPlugin {
 

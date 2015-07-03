@@ -31,9 +31,9 @@ import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.persist.ChunkCoords;
 import com.untamedears.realisticbiomes.persist.Plant;
 import com.untamedears.realisticbiomes.persist.WorldID;
-import com.untamedears.utils.Fruits;
-import com.untamedears.utils.MaterialAliases;
-import com.untamedears.utils.Trees;
+import com.untamedears.realisticbiomes.utils.Fruits;
+import com.untamedears.realisticbiomes.utils.MaterialAliases;
+import com.untamedears.realisticbiomes.utils.Trees;
 
 /**
  * Event listener for all plant growth related events. Whenever a crop, plant block, or sapling attempts to grow, its type

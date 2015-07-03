@@ -14,7 +14,7 @@ import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
 import com.untamedears.realisticbiomes.DropGrouper;
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.utils.MaterialAliases;
+import com.untamedears.realisticbiomes.utils.MaterialAliases;
 
 public class PlantChunk {
 	private final RealisticBiomes plugin;

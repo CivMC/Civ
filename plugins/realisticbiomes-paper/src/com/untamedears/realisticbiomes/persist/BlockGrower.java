@@ -23,8 +23,8 @@ import org.bukkit.util.Vector;
 import com.untamedears.realisticbiomes.DropGrouper;
 import com.untamedears.realisticbiomes.GrowthMap;
 import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.utils.Fruits;
-import com.untamedears.utils.Trees;
+import com.untamedears.realisticbiomes.utils.Fruits;
+import com.untamedears.realisticbiomes.utils.Trees;
 
 // handles force-growing of crop-type blocks based on a fractional growth amount
 public class BlockGrower {

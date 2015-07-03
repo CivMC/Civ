@@ -1,4 +1,4 @@
-package com.untamedears.utils;
+package com.untamedears.realisticbiomes.utils;
 
 import java.util.ArrayList;
 import java.util.List;

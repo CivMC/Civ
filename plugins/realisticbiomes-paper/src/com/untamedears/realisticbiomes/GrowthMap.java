@@ -9,7 +9,7 @@ import org.bukkit.TreeType;
 import org.bukkit.entity.EntityType;
 
 import com.untamedears.realisticbiomes.GrowthConfig.Type;
-import com.untamedears.utils.MaterialAliases;
+import com.untamedears.realisticbiomes.utils.MaterialAliases;
 
 /**
  * Would probably be best to have box type as key, with material + data or entity

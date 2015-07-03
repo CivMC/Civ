@@ -16,8 +16,8 @@ import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.GrowthMap;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.persist.Plant;
-import com.untamedears.utils.Fruits;
-import com.untamedears.utils.MaterialAliases;
+import com.untamedears.realisticbiomes.utils.Fruits;
+import com.untamedears.realisticbiomes.utils.MaterialAliases;
 
 public class PlayerListener implements Listener {
 	
