@@ -3398,11 +3398,11 @@ production_recipes:
         durability: 0
       Jungle Sapling:
         material: SAPLING
-        amount: 8
+        amount: 6
         durability: 3
       Acacia Sapling:
         material: SAPLING
-        amount: 8
+        amount: 12
         durability: 4
     outputs:
       Emerald Block:
@@ -4653,11 +4653,11 @@ production_recipes:
         durability: 1
       Spruce Sapling:
         material: SAPLING
-        amount: 8
+        amount: 10
         durability: 1
       Dark Oak Sapling:
         material: SAPLING
-        amount: 8
+        amount: 4
         durability: 5
     outputs:
       Emerald Block:
@@ -10787,12 +10787,12 @@ production_recipes:
        Compacted Jungle Sapling:
          material: SAPLING
          durability: 3
-         amount: 4
+         amount: 3
          lore: Compacted Item
        Compacted Acacia Sapling:
          material: SAPLING
          durability: 4
-         amount: 4
+         amount: 6
          lore: Compacted Item
     outputs:
         Emerald Blocks:
@@ -10847,12 +10847,12 @@ production_recipes:
        Compacted Spruce Sapling:
          material: SAPLING
          durability: 1
-         amount: 4
+         amount: 5
          lore: Compacted Item
        Compacted Dark Oak Sapling:
          material: SAPLING
          durability: 5
-         amount: 4
+         amount: 2
          lore: Compacted Item
     outputs:
         Emerald Blocks:
