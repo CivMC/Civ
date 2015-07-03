@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -71,53 +70,23 @@ public class PlayerListener implements Listener {
 				block = block.getRelative(0,1,0);
 			}
 			
-		} else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (event.getItem().getType() == Material.STICK || event.getItem().getType() == Material.BONE) {
+		} else if (event.getAction() == Action.RIGHT_CLICK_BLOCK
+				&& (event.getItem().getType() == Material.STICK || event.getItem().getType() == Material.BONE)) {
 			
-				// right click on a growing crop with a stick: get information about that crop
-				growthConfig = MaterialAliases.getConfig(growthConfigs, event.getClickedBlock());
-				if (growthConfig == null) {
-					return;
-				}
-				
-				if (!Fruits.isFruit(event.getClickedBlock().getType())) {
-					if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {				
-						plant = plugin.growAndPersistBlock(block, false, growthConfig, null, null);
-					}
-				}
-			
-			} else if (event.getItem().getType() == Material.BLAZE_ROD) {
-				// When right-clicking with blazerod, look up all blocks above for potential cactus
-				// or sugarcane and add them to PlantManager. Makes it easy to add existing
-				// vertical farms without having to click a massive amount of blocks.
-				Block blazeBlock = event.getClickedBlock();
-				int count = 0;
-				int maxY = blazeBlock.getWorld().getHighestBlockYAt(blazeBlock.getLocation());
-				while (blazeBlock != null) {
-					if (blazeBlock.getY() > maxY) {
-						break;
-					}
-					blazeBlock = blazeBlock.getRelative(BlockFace.UP);
-					if (blazeBlock == null) {
-						break; // just in case
-					}
-					if (blazeBlock.getType() == Material.CACTUS || blazeBlock.getType() == Material.SUGAR_CANE_BLOCK) {
-						Block below = blazeBlock.getRelative(BlockFace.DOWN);
-						if (below.getType() != blazeBlock.getType()) {
-							plugin.getPlantManager().addPlant(blazeBlock, new Plant(0.0f, -1.0f));
-							count += 1;
-						}
-					}
-				}
-				event.getPlayer().sendMessage("§7[Realistic Biomes] made " + count + " blocks persistent");
-				return;
-				
-			} else {
+			// right click on a growing crop with a stick: get information about that crop
+			growthConfig = MaterialAliases.getConfig(growthConfigs, event.getClickedBlock());
+			if (growthConfig == null) {
 				return;
 			}
 			
+			if (!Fruits.isFruit(event.getClickedBlock().getType())) {
+				if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {				
+					plant = plugin.growAndPersistBlock(block, false, growthConfig, null, null);
+				}
+			}
+			
 		} else {
-			// right clicked without stick, bone or blaze rod, do nothing
+			// right clicked without stick or bone, do nothing
 			return;
 		}
 		
