@@ -1,6 +1,6 @@
-name: CivChat2
+name: ${project.name}
 main: vg.civcraft.mc.civchat2.CivChat2
-version: 1.0.3
+version: ${project.version}
 author: jjj5311
 depend: [NameLayer, CivModCore]
 softdepend: [Mercury]
