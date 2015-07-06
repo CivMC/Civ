@@ -19,26 +19,6 @@
 		<sourceDirectory>${basedir}/src</sourceDirectory>
 		<finalName>${project.name}</finalName>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal> 
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<finalName>${project.artifactId}.${project.version}</finalName>
-					<filters>
-						<filter>
-							<artifact>namelayernms</artifact>
-						</filter>
-					</filters>
-				</configuration>
-			</plugin>
 		</plugins>
 		<resources>
 			<resource>
