@@ -47,6 +47,12 @@
 			<version>[1.0.1,)</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>vg.civcraft.mc.mercury</groupId>
+			<artifactId>Mercury</artifactId>
+			<version>1.0.1-13</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
