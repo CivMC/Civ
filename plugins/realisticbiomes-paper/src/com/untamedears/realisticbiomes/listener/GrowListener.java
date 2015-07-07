@@ -307,9 +307,9 @@ public class GrowListener implements Listener {
 
 	public void growTree(Block block, TreeType type, GrowthConfig growthConfig) {
 		if (!Trees.canGrowLArge(block, type)) {
-			block = Trees.getLargeTreeOrigin(block, type);
-			if (block == null) {
-				return;
+			Block originBlock = Trees.getLargeTreeOrigin(block, type);
+			if (originBlock != null) {
+				block = originBlock;
 			}
 		}
 		plugin.growAndPersistBlock(block, true, growthConfig, null, null);

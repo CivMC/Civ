@@ -45,12 +45,12 @@ public class Trees {
 				}
 
 			} else {			
-				RealisticBiomes.doLog(Level.FINER, "generateTree jungle tall");
+				RealisticBiomes.doLog(Level.FINER, "getTreeType jungle tall");
 			}
 
 		} else if (type == TreeType.REDWOOD) {
 			if (canGrowLArge(block, type)) {
-				RealisticBiomes.doLog(Level.FINER, "generateTree mega redwood");
+				RealisticBiomes.doLog(Level.FINER, "getTreeType mega redwood");
 				type = TreeType.MEGA_REDWOOD;
 				
 			} else if (isPartOfLargeTree(block, type)) {
@@ -60,7 +60,7 @@ public class Trees {
 
 		} else if (type == TreeType.DARK_OAK) {
 			if (!canGrowLArge(block, type)) {
-				RealisticBiomes.doLog(Level.FINER, "generateTree darkoak not 2x2");
+				RealisticBiomes.doLog(Level.FINER, "getTreeType darkoak not 2x2");
 				return null;
 			}
 			
@@ -68,7 +68,7 @@ public class Trees {
 			if (block.getBiome() == Biome.SWAMPLAND || block.getBiome() == Biome.SWAMPLAND_MOUNTAINS) {
 				// swamptree, only spawns naturally at worldgen
 				type = TreeType.SWAMP;
-				RealisticBiomes.doLog(Level.FINER, "generateTree swamp");
+				RealisticBiomes.doLog(Level.FINER, "getTreeType swamp");
 			}
 
 		}
@@ -103,7 +103,7 @@ public class Trees {
 	}
 
 	public static Block getLargeTreeOrigin(Block block, TreeType type) {
-		type = getSmallType(type);
+		type = getSaplingType(type);
 		for (Vector vec: largeTreeOriginBlocks) {
 			Block candidate = block.getLocation().add(vec).getBlock();
 			if (MaterialAliases.getTreeType(candidate) == type && canGrowLArge(candidate, type)) {
@@ -118,7 +118,7 @@ public class Trees {
 	}
 
 	public static boolean canGrowLArge(Block block, TreeType type) {
-		type = getSmallType(type);
+		type = getSaplingType(type);
 		for (Vector vec: largeTreeBlocks) {
 			Block candidate = block.getLocation().add(vec).getBlock();
 			if (MaterialAliases.getTreeType(candidate) != type) {
@@ -128,11 +128,9 @@ public class Trees {
 		return true;
 	}
 
-	private static TreeType getSmallType(TreeType type) {
+	private static TreeType getSaplingType(TreeType type) {
 		if (type == TreeType.MEGA_REDWOOD) {
 			return TreeType.REDWOOD;
-		} else if (type == TreeType.JUNGLE) {
-			return TreeType.SMALL_JUNGLE;
 		} else {
 			return type;
 		}
