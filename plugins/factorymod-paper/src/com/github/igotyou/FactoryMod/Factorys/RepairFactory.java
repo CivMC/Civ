@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.minecraft.server.v1_8_R2.ItemStack;
+import net.minecraft.server.v1_8_R3.ItemStack;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 
 import com.github.igotyou.FactoryMod.properties.IFactoryProperties;
 import com.github.igotyou.FactoryMod.properties.RepairFactoryProperties;

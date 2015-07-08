@@ -2,12 +2,12 @@ package com.github.igotyou.FactoryMod.listeners;
 
 import java.util.List;
 
-import net.minecraft.server.v1_8_R2.ItemStack;
+import net.minecraft.server.v1_8_R3.ItemStack;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
