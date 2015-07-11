@@ -15,15 +15,16 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.untamedears.realisticbiomes.GrowthConfig.Type;
 import com.untamedears.realisticbiomes.listener.GrowListener;
 import com.untamedears.realisticbiomes.listener.PlayerListener;
 import com.untamedears.realisticbiomes.listener.SpawnListener;
 import com.untamedears.realisticbiomes.persist.BlockGrower;
 import com.untamedears.realisticbiomes.persist.ChunkCoords;
-import com.untamedears.realisticbiomes.persist.Coords;
-import com.untamedears.realisticbiomes.persist.Fruits;
 import com.untamedears.realisticbiomes.persist.Plant;
 import com.untamedears.realisticbiomes.persist.PlantManager;
+import com.untamedears.realisticbiomes.utils.Fruits;
+import com.untamedears.realisticbiomes.utils.MaterialAliases;
 
 public class RealisticBiomes extends JavaPlugin {
 
@@ -31,35 +32,11 @@ public class RealisticBiomes extends JavaPlugin {
 	public static Level minLogLevel = Level.INFO;
 	
 	public HashMap<String, List<Biome>> biomeAliases;
-	public HashMap<Object, GrowthConfig> materialGrowth;
-	public HashMap<Object, BaseConfig> fishDrops;
+	public GrowthMap materialGrowth;
 	public BlockGrower blockGrower;
 	public PersistConfig persistConfig;
 	private PlantManager plantManager;
 
-	private static HashMap<TreeType, TreeType> treeTypeMap;
-
-	// Review this code when ever a new treeType is added to bukkit.
-	static {
-		treeTypeMap = new HashMap<TreeType, TreeType>();
-
-		for (TreeType t : TreeType.values()) {
-			if (t == TreeType.BIG_TREE)
-				treeTypeMap.put(t, TreeType.TREE);
-			else if (t == TreeType.JUNGLE_BUSH)
-				treeTypeMap.put(t, TreeType.JUNGLE);
-			else if (t == TreeType.SMALL_JUNGLE)
-				treeTypeMap.put(t, TreeType.JUNGLE);
-			else if (t == TreeType.TALL_REDWOOD)
-				treeTypeMap.put(t, TreeType.REDWOOD);
-			else if (t == TreeType.MEGA_REDWOOD)
-				treeTypeMap.put(t, TreeType.REDWOOD);
-			else if (t == TreeType.TALL_BIRCH)
-				treeTypeMap.put(t, TreeType.BIRCH);
-			else
-				treeTypeMap.put(t, t);
-		}
-	}
 	
 	@Override
 	public void onEnable() {		
@@ -86,8 +63,8 @@ public class RealisticBiomes extends JavaPlugin {
 
 		loadBiomeAliases(config);
 		loadPersistConfig(config);
-		loadGrowthConfigs(config);
-		loadFishConfigs(config);
+		materialGrowth = loadGrowthConfigs(config.getConfigurationSection("growth"), null);
+		materialGrowth.putAll(loadGrowthConfigs(config.getConfigurationSection("fish_drops"), GrowthConfig.Type.FISHING_DROP));
 
 		// load the max log level for our logging hack
 		// if not defined then its just initalized at INFO
@@ -111,7 +88,7 @@ public class RealisticBiomes extends JavaPlugin {
 		
 		if (persistConfig.enabled) {
 			plantManager = new PlantManager(this, persistConfig);
-			blockGrower = new BlockGrower(plantManager);
+			blockGrower = new BlockGrower(plantManager, materialGrowth);
 			
 		}
 				
@@ -198,17 +175,20 @@ public class RealisticBiomes extends JavaPlugin {
 			biomeAliases.put(alias, biomes);
 		}
 	}
-
-	private void loadGrowthConfigs(ConfigurationSection config) {
-		
-		GrowthConfig defaultConfig = new GrowthConfig();
-		
-		materialGrowth = new HashMap<Object, GrowthConfig>();
+	
+	/**
+	 * Load growth config into GrowthMap
+	 * @param config Configuration section, e.g. "growth"
+	 * @param type Force a type or null to guess
+	 * @return the growth map
+	 */
+	private GrowthMap loadGrowthConfigs(ConfigurationSection config, GrowthConfig.Type type) {
+		GrowthConfig defaultConfig = new GrowthConfig("default", type);
+		GrowthMap materialGrowth = new GrowthMap();
 		HashMap<String, GrowthConfig> growthConfigNodes = new HashMap<String, GrowthConfig>();
 		
-		ConfigurationSection growthConfigSection = config.getConfigurationSection("growth");
-		for (String materialName : growthConfigSection.getKeys(false)) {
-			ConfigurationSection configSection = growthConfigSection.getConfigurationSection(materialName);
+		for (String materialName : config.getKeys(false)) {
+			ConfigurationSection configSection = config.getConfigurationSection(materialName);
 			
 			GrowthConfig inheritConfig = defaultConfig;
 			
@@ -220,69 +200,46 @@ public class RealisticBiomes extends JavaPlugin {
 				}
 				else {
 					Object inheritKey = getMaterialKey(inheritStr);
-					if (materialGrowth.containsKey(inheritKey)) {
-						inheritConfig = materialGrowth.get(inheritKey);
+					if (inheritKey != null) {
+						if ((inheritKey instanceof Material) && materialGrowth.containsKey((Material) inheritKey)) {
+							inheritConfig = materialGrowth.get((Material) inheritKey);
+						} else if ((inheritKey instanceof EntityType) && materialGrowth.containsKey((EntityType) inheritKey)) {
+							inheritConfig = materialGrowth.get((EntityType) inheritKey);
+						} else if ((inheritKey instanceof TreeType) && materialGrowth.containsKey((TreeType) inheritKey)) {
+							inheritConfig = materialGrowth.get((TreeType) inheritKey);
+						} else {
+							LOG.warning(configSection.getName() + " inherits unknown key: " + inheritKey);
+							LOG.finest("keys: " + materialGrowth.keySet());
+						}
 					}
 				}
 			}
 			
-			GrowthConfig newGrowthConfig = new GrowthConfig(inheritConfig, configSection, biomeAliases);
+			GrowthConfig newGrowthConfig = GrowthConfig.get(materialName, (GrowthConfig)inheritConfig, configSection, biomeAliases);
 			
-			Object key = getMaterialKey(materialName);	
+			Object key = getMaterialKey(materialName);
+			
+			newGrowthConfig.setName(key);
+			
 			if (key == null) {
 				// if the name is partially capitalized, then warning the player that
 				// the name might be a misspelling
 				if (materialName.length() > 0 && materialName.matches(".*[A-Z].*"))
 					LOG.warning("config material name: is \""+materialName+"\" misspelled?");
 				growthConfigNodes.put(materialName, newGrowthConfig);
-			}
-			else {
-				materialGrowth.put(key, newGrowthConfig);
-			}
-		}
-	}
 
-	private void loadFishConfigs(ConfigurationSection config) {
-		
-		BaseConfig defaultConfig = new BaseConfig();
-		
-		fishDrops = new HashMap<Object, BaseConfig>();
-		HashMap<String, BaseConfig> fishDropsNodes = new HashMap<String, BaseConfig>();
-		
-		ConfigurationSection fishDropsSection = config.getConfigurationSection("fish_drops");
-		for (String materialName : fishDropsSection.getKeys(false)) {
-			ConfigurationSection configSection = fishDropsSection.getConfigurationSection(materialName);
-			
-			BaseConfig inheritConfig = defaultConfig;
-			
-			if (configSection.isSet("inherit")) {
-				String inheritStr = configSection.getString("inherit");
-				
-				if (fishDropsNodes.containsKey(inheritStr)) {
-					inheritConfig = fishDropsNodes.get(inheritStr);
-				}
-				else {
-					Object inheritKey = getMaterialKey(inheritStr);
-					if (fishDrops.containsKey(inheritKey)) {
-						inheritConfig = fishDrops.get(inheritKey);
-					}
-				}
-			}
-			
-			BaseConfig newFishDrops = new BaseConfig(inheritConfig, configSection, biomeAliases);
-			
-			Object key = getMaterialKey(materialName);	
-			if (key == null) {
-				// if the name is partially capitalized, then warning the player that
-				// the name might be a misspelling
-				if (materialName.length() > 0 && materialName.matches(".*[A-Z].*"))
-					LOG.warning("config material name: is \""+materialName+"\" misspelled?");
-				fishDropsNodes.put(materialName, newFishDrops);
-			}
-			else {
-				fishDrops.put(key, newFishDrops);
+			} else if (key instanceof Material){
+				materialGrowth.put((Material)key, newGrowthConfig, type);
+			} else if (key instanceof EntityType){
+				materialGrowth.put((EntityType)key, newGrowthConfig);
+			} else if (key instanceof TreeType){
+				materialGrowth.put((TreeType)key, newGrowthConfig);
+			} else {
+				LOG.warning("unknown key: " + key);
 			}
 		}
+		
+		return materialGrowth;
 	}
 	
 	
@@ -366,17 +323,13 @@ public class RealisticBiomes extends JavaPlugin {
 		try {
 			PluginManager pm = getServer().getPluginManager();
 			pm.registerEvents(new GrowListener(this), this);
-			pm.registerEvents(new SpawnListener(materialGrowth, fishDrops), this);
+			pm.registerEvents(new SpawnListener(materialGrowth), this);
 			pm.registerEvents(new PlayerListener(this, materialGrowth), this);
 		}
 		catch(Exception e)
 		{
 			LOG.severe("caught an exception while attempting to register events with the PluginManager: " + e);
 		}
-	}
-	
-	public BlockGrower getBlockGrower() {
-		return blockGrower;
 	}
 	
 	// -----------------------------------
@@ -389,15 +342,14 @@ public class RealisticBiomes extends JavaPlugin {
 	 * @param fruitBlockToIgnore When checking for fruits, ignore this block. BlockBreak event needs this, since the block being broken is still in world until event has completed.
 	 * @return Plant or null, to report growth back to player on interaction
 	 */
-	public Plant growAndPersistBlock(Block block, boolean naturalGrowEvent, GrowthConfig growthConfig, Block fruitBlockToIgnore) {
+	public Plant growAndPersistBlock(Block block, boolean naturalGrowEvent, GrowthConfig growthConfig, Block fruitBlockToIgnore, DropGrouper dropGrouper) {
 		if (growthConfig == null) {
-			growthConfig = getGrowthConfig(block);
+			growthConfig = MaterialAliases.getConfig(materialGrowth, block);
 		}
 		RealisticBiomes.doLog(Level.FINER, "RealisticBiomes:growAndPersistBlock() called for block: " + block + " and is naturalGrowEvent? " + naturalGrowEvent);
 		if (!persistConfig.enabled)
 			return null;
-		
-		Coords blockCoords = new Coords(block);
+
 		ChunkCoords chunckCoords = new ChunkCoords(block.getChunk()); 
 		
 		boolean loadChunk = naturalGrowEvent ? Math.random() < persistConfig.growEventLoadChance : true;
@@ -421,8 +373,6 @@ public class RealisticBiomes extends JavaPlugin {
 			return null;
 		}
 		
-		RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): plantManager.get() returned: " + plant + " for coords: " + blockCoords);
-		
 		if (plant == null) {
 			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): creating new plant and adding it");
 			
@@ -431,11 +381,10 @@ public class RealisticBiomes extends JavaPlugin {
 			plantManager.addPlant(block, plant);
 		}
 		
-		growPlant(plant, block, growthConfig, fruitBlockToIgnore);
+		growPlant(plant, block, growthConfig, fruitBlockToIgnore, dropGrouper);
 		
 		if (plant.isFullyGrown()) {
 			// if plant is fully grown and either has no fruits or fruit has fully grown, stop tracking it
-			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growAndPersistBlock(): removing fully grown plant: " + plant);
 			plantManager.removePlant(block);
 		}
 		
@@ -450,17 +399,17 @@ public class RealisticBiomes extends JavaPlugin {
 	 * @param block
 	 * @param growthConfig
 	 * @param fruitBlockToIgnore When checking for fruits, ignore this block
+	 * @param dropGrouper 
 	 */
-	public void growPlant(Plant plant, Block block, GrowthConfig growthConfig, Block fruitBlockToIgnore) {
+	public void growPlant(Plant plant, Block block, GrowthConfig growthConfig, Block fruitBlockToIgnore, DropGrouper dropGrouper) {
 		double rate = growthConfig.getRate(block);
 		double fruitRate = -1.0;
 		
-		RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growPlant(): plant existed, growthAmount was: " + plant.getGrowth());
 		double updateTime = plant.grow(rate);
 		
 		if (Fruits.isFruitFul(block.getType())) {
 			boolean hasFruit = Fruits.hasFruit(block, fruitBlockToIgnore);
-			GrowthConfig fruitGrowthConfig = getGrowthConfig(Fruits.getFruit(block.getType()));
+			GrowthConfig fruitGrowthConfig = materialGrowth.get(Fruits.getFruit(block.getType()));
 			if (fruitGrowthConfig.isPersistent()) {	
 				if (!hasFruit && plant.getGrowth() >= 1.0) {	
 					if (plant.getFruitGrowth() == -1.0) {
@@ -488,38 +437,21 @@ public class RealisticBiomes extends JavaPlugin {
 		
 		// actually 'grows' the block or fruit (in minecraft terms, between the different stages of growth that you can see in game)
 		// depending on its growth value
-		blockGrower.growBlock(block, plant.getGrowth(), plant.getFruitGrowth());
+		boolean growthPrevented = false;
+		if (growthConfig.getType() == Type.TREE) {
+			growthPrevented = blockGrower.generateTree(block, plant.getGrowth(), growthConfig.getTreeType());
+		} else if (growthConfig.getType() == Type.COLUMN) {
+			growthPrevented = blockGrower.growColumn(block, plant.getGrowth(), dropGrouper);
+		} else {
+			growthPrevented = blockGrower.growBlock(block, plant.getGrowth(), plant.getFruitGrowth());
+		}
+		if (growthPrevented) {
+			RealisticBiomes.doLog(Level.FINER, "Realisticbiomes.growPlant(): growth prevented");
+			plant.setGrowth(0.0);
+		}
 	}
 	
 	public PlantManager getPlantManager() {
 		return plantManager;
-	}
-
-	public static HashMap<TreeType, TreeType> getTreeTypes() {
-		return treeTypeMap;
-	}
-	
-	public GrowthConfig getGrowthConfig(TreeType species) {
-		return materialGrowth.get(treeTypeMap.get(species));
-	}
-	
-	public GrowthConfig getGrowthConfig(Material m) {
-		return materialGrowth.get(m);
-	}
-	
-	public GrowthConfig getGrowthConfig(Block b) {
-		return materialGrowth.get(b.getType());
-	}
-	
-	public boolean hasGrowthConfig(Material m) {
-		return materialGrowth.containsKey(m);
-	}
-	
-	public boolean hasGrowthConfig(Block b) {
-		return materialGrowth.containsKey(b.getType());
-	}
-	
-	public boolean hasGrowthConfig(TreeType species) {
-		return materialGrowth.containsKey(treeTypeMap.get(species));
 	}
 }

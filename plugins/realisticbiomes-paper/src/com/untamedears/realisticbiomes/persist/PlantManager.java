@@ -23,8 +23,10 @@ import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
+import com.untamedears.realisticbiomes.DropGrouper;
 import com.untamedears.realisticbiomes.PersistConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.utils.MaterialAliases;
 
 public class PlantManager {
 	private final RealisticBiomes plugin;
@@ -67,8 +69,7 @@ public class PlantManager {
 	
 	// database write thread
 	ExecutorService writeService;
-	private ChunkWriter chunkWriter;
-	
+
 	
 	// prepared statements
 	PreparedStatement makeTableChunk;
@@ -128,7 +129,7 @@ public class PlantManager {
 			this.selectAllFromChunk = readConn.prepareStatement(String.format("SELECT id, w, x, z FROM %s_chunk", config.prefix));
 						
 			// create chunk writer
-			chunkWriter = new ChunkWriter(writeConn, readConn, config);
+			ChunkWriter.init(writeConn, readConn, config);
 			
 		} catch (SQLException e) {
 			throw new DataSourceException("PlantManager constructor: Failed to create the prepared statements! (for table creation)", e);
@@ -580,6 +581,9 @@ public class PlantManager {
 			return;
 		}
 
+		RealisticBiomes.doLog(Level.FINER, "PlantManager.growChunk() group: " + pChunk.getPlantCoords().size());
+		DropGrouper dropGrouper = new DropGrouper(chunk.getWorld());
+		
 		// We can assume the chunk will be loaded at this point
 		
 		// Create a deep copy of the plant set to iterate over so we don't run into problems when
@@ -588,8 +592,14 @@ public class PlantManager {
 		for (Coords position : new HashSet<Coords>(pChunk.getPlantCoords())) {
 			Block block = chunk.getBlock(position.x,  position.y,  position.z);
 			
-			plugin.growAndPersistBlock(block, false, null, null);
+			block = MaterialAliases.getOriginBlock(block, block.getType());
+			
+			if (block != null) {
+				plugin.growAndPersistBlock(block, false, null, null, dropGrouper);
+			}
 		}
+		
+		dropGrouper.done();
 	}
 	
 	
@@ -606,6 +616,8 @@ public class PlantManager {
 		
 		// make sure the chunk is loaded
 		loadChunk(chunkCoords);
+		
+		RealisticBiomes.doLog(Level.WARNING, "PlantManager.removePlant(): removing plant: " + block.getLocation());
 		
 		pChunk.remove(new Coords(block));		
 	}

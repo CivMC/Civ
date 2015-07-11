@@ -6,7 +6,7 @@
   <groupId>com.untamedears</groupId>
   <artifactId>RealisticBiomes</artifactId>
   <packaging>jar</packaging>
-  <version>0.6.4.2-${build.number}</version>
+  <version>0.6.5.0-${build.number}</version>
   <name>RealisticBiomes</name>
   <url>https://github.com/Civcraft/RealisticBiomes</url>
   

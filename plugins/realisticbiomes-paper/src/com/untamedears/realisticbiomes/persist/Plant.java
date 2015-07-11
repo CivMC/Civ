@@ -83,4 +83,8 @@ public class Plant {
 	public void setFruitGrowth(float fruitState) {
 		this.fruitGrowth = fruitState;
 	}
+
+	public void setGrowth(double state) {
+		this.growth = (float) state;
+	}
 }

@@ -7,13 +7,28 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
+import org.bukkit.TreeType;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
 
-public class GrowthConfig extends BaseConfig {
+public class GrowthConfig {
+	
+protected String name;
+	
+	// a rate of growth between 0 and 1
+	// this represents a chance,
+	// for a fishing reward, it's an additional chance of the item dropping once Minecraft has already chosen to drop it
+	protected double baseRate;
+
+	// map from biome to the modulated growth rate per biome
+	protected Map<Biome, Double> biomeMultipliers;
+
+	// ------------------------------------------------------------------------
+
+	
 	// a rate of growth between 0 and 1
 	// this usually represents a chance,
 	// for a crop, it would be the chance to grow per tick
@@ -40,15 +55,24 @@ public class GrowthConfig extends BaseConfig {
 
 	// some crops get a boost from layers of materials beneath the block the plant has been planted on
 	private Material soilMaterial;
+	private byte soilData;
 	private int soilMaxLayers;
 	private double soilBonusPerLevel;
 	// the z levels below the actual growth event location in which to start looking for the correct soil
 	private int soilLayerOffset;
 
+	private Type type;
+
+	private TreeType treeType;
+
 	// conversion used for persistence calculations
 	private static final int SEC_PER_HOUR = 60 * 60;
 	// maximum light level on a block
 	private static final double MAX_LIGHT_INTENSITY = 15.0;
+
+	public enum Type {
+		PLANT, TREE, COLUMN, ENTITY, FISHING_DROP
+	}
 
 	// ------------------------------------------------------------------------
 
@@ -66,21 +90,24 @@ public class GrowthConfig extends BaseConfig {
 		this.add(new Vector(0,0,-1));	// north
 		this.add(new Vector(0,0,1));	// south
 	}};
+	@SuppressWarnings("serial")
 	private static List<Vector> waterCheckBlocks = new ArrayList<Vector>(){{
 		this.add(new Vector(-5,-1,0));	// west
 		this.add(new Vector(5,-1,0));	// east
 		this.add(new Vector(0,-1,-5));	// north
 		this.add(new Vector(0,-1,5));	// south
 	}};
-
-	public static GrowthConfig get(ConfigurationSection conf, GrowthConfig parent, Map<String, Biome[]>biomeAliases) {
-		GrowthConfig growth = new GrowthConfig(parent);
-		return growth;
+	
+	public static GrowthConfig get(String name, GrowthConfig parent, ConfigurationSection conf, HashMap<String, List<Biome>> biomeAliases) {
+		return new GrowthConfig(name, parent, conf, biomeAliases);
 	}
 
 	// create a new default configuration
-	GrowthConfig() {
-		super();
+	GrowthConfig(String name, Type type) {
+		setName(name);
+		this.type = type;
+		baseRate = 1.0;
+		biomeMultipliers = new HashMap<Biome, Double>();
 		
 		greenhouseRate = 1.0;
 		isGreenhouseEnabled = false;
@@ -95,19 +122,17 @@ public class GrowthConfig extends BaseConfig {
 		notIrrigatedMultiplier = 1.0;
 		
 		soilMaterial = null; /* none */
+		soilData = -1;
 		soilMaxLayers = 0;
 		soilBonusPerLevel = 0.0;
 		soilLayerOffset = 1;
-	}
-	
-	// make a copy of the given configuration
-	GrowthConfig(GrowthConfig parent) {
-		super();
-		copy(parent);
+		
+		treeType = null;
 	}
 	
 	// make a copy of the given configuration and modify it by loading in a YML config section
-	GrowthConfig(GrowthConfig parent, ConfigurationSection config, HashMap<String, List<Biome>> biomeAliases) {
+	GrowthConfig(String name, GrowthConfig parent, ConfigurationSection config, HashMap<String, List<Biome>> biomeAliases) {
+		this(name, null);
 		copy(parent);
 		
 		if (config.isSet("base_rate"))
@@ -139,11 +164,19 @@ public class GrowthConfig extends BaseConfig {
 		
 		if (config.isSet("soil_material")) {
 			String materialName = config.getString("soil_material");
+			byte data = -1;
+			if (materialName.contains(":")) {
+				String[] parts = materialName.split(":");
+				materialName = parts[0];
+				data = Byte.parseByte(parts[1]);
+			}
 			Material material = Material.getMaterial(materialName);
-			if (material == null)
+			if (material == null) {
 				LOG.warning("loading configs: \""+ config.getName() +"\" soil_material: \"" + materialName +"\" is not a valid material name.");
-			else
+			} else {
 				soilMaterial = material;
+				soilData = data;
+			}
 		}
 		
 		if (config.isSet("soil_max_layers"))
@@ -158,9 +191,25 @@ public class GrowthConfig extends BaseConfig {
 		if (config.isSet("biomes"))
 			loadBiomes(config.getConfigurationSection("biomes"), biomeAliases);
 	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public Type getType() {
+		return type;
+	}
+	
+	public void setName(Object name) {
+		if (name != null) {
+			this.name = name.toString().toLowerCase().replaceAll("_", " ");
+		}
+	}
 
 	public void copy(GrowthConfig other) {
-		super.copy(other);
+		type = other.type;
+		baseRate = other.baseRate;
+		biomeMultipliers = new HashMap<Biome, Double>(other.biomeMultipliers);
 		
 		greenhouseRate = other.greenhouseRate;
 		isGreenhouseEnabled = other.isGreenhouseEnabled;
@@ -173,9 +222,35 @@ public class GrowthConfig extends BaseConfig {
 		notIrrigatedMultiplier = other.notIrrigatedMultiplier;
 		
 		soilMaterial = other.soilMaterial;
+		soilData = other.soilData;
 		soilMaxLayers = other.soilMaxLayers;
 		soilBonusPerLevel = other.soilBonusPerLevel;
 		soilLayerOffset = other.soilLayerOffset;
+		
+		treeType = other.treeType;
+	}
+	
+	public void loadBiomes(ConfigurationSection config, HashMap<String, List<Biome>> biomeAliases) {
+		for (String biomeName : config.getKeys(false)) {
+			if (biomeAliases.containsKey(biomeName)) {
+				// if there is a biome alias with the name, register all biomes of that alias with the
+				// given multiplier
+				double multiplier = config.getDouble(biomeName);
+				for (Biome biome : biomeAliases.get(biomeName)) {
+					biomeMultipliers.put(biome, multiplier);
+				}
+			}
+			else {
+				// else just register the given biome with the multiplier
+				try {
+					Biome biome = Biome.valueOf(biomeName);
+					biomeMultipliers.put(biome, config.getDouble(biomeName));
+				}
+				catch(IllegalArgumentException e) {
+					LOG.warning("loading configs: in \""+ config.getParent().getName() +"\" biomes: \"" + biomeName +"\" is not a valid biome name.");
+				}
+			}
+		}
 	}
 
 	/* ================================================================================ */
@@ -186,8 +261,10 @@ public class GrowthConfig extends BaseConfig {
 	}
 	
 	// given a block (a location), find the growth rate using these rules
-	@Override
 	public double getRate(Block block) {
+		if (type == Type.FISHING_DROP) {
+			return getBaseRate(block);
+		}
 		// rate = baseRate * sunlightLevel * biome * (1.0 + soilBonus)
 		double rate = baseRate;
 		// if persistent, the growth rate is measured in growth/second
@@ -269,6 +346,9 @@ public class GrowthConfig extends BaseConfig {
 			if (newBlock == null || !newBlock.getType().equals(soilMaterial)) {
 				break;
 			}
+			if (soilData != -1 && newBlock.getData() != soilData) {
+				break;
+			}
 				
 			soilBonus += soilBonusPerLevel;
 			
@@ -278,5 +358,37 @@ public class GrowthConfig extends BaseConfig {
 		rate *= (1.0 + soilBonus);
 		
 		return rate;
+	}
+	
+	// given a block (a location), find the rate using these rules
+	public double getBaseRate(Block block) {
+		// rate = baseRate * biome
+		double rate = baseRate;
+		// biome multiplier
+		Double biomeMultiplier = biomeMultipliers.get(block.getBiome());
+		if (biomeMultiplier != null) {
+			rate *= biomeMultiplier.floatValue();
+		} else {
+			rate = 0.0D; // if the biome cannot be found, assume zero
+		}
+		return rate;
+	}
+	
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "." + this.name;
+	}
+
+	public GrowthConfig setType(Type type) {
+		this.type = type;
+		return this;
+	}
+
+	public void setTreeType(TreeType treeType) {
+		this.treeType = treeType;
+	}
+	
+	public TreeType getTreeType() {
+		return treeType;
 	}
 }
