@@ -9,9 +9,11 @@ public final class NpcDespawnEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     private final Npc npc;
+    private final NpcDespawnReason reason;
 
-    public NpcDespawnEvent(Npc npc) {
+    public NpcDespawnEvent(Npc npc, NpcDespawnReason reason) {
         this.npc = npc;
+        this.reason = reason;
     }
 
     public static HandlerList getHandlerList() {
@@ -26,5 +28,8 @@ public final class NpcDespawnEvent extends Event {
     public Npc getNpc() {
         return npc;
     }
-
+    
+    public NpcDespawnReason getDespawnReason(){
+    	return reason;
+    }
 }

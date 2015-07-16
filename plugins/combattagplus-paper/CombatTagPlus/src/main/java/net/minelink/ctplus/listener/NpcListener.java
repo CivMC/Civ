@@ -3,7 +3,9 @@ package net.minelink.ctplus.listener;
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.Npc;
 import net.minelink.ctplus.event.NpcDespawnEvent;
+import net.minelink.ctplus.event.NpcDespawnReason;
 import net.minelink.ctplus.task.SafeLogoutTask;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -90,6 +92,7 @@ public final class NpcListener implements Listener {
             @Override
             public void run() {
                 plugin.getNpcManager().despawn(npc);
+                Bukkit.getPluginManager().callEvent(new NpcDespawnEvent(npc, NpcDespawnReason.DEATH));
             }
         });
     }

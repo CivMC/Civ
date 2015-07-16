@@ -1,6 +1,8 @@
 package net.minelink.ctplus;
 
 import net.minelink.ctplus.event.NpcDespawnEvent;
+import net.minelink.ctplus.event.NpcDespawnReason;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -71,7 +73,7 @@ public final class NpcManager {
         if (other == null || other != npc) return;
 
         // Call NPC despawn event
-        NpcDespawnEvent event = new NpcDespawnEvent(npc);
+        NpcDespawnEvent event = new NpcDespawnEvent(npc, NpcDespawnReason.DESPAWN);
         Bukkit.getPluginManager().callEvent(event);
 
         // Remove the NPC entity from the world
