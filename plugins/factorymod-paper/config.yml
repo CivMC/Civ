@@ -1706,6 +1706,8 @@ production_factories:
       - Grilled_Pork
       - Cooked_Beef
       - Cook_Salmon
+      - Cook_Mutton
+      - Cook_Rabbit
       - Bastion_Rations
     repair_multiple: 2
     repair_inputs:
@@ -4115,6 +4117,28 @@ production_recipes:
     outputs:
       Cooked Chicken:
         material: COOKED_CHICKEN
+        amount: 128
+  Cook_Mutton:
+    name: Grill Raw Mutton
+    production_time: 6
+    inputs:
+      Raw Mutton:
+        material: MUTTON
+        amount: 64
+    outputs:
+      Cooked Mutton:
+        material: COOKED_MUTTON
+        amount: 128
+  Cook_Rabbit:
+    name: Grill Raw Rabbit
+    production_time: 6
+    inputs:
+      Raw Rabbit:
+        material: RABBIT
+        amount: 64
+    outputs:
+      Cooked Rabbit:
+        material: COOKED_RABBIT
         amount: 128
   Dye_Brown_Wool_Pink:
     name: Dye Brown Wool Pink
