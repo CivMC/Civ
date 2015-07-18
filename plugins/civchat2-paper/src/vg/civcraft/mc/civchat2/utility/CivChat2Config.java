@@ -36,6 +36,10 @@ public class CivChat2Config {
 	public String getDefaultColor() {
 		return config.getString("chat.defaultChatColor");
 	}
+	
+	public String getOpChatColor(){
+		return config.getString("chat.opChatColor");
+	}
 
 	public int getYInc() {
 		return config.getInt("chat.yIncreaseDist");

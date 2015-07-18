@@ -19,3 +19,4 @@ commands:
     ignorelist:
     exit:
       aliases: [e]
+    say:

@@ -388,7 +388,7 @@ public class CivChat2Manager {
 	/**
 	 * Method to see if a user is ignoring a group
 	 * @param name Player to check
-	 * @param chatChannel Groupname to check
+	 * @param chatChannel Groupname to check... format is GROUP<groupname>
 	 * @return true if ignoring, false otherwise
 	 */
 	public boolean isIgnoringGroup(String name, Group group) {

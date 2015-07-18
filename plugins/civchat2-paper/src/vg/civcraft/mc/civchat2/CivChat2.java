@@ -10,6 +10,7 @@ import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
 import vg.civcraft.mc.civchat2.listeners.MercuryMessageListener;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
+import vg.civcraft.mc.civchat2.utility.CivChat2Executor;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civchat2.zipper.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
@@ -29,6 +30,7 @@ public class CivChat2 extends JavaPlugin{
 	private static CivChat2CommandHandler handle;
 	private CivChat2FileLogger fileLog;
 	private boolean isMercuryEnabled = false;
+	private static CivChat2Executor executor;
 	
 	public void onEnable(){
 		//onEnable stuff
@@ -57,7 +59,10 @@ public class CivChat2 extends JavaPlugin{
 		handle.registerCommands();
 		
 		chatListener = new CivChat2Listener(chatMan);
+		executor = new CivChat2Executor(instance);
 		registerEvents();
+		
+		getCommand("say").setExecutor(instance.executor);
 	}
 	
 	public void onDisable(){
