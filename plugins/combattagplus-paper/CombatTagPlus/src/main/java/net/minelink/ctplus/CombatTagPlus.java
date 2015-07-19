@@ -175,6 +175,8 @@ public final class CombatTagPlus extends JavaPlugin {
         // Special case for HCF. Use FactionsUUID 1.6 hook
         if (version.compareTo("1_6") < 0) {
             version = "1_6";
+        } else if (version.compareTo("2_7") > 0) {
+            version = "2_7";
         }
 
         // Determine which hook implementation to use
