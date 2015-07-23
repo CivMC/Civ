@@ -5070,7 +5070,7 @@ production_recipes:
         amount: 128
     outputs:
       Brick blocks:
-        material: BRICK_BLOCK
+        material: BRICK
         amount: 256
   Smelt_Sandstone:
     name: Smelt Sandstone
