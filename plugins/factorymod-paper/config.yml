@@ -1,4 +1,4 @@
-#Example: production_general
+#Example: Production_general
 # update_cycle: 20 the period of ticks between which factories are updated
 # maintenance_cycle: 15 the period of ticks between which the maintenance of the factories are updated
 # maintenance_rate: 1 %Modifies the rate at which factories degrade, higher numbers degrade the factories faster
@@ -1383,6 +1383,7 @@ production_factories:
       - Bake_clay_blocks
       - Bake_bricks
       - Bake_pots
+      - Bake_brick_blocks
     repair_multiple: 26
     repair_inputs:
       Clay:
@@ -5039,7 +5040,7 @@ production_recipes:
         material: HARD_CLAY
         amount: 1024
   Bake_bricks:
-    name: Bake Bricks
+    name: Bake Individual Bricks
     production_time: 32
     inputs:
       Clay:
@@ -5060,6 +5061,17 @@ production_recipes:
       Flower Pots:
         material: FLOWER_POT_ITEM
         amount: 64
+  Bake_brick_blocks:
+    name: Bake brick blocks
+    production_time: 32
+    inputs:
+      Clay:
+        material: CLAY
+        amount: 128
+    outputs:
+      Brick blocks:
+        material: BRICK_BLOCK
+        amount: 256
   Smelt_Sandstone:
     name: Smelt Sandstone
     production_time: 32
@@ -7824,9 +7836,9 @@ production_recipes:
   Bastion_Flooring:
     name: Flooring
     inputs:
-      Clay Ball:
-        material: CLAY_BALL
-        amount: 32
+      Clay Block:
+        material: CLAY
+        amount: 8
       Nether Brick:
         material: NETHER_BRICK
         amount: 64
