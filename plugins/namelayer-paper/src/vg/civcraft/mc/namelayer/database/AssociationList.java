@@ -3,6 +3,9 @@ package vg.civcraft.mc.namelayer.database;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -39,6 +42,7 @@ public class AssociationList {
     private String getUUIDfromPlayer;
     private String getPlayerfromUUID;
 	private String changePlayerName;
+	private String getAllPlayerInfo;
 	
 	public void initializeStatements(){
 		addPlayer = "call addplayertotable(?, ?)"; // order player name, uuid 
@@ -48,6 +52,7 @@ public class AssociationList {
 				"where uuid=?";
 		changePlayerName = "delete from Name_player " +
 				"where uuid=?";
+		getAllPlayerInfo = "select * from Name_player";
 	}
 	
 	public void initializeProcedures(){
@@ -140,6 +145,7 @@ public class AssociationList {
 			e.printStackTrace();
 		}
 	}
+	
 	public void changePlayer(String newName, UUID uuid) {
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		PreparedStatement changePlayerName = db.prepareStatement(this.changePlayerName);
@@ -151,5 +157,33 @@ public class AssociationList {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	/**
+	 * This method returns all player info in the table.  It is used mainly
+	 * by NameAPI class to prepopulate the maps.  
+	 * As such Object[0] will return Map<String, UUID> while Object[1]
+	 * will return Map<UUID, String>
+	 */
+	public Object[] getAllPlayerInfo(){
+		NameLayerPlugin.reconnectAndReintializeStatements();
+		PreparedStatement getAllPlayerInfo = db.prepareStatement(this.getAllPlayerInfo);
+		Map<String, UUID> nameMapping = new HashMap<String, UUID>();
+		Map<UUID, String> uuidMapping = new HashMap<UUID, String>();
+		try {
+			ResultSet set = getAllPlayerInfo.executeQuery();
+			while (set.next()){
+				UUID uuid = UUID.fromString(set.getString("uuid"));
+				String playername = set.getString("player");
+				nameMapping.put(playername, uuid);
+				uuidMapping.put(uuid, playername);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Object[] objs = new Object[2];
+		objs[0] = nameMapping;
+		objs[1] = uuidMapping;
+		return objs;
 	}
 }

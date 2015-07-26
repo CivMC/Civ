@@ -1,5 +1,8 @@
 package vg.civcraft.mc.namelayer.permission;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
