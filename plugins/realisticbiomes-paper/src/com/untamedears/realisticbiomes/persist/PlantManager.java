@@ -617,7 +617,7 @@ public class PlantManager {
 		// make sure the chunk is loaded
 		loadChunk(chunkCoords);
 		
-		RealisticBiomes.doLog(Level.WARNING, "PlantManager.removePlant(): removing plant: " + block.getLocation());
+		RealisticBiomes.doLog(Level.FINER, "PlantManager.removePlant(): removing plant: " + block.getLocation());
 		
 		pChunk.remove(new Coords(block));		
 	}
