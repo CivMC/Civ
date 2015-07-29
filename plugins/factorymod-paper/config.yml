@@ -2462,7 +2462,6 @@ production_factories:
       - Smelt_Prismarine_Bricks
       - Smelt_Dark_Prismarine
       - Smelt_Cracked_Stone_Brick
-      - Craft_Sea_Lanterns
       - Smelt_Mossy_Stone_Brick
       - Smelt_Chiseled_Stone_Brick
       - Bastion_Flooring
