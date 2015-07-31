@@ -497,23 +497,4 @@ public class FactoryModListener implements Listener
 			event.setCancelled(true);
 		}
 	}
-
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void anvilRepairEvent(InventoryClickEvent event){
-		if (!FactoryModPlugin.SHOULD_SET_ANVIL_COST)
-			return;
-		if (event instanceof InventoryCreativeEvent)
-			return;
-		Inventory inv = event.getClickedInventory();
-		if (!(inv instanceof AnvilInventory))
-			return;
-		
-		org.bukkit.inventory.ItemStack stack = inv.getItem(2);
-		if (stack == null)
-			return;
-		
-		ItemStack s = CraftItemStack.asNMSCopy(stack);
-		s.setRepairCost(FactoryModPlugin.GET_SET_ANVIL_COST);
-		inv.setItem(3, (CraftItemStack.asBukkitCopy(s)));
-	}
 }

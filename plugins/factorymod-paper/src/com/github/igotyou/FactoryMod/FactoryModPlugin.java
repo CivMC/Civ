@@ -112,9 +112,6 @@ public class FactoryModPlugin extends JavaPlugin
 	 * Whether factory running state is output to a lever (Default true)
 	 */
 	public static boolean LEVER_OUTPUT_ENABLED;
-
-	public static boolean SHOULD_SET_ANVIL_COST;
-	public static int GET_SET_ANVIL_COST;
 	
 	/* Nether Properties */
 	
@@ -271,9 +268,6 @@ public class FactoryModPlugin extends JavaPlugin
 		LEVER_OUTPUT_ENABLED = config.getBoolean("general.lever_output_enabled",true);
 		//Do we allow factories to be started with redstone?
 		REDSTONE_START_ENABLED = config.getBoolean("general.redstone_start_enabled",true);
-		//Set anvil repair cost
-		SHOULD_SET_ANVIL_COST = config.getBoolean("general.should_default_anvil_cost", false);
-		GET_SET_ANVIL_COST = config.getInt("general.set_default_anvil_cost", 37);
 
 		// Disable the following recipes
 		List<Recipe> toDisable = new ArrayList<Recipe>();
