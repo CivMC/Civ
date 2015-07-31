@@ -37,7 +37,6 @@ protected String name;
 	// this rate overrides all other settings if the plant is under artificial light (adjacent to glowstone)
 	private double greenhouseRate;
 	private boolean isGreenhouseEnabled;
-	private boolean greenhouseIgnoreBiome;
 
 	// flag that denotes if this crop's growth is persisted
 	private boolean isPersistent;
@@ -50,8 +49,6 @@ protected String name;
 	// multiplier that is applied if the crop is not at light level = 15
 	private double notFullSunlightMultiplier;
 
-	// multiplier that is applied if the crop is not near "fresh water(river biome)"
-	private double notIrrigatedMultiplier;
 
 	// some crops get a boost from layers of materials beneath the block the plant has been planted on
 	private Material soilMaterial;
@@ -90,13 +87,6 @@ protected String name;
 		this.add(new Vector(0,0,-1));	// north
 		this.add(new Vector(0,0,1));	// south
 	}};
-	@SuppressWarnings("serial")
-	private static List<Vector> waterCheckBlocks = new ArrayList<Vector>(){{
-		this.add(new Vector(-5,-1,0));	// west
-		this.add(new Vector(5,-1,0));	// east
-		this.add(new Vector(0,-1,-5));	// north
-		this.add(new Vector(0,-1,5));	// south
-	}};
 	
 	public static GrowthConfig get(String name, GrowthConfig parent, ConfigurationSection conf, HashMap<String, List<Biome>> biomeAliases) {
 		return new GrowthConfig(name, parent, conf, biomeAliases);
@@ -111,15 +101,12 @@ protected String name;
 		
 		greenhouseRate = 1.0;
 		isGreenhouseEnabled = false;
-		greenhouseIgnoreBiome = false;
 		
 		isPersistent = false;
 		
 		needsSunlight = false;
 		
 		notFullSunlightMultiplier = 1.0;
-		
-		notIrrigatedMultiplier = 1.0;
 		
 		soilMaterial = null; /* none */
 		soilData = -1;
@@ -143,10 +130,6 @@ protected String name;
 			greenhouseRate = config.getDouble("greenhouse_rate");
 		}
 		
-		if (config.isSet("greenhouse_ignore_biome")) {
-			greenhouseIgnoreBiome = config.getBoolean("greenhouse_ignore_biome");
-		}
-		
 		isPersistent = false;
 		if (config.isSet("persistent_growth_period")) {
 			isPersistent = true;
@@ -158,9 +141,6 @@ protected String name;
 		
 		if (config.isSet("not_full_sunlight_multiplier"))
 			notFullSunlightMultiplier = config.getDouble("not_full_sunlight_multiplier");
-		
-		if (config.isSet("not_irrigated_multiplier"))
-			notIrrigatedMultiplier = config.getDouble("not_irrigated_multiplier");
 		
 		if (config.isSet("soil_material")) {
 			String materialName = config.getString("soil_material");
@@ -213,13 +193,10 @@ protected String name;
 		
 		greenhouseRate = other.greenhouseRate;
 		isGreenhouseEnabled = other.isGreenhouseEnabled;
-		greenhouseIgnoreBiome = other.greenhouseIgnoreBiome;
 		
 		needsSunlight = other.needsSunlight;
 		
 		notFullSunlightMultiplier = other.notFullSunlightMultiplier;
-		
-		notIrrigatedMultiplier = other.notIrrigatedMultiplier;
 		
 		soilMaterial = other.soilMaterial;
 		soilData = other.soilData;
@@ -261,117 +238,69 @@ protected String name;
 	}
 	
 	// given a block (a location), find the growth rate using these rules
+	
 	public double getRate(Block block) {
-		if (type == Type.FISHING_DROP) {
-			return getBaseRate(block);
-		}
-		// rate = baseRate * sunlightLevel * biome * (1.0 + soilBonus)
-		double rate = baseRate;
-		// if persistent, the growth rate is measured in growth/second
-		if (isPersistent) {
-			rate = 1.0 / (persistentRate * SEC_PER_HOUR);
-		}
-		
-		double environmentMultiplier = 1.0;
-		
-		// biome multiplier
 		Double biomeMultiplier = biomeMultipliers.get(block.getBiome());
-		if (biomeMultiplier != null) {
-			environmentMultiplier *= biomeMultiplier.floatValue();
-		} else {
-			return 0.0; // if the biome cannot be found, assume zero
-		}
-		
-		// if the greenhouse effect does not ignore biome, fold the biome rate into the main rate directly
-		if (!greenhouseIgnoreBiome) {
-			rate *= environmentMultiplier;
-			environmentMultiplier = 1.0;
-		}
-		
-		// modulate the rate by the amount of sunlight recieved by this plant
-		int sunlightIntensity;
-		if (block.getType().isTransparent()) {
-			sunlightIntensity = block.getLightFromSky();
-		} else {
-			sunlightIntensity = block.getRelative(BlockFace.UP).getLightFromSky();
-		}
-		if (needsSunlight) {
-			environmentMultiplier *= Math.pow((sunlightIntensity / MAX_LIGHT_INTENSITY), 3.0);
-		}
-		// apply multiplier if the sunlight is not at maximum
-		if (sunlightIntensity < MAX_LIGHT_INTENSITY) {
-			environmentMultiplier *= notFullSunlightMultiplier;
-		}
-		
-		// if the crop block if fully lit, and the greenhouse rate would be an improvement
-		// over the current environment multiplier, then use the green house rate as the
-		// environment multiplier.
-		if(isGreenhouseEnabled && ( environmentMultiplier < greenhouseRate ) && ( block.getLightFromBlocks() == (MAX_LIGHT_INTENSITY - 1) ) ) {
-			// make sure it's a glowstone/lamp
+	    if (biomeMultiplier == null || biomeMultiplier.floatValue() == 0.0) {
+	        return 0.0;
+	    }
+
+	    if (type == Type.FISHING_DROP) {
+	        return baseRate * biomeMultiplier.floatValue();
+	    }
+	    double rate;
+	    if (isPersistent) {
+	        rate = 1.0 / (persistentRate * SEC_PER_HOUR);
+	    } else {
+	        rate = baseRate;
+	    }
+	    rate *= biomeMultiplier.floatValue();
+		if (isGreenhouseEnabled && block.getLightFromBlocks() == (MAX_LIGHT_INTENSITY - 1)) {
 			for( Vector vec : adjacentBlocks ) {
 				Material mat = block.getLocation().add(vec).getBlock().getType();
 				if( mat == Material.GLOWSTONE || mat == Material.REDSTONE_LAMP_ON ) {
-					environmentMultiplier = greenhouseRate;
+					rate *= greenhouseRate;
 					break;
 				}
 			}
 		}
-		
-		rate *= environmentMultiplier;
-		
-		// if the plant will be effected by irrigation, check if the block is at the correct level and
-		// check if nearby blocks are water blocks in river biomes
-		if (notIrrigatedMultiplier != 1.0) {
-			// determine if the block is near a water block in a river biome
-			boolean irrigated = false;
-			for( Vector vec : waterCheckBlocks ) {
-				Block waterBlock = block.getLocation().add(vec).getBlock();
-				Material mat = waterBlock.getType();
-				Biome biome = waterBlock.getBiome();
-				if((biome == Biome.RIVER || biome == Biome.FROZEN_RIVER) && (mat == Material.STATIONARY_WATER || mat == Material.WATER)) {
-					irrigated = true;
-					break;
+		else {
+			int sunlightIntensity;
+			if (block.getType().isTransparent()) {
+				sunlightIntensity = block.getLightFromSky();
+			} else {
+				sunlightIntensity = block.getRelative(BlockFace.UP).getLightFromSky();
+			}
+			// apply multiplier if the sunlight is not at maximum
+			if (sunlightIntensity < MAX_LIGHT_INTENSITY) {
+				rate *= notFullSunlightMultiplier;
+				if (needsSunlight) {
+					rate *= Math.pow((sunlightIntensity / MAX_LIGHT_INTENSITY), 3.0);
 				}
 			}
-			
-			if (!irrigated)
-				rate *= notIrrigatedMultiplier;
 		}
-		
 		// check the depth of the required 'soil' and add a bonus
-		float soilBonus = 0.0f;
-		Block newBlock = block.getRelative(0,-soilLayerOffset,0);	
-		int soilCount = 0;
-		while (soilCount < soilMaxLayers) {
-			if (newBlock == null || !newBlock.getType().equals(soilMaterial)) {
-				break;
+		if (soilMaxLayers > 0) {
+			float soilBonus = 0.0f;
+			Block newBlock = block.getRelative(0,-soilLayerOffset,0);	
+			int soilCount = 0;
+			while (soilCount < soilMaxLayers) {
+				if (newBlock == null || !newBlock.getType().equals(soilMaterial)) {
+					break;
+				}
+				if (soilData != -1 && newBlock.getData() != soilData) {
+							break;
+				}
+							
+				soilBonus += soilBonusPerLevel;
+						
+				newBlock = newBlock.getRelative(0, -1, 0);
+				soilCount++;
 			}
-			if (soilData != -1 && newBlock.getData() != soilData) {
-				break;
-			}
-				
-			soilBonus += soilBonusPerLevel;
+			rate *= (1.0 + soilBonus);				
+		}
+		return rate;
 			
-			newBlock = newBlock.getRelative(0, -1, 0);
-			soilCount++;
-		}
-		rate *= (1.0 + soilBonus);
-		
-		return rate;
-	}
-	
-	// given a block (a location), find the rate using these rules
-	public double getBaseRate(Block block) {
-		// rate = baseRate * biome
-		double rate = baseRate;
-		// biome multiplier
-		Double biomeMultiplier = biomeMultipliers.get(block.getBiome());
-		if (biomeMultiplier != null) {
-			rate *= biomeMultiplier.floatValue();
-		} else {
-			rate = 0.0D; // if the biome cannot be found, assume zero
-		}
-		return rate;
 	}
 	
 	@Override
