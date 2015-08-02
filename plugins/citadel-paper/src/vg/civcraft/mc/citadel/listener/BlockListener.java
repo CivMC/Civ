@@ -113,6 +113,7 @@ public class BlockListener implements Listener{
 				}	
 			}
 			catch(ReinforcemnetFortificationCancelException ex){
+				Citadel.Log("ReinforcementFortificationCancelException occured in BlockListener, BlockPlaceEvent " + ex.getStackTrace());
 			}
         } else {
             p.sendMessage(ChatColor.YELLOW + String.format("%s depleted, left fortification mode ",  
@@ -323,6 +324,7 @@ public class BlockListener implements Listener{
                 bre.setNewCurrent(bre.getOldCurrent());
             }
         } catch(Exception e) {
+        	Citadel.Log("Exception occured in BlockListener, BlockRedstoneEvent " + e.getStackTrace());
         }
     }
 	
@@ -519,6 +521,7 @@ public class BlockListener implements Listener{
                 	ReinforcementType type = ReinforcementType.getReinforcementType(stack);
                 	if (type == null){
                 		player.sendMessage(ChatColor.RED + stack.getType().name() + " is not a reinforcable material.");
+                		player.sendMessage(ChatColor.RED + "Left Reinforcement mode.");
                 		state.reset();
                 		return;
                 	}
@@ -535,7 +538,7 @@ public class BlockListener implements Listener{
                         createPlayerReinforcement(player, state.getGroup(),
                         		block, state.getReinforcementType());
                     	}catch(ReinforcemnetFortificationCancelException e){
-                    		
+                    		Citadel.Log("ReinforcementFortificationCancelException occured in BlockListener, PlayerInteractEvent " + e.getStackTrace());
                     	}
                     }
                 } else if (reinforcement.isBypassable(player) || (player.isOp() || player.hasPermission("citadel.admin"))) {
