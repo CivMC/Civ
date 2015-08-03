@@ -5,7 +5,6 @@ import net.minelink.ctplus.Tag;
 import net.minelink.ctplus.event.PlayerCombatTagEvent;
 import net.minelink.ctplus.task.TagUpdateTask;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,7 +17,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
@@ -259,25 +257,6 @@ public final class PlayerListener implements Listener {
         event.setCancelled(true);
         if (!plugin.getSettings().getDisableTeleportationMessage().isEmpty()) {
             player.sendMessage(plugin.getSettings().getDisableTeleportationMessage());
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void denySafeZoneEntry(PlayerMoveEvent event) {
-        // Do nothing if check is not active
-        if (!plugin.getSettings().denySafezone()) return;
-
-        // Do nothing if player's X/Y/Z hasn't changed
-        Location t = event.getTo();
-        Location f = event.getFrom();
-        if (Double.compare(t.getX(), f.getX()) == 0 && Double.compare(t.getY(), f.getY()) == 0 &&
-                Double.compare(t.getZ(), f.getZ()) == 0) {
-            return;
-        }
-
-        if (plugin.getTagManager().isTagged(event.getPlayer().getUniqueId()) &&
-                !plugin.getHookManager().isPvpEnabledAt(t) && plugin.getHookManager().isPvpEnabledAt(f)) {
-            event.setCancelled(true);
         }
     }
 

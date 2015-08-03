@@ -10,6 +10,7 @@ import net.minelink.ctplus.listener.NpcListener;
 import net.minelink.ctplus.listener.PlayerHeadsListener;
 import net.minelink.ctplus.listener.PlayerListener;
 import net.minelink.ctplus.listener.TagListener;
+import net.minelink.ctplus.task.ForceFieldTask;
 import net.minelink.ctplus.task.SafeLogoutTask;
 import net.minelink.ctplus.task.TagUpdateTask;
 import net.minelink.ctplus.util.BarUtils;
@@ -110,6 +111,9 @@ public final class CombatTagPlus extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("PlayerHeads")) {
             Bukkit.getPluginManager().registerEvents(new PlayerHeadsListener(this), this);
         }
+
+        // Anti-SafeZone task
+        ForceFieldTask.run(this);
 
         // Periodic task for purging unused data
         Bukkit.getScheduler().runTaskTimer(this, new Runnable() {

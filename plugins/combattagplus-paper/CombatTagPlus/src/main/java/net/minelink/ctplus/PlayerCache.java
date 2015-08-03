@@ -2,6 +2,8 @@ package net.minelink.ctplus;
 
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -36,6 +38,10 @@ public final class PlayerCache {
 
     public Player getPlayer(String name) {
         return nameCache.get(name.toLowerCase());
+    }
+
+    public Collection<Player> getPlayers() {
+        return Collections.unmodifiableCollection(uuidCache.values());
     }
 
 }
