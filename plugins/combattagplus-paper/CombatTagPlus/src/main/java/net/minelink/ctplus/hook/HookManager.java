@@ -36,32 +36,36 @@ public final class HookManager {
     public boolean isPvpEnabledAt(Location location) {
         long currentTime = System.currentTimeMillis();
         BlockPosition position = new BlockPosition(location);
-        PvpBlock pvpBlock = pvpBlocks.get(position);
+        PvpBlock pvpBlock;
 
-        if (pvpBlock != null && pvpBlock.expiry > currentTime) {
-            return pvpBlock.enabled;
+        synchronized (pvpBlocks) {
+            pvpBlock = pvpBlocks.get(position);
+
+            if (pvpBlock != null && pvpBlock.expiry > currentTime) {
+                return pvpBlock.enabled;
+            }
+
+            pvpBlock = new PvpBlock(currentTime + 60000);
+            pvpBlocks.put(position, pvpBlock);
         }
 
-        boolean result = true;
         for (Hook hook : hooks) {
             if (!hook.isPvpEnabledAt(location)) {
-                result = false;
+                pvpBlock.enabled = false;
                 break;
             }
         }
 
-        pvpBlocks.put(position, new PvpBlock(result, currentTime + 60000));
-        return result;
+        return pvpBlock.enabled;
     }
 
     private static class PvpBlock {
 
-        private final boolean enabled;
-
         private final long expiry;
 
-        PvpBlock(boolean enabled, long expiry) {
-            this.enabled = enabled;
+        private boolean enabled = true;
+
+        PvpBlock(long expiry) {
             this.expiry = expiry;
         }
 
