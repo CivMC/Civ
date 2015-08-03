@@ -4,6 +4,7 @@ import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.Tag;
 import net.minelink.ctplus.event.PlayerCombatTagEvent;
 import net.minelink.ctplus.task.TagUpdateTask;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,6 +21,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
@@ -60,9 +62,10 @@ public final class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void broadcastKill(PlayerDeathEvent event) {
-        // Do nothing with kill message is blank
+        // Do nothing if both kill messages are blank
         String message = plugin.getSettings().getKillMessage();
-        if (message.isEmpty()) return;
+        String messageItem = plugin.getSettings().getKillMessageItem();
+        if (message.isEmpty() && messageItem.isEmpty()) return;
 
         Player player = event.getEntity();
         UUID playerId = player.getUniqueId();
@@ -91,9 +94,17 @@ public final class PlayerListener implements Listener {
             attacker = tag.getVictimName();
         }
 
+        // Use item-based kill message?
+        ItemStack item = p.getItemInHand();
+        if (item.getType() != Material.AIR) {
+            String name = WordUtils.capitalizeFully(item.getType().name().replace("_", " "));
+            message = messageItem.replace("{item}", name);
+        }
+
+        // Insert victim and attacker names into message
+        message = message.replace("{victim}", victim).replace("{attacker}", attacker);
+
         // Broadcast kill message
-        String item = p.getItemInHand().getType().toString().toLowerCase().replace("_", " ");
-        message = message.replace("{victim}", victim).replace("{attacker}", attacker).replace("{item}", item);
         Bukkit.broadcast(message, "ctplus.notify.kill");
     }
 
