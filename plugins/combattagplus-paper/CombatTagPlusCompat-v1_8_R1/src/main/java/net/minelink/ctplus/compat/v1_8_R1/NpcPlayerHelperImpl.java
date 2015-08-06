@@ -126,7 +126,7 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
         Player p = Bukkit.getPlayer(identity.getId());
         if (p != null && p.isOnline()) return;
 
-        WorldNBTStorage worldStorage = (WorldNBTStorage) npcPlayer.getWorld().getDataManager();
+        WorldNBTStorage worldStorage = (WorldNBTStorage) ((CraftWorld)Bukkit.getWorlds().get(0)).getHandle().getDataManager();
         NBTTagCompound playerNbt = worldStorage.getPlayerData(identity.getId().toString());
         if (playerNbt == null) return;
 
