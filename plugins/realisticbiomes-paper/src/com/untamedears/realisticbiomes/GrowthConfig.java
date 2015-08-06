@@ -256,28 +256,21 @@ protected String name;
 	    }
 	    rate *= biomeMultiplier.floatValue();
 		if (isGreenhouseEnabled && block.getLightFromBlocks() == (MAX_LIGHT_INTENSITY - 1)) {
+			boolean found = false;
 			for( Vector vec : adjacentBlocks ) {
 				Material mat = block.getLocation().add(vec).getBlock().getType();
 				if( mat == Material.GLOWSTONE || mat == Material.REDSTONE_LAMP_ON ) {
 					rate *= greenhouseRate;
+					found = true;
 					break;
 				}
 			}
+			if (!found) {
+				rate *= sunlightChecks(block);
+			}
 		}
 		else {
-			int sunlightIntensity;
-			if (block.getType().isTransparent()) {
-				sunlightIntensity = block.getLightFromSky();
-			} else {
-				sunlightIntensity = block.getRelative(BlockFace.UP).getLightFromSky();
-			}
-			// apply multiplier if the sunlight is not at maximum
-			if (sunlightIntensity < MAX_LIGHT_INTENSITY) {
-				rate *= notFullSunlightMultiplier;
-				if (needsSunlight) {
-					rate *= Math.pow((sunlightIntensity / MAX_LIGHT_INTENSITY), 3.0);
-				}
-			}
+			rate *= sunlightChecks(block);
 		}
 		// check the depth of the required 'soil' and add a bonus
 		if (soilMaxLayers > 0) {
@@ -301,6 +294,24 @@ protected String name;
 		}
 		return rate;
 			
+	}
+	
+	double sunlightChecks(Block block) {
+		double rate = 1.0;
+		int sunlightIntensity;
+		if (block.getType().isTransparent()) {
+			sunlightIntensity = block.getLightFromSky();
+		} else {
+			sunlightIntensity = block.getRelative(BlockFace.UP).getLightFromSky();
+		}
+		// apply multiplier if the sunlight is not at maximum
+		if (sunlightIntensity < MAX_LIGHT_INTENSITY) {
+			rate *= notFullSunlightMultiplier;
+			if (needsSunlight) {
+				rate *= Math.pow((sunlightIntensity / MAX_LIGHT_INTENSITY), 3.0);
+			}
+		}
+		return rate;
 	}
 	
 	@Override
