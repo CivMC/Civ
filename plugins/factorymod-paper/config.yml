@@ -3372,7 +3372,7 @@ production_recipes:
         amount: 512
       Melon Block:
         material: MELON_BLOCK
-        amount: 64
+        amount: 4
       Brown Mushroom:
         material: BROWN_MUSHROOM
         amount: 128
@@ -3388,7 +3388,7 @@ production_recipes:
         amount: 128
       Sugar Cane:
         material: SUGAR_CANE
-        amount: 512
+        amount: 16
       Yellow Flower:
         material: YELLOW_FLOWER
         amount: 32
@@ -3735,14 +3735,14 @@ production_recipes:
         amount: 512
       Cactus:
         material: CACTUS
-        amount: 256
+        amount: 16
       Cocoa:
         material: INK_SACK
         amount: 64
         durability: 3
       Melon Block:
         material: MELON_BLOCK
-        amount: 64
+        amount: 4
     outputs:
       XP Bottles:
         material: EXP_BOTTLE
@@ -4645,13 +4645,13 @@ production_recipes:
         amount: 256
       Cactus:
         material: CACTUS
-        amount: 512
+        amount: 32
       Wheat:
         material: WHEAT
         amount: 384
       Pumpkin:
         material: PUMPKIN
-        amount: 256
+        amount: 16
       Grass:
         material: LONG_GRASS
         amount: 128
@@ -4699,13 +4699,13 @@ production_recipes:
         amount: 512
       Sugar Cane:
         material: SUGAR_CANE
-        amount: 512
+        amount: 32
       Grass Blocks:
         material: GRASS
         amount: 32
       Pumpkin:
         material: PUMPKIN
-        amount: 256
+        amount: 16
       Nether Wart:
         material: NETHER_STALK
         amount: 128
@@ -4717,7 +4717,7 @@ production_recipes:
         amount: 128
       Melon Block:
         material: MELON_BLOCK
-        amount: 64
+        amount: 4
       Yellow Flower:
         material: YELLOW_FLOWER
         amount: 32
@@ -5485,10 +5485,10 @@ production_recipes:
         amount: 256
       Sugar Cane:
         material: SUGAR_CANE
-        amount: 256
+        amount: 16
       Pumpkin:
         material: PUMPKIN
-        amount: 128
+        amount: 8
     outputs:
       XP Bottles:
         material: EXP_BOTTLE
@@ -5504,14 +5504,14 @@ production_recipes:
         amount: 256
       Cactus:
         material: CACTUS
-        amount: 256
+        amount: 16
       Cocoa:
         material: INK_SACK
         amount: 64
         durability: 3
       Pumpkin:
         material: PUMPKIN
-        amount: 128
+        amount: 8
     outputs:
       XP Bottles:
         material: EXP_BOTTLE
@@ -5530,10 +5530,10 @@ production_recipes:
         amount: 256
       Sugar Cane:
         material: SUGAR_CANE
-        amount: 256
+        amount: 16
       Melon Block:
         material: MELON_BLOCK
-        amount: 64
+        amount: 4
     outputs:
       XP Bottles:
         material: EXP_BOTTLE
@@ -10786,7 +10786,7 @@ production_recipes:
          lore: Compacted Item
        Compacted Sugar Cane:
          material: SUGAR_CANE
-         amount: 256
+         amount: 16
          lore: Compacted Item
        Compacted Bread:
          material: BREAD
@@ -10807,7 +10807,7 @@ production_recipes:
          lore: Compacted Item
        Compacted Melons:
          material: MELON_BLOCK
-         amount: 32
+         amount: 2
          lore: Compacted Item
        Compacted Yellow Flowers:
          material: YELLOW_FLOWER
@@ -10840,7 +10840,7 @@ production_recipes:
          lore: Compacted Item
        Compacted Cacti:
          material: CACTUS
-         amount: 256
+         amount: 16
          lore: Compacted Item
        Compacted Wheat:
          material: WHEAT
@@ -10848,7 +10848,7 @@ production_recipes:
          lore: Compacted Item
        Compacted Pumpkins:
          material: PUMPKIN
-         amount: 128
+         amount: 8
          lore: Compacted Item
        Compacted Grass:
          material: LONG_GRASS
@@ -10908,11 +10908,11 @@ production_recipes:
          lore: Compacted Item
        Compacted Sugar Cane:
          material: SUGAR_CANE
-         amount: 256
+         amount: 12
          lore: Compacted Item
        Compacted Pumpkins:
          material: PUMPKIN
-         amount: 128
+         amount: 8
          lore: Compacted Item
        Compacted Nether Warts:
          material: NETHER_STALK
@@ -10924,7 +10924,7 @@ production_recipes:
          lore: Compacted Item
        Compacted Melons:
          material: MELON_BLOCK
-         amount: 32
+         amount: 2
          lore: Compacted Item
        Compacted Red Mushrooms:
          material: RED_MUSHROOM
