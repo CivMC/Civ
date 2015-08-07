@@ -260,6 +260,7 @@ realistic_biomes:
    inherit: tree
    persistent_growth_period: 6
    biomes:
+    cold: 0.75
     cold_forest: 2.0
     mountain: 0.75
   
