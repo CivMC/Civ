@@ -10008,7 +10008,7 @@ production_recipes:
       Feather Falling 4:
         type: PROTECTION_FALL
         level: 4
-        probability: 0.25
+        probability: 0.20
       Protection 4:
         type: PROTECTION_ENVIRONMENTAL
         level: 4
@@ -10029,6 +10029,11 @@ production_recipes:
         type: PROTECTION_EXPLOSIONS
         level: 4
         probability: 0.10
+      Depth Strider 3:
+        type: DEPTH_STRIDER
+        level: 3
+        probability: 0.05
+
   Create_Diamond_Chestplate:
     name: Create Diamond Chestplate
     production_time: 40
