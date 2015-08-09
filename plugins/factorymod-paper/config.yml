@@ -3388,7 +3388,7 @@ production_recipes:
         amount: 128
       Sugar Cane:
         material: SUGAR_CANE
-        amount: 16
+        amount: 32
       Yellow Flower:
         material: YELLOW_FLOWER
         amount: 32
