@@ -150,7 +150,7 @@ realistic_biomes:
 
   MELON_BLOCK:
    inherit: crop
-   persistent_growth_period: 0.5
+   persistent_growth_period: 12
    soil_max_layers: 0
    base_rate: 0.32
    biomes:
@@ -160,7 +160,7 @@ realistic_biomes:
 
   PUMPKIN:
    inherit: crop
-   persistent_growth_period: 0.5
+   persistent_growth_period: 12
    soil_max_layers: 0
    base_rate: 0.32
    biomes:
@@ -177,14 +177,14 @@ realistic_biomes:
 
   CACTUS:
    inherit: column
-   persistent_growth_period: 0.5
+   persistent_growth_period: 12
    biomes:
     hot_dry: 1.0
     HELL: 0.5
 
   SUGAR_CANE_BLOCK:
    inherit: column
-   persistent_growth_period: 0.5
+   persistent_growth_period: 12
    biomes:
     hot_rainy: 1.0
     SWAMPLAND: 0.5
