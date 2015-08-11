@@ -48,7 +48,7 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
         }
 
         worldServer.addEntity(npcPlayer);
-        minecraftServer.getPlayerList().a(npcPlayer, (WorldServer) null);
+        worldServer.getPlayerChunkMap().addPlayer(npcPlayer);
 
         return npcPlayer.getBukkitEntity();
     }
@@ -61,16 +61,16 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
             throw new IllegalArgumentException();
         }
 
-        NpcPlayer npcPlayer = (NpcPlayer) entity;
-
         for (Object o : MinecraftServer.getServer().getPlayerList().players) {
             if (!(o instanceof EntityPlayer) || o instanceof NpcPlayer) continue;
 
-            PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, npcPlayer);
+            PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, entity);
             ((EntityPlayer) o).playerConnection.sendPacket(packet);
         }
 
-        ((CraftWorld) player.getLocation().getWorld()).getHandle().removeEntity(entity);
+        WorldServer worldServer = MinecraftServer.getServer().getWorldServer(entity.dimension);
+        worldServer.removeEntity(entity);
+        worldServer.getPlayerChunkMap().removePlayer(entity);
     }
 
     @Override
@@ -128,7 +128,7 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
         Player p = Bukkit.getPlayer(identity.getId());
         if (p != null && p.isOnline()) return;
 
-        WorldNBTStorage worldStorage = (WorldNBTStorage) ((CraftWorld)Bukkit.getWorlds().get(0)).getHandle().getDataManager();
+        WorldNBTStorage worldStorage = (WorldNBTStorage) ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getDataManager();
         NBTTagCompound playerNbt = worldStorage.getPlayerData(identity.getId().toString());
         if (playerNbt == null) return;
 

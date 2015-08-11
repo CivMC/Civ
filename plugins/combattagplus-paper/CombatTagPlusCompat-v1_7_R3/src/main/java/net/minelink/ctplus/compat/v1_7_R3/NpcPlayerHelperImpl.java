@@ -37,7 +37,7 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
         npcPlayer.invulnerableTicks = 0;
 
         worldServer.addEntity(npcPlayer);
-        minecraftServer.getPlayerList().a(npcPlayer, null);
+        worldServer.getPlayerChunkMap().addPlayer(npcPlayer);
 
         return npcPlayer.getBukkitEntity();
     }
@@ -50,7 +50,9 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
             throw new IllegalArgumentException();
         }
 
-        ((CraftWorld) player.getLocation().getWorld()).getHandle().removeEntity(entity);
+        WorldServer worldServer = MinecraftServer.getServer().getWorldServer(entity.dimension);
+        worldServer.removeEntity(entity);
+        worldServer.getPlayerChunkMap().removePlayer(entity);
     }
 
     @Override
@@ -108,7 +110,7 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
         Player p = Bukkit.getPlayer(identity.getId());
         if (p != null && p.isOnline()) return;
 
-        WorldNBTStorage worldStorage = (WorldNBTStorage) ((CraftWorld)Bukkit.getWorlds().get(0)).getHandle().getDataManager();
+        WorldNBTStorage worldStorage = (WorldNBTStorage) ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getDataManager();
         NBTTagCompound playerNbt = worldStorage.getPlayerData(identity.getId().toString());
         if (playerNbt == null) return;
 

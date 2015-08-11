@@ -51,6 +51,7 @@ public final class NpcManager {
         entity.addPotionEffects(player.getActivePotionEffects());
 
         // Should fix some visual glitches, such as health bars displaying zero
+        // TODO: Find another solution. This one causes the player to be added to the NMS PlayerList, that's not ideal.
         entity.teleport(player, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
         // Send equipment packets to nearby players
