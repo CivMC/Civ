@@ -3,6 +3,7 @@ package com.untamedears.realisticbiomes.listener;
 import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,6 +13,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.GrowthMap;
 import com.untamedears.realisticbiomes.RealisticBiomes;
@@ -54,6 +57,10 @@ public class PlayerListener implements Listener {
 		if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			// hit the ground with a seed, or other farm product: get the adjusted crop growth
 			// rate as if that crop was planted on top of the block
+			
+			if (((List<ItemStack>)block.getDrops()).get(0).getType() == event.getMaterial()) {
+				return;
+			}
 			
 			growthConfig = MaterialAliases.getConfig(growthConfigs, event.getItem());
 			if (growthConfig == null) {
