@@ -1189,7 +1189,7 @@ public class JukeAlertLogger {
             final Snitch snitch = JukeAlert.getInstance().getSnitchManager().getSnitch(snitchID);
             final String name = (snitch == null) ? "" : snitch.getName();
 
-            final String initiator = ChatFiller.fillString(set.getString("snitch_logged_initiated_user"), 20.0);
+            final String initiator = ChatFiller.fillString(set.getString("snitch_logged_initiated_user"), 22.0);
             final String victim = set.getString("snitch_logged_victim_user");
             final int actionValue = set.getByte("snitch_logged_action");
             final LoggedAction action = LoggedAction.getFromId(actionValue);
@@ -1294,7 +1294,7 @@ public class JukeAlertLogger {
                     actionText = name;
                     break;
             }
-            actionString = ChatFiller.fillString(actionString, 20.0);
+            actionString = ChatFiller.fillString(actionString, 22.0);
             final String formatting = "  %s%s %s%s%s %s";
             resultString = String.format(formatting, ChatColor.GOLD, initiator, actionColor, actionString, ChatColor.WHITE, actionText);
         } catch (SQLException ex) {
