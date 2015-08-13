@@ -3,6 +3,9 @@ package com.untamedears.realisticbiomes.listener;
 import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,6 +15,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.GrowthMap;
 import com.untamedears.realisticbiomes.RealisticBiomes;
@@ -25,8 +30,7 @@ public class PlayerListener implements Listener {
 	
 	private RealisticBiomes plugin;
 	
-	
-	
+	private static ConcurrentHashMap<UUID, Long> suppression = new ConcurrentHashMap<UUID, Long>();
 	
 	private GrowthMap growthConfigs;
 	
@@ -45,9 +49,18 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
-		Plant plant = null;
-		
 		Block block = event.getClickedBlock();
+		
+		if (((List<ItemStack>)block.getDrops()).get(0).getType() == event.getMaterial()) {
+			suppression.put(event.getPlayer().getUniqueId(), System.currentTimeMillis());
+			return;
+		}
+		
+		if(System.currentTimeMillis() - suppression.get(event.getPlayer().getUniqueId()) < 1000) {
+			return;
+		}
+		
+		Plant plant = null;
 		
 		GrowthConfig growthConfig;
 		
