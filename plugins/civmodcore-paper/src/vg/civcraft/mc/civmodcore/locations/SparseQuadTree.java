@@ -58,18 +58,18 @@ public class SparseQuadTree {
       return;
     }
     if (box.qtXMin() - borderSize_ <= midX_) {
-      if (box.qtYMin() - borderSize_ <= midY_) {
+      if (box.qtZMin() - borderSize_ <= midZ_) {
         nw_.add(box);
       }
-      if (box.qtYMax() + borderSize_ > midY_) {
+      if (box.qtZMax() + borderSize_ > midZ_) {
         sw_.add(box);
       }
     }
     if (box.qtXMax() + borderSize_ > midX_) {
-      if (box.qtYMin() - borderSize_ <= midY_) {
+      if (box.qtZMin() - borderSize_ <= midZ_) {
         ne_.add(box);
       }
-      if (box.qtYMax() + borderSize_ > midY_) {
+      if (box.qtZMax() + borderSize_ > midZ_) {
         se_.add(box);
       }
     }
@@ -94,18 +94,18 @@ public class SparseQuadTree {
       return;
     }
     if (box.qtXMin() - borderSize_ <= midX_) {
-      if (box.qtYMin() - borderSize_ <= midY_) {
+      if (box.qtZMin() - borderSize_ <= midZ_) {
         nw_.remove(box);
       }
-      if (box.qtYMax() + borderSize_ > midY_) {
+      if (box.qtZMax() + borderSize_ > midZ_) {
         sw_.remove(box);
       }
     }
     if (box.qtXMax() + borderSize_ > midX_) {
-      if (box.qtYMin() - borderSize_ <= midY_) {
+      if (box.qtZMin() - borderSize_ <= midZ_) {
         ne_.remove(box);
       }
-      if (box.qtYMax() + borderSize_ > midY_) {
+      if (box.qtZMax() + borderSize_ > midZ_) {
         se_.remove(box);
       }
     }
@@ -131,14 +131,14 @@ public class SparseQuadTree {
       if (includeBorder) {
         for (QTBox box : boxes_) {
           if (box.qtXMin() - border <= x && box.qtXMax() + border >= x
-              && box.qtYMin() - border <= y && box.qtYMax() + border >= y) {
+              && box.qtZMin() - border <= y && box.qtZMax() + border >= y) {
             result.add(box);
           }
         }
       } else {
         for (QTBox box : boxes_) {
           if (box.qtXMin() <= x && box.qtXMax() >= x
-              && box.qtYMin() <= y && box.qtYMax() >= y) {
+              && box.qtZMin() <= y && box.qtZMax() >= y) {
             result.add(box);
           }
         }
@@ -146,13 +146,13 @@ public class SparseQuadTree {
       return result;
     }
     if (x <= midX_) {
-      if (y <= midY_) {
+      if (y <= midZ_) {
         return nw_.find(x, y, includeBorder);
       } else {
         return sw_.find(x, y, includeBorder);
       }
     }
-    if (y <= midY_) {
+    if (y <= midZ_) {
       return ne_.find(x, y, includeBorder);
     }
     return se_.find(x, y, includeBorder);
@@ -174,23 +174,23 @@ public class SparseQuadTree {
       switch (quadrant_) {
         case NW:
           x = box.qtXMin();
-          y = box.qtYMin();
+          y = box.qtZMin();
           break;
         case NE:
           x = box.qtXMax();
-          y = box.qtYMin();
+          y = box.qtZMin();
           break;
         case SW:
           x = box.qtXMin();
-          y = box.qtYMax();
+          y = box.qtZMax();
           break;
         case SE:
           x = box.qtXMax();
-          y = box.qtYMax();
+          y = box.qtZMax();
           break;
         default:
           x = box.qtXMid();
-          y = box.qtYMid();
+          y = box.qtZMid();
           break;
       }
       xAxis.add(x);
@@ -209,25 +209,25 @@ public class SparseQuadTree {
     ender = (yAxis.size() / 2) - 1;
     for (Integer i : yAxis) {
       if (counter >= ender) {
-        midY_ = i;
+        midZ_ = i;
         break;
       }
       ++counter;
     }
     for (QTBox box : boxes_) {
       if (box.qtXMin() - borderSize_ <= midX_) {
-        if (box.qtYMin() - borderSize_ <= midY_) {
+        if (box.qtZMin() - borderSize_ <= midZ_) {
           nw_.add(box, true);
         }
-        if (box.qtYMax() + borderSize_ > midY_) {
+        if (box.qtZMax() + borderSize_ > midZ_) {
           sw_.add(box, true);
         }
       }
       if (box.qtXMax() + borderSize_ > midX_) {
-        if (box.qtYMin() - borderSize_ <= midY_) {
+        if (box.qtZMin() - borderSize_ <= midZ_) {
           ne_.add(box, true);
         }
-        if (box.qtYMax() + borderSize_ > midY_) {
+        if (box.qtZMax() + borderSize_ > midZ_) {
           se_.add(box, true);
         }
       }
@@ -273,7 +273,7 @@ public class SparseQuadTree {
 
   public String boxCoord(QTBox box) {
     return String.format("(%d,%d %d,%d)",
-        box.qtXMin(), box.qtYMin(), box.qtXMax(), box.qtYMax());
+        box.qtXMin(), box.qtZMin(), box.qtXMax(), box.qtZMax());
   }
 
   @Override
@@ -288,7 +288,7 @@ public class SparseQuadTree {
       sb.append(']');
       return sb.toString();
     }
-    sb.append(String.format("{{%d,%d}", midX_, midY_));
+    sb.append(String.format("{{%d,%d}", midX_, midZ_));
     sb.append(nw_.toString());
     sb.append(',');
     sb.append(sw_.toString());
@@ -307,7 +307,7 @@ public class SparseQuadTree {
   protected Integer borderSize_ = 0;
   protected Quadrant quadrant_;
   protected Integer midX_ = null;
-  protected Integer midY_ = null;
+  protected Integer midZ_ = null;
   protected int size_;
   protected int maxNodeSize_ = MAX_NODE_SIZE;
   protected Set<QTBox> boxes_;

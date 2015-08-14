@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.command;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public abstract class PlayerCommand implements Command{
 
@@ -60,5 +61,10 @@ public abstract class PlayerCommand implements Command{
 	public void setArguments(int min, int max){
 		this.min = min;
 		this.max = max;
+	}
+	
+	public boolean sendPlayerMessage(Player p, String m, boolean flag) {
+		p.sendMessage(m);
+		return flag;
 	}
 }
