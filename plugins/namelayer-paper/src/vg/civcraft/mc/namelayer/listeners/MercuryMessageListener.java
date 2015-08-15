@@ -29,10 +29,10 @@ public class MercuryMessageListener implements Listener{
 	private NameLayerPlugin nl = NameLayerPlugin.getInstance();
 	
 	public MercuryMessageListener() {
+		MercuryAPI.instance.registerPluginMessageChannel("namelayer");
 		NameLayerPlugin.setOnlineAllServers(new HashMap<String,String>());
 		MercuryAPI.instance.sendMessage("all", "whoonline "+MercuryPlugin.name, "namelayer");
 		nl.getLogger().info("Requested player lists");
-		MercuryAPI.instance.registerPluginMessageChannel("namelayer", "whoonline", "login", "logoff", "sync", "recache", "delete", "merge", "transfer");
 	}
 
 	@SuppressWarnings("deprecation")
