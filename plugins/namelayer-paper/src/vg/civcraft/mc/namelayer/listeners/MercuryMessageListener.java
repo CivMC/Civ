@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.mercury.MercuryPlugin;
 import vg.civcraft.mc.mercury.events.AsyncPluginBroadcastMessageEvent;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -29,8 +30,9 @@ public class MercuryMessageListener implements Listener{
 	
 	public MercuryMessageListener() {
 		NameLayerPlugin.setOnlineAllServers(new HashMap<String,String>());
-		MercuryPlugin.handler.sendMessage("all", "whoonline "+MercuryPlugin.name, "namelayer");
+		MercuryAPI.instance.sendMessage("all", "whoonline "+MercuryPlugin.name, "namelayer");
 		nl.getLogger().info("Requested player lists");
+		MercuryAPI.instance.registerPluginMessageChannel("whoonline", "login", "logoff", "sync", "recache", "delete", "merge", "transfer");
 	}
 
 	@SuppressWarnings("deprecation")
