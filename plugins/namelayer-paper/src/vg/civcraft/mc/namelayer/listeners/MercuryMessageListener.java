@@ -32,7 +32,7 @@ public class MercuryMessageListener implements Listener{
 		NameLayerPlugin.setOnlineAllServers(new HashMap<String,String>());
 		MercuryAPI.instance.sendMessage("all", "whoonline "+MercuryPlugin.name, "namelayer");
 		nl.getLogger().info("Requested player lists");
-		MercuryAPI.instance.registerPluginMessageChannel("whoonline", "login", "logoff", "sync", "recache", "delete", "merge", "transfer");
+		MercuryAPI.instance.registerPluginMessageChannel("namelayer", "whoonline", "login", "logoff", "sync", "recache", "delete", "merge", "transfer");
 	}
 
 	@SuppressWarnings("deprecation")

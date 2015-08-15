@@ -61,7 +61,7 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.mercury</groupId>
 			<artifactId>Mercury</artifactId>
-			<version>1.0.1-13</version>
+			<version>[1.0.1,)</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -69,13 +69,6 @@
 			<artifactId>CivModCore</artifactId>
 			<version>[1.0.1,)</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>vg.civcraft.mc.namelayernms</groupId>
-			<artifactId>NameLayerNMS</artifactId>
-			<version>1.0.0</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.namelayernms</groupId>
