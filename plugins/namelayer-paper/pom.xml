@@ -29,7 +29,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<finalName>${project.artifactId}</finalName>
 					<filters>
 						<filter>
 							<artifact>namelayernms</artifact>
