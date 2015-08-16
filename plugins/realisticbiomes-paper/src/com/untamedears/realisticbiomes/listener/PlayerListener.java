@@ -4,8 +4,6 @@ import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,7 +28,8 @@ public class PlayerListener implements Listener {
 	
 	private RealisticBiomes plugin;
 	
-	private static ConcurrentHashMap<UUID, Long> suppression = new ConcurrentHashMap<UUID, Long>();
+	
+	
 	
 	private GrowthMap growthConfigs;
 	
@@ -49,24 +48,19 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
-		Block block = event.getClickedBlock();
-		
-		if (((List<ItemStack>)block.getDrops()).get(0).getType() == event.getMaterial()) {
-			suppression.put(event.getPlayer().getUniqueId(), System.currentTimeMillis());
-			return;
-		}
-		
-		if(System.currentTimeMillis() - suppression.get(event.getPlayer().getUniqueId()) < 1000) {
-			return;
-		}
-		
 		Plant plant = null;
+		
+		Block block = event.getClickedBlock();
 		
 		GrowthConfig growthConfig;
 		
 		if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			// hit the ground with a seed, or other farm product: get the adjusted crop growth
 			// rate as if that crop was planted on top of the block
+			
+			if (((List<ItemStack>)block.getDrops()).get(0).getType() == event.getMaterial()) {
+				return;
+			}
 			
 			growthConfig = MaterialAliases.getConfig(growthConfigs, event.getItem());
 			if (growthConfig == null) {
