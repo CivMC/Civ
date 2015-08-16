@@ -90,7 +90,11 @@ public class PlayerListener implements Listener {
 			}
 			
 		} else {
-			// right clicked without stick or bone, do nothing
+			// right clicked without stick, bone, or plant item: do nothing
+			return;
+		}
+		
+		if (growthConfig.getType() == GrowthConfig.Type.FISHING_DROP) {
 			return;
 		}
 		
@@ -161,11 +165,6 @@ public class PlayerListener implements Listener {
 			String rateType;
 			if (growthConfig.getType() == GrowthConfig.Type.ENTITY) {
 				rateType = "Spawn rate";
-			} else if (growthConfig.getType() == GrowthConfig.Type.FISHING_DROP) {
-				if (growthAmount == 0.0) {
-					return; // don't spam players clicking things unless it can actually be fished
-				}
-				rateType = "Fishing rate";
 			} else {
 				rateType = "Growth rate";
 			}
