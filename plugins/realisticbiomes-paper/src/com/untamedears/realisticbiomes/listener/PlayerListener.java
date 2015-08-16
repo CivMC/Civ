@@ -49,6 +49,10 @@ public class PlayerListener implements Listener {
 		
 		Block block = event.getClickedBlock();
 		
+		if (MaterialAliases.getBlockFromItem(event.getMaterial()) == block.getType()) {
+			return;
+		}
+		
 		GrowthConfig growthConfig;
 		
 		if (event.getAction() == Action.LEFT_CLICK_BLOCK) {

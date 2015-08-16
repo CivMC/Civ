@@ -47,6 +47,10 @@ public class MaterialAliases {
 
 		materialAliases.put(Material.FISHING_ROD, Material.RAW_FISH);
 	}
+	
+	public static Material getBlockFromItem(Material material) {
+		return materialAliases.get(material);
+	}
 
 	/**
 	 * There is a bug in spigot/bukkit, where the species of a sapling is retrieved the
