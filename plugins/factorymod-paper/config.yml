@@ -881,9 +881,10 @@ production_factories:
         material: COAL
         durability: 1
     inputs:
-      Diamonds:
-        material: DIAMOND
-        amount: 130
+      Bedrock:
+        material: BEDROCK 
+        amount: 64
+        lore: 'Admin Crimes Only'
     recipes:
       - Nether_Decraft_Crate_of_Acacia_Sapling
       - Nether_Decraft_Crate_of_Baked_Potatoes
@@ -914,9 +915,10 @@ production_factories:
       - Nether_Decraft_Crate_of_Yellow_Flower
     repair_multiple: 6
     repair_inputs:
-      Diamonds:
+      Bedrock:
         material: DIAMOND
-        amount: 2
+        amount: 64
+        lore: 'Admin Crimes Only'
   Diamond_Cauldron:
     name: Diamond Cauldron
     fuel:
