@@ -913,10 +913,10 @@ production_factories:
       - Nether_Decraft_Crate_of_Vine
       - Nether_Decraft_Crate_of_Wheat
       - Nether_Decraft_Crate_of_Yellow_Flower
-    repair_multiple: 6
+    repair_multiple: 54
     repair_inputs:
       Bedrock:
-        material: DIAMOND
+        material: BEDROCK
         amount: 64
         lore: 'Admin Crimes Only'
   Diamond_Cauldron:
