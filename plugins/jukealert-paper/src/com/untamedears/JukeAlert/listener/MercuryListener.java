@@ -6,12 +6,14 @@ import java.util.List;
 
 
 
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.mercury.events.AsyncPluginBroadcastMessageEvent;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -25,6 +27,7 @@ public class MercuryListener implements Listener{
 	private GroupManager gm = NameAPI.getGroupManager();
 	
 	public MercuryListener(){
+		MercuryAPI.instance.registerPluginMessageChannel(Mercury.getChannels());
 		for (String x: Mercury.getChannels())
 			channels.add(x);
 	}
