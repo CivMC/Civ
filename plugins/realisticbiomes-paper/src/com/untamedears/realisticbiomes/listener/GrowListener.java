@@ -2,6 +2,7 @@ package com.untamedears.realisticbiomes.listener;
 
 
 import org.bukkit.DyeColor;
+import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
@@ -253,7 +254,11 @@ public class GrowListener implements Listener {
 			return;	
 		}
 		
-		plugin.getPlantManager().addPlant(block, new Plant(0.0f, -1.0f));
+		if (growthConfig.getRate(block) > 0.0d) {
+			plugin.getPlantManager().addPlant(block, new Plant(0.0f, -1.0f));
+		} else {
+			block.getWorld().playEffect(block.getLocation(), Effect.VILLAGER_THUNDERCLOUD, 1, 4);
+		}
 	}
 	
 	@EventHandler
