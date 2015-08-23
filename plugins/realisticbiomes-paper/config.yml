@@ -250,12 +250,12 @@ realistic_biomes:
    biomes:
     forest: 2.0
     PLAINS: 0.25
-  
+
   # BIRCH has a (rate) chance of growing into this version:
   TALL_BIRCH:
    inherit: BIRCH
    base_rate: 0.04
-   
+
   REDWOOD:
    inherit: tree
    persistent_growth_period: 6
@@ -263,16 +263,16 @@ realistic_biomes:
     cold: 0.75
     cold_forest: 2.0
     mountain: 0.75
-  
+
   # REDWOOD has a (rate) chance of growing into this version:
   TALL_REDWOOD:
    base_rate: 0.04
-  
+
   # 2x2 array of redwood saplings
   MEGA_REDWOOD:
    inherit: REDWOOD
    persistent_growth_period: 6
-  
+
   # generic sapling grows into this version ONLY in swampland:
   SWAMP:
    inherit: tree
@@ -287,17 +287,17 @@ realistic_biomes:
    persistent_growth_period: 6
    biomes:
     hot_rainy: 1.0
-  
+
   # 2x2 array of jungle saplings
   JUNGLE:
    inherit: SMALL_JUNGLE
    persistent_growth_period: 6
-  
+
   # SMALL_JUNGLE has a (rate) chance of growing into this (rather annoying) bush:
   JUNGLE_BUSH:
    inherit: SMALL_JUNGLE
    base_rate: 0.01
-   
+
   ACACIA:
    inherit: tree
    persistent_growth_period: 6
@@ -306,7 +306,7 @@ realistic_biomes:
     PLAINS: 1.0
     mushroom: 0.0
     freshwater: 0.0
-    
+
   DARK_OAK:
    inherit: tree
    persistent_growth_period: 6
