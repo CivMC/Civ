@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 
@@ -25,13 +26,21 @@ public class ClassUtility {
 		        ClassPath path = ClassPath.from(classloader);
 
 		        for (ClassPath.ClassInfo info : path.getTopLevelClassesRecursive(packageName)) {
-		        	Class clazz = Class.forName(info.getName(), true, classloader);
+		        	Class clazz = null;
+					try {
+						clazz = Class.forName(info.getName(), true, classloader);
+					} catch (ClassNotFoundException e) {
+						plugin.getLogger().log(Level.INFO, "CivModCore failed to find class " + info.getName() + ", you could be missing a dependency. "
+								+ "This message is more of an info message useful for debugging. If you see this message you can usually ignore it "
+								+ "unless the plugin itself throws an error.");
+						continue;
+					}
 		        	if(ofType==null || ofType.isAssignableFrom(clazz)){
 			        	classes.add(clazz);
 		        	}
 		        }
 	    	}
-	    } catch (ClassNotFoundException | IOException e) {
+	    } catch (IOException e) {
 	    	e.printStackTrace();
 	    }
 		return classes;
