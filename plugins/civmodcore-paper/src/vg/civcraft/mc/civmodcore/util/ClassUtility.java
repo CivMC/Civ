@@ -12,7 +12,7 @@ public class ClassUtility {
 	public static ArrayList<Class<?>> GetClassesForPlugin(ACivMod plugin){
 		return GetClassesForPlugin(plugin, null);
 	}
-	public  static ArrayList<Class<?>> GetClassesForPlugin(ACivMod plugin, Class<?> ofType){
+	public  static ArrayList<Class<?>> GetClassesForPlugin(ACivMod plugin, Class<?> ofType) {
 		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
 		try {
 	    	Package pack= plugin.getClass().getPackage();
@@ -29,8 +29,8 @@ public class ClassUtility {
 		        	Class clazz = null;
 					try {
 						clazz = Class.forName(info.getName(), true, classloader);
-					} catch (ClassNotFoundException e) {
-						plugin.getLogger().log(Level.INFO, "CivModCore failed to find class " + info.getName() + ", you could be missing a dependency. "
+					} catch (NoClassDefFoundError e) {
+						plugin.getLogger().log(Level.INFO, "CivModCore failed to load class " + info.getName() + ", you could be missing a dependency. "
 								+ "This message is more of an info message useful for debugging. If you see this message you can usually ignore it "
 								+ "unless the plugin itself throws an error.");
 						continue;
@@ -40,7 +40,7 @@ public class ClassUtility {
 		        	}
 		        }
 	    	}
-	    } catch (IOException e) {
+	    } catch (ClassNotFoundException | IOException e) {
 	    	e.printStackTrace();
 	    }
 		return classes;
