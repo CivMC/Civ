@@ -6685,7 +6685,7 @@ production_recipes:
     inputs:
       Iron Ingot:
         material: IRON_INGOT
-        amount: 54
+        amount: 18
     outputs:
       Iron Door:
         material: IRON_DOOR
