@@ -2443,6 +2443,45 @@ production_factories:
         amount: 2
       Diamond:
         material: DIAMOND
+  Igneous_Stone_Smelter:
+    name: Igneous Stone smelter
+    fuel:
+      Charcoal:
+        material: COAL
+        durability: 1
+    inputs:
+      Stone:
+        material: STONE
+        amount: 1024
+        durability: 0
+      Gravel:
+        material: GRAVEL
+        amount: 512
+      Flint:
+        material: FLINT
+        amount: 256
+      Quartz:
+        material: QUARTZ
+        amount: 256
+    recipes:
+      - Smelt_Granite
+      - Smelt_Diorite
+      - Smelt_Andesite
+    repair_multiple: 10
+    repair_inputs:
+      Stone:
+        material: STONE
+        amount: 10
+        durability: 0
+      Gravel:
+        material: GRAVEL
+        amount: 5
+      Flint:
+        material: FLINT
+        amount: 2
+      Quartz:
+        material: QUARTZ
+        amount: 2
   Stone_Brick_Smelter:
     name: Fancy Stone Brick Smelter
     fuel:
@@ -7678,6 +7717,51 @@ production_recipes:
         material: MONSTER_EGG
         durability: 56
         amount: 4
+  Smelt_Diorite:
+    name: Smelt Diorite
+    production_time: 32
+    inputs:
+      Cobblestone:
+        material: COBBLESTONE
+        amount: 256
+      Quartz:
+        material: QUARTZ
+        amount: 32
+    outputs:
+      Diorite:
+        material: STONE
+        amount: 256
+        durability: 3
+  Smelt_Granite:
+    name: Smelt Granite
+    production_time: 32
+    inputs:
+      Cobblestone:
+        material: COBBLESTONE
+        amount: 256
+      Dirt:
+        material: DIRT
+        amount: 128
+    outputs:
+      Granite:
+        material: STONE
+        amount: 256
+        durability: 1
+  Smelt_Andesite:
+    name: Smelt Andesite
+    production_time: 32
+    inputs:
+      Cobblestone:
+        material: COBBLESTONE
+        amount: 256
+      Gravel:
+        material: GRAVEL
+        amount: 128
+    outputs:
+      Andesite:
+        material: STONE
+        amount: 256
+        durability: 5
   Compact_Ice:
     name: Compact Ice
     production_time: 32
