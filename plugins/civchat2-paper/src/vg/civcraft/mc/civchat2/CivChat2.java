@@ -14,6 +14,7 @@ import vg.civcraft.mc.civchat2.utility.CivChat2Executor;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civchat2.zipper.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
+import vg.civcraft.mc.mercury.MercuryAPI;
 
 /**
  * @author jjj5311
@@ -63,6 +64,9 @@ public class CivChat2 extends JavaPlugin{
 		registerEvents();
 		
 		getCommand("say").setExecutor(instance.executor);
+		
+		if (isMercuryEnabled) 
+			MercuryAPI.instance.registerPluginMessageChannel("civchat2");
 	}
 	
 	public void onDisable(){
