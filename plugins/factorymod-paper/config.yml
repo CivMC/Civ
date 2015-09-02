@@ -1332,6 +1332,7 @@ production_factories:
       - Smelt_Glass_Panes
       - Smelt_Bottles
       - Smelt_Red_Sand
+      - Smelt_Red_Sandstone
       - Smelt_Glass_From_Sandstone
     repair_multiple: 26
     repair_inputs:
@@ -5155,6 +5156,19 @@ production_recipes:
         material: SAND
         amount: 64
         durability: 1
+  Smelt_Red_Sandstone:
+    name: Smelt Red Sandstone
+    production_time: 32
+    inputs:
+      Red Sand:
+        material: SAND
+        amount: 512
+        durability: 1
+    outputs:
+      Red Sandstone:
+        material: RED_SANDSTONE
+        amount: 384
+        durability: 0
   Smelt_Glass_From_Sandstone:
     name: Smelt Glass From Sandstone
     production_time: 32
