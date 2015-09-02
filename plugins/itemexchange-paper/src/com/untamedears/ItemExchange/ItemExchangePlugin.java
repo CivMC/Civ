@@ -54,6 +54,7 @@ public class ItemExchangePlugin extends JavaPlugin {
 	public static final Map<String, String> ENCHANTMENT_NAME = new HashMap<String, String>();
 	// Specifics of appeareance of ItemExchange Rules
 	public static final ItemStack ITEM_RULE_ITEMSTACK = new ItemStack(Material.STONE_BUTTON, 1);
+	public static final Material ITEM_RULE_MATERIAL = ITEM_RULE_ITEMSTACK.getType();
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		return commandHandler.dispatch(sender, label, args);

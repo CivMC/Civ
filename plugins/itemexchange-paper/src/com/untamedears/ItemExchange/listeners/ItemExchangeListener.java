@@ -129,6 +129,9 @@ public class ItemExchangeListener implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	public void onInventoryMove(InventoryMoveItemEvent event) {
 		ItemStack item = event.getItem();
+		if (item.getType() != ItemExchangePlugin.ITEM_RULE_MATERIAL) {
+			return;
+		}
 		
 		try {
 			ExchangeRule.parseRuleBlock(item);
@@ -152,6 +155,9 @@ public class ItemExchangeListener implements Listener {
 		}
 		
 		ItemStack item = event.getItem().getItemStack();
+		if (item.getType() != ItemExchangePlugin.ITEM_RULE_MATERIAL) {
+			return;
+		}
 		
 		try {
 			ExchangeRule.parseRuleBlock(item);
