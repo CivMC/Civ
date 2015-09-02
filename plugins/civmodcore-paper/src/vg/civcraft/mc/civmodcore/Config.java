@@ -58,7 +58,7 @@ public class Config {
   private void scanAnnotations(Class clazz) {
     try {
 //   plugin_.info("loading annotations for: "+clazz.getName());
-      for (Method method : clazz.getMethods()) {
+      for (Method method : clazz.getDeclaredMethods()) {
 
 //        plugin_.info("scanning: "+method.getName());
         CivConfig bug = method.getAnnotation(CivConfig.class);
