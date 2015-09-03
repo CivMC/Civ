@@ -14,23 +14,21 @@ import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
+import com.github.igotyou.FactoryMod.Factorys.ABaseFactory;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.managers.FactoryManagerService;
-import com.github.igotyou.FactoryMod.managers.ProductionFactoryManager;
 
 public class RedstoneListener implements Listener {
 	private FactoryManagerService factoryMan;
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	//this is a lazy fix...
-	private ProductionFactoryManager productionMan;
 	
 	/**
 	 * Constructor
 	 */
-	public RedstoneListener(FactoryManagerService factoryManager, ProductionFactoryManager productionManager)
+	public RedstoneListener(FactoryManagerService manager)
 	{
-		this.factoryMan = factoryManager;
-		this.productionMan = productionManager;
+		this.factoryMan = manager;
 	}
 	
 	@EventHandler(ignoreCancelled = true)
@@ -98,22 +96,18 @@ public class RedstoneListener implements Listener {
 			if(block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE)
 			{
 				if (factoryMan.factoryExistsAt(block.getLocation()))
-				{					
-					//Is the factory a production factory?
-					if (productionMan.factoryExistsAt(block.getLocation()))
-					{
-						ProductionFactory factory = (ProductionFactory) productionMan.getFactory(block.getLocation());
+				{
+					ABaseFactory factory = (ABaseFactory) factoryMan.getFactory(block.getLocation());
 						
-						Block lever = factory.findActivationLever();
-						if (lever == null) {
-							// No lever - don't respond to redstone
-							return;
-						}
+					Block lever = factory.findActivationLever();
+					if (lever == null) {
+						// No lever - don't respond to redstone
+						return;
+					}
 						
-						if (!factory.getActive()) {
-							// Try to start the factory
-							factory.togglePower();
-						}
+					if (!factory.getActive()) {
+						// Try to start the factory
+						factory.togglePower();
 					}
 				}
 			}
