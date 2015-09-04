@@ -2453,17 +2453,11 @@ production_factories:
     inputs:
       Stone:
         material: STONE
-        amount: 1024
+        amount: 2048
         durability: 0
-      Gravel:
-        material: GRAVEL
-        amount: 512
-      Flint:
-        material: FLINT
-        amount: 256
       Quartz:
         material: QUARTZ
-        amount: 256
+        amount: 1024
     recipes:
       - Smelt_Granite
       - Smelt_Diorite
@@ -2472,17 +2466,11 @@ production_factories:
     repair_inputs:
       Stone:
         material: STONE
-        amount: 10
+        amount: 20
         durability: 0
-      Gravel:
-        material: GRAVEL
-        amount: 5
-      Flint:
-        material: FLINT
-        amount: 2
       Quartz:
         material: QUARTZ
-        amount: 2
+        amount: 10
   Stone_Brick_Smelter:
     name: Fancy Stone Brick Smelter
     fuel:
@@ -7737,14 +7725,14 @@ production_recipes:
     inputs:
       Cobblestone:
         material: COBBLESTONE
-        amount: 256
+        amount: 576
       Quartz:
         material: QUARTZ
-        amount: 32
+        amount: 192
     outputs:
       Diorite:
         material: STONE
-        amount: 256
+        amount: 576
         durability: 3
   Smelt_Granite:
     name: Smelt Granite
@@ -7752,14 +7740,14 @@ production_recipes:
     inputs:
       Cobblestone:
         material: COBBLESTONE
+        amount: 512
+      Quartz:
+        material: QUARTZ
         amount: 256
-      Dirt:
-        material: DIRT
-        amount: 128
     outputs:
       Granite:
         material: STONE
-        amount: 256
+        amount: 512
         durability: 1
   Smelt_Andesite:
     name: Smelt Andesite
@@ -7767,14 +7755,14 @@ production_recipes:
     inputs:
       Cobblestone:
         material: COBBLESTONE
-        amount: 256
-      Gravel:
-        material: GRAVEL
-        amount: 128
+        amount: 1024
+      Quartz:
+        material: QUARTZ
+        amount: 64
     outputs:
       Andesite:
         material: STONE
-        amount: 256
+        amount: 512
         durability: 5
   Compact_Ice:
     name: Compact Ice
