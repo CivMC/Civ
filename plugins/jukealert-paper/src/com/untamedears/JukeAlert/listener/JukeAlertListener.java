@@ -22,8 +22,10 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -41,6 +43,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.material.Lever;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -502,6 +505,32 @@ public class JukeAlertListener implements Listener {
             }
         }
     }
+    
+    @EventHandler(priority = EventPriority.HIGH)
+    public void playerDestroyCart(VehicleDestroyEvent event) {
+        Vehicle vehicle = event.getVehicle();
+        Entity killer = event.getAttacker();
+        if (killer == null || !(killer instanceof Player)) {
+            return;
+        }
+        if (vanishNoPacket.isPlayerInvisible((Player) killer)) {
+            return;
+        }
+        Player player = (Player) killer;
+        UUID accountId = player.getUniqueId();
+        Set<Snitch> snitches = snitchManager.findSnitches(player.getWorld(), player.getLocation());
+        for (Snitch snitch : snitches) {
+            if (!snitch.shouldLog()) {
+                continue;
+            }
+            if (!isOnSnitch(snitch, accountId) || isDebugging()) {
+                if (checkProximity(snitch, accountId)) {
+                    plugin.getJaLogger().logSnitchCartDestroyed(snitch, player, vehicle);
+                }
+            }
+        }
+    }
+    
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerKillPlayer(PlayerDeathEvent event) {

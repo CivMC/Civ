@@ -30,7 +30,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.namelayer.group.Group;
@@ -991,6 +993,17 @@ public class JukeAlertLogger {
     public void logSnitchBucketEmpty(Snitch snitch, Player player, Location loc, ItemStack item) {
         // no victim user in this event
         this.logSnitchInfo(snitch, item.getType(), loc, new Date(), LoggedAction.BUCKET_EMPTY, player.getPlayerListName(), null);
+    }
+    
+    /**
+     * Logs a message that someone destroyed a cart within the snitch's field
+     * 
+     * @param snitch - the snitch that recorded this event
+     * @param player - the player that destroyed the cart
+     * @param vehicle - the vehicle destroyed
+     */
+    public void logSnitchCartDestroyed(Snitch snitch, Player player,Vehicle vehicle) {
+    	this.logSnitchInfo(snitch, null, null, new Date(),LoggedAction.CART_DESTROY,player.getPlayerListName(),vehicle.getType().toString());
     }
 
     /**
