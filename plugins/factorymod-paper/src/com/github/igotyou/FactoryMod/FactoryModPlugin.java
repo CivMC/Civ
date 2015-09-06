@@ -23,6 +23,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
+import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.listeners.NoteStackListener;
 import com.github.igotyou.FactoryMod.listeners.RedstoneListener;
@@ -197,6 +198,7 @@ public class FactoryModPlugin extends JavaPlugin
 			getServer().getPluginManager().registerEvents(new FactoryModListener(manager), this);
 			getServer().getPluginManager().registerEvents(new RedstoneListener(manager), this);
 			getServer().getPluginManager().registerEvents(new NoteStackListener(this), this);
+			getServer().getPluginManager().registerEvents(new CompactItemListener(compactorProperties.getCompactLore()),this);
 		}
 		catch(Exception e)
 		{
