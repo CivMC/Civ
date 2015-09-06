@@ -13,6 +13,7 @@ import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class ListMembers extends PlayerCommandMiddle{
 
@@ -39,6 +40,11 @@ public class ListMembers extends PlayerCommandMiddle{
 		}
 		if (!g.isMember(uuid) && !(p.isOp() || p.hasPermission("namelayer.admin"))){
 			p.sendMessage(ChatColor.RED + "You are not on this group.");
+			return true;
+		}
+		
+		if (!gm.getPermissionforGroup(g).isAccessible(g.getPlayerType(uuid), PermissionType.GROUPSTATS)){
+			p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
 			return true;
 		}
 		

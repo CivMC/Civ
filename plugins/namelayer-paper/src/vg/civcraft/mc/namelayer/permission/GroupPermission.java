@@ -41,10 +41,19 @@ public class GroupPermission {
 			default:;
 			}
 		}
+		List<PermissionType> p = perms.get(ptype);
+		if (p == null){
+			return false;
+		} else if (p.isEmpty()){
+			return false;
+		}
 		boolean hasPerm = false;
-		for (PermissionType t: type)
-			if (perms.get(ptype).contains(t))
+		for (PermissionType t: type){
+			if (p.contains(t)){
 				hasPerm = true;
+				break;
+			}
+		}
 		return hasPerm;
 	}
 	/**
