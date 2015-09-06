@@ -1003,7 +1003,7 @@ public class JukeAlertLogger {
      * @param vehicle - the vehicle destroyed
      */
     public void logSnitchCartDestroyed(Snitch snitch, Player player,Vehicle vehicle) {
-    	this.logSnitchInfo(snitch, null, null, new Date(),LoggedAction.CART_DESTROY,player.getPlayerListName(),vehicle.getType().toString());
+    	this.logSnitchInfo(snitch, null, vehicle.getLocation(), new Date(),LoggedAction.VEHICLE_DESTROY,player.getPlayerListName(),vehicle.getType().toString());
     }
 
     /**
