@@ -41,6 +41,8 @@ public class MercuryMessageListener implements Listener{
 				message.append("sync " + MercuryPlugin.name + " ");
 				for (Player p: Bukkit.getOnlinePlayers())
 					message.append(p.getName() + ";");
+				
+				MercuryAPI.instance.sendMessage("all", message.toString(), "namelayer");
 			}
 			
 		}, 10, 100);
