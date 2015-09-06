@@ -42,6 +42,8 @@ public class MercuryMessageListener implements Listener{
 				for (Player p: Bukkit.getOnlinePlayers())
 					message.append(p.getName() + ";");
 				
+				if (message.toString().split(" ").length != 3)
+					return;
 				MercuryAPI.instance.sendMessage("all", message.toString(), "namelayer");
 			}
 			
