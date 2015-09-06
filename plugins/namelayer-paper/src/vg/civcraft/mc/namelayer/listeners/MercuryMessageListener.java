@@ -33,6 +33,17 @@ public class MercuryMessageListener implements Listener{
 		NameLayerPlugin.setOnlineAllServers(new HashMap<String,String>());
 		MercuryAPI.instance.sendMessage("all", "whoonline "+MercuryPlugin.name, "namelayer");
 		nl.getLogger().info("Requested player lists");
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(nl, new Runnable() {
+
+			@Override
+			public void run() {
+				StringBuilder message = new StringBuilder();
+				message.append("sync " + MercuryPlugin.name + " ");
+				for (Player p: Bukkit.getOnlinePlayers())
+					message.append(p.getName() + ";");
+			}
+			
+		}, 10, 100);
 	}
 
 	@SuppressWarnings("deprecation")
