@@ -98,7 +98,7 @@ public class CivChat2Listener implements Listener {
 					if (NameLayerPlugin.getOnlineAllServers().containsKey(chatChannel)){
 						//This separator needs to be changed to load from config.
 						String sep = "|";
-						MercuryPlugin.handler.sendMessage(NameLayerPlugin.getOnlineAllServers().get(chatChannel.toLowerCase()), "civchat2", "pm"+sep+sender.getName()+sep+chatChannel+sep+chatMessage.replace(sep, ""));
+						MercuryPlugin.handler.sendMessage(NameLayerPlugin.getOnlineAllServers().get(chatChannel.toLowerCase()), "pm"+sep+sender.getName()+sep+chatChannel+sep+chatMessage.replace(sep, ""), "civchat2");
 						sender.sendMessage(ChatColor.LIGHT_PURPLE+"To "+chatChannel+": "+chatMessage);
 						return;
 					}

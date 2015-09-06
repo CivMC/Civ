@@ -1,6 +1,8 @@
 package vg.civcraft.mc.civchat2.command.commands;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -107,9 +109,24 @@ public class Tell extends PlayerCommand{
 	}
 
 	@Override
-	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		if (args.length != 1)
+			return null;
+		List<String> namesToReturn = new ArrayList<String>();
+		if (plugin.isMercuryEnabled()) {
+			Set<String> players = NameLayerPlugin.getOnlineAllServers().keySet();
+			for (String x: players) {
+				if (x.startsWith(args[0]))
+					namesToReturn.add(x);
+			}
+		}
+		else {
+			for (Player p: Bukkit.getOnlinePlayers()) {
+				if (p.getName().startsWith(args[0]))
+					namesToReturn.add(p.getName());
+			}
+		}
+		return namesToReturn;
 	}	
 
 }
