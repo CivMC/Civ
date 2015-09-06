@@ -147,6 +147,7 @@ public abstract class ABaseFactory extends FactoryObject implements IFactory {
 		furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();
 		furnace.setRawData(data);
 		furnace.update();
+		furnace.setBurnTime(Short.MAX_VALUE);
 		furnace.getInventory().setContents(oldContents);
 		//reset the production timer
 		currentProductionTimer = 0;
