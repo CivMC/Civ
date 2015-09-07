@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import vg.civcraft.mc.civmodcore.command.Command;
+import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civchat2.command.commands.Exit;
 import vg.civcraft.mc.civchat2.command.commands.GroupChat;
 import vg.civcraft.mc.civchat2.command.commands.Ignore;
@@ -16,7 +17,7 @@ import vg.civcraft.mc.civchat2.command.commands.Reply;
 import vg.civcraft.mc.civchat2.command.commands.Tell;
 import vg.civcraft.mc.civchat2.command.commands.Afk;
 
-public class CivChat2CommandHandler {
+public class CivChat2CommandHandler extends CommandHandler{
 	
 	public Map<String, Command> commands = new HashMap<String, Command>();
 	
@@ -35,6 +36,7 @@ public class CivChat2CommandHandler {
 		commands.put(command.getIdentifier().toLowerCase(), command);
 	}
 	
+	@Override
 	public boolean execute(CommandSender sender, org.bukkit.command.Command cmd, String[] args){
 		if(commands.containsKey(cmd.getName().toLowerCase())){
 			Command command = (Command) commands.get(cmd.getName().toLowerCase());

@@ -18,7 +18,7 @@ public class Reply extends PlayerCommand{
 	private CivChat2 plugin = CivChat2.getInstance();
 	private CivChat2Manager chatMan;
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
-	private CivChat2CommandHandler handler = CivChat2.getCivChat2CommandHandler();
+	private CivChat2CommandHandler handler = (CivChat2CommandHandler) plugin.getCivChat2CommandHandler();
 	
 	public Reply(String name) {
 		super(name);

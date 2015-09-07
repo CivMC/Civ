@@ -14,13 +14,15 @@ import vg.civcraft.mc.civchat2.utility.CivChat2Executor;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civchat2.zipper.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
+import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.mercury.MercuryAPI;
 
 /**
  * @author jjj5311
  *
  */
-public class CivChat2 extends JavaPlugin{
+public class CivChat2 extends ACivMod{
 	
 	private static CivChat2 instance;
 	private static CivChat2Log log_;
@@ -28,7 +30,6 @@ public class CivChat2 extends JavaPlugin{
 	private static CivChat2Config config_;
 	private static CivChat2Manager chatMan;
 	private CivChat2Listener chatListener;
-	private static CivChat2CommandHandler handle;
 	private CivChat2FileLogger fileLog;
 	private boolean isMercuryEnabled = false;
 	private static CivChat2Executor executor;
@@ -102,7 +103,7 @@ public class CivChat2 extends JavaPlugin{
 		return handle.execute(sender, cmd, args);
 	}
 
-	public static CivChat2CommandHandler getCivChat2CommandHandler() {
+	public CommandHandler getCivChat2CommandHandler() {
 		return handle;
 	}
 
@@ -138,5 +139,9 @@ public class CivChat2 extends JavaPlugin{
 		this.isMercuryEnabled = isMercuryEnabled;
 	}
 
-	
+	@Override
+	protected String getPluginName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
