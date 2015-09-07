@@ -34,6 +34,12 @@ public class NameAPI {
 		uuidsToName = (HashMap<UUID, String>) objs[1];
 		
 	}
+	
+	public static void resetCache(UUID uuid) {
+		String name = getCurrentName(uuid);
+		uuidsToName.remove(uuid);
+		nameToUUIDS.remove(name);
+	}
 	/**
 	 * Returns the UUID of the player on the given server.
 	 * @param playerName The playername.

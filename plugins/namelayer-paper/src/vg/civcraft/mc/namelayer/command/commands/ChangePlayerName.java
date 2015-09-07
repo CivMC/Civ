@@ -36,6 +36,7 @@ public class ChangePlayerName  extends PlayerCommandMiddle {
 
         String newName = args[1].length() >= 16 ? args[1].substring(0, 16) : args[1];
         NameAPI.getAssociationList().changePlayer(newName, player);
+        NameAPI.resetCache(player);
 
         sender.sendMessage("player name changed have them relog for it to take affect");
         return true;
