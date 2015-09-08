@@ -419,6 +419,32 @@ crafting:
         Exp Bottle:
           material: EXP_BOTTLE
           amount: 9
+    Stone Slab to Double Slab:
+      inputs:
+        s:
+         Stone Slab:
+           material: STONE_SLAB2
+      shape:
+        - s
+        - s
+      output:
+        Double Stone Slab:
+          material: STONE_SLAB2
+          lore: Smooth double slab
+    Sandstone Slab to Double Slab:
+      inputs:
+        s:
+         Sandstone Slab:
+           material: STONE_SLAB2
+           durability: 1
+      shape:
+        - s
+        - s
+      output:
+        Double Sandstone Slab:
+          material: STONE_SLAB2
+          durability: 1
+          lore: Smooth double slab 
 production_factories:
   Bakery:
     name: Bakery

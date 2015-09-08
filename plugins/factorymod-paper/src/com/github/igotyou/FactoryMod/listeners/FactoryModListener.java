@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -25,6 +26,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
@@ -497,4 +499,27 @@ public class FactoryModListener implements Listener
 			event.setCancelled(true);
 		}
 	}
+
+	/**
+	 * Turns slabs with the lore "Smooth double slab" into smooth double slab blocks
+	 * @param e
+	 */
+	@EventHandler
+	public void onDoubleSlabUse(BlockPlaceEvent e) {
+	    Material material = e.getBlock().getType();
+	    if (material != Material.STONE_SLAB2) {
+	    	return;
+	    }
+	    org.bukkit.inventory.ItemStack is = e.getItemInHand();
+	    if (!is.hasItemMeta() || !is.getItemMeta().hasLore()) {
+	    	return;
+	    }
+	    ItemMeta blockMeta = is.getItemMeta();
+	    if (blockMeta.getLore().get(0).equals("Smooth double slab")) {
+	    	Block block = e.getBlock();
+	    	byte type = (byte)(is.getDurability() + 8);
+	    	block.setTypeIdAndData(Material.DOUBLE_STONE_SLAB2.getId(),type,true);
+	    	}
+	  }
+	  
 }
