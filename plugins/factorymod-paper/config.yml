@@ -2515,6 +2515,7 @@ production_factories:
     inputs:
       Bedrock:
         material: BEDROCK
+        lore: Admincrimes only
         amount: 1
     recipes:
       - Smelt_Granite
@@ -2522,10 +2523,10 @@ production_factories:
       - Smelt_Andesite
     repair_multiple: 10
     repair_inputs:
-      Stone:
-        material: STONE
-        amount: 20
-        durability: 0
+      Bedrock:
+        material: BEDROCK
+        lore: Admincrimes only
+        amount: 1
   Stone_Brick_Smelter:
     name: Stone Brick Smelter
     fuel:
