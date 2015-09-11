@@ -367,6 +367,7 @@ public class CitadelReinforcementData {
 					if (rein != null)
 						reins.add(rein);
 					getCordsbyReinID.setInt(1, id);
+					set.close();
 					set = getCordsbyReinID.executeQuery();
 					List<Location> locs = new ArrayList<Location>();
 					while (set.next()){

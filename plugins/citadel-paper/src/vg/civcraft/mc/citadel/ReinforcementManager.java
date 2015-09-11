@@ -217,4 +217,24 @@ public class ReinforcementManager {
 		}
 		return reins_new;
 	}
+	
+	public void loadReinforcementChunk(Chunk chunk) {
+		List<Reinforcement> reins = db.getReinforcements(chunk);
+		synchronized(reinforcements){
+			for (Reinforcement rein: reins){
+				if (reinforcements.getIfPresent(rein.getLocation()) == null){
+					reinforcements.put(rein.getLocation(), rein);
+				}
+				else {
+					Reinforcement r = null;
+					try {
+						r = reinforcements.get(rein.getLocation());
+					} catch (ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
 }
