@@ -222,17 +222,9 @@ public class ReinforcementManager {
 		List<Reinforcement> reins = db.getReinforcements(chunk);
 		synchronized(reinforcements){
 			for (Reinforcement rein: reins){
-				if (reinforcements.getIfPresent(rein.getLocation()) == null){
+				Reinforcement r = reinforcements.getIfPresent(rein.getLocation());
+				if (r == null || r instanceof NullReinforcement) {
 					reinforcements.put(rein.getLocation(), rein);
-				}
-				else {
-					Reinforcement r = null;
-					try {
-						r = reinforcements.get(rein.getLocation());
-					} catch (ExecutionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 				}
 			}
 		}
