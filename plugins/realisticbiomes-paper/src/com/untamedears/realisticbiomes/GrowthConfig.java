@@ -122,8 +122,9 @@ protected String name;
 		this(name, null);
 		copy(parent);
 		
-		if (config.isSet("base_rate"))
+		if (config.isSet("base_rate")) {
 			baseRate = config.getDouble("base_rate");
+		}
 		
 		if (config.isSet("greenhouse_rate")) {
 			isGreenhouseEnabled = true;
@@ -135,11 +136,13 @@ protected String name;
 			persistentRate = config.getDouble("persistent_growth_period");
 		}
 		
-		if (config.isSet("needs_sunlight"))
+		if (config.isSet("needs_sunlight")) {
 			needsSunlight = config.getBoolean("needs_sunlight");
+		}
 		
-		if (config.isSet("not_full_sunlight_multiplier"))
+		if (config.isSet("not_full_sunlight_multiplier")) {
 			notFullSunlightMultiplier = config.getDouble("not_full_sunlight_multiplier");
+		}
 		
 		if (config.isSet("soil_material")) {
 			String materialName = config.getString("soil_material");
@@ -158,17 +161,21 @@ protected String name;
 			}
 		}
 		
-		if (config.isSet("soil_max_layers"))
+		if (config.isSet("soil_max_layers")) {
 			soilMaxLayers = config.getInt("soil_max_layers");
+		}
 		
-		if (config.isSet("soil_bonus_per_layer"))
+		if (config.isSet("soil_bonus_per_layer")) {
 			soilBonusPerLevel = config.getDouble("soil_bonus_per_layer");
+		}
 		
-		if (config.isSet("soil_layer_offset"))
+		if (config.isSet("soil_layer_offset")) {
 			soilLayerOffset = config.getInt("soil_layer_offset");
+		}
 		
-		if (config.isSet("biomes"))
+		if (config.isSet("biomes")) {
 			loadBiomes(config.getConfigurationSection("biomes"), biomeAliases);
+		}
 	}
 	
 	public String getName() {
