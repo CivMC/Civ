@@ -220,7 +220,7 @@ realistic_biomes:
   # actually get cancelled more often in loaded chunks than the rate/chance from
   # persistence does.
 
-  tree:
+  basetree:
    base_rate: 0.04
    needs_sunlight: true
    not_full_sunlight_multiplier: 0.125
@@ -230,7 +230,7 @@ realistic_biomes:
     freshwater: 0.5
 
   TREE:
-   inherit: tree
+   inherit: basetree
    persistent_growth_period: 6
    biomes:
     SWAMPLAND: 0.5
@@ -245,7 +245,7 @@ realistic_biomes:
    base_rate: 0.04
 
   BIRCH:
-   inherit: tree
+   inherit: basetree
    persistent_growth_period: 6
    biomes:
     forest: 2.0
@@ -257,7 +257,7 @@ realistic_biomes:
    base_rate: 0.04
 
   REDWOOD:
-   inherit: tree
+   inherit: basetree
    persistent_growth_period: 6
    biomes:
     cold: 0.75
@@ -266,6 +266,7 @@ realistic_biomes:
 
   # REDWOOD has a (rate) chance of growing into this version:
   TALL_REDWOOD:
+   inherit: REDWOOD
    base_rate: 0.04
 
   # 2x2 array of redwood saplings
@@ -275,7 +276,7 @@ realistic_biomes:
 
   # generic sapling grows into this version ONLY in swampland:
   SWAMP:
-   inherit: tree
+   inherit: basetree
    persistent_growth_period: 6
    biomes:
     SWAMPLAND: 1.0
@@ -299,7 +300,7 @@ realistic_biomes:
    base_rate: 0.01
 
   ACACIA:
-   inherit: tree
+   inherit: basetree
    persistent_growth_period: 6
    biomes:
     hot_dry: 2.0
@@ -308,7 +309,7 @@ realistic_biomes:
     freshwater: 0.0
 
   DARK_OAK:
-   inherit: tree
+   inherit: basetree
    persistent_growth_period: 6
    biomes:
     SWAMPLAND: 2.0
