@@ -130,7 +130,6 @@ protected String name;
 			greenhouseRate = config.getDouble("greenhouse_rate");
 		}
 		
-		isPersistent = false;
 		if (config.isSet("persistent_growth_period")) {
 			isPersistent = true;
 			persistentRate = config.getDouble("persistent_growth_period");
@@ -190,6 +189,7 @@ protected String name;
 		type = other.type;
 		baseRate = other.baseRate;
 		biomeMultipliers = new HashMap<Biome, Double>(other.biomeMultipliers);
+		isPersistent = other.isPersistent;
 		
 		greenhouseRate = other.greenhouseRate;
 		isGreenhouseEnabled = other.isGreenhouseEnabled;
