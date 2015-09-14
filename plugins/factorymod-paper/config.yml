@@ -2388,7 +2388,7 @@ production_factories:
         amount: 576
       Diamond Blocks:
         material: DIAMOND_BLOCK
-        amount: 64
+        amount: 96
       Coal Blocks:
         material: COAL_BLOCK
         amount: 576
@@ -2420,7 +2420,7 @@ production_factories:
         amount: 5
       Diamond Blocks:
         material: DIAMOND_BLOCK
-        amount: 3
+        amount: 1
       Coal Blocks:
         material: COAL_BLOCK
         amount: 5
