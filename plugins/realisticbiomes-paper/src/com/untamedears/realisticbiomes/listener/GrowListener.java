@@ -97,6 +97,10 @@ public class GrowListener implements Listener {
 		}
 		
 		TreeType type = event.getSpecies();
+		if (type == TreeType.BIG_TREE) {
+			event.setCancelled(true);
+			return;
+		}
 		
 		Block block = event.getLocation().getBlock();
 		
