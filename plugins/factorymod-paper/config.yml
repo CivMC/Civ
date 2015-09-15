@@ -751,7 +751,7 @@ production_factories:
     inputs:
       Charcoal:
         material: COAL
-        amount: 600
+        amount: 768
         durability: 1
     recipes:
       - Smelt_Oak_Wood
@@ -761,11 +761,13 @@ production_factories:
       - Burn_Acacia_Wood
       - Burn_Dark_Oak_Wood
       - Smelt_Coal
-    repair_multiple: 60
+      - Smelt_Charcoal
+    repair_multiple: 10
     repair_inputs:
       Charcoal:
         material: COAL
         durability: 1
+        amount: 8
   Diamond_Axe_Smithy:
     name: Diamond Axe Smithy
     fuel:
@@ -2372,8 +2374,67 @@ production_factories:
       Leather:
         material: LEATHER
         amount: 1
+  Industrial_Ore_Refinery:
+    name: Industrial Ore Refinery
+    fuel:
+      Coal Blocks:
+        material: COAL_BLOCK
+    inputs:
+      Lapis Lazuli Blocks:
+        material: LAPIS_BLOCK 
+        amount: 128
+      Netherquartz:
+        material: QUARTZ
+        amount: 576
+      Diamond Blocks:
+        material: DIAMOND_BLOCK
+        amount: 96
+      Coal Blocks:
+        material: COAL_BLOCK
+        amount: 576
+      Iron Blocks:
+        material: IRON_BLOCK
+        amount: 256
+      Gold Blocks:
+        material: GOLD_BLOCK
+        amount: 128
+      Redstone Blocks:
+        material: REDSTONE_BLOCK
+        amount: 256
+    recipes:
+      - Refine_Diamond_Ore
+      - Refine_Lapis_Lazuli_Ore
+      - Refine_Netherquartz_Ore
+      - Refine_Coal_Ore
+      - Refine_Redstone_Ore
+      - Refine_Iron_Ore
+      - Refine_Gold_Ore
+      - Bastion_Base
+      - Bastion_Walls
+    repair_multiple: 10
+    repair_inputs:
+      Lapis Lazuli Blocks:
+        material: LAPIS_BLOCK 
+      Netherquartz:
+        material: QUARTZ
+        amount: 5
+      Diamond Blocks:
+        material: DIAMOND_BLOCK
+        amount: 1
+      Coal Blocks:
+        material: COAL_BLOCK
+        amount: 5
+      Iron Blocks:
+        material: IRON_BLOCK
+        amount: 3
+      Gold Blocks:
+        material: GOLD_BLOCK
+        amount: 3
+      Redstone Blocks:
+        material: REDSTONE_BLOCK
+        amount: 3
   Fancy_Ore_Smelter:
-    name: Fancy Ore Smelter
+    name: Gem Extractor
     fuel:
       Charcoal:
         material: COAL
@@ -2381,30 +2442,30 @@ production_factories:
     inputs:
       Lapis Lazuli:
         material: INK_SACK
-        amount: 1536
+        amount: 1024
         durability: 4
-      Redstone:
-        material: REDSTONE
-        amount: 1152
       Netherquartz:
         material: QUARTZ
-        amount: 576
+        amount: 384
+      Diamond:
+        material: DIAMOND
+        amount: 160
     recipes:
       - Smelt_Lapis_Lazuli_Ore
-      - Smelt_Redstone_Ore
       - Smelt_Netherquartz_Ore
       - Bastion_Walls
-    repair_multiple: 26
+      - Smelt_Diamond_Ore
+    repair_multiple: 10
     repair_inputs:
       Lapis Lazuli:
         material: INK_SACK
-        amount: 6
+        amount: 10
         durability: 4
-      Redstone:
-        material: REDSTONE
-        amount: 5
       Netherquartz:
         material: QUARTZ
+        amount: 4
+      Diamond:
+        material: DIAMOND
         amount: 2
   Smelter:
     name: Ore Smelter
@@ -2415,35 +2476,36 @@ production_factories:
     inputs:
       Coal:
         material: COAL
-        amount: 512
+        amount: 1024
       Iron Ingot:
         material: IRON_INGOT
-        amount: 384
+        amount: 256
       Gold Ingot:
         material: GOLD_INGOT
-        amount: 192
-      Diamond:
-        material: DIAMOND
-        amount: 96
+        amount: 128
+      Redstone:
+        material: REDSTONE
+        amount: 1024
     recipes:
       - Smelt_Coal_Ore
+      - Smelt_Redstone_Ore
       - Smelt_Iron_Ore
       - Smelt_Gold_Ore
-      - Smelt_Diamond_Ore
       - Bastion_Base
     repair_multiple: 10
     repair_inputs:
       Coal:
         material: COAL
-        amount: 6
+        amount: 10
       Iron Ingot:
         material: IRON_INGOT
-        amount: 4
+        amount: 3
       Gold Ingot:
         material: GOLD_INGOT
-        amount: 2
-      Diamond:
-        material: DIAMOND
+        amount: 1
+      Redstone:
+        material: REDSTONE
+        amount: 10
   Igneous_Stone_Smelter:
     name: Igneous Stone smelter
     fuel:
@@ -2451,28 +2513,22 @@ production_factories:
         material: COAL
         durability: 1
     inputs:
-      Stone:
-        material: STONE
-        amount: 2048
-        durability: 0
-      Quartz:
-        material: QUARTZ
-        amount: 1024
+      Bedrock:
+        material: BEDROCK
+        lore: Admincrimes only
+        amount: 1
     recipes:
       - Smelt_Granite
       - Smelt_Diorite
       - Smelt_Andesite
     repair_multiple: 10
     repair_inputs:
-      Stone:
-        material: STONE
-        amount: 20
-        durability: 0
-      Quartz:
-        material: QUARTZ
-        amount: 10
+      Bedrock:
+        material: BEDROCK
+        lore: Admincrimes only
+        amount: 1
   Stone_Brick_Smelter:
-    name: Fancy Stone Brick Smelter
+    name: Stone Brick Smelter
     fuel:
       Charcoal:
         material: COAL
@@ -2480,11 +2536,17 @@ production_factories:
     inputs:
       Stone Brick:
         material: SMOOTH_BRICK
-        amount: 512
+        amount: 2560
       Lapis Lazuli:
         material: INK_SACK
         amount: 256
         durability: 4
+      Netherquartz:
+        material: QUARTZ
+        amount: 256
+      Prismarine Shard:
+        material: PRISMARINE_SHARD 
+        amount: 256
     recipes:
       - Smelt_Prismarine
       - Smelt_Prismarine_Bricks
@@ -2492,15 +2554,26 @@ production_factories:
       - Smelt_Cracked_Stone_Brick
       - Smelt_Mossy_Stone_Brick
       - Smelt_Chiseled_Stone_Brick
+      - Smelt_Granite
+      - Smelt_Diorite
+      - Smelt_Andesite
       - Bastion_Flooring
-    repair_multiple: 26
+      - Smelt_Stone
+    repair_multiple: 10
     repair_inputs:
       Stone Brick:
         material: SMOOTH_BRICK
-        amount: 2
+        amount: 25
       Lapis Lazuli:
         material: INK_SACK
+        amount: 3
         durability: 4
+      Netherquartz:
+        material: QUARTZ
+        amount: 3
+      Prismarine Shard:
+        material: PRISMARINE_SHARD 
+        amount: 3
   Stone_Smelter:
     name: Stone Smelter
     fuel:
@@ -2513,10 +2586,11 @@ production_factories:
         amount: 2048
     recipes:
       - Smelt_Stone
-    repair_multiple: 205
+    repair_multiple: 10
     repair_inputs:
       Stone:
         material: STONE
+        armount: 20
   Bio_Lab:
     name: Bio Lab
     fuel:
@@ -3382,15 +3456,15 @@ production_recipes:
         durability: 7
   Smelt_Diamond_Ore:
     name: Smelt Diamond Ore
-    production_time: 1
+    production_time: 4
     inputs:
       Diamond Ore:
         material: DIAMOND_ORE
-        amount: 16
+        amount: 32
     outputs:
       Diamond:
         material: DIAMOND
-        amount: 48
+        amount: 96
   Diamond_XP_Bottle_0:
     name: Brew XP Bottles  - 1
     inputs:
@@ -5171,7 +5245,7 @@ production_recipes:
     production_time: 6
   Smelt_Lapis_Lazuli_Ore:
     name: Smelt Lapis Lazuli Ore
-    production_time: 6
+    production_time: 16
     inputs:
       Lapis Ore:
         material: LAPIS_ORE
@@ -5179,7 +5253,7 @@ production_recipes:
     outputs:
       Lapis Lazuli:
         material: INK_SACK
-        amount: 512
+        amount: 640
         durability: 4
   Smelt_Redstone_Ore:
     name: Smelt Redstone Ore
@@ -5187,22 +5261,22 @@ production_recipes:
     inputs:
       Redstone Ore:
         material: REDSTONE_ORE
-        amount: 128
+        amount: 64
     outputs:
       Redstone:
         material: REDSTONE
-        amount: 1024
+        amount: 640
   Smelt_Netherquartz_Ore:
     name: Smelt Netherquartz ore
     production_time: 6
     inputs:
       Netherquartz ore:
         material: QUARTZ_ORE
-        amount: 64
+        amount: 128
     outputs:
       Quartz:
         material: QUARTZ
-        amount: 192
+        amount: 640
   Dye_Brown_Wool_Gray:
     name: Dye Brown Wool Gray
     inputs:
@@ -5427,7 +5501,7 @@ production_recipes:
         amount: 64
   Smelt_Gold_Ore:
     name: Smelt Gold Ore
-    production_time: 3
+    production_time: 8
     inputs:
       Gold Ore:
         material: GOLD_ORE
@@ -5435,7 +5509,7 @@ production_recipes:
     outputs:
       Gold Ingot:
         material: GOLD_INGOT
-        amount: 224
+        amount: 384
   Dye_Gray_Wool_Brown:
     name: Dye Gray Wool Brown
     inputs:
@@ -5932,6 +6006,18 @@ production_recipes:
         material: COAL
         amount: 512
         durability: 1
+  Smelt_Charcoal:
+    name: Burn Charcoal
+    production_time: 24
+    inputs:
+      Charcoal:
+        material: COAL
+        amount: 1024
+        durability: 1
+    outputs:
+      Coal:
+        material: COAL
+        amount: 128
   Gold_Axe:
     name: Forge Gold Axe.
     production_time: 15
@@ -6086,7 +6172,7 @@ production_recipes:
     outputs:
       Iron Ingot:
         material: IRON_INGOT
-        amount: 224
+        amount: 256
   Produce_Powered_Rail:
     name: Produce Powered Rails
     inputs:
@@ -7725,10 +7811,10 @@ production_recipes:
     inputs:
       Cobblestone:
         material: COBBLESTONE
-        amount: 576
+        amount: 1728
       Quartz:
         material: QUARTZ
-        amount: 192
+        amount: 32
     outputs:
       Diorite:
         material: STONE
@@ -7740,10 +7826,10 @@ production_recipes:
     inputs:
       Cobblestone:
         material: COBBLESTONE
-        amount: 512
+        amount: 1728
       Quartz:
         material: QUARTZ
-        amount: 256
+        amount: 64
     outputs:
       Granite:
         material: STONE
@@ -7755,10 +7841,10 @@ production_recipes:
     inputs:
       Cobblestone:
         material: COBBLESTONE
-        amount: 1024
+        amount: 1728
       Quartz:
         material: QUARTZ
-        amount: 64
+        amount: 32
     outputs:
       Andesite:
         material: STONE
@@ -8612,7 +8698,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 75
+        amount: 70
     outputs:
       Diamond Pick:
         material: DIAMOND_PICKAXE  
@@ -8630,7 +8716,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 75
+        amount: 70
     outputs:
       Diamond Spade:
         material: DIAMOND_SPADE   
@@ -8648,7 +8734,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 75
+        amount: 70
     outputs:
       Diamond Pick:
         material: DIAMOND_AXE  
@@ -11040,3 +11126,80 @@ production_recipes:
         Emerald Blocks:
           material: EMERALD_BLOCK
           amount: 84
+  Refine_Diamond_Ore:
+    name: Refine Diamond Ore
+    production_time: 16
+    inputs:
+      Diamond Ore:
+        material: DIAMOND_ORE
+        amount: 256
+    outputs:
+      Diamond Block:
+        material: DIAMOND_BLOCK
+        amount: 100
+  Refine_Coal_Ore:
+    name: Refine Coal Ore
+    production_time: 8
+    inputs:
+      Coal Ore:
+        material: COAL_ORE
+        amount: 768
+    outputs:
+      Coal Block:
+        material: COAL_BLOCK
+        amount: 336
+  Refine_Iron_Ore:
+    name: Refine Iron Ore
+    production_time: 16
+    inputs:
+      Iron Ore:
+        material: IRON_ORE
+        amount: 768
+    outputs:
+      Iron Block:
+        material: IRON_BLOCK
+        amount: 234
+  Refine_Gold_Ore:
+    name: Refine Gold Ore
+    production_time: 8
+    inputs:
+      Gold Ore:
+        material: GOLD_ORE
+        amount: 128
+    outputs:
+      Gold Block:
+        material: GOLD_BLOCK
+        amount: 228
+  Refine_Lapis_Lazuli_Ore:
+    name: Refine Lapis Lazuli Ore
+    production_time: 8
+    inputs:
+      Lapis Ore:
+        material: LAPIS_ORE
+        amount: 128
+    outputs:
+      Lapis Lazuli:
+        material: LAPIS_BLOCK
+        amount: 420 
+  Refine_Redstone_Ore:
+    name: Refine Redstone Ore
+    production_time: 8
+    inputs:
+      Redstone Ore:
+        material: REDSTONE_ORE
+        amount: 256
+    outputs:
+      Redstone Block:
+        material: REDSTONE_BLOCK
+        amount: 400
+  Refine_Netherquartz_Ore:
+    name: Refine Netherquartz ore
+    production_time: 8
+    inputs:
+      Netherquartz ore:
+        material: QUARTZ_ORE
+        amount: 256
+    outputs:
+      Quartz:
+        material: QUARTZ
+        amount: 1536
