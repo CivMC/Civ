@@ -3,16 +3,17 @@ main: vg.civcraft.mc.namelayer.NameLayerPlugin
 version: ${project.version}
 author: Rourke750
 softdepend: [Mercury, CivModCore]
+description: NameLayer handles groups creation and management, in addition to name changes. Once you have connected to Civcraft with a name, it is permanently yours. If a name is already taken, then NameLayer will add a number to the name.
 commands:
    nlag:
     aliases: [nlacceptinvite, nlacceptgroup]
-   nlasg:
    nlcg:
     aliases: [nlcreategroup]
    nldg:
     aliases: [nldeletegroup]
    nldig:
     aliases: [nldisiplinegroup, nldisablegroup, nldisable]
+    permission: namelayer.admin
    nlgls:
     aliases: [nlglobalstats]
    nlgs:
