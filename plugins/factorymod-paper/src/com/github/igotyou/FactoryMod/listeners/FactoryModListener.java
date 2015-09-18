@@ -501,25 +501,36 @@ public class FactoryModListener implements Listener
 	}
 
 	/**
-	 * Turns slabs with the lore "Smooth double slab" into smooth double slab blocks
+	 * Turns slabs with the lore "Smooth double slab" into smooth double slab blocks and logs
+	 * with the lore "6-sided log" into logs with the log texture on all 6 sides
 	 * @param e
 	 */
 	@EventHandler
-	public void onDoubleSlabUse(BlockPlaceEvent e) {
-	    Material material = e.getBlock().getType();
-	    if (material != Material.STONE_SLAB2) {
-	    	return;
-	    }
-	    org.bukkit.inventory.ItemStack is = e.getItemInHand();
+	public void onSpecialBlockUse(BlockPlaceEvent e) {
+		org.bukkit.inventory.ItemStack is = e.getItemInHand();
 	    if (!is.hasItemMeta() || !is.getItemMeta().hasLore()) {
 	    	return;
 	    }
+	    Material material = e.getBlock().getType();
 	    ItemMeta blockMeta = is.getItemMeta();
-	    if (blockMeta.getLore().get(0).equals("Smooth double slab")) {
-	    	Block block = e.getBlock();
-	    	byte type = (byte)(is.getDurability() + 8);
-	    	block.setTypeIdAndData(Material.DOUBLE_STONE_SLAB2.getId(),type,true);
-	    	}
-	  }
-	  
+	    switch (material) {
+	    case STEP:
+		    if (blockMeta.getLore().get(0).equals("Smooth double slab")) {
+		    	byte type = (byte)(is.getDurability() + 8);
+		    	e.getBlock().setTypeIdAndData(Material.DOUBLE_STEP.getId(),type,true);
+		    	}
+	    	break;
+	    case LOG:
+	    case LOG_2:
+		    if (blockMeta.getLore().get(0).equals("Sixsided log")) {
+		    	byte type = (byte)((is.getDurability()%4)+12);
+		    	e.getBlock().setTypeIdAndData(material.getId(),type,true);
+		    	}
+	    	
+	    	break;
+	    	default:
+	    		return;
+	    }
+	    
+}
 }

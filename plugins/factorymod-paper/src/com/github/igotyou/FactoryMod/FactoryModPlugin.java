@@ -314,8 +314,8 @@ public class FactoryModPlugin extends JavaPlugin
 				
 				for (ItemStack input:getItems(configSection.getConfigurationSection("inputs")))
 				{
-					shapelessRecipe.addIngredient(input.getAmount(), input.getType());
-					//shapelessRecipe.addIngredient(input.getAmount(), input.getType(), input.getDurability());
+					//shapelessRecipe.addIngredient(input.getAmount(), input.getType());
+					shapelessRecipe.addIngredient(input.getAmount(), input.getType(), input.getDurability());
 				}
 				
 				recipe = shapelessRecipe;

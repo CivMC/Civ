@@ -421,30 +421,94 @@ crafting:
           amount: 9
     Stone Slab to Double Slab:
       inputs:
-        s:
-         Stone Slab:
-           material: STONE_SLAB2
-      shape:
-        - s
-        - s
+        Stone Slab:
+          material: STEP
+          amount: 9
       output:
         Double Stone Slab:
-          material: STONE_SLAB2
+          material: STEP
+          amount: 4
           lore: Smooth double slab
     Sandstone Slab to Double Slab:
       inputs:
-        s:
-         Sandstone Slab:
-           material: STONE_SLAB2
-           durability: 1
-      shape:
-        - s
-        - s
+        Sandstone Slab:
+          material: STEP
+          durability: 1
+          amount: 9
       output:
         Double Sandstone Slab:
-          material: STONE_SLAB2
+          material: STEP
           durability: 1
           lore: Smooth double slab 
+          amount: 4
+    Sixsided oaklog:
+      inputs:
+        Oak log:
+          material: log
+          amount: 9
+      output:
+        6sided log:
+          material: log
+          amount: 6
+          lore: Sixsided log
+    Sixsided sprucelog:
+      inputs:
+        Spruce log:
+          material: log
+          amount: 9
+          durability: 1
+      output:
+        6sided log:
+          material: log
+          amount: 6
+          lore: Sixsided log
+          durability: 1
+    Sixsided birchlog:
+      inputs:
+        Birch log:
+          material: log
+          amount: 9
+          durability: 2
+      output:
+        6sided log:
+          material: log
+          amount: 6
+          lore: Sixsided log
+          durability: 2
+    Sixsided junglelog:
+      inputs:
+        jungle log:
+          material: log
+          amount: 9
+          durability: 3
+      output:
+        6sided log:
+          material: log
+          amount: 6
+          lore: Sixsided log
+          durability: 3
+    Sixsided acacialog:
+      inputs:
+        acacia log:
+          material: log_2
+          amount: 9
+      output:
+        6sided log:
+          material: log_2
+          amount: 6
+          lore: Sixsided log 
+    Sixsided dark oaklog:
+      inputs:
+        dark oak log:
+          material: log_2
+          amount: 9
+          durability: 1
+      output:
+        6sided log:
+          material: log_2
+          amount: 6
+          lore: Sixsided log   
+          durability: 1          
 production_factories:
   Bakery:
     name: Bakery
