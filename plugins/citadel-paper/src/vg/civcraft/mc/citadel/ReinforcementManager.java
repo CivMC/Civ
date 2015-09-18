@@ -182,8 +182,10 @@ public class ReinforcementManager {
 					for (Reinforcement r: reinforcements.asMap().values())
 						reins.add(r);
 				}
-				for (Reinforcement r: reins)
-					saveReinforcement(r);
+				for (Reinforcement r: reins) {
+					if (r.isDirty())
+						saveReinforcement(r);
+				}
 			}
 			
 		}, CitadelConfigManager.getTickRepeatingSave());
