@@ -1280,6 +1280,11 @@ public class JukeAlertLogger {
                 	actionColor = ChatColor.DARK_GRAY;
                 	actionTextType = 2;
                 	break;
+                case VEHICLE_DESTROY:
+                	actionString = "Destroyed";
+                	actionColor = ChatColor.DARK_RED;
+                	actionTextType = 3;
+                	break;
                 default:
                 case UNKNOWN:
                     this.plugin.getLogger().log(Level.SEVERE, String.format(
