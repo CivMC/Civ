@@ -15,6 +15,7 @@ import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.mercury.MercuryPlugin;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
@@ -49,7 +50,7 @@ public class Tell extends PlayerCommand{
 			return true;
 		}
 		
-		if (CivChat2.getInstance().isMercuryEnabled() && NameLayerPlugin.getOnlineAllServers().containsKey(args[0].toLowerCase())){
+		if (CivChat2.getInstance().isMercuryEnabled() && MercuryAPI.instance.getAllPlayers().contains(args[0].toLowerCase())){
 			if(args.length == 1){
 				chatMan.addChatChannel(player.getName(), args[0].toLowerCase());
 				player.sendMessage(ChatColor.GREEN + "You are now chatting with " + args[0] + " on another server.");
@@ -60,7 +61,7 @@ public class Tell extends PlayerCommand{
 					builder.append(args[x] + " ");
 				//This separator needs to be changed to load from config.
 				String sep = "|";
-				MercuryPlugin.handler.sendMessage(NameLayerPlugin.getOnlineAllServers().get(args[0].toLowerCase()), "pm"+sep+player.getName()+sep+args[0].trim()+sep+builder.toString().replace(sep, ""), "civchat2");
+				MercuryPlugin.handler.sendMessage(MercuryAPI.instance.getServerforPlayer(args[0].toLowerCase()), "pm"+sep+player.getName()+sep+args[0].trim()+sep+builder.toString().replace(sep, ""), "civchat2");
 				player.sendMessage(ChatColor.LIGHT_PURPLE+"To "+args[0]+": "+builder.toString());
 				return true;
 			}
@@ -114,7 +115,7 @@ public class Tell extends PlayerCommand{
 			return null;
 		List<String> namesToReturn = new ArrayList<String>();
 		if (plugin.isMercuryEnabled()) {
-			Set<String> players = NameLayerPlugin.getOnlineAllServers().keySet();
+			Set<String> players = MercuryAPI.instance.getAllPlayers();
 			for (String x: players) {
 				if (x.startsWith(args[0]))
 					namesToReturn.add(x);

@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
+import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.mercury.MercuryPlugin;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -95,10 +96,10 @@ public class CivChat2Listener implements Listener {
 			}
 			else{
 				if (CivChat2.getInstance().isMercuryEnabled()){
-					if (NameLayerPlugin.getOnlineAllServers().containsKey(chatChannel)){
+					if (MercuryAPI.instance.getAllPlayers().contains(chatChannel)){
 						//This separator needs to be changed to load from config.
 						String sep = "|";
-						MercuryPlugin.handler.sendMessage(NameLayerPlugin.getOnlineAllServers().get(chatChannel.toLowerCase()), "pm"+sep+sender.getName()+sep+chatChannel+sep+chatMessage.replace(sep, ""), "civchat2");
+						MercuryAPI.instance.sendMessage(MercuryAPI.instance.getServerforPlayer(chatChannel.toLowerCase()), "pm"+sep+sender.getName()+sep+chatChannel+sep+chatMessage.replace(sep, ""), "civchat2");
 						sender.sendMessage(ChatColor.LIGHT_PURPLE+"To "+chatChannel+": "+chatMessage);
 						return;
 					}
