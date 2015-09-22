@@ -58,7 +58,7 @@
 		</repository>
 		<repository>
 			<id>Jenkins-repo</id>
-			<url>http://civcraft.co:8080/plugin/repository/everything/</url>
+			<url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
 		</repository>
 	</repositories>
 </project>
