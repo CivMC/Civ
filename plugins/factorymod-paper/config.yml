@@ -444,68 +444,68 @@ crafting:
     Sixsided oaklog:
       inputs:
         Oak log:
-          material: log
+          material: LOG
           amount: 9
       output:
         6sided log:
-          material: log
+          material: LOG
           amount: 6
           lore: Sixsided log
     Sixsided sprucelog:
       inputs:
         Spruce log:
-          material: log
+          material: LOG
           amount: 9
           durability: 1
       output:
         6sided log:
-          material: log
+          material: LOG
           amount: 6
           lore: Sixsided log
           durability: 1
     Sixsided birchlog:
       inputs:
         Birch log:
-          material: log
+          material: LOG
           amount: 9
           durability: 2
       output:
         6sided log:
-          material: log
+          material: LOG
           amount: 6
           lore: Sixsided log
           durability: 2
     Sixsided junglelog:
       inputs:
         jungle log:
-          material: log
+          material: LOG
           amount: 9
           durability: 3
       output:
         6sided log:
-          material: log
+          material: LOG
           amount: 6
           lore: Sixsided log
           durability: 3
     Sixsided acacialog:
       inputs:
         acacia log:
-          material: log_2
+          material: LOG_2
           amount: 9
       output:
         6sided log:
-          material: log_2
+          material: LOG_2
           amount: 6
           lore: Sixsided log 
     Sixsided dark oaklog:
       inputs:
         dark oak log:
-          material: log_2
+          material: LOG_2
           amount: 9
           durability: 1
       output:
         6sided log:
-          material: log_2
+          material: LOG_2
           amount: 6
           lore: Sixsided log   
           durability: 1          
