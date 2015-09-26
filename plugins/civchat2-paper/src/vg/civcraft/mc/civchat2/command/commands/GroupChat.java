@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civchat2.command.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -133,8 +134,22 @@ public class GroupChat extends PlayerCommand{
 
 	@Override
 	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
-		// TODO Auto-generated method stub
-		return null;
+		if (arg1.length == 0)
+			return null;
+		if (!(arg0 instanceof Player)) {
+			arg0.sendMessage("This command can not be accessed from the console");
+			return null;
+		}
+		List<String> groupsToReturn = new ArrayList<String>();
+		UUID uuid = NameAPI.getUUID(arg0.getName());
+		GroupManager gm = NameAPI.getGroupManager();
+		List<String> groups = gm.getAllGroupNames(uuid);
+		for(String group:groups) {
+			if(group.toLowerCase().startsWith(arg1[0].toLowerCase())) {
+				groupsToReturn.add(group);
+			}
+		}
+		return groupsToReturn;	
 	}	
 
 }

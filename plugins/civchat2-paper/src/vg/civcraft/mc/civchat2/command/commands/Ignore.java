@@ -1,7 +1,10 @@
 package vg.civcraft.mc.civchat2.command.commands;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -76,9 +79,24 @@ public class Ignore extends PlayerCommand{
 	}
 
 	@Override
-	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		if (args.length != 1)
+			return null;
+		List<String> namesToReturn = new ArrayList<String>();
+		if (plugin.isMercuryEnabled()) {
+			Set<String> players = MercuryAPI.instance.getAllPlayers();
+			for (String x: players) {
+				if (x.toLowerCase().startsWith(args[0].toLowerCase()))
+					namesToReturn.add(x);
+			}
+		}
+		else {
+			for (Player p: Bukkit.getOnlinePlayers()) {
+				if (p.getName().toLowerCase().startsWith(args[0].toLowerCase()))
+					namesToReturn.add(p.getName());
+			}
+		}
+		return namesToReturn;
 	}	
 
 }
