@@ -117,13 +117,13 @@ public class Tell extends PlayerCommand{
 		if (plugin.isMercuryEnabled()) {
 			Set<String> players = MercuryAPI.instance.getAllPlayers();
 			for (String x: players) {
-				if (x.startsWith(args[0]))
+				if (x.toLowerCase().startsWith(args[0].toLowerCase()))
 					namesToReturn.add(x);
 			}
 		}
 		else {
 			for (Player p: Bukkit.getOnlinePlayers()) {
-				if (p.getName().startsWith(args[0]))
+				if (p.getName().toLowerCase().startsWith(args[0].toLowerCase()))
 					namesToReturn.add(p.getName());
 			}
 		}
