@@ -4,6 +4,7 @@ version: ${project.version}
 author: jjj5311
 depend: [NameLayer, CivModCore]
 softdepend: [Mercury]
+description: CivChat2 limits the chat radius to 1000 blocks. However Private Messaging and Group Chat works above the 1000 block chat radius.
 commands:
     tell:
       aliases: [message, msg, m, pm]
