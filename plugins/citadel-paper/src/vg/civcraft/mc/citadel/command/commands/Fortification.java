@@ -62,12 +62,12 @@ public class Fortification extends PlayerCommand{
 		}
 		
 		PlayerType type = g.getPlayerType(uuid);
-		if (type == null){
+		if (!p.hasPermission("citadel.admin") && !p.isOp() && type == null){
 			p.sendMessage(ChatColor.RED + "You are not on this group.");
 			return true;
 		}
 		GroupPermission gPerm = gm.getPermissionforGroup(g);
-		if (!gPerm.isAccessible(type, PermissionType.BLOCKS)){
+		if (!p.hasPermission("citadel.admin") && !p.isOp() && !gPerm.isAccessible(type, PermissionType.BLOCKS)){
 			p.sendMessage(ChatColor.RED + "You do not have permission to "
 					+ "place a reinforcement on this group.");
 			return true;
