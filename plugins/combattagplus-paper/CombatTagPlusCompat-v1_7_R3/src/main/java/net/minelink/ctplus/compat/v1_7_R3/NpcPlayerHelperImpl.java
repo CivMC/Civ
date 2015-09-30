@@ -27,8 +27,7 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
     @Override
     public Player spawn(Player player) {
         NpcPlayer npcPlayer = NpcPlayer.valueOf(player);
-        MinecraftServer minecraftServer = MinecraftServer.getServer();
-        WorldServer worldServer = minecraftServer.getWorldServer(npcPlayer.dimension);
+        WorldServer worldServer = ((CraftWorld) player.getWorld()).getHandle();
         Location l = player.getLocation();
 
         npcPlayer.spawnIn(worldServer);

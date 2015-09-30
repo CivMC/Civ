@@ -42,8 +42,7 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
     @Override
     public Player spawn(Player player) {
         NpcPlayer npcPlayer = NpcPlayer.valueOf(player);
-        MinecraftServer minecraftServer = MinecraftServer.getServer();
-        WorldServer worldServer = minecraftServer.getWorldServer(npcPlayer.dimension);
+        WorldServer worldServer = ((CraftWorld) player.getWorld()).getHandle();
         Location l = player.getLocation();
 
         npcPlayer.spawnIn(worldServer);
@@ -51,7 +50,7 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
         npcPlayer.playerInteractManager.a(worldServer);
         npcPlayer.invulnerableTicks = 0;
 
-        for (Object o : minecraftServer.getPlayerList().players) {
+        for (Object o : MinecraftServer.getServer().getPlayerList().players) {
             if (!(o instanceof EntityPlayer) || o instanceof NpcPlayer) continue;
             if (addPlayer == null) break;
 
