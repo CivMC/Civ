@@ -35,6 +35,9 @@ public final class NpcListener implements Listener {
         boolean isTagged = plugin.getTagManager().isTagged(player.getUniqueId());
         if (!isTagged && !plugin.getSettings().alwaysSpawn()) return;
 
+        // Do nothing if player is not within enabled world
+        if (plugin.getSettings().getDisabledWorlds().contains(player.getWorld().getName())) return;
+
         // Do nothing if a player logs off in combat in a WorldGuard protected region
         if (!plugin.getHookManager().isPvpEnabledAt(player.getLocation())) return;
 
