@@ -52,7 +52,7 @@ public final class TagManager {
         // Determine attacker identity
         UUID attackerId = null;
         if (attacker != null) {
-            if (attacker.getHealth() <= 0 || attacker.isDead()) {
+            if (attacker.getHealth() <= 0 || attacker.isDead() || attacker == victim) {
                 attacker = null;
             } else if (helper.isNpc(attacker)) {
                 attackerId = helper.getIdentity(attacker).getId();

@@ -1,5 +1,5 @@
 # Don't touch this. It's here to determine whether you need to refresh your config.
-config-version: 16
+config-version: 17
 
 # The duration in seconds that both the attacker and victim should be tagged in combat.
 tag-duration: 15
@@ -39,6 +39,9 @@ untag-on-kick: false
 
 # Only the attacker will be tagged if this is set to true.
 only-tag-attacker: false
+
+# Disables players being able to tag themselves.
+disable-self-tagging: true
 
 # Prevent block editing while tagged.
 disable-block-edit: false

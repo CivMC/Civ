@@ -237,6 +237,10 @@ public final class Settings {
         return plugin.getConfig().getBoolean("only-tag-attacker");
     }
 
+    public boolean disableSelfTagging() {
+        return plugin.getConfig().getBoolean("disable-self-tagging");
+    }
+
     public boolean disableBlockEdit() {
         return plugin.getConfig().getBoolean("disable-block-edit");
     }

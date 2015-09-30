@@ -107,7 +107,7 @@ public final class TagListener implements Listener {
         }
 
         // Do nothing if damage is self-inflicted
-        if (victim == attacker) return;
+        if (victim == attacker && plugin.getSettings().disableSelfTagging()) return;
 
         // Combat tag victim and player
         plugin.getTagManager().tag(victim, attacker);
