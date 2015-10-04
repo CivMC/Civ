@@ -126,6 +126,38 @@ public class Utility {
         rm.saveInitialReinforcement(rein);
         return rein;
     }
+	
+	/**
+	 * Creates a player reinforcement without consuming any materials. This should only be used
+	 * for admin tools
+	 * @param The player who is creating the reinforcement
+	 * @param The Group this reinforcement belongs too.
+	 * @param The Block this reinforcement is occurring on.
+	 * @param The ReinforcementType that is being reinforced on the block.
+	 * @return The PlayerReinforcement that comes from these parameters or null if certain checks failed.
+	 * @throws ReinforcemnetFortificationCancelException
+	 */
+	public static PlayerReinforcement createPlayerReinforcementWithoutMaterialConsumption(Player player, 
+			Group g, Block block, ReinforcementType type) {
+		//no error messages towards the player because this might be called a few thousand times 
+		if (g.isDisciplined()) {
+            return null;
+        }
+		if (NonReinforceableType.isNonReinforceable(block.getType())){
+        	return null;
+        }
+		PlayerReinforcement rein = new PlayerReinforcement(block.getLocation(), 
+        		type.getHitPoints(), getIntFormofMaturation(System.currentTimeMillis(),type.getItemStack()), 
+        		g, type.getItemStack(), g.getGroupId());
+        ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, block, player);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+        	throw new ReinforcemnetFortificationCancelException();
+        }
+        rm.saveInitialReinforcement(rein);
+        return rein;		
+	}
+	
 	/**
 	 * Checks if creating a plant reinforcement would result in a 
 	 * double reinforcement.
