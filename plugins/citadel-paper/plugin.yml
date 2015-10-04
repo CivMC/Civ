@@ -25,6 +25,9 @@ commands:
   permission: citadel.admin
  ctur:
   permission: citadel.admin
+ ctar:
+  permission: citadel.admin
+  aliases: [ctareareinforce] 
 permissions:
  citadel.admin:
   default: op

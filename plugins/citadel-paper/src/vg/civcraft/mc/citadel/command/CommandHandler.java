@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import vg.civcraft.mc.citadel.command.commands.Acid;
+import vg.civcraft.mc.citadel.command.commands.AreaReinforce;
 import vg.civcraft.mc.citadel.command.commands.Bypass;
 import vg.civcraft.mc.citadel.command.commands.Fortification;
 import vg.civcraft.mc.citadel.command.commands.Information;
@@ -35,6 +36,7 @@ public class CommandHandler {
 		addCommands(new Off("Off"));
 		addCommands(new Stats("Stats"));
 		addCommands(new UpdateReinforcements("UpdateReinforcements"));
+		addCommands(new AreaReinforce("AreaReinforce"));
 	}
 	
 	private void addCommands(Command command){
