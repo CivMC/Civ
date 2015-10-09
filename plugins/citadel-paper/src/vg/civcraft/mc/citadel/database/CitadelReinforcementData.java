@@ -248,7 +248,6 @@ public class CitadelReinforcementData {
 	 */
 	public synchronized Reinforcement getReinforcement(Location loc){
 		reconnectAndReinitialize();
-		
 		try {
 			int x = loc.getBlockX();
 			int y = loc.getBlockY();
@@ -261,6 +260,7 @@ public class CitadelReinforcementData {
 			getRein.setString(5, loc.getWorld().getName());
 			ResultSet set = getRein.executeQuery();
 			if (!set.next()){
+				set.close();
 				return null;
 			}
 			Material mat = Material.getMaterial(set.getInt(1));
@@ -286,15 +286,18 @@ public class CitadelReinforcementData {
 								mature, GroupManager.getGroup(group),
 								stack, group_id);
 				rein.setInsecure(inSecure);
+				set.close();
 				return rein;
 			}
 			else if(rein_type.equals("NaturalReinforcement")){
 				NaturalReinforcement rein = 
 						new NaturalReinforcement(loc.getBlock(), durability);
+				set.close();
 				return rein;
 			}
 			else if (rein_type.equals("MultiBlockReinforcement")){
 				int id = set.getInt(9);
+				set.close();
 				MultiBlockReinforcement rein = MultiBlockReinforcement.getMultiRein(id);
 				if (rein != null)
 					return rein;
@@ -306,6 +309,7 @@ public class CitadelReinforcementData {
 					String world = set.getString(4);
 					locs.add(new Location(Bukkit.getWorld(world), xx, yy, zz));
 				}
+				set.close();
 				
 				rein = new MultiBlockReinforcement(locs, GroupManager.getGroup(group), durability, mature, id);
 				return rein;
@@ -367,19 +371,20 @@ public class CitadelReinforcementData {
 					if (rein != null)
 						reins.add(rein);
 					getCordsbyReinID.setInt(1, id);
-					set.close();
-					set = getCordsbyReinID.executeQuery();
+					ResultSet multi = getCordsbyReinID.executeQuery();
 					List<Location> locs = new ArrayList<Location>();
-					while (set.next()){
-						int xx = set.getInt(1), yy = set.getInt(2), zz = set.getInt(3);
-						String w = set.getString(4);
+					while (multi.next()){
+						int xx = multi.getInt(1), yy = multi.getInt(2), zz = multi.getInt(3);
+						String w = multi.getString(4);
 						locs.add(new Location(Bukkit.getWorld(w), xx, yy, zz));
 					}
+					multi.close();
 					
 					rein = new MultiBlockReinforcement(locs, g, durability, mature, id);
 					reins.add(rein);
 				}
 			}
+			set.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -646,6 +651,7 @@ public class CitadelReinforcementData {
 			ResultSet set = getLastReinID.executeQuery();
 			set.next();
 			lastId = set.getInt(1);
+			set.close();
 			return lastId;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -672,6 +678,7 @@ public class CitadelReinforcementData {
 			selectReinCountForGroup.setString(1, group);
 			ResultSet set = selectReinCountForGroup.executeQuery();
 			set.next();
+			set.close();
 			return set.getInt(1);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -684,6 +691,7 @@ public class CitadelReinforcementData {
 		try {
 			ResultSet set = selectReinCount.executeQuery();
 			set.next();
+			set.close();
 			return set.getInt(1);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -702,6 +710,7 @@ public class CitadelReinforcementData {
 			getGroupFromRein.setString(5, formatChunk(loc));
 			ResultSet set = getGroupFromRein.executeQuery();
 			set.next();
+			set.close();
 			return set.getString(1);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
