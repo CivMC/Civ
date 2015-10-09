@@ -4,6 +4,7 @@ import isaac.bastion.Bastion;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,31 +17,36 @@ public class PlayersStates {
 	static public enum Mode {
 		NORMAL,INFO,DELETE,OFF,BASTION,MATURE
 	}
-	static private Map<Player,Mode> playersModes=new HashMap<Player,Mode>();
-	static private Map<Player,Integer> playersCallback=new HashMap<Player,Integer>();
+	static private Map<UUID,Mode> playersModes=new HashMap<UUID,Mode>();
+	static private Map<UUID,Integer> playersCallback=new HashMap<UUID,Integer>();
 
 	static public boolean playerInMode(Player player,Mode mode){
-		Mode result=playersModes.get(player);
+		Mode result=playersModes.get(player.getUniqueId());
 		if(result==mode)
 			return true;
 		return false;
 	}
 
 	static public void touchPlayer(Player player){
-		registerReturnToNormal(player,playersModes.get(player));
+		registerReturnToNormal(player,playersModes.get(player.getUniqueId()));
 	}
 
 	static private class CallBack extends BukkitRunnable{
-		private Player forPlayer;
+		private UUID forPlayer;
 		private Mode forMode;
-		public CallBack(Player player,Mode mode){
+		public CallBack(UUID player,Mode mode){
 			forPlayer=player;
 			forMode=mode; 
 		}
 
 		@Override
 		public void run() {
-			PlayersStates.setModeForPlayer(forPlayer, forMode);
+			try {
+			PlayersStates.setModeForPlayer(Bastion.getPlugin().getServer().getPlayer(forPlayer), forMode);
+			}
+			catch (NullPointerException e) {
+				
+			}
 		}
 
 	}
@@ -49,36 +55,36 @@ public class PlayersStates {
 		if(mode==null)
 			mode=Mode.NORMAL;
 		
-		Mode old=playersModes.get(player);
+		Mode old=playersModes.get(player.getUniqueId());
 		
 		if(old!=null&&old!=mode&&old!=Mode.NORMAL){
 			player.sendMessage(ChatColor.YELLOW+"Bastion "+old.name()+" mode off");
 		}
 		player.sendMessage(ChatColor.GREEN+"Bastion "+mode.name()+" mode on");
 
-		playersModes.put(player, mode);
+		playersModes.put(player.getUniqueId(), mode);
 		registerReturnToNormal(player,mode);
 
 	}
 	static public void toggleModeForPlayer(Player player, Mode mode){
-		Mode old=playersModes.get(player);
+		Mode old=playersModes.get(player.getUniqueId());
 		if(old==mode)
 			mode=Mode.NORMAL;
 		setModeForPlayer(player, mode);
 	}
 
 	static private void registerReturnToNormal(Player player,Mode fromMode){
-		Integer previousId=playersCallback.get(player);
+		Integer previousId=playersCallback.get(player.getUniqueId());
 
 		if(previousId!=null)
 			Bukkit.getScheduler().cancelTask(previousId);
 		if(fromMode!=Mode.NORMAL){
 			Integer id=Bukkit.getScheduler().scheduleSyncDelayedTask(
 					Bastion.getPlugin(),
-					new CallBack(player,Mode.NORMAL),
+					new CallBack(player.getUniqueId(),Mode.NORMAL),
 					20L * CitadelConfigManager.getPlayerStateReset());
 
-			playersCallback.put(player, id);
+			playersCallback.put(player.getUniqueId(), id);
 		}
 
 	}
