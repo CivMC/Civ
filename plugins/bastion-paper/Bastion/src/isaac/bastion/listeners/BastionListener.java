@@ -35,58 +35,36 @@ implements Listener
 		bastionManager = Bastion.getBastionManager();
 		config=Bastion.getConfigManager();
 	}
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
 	public void onBlockPlace(BlockPlaceEvent event) {
-		if(event.isCancelled()){
-			return;
-		}
 		bastionManager.handleBlockPlace(event);
 	}
 
-	@EventHandler
+	@EventHandler (ignoreCancelled = true)
 	public void waterflowed(BlockFromToEvent  event){
-		if(event.isCancelled()){
-			return;
-		}
 		bastionManager.handleFlowingWater(event);
 	}
 
-	@EventHandler
+	@EventHandler (ignoreCancelled = true)
 	public void treeGrew(StructureGrowEvent event){
-		if(event.isCancelled()){
-			return;
-		}
 		bastionManager.handleTreeGrowth(event);
 	}
 
-	@EventHandler
+	@EventHandler (ignoreCancelled = true)
 	public void pistionPushed(BlockPistonExtendEvent  event){
-		if(event.isCancelled()){
-			return;
-		}
 		bastionManager.handlePistonPush(event);
 	}
-	@EventHandler
+	@EventHandler (ignoreCancelled = true)
 	public void bucketPlaced(PlayerBucketEmptyEvent  event){
-		if(event.isCancelled()){
-			return;
-		}
 		bastionManager.handleBucketPlace(event);
 
 	}
-	@EventHandler
+	@EventHandler (ignoreCancelled = true)
 	public void dispensed(BlockDispenseEvent  event){
-		if(event.isCancelled()){
-			return;
-		}
-
 		bastionManager.handleDispensed(event);
 	}
-	@EventHandler
+	@EventHandler (ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
-		if(event.isCancelled()){
-			return;
-		}
 		bastionManager.handleBlockBreakEvent(event);
 	}
 	@EventHandler
