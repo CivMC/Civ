@@ -173,7 +173,7 @@ public class ReinforcementManager {
 	
 	// Saves periodicly all the reinforcements.
 	private void scheduleSave(){
-		Bukkit.getScheduler().runTaskLaterAsynchronously(Citadel.getInstance(), new Runnable(){
+		Bukkit.getScheduler().runTaskTimerAsynchronously(Citadel.getInstance(), new Runnable(){
 
 			@Override
 			public void run() {
@@ -188,7 +188,7 @@ public class ReinforcementManager {
 				}
 			}
 			
-		}, CitadelConfigManager.getTickRepeatingSave());
+		}, 100, CitadelConfigManager.getTickRepeatingSave());
 	}
 	
 	/**
