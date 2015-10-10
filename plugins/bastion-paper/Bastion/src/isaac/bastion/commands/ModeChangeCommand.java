@@ -28,12 +28,18 @@ public class ModeChangeCommand implements CommandExecutor {
 		
 		if(sender.hasPermission("Bastion.dev"))
 			if(arguments.length >= 3){
-				Integer x = Integer.parseInt(arguments[0]);
-				Integer y = Integer.parseInt(arguments[1]);
-				Integer z = Integer.parseInt(arguments[2]);
-				Player player = (Player) sender;
-				if(x != null && y != null && z != null){
-					Bukkit.getServer().getPluginManager().callEvent(new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, player.getItemInHand(), new Location(player.getLocation().getWorld(), x, y - 1, z).getBlock(), BlockFace.UP ));
+				try {
+					Integer x = Integer.parseInt(arguments[0]);
+					Integer y = Integer.parseInt(arguments[1]);
+					Integer z = Integer.parseInt(arguments[2]);
+					Player player = (Player) sender;
+					Bukkit.getServer().getPluginManager().callEvent(new PlayerInteractEvent(player,
+							Action.RIGHT_CLICK_BLOCK, player.getItemInHand(), 
+							new Location(player.getLocation().getWorld(),
+									x, y - 1, z).getBlock(), BlockFace.UP ));
+				}
+				catch (NumberFormatException e) {
+					sender.sendMessage("One of the arguments you provided was not a number");
 				}
 			}
 			
