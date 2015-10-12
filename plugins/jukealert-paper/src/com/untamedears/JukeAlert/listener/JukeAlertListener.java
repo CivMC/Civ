@@ -162,7 +162,7 @@ public class JukeAlertListener implements Listener {
         handlePlayerExit(event);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void playerQuitEvent(PlayerQuitEvent event) {
         handlePlayerExit(event);
     }
