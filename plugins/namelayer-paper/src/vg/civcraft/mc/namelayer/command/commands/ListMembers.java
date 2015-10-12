@@ -22,7 +22,7 @@ public class ListMembers extends PlayerCommandMiddle{
 		setIdentifier("nllm");
 		setDescription("List the members in a group");
 		setUsage("/nllm <group> (PlayerType)");
-		setArguments(1,2);
+		setArguments(1,3);
 	}
 
 	@Override
@@ -50,12 +50,17 @@ public class ListMembers extends PlayerCommandMiddle{
 		
 		List<UUID> uuids = null;
 		if (args.length > 1){
-			PlayerType type = PlayerType.getPlayerType(args[1]);
-			if (type == null){
-				PlayerType.displayPlayerTypes(p);
-				return true;
+			if (args.length == 3) {
+				uuids = g.getMembersInNameRange(args[1], args[2]);
 			}
-			uuids = g.getAllMembers(type);
+			else {
+				PlayerType type = PlayerType.getPlayerType(args[1]);
+				if (type == null){
+					PlayerType.displayPlayerTypes(p);
+					return true;
+				}
+				uuids = g.getAllMembers(type);
+			}
 		}
 		else
 			uuids = g.getAllMembers();

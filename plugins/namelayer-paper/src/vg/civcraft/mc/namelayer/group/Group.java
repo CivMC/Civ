@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 
@@ -61,6 +62,25 @@ public class Group {
 				uuids.add(uu);
 		return uuids;
 	}
+	
+	/**
+	 * Gives the uuids of players who are in this group and whos name is
+	 * within the given range. 
+	 * @param lowerLimit lexicographically lowest acceptable name
+	 * @param upperLimit lexicographically highest acceptable name
+	 * @return list of uuids of all players in the group whose name is within the given range
+	 */
+	public List<UUID> getMembersInNameRange(String lowerLimit, String upperLimit) {
+		List<UUID> uuids = new ArrayList<UUID>();
+		for (UUID uu: players.keySet()) {
+			String name = NameAPI.getCurrentName(uu);
+			if (name.compareToIgnoreCase(lowerLimit) >= 0 && name.compareToIgnoreCase(upperLimit) <= 0) {
+				uuids.add(uu);
+			}
+		}
+		return uuids;
+	}
+	
 	/**
 	 * Adds the player to be allowed to join a group into a specific PlayerType.
 	 * @param uuid- The UUID of the player.
