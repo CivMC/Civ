@@ -75,8 +75,11 @@ public class GroupPermission {
 	 */
 	public String listPermsforPlayerType(PlayerType type){
 		String x = "The permission types are: ";
-		for (PermissionType pType: perms.get(type))
-			x += pType.name() + " ";
+		for (PermissionType pType: perms.get(type)) {
+			if (pType != null) {
+				x += pType.name() + " ";
+			}
+		}
 		return x;
 	}
 	/**
