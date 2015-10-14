@@ -64,3 +64,6 @@ permissions:
   jukealert.jalookup:
     description: Ability to use /jalookup
     default: true
+  jukealert.vanish:
+    description: Ability to avoid snitches.
+    default: op  

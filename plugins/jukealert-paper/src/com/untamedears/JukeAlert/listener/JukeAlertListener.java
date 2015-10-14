@@ -87,7 +87,7 @@ public class JukeAlertListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void playerJoinEvent(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (vanishNoPacket.isPlayerInvisible(player)) {
+        if (vanishNoPacket.isPlayerInvisible(player) || player.hasPermission("jukealert.vanish")) {
             return;
         }
         UUID accountId = player.getUniqueId();
@@ -126,7 +126,7 @@ public class JukeAlertListener implements Listener {
     public void handlePlayerExit(PlayerEvent event) {
         Player player = event.getPlayer();
 
-        if (vanishNoPacket.isPlayerInvisible(player)) {
+        if (vanishNoPacket.isPlayerInvisible(player) || player.hasPermission("jukealert.vanish")) {
             return;
         }
         UUID accountId = player.getUniqueId();
@@ -303,7 +303,7 @@ public class JukeAlertListener implements Listener {
         if (!block.getType().equals(Material.JUKEBOX)) {
             return;
         }
-        if (vanishNoPacket.isPlayerInvisible(event.getPlayer())) {
+        if (vanishNoPacket.isPlayerInvisible(event.getPlayer()) || event.getPlayer().hasPermission("jukealert.vanish")) {
             return;
         }
         Location loc = block.getLocation();
@@ -329,7 +329,7 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
-        if (vanishNoPacket.isPlayerInvisible(player)) {
+        if (vanishNoPacket.isPlayerInvisible(player) || player.hasPermission("jukealert.vanish")) {
             return;
         }
         UUID accountId = player.getUniqueId();
@@ -447,7 +447,7 @@ public class JukeAlertListener implements Listener {
         if (e.isCancelled()) {
             return;
         }
-        if (vanishNoPacket.isPlayerInvisible(player)) {
+        if (vanishNoPacket.isPlayerInvisible(player) || player.hasPermission("jukealert.vanish")) {
             return;
         }
         Block block;
@@ -488,7 +488,7 @@ public class JukeAlertListener implements Listener {
         if (!(killer instanceof Player)) {
             return;
         }
-        if (vanishNoPacket.isPlayerInvisible((Player) killer)) {
+        if (vanishNoPacket.isPlayerInvisible((Player) killer) || ((Player) killer).hasPermission("jukealert.vanish")) {
             return;
         }
         Player player = (Player) killer;
@@ -513,7 +513,7 @@ public class JukeAlertListener implements Listener {
         if (killer == null || !(killer instanceof Player)) {
             return;
         }
-        if (vanishNoPacket.isPlayerInvisible((Player) killer)) {
+        if (vanishNoPacket.isPlayerInvisible((Player) killer) || ((Player) killer).hasPermission("jukealert.vanish")) {
             return;
         }
         Player player = (Player) killer;
@@ -539,7 +539,7 @@ public class JukeAlertListener implements Listener {
         }
         Player killed = event.getEntity();
         Player killer = killed.getKiller();
-        if (vanishNoPacket.isPlayerInvisible(killer)) {
+        if (vanishNoPacket.isPlayerInvisible(killer) || killer.hasPermission("jukealert.vanish")) {
             return;
         }
         UUID accountId = killer.getUniqueId();
@@ -565,7 +565,7 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
-        if (vanishNoPacket.isPlayerInvisible(player)) {
+        if (vanishNoPacket.isPlayerInvisible(player) || player.hasPermission("jukealert.vanish")) {
             return;
         }
         Block block = event.getBlock();
@@ -607,7 +607,7 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
-        if (vanishNoPacket.isPlayerInvisible(player)) {
+        if (vanishNoPacket.isPlayerInvisible(player) || player.hasPermission("jukealert.vanish")) {
             return;
         }
         Block block = event.getBlock();
@@ -633,7 +633,7 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
-        if (vanishNoPacket.isPlayerInvisible(player)) {
+        if (vanishNoPacket.isPlayerInvisible(player) || player.hasPermission("jukealert.vanish")) {
             return;
         }
         Block block = event.getBlock();
@@ -661,7 +661,7 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
-        if (vanishNoPacket.isPlayerInvisible(player)) {
+        if (vanishNoPacket.isPlayerInvisible(player) || player.hasPermission("jukealert.vanish")) {
             return;
         }
         Block block = event.getBlockClicked();
@@ -685,7 +685,7 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
-        if (vanishNoPacket.isPlayerInvisible(player)) {
+        if (vanishNoPacket.isPlayerInvisible(player) || player.hasPermission("jukealert.vanish")) {
             return;
         }
         Block block = event.getBlockClicked();
