@@ -69,11 +69,15 @@ public class Utility {
         final int invSize = inv.getSize();
         final ItemStack itemType = type.getItemStack();
         List<Integer> slots = new ArrayList<Integer>(type.getRequiredAmount());
-        int requirements = type.getRequiredAmount();
-        if (requirements <= 0) {
+        int requirementscheck =  type.getRequiredAmount();
+        if (requirementscheck <= 0) {
             Citadel.Log("Reinforcement requirements too low for " + itemType.getType().name());
             return null;
         }
+        if (type.getMaterial().equals(block.getType())){
+        	requirementscheck++;
+        }
+        int requirements = requirementscheck;
         try {
             for (int slot = 0; slot < invSize && requirements > 0; ++slot) {
                 final ItemStack slotItem = inv.getItem(slot);
@@ -83,13 +87,13 @@ public class Utility {
                 if (!slotItem.isSimilar(itemType)) {
                     continue;
                 }
-                requirements -= slotItem.getAmount();
+                requirementscheck -= slotItem.getAmount();
                 slots.add(slot);
             }
         } catch (Exception ex) {
             // Eat any inventory size mis-match exceptions, like with the Anvil
         }
-        if (requirements > 0) {
+        if (requirementscheck > 0) {
             // Not enough reinforcement material
             return null;
         }
@@ -103,7 +107,15 @@ public class Utility {
         	throw new ReinforcemnetFortificationCancelException();
         }
         // Now eat the materials
-        requirements = type.getRequiredAmount();
+        
+        // Handle special case with block reinforcments.
+        if (type.getMaterial().isBlock()){
+	        if (slots.size()>1){
+	        	if (inv.getItemInHand().getType().equals(type.getMaterial()) && slots.get(0) != inv.getHeldItemSlot()){
+	        		requirements--;
+	        	}
+	        }
+        }
         for (final int slot : slots) {
             if (requirements <= 0) {
                 break;

@@ -105,8 +105,11 @@ public class BlockListener implements Listener{
             event.setCancelled(true);
             return;
         }
-        
-		if (inv.contains(type.getMaterial(), type.getRequiredAmount())) {
+        int required = type.getRequiredAmount();
+        if (type.getMaterial().equals(b.getType())){
+        	required++;
+        }
+		if (inv.contains(type.getMaterial(), required)) {
 			try {
 				if (createPlayerReinforcement(p, state.getGroup(), b, type) == null) {
 						p.sendMessage(ChatColor.RED + String.format("%s is not a reinforcible material ", b.getType().name()));
