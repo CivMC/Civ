@@ -32,6 +32,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -579,5 +580,17 @@ public class BlockListener implements Listener{
     public void chunkLoadEvent(ChunkLoadEvent event) {
     	Chunk chunk = event.getChunk();
     	rm.loadReinforcementChunk(chunk);
+    }
+    
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void blockPhysEvent(BlockPhysicsEvent event){
+    	Block block = event.getBlock();
+    	if (block.getType().hasGravity()){
+    		Reinforcement rein = rm.getReinforcement(Utility.getRealBlock(block));
+    		if (rein != null){
+    			event.setCancelled(true);
+    		}
+    	}
+    	
     }
 }
