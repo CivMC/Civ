@@ -14,6 +14,7 @@ import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class Ignore extends PlayerCommand{
