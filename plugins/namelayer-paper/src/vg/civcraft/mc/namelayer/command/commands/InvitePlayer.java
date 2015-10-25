@@ -1,5 +1,6 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,6 +10,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -19,6 +21,7 @@ import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
+import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -158,9 +161,12 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			else
 				return GroupTabCompleter.complete(args[0], null, (Player)sender);
 
-		} else if (args.length == 2)
+		} else if (args.length == 2) {
+			if (NameLayerPlugin.isMercuryEnabled()) {
+				return new ArrayList <String>(MercuryAPI.instance.getAllPlayers());
+			}
 			return null;
-
+		}
 		else if (args.length == 3)
 			return MemberTypeCompleter.complete(args[2]);
 
