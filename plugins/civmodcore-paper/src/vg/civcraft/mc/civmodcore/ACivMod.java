@@ -13,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.annotations.*;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.interfaces.ApiManager;
+import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.util.ClassUtility;
 
 public abstract class ACivMod extends JavaPlugin implements Listener{
@@ -121,6 +122,7 @@ public abstract class ACivMod extends JavaPlugin implements Listener{
     }
     private void registerEvents() {
     	getServer().getPluginManager().registerEvents(this, this);
+    	getServer().getPluginManager().registerEvents(new ClickableInventoryListener(), this);
     }
     public void registerCommands() {
       ConsoleCommandSender console = getServer().getConsoleSender();
