@@ -252,10 +252,13 @@ public final class PlayerListener implements Listener {
         // Do nothing if teleportation is allowed in combat
         if (!plugin.getSettings().disableTeleportation()) return;
 
-        // Do nothing if teleportation caused by enderpearl or plugin
-        PlayerTeleportEvent.TeleportCause cause = event.getCause();
-        if (cause == PlayerTeleportEvent.TeleportCause.ENDER_PEARL ||
-                cause == PlayerTeleportEvent.TeleportCause.PLUGIN) return;
+        // Do nothing if teleportation caused by enderpearl, plugin or unknown cause
+        switch (event.getCause()) {
+            case ENDER_PEARL:
+            case PLUGIN:
+            case UNKNOWN:
+                return;
+        }
 
         // Do nothing if player isn't even combat tagged
         Player player = event.getPlayer();
