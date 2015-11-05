@@ -11,7 +11,9 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
+import vg.civcraft.mc.namelayer.command.TabCompleters.GroupMemberTabCompleter;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.command.TabCompleters.InviteTabCompleter;
 import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
@@ -147,8 +149,7 @@ public class PromotePlayer extends PlayerCommandMiddle{
 				return GroupTabCompleter.complete(args[0], null, (Player)sender);
 
 		} else if (args.length == 2)
-			return null;
-
+			return GroupMemberTabCompleter.complete(args[0], args[1]);
 		else if (args.length == 3)
 			return MemberTypeCompleter.complete(args[2]);
 

@@ -64,6 +64,25 @@ public class Group {
 	}
 	
 	/**
+	 * Gives the uuids of the members whose name starts with the given
+	 * String, this is not case-sensitive
+	 * 
+	 * @param args start of the players name
+	 * @return list of all players whose name starts with the given string
+	 */
+	public List<UUID> getMembersByName(String args) {
+		List<UUID> uuids = new ArrayList<UUID>();
+		args = args.toLowerCase();
+		for (UUID uu: players.keySet()) {
+			String name = NameAPI.getCurrentName(uu);
+			if (name.toLowerCase().startsWith(args)) {
+				uuids.add(uu);
+			}
+		}
+		return uuids;
+	}
+	
+	/**
 	 * Gives the uuids of players who are in this group and whos name is
 	 * within the given range. 
 	 * @param lowerLimit lexicographically lowest acceptable name

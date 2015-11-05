@@ -7,9 +7,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
+import vg.civcraft.mc.namelayer.command.TabCompleters.GroupMemberTabCompleter;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
@@ -111,6 +113,9 @@ public class RemoveMember extends PlayerCommandMiddle {
 			else {
 				return GroupTabCompleter.complete(null, null, (Player)sender);
 			}
+		}
+		if (args.length == 2) {
+			return GroupMemberTabCompleter.complete(args[0],args[1]);
 		}
 
 		return null;
