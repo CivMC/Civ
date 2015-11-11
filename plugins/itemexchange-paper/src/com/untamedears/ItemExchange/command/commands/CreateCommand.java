@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BlockIterator;
 
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.command.PlayerCommand;
@@ -39,30 +40,23 @@ public class CreateCommand extends PlayerCommand {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
-
-		List<Block> blocks = player.getLastTwoTargetBlocks(new HashSet<Byte>(), 5);
-
-		if(blocks.size() == 0) {
-			player.sendMessage(ChatColor.RED + "No block in view.");
-
-			return true;
-		}
-
-		Block block = blocks.get(blocks.size() - 1).getLocation().getBlock();
 		//If no input or ouptut is specified player attempt to set up ItemExchange at the block the player is looking at
 		//The player must have citadel access to the inventory block
 		if (args.length == 0) {
-			if (ItemExchangePlugin.ACCEPTABLE_BLOCKS.contains(block.getState().getType())) {
-				PlayerInteractEvent event = new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, player.getItemInHand(), block, BlockFace.UP);
-				
-				Bukkit.getPluginManager().callEvent(event);
-				
-				if(!event.isCancelled())
-					player.sendMessage(ItemExchange.createExchange(block.getLocation(), player));
+			BlockIterator iter = new BlockIterator(player,6);
+			while(iter.hasNext()) {
+				Block block = iter.next();	
+				if (ItemExchangePlugin.ACCEPTABLE_BLOCKS.contains(block.getState().getType())) {
+					PlayerInteractEvent event = new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, player.getItemInHand(), block, BlockFace.UP);
+					
+					Bukkit.getPluginManager().callEvent(event);
+					
+					if(!event.isCancelled())
+						player.sendMessage(ItemExchange.createExchange(block.getLocation(), player));
+					return true;
+				}				
 			}
-			else {
-				player.sendMessage(ChatColor.RED + "Block in view is not suitable for an Item Exchange.");
-			}
+			player.sendMessage(ChatColor.RED + "No block in view is suitable for an Item Exchange.");
 		}
 		//Create a RuleBlock in the players inventory
 		else {
