@@ -108,14 +108,12 @@ public class Acid extends PlayerCommand {
 			if (event.isCancelled())
 				return true;
 			topFace.setType(Material.AIR);
-			if (rand.nextDouble() < pRein.getHealth()) {
-				// A chance for it to break.
-				pRein.getLocation()
-						.getWorld()
-						.dropItemNaturally(pRein.getLocation(),
-								pRein.getStackRepresentation());
-			}
+
 			block.breakNaturally();
+			
+			// Consider if should simply be an AcidBlockEvent listener. This will do for now.
+			Utility.reinforcementBroken(p, pRein);
+			rm.deleteReinforcement(pTopRein);
 		}
 		return true;
 	}
