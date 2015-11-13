@@ -576,11 +576,12 @@ public class BlockListener implements Listener{
         }
     }
     
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+// TODO: Come back and figure out why this is causing all the data to be re-written inplace with no change
+/*    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void chunkLoadEvent(ChunkLoadEvent event) {
     	Chunk chunk = event.getChunk();
     	rm.loadReinforcementChunk(chunk);
-    }
+    }*/
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void blockPhysEvent(BlockPhysicsEvent event){
