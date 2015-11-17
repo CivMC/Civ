@@ -19,6 +19,7 @@ public class ReinforcementType {
 	private int hitpoints;
 	private Material mat;
 	private int maturationTime;
+	private int acidTime;
 	private int scale;
 	private ItemStack stack;
 	
@@ -26,14 +27,15 @@ public class ReinforcementType {
 			new HashMap<ItemStack, ReinforcementType>();
 	
 	public ReinforcementType(Material mat, int amount, double percentReturn,
-			int returnValue, int hitpoints, int maturationTime, int scale,
-			List<String> lore) {
+			int returnValue, int hitpoints, int maturationTime, int acidTime,
+			int scale, List<String> lore) {
 		this.mat = mat;
 		this.amount = amount;
 		this.percentReturn = percentReturn/100;
 		this.returnValue = returnValue;
 		this.hitpoints = hitpoints;
 		this.maturationTime = maturationTime;
+		this.acidTime = acidTime;
 		this.scale = scale;
 		ItemStack stack = new ItemStack(mat, amount);
 		ItemMeta meta = stack.getItemMeta();
@@ -52,10 +54,11 @@ public class ReinforcementType {
 			int returnValue = CitadelConfigManager.getReturns(type);
 			int hitpoints = CitadelConfigManager.getHitPoints(type);
 			int maturation = CitadelConfigManager.getMaturationTime(type);
+			int acid = CitadelConfigManager.getAcidTime(type);
 			int maturation_scale = CitadelConfigManager.getMaturationScale(type);
 			List<String> lore = CitadelConfigManager.getLoreValues(type);
 			new ReinforcementType(mat, amount, percentReturn, returnValue,
-					hitpoints, maturation, maturation_scale, lore);
+					hitpoints, maturation, acid, maturation_scale, lore);
 		}
     }
 	/**
@@ -93,6 +96,12 @@ public class ReinforcementType {
 	 */
 	public int getMaturationTime(){
 		return maturationTime;
+	}
+	/**
+	 * @return Returns the Acid time needed until this acid block is ready.
+	 */
+	public int getAcidTime() {
+		return acidTime;
 	}
 	/**
 	 * @return Get the scale of amount of damage a block should take when it is not fully mature.

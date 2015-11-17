@@ -27,8 +27,8 @@ public class PlayerReinforcement extends Reinforcement{
 	private ItemStack stack;
 	
 	public PlayerReinforcement(Location loc, int health,
-			int creation, Group g, ItemStack stack) {
-		super(loc, stack.getType(), health, creation);
+			int creation, int acid, Group g, ItemStack stack) {
+		super(loc, stack.getType(), health, creation, acid);
 		this.g = g;
 		this.stack = stack;
 		gp = NameAPI.getGroupManager().getPermissionforGroup(g);

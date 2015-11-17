@@ -18,8 +18,8 @@ public class MultiBlockReinforcement extends Reinforcement{
 			new HashMap<Integer, MultiBlockReinforcement>();
 	
 	public MultiBlockReinforcement(List<Location> locs, Group g, int dur, 
-			int creation, int multiBlockId) {
-		super(null, null, dur, creation);
+			int creation, int acid, int multiBlockId) {
+		super(null, null, dur, creation, acid);
 		this.g = g;
 		this.locs = locs;
 	}

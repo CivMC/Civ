@@ -6,16 +6,18 @@ import org.bukkit.Material;
 public class Reinforcement {
 
 	private int creation;
+	private int acid;
 	private Location loc;
 	private Material mat;
 	private int dur;
 	protected boolean isDirty;
 	
-	public Reinforcement(Location loc, Material mat, int dur, int creation){
+	public Reinforcement(Location loc, Material mat, int dur, int creation, int acid){
 		this.loc = loc;
 		this.mat = mat;
 		this.dur = dur;
 		this.creation = creation;
+		this.acid = acid;
 		isDirty = false;
 	}
 	/**
@@ -52,10 +54,24 @@ public class Reinforcement {
 	}
 	/**
 	 * Sets the maturation time of this reinforcement.
-	 * @param The time in seconds it was created.
+	 * @param The time in minutes it was created.
 	 */
 	public void setMaturationTime(int time){
 		creation = time;
+		isDirty = true;
+	}
+	/**
+	 * @return Returns the time that this acid process began or 0 if not acid/done.
+	 */
+	public int getAcidTime(){
+		return acid;
+	}
+	/**
+	 * Sets the acid process time of this reinforcement (0 to indicate done/not acid).
+	 * @param The time in minutes acid process began.
+	 */
+	public void setAcidTime(int acid) {
+		this.acid = acid;
 		isDirty = true;
 	}
 	/**

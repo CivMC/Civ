@@ -200,6 +200,15 @@ public class CitadelReinforcementData {
 			ver = checkVersion(plugin.getName());
 			Citadel.Log("The update to Version 8 took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
 		}
+		if (ver == 8) {
+			long first_time = System.currentTimeMillis();
+			Citadel.Log("Updating to version 9: The acid test. Note: This will take a while.");
+			db.execute("alter table reinforcement add acid_time int not null;"); 
+			db.execute("update reinforcement set acid_time = maturation_time;"); // Might take a minute.
+			updateVersion(ver, plugin.getName());
+			ver = checkVersion(plugin.getName());
+			Citadel.Log("The update to Version 9 took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
+		}
 		Citadel.Log("The total time it took Citadel to update was " + 
 				(System.currentTimeMillis() - begin_time) / 1000 + " seconds.");
 	}
@@ -223,21 +232,21 @@ public class CitadelReinforcementData {
 	 */
 	private void initalizePreparedStatements(){
 		getRein = "select r.material_id, r.durability, " +
-				"r.insecure, r.maturation_time, rt.rein_type, "
+				"r.insecure, r.maturation_time, r.acid_time, rt.rein_type, "
 				+ "r.lore, r.group_id, r.rein_id from reinforcement r "
 				+ "inner join reinforcement_id ri on r.rein_id = ri.rein_id "
 				+ "inner join reinforcement_type rt on rt.rein_type_id = r.rein_type_id "
 				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.chunk_id = ? and ri.world = ?";
 		getReins = "select ri.x, ri.y, ri.z, ri.world, r.material_id, r.durability, " +
 				"r.insecure, r.maturation_time, rt.rein_type, "
-				+ "r.lore, r.group_id, r.rein_id from reinforcement r "
+				+ "r.lore, r.group_id, r.rein_id, r.acid_time from reinforcement r "
 				+ "inner join reinforcement_id ri on r.rein_id = ri.rein_id "
 				+ "inner join reinforcement_type rt on rt.rein_type_id = r.rein_type_id "
 				+ "where ri.chunk_id = ?";
 		addRein = "insert into reinforcement ("
 				+ "material_id, durability, "
 				+ "insecure, group_id, maturation_time, rein_type_id,"
-				+ "lore, rein_id) select ?, ?, ?, ?, ?, rt.rein_type_id, ?, ? "
+				+ "lore, rein_id, acid_time) select ?, ?, ?, ?, ?, rt.rein_type_id, ?, ?, ? "
 				+ "from reinforcement_type rt where rt.rein_type = ?";
 		removeRein = "delete r.*, ri.* from reinforcement r "
 				+ "left join reinforcement_id ri on r.rein_id = ri.rein_id "
@@ -245,7 +254,7 @@ public class CitadelReinforcementData {
 		updateRein = "update reinforcement r "
 				+ "inner join reinforcement_id ri on ri.rein_id = r.rein_id "
 				+ "set r.durability = ?, r.insecure = ?, r.group_id = ?, "
-				+ "maturation_time = ? "
+				+ "maturation_time = ?, acid_time = ? "
 				+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.world =?";
 		/*
 		deleteGroup = db.prepareStatement("call deleteGroup(?)");
@@ -342,9 +351,10 @@ public class CitadelReinforcementData {
 			int durability = set.getInt(2);
 			boolean inSecure = set.getBoolean(3);
 			int mature = set.getInt(4);
-			String rein_type = set.getString(5);
-			String lore = set.getString(6);
-			int group_id = set.getInt(7);
+			int acid = set.getInt(5);
+			String rein_type = set.getString(6);
+			String lore = set.getString(7);
+			int group_id = set.getInt(8);
 			// Check for what type of reinforcement and return the one
 			// needed.
 			if (rein_type.equals("PlayerReinforcement")){
@@ -357,7 +367,7 @@ public class CitadelReinforcementData {
 				}
 				PlayerReinforcement rein =
 						new PlayerReinforcement(loc, durability,
-								mature, GroupManager.getGroup(group_id),
+								mature, acid, GroupManager.getGroup(group_id),
 								stack);
 				rein.setInsecure(inSecure);
 				set.close();
@@ -370,7 +380,7 @@ public class CitadelReinforcementData {
 				return rein;
 			}
 			else if (rein_type.equals("MultiBlockReinforcement")){
-				int id = set.getInt(8);
+				int id = set.getInt(9);
 				set.close();
 				MultiBlockReinforcement rein = MultiBlockReinforcement.getMultiRein(id);
 				if (rein != null)
@@ -386,7 +396,7 @@ public class CitadelReinforcementData {
 				}
 				set.close();
 				
-				rein = new MultiBlockReinforcement(locs, GroupManager.getGroup(group_id), durability, mature, id);
+				rein = new MultiBlockReinforcement(locs, GroupManager.getGroup(group_id), durability, mature, acid, id);
 				return rein;
 			}
 		} catch (SQLException e) {
@@ -419,6 +429,7 @@ public class CitadelReinforcementData {
 				String lore = set.getString(10);
 				int group_id = set.getInt(11);
 				Group g = GroupManager.getGroup(group_id);
+				int acid = set.getInt(13);
 				
 				Location loc = new Location(Bukkit.getWorld(world), x, y, z);
 				
@@ -432,7 +443,7 @@ public class CitadelReinforcementData {
 					}
 					PlayerReinforcement rein =
 							new PlayerReinforcement(loc, durability,
-									mature, g,
+									mature, acid, g,
 									stack);
 					rein.setInsecure(inSecure);
 					reins.add(rein);
@@ -458,7 +469,7 @@ public class CitadelReinforcementData {
 					}
 					multi.close();
 					
-					rein = new MultiBlockReinforcement(locs, g, durability, mature, id);
+					rein = new MultiBlockReinforcement(locs, g, durability, mature, acid, id);
 					reins.add(rein);
 				}
 			}
@@ -485,6 +496,7 @@ public class CitadelReinforcementData {
 			Material mat = rein.getMaterial();
 			int dur = rein.getDurability();
 			int maturationTime = rein.getMaturationTime();
+			int acidTime = rein.getAcidTime();
 			boolean insecure = false;
 			String group = null;
 			String reinType = "";
@@ -520,7 +532,8 @@ public class CitadelReinforcementData {
 				addRein.setInt(5, maturationTime);
 				addRein.setString(6, lore);
 				addRein.setInt(7, id);
-				addRein.setString(8, reinType);
+				addRein.setInt(8, acidTime);
+				addRein.setString(9, reinType);
 				addRein.execute();
 			} catch (SQLException e) {
 				Citadel.Log("Citadel has detected a reinforcement that should not be there. Deleting it and trying again. "
@@ -534,6 +547,8 @@ public class CitadelReinforcementData {
 		}
 		else if (rein instanceof NaturalReinforcement){
 			/* 
+			 * Why removed? We had thoughts of using this..
+			 *
 			 * We don't need to worry about saving this right now.
 			 * 
 			Location loc = rein.getLocation();
@@ -543,6 +558,7 @@ public class CitadelReinforcementData {
 			int dur = rein.getDurability();
 			String chunk_id = loc.getChunk().toString();
 			int maturationTime = rein.getMaturationTime();
+			int acidTime = rein.getAcidTime();
 			boolean insecure = false;
 			String group = NameLayerPlugin.getSpecialAdminGroup();
 			String reinType = "NaturalReinforcement";
@@ -567,8 +583,9 @@ public class CitadelReinforcementData {
 				addRein.setInt(4, maturationTime);
 				addRein.setString(5, lore);
 				addRein.setInt(6, id);
-				addRein.setString(7, reinType);
-				addRein.setString(8, group);
+				addRein.setInt(7, acidTime);
+				addRein.setString(8, reinType);
+				addRein.setString(9, group);
 				addRein.execute();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -619,7 +636,8 @@ public class CitadelReinforcementData {
 				addRein.setInt(5, mbRein.getMaturationTime());
 				addRein.setString(6, null);
 				addRein.setInt(7, id);
-				addRein.setString(8, "MultiBlockReinforcement");
+				addRein.setInt(8, mbRein.getAcidTime());
+				addRein.setString(9, "MultiBlockReinforcement");
 				addRein.execute();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -663,6 +681,7 @@ public class CitadelReinforcementData {
 		boolean insecure = false;
 		int groupId = -1;
 		int mature = rein.getMaturationTime();
+		int acid = rein.getAcidTime();
 		Location loc = rein.getLocation();
 		int x = loc.getBlockX(), y = loc.getBlockY(), z = loc.getBlockZ();
 		String world = loc.getWorld().getName();
@@ -682,10 +701,11 @@ public class CitadelReinforcementData {
 			updateRein.setBoolean(2, insecure);
 			updateRein.setInt(3, groupId);
 			updateRein.setInt(4, mature);
-			updateRein.setInt(5, x);
-			updateRein.setInt(6, y);
-			updateRein.setInt(7, z);
-			updateRein.setString(8, world);
+			updateRein.setInt(5, acid);
+			updateRein.setInt(6, x);
+			updateRein.setInt(7, y);
+			updateRein.setInt(8, z);
+			updateRein.setString(9, world);
 			updateRein.execute();
 		} catch (SQLException e) {
 			Citadel.Log(String.format("The Null Group Exception that is being followed has to deal with the group id: %s,"
