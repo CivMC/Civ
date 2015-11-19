@@ -38,10 +38,10 @@ public class NameLayerPlugin extends ACivMod{
 		config = GetConfig();
 		loadGroups = config.get("groups.enable").getBool();
 		instance = this;
-		registerListeners();
 		loadDatabases();
 	    ClassHandler.Initialize(Bukkit.getServer());
 		new NameAPI(new GroupManager(), associations);
+		registerListeners();
 		if (loadGroups){
 			handle = new CommandHandler();
 			handle.registerCommands();
