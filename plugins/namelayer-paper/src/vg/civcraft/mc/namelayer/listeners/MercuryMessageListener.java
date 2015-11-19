@@ -38,23 +38,33 @@ public class MercuryMessageListener implements Listener{
 		if (reason.equals("recache")){
 			GroupInvalidationEvent e = new GroupInvalidationEvent(reason, group);
 			Bukkit.getPluginManager().callEvent(e);
-			gm.invalidateCache(group);
+			if (gm.getGroup(group) != null) {
+				gm.invalidateCache(group);
+			}
 		}
 		else if (reason.equals("delete")){
 			GroupInvalidationEvent e = new GroupInvalidationEvent(reason, group);
 			Bukkit.getPluginManager().callEvent(e);
-			gm.invalidateCache(group);
+			if (gm.getGroup(group) != null) {
+				gm.invalidateCache(group);
+			}
 		}
 		else if (reason.equals("merge")){
 			GroupInvalidationEvent e = new GroupInvalidationEvent(reason, group, message[2]);
 			Bukkit.getPluginManager().callEvent(e);
-			gm.invalidateCache(group);
-			gm.invalidateCache(message[2]);
+			if (gm.getGroup(group) != null) {
+				gm.invalidateCache(group);
+			}
+			if (gm.getGroup(message [2]) != null) {
+				gm.invalidateCache(message [2]);
+			}
 		}
 		else if (reason.equals("transfer")){
 			GroupInvalidationEvent e = new GroupInvalidationEvent(reason, message[2]);
 			Bukkit.getPluginManager().callEvent(e);
-			gm.invalidateCache(group);
+			if (gm.getGroup(group) != null) {
+				gm.invalidateCache(group);
+			}
 		}
 	}
 
