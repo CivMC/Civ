@@ -87,4 +87,8 @@ public class Reinforcement {
 	public void setDirty(boolean dirty){
 		isDirty = dirty;
 	}
+	
+	public Material getType() {
+		return this.mat;
+	}
 }

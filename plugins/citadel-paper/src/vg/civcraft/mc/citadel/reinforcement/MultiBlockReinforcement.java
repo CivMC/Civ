@@ -3,6 +3,7 @@ package vg.civcraft.mc.citadel.reinforcement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.bukkit.Location;
 
@@ -42,8 +43,23 @@ public class MultiBlockReinforcement extends Reinforcement{
 	}
 	
 	public Group getGroup(){
+		checkValid();
 		return g;
 	}
+	
+    private void checkValid(){
+    	if (g == null) {
+    		Citadel.getInstance().getLogger().log(Level.WARNING, "CheckValid was called but the underlying group is gone for " + this.getLocation() + "!");
+    		return;
+    	}
+    	if (!g.isValid()){ // incase it was recently merged/ deleted.
+    		g = NameAPI.getGroupManager().getGroup(g.getGroupId());
+    		if (g == null) {
+    			Citadel.getInstance().getLogger().log(Level.INFO, "Group " + g.getGroupId() + " was deleted or merged but not marked invalid!");
+    		}
+    		isDirty = true;
+    	}
+    }
 	/**
 	 * This method is used to get the MultiblockReinforcement from a
 	 * particular id. The id is the one from the db.

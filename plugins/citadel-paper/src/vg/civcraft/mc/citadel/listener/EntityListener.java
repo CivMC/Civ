@@ -6,6 +6,7 @@ import static vg.civcraft.mc.citadel.Utility.maybeReinforcementDamaged;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -68,7 +69,7 @@ public class EntityListener implements Listener{
 	                iterator.remove();
 	            }
             } catch (NoClassDefFoundError e){
-            	Citadel.Log("NoClassDefFoundError");
+            	Citadel.getInstance().getLogger().log(Level.WARNING, "Class Definition not found in explode", e);
             }
         }
     }

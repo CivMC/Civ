@@ -6,12 +6,11 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementMode;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Insecure extends PlayerCommand{
+public class Insecure extends PlayerCommandMiddle{
 
 	public Insecure(String name) {
 		super(name);
@@ -30,11 +29,11 @@ public class Insecure extends PlayerCommand{
 		Player p = (Player) sender;
 		PlayerState state = PlayerState.get(p);
 		if (state.getMode() == ReinforcementMode.INSECURE){
-			p.sendMessage(ChatColor.GREEN + state.getMode().name() + " has been disabled");
+			sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
 			state.reset();
 		}
 		else{
-			p.sendMessage(ChatColor.GREEN + "Reinforcement mode changed to "
+			sendAndLog(p, ChatColor.GREEN, "Reinforcement mode changed to "
 					+ ReinforcementMode.INSECURE.name() + ".");
 			state.setMode(ReinforcementMode.INSECURE);
 		}

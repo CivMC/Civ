@@ -29,6 +29,9 @@ commands:
  ctar:
   permission: citadel.admin
   aliases: [ctareareinforce] 
+ ctsl:
+  permission: citadel.admin
+  aliases: [ctsetlogging]
 permissions:
  citadel.admin:
   default: op

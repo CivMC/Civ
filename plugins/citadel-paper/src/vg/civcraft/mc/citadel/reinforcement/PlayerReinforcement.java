@@ -178,9 +178,17 @@ public class PlayerReinforcement extends Reinforcement{
     }
     
     private void checkValid(){
+    	if (g == null) {
+    		Citadel.getInstance().getLogger().log(Level.WARNING, "CheckValid was called but the underlying group is gone for " + this.getLocation() + "!");
+    		return;
+    	}
     	if (!g.isValid()){ // incase it was recently merged/ deleted.
     		g = NameAPI.getGroupManager().getGroup(g.getGroupId());
-    		gp = NameAPI.getGroupManager().getPermissionforGroup(g);
+    		if (g != null) {
+    			gp = NameAPI.getGroupManager().getPermissionforGroup(g);
+    		} else {
+    			Citadel.getInstance().getLogger().log(Level.INFO, "Group " + g.getGroupId() + " was deleted or merged but not marked invalid!");
+    		}
     		isDirty = true;
     	}
     }

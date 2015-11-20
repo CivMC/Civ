@@ -140,4 +140,20 @@ public class CitadelConfigManager {
 	public static String getPassword(){
 		return config.getString("mysql.password", "");
 	}
+
+	public static boolean shouldLogInternal() {
+		return config.getBoolean("internal_logging", false);
+	}
+
+	public static boolean shouldLogPlayerCommands() {
+		return config.getBoolean("command_logging", false);
+	}
+
+	public static boolean shouldLogBreaks() {
+		return config.getBoolean("break_logging", false);
+	}
+
+	public static boolean shouldLogReinforcement() {
+		return config.getBoolean("reinf_logging", false);
+	}
 }

@@ -8,4 +8,5 @@ public class NaturalReinforcement extends Reinforcement{
 		super(block.getLocation(), block.getType(), dur, 0, 0);
 		// The group is null be natural reinforcements don't belong to a group.
 	}
+
 }
