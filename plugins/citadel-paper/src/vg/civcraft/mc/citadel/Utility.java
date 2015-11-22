@@ -305,8 +305,13 @@ public class Utility {
           if (maturationTime > 0 && type.getMaturationScale() != 0) {
         	  // the default amount of minutes it takes to mature
               int normal = type.getMaturationTime();
-              int percentTo = maturationTime / normal; // the percent of time left of maturation
-              durabilityLoss = durabilityLoss / percentTo * type.getMaturationScale();
+              if (maturationTime == normal) {
+                  durabilityLoss = durability;
+              } else {
+                  double percentTo = (double) maturationTime / (double) normal; // the percent of time left of maturation
+                  durabilityLoss = (int) (((double) durabilityLoss / (1.0d - percentTo)) * (double) type.getMaturationScale());
+              } // this new code scales smoothly between MaturationScale and a very large number, being closer to 
+              // MaturationScale the closer to "done" a maturation cycle
           }
           if (durability < durabilityLoss) {
               durabilityLoss = durability;
@@ -328,7 +333,7 @@ public class Utility {
     /**
      * Used to get the amount of time left until a reinforcement is mature.
      * @param Reinforcement.
-     * @return Returns 0 if it is mature or the time in seconds until it is mature.
+     * @return Returns 0 if it is mature or the time in minutes until it is mature.
      */
     public static int timeUntilMature(Reinforcement reinforcement) {
         // Doesn't explicitly save the updated Maturation time into the cache.
