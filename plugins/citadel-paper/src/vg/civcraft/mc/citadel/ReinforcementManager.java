@@ -78,9 +78,7 @@ public class ReinforcementManager {
 	 * @param The Reinforcement to save
 	 */
 	public void saveInitialReinforcement(Reinforcement rein) {
-		synchronized(reinforcements){
-			reinforcements.put(rein.getLocation(), rein);
-		}
+		reinforcements.put(rein.getLocation(), rein);
 		CitadelStatics.updateHitStat(CitadelStatics.INSERT);
 		db.insertReinforcement(rein);
 	}
@@ -93,10 +91,7 @@ public class ReinforcementManager {
 	 */
 	public Reinforcement getReinforcement(Location loc) {
 		try {
-			Reinforcement rein;
-			synchronized(reinforcements){
-				rein = reinforcements.get(loc);
-			}
+			Reinforcement rein = reinforcements.get(loc);
 			if (rein instanceof NullReinforcement)
 				return null;
 			CitadelStatics.updateHitStat(CitadelStatics.CACHE);
@@ -125,11 +120,9 @@ public class ReinforcementManager {
 	 * @param rein
 	 */
 	public void deleteReinforcement(Reinforcement rein) {
-		synchronized(reinforcements){
-			reinforcements.invalidate(rein.getLocation());
-			CitadelStatics.updateHitStat(CitadelStatics.DELETE);
-			db.deleteReinforcement(rein);
-		}
+		reinforcements.invalidate(rein.getLocation());
+		CitadelStatics.updateHitStat(CitadelStatics.DELETE);
+		db.deleteReinforcement(rein);
 	}
 
 	/**
@@ -137,9 +130,7 @@ public class ReinforcementManager {
 	 * else where if too a manual flush is wanted.
 	 */
 	public void invalidateAllReinforcements() {
-		synchronized(reinforcements){
-			reinforcements.invalidateAll();
-		}
+		reinforcements.invalidateAll();
 	}
 
 	/**
@@ -178,10 +169,8 @@ public class ReinforcementManager {
 			@Override
 			public void run() {
 				List<Reinforcement> reins = new ArrayList<Reinforcement>();
-				synchronized(reinforcements){
-					for (Reinforcement r: reinforcements.asMap().values())
-						reins.add(r);
-				}
+				for (Reinforcement r: reinforcements.asMap().values())
+					reins.add(r);
 				for (Reinforcement r: reins) {
 					if (r.isDirty())
 						saveReinforcement(r);
@@ -199,22 +188,20 @@ public class ReinforcementManager {
 	public List<Reinforcement> getReinforcementsByChunk(Chunk chunk){
 		List<Reinforcement> reins = db.getReinforcements(chunk);
 		List<Reinforcement> reins_new = new ArrayList<Reinforcement>();
-		synchronized(reinforcements){
-			for (Reinforcement rein: reins){
-				if (reinforcements.getIfPresent(rein.getLocation()) == null){
-					reinforcements.put(rein.getLocation(), rein);
-					reins_new.add(rein);
+		for (Reinforcement rein: reins){
+			if (reinforcements.getIfPresent(rein.getLocation()) == null){
+				reinforcements.put(rein.getLocation(), rein);
+				reins_new.add(rein);
+			}
+			else {
+				Reinforcement r = null;
+				try {
+					r = reinforcements.get(rein.getLocation());
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				else {
-					Reinforcement r = null;
-					try {
-						r = reinforcements.get(rein.getLocation());
-					} catch (ExecutionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					reins_new.add(r);
-				}
+				reins_new.add(r);
 			}
 		}
 		return reins_new;
@@ -222,12 +209,10 @@ public class ReinforcementManager {
 	
 	public void loadReinforcementChunk(Chunk chunk) {
 		List<Reinforcement> reins = db.getReinforcements(chunk);
-		synchronized(reinforcements){
-			for (Reinforcement rein: reins){
-				Reinforcement r = reinforcements.getIfPresent(rein.getLocation());
-				if (r == null || r instanceof NullReinforcement) {
-					reinforcements.put(rein.getLocation(), rein);
-				}
+		for (Reinforcement rein: reins){
+			Reinforcement r = reinforcements.getIfPresent(rein.getLocation());
+			if (r == null || r instanceof NullReinforcement) {
+				reinforcements.put(rein.getLocation(), rein);
 			}
 		}
 	}
