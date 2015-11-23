@@ -32,6 +32,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -105,8 +106,11 @@ public class BlockListener implements Listener{
             event.setCancelled(true);
             return;
         }
-        
-		if (inv.contains(type.getMaterial(), type.getRequiredAmount())) {
+        int required = type.getRequiredAmount();
+        if (type.getMaterial().equals(b.getType())){
+        	required++;
+        }
+		if (inv.contains(type.getMaterial(), required)) {
 			try {
 				if (createPlayerReinforcement(p, state.getGroup(), b, type) == null) {
 						p.sendMessage(ChatColor.RED + String.format("%s is not a reinforcible material ", b.getType().name()));
@@ -575,9 +579,22 @@ public class BlockListener implements Listener{
         }
     }
     
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+// TODO: Come back and figure out why this is causing all the data to be re-written inplace with no change
+/*    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void chunkLoadEvent(ChunkLoadEvent event) {
     	Chunk chunk = event.getChunk();
     	rm.loadReinforcementChunk(chunk);
+    }*/
+    
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void blockPhysEvent(BlockPhysicsEvent event){
+    	Block block = event.getBlock();
+    	if (block.getType().hasGravity()){
+    		Reinforcement rein = rm.getReinforcement(Utility.getRealBlock(block));
+    		if (rein != null){
+    			event.setCancelled(true);
+    		}
+    	}
+    	
     }
 }
