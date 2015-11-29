@@ -113,7 +113,7 @@ public class ConfigManager
         alertRateLimit = loadInt("settings.alertratelimit", 70);
         enableInvisibility = loadBoolean("settings.enableinvisiblity", false);
         toggleRestartCheckGroup = loadBoolean("settings.togglerestartgroupcheck", false);
-        displayOwnerOnBreak = loadBoolean(“settings.displayOwnerOnSnitchBreak”, true);
+        displayOwnerOnBreak = loadBoolean("settings.displayOwnerOnSnitchBreak", true);
 
         broadcastAllServers = loadBoolean("mercury.broadcastallservers", false);
         

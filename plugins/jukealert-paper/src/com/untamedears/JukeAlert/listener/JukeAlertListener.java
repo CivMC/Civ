@@ -61,6 +61,7 @@ import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
 import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -305,8 +306,8 @@ public class JukeAlertListener implements Listener {
             Snitch snitch = snitchManager.getSnitch(block.getWorld(), block.getLocation());
             if(snitch != null && !snitch.getGroup().isMember(event.getPlayer().getUniqueId())) {
                 Location loc = snitch.getLoc();
-        	event.getPlayer().sendMessage(ChatColor.AQUA + "Snitch at [" + loc.getWorld() + " " + loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + "] is owned
-                by " + NameAPI.getCurrentName(snitch.getGroup().getOwner()) + “ and is on group: “ + snitch.getGroup().getName());
+        	event.getPlayer().sendMessage(ChatColor.AQUA + "Snitch at [" + loc.getWorld() + " " + loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + "] is owned by " 
+                + NameAPI.getCurrentName(snitch.getGroup().getOwner()) + " and is on group: " + snitch.getGroup().getName());
        	    }
         }
         if (!block.getType().equals(Material.JUKEBOX)) {
