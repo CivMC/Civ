@@ -301,6 +301,14 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Block block = event.getBlock();
+        if((block.getType().equals(Material.JUKEBOX) || block.getType().equals(Material.NOTE_BLOCK)) && plugin.getConfigManager().isDisplayOwnerOnBreak()) {
+            Snitch snitch = snitchManager.getSnitch(block.getWorld(), block.getLocation());
+            if(snitch != null && !snitch.getGroup().isMember(event.getPlayer().getUniqueId())) {
+                Location loc = snitch.getLoc();
+        	event.getPlayer().sendMessage(ChatColor.AQUA + "Snitch at [" + loc.getWorld() + " " + loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + "] is owned
+                by " + NameAPI.getCurrentName(snitch.getGroup().getOwner()) + “ and is on group: “ + snitch.getGroup().getName());
+       	    }
+        }
         if (!block.getType().equals(Material.JUKEBOX)) {
             return;
         }
