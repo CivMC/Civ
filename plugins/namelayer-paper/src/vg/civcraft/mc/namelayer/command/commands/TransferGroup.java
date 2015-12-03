@@ -9,9 +9,11 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -65,6 +67,7 @@ public class TransferGroup extends PlayerCommandMiddle{
 		
 		g.addMember(oPlayer, PlayerType.OWNER);
 		g.setOwner(oPlayer);
+		checkRecacheGroup(g);
 		g.removeMember(uuid);
 		p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(oPlayer) + " has been given ownership of the group.");
 		return true;

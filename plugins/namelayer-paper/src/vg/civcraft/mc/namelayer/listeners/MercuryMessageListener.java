@@ -12,11 +12,7 @@ import vg.civcraft.mc.mercury.events.AsyncPluginBroadcastMessageEvent;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
 import vg.civcraft.mc.namelayer.events.GroupInvalidationEvent;
-import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
-import vg.civcraft.mc.namelayer.events.GroupTransferEvent;
-import vg.civcraft.mc.namelayer.group.Group;
 
 public class MercuryMessageListener implements Listener{
 	
@@ -27,7 +23,6 @@ public class MercuryMessageListener implements Listener{
 		MercuryAPI.instance.registerPluginMessageChannel("namelayer");
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onMercuryMessage(AsyncPluginBroadcastMessageEvent event){
 		if (!event.getChannel().equalsIgnoreCase("namelayer"))
@@ -67,5 +62,4 @@ public class MercuryMessageListener implements Listener{
 			}
 		}
 	}
-
 }

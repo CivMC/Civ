@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -29,7 +30,7 @@ public class GroupManager{
 		permhandle = new PermissionHandler();
 	}
 	
-	private static Map<String, Group> groups = new HashMap<String, Group>();
+	private static Map<String, Group> groups = new ConcurrentHashMap<String, Group>();
 	/**
 	 * Saves the group into caching and saves it into the db. Also fires the GroupCreateEvent.
 	 * @param The group to create to db.

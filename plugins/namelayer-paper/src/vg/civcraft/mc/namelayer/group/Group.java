@@ -177,6 +177,7 @@ public class Group {
 	 */
 	public void setOwner(UUID uuid){
 		ownerUUID = uuid;
+		db.setFounder(uuid, this);
 	}
 	/**
 	 * @return Returns the UUID of the Owner.

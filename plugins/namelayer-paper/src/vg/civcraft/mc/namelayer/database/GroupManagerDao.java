@@ -271,7 +271,7 @@ public class GroupManagerDao {
 	
 	private PreparedStatement createGroup, getGroup, getAllGroupsNames, deleteGroup;
 	
-	private PreparedStatement addMember, getMembers, removeMember, updatePassword;
+	private PreparedStatement addMember, getMembers, removeMember, updatePassword, updateOwner;
 	
 	private PreparedStatement addSubGroup, getSubGroups, getSuperGroup, removeSubGroup;
 	
@@ -338,6 +338,9 @@ public class GroupManagerDao {
 		mergeGroup = db.prepareStatement("call mergeintogroup(?,?)");
 		
 		updatePassword = db.prepareStatement("update faction set `password` = ? "
+				+ "where group_name = ?");
+		
+		updateOwner = db.prepareStatement("update faction set founder = ? "
 				+ "where group_name = ?");
 		
 		addAutoAcceptGroup = db.prepareStatement("insert into toggleAutoAccept(uuid)"
@@ -723,7 +726,7 @@ public class GroupManagerDao {
 		}
 	}
 
-	public String getDefaultGroup(UUID uuid) {
+	public synchronized String getDefaultGroup(UUID uuid) {
 		try {
 			getDefaultGroup.setString(1, uuid.toString());
 			ResultSet set = getDefaultGroup.executeQuery();
@@ -735,5 +738,21 @@ public class GroupManagerDao {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	/**
+	 * Use this method to override the current founder of a group.
+	 * @param uuid This is the uuid of the player.
+	 * @param group This is the group that we are changing the founder of.
+	 */
+	public synchronized void setFounder(UUID uuid, Group group) {
+		try {
+			updateOwner.setString(1, uuid.toString());
+			updateOwner.setString(2, group.getName());
+			updateOwner.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
