@@ -28,10 +28,14 @@ public final class NpcListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void spawnNpc(PlayerQuitEvent event) {
         // Do nothing if player is not combat tagged and NPCs only spawn if tagged
         Player player = event.getPlayer();
+
+        // Do nothing if player is dead
+        if (player.isDead()) return;
+
         boolean isTagged = plugin.getTagManager().isTagged(player.getUniqueId());
         if (!isTagged && !plugin.getSettings().alwaysSpawn()) return;
 
