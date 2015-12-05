@@ -92,7 +92,7 @@ public class BlockListener implements Listener{
 			}
 		}
 		PlayerState state = PlayerState.get(p);
-		if (state.getMode() != ReinforcementMode.REINFOREMENT_FORTIFICATION)
+		if (state.getMode() != ReinforcementMode.REINFORCEMENT_FORTIFICATION)
 			return;
 		if (!canPlace(b, p)){
 			p.sendMessage(ChatColor.RED + "Cancelled block place, mismatched reinforcement.");
@@ -435,7 +435,7 @@ public class BlockListener implements Listener{
                         */
                 }
                 return;
-            case REINFOREMENT_FORTIFICATION:
+            case REINFORCEMENT_FORTIFICATION:
                 return;
             case REINFORCEMENT_INFORMATION:
             	// did player click on a reinforced block?
