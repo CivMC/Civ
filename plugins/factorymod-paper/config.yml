@@ -7657,7 +7657,7 @@ production_recipes:
         durability: 15
   Mutate_Spruce_Saplings:
     name: Mutate Spruce Saplings
-    production_time: 64
+    production_time: 16
     inputs:
       Oak Sapling:
         material: SAPLING
@@ -7669,7 +7669,7 @@ production_recipes:
         durability: 1
   Mutate_Birch_Saplings:
     name: Mutate Birch Saplings
-    production_time: 64
+    production_time: 16
     inputs:
       Oak Sapling:
         material: SAPLING
@@ -7681,7 +7681,7 @@ production_recipes:
         durability: 2
   Mutate_Jungle_Saplings:
     name: Mutate Jungle Saplings
-    production_time: 64
+    production_time: 16
     inputs:
       Oak Sapling:
         material: SAPLING
@@ -7693,7 +7693,7 @@ production_recipes:
         durability: 3
   Mutate_Acacia_Saplings:
     name: Mutate Acacia Saplings
-    production_time: 64
+    production_time: 16
     inputs:
       Oak Sapling:
         material: SAPLING
@@ -7705,7 +7705,7 @@ production_recipes:
         durability: 4
   Mutate_Dark_Oak_Saplings:
     name: Mutate Dark Oak Saplings
-    production_time: 64
+    production_time: 16
     inputs:
       Oak Sapling:
         material: SAPLING
@@ -8588,7 +8588,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 50
+        amount: 45
     outputs:
       Diamond Sword:
         material: DIAMOND_SWORD
@@ -8606,7 +8606,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 30
+        amount: 27
     outputs:
       Diamond Sword:
         material: DIAMOND_SWORD
@@ -8624,7 +8624,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 35
+        amount: 31
     outputs:
       Diamond Sword:
         material: DIAMOND_SWORD
@@ -8642,7 +8642,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 44
+        amount: 40
     outputs:
       Diamond Chestplate:
         material: DIAMOND_CHESTPLATE
@@ -8660,7 +8660,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 42
+        amount: 38
     outputs:
       Diamond Legs:
         material: DIAMOND_LEGGINGS 
@@ -8678,7 +8678,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 36
+        amount: 32
     outputs:
       Diamond Boots:
         material: DIAMOND_BOOTS  
@@ -8696,7 +8696,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 32
+        amount: 29
     outputs:
       Diamond Helemt:
         material: DIAMOND_HELMET   
@@ -8714,7 +8714,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 44
+        amount: 40
     outputs:
       Diamond Chestplate:
         material: DIAMOND_CHESTPLATE
@@ -8732,7 +8732,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 42
+        amount: 38
     outputs:
       Diamond Legs:
         material: DIAMOND_LEGGINGS 
@@ -8750,7 +8750,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 36
+        amount: 33
     outputs:
       Diamond Boots:
         material: DIAMOND_BOOTS  
@@ -8768,7 +8768,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 32
+        amount: 29
     outputs:
       Diamond Helemt:
         material: DIAMOND_HELMET   
@@ -8786,7 +8786,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 36
+        amount: 32
     outputs:
       Diamond Pick:
         material: DIAMOND_PICKAXE   
@@ -8804,7 +8804,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 36
+        amount: 32
     outputs:
       Diamond Spade:
         material: DIAMOND_SPADE   
@@ -8822,7 +8822,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 36
+        amount: 32
     outputs:
       Diamond Pick:
         material: DIAMOND_AXE  
@@ -8840,7 +8840,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 39
+        amount: 35
     outputs:
       Diamond Pick:
         material: DIAMOND_PICKAXE   
@@ -8858,7 +8858,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 39
+        amount: 35
     outputs:
       Diamond Spade:
         material: DIAMOND_SPADE   
@@ -8876,7 +8876,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 39
+        amount: 35
     outputs:
       Diamond Pick:
         material: DIAMOND_AXE  
@@ -8894,7 +8894,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 70
+        amount: 63
     outputs:
       Diamond Pick:
         material: DIAMOND_PICKAXE  
@@ -8912,7 +8912,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 70
+        amount: 63
     outputs:
       Diamond Spade:
         material: DIAMOND_SPADE   
@@ -8930,7 +8930,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 70
+        amount: 63
     outputs:
       Diamond Pick:
         material: DIAMOND_AXE  
@@ -8948,7 +8948,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 40
+        amount: 36
     outputs:
       Diamond Pick:
         material: DIAMOND_PICKAXE   
@@ -8966,7 +8966,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 40
+        amount: 36
     outputs:
       Diamond Spade:
         material: DIAMOND_SPADE   
@@ -8984,7 +8984,7 @@ production_recipes:
         amount: 5
       Emerald Block:
         material: EMERALD_BLOCK
-        amount: 40
+        amount: 36
     outputs:
       Diamond Pick:
         material: DIAMOND_AXE  
