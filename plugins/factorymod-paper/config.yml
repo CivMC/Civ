@@ -2453,6 +2453,12 @@ production_factories:
       - Craft_Bookshelfs
       - Bastion_Framing
       - Craft_Crate
+      - Craft_Crate_Oak_Bulk
+      - Craft_Crate_Birch_Bulk
+      - Craft_Crate_Jungle_Bulk
+      - Craft_Crate_Acacia_Bulk
+      - Craft_Crate_Dark_Oak_Bulk
+      - Craft_Crate_Spruce_Bulk
     repair_multiple: 10
     repair_inputs:
       Paper:
@@ -8458,7 +8464,7 @@ production_recipes:
         material: SEA_LANTERN
         amount: 16
   Craft_Crate:
-    name: Craft Compactor Crate
+    name: Craft Compactor Crates
     production_time: 4
     inputs:
       Chest:
@@ -8471,6 +8477,106 @@ production_recipes:
       Crate:
         material: CHEST
         amount: 54
+        display_name: Crate
+        lore: A crate for compacting items
+  Craft_Crate_Oak_Bulk:
+    name: Craft Compactor Crates from Oak Logs
+    production_time: 43
+    inputs:
+      Chest:
+        material: LOG
+        amount: 1248
+      'Iron Ingot':
+        material: IRON_INGOT
+        amount: 64
+    outputs:
+      Crate:
+        material: CHEST
+        amount: 864
+        display_name: Crate
+        lore: A crate for compacting items
+  Craft_Crate_Birch_Bulk:
+    name: Craft Compactor Crates from Birch Logs
+    production_time: 43
+    inputs:
+      Chest:
+        material: LOG
+        amount: 1248
+        durability: 2
+      'Iron Ingot':
+        material: IRON_INGOT
+        amount: 64
+    outputs:
+      Crate:
+        material: CHEST
+        amount: 864
+        display_name: Crate
+        lore: A crate for compacting items
+  Craft_Crate_Spruce_Bulk:
+    name: Craft Compactor Crates from Spruce Logs
+    production_time: 43
+    inputs:
+      Chest:
+        material: LOG
+        amount: 1248
+        durability: 1
+      'Iron Ingot':
+        material: IRON_INGOT
+        amount: 64
+    outputs:
+      Crate:
+        material: CHEST
+        amount: 864
+        display_name: Crate
+        lore: A crate for compacting items
+  Craft_Crate_Dark_Oak_Bulk:
+    name: Craft Compactor Crates from Dark Oak Logs
+    production_time: 43
+    inputs:
+      Chest:
+        material: LOG_2
+        amount: 1248
+        durability: 1
+      'Iron Ingot':
+        material: IRON_INGOT
+        amount: 64
+    outputs:
+      Crate:
+        material: CHEST
+        amount: 864
+        display_name: Crate
+        lore: A crate for compacting items
+  Craft_Crate_Jungle_Bulk:
+    name: Craft Compactor Crates from Jungle Logs
+    production_time: 43
+    inputs:
+      Chest:
+        material: LOG
+        amount: 1248
+        durability: 3
+      'Iron Ingot':
+        material: IRON_INGOT
+        amount: 64
+    outputs:
+      Crate:
+        material: CHEST
+        amount: 864
+        display_name: Crate
+        lore: A crate for compacting items
+  Craft_Crate_Acacia_Bulk:
+    name: Craft Compactor Crates from Acacia Logs
+    production_time: 43
+    inputs:
+      Chest:
+        material: LOG_2
+        amount: 1248
+      'Iron Ingot':
+        material: IRON_INGOT
+        amount: 64
+    outputs:
+      Crate:
+        material: CHEST
+        amount: 864
         display_name: Crate
         lore: A crate for compacting items
   Enchant_Sharpness:
