@@ -168,6 +168,15 @@ public class ClickableInventory {
 			}
 		}
 	}
+	
+	/**
+	 * Gets the index of any given Clickable in this instance
+	 * @param c Clickable to search for
+	 * @return The index of the clickable if it exists in this inventory or -1 if it doesnt
+	 */
+	public int indexOf(Clickable c) {
+		return clickables.indexOf(c);
+	}
 
 	/**
 	 * Closes a players clickable inventory if he has one open. This will also
