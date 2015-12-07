@@ -24,8 +24,8 @@ public class ClickableInventoryListener implements Listener {
 		Player p = (Player) e.getWhoClicked();
 		ClickableInventory ci = ClickableInventory.getOpenInventory(p);
 		if (ci != null) {
-			ci.itemClick(p, e.getSlot());
-			e.setCancelled(true);
+			e.setCancelled(true);  //always cancel first to prevent dupes
+			ci.itemClick(p, e.getRawSlot());
 		}
 	}
 
