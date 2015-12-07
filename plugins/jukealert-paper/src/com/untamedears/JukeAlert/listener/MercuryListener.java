@@ -27,7 +27,7 @@ public class MercuryListener implements Listener{
 	private GroupManager gm = NameAPI.getGroupManager();
 	
 	public MercuryListener(){
-		MercuryAPI.instance.registerPluginMessageChannel(Mercury.getChannels());
+		MercuryAPI.addChannels(Mercury.getChannels());
 		for (String x: Mercury.getChannels())
 			channels.add(x);
 	}

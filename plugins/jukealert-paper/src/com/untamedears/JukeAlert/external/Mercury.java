@@ -24,7 +24,7 @@ public class Mercury {
 	}
 	
 	public void sendMessage(String server, String message, String... channels){
-		MercuryPlugin.handler.sendMessage(server, message, channels);
+		MercuryAPI.sendMessage(server, message, channels);
 	}
 	
 	public static String[] getChannels(){

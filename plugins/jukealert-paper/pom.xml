@@ -6,15 +6,17 @@
   <groupId>com.untamedears</groupId>
   <artifactId>JukeAlert</artifactId>
   <packaging>jar</packaging>
-  <version>1.3.4</version>
+  <version>1.3.5</version>
   <name>JukeAlert</name>
   <url>https://github.com/Civcraft/JukeAlert/</url>
 
 
-   <properties>
-      <maven.compiler.source>1.6</maven.compiler.source>
-      <maven.compiler.target>1.6</maven.compiler.target>
-    </properties>
+  <properties>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
 
   <build>
     <sourceDirectory>${basedir}/src</sourceDirectory>
@@ -61,7 +63,7 @@
       <version>1.0.0-58</version>
       <scope>provided</scope>
     </dependency>
-	<dependency>
+    <dependency>
       <groupId>vg.civcraft.mc.mercury</groupId>
       <artifactId>Mercury</artifactId>
       <version>[1.0.0,)</version>
