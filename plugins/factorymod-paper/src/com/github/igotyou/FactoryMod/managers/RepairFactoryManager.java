@@ -5,15 +5,16 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
 
+import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.RepairFactory;
 import com.github.igotyou.FactoryMod.properties.RepairFactoryProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
-import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.AdvancedItemStack;
 
-public class RepairFactoryManager extends AManager<RepairFactory>{
+public class RepairFactoryManager extends FactoryModManager<RepairFactory>{
 
 	public RepairFactoryManager(FactoryModPlugin plugin) {
 		super(plugin);
@@ -34,7 +35,7 @@ public class RepairFactoryManager extends AManager<RepairFactory>{
 			Block inventoryBlock = inventoryLocation.getBlock();
 			Chest chest = (Chest) inventoryBlock.getState();
 			Inventory chestInventory = chest.getInventory();
-			ItemList<NamedItemStack> constructionMaterials = repairFactoryProperties.getConstructionMaterials();
+			ItemList<AdvancedItemStack> constructionMaterials = repairFactoryProperties.getConstructionMaterials();
 			
 			if (constructionMaterials.exactlyIn(chestInventory)){
 				RepairFactory factory = new RepairFactory(factoryLocation, inventoryLocation, powerLocation, false, repairFactoryProperties);

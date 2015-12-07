@@ -21,7 +21,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.github.igotyou.FactoryMod.FactoryObject.FactoryType;
+import vg.civcraft.mc.civmodcore.ACivMod;
+
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
@@ -39,17 +40,14 @@ import com.github.igotyou.FactoryMod.recipes.EnchantmentOptions;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.ItemList;
-import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.AdvancedItemStack;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 
-public class FactoryModPlugin extends JavaPlugin
+public class FactoryModPlugin extends ACivMod
 {
 	/* Special Values */
-	public static final String VERSION = "v1.4.0"; //Current version of plugin
-	public static final String PLUGIN_NAME = "FactoryMod"; //Name of plugin
-	public static final String PLUGIN_PREFIX = PLUGIN_NAME + " " + VERSION + ": ";
 	public static final String PRINTING_PRESSES_SAVE_FILE = "pressSaves"; // The printing press saves file name
 	public static final String NETHER_FACTORY_SAVE_FILE = "netherSaves"; // The nether saves file name
 	public static final String REPAIR_FACTORY_SAVE_FILE = "repairSaves";
@@ -61,7 +59,7 @@ public class FactoryModPlugin extends JavaPlugin
 	public static final int MILLIS_PER_DAY =  24 * 60 * 60 * 1000; // number of milliseconds per day (86.4M)
 	public static final int MINUTES_PER_YEAR = 60 * 60 * 24 * 365; //number of minutes per year (31.5M)
 	private static final String CONFIG_FILE = "config.yml"; // the config file name
-	private static final NamedItemStack DEFAULT_FUEL = new NamedItemStack(Material.COAL, 1, (short)1, "Charcoal"); // The default fuel item
+	private static final AdvancedItemStack DEFAULT_FUEL = new AdvancedItemStack(Material.COAL, 1, (short)1, "Charcoal"); // The default fuel item
 	
 	/* General Properties */
 
@@ -81,89 +79,24 @@ public class FactoryModPlugin extends JavaPlugin
 	 * 	Number of days for a factory to fully degrade from 100% to 0% health (Default 28)
 	 */
 	public static long REPAIR_PERIOD;
-	/**
-	 * Factory center block material (Default WORKBENCH)
-	 */
-	public static Material CENTRAL_BLOCK_MATERIAL;
+	
 	/**
 	 * The item used to interact with factoies (Default STICK)
 	 */
 	public static Material FACTORY_INTERACTION_MATERIAL;
-	/**
-	 * Whether the build materials are returned upon destruction of a factory (Default false)
-	 */
-	public static boolean RETURN_BUILD_MATERIALS;
+
 	/**
 	 * Whether Citadel is enabled (Default true)
 	 */
 	public static boolean CITADEL_ENABLED;
-	/**
-	 * Whether factories are permanently removed upon the destruction of their blocks (Default false)
-	 */
-	public static boolean DESTRUCTIBLE_FACTORIES;
+
 	/**
 	 * Whether XP orb drops are disabled (Default false)
 	 */
 	public static boolean DISABLE_EXPERIENCE;
-	/**
-	 * Whether factories are triggered by redstone signals (Default true)
-	 */
-	public static boolean REDSTONE_START_ENABLED;
-	/**
-	 * Whether factory running state is output to a lever (Default true)
-	 */
-	public static boolean LEVER_OUTPUT_ENABLED;
 	
-	/* Nether Properties */
 	
-	/**
-	 * The name of the overworld dimension (Default world)
-	 */
-	public static String WORLD_NAME;
-	/**
-	 * The name of the nether dimension (Default world_nether)
-	 */
-	public static String NETHER_NAME;
-	/**
-	 * Overworld to nether distance ratio (Default 8)
-	 */
-	public static int NETHER_SCALE;
-	/**
-	 * Disable vanilla nether portal operation (Default true)
-	 */
-	public static boolean DISABLE_PORTALS;
-	/**
-	 * The material of the nether factory teleport platform (Default OBSIDIAN)
-	 */
-	public static Material NETHER_FACTORY_TELEPORT_PLATFORM_MATERIAL;
-	/**
-	 * Allow reinforcement above nether factory teleport platforms (Default false)
-	 */
-	public static boolean ALLOW_REINFORCEMENT_CREATION_ABOVE_TELEPORT_PLATFORM;
-	/**
-	 * Allow placing of blocks above nether factory teleport platform (Default false)
-	 */
-	public static boolean ALLOW_BLOCK_PLACEMENT_ABOVE_TELEPORT_PLATFORM;
-	/**
-	 * Whether teleport platforms are unbreakable (Default false)
-	 */
-	public static boolean TELEPORT_PLATFORM_INVUNERABLE;
-	/**
-	 * Whether the teleport platform is generated when a player is about to teleport (Default false)
-	 */
-	public static boolean REGENERATE_TELEPORT_BLOCK_ON_TELEPORT;
-	/**
-	 * Whether the blocks above a portal are destroyed, ignoring Citadel, when a player is about to teleport (Default false)
-	 */
-	public static boolean REMOVE_BLOCK_ABOVE_TELEPORT_PLATFORM_ON_TELEPORT;
-	/**
-	 * The material of the nether factory marker block (Default COAL_BLOCK)
-	 */
-	public static Material NETHER_FACTORY_MARKER_MATERIAL;	
-	/**
-	 * Maximum distance between nether factory and marker (Default 64)
-	 */
-	public static int NETHER_MARKER_MAX_DISTANCE;
+	
 	
 	public static Map<String, ProductionProperties> productionProperties;
 	public static Map<String,ProductionRecipe> productionRecipes;
@@ -176,6 +109,7 @@ public class FactoryModPlugin extends JavaPlugin
 	
 	public void onEnable()
 	{
+		super.onEnable();
 		plugin = this;
 		//load the config.yml
 		initConfig();
@@ -189,6 +123,10 @@ public class FactoryModPlugin extends JavaPlugin
 	{
 		//call the disable method, this will save the data etc.
 		manager.onDisable();
+	}
+	
+	public String getPluginName() {
+		return "FactoryMod";
 	}
 	
 	public void registerEvents()
@@ -221,42 +159,10 @@ public class FactoryModPlugin extends JavaPlugin
 		this.saveDefaultConfig();
 		reloadConfig();
 		config = getConfig();
-		//what should the nether scaling be for the nether factorys?
-		NETHER_SCALE = config.getInt("nether_general.nether_scale",8);
-		//Should we Disable regular portals?
-		DISABLE_PORTALS = config.getBoolean("nether_general.disable_portals", true);
-		//Allow reinforcement above nether factory teleport platforms.
-		ALLOW_REINFORCEMENT_CREATION_ABOVE_TELEPORT_PLATFORM = config.getBoolean("nether_general.allow_reinforcement_creation_above_teleport_platform", false);
-		//Allow people to place blocks above nether factory teleport platforms.
-		ALLOW_BLOCK_PLACEMENT_ABOVE_TELEPORT_PLATFORM = config.getBoolean("nether_general.allow_block_placement_above_teleport_platform", false);
-		//Make teleport platforms unbreakable
-		TELEPORT_PLATFORM_INVUNERABLE = config.getBoolean("nether_general.teleport_platform_invunerable",false);
-		//Right before a player get's teleported, should the teleport platform be regenerated?
-		REGENERATE_TELEPORT_BLOCK_ON_TELEPORT = config.getBoolean("nether_general.regenerate_teleport_block_on_teleport", false);
-		//Right before a player get's teleported, should the blocks above the portal be destroyed(ignotes citadel)?
-		REMOVE_BLOCK_ABOVE_TELEPORT_PLATFORM_ON_TELEPORT = config.getBoolean("nether_general.remove_blocks_above_teleport_platform_on_teleport", false);
-		//what's the name of the overworld?
-		WORLD_NAME = config.getString("nether_general.world_name", "world");
-		//what's the name of the overworld?
-		NETHER_NAME = config.getString("nether_general.nether_name", "world_nether");
-		//how often should the managers save?
-		SAVE_CYCLE = config.getInt("general.save_cycle",15)*60*20;
-		//what's the material of the center block of factorys?
-		CENTRAL_BLOCK_MATERIAL = Material.getMaterial(config.getString("general.central_block"));
-		//what's the material of the nether portal teleportation platforms?
-		NETHER_FACTORY_TELEPORT_PLATFORM_MATERIAL = Material.getMaterial(config.getString("nether_general.teleport_platform_material_nether_factory"));
-		//what's the material of the marker blocks for nether factorys?
-		NETHER_FACTORY_MARKER_MATERIAL = Material.getMaterial(config.getString("nether_general.marker_material_nether_factory"));
-		//how far from the factory can the marker be?
-		NETHER_MARKER_MAX_DISTANCE = config.getInt("nether_general.marker_max_distance");
-		//Return the build materials upon destruction of factory.
-		RETURN_BUILD_MATERIALS = config.getBoolean("general.return_build_materials",false);
 		//is citadel enabled?
 		CITADEL_ENABLED = config.getBoolean("general.citadel_enabled",true);
 		//what's the tool that we use to interact with the factorys?
 		FACTORY_INTERACTION_MATERIAL = Material.getMaterial(config.getString("general.factory_interaction_material","STICK"));
-		//If factories are removed upon destruction of their blocks
-		DESTRUCTIBLE_FACTORIES=config.getBoolean("general.destructible_factories",false);		
 		//Check if XP drops should be disabled
 		DISABLE_EXPERIENCE=config.getBoolean("general.disable_experience",false);
 		//How frequently factories are updated
@@ -265,16 +171,12 @@ public class FactoryModPlugin extends JavaPlugin
 		DISREPAIR_PERIOD= config.getLong("general.disrepair_period",14)*24*60*60*1000;
 		//The length of time it takes a factory to go to 0% health
 		REPAIR_PERIOD = config.getLong("production_general.repair_period",28)*24*60*60*1000;
-		//Disable recipes which result in the following items
-		//Do we output the running state with a lever?
-		LEVER_OUTPUT_ENABLED = config.getBoolean("general.lever_output_enabled",true);
-		//Do we allow factories to be started with redstone?
-		REDSTONE_START_ENABLED = config.getBoolean("general.redstone_start_enabled",true);
+
 
 		// Disable the following recipes
 		List<Recipe> toDisable = new ArrayList<Recipe>();
-		ItemList<NamedItemStack> disabledRecipes = getItems(config.getConfigurationSection("crafting.disable"));		
-		for (NamedItemStack recipe : disabledRecipes) {
+		ItemList<AdvancedItemStack> disabledRecipes = getItems(config.getConfigurationSection("crafting.disable"));		
+		for (AdvancedItemStack recipe : disabledRecipes) {
 			sendConsoleMessage("Attempting to disable recipes for " + recipe.getCommonName());
 			
 			List<Recipe> tempList = getServer().getRecipesFor(recipe);
@@ -306,7 +208,7 @@ public class FactoryModPlugin extends JavaPlugin
 			Recipe recipe;
 			List<String> shape = configSection.getStringList("shape");
 
-			NamedItemStack output = getItems(configSection.getConfigurationSection("output")).get(0);
+			AdvancedItemStack output = getItems(configSection.getConfigurationSection("output")).get(0);
 			
 			if(shape.isEmpty())
 			{
@@ -364,11 +266,11 @@ public class FactoryModPlugin extends JavaPlugin
 			//TODO: fix config according to default 1
 			int productionTime = configSection.getInt("production_time", 2);
 			//Inputs of the recipe, empty of there are no inputs
-			ItemList<NamedItemStack> inputs = getItems(configSection.getConfigurationSection("inputs"));
+			ItemList<AdvancedItemStack> inputs = getItems(configSection.getConfigurationSection("inputs"));
 			//Inputs of the recipe, empty of there are no inputs
-			ItemList<NamedItemStack> upgrades = getItems(configSection.getConfigurationSection("upgrades"));
+			ItemList<AdvancedItemStack> upgrades = getItems(configSection.getConfigurationSection("upgrades"));
 			//Outputs of the recipe, empty of there are no inputs
-			ItemList<NamedItemStack> outputs = getItems(configSection.getConfigurationSection("outputs"));
+			ItemList<AdvancedItemStack> outputs = getItems(configSection.getConfigurationSection("outputs"));
 			//EnchantmentOptions of the recipe, all false if nothing set.
 			ConfigurationSection configEnchant = configSection.getConfigurationSection("enchantment_options");
 			EnchantmentOptions enchantmentOptions = null;
@@ -382,7 +284,7 @@ public class FactoryModPlugin extends JavaPlugin
 			List<ProbabilisticEnchantment> enchantments = getEnchantments(configSection.getConfigurationSection("enchantments"));
 			//Whether this recipe can only be used once
 			boolean useOnce = configSection.getBoolean("use_once");
-			ProductionRecipe recipe = new ProductionRecipe(title, recipeName, productionTime, inputs, upgrades, outputs, enchantmentOptions, enchantments, useOnce, new ItemList<NamedItemStack>());
+			ProductionRecipe recipe = new ProductionRecipe(title, recipeName, productionTime, inputs, upgrades, outputs, enchantmentOptions, enchantments, useOnce, new ItemList<AdvancedItemStack>());
 			productionRecipes.put(title, recipe);
 			//Store the titles of the recipes that this should point to
 			List <String> currentOutputRecipes = Lists.newArrayList();
@@ -409,16 +311,16 @@ public class FactoryModPlugin extends JavaPlugin
 			String factoryName = configSection.getString("name", "Default Name");
 			//Uses overpowered getItems method for consistency, should always return a list of size=1
 			//If no fuel is found, default to charcoal
-			ItemList<NamedItemStack> fuel = getItems(configSection.getConfigurationSection("fuel"));
+			ItemList<AdvancedItemStack> fuel = getItems(configSection.getConfigurationSection("fuel"));
 			if(fuel.isEmpty())
 			{
-				fuel = new ItemList<NamedItemStack>();
+				fuel = new ItemList<AdvancedItemStack>();
 				fuel.add(DEFAULT_FUEL);
 			}
 			//TODO: default fuel time should be 1
 			int fuelTime = configSection.getInt("fuel_time", 2);
-			ItemList<NamedItemStack> inputs = getItems(configSection.getConfigurationSection("inputs"));
-			ItemList<NamedItemStack> repairs = getItems(configSection.getConfigurationSection("repair_inputs"));
+			ItemList<AdvancedItemStack> inputs = getItems(configSection.getConfigurationSection("inputs"));
+			ItemList<AdvancedItemStack> repairs = getItems(configSection.getConfigurationSection("repair_inputs"));
 			
 			List<ProductionRecipe> factoryRecipes = Lists.newArrayList();
 			for (String recipe : configSection.getStringList("recipes"))
@@ -488,9 +390,9 @@ public class FactoryModPlugin extends JavaPlugin
 		return potionEffects;
 	}
 	
-	public ItemList<NamedItemStack> getItems(ConfigurationSection configItems)
+	public ItemList<AdvancedItemStack> getItems(ConfigurationSection configItems)
 	{
-		ItemList<NamedItemStack> items = new ItemList<NamedItemStack>();
+		ItemList<AdvancedItemStack> items = new ItemList<AdvancedItemStack>();
 		if(configItems != null)
 		{
 			for(String commonName : configItems.getKeys(false))
@@ -522,10 +424,10 @@ public class FactoryModPlugin extends JavaPlugin
 		return items;
 	}
 
-	private NamedItemStack createItemStack(Material material, int stackSize, short durability, String name, String loreString, String commonName, int repairCost, 
+	private AdvancedItemStack createItemStack(Material material, int stackSize, short durability, String name, String loreString, String commonName, int repairCost, 
 			List<ProbabilisticEnchantment> compulsoryEnchants, List<ProbabilisticEnchantment> storedEnchants, List<PotionEffect> potionEffects)
 	{
-		NamedItemStack namedItemStack= new NamedItemStack(material, stackSize, durability,commonName);
+		AdvancedItemStack namedItemStack= new AdvancedItemStack(material, stackSize, durability,commonName);
 		if(name != null || loreString != null || compulsoryEnchants.size() > 0 || storedEnchants.size() > 0 || potionEffects.size() > 0 || repairCost > 0)
 		{
 			ItemMeta meta = namedItemStack.getItemMeta();

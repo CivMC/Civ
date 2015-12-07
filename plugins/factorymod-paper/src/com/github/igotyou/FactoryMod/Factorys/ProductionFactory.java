@@ -15,7 +15,7 @@ import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
-import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.AdvancedItemStack;
 
 public class ProductionFactory extends ABaseFactory
 {
@@ -115,7 +115,7 @@ public class ProductionFactory extends ABaseFactory
 	}
 	
 	@Override
-	public ItemList<NamedItemStack> getFuel() {
+	public ItemList<AdvancedItemStack> getFuel() {
 		return productionFactoryProperties.getFuel();
 	}
 
@@ -252,17 +252,17 @@ public class ProductionFactory extends ABaseFactory
 	}
 
 	@Override
-	public ItemList<NamedItemStack> getInputs() {
+	public ItemList<AdvancedItemStack> getInputs() {
 		return currentRecipe.getInputs();
 	}
 
 	@Override
-	public ItemList<NamedItemStack> getOutputs() {
+	public ItemList<AdvancedItemStack> getOutputs() {
 		return currentRecipe.getOutputs();
 	}
 
 	@Override
-	public ItemList<NamedItemStack> getRepairs() {
+	public ItemList<AdvancedItemStack> getRepairs() {
 		return currentRecipe.getRepairs();
 	}
 

@@ -13,7 +13,7 @@ import com.github.igotyou.FactoryMod.properties.IFactoryProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
-import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.AdvancedItemStack;
 
 public class Compactor extends ABaseFactory {
 
@@ -42,7 +42,7 @@ public class Compactor extends ABaseFactory {
         return mode.equals(CompactorMode.REPAIR);
     }
     
-    public ItemList<NamedItemStack> getFuel() {
+    public ItemList<AdvancedItemStack> getFuel() {
         return cp.getFuel();
     }
     
@@ -58,13 +58,13 @@ public class Compactor extends ABaseFactory {
 		}
     }
     
-    public ItemList<NamedItemStack> getInputs() {
-        ItemList<NamedItemStack> inputs = new ItemList<NamedItemStack>();
+    public ItemList<AdvancedItemStack> getInputs() {
+        ItemList<AdvancedItemStack> inputs = new ItemList<AdvancedItemStack>();
         Inventory inv = getInventory();
         if(mode.equals(CompactorMode.DECOMPACT)) {
             for(ItemStack is : inv.getContents()) {
                 if(canDecompact(is)) {
-                	NamedItemStack clone = new NamedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
+                	AdvancedItemStack clone = new AdvancedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
                 	clone.setAmount(1);
                 	inputs.add(clone);
 
@@ -74,7 +74,7 @@ public class Compactor extends ABaseFactory {
         } else if (mode.equals(CompactorMode.COMPACT)) {
             for(ItemStack is : inv.getContents()) {
                 if(canCompact(is)) {
-                	NamedItemStack clone = new NamedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
+                	AdvancedItemStack clone = new AdvancedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
                     inputs.add(clone); 
 
                     inputs.addAll(cp.getRecipeMaterials());
@@ -137,13 +137,13 @@ public class Compactor extends ABaseFactory {
     	return false;
     }
     
-    public ItemList<NamedItemStack> getOutputs() {
-        ItemList<NamedItemStack> outputs = new ItemList<NamedItemStack>();
+    public ItemList<AdvancedItemStack> getOutputs() {
+        ItemList<AdvancedItemStack> outputs = new ItemList<AdvancedItemStack>();
         Inventory inv = getInventory();
         if (mode.equals( CompactorMode.DECOMPACT )) {
             for(ItemStack is : inv.getContents()) {
                 if(canDecompact(is)) {
-                	NamedItemStack clone = new NamedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
+                	AdvancedItemStack clone = new AdvancedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
                 	clone.setAmount(clone.getMaxStackSize());
                     ItemMeta cloneMeta = clone.getItemMeta();
                     cloneMeta.setLore(null);
@@ -156,7 +156,7 @@ public class Compactor extends ABaseFactory {
         } else if (mode.equals( CompactorMode.COMPACT )) {
             for (ItemStack is : inv.getContents()) {
                 if(canCompact(is)) {
-                	NamedItemStack clone = new NamedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
+                	AdvancedItemStack clone = new AdvancedItemStack(is.clone(), is.getItemMeta().hasDisplayName() ? is.getItemMeta().getDisplayName() : is.getType().toString());
                 	clone.setAmount(1);
                     ItemMeta cloneMeta = clone.getItemMeta();
                     List<String> lore = new ArrayList<String>();
@@ -172,11 +172,11 @@ public class Compactor extends ABaseFactory {
         return outputs;
     }
     
-    public ItemList<NamedItemStack> getRepairs() {
+    public ItemList<AdvancedItemStack> getRepairs() {
 		if (mode.equals( CompactorMode.REPAIR)) {
 			return cp.getRepairMaterials();
 		} else {
-			return new ItemList<NamedItemStack>();
+			return new ItemList<AdvancedItemStack>();
 		}
     }
     
@@ -235,7 +235,7 @@ public class Compactor extends ABaseFactory {
 	}
     
     protected void recipeFinished() {
-    	ItemList<NamedItemStack> output = getOutputs();
+    	ItemList<AdvancedItemStack> output = getOutputs();
         getInputs().removeFrom(getInventory());
         output.putIn(getInventory());
     }
@@ -265,10 +265,10 @@ public class Compactor extends ABaseFactory {
         String response = ""; // the response specific to the mode.
 
         if (mode.equals(CompactorMode.COMPACT) ) {
-        	ItemList<NamedItemStack> inputs = getInputs();
+        	ItemList<AdvancedItemStack> inputs = getInputs();
         	response = (inputs.isEmpty() ? "Nothing to compact." : "Next up to compact: " + inputs.toString() );
         } else if (mode.equals(CompactorMode.DECOMPACT)){
-        	ItemList<NamedItemStack> inputs = getInputs();
+        	ItemList<AdvancedItemStack> inputs = getInputs();
         	if (inputs.isEmpty()) {
         		response = "Nothing to decompact.";
         	} else {

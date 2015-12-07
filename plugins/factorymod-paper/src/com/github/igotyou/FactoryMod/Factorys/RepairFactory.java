@@ -14,7 +14,7 @@ import com.github.igotyou.FactoryMod.properties.RepairFactoryProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
-import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.AdvancedItemStack;
 
 public class RepairFactory extends ABaseFactory{
 
@@ -49,7 +49,7 @@ public class RepairFactory extends ABaseFactory{
 	}
 
 	@Override
-	public ItemList<NamedItemStack> getFuel() {
+	public ItemList<AdvancedItemStack> getFuel() {
 		return rfp.getFuel();
 	}
 	
@@ -125,8 +125,8 @@ public class RepairFactory extends ABaseFactory{
 						//[Requires the following: Amount Name, Amount Name.]
 						//[Requires one of the following: Amount Name, Amount Name.]
 						
-						ItemList<NamedItemStack> needAll=new ItemList<NamedItemStack>();
-						ItemList<NamedItemStack> allInputs = null;
+						ItemList<AdvancedItemStack> needAll=new ItemList<AdvancedItemStack>();
+						ItemList<AdvancedItemStack> allInputs = null;
 						
 						if (mode.equals(RepairFactoryMode.REPAIR)){
 							allInputs = rfp.getRepairMaterials();
@@ -178,25 +178,25 @@ public class RepairFactory extends ABaseFactory{
 	}
 
 	@Override
-	public ItemList<NamedItemStack> getInputs() {
+	public ItemList<AdvancedItemStack> getInputs() {
 		if (mode.equals(RepairFactoryMode.RESET_ITEMS)) {
 			return rfp.getRecipeMaterials();
 		} else {
-			return new ItemList<NamedItemStack>();
+			return new ItemList<AdvancedItemStack>();
 		}
 	}
 
 	@Override
-	public ItemList<NamedItemStack> getOutputs() {
-		return new ItemList<NamedItemStack>();
+	public ItemList<AdvancedItemStack> getOutputs() {
+		return new ItemList<AdvancedItemStack>();
 	}
 
 	@Override
-	public ItemList<NamedItemStack> getRepairs() {
+	public ItemList<AdvancedItemStack> getRepairs() {
 		if (mode.equals( RepairFactoryMode.REPAIR)) {
 			return rfp.getRepairMaterials();
 		} else {
-			return new ItemList<NamedItemStack>();
+			return new ItemList<AdvancedItemStack>();
 		}
 	}
 

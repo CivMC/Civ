@@ -5,23 +5,23 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.utility.ItemList;
-import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.AdvancedItemStack;
 
 public class PrintingPressProperties extends AFactoryProperties{
 
-	private ItemList<NamedItemStack> fuel;
-	private ItemList<NamedItemStack> constructionMaterials;
-	private ItemList<NamedItemStack> plateMaterials;
-	private ItemList<NamedItemStack> bindingMaterials;
-	private ItemList<NamedItemStack> pageMaterials;
+	private ItemList<AdvancedItemStack> fuel;
+	private ItemList<AdvancedItemStack> constructionMaterials;
+	private ItemList<AdvancedItemStack> plateMaterials;
+	private ItemList<AdvancedItemStack> bindingMaterials;
+	private ItemList<AdvancedItemStack> pageMaterials;
 	private int pagesPerLot;
-	private ItemList<NamedItemStack> pamphletMaterials;
+	private ItemList<AdvancedItemStack> pamphletMaterials;
 	private int pamphletsPerLot;
-	private ItemList<NamedItemStack> securityMaterials;
+	private ItemList<AdvancedItemStack> securityMaterials;
 	private int securityNotesPerLot;
 	private int energyTime;
 	private int maxRepair;
-	private ItemList<NamedItemStack> repairMaterials;
+	private ItemList<AdvancedItemStack> repairMaterials;
 	private int pageLead;
 	private int setPlateTime;
 	private int repairTime;
@@ -34,16 +34,16 @@ public class PrintingPressProperties extends AFactoryProperties{
 
 
 	public PrintingPressProperties(
-			ItemList<NamedItemStack> fuel,
-			ItemList<NamedItemStack> constructionMaterials,
-			ItemList<NamedItemStack> repairMaterials,
-			ItemList<NamedItemStack> plateMaterials,
-			ItemList<NamedItemStack> bindingMaterials,
-			ItemList<NamedItemStack> pageMaterials,
+			ItemList<AdvancedItemStack> fuel,
+			ItemList<AdvancedItemStack> constructionMaterials,
+			ItemList<AdvancedItemStack> repairMaterials,
+			ItemList<AdvancedItemStack> plateMaterials,
+			ItemList<AdvancedItemStack> bindingMaterials,
+			ItemList<AdvancedItemStack> pageMaterials,
 			int pagesPerLot,
-			ItemList<NamedItemStack> pamphletMaterials,
+			ItemList<AdvancedItemStack> pamphletMaterials,
 			int pamphletsPerLot,
-			ItemList<NamedItemStack> securityMaterials,
+			ItemList<AdvancedItemStack> securityMaterials,
 			int securityNotesPerLot,
 			int energyTime, String name, int repair, int paperRate,
 			int pageLead, int setPlateTime, int repairTime, int bookPagesCap
@@ -80,45 +80,45 @@ public class PrintingPressProperties extends AFactoryProperties{
 	}
 
 
-	public ItemList<NamedItemStack> getBindingMaterials() {
+	public ItemList<AdvancedItemStack> getBindingMaterials() {
 		return bindingMaterials;
 	}
 
 
-	public ItemList<NamedItemStack> getPageMaterials() {
+	public ItemList<AdvancedItemStack> getPageMaterials() {
 		return pageMaterials;
 	}
 
-	public ItemList<NamedItemStack> getSecurityMaterials() {
+	public ItemList<AdvancedItemStack> getSecurityMaterials() {
 		return securityMaterials;
 	}
 
-	public ItemList<NamedItemStack> getRepairMaterials() {
+	public ItemList<AdvancedItemStack> getRepairMaterials() {
 		return repairMaterials;
 	}
 	
-	public ItemList<NamedItemStack> getPlateMaterials() {
+	public ItemList<AdvancedItemStack> getPlateMaterials() {
 		return plateMaterials;
 	}
 
 
 	public static PrintingPressProperties fromConfig(FactoryModPlugin plugin, ConfigurationSection configPrintingPresses) {
-		ItemList<NamedItemStack> ppFuel=plugin.getItems(configPrintingPresses.getConfigurationSection("fuel"));
+		ItemList<AdvancedItemStack> ppFuel=plugin.getItems(configPrintingPresses.getConfigurationSection("fuel"));
 		if(ppFuel.isEmpty())
 		{
-			ppFuel=new ItemList<NamedItemStack>();
-			ppFuel.add(new NamedItemStack(Material.getMaterial("COAL"),1,(short)1,"Charcoal"));
+			ppFuel=new ItemList<AdvancedItemStack>();
+			ppFuel.add(new AdvancedItemStack(Material.getMaterial("COAL"),1,(short)1,"Charcoal"));
 		}
 		ConfigurationSection costs = configPrintingPresses.getConfigurationSection("costs");
-		ItemList<NamedItemStack> ppConstructionCost=plugin.getItems(costs.getConfigurationSection("construction"));
-		ItemList<NamedItemStack> ppRepairCost=plugin.getItems(costs.getConfigurationSection("repair"));
-		ItemList<NamedItemStack> ppPlateCost=plugin.getItems(costs.getConfigurationSection("plates"));
-		ItemList<NamedItemStack> ppBindingCost=plugin.getItems(costs.getConfigurationSection("binding"));
-		ItemList<NamedItemStack> ppPageCost=plugin.getItems(costs.getConfigurationSection("page_lot"));
+		ItemList<AdvancedItemStack> ppConstructionCost=plugin.getItems(costs.getConfigurationSection("construction"));
+		ItemList<AdvancedItemStack> ppRepairCost=plugin.getItems(costs.getConfigurationSection("repair"));
+		ItemList<AdvancedItemStack> ppPlateCost=plugin.getItems(costs.getConfigurationSection("plates"));
+		ItemList<AdvancedItemStack> ppBindingCost=plugin.getItems(costs.getConfigurationSection("binding"));
+		ItemList<AdvancedItemStack> ppPageCost=plugin.getItems(costs.getConfigurationSection("page_lot"));
 		int pagesPerLot = costs.getInt("pages_per_lot",16); 
-		ItemList<NamedItemStack> ppPamphletCost=plugin.getItems(costs.getConfigurationSection("pamphlet_lot"));
+		ItemList<AdvancedItemStack> ppPamphletCost=plugin.getItems(costs.getConfigurationSection("pamphlet_lot"));
 		int pamphletsPerLot = costs.getInt("pamphlets_per_lot",24);
-		ItemList<NamedItemStack> ppSecurityCost=plugin.getItems(costs.getConfigurationSection("security_lot"));
+		ItemList<AdvancedItemStack> ppSecurityCost=plugin.getItems(costs.getConfigurationSection("security_lot"));
 		int securityNotesPerLot = costs.getInt("security_notes_per_lot",24);
 		int ppEnergyTime = configPrintingPresses.getInt("fuel_time", 10);
 		int ppRepair = costs.getInt("repair_multiple",1);
@@ -142,7 +142,7 @@ public class PrintingPressProperties extends AFactoryProperties{
 	}
 
 
-	public ItemList<NamedItemStack> getPamphletMaterials() {
+	public ItemList<AdvancedItemStack> getPamphletMaterials() {
 		return pamphletMaterials;
 	}
 
@@ -157,7 +157,7 @@ public class PrintingPressProperties extends AFactoryProperties{
 	}
 
 
-	public ItemList<NamedItemStack> getFuel()
+	public ItemList<AdvancedItemStack> getFuel()
 	{
 		return fuel;
 	}
@@ -167,7 +167,7 @@ public class PrintingPressProperties extends AFactoryProperties{
 		return energyTime;
 	}
 
-	public ItemList<NamedItemStack> getConstructionMaterials() {
+	public ItemList<AdvancedItemStack> getConstructionMaterials() {
 		return constructionMaterials;
 	}
 

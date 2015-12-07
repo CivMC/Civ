@@ -20,7 +20,7 @@ import com.github.igotyou.FactoryMod.properties.NetherFactoryProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
-import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.AdvancedItemStack;
 
 public class NetherFactory extends ABaseFactory
 {
@@ -380,7 +380,7 @@ public class NetherFactory extends ABaseFactory
 	}
 	
 	@Override
-	public ItemList<NamedItemStack> getFuel() {
+	public ItemList<AdvancedItemStack> getFuel() {
 		return netherFactoryProperties.getFuel();
 	}
 	
@@ -423,25 +423,25 @@ public class NetherFactory extends ABaseFactory
 	}
 
 	@Override
-	public ItemList<NamedItemStack> getInputs() {
+	public ItemList<AdvancedItemStack> getInputs() {
 		if(mode == NetherOperationMode.REPAIR)
 		{
-			return new ItemList<NamedItemStack>();
+			return new ItemList<AdvancedItemStack>();
 		}
 		else
 		{
-			return new ItemList<NamedItemStack>();
+			return new ItemList<AdvancedItemStack>();
 		}
 	}
 
 	@Override
-	public ItemList<NamedItemStack> getOutputs() {
-		return new ItemList<NamedItemStack>();
+	public ItemList<AdvancedItemStack> getOutputs() {
+		return new ItemList<AdvancedItemStack>();
 	}
 
 	@Override
-	public ItemList<NamedItemStack> getRepairs() {
-		ItemList<NamedItemStack> repairMaterials = new ItemList<NamedItemStack>();
+	public ItemList<AdvancedItemStack> getRepairs() {
+		ItemList<AdvancedItemStack> repairMaterials = new ItemList<AdvancedItemStack>();
 		switch(mode) {
 		case REPAIR:
 			repairMaterials.addAll(netherFactoryProperties.getRepairMaterials());

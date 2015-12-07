@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.Listener;
 
+import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.ABaseFactory;
 import com.github.igotyou.FactoryMod.Factorys.IFactory;
@@ -32,7 +33,7 @@ import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResu
 public class FactoryManagerService 
 {
 	List<Listener> listeners;
-	List<AManager<? extends ABaseFactory>> managers;
+	List<FactoryModManager<? extends ABaseFactory>> managers;
 	
 	/**
 	 * The plugin instance
@@ -62,7 +63,7 @@ public class FactoryManagerService
 	 */
 	private void initializeManagers()
 	{
-		managers = new ArrayList<AManager<? extends ABaseFactory>>();
+		managers = new ArrayList<FactoryModManager<? extends ABaseFactory>>();
 		listeners = new ArrayList<Listener>();
 		
 		managers.add(new ProductionFactoryManager(plugin));

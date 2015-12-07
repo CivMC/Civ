@@ -18,7 +18,7 @@ import com.github.igotyou.FactoryMod.properties.PrintingPressProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
-import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.AdvancedItemStack;
 import com.github.igotyou.FactoryMod.utility.StringUtils;
 
 public class PrintingPress extends ABaseFactory {
@@ -86,7 +86,7 @@ public class PrintingPress extends ABaseFactory {
 	}
 
 	@Override
-	public ItemList<NamedItemStack> getFuel() {
+	public ItemList<AdvancedItemStack> getFuel() {
 		return printingPressProperties.getFuel();
 	}
 	
@@ -111,7 +111,7 @@ public class PrintingPress extends ABaseFactory {
 	public double getProductionTime() {
 		switch(mode) {
 			case SET_PLATES:
-				NamedItemStack plates = getPlateResult();
+				AdvancedItemStack plates = getPlateResult();
 				int pageCount = 1;
 				if (plates != null) {
 					pageCount = Math.max(1, ((BookMeta) plates.getItemMeta()).getPageCount());
@@ -129,11 +129,11 @@ public class PrintingPress extends ABaseFactory {
 	}
 
 	@Override
-	public ItemList<NamedItemStack> getInputs() {
-		ItemList<NamedItemStack> inputs = new ItemList<NamedItemStack>();
+	public ItemList<AdvancedItemStack> getInputs() {
+		ItemList<AdvancedItemStack> inputs = new ItemList<AdvancedItemStack>();
 		switch(mode) {
 		case SET_PLATES:
-			NamedItemStack plates = getPlateResult();
+			AdvancedItemStack plates = getPlateResult();
 			if (plates != null) {
 				int pageCount = ((BookMeta) plates.getItemMeta()).getPageCount();
 				if (pageCount > 0) {
@@ -151,11 +151,11 @@ public class PrintingPress extends ABaseFactory {
 	}
 
 	@Override
-	public ItemList<NamedItemStack> getOutputs() {
-		ItemList<NamedItemStack> outputs = new ItemList<NamedItemStack>();
+	public ItemList<AdvancedItemStack> getOutputs() {
+		ItemList<AdvancedItemStack> outputs = new ItemList<AdvancedItemStack>();
 		switch(mode) {
 		case SET_PLATES:
-			NamedItemStack plates = getPlateResult();
+			AdvancedItemStack plates = getPlateResult();
 			if (plates != null) {
 				outputs.add(plates);
 			} else {
@@ -169,8 +169,8 @@ public class PrintingPress extends ABaseFactory {
 	}
 
 	@Override
-	public ItemList<NamedItemStack> getRepairs() {
-		ItemList<NamedItemStack> inputs = new ItemList<NamedItemStack>();
+	public ItemList<AdvancedItemStack> getRepairs() {
+		ItemList<AdvancedItemStack> inputs = new ItemList<AdvancedItemStack>();
 		switch(mode) {
 		case REPAIR:
 			inputs.addAll(printingPressProperties.getRepairMaterials());
@@ -244,15 +244,15 @@ public class PrintingPress extends ABaseFactory {
 		
 		int finished = processQueue[processQueueOffset];
 		if (finished > 0) {
-			NamedItemStack result = printResult.toBook();
-			ItemList<NamedItemStack> set = new ItemList<NamedItemStack>();
+			AdvancedItemStack result = printResult.toBook();
+			ItemList<AdvancedItemStack> set = new ItemList<AdvancedItemStack>();
 			set.add(result);
 			set = set.getMultiple(finished);
 			set.putIn(getInventory());
 		}
 		
 		// Load materials
-		ItemList<NamedItemStack> pages = printingPressProperties.getPageMaterials();
+		ItemList<AdvancedItemStack> pages = printingPressProperties.getPageMaterials();
 		boolean hasPages = pages.allIn(getInventory());
 		boolean inputStall = false;
 		
@@ -263,7 +263,7 @@ public class PrintingPress extends ABaseFactory {
 			// Check bindings
 			int expectedBindings = pageCount == 0 ? containedPaper + printingPressProperties.getPagesPerLot() : (int) Math.floor((double) (containedPaper + printingPressProperties.getPagesPerLot()) / (double) pageCount);
 			boolean hasBindings = true;
-			ItemList<NamedItemStack> allBindings = new ItemList<NamedItemStack>();
+			ItemList<AdvancedItemStack> allBindings = new ItemList<AdvancedItemStack>();
 			if (expectedBindings > containedBindings) {
 				int neededBindings = expectedBindings - containedBindings;
 				allBindings = printingPressProperties.getBindingMaterials().getMultiple(neededBindings);
@@ -323,15 +323,15 @@ public class PrintingPress extends ABaseFactory {
 		// Output finished results
 		int finished = processQueue[processQueueOffset];
 		if (finished > 0) {
-			NamedItemStack result = getPrintResult().toPamphlet();
-			ItemList<NamedItemStack> set = new ItemList<NamedItemStack>();
+			AdvancedItemStack result = getPrintResult().toPamphlet();
+			ItemList<AdvancedItemStack> set = new ItemList<AdvancedItemStack>();
 			set.add(result);
 			set = set.getMultiple(finished);
 			set.putIn(getInventory());
 		}
 		
 		// Load materials
-		ItemList<NamedItemStack> pages = printingPressProperties.getPamphletMaterials();
+		ItemList<AdvancedItemStack> pages = printingPressProperties.getPamphletMaterials();
 		boolean hasPages = pages.allIn(getInventory());
 		if (hasPages) {
 			pages.removeFrom(getInventory());
@@ -352,22 +352,22 @@ public class PrintingPress extends ABaseFactory {
 		// Output finished results
 		int finished = processQueue[processQueueOffset];
 		if (finished > 0) {
-			NamedItemStack result = getPrintResult().toSecurityNote();
-			ItemList<NamedItemStack> set = new ItemList<NamedItemStack>();
+			AdvancedItemStack result = getPrintResult().toSecurityNote();
+			ItemList<AdvancedItemStack> set = new ItemList<AdvancedItemStack>();
 			set.add(result);
 			set = set.getMultiple(finished);
 			set.putIn(getInventory());
 		}
 		
 		// Load materials
-		ItemList<NamedItemStack> pages = printingPressProperties.getPamphletMaterials();
+		ItemList<AdvancedItemStack> pages = printingPressProperties.getPamphletMaterials();
 		boolean hasPages = pages.allIn(getInventory());
 		boolean inputStall = false;
 		if (hasPages) {
 			// Check security materials
 			int expectedExtras = (int) Math.ceil((double) containedPaper + printingPressProperties.getPamphletsPerLot());
 			boolean hasExtras = true;
-			ItemList<NamedItemStack> allSecurityMaterials = new ItemList<NamedItemStack>();
+			ItemList<AdvancedItemStack> allSecurityMaterials = new ItemList<AdvancedItemStack>();
 			if (expectedExtras > containedSecurityMaterials) {
 				int neededExtras = expectedExtras - containedSecurityMaterials;
 				int neededExtraLots = (int) Math.ceil((double) neededExtras / (double) printingPressProperties.getSecurityNotesPerLot());
@@ -476,7 +476,7 @@ public class PrintingPress extends ABaseFactory {
 		responses.add(new InteractionResponse(InteractionResult.SUCCESS, mode.getDescription()));
 
 		// Never call the same function more than once, especially when this complex.
-		ItemList<NamedItemStack> getInputs = getInputs();
+		ItemList<AdvancedItemStack> getInputs = getInputs();
 		//[Inputs: amount Name, amount Name.]
 		if(getInputs != null && !getInputs.isEmpty()) {
 			responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Input: "+getInputs.toString()+"."));
@@ -485,7 +485,7 @@ public class PrintingPress extends ABaseFactory {
 		}
 
 		//[Outputs: amount Name, amount Name.]
-		ItemList<NamedItemStack> getOutputs = getOutputs();
+		ItemList<AdvancedItemStack> getOutputs = getOutputs();
 		if(getOutputs != null && !getOutputs.isEmpty()) {
 			responses.add(new InteractionResponse(InteractionResult.SUCCESS,"Output: "+getOutputs.toString()+"."));
 		} else {
@@ -493,7 +493,7 @@ public class PrintingPress extends ABaseFactory {
 		}
 
 		//[Will repair XX% of the factory]
-		ItemList<NamedItemStack> getRepairs = getRepairs();
+		ItemList<AdvancedItemStack> getRepairs = getRepairs();
 		if(getRepairs != null && !getRepairs.isEmpty() && maintenanceActive) {
 			int amountAvailable = getRepairs.amountAvailable(getInventory());
 			int amountRepaired = amountAvailable > currentRepair ? (int) Math.ceil(currentRepair) : amountAvailable;
@@ -599,10 +599,10 @@ public class PrintingPress extends ABaseFactory {
 	 *   uniquely reflects the book given as input. This plate can then be used to produce
 	 *   copies of the book, security notes, pamphlets, and the like.
 	 *
-	 * @return {@link NamedItemStack} of a Signed Book with lore containing the contents of
+	 * @return {@link AdvancedItemStack} of a Signed Book with lore containing the contents of
 	 *   the given input book, and other important metadata.
 	 */
-	private NamedItemStack getPlateResult() {
+	private AdvancedItemStack getPlateResult() {
 		for (ItemStack stack : getInventory().getContents()) {
 			if (stack == null) {
 				continue;
@@ -631,7 +631,7 @@ public class PrintingPress extends ABaseFactory {
 						log.finer("getPlateResult(): Book found has no pages; adding blank.");
 					}
 					
-					NamedItemStack plates = new NamedItemStack(Material.WRITTEN_BOOK, 1, (short) 0, "plate");
+					AdvancedItemStack plates = new AdvancedItemStack(Material.WRITTEN_BOOK, 1, (short) 0, "plate");
 					BookMeta plateMeta = (BookMeta) plates.getItemMeta();
 					plateMeta.setTitle(title);
 					plateMeta.setAuthor(author);
@@ -739,8 +739,8 @@ public class PrintingPress extends ABaseFactory {
 			return pages.size();
 		}
 		
-		public NamedItemStack toBook() {
-			NamedItemStack book = new NamedItemStack(Material.WRITTEN_BOOK, 1, (short) 0, "book");
+		public AdvancedItemStack toBook() {
+			AdvancedItemStack book = new AdvancedItemStack(Material.WRITTEN_BOOK, 1, (short) 0, "book");
 			BookMeta meta = (BookMeta) book.getItemMeta();
 			meta.setTitle(title);
 			meta.setAuthor(author);
@@ -749,8 +749,8 @@ public class PrintingPress extends ABaseFactory {
 			return book;
 		}
 		
-		public NamedItemStack toPamphlet() {
-			NamedItemStack book = new NamedItemStack(Material.PAPER, 1, (short) 0, "pamphlet");
+		public AdvancedItemStack toPamphlet() {
+			AdvancedItemStack book = new AdvancedItemStack(Material.PAPER, 1, (short) 0, "pamphlet");
 			ItemMeta meta = book.getItemMeta();
 			meta.setDisplayName(title);
 			List<String> lore = new ArrayList<String>();
@@ -762,8 +762,8 @@ public class PrintingPress extends ABaseFactory {
 			return book;
 		}
 		
-		public NamedItemStack toSecurityNote() {
-			NamedItemStack book = new NamedItemStack(Material.PAPER, 1, (short) 0, "note");
+		public AdvancedItemStack toSecurityNote() {
+			AdvancedItemStack book = new AdvancedItemStack(Material.PAPER, 1, (short) 0, "note");
 			ItemMeta meta = book.getItemMeta();
 			meta.setDisplayName(title);
 			List<String> lore = new ArrayList<String>();

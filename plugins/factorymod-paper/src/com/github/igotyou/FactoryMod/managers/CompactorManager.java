@@ -5,15 +5,16 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
 
+import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.Compactor;
 import com.github.igotyou.FactoryMod.properties.CompactorProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.ItemList;
-import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.AdvancedItemStack;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 
-public class CompactorManager extends AManager<Compactor> {
+public class CompactorManager extends FactoryModManager<Compactor> {
     
     public CompactorManager(FactoryModPlugin plugin) {
     	super(plugin);
@@ -28,7 +29,7 @@ public class CompactorManager extends AManager<Compactor> {
             Block inventoryBlock = inventoryLocation.getBlock();
             Chest chest = (Chest) inventoryBlock.getState();
             Inventory chestInventory = chest.getInventory();
-            ItemList<NamedItemStack> inputs = compactorProperties.getConstructionMaterials();
+            ItemList<AdvancedItemStack> inputs = compactorProperties.getConstructionMaterials();
 
 			if (inputs.exactlyIn(chestInventory)) {
 				Compactor production = new Compactor(factoryLocation, inventoryLocation, powerLocation, false, plugin.getCompactorProperties());

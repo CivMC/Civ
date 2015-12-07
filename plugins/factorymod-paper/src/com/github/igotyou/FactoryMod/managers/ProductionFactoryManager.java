@@ -8,13 +8,14 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
 
+import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
-import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.AdvancedItemStack;
 
 //original file:
 /**
@@ -32,7 +33,7 @@ import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 *
 */
 
-public class ProductionFactoryManager extends AManager<ProductionFactory>
+public class ProductionFactoryManager extends FactoryModManager<ProductionFactory>
 {
 	@Override
 	public Class<ProductionFactory> getFactoryType() {
@@ -57,7 +58,7 @@ public class ProductionFactoryManager extends AManager<ProductionFactory>
 			String subFactoryType = null;
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
-				ItemList<NamedItemStack> inputs = entry.getValue().getInputs();
+				ItemList<AdvancedItemStack> inputs = entry.getValue().getInputs();
 				if(inputs.exactlyIn(chestInventory))
 				{
 					subFactoryType = entry.getKey();
@@ -90,7 +91,7 @@ public class ProductionFactoryManager extends AManager<ProductionFactory>
 			boolean hasMaterials = true;
 			for (Map.Entry<String, ProductionProperties> entry : properties.entrySet())
 			{
-				ItemList<NamedItemStack> inputs = entry.getValue().getInputs();
+				ItemList<AdvancedItemStack> inputs = entry.getValue().getInputs();
 				if(!inputs.allIn(chestInventory))
 				{
 					hasMaterials = false;

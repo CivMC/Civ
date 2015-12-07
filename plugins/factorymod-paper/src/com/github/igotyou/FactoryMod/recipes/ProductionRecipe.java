@@ -6,24 +6,24 @@ import java.util.List;
 import org.bukkit.inventory.Inventory;
 
 import com.github.igotyou.FactoryMod.utility.ItemList;
-import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.AdvancedItemStack;
 
 public class ProductionRecipe implements IRecipe
 {
 	private String title;
 	private String recipeName;
 	private int productionTime;
-	private ItemList<NamedItemStack> inputs;
-	private ItemList<NamedItemStack> upgrades;
-	private ItemList<NamedItemStack> outputs;
-	private ItemList<NamedItemStack> repairs;
+	private ItemList<AdvancedItemStack> inputs;
+	private ItemList<AdvancedItemStack> upgrades;
+	private ItemList<AdvancedItemStack> outputs;
+	private ItemList<AdvancedItemStack> repairs;
 	private List<ProductionRecipe> outputRecipes;
 	private List<ProbabilisticEnchantment> enchantments;
 	private EnchantmentOptions enchantmentOptions;
 	private boolean useOnce;
 	
-	public ProductionRecipe(String title,String recipeName,int productionTime,ItemList<NamedItemStack> inputs,ItemList<NamedItemStack> upgrades,
-		ItemList<NamedItemStack> outputs, EnchantmentOptions enchantmentOptions, List<ProbabilisticEnchantment> enchantments,boolean useOnce, ItemList<NamedItemStack> repairs)
+	public ProductionRecipe(String title,String recipeName,int productionTime,ItemList<AdvancedItemStack> inputs,ItemList<AdvancedItemStack> upgrades,
+		ItemList<AdvancedItemStack> outputs, EnchantmentOptions enchantmentOptions, List<ProbabilisticEnchantment> enchantments,boolean useOnce, ItemList<AdvancedItemStack> repairs)
 	{
 		this.title=title;
 		this.recipeName = recipeName;
@@ -38,9 +38,9 @@ public class ProductionRecipe implements IRecipe
 		this.repairs=repairs;
 	}
 	
-	public ProductionRecipe(String title,String recipeName,int productionTime,ItemList<NamedItemStack> repairs)
+	public ProductionRecipe(String title,String recipeName,int productionTime,ItemList<AdvancedItemStack> repairs)
 	{
-		this(title,recipeName,productionTime,new ItemList<NamedItemStack>(),new ItemList<NamedItemStack>(),new ItemList<NamedItemStack>(),null,new ArrayList<ProbabilisticEnchantment>(),false,repairs);
+		this(title,recipeName,productionTime,new ItemList<AdvancedItemStack>(),new ItemList<AdvancedItemStack>(),new ItemList<AdvancedItemStack>(),null,new ArrayList<ProbabilisticEnchantment>(),false,repairs);
 	}
 	
 	public boolean hasMaterials(Inventory inventory)
@@ -52,22 +52,22 @@ public class ProductionRecipe implements IRecipe
 		this.outputRecipes.add(outputRecipe);
 	}
 
-	public ItemList<NamedItemStack> getInputs()
+	public ItemList<AdvancedItemStack> getInputs()
 	{
 		return inputs;
 	}
 	
-	public ItemList<NamedItemStack> getUpgrades()
+	public ItemList<AdvancedItemStack> getUpgrades()
 	{
 		return upgrades;
 	}
 	
-	public ItemList<NamedItemStack> getOutputs() 
+	public ItemList<AdvancedItemStack> getOutputs() 
 	{
 		return outputs;
 	}
 	
-	public ItemList<NamedItemStack> getRepairs()
+	public ItemList<AdvancedItemStack> getRepairs()
 	{
 		return repairs;
 	}

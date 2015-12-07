@@ -4,19 +4,19 @@ import java.util.List;
 
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.utility.ItemList;
-import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import com.github.igotyou.FactoryMod.utility.AdvancedItemStack;
 
 
 public class ProductionProperties extends AFactoryProperties
 {
-	private ItemList<NamedItemStack> inputs;
+	private ItemList<AdvancedItemStack> inputs;
 	private List<ProductionRecipe> recipes;
-	private ItemList<NamedItemStack> fuel;
+	private ItemList<AdvancedItemStack> fuel;
 	private int energyTime;
 	private int repair;
 	
-	public ProductionProperties(ItemList<NamedItemStack> inputs, List<ProductionRecipe> recipes,
-			ItemList<NamedItemStack> fuel, int energyTime, String name,int repair)
+	public ProductionProperties(ItemList<AdvancedItemStack> inputs, List<ProductionRecipe> recipes,
+			ItemList<AdvancedItemStack> fuel, int energyTime, String name,int repair)
 	{
 		this.inputs = inputs;
 		this.recipes = recipes;
@@ -31,7 +31,7 @@ public class ProductionProperties extends AFactoryProperties
 		return repair;
 	}
 
-	public ItemList<NamedItemStack> getInputs() 
+	public ItemList<AdvancedItemStack> getInputs() 
 	{
 		return inputs;
 	}
@@ -41,7 +41,7 @@ public class ProductionProperties extends AFactoryProperties
 		return recipes;
 	}
 	
-	public ItemList<NamedItemStack> getFuel()
+	public ItemList<AdvancedItemStack> getFuel()
 	{
 		return fuel;
 	}
