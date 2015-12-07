@@ -99,7 +99,7 @@ public class CivChat2Listener implements Listener {
 					if (MercuryAPI.instance.getAllPlayers().contains(chatChannel)){
 						//This separator needs to be changed to load from config.
 						String sep = "|";
-						MercuryAPI.instance.sendMessage(MercuryAPI.instance.getServerforPlayer(chatChannel.toLowerCase()), "pm"+sep+sender.getName()+sep+chatChannel+sep+chatMessage.replace(sep, ""), "civchat2");
+						MercuryAPI.sendMessage(MercuryAPI.getServerforPlayer(chatChannel.toLowerCase()).getServerName(), "pm"+sep+sender.getName()+sep+chatChannel+sep+chatMessage.replace(sep, ""), "civchat2");
 						sender.sendMessage(ChatColor.LIGHT_PURPLE+"To "+chatChannel+": "+chatMessage);
 						return;
 					}
