@@ -29,9 +29,9 @@ public class NameAPI {
 		boolean load = NameLayerPlugin.getInstance().GetConfig().get("persistance.forceloadnamecaching").getBool();
 		if (!load)
 			return;
-		Object[] objs = associations.getAllPlayerInfo();
-		nameToUUIDS = (HashMap<String, UUID>) objs[0];
-		uuidsToName = (HashMap<UUID, String>) objs[1];
+		AssociationList.PlayerMappingInfo pmi = associations.getAllPlayerInfo();
+		nameToUUIDS = pmi.nameMapping;
+		uuidsToName = pmi.uuidMapping;
 		
 	}
 	

@@ -22,7 +22,7 @@ public class AssociationList {
 			initializeStatements();
 		}
 	}
-	
+
 	public void genTables(){
 		// creates the player table
 		// Where uuid and host names will be stored
@@ -30,20 +30,20 @@ public class AssociationList {
 				"`uuid` varchar(40) NOT NULL," +
 				"`player` varchar(40) NOT NULL,"
 				+ "UNIQUE KEY `uuid_player_combo` (`uuid`, `player`));");
-		
+
 		// this creates the table needed for when a player changes there name to a prexisting name before joining the server
 		db.execute("create table if not exists playercountnames ("
 				+ "player varchar(40) not null,"
 				+ "amount int(10) not null,"
 				+ "primary key (player));");
 	}
-	
+
 	private String addPlayer;
-    private String getUUIDfromPlayer;
-    private String getPlayerfromUUID;
+	private String getUUIDfromPlayer;
+	private String getPlayerfromUUID;
 	private String changePlayerName;
 	private String getAllPlayerInfo;
-	
+
 	public void initializeStatements(){
 		addPlayer = "call addplayertotable(?, ?)"; // order player name, uuid 
 		getUUIDfromPlayer = "select uuid from Name_player " +
@@ -54,7 +54,7 @@ public class AssociationList {
 				"where uuid=?";
 		getAllPlayerInfo = "select * from Name_player";
 	}
-	
+
 	public void initializeProcedures(){
 		db.execute("drop procedure if exists addplayertotable");
 		db.execute("create definer=current_user procedure addplayertotable("
@@ -98,7 +98,7 @@ public class AssociationList {
 				+ "end if;"
 				+ "end");
 	}
-	
+
 	// returns null if no uuid was found
 	public UUID getUUID(String playername){
 		NameLayerPlugin.reconnectAndReintializeStatements();
@@ -115,7 +115,7 @@ public class AssociationList {
 		}
 		return null;
 	}
-	
+
 	// returns null if no playername was found
 	public String getCurrentName(UUID uuid){
 		NameLayerPlugin.reconnectAndReintializeStatements();
@@ -132,7 +132,7 @@ public class AssociationList {
 		}
 		return null;
 	}
-	
+
 	public void addPlayer(String playername, UUID uuid){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		PreparedStatement addPlayer = db.prepareStatement(this.addPlayer);
@@ -145,7 +145,7 @@ public class AssociationList {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void changePlayer(String newName, UUID uuid) {
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		PreparedStatement changePlayerName = db.prepareStatement(this.changePlayerName);
@@ -164,7 +164,7 @@ public class AssociationList {
 	 * As such Object[0] will return Map<String, UUID> while Object[1]
 	 * will return Map<UUID, String>
 	 */
-	public Object[] getAllPlayerInfo(){
+	public PlayerMappingInfo getAllPlayerInfo(){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		PreparedStatement getAllPlayerInfo = db.prepareStatement(this.getAllPlayerInfo);
 		Map<String, UUID> nameMapping = new HashMap<String, UUID>();
@@ -181,9 +181,15 @@ public class AssociationList {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Object[] objs = new Object[2];
-		objs[0] = nameMapping;
-		objs[1] = uuidMapping;
-		return objs;
+		return new PlayerMappingInfo(nameMapping, uuidMapping);
+	}
+
+	public static class PlayerMappingInfo {
+		public final Map<String, UUID> nameMapping;
+		public final Map<UUID, String> uuidMapping;
+		public PlayerMappingInfo(Map<String, UUID> nameMap, Map<UUID, String> uuidMap) {
+			this.nameMapping = nameMap;
+			this.uuidMapping = uuidMap;
+		}
 	}
 }

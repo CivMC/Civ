@@ -163,7 +163,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 
 		} else if (args.length == 2) {
 			if (NameLayerPlugin.isMercuryEnabled()) {
-				return new ArrayList <String>(MercuryAPI.instance.getAllPlayers());
+				return new ArrayList <String>(MercuryAPI.getAllPlayers());
 			}
 			return null;
 		}
