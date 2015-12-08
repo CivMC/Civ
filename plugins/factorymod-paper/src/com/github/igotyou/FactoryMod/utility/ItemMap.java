@@ -1,6 +1,8 @@
 package com.github.igotyou.FactoryMod.utility;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,14 +27,24 @@ public class ItemMap {
 
 	/**
 	 * Constructor to create an item map based on the content of an inventory.
-	 * The ItemMap will be in sync with the inventory, it will only update if
-	 * it's explicitly told to do so
+	 * The ItemMap will not be in sync with the inventory, it will only update
+	 * if it's explicitly told to do so
 	 * 
 	 * @param inv
 	 *            Inventory to base the item map on
 	 */
 	public ItemMap(Inventory inv) {
 		update(inv);
+	}
+
+	/**
+	 * Constructor to create an item map based on a collection of ItemStacks
+	 * 
+	 * @param stacks
+	 *            Stacks to add to the map
+	 */
+	public ItemMap(Collection<ItemStack> stacks) {
+		addAll(stacks);
 	}
 
 	/**
@@ -54,6 +66,79 @@ public class ItemMap {
 			items.put(is, input.getAmount());
 		}
 		totalItems += input.getAmount();
+	}
+
+	/**
+	 * Removes the given ItemStack from this map. Only the amount of the given
+	 * ItemStack will be removed, not all of them. Use the safe parameter to
+	 * specify whether stacks with negative amounts as a result in the map
+	 * should be allowed or not.
+	 * 
+	 * @param input
+	 *            ItemStack to remove
+	 * @param safe
+	 *            true to forbid stacks with negative amounts, false to allow
+	 *            them
+	 */
+	public void removeItemStack(ItemStack input, boolean safe) {
+		ItemStack is = createMapConformCopy(input);
+		Integer i;
+		if ((i = items.get(is)) != null) {
+			int newSum = i - input.getAmount();
+			if ((safe && newSum > 0) || !safe) {
+				items.put(is, i - input.getAmount());
+				totalItems -= input.getAmount();
+			}
+		} else {
+			if (!safe) {
+				items.put(is, -1 * input.getAmount());
+				totalItems -= input.getAmount();
+			}
+		}
+	}
+
+	/**
+	 * Removes all the given ItemStacks from this map. Only the amount of the
+	 * given ItemStack will be removed, not the complete instance from the map.
+	 * Use the safe parameter to specify whether stacks with negative amounts as
+	 * a result in the map should be allowed or not.
+	 * 
+	 * @param stacks
+	 *            ItemStacks to remove
+	 * @param safe
+	 *            true to forbid stacks with negative amounts, false to allow
+	 *            them
+	 */
+	public void removeAll(Collection<ItemStack> stacks, boolean safe) {
+		for (ItemStack stack : stacks) {
+			removeItemStack(stack, safe);
+		}
+	}
+
+	/**
+	 * Adds all the stacks given in the collection to this map
+	 * 
+	 * @param stacks
+	 *            Stacks to add
+	 */
+	public void addAll(Collection<ItemStack> stacks) {
+		for (ItemStack is : stacks) {
+			if (is != null) {
+				addItemStack(is);
+			}
+		}
+	}
+
+	/**
+	 * Merges the given item map into this instance
+	 * 
+	 * @param im
+	 *            ItemMap to merge
+	 */
+	public void merge(ItemMap im) {
+		for (Entry<ItemStack, Integer> entry : im.getEntrySet()) {
+			addItemAmount(entry.getKey(), entry.getValue());
+		}
 	}
 
 	public void update(Inventory inv) {
@@ -84,9 +169,7 @@ public class ItemMap {
 	}
 
 	/**
-	 * Utility method, which has the amount of items to add as parameter. This
-	 * method doesnt clone the ItemStack, so dont use this on ItemStacks which
-	 * exist in the world
+	 * Utility method, which has the amount of items to add as parameter.
 	 * 
 	 * @param input
 	 *            ItemStack to sort into the map
@@ -94,8 +177,9 @@ public class ItemMap {
 	 *            Amount associated with the given ItemStack
 	 */
 	public void addItemAmount(ItemStack input, int amount) {
-		input.setAmount(amount);
-		addItemStack(input);
+		ItemStack copy = createMapConformCopy(input);
+		copy.setAmount(amount);
+		addItemStack(copy);
 	}
 
 	/**
@@ -271,13 +355,108 @@ public class ItemMap {
 	}
 
 	/**
+	 * Checks whether an inventory contains exactly what's described in this
+	 * ItemMap
+	 * 
+	 * @param i
+	 *            Inventory to compare
+	 * @return True if the inventory is identical with this instance, false if
+	 *         not
+	 */
+	public boolean containedExactlyIn(Inventory i) {
+		return getDifference(new ItemMap(i)).getTotalItemAmount() == 0;
+	}
+
+	/**
+	 * Checks whether this instance is completly contained in the given ItemMap,
+	 * which means every stack in this instance is also in the given map and the
+	 * amount in the given map is either the same or bigger as in this instance
+	 * 
+	 * @param im
+	 *            ItemStack to check
+	 * @return true if this instance is completly contained in the given stack,
+	 *         false if not
+	 */
+	public boolean isContainedBy(ItemMap im) {
+		for (Entry<ItemStack, Integer> entry : getDifference(im).getEntrySet()) {
+			if (entry.getValue() < 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Checks whether this instance completly contains the given ItemMap, which
+	 * means every stack in the given map also exists in this instance and the
+	 * amount in the given map is either the same or smaller compared to the one
+	 * in this instance
+	 * 
+	 * @param im
+	 *            ItemStack to check
+	 * @return true if this instance completly contains the given ItemStack,
+	 *         false if not
+	 */
+	public boolean contains(ItemMap im) {
+		return im.isContainedBy(this);
+	}
+
+	/**
+	 * Turns this item map into a list of ItemStacks, with amounts that do not
+	 * surpass the maximum allowed stack size for each ItemStack
+	 * 
+	 * @return List of stacksize conform ItemStacks
+	 */
+	public LinkedList<ItemStack> getItemStackRepresentation() {
+		LinkedList<ItemStack> result = new LinkedList<ItemStack>();
+		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+			ItemStack is = entry.getKey();
+			Integer amount = entry.getValue();
+			while (amount != 0) {
+				ItemStack toAdd = is.clone();
+				int addAmount = Math.min(amount, is.getMaxStackSize());
+				toAdd.setAmount(addAmount);
+				result.add(toAdd);
+				amount -= addAmount;
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Clones this map
+	 */
+	public ItemMap clone() {
+		ItemMap clone = new ItemMap();
+		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+			clone.addItemAmount(entry.getKey(), entry.getValue());
+		}
+		return clone;
+	}
+
+	/**
+	 * Checks whether this instance would completly fit into the given inventory
+	 * 
+	 * @param i
+	 *            Inventory to check
+	 * @return True if this ItemMap's item representation would completly fit in
+	 *         the inventory, false if not
+	 */
+	public boolean fitsIn(Inventory i) {
+		ItemMap invCopy = new ItemMap(i);
+		ItemMap instanceCopy = this.clone();
+		instanceCopy.merge(invCopy);
+		return instanceCopy.getItemStackRepresentation().size() <= i.getSize();
+	}
+
+	/**
 	 * Utility to not mess with stacks directly taken from inventories
 	 * 
 	 * @param is
 	 *            Template ItemStack
 	 * @return Cloned ItemStack with its amount set to 1
 	 */
-	private ItemStack createMapConformCopy(ItemStack is) {
+	private static ItemStack createMapConformCopy(ItemStack is) {
 		ItemStack copy = is.clone();
 		copy.setAmount(1);
 		return copy;
