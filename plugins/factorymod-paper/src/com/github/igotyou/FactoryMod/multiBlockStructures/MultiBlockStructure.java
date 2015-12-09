@@ -8,8 +8,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
 public abstract class MultiBlockStructure {
-	private static LinkedList <BlockFace> allBlockSides;
-	private static LinkedList <BlockFace> northEastWestSouthSides;
+	protected static LinkedList <BlockFace> allBlockSides;
+	protected static LinkedList <BlockFace> northEastWestSouthSides;
 	
 	public static void initiliazeBlockSides() {
 		northEastWestSouthSides = new LinkedList<BlockFace>();
@@ -34,9 +34,9 @@ public abstract class MultiBlockStructure {
 		return result;
 	}
 	
-	public abstract boolean isComplete(Block center);
+	public abstract boolean isComplete();
 	
-	public abstract Block getInventoryBlock(Block center); 
+	public abstract void initializeBlocks(Block start); 
 		
 
 }

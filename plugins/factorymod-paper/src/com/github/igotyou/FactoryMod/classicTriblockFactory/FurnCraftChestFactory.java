@@ -1,100 +1,87 @@
 package com.github.igotyou.FactoryMod.classicTriblockFactory;
 
-import org.bukkit.Location;
+import java.util.List;
+
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.Contraption;
+import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
+import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
+import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
+import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 
-//original file:
 /**
- * MachineObject.java
- * Purpose: Basic object base for machines to extend
- *
- * @author MrTwiggy
- * @version 0.1 1/14/13
- */
-//edited version:
-/**
- * FactoryObject.java Purpose basic object base for factories to extend
- * 
- * @author igotyou
+ * Represents a "classic" factory, which consists of a furnace as powersource, a
+ * crafting table as main interaction element between the furnace and the chest,
+ * which is used as inventory holder
  *
  */
 public abstract class FurnCraftChestFactory extends Contraption {
-
-	protected Location factoryInventoryLocation;
-	protected Location factoryPowerSourceLocation;
-	protected boolean active;
-	protected Inventory factoryInventory;
-	protected Inventory factoryPowerInventory;
 	protected int currentProductionTimer = 0;
+	protected List<IRecipe> recipes;
+	protected IRecipe currentRecipe;
 
-	/**
-	 * Constructor
-	 */
-	public FurnCraftChestFactory(Location factoryLocation,
-			Location factoryInventoryLocation, Location factoryPowerSource,
-			IInteractionManager im, IRepairManager rm) {
-		super(factoryLocation, im, rm);
-		this.factoryInventoryLocation = factoryInventoryLocation;
-		this.factoryPowerSourceLocation = factoryPowerSource;
+	public FurnCraftChestFactory(IInteractionManager im, IRepairManager rm,
+			IPowerManager ipm, FurnCraftChestStructure mbs, int updateTime) {
+		super(im, rm, ipm, mbs, updateTime);
 		this.active = false;
 	}
 
 	/**
-	 * Returns the factory Inventory(normally a chest), updates the inventory
-	 * variable aswell.
+	 * @return Inventory of the chest or null if there is no chest where one
+	 *         should be
 	 */
 	public Inventory getInventory() {
-		Chest chestBlock = (Chest) factoryInventoryLocation.getBlock()
-				.getState();
-		factoryInventory = chestBlock.getInventory();
-		return factoryInventory;
-	}
-
-	/**
-	 * Returns the power Source inventory, updates it aswell.
-	 */
-	public Inventory getPowerSourceInventory() {
-		if (!(factoryPowerSourceLocation.getBlock().getType() == Material.FURNACE || factoryPowerSourceLocation
-				.getBlock().getType() == Material.BURNING_FURNACE)) {
+		if (!(getFurnace().getType() == Material.CHEST)) {
 			return null;
 		}
-		Furnace furnaceBlock = (Furnace) factoryPowerSourceLocation.getBlock()
-				.getState();
-		factoryPowerInventory = furnaceBlock.getInventory();
-		return factoryPowerInventory;
+		Chest chestBlock = (Chest) (getChest().getState());
+		return chestBlock.getInventory();
 	}
 
 	/**
-	 * Checks whether enough space for the output is available in the chest
-	 * 
-	 * @return true if enough space is available, false if not
+	 * @return Inventory of the furnace or null if there is no furnace where one
+	 *         should be
 	 */
-	public boolean checkSpaceForOutput() {
-		// TODO
-		return true;
+	public Inventory getFurnaceInventory() {
+		if (!(getFurnace().getType() == Material.FURNACE || getFurnace()
+				.getType() == Material.BURNING_FURNACE)) {
+			return null;
+		}
+		Furnace furnaceBlock = (Furnace) (getFurnace().getState());
+		return furnaceBlock.getInventory();
 	}
-	
+
+	public void attemptToActivate(Player p) {
+		// TODO Citadel stuff
+		if (mbs.isComplete()) {
+			if (hasInputMaterials() && pm.fuelAvailable()) {
+				activate();
+				run();
+			}
+		}
+	}
+
 	/**
 	 * Turns the factory on
 	 */
 	public void activate() {
-		active = true;
 		// lots of code to make the furnace light up, without loosing contents.
-		Furnace furnace = (Furnace) factoryPowerSourceLocation.getBlock()
-				.getState();
+		active = true;
+		Furnace furnace = (Furnace) (getFurnace().getState());
 		byte data = furnace.getData().getData();
 		ItemStack[] oldContents = furnace.getInventory().getContents();
 		furnace.getInventory().clear();
-		factoryPowerSourceLocation.getBlock().setType(Material.BURNING_FURNACE);
-		furnace = (Furnace) factoryPowerSourceLocation.getBlock().getState();
+		getFurnace().setType(Material.BURNING_FURNACE);
+		furnace = (Furnace) (getFurnace().getState());
 		furnace.setRawData(data);
 		furnace.update();
 		furnace.setBurnTime(Short.MAX_VALUE);
@@ -103,7 +90,6 @@ public abstract class FurnCraftChestFactory extends Contraption {
 		currentProductionTimer = 0;
 	}
 
-
 	/**
 	 * Turns the factory off.
 	 */
@@ -111,14 +97,12 @@ public abstract class FurnCraftChestFactory extends Contraption {
 		if (active) {
 			// lots of code to make the furnace turn off, without loosing
 			// contents.
-			Furnace furnace = (Furnace) factoryPowerSourceLocation.getBlock()
-					.getState();
+			Furnace furnace = (Furnace) (getFurnace().getState());
 			byte data = furnace.getData().getData();
 			ItemStack[] oldContents = furnace.getInventory().getContents();
 			furnace.getInventory().clear();
-			factoryPowerSourceLocation.getBlock().setType(Material.FURNACE);
-			furnace = (Furnace) factoryPowerSourceLocation.getBlock()
-					.getState();
+			getFurnace().setType(Material.FURNACE);
+			furnace = (Furnace) getFurnace().getState();
 			furnace.setRawData(data);
 			furnace.update();
 			furnace.getInventory().setContents(oldContents);
@@ -130,11 +114,12 @@ public abstract class FurnCraftChestFactory extends Contraption {
 		}
 	}
 
-	/**
-	 * Returns the energy timer
-	 */
-	public int getEnergyTimer() {
-		return currentEnergyTimer;
+	public Block getFurnace() {
+		return ((FurnCraftChestStructure) mbs).getFurnace();
+	}
+
+	public Block getChest() {
+		return ((FurnCraftChestStructure) mbs).getChest();
 	}
 
 	/**
@@ -152,77 +137,65 @@ public abstract class FurnCraftChestFactory extends Contraption {
 	}
 
 	/**
-	 * @return How long since energy was consumed the last time in ticks
-	 */
-	public int getLastEnergyConsumptionTime() {
-		return currentEnergyTimer;
-	}
-
-	/**
-	 * returns true if all factory blocks are occupied with the correct blocks
-	 */
-	public boolean isWhole() {
-		return (factoryPowerSourceLocation.getBlock().getType() == Material.FURNACE || factoryPowerSourceLocation
-				.getBlock().getType() == Material.BURNING_FURNACE)
-				&& (factoryInventoryLocation.getBlock().getType() == Material.CHEST)
-				&& (physicalLocation.getBlock().getType() == Material.WORKBENCH);
-	}
-	
-	/**
 	 * called by the manager each update cycle
 	 */
-	public void update() {
-		// if factory is turned on
-		if (active) {
+	public void run() {
+		if (active && mbs.isComplete()) {
 			// if the materials required to produce the current recipe are in
 			// the factory inventory
-			if (checkHasMaterials()) {
+			if (hasInputMaterials()) {
 				// if the factory has been working for less than the required
 				// time for the recipe
-				if (currentProductionTimer < getProductionTime()) {
+				if (currentProductionTimer < currentRecipe.getProductionTime()) {
 					// if the factory power source inventory has enough fuel for
 					// at least 1 energyCycle
-					if (isFuelAvailable()) {
+					if (pm.fuelAvailable()) {
 						// if the time since fuel was last consumed is equal to
 						// how often fuel needs to be consumed
-						if (currentEnergyTimer == getEnergyTime() - 1) {
+						if (pm.getPowerCounter() == pm
+								.getPowerConsumptionIntervall() - 1) {
 							// remove one fuel.
-							getFuel().removeFrom(getPowerSourceInventory());
+							pm.consumeFuel();
 							// 0 seconds since last fuel consumption
-							currentEnergyTimer = 0;
-							fuelConsumed();
+							pm.setPowerCounter(0);
 						}
 						// if we don't need to consume fuel, just increment the
 						// energy timer
 						else {
-							currentEnergyTimer++;
+							pm.incrementPowerCounter();
 						}
 						// increment the production timer
-						currentProductionTimer++;
-						postUpdate();
+						currentProductionTimer += updateTime;
+						// schedule next update
+						FactoryModPlugin
+								.getPlugin()
+								.getServer()
+								.getScheduler()
+								.scheduleSyncDelayedTask(
+										FactoryModPlugin.getPlugin(), this,
+										(long) updateTime);
 					}
 					// if there is no fuel Available turn off the factory
 					else {
-						powerOff();
+						deactivate();
 					}
 				}
 
 				// if the production timer has reached the recipes production
 				// time remove input from chest, and add output material
-				else if (currentProductionTimer >= getProductionTime()) {
-					consumeInputs();
-					produceOutputs();
-					// Repairs the factory
-					repair(getRepairs().removeMaxFrom(getInventory(),
-							(int) currentRepair));
-					recipeFinished();
-
+				else if (currentProductionTimer >= currentRecipe
+						.getProductionTime()) {
+					applyRecipeEffect();
 					currentProductionTimer = 0;
-					powerOff();
+					deactivate();
 				}
 			} else {
-				powerOff();
+				deactivate();
 			}
 		}
 	}
+
+	public abstract boolean hasInputMaterials();
+
+	public abstract void applyRecipeEffect();
 }

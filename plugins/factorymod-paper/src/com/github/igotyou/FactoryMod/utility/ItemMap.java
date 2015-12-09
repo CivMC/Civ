@@ -387,6 +387,40 @@ public class ItemMap {
 	}
 
 	/**
+	 * Checks how often this ItemMap is contained in the given ItemMap or how
+	 * often this ItemMap could be removed from the given one before creating
+	 * negative stacks
+	 * 
+	 * @param im
+	 *            ItemMap to check
+	 * @return How often this map is contained in the given one or
+	 *         Integer.MAX_VALUE if this instance is empty
+	 */
+	public int getMultiplesContainedIn(ItemMap im) {
+		int res = Integer.MAX_VALUE;
+		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+			int pulledAmount = im.getAmount(entry.getKey()) != null ? im
+					.getAmount(entry.getKey()) : 0;
+			res = Math.min(res, pulledAmount);
+		}
+		return res;
+	}
+
+	/**
+	 * Multiplies the whole content of this instance by the given multiplier
+	 * 
+	 * @param multiplier
+	 *            Multiplier to scale the amount of the contained items with
+	 */
+	public void multiplyContent(double multiplier) {
+		totalItems = 0;
+		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+			items.put(entry.getKey(), (int) (entry.getValue() * multiplier));
+			totalItems += (int) (entry.getValue() * multiplier);
+		}
+	}
+
+	/**
 	 * Checks whether this instance completly contains the given ItemMap, which
 	 * means every stack in the given map also exists in this instance and the
 	 * amount in the given map is either the same or smaller compared to the one

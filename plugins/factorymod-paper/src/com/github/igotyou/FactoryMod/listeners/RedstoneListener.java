@@ -15,7 +15,7 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.ABaseFactory;
-import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.ProductionFactory;
 import com.github.igotyou.FactoryMod.managers.FactoryManagerService;
 
 public class RedstoneListener implements Listener {

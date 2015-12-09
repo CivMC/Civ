@@ -3,12 +3,12 @@ package com.github.igotyou.FactoryMod.persistence;
 import java.io.File;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.Factorys.Compactor;
 import com.github.igotyou.FactoryMod.Factorys.IFactory;
-import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
-import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
-import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
-import com.github.igotyou.FactoryMod.Factorys.RepairFactory;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.Compactor;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.NetherFactory;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.PrintingPress;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.ProductionFactory;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.RepairFactory;
 import com.github.igotyou.FactoryMod.managers.CompactorManager;
 import com.github.igotyou.FactoryMod.managers.IManager;
 import com.github.igotyou.FactoryMod.managers.NetherFactoryManager;

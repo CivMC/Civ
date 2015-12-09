@@ -34,7 +34,7 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.Factorys.IFactory;
-import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.NetherFactory;
 import com.github.igotyou.FactoryMod.managers.FactoryManagerService;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;

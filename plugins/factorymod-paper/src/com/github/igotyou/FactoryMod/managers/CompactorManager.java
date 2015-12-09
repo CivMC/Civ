@@ -7,7 +7,7 @@ import org.bukkit.inventory.Inventory;
 
 import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.Factorys.Compactor;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.Compactor;
 import com.github.igotyou.FactoryMod.properties.CompactorProperties;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.ItemList;

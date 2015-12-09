@@ -11,8 +11,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.Factorys.RepairFactory;
-import com.github.igotyou.FactoryMod.Factorys.RepairFactory.RepairFactoryMode;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.RepairFactory;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.RepairFactory.RepairFactoryMode;
 import com.google.common.collect.Lists;
 
 public class RepairCsvReader implements IFactoryReader<RepairFactory>{

@@ -10,7 +10,7 @@ import java.util.List;
 import org.bukkit.Location;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.Factorys.RepairFactory;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.RepairFactory;
 
 public class RepairCsvWriter implements IFactoryWriter<RepairFactory> {
 	

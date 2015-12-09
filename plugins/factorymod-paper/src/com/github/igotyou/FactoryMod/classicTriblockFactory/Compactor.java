@@ -1,4 +1,4 @@
-package com.github.igotyou.FactoryMod.Factorys;
+package com.github.igotyou.FactoryMod.classicTriblockFactory;
 
 import java.util.ArrayList;
 import java.util.List;

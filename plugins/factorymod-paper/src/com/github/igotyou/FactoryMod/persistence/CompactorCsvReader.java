@@ -11,8 +11,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.Factorys.Compactor;
-import com.github.igotyou.FactoryMod.Factorys.Compactor.CompactorMode;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.Compactor;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.Compactor.CompactorMode;
 import com.google.common.collect.Lists;
 
 public class CompactorCsvReader implements IFactoryReader<Compactor>{

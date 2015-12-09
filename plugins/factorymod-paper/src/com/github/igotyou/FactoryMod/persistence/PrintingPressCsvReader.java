@@ -10,8 +10,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.Factorys.PrintingPress;
-import com.github.igotyou.FactoryMod.Factorys.PrintingPress.OperationMode;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.PrintingPress;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.PrintingPress.OperationMode;
 import com.google.common.collect.Lists;
 
 public class PrintingPressCsvReader implements IFactoryReader<PrintingPress> {

@@ -5,89 +5,61 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
 public class FurnCraftChestStructure extends MultiBlockStructure {
-	public boolean isComplete(Block center) {
+	private Block CraftingTable;
+	private Block Furnace;
+	private Block Chest;
+
+	public FurnCraftChestStructure(Block center) {
+		initializeBlocks(center);
+	}
+
+	public boolean isComplete() {
+		return CraftingTable.getType() == Material.WORKBENCH
+				&& (Furnace.getType() == Material.FURNACE || Furnace.getType() == Material.BURNING_FURNACE)
+				&& Chest.getType() == Material.CHEST;
+	}
+
+	public void initializeBlocks(Block center) {
 		if (center.getType() == Material.WORKBENCH) {
+			CraftingTable = center;
 			for (Block b : searchForBlockOnSides(center, Material.CHEST)) {
 				switch (center.getFace(b)) {
 				case SOUTH:
 					if (center.getRelative(BlockFace.NORTH).getType() == Material.FURNACE) {
-						return true;
+						Chest = b;
+						Furnace = center.getRelative(BlockFace.NORTH);
 					}
 				case NORTH:
 					if (center.getRelative(BlockFace.SOUTH).getType() == Material.FURNACE) {
-						return true;
+						Chest = b;
+						Furnace = center.getRelative(BlockFace.SOUTH);
 					}
 				case WEST:
 					if (center.getRelative(BlockFace.EAST).getType() == Material.FURNACE) {
-						return true;
+						Chest = b;
+						Furnace = center.getRelative(BlockFace.EAST);
 					}
 				case EAST:
 					if (center.getRelative(BlockFace.WEST).getType() == Material.FURNACE) {
-						return true;
+						Chest = b;
+						Furnace = center.getRelative(BlockFace.WEST);
 					}
 				}
 
 			}
 		}
-
-		return false;
 	}
-	
-	public Block getInventoryBlock(Block center) {
-		if (center.getType() == Material.WORKBENCH) {
-			for (Block b : searchForBlockOnSides(center, Material.CHEST)) {
-				switch (center.getFace(b)) {
-				case SOUTH:
-					if (center.getRelative(BlockFace.NORTH).getType() == Material.FURNACE) {
-						return b;
-					}
-				case NORTH:
-					if (center.getRelative(BlockFace.SOUTH).getType() == Material.FURNACE) {
-						return b;
-					}
-				case WEST:
-					if (center.getRelative(BlockFace.EAST).getType() == Material.FURNACE) {
-						return b;
-					}
-				case EAST:
-					if (center.getRelative(BlockFace.WEST).getType() == Material.FURNACE) {
-						return b;
-					}
-				}
 
-			}
-		}
-
-		return null;
+	public Block getCraftingTable() {
+		return CraftingTable;
 	}
-	
-	
-	public Block getFurnace(Block center) {
-		if (center.getType() == Material.WORKBENCH) {
-			for (Block b : searchForBlockOnSides(center, Material.FURNACE)) {
-				switch (center.getFace(b)) {
-				case SOUTH:
-					if (center.getRelative(BlockFace.NORTH).getType() == Material.CHEST) {
-						return b;
-					}
-				case NORTH:
-					if (center.getRelative(BlockFace.SOUTH).getType() == Material.CHEST) {
-						return b;
-					}
-				case WEST:
-					if (center.getRelative(BlockFace.EAST).getType() == Material.CHEST) {
-						return b;
-					}
-				case EAST:
-					if (center.getRelative(BlockFace.WEST).getType() == Material.CHEST) {
-						return b;
-					}
-				}
 
-			}
-		}
+	public Block getFurnace() {
+		return Furnace;
+	}
 
-		return null;
+	public Block getChest() {
+		return Chest;
 	}
 
 }

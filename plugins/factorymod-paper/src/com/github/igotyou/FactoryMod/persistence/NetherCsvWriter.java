@@ -10,7 +10,7 @@ import java.util.List;
 import org.bukkit.Location;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.Factorys.NetherFactory;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.NetherFactory;
 
 public class NetherCsvWriter implements IFactoryWriter<NetherFactory> {
 	

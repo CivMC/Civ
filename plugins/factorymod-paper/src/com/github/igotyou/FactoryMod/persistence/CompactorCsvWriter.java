@@ -10,7 +10,7 @@ import java.util.List;
 import org.bukkit.Location;
 
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.Factorys.Compactor;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.Compactor;
 
 public class CompactorCsvWriter implements IFactoryWriter<Compactor> {
 	

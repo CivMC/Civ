@@ -23,7 +23,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 
-import com.github.igotyou.FactoryMod.Factorys.ProductionFactory;
+import com.github.igotyou.FactoryMod.classicTriblockFactory.ProductionFactory;
 import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.listeners.NoteStackListener;
