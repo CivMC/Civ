@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.igotyou.FactoryMod.Contraption;
+import com.github.igotyou.FactoryMod.Factory;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
@@ -25,7 +25,7 @@ import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
  * which is used as inventory holder
  *
  */
-public abstract class FurnCraftChestFactory extends Contraption {
+public abstract class FurnCraftChestFactory extends Factory {
 	protected int currentProductionTimer = 0;
 	protected List<IRecipe> recipes;
 	protected IRecipe currentRecipe;

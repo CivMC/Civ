@@ -7,7 +7,7 @@ import com.github.igotyou.FactoryMod.multiBlockStructures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 
-public abstract class Contraption implements Runnable{
+public abstract class Factory implements Runnable{
 	protected IInteractionManager im;
 	protected IRepairManager rm;
 	protected IPowerManager pm;
@@ -15,7 +15,7 @@ public abstract class Contraption implements Runnable{
 	protected MultiBlockStructure mbs;
 	protected int updateTime;
 
-	public Contraption(IInteractionManager im, IRepairManager rm,
+	public Factory(IInteractionManager im, IRepairManager rm,
 			IPowerManager pm, MultiBlockStructure mbs, int updateTime) {
 		this.im = im;
 		this.rm = rm;
