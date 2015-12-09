@@ -16,6 +16,7 @@ import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
+import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 
 /**
@@ -76,6 +77,7 @@ public abstract class FurnCraftChestFactory extends Contraption {
 	public void activate() {
 		// lots of code to make the furnace light up, without loosing contents.
 		active = true;
+		pm.setPowerCounter(0);
 		Furnace furnace = (Furnace) (getFurnace().getState());
 		byte data = furnace.getData().getData();
 		ItemStack[] oldContents = furnace.getInventory().getContents();
@@ -192,6 +194,20 @@ public abstract class FurnCraftChestFactory extends Contraption {
 			} else {
 				deactivate();
 			}
+		}
+	}
+
+	public List<IRecipe> getRecipes() {
+		return recipes;
+	}
+
+	public IRecipe getCurrentRecipe() {
+		return currentRecipe;
+	}
+
+	public void setRecipe(IRecipe pr) {
+		if (recipes.contains(pr)) {
+			currentRecipe = pr;
 		}
 	}
 

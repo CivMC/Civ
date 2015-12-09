@@ -1,6 +1,10 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import java.util.LinkedList;
+
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
@@ -9,6 +13,7 @@ public class ProductionRecipe implements IRecipe {
 	private int productionTime;
 	private ItemMap inputs;
 	private ItemMap outputs;
+	private ItemStack itemRepresentation;
 
 	public ProductionRecipe(String recipeName, int productionTime,
 			ItemMap inputs, ItemMap outputs) {
@@ -16,6 +21,13 @@ public class ProductionRecipe implements IRecipe {
 		this.productionTime = productionTime;
 		this.inputs = inputs;
 		this.outputs = outputs;
+		LinkedList <ItemStack> outputRepresentation = outputs.getItemStackRepresentation();
+		if (outputRepresentation.size() != 0) {
+			itemRepresentation = outputRepresentation.get(0);
+		}
+		else {
+			itemRepresentation = new ItemStack(Material.STONE);
+		}
 	}
 
 	public ItemMap getRawInputs() {
@@ -43,7 +55,9 @@ public class ProductionRecipe implements IRecipe {
 		ItemMap copy = outputs.clone();
 		copy.multiplyContent(getCurrentMultiplier(i));
 		return copy;
-	}
-
+	}	
 	
+	public ItemStack getItemRepresentation() {
+		return itemRepresentation;
+	}
 }

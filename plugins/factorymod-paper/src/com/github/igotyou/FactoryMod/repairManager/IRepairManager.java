@@ -1,7 +1,9 @@
 package com.github.igotyou.FactoryMod.repairManager;
 
 public interface IRepairManager {
-	public int getHealth();
+	public void breakIt();
+	
+	public String getHealth();
 
 	public boolean atFullHealth();
 
