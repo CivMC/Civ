@@ -1,5 +1,8 @@
 package com.github.igotyou.FactoryMod.multiBlockStructures;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -60,6 +63,14 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 
 	public Block getChest() {
 		return Chest;
+	}
+
+	public List<Block> getAllBlocks() {
+		LinkedList<Block> result = new LinkedList<Block>();
+		result.add(Furnace);
+		result.add(Chest);
+		result.add(CraftingTable);
+		return result;
 	}
 
 }

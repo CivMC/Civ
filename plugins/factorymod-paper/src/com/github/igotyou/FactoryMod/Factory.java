@@ -14,14 +14,16 @@ public abstract class Factory implements Runnable{
 	protected boolean active;
 	protected MultiBlockStructure mbs;
 	protected int updateTime;
+	protected String name;
 
 	public Factory(IInteractionManager im, IRepairManager rm,
-			IPowerManager pm, MultiBlockStructure mbs, int updateTime) {
+			IPowerManager pm, MultiBlockStructure mbs, int updateTime, String name) {
 		this.im = im;
 		this.rm = rm;
 		this.mbs = mbs;
 		this.pm = pm;
 		this.updateTime = updateTime;
+		this.name = name;
 	}
 
 	public IRepairManager getRepairManager() {
@@ -46,6 +48,10 @@ public abstract class Factory implements Runnable{
 
 	public int getUpdateTime() {
 		return updateTime;
+	}
+	
+	public String getName() {
+		return name;
 	}
 
 	public abstract void activate();

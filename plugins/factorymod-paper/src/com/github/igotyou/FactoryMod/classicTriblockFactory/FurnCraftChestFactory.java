@@ -16,7 +16,6 @@ import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
-import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 
 /**
@@ -25,14 +24,14 @@ import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
  * which is used as inventory holder
  *
  */
-public abstract class FurnCraftChestFactory extends Factory {
+public class FurnCraftChestFactory extends Factory {
 	protected int currentProductionTimer = 0;
 	protected List<IRecipe> recipes;
 	protected IRecipe currentRecipe;
 
 	public FurnCraftChestFactory(IInteractionManager im, IRepairManager rm,
-			IPowerManager ipm, FurnCraftChestStructure mbs, int updateTime) {
-		super(im, rm, ipm, mbs, updateTime);
+			IPowerManager ipm, FurnCraftChestStructure mbs, int updateTime, String name) {
+		super(im, rm, ipm, mbs, updateTime, name);
 		this.active = false;
 	}
 
@@ -189,7 +188,20 @@ public abstract class FurnCraftChestFactory extends Factory {
 						.getProductionTime()) {
 					applyRecipeEffect();
 					currentProductionTimer = 0;
-					deactivate();
+					if (hasInputMaterials() && pm.fuelAvailable()) {
+						pm.setPowerCounter(0);
+						FactoryModPlugin
+						.getPlugin()
+						.getServer()
+						.getScheduler()
+						.scheduleSyncDelayedTask(
+								FactoryModPlugin.getPlugin(), this,
+								(long) updateTime);
+						//keep going						
+					}
+					else {
+						deactivate();
+					}
 				}
 			} else {
 				deactivate();
@@ -211,7 +223,12 @@ public abstract class FurnCraftChestFactory extends Factory {
 		}
 	}
 
-	public abstract boolean hasInputMaterials();
+	public boolean hasInputMaterials() {
+		return currentRecipe.enoughMaterialAvailable(getInventory());
+	}
 
-	public abstract void applyRecipeEffect();
+	public void applyRecipeEffect() {
+		currentRecipe.applyEffect(getInventory());
+	}
+
 }

@@ -37,6 +37,8 @@ public abstract class MultiBlockStructure {
 	public abstract boolean isComplete();
 	
 	public abstract void initializeBlocks(Block start); 
+	
+	public abstract List <Block> getAllBlocks();
 		
 
 }

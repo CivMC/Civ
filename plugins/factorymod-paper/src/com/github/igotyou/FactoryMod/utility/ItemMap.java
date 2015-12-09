@@ -38,6 +38,16 @@ public class ItemMap {
 	}
 
 	/**
+	 * Constructor to create an ItemMap based on a single ItemStack
+	 * 
+	 * @param is
+	 *            ItemStack to start with
+	 */
+	public ItemMap(ItemStack is) {
+		addItemStack(is);
+	}
+
+	/**
 	 * Constructor to create an item map based on a collection of ItemStacks
 	 * 
 	 * @param stacks
@@ -377,7 +387,7 @@ public class ItemMap {
 	 * @return true if this instance is completly contained in the given stack,
 	 *         false if not
 	 */
-	public boolean isContainedBy(ItemMap im) {
+	public boolean isContainedIn(ItemMap im) {
 		for (Entry<ItemStack, Integer> entry : getDifference(im).getEntrySet()) {
 			if (entry.getValue() < 0) {
 				return false;
@@ -432,7 +442,7 @@ public class ItemMap {
 	 *         false if not
 	 */
 	public boolean contains(ItemMap im) {
-		return im.isContainedBy(this);
+		return im.isContainedIn(this);
 	}
 
 	/**
@@ -481,6 +491,19 @@ public class ItemMap {
 		ItemMap instanceCopy = this.clone();
 		instanceCopy.merge(invCopy);
 		return instanceCopy.getItemStackRepresentation().size() <= i.getSize();
+	}
+
+	public boolean equals(Object o) {
+		if (o instanceof ItemMap) {
+			ItemMap im = (ItemMap) o;
+			if (im.getTotalItemAmount() == getTotalItemAmount()) {
+				ItemMap diff = im.getDifference(this);
+				if (diff.getEntrySet().size() == 0) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**

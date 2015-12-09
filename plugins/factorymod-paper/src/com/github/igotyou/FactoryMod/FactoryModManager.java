@@ -2,25 +2,23 @@ package com.github.igotyou.FactoryMod;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 
+import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.multiBlockStructures.MultiBlockStructure;
-import com.github.igotyou.FactoryMod.properties.AFactoryProperties;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
 public abstract class FactoryModManager {
 
 	protected FactoryModPlugin plugin;
-	private HashMap<ItemMap, Factory> factoryCreationRecipes = new HashMap<ItemMap, Factory>();
-	private HashMap<Material, HashMap<Location, Factory>> locations = new HashMap<Material, HashMap<Location, Factory>>();
+	private HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>> factoryCreationRecipes;
+	private HashMap<Material, HashMap<Location, Factory>> locations;
 	private HashSet<Material> possibleCenterBlocks;
 	private HashSet<Material> possibleInteractionBlock;
 
@@ -34,12 +32,24 @@ public abstract class FactoryModManager {
 		possibleInteractionBlock.add(Material.CHEST);
 	}
 
-	public void addFactory(Factory c, AFactoryProperties prop) {
-		contraptions.put(c, prop);
+	public void addFactory(Factory f) {
+		for (Block b : f.getMultiBlockStructure().getAllBlocks()) {
+			HashMap<Location, Factory> forThatMaterial = locations.get(b
+					.getType());
+			if (forThatMaterial == null) {
+				forThatMaterial = new HashMap<Location, Factory>();
+				locations.put(b.getType(), forThatMaterial);
+			}
+			forThatMaterial.put(b.getLocation(), f);
+		}
 	}
 
-	public void removeFactory(Factory c) {
-		contraptions.remove(c);
+	public void removeFactory(Factory f) {
+		for (Block b : f.getMultiBlockStructure().getAllBlocks()) {
+			HashMap<Location, Factory> forThatMaterial = locations.get(b
+					.getType());
+			forThatMaterial.remove(b.getLocation());
+		}
 	}
 
 	public Factory getFactoryAt(Location loc) {
@@ -55,15 +65,6 @@ public abstract class FactoryModManager {
 		}
 	}
 
-	public void addFactoryBlock(Block b, Factory c) {
-		HashMap<Location, Factory> requiredMaterial = locations
-				.get(b.getType());
-		if (requiredMaterial == null) {
-			requiredMaterial = new HashMap<Location, Factory>();
-		}
-		requiredMaterial.put(b.getLocation(), c);
-	}
-
 	public boolean factoryExistsAt(Location loc) {
 		return getFactoryAt(loc) == null;
 	}
@@ -73,10 +74,29 @@ public abstract class FactoryModManager {
 			// Cycle through possible structures here
 			FurnCraftChestStructure fccs = new FurnCraftChestStructure(b);
 			if (fccs.isComplete()) {
-
+				HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
+						.get(FurnCraftChestStructure.class);
+				if (eggs != null) {
+					IFactoryEgg egg = eggs.get(new ItemMap((Inventory) (fccs
+							.getChest().getState())));
+					if (egg != null) {
+						Factory f = egg.hatch(p);
+						addFactory(f);
+					}
+				}
 			}
 
 		}
+	}
+
+	public void addFactoryEgg(Class<MultiBlockStructure> blockStructureClass,
+			ItemMap recipe, IFactoryEgg egg) {
+		HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
+				.get(blockStructureClass);
+		if (eggs == null) {
+			eggs = new HashMap<ItemMap, IFactoryEgg>();
+		}
+		eggs.put(recipe, egg);
 	}
 
 	public boolean isPossibleCenterBlock(Material m) {

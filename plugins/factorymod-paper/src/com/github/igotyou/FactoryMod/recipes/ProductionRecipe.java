@@ -1,63 +1,75 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import java.util.LinkedList;
+import java.util.List;
 
-import org.bukkit.Material;
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
-public class ProductionRecipe implements IRecipe {
-	private String recipeName;
-	private int productionTime;
-	private ItemMap inputs;
-	private ItemMap outputs;
-	private ItemStack itemRepresentation;
+public class ProductionRecipe extends InputOutputRecipe {
+	private ItemMap output;
 
-	public ProductionRecipe(String recipeName, int productionTime,
-			ItemMap inputs, ItemMap outputs) {
-		this.recipeName = recipeName;
-		this.productionTime = productionTime;
-		this.inputs = inputs;
-		this.outputs = outputs;
-		LinkedList <ItemStack> outputRepresentation = outputs.getItemStackRepresentation();
-		if (outputRepresentation.size() != 0) {
-			itemRepresentation = outputRepresentation.get(0);
-		}
-		else {
-			itemRepresentation = new ItemStack(Material.STONE);
-		}
+	public ProductionRecipe(String name, int productionTime, ItemMap inputs,
+			ItemMap output) {
+		super(name, productionTime, inputs);
+		this.output = output;
 	}
 
-	public ItemMap getRawInputs() {
-		return inputs;
+	public ItemMap getOutput() {
+		return output;
 	}
 
-	public ItemMap getRawOutputs() {
-		return outputs;
-	}
-
-	public String getRecipeName() {
-		return recipeName;
-	}
-
-	public int getProductionTime() {
-		return productionTime;
-	}
-	
 	public int getCurrentMultiplier(Inventory i) {
 		ItemMap im = new ItemMap(i);
-		return inputs.getMultiplesContainedIn(im);
+		return input.getMultiplesContainedIn(im);
 	}
-	
+
 	public ItemMap getCurrentOutput(Inventory i) {
-		ItemMap copy = outputs.clone();
+		ItemMap copy = output.clone();
 		copy.multiplyContent(getCurrentMultiplier(i));
 		return copy;
-	}	
-	
-	public ItemStack getItemRepresentation() {
-		return itemRepresentation;
+	}
+
+	public List<ItemStack> getOutputRepresentation(Inventory i) {
+		List <ItemStack> stacks = output.getItemStackRepresentation();
+		int possibleRuns = input.getMultiplesContainedIn(new ItemMap (i));
+		for(ItemStack is: stacks) {
+			ItemMeta im = is.getItemMeta();
+			List<String> lore;
+			if (im.hasLore()) {
+				lore = im.getLore();
+			} else {
+				lore = new LinkedList<String>();
+			}
+			lore.add(ChatColor.GREEN + "Enough materials for "
+					+ String.valueOf(possibleRuns) + " runs");
+			im.setLore(lore);
+			is.setItemMeta(im);
+		}
+		return stacks;
+	}
+
+	public List<ItemStack> getInputRepresentation(Inventory i) {
+		return createLoredStacksForInfo(i);
+	}
+
+	public boolean enoughMaterialAvailable(Inventory i) {
+		return input.isContainedIn(new ItemMap(i));
+	}
+
+	public void applyEffect(Inventory i) {
+		ItemMap toRemove = input.clone();
+		ItemMap toAdd = output.clone();
+		if (new ItemMap(i).contains(toRemove))
+			for (ItemStack is : toRemove.getItemStackRepresentation()) {
+				i.removeItem(is);
+			}
+		for (ItemStack is : toAdd.getItemStackRepresentation()) {
+			i.addItem(is);
+		}
 	}
 }
