@@ -21,15 +21,29 @@ public class FactoryModManager {
 	private HashMap<Material, HashMap<Location, Factory>> locations;
 	private HashSet<Material> possibleCenterBlocks;
 	private HashSet<Material> possibleInteractionBlock;
+	private Material factoryInteractionMaterial;
+	private boolean citadelEnabled;
+	private String compactLore;
 
-	public FactoryModManager(FactoryModPlugin plugin) {
+	public FactoryModManager(FactoryModPlugin plugin,
+			Material factoryInteractionMaterial, boolean citadelEnabled) {
 		this.plugin = plugin;
+		this.factoryInteractionMaterial = factoryInteractionMaterial;
+		this.citadelEnabled = citadelEnabled;
 		// Normal furnace, craftingtable, chest factories
 		possibleCenterBlocks.add(Material.WORKBENCH);
 		possibleInteractionBlock.add(Material.WORKBENCH);
 		possibleInteractionBlock.add(Material.FURNACE);
 		possibleInteractionBlock.add(Material.BURNING_FURNACE);
 		possibleInteractionBlock.add(Material.CHEST);
+	}
+
+	public void setCompactLore(String lore) {
+		compactLore = lore;
+	}
+
+	public String getCompactLore() {
+		return compactLore;
 	}
 
 	public void addFactory(Factory f) {
@@ -42,6 +56,14 @@ public class FactoryModManager {
 			}
 			forThatMaterial.put(b.getLocation(), f);
 		}
+	}
+
+	public boolean isCitadelEnabled() {
+		return citadelEnabled;
+	}
+
+	public Material getFactoryInteractionMaterial() {
+		return factoryInteractionMaterial;
 	}
 
 	public void removeFactory(Factory f) {
@@ -80,8 +102,10 @@ public class FactoryModManager {
 					IFactoryEgg egg = eggs.get(new ItemMap((Inventory) (fccs
 							.getChest().getState())));
 					if (egg != null) {
-						Factory f = egg.hatch(p);
-						addFactory(f);
+						Factory f = egg.hatch(fccs,p);
+						if (f != null) {
+							addFactory(f);
+						}
 					}
 				}
 			}

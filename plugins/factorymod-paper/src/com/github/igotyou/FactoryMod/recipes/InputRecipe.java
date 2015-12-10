@@ -36,10 +36,12 @@ public abstract class InputRecipe implements IRecipe {
 	public ItemMap getInput() {
 		return input;
 	}
-	
+
 	public boolean enoughMaterialAvailable(Inventory i) {
 		return input.isContainedIn(new ItemMap(i));
 	}
+	
+	public abstract ItemStack getRecipeRepresentation();
 
 	/**
 	 * Creates a list of ItemStack for a GUI representation. This list contains
@@ -47,29 +49,29 @@ public abstract class InputRecipe implements IRecipe {
 	 * map and adds to each of the stacks how many runs could be made with the
 	 * material available in the chest
 	 * 
-	 * @param i Inventory to calculate the possible runs for
-	 * @return ItemStacks containing the additional information, ready for the GUI
+	 * @param i
+	 *            Inventory to calculate the possible runs for
+	 * @return ItemStacks containing the additional information, ready for the
+	 *         GUI
 	 */
 	protected List<ItemStack> createLoredStacksForInfo(Inventory i) {
 		LinkedList<ItemStack> result = new LinkedList<ItemStack>();
 		ItemMap inventoryMap = new ItemMap(i);
-		if (input.isContainedIn(inventoryMap)) {
-			for (ItemStack is : input.getItemStackRepresentation()) {
-				int possibleRuns = new ItemMap(is)
-						.getMultiplesContainedIn(inventoryMap);
-				ItemMeta im = is.getItemMeta();
-				List<String> lore;
-				if (im.hasLore()) {
-					lore = im.getLore();
-				} else {
-					lore = new LinkedList<String>();
-				}
-				lore.add(ChatColor.GREEN + "Enough materials for "
-						+ String.valueOf(possibleRuns) + " runs");
-				im.setLore(lore);
-				is.setItemMeta(im);
-				result.add(is);
+		for (ItemStack is : input.getItemStackRepresentation()) {
+			int possibleRuns = new ItemMap(is)
+					.getMultiplesContainedIn(inventoryMap);
+			ItemMeta im = is.getItemMeta();
+			List<String> lore;
+			if (im.hasLore()) {
+				lore = im.getLore();
+			} else {
+				lore = new LinkedList<String>();
 			}
+			lore.add(ChatColor.GREEN + "Enough materials for "
+					+ String.valueOf(possibleRuns) + " runs");
+			im.setLore(lore);
+			is.setItemMeta(im);
+			result.add(is);
 		}
 		return result;
 	}

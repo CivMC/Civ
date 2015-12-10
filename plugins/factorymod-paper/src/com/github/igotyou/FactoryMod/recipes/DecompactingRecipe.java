@@ -3,6 +3,7 @@ package com.github.igotyou.FactoryMod.recipes;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -14,7 +15,7 @@ public class DecompactingRecipe extends InputRecipe {
 
 	public DecompactingRecipe(ItemMap input, String name, int productionTime,
 			String compactedLore) {
-		super(name,productionTime,input);
+		super(name, productionTime, input);
 		this.compactedLore = compactedLore;
 	}
 
@@ -75,44 +76,45 @@ public class DecompactingRecipe extends InputRecipe {
 
 	public List<ItemStack> getInputRepresentation(Inventory i) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
-		ItemMap inventoryMap = new ItemMap(i);
-		if (input.isContainedIn(inventoryMap)) {
-			result = createLoredStacksForInfo(i);
-			for (ItemStack is : i.getContents()) {
-				if (is != null) {
-					ItemMeta im = is.getItemMeta();
-					if (im.hasLore()
-							&& im.getLore().get(0).equals(compactedLore)) {
-						ItemStack compactedStack = is.clone();
-						result.add(compactedStack);
-						break;
-					}
+		result = createLoredStacksForInfo(i);
+		for (ItemStack is : i.getContents()) {
+			if (is != null) {
+				ItemMeta im = is.getItemMeta();
+				if (im.hasLore() && im.getLore().get(0).equals(compactedLore)) {
+					ItemStack compactedStack = is.clone();
+					result.add(compactedStack);
+					break;
 				}
 			}
 		}
 		return result;
 	}
 
+	public ItemStack getRecipeRepresentation() {
+		ItemStack res = new ItemStack(Material.CHEST);
+		ItemMeta im = res.getItemMeta();
+		im.setDisplayName(getRecipeName());
+		res.setItemMeta(im);
+		return res;
+	}
+
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
-		if (input.isContainedIn(new ItemMap(i))) {
-			for (ItemStack is : i.getContents()) {
-				if (is != null) {
-					ItemMeta im = is.getItemMeta();
-					if (im.hasLore()
-							&& im.getLore().get(0).equals(compactedLore)) {
-						ItemStack decompactedStack = is.clone();
-						decompactedStack.setAmount(decompactedStack.getMaxStackSize());
-						List<String> loreList = new LinkedList<String>();
-						im.setLore(loreList);
-						decompactedStack.setItemMeta(im);
-						result.add(decompactedStack);
-						break;
-					}
+		for (ItemStack is : i.getContents()) {
+			if (is != null) {
+				ItemMeta im = is.getItemMeta();
+				if (im.hasLore() && im.getLore().get(0).equals(compactedLore)) {
+					ItemStack decompactedStack = is.clone();
+					decompactedStack.setAmount(decompactedStack
+							.getMaxStackSize());
+					List<String> loreList = new LinkedList<String>();
+					im.setLore(loreList);
+					decompactedStack.setItemMeta(im);
+					result.add(decompactedStack);
+					break;
 				}
 			}
 		}
-
-			return result;
+		return result;
 	}
 }

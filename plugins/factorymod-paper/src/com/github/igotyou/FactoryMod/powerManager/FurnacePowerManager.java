@@ -18,6 +18,15 @@ public class FurnacePowerManager implements IPowerManager {
 		this.fuel = fuel;
 		this.fuelConsumptionIntervall = fuelConsumptionIntervall;
 	}
+	
+	public FurnacePowerManager(ItemMap fuel,int fuelConsumptionIntervall) {
+		this.fuel = fuel;
+		this.fuelConsumptionIntervall = fuelConsumptionIntervall;
+	}
+	
+	public void setFactory(FurnCraftChestFactory fccf) {
+		this.fccf = fccf;
+	}
 
 	public int getPowerCounter() {
 		return powerCounter;

@@ -3,7 +3,6 @@ package com.github.igotyou.FactoryMod.recipes;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +16,7 @@ public class CompactingRecipe extends InputRecipe {
 
 	public CompactingRecipe(ItemMap input, List<Material> excludedMaterial,
 			String name, int productionTime, String compactedLore) {
-		super(name,productionTime,input);
+		super(name, productionTime, input);
 		this.excludedMaterials = excludedMaterial;
 		this.compactedLore = compactedLore;
 	}
@@ -65,16 +64,13 @@ public class CompactingRecipe extends InputRecipe {
 
 	public List<ItemStack> getInputRepresentation(Inventory i) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
-		ItemMap inventoryMap = new ItemMap(i);
-		if (input.isContainedIn(inventoryMap)) {
-			result = createLoredStacksForInfo(i);
-			for (ItemStack is : i.getContents()) {
-				if (is != null) {
-					if (compactable(is)) {
-						ItemStack compactedStack = is.clone();
-						result.add(compactedStack);
-						break;
-					}
+		result = createLoredStacksForInfo(i);
+		for (ItemStack is : i.getContents()) {
+			if (is != null) {
+				if (compactable(is)) {
+					ItemStack compactedStack = is.clone();
+					result.add(compactedStack);
+					break;
 				}
 			}
 		}
@@ -83,20 +79,26 @@ public class CompactingRecipe extends InputRecipe {
 
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
-		if (input.isContainedIn(new ItemMap(i))) {
-			for (ItemStack is : i.getContents()) {
-				if (is != null) {
-					if (compactable(is)) {
-						ItemStack decompactedStack = is.clone();
-						compact(decompactedStack);
-						result.add(decompactedStack);
-						break;
-					}
+		for (ItemStack is : i.getContents()) {
+			if (is != null) {
+				if (compactable(is)) {
+					ItemStack decompactedStack = is.clone();
+					compact(decompactedStack);
+					result.add(decompactedStack);
+					break;
 				}
 			}
 		}
 
 		return result;
+	}
+
+	public ItemStack getRecipeRepresentation() {
+		ItemStack res = new ItemStack(Material.CHEST);
+		ItemMeta im = res.getItemMeta();
+		im.setDisplayName(getRecipeName());
+		res.setItemMeta(im);
+		return res;
 	}
 
 	/**

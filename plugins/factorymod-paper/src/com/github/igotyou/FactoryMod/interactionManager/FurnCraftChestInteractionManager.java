@@ -14,13 +14,21 @@ import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import com.github.igotyou.FactoryMod.classicTriblockFactory.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
+import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 
 public class FurnCraftChestInteractionManager implements IInteractionManager {
 	private FurnCraftChestFactory fccf;
 	private ClickableInventory ci;
-	private HashMap<Clickable, IRecipe> recipes = new HashMap<Clickable, IRecipe>();
+	private HashMap<Clickable, InputRecipe> recipes = new HashMap<Clickable, InputRecipe>();
 
 	public FurnCraftChestInteractionManager(FurnCraftChestFactory fccf) {
+		this.fccf = fccf;
+	}
+
+	public FurnCraftChestInteractionManager() {
+	}
+	
+	public void setFactory(FurnCraftChestFactory fccf) {
 		this.fccf = fccf;
 	}
 
@@ -42,8 +50,10 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		if (b == ((FurnCraftChestStructure) fccf.getMultiBlockStructure())
 				.getCraftingTable()) { // crafting table interaction
 			ArrayList<Clickable> clickables = new ArrayList<Clickable>();
-			for (IRecipe recipe : fccf.getRecipes()) {
-				Clickable c = new Clickable(recipe.getItemRepresentation()) {
+			for (IRecipe rec : fccf.getRecipes()) {
+				InputRecipe recipe = (InputRecipe) (rec);
+				Clickable c = new Clickable(recipe.getOutputRepresentation(
+						fccf.getInventory()).get(0)) {
 
 					@Override
 					public void clicked(Player p) {

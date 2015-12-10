@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -67,5 +68,20 @@ public class ProductionRecipe extends InputRecipe {
 		for (ItemStack is : toAdd.getItemStackRepresentation()) {
 			i.addItem(is);
 		}
+	}
+	
+	public ItemStack getRecipeRepresentation() {
+		List <ItemStack> out = output.getItemStackRepresentation();
+		ItemStack res;
+		if (out.size() == 0) {
+			res = new ItemStack(Material.STONE);
+		}
+		else {
+			res = out.get(0);
+		}
+		ItemMeta im = res.getItemMeta();
+		im.setDisplayName(getRecipeName());
+		res.setItemMeta(im);
+		return res;
 	}
 }

@@ -2,50 +2,35 @@ package com.github.igotyou.FactoryMod.listeners;
 
 import java.util.List;
 
-import net.minecraft.server.v1_8_R3.ItemStack;
-import net.minecraft.server.v1_8_R3.PossibleFishingResult;
-
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityPortalEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPortalEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.AnvilInventory;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
-import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
 import com.github.igotyou.FactoryMod.Factory;
 import com.github.igotyou.FactoryMod.FactoryModManager;
-import com.github.igotyou.FactoryMod.FactoryModPlugin;
-import com.github.igotyou.FactoryMod.utility.InteractionResponse;
-import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
-import com.github.igotyou.FactoryMod.utility.StringUtils;
 
 public class FactoryModListener implements Listener {
 	private FactoryModManager manager;
-	private ReinforcementManager rm = Citadel.getReinforcementManager();
+	private ReinforcementManager rm;
 
 	public FactoryModListener(FactoryModManager manager) {
 		this.manager = manager;
+		if (manager.isCitadelEnabled()) {
+			rm = Citadel.getReinforcementManager();
+		}
 	}
 
 	/**
@@ -56,14 +41,22 @@ public class FactoryModListener implements Listener {
 	public void blockBreakEvent(BlockBreakEvent e) {
 		Block block = e.getBlock();
 		if (manager.isPossibleInteractionBlock(block.getType())
-				&& ((FactoryModPlugin.CITADEL_ENABLED && !rm
-						.isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)) {
+				&& ((manager.isCitadelEnabled() && !rm.isReinforced(block)) || !manager
+						.isCitadelEnabled())) {
 			Factory c = manager.getFactoryAt(block);
 			if (c != null) {
 				c.getInteractionManager().blockBreak(e.getPlayer(), block);
 			}
 		}
 
+	}
+
+	@EventHandler()
+	public void redstoneChange(BlockRedstoneEvent e) {
+		Factory f = manager.getFactoryAt(e.getBlock());
+		if (f != null) {
+			f.getInteractionManager().redStoneEvent(e);
+		}
 	}
 
 	/**
@@ -75,8 +68,8 @@ public class FactoryModListener implements Listener {
 		List<Block> blocks = e.blockList();
 		for (Block block : blocks) {
 			if (manager.isPossibleInteractionBlock(block.getType())
-					&& ((FactoryModPlugin.CITADEL_ENABLED && !rm
-							.isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)) {
+					&& ((manager.isCitadelEnabled() && !rm
+							.isReinforced(block)) || !manager.isCitadelEnabled())) {
 				Factory c = manager.getFactoryAt(block);
 				if (c != null) {
 					c.getInteractionManager().blockBreak(null, block);
@@ -92,8 +85,8 @@ public class FactoryModListener implements Listener {
 	public void burnListener(BlockBurnEvent e) {
 		Block block = e.getBlock();
 		if (manager.isPossibleInteractionBlock(block.getType())
-				&& ((FactoryModPlugin.CITADEL_ENABLED && !rm
-						.isReinforced(block)) || !FactoryModPlugin.CITADEL_ENABLED)) {
+				&& ((manager.isCitadelEnabled() && !rm
+						.isReinforced(block)) || !manager.isCitadelEnabled())) {
 			Factory c = manager.getFactoryAt(block);
 			if (c != null) {
 				c.getInteractionManager().blockBreak(null, block);
@@ -101,12 +94,11 @@ public class FactoryModListener implements Listener {
 		}
 	}
 
-
 	public void playerInteract(PlayerInteractEvent e) {
 		Block block = e.getClickedBlock();
 		Player player = e.getPlayer();
 		if (manager.isPossibleInteractionBlock(block.getType())
-				&& player.getItemInHand().getType() == FactoryModPlugin.FACTORY_INTERACTION_MATERIAL) {
+				&& player.getItemInHand().getType() == manager.getFactoryInteractionMaterial()) {
 			Factory c = manager.getFactoryAt(block);
 			if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				if (c != null) {
@@ -123,38 +115,6 @@ public class FactoryModListener implements Listener {
 				}
 
 			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void handlePortalTelportEvent(PlayerPortalEvent e) {
-		if (e.isCancelled()) {
-			return;
-		}
-
-		// Disable normal nether portal teleportation
-		if (e.getCause() == TeleportCause.NETHER_PORTAL
-				&& FactoryModPlugin.DISABLE_PORTALS) {
-			e.setCancelled(true);
-		}
-	}
-
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void playerTeleportEvent(PlayerTeleportEvent e) {
-		if (e.isCancelled() || e.getCause() != TeleportCause.NETHER_PORTAL) {
-			return;
-		}
-
-		// Disable normal nether portal teleportation
-		if (FactoryModPlugin.DISABLE_PORTALS) {
-			e.setCancelled(true);
-		}
-	}
-
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void entityTeleportEvent(EntityPortalEvent event) {
-		if (FactoryModPlugin.DISABLE_PORTALS) {
-			event.setCancelled(true);
 		}
 	}
 

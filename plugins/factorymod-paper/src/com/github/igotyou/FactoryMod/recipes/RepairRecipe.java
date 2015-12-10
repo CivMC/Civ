@@ -49,4 +49,12 @@ public class RepairRecipe extends InputRecipe {
 			f.getRepairManager().repair(healthPerRun);
 		}
 	}
+	
+	public ItemStack getRecipeRepresentation() {
+		ItemStack res = new ItemStack(Material.FURNACE);
+		ItemMeta im = res.getItemMeta();
+		im.setDisplayName(getRecipeName());
+		res.setItemMeta(im);
+		return res;
+	}
 }
