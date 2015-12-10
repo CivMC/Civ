@@ -68,14 +68,16 @@ public class ItemMap {
 	 *            ItemStack to insert
 	 */
 	public void addItemStack(ItemStack input) {
-		ItemStack is = createMapConformCopy(input);
-		Integer i;
-		if ((i = items.get(is)) != null) {
-			items.put(is, i + input.getAmount());
-		} else {
-			items.put(is, input.getAmount());
+		if (input != null) {
+			ItemStack is = createMapConformCopy(input);
+			Integer i;
+			if ((i = items.get(is)) != null) {
+				items.put(is, i + input.getAmount());
+			} else {
+				items.put(is, input.getAmount());
+			}
+			totalItems += input.getAmount();
 		}
-		totalItems += input.getAmount();
 	}
 
 	/**

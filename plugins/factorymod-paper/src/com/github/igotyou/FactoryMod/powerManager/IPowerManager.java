@@ -1,15 +1,15 @@
 package com.github.igotyou.FactoryMod.powerManager;
 
 public interface IPowerManager {
-	public void consumeFuel();
+	public void consumePower();
 
-	public boolean fuelAvailable();
+	public boolean powerAvailable();
 
 	public int getPowerConsumptionIntervall();
 
 	public int getPowerCounter();
 	
-	public void incrementPowerCounter();
+	public void increasePowerCounter(int amount);
 	
 	public void setPowerCounter(int value);
 	

@@ -9,5 +9,13 @@ public interface IInteractionManager {
 	public void leftClick(Player p, Block b);
 
 	public void blockBreak(Player p, Block b);
+	
+	public void failedTurnOnDisrepair(Player p);
+	
+	public void failedTurnOnPermission(Player p);
+
+	public void successfullTurnOn(Player p);
+	
+	public void turnOff(Player p);
 
 }

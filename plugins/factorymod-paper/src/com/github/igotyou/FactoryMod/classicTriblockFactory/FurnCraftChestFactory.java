@@ -7,6 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -51,7 +52,7 @@ public class FurnCraftChestFactory extends Factory {
 	 * @return Inventory of the furnace or null if there is no furnace where one
 	 *         should be
 	 */
-	public Inventory getFurnaceInventory() {
+	public FurnaceInventory getFurnaceInventory() {
 		if (!(getFurnace().getType() == Material.FURNACE || getFurnace()
 				.getType() == Material.BURNING_FURNACE)) {
 			return null;
@@ -63,7 +64,7 @@ public class FurnCraftChestFactory extends Factory {
 	public void attemptToActivate(Player p) {
 		// TODO Citadel stuff
 		if (mbs.isComplete()) {
-			if (hasInputMaterials() && pm.fuelAvailable()) {
+			if (hasInputMaterials() && pm.powerAvailable()) {
 				activate();
 				run();
 			}
@@ -150,20 +151,20 @@ public class FurnCraftChestFactory extends Factory {
 				if (currentProductionTimer < currentRecipe.getProductionTime()) {
 					// if the factory power source inventory has enough fuel for
 					// at least 1 energyCycle
-					if (pm.fuelAvailable()) {
+					if (pm.powerAvailable()) {
 						// if the time since fuel was last consumed is equal to
 						// how often fuel needs to be consumed
 						if (pm.getPowerCounter() == pm
 								.getPowerConsumptionIntervall() - 1) {
 							// remove one fuel.
-							pm.consumeFuel();
+							pm.consumePower();
 							// 0 seconds since last fuel consumption
 							pm.setPowerCounter(0);
 						}
 						// if we don't need to consume fuel, just increment the
 						// energy timer
 						else {
-							pm.incrementPowerCounter();
+							pm.increasePowerCounter(updateTime);
 						}
 						// increment the production timer
 						currentProductionTimer += updateTime;
@@ -188,7 +189,7 @@ public class FurnCraftChestFactory extends Factory {
 						.getProductionTime()) {
 					applyRecipeEffect();
 					currentProductionTimer = 0;
-					if (hasInputMaterials() && pm.fuelAvailable()) {
+					if (hasInputMaterials() && pm.powerAvailable()) {
 						pm.setPowerCounter(0);
 						FactoryModPlugin
 						.getPlugin()
