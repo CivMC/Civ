@@ -51,11 +51,12 @@ public class Utility {
 	 * @param The Group this reinforcement belongs too.
 	 * @param The Block this reinforcement is occurring on.
 	 * @param The ReinforcementType that is being reinforced on the block.
+	 * @param The ItemStack type of the block being placed (if CTF, null if CTR)
 	 * @return The PlayerReinforcement that comes from these parameters or null if certain checks failed.
 	 * @throws ReinforcemnetFortificationCancelException
 	 */
 	public static PlayerReinforcement createPlayerReinforcement(Player player, Group g, Block block,
-			ReinforcementType type) {
+			ReinforcementType type, ItemStack reinfMat) {
         if (g.isDisciplined()) {
             player.sendMessage(ChatColor.RED + "This group is disiplined.");
             return null;
@@ -74,7 +75,7 @@ public class Utility {
             Citadel.Log("Reinforcement requirements too low for " + itemType.getType().name());
             return null;
         }
-        if (type.getMaterial().equals(block.getType())){
+        if (reinfMat != null && itemType.isSimilar(reinfMat)){ // only in CTF.
         	requirementscheck++;
         }
         int requirements = requirementscheck;
@@ -108,10 +109,10 @@ public class Utility {
         }
         // Now eat the materials
         
-        // Handle special case with block reinforcments.
+        // Handle special case with block reinforcements.
         if (type.getMaterial().isBlock()){
 	        if (slots.size()>1){
-	        	if (inv.getItemInHand().getType().equals(type.getMaterial()) && slots.get(0) != inv.getHeldItemSlot()){
+	        	if (inv.getItemInHand().isSimilar(itemType) && slots.get(0) != inv.getHeldItemSlot()){
 	        		requirements--;
 	        	}
 	        }
