@@ -661,7 +661,7 @@ public class CitadelReinforcementData {
 			return lastId;
 		}
 		try {
-			PreparedStatement updateRein = db.prepareStatement(this.updateRein);
+			PreparedStatement updateRein = db.prepareStatement(this.getLastReinID);
 			ResultSet set = updateRein.executeQuery();
 			set.next();
 			lastId = set.getInt(1);
