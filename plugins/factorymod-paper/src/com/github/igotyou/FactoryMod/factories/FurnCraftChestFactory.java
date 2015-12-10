@@ -1,4 +1,4 @@
-package com.github.igotyou.FactoryMod.classicTriblockFactory;
+package com.github.igotyou.FactoryMod.factories;
 
 import java.util.List;
 
@@ -17,6 +17,7 @@ import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
+import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 
 /**
@@ -31,7 +32,8 @@ public class FurnCraftChestFactory extends Factory {
 	protected IRecipe currentRecipe;
 
 	public FurnCraftChestFactory(IInteractionManager im, IRepairManager rm,
-			IPowerManager ipm, FurnCraftChestStructure mbs, int updateTime, String name) {
+			IPowerManager ipm, FurnCraftChestStructure mbs, int updateTime,
+			String name) {
 		super(im, rm, ipm, mbs, updateTime, name);
 		this.active = false;
 	}
@@ -64,9 +66,29 @@ public class FurnCraftChestFactory extends Factory {
 	public void attemptToActivate(Player p) {
 		// TODO Citadel stuff
 		if (mbs.isComplete()) {
-			if (hasInputMaterials() && pm.powerAvailable()) {
-				activate();
-				run();
+			if (hasInputMaterials()) {
+				if (pm.powerAvailable()) {
+					if (rm.inDisrepair()
+							&& !(currentRecipe instanceof RepairRecipe)) {
+						if (p != null) {
+							p.sendMessage("This factory is in disrepair, you have to repair it before using it");
+						}
+						return;
+					}
+					if (p != null) {
+						p.sendMessage("Activated " + name + " with recipe: "
+								+ currentRecipe.getRecipeName());
+					}
+					activate();
+					run();
+				} else {
+					if (p != null) {
+						p.sendMessage("Failed to activate factory, there is no fuel in the furnace");
+					}
+				}
+			}
+			else {
+				p.sendMessage("Not enough materials available"); //TODO how much is needed
 			}
 		}
 	}
@@ -192,15 +214,14 @@ public class FurnCraftChestFactory extends Factory {
 					if (hasInputMaterials() && pm.powerAvailable()) {
 						pm.setPowerCounter(0);
 						FactoryModPlugin
-						.getPlugin()
-						.getServer()
-						.getScheduler()
-						.scheduleSyncDelayedTask(
-								FactoryModPlugin.getPlugin(), this,
-								(long) updateTime);
-						//keep going						
-					}
-					else {
+								.getPlugin()
+								.getServer()
+								.getScheduler()
+								.scheduleSyncDelayedTask(
+										FactoryModPlugin.getPlugin(), this,
+										(long) updateTime);
+						// keep going
+					} else {
 						deactivate();
 					}
 				}

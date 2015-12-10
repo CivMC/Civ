@@ -3,7 +3,7 @@ package com.github.igotyou.FactoryMod.powerManager;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.igotyou.FactoryMod.classicTriblockFactory.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
 public class FurnacePowerManager implements IPowerManager {

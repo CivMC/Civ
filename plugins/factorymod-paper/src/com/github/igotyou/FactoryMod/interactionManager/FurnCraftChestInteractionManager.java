@@ -6,12 +6,13 @@ import java.util.HashMap;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.inventory.InventoryType;
 
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 
-import com.github.igotyou.FactoryMod.classicTriblockFactory.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
@@ -27,9 +28,13 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 
 	public FurnCraftChestInteractionManager() {
 	}
-	
+
 	public void setFactory(FurnCraftChestFactory fccf) {
 		this.fccf = fccf;
+	}
+	
+	public void redStoneEvent(BlockRedstoneEvent e) {
+		//TODO
 	}
 
 	public void blockBreak(Player p, Block b) {

@@ -19,6 +19,7 @@ public class FactoryModManager {
 	protected FactoryModPlugin plugin;
 	private HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>> factoryCreationRecipes;
 	private HashMap<Material, HashMap<Location, Factory>> locations;
+	private HashMap<String, IFactoryEgg> eggs;
 	private HashSet<Material> possibleCenterBlocks;
 	private HashSet<Material> possibleInteractionBlock;
 	private Material factoryInteractionMaterial;
@@ -30,6 +31,13 @@ public class FactoryModManager {
 		this.plugin = plugin;
 		this.factoryInteractionMaterial = factoryInteractionMaterial;
 		this.citadelEnabled = citadelEnabled;
+
+		factoryCreationRecipes = new HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>>();
+		locations = new HashMap<Material, HashMap<Location, Factory>>();
+		eggs = new HashMap<String, IFactoryEgg>();
+		possibleCenterBlocks = new HashSet<Material>();
+		possibleInteractionBlock = new HashSet<Material>();
+
 		// Normal furnace, craftingtable, chest factories
 		possibleCenterBlocks.add(Material.WORKBENCH);
 		possibleInteractionBlock.add(Material.WORKBENCH);
@@ -102,7 +110,7 @@ public class FactoryModManager {
 					IFactoryEgg egg = eggs.get(new ItemMap((Inventory) (fccs
 							.getChest().getState())));
 					if (egg != null) {
-						Factory f = egg.hatch(fccs,p);
+						Factory f = egg.hatch(fccs, p);
 						if (f != null) {
 							addFactory(f);
 						}
@@ -121,6 +129,7 @@ public class FactoryModManager {
 			eggs = new HashMap<ItemMap, IFactoryEgg>();
 		}
 		eggs.put(recipe, egg);
+		this.eggs.put(egg.getName(), egg);
 	}
 
 	public boolean isPossibleCenterBlock(Material m) {
@@ -129,5 +138,9 @@ public class FactoryModManager {
 
 	public boolean isPossibleInteractionBlock(Material m) {
 		return possibleInteractionBlock.contains(m);
+	}
+
+	public IFactoryEgg getEgg(String name) {
+		return eggs.get(name);
 	}
 }
