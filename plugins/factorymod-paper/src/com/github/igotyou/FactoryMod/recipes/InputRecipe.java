@@ -10,12 +10,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
-public abstract class InputOutputRecipe implements IRecipe {
+public abstract class InputRecipe implements IRecipe {
 	protected String name;
 	protected int productionTime;
 	protected ItemMap input;
 
-	public InputOutputRecipe(String name, int productionTime, ItemMap input) {
+	public InputRecipe(String name, int productionTime, ItemMap input) {
 		this.name = name;
 		this.productionTime = productionTime;
 		this.input = input;
@@ -35,6 +35,10 @@ public abstract class InputOutputRecipe implements IRecipe {
 
 	public ItemMap getInput() {
 		return input;
+	}
+	
+	public boolean enoughMaterialAvailable(Inventory i) {
+		return input.isContainedIn(new ItemMap(i));
 	}
 
 	/**

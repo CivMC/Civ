@@ -14,7 +14,7 @@ import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructur
 import com.github.igotyou.FactoryMod.multiBlockStructures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
-public abstract class FactoryModManager {
+public class FactoryModManager {
 
 	protected FactoryModPlugin plugin;
 	private HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>> factoryCreationRecipes;

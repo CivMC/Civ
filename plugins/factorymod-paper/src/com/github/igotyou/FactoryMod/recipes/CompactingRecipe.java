@@ -11,7 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
-public class CompactingRecipe extends InputOutputRecipe {
+public class CompactingRecipe extends InputRecipe {
 	private List<Material> excludedMaterials;
 	private String compactedLore;
 

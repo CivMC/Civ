@@ -10,7 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
-public class ProductionRecipe extends InputOutputRecipe {
+public class ProductionRecipe extends InputRecipe {
 	private ItemMap output;
 
 	public ProductionRecipe(String name, int productionTime, ItemMap inputs,
@@ -55,10 +55,6 @@ public class ProductionRecipe extends InputOutputRecipe {
 
 	public List<ItemStack> getInputRepresentation(Inventory i) {
 		return createLoredStacksForInfo(i);
-	}
-
-	public boolean enoughMaterialAvailable(Inventory i) {
-		return input.isContainedIn(new ItemMap(i));
 	}
 
 	public void applyEffect(Inventory i) {

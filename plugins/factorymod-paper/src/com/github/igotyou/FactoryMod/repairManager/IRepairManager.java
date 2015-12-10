@@ -7,7 +7,7 @@ public interface IRepairManager {
 
 	public boolean atFullHealth();
 
-	public void repair();
+	public void repair(int amount);
 
 	public boolean inDisrepair();
 

@@ -9,7 +9,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
-public class DecompactingRecipe extends InputOutputRecipe {
+public class DecompactingRecipe extends InputRecipe {
 	private String compactedLore;
 
 	public DecompactingRecipe(ItemMap input, String name, int productionTime,
