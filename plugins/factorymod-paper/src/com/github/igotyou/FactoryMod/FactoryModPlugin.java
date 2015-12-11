@@ -1,5 +1,7 @@
 package com.github.igotyou.FactoryMod;
 
+import com.github.igotyou.FactoryMod.multiBlockStructures.MultiBlockStructure;
+
 import vg.civcraft.mc.civmodcore.ACivMod;
 
 public class FactoryModPlugin extends ACivMod {
@@ -11,6 +13,7 @@ public class FactoryModPlugin extends ACivMod {
 		plugin = this;
 		ConfigParser cp = new ConfigParser(this);
 		manager = cp.parse();
+		MultiBlockStructure.initiliazeBlockSides();
 	}
 
 	public void onDisable() {

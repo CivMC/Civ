@@ -1,0 +1,43 @@
+#FactoryMod configuration file
+
+citadel_enabled: true
+factory_interaction_material: STICK
+disable_nether: true
+default_update_time: 4
+
+crafting:
+    disabled:
+        dirt:
+            material: DIRT
+    
+    enabled:
+    
+    
+recipes:
+    test1:
+        type: PRODUCTION
+        input:
+            stone:
+                material: STONE
+                amount: 64
+        output:
+            cobble:
+                material: DIRT
+                amount: 43
+        name: TestRecipe1
+        production_time: 200
+
+factories:
+    test2:
+        type: FCC
+        recipes:
+         - TestRecipe1
+        fuel:
+            char:
+                material: COAL
+                durability: 1
+        fuel_consumption_intervall: 10
+        setupcost:
+            dirt:
+                material: DIRT
+                amount: 64

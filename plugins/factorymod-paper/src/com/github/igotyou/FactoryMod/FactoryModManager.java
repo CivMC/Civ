@@ -113,6 +113,7 @@ public class FactoryModManager {
 						Factory f = egg.hatch(fccs, p);
 						if (f != null) {
 							addFactory(f);
+							p.sendMessage("Successfully created "+f.getName());
 						}
 					}
 				}

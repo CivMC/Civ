@@ -46,12 +46,12 @@ public class ConfigParser {
 		boolean disableExperience = config.getBoolean("disable_experience",
 				false);
 		// TODO disable experience
-		boolean disableNether = config.getBoolean("disable_nether");
+		boolean disableNether = config.getBoolean("disable_nether", false);
 		if (disableNether) {
 			plugin.getServer().getPluginManager()
 					.registerEvents(new NetherPortalListener(), plugin);
 		}
-		int defaultUpdateTime = config.getInt("default_update_time");
+		int defaultUpdateTime = config.getInt("default_update_time", 4);
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
 				citadelEnabled);
 		handleEnabledAndDisabledRecipes(config
@@ -106,6 +106,7 @@ public class ConfigParser {
 			plugin.severe("Could not identify factory type "
 					+ config.getString("type"));
 		}
+		plugin.info("Parsed factory "+name);
 
 	}
 
@@ -181,6 +182,7 @@ public class ConfigParser {
 					+ " as a valid recipe identifier");
 			result = null;
 		}
+		plugin.info("Parsed recipe "+name);
 		return result;
 	}
 
@@ -190,6 +192,8 @@ public class ConfigParser {
 			ConfigurationSection current = config.getConfigurationSection(key);
 			Material m = Material.valueOf(current.getString("material"));
 			ItemStack toAdd = new ItemStack(m);
+			int amount = current.getInt("amount");
+			toAdd.setAmount(amount);
 			int durability = current.getInt("durability", 0);
 			toAdd.setDurability((short) durability);
 			ItemMeta im = toAdd.getItemMeta();
