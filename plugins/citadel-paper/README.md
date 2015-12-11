@@ -1,5 +1,7 @@
 # Citadel
 
-Jenkins Build Server can be found: http://build.civcraft.co/job/Citadel-master/
+Original Citadel Jenkins Build Server can be found here: http://build.civcraft.co/job/Citadel-master/
 
-Java Docs: http://build.civcraft.co/job/Citadel-master/javadoc/
+Basic new player tutorial: https://www.reddit.com/r/Devoted/wiki/plugins/citadel
+
+If you need help installing Citadel, follow this guide: https://github.com/ProgrammerDan/civcraft-vm
