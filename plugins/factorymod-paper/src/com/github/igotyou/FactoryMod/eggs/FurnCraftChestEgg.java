@@ -39,7 +39,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(
 				100);
 		FurnCraftChestFactory fccf = new FurnCraftChestFactory(fccim, phrm,
-				fpm, fccs, updateTime, name);
+				fpm, fccs, updateTime, name, recipes);
 		fccim.setFactory(fccf);
 		fpm.setFactory(fccf);
 		if (recipes.size() != 0) {
@@ -60,7 +60,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(
 				health);
 		FurnCraftChestFactory fccf = new FurnCraftChestFactory(fccim, phrm,
-				fpm, fccs, updateTime, name);
+				fpm, fccs, updateTime, name, recipes);
 		fccim.setFactory(fccf);
 		fpm.setFactory(fccf);
 		for (IRecipe recipe : recipes) {

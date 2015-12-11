@@ -48,17 +48,19 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	public void leftClick(Player p, Block b) {
 		if (b == ((FurnCraftChestStructure) fccf.getMultiBlockStructure())
 				.getChest()) { // chest interaction
+			System.out.println("chest hit");
 			// TODO Display information
 
 			return;
 		}
 		if (b == ((FurnCraftChestStructure) fccf.getMultiBlockStructure())
 				.getCraftingTable()) { // crafting table interaction
+			System.out.println("craft hit");
 			ArrayList<Clickable> clickables = new ArrayList<Clickable>();
 			for (IRecipe rec : fccf.getRecipes()) {
+				System.out.println(rec.getRecipeName());
 				InputRecipe recipe = (InputRecipe) (rec);
-				Clickable c = new Clickable(recipe.getOutputRepresentation(
-						fccf.getInventory()).get(0)) {
+				Clickable c = new Clickable(recipe.getRecipeRepresentation()) {
 
 					@Override
 					public void clicked(Player p) {

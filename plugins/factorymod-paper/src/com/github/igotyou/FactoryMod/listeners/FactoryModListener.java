@@ -94,10 +94,11 @@ public class FactoryModListener implements Listener {
 		}
 	}
 
+	@EventHandler
 	public void playerInteract(PlayerInteractEvent e) {
 		Block block = e.getClickedBlock();
 		Player player = e.getPlayer();
-		if (manager.isPossibleInteractionBlock(block.getType())
+		if (block != null && manager.isPossibleInteractionBlock(block.getType())
 				&& player.getItemInHand().getType() == manager.getFactoryInteractionMaterial()) {
 			Factory c = manager.getFactoryAt(block);
 			if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {

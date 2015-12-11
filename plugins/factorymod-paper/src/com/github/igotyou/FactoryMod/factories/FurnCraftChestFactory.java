@@ -33,9 +33,10 @@ public class FurnCraftChestFactory extends Factory {
 
 	public FurnCraftChestFactory(IInteractionManager im, IRepairManager rm,
 			IPowerManager ipm, FurnCraftChestStructure mbs, int updateTime,
-			String name) {
+			String name, List<IRecipe> recipes) {
 		super(im, rm, ipm, mbs, updateTime, name);
 		this.active = false;
+		this.recipes = recipes;
 	}
 
 	/**

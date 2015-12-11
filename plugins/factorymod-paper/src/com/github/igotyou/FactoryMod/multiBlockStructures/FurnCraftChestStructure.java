@@ -24,9 +24,11 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 	}
 
 	public boolean isComplete() {
-		return CraftingTable.getType() == Material.WORKBENCH
+		return CraftingTable != null
+				&& CraftingTable.getType() == Material.WORKBENCH
+				&& Furnace != null
 				&& (Furnace.getType() == Material.FURNACE || Furnace.getType() == Material.BURNING_FURNACE)
-				&& Chest.getType() == Material.CHEST;
+				&& Chest != null && Chest.getType() == Material.CHEST;
 	}
 
 	public void initializeBlocks(Block center) {

@@ -44,6 +44,7 @@ public class ItemMap {
 	 *            ItemStack to start with
 	 */
 	public ItemMap(ItemStack is) {
+		items = new HashMap<ItemStack, Integer>();
 		addItemStack(is);
 	}
 
@@ -54,6 +55,7 @@ public class ItemMap {
 	 *            Stacks to add to the map
 	 */
 	public ItemMap(Collection<ItemStack> stacks) {
+		items = new HashMap<ItemStack, Integer>();
 		addAll(stacks);
 	}
 
@@ -126,6 +128,15 @@ public class ItemMap {
 			removeItemStack(stack, safe);
 		}
 	}
+	
+	
+	public int hashCode() {
+		int res = 0;
+		for(Entry <ItemStack,Integer> entry:items.entrySet()) {
+			res += entry.hashCode();
+		}
+		return  res;
+	} 
 
 	/**
 	 * Adds all the stacks given in the collection to this map

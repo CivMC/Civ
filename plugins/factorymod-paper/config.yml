@@ -30,6 +30,7 @@ recipes:
 factories:
     test2:
         type: FCC
+        name: smelter
         recipes:
          - TestRecipe1
         fuel:

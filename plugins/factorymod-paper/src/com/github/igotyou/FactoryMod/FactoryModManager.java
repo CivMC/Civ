@@ -3,9 +3,11 @@ package com.github.igotyou.FactoryMod;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -96,7 +98,7 @@ public class FactoryModManager {
 	}
 
 	public boolean factoryExistsAt(Location loc) {
-		return getFactoryAt(loc) == null;
+		return getFactoryAt(loc) != null;
 	}
 
 	public void attemptCreation(Block b, Player p) {
@@ -107,27 +109,34 @@ public class FactoryModManager {
 				HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
 						.get(FurnCraftChestStructure.class);
 				if (eggs != null) {
-					IFactoryEgg egg = eggs.get(new ItemMap((Inventory) (fccs
-							.getChest().getState())));
+					IFactoryEgg egg = eggs.get(new ItemMap(((Chest) (fccs
+							.getChest().getState())).getBlockInventory()));
 					if (egg != null) {
 						Factory f = egg.hatch(fccs, p);
 						if (f != null) {
 							addFactory(f);
-							p.sendMessage("Successfully created "+f.getName());
+							p.sendMessage(ChatColor.GREEN
+									+ "Successfully created " + f.getName());
 						}
+					} else {
+						p.sendMessage(ChatColor.RED
+								+ "There is no factory with the given creation materials");
 					}
 				}
+			} else {
+				p.sendMessage(ChatColor.RED + "This is no complete factory");
 			}
 
 		}
 	}
 
-	public void addFactoryEgg(Class blockStructureClass,
-			ItemMap recipe, IFactoryEgg egg) {
+	public void addFactoryEgg(Class blockStructureClass, ItemMap recipe,
+			IFactoryEgg egg) {
 		HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
 				.get(blockStructureClass);
 		if (eggs == null) {
 			eggs = new HashMap<ItemMap, IFactoryEgg>();
+			this.factoryCreationRecipes.put(blockStructureClass, eggs);
 		}
 		eggs.put(recipe, egg);
 		this.eggs.put(egg.getName(), egg);
