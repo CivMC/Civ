@@ -24,3 +24,7 @@ With 5 of the X's randomly revealed. So for instance:
 "Relayed snitch broken. Relay located at [world X3X 21 1X2]"
 
 This allows players to track down Relays, if they break enough snitches.
+
+---
+
+Additionally, a change to allow players with invisibility potions to not trip entry alerts. /jainfo alerts are fine, but no chat alerts.
