@@ -7,14 +7,14 @@ softdepend: [Mercury, BetterShards]
 description: Citadel allows you to make blocks difficult to break. When a block is reinforced, it must be broken many times before it is destroyed.
 commands:
  ctr:
-  aliases: [ctreinforce]
+  aliases: [ctreinforce, reinforce, protect, cprivate, lwc, private]
  ctacid:
  ctf:
-  aliases: [ctfortify]
+  aliases: [ctfortify, fortify]
  ctb:
-  aliases: [ctbypass]
+  aliases: [ctbypass, bypass]
  cti:
-  aliases: [ctinformation]
+  aliases: [ctinformation, info]
  ctin:
   aliases: [ctinsecure]
  ctm:

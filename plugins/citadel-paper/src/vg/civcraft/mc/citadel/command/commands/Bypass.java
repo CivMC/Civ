@@ -31,7 +31,7 @@ public class Bypass extends PlayerCommandMiddle{
 		Player p = (Player) sender;
 		PlayerState state = PlayerState.get(p);
 		if (state.toggleBypassMode()){
-			sendAndLog(p, ChatColor.GREEN, "Bypass mode has been enabled.");
+			sendAndLog(p, ChatColor.GREEN, "Bypass mode has been enabled. You will be able to break reinforced blocks if you are on the group.");
 		}
 		else  {
 			sendAndLog(p, ChatColor.GREEN, "Bypass mode has been disabled.");

@@ -28,7 +28,7 @@ public class Fortification extends PlayerCommandMiddle{
 	public Fortification(String name) {
 		super(name);
 		setIdentifier("ctf");
-		setDescription("Allows you to place already reinforced blocks.");
+		setDescription("Allows you to place already reinforced blocks. Use /ctf groupname with a reinforcement material in your hand, then place down blocks and they will automatically be reinforced to groupname.");
 		setUsage("/ctf <group>");
 		setArguments(0,1);
 	}
@@ -45,7 +45,7 @@ public class Fortification extends PlayerCommandMiddle{
 		if(args.length == 0){
 			groupName = gm.getDefaultGroup(uuid);
 			if(groupName == null){
-				sendAndLog(p, ChatColor.RED, "You need to set a default group \n Use /nlsdg to do so");
+				sendAndLog(p, ChatColor.RED, "You need to fortify to a group! Try /ctf groupname. \n Or use /nlcg groupname if you don't have a group yet.");
 				return true;
 			}
 		}
@@ -77,15 +77,14 @@ public class Fortification extends PlayerCommandMiddle{
 		}
 		else{
 			if (stack.getType() == Material.AIR){
-				sendAndLog(p, ChatColor.RED, "You need to be holding an ItemStack.");
+				sendAndLog(p, ChatColor.RED, "You need to be holding something to fortify with, try holding a stone block in your hand.");
 				return true;
 			}
 			else if (reinType == null){
-				sendAndLog(p, ChatColor.RED, "That is not a ReinforcementType.");
+				sendAndLog(p, ChatColor.RED, "You can't use the item in your hand to reinforce. Try using a stone block.");
 				return true;
 			}
-			sendAndLog(p, ChatColor.GREEN, "Your mode has been set to " + 
-					ReinforcementMode.REINFORCEMENT_FORTIFICATION.name() + ".");
+			sendAndLog(p, ChatColor.GREEN, "You are now in Fortification mode, place blocks down and they will be secured with the material in your hand. \n Type /ctf or /cto to turn this off when you are done.");
 			state.setMode(ReinforcementMode.REINFORCEMENT_FORTIFICATION);
 			state.setFortificationItemStack(reinType.getItemStack());
 			state.setGroup(g);
