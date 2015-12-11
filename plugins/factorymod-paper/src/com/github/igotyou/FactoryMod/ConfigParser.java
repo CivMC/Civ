@@ -1,6 +1,7 @@
 package com.github.igotyou.FactoryMod;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,12 +16,21 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.listeners.NetherPortalListener;
+import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
+import com.github.igotyou.FactoryMod.recipes.CompactingRecipe;
+import com.github.igotyou.FactoryMod.recipes.DecompactingRecipe;
+import com.github.igotyou.FactoryMod.recipes.IRecipe;
+import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
+import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 import com.google.common.collect.Lists;
 
 public class ConfigParser {
 	private FactoryModPlugin plugin;
+	private HashMap<String, IRecipe> recipes;
+	private FactoryModManager manager;
 
 	public ConfigParser(FactoryModPlugin plugin) {
 		this.plugin = plugin;
@@ -35,22 +45,71 @@ public class ConfigParser {
 				.getString("factory_interaction_material", "STICK"));
 		boolean disableExperience = config.getBoolean("disable_experience",
 				false);
-		//TODO disable experience
+		// TODO disable experience
 		boolean disableNether = config.getBoolean("disable_nether");
 		if (disableNether) {
 			plugin.getServer().getPluginManager()
 					.registerEvents(new NetherPortalListener(), plugin);
 		}
 		int defaultUpdateTime = config.getInt("default_update_time");
-		FactoryModManager manager = new FactoryModManager(plugin,
-				factoryInteractionMaterial, citadelEnabled);
+		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
+				citadelEnabled);
 		handleEnabledAndDisabledRecipes(config
 				.getConfigurationSection("crafting"));
-
+		parseRecipes(config.getConfigurationSection("recipes"));
+		parseFactories(config.getConfigurationSection("factories"),
+				defaultUpdateTime);
+		plugin.info("Parsed complete config");
 		return manager;
 	}
 
-	public void handleEnabledAndDisabledRecipes(ConfigurationSection config) {
+	private void parseRecipes(ConfigurationSection config) {
+		recipes = new HashMap<String, IRecipe>();
+		for (String key : config.getKeys(false)) {
+			IRecipe recipe = parseRecipe(config.getConfigurationSection(key));
+			recipes.put(recipe.getRecipeName(), recipe);
+		}
+	}
+
+	private void parseFactories(ConfigurationSection config, int defaultUpdate) {
+		for (String key : config.getKeys(false)) {
+			parseFactory(config.getConfigurationSection(key), defaultUpdate);
+		}
+
+	}
+
+	private void parseFactory(ConfigurationSection config, int defaultUpdate) {
+		String name = config.getString("name");
+		// One implementation for each egg here
+		switch (config.getString("type")) {
+		case "FCC": // Furnace, chest, craftingtable
+			int update;
+			if (config.contains("updatetime")) {
+				update = config.getInt("updatetime");
+			} else {
+				update = defaultUpdate;
+			}
+			List<IRecipe> recipeList = new LinkedList<IRecipe>();
+			for (String recipe : config.getStringList("recipes")) {
+				recipeList.add(recipes.get(recipe));
+			}
+			ItemMap fuel = parseItemMap(config.getConfigurationSection("fuel"));
+			int fuelIntervall = config.getInt("fuel_consumption_intervall");
+			ItemMap setupCost = parseItemMap(config
+					.getConfigurationSection("setupcost"));
+			FurnCraftChestEgg egg = new FurnCraftChestEgg(name, update,
+					recipeList, fuel, fuelIntervall);
+			manager.addFactoryEgg(FurnCraftChestStructure.class, setupCost, egg);
+			break;
+
+		default:
+			plugin.severe("Could not identify factory type "
+					+ config.getString("type"));
+		}
+
+	}
+
+	private void handleEnabledAndDisabledRecipes(ConfigurationSection config) {
 		// Disabling recipes
 		List<Recipe> toDisable = new ArrayList<Recipe>();
 		ItemMap disabledRecipes = parseItemMap(config
@@ -80,10 +139,52 @@ public class ConfigParser {
 		}
 
 		// TODO enable shaped and unshaped recipes here
-
 	}
 
-	public ItemMap parseItemMap(ConfigurationSection config) {
+	private IRecipe parseRecipe(ConfigurationSection config) {
+		IRecipe result;
+		String name = config.getString("name");
+		int productionTime = config.getInt("production_time");
+		switch (config.getString("type")) {
+		case "PRODUCTION":
+			ItemMap input = parseItemMap(config
+					.getConfigurationSection("input"));
+			ItemMap output = parseItemMap(config
+					.getConfigurationSection("output"));
+			result = new ProductionRecipe(name, productionTime, input, output);
+			break;
+		case "COMPACT":
+			ItemMap extraMats = parseItemMap(config
+					.getConfigurationSection("input"));
+			String compactedLore = config.getString("compact_lore");
+			List<Material> excluded = new LinkedList<Material>();
+			for (String mat : config.getStringList("excluded_materials")) {
+				excluded.add(Material.valueOf(mat));
+			}
+			result = new CompactingRecipe(extraMats, excluded, name,
+					productionTime, compactedLore);
+			break;
+		case "DECOMPACT":
+			ItemMap extraMate = parseItemMap(config
+					.getConfigurationSection("input"));
+			String decompactedLore = config.getString("compact_lore");
+			result = new DecompactingRecipe(extraMate, name, productionTime,
+					decompactedLore);
+			break;
+		case "REPAIR":
+			ItemMap rep = parseItemMap(config.getConfigurationSection("input"));
+			int health = config.getInt("health_gained");
+			result = new RepairRecipe(name, productionTime, rep, health);
+			break;
+		default:
+			plugin.severe("Could not identify type " + config.getString("type")
+					+ " as a valid recipe identifier");
+			result = null;
+		}
+		return result;
+	}
+
+	private static ItemMap parseItemMap(ConfigurationSection config) {
 		ItemMap result = new ItemMap();
 		for (String key : config.getKeys(false)) {
 			ConfigurationSection current = config.getConfigurationSection(key);
@@ -120,7 +221,7 @@ public class ConfigParser {
 		return result;
 	}
 
-	private List<PotionEffect> parsePotionEffects(
+	private static List<PotionEffect> parsePotionEffects(
 			ConfigurationSection configurationSection) {
 		List<PotionEffect> potionEffects = Lists.newArrayList();
 		if (configurationSection != null) {

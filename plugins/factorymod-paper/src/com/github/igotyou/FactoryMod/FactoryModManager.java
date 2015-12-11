@@ -121,7 +121,7 @@ public class FactoryModManager {
 		}
 	}
 
-	public void addFactoryEgg(Class<MultiBlockStructure> blockStructureClass,
+	public void addFactoryEgg(Class blockStructureClass,
 			ItemMap recipe, IFactoryEgg egg) {
 		HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
 				.get(blockStructureClass);

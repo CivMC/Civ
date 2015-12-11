@@ -18,7 +18,7 @@ import com.github.igotyou.FactoryMod.utility.ItemMap;
 public class FurnCraftChestEgg implements IFactoryEgg {
 	private String name;
 	private int updateTime;
-	protected List<IRecipe> recipes;
+	private List<IRecipe> recipes;
 	private ItemMap fuel;
 	private int fuelConsumptionIntervall;
 
