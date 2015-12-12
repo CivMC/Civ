@@ -48,8 +48,9 @@ public class ClickableInventory {
 	public ClickableInventory(ArrayList<Clickable> clickables,
 			InventoryType type, String name) {
 		inventory = Bukkit.createInventory(null, type, name);
-		this.clickables = (Clickable[]) (clickables.toArray());
+		this.clickables = new Clickable[inventory.getSize()];
 		for (int i = 0; i < clickables.size(); i++) {
+			this.clickables[i] = clickables.get(i);
 			if (clickables.get(i) != null) {
 				inventory.setItem(i, clickables.get(i).getItemStack());
 			}
@@ -77,8 +78,9 @@ public class ClickableInventory {
 	public ClickableInventory(ArrayList<Clickable> clickables, int size,
 			String name) {
 		inventory = Bukkit.createInventory(null, size, name);
-		this.clickables = (Clickable[]) (clickables.toArray());
+		this.clickables = new Clickable[size];
 		for (int i = 0; i < clickables.size(); i++) {
+			this.clickables[i] = clickables.get(i);
 			if (clickables.get(i) != null) {
 				inventory.setItem(i, clickables.get(i).getItemStack());
 			}
@@ -117,7 +119,7 @@ public class ClickableInventory {
 	 *         indices
 	 */
 	public Clickable getSlot(int index) {
-		return index < inventory.getSize() ? clickables [index] : null;
+		return index < inventory.getSize() ? clickables[index] : null;
 	}
 
 	/**
@@ -206,7 +208,7 @@ public class ClickableInventory {
 	 *         if it doesnt
 	 */
 	public int indexOf(Clickable c) {
-		for(int i = 0;i<clickables.length;i++) {
+		for (int i = 0; i < clickables.length; i++) {
 			if (clickables[i] == c) {
 				return i;
 			}
