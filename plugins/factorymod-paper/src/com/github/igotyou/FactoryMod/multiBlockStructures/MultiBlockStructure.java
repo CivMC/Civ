@@ -24,7 +24,7 @@ public abstract class MultiBlockStructure {
 
 	}
 
-	protected static List<Block> searchForBlockOnSides(Block b, Material m) {
+	public static List<Block> searchForBlockOnSides(Block b, Material m) {
 		LinkedList<Block> result = new LinkedList<Block>();
 		for (BlockFace face : northEastWestSouthSides) {
 			Block side = b.getRelative(face);

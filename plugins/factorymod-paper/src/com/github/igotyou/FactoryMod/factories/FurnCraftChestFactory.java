@@ -2,6 +2,7 @@ package com.github.igotyou.FactoryMod.factories;
 
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -44,7 +45,7 @@ public class FurnCraftChestFactory extends Factory {
 	 *         should be
 	 */
 	public Inventory getInventory() {
-		if (!(getFurnace().getType() == Material.CHEST)) {
+		if (!(getChest().getType() == Material.CHEST)) {
 			return null;
 		}
 		Chest chestBlock = (Chest) (getChest().getState());
@@ -72,24 +73,30 @@ public class FurnCraftChestFactory extends Factory {
 					if (rm.inDisrepair()
 							&& !(currentRecipe instanceof RepairRecipe)) {
 						if (p != null) {
-							p.sendMessage("This factory is in disrepair, you have to repair it before using it");
+							p.sendMessage(ChatColor.RED
+									+ "This factory is in disrepair, you have to repair it before using it");
 						}
 						return;
 					}
 					if (p != null) {
-						p.sendMessage("Activated " + name + " with recipe: "
+						p.sendMessage(ChatColor.GREEN + "Activated " + name
+								+ " with recipe: "
 								+ currentRecipe.getRecipeName());
 					}
 					activate();
 					run();
 				} else {
 					if (p != null) {
-						p.sendMessage("Failed to activate factory, there is no fuel in the furnace");
+						p.sendMessage(ChatColor.RED
+								+ "Failed to activate factory, there is no fuel in the furnace");
 					}
 				}
-			}
-			else {
-				p.sendMessage("Not enough materials available"); //TODO how much is needed
+			} else {
+				p.sendMessage(ChatColor.RED + "Not enough materials available"); // TODO
+																					// how
+																					// much
+																					// is
+																					// needed
 			}
 		}
 	}
@@ -148,13 +155,6 @@ public class FurnCraftChestFactory extends Factory {
 	}
 
 	/**
-	 * @return Whether the factory is currently on or not
-	 */
-	public boolean getActive() {
-		return active;
-	}
-
-	/**
 	 * @return How long the factory has been running in ticks
 	 */
 	public int getRunningTime() {
@@ -177,7 +177,7 @@ public class FurnCraftChestFactory extends Factory {
 					if (pm.powerAvailable()) {
 						// if the time since fuel was last consumed is equal to
 						// how often fuel needs to be consumed
-						if (pm.getPowerCounter() == pm
+						if (pm.getPowerCounter() >= pm
 								.getPowerConsumptionIntervall() - 1) {
 							// remove one fuel.
 							pm.consumePower();

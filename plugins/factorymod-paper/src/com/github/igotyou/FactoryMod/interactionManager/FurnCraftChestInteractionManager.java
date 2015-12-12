@@ -32,9 +32,9 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	public void setFactory(FurnCraftChestFactory fccf) {
 		this.fccf = fccf;
 	}
-	
+
 	public void redStoneEvent(BlockRedstoneEvent e) {
-		//TODO
+		// TODO
 	}
 
 	public void blockBreak(Player p, Block b) {
@@ -43,22 +43,22 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			p.sendMessage(ChatColor.DARK_RED
 					+ "You broke the factory, it is in disrepair now");
 		}
+		if (fccf.isActive()) {
+			fccf.deactivate();
+		}
 	}
 
 	public void leftClick(Player p, Block b) {
-		if (b == ((FurnCraftChestStructure) fccf.getMultiBlockStructure())
-				.getChest()) { // chest interaction
-			System.out.println("chest hit");
+		if (b.equals(((FurnCraftChestStructure) fccf.getMultiBlockStructure())
+				.getChest())) { // chest interaction
 			// TODO Display information
 
 			return;
 		}
-		if (b == ((FurnCraftChestStructure) fccf.getMultiBlockStructure())
-				.getCraftingTable()) { // crafting table interaction
-			System.out.println("craft hit");
+		if (b.equals(((FurnCraftChestStructure) fccf.getMultiBlockStructure())
+				.getCraftingTable())) { // crafting table interaction
 			ArrayList<Clickable> clickables = new ArrayList<Clickable>();
 			for (IRecipe rec : fccf.getRecipes()) {
-				System.out.println(rec.getRecipeName());
 				InputRecipe recipe = (InputRecipe) (rec);
 				Clickable c = new Clickable(recipe.getRecipeRepresentation()) {
 
@@ -69,6 +69,9 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 									+ "You can't switch recipes while the factory is running");
 						} else {
 							fccf.setRecipe(recipes.get(this));
+							p.sendMessage(ChatColor.GREEN
+									+ "Switched recipe to "
+									+ recipes.get(this).getRecipeName());
 						}
 
 					}
@@ -81,8 +84,8 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			ci.showInventory(p);
 			return;
 		}
-		if (b == ((FurnCraftChestStructure) fccf.getMultiBlockStructure())
-				.getFurnace()) { // furnace interaction
+		if (b.equals(((FurnCraftChestStructure) fccf.getMultiBlockStructure())
+				.getFurnace())) { // furnace interaction
 			if (fccf.isActive()) {
 				fccf.deactivate();
 			} else {

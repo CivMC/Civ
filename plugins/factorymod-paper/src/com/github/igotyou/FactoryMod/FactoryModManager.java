@@ -110,7 +110,7 @@ public class FactoryModManager {
 						.get(FurnCraftChestStructure.class);
 				if (eggs != null) {
 					IFactoryEgg egg = eggs.get(new ItemMap(((Chest) (fccs
-							.getChest().getState())).getBlockInventory()));
+							.getChest().getState())).getInventory()));
 					if (egg != null) {
 						Factory f = egg.hatch(fccs, p);
 						if (f != null) {

@@ -128,15 +128,14 @@ public class ItemMap {
 			removeItemStack(stack, safe);
 		}
 	}
-	
-	
+
 	public int hashCode() {
 		int res = 0;
-		for(Entry <ItemStack,Integer> entry:items.entrySet()) {
+		for (Entry<ItemStack, Integer> entry : items.entrySet()) {
 			res += entry.hashCode();
 		}
-		return  res;
-	} 
+		return res;
+	}
 
 	/**
 	 * Adds all the stacks given in the collection to this map
@@ -407,6 +406,14 @@ public class ItemMap {
 			}
 		}
 		return true;
+	}
+
+	public String toString() {
+		String res = "";
+		for (ItemStack is : getItemStackRepresentation()) {
+			res += is.toString() + ";";
+		}
+		return res;
 	}
 
 	/**

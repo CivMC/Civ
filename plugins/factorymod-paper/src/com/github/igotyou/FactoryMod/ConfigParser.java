@@ -192,7 +192,7 @@ public class ConfigParser {
 			ConfigurationSection current = config.getConfigurationSection(key);
 			Material m = Material.valueOf(current.getString("material"));
 			ItemStack toAdd = new ItemStack(m);
-			int amount = current.getInt("amount");
+			int amount = current.getInt("amount", 1);
 			toAdd.setAmount(amount);
 			int durability = current.getInt("durability", 0);
 			toAdd.setDurability((short) durability);
