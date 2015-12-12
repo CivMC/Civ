@@ -58,6 +58,36 @@ public class ClickableInventory {
 	}
 
 	/**
+	 * Creates a new Clickable Inventory based on how many slots the inventory
+	 * should have. The given size should always be dividable by 9 and smaller
+	 * or equal to 54, which is the maximum possible size
+	 * 
+	 * @param clickables
+	 *            The clickables to be put into this inventory. They will appear
+	 *            in the same order in the inventory as they are given in the
+	 *            arraylist, null represents empty slots, which will be skipped.
+	 *            If this arraylist contains more elements than the given
+	 *            inventory type has slots, an exception will be thrown.
+	 * @param size
+	 *            Size of the inventory to create, must be multiple of 9, bigger
+	 *            than 0 and smaller than 54
+	 * @param name
+	 *            name of the inventory which is shown at the top when a player
+	 *            has it open
+	 */
+	public ClickableInventory(ArrayList<Clickable> clickables, int size,
+			String name) {
+		inventory = Bukkit.createInventory(null, size, name);
+		this.clickables = clickables;
+		for (int i = 0; i < clickables.size(); i++) {
+			if (clickables.get(i) != null) {
+				inventory.setItem(i, clickables.get(i).getItemStack());
+			}
+		}
+		this.clickables.ensureCapacity(inventory.getSize());
+	}
+
+	/**
 	 * Sets a specific slot to use the given Clickable and also updates its item
 	 * in the inventory. This will overwrite any existing clickable for this
 	 * slot, but wont update player inventories on it's own, which means if this
@@ -168,11 +198,14 @@ public class ClickableInventory {
 			}
 		}
 	}
-	
+
 	/**
 	 * Gets the index of any given Clickable in this instance
-	 * @param c Clickable to search for
-	 * @return The index of the clickable if it exists in this inventory or -1 if it doesnt
+	 * 
+	 * @param c
+	 *            Clickable to search for
+	 * @return The index of the clickable if it exists in this inventory or -1
+	 *         if it doesnt
 	 */
 	public int indexOf(Clickable c) {
 		return clickables.indexOf(c);
