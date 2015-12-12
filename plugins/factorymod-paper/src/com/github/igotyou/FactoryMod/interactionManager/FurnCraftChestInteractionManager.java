@@ -2,8 +2,10 @@ package com.github.igotyou.FactoryMod.interactionManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
@@ -34,7 +36,77 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	}
 
 	public void redStoneEvent(BlockRedstoneEvent e) {
-		// TODO
+		if (e.getNewCurrent() == e.getOldCurrent()) {
+			return;
+		}
+		int threshold = 1;
+		int rThreshold = 1;
+		boolean newState = false;
+		if (e.getBlock().getLocation().equals(fccf.getFurnace().getLocation())) {
+			if (e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold && fccf.isActive()) {
+				// Falling Edge (turn off)
+				newState = false;
+			} else if (e.getOldCurrent() < threshold && e.getNewCurrent() >= threshold && !fccf.isActive()) {
+				// Rising Edge (turn on)
+				newState = true;
+			} else {
+				return;
+			}
+			
+			// TODO: Check citadel here
+			if (checkCitadelAround(e.getBlock().getLocation(), e.getNewCurrent())) {
+				if (newState) {
+					fccf.activate();
+				} else {
+					fccf.deactivate();
+				}
+			}
+		} else if (!fccf.isActive() && e.getBlock().getLocation().equals( 
+				((FurnCraftChestStructure) fccf.getMultiBlockStructure()).getCraftingTable())) {
+			// Can't change recipe while active.
+			int change = e.getOldCurrent() - e.getNewCurrent();
+			if (Math.abs(change) >= rThreshold) {
+				List<IRecipe> currentRecipes = fccf.getRecipes();
+				if (currentRecipes.size() == 0 || !checkCitadelAround(e.getBlock().getLocation(), e.getNewCurrent())) {
+					return;
+				}
+				IRecipe current = fccf.getCurrentRecipe();
+				int idx = 0;
+				// edge case?
+				if (current != null) {
+					idx = currentRecipes.indexOf(current);
+					if (change > 0) { // next
+						if (idx >= currentRecipes.size() - 1) {
+							idx = 0;
+						} else {
+							idx ++;
+						}
+					} else if (change < 0) { // prev
+						if (idx == 0) {
+							idx = currentRecipes.size() - 1;
+						} else { 
+							idx --;
+						}
+					}
+				}
+				fccf.setRecipe(currentRecipes.get(idx));
+			}
+		}
+	}
+	
+	/**
+	 * Utility method to check Citadel properties of potential power-giving blocks
+	 * surrounding the location passed, but skipping any locations owned by the Factory.
+	 * 
+	 * In other words, the factory won't transmit power to other blocks within its multiblock
+	 * structure.
+	 * 
+	 * @param here The Location (part of the factory) to check around
+	 * @param level The power level to compare against
+	 * @return True if something found that is powered at the level indicated and on a compatible group 
+	 */
+	private boolean checkCitadelAround(Location here, int level) {
+		return true;
 	}
 
 	public void blockBreak(Player p, Block b) {
@@ -156,8 +228,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			ci.showInventory(p);
 			return;
 		}
-		if (b.equals(((FurnCraftChestStructure) fccf.getMultiBlockStructure())
-				.getFurnace())) { // furnace interaction
+		if (b.equals(fccf.getFurnace()) { // furnace interaction
 			if (fccf.isActive()) {
 				fccf.deactivate();
 			} else {
