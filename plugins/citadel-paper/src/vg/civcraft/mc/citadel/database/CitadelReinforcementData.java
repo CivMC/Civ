@@ -165,6 +165,14 @@ public class CitadelReinforcementData {
 			ver = NameLayerPlugin.getVersionNum(plugin.getName());
 			Citadel.Log("The update to Version 7 took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
 		}
+		if (ver == 7){
+			long first_time = System.currentTimeMillis();
+			db.execute("alter table reinforcement_id drop primary key,"
+					+ " add primary key (rein_id, x, y, z, world);");
+			NameLayerPlugin.insertVersionNum(ver, plugin.getName());
+			ver = NameLayerPlugin.getVersionNum(plugin.getName());
+			Citadel.Log("The update to Version 8 took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
+		}
 		Citadel.Log("The total time it took Citadel to update was " + 
 				(System.currentTimeMillis() - begin_time) / 1000 + " seconds.");
 	}
@@ -180,7 +188,7 @@ public class CitadelReinforcementData {
 	
 	private String getRein, getReins, addRein, removeRein, updateRein, getGroupFromRein;
 	//private PreparedStatement deleteGroup, insertDeleteGroup, removeDeleteGroup, getDeleteGroup;
-	private String insertReinID, getLastReinID, getCordsbyReinID, selectReinCountForGroup, selectReinCount;
+	private String insertReinID, insertCustomReinID, getLastReinID, getCordsbyReinID, selectReinCountForGroup, selectReinCount;
 	/**
 	 * Initializes the PreparedStatements. Gets called on db connect or
 	 * reconnect.
@@ -229,7 +237,8 @@ public class CitadelReinforcementData {
 				+ "inner join toDeleteReinforecments d on f.group_id = d.group_id");
 		*/
 		
-		insertReinID = "insert ignore into reinforcement_id(x, y, z, chunk_id, world) values (?, ?, ?, ?, ?)";
+		insertReinID = "insert ignore into reinforcement_id(x, y, z, chunk_id, world) values (?, ?, ?, ?, ?);";
+		insertCustomReinID = "insert ignore into reinforcement_id(rein_id, x, y, z, chunk_id, world) values (?, ?, ?, ?, ?, ?);";
 		getLastReinID = "select LAST_INSERT_ID() as id";
 		getCordsbyReinID = "select x, y, z, world from reinforcement_id where rein_id = ?";
 		selectReinCountForGroup = "select count(*) as count from reinforcement r "
@@ -454,6 +463,9 @@ public class CitadelReinforcementData {
 			}
 		}
 		else if (rein instanceof NaturalReinforcement){
+			/* 
+			 * We don't need to worry about saving this right now.
+			 * 
 			Location loc = rein.getLocation();
 			int x = loc.getBlockX(), y = loc.getBlockY(), z = loc.getBlockZ();
 			String world = loc.getWorld().getName();
@@ -492,25 +504,26 @@ public class CitadelReinforcementData {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
 		}
 		else if (rein instanceof MultiBlockReinforcement){
 			MultiBlockReinforcement mbRein = (MultiBlockReinforcement) rein;
-			Location loc = mbRein.getLocation();
+
+			int id = getLastReinId() + 1; // We add one because we haven't added it yet.
 			try {
-				PreparedStatement insertReinID = db.prepareStatement(this.insertReinID);
+				PreparedStatement insertCustomReinID = db.prepareStatement(this.insertCustomReinID);
 				// add all the locations into the db.
 				for (Location lo: mbRein.getLocations()){
-					insertReinID.setInt(1, lo.getBlockX());
-					insertReinID.setInt(2, lo.getBlockY());
-					insertReinID.setInt(3, lo.getBlockZ());
+					insertCustomReinID.setInt(1, id);
+					insertCustomReinID.setInt(2, lo.getBlockX());
+					insertCustomReinID.setInt(3, lo.getBlockY());
+					insertCustomReinID.setInt(4, lo.getBlockZ());
 					String formatChunk = formatChunk(lo);
-					insertReinID.setString(4, formatChunk);
-					insertReinID.setString(5, lo.getWorld().getName());
-					insertReinID.addBatch();
+					insertCustomReinID.setString(5, formatChunk);
+					insertCustomReinID.setString(6, lo.getWorld().getName());
+					insertCustomReinID.addBatch();
 				}
-				insertReinID.executeBatch();
-				
-				int id = getLastReinId();
+				insertCustomReinID.executeBatch();
 				
 				PreparedStatement addRein = db.prepareStatement(this.addRein);
 				addRein.setInt(1, -1);
