@@ -152,7 +152,7 @@ public class ClickableInventory {
 	 *            index of the item in the inventory
 	 */
 	public void itemClick(Player p, int index) {
-		if (index >= clickables.length) {
+		if (index >= clickables.length  || index < 0) {
 			return;
 		}
 		clickables[index].clicked(p);
