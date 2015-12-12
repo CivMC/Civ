@@ -28,7 +28,7 @@ public class ClickableInventory {
 	private static JavaPlugin plugin;
 	private static HashMap<UUID, ClickableInventory> openInventories = new HashMap<UUID, ClickableInventory>();
 	private Inventory inventory;
-	private ArrayList<Clickable> clickables;
+	private Clickable[] clickables;
 
 	/**
 	 * Creates a new ClickableInventory
@@ -48,13 +48,12 @@ public class ClickableInventory {
 	public ClickableInventory(ArrayList<Clickable> clickables,
 			InventoryType type, String name) {
 		inventory = Bukkit.createInventory(null, type, name);
-		this.clickables = clickables;
+		this.clickables = (Clickable[]) (clickables.toArray());
 		for (int i = 0; i < clickables.size(); i++) {
 			if (clickables.get(i) != null) {
 				inventory.setItem(i, clickables.get(i).getItemStack());
 			}
 		}
-		this.clickables.ensureCapacity(inventory.getSize());
 	}
 
 	/**
@@ -78,13 +77,12 @@ public class ClickableInventory {
 	public ClickableInventory(ArrayList<Clickable> clickables, int size,
 			String name) {
 		inventory = Bukkit.createInventory(null, size, name);
-		this.clickables = clickables;
+		this.clickables = (Clickable[]) (clickables.toArray());
 		for (int i = 0; i < clickables.size(); i++) {
 			if (clickables.get(i) != null) {
 				inventory.setItem(i, clickables.get(i).getItemStack());
 			}
 		}
-		this.clickables.ensureCapacity(inventory.getSize());
 	}
 
 	/**
@@ -104,7 +102,7 @@ public class ClickableInventory {
 	 */
 	public void setSlot(Clickable c, int index) {
 		inventory.setItem(index, c.getItemStack());
-		clickables.set(index, c);
+		clickables[index] = c;
 	}
 
 	/**
@@ -119,7 +117,7 @@ public class ClickableInventory {
 	 *         indices
 	 */
 	public Clickable getSlot(int index) {
-		return index < inventory.getSize() ? clickables.get(index) : null;
+		return index < inventory.getSize() ? clickables [index] : null;
 	}
 
 	/**
@@ -152,10 +150,10 @@ public class ClickableInventory {
 	 *            index of the item in the inventory
 	 */
 	public void itemClick(Player p, int index) {
-		if (index >= clickables.size()) {
+		if (index >= clickables.length) {
 			return;
 		}
-		clickables.get(index).clicked(p);
+		clickables[index].clicked(p);
 		forceCloseInventory(p);
 	}
 
@@ -208,7 +206,12 @@ public class ClickableInventory {
 	 *         if it doesnt
 	 */
 	public int indexOf(Clickable c) {
-		return clickables.indexOf(c);
+		for(int i = 0;i<clickables.length;i++) {
+			if (clickables[i] == c) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	/**
