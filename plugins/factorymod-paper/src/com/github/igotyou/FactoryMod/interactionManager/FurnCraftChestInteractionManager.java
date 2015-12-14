@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -15,6 +16,11 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.ReinforcementManager;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+
+import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
@@ -23,19 +29,43 @@ import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 public class FurnCraftChestInteractionManager implements IInteractionManager {
 	private FurnCraftChestFactory fccf;
 	private HashMap<Clickable, InputRecipe> recipes = new HashMap<Clickable, InputRecipe>();
+	private ReinforcementManager rm;
 
 	public FurnCraftChestInteractionManager(FurnCraftChestFactory fccf) {
 		this.fccf = fccf;
+		prepCitadel();
 	}
 
 	public FurnCraftChestInteractionManager() {
+		prepCitadel();
 	}
 
 	public void setFactory(FurnCraftChestFactory fccf) {
 		this.fccf = fccf;
 	}
+	
+	private void prepCitadel() {
+		if (FactoryModPlugin.getManager().isCitadelEnabled()) {
+			rm = Citadel.getReinforcementManager();
+		} else {
+			rm = null;
+		}
+	}
 
 	public void redStoneEvent(BlockRedstoneEvent e) {
+		if (rm != null) {
+			// Note this also accomplishes all the Citadel checking we need.
+			BlockFace powerFace = findPoweringFace(e.getBlock(), fccf.getMultiBlockStructure().getAllBlocks());
+			if (powerFace != null) {
+				int trueNewCurrent = e.getBlock().getBlockPower(powerFace);
+				if (trueNewCurrent != e.getNewCurrent()) {
+					e.setNewCurrent(trueNewCurrent);
+				}
+			} else { // null means citadel is enabled but no valid redstone power was found.
+				return;
+			}
+		}
+
 		if (e.getNewCurrent() == e.getOldCurrent()) {
 			return;
 		}
@@ -53,13 +83,10 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				return;
 			}
 			
-			// TODO: Check citadel here
-			if (checkCitadelAround(e.getBlock().getLocation(), e.getNewCurrent())) {
-				if (newState) {
-					fccf.activate();
-				} else {
-					fccf.deactivate();
-				}
+			if (newState) {
+				fccf.activate();
+			} else {
+				fccf.deactivate();
 			}
 		} else if (!fccf.isActive() && e.getBlock().getLocation().equals( 
 				((FurnCraftChestStructure) fccf.getMultiBlockStructure()).getCraftingTable())) {
@@ -67,7 +94,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			int change = e.getOldCurrent() - e.getNewCurrent();
 			if (Math.abs(change) >= rThreshold) {
 				List<IRecipe> currentRecipes = fccf.getRecipes();
-				if (currentRecipes.size() == 0 || !checkCitadelAround(e.getBlock().getLocation(), e.getNewCurrent())) {
+				if (currentRecipes.size() == 0) {
 					return;
 				}
 				IRecipe current = fccf.getCurrentRecipe();
@@ -95,19 +122,45 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	}
 	
 	/**
-	 * Utility method to check Citadel properties of potential power-giving blocks
-	 * surrounding the location passed, but skipping any locations owned by the Factory.
+	 * Only deals with directly powered redstone interactions, not indirect power
+	 * Finds the block face giving the highest power that is also on a compatible Citadel group.
 	 * 
-	 * In other words, the factory won't transmit power to other blocks within its multiblock
-	 * structure.
-	 * 
-	 * @param here The Location (part of the factory) to check around
-	 * @param level The power level to compare against
-	 * @return True if something found that is powered at the level indicated and on a compatible group 
+	 * @param here The block to check around.
+	 * @param exclude The blocks to exclude from checks.
+	 * @return The Face of the highest compatible power level.
 	 */
-	private boolean checkCitadelAround(Location here, int level) {
-		return true;
+	private BlockFace findPoweringFace(Block here, List<Block> exclude) {
+		if (here.isBlockPowered()) {
+			PlayerReinforcement pr = (rm != null) ? (PlayerReinforcement) rm.getReinforcement(here) : null;
+			int prGID = (pr != null) ? pr.getGroup().getGroupId() : -1;
+			boolean checkCitadel = pr != null;
+			if (checkCitadel) {
+				checkCitadel = !pr.isInsecure(); // don't check citadel if insecure; any input is good then
+			}
+			BlockFace max = null;
+			int maxP = -1;
+			for (BlockFace face : adjacentFaces) {
+				Block rel = here.getRelative(face);
+				if (!exclude.contains(rel) && here.isBlockFacePowered(face)) {
+					int curP = here.getBlockPower(face);
+					if (curP > maxP) {
+						if (!checkCitadel || prGID == 
+								((PlayerReinforcement) rm.getReinforcement(rel)).getGroup().getGroupId()) {
+							max = face;
+							maxP = curP;
+							// TODO: consider shortcut of iff max == 15 return;
+						}
+					}
+				}
+			}
+			return max;
+		} else {
+			return null;
+		}
 	}
+	
+	protected static BlockFace[] adjacentFaces = new BlockFace[] {BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH,
+				BlockFace.SOUTH, BlockFace.DOWN, BlockFace.UP};
 
 	public void blockBreak(Player p, Block b) {
 		fccf.getRepairManager().breakIt();
