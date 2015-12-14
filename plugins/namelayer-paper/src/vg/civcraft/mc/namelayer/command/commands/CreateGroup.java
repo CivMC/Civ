@@ -34,7 +34,7 @@ public class CreateGroup extends PlayerCommandMiddle{
 		Player p = (Player) sender;
 		String name = args[0];
 		if (gm.getGroup(name) != null){
-			p.sendMessage(ChatColor.RED + "That group is already taken.");
+			p.sendMessage(ChatColor.RED + "That group is already taken. Try another unique group name.");
 			return true;
 		}
 		String password = "";
@@ -46,7 +46,7 @@ public class CreateGroup extends PlayerCommandMiddle{
 		if (args.length == 2)
 		{
 			if(GroupType.getGroupType(args[1]) == null){
-				p.sendMessage(ChatColor.RED + "You have entered an invalid GroupType, use /nllgt to list GroupTypes.");
+				p.sendMessage(ChatColor.RED + "You have entered an invalid GroupType, try PRIVATE or PUBLIC. \n (Or don't use spaces in your groupname)");
 				return true;
 			}
 			type = GroupType.getGroupType(args[1]);

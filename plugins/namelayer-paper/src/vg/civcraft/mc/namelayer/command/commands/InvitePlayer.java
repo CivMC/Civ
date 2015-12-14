@@ -97,7 +97,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 		
 		if (group.isMember(uuid)){ // So a player can't demote someone who is above them.
 			p.sendMessage(ChatColor.RED + "Player is already a member."
-					+ "Use /nlpp to change their PlayerType.");
+					+ "Use /promote to change their PlayerType.");
 			return true;
 		}
 		
@@ -120,15 +120,15 @@ public class InvitePlayer extends PlayerCommandMiddle{
 						g.addMember(uuid, PlayerType.SUBGROUP);
 					}
 				}
-				p.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
+				p.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /revoke to Revoke an invite.");
 				oInvitee.sendMessage(ChatColor.GREEN + " You have auto-accepted invite to the group: " + group.getName());
 			}
 			else{
 				PlayerListener.addNotification(uuid, group);
 				oInvitee.sendMessage(ChatColor.GREEN + "You have been invited to the group " + group.getName() +" by " + p.getName() +".\n" +
-						"Use the command /nlag <group> to accept.\n"
-						+ "If you wish to toggle invites so they always are accepted please run /nltaai");
-				p.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
+						"Use the command /accept <group> to accept.\n"
+						+ "If you wish to toggle invites so they always are accepted please run /autoaccept");
+				p.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /revoke to Revoke an invite.");
 			}
 		}
 		else{
@@ -137,12 +137,12 @@ public class InvitePlayer extends PlayerCommandMiddle{
 				group.addMember(uuid, pType);
 				group.removeRemoveInvite(uuid);
 				PlayerListener.addNotification(uuid, group);
-				p.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
+				p.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /revoke to Revoke an invite.");
 			}
 			else{
 				//Player did not auto accept
 				PlayerListener.addNotification(uuid, group);
-				p.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
+				p.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /revoke to Revoke an invite.");
 			}
 		}
 		
