@@ -233,7 +233,7 @@ public class CivChat2Manager {
 
 	
 	/**
-	 * Check to see if a receiver is ignoring a sender (P2P chat only)
+	 * Check to see if a receiver is ignoring a sender
 	 * @param receiverName
 	 * @param senderName
 	 * @return True if they are ignored, False if not
@@ -285,25 +285,27 @@ public class CivChat2Manager {
 		}
 		
 		for (Player receiver : recipients){
-			//loop through players and send to those that are close enough
-			ChatColor color = ChatColor.valueOf(defaultColor);
-			int rx = receiver.getLocation().getBlockX();
-			int ry = receiver.getLocation().getBlockY();
-			int rz = receiver.getLocation().getBlockZ();
-			
-			chatdist = Math.sqrt(Math.pow(x- rx, 2) + Math.pow(y - ry, 2) + Math.pow(z - rz, 2));
-			
-			if(chatdist <= range){
-				if(receiver.getWorld() != sender.getWorld()){
-					//reciever is in differnt world dont send
-					continue;
-				} else {
-					receiver.sendMessage(sb.append(color) 
-											.append( NameAPI.getCurrentName(uuid)) 
-											.append(": ") 
-											.append( chatMessage)
-											.toString());
-					sb.delete(0, sb.length());
+			if (!isIgnoringPlayer(receiver.getName(), sender.getName())) {
+				//loop through players and send to those that are close enough
+				ChatColor color = ChatColor.valueOf(defaultColor);
+				int rx = receiver.getLocation().getBlockX();
+				int ry = receiver.getLocation().getBlockY();
+				int rz = receiver.getLocation().getBlockZ();
+				
+				chatdist = Math.sqrt(Math.pow(x- rx, 2) + Math.pow(y - ry, 2) + Math.pow(z - rz, 2));
+				
+				if(chatdist <= range){
+					if(receiver.getWorld() != sender.getWorld()){
+						//reciever is in differnt world dont send
+						continue;
+					} else {
+						receiver.sendMessage(sb.append(color) 
+												.append( NameAPI.getCurrentName(uuid)) 
+												.append(": ") 
+												.append( chatMessage)
+												.toString());
+						sb.delete(0, sb.length());
+					}
 				}
 			}
 		}
