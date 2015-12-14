@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
@@ -19,7 +20,6 @@ import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 
 public class FurnCraftChestInteractionManager implements IInteractionManager {
 	private FurnCraftChestFactory fccf;
-	private ClickableInventory ci;
 	private HashMap<Clickable, InputRecipe> recipes = new HashMap<Clickable, InputRecipe>();
 
 	public FurnCraftChestInteractionManager(FurnCraftChestFactory fccf) {
@@ -51,7 +51,79 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	public void leftClick(Player p, Block b) {
 		if (b.equals(((FurnCraftChestStructure) fccf.getMultiBlockStructure())
 				.getChest())) { // chest interaction
-			// TODO Display information
+			if (p.isSneaking()) { // sneaking, so showing detailed recipe stuff
+				ClickableInventory ci = new ClickableInventory(
+						new ArrayList<Clickable>(), 54, fccf.getCurrentRecipe()
+								.getRecipeName());
+				int index = 4;
+				for (ItemStack is : ((InputRecipe) fccf.getCurrentRecipe())
+						.getInputRepresentation(fccf.getInventory())) {
+					Clickable c = new Clickable(is) {
+						@Override
+						public void clicked(Player arg0) {
+							// nothing, just supposed to look nice
+						}
+					};
+					ci.setSlot(c, index);
+					// weird math to fill up the gui nicely
+					if ((index % 9) == 4) {
+						index++;
+						continue;
+					}
+					if ((index % 9) > 4) {
+						index -= (((index % 9) - 4) * 2);
+					} else {
+						if ((index % 9) == 0) {
+							index += 9;
+						} else {
+							index += (((4 - (index % 9)) * 2) + 1);
+						}
+					}
+
+				}
+				index = 49;
+				for (ItemStack is : ((InputRecipe) fccf.getCurrentRecipe())
+						.getOutputRepresentation(fccf.getInventory())) {
+					Clickable c = new Clickable(is) {
+						@Override
+						public void clicked(Player arg0) {
+							// nothing, just supposed to look nice
+						}
+					};
+					ci.setSlot(c, index);
+					if ((index % 9) == 4) {
+						index++;
+						continue;
+					}
+					if ((index % 9) > 4) {
+						index -= (((index % 9) - 4) * 2);
+					} else {
+						if ((index % 9) == 0) {
+							index -= 9;
+						} else {
+							index += (((4 - (index % 9)) * 2) + 1);
+						}
+					}
+
+				}
+				ci.showInventory(p);
+
+			} else { // not sneaking, so just a short sumup
+				p.sendMessage(ChatColor.GOLD + fccf.getName()
+						+ " currently turned "
+						+ (fccf.isActive() ? "on" : "off"));
+				if (fccf.isActive()) {
+					p.sendMessage(ChatColor.GOLD
+							+ String.valueOf((fccf.getCurrentRecipe()
+									.getProductionTime() - fccf
+									.getRunningTime()) / 20)
+							+ " seconds remaining until current run is complete");
+				}
+				p.sendMessage(ChatColor.GOLD + "Currently selected recipe: "
+						+ fccf.getCurrentRecipe().getRecipeName());
+				p.sendMessage(ChatColor.GOLD + "Currently at "
+						+ fccf.getRepairManager().getHealth() + " health");
+			}
 
 			return;
 		}
@@ -79,8 +151,8 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				recipes.put(c, recipe);
 				clickables.add(c);
 			}
-			ci = new ClickableInventory(clickables, InventoryType.CHEST,
-					"Select a recipe");
+			ClickableInventory ci = new ClickableInventory(clickables,
+					InventoryType.CHEST, "Select a recipe");
 			ci.showInventory(p);
 			return;
 		}

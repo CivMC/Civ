@@ -36,6 +36,12 @@ public class ConfigParser {
 		this.plugin = plugin;
 	}
 
+	/**
+	 * Parses the whole config and creates a manager containing everything that
+	 * was parsed from the config
+	 * 
+	 * @return manager with everything contained in the config
+	 */
 	public FactoryModManager parse() {
 		plugin.saveDefaultConfig();
 		plugin.reloadConfig();
@@ -63,6 +69,13 @@ public class ConfigParser {
 		return manager;
 	}
 
+	/**
+	 * Parses all recipes and sorts them into a hashmap by their name so they
+	 * are ready to assign them to factories
+	 * 
+	 * @param config
+	 *            ConfigurationSection containing the recipe configurations
+	 */
 	private void parseRecipes(ConfigurationSection config) {
 		recipes = new HashMap<String, IRecipe>();
 		for (String key : config.getKeys(false)) {
@@ -71,6 +84,16 @@ public class ConfigParser {
 		}
 	}
 
+	/**
+	 * Parses all factories
+	 * 
+	 * @param config
+	 *            ConfigurationSection to parse the factories from
+	 * @param defaultUpdate
+	 *            default intervall in ticks how often factories update, each
+	 *            factory can choose to define an own value or to use the
+	 *            default instead
+	 */
 	private void parseFactories(ConfigurationSection config, int defaultUpdate) {
 		for (String key : config.getKeys(false)) {
 			parseFactory(config.getConfigurationSection(key), defaultUpdate);
@@ -78,6 +101,17 @@ public class ConfigParser {
 
 	}
 
+	/**
+	 * Parses a single factory and turns it into a factory egg which is add to
+	 * the manager
+	 * 
+	 * @param config
+	 *            ConfigurationSection to parse the factory from
+	 * @param defaultUpdate
+	 *            default intervall in ticks how often factories update, each
+	 *            factory can choose to define an own value or to use the
+	 *            default instead
+	 */
 	private void parseFactory(ConfigurationSection config, int defaultUpdate) {
 		String name = config.getString("name");
 		// One implementation for each egg here
@@ -106,10 +140,16 @@ public class ConfigParser {
 			plugin.severe("Could not identify factory type "
 					+ config.getString("type"));
 		}
-		plugin.info("Parsed factory "+name);
+		plugin.info("Parsed factory " + name);
 
 	}
 
+	/**
+	 * Disables and enables crafting recipes as specified in the config
+	 * 
+	 * @param config
+	 *            ConfigurationSection to parse from
+	 */
 	private void handleEnabledAndDisabledRecipes(ConfigurationSection config) {
 		// Disabling recipes
 		List<Recipe> toDisable = new ArrayList<Recipe>();
@@ -142,6 +182,13 @@ public class ConfigParser {
 		// TODO enable shaped and unshaped recipes here
 	}
 
+	/**
+	 * Parses a single recipe
+	 * 
+	 * @param config
+	 *            ConfigurationSection to parse the recipe from
+	 * @return The recipe created based on the data parse
+	 */
 	private IRecipe parseRecipe(ConfigurationSection config) {
 		IRecipe result;
 		String name = config.getString("name");
@@ -158,6 +205,7 @@ public class ConfigParser {
 			ItemMap extraMats = parseItemMap(config
 					.getConfigurationSection("input"));
 			String compactedLore = config.getString("compact_lore");
+			manager.setCompactLore(compactedLore);
 			List<Material> excluded = new LinkedList<Material>();
 			for (String mat : config.getStringList("excluded_materials")) {
 				excluded.add(Material.valueOf(mat));
@@ -182,12 +230,23 @@ public class ConfigParser {
 					+ " as a valid recipe identifier");
 			result = null;
 		}
-		plugin.info("Parsed recipe "+name);
+		plugin.info("Parsed recipe " + name);
 		return result;
 	}
 
+	/**
+	 * Creates an itemmap containing all the items listed in the given config
+	 * section
+	 * 
+	 * @param config
+	 *            ConfigurationSection to parse the items from
+	 * @return The item map created
+	 */
 	private static ItemMap parseItemMap(ConfigurationSection config) {
 		ItemMap result = new ItemMap();
+		if (config == null) {
+			return result;
+		}
 		for (String key : config.getKeys(false)) {
 			ConfigurationSection current = config.getConfigurationSection(key);
 			Material m = Material.valueOf(current.getString("material"));
@@ -207,7 +266,7 @@ public class ConfigParser {
 				loreList.add(lore);
 				im.setLore(loreList);
 			}
-			if (config.contains("enchants")) {
+			if (current.contains("enchants")) {
 				for (String enchantKey : current.getConfigurationSection(
 						"enchants").getKeys(false)) {
 					ConfigurationSection enchantConfig = current
@@ -215,7 +274,7 @@ public class ConfigParser {
 							.getConfigurationSection(enchantKey);
 					Enchantment enchant = Enchantment.getByName(enchantConfig
 							.getString("enchant"));
-					int level = enchantConfig.getInt("level");
+					int level = enchantConfig.getInt("level", 1);
 					im.addEnchant(enchant, level, true);
 				}
 			}
@@ -225,6 +284,13 @@ public class ConfigParser {
 		return result;
 	}
 
+	/**
+	 * Parses a potion effect
+	 * 
+	 * @param configurationSection
+	 *            ConfigurationSection to parse the effect from
+	 * @return The potion effect parsed
+	 */
 	private static List<PotionEffect> parsePotionEffects(
 			ConfigurationSection configurationSection) {
 		List<PotionEffect> potionEffects = Lists.newArrayList();

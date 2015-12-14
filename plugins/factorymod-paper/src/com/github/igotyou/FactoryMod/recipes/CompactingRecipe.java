@@ -8,8 +8,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.github.igotyou.FactoryMod.Factory;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
+/**
+ * Used to "compact" itemstack, which means complete stacks are reduced to a
+ * single lored item, which can be stacked. This makes the transportation of
+ * those items much easier. Additionally there can be a cost for each
+ * compaction.
+ *
+ */
 public class CompactingRecipe extends InputRecipe {
 	private List<Material> excludedMaterials;
 	private String compactedLore;
@@ -43,7 +51,7 @@ public class CompactingRecipe extends InputRecipe {
 		return name;
 	}
 
-	public void applyEffect(Inventory i) {
+	public void applyEffect(Inventory i, Factory f) {
 		if (input.isContainedIn(new ItemMap(i))) {
 			for (ItemStack is : i.getContents()) {
 				if (is != null) {
@@ -126,7 +134,8 @@ public class CompactingRecipe extends InputRecipe {
 	 * @return True if compacting the stack is allowed, false if not
 	 */
 	private boolean compactable(ItemStack is) {
-		return !excludedMaterials.contains(is.getType())
+		return is.getMaxStackSize() != 1
+				&& !excludedMaterials.contains(is.getType())
 				&& is.getAmount() == is.getMaxStackSize() && !is.hasItemMeta();
 	}
 }

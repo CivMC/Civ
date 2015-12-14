@@ -112,6 +112,17 @@ public class ItemMap {
 	}
 
 	/**
+	 * Completly removes the given itemstack of this item map, completly
+	 * independent of its amount
+	 * 
+	 * @param input
+	 *            ItemStack to remove
+	 */
+	public void removeItemStackCompletly(ItemStack input) {
+		items.remove(input);
+	}
+
+	/**
 	 * Removes all the given ItemStacks from this map. Only the amount of the
 	 * given ItemStack will be removed, not the complete instance from the map.
 	 * Use the safe parameter to specify whether stacks with negative amounts as
@@ -357,7 +368,7 @@ public class ItemMap {
 	public ItemMap getDifference(ItemMap im) {
 		ItemMap result = new ItemMap();
 		Set<Entry<ItemStack, Integer>> firstSet = getEntrySet();
-		Set<Entry<ItemStack, Integer>> secondSet = im.getEntrySet();
+		Set<Entry<ItemStack, Integer>> secondSet = im.getActualEntrySet();
 		for (Entry<ItemStack, Integer> entry : firstSet) {
 			Integer pulled = im.getAmount(entry.getKey());
 			if (pulled != null) {
@@ -365,15 +376,20 @@ public class ItemMap {
 					result.addItemAmount(entry.getKey(),
 							pulled - entry.getValue());
 				}
-				clearEntrySetFromStack(secondSet, entry.getKey());
+				im.removeItemStackCompletly(entry.getKey());
 			} else {
 				result.addItemAmount(entry.getKey(), entry.getValue() * -1);
 			}
-			clearEntrySetFromStack(firstSet, entry.getKey());
-
 		}
 		result.addEntrySet(secondSet);
 		return result;
+	}
+	
+	/**
+	 * @return An entry set of the hashmap in this itemmap and not just a copy
+	 */
+	private Set <Entry <ItemStack,Integer>> getActualEntrySet() {
+		return items.entrySet();
 	}
 
 	/**
@@ -429,8 +445,8 @@ public class ItemMap {
 	public int getMultiplesContainedIn(ItemMap im) {
 		int res = Integer.MAX_VALUE;
 		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
-			int pulledAmount = im.getAmount(entry.getKey()) != null ? im
-					.getAmount(entry.getKey()) : 0;
+			int pulledAmount = im.getAmount(entry.getKey()) != null ? (im
+					.getAmount(entry.getKey()) / getAmount(entry.getKey())) : 0;
 			res = Math.min(res, pulledAmount);
 		}
 		return res;

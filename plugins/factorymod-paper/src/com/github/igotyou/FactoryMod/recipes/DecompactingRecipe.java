@@ -8,8 +8,15 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.github.igotyou.FactoryMod.Factory;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
+/**
+ * Used to decompact itemstacks, which means a single item with compacted lore
+ * is turned into a whole stack without lore. This reverses the functionality of
+ * the CompactingRecipe
+ *
+ */
 public class DecompactingRecipe extends InputRecipe {
 	private String compactedLore;
 
@@ -34,15 +41,7 @@ public class DecompactingRecipe extends InputRecipe {
 		return false;
 	}
 
-	public int getProductionTime() {
-		return productionTime;
-	}
-
-	public String getRecipeName() {
-		return name;
-	}
-
-	public void applyEffect(Inventory i) {
+	public void applyEffect(Inventory i, Factory f) {
 		if (input.isContainedIn(new ItemMap(i))) {
 			for (ItemStack is : i.getContents()) {
 				if (is != null) {

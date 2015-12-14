@@ -2,6 +2,7 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
@@ -10,6 +11,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
+/**
+ * A recipe with any form of item input to run it
+ *
+ */
 public abstract class InputRecipe implements IRecipe {
 	protected String name;
 	protected int productionTime;
@@ -21,8 +26,32 @@ public abstract class InputRecipe implements IRecipe {
 		this.input = input;
 	}
 
+	/**
+	 * Used to get a representation of a recipes input materials, which is
+	 * displayed in an item gui to illustrate the recipe and to give additional
+	 * information
+	 * 
+	 * @param i
+	 *            Inventory for which the recipe would be run, this is used to
+	 *            add lore to the items, which tells how often the recipe could
+	 *            be run
+	 * @return List of itemstacks which represent the input required to run this
+	 *         recipe
+	 */
 	public abstract List<ItemStack> getInputRepresentation(Inventory i);
 
+	/**
+	 * Used to get a representation of a recipes output materials, which is
+	 * displayed in an item gui to illustrate the recipe and to give additional
+	 * information
+	 * 
+	 * @param i
+	 *            Inventory for which the recipe would be run, this is used to
+	 *            add lore to the items, which tells how often the recipe could
+	 *            be run
+	 * @return List of itemstacks which represent the output returned when
+	 *         running this recipe
+	 */
 	public abstract List<ItemStack> getOutputRepresentation(Inventory i);
 
 	public String getRecipeName() {
@@ -40,7 +69,11 @@ public abstract class InputRecipe implements IRecipe {
 	public boolean enoughMaterialAvailable(Inventory i) {
 		return input.isContainedIn(new ItemMap(i));
 	}
-	
+
+	/**
+	 * @return A single itemstack which is used to represent this recipe as a
+	 *         whole in an item gui
+	 */
 	public abstract ItemStack getRecipeRepresentation();
 
 	/**
@@ -57,9 +90,20 @@ public abstract class InputRecipe implements IRecipe {
 	protected List<ItemStack> createLoredStacksForInfo(Inventory i) {
 		LinkedList<ItemStack> result = new LinkedList<ItemStack>();
 		ItemMap inventoryMap = new ItemMap(i);
+		ItemMap possibleRuns = new ItemMap();
+		for (Entry<ItemStack, Integer> entry : input.getEntrySet()) {
+			if (inventoryMap.getAmount(entry.getKey()) != null) {
+				possibleRuns.addItemAmount(
+						entry.getKey(),
+						inventoryMap.getAmount(entry.getKey())
+								/ entry.getValue());
+			} else {
+				possibleRuns.addItemAmount(entry.getKey(), 0);
+
+			}
+		}
+
 		for (ItemStack is : input.getItemStackRepresentation()) {
-			int possibleRuns = new ItemMap(is)
-					.getMultiplesContainedIn(inventoryMap);
 			ItemMeta im = is.getItemMeta();
 			List<String> lore;
 			if (im.hasLore()) {
@@ -68,7 +112,7 @@ public abstract class InputRecipe implements IRecipe {
 				lore = new LinkedList<String>();
 			}
 			lore.add(ChatColor.GREEN + "Enough materials for "
-					+ String.valueOf(possibleRuns) + " runs");
+					+ String.valueOf(possibleRuns.getAmount(is)) + " runs");
 			im.setLore(lore);
 			is.setItemMeta(im);
 			result.add(is);

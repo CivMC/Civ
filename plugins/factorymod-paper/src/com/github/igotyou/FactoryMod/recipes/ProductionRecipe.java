@@ -9,8 +9,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.github.igotyou.FactoryMod.Factory;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
+/**
+ * Consumes a set of materials from a container and outputs another set of
+ * materials to the same container
+ *
+ */
 public class ProductionRecipe extends InputRecipe {
 	private ItemMap output;
 
@@ -36,9 +42,9 @@ public class ProductionRecipe extends InputRecipe {
 	}
 
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
-		List <ItemStack> stacks = output.getItemStackRepresentation();
-		int possibleRuns = input.getMultiplesContainedIn(new ItemMap (i));
-		for(ItemStack is: stacks) {
+		List<ItemStack> stacks = output.getItemStackRepresentation();
+		int possibleRuns = input.getMultiplesContainedIn(new ItemMap(i));
+		for (ItemStack is : stacks) {
 			ItemMeta im = is.getItemMeta();
 			List<String> lore;
 			if (im.hasLore()) {
@@ -58,7 +64,7 @@ public class ProductionRecipe extends InputRecipe {
 		return createLoredStacksForInfo(i);
 	}
 
-	public void applyEffect(Inventory i) {
+	public void applyEffect(Inventory i, Factory f) {
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd = output.clone();
 		if (new ItemMap(i).contains(toRemove))
@@ -69,14 +75,13 @@ public class ProductionRecipe extends InputRecipe {
 			i.addItem(is);
 		}
 	}
-	
+
 	public ItemStack getRecipeRepresentation() {
-		List <ItemStack> out = output.getItemStackRepresentation();
+		List<ItemStack> out = output.getItemStackRepresentation();
 		ItemStack res;
 		if (out.size() == 0) {
 			res = new ItemStack(Material.STONE);
-		}
-		else {
+		} else {
 			res = out.get(0);
 		}
 		ItemMeta im = res.getItemMeta();

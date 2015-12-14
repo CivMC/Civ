@@ -65,6 +65,10 @@ public class FurnCraftChestFactory extends Factory {
 		return furnaceBlock.getInventory();
 	}
 
+	/**
+	 * Attempts to turn the factory on and does all the checks needed to ensure
+	 * that the factory is allowed to turn on
+	 */
 	public void attemptToActivate(Player p) {
 		// TODO Citadel stuff
 		if (mbs.isComplete()) {
@@ -77,6 +81,13 @@ public class FurnCraftChestFactory extends Factory {
 									+ "This factory is in disrepair, you have to repair it before using it");
 						}
 						return;
+					}
+					if (currentRecipe instanceof RepairRecipe
+							&& rm.atFullHealth()) {
+						if (p != null) {
+							p.sendMessage("This factory is already at full health!");
+							return;
+						}
 					}
 					if (p != null) {
 						p.sendMessage(ChatColor.GREEN + "Activated " + name
@@ -92,17 +103,18 @@ public class FurnCraftChestFactory extends Factory {
 					}
 				}
 			} else {
-				p.sendMessage(ChatColor.RED + "Not enough materials available"); // TODO
-																					// how
-																					// much
-																					// is
-																					// needed
+				if (p != null) {
+					p.sendMessage(ChatColor.RED
+							+ "Not enough materials available");
+				}
 			}
 		}
 	}
 
 	/**
-	 * Turns the factory on
+	 * Actually turns the factory on, never use this directly unless you know
+	 * what you are doing, use attemptToActivate() instead to ensure the factory
+	 * is allowed to turn on
 	 */
 	public void activate() {
 		// lots of code to make the furnace light up, without loosing contents.
@@ -146,10 +158,16 @@ public class FurnCraftChestFactory extends Factory {
 		}
 	}
 
+	/**
+	 * @return The furnace of this factory
+	 */
 	public Block getFurnace() {
 		return ((FurnCraftChestStructure) mbs).getFurnace();
 	}
 
+	/**
+	 * @return The chest of this factory
+	 */
 	public Block getChest() {
 		return ((FurnCraftChestStructure) mbs).getChest();
 	}
@@ -162,7 +180,7 @@ public class FurnCraftChestFactory extends Factory {
 	}
 
 	/**
-	 * called by the manager each update cycle
+	 * Called by the manager each update cycle
 	 */
 	public void run() {
 		if (active && mbs.isComplete()) {
@@ -184,12 +202,12 @@ public class FurnCraftChestFactory extends Factory {
 							// 0 seconds since last fuel consumption
 							pm.setPowerCounter(0);
 						}
-						// if we don't need to consume fuel, just increment the
+						// if we don't need to consume fuel, just increase the
 						// energy timer
 						else {
 							pm.increasePowerCounter(updateTime);
 						}
-						// increment the production timer
+						// increase the production timer
 						currentProductionTimer += updateTime;
 						// schedule next update
 						FactoryModPlugin
@@ -210,7 +228,7 @@ public class FurnCraftChestFactory extends Factory {
 				// time remove input from chest, and add output material
 				else if (currentProductionTimer >= currentRecipe
 						.getProductionTime()) {
-					applyRecipeEffect();
+					currentRecipe.applyEffect(getInventory(), this);
 					currentProductionTimer = 0;
 					if (hasInputMaterials() && pm.powerAvailable()) {
 						pm.setPowerCounter(0);
@@ -232,26 +250,38 @@ public class FurnCraftChestFactory extends Factory {
 		}
 	}
 
+	/**
+	 * @return All the recipes which are available for this instance
+	 */
 	public List<IRecipe> getRecipes() {
 		return recipes;
 	}
 
+	/**
+	 * @return The recipe currently selected in this instance
+	 */
 	public IRecipe getCurrentRecipe() {
 		return currentRecipe;
 	}
 
+	/**
+	 * Changes the current recipe for this factory to the given one
+	 * 
+	 * @param pr
+	 *            Recipe to switch to
+	 */
 	public void setRecipe(IRecipe pr) {
 		if (recipes.contains(pr)) {
 			currentRecipe = pr;
 		}
 	}
 
+	/**
+	 * @return Whether enough materials are available to run the currently
+	 *         selected recipe at least once
+	 */
 	public boolean hasInputMaterials() {
 		return currentRecipe.enoughMaterialAvailable(getInventory());
-	}
-
-	public void applyRecipeEffect() {
-		currentRecipe.applyEffect(getInventory());
 	}
 
 }
