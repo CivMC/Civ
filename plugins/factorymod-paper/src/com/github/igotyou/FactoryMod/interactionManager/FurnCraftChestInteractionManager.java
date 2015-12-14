@@ -69,8 +69,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		if (e.getNewCurrent() == e.getOldCurrent()) {
 			return;
 		}
-		int threshold = 1;
-		int rThreshold = 1;
+		int threshold = FactoryModPlugin.getManager().getRedstonePowerOn();
 		boolean newState = false;
 		if (e.getBlock().getLocation().equals(fccf.getFurnace().getLocation())) {
 			if (e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold && fccf.isActive()) {
@@ -92,7 +91,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				((FurnCraftChestStructure) fccf.getMultiBlockStructure()).getCraftingTable())) {
 			// Can't change recipe while active.
 			int change = e.getOldCurrent() - e.getNewCurrent();
-			if (Math.abs(change) >= rThreshold) {
+			if (Math.abs(change) >= FactoryModPlugin.getManager().getRedstoneRecipeChange()) {
 				List<IRecipe> currentRecipes = fccf.getRecipes();
 				if (currentRecipes.size() == 0) {
 					return;
