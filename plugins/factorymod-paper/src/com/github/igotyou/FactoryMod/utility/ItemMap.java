@@ -13,6 +13,16 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Allows the storage and comparison of itemstacks while ignoring their maximum
+ * possible stack sizes. This offers various tools to compare inventories, to
+ * store recipe costs or to specify setupcosts. Take great care when dealing
+ * with itemstacks with negative amounnts, while this implementation should be
+ * consistent even with negative values, they create possibly unexpected
+ * results. For example an empty inventory/itemmap will seem to contain items
+ * when compared to a map containing negative values
+ *
+ */
 public class ItemMap {
 	private HashMap<ItemStack, Integer> items;
 	private int totalItems;
@@ -384,11 +394,11 @@ public class ItemMap {
 		result.addEntrySet(secondSet);
 		return result;
 	}
-	
+
 	/**
 	 * @return An entry set of the hashmap in this itemmap and not just a copy
 	 */
-	private Set <Entry <ItemStack,Integer>> getActualEntrySet() {
+	private Set<Entry<ItemStack, Integer>> getActualEntrySet() {
 		return items.entrySet();
 	}
 
@@ -553,15 +563,5 @@ public class ItemMap {
 		ItemStack copy = is.clone();
 		copy.setAmount(1);
 		return copy;
-	}
-
-	private Set<Entry<ItemStack, Integer>> clearEntrySetFromStack(
-			Set<Entry<ItemStack, Integer>> set, ItemStack is) {
-		for (Entry<ItemStack, Integer> entry : set) {
-			if (entry.getKey().equals(is)) {
-				set.remove(entry);
-			}
-		}
-		return set;
 	}
 }

@@ -9,7 +9,8 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 /**
- * This will only be registered as a listener if we want to disable portals
+ * Used to disables vanilla nether portals. This will only be registered as a
+ * listener if we want to disable portals.
  *
  */
 public class NetherPortalListener implements Listener {

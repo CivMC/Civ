@@ -14,7 +14,6 @@ public class FactoryModPlugin extends ACivMod {
 		plugin = this;
 		ConfigParser cp = new ConfigParser(this);
 		manager = cp.parse();
-		MultiBlockStructure.initiliazeBlockSides();
 		plugin.getServer().getPluginManager().registerEvents(new FactoryModListener(manager),plugin);
 	}
 

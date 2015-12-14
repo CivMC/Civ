@@ -8,30 +8,19 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
+/**
+ * Physical representation of a factory consisting of a chest, a crafting table
+ * and a furnace. The crafting table has to be inbetween the furnace and chest.
+ * The chest may be a double chest, but the part of the double chest not
+ * adjacent to the crafting table is ignored when doing any checks
+ *
+ */
 public class FurnCraftChestStructure extends MultiBlockStructure {
 	private Block CraftingTable;
 	private Block Furnace;
 	private Block Chest;
 
 	public FurnCraftChestStructure(Block center) {
-		initializeBlocks(center);
-	}
-
-	public FurnCraftChestStructure(List<Block> blocks) {
-		CraftingTable = blocks.get(0);
-		Furnace = blocks.get(1);
-		Chest = blocks.get(2);
-	}
-
-	public boolean isComplete() {
-		return CraftingTable != null
-				&& CraftingTable.getType() == Material.WORKBENCH
-				&& Furnace != null
-				&& (Furnace.getType() == Material.FURNACE || Furnace.getType() == Material.BURNING_FURNACE)
-				&& Chest != null && Chest.getType() == Material.CHEST;
-	}
-
-	public void initializeBlocks(Block center) {
 		if (center.getType() == Material.WORKBENCH) {
 			CraftingTable = center;
 			for (Block b : searchForBlockOnSides(center, Material.CHEST)) {
@@ -56,10 +45,34 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 						Chest = b;
 						Furnace = center.getRelative(BlockFace.WEST);
 					}
+				case UP:
+					if (center.getRelative(BlockFace.DOWN).getType() == Material.FURNACE) {
+						Chest = b;
+						Furnace = center.getRelative(BlockFace.DOWN);
+					}
+				case DOWN:
+					if (center.getRelative(BlockFace.UP).getType() == Material.FURNACE) {
+						Chest = b;
+						Furnace = center.getRelative(BlockFace.UP);
+					}
 				}
 
 			}
 		}
+	}
+
+	public FurnCraftChestStructure(List<Block> blocks) {
+		CraftingTable = blocks.get(0);
+		Furnace = blocks.get(1);
+		Chest = blocks.get(2);
+	}
+
+	public boolean isComplete() {
+		return CraftingTable != null
+				&& CraftingTable.getType() == Material.WORKBENCH
+				&& Furnace != null
+				&& (Furnace.getType() == Material.FURNACE || Furnace.getType() == Material.BURNING_FURNACE)
+				&& Chest != null && Chest.getType() == Material.CHEST;
 	}
 
 	public Block getCraftingTable() {

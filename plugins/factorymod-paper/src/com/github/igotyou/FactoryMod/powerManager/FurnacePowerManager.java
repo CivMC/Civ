@@ -6,6 +6,11 @@ import org.bukkit.inventory.ItemStack;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
+/**
+ * Power manager for a FurnCraftChest factory, which uses a specific item in the
+ * furnace of the factory as fuel
+ *
+ */
 public class FurnacePowerManager implements IPowerManager {
 	private ItemMap fuel;
 	private FurnCraftChestFactory fccf;
@@ -18,12 +23,12 @@ public class FurnacePowerManager implements IPowerManager {
 		this.fuel = fuel;
 		this.fuelConsumptionIntervall = fuelConsumptionIntervall;
 	}
-	
-	public FurnacePowerManager(ItemMap fuel,int fuelConsumptionIntervall) {
+
+	public FurnacePowerManager(ItemMap fuel, int fuelConsumptionIntervall) {
 		this.fuel = fuel;
 		this.fuelConsumptionIntervall = fuelConsumptionIntervall;
 	}
-	
+
 	public void setFactory(FurnCraftChestFactory fccf) {
 		this.fccf = fccf;
 	}
