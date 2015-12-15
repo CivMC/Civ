@@ -34,6 +34,7 @@ public class Materials extends PlayerCommand{
 			t += "Amount: " + type.getRequiredAmount() + ".\n   ";
 			t += "Durability: " + type.getHitPoints() + ".\n   ";
 			t += "Material: " + type.getMaterial() + ".\n   ";
+			t += "Maturation: " + type.getMaturationTime() + ".\n   ";
 			if (type.getItemStack().getItemMeta().hasLore()){
 				t += "Lore: ";
 				for (String x: type.getItemStack().getItemMeta().getLore())
