@@ -306,7 +306,7 @@ public class JukeAlertListener implements Listener {
             Snitch snitch = snitchManager.getSnitch(block.getWorld(), block.getLocation());
             if(snitch != null && !snitch.getGroup().isMember(event.getPlayer().getUniqueId())) {
                 Location loc = snitch.getLoc();
-        	event.getPlayer().sendMessage(ChatColor.AQUA + "Snitch at [" + loc.getWorld() + " " + loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + "] is owned by " 
+        	event.getPlayer().sendMessage(ChatColor.AQUA + "Snitch at [" + loc.getWorld().getName() + " " + loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + "] is owned by " 
                 + NameAPI.getCurrentName(snitch.getGroup().getOwner()) + " and is on group: " + snitch.getGroup().getName());
        	    }
         }
