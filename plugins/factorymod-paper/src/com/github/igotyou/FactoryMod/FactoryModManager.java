@@ -29,13 +29,17 @@ public class FactoryModManager {
 	private HashSet<Material> possibleInteractionBlock;
 	private Material factoryInteractionMaterial;
 	private boolean citadelEnabled;
+	private int redstonePowerOn;
+	private int redstoneRecipeChange;
 	private String compactLore;
 
 	public FactoryModManager(FactoryModPlugin plugin,
-			Material factoryInteractionMaterial, boolean citadelEnabled) {
+			Material factoryInteractionMaterial, boolean citadelEnabled, int redstonePowerOn, int redstoneRecipeChange) {
 		this.plugin = plugin;
 		this.factoryInteractionMaterial = factoryInteractionMaterial;
 		this.citadelEnabled = citadelEnabled;
+		this.redstonePowerOn = redstonePowerOn;
+		this.redstoneRecipeChange = redstoneRecipeChange;
 
 		factoryCreationRecipes = new HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>>();
 		locations = new HashMap<Location, Factory>();
@@ -251,5 +255,26 @@ public class FactoryModManager {
 	 */
 	public IFactoryEgg getEgg(String name) {
 		return eggs.get(name);
+	}
+	
+	/**
+	 * Gets the Redstone power level necessary to active a factory.
+	 * Fall below this level and the factory will deactivate.
+	 *  
+	 * @return The power level on which factory activation or de-activation hinges
+	 */
+	public int getRedstonePowerOn() {
+		return this.redstonePowerOn;
+	}
+	
+	/**
+	 * Gets the Redstone power change necessary to alter the recipe setting of a factory.
+	 * Any change >= this level, either positive or negative, will attempt to alter the recipe 
+	 *   (implementation depending).
+	 *   
+	 * @return The amount of Redstone power change necessary to alter recipe setting of a factory.
+	 */
+	public int getRedstoneRecipeChange() {
+		return this.redstoneRecipeChange;
 	}
 }

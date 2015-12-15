@@ -4,6 +4,8 @@ citadel_enabled: true
 factory_interaction_material: STICK
 disable_nether: true
 default_update_time: 4
+redstone_power_on: 7
+redstone_recipe_change: 2
 
 crafting:
     disabled:

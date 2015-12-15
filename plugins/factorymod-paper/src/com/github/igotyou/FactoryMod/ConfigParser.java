@@ -58,8 +58,10 @@ public class ConfigParser {
 					.registerEvents(new NetherPortalListener(), plugin);
 		}
 		int defaultUpdateTime = config.getInt("default_update_time", 4);
+		int redstonePowerOn = config.getInt("redstone_power_on", 7);
+		int redstoneRecipeChange = config.getInt("redstone_recipe_change", 2);
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
-				citadelEnabled);
+				citadelEnabled, redstonePowerOn, redstoneRecipeChange);
 		handleEnabledAndDisabledRecipes(config
 				.getConfigurationSection("crafting"));
 		parseRecipes(config.getConfigurationSection("recipes"));
