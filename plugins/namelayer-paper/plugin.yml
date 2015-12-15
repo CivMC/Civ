@@ -32,7 +32,7 @@ commands:
    nllp:
     aliases: [nllistpermissions, nllistperms]
    nlpp:
-    aliases: [nlpromoteplayer, nlpromote, promote, ctpromote, ctaddmod, ctam]
+    aliases: [nlpromoteplayer, nlpromote, ctpromote, ctaddmod, ctam, addmod, promoteplayer]
    nlmg:
     aliases: [nlmergegroups, nlmerge, merge]
    nlmp:
