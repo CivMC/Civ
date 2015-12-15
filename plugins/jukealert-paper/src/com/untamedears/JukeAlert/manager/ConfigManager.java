@@ -41,6 +41,7 @@ public class ConfigManager
     private int alertRateLimit;
     private boolean enableInvisibility;
     private boolean toggleRestartCheckGroup;
+    private boolean displayOwnerOnBreak;
     
     private boolean broadcastAllServers;
 
@@ -112,7 +113,8 @@ public class ConfigManager
         alertRateLimit = loadInt("settings.alertratelimit", 70);
         enableInvisibility = loadBoolean("settings.enableinvisiblity", false);
         toggleRestartCheckGroup = loadBoolean("settings.togglerestartgroupcheck", false);
-        
+        displayOwnerOnBreak = loadBoolean("settings.displayOwnerOnSnitchBreak", true);
+
         broadcastAllServers = loadBoolean("mercury.broadcastallservers", false);
         
         save();
@@ -359,6 +361,10 @@ public class ConfigManager
     
     public boolean getInvisibilityEnabled(){
     	return enableInvisibility;
+    }
+
+    public boolean isDisplayOwnerOnBreak() {
+        return displayOwnerOnBreak;
     }
     
     public boolean getToggleRestartCheckGroup(){
