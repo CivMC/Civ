@@ -83,7 +83,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			}
 			
 			if (newState) {
-				fccf.activate();
+				fccf.attemptToActivate(null);
 			} else {
 				fccf.deactivate();
 			}
@@ -280,7 +280,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			ci.showInventory(p);
 			return;
 		}
-		if (b.equals(fccf.getFurnace()) { // furnace interaction
+		if (b.equals(fccf.getFurnace())) { // furnace interaction
 			if (fccf.isActive()) {
 				fccf.deactivate();
 			} else {
