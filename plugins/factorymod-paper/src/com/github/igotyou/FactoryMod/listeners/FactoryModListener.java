@@ -21,6 +21,7 @@ import vg.civcraft.mc.citadel.ReinforcementManager;
 
 import com.github.igotyou.FactoryMod.Factory;
 import com.github.igotyou.FactoryMod.FactoryModManager;
+import com.github.igotyou.FactoryMod.multiBlockStructures.MultiBlockStructure;
 
 public class FactoryModListener implements Listener {
 	private FactoryModManager manager;
@@ -68,8 +69,8 @@ public class FactoryModListener implements Listener {
 		List<Block> blocks = e.blockList();
 		for (Block block : blocks) {
 			if (manager.isPossibleInteractionBlock(block.getType())
-					&& ((manager.isCitadelEnabled() && !rm
-							.isReinforced(block)) || !manager.isCitadelEnabled())) {
+					&& ((manager.isCitadelEnabled() && !rm.isReinforced(block)) || !manager
+							.isCitadelEnabled())) {
 				Factory c = manager.getFactoryAt(block);
 				if (c != null) {
 					c.getInteractionManager().blockBreak(null, block);
@@ -85,8 +86,8 @@ public class FactoryModListener implements Listener {
 	public void burnListener(BlockBurnEvent e) {
 		Block block = e.getBlock();
 		if (manager.isPossibleInteractionBlock(block.getType())
-				&& ((manager.isCitadelEnabled() && !rm
-						.isReinforced(block)) || !manager.isCitadelEnabled())) {
+				&& ((manager.isCitadelEnabled() && !rm.isReinforced(block)) || !manager
+						.isCitadelEnabled())) {
 			Factory c = manager.getFactoryAt(block);
 			if (c != null) {
 				c.getInteractionManager().blockBreak(null, block);
@@ -98,18 +99,42 @@ public class FactoryModListener implements Listener {
 	public void playerInteract(PlayerInteractEvent e) {
 		Block block = e.getClickedBlock();
 		Player player = e.getPlayer();
-		if (block != null && manager.isPossibleInteractionBlock(block.getType())
-				&& player.getItemInHand().getType() == manager.getFactoryInteractionMaterial()) {
+		if (block != null
+				&& manager.isPossibleInteractionBlock(block.getType())
+				&& player.getItemInHand().getType() == manager
+						.getFactoryInteractionMaterial()) {
 			Factory c = manager.getFactoryAt(block);
 			if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				if (c != null) {
 					c.getInteractionManager().rightClick(player, block);
+				} else {
+					if (block.getType() == Material.CHEST) {
+						for (Block b : MultiBlockStructure
+								.searchForBlockOnSides(block, Material.CHEST)) {
+							Factory f = manager.getFactoryAt(b);
+							if (f != null) {
+								f.getInteractionManager().rightClick(player, b);
+							}
+						}
+					}
 				}
 			}
 			if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
 				if (c == null) {
 					if (manager.isPossibleCenterBlock(block.getType())) {
 						manager.attemptCreation(block, player);
+					} else {
+						if (block.getType() == Material.CHEST) {
+							for (Block b : MultiBlockStructure
+									.searchForBlockOnSides(block,
+											Material.CHEST)) {
+								Factory f = manager.getFactoryAt(b);
+								if (f != null) {
+									f.getInteractionManager().leftClick(
+											player, b);
+								}
+							}
+						}
 					}
 				} else {
 					c.getInteractionManager().leftClick(player, block);
