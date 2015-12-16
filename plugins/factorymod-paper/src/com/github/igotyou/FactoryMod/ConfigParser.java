@@ -34,6 +34,8 @@ public class ConfigParser {
 	private HashMap<String, IRecipe> recipes;
 	private FactoryModManager manager;
 	private int defaultUpdateTime;
+	private ItemMap defaultFuel;
+	private int defaultFuelConsumptionTime;
 
 	public ConfigParser(FactoryModPlugin plugin) {
 		this.plugin = plugin;
@@ -60,7 +62,11 @@ public class ConfigParser {
 			plugin.getServer().getPluginManager()
 					.registerEvents(new NetherPortalListener(), plugin);
 		}
-		defaultUpdateTime = config.getInt("default_update_time", 4);
+		defaultUpdateTime = config.getInt("default_update_time", 5);
+		defaultFuel = parseItemMap(config
+				.getConfigurationSection("default_fuel"));
+		defaultFuelConsumptionTime = config.getInt(
+				"default_fuel_consumption_intervall", 20);
 		int redstonePowerOn = config.getInt("redstone_power_on", 7);
 		int redstoneRecipeChange = config.getInt("redstone_recipe_change", 2);
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
@@ -149,8 +155,18 @@ public class ConfigParser {
 			for (String recipe : config.getStringList("recipes")) {
 				recipeList.add(recipes.get(recipe));
 			}
-			ItemMap fuel = parseItemMap(config.getConfigurationSection("fuel"));
-			int fuelIntervall = config.getInt("fuel_consumption_intervall");
+			ItemMap fuel;
+			if (config.contains("fuel")) {
+				fuel = parseItemMap(config.getConfigurationSection("fuel"));
+			} else {
+				fuel = defaultFuel;
+			}
+			int fuelIntervall;
+			if (config.contains("fuel_consumption_intervall")) {
+				fuelIntervall = config.getInt("fuel_consumption_intervall");
+			} else {
+				fuelIntervall = defaultFuelConsumptionTime;
+			}
 			FurnCraftChestEgg egg = new FurnCraftChestEgg(name, update,
 					recipeList, fuel, fuelIntervall);
 			return egg;
