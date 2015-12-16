@@ -17,6 +17,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
+import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.listeners.NetherPortalListener;
 import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.recipes.CompactingRecipe;
@@ -24,6 +25,7 @@ import com.github.igotyou.FactoryMod.recipes.DecompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
+import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 import com.google.common.collect.Lists;
 
@@ -31,6 +33,7 @@ public class ConfigParser {
 	private FactoryModPlugin plugin;
 	private HashMap<String, IRecipe> recipes;
 	private FactoryModManager manager;
+	private int defaultUpdateTime;
 
 	public ConfigParser(FactoryModPlugin plugin) {
 		this.plugin = plugin;
@@ -57,7 +60,7 @@ public class ConfigParser {
 			plugin.getServer().getPluginManager()
 					.registerEvents(new NetherPortalListener(), plugin);
 		}
-		int defaultUpdateTime = config.getInt("default_update_time", 4);
+		defaultUpdateTime = config.getInt("default_update_time", 4);
 		int redstonePowerOn = config.getInt("redstone_power_on", 7);
 		int redstoneRecipeChange = config.getInt("redstone_recipe_change", 2);
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
@@ -65,8 +68,7 @@ public class ConfigParser {
 		handleEnabledAndDisabledRecipes(config
 				.getConfigurationSection("crafting"));
 		parseRecipes(config.getConfigurationSection("recipes"));
-		parseFactories(config.getConfigurationSection("factories"),
-				defaultUpdateTime);
+		parseFactories(config.getConfigurationSection("factories"));
 		plugin.info("Parsed complete config");
 		return manager;
 	}
@@ -96,9 +98,9 @@ public class ConfigParser {
 	 *            factory can choose to define an own value or to use the
 	 *            default instead
 	 */
-	private void parseFactories(ConfigurationSection config, int defaultUpdate) {
+	private void parseFactories(ConfigurationSection config) {
 		for (String key : config.getKeys(false)) {
-			parseFactory(config.getConfigurationSection(key), defaultUpdate);
+			parseFactory(config.getConfigurationSection(key));
 		}
 
 	}
@@ -114,16 +116,34 @@ public class ConfigParser {
 	 *            factory can choose to define an own value or to use the
 	 *            default instead
 	 */
-	private void parseFactory(ConfigurationSection config, int defaultUpdate) {
+	private void parseFactory(ConfigurationSection config) {
+		IFactoryEgg egg = null;
+		switch (config.getString("type")) {
+		case "FCC": // Furnace, chest, craftingtable
+			egg = parseFactoryEgg(config);
+			ItemMap setupCost = parseItemMap(config
+					.getConfigurationSection("setupcost"));
+			manager.addFactoryCreationEgg(FurnCraftChestStructure.class,
+					setupCost, egg);
+			break;
+
+		default:
+			plugin.severe("Could not identify factory type "
+					+ config.getString("type"));
+		}
+		plugin.info("Parsed factory " + egg.getName());
+
+	}
+
+	public IFactoryEgg parseFactoryEgg(ConfigurationSection config) {
 		String name = config.getString("name");
-		// One implementation for each egg here
 		switch (config.getString("type")) {
 		case "FCC": // Furnace, chest, craftingtable
 			int update;
 			if (config.contains("updatetime")) {
 				update = config.getInt("updatetime");
 			} else {
-				update = defaultUpdate;
+				update = defaultUpdateTime;
 			}
 			List<IRecipe> recipeList = new LinkedList<IRecipe>();
 			for (String recipe : config.getStringList("recipes")) {
@@ -131,19 +151,14 @@ public class ConfigParser {
 			}
 			ItemMap fuel = parseItemMap(config.getConfigurationSection("fuel"));
 			int fuelIntervall = config.getInt("fuel_consumption_intervall");
-			ItemMap setupCost = parseItemMap(config
-					.getConfigurationSection("setupcost"));
 			FurnCraftChestEgg egg = new FurnCraftChestEgg(name, update,
 					recipeList, fuel, fuelIntervall);
-			manager.addFactoryEgg(FurnCraftChestStructure.class, setupCost, egg);
-			break;
-
+			return egg;
 		default:
 			plugin.severe("Could not identify factory type "
 					+ config.getString("type"));
+			return null;
 		}
-		plugin.info("Parsed factory " + name);
-
 	}
 
 	/**
@@ -226,6 +241,13 @@ public class ConfigParser {
 			ItemMap rep = parseItemMap(config.getConfigurationSection("input"));
 			int health = config.getInt("health_gained");
 			result = new RepairRecipe(name, productionTime, rep, health);
+			break;
+		case "UPGRADE":
+			ItemMap upgradeCost = parseItemMap(config
+					.getConfigurationSection("input"));
+			IFactoryEgg egg = parseFactoryEgg(config
+					.getConfigurationSection("factory"));
+			result = new Upgraderecipe(name, productionTime, upgradeCost, egg);
 			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type")

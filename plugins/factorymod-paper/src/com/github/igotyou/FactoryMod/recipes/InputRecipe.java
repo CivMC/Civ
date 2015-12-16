@@ -7,9 +7,9 @@ import java.util.Map.Entry;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.utility.ItemMap;
+import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
 
 /**
  * A recipe with any form of item input to run it
@@ -104,17 +104,11 @@ public abstract class InputRecipe implements IRecipe {
 		}
 
 		for (ItemStack is : input.getItemStackRepresentation()) {
-			ItemMeta im = is.getItemMeta();
-			List<String> lore;
-			if (im.hasLore()) {
-				lore = im.getLore();
-			} else {
-				lore = new LinkedList<String>();
-			}
-			lore.add(ChatColor.GREEN + "Enough materials for "
-					+ String.valueOf(possibleRuns.getAmount(is)) + " runs");
-			im.setLore(lore);
-			is.setItemMeta(im);
+			ItemStackUtils.addLore(
+					is,
+					ChatColor.GREEN + "Enough materials for "
+							+ String.valueOf(possibleRuns.getAmount(is))
+							+ " runs");
 			result.add(is);
 		}
 		return result;

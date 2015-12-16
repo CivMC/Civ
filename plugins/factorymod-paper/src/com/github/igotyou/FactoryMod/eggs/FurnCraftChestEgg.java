@@ -52,6 +52,22 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		return name;
 	}
 
+	public int getUpdateTime() {
+		return updateTime;
+	}
+
+	public ItemMap getFuel() {
+		return fuel;
+	}
+
+	public List<IRecipe> getRecipes() {
+		return recipes;
+	}
+
+	public int getFuelConsumptionIntervall() {
+		return fuelConsumptionIntervall;
+	}
+
 	public Factory revive(List<Block> blocks, int health, String selectedRecipe) {
 		FurnCraftChestStructure fccs = new FurnCraftChestStructure(blocks);
 		FurnacePowerManager fpm = new FurnacePowerManager(fuel,

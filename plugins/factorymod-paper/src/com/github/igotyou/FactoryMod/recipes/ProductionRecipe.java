@@ -1,6 +1,5 @@
 package com.github.igotyou.FactoryMod.recipes;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -11,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.Factory;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
+import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
 
 /**
  * Consumes a set of materials from a container and outputs another set of
@@ -45,17 +45,9 @@ public class ProductionRecipe extends InputRecipe {
 		List<ItemStack> stacks = output.getItemStackRepresentation();
 		int possibleRuns = input.getMultiplesContainedIn(new ItemMap(i));
 		for (ItemStack is : stacks) {
-			ItemMeta im = is.getItemMeta();
-			List<String> lore;
-			if (im.hasLore()) {
-				lore = im.getLore();
-			} else {
-				lore = new LinkedList<String>();
-			}
-			lore.add(ChatColor.GREEN + "Enough materials for "
-					+ String.valueOf(possibleRuns) + " runs");
-			im.setLore(lore);
-			is.setItemMeta(im);
+			ItemStackUtils.addLore(is, ChatColor.GREEN
+					+ "Enough materials for " + String.valueOf(possibleRuns)
+					+ " runs");
 		}
 		return stacks;
 	}
@@ -84,9 +76,7 @@ public class ProductionRecipe extends InputRecipe {
 		} else {
 			res = out.get(0);
 		}
-		ItemMeta im = res.getItemMeta();
-		im.setDisplayName(getRecipeName());
-		res.setItemMeta(im);
+		ItemStackUtils.setName(res, getRecipeName());
 		return res;
 	}
 }

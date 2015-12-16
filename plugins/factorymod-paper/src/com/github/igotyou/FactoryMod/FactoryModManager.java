@@ -24,6 +24,7 @@ public class FactoryModManager {
 	private HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>> factoryCreationRecipes;
 	private HashMap<Location, Factory> locations;
 	private HashMap<String, IFactoryEgg> eggs;
+	private HashMap<String, HashMap<ItemMap, IFactoryEgg>> upgradeRecipes;
 	private HashSet<Factory> factories;
 	private HashSet<Material> possibleCenterBlocks;
 	private HashSet<Material> possibleInteractionBlock;
@@ -44,6 +45,7 @@ public class FactoryModManager {
 		factoryCreationRecipes = new HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>>();
 		locations = new HashMap<Location, Factory>();
 		eggs = new HashMap<String, IFactoryEgg>();
+		upgradeRecipes = new HashMap<String, HashMap<ItemMap, IFactoryEgg>>();
 		possibleCenterBlocks = new HashSet<Material>();
 		possibleInteractionBlock = new HashSet<Material>();
 		factories = new HashSet<Factory>();
@@ -206,15 +208,27 @@ public class FactoryModManager {
 	 * @param egg
 	 *            Encapsulates the factory itself
 	 */
-	public void addFactoryEgg(Class blockStructureClass, ItemMap recipe,
-			IFactoryEgg egg) {
+	public void addFactoryCreationEgg(Class blockStructureClass,
+			ItemMap recipe, IFactoryEgg egg) {
 		HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
 				.get(blockStructureClass);
 		if (eggs == null) {
 			eggs = new HashMap<ItemMap, IFactoryEgg>();
-			this.factoryCreationRecipes.put(blockStructureClass, eggs);
+			factoryCreationRecipes.put(blockStructureClass, eggs);
 		}
 		eggs.put(recipe, egg);
+		this.eggs.put(egg.getName(), egg);
+	}
+
+	public void addFactoryUpgradeEgg(String factoryUpgradingFrom, ItemMap cost,
+			IFactoryEgg egg) {
+		HashMap<ItemMap, IFactoryEgg> eggs = upgradeRecipes
+				.get(factoryUpgradingFrom);
+		if (eggs == null) {
+			eggs = new HashMap<ItemMap, IFactoryEgg>();
+			upgradeRecipes.put(factoryUpgradingFrom, eggs);
+		}
+		eggs.put(cost, egg);
 		this.eggs.put(egg.getName(), egg);
 	}
 
