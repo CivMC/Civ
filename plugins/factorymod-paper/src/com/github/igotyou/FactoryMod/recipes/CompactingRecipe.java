@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.Factory;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
+import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
 
 /**
  * Used to "compact" itemstack, which means complete stacks are reduced to a
@@ -116,12 +117,8 @@ public class CompactingRecipe extends InputRecipe {
 	 * @param is
 	 */
 	private void compact(ItemStack is) {
-		List<String> loreList = new LinkedList<String>();
-		loreList.add(compactedLore);
+		ItemStackUtils.addLore(is, compactedLore);
 		is.setAmount(1);
-		ItemMeta im = is.getItemMeta();
-		im.setLore(loreList);
-		is.setItemMeta(im);
 	}
 
 	/**

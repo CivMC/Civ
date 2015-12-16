@@ -6,10 +6,10 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.Factory;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
+import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
 
 /**
  * Used to repair FurnCraftChest factories. Once one of those factories is in
@@ -28,11 +28,7 @@ public class RepairRecipe extends InputRecipe {
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
 		ItemStack furn = new ItemStack(Material.FURNACE);
-		ItemMeta im = furn.getItemMeta();
-		List<String> lore = new LinkedList<String>();
-		lore.add("+" + String.valueOf(healthPerRun) + " health");
-		im.setLore(lore);
-		furn.setItemMeta(im);
+		ItemStackUtils.setLore(furn, "+" + String.valueOf(healthPerRun) + " health");
 		result.add(furn);
 		return result;
 	}
@@ -52,9 +48,7 @@ public class RepairRecipe extends InputRecipe {
 
 	public ItemStack getRecipeRepresentation() {
 		ItemStack res = new ItemStack(Material.FURNACE);
-		ItemMeta im = res.getItemMeta();
-		im.setDisplayName(getRecipeName());
-		res.setItemMeta(im);
+		ItemStackUtils.setName(res, getRecipeName());
 		return res;
 	}
 }

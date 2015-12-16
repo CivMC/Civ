@@ -16,10 +16,13 @@ import com.github.igotyou.FactoryMod.Factory;
 import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
+import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
+import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
+import com.github.igotyou.FactoryMod.utility.ItemMap;
 
 /**
  * Represents a "classic" factory, which consists of a furnace as powersource, a
@@ -228,7 +231,16 @@ public class FurnCraftChestFactory extends Factory {
 				// time remove input from chest, and add output material
 				else if (currentProductionTimer >= currentRecipe
 						.getProductionTime()) {
-					currentRecipe.applyEffect(getInventory(), this);
+					if (currentRecipe instanceof Upgraderecipe) {
+						// this if else might look a bit weird, but because
+						// upgrading changes the current recipe and a lot of
+						// other stuff, this is needed
+						currentRecipe.applyEffect(getInventory(), this);
+						deactivate();
+						return;
+					} else {
+						currentRecipe.applyEffect(getInventory(), this);
+					}
 					currentProductionTimer = 0;
 					if (hasInputMaterials() && pm.powerAvailable()) {
 						pm.setPowerCounter(0);
@@ -282,6 +294,20 @@ public class FurnCraftChestFactory extends Factory {
 	 */
 	public boolean hasInputMaterials() {
 		return currentRecipe.enoughMaterialAvailable(getInventory());
+	}
+
+	public void upgrade(String name, List<IRecipe> recipes, ItemMap fuel,
+			int fuelConsumptionIntervall, int updateTime) {
+		this.name = name;
+		this.recipes = recipes;
+		this.updateTime = updateTime;
+		this.pm = new FurnacePowerManager(this, fuel, fuelConsumptionIntervall);
+		this.rm.repair(100);
+		if (recipes.size() != 0) {
+			setRecipe(recipes.get(0));
+		} else {
+			currentRecipe = null;
+		}
 	}
 
 }
