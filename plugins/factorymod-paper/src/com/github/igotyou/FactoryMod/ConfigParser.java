@@ -54,19 +54,18 @@ public class ConfigParser {
 		boolean citadelEnabled = config.getBoolean("citadel_enabled", true);
 		Material factoryInteractionMaterial = Material.getMaterial(config
 				.getString("factory_interaction_material", "STICK"));
-		boolean disableExperience = config.getBoolean("disable_experience",
-				false);
 		// TODO disable experience
 		boolean disableNether = config.getBoolean("disable_nether", false);
 		if (disableNether) {
 			plugin.getServer().getPluginManager()
 					.registerEvents(new NetherPortalListener(), plugin);
 		}
-		defaultUpdateTime = config.getInt("default_update_time", 5);
+		defaultUpdateTime = (int) parseTime(config.getString(
+				"default_update_time", "5"));
 		defaultFuel = parseItemMap(config
 				.getConfigurationSection("default_fuel"));
-		defaultFuelConsumptionTime = config.getInt(
-				"default_fuel_consumption_intervall", 20);
+		defaultFuelConsumptionTime = (int) parseTime(config.getString(
+				"default_fuel_consumption_intervall", "20"));
 		int redstonePowerOn = config.getInt("redstone_power_on", 7);
 		int redstoneRecipeChange = config.getInt("redstone_recipe_change", 2);
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
@@ -147,7 +146,7 @@ public class ConfigParser {
 		case "FCC": // Furnace, chest, craftingtable
 			int update;
 			if (config.contains("updatetime")) {
-				update = config.getInt("updatetime");
+				update = (int)parseTime(config.getString("updatetime"));
 			} else {
 				update = defaultUpdateTime;
 			}
@@ -163,7 +162,7 @@ public class ConfigParser {
 			}
 			int fuelIntervall;
 			if (config.contains("fuel_consumption_intervall")) {
-				fuelIntervall = config.getInt("fuel_consumption_intervall");
+				fuelIntervall = (int)parseTime(config.getString("fuel_consumption_intervall"));
 			} else {
 				fuelIntervall = defaultFuelConsumptionTime;
 			}
@@ -225,7 +224,7 @@ public class ConfigParser {
 	private IRecipe parseRecipe(ConfigurationSection config) {
 		IRecipe result;
 		String name = config.getString("name");
-		int productionTime = config.getInt("production_time");
+		int productionTime = (int)parseTime(config.getString("production_time"));
 		switch (config.getString("type")) {
 		case "PRODUCTION":
 			ItemMap input = parseItemMap(config
@@ -347,6 +346,65 @@ public class ConfigParser {
 			}
 		}
 		return potionEffects;
+	}
+
+	private long parseTime(String arg) {
+		long result = 0;
+		boolean set = true;
+		try {
+			result += Long.parseLong(arg);
+		} catch (NumberFormatException e) {
+			set = false;
+		}
+		if (set) {
+			return result;
+		}
+		while (!arg.equals("")) {
+			int length = 0;
+			switch (arg.charAt(arg.length() - 1)) {
+			case 't': // ticks
+				long ticks = getLastNumber(arg);
+				result += ticks;
+				length = String.valueOf(ticks).length() + 1;
+				break;
+			case 's': // seconds
+				long seconds = getLastNumber(arg);
+				result += 20 * seconds; // 20 ticks in a second
+				length = String.valueOf(seconds).length() + 1;
+				break;
+			case 'm': // minutes
+				long minutes = getLastNumber(arg);
+				result += 20 * 60 * minutes;
+				length = String.valueOf(minutes).length() + 1;
+				break;
+			case 'h': // hours
+				long hours = getLastNumber(arg);
+				result += 20 * 3600 * hours;
+				length = String.valueOf(hours).length() + 1;
+				break;
+			case 'd': // days, mostly here to define a 'never'
+				long days = getLastNumber(arg);
+				result += 20 * 3600 * 24 * days;
+				length = String.valueOf(days).length() + 1;
+			default:
+				plugin.severe("Invalid time value in config:" + arg);
+			}
+			arg = arg.substring(0, arg.length() - length);
+		}
+		return result;
+	}
+
+	private long getLastNumber(String arg) {
+		StringBuilder number = new StringBuilder();
+		for (int i = arg.length() - 2; i >= 0; i--) {
+			if (Character.isDigit(arg.charAt(i))) {
+				number.insert(0, arg.substring(i, i + 1));
+			} else {
+				break;
+			}
+		}
+		long result = Long.parseLong(number.toString());
+		return result;
 	}
 
 }
