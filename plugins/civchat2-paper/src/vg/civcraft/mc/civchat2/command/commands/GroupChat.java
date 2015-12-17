@@ -15,6 +15,8 @@ import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class GroupChat extends PlayerCommand{
@@ -49,6 +51,8 @@ public class GroupChat extends PlayerCommand{
 		if(chatMan.getGroupChatting(playerName) == null){
 			isGroupChatting = false;
 		}
+		Group group;
+		boolean defGroup = false;
 		if(args.length <1){
 			//check if player is in groupchat and move them to normal chat
 			logger.debug("Checking if name=[" + playerName + "] is groupchatting");
@@ -58,11 +62,20 @@ public class GroupChat extends PlayerCommand{
 				return true;
 			}
 			else {
-				handler.helpPlayer(this, sender);
-				return true;
+				String grpName = gm.getDefaultGroup(uuid);
+				if (grpName != null) {
+					group = gm.getGroup(grpName);
+					defGroup = true;
+				}
+				else {
+					handler.helpPlayer(this, sender);
+					return true;
+				}
 			}
 		}
-		Group group = GroupManager.getGroup(args[0]);
+		else {
+			group = GroupManager.getGroup(args[0]);
+		}
 		if(group == null){
 			sender.sendMessage(ChatColor.RED + "There is no group with that name.");
 			return true;
@@ -98,7 +111,7 @@ public class GroupChat extends PlayerCommand{
 			
 		} else if (args.length > 1){
 			StringBuilder chatMsg = new StringBuilder();
-			for(int i = 1; i < args.length; i++){
+			for(int i = defGroup ? 0 : 1; i < args.length; i++){
 				chatMsg.append(args[i]);
 				chatMsg.append(" ");
 			}
