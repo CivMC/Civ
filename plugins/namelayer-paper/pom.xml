@@ -9,30 +9,17 @@
 	<version>2.5.12</version>
 	<name>NameLayer Parent</name>
 	<url>https://github.com/Civcraft/NameLayer/</url>
+	<modules>
+		<module>NameLayerMain</module>
+		<module>NameLayer1_8_R1</module>
+		<module>NameLayer1_8_R2</module>
+		<module>NameLayer1_8_R3</module>
+	</modules>
 
 	<properties>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 	</properties>
-
-	<profiles>
-		<profile>
-			<id>all</id>
-			<activation>
-				<property>
-					<name>cbdedicated</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<modules>
-				<module>NameLayerMain</module>
-				<module>NameLayer1_8_R1</module>
-				<module>NameLayer1_8_R2</module>
-				<module>NameLayer1_8_R3</module>
-			</modules>
-		</profile>
-	</profiles>
-	
 	<build>
 		<plugins>
 			<plugin>
