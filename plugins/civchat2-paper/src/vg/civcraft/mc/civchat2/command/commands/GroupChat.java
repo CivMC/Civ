@@ -105,6 +105,10 @@ public class GroupChat extends PlayerCommand{
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + "You have been moved to groupchat: " + group.getName());
+				String chattingWith = chatMan.getChannel(playerName);
+				if (chattingWith != null) {
+					chatMan.removeChannel(playerName);
+				}
 				chatMan.addGroupChat(playerName, group.getName());
 				return true;
 			}
@@ -133,6 +137,10 @@ public class GroupChat extends PlayerCommand{
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + "You have been moved to groupchat: " + group.getName());
+				String chattingWith = chatMan.getChannel(playerName);
+				if (chattingWith != null) {
+					chatMan.removeChannel(playerName);
+				}
 				chatMan.addGroupChat(playerName, group.getName());
 				chatMan.sendGroupMsg(playerName, chatMsg.toString(), group);
 				return true;
