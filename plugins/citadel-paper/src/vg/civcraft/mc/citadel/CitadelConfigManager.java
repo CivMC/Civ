@@ -112,4 +112,24 @@ public class CitadelConfigManager {
 	public static int getTickRepeatingSave(){
 		return config.getInt("save_interval_ticks", 500);
 	}
+	
+	public static String getHostName(){
+		return config.getString("mysql.hostname", "localhost");
+	}
+	
+	public static int getPort(){
+		return config.getInt("mysql.port", 3306);
+	}
+	
+	public static String getDBName(){
+		return config.getString("mysql.dbname", "bukkit");
+	}
+	
+	public static String getUserName(){
+		return config.getString("mysql.username", "bukkit");
+	}
+	
+	public static String getPassword(){
+		return config.getString("mysql.password", "");
+	}
 }

@@ -63,12 +63,11 @@ public class Citadel extends JavaPlugin{
 	 * Initializes the database.
 	 */
 	public void initializeDatabase(){
-		FileConfiguration nameConfig = NameLayerPlugin.getInstance().getConfig();
-		String host = nameConfig.getString("sql.hostname");
-		String user = nameConfig.getString("sql.username");
-		String password = nameConfig.getString("sql.password");
-		int port = nameConfig.getInt("sql.port");
-		String dbName = nameConfig.getString("sql.dbname");
+		String host = CitadelConfigManager.getHostName();
+		String user = CitadelConfigManager.getUserName();
+		String password = CitadelConfigManager.getPassword();
+		int port = CitadelConfigManager.getPort();
+		String dbName = CitadelConfigManager.getDBName();
 		Database data = new Database(host, port, dbName, user, password, getLogger());
 		db = new CitadelReinforcementData(data);
 	}
