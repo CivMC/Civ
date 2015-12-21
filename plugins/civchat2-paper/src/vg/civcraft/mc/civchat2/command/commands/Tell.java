@@ -45,8 +45,14 @@ public class Tell extends PlayerCommand{
 		Player player = (Player) sender;
 		
 		if (args.length == 0){
-			chatMan.removeChannel(player.getName());
-			player.sendMessage(ChatColor.GREEN + "You have been removed from private chat.");
+			String chattingWith = chatMan.getChannel(player.getName());
+			if (chattingWith != null) {
+				chatMan.removeChannel(player.getName());
+				player.sendMessage(ChatColor.GREEN + "You have been removed from private chat.");
+			}
+			else {
+				player.sendMessage(ChatColor.RED + "You are not in a private chat");
+			}
 			return true;
 		}
 		
