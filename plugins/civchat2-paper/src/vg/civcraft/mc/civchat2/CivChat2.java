@@ -141,7 +141,6 @@ public class CivChat2 extends ACivMod{
 
 	@Override
 	protected String getPluginName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "CivChat2";
 	}
 }
