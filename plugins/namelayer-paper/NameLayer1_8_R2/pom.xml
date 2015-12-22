@@ -22,6 +22,7 @@
 	</parent>
 	
 	<build>
+		<sourceDirectory>../NameLayerNMS1_8_R2/src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -34,7 +35,6 @@
 	</build>
 
 	<dependencies>
-		<sourceDirectory>../NameLayerNMS1_8_R2/src</sourceDirectory>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>Spigot1.8.3</artifactId>
