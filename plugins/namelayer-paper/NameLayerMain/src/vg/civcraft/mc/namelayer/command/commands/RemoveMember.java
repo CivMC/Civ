@@ -115,7 +115,7 @@ public class RemoveMember extends PlayerCommandMiddle {
 			}
 		}
 		if (args.length == 2) {
-			return GroupMemberTabCompleter.complete(args[0],args[1]);
+			return GroupMemberTabCompleter.complete(args[0],args[1], (Player) sender);
 		}
 
 		return null;
