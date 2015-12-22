@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civchat2;
 
 import java.io.File;
+import java.util.List;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -143,4 +144,9 @@ public class CivChat2 extends ACivMod{
 	protected String getPluginName() {
 		return "CivChat2";
 	}
+	
+	 @Override
+	 public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args){
+		 return handle == null ? null : handle.complete(sender, cmd, args);
+	 }
 }
