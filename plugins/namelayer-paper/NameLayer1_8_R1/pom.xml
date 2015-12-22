@@ -21,7 +21,7 @@
 	</parent>
 	
 	<build>
-		<sourceDirectory>../NameLayerNMS1_8_R1/src</sourceDirectory>
+		<sourceDirectory>../NameLayer1_8_R1/src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
