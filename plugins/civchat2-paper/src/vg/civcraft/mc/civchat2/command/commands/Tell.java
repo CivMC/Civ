@@ -56,20 +56,25 @@ public class Tell extends PlayerCommand{
 			return true;
 		}
 		
-		if (CivChat2.getInstance().isMercuryEnabled() && MercuryAPI.instance.getAllPlayers().contains(args[0].toLowerCase())){
-			if(args.length == 1){
-				chatMan.addChatChannel(player.getName(), args[0].toLowerCase());
-				player.sendMessage(ChatColor.GREEN + "You are now chatting with " + args[0] + " on another server.");
-				return true;
-			} else if(args.length >=2){
-				StringBuilder builder = new StringBuilder();
-				for (int x = 1; x < args.length; x++)
-					builder.append(args[x] + " ");
-				//This separator needs to be changed to load from config.
-				String sep = "|";
-				MercuryAPI.sendMessage(MercuryAPI.getServerforPlayer(args[0].toLowerCase()).getServerName(), "pm"+sep+player.getName()+sep+args[0].trim()+sep+builder.toString().replace(sep, ""), "civchat2");
-				player.sendMessage(ChatColor.LIGHT_PURPLE+"To "+args[0]+": "+builder.toString());
-				return true;
+		if (CivChat2.getInstance().isMercuryEnabled()){
+			for(String s : MercuryAPI.getAllPlayers()) {
+				if (s.equalsIgnoreCase(args[0])) {
+					if(args.length == 1){
+						chatMan.addChatChannel(player.getName(), args[0].toLowerCase());
+						player.sendMessage(ChatColor.GREEN + "You are now chatting with " + args[0] + " on another server.");
+						return true;
+					} else if(args.length >=2){
+						StringBuilder builder = new StringBuilder();
+						for (int x = 1; x < args.length; x++)
+							builder.append(args[x] + " ");
+						//This separator needs to be changed to load from config.
+						String sep = "|";
+						MercuryAPI.sendMessage(MercuryAPI.getServerforPlayer(args[0].toLowerCase()).getServerName(), "pm"+sep+player.getName()+sep+args[0].trim()+sep+builder.toString().replace(sep, ""), "civchat2");
+						player.sendMessage(ChatColor.LIGHT_PURPLE+"To "+args[0]+": "+builder.toString());
+						return true;
+					}
+					break;
+				}
 			}
 		}
 		
