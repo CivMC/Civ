@@ -40,8 +40,8 @@ reinforcements:
   requirements: 1
   return: 0
   percent_chance: 100
-  hit_points: 2147483646
-  mature_time: 2147483646
+  hit_points: 147483646
+  mature_time: 147483646
   scale_amount: 0
   lore:
 #natural_reinforcements:
