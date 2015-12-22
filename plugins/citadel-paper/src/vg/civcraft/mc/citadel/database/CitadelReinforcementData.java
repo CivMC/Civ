@@ -3,8 +3,10 @@ package vg.civcraft.mc.citadel.database;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -44,12 +46,15 @@ public class CitadelReinforcementData {
 	 * Creates the required mysql tables and updates the db if needed.
 	 */
 	private void createTables(){
-		int ver = NameLayerPlugin.getVersionNum(plugin.getName());
+		int ver = checkVersion(plugin.getName());
 		long begin_time = System.currentTimeMillis();
+		db.execute("create table if not exists db_version (db_version int not null," +
+				"update_time varchar(24),"
+				+ "plugin_name varchar(40));");
 		if (ver == 0){
 			db.execute(String.format("update db_version set plugin_name = '%s' " +
 					"where plugin_name is null", plugin.getName()));
-			ver = NameLayerPlugin.getVersionNum(plugin.getName());
+			ver = checkVersion(plugin.getName());
 			if (ver == 0){
 				Citadel.Log("Creating tables from scratch, this is a new " +
 						"instance of citadel.");
@@ -132,8 +137,8 @@ public class CitadelReinforcementData {
 			for (String x: types)
 				db.execute(String.format("insert into reinforcement_type(rein_type)"
 						+ "values('%s');", x));
-			NameLayerPlugin.insertVersionNum(5, plugin.getName());
-			ver = NameLayerPlugin.getVersionNum(plugin.getName());
+			updateVersion(5, plugin.getName());
+			ver = checkVersion(plugin.getName());
 			Citadel.Log("The update to Version 6 took " + (System.currentTimeMillis() - first_time) / 1000 + " seconds.");
 		}
 		if (ver == 6){
@@ -161,16 +166,16 @@ public class CitadelReinforcementData {
 					+ "drop z,"
 					+ "drop world;");
 			db.execute("alter table reinforcement_id add index `chunk_id_index` (chunk_id);");
-			NameLayerPlugin.insertVersionNum(ver, plugin.getName());
-			ver = NameLayerPlugin.getVersionNum(plugin.getName());
+			updateVersion(ver, plugin.getName());
+			ver = checkVersion(plugin.getName());
 			Citadel.Log("The update to Version 7 took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
 		}
 		if (ver == 7){
 			long first_time = System.currentTimeMillis();
 			db.execute("alter table reinforcement_id drop primary key,"
 					+ " add primary key (rein_id, x, y, z, world);");
-			NameLayerPlugin.insertVersionNum(ver, plugin.getName());
-			ver = NameLayerPlugin.getVersionNum(plugin.getName());
+			updateVersion(ver, plugin.getName());
+			ver = checkVersion(plugin.getName());
 			Citadel.Log("The update to Version 8 took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
 		}
 		Citadel.Log("The total time it took Citadel to update was " + 
@@ -186,6 +191,7 @@ public class CitadelReinforcementData {
 		initalizePreparedStatements();
 	}
 	
+	private String version, updateVersion;
 	private String getRein, getReins, addRein, removeRein, updateRein, getGroupFromRein;
 	//private PreparedStatement deleteGroup, insertDeleteGroup, removeDeleteGroup, getDeleteGroup;
 	private String insertReinID, insertCustomReinID, getLastReinID, getCordsbyReinID, selectReinCountForGroup, selectReinCount;
@@ -245,6 +251,52 @@ public class CitadelReinforcementData {
 				+ "inner join faction_id f on f.group_id = r.group_id "
 				+ "where f.group_name = ?";
 		selectReinCount = "select count(*) as count from reinforcement r";
+		
+		version = "select max(db_version) as db_version from db_version where plugin_name=?";
+		updateVersion = "insert into db_version (db_version, update_time, plugin_name) values (?,?,?)";
+	}
+	
+	/**
+	 * Checks the version of a specific plugin's db.
+	 * @param name- The name of the plugin.
+	 * @return Returns the version of the plugin or 0 if none was found.
+	 */
+	public int checkVersion(String name){
+		reconnectAndReinitialize();
+		PreparedStatement version = db.prepareStatement(this.version);
+		try {
+			version.setString(1, name);
+			ResultSet set = version.executeQuery();
+			if (!set.next()) 
+				return 0;
+			return set.getInt("db_version");
+		} catch (SQLException e) {
+			// table doesnt exist
+			return 0;
+		}
+	}
+	
+	/**
+	 * Updates the version number for a plugin. You must specify what 
+	 * the current version number is.
+	 * @param version- The current version of the plugin.
+	 * @param pluginname- The plugin name.
+	 * @return Returns the new version of the db.
+	 */
+	public synchronized int updateVersion(int version, String pluginname){
+		reconnectAndReinitialize();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		PreparedStatement updateVersion = db.prepareStatement(this.updateVersion);
+		try {
+			updateVersion.setInt(1, version+ 1);
+			updateVersion.setString(2, sdf.format(new Date()));
+			updateVersion.setString(3, pluginname);
+			updateVersion.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ++version;
 	}
 	
 	/**
