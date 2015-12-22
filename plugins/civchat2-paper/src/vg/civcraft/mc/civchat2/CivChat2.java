@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
@@ -65,10 +64,10 @@ public class CivChat2 extends ACivMod{
 		executor = new CivChat2Executor(instance);
 		registerEvents();
 		
-		getCommand("say").setExecutor(instance.executor);
+		getCommand("say").setExecutor(executor);
 		
 		if (isMercuryEnabled) 
-			MercuryAPI.instance.registerPluginMessageChannel("civchat2");
+			MercuryAPI.registerPluginMessageChannel("civchat2");
 	}
 	
 	public void onDisable(){

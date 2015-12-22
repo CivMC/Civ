@@ -7,8 +7,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+
 import vg.civcraft.mc.civchat2.CivChat2;
+import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.mercury.events.AsyncPluginBroadcastMessageEvent;
+import vg.civcraft.mc.namelayer.group.Group;
 
 public class MercuryMessageListener implements Listener {
 	private static CivChat2 cc;
@@ -39,6 +42,13 @@ public class MercuryMessageListener implements Listener {
 			}
 			
 
+		}
+		else if(message[0].equalsIgnoreCase("gc")) {
+			CivChat2Manager man = cc.getCivChat2Manager();
+			String senderName = message[1];
+			String groupName = message [2];
+			String gcMessage = message [3];
+			man.sendGroupMsgFromOtherShard(senderName, groupName, gcMessage);
 		}
 		
 	}

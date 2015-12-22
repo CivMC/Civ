@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -171,12 +172,20 @@ public class CivChat2FileLogger {
 	 * @param msg The message you want to add to chatlog
 	 * @param receive Player recieving the message
 	 */
-	public void writeToChatLog(Player sender, String msg, String type){
+	public void writeToChatLog(String sender, String msg, String type){
 		String date = new SimpleDateFormat("dd-MM HH:mm:ss").format(new Date());
-		String name = NameAPI.getCurrentName(sender.getUniqueId());
-		String loc = (int) sender.getLocation().getX() + ", "
-				+ (int) sender.getLocation().getY() + ", "
-				+ (int) sender.getLocation().getZ();
+		Player player = Bukkit.getPlayer(sender);
+		String name, loc;
+		if (player != null) {
+		name = NameAPI.getCurrentName(player.getUniqueId());
+		loc = (int) player.getLocation().getX() + ", "
+				+ (int) player.getLocation().getY() + ", "
+				+ (int) player.getLocation().getZ();
+		}
+		else {
+			name = sender;
+			loc = "Not on this server";
+		}
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
 		sb.append(date);

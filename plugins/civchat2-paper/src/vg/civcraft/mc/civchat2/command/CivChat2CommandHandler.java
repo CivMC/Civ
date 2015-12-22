@@ -1,8 +1,5 @@
 package vg.civcraft.mc.civchat2.command;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 

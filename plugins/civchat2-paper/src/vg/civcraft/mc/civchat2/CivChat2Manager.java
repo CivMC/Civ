@@ -115,66 +115,6 @@ public class CivChat2Manager {
 	}
 	
 	/**
-	 * Method to send message in a group
-	 * @param chatGroupName Name of the namelayer group
-	 * @param chatMessage Message to send to the groupees
-	 * @param msgSender Player that sent the message
-	 */
-	public void groupChat(String chatGroupName, String chatMessage, String msgSender) {
-		StringBuilder sb = new StringBuilder();
-		Player sender = Bukkit.getPlayer(NameAPI.getUUID(msgSender));
-		Group chatGroup = GroupManager.getGroup(chatGroupName);
-		if(chatGroup == null){
-			CivChat2.debugmessage(sb.append("groupChat tried chatting to a group that doesn't exist: GroupName" )
-									.append( chatGroupName ) 
-									.append(" Message: ") 
-									.append( chatMessage) 
-									.append( " Sender: ") 
-									.append( msgSender)
-									.toString());
-			sb.delete(0, sb.length());
-			return;
-		}
-		String groupName = chatGroup.getName();
-		List<UUID> groupMembers = chatGroup.getAllMembers();
-		for(UUID u : groupMembers){
-			//check if player is ignoring this group chat or is afk
-			Player p = Bukkit.getPlayer(u);
-			String playerName = NameAPI.getCurrentName(u);
-			if(isAfk(playerName)){
-				//player is afk do not include
-				continue;
-			}
-			if(isIgnoringGroup(playerName, GroupManager.getGroup(groupName))){
-				//player is ignoring group do not include			
-				continue;
-			}
-			if(p == sender){
-				continue;
-			}
-			else{
-				String grayMessage = sb.append(ChatColor.GRAY)
-										.append( "[")
-										.append(groupName)
-										.append( "] ")
-										.append( msgSender)
-										.append( ": ")
-										.toString();
-				sb.delete(0, sb.length());
-				String whiteMessage = sb.append(ChatColor.WHITE)
-										.append(chatMessage)
-										.toString();
-				sb.delete(0, sb.length());
-				p.sendMessage(sb.append(grayMessage)
-								.append(whiteMessage)
-								.toString());
-				sb.delete(0, sb.length());
-			}
-		}		
-	}
-	
-
-	/**
 	 * Method to Send private message between to players
 	 * @param sender Player sending the message
 	 * @param receive Player Receiving the message
@@ -225,7 +165,7 @@ public class CivChat2Manager {
 			return;
 		}
 		CivChat2.debugmessage("Sending private chat message");
-		chatLog.writeToChatLog(sender, chatMessage, "P MSG");
+		chatLog.writeToChatLog(senderName, chatMessage, "P MSG");
 		replyList.put(receiverName, senderName);		
 		sender.sendMessage(senderMessage);
 		receive.sendMessage(receiverMessage);
@@ -268,7 +208,7 @@ public class CivChat2Manager {
 		
 		UUID uuid = NameAPI.getUUID(sender.getName());
 		StringBuilder sb = new StringBuilder();
-		chatLog.writeToChatLog(sender, chatMessage, "GLOBAL");
+		chatLog.writeToChatLog(sender.getName(), chatMessage, "GLOBAL");
 
 		//do height check
 		if(y > height){
@@ -549,7 +489,52 @@ public class CivChat2Manager {
 			}
 		}
 		
-		chatLog.writeToChatLog(msgSender, groupMsg, "GROUP MSG");
+		chatLog.writeToChatLog(name, groupMsg, "GROUP MSG");
+	}
+	
+	public void sendGroupMsgFromOtherShard(String name, String groupName, String groupMsg) {
+		Group g = NameAPI.getGroupManager().getGroup(groupName);
+		if (g == null) {
+			return;
+		}
+		List<Player> members = new ArrayList<Player>();
+		List<UUID> membersUUID = g.getAllMembers();
+		for(UUID uuid : membersUUID){
+			Player toAdd = Bukkit.getPlayer(uuid);
+			if (toAdd != null && toAdd.isOnline()) {
+				members.add(toAdd);
+			}
+		}
+		StringBuilder sb = new StringBuilder();
+		for(Player receiver: members){
+			CivChat2.debugmessage(sb.append("Checking if player is ignoring group or player.. Receiver: " )
+									.append( receiver.getName() )
+									.append(" Group: ") 
+									.append( g.getName()) 
+									.append( " Sender: ")
+									.append( name)
+									.toString());
+			sb.delete(0, sb.length());
+			if(isIgnoringGroup(receiver.getName(), g)){
+				continue;
+			}
+			if(isIgnoringPlayer(receiver.getName(), name)){
+				continue;
+			}
+			else {
+				receiver.sendMessage(sb.append(ChatColor.GRAY )
+										.append( "[" )
+										.append( g.getName() )
+										.append( "] ") 
+										.append( name) 
+										.append( ": " )
+										.append( ChatColor.WHITE) 
+										.append( groupMsg)
+										.toString());
+				sb.delete(0, sb.length());
+			}
+		}
+		chatLog.writeToChatLog(name, groupMsg, "GROUP MSG");
 	}
 	
 	/**

@@ -15,10 +15,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.mercury.MercuryAPI;
-import vg.civcraft.mc.mercury.MercuryPlugin;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
 /*
  * @author jjj5311
@@ -29,6 +27,7 @@ public class CivChat2Listener implements Listener {
 	
 	private CivChat2Manager chatman;
 	private GroupManager gm;
+	private final String sep = "|";
 	
 	public CivChat2Listener(CivChat2Manager instance){
 		chatman = instance;
@@ -71,12 +70,12 @@ public class CivChat2Listener implements Listener {
 		String groupChat = chatman.getGroupChatting(sender.getName());
 		
 		CivChat2.debugmessage(String.format("ChatEvent properties: chatMessage =[ %s ], sender = [ %s ], chatChannel = [ %s ], groupchatting = [ %s ];", chatMessage, sender.getName(), chatChannel, groupChat));
-		if(!(chatChannel == null)){
+		if(chatChannel != null){
 			StringBuilder sb = new StringBuilder();
 			CivChat2.debugmessage("PlayerChatEvent chatChannel does not equal null");
 			Player receive = Bukkit.getPlayer(NameAPI.getUUID(chatChannel));
 			CivChat2.debugmessage("player chat event receive = [" + receive + "]");
-			if(!(receive == null)){	
+			if(receive != null){	
 				if(chatman.isIgnoringPlayer(sender.getName(), chatChannel)){
 					CivChat2.debugmessage("PlayerChatEvent receive != null isIgnoringGroups is true");
 					String muteMessage = sb.append(ChatColor.YELLOW) 
@@ -96,9 +95,8 @@ public class CivChat2Listener implements Listener {
 			}
 			else{
 				if (CivChat2.getInstance().isMercuryEnabled()){
-					if (MercuryAPI.instance.getAllPlayers().contains(chatChannel)){
+					if (MercuryAPI.getAllPlayers().contains(chatChannel)){
 						//This separator needs to be changed to load from config.
-						String sep = "|";
 						MercuryAPI.sendMessage(MercuryAPI.getServerforPlayer(chatChannel.toLowerCase()).getServerName(), "pm"+sep+sender.getName()+sep+chatChannel+sep+chatMessage.replace(sep, ""), "civchat2");
 						sender.sendMessage(ChatColor.LIGHT_PURPLE+"To "+chatChannel+": "+chatMessage);
 						return;
@@ -113,9 +111,12 @@ public class CivChat2Listener implements Listener {
 				return;
 			}
 		}
-		if(!(groupChat == null)){
+		if(groupChat != null){
 			//player is group chatting
 			chatman.sendGroupMsg(sender.getName(), chatMessage, GroupManager.getGroup(groupChat));
+			if (CivChat2.getInstance().isMercuryEnabled()) {
+				MercuryAPI.sendGlobalMessage("gc" + sep + sender.getName() + sep + groupChat + sep + chatMessage, "civchat2");
+			}
 			return;
 		}
 		
