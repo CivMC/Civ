@@ -21,6 +21,7 @@
 	</parent>
 	
 	<build>
+		<sourceDirectory>../NameLayerNMS1_8_R1/src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -30,17 +31,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<sourceDirectory>${basedir}/src</sourceDirectory>
-
-		<resources>
-			<resource>
-				<directory>${basedir}</directory>
-				<includes>
-					<include>*.yml</include>
-				</includes>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
 	</build>
 
 	<dependencies>
@@ -51,10 +41,4 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>Jenkins-repo</id>
-			<url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
-		</repository>
-	</repositories>
 </project>

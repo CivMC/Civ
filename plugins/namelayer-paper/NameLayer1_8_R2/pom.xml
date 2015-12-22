@@ -31,20 +31,10 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<sourceDirectory>${basedir}/src</sourceDirectory>
-
-		<resources>
-			<resource>
-				<directory>${basedir}</directory>
-				<includes>
-					<include>*.yml</include>
-				</includes>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
 	</build>
 
 	<dependencies>
+		<sourceDirectory>../NameLayerNMS1_8_R2/src</sourceDirectory>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>Spigot1.8.3</artifactId>

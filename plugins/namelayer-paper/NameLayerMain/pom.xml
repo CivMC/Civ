@@ -40,13 +40,13 @@
 				<dependency>
 					<groupId>vg.civcraft.mc.mercury</groupId>
 					<artifactId>Mercury</artifactId>
-					<version>[1.0.1,)</version>
+					<version>1.1.103</version>
 					<scope>provided</scope>
 				</dependency>
 				<dependency>
 					<groupId>vg.civcraft.mc.civmodcore</groupId>
 					<artifactId>CivModCore</artifactId>
-					<version>[1.0.1,)</version>
+					<version>1.1.2</version>
 					<scope>provided</scope>
 				</dependency>
 				<dependency>
@@ -99,13 +99,13 @@
 				<dependency>
 					<groupId>vg.civcraft.mc.mercury</groupId>
 					<artifactId>Mercury</artifactId>
-					<version>[1.0.1,)</version>
+					<version>1.1.103</version>
 					<scope>provided</scope>
 				</dependency>
 				<dependency>
 					<groupId>vg.civcraft.mc.civmodcore</groupId>
 					<artifactId>CivModCore</artifactId>
-					<version>[1.0.1,)</version>
+					<version>1.1.2</version>
 					<scope>provided</scope>
 				</dependency>
 				<dependency>
@@ -130,18 +130,8 @@
 		</profile>
 	</profiles>
 	
-	<repositories>
-		<repository>
-			<id>Jenkins-repo</id>
-			<url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
-		</repository>
-		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-		</repository>
-	</repositories>
 	<build>
-		<sourceDirectory>${basedir}/NameLayerMain/src</sourceDirectory>
+		<sourceDirectory>../NameLayerMain/src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
