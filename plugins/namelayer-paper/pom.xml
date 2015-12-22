@@ -24,7 +24,7 @@
 				<module>NameLayer1_8_R2</module>
 				<module>NameLayer1_8_R3</module>
 				<module>NameLayerMain</module>
-				<module>NameLayerPlugin</module>
+				<module>NameLayer</module>
 			</modules>
 		</profile>
 		<profile>
@@ -34,7 +34,7 @@
 			</activation>
 			<modules>
 				<module>NameLayerMain</module>
-				<module>NameLayerPlugin</module>
+				<module>NameLayer</module>
 			</modules>
 		</profile>
 	</profiles>

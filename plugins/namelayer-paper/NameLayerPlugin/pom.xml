@@ -4,10 +4,10 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 <modelVersion>4.0.0</modelVersion>
 	<groupId>vg.civcraft.mc.namelayer</groupId>
-	<artifactId>NameLayerPlugin</artifactId>
+	<artifactId>NameLayer</artifactId>
 	<packaging>jar</packaging>
-	<version>2.5.13</version>
-	<name>NameLayer Plugin</name>
+	<version>2.5.14</version>
+	<name>NameLayer</name>
 	<url>https://github.com/Civcraft/NameLayer/</url>			  
 	
 	<dependencies>
