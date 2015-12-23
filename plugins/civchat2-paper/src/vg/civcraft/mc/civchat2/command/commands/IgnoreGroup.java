@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
-import vg.civcraft.mc.civchat2.database.DatabaseManager;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -23,7 +22,6 @@ public class IgnoreGroup extends PlayerCommand{
 	private CivChat2Manager chatMan;
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
 	private CivChat2CommandHandler handler = (CivChat2CommandHandler) plugin.getCivChat2CommandHandler();
-	private DatabaseManager DBM = plugin.getDatabaseManager();
 	
 	public IgnoreGroup(String name) {
 		super(name);
@@ -59,9 +57,8 @@ public class IgnoreGroup extends PlayerCommand{
 		String ignore = group.getName();
 		String name = NameAPI.getCurrentName(player.getUniqueId());
 		String curGroup = chatMan.getGroupChatting(name);
-		if(!DBM.isIgnoringGroup(name, ignore)){
+		if(chatMan.addIgnoringGroup(name, ignore)){
 			//Player added to list
-			DBM.addIgnoredGroup(name, ignore);
 			String debugMessage = "Player ignored Group, Player: " + name + " Group: " + ignore;
 			logger.debug(debugMessage);
 			sender.sendMessage(ChatColor.YELLOW + "You have ignored: " + ignore);
@@ -75,7 +72,6 @@ public class IgnoreGroup extends PlayerCommand{
 			return true;
 		} else{
 			//player removed from list
-			DBM.removeIgnoredGroup(name, ignore);
 			String debugMessage = "Player un-ignored Group, Player: " + name + " Group: " + ignore;
 			logger.debug(debugMessage);
 			sender.sendMessage(ChatColor.YELLOW + "You have removed: " + ignore + " from ignoring list");
