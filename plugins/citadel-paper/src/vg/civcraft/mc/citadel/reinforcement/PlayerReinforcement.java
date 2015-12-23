@@ -21,19 +21,17 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class PlayerReinforcement extends Reinforcement{
 
-	private int group_id;
 	private Group g;
 	private GroupPermission gp;
 	private boolean isInsecure = false;
 	private ItemStack stack;
 	
 	public PlayerReinforcement(Location loc, int health,
-			int creation, Group g, ItemStack stack, int group_id) {
+			int creation, Group g, ItemStack stack) {
 		super(loc, stack.getType(), health, creation);
 		this.g = g;
 		this.stack = stack;
 		gp = NameAPI.getGroupManager().getPermissionforGroup(g);
-		this.group_id = group_id;
 	}
 	
 	/**
@@ -166,8 +164,7 @@ public class PlayerReinforcement extends Reinforcement{
     
     private void checkValid(){
     	if (!g.isValid()){ // incase it was recently merged/ deleted.
-    		String group = Citadel.getCitadelDatabase().getSavedGroupName(this);
-    		g = NameAPI.getGroupManager().getGroup(group);
+    		g = NameAPI.getGroupManager().getGroup(g.getGroupId());
     		gp = NameAPI.getGroupManager().getPermissionforGroup(g);
     		isDirty = true;
     	}
@@ -179,6 +176,6 @@ public class PlayerReinforcement extends Reinforcement{
      * @return Returns the value of the group_id from the group it was created with.
      */
     public int getGroupId(){
-    	return group_id;
+    	return g.getGroupId();
     }
 }

@@ -54,5 +54,14 @@ public class MultiBlockReinforcement extends Reinforcement{
 	public static MultiBlockReinforcement getMultiRein(int id){
 		return reins.get(id);
 	}
-
+	
+	/**
+     * Note this is different to the group id of a Group.
+     * If a reinforcement is made with Group 1 and then is merged into Group 0 then this will return the group_id
+     * of Group 1.
+     * @return Returns the value of the group_id from the group it was created with.
+     */
+    public int getGroupId(){
+    	return g.getGroupId();
+    }
 }
