@@ -53,7 +53,7 @@ public class CitadelReinforcementData {
 				+ "end;");
 		db.execute("drop procedure if exists insertCustomReinID;");
 		db.execute("create definer=current_user procedure insertCustomReinID("
-				+ "in rein_id int" +
+				+ "in rein_id int," +
 				"in x int,"
 				+ "in y int,"
 				+ "in z int,"
