@@ -33,8 +33,8 @@ public class CitadelReinforcementData {
 	public CitadelReinforcementData(Database db){
 		this.db = db;
 		if (db.connect()){
-			createTables();
 			initalizePreparedStatements();
+			createTables();
 			intitializeProcedures();
 		}
 	}
