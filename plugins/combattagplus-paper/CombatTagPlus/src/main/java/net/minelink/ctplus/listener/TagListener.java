@@ -208,6 +208,9 @@ public final class TagListener implements Listener {
         // Do nothing if user has not specified to kill on kick
         if (!plugin.getSettings().untagOnKick()) return;
 
+        // Do nothing if blacklist contains this kick message
+        if (plugin.getSettings().getUntagOnKickBlacklist().contains(event.getReason())) return;
+
         // Remove the players tag
         Player player = event.getPlayer();
         plugin.getTagManager().untag(player.getUniqueId());

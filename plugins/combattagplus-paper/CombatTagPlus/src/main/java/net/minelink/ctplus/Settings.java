@@ -241,6 +241,10 @@ public final class Settings {
         return plugin.getConfig().getBoolean("untag-on-kick");
     }
 
+    public List<String> getUntagOnKickBlacklist() {
+        return plugin.getConfig().getStringList("untag-on-kick-blacklist");
+    }
+
     public boolean onlyTagAttacker() {
         return plugin.getConfig().getBoolean("only-tag-attacker");
     }

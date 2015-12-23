@@ -47,6 +47,10 @@ instantly-kill: false
 # Untags the player if they are kicked from combat rather than logging.
 untag-on-kick: false
 
+# If a player is kicked with a kick message that contains any of the following, they will not be untagged.
+untag-on-kick-blacklist:
+  - disconnect.spam
+
 # Only the attacker will be tagged if this is set to true.
 only-tag-attacker: false
 
