@@ -269,7 +269,7 @@ public class GroupManagerDao {
 	
 	private PreparedStatement version, updateVersion;
 	
-	private PreparedStatement createGroup, getGroup, getAllGroupsNames, deleteGroup;
+	private PreparedStatement createGroup, getGroup, getGroupById, getAllGroupsNames, deleteGroup;
 	
 	private PreparedStatement addMember, getMembers, removeMember, updatePassword, updateOwner;
 	
@@ -294,6 +294,10 @@ public class GroupManagerDao {
 				"from faction f "
 				+ "inner join faction_id fi on fi.group_name = f.group_name "
 				+ "where f.group_name = ?");
+		getGroupById = db.prepareStatement("select f.group_name, f.founder, f.password, f.discipline_flags, f.group_type, fi.group_id " +
+				"from faction f "
+				+ "inner join faction_id fi on fi.group_id = ? "
+				+ "where f.group_name = fi.group_name");
 		getAllGroupsNames = db.prepareStatement("select f.group_name from faction_id f "
 				+ "inner join faction_member fm on f.group_id = fm.group_id "
 				+ "where fm.member_name = ?");
@@ -422,6 +426,40 @@ public class GroupManagerDao {
 		try {
 			getGroup.setString(1, groupName);
 			ResultSet set = getGroup.executeQuery();
+			if (!set.next()) return null;
+			String name = set.getString(1);
+			String uuid = set.getString(2);
+			UUID owner = null;
+			if (uuid != null)
+				owner = UUID.fromString(uuid);
+			boolean dis = set.getInt(4) != 0;
+			String password = set.getString(3);
+			GroupType type = GroupType.getGroupType(set.getString(5));
+			int id = set.getInt(6);
+			Group g = null;
+			switch(type){
+			case PRIVATE:
+				g = new PrivateGroup(name, owner, dis, password, id);
+				break;
+			case PUBLIC:
+				g = new PublicGroup(name, owner, dis, password, id);
+				break;
+			default:
+				g = new Group(name, owner, dis, password, type, id);
+			}
+			return g;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public synchronized Group getGroup(int groupId){
+		NameLayerPlugin.reconnectAndReintializeStatements();
+		try {
+			getGroupById.setInt(1, groupId);
+			ResultSet set = getGroupById.executeQuery();
 			if (!set.next()) return null;
 			String name = set.getString(1);
 			String uuid = set.getString(2);

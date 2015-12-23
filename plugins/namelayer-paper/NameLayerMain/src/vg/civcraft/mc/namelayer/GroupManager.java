@@ -30,7 +30,8 @@ public class GroupManager{
 		permhandle = new PermissionHandler();
 	}
 	
-	private static Map<String, Group> groups = new ConcurrentHashMap<String, Group>();
+	private static Map<String, Group> groupsByName = new ConcurrentHashMap<String, Group>();
+	private static Map<Integer, Group> groupsById = new ConcurrentHashMap<Integer, Group>();
 	/**
 	 * Saves the group into caching and saves it into the db. Also fires the GroupCreateEvent.
 	 * @param The group to create to db.
@@ -56,9 +57,10 @@ public class GroupManager{
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled())
 			return false;
-		deleteGroupPerms(groups.get(groupName));
+		deleteGroupPerms(groupsByName.get(groupName));
 		groupManagerDao.deleteGroup(groupName);
-		groups.remove(groupName);
+		groupsByName.remove(groupName);
+		groupsById.remove(g.getGroupId());
 		event = new GroupDeleteEvent(g, true);
 		Bukkit.getPluginManager().callEvent(event);
 		g.setDisciplined(true);
@@ -102,7 +104,8 @@ public class GroupManager{
 					for (UUID uuid: toMerge.getAllMembers(type))
 						if (!group.isMember(uuid))
 							group.addMember(uuid, type);
-				groups.remove(toMerge.getName());
+				groupsByName.remove(toMerge.getName());
+				groupsById.remove(toMerge.getGroupId());
 			}
 			
 		});
@@ -124,16 +127,33 @@ public class GroupManager{
 	 */
 	public static Group getGroup(String groupName){
 		groupName = groupName.toLowerCase();
-		if (groups.containsKey(groupName))
-			return groups.get(groupName);
+		if (groupsByName.containsKey(groupName))
+			return groupsByName.get(groupName);
 		else{ 
 			Group group;
 			group = groupManagerDao.getGroup(groupName);
-			if (group != null)
-				groups.put(groupName, group);
+			if (group != null) {
+				groupsByName.put(groupName, group);
+				groupsById.put(group.getGroupId(), group);
+			}
 			return group;
 		}
 	}
+	
+	public static Group getGroup(int groupId){
+		if (groupsById.containsKey(groupId))
+			return groupsById.get(groupId);
+		else{ 
+			Group group;
+			group = groupManagerDao.getGroup(groupId);
+			if (group != null) {
+				groupsByName.put(group.getName(), group);
+				groupsById.put(group.getGroupId(), group);
+			}
+			return group;
+		}
+	}
+	
 	/**
 	 * Returns the admin group for groups if the group was found to be null.
 	 * Good for when you have to have a group that can't be null.
@@ -141,13 +161,15 @@ public class GroupManager{
 	 * @return Either the group or the special admin group.
 	 */
 	public static Group getSpecialCircumstanceGroup(String groupName){
-		if (groups.containsKey(groupName))
-			return groups.get(groupName);
+		if (groupsByName.containsKey(groupName))
+			return groupsByName.get(groupName);
 		else{ 
 			Group group;
 			group = groupManagerDao.getGroup(groupName);
-			if (group != null)
-				groups.put(groupName, group);
+			if (group != null) {
+				groupsByName.put(groupName, group);
+				groupsById.put(group.getGroupId(), group);
+			}
 			else
 				group = groupManagerDao.getGroup(NameLayerPlugin.getSpecialAdminGroup());
 			return group;
@@ -228,7 +250,8 @@ public class GroupManager{
 	 * @param group
 	 */
 	public void invalidateCache(String group){
-		groups.get(group).setValid(false);
-		groups.remove(group);
+		groupsByName.get(group).setValid(false);
+		groupsByName.remove(group);
+		groupsById.remove(group);
 	}
 }
