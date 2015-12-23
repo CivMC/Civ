@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civchat2.command.commands;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -10,17 +9,14 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
-import vg.civcraft.mc.civchat2.database.DatabaseManager;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
-import vg.civcraft.mc.namelayer.NameAPI;
 
 public class IgnoreList extends PlayerCommand{
 	private CivChat2 plugin = CivChat2.getInstance();
 	private CivChat2Manager chatMan;
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
 	private CivChat2CommandHandler handler = (CivChat2CommandHandler) plugin.getCivChat2CommandHandler();
-	private DatabaseManager DBM = plugin.getDatabaseManager();
 	
 	public IgnoreList(String name) {
 		super(name);
@@ -46,8 +42,8 @@ public class IgnoreList extends PlayerCommand{
 			return true;
 		}
 		
-		List<UUID> players = DBM.getIgnoredPlayers(player.getUniqueId());
-		List<String> groups = DBM.getIgnoredGroups(player.getUniqueId());
+		List<String> players = chatMan.getIgnoredPlayers(player.getName());
+		List<String> groups = chatMan.getIgnoredGroups(player.getName());
 		
 		if(players == null){
 			//no players ignored
@@ -56,12 +52,9 @@ public class IgnoreList extends PlayerCommand{
 			StringBuilder sb = new StringBuilder();
 			sb.append("Ignored Players: ");
 			sb.append("\n");
-			for(UUID playerUUID : players){
-				String playerName = NameAPI.getCurrentName(playerUUID);
-				if(playerName != null){
-					sb.append(playerName);
-					sb.append(", ");
-				}
+			for(String s : players){
+				sb.append(s);
+				sb.append(", ");
 			}
 			sender.sendMessage(ChatColor.YELLOW + sb.toString());
 		}
