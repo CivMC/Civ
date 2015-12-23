@@ -1,5 +1,7 @@
 package vg.civcraft.mc.civchat2.command.commands;
 
+import java.util.List;
+
 import net.md_5.bungee.api.ChatColor;
 
 import org.bukkit.command.CommandSender;
@@ -46,5 +48,10 @@ public class SayAll extends PlayerCommand {
 		
 		
 	}
+	
+	@Override
+	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
+		return null;
+	}	
 
 }
