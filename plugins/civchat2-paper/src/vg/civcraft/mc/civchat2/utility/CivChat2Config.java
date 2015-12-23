@@ -49,4 +49,24 @@ public class CivChat2Config {
 		return config.getDouble("chat.yIncreaseScale");
 	}
 	
+	public String getMysqlUsername(){
+		return config.getString("mysql.username");
+	}
+	
+	public String getMysqlHost(){
+		return config.getString("mysql.host");
+	}
+	
+	public int getMysqlPort(){
+		return config.getInt("mysql.port");
+	}
+	
+	public String getMysqlPassword(){
+		return config.getString("mysql.password");
+	}
+	
+	public String getMysqlDBname(){
+		return config.getString("mysql.dbname");
+	}
+
 }

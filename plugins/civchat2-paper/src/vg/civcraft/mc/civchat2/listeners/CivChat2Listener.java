@@ -109,7 +109,7 @@ public class CivChat2Listener implements Listener {
 			//player is group chatting
 			chatman.sendGroupMsg(sender.getName(), chatMessage, GroupManager.getGroup(groupChat));
 			if (CivChat2.getInstance().isMercuryEnabled()) {
-				MercuryAPI.sendGlobalMessage("gc" + sep + sender.getName() + sep + groupChat + sep + chatMessage, "civchat2");
+				MercuryAPI.sendGlobalMessage("gc" + sep + sender.getName() + sep + groupChat + sep + chatMessage.replace(sep, ""), "civchat2");
 			}
 			return;
 		}
