@@ -40,7 +40,29 @@ public class CitadelReinforcementData {
 	}
 
 	private void intitializeProcedures(){
-		// :( empty
+		db.execute("drop procedure if exists insertReinID;");
+		db.execute("create definer=current_user procedure insertReinID(" +
+				"in x int,"
+				+ "in y int,"
+				+ "in z int,"
+				+ "in chunk_id varchar(255),"
+				+ "in world varchar(255)" +
+				") sql security invoker begin "
+				+ "insert into reinforcement_id(x, y, z, chunk_id, world) values (x, y, z, chunk_id, world);"
+				+ "select LAST_INSERT_ID() as id;"
+				+ "end;");
+		db.execute("drop procedure if exists insertCustomReinID;");
+		db.execute("create definer=current_user procedure insertCustomReinID("
+				+ "in rein_id int" +
+				"in x int,"
+				+ "in y int,"
+				+ "in z int,"
+				+ "in chunk_id varchar(255),"
+				+ "in world varchar(255)" +
+				") sql security invoker begin "
+				+ "insert into reinforcement_id(rein_id, x, y, z, chunk_id, world) values (rein_id, x, y, z, chunk_id, world);"
+				+ "select LAST_INSERT_ID() as id;"
+				+ "end;");
 	}
 	/**
 	 * Creates the required mysql tables and updates the db if needed.
@@ -235,10 +257,8 @@ public class CitadelReinforcementData {
 				+ "inner join toDeleteReinforecments d on f.group_id = d.group_id");
 		*/
 		
-		insertReinID = "insert into reinforcement_id(x, y, z, chunk_id, world) values (?, ?, ?, ?, ?);"
-				+ "select LAST_INSERT_ID() as id;";
-		insertCustomReinID = "insert into reinforcement_id(rein_id, x, y, z, chunk_id, world) values (?, ?, ?, ?, ?, ?);"
-				+ "select LAST_INSERT_ID() as id;";
+		insertReinID = "call insertReinID(?,?,?,?,?)";
+		insertCustomReinID = "call insertCustomReinID(?,?,?,?,?,?)";
 		getCordsbyReinID = "select x, y, z, world from reinforcement_id where rein_id = ?";
 		selectReinCountForGroup = "select count(*) as count from reinforcement r "
 				+ "inner join faction_id f on f.group_id = r.group_id "
