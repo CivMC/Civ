@@ -22,6 +22,7 @@ commands:
       aliases: [e]
     sayall:
       permission: CivChat2.*
+    say:
 permissions:
     CivChat2.*:
       description: Gives access to /sayall

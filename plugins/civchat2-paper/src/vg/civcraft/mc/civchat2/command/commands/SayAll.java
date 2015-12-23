@@ -2,8 +2,7 @@ package vg.civcraft.mc.civchat2.command.commands;
 
 import java.util.List;
 
-import net.md_5.bungee.api.ChatColor;
-
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -34,6 +33,7 @@ public class SayAll extends PlayerCommand {
 		StringBuilder sb = new StringBuilder();
 		for(String add: args) {
 			sb.append(add);
+			sb.append(" ");
 		}
 		String msg = sb.toString();
 		plugin.getServer().broadcastMessage(ChatColor.GOLD+ msg);
