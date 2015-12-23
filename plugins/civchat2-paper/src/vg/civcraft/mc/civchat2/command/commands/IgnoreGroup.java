@@ -59,7 +59,7 @@ public class IgnoreGroup extends PlayerCommand{
 		String ignore = group.getName();
 		String name = NameAPI.getCurrentName(player.getUniqueId());
 		String curGroup = chatMan.getGroupChatting(name);
-		if(DBM.isIgnoringGroup(name, ignore)){
+		if(!DBM.isIgnoringGroup(name, ignore)){
 			//Player added to list
 			DBM.addIgnoredGroup(name, ignore);
 			String debugMessage = "Player ignored Group, Player: " + name + " Group: " + ignore;

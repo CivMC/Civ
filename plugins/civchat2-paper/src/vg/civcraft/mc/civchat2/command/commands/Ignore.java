@@ -66,7 +66,7 @@ public class Ignore extends PlayerCommand{
 			sender.sendMessage(ChatColor.RED + "You cannot ignore yourself");
 			return true;
 		}
-		if(DBM.isIgnoringPlayer(name, ignore)){
+		if(!DBM.isIgnoringPlayer(name, ignore)){
 			//Player added to list
 			DBM.addIgnoredPlayer(name, ignore);
 			String debugMessage = "Player ignored another Player, Player: " + name + " IgnoredPlayer: " + ignore;

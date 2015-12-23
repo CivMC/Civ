@@ -51,6 +51,7 @@ public class CivChat2 extends ACivMod{
 		log_ = new CivChat2Log();
 		log_.initializeLogger(instance);
 		fileLog = new CivChat2FileLogger();
+		DBM = new DatabaseManager();
 		chatMan = new CivChat2Manager(instance);
 		fileLog.Init();
 		groupsEnabled = config_.getGroupsEnabled();
@@ -70,8 +71,6 @@ public class CivChat2 extends ACivMod{
 		
 		if (isMercuryEnabled) 
 			MercuryAPI.registerPluginMessageChannel("civchat2");
-		
-		DBM = new DatabaseManager();
 	}
 	
 	public void onDisable(){

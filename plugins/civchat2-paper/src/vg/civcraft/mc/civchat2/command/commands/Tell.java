@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
+import vg.civcraft.mc.civchat2.database.DatabaseManager;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.mercury.MercuryAPI;
@@ -24,6 +25,7 @@ public class Tell extends PlayerCommand{
 	private CivChat2Manager chatMan;
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
 	private CivChat2CommandHandler handler = (CivChat2CommandHandler) plugin.getCivChat2CommandHandler();
+	private DatabaseManager DBM = plugin.getDatabaseManager();
 	
 	public Tell(String name) {
 		super(name);
@@ -61,6 +63,14 @@ public class Tell extends PlayerCommand{
 				//iterate over names to find someone with a similar name to the one entered
 				if (name.equalsIgnoreCase(args[0])) {
 					if(args.length == 1){
+						if (DBM.isIgnoringPlayer(player.getName(), name) ){
+							player.sendMessage(ChatColor.YELLOW + "You need to unignore " + name);
+							return true;
+						}
+				        if (DBM.isIgnoringPlayer(name, player.getName())){
+				            sender.sendMessage(ChatColor.YELLOW + "Player " + name +" is ignoring you");
+				            return true;
+				        }
 						chatMan.removeChannel(player.getName());
 						chatMan.addChatChannel(player.getName(), name);
 						player.sendMessage(ChatColor.GREEN + "You are now chatting with " + name + " on another server.");
@@ -69,7 +79,7 @@ public class Tell extends PlayerCommand{
 						StringBuilder builder = new StringBuilder();
 						for (int x = 1; x < args.length; x++)
 							builder.append(args[x] + " ");
-						chatMan.sendPrivateMsgAcrossShards(player, args[0], builder.toString());
+						chatMan.sendPrivateMsgAcrossShards(player, name, builder.toString());
 						return true;
 					}
 					break;
@@ -105,10 +115,14 @@ public class Tell extends PlayerCommand{
 			return true;
 		}
 		else if(args.length == 1){
-			if (plugin.getDatabaseManager().isIgnoringPlayer(player.getUniqueId(), receiver.getUniqueId()) ){
+			if (DBM.isIgnoringPlayer(player.getUniqueId(), receiver.getUniqueId()) ){
 				player.sendMessage(ChatColor.YELLOW+"You need to unignore "+receiver.getName());
 				return true;
 			}
+	        if (DBM.isIgnoringPlayer(receiver.getUniqueId(), player.getUniqueId())){
+	            sender.sendMessage(ChatColor.YELLOW + "Player " + receiver.getName() +" is ignoring you");
+	            return true;
+	        }
 			chatMan.addChatChannel(player.getName(), receiver.getName());
 			player.sendMessage(ChatColor.GREEN + "You are now chatting with " + receiver.getName() + ".");
 			return true;
