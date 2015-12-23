@@ -61,6 +61,7 @@ public class Tell extends PlayerCommand{
 				//iterate over names to find someone with a similar name to the one entered
 				if (name.equalsIgnoreCase(args[0])) {
 					if(args.length == 1){
+						chatMan.removeChannel(player.getName());
 						chatMan.addChatChannel(player.getName(), name);
 						player.sendMessage(ChatColor.GREEN + "You are now chatting with " + name + " on another server.");
 						return true;
@@ -68,10 +69,7 @@ public class Tell extends PlayerCommand{
 						StringBuilder builder = new StringBuilder();
 						for (int x = 1; x < args.length; x++)
 							builder.append(args[x] + " ");
-						//This separator needs to be changed to load from config.
-						String sep = "|";
-						MercuryAPI.sendMessage(MercuryAPI.getServerforPlayer(name).getServerName(), "pm"+sep+player.getName()+sep+name.trim()+sep+builder.toString().replace(sep, ""), "civchat2");
-						player.sendMessage(ChatColor.LIGHT_PURPLE+"To "+name+": "+builder.toString());
+						chatMan.sendPrivateMsgAcrossShards(player, args[0], builder.toString());
 						return true;
 					}
 					break;

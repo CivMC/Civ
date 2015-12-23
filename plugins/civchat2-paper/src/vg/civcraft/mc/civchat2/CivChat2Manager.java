@@ -21,6 +21,7 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.zipper.CivChat2FileLogger;
+import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -115,6 +116,18 @@ public class CivChat2Manager {
 	}
 	
 	/**
+	 * Method to Send a message to a player on a different shard
+	 * @param receive Name of the player receiving the message
+	 * @param chatMessage Message to send to the player
+	 */
+	public void sendMsgAcrossShards(String receiver, String chatMessage){
+		String receiverServer = MercuryAPI.getServerforPlayer(receiver).getServerName();
+		//This separator needs to be changed to load from config.
+        String sep = "|";
+        MercuryAPI.sendMessage(receiverServer, "msg" + sep + receiver + sep + chatMessage.replace(sep, ""), "civchat2");
+	}
+	
+	/**
 	 * Method to Send private message between to players
 	 * @param sender Player sending the message
 	 * @param receive Player Receiving the message
@@ -166,11 +179,82 @@ public class CivChat2Manager {
 		}
 		CivChat2.debugmessage("Sending private chat message");
 		chatLog.writeToChatLog(senderName, chatMessage, "P MSG");
-		replyList.put(receiverName, senderName);		
+		replyList.put(receiverName, senderName);
+		replyList.put(senderName, receiverName);
 		sender.sendMessage(senderMessage);
 		receive.sendMessage(receiverMessage);
 	}
-
+	
+	/**
+	 * Method to Send a private message to a player on a different shard
+	 * @param sender Player sending the message on the current shard
+	 * @param receiver Name of the player receiving the message on a different shard
+	 * @param chatMessage Message to send from sender to receiver
+	 */
+	public void sendPrivateMsgAcrossShards(Player sender, String receiver, String chatMessage){
+        String receiverServer = MercuryAPI.getServerforPlayer(receiver).getServerName();
+        //This separator needs to be changed to load from config.
+        String sep = "|";
+       
+        if (isIgnoringPlayer(receiver, sender.getName())){
+            sender.sendMessage(ChatColor.YELLOW + "Player " + receiver +" is ignoring you");
+            return;
+        }
+       
+        if (isIgnoringPlayer(sender.getName(), receiver)){
+            sender.sendMessage(ChatColor.YELLOW + "You need to unignore " + receiver);
+            return;
+        }
+       
+        StringBuilder sb = new StringBuilder();
+       
+        String senderMessage = sb.append(ChatColor.LIGHT_PURPLE)
+                                .append("To ")
+                                .append(receiver)
+                                .append(": ")
+                                .append(chatMessage)
+                                .toString();
+       
+        sender.sendMessage(senderMessage);
+       
+        CivChat2.debugmessage(sb.append("ChatManager.sendPrivateMsg Sender: " )
+                .append( sender.getName())  
+                .append(" receiver: ")
+                .append( receiver)
+                .append( " Message: ")
+                .append(chatMessage)
+                .toString());
+        CivChat2.debugmessage("Sending private chat message");
+        chatLog.writeToChatLog(sender.getName(), chatMessage, "P MSG");
+       
+        replyList.put(sender.getName(), receiver);
+        MercuryAPI.sendMessage(receiverServer, "pm" + sep + sender.getName() + sep + receiver.trim()+sep + chatMessage.replace(sep, ""), "civchat2");
+    }
+	
+	/**
+	 * Method to Receive a private message from a player on a different shard
+	 * @param sender Player sending the message on the current shard
+	 * @param receiver Name of the player receiving the message on a different shard
+	 * @param chatMessage Message to send from sender to receiver
+	 */
+    public void receivePrivateMsgAcrossShards(String sender, Player receiver, String chatMessage){
+        if(isAfk(receiver.getName())){
+            sendMsgAcrossShards(sender, AFKMSG);
+        }
+       
+        StringBuilder sb = new StringBuilder();
+       
+        String receiverMessage = sb.append(ChatColor.LIGHT_PURPLE)
+                                .append("From ")
+                                .append(sender)
+                                .append(": ")
+                                .append(chatMessage)
+                                .toString();
+        sb.delete(0, sb.length());
+       
+        replyList.put(receiver.getName(), sender);
+        receiver.sendMessage(receiverMessage);
+    }
 	
 	/**
 	 * Check to see if a receiver is ignoring a sender
