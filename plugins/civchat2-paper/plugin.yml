@@ -20,4 +20,9 @@ commands:
     ignorelist:
     exit:
       aliases: [e]
-    say:
+    sayall:
+      permission: CivChat2.*
+permissions:
+    CivChat2.*:
+      description: Gives access to /sayall
+      default: op
