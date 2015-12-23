@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
+import vg.civcraft.mc.civchat2.database.DatabaseManager;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.mercury.MercuryAPI;
@@ -22,6 +23,7 @@ public class Ignore extends PlayerCommand{
 	private CivChat2Manager chatMan;
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
 	private CivChat2CommandHandler handler = (CivChat2CommandHandler) plugin.getCivChat2CommandHandler();
+	private DatabaseManager DBM = plugin.getDatabaseManager();
 	
 	public Ignore(String name) {
 		super(name);
@@ -64,14 +66,16 @@ public class Ignore extends PlayerCommand{
 			sender.sendMessage(ChatColor.RED + "You cannot ignore yourself");
 			return true;
 		}
-		if(chatMan.addIgnoringPlayer(name, ignore)){
+		if(DBM.isIgnoringPlayer(name, ignore)){
 			//Player added to list
+			DBM.addIgnoredPlayer(name, ignore);
 			String debugMessage = "Player ignored another Player, Player: " + name + " IgnoredPlayer: " + ignore;
 			logger.debug(debugMessage);
 			sender.sendMessage(ChatColor.YELLOW + "You have ignored: " + ignore);
 			return true;
 		} else{
 			//player removed from list
+			DBM.removeIgnoredPlayer(name, ignore);
 			String debugMessage = "Player un-ignored another Player, Player: " + name + " IgnoredPlayer: " + ignore;
 			logger.debug(debugMessage);
 			sender.sendMessage(ChatColor.YELLOW + "You have removed: " + ignore + " from ignoring list");

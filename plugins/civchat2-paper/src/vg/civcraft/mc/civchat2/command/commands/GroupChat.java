@@ -84,7 +84,7 @@ public class GroupChat extends PlayerCommand{
 			sender.sendMessage(ChatColor.RED + "You are not a member of that group.");
 			return true;
 		}
-		if (chatMan.isIgnoringGroup(sender.getName(), group)){
+		if (plugin.getDatabaseManager().isIgnoringGroup(sender.getName(), group.getName())){
 			sender.sendMessage(ChatColor.RED + "You need to unignore group: "+group.getName());
 			return true;
 		}

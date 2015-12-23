@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
+import vg.civcraft.mc.civchat2.database.DatabaseManager;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
 import vg.civcraft.mc.civchat2.listeners.MercuryMessageListener;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
@@ -33,6 +34,7 @@ public class CivChat2 extends ACivMod{
 	private CivChat2FileLogger fileLog;
 	private boolean isMercuryEnabled = false;
 	private static CivChat2Executor executor;
+	private DatabaseManager DBM;
 	
 	public void onEnable(){
 		//onEnable stuff
@@ -68,6 +70,8 @@ public class CivChat2 extends ACivMod{
 		
 		if (isMercuryEnabled) 
 			MercuryAPI.registerPluginMessageChannel("civchat2");
+		
+		DBM = new DatabaseManager();
 	}
 	
 	public void onDisable(){
@@ -138,7 +142,11 @@ public class CivChat2 extends ACivMod{
 	public void setMercuryEnabled(boolean isMercuryEnabled) {
 		this.isMercuryEnabled = isMercuryEnabled;
 	}
-
+	
+	public DatabaseManager getDatabaseManager(){
+		return this.DBM;
+	}
+	
 	@Override
 	protected String getPluginName() {
 		return "CivChat2";

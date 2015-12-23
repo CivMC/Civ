@@ -60,6 +60,8 @@ public class MercuryMessageListener implements Listener {
 				return;
 			}
 			receiver.sendMessage(message[2]);
+		} else if(message[0].equalsIgnoreCase("ignore") || message[0].equalsIgnoreCase("unignore")){
+			cc.getDatabaseManager().processMercuryInfo(message);
 		}
 		
 	}

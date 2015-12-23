@@ -105,7 +105,7 @@ public class Tell extends PlayerCommand{
 			return true;
 		}
 		else if(args.length == 1){
-			if (chatMan.isIgnoringPlayer(player.getName(), receiver.getName()) ){
+			if (plugin.getDatabaseManager().isIgnoringPlayer(player.getUniqueId(), receiver.getUniqueId()) ){
 				player.sendMessage(ChatColor.YELLOW+"You need to unignore "+receiver.getName());
 				return true;
 			}
