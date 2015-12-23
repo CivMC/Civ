@@ -194,7 +194,7 @@ public class CitadelReinforcementData {
 	private String version, updateVersion;
 	private String getRein, getReins, addRein, removeRein, updateRein;
 	//private PreparedStatement deleteGroup, insertDeleteGroup, removeDeleteGroup, getDeleteGroup;
-	private String insertReinID, insertCustomReinID, getLastReinID, getCordsbyReinID, selectReinCountForGroup, selectReinCount;
+	private String insertReinID, insertCustomReinID, getCordsbyReinID, selectReinCountForGroup, selectReinCount;
 	/**
 	 * Initializes the PreparedStatements. Gets called on db connect or
 	 * reconnect.
@@ -235,9 +235,10 @@ public class CitadelReinforcementData {
 				+ "inner join toDeleteReinforecments d on f.group_id = d.group_id");
 		*/
 		
-		insertReinID = "insert ignore into reinforcement_id(x, y, z, chunk_id, world) values (?, ?, ?, ?, ?);";
-		insertCustomReinID = "insert ignore into reinforcement_id(rein_id, x, y, z, chunk_id, world) values (?, ?, ?, ?, ?, ?);";
-		getLastReinID = "select LAST_INSERT_ID() as id";
+		insertReinID = "insert into reinforcement_id(x, y, z, chunk_id, world) values (?, ?, ?, ?, ?);"
+				+ "select LAST_INSERT_ID() as id;";
+		insertCustomReinID = "insert into reinforcement_id(rein_id, x, y, z, chunk_id, world) values (?, ?, ?, ?, ?, ?);"
+				+ "select LAST_INSERT_ID() as id;";
 		getCordsbyReinID = "select x, y, z, world from reinforcement_id where rein_id = ?";
 		selectReinCountForGroup = "select count(*) as count from reinforcement r "
 				+ "inner join faction_id f on f.group_id = r.group_id "
@@ -486,9 +487,10 @@ public class CitadelReinforcementData {
 				String formatChunk = formatChunk(loc);
 				insertReinID.setString(4, formatChunk);
 				insertReinID.setString(5, world);
-				insertReinID.execute();
+				ResultSet set = insertReinID.executeQuery();
+				set.next();
 				
-				int id = getLastReinId();
+				int id = set.getInt("id");
 				
 				PreparedStatement addRein = db.prepareStatement(this.addRein);
 				addRein.setInt(1, mat.getId());
@@ -552,11 +554,27 @@ public class CitadelReinforcementData {
 		else if (rein instanceof MultiBlockReinforcement){
 			MultiBlockReinforcement mbRein = (MultiBlockReinforcement) rein;
 
-			int id = getLastReinId() + 1; // We add one because we haven't added it yet.
+			int id = -1; // We add one because we haven't added it yet.
 			try {
 				PreparedStatement insertCustomReinID = db.prepareStatement(this.insertCustomReinID);
 				// add all the locations into the db.
+				int count = 0;
 				for (Location lo: mbRein.getLocations()){
+					if (count == 0) {
+						PreparedStatement insertReinID = db.prepareStatement(this.insertReinID);
+						insertReinID.setInt(1, lo.getBlockX());
+						insertReinID.setInt(2, lo.getBlockY());
+						insertReinID.setInt(3, lo.getBlockZ());
+						String formatChunk = formatChunk(lo);
+						insertReinID.setString(4, formatChunk);
+						insertReinID.setString(5, lo.getWorld().getName());
+						ResultSet set = insertReinID.executeQuery();
+						set.next();
+						
+						id = set.getInt("id");
+						mbRein.setReinId(id);
+						continue;
+					}
 					insertCustomReinID.setInt(1, id);
 					insertCustomReinID.setInt(2, lo.getBlockX());
 					insertCustomReinID.setInt(3, lo.getBlockY());
@@ -713,27 +731,6 @@ public class CitadelReinforcementData {
 		}
 	}
 	*/
-	
-	private int lastId = 0;
-	public synchronized int getLastReinId(){
-		reconnectAndReinitialize();
-		if (lastId != 0){
-			lastId++;
-			return lastId;
-		}
-		try {
-			PreparedStatement updateRein = db.prepareStatement(this.getLastReinID);
-			ResultSet set = updateRein.executeQuery();
-			set.next();
-			lastId = set.getInt(1);
-			set.close();
-			return lastId;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return 0;
-	}
 	
 	private String formatChunk(Location loc){
 		String chunk = loc.getWorld().getName();

@@ -571,8 +571,7 @@ public class Utility {
      * @return
      */
     public static MultiBlockReinforcement createMultiBlockReinforcement(List<Location> locs, Group g, int dur, int mature){
-    	int nextID = rm.getNextReinforcementID();
-    	MultiBlockReinforcement rein = new MultiBlockReinforcement(locs, g, dur, mature, nextID);
+    	MultiBlockReinforcement rein = new MultiBlockReinforcement(locs, g, dur, mature, -1);
     	ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, rein.getLocation().getBlock(), null);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {

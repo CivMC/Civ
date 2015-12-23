@@ -134,13 +134,6 @@ public class ReinforcementManager {
 	}
 
 	/**
-	 * @return Returns the next reinforcement Id for reinforcements.
-	 */
-	public int getNextReinforcementID() {
-		return db.getLastReinId();
-	}
-
-	/**
 	 * Returns if the location is reinforced or not.
 	 * 
 	 * @param loc

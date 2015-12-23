@@ -22,7 +22,6 @@ public class MultiBlockReinforcement extends Reinforcement{
 		super(null, null, dur, creation);
 		this.g = g;
 		this.locs = locs;
-		reins.put(multiBlockId, this);
 	}
 	
 	@Override
@@ -63,5 +62,9 @@ public class MultiBlockReinforcement extends Reinforcement{
      */
     public int getGroupId(){
     	return g.getGroupId();
+    }
+    
+    public void setReinId(int id) {
+		reins.put(id, this);
     }
 }
