@@ -34,14 +34,14 @@ public class MercuryMessageListener implements Listener {
 		
 		if (message[0].equalsIgnoreCase("pm")){
 			UUID receiverUUID = cc.getCivChat2Manager().getPlayerUUID(message[2]);
-			if (receiverUUID == null){return;}
-			Player receiver = Bukkit.getPlayer(receiverUUID);
-			if (receiver == null || !receiver.isOnline()){return;}
-			if (!CivChat2.getInstance().getCivChat2Manager().isIgnoringPlayer(receiver.getName(), message[1])){
-				receiver.sendMessage(ChatColor.LIGHT_PURPLE+"From "+message[1]+": "+message[3]);
+			if (receiverUUID == null){
+				return;
 			}
-			
-
+			Player receiver = Bukkit.getPlayer(receiverUUID);
+			if (receiver == null || !receiver.isOnline()){
+				return;
+			}
+			cc.getCivChat2Manager().receivePrivateMsgAcrossShards(message[1], receiver, message[3]);
 		}
 		else if(message[0].equalsIgnoreCase("gc")) {
 			CivChat2Manager man = cc.getCivChat2Manager();
@@ -49,6 +49,17 @@ public class MercuryMessageListener implements Listener {
 			String groupName = message [2];
 			String gcMessage = message [3];
 			man.sendGroupMsgFromOtherShard(senderName, groupName, gcMessage);
+		}
+		else if(message[0].equalsIgnoreCase("msg")){
+			UUID receiverUUID = cc.getCivChat2Manager().getPlayerUUID(message[1]);
+			if (receiverUUID == null){
+				return;
+			}
+			Player receiver = Bukkit.getPlayer(receiverUUID);
+			if (receiver == null || !receiver.isOnline()){
+				return;
+			}
+			receiver.sendMessage(message[2]);
 		}
 		
 	}
