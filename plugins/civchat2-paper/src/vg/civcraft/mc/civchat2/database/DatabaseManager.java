@@ -34,6 +34,8 @@ public class DatabaseManager {
 			return;
 		executeDatabaseStatements();
 		loadPreparedStatements();
+		loadIgnoredPlayersList();
+		loadIgnoredGroupsList();
 	}
 	
 	public boolean isValidConnection(){
