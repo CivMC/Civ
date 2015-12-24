@@ -24,9 +24,9 @@ file:
   #maxNumberofZips: The number of chatlog zips to keep
   maxNumberofZips: 4
 mysql:
-  username: bukkit
   host: localhost
+  dbname: ''
   port: 3306
+  username: ''
   password: ''
-  dbname: bukkit2
   
