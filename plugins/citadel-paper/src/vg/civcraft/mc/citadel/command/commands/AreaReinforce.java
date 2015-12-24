@@ -1,14 +1,11 @@
 package vg.civcraft.mc.citadel.command.commands;
 
-import static vg.civcraft.mc.citadel.Utility.wouldPlantDoubleReinforce;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.lang.Integer;
 import java.lang.Math;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,13 +15,8 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.Utility;
-import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
-import vg.civcraft.mc.citadel.misc.ReinforcemnetFortificationCancelException;
-import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
-import vg.civcraft.mc.citadel.reinforcementtypes.NonReinforceableType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -105,7 +97,7 @@ public class AreaReinforce extends PlayerCommand {
 				for (int z = zMin; z <= zMax; z++) {
 					Block current = Utility.getRealBlock(p.getWorld()
 							.getBlockAt(x, y, z));
-					if (!(current.getType() == Material.AIR)
+					if (!(current.getType() == Material.AIR) && !rm.isReinforced(current) 
 							&& !Utility.wouldPlantDoubleReinforce(current)) {				
 						Utility.createPlayerReinforcementWithoutMaterialConsumption(p, g, current, rt);
 					}
