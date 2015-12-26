@@ -100,6 +100,9 @@ public class Database {
      */
     public PreparedStatement prepareStatement(String sqlStatement) {
         try {
+        	if(!isConnected()){
+        		connect();
+        	}
             return connection.prepareStatement(sqlStatement);
         } catch (SQLException ex) {
             this.logger.log(Level.SEVERE, "Failed to prepare statement! " + sqlStatement, ex);
