@@ -179,6 +179,9 @@ public class GrowListener implements Listener {
 	        	if(event.getBlock().getRelative(face).getType() == Material.SOIL) {
 	        		event.setCancelled(true);
 	        	}
+	        	if(event.getBlock().getRelative(face).getType() == Material.SAPLING) {
+	        		event.setCancelled(true);
+	        	}
 	        }
 		}        
     }
