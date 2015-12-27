@@ -110,7 +110,7 @@ public class JukeAlertListener implements Listener {
                 notifyGroup(snitch, ChatColor.AQUA+message);
                                 
                 if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers())
-                	mercury.sendMessage("all", snitch.getGroup().getName() + " " + message, "jukealert-login");
+                	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "jukealert-login");
                 } catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -147,7 +147,7 @@ public class JukeAlertListener implements Listener {
                 notifyGroup(snitch, ChatColor.AQUA+message);
                 
                 if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers())
-                	mercury.sendMessage("all", snitch.getGroup().getName() + " " + message, "jukealert-logout");
+                	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "jukealert-logout");
                 } catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -432,7 +432,7 @@ public class JukeAlertListener implements Listener {
                              notifyGroup(snitch, ChatColor.AQUA+message);
                              
                              if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers())
-                             	mercury.sendMessage("all", snitch.getGroup().getName() + " " + message, "jukealert-entry");
+                             	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "jukealert-entry");
                          	} catch (SQLException e) {
  								e.printStackTrace();
  							}

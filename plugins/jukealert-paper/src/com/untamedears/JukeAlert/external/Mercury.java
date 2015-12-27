@@ -23,8 +23,8 @@ public class Mercury {
 		return isEnabled;
 	}
 	
-	public void sendMessage(String server, String message, String... channels){
-		MercuryAPI.sendMessage(server, message, channels);
+	public void sendMessage(String message, String... channels){
+		MercuryAPI.sendGlobalMessage(message, channels);
 	}
 	
 	public static String[] getChannels(){
