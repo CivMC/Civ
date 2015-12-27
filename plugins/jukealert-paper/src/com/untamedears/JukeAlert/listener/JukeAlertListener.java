@@ -63,8 +63,10 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
+import vg.civcraft.mc.namelayer.events.GroupInvalidationEvent;
 import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
 public class JukeAlertListener implements Listener {
 
