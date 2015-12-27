@@ -132,6 +132,9 @@ public class GrowListener implements Listener {
         					&& MaterialAliases.getConfig(plugin.materialGrowth, event.getClickedBlock()) != null) {
             			event.setCancelled(true);
         			}
+        			else if(material == Material.DOUBLE_PLANT) {
+        				event.setCancelled(true);
+        			}
             	}
             }
         }
@@ -173,13 +176,8 @@ public class GrowListener implements Listener {
 	        	MaterialData d = event.getBlock().getState().getData();
 	        	Dispenser disp = (Dispenser) d;
 	        	BlockFace face = disp.getFacing();
-	        	if(event.getBlock().getRelative(face).getType() == Material.CROPS) {
-	        		event.setCancelled(true);
-	        	}
-	        	if(event.getBlock().getRelative(face).getType() == Material.SOIL) {
-	        		event.setCancelled(true);
-	        	}
-	        	if(event.getBlock().getRelative(face).getType() == Material.SAPLING) {
+	        	Material mat = event.getBlock().getRelative(face).getType();
+	        	if (mat == Material.CROPS || mat == Material.SOIL || mat == Material.SAPLING || mat == Material.DOUBLE_PLANT) {
 	        		event.setCancelled(true);
 	        	}
 	        }
