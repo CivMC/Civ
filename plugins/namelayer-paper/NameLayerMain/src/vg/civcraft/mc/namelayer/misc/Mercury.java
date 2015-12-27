@@ -9,6 +9,6 @@ public class Mercury {
 	 * @param message- The message to send.
 	 */
 	public static void invalidateGroup(String message){
-		MercuryAPI.instance.sendMessage("all", message, "namelayer");
+		MercuryAPI.sendGlobalMessage(message, "namelayer");
 	}
 }
