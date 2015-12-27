@@ -66,7 +66,7 @@ import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
 import vg.civcraft.mc.namelayer.events.GroupInvalidationEvent;
 import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.NameAPI;
 
 public class JukeAlertListener implements Listener {
 
@@ -304,7 +304,7 @@ public class JukeAlertListener implements Listener {
     	else if (reason.equalsIgnoreCase("merge")) {
     		String group1 = event.getParameter() [0];
     		String group2 = event.getParameter() [1];
-    		Group g1 = NameLayerPlugin.getGroupManagerDao().getGroup(group1);
+    		Group g1 = NameAPI.getGroupManager().getGroup(group1);
             Set<Snitch> mergeSet = new TreeSet<Snitch>();
             for (Snitch snitch : snitchManager.getAllSnitches()) {
                 final Group snitchGroup = snitch.getGroup();
