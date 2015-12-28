@@ -12,19 +12,19 @@ import com.github.igotyou.FactoryMod.utility.ItemMap;
  *
  */
 public class FurnacePowerManager implements IPowerManager {
-	private ItemMap fuel;
+	private ItemStack fuel;
 	private FurnCraftChestFactory fccf;
 	private int powerCounter;
 	private int fuelConsumptionIntervall;
 
-	public FurnacePowerManager(FurnCraftChestFactory fccf, ItemMap fuel,
+	public FurnacePowerManager(FurnCraftChestFactory fccf, ItemStack fuel,
 			int fuelConsumptionIntervall) {
 		this.fccf = fccf;
 		this.fuel = fuel;
 		this.fuelConsumptionIntervall = fuelConsumptionIntervall;
 	}
 
-	public FurnacePowerManager(ItemMap fuel, int fuelConsumptionIntervall) {
+	public FurnacePowerManager(ItemStack fuel, int fuelConsumptionIntervall) {
 		this.fuel = fuel;
 		this.fuelConsumptionIntervall = fuelConsumptionIntervall;
 	}
@@ -42,7 +42,7 @@ public class FurnacePowerManager implements IPowerManager {
 		ItemMap im = new ItemMap();
 		im.addItemStack(fi.getFuel());
 		im.addItemStack(fi.getSmelting());
-		return im.contains(fuel);
+		return im.getAmount(fuel) != 0;
 	}
 
 	public int getPowerConsumptionIntervall() {
@@ -59,9 +59,7 @@ public class FurnacePowerManager implements IPowerManager {
 
 	public void consumePower() {
 		FurnaceInventory fi = fccf.getFurnaceInventory();
-		for (ItemStack is : fuel.getItemStackRepresentation()) {
-			fi.removeItem(is);
-		}
+		fi.removeItem(fuel);
 	}
 
 }

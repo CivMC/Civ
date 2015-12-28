@@ -94,29 +94,22 @@ public class ItemMap {
 
 	/**
 	 * Removes the given ItemStack from this map. Only the amount of the given
-	 * ItemStack will be removed, not all of them. Use the safe parameter to
-	 * specify whether stacks with negative amounts as a result in the map
-	 * should be allowed or not.
+	 * ItemStack will be removed, not all of them. If the amount of the given
+	 * itemstack is bigger than the existing ones in this map, not more than the
+	 * amount in this map will be removed
 	 * 
 	 * @param input
 	 *            ItemStack to remove
-	 * @param safe
-	 *            true to forbid stacks with negative amounts, false to allow
-	 *            them
 	 */
-	public void removeItemStack(ItemStack input, boolean safe) {
+	public void removeItemStack(ItemStack input) {
 		ItemStack is = createMapConformCopy(input);
-		Integer i;
-		if ((i = items.get(is)) != null) {
-			int newSum = i - input.getAmount();
-			if ((safe && newSum > 0) || !safe) {
-				items.put(is, i - input.getAmount());
-				totalItems -= input.getAmount();
-			}
-		} else {
-			if (!safe) {
-				items.put(is, -1 * input.getAmount());
-				totalItems -= input.getAmount();
+		Integer value = items.get(is);
+		if (value != null) {
+			int newVal = value - input.getAmount();
+			if (newVal > 0) {
+				items.put(is, newVal);
+			} else {
+				items.remove(is);
 			}
 		}
 	}
@@ -130,24 +123,6 @@ public class ItemMap {
 	 */
 	public void removeItemStackCompletly(ItemStack input) {
 		items.remove(input);
-	}
-
-	/**
-	 * Removes all the given ItemStacks from this map. Only the amount of the
-	 * given ItemStack will be removed, not the complete instance from the map.
-	 * Use the safe parameter to specify whether stacks with negative amounts as
-	 * a result in the map should be allowed or not.
-	 * 
-	 * @param stacks
-	 *            ItemStacks to remove
-	 * @param safe
-	 *            true to forbid stacks with negative amounts, false to allow
-	 *            them
-	 */
-	public void removeAll(Collection<ItemStack> stacks, boolean safe) {
-		for (ItemStack stack : stacks) {
-			removeItemStack(stack, safe);
-		}
 	}
 
 	public int hashCode() {
@@ -193,16 +168,6 @@ public class ItemMap {
 				addItemStack(is);
 			}
 		}
-	}
-
-	/**
-	 * Merges an existing item map into this instance
-	 * 
-	 * @param im
-	 *            Map to merge
-	 */
-	public void addItemMap(ItemMap im) {
-		addEntrySet(im.getEntrySet());
 	}
 
 	public void addEntrySet(Set<Entry<ItemStack, Integer>> entries) {
@@ -340,8 +305,21 @@ public class ItemMap {
 	 *            Exact ItemStack to search for
 	 * @return amount of items like the given stack in this map
 	 */
-	public Integer getAmount(ItemStack is) {
-		return items.get(createMapConformCopy(is));
+	public int getAmount(ItemStack is) {
+		ItemMap matSubMap = getStacksByMaterial(is);
+		int amount = 0;
+		for (Entry<ItemStack, Integer> entry : matSubMap.getEntrySet()) {
+			ItemStack current = entry.getKey();
+			if ((is.getDurability() == -1 || is.getDurability() == current
+					.getDurability())
+					&& is.getEnchantments().equals(current.getEnchantments())
+					&& (current.getItemMeta().getLore() == null || current
+							.getItemMeta().getLore()
+							.equals(is.getItemMeta().getLore()))) {
+				amount += entry.getValue();
+			}
+		}
+		return amount;
 	}
 
 	/**
@@ -362,45 +340,17 @@ public class ItemMap {
 		return ((HashMap<ItemStack, Integer>) items.clone()).entrySet();
 	}
 
-	/**
-	 * Compares this ItemMap to a given one and returns a map containing the
-	 * exact differences. For example if this instance has 5 stone and the given
-	 * ItemMap has 10 stone, then the result will contain 5 stone. If instance
-	 * and argument were switched around, the result would contain -5 stone,
-	 * which expresses that the given ItemMap has 5 stone less than this
-	 * instance. If an amount is identical it wont be added to the diff map
-	 * 
-	 * @param im
-	 *            ItemMap to compare to
-	 * @return ItemMap containing the exact differences between this instance
-	 *         and a given map
+	// autoformatting messed this up a bit, this method isnt needed anymore, but
+	// shouldnt be removed yet
+	/*
+	 * public ItemMap getDifference(Inventory inv) { ItemMap res = new
+	 * ItemMap(); ItemMap invMap = new ItemMap(inv); for (Entry<ItemStack,
+	 * Integer> entry : getEntrySet()) { int amount = entry.getValue(); int
+	 * invAmount = invMap.getAmount(entry.getKey()); if (amount != invAmount) {
+	 * res.addItemAmount(entry.getKey(), invAmount - amount); }
+	 * invMap.removeItemStackCompletly(entry.getKey()); } res.merge(invMap);
+	 * return res; }
 	 */
-	public ItemMap getDifference(ItemMap im) {
-		ItemMap result = new ItemMap();
-		Set<Entry<ItemStack, Integer>> firstSet = getEntrySet();
-		Set<Entry<ItemStack, Integer>> secondSet = im.getActualEntrySet();
-		for (Entry<ItemStack, Integer> entry : firstSet) {
-			Integer pulled = im.getAmount(entry.getKey());
-			if (pulled != null) {
-				if ((pulled - entry.getValue()) != 0) {
-					result.addItemAmount(entry.getKey(),
-							pulled - entry.getValue());
-				}
-				im.removeItemStackCompletly(entry.getKey());
-			} else {
-				result.addItemAmount(entry.getKey(), entry.getValue() * -1);
-			}
-		}
-		result.addEntrySet(secondSet);
-		return result;
-	}
-
-	/**
-	 * @return An entry set of the hashmap in this itemmap and not just a copy
-	 */
-	private Set<Entry<ItemStack, Integer>> getActualEntrySet() {
-		return items.entrySet();
-	}
 
 	/**
 	 * Checks whether an inventory contains exactly what's described in this
@@ -412,22 +362,30 @@ public class ItemMap {
 	 *         not
 	 */
 	public boolean containedExactlyIn(Inventory i) {
-		return getDifference(new ItemMap(i)).getTotalItemAmount() == 0;
+		ItemMap invMap = new ItemMap(i);
+		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+			if (!entry.getValue().equals(invMap.getAmount(entry.getKey()))) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
-	 * Checks whether this instance is completly contained in the given ItemMap,
-	 * which means every stack in this instance is also in the given map and the
-	 * amount in the given map is either the same or bigger as in this instance
+	 * Checks whether this instance is completly contained in the given
+	 * inventory, which means every stack in this instance is also in the given
+	 * inventory and the amount in the given inventory is either the same or
+	 * bigger as in this instance
 	 * 
 	 * @param im
-	 *            ItemStack to check
-	 * @return true if this instance is completly contained in the given stack,
-	 *         false if not
+	 *            inventory to check
+	 * @return true if this instance is completly contained in the given
+	 *         inventory, false if not
 	 */
-	public boolean isContainedIn(ItemMap im) {
-		for (Entry<ItemStack, Integer> entry : getDifference(im).getEntrySet()) {
-			if (entry.getValue() < 0) {
+	public boolean isContainedIn(Inventory i) {
+		ItemMap invMap = new ItemMap(i);
+		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+			if (entry.getValue() < invMap.getAmount(entry.getKey())) {
 				return false;
 			}
 		}
@@ -452,12 +410,13 @@ public class ItemMap {
 	 * @return How often this map is contained in the given one or
 	 *         Integer.MAX_VALUE if this instance is empty
 	 */
-	public int getMultiplesContainedIn(ItemMap im) {
+	public int getMultiplesContainedIn(Inventory i) {
+		ItemMap invMap = new ItemMap(i);
 		int res = Integer.MAX_VALUE;
 		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
-			int pulledAmount = im.getAmount(entry.getKey()) != null ? (im
-					.getAmount(entry.getKey()) / getAmount(entry.getKey())) : 0;
-			res = Math.min(res, pulledAmount);
+			int pulledAmount = invMap.getAmount(entry.getKey());
+			int multiples = pulledAmount/entry.getValue();
+			res = Math.min(res, multiples);
 		}
 		return res;
 	}
@@ -474,21 +433,6 @@ public class ItemMap {
 			items.put(entry.getKey(), (int) (entry.getValue() * multiplier));
 			totalItems += (int) (entry.getValue() * multiplier);
 		}
-	}
-
-	/**
-	 * Checks whether this instance completly contains the given ItemMap, which
-	 * means every stack in the given map also exists in this instance and the
-	 * amount in the given map is either the same or smaller compared to the one
-	 * in this instance
-	 * 
-	 * @param im
-	 *            ItemStack to check
-	 * @return true if this instance completly contains the given ItemStack,
-	 *         false if not
-	 */
-	public boolean contains(ItemMap im) {
-		return im.isContainedIn(this);
 	}
 
 	/**
@@ -543,10 +487,7 @@ public class ItemMap {
 		if (o instanceof ItemMap) {
 			ItemMap im = (ItemMap) o;
 			if (im.getTotalItemAmount() == getTotalItemAmount()) {
-				ItemMap diff = im.getDifference(this);
-				if (diff.getEntrySet().size() == 0) {
-					return true;
-				}
+				return im.getEntrySet().equals(getEntrySet());
 			}
 		}
 		return false;

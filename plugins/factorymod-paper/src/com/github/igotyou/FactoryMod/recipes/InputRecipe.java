@@ -67,7 +67,7 @@ public abstract class InputRecipe implements IRecipe {
 	}
 
 	public boolean enoughMaterialAvailable(Inventory i) {
-		return input.isContainedIn(new ItemMap(i));
+		return input.isContainedIn(i);
 	}
 
 	/**
@@ -92,7 +92,7 @@ public abstract class InputRecipe implements IRecipe {
 		ItemMap inventoryMap = new ItemMap(i);
 		ItemMap possibleRuns = new ItemMap();
 		for (Entry<ItemStack, Integer> entry : input.getEntrySet()) {
-			if (inventoryMap.getAmount(entry.getKey()) != null) {
+			if (inventoryMap.getAmount(entry.getKey()) != 0) {
 				possibleRuns.addItemAmount(
 						entry.getKey(),
 						inventoryMap.getAmount(entry.getKey())

@@ -31,8 +31,7 @@ public class ProductionRecipe extends InputRecipe {
 	}
 
 	public int getCurrentMultiplier(Inventory i) {
-		ItemMap im = new ItemMap(i);
-		return input.getMultiplesContainedIn(im);
+		return input.getMultiplesContainedIn(i);
 	}
 
 	public ItemMap getCurrentOutput(Inventory i) {
@@ -43,7 +42,7 @@ public class ProductionRecipe extends InputRecipe {
 
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
 		List<ItemStack> stacks = output.getItemStackRepresentation();
-		int possibleRuns = input.getMultiplesContainedIn(new ItemMap(i));
+		int possibleRuns = input.getMultiplesContainedIn(i);
 		for (ItemStack is : stacks) {
 			ItemStackUtils.addLore(is, ChatColor.GREEN
 					+ "Enough materials for " + String.valueOf(possibleRuns)
@@ -59,12 +58,13 @@ public class ProductionRecipe extends InputRecipe {
 	public void applyEffect(Inventory i, Factory f) {
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd = output.clone();
-		if (new ItemMap(i).contains(toRemove))
+		if (toRemove.isContainedIn(i)) {
 			for (ItemStack is : toRemove.getItemStackRepresentation()) {
 				i.removeItem(is);
 			}
-		for (ItemStack is : toAdd.getItemStackRepresentation()) {
-			i.addItem(is);
+			for (ItemStack is : toAdd.getItemStackRepresentation()) {
+				i.addItem(is);
+			}
 		}
 	}
 

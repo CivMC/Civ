@@ -11,9 +11,14 @@ public interface IRepairManager {
 	public void breakIt();
 
 	/**
-	 * @return How much factory the factory represented currently has
+	 * @return How much health the factory represented currently has as a nice string for output messages
 	 */
 	public String getHealth();
+	
+	/**
+	 * @return How much health the factory represented currently has
+	 */
+	public int getRawHealth();
 
 	/**
 	 * @return Whether the factory represented is currently at full health
@@ -33,5 +38,10 @@ public interface IRepairManager {
 	 * @return Whether the factory is in disrepair currently
 	 */
 	public boolean inDisrepair();
+	
+	/**
+	 * Set this factorys health
+	 */
+	public void setHealth(int health);
 
 }

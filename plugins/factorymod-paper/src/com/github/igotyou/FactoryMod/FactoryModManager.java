@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.multiBlockStructures.MultiBlockStructure;
+import com.github.igotyou.FactoryMod.persistence.FactoryFileHandler;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
 /**
@@ -20,7 +21,8 @@ import com.github.igotyou.FactoryMod.utility.ItemMap;
  *
  */
 public class FactoryModManager {
-	protected FactoryModPlugin plugin;
+	protected FactoryMod plugin;
+	private FactoryFileHandler fileHandler;
 	private HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>> factoryCreationRecipes;
 	private HashMap<Location, Factory> locations;
 	private HashMap<String, IFactoryEgg> eggs;
@@ -34,14 +36,17 @@ public class FactoryModManager {
 	private int redstoneRecipeChange;
 	private String compactLore;
 
-	public FactoryModManager(FactoryModPlugin plugin,
-			Material factoryInteractionMaterial, boolean citadelEnabled, int redstonePowerOn, int redstoneRecipeChange) {
+	public FactoryModManager(FactoryMod plugin,
+			Material factoryInteractionMaterial, boolean citadelEnabled,
+			int redstonePowerOn, int redstoneRecipeChange) {
 		this.plugin = plugin;
 		this.factoryInteractionMaterial = factoryInteractionMaterial;
 		this.citadelEnabled = citadelEnabled;
 		this.redstonePowerOn = redstonePowerOn;
 		this.redstoneRecipeChange = redstoneRecipeChange;
 
+		fileHandler = new FactoryFileHandler(this);
+		
 		factoryCreationRecipes = new HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>>();
 		locations = new HashMap<Location, Factory>();
 		eggs = new HashMap<String, IFactoryEgg>();
@@ -232,6 +237,16 @@ public class FactoryModManager {
 		this.eggs.put(egg.getName(), egg);
 	}
 
+	public void saveFactories() {
+		plugin.info("Attempting to save factory data");
+		fileHandler.save(factories);
+	}
+	
+	public void loadFactories() {
+		plugin.info("Attempting to load factory data");
+		fileHandler.load(eggs);
+	}
+
 	/**
 	 * Checks whether a specific material is a possible center block for a
 	 * factory and whether a factory could potentionally created from a block
@@ -270,23 +285,25 @@ public class FactoryModManager {
 	public IFactoryEgg getEgg(String name) {
 		return eggs.get(name);
 	}
-	
+
 	/**
-	 * Gets the Redstone power level necessary to active a factory.
-	 * Fall below this level and the factory will deactivate.
-	 *  
-	 * @return The power level on which factory activation or de-activation hinges
+	 * Gets the Redstone power level necessary to active a factory. Fall below
+	 * this level and the factory will deactivate.
+	 * 
+	 * @return The power level on which factory activation or de-activation
+	 *         hinges
 	 */
 	public int getRedstonePowerOn() {
 		return this.redstonePowerOn;
 	}
-	
+
 	/**
-	 * Gets the Redstone power change necessary to alter the recipe setting of a factory.
-	 * Any change >= this level, either positive or negative, will attempt to alter the recipe 
-	 *   (implementation depending).
-	 *   
-	 * @return The amount of Redstone power change necessary to alter recipe setting of a factory.
+	 * Gets the Redstone power change necessary to alter the recipe setting of a
+	 * factory. Any change >= this level, either positive or negative, will
+	 * attempt to alter the recipe (implementation depending).
+	 * 
+	 * @return The amount of Redstone power change necessary to alter recipe
+	 *         setting of a factory.
 	 */
 	public int getRedstoneRecipeChange() {
 		return this.redstoneRecipeChange;

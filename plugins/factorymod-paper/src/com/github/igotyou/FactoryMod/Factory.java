@@ -107,4 +107,13 @@ public abstract class Factory implements Runnable {
 	 */
 	public abstract void attemptToActivate(Player p);
 
+	/**
+	 * Gets all the information needed to recreate this factory at a later
+	 * point. The implementation of this method should be in line with the egg
+	 * of the factory type to ensure persistence past restarts without problems
+	 * 
+	 * @return Everything needed to recreate this factory
+	 */
+	public abstract String serialize();
+
 }

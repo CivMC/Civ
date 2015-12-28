@@ -13,7 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.Factory;
-import com.github.igotyou.FactoryMod.FactoryModPlugin;
+import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
@@ -22,7 +22,6 @@ import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
-import com.github.igotyou.FactoryMod.utility.ItemMap;
 
 /**
  * Represents a "classic" factory, which consists of a furnace as powersource, a
@@ -213,12 +212,12 @@ public class FurnCraftChestFactory extends Factory {
 						// increase the production timer
 						currentProductionTimer += updateTime;
 						// schedule next update
-						FactoryModPlugin
+						FactoryMod
 								.getPlugin()
 								.getServer()
 								.getScheduler()
 								.scheduleSyncDelayedTask(
-										FactoryModPlugin.getPlugin(), this,
+										FactoryMod.getPlugin(), this,
 										(long) updateTime);
 					}
 					// if there is no fuel Available turn off the factory
@@ -244,12 +243,12 @@ public class FurnCraftChestFactory extends Factory {
 					currentProductionTimer = 0;
 					if (hasInputMaterials() && pm.powerAvailable()) {
 						pm.setPowerCounter(0);
-						FactoryModPlugin
+						FactoryMod
 								.getPlugin()
 								.getServer()
 								.getScheduler()
 								.scheduleSyncDelayedTask(
-										FactoryModPlugin.getPlugin(), this,
+										FactoryMod.getPlugin(), this,
 										(long) updateTime);
 						// keep going
 					} else {
@@ -289,6 +288,16 @@ public class FurnCraftChestFactory extends Factory {
 	}
 
 	/**
+	 * Sets the internal production timer
+	 * 
+	 * @param timer
+	 *            New timer
+	 */
+	public void setProductionTimer(int timer) {
+		this.currentProductionTimer = timer;
+	}
+
+	/**
 	 * @return Whether enough materials are available to run the currently
 	 *         selected recipe at least once
 	 */
@@ -296,7 +305,7 @@ public class FurnCraftChestFactory extends Factory {
 		return currentRecipe.enoughMaterialAvailable(getInventory());
 	}
 
-	public void upgrade(String name, List<IRecipe> recipes, ItemMap fuel,
+	public void upgrade(String name, List<IRecipe> recipes, ItemStack fuel,
 			int fuelConsumptionIntervall, int updateTime) {
 		this.name = name;
 		this.recipes = recipes;
@@ -308,6 +317,31 @@ public class FurnCraftChestFactory extends Factory {
 		} else {
 			currentRecipe = null;
 		}
+	}
+
+	public String serialize() {
+		StringBuilder sb = new StringBuilder();
+		String separator = "#";
+		sb.append("FCC");
+		sb.append(separator);
+		sb.append(getName());
+		sb.append(separator);
+		sb.append(rm.getHealth());
+		sb.append(separator);
+		sb.append(currentProductionTimer);
+		sb.append(separator);
+		sb.append(currentRecipe);
+		sb.append(separator);
+		for (Block b : mbs.getAllBlocks()) {
+			sb.append(b.getWorld().getName());
+			sb.append(separator);
+			sb.append(b.getX());
+			sb.append(separator);
+			sb.append(b.getY());
+			sb.append(separator);
+			sb.append(b.getZ());
+		}
+		return sb.toString();
 	}
 
 }

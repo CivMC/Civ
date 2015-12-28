@@ -27,7 +27,7 @@ public class DecompactingRecipe extends InputRecipe {
 	}
 
 	public boolean enoughMaterialAvailable(Inventory i) {
-		if (!input.isContainedIn(new ItemMap(i))) {
+		if (!input.isContainedIn(i)) {
 			return false;
 		}
 		for (ItemStack is : i.getContents()) {
@@ -42,7 +42,7 @@ public class DecompactingRecipe extends InputRecipe {
 	}
 
 	public void applyEffect(Inventory i, Factory f) {
-		if (input.isContainedIn(new ItemMap(i))) {
+		if (input.isContainedIn(i)) {
 			for (ItemStack is : i.getContents()) {
 				if (is != null) {
 					ItemMeta im = is.getItemMeta();

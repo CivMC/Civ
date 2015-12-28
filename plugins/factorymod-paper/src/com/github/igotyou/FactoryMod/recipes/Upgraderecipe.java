@@ -25,8 +25,7 @@ public class Upgraderecipe extends InputRecipe {
 	}
 
 	public void applyEffect(Inventory i, Factory f) {
-		ItemMap invMap = new ItemMap(i);
-		if (invMap.contains(input) && f instanceof FurnCraftChestFactory) {
+		if (input.isContainedIn(i) && f instanceof FurnCraftChestFactory) {
 			for (ItemStack is : input.getItemStackRepresentation()) {
 				i.removeItem(is);
 			}
@@ -49,7 +48,7 @@ public class Upgraderecipe extends InputRecipe {
 		ItemMap inventoryMap = new ItemMap(i);
 		ItemMap possibleRuns = new ItemMap();
 		for (Entry<ItemStack, Integer> entry : input.getEntrySet()) {
-			if (inventoryMap.getAmount(entry.getKey()) != null) {
+			if (inventoryMap.getAmount(entry.getKey()) != 0) {
 				possibleRuns.addItemAmount(
 						entry.getKey(),
 						inventoryMap.getAmount(entry.getKey())

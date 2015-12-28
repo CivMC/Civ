@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -30,14 +31,16 @@ import com.github.igotyou.FactoryMod.utility.ItemMap;
 import com.google.common.collect.Lists;
 
 public class ConfigParser {
-	private FactoryModPlugin plugin;
+	private FactoryMod plugin;
 	private HashMap<String, IRecipe> recipes;
 	private FactoryModManager manager;
 	private int defaultUpdateTime;
-	private ItemMap defaultFuel;
+	private ItemStack defaultFuel;
 	private int defaultFuelConsumptionTime;
+	private HashMap<String, IFactoryEgg> upgradeEggs;
+	private HashMap<IFactoryEgg, List<String>> recipeLists;
 
-	public ConfigParser(FactoryModPlugin plugin) {
+	public ConfigParser(FactoryMod plugin) {
 		this.plugin = plugin;
 	}
 
@@ -51,10 +54,10 @@ public class ConfigParser {
 		plugin.saveDefaultConfig();
 		plugin.reloadConfig();
 		FileConfiguration config = plugin.getConfig();
-		boolean citadelEnabled = config.getBoolean("citadel_enabled", true);
+		boolean citadelEnabled = plugin.getServer().getPluginManager()
+				.isPluginEnabled("Citadel");
 		Material factoryInteractionMaterial = Material.getMaterial(config
 				.getString("factory_interaction_material", "STICK"));
-		// TODO disable experience
 		boolean disableNether = config.getBoolean("disable_nether", false);
 		if (disableNether) {
 			plugin.getServer().getPluginManager()
@@ -62,8 +65,9 @@ public class ConfigParser {
 		}
 		defaultUpdateTime = (int) parseTime(config.getString(
 				"default_update_time", "5"));
-		defaultFuel = parseItemMap(config
-				.getConfigurationSection("default_fuel"));
+		defaultFuel = parseItemMap(
+				config.getConfigurationSection("default_fuel"))
+				.getItemStackRepresentation().get(0);
 		defaultFuelConsumptionTime = (int) parseTime(config.getString(
 				"default_fuel_consumption_intervall", "20"));
 		int redstonePowerOn = config.getInt("redstone_power_on", 7);
@@ -72,8 +76,16 @@ public class ConfigParser {
 				citadelEnabled, redstonePowerOn, redstoneRecipeChange);
 		handleEnabledAndDisabledRecipes(config
 				.getConfigurationSection("crafting"));
-		parseRecipes(config.getConfigurationSection("recipes"));
+		upgradeEggs = new HashMap<String, IFactoryEgg>();
+		recipeLists = new HashMap<IFactoryEgg, List<String>>();
 		parseFactories(config.getConfigurationSection("factories"));
+		parseRecipes(config.getConfigurationSection("recipes"));
+		assignRecipesToFactories();
+		// Some recipes need references to factories and all factories need
+		// references to recipes, so we parse all factories first, set their
+		// recipes to null, store the names of the recipes in a map here, parse
+		// the recipes which can already get the references to the factories and
+		// then fix the recipe references for the factories
 		plugin.info("Parsed complete config");
 		return manager;
 	}
@@ -125,13 +137,15 @@ public class ConfigParser {
 		IFactoryEgg egg = null;
 		switch (config.getString("type")) {
 		case "FCC": // Furnace, chest, craftingtable
-			egg = parseFactoryEgg(config);
+			egg = parseFCCFactory(config);
 			ItemMap setupCost = parseItemMap(config
 					.getConfigurationSection("setupcost"));
 			manager.addFactoryCreationEgg(FurnCraftChestStructure.class,
 					setupCost, egg);
 			break;
-
+		case "FCCUPGRADE":
+			egg = parseFCCFactory(config);
+			upgradeEggs.put(egg.getName(), egg);
 		default:
 			plugin.severe("Could not identify factory type "
 					+ config.getString("type"));
@@ -140,40 +154,32 @@ public class ConfigParser {
 
 	}
 
-	public IFactoryEgg parseFactoryEgg(ConfigurationSection config) {
+	public IFactoryEgg parseFCCFactory(ConfigurationSection config) {
 		String name = config.getString("name");
-		switch (config.getString("type")) {
-		case "FCC": // Furnace, chest, craftingtable
-			int update;
-			if (config.contains("updatetime")) {
-				update = (int)parseTime(config.getString("updatetime"));
-			} else {
-				update = defaultUpdateTime;
-			}
-			List<IRecipe> recipeList = new LinkedList<IRecipe>();
-			for (String recipe : config.getStringList("recipes")) {
-				recipeList.add(recipes.get(recipe));
-			}
-			ItemMap fuel;
-			if (config.contains("fuel")) {
-				fuel = parseItemMap(config.getConfigurationSection("fuel"));
-			} else {
-				fuel = defaultFuel;
-			}
-			int fuelIntervall;
-			if (config.contains("fuel_consumption_intervall")) {
-				fuelIntervall = (int)parseTime(config.getString("fuel_consumption_intervall"));
-			} else {
-				fuelIntervall = defaultFuelConsumptionTime;
-			}
-			FurnCraftChestEgg egg = new FurnCraftChestEgg(name, update,
-					recipeList, fuel, fuelIntervall);
-			return egg;
-		default:
-			plugin.severe("Could not identify factory type "
-					+ config.getString("type"));
-			return null;
+		int update;
+		if (config.contains("updatetime")) {
+			update = (int) parseTime(config.getString("updatetime"));
+		} else {
+			update = defaultUpdateTime;
 		}
+		ItemStack fuel;
+		if (config.contains("fuel")) {
+			fuel = parseItemMap(config.getConfigurationSection("fuel"))
+					.getItemStackRepresentation().get(0);
+		} else {
+			fuel = defaultFuel;
+		}
+		int fuelIntervall;
+		if (config.contains("fuel_consumption_intervall")) {
+			fuelIntervall = (int) parseTime(config
+					.getString("fuel_consumption_intervall"));
+		} else {
+			fuelIntervall = defaultFuelConsumptionTime;
+		}
+		FurnCraftChestEgg egg = new FurnCraftChestEgg(name, update, null, fuel,
+				fuelIntervall);
+		recipeLists.put(egg, config.getStringList("recipes"));
+		return egg;
 	}
 
 	/**
@@ -224,7 +230,8 @@ public class ConfigParser {
 	private IRecipe parseRecipe(ConfigurationSection config) {
 		IRecipe result;
 		String name = config.getString("name");
-		int productionTime = (int)parseTime(config.getString("production_time"));
+		int productionTime = (int) parseTime(config
+				.getString("production_time"));
 		switch (config.getString("type")) {
 		case "PRODUCTION":
 			ItemMap input = parseItemMap(config
@@ -260,8 +267,12 @@ public class ConfigParser {
 		case "UPGRADE":
 			ItemMap upgradeCost = parseItemMap(config
 					.getConfigurationSection("input"));
-			IFactoryEgg egg = parseFactoryEgg(config
-					.getConfigurationSection("factory"));
+			String upgradeName = config.getString("factoryname");
+			IFactoryEgg egg = upgradeEggs.get(upgradeName);
+			if (egg == null) {
+				plugin.severe("Could not find factory " + upgradeName
+						+ " for upgrade recipe " + name);
+			}
 			result = new Upgraderecipe(name, productionTime, upgradeCost, egg);
 			break;
 		default:
@@ -271,6 +282,18 @@ public class ConfigParser {
 		}
 		plugin.info("Parsed recipe " + name);
 		return result;
+	}
+
+	public void assignRecipesToFactories() {
+		for (Entry<IFactoryEgg, List<String>> entry : recipeLists.entrySet()) {
+			if (entry.getKey() instanceof FurnCraftChestEgg) {
+				List<IRecipe> recipeList = new LinkedList<IRecipe>();
+				for (String recipeName : entry.getValue()) {
+					recipeList.add(recipes.get(recipeName));
+				}
+				((FurnCraftChestEgg) entry.getKey()).setRecipes(recipeList);
+			}
+		}
 	}
 
 	/**

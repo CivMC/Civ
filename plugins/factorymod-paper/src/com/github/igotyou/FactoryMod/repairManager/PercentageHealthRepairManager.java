@@ -26,4 +26,12 @@ public class PercentageHealthRepairManager implements IRepairManager {
 	public void breakIt() {
 		health = 0;
 	}
+	
+	public int getRawHealth() {
+		return health;
+	}
+	
+	public void setHealth(int health) {
+		this.health = health;
+	}
 }
