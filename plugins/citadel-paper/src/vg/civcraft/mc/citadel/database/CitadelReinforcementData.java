@@ -523,8 +523,13 @@ public class CitadelReinforcementData {
 				addRein.setString(8, reinType);
 				addRein.execute();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Citadel.Log("Citadel has detected a reinforcement that should not be there. Deleting it and trying again. "
+						+ "Including the stack incase it is useful.\n" + e.getStackTrace());
+				// Let's delete the reinforcement because if a user 
+				//is able to place one then the db is messed up some how.
+				deleteReinforcement(rein);
+				// Now lets try again.
+				insertReinforcement(rein);
 			}
 		}
 		else if (rein instanceof NaturalReinforcement){
