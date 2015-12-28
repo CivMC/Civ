@@ -1,13 +1,5 @@
 package vg.civcraft.mc.civchat2;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +25,7 @@ public class CivChat2Manager {
 	private CivChat2FileLogger chatLog;
 	private CivChat2 instance;
 	private DatabaseManager DBM;
+	private final String sep = "|";
 	
 	
 	//chatChannels in hashmap with (Player 1 name, player 2 name)
@@ -407,6 +400,9 @@ public class CivChat2Manager {
 	 * @param group Group to send the message too
 	 */
 	public void sendGroupMsg(String name, String groupMsg, Group group) {
+		if (CivChat2.getInstance().isMercuryEnabled()) {
+			MercuryAPI.sendGlobalMessage("gc" + sep + name + sep + group.getName() + sep + groupMsg.replace(sep, ""), "civchat2");
+		}
 		StringBuilder sb = new StringBuilder();
 		Player msgSender = Bukkit.getPlayer(NameAPI.getUUID(name));
 		List<Player> members = new ArrayList<Player>();

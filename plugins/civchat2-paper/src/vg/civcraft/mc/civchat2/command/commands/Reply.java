@@ -47,7 +47,8 @@ public class Reply extends PlayerCommand{
 			String reciver = NameAPI.getCurrentName(receiverUUID);
 			for(String name : MercuryAPI.getAllPlayers()) {
 				//iterate over names to find someone with a similar name to the one entered
-				if (name.equalsIgnoreCase(reciver)) {
+				if (name.equalsIgnoreCase(reciver) && 
+						!(MercuryAPI.getServerforPlayer(name).getServerName().equals(MercuryAPI.getServerforPlayer(player.getName()).getServerName()))) {
 					if(args.length == 0){
 						chatMan.removeChannel(senderName);
 						chatMan.addChatChannel(player.getName(), name);

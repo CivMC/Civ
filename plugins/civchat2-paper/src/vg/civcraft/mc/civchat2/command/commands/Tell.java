@@ -61,7 +61,8 @@ public class Tell extends PlayerCommand{
 		if (CivChat2.getInstance().isMercuryEnabled()){
 			for(String name : MercuryAPI.getAllPlayers()) {
 				//iterate over names to find someone with a similar name to the one entered
-				if (name.equalsIgnoreCase(args[0])  && !MercuryAPI.getServerforPlayer(name).equals(MercuryAPI.getServerforAccount(player.getUniqueId()))) {
+				if (name.equalsIgnoreCase(args[0])  && 
+						!(MercuryAPI.getServerforPlayer(name).getServerName().equals(MercuryAPI.getServerforPlayer(player.getName()).getServerName()))) {
 					if(args.length == 1){
 						if (DBM.isIgnoringPlayer(player.getName(), name) ){
 							player.sendMessage(ChatColor.YELLOW + "You need to unignore " + name);

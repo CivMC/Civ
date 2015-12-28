@@ -29,7 +29,6 @@ public class CivChat2Listener implements Listener {
 	
 	private CivChat2Manager chatman;
 	private GroupManager gm;
-	private final String sep = "|";
 	
 	public CivChat2Listener(CivChat2Manager instance){
 		chatman = instance;
@@ -108,9 +107,6 @@ public class CivChat2Listener implements Listener {
 		if(groupChat != null){
 			//player is group chatting
 			chatman.sendGroupMsg(sender.getName(), chatMessage, GroupManager.getGroup(groupChat));
-			if (CivChat2.getInstance().isMercuryEnabled()) {
-				MercuryAPI.sendGlobalMessage("gc" + sep + sender.getName() + sep + groupChat + sep + chatMessage.replace(sep, ""), "civchat2");
-			}
 			return;
 		}
 		
