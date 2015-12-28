@@ -8483,7 +8483,7 @@ production_recipes:
     name: Craft Compactor Crates from Oak Logs
     production_time: 43
     inputs:
-      Chest:
+      'Oak Log':
         material: LOG
         amount: 1248
       'Iron Ingot':
@@ -8499,7 +8499,7 @@ production_recipes:
     name: Craft Compactor Crates from Birch Logs
     production_time: 43
     inputs:
-      Chest:
+      'Birch Log':
         material: LOG
         amount: 1248
         durability: 2
@@ -8516,7 +8516,7 @@ production_recipes:
     name: Craft Compactor Crates from Spruce Logs
     production_time: 43
     inputs:
-      Chest:
+      'Spruce Log':
         material: LOG
         amount: 1248
         durability: 1
@@ -8533,7 +8533,7 @@ production_recipes:
     name: Craft Compactor Crates from Dark Oak Logs
     production_time: 43
     inputs:
-      Chest:
+      'Dark Oak Log':
         material: LOG_2
         amount: 1248
         durability: 1
@@ -8550,7 +8550,7 @@ production_recipes:
     name: Craft Compactor Crates from Jungle Logs
     production_time: 43
     inputs:
-      Chest:
+      'Jungle Log':
         material: LOG
         amount: 1248
         durability: 3
@@ -8567,7 +8567,7 @@ production_recipes:
     name: Craft Compactor Crates from Acacia Logs
     production_time: 43
     inputs:
-      Chest:
+      'Acacia Log':
         material: LOG_2
         amount: 1248
       'Iron Ingot':
