@@ -78,9 +78,14 @@ public class ReinforcementManager {
 	 * @param The Reinforcement to save
 	 */
 	public void saveInitialReinforcement(Reinforcement rein) {
-		reinforcements.put(rein.getLocation(), rein);
-		CitadelStatics.updateHitStat(CitadelStatics.INSERT);
-		db.insertReinforcement(rein);
+		// Do a check first, there might be an edge case for example half slabs where there is a reinforcement
+		// but it got this far.  Lets just keep the one already there and ignore this new one.
+		// If this is some other case then the code already in place should have deleted the reinforcement EX: Air.
+		if (getReinforcement(rein.getLocation()) == null) {
+			reinforcements.put(rein.getLocation(), rein);
+			CitadelStatics.updateHitStat(CitadelStatics.INSERT);
+			db.insertReinforcement(rein);
+		}
 	}
 
 	/**
