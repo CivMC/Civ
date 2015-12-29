@@ -16,10 +16,11 @@ public class FactoryMod extends ACivMod {
 		manager = cp.parse();
 		manager.loadFactories();
 		registerListeners();
+		info("Successfully enabled");
 	}
 
 	public void onDisable() {
-		manager.saveFactories();
+		manager.shutDown();
 		plugin.info("Shutting down");
 	}
 

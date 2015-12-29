@@ -11,6 +11,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
+import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.multiBlockStructures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.persistence.FactoryFileHandler;
@@ -26,7 +27,6 @@ public class FactoryModManager {
 	private HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>> factoryCreationRecipes;
 	private HashMap<Location, Factory> locations;
 	private HashMap<String, IFactoryEgg> eggs;
-	private HashMap<String, HashMap<ItemMap, IFactoryEgg>> upgradeRecipes;
 	private HashSet<Factory> factories;
 	private HashSet<Material> possibleCenterBlocks;
 	private HashSet<Material> possibleInteractionBlock;
@@ -46,11 +46,10 @@ public class FactoryModManager {
 		this.redstoneRecipeChange = redstoneRecipeChange;
 
 		fileHandler = new FactoryFileHandler(this);
-		
+
 		factoryCreationRecipes = new HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>>();
 		locations = new HashMap<Location, Factory>();
 		eggs = new HashMap<String, IFactoryEgg>();
-		upgradeRecipes = new HashMap<String, HashMap<ItemMap, IFactoryEgg>>();
 		possibleCenterBlocks = new HashSet<Material>();
 		possibleInteractionBlock = new HashSet<Material>();
 		factories = new HashSet<Factory>();
@@ -225,26 +224,29 @@ public class FactoryModManager {
 		this.eggs.put(egg.getName(), egg);
 	}
 
-	public void addFactoryUpgradeEgg(String factoryUpgradingFrom, ItemMap cost,
-			IFactoryEgg egg) {
-		HashMap<ItemMap, IFactoryEgg> eggs = upgradeRecipes
-				.get(factoryUpgradingFrom);
-		if (eggs == null) {
-			eggs = new HashMap<ItemMap, IFactoryEgg>();
-			upgradeRecipes.put(factoryUpgradingFrom, eggs);
-		}
-		eggs.put(cost, egg);
-		this.eggs.put(egg.getName(), egg);
+	public void addFactoryUpgradeEgg(IFactoryEgg egg) {
+		eggs.put(egg.getName(), egg);
 	}
 
 	public void saveFactories() {
 		plugin.info("Attempting to save factory data");
 		fileHandler.save(factories);
 	}
-	
+
 	public void loadFactories() {
 		plugin.info("Attempting to load factory data");
 		fileHandler.load(eggs);
+	}
+
+	/**
+	 * Called when the plugin is deactivated to first save all factories and
+	 * then deactivate them, so the deactivated block state is saved
+	 */
+	public void shutDown() {
+		saveFactories();
+		for (Factory f : factories) {
+			f.deactivate();
+		}
 	}
 
 	/**

@@ -10,15 +10,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import com.github.igotyou.FactoryMod.Factory;
 import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
-import com.github.igotyou.FactoryMod.recipes.IRecipe;
+import com.github.igotyou.FactoryMod.factories.Factory;
 
 public class FactoryFileHandler {
 	private FactoryMod plugin;
@@ -30,9 +30,9 @@ public class FactoryFileHandler {
 		plugin = FactoryMod.getPlugin();
 		this.manager = manager;
 		saveFile = new File(plugin.getDataFolder().getAbsolutePath()
-				+ File.separator + "factoryData");
+				+ File.separator + "factoryData.txt");
 		backup = new File(plugin.getDataFolder().getAbsolutePath()
-				+ File.separator + "factoryDataPreviousSave");
+				+ File.separator + "factoryDataPreviousSave.txt");
 	}
 
 	public void save(Collection<Factory> factories) {
@@ -77,6 +77,7 @@ public class FactoryFileHandler {
 	}
 
 	private void loadFromFile(File f, Map<String, IFactoryEgg> eggs) {
+		int counter = 0;
 		try {
 			FileReader fr = new FileReader(f);
 			BufferedReader reader = new BufferedReader(fr);
@@ -87,6 +88,13 @@ public class FactoryFileHandler {
 				case "FCC":
 					FurnCraftChestEgg egg = (FurnCraftChestEgg) eggs
 							.get(content[1]);
+					if (egg == null) {
+						plugin.warning("Save file contained factory named "
+								+ content[1]
+								+ " , but no factory with this name was found in the config");
+						line = reader.readLine();
+						continue;
+					}
 					int health = Integer.parseInt(content[2]);
 					int productionTimer = Integer.parseInt(content[3]);
 					String selectedRecipe = content[4];
@@ -96,14 +104,20 @@ public class FactoryFileHandler {
 						int x = Integer.parseInt(content[i + 1]);
 						int y = Integer.parseInt(content[i + 2]);
 						int z = Integer.parseInt(content[i + 3]);
+						blocks.add(new Location(w, x, y, z).getBlock());
 					}
-					egg.revive(blocks, health, selectedRecipe, productionTimer);
+					Factory fac = egg.revive(blocks, health, selectedRecipe,
+							productionTimer);
+					manager.addFactory(fac);
+					counter++;
 				}
+				line = reader.readLine();
 			}
 			reader.close();
 		} catch (Exception e) {
 			plugin.severe("Fatal error while loading factory data");
 			e.printStackTrace();
 		}
+		plugin.info("Loaded " + counter + " factory from save file");
 	}
 }

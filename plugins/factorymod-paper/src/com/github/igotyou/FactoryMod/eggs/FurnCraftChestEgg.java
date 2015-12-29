@@ -6,7 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.igotyou.FactoryMod.Factory;
+import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.interactionManager.FurnCraftChestInteractionManager;
 import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;

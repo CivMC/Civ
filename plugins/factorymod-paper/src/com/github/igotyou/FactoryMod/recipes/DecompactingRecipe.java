@@ -8,7 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.github.igotyou.FactoryMod.Factory;
+import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
 /**

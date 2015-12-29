@@ -385,7 +385,7 @@ public class ItemMap {
 	public boolean isContainedIn(Inventory i) {
 		ItemMap invMap = new ItemMap(i);
 		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
-			if (entry.getValue() < invMap.getAmount(entry.getKey())) {
+			if (entry.getValue() > invMap.getAmount(entry.getKey())) {
 				return false;
 			}
 		}

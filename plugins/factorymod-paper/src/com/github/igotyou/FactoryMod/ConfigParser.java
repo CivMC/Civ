@@ -146,6 +146,8 @@ public class ConfigParser {
 		case "FCCUPGRADE":
 			egg = parseFCCFactory(config);
 			upgradeEggs.put(egg.getName(), egg);
+			manager.addFactoryUpgradeEgg(egg);
+			break;
 		default:
 			plugin.severe("Could not identify factory type "
 					+ config.getString("type"));
@@ -267,7 +269,7 @@ public class ConfigParser {
 		case "UPGRADE":
 			ItemMap upgradeCost = parseItemMap(config
 					.getConfigurationSection("input"));
-			String upgradeName = config.getString("factoryname");
+			String upgradeName = config.getString("factory");
 			IFactoryEgg egg = upgradeEggs.get(upgradeName);
 			if (egg == null) {
 				plugin.severe("Could not find factory " + upgradeName

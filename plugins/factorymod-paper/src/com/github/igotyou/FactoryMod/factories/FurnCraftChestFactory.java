@@ -12,7 +12,6 @@ import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.igotyou.FactoryMod.Factory;
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
@@ -326,13 +325,13 @@ public class FurnCraftChestFactory extends Factory {
 		sb.append(separator);
 		sb.append(getName());
 		sb.append(separator);
-		sb.append(rm.getHealth());
+		sb.append(rm.getRawHealth());
 		sb.append(separator);
 		sb.append(currentProductionTimer);
 		sb.append(separator);
-		sb.append(currentRecipe);
-		sb.append(separator);
+		sb.append(currentRecipe.getRecipeName());
 		for (Block b : mbs.getAllBlocks()) {
+			sb.append(separator);
 			sb.append(b.getWorld().getName());
 			sb.append(separator);
 			sb.append(b.getX());

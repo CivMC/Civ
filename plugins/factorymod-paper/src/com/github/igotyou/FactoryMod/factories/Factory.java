@@ -1,4 +1,4 @@
-package com.github.igotyou.FactoryMod;
+package com.github.igotyou.FactoryMod.factories;
 
 import org.bukkit.entity.Player;
 

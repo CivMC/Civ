@@ -19,8 +19,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 
-import com.github.igotyou.FactoryMod.Factory;
 import com.github.igotyou.FactoryMod.FactoryModManager;
+import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.multiBlockStructures.MultiBlockStructure;
 
 public class FactoryModListener implements Listener {

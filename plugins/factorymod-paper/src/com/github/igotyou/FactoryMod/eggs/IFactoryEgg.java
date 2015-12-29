@@ -2,7 +2,7 @@ package com.github.igotyou.FactoryMod.eggs;
 
 import org.bukkit.entity.Player;
 
-import com.github.igotyou.FactoryMod.Factory;
+import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.multiBlockStructures.MultiBlockStructure;
 
 /**
