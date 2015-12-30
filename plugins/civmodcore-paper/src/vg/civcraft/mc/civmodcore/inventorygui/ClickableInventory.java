@@ -144,7 +144,7 @@ public class ClickableInventory {
 	/**
 	 * Called whenever a player clicks an item in a clickable inventory. This
 	 * executes the clicked items clickable and also closes the clickable
-	 * inventory
+	 * inventory, unless the clicked object was a decoration stack
 	 * 
 	 * @param p
 	 *            Player who clicked
@@ -152,11 +152,13 @@ public class ClickableInventory {
 	 *            index of the item in the inventory
 	 */
 	public void itemClick(Player p, int index) {
-		if (index >= clickables.length  || index < 0) {
+		if (index >= clickables.length || index < 0) {
 			return;
 		}
 		clickables[index].clicked(p);
-		forceCloseInventory(p);
+		if (!(clickables[index] instanceof DecorationStack)) {
+			forceCloseInventory(p);
+		}
 	}
 
 	/**
