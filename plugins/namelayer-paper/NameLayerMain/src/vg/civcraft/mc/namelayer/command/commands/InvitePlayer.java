@@ -2,6 +2,7 @@ package vg.civcraft.mc.namelayer.command.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -162,10 +163,21 @@ public class InvitePlayer extends PlayerCommandMiddle{
 				return GroupTabCompleter.complete(args[0], null, (Player)sender);
 
 		} else if (args.length == 2) {
-			if (NameLayerPlugin.isMercuryEnabled()) {
-				return new ArrayList <String>(MercuryAPI.getAllPlayers());
+			List<String> namesToReturn = new ArrayList<String>();
+			if (plugin.isMercuryEnabled()) {
+				Set<String> players = MercuryAPI.instance.getAllPlayers();
+				for (String x: players) {
+					if (x.toLowerCase().startsWith(args[0].toLowerCase()))
+						namesToReturn.add(x);
+				}
 			}
-			return null;
+			else {
+				for (Player p: Bukkit.getOnlinePlayers()) {
+					if (p.getName().toLowerCase().startsWith(args[0].toLowerCase()))
+						namesToReturn.add(p.getName());
+				}
+			}
+			return namesToReturn;			
 		}
 		else if (args.length == 3)
 			return MemberTypeCompleter.complete(args[2]);
