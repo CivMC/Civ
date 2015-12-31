@@ -106,8 +106,14 @@ public class CivChat2Listener implements Listener {
 		}
 		if(groupChat != null){
 			//player is group chatting
-			chatman.sendGroupMsg(sender.getName(), chatMessage, GroupManager.getGroup(groupChat));
-			return;
+			if (GroupManager.getGroup(groupChat).isMember(NameAPI.getUUID(sender.getName()))) {
+				chatman.sendGroupMsg(sender.getName(), chatMessage, GroupManager.getGroup(groupChat));
+				return;
+			} //player was kicked from the group
+			else {
+				chatman.removeGroupChat(sender.getName());
+				sender.sendMessage(ChatColor.RED + "You have been removed from groupchat because you were removed from the group");
+			}
 		}
 		
 		CivChat2.debugmessage("PlayerChatEvent calling chatman.broadcastMessage()");
