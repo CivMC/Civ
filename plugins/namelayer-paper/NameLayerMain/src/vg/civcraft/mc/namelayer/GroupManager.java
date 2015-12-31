@@ -250,7 +250,10 @@ public class GroupManager{
 	 * @param group
 	 */
 	public void invalidateCache(String group){
-		groupsByName.get(group).setValid(false);
+		Group g = groupsByName.get(group);
+		if (g != null) {
+			g.setValid(false);
+		}
 		groupsByName.remove(group);
 		groupsById.remove(group);
 	}
