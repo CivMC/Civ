@@ -89,7 +89,8 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
                 if (!(o instanceof EntityPlayer)) continue;
 
                 EntityPlayer p = (EntityPlayer) o;
-                if (l.distanceSquared(p.getBukkitEntity().getLocation()) <= rangeSquared) {
+                Location loc = p.getBukkitEntity().getLocation();
+                if (l.getWorld().equals(loc.getWorld()) && l.distanceSquared(loc) <= rangeSquared) {
                     p.playerConnection.sendPacket(packet);
                 }
             }
