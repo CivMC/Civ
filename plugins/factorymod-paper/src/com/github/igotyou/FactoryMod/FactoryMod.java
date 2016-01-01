@@ -2,18 +2,23 @@ package com.github.igotyou.FactoryMod;
 
 import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
+import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
+import com.github.igotyou.FactoryMod.utility.MenuBuilder;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 
 public class FactoryMod extends ACivMod {
 	private static FactoryModManager manager;
 	private static FactoryMod plugin;
+	private static MenuBuilder mb;
 
 	public void onEnable() {
 		super.onEnable();
 		plugin = this;
+		MultiBlockStructure.initializeBlockFaceMap();
 		ConfigParser cp = new ConfigParser(this);
 		manager = cp.parse();
+		mb = new MenuBuilder();
 		manager.loadFactories();
 		registerListeners();
 		info("Successfully enabled");
@@ -44,5 +49,9 @@ public class FactoryMod extends ACivMod {
 				.registerEvents(
 						new CompactItemListener(manager.getCompactLore()),
 						plugin);
+	}
+	
+	public static MenuBuilder getMenuBuilder() {
+		return mb;
 	}
 }

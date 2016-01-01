@@ -1,7 +1,9 @@
-package com.github.igotyou.FactoryMod.multiBlockStructures;
+package com.github.igotyou.FactoryMod.structures;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,6 +21,8 @@ public abstract class MultiBlockStructure {
 			BlockFace.SOUTH, BlockFace.NORTH };
 	protected static BlockFace[] northEastWestSouthSides = new BlockFace[] {
 			BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH, BlockFace.NORTH };
+
+	protected static Map<Integer, BlockFace> dataBlockFaceConversion;
 
 	/**
 	 * Checks east,west,north and south of the given block for other blocks with
@@ -42,6 +46,22 @@ public abstract class MultiBlockStructure {
 		return result;
 	}
 
+	public static void initializeBlockFaceMap() {
+		dataBlockFaceConversion = new TreeMap<Integer, BlockFace>();
+		dataBlockFaceConversion.put(0, BlockFace.DOWN);
+		dataBlockFaceConversion.put(8, BlockFace.DOWN);
+		dataBlockFaceConversion.put(1, BlockFace.UP);
+		dataBlockFaceConversion.put(9, BlockFace.UP);
+		dataBlockFaceConversion.put(2, BlockFace.NORTH);
+		dataBlockFaceConversion.put(10, BlockFace.NORTH);
+		dataBlockFaceConversion.put(3, BlockFace.SOUTH);
+		dataBlockFaceConversion.put(11, BlockFace.SOUTH);
+		dataBlockFaceConversion.put(4, BlockFace.WEST);
+		dataBlockFaceConversion.put(12, BlockFace.WEST);
+		dataBlockFaceConversion.put(5, BlockFace.EAST);
+		dataBlockFaceConversion.put(13, BlockFace.EAST);
+	}
+
 	/**
 	 * @return Whether all parts of this factory are where they should be and no
 	 *         block is broken
@@ -62,5 +82,13 @@ public abstract class MultiBlockStructure {
 	 * @return center block of the factory which it was created from
 	 */
 	public abstract Location getCenter();
+
+	public static List<Block> getAdjacentBlocks(Block b) {
+		List<Block> blocks = new LinkedList<Block>();
+		for (BlockFace face : allBlockSides) {
+			blocks.add(b.getRelative(face));
+		}
+		return blocks;
+	}
 
 }

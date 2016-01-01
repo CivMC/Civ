@@ -8,6 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
 
@@ -28,7 +29,8 @@ public class RepairRecipe extends InputRecipe {
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
 		ItemStack furn = new ItemStack(Material.FURNACE);
-		ItemStackUtils.setLore(furn, "+" + String.valueOf(healthPerRun) + " health");
+		ItemStackUtils.setLore(furn, "+" + String.valueOf(healthPerRun)
+				+ " health");
 		result.add(furn);
 		return result;
 	}
@@ -42,7 +44,8 @@ public class RepairRecipe extends InputRecipe {
 			for (ItemStack is : input.getItemStackRepresentation()) {
 				i.removeItem(is);
 			}
-			f.getRepairManager().repair(healthPerRun);
+			((PercentageHealthRepairManager) (f.getRepairManager()))
+					.repair(healthPerRun);
 		}
 	}
 

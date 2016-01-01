@@ -8,13 +8,15 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.block.Dropper;
 import org.bukkit.entity.Player;
 
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.factories.Factory;
-import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
-import com.github.igotyou.FactoryMod.multiBlockStructures.MultiBlockStructure;
-import com.github.igotyou.FactoryMod.persistence.FactoryFileHandler;
+import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
+import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
+import com.github.igotyou.FactoryMod.structures.PipeStructure;
+import com.github.igotyou.FactoryMod.utility.FactoryFileHandler;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
 /**
@@ -60,6 +62,10 @@ public class FactoryModManager {
 		possibleInteractionBlock.add(Material.FURNACE);
 		possibleInteractionBlock.add(Material.BURNING_FURNACE);
 		possibleInteractionBlock.add(Material.CHEST);
+
+		// pipe
+		possibleCenterBlocks.add(Material.DROPPER);
+		possibleInteractionBlock.add(Material.DROPPER);
 	}
 
 	/**
@@ -191,10 +197,31 @@ public class FactoryModManager {
 								+ "There is no factory with the given creation materials");
 					}
 				}
-			} else {
-				p.sendMessage(ChatColor.RED + "This is no complete factory");
+				return;
 			}
+			PipeStructure ps = new PipeStructure(b);
+			if (ps.isComplete()) {
+				HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
+						.get(PipeStructure.class);
+				if (eggs != null) {
+					IFactoryEgg egg = eggs.get(new ItemMap(((Dropper) (ps
+							.getStart().getState())).getInventory()));
+					if (egg != null) {
+						Factory f = egg.hatch(ps, p);
+						if (f != null) {
+							((Dropper) (ps.getStart().getState()))
+									.getInventory().clear();
+							addFactory(f);
+							p.sendMessage(ChatColor.GREEN
+									+ "Successfully created " + f.getName());
+						}
 
+					} else {
+						p.sendMessage(ChatColor.RED
+								+ "There is no pipe with the given creation materials");
+					}
+				}
+			}
 		}
 	}
 

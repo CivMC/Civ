@@ -21,7 +21,7 @@ import vg.civcraft.mc.citadel.ReinforcementManager;
 
 import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.factories.Factory;
-import com.github.igotyou.FactoryMod.multiBlockStructures.MultiBlockStructure;
+import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 
 public class FactoryModListener implements Listener {
 	private FactoryModManager manager;
@@ -100,9 +100,7 @@ public class FactoryModListener implements Listener {
 		Block block = e.getClickedBlock();
 		Player player = e.getPlayer();
 		if (block != null
-				&& manager.isPossibleInteractionBlock(block.getType())
-				&& player.getItemInHand().getType() == manager
-						.getFactoryInteractionMaterial()) {
+				&& manager.isPossibleInteractionBlock(block.getType())) {
 			Factory c = manager.getFactoryAt(block);
 			if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				if (c != null) {
@@ -122,7 +120,10 @@ public class FactoryModListener implements Listener {
 			if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
 				if (c == null) {
 					if (manager.isPossibleCenterBlock(block.getType())) {
-						manager.attemptCreation(block, player);
+						if (player.getItemInHand().getType() == manager
+								.getFactoryInteractionMaterial()) {
+							manager.attemptCreation(block, player);
+						}
 					} else {
 						if (block.getType() == Material.CHEST) {
 							for (Block b : MultiBlockStructure
@@ -130,8 +131,8 @@ public class FactoryModListener implements Listener {
 											Material.CHEST)) {
 								Factory f = manager.getFactoryAt(b);
 								if (f != null) {
-									f.getInteractionManager().leftClick(
-											player, b);
+									f.getInteractionManager().leftClick(player,
+											b);
 								}
 							}
 						}

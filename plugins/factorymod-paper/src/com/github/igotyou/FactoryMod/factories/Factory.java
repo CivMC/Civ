@@ -1,11 +1,16 @@
 package com.github.igotyou.FactoryMod.factories;
 
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
+import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
-import com.github.igotyou.FactoryMod.multiBlockStructures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
+import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 
 /**
  * Super class for any sort of factory created by this plugin
@@ -19,6 +24,7 @@ public abstract class Factory implements Runnable {
 	protected MultiBlockStructure mbs;
 	protected int updateTime;
 	protected String name;
+	protected final String separator = "#";
 
 	public Factory(IInteractionManager im, IRepairManager rm, IPowerManager pm,
 			MultiBlockStructure mbs, int updateTime, String name) {
@@ -115,5 +121,52 @@ public abstract class Factory implements Runnable {
 	 * @return Everything needed to recreate this factory
 	 */
 	public abstract String serialize();
+
+	public void scheduleUpdate() {
+		FactoryMod
+				.getPlugin()
+				.getServer()
+				.getScheduler()
+				.scheduleSyncDelayedTask(FactoryMod.getPlugin(), this,
+						(long) updateTime);
+	}
+
+	public void turnFurnaceOn(Block f) {
+		Furnace furnace = (Furnace) f.getState();
+		byte data = furnace.getData().getData();
+		ItemStack[] oldContents = furnace.getInventory().getContents();
+		furnace.getInventory().clear();
+		f.setType(Material.BURNING_FURNACE);
+		furnace = (Furnace) f.getState();
+		furnace.setRawData(data);
+		furnace.update();
+		furnace.setBurnTime(Short.MAX_VALUE);
+		furnace.getInventory().setContents(oldContents);
+	}
+
+	public void turnFurnaceOff(Block f) {
+		Furnace furnace = (Furnace) f.getState();
+		byte data = furnace.getData().getData();
+		ItemStack[] oldContents = furnace.getInventory().getContents();
+		furnace.getInventory().clear();
+		f.setType(Material.FURNACE);
+		furnace = (Furnace) f.getState();
+		furnace.setRawData(data);
+		furnace.update();
+		furnace.getInventory().setContents(oldContents);
+	}
+
+	public String serializeBlock(Block b) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(separator);
+		sb.append(b.getWorld().getName());
+		sb.append(separator);
+		sb.append(b.getX());
+		sb.append(separator);
+		sb.append(b.getY());
+		sb.append(separator);
+		sb.append(b.getZ());
+		return sb.toString();
+	}
 
 }

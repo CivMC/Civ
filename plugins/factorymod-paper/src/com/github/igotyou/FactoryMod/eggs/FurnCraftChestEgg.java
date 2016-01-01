@@ -9,11 +9,11 @@ import org.bukkit.inventory.ItemStack;
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.interactionManager.FurnCraftChestInteractionManager;
-import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
-import com.github.igotyou.FactoryMod.multiBlockStructures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
+import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
+import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 
 public class FurnCraftChestEgg implements IFactoryEgg {
 	private String name;
@@ -33,7 +33,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 
 	public Factory hatch(MultiBlockStructure mbs, Player p) {
 		FurnCraftChestStructure fccs = (FurnCraftChestStructure) mbs;
-		FurnacePowerManager fpm = new FurnacePowerManager(fuel,
+		FurnacePowerManager fpm = new FurnacePowerManager(fccs.getFurnace(), fuel,
 				fuelConsumptionIntervall);
 		FurnCraftChestInteractionManager fccim = new FurnCraftChestInteractionManager();
 		PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(
@@ -41,7 +41,6 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		FurnCraftChestFactory fccf = new FurnCraftChestFactory(fccim, phrm,
 				fpm, fccs, updateTime, name, recipes);
 		fccim.setFactory(fccf);
-		fpm.setFactory(fccf);
 		if (recipes.size() != 0) {
 			fccf.setRecipe(recipes.get(0));
 		}
@@ -74,7 +73,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 
 	public Factory revive(List<Block> blocks, int health, String selectedRecipe, int productionTimer) {
 		FurnCraftChestStructure fccs = new FurnCraftChestStructure(blocks);
-		FurnacePowerManager fpm = new FurnacePowerManager(fuel,
+		FurnacePowerManager fpm = new FurnacePowerManager(fccs.getFurnace(), fuel,
 				fuelConsumptionIntervall);
 		FurnCraftChestInteractionManager fccim = new FurnCraftChestInteractionManager();
 		PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(
@@ -82,7 +81,6 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		FurnCraftChestFactory fccf = new FurnCraftChestFactory(fccim, phrm,
 				fpm, fccs, updateTime, name, recipes);
 		fccim.setFactory(fccf);
-		fpm.setFactory(fccf);
 		for (IRecipe recipe : recipes) {
 			if (recipe.getRecipeName() == selectedRecipe) {
 				fccf.setRecipe(recipe);

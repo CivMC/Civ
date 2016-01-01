@@ -19,14 +19,16 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
+import com.github.igotyou.FactoryMod.eggs.PipeEgg;
 import com.github.igotyou.FactoryMod.listeners.NetherPortalListener;
-import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.recipes.CompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.DecompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
+import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
+import com.github.igotyou.FactoryMod.structures.PipeStructure;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 import com.google.common.collect.Lists;
 
@@ -148,12 +150,48 @@ public class ConfigParser {
 			upgradeEggs.put(egg.getName(), egg);
 			manager.addFactoryUpgradeEgg(egg);
 			break;
+		case "PIPE":
+			egg = parsePipe(config);
+			ItemMap pipeSetupCost = parseItemMap(config
+					.getConfigurationSection("setupcost"));
+			manager.addFactoryCreationEgg(PipeStructure.class, pipeSetupCost,
+					egg);
+			break;
 		default:
 			plugin.severe("Could not identify factory type "
 					+ config.getString("type"));
 		}
 		plugin.info("Parsed factory " + egg.getName());
 
+	}
+
+	public PipeEgg parsePipe(ConfigurationSection config) {
+		String name = config.getString("name");
+		int update;
+		if (config.contains("updatetime")) {
+			update = (int) parseTime(config.getString("updatetime"));
+		} else {
+			update = defaultUpdateTime;
+		}
+		ItemStack fuel;
+		if (config.contains("fuel")) {
+			fuel = parseItemMap(config.getConfigurationSection("fuel"))
+					.getItemStackRepresentation().get(0);
+		} else {
+			fuel = defaultFuel;
+		}
+		int fuelIntervall;
+		if (config.contains("fuel_consumption_intervall")) {
+			fuelIntervall = (int) parseTime(config
+					.getString("fuel_consumption_intervall"));
+		} else {
+			fuelIntervall = defaultFuelConsumptionTime;
+		}
+		int transferTimeMultiplier = (int) parseTime(config
+				.getString("transfer_time_multiplier"));
+		int transferAmount = config.getInt("transferamount");
+		return new PipeEgg(name, update, fuel, fuelIntervall, null,
+				transferTimeMultiplier, transferAmount);
 	}
 
 	public IFactoryEgg parseFCCFactory(ConfigurationSection config) {

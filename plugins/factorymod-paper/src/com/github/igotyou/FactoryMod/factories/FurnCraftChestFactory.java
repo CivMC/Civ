@@ -12,15 +12,15 @@ import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
-import com.github.igotyou.FactoryMod.multiBlockStructures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
+import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
+import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 
 /**
  * Represents a "classic" factory, which consists of a furnace as powersource, a
@@ -96,7 +96,6 @@ public class FurnCraftChestFactory extends Factory {
 								+ currentRecipe.getRecipeName());
 					}
 					activate();
-					run();
 				} else {
 					if (p != null) {
 						p.sendMessage(ChatColor.RED
@@ -118,21 +117,12 @@ public class FurnCraftChestFactory extends Factory {
 	 * is allowed to turn on
 	 */
 	public void activate() {
-		// lots of code to make the furnace light up, without loosing contents.
 		active = true;
 		pm.setPowerCounter(0);
-		Furnace furnace = (Furnace) (getFurnace().getState());
-		byte data = furnace.getData().getData();
-		ItemStack[] oldContents = furnace.getInventory().getContents();
-		furnace.getInventory().clear();
-		getFurnace().setType(Material.BURNING_FURNACE);
-		furnace = (Furnace) (getFurnace().getState());
-		furnace.setRawData(data);
-		furnace.update();
-		furnace.setBurnTime(Short.MAX_VALUE);
-		furnace.getInventory().setContents(oldContents);
+		turnFurnaceOn(getFurnace());
 		// reset the production timer
 		currentProductionTimer = 0;
+		run();
 	}
 
 	/**
@@ -140,19 +130,7 @@ public class FurnCraftChestFactory extends Factory {
 	 */
 	public void deactivate() {
 		if (active) {
-			// lots of code to make the furnace turn off, without loosing
-			// contents.
-			Furnace furnace = (Furnace) (getFurnace().getState());
-			byte data = furnace.getData().getData();
-			ItemStack[] oldContents = furnace.getInventory().getContents();
-			furnace.getInventory().clear();
-			getFurnace().setType(Material.FURNACE);
-			furnace = (Furnace) getFurnace().getState();
-			furnace.setRawData(data);
-			furnace.update();
-			furnace.getInventory().setContents(oldContents);
-
-			// put active to false
+			turnFurnaceOff(getFurnace());
 			active = false;
 			// reset the production timer
 			currentProductionTimer = 0;
@@ -211,13 +189,7 @@ public class FurnCraftChestFactory extends Factory {
 						// increase the production timer
 						currentProductionTimer += updateTime;
 						// schedule next update
-						FactoryMod
-								.getPlugin()
-								.getServer()
-								.getScheduler()
-								.scheduleSyncDelayedTask(
-										FactoryMod.getPlugin(), this,
-										(long) updateTime);
+						scheduleUpdate();
 					}
 					// if there is no fuel Available turn off the factory
 					else {
@@ -242,13 +214,7 @@ public class FurnCraftChestFactory extends Factory {
 					currentProductionTimer = 0;
 					if (hasInputMaterials() && pm.powerAvailable()) {
 						pm.setPowerCounter(0);
-						FactoryMod
-								.getPlugin()
-								.getServer()
-								.getScheduler()
-								.scheduleSyncDelayedTask(
-										FactoryMod.getPlugin(), this,
-										(long) updateTime);
+						scheduleUpdate();
 						// keep going
 					} else {
 						deactivate();
@@ -309,8 +275,9 @@ public class FurnCraftChestFactory extends Factory {
 		this.name = name;
 		this.recipes = recipes;
 		this.updateTime = updateTime;
-		this.pm = new FurnacePowerManager(this, fuel, fuelConsumptionIntervall);
-		this.rm.repair(100);
+		this.pm = new FurnacePowerManager(getFurnace(), fuel,
+				fuelConsumptionIntervall);
+		((PercentageHealthRepairManager) this.rm).repair(100);
 		if (recipes.size() != 0) {
 			setRecipe(recipes.get(0));
 		} else {
@@ -320,25 +287,17 @@ public class FurnCraftChestFactory extends Factory {
 
 	public String serialize() {
 		StringBuilder sb = new StringBuilder();
-		String separator = "#";
 		sb.append("FCC");
 		sb.append(separator);
 		sb.append(getName());
 		sb.append(separator);
-		sb.append(rm.getRawHealth());
+		sb.append(((PercentageHealthRepairManager) rm).getRawHealth());
 		sb.append(separator);
 		sb.append(currentProductionTimer);
 		sb.append(separator);
 		sb.append(currentRecipe.getRecipeName());
 		for (Block b : mbs.getAllBlocks()) {
-			sb.append(separator);
-			sb.append(b.getWorld().getName());
-			sb.append(separator);
-			sb.append(b.getX());
-			sb.append(separator);
-			sb.append(b.getY());
-			sb.append(separator);
-			sb.append(b.getZ());
+			sb.append(serializeBlock(b));
 		}
 		return sb.toString();
 	}

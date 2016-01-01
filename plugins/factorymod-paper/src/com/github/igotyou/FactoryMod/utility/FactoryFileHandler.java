@@ -1,4 +1,4 @@
-package com.github.igotyou.FactoryMod.persistence;
+package com.github.igotyou.FactoryMod.utility;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
@@ -18,6 +19,7 @@ import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
+import com.github.igotyou.FactoryMod.eggs.PipeEgg;
 import com.github.igotyou.FactoryMod.factories.Factory;
 
 public class FactoryFileHandler {
@@ -109,6 +111,36 @@ public class FactoryFileHandler {
 					Factory fac = egg.revive(blocks, health, selectedRecipe,
 							productionTimer);
 					manager.addFactory(fac);
+					counter++;
+					break;
+				case "PIPE":
+					PipeEgg pipeEgg = (PipeEgg) eggs.get(content[1]);
+					int runTime = Integer.parseInt(content[2]);
+					List<Material> mats = new LinkedList<Material>();
+					int i = 3;
+					for (; i < content.length; i++) {
+						if (content[i].equals("NONE")) {
+							mats = null;
+							i+=2;
+							break;
+						}
+						if (content[i].equals("BLOCKS")) {
+							i++;
+							break;
+						}
+						Material m = Material.valueOf(content[i]);
+						mats.add(m);
+					}
+					List<Block> pipeBlocks = new LinkedList<Block>();
+					for (; i < content.length; i += 4) {
+						World w = plugin.getServer().getWorld(content[i]);
+						int x = Integer.parseInt(content[i + 1]);
+						int y = Integer.parseInt(content[i + 2]);
+						int z = Integer.parseInt(content[i + 3]);
+						pipeBlocks.add(new Location(w, x, y, z).getBlock());
+					}
+					Factory p = pipeEgg.revive(pipeBlocks, mats, runTime);
+					manager.addFactory(p);
 					counter++;
 				}
 				line = reader.readLine();

@@ -1,4 +1,4 @@
-package com.github.igotyou.FactoryMod.multiBlockStructures;
+package com.github.igotyou.FactoryMod.structures;
 
 import java.util.LinkedList;
 import java.util.List;

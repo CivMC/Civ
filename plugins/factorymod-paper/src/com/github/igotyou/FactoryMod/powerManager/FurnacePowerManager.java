@@ -1,9 +1,11 @@
 package com.github.igotyou.FactoryMod.powerManager;
 
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Furnace;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
 /**
@@ -13,15 +15,15 @@ import com.github.igotyou.FactoryMod.utility.ItemMap;
  */
 public class FurnacePowerManager implements IPowerManager {
 	private ItemStack fuel;
-	private FurnCraftChestFactory fccf;
 	private int powerCounter;
 	private int fuelConsumptionIntervall;
+	private Block furnace;
 
-	public FurnacePowerManager(FurnCraftChestFactory fccf, ItemStack fuel,
+	public FurnacePowerManager(Block furnace, ItemStack fuel,
 			int fuelConsumptionIntervall) {
-		this.fccf = fccf;
 		this.fuel = fuel;
 		this.fuelConsumptionIntervall = fuelConsumptionIntervall;
+		this.furnace = furnace;
 	}
 
 	public FurnacePowerManager(ItemStack fuel, int fuelConsumptionIntervall) {
@@ -29,16 +31,16 @@ public class FurnacePowerManager implements IPowerManager {
 		this.fuelConsumptionIntervall = fuelConsumptionIntervall;
 	}
 
-	public void setFactory(FurnCraftChestFactory fccf) {
-		this.fccf = fccf;
-	}
-
 	public int getPowerCounter() {
 		return powerCounter;
 	}
 
 	public boolean powerAvailable() {
-		FurnaceInventory fi = fccf.getFurnaceInventory();
+		if (furnace.getType() != Material.FURNACE
+				&& furnace.getType() != Material.BURNING_FURNACE) {
+			return false;
+		}
+		FurnaceInventory fi = ((Furnace) furnace.getState()).getInventory();
 		ItemMap im = new ItemMap();
 		im.addItemStack(fi.getFuel());
 		im.addItemStack(fi.getSmelting());
@@ -58,7 +60,7 @@ public class FurnacePowerManager implements IPowerManager {
 	}
 
 	public void consumePower() {
-		FurnaceInventory fi = fccf.getFurnaceInventory();
+		FurnaceInventory fi = ((Furnace) furnace.getState()).getInventory();
 		fi.removeItem(fuel);
 	}
 
