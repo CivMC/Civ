@@ -135,7 +135,7 @@ public class ClickableInventory {
 	public void addSlot(Clickable c) {
 		for (int i = 0; i < clickables.length; i++) {
 			if (clickables[i] == null) {
-				clickables [i] = c;
+				clickables[i] = c;
 				break;
 			}
 		}
@@ -157,7 +157,9 @@ public class ClickableInventory {
 			return;
 		}
 		clickables[index].clicked(p);
-		if (!(clickables[index] instanceof DecorationStack)) {
+		if (!(clickables[index] instanceof DecorationStack)
+				&& getOpenInventory(p) == this) {
+			//if the clickable opened a new window, we dont want to close it here
 			forceCloseInventory(p);
 		}
 	}
