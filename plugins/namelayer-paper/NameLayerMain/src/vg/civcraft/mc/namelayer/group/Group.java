@@ -278,6 +278,11 @@ public class Group {
 	/**
 	 * Gets the id for a group.  Keep in mind though if you are trying to get a group_id from a GroupCreateEvent event
 	 * it will not be accurate.  You must have a delay for 1 tick for it to work correctly.
+	 * 
+	 * Also calling the GroupManager.getGroup(int) will return a group that either has that group id or the object associated
+	 * with that id.  As such if a group is previously called and which didn't have the same id as the one called now
+	 * you could get a different group id.
+	 * Example would be System.out.println(GroupManager.getGroup(1).getGroupId()) and that could equal something like 2.
 	 * @return Returns the group id for a group.
 	 */
 	public int getGroupId(){
@@ -286,5 +291,13 @@ public class Group {
 	
 	public void setId(int id){
 		this.id = id;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Group))
+			return false;
+		Group g = (Group) obj;
+		return g.getName().equals(this.getName()); // If they have the same name they are equal.
 	}
 }

@@ -147,10 +147,17 @@ public class GroupManager{
 			Group group;
 			group = groupManagerDao.getGroup(groupId);
 			if (group != null) {
-				groupsByName.put(group.getName(), group);
-				groupsById.put(group.getGroupId(), group);
+				int id = group.getGroupId();
+				if (groupsByName.containsKey(group.getName())) {
+					group = groupsByName.get(group.getName());
+					groupsById.put(id, group);
+				}
+				else {
+					groupsByName.put(group.getName(), group);
+					groupsById.put(group.getGroupId(), group);
+				}
 			}
-			return group;
+			return groupsById.get(groupId);
 		}
 	}
 	
@@ -253,8 +260,10 @@ public class GroupManager{
 		Group g = groupsByName.get(group);
 		if (g != null) {
 			g.setValid(false);
+			groupsByName.remove(group);
+			for (Group x: groupsById.values())
+				if (x.getName().equals(g.getName()))
+				groupsById.remove(x.getGroupId());
 		}
-		groupsByName.remove(group);
-		groupsById.remove(group);
 	}
 }
