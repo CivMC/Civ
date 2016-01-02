@@ -177,7 +177,7 @@ public class GrowListener implements Listener {
 	        	Dispenser disp = (Dispenser) d;
 	        	BlockFace face = disp.getFacing();
 	        	Material mat = event.getBlock().getRelative(face).getType();
-	        	if (mat == Material.CROPS || mat == Material.SOIL || mat == Material.SAPLING || mat == Material.DOUBLE_PLANT || mat == Material.BROWN_MUSHROOM || mat == Material.RED_MUSHROOM) {
+	        	if (mat == Material.CROPS || mat == Material.SOIL || mat == Material.SAPLING || mat == Material.BROWN_MUSHROOM || mat == Material.RED_MUSHROOM) {
 	        		event.setCancelled(true);
 	        	}
 	        }
