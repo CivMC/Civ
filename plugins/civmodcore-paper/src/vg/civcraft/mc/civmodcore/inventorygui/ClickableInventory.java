@@ -133,9 +133,10 @@ public class ClickableInventory {
 	 *            Clickable to add
 	 */
 	public void addSlot(Clickable c) {
-		for (Clickable cl : clickables) {
-			if (cl == null) {
-				cl = c;
+		for (int i = 0; i < clickables.length; i++) {
+			if (clickables[i] == null) {
+				clickables [i] = c;
+				break;
 			}
 		}
 		inventory.addItem(c.getItemStack());
