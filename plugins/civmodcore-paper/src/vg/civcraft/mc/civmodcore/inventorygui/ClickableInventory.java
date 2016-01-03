@@ -33,28 +33,15 @@ public class ClickableInventory {
 	/**
 	 * Creates a new ClickableInventory
 	 * 
-	 * @param clickables
-	 *            The clickables to be put into this inventory. They will appear
-	 *            in the same order in the inventory as they are given in the
-	 *            arraylist, null represents empty slots, which will be skipped.
-	 *            If this arraylist contains more elements than the given
-	 *            inventory type has slots, an exception will be thrown.
 	 * @param type
 	 *            type of the inventory, dont use CREATIVE here, it wont work
 	 * @param name
 	 *            name of the inventory which is shown at the top when a player
 	 *            has it open
 	 */
-	public ClickableInventory(ArrayList<Clickable> clickables,
-			InventoryType type, String name) {
+	public ClickableInventory(InventoryType type, String name) {
 		inventory = Bukkit.createInventory(null, type, name);
-		this.clickables = new Clickable[inventory.getSize()];
-		for (int i = 0; i < clickables.size(); i++) {
-			this.clickables[i] = clickables.get(i);
-			if (clickables.get(i) != null) {
-				inventory.setItem(i, clickables.get(i).getItemStack());
-			}
-		}
+		this.clickables = new Clickable[inventory.getSize() + 1];
 	}
 
 	/**
@@ -62,12 +49,6 @@ public class ClickableInventory {
 	 * should have. The given size should always be dividable by 9 and smaller
 	 * or equal to 54, which is the maximum possible size
 	 * 
-	 * @param clickables
-	 *            The clickables to be put into this inventory. They will appear
-	 *            in the same order in the inventory as they are given in the
-	 *            arraylist, null represents empty slots, which will be skipped.
-	 *            If this arraylist contains more elements than the given
-	 *            inventory type has slots, an exception will be thrown.
 	 * @param size
 	 *            Size of the inventory to create, must be multiple of 9, bigger
 	 *            than 0 and smaller than 54
@@ -75,16 +56,9 @@ public class ClickableInventory {
 	 *            name of the inventory which is shown at the top when a player
 	 *            has it open
 	 */
-	public ClickableInventory(ArrayList<Clickable> clickables, int size,
-			String name) {
+	public ClickableInventory(int size, String name) {
 		inventory = Bukkit.createInventory(null, size, name);
-		this.clickables = new Clickable[size];
-		for (int i = 0; i < clickables.size(); i++) {
-			this.clickables[i] = clickables.get(i);
-			if (clickables.get(i) != null) {
-				inventory.setItem(i, clickables.get(i).getItemStack());
-			}
-		}
+		this.clickables = new Clickable[size + 1];
 	}
 
 	/**
@@ -133,7 +107,7 @@ public class ClickableInventory {
 	 *            Clickable to add
 	 */
 	public void addSlot(Clickable c) {
-		for (int i = 0; i < clickables.length; i++) {
+		for (int i = 1; i < clickables.length; i++) {
 			if (clickables[i] == null) {
 				clickables[i] = c;
 				break;
@@ -153,13 +127,14 @@ public class ClickableInventory {
 	 *            index of the item in the inventory
 	 */
 	public void itemClick(Player p, int index) {
-		if (index >= clickables.length || index < 0) {
+		if (index >= clickables.length || index < 0 || clickables[index] == null) {
 			return;
 		}
 		clickables[index].clicked(p);
 		if (!(clickables[index] instanceof DecorationStack)
 				&& getOpenInventory(p) == this) {
-			//if the clickable opened a new window, we dont want to close it here
+			// if the clickable opened a new window, we dont want to close it
+			// here
 			forceCloseInventory(p);
 		}
 	}
