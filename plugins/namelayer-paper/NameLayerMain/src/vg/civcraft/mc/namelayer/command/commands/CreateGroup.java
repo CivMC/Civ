@@ -42,7 +42,18 @@ public class CreateGroup extends PlayerCommandMiddle{
 			return true;
 		}
 		Charset latin1 = StandardCharsets.ISO_8859_1;
+		boolean invalidChars = false;
 		if (!latin1.newEncoder().canEncode(name)) {
+			invalidChars = true;
+		}
+		
+		for(char c:name.toCharArray()) {
+			if (Character.isISOControl(c)) {
+				invalidChars = true;
+			}
+		}
+		
+		if(invalidChars) {
 			p.sendMessage(ChatColor.RED + "You used characters, which are not allowed");
 			return true;
 		}
