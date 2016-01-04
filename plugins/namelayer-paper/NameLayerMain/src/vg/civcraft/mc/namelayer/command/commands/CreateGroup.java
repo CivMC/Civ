@@ -1,5 +1,7 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +35,18 @@ public class CreateGroup extends PlayerCommandMiddle{
 		}
 		Player p = (Player) sender;
 		String name = args[0];
+		
+		//enforce regulations on the name
+		if (name.length() > 32) {
+			p.sendMessage(ChatColor.RED + "The group name is not allowed to contain more than 32 characters");
+			return true;
+		}
+		Charset latin1 = StandardCharsets.ISO_8859_1;
+		if (!latin1.newEncoder().canEncode(name)) {
+			p.sendMessage(ChatColor.RED + "You used characters, which are not allowed");
+			return true;
+		}
+		
 		if (gm.getGroup(name) != null){
 			p.sendMessage(ChatColor.RED + "That group is already taken.");
 			return true;
