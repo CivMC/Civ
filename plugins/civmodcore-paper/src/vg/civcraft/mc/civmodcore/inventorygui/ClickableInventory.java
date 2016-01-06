@@ -107,7 +107,7 @@ public class ClickableInventory {
 	 *            Clickable to add
 	 */
 	public void addSlot(Clickable c) {
-		for (int i = 1; i < clickables.length; i++) {
+		for (int i = 0; i < clickables.length; i++) {
 			if (clickables[i] == null) {
 				clickables[i] = c;
 				break;
