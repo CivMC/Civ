@@ -39,7 +39,7 @@ public class Upgraderecipe extends InputRecipe {
 
 	public ItemStack getRecipeRepresentation() {
 		ItemStack res = new ItemStack(Material.WORKBENCH);
-		ItemStackUtils.setName(res, "Upgrade to " + egg.getName());
+		ItemStackUtils.setName(res, name);
 		return res;
 	}
 

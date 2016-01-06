@@ -36,6 +36,7 @@ public class Pipe extends Factory {
 
 	public void attemptToActivate(Player p) {
 		// TODO Citadel stuff
+		mbs.recheckComplete();
 		if (mbs.isComplete()) {
 			if (transferMaterialsAvailable()) {
 				if (pm.powerAvailable()) {

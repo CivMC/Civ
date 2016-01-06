@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
@@ -30,11 +31,11 @@ public class PipeInteractionManager implements IInteractionManager {
 		this.pipe = pipe;
 	}
 
-	public void rightClick(Player p, Block b) {
+	public void rightClick(Player p, Block b, BlockFace bf) {
 		// no use for this here
 	}
 
-	public void leftClick(Player p, Block b) {
+	public void leftClick(Player p, Block b, BlockFace bf) {
 		ItemStack hand = p.getItemInHand();
 		if (b.equals(((PipeStructure) (pipe.getMultiBlockStructure()))
 				.getStart())) {

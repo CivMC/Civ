@@ -16,10 +16,10 @@ import org.bukkit.block.BlockFace;
  *
  */
 public abstract class MultiBlockStructure {
-	protected static BlockFace[] allBlockSides = new BlockFace[] {
+	public static BlockFace[] allBlockSides = new BlockFace[] {
 			BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.WEST,
 			BlockFace.SOUTH, BlockFace.NORTH };
-	protected static BlockFace[] northEastWestSouthSides = new BlockFace[] {
+	public static BlockFace[] northEastWestSouthSides = new BlockFace[] {
 			BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH, BlockFace.NORTH };
 
 	protected static Map<Integer, BlockFace> dataBlockFaceConversion;
@@ -77,6 +77,12 @@ public abstract class MultiBlockStructure {
 	 * @return All blocks which are part of this factory
 	 */
 	public abstract List<Block> getAllBlocks();
+
+	/**
+	 * Rechecks whether all blocks of this factory exists and sets the variable
+	 * used for isComplete(), if needed
+	 */
+	public abstract void recheckComplete();
 
 	/**
 	 * @return center block of the factory which it was created from

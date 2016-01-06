@@ -1,6 +1,7 @@
 package com.github.igotyou.FactoryMod.interactionManager;
 
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 
@@ -18,7 +19,7 @@ public interface IInteractionManager {
 	 * @param b
 	 *            Block which was clicked
 	 */
-	public void rightClick(Player p, Block b);
+	public void rightClick(Player p, Block b, BlockFace bf);
 
 	/**
 	 * Called if a player left clicks a block, which is part of the factory of
@@ -29,7 +30,7 @@ public interface IInteractionManager {
 	 * @param b
 	 *            Block which was clicked
 	 */
-	public void leftClick(Player p, Block b);
+	public void leftClick(Player p, Block b, BlockFace bf);
 
 	/**
 	 * Called if a block, which is part of the factory of this manager is

@@ -21,6 +21,7 @@ public class PipeStructure extends MultiBlockStructure {
 	private List<Block> glassPipe;
 	private static Material pipeMaterial = Material.STAINED_GLASS;
 	private static int maximumLength = 32;
+	private boolean complete;
 
 	public PipeStructure(Block startBlock) {
 		if (startBlock.getType() != Material.DROPPER) {
@@ -97,22 +98,28 @@ public class PipeStructure extends MultiBlockStructure {
 		res.add(end);
 		return res;
 	}
-
-	public boolean isComplete() {
+	
+	public void recheckComplete() {
 		if (start == null
 				|| furnace == null
 				|| end == null
 				|| start.getType() != Material.DROPPER
 				|| (furnace.getType() != Material.FURNACE && furnace.getType() != Material.BURNING_FURNACE)
 				|| !(end.getState() instanceof InventoryHolder)) {
-			return false;
+			complete = false;
+			return;
 		}
 		for (Block b : glassPipe) {
 			if (b.getType() != pipeMaterial) {
-				return false;
+				complete = false;
+				return;
 			}
 		}
-		return true;
+		complete = true;
+	}
+
+	public boolean isComplete() {
+		return complete;
 	}
 
 	public int getLength() {

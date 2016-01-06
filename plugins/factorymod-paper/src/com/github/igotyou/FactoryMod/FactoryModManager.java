@@ -2,21 +2,24 @@ package com.github.igotyou.FactoryMod;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.block.Dispenser;
 import org.bukkit.block.Dropper;
 import org.bukkit.entity.Player;
 
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
-import com.github.igotyou.FactoryMod.utility.FactoryFileHandler;
+import com.github.igotyou.FactoryMod.utility.FileHandler;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
 
 /**
@@ -25,7 +28,7 @@ import com.github.igotyou.FactoryMod.utility.ItemMap;
  */
 public class FactoryModManager {
 	protected FactoryMod plugin;
-	private FactoryFileHandler fileHandler;
+	private FileHandler fileHandler;
 	private HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>> factoryCreationRecipes;
 	private HashMap<Location, Factory> locations;
 	private HashMap<String, IFactoryEgg> eggs;
@@ -47,7 +50,7 @@ public class FactoryModManager {
 		this.redstonePowerOn = redstonePowerOn;
 		this.redstoneRecipeChange = redstoneRecipeChange;
 
-		fileHandler = new FactoryFileHandler(this);
+		fileHandler = new FileHandler(this);
 
 		factoryCreationRecipes = new HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>>();
 		locations = new HashMap<Location, Factory>();
@@ -66,6 +69,10 @@ public class FactoryModManager {
 		// pipe
 		possibleCenterBlocks.add(Material.DROPPER);
 		possibleInteractionBlock.add(Material.DROPPER);
+
+		// sorter
+		possibleCenterBlocks.add(Material.DISPENSER);
+		possibleInteractionBlock.add(Material.DISPENSER);
 	}
 
 	/**
@@ -87,6 +94,25 @@ public class FactoryModManager {
 	}
 
 	/**
+	 * Gets the setupcost for a specific factory
+	 * 
+	 * @param c
+	 *            Class of the structure type the factory is using
+	 * @param name
+	 *            Name of the factory
+	 * @return Setupcost if the factory if it was found or null if it wasnt
+	 */
+	public ItemMap getSetupCost(Class c, String name) {
+		for (Entry<ItemMap, IFactoryEgg> entry : factoryCreationRecipes.get(c)
+				.entrySet()) {
+			if (entry.getValue().getName().equals(name)) {
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Adds a factory and the locations of its blocks to the manager
 	 * 
 	 * @param f
@@ -104,6 +130,13 @@ public class FactoryModManager {
 	 */
 	public boolean isCitadelEnabled() {
 		return citadelEnabled;
+	}
+
+	/**
+	 * @return All eggs contained in this manager
+	 */
+	public HashMap<String, IFactoryEgg> getAllEggs() {
+		return eggs;
 	}
 
 	/**
@@ -219,6 +252,31 @@ public class FactoryModManager {
 					} else {
 						p.sendMessage(ChatColor.RED
 								+ "There is no pipe with the given creation materials");
+					}
+				}
+				return;
+			}
+			BlockFurnaceStructure bfs = new BlockFurnaceStructure(b);
+			if (bfs.isComplete()) {
+				HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
+						.get(BlockFurnaceStructure.class);
+				if (eggs != null) {
+					IFactoryEgg egg = eggs
+							.get(new ItemMap(((Dispenser) (bfs.getCenter()
+									.getBlock().getState())).getInventory()));
+					if (egg != null) {
+						Factory f = egg.hatch(bfs, p);
+						if (f != null) {
+							((Dispenser) (bfs.getCenter().getBlock().getState()))
+									.getInventory().clear();
+							addFactory(f);
+							p.sendMessage(ChatColor.GREEN
+									+ "Successfully created " + f.getName());
+						}
+
+					} else {
+						p.sendMessage(ChatColor.RED
+								+ "There is no sorter with the given creation materials");
 					}
 				}
 			}

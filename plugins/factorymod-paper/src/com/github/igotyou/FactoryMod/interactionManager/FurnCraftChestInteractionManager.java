@@ -5,12 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
@@ -29,24 +27,23 @@ import com.github.igotyou.FactoryMod.utility.MenuBuilder;
 public class FurnCraftChestInteractionManager implements IInteractionManager {
 	private FurnCraftChestFactory fccf;
 	private HashMap<Clickable, InputRecipe> recipes = new HashMap<Clickable, InputRecipe>();
-	private ReinforcementManager rm;
-	private MenuBuilder mb;
+	private static ReinforcementManager rm;
+	private static MenuBuilder mb;
 
 	public FurnCraftChestInteractionManager(FurnCraftChestFactory fccf) {
 		this.fccf = fccf;
-		prepCitadel();
-		mb = FactoryMod.getMenuBuilder();
 	}
 
 	public FurnCraftChestInteractionManager() {
-		prepCitadel();
+		
 	}
 
 	public void setFactory(FurnCraftChestFactory fccf) {
 		this.fccf = fccf;
 	}
 
-	private void prepCitadel() {
+	public static void prep() {
+		mb = FactoryMod.getMenuBuilder();
 		if (FactoryMod.getManager().isCitadelEnabled()) {
 			rm = Citadel.getReinforcementManager();
 		} else {
@@ -191,7 +188,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		}
 	}
 
-	public void leftClick(Player p, Block b) {
+	public void leftClick(Player p, Block b, BlockFace bf) {
 		if (p.getItemInHand().getType() != FactoryMod.getManager()
 				.getFactoryInteractionMaterial()) {
 			return;
@@ -199,9 +196,8 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		if (b.equals(((FurnCraftChestStructure) fccf.getMultiBlockStructure())
 				.getChest())) { // chest interaction
 			if (p.isSneaking()) { // sneaking, so showing detailed recipe stuff
-				ClickableInventory ci = new ClickableInventory(
-						new ArrayList<Clickable>(), 54, fccf.getCurrentRecipe()
-								.getRecipeName());
+				ClickableInventory ci = new ClickableInventory(54, fccf
+						.getCurrentRecipe().getRecipeName());
 				int index = 4;
 				for (ItemStack is : ((InputRecipe) fccf.getCurrentRecipe())
 						.getInputRepresentation(fccf.getInventory())) {
@@ -298,8 +294,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				recipes.put(c, recipe);
 				clickables.add(c);
 			}
-			ClickableInventory ci = new ClickableInventory(clickables, 36,
-					"Select a recipe");
+			ClickableInventory ci = new ClickableInventory(36,"Select a recipe");
 			ci.showInventory(p);
 			return;
 		}
@@ -312,7 +307,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		}
 	}
 
-	public void rightClick(Player p, Block b) {
+	public void rightClick(Player p, Block b, BlockFace bf) {
 		// Nothing to do here, every block already has a right click
 		// functionality
 	}

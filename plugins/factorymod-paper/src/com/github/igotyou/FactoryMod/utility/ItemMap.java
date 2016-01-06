@@ -122,7 +122,7 @@ public class ItemMap {
 	 *            ItemStack to remove
 	 */
 	public void removeItemStackCompletly(ItemStack input) {
-		items.remove(input);
+		items.remove(createMapConformCopy(input));
 	}
 
 	public int hashCode() {

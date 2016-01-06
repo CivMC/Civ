@@ -1,5 +1,7 @@
 package com.github.igotyou.FactoryMod;
 
+import com.github.igotyou.FactoryMod.commands.FactoryModCommandHandler;
+import com.github.igotyou.FactoryMod.interactionManager.FurnCraftChestInteractionManager;
 import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
@@ -13,6 +15,8 @@ public class FactoryMod extends ACivMod {
 	private static MenuBuilder mb;
 
 	public void onEnable() {
+		handle = new FactoryModCommandHandler();
+		handle.registerCommands();
 		super.onEnable();
 		plugin = this;
 		MultiBlockStructure.initializeBlockFaceMap();
@@ -21,6 +25,7 @@ public class FactoryMod extends ACivMod {
 		mb = new MenuBuilder();
 		manager.loadFactories();
 		registerListeners();
+		FurnCraftChestInteractionManager.prep();
 		info("Successfully enabled");
 	}
 

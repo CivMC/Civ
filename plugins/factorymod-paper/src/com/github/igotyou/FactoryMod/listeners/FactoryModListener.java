@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -101,17 +102,19 @@ public class FactoryModListener implements Listener {
 		Player player = e.getPlayer();
 		if (block != null
 				&& manager.isPossibleInteractionBlock(block.getType())) {
+			BlockFace bf = e.getBlockFace();
 			Factory c = manager.getFactoryAt(block);
 			if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				if (c != null) {
-					c.getInteractionManager().rightClick(player, block);
+					c.getInteractionManager().rightClick(player, block, bf);
 				} else {
 					if (block.getType() == Material.CHEST) {
 						for (Block b : MultiBlockStructure
 								.searchForBlockOnSides(block, Material.CHEST)) {
 							Factory f = manager.getFactoryAt(b);
 							if (f != null) {
-								f.getInteractionManager().rightClick(player, b);
+								f.getInteractionManager().rightClick(player, b,
+										bf);
 							}
 						}
 					}
@@ -132,13 +135,13 @@ public class FactoryModListener implements Listener {
 								Factory f = manager.getFactoryAt(b);
 								if (f != null) {
 									f.getInteractionManager().leftClick(player,
-											b);
+											b, bf);
 								}
 							}
 						}
 					}
 				} else {
-					c.getInteractionManager().leftClick(player, block);
+					c.getInteractionManager().leftClick(player, block, bf);
 				}
 
 			}

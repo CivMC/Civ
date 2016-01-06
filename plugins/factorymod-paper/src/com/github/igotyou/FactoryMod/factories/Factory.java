@@ -138,7 +138,7 @@ public abstract class Factory implements Runnable {
 		furnace.getInventory().clear();
 		f.setType(Material.BURNING_FURNACE);
 		furnace = (Furnace) f.getState();
-		furnace.setRawData(data);
+		furnace.getData().setData(data);
 		furnace.update();
 		furnace.setBurnTime(Short.MAX_VALUE);
 		furnace.getInventory().setContents(oldContents);
@@ -151,7 +151,7 @@ public abstract class Factory implements Runnable {
 		furnace.getInventory().clear();
 		f.setType(Material.FURNACE);
 		furnace = (Furnace) f.getState();
-		furnace.setRawData(data);
+		furnace.getData().setData(data);
 		furnace.update();
 		furnace.getInventory().setContents(oldContents);
 	}

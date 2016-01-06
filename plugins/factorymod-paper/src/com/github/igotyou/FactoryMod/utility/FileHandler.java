@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -14,21 +15,24 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.eggs.PipeEgg;
+import com.github.igotyou.FactoryMod.eggs.SorterEgg;
 import com.github.igotyou.FactoryMod.factories.Factory;
 
-public class FactoryFileHandler {
+public class FileHandler {
 	private FactoryMod plugin;
 	private FactoryModManager manager;
 	File saveFile;
 	File backup;
 
-	public FactoryFileHandler(FactoryModManager manager) {
+	public FileHandler(FactoryModManager manager) {
 		plugin = FactoryMod.getPlugin();
 		this.manager = manager;
 		saveFile = new File(plugin.getDataFolder().getAbsolutePath()
@@ -121,7 +125,7 @@ public class FactoryFileHandler {
 					for (; i < content.length; i++) {
 						if (content[i].equals("NONE")) {
 							mats = null;
-							i+=2;
+							i += 2;
 							break;
 						}
 						if (content[i].equals("BLOCKS")) {
@@ -142,6 +146,42 @@ public class FactoryFileHandler {
 					Factory p = pipeEgg.revive(pipeBlocks, mats, runTime);
 					manager.addFactory(p);
 					counter++;
+					break;
+				case "SORTER":
+					Map <BlockFace, ItemMap> assignments = new HashMap<BlockFace, ItemMap>();
+					SorterEgg sorterEgg = (SorterEgg) eggs.get(content[1]);
+					int runTimeSorter = Integer.valueOf(content[2]);
+					int index = 3;
+					for (int q = 0; q < 6; q++) {
+						BlockFace bf = BlockFace.valueOf(content[index++]);
+						ItemMap im = new ItemMap();
+						while(true) {
+							if (content[index].equals("STOP")) {
+								index++;
+								break;
+							}
+							else {
+								Material m = Material.valueOf(content[index]);
+								int dura = Integer.valueOf(content[index+1]);
+								im.addItemStack(new ItemStack(m, 1, (short)dura));
+								index +=2;
+								
+							}
+						}
+						assignments.put(bf, im);
+					}
+					List <Block> sorterBlocks = new LinkedList<Block>();
+					for (; index < content.length; index += 4) {
+						World w = plugin.getServer().getWorld(content[index]);
+						int x = Integer.parseInt(content[index+1]);
+						int y = Integer.parseInt(content[index + 2]);
+						int z = Integer.parseInt(content[index + 3]);
+						sorterBlocks.add(new Location(w, x, y, z).getBlock());
+					}
+					Factory s = sorterEgg.revive(sorterBlocks, assignments, runTimeSorter);
+					manager.addFactory(s);
+					counter++;
+					break;					
 				}
 				line = reader.readLine();
 			}
