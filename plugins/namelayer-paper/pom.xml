@@ -25,6 +25,7 @@
 				<module>NameLayer1_8_R3</module>
 				<module>NameLayerMain</module>
 				<module>NameLayer</module>
+				<module>NameLayerBungee</module>
 			</modules>
 		</profile>
 		<profile>

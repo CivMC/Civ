@@ -6,7 +6,7 @@
 	<groupId>vg.civcraft.mc.namelayer</groupId>
 	<artifactId>NameLayer</artifactId>
 	<packaging>jar</packaging>
-	<version>2.5.25</version>
+	<version>2.5.26</version>
 	<name>NameLayer</name>
 	<url>https://github.com/Civcraft/NameLayer/</url>			  
 	
@@ -38,6 +38,23 @@
 				<directory>../NameLayerMain</directory>
 				<includes>
 					<include>plugin.yml</include>
+				</includes>
+			</resource>
+			<resource>
+				<targetPath>.</targetPath>
+				<filtering>true</filtering>
+				<directory>../NameLayerBungee</directory>
+				<includes>
+					<include>bungee.yml</include>
+				</includes>
+			</resource>
+			<!-- config.yml needs its own location so it does not mess with the bukkit plugin. -->
+			<resource>
+				<targetPath>../bungee</targetPath>
+				<filtering>true</filtering>
+				<directory>../NameLayerBungee</directory>
+				<includes>
+					<include>config.yml</include>
 				</includes>
 			</resource>
 		</resources>
