@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
-
 public class Database {
 	private String host;
 	private int port;
@@ -55,7 +53,7 @@ public class Database {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch (Exception ex) {
-			throw new DataSourceException("Failed to initialize JDBC driver.");
+			this.logger.log(Level.SEVERE, "Failed to initialize JDBC driver.");
 		}
 		try {
 			connection = DriverManager.getConnection(jdbc);
