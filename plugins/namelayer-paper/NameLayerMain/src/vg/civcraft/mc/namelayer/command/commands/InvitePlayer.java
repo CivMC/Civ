@@ -167,7 +167,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			if (NameLayerPlugin.isMercuryEnabled()) {
 				Set<String> players = MercuryAPI.instance.getAllPlayers();
 				for (String x: players) {
-					if (x.toLowerCase().startsWith(args[0].toLowerCase()))
+					if (x.toLowerCase().startsWith(args[1].toLowerCase()))
 						namesToReturn.add(x);
 				}
 			}
