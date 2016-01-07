@@ -62,6 +62,10 @@
 			<id>bukkit</id>
 			<url>http://repo.bukkit.org/content/groups/public/</url>
 		</repository>
+		<repository>
+			<id>md_5-repo</id>
+			<url>http://repo.md-5.net/content/repositories/public/</url>
+		</repository>
 	</repositories>
 	<build>
 		<plugins>
