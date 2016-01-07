@@ -10,17 +10,21 @@ import org.bukkit.inventory.ItemStack;
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.Sorter;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
+import com.github.igotyou.FactoryMod.utility.MenuBuilder;
+import com.github.igotyou.FactoryMod.utility.NiceNames;
 
 public class SorterInteractionManager implements IInteractionManager {
 	private Sorter sorter;
 	private BlockFurnaceStructure bfs;
+	private MenuBuilder mb;
 
 	public SorterInteractionManager(Sorter sorter) {
 		setSorter(sorter);
+		mb = FactoryMod.getMenuBuilder();
 	}
 
 	public SorterInteractionManager() {
-
+		mb = FactoryMod.getMenuBuilder();
 	}
 
 	public void setSorter(Sorter sorter) {
@@ -36,7 +40,7 @@ public class SorterInteractionManager implements IInteractionManager {
 	}
 
 	public void rightClick(Player p, Block b, BlockFace bf) {
-		//not needed here
+		// not needed here
 	}
 
 	public void leftClick(Player p, Block b, BlockFace bf) {
@@ -48,21 +52,30 @@ public class SorterInteractionManager implements IInteractionManager {
 				sorter.attemptToActivate(p);
 			}
 		} else { // center
+			if (p.isSneaking()
+					&& p.getItemInHand()
+							.getType()
+							.equals(FactoryMod.getManager()
+									.getFactoryInteractionMaterial())) {
+				mb.showSorterFace(p, sorter, bf);
+				return;
+			}
 			ItemStack is = p.getItemInHand();
 			BlockFace side = sorter.getSide(is);
 			if (side == null) {
 				sorter.addAssignment(bf, is);
 				p.sendMessage(ChatColor.GREEN + "Added "
-						+ is.getType().toString() + " to " + bf.toString());
+						+ NiceNames.getName(is) + " to " + bf.toString());
 			} else {
 				if (side == bf) {
 					sorter.removeAssignment(is);
 					p.sendMessage(ChatColor.GOLD + "Removed "
-							+ is.getType().toString() + " from "
+							+ NiceNames.getName(is) + " from "
 							+ side.toString());
 				} else {
 					p.sendMessage(ChatColor.RED
-							+ "This item is already associated with " + side.toString());
+							+ "This item is already associated with "
+							+ side.toString());
 				}
 			}
 		}

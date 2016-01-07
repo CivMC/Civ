@@ -54,6 +54,7 @@ public class PipeStructure extends MultiBlockStructure {
 				if (b.getState() instanceof InventoryHolder) {
 					end = b;
 					this.length = length;
+					complete = true;
 					foundEnd = true;
 					break;
 				} else if (b.getType() == pipeMaterial
@@ -84,6 +85,7 @@ public class PipeStructure extends MultiBlockStructure {
 		}
 		this.glassPipe = glass;
 		length = glassPipe.size();
+		recheckComplete();
 	}
 
 	public Location getCenter() {

@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.utility.ItemMap;
+import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
 
 /**
  * Used to decompact itemstacks, which means a single item with compacted lore
@@ -75,6 +76,13 @@ public class DecompactingRecipe extends InputRecipe {
 
 	public List<ItemStack> getInputRepresentation(Inventory i) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
+		if (i == null) {
+			ItemStack is = new ItemStack(Material.STONE, 64);
+			ItemStackUtils.addLore(is, compactedLore);
+			is.setAmount(1);
+			result.add(is);
+			return result;
+		}
 		result = createLoredStacksForInfo(i);
 		for (ItemStack is : i.getContents()) {
 			if (is != null) {
@@ -99,6 +107,10 @@ public class DecompactingRecipe extends InputRecipe {
 
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
+		if (i == null) {
+			result.add(new ItemStack(Material.STONE, 64));
+			return result;
+		}		
 		for (ItemStack is : i.getContents()) {
 			if (is != null) {
 				ItemMeta im = is.getItemMeta();

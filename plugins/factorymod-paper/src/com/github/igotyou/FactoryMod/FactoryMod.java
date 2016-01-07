@@ -6,6 +6,7 @@ import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.utility.MenuBuilder;
+import com.github.igotyou.FactoryMod.utility.NiceNames;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 
@@ -26,6 +27,7 @@ public class FactoryMod extends ACivMod {
 		manager.loadFactories();
 		registerListeners();
 		FurnCraftChestInteractionManager.prep();
+		new NiceNames().loadNames();
 		info("Successfully enabled");
 	}
 

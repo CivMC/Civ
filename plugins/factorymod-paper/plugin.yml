@@ -1,5 +1,11 @@
 name: ${project.name}
-main: com.github.igotyou.FactoryMod.FactoryModPlugin
+main: com.github.igotyou.FactoryMod.FactoryMod
 author: igotyou
 version: ${project.version}
 depend: [NameLayer, Citadel]
+commands:
+    fm:
+        permission: fm.public
+permissions:
+    fm.public:
+        default: true

@@ -126,6 +126,10 @@ public class Sorter extends Factory {
 	public void addAssignment(BlockFace bf, ItemStack is) {
 		assignedMaterials.get(bf).addItemStack(is.clone());
 	}
+	
+	public ItemMap getItemsForSide(BlockFace face) {
+		return assignedMaterials.get(face);
+	}
 
 	public void removeAssignment(ItemStack is) {
 		for (Entry<BlockFace, ItemMap> entry : assignedMaterials.entrySet()) {

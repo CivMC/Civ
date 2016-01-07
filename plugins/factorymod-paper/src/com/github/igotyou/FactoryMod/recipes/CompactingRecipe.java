@@ -73,6 +73,10 @@ public class CompactingRecipe extends InputRecipe {
 
 	public List<ItemStack> getInputRepresentation(Inventory i) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
+		if (i == null) {
+			result.add(new ItemStack(Material.STONE, 64));
+			return result;
+		}
 		result = createLoredStacksForInfo(i);
 		for (ItemStack is : i.getContents()) {
 			if (is != null) {
@@ -88,6 +92,12 @@ public class CompactingRecipe extends InputRecipe {
 
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
+		if (i == null) {
+			ItemStack is = new ItemStack(Material.STONE, 64);
+			compact(is);
+			result.add(is);
+			return result;
+		}
 		for (ItemStack is : i.getContents()) {
 			if (is != null) {
 				if (compactable(is)) {

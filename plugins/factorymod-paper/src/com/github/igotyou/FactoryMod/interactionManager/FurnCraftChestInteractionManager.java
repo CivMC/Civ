@@ -272,7 +272,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		}
 		if (b.equals(((FurnCraftChestStructure) fccf.getMultiBlockStructure())
 				.getCraftingTable())) { // crafting table interaction
-			ArrayList<Clickable> clickables = new ArrayList<Clickable>();
+			ClickableInventory ci = new ClickableInventory(36,"Select a recipe");
 			for (IRecipe rec : fccf.getRecipes()) {
 				InputRecipe recipe = (InputRecipe) (rec);
 				Clickable c = new Clickable(recipe.getRecipeRepresentation()) {
@@ -292,9 +292,9 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 					}
 				};
 				recipes.put(c, recipe);
-				clickables.add(c);
+				ci.addSlot(c);
 			}
-			ClickableInventory ci = new ClickableInventory(36,"Select a recipe");
+
 			ci.showInventory(p);
 			return;
 		}

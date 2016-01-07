@@ -29,7 +29,9 @@ public abstract class InputRecipe implements IRecipe {
 	/**
 	 * Used to get a representation of a recipes input materials, which is
 	 * displayed in an item gui to illustrate the recipe and to give additional
-	 * information
+	 * information. If null is given instead of an inventory just general
+	 * information should be returned, which doesnt depend on a specific
+	 * instance
 	 * 
 	 * @param i
 	 *            Inventory for which the recipe would be run, this is used to
@@ -43,7 +45,9 @@ public abstract class InputRecipe implements IRecipe {
 	/**
 	 * Used to get a representation of a recipes output materials, which is
 	 * displayed in an item gui to illustrate the recipe and to give additional
-	 * information
+	 * information. If null is given instead of an inventory just general
+	 * information should be returned, which doesnt depend on a specific
+	 * instance
 	 * 
 	 * @param i
 	 *            Inventory for which the recipe would be run, this is used to

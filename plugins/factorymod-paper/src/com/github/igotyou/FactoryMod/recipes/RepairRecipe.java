@@ -36,6 +36,9 @@ public class RepairRecipe extends InputRecipe {
 	}
 
 	public List<ItemStack> getInputRepresentation(Inventory i) {
+		if (i == null) {
+			return input.getItemStackRepresentation();
+		}
 		return createLoredStacksForInfo(i);
 	}
 

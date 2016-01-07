@@ -41,6 +41,9 @@ public class ProductionRecipe extends InputRecipe {
 
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
 		List<ItemStack> stacks = output.getItemStackRepresentation();
+		if (i == null) {
+			return stacks;
+		}
 		int possibleRuns = input.getMultiplesContainedIn(i);
 		for (ItemStack is : stacks) {
 			ItemStackUtils.addLore(is, ChatColor.GREEN
@@ -51,6 +54,9 @@ public class ProductionRecipe extends InputRecipe {
 	}
 
 	public List<ItemStack> getInputRepresentation(Inventory i) {
+		if (i == null) {
+			return input.getItemStackRepresentation();
+		}
 		return createLoredStacksForInfo(i);
 	}
 

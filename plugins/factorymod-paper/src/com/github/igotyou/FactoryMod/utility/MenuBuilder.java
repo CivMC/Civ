@@ -6,22 +6,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.minecraft.server.v1_8_R3.ItemAnvil;
+
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.ScheduledInventoryOpen;
 
+import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
+import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.Pipe;
+import com.github.igotyou.FactoryMod.factories.Sorter;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
@@ -31,10 +42,11 @@ public class MenuBuilder {
 	private FactoryModManager manager;
 	private Map<UUID, String> factoryViewed = new HashMap<UUID, String>();
 
-	private Map<UUID, Pipe> pipeViewed = new HashMap<UUID, Pipe>();
-
+	private Map<UUID, Factory> viewed = new HashMap<UUID, Factory>();
 	// child is key, parent is value
 	private Map<String, String> parentFactories = new HashMap<String, String>();
+	private DecorationStack input;
+	private DecorationStack output;
 
 	public MenuBuilder() {
 		manager = FactoryMod.getManager();
@@ -42,13 +54,34 @@ public class MenuBuilder {
 			if (egg instanceof FurnCraftChestEgg) {
 				FurnCraftChestEgg furnegg = (FurnCraftChestEgg) egg;
 				for (IRecipe rec : furnegg.getRecipes()) {
+					System.out.println(rec.toString());
 					if (rec instanceof Upgraderecipe) {
-						parentFactories.put(egg.getName(),
-								((Upgraderecipe) rec).getEgg().getName());
+						parentFactories.put(((Upgraderecipe) rec).getEgg()
+								.getName(), egg.getName());
 					}
 				}
 			}
 		}
+		ItemStack inp = new ItemStack(Material.PAPER);
+		ItemStackUtils.setName(inp, "Input");
+		ItemStackUtils.setLore(inp, ChatColor.LIGHT_PURPLE
+				+ "The items below are required");
+		input = new DecorationStack(inp);
+		ItemStack outp = new ItemStack(Material.PAPER);
+		ItemStackUtils.setName(outp, "Output");
+		ItemStackUtils.setLore(outp, ChatColor.LIGHT_PURPLE
+				+ "The output of this recipe");
+	}
+
+	private DecorationStack createBannerDeco(PatternType... types) {
+		ItemStack is = new ItemStack(Material.BANNER);
+		BannerMeta bm = (BannerMeta) is.getItemMeta();
+		bm.setBaseColor(DyeColor.GRAY);
+		for (PatternType type : types) {
+			bm.addPattern(new Pattern(DyeColor.YELLOW, type));
+		}
+		is.setItemMeta(bm);
+		return new DecorationStack(is);
 	}
 
 	public void openFactoryBrowser(Player p, String startingFac) {
@@ -109,7 +142,6 @@ public class MenuBuilder {
 				}
 			};
 			browser.setSlot(upgradeClickable, 16);
-
 			ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(), browser, p);
 		}
 
@@ -138,7 +170,8 @@ public class MenuBuilder {
 		// back option
 		ItemStack backStack = new ItemStack(Material.ARROW);
 		ItemStackUtils.setName(backStack, "Back to factory overview");
-		ItemStackUtils.addLore(backStack, "Click to go back");
+		ItemStackUtils.addLore(backStack, ChatColor.LIGHT_PURPLE
+				+ "Click to go back");
 		Clickable backClickable = new Clickable(backStack) {
 			@Override
 			public void clicked(Player arg0) {
@@ -152,21 +185,24 @@ public class MenuBuilder {
 
 	private void openSetupBrowser(Player p, String facName) {
 		ClickableInventory.forceCloseInventory(p);
-		FurnCraftChestEgg egg = (FurnCraftChestEgg) manager
-				.getEgg(factoryViewed.get(p.getUniqueId()));
+		FurnCraftChestEgg egg = (FurnCraftChestEgg) manager.getEgg(facName);
 		FurnCraftChestEgg parEgg = (FurnCraftChestEgg) manager
-				.getEgg(parentFactories.get(egg.getName()));
+				.getEgg(parentFactories.get(facName));
 		ClickableInventory ci = new ClickableInventory(54, "How to get a "
 				+ egg.getName());
 		ItemStack cr = new ItemStack(Material.WORKBENCH);
 		ItemStack fur = new ItemStack(Material.FURNACE);
 		ItemStack che = new ItemStack(Material.CHEST);
 		if (parEgg == null) {// creation factory
-			ItemStackUtils.setLore(cr, "This factory can be created with",
-					"a normal crafting table, furnace and chest");
-			ItemStackUtils.setLore(che, "Arrange the 3 blocks like this,",
-					"put the materials below in the chest",
-					"and hit the craftingtable with a stick");
+			ItemStackUtils.setLore(cr, ChatColor.LIGHT_PURPLE
+					+ "This factory can be created with",
+					ChatColor.LIGHT_PURPLE
+							+ "a normal crafting table, furnace and chest");
+			ItemStackUtils.setLore(che, ChatColor.LIGHT_PURPLE
+					+ "Arrange the 3 blocks like this,", ChatColor.LIGHT_PURPLE
+					+ "put the materials below in the chest",
+					ChatColor.LIGHT_PURPLE
+							+ "and hit the craftingtable with a stick");
 			DecorationStack furnDec = new DecorationStack(fur);
 			DecorationStack chestDec = new DecorationStack(che);
 			DecorationStack craStack = new DecorationStack(cr);
@@ -185,7 +221,7 @@ public class MenuBuilder {
 			Upgraderecipe rec = null;
 			for (IRecipe reci : parEgg.getRecipes()) {
 				if (reci instanceof Upgraderecipe
-						&& ((Upgraderecipe) rec).getEgg().equals(egg)) {
+						&& ((Upgraderecipe) reci).getEgg().equals(egg)) {
 					rec = (Upgraderecipe) reci;
 				}
 			}
@@ -199,6 +235,8 @@ public class MenuBuilder {
 				}
 			};
 			ci.setSlot(craCli, 13);
+			ItemStackUtils.setLore(fur, ChatColor.LIGHT_PURPLE
+					+ "Click to display information", "on this factory");
 			Clickable furCli = new Clickable(fur) {
 				@Override
 				public void clicked(Player arg0) {
@@ -222,6 +260,7 @@ public class MenuBuilder {
 				slot++;
 			}
 		}
+		ci.setSlot(input, 31);
 		ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(), ci, p);
 	}
 
@@ -239,7 +278,8 @@ public class MenuBuilder {
 		if (upgrades.size() == 0) {
 			ItemStack bar = new ItemStack(Material.BARRIER);
 			ItemStackUtils.setName(bar, "No upgrades available");
-			ItemStackUtils.addLore(bar, "Click to go back");
+			ItemStackUtils.addLore(bar, ChatColor.LIGHT_PURPLE
+					+ "Click to go back");
 			Clickable noUpgrades = new Clickable(bar) {
 				@Override
 				public void clicked(Player p) {
@@ -348,7 +388,7 @@ public class MenuBuilder {
 	}
 
 	public void showPipeMaterials(Player p, Pipe pipe) {
-		pipeViewed.put(p.getUniqueId(), pipe);
+		viewed.put(p.getUniqueId(), pipe);
 		showPipeMaterialPart(p, pipe, 0);
 	}
 
@@ -366,8 +406,9 @@ public class MenuBuilder {
 			Clickable c = new Clickable(is) {
 				@Override
 				public void clicked(Player arg0) {
-					pipeViewed.get(arg0.getUniqueId()).removeAllowedMaterial(
-							this.getItemStack().getType());
+					((Pipe) viewed.get(arg0.getUniqueId()))
+							.removeAllowedMaterial(this.getItemStack()
+									.getType());
 					arg0.sendMessage(ChatColor.GOLD + "Removed "
 							+ this.getItemStack().getType()
 							+ " as allowed material");
@@ -386,7 +427,7 @@ public class MenuBuilder {
 				public void clicked(Player arg0) {
 					showPipeMaterialPart(
 							arg0,
-							pipeViewed.get(arg0.getUniqueId()),
+							(Pipe) viewed.get(arg0.getUniqueId()),
 							Integer.valueOf(this.getItemStack().getItemMeta()
 									.getLore().get(0).split(" ")[7]));
 				}
@@ -394,6 +435,28 @@ public class MenuBuilder {
 			ci.setSlot(nextClick, 49);
 		}
 		ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(), ci, p);
+	}
+
+	public void showSorterFace(Player p, Sorter s, BlockFace face) {
+		ClickableInventory.forceCloseInventory(p);
+		ClickableInventory ci = new ClickableInventory(54,
+				"Items for this side");
+		viewed.put(p.getUniqueId(), s);
+		for (ItemStack is : s.getItemsForSide(face)
+				.getItemStackRepresentation()) {
+			is.setAmount(1);
+			ci.addSlot(new Clickable(is) {
+				@Override
+				public void clicked(Player arg0) {
+					((Sorter) viewed.get(arg0.getUniqueId()))
+							.removeAssignment(this.getItemStack());
+					arg0.sendMessage(ChatColor.GOLD + "Removed "
+							+ NiceNames.getName(this.getItemStack()));
+				}
+			});
+		}
+		ci.showInventory(p);
+
 	}
 
 }

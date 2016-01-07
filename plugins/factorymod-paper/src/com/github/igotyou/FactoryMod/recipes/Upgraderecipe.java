@@ -44,6 +44,9 @@ public class Upgraderecipe extends InputRecipe {
 	}
 
 	public List<ItemStack> getInputRepresentation(Inventory i) {
+		if (i == null) {
+			return input.getItemStackRepresentation();
+		}
 		LinkedList<ItemStack> result = new LinkedList<ItemStack>();
 		ItemMap inventoryMap = new ItemMap(i);
 		ItemMap possibleRuns = new ItemMap();
