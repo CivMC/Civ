@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.Material;
 
@@ -27,6 +28,10 @@ public class NiceNames {
 		} else {
 			return res;
 		}
+	}
+	
+	public static String getName(Enchantment enchant) {
+		return "";
 	}
 
 	public void loadNames() {

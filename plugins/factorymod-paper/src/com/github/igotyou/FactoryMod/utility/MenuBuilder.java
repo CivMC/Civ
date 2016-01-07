@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import net.minecraft.server.v1_8_R3.ItemAnvil;
-
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -18,14 +16,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.ScheduledInventoryOpen;
 
-import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
@@ -46,7 +42,6 @@ public class MenuBuilder {
 	// child is key, parent is value
 	private Map<String, String> parentFactories = new HashMap<String, String>();
 	private DecorationStack input;
-	private DecorationStack output;
 
 	public MenuBuilder() {
 		manager = FactoryMod.getManager();
@@ -54,7 +49,6 @@ public class MenuBuilder {
 			if (egg instanceof FurnCraftChestEgg) {
 				FurnCraftChestEgg furnegg = (FurnCraftChestEgg) egg;
 				for (IRecipe rec : furnegg.getRecipes()) {
-					System.out.println(rec.toString());
 					if (rec instanceof Upgraderecipe) {
 						parentFactories.put(((Upgraderecipe) rec).getEgg()
 								.getName(), egg.getName());
@@ -206,12 +200,12 @@ public class MenuBuilder {
 			DecorationStack furnDec = new DecorationStack(fur);
 			DecorationStack chestDec = new DecorationStack(che);
 			DecorationStack craStack = new DecorationStack(cr);
-			ci.setSlot(furnDec, 12);
-			ci.setSlot(craStack, 13);
-			ci.setSlot(chestDec, 14);
+			ci.setSlot(furnDec, 3);
+			ci.setSlot(craStack, 4);
+			ci.setSlot(chestDec, 5);
 			ItemMap im = manager.getSetupCost(FurnCraftChestStructure.class,
 					egg.getName());
-			int slot = 36;
+			int slot = 27;
 			for (ItemStack is : im.getItemStackRepresentation()) {
 				DecorationStack dec = new DecorationStack(is);
 				ci.setSlot(dec, slot);
@@ -234,7 +228,7 @@ public class MenuBuilder {
 							.get(arg0.getUniqueId())));
 				}
 			};
-			ci.setSlot(craCli, 13);
+			ci.setSlot(craCli, 4);
 			ItemStackUtils.setLore(fur, ChatColor.LIGHT_PURPLE
 					+ "Click to display information", "on this factory");
 			Clickable furCli = new Clickable(fur) {
@@ -244,7 +238,7 @@ public class MenuBuilder {
 							.get(arg0.getUniqueId())));
 				}
 			};
-			ci.setSlot(furCli, 12);
+			ci.setSlot(furCli, 3);
 			Clickable cheCli = new Clickable(che) {
 				@Override
 				public void clicked(Player arg0) {
@@ -252,7 +246,7 @@ public class MenuBuilder {
 							.get(arg0.getUniqueId())));
 				}
 			};
-			ci.setSlot(cheCli, 14);
+			ci.setSlot(cheCli, 5);
 			int slot = 36;
 			for (ItemStack is : rec.getInput().getItemStackRepresentation()) {
 				DecorationStack dec = new DecorationStack(is);
@@ -260,7 +254,18 @@ public class MenuBuilder {
 				slot++;
 			}
 		}
-		ci.setSlot(input, 31);
+		ci.setSlot(input, 22);
+		ItemStack backStack = new ItemStack(Material.ARROW);
+		ItemStackUtils.setName(backStack, "Back to factory overview");
+		ItemStackUtils.addLore(backStack, ChatColor.LIGHT_PURPLE
+				+ "Click to go back");
+		Clickable backClickable = new Clickable(backStack) {
+			@Override
+			public void clicked(Player arg0) {
+				openFactoryBrowser(arg0, factoryViewed.get(arg0.getUniqueId()));
+			}
+		};
+		ci.setSlot(backClickable, 18);
 		ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(), ci, p);
 	}
 
@@ -289,6 +294,10 @@ public class MenuBuilder {
 			ci.setSlot(noUpgrades, 4);
 		} else {
 			for (IRecipe recipe : upgrades) {
+				ItemStack recStack = ((InputRecipe) recipe)
+						.getRecipeRepresentation();
+				ItemStackUtils.setLore(recStack, ChatColor.LIGHT_PURPLE
+						+ "Click to display more information");
 				Clickable c = new Clickable(
 						((InputRecipe) recipe).getRecipeRepresentation()) {
 					@Override
@@ -300,6 +309,17 @@ public class MenuBuilder {
 				ci.addSlot(c);
 			}
 		}
+		ItemStack backStack = new ItemStack(Material.ARROW);
+		ItemStackUtils.setName(backStack, "Back to factory overview");
+		ItemStackUtils.addLore(backStack, ChatColor.LIGHT_PURPLE
+				+ "Click to go back");
+		Clickable backClickable = new Clickable(backStack) {
+			@Override
+			public void clicked(Player arg0) {
+				openFactoryBrowser(arg0, factoryViewed.get(arg0.getUniqueId()));
+			}
+		};
+		ci.setSlot(backClickable, 17);
 		ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(), ci, p);
 	}
 
@@ -317,13 +337,9 @@ public class MenuBuilder {
 		ClickableInventory ci = new ClickableInventory(54, recipeName);
 		ItemStack inputStack = new ItemStack(Material.PAPER);
 		ItemStackUtils.setName(inputStack, "Input materials");
-		ItemStackUtils.addLore(inputStack,
-				"The materials required to run this recipe");
-		Clickable inputClickable = new Clickable(inputStack) {
-			@Override
-			public void clicked(Player arg0) {
-			}
-		};
+		ItemStackUtils.addLore(inputStack, ChatColor.LIGHT_PURPLE
+				+ "The materials required to run this recipe");
+		DecorationStack inputClickable = new DecorationStack(inputStack);
 		ci.setSlot(inputClickable, 4);
 		int index = 13;
 		for (ItemStack is : rec.getInputRepresentation(null)) {
@@ -348,15 +364,11 @@ public class MenuBuilder {
 
 		ItemStack outputStack = new ItemStack(Material.PAPER);
 		ItemStackUtils.setName(outputStack, "Output/effect");
-		Clickable outputClickable = new Clickable(outputStack) {
-			@Override
-			public void clicked(Player arg0) {
-			}
-		};
-
+		DecorationStack outputClickable = new DecorationStack(outputStack);
 		ItemStack backStack = new ItemStack(Material.ARROW);
 		ItemStackUtils.setName(backStack, "Back to recipe overview");
-		ItemStackUtils.addLore(backStack, "Click to go back");
+		ItemStackUtils.addLore(backStack, ChatColor.LIGHT_PURPLE
+				+ "Click to go back");
 		Clickable backClickable = new Clickable(backStack) {
 			@Override
 			public void clicked(Player arg0) {

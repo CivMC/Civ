@@ -77,11 +77,17 @@ public class Upgraderecipe extends InputRecipe {
 		List<ItemStack> res = new LinkedList<ItemStack>();
 		ItemStack cr = new ItemStack(Material.WORKBENCH);
 		ItemStackUtils.setName(cr, egg.getName());
+		ItemStackUtils.setLore(cr, ChatColor.LIGHT_PURPLE+ "Upgrade to get new and better recipes");
 		res.add(cr);
 		ItemStack fur = new ItemStack(Material.FURNACE);
 		ItemStackUtils.setName(fur, egg.getName());
+		ItemStackUtils.setLore(fur, ChatColor.LIGHT_PURPLE + "Recipes:");
+		for(IRecipe rec : ((FurnCraftChestEgg)egg).getRecipes()) {
+			ItemStackUtils.addLore(fur, ChatColor.YELLOW + rec.getRecipeName());
+		}
 		res.add(fur);
 		ItemStack che = new ItemStack(Material.CHEST);
+		ItemStackUtils.setLore(che, ChatColor.LIGHT_PURPLE + "Careful, you can not",ChatColor.LIGHT_PURPLE+ "revert upgrades!");
 		ItemStackUtils.setName(che, egg.getName());
 		res.add(che);
 		return res;

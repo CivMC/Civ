@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -22,6 +23,7 @@ import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
+import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
 import com.github.igotyou.FactoryMod.utility.MenuBuilder;
 
 public class FurnCraftChestInteractionManager implements IInteractionManager {
@@ -294,6 +296,16 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				recipes.put(c, recipe);
 				ci.addSlot(c);
 			}
+			ItemStack menuStack = new ItemStack(Material.PAINTING);
+			ItemStackUtils.setName(menuStack, "Open menu");
+			ItemStackUtils.addLore(menuStack, ChatColor.LIGHT_PURPLE + "Click to open a detailed menu");
+			Clickable menuC = new Clickable(menuStack) {
+				@Override
+				public void clicked(Player arg0) {
+					mb.openFactoryBrowser(arg0, fccf.getName());
+				}
+			};
+			ci.setSlot(menuC, 35);
 
 			ci.showInventory(p);
 			return;
