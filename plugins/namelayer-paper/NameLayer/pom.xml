@@ -50,7 +50,7 @@
 			</resource>
 			<!-- config.yml needs its own location so it does not mess with the bukkit plugin. -->
 			<resource>
-				<targetPath>../bungee</targetPath>
+				<targetPath>./bungee</targetPath>
 				<filtering>true</filtering>
 				<directory>../NameLayerBungee</directory>
 				<includes>
