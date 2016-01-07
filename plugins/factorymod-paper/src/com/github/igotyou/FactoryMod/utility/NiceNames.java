@@ -13,10 +13,11 @@ import org.bukkit.Material;
 import com.github.igotyou.FactoryMod.FactoryMod;
 
 public class NiceNames {
-	private static Map<Material, Map<Short, String>> names;
+	private static Map<Material, Map<Short, String>> items;
+	private static Map<Enchantment, String> enchants;
 
 	public static String getName(ItemStack is) {
-		Map<Short, String> duraMap = names.get(is.getType());
+		Map<Short, String> duraMap = items.get(is.getType());
 		if (duraMap == null) {
 			return "COULD NOT FIND NAME FOR " + is.getType() + ", dura:"
 					+ is.getDurability();
@@ -29,13 +30,14 @@ public class NiceNames {
 			return res;
 		}
 	}
-	
+
 	public static String getName(Enchantment enchant) {
-		return "";
+		return enchants.get(enchant);
 	}
 
 	public void loadNames() {
-		names = new HashMap<Material, Map<Short, String>>();
+		//item aliases
+		items = new HashMap<Material, Map<Short, String>>();
 		int counter = 0;
 		try {
 			InputStream in = getClass().getResourceAsStream("/materials.csv");
@@ -44,10 +46,11 @@ public class NiceNames {
 			String line = reader.readLine();
 			while (line != null) {
 				String[] content = line.split(",");
-				Map<Short, String> duraMap = names.get(Material
+				Map<Short, String> duraMap = items.get(Material
 						.valueOf(content[1]));
 				if (duraMap == null) {
 					duraMap = new HashMap<Short, String>();
+					items.put(Material.valueOf(content[1]), duraMap);
 				}
 				duraMap.put(Short.valueOf(content[3]), content[0]);
 				line = reader.readLine();
@@ -59,5 +62,26 @@ public class NiceNames {
 		}
 		FactoryMod.getPlugin().info(
 				"Imported " + counter + " item name aliases");
+		
+		//enchantment aliases
+		enchants = new HashMap<Enchantment, String>();
+		counter = 0;
+		try {
+			InputStream in = getClass().getResourceAsStream("/enchantments.csv");
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(in));
+			String line = reader.readLine();
+			while (line != null) {
+				String[] content = line.split(",");
+				enchants.put(Enchantment.getByName(content[1]), content[0]);
+				line = reader.readLine();
+				counter++;
+			}
+			reader.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		FactoryMod.getPlugin().info(
+				"Imported " + counter + " enchantment aliases");
 	}
 }

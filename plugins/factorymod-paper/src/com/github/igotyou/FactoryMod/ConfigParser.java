@@ -399,11 +399,9 @@ public class ConfigParser {
 			if (name != null) {
 				im.setDisplayName(name);
 			}
-			String lore = current.getString("lore");
+			List<String> lore = current.getStringList("lore");
 			if (lore != null) {
-				List<String> loreList = new LinkedList<String>();
-				loreList.add(lore);
-				im.setLore(loreList);
+				im.setLore(lore);
 			}
 			if (current.contains("enchants")) {
 				for (String enchantKey : current.getConfigurationSection(
