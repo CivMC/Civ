@@ -14,6 +14,7 @@ import org.bukkit.block.Dropper;
 import org.bukkit.entity.Player;
 
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
+import com.github.igotyou.FactoryMod.eggs.PipeEgg;
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
@@ -240,6 +241,10 @@ public class FactoryModManager {
 					IFactoryEgg egg = eggs.get(new ItemMap(((Dropper) (ps
 							.getStart().getState())).getInventory()));
 					if (egg != null) {
+						if (ps.getGlassColor() != ((PipeEgg)egg).getColor()) {
+							p.sendMessage(ChatColor.RED + "You dont have the right color of glass for this pipe");
+							return;
+						}
 						Factory f = egg.hatch(ps, p);
 						if (f != null) {
 							((Dropper) (ps.getStart().getState()))

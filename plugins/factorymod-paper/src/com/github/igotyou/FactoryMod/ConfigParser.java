@@ -227,8 +227,9 @@ public class ConfigParser {
 		int transferTimeMultiplier = (int) parseTime(config
 				.getString("transfer_time_multiplier"));
 		int transferAmount = config.getInt("transferamount");
+		byte color = (byte)config.getInt("glass_color");
 		return new PipeEgg(name, update, fuel, fuelIntervall, null,
-				transferTimeMultiplier, transferAmount);
+				transferTimeMultiplier, transferAmount, color);
 	}
 
 	public IFactoryEgg parseFCCFactory(ConfigurationSection config) {

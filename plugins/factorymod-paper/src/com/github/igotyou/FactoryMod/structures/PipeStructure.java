@@ -19,6 +19,7 @@ public class PipeStructure extends MultiBlockStructure {
 	private Block end;
 	private int length;
 	private List<Block> glassPipe;
+	private byte glassColor;
 	private static Material pipeMaterial = Material.STAINED_GLASS;
 	private static int maximumLength = 32;
 	private boolean complete;
@@ -43,6 +44,7 @@ public class PipeStructure extends MultiBlockStructure {
 		if (currentBlock.getType() != pipeMaterial) {
 			return;
 		}
+		glassColor = currentBlock.getData();
 		glassPipe.add(currentBlock);
 		int length = 1;
 		while (length <= maximumLength) {
@@ -58,6 +60,7 @@ public class PipeStructure extends MultiBlockStructure {
 					foundEnd = true;
 					break;
 				} else if (b.getType() == pipeMaterial
+						&& b.getData() == glassColor
 						&& !b.equals(previousBlock)) {
 					glassPipe.add(b);
 					previousBlock = currentBlock;
@@ -77,8 +80,8 @@ public class PipeStructure extends MultiBlockStructure {
 		this.start = blocks.get(0);
 		this.furnace = blocks.get(1);
 		this.end = blocks.get(blocks.size() - 1);
-		List <Block> glass = new LinkedList<Block>();
-		for(Block b:blocks) {
+		List<Block> glass = new LinkedList<Block>();
+		for (Block b : blocks) {
 			if (b.getType() == pipeMaterial) {
 				glass.add(b);
 			}
@@ -100,7 +103,7 @@ public class PipeStructure extends MultiBlockStructure {
 		res.add(end);
 		return res;
 	}
-	
+
 	public void recheckComplete() {
 		if (start == null
 				|| furnace == null
@@ -112,7 +115,7 @@ public class PipeStructure extends MultiBlockStructure {
 			return;
 		}
 		for (Block b : glassPipe) {
-			if (b.getType() != pipeMaterial) {
+			if (b.getType() != pipeMaterial || b.getData() != glassColor) {
 				complete = false;
 				return;
 			}
@@ -122,6 +125,10 @@ public class PipeStructure extends MultiBlockStructure {
 
 	public boolean isComplete() {
 		return complete;
+	}
+	
+	public byte getGlassColor() {
+		return glassColor;
 	}
 
 	public int getLength() {

@@ -26,10 +26,11 @@ public class PipeEgg implements IFactoryEgg {
 	private List<Material> allowedMaterials;
 	private int transferTimeMultiplier;
 	private int transferAmount;
+	private byte color;
 
 	public PipeEgg(String name, int updateTime, ItemStack fuel,
 			int fuelConsumptionIntervall, List<Material> allowedMaterials,
-			int transferTimeMultiplier, int transferAmount) {
+			int transferTimeMultiplier, int transferAmount, byte color) {
 		this.name = name;
 		this.fuel = fuel;
 		this.updateTime = updateTime;
@@ -37,6 +38,7 @@ public class PipeEgg implements IFactoryEgg {
 		this.transferTimeMultiplier = transferTimeMultiplier;
 		this.transferAmount = transferAmount;
 		this.allowedMaterials = allowedMaterials;
+		this.color = color;
 	}
 
 	public String getName() {
@@ -65,6 +67,10 @@ public class PipeEgg implements IFactoryEgg {
 
 	public int getTransferTimeMultiplier() {
 		return transferTimeMultiplier;
+	}
+	
+	public byte getColor() {
+		return color;
 	}
 
 	public Factory hatch(MultiBlockStructure mbs, Player p) {
