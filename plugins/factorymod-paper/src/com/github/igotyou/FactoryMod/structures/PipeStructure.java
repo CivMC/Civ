@@ -21,7 +21,7 @@ public class PipeStructure extends MultiBlockStructure {
 	private List<Block> glassPipe;
 	private byte glassColor;
 	private static Material pipeMaterial = Material.STAINED_GLASS;
-	private static int maximumLength = 32;
+	private static int maximumLength = 128;
 	private boolean complete;
 
 	public PipeStructure(Block startBlock) {

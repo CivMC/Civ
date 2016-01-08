@@ -25,13 +25,15 @@ public class Sorter extends Factory {
 	private int runTime;
 	private int matsPerSide;
 	private int sortTime;
+	private int sortAmount;
 
 	public Sorter(IInteractionManager im, IRepairManager rm, IPowerManager pm,
 			MultiBlockStructure mbs, int updateTime, String name, int sortTime,
-			int matsPerSide) {
+			int matsPerSide, int sortAmount) {
 		super(im, rm, pm, mbs, updateTime, name);
 		assignedMaterials = new HashMap<BlockFace, ItemMap>();
 		this.sortTime = sortTime;
+		this.sortAmount = sortAmount;
 		runTime = 0;
 		this.matsPerSide = matsPerSide;
 		for (BlockFace bf : MultiBlockStructure.allBlockSides) {
@@ -143,7 +145,7 @@ public class Sorter extends Factory {
 	public void sortStack() {
 		Block center = mbs.getCenter().getBlock();
 		Inventory inv = getCenterInventory();
-		boolean transferred = false;
+		int leftToSort = sortAmount;
 		for (BlockFace bf : MultiBlockStructure.allBlockSides) {
 			if (center.getRelative(bf).getState() instanceof InventoryHolder) {
 				Inventory relInv = ((InventoryHolder) center.getRelative(bf)
@@ -152,16 +154,22 @@ public class Sorter extends Factory {
 				for (ItemStack is : inv.getContents()) {
 					if (is != null && is.getType() != Material.AIR
 							&& im.getAmount(is) != 0) {
+						int removeAmount = Math.min(leftToSort, is.getAmount());
+						ItemStack rem = is.clone();
+						rem.setAmount(removeAmount);
 						if (new ItemMap(is).fitsIn(relInv)) {
-							inv.removeItem(is);
-							relInv.addItem(is);
-							transferred = true;
+							inv.removeItem(rem);
+							relInv.addItem(rem);
+							leftToSort -=removeAmount;
 							break;
 						}
 					}
+					if (leftToSort <= 0) {
+						break;
+					}
 				}
 			}
-			if (transferred) {
+			if (leftToSort <= 0) {
 				break;
 			}
 		}

@@ -27,39 +27,42 @@ public class SorterEgg implements IFactoryEgg {
 	private int fuelConsumptionIntervall;
 	private int sortTime;
 	private int matsPerSide;
-	
+	private int sortAmount;
+
 	public SorterEgg(String name, int updateTime, ItemStack fuel,
-			int fuelConsumptionIntervall, int sortTime, int matsPerSide) {
+			int fuelConsumptionIntervall, int sortTime, int matsPerSide,
+			int sortAmount) {
 		this.name = name;
 		this.fuel = fuel;
 		this.updateTime = updateTime;
 		this.fuelConsumptionIntervall = fuelConsumptionIntervall;
 		this.sortTime = sortTime;
+		this.sortAmount = sortAmount;
 		this.matsPerSide = matsPerSide;
 	}
-	
+
 	public Factory hatch(MultiBlockStructure mbs, Player p) {
 		IInteractionManager im = new SorterInteractionManager();
 		IRepairManager rm = new NoRepairDestroyOnBreakManager();
 		IPowerManager pm = new FurnacePowerManager(
 				((BlockFurnaceStructure) mbs).getFurnace(), fuel,
 				fuelConsumptionIntervall);
-		Sorter sorter = new Sorter(im, rm, pm, mbs, updateTime, name,
-				sortTime, matsPerSide);
+		Sorter sorter = new Sorter(im, rm, pm, mbs, updateTime, name, sortTime,
+				matsPerSide, sortAmount);
 		((SorterInteractionManager) im).setSorter(sorter);
 		return sorter;
 	}
-	
-	public Factory revive(List<Block> blocks, Map <BlockFace,ItemMap> assignments,
-			int runTime) {
+
+	public Factory revive(List<Block> blocks,
+			Map<BlockFace, ItemMap> assignments, int runTime) {
 		MultiBlockStructure ps = new BlockFurnaceStructure(blocks);
 		SorterInteractionManager im = new SorterInteractionManager();
 		IRepairManager rm = new NoRepairDestroyOnBreakManager();
 		IPowerManager pm = new FurnacePowerManager(
 				((BlockFurnaceStructure) ps).getFurnace(), fuel,
 				fuelConsumptionIntervall);
-		Sorter sorter = new Sorter(im, rm, pm, ps, updateTime, name,
-				sortTime, matsPerSide);
+		Sorter sorter = new Sorter(im, rm, pm, ps, updateTime, name, sortTime,
+				matsPerSide, sortAmount);
 		((SorterInteractionManager) im).setSorter(sorter);
 		sorter.setAssignments(assignments);
 		if (runTime != 0) {
@@ -70,30 +73,33 @@ public class SorterEgg implements IFactoryEgg {
 		}
 		return sorter;
 	}
-	
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public int getUpdateTime() {
 		return updateTime;
 	}
-	
+
 	public ItemStack getFuel() {
 		return fuel;
 	}
-	
+
 	public int getFuelConsumptionIntervall() {
 		return fuelConsumptionIntervall;
 	}
-	
+
 	public int getSortTime() {
 		return sortTime;
 	}
-	
+
 	public int getMaterialsPerSide() {
 		return matsPerSide;
+	}
+	
+	public int getSortAmount() {
+		return sortAmount;
 	}
 
 }

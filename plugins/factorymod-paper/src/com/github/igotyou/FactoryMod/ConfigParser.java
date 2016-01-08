@@ -197,9 +197,10 @@ public class ConfigParser {
 			fuelIntervall = defaultFuelConsumptionTime;
 		}
 		int sortTime = (int) parseTime(config.getString("sort_time"));
+		int sortamount = config.getInt("sort_amount");
 		int matsPerSide = config.getInt("maximum_materials_per_side");
 		return new SorterEgg(name, update, fuel, fuelIntervall, sortTime,
-				matsPerSide);
+				matsPerSide, sortamount);
 	}
 
 	public PipeEgg parsePipe(ConfigurationSection config) {
@@ -227,7 +228,7 @@ public class ConfigParser {
 		int transferTimeMultiplier = (int) parseTime(config
 				.getString("transfer_time_multiplier"));
 		int transferAmount = config.getInt("transferamount");
-		byte color = (byte)config.getInt("glass_color");
+		byte color = (byte) config.getInt("glass_color");
 		return new PipeEgg(name, update, fuel, fuelIntervall, null,
 				transferTimeMultiplier, transferAmount, color);
 	}
