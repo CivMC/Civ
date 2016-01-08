@@ -385,6 +385,39 @@ public class CivChat2Manager {
 	}
 
 	/**
+	 * Gets the player to send reply to
+	 * @param sender the person sending reply command
+	 * @return the UUID of the person to reply to, null if none
+	 */
+	public UUID getPlayerReply(String sender) {
+		if(replyList.containsKey(sender)){
+			String replyName = replyList.get(sender);
+			UUID uuid = NameAPI.getUUID(replyName);
+			if(uuid == null){
+				StringBuilder sb = new StringBuilder();
+				String errorMsg = sb.append("This should not be occuring... ERROR INFO: sender: [").append(sender)
+						.append("] replyList Value: [").append(replyName).append("]").toString();
+				sb.delete(0, sb.length());
+				CivChat2.warningMessage(errorMsg);
+			}
+			return uuid;
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Add a player to the replyList 
+	 * @param The name of the player using the reply command. 
+	 * @param The name of the player that will receive the reply
+	 */
+	public void addPlayerReply(String player, String playerToReply){
+		if(player != null && playerToReply != null){
+			replyList.put(player, playerToReply);
+		}
+	}
+	
+	/**
 	 * Method to add a groupchat channel
 	 * @param name Player sending the message
 	 * @param group Group sending the message to

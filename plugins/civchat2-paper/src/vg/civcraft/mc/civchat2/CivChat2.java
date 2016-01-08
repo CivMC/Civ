@@ -14,6 +14,7 @@ import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2Executor;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civchat2.zipper.CivChat2FileLogger;
+import vg.civcraft.mc.bettershards.listeners.BetterShardsListener;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
@@ -33,6 +34,7 @@ public class CivChat2 extends ACivMod{
 	private CivChat2Listener chatListener;
 	private CivChat2FileLogger fileLog;
 	private boolean isMercuryEnabled = false;
+	private boolean isBetterShardsEnabled = false;
 	private static CivChat2Executor executor;
 	private DatabaseManager DBM;
 	
@@ -97,8 +99,12 @@ public class CivChat2 extends ACivMod{
 	public void registerEvents(){
 		getServer().getPluginManager().registerEvents(chatListener, instance);
 		setMercuryEnabled(getServer().getPluginManager().isPluginEnabled("Mercury"));
+		setBetterShardsEnabled(getServer().getPluginManager().isPluginEnabled("BetterShards"));
 		if (isMercuryEnabled()){
 			this.getServer().getPluginManager().registerEvents(new MercuryMessageListener(this), this);
+		}
+		if(isBetterShardsEnabled){
+			this.getServer().getPluginManager().registerEvents(new vg.civcraft.mc.civchat2.listeners.BetterShardsListener(this), this);
 		}
 	}
 	
@@ -140,6 +146,14 @@ public class CivChat2 extends ACivMod{
 
 	public void setMercuryEnabled(boolean isMercuryEnabled) {
 		this.isMercuryEnabled = isMercuryEnabled;
+	}
+	
+	public boolean isBetterShardsEnabled() {
+		return isBetterShardsEnabled;
+	}
+
+	public void setBetterShardsEnabled(boolean isBetterShardsEnabled) {
+		this.isBetterShardsEnabled = isBetterShardsEnabled;
 	}
 	
 	public DatabaseManager getDatabaseManager(){
