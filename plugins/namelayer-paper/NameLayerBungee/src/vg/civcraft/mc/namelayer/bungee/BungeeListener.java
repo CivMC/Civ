@@ -10,7 +10,6 @@ import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
-import net.md_5.bungee.tab.TabList;
 
 public class BungeeListener implements Listener{
 
