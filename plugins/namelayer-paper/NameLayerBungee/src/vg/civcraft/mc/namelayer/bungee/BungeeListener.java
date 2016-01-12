@@ -5,11 +5,14 @@ import java.lang.reflect.Modifier;
 import java.util.UUID;
 
 import net.md_5.bungee.UserConnection;
+import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
+import net.md_5.bungee.protocol.packet.LoginRequest;
 
 public class BungeeListener implements Listener{
 
@@ -22,23 +25,30 @@ public class BungeeListener implements Listener{
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void postLoginEvent(PostLoginEvent event) {
-		ProxiedPlayer player = event.getPlayer();
-		UUID uuid = player.getUniqueId();
-		db.addPlayer(player.getName(), uuid);
+	public void postLoginEvent(LoginEvent event) {
+		PendingConnection pending = event.getConnection();
+		UUID uuid = pending.getUniqueId();
+		db.addPlayer(pending.getName(), uuid);
 		String name = db.getCurrentName(uuid);
 		try {
-			Field nameField = UserConnection.class.getDeclaredField("name");
-			UserConnection con = (UserConnection) player;
-			setFinalStatic(nameField, name, con);
+			Field loginField = PendingConnection.class.getDeclaredField("loginRequest");
+			loginField.setAccessible(true);
+			LoginRequest request = (LoginRequest) loginField.get(pending);
+			request.setData(name);
+			//setFinalStatic(nameField, name, con);
 		} catch (NoSuchFieldException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		player.setDisplayName(name);
 	}
 	
 	public void setFinalStatic(Field field, Object newValue, Object object) {
