@@ -45,6 +45,19 @@
 		<maven.compiler.target>1.7</maven.compiler.target>
 	</properties>
 	
+	<distributionManagement>
+        <repository>
+            <id>deployment</id>
+            <name>Internal Releases</name>
+            <url>http://nexus.codecrafter47.dyndns.eu/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>deployment</id>
+            <name>Internal Releases</name>
+            <url>http://nexus.codecrafter47.dyndns.eu/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+	
 	<repositories>
 		<repository>
 			<id>Jenkins-repo</id>
