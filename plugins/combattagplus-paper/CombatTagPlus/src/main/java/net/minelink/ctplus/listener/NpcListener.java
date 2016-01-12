@@ -97,8 +97,7 @@ public final class NpcListener implements Listener {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override
             public void run() {
-                plugin.getNpcManager().despawn(npc);
-                Bukkit.getPluginManager().callEvent(new NpcDespawnEvent(npc, NpcDespawnReason.DEATH));
+                plugin.getNpcManager().despawn(npc, NpcDespawnReason.DEATH);
             }
         });
     }

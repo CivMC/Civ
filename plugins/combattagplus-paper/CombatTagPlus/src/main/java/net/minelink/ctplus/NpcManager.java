@@ -68,12 +68,16 @@ public final class NpcManager {
     }
 
     public void despawn(Npc npc) {
+        despawn(npc, NpcDespawnReason.DESPAWN);
+    }
+
+    public void despawn(Npc npc, NpcDespawnReason reason) {
         // Do nothing if NPC isn't spawned or if it's a different NPC
         Npc other = getSpawnedNpc(npc.getIdentity().getId());
         if (other == null || other != npc) return;
 
         // Call NPC despawn event
-        NpcDespawnEvent event = new NpcDespawnEvent(npc, NpcDespawnReason.DESPAWN);
+        NpcDespawnEvent event = new NpcDespawnEvent(npc, reason);
         Bukkit.getPluginManager().callEvent(event);
 
         // Remove the NPC entity from the world
