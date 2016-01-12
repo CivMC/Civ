@@ -54,5 +54,12 @@
 			<scope>provided</scope>
 			<type>jar</type>
 		</dependency>
+		<dependency>
+			<groupId>net.md-5</groupId>
+			<artifactId>bungeecord-parent</artifactId>
+			<version>1.8-SNAPSHOT</version>
+			<scope>provided</scope>
+			<type>jar</type>
+		</dependency>
 	</dependencies>
 </project>
