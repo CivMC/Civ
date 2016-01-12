@@ -10,6 +10,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 import net.md_5.bungee.protocol.packet.LoginRequest;
@@ -27,13 +28,14 @@ public class BungeeListener implements Listener{
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void postLoginEvent(LoginEvent event) {
 		PendingConnection pending = event.getConnection();
+		InitialHandler handle = (InitialHandler) pending;
 		UUID uuid = pending.getUniqueId();
 		db.addPlayer(pending.getName(), uuid);
 		String name = db.getCurrentName(uuid);
 		try {
-			Field loginField = PendingConnection.class.getDeclaredField("loginRequest");
+			Field loginField = InitialHandler.class.getDeclaredField("loginRequest");
 			loginField.setAccessible(true);
-			LoginRequest request = (LoginRequest) loginField.get(pending);
+			LoginRequest request = (LoginRequest) loginField.get(handle);
 			request.setData(name);
 			//setFinalStatic(nameField, name, con);
 		} catch (NoSuchFieldException e) {
