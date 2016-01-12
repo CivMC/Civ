@@ -28,9 +28,9 @@ public class BungeeListener implements Listener{
 		db.addPlayer(player.getName(), uuid);
 		String name = db.getCurrentName(uuid);
 		try {
-			Field playerName = UserConnection.class.getDeclaredField("name");
+			Field nameField = UserConnection.class.getDeclaredField("name");
 			UserConnection con = (UserConnection) player;
-			setFinalStatic(playerName, playerName, con);
+			setFinalStatic(nameField, name, con);
 		} catch (NoSuchFieldException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
