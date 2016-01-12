@@ -27,7 +27,8 @@ public class ListMembers extends PlayerCommandMiddle{
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)){
+		final boolean isConsole = !(sender instanceof Player);
+		if (isConsole) {
 			sender.sendMessage("\"Pretend this is red:\" no.");
 			return true;
 		}
@@ -38,16 +39,15 @@ public class ListMembers extends PlayerCommandMiddle{
 			p.sendMessage(ChatColor.RED + "That group does not exist.");
 			return true;
 		}
-		if (!g.isMember(uuid) && !(p.isOp() || p.hasPermission("namelayer.admin"))){
+		final boolean isAdmin = isConsole || p.hasPermission("namelayer.admin");
+		if (!isAdmin && !g.isMember(uuid)) {
 			p.sendMessage(ChatColor.RED + "You are not on this group.");
 			return true;
 		}
-		
-		if (!gm.getPermissionforGroup(g).isAccessible(g.getPlayerType(uuid), PermissionType.GROUPSTATS)){
+		if (!isAdmin && !gm.getPermissionforGroup(g).isAccessible(g.getPlayerType(uuid), PermissionType.GROUPSTATS)) {
 			p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
 			return true;
 		}
-		
 		List<UUID> uuids = null;
 		if (args.length > 1){
 			if (args.length == 3) {
