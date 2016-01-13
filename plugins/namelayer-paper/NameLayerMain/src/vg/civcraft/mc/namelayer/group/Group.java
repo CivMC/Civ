@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -106,8 +107,22 @@ public class Group {
 	 * @param type- The PlayerType they will be joining.
 	 */
 	public void addInvite(UUID uuid, PlayerType type){
-		invitations.put(uuid, type);
+		addInvite(uuid, type, true);
 	}
+	
+	/**
+	 * Adds the player to be allowed to join a group into a specific PlayerType.
+	 * @param uuid- The UUID of the player.
+	 * @param type- The PlayerType they will be joining.
+	 * @param saveToDB - save the invitation to the DB. 
+	 */
+	public void addInvite(UUID uuid, PlayerType type, boolean saveToDB){
+		invitations.put(uuid, type);
+		if(saveToDB){
+			db.addGroupInvitation(uuid, groupName, type.name());
+		}
+	}
+	
 	/**
 	 * Get's the PlayerType of an invited Player.
 	 * @param uuid- The UUID of the player.
@@ -118,12 +133,26 @@ public class Group {
 			return null;
 		return invitations.get(uuid);
 	}
+	
 	/**
 	 * Removes the invite of a Player
 	 * @param uuid- The UUID of the player.
+	 * @param saveToDB - remove the invitation from the DB. 
 	 */
-	public void removeRemoveInvite(UUID uuid){
+	public void removeInvite(UUID uuid){
+		removeInvite(uuid, true);
+	}
+	
+	/**
+	 * Removes the invite of a Player
+	 * @param uuid- The UUID of the player.
+	 * @param saveToDB - remove the invitation from the DB. 
+	 */
+	public void removeInvite(UUID uuid, boolean saveToDB){
 		invitations.remove(uuid);
+		if(saveToDB){
+			db.removeGroupInvitation(uuid, groupName);
+		}
 	}
 	/**
 	 * Adds a member to a group.

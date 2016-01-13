@@ -11,8 +11,13 @@ import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.mercury.events.AsyncPluginBroadcastMessageEvent;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.command.commands.InvitePlayer;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.events.GroupAddInvitation;
 import vg.civcraft.mc.namelayer.events.GroupInvalidationEvent;
+import vg.civcraft.mc.namelayer.events.GroupRemoveInvitation;
+import vg.civcraft.mc.namelayer.group.Group;
 
 public class MercuryMessageListener implements Listener{
 	
@@ -59,6 +64,28 @@ public class MercuryMessageListener implements Listener{
 			Bukkit.getPluginManager().callEvent(e);
 			if (gm.getGroup(group) != null) {
 				gm.invalidateCache(group);
+			}
+		}
+		else if (reason.equals("addInvitation")){
+			PlayerType pType = PlayerType.getPlayerType(message[2]);
+			String invitedPlayer = message[3];
+			UUID invitedPlayerUUID = NameAPI.getUUID(invitedPlayer);
+			String inviter = message[4];
+			UUID inviterUUID = NameAPI.getUUID(inviter);
+			GroupAddInvitation e = new GroupAddInvitation(group, pType, invitedPlayerUUID, inviterUUID);
+			Bukkit.getPluginManager().callEvent(e);
+			Group playerGroup = gm.getGroup(group);
+			InvitePlayer.sendInvitation(playerGroup, pType, invitedPlayerUUID, inviterUUID, false);
+		}
+		else if (reason.equals("removeInvitation")){
+			String invitedPlayer = message[2];
+			UUID invitedPlayerUUID = NameAPI.getUUID(invitedPlayer);
+			GroupRemoveInvitation e = new GroupRemoveInvitation(group, invitedPlayerUUID);
+			Bukkit.getPluginManager().callEvent(e);
+			Group playerGroup = gm.getGroup(group);
+			if(playerGroup != null){
+				playerGroup.removeInvite(invitedPlayerUUID, false);
+				PlayerListener.removeNotification(invitedPlayerUUID, playerGroup);
 			}
 		}
 	}

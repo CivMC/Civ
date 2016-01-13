@@ -41,6 +41,7 @@ public class NameLayerPlugin extends ACivMod{
 		loadDatabases();
 	    ClassHandler.Initialize(Bukkit.getServer());
 		new NameAPI(new GroupManager(), associations);
+		groupManagerDao.loadGroupsInvitations();
 		registerListeners();
 		if (loadGroups){
 			handle = new CommandHandler();

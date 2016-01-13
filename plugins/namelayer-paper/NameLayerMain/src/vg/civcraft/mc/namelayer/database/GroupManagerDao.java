@@ -16,12 +16,14 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.group.GroupType;
 import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
 import vg.civcraft.mc.namelayer.group.groups.PublicGroup;
+import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class GroupManagerDao {
@@ -205,6 +207,17 @@ public class GroupManagerDao {
 			ver = updateVersion(ver, plugin.getName());
 			log(Level.INFO, "Database update to Version six took " + (System.currentTimeMillis() - first_time) /1000 + " seconds.");
 		}
+		if (ver == 6){
+			long first_time = System.currentTimeMillis();
+			log(Level.INFO, "Database upadting to version seven.");
+			db.execute("create table if not exists group_invitation(" + 
+					"uuid varchar(40) NOT NULL," +
+					"groupName varchar(255) NOT NULL,"+
+					"role varchar(10) NOT NULL default 'MEMBERS'," +
+					"date datetime NOT NULL default NOW())");
+			ver = updateVersion(ver, plugin.getName());
+			log(Level.INFO, "Database update to Version seven took " + (System.currentTimeMillis() - first_time) /1000 + " seconds.");
+		}
 		log(Level.INFO, "Database update took " + (System.currentTimeMillis() - begin_time) / 1000 + " seconds.");
 	}
 
@@ -285,6 +298,8 @@ public class GroupManagerDao {
 	
 	private PreparedStatement setDefaultGroup, changeDefaultGroup, getDefaultGroup;
 	
+	private PreparedStatement loadGroupsInvitations, addGroupInvitation, removeGroupInvitation;
+	
 	public void initializeStatements(){
 		version = db.prepareStatement("select max(db_version) as db_version from db_version where plugin_name=?");
 		updateVersion = db.prepareStatement("insert into db_version (db_version, update_time, plugin_name) values (?,?,?)"); 
@@ -360,6 +375,12 @@ public class GroupManagerDao {
 		
 		getDefaultGroup = db.prepareStatement("select defaultgroup from default_group "
 				+ "where uuid = ?");
+		
+		loadGroupsInvitations = db.prepareStatement("select uuid, groupName, role from group_invitation");
+		
+		addGroupInvitation = db.prepareStatement("insert into group_invitation(uuid, groupName, role) values(?, ?, ?)");
+		
+		removeGroupInvitation = db.prepareStatement("delete from group_invitation where uuid = ? and groupName = ?");
 	}
 	/**
 	 * Checks the version of a specific plugin's db.
@@ -793,4 +814,57 @@ public class GroupManagerDao {
 			e.printStackTrace();
 		}
 	}
+	
+	public synchronized void addGroupInvitation(UUID uuid, String groupName, String role){
+		try {
+			addGroupInvitation.setString(1, uuid.toString());
+			addGroupInvitation.setString(2, groupName);
+			addGroupInvitation.setString(3, role); 
+			addGroupInvitation.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void removeGroupInvitation(UUID uuid, String groupName){
+		try {
+			removeGroupInvitation.setString(1, uuid.toString());
+			removeGroupInvitation.setString(2, groupName);
+			removeGroupInvitation.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void loadGroupsInvitations(){
+		try {
+			ResultSet set = loadGroupsInvitations.executeQuery();
+			while(set.next()){
+				String uuid = set.getString("uuid");
+				String group = set.getString("groupName");
+				String role = set.getString("role");
+				UUID playerUUID = null;
+				if (uuid != null){
+					playerUUID = UUID.fromString(uuid);
+				}
+				Group g = null;
+				if(group != null){
+					System.out.println(group);
+					g = getGroup(group);
+				}
+				PlayerType type = null;
+				if(role != null){
+					type = PlayerType.getPlayerType(role);
+				}
+				g.addInvite(playerUUID, type, false);
+				PlayerListener.addNotification(playerUUID, g);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }
