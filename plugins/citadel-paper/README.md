@@ -1,5 +1,5 @@
 # Citadel
 
-Jenkins Build Server can be found: http://192.99.169.83:8080/job/Citadel-master/
+Jenkins Build Server can be found: http://build.civcraft.co/job/Citadel-master/
 
-Java Docs: http://192.99.169.83:8080/job/Citadel-master/javadoc/
+Java Docs: http://build.civcraft.co/job/Citadel-master/javadoc/
