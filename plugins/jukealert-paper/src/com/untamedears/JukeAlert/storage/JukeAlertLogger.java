@@ -1005,6 +1005,14 @@ public class JukeAlertLogger {
     public void logSnitchCartDestroyed(Snitch snitch, Player player,Vehicle vehicle) {
     	this.logSnitchInfo(snitch, null, vehicle.getLocation(), new Date(),LoggedAction.VEHICLE_DESTROY,player.getPlayerListName(),vehicle.getType().toString());
     }
+    
+    public void logSnitchMount(Snitch snitch, Player player, Entity mount) {
+    	this.logSnitchInfo(snitch, null, mount.getLocation(), new Date(), LoggedAction.ENTITY_MOUNT, player.getPlayerListName(), mount.getType().toString());
+    }
+    
+    public void logSnitchDismount(Snitch snitch, Player player, Entity mount) {
+    	this.logSnitchInfo(snitch, null, mount.getLocation(), new Date(), LoggedAction.ENTITY_DISMOUNT, player.getPlayerListName(), mount.getType().toString());
+    }
 
     /**
      * Logs a message that someone filled a bucket within the snitch's field
@@ -1283,6 +1291,16 @@ public class JukeAlertLogger {
                 case VEHICLE_DESTROY:
                 	actionString = "Destroyed";
                 	actionColor = ChatColor.DARK_RED;
+                	actionTextType = 3;
+                	break;
+                case ENTITY_MOUNT:
+                	actionString = "Mount";
+                	actionColor = ChatColor.RED;
+                	actionTextType = 3;
+                	break;
+                case ENTITY_DISMOUNT:
+                	actionString = "Dismount";
+                	actionColor = ChatColor.GOLD;
                 	actionTextType = 3;
                 	break;
                 default:

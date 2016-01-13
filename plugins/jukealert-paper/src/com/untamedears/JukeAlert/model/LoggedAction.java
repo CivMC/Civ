@@ -23,7 +23,9 @@ public enum LoggedAction {
     LOGIN(10),
     LOGOUT(11),
     EXCHANGE(12),
-    VEHICLE_DESTROY(13);
+    VEHICLE_DESTROY(13),
+    ENTITY_MOUNT(14),
+    ENTITY_DISMOUNT(15);
     
     private int value;
 
@@ -52,6 +54,8 @@ public enum LoggedAction {
             case 11: return LOGOUT;
             case 12: return EXCHANGE;
             case 13: return VEHICLE_DESTROY;
+            case 14: return ENTITY_MOUNT;
+            case 15: return ENTITY_DISMOUNT;
             default: return UNKNOWN;
         }
     }

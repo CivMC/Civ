@@ -23,6 +23,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
@@ -48,6 +49,8 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.material.Lever;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.spigotmc.event.entity.EntityDismountEvent;
+import org.spigotmc.event.entity.EntityMountEvent;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.external.Mercury;
@@ -596,6 +599,54 @@ public class JukeAlertListener implements Listener {
                 }
             }
         }
+    }
+    
+    @EventHandler (priority = EventPriority.HIGH)
+    public void playerMountEntity(EntityMountEvent e) {
+    	if (e.getEntityType() != EntityType.PLAYER) {
+    		return;
+    	}
+    	Player p = (Player) e.getEntity();
+    	Entity mount = e.getMount();
+    	if (vanishNoPacket.isPlayerInvisible(p) || p.hasPermission("jukealert.vanish")) {
+            return;
+        }
+    	UUID accountId = p.getUniqueId();
+    	Set<Snitch> snitches = snitchManager.findSnitches(p.getWorld(), p.getLocation());
+    	 for (Snitch snitch : snitches) {
+             if (!snitch.shouldLog()) {
+                 continue;
+             }
+             if (!isOnSnitch(snitch, accountId) || isDebugging()) {
+                 if (checkProximity(snitch, accountId)) {
+                     plugin.getJaLogger().logSnitchMount(snitch, p, mount);
+                 }
+             }
+         }
+    }
+    
+    @EventHandler (priority = EventPriority.HIGH)
+    public void playerDismountEntity(EntityDismountEvent e) {
+    	if (e.getEntityType() != EntityType.PLAYER) {
+    		return;
+    	}
+    	Player p = (Player) e.getEntity();
+    	Entity mount = e.getDismounted();
+    	if (vanishNoPacket.isPlayerInvisible(p) || p.hasPermission("jukealert.vanish")) {
+            return;
+        }
+    	UUID accountId = p.getUniqueId();
+    	Set<Snitch> snitches = snitchManager.findSnitches(p.getWorld(), p.getLocation());
+    	 for (Snitch snitch : snitches) {
+             if (!snitch.shouldLog()) {
+                 continue;
+             }
+             if (!isOnSnitch(snitch, accountId) || isDebugging()) {
+                 if (checkProximity(snitch, accountId)) {
+                     plugin.getJaLogger().logSnitchDismount(snitch, p, mount);
+                 }
+             }
+         }
     }
     
 
