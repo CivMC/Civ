@@ -201,7 +201,7 @@ public class GroupManagerDao {
 			long first_time = System.currentTimeMillis();
 			log(Level.INFO, "Database upadting to version six.");
 			db.execute("create table if not exists default_group(" + 
-					"uuid varchar(40) NOT NULL," +
+					"uuid varchar(36) NOT NULL," +
 					"defaultgroup varchar(255) NOT NULL,"+
 					"primary key key_uuid(uuid))");
 			ver = updateVersion(ver, plugin.getName());
@@ -211,7 +211,7 @@ public class GroupManagerDao {
 			long first_time = System.currentTimeMillis();
 			log(Level.INFO, "Database upadting to version seven.");
 			db.execute("create table if not exists group_invitation(" + 
-					"uuid varchar(40) NOT NULL," +
+					"uuid varchar(36) NOT NULL," +
 					"groupName varchar(255) NOT NULL,"+
 					"role varchar(10) NOT NULL default 'MEMBERS'," +
 					"date datetime NOT NULL default NOW()," +
