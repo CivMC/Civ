@@ -67,22 +67,19 @@ public class MercuryMessageListener implements Listener{
 			}
 		}
 		else if (reason.equals("addInvitation")){
+			Group playerGroup = gm.getGroup(Integer.parseInt(group));
 			PlayerType pType = PlayerType.getPlayerType(message[2]);
-			String invitedPlayer = message[3];
-			UUID invitedPlayerUUID = NameAPI.getUUID(invitedPlayer);
-			String inviter = message[4];
-			UUID inviterUUID = NameAPI.getUUID(inviter);
-			GroupAddInvitation e = new GroupAddInvitation(group, pType, invitedPlayerUUID, inviterUUID);
+			UUID invitedPlayerUUID = UUID.fromString(message[3]);
+			UUID inviterUUID = UUID.fromString(message[4]);
+			GroupAddInvitation e = new GroupAddInvitation(playerGroup.getName(), pType, invitedPlayerUUID, inviterUUID);
 			Bukkit.getPluginManager().callEvent(e);
-			Group playerGroup = gm.getGroup(group);
 			InvitePlayer.sendInvitation(playerGroup, pType, invitedPlayerUUID, inviterUUID, false);
 		}
 		else if (reason.equals("removeInvitation")){
-			String invitedPlayer = message[2];
-			UUID invitedPlayerUUID = NameAPI.getUUID(invitedPlayer);
-			GroupRemoveInvitation e = new GroupRemoveInvitation(group, invitedPlayerUUID);
-			Bukkit.getPluginManager().callEvent(e);
-			Group playerGroup = gm.getGroup(group);
+			Group playerGroup = gm.getGroup(Integer.parseInt(group));
+			UUID invitedPlayerUUID = UUID.fromString(message[2]);
+			GroupRemoveInvitation e = new GroupRemoveInvitation(playerGroup.getName(), invitedPlayerUUID);
+			Bukkit.getPluginManager().callEvent(e);	
 			if(playerGroup != null){
 				playerGroup.removeInvite(invitedPlayerUUID, false);
 				PlayerListener.removeNotification(invitedPlayerUUID, playerGroup);

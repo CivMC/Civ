@@ -214,7 +214,8 @@ public class GroupManagerDao {
 					"uuid varchar(40) NOT NULL," +
 					"groupName varchar(255) NOT NULL,"+
 					"role varchar(10) NOT NULL default 'MEMBERS'," +
-					"date datetime NOT NULL default NOW())");
+					"date datetime NOT NULL default NOW()," +
+					"constraint UQ_uuid_groupName unique(uuid, groupName))");
 			ver = updateVersion(ver, plugin.getName());
 			log(Level.INFO, "Database update to Version seven took " + (System.currentTimeMillis() - first_time) /1000 + " seconds.");
 		}
@@ -378,7 +379,7 @@ public class GroupManagerDao {
 		
 		loadGroupsInvitations = db.prepareStatement("select uuid, groupName, role from group_invitation");
 		
-		addGroupInvitation = db.prepareStatement("insert into group_invitation(uuid, groupName, role) values(?, ?, ?)");
+		addGroupInvitation = db.prepareStatement("insert into group_invitation(uuid, groupName, role) values(?, ?, ?) on duplicate key update role=values(role), date=now();");
 		
 		removeGroupInvitation = db.prepareStatement("delete from group_invitation where uuid = ? and groupName = ?");
 	}

@@ -61,8 +61,7 @@ public class AcceptInvite extends PlayerCommandMiddle{
 		PlayerListener.removeNotification(uuid, group);
 		
 		if(NameLayerPlugin.isMercuryEnabled()){
-			String invitedPlayer = NameAPI.getCurrentName(uuid);
-			MercuryAPI.sendGlobalMessage("removeInvitation " + group.getName() + " " + NameAPI.getCurrentName(uuid), "namelayer");
+			MercuryAPI.sendGlobalMessage("removeInvitation " + group.getGroupId() + " " + uuid, "namelayer");
 		}
 		
 		p.sendMessage(ChatColor.GREEN + "You have successfully been added to the group as a " + type.name() +".");
