@@ -15,6 +15,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -108,7 +110,7 @@ public final class PlayerListener implements Listener {
         Bukkit.broadcast(message, "ctplus.notify.kill");
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void disableCommand(PlayerCommandPreprocessEvent event) {
         // Do nothing if player has bypass permission
         Player player = event.getPlayer();
@@ -132,7 +134,7 @@ public final class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void disableBlockEdit(BlockBreakEvent event) {
         // Do nothing if block edits are allowed in combat
         if (!plugin.getSettings().disableBlockEdit()) return;
@@ -151,7 +153,7 @@ public final class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void disableBlockEdit(BlockPlaceEvent event) {
         // Do nothing if block edits are allowed in combat
         if (!plugin.getSettings().disableBlockEdit()) return;
@@ -170,7 +172,7 @@ public final class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void disableEnderpearls(PlayerInteractEvent event) {
         // Do nothing if enderpearls are allowed in combat
         if (!plugin.getSettings().disableEnderpearls()) return;
@@ -196,7 +198,7 @@ public final class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void disableFlying(PlayerCombatTagEvent event) {
         // Do nothing if flying is allowed in combat
         if (!plugin.getSettings().disableFlying()) return;
@@ -222,7 +224,7 @@ public final class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void disableFlying(PlayerToggleFlightEvent event) {
         // Do nothing if flying is allowed in combat
         if (!plugin.getSettings().disableFlying()) return;
@@ -247,7 +249,7 @@ public final class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void disableTeleportation(PlayerTeleportEvent event) {
         // Do nothing if teleportation is allowed in combat
         if (!plugin.getSettings().disableTeleportation()) return;
@@ -271,6 +273,28 @@ public final class PlayerListener implements Listener {
         event.setCancelled(true);
         if (!plugin.getSettings().getDisableTeleportationMessage().isEmpty()) {
             player.sendMessage(plugin.getSettings().getDisableTeleportationMessage());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void disableCrafting(CraftItemEvent event) {
+        // Do nothing if teleportation is allowed in combat
+        if (!plugin.getSettings().disableCrafting()) return;
+
+        // Do nothing if clicker isn't a player
+        if (!(event.getWhoClicked() instanceof Player)) return;
+
+        // Do nothing if player isn't even combat tagged
+        Player player = (Player) event.getWhoClicked();
+        if (!plugin.getTagManager().isTagged(player.getUniqueId())) return;
+
+        // Do nothing if player has bypass permission
+        if (player.hasPermission("ctplus.bypass.craft")) return;
+
+        // Cancel the event and inform the player
+        event.setCancelled(true);
+        if (!plugin.getSettings().getDisableCraftingMessage().isEmpty()) {
+            player.sendMessage(plugin.getSettings().getDisableCraftingMessage());
         }
     }
 

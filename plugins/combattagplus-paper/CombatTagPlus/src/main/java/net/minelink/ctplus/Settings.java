@@ -281,6 +281,15 @@ public final class Settings {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
+    public boolean disableCrafting() {
+        return plugin.getConfig().getBoolean("disable-crafting");
+    }
+
+    public String getDisableCraftingMessage() {
+        String message = plugin.getConfig().getString("disable-crafting-message", "");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
     public int getNpcDespawnTime() {
         return plugin.getConfig().getInt("npc-despawn-time", 60);
     }

@@ -1,5 +1,5 @@
 # Don't touch this. It's here to determine whether you need to refresh your config.
-config-version: 17
+config-version: 18
 
 # The duration in seconds that both the attacker and victim should be tagged in combat.
 tag-duration: 15
@@ -69,6 +69,12 @@ disable-teleportation: false
 
 # This message is displayed when a player attempts to teleport within pvp if teleportation is disabled in pvp.
 disable-teleportation-message: '&bTeleportation &cis disabled in combat.'
+
+# Prevents tagged players from crafting during combat.
+disable-crafting: false
+
+# This message is displayed when a player attempts to craft an item while in combat if crafting is disabled.
+disable-crafting-message: '&bCrafting &cis disabled in combat.'
 
 # The duration in seconds to despawn the combat logger's NPC if it hasn't died.
 npc-despawn-time: 60
