@@ -88,7 +88,7 @@ public class CreateGroup extends PlayerCommandMiddle{
 			g = new Group(name, uuid, false, password, type, -1);
 		}
 		int id = gm.createGroup(g);
-		g.setId(id);
+		g.setGroupId(id);
 		p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
 		return true;
 	}

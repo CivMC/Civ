@@ -47,7 +47,7 @@ public class TransferGroup extends PlayerCommandMiddle{
 		
 		UUID oPlayer = NameAPI.getUUID(args[1]); // uuid of the second player
 		UUID uuid = NameAPI.getUUID(p.getName());
-		PlayerType pType = g.getPlayerType(uuid);
+		PlayerType pType = g.getMemberRank(uuid);
 		if (pType == null){
 			p.sendMessage(ChatColor.RED + "You are not a member of this group.");
 			return true;

@@ -59,7 +59,7 @@ public class RevokeInvite extends PlayerCommandMiddle{
 		}
 		
 		//check invitee has invite
-		if(group.getInvite(uuid) == null){
+		if(group.getInviteType(uuid) == null){
 			if(group.isMember(uuid)){
 				p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " is already part of that group, "
 						+ "use /nlrm to remove them.");
@@ -70,10 +70,10 @@ public class RevokeInvite extends PlayerCommandMiddle{
 		}
 		
 		//get invitee PlayerType
-		PlayerType pType = group.getInvite(uuid);
+		PlayerType pType = group.getInviteType(uuid);
 		
 		GroupPermission perm = gm.getPermissionforGroup(group);
-		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
+		PlayerType t = group.getMemberRank(executor); // playertype for the player running the command.
 		if (t == null){
 			p.sendMessage(ChatColor.RED + "You are not on that group.");
 			return true;

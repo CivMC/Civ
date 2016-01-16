@@ -41,7 +41,7 @@ public class GroupStats extends PlayerCommandMiddle {
 			p.sendMessage(ChatColor.RED + "That group does not exist.");
 			return true;
 		}
-		PlayerType pType = g.getPlayerType(uuid);
+		PlayerType pType = g.getMemberRank(uuid);
 		if (!g.isMember(uuid) && !(p.isOp() || p.hasPermission("namelayer.admin"))){
 			p.sendMessage(ChatColor.RED + "You are not on this group.");
 			return true;

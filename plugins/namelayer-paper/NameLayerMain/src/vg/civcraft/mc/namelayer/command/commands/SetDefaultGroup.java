@@ -39,7 +39,7 @@ public class SetDefaultGroup extends PlayerCommandMiddle{
 			return true;
 		}
 		
-		PlayerType pType = g.getPlayerType(uuid);
+		PlayerType pType = g.getMemberRank(uuid);
 		if (pType == null){
 			p.sendMessage(ChatColor.RED + "You do not have access to that group.");
 			return true;

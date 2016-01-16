@@ -69,16 +69,16 @@ public class InfoDump extends PlayerCommandMiddle
 				player.sendMessage(ChatColor.RED + "No such Group");
 				return true;
 			}
-			PlayerType pType = group.getPlayerType(playerUUID);
+			PlayerType pType = group.getMemberRank(playerUUID);
 			GroupPermission permissions = gm.getPermissionforGroup(group);
 
 			StringBuilder outputBuilder = new StringBuilder();
 			outputBuilder.append("[NLID] : [GROUPNAME] ");
 			outputBuilder.append(group.getName());
 			outputBuilder.append(" : [MEMBERSHIPLEVEL] ");
-			outputBuilder.append(group.getPlayerType(playerUUID));
+			outputBuilder.append(group.getMemberRank(playerUUID));
 			outputBuilder.append(" : [PERMS] ");
-			outputBuilder.append(permissions.listPermsforPlayerType(group.getPlayerType(playerUUID)));
+			outputBuilder.append(permissions.listPermsforPlayerType(group.getMemberRank(playerUUID)));
 			
 
 			outputBuilder.append(" : [OWNERS]");

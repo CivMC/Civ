@@ -43,7 +43,7 @@ public class GroupTabCompleter {
         } else {
             for (String group_name : fitting_groups) {
                 Group group = gm.getGroup(group_name);
-                if (gm.getPermissionforGroup(group).isAccessible(group.getPlayerType(uuid), accessLevel))
+                if (gm.getPermissionforGroup(group).isAccessible(group.getMemberRank(uuid), accessLevel))
                     result.add(group_name);
             }
         }

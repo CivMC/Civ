@@ -15,6 +15,9 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+
+import com.google.common.collect.Lists;
+
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
@@ -329,22 +332,31 @@ public class GroupManagerDao {
 				+ "inner join faction_id fi on fi.group_id = fm.group_id "
 				+ "where fm.member_name = ? and fi.group_name =?");
 		
-		addSubGroup = db.prepareStatement("insert into subgroup (group_id, sub_group_id) " +
-				"select g.group_id, sg.group_id from faction_id g "
-				+ "inner join faction_id sg on sg.group_name = ? "
-				+ "where g.group_name = ?");
-		getSubGroups = db.prepareStatement("select f.group_name from faction_id f "
-				+ "inner join faction_id sf on sf.group_name = ? "
-				+ "inner join subgroup sg on sg.group_id = sf.group_id "
-				+ "where f.group_id = sg.sub_group_id");
-		getSuperGroup = db.prepareStatement("select f.group_name from faction_id f "
-				+ "inner join faction_id sf on sf.group_name = ? "
-				+ "inner join subgroup sg on sg.sub_group_id = sf.group_id "
-				+ "where f.group_id = sg.group_id");
-		removeSubGroup = db.prepareStatement("delete from subgroup "
-				+ "where group_id = (select group_id from faction_id where group_name = ?)"
-				+ " and sub_group_id = (select group_id from faction_id where group_name = ?)");
-
+		addSubGroup = db.prepareStatement(
+				"INSERT INTO subgroup (group_id, sub_group_id) "
+				+ "SELECT super.group_id, sub.group_id "
+				+ "FROM faction_id super "
+				+ "INNER JOIN faction_id sub "
+				+ "ON sub.group_name = ? "
+				+ "WHERE super.group_name = ?");
+		removeSubGroup = db.prepareStatement(
+				"DELETE FROM subgroup "
+				+ "WHERE group_id = (SELECT group_id FROM faction_id WHERE group_name = ?) "
+				+ "AND sub_group_id = (SELECT group_id FROM faction_id WHERE group_name = ?)");
+		getSubGroups = db.prepareStatement(
+				"SELECT sub.group_name FROM faction_id sub "
+				+ "INNER JOIN faction_id super "
+				+ "ON super.group_name = ? "
+				+ "INNER JOIN subgroup other "
+				+ "ON other.group_id = super.group_id "
+				+ "WHERE sub.group_id = other.sub_group_id");
+		
+		getSuperGroup = db.prepareStatement(
+				"SELECT f.group_name FROM faction_id f "
+				+ "INNER JOIN faction_id sf ON sf.group_name = ? "
+				+ "INNER JOIN subgroup sg ON sg.group_id = sf.group_id "
+				+ "WHERE f.group_id = sg.sub_group_id");
+		
 		addPerm = db.prepareStatement("insert into permissions (group_id, role, tier) "
 				+ "select g.group_id, ?, ? from faction_id g where g.group_name = ?");
 		getPerms = db.prepareStatement("select p.role, p.tier from permissions p "
@@ -446,30 +458,34 @@ public class GroupManagerDao {
 	public synchronized Group getGroup(String groupName){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
+			getGroup.clearParameters();
 			getGroup.setString(1, groupName);
-			ResultSet set = getGroup.executeQuery();
-			if (!set.next()) return null;
-			String name = set.getString(1);
-			String uuid = set.getString(2);
-			UUID owner = null;
-			if (uuid != null)
-				owner = UUID.fromString(uuid);
-			boolean dis = set.getInt(4) != 0;
-			String password = set.getString(3);
-			GroupType type = GroupType.getGroupType(set.getString(5));
-			int id = set.getInt(6);
-			Group g = null;
-			switch(type){
-			case PRIVATE:
-				g = new PrivateGroup(name, owner, dis, password, id);
-				break;
-			case PUBLIC:
-				g = new PublicGroup(name, owner, dis, password, id);
-				break;
-			default:
-				g = new Group(name, owner, dis, password, type, id);
+			try (ResultSet set = getGroup.executeQuery()) {
+				if (!set.next()) {
+					return null;
+				}
+				
+				String name = set.getString(1);
+				String uuid = set.getString(2);
+				UUID owner = (uuid != null) ? UUID.fromString(uuid) : null;
+				boolean discipline = set.getInt(4) != 0;
+				String password = set.getString(3);
+				GroupType type = GroupType.getGroupType(set.getString(5));
+				int id = set.getInt(6);
+				
+				Group g = null;
+				switch(type) {
+					case PRIVATE:
+						g = new PrivateGroup(name, owner, discipline, password, id);
+						break;
+					case PUBLIC:
+						g = new PublicGroup(name, owner, discipline, password, id);
+						break;
+					default:
+						g = new Group(name, owner, discipline, password, type, id);
+				}
+				return g;
 			}
-			return g;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -587,8 +603,8 @@ public class GroupManagerDao {
 	public synchronized void addSubGroup(String group, String subGroup){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
-			addSubGroup.setString(1, group);
-			addSubGroup.setString(2, subGroup);
+			addSubGroup.setString(1, subGroup);
+			addSubGroup.setString(2, group);
 			addSubGroup.execute();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -600,11 +616,27 @@ public class GroupManagerDao {
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		List<Group> groups = new ArrayList<Group>();
 		try {
+			getSubGroups.clearParameters();
 			getSubGroups.setString(1, group);
-			ResultSet set = getSubGroups.executeQuery();
-			while (set.next()){
-				Group g = GroupManager.getGroup(set.getString(1));
-				groups.add(g);
+			
+			List<String> subgroups = Lists.newArrayList();
+			try (ResultSet set = getSubGroups.executeQuery()) {
+				while (set.next()) {
+					subgroups.add(set.getString(1));
+				}
+			}
+			
+			for (String groupname : subgroups) {				
+				Group g = null;
+				if (GroupManager.hasGroup(groupname)) {
+					g = GroupManager.getGroup(groupname);
+				} else {
+					g = getGroup(groupname);
+				}
+				
+				if (g != null) {
+					groups.add(g);
+				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -613,14 +645,22 @@ public class GroupManagerDao {
 		return groups;
 	}
 	
-	public synchronized Group getSuperGroup(String subGroup){
+	public synchronized Group getSuperGroup(String group){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
-			getSuperGroup.setString(1, subGroup);
-			ResultSet set = getSuperGroup.executeQuery();
-			if (!set.next()) 
-				return null;
-			return GroupManager.getGroup(set.getString(1));
+			getSuperGroup.clearParameters();
+			getSuperGroup.setString(1, group);
+			try (ResultSet set = getSuperGroup.executeQuery()) {
+				if (!set.next()) {
+					return null;
+				}
+				String supergroup = set.getString(1);
+				if (GroupManager.hasGroup(supergroup)) {
+					return GroupManager.getGroup(supergroup);
+				} else {
+					return getGroup(supergroup);
+				}
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

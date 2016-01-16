@@ -40,7 +40,7 @@ public class ModifyPermissions extends PlayerCommandMiddle{
 			return true;
 		}
 		UUID uuid = NameAPI.getUUID(p.getName());
-		PlayerType type = g.getPlayerType(uuid);
+		PlayerType type = g.getMemberRank(uuid);
 		if (type == null){
 			p.sendMessage(ChatColor.RED + "You are not on this group.");
 			return true;

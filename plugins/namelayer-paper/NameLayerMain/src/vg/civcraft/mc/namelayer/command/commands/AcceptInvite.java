@@ -41,7 +41,7 @@ public class AcceptInvite extends PlayerCommandMiddle{
 			return true;
 		}
 		UUID uuid = NameAPI.getUUID(p.getName());
-		PlayerType type = group.getInvite(uuid);
+		PlayerType type = group.getInviteType(uuid);
 		if (type == null){
 			p.sendMessage(ChatColor.RED + "You were not invited to that group.");
 			return true;
@@ -65,14 +65,7 @@ public class AcceptInvite extends PlayerCommandMiddle{
 		}
 		
 		p.sendMessage(ChatColor.GREEN + "You have successfully been added to the group as a " + type.name() +".");
-		if (group instanceof PrivateGroup){
-			PrivateGroup priv = (PrivateGroup) group;
-			List<Group> groups = priv.getSubGroups();
-			for (Group g: groups){
-				g.addMember(uuid, PlayerType.SUBGROUP);
-				checkRecacheGroup(g);
-			}
-		}
+		checkRecacheGroup(group);
 		return true;
 	}
 	@Override

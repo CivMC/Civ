@@ -29,7 +29,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 	public InvitePlayer(String name) {
 		super(name);
 		setIdentifier("nlip");
-		setDescription("Invite a player to the PlayerType " + PlayerType.toStringName() + " of a group.");
+		setDescription("Invite a player to the PlayerType " + PlayerType.getStringOfTypes() + " of a group.");
 		setUsage("/nlip <group> <player> (PlayerType- default MEMBERS)");
 		setArguments(2,3);
 	}
@@ -74,7 +74,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			// Perform access check
 			final GroupPermission perm = gm.getPermissionforGroup(group);
 			final UUID executor = p.getUniqueId();
-			final PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
+			final PlayerType t = group.getMemberRank(executor); // playertype for the player running the command.
 			if (t == null) {
 				s.sendMessage(ChatColor.RED + "You are not on that group.");
 				return true;
@@ -126,13 +126,6 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			if (shouldAutoAccept) {
 				// player auto accepts invite
 				group.addMember(invitedPlayer, pType);
-				if (group instanceof PrivateGroup) {
-					PrivateGroup priv = (PrivateGroup) group;
-					List<Group> groups = priv.getSubGroups();
-					for (Group g : groups) {
-						g.addMember(invitedPlayer, PlayerType.SUBGROUP);
-					}
-				}
 				invitee.sendMessage(
 						ChatColor.GREEN + " You have auto-accepted invite to the group: " + group.getName());
 			} else {
