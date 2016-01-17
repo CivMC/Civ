@@ -1,6 +1,5 @@
 package vg.civcraft.mc.namelayer;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -41,6 +40,7 @@ public class NameLayerPlugin extends ACivMod{
 		loadDatabases();
 	    ClassHandler.Initialize(Bukkit.getServer());
 		new NameAPI(new GroupManager(), associations);
+		groupManagerDao.loadGroupsInvitations();
 		registerListeners();
 		if (loadGroups){
 			handle = new CommandHandler();

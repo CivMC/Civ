@@ -18,17 +18,14 @@ import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
-import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class InvitePlayer extends PlayerCommandMiddle{
 
-	private GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
 	public InvitePlayer(String name) {
 		super(name);
 		setIdentifier("nlip");
@@ -104,50 +101,66 @@ public class InvitePlayer extends PlayerCommandMiddle{
 				s.sendMessage(ChatColor.RED + "You do not have permissions to modify this group.");
 				return true;
 			}
-		}
-		group.addInvite(targetAccount, pType);
-		final boolean shouldAutoAccept = db.shouldAutoAcceptGroups(targetAccount);
-		final Player oInvitee = Bukkit.getPlayer(targetAccount);
-		if (oInvitee != null) {
-			//invitee is online make them a player
-			if (shouldAutoAccept) {
-				//player auto accepts invite
-				group.addMember(targetAccount, pType);
-				group.removeRemoveInvite(targetAccount);
-				if (group instanceof PrivateGroup) {
-					PrivateGroup priv = (PrivateGroup) group;
-					List<Group> groups = priv.getSubGroups();
-					for (Group g: groups) {
-						g.addMember(targetAccount, PlayerType.SUBGROUP);
-					}
-				}
-				s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
-				oInvitee.sendMessage(ChatColor.GREEN + " You have auto-accepted invite to the group: " + group.getName());
-			} else {
-				PlayerListener.addNotification(targetAccount, group);
-				if (isPlayer) {
-					oInvitee.sendMessage(ChatColor.GREEN + "You have been invited to the group " + group.getName() +" by " + p.getName() +".\n" +
-							"Use the command /nlag <group> to accept.\n"
-							+ "If you wish to toggle invites so they always are accepted please run /nltaai");
-				} else {
-					oInvitee.sendMessage(ChatColor.GREEN + "You have been invited to the group " + group.getName() + ".\n" +
-							"Use the command /nlag <group> to accept.\n"
-							+ "If you wish to toggle invites so they always are accepted please run /nltaai");
-				}
-				s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
+			sendInvitation(group, pType, targetAccount, p.getUniqueId(), true);
+			
+			if(NameLayerPlugin.isMercuryEnabled()){
+				MercuryAPI.sendGlobalMessage("addInvitation " + group.getGroupId() + " " + pType.toString() + " " + targetAccount + " " + p.getUniqueId(), "namelayer");
 			}
 		} else {
-			//invitee is offline
-			if (shouldAutoAccept) {
-				group.addMember(targetAccount, pType);
-				group.removeRemoveInvite(targetAccount);
+			sendInvitation(group, pType, targetAccount, null, true);
+			
+			if(NameLayerPlugin.isMercuryEnabled()){
+				MercuryAPI.sendGlobalMessage("addInvitation " + group.getGroupId() + " " + pType.toString() + " " + targetAccount, "namelayer");
 			}
-			PlayerListener.addNotification(targetAccount, group);
-			s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
 		}
+
+		s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
 		return true;
 	}
 
+	public static void sendInvitation(Group group, PlayerType pType, UUID invitedPlayer, UUID inviter, boolean saveToDB){
+		Player invitee = Bukkit.getPlayer(invitedPlayer);
+		boolean shouldAutoAccept = NameLayerPlugin.getGroupManagerDao().shouldAutoAcceptGroups(invitedPlayer);
+		if (invitee != null) {
+			// invitee is online
+			if (shouldAutoAccept) {
+				// player auto accepts invite
+				group.addMember(invitedPlayer, pType);
+				if (group instanceof PrivateGroup) {
+					PrivateGroup priv = (PrivateGroup) group;
+					List<Group> groups = priv.getSubGroups();
+					for (Group g : groups) {
+						g.addMember(invitedPlayer, PlayerType.SUBGROUP);
+					}
+				}
+				invitee.sendMessage(
+						ChatColor.GREEN + " You have auto-accepted invite to the group: " + group.getName());
+			} else {
+				group.addInvite(invitedPlayer, pType, saveToDB);
+				PlayerListener.addNotification(invitedPlayer, group);
+				if(inviter != null){
+					String inviterName = NameAPI.getCurrentName(inviter);
+					invitee.sendMessage(ChatColor.GREEN + "You have been invited to the group " + group.getName()
+							+ " by " + inviterName + ".\n" + "Use the command /nlag <group> to accept.\n"
+							+ "If you wish to toggle invites so they always are accepted please run /nltaai");
+				} else {
+					invitee.sendMessage(ChatColor.GREEN + "You have been invited to the group " + group.getName()+ ".\n" 
+					+ "Use the command /nlag <group> to accept.\n"
+					+ "If you wish to toggle invites so they always are accepted please run /nltaai");
+				}
+			}
+		} else {
+			// invitee is offline or on a different shard
+			if (shouldAutoAccept) {
+				group.addMember(invitedPlayer, pType);
+			} else {
+				// Player did not auto accept
+				group.addInvite(invitedPlayer, pType, saveToDB);
+			}
+			PlayerListener.addNotification(invitedPlayer, group);
+		}
+	}
+	
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)){
