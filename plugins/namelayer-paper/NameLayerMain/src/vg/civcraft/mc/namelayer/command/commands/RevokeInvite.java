@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
@@ -100,8 +101,13 @@ public class RevokeInvite extends PlayerCommandMiddle{
 			return true;
 		}
 		
-		group.removeRemoveInvite(uuid);
+		group.removeInvite(uuid, true);
 		PlayerListener.removeNotification(uuid, group);
+		
+		if(NameLayerPlugin.isMercuryEnabled()){
+			MercuryAPI.sendGlobalMessage("removeInvitation " + group.getGroupId() + " " + uuid, "namelayer");
+		}
+		
 		p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(uuid) + "'s invitation has been revoked.");
 		return true;
 	}
