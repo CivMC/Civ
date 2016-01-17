@@ -38,115 +38,113 @@ public class InvitePlayer extends PlayerCommandMiddle{
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)){
-			sender.sendMessage(ChatColor.RED + "I'm sorry baby, please run this as a player :)");
-			return true;
-		}
-		Player p = (Player) sender;
-		Group group = gm.getGroup(args[0]);
+	public boolean execute(CommandSender s, String[] args) {
+		final String targetGroup = args[0];
+		final String targetPlayer = args[1];
+		final String targetType = args.length >= 3 ? args[2] : null;
+		final boolean isPlayer = s instanceof Player;
+		final Player p = isPlayer ? (Player)s : null;
+		final boolean isAdmin = !isPlayer || p.hasPermission("namelayer.admin");
+		final Group group = gm.getGroup(targetGroup);
 		if (group == null){
-			p.sendMessage(ChatColor.RED + "That group does not exist.");
+			s.sendMessage(ChatColor.RED + "That group does not exist.");
 			return true;
 		}
-		if (group.isDisciplined()){
-			p.sendMessage(ChatColor.RED + "This group is disiplined.");
+		if (!isAdmin && group.isDisciplined()) {
+			s.sendMessage(ChatColor.RED + "This group is disiplined.");
 			return true;
 		}
-		UUID executor = NameAPI.getUUID(p.getName());
-		PlayerType pType = PlayerType.MEMBERS;
-		if (args.length == 3)
-			pType = PlayerType.getPlayerType(args[2]);
-		if (pType == null){
-			PlayerType.displayPlayerTypes(p);
+		final UUID targetAccount = NameAPI.getUUID(targetPlayer);
+		if (targetAccount == null) {
+			s.sendMessage(ChatColor.RED + "The player has never played before.");
 			return true;
 		}
-		UUID uuid = NameAPI.getUUID(args[1]);
-		if (uuid == null){
-			p.sendMessage(ChatColor.RED + "The player has never played before.");
-			return true;
-		}
-		
-		GroupPermission perm = gm.getPermissionforGroup(group);
-		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
-		if (t == null){
-			p.sendMessage(ChatColor.RED + "You are not on that group.");
-			return true;
-		}
-		boolean allowed = false;
-		switch (pType){ // depending on the type the executor wants to add the player to
-		case MEMBERS:
-			allowed = perm.isAccessible(t, PermissionType.MEMBERS);
-			break;
-		case MODS:
-			allowed = perm.isAccessible(t, PermissionType.MODS);
-			break;
-		case ADMINS:
-			allowed = perm.isAccessible(t, PermissionType.ADMINS);
-			break;
-		case OWNER:
-			allowed = perm.isAccessible(t, PermissionType.OWNER);
-			break;
-		default:
-			allowed = false;
-			break;
-		}
-		if (!allowed){
-			p.sendMessage(ChatColor.RED + "You do not have permissions to modify this group.");
-			return true;
-		}
-		
-		if (group.isMember(uuid)){ // So a player can't demote someone who is above them.
-			p.sendMessage(ChatColor.RED + "Player is already a member."
+		if (group.isMember(targetAccount)) { // So a player can't demote someone who is above them.
+			s.sendMessage(ChatColor.RED + "Player is already a member."
 					+ "Use /nlpp to change their PlayerType.");
 			return true;
 		}
-		
-		group.addInvite(uuid, pType);
-		OfflinePlayer invitee = Bukkit.getOfflinePlayer(uuid);
-		
-		boolean shouldAutoAccept = db.shouldAutoAcceptGroups(uuid);
-		
-		if(invitee.isOnline()){
+		final PlayerType pType = targetType != null ? PlayerType.getPlayerType(targetType) : PlayerType.MEMBERS;
+		if (pType == null) {
+			if (p != null) {
+				PlayerType.displayPlayerTypes(p);
+			} else {
+				s.sendMessage("Invalid player type");
+			}
+			return true;
+		}
+		if (!isAdmin) {
+			// Perform access check
+			final GroupPermission perm = gm.getPermissionforGroup(group);
+			final UUID executor = p.getUniqueId();
+			final PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
+			if (t == null) {
+				s.sendMessage(ChatColor.RED + "You are not on that group.");
+				return true;
+			}
+			boolean allowed = false;
+			switch (pType) { // depending on the type the executor wants to add the player to
+				case MEMBERS:
+					allowed = perm.isAccessible(t, PermissionType.MEMBERS);
+					break;
+				case MODS:
+					allowed = perm.isAccessible(t, PermissionType.MODS);
+					break;
+				case ADMINS:
+					allowed = perm.isAccessible(t, PermissionType.ADMINS);
+					break;
+				case OWNER:
+					allowed = perm.isAccessible(t, PermissionType.OWNER);
+					break;
+				default:
+					allowed = false;
+					break;
+			}
+			if (!allowed) {
+				s.sendMessage(ChatColor.RED + "You do not have permissions to modify this group.");
+				return true;
+			}
+		}
+		group.addInvite(targetAccount, pType);
+		final boolean shouldAutoAccept = db.shouldAutoAcceptGroups(targetAccount);
+		final Player oInvitee = Bukkit.getPlayer(targetAccount);
+		if (oInvitee != null) {
 			//invitee is online make them a player
-			Player oInvitee = (Player) invitee;
-			if(shouldAutoAccept){
+			if (shouldAutoAccept) {
 				//player auto accepts invite
-				group.addMember(uuid, pType);
-				group.removeRemoveInvite(uuid);
-				if (group instanceof PrivateGroup){
+				group.addMember(targetAccount, pType);
+				group.removeRemoveInvite(targetAccount);
+				if (group instanceof PrivateGroup) {
 					PrivateGroup priv = (PrivateGroup) group;
 					List<Group> groups = priv.getSubGroups();
-					for (Group g: groups){
-						g.addMember(uuid, PlayerType.SUBGROUP);
+					for (Group g: groups) {
+						g.addMember(targetAccount, PlayerType.SUBGROUP);
 					}
 				}
-				p.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
+				s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
 				oInvitee.sendMessage(ChatColor.GREEN + " You have auto-accepted invite to the group: " + group.getName());
+			} else {
+				PlayerListener.addNotification(targetAccount, group);
+				if (isPlayer) {
+					oInvitee.sendMessage(ChatColor.GREEN + "You have been invited to the group " + group.getName() +" by " + p.getName() +".\n" +
+							"Use the command /nlag <group> to accept.\n"
+							+ "If you wish to toggle invites so they always are accepted please run /nltaai");
+				} else {
+					oInvitee.sendMessage(ChatColor.GREEN + "You have been invited to the group " + group.getName() + ".\n" +
+							"Use the command /nlag <group> to accept.\n"
+							+ "If you wish to toggle invites so they always are accepted please run /nltaai");
+				}
+				s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
 			}
-			else{
-				PlayerListener.addNotification(uuid, group);
-				oInvitee.sendMessage(ChatColor.GREEN + "You have been invited to the group " + group.getName() +" by " + p.getName() +".\n" +
-						"Use the command /nlag <group> to accept.\n"
-						+ "If you wish to toggle invites so they always are accepted please run /nltaai");
-				p.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
-			}
-		}
-		else{
+		} else {
 			//invitee is offline
-			if(shouldAutoAccept){
-				group.addMember(uuid, pType);
-				group.removeRemoveInvite(uuid);
-				PlayerListener.addNotification(uuid, group);
-				p.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
+			if (shouldAutoAccept) {
+				group.addMember(targetAccount, pType);
+				group.removeRemoveInvite(targetAccount);
 			}
-			else{
-				//Player did not auto accept
-				PlayerListener.addNotification(uuid, group);
-				p.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
-			}
+			PlayerListener.addNotification(targetAccount, group);
+			s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
 		}
-		
 		return true;
 	}
 
@@ -177,7 +175,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 						namesToReturn.add(p.getName());
 				}
 			}
-			return namesToReturn;			
+			return namesToReturn;
 		}
 		else if (args.length == 3)
 			return MemberTypeCompleter.complete(args[2]);
