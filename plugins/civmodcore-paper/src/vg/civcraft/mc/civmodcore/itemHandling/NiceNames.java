@@ -23,6 +23,7 @@ public class NiceNames {
 		private NameSearchObject(Material m, short dura, List<String> lore) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(m.toString());
+			sb.append("#");
 			sb.append(dura);
 			for (String s : lore) {
 				sb.append(s);
@@ -104,5 +105,9 @@ public class NiceNames {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void registerItem(ItemStack is, String name) {
+		items.put(new NameSearchObject(is), name);
 	}
 }
