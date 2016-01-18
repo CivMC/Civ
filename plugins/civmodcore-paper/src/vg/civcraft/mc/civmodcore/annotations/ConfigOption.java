@@ -43,6 +43,8 @@ public class ConfigOption {
       case String:
         set(config_.getStorage().getString(name_, (String)value_));
         break;
+      case Long:
+    	set(config_.getStorage().getLong(name_, (Long)value_));
       default:
         throw new Error("Unknown OptType");
     }
@@ -75,6 +77,15 @@ public class ConfigOption {
           return (String)defaultValue;
         }
         return value;
+      case Long:
+    	  if (value.isEmpty()) {
+              return -1;
+            }
+            try {
+              return Long.parseLong(value);
+            } catch(Exception e) {
+              return defaultValue;
+            }
       default:
         throw new Error("Unknown OptType");
     }
@@ -110,6 +121,13 @@ public class ConfigOption {
         }
         value_ = value;
         break;
+      case Long:
+    	  if (!(value instanceof Long)) {
+    		  throw new Error(String.format(
+    	              "Value set is not a Long for %s: %s",
+    	              name_, value.toString()));
+    	  }
+    	  value_ = value;
       case String:
       default:
         throw new Error("Unknown OptType");
@@ -152,6 +170,14 @@ public class ConfigOption {
           "Config option %s not of type Double", name_));
     }
     return (Double)value_;
+  }
+  
+  public Long getLong() {
+	  if (type_ != CivConfigType.Long) {
+	      throw new Error(String.format(
+	          "Config option %s not of type Long", name_));
+	    }
+	    return (Long)value_;
   }
 
   public String getString() {

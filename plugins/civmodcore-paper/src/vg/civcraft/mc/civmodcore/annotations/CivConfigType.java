@@ -4,5 +4,6 @@ public enum CivConfigType {
   Bool,
   Double,
   Int,
-  String
+  String,
+  Long
 }

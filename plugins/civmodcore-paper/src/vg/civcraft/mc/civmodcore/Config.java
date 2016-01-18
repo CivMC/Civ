@@ -149,6 +149,9 @@ public class Config {
 			case Double:
 				config_.set(c.getName(), c.getDouble());
 				break;
+			case Long:
+				config_.set(c.getName(), c.getLong());
+				break;
 			}
 		}
 		plugin_.saveConfig();
