@@ -7,7 +7,7 @@
 	<artifactId>CivModCore</artifactId>
 	<packaging>jar</packaging>
 	<description/>
-	<version>1.1.7</version>
+	<version>1.1.8</version>
 	<name>CivModCore</name>
 	<url>https://github.com/Civcraft/CivModCore/</url>
 
@@ -24,6 +24,7 @@
 				<directory>${basedir}</directory>
 				<includes>
 					<include>*.yml</include>
+					<include>*.csv</include>
 				</includes>
 				<filtering>true</filtering>
 			</resource>

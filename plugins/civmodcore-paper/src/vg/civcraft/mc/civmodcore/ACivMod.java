@@ -14,6 +14,7 @@ import vg.civcraft.mc.civmodcore.annotations.*;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.interfaces.ApiManager;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
+import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 import vg.civcraft.mc.civmodcore.util.ClassUtility;
 
 public abstract class ACivMod extends JavaPlugin implements Listener{
@@ -117,6 +118,7 @@ public abstract class ACivMod extends JavaPlugin implements Listener{
     public void onEnable() {
       registerEvents();
       registerCommands();
+      new NiceNames().loadNames();
       //global_instance_ = this;
       info("Main Plugin Events and Config Command registered");
     }
