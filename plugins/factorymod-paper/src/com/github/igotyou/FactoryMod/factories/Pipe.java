@@ -33,7 +33,7 @@ public class Pipe extends Factory {
 		allowedMaterials = null;
 		runTime = 0;
 	}
-
+	
 	public void attemptToActivate(Player p) {
 		// TODO Citadel stuff
 		mbs.recheckComplete();
@@ -57,6 +57,9 @@ public class Pipe extends Factory {
 							+ "No items available to transfer");
 				}
 			}
+		}
+		else {
+			rm.breakIt();
 		}
 	}
 

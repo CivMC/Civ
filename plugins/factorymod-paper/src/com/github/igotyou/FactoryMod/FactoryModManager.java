@@ -2,6 +2,8 @@ package com.github.igotyou.FactoryMod;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
@@ -67,11 +69,11 @@ public class FactoryModManager {
 		possibleInteractionBlock.add(Material.BURNING_FURNACE);
 		possibleInteractionBlock.add(Material.CHEST);
 
-		// pipe
+		// sorter
 		possibleCenterBlocks.add(Material.DROPPER);
 		possibleInteractionBlock.add(Material.DROPPER);
 
-		// sorter
+		// pipe
 		possibleCenterBlocks.add(Material.DISPENSER);
 		possibleInteractionBlock.add(Material.DISPENSER);
 	}
@@ -238,16 +240,17 @@ public class FactoryModManager {
 				HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
 						.get(PipeStructure.class);
 				if (eggs != null) {
-					IFactoryEgg egg = eggs.get(new ItemMap(((Dropper) (ps
+					IFactoryEgg egg = eggs.get(new ItemMap(((Dispenser) (ps
 							.getStart().getState())).getInventory()));
 					if (egg != null) {
-						if (ps.getGlassColor() != ((PipeEgg)egg).getColor()) {
-							p.sendMessage(ChatColor.RED + "You dont have the right color of glass for this pipe");
+						if (ps.getGlassColor() != ((PipeEgg) egg).getColor()) {
+							p.sendMessage(ChatColor.RED
+									+ "You dont have the right color of glass for this pipe");
 							return;
 						}
 						Factory f = egg.hatch(ps, p);
 						if (f != null) {
-							((Dropper) (ps.getStart().getState()))
+							((Dispenser) (ps.getStart().getState()))
 									.getInventory().clear();
 							addFactory(f);
 							p.sendMessage(ChatColor.GREEN
@@ -267,12 +270,12 @@ public class FactoryModManager {
 						.get(BlockFurnaceStructure.class);
 				if (eggs != null) {
 					IFactoryEgg egg = eggs
-							.get(new ItemMap(((Dispenser) (bfs.getCenter()
+							.get(new ItemMap(((Dropper) (bfs.getCenter()
 									.getBlock().getState())).getInventory()));
 					if (egg != null) {
 						Factory f = egg.hatch(bfs, p);
 						if (f != null) {
-							((Dispenser) (bfs.getCenter().getBlock().getState()))
+							((Dropper) (bfs.getCenter().getBlock().getState()))
 									.getInventory().clear();
 							addFactory(f);
 							p.sendMessage(ChatColor.GREEN
@@ -286,6 +289,26 @@ public class FactoryModManager {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Gets all the factories within a certain range of a given location
+	 * 
+	 * @param l
+	 *            Location on which the search is centered
+	 * @param range
+	 *            maximum distance from the center allowed
+	 * @return All of the factories which are less or equal than the given range
+	 *         away from the given location
+	 */
+	public List<Factory> getNearbyFactories(Location l, int range) {
+		List<Factory> facs = new LinkedList<Factory>();
+		for (Factory f : factories) {
+			if (f.getMultiBlockStructure().getCenter().distance(l) <= range) {
+				facs.add(f);
+			}
+		}
+		return facs;
 	}
 
 	/**

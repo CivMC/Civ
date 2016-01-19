@@ -39,7 +39,7 @@ public class Sorter extends Factory {
 		for (BlockFace bf : MultiBlockStructure.allBlockSides) {
 			assignedMaterials.put(bf, new ItemMap());
 		}
-		assignedMaterials.remove(((BlockFurnaceStructure) mbs).getFurnace().getFace(mbs.getCenter().getBlock()));
+		assignedMaterials.remove(mbs.getCenter().getBlock().getFace(((BlockFurnaceStructure)mbs).getFurnace()));
 	}
 
 	public void attemptToActivate(Player p) {

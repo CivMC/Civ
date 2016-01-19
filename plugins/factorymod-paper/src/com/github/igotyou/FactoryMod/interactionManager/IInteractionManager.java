@@ -51,6 +51,6 @@ public interface IInteractionManager {
 	 * @param e
 	 *            Event which occured
 	 */
-	public void redStoneEvent(BlockRedstoneEvent e);
+	public void redStoneEvent(BlockRedstoneEvent e, Block factoryBlock);
 
 }

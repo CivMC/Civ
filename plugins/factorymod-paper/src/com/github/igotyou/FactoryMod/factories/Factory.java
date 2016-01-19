@@ -2,9 +2,12 @@ package com.github.igotyou.FactoryMod.factories;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.DirectionalContainer;
+import org.bukkit.material.MaterialData;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
@@ -133,12 +136,15 @@ public abstract class Factory implements Runnable {
 
 	public void turnFurnaceOn(Block f) {
 		Furnace furnace = (Furnace) f.getState();
-		byte data = furnace.getData().getData();
 		ItemStack[] oldContents = furnace.getInventory().getContents();
+		BlockFace facing = ((DirectionalContainer)furnace.getData()).getFacing();
+		System.out.println(facing);
 		furnace.getInventory().clear();
 		f.setType(Material.BURNING_FURNACE);
 		furnace = (Furnace) f.getState();
-		furnace.getData().setData(data);
+		MaterialData data = furnace.getData();
+		((DirectionalContainer)data).setFacingDirection(facing);
+		furnace.setData(data);
 		furnace.update();
 		furnace.setBurnTime(Short.MAX_VALUE);
 		furnace.getInventory().setContents(oldContents);
@@ -146,12 +152,15 @@ public abstract class Factory implements Runnable {
 
 	public void turnFurnaceOff(Block f) {
 		Furnace furnace = (Furnace) f.getState();
-		byte data = furnace.getData().getData();
 		ItemStack[] oldContents = furnace.getInventory().getContents();
+		BlockFace facing = ((DirectionalContainer)furnace.getData()).getFacing();
+		System.out.println(facing);
 		furnace.getInventory().clear();
 		f.setType(Material.FURNACE);
 		furnace = (Furnace) f.getState();
-		furnace.getData().setData(data);
+		MaterialData data = furnace.getData();
+		((DirectionalContainer)data).setFacingDirection(facing);
+		furnace.setData(data);
 		furnace.update();
 		furnace.getInventory().setContents(oldContents);
 	}

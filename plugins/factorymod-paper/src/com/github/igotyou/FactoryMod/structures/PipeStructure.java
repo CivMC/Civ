@@ -9,7 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.InventoryHolder;
 
 /**
- * Represents a pipe with a dropper at each end, which are directly connected
+ * Represents a pipe with a dispenser at each end, which are directly connected
  * through blocks of one specific type which make up the actual pipe
  *
  */
@@ -25,7 +25,7 @@ public class PipeStructure extends MultiBlockStructure {
 	private boolean complete;
 
 	public PipeStructure(Block startBlock) {
-		if (startBlock.getType() != Material.DROPPER) {
+		if (startBlock.getType() != Material.DISPENSER) {
 			return;
 		}
 		this.start = startBlock;
@@ -108,7 +108,7 @@ public class PipeStructure extends MultiBlockStructure {
 		if (start == null
 				|| furnace == null
 				|| end == null
-				|| start.getType() != Material.DROPPER
+				|| start.getType() != Material.DISPENSER
 				|| (furnace.getType() != Material.FURNACE && furnace.getType() != Material.BURNING_FURNACE)
 				|| !(end.getState() instanceof InventoryHolder)) {
 			complete = false;
@@ -126,7 +126,7 @@ public class PipeStructure extends MultiBlockStructure {
 	public boolean isComplete() {
 		return complete;
 	}
-	
+
 	public byte getGlassColor() {
 		return glassColor;
 	}

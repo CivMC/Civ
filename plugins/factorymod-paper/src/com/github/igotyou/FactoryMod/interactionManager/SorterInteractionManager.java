@@ -7,9 +7,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
 
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.ReinforcementManager;
+
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.Sorter;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
+import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.utility.MenuBuilder;
 import com.github.igotyou.FactoryMod.utility.NiceNames;
 
@@ -35,7 +39,7 @@ public class SorterInteractionManager implements IInteractionManager {
 	public void blockBreak(Player p, Block b) {
 		sorter.getRepairManager().breakIt();
 		if (p != null) {
-			p.sendMessage(ChatColor.RED + "The sorter was destroyed");
+			p.sendMessage(ChatColor.DARK_RED + "The sorter was destroyed");
 		}
 	}
 
@@ -81,8 +85,29 @@ public class SorterInteractionManager implements IInteractionManager {
 		}
 	}
 
-	public void redStoneEvent(BlockRedstoneEvent e) {
-
+	public void redStoneEvent(BlockRedstoneEvent e, Block factoryBlock) {
+		ReinforcementManager rm = FactoryMod.getManager().isCitadelEnabled() ? Citadel
+				.getReinforcementManager() : null;
+		int threshold = FactoryMod.getManager().getRedstonePowerOn();
+		if (factoryBlock.getLocation().equals(
+				((BlockFurnaceStructure) sorter.getMultiBlockStructure())
+						.getFurnace().getLocation())) {
+			if (e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold
+					&& sorter.isActive()) {
+				if ((rm == null || MultiBlockStructure.citadelRedstoneChecks(e
+						.getBlock()))) {
+					sorter.deactivate();
+				}
+			} else if (e.getOldCurrent() < threshold
+					&& e.getNewCurrent() >= threshold && !sorter.isActive()) {
+				if (rm == null
+						|| MultiBlockStructure.citadelRedstoneChecks(e
+								.getBlock())) {
+					sorter.attemptToActivate(null);
+				}
+			} else {
+				return;
+			}
+		}
 	}
-
 }

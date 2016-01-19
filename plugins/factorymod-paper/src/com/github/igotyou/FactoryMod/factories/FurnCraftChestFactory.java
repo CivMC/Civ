@@ -1,6 +1,9 @@
 package com.github.igotyou.FactoryMod.factories;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,6 +19,7 @@ import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
+import com.github.igotyou.FactoryMod.recipes.PylonRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
@@ -32,6 +36,9 @@ public class FurnCraftChestFactory extends Factory {
 	protected int currentProductionTimer = 0;
 	protected List<IRecipe> recipes;
 	protected IRecipe currentRecipe;
+	protected Map<IRecipe, Integer> runCount;
+
+	private static HashSet<FurnCraftChestFactory> pylonFactories;
 
 	public FurnCraftChestFactory(IInteractionManager im, IRepairManager rm,
 			IPowerManager ipm, FurnCraftChestStructure mbs, int updateTime,
@@ -39,6 +46,19 @@ public class FurnCraftChestFactory extends Factory {
 		super(im, rm, ipm, mbs, updateTime, name);
 		this.active = false;
 		this.recipes = recipes;
+		this.runCount = new HashMap<IRecipe, Integer>();
+		for(IRecipe rec:recipes) {
+			runCount.put(rec, 0);
+		}
+		if (pylonFactories == null) {
+			pylonFactories = new HashSet<FurnCraftChestFactory>();
+		}
+		for (IRecipe rec : recipes) {
+			if (rec instanceof PylonRecipe) {
+				pylonFactories.add(this);
+				break;
+			}
+		}
 	}
 
 	/**
@@ -110,6 +130,9 @@ public class FurnCraftChestFactory extends Factory {
 				}
 			}
 		}
+		else {
+			rm.breakIt();
+		}
 	}
 
 	/**
@@ -157,6 +180,12 @@ public class FurnCraftChestFactory extends Factory {
 	 */
 	public int getRunningTime() {
 		return currentProductionTimer;
+	}
+
+	public void setRunCount(IRecipe r, Integer count) {
+		if (recipes.contains(r)) {
+			runCount.put(r, count);
+		}
 	}
 
 	/**
@@ -211,6 +240,8 @@ public class FurnCraftChestFactory extends Factory {
 						return;
 					} else {
 						currentRecipe.applyEffect(getInventory(), this);
+						runCount.put(currentRecipe,
+								runCount.get(currentRecipe) + 1);
 					}
 					currentProductionTimer = 0;
 					if (hasInputMaterials() && pm.powerAvailable()) {
@@ -235,6 +266,18 @@ public class FurnCraftChestFactory extends Factory {
 	}
 
 	/**
+	 * Pylon recipes have a special functionality, which requires them to know
+	 * all other factories with pylon recipes on the map. Because of that all of
+	 * those factories are kept in a separated hashset, which is provided by
+	 * this method
+	 * 
+	 * @return All factories with a pylon recipe
+	 */
+	public static HashSet<FurnCraftChestFactory> getPylonFactories() {
+		return pylonFactories;
+	}
+
+	/**
 	 * @return The recipe currently selected in this instance
 	 */
 	public IRecipe getCurrentRecipe() {
@@ -251,6 +294,10 @@ public class FurnCraftChestFactory extends Factory {
 		if (recipes.contains(pr)) {
 			currentRecipe = pr;
 		}
+	}
+	
+	public int getRunCount(IRecipe r) {
+		return runCount.get(r);
 	}
 
 	/**
@@ -283,6 +330,10 @@ public class FurnCraftChestFactory extends Factory {
 			setRecipe(recipes.get(0));
 		} else {
 			currentRecipe = null;
+		}
+		runCount = new HashMap<IRecipe, Integer>();
+		for(IRecipe rec:recipes) {
+			runCount.put(rec, 0);
 		}
 	}
 

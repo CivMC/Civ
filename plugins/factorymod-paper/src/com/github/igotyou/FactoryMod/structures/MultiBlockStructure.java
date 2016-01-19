@@ -10,6 +10,12 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
+import com.github.igotyou.FactoryMod.FactoryMod;
+
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.ReinforcementManager;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+
 /**
  * Physical representation of a factory. This may be any shape as long as the
  * required methods can be applied on the shape.
@@ -95,6 +101,43 @@ public abstract class MultiBlockStructure {
 			blocks.add(b.getRelative(face));
 		}
 		return blocks;
+	}
+	
+	/**
+	 * Only deals with directly powered redstone interactions, not indirect
+	 * power. If all blocks powering this block are on the same group or if the
+	 * block is insecure or if the block is unreinforced, true will be returned
+	 * 
+	 * @param here
+	 *            The block to check around.
+	 * @return Whether all power sources around the given block are on the same
+	 *         group
+	 */
+	public static boolean citadelRedstoneChecks(Block here) {
+		ReinforcementManager rm;
+		if (FactoryMod.getManager().isCitadelEnabled()) {
+			rm = Citadel.getReinforcementManager();
+		}
+		else {
+			return true;
+		}
+		PlayerReinforcement pr = (rm != null) ? (PlayerReinforcement) rm
+				.getReinforcement(here) : null;
+		if (pr == null || pr.isInsecure()) {
+			return true;
+		}
+		int prGID = pr.getGroup().getGroupId();
+		for (BlockFace face : MultiBlockStructure.allBlockSides) {
+			Block rel = here.getRelative(face);
+			if (here.isBlockFacePowered(face)) {
+				PlayerReinforcement relRein = (PlayerReinforcement) rm
+						.getReinforcement(rel);
+				if (relRein == null || relRein.getGroup().getGroupId() != prGID) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 }

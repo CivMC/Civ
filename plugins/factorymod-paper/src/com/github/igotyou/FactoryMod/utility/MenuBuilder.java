@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
@@ -82,9 +83,20 @@ public class MenuBuilder {
 		ClickableInventory.forceCloseInventory(p);
 		IFactoryEgg egg = manager.getEgg(startingFac);
 		if (egg == null) {
-			p.sendMessage(ChatColor.RED
-					+ "There is no factory with the name you entered");
-			return;
+			String comp = startingFac.toLowerCase();
+			// check for lower/uppercase miss spellings
+			for (Entry<String, IFactoryEgg> entry : manager.getAllEggs()
+					.entrySet()) {
+				if (entry.getKey().toLowerCase().equals(comp)) {
+					egg = entry.getValue();
+					break;
+				}
+			}
+			if (egg == null) {
+				p.sendMessage(ChatColor.RED
+						+ "There is no factory with the name you entered");
+				return;
+			}
 		}
 		if (egg instanceof FurnCraftChestEgg) {
 			FurnCraftChestEgg furnegg = (FurnCraftChestEgg) egg;
@@ -205,11 +217,23 @@ public class MenuBuilder {
 			ci.setSlot(chestDec, 5);
 			ItemMap im = manager.getSetupCost(FurnCraftChestStructure.class,
 					egg.getName());
-			int slot = 27;
+			int slot = 31;
 			for (ItemStack is : im.getItemStackRepresentation()) {
 				DecorationStack dec = new DecorationStack(is);
 				ci.setSlot(dec, slot);
-				slot++;
+				if ((slot % 9) == 4) {
+					slot++;
+					continue;
+				}
+				if ((slot % 9) > 4) {
+					slot -= (((slot % 9) - 4) * 2);
+				} else {
+					if ((slot % 9) == 0) {
+						slot += 9;
+					} else {
+						slot += (((4 - (slot % 9)) * 2) + 1);
+					}
+				}
 			}
 		} else {
 			Upgraderecipe rec = null;
@@ -220,7 +244,7 @@ public class MenuBuilder {
 				}
 			}
 
-			ItemStackUtils.setLore(cr, "Upgrade from a " + parEgg.getName());
+			ItemStackUtils.setLore(cr, ChatColor.LIGHT_PURPLE + "Upgrade from a " + parEgg.getName());
 			Clickable craCli = new Clickable(cr) {
 				@Override
 				public void clicked(Player arg0) {
@@ -230,7 +254,7 @@ public class MenuBuilder {
 			};
 			ci.setSlot(craCli, 4);
 			ItemStackUtils.setLore(fur, ChatColor.LIGHT_PURPLE
-					+ "Click to display information", "on this factory");
+					+ "Click to display information", ChatColor.LIGHT_PURPLE + "on this factory");
 			Clickable furCli = new Clickable(fur) {
 				@Override
 				public void clicked(Player arg0) {
@@ -247,11 +271,23 @@ public class MenuBuilder {
 				}
 			};
 			ci.setSlot(cheCli, 5);
-			int slot = 36;
+			int slot = 40;
 			for (ItemStack is : rec.getInput().getItemStackRepresentation()) {
 				DecorationStack dec = new DecorationStack(is);
 				ci.setSlot(dec, slot);
-				slot++;
+				if ((slot % 9) == 4) {
+					slot++;
+					continue;
+				}
+				if ((slot % 9) > 4) {
+					slot -= (((slot % 9) - 4) * 2);
+				} else {
+					if ((slot % 9) == 0) {
+						slot += 9;
+					} else {
+						slot += (((4 - (slot % 9)) * 2) + 1);
+					}
+				}
 			}
 		}
 		ci.setSlot(input, 22);
@@ -380,7 +416,31 @@ public class MenuBuilder {
 		ci.setSlot(outputClickable, 31);
 		index = 40;
 		for (ItemStack is : rec.getOutputRepresentation(null)) {
-			Clickable c = new DecorationStack(is);
+			Clickable c;
+			if (rec instanceof Upgraderecipe) {
+				c = new Clickable(is) {
+					@Override
+					public void clicked(Player arg0) {
+						IFactoryEgg egg = manager.getEgg(factoryViewed.get(arg0
+								.getUniqueId()));
+						for (IRecipe re : ((FurnCraftChestEgg) egg)
+								.getRecipes()) {
+							if (re instanceof Upgraderecipe
+									&& ((Upgraderecipe) re)
+											.getEgg()
+											.getName()
+											.equals(ItemStackUtils.getName(this
+													.getItemStack()))) {
+								openFactoryBrowser(arg0, ((Upgraderecipe) re)
+										.getEgg().getName());
+								break;
+							}
+						}
+					}
+				};
+			} else {
+				c = new DecorationStack(is);
+			}
 			ci.setSlot(c, index);
 			if ((index % 9) == 4) {
 				index++;

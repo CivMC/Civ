@@ -7,10 +7,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -39,12 +41,10 @@ public class FactoryModListener implements Listener {
 	 * Called when a block is broken If the block that is destroyed is part of a
 	 * factory, call the required methods.
 	 */
-	@EventHandler
+	@EventHandler (ignoreCancelled = true, priority = EventPriority.MONITOR)
 	public void blockBreakEvent(BlockBreakEvent e) {
 		Block block = e.getBlock();
-		if (manager.isPossibleInteractionBlock(block.getType())
-				&& ((manager.isCitadelEnabled() && !rm.isReinforced(block)) || !manager
-						.isCitadelEnabled())) {
+		if (manager.isPossibleInteractionBlock(block.getType())) {
 			Factory c = manager.getFactoryAt(block);
 			if (c != null) {
 				c.getInteractionManager().blockBreak(e.getPlayer(), block);
@@ -53,11 +53,21 @@ public class FactoryModListener implements Listener {
 
 	}
 
-	@EventHandler()
+	@EventHandler
 	public void redstoneChange(BlockRedstoneEvent e) {
-		Factory f = manager.getFactoryAt(e.getBlock());
-		if (f != null) {
-			f.getInteractionManager().redStoneEvent(e);
+		if (e.getOldCurrent() == e.getNewCurrent()) {
+			System.out.println(e.getBlock().getLocation() + " unchanged at "
+					+ e.getOldCurrent());
+			return;
+		}
+		System.out.println("Switching " + e.getBlock().getLocation().toString()
+				+ " from " + e.getOldCurrent() + " to " + e.getNewCurrent());
+		for (BlockFace face : MultiBlockStructure.allBlockSides) {
+			Factory f = manager.getFactoryAt(e.getBlock().getRelative(face));
+			if (f != null) {
+				f.getInteractionManager().redStoneEvent(e,
+						e.getBlock().getRelative(face));
+			}
 		}
 	}
 
@@ -145,6 +155,13 @@ public class FactoryModListener implements Listener {
 				}
 
 			}
+		}
+	}
+	
+	@EventHandler
+	public void blockDispenser(BlockDispenseEvent e) {
+		if (manager.getFactoryAt(e.getBlock()) != null) {
+			e.setCancelled(true);
 		}
 	}
 

@@ -22,6 +22,7 @@ import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.eggs.PipeEgg;
 import com.github.igotyou.FactoryMod.eggs.SorterEgg;
 import com.github.igotyou.FactoryMod.listeners.NetherPortalListener;
+import com.github.igotyou.FactoryMod.recipes.AOERepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.CompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.DecompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
@@ -353,6 +354,14 @@ public class ConfigParser {
 						+ " for upgrade recipe " + name);
 			}
 			result = new Upgraderecipe(name, productionTime, upgradeCost, egg);
+			break;
+		case "AOEREPAIR":
+			ItemStack essence = parseItemMap(
+					config.getConfigurationSection("essence"))
+					.getItemStackRepresentation().get(0);
+			int repPerEssence = config.getInt("repair_per_essence");
+			int range = config.getInt("range");
+			result = new AOERepairRecipe(name, productionTime, essence, range, repPerEssence);
 			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type")

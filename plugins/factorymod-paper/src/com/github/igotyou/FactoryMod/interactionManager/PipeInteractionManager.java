@@ -10,10 +10,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
 
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.ReinforcementManager;
+
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.factories.Pipe;
 import com.github.igotyou.FactoryMod.repairManager.NoRepairDestroyOnBreakManager;
+import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
 import com.github.igotyou.FactoryMod.utility.MenuBuilder;
 
@@ -73,8 +77,30 @@ public class PipeInteractionManager implements IInteractionManager {
 		}
 	}
 
-	public void redStoneEvent(BlockRedstoneEvent e) {
-		// soon
+	public void redStoneEvent(BlockRedstoneEvent e, Block factoryBlock) {
+		ReinforcementManager rm = FactoryMod.getManager().isCitadelEnabled() ? Citadel
+				.getReinforcementManager() : null;
+		int threshold = FactoryMod.getManager().getRedstonePowerOn();
+		if (factoryBlock.getLocation().equals(
+				((PipeStructure) pipe.getMultiBlockStructure()).getFurnace()
+						.getLocation())) {
+			if (e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold
+					&& pipe.isActive()) {
+				if ((rm == null || MultiBlockStructure.citadelRedstoneChecks(e
+						.getBlock()))) {
+					pipe.deactivate();
+				}
+			} else if (e.getOldCurrent() < threshold
+					&& e.getNewCurrent() >= threshold && !pipe.isActive()) {
+				if (rm == null
+						|| MultiBlockStructure.citadelRedstoneChecks(e
+								.getBlock())) {
+					pipe.attemptToActivate(null);
+				}
+			} else {
+				return;
+			}
+		}
 	}
 
 	public void blockBreak(Player p, Block b) {
@@ -83,5 +109,4 @@ public class PipeInteractionManager implements IInteractionManager {
 			p.sendMessage(ChatColor.RED + "Pipe was destroyed");
 		}
 	}
-
 }

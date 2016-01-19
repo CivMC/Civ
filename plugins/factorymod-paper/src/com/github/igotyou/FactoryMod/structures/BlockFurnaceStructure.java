@@ -14,7 +14,7 @@ public class BlockFurnaceStructure extends MultiBlockStructure {
 	private boolean complete = false;
 
 	public BlockFurnaceStructure(Block center) {
-		if (center.getType() == Material.DISPENSER) {
+		if (center.getType() == Material.DROPPER) {
 			this.center = center;
 			for (Block b : searchForBlockOnSides(center, Material.FURNACE)) {
 				furnace = b;
@@ -49,7 +49,7 @@ public class BlockFurnaceStructure extends MultiBlockStructure {
 	}
 
 	public void recheckComplete() {
-		complete = (center.getType() == Material.DISPENSER && (furnace
+		complete = (center.getType() == Material.DROPPER && (furnace
 				.getType() == Material.FURNACE || furnace.getType() == Material.BURNING_FURNACE));
 	}
 
