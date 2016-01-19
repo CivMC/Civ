@@ -1,5 +1,8 @@
 package vg.civcraft.mc.civmodcore.annotations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import vg.civcraft.mc.civmodcore.Config;
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
@@ -45,6 +48,10 @@ public class ConfigOption {
         break;
       case Long:
     	set(config_.getStorage().getLong(name_, (Long)value_));
+    	break;
+      case String_List:
+    	set(config_.getStorage().getStringList(name_));
+    	break;
       default:
         throw new Error("Unknown OptType");
     }
@@ -86,6 +93,17 @@ public class ConfigOption {
             } catch(Exception e) {
               return defaultValue;
             }
+      case String_List:
+    	  List<String> list = new ArrayList<String>();
+    	  if (value == null) {
+    		  return (List<String>) defaultValue;
+    	  } 
+    	  else {
+    		  String[] parts = ((String) defaultValue).split("\\|");
+    		  for (String x: parts)
+    			  list.add(x);
+    	  }
+    	  return list;
       default:
         throw new Error("Unknown OptType");
     }
@@ -128,6 +146,14 @@ public class ConfigOption {
     	              name_, value.toString()));
     	  }
     	  value_ = value;
+      case String_List:
+    	  if (!(value instanceof List)) {
+    		  throw new Error(String.format(
+    	              "Value set is not a List for %s: %s",
+    	              name_, value.toString()));
+    	  }
+    	  value_ = value;
+    	  break;
       case String:
       default:
         throw new Error("Unknown OptType");
@@ -178,6 +204,14 @@ public class ConfigOption {
 	          "Config option %s not of type Long", name_));
 	    }
 	    return (Long)value_;
+  }
+  
+  public List<String> getStringList() {
+	  if (type_ != CivConfigType.String_List) {
+	      throw new Error(String.format(
+	          "Config option %s not of type Long", name_));
+	    }
+	    return (List<String>) value_;
   }
 
   public String getString() {

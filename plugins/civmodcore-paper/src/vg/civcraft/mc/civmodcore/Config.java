@@ -152,6 +152,8 @@ public class Config {
 			case Long:
 				config_.set(c.getName(), c.getLong());
 				break;
+			case String_List:
+				config_.set(c.getName(), c.getStringList());
 			}
 		}
 		plugin_.saveConfig();
