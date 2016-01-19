@@ -198,6 +198,18 @@ disabled-commands:
   - 'plotme:plot'
   - 'plotme:p'
 
+  # floAuction
+  - auction
+  - auc
+  - sauction
+  - sauc
+  - bid
+  - 'floauction:auction'
+  - 'floauction:auc'
+  - 'floauction:sauction'
+  - 'floauction:sauc'
+  - 'floauction:bid'
+
   # Essentials
   - spawn
   - home
@@ -225,6 +237,7 @@ disabled-commands:
   - enderchest
   - endersee
   - echest
+  - sell
   - ehome
   - ehomes
   - ewarp
@@ -249,6 +262,7 @@ disabled-commands:
   - eenderchest
   - eechest
   - eendersee
+  - esell
   - 'essentials:spawn'
   - 'essentials:home'
   - 'essentials:homes'
@@ -274,6 +288,7 @@ disabled-commands:
   - 'essentials:enderchest'
   - 'essentials:endersee'
   - 'essentials:echest'
+  - 'essentials:sell'
   - 'essentials:espawn'
   - 'essentials:ehome'
   - 'essentials:ehomes'
@@ -299,3 +314,4 @@ disabled-commands:
   - 'essentials:eenderchest'
   - 'essentials:eechest'
   - 'essentials:eendersee'
+  - 'essentials:esell'
