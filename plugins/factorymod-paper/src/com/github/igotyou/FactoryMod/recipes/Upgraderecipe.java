@@ -9,12 +9,13 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-import com.github.igotyou.FactoryMod.utility.ItemMap;
-import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
 
 public class Upgraderecipe extends InputRecipe {
 	private IFactoryEgg egg;
@@ -39,7 +40,7 @@ public class Upgraderecipe extends InputRecipe {
 
 	public ItemStack getRecipeRepresentation() {
 		ItemStack res = new ItemStack(Material.WORKBENCH);
-		ItemStackUtils.setName(res, name);
+		ISUtils.setName(res, name);
 		return res;
 	}
 
@@ -62,10 +63,10 @@ public class Upgraderecipe extends InputRecipe {
 		}
 		for (ItemStack is : input.getItemStackRepresentation()) {
 			if (possibleRuns.getAmount(is) != 0) {
-				ItemStackUtils.addLore(is, ChatColor.GREEN
+				ISUtils.addLore(is, ChatColor.GREEN
 						+ "Enough of this material available to upgrade");
 			} else {
-				ItemStackUtils.addLore(is, ChatColor.RED
+				ISUtils.addLore(is, ChatColor.RED
 						+ "Not enough of this materials available to upgrade");
 			}
 			result.add(is);
@@ -76,19 +77,19 @@ public class Upgraderecipe extends InputRecipe {
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
 		List<ItemStack> res = new LinkedList<ItemStack>();
 		ItemStack cr = new ItemStack(Material.WORKBENCH);
-		ItemStackUtils.setName(cr, egg.getName());
-		ItemStackUtils.setLore(cr, ChatColor.LIGHT_PURPLE+ "Upgrade to get new and better recipes");
+		ISUtils.setName(cr, egg.getName());
+		ISUtils.setLore(cr, ChatColor.LIGHT_PURPLE+ "Upgrade to get new and better recipes");
 		res.add(cr);
 		ItemStack fur = new ItemStack(Material.FURNACE);
-		ItemStackUtils.setName(fur, egg.getName());
-		ItemStackUtils.setLore(fur, ChatColor.LIGHT_PURPLE + "Recipes:");
+		ISUtils.setName(fur, egg.getName());
+		ISUtils.setLore(fur, ChatColor.LIGHT_PURPLE + "Recipes:");
 		for(IRecipe rec : ((FurnCraftChestEgg)egg).getRecipes()) {
-			ItemStackUtils.addLore(fur, ChatColor.YELLOW + rec.getRecipeName());
+			ISUtils.addLore(fur, ChatColor.YELLOW + rec.getRecipeName());
 		}
 		res.add(fur);
 		ItemStack che = new ItemStack(Material.CHEST);
-		ItemStackUtils.setLore(che, ChatColor.LIGHT_PURPLE + "Careful, you can not",ChatColor.LIGHT_PURPLE+ "revert upgrades!");
-		ItemStackUtils.setName(che, egg.getName());
+		ISUtils.setLore(che, ChatColor.LIGHT_PURPLE + "Careful, you can not",ChatColor.LIGHT_PURPLE+ "revert upgrades!");
+		ISUtils.setName(che, egg.getName());
 		res.add(che);
 		return res;
 	}

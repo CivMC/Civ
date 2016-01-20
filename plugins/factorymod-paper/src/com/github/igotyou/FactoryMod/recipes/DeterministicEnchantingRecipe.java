@@ -9,9 +9,10 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+
 import com.github.igotyou.FactoryMod.factories.Factory;
-import com.github.igotyou.FactoryMod.utility.ItemMap;
-import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
 
 public class DeterministicEnchantingRecipe extends InputRecipe {
 	private Enchantment enchant;
@@ -41,7 +42,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 	public ItemStack getRecipeRepresentation() {
 		ItemStack is = new ItemStack(tool);
 		is.addEnchantment(enchant, level);
-		ItemStackUtils.setName(is, name);
+		ISUtils.setName(is, name);
 		return is;
 	}
 
@@ -49,7 +50,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		ItemStack is = new ItemStack(tool);
 		is.addEnchantment(enchant, level);
 		if (i != null) {
-			ItemStackUtils.addLore(
+			ISUtils.addLore(
 					is,
 					ChatColor.GREEN
 							+ "Enough materials for "
@@ -71,7 +72,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		}
 		List<ItemStack> returns = createLoredStacksForInfo(i);
 		ItemStack toSt = new ItemStack(tool);
-		ItemStackUtils.addLore(toSt, ChatColor.GREEN + "Enough materials for "
+		ISUtils.addLore(toSt, ChatColor.GREEN + "Enough materials for "
 				+ new ItemMap(toSt).getMultiplesContainedIn(i) + " runs");
 		returns.add(toSt);
 		return returns;

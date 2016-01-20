@@ -6,7 +6,7 @@ import org.bukkit.block.Furnace;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.igotyou.FactoryMod.utility.ItemMap;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**
  * Power manager for a FurnCraftChest factory, which uses a specific item in the

@@ -8,9 +8,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+
 import com.github.igotyou.FactoryMod.factories.Factory;
-import com.github.igotyou.FactoryMod.utility.ItemMap;
-import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
 
 /**
  * Used to "compact" itemstack, which means complete stacks are reduced to a
@@ -127,7 +128,7 @@ public class CompactingRecipe extends InputRecipe {
 	 * @param is
 	 */
 	private void compact(ItemStack is) {
-		ItemStackUtils.addLore(is, compactedLore);
+		ISUtils.addLore(is, compactedLore);
 		is.setAmount(1);
 	}
 

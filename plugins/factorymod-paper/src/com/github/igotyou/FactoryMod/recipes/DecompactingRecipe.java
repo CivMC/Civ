@@ -8,10 +8,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.github.igotyou.FactoryMod.factories.Factory;
-import com.github.igotyou.FactoryMod.utility.ItemMap;
-import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
+import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
+import com.github.igotyou.FactoryMod.factories.Factory;
 /**
  * Used to decompact itemstacks, which means a single item with compacted lore
  * is turned into a whole stack without lore. This reverses the functionality of
@@ -78,7 +78,7 @@ public class DecompactingRecipe extends InputRecipe {
 		List<ItemStack> result = new LinkedList<ItemStack>();
 		if (i == null) {
 			ItemStack is = new ItemStack(Material.STONE, 64);
-			ItemStackUtils.addLore(is, compactedLore);
+			ISUtils.addLore(is, compactedLore);
 			is.setAmount(1);
 			result.add(is);
 			return result;

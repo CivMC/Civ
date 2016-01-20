@@ -6,9 +6,9 @@ import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.utility.MenuBuilder;
-import com.github.igotyou.FactoryMod.utility.NiceNames;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 
 public class FactoryMod extends ACivMod {
 	private static FactoryModManager manager;

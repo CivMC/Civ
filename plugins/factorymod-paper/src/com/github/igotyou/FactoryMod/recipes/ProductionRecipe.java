@@ -7,9 +7,10 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+
 import com.github.igotyou.FactoryMod.factories.Factory;
-import com.github.igotyou.FactoryMod.utility.ItemMap;
-import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
 
 /**
  * Consumes a set of materials from a container and outputs another set of
@@ -46,7 +47,7 @@ public class ProductionRecipe extends InputRecipe {
 		}
 		int possibleRuns = input.getMultiplesContainedIn(i);
 		for (ItemStack is : stacks) {
-			ItemStackUtils.addLore(is, ChatColor.GREEN
+			ISUtils.addLore(is, ChatColor.GREEN
 					+ "Enough materials for " + String.valueOf(possibleRuns)
 					+ " runs");
 		}
@@ -81,7 +82,7 @@ public class ProductionRecipe extends InputRecipe {
 		} else {
 			res = out.get(0);
 		}
-		ItemStackUtils.setName(res, getRecipeName());
+		ISUtils.setName(res, getRecipeName());
 		return res;
 	}
 }

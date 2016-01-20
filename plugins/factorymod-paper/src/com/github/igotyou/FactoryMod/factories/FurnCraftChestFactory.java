@@ -93,6 +93,9 @@ public class FurnCraftChestFactory extends Factory {
 	public void attemptToActivate(Player p) {
 		// TODO Citadel stuff
 		mbs.recheckComplete();
+		if (active) {
+			return;
+		}
 		if (mbs.isComplete()) {
 			if (hasInputMaterials()) {
 				if (pm.powerAvailable()) {

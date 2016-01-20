@@ -7,10 +7,11 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
-import com.github.igotyou.FactoryMod.utility.ItemMap;
-import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
 
 /**
  * Used to repair FurnCraftChest factories. Once one of those factories is in
@@ -29,7 +30,7 @@ public class RepairRecipe extends InputRecipe {
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
 		ItemStack furn = new ItemStack(Material.FURNACE);
-		ItemStackUtils.setLore(furn, "+" + String.valueOf(healthPerRun)
+		ISUtils.setLore(furn, "+" + String.valueOf(healthPerRun)
 				+ " health");
 		result.add(furn);
 		return result;
@@ -54,7 +55,7 @@ public class RepairRecipe extends InputRecipe {
 
 	public ItemStack getRecipeRepresentation() {
 		ItemStack res = new ItemStack(Material.FURNACE);
-		ItemStackUtils.setName(res, getRecipeName());
+		ISUtils.setName(res, getRecipeName());
 		return res;
 	}
 }

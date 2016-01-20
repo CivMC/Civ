@@ -10,10 +10,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
+
 import com.github.igotyou.FactoryMod.factories.Factory;
-import com.github.igotyou.FactoryMod.utility.ItemMap;
-import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
-import com.github.igotyou.FactoryMod.utility.NiceNames;
 
 public class RandomEnchantingRecipe extends InputRecipe {
 	private List<RandomEnchant> enchants;
@@ -47,7 +48,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 		for (RandomEnchant re : enchants) {
 			is.addEnchantment(re.enchant, re.level);
 		}
-		ItemStackUtils.setName(is, name);
+		ISUtils.setName(is, name);
 		return is;
 	}
 
@@ -59,7 +60,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 		}
 		List<ItemStack> returns = createLoredStacksForInfo(i);
 		ItemStack toSt = new ItemStack(tool);
-		ItemStackUtils.addLore(toSt, ChatColor.GREEN + "Enough materials for "
+		ISUtils.addLore(toSt, ChatColor.GREEN + "Enough materials for "
 				+ new ItemMap(toSt).getMultiplesContainedIn(i) + " runs");
 		returns.add(toSt);
 		return returns;
@@ -71,7 +72,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 			is.addEnchantment(re.enchant, re.level);
 		}
 		if (i != null) {
-			ItemStackUtils.addLore(
+			ISUtils.addLore(
 					is,
 					ChatColor.GREEN
 							+ "Enough materials for "
@@ -81,12 +82,12 @@ public class RandomEnchantingRecipe extends InputRecipe {
 									.getMultiplesContainedIn(i))) + " runs");
 		}
 		for (RandomEnchant re : enchants) {
-			ItemStackUtils.addLore(is,
+			ISUtils.addLore(is,
 					ChatColor.YELLOW + String.valueOf(re.chance * 100)
 							+ " % chance for " + NiceNames.getName(re.enchant)
 							+ " " + String.valueOf(re.level));
 		}
-		ItemStackUtils.addLore(is, ChatColor.LIGHT_PURPLE
+		ISUtils.addLore(is, ChatColor.LIGHT_PURPLE
 				+ "At least one guaranteed");
 		List<ItemStack> stacks = new LinkedList<ItemStack>();
 		stacks.add(is);

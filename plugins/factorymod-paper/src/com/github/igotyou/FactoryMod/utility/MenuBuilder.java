@@ -22,6 +22,9 @@ import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.ScheduledInventoryOpen;
+import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.FactoryModManager;
@@ -58,13 +61,13 @@ public class MenuBuilder {
 			}
 		}
 		ItemStack inp = new ItemStack(Material.PAPER);
-		ItemStackUtils.setName(inp, "Input");
-		ItemStackUtils.setLore(inp, ChatColor.LIGHT_PURPLE
+		ISUtils.setName(inp, "Input");
+		ISUtils.setLore(inp, ChatColor.LIGHT_PURPLE
 				+ "The items below are required");
 		input = new DecorationStack(inp);
 		ItemStack outp = new ItemStack(Material.PAPER);
-		ItemStackUtils.setName(outp, "Output");
-		ItemStackUtils.setLore(outp, ChatColor.LIGHT_PURPLE
+		ISUtils.setName(outp, "Output");
+		ISUtils.setLore(outp, ChatColor.LIGHT_PURPLE
 				+ "The output of this recipe");
 	}
 
@@ -105,8 +108,8 @@ public class MenuBuilder {
 					InventoryType.CHEST, furnegg.getName());
 			// creation option
 			ItemStack creationStack = new ItemStack(Material.CHEST);
-			ItemStackUtils.setName(creationStack, "Setup");
-			ItemStackUtils.addLore(creationStack, ChatColor.LIGHT_PURPLE
+			ISUtils.setName(creationStack, "Setup");
+			ISUtils.addLore(creationStack, ChatColor.LIGHT_PURPLE
 					+ "Click to display more information",
 					ChatColor.LIGHT_PURPLE + "on how to setup this factory");
 			Clickable creationClickable = new Clickable(creationStack) {
@@ -120,8 +123,8 @@ public class MenuBuilder {
 
 			// recipe option
 			ItemStack recipeStack = new ItemStack(Material.WORKBENCH);
-			ItemStackUtils.setName(recipeStack, "Recipes");
-			ItemStackUtils.addLore(recipeStack, ChatColor.LIGHT_PURPLE
+			ISUtils.setName(recipeStack, "Recipes");
+			ISUtils.addLore(recipeStack, ChatColor.LIGHT_PURPLE
 					+ "Click to display all recipes", ChatColor.LIGHT_PURPLE
 					+ "this factory can run");
 			Clickable recipeClickable = new Clickable(recipeStack) {
@@ -135,8 +138,8 @@ public class MenuBuilder {
 
 			// upgrade option
 			ItemStack upgradeStack = new ItemStack(Material.FURNACE);
-			ItemStackUtils.setName(upgradeStack, "Upgrades");
-			ItemStackUtils.addLore(upgradeStack, ChatColor.LIGHT_PURPLE
+			ISUtils.setName(upgradeStack, "Upgrades");
+			ISUtils.addLore(upgradeStack, ChatColor.LIGHT_PURPLE
 					+ "Click to display more information about",
 					ChatColor.LIGHT_PURPLE
 							+ "the possible upgrades to this factory");
@@ -167,7 +170,7 @@ public class MenuBuilder {
 				@Override
 				public void clicked(Player arg0) {
 					openDetailedRecipeBrowser(arg0,
-							ItemStackUtils.getName(this.getItemStack()));
+							ISUtils.getName(this.getItemStack()));
 				}
 			};
 			recipeInventory.setSlot(c, i);
@@ -175,8 +178,8 @@ public class MenuBuilder {
 
 		// back option
 		ItemStack backStack = new ItemStack(Material.ARROW);
-		ItemStackUtils.setName(backStack, "Back to factory overview");
-		ItemStackUtils.addLore(backStack, ChatColor.LIGHT_PURPLE
+		ISUtils.setName(backStack, "Back to factory overview");
+		ISUtils.addLore(backStack, ChatColor.LIGHT_PURPLE
 				+ "Click to go back");
 		Clickable backClickable = new Clickable(backStack) {
 			@Override
@@ -200,11 +203,11 @@ public class MenuBuilder {
 		ItemStack fur = new ItemStack(Material.FURNACE);
 		ItemStack che = new ItemStack(Material.CHEST);
 		if (parEgg == null) {// creation factory
-			ItemStackUtils.setLore(cr, ChatColor.LIGHT_PURPLE
+			ISUtils.setLore(cr, ChatColor.LIGHT_PURPLE
 					+ "This factory can be created with",
 					ChatColor.LIGHT_PURPLE
 							+ "a normal crafting table, furnace and chest");
-			ItemStackUtils.setLore(che, ChatColor.LIGHT_PURPLE
+			ISUtils.setLore(che, ChatColor.LIGHT_PURPLE
 					+ "Arrange the 3 blocks like this,", ChatColor.LIGHT_PURPLE
 					+ "put the materials below in the chest",
 					ChatColor.LIGHT_PURPLE
@@ -244,7 +247,7 @@ public class MenuBuilder {
 				}
 			}
 
-			ItemStackUtils.setLore(cr, ChatColor.LIGHT_PURPLE + "Upgrade from a " + parEgg.getName());
+			ISUtils.setLore(cr, ChatColor.LIGHT_PURPLE + "Upgrade from a " + parEgg.getName());
 			Clickable craCli = new Clickable(cr) {
 				@Override
 				public void clicked(Player arg0) {
@@ -253,7 +256,7 @@ public class MenuBuilder {
 				}
 			};
 			ci.setSlot(craCli, 4);
-			ItemStackUtils.setLore(fur, ChatColor.LIGHT_PURPLE
+			ISUtils.setLore(fur, ChatColor.LIGHT_PURPLE
 					+ "Click to display information", ChatColor.LIGHT_PURPLE + "on this factory");
 			Clickable furCli = new Clickable(fur) {
 				@Override
@@ -292,8 +295,8 @@ public class MenuBuilder {
 		}
 		ci.setSlot(input, 22);
 		ItemStack backStack = new ItemStack(Material.ARROW);
-		ItemStackUtils.setName(backStack, "Back to factory overview");
-		ItemStackUtils.addLore(backStack, ChatColor.LIGHT_PURPLE
+		ISUtils.setName(backStack, "Back to factory overview");
+		ISUtils.addLore(backStack, ChatColor.LIGHT_PURPLE
 				+ "Click to go back");
 		Clickable backClickable = new Clickable(backStack) {
 			@Override
@@ -318,8 +321,8 @@ public class MenuBuilder {
 		}
 		if (upgrades.size() == 0) {
 			ItemStack bar = new ItemStack(Material.BARRIER);
-			ItemStackUtils.setName(bar, "No upgrades available");
-			ItemStackUtils.addLore(bar, ChatColor.LIGHT_PURPLE
+			ISUtils.setName(bar, "No upgrades available");
+			ISUtils.addLore(bar, ChatColor.LIGHT_PURPLE
 					+ "Click to go back");
 			Clickable noUpgrades = new Clickable(bar) {
 				@Override
@@ -332,22 +335,22 @@ public class MenuBuilder {
 			for (IRecipe recipe : upgrades) {
 				ItemStack recStack = ((InputRecipe) recipe)
 						.getRecipeRepresentation();
-				ItemStackUtils.setLore(recStack, ChatColor.LIGHT_PURPLE
+				ISUtils.setLore(recStack, ChatColor.LIGHT_PURPLE
 						+ "Click to display more information");
 				Clickable c = new Clickable(
 						((InputRecipe) recipe).getRecipeRepresentation()) {
 					@Override
 					public void clicked(Player p) {
 						openDetailedRecipeBrowser(p,
-								ItemStackUtils.getName(this.getItemStack()));
+								ISUtils.getName(this.getItemStack()));
 					}
 				};
 				ci.addSlot(c);
 			}
 		}
 		ItemStack backStack = new ItemStack(Material.ARROW);
-		ItemStackUtils.setName(backStack, "Back to factory overview");
-		ItemStackUtils.addLore(backStack, ChatColor.LIGHT_PURPLE
+		ISUtils.setName(backStack, "Back to factory overview");
+		ISUtils.addLore(backStack, ChatColor.LIGHT_PURPLE
 				+ "Click to go back");
 		Clickable backClickable = new Clickable(backStack) {
 			@Override
@@ -372,8 +375,8 @@ public class MenuBuilder {
 		}
 		ClickableInventory ci = new ClickableInventory(54, recipeName);
 		ItemStack inputStack = new ItemStack(Material.PAPER);
-		ItemStackUtils.setName(inputStack, "Input materials");
-		ItemStackUtils.addLore(inputStack, ChatColor.LIGHT_PURPLE
+		ISUtils.setName(inputStack, "Input materials");
+		ISUtils.addLore(inputStack, ChatColor.LIGHT_PURPLE
 				+ "The materials required to run this recipe");
 		DecorationStack inputClickable = new DecorationStack(inputStack);
 		ci.setSlot(inputClickable, 4);
@@ -399,11 +402,11 @@ public class MenuBuilder {
 		}
 
 		ItemStack outputStack = new ItemStack(Material.PAPER);
-		ItemStackUtils.setName(outputStack, "Output/effect");
+		ISUtils.setName(outputStack, "Output/effect");
 		DecorationStack outputClickable = new DecorationStack(outputStack);
 		ItemStack backStack = new ItemStack(Material.ARROW);
-		ItemStackUtils.setName(backStack, "Back to recipe overview");
-		ItemStackUtils.addLore(backStack, ChatColor.LIGHT_PURPLE
+		ISUtils.setName(backStack, "Back to recipe overview");
+		ISUtils.addLore(backStack, ChatColor.LIGHT_PURPLE
 				+ "Click to go back");
 		Clickable backClickable = new Clickable(backStack) {
 			@Override
@@ -429,7 +432,7 @@ public class MenuBuilder {
 									&& ((Upgraderecipe) re)
 											.getEgg()
 											.getName()
-											.equals(ItemStackUtils.getName(this
+											.equals(ISUtils.getName(this
 													.getItemStack()))) {
 								openFactoryBrowser(arg0, ((Upgraderecipe) re)
 										.getEgg().getName());
@@ -490,8 +493,8 @@ public class MenuBuilder {
 		}
 		if (mats.size() >= (start + 45)) {
 			ItemStack nextPage = new ItemStack(Material.ARROW);
-			ItemStackUtils.setName(nextPage, "Next page");
-			ItemStackUtils.addLore(nextPage, ChatColor.LIGHT_PURPLE
+			ISUtils.setName(nextPage, "Next page");
+			ISUtils.addLore(nextPage, ChatColor.LIGHT_PURPLE
 					+ "Click to show entries upwards from " + (start + 45));
 
 			Clickable nextClick = new Clickable(nextPage) {

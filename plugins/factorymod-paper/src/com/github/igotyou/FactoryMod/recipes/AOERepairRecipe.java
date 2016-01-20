@@ -13,12 +13,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
+import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
-import com.github.igotyou.FactoryMod.utility.ItemMap;
-import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
 
 public class AOERepairRecipe extends InputRecipe {
 	private ItemStack essence;
@@ -61,7 +62,7 @@ public class AOERepairRecipe extends InputRecipe {
 		List<ItemStack> bla = imp.getItemStackRepresentation();
 		for (ItemStack item : bla) {
 			item.setAmount(new ItemMap(i).getAmount(essence) - essenceCount);
-			ItemStackUtils.addLore(item, ChatColor.YELLOW + "Will repair "
+			ISUtils.addLore(item, ChatColor.YELLOW + "Will repair "
 					+ facCounter + " nearby factories total");
 		}
 		return bla;
@@ -106,20 +107,19 @@ public class AOERepairRecipe extends InputRecipe {
 					.getRepairManager();
 			int diff = 100 - rm.getRawHealth();
 			if (diff >= repairPerEssence) {
-				ItemStackUtils
-						.addLore(
-								is,
-								ChatColor.LIGHT_PURPLE
-										+ "Will repair "
-										+ fac.getName()
-										+ " to "
-										+ Math.min(
-												100,
-												rm.getRawHealth()
-														+ (repairPerEssence * Math
-																.min(essenceCount,
-																		diff
-																				/ repairPerEssence))));
+				ISUtils.addLore(
+						is,
+						ChatColor.LIGHT_PURPLE
+								+ "Will repair "
+								+ fac.getName()
+								+ " to "
+								+ Math.min(
+										100,
+										rm.getRawHealth()
+												+ (repairPerEssence * Math
+														.min(essenceCount,
+																diff
+																		/ repairPerEssence))));
 				essenceCount -= Math.min(essenceCount, diff / repairPerEssence);
 			}
 			if (essenceCount <= 0) {

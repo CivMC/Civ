@@ -9,13 +9,13 @@ import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
+import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.Sorter;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.utility.MenuBuilder;
-import com.github.igotyou.FactoryMod.utility.NiceNames;
 
 public class SorterInteractionManager implements IInteractionManager {
 	private Sorter sorter;

@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
+import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
@@ -23,7 +24,6 @@ import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
-import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
 import com.github.igotyou.FactoryMod.utility.MenuBuilder;
 
 public class FurnCraftChestInteractionManager implements IInteractionManager {
@@ -172,7 +172,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			for (IRecipe rec : fccf.getRecipes()) {
 				InputRecipe recipe = (InputRecipe) (rec);
 				ItemStack recStack = recipe.getRecipeRepresentation();
-				ItemStackUtils.addLore(recStack, ChatColor.GOLD + "Ran "
+				ISUtils.addLore(recStack, ChatColor.GOLD + "Ran "
 						+ String.valueOf(fccf.getRunCount(recipe)) + " times");
 				Clickable c = new Clickable(recStack) {
 
@@ -194,8 +194,8 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				ci.addSlot(c);
 			}
 			ItemStack menuStack = new ItemStack(Material.PAINTING);
-			ItemStackUtils.setName(menuStack, "Open menu");
-			ItemStackUtils.addLore(menuStack, ChatColor.LIGHT_PURPLE
+			ISUtils.setName(menuStack, "Open menu");
+			ISUtils.addLore(menuStack, ChatColor.LIGHT_PURPLE
 					+ "Click to open a detailed menu");
 			Clickable menuC = new Clickable(menuStack) {
 				@Override

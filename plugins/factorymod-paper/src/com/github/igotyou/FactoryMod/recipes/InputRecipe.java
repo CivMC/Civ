@@ -8,8 +8,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.igotyou.FactoryMod.utility.ItemMap;
-import com.github.igotyou.FactoryMod.utility.ItemStackUtils;
+import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**
  * A recipe with any form of item input to run it
@@ -108,7 +108,7 @@ public abstract class InputRecipe implements IRecipe {
 		}
 
 		for (ItemStack is : input.getItemStackRepresentation()) {
-			ItemStackUtils.addLore(
+			ISUtils.addLore(
 					is,
 					ChatColor.GREEN + "Enough materials for "
 							+ String.valueOf(possibleRuns.getAmount(is))
