@@ -1,5 +1,5 @@
 name: ${project.name}
 version: ${project.version}
 authors: [valadian, rourke750]
-main: vg.civcraft.mc.civmodcore.ACivMod
+main: Dummy
 dev-url: null
