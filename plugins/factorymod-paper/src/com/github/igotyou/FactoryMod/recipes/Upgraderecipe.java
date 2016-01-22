@@ -20,12 +20,14 @@ import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 public class Upgraderecipe extends InputRecipe {
 	private IFactoryEgg egg;
 
-	public Upgraderecipe(String name, int productionTime, ItemMap input, IFactoryEgg egg) {
+	public Upgraderecipe(String name, int productionTime, ItemMap input,
+			IFactoryEgg egg) {
 		super(name, productionTime, input);
 		this.egg = egg;
 	}
 
 	public void applyEffect(Inventory i, Factory f) {
+		logAfterRecipeRun(i, f);
 		if (input.isContainedIn(i) && f instanceof FurnCraftChestFactory) {
 			for (ItemStack is : input.getItemStackRepresentation()) {
 				i.removeItem(is);
@@ -35,7 +37,7 @@ public class Upgraderecipe extends InputRecipe {
 					e.getFuel(), e.getFuelConsumptionIntervall(),
 					e.getUpdateTime());
 		}
-
+		logAfterRecipeRun(i, f);
 	}
 
 	public ItemStack getRecipeRepresentation() {
@@ -78,17 +80,19 @@ public class Upgraderecipe extends InputRecipe {
 		List<ItemStack> res = new LinkedList<ItemStack>();
 		ItemStack cr = new ItemStack(Material.WORKBENCH);
 		ISUtils.setName(cr, egg.getName());
-		ISUtils.setLore(cr, ChatColor.LIGHT_PURPLE+ "Upgrade to get new and better recipes");
+		ISUtils.setLore(cr, ChatColor.LIGHT_PURPLE
+				+ "Upgrade to get new and better recipes");
 		res.add(cr);
 		ItemStack fur = new ItemStack(Material.FURNACE);
 		ISUtils.setName(fur, egg.getName());
 		ISUtils.setLore(fur, ChatColor.LIGHT_PURPLE + "Recipes:");
-		for(IRecipe rec : ((FurnCraftChestEgg)egg).getRecipes()) {
+		for (IRecipe rec : ((FurnCraftChestEgg) egg).getRecipes()) {
 			ISUtils.addLore(fur, ChatColor.YELLOW + rec.getRecipeName());
 		}
 		res.add(fur);
 		ItemStack che = new ItemStack(Material.CHEST);
-		ISUtils.setLore(che, ChatColor.LIGHT_PURPLE + "Careful, you can not",ChatColor.LIGHT_PURPLE+ "revert upgrades!");
+		ISUtils.setLore(che, ChatColor.LIGHT_PURPLE + "Careful, you can not",
+				ChatColor.LIGHT_PURPLE + "revert upgrades!");
 		ISUtils.setName(che, egg.getName());
 		res.add(che);
 		return res;

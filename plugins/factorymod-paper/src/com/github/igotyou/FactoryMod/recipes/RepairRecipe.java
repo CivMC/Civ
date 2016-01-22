@@ -12,6 +12,7 @@ import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
+import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 
 /**
  * Used to repair FurnCraftChest factories. Once one of those factories is in
@@ -30,8 +31,7 @@ public class RepairRecipe extends InputRecipe {
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
 		ItemStack furn = new ItemStack(Material.FURNACE);
-		ISUtils.setLore(furn, "+" + String.valueOf(healthPerRun)
-				+ " health");
+		ISUtils.setLore(furn, "+" + String.valueOf(healthPerRun) + " health");
 		result.add(furn);
 		return result;
 	}
@@ -44,13 +44,19 @@ public class RepairRecipe extends InputRecipe {
 	}
 
 	public void applyEffect(Inventory i, Factory f) {
+		logBeforeRecipeRun(i, f);
 		if (enoughMaterialAvailable(i)) {
 			for (ItemStack is : input.getItemStackRepresentation()) {
 				i.removeItem(is);
 			}
 			((PercentageHealthRepairManager) (f.getRepairManager()))
 					.repair(healthPerRun);
+			LoggingUtils.log(((PercentageHealthRepairManager) (f
+					.getRepairManager())).getHealth()
+					+ " for "
+					+ f.getLogData() + " after repairing");
 		}
+		logAfterRecipeRun(i, f);
 	}
 
 	public ItemStack getRecipeRepresentation() {

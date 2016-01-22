@@ -95,6 +95,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 	}
 
 	public void applyEffect(Inventory i, Factory f) {
+		logBeforeRecipeRun(i, f);
 		for (ItemStack is : input.getItemStackRepresentation()) {
 			i.removeItem(is);
 		}
@@ -114,6 +115,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 				break;
 			}
 		}
+		logAfterRecipeRun(i, f);
 	}
 
 }

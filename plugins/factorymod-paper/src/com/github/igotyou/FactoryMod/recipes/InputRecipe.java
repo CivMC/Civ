@@ -8,6 +8,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.utility.LoggingUtils;
+
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
@@ -108,14 +111,21 @@ public abstract class InputRecipe implements IRecipe {
 		}
 
 		for (ItemStack is : input.getItemStackRepresentation()) {
-			ISUtils.addLore(
-					is,
-					ChatColor.GREEN + "Enough materials for "
-							+ String.valueOf(possibleRuns.getAmount(is))
-							+ " runs");
+			ISUtils.addLore(is, ChatColor.GREEN + "Enough materials for "
+					+ String.valueOf(possibleRuns.getAmount(is)) + " runs");
 			result.add(is);
 		}
 		return result;
+	}
+
+	protected void logBeforeRecipeRun(Inventory i, Factory f) {
+		LoggingUtils.logInventory(i, "Before executing recipe " + name
+				+ " for " + f.getLogData());
+	}
+
+	protected void logAfterRecipeRun(Inventory i, Factory f) {
+		LoggingUtils.logInventory(i, "After executing recipe " + name + " for "
+				+ f.getLogData());
 	}
 
 }

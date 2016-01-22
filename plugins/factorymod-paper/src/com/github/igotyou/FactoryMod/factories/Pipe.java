@@ -18,6 +18,7 @@ import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
+import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 
 public class Pipe extends Factory {
 	private List<Material> allowedMaterials;
@@ -37,6 +38,8 @@ public class Pipe extends Factory {
 	
 	public void attemptToActivate(Player p) {
 		// TODO Citadel stuff
+		LoggingUtils.log((p != null ? p.getName() : "Redstone")
+				+ "is attempting to activate " + getLogData());
 		mbs.recheckComplete();
 		if (mbs.isComplete()) {
 			if (transferMaterialsAvailable()) {
@@ -65,6 +68,7 @@ public class Pipe extends Factory {
 	}
 
 	public void activate() {
+		LoggingUtils.log("Activating " + getLogData());
 		active = true;
 		pm.setPowerCounter(0);
 		turnFurnaceOn(((PipeStructure) mbs).getFurnace());
@@ -74,6 +78,7 @@ public class Pipe extends Factory {
 	}
 
 	public void deactivate() {
+		LoggingUtils.log("Deactivating " + getLogData());
 		active = false;
 		turnFurnaceOff(((PipeStructure) mbs).getFurnace());
 		runTime = 0;
@@ -115,6 +120,7 @@ public class Pipe extends Factory {
 	}
 
 	public void transfer() {
+		LoggingUtils.log("Attempting to transfer for " + getLogData());
 		if (mbs.isComplete()) {
 			Inventory sourceInventory = ((InventoryHolder) (((PipeStructure) mbs)
 					.getStart().getState())).getInventory();
@@ -131,8 +137,20 @@ public class Pipe extends Factory {
 					removing.setAmount(removeAmount);
 					ItemMap removeMap = new ItemMap(removing);
 					if (removeMap.fitsIn(targetInventory)) {
+						LoggingUtils.logInventory(sourceInventory,
+								"Origin inventory before transfer for "
+										+ getLogData());
+						LoggingUtils.logInventory(targetInventory,
+								"Target inventory before transfer for "
+										+ getLogData());
 						sourceInventory.removeItem(removing);
 						targetInventory.addItem(removing);
+						LoggingUtils.logInventory(sourceInventory,
+								"Origin inventory after transfer for "
+										+ getLogData());
+						LoggingUtils.logInventory(targetInventory,
+								"Target inventory after transfer for "
+										+ getLogData());
 						leftToRemove -= removeAmount;
 					} else {
 						break;

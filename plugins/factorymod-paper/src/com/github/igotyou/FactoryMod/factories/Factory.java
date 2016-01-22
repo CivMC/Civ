@@ -149,6 +149,10 @@ public abstract class Factory implements Runnable {
 		furnace.setBurnTime(Short.MAX_VALUE);
 		furnace.getInventory().setContents(oldContents);
 	}
+	
+	public String getLogData() {
+		return name+" at " + mbs.getCenter().toString();
+	}
 
 	public void turnFurnaceOff(Block f) {
 		Furnace furnace = (Furnace) f.getState();

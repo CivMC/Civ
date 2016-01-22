@@ -47,9 +47,8 @@ public class ProductionRecipe extends InputRecipe {
 		}
 		int possibleRuns = input.getMultiplesContainedIn(i);
 		for (ItemStack is : stacks) {
-			ISUtils.addLore(is, ChatColor.GREEN
-					+ "Enough materials for " + String.valueOf(possibleRuns)
-					+ " runs");
+			ISUtils.addLore(is, ChatColor.GREEN + "Enough materials for "
+					+ String.valueOf(possibleRuns) + " runs");
 		}
 		return stacks;
 	}
@@ -62,6 +61,7 @@ public class ProductionRecipe extends InputRecipe {
 	}
 
 	public void applyEffect(Inventory i, Factory f) {
+		logBeforeRecipeRun(i, f);
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd = output.clone();
 		if (toRemove.isContainedIn(i)) {
@@ -72,6 +72,7 @@ public class ProductionRecipe extends InputRecipe {
 				i.addItem(is);
 			}
 		}
+		logAfterRecipeRun(i, f);
 	}
 
 	public ItemStack getRecipeRepresentation() {

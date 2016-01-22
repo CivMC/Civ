@@ -20,6 +20,7 @@ import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
+import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 
 public class Sorter extends Factory {
 	private Map<BlockFace, ItemMap> assignedMaterials;
@@ -40,10 +41,13 @@ public class Sorter extends Factory {
 		for (BlockFace bf : MultiBlockStructure.allBlockSides) {
 			assignedMaterials.put(bf, new ItemMap());
 		}
-		assignedMaterials.remove(mbs.getCenter().getBlock().getFace(((BlockFurnaceStructure)mbs).getFurnace()));
+		assignedMaterials.remove(mbs.getCenter().getBlock()
+				.getFace(((BlockFurnaceStructure) mbs).getFurnace()));
 	}
 
 	public void attemptToActivate(Player p) {
+		LoggingUtils.log((p != null ? p.getName() : "Redstone")
+				+ "is attempting to activate " + getLogData());
 		mbs.recheckComplete();
 		if (mbs.isComplete()) {
 			activate();
@@ -71,12 +75,16 @@ public class Sorter extends Factory {
 	}
 
 	public void activate() {
+		LoggingUtils.log("Activating " + getLogData());
+		LoggingUtils.logInventory(mbs.getCenter().getBlock());
 		turnFurnaceOn(((BlockFurnaceStructure) mbs).getFurnace());
 		active = true;
 		run();
 	}
 
 	public void deactivate() {
+		LoggingUtils.log("Deactivating " + getLogData());
+		LoggingUtils.logInventory(mbs.getCenter().getBlock());
 		turnFurnaceOff(((BlockFurnaceStructure) mbs).getFurnace());
 		active = false;
 	}
@@ -129,7 +137,7 @@ public class Sorter extends Factory {
 	public void addAssignment(BlockFace bf, ItemStack is) {
 		assignedMaterials.get(bf).addItemStack(is.clone());
 	}
-	
+
 	public ItemMap getItemsForSide(BlockFace face) {
 		return assignedMaterials.get(face);
 	}
@@ -144,6 +152,7 @@ public class Sorter extends Factory {
 	}
 
 	public void sortStack() {
+		LoggingUtils.log("Attempting to sort " + getLogData());
 		Block center = mbs.getCenter().getBlock();
 		Inventory inv = getCenterInventory();
 		int leftToSort = sortAmount;
@@ -159,9 +168,28 @@ public class Sorter extends Factory {
 						ItemStack rem = is.clone();
 						rem.setAmount(removeAmount);
 						if (new ItemMap(is).fitsIn(relInv)) {
+							LoggingUtils.log("Moving "
+									+ rem.toString()
+									+ " from "
+									+ mbs.getCenter().toString()
+									+ " to "
+									+ center.getRelative(bf).getLocation()
+											.toString());
+							LoggingUtils.logInventory(inv,
+									"Origin inventory before transfer for "
+											+ getLogData());
+							LoggingUtils.logInventory(relInv,
+									"Target inventory before transfer for "
+											+ getLogData());
 							inv.removeItem(rem);
 							relInv.addItem(rem);
-							leftToSort -=removeAmount;
+							LoggingUtils.logInventory(inv,
+									"Origin inventory after transfer for "
+											+ getLogData());
+							LoggingUtils.logInventory(relInv,
+									"Target inventory after transfer for "
+											+ getLogData());
+							leftToSort -= removeAmount;
 							break;
 						}
 					}

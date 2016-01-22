@@ -54,6 +54,7 @@ public class CompactingRecipe extends InputRecipe {
 	}
 
 	public void applyEffect(Inventory i, Factory f) {
+		logBeforeRecipeRun(i, f);
 		if (input.isContainedIn(i)) {
 			for (ItemStack is : i.getContents()) {
 				if (is != null) {
@@ -69,6 +70,7 @@ public class CompactingRecipe extends InputRecipe {
 				}
 			}
 		}
+		logAfterRecipeRun(i, f);
 
 	}
 

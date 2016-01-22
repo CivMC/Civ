@@ -25,6 +25,7 @@ import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
+import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 
 /**
  * Represents a "classic" factory, which consists of a furnace as powersource, a
@@ -47,7 +48,7 @@ public class FurnCraftChestFactory extends Factory {
 		this.active = false;
 		this.recipes = recipes;
 		this.runCount = new HashMap<IRecipe, Integer>();
-		for(IRecipe rec:recipes) {
+		for (IRecipe rec : recipes) {
 			runCount.put(rec, 0);
 		}
 		if (pylonFactories == null) {
@@ -91,8 +92,11 @@ public class FurnCraftChestFactory extends Factory {
 	 * that the factory is allowed to turn on
 	 */
 	public void attemptToActivate(Player p) {
+		LoggingUtils.log((p != null ? p.getName() : "Redstone")
+				+ "is attempting to activate " + getLogData());
 		// TODO Citadel stuff
 		mbs.recheckComplete();
+
 		if (active) {
 			return;
 		}
@@ -132,8 +136,7 @@ public class FurnCraftChestFactory extends Factory {
 							+ "Not enough materials available");
 				}
 			}
-		}
-		else {
+		} else {
 			rm.breakIt();
 		}
 	}
@@ -144,6 +147,7 @@ public class FurnCraftChestFactory extends Factory {
 	 * is allowed to turn on
 	 */
 	public void activate() {
+		LoggingUtils.log("Activating " + getLogData());
 		active = true;
 		pm.setPowerCounter(0);
 		turnFurnaceOn(getFurnace());
@@ -156,6 +160,7 @@ public class FurnCraftChestFactory extends Factory {
 	 * Turns the factory off.
 	 */
 	public void deactivate() {
+		LoggingUtils.log("Deactivating " + getLogData());
 		if (active) {
 			turnFurnaceOff(getFurnace());
 			active = false;
@@ -234,6 +239,9 @@ public class FurnCraftChestFactory extends Factory {
 				// time remove input from chest, and add output material
 				else if (currentProductionTimer >= currentRecipe
 						.getProductionTime()) {
+					LoggingUtils.log("Executing recipe "
+							+ currentRecipe.getRecipeName() + " for "
+							+ getLogData());
 					if (currentRecipe instanceof Upgraderecipe) {
 						// this if else might look a bit weird, but because
 						// upgrading changes the current recipe and a lot of
@@ -298,7 +306,7 @@ public class FurnCraftChestFactory extends Factory {
 			currentRecipe = pr;
 		}
 	}
-	
+
 	public int getRunCount(IRecipe r) {
 		return runCount.get(r);
 	}
@@ -335,7 +343,7 @@ public class FurnCraftChestFactory extends Factory {
 			currentRecipe = null;
 		}
 		runCount = new HashMap<IRecipe, Integer>();
-		for(IRecipe rec:recipes) {
+		for (IRecipe rec : recipes) {
 			runCount.put(rec, 0);
 		}
 	}

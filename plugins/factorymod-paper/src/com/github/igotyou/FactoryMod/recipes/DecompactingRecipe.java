@@ -43,6 +43,7 @@ public class DecompactingRecipe extends InputRecipe {
 	}
 
 	public void applyEffect(Inventory i, Factory f) {
+		logBeforeRecipeRun(i, f);
 		if (input.isContainedIn(i)) {
 			for (ItemStack is : i.getContents()) {
 				if (is != null) {
@@ -71,7 +72,7 @@ public class DecompactingRecipe extends InputRecipe {
 				}
 			}
 		}
-
+		logAfterRecipeRun(i, f);
 	}
 
 	public List<ItemStack> getInputRepresentation(Inventory i) {

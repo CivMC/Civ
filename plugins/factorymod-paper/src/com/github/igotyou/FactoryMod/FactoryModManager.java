@@ -41,13 +41,14 @@ public class FactoryModManager {
 	private HashSet<Material> possibleInteractionBlock;
 	private Material factoryInteractionMaterial;
 	private boolean citadelEnabled;
+	private boolean logInventories;
 	private int redstonePowerOn;
 	private int redstoneRecipeChange;
 	private String compactLore;
 
 	public FactoryModManager(FactoryMod plugin,
 			Material factoryInteractionMaterial, boolean citadelEnabled,
-			int redstonePowerOn, int redstoneRecipeChange) {
+			int redstonePowerOn, int redstoneRecipeChange, boolean logInventories) {
 		this.plugin = plugin;
 		this.factoryInteractionMaterial = factoryInteractionMaterial;
 		this.citadelEnabled = citadelEnabled;
@@ -88,6 +89,10 @@ public class FactoryModManager {
 	 */
 	public void setCompactLore(String lore) {
 		compactLore = lore;
+	}
+	
+	public boolean logInventories() {
+		return logInventories;
 	}
 
 	/**

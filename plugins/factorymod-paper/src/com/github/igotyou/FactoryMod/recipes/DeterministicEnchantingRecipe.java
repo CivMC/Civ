@@ -13,6 +13,7 @@ import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 
 public class DeterministicEnchantingRecipe extends InputRecipe {
 	private Enchantment enchant;
@@ -79,6 +80,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 	}
 
 	public void applyEffect(Inventory i, Factory f) {
+		logBeforeRecipeRun(i, f);
 		for(ItemStack is:input.getItemStackRepresentation()) {
 			i.removeItem(is);
 		}
@@ -89,6 +91,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 				break;
 			}
 		}
+		logAfterRecipeRun(i, f);
 	}
 
 }

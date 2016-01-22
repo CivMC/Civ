@@ -62,6 +62,7 @@ public class ConfigParser {
 		FileConfiguration config = plugin.getConfig();
 		boolean citadelEnabled = plugin.getServer().getPluginManager()
 				.isPluginEnabled("Citadel");
+		boolean logInventories = config.getBoolean("log_inventories",true);
 		Material factoryInteractionMaterial = Material.getMaterial(config
 				.getString("factory_interaction_material", "STICK"));
 		boolean disableNether = config.getBoolean("disable_nether", false);
@@ -79,7 +80,7 @@ public class ConfigParser {
 		int redstonePowerOn = config.getInt("redstone_power_on", 7);
 		int redstoneRecipeChange = config.getInt("redstone_recipe_change", 2);
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
-				citadelEnabled, redstonePowerOn, redstoneRecipeChange);
+				citadelEnabled, redstonePowerOn, redstoneRecipeChange, logInventories);
 		handleEnabledAndDisabledRecipes(config
 				.getConfigurationSection("crafting"));
 		upgradeEggs = new HashMap<String, IFactoryEgg>();
