@@ -23,6 +23,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
@@ -48,6 +49,8 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.material.Lever;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.spigotmc.event.entity.EntityDismountEvent;
+import org.spigotmc.event.entity.EntityMountEvent;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.external.Mercury;
@@ -61,9 +64,12 @@ import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
+import vg.civcraft.mc.namelayer.events.GroupInvalidationEvent;
 import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.NameAPI;
 
 public class JukeAlertListener implements Listener {
 
@@ -109,7 +115,7 @@ public class JukeAlertListener implements Listener {
                 notifyGroup(snitch, ChatColor.AQUA+message);
                                 
                 if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers())
-                	mercury.sendMessage("all", snitch.getGroup().getName() + " " + message, "jukealert-login");
+                	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "jukealert-login");
                 } catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -146,7 +152,7 @@ public class JukeAlertListener implements Listener {
                 notifyGroup(snitch, ChatColor.AQUA+message);
                 
                 if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers())
-                	mercury.sendMessage("all", snitch.getGroup().getName() + " " + message, "jukealert-logout");
+                	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "jukealert-logout");
                 } catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -274,6 +280,51 @@ public class JukeAlertListener implements Listener {
         }
     }
     
+    @EventHandler
+    public void onGroupEvent(GroupInvalidationEvent event) {
+    	String reason = event.getReason();
+    	if (reason.equalsIgnoreCase("delete")) {
+	        String groupName = event.getParameter() [0];
+	        Set<Snitch> removeSet = new TreeSet<Snitch>();
+	        for (Snitch snitch : snitchManager.getAllSnitches()) {
+	            final Group snitchGroup = snitch.getGroup();
+	            String snitchGroupName = null;
+	            if (snitchGroup != null) {
+	                snitchGroupName = snitchGroup.getName();
+	            }
+	            if (snitchGroupName != null && snitchGroupName.equalsIgnoreCase(groupName)) {
+	                removeSet.add(snitch);
+	            }
+	        }
+	        for (Snitch snitch : removeSet) {
+	            final Location loc = snitch.getLoc();
+	            if (snitch.shouldLog()) {
+	                plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+	            }
+	            snitchManager.removeSnitch(snitch);
+	        }
+    	}
+    	else if (reason.equalsIgnoreCase("merge")) {
+    		String group1 = event.getParameter() [0];
+    		String group2 = event.getParameter() [1];
+    		Group g1 = NameAPI.getGroupManager().getGroup(group1);
+            Set<Snitch> mergeSet = new TreeSet<Snitch>();
+            for (Snitch snitch : snitchManager.getAllSnitches()) {
+                final Group snitchGroup = snitch.getGroup();
+                String snitchGroupName = null;
+                if (snitchGroup != null) {
+                    snitchGroupName = snitchGroup.getName();
+                }
+                if (snitchGroupName != null && snitchGroupName.equalsIgnoreCase(group2)) {
+                	mergeSet.add(snitch);
+                }
+            }
+            for (Snitch snitch : mergeSet) {
+            	snitch.setGroup(g1);
+            }
+    	}
+    }
+    
     @EventHandler(priority = EventPriority.HIGH)
     public void onGroupMergeEvent(GroupMergeEvent event){
     	Group g1 = event.getMergingInto();
@@ -301,6 +352,14 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Block block = event.getBlock();
+        if((block.getType().equals(Material.JUKEBOX) || block.getType().equals(Material.NOTE_BLOCK)) && plugin.getConfigManager().isDisplayOwnerOnBreak()) {
+            Snitch snitch = snitchManager.getSnitch(block.getWorld(), block.getLocation());
+            if(snitch != null && !snitch.getGroup().isMember(event.getPlayer().getUniqueId())) {
+                Location loc = snitch.getLoc();
+        	event.getPlayer().sendMessage(ChatColor.AQUA + "Snitch at [" + loc.getWorld().getName() + " " + loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + "] is owned by " 
+                + NameAPI.getCurrentName(snitch.getGroup().getOwner()) + " and is on group: " + snitch.getGroup().getName());
+       	    }
+        }
         if (!block.getType().equals(Material.JUKEBOX)) {
             return;
         }
@@ -378,7 +437,7 @@ public class JukeAlertListener implements Listener {
                              notifyGroup(snitch, ChatColor.AQUA+message);
                              
                              if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers())
-                             	mercury.sendMessage("all", snitch.getGroup().getName() + " " + message, "jukealert-entry");
+                             	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "jukealert-entry");
                          	} catch (SQLException e) {
  								e.printStackTrace();
  							}
@@ -540,6 +599,54 @@ public class JukeAlertListener implements Listener {
                 }
             }
         }
+    }
+    
+    @EventHandler (priority = EventPriority.HIGH)
+    public void playerMountEntity(EntityMountEvent e) {
+    	if (e.getEntityType() != EntityType.PLAYER) {
+    		return;
+    	}
+    	Player p = (Player) e.getEntity();
+    	Entity mount = e.getMount();
+    	if (vanishNoPacket.isPlayerInvisible(p) || p.hasPermission("jukealert.vanish")) {
+            return;
+        }
+    	UUID accountId = p.getUniqueId();
+    	Set<Snitch> snitches = snitchManager.findSnitches(p.getWorld(), p.getLocation());
+    	 for (Snitch snitch : snitches) {
+             if (!snitch.shouldLog()) {
+                 continue;
+             }
+             if (!isOnSnitch(snitch, accountId) || isDebugging()) {
+                 if (checkProximity(snitch, accountId)) {
+                     plugin.getJaLogger().logSnitchMount(snitch, p, mount);
+                 }
+             }
+         }
+    }
+    
+    @EventHandler (priority = EventPriority.HIGH)
+    public void playerDismountEntity(EntityDismountEvent e) {
+    	if (e.getEntityType() != EntityType.PLAYER) {
+    		return;
+    	}
+    	Player p = (Player) e.getEntity();
+    	Entity mount = e.getDismounted();
+    	if (vanishNoPacket.isPlayerInvisible(p) || p.hasPermission("jukealert.vanish")) {
+            return;
+        }
+    	UUID accountId = p.getUniqueId();
+    	Set<Snitch> snitches = snitchManager.findSnitches(p.getWorld(), p.getLocation());
+    	 for (Snitch snitch : snitches) {
+             if (!snitch.shouldLog()) {
+                 continue;
+             }
+             if (!isOnSnitch(snitch, accountId) || isDebugging()) {
+                 if (checkProximity(snitch, accountId)) {
+                     plugin.getJaLogger().logSnitchDismount(snitch, p, mount);
+                 }
+             }
+         }
     }
     
 
