@@ -4,3 +4,4 @@
 *.jar
 !citadel.jar
 *~
+/target/
