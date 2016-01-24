@@ -357,7 +357,7 @@ public class Group {
 	 * @param uuid- The UUID of the player.
 	 * @return Returns the PlayerType of a UUID.
 	 */
-	public PlayerType getMemberRank(UUID uuid) {
+	public PlayerType getPlayerType(UUID uuid) {
 		return players.get(uuid);
 	}
 
@@ -382,18 +382,6 @@ public class Group {
 	public void removeMember(UUID uuid) {
 		db.removeMember(uuid, name);
 		players.remove(uuid);
-	}
-
-	/**
-	 * Get's the PlayerType of an invited Player.
-	 * @param uuid- The UUID of the player.
-	 * @return Returns the PlayerType or null.
-	 */
-	public PlayerType getInviteType(UUID uuid) {
-		if (!invites.containsKey(uuid)) {
-			return null;
-		}
-		return invites.get(uuid);
 	}
 
 	/**

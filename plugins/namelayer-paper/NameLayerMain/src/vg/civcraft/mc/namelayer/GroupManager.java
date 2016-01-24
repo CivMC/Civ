@@ -228,7 +228,7 @@ public class GroupManager{
 		if (group == null) {
 			return null;
 		}
-		return group.getMemberRank(player);
+		return group.getPlayerType(player);
 	}
 	
 	public boolean isMember(String groupname, UUID player) {		
@@ -246,7 +246,7 @@ public class GroupManager{
 		}
 		
 		GroupPermission perms = getPermissionforGroup(group);
-		PlayerType rank = group.getMemberRank(player);	
+		PlayerType rank = group.getPlayerType(player);	
 		
 		return perms.isAccessible(rank, perm);
 	}

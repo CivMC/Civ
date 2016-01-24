@@ -38,7 +38,7 @@ public class SetPassword extends PlayerCommandMiddle{
 			p.sendMessage(ChatColor.RED + "That group does not exist.");
 		}
 		
-		PlayerType pType = g.getMemberRank(uuid);
+		PlayerType pType = g.getPlayerType(uuid);
 		if (pType == null){
 			p.sendMessage(ChatColor.RED + "You do not have access to that group.");
 			return true;

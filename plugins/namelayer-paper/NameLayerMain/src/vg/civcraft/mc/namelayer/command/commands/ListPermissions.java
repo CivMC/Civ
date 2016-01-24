@@ -39,7 +39,7 @@ public class ListPermissions extends PlayerCommandMiddle{
 			return true;
 		}
 		UUID uuid = NameAPI.getUUID(p.getName());
-		PlayerType playerType = g.getMemberRank(uuid);
+		PlayerType playerType = g.getPlayerType(uuid);
 		if (playerType == null){
 			p.sendMessage(ChatColor.RED + "You do not have access to this group.");
 			return true;

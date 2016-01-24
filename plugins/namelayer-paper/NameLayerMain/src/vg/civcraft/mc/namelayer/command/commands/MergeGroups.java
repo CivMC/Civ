@@ -64,8 +64,8 @@ public class MergeGroups extends PlayerCommandMiddle{
 		GroupPermission mPerm = gm.getPermissionforGroup(toMerge);
 		
 		UUID uuid = NameAPI.getUUID(p.getName());
-		PlayerType p1 = g.getMemberRank(uuid);
-		PlayerType p2 = toMerge.getMemberRank(uuid);
+		PlayerType p1 = g.getPlayerType(uuid);
+		PlayerType p2 = toMerge.getPlayerType(uuid);
 		
 		if (p1 == null || p2 == null){
 			p.sendMessage(ChatColor.RED + "You don't have access for one of the groups.");

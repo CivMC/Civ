@@ -54,8 +54,8 @@ public class RemoveMember extends PlayerCommandMiddle {
 		
 		String playerName = NameAPI.getCurrentName(uuid);
 		GroupPermission perm = gm.getPermissionforGroup(group);
-		PlayerType t = group.getMemberRank(executor); // playertype for the player running the command.
-		PlayerType toBeRemoved = group.getMemberRank(uuid);
+		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
+		PlayerType toBeRemoved = group.getPlayerType(uuid);
 		if (toBeRemoved == null){
 			p.sendMessage(ChatColor.RED + "That player is not on the group.");
 			return true;

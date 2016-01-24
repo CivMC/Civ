@@ -66,7 +66,7 @@ public class PromotePlayer extends PlayerCommandMiddle{
 			return true;
 		}
 		
-		PlayerType promoteecurrentType = group.getMemberRank(promotee);
+		PlayerType promoteecurrentType = group.getPlayerType(promotee);
 		PlayerType promoteeType = PlayerType.getPlayerType(args[2]);
 		if(promoteeType == null){
 			PlayerType.displayPlayerTypes(p);
@@ -74,7 +74,7 @@ public class PromotePlayer extends PlayerCommandMiddle{
 		}
 		
 		GroupPermission perm = gm.getPermissionforGroup(group);
-		PlayerType t = group.getMemberRank(executor); // playertype for the player running the command.
+		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
 		
 		if (t == null){
 			p.sendMessage(ChatColor.RED + "You are not on that group.");

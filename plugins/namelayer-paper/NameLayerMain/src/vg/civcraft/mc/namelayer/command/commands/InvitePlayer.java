@@ -74,7 +74,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			// Perform access check
 			final GroupPermission perm = gm.getPermissionforGroup(group);
 			final UUID executor = p.getUniqueId();
-			final PlayerType t = group.getMemberRank(executor); // playertype for the player running the command.
+			final PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
 			if (t == null) {
 				s.sendMessage(ChatColor.RED + "You are not on that group.");
 				return true;

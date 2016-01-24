@@ -41,7 +41,7 @@ public class AcceptInvite extends PlayerCommandMiddle{
 			return true;
 		}
 		UUID uuid = NameAPI.getUUID(p.getName());
-		PlayerType type = group.getInviteType(uuid);
+		PlayerType type = group.getInvite(uuid);
 		if (type == null){
 			p.sendMessage(ChatColor.RED + "You were not invited to that group.");
 			return true;

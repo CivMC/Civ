@@ -59,7 +59,7 @@ public class ListSubGroups extends PlayerCommandMiddle {
 			
 			Group group = GroupManager.getGroup(args[0]);
 			
-			sb.append(String.format(format, "", group.getName(), group.getMemberRank(uuid)));
+			sb.append(String.format(format, "", group.getName(), group.getPlayerType(uuid)));
 			buildList(sb, uuid, group.getSubgroups(), "   ");
 		} else {
 			List<String> groups = gm.getAllGroupNames(uuid);
@@ -72,7 +72,7 @@ public class ListSubGroups extends PlayerCommandMiddle {
 			
 			for (String supergroup : supergroups) {
 				Group group = GroupManager.getGroup(supergroup);
-				sb.append(String.format(format, "", group.getName(), group.getMemberRank(uuid)));
+				sb.append(String.format(format, "", group.getName(), group.getPlayerType(uuid)));
 				buildList(sb, uuid, group.getSubgroups(), "   ");
 			}
 		}
@@ -89,7 +89,7 @@ public class ListSubGroups extends PlayerCommandMiddle {
 
 	private void buildList(StringBuilder sb, UUID uuid, List<Group> subs, String prefix) {
 		for (Group group : subs) {
-			sb.append(String.format(format, prefix, group.getName(), group.getMemberRank(uuid)));
+			sb.append(String.format(format, prefix, group.getName(), group.getPlayerType(uuid)));
 			buildList(sb, uuid, group.getSubgroups(), "   " + prefix);
 		}
 	}

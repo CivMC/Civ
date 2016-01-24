@@ -75,7 +75,7 @@ public class DeleteGroup extends PlayerCommandMiddle{
 			p.sendMessage(ChatColor.RED + "That group does not exist.");
 			return true;
 		}
-		PlayerType pType = g.getMemberRank(uuid);
+		PlayerType pType = g.getPlayerType(uuid);
 		if (pType == null && !p.hasPermission("namelayer.admin")){
 			p.sendMessage(ChatColor.RED + "You are not on that group.");
 			return true;

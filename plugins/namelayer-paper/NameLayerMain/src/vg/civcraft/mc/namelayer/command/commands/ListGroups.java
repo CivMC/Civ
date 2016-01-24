@@ -83,7 +83,7 @@ public class ListGroups extends PlayerCommandMiddle {
 			for (int x = first; x < first + 10 && x < groups.size(); x++){
 				Group g = GroupManager.getGroup(groups.get(x));
 				sb.append(String.format("%s : (%s)\n", 
-				        g.getName(), g.getMemberRank(uuid).toString()));
+				        g.getName(), g.getPlayerType(uuid).toString()));
 			}
 		}
 		sender.sendMessage(sb.toString());
