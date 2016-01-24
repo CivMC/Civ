@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -61,7 +62,6 @@ public class CivChat2FileLogger {
 		checkDirectories(chatDirectory);
 		checkDirectories(ignoreDirectory);
 		initchatLog(chatDirectory + dateString + ".txt");
-		initIgnoreLog(ignoreDirectory + "ignorelist.txt");
 		fileManagement(dateString, chatDirectory);
 	}
 	/**
@@ -118,43 +118,6 @@ public class CivChat2FileLogger {
 		}
 	}
 	
-	/**
-	 * Method to create/get ignoring players file
-	 * @param filename
-	 */
-	public void initIgnoreLog(String filename){
-		StringBuilder sb = new StringBuilder();
-		File existing = new File(filename);
-		CivChat2.debugmessage("Initializing IgnoreLog...");
-		try{
-			if(existing.exists()){
-				//ignore file exists load it
-				CivChat2.infoMessage(sb.append("Existing Ignore file: ") 
-										.append( existing.getAbsolutePath())
-										.toString());
-				sb.delete(0, sb.length());
-				FileWriter fw = new FileWriter(existing, true);
-				writer = new BufferedWriter(fw);
-				ignoredPlayers = existing;
-				chatMan.loadIgnoredPlayers(ignoredPlayers);
-			} else {
-				//create new ignore file
-				CivChat2.infoMessage(sb.append("Creating new Ignore file: ")
-										.append(existing.getAbsolutePath())
-										.toString());
-				sb.delete(0, sb.length());
-				existing.createNewFile();
-				PrintWriter pw = new PrintWriter(existing);
-				writer = new BufferedWriter(pw);
-				ignoredPlayers = existing;
-				addIgnoreHeader();
-			}
-		} catch (IOException ex){
-			CivChat2.warningMessage("File Failed: " + ex);
-		}
-	}
-	
-	
 	private void addIgnoreHeader() {
 		try {
 			writer.write("Ignore List Format: <OwnerName>,<Ignoree1>,<Ignoree....>,...,<GROUP(groupname)>");
@@ -171,12 +134,20 @@ public class CivChat2FileLogger {
 	 * @param msg The message you want to add to chatlog
 	 * @param receive Player recieving the message
 	 */
-	public void writeToChatLog(Player sender, String msg, String type){
+	public void writeToChatLog(String sender, String msg, String type){
 		String date = new SimpleDateFormat("dd-MM HH:mm:ss").format(new Date());
-		String name = NameAPI.getCurrentName(sender.getUniqueId());
-		String loc = (int) sender.getLocation().getX() + ", "
-				+ (int) sender.getLocation().getY() + ", "
-				+ (int) sender.getLocation().getZ();
+		Player player = Bukkit.getPlayer(sender);
+		String name, loc;
+		if (player != null) {
+		name = NameAPI.getCurrentName(player.getUniqueId());
+		loc = (int) player.getLocation().getX() + ", "
+				+ (int) player.getLocation().getY() + ", "
+				+ (int) player.getLocation().getZ();
+		}
+		else {
+			name = sender;
+			loc = "Not on this server";
+		}
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
 		sb.append(date);
@@ -213,7 +184,6 @@ public class CivChat2FileLogger {
 			fileWriter.newLine();
 			fileWriter.flush();
 			fileWriter.close();
-			chatMan.saveIgnoredFile(ignoredPlayers);
 		} catch (IOException ex){
 			CivChat2.severeMessage("Could not write to chatlog file " + ex);
 		}
@@ -230,24 +200,6 @@ public class CivChat2FileLogger {
 			fileWriter.flush();
 		} catch (IOException ex){
 			CivChat2.severeMessage("Could not write to chatlog file " + ex);
-		}
-	}
-	
-	/**
-	 * Method to save the ignored users file text file
-	 * @param toSave the File to save to
-	 */
-	public void saveIgnoredFile(File toSave){
-		CivChat2.debugmessage("Trying to saveIgnoredFile");
-		if(toSave == null){
-			CivChat2.debugmessage("toSave file is null.....");
-			return;
-		}
-		CivChat2.debugmessage("Saving ignoredFile [" + toSave.toString() + "]");
-		try {
-			chatMan.saveIgnoredFile(toSave);
-		} catch (IOException e) {
-			CivChat2.severeMessage("Error writing ignorelist file: " + e);
 		}
 	}
 	

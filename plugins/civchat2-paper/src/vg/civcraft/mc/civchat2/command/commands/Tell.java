@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
+import vg.civcraft.mc.civchat2.database.DatabaseManager;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.mercury.MercuryAPI;
@@ -24,6 +25,7 @@ public class Tell extends PlayerCommand{
 	private CivChat2Manager chatMan;
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
 	private CivChat2CommandHandler handler = (CivChat2CommandHandler) plugin.getCivChat2CommandHandler();
+	private DatabaseManager DBM = plugin.getDatabaseManager();
 	
 	public Tell(String name) {
 		super(name);
@@ -45,25 +47,44 @@ public class Tell extends PlayerCommand{
 		Player player = (Player) sender;
 		
 		if (args.length == 0){
-			chatMan.removeChannel(player.getName());
-			player.sendMessage(ChatColor.GREEN + "You have been removed from private chat.");
+			String chattingWith = chatMan.getChannel(player.getName());
+			if (chattingWith != null) {
+				chatMan.removeChannel(player.getName());
+				player.sendMessage(ChatColor.GREEN + "You have been removed from private chat.");
+			}
+			else {
+				player.sendMessage(ChatColor.RED + "You are not in a private chat");
+			}
 			return true;
 		}
 		
-		if (CivChat2.getInstance().isMercuryEnabled() && MercuryAPI.instance.getAllPlayers().contains(args[0].toLowerCase())){
-			if(args.length == 1){
-				chatMan.addChatChannel(player.getName(), args[0].toLowerCase());
-				player.sendMessage(ChatColor.GREEN + "You are now chatting with " + args[0] + " on another server.");
-				return true;
-			} else if(args.length >=2){
-				StringBuilder builder = new StringBuilder();
-				for (int x = 1; x < args.length; x++)
-					builder.append(args[x] + " ");
-				//This separator needs to be changed to load from config.
-				String sep = "|";
-				MercuryAPI.sendMessage(MercuryAPI.getServerforPlayer(args[0].toLowerCase()).getServerName(), "pm"+sep+player.getName()+sep+args[0].trim()+sep+builder.toString().replace(sep, ""), "civchat2");
-				player.sendMessage(ChatColor.LIGHT_PURPLE+"To "+args[0]+": "+builder.toString());
-				return true;
+		if (CivChat2.getInstance().isMercuryEnabled()){
+			for(String name : MercuryAPI.getAllPlayers()) {
+				//iterate over names to find someone with a similar name to the one entered
+				if (name.equalsIgnoreCase(args[0])  && 
+						!(MercuryAPI.getServerforPlayer(name).getServerName().equals(MercuryAPI.getServerforPlayer(player.getName()).getServerName()))) {
+					if(args.length == 1){
+						if (DBM.isIgnoringPlayer(player.getName(), name) ){
+							player.sendMessage(ChatColor.YELLOW + "You need to unignore " + name);
+							return true;
+						}
+				        if (DBM.isIgnoringPlayer(name, player.getName())){
+				            sender.sendMessage(ChatColor.YELLOW + "Player " + name +" is ignoring you");
+				            return true;
+				        }
+						chatMan.removeChannel(player.getName());
+						chatMan.addChatChannel(player.getName(), name);
+						player.sendMessage(ChatColor.GREEN + "You are now chatting with " + name + " on another server.");
+						return true;
+					} else if(args.length >=2){
+						StringBuilder builder = new StringBuilder();
+						for (int x = 1; x < args.length; x++)
+							builder.append(args[x] + " ");
+						chatMan.sendPrivateMsgAcrossShards(player, name, builder.toString());
+						return true;
+					}
+					break;
+				}
 			}
 		}
 		
@@ -95,10 +116,14 @@ public class Tell extends PlayerCommand{
 			return true;
 		}
 		else if(args.length == 1){
-			if (chatMan.isIgnoringPlayer(player.getName(), receiver.getName()) ){
+			if (DBM.isIgnoringPlayer(player.getUniqueId(), receiver.getUniqueId()) ){
 				player.sendMessage(ChatColor.YELLOW+"You need to unignore "+receiver.getName());
 				return true;
 			}
+	        if (DBM.isIgnoringPlayer(receiver.getUniqueId(), player.getUniqueId())){
+	            sender.sendMessage(ChatColor.YELLOW + "Player " + receiver.getName() +" is ignoring you");
+	            return true;
+	        }
 			chatMan.addChatChannel(player.getName(), receiver.getName());
 			player.sendMessage(ChatColor.GREEN + "You are now chatting with " + receiver.getName() + ".");
 			return true;

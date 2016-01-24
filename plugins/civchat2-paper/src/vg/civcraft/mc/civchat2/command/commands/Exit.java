@@ -53,7 +53,6 @@ public class Exit extends PlayerCommand{
 
 	@Override
 	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
-		// TODO Auto-generated method stub
 		return null;
 	}	
 

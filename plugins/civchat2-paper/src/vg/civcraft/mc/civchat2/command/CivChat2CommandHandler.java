@@ -1,8 +1,5 @@
 package vg.civcraft.mc.civchat2.command;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -14,13 +11,12 @@ import vg.civcraft.mc.civchat2.command.commands.Ignore;
 import vg.civcraft.mc.civchat2.command.commands.IgnoreGroup;
 import vg.civcraft.mc.civchat2.command.commands.IgnoreList;
 import vg.civcraft.mc.civchat2.command.commands.Reply;
+import vg.civcraft.mc.civchat2.command.commands.SayAll;
 import vg.civcraft.mc.civchat2.command.commands.Tell;
 import vg.civcraft.mc.civchat2.command.commands.Afk;
 
 public class CivChat2CommandHandler extends CommandHandler{
-	
-	public Map<String, Command> commands = new HashMap<String, Command>();
-	
+
 	public void registerCommands(){
 		addCommands(new Tell("tell"));
 		addCommands(new Afk("afk"));
@@ -30,23 +26,11 @@ public class CivChat2CommandHandler extends CommandHandler{
 		addCommands(new IgnoreGroup("ignoregroup"));
 		addCommands(new IgnoreList("ignorelist"));
 		addCommands(new Exit("exit"));
+		addCommands(new SayAll("sayall"));
 	}
 	
 	public void addCommands(Command command){
 		commands.put(command.getIdentifier().toLowerCase(), command);
-	}
-	
-	@Override
-	public boolean execute(CommandSender sender, org.bukkit.command.Command cmd, String[] args){
-		if(commands.containsKey(cmd.getName().toLowerCase())){
-			Command command = (Command) commands.get(cmd.getName().toLowerCase());
-			if(args.length < command.getMinArguments() || args.length > command.getMaxArguments()){
-				helpPlayer(command, sender);
-				return true;
-			}
-			command.execute(sender, args);
-		}
-		return true;
 	}
 	
 	public void helpPlayer(Command command, CommandSender sender){

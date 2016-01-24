@@ -1,5 +1,7 @@
 package vg.civcraft.mc.civchat2.listeners;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -15,10 +17,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.mercury.MercuryAPI;
-import vg.civcraft.mc.mercury.MercuryPlugin;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
 /*
  * @author jjj5311
@@ -71,37 +71,28 @@ public class CivChat2Listener implements Listener {
 		String groupChat = chatman.getGroupChatting(sender.getName());
 		
 		CivChat2.debugmessage(String.format("ChatEvent properties: chatMessage =[ %s ], sender = [ %s ], chatChannel = [ %s ], groupchatting = [ %s ];", chatMessage, sender.getName(), chatChannel, groupChat));
-		if(!(chatChannel == null)){
+		if(chatChannel != null){
+			
+			
+			
 			StringBuilder sb = new StringBuilder();
 			CivChat2.debugmessage("PlayerChatEvent chatChannel does not equal null");
-			Player receive = Bukkit.getPlayer(NameAPI.getUUID(chatChannel));
-			CivChat2.debugmessage("player chat event receive = [" + receive + "]");
-			if(!(receive == null)){	
-				if(chatman.isIgnoringPlayer(sender.getName(), chatChannel)){
-					CivChat2.debugmessage("PlayerChatEvent receive != null isIgnoringGroups is true");
-					String muteMessage = sb.append(ChatColor.YELLOW) 
-											.append( chatChannel) 
-											.append( ChatColor.RED) 
-											.append( " has muted you")
-											.toString();
-					sb.delete(0, sb.length());
-					sender.sendMessage(muteMessage);
-					return;
-				}
-				else{
-					CivChat2.debugmessage("PlayerChatEvent chatman.sendPrivateMessage being sent");
-					chatman.sendPrivateMsg(sender, receive, chatMessage);
-					return;
-				}
-			}
-			else{
+			UUID receiverUUID = NameAPI.getUUID(chatChannel);
+			Player receiver = Bukkit.getPlayer(receiverUUID);
+			CivChat2.debugmessage("player chat event receive = [" + receiver + "]");
+			if(receiver != null){	
+				CivChat2.debugmessage("PlayerChatEvent chatman.sendPrivateMessage being sent");
+				chatman.sendPrivateMsg(sender, receiver, chatMessage);
+				return;
+			} else {
 				if (CivChat2.getInstance().isMercuryEnabled()){
-					if (MercuryAPI.instance.getAllPlayers().contains(chatChannel)){
-						//This separator needs to be changed to load from config.
-						String sep = "|";
-						MercuryAPI.sendMessage(MercuryAPI.getServerforPlayer(chatChannel.toLowerCase()).getServerName(), "pm"+sep+sender.getName()+sep+chatChannel+sep+chatMessage.replace(sep, ""), "civchat2");
-						sender.sendMessage(ChatColor.LIGHT_PURPLE+"To "+chatChannel+": "+chatMessage);
-						return;
+					String receiverName = NameAPI.getCurrentName(receiverUUID);
+					for(String name : MercuryAPI.getAllPlayers()) {
+						if (name.equalsIgnoreCase(receiverName)){
+							//This separator needs to be changed to load from config.
+							chatman.sendPrivateMsgAcrossShards(sender, receiverName, chatMessage);
+							return;
+						}	
 					}
 				}
 				chatman.removeChannel(sender.getName());
@@ -113,10 +104,16 @@ public class CivChat2Listener implements Listener {
 				return;
 			}
 		}
-		if(!(groupChat == null)){
+		if(groupChat != null){
 			//player is group chatting
-			chatman.sendGroupMsg(sender.getName(), chatMessage, GroupManager.getGroup(groupChat));
-			return;
+			if (GroupManager.getGroup(groupChat).isMember(NameAPI.getUUID(sender.getName()))) {
+				chatman.sendGroupMsg(sender.getName(), chatMessage, GroupManager.getGroup(groupChat));
+				return;
+			} //player was kicked from the group
+			else {
+				chatman.removeGroupChat(sender.getName());
+				sender.sendMessage(ChatColor.RED + "You have been removed from groupchat because you were removed from the group");
+			}
 		}
 		
 		CivChat2.debugmessage("PlayerChatEvent calling chatman.broadcastMessage()");

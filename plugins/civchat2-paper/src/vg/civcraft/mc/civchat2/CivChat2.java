@@ -1,18 +1,20 @@
 package vg.civcraft.mc.civchat2;
 
 import java.io.File;
+import java.util.List;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
+import vg.civcraft.mc.civchat2.database.DatabaseManager;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
 import vg.civcraft.mc.civchat2.listeners.MercuryMessageListener;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2Executor;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civchat2.zipper.CivChat2FileLogger;
+import vg.civcraft.mc.bettershards.listeners.BetterShardsListener;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
@@ -32,7 +34,9 @@ public class CivChat2 extends ACivMod{
 	private CivChat2Listener chatListener;
 	private CivChat2FileLogger fileLog;
 	private boolean isMercuryEnabled = false;
+	private boolean isBetterShardsEnabled = false;
 	private static CivChat2Executor executor;
+	private DatabaseManager DBM;
 	
 	public void onEnable(){
 		//onEnable stuff
@@ -49,6 +53,7 @@ public class CivChat2 extends ACivMod{
 		log_ = new CivChat2Log();
 		log_.initializeLogger(instance);
 		fileLog = new CivChat2FileLogger();
+		DBM = new DatabaseManager();
 		chatMan = new CivChat2Manager(instance);
 		fileLog.Init();
 		groupsEnabled = config_.getGroupsEnabled();
@@ -64,10 +69,10 @@ public class CivChat2 extends ACivMod{
 		executor = new CivChat2Executor(instance);
 		registerEvents();
 		
-		getCommand("say").setExecutor(instance.executor);
+		getCommand("say").setExecutor(executor);
 		
 		if (isMercuryEnabled) 
-			MercuryAPI.instance.registerPluginMessageChannel("civchat2");
+			MercuryAPI.registerPluginMessageChannel("civchat2");
 	}
 	
 	public void onDisable(){
@@ -94,8 +99,12 @@ public class CivChat2 extends ACivMod{
 	public void registerEvents(){
 		getServer().getPluginManager().registerEvents(chatListener, instance);
 		setMercuryEnabled(getServer().getPluginManager().isPluginEnabled("Mercury"));
+		setBetterShardsEnabled(getServer().getPluginManager().isPluginEnabled("BetterShards"));
 		if (isMercuryEnabled()){
 			this.getServer().getPluginManager().registerEvents(new MercuryMessageListener(this), this);
+		}
+		if(isBetterShardsEnabled){
+			this.getServer().getPluginManager().registerEvents(new vg.civcraft.mc.civchat2.listeners.BetterShardsListener(this), this);
 		}
 	}
 	
@@ -138,10 +147,26 @@ public class CivChat2 extends ACivMod{
 	public void setMercuryEnabled(boolean isMercuryEnabled) {
 		this.isMercuryEnabled = isMercuryEnabled;
 	}
+	
+	public boolean isBetterShardsEnabled() {
+		return isBetterShardsEnabled;
+	}
 
+	public void setBetterShardsEnabled(boolean isBetterShardsEnabled) {
+		this.isBetterShardsEnabled = isBetterShardsEnabled;
+	}
+	
+	public DatabaseManager getDatabaseManager(){
+		return this.DBM;
+	}
+	
 	@Override
 	protected String getPluginName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "CivChat2";
 	}
+	
+	 @Override
+	 public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args){
+		 return handle == null ? null : handle.complete(sender, cmd, args);
+	 }
 }
