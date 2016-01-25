@@ -2,7 +2,8 @@ name: ${project.name}
 main: com.github.igotyou.FactoryMod.FactoryMod
 author: igotyou
 version: ${project.version}
-depend: [NameLayer, Citadel]
+depend: [NameLayer, Citadel, CivModCore]
+softdepend: [CivMenu]
 commands:
     fm:
         permission: fm.public

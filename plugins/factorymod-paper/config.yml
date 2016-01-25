@@ -1,46 +1,491 @@
 #FactoryMod configuration file
 
-citadel_enabled: true
-factory_interaction_material: STICK
-disable_nether: true
-default_update_time: 4
-redstone_power_on: 7
-redstone_recipe_change: 2
+#FactoryMod is a Spigot plugin, which allows players to setup predefined factories for an item cost. There are various
+#factories with different purposes and pretty much everything about them is configurable. Their configuration is 
+#handled within this file. Take great care to ensure that your configurations follow exactly the documentation provided
+#here, otherwise unwanted effects/crashes and run time exceptions may occur.
+
+#----------------------------------------------------------------------------------------------------------------------
+
+#Specifying items:
+
+#Very often in this config you will have to specify items for a configuration. All item specifications are lists of 
+#configurations, which contain information about the actual item, like this:
+
+#inputmaterials:
+#   inputmat1:
+#       material: STONE
+#   inputmat345FF:
+#       material: DIRT
+
+#Ensure that the identifer (here inputmat1 or inputmat345FF) all have the same intendation and never use duplicate
+#identifers on the same level. Duplicate identifers which belong to a different configuration section are a bad habit,
+#but should still work, while duplicate identifers on the same level will definitely not lead to the result you desire.
+#This applies for every configuration option and not only for items. When you are required to specify a list of items
+#you can also just put the option for it there, but not actually any identifers below it to list items and it will
+#result in no cost/output.
+
+#An example item config utilizing all possiblities could look like this:
+
+#inputmat1:
+#   material: STONE
+#   durability: 3
+#   amount: 456
+#   name: SuperSpecialStone
+#   lore:
+#    - First lore line
+#    - Even more lore
+#   enchants:
+#       enchantidentifier1:
+#           enchant: SILK_TOUCH
+#           level: 1
+#       enchantgharbbl:
+#           enchant: DAMAGE_ALL
+#           level: 5
+
+
+#material requires you to specify the type of the item. Use Spigot's official item identifers here, a full list of those
+#can be found here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+
+#durability allows you to specify the durability of the item. Note that this is not only limited to the durability of tools
+#or armour, but instead the durability is also used to create different variations of the same material. For example orange
+#wool is actually just white wool with a durability of 1. If this option is not specified it will default to 0, which is also
+#minecraft's default durability for items. If you don't want to limit an item to a specific durability, but for example want to
+#require any type of wool as an input, use -1 as durability. Make sure to only use this for inputs though, if you let a factory
+#output an itemstack for players with a durability of -1, the item will be glitched. For a full list of all items and their 
+#durabilities use this site: http://minecraft-ids.grahamedgecombe.com/
+
+#amount allows you to specify the amount of the item, this isn't limited to 64 or whatever the maximum stack size of that
+#item is, it can be any number (assuming it fits into an int). If not specfied this option will default to 1
+
+#name allows you to define a custom name for this item, if this option is not set the item will have its vanilla name
+
+#lore allows you to list lore which is added to the item. There is no limit to the lines of lore here, but after too many the
+#minecraft client will stop display them properly. Defining lore is completly optional.
+
+#Finally enchants allows you to list all the enchants wanted on this item, each enchant requires it's own config identifer.
+
+#The two options requires per enchant are relatively straight forward, first of all you need to specify the enchantment type
+#with it's spigot identifer. https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html provides a
+#full list of those. Second you will need to specify the level you want the desired enchantment to be, this may exceed the
+#possibilites of vanilla without causing problems.
+
+#----------------------------------------------------------------------------------------------------------------------
+#General
+
+#This section allows you to define global default values and some general stuff. 
+
+#First of all under the crafting option you can disable existing 
+#vanilla crafting recipes here and enable new custom recipes.
+
+#An example to disable recipes:
+
+#crafting:
+#   disabled:
+#       firstdisabledidentifer:
+#           material: TORCH
+#       crackedStoneBrick:
+#           material: SMOOTH_BRICK
+#           durability: 2
+
+#Basically you only need to give a list of items here and all their crafting recipes will be disabled
+
+#To enable new crafting recipes 
+
+#TODO TODO TODO TODO TODO
+
 
 crafting:
     disabled:
-        dirt:
-            material: DIRT
-    
     enabled:
-    
-    
-recipes:
-    test1:
-        type: PRODUCTION
-        input:
-            stone:
-                material: STONE
-                amount: 64
-        output:
-            cobble:
-                material: DIRT
-                amount: 43
-        name: TestRecipe1
-        production_time: 200
 
-factories:
-    test2:
-        type: FCC
-        name: smelter
-        recipes:
-         - TestRecipe1
-        fuel:
-            char:
-                material: COAL
-                durability: 1
-        fuel_consumption_intervall: 10
-        setupcost:
-            dirt:
-                material: DIRT
-                amount: 64
+
+#Additionally you can specify default options here, which are applied to all factories which use this option, unless
+#you chose to overwrite the default for a specific factory, in that case the option specified in the factories config 
+#will apply to it.
+
+#The first option here is default_update_time. The update time describes how often a factory is ticked, ergo how often
+#it checks whether it still has enough fuel, enough other resources to run and so on. This is basically the smallest
+#time unit within your factory can possibly react and all other time values your factory works with should be multiples
+#of this value. If they are not a multiple of this value, their de-facto value will be the next higher multiple of the
+#update time, simply because whatever effect they have can only be applied if the factory is actually ticked. Note that
+#this value highly influences the performance of this plugin, if FactoryMod is consuming more server power than you want
+#it to, the first step should be to make this value higher. Recommended value is 1 second
+
+default_update_time: 1s
+
+
+#With the option default_fuel you can specify the default fuel for all factories which are consuming fuel in a furnace
+#while running. This doesn't have to be a vanilla furnace fuel, but can be any item instead. A factory may chose to over
+#write this option
+
+default_fuel:
+    charcoal:
+        material: COAL
+        durability: 1
+ 
+
+#default_fuel_consumption_intervall specifies a default for how often factories consume fuel. Basically every time a 
+#factory which consumes fuel has run for the time specified here, one fuel unit will be consumed. This value should
+#always be a multiple of the updatetime and a factory may chose to specify it's own value and not use the default value
+
+default_fuel_consumption_intervall: 2s
+
+#As a debug mode or to prevent additional information when tracking down bugs this plugin can log all of its inventory 
+#interactions and the full inventories at that point, if desired. If this option is not specified it will default to true
+
+log_inventories: true
+
+
+#Additionally this plugin can disable vanilla nether portals. This isn't really part of the plugin's core functionality,
+#but it was picked up from the first implementation of FactoryMod and stayed here after it's rewrite. Deal with it.
+disable_nether: false
+
+
+
+
+#----------------------------------------------------------------------------------------------------------------------
+#Factories
+
+#The main part of this plugin's functionality will be defined by this section as it specifies most of the configuration
+#for your factories. Under the option factories you will be required to specify each factories configuration, each factory
+#needs it's own identifier here, an example could look like this:
+
+#factories:
+#   IAmAnIdentifer:
+#       type: FCC
+#       name: Stone Smelter
+#   SoAmI:
+#       type: PIPE
+#       name: Pipinator
+
+#All factories have in common that they require you to define a type and a name. The type must be one of the predefined 
+#options explained further below to specify the physical appearance and the broad functionality of the factory.
+#The name can be any string, which will be used to identify this factory at a later point. There may be many different
+#factories of the same type with different names with completly different configurations, but ingame factories with
+#the same name are guaranteed to have the same functionality. Because of that NEVER EVER duplicate factory names, not 
+#even if their type is different.
+
+#Currently there are three different types of factories:
+
+#1. FCC
+
+#FCC is an acronym for FurnaceCraftingTableChest, which is the "classic" factory and what factories used to be in the first
+#version of FactoryMod before its rewrite. As you might guess it consist of a crafting table, a furnace and a chest. The
+#crafting table has to be in the middle between the furnace and the chest either vertical or horizontal. Those factories
+#use an item which is burned in furnace as fuel to execute recipes, which usually use up some sort of item in the chest
+#to produce another. A factory can have as many recipes as you want, the details for those are defined further down in the
+#config. The identifier used for this type of factory in the config is FCC. An example config to explain every possible
+#option for this factory:
+
+#smelteridentiferbla:
+#   type: FCC
+#   name: Smelter
+#   updatetime: 2s
+#   fuel:
+#       fuelidentifier:
+#           material: COAL
+#           durability: 1
+#   fuel_consumption_intervall: 10s
+#   setupcost:
+#       dirt:
+#           material: DIRT
+#           amount: 64
+#       stone:
+#           material: STONE
+#           amount: 64
+#   recipes:
+#    - Smelt iron ore
+#    - Smelt diamond ore
+#    - Smelt stone
+#    - Upgrade smelter
+
+#type and name work as already described above
+
+#updatetime decides how often this factory is ticked to check whether it still has all the materials required, fuel etc.
+#If this is not specified the default option which was specified above will be used. For more details on this option read
+#the explaination next to the default updatetime above
+
+#fuel specifies which item is used in the furnace to power this factory. You will still need to give the fuel it's own
+#sub identifer here, because it's techincally part of a list of items. If this option is not set, the default fuel specified
+#above will be used.
+
+#fuel_consumption_intervall describes how often fuel is consumed if the factory is running with any recipe. If it is not set,   
+#the default fuel consumption intervall specified above will be used.
+
+#setupcost are the materials the player will need to create this factory. Two factories may not have the exact same setupcost,
+#otherwise there is no way to determine which factory a player actually intended to setup.
+
+#recipes is the option which defines what this FCC actually does, but you are only supposed to list the names of the
+#recipes this factory is meant to run here. The exact functionality of the recipes is defined further below, ensure that the
+#names given to the recipes are identical with the ones used here, even the capitalization has to be the same. The same recipe
+#may be used by multiple factories or exist in the config without being used by any factory.
+
+
+#Additionally it is also possible to upgrade factories, which turns the factory into a completly different one after a specific
+#recipe. To do so, the upgraded version must be added to the list of factories with FCCUPGRADE as the type identifier. Example:
+
+#upgradedsmelter:
+#   type: FCCUPGRADE
+#   name: Upgraded Smelter
+#   updatetime: 2s
+#   fuel:
+#       fuelidentifier:
+#           material: COAL
+#           durability: 1
+#   fuel_consumption_intervall: 10s
+#   recipes:
+#    - Smelt emerald ore
+
+#As you can see this is pretty much identical to a normal factory aside from the type and the fact that an upgraded factory
+#does not specify a setup cost. The actual upgrade cost will be contained in the recipe which is used to upgrade the factory
+
+
+#2. Pipe
+
+#Pipes allow players to transport items over longer distances. This is meant to replace hopper chains, which can have heavy
+#impact on the server performance. The pipes themselves consist of a dropper, which represents the start point of the pipe
+#and it's pumper, a furnace to consume fuel while transporting, the actual pipe consisting of stained glass blocks and a target 
+#block with an inventory.
+
+#An example config for a pipe:
+
+#thisIsAPipeIdentifer123:
+#   type: PIPE
+#   name: Example Pipe
+#   updatetime: 2s
+#   setupcost:
+#       redstone:
+#           material: REDSTONE
+#           amount 64
+#   fuel:
+#       normalcoal:
+#           material: COAL
+#   fuel_consumption_intervall: 5s
+#   transfer_time_multiplier: 1s
+#   transferamount: 16
+#   glass_color: 1
+
+#type for all pipes must be PIPE and name a unique identifer, standard stuff
+
+#update time specifies how often this factory is ticked, see default_update_time for a detailed description of updatetimes
+#functionality
+
+#setupcost are the items required in the dropper when creating this factory
+
+#fuel specifies the fuel the pipe uses up while transferring, standard as described above
+
+#fuel_consumption_intervall specifies how often fuel is consumed, again this works exactly as described above
+
+#transfer_time_multiplier defines how long the pipe takes to transfer one load of items. The total transportation time scales
+#directly with the length of the pipe and the value specified here multiplied with the length of the pipe (only counting
+#glass blocks) results in the total transportation time per batch. For example if you set this value to one second, a pipe
+#which is 10 blocks long will take 10 seconds to transport a batch of items.
+
+#transferamount is the total amount of items transferred per batch. 
+
+#glass_color is the durability value of the glass this pipe is supposed to have. For a full list see:
+#http://minecraft.gamepedia.com/Stained_Glass#Block_data
+
+
+#3. Sorter
+
+#Sorters allow players to sort item from a single dispenser into different other containers. What gets sorted where is
+#completly up to the player, the factory itself only consists of a dispenser and a furnace. The dispenser is the main block of 
+#the factory which contains the items which will be sorted and the blocks in which will be sorted have to be adjacent to it.
+#The furnace simply consumes fuel to power the factory, like it's done for other factories as well. An example config:
+
+#fkIsGonnaLikeThis:
+#   type: SORTER
+#   name: The first sorter
+#   updatetime: 2s
+#   fuel:
+#       normalcoal:
+#           material: COAL
+#   fuel_consumption_intervall: 5s
+#   setupcost:
+#       redblocks:
+#           material: REDSTONE_BLOCK
+#           amount: 64
+#   sort_time: 2s
+#   sort_amount: 32
+#   maximum_materials_per_side: 20
+
+
+# type, name, updatetime, fuel and fuel_consumption_intervall work all exactly as described above
+
+#setupcost are the material requires when setting up this factory
+
+#sort_time is the amount of time it takes for the sorter to sort one batch of items, where one batch is the sort amount specified
+#in the config.
+
+#sort_amount is the amount of items that gets sorted per run
+
+#maximum_materials_per_side is an amount that limits how many items you can assign to a specific side (so the sorter sorts them
+#in this direction)
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#FCC recipes
+
+#FCCs have a wide variety of different recipes with different functionality they can run. Those will be listed under the config
+#option recipes, like this:
+
+#recipes:
+#   smeltstone:
+#       name: well
+#           ...
+#   anotheridentifer:
+#       name: weg
+#           ...
+
+#Every recipe has two configurations values, that always have to be specified, those are name and production_time.
+
+#name can be any String, but it's not allowed to contain '#', because this is used internally. The name you give your recipe
+#here has to be the same you used above to list a factorys recipes, even capitalization has to be the same.
+
+#production_time is simply how long this recipe takes to complete one run
+
+
+#Now on to the actual recipes:
+
+#1. Productionrecipe
+
+#This is the standard recipe; you put in materials, run the factory and get others as an output.
+
+#An example:
+
+#identiferABC:
+#   type: PRODUCTION
+#   name: Productionrecipeexample
+#   production_time: 10s
+#   input:
+#       item1:
+#           material: STONE
+#   output:
+#       outputstuff:
+#           material: DIAMOND
+
+
+#The type for recipes works exactly like the one for factories, each recipe has it's own unique identifer that has to be used.
+#The one for production recipes is PRODUCTION.
+
+#input is a list of items that gets consumed when the recipe completes, those items are required to even activate a factory
+#with this recipe
+
+#output is a list of items that will get returned after the the input materials were consumed.
+
+
+#2. Compactionrecipe
+
+#Compaction allows players to store large amounts of items easily. Whole stacks of items get compacted into single items marked
+#with lore and those items are stackable. This means a player can keep up to 4096 items in a single inventory slot! The recipe
+#to add the lore and reduce the stack to a single one is this one, the decompation recipe is used to reverse this process.
+
+#An example:
+
+#compactIdentifier:
+#   type: COMPACT
+#   name: Compact item
+#   production_time 5s
+#   input:
+#       crate:
+#           material: CHEST
+#           lore:
+#            - Crate
+#   compact_lore: Compacted Item
+#   excluded_materials:
+#    - BOOK
+
+
+#type always has to be COMPACT for this type of recipe
+
+#input specifies the compaction cost, ergo items that are consumed addtionally to the stack which is turned into a single item
+
+#compact_lore is the lore that will be added to the item to signalized that it's compacted
+
+#excluded_materials allows you to list materials, which will not be compactable. Per default anything that has a stack size of 1,
+#has lore or enchants is not compactable, but if you also want to prevent other items from being compactable, you can do that here.
+
+
+#3. Decompactionrecipe
+
+#Decompaction allows you to decompact items that were previously compacted. For a description of compaction see the compaction
+#recipe.
+
+#Example:
+
+#decompactedIdentifier:
+#   type:DECOMPACT
+#   name: Decompaction recipe
+#   production_time: 5s
+#   input:
+#   compact_lore: Compact Item
+
+
+#type always has to be DECOMPACT here. 
+
+#input is a list of items that get consumed as decompaction cost
+
+#compact_lore is the lore that is required on the compacted item. Ensure that the lore here and the one in the compaction recipe
+#are the same.
+
+
+#4. Repairrecipe
+
+#Repair recipes allow repairing their factory. Once a factory is at 0% health, the only recipe that can be run is the repair
+#recipe.
+
+#Example config:
+
+#hurryItsAboutToBreak:
+#   type: REPAIR
+#   name: Repair factory
+#   production_time: 20s
+#   input:
+#       diamonds:
+#           material: DIAMOND
+#           amount: 576
+#   health_gained: 50
+
+
+#type always has to be REPAIR for this.
+
+#Input is as usual a list of items, which will be consumed when the recipe completes.
+
+#health_gained is the amount of health that will be restored by a successfull run. 100 means fully health here
+
+
+#5. Upgraderecipe
+
+#Upgrades recipes allow you to upgrade one factory into another to completly change it's recipes and properties
+
+#Example:
+
+#upgrading:
+#   type: UPGRADE
+#   name: Upgrade to super duper factory
+#   input:
+#       diamond:
+#           material: DIAMOND
+#           amount: 64
+#   factory: upgradedsmelter
+
+#type always has to be UPGRADE
+
+#input is again the list of items which are consumed
+
+#factory is the name of the factory it's supposed to be upgraded to. This factory must have been specified as FCCUPGRADE
+#above and the name here and above has to be exactly the same.
+
+
+
+#CivMenu configuration
+
+#This plugin uses CivMenu (https://github.com/civcraft/CivMenu) to display additional information to players. You can specify
+#the messages sent to the players here:
+
+CivMenu:
+    events:
+        
