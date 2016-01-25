@@ -22,9 +22,9 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
  *
  */
 public abstract class MultiBlockStructure {
-	public static BlockFace[] allBlockSides = new BlockFace[] {
-			BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.WEST,
-			BlockFace.SOUTH, BlockFace.NORTH };
+	public static BlockFace[] allBlockSides = new BlockFace[] { BlockFace.UP,
+			BlockFace.DOWN, BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH,
+			BlockFace.NORTH };
 	public static BlockFace[] northEastWestSouthSides = new BlockFace[] {
 			BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH, BlockFace.NORTH };
 
@@ -94,11 +94,12 @@ public abstract class MultiBlockStructure {
 	 * @return center block of the factory which it was created from
 	 */
 	public abstract Location getCenter();
-	
+
 	/**
-	 * @return All interaction blocks and blocks that are not allowed to be used in two factories at once
+	 * @return All interaction blocks and blocks that are not allowed to be used
+	 *         in two factories at once
 	 */
-	public abstract List <Block> getRelevantBlocks();
+	public abstract List<Block> getRelevantBlocks();
 
 	public static List<Block> getAdjacentBlocks(Block b) {
 		List<Block> blocks = new LinkedList<Block>();
@@ -107,7 +108,7 @@ public abstract class MultiBlockStructure {
 		}
 		return blocks;
 	}
-	
+
 	/**
 	 * Only deals with directly powered redstone interactions, not indirect
 	 * power. If all blocks powering this block are on the same group or if the
@@ -122,8 +123,7 @@ public abstract class MultiBlockStructure {
 		ReinforcementManager rm;
 		if (FactoryMod.getManager().isCitadelEnabled()) {
 			rm = Citadel.getReinforcementManager();
-		}
-		else {
+		} else {
 			return true;
 		}
 		PlayerReinforcement pr = (rm != null) ? (PlayerReinforcement) rm
@@ -143,6 +143,15 @@ public abstract class MultiBlockStructure {
 			}
 		}
 		return true;
+	}
+
+	public boolean blockedByExistingFactory() {
+		for (Block b : getRelevantBlocks()) {
+			if (FactoryMod.getManager().factoryExistsAt(b.getLocation())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

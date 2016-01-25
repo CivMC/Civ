@@ -222,6 +222,11 @@ public class FactoryModManager {
 			if (b.getType() == Material.WORKBENCH) {
 				FurnCraftChestStructure fccs = new FurnCraftChestStructure(b);
 				if (fccs.isComplete()) {
+					if (fccs.blockedByExistingFactory()) {
+						p.sendMessage(ChatColor.RED
+								+ "At least one of the blocks of this factory is already part of another factory");
+						return;
+					}
 					HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
 							.get(FurnCraftChestStructure.class);
 					if (eggs != null) {
@@ -240,18 +245,23 @@ public class FactoryModManager {
 						} else {
 							p.sendMessage(ChatColor.RED
 									+ "There is no factory with the given creation materials");
-							FactoryMod.sendResponse("WrongFactoryCreationItems", p);
+							FactoryMod.sendResponse(
+									"WrongFactoryCreationItems", p);
 						}
 					}
 					return;
-				}
-				else {
+				} else {
 					FactoryMod.sendResponse("WrongFactoryBlockSetup", p);
 				}
 			}
 			if (b.getType() == Material.DISPENSER) {
 				PipeStructure ps = new PipeStructure(b);
 				if (ps.isComplete()) {
+					if (ps.blockedByExistingFactory()) {
+						p.sendMessage(ChatColor.RED
+								+ "At least one of the blocks of this factory is already part of another factory");
+						return;
+					}
 					HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
 							.get(PipeStructure.class);
 					if (eggs != null) {
@@ -277,18 +287,23 @@ public class FactoryModManager {
 						} else {
 							p.sendMessage(ChatColor.RED
 									+ "There is no pipe with the given creation materials");
-							FactoryMod.sendResponse("WrongPipeCreationItems", p);
+							FactoryMod
+									.sendResponse("WrongPipeCreationItems", p);
 						}
 					}
 					return;
-				}
-				else {
+				} else {
 					FactoryMod.sendResponse("WrongPipeBlockSetup", p);
 				}
 			}
 			if (b.getType() == Material.DROPPER) {
 				BlockFurnaceStructure bfs = new BlockFurnaceStructure(b);
 				if (bfs.isComplete()) {
+					if (bfs.blockedByExistingFactory()) {
+						p.sendMessage(ChatColor.RED
+								+ "At least one of the blocks of this factory is already part of another factory");
+						return;
+					}
 					HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
 							.get(BlockFurnaceStructure.class);
 					if (eggs != null) {
@@ -309,11 +324,11 @@ public class FactoryModManager {
 						} else {
 							p.sendMessage(ChatColor.RED
 									+ "There is no sorter with the given creation materials");
-							FactoryMod.sendResponse("WrongSorterCreationItems", p);
+							FactoryMod.sendResponse("WrongSorterCreationItems",
+									p);
 						}
 					}
-				}
-				else {
+				} else {
 					FactoryMod.sendResponse("WrongSorterBlockSetup", p);
 				}
 			}
