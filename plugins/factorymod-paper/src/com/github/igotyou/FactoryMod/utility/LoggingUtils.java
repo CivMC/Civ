@@ -13,7 +13,7 @@ import com.github.igotyou.FactoryMod.FactoryMod;
 public class LoggingUtils {
 
 	public static void log(String msg) {
-		FactoryMod.getPlugin().getLogger().log(Level.FINE, msg);
+		FactoryMod.getPlugin().getLogger().log(Level.INFO, msg);
 	}
 
 	private static String serializeInventory(Inventory i) {

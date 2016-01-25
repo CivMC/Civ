@@ -116,15 +116,6 @@ public abstract class Factory implements Runnable {
 	 */
 	public abstract void attemptToActivate(Player p);
 
-	/**
-	 * Gets all the information needed to recreate this factory at a later
-	 * point. The implementation of this method should be in line with the egg
-	 * of the factory type to ensure persistence past restarts without problems
-	 * 
-	 * @return Everything needed to recreate this factory
-	 */
-	public abstract String serialize();
-
 	public void scheduleUpdate() {
 		FactoryMod
 				.getPlugin()
@@ -135,10 +126,12 @@ public abstract class Factory implements Runnable {
 	}
 
 	public void turnFurnaceOn(Block f) {
+		if (f.getType() != Material.FURNACE) {
+			return;
+		}
 		Furnace furnace = (Furnace) f.getState();
 		ItemStack[] oldContents = furnace.getInventory().getContents();
 		BlockFace facing = ((DirectionalContainer)furnace.getData()).getFacing();
-		System.out.println(facing);
 		furnace.getInventory().clear();
 		f.setType(Material.BURNING_FURNACE);
 		furnace = (Furnace) f.getState();
@@ -155,10 +148,12 @@ public abstract class Factory implements Runnable {
 	}
 
 	public void turnFurnaceOff(Block f) {
+		if (f.getType() != Material.FURNACE) {
+			return;
+		}
 		Furnace furnace = (Furnace) f.getState();
 		ItemStack[] oldContents = furnace.getInventory().getContents();
 		BlockFace facing = ((DirectionalContainer)furnace.getData()).getFacing();
-		System.out.println(facing);
 		furnace.getInventory().clear();
 		f.setType(Material.FURNACE);
 		furnace = (Furnace) f.getState();
@@ -168,18 +163,4 @@ public abstract class Factory implements Runnable {
 		furnace.update();
 		furnace.getInventory().setContents(oldContents);
 	}
-
-	public String serializeBlock(Block b) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(separator);
-		sb.append(b.getWorld().getName());
-		sb.append(separator);
-		sb.append(b.getX());
-		sb.append(separator);
-		sb.append(b.getY());
-		sb.append(separator);
-		sb.append(b.getZ());
-		return sb.toString();
-	}
-
 }

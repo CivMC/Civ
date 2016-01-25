@@ -52,5 +52,9 @@ public class BlockFurnaceStructure extends MultiBlockStructure {
 		complete = (center.getType() == Material.DROPPER && (furnace
 				.getType() == Material.FURNACE || furnace.getType() == Material.BURNING_FURNACE));
 	}
+	
+	public List <Block> getRelevantBlocks() {
+		return getAllBlocks();
+	}
 
 }

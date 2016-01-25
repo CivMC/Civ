@@ -41,8 +41,6 @@ public class Sorter extends Factory {
 		for (BlockFace bf : MultiBlockStructure.allBlockSides) {
 			assignedMaterials.put(bf, new ItemMap());
 		}
-		assignedMaterials.remove(mbs.getCenter().getBlock()
-				.getFace(((BlockFurnaceStructure) mbs).getFurnace()));
 	}
 
 	public void attemptToActivate(Player p) {
@@ -50,7 +48,6 @@ public class Sorter extends Factory {
 				+ "is attempting to activate " + getLogData());
 		mbs.recheckComplete();
 		if (mbs.isComplete()) {
-			activate();
 			if (pm.powerAvailable()) {
 				if (sortableMaterialsAvailable()) {
 					activate();
@@ -163,7 +160,7 @@ public class Sorter extends Factory {
 				ItemMap im = assignedMaterials.get(bf);
 				for (ItemStack is : inv.getContents()) {
 					if (is != null && is.getType() != Material.AIR
-							&& im.getAmount(is) != 0) {
+							&& im != null && im.getAmount(is) != 0) {
 						int removeAmount = Math.min(leftToSort, is.getAmount());
 						ItemStack rem = is.clone();
 						rem.setAmount(removeAmount);
@@ -207,6 +204,10 @@ public class Sorter extends Factory {
 	public void setRunTime(int runtime) {
 		this.runTime = runtime;
 	}
+	
+	public int getRunTime() {
+		return runTime;
+	}
 
 	public Inventory getCenterInventory() {
 		return ((InventoryHolder) mbs.getCenter().getBlock().getState())
@@ -232,30 +233,4 @@ public class Sorter extends Factory {
 	public int getMatsPerSide() {
 		return matsPerSide;
 	}
-
-	public String serialize() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("SORTER");
-		sb.append(separator);
-		sb.append(name);
-		sb.append(separator);
-		sb.append(runTime);
-		for (Entry<BlockFace, ItemMap> entry : assignedMaterials.entrySet()) {
-			sb.append(separator);
-			sb.append(entry.getKey().toString());
-			for (ItemStack is : entry.getValue().getItemStackRepresentation()) {
-				sb.append(separator);
-				sb.append(is.getType().toString());
-				sb.append(separator);
-				sb.append(is.getDurability());
-			}
-			sb.append(separator);
-			sb.append("STOP");
-		}
-		for (Block b : mbs.getAllBlocks()) {
-			sb.append(serializeBlock(b));
-		}
-		return sb.toString();
-	}
-
 }

@@ -65,6 +65,10 @@ public class SorterInteractionManager implements IInteractionManager {
 				return;
 			}
 			ItemStack is = p.getItemInHand();
+			if (is == null) {
+				return;
+				//no item in hand
+			}
 			BlockFace side = sorter.getSide(is);
 			if (side == null) {
 				sorter.addAssignment(bf, is);

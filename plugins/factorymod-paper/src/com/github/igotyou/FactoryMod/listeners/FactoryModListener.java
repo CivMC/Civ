@@ -56,12 +56,8 @@ public class FactoryModListener implements Listener {
 	@EventHandler
 	public void redstoneChange(BlockRedstoneEvent e) {
 		if (e.getOldCurrent() == e.getNewCurrent()) {
-			System.out.println(e.getBlock().getLocation() + " unchanged at "
-					+ e.getOldCurrent());
 			return;
 		}
-		System.out.println("Switching " + e.getBlock().getLocation().toString()
-				+ " from " + e.getOldCurrent() + " to " + e.getNewCurrent());
 		for (BlockFace face : MultiBlockStructure.allBlockSides) {
 			Factory f = manager.getFactoryAt(e.getBlock().getRelative(face));
 			if (f != null) {

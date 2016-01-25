@@ -48,7 +48,8 @@ public class FactoryModManager {
 
 	public FactoryModManager(FactoryMod plugin,
 			Material factoryInteractionMaterial, boolean citadelEnabled,
-			int redstonePowerOn, int redstoneRecipeChange, boolean logInventories) {
+			int redstonePowerOn, int redstoneRecipeChange,
+			boolean logInventories) {
 		this.plugin = plugin;
 		this.factoryInteractionMaterial = factoryInteractionMaterial;
 		this.citadelEnabled = citadelEnabled;
@@ -90,7 +91,7 @@ public class FactoryModManager {
 	public void setCompactLore(String lore) {
 		compactLore = lore;
 	}
-	
+
 	public boolean logInventories() {
 		return logInventories;
 	}
@@ -129,7 +130,7 @@ public class FactoryModManager {
 	 */
 	public void addFactory(Factory f) {
 		factories.add(f);
-		for (Block b : f.getMultiBlockStructure().getAllBlocks()) {
+		for (Block b : f.getMultiBlockStructure().getRelevantBlocks()) {
 			locations.put(b.getLocation(), f);
 		}
 	}
@@ -218,80 +219,102 @@ public class FactoryModManager {
 	public void attemptCreation(Block b, Player p) {
 		if (!factoryExistsAt(b.getLocation())) {
 			// Cycle through possible structures here
-			FurnCraftChestStructure fccs = new FurnCraftChestStructure(b);
-			if (fccs.isComplete()) {
-				HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
-						.get(FurnCraftChestStructure.class);
-				if (eggs != null) {
-					IFactoryEgg egg = eggs.get(new ItemMap(((Chest) (fccs
-							.getChest().getState())).getInventory()));
-					if (egg != null) {
-						Factory f = egg.hatch(fccs, p);
-						if (f != null) {
-							((Chest) (fccs.getChest().getState()))
-									.getInventory().clear();
-							addFactory(f);
-							p.sendMessage(ChatColor.GREEN
-									+ "Successfully created " + f.getName());
-						}
-					} else {
-						p.sendMessage(ChatColor.RED
-								+ "There is no factory with the given creation materials");
-					}
-				}
-				return;
-			}
-			PipeStructure ps = new PipeStructure(b);
-			if (ps.isComplete()) {
-				HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
-						.get(PipeStructure.class);
-				if (eggs != null) {
-					IFactoryEgg egg = eggs.get(new ItemMap(((Dispenser) (ps
-							.getStart().getState())).getInventory()));
-					if (egg != null) {
-						if (ps.getGlassColor() != ((PipeEgg) egg).getColor()) {
+			if (b.getType() == Material.WORKBENCH) {
+				FurnCraftChestStructure fccs = new FurnCraftChestStructure(b);
+				if (fccs.isComplete()) {
+					HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
+							.get(FurnCraftChestStructure.class);
+					if (eggs != null) {
+						IFactoryEgg egg = eggs.get(new ItemMap(((Chest) (fccs
+								.getChest().getState())).getInventory()));
+						if (egg != null) {
+							Factory f = egg.hatch(fccs, p);
+							if (f != null) {
+								((Chest) (fccs.getChest().getState()))
+										.getInventory().clear();
+								addFactory(f);
+								p.sendMessage(ChatColor.GREEN
+										+ "Successfully created " + f.getName());
+								FactoryMod.sendResponse("FactoryCreation", p);
+							}
+						} else {
 							p.sendMessage(ChatColor.RED
-									+ "You dont have the right color of glass for this pipe");
-							return;
+									+ "There is no factory with the given creation materials");
+							FactoryMod.sendResponse("WrongFactoryCreationItems", p);
 						}
-						Factory f = egg.hatch(ps, p);
-						if (f != null) {
-							((Dispenser) (ps.getStart().getState()))
-									.getInventory().clear();
-							addFactory(f);
-							p.sendMessage(ChatColor.GREEN
-									+ "Successfully created " + f.getName());
-						}
+					}
+					return;
+				}
+				else {
+					FactoryMod.sendResponse("WrongFactoryBlockSetup", p);
+				}
+			}
+			if (b.getType() == Material.DISPENSER) {
+				PipeStructure ps = new PipeStructure(b);
+				if (ps.isComplete()) {
+					HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
+							.get(PipeStructure.class);
+					if (eggs != null) {
+						IFactoryEgg egg = eggs.get(new ItemMap(((Dispenser) (ps
+								.getStart().getState())).getInventory()));
+						if (egg != null) {
+							if (ps.getGlassColor() != ((PipeEgg) egg)
+									.getColor()) {
+								p.sendMessage(ChatColor.RED
+										+ "You dont have the right color of glass for this pipe");
+								return;
+							}
+							Factory f = egg.hatch(ps, p);
+							if (f != null) {
+								((Dispenser) (ps.getStart().getState()))
+										.getInventory().clear();
+								addFactory(f);
+								p.sendMessage(ChatColor.GREEN
+										+ "Successfully created " + f.getName());
+								FactoryMod.sendResponse("PipeCreation", p);
+							}
 
-					} else {
-						p.sendMessage(ChatColor.RED
-								+ "There is no pipe with the given creation materials");
+						} else {
+							p.sendMessage(ChatColor.RED
+									+ "There is no pipe with the given creation materials");
+							FactoryMod.sendResponse("WrongPipeCreationItems", p);
+						}
+					}
+					return;
+				}
+				else {
+					FactoryMod.sendResponse("WrongPipeBlockSetup", p);
+				}
+			}
+			if (b.getType() == Material.DROPPER) {
+				BlockFurnaceStructure bfs = new BlockFurnaceStructure(b);
+				if (bfs.isComplete()) {
+					HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
+							.get(BlockFurnaceStructure.class);
+					if (eggs != null) {
+						IFactoryEgg egg = eggs.get(new ItemMap(((Dropper) (bfs
+								.getCenter().getBlock().getState()))
+								.getInventory()));
+						if (egg != null) {
+							Factory f = egg.hatch(bfs, p);
+							if (f != null) {
+								((Dropper) (bfs.getCenter().getBlock()
+										.getState())).getInventory().clear();
+								addFactory(f);
+								p.sendMessage(ChatColor.GREEN
+										+ "Successfully created " + f.getName());
+								FactoryMod.sendResponse("SorterCreation", p);
+							}
+
+						} else {
+							p.sendMessage(ChatColor.RED
+									+ "There is no sorter with the given creation materials");
+							FactoryMod.sendResponse("WrongSorterCreationItems", p);
+						}
 					}
 				}
-				return;
-			}
-			BlockFurnaceStructure bfs = new BlockFurnaceStructure(b);
-			if (bfs.isComplete()) {
-				HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
-						.get(BlockFurnaceStructure.class);
-				if (eggs != null) {
-					IFactoryEgg egg = eggs
-							.get(new ItemMap(((Dropper) (bfs.getCenter()
-									.getBlock().getState())).getInventory()));
-					if (egg != null) {
-						Factory f = egg.hatch(bfs, p);
-						if (f != null) {
-							((Dropper) (bfs.getCenter().getBlock().getState()))
-									.getInventory().clear();
-							addFactory(f);
-							p.sendMessage(ChatColor.GREEN
-									+ "Successfully created " + f.getName());
-						}
-
-					} else {
-						p.sendMessage(ChatColor.RED
-								+ "There is no sorter with the given creation materials");
-					}
+				else {
+					FactoryMod.sendResponse("WrongSorterBlockSetup", p);
 				}
 			}
 		}

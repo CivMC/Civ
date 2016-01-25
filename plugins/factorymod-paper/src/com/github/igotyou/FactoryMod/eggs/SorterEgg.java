@@ -50,6 +50,7 @@ public class SorterEgg implements IFactoryEgg {
 				fuelConsumptionIntervall);
 		Sorter sorter = new Sorter(im, rm, pm, mbs, updateTime, name, sortTime,
 				matsPerSide, sortAmount);
+		((NoRepairDestroyOnBreakManager)rm).setFactory(sorter);
 		((SorterInteractionManager) im).setSorter(sorter);
 		return sorter;
 	}
@@ -65,6 +66,7 @@ public class SorterEgg implements IFactoryEgg {
 		Sorter sorter = new Sorter(im, rm, pm, ps, updateTime, name, sortTime,
 				matsPerSide, sortAmount);
 		((SorterInteractionManager) im).setSorter(sorter);
+		((NoRepairDestroyOnBreakManager)rm).setFactory(sorter);
 		sorter.setAssignments(assignments);
 		if (runTime != 0) {
 			sorter.attemptToActivate(null);

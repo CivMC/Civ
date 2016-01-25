@@ -347,22 +347,4 @@ public class FurnCraftChestFactory extends Factory {
 			runCount.put(rec, 0);
 		}
 	}
-
-	public String serialize() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("FCC");
-		sb.append(separator);
-		sb.append(getName());
-		sb.append(separator);
-		sb.append(((PercentageHealthRepairManager) rm).getRawHealth());
-		sb.append(separator);
-		sb.append(currentProductionTimer);
-		sb.append(separator);
-		sb.append(currentRecipe.getRecipeName());
-		for (Block b : mbs.getAllBlocks()) {
-			sb.append(serializeBlock(b));
-		}
-		return sb.toString();
-	}
-
 }

@@ -94,6 +94,11 @@ public abstract class MultiBlockStructure {
 	 * @return center block of the factory which it was created from
 	 */
 	public abstract Location getCenter();
+	
+	/**
+	 * @return All interaction blocks and blocks that are not allowed to be used in two factories at once
+	 */
+	public abstract List <Block> getRelevantBlocks();
 
 	public static List<Block> getAdjacentBlocks(Block b) {
 		List<Block> blocks = new LinkedList<Block>();

@@ -35,7 +35,7 @@ public class Pipe extends Factory {
 		allowedMaterials = null;
 		runTime = 0;
 	}
-	
+
 	public void attemptToActivate(Player p) {
 		// TODO Citadel stuff
 		LoggingUtils.log((p != null ? p.getName() : "Redstone")
@@ -61,8 +61,7 @@ public class Pipe extends Factory {
 							+ "No items available to transfer");
 				}
 			}
-		}
-		else {
+		} else {
 			rm.breakIt();
 		}
 	}
@@ -208,28 +207,7 @@ public class Pipe extends Factory {
 		}
 	}
 
-	public String serialize() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("PIPE");
-		sb.append(separator);
-		sb.append(name);
-		sb.append(separator);
-		sb.append(runTime);
-		if (allowedMaterials == null) {
-			sb.append(separator);
-			sb.append("NONE");
-		} else {
-			for (Material m : allowedMaterials) {
-				sb.append(separator);
-				sb.append(m.toString());
-			}
-		}
-		sb.append(separator);
-		sb.append("BLOCKS");
-		for (Block b : mbs.getAllBlocks()) {
-			sb.append(serializeBlock(b));
-		}
-		return sb.toString();
+	public int getRunTime() {
+		return runTime;
 	}
-
 }

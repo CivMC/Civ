@@ -97,6 +97,10 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 	public Block getChest() {
 		return Chest;
 	}
+	
+	public List <Block> getRelevantBlocks() {
+		return getAllBlocks();
+	}
 
 	public List<Block> getAllBlocks() {
 		LinkedList<Block> result = new LinkedList<Block>();

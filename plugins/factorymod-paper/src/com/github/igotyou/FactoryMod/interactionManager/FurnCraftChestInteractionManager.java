@@ -1,7 +1,6 @@
 package com.github.igotyou.FactoryMod.interactionManager;
 
 import java.util.HashMap;
-import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,7 +15,6 @@ import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
-import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
@@ -55,16 +53,19 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 
 	public void redStoneEvent(BlockRedstoneEvent e, Block factoryBlock) {
 		int threshold = FactoryMod.getManager().getRedstonePowerOn();
-		if (factoryBlock.getLocation().equals(fccf.getFurnace().getLocation()))  {
+		if (factoryBlock.getLocation().equals(fccf.getFurnace().getLocation())) {
 			if (e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold
 					&& fccf.isActive()) {
-				if ((rm == null || MultiBlockStructure.citadelRedstoneChecks(e.getBlock()))) {
-				fccf.deactivate();
+				if ((rm == null || MultiBlockStructure.citadelRedstoneChecks(e
+						.getBlock()))) {
+					fccf.deactivate();
 				}
 			} else if (e.getOldCurrent() < threshold
 					&& e.getNewCurrent() >= threshold && !fccf.isActive()) {
-				if  (rm == null || MultiBlockStructure.citadelRedstoneChecks(e.getBlock())) {
-				fccf.attemptToActivate(null);
+				if (rm == null
+						|| MultiBlockStructure.citadelRedstoneChecks(e
+								.getBlock())) {
+					fccf.attemptToActivate(null);
 				}
 			} else {
 				return;
@@ -74,7 +75,8 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 
 	public void blockBreak(Player p, Block b) {
 		fccf.getRepairManager().breakIt();
-		if (p != null) {
+		if (p != null && !fccf.getRepairManager().inDisrepair()) {
+			FactoryMod.sendResponse("FactoryBreak", p);
 			p.sendMessage(ChatColor.DARK_RED
 					+ "You broke the factory, it is in disrepair now");
 		}
@@ -172,8 +174,11 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			for (IRecipe rec : fccf.getRecipes()) {
 				InputRecipe recipe = (InputRecipe) (rec);
 				ItemStack recStack = recipe.getRecipeRepresentation();
-				ISUtils.addLore(recStack, ChatColor.GOLD + "Ran "
-						+ String.valueOf(fccf.getRunCount(recipe)) + " times");
+				ISUtils.addLore(
+						recStack,
+						ChatColor.GOLD + "Ran "
+								+ String.valueOf(fccf.getRunCount(recipe))
+								+ " times");
 				Clickable c = new Clickable(recStack) {
 
 					@Override
@@ -186,6 +191,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 							p.sendMessage(ChatColor.GREEN
 									+ "Switched recipe to "
 									+ recipes.get(this).getRecipeName());
+							FactoryMod.sendResponse("RecipeSwitch", p);
 						}
 
 					}
@@ -212,8 +218,10 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			if (fccf.isActive()) {
 				fccf.deactivate();
 				p.sendMessage(ChatColor.RED + "Deactivated " + fccf.getName());
+				FactoryMod.sendResponse("FactoryActivation", p);
 			} else {
 				fccf.attemptToActivate(p);
+				FactoryMod.sendResponse("FactoryDeactivation", p);
 			}
 		}
 	}

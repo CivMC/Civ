@@ -82,7 +82,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 				fpm, fccs, updateTime, name, recipes);
 		fccim.setFactory(fccf);
 		for (IRecipe recipe : recipes) {
-			if (recipe.getRecipeName() == selectedRecipe) {
+			if (recipe.getRecipeName().equals(selectedRecipe)) {
 				fccf.setRecipe(recipe);
 			}
 		}

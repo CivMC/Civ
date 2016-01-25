@@ -103,6 +103,13 @@ public class PipeStructure extends MultiBlockStructure {
 		res.add(end);
 		return res;
 	}
+	
+	public List <Block> getRelevantBlocks() {
+		List<Block> res = new LinkedList<Block>();
+		res.add(start);
+		res.add(furnace);
+		return res;
+	}
 
 	public void recheckComplete() {
 		if (start == null

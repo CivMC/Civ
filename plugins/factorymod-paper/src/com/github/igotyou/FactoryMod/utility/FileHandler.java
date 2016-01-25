@@ -1,21 +1,20 @@
 package com.github.igotyou.FactoryMod.utility;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
@@ -27,6 +26,11 @@ import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.eggs.PipeEgg;
 import com.github.igotyou.FactoryMod.eggs.SorterEgg;
 import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.factories.Pipe;
+import com.github.igotyou.FactoryMod.factories.Sorter;
+import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
+import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 
 public class FileHandler {
 	private FactoryMod plugin;
@@ -38,9 +42,9 @@ public class FileHandler {
 		plugin = FactoryMod.getPlugin();
 		this.manager = manager;
 		saveFile = new File(plugin.getDataFolder().getAbsolutePath()
-				+ File.separator + "factoryData.txt");
+				+ File.separator + "factoryData.yml");
 		backup = new File(plugin.getDataFolder().getAbsolutePath()
-				+ File.separator + "factoryDataPreviousSave.txt");
+				+ File.separator + "factoryDataPreviousSave.yml");
 	}
 
 	public void save(Collection<Factory> factories) {
@@ -53,14 +57,50 @@ public class FileHandler {
 		}
 		try {
 			saveFile.createNewFile();
-			FileWriter fw = new FileWriter(saveFile);
-			BufferedWriter buff = new BufferedWriter(fw);
+			YamlConfiguration config = YamlConfiguration
+					.loadConfiguration(saveFile);
 			for (Factory f : factories) {
-				buff.write(f.serialize());
-				buff.newLine();
+				String current = serializeLocation(f.getMultiBlockStructure()
+						.getCenter());
+				config.set(current + ".name", f.getName());
+				config.getConfigurationSection(current).createSection("blocks");
+				for (Block b : f.getMultiBlockStructure().getAllBlocks()) {
+					configureLocation(config.getConfigurationSection(current)
+							.getConfigurationSection("blocks"), b.getLocation());
+				}
+				if (f instanceof FurnCraftChestFactory) {
+					FurnCraftChestFactory fccf = (FurnCraftChestFactory) f;
+					config.set(current + ".type", "FCC");
+					config.set(current + ".health",
+							((PercentageHealthRepairManager) fccf
+									.getRepairManager()).getRawHealth());
+					config.set(current + ".runtime", fccf.getRunningTime());
+					config.set(current + ".selectedRecipe", fccf
+							.getCurrentRecipe().getRecipeName());
+				} else if (f instanceof Pipe) {
+					Pipe p = (Pipe) f;
+					config.set(current + ".type", "PIPE");
+					config.set(current + ".runtime", p.getRunTime());
+					List<String> mats = new LinkedList<String>();
+					List<Material> materials = p.getAllowedMaterials();
+					if (materials != null) {
+						for (Material m : materials) {
+							mats.add(m.toString());
+						}
+					}
+					config.set(current + ".materials", mats);
+				} else if (f instanceof Sorter) {
+					Sorter s = (Sorter) f;
+					config.set(current + ".runtime", s.getRunTime());
+					config.set(current + ".type", "SORTER");
+					for (BlockFace face : MultiBlockStructure.allBlockSides) {
+						config.set(current + ".faces." + face.toString(), s
+								.getItemsForSide(face)
+								.getItemStackRepresentation().toArray());
+					}
+				}
 			}
-			buff.flush();
-			buff.close();
+			config.save(saveFile);
 		} catch (Exception e) {
 			// In case anything goes wrong while saving we always keep the
 			// latest valid backup
@@ -68,6 +108,19 @@ public class FileHandler {
 			e.printStackTrace();
 			saveFile.delete();
 		}
+	}
+
+	private void configureLocation(ConfigurationSection config, Location loc) {
+		String identifier = serializeLocation(loc);
+		config.set(identifier + ".world", loc.getWorld().getName());
+		config.set(identifier + ".x", loc.getBlockX());
+		config.set(identifier + ".y", loc.getBlockY());
+		config.set(identifier + ".z", loc.getBlockZ());
+	}
+
+	private String serializeLocation(Location loc) {
+		return loc.getWorld().getName() + "#" + loc.getBlockX() + "#"
+				+ loc.getBlockY() + "#" + loc.getBlockZ();
 	}
 
 	public void load(Map<String, IFactoryEgg> eggs) {
@@ -86,111 +139,71 @@ public class FileHandler {
 
 	private void loadFromFile(File f, Map<String, IFactoryEgg> eggs) {
 		int counter = 0;
-		try {
-			FileReader fr = new FileReader(f);
-			BufferedReader reader = new BufferedReader(fr);
-			String line = reader.readLine();
-			while (line != null) {
-				String[] content = line.split("#");
-				switch (content[0]) {
-				case "FCC":
-					FurnCraftChestEgg egg = (FurnCraftChestEgg) eggs
-							.get(content[1]);
-					if (egg == null) {
-						plugin.warning("Save file contained factory named "
-								+ content[1]
-								+ " , but no factory with this name was found in the config");
-						line = reader.readLine();
-						continue;
-					}
-					int health = Integer.parseInt(content[2]);
-					int productionTimer = Integer.parseInt(content[3]);
-					String selectedRecipe = content[4];
-					List<Block> blocks = new LinkedList<Block>();
-					for (int i = 5; i < 17; i += 4) {
-						World w = plugin.getServer().getWorld(content[i]);
-						int x = Integer.parseInt(content[i + 1]);
-						int y = Integer.parseInt(content[i + 2]);
-						int z = Integer.parseInt(content[i + 3]);
-						blocks.add(new Location(w, x, y, z).getBlock());
-					}
-					Factory fac = egg.revive(blocks, health, selectedRecipe,
-							productionTimer);
-					manager.addFactory(fac);
-					counter++;
-					break;
-				case "PIPE":
-					PipeEgg pipeEgg = (PipeEgg) eggs.get(content[1]);
-					int runTime = Integer.parseInt(content[2]);
-					List<Material> mats = new LinkedList<Material>();
-					int i = 3;
-					for (; i < content.length; i++) {
-						if (content[i].equals("NONE")) {
-							mats = null;
-							i += 2;
-							break;
-						}
-						if (content[i].equals("BLOCKS")) {
-							i++;
-							break;
-						}
-						Material m = Material.valueOf(content[i]);
-						mats.add(m);
-					}
-					List<Block> pipeBlocks = new LinkedList<Block>();
-					for (; i < content.length; i += 4) {
-						World w = plugin.getServer().getWorld(content[i]);
-						int x = Integer.parseInt(content[i + 1]);
-						int y = Integer.parseInt(content[i + 2]);
-						int z = Integer.parseInt(content[i + 3]);
-						pipeBlocks.add(new Location(w, x, y, z).getBlock());
-					}
-					Factory p = pipeEgg.revive(pipeBlocks, mats, runTime);
-					manager.addFactory(p);
-					counter++;
-					break;
-				case "SORTER":
-					Map <BlockFace, ItemMap> assignments = new HashMap<BlockFace, ItemMap>();
-					SorterEgg sorterEgg = (SorterEgg) eggs.get(content[1]);
-					int runTimeSorter = Integer.valueOf(content[2]);
-					int index = 3;
-					for (int q = 0; q < 6; q++) {
-						BlockFace bf = BlockFace.valueOf(content[index++]);
-						ItemMap im = new ItemMap();
-						while(true) {
-							if (content[index].equals("STOP")) {
-								index++;
-								break;
-							}
-							else {
-								Material m = Material.valueOf(content[index]);
-								int dura = Integer.valueOf(content[index+1]);
-								im.addItemStack(new ItemStack(m, 1, (short)dura));
-								index +=2;
-								
-							}
-						}
-						assignments.put(bf, im);
-					}
-					List <Block> sorterBlocks = new LinkedList<Block>();
-					for (; index < content.length; index += 4) {
-						World w = plugin.getServer().getWorld(content[index]);
-						int x = Integer.parseInt(content[index+1]);
-						int y = Integer.parseInt(content[index + 2]);
-						int z = Integer.parseInt(content[index + 3]);
-						sorterBlocks.add(new Location(w, x, y, z).getBlock());
-					}
-					Factory s = sorterEgg.revive(sorterBlocks, assignments, runTimeSorter);
-					manager.addFactory(s);
-					counter++;
-					break;					
-				}
-				line = reader.readLine();
+		YamlConfiguration config = YamlConfiguration
+				.loadConfiguration(saveFile);
+		for (String key : config.getKeys(false)) {
+			ConfigurationSection current = config.getConfigurationSection(key);
+			String type = current.getString("type");
+			String name = current.getString("name");
+			int runtime = current.getInt("runtime");
+			List<Block> blocks = new LinkedList<Block>();
+			for (String blockKey : current.getConfigurationSection("blocks")
+					.getKeys(false)) {
+				ConfigurationSection currSec = current.getConfigurationSection(
+						"blocks").getConfigurationSection(blockKey);
+				String worldName = currSec.getString("world");
+				int x = currSec.getInt("x");
+				int y = currSec.getInt("y");
+				int z = currSec.getInt("z");
+				World w = Bukkit.getWorld(worldName);
+				blocks.add(new Location(w, x, y, z).getBlock());
 			}
-			reader.close();
-		} catch (Exception e) {
-			plugin.severe("Fatal error while loading factory data");
-			e.printStackTrace();
+			switch (type) {
+			case "FCC":
+				FurnCraftChestEgg egg = (FurnCraftChestEgg) eggs.get(name);
+				if (egg == null) {
+					plugin.warning("Save file contained factory named "
+							+ name
+							+ " , but no factory with this name was found in the config");
+					continue;
+				}
+				int health = current.getInt("health");
+				String selectedRecipe = current.getString("selectedRecipe");
+				Factory fac = egg.revive(blocks, health, selectedRecipe,
+						runtime);
+				manager.addFactory(fac);
+				counter++;
+				break;
+			case "PIPE":
+				PipeEgg pipeEgg = (PipeEgg) eggs.get(name);
+				List<Material> mats = new LinkedList<Material>();
+				if (current.isSet("materials")) {
+					for (String mat : current.getStringList("materials")) {
+						mats.add(Material.valueOf(mat));
+					}
+				} else {
+					mats = null;
+				}
+				Factory p = pipeEgg.revive(blocks, mats, runtime);
+				manager.addFactory(p);
+				counter++;
+				break;
+			case "SORTER":
+				Map<BlockFace, ItemMap> assignments = new HashMap<BlockFace, ItemMap>();
+				SorterEgg sorterEgg = (SorterEgg) eggs.get(name);
+				for (String face : current.getConfigurationSection("faces")
+						.getKeys(false)) {
+					List<ItemStack> stacks = (List<ItemStack>) current
+							.getConfigurationSection("faces").get(face);
+					// it works, okay?
+					ItemMap map = new ItemMap(stacks);
+					assignments.put(BlockFace.valueOf(face), map);
+				}
+				Factory s = sorterEgg.revive(blocks, assignments, runtime);
+				manager.addFactory(s);
+				counter++;
+				break;
+			}
 		}
 		plugin.info("Loaded " + counter + " factory from save file");
 	}
