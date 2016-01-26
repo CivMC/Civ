@@ -9,13 +9,20 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
-public class CompactItemListener implements Listener{
-	private String compactLore;	
-	
+/**
+ * Used to handle events related to items with compacted lore
+ *
+ */
+public class CompactItemListener implements Listener {
+	private String compactLore;
+
 	public CompactItemListener(String compactLore) {
 		this.compactLore = compactLore;
 	}
-	
+
+	/**
+	 * Prevents players from placing compacted blocks
+	 */
 	@EventHandler
 	public void blockPlaceEvent(BlockPlaceEvent e) {
 		if (!e.getItemInHand().hasItemMeta()) {
@@ -24,20 +31,24 @@ public class CompactItemListener implements Listener{
 		if (!e.getItemInHand().getItemMeta().hasLore()) {
 			return;
 		}
-		if (e.getItemInHand().getItemMeta().getLore().get(0).equals(compactLore)) {
+		if (e.getItemInHand().getItemMeta().getLore().get(0)
+				.equals(compactLore)) {
 			e.setCancelled(true);
 			Player p = e.getPlayer();
 			if (p != null) {
-			p.sendMessage("You can not place compacted blocks");
+				p.sendMessage("You can not place compacted blocks");
 			}
 		}
-		
+
 	}
-	
+
+	/**
+	 * Prevents players from crafting with compacted materials
+	 */
 	@EventHandler
 	public void craftingEvent(CraftItemEvent e) {
 		CraftingInventory ci = e.getInventory();
-		for(ItemStack is:ci.getMatrix()) {
+		for (ItemStack is : ci.getMatrix()) {
 			if (is == null) {
 				continue;
 			}
@@ -51,7 +62,8 @@ public class CompactItemListener implements Listener{
 				e.setCancelled(true);
 				HumanEntity h = e.getWhoClicked();
 				if (h instanceof Player && h != null) {
-				((Player)h).sendMessage("You can not craft with compacted items");
+					((Player) h)
+							.sendMessage("You can not craft with compacted items");
 				}
 				break;
 			}
