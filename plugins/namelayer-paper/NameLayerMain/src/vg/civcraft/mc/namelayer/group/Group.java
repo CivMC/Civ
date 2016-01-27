@@ -176,41 +176,7 @@ public class Group {
 	public boolean hasSubGroup(Group group){
 		return subgroups.contains(group);
 	}
-	
-	/**
-	 * Adds a Sub Group to this group.
-	 * @param group- The group to be added as a sub group.
-	 * @return true if it was added but false if the group in question 
-	 * is not a PrivateGroup or was already added.
-	 */
-	public boolean addSubGroup(Group group){
-		boolean success = false;
-		if (!hasSubGroup(group) && !hasSuperGroup(group)) {
-			subgroups.add(group);
-			db.addSubGroup(getName(), group.getName());
-			group.setSuperGroup(this);
-			
-			success = true;
-		}
-		return success;
-	}
-	/**
-	 * Removes a sub group from this group.
-	 * @param group- The group to remove.
-	 * @return Returns true if successful but false if this group didn't contain that subgroup.
-	 */
-	public boolean removeSubGroup(Group group){
-		boolean success = false;
-		if (hasSubGroup(group)) {
-			subgroups.remove(group);
-			db.removeSubGroup(getName(), group.getName());
-			group.removeSuperGroup();
-			
-			success = true;
-		}
-		return success;
-	}
-	
+		
 	/**
 	 * @return Returns the SubGroup for this group if there is one, null otherwise.
 	 */
@@ -240,44 +206,7 @@ public class Group {
 		}
 		return false;
 	}
-	
-	/**
-	 * Sets a super Group to the group.
-	 * @param group- The supergroup to set as.
-	 * @return true is the super group was successfully set, false otherwise
-	 */
-	public boolean setSuperGroup(Group group) {
-		boolean success = false;
-		if (!hasSuperGroup(group)) {
-			removeSuperGroup(); // remove supergroup if there is one
-			
-			db.addSubGroup(group.getName(), getName());
-			supergroup = group;
-			group.addSubGroup(this);
-			
-			success = true;
-		}
-		return success;
-	}
-	
-	/**
-	 * Removes the supergroup from this group if there is one, otherwise does nothing.
-	 * @return true if the supergroup was successfully removed, false otherwise
-	 */
-	public boolean removeSuperGroup() {
-		boolean success = false;
-		if (hasSuperGroup()) {
-			Group group = supergroup;
-			
-			db.removeSubGroup(group.getName(), getName());
-			supergroup = null;
-			group.removeSubGroup(this);
-			
-			success = true;
-		}
-		return success;
-	}
-	
+		
 	/**
 	 * Adds the player to be allowed to join a group into a specific PlayerType.
 	 * @param uuid- The UUID of the player.
@@ -338,7 +267,8 @@ public class Group {
 	 * @return Returns true if the player is a member, false otherwise.
 	 */
 	public boolean isMember(UUID uuid) {
-		return players.containsKey(uuid);
+		Map<UUID, PlayerType> members = getMembersMap();
+		return members.containsKey(uuid);
 	}
 
 	/**
@@ -348,8 +278,9 @@ public class Group {
 	 * @return Returns true if the player is a member of the specific playertype, otherwise false.
 	 */
 	public boolean isMember(UUID uuid, PlayerType type) {
-		if (players.containsKey(uuid))
-			return players.get(uuid).equals(type);
+		Map<UUID, PlayerType> members = getMembersMap();
+		if (members.containsKey(uuid))
+			return members.get(uuid).equals(type);
 		return false;
 	}
 
@@ -358,7 +289,8 @@ public class Group {
 	 * @return Returns the PlayerType of a UUID.
 	 */
 	public PlayerType getPlayerType(UUID uuid) {
-		return players.get(uuid);
+		Map<UUID, PlayerType> members = getMembersMap();
+		return members.get(uuid);
 	}
 
 	/**
