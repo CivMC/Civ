@@ -14,5 +14,6 @@ settings:
   allowTriggeringLevers: false
   togglerestartgroupcheck: false
   displayOwnerOnSnitchBreak: true
+  softDelete: true
 mercury:
   broadcastallservers: false

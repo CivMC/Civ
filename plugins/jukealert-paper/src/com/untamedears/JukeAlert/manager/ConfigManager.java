@@ -42,6 +42,7 @@ public class ConfigManager
     private boolean enableInvisibility;
     private boolean toggleRestartCheckGroup;
     private boolean displayOwnerOnBreak;
+    private boolean softDelete;
     
     private boolean broadcastAllServers;
 
@@ -114,6 +115,7 @@ public class ConfigManager
         enableInvisibility = loadBoolean("settings.enableinvisiblity", false);
         toggleRestartCheckGroup = loadBoolean("settings.togglerestartgroupcheck", false);
         displayOwnerOnBreak = loadBoolean("settings.displayOwnerOnSnitchBreak", true);
+        softDelete = loadBoolean("settings.softDelete", true);
 
         broadcastAllServers = loadBoolean("mercury.broadcastallservers", false);
         
@@ -365,6 +367,10 @@ public class ConfigManager
 
     public boolean isDisplayOwnerOnBreak() {
         return displayOwnerOnBreak;
+    }
+    
+    public boolean isSoftDelete() {
+    	return softDelete;
     }
     
     public boolean getToggleRestartCheckGroup(){

@@ -62,9 +62,11 @@ public class JukeAlertLogger {
     private PreparedStatement getSnitchLogStmt;
     private PreparedStatement getSnitchLogGroupStmt;
     private PreparedStatement getSnitchListStmt;
+    private PreparedStatement softDeleteSnitchLogStmt;
     private PreparedStatement deleteSnitchLogStmt;
     private PreparedStatement insertSnitchLogStmt;
     private PreparedStatement insertNewSnitchStmt;
+    private PreparedStatement softDeleteSnitchStmt;
     private PreparedStatement deleteSnitchStmt;
     private PreparedStatement updateGroupStmt;
     private PreparedStatement updateCuboidVolumeStmt;
@@ -87,6 +89,7 @@ public class JukeAlertLogger {
     private final int maxEntryLifetimeDays;
     private final int daysFromLastAdminVisitForLoggedSnitchCulling;
     private final int daysFromLastAdminVisitForNonLoggedSnitchCulling;
+    private final boolean softDelete;
     private final String host;
     private final String dbname;
     private final String username;
@@ -113,6 +116,7 @@ public class JukeAlertLogger {
         
         daysFromLastAdminVisitForLoggedSnitchCulling = configManager.getDaysFromLastAdminVisitForLoggedSnitchCulling();
         daysFromLastAdminVisitForNonLoggedSnitchCulling = configManager.getDaysFromLastAdminVisitForNonLoggedSnitchCulling();
+        softDelete = configManager.isSoftDelete();
 
         logsPerPage = configManager.getLogsPerPage();
         snitchsTbl = prefix + "snitchs";
@@ -203,6 +207,9 @@ public class JukeAlertLogger {
         db.silentExecute(String.format("ALTER TABLE %s ADD COLUMN (allow_triggering_lever bit);", snitchsTbl));
         db.silentExecute(String.format("UPDATE %s SET allow_triggering_lever = 0 WHERE allow_triggering_lever IS NULL;", snitchsTbl));
         db.silentExecute(String.format("ALTER TABLE %s MODIFY COLUMN allow_triggering_lever bit NOT NULL;", snitchsTbl));
+        
+        db.silentExecute(String.format("ALTER TABLE %s ADD COLUMN (soft_delete BOOL NOT NULL DEFAULT 0);", snitchsTbl));
+        db.silentExecute(String.format("ALTER TABLE %s ADD COLUMN (soft_delete BOOL NOT NULL DEFAULT 0);", snitchDetailsTbl));
         
         try {
 
@@ -362,6 +369,7 @@ public class JukeAlertLogger {
             				+ " 		{0} s                                                                                                  \n"
             				+ " 		INNER JOIN GroupNames filter                                                                           \n"
             				+ " 			ON filter.groupname = s.snitch_group                                                               \n"
+            				+ " 	 WHERE s.soft_delete = 0                                                                                   \n"
             				+ " 	 ORDER BY CASE                                                                                             \n"
             				+ " 		WHEN                                                                                                   \n"
             				+ " 			(s.snitch_should_log = 1 AND daysFromLastAdminVisitForLoggedSnitchCulling >= 1)                    \n"
@@ -400,10 +408,10 @@ public class JukeAlertLogger {
     private void initializeStatements() {
 
         getAllSnitchesStmt = db.prepareStatement(String.format(
-                "SELECT * FROM %s", snitchsTbl));
+                "SELECT * FROM %s WHERE soft_delete = 0", snitchsTbl));
 
         getAllSnitchesByWorldStmt = db.prepareStatement(String.format(
-                "SELECT * FROM %s WHERE snitch_world = ?", snitchsTbl));
+                "SELECT * FROM %s WHERE snitch_world = ? AND soft_delete = 0", snitchsTbl));
 
         getLastSnitchID = db.prepareStatement(String.format(
                 "SHOW TABLE STATUS LIKE '%s'", snitchsTbl));
@@ -412,13 +420,13 @@ public class JukeAlertLogger {
         // LIMIT ?,? means offset followed by max rows to return
         getSnitchLogStmt = db.prepareStatement(String.format(
                 "SELECT * FROM %s"
-                + " WHERE snitch_id=? ORDER BY snitch_log_time DESC LIMIT ?,?",
+                + " WHERE snitch_id=? AND soft_delete = 0 ORDER BY snitch_log_time DESC LIMIT ?,?",
                 snitchDetailsTbl));
 
         getSnitchLogGroupStmt = db.prepareStatement(MessageFormat.format(
             "SELECT {0}.snitch_name, {1}.*"
             + " FROM {1} INNER JOIN {0} ON {0}.snitch_id = {1}.snitch_id"
-            + " WHERE {0}.snitch_group=? ORDER BY {1}.snitch_log_time DESC LIMIT ?,{2}",
+            + " WHERE {0}.snitch_group=? AND {0}.soft_delete = 0 AND {1}.soft_delete = 0 ORDER BY {1}.snitch_log_time DESC LIMIT ?,{2}",
             snitchsTbl, snitchDetailsTbl, logsPerPage));
         
         getSnitchListStmt = db.prepareStatement(MessageFormat.format(
@@ -429,7 +437,7 @@ public class JukeAlertLogger {
 
         // statement to get the ID of a snitch in the main snitchsTbl based on a Location (x,y,z, world)
         getSnitchIdFromLocationStmt = db.prepareStatement(String.format("SELECT snitch_id FROM %s"
-                + " WHERE snitch_x=? AND snitch_y=? AND snitch_z=? AND snitch_world=?", snitchsTbl));
+                + " WHERE snitch_x=? AND snitch_y=? AND snitch_z=? AND snitch_world=? AND soft_delete = 0", snitchsTbl));
 
         // statement to insert a log entry into the snitchesDetailsTable
         insertSnitchLogStmt = db.prepareStatement(String.format(
@@ -450,10 +458,20 @@ public class JukeAlertLogger {
                 snitchDetailsTbl));
 
         //
+        softDeleteSnitchLogStmt = db.prepareStatement(String.format(
+        		"UPDATE %s SET soft_delete = 1 WHERE snitch_id=?",
+        		snitchDetailsTbl));
+        
+        //
         deleteSnitchStmt = db.prepareStatement(String.format(
                 "DELETE FROM %s WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
                 snitchsTbl));
 
+        //
+        softDeleteSnitchStmt = db.prepareStatement(String.format(
+        		"UPDATE %s SET soft_delete = 1 WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
+        		snitchsTbl));
+        
         //
         updateGroupStmt = db.prepareStatement(String.format(
                 "UPDATE %s SET snitch_group=? WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
@@ -485,7 +503,7 @@ public class JukeAlertLogger {
 
         //
         getAllSnitchIdsStmt = db.prepareStatement(String.format(
-                "SELECT snitch_id FROM %s;", snitchsTbl));
+                "SELECT snitch_id FROM %s WHERE soft_delete = 0;", snitchsTbl));
 
         //
         cullSnitchEntriesStmt = db.prepareStatement(MessageFormat.format(
@@ -786,8 +804,13 @@ public class JukeAlertLogger {
 
     public Boolean deleteSnitchInfo(int snitchId) {
         try {
-            deleteSnitchLogStmt.setInt(1, snitchId);
-            deleteSnitchLogStmt.execute();
+        	if (this.softDelete) {
+        		softDeleteSnitchLogStmt.setInt(1, snitchId);
+        		softDeleteSnitchLogStmt.execute();
+        	} else {
+        		deleteSnitchLogStmt.setInt(1, snitchId);
+        		deleteSnitchLogStmt.execute();
+        	}
             return true;
         } catch (SQLException ex) {
             this.plugin.getLogger().log(Level.SEVERE, "Could not delete Snitch Details from the snitchesDetail table using the snitch id " + snitchId, ex);
@@ -1077,12 +1100,22 @@ public class JukeAlertLogger {
             public void run() {
                 try {
                     jukeinfobatch.flush();
-                    synchronized (deleteSnitchStmt) {
-                        deleteSnitchStmt.setString(1, world);
-                        deleteSnitchStmt.setInt(2, (int) Math.floor(x));
-                        deleteSnitchStmt.setInt(3, (int) Math.floor(y));
-                        deleteSnitchStmt.setInt(4, (int) Math.floor(z));
-                        deleteSnitchStmt.execute();
+                    if (softDelete) {
+                    	synchronized (softDeleteSnitchStmt) {
+	                        softDeleteSnitchStmt.setString(1, world);
+	                        softDeleteSnitchStmt.setInt(2, (int) Math.floor(x));
+	                        softDeleteSnitchStmt.setInt(3, (int) Math.floor(y));
+	                        softDeleteSnitchStmt.setInt(4, (int) Math.floor(z));
+	                        softDeleteSnitchStmt.execute();                    		
+                    	}
+                    } else {
+	                    synchronized (deleteSnitchStmt) {
+	                        deleteSnitchStmt.setString(1, world);
+	                        deleteSnitchStmt.setInt(2, (int) Math.floor(x));
+	                        deleteSnitchStmt.setInt(3, (int) Math.floor(y));
+	                        deleteSnitchStmt.setInt(4, (int) Math.floor(z));
+	                        deleteSnitchStmt.execute();
+	                    }
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
