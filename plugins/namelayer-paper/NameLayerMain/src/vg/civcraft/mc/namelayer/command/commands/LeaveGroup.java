@@ -35,7 +35,7 @@ public class LeaveGroup extends PlayerCommandMiddle{
 			return true;
 		}
 		UUID uuid = NameAPI.getUUID(p.getName());
-		if (!g.isMember(uuid)){
+		if (!g.isCurrentMember(uuid)){
 			p.sendMessage(ChatColor.RED + "You are not a member of this group.");
 			return true;
 		}

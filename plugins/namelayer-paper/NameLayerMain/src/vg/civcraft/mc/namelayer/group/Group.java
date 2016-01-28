@@ -1,12 +1,9 @@
 package vg.civcraft.mc.namelayer.group;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Level;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -79,13 +76,9 @@ public class Group {
 			
 			if (inheritedMembers.containsKey(player)) {
 				PlayerType inheritedRank = inheritedMembers.get(player);
-				if (currentRank == PlayerType.OWNER) {
-					inheritedMembers.put(player, PlayerType.ADMINS);
-				} else if (currentRank.compareTo(inheritedRank) > 0) {
+				if (currentRank.compareTo(inheritedRank) > 0) {
 					inheritedMembers.put(player, currentRank);
-				} // else do not change rank
-			} else if (currentRank == PlayerType.OWNER) {
-				inheritedMembers.put(player, PlayerType.ADMINS);
+				}
 			} else {
 				inheritedMembers.put(player, currentRank);
 			}
@@ -108,7 +101,7 @@ public class Group {
 	 * @return Returns all the UUIDS of the specific PlayerType.
 	 */
 	public List<UUID> getAllMembers(PlayerType type) {
-		List<UUID> uuids = new ArrayList<UUID>();
+		List<UUID> uuids = Lists.newArrayList();
 		
 		Map<UUID, PlayerType> members = getMembersMap();
 		for (Map.Entry<UUID, PlayerType> entry : members.entrySet()) {
@@ -127,7 +120,7 @@ public class Group {
 	 * @return list of all players whose name starts with the given string
 	 */
 	public List<UUID> getMembersByName(String prefix) {
-		List<UUID> uuids = new ArrayList<UUID>();
+		List<UUID> uuids = Lists.newArrayList();
 		List<UUID> members = getAllMembers();
 		
 		prefix = prefix.toLowerCase();
@@ -148,7 +141,7 @@ public class Group {
 	 * @return list of uuids of all players in the group whose name is within the given range
 	 */
 	public List<UUID> getMembersInNameRange(String lowerLimit, String upperLimit) {
-		List<UUID> uuids = new ArrayList<UUID>();
+		List<UUID> uuids = Lists.newArrayList();
 		List<UUID> members = getAllMembers();
 		
 		for (UUID member : members) {
@@ -156,6 +149,25 @@ public class Group {
 			if (name.compareToIgnoreCase(lowerLimit) >= 0 
 					&& name.compareToIgnoreCase(upperLimit) <= 0) {
 				uuids.add(member);
+			}
+		}
+		return uuids;
+	}
+	
+	/**
+	 * Gives a list of the members of this group, excluding the inherited members.
+	 * @return List of UUIDs of the current players in this group
+	 */
+	public List<UUID> getCurrentMembers() {
+		return Lists.newArrayList(players.keySet());
+	}
+	
+	public List<UUID> getCurrentMembers(PlayerType rank) {
+		List<UUID> uuids = Lists.newArrayList();
+		
+		for (Map.Entry<UUID, PlayerType> entry : players.entrySet()) {
+			if (entry.getValue() == rank) {
+				uuids.add(entry.getKey());
 			}
 		}
 		return uuids;
@@ -198,13 +210,12 @@ public class Group {
 	 * @return true if it is a supergroup, false otherwise.
 	 */
 	public boolean hasSuperGroup(Group group) {
-		if (supergroup != null) {
-			if (supergroup != group) {
-				return supergroup.hasSuperGroup(group);
-			}
+		if (supergroup == null) {
+			return false;
+		} else if (supergroup == group) {
 			return true;
 		}
-		return false;
+		return supergroup.hasSuperGroup(group);
 	}
 		
 	/**
@@ -284,6 +295,17 @@ public class Group {
 		return false;
 	}
 
+	public boolean isCurrentMember(UUID uuid) {
+		return players.containsKey(uuid);
+	}
+	
+	public boolean isCurrentMember(UUID uuid, PlayerType rank) {
+		if (players.containsKey(uuid)) {
+			return players.get(uuid).equals(rank);
+		}
+		return false;
+	}
+	
 	/**
 	 * @param uuid- The UUID of the player.
 	 * @return Returns the PlayerType of a UUID.
@@ -291,6 +313,10 @@ public class Group {
 	public PlayerType getPlayerType(UUID uuid) {
 		Map<UUID, PlayerType> members = getMembersMap();
 		return members.get(uuid);
+	}
+	
+	public PlayerType getCurrentRank(UUID uuid) {
+		return players.get(uuid);
 	}
 
 	/**

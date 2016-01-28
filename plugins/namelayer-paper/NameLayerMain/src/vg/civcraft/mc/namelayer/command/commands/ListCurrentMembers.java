@@ -18,13 +18,13 @@ import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class ListMembers extends PlayerCommandMiddle {
+public class ListCurrentMembers extends PlayerCommandMiddle {
 
-	public ListMembers(String name) {
+	public ListCurrentMembers(String name) {
 		super(name);
-		setIdentifier("nllm");
+		setIdentifier("nllcm");
 		setDescription("List the members in a group");
-		setUsage("/nllm <group> (PlayerType)");
+		setUsage("/nllcm <group> (PlayerType)");
 		setArguments(1,3);
 	}
 
@@ -48,7 +48,7 @@ public class ListMembers extends PlayerCommandMiddle {
 		Group group = gm.getGroup(groupname);
 		
 		if (!p.hasPermission("namelayer.admin")) {
-			if (!group.isMember(uuid)) {
+			if (!group.isCurrentMember(uuid)) {
 				p.sendMessage(ChatColor.RED + "You're not on this group.");
 				return true;
 			}
@@ -64,7 +64,7 @@ public class ListMembers extends PlayerCommandMiddle {
 		if (args.length == 3) {
 			String nameMin = args[1], nameMax = args[2];
 			
-			List<UUID> members = group.getAllMembers();
+			List<UUID> members = group.getCurrentMembers();
 			uuids = Lists.newArrayList();
 			
 			for (UUID member : members) {
@@ -84,9 +84,9 @@ public class ListMembers extends PlayerCommandMiddle {
 				return true;
 			}
 			
-			uuids = group.getAllMembers(filterType);
+			uuids = group.getCurrentMembers(filterType);
 		} else {
-			uuids = group.getAllMembers();
+			uuids = group.getCurrentMembers();
 		}
 		
 		StringBuilder sb = new StringBuilder();
@@ -95,7 +95,7 @@ public class ListMembers extends PlayerCommandMiddle {
 		for (UUID uu: uuids){
 			sb.append(NameAPI.getCurrentName(uu));
 			sb.append(" (");
-			sb.append(group.getPlayerType(uuid));
+			sb.append(group.getCurrentRank(uuid));
 			sb.append(")\n");
 		}
 		

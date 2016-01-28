@@ -204,41 +204,7 @@ public class GroupManager{
 	public GroupPermission getPermissionforGroup(Group group){
 		return permhandle.getGroupPermission(group);
 	}
-	
-	// == GROUP INTERACTIONS ============================================================== //
-	
-	public List<UUID> getMembers(String groupname) {
-		Group group = getGroup(groupname);
-		if (group == null) { 
-			return Lists.newArrayList();
-		}
-		return group.getAllMembers();
-	}
-	
-	public List<UUID> getMembers(String groupname, PlayerType rank) {
-		Group group = getGroup(groupname);
-		if (group == null) {
-			return Lists.newArrayList();
-		}
-		return group.getAllMembers(rank);
-	}
-	
-	public PlayerType getMemberRank(String groupname, UUID player) {
-		Group group = getGroup(groupname);
-		if (group == null) {
-			return null;
-		}
-		return group.getPlayerType(player);
-	}
-	
-	public boolean isMember(String groupname, UUID player) {		
-		Group group = getGroup(groupname);
-		if (group == null) {
-			return false;
-		}
-		return group.isMember(player);
-	}
-	
+		
 	public boolean hasAccess(String groupname, UUID player, PermissionType perm) {
 		Group group = getGroup(groupname);
 		if (group == null) {

@@ -56,7 +56,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			s.sendMessage(ChatColor.RED + "The player has never played before.");
 			return true;
 		}
-		if (group.isMember(targetAccount)) { // So a player can't demote someone who is above them.
+		if (group.isCurrentMember(targetAccount)) { // So a player can't demote someone who is above them.
 			s.sendMessage(ChatColor.RED + "Player is already a member."
 					+ "Use /nlpp to change their PlayerType.");
 			return true;
