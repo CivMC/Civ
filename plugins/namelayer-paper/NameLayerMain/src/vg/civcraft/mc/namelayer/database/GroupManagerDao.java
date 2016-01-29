@@ -852,8 +852,7 @@ public class GroupManagerDao {
 				}
 				Group g = null;
 				if(group != null){
-					System.out.println(group);
-					g = getGroup(group);
+					g = GroupManager.getGroup(group);
 				}
 				PlayerType type = null;
 				if(role != null){
