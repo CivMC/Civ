@@ -1,7 +1,6 @@
 package com.github.igotyou.FactoryMod.repairManager;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
-import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.factories.Factory;
 
 public class NoRepairDestroyOnBreakManager implements IRepairManager {
@@ -21,8 +20,9 @@ public class NoRepairDestroyOnBreakManager implements IRepairManager {
 	}
 
 	public void breakIt() {
-		FactoryModManager manager = FactoryMod.getManager();
-		manager.removeFactory(factory);
+		if (factory.getMultiBlockStructure().relevantBlocksDestroyed()) {
+			FactoryMod.getManager().removeFactory(factory);
+		}
 	}
 
 	public boolean atFullHealth() {

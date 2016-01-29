@@ -154,4 +154,12 @@ public abstract class MultiBlockStructure {
 		return false;
 	}
 
+	/**
+	 * Checks whether all relevant/interaction blocks of this factory were
+	 * completly destroyed/replaced by other blocks
+	 * 
+	 * @return True if the structure is completly destroyed, false if not
+	 */
+	public abstract boolean relevantBlocksDestroyed();
+
 }

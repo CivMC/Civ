@@ -76,7 +76,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 					is,
 					ChatColor.GREEN
 							+ "Enough materials for "
-							+ String.valueOf(Integer.max(new ItemMap(
+							+ String.valueOf(Math.max(new ItemMap(
 									new ItemStack(tool))
 									.getMultiplesContainedIn(i), input
 									.getMultiplesContainedIn(i))) + " runs");

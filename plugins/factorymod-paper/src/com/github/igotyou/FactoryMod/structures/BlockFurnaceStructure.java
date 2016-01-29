@@ -23,16 +23,22 @@ public class BlockFurnaceStructure extends MultiBlockStructure {
 			}
 		}
 	}
-	
-	public BlockFurnaceStructure(List <Block> blocks) {
+
+	public BlockFurnaceStructure(List<Block> blocks) {
 		this.center = blocks.get(0);
 		this.furnace = blocks.get(1);
+	}
+
+	public boolean relevantBlocksDestroyed() {
+		return center.getType() != Material.DROPPER
+				&& furnace.getType() != Material.FURNACE
+				&& furnace.getType() != Material.BURNING_FURNACE;
 	}
 
 	public Location getCenter() {
 		return center.getLocation();
 	}
-	
+
 	public Block getFurnace() {
 		return furnace;
 	}
@@ -49,11 +55,11 @@ public class BlockFurnaceStructure extends MultiBlockStructure {
 	}
 
 	public void recheckComplete() {
-		complete = (center.getType() == Material.DROPPER && (furnace
-				.getType() == Material.FURNACE || furnace.getType() == Material.BURNING_FURNACE));
+		complete = (center.getType() == Material.DROPPER && (furnace.getType() == Material.FURNACE || furnace
+				.getType() == Material.BURNING_FURNACE));
 	}
-	
-	public List <Block> getRelevantBlocks() {
+
+	public List<Block> getRelevantBlocks() {
 		return getAllBlocks();
 	}
 

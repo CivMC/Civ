@@ -164,6 +164,9 @@ public class FactoryModManager {
 	 *            Factory to remove
 	 */
 	public void removeFactory(Factory f) {
+		if (f.isActive()) {
+			f.deactivate();
+		}
 		factories.remove(f);
 		for (Block b : f.getMultiBlockStructure().getAllBlocks()) {
 			locations.remove(b.getLocation());
@@ -293,6 +296,7 @@ public class FactoryModManager {
 					}
 					return;
 				} else {
+					p.sendMessage(ChatColor.RED + "This pipe is not set up the right way");
 					FactoryMod.sendResponse("WrongPipeBlockSetup", p);
 				}
 			}
@@ -329,6 +333,7 @@ public class FactoryModManager {
 						}
 					}
 				} else {
+					p.sendMessage(ChatColor.RED + "This sorter is not set up the right way");
 					FactoryMod.sendResponse("WrongSorterBlockSetup", p);
 				}
 			}

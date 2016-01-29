@@ -41,6 +41,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		FurnCraftChestFactory fccf = new FurnCraftChestFactory(fccim, phrm,
 				fpm, fccs, updateTime, name, recipes);
 		fccim.setFactory(fccf);
+		phrm.setFactory(fccf);
 		if (recipes.size() != 0) {
 			fccf.setRecipe(recipes.get(0));
 		}
@@ -81,6 +82,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		FurnCraftChestFactory fccf = new FurnCraftChestFactory(fccim, phrm,
 				fpm, fccs, updateTime, name, recipes);
 		fccim.setFactory(fccf);
+		phrm.setFactory(fccf);
 		for (IRecipe recipe : recipes) {
 			if (recipe.getRecipeName().equals(selectedRecipe)) {
 				fccf.setRecipe(recipe);

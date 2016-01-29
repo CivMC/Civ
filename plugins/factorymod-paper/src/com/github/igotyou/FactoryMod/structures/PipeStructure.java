@@ -95,6 +95,12 @@ public class PipeStructure extends MultiBlockStructure {
 		return start.getLocation();
 	}
 
+	public boolean relevantBlocksDestroyed() {
+		return start.getType() != Material.DISPENSER
+				&& furnace.getType() != Material.FURNACE
+				&& furnace.getType() != Material.BURNING_FURNACE;
+	}
+
 	public List<Block> getAllBlocks() {
 		List<Block> res = new LinkedList<Block>();
 		res.add(start);
@@ -103,8 +109,8 @@ public class PipeStructure extends MultiBlockStructure {
 		res.add(end);
 		return res;
 	}
-	
-	public List <Block> getRelevantBlocks() {
+
+	public List<Block> getRelevantBlocks() {
 		List<Block> res = new LinkedList<Block>();
 		res.add(start);
 		res.add(furnace);

@@ -13,7 +13,6 @@ import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.factories.Factory;
-import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 
 public class DeterministicEnchantingRecipe extends InputRecipe {
 	private Enchantment enchant;
@@ -55,7 +54,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 					is,
 					ChatColor.GREEN
 							+ "Enough materials for "
-							+ String.valueOf(Integer.max(new ItemMap(
+							+ String.valueOf(Math.max(new ItemMap(
 									new ItemStack(tool))
 									.getMultiplesContainedIn(i), input
 									.getMultiplesContainedIn(i))) + " runs");
