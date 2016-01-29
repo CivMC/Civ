@@ -484,8 +484,38 @@ disable_nether: false
 #CivMenu configuration
 
 #This plugin uses CivMenu (https://github.com/civcraft/CivMenu) to display additional information to players. You can specify
-#the messages sent to the players here:
+#the messages sent to the players here. Note that for all those events a short message to sum it up will already be displayed,
+#this is only meant to provide messages to teach the game mechanic as a whole.
 
 CivMenu:
     events:
+        #Called when a FCC factory is successfully created
+        FactoryCreation:
+        
+        #Called when a player attempt to create a FCC factory with invalid materials
+        WrongFactoryCreationItems:
+        
+        #Called when a player attempts to create a FCC factory with a wrong block setup
+        WrongFactoryBlockSetup:
+        
+        #Called when a pipe is successfully created
+        PipeCreation:
+        
+        #Called when a player attempt to create a pipe with invalid materials
+        WrongPipeCreationItems:
+        
+        #Called when a player attempts to create a pipe with a wrong block setup
+        WrongPipeBlockSetup:
+        
+        #Called when a sorter is successfully created
+        SorterCreation:
+        
+        #Called when a player attempt to create a sorter with invalid materials
+        WrongSorterCreationItems:
+        
+        #Called when a player attempts to create a sorter with a wrong block setup
+        WrongSorterBlockSetup:
+        
+        
+        
         
