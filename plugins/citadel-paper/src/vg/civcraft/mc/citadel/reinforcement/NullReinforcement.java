@@ -8,6 +8,6 @@ import org.bukkit.Location;
 public class NullReinforcement extends Reinforcement{
 
 	public NullReinforcement(Location loc) {
-		super(loc, null, 0, 0);
+		super(loc, null, 0, 0, 0);
 	}
 }

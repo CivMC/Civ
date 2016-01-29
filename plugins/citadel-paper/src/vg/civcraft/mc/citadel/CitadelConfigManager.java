@@ -63,6 +63,10 @@ public class CitadelConfigManager {
 	public static int getMaturationTime(String type){
 		return config.getInt("reinforcements." + type + ".mature_time");
 	}
+
+	public static int getAcidTime(String type) {
+		return config.getInt("reinforcements." + type + ".acid_time", getMaturationTime(type));
+	}
 	
 	public static int getMaturationScale(String type){
 		return config.getInt("reinforcements." + type + ".scale_amount");

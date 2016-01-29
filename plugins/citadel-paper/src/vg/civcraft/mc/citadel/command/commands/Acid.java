@@ -72,9 +72,9 @@ public class Acid extends PlayerCommand {
 						+ "to use acid blocks.");
 				return true;
 			}
-			int time = Utility.timeUntilMature(pRein);
+			int time = Utility.timeUntilAcidMature(pRein);
 			if (time != 0) {
-				p.sendMessage(ChatColor.RED + "That block is not mature yet.");
+				p.sendMessage(ChatColor.RED + "That acid block is not mature yet.");
 				return true;
 			}
 			Block topFace = block.getRelative(BlockFace.UP);
@@ -97,8 +97,7 @@ public class Acid extends PlayerCommand {
 					.getReinforcementType(pRein.getStackRepresentation());
 			ReinforcementType topReinType = ReinforcementType
 					.getReinforcementType(pTopRein.getStackRepresentation());
-			if (acidBlockType.getMaturationTime() < topReinType
-					.getMaturationTime()) {
+			if (acidBlockType.getAcidTime() < topReinType.getAcidTime()) {
 				p.sendMessage(ChatColor.RED
 						+ "This acid block is too weak for that reinforcement.");
 				return true;

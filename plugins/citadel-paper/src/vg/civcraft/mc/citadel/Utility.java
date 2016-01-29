@@ -101,6 +101,7 @@ public class Utility {
         // Fire the creation event
         PlayerReinforcement rein = new PlayerReinforcement(block.getLocation(), 
         		type.getHitPoints(), getIntFormofMaturation(System.currentTimeMillis(),type.getItemStack()), 
+        		getIntFormofAcidMaturation(System.currentTimeMillis(),type.getItemStack()),  
         		g, type.getItemStack());
         ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, block, player);
         Bukkit.getPluginManager().callEvent(event);
@@ -161,6 +162,7 @@ public class Utility {
         }
 		PlayerReinforcement rein = new PlayerReinforcement(block.getLocation(), 
         		type.getHitPoints(), getIntFormofMaturation(System.currentTimeMillis(),type.getItemStack()), 
+        		getIntFormofAcidMaturation(System.currentTimeMillis(),type.getItemStack()), 
         		g, type.getItemStack());
         ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, block, player);
         Bukkit.getPluginManager().callEvent(event);
@@ -355,6 +357,30 @@ public class Utility {
         return 0;
     }
     /**
+     * Used to get the amount of time left until a reinforcement's acid component is mature.
+     * @param Reinforcement.
+     * @return Returns 0 if it is mature or the time in minutes until it is mature.
+     */
+    public static int timeUntilAcidMature(Reinforcement reinforcement) {
+        // Doesn't explicitly save the updated Acid Maturation time into the cache.
+        //  That's the responsibility of the caller.
+        if (reinforcement instanceof PlayerReinforcement){
+            int maturationTime = reinforcement.getAcidTime();
+            if (maturationTime > 0) {
+                final int curMinute = (int)(System.currentTimeMillis() / 60000L);
+                if (curMinute >= maturationTime) {
+                    maturationTime = 0;
+                    reinforcement.setAcidTime(0);
+                } else {
+                    maturationTime = maturationTime - curMinute;
+                }
+            }
+            return (int) maturationTime; // should be small enough by now
+        }
+        return 0;
+	}
+    
+    /**
      * 
      * @param The Player who broke the reinforcement
      * @param The Reinforcement broken.
@@ -529,8 +555,9 @@ public class Utility {
     		return null;
     	Group g = GroupManager.getSpecialCircumstanceGroup(group);
     	PlayerReinforcement rein = new PlayerReinforcement(loc, dur, 
-    			getIntFormofMaturation(System.currentTimeMillis(),reinType.getItemStack())
-    			, g, reinType.getItemStack());
+    			getIntFormofMaturation(System.currentTimeMillis(),reinType.getItemStack()),
+        		getIntFormofAcidMaturation(System.currentTimeMillis(),reinType.getItemStack()),
+    			g, reinType.getItemStack());
     	ReinforcementCreationEvent event = 
     			new ReinforcementCreationEvent(rein, loc.getBlock(), p);
     	Bukkit.getPluginManager().callEvent(event);
@@ -564,14 +591,15 @@ public class Utility {
     /**
      * Creates a MultiBlockReinforcement and saves it to the db. This method is to be used only be other plugins. Citadel 
      * will not use this anywhere. 
-     * @param locs- The locations that make up the structure.
-     * @param g- The group this will belong too.
-     * @param dur- The durability this structure will have.
-     * @param mature- The amount of time until it is mature (in minutes).
+     * @param locs The locations that make up the structure.
+     * @param g The group this will belong too.
+     * @param dur The durability this structure will have.
+     * @param mature The amount of time until it is mature (in minutes).
+     * @param acid The amount of time until it is mature (if acid -- in minutes).
      * @return
      */
-    public static MultiBlockReinforcement createMultiBlockReinforcement(List<Location> locs, Group g, int dur, int mature){
-    	MultiBlockReinforcement rein = new MultiBlockReinforcement(locs, g, dur, mature, -1);
+    public static MultiBlockReinforcement createMultiBlockReinforcement(List<Location> locs, Group g, int dur, int mature, int acid){
+    	MultiBlockReinforcement rein = new MultiBlockReinforcement(locs, g, dur, mature, acid, -1);
     	ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, rein.getLocation().getBlock(), null);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -642,6 +670,14 @@ public class Utility {
 				.getMaturationTime();
 		return maturation;
 	}
+    
+    private static int getIntFormofAcidMaturation(long creation, ItemStack stack) {
+		int maturation = (int)(creation / 60000) + 
+				ReinforcementType.
+				getReinforcementType(stack)
+				.getAcidTime();
+		return maturation;
+    }
     
     public static Block findPlantSoil(Block block){
     	final Set<Material> soilTypes = getPlantSoilTypes(block.getType());
