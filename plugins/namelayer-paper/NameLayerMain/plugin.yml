@@ -29,6 +29,7 @@ commands:
     aliases: [nllistgroups, nllistg]
    nllm:
     aliases: [nllistmembers, nllistm]
+   nllcm:
    nllp:
     aliases: [nllistpermissions, nllistperms]
    nlpp:
