@@ -3,7 +3,7 @@ package com.github.igotyou.FactoryMod.eggs;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.block.Block;
+import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -29,16 +29,18 @@ public class SorterEgg implements IFactoryEgg {
 	private int sortTime;
 	private int matsPerSide;
 	private int sortAmount;
+	private double returnRate;
 
 	public SorterEgg(String name, int updateTime, ItemStack fuel,
 			int fuelConsumptionIntervall, int sortTime, int matsPerSide,
-			int sortAmount) {
+			int sortAmount, double returnRate) {
 		this.name = name;
 		this.fuel = fuel;
 		this.updateTime = updateTime;
 		this.fuelConsumptionIntervall = fuelConsumptionIntervall;
 		this.sortTime = sortTime;
 		this.sortAmount = sortAmount;
+		this.returnRate = returnRate;
 		this.matsPerSide = matsPerSide;
 	}
 
@@ -50,12 +52,12 @@ public class SorterEgg implements IFactoryEgg {
 				fuelConsumptionIntervall);
 		Sorter sorter = new Sorter(im, rm, pm, mbs, updateTime, name, sortTime,
 				matsPerSide, sortAmount);
-		((NoRepairDestroyOnBreakManager)rm).setFactory(sorter);
+		((NoRepairDestroyOnBreakManager) rm).setFactory(sorter);
 		((SorterInteractionManager) im).setSorter(sorter);
 		return sorter;
 	}
 
-	public Factory revive(List<Block> blocks,
+	public Factory revive(List<Location> blocks,
 			Map<BlockFace, ItemMap> assignments, int runTime) {
 		MultiBlockStructure ps = new BlockFurnaceStructure(blocks);
 		SorterInteractionManager im = new SorterInteractionManager();
@@ -66,7 +68,7 @@ public class SorterEgg implements IFactoryEgg {
 		Sorter sorter = new Sorter(im, rm, pm, ps, updateTime, name, sortTime,
 				matsPerSide, sortAmount);
 		((SorterInteractionManager) im).setSorter(sorter);
-		((NoRepairDestroyOnBreakManager)rm).setFactory(sorter);
+		((NoRepairDestroyOnBreakManager) rm).setFactory(sorter);
 		sorter.setAssignments(assignments);
 		if (runTime != 0) {
 			sorter.attemptToActivate(null);
@@ -89,6 +91,10 @@ public class SorterEgg implements IFactoryEgg {
 		return fuel;
 	}
 
+	public double getReturnRate() {
+		return returnRate;
+	}
+
 	public int getFuelConsumptionIntervall() {
 		return fuelConsumptionIntervall;
 	}
@@ -100,9 +106,13 @@ public class SorterEgg implements IFactoryEgg {
 	public int getMaterialsPerSide() {
 		return matsPerSide;
 	}
-	
+
 	public int getSortAmount() {
 		return sortAmount;
+	}
+
+	public Class getMultiBlockStructure() {
+		return BlockFurnaceStructure.class;
 	}
 
 }

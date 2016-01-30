@@ -516,6 +516,9 @@ CivMenu:
         #Called when a player attempts to create a sorter with a wrong block setup
         WrongSorterBlockSetup:
         
+        #Called when someone attempts to interact with any type of factory, but doesnt have the correct permissions
+        FactoryNoPermission:
+        
         
         
         

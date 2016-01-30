@@ -16,51 +16,51 @@ import org.bukkit.block.BlockFace;
  *
  */
 public class FurnCraftChestStructure extends MultiBlockStructure {
-	private Block CraftingTable;
-	private Block Furnace;
-	private Block Chest;
+	private Location craftingTable;
+	private Location furnace;
+	private Location chest;
 	private boolean complete;
 
 	public FurnCraftChestStructure(Block center) {
 		if (center.getType() == Material.WORKBENCH) {
-			CraftingTable = center;
+			craftingTable = center.getLocation();
 			for (Block b : searchForBlockOnSides(center, Material.CHEST)) {
 				switch (center.getFace(b)) {
 				case SOUTH:
 					if (center.getRelative(BlockFace.NORTH).getType() == Material.FURNACE) {
-						Chest = b;
-						Furnace = center.getRelative(BlockFace.NORTH);
+						chest = b.getLocation();
+						furnace = center.getRelative(BlockFace.NORTH).getLocation();
 					}
 				case NORTH:
 					if (center.getRelative(BlockFace.SOUTH).getType() == Material.FURNACE) {
-						Chest = b;
-						Furnace = center.getRelative(BlockFace.SOUTH);
+						chest = b.getLocation();
+						furnace = center.getRelative(BlockFace.SOUTH).getLocation();
 					}
 				case WEST:
 					if (center.getRelative(BlockFace.EAST).getType() == Material.FURNACE) {
-						Chest = b;
-						Furnace = center.getRelative(BlockFace.EAST);
+						chest = b.getLocation();
+						furnace = center.getRelative(BlockFace.EAST).getLocation();
 					}
 				case EAST:
 					if (center.getRelative(BlockFace.WEST).getType() == Material.FURNACE) {
-						Chest = b;
-						Furnace = center.getRelative(BlockFace.WEST);
+						chest = b.getLocation();
+						furnace = center.getRelative(BlockFace.WEST).getLocation();
 					}
 				case UP:
 					if (center.getRelative(BlockFace.DOWN).getType() == Material.FURNACE) {
-						Chest = b;
-						Furnace = center.getRelative(BlockFace.DOWN);
+						chest = b.getLocation();
+						furnace = center.getRelative(BlockFace.DOWN).getLocation();
 					}
 				case DOWN:
 					if (center.getRelative(BlockFace.UP).getType() == Material.FURNACE) {
-						Chest = b;
-						Furnace = center.getRelative(BlockFace.UP);
+						chest = b.getLocation();
+						furnace = center.getRelative(BlockFace.UP).getLocation();
 					}
 				}
 
 			}
 		}
-		if (Chest != null && Furnace != null) {
+		if (chest != null && furnace != null) {
 			complete = true;
 		} else {
 			complete = false;
@@ -68,17 +68,17 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 	}
 
 	public void recheckComplete() {
-		complete = CraftingTable != null
-				&& CraftingTable.getType() == Material.WORKBENCH
-				&& Furnace != null
-				&& (Furnace.getType() == Material.FURNACE || Furnace.getType() == Material.BURNING_FURNACE)
-				&& Chest != null && Chest.getType() == Material.CHEST;
+		complete = craftingTable != null
+				&& craftingTable.getBlock().getType() == Material.WORKBENCH
+				&& furnace != null
+				&& (furnace.getBlock().getType() == Material.FURNACE || furnace.getBlock().getType() == Material.BURNING_FURNACE)
+				&& chest != null && chest.getBlock().getType() == Material.CHEST;
 	}
 
-	public FurnCraftChestStructure(List<Block> blocks) {
-		CraftingTable = blocks.get(0);
-		Furnace = blocks.get(1);
-		Chest = blocks.get(2);
+	public FurnCraftChestStructure(List<Location> blocks) {
+		craftingTable = blocks.get(0);
+		furnace = blocks.get(1);
+		chest = blocks.get(2);
 	}
 
 	public boolean isComplete() {
@@ -86,38 +86,42 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 	}
 
 	public Block getCraftingTable() {
-		return CraftingTable;
+		return craftingTable.getBlock();
 	}
 
 	public Block getFurnace() {
-		return Furnace;
+		return furnace.getBlock();
 	}
 
 	public Block getChest() {
-		return Chest;
+		return chest.getBlock();
 	}
 
 	public boolean relevantBlocksDestroyed() {
-		return CraftingTable.getType() != Material.WORKBENCH
-				&& Furnace.getType() != Material.FURNACE
-				&& Furnace.getType() != Material.BURNING_FURNACE
-				&& Chest.getType() != Material.CHEST;
+		return craftingTable.getBlock().getType() != Material.WORKBENCH
+				&& furnace.getBlock().getType() != Material.FURNACE
+				&& furnace.getBlock().getType() != Material.BURNING_FURNACE
+				&& chest.getBlock().getType() != Material.CHEST;
 	}
 
 	public List<Block> getRelevantBlocks() {
-		return getAllBlocks();
+		LinkedList<Block> result = new LinkedList<Block>();
+		result.add(getCraftingTable());
+		result.add(getFurnace());
+		result.add(getChest());
+		return result;
 	}
 
-	public List<Block> getAllBlocks() {
-		LinkedList<Block> result = new LinkedList<Block>();
-		result.add(CraftingTable);
-		result.add(Furnace);
-		result.add(Chest);
+	public List<Location> getAllBlocks() {
+		LinkedList<Location> result = new LinkedList<Location>();
+		result.add(craftingTable);
+		result.add(furnace);
+		result.add(chest);
 		return result;
 	}
 
 	public Location getCenter() {
-		return Chest.getLocation();
+		return chest;
 	}
 
 }

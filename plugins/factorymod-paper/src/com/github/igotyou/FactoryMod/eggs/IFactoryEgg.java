@@ -38,6 +38,23 @@ public interface IFactoryEgg {
 	public String getName();
 
 	/**
+	 * When destroyed completly a factory may return a part of it's setup cost.
+	 * This value specifies how much of the setup cost is returned (as a
+	 * multiplier)
+	 * 
+	 * @return Multiplier of the setupcost which is returned upon destruction
+	 */
+	public double getReturnRate();
+
+	/**
+	 * All the factories created by a specific egg will be represented through a
+	 * specific MultiBlockStructure and this is the getter for it
+	 * 
+	 * @return Structure class of the factories created by this egg
+	 */
+	public Class getMultiBlockStructure();
+
+	/**
 	 * Java wont let me specify a method here without specifying its parameters
 	 * so it's commented out, because parameters may vary for each
 	 * implementation, but this is needed to make the whole thing work. This

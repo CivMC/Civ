@@ -64,9 +64,9 @@ public class FileHandler {
 						.getCenter());
 				config.set(current + ".name", f.getName());
 				config.getConfigurationSection(current).createSection("blocks");
-				for (Block b : f.getMultiBlockStructure().getAllBlocks()) {
+				for (Location b : f.getMultiBlockStructure().getAllBlocks()) {
 					configureLocation(config.getConfigurationSection(current)
-							.getConfigurationSection("blocks"), b.getLocation());
+							.getConfigurationSection("blocks"), b);
 				}
 				if (f instanceof FurnCraftChestFactory) {
 					FurnCraftChestFactory fccf = (FurnCraftChestFactory) f;
@@ -146,7 +146,7 @@ public class FileHandler {
 			String type = current.getString("type");
 			String name = current.getString("name");
 			int runtime = current.getInt("runtime");
-			List<Block> blocks = new LinkedList<Block>();
+			List<Location> blocks = new LinkedList<Location>();
 			for (String blockKey : current.getConfigurationSection("blocks")
 					.getKeys(false)) {
 				ConfigurationSection currSec = current.getConfigurationSection(
@@ -156,7 +156,7 @@ public class FileHandler {
 				int y = currSec.getInt("y");
 				int z = currSec.getInt("z");
 				World w = Bukkit.getWorld(worldName);
-				blocks.add(new Location(w, x, y, z).getBlock());
+				blocks.add(new Location(w, x, y, z));
 			}
 			switch (type) {
 			case "FCC":

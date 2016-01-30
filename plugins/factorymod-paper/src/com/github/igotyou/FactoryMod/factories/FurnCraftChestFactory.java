@@ -93,7 +93,7 @@ public class FurnCraftChestFactory extends Factory {
 	 */
 	public void attemptToActivate(Player p) {
 		LoggingUtils.log((p != null ? p.getName() : "Redstone")
-				+ "is attempting to activate " + getLogData());
+				+ " is attempting to activate " + getLogData());
 		// TODO Citadel stuff
 		mbs.recheckComplete();
 
@@ -331,6 +331,7 @@ public class FurnCraftChestFactory extends Factory {
 
 	public void upgrade(String name, List<IRecipe> recipes, ItemStack fuel,
 			int fuelConsumptionIntervall, int updateTime) {
+		deactivate();
 		this.name = name;
 		this.recipes = recipes;
 		this.updateTime = updateTime;

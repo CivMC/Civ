@@ -15,6 +15,8 @@ import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
@@ -74,21 +76,30 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	}
 
 	public void blockBreak(Player p, Block b) {
-		fccf.getRepairManager().breakIt();
 		if (p != null && !fccf.getRepairManager().inDisrepair()) {
-			FactoryMod.sendResponse("FactoryBreak", p);
 			p.sendMessage(ChatColor.DARK_RED
 					+ "You broke the factory, it is in disrepair now");
+			FactoryMod.sendResponse("FactoryBreak", p);
 		}
 		if (fccf.isActive()) {
 			fccf.deactivate();
 		}
+		fccf.getRepairManager().breakIt();
 	}
 
 	public void leftClick(Player p, Block b, BlockFace bf) {
 		if (p.getItemInHand().getType() != FactoryMod.getManager()
 				.getFactoryInteractionMaterial()) {
 			return;
+		}
+		if(FactoryMod.getManager().isCitadelEnabled()) {
+			//is this cast safe? Let's just assume yes for now
+			PlayerReinforcement rein = (PlayerReinforcement)rm.getReinforcement(b);
+			if (rein != null && !rein.getGroup().isMember(p.getUniqueId())) {
+				p.sendMessage(ChatColor.RED + "You dont have permission to interact with this factory");
+				FactoryMod.sendResponse("FactoryNoPermission", p);
+				return;
+			}
 		}
 		if (b.equals(((FurnCraftChestStructure) fccf.getMultiBlockStructure())
 				.getChest())) { // chest interaction

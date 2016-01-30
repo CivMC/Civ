@@ -2,7 +2,7 @@ package com.github.igotyou.FactoryMod.eggs;
 
 import java.util.List;
 
-import org.bukkit.block.Block;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -21,20 +21,23 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 	private List<IRecipe> recipes;
 	private ItemStack fuel;
 	private int fuelConsumptionIntervall;
+	private double returnRateOnDestruction;
 
 	public FurnCraftChestEgg(String name, int updateTime,
-			List<IRecipe> recipes, ItemStack fuel, int fuelConsumptionIntervall) {
+			List<IRecipe> recipes, ItemStack fuel,
+			int fuelConsumptionIntervall, double returnRateOnDestruction) {
 		this.name = name;
 		this.updateTime = updateTime;
 		this.recipes = recipes;
 		this.fuel = fuel;
 		this.fuelConsumptionIntervall = fuelConsumptionIntervall;
+		this.returnRateOnDestruction = returnRateOnDestruction;
 	}
 
 	public Factory hatch(MultiBlockStructure mbs, Player p) {
 		FurnCraftChestStructure fccs = (FurnCraftChestStructure) mbs;
-		FurnacePowerManager fpm = new FurnacePowerManager(fccs.getFurnace(), fuel,
-				fuelConsumptionIntervall);
+		FurnacePowerManager fpm = new FurnacePowerManager(fccs.getFurnace(),
+				fuel, fuelConsumptionIntervall);
 		FurnCraftChestInteractionManager fccim = new FurnCraftChestInteractionManager();
 		PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(
 				100);
@@ -63,19 +66,24 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 	public List<IRecipe> getRecipes() {
 		return recipes;
 	}
-	
-	public void setRecipes(List <IRecipe> recipes) {
+
+	public void setRecipes(List<IRecipe> recipes) {
 		this.recipes = recipes;
+	}
+	
+	public double getReturnRate() {
+		return returnRateOnDestruction;
 	}
 
 	public int getFuelConsumptionIntervall() {
 		return fuelConsumptionIntervall;
 	}
 
-	public Factory revive(List<Block> blocks, int health, String selectedRecipe, int productionTimer) {
+	public Factory revive(List<Location> blocks, int health,
+			String selectedRecipe, int productionTimer) {
 		FurnCraftChestStructure fccs = new FurnCraftChestStructure(blocks);
-		FurnacePowerManager fpm = new FurnacePowerManager(fccs.getFurnace(), fuel,
-				fuelConsumptionIntervall);
+		FurnacePowerManager fpm = new FurnacePowerManager(fccs.getFurnace(),
+				fuel, fuelConsumptionIntervall);
 		FurnCraftChestInteractionManager fccim = new FurnCraftChestInteractionManager();
 		PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(
 				health);
@@ -98,6 +106,10 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 			}
 		}
 		return fccf;
+	}
+	
+	public Class getMultiBlockStructure() {
+		return FurnCraftChestStructure.class;
 	}
 
 }

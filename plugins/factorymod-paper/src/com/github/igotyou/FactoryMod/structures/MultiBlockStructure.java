@@ -82,7 +82,7 @@ public abstract class MultiBlockStructure {
 	 * 
 	 * @return All blocks which are part of this factory
 	 */
-	public abstract List<Block> getAllBlocks();
+	public abstract List<Location> getAllBlocks();
 
 	/**
 	 * Rechecks whether all blocks of this factory exists and sets the variable

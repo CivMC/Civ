@@ -43,6 +43,7 @@ public class ConfigParser {
 	private int defaultUpdateTime;
 	private ItemStack defaultFuel;
 	private int defaultFuelConsumptionTime;
+	private double defaultReturnRate;
 	private HashMap<String, IFactoryEgg> upgradeEggs;
 	private HashMap<IFactoryEgg, List<String>> recipeLists;
 
@@ -62,7 +63,7 @@ public class ConfigParser {
 		FileConfiguration config = plugin.getConfig();
 		boolean citadelEnabled = plugin.getServer().getPluginManager()
 				.isPluginEnabled("Citadel");
-		boolean logInventories = config.getBoolean("log_inventories",true);
+		boolean logInventories = config.getBoolean("log_inventories", true);
 		Material factoryInteractionMaterial = Material.getMaterial(config
 				.getString("factory_interaction_material", "STICK"));
 		boolean disableNether = config.getBoolean("disable_nether", false);
@@ -77,10 +78,12 @@ public class ConfigParser {
 				.getItemStackRepresentation().get(0);
 		defaultFuelConsumptionTime = (int) parseTime(config.getString(
 				"default_fuel_consumption_intervall", "20"));
+		defaultReturnRate = config.getDouble("default_return_rate", 0.0);
 		int redstonePowerOn = config.getInt("redstone_power_on", 7);
 		int redstoneRecipeChange = config.getInt("redstone_recipe_change", 2);
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
-				citadelEnabled, redstonePowerOn, redstoneRecipeChange, logInventories);
+				citadelEnabled, redstonePowerOn, redstoneRecipeChange,
+				logInventories);
 		handleEnabledAndDisabledRecipes(config
 				.getConfigurationSection("crafting"));
 		upgradeEggs = new HashMap<String, IFactoryEgg>();
@@ -88,6 +91,7 @@ public class ConfigParser {
 		parseFactories(config.getConfigurationSection("factories"));
 		parseRecipes(config.getConfigurationSection("recipes"));
 		assignRecipesToFactories();
+		manager.calculateTotalSetupCosts();
 		// Some recipes need references to factories and all factories need
 		// references to recipes, so we parse all factories first, set their
 		// recipes to null, store the names of the recipes in a map here, parse
@@ -147,6 +151,7 @@ public class ConfigParser {
 			egg = parseFCCFactory(config);
 			ItemMap setupCost = parseItemMap(config
 					.getConfigurationSection("setupcost"));
+			System.out.println(setupCost.toString());
 			manager.addFactoryCreationEgg(FurnCraftChestStructure.class,
 					setupCost, egg);
 			break;
@@ -179,6 +184,12 @@ public class ConfigParser {
 
 	public SorterEgg parseSorter(ConfigurationSection config) {
 		String name = config.getString("name");
+		double returnRate;
+		if (config.contains("return_rate")) {
+			returnRate = config.getDouble("return_rate");
+		} else {
+			returnRate = defaultReturnRate;
+		}
 		int update;
 		if (config.contains("updatetime")) {
 			update = (int) parseTime(config.getString("updatetime"));
@@ -203,11 +214,17 @@ public class ConfigParser {
 		int sortamount = config.getInt("sort_amount");
 		int matsPerSide = config.getInt("maximum_materials_per_side");
 		return new SorterEgg(name, update, fuel, fuelIntervall, sortTime,
-				matsPerSide, sortamount);
+				matsPerSide, sortamount, returnRate);
 	}
 
 	public PipeEgg parsePipe(ConfigurationSection config) {
 		String name = config.getString("name");
+		double returnRate;
+		if (config.contains("return_rate")) {
+			returnRate = config.getDouble("return_rate");
+		} else {
+			returnRate = defaultReturnRate;
+		}
 		int update;
 		if (config.contains("updatetime")) {
 			update = (int) parseTime(config.getString("updatetime"));
@@ -233,11 +250,17 @@ public class ConfigParser {
 		int transferAmount = config.getInt("transferamount");
 		byte color = (byte) config.getInt("glass_color");
 		return new PipeEgg(name, update, fuel, fuelIntervall, null,
-				transferTimeMultiplier, transferAmount, color);
+				transferTimeMultiplier, transferAmount, color, returnRate);
 	}
 
 	public IFactoryEgg parseFCCFactory(ConfigurationSection config) {
 		String name = config.getString("name");
+		double returnRate;
+		if (config.contains("return_rate")) {
+			returnRate = config.getDouble("return_rate");
+		} else {
+			returnRate = defaultReturnRate;
+		}
 		int update;
 		if (config.contains("updatetime")) {
 			update = (int) parseTime(config.getString("updatetime"));
@@ -259,7 +282,7 @@ public class ConfigParser {
 			fuelIntervall = defaultFuelConsumptionTime;
 		}
 		FurnCraftChestEgg egg = new FurnCraftChestEgg(name, update, null, fuel,
-				fuelIntervall);
+				fuelIntervall, returnRate);
 		recipeLists.put(egg, config.getStringList("recipes"));
 		return egg;
 	}
@@ -363,7 +386,8 @@ public class ConfigParser {
 					.getItemStackRepresentation().get(0);
 			int repPerEssence = config.getInt("repair_per_essence");
 			int range = config.getInt("range");
-			result = new AOERepairRecipe(name, productionTime, essence, range, repPerEssence);
+			result = new AOERepairRecipe(name, productionTime, essence, range,
+					repPerEssence);
 			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type")

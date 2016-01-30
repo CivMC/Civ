@@ -14,11 +14,11 @@ import org.bukkit.inventory.InventoryHolder;
  *
  */
 public class PipeStructure extends MultiBlockStructure {
-	private Block start;
-	private Block furnace;
-	private Block end;
+	private Location start;
+	private Location furnace;
+	private Location end;
 	private int length;
-	private List<Block> glassPipe;
+	private List<Location> glassPipe;
 	private byte glassColor;
 	private static Material pipeMaterial = Material.STAINED_GLASS;
 	private static int maximumLength = 128;
@@ -28,16 +28,16 @@ public class PipeStructure extends MultiBlockStructure {
 		if (startBlock.getType() != Material.DISPENSER) {
 			return;
 		}
-		this.start = startBlock;
+		this.start = startBlock.getLocation();
 		for (Block b : MultiBlockStructure.searchForBlockOnSides(startBlock,
 				Material.FURNACE)) {
-			furnace = b;
+			furnace = b.getLocation();
 			break;
 		}
 		if (furnace == null) {
 			return;
 		}
-		glassPipe = new LinkedList<Block>();
+		glassPipe = new LinkedList<Location>();
 		Block currentBlock = startBlock.getRelative(dataBlockFaceConversion
 				.get((int) (startBlock.getState().getRawData())));
 		Block previousBlock = null;
@@ -45,7 +45,7 @@ public class PipeStructure extends MultiBlockStructure {
 			return;
 		}
 		glassColor = currentBlock.getData();
-		glassPipe.add(currentBlock);
+		glassPipe.add(currentBlock.getLocation());
 		int length = 1;
 		while (length <= maximumLength) {
 			List<Block> blocks = MultiBlockStructure
@@ -54,7 +54,7 @@ public class PipeStructure extends MultiBlockStructure {
 			boolean foundPipeBlock = false;
 			for (Block b : blocks) {
 				if (b.getState() instanceof InventoryHolder) {
-					end = b;
+					end = b.getLocation();
 					this.length = length;
 					complete = true;
 					foundEnd = true;
@@ -62,7 +62,7 @@ public class PipeStructure extends MultiBlockStructure {
 				} else if (b.getType() == pipeMaterial
 						&& b.getData() == glassColor
 						&& !b.equals(previousBlock)) {
-					glassPipe.add(b);
+					glassPipe.add(b.getLocation());
 					previousBlock = currentBlock;
 					currentBlock = b;
 					length++;
@@ -76,15 +76,13 @@ public class PipeStructure extends MultiBlockStructure {
 		}
 	}
 
-	public PipeStructure(List<Block> blocks) {
+	public PipeStructure(List<Location> blocks) {
 		this.start = blocks.get(0);
 		this.furnace = blocks.get(1);
 		this.end = blocks.get(blocks.size() - 1);
-		List<Block> glass = new LinkedList<Block>();
-		for (Block b : blocks) {
-			if (b.getType() == pipeMaterial) {
-				glass.add(b);
-			}
+		List<Location> glass = new LinkedList<Location>();
+		for (int i = 3; i< blocks.size()-1;i++) {
+			glass.add(blocks.get(i));
 		}
 		this.glassPipe = glass;
 		length = glassPipe.size();
@@ -92,17 +90,17 @@ public class PipeStructure extends MultiBlockStructure {
 	}
 
 	public Location getCenter() {
-		return start.getLocation();
+		return start;
 	}
 
 	public boolean relevantBlocksDestroyed() {
-		return start.getType() != Material.DISPENSER
-				&& furnace.getType() != Material.FURNACE
-				&& furnace.getType() != Material.BURNING_FURNACE;
+		return start.getBlock().getType() != Material.DISPENSER
+				&& furnace.getBlock().getType() != Material.FURNACE
+				&& furnace.getBlock().getType() != Material.BURNING_FURNACE;
 	}
 
-	public List<Block> getAllBlocks() {
-		List<Block> res = new LinkedList<Block>();
+	public List<Location> getAllBlocks() {
+		List<Location> res = new LinkedList<Location>();
 		res.add(start);
 		res.add(furnace);
 		res.addAll(glassPipe);
@@ -112,8 +110,8 @@ public class PipeStructure extends MultiBlockStructure {
 
 	public List<Block> getRelevantBlocks() {
 		List<Block> res = new LinkedList<Block>();
-		res.add(start);
-		res.add(furnace);
+		res.add(start.getBlock());
+		res.add(furnace.getBlock());
 		return res;
 	}
 
@@ -121,13 +119,14 @@ public class PipeStructure extends MultiBlockStructure {
 		if (start == null
 				|| furnace == null
 				|| end == null
-				|| start.getType() != Material.DISPENSER
-				|| (furnace.getType() != Material.FURNACE && furnace.getType() != Material.BURNING_FURNACE)
-				|| !(end.getState() instanceof InventoryHolder)) {
+				|| start.getBlock().getType() != Material.DISPENSER
+				|| (furnace.getBlock().getType() != Material.FURNACE && furnace.getBlock().getType() != Material.BURNING_FURNACE)
+				|| !(end.getBlock().getState() instanceof InventoryHolder)) {
 			complete = false;
 			return;
 		}
-		for (Block b : glassPipe) {
+		for (Location loc : glassPipe) {
+			Block b = loc.getBlock();
 			if (b.getType() != pipeMaterial || b.getData() != glassColor) {
 				complete = false;
 				return;
@@ -149,14 +148,14 @@ public class PipeStructure extends MultiBlockStructure {
 	}
 
 	public Block getStart() {
-		return start;
+		return start.getBlock();
 	}
 
 	public Block getEnd() {
-		return end;
+		return end.getBlock();
 	}
 
 	public Block getFurnace() {
-		return furnace;
+		return furnace.getBlock();
 	}
 }

@@ -2,6 +2,7 @@ package com.github.igotyou.FactoryMod.repairManager;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 
 public class NoRepairDestroyOnBreakManager implements IRepairManager {
 	private Factory factory;
@@ -20,9 +21,27 @@ public class NoRepairDestroyOnBreakManager implements IRepairManager {
 	}
 
 	public void breakIt() {
-		if (factory.getMultiBlockStructure().relevantBlocksDestroyed()) {
-			FactoryMod.getManager().removeFactory(factory);
-		}
+		FactoryMod
+				.getPlugin()
+				.getServer()
+				.getScheduler()
+				.scheduleSyncDelayedTask(FactoryMod.getPlugin(),
+						new Runnable() {
+
+							@Override
+							public void run() {
+								if (factory.getMultiBlockStructure()
+										.relevantBlocksDestroyed()) {
+									LoggingUtils.log(factory.getLogData()
+											+ " removed because blocks were destroyed");
+									FactoryMod.getManager().removeFactory(
+											factory);
+									PercentageHealthRepairManager
+											.returnStuff(factory);
+								}
+
+							}
+						});
 	}
 
 	public boolean atFullHealth() {

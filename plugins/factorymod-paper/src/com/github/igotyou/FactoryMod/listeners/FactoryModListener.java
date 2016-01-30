@@ -41,7 +41,7 @@ public class FactoryModListener implements Listener {
 	 * Called when a block is broken If the block that is destroyed is part of a
 	 * factory, call the required methods.
 	 */
-	@EventHandler (ignoreCancelled = true, priority = EventPriority.MONITOR)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 	public void blockBreakEvent(BlockBreakEvent e) {
 		Block block = e.getBlock();
 		if (manager.isPossibleInteractionBlock(block.getType())) {
@@ -114,6 +114,7 @@ public class FactoryModListener implements Listener {
 				if (c != null) {
 					c.getInteractionManager().rightClick(player, block, bf);
 				} else {
+					// check if chest is other half of double chest
 					if (block.getType() == Material.CHEST) {
 						for (Block b : MultiBlockStructure
 								.searchForBlockOnSides(block, Material.CHEST)) {
@@ -134,6 +135,7 @@ public class FactoryModListener implements Listener {
 							manager.attemptCreation(block, player);
 						}
 					} else {
+						// check if chest is other half of double chest
 						if (block.getType() == Material.CHEST) {
 							for (Block b : MultiBlockStructure
 									.searchForBlockOnSides(block,
@@ -153,7 +155,7 @@ public class FactoryModListener implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void blockDispenser(BlockDispenseEvent e) {
 		if (manager.getFactoryAt(e.getBlock()) != null) {

@@ -2,8 +2,8 @@ package com.github.igotyou.FactoryMod.eggs;
 
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -27,10 +27,11 @@ public class PipeEgg implements IFactoryEgg {
 	private int transferTimeMultiplier;
 	private int transferAmount;
 	private byte color;
+	double returnRate;
 
 	public PipeEgg(String name, int updateTime, ItemStack fuel,
 			int fuelConsumptionIntervall, List<Material> allowedMaterials,
-			int transferTimeMultiplier, int transferAmount, byte color) {
+			int transferTimeMultiplier, int transferAmount, byte color, double returnRate) {
 		this.name = name;
 		this.fuel = fuel;
 		this.updateTime = updateTime;
@@ -39,6 +40,7 @@ public class PipeEgg implements IFactoryEgg {
 		this.transferAmount = transferAmount;
 		this.allowedMaterials = allowedMaterials;
 		this.color = color;
+		this.returnRate = returnRate;
 	}
 
 	public String getName() {
@@ -59,6 +61,10 @@ public class PipeEgg implements IFactoryEgg {
 
 	public List<Material> getAllowedMaterials() {
 		return allowedMaterials;
+	}
+	
+	public double getReturnRate() {
+		return returnRate;
 	}
 
 	public int getTransferAmount() {
@@ -86,7 +92,7 @@ public class PipeEgg implements IFactoryEgg {
 		return pipe;
 	}
 
-	public Factory revive(List<Block> blocks, List<Material> allowedMaterials,
+	public Factory revive(List<Location> blocks, List<Material> allowedMaterials,
 			int runTime) {
 		MultiBlockStructure ps = new PipeStructure(blocks);
 		PipeInteractionManager im = new PipeInteractionManager();
@@ -108,4 +114,7 @@ public class PipeEgg implements IFactoryEgg {
 		return pipe;
 	}
 
+	public Class getMultiBlockStructure() {
+		return PipeStructure.class;
+	}
 }

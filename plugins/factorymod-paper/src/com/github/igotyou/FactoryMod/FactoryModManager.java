@@ -17,14 +17,18 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
+import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.eggs.PipeEgg;
 import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.recipes.IRecipe;
+import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
 import com.github.igotyou.FactoryMod.utility.FileHandler;
+import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 
 /**
  * Manager class which handles all factories, their locations and their creation
@@ -34,6 +38,7 @@ public class FactoryModManager {
 	protected FactoryMod plugin;
 	private FileHandler fileHandler;
 	private HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>> factoryCreationRecipes;
+	private HashMap<IFactoryEgg, ItemMap> totalSetupCosts;
 	private HashMap<Location, Factory> locations;
 	private HashMap<String, IFactoryEgg> eggs;
 	private HashSet<Factory> factories;
@@ -64,6 +69,7 @@ public class FactoryModManager {
 		possibleCenterBlocks = new HashSet<Material>();
 		possibleInteractionBlock = new HashSet<Material>();
 		factories = new HashSet<Factory>();
+		totalSetupCosts = new HashMap<IFactoryEgg, ItemMap>();
 
 		// Normal furnace, craftingtable, chest factories
 		possibleCenterBlocks.add(Material.WORKBENCH);
@@ -168,8 +174,8 @@ public class FactoryModManager {
 			f.deactivate();
 		}
 		factories.remove(f);
-		for (Block b : f.getMultiBlockStructure().getAllBlocks()) {
-			locations.remove(b.getLocation());
+		for (Location b : f.getMultiBlockStructure().getAllBlocks()) {
+			locations.remove(b);
 		}
 	}
 
@@ -243,6 +249,7 @@ public class FactoryModManager {
 								addFactory(f);
 								p.sendMessage(ChatColor.GREEN
 										+ "Successfully created " + f.getName());
+								LoggingUtils.log(f.getLogData()+ " was created by " +p.getName());
 								FactoryMod.sendResponse("FactoryCreation", p);
 							}
 						} else {
@@ -284,6 +291,7 @@ public class FactoryModManager {
 								addFactory(f);
 								p.sendMessage(ChatColor.GREEN
 										+ "Successfully created " + f.getName());
+								LoggingUtils.log(f.getLogData()+ " was created by " +p.getName());
 								FactoryMod.sendResponse("PipeCreation", p);
 							}
 
@@ -296,7 +304,8 @@ public class FactoryModManager {
 					}
 					return;
 				} else {
-					p.sendMessage(ChatColor.RED + "This pipe is not set up the right way");
+					p.sendMessage(ChatColor.RED
+							+ "This pipe is not set up the right way");
 					FactoryMod.sendResponse("WrongPipeBlockSetup", p);
 				}
 			}
@@ -322,6 +331,7 @@ public class FactoryModManager {
 								addFactory(f);
 								p.sendMessage(ChatColor.GREEN
 										+ "Successfully created " + f.getName());
+								LoggingUtils.log(f.getLogData()+ " was created by " +p.getName());
 								FactoryMod.sendResponse("SorterCreation", p);
 							}
 
@@ -333,11 +343,49 @@ public class FactoryModManager {
 						}
 					}
 				} else {
-					p.sendMessage(ChatColor.RED + "This sorter is not set up the right way");
+					p.sendMessage(ChatColor.RED
+							+ "This sorter is not set up the right way");
 					FactoryMod.sendResponse("WrongSorterBlockSetup", p);
 				}
 			}
 		}
+	}
+
+	public void calculateTotalSetupCosts() {
+		for (HashMap<ItemMap, IFactoryEgg> maps : factoryCreationRecipes
+				.values()) {
+			for (Entry<ItemMap, IFactoryEgg> entry : maps.entrySet()) {
+				totalSetupCosts.put(entry.getValue(), entry.getKey());
+			}
+		}
+		for (IFactoryEgg egg : getAllEggs().values()) {
+			totalSetupCosts.put(egg, calculateTotalSetupCost(egg));
+		}
+	}
+
+	private ItemMap calculateTotalSetupCost(IFactoryEgg egg) {
+		ItemMap map = null;
+		map = totalSetupCosts.get(egg);
+		if (map != null) {
+			return map;
+		}
+		for (IFactoryEgg superEgg : getAllEggs().values()) {
+			if (superEgg instanceof FurnCraftChestEgg) {
+				for (IRecipe recipe : ((FurnCraftChestEgg) superEgg)
+						.getRecipes()) {
+					if (recipe instanceof Upgraderecipe
+							&& ((Upgraderecipe) recipe).getEgg() == egg) {
+						map = calculateTotalSetupCost(superEgg);
+						map = map.clone(); // so we dont mess with the original
+											// setup costs
+						map.merge(((Upgraderecipe) recipe).getInput());
+						return map;
+					}
+				}
+
+			}
+		}
+		return map;
 	}
 
 	/**
@@ -358,6 +406,14 @@ public class FactoryModManager {
 			}
 		}
 		return facs;
+	}
+
+	public ItemMap getTotalSetupCost(Factory f) {
+		return getTotalSetupCost(getEgg(f.getName()));
+	}
+
+	public ItemMap getTotalSetupCost(IFactoryEgg e) {
+		return totalSetupCosts.get(e);
 	}
 
 	/**
