@@ -118,7 +118,7 @@ public abstract class ACivMod extends JavaPlugin implements Listener{
     public void onEnable() {
       registerEvents();
       registerCommands();
-      new NiceNames().loadNames();
+      new NiceNames().loadNames(this);
       //global_instance_ = this;
       info("Main Plugin Events and Config Command registered");
     }
