@@ -20,6 +20,13 @@ public class CitadelConfigManager {
 		return reinforcementTypes;
 	}
 	
+	public static List<String> getReinforceableMaterials(String mat){
+		if(config.getConfigurationSection("reinforcements." + mat).contains("reinforceables")) {
+			return config.getConfigurationSection("reinforcements." + mat).getStringList("reinforceables");
+		}
+		return null;
+	}
+	
 	public static List<String> getNaturalReinforcementTypes(){
 		List<String> naturalReinforcementTypes = new ArrayList<String>();
 		if (config.getConfigurationSection("natural_reinforcements") == null)

@@ -22,6 +22,10 @@ reinforcements:
 # Delete the comment char to use lore.  Three spaces are required 
 # after lore. You can add multiple lines by adding -
 #   - Some string representation required for this reinforcement.
+#
+# # Uncomment below to add limits to what blocks this reinforcement can be applied to
+# reinforceables:
+#   - STONE
  iron:
   material: IRON_INGOT
   requirements: 1
