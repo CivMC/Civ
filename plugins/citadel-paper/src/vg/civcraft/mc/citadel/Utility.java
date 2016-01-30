@@ -42,28 +42,28 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
  */
 public class Utility {
 
-	private static ReinforcementManager rm = Citadel.getReinforcementManager();
-	private static Random rng = new Random();
-	/**
-	 * Creates a PlayerReinforcement or returns null if if player doesn't have
-	 * the required requirements.
-	 * @param The Player who created the reinforcement.
-	 * @param The Group this reinforcement belongs too.
-	 * @param The Block this reinforcement is occurring on.
-	 * @param The ReinforcementType that is being reinforced on the block.
-	 * @param The ItemStack type of the block being placed (if CTF, null if CTR)
-	 * @return The PlayerReinforcement that comes from these parameters or null if certain checks failed.
-	 * @throws ReinforcemnetFortificationCancelException
-	 */
-	public static PlayerReinforcement createPlayerReinforcement(Player player, Group g, Block block,
-			ReinforcementType type, ItemStack reinfMat) {
+    private static ReinforcementManager rm = Citadel.getReinforcementManager();
+    private static Random rng = new Random();
+    /**
+     * Creates a PlayerReinforcement or returns null if if player doesn't have
+     * the required requirements.
+     * @param The Player who created the reinforcement.
+     * @param The Group this reinforcement belongs too.
+     * @param The Block this reinforcement is occurring on.
+     * @param The ReinforcementType that is being reinforced on the block.
+     * @param The ItemStack type of the block being placed (if CTF, null if CTR)
+     * @return The PlayerReinforcement that comes from these parameters or null if certain checks failed.
+     * @throws ReinforcemnetFortificationCancelException
+     */
+    public static PlayerReinforcement createPlayerReinforcement(Player player, Group g, Block block,
+            ReinforcementType type, ItemStack reinfMat) {
         if (g.isDisciplined()) {
             player.sendMessage(ChatColor.RED + "This group is disiplined.");
             return null;
         }
         if (NonReinforceableType.isNonReinforceable(block.getType())){
-        	player.sendMessage(ChatColor.RED + "That block cannot be reinforced.");
-        	return null;
+            player.sendMessage(ChatColor.RED + "That block cannot be reinforced.");
+            return null;
         }
         // Find necessary itemstacks
         final PlayerInventory inv = player.getInventory();
@@ -76,7 +76,7 @@ public class Utility {
             return null;
         }
         if (reinfMat != null && itemType.isSimilar(reinfMat)){ // only in CTF.
-        	requirementscheck++;
+            requirementscheck++;
         }
         int requirements = requirementscheck;
         try {
@@ -100,23 +100,23 @@ public class Utility {
         }
         // Fire the creation event
         PlayerReinforcement rein = new PlayerReinforcement(block.getLocation(), 
-        		type.getHitPoints(), getIntFormofMaturation(System.currentTimeMillis(),type.getItemStack()), 
-        		getIntFormofAcidMaturation(System.currentTimeMillis(),type.getItemStack()),  
-        		g, type.getItemStack());
+                type.getHitPoints(), getIntFormofMaturation(System.currentTimeMillis(),type.getItemStack()), 
+                getIntFormofAcidMaturation(System.currentTimeMillis(),type.getItemStack()),  
+                g, type.getItemStack());
         ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, block, player);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
-        	throw new ReinforcemnetFortificationCancelException();
+            throw new ReinforcemnetFortificationCancelException();
         }
         // Now eat the materials
         
         // Handle special case with block reinforcements.
         if (type.getMaterial().isBlock()){
-	        if (slots.size()>1){
-	        	if (inv.getItemInHand().isSimilar(itemType) && slots.get(0) != inv.getHeldItemSlot()){
-	        		requirements--;
-	        	}
-	        }
+            if (slots.size()>1){
+                if (inv.getItemInHand().isSimilar(itemType) && PlayerState.get(player).getMode() == ReinforcementMode.REINFOREMENT_FORTIFICATION && slots.get(0) != inv.getHeldItemSlot()){
+                	requirements--;
+                }
+            }
         }
         for (final int slot : slots) {
             if (requirements <= 0) {
@@ -125,6 +125,7 @@ public class Utility {
             final ItemStack slotItem = inv.getItem(slot);
             final int stackSize = slotItem.getAmount();
             final int deduction = Math.min(stackSize, requirements);
+            
             if (deduction < stackSize) {
                 slotItem.setAmount(stackSize - deduction);
             } else {
@@ -140,47 +141,47 @@ public class Utility {
         rm.saveInitialReinforcement(rein);
         return rein;
     }
-	
-	/**
-	 * Creates a player reinforcement without consuming any materials. This should only be used
-	 * for admin tools
-	 * @param The player who is creating the reinforcement
-	 * @param The Group this reinforcement belongs too.
-	 * @param The Block this reinforcement is occurring on.
-	 * @param The ReinforcementType that is being reinforced on the block.
-	 * @return The PlayerReinforcement that comes from these parameters or null if certain checks failed.
-	 * @throws ReinforcemnetFortificationCancelException
-	 */
-	public static PlayerReinforcement createPlayerReinforcementWithoutMaterialConsumption(Player player, 
-			Group g, Block block, ReinforcementType type) {
-		//no error messages towards the player because this might be called a few thousand times 
-		if (g.isDisciplined()) {
+    
+    /**
+     * Creates a player reinforcement without consuming any materials. This should only be used
+     * for admin tools
+     * @param The player who is creating the reinforcement
+     * @param The Group this reinforcement belongs too.
+     * @param The Block this reinforcement is occurring on.
+     * @param The ReinforcementType that is being reinforced on the block.
+     * @return The PlayerReinforcement that comes from these parameters or null if certain checks failed.
+     * @throws ReinforcemnetFortificationCancelException
+     */
+    public static PlayerReinforcement createPlayerReinforcementWithoutMaterialConsumption(Player player, 
+            Group g, Block block, ReinforcementType type) {
+        //no error messages towards the player because this might be called a few thousand times 
+        if (g.isDisciplined()) {
             return null;
         }
-		if (NonReinforceableType.isNonReinforceable(block.getType())){
-        	return null;
+        if (NonReinforceableType.isNonReinforceable(block.getType())){
+            return null;
         }
-		PlayerReinforcement rein = new PlayerReinforcement(block.getLocation(), 
-        		type.getHitPoints(), getIntFormofMaturation(System.currentTimeMillis(),type.getItemStack()), 
-        		getIntFormofAcidMaturation(System.currentTimeMillis(),type.getItemStack()), 
-        		g, type.getItemStack());
+        PlayerReinforcement rein = new PlayerReinforcement(block.getLocation(), 
+                type.getHitPoints(), getIntFormofMaturation(System.currentTimeMillis(),type.getItemStack()), 
+                getIntFormofAcidMaturation(System.currentTimeMillis(),type.getItemStack()), 
+                g, type.getItemStack());
         ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, block, player);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
-        	throw new ReinforcemnetFortificationCancelException();
+            throw new ReinforcemnetFortificationCancelException();
         }
         rm.saveInitialReinforcement(rein);
-        return rein;		
-	}
-	
-	/**
-	 * Checks if creating a plant reinforcement would result in a 
-	 * double reinforcement.
-	 * @param The block of the plant.
-	 * @return True if it would create a double reinforcement.
-	 * @return False if it would not.
-	 */
-	public static boolean wouldPlantDoubleReinforce(final Block block) {
+        return rein;        
+    }
+    
+    /**
+     * Checks if creating a plant reinforcement would result in a 
+     * double reinforcement.
+     * @param The block of the plant.
+     * @return True if it would create a double reinforcement.
+     * @return False if it would not.
+     */
+    public static boolean wouldPlantDoubleReinforce(final Block block) {
         final Material blockMat = block.getType();
         if (isReinforceablePlant(blockMat)
             && rm.getReinforcement(block.getLocation()) != null) {
@@ -198,19 +199,19 @@ public class Utility {
         }
         return false;
     }
-	
-	private static boolean isReinforceablePlant(Material mat) {
+    
+    private static boolean isReinforceablePlant(Material mat) {
         // If this list changes, update wouldPlantDoubleReinforce to account
         // for the new soil types.
         return mat.equals(Material.MELON_BLOCK)
             || mat.equals(Material.PUMPKIN);
     }
-	/**
-	 * Returns a list of Materials that this plant can go on.
-	 * @param Material of the plant.
-	 * @return List of Materials that it can grow on.
-	 */
-	public static Set<Material> getPlantSoilTypes(Material mat) {
+    /**
+     * Returns a list of Materials that this plant can go on.
+     * @param Material of the plant.
+     * @return List of Materials that it can grow on.
+     */
+    public static Set<Material> getPlantSoilTypes(Material mat) {
         Set<Material> soilTypes = new HashSet<Material>();
         if (isSoilPlant(mat)) {
             soilTypes.add(Material.SOIL);
@@ -229,8 +230,8 @@ public class Utility {
         }
         return soilTypes;
     }
-	
-	private static boolean isSoilPlant(Material mat) {
+    
+    private static boolean isSoilPlant(Material mat) {
         return mat.equals(Material.WHEAT)
             || mat.equals(Material.MELON_STEM)
             || mat.equals(Material.PUMPKIN_STEM)
@@ -277,7 +278,7 @@ public class Utility {
     private static int maxPlantHeight(Block plant) {
         switch(plant.getType()) {
             case CACTUS:
-            	return 3;
+                return 3;
             case SUGAR_CANE_BLOCK:
                 return 3;
             default:
@@ -304,9 +305,9 @@ public class Utility {
         if (reinforcement instanceof PlayerReinforcement && CitadelConfigManager.isMaturationEnabled()) {
           final int maturationTime = timeUntilMature(reinforcement);
           PlayerReinforcement rein = (PlayerReinforcement) reinforcement;
-    	  ReinforcementType type = ReinforcementType.getReinforcementType(rein.getStackRepresentation());
+          ReinforcementType type = ReinforcementType.getReinforcementType(rein.getStackRepresentation());
           if (maturationTime > 0 && type.getMaturationScale() != 0) {
-        	  // the default amount of minutes it takes to mature
+              // the default amount of minutes it takes to mature
               int normal = type.getMaturationTime();
               if (maturationTime == normal) {
                   durabilityLoss = durability;
@@ -378,7 +379,7 @@ public class Utility {
             return (int) maturationTime; // should be small enough by now
         }
         return 0;
-	}
+    }
     
     /**
      * 
@@ -391,31 +392,31 @@ public class Utility {
         Citadel.getReinforcementManager().deleteReinforcement(reinforcement);
         if (reinforcement instanceof PlayerReinforcement) {
             PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
-	        ReinforcementType material = ReinforcementType.getReinforcementType(pr.getStackRepresentation());
+            ReinforcementType material = ReinforcementType.getReinforcementType(pr.getStackRepresentation());
             if (rng.nextDouble() <= pr.getHealth() * material.getPercentReturn()) {
                 Location location = pr.getLocation();
-    	        if (player != null){
-	        		Inventory inv = player.getInventory();
-    	        	if (CitadelConfigManager.shouldDropReinforcedBlock()){
-    	        		// If we should drop a block instead
-    	        		ItemStack stack = createDroppedReinforcementBlock
-    	        				(reinforcement.getLocation().getBlock(), (PlayerReinforcement) reinforcement);
-    	        		for(ItemStack leftover : inv.addItem(
-    	        				stack).values()) {
-    	                	location.getWorld().dropItem(location, leftover);
-    	            	}
-    	        	}
-    	        	else {
-    	        		for(ItemStack leftover : inv.addItem(
-    	        				material.getItemStack())
-    	        				.values()) {
-    	                	location.getWorld().dropItem(location, leftover);
-    	            	}
-    	        	}
-    	        }
-    	        else
-    	        	location.getWorld().dropItem(location, new ItemStack(material.getMaterial()
-    	        			, material.getReturnValue()));
+                if (player != null){
+                    Inventory inv = player.getInventory();
+                    if (CitadelConfigManager.shouldDropReinforcedBlock()){
+                        // If we should drop a block instead
+                        ItemStack stack = createDroppedReinforcementBlock
+                                (reinforcement.getLocation().getBlock(), (PlayerReinforcement) reinforcement);
+                        for(ItemStack leftover : inv.addItem(
+                                stack).values()) {
+                            location.getWorld().dropItem(location, leftover);
+                        }
+                    }
+                    else {
+                        for(ItemStack leftover : inv.addItem(
+                                material.getItemStack())
+                                .values()) {
+                            location.getWorld().dropItem(location, leftover);
+                        }
+                    }
+                }
+                else
+                    location.getWorld().dropItem(location, new ItemStack(material.getMaterial()
+                            , material.getReturnValue()));
             }
             return pr.isSecurable();
         }
@@ -431,14 +432,14 @@ public class Utility {
      */
     public static boolean isAuthorizedPlayerNear(PlayerReinforcement reinforcement, double distance) {
        
-    	Location reinLocation = reinforcement.getLocation();
+        Location reinLocation = reinforcement.getLocation();
         double min_x = reinLocation.getX() - distance;
         double min_z = reinLocation.getZ() - distance;
         double max_x = reinLocation.getX() + distance;
         double max_z = reinLocation.getZ() + distance;
         List<Player> onlinePlayers = new ArrayList<Player>();
         for (Player p: Bukkit.getOnlinePlayers())
-        	onlinePlayers.add(p);
+            onlinePlayers.add(p);
         boolean result = false;
         try {
             for (Player player : onlinePlayers) {
@@ -478,9 +479,9 @@ public class Utility {
     public static NaturalReinforcement createNaturalReinforcement(Block block, Player player) {
         Material material = block.getType();
         NaturalReinforcementType nType = NaturalReinforcementType.
-        		getNaturalReinforcementType(material);
+                getNaturalReinforcementType(material);
         if (nType == null)
-        	return null;
+            return null;
         int breakCount = nType.getDurability();
         NaturalReinforcement nr = new NaturalReinforcement(block, breakCount);
         ReinforcementCreationEvent event = new ReinforcementCreationEvent(nr, block, player);
@@ -499,76 +500,76 @@ public class Utility {
      * @return Itemstack form of the reinforcement on a block
      */
     public static ItemStack createDroppedReinforcementBlock(Block block, PlayerReinforcement rein){
-    	ItemStack reinBlock = new ItemStack(block.getType(), 1);
-    	ItemMeta lore = reinBlock.getItemMeta();
-    	List<String> info = new ArrayList<String>();
-    	String reinMat = rein.getMaterial().name();
-    	String amount = "" + rein.getStackRepresentation().getAmount();
-    	String dur = "" + ReinforcementType.getReinforcementType(rein.getStackRepresentation()).getHitPoints();
-    	String group = rein.getGroup().getName();
-    	info.add(reinMat);
-    	info.add(amount);
-    	info.add(dur);
-    	info.add(group);
-    	if (rein.getStackRepresentation().hasItemMeta())
-    		info.addAll(rein.getStackRepresentation().getItemMeta().getLore());
-    	lore.setLore(info);
-    	reinBlock.setItemMeta(lore);
-    	return reinBlock;
+        ItemStack reinBlock = new ItemStack(block.getType(), 1);
+        ItemMeta lore = reinBlock.getItemMeta();
+        List<String> info = new ArrayList<String>();
+        String reinMat = rein.getMaterial().name();
+        String amount = "" + rein.getStackRepresentation().getAmount();
+        String dur = "" + ReinforcementType.getReinforcementType(rein.getStackRepresentation()).getHitPoints();
+        String group = rein.getGroup().getName();
+        info.add(reinMat);
+        info.add(amount);
+        info.add(dur);
+        info.add(group);
+        if (rein.getStackRepresentation().hasItemMeta())
+            info.addAll(rein.getStackRepresentation().getItemMeta().getLore());
+        lore.setLore(info);
+        reinBlock.setItemMeta(lore);
+        return reinBlock;
     }
     /**
-	 * Returns the Reinforcement of a block if it was previously a reinforcement.
-	 * Importantly though if a group that this block was associated with 
-	 * gets deleted this block when placed will not belong to anyone.
+     * Returns the Reinforcement of a block if it was previously a reinforcement.
+     * Importantly though if a group that this block was associated with 
+     * gets deleted this block when placed will not belong to anyone.
      * @param The player placing the block
      * @param The stack the player is placing from
      * @param The location where the block is being placed
      * @return The PlayerReiforcement associated with this block
      */
     public static PlayerReinforcement isDroppedReinforcementBlock(Player p, ItemStack stack, Location loc){
-    	ItemMeta meta = stack.getItemMeta();
-    	List<String> lore = meta.getLore();
-    	try{
-    	if (!meta.hasLore())
-    		return null;
-    	Iterator<String> value = lore.iterator();
-    	if (!value.hasNext())
-    		return null;
-    	Material mat = Material.valueOf(value.next());
-    	if (!value.hasNext())
-    		return null;
-    	int amount = Integer.parseInt(value.next());
-    	if (!value.hasNext())
-    		return null;
-    	int dur = Integer.parseInt(value.next());
-    	if (!value.hasNext())
-    		return null;
-    	String group = value.next();
-    	List<String> itemStackInfo = new ArrayList<String>();
-    	while(value.hasNext())
-    		itemStackInfo.add(value.next());
-    	ItemStack newStack = new ItemStack(mat, amount);
-    	meta.setLore(itemStackInfo);
-    	newStack.setItemMeta(meta);
-    	ReinforcementType reinType = ReinforcementType.getReinforcementType(newStack);
-    	if (reinType == null)
-    		return null;
-    	Group g = GroupManager.getSpecialCircumstanceGroup(group);
-    	PlayerReinforcement rein = new PlayerReinforcement(loc, dur, 
-    			getIntFormofMaturation(System.currentTimeMillis(),reinType.getItemStack()),
-        		getIntFormofAcidMaturation(System.currentTimeMillis(),reinType.getItemStack()),
-    			g, reinType.getItemStack());
-    	ReinforcementCreationEvent event = 
-    			new ReinforcementCreationEvent(rein, loc.getBlock(), p);
-    	Bukkit.getPluginManager().callEvent(event);
-    	if (event.isCancelled())
-    		return null;
-    	return rein;
-    	} catch (IllegalArgumentException iae){
-    	} catch(Exception ex){
-    		ex.printStackTrace();
-    	}
-		return null;
+        ItemMeta meta = stack.getItemMeta();
+        List<String> lore = meta.getLore();
+        try{
+        if (!meta.hasLore())
+            return null;
+        Iterator<String> value = lore.iterator();
+        if (!value.hasNext())
+            return null;
+        Material mat = Material.valueOf(value.next());
+        if (!value.hasNext())
+            return null;
+        int amount = Integer.parseInt(value.next());
+        if (!value.hasNext())
+            return null;
+        int dur = Integer.parseInt(value.next());
+        if (!value.hasNext())
+            return null;
+        String group = value.next();
+        List<String> itemStackInfo = new ArrayList<String>();
+        while(value.hasNext())
+            itemStackInfo.add(value.next());
+        ItemStack newStack = new ItemStack(mat, amount);
+        meta.setLore(itemStackInfo);
+        newStack.setItemMeta(meta);
+        ReinforcementType reinType = ReinforcementType.getReinforcementType(newStack);
+        if (reinType == null)
+            return null;
+        Group g = GroupManager.getSpecialCircumstanceGroup(group);
+        PlayerReinforcement rein = new PlayerReinforcement(loc, dur, 
+                getIntFormofMaturation(System.currentTimeMillis(),reinType.getItemStack()),
+                getIntFormofAcidMaturation(System.currentTimeMillis(),reinType.getItemStack()),
+                g, reinType.getItemStack());
+        ReinforcementCreationEvent event = 
+                new ReinforcementCreationEvent(rein, loc.getBlock(), p);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled())
+            return null;
+        return rein;
+        } catch (IllegalArgumentException iae){
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
     }
     /**
      * If a reinforcement is exploded checks if it has a reinforcement on it
@@ -599,8 +600,8 @@ public class Utility {
      * @return
      */
     public static MultiBlockReinforcement createMultiBlockReinforcement(List<Location> locs, Group g, int dur, int mature, int acid){
-    	MultiBlockReinforcement rein = new MultiBlockReinforcement(locs, g, dur, mature, acid, -1);
-    	ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, rein.getLocation().getBlock(), null);
+        MultiBlockReinforcement rein = new MultiBlockReinforcement(locs, g, dur, mature, acid, -1);
+        ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, rein.getLocation().getBlock(), null);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return null;
@@ -623,76 +624,76 @@ public class Utility {
     }
     
     public static List<Material> doorTypes = new ArrayList<Material>(Arrays.asList(
-    		Material.WOODEN_DOOR, Material.IRON_DOOR_BLOCK,
-    		Material.ACACIA_DOOR, Material.BIRCH_DOOR,
-    		Material.DARK_OAK_DOOR, Material.JUNGLE_DOOR,
-    		Material.SPRUCE_DOOR, Material.WOOD_DOOR));
+            Material.WOODEN_DOOR, Material.IRON_DOOR_BLOCK,
+            Material.ACACIA_DOOR, Material.BIRCH_DOOR,
+            Material.DARK_OAK_DOOR, Material.JUNGLE_DOOR,
+            Material.SPRUCE_DOOR, Material.WOOD_DOOR));
     /**
      * Returns the block the Citadel is looking at, example: for beds, doors we want the bottom half.
      * @param block
      * @return Returns the block we want.
      */
     public static Block getRealBlock(Block block){
-    	Block b = block;
-    	switch (block.getType()){
-    	case CHEST:
-    	case TRAPPED_CHEST:
-    		if (!rm.isReinforced(block))
-    			b = getAttachedChest(block);
-    		if (b == null)
-    			b = block;
-    		break;
-		case WOODEN_DOOR:
-		case IRON_DOOR_BLOCK:
-		case ACACIA_DOOR:
-		case BIRCH_DOOR:
-		case DARK_OAK_DOOR:
-		case JUNGLE_DOOR:
-		case SPRUCE_DOOR:
-		case WOOD_DOOR:
-			if (!doorTypes.contains(block.getRelative(BlockFace.UP).getType()))
-				b = block.getRelative(BlockFace.DOWN);
-			break;
-		case BED_BLOCK:
-			if (((Bed) block.getState().getData()).isHeadOfBed())
-				b = block.getRelative(((Bed) block.getState().getData()).getFacing().getOppositeFace());
-			break;
-		default:
-			return block;
-		}
-    	return b;
+        Block b = block;
+        switch (block.getType()){
+        case CHEST:
+        case TRAPPED_CHEST:
+            if (!rm.isReinforced(block))
+                b = getAttachedChest(block);
+            if (b == null)
+                b = block;
+            break;
+        case WOODEN_DOOR:
+        case IRON_DOOR_BLOCK:
+        case ACACIA_DOOR:
+        case BIRCH_DOOR:
+        case DARK_OAK_DOOR:
+        case JUNGLE_DOOR:
+        case SPRUCE_DOOR:
+        case WOOD_DOOR:
+            if (!doorTypes.contains(block.getRelative(BlockFace.UP).getType()))
+                b = block.getRelative(BlockFace.DOWN);
+            break;
+        case BED_BLOCK:
+            if (((Bed) block.getState().getData()).isHeadOfBed())
+                b = block.getRelative(((Bed) block.getState().getData()).getFacing().getOppositeFace());
+            break;
+        default:
+            return block;
+        }
+        return b;
     }
     
     private static int getIntFormofMaturation(long creation, ItemStack stack){
-		int maturation = (int)(creation / 60000) + 
-				ReinforcementType.
-				getReinforcementType(stack)
-				.getMaturationTime();
-		return maturation;
-	}
+        int maturation = (int)(creation / 60000) + 
+                ReinforcementType.
+                getReinforcementType(stack)
+                .getMaturationTime();
+        return maturation;
+    }
     
     private static int getIntFormofAcidMaturation(long creation, ItemStack stack) {
-		int maturation = (int)(creation / 60000) + 
-				ReinforcementType.
-				getReinforcementType(stack)
-				.getAcidTime();
-		return maturation;
+        int maturation = (int)(creation / 60000) + 
+                ReinforcementType.
+                getReinforcementType(stack)
+                .getAcidTime();
+        return maturation;
     }
     
     public static Block findPlantSoil(Block block){
-    	final Set<Material> soilTypes = getPlantSoilTypes(block.getType());
-    	if(soilTypes.size() <= 0){
-    		return null;
-    	}
-    	//find the plants soil below it
-    	Block down = block;
-    	int max_depth = maxPlantHeight(block);
-    	for(int i =0; i < max_depth; ++i){
-    		down = down.getRelative(BlockFace.DOWN);
-    		if(soilTypes.contains(down.getType())){
-    			return down;
-    		}
-    	}
-    	return null;
+        final Set<Material> soilTypes = getPlantSoilTypes(block.getType());
+        if(soilTypes.size() <= 0){
+            return null;
+        }
+        //find the plants soil below it
+        Block down = block;
+        int max_depth = maxPlantHeight(block);
+        for(int i =0; i < max_depth; ++i){
+            down = down.getRelative(BlockFace.DOWN);
+            if(soilTypes.contains(down.getType())){
+                return down;
+            }
+        }
+        return null;
     }
 }
