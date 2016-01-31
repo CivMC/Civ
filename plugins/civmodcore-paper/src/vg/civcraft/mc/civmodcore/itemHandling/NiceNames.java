@@ -70,7 +70,7 @@ public class NiceNames {
 	public void loadNames(ACivMod plugin){
 		// item aliases
 		items = new HashMap<NiceNames.NameSearchObject, String>();
-		File materialsDir = new File(plugin.getDataFolder().getParent() + materialsFile);
+		File materialsDir = new File(plugin.getDataFolder().getPath() + materialsFile);
 		try {
 			if(materialsDir.exists()){
 				BufferedReader reader = new BufferedReader(new FileReader(materialsDir));
@@ -96,7 +96,7 @@ public class NiceNames {
 		// enchantment aliases
 		enchants = new HashMap<Enchantment, String>();
 		enchantAcronyms = new HashMap<Enchantment, String>();
-		File enchantmentsDir = new File(plugin.getDataFolder().getParent() + enchantmentsFile);
+		File enchantmentsDir = new File(plugin.getDataFolder().getPath() + enchantmentsFile);
 		try {
 			if(enchantmentsDir.exists()){
 				BufferedReader reader = new BufferedReader(new FileReader(enchantmentsDir));
