@@ -1,8 +1,8 @@
 package vg.civcraft.mc.civmodcore.itemHandling;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,14 +12,10 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.ACivMod;
-
 public class NiceNames {
 	private static Map<NameSearchObject, String> items;
 	private static Map<Enchantment, String> enchants;
 	private static Map<Enchantment, String> enchantAcronyms;
-	private static String enchantmentsFile = "/resources/enchantments.csv";
-	private static String materialsFile = "/resources/materials.csv";
 
 	private static class NameSearchObject {
 		private String data;
@@ -67,28 +63,24 @@ public class NiceNames {
 		return enchantAcronyms.get(enchant);
 	}
 
-	public void loadNames(ACivMod plugin){
+	public void loadNames() {
 		// item aliases
 		items = new HashMap<NiceNames.NameSearchObject, String>();
-		File materialsDir = new File(plugin.getDataFolder().getPath() + materialsFile);
 		try {
-			if(materialsDir.exists()){
-				BufferedReader reader = new BufferedReader(new FileReader(materialsDir));
-				String line = reader.readLine();
-				while (line != null) {
-					String[] content = line.split(",");
-					NameSearchObject nso = new NameSearchObject(
-							Material.valueOf(content[1]),
-							Short.valueOf(content[3]), new LinkedList<String>());
-					items.put(nso, content[0]);
-					line = reader.readLine();
-				}
-				reader.close();
+			InputStream in = getClass().getResourceAsStream(
+					"/resources/materials.csv");
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(in));
+			String line = reader.readLine();
+			while (line != null) {
+				String[] content = line.split(",");
+				NameSearchObject nso = new NameSearchObject(
+						Material.valueOf(content[1]),
+						Short.valueOf(content[3]), new LinkedList<String>());
+				items.put(nso, content[0]);
+				line = reader.readLine();
 			}
-			else{
-				plugin.warning("materials.csv could not be loaded because it does not exist!");
-				plugin.warning("Attempted to read: " + materialsDir.getAbsolutePath());
-			}
+			reader.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -96,24 +88,20 @@ public class NiceNames {
 		// enchantment aliases
 		enchants = new HashMap<Enchantment, String>();
 		enchantAcronyms = new HashMap<Enchantment, String>();
-		File enchantmentsDir = new File(plugin.getDataFolder().getPath() + enchantmentsFile);
 		try {
-			if(enchantmentsDir.exists()){
-				BufferedReader reader = new BufferedReader(new FileReader(enchantmentsDir));
-				String line = reader.readLine();
-				while (line != null) {
-					String[] content = line.split(",");
-					Enchantment enchant = Enchantment.getByName(content[1]);
-					enchants.put(enchant, content[2]);
-					enchantAcronyms.put(enchant, content[0]);
-					line = reader.readLine();
-				}
-				reader.close();
+			InputStream in = getClass().getResourceAsStream(
+					"/resources/enchantments.csv");
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(in));
+			String line = reader.readLine();
+			while (line != null) {
+				String[] content = line.split(",");
+				Enchantment enchant = Enchantment.getByName(content[1]);
+				enchants.put(enchant, content[2]);
+				enchantAcronyms.put(enchant, content[0]);
+				line = reader.readLine();
 			}
-			else{
-				plugin.warning("enchantments.csv could not be loaded because it does not exist!");
-				plugin.warning("Attempted to read: " + enchantmentsDir.getAbsolutePath());
-			}
+			reader.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
