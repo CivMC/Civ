@@ -27,8 +27,8 @@
 				<filtering>true</filtering>
 			</resource>
 			<resource>
-				<directory>../resources/</directory>
-				<targetPath>.</targetPath>
+				<directory>${basedir}/resources/</directory>
+				<targetPath>/resources/</targetPath>
 				<includes>
 					<include>*.csv</include>
 				</includes>
@@ -41,14 +41,22 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.8.3-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
+			<version>1.8.8-R0.1-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>C:\Users\Max\Desktop\civ plugins\Jars for dependencies\spigot-1.8.8.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>craftbukkit</artifactId>
+			<version>1.8.8-R0.1-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>C:\Users\Max\Desktop\civ plugins\Jars for dependencies\craftbukkit-1.8.8.jar</systemPath>
 		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
 			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
 	</repositories>
 </project>
