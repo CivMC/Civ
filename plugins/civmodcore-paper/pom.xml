@@ -28,7 +28,7 @@
 			</resource>
 			<resource>
 				<directory>${basedir}/resources/</directory>
-				<targetPath>/resources/</targetPath>
+				<targetPath>./resources/</targetPath>
 				<includes>
 					<include>*.csv</include>
 				</includes>
