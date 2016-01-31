@@ -40,7 +40,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 				fuel, fuelConsumptionIntervall);
 		FurnCraftChestInteractionManager fccim = new FurnCraftChestInteractionManager();
 		PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(
-				100);
+				PercentageHealthRepairManager.getMaximumHealth());
 		FurnCraftChestFactory fccf = new FurnCraftChestFactory(fccim, phrm,
 				fpm, fccs, updateTime, name, recipes);
 		fccim.setFactory(fccf);

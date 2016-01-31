@@ -142,6 +142,15 @@ log_inventories: true
 disable_nether: false
 
 
+#When FCCs are in disrepair they will be removed after a set amount of time, which can be specified here
+break_grace_period: 7d
+
+
+#How often factories are passively decayed
+decay_intervall: 1h
+
+#How much health is decayed from factories
+decay_amount: 21
 
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -434,7 +443,7 @@ disable_nether: false
 
 #4. Repairrecipe
 
-#Repair recipes allow repairing their factory. Once a factory is at 0% health, the only recipe that can be run is the repair
+#Repair recipes allow repairing their factory. Once a factory is at 0 health, the only recipe that can be run is the repair
 #recipe.
 
 #Example config:
@@ -454,7 +463,7 @@ disable_nether: false
 
 #Input is as usual a list of items, which will be consumed when the recipe completes.
 
-#health_gained is the amount of health that will be restored by a successfull run. 100 means fully health here
+#health_gained is the amount of health that will be restored by a successfull run. 10000 means fully health here
 
 
 #5. Upgraderecipe
@@ -478,6 +487,9 @@ disable_nether: false
 
 #factory is the name of the factory it's supposed to be upgraded to. This factory must have been specified as FCCUPGRADE
 #above and the name here and above has to be exactly the same.
+
+
+
 
 
 

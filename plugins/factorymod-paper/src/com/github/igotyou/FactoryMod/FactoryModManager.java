@@ -35,7 +35,7 @@ import com.github.igotyou.FactoryMod.utility.LoggingUtils;
  *
  */
 public class FactoryModManager {
-	protected FactoryMod plugin;
+	private FactoryMod plugin;
 	private FileHandler fileHandler;
 	private HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>> factoryCreationRecipes;
 	private HashMap<IFactoryEgg, ItemMap> totalSetupCosts;
@@ -50,16 +50,18 @@ public class FactoryModManager {
 	private int redstonePowerOn;
 	private int redstoneRecipeChange;
 	private String compactLore;
+	private long noHealthGracePeriod;
 
 	public FactoryModManager(FactoryMod plugin,
 			Material factoryInteractionMaterial, boolean citadelEnabled,
 			int redstonePowerOn, int redstoneRecipeChange,
-			boolean logInventories) {
+			boolean logInventories, long noHealthGracePeriod) {
 		this.plugin = plugin;
 		this.factoryInteractionMaterial = factoryInteractionMaterial;
 		this.citadelEnabled = citadelEnabled;
 		this.redstonePowerOn = redstonePowerOn;
 		this.redstoneRecipeChange = redstoneRecipeChange;
+		this.noHealthGracePeriod = noHealthGracePeriod;
 
 		fileHandler = new FileHandler(this);
 
@@ -249,7 +251,8 @@ public class FactoryModManager {
 								addFactory(f);
 								p.sendMessage(ChatColor.GREEN
 										+ "Successfully created " + f.getName());
-								LoggingUtils.log(f.getLogData()+ " was created by " +p.getName());
+								LoggingUtils.log(f.getLogData()
+										+ " was created by " + p.getName());
 								FactoryMod.sendResponse("FactoryCreation", p);
 							}
 						} else {
@@ -291,7 +294,8 @@ public class FactoryModManager {
 								addFactory(f);
 								p.sendMessage(ChatColor.GREEN
 										+ "Successfully created " + f.getName());
-								LoggingUtils.log(f.getLogData()+ " was created by " +p.getName());
+								LoggingUtils.log(f.getLogData()
+										+ " was created by " + p.getName());
 								FactoryMod.sendResponse("PipeCreation", p);
 							}
 
@@ -331,7 +335,8 @@ public class FactoryModManager {
 								addFactory(f);
 								p.sendMessage(ChatColor.GREEN
 										+ "Successfully created " + f.getName());
-								LoggingUtils.log(f.getLogData()+ " was created by " +p.getName());
+								LoggingUtils.log(f.getLogData()
+										+ " was created by " + p.getName());
 								FactoryMod.sendResponse("SorterCreation", p);
 							}
 
@@ -518,6 +523,17 @@ public class FactoryModManager {
 	}
 
 	/**
+	 * Gets how long factories using percentage health managers will stay alive
+	 * after being broken. This is measure in milliseconds, because unix
+	 * timestamps are used to track it
+	 * 
+	 * @return How long a factory will be alive at 0 % health in milli seconds
+	 */
+	public long getNoHealthGracePeriod() {
+		return noHealthGracePeriod;
+	}
+
+	/**
 	 * Gets the Redstone power change necessary to alter the recipe setting of a
 	 * factory. Any change >= this level, either positive or negative, will
 	 * attempt to alter the recipe (implementation depending).
@@ -527,5 +543,15 @@ public class FactoryModManager {
 	 */
 	public int getRedstoneRecipeChange() {
 		return this.redstoneRecipeChange;
+	}
+
+	/**
+	 * Gets all factories which currently exist. Do not mess with the hashset
+	 * returned as it is used in other places
+	 * 
+	 * @return All existing factory instances
+	 */
+	public HashSet<Factory> getAllFactories() {
+		return factories;
 	}
 }

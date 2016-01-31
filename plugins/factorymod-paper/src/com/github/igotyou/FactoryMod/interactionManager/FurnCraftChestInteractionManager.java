@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod.interactionManager;
 
+import java.sql.Date;
 import java.util.HashMap;
 
 import org.bukkit.ChatColor;
@@ -16,12 +17,12 @@ import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
-import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
+import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.utility.MenuBuilder;
@@ -92,11 +93,13 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				.getFactoryInteractionMaterial()) {
 			return;
 		}
-		if(FactoryMod.getManager().isCitadelEnabled()) {
-			//is this cast safe? Let's just assume yes for now
-			PlayerReinforcement rein = (PlayerReinforcement)rm.getReinforcement(b);
+		if (FactoryMod.getManager().isCitadelEnabled()) {
+			// is this cast safe? Let's just assume yes for now
+			PlayerReinforcement rein = (PlayerReinforcement) rm
+					.getReinforcement(b);
 			if (rein != null && !rein.getGroup().isMember(p.getUniqueId())) {
-				p.sendMessage(ChatColor.RED + "You dont have permission to interact with this factory");
+				p.sendMessage(ChatColor.RED
+						+ "You dont have permission to interact with this factory");
 				FactoryMod.sendResponse("FactoryNoPermission", p);
 				return;
 			}
@@ -174,6 +177,23 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 						+ fccf.getCurrentRecipe().getRecipeName());
 				p.sendMessage(ChatColor.GOLD + "Currently at "
 						+ fccf.getRepairManager().getHealth() + " health");
+				if (fccf.getRepairManager().inDisrepair()) {
+					long breaktime = ((PercentageHealthRepairManager) fccf
+							.getRepairManager()).getBreakTime();
+					long leftTime = FactoryMod.getManager()
+							.getNoHealthGracePeriod()
+							- (System.currentTimeMillis() - breaktime);
+					long months = leftTime % (60 * 60 * 24 * 30 * 1000);
+					long days = leftTime - (months * 60 * 60 * 24 * 30 * 1000)
+							% (60 * 60 * 24 * 1000);
+					long hours = leftTime - (months * 60 * 60 * 24 * 30 * 1000)
+							- (days * 60 * 60 * 24 * 1000) % (60 * 60 * 1000);
+					String time = (months != 0 ? months + " months, " : "")
+							+ (days != 0 ? days + " days, " : "")
+							+ (hours != 0 ? hours + " hours" : "");
+					//p.sendMessage(ChatColor.GOLD + "It will break in " + time);
+					//TODO FIX THIS
+				}
 			}
 
 			return;

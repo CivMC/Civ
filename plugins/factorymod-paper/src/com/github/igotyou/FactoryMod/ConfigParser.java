@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import vg.civcraft.mc.civmodcore.Config;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
@@ -34,6 +35,7 @@ import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
+import com.github.igotyou.FactoryMod.utility.FactoryGarbageCollector;
 import com.google.common.collect.Lists;
 
 public class ConfigParser {
@@ -81,9 +83,10 @@ public class ConfigParser {
 		defaultReturnRate = config.getDouble("default_return_rate", 0.0);
 		int redstonePowerOn = config.getInt("redstone_power_on", 7);
 		int redstoneRecipeChange = config.getInt("redstone_recipe_change", 2);
+		long gracePeriod = 50 * parseTime(config.getString("break_grace_period"));
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
 				citadelEnabled, redstonePowerOn, redstoneRecipeChange,
-				logInventories);
+				logInventories, gracePeriod);
 		handleEnabledAndDisabledRecipes(config
 				.getConfigurationSection("crafting"));
 		upgradeEggs = new HashMap<String, IFactoryEgg>();
@@ -91,6 +94,7 @@ public class ConfigParser {
 		parseFactories(config.getConfigurationSection("factories"));
 		parseRecipes(config.getConfigurationSection("recipes"));
 		assignRecipesToFactories();
+		enableFactoryDecay(config);
 		manager.calculateTotalSetupCosts();
 		// Some recipes need references to factories and all factories need
 		// references to recipes, so we parse all factories first, set their
@@ -285,6 +289,12 @@ public class ConfigParser {
 				fuelIntervall, returnRate);
 		recipeLists.put(egg, config.getStringList("recipes"));
 		return egg;
+	}
+	
+	public void enableFactoryDecay(ConfigurationSection config) {
+		long intervall = parseTime(config.getString("decay_intervall"));
+		int amount = config.getInt("decay_amount");
+		plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, new FactoryGarbageCollector(amount), intervall, intervall);
 	}
 
 	/**

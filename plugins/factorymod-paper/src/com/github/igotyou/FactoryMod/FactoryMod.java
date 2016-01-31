@@ -11,7 +11,6 @@ import com.github.igotyou.FactoryMod.utility.MenuBuilder;
 
 import vg.civcraft.mc.civmenu.guides.ResponseManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 
 public class FactoryMod extends ACivMod {
 	private static FactoryModManager manager;
@@ -34,7 +33,6 @@ public class FactoryMod extends ACivMod {
 		if (getServer().getPluginManager().isPluginEnabled("CivMenu")) {
 			rm = ResponseManager.getResponseManager(this);
 		}
-		new NiceNames().loadNames();
 		info("Successfully enabled");
 	}
 

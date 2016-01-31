@@ -13,13 +13,20 @@ import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 public class PercentageHealthRepairManager implements IRepairManager {
 	private int health;
 	private Factory factory;
+	private long breakTime;
+	private static final int maximumHealth = 10000;
 
 	public PercentageHealthRepairManager(int initialHealth) {
 		health = initialHealth;
+		breakTime = 0;
 	}
 
 	public boolean atFullHealth() {
-		return health >= 100;
+		return health >= maximumHealth;
+	}
+	
+	public static int getMaximumHealth() {
+		return maximumHealth;
 	}
 
 	public boolean inDisrepair() {
@@ -31,15 +38,18 @@ public class PercentageHealthRepairManager implements IRepairManager {
 	}
 
 	public String getHealth() {
-		return String.valueOf(health) + " %";
+		return String.valueOf(health / 100) + "."
+				+ String.valueOf(health % 100) + " %";
 	}
 
 	public void repair(int amount) {
-		health = Math.min(health + amount, 100);
+		health = Math.min(health + amount, maximumHealth);
+		breakTime = 0;
 	}
 
 	public void breakIt() {
 		health = 0;
+		breakTime = System.currentTimeMillis();
 		FactoryMod
 				.getPlugin()
 				.getServer()
@@ -51,7 +61,8 @@ public class PercentageHealthRepairManager implements IRepairManager {
 							public void run() {
 								if (factory.getMultiBlockStructure()
 										.relevantBlocksDestroyed()) {
-									LoggingUtils.log(factory.getLogData() + " removed because blocks were destroyed");
+									LoggingUtils.log(factory.getLogData()
+											+ " removed because blocks were destroyed");
 									FactoryMod.getManager().removeFactory(
 											factory);
 									returnStuff(factory);
@@ -89,5 +100,13 @@ public class PercentageHealthRepairManager implements IRepairManager {
 								is);
 			}
 		}
+	}
+
+	public long getBreakTime() {
+		return breakTime;
+	}
+
+	public void setBreakTime(long breakTime) {
+		this.breakTime = breakTime;
 	}
 }
