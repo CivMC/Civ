@@ -42,15 +42,7 @@
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>1.8.8-R0.1-SNAPSHOT</version>
-			<scope>system</scope>
-			<systemPath>C:\Users\Max\Desktop\civ plugins\Jars for dependencies\spigot-1.8.8.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>1.8.8-R0.1-SNAPSHOT</version>
-			<scope>system</scope>
-			<systemPath>C:\Users\Max\Desktop\civ plugins\Jars for dependencies\craftbukkit-1.8.8.jar</systemPath>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<repositories>
