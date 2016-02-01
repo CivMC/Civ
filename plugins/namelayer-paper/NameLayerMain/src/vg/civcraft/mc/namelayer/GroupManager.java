@@ -281,7 +281,7 @@ public class GroupManager{
 		}
 		
 		public static PlayerType getPlayerType(String type){
-			return BY_NAME.get(type);
+			return BY_NAME.get(type.toUpperCase());
 		}
 		
 		public static String getStringOfTypes() {
