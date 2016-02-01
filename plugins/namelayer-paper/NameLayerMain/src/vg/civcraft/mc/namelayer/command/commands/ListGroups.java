@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -25,60 +26,67 @@ public class ListGroups extends PlayerCommandMiddle {
 	public boolean execute(CommandSender sender, String[] args) {
 		Player p = null;
 		UUID uuid = null;
-		Boolean autopages = false;
+		boolean autopages = false;
+		
 		if ((sender.isOp() && sender.hasPermission("namelayer.admin"))) {
-			if (args.length == 0)
+			if (args.length == 0) {
 				uuid = NameAPI.getUUID(sender.getName());
-			else if (args.length == 1)
+			} else if (args.length == 1) {
 				uuid = NameAPI.getUUID(args[0]);
-            if(uuid == null){
-            	sender.sendMessage(ChatColor.RED + "UUID is NULL,  OP Usage is /nllg <playername>");
+			}
+				
+			if (uuid == null) {
+            	sender.sendMessage(ChatColor.RED + "UUID is NULL, OP Usage is /nllg <playername>");
             	return true;
             }
             autopages = true;
-        }
-		else{
+        } else {
 			p = (Player) sender;
 			uuid = NameAPI.getUUID(p.getName());
 		}
 		
 		List<String> groups = gm.getAllGroupNames(uuid);
 		
-		int pages = (groups.size() / 10) + 1;
-		String names = ChatColor.GREEN + "";
-		int start = 1;
+		int pages = (groups.size() / 10);
+		if (groups.size() % 10 > 0) {
+			pages++;
+		}
+		
+		int target = 0;
 		try {
-			start = Integer.parseInt(args[0]);
-		} catch(NumberFormatException | ArrayIndexOutOfBoundsException e){
-			if (e.getCause() instanceof NumberFormatException){
+			target = Integer.parseInt(args[0]);
+		} catch (Exception e) {
+			if (e.getCause() instanceof NumberFormatException) {
 				p.sendMessage(ChatColor.RED + "The page must be an integer.");
 				return true;
 			}
 		}
 		
+		if (target >= pages) {
+			target = pages;
+		}
 		
-		if(autopages){
-			for(int curPage = 1; curPage <= pages; curPage++)
-				{
-					start = curPage;
-					names += "Page " + start + " of " + pages + ".\n"
-							+ "Groups are as follows: \n";
-					for (int x = (start-1) * 10, z = 1; x < groups.size() && z <= 10; x++, z++){
-						Group g = gm.getGroup(groups.get(x));
-						names += g.getName() + ": (PlayerType) " + g.getPlayerType(uuid).toString() + "\n";
-					}
-				}
-			sender.sendMessage(names);
+		if (!autopages) {
+			pages = target;
 		}
-		else{
-			names += "Page " + start + " of " + pages + ".\n"
-					+ "Groups are as follows: \n";
-			for (int x = (start-1) * 10, z = 1; x < groups.size() && z <= 10; x++, z++){
-				Group g = gm.getGroup(groups.get(x));
-				names += g.getName() + ": (PlayerType) " + g.getPlayerType(uuid).toString() + "\n";
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(ChatColor.GREEN);
+		for (int page = target; page < pages; page++) {
+			sb.append("Page ");
+			sb.append(page + 1);
+			sb.append(" of ");
+			sb.append(pages);
+			sb.append(".\n");
+			
+			int first = page * 10;
+			for (int x = first; x < first + 10 && x < groups.size(); x++){
+				Group g = GroupManager.getGroup(groups.get(x));
+				sb.append(String.format("%s : (%s)\n", 
+				        g.getName(), g.getPlayerType(uuid).toString()));
 			}
-			p.sendMessage(names);
 		}
+		sender.sendMessage(sb.toString());
 		return true;
 	}
 	public List<String> tabComplete(CommandSender sender, String[] args) {

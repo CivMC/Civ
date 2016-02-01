@@ -1,12 +1,14 @@
 package vg.civcraft.mc.namelayer.group;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
-import vg.civcraft.mc.mercury.MercuryAPI;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -14,53 +16,99 @@ import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 
 public class Group {
 	
-	protected String groupName;
-	private UUID ownerUUID;
-	private boolean isDisciplined;
+	private static GroupManagerDao db;
+	
+	private String name;
 	private String password;
+	private UUID owner;
 	private GroupType type;
-	private boolean valid = true;
+	private boolean isDisciplined; // if true, prevents any interactions with this group
+	private boolean isValid = true;  // if false, then group has recently been deleted and is invalid
 	private int id;
+		
+	private Group supergroup;
+	private Set<Group> subgroups = Sets.newHashSet();
+	private Map<UUID, PlayerType> players = Maps.newHashMap();
+	private Map<UUID, PlayerType> invites = Maps.newHashMap();
 	
-	protected GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
-	
-	protected Map<UUID, PlayerType> players = new HashMap<UUID, PlayerType>();
-	
-	private Map<UUID, PlayerType> invitations = new HashMap<UUID, PlayerType>();
-	
-	public Group(String name, UUID owner, boolean disiplined, String password, GroupType type, int id){
-		groupName = name;
-		ownerUUID = owner;
-		isDisciplined = disiplined;
+	public Group(String name, UUID owner, boolean disciplined, 
+			String password, GroupType type, int id) {
+		if (db == null) {
+			db = NameLayerPlugin.getGroupManagerDao();
+		}
+		
+		this.name = name;
 		this.password = password;
+		this.owner = owner;
 		this.type = type;
-		for (PlayerType t: PlayerType.values()){
-			List<UUID> list;
-			list = db.getAllMembers(name, t);
-			for (UUID uuid: list){
-				players.put(uuid, t);
+		this.isDisciplined = disciplined;
+		this.id = id;
+		
+		for (PlayerType permission : PlayerType.values()) {
+			List<UUID> list = db.getAllMembers(name, permission);
+			for (UUID uuid : list) {
+				players.put(uuid, permission);
 			}
 		}
-		this.id = id;
+		
+		// only get subgroups, supergroups will set themselves
+		for (Group subgroup : GroupManager.getSubGroups(name)) {
+			link(this, subgroup);
+		}
 	}
+	
+	public void prepareForDeletion() {
+		unlink(supergroup, this);
+		for (Group subgroup : subgroups) {
+			unlink(this, subgroup);
+		}
+	}
+	
+	private Map<UUID, PlayerType> getMembersMap() {
+		if (supergroup == null) {
+			return Maps.newHashMap(players);
+		}
+		
+		Map<UUID, PlayerType> inheritedMembers = supergroup.getMembersMap();
+		for (Map.Entry<UUID, PlayerType> entry : players.entrySet()) { 
+			UUID player = entry.getKey();
+			PlayerType currentRank = entry.getValue();
+			
+			if (inheritedMembers.containsKey(player)) {
+				PlayerType inheritedRank = inheritedMembers.get(player);
+				if (currentRank.compareTo(inheritedRank) > 0) {
+					inheritedMembers.put(player, currentRank);
+				}
+			} else {
+				inheritedMembers.put(player, currentRank);
+			}
+		}
+		return inheritedMembers;
+	}
+	
 	/**
 	 * Returns all the uuids of the members in this group.
 	 * @return Returns all the uuids.
 	 */
-	public List<UUID> getAllMembers(){
-		List<UUID> uuids = new ArrayList<UUID>(players.keySet());
-		return uuids;
+	public List<UUID> getAllMembers() {
+		Map<UUID, PlayerType> members = getMembersMap();
+		return Lists.newArrayList(members.keySet());
 	}
+	
 	/**
 	 * Returns all the UUIDS of a group's PlayerType.
 	 * @param type- The PlayerType of a group that you want the UUIDs of.
 	 * @return Returns all the UUIDS of the specific PlayerType.
 	 */
-	public List<UUID> getAllMembers(PlayerType type){
-		List<UUID> uuids = new ArrayList<UUID>();
-		for (UUID uu: players.keySet())
-			if (players.get(uu) == type)
-				uuids.add(uu);
+	public List<UUID> getAllMembers(PlayerType type) {
+		List<UUID> uuids = Lists.newArrayList();
+		
+		Map<UUID, PlayerType> members = getMembersMap();
+		for (Map.Entry<UUID, PlayerType> entry : members.entrySet()) {
+			if (entry.getValue() == type) {
+				uuids.add(entry.getKey());
+			}
+		}
 		return uuids;
 	}
 	
@@ -68,16 +116,18 @@ public class Group {
 	 * Gives the uuids of the members whose name starts with the given
 	 * String, this is not case-sensitive
 	 * 
-	 * @param args start of the players name
+	 * @param prefix start of the players name
 	 * @return list of all players whose name starts with the given string
 	 */
-	public List<UUID> getMembersByName(String args) {
-		List<UUID> uuids = new ArrayList<UUID>();
-		args = args.toLowerCase();
-		for (UUID uu: players.keySet()) {
-			String name = NameAPI.getCurrentName(uu);
-			if (name.toLowerCase().startsWith(args)) {
-				uuids.add(uu);
+	public List<UUID> getMembersByName(String prefix) {
+		List<UUID> uuids = Lists.newArrayList();
+		List<UUID> members = getAllMembers();
+		
+		prefix = prefix.toLowerCase();
+		for (UUID member : members) {
+			String name = NameAPI.getCurrentName(member);
+			if (name.toLowerCase().startsWith(prefix)) {
+				uuids.add(member);
 			}
 		}
 		return uuids;
@@ -91,16 +141,83 @@ public class Group {
 	 * @return list of uuids of all players in the group whose name is within the given range
 	 */
 	public List<UUID> getMembersInNameRange(String lowerLimit, String upperLimit) {
-		List<UUID> uuids = new ArrayList<UUID>();
-		for (UUID uu: players.keySet()) {
-			String name = NameAPI.getCurrentName(uu);
-			if (name.compareToIgnoreCase(lowerLimit) >= 0 && name.compareToIgnoreCase(upperLimit) <= 0) {
-				uuids.add(uu);
+		List<UUID> uuids = Lists.newArrayList();
+		List<UUID> members = getAllMembers();
+		
+		for (UUID member : members) {
+			String name = NameAPI.getCurrentName(member);
+			if (name.compareToIgnoreCase(lowerLimit) >= 0 
+					&& name.compareToIgnoreCase(upperLimit) <= 0) {
+				uuids.add(member);
 			}
 		}
 		return uuids;
 	}
 	
+	/**
+	 * Gives a list of the members of this group, excluding the inherited members.
+	 * @return List of UUIDs of the current players in this group
+	 */
+	public List<UUID> getCurrentMembers() {
+		return Lists.newArrayList(players.keySet());
+	}
+	
+	public List<UUID> getCurrentMembers(PlayerType rank) {
+		List<UUID> uuids = Lists.newArrayList();
+		
+		for (Map.Entry<UUID, PlayerType> entry : players.entrySet()) {
+			if (entry.getValue() == rank) {
+				uuids.add(entry.getKey());
+			}
+		}
+		return uuids;
+	}
+	
+	/**
+	 * @return Returns the SubGroups in this group.
+	 */
+	public List<Group> getSubgroups() {
+		return Lists.newArrayList(subgroups);
+	}
+		
+	/**
+	 * Checks if a sub group is on a group.
+	 * @param group- The SubGroup.
+	 * @return Returns true if it has that subgroup.
+	 */
+	public boolean hasSubGroup(Group group){
+		return subgroups.contains(group);
+	}
+		
+	/**
+	 * @return Returns the SubGroup for this group if there is one, null otherwise.
+	 */
+	public Group getSuperGroup() {
+		return supergroup;
+	}
+	
+	/**
+	 * @return Returns if this group has a super group or not.
+	 */
+	public boolean hasSuperGroup() {
+		return supergroup != null;
+	}
+	
+	/**
+	 * Checks if the given Group is a supergroup of this group and this
+	 * group's supergroups.
+	 * @param group - Group to check as supergroup.
+	 * @return true if it is a supergroup, false otherwise.
+	 */
+	public boolean hasSuperGroup(Group group) {
+		if (supergroup == null) {
+			return false;
+		} else if (supergroup == group) {
+			return true;
+		}
+		return supergroup.hasSuperGroup(group);
+	}
+		
 	/**
 	 * Adds the player to be allowed to join a group into a specific PlayerType.
 	 * @param uuid- The UUID of the player.
@@ -117,9 +234,9 @@ public class Group {
 	 * @param saveToDB - save the invitation to the DB. 
 	 */
 	public void addInvite(UUID uuid, PlayerType type, boolean saveToDB){
-		invitations.put(uuid, type);
+		invites.put(uuid, type);
 		if(saveToDB){
-			db.addGroupInvitation(uuid, groupName, type.name());
+			db.addGroupInvitation(uuid, name, type.name());
 		}
 	}
 	
@@ -128,10 +245,11 @@ public class Group {
 	 * @param uuid- The UUID of the player.
 	 * @return Returns the PlayerType or null.
 	 */
-	public PlayerType getInvite(UUID uuid){
-		if (!invitations.containsKey(uuid))
+	public PlayerType getInvite(UUID uuid) {
+		if (!invites.containsKey(uuid)) {
 			return null;
-		return invitations.get(uuid);
+		}
+		return invites.get(uuid);
 	}
 	
 	/**
@@ -149,179 +267,237 @@ public class Group {
 	 * @param saveToDB - remove the invitation from the DB. 
 	 */
 	public void removeInvite(UUID uuid, boolean saveToDB){
-		invitations.remove(uuid);
+		invites.remove(uuid);
 		if(saveToDB){
-			db.removeGroupInvitation(uuid, groupName);
+			db.removeGroupInvitation(uuid, name);
 		}
-	}
-	/**
-	 * Adds a member to a group.
-	 * @param uuid- The uuid of the player.
-	 * @param type- The PlayerType to add. If a preexisting PlayerType is found, it will be overwritten.
-	 */
-	public void addMember(UUID uuid, PlayerType type){
-		if (isMember(uuid, type))
-			db.removeMember(uuid, groupName);
-		db.addMember(uuid, groupName, type);
-		players.put(uuid, type);
 	}
 	/**
 	 * Checks if the player is in the Group or not.
 	 * @param uuid- The UUID of the player.
 	 * @return Returns true if the player is a member, false otherwise.
 	 */
-	public boolean isMember(UUID uuid){
-		return players.containsKey(uuid);
+	public boolean isMember(UUID uuid) {
+		Map<UUID, PlayerType> members = getMembersMap();
+		return members.containsKey(uuid);
 	}
+
 	/**
 	 * Checks if the player is in the Group's PlayerType or not.
 	 * @param uuid- The UUID of the player.
 	 * @param type- The PlayerType wanted.
 	 * @return Returns true if the player is a member of the specific playertype, otherwise false.
 	 */
-	public boolean isMember(UUID uuid, PlayerType type){
-		if (players.containsKey(uuid))
-			return players.get(uuid).equals(type);
+	public boolean isMember(UUID uuid, PlayerType type) {
+		Map<UUID, PlayerType> members = getMembersMap();
+		if (members.containsKey(uuid))
+			return members.get(uuid).equals(type);
 		return false;
 	}
+
+	public boolean isCurrentMember(UUID uuid) {
+		return players.containsKey(uuid);
+	}
+	
+	public boolean isCurrentMember(UUID uuid, PlayerType rank) {
+		if (players.containsKey(uuid)) {
+			return players.get(uuid).equals(rank);
+		}
+		return false;
+	}
+	
+	/**
+	 * @param uuid- The UUID of the player.
+	 * @return Returns the PlayerType of a UUID.
+	 */
+	public PlayerType getPlayerType(UUID uuid) {
+		Map<UUID, PlayerType> members = getMembersMap();
+		return members.get(uuid);
+	}
+	
+	public PlayerType getCurrentRank(UUID uuid) {
+		return players.get(uuid);
+	}
+
+	/**
+	 * Adds a member to a group.
+	 * @param uuid- The uuid of the player.
+	 * @param type- The PlayerType to add. If a preexisting PlayerType is found, 
+	 * it will be overwritten.
+	 */
+	public void addMember(UUID uuid, PlayerType type) {
+		if (isMember(uuid, type)) {
+			db.removeMember(uuid, name);
+		}
+		players.put(uuid, type);
+		db.addMember(uuid, name, type);
+	}
+
 	/**
 	 * Removes the Player from the Group.
 	 * @param uuid- The UUID of the Player.
 	 */
-	public void removeMember(UUID uuid){
-		db.removeMember(uuid, groupName);
+	public void removeMember(UUID uuid) {
+		db.removeMember(uuid, name);
 		players.remove(uuid);
 	}
+
 	/**
-	 * Checks if the player is the owner.
-	 * @param uuid- The UUID to Compare.
-	 * @return Returns true if the UUID equals that to of the owner, false otherwise.
+	 * 
+	 * @param supergroup
+	 * @param subgroup
+	 * @return true if linking succeeded, false otherwise.
 	 */
-	public boolean isOwner(UUID uuid){
-		return ownerUUID.equals(uuid);
+	public static boolean link(Group supergroup, Group subgroup) {
+		if (supergroup == null || subgroup == null) {
+			return false;
+		}
+				
+		if (supergroup.equals(subgroup)) {
+			return false;
+		}
+		
+		if (supergroup.hasSuperGroup(subgroup)) {
+			return false;
+		}
+		
+		if (subgroup.hasSuperGroup()) {
+			unlink(subgroup.supergroup, subgroup);
+		}
+		subgroup.supergroup = supergroup;
+		
+		if (!supergroup.hasSubGroup(subgroup)) {
+			supergroup.subgroups.add(subgroup);
+		}
+				
+		db.addSubGroup(supergroup.getName(), subgroup.getName());
+		
+		return true;
 	}
+	
 	/**
-	 * Sets the owner of the group.
-	 * @param uuid- The UUID of the Player.
+	 * 
+	 * @param supergroup
+	 * @param subgroup
 	 */
-	public void setOwner(UUID uuid){
-		ownerUUID = uuid;
-		db.setFounder(uuid, this);
+	public static boolean unlink(Group supergroup, Group subgroup) {
+		if (supergroup == null || subgroup == null) { 
+			return false;
+		}
+						
+		if (subgroup.hasSuperGroup() && subgroup.supergroup.equals(supergroup)) {
+			subgroup.supergroup = null;
+		}
+		
+		if (supergroup.hasSubGroup(subgroup)) {
+			supergroup.subgroups.remove(subgroup);
+		}		
+						
+		db.removeSubGroup(supergroup.getName(), subgroup.getName());
+		
+		return true;
 	}
+	
+	public static boolean areLinked(Group supergroup, Group subgroup) {
+		if (supergroup == null || subgroup == null) {
+			return false;
+		}
+		
+		return supergroup.hasSubGroup(subgroup) 
+				&& (subgroup.hasSuperGroup() 
+				&& subgroup.supergroup.equals(supergroup));
+	}
+	
 	/**
-	 * @return Returns the UUID of the Owner.
+	 * Sets the default group for a player
+	 * @param uuid- The UUID of the player.
 	 */
-	public UUID getOwner(){
-		return ownerUUID;
+	public String setDefaultGroup(UUID uuid) {
+		db.setDefaultGroup(uuid,  name);
+		return name;
 	}
+
+	public void changeDefaultGroup(UUID uuid) {
+		db.changeDefaultGroup(uuid, name);
+	}
+	
+	// == GETTERS ========================================================================= //
+	
 	/**
 	 * @return Returns the group name.
 	 */
-	public String getName(){
-		return groupName;
-	}
-	/**
-	 * @return Returns true if the group is Disciplined, false otherwise.
-	 */
-	public boolean isDisciplined(){
-		return isDisciplined;
-	}
-	/**
-	 * Sets a group to be disciplined or not.
-	 * @param value- either true to set the group disciplined or false to disable it.
-	 */
-	public void setDisciplined(boolean value){
-		isDisciplined = value;
-	}
-	/**
-	 * Sets the password for a group. Set the parameter as null to remove the password.
-	 * @param password- The password of the group.
-	 */
-	public void setPassword(String password){
-		this.password = password;
-		db.updatePassword(groupName, password);
-	}
+	public String getName() { return name; }
+
+	public String getPassword() { return password; }
+
 	/**
 	 * Checks if a string equals the password of a group.
 	 * @param password- The password to compare.
 	 * @return Returns true if they equal, otherwise false.
 	 */
-	public boolean isPassword(String password){
-		return this.password.equals(password);
-	}
+	public boolean isPassword(String password) { return this.password.equals(password); }
+
 	/**
-	 * @return Returns the password of the group or null if none.
+	 * @return The UUID of the owner of the group.
 	 */
-	public String getPassword(){
-		return password;
-	}
-	/**
-	 * Sets the GroupType of a group. This shouldn't be called except from
-	 * the constructor.
-	 * @param type- The GroupType of the group.
-	 */
-	public void setType(GroupType type){
-		this.type = type;
-	}
-	/**
-	 * @return Returns the GroupType of the group.
-	 */
-	public GroupType getType(){
-		return type;
-	}
-	/**
-	 * @param uuid- The UUID of the player.
-	 * @return Returns the PlayerType of a UUID.
-	 */
-	public PlayerType getPlayerType(UUID uuid){
-		return players.get(uuid);
-	}
-	/**
-	 * Sets whether this group is valid or not.  Should only be called when a group is deleted so other plugins know
-	 * that this group is no longer accurate. 
-	 * @param valid
-	 */
-	public void setValid(boolean valid){
-		this.valid = valid;
-	}
-	/**
-	 * Checks whether or not a group is valid.
-	 * @return True if it is valid false if recently deleted.
-	 */
-	public boolean isValid(){
-		return valid;
-	}
-	/**
-	 * Sets the default group for a player
-	 * @param uuid- The UUID of the player.
-	 */
-	public String setDefaultGroup(UUID uuid){
-		db.setDefaultGroup(uuid,  groupName);
-		return groupName;
-	}
+	public UUID getOwner() { return owner; }
 	
-	public String changeDefaultGroup(UUID uuid){
-		db.changeDefaultGroup(uuid, groupName);
-		return groupName;
-	}
 	/**
-	 * Gets the id for a group.  Keep in mind though if you are trying to get a group_id from a GroupCreateEvent event
-	 * it will not be accurate.  You must have a delay for 1 tick for it to work correctly.
-	 * 
-	 * Also calling the GroupManager.getGroup(int) will return a group that either has that group id or the object associated
-	 * with that id.  As such if a group is previously called and which didn't have the same id as the one called now
-	 * you could get a different group id.
-	 * Example would be System.out.println(GroupManager.getGroup(1).getGroupId()) and that could equal something like 2.
-	 * @return Returns the group id for a group.
+	 * @param uuid
+	 * @return true if the UUID belongs to the owner of the group, false otherwise.
 	 */
-	public int getGroupId(){
-		return id;
-	}
+	public boolean isOwner(UUID uuid) { return owner.equals(uuid); }
+
+	public GroupType getType() { return type; }
+
+	public boolean isDisciplined() { return isDisciplined; }
+
+	public boolean isValid() { return isValid; }
+
+	/**
+	 * Gets the id for a group.
+	 * <p>
+	 * <b>Note:</b> 
+	 * Keep in mind though if you are trying to get a group_id from a GroupCreateEvent event
+	 * it will not be accurate. You must have a delay for 1 tick for it to work correctly.
+	 * <p>
+	 * Also calling the GroupManager.getGroup(int) will return a group that either has that 
+	 * group id or the object associated with that id. As such if a group is previously called
+	 * and which didn't have the same id as the one called now you could get a different group id.
+	 * Example would be System.out.println(GroupManager.getGroup(1).getGroupId()) and that 
+	 * could equal something like 2.
+	 * @return the group id for a group.
+	 */
+	public int getGroupId() { return id; }
+
+	// == SETTERS ========================================================================= //
 	
-	public void setId(int id){
-		this.id = id;
+	/**
+	 * Sets the password for a group. Set the parameter as null to remove the password.
+	 * @param password- The password of the group.
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+		db.updatePassword(name, password);
 	}
-	
+
+	/**
+	 * Sets the owner of the group.
+	 * @param uuid- The UUID of the Player.
+	 */
+	public void setOwner(UUID uuid) {
+		this.owner = uuid;
+		db.setFounder(uuid, this);
+	}
+
+	public void setDisciplined(boolean value) { this.isDisciplined = value; }
+
+	public void setValid(boolean valid) { this.isValid = valid; }
+
+	public void setType(GroupType type) { this.type = type; }
+
+	public void setGroupId(int id) { this.id = id; }
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Group))

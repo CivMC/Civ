@@ -29,6 +29,7 @@ commands:
     aliases: [nllistgroups, nllistg]
    nllm:
     aliases: [nllistmembers, nllistm]
+   nllcm:
    nllp:
     aliases: [nllistpermissions, nllistperms]
    nlpp:
@@ -41,7 +42,9 @@ commands:
     aliases: [nlremovemember, nlremove, nlkick]
    nlri:
     aliases: [nlrevokeinvite, nluninvite]
-   nlrsg:
+   nllink:
+   nlunlink:
+   nllsg:
    nlsp:
     aliases: [nlsetpassword, nlsetpass]
    nltg:

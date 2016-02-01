@@ -29,7 +29,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 	public InvitePlayer(String name) {
 		super(name);
 		setIdentifier("nlip");
-		setDescription("Invite a player to the PlayerType " + PlayerType.toStringName() + " of a group.");
+		setDescription("Invite a player to the PlayerType " + PlayerType.getStringOfTypes() + " of a group.");
 		setUsage("/nlip <group> <player> (PlayerType- default MEMBERS)");
 		setArguments(2,3);
 	}
@@ -56,7 +56,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			s.sendMessage(ChatColor.RED + "The player has never played before.");
 			return true;
 		}
-		if (group.isMember(targetAccount)) { // So a player can't demote someone who is above them.
+		if (group.isCurrentMember(targetAccount)) { // So a player can't demote someone who is above them.
 			s.sendMessage(ChatColor.RED + "Player is already a member."
 					+ "Use /nlpp to change their PlayerType.");
 			return true;
@@ -126,13 +126,6 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			if (shouldAutoAccept) {
 				// player auto accepts invite
 				group.addMember(invitedPlayer, pType);
-				if (group instanceof PrivateGroup) {
-					PrivateGroup priv = (PrivateGroup) group;
-					List<Group> groups = priv.getSubGroups();
-					for (Group g : groups) {
-						g.addMember(invitedPlayer, PlayerType.SUBGROUP);
-					}
-				}
 				invitee.sendMessage(
 						ChatColor.GREEN + " You have auto-accepted invite to the group: " + group.getName());
 			} else {

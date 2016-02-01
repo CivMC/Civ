@@ -57,7 +57,7 @@ public class JoinGroup extends PlayerCommandMiddle{
 			p.sendMessage(ChatColor.RED + "Someone derped. This group does not have the specified permission to let you join, sorry.");
 			return true;
 		}
-		if (g.isMember(uuid, pType)){
+		if (g.isCurrentMember(uuid, pType)){
 			p.sendMessage(ChatColor.RED + "You are already a member.");
 			return true;
 		}

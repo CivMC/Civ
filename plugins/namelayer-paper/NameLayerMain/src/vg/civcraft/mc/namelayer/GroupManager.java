@@ -1,6 +1,5 @@
 package vg.civcraft.mc.namelayer;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -11,6 +10,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.events.GroupCreateEvent;
 import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
@@ -20,31 +22,36 @@ import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionHandler;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class GroupManager{
+	
 	private static GroupManagerDao groupManagerDao;
 	private PermissionHandler permhandle;
+	
+	private static Map<String, Group> groupsByName = new ConcurrentHashMap<String, Group>();
+	private static Map<Integer, Group> groupsById = new ConcurrentHashMap<Integer, Group>();
 	
 	public GroupManager(){
 		groupManagerDao = NameLayerPlugin.getGroupManagerDao();
 		permhandle = new PermissionHandler();
 	}
 	
-	private static Map<String, Group> groupsByName = new ConcurrentHashMap<String, Group>();
-	private static Map<Integer, Group> groupsById = new ConcurrentHashMap<Integer, Group>();
 	/**
 	 * Saves the group into caching and saves it into the db. Also fires the GroupCreateEvent.
 	 * @param The group to create to db.
 	 */
 	public int createGroup(Group group){
-		GroupCreateEvent event = new GroupCreateEvent(group.getName(), group.getOwner(),
+		GroupCreateEvent event = new GroupCreateEvent(
+				group.getName(), group.getOwner(),
 				group.getPassword(), group.getType());
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()){
 			NameLayerPlugin.log(Level.INFO, "Group create event was cancelled for group: " + group.getName());
 			return -1;
 		}
-		int id = groupManagerDao.createGroup(event.getGroupName(), event.getOwner(), 
+		int id = groupManagerDao.createGroup(
+				event.getGroupName(), event.getOwner(), 
 				event.getPassword(), event.getType());
 		initiateDefaultPerms(event.getGroupName()); // give default perms to a newly create group
 		return id;
@@ -52,19 +59,26 @@ public class GroupManager{
 	
 	public boolean deleteGroup(String groupName){
 		groupName = groupName.toLowerCase();
-		Group g = getGroup(groupName);
-		GroupDeleteEvent event = new GroupDeleteEvent(g, false);
+		Group group = getGroup(groupName);
+		
+		GroupDeleteEvent event = new GroupDeleteEvent(group, false);
 		Bukkit.getPluginManager().callEvent(event);
-		if (event.isCancelled())
+		if (event.isCancelled()) {
 			return false;
-		deleteGroupPerms(groupsByName.get(groupName));
+		}
+		
+		group.prepareForDeletion();
+		deleteGroupPerms(group);
 		groupManagerDao.deleteGroup(groupName);
 		groupsByName.remove(groupName);
-		groupsById.remove(g.getGroupId());
-		event = new GroupDeleteEvent(g, true);
+		groupsById.remove(group.getGroupId());
+		
+		event = new GroupDeleteEvent(group, true); //TODO why a second event?
 		Bukkit.getPluginManager().callEvent(event);
-		g.setDisciplined(true);
-		g.setValid(false);
+		
+		group.setDisciplined(true);
+		group.setValid(false);
+		
 		if (NameLayerPlugin.isMercuryEnabled()){
 			String message = "delete " + groupName;
 			Mercury.invalidateGroup(message);
@@ -121,64 +135,68 @@ public class GroupManager{
 		}
 	}
 	
+	public static List<Group> getSubGroups(String name) {
+		List<Group> groups = groupManagerDao.getSubGroups(name);
+		for (Group group : groups) {
+			groupsByName.put(group.getName().toLowerCase(), group);
+			groupsById.put(group.getGroupId(), group);
+		}
+		return groups;
+	}
+	
 	/*
 	 * Making this static so I can use it in other places without needing the GroupManager Object.
 	 * Saves me code so I can always grab a group if it is already loaded while not needing to check db.
 	 */
-	public static Group getGroup(String groupName){
-		groupName = groupName.toLowerCase();
-		if (groupsByName.containsKey(groupName))
-			return groupsByName.get(groupName);
-		else{ 
-			Group group;
-			group = groupManagerDao.getGroup(groupName);
+	public static Group getGroup(String name){
+		String lower = name.toLowerCase();
+		if (groupsByName.containsKey(lower)) {
+			return groupsByName.get(lower);
+		} else { 
+			Group group = groupManagerDao.getGroup(name);
 			if (group != null) {
-				groupsByName.put(groupName, group);
+				groupsByName.put(lower, group);
 				groupsById.put(group.getGroupId(), group);
 			}
 			return group;
 		}
 	}
-	
+		
 	public static Group getGroup(int groupId){
-		if (groupsById.containsKey(groupId))
+		if (groupsById.containsKey(groupId)) {
 			return groupsById.get(groupId);
-		else{ 
-			Group group;
-			group = groupManagerDao.getGroup(groupId);
+		} else { 
+			Group group = groupManagerDao.getGroup(groupId);
 			if (group != null) {
-				int id = group.getGroupId();
-				if (groupsByName.containsKey(group.getName())) {
-					group = groupsByName.get(group.getName());
-					groupsById.put(id, group);
-				}
-				else {
-					groupsByName.put(group.getName(), group);
-					groupsById.put(group.getGroupId(), group);
-				}
+				groupsByName.put(group.getName().toLowerCase(), group);
+				groupsById.put(groupId, group);
 			}
-			return groupsById.get(groupId);
+			return group;
 		}
+	}
+	
+	public static boolean hasGroup(String groupName) {
+		return groupsByName.containsKey(groupName.toLowerCase());
 	}
 	
 	/**
 	 * Returns the admin group for groups if the group was found to be null.
 	 * Good for when you have to have a group that can't be null.
-	 * @param The group name for the group
+	 * @param name - The group name for the group
 	 * @return Either the group or the special admin group.
 	 */
-	public static Group getSpecialCircumstanceGroup(String groupName){
-		if (groupsByName.containsKey(groupName))
-			return groupsByName.get(groupName);
-		else{ 
-			Group group;
-			group = groupManagerDao.getGroup(groupName);
+	public static Group getSpecialCircumstanceGroup(String name){
+		String lower = name.toLowerCase();
+		if (groupsByName.containsKey(lower)) {
+			return groupsByName.get(lower);
+		} else { 
+			Group group = groupManagerDao.getGroup(name);
 			if (group != null) {
-				groupsByName.put(groupName, group);
+				groupsByName.put(lower, group);
 				groupsById.put(group.getGroupId(), group);
-			}
-			else
+			} else {
 				group = groupManagerDao.getGroup(NameLayerPlugin.getSpecialAdminGroup());
+			}
 			return group;
 		}
 	}
@@ -186,6 +204,20 @@ public class GroupManager{
 	public GroupPermission getPermissionforGroup(Group group){
 		return permhandle.getGroupPermission(group);
 	}
+		
+	public boolean hasAccess(String groupname, UUID player, PermissionType perm) {
+		Group group = getGroup(groupname);
+		if (group == null) {
+			return false;
+		}
+		
+		GroupPermission perms = getPermissionforGroup(group);
+		PlayerType rank = group.getPlayerType(player);	
+		
+		return perms.isAccessible(rank, perm);
+	}
+			
+	// == PERMISSION HANDLING ============================================================= //
 	
 	private void deleteGroupPerms(Group group){
 		permhandle.deletePerms(group);
@@ -197,8 +229,11 @@ public class GroupManager{
 	
 	private void initiateDefaultPerms(String group){
 		// for perms follow the order that they are in the enum PlayerType
-		String[] perms = {"DOORS CHESTS", "DOORS CHESTS BLOCKS MEMBERS CROPS", "DOORS CHESTS BLOCKS MODS MEMBERS PASSWORD LIST_PERMS CROPS GROUPSTATS",
-				"DOORS CHESTS BLOCKS ADMINS OWNER MODS MEMBERS PASSWORD SUBGROUP PERMS DELETE MERGE LIST_PERMS TRANSFER CROPS GROUPSTATS", ""};
+		String[] perms = {"DOORS CHESTS", 
+				"DOORS CHESTS BLOCKS MEMBERS CROPS", 
+				"DOORS CHESTS BLOCKS MODS MEMBERS PASSWORD LIST_PERMS CROPS GROUPSTATS",
+				"DOORS CHESTS BLOCKS ADMINS OWNER MODS MEMBERS PASSWORD SUBGROUP PERMS DELETE MERGE LIST_PERMS TRANSFER CROPS GROUPSTATS LINKING", 
+				""};
 		int x = 0;
 		for (PlayerType role: PlayerType.values()){
 			groupManagerDao.addPermission(group, role.name(), perms[x]);
@@ -206,52 +241,10 @@ public class GroupManager{
 		}
 	}
 	
-	/**
-	 * In ascending order
-	 * Add an enum here if you wish to add more than the four default tiers of
-	 * roles.
-	 */
-	public enum PlayerType{
-		MEMBERS,
-		MODS,
-		ADMINS,
-		OWNER,
-		SUBGROUP;// The perm players get when they are added from a super group.
-		
-		public static PlayerType getPlayerType(String type){
-			PlayerType pType = null;
-			try{
-				pType = PlayerType.valueOf(type.toUpperCase());
-			} catch(IllegalArgumentException ex){}
-			return pType;
-		}
-		
-		public static void displayPlayerTypes(Player p){
-			String types = "";
-			for (PlayerType type: PlayerType.values())
-				types += type.name() + " ";
-			p.sendMessage(ChatColor.RED +"That PlayerType does not exists.\n" +
-					"The current types are: " + types);
-		}
-		
-		public static void displayPlayerTypesnllpt(Player p){
-			String types = "";
-			for (PlayerType type: PlayerType.values())
-				types += type.name() + " ";
-			p.sendMessage(ChatColor.GREEN + "The current types are: " + types); //dont yell at player for nllpt
-		}
-		
-		public static String toStringName(){
-			String x = "";
-			for (PlayerType name: PlayerType.values())
-				x += name.name() + " ";
-			return x;
-		}
-	}
-	
 	public String getDefaultGroup(UUID uuid){
 		return groupManagerDao.getDefaultGroup(uuid);
 	}
+
 	/**
 	 * Invalidates a group from cache.
 	 * @param group
@@ -264,6 +257,52 @@ public class GroupManager{
 			for (Group x: groupsById.values())
 				if (x.getName().equals(g.getName()))
 				groupsById.remove(x.getGroupId());
+		}
+	}
+
+	/**
+	 * In ascending order
+	 * Add an enum here if you wish to add more than the four default tiers of
+	 * roles.
+	 */
+	public enum PlayerType{
+		MEMBERS,
+		MODS,
+		ADMINS,
+		OWNER,
+		SUBGROUP;// The perm players get when they are added from a super group.
+		
+		private final static Map<String, PlayerType> BY_NAME = Maps.newHashMap();
+		
+		static {
+			for (PlayerType rank : values()) {
+				BY_NAME.put(rank.name(), rank);
+			}
+		}
+		
+		public static PlayerType getPlayerType(String type){
+			return BY_NAME.get(type.toUpperCase());
+		}
+		
+		public static String getStringOfTypes() {
+			StringBuilder ranks = new StringBuilder();
+			for (String rank: BY_NAME.keySet()) {
+				ranks.append(rank);
+				ranks.append(" ");
+			}
+			return ranks.toString();
+		}
+		
+		public static void displayPlayerTypes(Player p) {
+			p.sendMessage(ChatColor.RED 
+					+ "That PlayerType does not exists.\n"
+					+ "The current types are: " + getStringOfTypes());
+		}
+		
+		public static void displayPlayerTypesnllpt(Player p) {
+			p.sendMessage(ChatColor.GREEN 
+					+ "The current types are: " + getStringOfTypes()); 
+			//dont yell at player for nllpt
 		}
 	}
 }

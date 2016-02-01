@@ -65,14 +65,7 @@ public class AcceptInvite extends PlayerCommandMiddle{
 		}
 		
 		p.sendMessage(ChatColor.GREEN + "You have successfully been added to the group as a " + type.name() +".");
-		if (group instanceof PrivateGroup){
-			PrivateGroup priv = (PrivateGroup) group;
-			List<Group> groups = priv.getSubGroups();
-			for (Group g: groups){
-				g.addMember(uuid, PlayerType.SUBGROUP);
-				checkRecacheGroup(g);
-			}
-		}
+		checkRecacheGroup(group);
 		return true;
 	}
 	@Override
