@@ -94,6 +94,59 @@
 			</dependencies>
 		</profile>
 		<profile>
+			<id>latest</id>
+			<activation>
+				<property>
+					<name>cbdedicated</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.spigotmc</groupId>
+					<artifactId>spigot-api</artifactId>
+					<version>1.8.3-R0.1-SNAPSHOT</version>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>vg.civcraft.mc.mercury</groupId>
+					<artifactId>Mercury</artifactId>
+					<version>1.1.103</version>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>vg.civcraft.mc.civmodcore</groupId>
+					<artifactId>CivModCore</artifactId>
+					<version>1.1.2</version>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>mysql</groupId>
+					<artifactId>mysql-connector-java</artifactId>
+					<version>5.1.35</version>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava</artifactId>
+					<version>18.0</version>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>jline</groupId>
+					<artifactId>jline</artifactId>
+					<version>2.12.1</version>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>vg.civcraft.mc.namelayer</groupId>
+					<artifactId>NameLayerNMS1_8_R3</artifactId>
+					<version>1.0.0</version>
+					<scope>compile</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
 			<id>minimal</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>

@@ -29,6 +29,20 @@
 			</modules>
 		</profile>
 		<profile>
+			<id>latest</id>
+			<activation>
+				<property>
+					<name>cbdedicated</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<modules>
+				<module>NameLayer1_8_R3</module>
+				<module>NameLayerMain</module>
+				<module>NameLayer</module>
+			</modules>
+		</profile>
+		<profile>
 			<id>minimal</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
