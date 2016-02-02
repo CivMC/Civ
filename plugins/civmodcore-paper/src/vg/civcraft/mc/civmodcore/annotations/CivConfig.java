@@ -11,6 +11,6 @@ import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CivConfig {
   public String name();
-  public String def() default "";
+  public Object def() default null;
   public CivConfigType type() default CivConfigType.Bool;
 }

@@ -57,17 +57,24 @@ public class ConfigOption {
     }
   }
 
-  public Object convert(String value, Object defaultValue) {
+  public Object convert(Object value, Object defaultValue) {
     switch(type_) {
       case Bool:
-        return value.equals("1") || value.equalsIgnoreCase("true");
+        return (value instanceof Boolean ? value : 
+                value instanceof String ? (value.equals("1") || value.equalsIgnoreCase("true")) : false;
       case Int:
-        if (value.isEmpty()) {
-          return -1;
-        }
-        try {
-          return Integer.parseInt(value);
-        } catch(Exception e) {
+	    if (value instanceof Integer) {
+          return value;
+        } else if (value instanceof String) {
+          if (value.isEmpty()) {
+            return -1;
+          }
+          try {
+            return Integer.parseInt(value);
+          } catch(Exception e) {
+            return defaultValue;
+          }
+		} else {
           return defaultValue;
         }
       case Double:
