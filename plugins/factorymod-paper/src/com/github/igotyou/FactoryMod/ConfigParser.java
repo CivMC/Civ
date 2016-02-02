@@ -10,15 +10,12 @@ import java.util.Map.Entry;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
-import vg.civcraft.mc.civmodcore.Config;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseItemMap;
+import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
 
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
@@ -83,7 +80,8 @@ public class ConfigParser {
 		defaultReturnRate = config.getDouble("default_return_rate", 0.0);
 		int redstonePowerOn = config.getInt("redstone_power_on", 7);
 		int redstoneRecipeChange = config.getInt("redstone_recipe_change", 2);
-		long gracePeriod = 50 * parseTime(config.getString("break_grace_period"));
+		long gracePeriod = 50 * parseTime(config
+				.getString("break_grace_period"));
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
 				citadelEnabled, redstonePowerOn, redstoneRecipeChange,
 				logInventories, gracePeriod);
@@ -290,11 +288,15 @@ public class ConfigParser {
 		recipeLists.put(egg, config.getStringList("recipes"));
 		return egg;
 	}
-	
+
 	public void enableFactoryDecay(ConfigurationSection config) {
 		long intervall = parseTime(config.getString("decay_intervall"));
 		int amount = config.getInt("decay_amount");
-		plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, new FactoryGarbageCollector(amount), intervall, intervall);
+		plugin.getServer()
+				.getScheduler()
+				.scheduleAsyncRepeatingTask(plugin,
+						new FactoryGarbageCollector(amount), intervall,
+						intervall);
 	}
 
 	/**
@@ -419,137 +421,4 @@ public class ConfigParser {
 			}
 		}
 	}
-
-	/**
-	 * Creates an itemmap containing all the items listed in the given config
-	 * section
-	 * 
-	 * @param config
-	 *            ConfigurationSection to parse the items from
-	 * @return The item map created
-	 */
-	private static ItemMap parseItemMap(ConfigurationSection config) {
-		ItemMap result = new ItemMap();
-		if (config == null) {
-			return result;
-		}
-		for (String key : config.getKeys(false)) {
-			ConfigurationSection current = config.getConfigurationSection(key);
-			Material m = Material.valueOf(current.getString("material"));
-			ItemStack toAdd = new ItemStack(m);
-			int amount = current.getInt("amount", 1);
-			toAdd.setAmount(amount);
-			int durability = current.getInt("durability", 0);
-			toAdd.setDurability((short) durability);
-			ItemMeta im = toAdd.getItemMeta();
-			String name = current.getString("name");
-			if (name != null) {
-				im.setDisplayName(name);
-			}
-			List<String> lore = current.getStringList("lore");
-			if (lore != null) {
-				im.setLore(lore);
-			}
-			if (current.contains("enchants")) {
-				for (String enchantKey : current.getConfigurationSection(
-						"enchants").getKeys(false)) {
-					ConfigurationSection enchantConfig = current
-							.getConfigurationSection("enchants")
-							.getConfigurationSection(enchantKey);
-					Enchantment enchant = Enchantment.getByName(enchantConfig
-							.getString("enchant"));
-					int level = enchantConfig.getInt("level", 1);
-					im.addEnchant(enchant, level, true);
-				}
-			}
-			toAdd.setItemMeta(im);
-			result.addItemStack(toAdd);
-		}
-		return result;
-	}
-
-	/**
-	 * Parses a potion effect
-	 * 
-	 * @param configurationSection
-	 *            ConfigurationSection to parse the effect from
-	 * @return The potion effect parsed
-	 */
-	private static List<PotionEffect> parsePotionEffects(
-			ConfigurationSection configurationSection) {
-		List<PotionEffect> potionEffects = Lists.newArrayList();
-		if (configurationSection != null) {
-			for (String name : configurationSection.getKeys(false)) {
-				ConfigurationSection configEffect = configurationSection
-						.getConfigurationSection(name);
-				String type = configEffect.getString("type");
-				PotionEffectType effect = PotionEffectType.getByName(type);
-				int duration = configEffect.getInt("duration", 200);
-				int amplifier = configEffect.getInt("amplifier", 0);
-				potionEffects
-						.add(new PotionEffect(effect, duration, amplifier));
-			}
-		}
-		return potionEffects;
-	}
-
-	private long parseTime(String arg) {
-		long result = 0;
-		boolean set = true;
-		try {
-			result += Long.parseLong(arg);
-		} catch (NumberFormatException e) {
-			set = false;
-		}
-		if (set) {
-			return result;
-		}
-		while (!arg.equals("")) {
-			int length = 0;
-			switch (arg.charAt(arg.length() - 1)) {
-			case 't': // ticks
-				long ticks = getLastNumber(arg);
-				result += ticks;
-				length = String.valueOf(ticks).length() + 1;
-				break;
-			case 's': // seconds
-				long seconds = getLastNumber(arg);
-				result += 20 * seconds; // 20 ticks in a second
-				length = String.valueOf(seconds).length() + 1;
-				break;
-			case 'm': // minutes
-				long minutes = getLastNumber(arg);
-				result += 20 * 60 * minutes;
-				length = String.valueOf(minutes).length() + 1;
-				break;
-			case 'h': // hours
-				long hours = getLastNumber(arg);
-				result += 20 * 3600 * hours;
-				length = String.valueOf(hours).length() + 1;
-				break;
-			case 'd': // days, mostly here to define a 'never'
-				long days = getLastNumber(arg);
-				result += 20 * 3600 * 24 * days;
-				length = String.valueOf(days).length() + 1;
-			default:
-				plugin.severe("Invalid time value in config:" + arg);
-			}
-			arg = arg.substring(0, arg.length() - length);
-		}
-		return result;
-	}
-
-	private long getLastNumber(String arg) {
-		StringBuilder number = new StringBuilder();
-		for (int i = arg.length() - 2; i >= 0; i--) {
-			if (Character.isDigit(arg.charAt(i))) {
-				number.insert(0, arg.substring(i, i + 1));
-			} else {
-				break;
-			}
-		}
-		long result = Long.parseLong(number.toString());
-		return result;
-	}
-
 }
