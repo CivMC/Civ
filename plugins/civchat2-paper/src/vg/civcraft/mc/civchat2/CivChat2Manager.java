@@ -299,7 +299,10 @@ public class CivChat2Manager {
 						//reciever is in differnt world dont send
 						continue;
 					} else {
-						receiver.sendMessage(String.format(event.getFormat(), sender.getName(), chatMessage));
+						if(event.getFormat().equals("<%1$s> %2$s")) {
+							event.setFormat(color + "%1$s: %2$s");
+						}
+						receiver.sendMessage(String.format(event.getFormat(), NameAPI.getCurrentName(sender.getUniqueId()), chatMessage));
 						/*receiver.sendMessage(sb.append(color) 
 												.append( NameAPI.getCurrentName(uuid)) 
 												.append(": ") 
