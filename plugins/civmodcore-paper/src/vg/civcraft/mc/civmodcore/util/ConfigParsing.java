@@ -156,7 +156,7 @@ public class ConfigParsing {
 	 *            ConfigurationSection to parse the effect from
 	 * @return The potion effect parsed
 	 */
-	private static List<PotionEffect> parsePotionEffects(
+	public static List<PotionEffect> parsePotionEffects(
 			ConfigurationSection configurationSection) {
 		List<PotionEffect> potionEffects = Lists.newArrayList();
 		if (configurationSection != null) {
