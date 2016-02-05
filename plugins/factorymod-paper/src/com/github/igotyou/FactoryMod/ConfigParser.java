@@ -63,8 +63,14 @@ public class ConfigParser {
 		boolean citadelEnabled = plugin.getServer().getPluginManager()
 				.isPluginEnabled("Citadel");
 		boolean logInventories = config.getBoolean("log_inventories", true);
-		Material factoryInteractionMaterial = Material.getMaterial(config
-				.getString("factory_interaction_material", "STICK"));
+		Material factoryInteractionMaterial = Material.STICK;
+		try {
+			factoryInteractionMaterial = Material.getMaterial(config
+					.getString("factory_interaction_material", "STICK"));
+		} catch (IllegalArgumentException iae) {
+			plugin.warning(config.getString("factory_interaction_material") +
+					" is not a valid material for factory_interaction_material");
+		}
 		boolean disableNether = config.getBoolean("disable_nether", false);
 		if (disableNether) {
 			plugin.getServer().getPluginManager()
@@ -72,9 +78,12 @@ public class ConfigParser {
 		}
 		defaultUpdateTime = (int) parseTime(config.getString(
 				"default_update_time", "5"));
-		defaultFuel = parseItemMap(
-				config.getConfigurationSection("default_fuel"))
-				.getItemStackRepresentation().get(0);
+		ItemMap dFuel = parseItemMap(config.getConfigurationSection("default_fuel"));
+		if (dFuel.getTotalUniqueItemAmount() > 0) {
+			defaultFuel = dFuel.getItemStackRepresentation().get(0);
+		} else {
+			plugin.warning("No default_fuel specified. Should be an ItemMap.");
+		}
 		defaultFuelConsumptionTime = (int) parseTime(config.getString(
 				"default_fuel_consumption_intervall", "20"));
 		defaultReturnRate = config.getDouble("default_return_rate", 0.0);
@@ -114,7 +123,11 @@ public class ConfigParser {
 		recipes = new HashMap<String, IRecipe>();
 		for (String key : config.getKeys(false)) {
 			IRecipe recipe = parseRecipe(config.getConfigurationSection(key));
-			recipes.put(recipe.getRecipeName(), recipe);
+			if (recipe == null) {
+				plugin.warning(String.format("Recipe %s unable to be added.", key));
+			} else {
+				recipes.put(recipe.getRecipeName(), recipe);
+			}
 		}
 	}
 
@@ -151,36 +164,67 @@ public class ConfigParser {
 		switch (config.getString("type")) {
 		case "FCC": // Furnace, chest, craftingtable
 			egg = parseFCCFactory(config);
+			if (egg == null) {
+				break;
+			}
 			ItemMap setupCost = parseItemMap(config
 					.getConfigurationSection("setupcost"));
 			System.out.println(setupCost.toString());
-			manager.addFactoryCreationEgg(FurnCraftChestStructure.class,
-					setupCost, egg);
+			if (setupCost.getTotalUniqueItemAmount() > 0) {
+				manager.addFactoryCreationEgg(FurnCraftChestStructure.class,
+						setupCost, egg);
+			} else {
+				plugin.warning(String.format("FCC %s specified with no setup cost, skipping",
+						egg.getName()));
+			}
 			break;
 		case "FCCUPGRADE":
 			egg = parseFCCFactory(config);
+			if (egg == null) {
+				break;
+			}
 			upgradeEggs.put(egg.getName(), egg);
 			manager.addFactoryUpgradeEgg(egg);
 			break;
 		case "PIPE":
 			egg = parsePipe(config);
+			if (egg == null) {
+				break;
+			}
 			ItemMap pipeSetupCost = parseItemMap(config
 					.getConfigurationSection("setupcost"));
-			manager.addFactoryCreationEgg(PipeStructure.class, pipeSetupCost,
-					egg);
+			if (pipeSetupCost.getTotalUniqueItemAmount() > 0) {
+				manager.addFactoryCreationEgg(PipeStructure.class, pipeSetupCost,
+						egg);
+			} else {
+				plugin.warning(String.format("PIPE %s specified with no setup cost, skipping",
+						egg.getName()));
+			}
 			break;
 		case "SORTER":
 			egg = parseSorter(config);
+			if (egg == null) {
+				break;
+			}
 			ItemMap sorterSetupCost = parseItemMap(config
 					.getConfigurationSection("setupcost"));
-			manager.addFactoryCreationEgg(BlockFurnaceStructure.class,
+			if (sorterSetupCost.getTotalUniqueItemAmount() > 0) {
+				manager.addFactoryCreationEgg(BlockFurnaceStructure.class,
 					sorterSetupCost, egg);
+			} else {
+				plugin.warning(String.format("SORTER %s specified with no setup cost, skipping",
+						egg.getName()));
+			}
 			break;
 		default:
 			plugin.severe("Could not identify factory type "
 					+ config.getString("type"));
 		}
-		plugin.info("Parsed factory " + egg.getName());
+		if (egg != null) {
+			plugin.info("Parsed factory " + egg.getName());
+		} else {
+			plugin.warning(String.format("Failed to set up factory %s", config.getCurrentPath()));
+		}
 
 	}
 
@@ -200,8 +244,13 @@ public class ConfigParser {
 		}
 		ItemStack fuel;
 		if (config.contains("fuel")) {
-			fuel = parseItemMap(config.getConfigurationSection("fuel"))
-					.getItemStackRepresentation().get(0);
+			ItemMap tfuel = parseItemMap(config.getConfigurationSection("fuel"));
+			if (tfuel.getTotalUniqueItemAmount() > 0) {
+				fuel = tfuel.getItemStackRepresentation().get(0);
+			} else {
+				plugin.warning("Custom fuel was specified incorrectly for " + name);
+				fuel = defaultFuel;
+			}
 		} else {
 			fuel = defaultFuel;
 		}
@@ -235,8 +284,13 @@ public class ConfigParser {
 		}
 		ItemStack fuel;
 		if (config.contains("fuel")) {
-			fuel = parseItemMap(config.getConfigurationSection("fuel"))
-					.getItemStackRepresentation().get(0);
+			ItemMap tfuel = parseItemMap(config.getConfigurationSection("fuel"));
+			if (tfuel.getTotalUniqueItemAmount() > 0) {
+				fuel = tfuel.getItemStackRepresentation().get(0);
+			} else {
+				plugin.warning("Custom fuel was specified incorrectly for " + name);
+				fuel = defaultFuel;
+			}
 		} else {
 			fuel = defaultFuel;
 		}
@@ -271,8 +325,13 @@ public class ConfigParser {
 		}
 		ItemStack fuel;
 		if (config.contains("fuel")) {
-			fuel = parseItemMap(config.getConfigurationSection("fuel"))
-					.getItemStackRepresentation().get(0);
+			ItemMap tfuel = parseItemMap(config.getConfigurationSection("fuel"));
+			if (tfuel.getTotalUniqueItemAmount() > 0) {
+				fuel = tfuel.getItemStackRepresentation().get(0);
+			} else {
+				plugin.warning("Custom fuel was specified incorrectly for " + name);
+				fuel = defaultFuel;
+			}
 		} else {
 			fuel = defaultFuel;
 		}
@@ -290,13 +349,10 @@ public class ConfigParser {
 	}
 
 	public void enableFactoryDecay(ConfigurationSection config) {
-		long intervall = parseTime(config.getString("decay_intervall"));
+		long interval = parseTime(config.getString("decay_intervall"));
 		int amount = config.getInt("decay_amount");
-		plugin.getServer()
-				.getScheduler()
-				.scheduleAsyncRepeatingTask(plugin,
-						new FactoryGarbageCollector(amount), intervall,
-						intervall);
+		plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, 
+						new FactoryGarbageCollector(amount), interval, interval);
 	}
 
 	/**
@@ -328,8 +384,7 @@ public class ConfigParser {
 			for (Recipe disable : toDisable) {
 				if (disable.getResult().isSimilar(recipe.getResult())) {
 					it.remove();
-					plugin.info("Disabling recipe "
-							+ recipe.getResult().toString());
+					plugin.info("Disabling recipe "	+ recipe.getResult().toString());
 				}
 			}
 		}
@@ -364,7 +419,11 @@ public class ConfigParser {
 			manager.setCompactLore(compactedLore);
 			List<Material> excluded = new LinkedList<Material>();
 			for (String mat : config.getStringList("excluded_materials")) {
-				excluded.add(Material.valueOf(mat));
+				try {
+					excluded.add(Material.valueOf(mat));
+				} catch (IllegalArgumentException iae) {
+					plugin.warning(mat + " is not a valid material to exclude: " + config.getCurrentPath());
+				}
 			}
 			result = new CompactingRecipe(extraMats, excluded, name,
 					productionTime, compactedLore);
@@ -389,17 +448,25 @@ public class ConfigParser {
 			if (egg == null) {
 				plugin.severe("Could not find factory " + upgradeName
 						+ " for upgrade recipe " + name);
+				result = null;
+			} else {
+				result = new Upgraderecipe(name, productionTime, upgradeCost, egg);
 			}
-			result = new Upgraderecipe(name, productionTime, upgradeCost, egg);
 			break;
 		case "AOEREPAIR":
-			ItemStack essence = parseItemMap(
-					config.getConfigurationSection("essence"))
-					.getItemStackRepresentation().get(0);
-			int repPerEssence = config.getInt("repair_per_essence");
-			int range = config.getInt("range");
-			result = new AOERepairRecipe(name, productionTime, essence, range,
-					repPerEssence);
+			ItemMap tessence = parseItemMap(
+					config.getConfigurationSection("essence"));
+			if (tessence.getTotalUniqueItemAmount() > 0){
+				ItemStack essence = tessence
+						.getItemStackRepresentation().get(0);
+				int repPerEssence = config.getInt("repair_per_essence");
+				int range = config.getInt("range");
+				result = new AOERepairRecipe(name, productionTime, essence, range,
+						repPerEssence);
+			} else {
+				plugin.severe("No essence specified for AOEREPAIR " + config.getCurrentPath());
+				result = null;
+			}
 			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type")
