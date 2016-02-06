@@ -3,6 +3,9 @@ package vg.civcraft.mc.civmodcore.annotations;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import vg.civcraft.mc.civmodcore.Config;
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
@@ -19,7 +22,22 @@ public class ConfigOption {
     name_ = bug.name();
     type_ = bug.type();
     Object failure = new Object();
-    default_ = convert(bug.def(), failure);
+    if (type_ == CivConfigType.Object) {
+      YamlConfiguration yc = null;
+      try {
+        yc = new YamlConfiguration();
+        yc.loadFromString(bug.def());
+      } catch (InvalidConfigurationException ice) {
+        yc = null;
+      }
+      if (yc == null) {
+        default_ = failure;
+      } else {
+        default_ = yc.get("default");
+      }
+    } else {
+      default_ = convert(bug.def(), failure);
+    }
     if (default_ == failure) {
       throw new Error(String.format(
           "Unable to parse default value for %s: %s",
@@ -52,25 +70,29 @@ public class ConfigOption {
       case String_List:
     	set(config_.getStorage().getStringList(name_));
     	break;
+      case Object:
+        set(config_.getStorage().get(name_));
       default:
         throw new Error("Unknown OptType");
     }
   }
 
+  @SuppressWarnings("unchecked")
   public Object convert(Object value, Object defaultValue) {
     switch(type_) {
       case Bool:
         return (value instanceof Boolean ? value : 
-                value instanceof String ? (value.equals("1") || value.equalsIgnoreCase("true")) : false;
+            value instanceof String ? 
+                (value.equals("1") || ((String)value).equalsIgnoreCase("true")) : false);
       case Int:
 	    if (value instanceof Integer) {
           return value;
         } else if (value instanceof String) {
-          if (value.isEmpty()) {
+          if (((String) value).isEmpty()) {
             return -1;
           }
           try {
-            return Integer.parseInt(value);
+            return Integer.parseInt((String) value);
           } catch(Exception e) {
             return defaultValue;
           }
@@ -78,39 +100,65 @@ public class ConfigOption {
           return defaultValue;
         }
       case Double:
-        if (value.isEmpty()) {
-          return -1.00000001;
-        }
-        try {
-          return Double.parseDouble(value);
-        } catch(Exception e) {
+        if (value instanceof Double) {
+          return value;
+        } else if (value instanceof String) {
+          if (((String)value).isEmpty()) {
+            return -1.00000001;
+          }
+          try {
+            return Double.parseDouble((String)value);
+          } catch(Exception e) {
+            return defaultValue;
+          }
+        } else {
           return defaultValue;
         }
       case String:
-        if (value == null) {
-          return (String)defaultValue;
+        if (value == null || !(value instanceof String)) {
+          return defaultValue;
         }
         return value;
       case Long:
-    	  if (value.isEmpty()) {
-              return -1;
-            }
-            try {
-              return Long.parseLong(value);
-            } catch(Exception e) {
-              return defaultValue;
-            }
+        if (value instanceof Long) {
+          return value;
+        } else if (value instanceof String) {
+    	  if (((String) value).isEmpty()) {
+            return -1;
+          }
+          try {
+            return Long.parseLong((String) value);
+          } catch(Exception e) {
+            return defaultValue;
+          }
+        } else {
+          return defaultValue;
+        }
       case String_List:
-    	  List<String> list = new ArrayList<String>();
-    	  if (value == null) {
-    		  return (List<String>) defaultValue;
-    	  } 
-    	  else {
-    		  String[] parts = ((String) defaultValue).split("\\|");
-    		  for (String x: parts)
-    			  list.add(x);
-    	  }
-    	  return list;
+        List<String> list = new ArrayList<String>();
+        if (value == null || !(value instanceof List<?> || value instanceof String[] || value instanceof String)) {
+          return (List<String>) defaultValue;
+        } else if (value instanceof List<?>) { // not a truly safe assumption...
+          list.addAll((List<String>) value);
+        } else if (value instanceof String[]) {
+          for (String v: (String[]) value) {
+            list.add(v);
+          }
+    	} else if (value instanceof String) {
+          String[] parts = ((String) value).split("\\|");
+          for (String x: parts) {
+            list.add(x);
+          }
+    	} else {
+          return defaultValue;
+    	}
+        return list;
+      case Object:
+        if (value == null) {
+          return defaultValue;
+        } else {
+          return value;
+        }
       default:
         throw new Error("Unknown OptType");
     }
@@ -147,21 +195,24 @@ public class ConfigOption {
         value_ = value;
         break;
       case Long:
-    	  if (!(value instanceof Long)) {
-    		  throw new Error(String.format(
-    	              "Value set is not a Long for %s: %s",
-    	              name_, value.toString()));
-    	  }
-    	  value_ = value;
+        if (!(value instanceof Long)) {
+          throw new Error(String.format(
+              "Value set is not a Long for %s: %s",
+              name_, value.toString()));
+        }
+        value_ = value;
+        break;
       case String_List:
-    	  if (!(value instanceof List)) {
-    		  throw new Error(String.format(
-    	              "Value set is not a List for %s: %s",
-    	              name_, value.toString()));
-    	  }
-    	  value_ = value;
-    	  break;
-      case String:
+        if (!(value instanceof List)) {
+          throw new Error(String.format(
+              "Value set is not a List for %s: %s", name_, value.toString()));
+        }
+        value_ = value;
+        break;
+      case Object: // unchecked.
+        value_ = value;
+        break;
+      case String: // ideally handled above already.
       default:
         throw new Error("Unknown OptType");
     }
@@ -206,21 +257,34 @@ public class ConfigOption {
   }
   
   public Long getLong() {
-	  if (type_ != CivConfigType.Long) {
-	      throw new Error(String.format(
-	          "Config option %s not of type Long", name_));
-	    }
-	    return (Long)value_;
+    if (type_ != CivConfigType.Long) {
+      throw new Error(String.format(
+          "Config option %s not of type Long", name_));
+    }
+    return (Long)value_;
   }
   
+  @SuppressWarnings("unchecked")
   public List<String> getStringList() {
-	  if (type_ != CivConfigType.String_List) {
-	      throw new Error(String.format(
-	          "Config option %s not of type Long", name_));
-	    }
-	    return (List<String>) value_;
+    if (type_ != CivConfigType.String_List) {
+      throw new Error(String.format(
+          "Config option %s not of type Long", name_));
+    }
+    return (List<String>) value_;
   }
 
+  public Object getObject() {
+    if (type_ != CivConfigType.Object) {
+      throw new Error(String.format(
+          "Config option %s not of type Object", name_));
+    }
+    return value_;
+  }
+  
+  public Object get() {
+    return value_;
+  }
+  
   public String getString() {
     return value_.toString();
   }

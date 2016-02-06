@@ -7,10 +7,14 @@ import java.lang.annotation.Target;
 
 import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
 
+/**
+ * If using {@link CivConfigType#Object} set default to be a valid YAML string, with
+ * a single top-level element "default"
+ */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CivConfig {
   public String name();
-  public Object def() default null;
+  public String def() default "";
   public CivConfigType type() default CivConfigType.Bool;
 }
