@@ -96,6 +96,7 @@ public class MenuBuilder {
 				}
 			}
 			if (egg == null) {
+				FactoryMod.getPlugin().warning("There is no factory with name " + comp);
 				p.sendMessage(ChatColor.RED
 						+ "There is no factory with the name you entered");
 				return;
@@ -109,8 +110,8 @@ public class MenuBuilder {
 			// creation option
 			ItemStack creationStack = new ItemStack(Material.CHEST);
 			ISUtils.setName(creationStack, "Setup");
-			ISUtils.addLore(creationStack, ChatColor.LIGHT_PURPLE
-					+ "Click to display more information",
+			ISUtils.addLore(creationStack, 
+					ChatColor.LIGHT_PURPLE + "Click to display more information",
 					ChatColor.LIGHT_PURPLE + "on how to setup this factory");
 			Clickable creationClickable = new Clickable(creationStack) {
 				@Override
@@ -139,10 +140,9 @@ public class MenuBuilder {
 			// upgrade option
 			ItemStack upgradeStack = new ItemStack(Material.FURNACE);
 			ISUtils.setName(upgradeStack, "Upgrades");
-			ISUtils.addLore(upgradeStack, ChatColor.LIGHT_PURPLE
-					+ "Click to display more information about",
-					ChatColor.LIGHT_PURPLE
-							+ "the possible upgrades to this factory");
+			ISUtils.addLore(upgradeStack,
+					ChatColor.LIGHT_PURPLE + "Click to display more information about",
+					ChatColor.LIGHT_PURPLE + "the possible upgrades to this factory");
 			Clickable upgradeClickable = new Clickable(upgradeStack) {
 				@Override
 				public void clicked(Player arg0) {
@@ -159,12 +159,16 @@ public class MenuBuilder {
 	private void openRecipeBrowser(Player p, String facName) {
 		ClickableInventory.forceCloseInventory(p);
 		ClickableInventory recipeInventory = new ClickableInventory(36,
-				"All recipes for " + facName);
+				"Recipes for " + facName); // Bukkit has 32 char limit on inventory
 		FurnCraftChestEgg egg = (FurnCraftChestEgg) manager.getEgg(facName);
 		List<IRecipe> recipes = egg.getRecipes();
 
 		// put recipes
+		int j = 0;
 		for (int i = 0; i < recipes.size(); i++) {
+			if (recipes.get(i) == null) {
+				continue;
+			}
 			Clickable c = new Clickable(
 					((InputRecipe) recipes.get(i)).getRecipeRepresentation()) {
 				@Override
@@ -173,14 +177,14 @@ public class MenuBuilder {
 							ISUtils.getName(this.getItemStack()));
 				}
 			};
-			recipeInventory.setSlot(c, i);
+			recipeInventory.setSlot(c, j++);
 		}
 
 		// back option
 		ItemStack backStack = new ItemStack(Material.ARROW);
 		ISUtils.setName(backStack, "Back to factory overview");
-		ISUtils.addLore(backStack, ChatColor.LIGHT_PURPLE
-				+ "Click to go back");
+		ISUtils.addLore(backStack, 
+				ChatColor.LIGHT_PURPLE + "Click to go back");
 		Clickable backClickable = new Clickable(backStack) {
 			@Override
 			public void clicked(Player arg0) {
@@ -197,21 +201,19 @@ public class MenuBuilder {
 		FurnCraftChestEgg egg = (FurnCraftChestEgg) manager.getEgg(facName);
 		FurnCraftChestEgg parEgg = (FurnCraftChestEgg) manager
 				.getEgg(parentFactories.get(facName));
-		ClickableInventory ci = new ClickableInventory(54, "How to get a "
-				+ egg.getName());
+		ClickableInventory ci = new ClickableInventory(54, "Create a "
+				+ egg.getName()); // Bukkit has 32 char limit on inventory
 		ItemStack cr = new ItemStack(Material.WORKBENCH);
 		ItemStack fur = new ItemStack(Material.FURNACE);
 		ItemStack che = new ItemStack(Material.CHEST);
 		if (parEgg == null) {// creation factory
-			ISUtils.setLore(cr, ChatColor.LIGHT_PURPLE
-					+ "This factory can be created with",
-					ChatColor.LIGHT_PURPLE
-							+ "a normal crafting table, furnace and chest");
-			ISUtils.setLore(che, ChatColor.LIGHT_PURPLE
-					+ "Arrange the 3 blocks like this,", ChatColor.LIGHT_PURPLE
-					+ "put the materials below in the chest",
-					ChatColor.LIGHT_PURPLE
-							+ "and hit the craftingtable with a stick");
+			ISUtils.setLore(cr, 
+					ChatColor.LIGHT_PURPLE + "This factory can be created with",
+					ChatColor.LIGHT_PURPLE + "a normal crafting table, furnace and chest");
+			ISUtils.setLore(che, 
+					ChatColor.LIGHT_PURPLE + "Arrange the 3 blocks like this,", 
+					ChatColor.LIGHT_PURPLE + "put the materials below in the chest",
+					ChatColor.LIGHT_PURPLE + "and hit the crafting table with a stick");
 			DecorationStack furnDec = new DecorationStack(fur);
 			DecorationStack chestDec = new DecorationStack(che);
 			DecorationStack craStack = new DecorationStack(cr);
@@ -256,8 +258,9 @@ public class MenuBuilder {
 				}
 			};
 			ci.setSlot(craCli, 4);
-			ISUtils.setLore(fur, ChatColor.LIGHT_PURPLE
-					+ "Click to display information", ChatColor.LIGHT_PURPLE + "on this factory");
+			ISUtils.setLore(fur, 
+					ChatColor.LIGHT_PURPLE + "Click to display information", 
+					ChatColor.LIGHT_PURPLE + "on this factory");
 			Clickable furCli = new Clickable(fur) {
 				@Override
 				public void clicked(Player arg0) {
@@ -296,8 +299,7 @@ public class MenuBuilder {
 		ci.setSlot(input, 22);
 		ItemStack backStack = new ItemStack(Material.ARROW);
 		ISUtils.setName(backStack, "Back to factory overview");
-		ISUtils.addLore(backStack, ChatColor.LIGHT_PURPLE
-				+ "Click to go back");
+		ISUtils.addLore(backStack, ChatColor.LIGHT_PURPLE + "Click to go back");
 		Clickable backClickable = new Clickable(backStack) {
 			@Override
 			public void clicked(Player arg0) {
@@ -312,18 +314,18 @@ public class MenuBuilder {
 		ClickableInventory.forceCloseInventory(p);
 		FurnCraftChestEgg egg = (FurnCraftChestEgg) manager
 				.getEgg(factoryViewed.get(p.getUniqueId()));
-		ClickableInventory ci = new ClickableInventory(18, "Possible upgrades");
 		List<IRecipe> upgrades = new LinkedList<IRecipe>();
 		for (IRecipe recipe : egg.getRecipes()) {
 			if (recipe instanceof Upgraderecipe) {
 				upgrades.add(recipe);
 			}
 		}
+		ClickableInventory ci = new ClickableInventory(
+				Math.max(18, (upgrades.size() / 9) * 9), "Possible upgrades");
 		if (upgrades.size() == 0) {
 			ItemStack bar = new ItemStack(Material.BARRIER);
 			ISUtils.setName(bar, "No upgrades available");
-			ISUtils.addLore(bar, ChatColor.LIGHT_PURPLE
-					+ "Click to go back");
+			ISUtils.addLore(bar, ChatColor.LIGHT_PURPLE + "Click to go back");
 			Clickable noUpgrades = new Clickable(bar) {
 				@Override
 				public void clicked(Player p) {
@@ -335,8 +337,8 @@ public class MenuBuilder {
 			for (IRecipe recipe : upgrades) {
 				ItemStack recStack = ((InputRecipe) recipe)
 						.getRecipeRepresentation();
-				ISUtils.setLore(recStack, ChatColor.LIGHT_PURPLE
-						+ "Click to display more information");
+				ISUtils.setLore(recStack, 
+						ChatColor.LIGHT_PURPLE + "Click to display more information");
 				Clickable c = new Clickable(
 						((InputRecipe) recipe).getRecipeRepresentation()) {
 					@Override
@@ -350,8 +352,7 @@ public class MenuBuilder {
 		}
 		ItemStack backStack = new ItemStack(Material.ARROW);
 		ISUtils.setName(backStack, "Back to factory overview");
-		ISUtils.addLore(backStack, ChatColor.LIGHT_PURPLE
-				+ "Click to go back");
+		ISUtils.addLore(backStack, ChatColor.LIGHT_PURPLE + "Click to go back");
 		Clickable backClickable = new Clickable(backStack) {
 			@Override
 			public void clicked(Player arg0) {
@@ -364,14 +365,29 @@ public class MenuBuilder {
 
 	private void openDetailedRecipeBrowser(Player p, String recipeName) {
 		ClickableInventory.forceCloseInventory(p);
+		if (recipeName == null){
+			FactoryMod.getPlugin().warning("Recipe name cannot be null in openDetailedRecipeBrowser calls");
+			return;
+		}
 		FurnCraftChestEgg egg = (FurnCraftChestEgg) manager
 				.getEgg(factoryViewed.get(p.getUniqueId()));
 		InputRecipe rec = null;
 		for (IRecipe recipe : egg.getRecipes()) {
-			if (recipe.getRecipeName().equals(recipeName)) {
+			if (recipe == null || recipe.getRecipeName() == null) {
+				FactoryMod.getPlugin().warning("Null recipe or recipe name registered with "+
+						egg.getName());
+				continue;
+			}
+			if (recipeName.equals(recipe.getRecipeName())) {
 				rec = (InputRecipe) recipe;
 				break;
 			}
+		}
+		if (rec == null) {
+			FactoryMod.getPlugin().warning("There is no recipe with name " + recipeName);
+			p.sendMessage(ChatColor.RED
+					+ "There is no recipe that matches " + recipeName);
+			return;
 		}
 		ClickableInventory ci = new ClickableInventory(54, recipeName);
 		ItemStack inputStack = new ItemStack(Material.PAPER);
@@ -517,8 +533,7 @@ public class MenuBuilder {
 		ClickableInventory ci = new ClickableInventory(54,
 				"Items for this side");
 		viewed.put(p.getUniqueId(), s);
-		for (ItemStack is : s.getItemsForSide(face)
-				.getItemStackRepresentation()) {
+		for (ItemStack is : s.getItemsForSide(face).getItemStackRepresentation()) {
 			is.setAmount(1);
 			ci.addSlot(new Clickable(is) {
 				@Override
@@ -531,7 +546,6 @@ public class MenuBuilder {
 			});
 		}
 		ci.showInventory(p);
-
 	}
 
 }
