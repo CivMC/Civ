@@ -40,6 +40,10 @@ public class ClickableInventory {
 	 *            has it open
 	 */
 	public ClickableInventory(InventoryType type, String name) {
+		if (name != null && name.length() > 32) {
+			Bukkit.getLogger().warning("ClickableInventory title exceeds Bukkit limits: " + name);
+			name = name.substring(0, 32);
+		}
 		inventory = Bukkit.createInventory(null, type, name);
 		this.clickables = new Clickable[inventory.getSize() + 1];
 	}
@@ -57,6 +61,10 @@ public class ClickableInventory {
 	 *            has it open
 	 */
 	public ClickableInventory(int size, String name) {
+		if (name != null && name.length() > 32) {
+			Bukkit.getLogger().warning("ClickableInventory title exceeds Bukkit limits: " + name);
+			name = name.substring(0, 32);
+		}
 		inventory = Bukkit.createInventory(null, size, name);
 		this.clickables = new Clickable[size + 1];
 	}
