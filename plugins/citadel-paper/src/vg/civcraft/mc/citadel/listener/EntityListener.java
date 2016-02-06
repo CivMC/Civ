@@ -49,11 +49,17 @@ public class EntityListener implements Listener{
             Block block = Utility.getRealBlock(b);
             //if it's a plant we want to check the reinforcement of the soil block
             if(Utility.isPlant(block)) {
-            	Block soilBlock = block.getRelative(BlockFace.DOWN);
-            	if(Citadel.getReinforcementManager().isReinforced(soilBlock)) {
-            		block.getDrops().clear();
-            		iterator.remove();
-            	}
+                // TODO: Ideally we defer evaluating drops for crops until after soil is checked.
+                // So process is, find soil; link soil and block here.
+                // If soil is exploded (reinf breached) then let this block drop its stuff, otherwise
+                // don't. 
+                // For now, we'll just remove the drops.
+                Block soilBlock = Utility.findPlantSoil(block);
+                if(soilBlock != null && Citadel.getReinforcementManager().isReinforced(soilBlock)) {
+                    block.getDrops().clear();
+                    iterator.remove();
+                    continue;
+                }
             }
             // getRealBlock should return the block we care about so if its already in the list we know it is a double block and was already handled.
             if (blocks.contains(block)){
