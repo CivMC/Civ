@@ -221,10 +221,19 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	}
 
 	public boolean inField(Location loc){
-		if (((loc.getBlockX() - location.getX()) * (float)(loc.getBlockX() - location.getX()) + 
-				(loc.getBlockZ() - location.getZ()) * (float)(loc.getBlockZ() - location.getZ()) >= RADIUS_SQUARED)
-				|| (loc.getBlockY() <= location.getY())) {
-			return false;
+		if (Bastion.getConfigManager().squareField()) {
+			if (Math.abs(loc.getBlockX() - location.getBlockX()) > RADIUS || 
+					Math.abs(loc.getBlockZ() - location.getBlockZ()) > RADIUS ||
+					loc.getBlockY() < location.getBlockY()) {
+				return false;
+			}
+		}
+		else {
+			if (((loc.getBlockX() - location.getX()) * (float)(loc.getBlockX() - location.getX()) + 
+					(loc.getBlockZ() - location.getZ()) * (float)(loc.getBlockZ() - location.getZ()) >= RADIUS_SQUARED)
+					|| (loc.getBlockY() < location.getY())) {
+				return false;
+			}
 		}
 		return true;	
 	}

@@ -8,6 +8,8 @@ mysql:
   savesPerDay: 64
 BastionBlock:
   material: SPONGE
+  #If squarefield is set to wrong, the field will be a circle
+  squarefield: true
   effectRadius: 10
   startScaleFactor: 100
   finalScaleFactor: 0.2
@@ -18,6 +20,7 @@ BastionBlock:
   blocksToErode: 1
   EnderPearls:
     preventEnderPearl: true 
+    block_midair: false
     scaleFac: 1
     requireMaturity: true 
   
