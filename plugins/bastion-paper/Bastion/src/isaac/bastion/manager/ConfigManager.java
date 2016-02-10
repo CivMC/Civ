@@ -39,6 +39,7 @@ public class ConfigManager {
 	private double enderPearlErosionScale;
 	private boolean squareField;
 	private boolean blockMidAir;
+	private boolean includeBastionYLevel;
 	
 	static String file_name="config.yml";
 	
@@ -91,6 +92,7 @@ public class ConfigManager {
 		destroy=loadBool("BastionBlock.destroyOnRemove");
 		bastionBlocksToErode=loadInt("BastionBlock.blocksToErode");
 		squareField = loadBool("BastionBlock.squarefield");
+		includeBastionYLevel = loadBool("BastionBlock.includeYlevel");
 		
 		preventEnderPearl=loadBool("BastionBlock.EnderPearls.preventEnderPearl");
 		enderPearlBlockingRequiresMaturity=loadBool("BastionBlock.EnderPearls.requireMaturity");
@@ -110,6 +112,10 @@ public class ConfigManager {
 	}
 	public String getPrefix(){
 		return prefix;
+	}
+	
+	public boolean includeSameYLevel() {
+		return includeBastionYLevel;
 	}
 	
 	public String getUsername(){

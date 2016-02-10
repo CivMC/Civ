@@ -11,6 +11,7 @@ BastionBlock:
   #If squarefield is set to wrong, the field will be a circle
   squarefield: true
   effectRadius: 10
+  includeYlevel: true
   startScaleFactor: 100
   finalScaleFactor: 0.2
   warmUpTime: 86400000
