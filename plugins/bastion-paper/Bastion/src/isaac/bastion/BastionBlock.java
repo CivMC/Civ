@@ -221,14 +221,30 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock>
 	}
 
 	public boolean inField(Location loc){
-		if (((loc.getBlockX() - location.getX()) * (float)(loc.getBlockX() - location.getX()) + 
-				(loc.getBlockZ() - location.getZ()) * (float)(loc.getBlockZ() - location.getZ()) >= RADIUS_SQUARED)
-				|| (loc.getBlockY() <= location.getY())) {
-			return false;
+		if (Bastion.getConfigManager().squareField()) {
+			if (Math.abs(loc.getBlockX() - location.getBlockX()) > RADIUS || 
+					Math.abs(loc.getBlockZ() - location.getBlockZ()) > RADIUS ||
+					yLevelCheck(loc)) {
+				return false;
+			}
+		}
+		else {
+			if (((loc.getBlockX() - location.getX()) * (float)(loc.getBlockX() - location.getX()) + 
+					(loc.getBlockZ() - location.getZ()) * (float)(loc.getBlockZ() - location.getZ()) >= RADIUS_SQUARED)
+					|| yLevelCheck(loc)) {
+				return false;
+			}
 		}
 		return true;	
 	}
 	//checks if a player would be allowed to remove the Bastion block
+	
+	public boolean yLevelCheck(Location loc) {
+		if (Bastion.getConfigManager().includeSameYLevel()) {
+			return loc.getBlockY() < location.getY();
+		}
+		return loc.getBlockY() <= location.getY();
+	}
 
 	public boolean canRemove(Player player){
 

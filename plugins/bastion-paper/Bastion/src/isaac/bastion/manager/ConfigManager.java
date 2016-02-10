@@ -37,6 +37,9 @@ public class ConfigManager {
 	private boolean enderPearlBlockingRequiresMaturity;
 	private boolean destroy;
 	private double enderPearlErosionScale;
+	private boolean squareField;
+	private boolean blockMidAir;
+	private boolean includeBastionYLevel;
 	
 	static String file_name="config.yml";
 	
@@ -88,10 +91,13 @@ public class ConfigManager {
 		bastionBlockScaleTime=loadInt("BastionBlock.warmUpTime");
 		destroy=loadBool("BastionBlock.destroyOnRemove");
 		bastionBlocksToErode=loadInt("BastionBlock.blocksToErode");
+		squareField = loadBool("BastionBlock.squarefield");
+		includeBastionYLevel = loadBool("BastionBlock.includeYlevel");
 		
 		preventEnderPearl=loadBool("BastionBlock.EnderPearls.preventEnderPearl");
 		enderPearlBlockingRequiresMaturity=loadBool("BastionBlock.EnderPearls.requireMaturity");
 		enderPearlErosionScale=loadDouble("BastionBlock.EnderPearls.scaleFac");
+		blockMidAir = loadBool("BastionBlock.EnderPearls.block_midair");
 		
 	}
 	
@@ -108,6 +114,10 @@ public class ConfigManager {
 		return prefix;
 	}
 	
+	public boolean includeSameYLevel() {
+		return includeBastionYLevel;
+	}
+	
 	public String getUsername(){
 		return username;
 	}
@@ -120,6 +130,14 @@ public class ConfigManager {
 	
 	public Material getBastionBlockMaterial(){
 		return bastionBlockMaterial;
+	}
+	
+	public boolean squareField() {
+		return squareField;
+	}
+	
+	public boolean blockMidAir() {
+		return blockMidAir;
 	}
 	
 	public String getNeededMeta(){
