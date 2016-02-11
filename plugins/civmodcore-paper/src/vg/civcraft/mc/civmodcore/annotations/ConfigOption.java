@@ -85,7 +85,7 @@ public class ConfigOption {
             value instanceof String ? 
                 (value.equals("1") || ((String)value).equalsIgnoreCase("true")) : false);
       case Int:
-	    if (value instanceof Integer) {
+        if (value instanceof Integer) {
           return value;
         } else if (value instanceof String) {
           if (((String) value).isEmpty()) {
@@ -96,7 +96,7 @@ public class ConfigOption {
           } catch(Exception e) {
             return defaultValue;
           }
-		} else {
+	} else {
           return defaultValue;
         }
       case Double:
