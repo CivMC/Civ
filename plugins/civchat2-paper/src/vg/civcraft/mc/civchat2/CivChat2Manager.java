@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import vg.civcraft.mc.civchat2.database.DatabaseManager;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
@@ -253,7 +254,9 @@ public class CivChat2Manager {
 	 * @param chatMessage Message to send
 	 * @param recipients Players in range to receive the message
 	 */
-	public void broadcastMessage(Player sender, String chatMessage, Set<Player> recipients) {
+	public void broadcastMessage(AsyncPlayerChatEvent event, Set<Player> recipients) {
+		Player sender = event.getPlayer();
+		String chatMessage = event.getMessage();
 		int range = config.getChatRange();
 		int height = config.getYInc();	
 		Location location = sender.getLocation();
@@ -296,11 +299,15 @@ public class CivChat2Manager {
 						//reciever is in differnt world dont send
 						continue;
 					} else {
-						receiver.sendMessage(sb.append(color) 
+						if(event.getFormat().equals("<%1$s> %2$s")) {
+							event.setFormat(color + "%1$s: %2$s");
+						}
+						receiver.sendMessage(String.format(event.getFormat(), NameAPI.getCurrentName(sender.getUniqueId()), chatMessage));
+						/*receiver.sendMessage(sb.append(color) 
 												.append( NameAPI.getCurrentName(uuid)) 
 												.append(": ") 
 												.append( chatMessage)
-												.toString());
+												.toString());*/
 						sb.delete(0, sb.length());
 					}
 				}

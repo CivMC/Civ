@@ -117,7 +117,7 @@ public class CivChat2Listener implements Listener {
 		}
 		
 		CivChat2.debugmessage("PlayerChatEvent calling chatman.broadcastMessage()");
-		chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getRecipients());
+		chatman.broadcastMessage(asyncPlayerChatEvent, asyncPlayerChatEvent.getRecipients());
 	}
 	
 	
