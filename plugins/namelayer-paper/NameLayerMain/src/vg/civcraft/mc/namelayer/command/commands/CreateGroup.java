@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.group.GroupType;
@@ -35,6 +36,11 @@ public class CreateGroup extends PlayerCommandMiddle{
 		}
 		Player p = (Player) sender;
 		String name = args[0];
+		
+		if (NameLayerPlugin.getInstance().getGroupLimit() < gm.countGroups(p.getUniqueId()) + 1){
+			p.sendMessage(ChatColor.RED + "You cannot create any more groups! Please delete an un-needed group before making more.");
+			return true;
+		}
 		
 		//enforce regulations on the name
 		if (name.length() > 32) {
@@ -90,6 +96,8 @@ public class CreateGroup extends PlayerCommandMiddle{
 		int id = gm.createGroup(g);
 		g.setGroupId(id);
 		p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
+		if (NameLayerPlugin.getInstance().getGroupLimit() == gm.countGroups(p.getUniqueId()))
+			p.sendMessage(ChatColor.YELLOW + "You have reached the group limit with " + NameLayerPlugin.getInstance().getGroupLimit() + " groups! Please delete un-needed groups if you wish to create more.");
 		return true;
 	}
 

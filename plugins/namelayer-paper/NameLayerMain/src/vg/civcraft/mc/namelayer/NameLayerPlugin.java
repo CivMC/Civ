@@ -28,14 +28,19 @@ public class NameLayerPlugin extends ACivMod{
 	private CommandHandler handle;
 	private static Database db;
 	private static boolean loadGroups = true;
+	private static int groupLimit = 10;
 	private Config config;
 	
-	@CivConfig(name = "groups.enable", def = "true", type = CivConfigType.Bool)
+	@CivConfigs({
+		@CivConfig(name = "groups.enable", def = "true", type = CivConfigType.Bool),
+		@CivConfig(name = "groups.grouplimit", def = "10", type = CivConfigType.Int)
+	})
 	@Override
 	public void onEnable() {
 		super.onEnable(); // Need to call this to properly initialize this mod
 		config = GetConfig();
 		loadGroups = config.get("groups.enable").getBool();
+		groupLimit = config.get("groups.grouplimit").getInt();
 		instance = this;
 		loadDatabases();
 	    ClassHandler.Initialize(Bukkit.getServer());
@@ -171,5 +176,9 @@ public class NameLayerPlugin extends ACivMod{
 
 	public static boolean isMercuryEnabled() {
 		return Bukkit.getPluginManager().isPluginEnabled("Mercury");
+	}
+	
+	public int getGroupLimit(){
+		return groupLimit;
 	}
 }
