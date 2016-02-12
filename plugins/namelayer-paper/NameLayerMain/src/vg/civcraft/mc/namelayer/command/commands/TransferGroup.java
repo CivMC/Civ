@@ -65,6 +65,11 @@ public class TransferGroup extends PlayerCommandMiddle{
 			return true;
 		}
 		
+		if (NameLayerPlugin.getInstance().getGroupLimit() < gm.countGroups(oPlayer) + 1){
+			p.sendMessage(ChatColor.RED + "This cannot receive the group! This player has already reached the group limit count.");
+			return true;
+		}
+		
 		g.addMember(oPlayer, PlayerType.OWNER);
 		g.setOwner(oPlayer);
 		checkRecacheGroup(g);
