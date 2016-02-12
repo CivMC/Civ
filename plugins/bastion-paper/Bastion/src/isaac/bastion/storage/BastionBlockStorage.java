@@ -14,21 +14,37 @@ import org.bukkit.World;
 
 public class BastionBlockStorage {
 	public static Database db;
-	static public String bationBlocksTable;
+	static public String bastionBlocksTable;
 	private PreparedStatement getAllBastionsForWorld;
+	private static boolean tablesCreated = false;
 	public BastionBlockStorage(){
 		ConfigManager config=Bastion.getConfigManager();
 		db=new Database(config.getHost(), config.getPort(), config.getDatabase(),config.getUsername(),config.getPassword(),config.getPrefix(), Bastion.getPlugin().getLogger());
-		bationBlocksTable="bastion_"+"blocks";
+		bastionBlocksTable="bastion_blocks";
 		db.connect();
 		if (db.isConnected()) {
 			createTables();
-			getAllBastionsForWorld = db.prepareStatement("SELECT * FROM "+bationBlocksTable+" WHERE loc_world=?;");
+			tablesCreated = true;
+			prepareStatements();
+			getAllBastionsForWorld = db.prepareStatement("SELECT * FROM "+bastionBlocksTable+" WHERE loc_world=?;");
 		}
 	}
+	
+	public static PreparedStatement insertBastion;
+	public static PreparedStatement updateBastion;
+	public static PreparedStatement deleteBastion;
+	
+	public static void prepareStatements() {
+		if (tablesCreated) {
+			insertBastion = db.prepareStatement("INSERT INTO "+BastionBlockStorage.bastionBlocksTable+" (loc_x,loc_y,loc_z,loc_world,placed,fraction) VALUES(?,?,?,?,?,?);");
+			updateBastion = db.prepareStatement("UPDATE "+BastionBlockStorage.bastionBlocksTable+" set placed=?,fraction=? where bastion_id=?;");
+			deleteBastion = db.prepareStatement("DELETE FROM "+BastionBlockStorage.bastionBlocksTable+" WHERE bastion_id=?;");
+		}
+	}
+	
 	public void createTables(){
 		//Database only needs to store the loc of each block for now
-		String toExicute="CREATE TABLE IF NOT EXISTS "+bationBlocksTable+" ("
+		String toExicute="CREATE TABLE IF NOT EXISTS "+bastionBlocksTable+" ("
 				+ "bastion_id int(10)  unsigned NOT NULL AUTO_INCREMENT,"
 				+ "loc_x int(10), "
 				+ "loc_y int(10), "

@@ -19,24 +19,24 @@ public class EnderPearlListener implements Listener {
 	EnderPearlManager pearlMang;
 
 	public EnderPearlListener(){
-		server=Bastion.getPlugin().getServer();
-		manager=Bastion.getBastionManager();
+		server = Bastion.getPlugin().getServer();
+		manager = Bastion.getBastionManager();
 		
-		pearlMang=new EnderPearlManager();
+		pearlMang = new EnderPearlManager();
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
 	public void handleEnderPearlLanded(PlayerTeleportEvent event){
-		if(event.isCancelled())
-			return;
 		manager.handleEnderPearlLanded(event);
 	}
-	@EventHandler(priority = EventPriority.LOWEST)
+	
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
 	public void onProjectileThrownEvent(ProjectileLaunchEvent event) {
-		if(event.isCancelled() || !Bastion.getConfigManager().blockMidAir())
+		if (!Bastion.getConfigManager().blockMidAir()) {
 			return;
-		if(event.getEntity() instanceof EnderPearl) {
-			EnderPearl pearl=(EnderPearl) event.getEntity();
+		}
+		if (event.getEntity() instanceof EnderPearl) {
+			EnderPearl pearl = (EnderPearl) event.getEntity();
 			pearlMang.handlePearlLaunched(pearl);
 		}
 	}

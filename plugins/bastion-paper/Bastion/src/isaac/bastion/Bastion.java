@@ -1,8 +1,5 @@
 package isaac.bastion;
 
-
-
-
 import java.util.logging.Level;
 
 import isaac.bastion.commands.BastionCommandManager;
@@ -19,18 +16,13 @@ import isaac.bastion.storage.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-
-
-
-public final class Bastion extends JavaPlugin
-{
+public final class Bastion extends JavaPlugin {
 	private static BastionListener listener; ///Main listener
 	private static Bastion plugin; ///Holds the plugin
 	private static BastionBlockManager bastionManager; ///Most of the direct interaction with Bastions
 	private static ConfigManager config; ///Holds the configuration
 	
-	public void onEnable()
-	{
+	public void onEnable() 	{
 		//set the static variables
 		plugin = this;
 		config = new ConfigManager();
@@ -46,12 +38,12 @@ public final class Bastion extends JavaPlugin
 		registerCommands();
 	}
 	
-	//What the name says
-	private void registerListeners(){
+	private void registerListeners() {
 		getServer().getPluginManager().registerEvents(listener, this);
 		getServer().getPluginManager().registerEvents(new CommandListener(), this);
-		if(config.getEnderPearlsBlocked()) //currently everything to do with blocking pearls is part of EnderPearlListener. Needs changed
+		if(config.getEnderPearlsBlocked()) { //currently everything to do with blocking pearls is part of EnderPearlListener. Needs changed
 			getServer().getPluginManager().registerEvents(new EnderPearlListener(), this);
+		}
 	}
 	
 	
@@ -67,34 +59,30 @@ public final class Bastion extends JavaPlugin
 		getCommand("bsm").setExecutor(new ModeChangeCommand(Mode.MATURE));
 	}
 
-	public void onDisable()
-	{
-		if(bastionManager==null)
-			return;
-		bastionManager.close();//saves all Bastion Blocks
+	public void onDisable() {
+		if(bastionManager != null) {
+			bastionManager.close(); //saves all Bastion Blocks
+		}
 	}
 
-	public static BastionBlockManager getBastionManager()
-	{
+	public static BastionBlockManager getBastionManager() {
 		return bastionManager;
 	}
-	public static Bastion getPlugin()
-	{
+	public static Bastion getPlugin() {
 		return plugin;
 	}
-	public static BastionListener getBastionBlockListener()
-	{
+	public static BastionListener getBastionBlockListener() {
 		return listener;
 	}
-	public static ConfigManager getConfigManager(){
+	public static ConfigManager getConfigManager() {
 		return config;
 	}
 	
 	public void removeGhostBlocks(){
 		Database db = BastionBlockStorage.db;
 		Bukkit.getLogger().log(Level.INFO, "Bastion is beginning ghost block check.");
-		for (BastionBlock block: bastionManager.set){
-			if (block.getLocation().getBlock().getType() != config.getBastionBlockMaterial()){
+		for (BastionBlock block: bastionManager.set) {
+			if (block.getLocation().getBlock().getType() != config.getBastionBlockMaterial()) {
 				Bukkit.getLogger().log(Level.INFO, "Bastion removed a block at: " + block.getLocation() + ". If it is still"
 						+ " there, there is a problem...");
 				block.delete(db);

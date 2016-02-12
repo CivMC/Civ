@@ -77,10 +77,11 @@ public class Database {
         }
         try {
             connection = DriverManager.getConnection(jdbc);
+            prepareStatements();
             this.logger.log(Level.INFO, "Connected to database!");
             return true;
         } catch (SQLException ex) { //Error handling below:
-            this.logger.log(Level.SEVERE, "Could not connnect to the database! Because "+ex.getMessage());
+            this.logger.log(Level.SEVERE, "Could not connnect to the database! Because ", ex);
             Bukkit.getPluginManager().disablePlugin(Bastion.getPlugin());
             return false;
         }
@@ -117,6 +118,13 @@ public class Database {
     }
 
     /**
+     * Convenience aggregator for all storage types that leverage prepared statements.
+     */
+    private void prepareStatements() {
+    	BastionBlockStorage.prepareStatements();
+    }
+    
+    /**
      * Prepare the SQL statements
      *
      * @return PreparedStatement
@@ -139,7 +147,7 @@ public class Database {
     public void execute(String sql) {
         try {
             if (isConnected()) {
-                connection.prepareStatement(sql).executeUpdate();
+                connection.createStatement().executeUpdate(sql);
             } else {
                 connect();
                 execute(sql);
@@ -156,7 +164,7 @@ public class Database {
      */
     public void executeLoud(String sql) throws java.sql.SQLException {
         if (isConnected()) {
-            connection.prepareStatement(sql).executeUpdate();
+            connection.createStatement().executeUpdate(sql);
         } else {
             connect();
             execute(sql);
@@ -171,7 +179,7 @@ public class Database {
     public void silentExecute(String sql) {
         try {
             if (isConnected()) {
-                connection.prepareStatement(sql).executeUpdate();
+                connection.createStatement().executeUpdate(sql);
             } else {
                 connect();
                 execute(sql);
