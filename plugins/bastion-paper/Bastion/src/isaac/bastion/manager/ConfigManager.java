@@ -44,27 +44,11 @@ public class ConfigManager {
 	static String file_name="config.yml";
 	
 	public ConfigManager(){
+		Bastion.getPlugin().saveDefaultConfig();
+		Bastion.getPlugin().reloadConfig();
 		config=Bastion.getPlugin().getConfig();
-		main_config=new File(Bastion.getPlugin().getDataFolder()+File.pathSeparator+file_name);
-		config.options().copyDefaults(true);
-		if(main_config.exists()){
-			try {
-				config.load(main_config);
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvalidConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
 		
 		load();
-		Bastion.getPlugin().saveConfig();
 	}
 	
 	private void load(){

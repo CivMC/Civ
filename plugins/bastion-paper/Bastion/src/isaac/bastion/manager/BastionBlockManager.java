@@ -60,11 +60,27 @@ public class BastionBlockManager {
 	
 	// TODO why is origin and result passed if not used
 	public void erodeFromPlace(Block origin, Set<Block> result, String player, Set<BastionBlock> blocking) {
+		erodeFromAction(player, blocking, true);
+	}
+	
+	// TODO: Why is loc passed if not used.
+	public void erodeFromTeleport(Location loc, String player, Set<BastionBlock> blocking){
+		erodeFromAction(player, blocking, false);
+	}
+
+	/**
+	 * Common handler for erosion.
+	 */
+	private void erodeFromAction(String player, Set<BastionBlock> blocking, boolean fromBlock) {
 		if (onCooldown(player)) return;
 		
 		if (Bastion.getConfigManager().getBastionBlocksToErode() < 0) {
 			for (BastionBlock bastion : blocking){
-				bastion.erode(bastion.erosionFromBlock());
+				if (fromBlock) {
+					bastion.erode(bastion.erosionFromBlock());
+				} else {
+					bastion.erode(bastion.erosionFromPearl());
+				}
 			}
 		} else {
 			// TODO: Batch!
@@ -72,21 +88,14 @@ public class BastionBlockManager {
 			for (int i = 0;i < ordered.size() && (i < Bastion.getConfigManager().getBastionBlocksToErode());++i){
 				int erode = generator.nextInt(ordered.size()); 
 				BastionBlock toErode = ordered.get(erode);
-				toErode.erode(toErode.erosionFromBlock());
+				if (fromBlock) {
+					toErode.erode(toErode.erosionFromBlock());
+				} else {
+					toErode.erode(toErode.erosionFromPearl());
+				}
 				ordered.remove(erode);
 			}
 		}
-	}
-	
-	// TODO: Why is loc passed if not used.
-	// TODO: Why does teleport only erode a single bastion at a time?
-	public void erodeFromTeleport(Location loc, String player, Set<BastionBlock> blocking){
-		if(onCooldown(player)) return;
-		
-		List<BastionBlock> ordered = new LinkedList<BastionBlock>(blocking);
-		
-		BastionBlock toErode = ordered.get(generator.nextInt(ordered.size()));
-		toErode.erode(toErode.erosionFromPearl());
 	}
 	
 	public boolean onCooldown(String player){
@@ -386,7 +395,7 @@ public class BastionBlockManager {
 		}
 
 		if (!Bastion.getConfigManager().blockMidAir()) { // Do we block launches or mid-air?
-			return;
+			return; // only block landings as above.
 		}
 		
 		blocking = this.getBlockingBastions(event.getFrom(), event.getPlayer());
