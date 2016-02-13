@@ -131,6 +131,10 @@ default_fuel:
 
 default_fuel_consumption_intervall: 2s
 
+#default_menu_factory allows you to specify the menu for which factory will be opened when a player runs /fm without 
+#specifying a factory. If this is not specified and the player runs "/fm" one will be picked randomly.
+default_menu_factory:
+
 #As a debug mode or to prevent additional information when tracking down bugs this plugin can log all of its inventory 
 #interactions and the full inventories at that point, if desired. If this option is not specified it will default to true
 

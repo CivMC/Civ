@@ -26,7 +26,7 @@ public class FactoryMod extends ACivMod {
 		MultiBlockStructure.initializeBlockFaceMap();
 		ConfigParser cp = new ConfigParser(this);
 		manager = cp.parse();
-		mb = new MenuBuilder();
+		mb = new MenuBuilder(cp.getDefaultMenuFactory());
 		manager.loadFactories();
 		registerListeners();
 		FurnCraftChestInteractionManager.prep();

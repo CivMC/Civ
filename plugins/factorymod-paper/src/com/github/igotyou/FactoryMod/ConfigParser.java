@@ -44,6 +44,7 @@ public class ConfigParser {
 	private double defaultReturnRate;
 	private HashMap<String, IFactoryEgg> upgradeEggs;
 	private HashMap<IFactoryEgg, List<String>> recipeLists;
+	private String defaultMenuFactory;
 
 	public ConfigParser(FactoryMod plugin) {
 		this.plugin = plugin;
@@ -90,6 +91,7 @@ public class ConfigParser {
 		int redstoneRecipeChange = config.getInt("redstone_recipe_change", 2);
 		long gracePeriod = 50 * parseTime(config
 				.getString("break_grace_period"));
+		defaultMenuFactory = config.getString("default_menu_factory");
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
 				citadelEnabled, redstonePowerOn, redstoneRecipeChange,
 				logInventories, gracePeriod);
@@ -493,5 +495,9 @@ public class ConfigParser {
 				((FurnCraftChestEgg) entry.getKey()).setRecipes(recipeList);
 			}
 		}
+	}
+	
+	public String getDefaultMenuFactory() {
+		return defaultMenuFactory;
 	}
 }
