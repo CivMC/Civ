@@ -33,7 +33,6 @@ import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
 import com.github.igotyou.FactoryMod.utility.FactoryGarbageCollector;
-import com.google.common.collect.Lists;
 
 public class ConfigParser {
 	private FactoryMod plugin;
@@ -482,7 +481,14 @@ public class ConfigParser {
 			if (entry.getKey() instanceof FurnCraftChestEgg) {
 				List<IRecipe> recipeList = new LinkedList<IRecipe>();
 				for (String recipeName : entry.getValue()) {
-					recipeList.add(recipes.get(recipeName));
+					IRecipe rec = recipes.get(recipeName);
+					if (rec != null) {
+						recipeList.add(recipes.get(recipeName));
+					}
+					else {
+						plugin.severe("Could not find specified recipe " + recipeName 
+								+ " for factory " + entry.getKey().getName());
+					}
 				}
 				((FurnCraftChestEgg) entry.getKey()).setRecipes(recipeList);
 			}
