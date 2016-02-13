@@ -497,6 +497,9 @@ public class ItemMap {
 	private static ItemStack createMapConformCopy(ItemStack is) {
 		ItemStack copy = is.clone();
 		copy.setAmount(1);
+		ItemStack s = CraftItemStack.asNMSCopy(copy);
+		s.setRepairCost(0);
+		copy = CraftItemStack.asBukkitCopy(s);
 		return copy;
 	}
 }
