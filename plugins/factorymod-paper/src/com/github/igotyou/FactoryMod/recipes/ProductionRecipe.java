@@ -11,7 +11,6 @@ import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.factories.Factory;
-import com.github.igotyou.FactoryMod.utility.InventoryHandling;
 
 /**
  * Consumes a set of materials from a container and outputs another set of
