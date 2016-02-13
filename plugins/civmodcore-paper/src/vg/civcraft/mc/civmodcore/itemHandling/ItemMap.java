@@ -478,6 +478,51 @@ public class ItemMap {
 		return instanceCopy.getItemStackRepresentation().size() <= i.getSize();
 	}
 
+	/**
+	 * Attempts to remove the content of this ItemMap from the given inventory.
+	 * If it fails to find all the required items it will stop and return false
+	 * 
+	 * @param i
+	 *            Inventory to remove from
+	 * @return True if everything was successfully removed, false if not
+	 */
+	public boolean removeSafelyFrom(Inventory i) {
+		for (ItemStack is : getItemStackRepresentation()) {
+			if (isTaggedItem(is.getType())) {
+				ItemMap currentMap = new ItemMap(is);
+				boolean taken = false;
+				for (ItemStack inventoryStack : i.getContents()) {
+					if (inventoryStack == null) {
+						continue;
+					}
+					if (inventoryStack.getType() == is.getType()) {
+						ItemMap compareMap = new ItemMap(inventoryStack);
+						if (compareMap.hashCode() == currentMap.hashCode()) {
+							if (i.removeItem(inventoryStack).values().size() != 0) {
+								return false;
+							} else {
+								taken = true;
+								break;
+							}
+						}
+					}
+				}
+				if (!taken) {
+					return false;
+				}
+			} else {
+				if (i.removeItem(is).values().size() != 0) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private static boolean isTaggedItem(Material m) {
+		return m.getMaxStackSize() == 1;
+	}
+
 	public boolean equals(Object o) {
 		if (o instanceof ItemMap) {
 			ItemMap im = (ItemMap) o;
@@ -498,7 +543,8 @@ public class ItemMap {
 	private static ItemStack createMapConformCopy(ItemStack is) {
 		ItemStack copy = is.clone();
 		copy.setAmount(1);
-		net.minecraft.server.v1_8_R3.ItemStack s = CraftItemStack.asNMSCopy(copy);
+		net.minecraft.server.v1_8_R3.ItemStack s = CraftItemStack
+				.asNMSCopy(copy);
 		s.setRepairCost(0);
 		copy = CraftItemStack.asBukkitCopy(s);
 		return copy;
