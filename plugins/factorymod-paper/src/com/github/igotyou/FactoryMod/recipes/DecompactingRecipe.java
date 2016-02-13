@@ -12,6 +12,7 @@ import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.factories.Factory;
+
 /**
  * Used to decompact itemstacks, which means a single item with compacted lore
  * is turned into a whole stack without lore. This reverses the functionality of
@@ -58,14 +59,12 @@ public class DecompactingRecipe extends InputRecipe {
 						// gives a copy
 						decompatedStack.setItemMeta(im);
 						if (new ItemMap(decompatedStack).fitsIn(i)) {
-							for (ItemStack toRemove : input
-									.getItemStackRepresentation()) {
-								i.removeItem(toRemove);
+							if (input.removeSafelyFrom(i)) {
+								ItemStack removeLoredStack = is.clone();
+								removeLoredStack.setAmount(1);
+								i.removeItem(removeLoredStack);
+								i.addItem(decompatedStack);
 							}
-							ItemStack removeLoredStack = is.clone();
-							removeLoredStack.setAmount(1);
-							i.removeItem(removeLoredStack);
-							i.addItem(decompatedStack);
 						}
 						break;
 					}
@@ -111,7 +110,7 @@ public class DecompactingRecipe extends InputRecipe {
 		if (i == null) {
 			result.add(new ItemStack(Material.STONE, 64));
 			return result;
-		}		
+		}
 		for (ItemStack is : i.getContents()) {
 			if (is != null) {
 				ItemMeta im = is.getItemMeta();

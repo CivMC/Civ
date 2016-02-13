@@ -11,6 +11,7 @@ import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.utility.InventoryHandling;
 
 /**
  * Consumes a set of materials from a container and outputs another set of
@@ -65,11 +66,10 @@ public class ProductionRecipe extends InputRecipe {
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd = output.clone();
 		if (toRemove.isContainedIn(i)) {
-			for (ItemStack is : toRemove.getItemStackRepresentation()) {
-				i.removeItem(is);
-			}
-			for (ItemStack is : toAdd.getItemStackRepresentation()) {
-				i.addItem(is);
+			if (toRemove.removeSafelyFrom(i)) {
+				for(ItemStack is: toAdd.getItemStackRepresentation()) {
+					i.addItem(is);
+				}
 			}
 		}
 		logAfterRecipeRun(i, f);

@@ -37,11 +37,10 @@ public class PylonRecipe extends InputRecipe {
 		if (!actualOutput.fitsIn(i)) {
 			return;
 		}
-		for (ItemStack is : input.getItemStackRepresentation()) {
-			i.removeItem(is);
-		}
-		for (ItemStack is : actualOutput.getItemStackRepresentation()) {
-			i.addItem(is);
+		if (input.removeSafelyFrom(i)) {
+			for (ItemStack is : actualOutput.getItemStackRepresentation()) {
+				i.addItem(is);
+			}
 		}
 	}
 

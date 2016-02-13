@@ -29,13 +29,12 @@ public class Upgraderecipe extends InputRecipe {
 	public void applyEffect(Inventory i, Factory f) {
 		logAfterRecipeRun(i, f);
 		if (input.isContainedIn(i) && f instanceof FurnCraftChestFactory) {
-			for (ItemStack is : input.getItemStackRepresentation()) {
-				i.removeItem(is);
+			if (input.removeSafelyFrom(i)) {
+				FurnCraftChestEgg e = (FurnCraftChestEgg) egg;
+				((FurnCraftChestFactory) f).upgrade(e.getName(),
+						e.getRecipes(), e.getFuel(),
+						e.getFuelConsumptionIntervall(), e.getUpdateTime());
 			}
-			FurnCraftChestEgg e = (FurnCraftChestEgg) egg;
-			((FurnCraftChestFactory) f).upgrade(e.getName(), e.getRecipes(),
-					e.getFuel(), e.getFuelConsumptionIntervall(),
-					e.getUpdateTime());
 		}
 		logAfterRecipeRun(i, f);
 	}

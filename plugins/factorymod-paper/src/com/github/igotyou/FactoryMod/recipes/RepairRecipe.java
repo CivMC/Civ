@@ -46,15 +46,14 @@ public class RepairRecipe extends InputRecipe {
 	public void applyEffect(Inventory i, Factory f) {
 		logBeforeRecipeRun(i, f);
 		if (enoughMaterialAvailable(i)) {
-			for (ItemStack is : input.getItemStackRepresentation()) {
-				i.removeItem(is);
+			if (input.removeSafelyFrom(i)) {
+				((PercentageHealthRepairManager) (f.getRepairManager()))
+						.repair(healthPerRun);
+				LoggingUtils.log(((PercentageHealthRepairManager) (f
+						.getRepairManager())).getHealth()
+						+ " for "
+						+ f.getLogData() + " after repairing");
 			}
-			((PercentageHealthRepairManager) (f.getRepairManager()))
-					.repair(healthPerRun);
-			LoggingUtils.log(((PercentageHealthRepairManager) (f
-					.getRepairManager())).getHealth()
-					+ " for "
-					+ f.getLogData() + " after repairing");
 		}
 		logAfterRecipeRun(i, f);
 	}

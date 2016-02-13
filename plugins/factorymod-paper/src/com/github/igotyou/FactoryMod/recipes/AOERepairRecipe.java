@@ -149,19 +149,21 @@ public class AOERepairRecipe extends InputRecipe {
 				int rem = Math.min(essenceCount, diff / repairPerEssence);
 				ItemStack remStack = essence.clone();
 				remStack.setAmount(rem);
+				ItemMap remMap = new ItemMap(remStack);
 				Inventory targetInv = ((InventoryHolder) (fac.getChest()
 						.getState())).getInventory();
-				if (new ItemMap(remStack).fitsIn(targetInv)) {
-					i.removeItem(remStack);
-					targetInv.addItem(remStack);
-					for (IRecipe rec : fac.getRecipes()) {
-						if (rec instanceof RepairRecipe) {
-							fac.setRecipe(rec);
-							break;
+				if (remMap.fitsIn(targetInv)) {
+					if (remMap.removeSafelyFrom(i)) {
+						targetInv.addItem(remStack);
+						for (IRecipe rec : fac.getRecipes()) {
+							if (rec instanceof RepairRecipe) {
+								fac.setRecipe(rec);
+								break;
+							}
 						}
+						fac.attemptToActivate(null);
+						break;
 					}
-					fac.attemptToActivate(null);
-					break;
 				}
 			}
 			if (essenceCount <= 0) {
