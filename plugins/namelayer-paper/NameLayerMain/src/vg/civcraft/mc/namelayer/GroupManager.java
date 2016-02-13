@@ -259,6 +259,10 @@ public class GroupManager{
 				groupsById.remove(x.getGroupId());
 		}
 	}
+	
+	public int countGroups(UUID uuid){
+		return groupManagerDao.countGroups(uuid);
+	}
 
 	/**
 	 * In ascending order

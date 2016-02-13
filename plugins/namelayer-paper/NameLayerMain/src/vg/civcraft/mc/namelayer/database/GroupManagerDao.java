@@ -296,7 +296,7 @@ public class GroupManagerDao {
 	
 	private PreparedStatement mergeGroup;
 	
-	private PreparedStatement countGroups;
+	private PreparedStatement countGroups, countGroupsFromUUID;
 	
 	private PreparedStatement addAutoAcceptGroup, getAutoAcceptGroup, removeAutoAcceptGroup;
 	
@@ -366,6 +366,8 @@ public class GroupManagerDao {
 				+ "where p.group_id = (select g.group_id from faction_id g where g.group_name = ? limit 1) and p.role = ?");
 		
 		countGroups = db.prepareStatement("select count(*) as count from faction");
+		
+		countGroupsFromUUID = db.prepareStatement("select count(*) as count from faction where founder = ?");
 		
 		mergeGroup = db.prepareStatement("call mergeintogroup(?,?)");
 		
@@ -738,6 +740,20 @@ public class GroupManagerDao {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+	
+	public synchronized int countGroups(UUID uuid){
+		NameLayerPlugin.reconnectAndReintializeStatements();
+		try{
+			countGroupsFromUUID.setString(1, uuid.toString());
+			ResultSet set = countGroupsFromUUID.executeQuery();
+			return set.next() ? set.getInt("count") : 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+		
 	}
 	
 	public synchronized void mergeGroup(String groupName, String toMerge){

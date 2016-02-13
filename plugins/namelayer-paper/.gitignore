@@ -1,1 +1,8 @@
 /bin
+/target
+/NameLayerMain/dependency-reduced-pom.xml
+/NameLayerMain/target
+/NameLayerBungee/target
+/NameLayer1_8_R3/target
+/NameLayer1_8_R2/target
+/NameLayer1_8_R1/target
