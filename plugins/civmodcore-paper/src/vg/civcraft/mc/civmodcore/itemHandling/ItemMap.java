@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -497,7 +498,7 @@ public class ItemMap {
 	private static ItemStack createMapConformCopy(ItemStack is) {
 		ItemStack copy = is.clone();
 		copy.setAmount(1);
-		ItemStack s = CraftItemStack.asNMSCopy(copy);
+		net.minecraft.server.v1_8_R3.ItemStack s = CraftItemStack.asNMSCopy(copy);
 		s.setRepairCost(0);
 		copy = CraftItemStack.asBukkitCopy(s);
 		return copy;
