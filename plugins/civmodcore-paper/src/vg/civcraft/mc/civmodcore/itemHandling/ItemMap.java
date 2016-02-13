@@ -6,8 +6,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
@@ -89,6 +91,9 @@ public class ItemMap {
 	public void addItemStack(ItemStack input) {
 		if (input != null) {
 			ItemStack is = createMapConformCopy(input);
+			if (is == null) {
+				return;
+			}
 			Integer i;
 			if ((i = items.get(is)) != null) {
 				items.put(is, i + input.getAmount());
@@ -110,6 +115,9 @@ public class ItemMap {
 	 */
 	public void removeItemStack(ItemStack input) {
 		ItemStack is = createMapConformCopy(input);
+		if (is == null) {
+			return;
+		}
 		Integer value = items.get(is);
 		if (value != null) {
 			int newVal = value - input.getAmount();
@@ -129,7 +137,10 @@ public class ItemMap {
 	 *            ItemStack to remove
 	 */
 	public void removeItemStackCompletly(ItemStack input) {
-		items.remove(createMapConformCopy(input));
+		ItemStack is = createMapConformCopy(input);
+		if (is != null) {
+			items.remove(is);
+		}
 	}
 
 	public int hashCode() {
@@ -193,6 +204,9 @@ public class ItemMap {
 	 */
 	public void addItemAmount(ItemStack input, int amount) {
 		ItemStack copy = createMapConformCopy(input);
+		if (copy == null) {
+			return;
+		}
 		copy.setAmount(amount);
 		addItemStack(copy);
 	}
@@ -545,6 +559,15 @@ public class ItemMap {
 		copy.setAmount(1);
 		net.minecraft.server.v1_8_R3.ItemStack s = CraftItemStack
 				.asNMSCopy(copy);
+		if (s == null) {
+			Bukkit.getServer()
+					.getLogger()
+					.log(Level.SEVERE,
+							"Attempted to create map conform copy of "
+									+ copy.toString()
+									+ ", but couldn't because this item can't be held in inventories since Minecraft 1.8");
+			return null;
+		}
 		s.setRepairCost(0);
 		copy = CraftItemStack.asBukkitCopy(s);
 		return copy;
