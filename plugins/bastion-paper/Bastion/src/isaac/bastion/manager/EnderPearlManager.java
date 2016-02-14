@@ -25,60 +25,60 @@ import org.bukkit.util.Vector;
 import com.untamedears.humbug.CustomNMSEntityEnderPearl;
 
 public class EnderPearlManager {
-	public static final int MAX_TELEPORT=800;
+	public static final int MAX_TELEPORT = 800;
 	private BastionBlockSet bastions;
 	
 	private FlightTask task;
 	
-	public EnderPearlManager(){
+	public EnderPearlManager() {
 		bastions=Bastion.getBastionManager().set;
 
 		task = new FlightTask();
 	}
-	public void handlePearlLaunched(EnderPearl pearl){
+	public void handlePearlLaunched(EnderPearl pearl) {
 		getBlocking(pearl);
 	}
-	private void getBlocking(EnderPearl pearl){
+	private void getBlocking(EnderPearl pearl) {
 		double gravity=0.03F;
 		try {
-		if(pearl instanceof CustomNMSEntityEnderPearl)
-			gravity=((CustomNMSEntityEnderPearl)pearl).y_adjust_;
-		else
-			Bastion.getPlugin().getLogger().info("Humbug not found");
-		
-		} 
-		catch(NoClassDefFoundError e ){
+			if (pearl instanceof CustomNMSEntityEnderPearl) {
+				gravity = ((CustomNMSEntityEnderPearl) pearl ).y_adjust_;
+			} else {
+				Bastion.getPlugin().getLogger().info("Humbug not found");
+			}
+		} catch(NoClassDefFoundError e ) {
 			Bastion.getPlugin().getLogger().info("Humbug not found");
 		}
 
-		Vector speed=pearl.getVelocity();
-		Vector twoDSpeed=speed.clone();
+		Vector speed = pearl.getVelocity();
+		Vector twoDSpeed = speed.clone();
 		twoDSpeed.setY(0);
 
-		double horizontalSpeed=getLengthSigned(twoDSpeed);
-		double verticalSpeed=speed.getY();
+		double horizontalSpeed = getLengthSigned(twoDSpeed);
+		double verticalSpeed = speed.getY();
 
-		Location loc=pearl.getLocation();
+		Location loc = pearl.getLocation();
 
-		double maxTicks=getMaxTicks(verticalSpeed,loc.getY(),-gravity);
-		double maxDistance=getMaxDistance(horizontalSpeed,maxTicks);
+		double maxTicks = getMaxTicks(verticalSpeed, loc.getY(), -gravity);
+		double maxDistance = getMaxDistance(horizontalSpeed, maxTicks);
 
 
 		//check if it has any possibility of going through a bastion 
-		if(!(maxDistance>Bastion.getConfigManager().getBastionBlockEffectRadius()/2||maxDistance<-1)){
+		if (!(maxDistance > Bastion.getConfigManager().getBastionBlockEffectRadius() / 2 
+				|| maxDistance < -1)) {
 			return;
 		}
 		
 		
-		Player threw=null;
-		if(pearl.getShooter() instanceof Player){
-			threw=(Player) pearl.getShooter();
+		Player threw = null;
+		if (pearl.getShooter() instanceof Player) {
+			threw = (Player) pearl.getShooter();
 		}
 
 		Set<BastionBlock> possible = bastions.getPossibleTeleportBlocking(pearl.getLocation(), maxDistance); //all the bastion blocks within range of the pearl
 
-		//no need to do anything if there aren't any bastions to run into.
-		if(possible.isEmpty()){
+		// no need to do anything if there aren't any bastions to run into.
+		if (possible.isEmpty()) {
 			return;
 		}
 

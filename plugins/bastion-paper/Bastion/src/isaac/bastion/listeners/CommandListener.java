@@ -29,7 +29,7 @@ public class CommandListener implements Listener{
 	
 	@EventHandler(ignoreCancelled=true)
 	public void clicked(PlayerInteractEvent event){
-		if (event.getAction()!=Action.RIGHT_CLICK_BLOCK) {
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
 
@@ -83,14 +83,14 @@ public class CommandListener implements Listener{
 
 			if (reinforcement.isBypassable(player)) {
 				if (((PlayerReinforcement) reinforcement).getGroup() instanceof PublicGroup) {
-					player.sendMessage(ChatColor.RED + "Bastion's cannot be reinforced under a PublicGroup.");
+					player.sendMessage(ChatColor.RED + "Bastions cannot be reinforced under a public group.");
 				} else{
 					Bastion.getBastionManager().addBastion(block.getLocation(), reinforcement);
 					player.sendMessage(ChatColor.GREEN + "Bastion block created");
 					PlayersStates.touchPlayer(player);
 				}
 			} else{
-				player.sendMessage(ChatColor.RED + "You don't have permissions");
+				player.sendMessage(ChatColor.RED + "You don't have the right permission");
 			}
 		}
 	}

@@ -74,10 +74,10 @@ public final class BastionListener implements Listener {
 			PlayerReinforcement rein = (PlayerReinforcement) event.getReinforcement();
 			if (rein.getGroup() instanceof PublicGroup) {
 				event.setCancelled(true);
-				event.getPlayer().sendMessage(ChatColor.GREEN + "Bastion's cannot be reinforced under a PublicGroup.");
+				event.getPlayer().sendMessage(ChatColor.GREEN + "Bastions cannot be reinforced under a public group.");
 			} else {
 				bastionManager.addBastion(event.getBlock().getLocation(), rein);
-				event.getPlayer().sendMessage(ChatColor.GREEN+"Bastion block created");
+				event.getPlayer().sendMessage(ChatColor.GREEN + "Bastion block created");
 			}
 		}
 	}

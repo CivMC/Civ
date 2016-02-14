@@ -258,7 +258,6 @@ public class BastionBlockManager {
 			}
 		}
 		
-		
 		return bastions;
 	}
 	
@@ -414,7 +413,7 @@ public class BastionBlockManager {
 		if (blocking.size() > 0){
 			// TODO: Double check: We use getFrom() to find a list of blockers, but previously used erode getTo() if a blocker was found.
 			this.erodeFromTeleport(event.getFrom(), event.getPlayer().getName(), blocking);
-			event.getPlayer().sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
+			event.getPlayer().sendMessage(ChatColor.RED + "Ender pearl blocked by Bastion Block");
 			// TODO: Make consumption of pearls optional here.
 			event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
 			event.setCancelled(true);
