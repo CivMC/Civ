@@ -82,103 +82,102 @@ public class EnderPearlManager {
 			return;
 		}
 
-		Location start=pearl.getLocation();
-		Location end=start.clone();
+		Location start = pearl.getLocation();
+		Location end = start.clone();
 		end.add(twoDSpeed.multiply(maxTicks)); 
 
-		Set<BastionBlock> couldCollide=simpleCollide(possible, start.clone(), end.clone(), threw); //all the bastions where the pearl passes over or under their shadow
+		Set<BastionBlock> couldCollide = simpleCollide(possible, start.clone(), end.clone(), threw); //all the bastions where the pearl passes over or under their shadow
 
-		if(couldCollide.isEmpty()){
+		if (couldCollide.isEmpty()) {
 			return;
 		}
 
 
-		BastionBlock firstCollision=null;
-		long firstCollisionTime=-1;
-		for(BastionBlock bastion : couldCollide){
-			long currentCollidesBy=(long) collidesBy(bastion, start.clone(), end.clone(), speed, gravity, horizontalSpeed);
-			if(currentCollidesBy!=-1&&currentCollidesBy<firstCollisionTime){
-				firstCollisionTime=currentCollidesBy;
-				firstCollision=bastion;
+		BastionBlock firstCollision = null;
+		long firstCollisionTime = -1;
+		for (BastionBlock bastion : couldCollide) {
+			long currentCollidesBy = (long) collidesBy(bastion, start.clone(), end.clone(), speed, gravity, horizontalSpeed);
+			if (currentCollidesBy != -1 && currentCollidesBy < firstCollisionTime) {
+				firstCollisionTime = currentCollidesBy;
+				firstCollision = bastion;
 			}
 			
 			//make sure there is at least a starting value Probably better ways of doing this
-			if(firstCollisionTime==-1 && currentCollidesBy!=-1){
-				firstCollisionTime=currentCollidesBy;
-				firstCollision=bastion;
+			if (firstCollisionTime == -1 && currentCollidesBy != -1) {
+				firstCollisionTime = currentCollidesBy;
+				firstCollision = bastion;
 			}
 		}
-		if(firstCollisionTime!=-1){ //if we found something add it
+		if (firstCollisionTime != -1) { //if we found something add it
 			task.manage(new Flight(pearl, firstCollisionTime, firstCollision));
 			return;
 		}
-
 	}
-	private Set<BastionBlock> simpleCollide(Set<BastionBlock> possible,Location start,Location end, Player player){
-		Set<BastionBlock> couldCollide=new TreeSet<BastionBlock>();
-		for(BastionBlock bastion : possible){
-			Location loc=bastion.getLocation().clone();
+	
+	private Set<BastionBlock> simpleCollide(Set<BastionBlock> possible, Location start, Location end, Player player) {
+		Set<BastionBlock> couldCollide = new TreeSet<BastionBlock>();
+		for (BastionBlock bastion : possible) {
+			Location loc = bastion.getLocation().clone();
 			loc.setY(0);
 			
-			if(circleLineCollide(start,end,loc,BastionBlock.getRadiusSquared()) &&  !bastion.canPlace(player))
+			if (circleLineCollide(start, end, loc, BastionBlock.getRadiusSquared()) &&  !bastion.canPlace(player))
 				couldCollide.add(bastion);
 		}
 
 		return couldCollide;
 	}
 
-	double collidesBy(BastionBlock bastion, Location startLoc,Location endLoc,Vector speed,double gravity,double horizontalSpeed){
-
-
+	double collidesBy(BastionBlock bastion, Location startLoc, Location endLoc, Vector speed, double gravity, double horizontalSpeed) {
 		//Get the points were our line crosses the circle
-		List<Location>  collision_points=getCollisionPoints(startLoc,endLoc,bastion.getLocation(),BastionBlock.getRadiusSquared());
+		List<Location> collision_points = getCollisionPoints(startLoc, endLoc, bastion.getLocation(), BastionBlock.getRadiusSquared());
 		
 		//solve the quadratic equation for the equation governing the pearls y height. See if it ever reaches (bastion.getLocation().getY()+1
-		List<Double> solutions=getSolutions(-gravity/2,speed.getY(),startLoc.getY()-(bastion.getLocation().getY()+1));
+		List<Double> solutions = getSolutions(-gravity/2, speed.getY(), startLoc.getY() - (bastion.getLocation().getY() + 1));
+		
 		//If there aren't any results we no there are no intersections
-		if(solutions.isEmpty()){
+		if (solutions.isEmpty()) {
 			return -1;
 		}
 		
-		Location temp=startLoc.clone();
+		Location temp = startLoc.clone();
 		temp.setY(0);
+
 		//Solutions held the time at which the collision would happen lets change it to a position
-		for(int i=0;i<solutions.size();++i){
-			solutions.set(i, solutions.get(i)*horizontalSpeed);
+		for(int i = 0; i < solutions.size(); ++i) {
+			solutions.set(i, solutions.get(i) * horizontalSpeed);
 		}
 
-		List<Double> oneDCollisions=new ArrayList<Double>();
+		List<Double> oneDCollisions = new ArrayList<Double>();
 
 		//turn those points into scalers along the line of the pearl
 		for(Location collision_point : collision_points){
-			Location twoDStart=startLoc.clone();
+			Location twoDStart = startLoc.clone();
 			twoDStart.setY(0);
 			collision_point.setY(0);
 			oneDCollisions.add(collision_point.subtract(twoDStart).length());
 		}
 
-
 		for(Double collisionPoint : oneDCollisions){
 			//if this is the solution lets convert it to a tick
-			//check if the collision point is inside between the solutions if so we no there will be a collision
-			if((solutions.get(0) > collisionPoint && solutions.get(1) < collisionPoint)||(solutions.get(1) > collisionPoint && solutions.get(0) < collisionPoint)){
+			//check if the collision point is inside between the solutions if so we know there will be a collision
+			if ((solutions.get(0) > collisionPoint && solutions.get(1) < collisionPoint) || (solutions.get(1) > collisionPoint && solutions.get(0) < collisionPoint)) {
 				//solution 1 is between the two collision points
-				if(!(oneDCollisions.get(0)>solutions.get(1)&&oneDCollisions.get(1)<solutions.get(0)||
-						oneDCollisions.get(1)>solutions.get(1)&&oneDCollisions.get(0)<solutions.get(0))){
-					return (solutions.get(1))/horizontalSpeed+startLoc.getWorld().getFullTime();
+				if (!(oneDCollisions.get(0) > solutions.get(1) && oneDCollisions.get(1) < solutions.get(0) ||
+						oneDCollisions.get(1) > solutions.get(1) && oneDCollisions.get(0) < solutions.get(0))) {
+					return (solutions.get(1)) / horizontalSpeed + startLoc.getWorld().getFullTime();
 				} else{
-					if(oneDCollisions.get(0)<oneDCollisions.get(1)){
-						return (oneDCollisions.get(0))/horizontalSpeed+startLoc.getWorld().getFullTime();
+					if (oneDCollisions.get(0) < oneDCollisions.get(1)) {
+						return (oneDCollisions.get(0)) / horizontalSpeed + startLoc.getWorld().getFullTime();
 					}else{
-						return (oneDCollisions.get(1))/horizontalSpeed+startLoc.getWorld().getFullTime();
+						return (oneDCollisions.get(1)) / horizontalSpeed + startLoc.getWorld().getFullTime();
 					}
 				}
 			}
-
 		}
 
 		return -1;
 	}
+	
 	//returns the solutions to the quadratic equation
 	private List<Double> getSolutions(double a, double b, double c){
 		double toTakeSquareRoot=b*b-4*a*c;
@@ -193,15 +192,37 @@ public class EnderPearlManager {
 
 		return  Arrays.asList(s1, s2);
 	}
-	//Finds points on a line extending infinitely through the points startLoc and endLoc intersecting a circle centered at circleLoc
-	private List<Location> getCollisionPoints(Location startLoc,Location endLoc,Location circleLoc,double radiusSquared){
-		Vector delta=vectorFromLocations(startLoc,endLoc);
-		Vector circleLocInTermsOfStart=vectorFromLocations(startLoc,circleLoc);
+	
+	/**
+	 * Finds points on a line extending infinitely through the points startLoc and endLoc interesting a square centered at squareLoc.
+	 * @param startLoc
+	 * @param endLoc
+	 * @param squareLoc
+	 * @param radius
+	 * @return
+	 */
+	private List<Location> getSquareCollisionPoints (Location startLoc, Location endLoc, Location squareLoc, double radius) {
+		Vector delta = vectorFromLocations(startLoc, endLoc);
 		
+		// TODO: here be dragons
+		return null;
+	}
+	
+	/**
+	 * Finds points on a line extending infinitely through the points startLoc and endLoc intersecting a circle centered at circleLoc
+	 * @param startLoc
+	 * @param endLoc
+	 * @param circleLoc
+	 * @param radiusSquared
+	 * @return
+	 */
+	private List<Location> getCollisionPoints (Location startLoc, Location endLoc, Location circleLoc, double radiusSquared) {
+		Vector delta = vectorFromLocations(startLoc, endLoc);
+		Vector circleLocInTermsOfStart = vectorFromLocations(startLoc, circleLoc);
 		
-		boolean flipped=false;
-		if(delta.getX()==0){
-			flipped=true;
+		boolean flipped = false;
+		if(delta.getX() == 0){
+			flipped = true;
 			flipXZ(delta);
 			flipXZ(circleLocInTermsOfStart);
 		}
