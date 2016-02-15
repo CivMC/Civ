@@ -26,6 +26,9 @@ public class BetterShardsListener implements Listener{
 	public void PlayerChangeServer(PlayerChangeServerEvent event){
 		String playerName = NameAPI.getCurrentName(event.getPlayerUUID());
 		UUID playerToReplyUUID = chatMan.getPlayerReply(playerName);
+		if (playerToReplyUUID == null) {
+			return;
+		}
 		String playerToReply = NameAPI.getCurrentName(playerToReplyUUID);
 		if(playerToReply != null){
 			MercuryAPI.sendMessage(event.getServerTravelingTo(), "reply|" + playerName + sep + playerToReply, "civchat2");
