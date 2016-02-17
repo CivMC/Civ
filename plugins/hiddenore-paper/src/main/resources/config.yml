@@ -1,0 +1,150 @@
+prefix: You found a hidden ore!
+alert_user: true
+list_drops: true
+debug: true
+blocks:
+ STONE:
+  allTypes: false
+  types:
+   - 0
+  dropMultiple: false
+  drops:
+   COAL_ORE:
+    tools:
+     - WOOD_PICKAXE
+     - STONE_PICKAXE
+     - IRON_PICKAXE
+     - GOLD_PICKAXE
+     - DIAMOND_PICKAXE
+    minY: 1
+    maxY: 131
+    chance: 0.01
+    minAmount: 2
+    maxAmount: 8
+   IRON_ORE:
+    tools:
+     - STONE_PICKAXE
+     - IRON_PICKAXE
+     - DIAMOND_PICKAXE
+    minY: 1
+    maxY: 67
+    chance: 0.007
+    minAmount: 1
+    maxAmount: 4
+   GOLD_ORE:
+    tools:
+     - IRON_PICKAXE
+     - DIAMOND_PICKAXE
+    minY: 1
+    maxY: 33
+    chance: 0.001437
+    minAmount: 1
+    maxAmount: 4
+   DIAMOND_ORE:
+    tools:
+     - IRON_PICKAXE
+     - DIAMOND_PICKAXE
+    minY: 1
+    maxY: 15
+    chance: 0.0005427
+    minAmount: 1
+    maxAmount: 3
+   REDSTONE_ORE:
+    tools:
+     - IRON_PICKAXE
+     - DIAMOND_PICKAXE
+    minY: 1
+    maxY: 15
+    chance: 0.01025
+    minAmount: 1
+    maxAmount: 4
+   LAPIS_ORE:
+    tools:
+     - STONE_PICKAXE
+     - IRON_PICKAXE
+     - DIAMOND_PICKAXE
+    minY: 1
+    maxY: 33
+    chance: 0.000597
+    minAmount: 1
+    maxAmount: 3
+   EMERALD_ORE:
+    tools:
+     - IRON_PICKAXE
+     - DIAMOND_PICKAXE
+    minY: 1
+    maxY: 32
+    chance: 0.0
+    minAmount: 1
+    maxAmount: 2
+    biomes:
+     EXTREME_HILLS:
+      chance: 0.001437
+     EXTREME_HILLS_MOUNTAINS:
+      chance: 0.001437
+     EXTREME_HILLS_PLUS:
+      chance: 0.001437
+     EXTREME_HILLS_PLUS_MOUNTAINS:
+      chance: 0.001437
+ NETHERRACK:
+  allTypes: true
+  dropMultiple: false
+  drops:
+   QUARTZ_ORE:
+    tools:
+     - WOOD_PICKAXE
+     - STONE_PICKAXE
+     - IRON_PICKAXE
+     - GOLD_PICKAXE
+     - DIAMOND_PICKAXE
+    minY: 1
+    maxY: 125
+    chance: 0.0
+    minAmount: 1
+    maxAmount: 2
+    biomes:
+     HELL:
+      minY: 1
+      maxY: 125
+      chance: 0.007
+# Example w/ custom prefixes.
+# SAND:
+#  allTypes: true
+#  dropMultiple: true
+#  drops:
+#   INK_SACK:
+#    prefix: Lucky find! You've found a dropchest inner.
+#    type: 4
+#    chance: 0.5
+#    minAmount: 32
+#    maxAmount: 64
+#    biome: 
+#     PLAIN:
+#      minY: 1
+#      maxY: 128
+#   QUARTZ:
+#    prefix: Lucky find! You've found a dropchest.
+#    chance: 0.25
+#    amount: 5
+  
+pretty_names:
+ DIAMOND: Diamond
+ IRON_INGOT: Iron ingot
+ GOLD_INGOT: Gold ingot
+ QUARTZ: Quartz
+ EMERALD: Emerald
+ PRISMARINE_SHARD: Prismarine Shard
+ REDSTONE: Redstone
+ DIAMOND_ORE: Diamond Ore
+ IRON_ORE: Iron Ore
+ GOLD_ORE: Gold Ore
+ QUARTZ_ORE: Quartz Ore
+ EMERALD_ORE: Emerald Ore
+ PRISMARINE: Prismarine
+ REDSTONE_ORE: Redstone Ore
+ LAPIS_ORE: Lapis Lazuli Ore
+ COAL_ORE: Coal Ore
+ COAL: Coal
+ NETHERRACK: Netherrack
+ INK_SACK:
+  4: Lapis Lazuli

@@ -1,0 +1,19 @@
+name: '${project.name}'
+version: '${project.version}'
+main: com.github.devotedmc.hiddenore.HiddenOre
+author: Soerxpso
+authors: [ProgrammerDan]
+commands:
+   hiddenore:
+      description: HiddenOre allows the hiding of cool drops underground. This reloads the config.
+      usage: /hiddenore
+      permission: hiddenore.adv
+permissions:
+    hiddenore.*:
+      description: Gives access to all HiddenOre commands
+      default: op
+      children:
+        hiddenore.adv: true
+    hiddenore.adv:
+      description: Allows access to  HiddenOre commands.
+      default: op
