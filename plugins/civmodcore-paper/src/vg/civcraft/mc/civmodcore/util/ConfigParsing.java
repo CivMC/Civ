@@ -123,6 +123,7 @@ public class ConfigParsing {
 				long days = getLastNumber(arg);
 				result += 20 * 3600 * 24 * days;
 				length = String.valueOf(days).length() + 1;
+				break;
 			default:
 				Bukkit.getLogger()
 						.severe("Invalid time value in config:" + arg);
