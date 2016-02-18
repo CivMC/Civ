@@ -337,6 +337,7 @@ decay_amount: 21
 #maximum_materials_per_side is an amount that limits how many items you can assign to a specific side (so the sorter sorts them
 #in this direction)
 
+factories:
 
 #-----------------------------------------------------------------------------------------------------------------------------
 
@@ -492,7 +493,7 @@ decay_amount: 21
 #factory is the name of the factory it's supposed to be upgraded to. This factory must have been specified as FCCUPGRADE
 #above and the name here and above has to be exactly the same.
 
-
+recipes:
 
 
 
