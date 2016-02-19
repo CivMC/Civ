@@ -78,3 +78,10 @@ Thanks :)
 ## License
 
 CombatTagPlus is licensed to you freely under the terms of the [LGPL license](https://www.gnu.org/licenses/lgpl.html).
+
+## Special Thanks To:
+
+![YourKit-Logo](https://www.yourkit.com/images/yklogo.png)
+
+[YourKit](http://www.yourkit.com/) supports open source projects with its full-featured Java Profiler.
+YourKit, LLC is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/profiler/index.jsp) and [YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/index.jsp), innovative and intelligent tools for profiling Java and .NET applications.
