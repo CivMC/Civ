@@ -81,7 +81,7 @@ public class PlayerReinforcement extends Reinforcement{
 		
 		long shiftMultiplier = ((System.currentTimeMillis() - ts.getTime()) / (long)86400000) / (long)Citadel.getReinforcementManager().getDayMultiplier();
 		if(shiftMultiplier > 0)
-			return 2 << shiftMultiplier;
+			return 1 << shiftMultiplier;
 		return 1;
 	}
 	
