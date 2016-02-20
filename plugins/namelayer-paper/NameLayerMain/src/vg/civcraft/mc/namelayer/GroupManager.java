@@ -1,5 +1,6 @@
 package vg.civcraft.mc.namelayer;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -262,6 +263,10 @@ public class GroupManager{
 	
 	public int countGroups(UUID uuid){
 		return groupManagerDao.countGroups(uuid);
+	}
+	
+	public Timestamp getTimestamp(String group){
+		return groupManagerDao.getTimestamp(group);
 	}
 
 	/**

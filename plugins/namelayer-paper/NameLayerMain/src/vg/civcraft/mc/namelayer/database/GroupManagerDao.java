@@ -5,6 +5,7 @@ import static vg.civcraft.mc.namelayer.NameLayerPlugin.log;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -212,7 +213,7 @@ public class GroupManagerDao {
 		}
 		if (ver == 6){
 			long first_time = System.currentTimeMillis();
-			log(Level.INFO, "Database upadting to version seven.");
+			log(Level.INFO, "Database updating to version seven.");
 			db.execute("create table if not exists group_invitation(" + 
 					"uuid varchar(36) NOT NULL," +
 					"groupName varchar(255) NOT NULL,"+
@@ -222,6 +223,14 @@ public class GroupManagerDao {
 			ver = updateVersion(ver, plugin.getName());
 			log(Level.INFO, "Database update to Version seven took " + (System.currentTimeMillis() - first_time) /1000 + " seconds.");
 		}
+		if (ver == 7){
+			long first_time = System.currentTimeMillis();
+			log(Level.INFO, "Database updating to version eight.");
+			db.execute("alter table faction add last_timestamp datetime NOT NULL default NOW();");
+			ver = updateVersion(ver, plugin.getName());
+			log(Level.INFO, "Database update to Version eight took " + (System.currentTimeMillis() - first_time) /1000 + " seconds.");
+		}
+		
 		log(Level.INFO, "Database update took " + (System.currentTimeMillis() - begin_time) / 1000 + " seconds.");
 	}
 
@@ -303,6 +312,8 @@ public class GroupManagerDao {
 	private PreparedStatement setDefaultGroup, changeDefaultGroup, getDefaultGroup;
 	
 	private PreparedStatement loadGroupsInvitations, addGroupInvitation, removeGroupInvitation;
+	
+	private PreparedStatement getGroupNameFromRole, updateLastTimestamp, getPlayerType, getTimestamp;
 	
 	public void initializeStatements(){
 		version = db.prepareStatement("select max(db_version) as db_version from db_version where plugin_name=?");
@@ -396,6 +407,21 @@ public class GroupManagerDao {
 		addGroupInvitation = db.prepareStatement("insert into group_invitation(uuid, groupName, role) values(?, ?, ?) on duplicate key update role=values(role), date=now();");
 		
 		removeGroupInvitation = db.prepareStatement("delete from group_invitation where uuid = ? and groupName = ?");
+		
+		getGroupNameFromRole = db.prepareStatement("SELECT faction_id.group_name FROM faction_member "
+								+ "inner join faction_id on faction_member.group_id = faction_id.group_id "
+								+ "WHERE member_name = ? "
+								+ "AND role = ?;");
+		
+		getTimestamp = db.prepareStatement("SELECT faction.last_timestamp FROM faction "
+								+ "WHERE group_name = ?;");
+		
+		updateLastTimestamp = db.prepareStatement("UPDATE faction SET faction.last_timestamp = NOW() "
+								+ "WHERE group_name = ?;");
+		
+		getPlayerType = db.prepareStatement("SELECT role FROM faction_member "
+						+ "WHERE group_id = ? "
+                        + "AND member_name = ?;");
 	}
 	/**
 	 * Checks the version of a specific plugin's db.
@@ -542,6 +568,66 @@ public class GroupManagerDao {
 			e.printStackTrace();
 		}
 		return groups;
+	}
+	
+	public synchronized List<String> getGroupNames(UUID uuid, String role){
+		NameLayerPlugin.reconnectAndReintializeStatements();
+		List<String> groups = new ArrayList<String>();
+		try {
+			getGroupNameFromRole.setString(1, uuid.toString());
+			getGroupNameFromRole.setString(2, role);
+			ResultSet set = getGroupNameFromRole.executeQuery();
+			while(set.next())
+				groups.add(set.getString(1));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return groups;
+	}
+	
+	public synchronized Timestamp getTimestamp(String group){
+		NameLayerPlugin.reconnectAndReintializeStatements();
+		Timestamp timestamp = null;
+		try{
+			getTimestamp.setString(1, group);
+			ResultSet set = getTimestamp.executeQuery();
+			if(set.next())
+				timestamp = set.getTimestamp(1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return timestamp;
+	}
+	
+	public synchronized PlayerType getPlayerType(int groupid, UUID uuid){
+		NameLayerPlugin.reconnectAndReintializeStatements();
+		PlayerType ptype = null;
+		try {
+			getPlayerType.setInt(1, groupid);
+			getPlayerType.setString(2, uuid.toString());
+			ResultSet set = getPlayerType.executeQuery();
+			if(set.next()){
+				ptype = PlayerType.getPlayerType(set.getString(1));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ptype;
+	}
+	
+	public synchronized void updateTimestamp(String group){
+		NameLayerPlugin.reconnectAndReintializeStatements();
+		try {
+			updateLastTimestamp.setString(1, group);
+			updateLastTimestamp.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public synchronized void deleteGroup(String groupName){
