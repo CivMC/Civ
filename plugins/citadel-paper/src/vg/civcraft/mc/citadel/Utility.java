@@ -306,6 +306,9 @@ public class Utility {
           final int maturationTime = timeUntilMature(reinforcement);
           PlayerReinforcement rein = (PlayerReinforcement) reinforcement;
           ReinforcementType type = ReinforcementType.getReinforcementType(rein.getStackRepresentation());
+          
+          durabilityLoss = rein.getDamageMultiplier();
+          
           if (maturationTime > 0 && type.getMaturationScale() != 0) {
               // the default amount of minutes it takes to mature
               int normal = type.getMaturationTime();
@@ -317,6 +320,7 @@ public class Utility {
               } // this new code scales smoothly between MaturationScale and a very large number, being closer to 
               // MaturationScale the closer to "done" a maturation cycle
           }
+          
           if (durability < durabilityLoss) {
               durabilityLoss = durability;
           }

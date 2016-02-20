@@ -25,6 +25,7 @@ import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 public class ReinforcementManager {
 
 	private CitadelReinforcementData db;
+	private long dayMultiplier;
 
 	// This shit is cool
 	private RemovalListener<Location, Reinforcement> removalListener = new RemovalListener<Location, Reinforcement>() {
@@ -57,7 +58,13 @@ public class ReinforcementManager {
 	
 	public ReinforcementManager(CitadelReinforcementData db) {
 		this.db = db;
+		this.dayMultiplier = (long)CitadelConfigManager.getDayMultiplier();
+		
 		scheduleSave();
+	}
+	
+	public long getDayMultiplier(){
+		return dayMultiplier;
 	}
 
 	/**

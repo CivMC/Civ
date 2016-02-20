@@ -117,6 +117,10 @@ public class CitadelConfigManager {
 		return config.getInt("save_interval_ticks", 500);
 	}
 	
+	public static int getDayMultiplier(){
+		return config.getInt("reinforcement_damageMultiplier", 7);
+	}
+	
 	public static String getHostName(){
 		return config.getString("mysql.hostname", "localhost");
 	}

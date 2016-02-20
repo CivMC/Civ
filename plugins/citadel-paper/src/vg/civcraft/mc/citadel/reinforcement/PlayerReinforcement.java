@@ -1,6 +1,9 @@
 package vg.civcraft.mc.citadel.reinforcement;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -10,10 +13,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Openable;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.group.groups.PublicGroup;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
@@ -68,6 +74,15 @@ public class PlayerReinforcement extends Reinforcement{
 		if (type == null)
 			return false;
 		return gp.isAccessible(type, PermissionType.BLOCKS);
+	}
+	
+	public int getDamageMultiplier(){
+		Timestamp ts = NameAPI.getGroupManager().getTimestamp(g.getName());
+		
+		long shiftMultiplier = ((System.currentTimeMillis() - ts.getTime()) / (long)86400000) / (long)Citadel.getReinforcementManager().getDayMultiplier();
+		if(shiftMultiplier > 0)
+			return 2 << shiftMultiplier;
+		return 1;
 	}
 	
 	/**
@@ -178,4 +193,25 @@ public class PlayerReinforcement extends Reinforcement{
     public int getGroupId(){
     	return g.getGroupId();
     }
+
+	public String getAgeStatus() {
+		int d = this.getDamageMultiplier();
+		if(d < 2){
+			return "not decayed";
+		}
+		else if(d < 16){
+			return "partially decayed";
+		}
+		else if(d < 256){
+			return "highly decayed";
+		}
+		else if(d < 2048){
+			return "heavily decayed";
+		}
+		else if(d > 2047){
+			return "completely decayed";
+		}
+		else
+			return "";
+	}
 }
