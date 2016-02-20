@@ -442,6 +442,7 @@ public class BlockListener implements Listener{
             	// did player click on a reinforced block?
                 if (reinforcement != null) {
                     String reinforcementStatus = reinforcement.getStatus();
+                    String ageStatus = reinforcement.getAgeStatus();
                     Group group = reinforcement.getGroup();
                     StringBuilder sb;
                     if (player.hasPermission("citadel.admin.ctinfodetails")) {
@@ -494,8 +495,8 @@ public class BlockListener implements Listener{
                         if (group != null) {
                             groupName = group.getName();
                         }
-                        sb.append(String.format("%s, group: %s",
-                            reinforcementStatus, groupName));
+                        sb.append(String.format("%s, %s, group: %s",
+                            reinforcementStatus, ageStatus, groupName));
                         if(immature){
                             sb.append(" (Hardening)");
                         }
@@ -507,7 +508,7 @@ public class BlockListener implements Listener{
                         }
                         player.sendMessage(ChatColor.GREEN + sb.toString());
                     } else {
-                        player.sendMessage(ChatColor.RED + reinforcementStatus);
+                        player.sendMessage(ChatColor.RED + reinforcementStatus + ", " + ageStatus);
                     }
                     if (player.getGameMode() == GameMode.CREATIVE) {
                         pie.setCancelled(true);

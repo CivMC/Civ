@@ -89,6 +89,8 @@ acidblock_material: GOLD_BLOCK
 # If set to true then instead of dropping the reinforcement a block with the specified reinforcement value will be dropped.
 drop_reinforced_block: false
 save_interval_ticks: 500
+# reinforcement_damageMultiplier is m where BlockDamage = 2 ^ (n/m) where n is equal to the number of days the group has been inactive
+reinforcement_damageMultiplier: 7
 mysql:
  hostname: "localhost"
  port: 3306
