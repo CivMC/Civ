@@ -62,7 +62,6 @@ public class EnderPearlManager {
 		double maxTicks = getMaxTicks(verticalSpeed, loc.getY(), -gravity);
 		double maxDistance = getMaxDistance(horizontalSpeed, maxTicks);
 
-
 		//check if it has any possibility of going through a bastion 
 		if (!(maxDistance > Bastion.getConfigManager().getBastionBlockEffectRadius() / 2 
 				|| maxDistance < -1)) {
@@ -120,8 +119,19 @@ public class EnderPearlManager {
 			Location loc = bastion.getLocation().clone();
 			loc.setY(0);
 			
-			if (circleLineCollide(start, end, loc, BastionBlock.getRadiusSquared()) &&  !bastion.canPlace(player))
-				couldCollide.add(bastion);
+			if (bastion.canPlace(player)) { // not blocked, continue
+				continue;
+			}
+			
+			if (Bastion.getConfigManager().squareField()) {
+				if (!getCollisionPointsSquare(start, end, loc, BastionBlock.getRadius()).isEmpty() ) { // TODO: reuse is good, doing the same thing twice is bad
+					couldCollide.add(bastion);
+				}
+			} else {
+				if (circleLineCollide(start, end, loc, BastionBlock.getRadiusSquared())) {
+					couldCollide.add(bastion);
+				}
+			}
 		}
 
 		return couldCollide;
@@ -129,10 +139,19 @@ public class EnderPearlManager {
 
 	double collidesBy(BastionBlock bastion, Location startLoc, Location endLoc, Vector speed, double gravity, double horizontalSpeed) {
 		//Get the points were our line crosses the circle
-		List<Location> collision_points = getCollisionPoints(startLoc, endLoc, bastion.getLocation(), BastionBlock.getRadiusSquared());
+		List<Location> collision_points = null;
+		if (Bastion.getConfigManager().squareField()) {
+			collision_points = getCollisionPointsSquare(startLoc, endLoc, bastion.getLocation(), BastionBlock.getRadius());
+		} else {
+			collision_points = getCollisionPoints(startLoc, endLoc, bastion.getLocation(), BastionBlock.getRadiusSquared());
+		}
+		
+		if (collision_points.isEmpty()) {
+			return -1;
+		}
 		
 		//solve the quadratic equation for the equation governing the pearls y height. See if it ever reaches (bastion.getLocation().getY()+1
-		List<Double> solutions = getSolutions(-gravity/2, speed.getY(), startLoc.getY() - (bastion.getLocation().getY() + 1));
+		List<Double> solutions = getSolutions(-gravity/2, speed.getY(), startLoc.getY() - (bastion.getLocation().getY() + (Bastion.getConfigManager().includeSameYLevel() ? 0 : 1) ));
 		
 		//If there aren't any results we no there are no intersections
 		if (solutions.isEmpty()) {
@@ -201,11 +220,44 @@ public class EnderPearlManager {
 	 * @param radius
 	 * @return
 	 */
-	private List<Location> getSquareCollisionPoints (Location startLoc, Location endLoc, Location squareLoc, double radius) {
-		Vector delta = vectorFromLocations(startLoc, endLoc);
+	private List<Location> getCollisionPointsSquare (Location startLoc, Location endLoc, Location squareLoc, double radius) {
+		double zl = (endLoc.getZ() - startLoc.getZ());
+		double xl = (endLoc.getX() - startLoc.getX());
+		double r2 = radius * 2.0;
+		double ba = squareLoc.getX() - startLoc.getX();
+		double bb = squareLoc.getZ() - startLoc.getZ();
 		
-		// TODO: here be dragons
-		return null;
+		List<Location> results=new ArrayList<Location>();
+		Location so = null;
+		double s = 0.0d;
+		if (xl != 0){
+			s = zl * (ba + radius) / ( xl * r2 ) - bb / r2 + .5d; //bottom
+			if (s >= 0.0 && s <= 1.0) {
+				so = squareLoc.clone().add(radius, 0, -radius + s*r2);
+				results.add(so);
+			}
+			
+			s = zl * (ba - radius) / ( xl * r2 ) - bb / r2 + .5d; //top
+			if (s >= 0.0 && s <= 1.0) {
+				so = squareLoc.clone().add(-radius, 0, -radius + s*r2);
+				results.add(so);
+			}
+		}
+		
+		if (zl != 0){
+			s = xl * (bb + radius) / ( zl * r2 ) - ba / r2 + .5d; //right
+			if (s >= 0.0 && s <= 1.0) {
+				so = squareLoc.clone().add(-radius + s*r2, 0, radius);
+				results.add(so);
+			}
+			
+			s = xl * (bb - radius) / ( zl * r2 ) - ba / r2 + .5d; //leftt
+			if (s >= 0.0 && s <= 1.0) {
+				so = squareLoc.clone().add(-radius + s*r2, 0, -radius);
+				results.add(so);
+			}
+		}
+		return results;
 	}
 	
 	/**
@@ -226,7 +278,7 @@ public class EnderPearlManager {
 			flipXZ(delta);
 			flipXZ(circleLocInTermsOfStart);
 		}
-		circleLocInTermsOfStart.add(new Vector(0.5,0,0.5));
+		circleLocInTermsOfStart.add(new Vector(0.5,0,0.5)); 
 		
 		double slope=delta.getZ()/delta.getX();
 		
@@ -257,6 +309,7 @@ public class EnderPearlManager {
 		return ((-verticalSpeed)-Math.sqrt(verticalSpeed*verticalSpeed-2*deltaY*y))/deltaY;
 	}
 
+	// TODO evaluate this vs. getCollisonPoints. Which is more efficient? Prefer it, or find a way to re-use the result once captured.
 	private boolean circleLineCollide(Location startLoc, Location endLoc, Location circleLoc, double radiusSquared){
 		Location lineStart=startLoc.clone();
 		Location lineEnd=endLoc.clone();
@@ -379,7 +432,7 @@ public class EnderPearlManager {
 				return;
 			}
 			
-			currentTask = Bukkit.getScheduler().scheduleSyncDelayedTask(Bastion.getPlugin(),new BukkitRunnable(){
+			currentTask = new BukkitRunnable(){
 
 				@Override
 				public void run() {
@@ -389,7 +442,7 @@ public class EnderPearlManager {
 					next();
 				}
 				
-			}, onTask.timeToEnd());
+			}.runTaskLater(Bastion.getPlugin(), onTask.timeToEnd()).getTaskId();
 		}
 	}
 	

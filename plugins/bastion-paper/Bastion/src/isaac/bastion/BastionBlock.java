@@ -37,7 +37,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	private static double BLOCK_TO_PEARL_SCALE; //factor between reinforcement removed by placing blocks and from blocking pearls
 	public static boolean ONLY_BLOCK_PEARLS_ON_MATURE; //only block pearls after maturity has been reached
 
-	private static boolean first=true;
+	private static boolean first = true;
 
 	private Location location; 
 	private int id = -1;
@@ -395,6 +395,11 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	static public int getRadiusSquared(){
 		return RADIUS_SQUARED;
 	}
+	
+	public static int getRadius() {
+		return RADIUS;
+	}
+	
 	public long getId(){
 		return id;
 	}
@@ -554,4 +559,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		Bastion.getPlugin().getLogger().info("Removed bastion " + id + " Had been placed on "
 				+ placed + " At "+ location);
 	}
+
+
 }

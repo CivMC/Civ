@@ -19,8 +19,8 @@ public class BastionBlockStorage {
 	private static boolean tablesCreated = false;
 	public BastionBlockStorage(){
 		ConfigManager config=Bastion.getConfigManager();
-		db=new Database(config.getHost(), config.getPort(), config.getDatabase(),config.getUsername(),config.getPassword(),config.getPrefix(), Bastion.getPlugin().getLogger());
-		bastionBlocksTable="bastion_blocks";
+		db = new Database(config.getHost(), config.getPort(), config.getDatabase(),config.getUsername(),config.getPassword(),config.getPrefix(), Bastion.getPlugin().getLogger());
+		bastionBlocksTable = "bastion_blocks";
 		db.connect();
 		if (db.isConnected()) {
 			createTables();
@@ -59,36 +59,39 @@ public class BastionBlockStorage {
 	public Enumeration<BastionBlock> getAllBastions(World world) {
 		return new BastionBlockEnumerator(world);
 	}
-	class BastionBlockEnumerator implements Enumeration<BastionBlock>{
+	
+	class BastionBlockEnumerator implements Enumeration<BastionBlock> {
 		World world;
 		ResultSet result;
 		BastionBlock next; 
-		public BastionBlockEnumerator(World nWorld){
-			world=nWorld;
-			if(!db.isConnected()){
-				next=null;
+		public BastionBlockEnumerator (World nWorld) {
+			world = nWorld;
+			if (!db.isConnected()) {
+				next = null;
 				return;
 			}
-			try{
+			try {
 				getAllBastionsForWorld.setString(1, world.getName());
 				result=getAllBastionsForWorld.executeQuery();
 				next=nextBastionBlock();
-			} catch(SQLException e){
+			} catch(SQLException e) {
 				next=null;
 				result=null;
 			}
 		}
+		
 		@Override
 		public boolean hasMoreElements() {
-			return (next!=null);
+			return (next != null);
 		}
 
 		@Override
 		public BastionBlock nextElement() {
-			BastionBlock result=next;
-			next=nextBastionBlock();
+			BastionBlock result = next;
+			next = nextBastionBlock();
 			return result;
 		}
+		
 		public BastionBlock nextBastionBlock() {
 			int x,y,z,id;
 			long placed;
@@ -98,24 +101,23 @@ public class BastionBlockStorage {
 					result = null;
 					return null;
 				}
-				x=result.getInt("loc_x");
-				y=result.getInt("loc_y");
-				z=result.getInt("loc_z");
-				id=result.getInt("bastion_id");
-				placed=result.getLong("placed");
-				balance=result.getFloat("fraction");
+				x = result.getInt("loc_x");
+				y = result.getInt("loc_y");
+				z = result.getInt("loc_z");
+				id = result.getInt("bastion_id");
+				placed = result.getLong("placed");
+				balance = result.getFloat("fraction");
 
 			} catch (SQLException e) {
 				e.printStackTrace();
 				return null;
 			}
-			Location loc=new Location(world, x, y, z);
-			return new BastionBlock(loc,placed,balance,id);
+			Location loc = new Location(world, x, y, z);
+			return new BastionBlock(loc, placed, balance, id);
 		}
 
 		public Database getDatabase(){
 			return db;
 		}
-
 	}
 }

@@ -108,8 +108,9 @@ public class Database {
      */
     public boolean isConnected() {
         try {
-        	if(connection!=null)
+        	if (connection != null) {
         		return connection.isValid(5);
+        	}
         	return false;
         } catch (SQLException ex) {
             this.logger.log(Level.SEVERE, "isConnected error!", ex);
