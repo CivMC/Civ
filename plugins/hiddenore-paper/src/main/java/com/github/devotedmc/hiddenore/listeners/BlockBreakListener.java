@@ -1,4 +1,5 @@
 package com.github.devotedmc.hiddenore.listeners;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -9,8 +10,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -30,7 +33,7 @@ public class BlockBreakListener implements Listener {
 	 * 
 	 * @param event
 	 */
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPistonExtend(BlockPistonExtendEvent event) {
 		Block source = event.getBlock();
 		Block extension = event.getBlock().getRelative(event.getDirection());
@@ -51,7 +54,7 @@ public class BlockBreakListener implements Listener {
 	 * Should cover even more clever implementations involving sticky pistons to game things.
 	 * @param event
 	 */
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPistonRetract(BlockPistonRetractEvent event) {
 		if (!event.isSticky()) return; // only care about stick business.
 		
@@ -72,10 +75,41 @@ public class BlockBreakListener implements Listener {
 	}
 	
 	/**
+	 * Catch block placement directly.
+	 * @param event
+	 */
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPlacingThings(BlockPlaceEvent event) {
+		Location placed = event.getBlockPlaced().getLocation();
+		if (event.getPlayer() != null) {
+			debug("Block place event at {0} by {1}", placed, event.getPlayer().getDisplayName());
+		} else {
+			debug("Block place event at {0}", placed);
+		}
+		
+		HiddenOre.getTracking().trackBreak(placed);
+	}
+	
+	/**
+	 * Catch explosions
+	 * @param event
+	 */
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onExplodingThings(BlockExplodeEvent event) {
+		HiddenOre.getTracking().trackBreak(event.getBlock().getLocation());
+		debug("Explosion event at {0}", event.getBlock().getLocation());
+		for (Block b : event.blockList()) {
+			if (b != null) {
+				HiddenOre.getTracking().trackBreak(b.getLocation());
+			}
+		}
+	}
+	
+	/**
 	 * Prevent gaming by dropping sand/gravel/gravity blocks 
 	 * @param event
 	 */
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onFallingThings(EntityChangeBlockEvent event) {
 		Material from = event.getBlock().getType();
 		if (!event.getBlock().isEmpty() && !event.getBlock().isLiquid()) {
@@ -110,10 +144,13 @@ public class BlockBreakListener implements Listener {
         BlockConfig bc = Config.isDropBlock(blockName, sb);
         
         if (bc == null) return;
-        debug("Break of tracked type {0}", blockName);
         
         Player p = event.getPlayer();
-        if(p.getItemInHand().getEnchantments().containsKey(Enchantment.SILK_TOUCH)) return;
+        if (p == null) return;
+        
+        debug("Break of tracked type {0} by {1}", blockName, p.getDisplayName());
+        
+        if (p.getItemInHand().getEnchantments().containsKey(Enchantment.SILK_TOUCH)) return;
 
 		boolean hasDrop = false;
 
