@@ -197,7 +197,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 				updateBastion.execute();
 			} catch (SQLException e) {
 				Bastion.getPlugin().getLogger().log(Level.SEVERE, "Failed Bastion Update to DB at " + location, e);
-				e.printStackTrace();
 			}
 		} else {
 			Bastion.getPlugin().getLogger().warning("tried to update BastionBlock that was not in DB\n " + toString());
@@ -226,8 +225,8 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 * @return The percentage that should erode
 	 */
 	public double erosionFromBlock() {
-		double scaleStart=Bastion.getConfigManager().getBastionBlockScaleFacStart();
-		double scaleEnd=Bastion.getConfigManager().getBastionBlockScaleFacEnd();
+		double scaleStart = Bastion.getConfigManager().getBastionBlockScaleFacStart();
+		double scaleEnd = Bastion.getConfigManager().getBastionBlockScaleFacEnd();
 		
 		// This needs to be a long or it will roll over after 21 days!
 		long time = System.currentTimeMillis() - placed;
@@ -326,10 +325,10 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	/**
 	 * returns if the Bastion's strength is at zero and it should be removed
 	 */
-	public boolean shouldCull(){
-		if(strength-balance > 0){
+	public boolean shouldCull() {
+		if (strength-balance > 0) {
 			return false;
-		} else{
+		} else {
 			return true;
 		}
 	}
@@ -338,11 +337,11 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 * removes a set amount of durability from the reinforcement
 	 * @param amount
 	 */
-	public void erode(double amount){
+	public void erode(double amount) {
 		double toBeRemoved = balance + amount;
 
-		int wholeToRemove=(int) toBeRemoved;
-		double fractionToRemove=(double) toBeRemoved-wholeToRemove;
+		int wholeToRemove = (int) toBeRemoved;
+		double fractionToRemove = (double) toBeRemoved - wholeToRemove;
 
 		Reinforcement reinforcement = getReinforcement();
 
@@ -364,18 +363,18 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		}
 	}
 
-	public void mature(){
+	public void mature() {
 		placed -= SCALING_TIME;
 	}
 	
-	public boolean isMature(){
+	public boolean isMature() {
 		return System.currentTimeMillis() - placed >= SCALING_TIME;
 	}
 
-	private PlayerReinforcement getReinforcement(){
+	private PlayerReinforcement getReinforcement() {
 		PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
 				getReinforcement(location.getBlock());
-		if(reinforcement instanceof PlayerReinforcement){
+		if (reinforcement instanceof PlayerReinforcement) {
 			return reinforcement;
 		} else {
 			close();
@@ -384,15 +383,15 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		return null;
 	}
 
-	public UUID getOwner(){
+	public UUID getOwner() {
 		return getReinforcement().getGroup().getOwner();
 	}
 
-	public Location getLocation(){
+	public Location getLocation() {
 		return location;
 	}
 
-	static public int getRadiusSquared(){
+	static public int getRadiusSquared() {
 		return RADIUS_SQUARED;
 	}
 	
@@ -400,7 +399,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		return RADIUS;
 	}
 	
-	public long getId(){
+	public long getId() {
 		return id;
 	}
 
@@ -457,7 +456,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 					.append(scaleTime_as_hours).append('\n');
 
 			result.append("Which means ").append(erosionFromBlock())
-					.append(" will removed after every blocked placeemnt\n");
+					.append(" will removed after every blocked placement\n");
 
 			result.append("Placed on ").append(dateFormator.format(new Date(placed))).append('\n');
 			result.append("by group ").append(reinforcement.getGroup().getName()).append('\n');
@@ -466,17 +465,17 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		return result.toString();
 	}
 	
-	public String infoMessage(boolean dev, Player asking){
+	public String infoMessage(boolean dev, Player asking) {
 		StringBuffer result = new StringBuffer(ChatColor.GREEN.toString());
 		if (dev) {
 			return result.append( this.toString() ).toString();
 		}
 
-		double fractionOfMaturityTime=0;
-		if(SCALING_TIME==0){
-			fractionOfMaturityTime=1;
-		} else{
-			fractionOfMaturityTime=((double) (System.currentTimeMillis()-placed))/SCALING_TIME;
+		double fractionOfMaturityTime = 0;
+		if (SCALING_TIME == 0) {
+			fractionOfMaturityTime = 1;
+		} else {
+			fractionOfMaturityTime = ((double) (System.currentTimeMillis() - placed)) / SCALING_TIME;
 		}
 		if (fractionOfMaturityTime == 0) {
 			result.append("No strength");
@@ -495,16 +494,23 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		return result.toString();
 	}
 	
-	// TODO: World-aware comparison
+	// TODO: Test world-aware comparison
 	@Override
 	public int compareTo(BastionBlock other) {
+		UUID thisWorld = location.getWorld().getUID();
 		int thisX = location.getBlockX();
 		int thisY = location.getBlockY();
 		int thisZ = location.getBlockZ();
 
+		UUID otherWorld = location.getWorld().getUID();
 		int otherX = other.location.getBlockX();
 		int otherY = other.location.getBlockY();
 		int otherZ = other.location.getBlockZ();
+
+		int worldCompare = thisWorld.compareTo(otherWorld);
+		if (worldCompare != 0) {
+			return worldCompare;
+		}
 
 		if (thisX < otherX) {
 			return -1;
@@ -544,10 +550,9 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	/**
 	 * removes Bastion from world
 	 */
-	public void close(){
-		if(!set.contains(this)){
+	public void close() {
+		if (!set.contains(this)) {
 			Bastion.getPlugin().getLogger().warning("Tried to close already closed Bastion at " + this.location);
-			//return; //already not in don't need to remove
 		}
 
 		if (EROSION_TIME != 0) {
@@ -556,9 +561,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		
 		set.remove(this);
 
-		Bastion.getPlugin().getLogger().info("Removed bastion " + id + " Had been placed on "
-				+ placed + " At "+ location);
+		Bastion.getPlugin().getLogger().log(Level.INFO, "Removed bastion {0}. Had been placed on {1} at {2}", new Object[]{id, placed, location});
 	}
-
-
 }

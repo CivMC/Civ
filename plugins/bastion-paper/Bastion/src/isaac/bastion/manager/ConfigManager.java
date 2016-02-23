@@ -34,6 +34,7 @@ public class ConfigManager {
 	private boolean squareField;
 	private boolean blockMidAir;
 	private boolean includeBastionYLevel;
+	private boolean consumePearlOnBlock;
 	
 	static String file_name = "config.yml";
 	
@@ -76,7 +77,7 @@ public class ConfigManager {
 		enderPearlBlockingRequiresMaturity = loadBool("BastionBlock.EnderPearls.requireMaturity");
 		enderPearlErosionScale = loadDouble("BastionBlock.EnderPearls.scaleFac");
 		blockMidAir = loadBool("BastionBlock.EnderPearls.block_midair");
-		
+		consumePearlOnBlock = loadBool("BastionBlock.EnderPearls.consumeOnBlock");
 	}
 	
 	public String getHost() {
@@ -156,7 +157,9 @@ public class ConfigManager {
 	public double getEnderPearlErosionScale() {
 		return enderPearlErosionScale;
 	}
-
+	public boolean getConsumePearlOnBlock() {
+		return consumePearlOnBlock;
+	}
 	
 	private int loadInt(String field) {
 		if (config.isInt(field)) {

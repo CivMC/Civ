@@ -268,17 +268,25 @@ public class BastionBlockManager {
 			return bastion.infoMessage(dev, player); //If there is actually something there tell the player about it.
 		}
 
+		StringBuilder sb = new StringBuilder();
+
 		bastion = getBlockingBastion(block.getLocation(), player);
 		if (bastion == null) {
 			bastion = getBlockingBastion(block.getLocation());
-			if(bastion != null){
-				return ChatColor.GREEN + "A Bastion Block prevents others from building" + ( (dev) ? (ChatColor.BLACK + "\n" +  bastion.toString()) : "" );
+			if (bastion != null) {
+				sb.append(ChatColor.GREEN).append("A Bastion Block prevents others from building");
+			} else {
+				sb.append(ChatColor.YELLOW).append("No Bastion Block");
 			}
-		} else{
-			return ChatColor.RED + "A Bastion Block prevents you building" + ( (dev) ? (ChatColor.BLACK + "\n" +  bastion.toString()) : "" );
+		} else {
+			sb.append(ChatColor.RED).append("A Bastion Block prevents you building");
 		}
-		
-		return ChatColor.YELLOW + "No Bastion Block";
+
+		if (dev && bastion != null) {
+			sb.append(ChatColor.BLACK).append("\n").append(bastion.toString());
+		}
+
+		return sb.toString();
 	}
 
 	public void handleBlockPlace(BlockPlaceEvent event) {

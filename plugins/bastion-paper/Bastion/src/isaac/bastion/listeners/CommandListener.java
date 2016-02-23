@@ -19,7 +19,7 @@ import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.namelayer.group.groups.PublicGroup;
 
-public class CommandListener implements Listener{
+public class CommandListener implements Listener {
 	private static BastionBlockManager manager;
 	private Material bastionBlock = Bastion.getConfigManager().getBastionBlockMaterial();
 	
@@ -28,7 +28,7 @@ public class CommandListener implements Listener{
 	}
 	
 	@EventHandler(ignoreCancelled=true)
-	public void clicked(PlayerInteractEvent event){
+	public void clicked(PlayerInteractEvent event) {
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}

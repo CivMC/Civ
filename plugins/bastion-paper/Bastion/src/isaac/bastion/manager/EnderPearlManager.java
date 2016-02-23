@@ -35,17 +35,17 @@ public class EnderPearlManager {
 
 		task = new FlightTask();
 	}
+
 	public void handlePearlLaunched(EnderPearl pearl) {
 		getBlocking(pearl);
 	}
+
 	private void getBlocking(EnderPearl pearl) {
-		double gravity=0.03F;
+		double gravity = 0.03F;
 		try {
 			if (pearl instanceof CustomNMSEntityEnderPearl) {
 				gravity = ((CustomNMSEntityEnderPearl) pearl ).y_adjust_;
-			} else {
-				Bastion.getPlugin().getLogger().info("Humbug not found");
-			}
+			} // else means humbug isn't adjusting.
 		} catch(NoClassDefFoundError e ) {
 			Bastion.getPlugin().getLogger().info("Humbug not found");
 		}
@@ -67,7 +67,6 @@ public class EnderPearlManager {
 				|| maxDistance < -1)) {
 			return;
 		}
-		
 		
 		Player threw = null;
 		if (pearl.getShooter() instanceof Player) {
@@ -96,17 +95,12 @@ public class EnderPearlManager {
 		long firstCollisionTime = -1;
 		for (BastionBlock bastion : couldCollide) {
 			long currentCollidesBy = (long) collidesBy(bastion, start.clone(), end.clone(), speed, gravity, horizontalSpeed);
-			if (currentCollidesBy != -1 && currentCollidesBy < firstCollisionTime) {
-				firstCollisionTime = currentCollidesBy;
-				firstCollision = bastion;
-			}
-			
-			//make sure there is at least a starting value Probably better ways of doing this
-			if (firstCollisionTime == -1 && currentCollidesBy != -1) {
+			if (currentCollidesBy != -1 && (firstCollision == null || currentCollidesBy < firstCollisionTime)) {
 				firstCollisionTime = currentCollidesBy;
 				firstCollision = bastion;
 			}
 		}
+
 		if (firstCollisionTime != -1) { //if we found something add it
 			task.manage(new Flight(pearl, firstCollisionTime, firstCollision));
 			return;
@@ -280,45 +274,47 @@ public class EnderPearlManager {
 		}
 		circleLocInTermsOfStart.add(new Vector(0.5,0,0.5)); 
 		
-		double slope=delta.getZ()/delta.getX();
+		double slope = delta.getZ()/delta.getX();
 		
-		double circleX=circleLocInTermsOfStart.getX();
-		double circleZ=circleLocInTermsOfStart.getZ();
+		double circleX = circleLocInTermsOfStart.getX();
+		double circleZ = circleLocInTermsOfStart.getZ();
 		
-		double circleXSquared=circleX*circleX;
-		double circleZSquared=circleZ*circleZ;
+		double circleXSquared = circleX*circleX;
+		double circleZSquared = circleZ*circleZ;
 
 		
-		List<Double> xs=getSolutions(slope*slope+1,-(2*circleZ*slope+2*circleX),circleXSquared+circleZSquared-radiusSquared);
-		List<Location> results=new ArrayList<Location>();
-		for(double x : xs){
-			Vector offset=new Vector(x,0,x*slope);
-			if(flipped)
+		List<Double> xs = getSolutions(slope*slope+1,-(2*circleZ*slope+2*circleX),circleXSquared+circleZSquared-radiusSquared);
+		List<Location> results = new ArrayList<Location>();
+		for (double x : xs) {
+			Vector offset = new Vector(x, 0, x*slope);
+			if(flipped) {
 				flipXZ(offset);
+			}
 			results.add(startLoc.clone().add(offset));
 		}
 		
 		
 		return results;
 	}
-	private double getMaxDistance(double horizontalSpeed,double maxTicks){
+
+	private double getMaxDistance(double horizontalSpeed, double maxTicks) {
 		return horizontalSpeed*maxTicks;
 	}
 
-	private double getMaxTicks(double verticalSpeed,double y,double deltaY){
-		return ((-verticalSpeed)-Math.sqrt(verticalSpeed*verticalSpeed-2*deltaY*y))/deltaY;
+	private double getMaxTicks(double verticalSpeed, double y, double deltaY) {
+		return ((-verticalSpeed) - Math.sqrt(verticalSpeed*verticalSpeed - 2*deltaY*y)) / deltaY;
 	}
 
 	// TODO evaluate this vs. getCollisonPoints. Which is more efficient? Prefer it, or find a way to re-use the result once captured.
-	private boolean circleLineCollide(Location startLoc, Location endLoc, Location circleLoc, double radiusSquared){
-		Location lineStart=startLoc.clone();
-		Location lineEnd=endLoc.clone();
-		Location circleCenter=circleLoc.clone();
+	private boolean circleLineCollide(Location startLoc, Location endLoc, Location circleLoc, double radiusSquared) {
+		Location lineStart = startLoc.clone();
+		Location lineEnd = endLoc.clone();
+		Location circleCenter = circleLoc.clone();
 
-		Vector direction=vectorFromLocations(lineStart,lineEnd);
+		Vector direction = vectorFromLocations(lineStart,lineEnd);
 
-		if(direction.getZ()==0){
-			if(direction.getBlockX()==0){
+		if (direction.getZ() == 0) {
+			if (direction.getBlockX() == 0) {
 				return false;
 			}
 			flipXZ(lineStart);
@@ -327,104 +323,102 @@ public class EnderPearlManager {
 			flipXZ(direction);
 		}
 
-		Vector start=lineStart.toVector();
-		Vector end=lineEnd.toVector();
+		Vector start = lineStart.toVector();
+		Vector end = lineEnd.toVector();
 
-		Vector circle=circleCenter.toVector();
+		Vector circle = circleCenter.toVector();
 
-		double slope=direction.getZ()/direction.getX();
-		double perpSlope=-1/slope;
+		double slope = direction.getZ() / direction.getX();
+		double perpSlope = -1/slope;
 
 		//This is the closest x if this line segment was extended for ever
-		double closestX=(slope*start.getX()-perpSlope*circle.getX()+circle.getBlockZ()-start.getZ())/
-				(slope-perpSlope);
+		double closestX = (slope*start.getX() - perpSlope*circle.getX() + circle.getBlockZ() - start.getZ()) /
+				(slope - perpSlope);
 
 		//Getting the Z from the x is easy
-		double closestZ=slope*(closestX-start.getX())+start.getZ();
+		double closestZ = slope*(closestX - start.getX()) + start.getZ();
 
-		Vector closest=new Vector(closestX,0,closestZ);
+		Vector closest = new Vector(closestX, 0, closestZ);
 
-		double distanceSquared=closest.clone().subtract(circle).lengthSquared();
+		double distanceSquared = closest.clone().subtract(circle).lengthSquared();
 
-		if(distanceSquared>radiusSquared){
+		if (distanceSquared > radiusSquared) {
 			return false;
 		}
 
-		if(((closest.getX()>lineStart.getX()&&closest.getX()>lineEnd.getX())||
-				(closest.getZ()>lineStart.getZ()&&closest.getZ()>lineEnd.getZ()))||
-
-				((closest.getX()<lineStart.getX()&&closest.getX()<lineEnd.getX())||
-						(closest.getZ()<lineStart.getZ()&&closest.getZ()<lineEnd.getZ()))
-				){
-			if(closest.clone().subtract(end).lengthSquared()<closest.clone().subtract(start).lengthSquared()){
+		if (    ((closest.getX() > lineStart.getX() && closest.getX() > lineEnd.getX()) ||
+				 (closest.getZ() > lineStart.getZ() && closest.getZ() > lineEnd.getZ()))||
+				((closest.getX() < lineStart.getX() && closest.getX() < lineEnd.getX()) ||
+				 (closest.getZ() < lineStart.getZ() && closest.getZ() < lineEnd.getZ()))) {
+			if (closest.clone().subtract(end).lengthSquared() < closest.clone().subtract(start).lengthSquared()) {
 				closest=end;
-			} else{
+			} else {
 				closest=start;
 			}
 		}
 
-		distanceSquared=closest.subtract(circle).lengthSquared();
+		distanceSquared = closest.subtract(circle).lengthSquared();
 
-		if(distanceSquared>radiusSquared){
+		if (distanceSquared > radiusSquared) {
 			return false;
 		}
 
 		return true;
 	}
 	
-	private double getLengthSigned(Vector vec){
-		double length=vec.length();
-		
-		//if(Math.signum(vec.getZ())==-1||Math.signum(vec.getX())==-1||Math.signum(vec.getY())==-1)
-			//length*=-1;
+	private double getLengthSigned(Vector vec) {
+		double length = vec.length();
 		
 		return length;
 	}
-	private void flipXZ(Location a){
-		double tempX=a.getX();
+
+	private void flipXZ(Location a) {
+		double tempX = a.getX();
 		a.setX(a.getZ());
 		a.setZ(tempX);
 	}
 
-	private void flipXZ(Vector a){
-		double tempX=a.getX();
+	private void flipXZ(Vector a) {
+		double tempX = a.getX();
 		a.setX(a.getZ());
 		a.setZ(tempX);
 	}
 
-	private Vector vectorFromLocations(Location start, Location end){
+	private Vector vectorFromLocations(Location start, Location end) {
 		return new Vector(end.getX()-start.getX(),end.getY()-start.getY(),end.getZ()-start.getZ());
 	}
-
-	
 	
 	private class FlightTask{
 		PriorityQueue<Flight> inFlight = new PriorityQueue<Flight>();
 		Flight onTask = null;
 		int currentTask = -1;
 		
-		void manage(Flight flight){
+		void manage(Flight flight) {
 			inFlight.add(flight);
-			if(onTask == null){
+			if (onTask == null){
 				next();
 				return;
 			}
-			if(onTask.compareTo(flight)==1 || onTask == null){
+			if (onTask.compareTo(flight) == 1 || onTask == null) {
 				this.next();
 			}
 		}
-		private void next(){
-			if(currentTask != -1)
+
+		private void next() {
+			if(currentTask != -1) {
 				Bukkit.getScheduler().cancelTask(currentTask);
+			}
 			
-			if (onTask != null)
+			if (onTask != null) {
 				inFlight.add(onTask);
+			}
 			
 			onTask = inFlight.poll();
-			if(onTask == null)
+			if (onTask == null) {
 				return;
+			}
 			
-			if(onTask.timeToEnd() <= 0){
+			if (onTask.timeToEnd() <= 0) {
 				onTask.cancel();
 				currentTask = -1;
 				onTask = null;
@@ -433,7 +427,6 @@ public class EnderPearlManager {
 			}
 			
 			currentTask = new BukkitRunnable(){
-
 				@Override
 				public void run() {
 					onTask.cancel();
@@ -441,33 +434,32 @@ public class EnderPearlManager {
 					currentTask = -1;
 					next();
 				}
-				
 			}.runTaskLater(Bastion.getPlugin(), onTask.timeToEnd()).getTaskId();
 		}
 	}
 	
 	
-	private class Flight implements Comparable<Flight>{
+	private class Flight implements Comparable<Flight> {
 		private EnderPearl   pearl;
 		private Long         endTime;
 		private BastionBlock blocking;
 		
-		public Flight(EnderPearl pearl, long endTime, BastionBlock blocking){
+		public Flight(EnderPearl pearl, long endTime, BastionBlock blocking) {
 			this.pearl    = pearl;
 			this.endTime  = endTime;
 			this.blocking = blocking;
 		}
 		
 		
-		public void cancel(){
-			if(pearl.getShooter() instanceof Player){
+		public void cancel() {
+			if (pearl.getShooter() instanceof Player) {
 				handleTeleport(blocking, pearl.getLocation(), (Player) pearl.getShooter());
 			}
 			pearl.remove();
 			
 		}
 		
-		public long timeToEnd(){
+		public long timeToEnd() {
 			return endTime - pearl.getWorld().getFullTime();
 		}
 
@@ -477,10 +469,14 @@ public class EnderPearlManager {
 		}
 	}
 	
-	private void handleTeleport(BastionBlock blocking ,Location loc, Player player){
-		if (!Bastion.getBastionManager().onCooldown(player.getName())) blocking.erode(blocking.erosionFromPearl());
+	private void handleTeleport(BastionBlock blocking, Location loc, Player player) {
+		if (!Bastion.getBastionManager().onCooldown(player.getName())) {
+			blocking.erode(blocking.erosionFromPearl());
+		}
 		
 		player.sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
-		player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+		if (!Bastion.getConfigManager().getConsumePearlOnBlock()) {
+			player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+		}
 	}
 }
