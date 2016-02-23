@@ -2,6 +2,7 @@ package isaac.bastion.commands;
 
 import isaac.bastion.Bastion;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
@@ -27,8 +28,22 @@ public class BastionCommandManager implements CommandExecutor {
 		}
 		return false;
 	}
+	
+	@SuppressWarnings("resource")
 	public static String convertStreamToString(InputStream is) {
-	    Scanner s = new Scanner(is).useDelimiter("\\A");
-	    return s.hasNext() ? s.next() : "";
+		if (is == null) {
+			return "";
+		}
+		Scanner s = new Scanner(is).useDelimiter("\\A");
+		String ret = "";
+		try {
+			ret = s.hasNext() ? s.next() : "";
+		} catch (IllegalStateException ise) {
+			ret = "";
+		} finally {
+			s.close();
+			ret = "";
+		}
+		return ret;
 	}
 }

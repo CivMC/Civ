@@ -39,53 +39,63 @@ import org.bukkit.material.Dispenser;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
-
-public class BastionBlockManager
-{
+public class BastionBlockManager {
 	public BastionBlockSet set;
 	private Map<String, Long> playerLastEroded = new HashMap<String, Long>();
 	private static Random generator = new Random();
 
-
-	public BastionBlockManager(){
-		set=new BastionBlockSet();
+	public BastionBlockManager() {
+		set = new BastionBlockSet();
 		set.load();
 	}
-	public void close(){
+	
+	public void close() {
 		set.close();
 	}
 
 	public void addBastion(Location location, PlayerReinforcement reinforcement) {
-		BastionBlock toAdd=new BastionBlock(location,reinforcement);
+		BastionBlock toAdd = new BastionBlock(location, reinforcement);
 		set.add(toAdd);
 	}
-
 	
-	public void erodeFromPlace(Block orrigin, Set<Block> result, String player, Set<BastionBlock> blocking){
-		if(onCooldown(player)) return;
+	// TODO why is origin and result passed if not used
+	public void erodeFromPlace(Block origin, Set<Block> result, String player, Set<BastionBlock> blocking) {
+		erodeFromAction(player, blocking, true);
+	}
+	
+	// TODO: Why is loc passed if not used.
+	public void erodeFromTeleport(Location loc, String player, Set<BastionBlock> blocking){
+		erodeFromAction(player, blocking, false);
+	}
+
+	/**
+	 * Common handler for erosion.
+	 */
+	private void erodeFromAction(String player, Set<BastionBlock> blocking, boolean fromBlock) {
+		if (onCooldown(player)) return;
 		
-		if(Bastion.getConfigManager().getBastionBlocksToErode() < 0){
+		if (Bastion.getConfigManager().getBastionBlocksToErode() < 0) {
 			for (BastionBlock bastion : blocking){
-				bastion.erode(bastion.erosionFromBlock());
+				if (fromBlock) {
+					bastion.erode(bastion.erosionFromBlock());
+				} else {
+					bastion.erode(bastion.erosionFromPearl());
+				}
 			}
-		} else{
+		} else {
+			// TODO: Batch!
 			List<BastionBlock> ordered = new LinkedList<BastionBlock>(blocking);
-			for(int i = 0;i < ordered.size() && (i < Bastion.getConfigManager().getBastionBlocksToErode());++i){
+			for (int i = 0;i < ordered.size() && (i < Bastion.getConfigManager().getBastionBlocksToErode());++i){
 				int erode = generator.nextInt(ordered.size()); 
 				BastionBlock toErode = ordered.get(erode);
-				toErode.erode(toErode.erosionFromBlock());
+				if (fromBlock) {
+					toErode.erode(toErode.erosionFromBlock());
+				} else {
+					toErode.erode(toErode.erosionFromPearl());
+				}
 				ordered.remove(erode);
 			}
 		}
-	}
-	
-	public void erodeFromTeleoprt(Location loc, String player, Set<BastionBlock> blocking){
-		if(onCooldown(player)) return;
-		
-		List<BastionBlock> ordered = new LinkedList<BastionBlock>(blocking);
-		
-		BastionBlock toErode = ordered.get(generator.nextInt(ordered.size()));
-		toErode.erode(toErode.erosionFromPearl());
 	}
 	
 	public boolean onCooldown(String player){
@@ -95,8 +105,11 @@ public class BastionBlockManager
 			return false;
 		}
 		
-		if ((System.currentTimeMillis() - playerLastEroded.get(player)) < BastionBlock.MIN_BREAK_TIME) return true;
-		else playerLastEroded.put(player, System.currentTimeMillis());
+		if ((System.currentTimeMillis() - playerLastEroded.get(player)) < BastionBlock.MIN_BREAK_TIME) {
+			return true;
+		} else {
+			playerLastEroded.put(player, System.currentTimeMillis());
+		}
 		
 		return false;
 	}
@@ -106,62 +119,70 @@ public class BastionBlockManager
 	}
 	
 
-	//handles all block based events in a general way
-	public Set<BastionBlock> shouldStopBlock(Block orrigin, Set<Block> result, UUID player){
-		if(player != null) {
+	/** 
+	 * handles all block based events in a general way
+	 * @param origin
+	 * @param result
+	 * @param player
+	 * @return
+	 */
+	public Set<BastionBlock> shouldStopBlock(Block origin, Set<Block> result, UUID player) {
+		if (player != null) {
 			Player playerB = Bukkit.getPlayer(player);
 			if (playerB != null && playerB.hasPermission("Bastion.bypass")) return new CopyOnWriteArraySet<BastionBlock>();
 		}
 		
 		Set<BastionBlock> toReturn = new HashSet<BastionBlock>();
 		Set<UUID> accessors = new HashSet<UUID>();
-		if(player != null)
+		if (player != null) {
 			accessors.add(player);
-		
-		if(orrigin != null){
-			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
-			getReinforcement(orrigin);
-			if(reinforcement instanceof PlayerReinforcement)
-				accessors.add(reinforcement.getGroup().getOwner());
-			
-			for(BastionBlock bastion: this.getBlockingBastions(orrigin.getLocation()))
-				accessors.add(bastion.getOwner());
 		}
 		
+		if (origin != null) {
+			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
+			getReinforcement(origin);
+			if (reinforcement instanceof PlayerReinforcement) {
+				accessors.add(reinforcement.getGroup().getOwner());
+			}
+			
+			for (BastionBlock bastion: this.getBlockingBastions(origin.getLocation())) {
+				accessors.add(bastion.getOwner());
+			}
+		}
 		
-		for(Block block: result)
+		for(Block block: result) {
 			toReturn.addAll(getBlockingBastions(block.getLocation(),accessors));
-		
+		}
 		
 		return toReturn;
 	}
 
-	private BastionBlock getBlockingBastion(Location loc, Player player){
-		
-		
-		Set<? extends QTBox> possible=set.forLocation(loc);
+	// TODO: This is potentially inefficient: new LL, plus shuffle, all to "random-choose" a bastion?
+	//   Evaluable if forLocation returns a new Set; if so, just directly mess with the set.
+	private BastionBlock getBlockingBastion(Location loc, Player player) {
+		Set<? extends QTBox> possible = set.forLocation(loc);
 
 		@SuppressWarnings("unchecked")
-		List<BastionBlock> possibleRandom=new LinkedList<BastionBlock>((Set<BastionBlock>)possible);
+		List<BastionBlock> possibleRandom = new LinkedList<BastionBlock>((Set<BastionBlock>)possible);
 		Collections.shuffle(possibleRandom);
 
-		for (BastionBlock bastion : possibleRandom){
-			if (!bastion.canPlace(player) && bastion.inField(loc)){
+		for (BastionBlock bastion : possibleRandom) {
+			if (!bastion.canPlace(player) && bastion.inField(loc)) {
 				return bastion;
 			}
 		}
 		return null;
 	}
 
-	public BastionBlock getBlockingBastion(Location loc){
-		Set<? extends QTBox> possible=set.forLocation(loc);
+	public BastionBlock getBlockingBastion(Location loc) {
+		Set<? extends QTBox> possible = set.forLocation(loc);
 
 		@SuppressWarnings("unchecked")
-		List<BastionBlock> possibleRandom=new LinkedList<BastionBlock>((Set<BastionBlock>)possible);
+		List<BastionBlock> possibleRandom = new LinkedList<BastionBlock>((Set<BastionBlock>)possible);
 		Collections.shuffle(possibleRandom);
 
-		for (BastionBlock bastion : possibleRandom){
-			if (bastion.inField(loc)){
+		for (BastionBlock bastion : possibleRandom) {
+			if (bastion.inField(loc)) {
 				return bastion;
 			}
 		}
@@ -173,11 +194,13 @@ public class BastionBlockManager
 		Set<? extends QTBox> boxes = set.forLocation(loc);
 		Set<BastionBlock> bastions = null;
 		
-		if(boxes.size() > 0 && boxes.iterator().next() instanceof BastionBlock)
+		if(boxes.size() > 0 && boxes.iterator().next() instanceof BastionBlock) {
 			bastions = (Set<BastionBlock>) boxes;
+		}
 
-		if(bastions == null)
+		if (bastions == null) {
 			return new CopyOnWriteArraySet<BastionBlock>();
+		}
 		
 		Iterator<BastionBlock> i = bastions.iterator();
 		
@@ -195,16 +218,18 @@ public class BastionBlockManager
 		Set<? extends QTBox> boxes = set.forLocation(loc);
 		Set<BastionBlock> bastions = null;
 		
-		if(boxes.size() > 0 && boxes.iterator().next() instanceof BastionBlock)
+		if (boxes.size() > 0 && boxes.iterator().next() instanceof BastionBlock) {
 			bastions = (Set<BastionBlock>) boxes;
+		}
 
-		if(bastions == null)
+		if (bastions == null) {
 			return new CopyOnWriteArraySet<BastionBlock>();
+		}
 		
 		Iterator<BastionBlock> i = bastions.iterator();
-		while (i.hasNext()){
+		while (i.hasNext()) {
 			BastionBlock bastion = i.next();
-			if (!bastion.inField(loc) || bastion.canPlace(player)){
+			if (!bastion.inField(loc) || bastion.canPlace(player)) {
 				i.remove();
 			}
 		}
@@ -212,69 +237,71 @@ public class BastionBlockManager
 		return bastions;
 	}
 	
-	
 	@SuppressWarnings("unchecked")
-	private Set<BastionBlock> getBlockingBastions(Location loc, Set<UUID> players){
+	private Set<BastionBlock> getBlockingBastions(Location loc, Set<UUID> players) {
 		Set<? extends QTBox> boxes = set.forLocation(loc);
 		Set<BastionBlock> bastions = null;
 		
-		if(boxes.size() != 0)
+		if (boxes.size() != 0) {
 			bastions = (Set<BastionBlock>) boxes;
+		}
 
-		if(bastions == null)
+		if (bastions == null) {
 			return new CopyOnWriteArraySet<BastionBlock>();
-		
+		}
 		
 		Iterator<BastionBlock> i = bastions.iterator();
-		while (i.hasNext()){
+		while (i.hasNext()) {
 			BastionBlock bastion = i.next();
-			if(!bastion.inField(loc) || bastion.oneCanPlace(players))
+			if (!bastion.inField(loc) || bastion.oneCanPlace(players)) {
 				i.remove();
-		};
-		
+			}
+		}
 		
 		return bastions;
 	}
 	
+	public String infoMessage(boolean dev, Block block, Block clicked, Player player) {
+		BastionBlock bastion = set.getBastionBlock(clicked.getLocation()); //Get the bastion at the location clicked.
 
-	public String infoMessage(boolean dev, Block block, Block clicked, Player player){
-		BastionBlock bastion=set.getBastionBlock(clicked.getLocation()); //Get the bastion at the location clicked.
-
-		if(bastion!=null){ //See if anything was found
+		if (bastion != null) { //See if anything was found
 			return bastion.infoMessage(dev, player); //If there is actually something there tell the player about it.
 		}
 
-		bastion=getBlockingBastion(block.getLocation(),player);
-		if(bastion==null){
-			bastion=getBlockingBastion(block.getLocation());
-			if(bastion!=null){
-				return ChatColor.GREEN+"A Bastion Block prevents others from building" + ( (dev) ? (ChatColor.BLACK + "\n" +  bastion.toString()) : "" );
+		StringBuilder sb = new StringBuilder();
+
+		bastion = getBlockingBastion(block.getLocation(), player);
+		if (bastion == null) {
+			bastion = getBlockingBastion(block.getLocation());
+			if (bastion != null) {
+				sb.append(ChatColor.GREEN).append("A Bastion Block prevents others from building");
+			} else {
+				sb.append(ChatColor.YELLOW).append("No Bastion Block");
 			}
-		} else{
-			return ChatColor.RED+"A Bastion Block prevents you building" + ( (dev) ? (ChatColor.BLACK + "\n" +  bastion.toString()) : "" );
+		} else {
+			sb.append(ChatColor.RED).append("A Bastion Block prevents you building");
 		}
-		
-		return ChatColor.YELLOW + "No Bastion Block";
+
+		if (dev && bastion != null) {
+			sb.append(ChatColor.BLACK).append("\n").append(bastion.toString());
+		}
+
+		return sb.toString();
 	}
-	
-	
-	
-	
+
 	public void handleBlockPlace(BlockPlaceEvent event) {
 		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 		blocks.add(event.getBlock());
 		Set<BastionBlock> blocking = shouldStopBlock(null, blocks,event.getPlayer().getUniqueId());
 		
-		if(blocking.size() != 0){
+		if (blocking.size() != 0){
 			erodeFromPlace(null, blocks,event.getPlayer().getName(),blocking);
 			
 			event.setCancelled(true);
 			event.getPlayer().sendMessage(ChatColor.RED + "Bastion removed block");
-			
-			//event.getBlock().breakNaturally();
-			//event.getBlockReplacedState().update(true, false); //most likely source of random blocks being removed. Only one I can think of.
 		}
 	}
+
 	public void handleFlowingWater(BlockFromToEvent event) {
 		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 		blocks.add(event.getToBlock());
@@ -283,63 +310,70 @@ public class BastionBlockManager
 		if(blocking.size() != 0){
 			event.setCancelled(true);
 		}
-		
 	}
+	
 	public void handleTreeGrowth(StructureGrowEvent event) {
 		HashSet<Block> blocks = new HashSet<Block>();
-		for(BlockState state: event.getBlocks())
+		for(BlockState state: event.getBlocks()) {
 			blocks.add(state.getBlock());
+		}
 		
 		Player player = event.getPlayer();
 		UUID playerName = null;
-		if(player != null)
+		if (player != null) {
 			playerName = player.getUniqueId();
+		}
 		
-		Set<BastionBlock> blocking = shouldStopBlock(event.getLocation().getBlock(),blocks, playerName);
+		Set<BastionBlock> blocking = shouldStopBlock(event.getLocation().getBlock(), blocks, playerName);
 		
-		if(blocking.size() != 0)
+		if (blocking.size() != 0) {
 			event.setCancelled(true);
+		}
 	}
+	
 	public void handlePistonPush(BlockPistonExtendEvent event) {
 		Block pistion = event.getBlock();
 		Set<Block> involved = new HashSet<Block>(event.getBlocks());
 		involved.add(pistion.getRelative(event.getDirection()));
-
 		
-		Set<BastionBlock> blocking = shouldStopBlock (pistion, involved, null);
+		Set<BastionBlock> blocking = shouldStopBlock(pistion, involved, null);
 		
-		
-		if(blocking.size() != 0)
+		if (blocking.size() != 0) {
 			event.setCancelled(true);
+		}
 	}
+	
 	public void handleBucketPlace(PlayerBucketEmptyEvent event) {
 		Set<Block> blocks = new HashSet<Block>();
 		blocks.add(event.getBlockClicked().getRelative(event.getBlockFace()));
 		
-		Set<BastionBlock> blocking = shouldStopBlock(null,blocks, event.getPlayer().getUniqueId());
+		Set<BastionBlock> blocking = shouldStopBlock(null, blocks, event.getPlayer().getUniqueId());
 		
-		if(blocking.size() != 0)
+		if (blocking.size() != 0) {
 			event.setCancelled(true);
+		}
 	}
+	
 	public void handleDispensed(BlockDispenseEvent event) {
 		if (!(event.getItem().getType() == Material.WATER_BUCKET || event.getItem().getType() == Material.LAVA_BUCKET || event.getItem().getType() == Material.FLINT_AND_STEEL)) return;
-		
-		
 		
 		Set<Block> blocks = new HashSet<Block>();
 		blocks.add(event.getBlock().getRelative( ((Dispenser) event.getBlock().getState().getData()).getFacing()));
 		
 		Set<BastionBlock> blocking = shouldStopBlock(event.getBlock(),blocks, null);
 		
-		if(blocking.size() != 0)
+		if(blocking.size() != 0) {
 			event.setCancelled(true);
-		
+		}
 	}
+	
 	public void handleBlockBreakEvent(BlockBreakEvent event) {
 		BastionBlock bastion = set.getBastionBlock(event.getBlock().getLocation());
-		if (bastion != null)
+		if (bastion != null) {
 			bastion.close();
+		}
 	}
+	
 	public void handleEnderPearlLanded(PlayerTeleportEvent event) {
 		if (!Bastion.getConfigManager().getEnderPearlsBlocked()) return; //don't block if the feature isn't enabled.
 		if (event.getPlayer().hasPermission("Bastion.bypass")) return; //I'm not totally sure about the implications of this combined with humbug. It might cause some exceptions. Bukkit will catch.
@@ -347,45 +381,49 @@ public class BastionBlockManager
 		
 		Set<BastionBlock> blocking = this.getBlockingBastions(event.getTo(), event.getPlayer());
 		
-		if(Bastion.getConfigManager().getEnderPearlRequireMaturity()){
+		if (Bastion.getConfigManager().getEnderPearlRequireMaturity()) {
 			Iterator<BastionBlock> i = blocking.iterator();
 		
-			while (i.hasNext()){
+			while (i.hasNext()) {
 				BastionBlock bastion = i.next();
 				if (!bastion.isMature()){
 					i.remove();
 				}
-			};
+			}
 		}
 		
-		if (blocking.size() > 0){
-			this.erodeFromTeleoprt(event.getTo(), event.getPlayer().getName(), blocking);
+		if (blocking.size() > 0) {
+			this.erodeFromTeleport(event.getTo(), event.getPlayer().getName(), blocking);
 			event.getPlayer().sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
+			// TODO: Make consumption of pearls optional here.
 			event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
-			
 			event.setCancelled(true);
 			return;
+		}
+
+		if (!Bastion.getConfigManager().blockMidAir()) { // Do we block launches or mid-air?
+			return; // only block landings as above.
 		}
 		
 		blocking = this.getBlockingBastions(event.getFrom(), event.getPlayer());
 		
-		if(Bastion.getConfigManager().getEnderPearlRequireMaturity()){
+		if (Bastion.getConfigManager().getEnderPearlRequireMaturity()) {
 			Iterator<BastionBlock> i = blocking.iterator();
 		
-			while (i.hasNext()){
+			while (i.hasNext()) {
 				BastionBlock bastion = i.next();
 				if (!bastion.isMature()){
 					i.remove();
 				}
-			};
+			}
 		}
 		
-		
 		if (blocking.size() > 0){
-			this.erodeFromTeleoprt(event.getTo(), event.getPlayer().getName(), blocking);
-			event.getPlayer().sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
+			// TODO: Double check: We use getFrom() to find a list of blockers, but previously used erode getTo() if a blocker was found.
+			this.erodeFromTeleport(event.getFrom(), event.getPlayer().getName(), blocking);
+			event.getPlayer().sendMessage(ChatColor.RED + "Ender pearl blocked by Bastion Block");
+			// TODO: Make consumption of pearls optional here.
 			event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
-			
 			event.setCancelled(true);
 			return;
 		}	

@@ -24,4 +24,4 @@ BastionBlock:
     block_midair: false
     scaleFac: 1
     requireMaturity: true 
-  
+    consumeOnBlock: false  
