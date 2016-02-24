@@ -75,7 +75,7 @@ public class Fortification extends PlayerCommand{
 		ItemStack stack = p.getItemInHand();
 		PlayerState state = PlayerState.get(p);
 		ReinforcementType reinType = ReinforcementType.getReinforcementType(stack);
-		if (state.getMode() == ReinforcementMode.REINFOREMENT_FORTIFICATION){
+		if (state.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION){
 			p.sendMessage(ChatColor.GREEN + state.getMode().name() + " has been disabled");
 			state.reset();
 		}
@@ -89,8 +89,8 @@ public class Fortification extends PlayerCommand{
 				return true;
 			}
 			p.sendMessage(ChatColor.GREEN + "Your mode has been set to " + 
-					ReinforcementMode.REINFOREMENT_FORTIFICATION.name() + ".");
-			state.setMode(ReinforcementMode.REINFOREMENT_FORTIFICATION);
+					ReinforcementMode.REINFORCEMENT_FORTIFICATION.name() + ".");
+			state.setMode(ReinforcementMode.REINFORCEMENT_FORTIFICATION);
 			state.setFortificationItemStack(reinType.getItemStack());
 			state.setGroup(g);
 		}
