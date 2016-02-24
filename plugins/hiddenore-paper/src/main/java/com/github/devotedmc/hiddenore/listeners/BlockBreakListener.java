@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.logging.Level;
 
@@ -179,10 +180,20 @@ public class BlockBreakListener implements Listener {
 	    		//Random check to decide whether or not the special drop should be dropped
 	    		if(dropChance > Math.random()) {
 	    			//Remove block, drop special drop and cancel the event
-	    			b.setType(Material.AIR);
-	    			ItemStack item = dc.renderDrop(drop, biomeName);
-	    			b.getWorld().dropItem(b.getLocation(), item);
-	    			event.setCancelled(true);
+	    			if (!hasDrop) {
+	    				b.setType(Material.AIR);
+	    				event.setCancelled(true);
+	    			}
+	    			
+	    			final ItemStack item = dc.renderDrop(drop, biomeName);
+	    			final Location l = b.getLocation();
+	    			new BukkitRunnable() {
+	    				@Override
+						public void run() {
+			    			l.getWorld().dropItem(l, item);							
+						}
+					}.runTaskLater(HiddenOre.getPlugin(), 1l);
+	    			
 					log("For {5} at {6} replacing {0}:{1} with {2} {3} at dura {4}", blockName, sb, 
 							item.getAmount(), drop, item.getDurability(), p.getDisplayName(), p.getLocation());
 					if (Config.isAlertUser()) {
@@ -212,9 +223,17 @@ public class BlockBreakListener implements Listener {
         		DropConfig dc = bc.getDropConfig(drop);
     			//Remove block, drop special drop and cancel the event
     			b.setType(Material.AIR);
-    			ItemStack item = dc.renderDrop(drop, biomeName);
-    			b.getWorld().dropItem(b.getLocation(), item);
     			event.setCancelled(true);
+    			final ItemStack item = dc.renderDrop(drop, biomeName);
+    			final Location l = b.getLocation();
+
+    			new BukkitRunnable() {
+    				@Override
+					public void run() {
+		    			l.getWorld().dropItem(l, item);							
+					}
+				}.runTaskLater(HiddenOre.getPlugin(), 1l);
+    			
     			log("For {5} at {6} replacing {0}:{1} with {2} {3} at dura {4}", blockName, sb, 
 						item.getAmount(), drop, item.getDurability(), p.getDisplayName(), p.getLocation());
 				if (Config.isAlertUser()) {
