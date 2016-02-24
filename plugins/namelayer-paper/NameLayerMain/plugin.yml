@@ -39,7 +39,7 @@ commands:
    nlmp:
     aliases: [nlmodifyperms, nlmodifypermissions, nlmodperms, modifypermissions]
    nlrm:
-    aliases: [nlremovemember, nlremove, nlkick, kick, removemember]
+    aliases: [nlremovemember, nlremove, nlkick, kickmember, removemember]
    nlri:
     aliases: [nlrevokeinvite, nluninvite, revokeinvite]
    nllink:
