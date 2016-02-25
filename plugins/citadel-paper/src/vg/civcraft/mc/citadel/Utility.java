@@ -113,7 +113,7 @@ public class Utility {
         // Handle special case with block reinforcements.
         if (type.getMaterial().isBlock()){
             if (slots.size()>1){
-                if (inv.getItemInHand().isSimilar(itemType) && PlayerState.get(player).getMode() == ReinforcementMode.REINFOREMENT_FORTIFICATION && slots.get(0) != inv.getHeldItemSlot()){
+                if (inv.getItemInHand().isSimilar(itemType) && PlayerState.get(player).getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION && slots.get(0) != inv.getHeldItemSlot()){
                 	requirements--;
                 }
             }
