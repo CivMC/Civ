@@ -1,0 +1,3607 @@
+# 
+#   inputmat1:
+#       material: STONE
+#   inputmat345FF:
+#       material: DIRT
+
+default_update_time: 1s
+default_fuel:
+  charcoal:
+    material: COAL
+    durability: 1
+default_fuel_consumption_intervall: 2s
+default_menu_factory: Basic Contraption
+log_inventories: true
+break_grace_period: 7d
+decay_intervall: 1h
+decay_amount: 21
+factories:
+  basiccontraption:
+    type: FCC
+    name: Basic Contraption
+    setupcost:
+      wood:
+        material: WOOD
+        amount: 64
+      stone:
+        material: STONE
+        amount: 64
+      bread:
+        material: BREAD
+        amount: 32
+    recipes:
+    - Smelt_Stone_Basic
+    - Cut_any_type_of_Plank_Basic
+    - Bake_Bread_Basic
+    - Upgrade_to_Stone_Smelter
+    - Upgrade_to_Farmstead_Factory
+    - Upgrade_to_Blacksmith
+    - Upgrade_to_Laboratory
+    - Upgrade_to_Wood_Processor
+  stonesmelter:
+    type: FCCUPGRADE
+    name: Stone Smelter
+    recipes:
+    - Smelt_Stone_Advanced
+    - Smelt_Coal_Ore_Basic
+    - Smelt_Glass_Basic
+    - Upgrade_to_Ore_Smelter
+    - Upgrade_to_Sand_Smelter
+    - Upgrade_to_Brick_Smelter
+    - Upgrade_to_Kiln
+  oresmelter:
+    type: FCCUPGRADE
+    name: Ore Smelter
+    recipes:
+    - Smelt_Coal_Ore_Advanced
+    - Smelt_Iron_Ore_Basic
+    - Extract_Redstone_Basic
+    - Extract_Quartz_Basic
+    - Upgrade_to_Ore_Forge
+    - Upgrade_to_Gem_extractor
+  oresmelter2:
+    type: FCCUPGRADE
+    name: Ore Forge
+    recipes:
+    - Smelt_Coal_Ore_Expert
+    - Smelt_Iron_Ore_Advanced
+    - Smelt_Gold_Ore
+  gemextractor:
+    type: FCCUPGRADE
+    name: Gem Extractor
+    recipes:
+    - Extract_Diamonds
+    - Extract_Emeralds
+    - Extract_Quartz_Advanced
+    - Extract_Redstone_Advanced
+    - Extract_Lapis
+  sandsmelter:
+    type: FCCUPGRADE
+    name: Sand Smelter
+    recipes:
+    - Smelt_Glass_Advanced
+    - Smelt_Glass_Panes_Basic
+    - Smelt_Sandstone_Basic
+    - Smelt_Red_Sandstone_Basic
+    - Convert_Normal_Sand_to_Red_Sand
+    - Upgrade_to_Sand_Smelter_2
+    - Upgrade_to_Sandstone_Smelter
+    - Upgrade_to_Glass_Dying
+  sandsmelter2:
+    type: FCCUPGRADE
+    name: Sand Smelter 2
+    recipes:
+    - Smelt_Glass_Expert
+    - Smelt_Glass_Panes_Advanced
+    - Smelt_Glassbottles
+  sandstonesmelter:
+    type: FCCUPGRADE
+    name: Sandstone Smelter
+    recipes:
+    - Smelt_Sandstone_Advanced
+    - Smelt_Red_Sandstone_Advanced
+    - Smelt_Sandstone_Stairs
+    - Smelt_Red_Sandstone_Stairs
+    - Smelt_Sandstone_Slabs
+    - Smelt_Red_Sandstone_Slabs
+    - Smelt_Chiselled_Sandstone
+    - Smelt_Chiselled_Red_Sandstone
+    - Smelt_Smooth_Sandstone
+    - Smelt_Smooth_Red_Sandstone
+  bricksmelter:
+    type: FCCUPGRADE
+    name: Brick Smelter
+    recipes:
+    - Smelt_Stone_Advanced
+    - Craft_Stonebricks_Basic
+    - Craft_Prismarine_Basic
+    - Craft_Netherbrick_Basic
+    - Upgrade_to_Stonebrick_Smelter
+    - Upgrade_to_Netherbrick_Smelter
+    - Upgrade_to_Aquatic_Brick_Smelter
+  advancedstonesmelter:
+    type: FCCUPGRADE
+    name: Advanced Stone Smelter
+    recipes:
+    - Smelt_Stone_Expert
+    - Craft_Polished_Andesite
+    - Craft_Polished_Diorite
+    - Craft_Polished_Granite
+  stonebricksmelter:
+    type: FCCUPGRADE
+    name: Stone Brick Smelter
+    recipes:
+    - Craft_Stonebricks_Advanced
+    - Craft_Stonebrick_Stairs
+    - Craft_Stonebrick_Slabs
+    - Craft_Chiselled_Stonebrick
+    - Craft_Cracked_Stonebrick
+    - Craft_Mossy_Stonebrick
+  netherbricksmelter:
+    type: FCCUPGRADE
+    name: Nether Brick Smelter
+    recipes:
+    - Smelt_Netherbrick_Advanced
+    - Craft_Netherbrick_Fence
+    - Craft_Netherbrick_Slabs
+    - Craft_Netherbrick_Stairs
+  aquaticstonesmelter:
+    type: FCCUPGRADE
+    name: Aquatic Brick Smelter
+    recipes:
+    - Smelt_Prismarine
+    - Smelt_Dark_Prismarine
+    - Smelt_Prismarine_Bricks
+    - Craft_Sea_Lanterns
+  quartzfactory:
+    type: FCCUPGRADE
+    name: Quartz Factory
+    recipes:
+    - Craft_Quartz_Slabs
+    - Craft_Quartz_Blocks
+    - Craft_Chiselled_Quartz_Blocks
+    - Craft_Pillar_Quartz_Blocks
+    - Craft_Quartz_Stairs
+  kiln:
+    type: FCCUPGRADE
+    name: Kiln
+    recipes:
+    - Smelt_Clay_Bricks
+    - Harden_Clay_Basic
+    - Upgrade_to_Advanced_Kiln
+  advancedkiln:
+    type: FCCUPGRADE
+    name: Advanced Kiln
+    recipes:
+    - Smelt_Brickblocks
+    - Harden_Clay_Advanced
+    - Craft_Flowerpots
+  woodprocessor:
+    type: FCCUPGRADE
+    name: Wood Processor
+    recipes:
+    - Burn_Charcoal_from_Logs_Basic
+    - Craft_Oak_Fence
+    - Cut_any_type_of_Plank_Basic
+    - Upgrade_to_Carpentry
+    - Upgrade_to_Fine_Woodworking
+    - Upgrade_to_Coal_Burner
+  carpentry:
+    type: FCCUPGRADE
+    name: Carpentry
+    recipes:
+    - Craft_Boat
+    - Cut_any_type_of_Plank_Advanced
+    - Craft_any_type_of_wooden_stair
+    - Craft_any_type_of_wooden_slab
+    - Craft_any_type_of_wooden_door
+  finewoodworking:
+    type: FCCUPGRADE
+    name: Fine Woodworking
+    recipes:
+    - Craft_any_type_of_fence
+    - Craft_any_type_of_fence_gate
+    - Craft_ladder
+    - Craft_trap_door
+  coalburner:
+    type: FCCUPGRADE
+    name: Coal Burner
+    recipes:
+    - Burn_Charcoal_from_Coal
+    - Burn_Charcoal_from_Logs_Advanced
+  farmsteadfactory:
+    type: FCCUPGRADE
+    name: Farmstead Factory
+    recipes:
+    - Bake_Bread_Basic
+    - Grill_Steak_Basic
+    - Create_Poppy_Basic
+    - Upgrade_to_Bakery
+    - Upgrade_to_Grill
+    - Upgrade_to_Soup_kitchen
+    - Upgrade_to_Bio_Lab
+    - Upgrade_to_Animal_Husbandry_Factory_Basic
+  bakery:
+    type: FCCUPGRADE
+    name: Bakery
+    recipes:
+    - Bake_Potatoes
+    - Bake_Bread_Advanced
+    - Bake_Cookies
+    - Bake_Cake
+    - Bake_Pumpkin_Pie
+  grill:
+    type: FCCUPGRADE
+    name: Grill
+    recipes:
+    - Grill_Steak_Advanced
+    - Grill_Beef
+    - Fry_Chicken
+    - Cook_Salmon
+    - Cook_Fish
+    - Cook_Mutton
+    - Cook_Rabbit
+  stewmaker:
+    type: FCCUPGRADE
+    name: Soup kitchen
+    recipes:
+    - Make_Rabbit_Stew
+    - Make_Mushroom_Stew
+  animalhusbandryfactorybasic:
+    type: FCCUPGRADE
+    name: Animal Husbandry Factory Basic
+    recipes:
+    - Craft_Saddles_Basic
+    - Dye_Wool_to_Red_Wool
+    - Dye_Wool_to_Yellow_Wool
+    - Dye_Wool_to_Green_Wool
+    - Upgrade_to_Wool_Processing
+    - Upgrade_to_Animal_Husbandry_Factory_Advanced
+  animalhusbandryfactoryadvanced:
+    type: FCCUPGRADE
+    name: Animal Husbandry Factory Advanced
+    recipes:
+    - Craft_Saddles_Advanced
+    - Create_Nametags
+    - Create_Leads
+  biolab:
+    type: FCCUPGRADE
+    name: Bio Lab
+    recipes:
+    - Create_Poppy_Advanced
+    - Mutate_Tall_Grass  Basic
+    - Take_friendly_mob_egg_apart
+    - Create_Podzol_Basic
+    - Upgrade_to_Grass_Gardening
+    - Upgrade_to_Flower_Gardening
+    - Upgrade_to_Tree_Mutator
+    - Upgrade_to_Mad_Scientist
+    - Upgrade_to_Organic_Block_Factory
+  grassgardening:
+    type: FCCUPGRADE
+    name: Grass Gardening
+    recipes:
+    - Mutate_Tall_Grass  Advanced
+    - Mutate_Large_Fern
+    - Kill_Dead_Bush
+    - Grow_Grass
+    - Grow_Fern
+    - Grow_Vine
+    - Kill_Dead_Shrub
+  flowergardening:
+    type: FCCUPGRADE
+    name: Flower Gardening
+    recipes:
+    - Create_any_flower
+  treemutator:
+    type: FCCUPGRADE
+    name: Tree Mutator
+    recipes:
+    - Mutate_any_sapling_into_any_other
+    - Mutate_any_leaf_into_any_other
+  madscientist:
+    type: FCCUPGRADE
+    name: Mad Scientist
+    recipes:
+    - Create_any_hostile_mob_egg
+    - Take_any_mob_egg_apart
+  organicblockfactory:
+    type: FCCUPGRADE
+    name: Organic Block Factory
+    recipes:
+    - Create_Podzol_Advanced
+    - Create_Coarse_Dirt
+    - Create_Mycelium
+  blacksmith:
+    type: FCCUPGRADE
+    name: Blacksmith
+    recipes:
+    - Forge_Stone_Sword
+    - Forge_Stone_Pickaxe
+    - Forge_Stone_Shovel
+    - Forge_Stone_Hoe
+    - Forge_Stone_Axe
+    - Upgrade_to_Iron_Forge_Basic
+    - Upgrade_to_Iron_Equipment_Forge
+  ironforgebasic:
+    type: FCCUPGRADE
+    name: Iron Forge Basic
+    recipes:
+    - Craft_Rail_Basic
+    - Craft_Buckets_Basic
+    - Craft_Anvils_Basic
+    - Upgrade_to_Iron_Forge_Advanced
+    - Upgrade_to_Rail_Factory
+  ironforgeadvanced:
+    type: FCCUPGRADE
+    name: Iron Forge Advanced
+    recipes:
+    - Craft_Shears
+    - Craft_Anvils_Advanced
+    - Craft_Buckets_Advanced
+    - Craft_Iron_Bars
+    - Craft_Iron_Door
+    - Craft_Flint_and_Steel
+  railfactory:
+    type: FCCUPGRADE
+    name: Rail Factory
+    recipes:
+    - Create_Rail_Advanced
+    - Create_Powered_Rail
+    - Create_Detector_Rail
+    - Create_Activator_Rail
+  ironequipmentforge:
+    type: FCCUPGRADE
+    name: Iron Equipment Forge
+    recipes:
+    - Forge_Iron_Pickaxe
+    - Forge_Iron_Shovel
+    - Forge_Iron_Axe
+    - Forge_Iron_Hoe
+    - Forge_Iron_Sword
+    - Forge_Iron_Helmet
+    - Forge_Iron_Boots
+    - Forge_Iron_Breastplate
+    - Forge_Iron_Leggings
+    - Forge_Iron_Horse_Armour
+    - Upgrade_to_Gold_Equipment_Forge
+    - Upgrade_to_Diamond_Equipment_Forge
+  goldequipmentforge:
+    type: FCCUPGRADE
+    name: Gold Equipment Forge
+    recipes:
+    - Forge_Gold_Pickaxe
+    - Forge_Gold_Shovel
+    - Forge_Gold_Breastplate
+    - Forge_Gold_Leggings
+    - Upgrade_to_Gold_Armour_Forge
+    - Upgrade_to_Gold_Tools_Forge
+  diamondequipmentforge:
+    type: FCCUPGRADE
+    name: Diamond Equipment Forge
+    recipes:
+    - Forge_Diamond_Pickaxe
+    - Forge_Diamond_Shovel
+    - Forge_Diamond_Breastplate
+    - Forge_Diamond_Leggings
+    - Upgrade_to_Diamond_Armour_Forge
+    - Upgrade_to_Diamond_Tools_Forge
+  goldarmourforge:
+    type: FCCUPGRADE
+    name: Gold Armour Forge
+    recipes:
+    - Forge_Gold_Helmet
+    - Forge_Gold_Boots
+    - Forge_Gold_Breastplate
+    - Forge_Gold_Leggings
+    - Forge_Gold_Horse_Armour
+  goldtoolsforge:
+    type: FCCUPGRADE
+    name: Gold Tools Forge
+    recipes:
+    - Forge_Gold_Pickaxe
+    - Forge_Gold_Shovel
+    - Forge_Gold_Axe
+    - Forge_Gold_Hoe
+    - Forge_Gold_Sword
+  diamondarmourforge:
+    type: FCCUPGRADE
+    name: Diamond Armour Forge
+    recipes:
+    - Forge_Diamond_Helmet
+    - Forge_Diamond_Boots
+    - Forge_Diamond_Breastplate
+    - Forge_Diamond_Leggings
+    - Forge_Diamond_Horse_Armour
+  diamondtoolsforge:
+    type: FCCUPGRADE
+    name: Diamond Tools Forge
+    recipes:
+    - Forge_Diamond_Pickaxe
+    - Forge_Diamond_Shovel
+    - Forge_Diamond_Axe
+    - Forge_Diamond_Hoe
+    - Forge_Diamond_Sword
+  laboratory:
+    type: FCCUPGRADE
+    name: Laboratory
+    recipes:
+    - Craft_Redstone_Repeater_Basic
+    - Craft_Dispenser_Basic
+    - Enchant_Efficiency
+    - Random_Printing_Press_Recipe
+    - Upgrade_to_Bastion_Factory
+    - Upgrade_to_Compactor_Basic
+    - Upgrade_to_Enchanter_Basic
+    - Upgrade_to_Printing_Press
+    - Upgrade_to_Redstone_Factory_Basic
+  bastionfactory:
+    type: FCCUPGRADE
+    name: Bastion Factory
+    recipes:
+    - Create_Bastion
+  printingpress:
+    type: FCCUPGRADE
+    name: Printing Press
+    recipes:
+    - foo
+  compactorbasic:
+    type: FCCUPGRADE
+    name: Compactor Basic
+    recipes:
+    - Compact_Stack_Basic
+    - De-compact_Stack_Basic
+    - Upgrade_to_Dedicated_Compactor
+    - Upgrade_to_Dedicated_De-Compactor
+  dedicatedcompactor:
+    type: FCCUPGRADE
+    name: Dedicated Compactor
+    recipes:
+    - Compact_Stack_Advanced
+  dedicateddecompactor:
+    type: FCCUPGRADE
+    name: Dedicated De-Compactor
+    recipes:
+    - De-compact_Stack_Advanced
+  redstonefactorybasic:
+    type: FCCUPGRADE
+    name: Redstone Factory Basic
+    recipes:
+    - Craft_Redstone_Repeater_Advanced
+    - Craft_Redstone_Torch_Basic
+    - Craft_Noteblocks_Basic
+    - Craft_Dispenser_Basic
+    - Upgrade_to_Redstone_Circularity_Factory
+    - Upgrade_to_Redstone_Mechanics_Factory
+  redstonecircularityfactory:
+    type: FCCUPGRADE
+    name: Redstone Circularity Factory
+    recipes:
+    - Craft_Redstone_Repeater_Advanced
+    - Craft_Redstone_Torch_Advanced
+    - Craft_Redstone_Comparator
+    - Craft_Daylight_Sensor
+  redstonemechanicsfactory:
+    type: FCCUPGRADE
+    name: Redstone Mechanics Factory
+    recipes:
+    - Craft_Piston
+    - Craft_Sticky_Piston
+    - Craft_Noteblocks_Advanced
+    - Craft_Jukeboxes
+    - Craft_Dispenser_Advanced
+    - Craft_Droppers
+    - Craft_Redstone_Lamps
+  basicenchanter:
+    type: FCCUPGRADE
+    name: Basic Enchanter
+    recipes:
+    - Upgrade_to_Tool_Enchanter
+    - Upgrade_to_Weapon_Enchanter
+    - Upgrade_to_Armour_Enchanter
+recipes:
+  Bake_Bread_Advanced:
+    type: PRODUCTION
+    name: Bake Bread
+    production_time: 5s
+    input:
+      wheat:
+        material: WHEAT
+        amount: 256
+    output:
+      bread:
+        material: BREAD
+        amount: 1024
+  Bake_Bread_Basic:
+    type: PRODUCTION
+    name: Bake Bread
+    production_time: 5s
+    input:
+      wheat:
+        material: WHEAT
+        amount: 256
+    output:
+      bread:
+        material: BREAD
+        amount: 512
+  Bake_Cake:
+    type: PRODUCTION
+    name: Bake Cake
+    production_time: 5s
+    input:
+      wheat:
+        material: WHEAT
+        amount: 192
+      sugar:
+        material: SUGAR
+        amount: 128
+      eggs:
+        material: EGG
+        amount: 64
+      milk:
+        material: MILK_BUCKET
+        amount: 10
+    output:
+      cake:
+        material: CAKE
+        amount: 64
+  Bake_Cookies:
+    type: PRODUCTION
+    name: Bake Cookies
+    production_time: 5s
+    input:
+      cocoa:
+        material: INK_SACK
+        durability: 3
+        amount: 64
+      wheat:
+        material: WHEAT
+        amount: 128
+    output:
+      cookie:
+        material: COOKIE
+        amount: 1024
+  Bake_Potatoes:
+    type: PRODUCTION
+    name: Bake Potatoes
+    production_time: 5s
+    input:
+      potato:
+        material: POTATO_ITEM
+        amount: 512
+    output:
+      baked potato:
+        material: BAKED_POTATO
+        amount: 1024
+  Bake_Pumpkin_Pie:
+    type: PRODUCTION
+    name: Bake Pumpkin Pie
+    production_time: 5s
+    input:
+      pumpkin:
+        material: PUMPKIN
+        amount: 64
+      egg:
+        material: EGG
+        amount: 64
+      sugar:
+        material: SUGAR
+        amount: 64
+    output:
+      pumpkin pie:
+        material: PUMPKIN_PIE
+        amount: 192
+  Burn_Charcoal_from_Coal:
+    type: PRODUCTION
+    name: Burn Charcoal from Coal
+    production_time: 5s
+    input:
+      coal:
+        material: COAL
+        amount: 64
+    output:
+      charcoal:
+        material: COAL
+        amount: 128
+        durability: 1
+  Compact_Stack_Advanced:
+    type: COMPACT
+    name: Compact Stack
+    production_time: 1s
+    input:
+      crate:
+        material: CHEST
+        lore:
+        - Crate
+        amount: 1
+    compact_lore: Compacted Item
+    excluded_materials: -BOOK
+  Compact_Stack_Basic:
+    type: COMPACT
+    name: Compact Stack
+    production_time: 5s
+    input:
+      crate:
+        material: CHEST
+        lore:
+        - Crate
+        amount: 1
+    compact_lore: Compacted Item
+    excluded_materials: -BOOK
+  Convert_Normal_Sand_to_Red_Sand:
+    type: PRODUCTION
+    name: Convert Normal Sand to Red Sand
+    production_time: 5s
+    input:
+      sand:
+        material: SAND
+        amount: 64
+    output:
+      red sand:
+        material: SAND
+        durability: 1
+        amount: 64
+  Cook_Fish:
+    type: PRODUCTION
+    name: Cook Fish
+    production_time: 5s
+    input:
+      raw fish:
+        material: RAW_FISH
+        amount: 64
+    output:
+      cooked fish:
+        material: COOKED_FISH
+        amount: 64
+  Cook_Mutton:
+    type: PRODUCTION
+    name: Cook Mutton
+    production_time: 5s
+    input:
+      raw mutton:
+        material: MUTTON
+        amount: 64
+    output:
+      cooked mutton:
+        material: COOKED_MUTTON
+        amount: 128
+  Cook_Rabbit:
+    type: PRODUCTION
+    name: Cook Rabbit
+    production_time: 5s
+    input:
+      raw rabbit:
+        material: RABBIT
+        amount: 64
+    output:
+      cooked rabbit:
+        material: COOKED_RABBIT
+        amount: 128
+  Cook_Salmon:
+    type: PRODUCTION
+    name: Cook Salmon
+    production_time: 5s
+    input:
+      raw salmon:
+        material: RAW_FISH
+        durability: 1
+        amount: 64
+    output:
+      cooked salmon:
+        material: COOKED_FISH
+        durability: 1
+        amount: 128
+  Craft_Anvils_Advanced:
+    type: PRODUCTION
+    name: Craft Anvils
+    production_time: 5s
+    input:
+      iron blocks:
+        material: IRON_BLOCK
+        amount: 32
+    output:
+      anvil:
+        material: ANVIL
+        amount: 16
+  Craft_Anvils_Basic:
+    type: PRODUCTION
+    name: Craft Anvils
+    production_time: 5s
+    input:
+      iron blocks:
+        material: IRON_BLOCK
+        amount: 32
+    output:
+      anvil:
+        material: ANVIL
+        amount: 10
+  Craft_any_type_of_fence:
+    type: PRODUCTION
+    name: Craft any type of fence
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Craft_any_type_of_fence_gate:
+    type: PRODUCTION
+    name: Craft any type of fence gate
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Craft_any_type_of_wooden_door_:
+    type: PRODUCTION
+    name: Craft any type of wooden door
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Craft_any_type_of_wooden_slab:
+    type: PRODUCTION
+    name: Craft any type of wooden slab
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Craft_any_type_of_wooden_stair_:
+    type: PRODUCTION
+    name: Craft any type of wooden stair
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Craft_Boat:
+    type: PRODUCTION
+    name: Craft Boat
+    production_time: 5s
+    input:
+      wood:
+        material: WOOD
+        amount: 64
+    output:
+      boat:
+        material: BOAT
+        amount: 18
+  Craft_Buckets_Advanced:
+    type: PRODUCTION
+    name: Craft Buckets
+    production_time: 5s
+    input:
+      iron blocks:
+        material: IRON_BLOCK
+        amount: 4
+    output:
+      bucket:
+        material: BUCKET
+        amount: 16
+  Craft_Buckets_Basic:
+    type: PRODUCTION
+    name: Craft Buckets
+    production_time: 5s
+    input:
+      iron blocks:
+        material: IRON_BLOCK
+        amount: 5
+    output:
+      bucket:
+        material: BUCKET
+        amount: 16
+  Craft_Chiselled_Quartz_Blocks:
+    type: PRODUCTION
+    name: Craft Chiselled Quartz Blocks
+    production_time: 5s
+    input:
+      quartz blocks:
+        material: QUARTZ_BLOCK
+        amount: 32
+    output:
+      chhiseled quartz blocks:
+        material: QUARTZ_BLOCK
+        durability: 1
+        amount: 32
+  Craft_Chiselled_Stonebrick:
+    type: PRODUCTION
+    name: Craft Chiselled Stonebrick
+    production_time: 5s
+    input:
+      stone brick:
+        material: SMOOTH_BRICK
+        amount: 16
+      flint:
+        material: FLINT
+        amount: 2
+    output:
+      chiseled stone brick:
+        material: SMOOTH_BRICK
+        durability: 3
+        amount: 16
+  Craft_Cracked_Stonebrick:
+    type: PRODUCTION
+    name: Craft Cracked Stonebrick
+    production_time: 5s
+    input:
+      stone brick:
+        material: SMOOTH_BRICK
+        amount: 16
+      gravel:
+        material: GRAVEL
+        amount: 2
+    output:
+      chiseled stone brick:
+        material: SMOOTH_BRICK
+        durability: 2
+        amount: 16
+  Craft_Daylight_Sensor:
+    type: PRODUCTION
+    name: Craft Daylight Sensor
+    production_time: 5s
+    input:
+      planks:
+        material: WOOD
+        durability: -1
+        amount: 64
+      glass:
+        material: GLASS
+        amount: 64
+      quartz:
+        material: QUARTZ
+        amount: 64
+    output:
+      daylight sensor:
+        material: DAYLIGHT_DETECTOR
+        amount: 32
+  Craft_Dispenser_Advanced:
+    type: PRODUCTION
+    name: Craft Dispenser
+    production_time: 5s
+    input:
+      cobblestone:
+        material: COBBLESTONE
+        amount: 192
+      string:
+        material: STRING
+        amount: 32
+      stick:
+        material: STICK
+        amount: 32
+      redstone:
+        material: REDSTONE
+        amount: 32
+    output:
+      dispenser:
+        material: DISPENSER
+        amount: 64
+  Craft_Dispenser_Basic:
+    type: PRODUCTION
+    name: Craft Dispenser
+    production_time: 5s
+    input:
+      cobblestone:
+        material: COBBLESTONE
+        amount: 192
+      string:
+        material: STRING
+        amount: 32
+      stick:
+        material: STICK
+        amount: 32
+      redstone:
+        material: REDSTONE
+        amount: 32
+    output:
+      dispenser:
+        material: DISPENSER
+        amount: 48
+  Craft_Droppers:
+    type: PRODUCTION
+    name: Craft Droppers
+    production_time: 5s
+    input:
+      cobblestone:
+        material: COBBLESTONE
+        amount: 192
+      redstone:
+        material: REDSTONE
+        amount: 32
+    output:
+      dispenser:
+        material: DROPPER
+        amount: 48
+  Craft_Flint_and_Steel:
+    type: PRODUCTION
+    name: Craft Flint and Steel
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 12
+      flint:
+        material: FLINT
+        amount: 12
+    output:
+      flint and steel:
+        material: FLINT_AND_STEEL
+        amount: 16
+  Craft_Flowerpots:
+    type: PRODUCTION
+    name: Craft Flowerpots
+    production_time: 5s
+    input:
+      brick:
+        material: BRICK
+        amount: 32
+    output:
+      flower pot:
+        material: FLOWER_POT_ITEM
+        amount: 64
+  Craft_Iron_Bars:
+    type: PRODUCTION
+    name: Craft Iron Bars
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 16
+    output:
+      iron bars:
+        material: IRON_FENCE
+        amount: 64
+  Craft_Iron_Door:
+    type: PRODUCTION
+    name: Craft Iron Door
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_FENCE
+        amount: 16
+    output:
+      iron door:
+        material: IRON_DOOR
+        amount: 10
+  Craft_Jukeboxes:
+    type: PRODUCTION
+    name: Craft Jukeboxes
+    production_time: 5s
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 48
+      log:
+        material: LOG
+        durability: -1
+        amount: 32
+    output:
+      jukebox:
+        material: JUKEBOX
+        amount: 64
+  Craft_ladder:
+    type: PRODUCTION
+    name: Craft ladder
+    production_time: 5s
+    input:
+      stick:
+        material: STICK
+        amount: 32
+    output:
+      ladder:
+        material: LADDER
+        amount: 16
+  Craft_Mossy_Stonebrick:
+    type: PRODUCTION
+    name: Craft Mossy Stonebrick
+    production_time: 5s
+    input:
+      stone brick:
+        material: SMOOTH_BRICK
+        amount: 16
+      vine:
+        material: VINE
+        amount: 2
+    output:
+      chiseled stone brick:
+        material: SMOOTH_BRICK
+        durability: 1
+        amount: 16
+  Craft_Netherbrick_Basic:
+    type: PRODUCTION
+    name: Craft Netherbrick
+    production_time: 5s
+    input:
+      netherrack:
+        material: NETHERRACK
+        amount: 64
+    output:
+      netherbrick:
+        material: NETHER_BRICK
+        amount: 32
+  Craft_Netherbrick_Fence:
+    type: PRODUCTION
+    name: Craft Netherbrick Fence
+    production_time: 5s
+    input:
+      nether brick:
+        material: NETHER_BRICK
+        amount: 48
+    output:
+      nether brick fence:
+        material: NETHER_FENCE
+        amount: 64
+  Craft_Netherbrick_Slabs:
+    type: PRODUCTION
+    name: Craft Netherbrick Slabs
+    production_time: 5s
+    input:
+      nether brick:
+        material: NETHER_BRICK
+        amount: 64
+    output:
+      nether brick slabs:
+        material: STEP
+        durability: 6
+        amount: 128
+  Craft_Netherbrick_Stairs:
+    type: PRODUCTION
+    name: Craft Netherbrick Stairs
+    production_time: 5s
+    input:
+      nether brick:
+        material: NETHER_BRICK
+        amount: 64
+    output:
+      nether brick stairs:
+        material: NETHER_BRICK_STAIRS
+        amount: 48
+  Craft_Noteblocks_Advanced:
+    type: PRODUCTION
+    name: Craft Noteblocks
+    production_time: 5s
+    input:
+      redstone:
+        material: REDSTONE
+        amount: 48
+      planks:
+        material: WOOD
+        durability: -1
+        amount: 128
+    output:
+      note block:
+        material: NOTE_BLOCK
+        amount: 64
+  Craft_Noteblocks_Basic:
+    type: PRODUCTION
+    name: Craft Noteblocks
+    production_time: 5s
+    input:
+      redstone:
+        material: REDSTONE
+        amount: 64
+      planks:
+        material: WOOD
+        durability: -1
+        amount: 128
+    output:
+      note block:
+        material: NOTE_BLOCK
+        amount: 64
+  Craft_Oak_Fence:
+    type: PRODUCTION
+    name: Craft Oak Fence
+    production_time: 5s
+    input:
+      oak log:
+        material: LOG
+        amount: 16
+    output:
+      identifiername:
+        material: STONE
+        amount: 48
+  Craft_Pillar_Quartz_Blocks:
+    type: PRODUCTION
+    name: Craft Pillar Quartz Blocks
+    production_time: 5s
+    input:
+      quartz block:
+        material: QUARTZ_BLOCK
+        amount: 32
+    output:
+      pillar quartz block:
+        material: QUARTZ_BLOCK
+        durability: 2
+        amount: 32
+  Craft_Piston:
+    type: PRODUCTION
+    name: Craft Piston
+    production_time: 5s
+    input:
+      cobblestone:
+        material: COBBLESTONE
+        amount: 128
+      redstone:
+        material: REDSTONE
+        amount: 48
+      iron:
+        material: IRON_INGOT
+        amount: 48
+      planks:
+        material: WOOD
+        durability: -1
+        amount: 192
+    output:
+      piston:
+        material: PISTON_BASE
+        amount: 64
+  Craft_Polished_Andesite:
+    type: PRODUCTION
+    name: Craft Polished Andesite
+    production_time: 5s
+    input:
+      andesite:
+        material: STONE
+        durability: 5
+        amount: 64
+    output:
+      polished andesite:
+        material: STONE
+        durability: 6
+        amount: 64
+  Craft_Polished_Diorite:
+    type: PRODUCTION
+    name: Craft Polished Diorite
+    production_time: 5s
+    input:
+      andesite:
+        material: STONE
+        durability: 3
+        amount: 64
+    output:
+      polished andesite:
+        material: STONE
+        durability: 4
+        amount: 64
+  Craft_Polished_Granite:
+    type: PRODUCTION
+    name: Craft Polished Granite
+    production_time: 5s
+    input:
+      andesite:
+        material: STONE
+        durability: 1
+        amount: 64
+    output:
+      polished andesite:
+        material: STONE
+        durability: 2
+        amount: 64
+  Craft_Prismarine_Basic:
+    type: PRODUCTION
+    name: Craft Prismarine
+    production_time: 5s
+    input:
+      prismarine shard:
+        material: PRISMARINE_SHARD
+        amount: 64
+    output:
+      orismarine:
+        material: PRISMARINE
+        amount: 32
+  Craft_Quartz_Blocks:
+    type: PRODUCTION
+    name: Craft Quartz Blocks
+    production_time: 5s
+    input:
+      quartz:
+        material: QUARTZ
+        amount: 64
+    output:
+      quartz block:
+        material: QUARTZ_BLOCK
+        amount: 32
+  Craft_Quartz_Slabs:
+    type: PRODUCTION
+    name: Craft Quartz Slabs
+    production_time: 5s
+    input:
+      quartz block:
+        material: QUARTZ_BLOCK
+        amount: 64
+    output:
+      quartz slab:
+        material: STEP
+        durability: 7
+        amount: 128
+  Craft_Quartz_Stairs:
+    type: PRODUCTION
+    name: Craft Quartz Stairs
+    production_time: 5s
+    input:
+      quartz block:
+        material: QUARTZ_BLOCK
+        amount: 64
+    output:
+      quartz stairs:
+        material: QUARTZ_STAIRS
+        amount: 48
+  Craft_Rail_Basic:
+    type: PRODUCTION
+    name: Craft Rail Basic
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 32
+      stick:
+        material: STICK
+        amount: 4
+    output:
+      rail:
+        material: RAILS
+        amount: 96
+  Craft_Redstone_Comparator:
+    type: PRODUCTION
+    name: Craft Redstone Comparator
+    production_time: 5s
+    input:
+      redstone torch:
+        material: REDSTONE_TORCH_ON
+        amount: 64
+      quartz:
+        material: QUARTZ
+        amount: 32
+      stone:
+        material: STONE
+        amount: 64
+    output:
+      comparator:
+        material: REDSTONE_COMPARATOR
+        amount: 32
+  Craft_Redstone_Lamps:
+    type: PRODUCTION
+    name: Craft Redstone Lamps
+    production_time: 5s
+    input:
+      glowstone:
+        material: GLOWSTONE
+        amount: 32
+      redstone:
+        material: REDSTONE
+        amount: 128
+    output:
+      redstone lamp:
+        material: REDSTONE_LAMP_OFF
+        amount: 48
+  Craft_Redstone_Repeater_Advanced:
+    type: PRODUCTION
+    name: Craft Redstone Repeater
+    production_time: 5s
+    input:
+      redstone:
+        material: REDSTONE
+        amount: 32
+      redstone torch:
+        material: REDSTONE_TORCH_ON
+        amount: 64
+      stone:
+        material: STONE
+        amount: 96
+    output:
+      redstone repeater:
+        material: DIODE
+        amount: 64
+  Craft_Redstone_Repeater_Basic:
+    type: PRODUCTION
+    name: Craft Redstone Repeater
+    production_time: 5s
+    input:
+      redstone:
+        material: REDSTONE
+        amount: 32
+      redstone torch:
+        material: REDSTONE_TORCH_ON
+        amount: 64
+      stone:
+        material: STONE
+        amount: 96
+    output:
+      redstone repeater:
+        material: DIODE
+        amount: 48
+  Craft_Redstone_Torch_Advanced:
+    type: PRODUCTION
+    name: Craft Redstone Torch
+    production_time: 5s
+    input:
+      redstone:
+        material: REDSTONE
+        amount: 32
+      stick:
+        material: STICK
+        amount: 32
+    output:
+      redstone torch:
+        material: REDSTONE_TORCH_ON
+        amount: 64
+  Craft_Redstone_Torch_Basic:
+    type: PRODUCTION
+    name: Craft Redstone Torch
+    production_time: 5s
+    input:
+      redstone:
+        material: REDSTONE
+        amount: 32
+      stick:
+        material: STICK
+        amount: 32
+    output:
+      redstone torch:
+        material: REDSTONE_TORCH_ON
+        amount: 64
+  Craft_Saddles_Advanced:
+    type: PRODUCTION
+    name: Craft Saddles
+    production_time: 5s
+    input:
+      leather:
+        material: LEATHER
+        amount: 32
+      iron:
+        material: IRON_INGOT
+        amount: 16
+    output:
+      saddle:
+        material: SADDLE
+        amount: 16
+  Craft_Saddles_Basic:
+    type: PRODUCTION
+    name: Craft Saddles
+    production_time: 5s
+    input:
+      leather:
+        material: LEATHER
+        amount: 32
+      iron:
+        material: IRON_INGOT
+        amount: 32
+    output:
+      saddle:
+        material: SADDLE
+        amount: 16
+  Craft_Sea_Lanterns:
+    type: PRODUCTION
+    name: Craft Sea Lanterns
+    production_time: 5s
+    input:
+      prismarine shard:
+        material: PRISMARINE_SHARD
+        amount: 48
+      prismarine crystal:
+        material: PRISMARINE_CRYSTALS
+        amount: 64
+    output:
+      sea lantern:
+        material: SEA_LANTERN
+        amount: 16
+  Craft_Shears:
+    type: PRODUCTION
+    name: Craft Shears
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 16
+    output:
+      shears:
+        material: SHEARS
+        amount: 10
+  Craft_Sticky_Piston:
+    type: PRODUCTION
+    name: Craft Sticky Piston
+    production_time: 5s
+    input:
+      cobblestone:
+        material: COBBLESTONE
+        amount: 128
+      redstone:
+        material: REDSTONE
+        amount: 48
+      iron:
+        material: IRON_INGOT
+        amount: 48
+      planks:
+        material: WOOD
+        durability: -1
+        amount: 192
+      slime:
+        material: SLIME_BALL
+        amount: 48
+    output:
+      piston:
+        material: PISTON_STICKY_BASE
+        amount: 64
+  Craft_Stonebrick_Slabs:
+    type: PRODUCTION
+    name: Craft Stonebrick Slabs
+    production_time: 5s
+    input:
+      stone brick:
+        material: SMOOTH_BRICK
+        amount: 64
+    output:
+      stone brick stairs:
+        material: STEP
+        durability: 5
+        amount: 128
+  Craft_Stonebrick_Stairs_:
+    type: PRODUCTION
+    name: Craft Stonebrick Stairs
+    production_time: 5s
+    input:
+      stone brick:
+        material: SMOOTH_BRICK
+        amount: 64
+    output:
+      stone brick stair:
+        material: SMOOTH_STAIRS
+        amount: 48
+  Craft_Stonebricks_Advanced:
+    type: PRODUCTION
+    name: Craft Stonebricks
+    production_time: 5s
+    input:
+      stone:
+        material: STONE
+        amount: 64
+    output:
+      stone brick:
+        material: SMOOTH_BRICK
+        amount: 128
+  Craft_Stonebricks_Basic:
+    type: PRODUCTION
+    name: Craft Stonebricks
+    production_time: 5s
+    input:
+      stone:
+        material: STONE
+        amount: 64
+    output:
+      stone brick:
+        material: SMOOTH_BRICK
+        amount: 96
+  Craft_trap_door:
+    type: PRODUCTION
+    name: Craft trap door
+    production_time: 5s
+    input:
+      planks:
+        material: WOOD
+        durability: -1
+        amount: 64
+    output:
+      trapdoor:
+        material: TRAP_DOOR
+        amount: 128
+  Create_Activator_Rail:
+    type: PRODUCTION
+    name: Create Activator Rail
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 32
+      stick:
+        material: STICK
+        amount: 8
+      redstone torch:
+        material: REDSTONE_TORCH_ON
+        amount: 4
+    output:
+      activator rail:
+        material: ACTIVATOR_RAIL
+        amount: 96
+  Create_any_flower:
+    type: PRODUCTION
+    name: Create any flower
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Create_any_hostile_mob_egg:
+    type: PRODUCTION
+    name: Create any hostile mob egg
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Create_Bastion_:
+    type: PRODUCTION
+    name: Create Bastion
+    production_time: 5s
+    input:
+      admin tears:
+        material: GHAST_TEAR
+        amount: 4
+        lore:
+        - Sadmins_are_sad
+      tealnerd is bae:
+        material: WOOL
+        durability: 9
+        amount: 4
+        lore:
+        - Teal_makes_great_configs
+      glitchwood:
+        material: LOG
+        amount: 1
+        lore:
+        - All_hail_the_mighty_Glitchwood
+        - There_can_be_only_one!
+    output:
+      bastion:
+        material: SPONGE
+        amount: 16
+        lore:
+        - A_bastion_block
+  Create_Coarse_Dirt:
+    type: PRODUCTION
+    name: Create Coarse Dirt
+    production_time: 5s
+    input:
+      dirt:
+        material: DIRT
+        amount: 64
+    output:
+      coarse dirt:
+        material: DIRT
+        amount: 64
+        durability: 1
+  Create_Detector_Rail:
+    type: PRODUCTION
+    name: Create Detector Rail
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 32
+      redstone:
+        material: REDSTONE
+        amount: 4
+    output:
+      detector rail:
+        material: DETECTOR_RAIL
+        amount: 96
+  Create_Leads:
+    type: PRODUCTION
+    name: Create Leads
+    production_time: 5s
+    input:
+      slime:
+        material: SLIME_BALL
+        amount: 12
+      string:
+        material: STRING
+        amount: 48
+    output:
+      lead:
+        material: LEASH
+        amount: 16
+  Create_Mycelium_:
+    type: PRODUCTION
+    name: Create Mycelium
+    production_time: 5s
+    input:
+      grass:
+        material: GRASS
+        amount: 64
+    output:
+      mycelium:
+        material: MYCEL
+        amount: 64
+  Create_Nametags_:
+    type: PRODUCTION
+    name: Create Nametags
+    production_time: 5s
+    input:
+      paper:
+        material: PAPER
+        amount: 16
+      string:
+        material: STRING
+        amount: 8
+      slime:
+        material: SLIME_BALL
+        amount: 4
+    output:
+      nametag:
+        material: NAME_TAG
+        amount: 8
+  Create_Podzol_Advanced:
+    type: PRODUCTION
+    name: Create Podzol Advanced
+    production_time: 5s
+    input:
+      dirt:
+        material: DIRT
+        amount: 64
+    output:
+      podzol:
+        material: DIRT
+        durability: 2
+        amount: 128
+  Create_Podzol_Basic:
+    type: PRODUCTION
+    name: Create Podzol Basic
+    production_time: 5s
+    input:
+      dirt:
+        material: DIRT
+        amount: 64
+    output:
+      podzol:
+        material: DIRT
+        durability: 2
+        amount: 64
+  Create_Poppy_Advanced:
+    type: PRODUCTION
+    name: Create Poppy Advanced
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Create_Poppy_Basic:
+    type: PRODUCTION
+    name: Create Poppy Basic
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Create_Powered_Rail:
+    type: PRODUCTION
+    name: Create Powered Rail
+    production_time: 5s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 32
+      redstone:
+        material: REDSTONE
+        amount: 4
+    output:
+      powered rail:
+        material: POWERED_RAIL
+        amount: 96
+  Create_Rail_Advanced:
+    type: PRODUCTION
+    name: Create Rail
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 32
+    output:
+      rail:
+        material: RAILS
+        amount: 128
+  Cut_any_type_of_Plank_Advanced:
+    type: PRODUCTION
+    name: Cut any type of Plank Advanced
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Cut_any_type_of_Plank_Basic:
+    type: PRODUCTION
+    name: Cut any type of Plank Basic
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  De-compact_Stack_Advanced:
+    type: DECOMPACT
+    name: De-compact Stack
+    production_time: 1s
+    compact_lore: Compacted item
+  De-compact_Stack_Basic:
+    type: DECOMPACT
+    name: De-compact Stack
+    production_time: 5s
+    compact_lore: Compacted item
+  Dye_Wool_to_Green_Wool:
+    type: PRODUCTION
+    name: Dye Wool to Green Wool
+    production_time: 5s
+    input:
+      wool:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        durability: 2
+        amount: 4
+    output:
+      green wool:
+        material: WOOL
+        durability: 13
+        amount: 64
+  Dye_Wool_to_Red_Wool:
+    type: PRODUCTION
+    name: Dye Wool to Red Wool
+    production_time: 5s
+    input:
+      wool:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        durability: 1
+        amount: 4
+    output:
+      green wool:
+        material: WOOL
+        durability: 14
+        amount: 64
+  Dye_Wool_to_Yellow_Wool:
+    type: PRODUCTION
+    name: Dye Wool to Yellow Wool
+    production_time: 5s
+    input:
+      wool:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        durability: 11
+        amount: 4
+    output:
+      green wool:
+        material: WOOL
+        durability: 4
+        amount: 64
+  Enchant_Efficiency_:
+    type: PRODUCTION
+    name: Enchant Efficiency
+    production_time: 5s
+    input:
+      diamond pickaxe:
+        material: DIAMOND_PICKAXE
+        amount: 1
+      emerald block:
+        material: EMERALD_BLOCK
+        amount: 4
+    output:
+      diamond pickaxe:
+        material: DIAMOND_PICKAXE
+        amount: 1
+        enchants:
+          efficiency:
+            enchant: DIG_SPEED
+            level: 5
+  Extract_Diamonds:
+    type: PRODUCTION
+    name: Extract Diamonds
+    production_time: 5s
+    input:
+      diamond ore:
+        material: DIAMOND_ORE
+        amount: 16
+    output:
+      diamond:
+        material: DIAMOND
+        amount: 32
+  Extract_Emeralds:
+    type: PRODUCTION
+    name: Extract Emeralds
+    production_time: 5s
+    input:
+      emerald ore:
+        material: EMERALD_ORE
+        amount: 4
+    output:
+      emerald:
+        material: EMERALD
+        amount: 6
+  Extract_Lapis:
+    type: PRODUCTION
+    name: Extract Lapis
+    production_time: 5s
+    input:
+      lapis ore:
+        material: LAPIS_ORE
+        amount: 32
+    output:
+      lapis:
+        material: INK_SACK
+        durability: 4
+        amount: 128
+  Extract_Quartz_Advanced:
+    type: PRODUCTION
+    name: Extract Quartz
+    production_time: 5s
+    input:
+      quartz ore:
+        material: QUARTZ_ORE
+        amount: 32
+    output:
+      quartz:
+        material: QUARTZ
+        amount: 128
+  Extract_Quartz_Basic:
+    type: PRODUCTION
+    name: Extract Quartz
+    production_time: 5s
+    input:
+      quartz ore:
+        material: QUARTZ_ORE
+        amount: 32
+    output:
+      quartz:
+        material: QUARTZ
+        amount: 96
+  Extract_Redstone_Advanced:
+    type: PRODUCTION
+    name: Extract Redstone
+    production_time: 5s
+    input:
+      redstone ore:
+        material: REDSTONE_ORE
+        amount: 64
+    output:
+      redstone:
+        material: REDSTONE
+        amount: 256
+  Extract_Redstone_Basic:
+    type: PRODUCTION
+    name: Extract Redstone
+    production_time: 5s
+    input:
+      redstone ore:
+        material: REDSTONE_ORE
+        amount: 64
+    output:
+      redstone:
+        material: REDSTONE
+        amount: 128
+  Forge_Diamond_Axe:
+    type: PRODUCTION
+    name: Forge Diamond Axe
+    production_time: 5s
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 16
+    output:
+      diamond axe:
+        material: DIAMOND_AXE
+        amount: 8
+  Forge_Diamond_Boots:
+    type: PRODUCTION
+    name: Forge Diamond Boots
+    production_time: 5s
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 24
+    output:
+      diamond boots:
+        material: DIAMOND_BOOTS
+        amount: 8
+  Forge_Diamond_Breastplate:
+    type: PRODUCTION
+    name: Forge Diamond Breastplate
+    production_time: 5s
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 48
+    output:
+      diamond chestplate:
+        material: DIAMOND_CHESTPLATE
+        amount: 8
+  Forge_Diamond_Helmet:
+    type: PRODUCTION
+    name: Forge Diamond Helmet
+    production_time: 5s
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 32
+    output:
+      diamond helmet:
+        material: DIAMOND_HELMET
+        amount: 8
+  Forge_Diamond_Hoe:
+    type: PRODUCTION
+    name: Forge Diamond Hoe
+    production_time: 5s
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 8
+    output:
+      diamond hoe:
+        material: DIAMOND_HOE
+        amount: 8
+  Forge_Diamond_Horse_Armour:
+    type: PRODUCTION
+    name: Forge Diamond Horse Armour
+    production_time: 5s
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 12
+    output:
+      diamond horse armor:
+        material: DIAMOND_BARDING
+        amount: 1
+  Forge_Diamond_Leggings_:
+    type: PRODUCTION
+    name: Forge Diamond Leggings
+    production_time: 5s
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 40
+    output:
+      diamond leggings:
+        material: DIAMOND_LEGGINGS
+        amount: 8
+  Forge_Diamond_Pickaxe:
+    type: PRODUCTION
+    name: Forge Diamond Pickaxe
+    production_time: 5s
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 16
+    output:
+      diamond pickaxe:
+        material: DIAMOND_PICKAXE
+        amount: 8
+  Forge_Diamond_Shovel:
+    type: PRODUCTION
+    name: Forge Diamond Shovel
+    production_time: 5s
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 6
+    output:
+      diamond pickaxe:
+        material: DIAMOND_PICKAXE
+        amount: 8
+  Forge_Diamond_Sword:
+    type: PRODUCTION
+    name: Forge Diamond Sword
+    production_time: 5s
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 10
+    output:
+      diamond sword:
+        material: DIAMOND_SWORD
+        amount: 8
+  Forge_Gold_Axe:
+    type: PRODUCTION
+    name: Forge Gold Axe
+    production_time: 5s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 16
+    output:
+      gold axe:
+        material: GOLD_AXE
+        amount: 8
+  Forge_Gold_Boots:
+    type: PRODUCTION
+    name: Forge Gold Boots
+    production_time: 5s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 24
+    output:
+      gold boots:
+        material: GOLD_BOOTS
+        amount: 8
+  Forge_Gold_Breastplate:
+    type: PRODUCTION
+    name: Forge Gold Breastplate
+    production_time: 5s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 48
+    output:
+      gold chestplate:
+        material: GOLD_CHESTPLATE
+        amount: 8
+  Forge_Gold_Helmet:
+    type: PRODUCTION
+    name: Forge Gold Helmet
+    production_time: 5s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 32
+    output:
+      gold helmet:
+        material: GOLD_HELMET
+        amount: 8
+  Forge_Gold_Hoe:
+    type: PRODUCTION
+    name: Forge Gold Hoe
+    production_time: 5s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 8
+    output:
+      gold hoe:
+        material: GOLD_HOE
+        amount: 8
+  Forge_Gold_Horse_Armour:
+    type: PRODUCTION
+    name: Forge Gold Horse Armour
+    production_time: 5s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 12
+    output:
+      gold horse armor:
+        material: GOLD_BARDING
+        amount: 1
+  Forge_Gold_Leggings_:
+    type: PRODUCTION
+    name: Forge Gold Leggings
+    production_time: 5s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 40
+    output:
+      gold leggings:
+        material: GOLD_LEGGINGS
+        amount: 8
+  Forge_Gold_Pickaxe:
+    type: PRODUCTION
+    name: Forge Gold Pickaxe
+    production_time: 5s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 16
+    output:
+      gold pickaxe:
+        material: GOLD_PICKAXE
+        amount: 8
+  Forge_Gold_Shovel:
+    type: PRODUCTION
+    name: Forge Gold Shovel
+    production_time: 5s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 6
+    output:
+      gold pickaxe:
+        material: GOLD_PICKAXE
+        amount: 8
+  Forge_Gold_Sword:
+    type: PRODUCTION
+    name: Forge Gold Sword
+    production_time: 5s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 10
+    output:
+      gold sword:
+        material: GOLD_SWORD
+        amount: 8
+  Forge_Iron_Axe:
+    type: PRODUCTION
+    name: Forge Iron Axe
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 16
+    output:
+      iron axe:
+        material: IRON_AXE
+        amount: 8
+  Forge_Iron_Boots:
+    type: PRODUCTION
+    name: Forge Iron Boots
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 24
+    output:
+      iron boots:
+        material: IRON_BOOTS
+        amount: 8
+  Forge_Iron_Breastplate:
+    type: PRODUCTION
+    name: Forge Iron Breastplate
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 48
+    output:
+      iron chestplate:
+        material: IRON_CHESTPLATE
+        amount: 8
+  Forge_Iron_Helmet:
+    type: PRODUCTION
+    name: Forge Iron Helmet
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 32
+    output:
+      iron helmet:
+        material: IRON_HELMET
+        amount: 8
+  Forge_Iron_Hoe:
+    type: PRODUCTION
+    name: Forge Iron Hoe
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 8
+    output:
+      iron hoe:
+        material: IRON_HOE
+        amount: 8
+  Forge_Iron_Horse_Armour:
+    type: PRODUCTION
+    name: Forge Iron Horse Armour
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 12
+    output:
+      iron horse armor:
+        material: IRON_BARDING
+        amount: 1
+  Forge_Iron_Leggings_:
+    type: PRODUCTION
+    name: Forge Iron Leggings
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 40
+    output:
+      iron leggings:
+        material: IRON_LEGGINGS
+        amount: 8
+  Forge_Iron_Pickaxe:
+    type: PRODUCTION
+    name: Forge Iron Pickaxe
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 16
+    output:
+      iron pickaxe:
+        material: IRON_PICKAXE
+        amount: 8
+  Forge_Iron_Shovel:
+    type: PRODUCTION
+    name: Forge Iron Shovel
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 6
+    output:
+      iron pickaxe:
+        material: IRON_PICKAXE
+        amount: 8
+  Forge_Iron_Sword:
+    type: PRODUCTION
+    name: Forge Iron Sword
+    production_time: 5s
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 10
+    output:
+      iron sword:
+        material: IRON_SWORD
+        amount: 8
+  Forge_Stone_Axe:
+    type: PRODUCTION
+    name: Forge Stone Axe
+    production_time: 5s
+    input:
+      stone:
+        material: STONE
+        amount: 16
+    output:
+      stone axe:
+        material: STONE_AXE
+        amount: 8
+  Forge_Stone_Hoe:
+    type: PRODUCTION
+    name: Forge Stone Hoe
+    production_time: 5s
+    input:
+      stone:
+        material: STONE
+        amount: 8
+    output:
+      stone hoe:
+        material: STONE_HOE
+        amount: 8
+  Forge_Stone_Pickaxe:
+    type: PRODUCTION
+    name: Forge Stone Pickaxe
+    production_time: 5s
+    input:
+      stone:
+        material: STONE
+        amount: 16
+    output:
+      stone pickaxe:
+        material: STONE_PICKAXE
+        amount: 8
+  Forge_Stone_Shovel:
+    type: PRODUCTION
+    name: Forge Stone Shovel
+    production_time: 5s
+    input:
+      stone:
+        material: STONE
+        amount: 6
+    output:
+      stone pickaxe:
+        material: STONE_PICKAXE
+        amount: 8
+  Forge_Stone_Sword:
+    type: PRODUCTION
+    name: Forge Stone Sword
+    production_time: 5s
+    input:
+      stone:
+        material: STONE
+        amount: 10
+    output:
+      stone sword:
+        material: STONE_SWORD
+        amount: 8
+  Fry_Chicken:
+    type: PRODUCTION
+    name: Fry Chicken
+    production_time: 5s
+    input:
+      chicken:
+        material: RAW_CHICKEN
+        amount: 32
+    output:
+      cooked chicken:
+        material: COOKED_CHICKEN
+        amount: 64
+  Grill_Beef:
+    type: PRODUCTION
+    name: Grill Beef
+    production_time: 5s
+    input:
+      beef:
+        material: RAW_BEEF
+        amount: 32
+    output:
+      cooked beef:
+        material: COOKED_BEEF
+        amount: 64
+  Grill_Steak_Advanced:
+    type: PRODUCTION
+    name: Grill Steak
+    production_time: 5s
+    input:
+      beef:
+        material: RAW_BEEF
+        amount: 32
+    output:
+      cooked beef:
+        material: COOKED_BEEF
+        amount: 64
+  Grill_Steak_Basic:
+    type: PRODUCTION
+    name: Grill Steak
+    production_time: 5s
+    input:
+      beef:
+        material: RAW_BEEF
+        amount: 32
+    output:
+      cooked beef:
+        material: COOKED_BEEF
+        amount: 48
+  Grow_Fern:
+    type: PRODUCTION
+    name: Grow Fern
+    production_time: 5s
+    input:
+      fern:
+        material: LONG_GRASS
+        amount: 32
+        durability: 2
+    output:
+      large fern:
+        material: DOUBLE_PLANT
+        amount: 32
+        durability: 3
+  Grow_Grass:
+    type: PRODUCTION
+    name: Grow Grass
+    production_time: 5s
+    input:
+      grass:
+        material: LONG_GRASS
+        amount: 64
+        durability: 1
+    output:
+      double tall grass:
+        material: DOUBLE_PLANT
+        amount: 64
+        durability: 2
+  Grow_Vine:
+    type: PRODUCTION
+    name: Grow Vine
+    production_time: 5s
+    input:
+      grass:
+        material: LONG_GRASS
+        amount: 64
+    output:
+      vine:
+        material: VINE
+        amount: 64
+  Harden_Clay_Advanced:
+    type: PRODUCTION
+    name: Harden Clay
+    production_time: 5s
+    input:
+      clay:
+        material: CLAY
+        amount: 48
+    output:
+      hard clay:
+        material: HARD_CLAY
+        amount: 64
+  Harden_Clay_Basic:
+    type: PRODUCTION
+    name: Harden Clay
+    production_time: 5s
+    input:
+      clay:
+        material: CLAY
+        amount: 64
+    output:
+      hard clay:
+        material: HARD_CLAY
+        amount: 64
+  Kill_Dead_Bush:
+    type: PRODUCTION
+    name: Kill Dead Bush
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Kill_Dead_Shrub:
+    type: PRODUCTION
+    name: Kill Dead Shrub
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Make_Mushroom_Stew:
+    type: PRODUCTION
+    name: Make Mushroom Stew
+    production_time: 5s
+    input:
+      brown mushroom:
+        material: BROWN_MUSHROOM
+        amount: 16
+      red mushroom:
+        material: RED_MUSHROOM
+        amount: 16
+      planks:
+        material: WOOD
+        durability: -1
+        amount: 32
+    output:
+      mushroom stew:
+        material: MUSHROOM_SOUP
+        amount: 18
+  Make_Rabbit_Stew:
+    type: PRODUCTION
+    name: Make Rabbit Stew
+    production_time: 5s
+    input:
+      rabbit:
+        material: COOKED_RABBIT
+        amount: 16
+      baked potato:
+        material: BAKED_POTATO
+        amount: 16
+      planks:
+        material: WOOD
+        durability: -1
+        amount: 32
+    output:
+      rabbit stew:
+        material: RABBIT_STEW
+        amount: 18
+  Mutate_any_leaf_into_any_other:
+    type: PRODUCTION
+    name: Mutate any leaf into any other
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Mutate_any_sapling_into_any_other:
+    type: PRODUCTION
+    name: Mutate any sapling into any other
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Mutate_Large_Fern_:
+    type: PRODUCTION
+    name: Mutate Large Fern
+    production_time: 5s
+    input:
+      fern:
+        material: LONG_GRASS
+        amount: 32
+        durability: 2
+    output:
+      large fern:
+        material: DOUBLE_PLANT
+        amount: 32
+        durability: 3
+  Mutate_Tall_Grass_Advanced:
+    type: PRODUCTION
+    name: Mutate Tall Grass Advanced
+    production_time: 5s
+    input:
+      fern:
+        material: LONG_GRASS
+        amount: 32
+        durability: 1
+    output:
+      large fern:
+        material: DOUBLE_PLANT
+        amount: 32
+        durability: 2
+  Mutate_Tall_Grass_Basic:
+    type: PRODUCTION
+    name: Mutate Tall Grass Basic
+    production_time: 5s
+    input:
+      fern:
+        material: LONG_GRASS
+        amount: 32
+        durability: 1
+    output:
+      large fern:
+        material: DOUBLE_PLANT
+        amount: 32
+        durability: 2
+  Random_Printing_Press_Recipe_:
+    type: PRODUCTION
+    name: Random Printing Press Recipe
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Smelt_Brickblocks:
+    type: PRODUCTION
+    name: Smelt Brickblocks
+    production_time: 5s
+    input:
+      clay:
+        material: CLAY
+        amount: 48
+    output:
+      bricks:
+        material: BRICK
+        amount: 64
+  Smelt_Chiselled_Red_Sandstone:
+    type: PRODUCTION
+    name: Smelt Chiselled Red Sandstone
+    production_time: 5s
+    input:
+      red sandstone:
+        material: RED_SANDSTONE
+        amount: 48
+    output:
+      chiseled red sandstone:
+        material: RED_SANDSTONE
+        durability: 1
+        amount: 64
+  Smelt_Chiselled_Sandstone_:
+    type: PRODUCTION
+    name: Smelt Chiselled Sandstone
+    production_time: 5s
+    input:
+      sandstone:
+        material: SANDSTONE
+        amount: 48
+    output:
+      chiseled sandstone:
+        material: SANDSTONE
+        durability: 1
+        amount: 64
+  Smelt_Clay_Bricks:
+    type: PRODUCTION
+    name: Smelt Clay Bricks
+    production_time: 5s
+    input:
+      clay:
+        material: CLAY
+        amount: 16
+    output:
+      bricks:
+        material: BRICK
+        amount: 64
+  Smelt_Coal_Ore_Advanced:
+    type: PRODUCTION
+    name: Smelt Coal Ore Advanced
+    production_time: 5s
+    input:
+      coal ore:
+        material: COAL_ORE
+        amount: 64
+    output:
+      coal:
+        material: COAL
+        amount: 256
+  Smelt_Coal_Ore_Basic:
+    type: PRODUCTION
+    name: Smelt Coal Ore Basic
+    production_time: 5s
+    input:
+      coal ore:
+        material: COAL_ORE
+        amount: 64
+    output:
+      coal:
+        material: COAL
+        amount: 192
+  Smelt_Coal_Ore_Expert:
+    type: PRODUCTION
+    name: Smelt Coal Ore Expert
+    production_time: 5s
+    input:
+      coal ore:
+        material: COAL_ORE
+        amount: 64
+    output:
+      coal:
+        material: COAL
+        amount: 384
+  Smelt_Dark_Prismarine:
+    type: PRODUCTION
+    name: Smelt Dark Prismarine
+    production_time: 5s
+    input:
+      prismarine shard:
+        material: PRISMARINE_SHARD
+        amount: 64
+      ink sack:
+        material: INK_SACK
+        amount: 8
+    output:
+      dark prismarine:
+        material: PRISMARINE
+        durability: 2
+        amount: 10
+  Smelt_Glass_Advanced:
+    type: PRODUCTION
+    name: Smelt Glass
+    production_time: 5s
+    input:
+      sand:
+        material: SAND
+        amount: 64
+    output:
+      glass:
+        material: GLASS
+        amount: 128
+  Smelt_Glass_Basic:
+    type: PRODUCTION
+    name: Smelt Glass
+    production_time: 5s
+    input:
+      sand:
+        material: SAND
+        amount: 64
+    output:
+      glass:
+        material: GLASS
+        amount: 96
+  Smelt_Glass_Expert:
+    type: PRODUCTION
+    name: Smelt Glass
+    production_time: 5s
+    input:
+      sand:
+        material: SAND
+        amount: 64
+    output:
+      glass:
+        material: GLASS
+        amount: 192
+  Smelt_Glass_Panes_Advanced:
+    type: PRODUCTION
+    name: Smelt Glass Panes
+    production_time: 5s
+    input:
+      sand:
+        material: SAND
+        amount: 16
+    output:
+      glass pane:
+        material: THIN_GLASS
+        amount: 96
+  Smelt_Glass_Panes_Basic:
+    type: PRODUCTION
+    name: Smelt Glass Panes
+    production_time: 5s
+    input:
+      sand:
+        material: SAND
+        amount: 16
+    output:
+      glass pane:
+        material: THIN_GLASS
+        amount: 64
+  Smelt_Glassbottles:
+    type: PRODUCTION
+    name: Smelt Glassbottles
+    production_time: 5s
+    input:
+      sand:
+        material: SAND
+        amount: 32
+    output:
+      glass bottle:
+        material: GLASS_BOTTLE
+        amount: 128
+  Smelt_Gold_Ore:
+    type: PRODUCTION
+    name: Smelt Gold Ore
+    production_time: 5s
+    input:
+      gold ore:
+        material: GOLD_ORE
+        amount: 16
+    output:
+      gold:
+        material: GOLD_INGOT
+        amount: 64
+  Smelt_Iron_Ore_Advanced:
+    type: PRODUCTION
+    name: Smelt Iron Ore
+    production_time: 5s
+    input:
+      iron ore:
+        material: IRON_ORE
+        amount: 64
+    output:
+      iron:
+        material: IRON_INGOT
+        amount: 192
+  Smelt_Iron_Ore_Basic:
+    type: PRODUCTION
+    name: Smelt Iron Ore
+    production_time: 5s
+    input:
+      iron ore:
+        material: IRON_ORE
+        amount: 64
+    output:
+      iron:
+        material: IRON_INGOT
+        amount: 128
+  Smelt_Netherbrick_Advanced:
+    type: PRODUCTION
+    name: Smelt Netherbrick Advanced
+    production_time: 5s
+    input:
+      netherrack:
+        material: NETHERRACK
+        amount: 64
+    output:
+      netherbrick:
+        material: NETHER_BRICK
+        amount: 48
+  Smelt_Prismarine:
+    type: PRODUCTION
+    name: Smelt Prismarine
+    production_time: 5s
+    input:
+      prismarine shard:
+        material: PRISMARINE_SHARD
+        amount: 64
+    output:
+      prismarine:
+        material: PRISMARINE
+        amount: 32
+  Smelt_Prismarine_Bricks:
+    type: PRODUCTION
+    name: Smelt Prismarine Bricks
+    production_time: 5s
+    input:
+      prismarine shard:
+        material: PRISMARINE_SHARD
+        amount: 64
+    output:
+      prismarine brick:
+        material: PRISMARINE
+        durability: 1
+        amount: 8
+  Smelt_Red_Sandstone_Advanced:
+    type: PRODUCTION
+    name: Smelt Red Sandstone
+    production_time: 5s
+    input:
+      red sand:
+        material: SAND
+        durability: 1
+        amount: 64
+    output:
+      red sandstone:
+        material: RED_SANDSTONE
+        amount: 48
+  Smelt_Red_Sandstone_Basic:
+    type: PRODUCTION
+    name: Smelt Red Sandstone
+    production_time: 5s
+    input:
+      red sand:
+        material: SAND
+        durability: 1
+        amount: 64
+    output:
+      red sandstone:
+        material: RED_SANDSTONE
+        amount: 32
+  Smelt_Red_Sandstone_Slabs:
+    type: PRODUCTION
+    name: Smelt Red Sandstone Slabs
+    production_time: 5s
+    input:
+      red sand:
+        material: RED_SANDSTONE
+        amount: 64
+    output:
+      red sandstone:
+        material: STONE_SLAB2
+        amount: 64
+  Smelt_Red_Sandstone_Stairs:
+    type: PRODUCTION
+    name: Smelt Red Sandstone Stairs
+    production_time: 5s
+    input:
+      red sand:
+        material: RED_SANDSTONE
+        amount: 64
+    output:
+      red sandstone:
+        material: RED_SANDSTONE_STAIRS
+        amount: 48
+  Smelt_Sandstone_Advanced:
+    type: PRODUCTION
+    name: Smelt Sandstone
+    production_time: 5s
+    input:
+      red sand:
+        material: SAND
+        amount: 64
+    output:
+      red sandstone:
+        material: SANDSTONE
+        amount: 32
+  Smelt_Sandstone_Basic:
+    type: PRODUCTION
+    name: Smelt Sandstone
+    production_time: 5s
+    input:
+      red sand:
+        material: SAND
+        amount: 64
+    output:
+      red sandstone:
+        material: SANDSTONE
+        amount: 32
+  Smelt_Sandstone_Slabs:
+    type: PRODUCTION
+    name: Smelt Sandstone Slabs
+    production_time: 5s
+    input:
+      sandstone:
+        material: SANDSTONE
+        amount: 64
+    output:
+      sandstone slab:
+        material: STEP
+        durability: 1
+        amount: 64
+  Smelt_Sandstone_Stairs:
+    type: PRODUCTION
+    name: Smelt Sandstone Stairs
+    production_time: 5s
+    input:
+      sandstone:
+        material: SANDSTONE
+        amount: 64
+    output:
+      sandstone stairs:
+        material: SANDSTONE_STAIRS
+        amount: 48
+  Smelt_Smooth_Red_Sandstone:
+    type: PRODUCTION
+    name: Smelt Smooth Red Sandstone
+    production_time: 5s
+    input:
+      red sandstone:
+        material: RED_SANDSTONE
+        amount: 64
+    output:
+      smooth red sandstone:
+        material: RED_SANDSTONE
+        durability: 2
+        amount: 64
+  Smelt_Smooth_Sandstone:
+    type: PRODUCTION
+    name: Smelt Smooth Sandstone
+    production_time: 5s
+    input:
+      sandstone:
+        material: SANDSTONE
+        amount: 64
+    output:
+      smooth sandstone:
+        material: SANDSTONE
+        durability: 2
+        amount: 64
+  Smelt_Stone_Advanced:
+    type: PRODUCTION
+    name: Smelt Stone
+    production_time: 5s
+    input:
+      sobblestone:
+        material: COBBLESTONE
+        amount: 64
+    output:
+      stone:
+        material: STONE
+        amount: 128
+  Smelt_Stone_Basic:
+    type: PRODUCTION
+    name: Smelt Stone
+    production_time: 5s
+    input:
+      sobblestone:
+        material: COBBLESTONE
+        amount: 64
+    output:
+      stone:
+        material: STONE
+        amount: 96
+  Smelt_Stone_Expert:
+    type: PRODUCTION
+    name: Smelt Stone
+    production_time: 5s
+    input:
+      sobblestone:
+        material: COBBLESTONE
+        amount: 64
+    output:
+      stone:
+        material: STONE
+        amount: 192
+  Take_any_mob_egg_apart:
+    type: PRODUCTION
+    name: Take any mob egg apart
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Take_friendly_mob_egg_apart:
+    type: PRODUCTION
+    name: Take friendly mob egg apart
+    production_time: 5s
+    input:
+      identifiername:
+        material: STONE
+        amount: 1
+    output:
+      identifiername:
+        material: STONE
+        amount: 1
+  Upgrade_to_Advanced_Kiln:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Advanced Kiln
+    input:
+      hardened clay:
+        material: HARD_CLAY
+        amount: 640
+    factory: Advanced Kiln
+  Upgrade_to_Animal_Husbandry_Factory_Advanced:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Animal Husbandry Factory Advanced
+    input:
+      golden apple:
+        material: GOLDEN_APPLE
+        amount: 64
+      hay bale:
+        material: HAY_BLOCK
+        amount: 128
+    factory: Animal Husbandry Factory Advanced
+  Upgrade_to_Animal_Husbandry_Factory_Basic:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Animal Husbandry Factory Basic
+    input:
+      hay bale:
+        material: HAY_BLOCK
+        amount: 64
+      golden apple:
+        material: GOLDEN_APPLE
+        amount: 16
+    factory: Animal Husbandry Factory Basic
+  Upgrade_to_Aquatic_Brick_Smelter:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Aquatic Brick Smelter
+    input:
+      prismarine shard:
+        material: PRISMARINE_SHARD
+        amount: 256
+      prismarine crystals:
+        material: PRISMARINE_CRYSTALS
+        amount: 128
+    factory: Aquatic Brick Smelter
+  Upgrade_to_Armour_Enchanter:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Armour Enchanter
+    input:
+      emerald block:
+        material: EMERALD_BLOCK
+        amount: 256
+      diamond block:
+        material: DIAMOND_BLOCK
+        amount: 64
+    factory: Armour Enchanter
+  Upgrade_to_Bakery:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Bakery
+    input:
+      bread:
+        material: BREAD
+        amount: 512
+      baked potato:
+        material: BAKED_POTATO
+        amount: 256
+      cookie:
+        material: COOKIE
+        amount: 128
+    factory: Bakery
+  Upgrade_to_Bastion_Factory:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Bastion Factory
+    input:
+      ender pearl:
+        material: ENDER_PEARL
+        amount: 256
+      cobweb:
+        material: WEB
+        amount: 128
+      diamond ore:
+        material: DIAMOND_ORE
+        amount: 48
+    factory: Bastion Factory
+  Upgrade_to_Bio_Lab:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Bio Lab
+    input:
+      grass:
+        material: GRASS
+        amount: 256
+      sapling:
+        material: SAPLING
+        durability: -1
+        amount: 256
+    factory: Bio Lab
+  Upgrade_to_Blacksmith:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Blacksmith
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 256
+    factory: Blacksmith
+  Upgrade_to_Brick_Smelter:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Brick Smelter
+    input:
+      clay:
+        material: CLAY
+        amount: 512
+    factory: Brick Smelter
+  Upgrade_to_Carpentry:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Carpentry
+    input:
+      planks:
+        material: WOOD
+        durability: -1
+        amount: 256
+    factory: Carpentry
+  Upgrade_to_Coal_Burner:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Coal Burner
+    input:
+      coal:
+        material: COAL
+        amount: 256
+    factory: Coal Burner
+  Upgrade_to_Compactor_Basic:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Compactor Basic
+    input:
+      piston:
+        material: PISTON_BASE
+        amount: 6
+      chest:
+        material: CHEST
+        amount: 64
+      iron:
+        material: IRON_INGOT
+        amount: 32
+    factory: Compactor Basic
+  Upgrade_to_Dedicated_Compactor:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Dedicated Compactor
+    input:
+      piston:
+        material: PISTON_BASE
+        amount: 6
+      chest:
+        material: CHEST
+        amount: 64
+      iron:
+        material: IRON_INGOT
+        amount: 48
+    factory: Dedicated Compactor
+  Upgrade_to_Dedicated_De-Compactor:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Dedicated De-Compactor
+    input:
+      sticky piston:
+        material: PISTON_STICKY_BASE
+        amount: 6
+      chest:
+        material: CHEST
+        amount: 64
+      iron:
+        material: IRON_INGOT
+        amount: 48
+    factory: Dedicated De-Compactor
+  Upgrade_to_Diamond_Armour_Forge_:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Diamond Armour Forge
+    input:
+      diamond block:
+        material: DIAMOND_BLOCK
+        amount: 48
+    factory: Diamond Armour Forge
+  Upgrade_to_Diamond_Equipment_Forge:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Diamond Equipment Forge
+    input:
+      diamond block:
+        material: DIAMOND_BLOCK
+        amount: 32
+    factory: Diamond Equipment Forge
+  Upgrade_to_Diamond_Tools_Forge_:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Diamond Tools Forge
+    input:
+      diamond block:
+        material: DIAMOND_BLOCK
+        amount: 32
+    factory: Diamond Tools Forge
+  Upgrade_to_Enchanter_Basic:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Enchanter Basic
+    input:
+      emerald block:
+        material: EMERALD_BLOCK
+        amount: 32
+    factory: Enchanter Basic
+  Upgrade_to_Farmstead_Factory:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Farmstead Factory
+    input:
+      wheat:
+        material: WHEAT
+        amount: 512
+      carrot:
+        material: CARROT
+        amount: 512
+      potato:
+        material: POTATO_ITEM
+        amount: 512
+      chicken:
+        material: RAW_CHICKEN
+        amount: 64
+      beef:
+        material: RAW_BEEF
+        amount: 64
+    factory: Farmstead Factory
+  Upgrade_to_Fine_Woodworking:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Fine Woodworking
+    input:
+      planks:
+        material: WOOD
+        durability: -1
+        amount: 512
+      iron axe:
+        material: IRON_AXE
+        amount: 1
+    factory: Fine Woodworking
+  Upgrade_to_Flower_Gardening_:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Flower Gardening
+    input:
+      flower:
+        material: RED_ROSE
+        amount: 128
+    factory: Flower Gardening
+  Upgrade_to_Gem_extractor_:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Gem extractor
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 64
+      gold:
+        material: GOLD_INGOT
+        amount: 32
+      iron:
+        material: IRON_INGOT
+        amount: 128
+    factory: Gem extractor
+  Upgrade_to_Glass_Dying_:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Glass Dying
+    input:
+      glass:
+        material: GLASS
+        amount: 128
+    factory: Glass Dying
+  Upgrade_to_Gold_Armour_Forge_:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Gold Armour Forge
+    input:
+      gold block:
+        material: GOLD_BLOCK
+        amount: 48
+    factory: Gold Armour Forge
+  Upgrade_to_Gold_Equipment_Forge:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Gold Equipment Forge
+    input:
+      gold block:
+        material: GOLD_BLOCK
+        amount: 32
+    factory: Gold Equipment Forge
+  Upgrade_to_Gold_Tools_Forge:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Gold Tools Forge
+    input:
+      gold block:
+        material: GOLD_BLOCK
+        amount: 32
+    factory: Gold Tools Forge
+  Upgrade_to_Grass_Gardening:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Grass Gardening
+    input:
+      grass:
+        material: LONG_GRASS
+        durability: 1
+        amount: 128
+    factory: Grass Gardening
+  Upgrade_to_Grill:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Grill
+    input:
+      beef:
+        material: RAW_BEEF
+        amount: 128
+      mutton:
+        material: MUTTON
+        amount: 128
+      chicken:
+        material: RAW_CHICKEN
+        amount: 128
+    factory: Grill
+  Upgrade_to_Iron_Equipment_Forge:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Iron Equipment Forge
+    input:
+      iron block:
+        material: IRON_BLOCK
+        amount: 48
+    factory: Iron Equipment Forge
+  Upgrade_to_Iron_Forge_Advanced:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Iron Forge Advanced
+    input:
+      iron block:
+        material: IRON_BLOCK
+        amount: 64
+    factory: Iron Forge Advanced
+  Upgrade_to_Iron_Forge_Basic:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Iron Forge Basic
+    input:
+      iron block:
+        material: IRON_BLOCK
+        amount: 32
+    factory: Iron Forge Basic
+  Upgrade_to_Kiln:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Kiln
+    input:
+      clay:
+        material: CLAY
+        amount: 128
+    factory: Kiln
+  Upgrade_to_Laboratory:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Laboratory
+    input:
+      cauldron:
+        material: CAULDRON
+        amount: 16
+      glass bottle:
+        material: GLASS_BOTTLE
+        amount: 128
+    factory: Laboratory
+  Upgrade_to_Mad_Scientist:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Mad Scientist
+    input:
+      blaze rod:
+        material: BLAZE_ROD
+        amount: 128
+      squid egg:
+        material: MONSTER_EGG
+        durability: 94
+    factory: Mad Scientist
+  Upgrade_to_Netherbrick_Smelter:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Netherbrick Smelter
+    input:
+      nether brick:
+        material: NETHER_BRICK
+        amount: 128
+    factory: Netherbrick Smelter
+  Upgrade_to_Ore_Smelter:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Ore Smelter
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 32
+      iron:
+        material: IRON_INGOT
+        amount: 64
+      gold:
+        material: GOLD_INGOT
+        amount: 16
+    factory: Ore Smelter
+  Upgrade_to_Organic_Block_Factory:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Organic Block Factory
+    input:
+      grass:
+        material: GRASS
+        amount: 128
+    factory: Organic Block Factory
+  Upgrade_to_Printing_Press:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Printing Press
+    input:
+      ink sack:
+        material: INK_SACK
+        amount: 32
+      paper:
+        material: PAPER
+        amount: 64
+    factory: Printing Press
+  Upgrade_to_Rail_Factory_:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Rail Factory
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 128
+      redstone:
+        material: REDSTONE
+        amount: 32
+    factory: Rail Factory
+  Upgrade_to_Redstone_Circularity_Factory:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Redstone Circularity Factory
+    input:
+      redstone:
+        material: REDSTONE
+        amount: 128
+      quartz:
+        material: QUARTZ
+        amount: 64
+    factory: Redstone Circularity Factory
+  Upgrade_to_Redstone_Factory_Basic:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Redstone Factory Basic
+    input:
+      redstone:
+        material: REDSTONE
+        amount: 128
+    factory: Redstone Factory Basic
+  Upgrade_to_Redstone_Mechanics_Factory:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Redstone Mechanics Factory
+    input:
+      redstone:
+        material: REDSTONE
+        amount: 128
+      iron:
+        material: IRON_INGOT
+        amount: 64
+    factory: Redstone Mechanics Factory
+  Upgrade_to_Sand_Smelter:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Sand Smelter
+    input:
+      sand:
+        material: SAND
+        amount: 512
+    factory: Sand Smelter
+  Upgrade_to_Sandstone_Smelter:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Sandstone Smelter
+    input:
+      sandstone:
+        material: SANDSTONE
+        amount: 128
+      red sandstone:
+        material: RED_SANDSTONE
+        amount: 128
+    factory: Sandstone Smelter
+  Upgrade_to_Soup_kitchen:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Soup kitchen
+    input:
+      red mushroom:
+        material: RED_MUSHROOM
+        amount: 64
+      brown mushroom:
+        material: BROWN_MUSHROOM
+        amount: 64
+      rabbit:
+        material: RABBIT
+        amount: 64
+    factory: Soup kitchen
+  Upgrade_to_Stone_Smelter:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Stone Smelter
+    input:
+      stone:
+        material: STONE
+        amount: 512
+    factory: Stone Smelter
+  Upgrade_to_Stonebrick_Smelter:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Stonebrick Smelter
+    input:
+      stone:
+        material: STONE
+        amount: 256
+    factory: Stonebrick Smelter
+  Upgrade_to_Tool_Enchanter:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Tool Enchanter
+    input:
+      emerald block:
+        material: EMERALD_BLOCK
+        amount: 32
+    factory: Tool Enchanter
+  Upgrade_to_Tree_Mutator:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Tree Mutator
+    input:
+      sapling:
+        material: SAPLING
+        durability: -1
+        amount: 128
+    factory: Tree Mutator
+  Upgrade_to_Weapon_Enchanter:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Weapon Enchanter
+    input:
+      emerald block:
+        material: EMERALD_BLOCK
+        amount: 32
+    factory: Weapon Enchanter
+  Upgrade_to_Wood_Processor:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Wood Processor
+    input:
+      planks:
+        material: WOOD
+        durability: -1
+        amount: 256
+    factory: Wood Processor
+  Upgrade_to_Wool_Processing:
+    production_time: 5s
+    type: UPGRADE
+    name: Upgrade to Wool Processing
+    input:
+      wool:
+        material: WOOL
+        amount: 256
+    factory: Wool Processing
