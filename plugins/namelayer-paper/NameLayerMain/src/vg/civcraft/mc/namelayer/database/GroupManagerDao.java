@@ -989,7 +989,11 @@ public class GroupManagerDao {
 	 * @param playerUUID The uuid of the invited player.
 	 * @param group The group the player was invited to. 
 	 */
-	public synchronized void loadGropInvitation(UUID playerUUID, Group group){
+	public synchronized void loadGroupInvitation(UUID playerUUID, Group group){
+		if(group == null){
+			return;
+		}
+		
 		try {
 			loadGroupInvitation.setString(1, playerUUID.toString());
 			loadGroupInvitation.setString(2, group.getName());
@@ -1000,10 +1004,7 @@ public class GroupManagerDao {
 				if(role != null){
 					type = PlayerType.getPlayerType(role);
 				}
-				if(group != null){
-					group.addInvite(playerUUID, type, false);
-				}
-				
+				group.addInvite(playerUUID, type, false);
 			}
 		} catch(SQLException e) {
 			// TODO Auto-generated catch block

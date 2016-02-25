@@ -247,7 +247,7 @@ public class Group {
 	 */
 	public PlayerType getInvite(UUID uuid) {
 		if (!invites.containsKey(uuid)) {
-			db.loadGropInvitation(uuid, this);
+			db.loadGroupInvitation(uuid, this);
 		}
 		return invites.get(uuid);
 	}
