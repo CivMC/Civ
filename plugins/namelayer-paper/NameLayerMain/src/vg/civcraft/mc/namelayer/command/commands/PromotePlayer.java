@@ -110,6 +110,12 @@ public class PromotePlayer extends PlayerCommandMiddle{
 			return true;
 		}
 		
+		if (group.isOwner(promotee)){
+			p.sendMessage(ChatColor.RED + "That player owns the group, you cannot "
+					+ "demote the player.");
+			return true;
+		}
+		
 		OfflinePlayer prom = Bukkit.getOfflinePlayer(promotee);
 		if(prom.isOnline()){
 			Player oProm = (Player) prom;
