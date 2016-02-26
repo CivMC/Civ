@@ -3245,7 +3245,7 @@ recipes:
         material: WHEAT
         amount: 512
       carrot:
-        material: CARROT
+        material: CARROT_ITEM
         amount: 512
       potato:
         material: POTATO_ITEM
