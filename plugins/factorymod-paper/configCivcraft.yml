@@ -15,6 +15,7 @@ log_inventories: true
 break_grace_period: 7d
 decay_intervall: 1h
 decay_amount: 21
+use_recipe_yamlidentifiers: true
 factories:
   basiccontraption:
     type: FCC

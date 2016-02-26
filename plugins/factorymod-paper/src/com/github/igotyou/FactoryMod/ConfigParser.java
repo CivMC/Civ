@@ -45,6 +45,7 @@ public class ConfigParser {
 	private HashMap<String, IFactoryEgg> upgradeEggs;
 	private HashMap<IFactoryEgg, List<String>> recipeLists;
 	private String defaultMenuFactory;
+	private boolean useYamlIdentifers;
 
 	public ConfigParser(FactoryMod plugin) {
 		this.plugin = plugin;
@@ -76,6 +77,7 @@ public class ConfigParser {
 			plugin.getServer().getPluginManager()
 					.registerEvents(new NetherPortalListener(), plugin);
 		}
+		useYamlIdentifers = config.getBoolean("use_recipe_yamlidentifiers", false);
 		defaultUpdateTime = (int) parseTime(config.getString(
 				"default_update_time", "5"));
 		ItemMap dFuel = parseItemMap(config.getConfigurationSection("default_fuel"));
@@ -127,7 +129,12 @@ public class ConfigParser {
 			if (recipe == null) {
 				plugin.warning(String.format("Recipe %s unable to be added.", key));
 			} else {
-				recipes.put(recipe.getRecipeName(), recipe);
+				if (useYamlIdentifers) {
+					recipes.put(key, recipe);
+				}
+				{
+					recipes.put(recipe.getRecipeName(), recipe);
+				}
 			}
 		}
 	}
