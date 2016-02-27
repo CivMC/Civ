@@ -78,7 +78,6 @@ public class MercuryMessageListener implements Listener{
 			Bukkit.getPluginManager().callEvent(e);
 			if (playerGroup != null) {
 				InvitePlayer.sendInvitation(playerGroup, pType, invitedPlayerUUID, inviterUUID, false);
-				playerGroup.addInvite(invitedPlayerUUID, pType, false);
 			}
 		}
 		else if (reason.equals("removeInvitation")){

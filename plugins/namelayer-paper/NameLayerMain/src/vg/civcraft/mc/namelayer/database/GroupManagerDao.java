@@ -311,7 +311,7 @@ public class GroupManagerDao {
 	
 	private PreparedStatement setDefaultGroup, changeDefaultGroup, getDefaultGroup;
 	
-	private PreparedStatement loadGroupsInvitations, addGroupInvitation, removeGroupInvitation;
+	private PreparedStatement loadGroupsInvitations, addGroupInvitation, removeGroupInvitation, loadGroupInvitation;
 	
 	private PreparedStatement getGroupNameFromRole, updateLastTimestamp, getPlayerType, getTimestamp;
 	
@@ -407,6 +407,8 @@ public class GroupManagerDao {
 		addGroupInvitation = db.prepareStatement("insert into group_invitation(uuid, groupName, role) values(?, ?, ?) on duplicate key update role=values(role), date=now();");
 		
 		removeGroupInvitation = db.prepareStatement("delete from group_invitation where uuid = ? and groupName = ?");
+		
+		loadGroupInvitation = db.prepareStatement("select role from group_invitation where uuid = ? and groupName = ?");
 		
 		getGroupNameFromRole = db.prepareStatement("SELECT faction_id.group_name FROM faction_member "
 								+ "inner join faction_id on faction_member.group_id = faction_id.group_id "
@@ -981,6 +983,38 @@ public class GroupManagerDao {
 		}
 	}
 	
+	
+	/**
+	 * Use this method to load a specific invitation to a group without the notification. 
+	 * @param playerUUID The uuid of the invited player.
+	 * @param group The group the player was invited to. 
+	 */
+	public synchronized void loadGroupInvitation(UUID playerUUID, Group group){
+		if(group == null){
+			return;
+		}
+		
+		try {
+			loadGroupInvitation.setString(1, playerUUID.toString());
+			loadGroupInvitation.setString(2, group.getName());
+			ResultSet set = loadGroupInvitation.executeQuery();
+			while(set.next()){
+				String role = set.getString("role");
+				PlayerType type = null;
+				if(role != null){
+					type = PlayerType.getPlayerType(role);
+				}
+				group.addInvite(playerUUID, type, false);
+			}
+		} catch(SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Use this method to load all invitations to all groups.
+	 */
 	public synchronized void loadGroupsInvitations(){
 		try {
 			ResultSet set = loadGroupsInvitations.executeQuery();
