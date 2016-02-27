@@ -95,7 +95,7 @@ public class ListMembers extends PlayerCommandMiddle {
 		for (UUID uu: uuids){
 			sb.append(NameAPI.getCurrentName(uu));
 			sb.append(" (");
-			sb.append(group.getPlayerType(uuid));
+			sb.append(group.getPlayerType(uu));
 			sb.append(")\n");
 		}
 		
