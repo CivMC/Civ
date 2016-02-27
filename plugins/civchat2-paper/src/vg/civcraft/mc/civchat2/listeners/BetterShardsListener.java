@@ -32,6 +32,11 @@ public class BetterShardsListener implements Listener{
 				MercuryAPI.sendMessage(event.getServerTravelingTo(), "channel" + sep + "reply" + sep + playerName + sep + playerToReply, "civchat2");
 			}
 		}
+		String playerChat = chatMan.getChannel(playerName);
+		if(playerChat != null){
+			MercuryAPI.sendMessage(event.getServerTravelingTo(), "channel" + sep + "player" + sep + playerName + sep + playerChat, "civchat2");
+			return;
+		}
 		String groupChat = chatMan.getGroupChatting(playerName);
 		if(groupChat != null){
 			MercuryAPI.sendMessage(event.getServerTravelingTo(), "channel" + sep + "group" + sep + playerName + sep + groupChat, "civchat2");
