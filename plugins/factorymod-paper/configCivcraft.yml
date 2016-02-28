@@ -35,6 +35,7 @@ factories:
     - Smelt_Stone_Basic
     - Cut_any_type_of_Plank_Basic
     - Bake_Bread_Basic
+    - Repair_Rudimentary_Factory
     - Upgrade_to_Stone_Smelter
     - Upgrade_to_Farmstead_Factory
     - Upgrade_to_Blacksmith
@@ -47,6 +48,7 @@ factories:
     - Smelt_Stone_Advanced
     - Smelt_Coal_Ore_Basic
     - Smelt_Glass_Basic
+    - Repair_Rudimentary_Factory
     - Upgrade_to_Ore_Smelter
     - Upgrade_to_Sand_Smelter
     - Upgrade_to_Brick_Smelter
@@ -59,6 +61,7 @@ factories:
     - Smelt_Iron_Ore_Basic
     - Extract_Redstone_Basic
     - Extract_Quartz_Basic
+    - Repair_Factory
     - Upgrade_to_Ore_Forge
     - Upgrade_to_Gem_extractor
   oresmelter2:
@@ -68,6 +71,7 @@ factories:
     - Smelt_Coal_Ore_Expert
     - Smelt_Iron_Ore_Advanced
     - Smelt_Gold_Ore
+    - Repair_Advanced_Factory
   gemextractor:
     type: FCCUPGRADE
     name: Gem Extractor
@@ -77,6 +81,7 @@ factories:
     - Extract_Quartz_Advanced
     - Extract_Redstone_Advanced
     - Extract_Lapis
+    - Repair_Advanced_Factory
   sandsmelter:
     type: FCCUPGRADE
     name: Sand Smelter
@@ -86,16 +91,24 @@ factories:
     - Smelt_Sandstone_Basic
     - Smelt_Red_Sandstone_Basic
     - Convert_Normal_Sand_to_Red_Sand
-    - Upgrade_to_Sand_Smelter_2
+    - Repair_Small_Factory
+    - Upgrade_to_Advanced_Sand_Smelter
     - Upgrade_to_Sandstone_Smelter
-    - Upgrade_to_Glass_Dying
-  sandsmelter2:
+    - Upgrade_to_Glass_Dying_Factory
+  glassdying:
     type: FCCUPGRADE
-    name: Sand Smelter 2
+    name: Glass Dying Factory
+    recipes:
+    - foo
+    - Repair_Factory
+  advancedsandsmelter:
+    type: FCCUPGRADE
+    name: Advanced Sand Smelter
     recipes:
     - Smelt_Glass_Expert
     - Smelt_Glass_Panes_Advanced
     - Smelt_Glassbottles
+    - Repair_Factory
   sandstonesmelter:
     type: FCCUPGRADE
     name: Sandstone Smelter
@@ -110,6 +123,7 @@ factories:
     - Smelt_Chiselled_Red_Sandstone
     - Smelt_Smooth_Sandstone
     - Smelt_Smooth_Red_Sandstone
+    - Repair_Factory
   bricksmelter:
     type: FCCUPGRADE
     name: Brick Smelter
@@ -118,6 +132,7 @@ factories:
     - Craft_Stonebricks_Basic
     - Craft_Prismarine_Basic
     - Craft_Netherbrick_Basic
+    - Repair_Small_Factory
     - Upgrade_to_Stonebrick_Smelter
     - Upgrade_to_Netherbrick_Smelter
     - Upgrade_to_Aquatic_Brick_Smelter
@@ -130,6 +145,7 @@ factories:
     - Craft_Polished_Andesite
     - Craft_Polished_Diorite
     - Craft_Polished_Granite
+    - Repair_Factory
   stonebricksmelter:
     type: FCCUPGRADE
     name: Stone Brick Smelter
@@ -140,6 +156,7 @@ factories:
     - Craft_Chiselled_Stonebrick
     - Craft_Cracked_Stonebrick
     - Craft_Mossy_Stonebrick
+    - Repair_Factory
   netherbricksmelter:
     type: FCCUPGRADE
     name: Nether Brick Smelter
@@ -148,6 +165,7 @@ factories:
     - Craft_Netherbrick_Fence
     - Craft_Netherbrick_Slabs
     - Craft_Netherbrick_Stairs
+    - Repair_Factory
   aquaticstonesmelter:
     type: FCCUPGRADE
     name: Aquatic Brick Smelter
@@ -156,6 +174,7 @@ factories:
     - Smelt_Dark_Prismarine
     - Smelt_Prismarine_Bricks
     - Craft_Sea_Lanterns
+    - Repair_Factory
   quartzfactory:
     type: FCCUPGRADE
     name: Quartz Factory
@@ -165,12 +184,14 @@ factories:
     - Craft_Chiselled_Quartz_Blocks
     - Craft_Pillar_Quartz_Blocks
     - Craft_Quartz_Stairs
+    - Repair_Factory
   kiln:
     type: FCCUPGRADE
     name: Kiln
     recipes:
     - Smelt_Clay_Bricks
     - Harden_Clay_Basic
+    - Repair_Small_Factory
     - Upgrade_to_Advanced_Kiln
   advancedkiln:
     type: FCCUPGRADE
@@ -179,6 +200,7 @@ factories:
     - Smelt_Brickblocks
     - Harden_Clay_Advanced
     - Craft_Flowerpots
+    - Repair_Factory
   woodprocessor:
     type: FCCUPGRADE
     name: Wood Processor
@@ -186,6 +208,7 @@ factories:
     - Burn_Charcoal_from_Logs_Basic
     - Craft_Oak_Fence
     - Cut_any_type_of_Plank_Basic
+    - Repair_Rudimentary_Factory
     - Upgrade_to_Carpentry
     - Upgrade_to_Fine_Woodworking
     - Upgrade_to_Coal_Burner
@@ -198,6 +221,7 @@ factories:
     - Craft_any_type_of_wooden_stair
     - Craft_any_type_of_wooden_slab
     - Craft_any_type_of_wooden_door
+    - Repair_Small_Factory
   finewoodworking:
     type: FCCUPGRADE
     name: Fine Woodworking
@@ -206,12 +230,14 @@ factories:
     - Craft_any_type_of_fence_gate
     - Craft_ladder
     - Craft_trap_door
+    - Repair_Small_Factory
   coalburner:
     type: FCCUPGRADE
     name: Coal Burner
     recipes:
     - Burn_Charcoal_from_Coal
     - Burn_Charcoal_from_Logs_Advanced
+    - Repair_Small_Factory
   farmsteadfactory:
     type: FCCUPGRADE
     name: Farmstead Factory
@@ -219,6 +245,7 @@ factories:
     - Bake_Bread_Basic
     - Grill_Steak_Basic
     - Create_Poppy_Basic
+    - Repair_Rudimentary_Factory
     - Upgrade_to_Bakery
     - Upgrade_to_Grill
     - Upgrade_to_Soup_kitchen
@@ -233,6 +260,7 @@ factories:
     - Bake_Cookies
     - Bake_Cake
     - Bake_Pumpkin_Pie
+    - Repair_Factory
   grill:
     type: FCCUPGRADE
     name: Grill
@@ -244,6 +272,7 @@ factories:
     - Cook_Fish
     - Cook_Mutton
     - Cook_Rabbit
+    - Repair_Small_Factory
   stewmaker:
     type: FCCUPGRADE
     name: Soup kitchen
@@ -258,6 +287,7 @@ factories:
     - Dye_Wool_to_Red_Wool
     - Dye_Wool_to_Yellow_Wool
     - Dye_Wool_to_Green_Wool
+    - Repair_Small_Factory
     - Upgrade_to_Wool_Processing
     - Upgrade_to_Animal_Husbandry_Factory_Advanced
   animalhusbandryfactoryadvanced:
@@ -267,6 +297,7 @@ factories:
     - Craft_Saddles_Advanced
     - Create_Nametags
     - Create_Leads
+    - Repair_Factory
   biolab:
     type: FCCUPGRADE
     name: Bio Lab
@@ -275,6 +306,7 @@ factories:
     - Mutate_Tall_Grass  Basic
     - Take_friendly_mob_egg_apart
     - Create_Podzol_Basic
+    - Repair_Small_Factory
     - Upgrade_to_Grass_Gardening
     - Upgrade_to_Flower_Gardening
     - Upgrade_to_Tree_Mutator
@@ -291,23 +323,27 @@ factories:
     - Grow_Fern
     - Grow_Vine
     - Kill_Dead_Shrub
+    - Repair_Factory
   flowergardening:
     type: FCCUPGRADE
     name: Flower Gardening
     recipes:
     - Create_any_flower
+    - Repair_Factory
   treemutator:
     type: FCCUPGRADE
     name: Tree Mutator
     recipes:
     - Mutate_any_sapling_into_any_other
     - Mutate_any_leaf_into_any_other
+    - Repair_Factory
   madscientist:
     type: FCCUPGRADE
     name: Mad Scientist
     recipes:
     - Create_any_hostile_mob_egg
     - Take_any_mob_egg_apart
+    - Repair_Factory
   organicblockfactory:
     type: FCCUPGRADE
     name: Organic Block Factory
@@ -315,6 +351,7 @@ factories:
     - Create_Podzol_Advanced
     - Create_Coarse_Dirt
     - Create_Mycelium
+    - Repair_Factory
   blacksmith:
     type: FCCUPGRADE
     name: Blacksmith
@@ -324,6 +361,7 @@ factories:
     - Forge_Stone_Shovel
     - Forge_Stone_Hoe
     - Forge_Stone_Axe
+    - Repair_Small_Factory
     - Upgrade_to_Iron_Forge_Basic
     - Upgrade_to_Iron_Equipment_Forge
   ironforgebasic:
@@ -333,6 +371,7 @@ factories:
     - Craft_Rail_Basic
     - Craft_Buckets_Basic
     - Craft_Anvils_Basic
+    - Repair_Factory
     - Upgrade_to_Iron_Forge_Advanced
     - Upgrade_to_Rail_Factory
   ironforgeadvanced:
@@ -345,6 +384,7 @@ factories:
     - Craft_Iron_Bars
     - Craft_Iron_Door
     - Craft_Flint_and_Steel
+    - Repair_Advanced_Factory
   railfactory:
     type: FCCUPGRADE
     name: Rail Factory
@@ -353,6 +393,7 @@ factories:
     - Create_Powered_Rail
     - Create_Detector_Rail
     - Create_Activator_Rail
+    - Repair_Advanced_Factory
   ironequipmentforge:
     type: FCCUPGRADE
     name: Iron Equipment Forge
@@ -367,6 +408,7 @@ factories:
     - Forge_Iron_Breastplate
     - Forge_Iron_Leggings
     - Forge_Iron_Horse_Armour
+    - Repair_Factory
     - Upgrade_to_Gold_Equipment_Forge
     - Upgrade_to_Diamond_Equipment_Forge
   goldequipmentforge:
@@ -377,6 +419,7 @@ factories:
     - Forge_Gold_Shovel
     - Forge_Gold_Breastplate
     - Forge_Gold_Leggings
+    - Repair_Factory
     - Upgrade_to_Gold_Armour_Forge
     - Upgrade_to_Gold_Tools_Forge
   diamondequipmentforge:
@@ -387,6 +430,7 @@ factories:
     - Forge_Diamond_Shovel
     - Forge_Diamond_Breastplate
     - Forge_Diamond_Leggings
+    - Repair_Advanced_Factory
     - Upgrade_to_Diamond_Armour_Forge
     - Upgrade_to_Diamond_Tools_Forge
   goldarmourforge:
@@ -398,6 +442,7 @@ factories:
     - Forge_Gold_Breastplate
     - Forge_Gold_Leggings
     - Forge_Gold_Horse_Armour
+    - Repair_Factory
   goldtoolsforge:
     type: FCCUPGRADE
     name: Gold Tools Forge
@@ -407,6 +452,7 @@ factories:
     - Forge_Gold_Axe
     - Forge_Gold_Hoe
     - Forge_Gold_Sword
+    - Repair_Factory
   diamondarmourforge:
     type: FCCUPGRADE
     name: Diamond Armour Forge
@@ -416,6 +462,7 @@ factories:
     - Forge_Diamond_Breastplate
     - Forge_Diamond_Leggings
     - Forge_Diamond_Horse_Armour
+    - Repair_Expert_Factory
   diamondtoolsforge:
     type: FCCUPGRADE
     name: Diamond Tools Forge
@@ -425,6 +472,7 @@ factories:
     - Forge_Diamond_Axe
     - Forge_Diamond_Hoe
     - Forge_Diamond_Sword
+    - Repair_Expert_Factory
   laboratory:
     type: FCCUPGRADE
     name: Laboratory
@@ -433,6 +481,7 @@ factories:
     - Craft_Dispenser_Basic
     - Enchant_Efficiency
     - Random_Printing_Press_Recipe
+    - Repair_Small_Factory
     - Upgrade_to_Bastion_Factory
     - Upgrade_to_Compactor_Basic
     - Upgrade_to_Enchanter_Basic
@@ -443,10 +492,12 @@ factories:
     name: Bastion Factory
     recipes:
     - Create_Bastion
+    - Repair_Expert_Factory
   printingpress:
     type: FCCUPGRADE
     name: Printing Press
     recipes:
+    - Repair_Factory
     - foo
   compactorbasic:
     type: FCCUPGRADE
@@ -454,6 +505,7 @@ factories:
     recipes:
     - Compact_Stack_Basic
     - De-compact_Stack_Basic
+    - Repair_Factory
     - Upgrade_to_Dedicated_Compactor
     - Upgrade_to_Dedicated_De-Compactor
   dedicatedcompactor:
@@ -461,11 +513,13 @@ factories:
     name: Dedicated Compactor
     recipes:
     - Compact_Stack_Advanced
+    - Repair_Advanced_Factory
   dedicateddecompactor:
     type: FCCUPGRADE
     name: Dedicated De-Compactor
     recipes:
     - De-compact_Stack_Advanced
+    - Repair_Advanced_Factory
   redstonefactorybasic:
     type: FCCUPGRADE
     name: Redstone Factory Basic
@@ -474,6 +528,7 @@ factories:
     - Craft_Redstone_Torch_Basic
     - Craft_Noteblocks_Basic
     - Craft_Dispenser_Basic
+    - Repair_Factory
     - Upgrade_to_Redstone_Circularity_Factory
     - Upgrade_to_Redstone_Mechanics_Factory
   redstonecircularityfactory:
@@ -484,6 +539,7 @@ factories:
     - Craft_Redstone_Torch_Advanced
     - Craft_Redstone_Comparator
     - Craft_Daylight_Sensor
+    - Repair_Advanced_Factory
   redstonemechanicsfactory:
     type: FCCUPGRADE
     name: Redstone Mechanics Factory
@@ -495,14 +551,61 @@ factories:
     - Craft_Dispenser_Advanced
     - Craft_Droppers
     - Craft_Redstone_Lamps
+    - Repair_Advanced_Factory
   basicenchanter:
     type: FCCUPGRADE
     name: Basic Enchanter
     recipes:
-    - Upgrade_to_Tool_Enchanter
-    - Upgrade_to_Weapon_Enchanter
-    - Upgrade_to_Armour_Enchanter
+    - Upgrade_to_Tool_Enchanter_
+    - Upgrade_to_Weapon_Enchanter_
+    - Upgrade_to_Armour_Enchanter_
+    - Repair_Advanced_Factory
 recipes:
+  Repair_Rudimentary_Factory:
+    type: REPAIR
+    name: Repair Factory
+    production_time: 60s
+    input:
+      eye of ender:
+        material: EYE_OF_ENDER 
+        amount: 1
+    health_gained: 1500
+  Repair_Small_Factory:
+    type: REPAIR
+    name: Repair Factory
+    production_time: 30s
+    input:
+      eye of ender:
+        material: EYE_OF_ENDER 
+        amount: 1
+    health_gained: 800
+  Repair_Factory:
+    type: REPAIR
+    name: Repair Factory
+    production_time: 30s
+    input:
+      eye of ender:
+        material: EYE_OF_ENDER 
+        amount: 1
+    health_gained: 350
+  Repair_Advanced_Factory:
+    type: REPAIR
+    name: Repair Advanced Factory
+    production_time: 15s
+    input:
+      eye of ender:
+        material: EYE_OF_ENDER 
+        amount: 1
+    health_gained: 225
+  Repair_Expert_Factory:
+    type: REPAIR
+    name: Repair Advanced Factory
+    production_time: 10s
+    input:
+      eye of ender:
+        material: EYE_OF_ENDER 
+        amount: 1
+    health_gained: 65
   Bake_Bread_Advanced:
     type: PRODUCTION
     name: Bake Bread
@@ -3338,16 +3441,16 @@ recipes:
         material: IRON_INGOT
         amount: 128
     factory: Gem extractor
-  Upgrade_to_Glass_Dying_:
+  Upgrade_to_Glass_Dying_Factory:
     production_time: 3600s
     type: UPGRADE
-    name: Upgrade to Glass Dying
+    name: Upgrade to Glass Dying Factory
     fuel_consumption_intervall: 30s
     input:
       glass:
         material: GLASS
         amount: 128
-    factory: Glass Dying
+    factory: Glass Dying Factory
   Upgrade_to_Gold_Armour_Forge_:
     production_time: 3600s
     type: UPGRADE
@@ -3598,6 +3701,16 @@ recipes:
         material: SAND
         amount: 512
     factory: Sand Smelter
+  Upgrade_to_Advanced_Sand_Smelter:
+    production_time: 1800s
+    type: UPGRADE
+    name: Upgrade to Sand Smelter
+    fuel_consumption_intervall: 15s
+    input:
+      sand:
+        material: SAND
+        amount: 1024
+    factory: Advanced Sand Smelter
   Upgrade_to_Sandstone_Smelter:
     production_time: 1800s
     type: UPGRADE
@@ -3689,7 +3802,7 @@ recipes:
         durability: -1
         amount: 256
     factory: Wood Processor
-  Upgrade_to_Wool_Processing:
+  Upgrade_to_Wool_Processing_:
     production_time: 1800s
     type: UPGRADE
     name: Upgrade to Wool Processing
