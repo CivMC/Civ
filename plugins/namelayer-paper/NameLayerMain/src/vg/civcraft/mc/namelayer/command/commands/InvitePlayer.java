@@ -155,7 +155,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 				TextComponent message = new TextComponent(msg + "Click this message to accept");
 				message.setColor(net.md_5.bungee.api.ChatColor.GREEN);
 				message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/nlag " + group.getName()));
-				message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to accept").create()));
+				message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("  ---  Click to accept").create()));
 				invitee.spigot().sendMessage(message);
 			}
 		} else {
