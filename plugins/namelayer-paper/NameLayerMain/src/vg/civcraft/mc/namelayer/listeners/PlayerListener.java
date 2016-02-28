@@ -13,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
@@ -31,9 +32,9 @@ public class PlayerListener implements Listener{
 		GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
 		
 		for (String groupName : db.getGroupNames(uuid)){
-			Group group = db.getGroup(groupName);
+			Group group = GroupManager.getGroup(groupName);
 			GroupPermission perm = new GroupPermission(group);
-			PlayerType ptype = db.getPlayerType(group.getGroupId(), uuid);
+			PlayerType ptype = group.getPlayerType(uuid);
 			
 			if(ptype != null && perm.isAccessible(ptype, PermissionType.BLOCKS))
 				db.updateTimestamp(groupName);
