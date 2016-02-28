@@ -125,7 +125,12 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			// invitee is online
 			if (shouldAutoAccept) {
 				// player auto accepts invite
-				NameAPI.getGroupManager().invalidateCache(group.getName());
+				if (saveToDB) {
+					group.addMember(invitedPlayer, pType);
+				}
+				else {
+					NameAPI.getGroupManager().invalidateCache(group.getName());
+				}
 				invitee.sendMessage(
 						ChatColor.GREEN + " You have auto-accepted invite to the group: " + group.getName());
 			} else {
@@ -145,7 +150,12 @@ public class InvitePlayer extends PlayerCommandMiddle{
 		} else {
 			// invitee is offline or on a different shard
 			if (shouldAutoAccept) {
-				NameAPI.getGroupManager().invalidateCache(group.getName());
+				if (saveToDB) {
+					group.addMember(invitedPlayer, pType);
+				}
+				else {
+					NameAPI.getGroupManager().invalidateCache(group.getName());
+				}
 			} else {
 				// Player did not auto accept
 				group.addInvite(invitedPlayer, pType, saveToDB);
