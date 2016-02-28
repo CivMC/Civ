@@ -21,8 +21,9 @@ factories:
     type: FCC
     name: Basic Contraption
     setupcost:
-      wood:
+      planks:
         material: WOOD
+        durability: -1
         amount: 64
       stone:
         material: STONE
@@ -120,6 +121,7 @@ factories:
     - Upgrade_to_Stonebrick_Smelter
     - Upgrade_to_Netherbrick_Smelter
     - Upgrade_to_Aquatic_Brick_Smelter
+    - Upgrade_to_Quartz_Factory
   advancedstonesmelter:
     type: FCCUPGRADE
     name: Advanced Stone Smelter
@@ -504,7 +506,7 @@ recipes:
   Bake_Bread_Advanced:
     type: PRODUCTION
     name: Bake Bread
-    production_time: 5s
+    production_time: 10s
     input:
       wheat:
         material: WHEAT
@@ -595,7 +597,7 @@ recipes:
   Burn_Charcoal_from_Coal:
     type: PRODUCTION
     name: Burn Charcoal from Coal
-    production_time: 5s
+    production_time: 10s
     input:
       coal:
         material: COAL
@@ -695,9 +697,9 @@ recipes:
   Craft_Anvils_Advanced:
     type: PRODUCTION
     name: Craft Anvils
-    production_time: 5s
+    production_time: 10s
     input:
-      iron blocks:
+      iron block:
         material: IRON_BLOCK
         amount: 32
     output:
@@ -709,7 +711,7 @@ recipes:
     name: Craft Anvils
     production_time: 5s
     input:
-      iron blocks:
+      iron block:
         material: IRON_BLOCK
         amount: 32
     output:
@@ -781,8 +783,9 @@ recipes:
     name: Craft Boat
     production_time: 5s
     input:
-      wood:
+      planks:
         material: WOOD
+        durability: -1
         amount: 64
     output:
       boat:
@@ -793,7 +796,7 @@ recipes:
     name: Craft Buckets
     production_time: 5s
     input:
-      iron blocks:
+      iron block:
         material: IRON_BLOCK
         amount: 4
     output:
@@ -805,7 +808,7 @@ recipes:
     name: Craft Buckets
     production_time: 5s
     input:
-      iron blocks:
+      iron block:
         material: IRON_BLOCK
         amount: 5
     output:
@@ -938,7 +941,7 @@ recipes:
     name: Craft Flint and Steel
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 12
       flint:
@@ -965,7 +968,7 @@ recipes:
     name: Craft Iron Bars
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 16
     output:
@@ -977,7 +980,7 @@ recipes:
     name: Craft Iron Door
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_FENCE
         amount: 16
     output:
@@ -1118,8 +1121,8 @@ recipes:
         material: LOG
         amount: 16
     output:
-      identifiername:
-        material: STONE
+      oak fence:
+        material: FENCE
         amount: 48
   Craft_Pillar_Quartz_Blocks:
     type: PRODUCTION
@@ -1142,10 +1145,10 @@ recipes:
       cobblestone:
         material: COBBLESTONE
         amount: 128
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 48
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 48
       planks:
@@ -1252,7 +1255,7 @@ recipes:
     name: Craft Rail Basic
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 32
       stick:
@@ -1369,7 +1372,7 @@ recipes:
       leather:
         material: LEATHER
         amount: 32
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 16
     output:
@@ -1384,7 +1387,7 @@ recipes:
       leather:
         material: LEATHER
         amount: 32
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 32
     output:
@@ -1411,7 +1414,7 @@ recipes:
     name: Craft Shears
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 16
     output:
@@ -1429,7 +1432,7 @@ recipes:
       redstone:
         material: REDSTONE
         amount: 48
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 48
       planks:
@@ -1510,7 +1513,7 @@ recipes:
     name: Create Activator Rail
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 32
       stick:
@@ -1593,7 +1596,7 @@ recipes:
     name: Create Detector Rail
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 32
       redstone:
@@ -1703,7 +1706,7 @@ recipes:
     name: Create Powered Rail
     production_time: 5s
     input:
-      gold:
+      gold ingot:
         material: GOLD_INGOT
         amount: 32
       redstone:
@@ -1718,7 +1721,7 @@ recipes:
     name: Create Rail
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 32
     output:
@@ -1727,28 +1730,30 @@ recipes:
         amount: 128
   Cut_any_type_of_Plank_Advanced:
     type: PRODUCTION
-    name: Cut any type of Plank Advanced
-    production_time: 5s
+    name: Cut Oak Planks Advanced
+    production_time: 2s
     input:
-      identifiername:
-        material: STONE
-        amount: 1
+      log:
+        material: LOG
+        durability: -1
+        amount: 10
     output:
-      identifiername:
-        material: STONE
-        amount: 1
+      planks:
+        material: WOOD
+        amount: 60
   Cut_any_type_of_Plank_Basic:
     type: PRODUCTION
-    name: Cut any type of Plank Basic
-    production_time: 5s
+    name: Cut Oak Planks Basic
+    production_time: 2s
     input:
-      identifiername:
-        material: STONE
-        amount: 1
+      log:
+        material: LOG
+        durability: -1
+        amount: 10
     output:
-      identifiername:
-        material: STONE
-        amount: 1
+      planks:
+        material: WOOD
+        amount: 50
   De-compact_Stack_Advanced:
     type: DECOMPACT
     name: De-compact Stack
@@ -1766,6 +1771,7 @@ recipes:
     input:
       wool:
         material: WOOL
+        durability: -1
         amount: 64
       dye:
         material: INK_SACK
@@ -1783,6 +1789,7 @@ recipes:
     input:
       wool:
         material: WOOL
+        durability: -1
         amount: 64
       dye:
         material: INK_SACK
@@ -1800,6 +1807,7 @@ recipes:
     input:
       wool:
         material: WOOL
+        durability: -1
         amount: 64
       dye:
         material: INK_SACK
@@ -2039,7 +2047,7 @@ recipes:
     name: Forge Gold Axe
     production_time: 5s
     input:
-      gold:
+      gold ingot:
         material: GOLD_INGOT
         amount: 16
     output:
@@ -2051,7 +2059,7 @@ recipes:
     name: Forge Gold Boots
     production_time: 5s
     input:
-      gold:
+      gold ingot:
         material: GOLD_INGOT
         amount: 24
     output:
@@ -2063,7 +2071,7 @@ recipes:
     name: Forge Gold Breastplate
     production_time: 5s
     input:
-      gold:
+      gold ingot:
         material: GOLD_INGOT
         amount: 48
     output:
@@ -2075,7 +2083,7 @@ recipes:
     name: Forge Gold Helmet
     production_time: 5s
     input:
-      gold:
+      gold ingot:
         material: GOLD_INGOT
         amount: 32
     output:
@@ -2087,7 +2095,7 @@ recipes:
     name: Forge Gold Hoe
     production_time: 5s
     input:
-      gold:
+      gold ingot:
         material: GOLD_INGOT
         amount: 8
     output:
@@ -2099,7 +2107,7 @@ recipes:
     name: Forge Gold Horse Armour
     production_time: 5s
     input:
-      gold:
+      gold ingot:
         material: GOLD_INGOT
         amount: 12
     output:
@@ -2111,7 +2119,7 @@ recipes:
     name: Forge Gold Leggings
     production_time: 5s
     input:
-      gold:
+      gold ingot:
         material: GOLD_INGOT
         amount: 40
     output:
@@ -2123,7 +2131,7 @@ recipes:
     name: Forge Gold Pickaxe
     production_time: 5s
     input:
-      gold:
+      gold ingot:
         material: GOLD_INGOT
         amount: 16
     output:
@@ -2135,7 +2143,7 @@ recipes:
     name: Forge Gold Shovel
     production_time: 5s
     input:
-      gold:
+      gold ingot:
         material: GOLD_INGOT
         amount: 6
     output:
@@ -2147,7 +2155,7 @@ recipes:
     name: Forge Gold Sword
     production_time: 5s
     input:
-      gold:
+      gold ingot:
         material: GOLD_INGOT
         amount: 10
     output:
@@ -2159,7 +2167,7 @@ recipes:
     name: Forge Iron Axe
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 16
     output:
@@ -2171,7 +2179,7 @@ recipes:
     name: Forge Iron Boots
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 24
     output:
@@ -2183,7 +2191,7 @@ recipes:
     name: Forge Iron Breastplate
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 48
     output:
@@ -2195,7 +2203,7 @@ recipes:
     name: Forge Iron Helmet
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 32
     output:
@@ -2207,7 +2215,7 @@ recipes:
     name: Forge Iron Hoe
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 8
     output:
@@ -2219,7 +2227,7 @@ recipes:
     name: Forge Iron Horse Armour
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 12
     output:
@@ -2231,7 +2239,7 @@ recipes:
     name: Forge Iron Leggings
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 40
     output:
@@ -2243,7 +2251,7 @@ recipes:
     name: Forge Iron Pickaxe
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 16
     output:
@@ -2255,7 +2263,7 @@ recipes:
     name: Forge Iron Shovel
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 6
     output:
@@ -2267,7 +2275,7 @@ recipes:
     name: Forge Iron Sword
     production_time: 5s
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 10
     output:
@@ -2769,7 +2777,7 @@ recipes:
         material: GOLD_ORE
         amount: 16
     output:
-      gold:
+      gold ingot:
         material: GOLD_INGOT
         amount: 64
   Smelt_Iron_Ore_Advanced:
@@ -2781,7 +2789,7 @@ recipes:
         material: IRON_ORE
         amount: 64
     output:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 192
   Smelt_Iron_Ore_Basic:
@@ -2793,7 +2801,7 @@ recipes:
         material: IRON_ORE
         amount: 64
     output:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 128
   Smelt_Netherbrick_Advanced:
@@ -3019,7 +3027,7 @@ recipes:
         material: STONE
         amount: 1
   Upgrade_to_Advanced_Kiln:
-    production_time: 5s
+    production_time: 30s
     type: UPGRADE
     name: Upgrade to Advanced Kiln
     input:
@@ -3028,7 +3036,7 @@ recipes:
         amount: 640
     factory: Advanced Kiln
   Upgrade_to_Animal_Husbandry_Factory_Advanced:
-    production_time: 5s
+    production_time: 45s
     type: UPGRADE
     name: Upgrade to Animal Husbandry Factory Advanced
     input:
@@ -3040,7 +3048,7 @@ recipes:
         amount: 128
     factory: Animal Husbandry Factory Advanced
   Upgrade_to_Animal_Husbandry_Factory_Basic:
-    production_time: 5s
+    production_time: 30s
     type: UPGRADE
     name: Upgrade to Animal Husbandry Factory Basic
     input:
@@ -3052,7 +3060,7 @@ recipes:
         amount: 16
     factory: Animal Husbandry Factory Basic
   Upgrade_to_Aquatic_Brick_Smelter:
-    production_time: 5s
+    production_time: 30s
     type: UPGRADE
     name: Upgrade to Aquatic Brick Smelter
     input:
@@ -3063,8 +3071,17 @@ recipes:
         material: PRISMARINE_CRYSTALS
         amount: 128
     factory: Aquatic Brick Smelter
+  Upgrade_to_Quartz_Factory:
+    production_time: 30s
+    type: UPGRADE
+    name: Upgrade to Quartz Factory
+    input:
+      Quartz Block:
+        material: QUARTZ_BLOCK
+        amount: 256
+    factory: Quartz Factory
   Upgrade_to_Armour_Enchanter:
-    production_time: 5s
+    production_time: 30s
     type: UPGRADE
     name: Upgrade to Armour Enchanter
     input:
@@ -3076,7 +3093,7 @@ recipes:
         amount: 64
     factory: Armour Enchanter
   Upgrade_to_Bakery:
-    production_time: 5s
+    production_time: 30s
     type: UPGRADE
     name: Upgrade to Bakery
     input:
@@ -3091,7 +3108,7 @@ recipes:
         amount: 128
     factory: Bakery
   Upgrade_to_Bastion_Factory:
-    production_time: 5s
+    production_time: 45s
     type: UPGRADE
     name: Upgrade to Bastion Factory
     input:
@@ -3106,7 +3123,7 @@ recipes:
         amount: 48
     factory: Bastion Factory
   Upgrade_to_Bio_Lab:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Bio Lab
     input:
@@ -3119,25 +3136,25 @@ recipes:
         amount: 256
     factory: Bio Lab
   Upgrade_to_Blacksmith:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Blacksmith
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 256
     factory: Blacksmith
   Upgrade_to_Brick_Smelter:
-    production_time: 5s
+    production_time: 30s
     type: UPGRADE
     name: Upgrade to Brick Smelter
     input:
-      clay:
+      clay blocks:
         material: CLAY
         amount: 512
     factory: Brick Smelter
   Upgrade_to_Carpentry:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Carpentry
     input:
@@ -3147,7 +3164,7 @@ recipes:
         amount: 256
     factory: Carpentry
   Upgrade_to_Coal_Burner:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Coal Burner
     input:
@@ -3156,7 +3173,7 @@ recipes:
         amount: 256
     factory: Coal Burner
   Upgrade_to_Compactor_Basic:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Compactor Basic
     input:
@@ -3166,12 +3183,12 @@ recipes:
       chest:
         material: CHEST
         amount: 64
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 32
     factory: Compactor Basic
   Upgrade_to_Dedicated_Compactor:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Dedicated Compactor
     input:
@@ -3181,12 +3198,12 @@ recipes:
       chest:
         material: CHEST
         amount: 64
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 48
     factory: Dedicated Compactor
   Upgrade_to_Dedicated_De-Compactor:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Dedicated De-Compactor
     input:
@@ -3196,12 +3213,12 @@ recipes:
       chest:
         material: CHEST
         amount: 64
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 48
     factory: Dedicated De-Compactor
   Upgrade_to_Diamond_Armour_Forge_:
-    production_time: 5s
+    production_time: 45s
     type: UPGRADE
     name: Upgrade to Diamond Armour Forge
     input:
@@ -3210,7 +3227,7 @@ recipes:
         amount: 48
     factory: Diamond Armour Forge
   Upgrade_to_Diamond_Equipment_Forge:
-    production_time: 5s
+    production_time: 30s
     type: UPGRADE
     name: Upgrade to Diamond Equipment Forge
     input:
@@ -3218,8 +3235,8 @@ recipes:
         material: DIAMOND_BLOCK
         amount: 32
     factory: Diamond Equipment Forge
-  Upgrade_to_Diamond_Tools_Forge_:
-    production_time: 5s
+  Upgrade_to_Diamond_Tools_Forge:
+    production_time: 45s
     type: UPGRADE
     name: Upgrade to Diamond Tools Forge
     input:
@@ -3228,7 +3245,7 @@ recipes:
         amount: 32
     factory: Diamond Tools Forge
   Upgrade_to_Enchanter_Basic:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Enchanter Basic
     input:
@@ -3237,7 +3254,7 @@ recipes:
         amount: 32
     factory: Enchanter Basic
   Upgrade_to_Farmstead_Factory:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Farmstead Factory
     input:
@@ -3258,7 +3275,7 @@ recipes:
         amount: 64
     factory: Farmstead Factory
   Upgrade_to_Fine_Woodworking:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Fine Woodworking
     input:
@@ -3271,7 +3288,7 @@ recipes:
         amount: 1
     factory: Fine Woodworking
   Upgrade_to_Flower_Gardening_:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Flower Gardening
     input:
@@ -3280,22 +3297,22 @@ recipes:
         amount: 128
     factory: Flower Gardening
   Upgrade_to_Gem_extractor_:
-    production_time: 5s
+    production_time: 45s
     type: UPGRADE
     name: Upgrade to Gem extractor
     input:
       diamond:
         material: DIAMOND
         amount: 64
-      gold:
+      gold ingot:
         material: GOLD_INGOT
         amount: 32
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 128
     factory: Gem extractor
   Upgrade_to_Glass_Dying_:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Glass Dying
     input:
@@ -3304,7 +3321,7 @@ recipes:
         amount: 128
     factory: Glass Dying
   Upgrade_to_Gold_Armour_Forge_:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Gold Armour Forge
     input:
@@ -3313,7 +3330,7 @@ recipes:
         amount: 48
     factory: Gold Armour Forge
   Upgrade_to_Gold_Equipment_Forge:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Gold Equipment Forge
     input:
@@ -3322,7 +3339,7 @@ recipes:
         amount: 32
     factory: Gold Equipment Forge
   Upgrade_to_Gold_Tools_Forge:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Gold Tools Forge
     input:
@@ -3331,7 +3348,7 @@ recipes:
         amount: 32
     factory: Gold Tools Forge
   Upgrade_to_Grass_Gardening:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Grass Gardening
     input:
@@ -3341,7 +3358,7 @@ recipes:
         amount: 128
     factory: Grass Gardening
   Upgrade_to_Grill:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Grill
     input:
@@ -3356,7 +3373,7 @@ recipes:
         amount: 128
     factory: Grill
   Upgrade_to_Iron_Equipment_Forge:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Iron Equipment Forge
     input:
@@ -3365,7 +3382,7 @@ recipes:
         amount: 48
     factory: Iron Equipment Forge
   Upgrade_to_Iron_Forge_Advanced:
-    production_time: 5s
+    production_time: 30s
     type: UPGRADE
     name: Upgrade to Iron Forge Advanced
     input:
@@ -3374,7 +3391,7 @@ recipes:
         amount: 64
     factory: Iron Forge Advanced
   Upgrade_to_Iron_Forge_Basic:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Iron Forge Basic
     input:
@@ -3383,7 +3400,7 @@ recipes:
         amount: 32
     factory: Iron Forge Basic
   Upgrade_to_Kiln:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Kiln
     input:
@@ -3392,7 +3409,7 @@ recipes:
         amount: 128
     factory: Kiln
   Upgrade_to_Laboratory:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Laboratory
     input:
@@ -3404,7 +3421,7 @@ recipes:
         amount: 128
     factory: Laboratory
   Upgrade_to_Mad_Scientist:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Mad Scientist
     input:
@@ -3416,7 +3433,7 @@ recipes:
         durability: 94
     factory: Mad Scientist
   Upgrade_to_Netherbrick_Smelter:
-    production_time: 5s
+    production_time: 30s
     type: UPGRADE
     name: Upgrade to Netherbrick Smelter
     input:
@@ -3425,22 +3442,37 @@ recipes:
         amount: 128
     factory: Netherbrick Smelter
   Upgrade_to_Ore_Smelter:
-    production_time: 5s
+    production_time: 30s
     type: UPGRADE
     name: Upgrade to Ore Smelter
     input:
       diamond:
         material: DIAMOND
         amount: 32
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 64
-      gold:
+      gold ingot:
         material: GOLD_INGOT
         amount: 16
     factory: Ore Smelter
+  Upgrade_to_Ore_Forge:
+    production_time: 60s
+    type: UPGRADE
+    name: Upgrade to Ore Forge
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 64
+      iron ingot:
+        material: IRON_INGOT
+        amount: 128
+      gold ingot:
+        material: GOLD_INGOT
+        amount: 32
+    factory: Ore Forge
   Upgrade_to_Organic_Block_Factory:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Organic Block Factory
     input:
@@ -3449,7 +3481,7 @@ recipes:
         amount: 128
     factory: Organic Block Factory
   Upgrade_to_Printing_Press:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Printing Press
     input:
@@ -3461,11 +3493,11 @@ recipes:
         amount: 64
     factory: Printing Press
   Upgrade_to_Rail_Factory_:
-    production_time: 5s
+    production_time: 30s
     type: UPGRADE
     name: Upgrade to Rail Factory
     input:
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 128
       redstone:
@@ -3473,7 +3505,7 @@ recipes:
         amount: 32
     factory: Rail Factory
   Upgrade_to_Redstone_Circularity_Factory:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Redstone Circularity Factory
     input:
@@ -3485,7 +3517,7 @@ recipes:
         amount: 64
     factory: Redstone Circularity Factory
   Upgrade_to_Redstone_Factory_Basic:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Redstone Factory Basic
     input:
@@ -3494,19 +3526,19 @@ recipes:
         amount: 128
     factory: Redstone Factory Basic
   Upgrade_to_Redstone_Mechanics_Factory:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Redstone Mechanics Factory
     input:
       redstone:
         material: REDSTONE
         amount: 128
-      iron:
+      iron ingot:
         material: IRON_INGOT
         amount: 64
     factory: Redstone Mechanics Factory
   Upgrade_to_Sand_Smelter:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Sand Smelter
     input:
@@ -3515,7 +3547,7 @@ recipes:
         amount: 512
     factory: Sand Smelter
   Upgrade_to_Sandstone_Smelter:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Sandstone Smelter
     input:
@@ -3527,7 +3559,7 @@ recipes:
         amount: 128
     factory: Sandstone Smelter
   Upgrade_to_Soup_kitchen:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Soup kitchen
     input:
@@ -3542,7 +3574,7 @@ recipes:
         amount: 64
     factory: Soup kitchen
   Upgrade_to_Stone_Smelter:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Stone Smelter
     input:
@@ -3551,7 +3583,7 @@ recipes:
         amount: 512
     factory: Stone Smelter
   Upgrade_to_Stonebrick_Smelter:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Stonebrick Smelter
     input:
@@ -3560,7 +3592,7 @@ recipes:
         amount: 256
     factory: Stonebrick Smelter
   Upgrade_to_Tool_Enchanter:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Tool Enchanter
     input:
@@ -3569,7 +3601,7 @@ recipes:
         amount: 32
     factory: Tool Enchanter
   Upgrade_to_Tree_Mutator:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Tree Mutator
     input:
@@ -3579,7 +3611,7 @@ recipes:
         amount: 128
     factory: Tree Mutator
   Upgrade_to_Weapon_Enchanter:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Weapon Enchanter
     input:
@@ -3588,7 +3620,7 @@ recipes:
         amount: 32
     factory: Weapon Enchanter
   Upgrade_to_Wood_Processor:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Wood Processor
     input:
@@ -3598,7 +3630,7 @@ recipes:
         amount: 256
     factory: Wood Processor
   Upgrade_to_Wool_Processing:
-    production_time: 5s
+    production_time: 20s
     type: UPGRADE
     name: Upgrade to Wool Processing
     input:
