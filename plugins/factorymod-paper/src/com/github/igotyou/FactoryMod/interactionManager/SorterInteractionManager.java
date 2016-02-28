@@ -53,7 +53,7 @@ public class SorterInteractionManager implements IInteractionManager {
 			ReinforcementManager rm = Citadel.getReinforcementManager();
 			//is this cast safe? Let's just assume yes for now
 			PlayerReinforcement rein = (PlayerReinforcement)rm.getReinforcement(b);
-			if (rein != null && !rein.getGroup().isMember(p.getUniqueId())) {
+			if (rein != null && !rein.getGroup().isMember(p.getUniqueId()) && !p.isOp()) {
 				p.sendMessage(ChatColor.RED + "You dont have permission to interact with this factory");
 				FactoryMod.sendResponse("FactoryNoPermission", p);
 				return;
