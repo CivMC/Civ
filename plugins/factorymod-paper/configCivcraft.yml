@@ -71,6 +71,7 @@ factories:
     - Smelt_Coal_Ore_Expert
     - Smelt_Iron_Ore_Advanced
     - Smelt_Gold_Ore
+    - Repair_Advanced_Factory
   gemextractor:
     type: FCCUPGRADE
     name: Gem Extractor
@@ -80,6 +81,7 @@ factories:
     - Extract_Quartz_Advanced
     - Extract_Redstone_Advanced
     - Extract_Lapis
+    - Repair_Advanced_Factory
   sandsmelter:
     type: FCCUPGRADE
     name: Sand Smelter
@@ -258,7 +260,7 @@ factories:
     - Bake_Cookies
     - Bake_Cake
     - Bake_Pumpkin_Pie
-    - Repair_Small_Factory
+    - Repair_Factory
   grill:
     type: FCCUPGRADE
     name: Grill
@@ -327,6 +329,7 @@ factories:
     name: Flower Gardening
     recipes:
     - Create_any_flower
+    - Repair_Factory
   treemutator:
     type: FCCUPGRADE
     name: Tree Mutator
@@ -489,7 +492,7 @@ factories:
     name: Bastion Factory
     recipes:
     - Create_Bastion
-    - Repair_Advanced_Factory
+    - Repair_Expert_Factory
   printingpress:
     type: FCCUPGRADE
     name: Printing Press
@@ -566,7 +569,7 @@ recipes:
       eye of ender:
         material: EYE_OF_ENDER 
         amount: 1
-    health_gained: 2000
+    health_gained: 1500
   Repair_Small_Factory:
     type: REPAIR
     name: Repair Factory
@@ -575,7 +578,7 @@ recipes:
       eye of ender:
         material: EYE_OF_ENDER 
         amount: 1
-    health_gained: 1000
+    health_gained: 800
   Repair_Factory:
     type: REPAIR
     name: Repair Factory
@@ -584,7 +587,7 @@ recipes:
       eye of ender:
         material: EYE_OF_ENDER 
         amount: 1
-    health_gained: 500
+    health_gained: 350
   Repair_Advanced_Factory:
     type: REPAIR
     name: Repair Advanced Factory
@@ -593,7 +596,7 @@ recipes:
       eye of ender:
         material: EYE_OF_ENDER 
         amount: 1
-    health_gained: 250
+    health_gained: 225
   Repair_Expert_Factory:
     type: REPAIR
     name: Repair Advanced Factory
@@ -602,7 +605,7 @@ recipes:
       eye of ender:
         material: EYE_OF_ENDER 
         amount: 1
-    health_gained: 75
+    health_gained: 65
   Bake_Bread_Advanced:
     type: PRODUCTION
     name: Bake Bread
