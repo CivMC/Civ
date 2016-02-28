@@ -568,6 +568,11 @@ recipes:
     input:
       eye of ender:
         material: EYE_OF_ENDER 
+        lore:
+         - Essence
+        enchants:
+          dura:
+            enchant: DURABILITY
         amount: 1
     health_gained: 1500
   Repair_Small_Factory:
@@ -577,6 +582,11 @@ recipes:
     input:
       eye of ender:
         material: EYE_OF_ENDER 
+        lore:
+         - Essence
+        enchants:
+          dura:
+            enchant: DURABILITY
         amount: 1
     health_gained: 800
   Repair_Factory:
@@ -586,6 +596,11 @@ recipes:
     input:
       eye of ender:
         material: EYE_OF_ENDER 
+        lore:
+         - Essence
+        enchants:
+          dura:
+            enchant: DURABILITY
         amount: 1
     health_gained: 350
   Repair_Advanced_Factory:
@@ -594,7 +609,12 @@ recipes:
     production_time: 15s
     input:
       eye of ender:
-        material: EYE_OF_ENDER 
+        material: EYE_OF_ENDER
+        lore:
+         - Essence
+        enchants:
+          dura:
+            enchant: DURABILITY        
         amount: 1
     health_gained: 225
   Repair_Expert_Factory:
@@ -604,6 +624,11 @@ recipes:
     input:
       eye of ender:
         material: EYE_OF_ENDER 
+        lore:
+         - Essence
+        enchants:
+          dura:
+            enchant: DURABILITY
         amount: 1
     health_gained: 65
   Bake_Bread_Advanced:
