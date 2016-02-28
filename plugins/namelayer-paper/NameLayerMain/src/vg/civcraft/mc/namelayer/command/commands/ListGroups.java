@@ -53,12 +53,12 @@ public class ListGroups extends PlayerCommandMiddle {
 		}
 		
 		int target = 0;
-		try {
-			target = Integer.parseInt(args[0]);
-		} catch (Exception e) {
-			if (e.getCause() instanceof NumberFormatException) {
-				p.sendMessage(ChatColor.RED + "The page must be an integer.");
-				return true;
+		if (args.length == 1) {
+			try {
+				target = Integer.parseInt(args[0]);
+			} catch (NumberFormatException e) {
+				p.sendMessage(ChatColor.RED + args[0] + " is not a number");
+				return false;
 			}
 		}
 		
@@ -72,7 +72,7 @@ public class ListGroups extends PlayerCommandMiddle {
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(ChatColor.GREEN);
-		for (int page = target; page < pages; page++) {
+		for (int page = target; page <= pages; page++) {
 			sb.append("Page ");
 			sb.append(page + 1);
 			sb.append(" of ");
