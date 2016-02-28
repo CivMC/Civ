@@ -12,7 +12,7 @@ default_fuel:
 default_fuel_consumption_intervall: 2s
 default_menu_factory: Basic Contraption
 log_inventories: true
-break_grace_period: 7d
+break_grace_period: 10d
 decay_intervall: 1h
 decay_amount: 21
 use_recipe_yamlidentifiers: true
@@ -893,7 +893,7 @@ recipes:
       stick:
         material: STICK
         amount: 32
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 32
     output:
@@ -914,7 +914,7 @@ recipes:
       stick:
         material: STICK
         amount: 32
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 32
     output:
@@ -929,7 +929,7 @@ recipes:
       cobblestone:
         material: COBBLESTONE
         amount: 192
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 32
     output:
@@ -1085,7 +1085,7 @@ recipes:
     name: Craft Noteblocks
     production_time: 5s
     input:
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 48
       planks:
@@ -1101,7 +1101,7 @@ recipes:
     name: Craft Noteblocks
     production_time: 5s
     input:
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 64
       planks:
@@ -1291,7 +1291,7 @@ recipes:
       glowstone:
         material: GLOWSTONE
         amount: 32
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 128
     output:
@@ -1303,7 +1303,7 @@ recipes:
     name: Craft Redstone Repeater
     production_time: 5s
     input:
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 32
       redstone torch:
@@ -1321,7 +1321,7 @@ recipes:
     name: Craft Redstone Repeater
     production_time: 5s
     input:
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 32
       redstone torch:
@@ -1339,7 +1339,7 @@ recipes:
     name: Craft Redstone Torch
     production_time: 5s
     input:
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 32
       stick:
@@ -1354,7 +1354,7 @@ recipes:
     name: Craft Redstone Torch
     production_time: 5s
     input:
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 32
       stick:
@@ -1424,12 +1424,12 @@ recipes:
   Craft_Sticky_Piston:
     type: PRODUCTION
     name: Craft Sticky Piston
-    production_time: 5s
+    production_time: 10s
     input:
       cobblestone:
         material: COBBLESTONE
         amount: 128
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 48
       iron ingot:
@@ -1599,7 +1599,7 @@ recipes:
       iron ingot:
         material: IRON_INGOT
         amount: 32
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 4
     output:
@@ -1709,7 +1709,7 @@ recipes:
       gold ingot:
         material: GOLD_INGOT
         amount: 32
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 4
     output:
@@ -1907,7 +1907,7 @@ recipes:
         material: REDSTONE_ORE
         amount: 64
     output:
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 256
   Extract_Redstone_Basic:
@@ -1919,7 +1919,7 @@ recipes:
         material: REDSTONE_ORE
         amount: 64
     output:
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 128
   Forge_Diamond_Axe:
@@ -2969,7 +2969,7 @@ recipes:
   Smelt_Stone_Advanced:
     type: PRODUCTION
     name: Smelt Stone
-    production_time: 5s
+    production_time: 10s
     input:
       sobblestone:
         material: COBBLESTONE
@@ -2981,7 +2981,7 @@ recipes:
   Smelt_Stone_Basic:
     type: PRODUCTION
     name: Smelt Stone
-    production_time: 5s
+    production_time: 20s
     input:
       sobblestone:
         material: COBBLESTONE
@@ -3027,18 +3027,20 @@ recipes:
         material: STONE
         amount: 1
   Upgrade_to_Advanced_Kiln:
-    production_time: 30s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Advanced Kiln
+    fuel_consumption_intervall: 15s
     input:
       hardened clay:
         material: HARD_CLAY
         amount: 640
     factory: Advanced Kiln
   Upgrade_to_Animal_Husbandry_Factory_Advanced:
-    production_time: 45s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Animal Husbandry Factory Advanced
+    fuel_consumption_intervall: 15s
     input:
       golden apple:
         material: GOLDEN_APPLE
@@ -3048,9 +3050,10 @@ recipes:
         amount: 128
     factory: Animal Husbandry Factory Advanced
   Upgrade_to_Animal_Husbandry_Factory_Basic:
-    production_time: 30s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Animal Husbandry Factory Basic
+    fuel_consumption_intervall: 15s
     input:
       hay bale:
         material: HAY_BLOCK
@@ -3060,9 +3063,10 @@ recipes:
         amount: 16
     factory: Animal Husbandry Factory Basic
   Upgrade_to_Aquatic_Brick_Smelter:
-    production_time: 30s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Aquatic Brick Smelter
+    fuel_consumption_intervall: 15s
     input:
       prismarine shard:
         material: PRISMARINE_SHARD
@@ -3072,18 +3076,20 @@ recipes:
         amount: 128
     factory: Aquatic Brick Smelter
   Upgrade_to_Quartz_Factory:
-    production_time: 30s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Quartz Factory
+    fuel_consumption_intervall: 15s
     input:
       Quartz Block:
         material: QUARTZ_BLOCK
         amount: 256
     factory: Quartz Factory
   Upgrade_to_Armour_Enchanter:
-    production_time: 30s
+    production_time: 3600s
     type: UPGRADE
     name: Upgrade to Armour Enchanter
+    fuel_consumption_intervall: 30s
     input:
       emerald block:
         material: EMERALD_BLOCK
@@ -3093,9 +3099,10 @@ recipes:
         amount: 64
     factory: Armour Enchanter
   Upgrade_to_Bakery:
-    production_time: 30s
+    production_time: 900s
     type: UPGRADE
     name: Upgrade to Bakery
+    fuel_consumption_intervall: 8s
     input:
       bread:
         material: BREAD
@@ -3108,9 +3115,10 @@ recipes:
         amount: 128
     factory: Bakery
   Upgrade_to_Bastion_Factory:
-    production_time: 45s
+    production_time: 3600s
     type: UPGRADE
     name: Upgrade to Bastion Factory
+    fuel_consumption_intervall: 30s
     input:
       ender pearl:
         material: ENDER_PEARL
@@ -3123,9 +3131,10 @@ recipes:
         amount: 48
     factory: Bastion Factory
   Upgrade_to_Bio_Lab:
-    production_time: 20s
+    production_time: 900s
     type: UPGRADE
     name: Upgrade to Bio Lab
+    fuel_consumption_intervall: 8s
     input:
       grass:
         material: GRASS
@@ -3136,46 +3145,51 @@ recipes:
         amount: 256
     factory: Bio Lab
   Upgrade_to_Blacksmith:
-    production_time: 20s
+    production_time: 300s
     type: UPGRADE
     name: Upgrade to Blacksmith
+    fuel_consumption_intervall: 3s
     input:
       iron ingot:
         material: IRON_INGOT
         amount: 256
     factory: Blacksmith
   Upgrade_to_Brick_Smelter:
-    production_time: 30s
+    production_time: 900s
     type: UPGRADE
     name: Upgrade to Brick Smelter
+    fuel_consumption_intervall: 8s
     input:
       clay blocks:
         material: CLAY
         amount: 512
     factory: Brick Smelter
   Upgrade_to_Carpentry:
-    production_time: 20s
+    production_time: 900s
     type: UPGRADE
     name: Upgrade to Carpentry
+    fuel_consumption_intervall: 8s
     input:
       planks:
         material: WOOD
         durability: -1
-        amount: 256
+        amount: 512
     factory: Carpentry
   Upgrade_to_Coal_Burner:
-    production_time: 20s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Coal Burner
+    fuel_consumption_intervall: 15s
     input:
       coal:
         material: COAL
-        amount: 256
+        amount: 512
     factory: Coal Burner
   Upgrade_to_Compactor_Basic:
-    production_time: 20s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Compactor Basic
+    fuel_consumption_intervall: 15s
     input:
       piston:
         material: PISTON_BASE
@@ -3188,9 +3202,10 @@ recipes:
         amount: 32
     factory: Compactor Basic
   Upgrade_to_Dedicated_Compactor:
-    production_time: 20s
+    production_time: 3600s
     type: UPGRADE
     name: Upgrade to Dedicated Compactor
+    fuel_consumption_intervall: 30s
     input:
       piston:
         material: PISTON_BASE
@@ -3203,9 +3218,10 @@ recipes:
         amount: 48
     factory: Dedicated Compactor
   Upgrade_to_Dedicated_De-Compactor:
-    production_time: 20s
+    production_time: 3600s
     type: UPGRADE
     name: Upgrade to Dedicated De-Compactor
+    fuel_consumption_intervall: 30s
     input:
       sticky piston:
         material: PISTON_STICKY_BASE
@@ -3217,46 +3233,51 @@ recipes:
         material: IRON_INGOT
         amount: 48
     factory: Dedicated De-Compactor
-  Upgrade_to_Diamond_Armour_Forge_:
-    production_time: 45s
+  Upgrade_to_Diamond_Armour_Forge:
+    production_time: 7200s
     type: UPGRADE
     name: Upgrade to Diamond Armour Forge
+    fuel_consumption_intervall: 60s
     input:
       diamond block:
         material: DIAMOND_BLOCK
         amount: 48
     factory: Diamond Armour Forge
   Upgrade_to_Diamond_Equipment_Forge:
-    production_time: 30s
+    production_time: 3600s
     type: UPGRADE
     name: Upgrade to Diamond Equipment Forge
+    fuel_consumption_intervall: 30s
     input:
       diamond block:
         material: DIAMOND_BLOCK
         amount: 32
     factory: Diamond Equipment Forge
   Upgrade_to_Diamond_Tools_Forge:
-    production_time: 45s
+    production_time: 3600s
     type: UPGRADE
     name: Upgrade to Diamond Tools Forge
+    fuel_consumption_intervall: 30s
     input:
       diamond block:
         material: DIAMOND_BLOCK
         amount: 32
     factory: Diamond Tools Forge
   Upgrade_to_Enchanter_Basic:
-    production_time: 20s
+    production_time: 3600s
     type: UPGRADE
     name: Upgrade to Enchanter Basic
+    fuel_consumption_intervall: 30s
     input:
       emerald block:
         material: EMERALD_BLOCK
         amount: 32
     factory: Enchanter Basic
   Upgrade_to_Farmstead_Factory:
-    production_time: 20s
+    production_time: 300s
     type: UPGRADE
     name: Upgrade to Farmstead Factory
+    fuel_consumption_intervall: 3s
     input:
       wheat:
         material: WHEAT
@@ -3275,9 +3296,10 @@ recipes:
         amount: 64
     factory: Farmstead Factory
   Upgrade_to_Fine_Woodworking:
-    production_time: 20s
+    production_time: 900s
     type: UPGRADE
     name: Upgrade to Fine Woodworking
+    fuel_consumption_intervall: 8s
     input:
       planks:
         material: WOOD
@@ -3288,18 +3310,23 @@ recipes:
         amount: 1
     factory: Fine Woodworking
   Upgrade_to_Flower_Gardening_:
-    production_time: 20s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Flower Gardening
+    fuel_consumption_intervall: 8s
     input:
       flower:
         material: RED_ROSE
         amount: 128
+      dirt:
+        material: DIRT
+        amount: 512
     factory: Flower Gardening
   Upgrade_to_Gem_extractor_:
-    production_time: 45s
+    production_time: 7200s
     type: UPGRADE
     name: Upgrade to Gem extractor
+    fuel_consumption_intervall: 60s
     input:
       diamond:
         material: DIAMOND
@@ -3312,55 +3339,64 @@ recipes:
         amount: 128
     factory: Gem extractor
   Upgrade_to_Glass_Dying_:
-    production_time: 20s
+    production_time: 3600s
     type: UPGRADE
     name: Upgrade to Glass Dying
+    fuel_consumption_intervall: 30s
     input:
       glass:
         material: GLASS
         amount: 128
     factory: Glass Dying
   Upgrade_to_Gold_Armour_Forge_:
-    production_time: 20s
+    production_time: 3600s
     type: UPGRADE
     name: Upgrade to Gold Armour Forge
+    fuel_consumption_intervall: 30s
     input:
       gold block:
         material: GOLD_BLOCK
         amount: 48
     factory: Gold Armour Forge
   Upgrade_to_Gold_Equipment_Forge:
-    production_time: 20s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Gold Equipment Forge
+    fuel_consumption_intervall: 15s
     input:
       gold block:
         material: GOLD_BLOCK
         amount: 32
     factory: Gold Equipment Forge
   Upgrade_to_Gold_Tools_Forge:
-    production_time: 20s
+    production_time: 3600s
     type: UPGRADE
     name: Upgrade to Gold Tools Forge
+    fuel_consumption_intervall: 30s
     input:
       gold block:
         material: GOLD_BLOCK
         amount: 32
     factory: Gold Tools Forge
   Upgrade_to_Grass_Gardening:
-    production_time: 20s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Grass Gardening
+    fuel_consumption_intervall: 15s
     input:
       grass:
         material: LONG_GRASS
         durability: 1
-        amount: 128
+        amount: 256
+      dirt:
+        material: DIRT
+        amount: 512
     factory: Grass Gardening
   Upgrade_to_Grill:
-    production_time: 20s
+    production_time: 900s
     type: UPGRADE
     name: Upgrade to Grill
+    fuel_consumption_intervall: 8s
     input:
       beef:
         material: RAW_BEEF
@@ -3373,45 +3409,50 @@ recipes:
         amount: 128
     factory: Grill
   Upgrade_to_Iron_Equipment_Forge:
-    production_time: 20s
+    production_time: 900s
     type: UPGRADE
     name: Upgrade to Iron Equipment Forge
+    fuel_consumption_intervall: 8s
     input:
       iron block:
         material: IRON_BLOCK
         amount: 48
     factory: Iron Equipment Forge
   Upgrade_to_Iron_Forge_Advanced:
-    production_time: 30s
+    production_time: 3600s
     type: UPGRADE
     name: Upgrade to Iron Forge Advanced
+    fuel_consumption_intervall: 30s
     input:
       iron block:
         material: IRON_BLOCK
         amount: 64
     factory: Iron Forge Advanced
   Upgrade_to_Iron_Forge_Basic:
-    production_time: 20s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Iron Forge Basic
+    fuel_consumption_intervall: 15s
     input:
       iron block:
         material: IRON_BLOCK
         amount: 32
     factory: Iron Forge Basic
   Upgrade_to_Kiln:
-    production_time: 20s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Kiln
+    fuel_consumption_intervall: 15s
     input:
       clay:
         material: CLAY
         amount: 128
     factory: Kiln
   Upgrade_to_Laboratory:
-    production_time: 20s
+    production_time: 300s
     type: UPGRADE
     name: Upgrade to Laboratory
+    fuel_consumption_intervall: 3s
     input:
       cauldron:
         material: CAULDRON
@@ -3421,9 +3462,10 @@ recipes:
         amount: 128
     factory: Laboratory
   Upgrade_to_Mad_Scientist:
-    production_time: 20s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Mad Scientist
+    fuel_consumption_intervall: 15s
     input:
       blaze rod:
         material: BLAZE_ROD
@@ -3433,18 +3475,20 @@ recipes:
         durability: 94
     factory: Mad Scientist
   Upgrade_to_Netherbrick_Smelter:
-    production_time: 30s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Netherbrick Smelter
+    fuel_consumption_intervall: 15s
     input:
       nether brick:
         material: NETHER_BRICK
         amount: 128
     factory: Netherbrick Smelter
   Upgrade_to_Ore_Smelter:
-    production_time: 30s
+    production_time: 900s
     type: UPGRADE
     name: Upgrade to Ore Smelter
+    fuel_consumption_intervall: 8s
     input:
       diamond:
         material: DIAMOND
@@ -3457,9 +3501,10 @@ recipes:
         amount: 16
     factory: Ore Smelter
   Upgrade_to_Ore_Forge:
-    production_time: 60s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Ore Forge
+    fuel_consumption_intervall: 15s
     input:
       diamond:
         material: DIAMOND
@@ -3472,18 +3517,20 @@ recipes:
         amount: 32
     factory: Ore Forge
   Upgrade_to_Organic_Block_Factory:
-    production_time: 20s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Organic Block Factory
+    fuel_consumption_intervall: 15s
     input:
       grass:
         material: GRASS
         amount: 128
     factory: Organic Block Factory
   Upgrade_to_Printing_Press:
-    production_time: 20s
+    production_time: 900s
     type: UPGRADE
     name: Upgrade to Printing Press
+    fuel_consumption_intervall: 15s
     input:
       ink sack:
         material: INK_SACK
@@ -3493,23 +3540,25 @@ recipes:
         amount: 64
     factory: Printing Press
   Upgrade_to_Rail_Factory_:
-    production_time: 30s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Rail Factory
+    fuel_consumption_intervall: 15s
     input:
       iron ingot:
         material: IRON_INGOT
         amount: 128
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 32
     factory: Rail Factory
   Upgrade_to_Redstone_Circularity_Factory:
-    production_time: 20s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Redstone Circularity Factory
+    fuel_consumption_intervall: 15s
     input:
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 128
       quartz:
@@ -3517,20 +3566,22 @@ recipes:
         amount: 64
     factory: Redstone Circularity Factory
   Upgrade_to_Redstone_Factory_Basic:
-    production_time: 20s
+    production_time: 900s
     type: UPGRADE
     name: Upgrade to Redstone Factory Basic
+    fuel_consumption_intervall: 8s
     input:
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 128
     factory: Redstone Factory Basic
   Upgrade_to_Redstone_Mechanics_Factory:
-    production_time: 20s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Redstone Mechanics Factory
+    fuel_consumption_intervall: 15s
     input:
-      redstone:
+      redstone dust:
         material: REDSTONE
         amount: 128
       iron ingot:
@@ -3538,18 +3589,20 @@ recipes:
         amount: 64
     factory: Redstone Mechanics Factory
   Upgrade_to_Sand_Smelter:
-    production_time: 20s
+    production_time: 900s
     type: UPGRADE
     name: Upgrade to Sand Smelter
+    fuel_consumption_intervall: 8s
     input:
       sand:
         material: SAND
         amount: 512
     factory: Sand Smelter
   Upgrade_to_Sandstone_Smelter:
-    production_time: 20s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Sandstone Smelter
+    fuel_consumption_intervall: 15s
     input:
       sandstone:
         material: SANDSTONE
@@ -3559,9 +3612,10 @@ recipes:
         amount: 128
     factory: Sandstone Smelter
   Upgrade_to_Soup_kitchen:
-    production_time: 20s
+    production_time: 900s
     type: UPGRADE
     name: Upgrade to Soup kitchen
+    fuel_consumption_intervall: 8s
     input:
       red mushroom:
         material: RED_MUSHROOM
@@ -3574,36 +3628,40 @@ recipes:
         amount: 64
     factory: Soup kitchen
   Upgrade_to_Stone_Smelter:
-    production_time: 20s
+    production_time: 300s
     type: UPGRADE
     name: Upgrade to Stone Smelter
+    fuel_consumption_intervall: 3s
     input:
       stone:
         material: STONE
         amount: 512
     factory: Stone Smelter
   Upgrade_to_Stonebrick_Smelter:
-    production_time: 20s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Stonebrick Smelter
+    fuel_consumption_intervall: 15s
     input:
       stone:
         material: STONE
         amount: 256
     factory: Stonebrick Smelter
   Upgrade_to_Tool_Enchanter:
-    production_time: 20s
+    production_time: 3600s
     type: UPGRADE
     name: Upgrade to Tool Enchanter
+    fuel_consumption_intervall: 30s
     input:
       emerald block:
         material: EMERALD_BLOCK
         amount: 32
     factory: Tool Enchanter
   Upgrade_to_Tree_Mutator:
-    production_time: 20s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Tree Mutator
+    fuel_consumption_intervall: 15s
     input:
       sapling:
         material: SAPLING
@@ -3611,18 +3669,20 @@ recipes:
         amount: 128
     factory: Tree Mutator
   Upgrade_to_Weapon_Enchanter:
-    production_time: 20s
+    production_time: 3600s
     type: UPGRADE
     name: Upgrade to Weapon Enchanter
+    fuel_consumption_intervall: 30s
     input:
       emerald block:
         material: EMERALD_BLOCK
         amount: 32
     factory: Weapon Enchanter
   Upgrade_to_Wood_Processor:
-    production_time: 20s
+    production_time: 300s
     type: UPGRADE
     name: Upgrade to Wood Processor
+    fuel_consumption_intervall: 3s
     input:
       planks:
         material: WOOD
@@ -3630,9 +3690,10 @@ recipes:
         amount: 256
     factory: Wood Processor
   Upgrade_to_Wool_Processing:
-    production_time: 20s
+    production_time: 1800s
     type: UPGRADE
     name: Upgrade to Wool Processing
+    fuel_consumption_intervall: 15s
     input:
       wool:
         material: WOOL
