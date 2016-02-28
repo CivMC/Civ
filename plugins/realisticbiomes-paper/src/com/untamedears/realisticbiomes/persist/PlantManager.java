@@ -20,6 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
@@ -80,6 +81,8 @@ public class PlantManager {
 	
 	////================================================================================= ////
 	
+	// TODO: Clean up. Database updates, prepared statement creation, and the like are spread
+	//   across three or four classes. Total mess.
 	public PlantManager(RealisticBiomes plugin, PersistConfig config) {
 		this.plugin = plugin;
 		this.config = config;
@@ -102,15 +105,40 @@ public class PlantManager {
 		try {
 			writeConn = DriverManager.getConnection(jdbcUrl);
 			readConn = DriverManager.getConnection(jdbcUrl);
-			Statement stmt = readConn.createStatement();
+			Statement stmt = readConn.createStatement(); // TODO: wtf is this supposed to do
 			stmt.setQueryTimeout(iTimeout);
 			
 		} catch (SQLException e) {
 			throw new DataSourceException("Failed to connect to the database with the jdbcUrl: " + jdbcUrl, e);
 		}
 		
-		// Create the prepared statements
+		// KeepAlives. TODO: Replace with actual connection handling.
+		new BukkitRunnable() {
+			private long failCount = 0l;
+			@Override
+			public void run() {
+				if (failCount > 50) {
+					RealisticBiomes.doLog(Level.WARNING, "Keepalive has failed too many times, cancelling");
+					this.cancel();
+					return;
+				}
+				try {
+					Statement writeAlive = writeConn.createStatement();
+					Statement readAlive = readConn.createStatement();
+				
+					writeAlive.execute("SELECT 1;");
+					readAlive.execute("SELECT 1;");
+					
+					RealisticBiomes.doLog(Level.FINER, "Keepalive Sent for read and write connections");
+				} catch(SQLException e) {
+					RealisticBiomes.doLog(Level.WARNING, "Keepalive has failed");
+					failCount++;
+				}
+			}
+			
+		}.runTaskTimerAsynchronously(plugin, 180000l, 180000l); // every 3 minutes
 		
+		// Create the prepared statements
 		try {
 			// we need InnoDB storage engine or else we can't do foreign keys!
 			this.makeTableChunk = writeConn.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s_chunk " +
