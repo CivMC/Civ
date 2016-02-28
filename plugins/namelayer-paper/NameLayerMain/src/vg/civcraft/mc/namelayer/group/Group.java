@@ -53,7 +53,7 @@ public class Group {
 		
 		// only get subgroups, supergroups will set themselves
 		for (Group subgroup : GroupManager.getSubGroups(name)) {
-			link(this, subgroup);
+			link(this, subgroup, false);
 		}
 	}
 	
@@ -348,7 +348,7 @@ public class Group {
 	 * @param subgroup
 	 * @return true if linking succeeded, false otherwise.
 	 */
-	public static boolean link(Group supergroup, Group subgroup) {
+	public static boolean link(Group supergroup, Group subgroup, boolean saveToDb) {
 		if (supergroup == null || subgroup == null) {
 			return false;
 		}
@@ -369,8 +369,9 @@ public class Group {
 		if (!supergroup.hasSubGroup(subgroup)) {
 			supergroup.subgroups.add(subgroup);
 		}
-				
-		db.addSubGroup(supergroup.getName(), subgroup.getName());
+		if (saveToDb) {		
+			db.addSubGroup(supergroup.getName(), subgroup.getName());
+		}
 		
 		return true;
 	}
