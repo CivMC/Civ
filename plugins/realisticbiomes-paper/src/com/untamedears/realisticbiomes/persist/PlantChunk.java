@@ -121,6 +121,25 @@ public class PlantChunk {
 	public synchronized Set<Coords> getPlantCoords() {
 		return plants.keySet();
 	}
+	
+	public synchronized boolean load(Connection readConn) {
+		// wrapper.
+		try { 
+			return innerLoad(readConn);
+		} catch (DataSourceException dse) {
+			// assume DB has gone away, reconnect and try one more time.
+			RealisticBiomes.LOG.log(Level.WARNING, "Looks like DB has gone away: ", dse);			
+		}
+		
+		// if we are here, had failure.
+		try {
+			plugin.getPlantManager().reconnect();
+			return innerLoad(readConn);
+		} catch(DataSourceException dse) {
+			RealisticBiomes.LOG.log(Level.WARNING, "DB really has gone away: ", dse);
+			throw dse;
+		}
+	}
 
 	/**
 	 * Loads the plants from the database into this PlantChunk object.
@@ -129,7 +148,7 @@ public class PlantChunk {
 	 * @param readConn
 	 * @return
 	 */
-	public synchronized boolean load(Connection readConn) {
+	private boolean innerLoad(Connection readConn) {
 		// if the data is being loaded, it is known that this chunk is in the
 		// database
 
@@ -203,6 +222,26 @@ public class PlantChunk {
 		return true;
 	}
 
+	public synchronized void unload() {
+		// wrapper.
+		try { 
+			innerUnload();
+		} catch (DataSourceException dse) {
+			// assume DB has gone away, reconnect and try one more time.
+			RealisticBiomes.LOG.log(Level.WARNING, "Looks like DB has gone away: ", dse);			
+		}
+		
+		// if we are here, had failure.
+		try {
+			plugin.getPlantManager().reconnect();
+			innerUnload();
+		} catch(DataSourceException dse) {
+			RealisticBiomes.LOG.log(Level.WARNING, "DB really has gone away: ", dse);
+			throw dse;
+		}
+	}
+
+	
 	/**
 	 * unloads the plant chunk, and saves it to the database.
 	 * 
@@ -212,7 +251,7 @@ public class PlantChunk {
 
 	 * @param writeStmts
 	 */
-	public synchronized void unload() {
+	private void innerUnload() {
 
 		RealisticBiomes.doLog(Level.FINEST,"PlantChunk.unload(): called with coords "
 				+ coords + "plantchunk object: " + this);

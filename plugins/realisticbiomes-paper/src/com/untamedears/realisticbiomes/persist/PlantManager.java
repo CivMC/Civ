@@ -97,20 +97,7 @@ public class PlantManager {
 			throw new DataSourceException("Failed to initalize the " + sDriverName + " driver class!", e);
 		}
 		
-		// TODO: make failures here fail more gracefully....
-		String jdbcUrl = "jdbc:mysql://" + config.host + ":" + config.port + "/" + config.databaseName + "?user=" + config.user + "&password=" + config.password;
-		int iTimeout = 30;
-		
-		// Try and connect to the database
-		try {
-			writeConn = DriverManager.getConnection(jdbcUrl);
-			readConn = DriverManager.getConnection(jdbcUrl);
-			Statement stmt = readConn.createStatement(); // TODO: wtf is this supposed to do
-			stmt.setQueryTimeout(iTimeout);
-			
-		} catch (SQLException e) {
-			throw new DataSourceException("Failed to connect to the database with the jdbcUrl: " + jdbcUrl, e);
-		}
+		this.connect();
 		
 		// KeepAlives. TODO: Replace with actual connection handling.
 		new BukkitRunnable() {
@@ -138,31 +125,7 @@ public class PlantManager {
 			
 		}.runTaskTimerAsynchronously(plugin, 180000l, 180000l); // every 3 minutes
 		
-		// Create the prepared statements
-		try {
-			// we need InnoDB storage engine or else we can't do foreign keys!
-			this.makeTableChunk = writeConn.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s_chunk " +
-							"(id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
-							"w INTEGER, x INTEGER, z INTEGER," +
-							"INDEX chunk_coords_idx (w, x, z)) " +
-							"ENGINE INNODB", config.prefix));
-			
-			// we need InnoDB storage engine or else we can't do foreign keys!
-			this.makeTablePlant = writeConn.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s_plant" +
-							"(chunkId BIGINT, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER UNSIGNED, growth REAL, fruitGrowth REAL, " +
-							"INDEX plant_chunk_idx (chunkId), " +
-							"CONSTRAINT chunkIdConstraint FOREIGN KEY (chunkId) REFERENCES %s_chunk (id))" +
-							"ENGINE INNODB", config.prefix, config.prefix));
-			
-			this.selectAllFromChunk = readConn.prepareStatement(String.format("SELECT id, w, x, z FROM %s_chunk", config.prefix));
-						
-			// create chunk writer
-			ChunkWriter.init(writeConn, readConn, config);
-			
-		} catch (SQLException e) {
-			throw new DataSourceException("PlantManager constructor: Failed to create the prepared statements! (for table creation)", e);
-			
-		}
+		setupStatements();
 		
 		// run the prepared statements that create the tables if they do not exist in the database
 		try {
@@ -214,9 +177,7 @@ public class PlantManager {
 		long endTime = System.nanoTime()/1000000/*ns/ms*/;
 
 		RealisticBiomes.LOG.info("Finished loading all PlantChunks - time taken: " +(endTime-startTime) + "ms");
-		
 
-		
 		// create unload batch
 		chunksToUnload = new LinkedBlockingQueue<ChunkCoords>();
 		
@@ -231,6 +192,69 @@ public class PlantManager {
 		writeService = Executors.newSingleThreadExecutor();
 		
 		log = plugin.getLogger();
+	}
+
+	public void reconnect() {
+		try {
+			if (writeConn != null) {
+				writeConn.close();
+			}
+			
+			if (readConn != null) {
+				readConn.close();
+			}
+		} catch (SQLException e){
+			RealisticBiomes.LOG.log(Level.WARNING, "Can't close prior connections, may already be closed", e);
+		}
+		try {
+			connect();
+			setupStatements();
+		} catch (DataSourceException dse) {
+			RealisticBiomes.LOG.log(Level.SEVERE, "Unable to reconnect to RealisticBiomes database", dse);
+		}
+	}
+	
+	public void connect() {
+		String jdbcUrl = "jdbc:mysql://" + config.host + ":" + config.port + "/" + config.databaseName + "?user=" + config.user + "&password=" + config.password;
+		int iTimeout = 30;
+
+		// Try and connect to the database
+		try {
+			writeConn = DriverManager.getConnection(jdbcUrl);
+			readConn = DriverManager.getConnection(jdbcUrl);
+			Statement stmt = readConn.createStatement(); // TODO: wtf is this supposed to do
+			stmt.setQueryTimeout(iTimeout);
+			
+		} catch (SQLException e) {
+			throw new DataSourceException("Failed to connect to the database with the jdbcUrl: " + jdbcUrl, e);
+		}
+	}
+	
+	public void setupStatements() {
+		// Create the prepared statements
+		try {
+			// we need InnoDB storage engine or else we can't do foreign keys!
+			this.makeTableChunk = writeConn.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s_chunk " +
+							"(id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
+							"w INTEGER, x INTEGER, z INTEGER," +
+							"INDEX chunk_coords_idx (w, x, z)) " +
+							"ENGINE INNODB", config.prefix));
+			
+			// we need InnoDB storage engine or else we can't do foreign keys!
+			this.makeTablePlant = writeConn.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s_plant" +
+							"(chunkId BIGINT, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER UNSIGNED, growth REAL, fruitGrowth REAL, " +
+							"INDEX plant_chunk_idx (chunkId), " +
+							"CONSTRAINT chunkIdConstraint FOREIGN KEY (chunkId) REFERENCES %s_chunk (id))" +
+							"ENGINE INNODB", config.prefix, config.prefix));
+			
+			this.selectAllFromChunk = readConn.prepareStatement(String.format("SELECT id, w, x, z FROM %s_chunk", config.prefix));
+						
+			// create chunk writer
+			ChunkWriter.init(writeConn, readConn, config);
+			
+		} catch (SQLException e) {
+			throw new DataSourceException("PlantManager constructor: Failed to create the prepared statements! (for table creation)", e);
+		}
 	}
 	
 	/**

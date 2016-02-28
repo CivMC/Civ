@@ -26,37 +26,39 @@ public class ChunkWriter {
 	public static PreparedStatement deleteOldPlantsStmt = null;
 	public static Connection writeConnection;
 	public static Connection readConnection;
+	public static PersistConfig curConfig;
 	
 	public static PreparedStatement loadPlantsStmt = null;
 	
 	public static void init(Connection writeConn, Connection readConn,  PersistConfig config) {
-
 		try {
-			
+			curConfig = config;
 			writeConnection = writeConn;
-			deleteOldDataStmt = writeConn.prepareStatement(String.format("DELETE FROM %s_plant WHERE chunkid = ?", config.prefix));
+			readConnection = readConn;
 			
-			addChunkStmt = writeConn.prepareStatement(String.format("INSERT INTO %s_chunk (w, x, z) VALUES (?, ?, ?)", config.prefix));
-			getLastChunkIdStmt = writeConn.prepareStatement("SELECT LAST_INSERT_ID()");	
-			
-			addPlantStmt = writeConn.prepareStatement(String.format("INSERT INTO %s_plant (chunkid, w, x, y, z, date, growth, fruitGrowth) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", config.prefix));
-			// don't need for now,...maybe later?
-			//updatePlantStmt = writeConn.prepareStatement(String.format("UPDATE %s_plant SET date = ?, growth = ? where chunkid = ?", config.prefix));
-			deleteOldPlantsStmt = writeConn.prepareStatement(String.format("DELETE FROM %s_plant WHERE chunkid = ?", config.prefix));
-
-			loadPlantsStmt = readConn.prepareStatement(String
-								.format("SELECT w, x, y, z, date, growth, fruitGrowth FROM %s_plant WHERE chunkid = ?",
-										config.prefix));
-
-
+			initWrite();
+			initRead();
 		} catch (SQLException e) {
 			throw new DataSourceException("Failed to create the prepared statements in ChunkWriter", e);
 		}
 	}
 	
+	public static void initWrite() throws SQLException{
+		deleteOldDataStmt = writeConnection.prepareStatement(String.format("DELETE FROM %s_plant WHERE chunkid = ?", curConfig.prefix));
+		
+		addChunkStmt = writeConnection.prepareStatement(String.format("INSERT INTO %s_chunk (w, x, z) VALUES (?, ?, ?)", curConfig.prefix));
+		getLastChunkIdStmt = writeConnection.prepareStatement("SELECT LAST_INSERT_ID()");	
+		
+		addPlantStmt = writeConnection.prepareStatement(String.format("INSERT INTO %s_plant (chunkid, w, x, y, z, date, growth, fruitGrowth) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", curConfig.prefix));
+		// don't need for now,...maybe later?
+		//updatePlantStmt = writeConnection.prepareStatement(String.format("UPDATE %s_plant SET date = ?, growth = ? where chunkid = ?", curConfig.prefix));
+		deleteOldPlantsStmt = writeConnection.prepareStatement(String.format("DELETE FROM %s_plant WHERE chunkid = ?", curConfig.prefix));		
+	}
+	
+	public static void initRead() throws SQLException{
+		loadPlantsStmt = readConnection.prepareStatement(String
+				.format("SELECT w, x, y, z, date, growth, fruitGrowth FROM %s_plant WHERE chunkid = ?",
+						curConfig.prefix));		
+	}
 
-	
-	
-	
-	
 }
