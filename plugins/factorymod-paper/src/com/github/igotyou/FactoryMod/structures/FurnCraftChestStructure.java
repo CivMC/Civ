@@ -24,7 +24,7 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 	public FurnCraftChestStructure(Block center) {
 		if (center.getType() == Material.WORKBENCH) {
 			craftingTable = center.getLocation();
-			for (Block b : searchForBlockOnSides(center, Material.CHEST)) {
+			for (Block b : searchForBlockOnAllSides(center, Material.CHEST)) {
 				switch (center.getFace(b)) {
 				case SOUTH:
 					if (center.getRelative(BlockFace.NORTH).getType() == Material.FURNACE) {

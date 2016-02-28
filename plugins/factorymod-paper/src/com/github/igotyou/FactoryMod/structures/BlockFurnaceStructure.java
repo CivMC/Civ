@@ -16,7 +16,7 @@ public class BlockFurnaceStructure extends MultiBlockStructure {
 	public BlockFurnaceStructure(Block center) {
 		if (center.getType() == Material.DROPPER) {
 			this.center = center.getLocation();
-			for (Block b : searchForBlockOnSides(center, Material.FURNACE)) {
+			for (Block b : searchForBlockOnAllSides(center, Material.FURNACE)) {
 				furnace = b.getLocation();
 				complete = true;
 				break;

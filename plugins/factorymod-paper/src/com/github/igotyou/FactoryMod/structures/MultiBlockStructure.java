@@ -31,19 +31,39 @@ public abstract class MultiBlockStructure {
 	protected static Map<Integer, BlockFace> dataBlockFaceConversion;
 
 	/**
-	 * Checks east,west,north and south of the given block for other blocks with
-	 * the given material and returns all the blocks which fulfill that criteria
+	 * Checks all sides of the given block for blocks with the given material
+	 * and returns all the blocks which fulfill that criteria
 	 * 
 	 * @param b
 	 *            Block to check around
 	 * @param m
 	 *            Material which the adjacent block should be
+	 * @return All the blocks adjacent to the given block
+	 *         and of the given material type
+	 */
+	public static List<Block> searchForBlockOnAllSides(Block b, Material m) {
+		LinkedList<Block> result = new LinkedList<Block>();
+		for (BlockFace face : allBlockSides) {
+			Block side = b.getRelative(face);
+			if (side.getType() == m) {
+				result.add(side);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Checks north, south, east and west of the given block for blocks with the
+	 * given material and returns all blocks which fulfill that criteria
+	 * 
+	 * @param b Block to search around
+	 * @param m Material to search for
 	 * @return All the blocks adjacent (not above or below) to the given block
 	 *         and of the given material type
 	 */
 	public static List<Block> searchForBlockOnSides(Block b, Material m) {
 		LinkedList<Block> result = new LinkedList<Block>();
-		for (BlockFace face : allBlockSides) {
+		for (BlockFace face : northEastWestSouthSides) {
 			Block side = b.getRelative(face);
 			if (side.getType() == m) {
 				result.add(side);

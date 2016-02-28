@@ -29,7 +29,7 @@ public class PipeStructure extends MultiBlockStructure {
 			return;
 		}
 		this.start = startBlock.getLocation();
-		for (Block b : MultiBlockStructure.searchForBlockOnSides(startBlock,
+		for (Block b : MultiBlockStructure.searchForBlockOnAllSides(startBlock,
 				Material.FURNACE)) {
 			furnace = b.getLocation();
 			break;

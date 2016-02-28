@@ -138,7 +138,7 @@ public class FactoryModListener implements Listener {
 						// check if chest is other half of double chest
 						if (block.getType() == Material.CHEST) {
 							for (Block b : MultiBlockStructure
-									.searchForBlockOnSides(block,
+									.searchForBlockOnAllSides(block,
 											Material.CHEST)) {
 								Factory f = manager.getFactoryAt(b);
 								if (f != null) {

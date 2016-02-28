@@ -267,6 +267,9 @@ public class FurnCraftChestFactory extends Factory {
 				deactivate();
 			}
 		}
+		else {
+			deactivate();
+		}
 	}
 
 	/**
@@ -331,13 +334,14 @@ public class FurnCraftChestFactory extends Factory {
 
 	public void upgrade(String name, List<IRecipe> recipes, ItemStack fuel,
 			int fuelConsumptionIntervall, int updateTime) {
+		LoggingUtils.log("Upgrading " + getLogData() + " to " + name);
 		deactivate();
 		this.name = name;
 		this.recipes = recipes;
 		this.updateTime = updateTime;
 		this.pm = new FurnacePowerManager(getFurnace(), fuel,
 				fuelConsumptionIntervall);
-		((PercentageHealthRepairManager) this.rm).repair(100);
+		((PercentageHealthRepairManager) this.rm).repair(PercentageHealthRepairManager.getMaximumHealth());
 		if (recipes.size() != 0) {
 			setRecipe(recipes.get(0));
 		} else {
