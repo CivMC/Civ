@@ -1034,8 +1034,11 @@ public class GroupManagerDao {
 				if(role != null){
 					type = PlayerType.getPlayerType(role);
 				}
-				g.addInvite(playerUUID, type, false);
-				PlayerListener.addNotification(playerUUID, g);
+				
+				if(g != null){
+					g.addInvite(playerUUID, type, false);
+					PlayerListener.addNotification(playerUUID, g);
+				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
