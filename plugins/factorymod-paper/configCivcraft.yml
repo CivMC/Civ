@@ -3583,7 +3583,7 @@ recipes:
     fuel_consumption_intervall: 3s
     input:
       cauldron:
-        material: CAULDRON
+        material: CAULDRON_ITEM
         amount: 16
       glass bottle:
         material: GLASS_BOTTLE
