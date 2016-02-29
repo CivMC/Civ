@@ -241,8 +241,14 @@ public class FactoryModManager {
 					HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
 							.get(FurnCraftChestStructure.class);
 					if (eggs != null) {
-						IFactoryEgg egg = eggs.get(new ItemMap(((Chest) (fccs
-								.getChest().getState())).getInventory()));
+						IFactoryEgg egg = null;
+						for(Entry <ItemMap, IFactoryEgg> entry: eggs.entrySet()) {
+							if (entry.getKey().containedExactlyIn(((Chest) (fccs
+								.getChest().getState())).getInventory())) {
+								egg = entry.getValue();
+								break;
+							}
+						}
 						if (egg != null) {
 							Factory f = egg.hatch(fccs, p);
 							if (f != null) {
@@ -278,8 +284,14 @@ public class FactoryModManager {
 					HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
 							.get(PipeStructure.class);
 					if (eggs != null) {
-						IFactoryEgg egg = eggs.get(new ItemMap(((Dispenser) (ps
-								.getStart().getState())).getInventory()));
+						IFactoryEgg egg = null;
+						for(Entry <ItemMap, IFactoryEgg> entry: eggs.entrySet()) {
+							if (entry.getKey().containedExactlyIn((((Dispenser) (ps
+									.getStart().getState())).getInventory()))) {
+								egg = entry.getValue();
+								break;
+							}
+						}
 						if (egg != null) {
 							if (ps.getGlassColor() != ((PipeEgg) egg)
 									.getColor()) {
@@ -324,9 +336,15 @@ public class FactoryModManager {
 					HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
 							.get(BlockFurnaceStructure.class);
 					if (eggs != null) {
-						IFactoryEgg egg = eggs.get(new ItemMap(((Dropper) (bfs
-								.getCenter().getBlock().getState()))
-								.getInventory()));
+						IFactoryEgg egg = null;
+						for(Entry <ItemMap, IFactoryEgg> entry: eggs.entrySet()) {
+							if (entry.getKey().containedExactlyIn(((Dropper) (bfs
+									.getCenter().getBlock().getState()))
+									.getInventory())) {
+								egg = entry.getValue();
+								break;
+							}
+						}
 						if (egg != null) {
 							Factory f = egg.hatch(bfs, p);
 							if (f != null) {
