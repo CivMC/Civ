@@ -26,12 +26,20 @@ public class BetterShardsListener implements Listener{
 	public void PlayerChangeServer(PlayerChangeServerEvent event){
 		String playerName = NameAPI.getCurrentName(event.getPlayerUUID());
 		UUID playerToReplyUUID = chatMan.getPlayerReply(playerName);
-		if (playerToReplyUUID == null) {
+		if (playerToReplyUUID != null) {
+			String playerToReply = NameAPI.getCurrentName(playerToReplyUUID);
+			if(playerToReply != null){
+				MercuryAPI.sendMessage(event.getServerTravelingTo(), "channel" + sep + "reply" + sep + playerName + sep + playerToReply, "civchat2");
+			}
+		}
+		String playerChat = chatMan.getChannel(playerName);
+		if(playerChat != null){
+			MercuryAPI.sendMessage(event.getServerTravelingTo(), "channel" + sep + "player" + sep + playerName + sep + playerChat, "civchat2");
 			return;
 		}
-		String playerToReply = NameAPI.getCurrentName(playerToReplyUUID);
-		if(playerToReply != null){
-			MercuryAPI.sendMessage(event.getServerTravelingTo(), "reply|" + playerName + sep + playerToReply, "civchat2");
+		String groupChat = chatMan.getGroupChatting(playerName);
+		if(groupChat != null){
+			MercuryAPI.sendMessage(event.getServerTravelingTo(), "channel" + sep + "group" + sep + playerName + sep + groupChat, "civchat2");
 		}
 	}
 }
