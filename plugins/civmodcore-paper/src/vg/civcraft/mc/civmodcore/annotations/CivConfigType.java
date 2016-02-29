@@ -6,5 +6,6 @@ public enum CivConfigType {
   Int,
   String,
   Long,
-  String_List
+  String_List,
+  Object
 }
