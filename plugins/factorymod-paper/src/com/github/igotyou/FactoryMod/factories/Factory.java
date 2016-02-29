@@ -152,15 +152,6 @@ public abstract class Factory implements Runnable {
 			return;
 		}
 		Furnace furnace = (Furnace) f.getState();
-		ItemStack[] oldContents = furnace.getInventory().getContents();
-		BlockFace facing = ((DirectionalContainer)furnace.getData()).getFacing();
-		furnace.getInventory().clear();
-		f.setType(Material.FURNACE);
-		furnace = (Furnace) f.getState();
-		MaterialData data = furnace.getData();
-		((DirectionalContainer)data).setFacingDirection(facing);
-		furnace.setData(data);
-		furnace.update();
-		furnace.getInventory().setContents(oldContents);
+		furnace.setBurnTime((short)0);
 	}
 }
