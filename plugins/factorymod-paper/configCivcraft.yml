@@ -236,6 +236,7 @@ factories:
     type: FCCUPGRADE
     name: Coal Burner
     recipes:
+    - Burn_Charcoal_from_Logs_Expert
     - Burn_Charcoal_from_Coal
     - Repair_Small_Factory
   farmsteadfactory:
@@ -762,6 +763,20 @@ recipes:
       charcoal:
         material: COAL
         amount: 128
+        durability: 1
+  Burn_Charcoal_from_Logs_Expert:
+    type: PRODUCTION
+    name: Burn Charcoal from Logs
+    production_time: 30s
+    input:
+      log:
+        material: LOG
+        durability: -1
+        amount: 64
+    output:
+      charcoal:
+        material: COAL
+        amount: 160
         durability: 1
   Compact_Stack_Advanced:
     type: COMPACT
