@@ -35,6 +35,7 @@ factories:
     - Smelt_Stone_Basic
     - Cut_any_type_of_Plank_Basic
     - Bake_Bread_Basic
+    - Burn_Charcoal_from_Logs_Basic
     - Repair_Rudimentary_Factory
     - Upgrade_to_Stone_Smelter
     - Upgrade_to_Farmstead_Factory
@@ -205,7 +206,7 @@ factories:
     type: FCCUPGRADE
     name: Wood Processor
     recipes:
-    - Burn_Charcoal_from_Logs_Basic
+    - Burn_Charcoal_from_Logs_Advanced
     - Craft_Oak_Fence
     - Cut_any_type_of_Plank_Basic
     - Repair_Rudimentary_Factory
@@ -235,8 +236,8 @@ factories:
     type: FCCUPGRADE
     name: Coal Burner
     recipes:
+    - Burn_Charcoal_from_Logs_Expert
     - Burn_Charcoal_from_Coal
-    - Burn_Charcoal_from_Logs_Advanced
     - Repair_Small_Factory
   farmsteadfactory:
     type: FCCUPGRADE
@@ -734,6 +735,48 @@ recipes:
       charcoal:
         material: COAL
         amount: 128
+        durability: 1
+  Burn_Charcoal_from_Logs_Basic:
+    type: PRODUCTION
+    name: Burn Charcoal from Logs
+    production_time: 15s
+    input:
+      log:
+        material: LOG
+        durability: -1
+        amount: 64
+    output:
+      charcoal:
+        material: COAL
+        amount: 96
+        durability: 1
+  Burn_Charcoal_from_Logs_Advanced:
+    type: PRODUCTION
+    name: Burn Charcoal from Logs
+    production_time: 25s
+    input:
+      log:
+        material: LOG
+        durability: -1
+        amount: 64
+    output:
+      charcoal:
+        material: COAL
+        amount: 128
+        durability: 1
+  Burn_Charcoal_from_Logs_Expert:
+    type: PRODUCTION
+    name: Burn Charcoal from Logs
+    production_time: 30s
+    input:
+      log:
+        material: LOG
+        durability: -1
+        amount: 64
+    output:
+      charcoal:
+        material: COAL
+        amount: 160
         durability: 1
   Compact_Stack_Advanced:
     type: COMPACT
