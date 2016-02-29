@@ -501,9 +501,9 @@ public class ItemMap {
 	 * @return True if everything was successfully removed, false if not
 	 */
 	public boolean removeSafelyFrom(Inventory i) {
-		for (ItemStack is : getItemStackRepresentation()) {
-				boolean taken = false;
-				int amountToRemove = is.getAmount();
+		for (Entry <ItemStack, Integer> entry : getEntrySet()) {
+				int amountToRemove = entry.getValue();
+				ItemStack is = entry.getKey();
 				for (ItemStack inventoryStack : i.getContents()) {
 					if (inventoryStack == null) {
 						continue;
