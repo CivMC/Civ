@@ -153,5 +153,6 @@ public abstract class Factory implements Runnable {
 		}
 		Furnace furnace = (Furnace) f.getState();
 		furnace.setBurnTime((short)0);
+		furnace.update();
 	}
 }
