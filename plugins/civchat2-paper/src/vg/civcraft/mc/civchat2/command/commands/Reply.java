@@ -43,7 +43,7 @@ public class Reply extends PlayerCommand{
 		String senderName = player.getName();
 		UUID receiverUUID = chatMan.getPlayerReply(player);
 		
-		if (CivChat2.getInstance().isMercuryEnabled()){
+		if (CivChat2.getInstance().isMercuryEnabled() && receiverUUID != null){
 			String reciver = NameAPI.getCurrentName(receiverUUID);
 			for(String name : MercuryAPI.getAllPlayers()) {
 				//iterate over names to find someone with a similar name to the one entered
