@@ -502,39 +502,34 @@ public class ItemMap {
 	 */
 	public boolean removeSafelyFrom(Inventory i) {
 		for (ItemStack is : getItemStackRepresentation()) {
-			if (isTaggedItem(is.getType())) {
-				ItemMap currentMap = new ItemMap(is);
 				boolean taken = false;
+				int amountToRemove = is.getAmount();
 				for (ItemStack inventoryStack : i.getContents()) {
 					if (inventoryStack == null) {
 						continue;
 					}
 					if (inventoryStack.getType() == is.getType()) {
 						ItemMap compareMap = new ItemMap(inventoryStack);
-						if (compareMap.hashCode() == currentMap.hashCode()) {
-							if (i.removeItem(inventoryStack).values().size() != 0) {
+						int removeAmount = Math.min(amountToRemove, compareMap.getAmount(is));
+						if (removeAmount != 0) {
+							ItemStack cloneStack = inventoryStack.clone();
+							cloneStack.setAmount(removeAmount);
+							if (i.removeItem(cloneStack).values().size() != 0) {
 								return false;
 							} else {
-								taken = true;
-								break;
+								amountToRemove -=removeAmount;
+								if (amountToRemove <= 0) {
+									break;
+								}
 							}
 						}
 					}
 				}
-				if (!taken) {
+				if (amountToRemove > 0) {
 					return false;
 				}
-			} else {
-				if (i.removeItem(is).values().size() != 0) {
-					return false;
-				}
-			}
 		}
 		return true;
-	}
-
-	private static boolean isTaggedItem(Material m) {
-		return m.getMaxStackSize() == 1;
 	}
 
 	public boolean equals(Object o) {
