@@ -164,7 +164,7 @@ public class PlantManager {
 				int x = rs.getInt("x");
 				int z = rs.getInt("z");
 				
-				PlantChunk pChunk = new PlantChunk(plugin, readConn, id, new ChunkCoords(w, x, z));
+				PlantChunk pChunk = new PlantChunk(plugin, id, new ChunkCoords(w, x, z));
 				pChunk.loaded = false;
 				pChunk.inDatabase = true;
 				RealisticBiomes.doLog(Level.FINER, "\tLoaded plantchunk " + pChunk + " at coords " + new Coords(w,x,0,z));
@@ -195,16 +195,21 @@ public class PlantManager {
 	}
 
 	public void reconnect() {
+		RealisticBiomes.LOG.info("Triggering reconnection for write and read channels.");
 		try {
 			if (writeConn != null) {
 				writeConn.close();
 			}
-			
+		} catch (SQLException e){
+			RealisticBiomes.LOG.log(Level.WARNING, "Can't close prior write connection, may already be closed", e);
+		}
+
+		try {
 			if (readConn != null) {
 				readConn.close();
 			}
 		} catch (SQLException e){
-			RealisticBiomes.LOG.log(Level.WARNING, "Can't close prior connections, may already be closed", e);
+			RealisticBiomes.LOG.log(Level.WARNING, "Can't close prior read connection, may already be closed", e);
 		}
 		try {
 			connect();
@@ -220,10 +225,11 @@ public class PlantManager {
 
 		// Try and connect to the database
 		try {
+			RealisticBiomes.LOG.info("Connecting write and read channels.");
 			writeConn = DriverManager.getConnection(jdbcUrl);
 			readConn = DriverManager.getConnection(jdbcUrl);
-			Statement stmt = readConn.createStatement(); // TODO: wtf is this supposed to do
-			stmt.setQueryTimeout(iTimeout);
+			//Statement stmt = readConn.createStatement(); // TODO: wtf is this supposed to do
+			//stmt.setQueryTimeout(iTimeout);
 			
 		} catch (SQLException e) {
 			throw new DataSourceException("Failed to connect to the database with the jdbcUrl: " + jdbcUrl, e);
@@ -250,12 +256,36 @@ public class PlantManager {
 			this.selectAllFromChunk = readConn.prepareStatement(String.format("SELECT id, w, x, z FROM %s_chunk", config.prefix));
 						
 			// create chunk writer
-			ChunkWriter.init(writeConn, readConn, config);
+			ChunkWriter.init(config);
 			
 		} catch (SQLException e) {
 			throw new DataSourceException("PlantManager constructor: Failed to create the prepared statements! (for table creation)", e);
 		}
 	}
+
+	public Connection getWriteConnection() {
+		return writeConn;
+	}
+
+	public Connection getReadConnection() {
+		return readConn;
+	}
+
+	public void testOrReconnect() {
+		try {
+			Statement writeAlive = writeConn.createStatement();
+			Statement readAlive = readConn.createStatement();
+		
+			writeAlive.execute("SELECT 1;");
+			readAlive.execute("SELECT 1;");
+			
+		} catch(SQLException e) {
+			RealisticBiomes.LOG.log(Level.WARNING, "Connection has died.", e);
+
+			reconnect();
+		}
+	}
+			
 	
 	/**
 	 * call this to load all the plants from all our plant chunks
@@ -321,15 +351,8 @@ public class PlantManager {
 				
 				long start = System.nanoTime()/1000000/*ns/ms*/;
 				long end;
-				
-				int chunksUnloadedCount = chunksToUnload.size();
-				
-				try {
-					writeConn.setAutoCommit(false);
-				} catch (SQLException e) {
-					throw new DataSourceException("unable to set autocommit to false in unloadBatch", e);
 
-				}
+				int chunksUnloadedCount = chunksToUnload.size();
 				
 				int plantCounter = 0;
 				while (!chunksToUnload.isEmpty()) {
@@ -338,14 +361,6 @@ public class PlantManager {
 					if (batchCoords != null) {
 						plantCounter += unloadChunk(batchCoords);
 					}
-				}
-				
-				// write the changes to the database
-				try {
-					writeConn.commit();
-					writeConn.setAutoCommit(true);
-				} catch (SQLException e) {
-					throw new DataSourceException("unable to set autocommit to true in unloadBatch", e);
 				}
 				
 				end = System.nanoTime()/1000000/*ns/ms*/;
@@ -413,12 +428,7 @@ public class PlantManager {
 				
 				try {
 				log.info("Starting runnable in saveAllAndStop()");
-				try {
-					writeConn.setAutoCommit(false);
-				} catch (SQLException e) {
-					log.severe("Exception in saveAllAndStop runnable!" + e);
-					throw new DataSourceException("unable to set autocommit to false in saveAllAndStop", e);
-				}				
+				testOrReconnect();
 				
 				for (ChunkCoords coords : chunks.getCoordsSet()) {
 
@@ -426,15 +436,6 @@ public class PlantManager {
 
 					pChunk.unload();
 				}
-				
-				try {
-					writeConn.commit();
-					writeConn.setAutoCommit(true);
-				} catch (SQLException e) {
-					log.severe("Exception in saveAllAndStop runnable!" + e);
-
-					throw new DataSourceException("unable to set autocommit to true in saveAllAndStop", e);
-				}	
 				
 				log.info("finished runnable in saveAllAndStop()");
 				} catch (Exception e) {
@@ -481,6 +482,7 @@ public class PlantManager {
 			return 0;
 		
 		// finally, actually unload this thing
+		testOrReconnect();
 		int tmpCount = pChunk.getPlantCount();
 		pChunk.unload();
 		return tmpCount;
@@ -542,8 +544,9 @@ public class PlantManager {
 		}
 		
 		// finally, just load this thing!
+		testOrReconnect();
 		long start = System.nanoTime()/1000000/*ns/ms*/;
-		boolean loaded = pChunk.load(readConn);
+		boolean loaded = pChunk.load();
 		long end = System.nanoTime()/1000000/*ns/ms*/;
 		RealisticBiomes.doLog(Level.FINER, "PlantManager.loadChunk():Had to load chunk, pchunk.load() returned " + loaded);
 		
@@ -571,12 +574,13 @@ public class PlantManager {
 		
 		// TESTING
 		RealisticBiomes.doLog(Level.FINER, "PlantManager.add() called at coords " + blockCoords + " and plant " + plant);
+
 		
 		// Only query the map a single time, optimize !!!
 		PlantChunk pChunk = loadChunk(chunkCoords);
 		
 		if (pChunk == null) {
-			pChunk = new PlantChunk(plugin, readConn, -1/*dummy index until assigned when added*/, chunkCoords);
+			pChunk = new PlantChunk(plugin, -1/*dummy index until assigned when added*/, chunkCoords);
 			chunks.addChunk(pChunk); 
 			pChunk.loaded = true; // its loaded because its a brand new plant chunk. 
 			RealisticBiomes.doLog(Level.FINER, "PlantManager.add() creating new plantchunk: " + pChunk + "at coords " + chunkCoords);
@@ -586,7 +590,7 @@ public class PlantManager {
 		}
 		
 		// add the plant
-		pChunk.addPlant(blockCoords, plant, readConn);
+		pChunk.addPlant(blockCoords, plant);
 	}
 	
 	public Plant getPlantFromBlock(Block block) {
@@ -602,7 +606,8 @@ public class PlantManager {
 		
 		// load the plant data if it is not yet loaded
 		if (pChunk.isLoaded() == false) {
-			pChunk.load(readConn);
+			testOrReconnect();
+			pChunk.load();
 		}
 		
 		return pChunk.get(new Coords(block));

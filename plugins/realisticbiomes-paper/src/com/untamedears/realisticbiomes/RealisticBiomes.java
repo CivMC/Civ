@@ -28,6 +28,8 @@ import com.untamedears.realisticbiomes.utils.MaterialAliases;
 
 public class RealisticBiomes extends JavaPlugin {
 
+	public static RealisticBiomes plugin;
+
 	public static Logger LOG = null;
 	public static Level minLogLevel = Level.INFO;
 	
@@ -40,7 +42,7 @@ public class RealisticBiomes extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {		
-		
+		RealisticBiomes.plugin = this;
 		
 		RealisticBiomes.LOG = this.getLogger();
 		LOG.info("name of logger is: " + LOG.getName());

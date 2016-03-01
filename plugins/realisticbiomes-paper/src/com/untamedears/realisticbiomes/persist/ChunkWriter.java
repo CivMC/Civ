@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
 import com.untamedears.realisticbiomes.PersistConfig;
+import com.untamedears.realisticbiomes.RealisticBiomes;
 
 /**
  * basically a container class that holds most of the prepared statements that we will be using often
@@ -24,17 +25,13 @@ public class ChunkWriter {
 	public static PreparedStatement getLastChunkIdStmt = null;
 	public static PreparedStatement addPlantStmt = null;
 	public static PreparedStatement deleteOldPlantsStmt = null;
-	public static Connection writeConnection;
-	public static Connection readConnection;
 	public static PersistConfig curConfig;
 	
 	public static PreparedStatement loadPlantsStmt = null;
 	
-	public static void init(Connection writeConn, Connection readConn,  PersistConfig config) {
+	public static void init(PersistConfig config) {
 		try {
 			curConfig = config;
-			writeConnection = writeConn;
-			readConnection = readConn;
 			
 			initWrite();
 			initRead();
@@ -44,6 +41,7 @@ public class ChunkWriter {
 	}
 	
 	public static void initWrite() throws SQLException{
+		Connection writeConnection = RealisticBiomes.plugin.getPlantManager().getWriteConnection();
 		deleteOldDataStmt = writeConnection.prepareStatement(String.format("DELETE FROM %s_plant WHERE chunkid = ?", curConfig.prefix));
 		
 		addChunkStmt = writeConnection.prepareStatement(String.format("INSERT INTO %s_chunk (w, x, z) VALUES (?, ?, ?)", curConfig.prefix));
@@ -56,6 +54,7 @@ public class ChunkWriter {
 	}
 	
 	public static void initRead() throws SQLException{
+		Connection readConnection = RealisticBiomes.plugin.getPlantManager().getReadConnection();
 		loadPlantsStmt = readConnection.prepareStatement(String
 				.format("SELECT w, x, y, z, date, growth, fruitGrowth FROM %s_plant WHERE chunkid = ?",
 						curConfig.prefix));		
