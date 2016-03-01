@@ -277,20 +277,21 @@ public class GroupManagerDao {
 				+ "where fi.group_id = fii.group_id;"
 				+ "end;");
 		db.execute("drop procedure if exists createGroup;");
-		db.execute("create definer=current_user procedure createGroup("
-				 + "in group_name varchar(255)," +
-				"in founder varchar(36)," +
-				"in password varchar(255)," +
-				"in discipline_flags int(11)," +
-				"in group_type varchar(40))"
-				+ "sql security invoker begin "
-				+ "insert into faction_id(group_name) values (group_name);"
-				+ "insert into faction(group_name, founder, password, discipline_flags," +
-				"group_type) values (group_name, founder, password, discipline_flags, group_type);"
-				+ "insert into faction_member (member_name, role, group_id) "
-				+ "select founder, 'OWNER', f.group_id from faction_id f where f.group_name = group_name;"
-				+ "select f.group_id from faction_id f where f.group_name = group_name;"
-				+ "end;");
+		db.execute("create definer=current_user procedure createGroup(" + 
+				"in group_name varchar(255), " +
+				"in founder varchar(36), " +
+				"in password varchar(255), " +
+				"in discipline_flags int(11), " +
+				"in group_type varchar(40)) " +
+				"sql security invoker " +
+				"begin" +
+				" if (select (count(*) = 0) from faction_id q where q.group_name = group_name) is true then" + 
+				"  insert into faction_id(group_name) values (group_name); " +
+				"  insert into faction(group_name, founder, password, discipline_flags, group_type) values (group_name, founder, password, discipline_flags, group_type);" + 
+				"  insert into faction_member (member_name, role, group_id) select founder, 'OWNER', f.group_id from faction_id f where f.group_name = group_name; " +
+				"  select f.group_id from faction_id f where f.group_name = group_name; " +
+				" end if; " +
+				"end;");
 	}
 	
 	private PreparedStatement version, updateVersion;

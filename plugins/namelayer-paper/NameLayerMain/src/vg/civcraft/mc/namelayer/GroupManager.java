@@ -54,7 +54,9 @@ public class GroupManager{
 		int id = groupManagerDao.createGroup(
 				event.getGroupName(), event.getOwner(), 
 				event.getPassword(), event.getType());
-		initiateDefaultPerms(event.getGroupName()); // give default perms to a newly create group
+		if (id > -1) {
+			initiateDefaultPerms(event.getGroupName()); // give default perms to a newly create group
+		}
 		return id;
 	}
 	
@@ -254,10 +256,27 @@ public class GroupManager{
 		Group g = groupsByName.get(group.toLowerCase());
 		if (g != null) {
 			g.setValid(false);
+			int k = g.getGroupId();
 			groupsByName.remove(group.toLowerCase());
-			for (Group x: groupsById.values())
-				if (x.getName().equals(g.getName()))
-				groupsById.remove(x.getGroupId());
+			
+			// You have a freaking hashmap, use it.
+			Group q = groupsById.get(k);
+			if (q != null) {
+				if (q.getName().equals(g.getName())) {
+					groupsById.remove(k);
+				} else {
+					q = null;
+				}
+			}
+			
+			// FALLBACK is hardloop
+			if (q == null) { // can't find ID or cache is wrong.
+				for (Group x: groupsById.values()) {
+					if (x.getName().equals(g.getName())) {
+						groupsById.remove(x.getGroupId());
+					}
+				}
+			}
 		}
 	}
 	

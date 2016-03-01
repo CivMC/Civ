@@ -94,6 +94,10 @@ public class CreateGroup extends PlayerCommandMiddle{
 			g = new Group(name, uuid, false, password, type, -1);
 		}
 		int id = gm.createGroup(g);
+		if (id == -1) { // failure
+			p.sendMessage(ChatColor.RED + "That group is already taken or creation failed.");
+			return true;
+		}
 		g.setGroupId(id);
 		p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
 		if (NameLayerPlugin.getInstance().getGroupLimit() == gm.countGroups(p.getUniqueId()))
