@@ -177,7 +177,6 @@ public class ConfigParser {
 			}
 			ItemMap setupCost = parseItemMap(config
 					.getConfigurationSection("setupcost"));
-			System.out.println(setupCost.toString());
 			if (setupCost.getTotalUniqueItemAmount() > 0) {
 				manager.addFactoryCreationEgg(FurnCraftChestStructure.class,
 						setupCost, egg);
