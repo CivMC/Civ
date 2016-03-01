@@ -225,6 +225,7 @@ public class PlantChunk {
 		// wrapper.
 		try { 
 			innerUnload();
+			return;
 		} catch (DataSourceException dse) {
 			// assume DB has gone away, reconnect and try one more time.
 			RealisticBiomes.LOG.log(Level.WARNING, "Looks like DB has gone away: ", dse);			
@@ -293,9 +294,13 @@ public class PlantChunk {
 				// database later in this method we dont get a Constraint
 				// Failure exception
 
-				RealisticBiomes.doLog(Level.FINEST, "plantchunk.unload(): committing new plantchunk with index "
+				try {
+					RealisticBiomes.doLog(Level.FINEST, "plantchunk.unload(): committing new plantchunk with index "
 								+ this.index);
-				plugin.getPlantManager().getWriteConnection().commit();
+					plugin.getPlantManager().getWriteConnection().commit();
+				} catch(SQLException e) {
+					RealisticBiomes.LOG.warning("Can't commit?" + e);
+				}
 				inDatabase = true;
 			}
 

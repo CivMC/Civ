@@ -110,8 +110,8 @@ public class PlantManager {
 					return;
 				}
 				try {
-					Statement writeAlive = writeConn.createStatement();
-					Statement readAlive = readConn.createStatement();
+					Statement writeAlive = RealisticBiomes.plugin.getPlantManager().getWriteConnection().createStatement();
+					Statement readAlive = RealisticBiomes.plugin.getPlantManager().getReadConnection().createStatement();
 				
 					writeAlive.execute("SELECT 1;");
 					readAlive.execute("SELECT 1;");
@@ -123,7 +123,7 @@ public class PlantManager {
 				}
 			}
 			
-		}.runTaskTimerAsynchronously(plugin, 180000l, 180000l); // every 3 minutes
+		}.runTaskTimer(plugin, 180000l, 180000l); // every 3 minutes
 		
 		setupStatements();
 		
@@ -256,7 +256,7 @@ public class PlantManager {
 			this.selectAllFromChunk = readConn.prepareStatement(String.format("SELECT id, w, x, z FROM %s_chunk", config.prefix));
 						
 			// create chunk writer
-			ChunkWriter.init(config);
+			ChunkWriter.init(writeConn, readConn, config);
 			
 		} catch (SQLException e) {
 			throw new DataSourceException("PlantManager constructor: Failed to create the prepared statements! (for table creation)", e);

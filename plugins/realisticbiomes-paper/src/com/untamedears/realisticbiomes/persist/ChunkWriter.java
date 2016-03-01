@@ -29,19 +29,18 @@ public class ChunkWriter {
 	
 	public static PreparedStatement loadPlantsStmt = null;
 	
-	public static void init(PersistConfig config) {
+	public static void init(Connection writeConn, Connection readConn, PersistConfig config) {
 		try {
 			curConfig = config;
 			
-			initWrite();
-			initRead();
+			initWrite(writeConn);
+			initRead(readConn);
 		} catch (SQLException e) {
 			throw new DataSourceException("Failed to create the prepared statements in ChunkWriter", e);
 		}
 	}
 	
-	public static void initWrite() throws SQLException{
-		Connection writeConnection = RealisticBiomes.plugin.getPlantManager().getWriteConnection();
+	public static void initWrite(Connection writeConnection) throws SQLException{
 		deleteOldDataStmt = writeConnection.prepareStatement(String.format("DELETE FROM %s_plant WHERE chunkid = ?", curConfig.prefix));
 		
 		addChunkStmt = writeConnection.prepareStatement(String.format("INSERT INTO %s_chunk (w, x, z) VALUES (?, ?, ?)", curConfig.prefix));
@@ -53,8 +52,7 @@ public class ChunkWriter {
 		deleteOldPlantsStmt = writeConnection.prepareStatement(String.format("DELETE FROM %s_plant WHERE chunkid = ?", curConfig.prefix));		
 	}
 	
-	public static void initRead() throws SQLException{
-		Connection readConnection = RealisticBiomes.plugin.getPlantManager().getReadConnection();
+	public static void initRead(Connection readConnection) throws SQLException{
 		loadPlantsStmt = readConnection.prepareStatement(String
 				.format("SELECT w, x, y, z, date, growth, fruitGrowth FROM %s_plant WHERE chunkid = ?",
 						curConfig.prefix));		
