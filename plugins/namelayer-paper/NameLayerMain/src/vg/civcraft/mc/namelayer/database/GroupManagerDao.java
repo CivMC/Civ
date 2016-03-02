@@ -20,7 +20,6 @@ import org.bukkit.Bukkit;
 import com.google.common.collect.Lists;
 
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -440,6 +439,7 @@ public class GroupManagerDao {
 				return 0;
 			return set.getInt("db_version");
 		} catch (SQLException e) {
+			plugin.getLogger().log(Level.WARNING, "Problem accessing db_version table", e);
 			// table doesnt exist
 			return 0;
 		}
@@ -460,14 +460,14 @@ public class GroupManagerDao {
 			updateVersion.setString(3, pluginname);
 			updateVersion.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem updating version", e);
 		}
 		return ++version;
 	}
 	
 	public synchronized int createGroup(String group, UUID owner, String password, GroupType type){
 		NameLayerPlugin.reconnectAndReintializeStatements();
+		int ret = -1;
 		try {
 			String own = null;
 			if (owner != null)
@@ -478,12 +478,15 @@ public class GroupManagerDao {
 			createGroup.setInt(4, 0);
 			createGroup.setString(5, type.name());
 			ResultSet set = createGroup.executeQuery();
-			return set.next() ? set.getInt("f.group_id") : -1;
+			ret = set.next() ? set.getInt("f.group_id") : -1;
+			plugin.getLogger().log(Level.INFO, "Created group {0} w/ id {1} for {2}", 
+					new Object[] {group, ret, own});
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem creating group " + group, e);
+			ret = -1;
 		}
-		return -1;
+		
+		return ret;
 	}
 	
 	public synchronized Group getGroup(String groupName){
@@ -518,8 +521,7 @@ public class GroupManagerDao {
 				return g;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem getting group " + groupName, e);
 		}
 		return null;
 	}
@@ -552,8 +554,7 @@ public class GroupManagerDao {
 			}
 			return g;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem getting group " + groupId, e);
 		}
 		return null;
 	}
@@ -564,11 +565,11 @@ public class GroupManagerDao {
 		try {
 			getAllGroupsNames.setString(1, uuid.toString());
 			ResultSet set = getAllGroupsNames.executeQuery();
-			while(set.next())
+			while(set.next()) {
 				groups.add(set.getString(1));
+			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem getting player's groups " + uuid, e);
 		}
 		return groups;
 	}
@@ -580,11 +581,11 @@ public class GroupManagerDao {
 			getGroupNameFromRole.setString(1, uuid.toString());
 			getGroupNameFromRole.setString(2, role);
 			ResultSet set = getGroupNameFromRole.executeQuery();
-			while(set.next())
+			while(set.next()) {
 				groups.add(set.getString(1));
+			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem getting player " + uuid + " groups by role " + role, e);
 		}
 		return groups;
 	}
@@ -598,8 +599,7 @@ public class GroupManagerDao {
 			if(set.next())
 				timestamp = set.getTimestamp(1);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem getting group timestamp " + group, e);
 		}
 		
 		return timestamp;
@@ -616,8 +616,7 @@ public class GroupManagerDao {
 				ptype = PlayerType.getPlayerType(set.getString(1));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem getting player " + uuid + " type within group " + groupid, e);
 		}
 		return ptype;
 	}
@@ -628,8 +627,7 @@ public class GroupManagerDao {
 			updateLastTimestamp.setString(1, group);
 			updateLastTimestamp.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem updating timestamp for group " + group, e);
 		}
 	}
 	
@@ -640,8 +638,7 @@ public class GroupManagerDao {
 			deleteGroup.setString(2, NameLayerPlugin.getSpecialAdminGroup());
 			deleteGroup.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem deleting group " + groupName, e);
 		}
 	}
 	
@@ -653,8 +650,8 @@ public class GroupManagerDao {
 			addMember.setString(3, faction);
 			addMember.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem adding " + member + " as " + role.toString() 
+					+ " to group " + faction, e);
 		}
 	}
 	
@@ -673,8 +670,8 @@ public class GroupManagerDao {
 			}
 			return members;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem getting all " + role.toString() 
+					+ " for group " + groupName, e);
 		}
 		return members;
 	}
@@ -686,8 +683,7 @@ public class GroupManagerDao {
 			removeMember.setString(2, group);
 			removeMember.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem removing " + member + " from group " + group, e);
 		}
 	}
 	
@@ -698,8 +694,8 @@ public class GroupManagerDao {
 			addSubGroup.setString(2, group);
 			addSubGroup.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem adding subgroup " + subGroup
+					+ " to group " + group, e);
 		}
 	}
 	
@@ -730,8 +726,7 @@ public class GroupManagerDao {
 				}
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem getting subgroups for group " + group, e);
 		}
 		return groups;
 	}
@@ -753,8 +748,7 @@ public class GroupManagerDao {
 				}
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem getting superGroup for group " + group, e);
 		}
 		return null;
 	}
@@ -766,8 +760,8 @@ public class GroupManagerDao {
 			removeSubGroup.setString(2, subGroup);
 			removeSubGroup.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Removing subgroup " + subGroup
+					+ " from group " + group, e);
 		}
 	}
 
@@ -779,8 +773,8 @@ public class GroupManagerDao {
 			addPerm.setString(3, groupName);
 			addPerm.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem adding " + role + " with " + values
+					+ " to group " + groupName, e);
 		}
 	}
 	
@@ -800,8 +794,7 @@ public class GroupManagerDao {
 				perms.put(type, listPerm);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem getting permissions for group " + group, e);
 		}
 		return perms;
 	}
@@ -814,8 +807,8 @@ public class GroupManagerDao {
 			updatePerm.setString(3, pType.name());
 			updatePerm.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem updating permissions for group " + group
+					+ " on playertype " + pType.name(), e);
 		}
 	}
 	
@@ -825,8 +818,7 @@ public class GroupManagerDao {
 			ResultSet set = countGroups.executeQuery();
 			return set.next() ? set.getInt("count") : 0;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem counting groups", e);
 		}
 		return 0;
 	}
@@ -838,8 +830,7 @@ public class GroupManagerDao {
 			ResultSet set = countGroupsFromUUID.executeQuery();
 			return set.next() ? set.getInt("count") : 0;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem counting groups for " + uuid, e);
 		}
 		return 0;
 		
@@ -852,8 +843,8 @@ public class GroupManagerDao {
 			mergeGroup.setString(2, toMerge);
 			mergeGroup.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem merging group " + toMerge
+					+ " into " + groupName, e);
 		}
 	}
 	
@@ -864,8 +855,7 @@ public class GroupManagerDao {
 			updatePassword.setString(2, groupName);
 			updatePassword.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem updating password for group " + groupName, e);
 		}
 	}
 	
@@ -878,8 +868,7 @@ public class GroupManagerDao {
 			addAutoAcceptGroup.setString(1, uuid.toString());
 			addAutoAcceptGroup.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem setting autoaccept for " + uuid, e);
 		}
 	}
 	
@@ -893,8 +882,7 @@ public class GroupManagerDao {
 			ResultSet set = getAutoAcceptGroup.executeQuery();
 			return set.next();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem getting autoaccept for " + uuid, e);
 		}
 		return false;
 	}
@@ -904,8 +892,7 @@ public class GroupManagerDao {
 			removeAutoAcceptGroup.setString(1, uuid.toString());
 			removeAutoAcceptGroup.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem removing autoaccept for " + uuid, e);
 		}
 	}
 	
@@ -915,8 +902,8 @@ public class GroupManagerDao {
 			setDefaultGroup.setString(2, groupName );
 			setDefaultGroup.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem setting user " + uuid 
+					+ " default group to " + groupName, e);
 		}
 	}
 	
@@ -926,8 +913,8 @@ public class GroupManagerDao {
 			changeDefaultGroup.setString(2, uuid.toString());
 			changeDefaultGroup.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem changing user " + uuid
+					+ " default group to " + groupName, e);
 		}
 	}
 
@@ -939,8 +926,7 @@ public class GroupManagerDao {
 			String group = set.getString(1);
 			return group;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem getting default group for " + uuid, e);
 		}
 		return null;
 	}
@@ -956,8 +942,8 @@ public class GroupManagerDao {
 			updateOwner.setString(2, group.getName());
 			updateOwner.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem setting founder of group " + group.getName() 
+					+ " to " + uuid, e);
 		}
 	}
 	
@@ -968,8 +954,8 @@ public class GroupManagerDao {
 			addGroupInvitation.setString(3, role); 
 			addGroupInvitation.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem adding group " + groupName + " invite for "
+					+ uuid + " with role " + role, e);
 		}
 	}
 	
@@ -979,8 +965,8 @@ public class GroupManagerDao {
 			removeGroupInvitation.setString(2, groupName);
 			removeGroupInvitation.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem removing group " + groupName + " invite for "
+					+ uuid, e);
 		}
 	}
 	
@@ -1008,8 +994,8 @@ public class GroupManagerDao {
 				group.addInvite(playerUUID, type, false);
 			}
 		} catch(SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem loading group " + group.getName() 
+					+ " invite for " + playerUUID, e);
 		}
 	}
 	
@@ -1042,8 +1028,7 @@ public class GroupManagerDao {
 				}
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Problem loading all group invitations", e);
 		}
 	}
 	
