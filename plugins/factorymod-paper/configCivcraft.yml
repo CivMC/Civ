@@ -101,7 +101,6 @@ factories:
     type: FCCUPGRADE
     name: Glass Dying Factory
     recipes:
-    - foo
     - Repair_Factory
   advancedsandsmelter:
     type: FCCUPGRADE
@@ -150,7 +149,7 @@ factories:
     - Repair_Factory
   stonebricksmelter:
     type: FCCUPGRADE
-    name: Stone Brick Smelter
+    name: Stonebrick Smelter
     recipes:
     - Craft_Stonebricks_Advanced
     - Craft_Stonebrick_Stairs
@@ -161,7 +160,7 @@ factories:
     - Repair_Factory
   netherbricksmelter:
     type: FCCUPGRADE
-    name: Nether Brick Smelter
+    name: Netherbrick Smelter
     recipes:
     - Smelt_Netherbrick_Advanced
     - Craft_Netherbrick_Fence
@@ -300,12 +299,16 @@ factories:
     - Create_Nametags
     - Create_Leads
     - Repair_Factory
+  woolprocessor:
+    type: FCCUPGRADE
+    name: Wool Processing
+    recipes:
   biolab:
     type: FCCUPGRADE
     name: Bio Lab
     recipes:
     - Create_Poppy_Advanced
-    - Mutate_Tall_Grass  Basic
+    - Mutate_Tall_Grass_Basic
     - Take_friendly_mob_egg_apart
     - Create_Podzol_Basic
     - Repair_Small_Factory
@@ -318,7 +321,7 @@ factories:
     type: FCCUPGRADE
     name: Grass Gardening
     recipes:
-    - Mutate_Tall_Grass  Advanced
+    - Mutate_Tall_Grass_Advanced
     - Mutate_Large_Fern
     - Kill_Dead_Bush
     - Grow_Grass
@@ -500,7 +503,6 @@ factories:
     name: Printing Press
     recipes:
     - Repair_Factory
-    - foo
   compactorbasic:
     type: FCCUPGRADE
     name: Compactor Basic
