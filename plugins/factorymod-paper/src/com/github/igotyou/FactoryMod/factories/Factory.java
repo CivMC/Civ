@@ -148,7 +148,8 @@ public abstract class Factory implements Runnable {
 	}
 
 	public void turnFurnaceOff(Block f) {
-		if (f.getType() != Material.FURNACE) {
+		//Since we are turning it off that implies its on, that means we should check if the furnace is burning.
+		if (f.getType() != Material.BURNING_FURNACE) {
 			return;
 		}
 		Furnace furnace = (Furnace) f.getState();
