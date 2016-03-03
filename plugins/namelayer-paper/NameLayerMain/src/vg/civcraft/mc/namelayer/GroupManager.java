@@ -1,6 +1,7 @@
 package vg.civcraft.mc.namelayer;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -43,6 +44,10 @@ public class GroupManager{
 	 * @param The group to create to db.
 	 */
 	public int createGroup(Group group){
+		if (group == null) {
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create event was cancelled, caller passed in null", new Exception());
+			return -1;
+		}
 		GroupCreateEvent event = new GroupCreateEvent(
 				group.getName(), group.getOwner(),
 				group.getPassword(), group.getType());
@@ -61,8 +66,16 @@ public class GroupManager{
 	}
 	
 	public boolean deleteGroup(String groupName){
+		if (groupName == null) {
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group delete event was cancelled, caller passed in null", new Exception());
+			return false;
+		}
 		groupName = groupName.toLowerCase();
 		Group group = getGroup(groupName);
+		if (group == null) {
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group delete event was cancelled, failed to find group", new Exception());
+			return false;
+		}
 		
 		GroupDeleteEvent event = new GroupDeleteEvent(group, false);
 		Bukkit.getPluginManager().callEvent(event);
@@ -73,6 +86,7 @@ public class GroupManager{
 		group.prepareForDeletion();
 		deleteGroupPerms(group);
 		groupManagerDao.deleteGroup(groupName);
+		// TODO: consistent handling of name/id pairs here too
 		groupsByName.remove(groupName);
 		groupsById.remove(group.getGroupId());
 		
@@ -90,6 +104,11 @@ public class GroupManager{
 	}
 	
 	public void transferGroup(Group g, UUID uuid){
+		if (g == null || uuid == null) {
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group transfer event was cancelled, caller passed in null", new Exception());
+			return;
+		}
+
 		GroupTransferEvent event = new GroupTransferEvent(g, uuid);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()){
@@ -106,6 +125,10 @@ public class GroupManager{
 	}
 	
 	public void mergeGroup(final Group group, final Group toMerge){
+		if (group == null || toMerge == null) {
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group merge event was cancelled, caller passed in null", new Exception());
+			return;
+		}
 		GroupMergeEvent event = new GroupMergeEvent(group, toMerge, false);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()){
@@ -121,6 +144,7 @@ public class GroupManager{
 					for (UUID uuid: toMerge.getAllMembers(type))
 						if (!group.isMember(uuid))
 							group.addMember(uuid, type);
+				// TODO: Clean this up and in general make consistent w/ decided approach
 				groupsByName.remove(toMerge.getName());
 				groupsById.remove(toMerge.getGroupId());
 			}
@@ -139,8 +163,14 @@ public class GroupManager{
 	}
 	
 	public static List<Group> getSubGroups(String name) {
+		if (name == null) {
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group getSubGroups event was cancelled, caller passed in null", new Exception());
+			return new ArrayList<Group>();
+		}
+
 		List<Group> groups = groupManagerDao.getSubGroups(name);
 		for (Group group : groups) {
+			// TODO: propogate every subgroup instance to every supergroup instance of the same name.
 			groupsByName.put(group.getName().toLowerCase(), group);
 			groupsById.put(group.getGroupId(), group);
 		}
@@ -151,7 +181,13 @@ public class GroupManager{
 	 * Making this static so I can use it in other places without needing the GroupManager Object.
 	 * Saves me code so I can always grab a group if it is already loaded while not needing to check db.
 	 */
+	// TODO: Deal with cache as a list. Deprecate this? Or deal with group ID inside the object?
 	public static Group getGroup(String name){
+		if (name == null) {
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group transfer event was cancelled, caller passed in null", new Exception());
+			return null;
+		}
+		
 		String lower = name.toLowerCase();
 		if (groupsByName.containsKey(lower)) {
 			return groupsByName.get(lower);
@@ -171,6 +207,7 @@ public class GroupManager{
 		} else { 
 			Group group = groupManagerDao.getGroup(groupId);
 			if (group != null) {
+				// TODO: Whatever we decide, these should adhere.
 				groupsByName.put(group.getName().toLowerCase(), group);
 				groupsById.put(groupId, group);
 			}
@@ -179,6 +216,11 @@ public class GroupManager{
 	}
 	
 	public static boolean hasGroup(String groupName) {
+		if (groupName == null) {
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "HasGroup Name been cancelled? ", new Exception());
+			return false;
+		}
+
 		return groupsByName.containsKey(groupName.toLowerCase());
 	}
 	
@@ -189,6 +231,10 @@ public class GroupManager{
 	 * @return Either the group or the special admin group.
 	 */
 	public static Group getSpecialCircumstanceGroup(String name){
+		if (g == name || uuid == name) {
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group transfer event was cancelled, caller passed in null", new Exception());
+			return;
+		}
 		String lower = name.toLowerCase();
 		if (groupsByName.containsKey(lower)) {
 			return groupsByName.get(lower);
@@ -209,6 +255,11 @@ public class GroupManager{
 	}
 		
 	public boolean hasAccess(String groupname, UUID player, PermissionType perm) {
+		if (groupname == null || player == null || perm == null) {
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group transfer event was cancelled, caller passed in null", new Exception());
+			return false;
+		}
+
 		Group group = getGroup(groupname);
 		if (group == null) {
 			return false;
@@ -222,6 +273,7 @@ public class GroupManager{
 			
 	// == PERMISSION HANDLING ============================================================= //
 	
+	// TODO: more nullschecks.
 	private void deleteGroupPerms(Group group){
 		permhandle.deletePerms(group);
 	}
