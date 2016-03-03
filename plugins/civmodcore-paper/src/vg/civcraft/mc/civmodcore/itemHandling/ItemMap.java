@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
@@ -493,6 +494,38 @@ public class ItemMap {
 	}
 
 	/**
+	 * Instead of converting into many stacks of maximum size, this creates a
+	 * stack with an amount of one for each entry and adds the total item amount
+	 * and stack count as lore, which is needed to display larger ItemMaps in
+	 * inventories
+	 * 
+	 * @return UI representation of large ItemMap
+	 */
+	public List<ItemStack> getLoredItemCountRepresentation() {
+		List<ItemStack> items = new LinkedList<ItemStack>();
+		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+			ItemStack is = entry.getKey().clone();
+			ISUtils.addLore(is,
+					ChatColor.GOLD + "Total item count: " + entry.getValue());
+			if (entry.getValue() > entry.getKey().getType().getMaxStackSize()) {
+				int stacks = entry.getValue() / is.getType().getMaxStackSize();
+				int extra = entry.getValue() % is.getType().getMaxStackSize();
+				StringBuilder out = new StringBuilder(ChatColor.GOLD.toString());
+				if (stacks != 0) {
+					out.append(stacks + " stack" + (stacks == 1 ? "" : "s"));
+				}
+				if (extra != 0) {
+					out.append(" and " + extra);
+					out.append(" item" + (stacks == 1 ? "" : "s"));
+				}
+				ISUtils.addLore(is, out.toString());
+			}
+			items.add(is);
+		}
+		return items;
+	}
+
+	/**
 	 * Attempts to remove the content of this ItemMap from the given inventory.
 	 * If it fails to find all the required items it will stop and return false
 	 * 
@@ -501,33 +534,34 @@ public class ItemMap {
 	 * @return True if everything was successfully removed, false if not
 	 */
 	public boolean removeSafelyFrom(Inventory i) {
-		for (Entry <ItemStack, Integer> entry : getEntrySet()) {
-				int amountToRemove = entry.getValue();
-				ItemStack is = entry.getKey();
-				for (ItemStack inventoryStack : i.getContents()) {
-					if (inventoryStack == null) {
-						continue;
-					}
-					if (inventoryStack.getType() == is.getType()) {
-						ItemMap compareMap = new ItemMap(inventoryStack);
-						int removeAmount = Math.min(amountToRemove, compareMap.getAmount(is));
-						if (removeAmount != 0) {
-							ItemStack cloneStack = inventoryStack.clone();
-							cloneStack.setAmount(removeAmount);
-							if (i.removeItem(cloneStack).values().size() != 0) {
-								return false;
-							} else {
-								amountToRemove -=removeAmount;
-								if (amountToRemove <= 0) {
-									break;
-								}
+		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+			int amountToRemove = entry.getValue();
+			ItemStack is = entry.getKey();
+			for (ItemStack inventoryStack : i.getContents()) {
+				if (inventoryStack == null) {
+					continue;
+				}
+				if (inventoryStack.getType() == is.getType()) {
+					ItemMap compareMap = new ItemMap(inventoryStack);
+					int removeAmount = Math.min(amountToRemove,
+							compareMap.getAmount(is));
+					if (removeAmount != 0) {
+						ItemStack cloneStack = inventoryStack.clone();
+						cloneStack.setAmount(removeAmount);
+						if (i.removeItem(cloneStack).values().size() != 0) {
+							return false;
+						} else {
+							amountToRemove -= removeAmount;
+							if (amountToRemove <= 0) {
+								break;
 							}
 						}
 					}
 				}
-				if (amountToRemove > 0) {
-					return false;
-				}
+			}
+			if (amountToRemove > 0) {
+				return false;
+			}
 		}
 		return true;
 	}
