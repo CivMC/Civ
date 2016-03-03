@@ -83,21 +83,16 @@ public class EntityListener implements Listener{
         ecbe.setCancelled(maybeReinforcementDamaged(ecbe.getBlock()));
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void spawn(CreatureSpawnEvent cse) {
     	ReinforcementManager reinforcementManager = Citadel.getReinforcementManager();
         EntityType type = cse.getEntityType();
-        if (type != EntityType.IRON_GOLEM && type != EntityType.SNOWMAN) return;
+        if (type != EntityType.IRON_GOLEM && type != EntityType.SNOWMAN && type != EntityType.WITHER && type != EntityType.SILVERFISH) return;
 
         for (Block block : getGolemBlocks(type, cse.getLocation().getBlock())) {
             Reinforcement reinforcement = reinforcementManager.getReinforcement(block);
             if (reinforcement != null) {
-            	/*
-            	Citadel.verbose(
-                        VerboseMsg.GolemCreated,
-            			reinforcement.getBlock().getLocation().toString());
-            			*/
-                reinforcementManager.deleteReinforcement(reinforcement);
+            	cse.setCancelled(true);
             }
         }
     }
