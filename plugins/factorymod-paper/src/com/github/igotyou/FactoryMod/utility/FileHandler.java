@@ -29,6 +29,7 @@ import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.factories.Pipe;
 import com.github.igotyou.FactoryMod.factories.Sorter;
+import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 
@@ -77,6 +78,9 @@ public class FileHandler {
 					config.set(current + ".runtime", fccf.getRunningTime());
 					config.set(current + ".selectedRecipe", fccf
 							.getCurrentRecipe().getRecipeName());
+					for(IRecipe i : ((FurnCraftChestFactory) f).getRecipes()) {
+						config.set(current + ".runcounts." + i.getRecipeName(), fccf.getRunCount(i));
+					}
 				} else if (f instanceof Pipe) {
 					Pipe p = (Pipe) f;
 					config.set(current + ".type", "PIPE");
@@ -169,8 +173,20 @@ public class FileHandler {
 				}
 				int health = current.getInt("health");
 				String selectedRecipe = current.getString("selectedRecipe");
-				Factory fac = egg.revive(blocks, health, selectedRecipe,
+				FurnCraftChestFactory fac = (FurnCraftChestFactory) egg.revive(blocks, health, selectedRecipe,
 						runtime);
+				ConfigurationSection runCounts = current.getConfigurationSection("runcounts");
+				if(runCounts != null) {
+					for(String countKey : runCounts.getKeys(false)) {
+						int runs = runCounts.getInt(countKey);
+						for(IRecipe r : fac.getRecipes()) {
+							if (r.getRecipeName().equals(countKey)) {
+								fac.setRunCount(r, runs);
+								break;
+							}
+						}
+					}
+				}
 				manager.addFactory(fac);
 				counter++;
 				break;
