@@ -22,6 +22,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Bed;
 import org.bukkit.material.Door;
+import org.bukkit.util.Vector;
 
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.misc.ReinforcemnetFortificationCancelException;
@@ -407,25 +408,61 @@ public class Utility {
                                 (reinforcement.getLocation().getBlock(), (PlayerReinforcement) reinforcement);
                         for(ItemStack leftover : inv.addItem(
                                 stack).values()) {
-                            location.getWorld().dropItem(location, leftover);
+                        	dropItemAtLocation(location, leftover);
                         }
                     }
                     else {
                         for(ItemStack leftover : inv.addItem(
                                 material.getItemStack())
                                 .values()) {
-                            location.getWorld().dropItem(location, leftover);
+                        	dropItemAtLocation(location, leftover);
                         }
                     }
                 }
                 else
-                    location.getWorld().dropItem(location, new ItemStack(material.getMaterial()
+                	dropItemAtLocation(location, new ItemStack(material.getMaterial()
                             , material.getReturnValue()));
             }
             return pr.isSecurable();
         }
         return false;  // implicit isSecureable() == false
     }
+
+
+	/**
+	 * A better version of dropNaturally that mimics normal drop behavior.
+	 * 
+	 * The built-in version of Bukkit's dropItem() method places the item at the block 
+	 * vertex which can make the item jump around. 
+	 * This method places the item in the middle of the block location with a slight 
+	 * vertical velocity to mimic how normal broken blocks appear.
+	 * @param l The location to drop the item
+	 * @param is The item to drop
+	 * 
+	 * @author GordonFreemanQ
+	 */
+	public static void dropItemAtLocation(final Location l, final ItemStack is) {
+		
+		// Schedule the item to drop 1 tick later
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Citadel.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				l.getWorld().dropItem(l.add(0.5, 0.5, 0.5), is).setVelocity(new Vector(0, 0.05, 0));
+			}
+		}, 1);
+	}
+	
+	
+	/**
+	 * Overload for dropItemAtLocation(Location l, ItemStack is) that accepts a block parameter.
+	 * @param b The block to drop it at
+	 * @param is The item to drop
+	 * 
+	 * @author GordonFreemanQ
+	 */
+	public static void dropItemAtLocation(Block b, ItemStack is) {
+		dropItemAtLocation(b.getLocation(), is);
+	}
     
     /**
      * Checks if a Redstone player is trying to power a block.
