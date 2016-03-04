@@ -22,6 +22,7 @@ public abstract class InputRecipe implements IRecipe {
 	protected String name;
 	protected int productionTime;
 	protected ItemMap input;
+	protected int fuel_consumption_intervall = -1;
 
 	public InputRecipe(String name, int productionTime, ItemMap input) {
 		this.name = name;
@@ -63,6 +64,14 @@ public abstract class InputRecipe implements IRecipe {
 
 	public String getRecipeName() {
 		return name;
+	}
+	
+	public int getFuelConsumptionIntervall() {
+		return fuel_consumption_intervall;
+	}
+	
+	public void setFuelConsumptionIntervall(int intervall) {
+		this.fuel_consumption_intervall = intervall;
 	}
 
 	public int getProductionTime() {

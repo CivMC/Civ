@@ -19,6 +19,7 @@ import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
+import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.PylonRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
@@ -212,8 +213,11 @@ public class FurnCraftChestFactory extends Factory {
 					if (pm.powerAvailable()) {
 						// if the time since fuel was last consumed is equal to
 						// how often fuel needs to be consumed
-						if (pm.getPowerCounter() >= pm
-								.getPowerConsumptionIntervall() - 1) {
+						int consumptionIntervall = ((InputRecipe) currentRecipe)
+								.getFuelConsumptionIntervall() != -1 ? ((InputRecipe) currentRecipe)
+								.getFuelConsumptionIntervall() : pm
+								.getPowerConsumptionIntervall();
+						if (pm.getPowerCounter() >= consumptionIntervall - 1) {
 							// remove one fuel.
 							pm.consumePower();
 							// 0 seconds since last fuel consumption
@@ -266,8 +270,7 @@ public class FurnCraftChestFactory extends Factory {
 			} else {
 				deactivate();
 			}
-		}
-		else {
+		} else {
 			deactivate();
 		}
 	}
@@ -341,7 +344,8 @@ public class FurnCraftChestFactory extends Factory {
 		this.updateTime = updateTime;
 		this.pm = new FurnacePowerManager(getFurnace(), fuel,
 				fuelConsumptionIntervall);
-		((PercentageHealthRepairManager) this.rm).repair(PercentageHealthRepairManager.getMaximumHealth());
+		((PercentageHealthRepairManager) this.rm)
+				.repair(PercentageHealthRepairManager.getMaximumHealth());
 		if (recipes.size() != 0) {
 			setRecipe(recipes.get(0));
 		} else {

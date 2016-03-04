@@ -26,6 +26,7 @@ import com.github.igotyou.FactoryMod.recipes.AOERepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.CompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.DecompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
+import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
@@ -480,6 +481,7 @@ public class ConfigParser {
 					+ " as a valid recipe identifier");
 			result = null;
 		}
+		((InputRecipe)result).setFuelConsumptionIntervall(config.getInt("fuel_consumption_intervall", -1));
 		plugin.info("Parsed recipe " + name);
 		return result;
 	}
