@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -324,6 +325,8 @@ public class GroupManagerDao {
 	
 	private PreparedStatement getGroupNameFromRole, updateLastTimestamp, getPlayerType, getTimestamp;
 	
+	private PreparedStatement getGroupIDs;
+	
 	public void initializeStatements(){
 		version = db.prepareStatement("select max(db_version) as db_version from db_version where plugin_name=?");
 		updateVersion = db.prepareStatement("insert into db_version (db_version, update_time, plugin_name) values (?,?,?)"); 
@@ -333,6 +336,8 @@ public class GroupManagerDao {
 				"from faction f "
 				+ "inner join faction_id fi on fi.group_name = f.group_name "
 				+ "where f.group_name = ?");
+		getGroupIDs = db.prepareStatement("SELECT f.group_id, count(DISTINCT fm.member_name) AS sz FROM faction_id f "
+				+ "INNER JOIN faction_member fm ON f.group_id = fm.group_id WHERE f.group_name = ? GROUP BY f.group_id ORDER BY sz DESC");
 		getGroupById = db.prepareStatement("select f.group_name, f.founder, f.password, f.discipline_flags, f.group_type, fi.group_id " +
 				"from faction f "
 				+ "inner join faction_id fi on fi.group_id = ? "
@@ -518,7 +523,7 @@ public class GroupManagerDao {
 			getGroup.clearParameters();
 			getGroup.setString(1, groupName);
 			try (ResultSet set = getGroup.executeQuery()) {
-				// TODO cache all
+				// TODO cache all	
 				if (!set.next()) {
 					return null;
 				}
@@ -1054,6 +1059,35 @@ public class GroupManagerDao {
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem loading all group invitations", e);
 		}
+	}
+
+	/**
+	 * Gets all the IDs for this group name, sorted by "size" in membercount.
+	 * Ideally only one groupname/id has members and the rest are shadows, but in any case
+	 * we arbitrarily define primacy as the one with the most members for ease of accounting
+	 * and backwards compatibility.
+	 *  
+	 * @param groupName
+	 * @return
+	 */
+	public List<Integer> getAllIDs(String groupName) {
+		if (groupName == null) {
+			return null;
+		}
+		try {
+			getGroupIDs.setString(1, groupName);
+			ResultSet set = getGroupIDs.executeQuery();
+			LinkedList<Integer> ids = new LinkedList<Integer>();
+			
+			while (set.next()) {
+				ids.add(set.getInt(1));
+			}
+			
+			return ids;
+		} catch (SQLException se) {
+			plugin.getLogger().log(Level.WARNING, "Unable to fully load group ID set", se);
+		}
+		return null;
 	}
 	
 }
