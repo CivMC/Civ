@@ -1,9 +1,3 @@
-# 
-#   inputmat1:
-#       material: STONE
-#   inputmat345FF:
-#       material: DIRT
-
 default_update_time: 1s
 default_fuel:
   charcoal:
@@ -11,7 +5,6 @@ default_fuel:
     durability: 1
 default_fuel_consumption_intervall: 2s
 default_menu_factory: Basic Contraption
-log_inventories: true
 default_return_rate: 0.5
 break_grace_period: 10d
 decay_intervall: 1h
@@ -25,10 +18,10 @@ factories:
       planks:
         material: WOOD
         durability: -1
-        amount: 64
+        amount: 1024
       stone:
         material: STONE
-        amount: 64
+        amount: 256
       bread:
         material: BREAD
         amount: 32
@@ -208,7 +201,7 @@ factories:
     recipes:
     - Burn_Charcoal_from_Logs_Advanced
     - Craft_Oak_Fence
-    - Cut_any_type_of_Plank_Basic
+    - Cut_any_type_of_Plank_Advanced
     - Repair_Rudimentary_Factory
     - Upgrade_to_Carpentry
     - Upgrade_to_Fine_Woodworking
@@ -222,6 +215,7 @@ factories:
     - Craft_any_type_of_wooden_stair
     - Craft_any_type_of_wooden_slab
     - Craft_any_type_of_wooden_door
+    - Cut_any_type_of_Plank_Expert
     - Repair_Small_Factory
   finewoodworking:
     type: FCCUPGRADE
@@ -243,7 +237,7 @@ factories:
     type: FCCUPGRADE
     name: Farmstead Factory
     recipes:
-    - Bake_Bread_Basic
+    - Bake_Bread_Advanced
     - Grill_Steak_Basic
     - Create_Poppy_Basic
     - Repair_Rudimentary_Factory
@@ -257,7 +251,7 @@ factories:
     name: Bakery
     recipes:
     - Bake_Potatoes
-    - Bake_Bread_Advanced
+    - Bake_Bread_Expert
     - Bake_Cookies
     - Bake_Cake
     - Bake_Pumpkin_Pie
@@ -485,7 +479,6 @@ factories:
     - Craft_Redstone_Repeater_Basic
     - Craft_Dispenser_Basic
     - Enchant_Efficiency_Basic
-    - Random_Printing_Press_Recipe
     - Repair_Small_Factory
     - Upgrade_to_Bastion_Factory
     - Upgrade_to_Compactor_Basic
@@ -638,7 +631,7 @@ recipes:
   Bake_Bread_Advanced:
     type: PRODUCTION
     name: Bake Bread
-    production_time: 10s
+    production_time: 30s
     input:
       wheat:
         material: WHEAT
@@ -646,19 +639,31 @@ recipes:
     output:
       bread:
         material: BREAD
-        amount: 1024
+        amount: 128
+  Bake_Bread_Expert:
+    type: PRODUCTION
+    name: Bake Bread
+    production_time: 30s
+    input:
+      wheat:
+        material: WHEAT
+        amount: 384
+    output:
+      bread:
+        material: BREAD
+        amount: 256
   Bake_Bread_Basic:
     type: PRODUCTION
     name: Bake Bread
-    production_time: 5s
+    production_time: 20s
     input:
       wheat:
         material: WHEAT
-        amount: 256
+        amount: 64
     output:
       bread:
         material: BREAD
-        amount: 512
+        amount: 27
   Bake_Cake:
     type: PRODUCTION
     name: Bake Cake
@@ -729,7 +734,7 @@ recipes:
   Burn_Charcoal_from_Coal:
     type: PRODUCTION
     name: Burn Charcoal from Coal
-    production_time: 10s
+    production_time: 16s
     input:
       coal:
         material: COAL
@@ -742,7 +747,7 @@ recipes:
   Burn_Charcoal_from_Logs_Basic:
     type: PRODUCTION
     name: Burn Charcoal from Logs
-    production_time: 15s
+    production_time: 16s
     input:
       log:
         material: LOG
@@ -751,35 +756,35 @@ recipes:
     output:
       charcoal:
         material: COAL
-        amount: 96
+        amount: 80
         durability: 1
   Burn_Charcoal_from_Logs_Advanced:
     type: PRODUCTION
     name: Burn Charcoal from Logs
-    production_time: 25s
+    production_time: 28s
     input:
       log:
         material: LOG
         durability: -1
-        amount: 64
+        amount: 128
     output:
       charcoal:
         material: COAL
-        amount: 128
+        amount: 192
         durability: 1
   Burn_Charcoal_from_Logs_Expert:
     type: PRODUCTION
     name: Burn Charcoal from Logs
-    production_time: 30s
+    production_time: 45s
     input:
       log:
         material: LOG
         durability: -1
-        amount: 64
+        amount: 512
     output:
       charcoal:
         material: COAL
-        amount: 160
+        amount: 1024
         durability: 1
   Compact_Stack_Advanced:
     type: COMPACT
@@ -1903,31 +1908,47 @@ recipes:
         material: RAILS
         amount: 128
   Cut_any_type_of_Plank_Advanced:
-    type: PRODUCTION
-    name: Cut Oak Planks Advanced
-    production_time: 2s
+    type: WOODMAPPING
+    name: Cut Planks
+    production_time: 15s
     input:
       log:
         material: LOG
-        durability: -1
-        amount: 10
+        durability: -2
+        amount: 128
     output:
       planks:
         material: WOOD
-        amount: 60
+        amount: 600
+        durabiliy: -2
   Cut_any_type_of_Plank_Basic:
-    type: PRODUCTION
-    name: Cut Oak Planks Basic
-    production_time: 2s
+    type: WOODMAPPING
+    name: Cut Planks
+    production_time: 5s
     input:
       log:
         material: LOG
-        durability: -1
-        amount: 10
+        durability: -2
+        amount: 32
     output:
       planks:
         material: WOOD
-        amount: 50
+        durability: -2
+        amount: 140
+  Cut_any_type_of_Plank_Expert:
+    type: WOODMAPPING
+    name: Cut Planks Expert
+    production_time: 30s
+    input:
+      log:
+        material: LOG
+        durability: -2
+        amount: 256
+    output:
+      planks:
+        material: WOOD
+        amount: 1280
+        durability: -2
   De-compact_Stack_Advanced:
     type: DECOMPACT
     name: De-compact Stack
@@ -2825,15 +2846,15 @@ recipes:
     input:
       coal ore:
         material: COAL_ORE
-        amount: 64
+        amount: 128
     output:
       coal:
         material: COAL
         amount: 256
   Smelt_Coal_Ore_Basic:
     type: PRODUCTION
-    name: Smelt Coal Ore Basic
-    production_time: 5s
+    name: Smelt Coal Ore
+    production_time: 16s
     input:
       coal ore:
         material: COAL_ORE
@@ -2841,19 +2862,19 @@ recipes:
     output:
       coal:
         material: COAL
-        amount: 192
+        amount: 80
   Smelt_Coal_Ore_Expert:
     type: PRODUCTION
-    name: Smelt Coal Ore Expert
+    name: Smelt Coal Ore
     production_time: 5s
     input:
       coal ore:
         material: COAL_ORE
-        amount: 64
+        amount: 256
     output:
       coal:
         material: COAL
-        amount: 384
+        amount: 
   Smelt_Dark_Prismarine:
     type: PRODUCTION
     name: Smelt Dark Prismarine
@@ -3143,15 +3164,15 @@ recipes:
   Smelt_Stone_Advanced:
     type: PRODUCTION
     name: Smelt Stone
-    production_time: 10s
+    production_time: 35s
     input:
       sobblestone:
         material: COBBLESTONE
-        amount: 64
+        amount: 256
     output:
       stone:
         material: STONE
-        amount: 128
+        amount: 320
   Smelt_Stone_Basic:
     type: PRODUCTION
     name: Smelt Stone
@@ -3159,23 +3180,23 @@ recipes:
     input:
       sobblestone:
         material: COBBLESTONE
-        amount: 64
+        amount: 128
     output:
       stone:
         material: STONE
-        amount: 96
+        amount: 140
   Smelt_Stone_Expert:
     type: PRODUCTION
     name: Smelt Stone
-    production_time: 5s
+    production_time: 60s
     input:
       sobblestone:
         material: COBBLESTONE
-        amount: 64
+        amount: 512
     output:
       stone:
         material: STONE
-        amount: 192
+        amount: 720
   Take_any_mob_egg_apart:
     type: PRODUCTION
     name: Take any mob egg apart
@@ -3319,10 +3340,10 @@ recipes:
         amount: 256
     factory: Bio Lab
   Upgrade_to_Blacksmith:
-    production_time: 300s
+    production_time: 10m
     type: UPGRADE
     name: Upgrade to Blacksmith
-    fuel_consumption_intervall: 3s
+    fuel_consumption_intervall: 20s
     input:
       iron ingot:
         material: IRON_INGOT
@@ -3448,26 +3469,23 @@ recipes:
         amount: 32
     factory: Enchanter Basic
   Upgrade_to_Farmstead_Factory:
-    production_time: 300s
+    production_time: 10m
     type: UPGRADE
     name: Upgrade to Farmstead Factory
-    fuel_consumption_intervall: 3s
+    fuel_consumption_intervall: 20s
     input:
       wheat:
-        material: WHEAT
-        amount: 512
-      carrot:
-        material: CARROT_ITEM
-        amount: 512
+        material: BREAD
+        amount: 384
       potato:
-        material: POTATO_ITEM
+        material: BAKED_POTATO
         amount: 512
       chicken:
-        material: RAW_CHICKEN
-        amount: 64
+        material: COOKED_CHICKEN
+        amount: 96
       beef:
-        material: RAW_BEEF
-        amount: 64
+        material: COOKED_PORK
+        amount: 96
     factory: Farmstead Factory
   Upgrade_to_Fine_Woodworking:
     production_time: 900s
@@ -3623,17 +3641,17 @@ recipes:
         amount: 128
     factory: Kiln
   Upgrade_to_Laboratory:
-    production_time: 300s
+    production_time: 10m
     type: UPGRADE
     name: Upgrade to Laboratory
-    fuel_consumption_intervall: 3s
+    fuel_consumption_intervall: 20s
     input:
       cauldron:
-        material: CAULDRON_ITEM
-        amount: 16
+        material: REDSTONE
+        amount: 256
       glass bottle:
-        material: GLASS_BOTTLE
-        amount: 128
+        material: CAULDRON_ITEM
+        amount: 32
     factory: Laboratory
   Upgrade_to_Mad_Scientist:
     production_time: 1800s
@@ -3812,14 +3830,14 @@ recipes:
         amount: 64
     factory: Soup kitchen
   Upgrade_to_Stone_Smelter:
-    production_time: 300s
+    production_time: 10m
     type: UPGRADE
     name: Upgrade to Stone Smelter
-    fuel_consumption_intervall: 3s
+    fuel_consumption_intervall: 20s
     input:
       stone:
         material: STONE
-        amount: 512
+        amount: 640
     factory: Stone Smelter
   Upgrade_to_Stonebrick_Smelter:
     production_time: 1800s
@@ -3863,15 +3881,15 @@ recipes:
         amount: 32
     factory: Weapon Enchanter
   Upgrade_to_Wood_Processor:
-    production_time: 300s
+    production_time: 10m
     type: UPGRADE
     name: Upgrade to Wood Processor
-    fuel_consumption_intervall: 3s
+    fuel_consumption_intervall: 20s
     input:
       planks:
-        material: WOOD
+        material: LOG
         durability: -1
-        amount: 256
+        amount: 512
     factory: Wood Processor
   Upgrade_to_Wool_Processing:
     production_time: 1800s
