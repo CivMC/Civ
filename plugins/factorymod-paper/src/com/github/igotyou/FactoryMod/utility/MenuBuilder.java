@@ -421,7 +421,11 @@ public class MenuBuilder {
 		DecorationStack inputClickable = new DecorationStack(inputStack);
 		ci.setSlot(inputClickable, 4);
 		int index = 13;
-		for (ItemStack is : rec.getInputRepresentation(null)) {
+		List <ItemStack> ins = rec.getInputRepresentation(null);
+		if (ins.size() > 18) {
+			ins = new ItemMap(ins).getLoredItemCountRepresentation();
+		}
+		for (ItemStack is : ins) {
 			Clickable c = new DecorationStack(is);
 			ci.setSlot(c, index);
 			// weird math to fill up the gui nicely
@@ -457,7 +461,11 @@ public class MenuBuilder {
 
 		ci.setSlot(outputClickable, 31);
 		index = 40;
-		for (ItemStack is : rec.getOutputRepresentation(null)) {
+		List <ItemStack> out = rec.getOutputRepresentation(null);
+		if (out.size() > 18) {
+			out = new ItemMap(out).getLoredItemCountRepresentation();
+		}
+		for (ItemStack is : out) {
 			Clickable c;
 			if (rec instanceof Upgraderecipe) {
 				c = new Clickable(is) {
