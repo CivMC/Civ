@@ -516,7 +516,7 @@ public class ItemMap {
 				}
 				if (extra != 0) {
 					out.append(" and " + extra);
-					out.append(" item" + (stacks == 1 ? "" : "s"));
+					out.append(" item" + (extra == 1 ? "" : "s"));
 				}
 				ISUtils.addLore(is, out.toString());
 			}
