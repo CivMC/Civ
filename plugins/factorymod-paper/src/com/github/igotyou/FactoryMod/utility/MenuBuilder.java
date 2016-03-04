@@ -252,7 +252,7 @@ public class MenuBuilder {
 					slot -= (((slot % 9) - 4) * 2);
 				} else {
 					if ((slot % 9) == 0) {
-						slot += 9;
+						slot += 13;
 					} else {
 						slot += (((4 - (slot % 9)) * 2) + 1);
 					}
@@ -308,7 +308,7 @@ public class MenuBuilder {
 					slot -= (((slot % 9) - 4) * 2);
 				} else {
 					if ((slot % 9) == 0) {
-						slot += 9;
+						slot += 13;
 					} else {
 						slot += (((4 - (slot % 9)) * 2) + 1);
 					}
@@ -422,9 +422,11 @@ public class MenuBuilder {
 		ci.setSlot(inputClickable, 4);
 		int index = 13;
 		List <ItemStack> ins = rec.getInputRepresentation(null);
+		System.out.println(ins.size());
 		if (ins.size() > 18) {
 			ins = new ItemMap(ins).getLoredItemCountRepresentation();
 		}
+		System.out.println(ins.size());
 		for (ItemStack is : ins) {
 			Clickable c = new DecorationStack(is);
 			ci.setSlot(c, index);
@@ -437,7 +439,7 @@ public class MenuBuilder {
 				index -= (((index % 9) - 4) * 2);
 			} else {
 				if ((index % 9) == 0) {
-					index += 9;
+					index += 13;
 				} else {
 					index += (((4 - (index % 9)) * 2) + 1);
 				}
@@ -500,7 +502,7 @@ public class MenuBuilder {
 				index -= (((index % 9) - 4) * 2);
 			} else {
 				if ((index % 9) == 0) {
-					index += 9;
+					index += 13;
 				} else {
 					index += (((4 - (index % 9)) * 2) + 1);
 				}
