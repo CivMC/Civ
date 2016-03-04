@@ -30,6 +30,10 @@ public class Menu extends PlayerCommand {
 		}
 		MenuBuilder mb = FactoryMod.getMenuBuilder();
 		Player p = (Player) sender;
+		if (p.isInsideVehicle()) {
+			p.sendMessage(ChatColor.RED + "You can't use this command in vehicles");
+			return true;
+		}
 		if (args.length == 0) {
 			mb.openFactoryBrowser(p, null);
 		} else {
