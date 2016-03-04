@@ -3484,7 +3484,7 @@ recipes:
         material: COOKED_CHICKEN
         amount: 96
       beef:
-        material: COOKED_PORK
+        material: GRILLED_PORK
         amount: 96
     factory: Farmstead Factory
   Upgrade_to_Fine_Woodworking:
