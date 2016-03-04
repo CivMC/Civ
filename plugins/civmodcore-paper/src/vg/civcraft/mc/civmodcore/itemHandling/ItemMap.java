@@ -373,8 +373,13 @@ public class ItemMap {
 	 */
 	public boolean containedExactlyIn(Inventory i) {
 		ItemMap invMap = new ItemMap(i);
-		for (Entry<ItemStack, Integer> entry : invMap.getEntrySet()) {
-			if (!entry.getValue().equals(getAmount(entry.getKey()))) {
+		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+			if (!entry.getValue().equals(invMap.getAmount(entry.getKey()))) {
+				return false;
+			}
+		}
+		for (ItemStack is : i.getContents()) {
+			if (getStacksByMaterial(is).getTotalUniqueItemAmount() == 0) {
 				return false;
 			}
 		}
