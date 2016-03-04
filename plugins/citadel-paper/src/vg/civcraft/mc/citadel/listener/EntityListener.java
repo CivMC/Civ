@@ -83,7 +83,7 @@ public class EntityListener implements Listener{
         ecbe.setCancelled(maybeReinforcementDamaged(ecbe.getBlock()));
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void spawn(CreatureSpawnEvent cse) {
     	ReinforcementManager reinforcementManager = Citadel.getReinforcementManager();
         EntityType type = cse.getEntityType();
