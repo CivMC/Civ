@@ -34,6 +34,16 @@ public class PlayerState {
         }
         return state;
     }
+    
+    public static PlayerState get(UUID id) {
+    	PlayerState state = PLAYER_STATES.get(id);
+        if (state == null) {
+            state = new PlayerState(id);
+            PLAYER_STATES.put(id, state);
+        }
+        return state;
+    }
+    
     /**
      * Removes a PlayerState from the list.
      * @param The Player to remove from the list.
@@ -51,9 +61,13 @@ public class PlayerState {
     private ItemStack fortificationStack;
 
     public PlayerState(Player player) {
-        reset();
-        this.accountId = player.getUniqueId();
-        bypassMode = false;
+        this(player.getUniqueId());
+    }
+    
+    public PlayerState(UUID uuid) {
+    	reset();
+    	this.accountId = uuid;
+    	bypassMode = false;
     }
 
     /**
