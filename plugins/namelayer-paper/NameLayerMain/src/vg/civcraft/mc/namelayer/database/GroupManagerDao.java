@@ -267,24 +267,37 @@ public class GroupManagerDao {
 				"delete from faction where group_name = groupName;" +
 				"end;");
 		db.execute("drop procedure if exists mergeintogroup;");
-		// needs to be set with inner jons
+		// needs to be set with inner joins
 		db.execute("create definer=current_user procedure mergeintogroup(" +
 				"in groupName varchar(255), in tomerge varchar(255)) " +
 				"sql security invoker begin " +
-				"update ignore faction_member fm "
-				+ "inner join faction_id fi on fi.group_name = groupName "
+				"DECLARE destID, tmp int;" +
+				"SELECT f.group_id, count(DISTINCT fm.member_name) AS sz INTO destID, tmp FROM faction_id f "
+				+ "INNER JOIN faction_member fm ON f.group_id = fm.group_id WHERE f.group_name = groupName GROUP BY f.group_id ORDER BY sz DESC LIMIT 1;" +
+				"update ignore faction_member fm " // move all members from group From to To
 				+ "inner join faction_id fii on fii.group_name = tomerge "
-				+ "set fm.group_id = fi.group_id "
+				+ "set fm.group_id = destID "
 				+ "where fm.group_id = fii.group_id;" +
-				"delete fm.* from faction_member fm "
+				/*"UPDATE faction_member fm " // update roles in dest on overlaps to be from merged group
+				+ "INNER JOIN (SELECT faction_member fq JOIN faction_id fii ON fii.group_name = tomerge) fmerg "
+				+ "ON fm.member_name = fmerge.member_name"
+				+ "SET fm.role = fmerg.role WHERE fm.group_id = destID;" +*/
+				"DELETE fm.* from faction_member fm " // Remove those "overlap" members left behind by IGNORE
 				+ "inner join faction_id fi on fi.group_name = tomerge "
-				+ "where fm.group_id = fi.group_id;"
-				+ "delete from faction where group_name = tomerge;"
-				+ "update faction_id fi "
+				+ "where fm.group_id = fi.group_id;" +
+				/*"DELETE FROM subgroup s " // If this was a subgroup for someone, unlink. subgroups to new group.
+				+ "WHERE sub_group_id IN " // TODO: might be double effort?
+				+ "(SELECT group_id from faction_id where group_name = tomerge);" +*/ // handled using unlink
+				"UPDATE subgroup s " // If it was a subgroup's supergroup, redirect
+				+ "SET s.group_id = destID "
+				+ "WHERE s.group_id IN "
+				+ "(SELECT group_id from faction_id where group_name = tomerge);" +
+				"delete from faction where group_name = tomerge;" + // Remove "faction" record of From
+				"update faction_id fi " // Point "faction_id" records to TO's Name instead
 				+ "inner join faction_id fii on fii.group_name = tomerge "
 				+ "set fi.group_name = groupName "
-				+ "where fi.group_id = fii.group_id;"
-				+ "end;");
+				+ "where fi.group_id = fii.group_id;" +
+				"end;");
 		db.execute("drop procedure if exists createGroup;");
 		db.execute("create definer=current_user procedure createGroup(" + 
 				"in group_name varchar(255), " +
@@ -523,7 +536,6 @@ public class GroupManagerDao {
 			getGroup.clearParameters();
 			getGroup.setString(1, groupName);
 			try (ResultSet set = getGroup.executeQuery()) {
-				// TODO cache all	
 				if (!set.next()) {
 					return null;
 				}
@@ -547,6 +559,8 @@ public class GroupManagerDao {
 					default:
 						g = new Group(name, owner, discipline, password, type, id);
 				}
+				// other group IDs cached via the constructor.
+				
 				return g;
 			}
 		} catch (SQLException e) {
