@@ -60,6 +60,11 @@ public class GroupManager{
 				event.getPassword(), event.getType());
 		if (id > -1) {
 			initiateDefaultPerms(event.getGroupName()); // give default perms to a newly create group
+			group.setGroupIds(groupManagerDao.getAllIDs(event.getGroupName()));
+			groupsByName.put(event.getGroupName(), group);
+			for (int q : group.getGroupIds()) {
+				groupsById.put(q, group);
+			}
 		}
 		return id;
 	}
@@ -72,7 +77,7 @@ public class GroupManager{
 		groupName = groupName.toLowerCase();
 		Group group = getGroup(groupName);
 		if (group == null) {
-			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group delete failed, failed to find group", new Exception());
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group delete failed, failed to find group " + groupName);
 			return false;
 		}
 		
@@ -80,7 +85,7 @@ public class GroupManager{
 		GroupDeleteEvent event = new GroupDeleteEvent(group, false);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) {
-			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group delete was cancelled for "+ groupName, new Exception());
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group delete was cancelled for "+ groupName);
 			return false;
 		}
 		
@@ -129,6 +134,9 @@ public class GroupManager{
 	
 	public void mergeGroup(final Group group, final Group toMerge){
 		if (group == null || toMerge == null) {
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group merge failed, caller passed in null", new Exception());
+			return;
+		} else if (group == toMerge || group.getName().equalsIgnoreCase(toMerge.getName())) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group merge failed, caller passed in null", new Exception());
 			return;
 		}
@@ -208,7 +216,7 @@ public class GroupManager{
 					groupsById.put(j, group);
 				}
 			} else {
-				NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by Name failed, unable to find the group " + name, new Exception());
+				NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by Name failed, unable to find the group " + name);
 			}
 			return group;
 		}
@@ -225,7 +233,7 @@ public class GroupManager{
 					groupsById.put(j, group);
 				}
 			} else {
-				NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by ID failed, unable to find the group " + groupId, new Exception());
+				NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by ID failed, unable to find the group " + groupId);
 			}
 			return group;
 		}
@@ -237,7 +245,11 @@ public class GroupManager{
 			return false;
 		}
 
-		return groupsByName.containsKey(groupName.toLowerCase());
+		if (!groupsByName.containsKey(groupName.toLowerCase())) {
+			return (getGroup(groupName.toLowerCase()) != null);
+		} else {
+			return true;
+		}
 	}
 	
 	/**
@@ -284,7 +296,7 @@ public class GroupManager{
 
 		Group group = getGroup(groupname);
 		if (group == null) {
-			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "hasAccess failed (access denied), could not find group " + groupname, new Exception());
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "hasAccess failed (access denied), could not find group " + groupname);
 			return false;
 		}
 		
@@ -371,7 +383,7 @@ public class GroupManager{
 				}
 			}
 		} else {
-			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Invalidate cache by name failed, unable to find the group " + group, new Exception());			
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Invalidate cache by name failed, unable to find the group " + group);			
 		}
 	}
 	

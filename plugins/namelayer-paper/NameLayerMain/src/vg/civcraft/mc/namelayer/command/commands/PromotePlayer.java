@@ -57,8 +57,7 @@ public class PromotePlayer extends PlayerCommandMiddle{
 		}
 		
 		Group group = gm.getGroup(args[0]);
-		if(group == null){
-			p.sendMessage(ChatColor.RED + "That group does not exist");
+		if (groupIsNull(sender, args[0], group)) {
 			return true;
 		}
 		if (group.isDisciplined()){

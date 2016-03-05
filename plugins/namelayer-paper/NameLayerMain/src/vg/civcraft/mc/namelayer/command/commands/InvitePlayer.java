@@ -48,8 +48,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 		final Player p = isPlayer ? (Player)s : null;
 		final boolean isAdmin = !isPlayer || p.hasPermission("namelayer.admin");
 		final Group group = gm.getGroup(targetGroup);
-		if (group == null){
-			s.sendMessage(ChatColor.RED + "That group does not exist.");
+		if (groupIsNull(s, targetGroup, group)) {
 			return true;
 		}
 		if (!isAdmin && group.isDisciplined()) {

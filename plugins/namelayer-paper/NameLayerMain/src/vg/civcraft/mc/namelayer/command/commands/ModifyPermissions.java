@@ -35,8 +35,7 @@ public class ModifyPermissions extends PlayerCommandMiddle{
 		}
 		Player p = (Player) sender;
 		Group g = gm.getGroup(args[0]);
-		if (g == null){
-			p.sendMessage(ChatColor.RED + "This group does not exist.");
+		if (groupIsNull(sender, args[0], g)) {
 			return true;
 		}
 		UUID uuid = NameAPI.getUUID(p.getName());

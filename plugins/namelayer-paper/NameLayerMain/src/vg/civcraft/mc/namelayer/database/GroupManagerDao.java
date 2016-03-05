@@ -382,8 +382,8 @@ public class GroupManagerDao {
 		// This undoes the above. It unlinks all instances (name/id pairs) of the subgroup from all instances (name/id pairs) of the supergroup.
 		removeSubGroup = db.prepareStatement(
 				"DELETE FROM subgroup "
-				+ "WHERE group_id = (SELECT group_id FROM faction_id WHERE group_name = ?) "
-				+ "AND sub_group_id = (SELECT group_id FROM faction_id WHERE group_name = ?)");
+				+ "WHERE group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) "
+				+ "AND sub_group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?)");
 		
 		// This lists all unique subgroups (names) for all instances (name/id pairs) of the supergroup.
 		getSubGroups = db.prepareStatement(

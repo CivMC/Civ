@@ -55,7 +55,7 @@ public class Group {
 		
 		// This returns list of ids w/ id holding largest # of players at top.
 		List<Integer> allIds = db.getAllIDs(name);
-		if (allIds != null) {
+		if (allIds != null && allIds.size() > 0) {
 			this.ids.addAll(allIds);
 			this.id = allIds.get(0); // default "root" id is the one with the players.
 		} else {
@@ -521,7 +521,9 @@ public class Group {
 	public void setGroupId(int id) {
 		this.ids.remove(this.id);
 		this.id = id;
-		this.ids.add(id);
+		if (!ids.contains(this.id)){
+			this.ids.add(this.id);
+		}
 	}
 
 	/**
@@ -530,8 +532,12 @@ public class Group {
 	 */
 	public void setGroupIds(List<Integer> ids) {
 		this.ids.clear();
-		this.ids.addAll(ids);
-		this.ids.add(this.id);
+		if (ids != null) {
+			this.ids.addAll(ids);
+		}
+		if (!ids.contains(this.id)){
+			this.ids.add(this.id);
+		}
 	}
 	
 	@Override

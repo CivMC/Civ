@@ -39,13 +39,10 @@ public class ListCurrentMembers extends PlayerCommandMiddle {
 		UUID uuid = NameAPI.getUUID(p.getName());
 		String groupname = args[0];
 		
-		if (!GroupManager.hasGroup(groupname)) {
-			p.sendMessage(ChatColor.RED 
-					+ "That group doesn't exist.");
+		Group group = gm.getGroup(groupname);
+		if (groupIsNull(sender, groupname, group)) {
 			return true;
 		}
-		
-		Group group = gm.getGroup(groupname);
 		
 		if (!p.hasPermission("namelayer.admin")) {
 			if (!group.isCurrentMember(uuid)) {

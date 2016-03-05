@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
@@ -64,7 +65,7 @@ public class CreateGroup extends PlayerCommandMiddle{
 			return true;
 		}
 		
-		if (gm.getGroup(name) != null){
+		if (GroupManager.getGroup(name) != null){
 			p.sendMessage(ChatColor.RED + "That group is already taken.");
 			return true;
 		}
@@ -90,6 +91,7 @@ public class CreateGroup extends PlayerCommandMiddle{
 			break;
 		case PUBLIC:
 			g = new PublicGroup(name, uuid, false, password, -1);
+			break;
 		default:
 			g = new Group(name, uuid, false, password, type, -1);
 		}
@@ -100,8 +102,10 @@ public class CreateGroup extends PlayerCommandMiddle{
 		}
 		g.setGroupId(id);
 		p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
-		if (NameLayerPlugin.getInstance().getGroupLimit() == gm.countGroups(p.getUniqueId()))
+		if (NameLayerPlugin.getInstance().getGroupLimit() == gm.countGroups(p.getUniqueId())){
 			p.sendMessage(ChatColor.YELLOW + "You have reached the group limit with " + NameLayerPlugin.getInstance().getGroupLimit() + " groups! Please delete un-needed groups if you wish to create more.");
+		}
+		checkRecacheGroup(g);
 		return true;
 	}
 

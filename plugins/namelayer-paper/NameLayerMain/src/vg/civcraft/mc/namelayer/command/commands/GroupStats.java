@@ -37,8 +37,7 @@ public class GroupStats extends PlayerCommandMiddle {
 		Group g = gm.getGroup(args[0]);
 		UUID uuid = NameAPI.getUUID(p.getName());	
 		
-		if (g == null){
-			p.sendMessage(ChatColor.RED + "That group does not exist.");
+		if (groupIsNull(sender, args[0], g)) {
 			return true;
 		}
 		PlayerType pType = g.getPlayerType(uuid);
