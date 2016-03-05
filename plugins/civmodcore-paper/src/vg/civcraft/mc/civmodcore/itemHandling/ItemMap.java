@@ -379,6 +379,9 @@ public class ItemMap {
 			}
 		}
 		for (ItemStack is : i.getContents()) {
+			if (is == null) {
+				continue;
+			}
 			if (getStacksByMaterial(is).getTotalUniqueItemAmount() == 0) {
 				return false;
 			}
