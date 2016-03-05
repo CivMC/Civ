@@ -17,6 +17,7 @@ import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.listener.EntityListener;
 import vg.civcraft.mc.citadel.listener.GroupsListener;
 import vg.civcraft.mc.citadel.listener.InventoryListener;
+import vg.civcraft.mc.citadel.listener.ShardListener;
 import vg.civcraft.mc.citadel.listener.WorldListener;
 import vg.civcraft.mc.citadel.misc.CitadelStatics;
 import vg.civcraft.mc.citadel.reinforcementtypes.NaturalReinforcementType;
@@ -80,6 +81,9 @@ public class Citadel extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new EntityListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 		getServer().getPluginManager().registerEvents(new WorldListener(), this);
+		if (Bukkit.getPluginManager().isPluginEnabled("Mercury") && Bukkit.getPluginManager().isPluginEnabled("BetterShards")) {
+			getServer().getPluginManager().registerEvents(new ShardListener(), this);
+		}
 	}
 	/**
 	 * Registers the commands for Citadel.
