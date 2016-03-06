@@ -161,9 +161,17 @@ public class GroupManager{
 		// "Disciplines" the memory-copy and sets to invalid.
 		 */
 		// deleteGroup was wasteful. Pulled the only things it did of value out and put them here:
-		Group.unlink(toMerge.getSuperGroup(), toMerge); // need to unlink any supergroup from merge.
+		if (toMerge.getSuperGroup() != null) {
+			Group sup = toMerge.getSuperGroup();
+			Group.unlink(sup, toMerge); // need to unlink any supergroup from merge.
+			invalidateCache(sup.getName());
+		}
 		// Merge brings subgroups with, but unlinks the toMerge group out from under any supergroup it had.
-		toMerge.prepareForDeletion();
+		//toMerge.prepareForDeletion();
+		for (Group subMerge : toMerge.getSubgroups()) {
+			Group.link(group, subMerge, false);
+			invalidateCache(subMerge.getName());
+		}
 		deleteGroupPerms(toMerge);
 		toMerge.setDisciplined(true);
 		invalidateCache(toMerge.getName()); // Removes merge group from cache & invalidates object

@@ -27,10 +27,10 @@ public class Group {
 	private boolean isDisciplined; // if true, prevents any interactions with this group
 	private boolean isValid = true;  // if false, then group has recently been deleted and is invalid
 	private int id;
-	private Set<Integer> ids = Sets.<Integer>newHashSet();
+	private Set<Integer> ids = Sets.<Integer>newConcurrentHashSet();
 		
 	private Group supergroup;
-	private Set<Group> subgroups = Sets.<Group>newHashSet();
+	private Set<Group> subgroups = Sets.<Group>newConcurrentHashSet();
 	private Map<UUID, PlayerType> players = Maps.<UUID, PlayerType>newHashMap();
 	private Map<UUID, PlayerType> invites = Maps.<UUID, PlayerType>newHashMap();
 	
