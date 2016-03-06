@@ -69,4 +69,19 @@ public class CivChat2Config {
 		return config.getString("mysql.dbname");
 	}
 
+	//This could be changed to a string instead of a char fairly easily in the future
+	public char getColorAtDistance(double distance) {
+		char ret = '-';
+		double minRange = Double.MAX_VALUE;
+		if(config.contains("chat.colors")) {
+			for(String s : config.getConfigurationSection("chat.colors").getKeys(false)) {
+				double range = config.getDouble("chat.colors." + s + ".range");
+				if(config.contains("chat.colors." + s + ".range") && distance < range && range < minRange) {
+					minRange = range;
+					ret = config.getString("chat.colors." + s + ".color").charAt(0);
+				}
+			}
+		}
+		return ret;
+	}
 }
