@@ -2857,7 +2857,7 @@ recipes:
   Smelt_Coal_Ore_Advanced:
     type: PRODUCTION
     name: Smelt Coal Ore Advanced
-    production_time: 5s
+    production_time: 30s
     input:
       coal ore:
         material: COAL_ORE
@@ -2881,7 +2881,7 @@ recipes:
   Smelt_Coal_Ore_Expert:
     type: PRODUCTION
     name: Smelt Coal Ore
-    production_time: 5s
+    production_time: 50s
     input:
       coal ore:
         material: COAL_ORE
@@ -2889,7 +2889,7 @@ recipes:
     output:
       coal:
         material: COAL
-        amount: 
+        amount: 640
   Smelt_Dark_Prismarine:
     type: PRODUCTION
     name: Smelt Dark Prismarine
