@@ -231,6 +231,7 @@ factories:
     name: Coal Burner
     recipes:
     - Burn_Charcoal_from_Logs_Expert
+    - Burn_Charcoal_from_Logs2_Expert
     - Burn_Charcoal_from_Coal
     - Repair_Small_Factory
   farmsteadfactory:
@@ -779,6 +780,20 @@ recipes:
     input:
       log:
         material: LOG
+        durability: -1
+        amount: 512
+    output:
+      charcoal:
+        material: COAL
+        amount: 1024
+        durability: 1
+  Burn_Charcoal_from_Logs2_Expert:
+    type: PRODUCTION
+    name: Burn Charcoal from Logs2
+    production_time: 45s
+    input:
+      log:
+        material: LOG_2
         durability: -1
         amount: 512
     output:
