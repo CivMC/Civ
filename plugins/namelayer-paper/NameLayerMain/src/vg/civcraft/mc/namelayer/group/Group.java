@@ -1,9 +1,11 @@
 package vg.civcraft.mc.namelayer.group;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -25,11 +27,12 @@ public class Group {
 	private boolean isDisciplined; // if true, prevents any interactions with this group
 	private boolean isValid = true;  // if false, then group has recently been deleted and is invalid
 	private int id;
+	private Set<Integer> ids = Sets.<Integer>newConcurrentHashSet();
 		
 	private Group supergroup;
-	private Set<Group> subgroups = Sets.newHashSet();
-	private Map<UUID, PlayerType> players = Maps.newHashMap();
-	private Map<UUID, PlayerType> invites = Maps.newHashMap();
+	private Set<Group> subgroups = Sets.<Group>newConcurrentHashSet();
+	private Map<UUID, PlayerType> players = Maps.<UUID, PlayerType>newHashMap();
+	private Map<UUID, PlayerType> invites = Maps.<UUID, PlayerType>newHashMap();
 	
 	public Group(String name, UUID owner, boolean disciplined, 
 			String password, GroupType type, int id) {
@@ -42,13 +45,22 @@ public class Group {
 		this.owner = owner;
 		this.type = type;
 		this.isDisciplined = disciplined;
-		this.id = id;
-		
+	
 		for (PlayerType permission : PlayerType.values()) {
 			List<UUID> list = db.getAllMembers(name, permission);
 			for (UUID uuid : list) {
 				players.put(uuid, permission);
 			}
+		}
+		
+		// This returns list of ids w/ id holding largest # of players at top.
+		List<Integer> allIds = db.getAllIDs(name);
+		if (allIds != null && allIds.size() > 0) {
+			this.ids.addAll(allIds);
+			this.id = allIds.get(0); // default "root" id is the one with the players.
+		} else {
+			this.ids.add(id);
+			this.id = id; // otherwise just use what we're given
 		}
 		
 		// only get subgroups, supergroups will set themselves
@@ -470,6 +482,14 @@ public class Group {
 	 * @return the group id for a group.
 	 */
 	public int getGroupId() { return id; }
+	
+	/**
+	 * Addresses issue above somewhat. Allows implementations that need the whole list of Ids
+	 * associated with this groupname to get them.
+	 * 
+	 * @return list of ids paired with this group name.
+	 */
+	public List<Integer> getGroupIds() { return new ArrayList<Integer>(this.ids); }
 
 	// == SETTERS ========================================================================= //
 	
@@ -497,8 +517,29 @@ public class Group {
 
 	public void setType(GroupType type) { this.type = type; }
 
-	public void setGroupId(int id) { this.id = id; }
+	// acts as replace
+	public void setGroupId(int id) {
+		this.ids.remove(this.id);
+		this.id = id;
+		if (!ids.contains(this.id)){
+			this.ids.add(this.id);
+		}
+	}
 
+	/**
+	 * Updates/replaces the group id list with a new one. Clears the old one, adds these,
+	 * and ensures that the "main" id is added to the list as well.
+	 */
+	public void setGroupIds(List<Integer> ids) {
+		this.ids.clear();
+		if (ids != null) {
+			this.ids.addAll(ids);
+		}
+		if (!ids.contains(this.id)){
+			this.ids.add(this.id);
+		}
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Group))

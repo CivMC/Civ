@@ -71,8 +71,7 @@ public class DeleteGroup extends PlayerCommandMiddle{
 			
 		}
 		Group g = gm.getGroup(x);
-		if (g == null){
-			p.sendMessage(ChatColor.RED + "That group does not exist.");
+		if (groupIsNull(sender, x, g)) {
 			return true;
 		}
 		PlayerType pType = g.getPlayerType(uuid);

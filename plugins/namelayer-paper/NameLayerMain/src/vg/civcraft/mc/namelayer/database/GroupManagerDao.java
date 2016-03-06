@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -229,6 +230,15 @@ public class GroupManagerDao {
 			ver = updateVersion(ver, plugin.getName());
 			log(Level.INFO, "Database update to Version eight took " + (System.currentTimeMillis() - first_time) /1000 + " seconds.");
 		}
+		if (ver == 8) {
+			long first_time = System.currentTimeMillis();
+			log(Level.INFO, "Database updating to version nine, fixing datatypes.");
+			db.execute("alter table blacklist modify column group_id int;");
+			db.execute("alter table permissions modify column group_id int;");
+			db.execute("alter table subgroup modify column group_id int, modify column sub_group_id int;");
+			ver = updateVersion(ver, plugin.getName());
+			log(Level.INFO, "Database update to Version nine took " + (System.currentTimeMillis() - first_time) /1000 + " seconds.");			
+		}
 		
 		log(Level.INFO, "Database update took " + (System.currentTimeMillis() - begin_time) / 1000 + " seconds.");
 	}
@@ -250,31 +260,44 @@ public class GroupManagerDao {
 				+ "where fi.group_name = groupName;" +
 				"delete p.* from permissions p "
 				+ "inner join faction_id fi on p.group_id = fi.group_id "
-				+ "where fi.group_name = groupName;"
-				+ "update faction f set f.group_name = specialAdminGroup "
-				+ "where f.group_name = specialAdminGroup;"
-				+ "update faction_id set group_name = specialAdminGroup where group_name = groupName;"
-				+ "delete from faction where group_name = groupName;" +
+				+ "where fi.group_name = groupName;" +
+				"update faction f set f.group_name = specialAdminGroup "
+				+ "where f.group_name = specialAdminGroup;" +
+				"update faction_id set group_name = specialAdminGroup where group_name = groupName;" +
+				"delete from faction where group_name = groupName;" +
 				"end;");
 		db.execute("drop procedure if exists mergeintogroup;");
-		// needs to be set with inner jons
+		// needs to be set with inner joins
 		db.execute("create definer=current_user procedure mergeintogroup(" +
 				"in groupName varchar(255), in tomerge varchar(255)) " +
 				"sql security invoker begin " +
-				"update ignore faction_member fm "
-				+ "inner join faction_id fi on fi.group_name = groupName "
+				"DECLARE destID, tmp int;" +
+				"SELECT f.group_id, count(DISTINCT fm.member_name) AS sz INTO destID, tmp FROM faction_id f "
+				+ "INNER JOIN faction_member fm ON f.group_id = fm.group_id WHERE f.group_name = groupName GROUP BY f.group_id ORDER BY sz DESC LIMIT 1;" +
+				"update ignore faction_member fm " // move all members from group From to To
 				+ "inner join faction_id fii on fii.group_name = tomerge "
-				+ "set fm.group_id = fi.group_id "
+				+ "set fm.group_id = destID "
 				+ "where fm.group_id = fii.group_id;" +
-				"delete fm.* from faction_member fm "
+				/*"UPDATE faction_member fm " // update roles in dest on overlaps to be from merged group
+				+ "INNER JOIN (SELECT faction_member fq JOIN faction_id fii ON fii.group_name = tomerge) fmerg "
+				+ "ON fm.member_name = fmerge.member_name"
+				+ "SET fm.role = fmerg.role WHERE fm.group_id = destID;" +*/
+				"DELETE fm.* from faction_member fm " // Remove those "overlap" members left behind by IGNORE
 				+ "inner join faction_id fi on fi.group_name = tomerge "
-				+ "where fm.group_id = fi.group_id;"
-				+ "delete from faction where group_name = tomerge;"
-				+ "update faction_id fi "
+				+ "where fm.group_id = fi.group_id;" +
+				/*"DELETE FROM subgroup s " // If this was a subgroup for someone, unlink. subgroups to new group.
+				+ "WHERE sub_group_id IN " // TODO: might be double effort?
+				+ "(SELECT group_id from faction_id where group_name = tomerge);" +*/ // handled using unlink
+				"UPDATE subgroup s " // If it was a subgroup's supergroup, redirect
+				+ "SET s.group_id = destID "
+				+ "WHERE s.group_id IN "
+				+ "(SELECT group_id from faction_id where group_name = tomerge);" +
+				"delete from faction where group_name = tomerge;" + // Remove "faction" record of From
+				"update faction_id fi " // Point "faction_id" records to TO's Name instead
 				+ "inner join faction_id fii on fii.group_name = tomerge "
 				+ "set fi.group_name = groupName "
-				+ "where fi.group_id = fii.group_id;"
-				+ "end;");
+				+ "where fi.group_id = fii.group_id;" +
+				"end;");
 		db.execute("drop procedure if exists createGroup;");
 		db.execute("create definer=current_user procedure createGroup(" + 
 				"in group_name varchar(255), " +
@@ -315,6 +338,8 @@ public class GroupManagerDao {
 	
 	private PreparedStatement getGroupNameFromRole, updateLastTimestamp, getPlayerType, getTimestamp;
 	
+	private PreparedStatement getGroupIDs;
+	
 	public void initializeStatements(){
 		version = db.prepareStatement("select max(db_version) as db_version from db_version where plugin_name=?");
 		updateVersion = db.prepareStatement("insert into db_version (db_version, update_time, plugin_name) values (?,?,?)"); 
@@ -324,6 +349,8 @@ public class GroupManagerDao {
 				"from faction f "
 				+ "inner join faction_id fi on fi.group_name = f.group_name "
 				+ "where f.group_name = ?");
+		getGroupIDs = db.prepareStatement("SELECT f.group_id, count(DISTINCT fm.member_name) AS sz FROM faction_id f "
+				+ "INNER JOIN faction_member fm ON f.group_id = fm.group_id WHERE f.group_name = ? GROUP BY f.group_id ORDER BY sz DESC");
 		getGroupById = db.prepareStatement("select f.group_name, f.founder, f.password, f.discipline_flags, f.group_type, fi.group_id " +
 				"from faction f "
 				+ "inner join faction_id fi on fi.group_id = ? "
@@ -343,6 +370,7 @@ public class GroupManagerDao {
 				+ "inner join faction_id fi on fi.group_id = fm.group_id "
 				+ "where fm.member_name = ? and fi.group_name =?");
 		
+		// So this will link all instances (name/id pairs) of the subgroup to all instances (name/id pairs) of the supergroup.
 		addSubGroup = db.prepareStatement(
 				"INSERT INTO subgroup (group_id, sub_group_id) "
 				+ "SELECT super.group_id, sub.group_id "
@@ -350,20 +378,26 @@ public class GroupManagerDao {
 				+ "INNER JOIN faction_id sub "
 				+ "ON sub.group_name = ? "
 				+ "WHERE super.group_name = ?");
+		
+		// This undoes the above. It unlinks all instances (name/id pairs) of the subgroup from all instances (name/id pairs) of the supergroup.
 		removeSubGroup = db.prepareStatement(
 				"DELETE FROM subgroup "
-				+ "WHERE group_id = (SELECT group_id FROM faction_id WHERE group_name = ?) "
-				+ "AND sub_group_id = (SELECT group_id FROM faction_id WHERE group_name = ?)");
+				+ "WHERE group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) "
+				+ "AND sub_group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?)");
+		
+		// This lists all unique subgroups (names) for all instances (name/id pairs) of the supergroup.
 		getSubGroups = db.prepareStatement(
-				"SELECT sub.group_name FROM faction_id sub "
+				"SELECT DISTINCT sub.group_name FROM faction_id sub "
 				+ "INNER JOIN faction_id super "
 				+ "ON super.group_name = ? "
 				+ "INNER JOIN subgroup other "
 				+ "ON other.group_id = super.group_id "
 				+ "WHERE sub.group_id = other.sub_group_id");
 		
+		// This lists all unique supergroups (names) which are parent(s) for all instances (name/id pairs) of the subgroup. 
+		// I expect most implementations to ignore if this has multiple results; a "safe" implementation will check.
 		getSuperGroup = db.prepareStatement(
-				"SELECT f.group_name FROM faction_id f "
+				"SELECT DISTINCT f.group_name FROM faction_id f "
 				+ "INNER JOIN faction_id sf ON sf.group_name = ? "
 				+ "INNER JOIN subgroup sg ON sg.group_id = sf.group_id "
 				+ "WHERE f.group_id = sg.sub_group_id");
@@ -373,12 +407,15 @@ public class GroupManagerDao {
 		getPerms = db.prepareStatement("select p.role, p.tier from permissions p "
 				+ "inner join faction_id fi on fi.group_name = ? "
 				+ "where p.group_id = fi.group_id");
+		// Propagate permission updates to all instances (name/id pairs) of this group.
 		updatePerm = db.prepareStatement("update permissions p set p.tier = ? "
-				+ "where p.group_id = (select g.group_id from faction_id g where g.group_name = ? limit 1) and p.role = ?");
+				+ "where p.group_id IN (select g.group_id from faction_id g where g.group_name = ? ) and p.role = ?");
 		
-		countGroups = db.prepareStatement("select count(*) as count from faction");
+		// returns count of unique names, but not (name / id pairs) of all groups.
+		countGroups = db.prepareStatement("select count(DISTINCT group_name) as count from faction");
 		
-		countGroupsFromUUID = db.prepareStatement("select count(*) as count from faction where founder = ?");
+		// returns count of unique names of groups owned by founder
+		countGroupsFromUUID = db.prepareStatement("select count(DISTINCT group_name) as count from faction where founder = ?");
 		
 		mergeGroup = db.prepareStatement("call mergeintogroup(?,?)");
 		
@@ -410,17 +447,21 @@ public class GroupManagerDao {
 		
 		loadGroupInvitation = db.prepareStatement("select role from group_invitation where uuid = ? and groupName = ?");
 		
-		getGroupNameFromRole = db.prepareStatement("SELECT faction_id.group_name FROM faction_member "
+		// Gets all unique names (not instances) of groups having this member at that role.
+		getGroupNameFromRole = db.prepareStatement("SELECT DISTINCT faction_id.group_name FROM faction_member "
 								+ "inner join faction_id on faction_member.group_id = faction_id.group_id "
 								+ "WHERE member_name = ? "
 								+ "AND role = ?;");
 		
-		getTimestamp = db.prepareStatement("SELECT faction.last_timestamp FROM faction "
+		// Gets the "most recent" updated group from all groups that share the name.
+		getTimestamp = db.prepareStatement("SELECT MAX(faction.last_timestamp) FROM faction "
 								+ "WHERE group_name = ?;");
 		
+		// updates "most recent" of all groups with a given name.
 		updateLastTimestamp = db.prepareStatement("UPDATE faction SET faction.last_timestamp = NOW() "
 								+ "WHERE group_name = ?;");
 		
+		// Breaking the pattern. Here we directly access a role based on _group ID_ rather then group_name. TODO: evaluate safety.
 		getPlayerType = db.prepareStatement("SELECT role FROM faction_member "
 						+ "WHERE group_id = ? "
                         + "AND member_name = ?;");
@@ -518,6 +559,8 @@ public class GroupManagerDao {
 					default:
 						g = new Group(name, owner, discipline, password, type, id);
 				}
+				// other group IDs cached via the constructor.
+				
 				return g;
 			}
 		} catch (SQLException e) {
@@ -1030,6 +1073,35 @@ public class GroupManagerDao {
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem loading all group invitations", e);
 		}
+	}
+
+	/**
+	 * Gets all the IDs for this group name, sorted by "size" in membercount.
+	 * Ideally only one groupname/id has members and the rest are shadows, but in any case
+	 * we arbitrarily define primacy as the one with the most members for ease of accounting
+	 * and backwards compatibility.
+	 *  
+	 * @param groupName
+	 * @return
+	 */
+	public List<Integer> getAllIDs(String groupName) {
+		if (groupName == null) {
+			return null;
+		}
+		try {
+			getGroupIDs.setString(1, groupName);
+			ResultSet set = getGroupIDs.executeQuery();
+			LinkedList<Integer> ids = new LinkedList<Integer>();
+			
+			while (set.next()) {
+				ids.add(set.getInt(1));
+			}
+			
+			return ids;
+		} catch (SQLException se) {
+			plugin.getLogger().log(Level.WARNING, "Unable to fully load group ID set", se);
+		}
+		return null;
 	}
 	
 }

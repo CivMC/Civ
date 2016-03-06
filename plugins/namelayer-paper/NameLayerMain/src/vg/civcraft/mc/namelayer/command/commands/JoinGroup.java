@@ -34,8 +34,7 @@ public class JoinGroup extends PlayerCommandMiddle{
 		}
 		Player p = (Player) sender;
 		Group g = gm.getGroup(args[0]);
-		if (g == null){
-			p.sendMessage(ChatColor.RED + "Group is null.");
+		if (groupIsNull(sender, args[0], g)) {
 			return true;
 		}
 		if (g.isDisciplined()){

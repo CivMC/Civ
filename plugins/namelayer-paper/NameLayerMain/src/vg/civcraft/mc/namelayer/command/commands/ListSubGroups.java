@@ -46,8 +46,8 @@ public class ListSubGroups extends PlayerCommandMiddle {
 		if (args.length > 0) {
 			String groupname = args[0];
 			
-			if (!GroupManager.hasGroup(groupname)) {
-				sender.sendMessage(ChatColor.RED + "Group does not exist.");
+			Group group = GroupManager.getGroup(groupname);
+			if (groupIsNull(sender, groupname, group)) {
 				return true;
 			}
 			
@@ -56,8 +56,6 @@ public class ListSubGroups extends PlayerCommandMiddle {
 						+ "You don't have permission to run that command.");
 				return true;
 			}
-			
-			Group group = GroupManager.getGroup(args[0]);
 			
 			sb.append(String.format(format, "", group.getName(), group.getPlayerType(uuid)));
 			buildList(sb, uuid, group.getSubgroups(), "   ");
