@@ -299,8 +299,13 @@ public class CivChat2Manager {
 						//reciever is in differnt world dont send
 						continue;
 					} else {
+						double receiverDistance = sender.getLocation().distance(receiver.getLocation());
+						ChatColor newColor = ChatColor.getByChar(config.getColorAtDistance(receiverDistance));
+						color = newColor != null ? newColor : color;
 						if(event.getFormat().equals("<%1$s> %2$s")) {
 							event.setFormat(color + "%1$s: %2$s");
+						}else {
+							event.setFormat(color + event.getFormat());
 						}
 						receiver.sendMessage(String.format(event.getFormat(), NameAPI.getCurrentName(sender.getUniqueId()), chatMessage));
 						/*receiver.sendMessage(sb.append(color) 

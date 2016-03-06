@@ -5,7 +5,7 @@
 	<groupId>vg.civcraft.mc.civchat2</groupId>
 	<artifactId>CivChat2</artifactId>
 	<packaging>jar</packaging>
-	<version>1.2-2</version>
+	<version>1.2-3</version>
 	<name>CivChat2</name>
 	<url>https://github.com/Civcraft/CivChat2</url>
 
@@ -58,13 +58,13 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>[1.0.1,)</version>
+			<version>1.1.91</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.mercury</groupId>
 			<artifactId>Mercury</artifactId>
-			<version>[1.1.2,)</version>
+			<version>1.1.112</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
