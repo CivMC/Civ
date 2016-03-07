@@ -482,7 +482,7 @@ public class ConfigParser {
 			result = null;
 		}
 		if (result != null) {
-			((InputRecipe)result).setFuelConsumptionIntervall(config.getInt("fuel_consumption_intervall", -1));
+			((InputRecipe)result).setFuelConsumptionIntervall((int)parseTime(config.getString("fuel_consumption_intervall", "-1")));
 			plugin.info("Parsed recipe " + name);
 		}
 		return result;
