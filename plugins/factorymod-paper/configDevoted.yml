@@ -1,0 +1,408 @@
+# 
+#   inputmat1:
+#       material: STONE
+#   inputmat345FF:
+#       material: DIRT
+
+default_fuel:
+  magic:
+    material: EXP_BOTTLE
+    amount: 1
+default_fuel_consumption_intervall: 2s
+default_menu_factory: Workshop
+default_return_rate: 0.75
+break_grace_period: 100d
+decay_intervall: 1h
+decay_amount: 0
+disable_nether: false
+default_update_time: 1s
+use_recipe_yamlidentifiers: false
+log_inventories: true
+factories:
+  workshop:
+    type: FCC
+    name: Workshop
+    setupcost:
+      spick:
+        material: STONE_PICKAXE
+        amount: 1
+      shovel:
+        material: STONE_SPADE
+        amount: 1
+      shoe:
+        material: STONE_HOE
+        amount: 1
+      saxe:
+        material: STONE_AXE
+        amount: 1
+    recipes:
+    - Upgrade to Dwarven Factory
+    - Upgrade to Dead Drop
+    - Upgrade to Enhanced Smelter
+    - Upgrade to Yeast Forager
+    - Upgrade to Material Synthesizer
+  dwa:
+    type: FCCUPGRADE
+    name: Dwarven Factory
+    recipes:
+    - Combine EFF4UB3
+    - Accident Repair
+  spy:
+    type: FCCUPGRADE
+    name: Dead Drop
+    recipes:
+    - Request a snitch
+    - Accident Repair
+  egg:
+    type: FCCUPGRADE
+    name: Genetics Lab
+    recipes:
+    - Empty
+    - Accident Repair
+  sml:
+    type: FCCUPGRADE
+    name: Enhanced Smelter
+    recipes:
+    - Sift Diamonds
+    - Extract Gems
+    - Smelt Iron
+    - Crush Coal
+    - Refine Lapis
+    - Accident Repair
+  def:
+    type: FCCUPGRADE
+    name: Defense Factory
+    recipes:
+    - Empty
+    - Accident Repair
+  rai:
+    type: FCCUPGRADE
+    name: Intrusion Ops
+    recipes:
+    - Empty
+    - Accident Repair
+  for:
+    type: FCCUPGRADE
+    name: Yeast Forager
+    recipes:
+    - Discover pure water
+    - Accident Repair
+  wea:
+    type: FCCUPGRADE
+    name: Weapons Factory
+    recipes:
+    - Empty
+    - Accident Repair
+  bos:
+    type: FCCUPGRADE
+    name: Dimensional Gate
+    recipes:
+    - Empty
+    - Accident Repair
+  cit:
+    type: FCCUPGRADE
+    name: Material Synthesizer
+    recipes:
+    - Mix Concrete
+    - Accident Repair
+recipes:
+  xprepair:
+    name: XP Repair
+    production_time: 1s
+    type: REPAIR
+    input:
+      xp_bottles:
+        material: EXP_BOTTLE
+        amount: 1
+    health_gained: 79
+  fullrepair:
+    name: Accident Repair
+    production_time: 1s
+    type: REPAIR
+    input:
+      xp_bottles:
+        material: EXP_BOTTLE
+        amount: 10
+    health_gained: 10000
+  dwr:
+    name: Upgrade to Dwarven Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      chests:
+        material: DIAMOND
+        amount: 5
+    factory: Dwarven Factory
+  rec1:
+    type: PRODUCTION
+    name: Mix Concrete
+    production_time: 10s
+    input:
+      stone:
+        material: STONE
+        durability: -1
+        amount: 64
+      gravel:
+        material: GRAVEL
+        amount: 64
+      sand:
+        material: SAND
+        amount: 64
+    output:
+      concrete:
+        material: GRAVEL
+        amount: 64
+        lore:
+        - Reinforce then let it set!
+  rec2:
+    name: Empty
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      cobble:
+        material: COBBLESTONE
+        amount: 1
+    output:
+      stone:
+        material: STONE
+        amount: 1
+  rec4:
+    name: Upgrade to Dead Drop
+    production_time: 10s
+    type: UPGRADE
+    input:
+      diamonds1:
+        material: DIAMOND
+        amount: 1
+    factory: Dead Drop
+  rec5:
+    name: Discover pure water
+    production_time: 10s
+    type: PRODUCTION
+    input:
+      water:
+        material: WATER_BUCKET
+        amount: 3
+    output:
+      purewater:
+        material: WATER_BUCKET
+        amount: 1
+        lore:
+        - Pure water
+  rec6:
+    name: Breed a bigger cow
+    production_time: 10s
+    type: PRODUCTION
+    input:
+      water:
+        material: WATER_BUCKET
+        amount: 3
+  rec7:
+    name: Combine EFF4UB3
+    production_time: 10s
+    type: PRODUCTION
+    input:
+      pick:
+        material: DIAMOND_PICKAXE
+        amount: 3
+        durability: 1560
+        enchants:
+          enchantidentifier1:
+            enchant: DURABILITY
+            level: 3
+          enchantgharbbl:
+            enchant: DIG_SPEED
+            level: 4
+    output:
+      5pick:
+        material: DIAMOND_PICKAXE
+        amount: 1
+        name: Dwarven Pick
+        lore:
+        - A dwarven mithril pick
+        - Known for its strength.
+        enchants:
+          enchantidentifier1:
+            enchant: DURABILITY
+            level: 4
+          enchantgharbbl:
+            enchant: DIG_SPEED
+            level: 5
+  rec8:
+    name: Request a snitch
+    production_time: 100s
+    type: PRODUCTION
+    input:
+      noteblocks1:
+        material: NOTE_BLOCK
+        amount: 128
+    output:
+      jb:
+        material: JUKEBOX
+        amount: 1
+  rec9:
+    name: Upgrade to Genetics Lab
+    production_time: 10s
+    type: UPGRADE
+    input:
+      chests1:
+        material: BEDROCK
+        amount: 1
+    factory: Genetics Lab
+  rec10:
+    name: Upgrade to Defense Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      chests2:
+        material: BEDROCK
+        amount: 2
+    factory: Defense Factory
+  rec11:
+    name: Upgrade to Intrusion Ops
+    production_time: 10s
+    type: UPGRADE
+    input:
+      chests:
+        material: BEDROCK
+        amount: 3
+    factory: Intrusion Ops
+  rec12:
+    name: Upgrade to Yeast Forager
+    production_time: 10s
+    type: UPGRADE
+    input:
+      bones1:
+        material: BONE
+        amount: 128
+      clay1:
+        material: CLAY
+        amount: 128
+      sugar1:
+        material: SUGAR
+        amount: 128
+    factory: Yeast Forager
+  rec13:
+    name: Upgrade to Weapons Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      ch1:
+        material: BEDROCK
+        amount: 4
+    factory: Weapons Factory
+  rec14:
+    name: Upgrade to Dimensional Gate
+    production_time: 10s
+    type: UPGRADE
+    input:
+      ch5:
+        material: BEDROCK
+        amount: 6
+    factory: Dimensional Gate
+  rec15:
+    name: Upgrade to Material Synthesizer
+    production_time: 10s
+    type: UPGRADE
+    input:
+      melon:
+        material: MELON
+        amount: 1
+      stn:
+        material: STONE
+        amount: 1
+      irn:
+        material: IRON_INGOT
+        amount: 1
+      dbred:
+        material: REDSTONE_BLOCK
+        amount: 1
+      diams:
+        material: DIAMOND
+        amount: 1
+      emrd:
+        material: EMERALD
+        amount: 1
+    factory: Material Synthesizer
+  rec16:
+    name: Upgrade to Enhanced Smelter
+    production_time: 20s
+    type: UPGRADE
+    input:
+      m1:
+        material: IRON_BLOCK
+        amount: 15
+      m2:
+        material: DIAMOND
+        amount: 64
+      m3:
+        material: EMERALD
+        amount: 10
+      m4:
+        material: LAPIS_BLOCK
+        amount: 15
+      m5:
+        material: COAL_ORE
+        amount: 640
+    factory: Enhanced Smelter
+  rec17:
+    name: Sift Diamonds
+    production_time: 3s
+    type: PRODUCTION
+    input:
+      d1:
+        material: DIAMOND_ORE
+        amount: 2
+    output:
+      d2:
+        material: DIAMOND
+        amount: 5
+  rec18:
+    name: Extract Gems
+    production_time: 3s
+    type: PRODUCTION
+    input:
+      g1:
+        material: EMERALD_ORE
+        amount: 2
+    output:
+      g2:
+        material: EMERALD
+        amount: 5
+  rec19:
+    name: Smelt Iron
+    production_time: 3s
+    type: PRODUCTION
+    input:
+      i1:
+        material: IRON_ORE
+        amount: 3
+    output:
+      i2:
+        material: IRON_INGOT
+        amount: 4
+  rec20:
+    name: Crush Coal
+    production_time: 3s
+    type: PRODUCTION
+    input:
+      c1:
+        material: COAL_ORE
+        amount: 2
+    output:
+      c2:
+        material: COAL
+        amount: 5
+  rec21:
+    name: Refine Lapis
+    production_time: 1s
+    type: PRODUCTION
+    input:
+      l1:
+        material: LAPIS_ORE
+        amount: 1
+    output:
+      l2:
+        material: INK_SACK
+        durability: 4
+        amount: 20
