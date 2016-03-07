@@ -92,7 +92,7 @@ public class PercentageHealthRepairManager implements IRepairManager {
 			ItemMap im = new ItemMap();
 			im.addItemAmount(items.getKey(), returnAmount);
 			for (ItemStack is : im.getItemStackRepresentation()) {
-				if(is.getDurability() == -1) is.setDurability(0);
+				if(is.getDurability() == -1) is.setDurability((short)0);
 				factory.getMultiBlockStructure()
 						.getCenter()
 						.getWorld()
