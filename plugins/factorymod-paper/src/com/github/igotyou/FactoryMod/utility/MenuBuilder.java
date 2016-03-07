@@ -514,7 +514,7 @@ public class MenuBuilder {
 		fuels.setAmount(fuelConsumed);
 		ItemStack fuelStack = new ItemMap(fuels).getLoredItemCountRepresentation().get(0);
 		ISUtils.addLore(fuelStack, ChatColor.LIGHT_PURPLE + "Total duration of " + rec.getProductionTime() * 20 + " seconds");
-		ci.setSlot(new DecorationStack(new ItemMap(fuels).getLoredItemCountRepresentation().get(0)), 30);
+		ci.setSlot(new DecorationStack(fuelStack), 30);
 		ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(), ci, p);
 	}
 
