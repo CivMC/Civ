@@ -231,6 +231,7 @@ factories:
     name: Coal Burner
     recipes:
     - Burn_Charcoal_from_Logs_Expert
+    - Burn_Charcoal_from_Logs2_Expert
     - Burn_Charcoal_from_Coal
     - Repair_Small_Factory
   farmsteadfactory:
@@ -779,6 +780,20 @@ recipes:
     input:
       log:
         material: LOG
+        durability: -1
+        amount: 512
+    output:
+      charcoal:
+        material: COAL
+        amount: 1024
+        durability: 1
+  Burn_Charcoal_from_Logs2_Expert:
+    type: PRODUCTION
+    name: Burn Charcoal from Logs2
+    production_time: 45s
+    input:
+      log:
+        material: LOG_2
         durability: -1
         amount: 512
     output:
@@ -2842,7 +2857,7 @@ recipes:
   Smelt_Coal_Ore_Advanced:
     type: PRODUCTION
     name: Smelt Coal Ore Advanced
-    production_time: 5s
+    production_time: 30s
     input:
       coal ore:
         material: COAL_ORE
@@ -2866,7 +2881,7 @@ recipes:
   Smelt_Coal_Ore_Expert:
     type: PRODUCTION
     name: Smelt Coal Ore
-    production_time: 5s
+    production_time: 50s
     input:
       coal ore:
         material: COAL_ORE
@@ -2874,7 +2889,7 @@ recipes:
     output:
       coal:
         material: COAL
-        amount: 
+        amount: 640
   Smelt_Dark_Prismarine:
     type: PRODUCTION
     name: Smelt Dark Prismarine
