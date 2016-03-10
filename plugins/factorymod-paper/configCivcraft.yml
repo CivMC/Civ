@@ -2050,15 +2050,15 @@ recipes:
   Extract_Diamonds:
     type: PRODUCTION
     name: Extract Diamonds
-    production_time: 5s
+    production_time: 25s
     input:
       diamond ore:
         material: DIAMOND_ORE
-        amount: 16
+        amount: 320
     output:
       diamond:
         material: DIAMOND
-        amount: 32
+        amount: 384
   Extract_Emeralds:
     type: PRODUCTION
     name: Extract Emeralds
