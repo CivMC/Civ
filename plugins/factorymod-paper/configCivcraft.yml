@@ -3532,7 +3532,7 @@ recipes:
   Upgrade_to_Gem_extractor:
     production_time: 7200s
     type: UPGRADE
-    name: Upgrade to Gem extractor
+    name: Upgrade to Gem Extractor
     fuel_consumption_intervall: 60s
     input:
       diamond:
@@ -3544,7 +3544,7 @@ recipes:
       iron ingot:
         material: IRON_INGOT
         amount: 128
-    factory: Gem extractor
+    factory: Gem Extractor
   Upgrade_to_Glass_Dying_Factory:
     production_time: 3600s
     type: UPGRADE
