@@ -194,6 +194,10 @@ public final class Settings {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
+    public boolean resetTagOnPearl() {
+        return plugin.getConfig().getBoolean("reset-tag-on-pearl");
+    }
+
     public boolean playEffect() {
         return plugin.getConfig().getBoolean("play-effect");
     }

@@ -1,5 +1,5 @@
 # Don't touch this. It's here to determine whether you need to refresh your config.
-config-version: 18
+config-version: 19
 
 # The duration in seconds that both the attacker and victim should be tagged in combat.
 tag-duration: 15
@@ -9,6 +9,9 @@ tag-message: '&cYou have engaged in combat. Type &b/ct &cto check your timer.'
 
 # This message is displayed the player when their tag expires. Set this to '' to display nothing.
 untag-message: '&aYou are no longer in combat.'
+
+# Resets the tag time when the tagged player throws an enderpearl.
+reset-tag-on-pearl: false
 
 # Plays an effect when a player logs off during combat.
 play-effect: true

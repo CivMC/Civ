@@ -54,6 +54,10 @@ public final class Tag {
         return expireTime;
     }
 
+    public void setExpireTime(long expireTime) {
+        this.expireTime = expireTime;
+    }
+
     public UUID getVictimId() {
         return victimId;
     }

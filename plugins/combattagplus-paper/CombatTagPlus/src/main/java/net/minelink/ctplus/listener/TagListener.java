@@ -2,6 +2,7 @@ package net.minelink.ctplus.listener;
 
 import com.google.common.collect.ImmutableSet;
 import net.minelink.ctplus.CombatTagPlus;
+import net.minelink.ctplus.Tag;
 import net.minelink.ctplus.event.PlayerCombatTagEvent;
 import net.minelink.ctplus.task.SafeLogoutTask;
 import net.minelink.ctplus.task.TagUpdateTask;
@@ -19,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -145,6 +147,30 @@ public final class TagListener implements Listener {
                 plugin.getTagManager().tag(victim, attacker);
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void tagPlayer(ProjectileLaunchEvent event) {
+        // Do nothing if option is disabled
+        if (plugin.getSettings().resetTagOnPearl()) return;
+
+        // Do nothing if the launched projectile is not an ender pearl
+        Projectile entity = event.getEntity();
+        if (entity.getType() != EntityType.ENDER_PEARL) return;
+
+        // Do nothing if projectile source is not a player
+        if (!(entity.getShooter() instanceof Player)) return;
+
+        // Do nothign if player has permission to bypass tagging
+        Player player = (Player) entity.getShooter();
+        if (player.hasPermission("ctplus.bypass.tag")) return;
+
+        // Do nothing if player is not tagged
+        Tag tag = plugin.getTagManager().getTag(player.getUniqueId());
+        if (tag == null) return;
+
+        // Reset the tag duration
+        tag.setExpireTime(System.currentTimeMillis() + (plugin.getSettings().getTagDuration() * 1000));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
