@@ -59,10 +59,10 @@ public class Utility {
      */
     public static PlayerReinforcement createPlayerReinforcement(Player player, Group g, Block block,
             ReinforcementType type, ItemStack reinfMat) {
-		if (player == null || g == null || block == null || type == null || reinfMat == null) {
+		if (player == null || g == null || block == null || type == null) {
 			Citadel.getInstance().getLogger().log(Level.WARNING,
-					"Utility createPlayerReinforcement called with null: {0},{1},{2},{3},{4}", 
-					new Object[] {player, g, block, type, reinfMat});
+					"Utility createPlayerReinforcement called with null: {0},{1},{2},{3}", 
+					new Object[] {player, g, block, type});
 			return null;
 		}
 
