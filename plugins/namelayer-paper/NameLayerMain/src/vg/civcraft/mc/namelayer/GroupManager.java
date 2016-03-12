@@ -60,11 +60,13 @@ public class GroupManager{
 				event.getPassword(), event.getType());
 		if (id > -1) {
 			initiateDefaultPerms(event.getGroupName()); // give default perms to a newly create group
-			group.setGroupIds(groupManagerDao.getAllIDs(event.getGroupName()));
+			GroupManager.getGroup(id); // force a recache from DB.
+			/*group.setGroupIds(groupManagerDao.getAllIDs(event.getGroupName()));
+			group.addMember(event.getOwner(), PlayerType.OWNER);
 			groupsByName.put(event.getGroupName(), group);
 			for (int q : group.getGroupIds()) {
 				groupsById.put(q, group);
-			}
+			}*/
 		}
 		return id;
 	}

@@ -707,8 +707,9 @@ public class GroupManagerDao {
 			ResultSet set = getMembers.executeQuery();
 			while(set.next()){
 				String uuid = set.getString(1);
-				if (uuid == null)
+				if (uuid == null) {
 					continue;
+				}
 				members.add(UUID.fromString(uuid));
 			}
 			return members;
