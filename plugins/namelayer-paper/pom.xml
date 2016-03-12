@@ -23,6 +23,7 @@
 				<module>NameLayer1_8_R1</module>
 				<module>NameLayer1_8_R2</module>
 				<module>NameLayer1_8_R3</module>
+				<module>NameLayer1_9_R1</module>
 				<module>NameLayerMain</module>
 				<module>NameLayer</module>
 				<module>NameLayerBungee</module>
@@ -37,7 +38,7 @@
 				</property>
 			</activation>
 			<modules>
-				<module>NameLayer1_8_R3</module>
+				<module>NameLayer1_9_R1</module>
 				<module>NameLayerMain</module>
 				<module>NameLayer</module>
 			</modules>

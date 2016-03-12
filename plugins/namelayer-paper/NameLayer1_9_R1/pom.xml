@@ -4,10 +4,10 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>vg.civcraft.mc.namelayer</groupId>
-	<artifactId>NameLayerNMS1_8_R2</artifactId>
+	<artifactId>NameLayerNMS1_9_R1</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.0</version>
-	<name>NameLayerNMS1_8_R2</name>
+	<name>NameLayerNMS1_9_R1</name>
 	<url>https://github.com/Civcraft/NameLayerNMS/</url>
 
 	<properties>
@@ -22,7 +22,7 @@
 	</parent>
 	
 	<build>
-		<sourceDirectory>../NameLayer1_8_R2/src</sourceDirectory>
+		<sourceDirectory>../NameLayer1_9_R1/src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -37,8 +37,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
-			<artifactId>Spigot1.8.3</artifactId>
-			<version>1.8.3</version>
+			<artifactId>spigot</artifactId>
+			<version>1.9</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
