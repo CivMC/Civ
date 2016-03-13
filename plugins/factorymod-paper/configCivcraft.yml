@@ -3808,7 +3808,7 @@ recipes:
   Upgrade_to_Advanced_Sand_Smelter:
     production_time: 1800s
     type: UPGRADE
-    name: Upgrade to Sand Smelter
+    name: Upgrade to Advanced Sand Smelter
     fuel_consumption_intervall: 15s
     input:
       sand:
