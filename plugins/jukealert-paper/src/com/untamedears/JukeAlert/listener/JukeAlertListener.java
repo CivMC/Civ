@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -346,11 +347,8 @@ public class JukeAlertListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void breakSnitchBlock(BlockBreakEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
         Block block = event.getBlock();
         if((block.getType().equals(Material.JUKEBOX) || block.getType().equals(Material.NOTE_BLOCK)) && plugin.getConfigManager().isDisplayOwnerOnBreak()) {
             Snitch snitch = snitchManager.getSnitch(block.getWorld(), block.getLocation());
@@ -376,20 +374,44 @@ public class JukeAlertListener implements Listener {
         }
     }
 
+    private long failureReportDelay = 10000l;
+    private long lastNotifyMoveFailure = System.currentTimeMillis() - failureReportDelay;
+    
     @EventHandler(priority = EventPriority.HIGH)
     public void enterSnitchProximity(PlayerMoveEvent event) {
-        Location from = event.getFrom();
-        Location to = event.getTo();
-
-        if (from.getBlockX() == to.getBlockX()
-                && from.getBlockY() == to.getBlockY()
-                && from.getBlockZ() == to.getBlockZ()
-                && from.getWorld().equals(to.getWorld())) {
-            // Player didn't move by at least one block.
-            return;
-        }
-        Player player = event.getPlayer();
-        handleSnitchEntry(player);
+    	try {
+	    	Location from = event.getFrom();
+	        Location to = event.getTo();
+	        if (from == null || to == null) {
+	        	if (System.currentTimeMillis() - lastNotifyMoveFailure > failureReportDelay) {
+	        		JukeAlert.getInstance().getLogger().log(Level.WARNING, "MoveEvent called without valid from and to.");
+	        		lastNotifyMoveFailure = System.currentTimeMillis();
+	        	}
+	        	return;
+	        }
+	
+	        if (from.getBlockX() == to.getBlockX()
+	                && from.getBlockY() == to.getBlockY()
+	                && from.getBlockZ() == to.getBlockZ()
+	                && from.getWorld().equals(to.getWorld())) {
+	            // Player didn't move by at least one block.
+	            return;
+	        }
+	        Player player = event.getPlayer();
+	        if (player == null) {
+	        	if (System.currentTimeMillis() - lastNotifyMoveFailure > failureReportDelay) {
+	        		JukeAlert.getInstance().getLogger().log(Level.WARNING, "MoveEvent called without valid player.");
+	        		lastNotifyMoveFailure = System.currentTimeMillis();
+	        	}
+	        	return;
+	        }
+	        handleSnitchEntry(player);
+    	} catch (NullPointerException npe) {
+        	if (System.currentTimeMillis() - lastNotifyMoveFailure > failureReportDelay) {
+        		JukeAlert.getInstance().getLogger().log(Level.WARNING, "MoveEvent generated an NPE", npe);
+        		lastNotifyMoveFailure = System.currentTimeMillis();
+        	}    		
+    	}
     }
     
     //Because teleporting doesn't trigger a movement event :/
@@ -436,11 +458,23 @@ public class JukeAlertListener implements Listener {
  					                " " + snitch.getY() + " " + snitch.getZ() + "]";
                              notifyGroup(snitch, ChatColor.AQUA+message);
                              
-                             if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers())
-                             	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "jukealert-entry");
-                         	} catch (SQLException e) {
- 								e.printStackTrace();
- 							}
+                             if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers()) {
+                            	 Group g = snitch.getGroup();
+                            	 if (g != null) {
+                            		 mercury.sendMessage(g.getName() + " " + message, "jukealert-entry");
+                            	 } else {
+                                 	if (System.currentTimeMillis() - lastNotifyMoveFailure > failureReportDelay) {
+                                		JukeAlert.getInstance().getLogger().log(Level.WARNING, "Null group encountered when constructing Mercury Message: {0}", message);
+                                		lastNotifyMoveFailure = System.currentTimeMillis();
+                                	}                            		 
+                            	 }
+                             }
+                         	} catch (SQLException | NullPointerException e) {
+                            	if (System.currentTimeMillis() - lastNotifyMoveFailure > failureReportDelay) {
+                            		JukeAlert.getInstance().getLogger().log(Level.WARNING, "handleSnitchEntry generated an exception", e);
+                            		lastNotifyMoveFailure = System.currentTimeMillis();
+                            	}
+                            }
                          }
                          if (snitch.shouldLog()){
                          	plugin.getJaLogger().logSnitchEntry(snitch, location, player);
@@ -511,12 +545,9 @@ public class JukeAlertListener implements Listener {
     	}
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryOpenEvent(InventoryOpenEvent e) {
         Player player = (Player) e.getPlayer();
-        if (e.isCancelled()) {
-            return;
-        }
         if (vanishNoPacket.isPlayerInvisible(player) || player.hasPermission("jukealert.vanish")) {
             return;
         }
