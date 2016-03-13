@@ -41,6 +41,13 @@
       <artifactId>Factions</artifactId>
       <version>1.6.9.5-U0.1.14</version>
       <scope>provided</scope>
+      <exclusions>
+        <!-- Its broken -->
+        <exclusion>
+          <groupId>mkremins</groupId>
+          <artifactId>fanciful</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 </project>
