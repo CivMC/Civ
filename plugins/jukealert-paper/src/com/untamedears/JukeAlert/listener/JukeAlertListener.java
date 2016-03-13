@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -376,10 +377,18 @@ public class JukeAlertListener implements Listener {
         }
     }
 
+    private long lastNotifyMoveFailure = System.currentTimeMillis();
+    
     @EventHandler(priority = EventPriority.HIGH)
     public void enterSnitchProximity(PlayerMoveEvent event) {
-        Location from = event.getFrom();
+    	Location from = event.getFrom();
         Location to = event.getTo();
+        if (from == null || to == null) {
+        	if (System.currentTimeMillis() - lastNotifyMoveFailure > 10000l) {
+        		JukeAlert.getInstance().getLogger().log(Level.WARNING, "MoveEvent called without valid from and to.");
+        	}
+        	return;
+        }
 
         if (from.getBlockX() == to.getBlockX()
                 && from.getBlockY() == to.getBlockY()
@@ -389,6 +398,12 @@ public class JukeAlertListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
+        if (player == null) {
+        	if (System.currentTimeMillis() - lastNotifyMoveFailure > 10000l) {
+        		JukeAlert.getInstance().getLogger().log(Level.WARNING, "MoveEvent called without valid player.");
+        	}
+        	return;
+        }
         handleSnitchEntry(player);
     }
     
