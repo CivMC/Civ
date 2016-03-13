@@ -8,9 +8,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
-public class Materials extends PlayerCommand{
+public class Materials extends PlayerCommandMiddle{
 
 	public Materials(String name) {
 		super(name);
@@ -32,9 +31,10 @@ public class Materials extends PlayerCommand{
 		for (ReinforcementType type: types){
 			t += type.getMaterial().name() + ":\n   ";
 			t += "Amount: " + type.getRequiredAmount() + ".\n   ";
-			t += "Durability: " + type.getHitPoints() + ".\n   ";
+			t += "Strength: " + type.getHitPoints() + ".\n   ";
 			t += "Material: " + type.getMaterial() + ".\n   ";
 			t += "Maturation: " + type.getMaturationTime() + ".\n   ";
+			t += "Acid Maturation: " + type.getAcidTime() + ".\n   ";
 			if (type.getItemStack().getItemMeta().hasLore()){
 				t += "Lore: ";
 				for (String x: type.getItemStack().getItemMeta().getLore())

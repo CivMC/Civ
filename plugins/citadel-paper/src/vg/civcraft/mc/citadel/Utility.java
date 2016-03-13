@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -58,12 +59,27 @@ public class Utility {
      */
     public static PlayerReinforcement createPlayerReinforcement(Player player, Group g, Block block,
             ReinforcementType type, ItemStack reinfMat) {
+		if (player == null || g == null || block == null || type == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility createPlayerReinforcement called with null: {0},{1},{2},{3}", 
+					new Object[] {player, g, block, type});
+			return null;
+		}
+
         if (g.isDisciplined()) {
-            player.sendMessage(ChatColor.RED + "This group is disiplined.");
+            player.sendMessage(ChatColor.RED + "This group is disciplined.");
+            if (CitadelConfigManager.shouldLogInternal()) {
+            	Citadel.getInstance().getLogger().log(Level.WARNING,
+            			"Request to create reinforcement for disciplined group " + g.getName());
+            }
             return null;
         }
         if (NonReinforceableType.isNonReinforceable(block.getType())){
             player.sendMessage(ChatColor.RED + "That block cannot be reinforced.");
+            if (CitadelConfigManager.shouldLogInternal()) {
+            	Citadel.getInstance().getLogger().log(Level.WARNING,
+            			"Request to create reinforcement for unreinforceable block " + block.getType());
+            }
             return null;
         }
         // Find necessary itemstacks
@@ -109,6 +125,17 @@ public class Utility {
         if (event.isCancelled()) {
             throw new ReinforcemnetFortificationCancelException();
         }
+		if (CitadelConfigManager.shouldLogReinforcement()) {
+			StringBuffer slb = new StringBuffer();
+			if (player != null) {
+				slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
+						.append("]");
+			}
+			slb.append("reinforced a ").append(block.getType()).append(" with a ")
+					.append(rein.getMaterial()).append(" reinforcement at ")
+					.append(rein.getLocation());
+			Citadel.Log(slb.toString());
+		}
         // Now eat the materials
         
         // Handle special case with block reinforcements.
@@ -135,8 +162,8 @@ public class Utility {
             requirements -= deduction;
         }
         if (requirements != 0) {
-            Citadel.Log(String.format(
-                "Reinforcement material out of sync %d vs %d", requirements, type.getRequiredAmount()));
+            Citadel.Log(String.format( "Reinforcement material out of sync %d vs %d", 
+					requirements, type.getRequiredAmount()));
         }
         player.updateInventory();
         rm.saveInitialReinforcement(rein);
@@ -155,7 +182,17 @@ public class Utility {
      */
     public static PlayerReinforcement createPlayerReinforcementWithoutMaterialConsumption(Player player, 
             Group g, Block block, ReinforcementType type) {
-        //no error messages towards the player because this might be called a few thousand times 
+		if (g == null || block == null || type == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility createPlayerReinforcementWithoutMaterialConsumption called with null: {0},{1},{2}", 
+					new Object[] {g, block, type});
+			return null;
+		} else if (player == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility createPlayerReinforcementWithoutMaterialConsumption called with player as null");
+		}
+
+    	//no error messages towards the player because this might be called a few thousand times 
         if (g.isDisciplined()) {
             return null;
         }
@@ -183,6 +220,12 @@ public class Utility {
      * @return False if it would not.
      */
     public static boolean wouldPlantDoubleReinforce(final Block block) {
+		if (block == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility wouldPlantDoubleReinforce called with null");
+			return false;
+		}
+    	
         final Material blockMat = block.getType();
         if (isReinforceablePlant(blockMat)
             && rm.getReinforcement(block.getLocation()) != null) {
@@ -204,8 +247,8 @@ public class Utility {
     private static boolean isReinforceablePlant(Material mat) {
         // If this list changes, update wouldPlantDoubleReinforce to account
         // for the new soil types.
-        return mat.equals(Material.MELON_BLOCK)
-            || mat.equals(Material.PUMPKIN);
+        return Material.MELON_BLOCK.equals(mat)
+            || Material.PUMPKIN.equals(mat);
     }
     /**
      * Returns a list of Materials that this plant can go on.
@@ -233,35 +276,35 @@ public class Utility {
     }
     
     private static boolean isSoilPlant(Material mat) {
-        return mat.equals(Material.WHEAT)
-            || mat.equals(Material.MELON_STEM)
-            || mat.equals(Material.PUMPKIN_STEM)
-            || mat.equals(Material.CARROT)
-            || mat.equals(Material.POTATO)
-            || mat.equals(Material.CROPS)
-            || mat.equals(Material.MELON_BLOCK)
-            || mat.equals(Material.PUMPKIN);
+        return Material.WHEAT.equals(mat)
+            || Material.MELON_STEM.equals(mat)
+            || Material.PUMPKIN_STEM.equals(mat)
+            || Material.CARROT.equals(mat)
+            || Material.POTATO.equals(mat)
+            || Material.CROPS.equals(mat)
+            || Material.MELON_BLOCK.equals(mat)
+            || Material.PUMPKIN.equals(mat);
     }
 
     private static boolean isDirtPlant(Material mat) {
-        return mat.equals(Material.SUGAR_CANE_BLOCK)
-            || mat.equals(Material.MELON_BLOCK)
-            || mat.equals(Material.PUMPKIN);
+        return Material.SUGAR_CANE_BLOCK.equals(mat)
+            || Material.MELON_BLOCK.equals(mat)
+            || Material.PUMPKIN.equals(mat);
     }
 
     private static boolean isGrassPlant(Material mat) {
-        return mat.equals(Material.SUGAR_CANE_BLOCK)
-            || mat.equals(Material.MELON_BLOCK)
-            || mat.equals(Material.PUMPKIN);
+        return Material.SUGAR_CANE_BLOCK.equals(mat)
+            || Material.MELON_BLOCK.equals(mat)
+            || Material.PUMPKIN.equals(mat);
     }
 
     private static boolean isSandPlant(Material mat) {
-        return mat.equals(Material.CACTUS)
-            || mat.equals(Material.SUGAR_CANE_BLOCK);
+        return Material.CACTUS.equals(mat)
+            || Material.SUGAR_CANE_BLOCK.equals(mat);
     }
 
     private static boolean isSoulSandPlant(Material mat) {
-        return mat.equals(Material.NETHER_WARTS);
+        return Material.NETHER_WARTS.equals(mat);
     }
 
     public static boolean isPlant(Block plant) {
@@ -292,16 +335,27 @@ public class Utility {
      * @return Returns false if no reinforcement exists and if it was broken.
      */
     public static boolean maybeReinforcementDamaged(Block block) {
+		if (block == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility maybeReinforcementDamaged called with null");
+			return false;
+		}
+
         Reinforcement reinforcement = rm.getReinforcement(block.getLocation());
-        return reinforcement != null && reinforcementDamaged(reinforcement);
+        return reinforcement != null && reinforcementDamaged(null, reinforcement);
     }
     /**
      * Damages the reinforcement.
      * @param The Reinforcement required.
      * @return True if the reinforcement was securable.
      */
-    public static boolean reinforcementDamaged(Reinforcement reinforcement) {
-        int durability = reinforcement.getDurability();
+    public static boolean reinforcementDamaged(Player player, Reinforcement reinforcement) {
+    	if (reinforcement == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility reinforcementDamaged called with null");
+			return false;
+		}
+    	int durability = reinforcement.getDurability();
         int durabilityLoss = 1;
         if (reinforcement instanceof PlayerReinforcement && CitadelConfigManager.isMaturationEnabled()) {
           final int maturationTime = timeUntilMature(reinforcement);
@@ -326,12 +380,50 @@ public class Utility {
               durabilityLoss = durability;
           }
         }
+		int olddurability = durability;
         durability -= durabilityLoss;
         reinforcement.setDurability(durability);
         boolean cancelled = durability > 0;
         if (durability <= 0) {
             cancelled = reinforcementBroken(null, reinforcement);
         } else {
+			/* TODO: Move to ReinforcementEvent listener*/
+			if (CitadelConfigManager.shouldLogBreaks()) {
+				StringBuffer slb = new StringBuffer();
+				if (player != null) {
+					slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
+							.append("]");
+				} else {
+					slb.append("Something ");
+				}
+				slb.append("damaged a ").append(reinforcement.getMaterial());
+				int strength = 0;
+				if (reinforcement instanceof PlayerReinforcement) {
+					slb.append("reinforcement to ");
+					ReinforcementType type = ReinforcementType.getReinforcementType(
+							((PlayerReinforcement) reinforcement).getStackRepresentation());
+					strength = type.getHitPoints();
+				} else if (reinforcement instanceof NaturalReinforcement) {
+					slb.append("natural reinforcement to ");
+					NaturalReinforcementType type = NaturalReinforcementType.getNaturalReinforcementType(
+							reinforcement.getType());
+					strength = type.getDurability();
+				} else {
+					slb.append("null reinforcement to ");
+				}
+				double nratio = strength > 0 ? (double) durability / (double) strength: 0;
+				double oratio = strength > 0 ? (double) olddurability / (double) strength: 1;
+				if ( nratio <= 0.25 && oratio > 0.25) {
+					slb.append("poor (");
+				} else if ( nratio <= 0.5 && oratio > 0.5) {
+					slb.append("decent (");
+				} else if ( nratio <= 0.75 && oratio > 0.75) {
+					slb.append("well (");
+				} else if ( nratio < 1.0 && oratio == 1.0) {
+					slb.append("excellent (");
+				}
+				slb.append(durability).append(") at ").append(reinforcement.getLocation());
+			}
             if (reinforcement instanceof PlayerReinforcement) {
                 // leave message
             }
@@ -345,7 +437,12 @@ public class Utility {
      * @return Returns 0 if it is mature or the time in minutes until it is mature.
      */
     public static int timeUntilMature(Reinforcement reinforcement) {
-        // Doesn't explicitly save the updated Maturation time into the cache.
+    	if (reinforcement == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility timeUntilMature called with null");
+			return 0;
+		}
+    	// Doesn't explicitly save the updated Maturation time into the cache.
         //  That's the responsibility of the caller.
         if (reinforcement instanceof PlayerReinforcement){
             int maturationTime = reinforcement.getMaturationTime();
@@ -368,7 +465,11 @@ public class Utility {
      * @return Returns 0 if it is mature or the time in minutes until it is mature.
      */
     public static int timeUntilAcidMature(Reinforcement reinforcement) {
-        // Doesn't explicitly save the updated Acid Maturation time into the cache.
+    	if (reinforcement == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility timeUntilAcidMature called with null");
+			return 0;
+		}        // Doesn't explicitly save the updated Acid Maturation time into the cache.
         //  That's the responsibility of the caller.
         if (reinforcement instanceof PlayerReinforcement){
             int maturationTime = reinforcement.getAcidTime();
@@ -388,12 +489,31 @@ public class Utility {
     
     /**
      * 
+     * /ctb mode type break
+     *
      * @param The Player who broke the reinforcement
      * @param The Reinforcement broken.
      * @return Returns true if it is securable.
      * @return Returns false if it is no securable.
      */
     public static boolean reinforcementBroken(Player player, Reinforcement reinforcement) {
+    	if (reinforcement == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility reinforcementBroken called with null reinforcement");
+			return false;
+		}
+    	StringBuffer slb = null;
+		if (CitadelConfigManager.shouldLogBreaks()) {
+			slb = new StringBuffer();
+			if (player != null) {
+				slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
+						.append("]");
+			} else {
+				slb.append("Something ");
+			}
+			slb.append("broke a ").append(reinforcement.getMaterial()).append(" reinforcement at ")
+					.append(reinforcement.getLocation());
+		}
         Citadel.getReinforcementManager().deleteReinforcement(reinforcement);
         if (reinforcement instanceof PlayerReinforcement) {
             PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
@@ -419,11 +539,22 @@ public class Utility {
                         }
                     }
                 }
-                else
+                else {
                 	dropItemAtLocation(location, new ItemStack(material.getMaterial()
                             , material.getReturnValue()));
+				}
+                if (CitadelConfigManager.shouldLogBreaks()) {
+                    slb.append(" - reinf mat refunded");
+					Citadel.Log(slb.toString());
+                }
+            } else if (CitadelConfigManager.shouldLogBreaks()) { 
+                slb.append(" - reinf mat lost");
+				Citadel.Log(slb.toString());
             }
             return pr.isSecurable();
+        }
+        if (CitadelConfigManager.shouldLogBreaks()) {
+            Citadel.Log(slb.toString());
         }
         return false;  // implicit isSecureable() == false
     }
@@ -442,12 +573,16 @@ public class Utility {
 	 * @author GordonFreemanQ
 	 */
 	public static void dropItemAtLocation(final Location l, final ItemStack is) {
-		
 		// Schedule the item to drop 1 tick later
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Citadel.getInstance(), new Runnable() {
 			@Override
 			public void run() {
-				l.getWorld().dropItem(l.add(0.5, 0.5, 0.5), is).setVelocity(new Vector(0, 0.05, 0));
+				try {
+					l.getWorld().dropItem(l.add(0.5, 0.5, 0.5), is).setVelocity(new Vector(0, 0.05, 0));
+				} catch (Exception e) {
+					Citadel.getInstance().getLogger().log(Level.WARNING,
+								"Utility dropItemAtLocation called but errored: ", e);
+				}
 			}
 		}, 1);
 	}
@@ -461,6 +596,11 @@ public class Utility {
 	 * @author GordonFreemanQ
 	 */
 	public static void dropItemAtLocation(Block b, ItemStack is) {
+    	if (b == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility dropItemAtLocation block called with null");
+			return;
+		}
 		dropItemAtLocation(b.getLocation(), is);
 	}
     
@@ -472,15 +612,20 @@ public class Utility {
      * @return Returns false if the player is not on the group or doesn't have permission.
      */
     public static boolean isAuthorizedPlayerNear(PlayerReinforcement reinforcement, double distance) {
-       
+    	if (reinforcement == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility isAuthorizedPlayerNear called with null");
+			return false;
+		}
         Location reinLocation = reinforcement.getLocation();
         double min_x = reinLocation.getX() - distance;
         double min_z = reinLocation.getZ() - distance;
         double max_x = reinLocation.getX() + distance;
         double max_z = reinLocation.getZ() + distance;
         List<Player> onlinePlayers = new ArrayList<Player>();
-        for (Player p: Bukkit.getOnlinePlayers())
+        for (Player p: Bukkit.getOnlinePlayers()) {
             onlinePlayers.add(p);
+        }
         boolean result = false;
         try {
             for (Player player : onlinePlayers) {
@@ -518,16 +663,27 @@ public class Utility {
      * @return Returns a natural Reinforcement for the block or null if it isn't meant to have one.
      */
     public static NaturalReinforcement createNaturalReinforcement(Block block, Player player) {
+    	if (block == null || player == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility createNaturalReinforcement called with null");
+			return null;
+		}
         Material material = block.getType();
         NaturalReinforcementType nType = NaturalReinforcementType.
                 getNaturalReinforcementType(material);
-        if (nType == null)
+        if (nType == null) {
             return null;
+        }
         int breakCount = nType.getDurability();
         NaturalReinforcement nr = new NaturalReinforcement(block, breakCount);
         ReinforcementCreationEvent event = new ReinforcementCreationEvent(nr, block, player);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
+            if (CitadelConfigManager.shouldLogInternal()) {
+            	Citadel.getInstance().getLogger().log(Level.INFO,
+            			"createNaturalReinforcement for " + block.getType() + " cancelled");
+            }
+
             return null;
         }
         Citadel.getReinforcementManager().saveInitialReinforcement(nr);
@@ -541,19 +697,25 @@ public class Utility {
      * @return Itemstack form of the reinforcement on a block
      */
     public static ItemStack createDroppedReinforcementBlock(Block block, PlayerReinforcement rein){
+    	if (block == null || rein == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility createDroppedReinforcementBlock called with null");
+			return null;
+		}
         ItemStack reinBlock = new ItemStack(block.getType(), 1);
         ItemMeta lore = reinBlock.getItemMeta();
         List<String> info = new ArrayList<String>();
         String reinMat = rein.getMaterial().name();
-        String amount = "" + rein.getStackRepresentation().getAmount();
-        String dur = "" + ReinforcementType.getReinforcementType(rein.getStackRepresentation()).getHitPoints();
+        String amount = Integer.toString(rein.getStackRepresentation().getAmount());
+        String dur = Integer.toString(ReinforcementType.getReinforcementType(rein.getStackRepresentation()).getHitPoints());
         String group = rein.getGroup().getName();
         info.add(reinMat);
         info.add(amount);
         info.add(dur);
         info.add(group);
-        if (rein.getStackRepresentation().hasItemMeta())
+        if (rein.getStackRepresentation().hasItemMeta()) {
             info.addAll(rein.getStackRepresentation().getItemMeta().getLore());
+        }
         lore.setLore(info);
         reinBlock.setItemMeta(lore);
         return reinBlock;
@@ -568,47 +730,67 @@ public class Utility {
      * @return The PlayerReiforcement associated with this block
      */
     public static PlayerReinforcement isDroppedReinforcementBlock(Player p, ItemStack stack, Location loc){
+    	if (stack == null || loc == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility isDroppedReinforcementBlock called with null");
+			return null;
+		}
         ItemMeta meta = stack.getItemMeta();
         List<String> lore = meta.getLore();
         try{
-        if (!meta.hasLore())
-            return null;
-        Iterator<String> value = lore.iterator();
-        if (!value.hasNext())
-            return null;
-        Material mat = Material.valueOf(value.next());
-        if (!value.hasNext())
-            return null;
-        int amount = Integer.parseInt(value.next());
-        if (!value.hasNext())
-            return null;
-        int dur = Integer.parseInt(value.next());
-        if (!value.hasNext())
-            return null;
-        String group = value.next();
-        List<String> itemStackInfo = new ArrayList<String>();
-        while(value.hasNext())
-            itemStackInfo.add(value.next());
-        ItemStack newStack = new ItemStack(mat, amount);
-        meta.setLore(itemStackInfo);
-        newStack.setItemMeta(meta);
-        ReinforcementType reinType = ReinforcementType.getReinforcementType(newStack);
-        if (reinType == null)
-            return null;
-        Group g = GroupManager.getSpecialCircumstanceGroup(group);
-        PlayerReinforcement rein = new PlayerReinforcement(loc, dur, 
-                getIntFormofMaturation(System.currentTimeMillis(),reinType.getItemStack()),
-                getIntFormofAcidMaturation(System.currentTimeMillis(),reinType.getItemStack()),
-                g, reinType.getItemStack());
-        ReinforcementCreationEvent event = 
-                new ReinforcementCreationEvent(rein, loc.getBlock(), p);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled())
-            return null;
-        return rein;
+	        if (!meta.hasLore()) {
+	            return null;
+	        }
+	        Iterator<String> value = lore.iterator();
+	        if (!value.hasNext()) {
+	            return null;
+	        }
+	        Material mat = Material.valueOf(value.next());
+	        if (!value.hasNext()) {
+	            return null;
+	        }
+	        int amount = Integer.parseInt(value.next());
+	        if (!value.hasNext()) {
+	            return null;
+	        }
+	        int dur = Integer.parseInt(value.next());
+	        if (!value.hasNext()) {
+	            return null;
+	        }
+	        String group = value.next();
+	        List<String> itemStackInfo = new ArrayList<String>();
+	        while(value.hasNext()) {
+	            itemStackInfo.add(value.next());
+	        }
+	        ItemStack newStack = new ItemStack(mat, amount);
+	        meta.setLore(itemStackInfo);
+	        newStack.setItemMeta(meta);
+	        ReinforcementType reinType = ReinforcementType.getReinforcementType(newStack);
+	        if (reinType == null) {
+	            return null;
+	        }
+	        Group g = GroupManager.getSpecialCircumstanceGroup(group);
+	        PlayerReinforcement rein = new PlayerReinforcement(loc, dur, 
+	                getIntFormofMaturation(System.currentTimeMillis(),reinType.getItemStack()),
+	                getIntFormofAcidMaturation(System.currentTimeMillis(),reinType.getItemStack()),
+	                g, reinType.getItemStack());
+	        ReinforcementCreationEvent event = 
+	                new ReinforcementCreationEvent(rein, loc.getBlock(), p);
+	        Bukkit.getPluginManager().callEvent(event);
+	        if (event.isCancelled()) {
+	            if (CitadelConfigManager.shouldLogInternal()) {
+	            	Citadel.getInstance().getLogger().log(Level.INFO,
+	            			"Dropped reinforcement creation event for " + rein.getType() + " cancelled");
+	            }
+	            return null;
+	        }
+	        return rein;
         } catch (IllegalArgumentException iae){
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility isDroppedReinforcementBlock failed", iae);        	
         } catch(Exception ex){
-            ex.printStackTrace();
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility isDroppedReinforcementBlock failed", ex);
         }
         return null;
     }
@@ -620,14 +802,19 @@ public class Utility {
      * @return False if there is not a reinforcement.
      */
     public static boolean explodeReinforcement(Block block) {
-        Reinforcement reinforcement = rm.getReinforcement(block);
+    	if (block == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility explodeReinforcement called with null");
+			return false;
+		}
+    	Reinforcement reinforcement = rm.getReinforcement(block);
         if (reinforcement == null) {
             reinforcement = createNaturalReinforcement(block, null);
         }
         if (reinforcement == null) {
             return false;
         }
-        return reinforcementDamaged(reinforcement);
+        return reinforcementDamaged(null, reinforcement);
     }
     
     /**
@@ -641,10 +828,19 @@ public class Utility {
      * @return
      */
     public static MultiBlockReinforcement createMultiBlockReinforcement(List<Location> locs, Group g, int dur, int mature, int acid){
+    	if (locs == null || g == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility createMultiBlockReinforcement called with null");
+			return null;
+		}
         MultiBlockReinforcement rein = new MultiBlockReinforcement(locs, g, dur, mature, acid, -1);
         ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, rein.getLocation().getBlock(), null);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
+            if (CitadelConfigManager.shouldLogInternal()) {
+            	Citadel.getInstance().getLogger().log(Level.INFO,
+            			"multiblock reinforcement creation event for " + rein.getType() + " cancelled");
+            }
             return null;
         }
         rm.saveInitialReinforcement(rein);
@@ -652,9 +848,14 @@ public class Utility {
     }
     
     public static Block getAttachedChest(Block block) {
+    	if (block == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility getAttachedChest called with null");
+			return null;
+		}
         Material mat = block.getType();
-        if (mat == Material.CHEST || mat == Material.TRAPPED_CHEST) {
-            for (BlockFace face : new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}) {
+        if (Material.CHEST.equals(mat) || Material.TRAPPED_CHEST.equals(mat)) {
+            for (BlockFace face : cardinals) {
                 Block b = block.getRelative(face);
                 if (b.getType() == mat) {
                     return b;
@@ -663,6 +864,8 @@ public class Utility {
         }
         return null;
     }
+    
+    private static BlockFace[] cardinals = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}; 
     
     public static List<Material> doorTypes = new ArrayList<Material>(Arrays.asList(
             Material.WOODEN_DOOR, Material.IRON_DOOR_BLOCK,
@@ -675,14 +878,21 @@ public class Utility {
      * @return Returns the block we want.
      */
     public static Block getRealBlock(Block block){
+    	if (block == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility getRealBlock called with null");
+			return null;
+		}    	
         Block b = block;
         switch (block.getType()){
         case CHEST:
         case TRAPPED_CHEST:
-            if (!rm.isReinforced(block))
+            if (!rm.isReinforced(block)) {
                 b = getAttachedChest(block);
-            if (b == null)
+            }
+            if (b == null) {
                 b = block;
+            }
             break;
         case WOODEN_DOOR:
         case IRON_DOOR_BLOCK:
@@ -692,20 +902,27 @@ public class Utility {
         case JUNGLE_DOOR:
         case SPRUCE_DOOR:
         case WOOD_DOOR:
-            if (!doorTypes.contains(block.getRelative(BlockFace.UP).getType()))
+            if (!doorTypes.contains(block.getRelative(BlockFace.UP).getType())) {
                 b = block.getRelative(BlockFace.DOWN);
+            }
             break;
         case BED_BLOCK:
-            if (((Bed) block.getState().getData()).isHeadOfBed())
+            if (((Bed) block.getState().getData()).isHeadOfBed()) {
                 b = block.getRelative(((Bed) block.getState().getData()).getFacing().getOppositeFace());
+            }
             break;
         default:
-            return block;
+            b = block;
         }
         return b;
     }
     
     private static int getIntFormofMaturation(long creation, ItemStack stack){
+    	if (stack == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility getIntFormofMaturation called with null");
+			return 0;
+		}
         int maturation = (int)(creation / 60000) + 
                 ReinforcementType.
                 getReinforcementType(stack)
@@ -714,7 +931,12 @@ public class Utility {
     }
     
     private static int getIntFormofAcidMaturation(long creation, ItemStack stack) {
-        int maturation = (int)(creation / 60000) + 
+    	if (stack == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility getIntFormofAcidMaturation called with null");
+			return 0;
+		}
+    	int maturation = (int)(creation / 60000) + 
                 ReinforcementType.
                 getReinforcementType(stack)
                 .getAcidTime();
@@ -722,6 +944,11 @@ public class Utility {
     }
     
     public static Block findPlantSoil(Block block){
+    	if (block == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Utility findPlantSoil called with null");
+			return null;
+		}    	
         final Set<Material> soilTypes = getPlantSoilTypes(block.getType());
         if(soilTypes.size() <= 0){
             return null;

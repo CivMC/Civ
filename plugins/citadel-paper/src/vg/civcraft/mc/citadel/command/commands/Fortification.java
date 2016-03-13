@@ -3,7 +3,6 @@ package vg.civcraft.mc.citadel.command.commands;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -18,13 +17,12 @@ import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class Fortification extends PlayerCommand{
+public class Fortification extends PlayerCommandMiddle{
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	private GroupManager gm = NameAPI.getGroupManager();
 
@@ -48,7 +46,7 @@ public class Fortification extends PlayerCommand{
 		if(args.length == 0){
 			groupName = gm.getDefaultGroup(uuid);
 			if(groupName == null){
-				p.sendMessage(ChatColor.RED + "You need to set a default group \n Use /nlsdg to do so");
+				sendAndLog(p, ChatColor.RED, "You need to set a default group \n Use /nlsdg to do so");
 				return true;
 			}
 		}
@@ -57,18 +55,18 @@ public class Fortification extends PlayerCommand{
 		}
 		Group g = gm.getGroup(groupName);	
 		if (g == null){
-			p.sendMessage(ChatColor.RED + "That group does not exist.");
+			sendAndLog(p, ChatColor.RED, "That group does not exist.");
 			return true;
 		}
 		
 		PlayerType type = g.getPlayerType(uuid);
 		if (!p.hasPermission("citadel.admin") && !p.isOp() && type == null){
-			p.sendMessage(ChatColor.RED + "You are not on this group.");
+			sendAndLog(p, ChatColor.RED, "You are not on this group.");
 			return true;
 		}
 		GroupPermission gPerm = gm.getPermissionforGroup(g);
 		if (!p.hasPermission("citadel.admin") && !p.isOp() && !gPerm.isAccessible(type, PermissionType.BLOCKS)){
-			p.sendMessage(ChatColor.RED + "You do not have permission to "
+			sendAndLog(p, ChatColor.RED, "You do not have permission to "
 					+ "place a reinforcement on this group.");
 			return true;
 		}
@@ -76,19 +74,19 @@ public class Fortification extends PlayerCommand{
 		PlayerState state = PlayerState.get(p);
 		ReinforcementType reinType = ReinforcementType.getReinforcementType(stack);
 		if (state.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION){
-			p.sendMessage(ChatColor.GREEN + state.getMode().name() + " has been disabled");
+			sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
 			state.reset();
 		}
 		else{
 			if (stack.getType() == Material.AIR){
-				p.sendMessage(ChatColor.RED + "You need to be holding an ItemStack.");
+				sendAndLog(p, ChatColor.RED, "You need to be holding an ItemStack.");
 				return true;
 			}
 			else if (reinType == null){
-				p.sendMessage(ChatColor.RED + "That is not a ReinforcementType.");
+				sendAndLog(p, ChatColor.RED, "That is not a ReinforcementType.");
 				return true;
 			}
-			p.sendMessage(ChatColor.GREEN + "Your mode has been set to " + 
+			sendAndLog(p, ChatColor.GREEN, "Your mode has been set to " + 
 					ReinforcementMode.REINFORCEMENT_FORTIFICATION.name() + ".");
 			state.setMode(ReinforcementMode.REINFORCEMENT_FORTIFICATION);
 			state.setFortificationItemStack(reinType.getItemStack());
@@ -110,5 +108,4 @@ public class Fortification extends PlayerCommand{
 			return new ArrayList<String>();
 		}
 	}
-
 }

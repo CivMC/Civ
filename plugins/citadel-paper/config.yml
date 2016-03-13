@@ -3,6 +3,10 @@
 # return is the amount of material to return.
 # percent_chance is the chance to return the block. Scales with damage.
 # scale_amount is, if maturation is enabled, the amount extra to damage a block if it is not fully matured.  The forumla for calculating the extra damage is 1/(1-((time left of maturation) / (default amount of time for maturation))) * scale.  So if a block has 5 minutes left of maturation on a 10 minute default period with a scale of 3 we do 1/(5 / 10) * 3 = 6 damage. Setting scale amount to 0 disables this function.
+internal_logging: true
+command_logging: true
+break_logging: true
+reinf_logging: false
 reinforcements:
  diamond:
   material: DIAMOND

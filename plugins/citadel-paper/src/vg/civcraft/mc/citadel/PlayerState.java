@@ -3,6 +3,7 @@ package vg.civcraft.mc.citadel;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,6 +27,9 @@ public class PlayerState {
      * @return The PlayerState of that player.
      */
     public static PlayerState get(Player player) {
+    	if (player == null) {
+    		Citadel.getInstance().getLogger().log(Level.WARNING, "PlayerState get called with null player");
+    	}
         UUID id = NameAPI.getUUID(player.getName());
         PlayerState state = PLAYER_STATES.get(id);
         if (state == null) {
@@ -36,6 +40,9 @@ public class PlayerState {
     }
     
     public static PlayerState get(UUID id) {
+    	if (id == null) {
+    		Citadel.getInstance().getLogger().log(Level.WARNING, "PlayerState get called with null id");
+    	}
     	PlayerState state = PLAYER_STATES.get(id);
         if (state == null) {
             state = new PlayerState(id);
@@ -54,7 +61,6 @@ public class PlayerState {
 
     private UUID accountId;
     private ReinforcementMode mode;
-    private Material fortificationMaterial;
     private Group faction;
     private boolean bypassMode;
     private Integer cancelModePid;
@@ -75,7 +81,6 @@ public class PlayerState {
      */
     public void reset() {
         mode = ReinforcementMode.NORMAL;
-        fortificationMaterial = null;
         fortificationStack = null;
         faction = null;
     }
@@ -99,7 +104,9 @@ public class PlayerState {
      * @param ItemStack.
      */
     public void setFortificationItemStack(ItemStack fortificationStack) {
-        this.fortificationMaterial = fortificationStack.getType();
+    	if (fortificationStack == null) {
+    		Citadel.getInstance().getLogger().log(Level.WARNING, "PlayerState setFortificationItemStack called with null stack");
+    	}
         this.fortificationStack = fortificationStack;
     }
     /**
@@ -114,6 +121,9 @@ public class PlayerState {
      * @param The group.
      */
     public void setGroup(Group faction) {
+    	if (faction == null) {
+    		Citadel.getInstance().getLogger().log(Level.WARNING, "PlayerState setGroup called with null faction");
+    	}
         this.faction = faction;
     }
     /**
@@ -146,11 +156,15 @@ public class PlayerState {
         
         cancelModePid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
             public void run() {
-                Player player = Bukkit.getPlayer(accountId);
-                if (player != null) {
-                    player.sendMessage(ChatColor.YELLOW + mode.name() + " mode off");
-                }
-                reset();
+            	try {
+	                Player player = Bukkit.getPlayer(accountId);
+	                if (player != null) {
+	                    player.sendMessage(ChatColor.YELLOW + mode.name() + " mode off");
+	                }
+	                reset();
+            	} catch (Exception e) {
+               		Citadel.getInstance().getLogger().log(Level.WARNING, "PlayerState checkResetMode Failed", e);
+            	}
             }
         }, 20L * CitadelConfigManager.getPlayerStateReset());
     }
