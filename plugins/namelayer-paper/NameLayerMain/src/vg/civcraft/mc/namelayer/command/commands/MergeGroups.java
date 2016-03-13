@@ -2,6 +2,7 @@ package vg.civcraft.mc.namelayer.command.commands;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
@@ -40,13 +42,12 @@ public class MergeGroups extends PlayerCommandMiddle{
 			return true;
 		}
 		final Group g = gm.getGroup(args[0]);
-		if (g == null){
-			p.sendMessage(ChatColor.RED + "The group " + args[0] + " does not exist.");
+		if (groupIsNull(sender, args[0], g)) {
 			return true;
 		}
+
 		final Group toMerge = gm.getGroup(args[1]);
-		if (toMerge == null){
-			p.sendMessage(ChatColor.RED + "The group " + args[1] + " does not exist.");
+		if (groupIsNull(sender, args[1], toMerge)) {
 			return true;
 		}
 		
@@ -87,9 +88,15 @@ public class MergeGroups extends PlayerCommandMiddle{
 
 			@Override
 			public void run() {
-				gm.mergeGroup(g, toMerge);
+				try {
+					gm.mergeGroup(g, toMerge);
+					p.sendMessage(ChatColor.GREEN + "Group merging is completed.");
+				} catch (Exception e) {
+					NameLayerPlugin.getInstance().getLogger().log(Level.SEVERE, "Group merging failed", e);
+					p.sendMessage(ChatColor.GREEN + "Group merging may have failed.");
+				}
 				active = false;
-				p.sendMessage(ChatColor.GREEN + "Group merging is completed.");
+				
 			}
 			
 		});

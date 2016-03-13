@@ -57,8 +57,7 @@ public class PromotePlayer extends PlayerCommandMiddle{
 		}
 		
 		Group group = gm.getGroup(args[0]);
-		if(group == null){
-			p.sendMessage(ChatColor.RED + "That group does not exist");
+		if (groupIsNull(sender, args[0], group)) {
 			return true;
 		}
 		if (group.isDisciplined()){
@@ -107,6 +106,12 @@ public class PromotePlayer extends PlayerCommandMiddle{
 		
 		if (!group.isMember(promotee)){ //can't edit a player who isn't in the group
 			p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(promotee) + " is not a member of this group.");
+			return true;
+		}
+		
+		if (group.isOwner(promotee)){
+			p.sendMessage(ChatColor.RED + "That player owns the group, you cannot "
+					+ "demote the player.");
 			return true;
 		}
 		

@@ -34,8 +34,7 @@ public class SetDefaultGroup extends PlayerCommandMiddle{
 		Player p = (Player) sender;
 		UUID uuid = NameAPI.getUUID(p.getName());
 		Group g = gm.getGroup(args[0]);
-		if (g == null){
-			p.sendMessage(ChatColor.RED + "That group does not exist.");
+		if (groupIsNull(sender, args[0], g)) {
 			return true;
 		}
 		

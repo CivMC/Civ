@@ -34,8 +34,7 @@ public class JoinGroup extends PlayerCommandMiddle{
 		}
 		Player p = (Player) sender;
 		Group g = gm.getGroup(args[0]);
-		if (g == null){
-			p.sendMessage(ChatColor.RED + "Group is null.");
+		if (groupIsNull(sender, args[0], g)) {
 			return true;
 		}
 		if (g.isDisciplined()){
@@ -57,7 +56,7 @@ public class JoinGroup extends PlayerCommandMiddle{
 			p.sendMessage(ChatColor.RED + "Someone derped. This group does not have the specified permission to let you join, sorry.");
 			return true;
 		}
-		if (g.isMember(uuid, pType)){
+		if (g.isCurrentMember(uuid, pType)){
 			p.sendMessage(ChatColor.RED + "You are already a member.");
 			return true;
 		}

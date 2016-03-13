@@ -35,8 +35,7 @@ public class TransferGroup extends PlayerCommandMiddle{
 		}
 		Player p = (Player) sender;
 		Group g = gm.getGroup(args[0]);
-		if (g == null){
-			p.sendMessage(ChatColor.RED + "This group does not exist.");
+		if (groupIsNull(sender, args[0], g)) {
 			return true;
 		}
 		
@@ -62,6 +61,11 @@ public class TransferGroup extends PlayerCommandMiddle{
 		
 		if (oPlayer == null){
 			p.sendMessage(ChatColor.RED + "This player has never played before and cannot be given the group.");
+			return true;
+		}
+		
+		if (NameLayerPlugin.getInstance().getGroupLimit() < gm.countGroups(oPlayer) + 1){
+			p.sendMessage(ChatColor.RED + "This player cannot receive the group! This player has already reached the group limit count.");
 			return true;
 		}
 		

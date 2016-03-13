@@ -27,8 +27,7 @@ public class DisciplineGroup extends PlayerCommandMiddle{
 		// naaaaaaa
 		Player p = (Player) sender;
 		Group g = gm.getGroup(args[0]);
-		if (g == null){
-			sender.sendMessage(ChatColor.RED + "Group does not exist.");
+		if (groupIsNull(sender, args[0], g)) {
 			return true;
 		}
 		if (!p.isOp() || !p.hasPermission("namelayer.admin")){

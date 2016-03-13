@@ -2,6 +2,7 @@ name: ${project.name}
 main: vg.civcraft.mc.namelayer.NameLayerPlugin
 version: ${project.version}
 author: Rourke750
+authors [BlackXnt, Maxopoly, ProgrammerDan, Tyrothalos, Scuwr]
 depend: [CivModCore]
 softdepend: [Mercury]
 description: NameLayer handles groups creation and management, in addition to name changes. Once you have connected to Civcraft with a name, it is permanently yours. If a name is already taken, then NameLayer will add a number to the name.
@@ -30,38 +31,40 @@ commands:
    nllm:
     aliases: [nllistmembers, nllistm, lm, listmembers, ctmembers, members]
    nllp:
-    aliases: [nllistpermissions, nllistperms]
+    aliases: [nllistpermissions, nllistperms, listpermissions]
    nlpp:
     aliases: [nlpromoteplayer, nlpromote, ctpromote, ctaddmod, ctam, addmod, promoteplayer]
    nlmg:
-    aliases: [nlmergegroups, nlmerge, merge]
+    aliases: [nlmergegroups, nlmerge, merge, mergegroup]
    nlmp:
-    aliases: [nlmodifyperms, nlmodifypermissions, nlmodperms]
+    aliases: [nlmodifyperms, nlmodifypermissions, nlmodperms, modifypermissions]
    nlrm:
-    aliases: [nlremovemember, nlremove, nlkick, remove, kickmember, ctremove, ctkick]
+    aliases: [nlremovemember, nlremove, nlkick, remove, kickmember, ctremove, ctkick, removemember]
    nlri:
-    aliases: [nlrevokeinvite, nluninvite, revoke, uninvite]
-   nlrsg:
+    aliases: [nlrevokeinvite, nluninvite, revoke, uninvite, revoteinvite]
    nlsp:
-    aliases: [nlsetpassword, nlsetpass, setpass]
+    aliases: [nlsetpassword, nlsetpass, setpass, setpassword]
+   nllink:
+   nlunlink:
+   nllsg:
    nltg:
-    aliases: [nltransfergroup, nltransfer]
+    aliases: [nltransfergroup, nltransfer, transfergroup]
    nlleg:
     aliases: [nlleavegroup, nlleave, leavegroup, ctleave]
    nllgt:
-    aliases: [nllistgrouptypes, nllistgtypes]
+    aliases: [nllistgrouptypes, nllistgtypes, listgrouptypes]
    nllpt:
-    aliases: [nllistplayertypes, nllistptypes]
+    aliases: [nllistplayertypes, nllistptypes, listplayertypes]
    nllci:
-    aliases: [nllistcurrentinvites, nllistinvites, invites, ctinvites]
+    aliases: [nllistcurrentinvites, nllistinvites, invites, ctinvites, listinvites]
    nltaai:
     aliases: [nlautoacceptinvites, nlautoaccept, autoaccept]
    nlcpn:
       permission: namelayer.admin
    nlsdg:
-    aliases: [nlsetdefaultgroup, nlsetdefault, setdefault, default]
+    aliases: [nlsetdefaultgroup, nlsetdefault, setdefault, default, setdefaultgroup]
    nlgdg:
-    aliases: [nlgetdefaultgroup, nlgetdefault]
+    aliases: [nlgetdefaultgroup, nlgetdefault, getdefaultgroup]
 permissions:
    namelayer.admin:
       default: op

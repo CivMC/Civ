@@ -6,18 +6,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.GroupPermission;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class PlayerListener implements Listener{
 
@@ -27,17 +29,28 @@ public class PlayerListener implements Listener{
 	public void playerJoinEvent(PlayerJoinEvent event){
 		Player p = event.getPlayer();
 		UUID uuid = p.getUniqueId();
+		GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
+		
+		for (String groupName : db.getGroupNames(uuid)){
+			Group group = GroupManager.getGroup(groupName);
+			GroupPermission perm = new GroupPermission(group);
+			PlayerType ptype = group.getPlayerType(uuid);
+			
+			if(ptype != null && perm.isAccessible(ptype, PermissionType.BLOCKS))
+				db.updateTimestamp(groupName);
+		}
+		
 		if (!notifications.containsKey(uuid) || notifications.get(uuid).isEmpty())
 			return;
 		
 		String x = null;
-		GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
+				
 		boolean shouldAutoAccept = db.shouldAutoAcceptGroups(uuid);
 		if(shouldAutoAccept){
 			x = "You have auto-accepted invitation from the following groups while you were away: ";
 		}
 		else{
-			x = "You have been invited to the following groups while you were away. You can accept each invitaion by using the command: /nlag [groupname].  ";
+			x = "You have been invited to the following groups while you were away. You can accept each invitation by using the command: /nlag [groupname].  ";
 		}			
 		
 		for (Group g:notifications .get(uuid)){

@@ -35,9 +35,7 @@ public class AcceptInvite extends PlayerCommandMiddle{
 		}
 		Player p = (Player) sender;
 		Group group = gm.getGroup(args[0]);
-		if (group == null){
-			// How can the group be real if the code isn't real
-			p.sendMessage(ChatColor.RED + "The group does not exist.");
+		if (groupIsNull(sender, args[0], group)) {
 			return true;
 		}
 		UUID uuid = NameAPI.getUUID(p.getName());
@@ -65,14 +63,7 @@ public class AcceptInvite extends PlayerCommandMiddle{
 		}
 		
 		p.sendMessage(ChatColor.GREEN + "You have successfully been added to the group as a " + type.name() +".");
-		if (group instanceof PrivateGroup){
-			PrivateGroup priv = (PrivateGroup) group;
-			List<Group> groups = priv.getSubGroups();
-			for (Group g: groups){
-				g.addMember(uuid, PlayerType.SUBGROUP);
-				checkRecacheGroup(g);
-			}
-		}
+		checkRecacheGroup(group);
 		return true;
 	}
 	@Override

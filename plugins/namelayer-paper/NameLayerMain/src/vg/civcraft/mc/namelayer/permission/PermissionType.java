@@ -1,10 +1,11 @@
 package vg.civcraft.mc.namelayer.permission;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import com.google.common.collect.Maps;
 
 /*
  * To add or remove perms add them to this list.
@@ -33,21 +34,33 @@ public enum PermissionType {
 	LIST_PERMS, // Allows the player to use the command to list the perms of a PlayerType
 	TRANSFER, // Allows the player to transfer the group
 	CROPS, // Allows access to crops, mainly used for citadel.
-	GROUPSTATS; //Allows access to nlgs command for group
+	GROUPSTATS, //Allows access to nlgs command for group
+	LINKING; // Allows linking and unlinking of super groups and subgroups
 	
+	private final static Map<String, PermissionType> BY_NAME = Maps.newHashMap();
+	
+	static {
+		for (PermissionType perm : values()) {
+			BY_NAME.put(perm.name(), perm);
+		}
+	}
+		
 	public static PermissionType getPermissionType(String type){
-		PermissionType pType = null;
-		try{
-			pType = PermissionType.valueOf(type.toUpperCase());
-		} catch(IllegalArgumentException ex){}
-		return pType;
+		return BY_NAME.get(type);
 	}
 	
-	public static void displayPermissionTypes(Player p){
-		String types = "";
-		for (PermissionType type: PermissionType.values())
-			types += type.name() + " ";
-		p.sendMessage(ChatColor.RED +"That PermissionType does not exists.\n" +
-				"The current types are: " + types);
+	public static String getStringOfTypes() {
+		StringBuilder perms = new StringBuilder();
+		for (String perm: BY_NAME.keySet()) {
+			perms.append(perm);
+			perms.append(" ");
+		}
+		return perms.toString();
+	}
+	
+	public static void displayPermissionTypes(Player p) {
+		p.sendMessage(ChatColor.RED 
+				+ "That PermissionType does not exists.\n"
+				+ "The current types are: " + getStringOfTypes());
 	}
 }

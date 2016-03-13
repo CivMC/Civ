@@ -30,12 +30,11 @@ public class LeaveGroup extends PlayerCommandMiddle{
 		}
 		Player p = (Player) sender;
 		Group g = gm.getGroup(args[0]);
-		if (g == null){
-			p.sendMessage(ChatColor.RED + "That group does not exit.");
+		if (groupIsNull(sender, args[0], g)) {
 			return true;
 		}
 		UUID uuid = NameAPI.getUUID(p.getName());
-		if (!g.isMember(uuid)){
+		if (!g.isCurrentMember(uuid)){
 			p.sendMessage(ChatColor.RED + "You are not a member of this group.");
 			return true;
 		}
