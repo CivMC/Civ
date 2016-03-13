@@ -109,8 +109,8 @@ public class Utility {
         int x = loc.getBlockX();
         int y = loc.getBlockY();
         int z = loc.getBlockZ();
-        int type_id = world.getBlockAt(x, y, z).getType().getId();
-        boolean exists = (type_id == 84 || type_id == 25);
+        Material type = world.getBlockAt(x, y, z).getType();
+        boolean exists = Material.NOTE_BLOCK == type || Material.JUKEBOX == type;
         if (!exists && shouldCleanup) {
             final JukeAlert plugin = JukeAlert.getInstance();
             plugin.log("Removing ghost snitch '" + snitch.getName() + "' at x:" + x + " y:" + y + " z:" + z);

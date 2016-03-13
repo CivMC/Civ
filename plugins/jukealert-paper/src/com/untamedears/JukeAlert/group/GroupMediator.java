@@ -19,27 +19,33 @@ public class GroupMediator {
     }
 
     public Group getGroupByName(String groupName) {
-        return groupManager.getGroup(groupName);
+        return GroupManager.getGroup(groupName);
     }
 
     public List<String> getGroupsByAccount(UUID accountId, boolean includeFounders, boolean includeModerators, boolean includeMembers) {
     	List<String> returnValue = new ArrayList<String>();
-    		List<Group> groups = new ArrayList<Group>();
-    		for (String group: groupManager.getAllGroupNames(accountId)){
-    			Group g = groupManager.getGroup(group);
-    			if (includeFounders && g.isOwner(accountId))
-    				groups.add(g);
-    			GroupPermission perm = groupManager.getPermissionforGroup(g);
-    			if (includeModerators && perm.isAccessible(g.getPlayerType(accountId), PermissionType.BLOCKS))
-    				groups.add(g);
-    			if (includeMembers && g.isMember(accountId))
-    				groups.add(g);
-    		}
-    		for(Group f : groups) {
-    			if (!returnValue.contains(f.getName())) {
-    				returnValue.add(f.getName());
-    			}
-    		}
+		List<Group> groups = new ArrayList<Group>();
+		for (String group: groupManager.getAllGroupNames(accountId)){
+			Group g = GroupManager.getGroup(group);
+			if (g == null) {
+				continue;
+			}
+			if (includeFounders && g.isOwner(accountId)) {
+				groups.add(g);
+			}
+			GroupPermission perm = groupManager.getPermissionforGroup(g);
+			if (includeModerators && perm.isAccessible(g.getPlayerType(accountId), PermissionType.BLOCKS)) {
+				groups.add(g);
+			}
+			if (includeMembers && g.isMember(accountId)) {
+				groups.add(g);
+			}
+		}
+		for(Group f : groups) {
+			if (!returnValue.contains(f.getName())) {
+				returnValue.add(f.getName());
+			}
+		}
     	
     	return returnValue;
     }

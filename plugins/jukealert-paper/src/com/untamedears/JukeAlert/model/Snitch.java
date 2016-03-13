@@ -142,7 +142,7 @@ public class Snitch implements QTBox, Comparable {
     }
 
     public Group getGroup() {
-        if (!group.isValid()) {
+        if (group != null && !group.isValid()) {
             group = NameAPI.getGroupManager().getGroup(group.getName());
         }
         return group;
