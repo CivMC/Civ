@@ -33,8 +33,7 @@ public class SparseQuadTree {
   public SparseQuadTree(Integer borderSize) {
     boxes_ = new TreeSet<QTBox>();
     if (borderSize == null || borderSize < 0) {
-        throw new IllegalArgumentException(
-            "borderSize == null || borderSize < 0");
+        throw new IllegalArgumentException("borderSize == null || borderSize < 0");
     }
     borderSize_ = borderSize;
     quadrant_ = Quadrant.Root;

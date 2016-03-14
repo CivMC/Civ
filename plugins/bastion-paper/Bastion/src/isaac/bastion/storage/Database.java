@@ -77,10 +77,11 @@ public class Database {
         }
         try {
             connection = DriverManager.getConnection(jdbc);
+            prepareStatements();
             this.logger.log(Level.INFO, "Connected to database!");
             return true;
         } catch (SQLException ex) { //Error handling below:
-            this.logger.log(Level.SEVERE, "Could not connnect to the database! Because "+ex.getMessage());
+            this.logger.log(Level.SEVERE, "Could not connnect to the database! Because ", ex);
             Bukkit.getPluginManager().disablePlugin(Bastion.getPlugin());
             return false;
         }
@@ -107,8 +108,9 @@ public class Database {
      */
     public boolean isConnected() {
         try {
-        	if(connection!=null)
+        	if (connection != null) {
         		return connection.isValid(5);
+        	}
         	return false;
         } catch (SQLException ex) {
             this.logger.log(Level.SEVERE, "isConnected error!", ex);
@@ -116,6 +118,13 @@ public class Database {
         return false;
     }
 
+    /**
+     * Convenience aggregator for all storage types that leverage prepared statements.
+     */
+    private void prepareStatements() {
+    	BastionBlockStorage.prepareStatements();
+    }
+    
     /**
      * Prepare the SQL statements
      *
@@ -139,7 +148,7 @@ public class Database {
     public void execute(String sql) {
         try {
             if (isConnected()) {
-                connection.prepareStatement(sql).executeUpdate();
+                connection.createStatement().executeUpdate(sql);
             } else {
                 connect();
                 execute(sql);
@@ -156,7 +165,7 @@ public class Database {
      */
     public void executeLoud(String sql) throws java.sql.SQLException {
         if (isConnected()) {
-            connection.prepareStatement(sql).executeUpdate();
+            connection.createStatement().executeUpdate(sql);
         } else {
             connect();
             execute(sql);
@@ -171,7 +180,7 @@ public class Database {
     public void silentExecute(String sql) {
         try {
             if (isConnected()) {
-                connection.prepareStatement(sql).executeUpdate();
+                connection.createStatement().executeUpdate(sql);
             } else {
                 connect();
                 execute(sql);

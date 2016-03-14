@@ -1,5 +1,5 @@
-name: Bastion
-version: 1.0.1
+name: ${project.name}
+version: ${project.version}
 main: isaac.bastion.Bastion
 depend: [Citadel, NameLayer]
 softdepend: [Humbug]
