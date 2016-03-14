@@ -62,7 +62,8 @@ Permissions:
   * /bsi gives extra info 
 
 To compile:
- * Download Bukkit
+ * Download Spigot
  * Download Citadel
+ * Download Namelayer
  * Download Humbug
- * Link to Bukkit, Citadel, and Humbug then compile
+ * Link to Spigot, Citadel, Namelayer, and Humbug then compile
