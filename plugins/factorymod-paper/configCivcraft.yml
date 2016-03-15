@@ -292,7 +292,7 @@ factories:
     name: Grill
     recipes:
     - Grill_Steak_Advanced
-    - Grill_Beef
+    - Grill_Pork
     - Fry_Chicken
     - Cook_Salmon
     - Cook_Fish
@@ -2594,17 +2594,17 @@ recipes:
       cooked chicken:
         material: COOKED_CHICKEN
         amount: 64
-  Grill_Beef:
+  Grill_Pork:
     type: PRODUCTION
-    name: Grill Beef
+    name: Grill Pork
     production_time: 5s
     input:
-      beef:
-        material: RAW_BEEF
+      pork:
+        material: RAW_PORK
         amount: 32
     output:
-      cooked beef:
-        material: COOKED_BEEF
+      grilled pork:
+        material: GRILLED_PORK
         amount: 64
   Grill_Steak_Advanced:
     type: PRODUCTION
