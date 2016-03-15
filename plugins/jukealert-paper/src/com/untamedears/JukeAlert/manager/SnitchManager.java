@@ -72,10 +72,23 @@ public class SnitchManager {
         		if (rein == null || !(rein instanceof PlayerReinforcement))
         			continue;
         		PlayerReinforcement pRein = (PlayerReinforcement) rein;
-        		if (!pRein.getGroup().getName().equals(snitch.getGroup().getName())){
-        			plugin.getLogger().log(Level.INFO, "Found mismatched juke at " + snitch.getLoc().toString() + " correcting from "
-        					+ snitch.getGroup().getName() + " to " + pRein.getGroup().getName());
-        			snitch.setGroup(pRein.getGroup());
+        		Group reinfGroup = pRein.getGroup();
+        		Group snitchGroup = snitch.getGroup();
+        		if (reinfGroup == null) {
+					plugin.getLogger().log(Level.SEVERE, "Juke at {0} is reinforced to a group that no longer exists: {1} (former id: {2}) - removing",
+							new Object[] {snitch.getLoc(), (snitchGroup != null ? snitchGroup.getName() : null), pRein.getGroupId() });
+					final String worldName = snitch.getLoc().getWorld().getName();
+					final int x = snitch.getX();
+					final int y = snitch.getY();
+					final int z = snitch.getZ();
+        			logger.logSnitchBreak(worldName, x, y, z);
+        			continue;
+        		}
+        		if (snitchGroup == null || !reinfGroup.getName().equals(snitchGroup.getName())){
+        			plugin.getLogger().log(Level.INFO, "Found mismatched juke at {0} correcting from {1} to {2}",
+        					new Object[] { snitch.getLoc(), (snitchGroup != null ? snitchGroup.getName() : null), 
+        							reinfGroup.getName()});
+        			snitch.setGroup(reinfGroup;
         		}
         	}
         }
@@ -98,6 +111,9 @@ public class SnitchManager {
             86400000L * (long)plugin.getConfigManager().getMaxSnitchLifetime());
         for (Snitch snitch : getAllSnitches()) {
             final Group group = snitch.getGroup();
+            if (group == null) {
+            	plugin.getLogger().log(LEVEL.WARNING, "Snitch at {0} lacks a valid group, skipping cull.", snitch.getLoc());
+            }
             final String groupName = group.getName();
             Boolean performCull = cullGroups.get(groupName);
             if (performCull == null) {
