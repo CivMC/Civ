@@ -2268,7 +2268,7 @@ recipes:
         amount: 6
     output:
       diamond pickaxe:
-        material: DIAMOND_PICKAXE
+        material: DIAMOND_SHOVEL
         amount: 8
   Forge_Diamond_Sword:
     type: PRODUCTION
