@@ -2267,7 +2267,7 @@ recipes:
         material: DIAMOND
         amount: 6
     output:
-      diamond pickaxe:
+      diamond shovel:
         material: DIAMOND_SHOVEL
         amount: 8
   Forge_Diamond_Sword:
@@ -2387,8 +2387,8 @@ recipes:
         material: GOLD_INGOT
         amount: 6
     output:
-      gold pickaxe:
-        material: GOLD_PICKAXE
+      gold shovel:
+        material: GOLD_SHOVEL
         amount: 8
   Forge_Gold_Sword:
     type: PRODUCTION
@@ -2507,8 +2507,8 @@ recipes:
         material: IRON_INGOT
         amount: 6
     output:
-      iron pickaxe:
-        material: IRON_PICKAXE
+      iron shovel:
+        material: IRON_SHOVEL
         amount: 8
   Forge_Iron_Sword:
     type: PRODUCTION
@@ -2567,8 +2567,8 @@ recipes:
         material: STONE
         amount: 6
     output:
-      stone pickaxe:
-        material: STONE_PICKAXE
+      stone shovel:
+        material: STONE_SHOVEL
         amount: 8
   Forge_Stone_Sword:
     type: PRODUCTION
