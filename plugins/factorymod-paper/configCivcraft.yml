@@ -292,7 +292,7 @@ factories:
     name: Grill
     recipes:
     - Grill_Steak_Advanced
-    - Grill_Beef
+    - Grill_Pork
     - Fry_Chicken
     - Cook_Salmon
     - Cook_Fish
@@ -2267,8 +2267,8 @@ recipes:
         material: DIAMOND
         amount: 6
     output:
-      diamond pickaxe:
-        material: DIAMOND_PICKAXE
+      diamond shovel:
+        material: DIAMOND_SHOVEL
         amount: 8
   Forge_Diamond_Sword:
     type: PRODUCTION
@@ -2387,8 +2387,8 @@ recipes:
         material: GOLD_INGOT
         amount: 6
     output:
-      gold pickaxe:
-        material: GOLD_PICKAXE
+      gold shovel:
+        material: GOLD_SHOVEL
         amount: 8
   Forge_Gold_Sword:
     type: PRODUCTION
@@ -2507,8 +2507,8 @@ recipes:
         material: IRON_INGOT
         amount: 6
     output:
-      iron pickaxe:
-        material: IRON_PICKAXE
+      iron shovel:
+        material: IRON_SHOVEL
         amount: 8
   Forge_Iron_Sword:
     type: PRODUCTION
@@ -2567,8 +2567,8 @@ recipes:
         material: STONE
         amount: 6
     output:
-      stone pickaxe:
-        material: STONE_PICKAXE
+      stone shovel:
+        material: STONE_SHOVEL
         amount: 8
   Forge_Stone_Sword:
     type: PRODUCTION
@@ -2594,17 +2594,17 @@ recipes:
       cooked chicken:
         material: COOKED_CHICKEN
         amount: 64
-  Grill_Beef:
+  Grill_Pork:
     type: PRODUCTION
-    name: Grill Beef
+    name: Grill Pork
     production_time: 5s
     input:
-      beef:
-        material: RAW_BEEF
+      pork:
+        material: RAW_PORK
         amount: 32
     output:
-      cooked beef:
-        material: COOKED_BEEF
+      grilled pork:
+        material: GRILLED_PORK
         amount: 64
   Grill_Steak_Advanced:
     type: PRODUCTION
