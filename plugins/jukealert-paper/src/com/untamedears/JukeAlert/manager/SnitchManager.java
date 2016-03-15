@@ -112,7 +112,7 @@ public class SnitchManager {
         for (Snitch snitch : getAllSnitches()) {
             final Group group = snitch.getGroup();
             if (group == null) {
-            	plugin.getLogger().log(LEVEL.WARNING, "Snitch at {0} lacks a valid group, skipping cull.", snitch.getLoc());
+            	plugin.getLogger().log(Level.WARNING, "Snitch at {0} lacks a valid group, skipping cull.", snitch.getLoc());
             	continue;
             }
             final String groupName = group.getName();
