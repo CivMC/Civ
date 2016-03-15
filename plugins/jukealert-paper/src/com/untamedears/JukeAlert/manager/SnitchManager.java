@@ -88,7 +88,7 @@ public class SnitchManager {
         			plugin.getLogger().log(Level.INFO, "Found mismatched juke at {0} correcting from {1} to {2}",
         					new Object[] { snitch.getLoc(), (snitchGroup != null ? snitchGroup.getName() : null), 
         							reinfGroup.getName()});
-        			snitch.setGroup(reinfGroup;
+        			snitch.setGroup(reinfGroup);
         		}
         	}
         }
@@ -113,6 +113,7 @@ public class SnitchManager {
             final Group group = snitch.getGroup();
             if (group == null) {
             	plugin.getLogger().log(LEVEL.WARNING, "Snitch at {0} lacks a valid group, skipping cull.", snitch.getLoc());
+            	continue;
             }
             final String groupName = group.getName();
             Boolean performCull = cullGroups.get(groupName);
