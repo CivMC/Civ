@@ -2600,7 +2600,7 @@ recipes:
     production_time: 5s
     input:
       pork:
-        material: RAW_PORK
+        material: PORK
         amount: 32
     output:
       grilled pork:
