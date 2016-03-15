@@ -2268,7 +2268,7 @@ recipes:
         amount: 6
     output:
       diamond shovel:
-        material: DIAMOND_SHOVEL
+        material: DIAMOND_SPADE
         amount: 8
   Forge_Diamond_Sword:
     type: PRODUCTION
@@ -2388,7 +2388,7 @@ recipes:
         amount: 6
     output:
       gold shovel:
-        material: GOLD_SHOVEL
+        material: GOLD_SPADE
         amount: 8
   Forge_Gold_Sword:
     type: PRODUCTION
@@ -2508,7 +2508,7 @@ recipes:
         amount: 6
     output:
       iron shovel:
-        material: IRON_SHOVEL
+        material: IRON_SPADE
         amount: 8
   Forge_Iron_Sword:
     type: PRODUCTION
@@ -2568,7 +2568,7 @@ recipes:
         amount: 6
     output:
       stone shovel:
-        material: STONE_SHOVEL
+        material: STONE_SPADE
         amount: 8
   Forge_Stone_Sword:
     type: PRODUCTION
