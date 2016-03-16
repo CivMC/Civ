@@ -52,20 +52,20 @@ public class Utility {
     }
 
     public static void notifyGroup(Snitch snitch, String message) throws SQLException {
-        if (snitch.getGroup() == null) return;
+        Group sG = snitch.getGroup();
+        if (sG == null) return;
         final JukeAlert plugin = JukeAlert.getInstance();
-        Set<String> skipUUID = plugin.getJaLogger().getIgnoreUUIDs(snitch.getGroup().getName());
+        Set<String> skipUUID = plugin.getJaLogger().getIgnoreUUIDs(sG.getName());
         if(skipUUID == null){
         	//this should be fine as it is how it used to be done
         	skipUUID = null;
         }
         OnlineGroupMembers iter = OnlineGroupMembers
-            .get(snitch.getGroup().getName())
+            .get(sG.getName())
             .reference(snitch.getLoc())
             .skipList(skipUUID);
         if (!snitch.shouldLog()) {
-            iter.maxDistance(
-                JukeAlert.getInstance().getConfigManager().getMaxAlertDistanceNs());
+            iter.maxDistance(JukeAlert.getInstance().getConfigManager().getMaxAlertDistanceNs());
         }
         for (Player player : iter) {
             RateLimiter.sendMessage(player, message);
@@ -78,12 +78,20 @@ public class Utility {
         return faction.isMember(accountId);
     }
     
+    private static long failureReportDelay = 10000l;
+    private static long lastNotifyPOSFailure = System.currentTimeMillis() - failureReportDelay;
+    
     public static boolean isPartialOwnerOfSnitch(Snitch snitch, UUID accountId) {
         Group faction = snitch.getGroup();
         if (faction == null) return false;
         PlayerType type = faction.getPlayerType(accountId);
         GroupPermission perm = NameAPI.getGroupManager().getPermissionforGroup(faction);
-        return faction.isOwner(accountId) || (type != null && perm.isAccessible(type, PermissionType.BLOCKS));
+        if (perm == null && System.currentTimeMillis() - lastNotifyPOSFailure > failureReportDelay) {
+            JukeAlert.getInstance().getLogger().log(Level.WARNING, 
+                    "isPartialOwnerOfSnitch unable to find permissions for group {0}", faction.getName());
+            lastNotifyPOSFailure = System.currentTimeMillis();
+        }
+        return faction.isOwner(accountId) || (type != null && perm != null && perm.isAccessible(type, PermissionType.BLOCKS));
     }
 
     public static Snitch getSnitchUnderCursor(Player player) {
