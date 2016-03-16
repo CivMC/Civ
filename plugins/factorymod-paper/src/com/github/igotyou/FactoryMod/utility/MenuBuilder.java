@@ -174,12 +174,17 @@ public class MenuBuilder {
 
 	private void openRecipeBrowser(Player p, String facName) {
 		ClickableInventory.forceCloseInventory(p);
-		ClickableInventory recipeInventory = new ClickableInventory(36,
-				"Recipes for " + facName); // Bukkit has 32 char limit on
-											// inventory
 		FurnCraftChestEgg egg = (FurnCraftChestEgg) manager.getEgg(facName);
 		List<IRecipe> recipes = egg.getRecipes();
-
+		int size = (recipes.size() / 9) + 2;
+		if ((recipes.size() % 9) == 0) {
+			size--;
+		}
+		size *= 9;
+		
+		ClickableInventory recipeInventory = new ClickableInventory(size,
+				"Recipes for " + facName); // Bukkit has 32 char limit on
+											// inventory
 		// put recipes
 		int j = 0;
 		for (int i = 0; i < recipes.size(); i++) {
@@ -207,7 +212,7 @@ public class MenuBuilder {
 				openFactoryBrowser(arg0, factoryViewed.get(arg0.getUniqueId()));
 			}
 		};
-		recipeInventory.setSlot(backClickable, 31);
+		recipeInventory.setSlot(backClickable, size - 5);
 		ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(),
 				recipeInventory, p);
 	}
