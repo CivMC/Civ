@@ -72,9 +72,6 @@ public class CivChat2Listener implements Listener {
 		
 		CivChat2.debugmessage(String.format("ChatEvent properties: chatMessage =[ %s ], sender = [ %s ], chatChannel = [ %s ], groupchatting = [ %s ];", chatMessage, sender.getName(), chatChannel, groupChat));
 		if(chatChannel != null){
-			
-			
-			
 			StringBuilder sb = new StringBuilder();
 			CivChat2.debugmessage("PlayerChatEvent chatChannel does not equal null");
 			UUID receiverUUID = NameAPI.getUUID(chatChannel);
