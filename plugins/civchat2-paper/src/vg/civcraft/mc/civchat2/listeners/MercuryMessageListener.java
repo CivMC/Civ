@@ -66,8 +66,14 @@ public class MercuryMessageListener implements Listener {
 		else if(message[0].equalsIgnoreCase("bc")) {
 			cc.getServer().broadcastMessage(ChatColor.GOLD + message [1]);
 		}
-		else if(message[0].equalsIgnoreCase("reply")) {
-			cc.getCivChat2Manager().addPlayerReply(message[1], message[2]);
+		else if(message[0].equalsIgnoreCase("channel")) {
+			if(message[1].equalsIgnoreCase("reply")){
+				cc.getCivChat2Manager().addPlayerReply(message[2], message[3]);
+			} else if(message[1].equalsIgnoreCase("player")){
+				cc.getCivChat2Manager().addChatChannel(message[2], message[3]);
+			} else if(message[1].equalsIgnoreCase("group")){
+				cc.getCivChat2Manager().addGroupChat(message[2], message[3]);
+			}
 		}
 		
 	}
