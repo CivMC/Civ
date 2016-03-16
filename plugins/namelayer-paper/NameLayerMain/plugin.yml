@@ -30,6 +30,7 @@ commands:
     aliases: [nllistgroups, nllistg, listgroups, ctlist, lg]
    nllm:
     aliases: [nllistmembers, nllistm, lm, listmembers, ctmembers, members]
+   nllcm:
    nllp:
     aliases: [nllistpermissions, nllistperms, listpermissions]
    nlpp:
@@ -42,11 +43,11 @@ commands:
     aliases: [nlremovemember, nlremove, nlkick, remove, kickmember, ctremove, ctkick, removemember]
    nlri:
     aliases: [nlrevokeinvite, nluninvite, revoke, uninvite, revoteinvite]
-   nlsp:
-    aliases: [nlsetpassword, nlsetpass, setpass, setpassword]
    nllink:
    nlunlink:
    nllsg:
+   nlsp:
+    aliases: [nlsetpassword, nlsetpass, setpass, setpassword]
    nltg:
     aliases: [nltransfergroup, nltransfer, transfergroup]
    nlleg:
@@ -60,7 +61,7 @@ commands:
    nltaai:
     aliases: [nlautoacceptinvites, nlautoaccept, autoaccept]
    nlcpn:
-      permission: namelayer.admin
+    permission: namelayer.admin
    nlsdg:
     aliases: [nlsetdefaultgroup, nlsetdefault, setdefault, default, setdefaultgroup]
    nlgdg:

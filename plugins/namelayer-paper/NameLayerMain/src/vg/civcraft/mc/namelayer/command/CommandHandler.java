@@ -79,6 +79,7 @@ public class CommandHandler {
 	
 	public void addCommands(Command command){
 			commands.put(command.getIdentifier().toLowerCase(), command);
+			command.postSetup();
 	}
 	
 	public boolean execute(CommandSender sender, org.bukkit.command.Command cmd, String[] args){
