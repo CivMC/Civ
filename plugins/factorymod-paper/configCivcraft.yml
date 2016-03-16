@@ -108,6 +108,38 @@ factories:
     type: FCCUPGRADE
     name: Glass Dying Factory
     recipes:
+    - Dye_Glass_White
+    - Dye_Glass_Orange
+    - Dye_Glass_Magenta
+    - Dye_Glass_Light_Blue
+    - Dye_Glass_Yellow
+    - Dye_Glass_Lime
+    - Dye_Glass_Pink
+    - Dye_Glass_Gray
+    - Dye_Glass_Light_Gray
+    - Dye_Glass_Cyan
+    - Dye_Glass_Purple
+    - Dye_Glass_Blue
+    - Dye_Glass_Brown
+    - Dye_Glass_Green
+    - Dye_Glass_Red
+    - Dye_Glass_Black
+    - Dye_GlassPanes_White
+    - Dye_GlassPanes_Orange
+    - Dye_GlassPanes_Magenta
+    - Dye_GlassPanes_Light_Blue
+    - Dye_GlassPanes_Yellow
+    - Dye_GlassPanes_Lime
+    - Dye_GlassPanes_Pink
+    - Dye_GlassPanes_Gray
+    - Dye_GlassPanes_Light_Gray
+    - Dye_GlassPanes_Cyan
+    - Dye_GlassPanes_Purple
+    - Dye_GlassPanes_Blue
+    - Dye_GlassPanes_Brown
+    - Dye_GlassPanes_Green
+    - Dye_GlassPanes_Red
+    - Dye_GlassPanes_Black
     - Repair_Factory
   advancedsandsmelter:
     #Basic Contraption --> Stone Smelter --> Sand Smelter --> Glass Blowing Workshop
@@ -150,6 +182,7 @@ factories:
     - Upgrade_to_Netherbrick_Smelter
     - Upgrade_to_Aquatic_Brick_Smelter
     - Upgrade_to_Quartz_Factory
+    - Upgrade_to_Fancy_Stone_Smelter
   advancedstonesmelter:
     #Basic Contraption --> Stone Smelter --> Brick Smelter --> Fancy Stone Smelter
     type: FCCUPGRADE
@@ -857,8 +890,8 @@ recipes:
     excluded_materials: -BOOK
   Convert_Normal_Sand_to_Red_Sand:
     type: PRODUCTION
-    name: Convert Normal Sand to Red Sand
-    production_time: 5s
+    name: Extract Red Sand
+    production_time: 16s
     input:
       sand:
         material: SAND
@@ -867,7 +900,7 @@ recipes:
       red sand:
         material: SAND
         durability: 1
-        amount: 64
+        amount: 32
   Cook_Fish:
     type: PRODUCTION
     name: Cook Fish
@@ -1386,7 +1419,7 @@ recipes:
   Craft_Polished_Andesite:
     type: PRODUCTION
     name: Craft Polished Andesite
-    production_time: 5s
+    production_time: 10s
     input:
       andesite:
         material: STONE
@@ -1396,11 +1429,11 @@ recipes:
       polished andesite:
         material: STONE
         durability: 6
-        amount: 64
+        amount: 32
   Craft_Polished_Diorite:
     type: PRODUCTION
     name: Craft Polished Diorite
-    production_time: 5s
+    production_time: 10s
     input:
       andesite:
         material: STONE
@@ -1410,11 +1443,11 @@ recipes:
       polished andesite:
         material: STONE
         durability: 4
-        amount: 64
+        amount: 32
   Craft_Polished_Granite:
     type: PRODUCTION
     name: Craft Polished Granite
-    production_time: 5s
+    production_time: 10s
     input:
       andesite:
         material: STONE
@@ -1424,7 +1457,7 @@ recipes:
       polished andesite:
         material: STONE
         durability: 2
-        amount: 64
+        amount: 32
   Craft_Prismarine_Basic:
     type: PRODUCTION
     name: Craft Prismarine
@@ -2846,32 +2879,6 @@ recipes:
       bricks:
         material: BRICK
         amount: 64
-  Smelt_Chiselled_Red_Sandstone:
-    type: PRODUCTION
-    name: Smelt Chiselled Red Sandstone
-    production_time: 5s
-    input:
-      red sandstone:
-        material: RED_SANDSTONE
-        amount: 48
-    output:
-      chiseled red sandstone:
-        material: RED_SANDSTONE
-        durability: 1
-        amount: 64
-  Smelt_Chiselled_Sandstone:
-    type: PRODUCTION
-    name: Smelt Chiselled Sandstone
-    production_time: 5s
-    input:
-      sandstone:
-        material: SANDSTONE
-        amount: 48
-    output:
-      chiseled sandstone:
-        material: SANDSTONE
-        durability: 1
-        amount: 64
   Smelt_Clay_Bricks:
     type: PRODUCTION
     name: Smelt Clay Bricks
@@ -2975,15 +2982,15 @@ recipes:
   Smelt_Glass_Panes_Advanced:
     type: PRODUCTION
     name: Smelt Glass Panes
-    production_time: 5s
+    production_time: 8s
     input:
       sand:
         material: SAND
-        amount: 16
+        amount: 32
     output:
       glass pane:
         material: THIN_GLASS
-        amount: 96
+        amount: 192
   Smelt_Glass_Panes_Basic:
     type: PRODUCTION
     name: Smelt Glass Panes
@@ -2996,10 +3003,10 @@ recipes:
       glass pane:
         material: THIN_GLASS
         amount: 64
-  Smelt_Glassbottles:
+  Blow_Glassbottles:
     type: PRODUCTION
-    name: Smelt Glassbottles
-    production_time: 5s
+    name: Blow Glassbottles
+    production_time: 10s
     input:
       sand:
         material: SAND
@@ -3084,20 +3091,20 @@ recipes:
   Smelt_Red_Sandstone_Advanced:
     type: PRODUCTION
     name: Smelt Red Sandstone
-    production_time: 5s
+    production_time: 20s
     input:
       red sand:
         material: SAND
         durability: 1
-        amount: 64
+        amount: 128
     output:
       red sandstone:
         material: RED_SANDSTONE
-        amount: 48
+        amount: 96
   Smelt_Red_Sandstone_Basic:
     type: PRODUCTION
     name: Smelt Red Sandstone
-    production_time: 5s
+    production_time: 12s
     input:
       red sand:
         material: SAND
@@ -3110,7 +3117,7 @@ recipes:
   Smelt_Red_Sandstone_Slabs:
     type: PRODUCTION
     name: Smelt Red Sandstone Slabs
-    production_time: 5s
+    production_time: 12s
     input:
       red sand:
         material: RED_SANDSTONE
@@ -3118,11 +3125,11 @@ recipes:
     output:
       red sandstone:
         material: STONE_SLAB2
-        amount: 64
+        amount: 192
   Smelt_Red_Sandstone_Stairs:
     type: PRODUCTION
     name: Smelt Red Sandstone Stairs
-    production_time: 5s
+    production_time: 12s
     input:
       red sand:
         material: RED_SANDSTONE
@@ -3130,23 +3137,23 @@ recipes:
     output:
       red sandstone:
         material: RED_SANDSTONE_STAIRS
-        amount: 48
+        amount: 64
   Smelt_Sandstone_Advanced:
     type: PRODUCTION
     name: Smelt Sandstone
-    production_time: 5s
+    production_time: 20s
     input:
       red sand:
         material: SAND
-        amount: 64
+        amount: 128
     output:
       red sandstone:
         material: SANDSTONE
-        amount: 32
+        amount: 96
   Smelt_Sandstone_Basic:
     type: PRODUCTION
     name: Smelt Sandstone
-    production_time: 5s
+    production_time: 12s
     input:
       red sand:
         material: SAND
@@ -3158,7 +3165,7 @@ recipes:
   Smelt_Sandstone_Slabs:
     type: PRODUCTION
     name: Smelt Sandstone Slabs
-    production_time: 5s
+    production_time: 12s
     input:
       sandstone:
         material: SANDSTONE
@@ -3167,11 +3174,11 @@ recipes:
       sandstone slab:
         material: STEP
         durability: 1
-        amount: 64
+        amount: 192
   Smelt_Sandstone_Stairs:
     type: PRODUCTION
     name: Smelt Sandstone Stairs
-    production_time: 5s
+    production_time: 12s
     input:
       sandstone:
         material: SANDSTONE
@@ -3179,11 +3186,11 @@ recipes:
     output:
       sandstone stairs:
         material: SANDSTONE_STAIRS
-        amount: 48
+        amount: 64
   Smelt_Smooth_Red_Sandstone:
     type: PRODUCTION
     name: Smelt Smooth Red Sandstone
-    production_time: 5s
+    production_time: 16s
     input:
       red sandstone:
         material: RED_SANDSTONE
@@ -3196,7 +3203,7 @@ recipes:
   Smelt_Smooth_Sandstone:
     type: PRODUCTION
     name: Smelt Smooth Sandstone
-    production_time: 5s
+    production_time: 16s
     input:
       sandstone:
         material: SANDSTONE
@@ -3205,6 +3212,32 @@ recipes:
       smooth sandstone:
         material: SANDSTONE
         durability: 2
+        amount: 64
+  Smelt_Chiselled_Red_Sandstone:
+    type: PRODUCTION
+    name: Smelt Chiselled Red Sandstone
+    production_time: 12s
+    input:
+      red sandstone:
+        material: RED_SANDSTONE
+        amount: 48
+    output:
+      chiseled red sandstone:
+        material: RED_SANDSTONE
+        durability: 1
+        amount: 64
+  Smelt_Chiselled_Sandstone:
+    type: PRODUCTION
+    name: Smelt Chiselled Sandstone
+    production_time: 12s
+    input:
+      sandstone:
+        material: SANDSTONE
+        amount: 48
+    output:
+      chiseled sandstone:
+        material: SANDSTONE
+        durability: 1
         amount: 64
   Smelt_Stone_Advanced:
     type: PRODUCTION
@@ -3591,7 +3624,74 @@ recipes:
     input:
       glass:
         material: GLASS
-        amount: 128
+        amount: 384
+      panes:
+        material: THIN_GLASS
+        amount: 384
+      dye0:
+        material: INK_SACK
+        amount: 64
+        durability: 0
+      dye1:
+        material: INK_SACK
+        amount: 64
+        durability: 1
+      dye2:
+        material: INK_SACK
+        amount: 64
+        durability: 2
+      dye3:
+        material: INK_SACK
+        amount: 64
+        durability: 3
+      dye4:
+        material: INK_SACK
+        amount: 64
+        durability: 4
+      dye5:
+        material: INK_SACK
+        amount: 64
+        durability: 5
+      dye6:
+        material: INK_SACK
+        amount: 64
+        durability: 6
+      dye7:
+        material: INK_SACK
+        amount: 64
+        durability: 7
+      dye8:
+        material: INK_SACK
+        amount: 64
+        durability: 8
+      dye9:
+        material: INK_SACK
+        amount: 64
+        durability: 9
+      dye10:
+        material: INK_SACK
+        amount: 64
+        durability: 10
+      dye11:
+        material: INK_SACK
+        amount: 64
+        durability: 11
+      dye12:
+        material: INK_SACK
+        amount: 64
+        durability: 12
+      dye13:
+        material: INK_SACK
+        amount: 64
+        durability: 13
+      dye14:
+        material: INK_SACK
+        amount: 64
+        durability: 14
+      dye15:
+        material: INK_SACK
+        amount: 64
+        durability: 15        
     factory: Glass Dying Factory
   Upgrade_to_Gold_Armour_Forge:
     production_time: 3600s
@@ -3851,7 +3951,13 @@ recipes:
     input:
       sand:
         material: SAND
+        amount: 512
+      glass:
+        material: GLASS
         amount: 1024
+      panes:
+        material: THIN_GLASS
+        amount: 512
     factory: Glass Blowing Workshop
   Upgrade_to_Sandstone_Smelter:
     production_time: 2h
@@ -3861,10 +3967,10 @@ recipes:
     input:
       sandstone:
         material: SANDSTONE
-        amount: 128
+        amount: 640
       red sandstone:
         material: RED_SANDSTONE
-        amount: 128
+        amount: 640
     factory: Sandstone Smelter
   Upgrade_to_Soup_kitchen:
     production_time: 900s
@@ -3954,3 +4060,572 @@ recipes:
         material: WOOL
         amount: 256
     factory: Wool Processing
+  Upgrade_to_Fancy_Stone_Smelter:
+    name: Upgrade to Fancy Stone Smelter
+    production_time: 20m
+    type: UPGRADE
+    fuel_consumption_intervall: 30s
+    factory: Fancy Stone Smelter
+    input:
+      stone:
+        material: STONE
+        amount: 1152
+      otherstone:
+        material: STONE
+        durability: 1
+        amount: 256
+      idontevenknowwhatthisoneiscalled:
+        material: STONE
+        durability: 3
+        amount: 256
+      morestoneIguess:
+        material: STONE
+        durability: 5
+        amount: 256
+
+        
+#Dying recipes
+  Dye_Glass_White:
+    name: Dye Glass White
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 15
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 0
+  Dye_Glass_Orange:
+    name: Dye Glass Orange
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 14
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 1
+  Dye_Glass_Magenta:
+    name: Dye Glass Magenta
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 13
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 2
+  Dye_Glass_Light_Blue:
+    name: Dye Glass Light Blue
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 12
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 3
+  Dye_Glass_Yellow:
+    name: Dye Glass Yellow
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 11
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 4
+  Dye_Glass_Lime:
+    name: Dye Glass Lime
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 10
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 5
+  Dye_Glass_Pink:
+    name: Dye Glass Pink
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 9
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 6
+  Dye_Glass_Gray:
+    name: Dye Glass Gray
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 8
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 7
+  Dye_Glass_Light_Gray:
+    name: Dye Glass Light Gray
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 7
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 8
+  Dye_Glass_Cyan:
+    name: Dye Glass Cyan
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 6
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 9
+  Dye_Glass_Purple:
+    name: Dye Glass Purple
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 5
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 10
+  Dye_Glass_Blue:
+    name: Dye Glass Blue
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 4
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 11
+  Dye_Glass_Brown:
+    name: Dye Glass Brown
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 3
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 12
+  Dye_Glass_Green:
+    name: Dye Glass Green
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 2
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 13
+  Dye_Glass_Red:
+    name: Dye Glass Red
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 1
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 14
+  Dye_Glass_Black:
+    name: Dye Glass Black
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 0
+    output:
+      stainedglass:
+        material: STAINED_GLASS
+        amount: 64
+        durability: 15
+  Dye_GlassPanes_White:
+    name: Dye Glass Panes White
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 15
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 0
+  Dye_GlassPanes_Orange:
+    name: Dye Glass Panes Orange
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 14
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 1
+  Dye_GlassPanes_Magenta:
+    name: Dye Glass Panes Magenta
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 13
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 2
+  Dye_GlassPanes_Light_Blue:
+    name: Dye Glass Panes Light Blue
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 12
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 3
+  Dye_GlassPanes_Yellow:
+    name: Dye Glass Panes Yellow
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 11
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 4
+  Dye_GlassPanes_Lime:
+    name: Dye Glass Panes Lime
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 10
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 5
+  Dye_GlassPanes_Pink:
+    name: Dye Glass Panes Pink
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 9
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 6
+  Dye_GlassPanes_Gray:
+    name: Dye Glass Panes Gray
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 8
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 7
+  Dye_GlassPanes_Light_Gray:
+    name: Dye Glass Panes Light Gray
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 7
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 8
+  Dye_GlassPanes_Cyan:
+    name: Dye Glass Panes Cyan
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 6
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 9
+  Dye_GlassPanes_Purple:
+    name: Dye Glass Panes Purple
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 5
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 10
+  Dye_GlassPanes_Blue:
+    name: Dye Glass Panes Blue
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 4
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 11
+  Dye_GlassPanes_Brown:
+    name: Dye Glass Panes Brown
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 3
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 12
+  Dye_GlassPanes_Green:
+    name: Dye Glass Panes Green
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 2
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 13
+  Dye_GlassPanes_Red:
+    name: Dye Glass Panes Red
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 1
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 14
+  Dye_GlassPanes_Black:
+    name: Dye Glass Panes Black
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: THIN_GLASS
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 0
+    output:
+      stainedglass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+        durability: 15
