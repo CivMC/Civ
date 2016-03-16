@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
  *
  */
 public abstract class Clickable {
-	private ItemStack item;
+	protected ItemStack item;
 
 	public Clickable(ItemStack item) {
 		this.item = item;

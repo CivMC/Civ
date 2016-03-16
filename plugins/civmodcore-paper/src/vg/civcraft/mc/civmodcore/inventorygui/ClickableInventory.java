@@ -1,6 +1,5 @@
 package vg.civcraft.mc.civmodcore.inventorygui;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -168,6 +167,21 @@ public class ClickableInventory {
 			p.openInventory(inventory);
 			p.updateInventory();
 			openInventories.put(p.getUniqueId(), this);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					if (inventory.getViewers().size() <= 0) {
+						return;
+					}
+					for(int i = 0; i < clickables.length; i++) {
+						if (clickables[i] instanceof BlinkingClickable) {
+							inventory.setItem(i, ((BlinkingClickable)clickables[i]).getNext());
+						}
+					}
+					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this, 40L);
+				}
+			}, 40L);
 		}
 	}
 
