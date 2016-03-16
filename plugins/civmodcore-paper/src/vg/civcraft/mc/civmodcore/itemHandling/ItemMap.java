@@ -12,7 +12,7 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -590,15 +590,12 @@ public class ItemMap {
 	private static ItemStack createMapConformCopy(ItemStack is) {
 		ItemStack copy = is.clone();
 		copy.setAmount(1);
-		net.minecraft.server.v1_8_R3.ItemStack s = CraftItemStack
+		net.minecraft.server.v1_9_R1.ItemStack s = CraftItemStack
 				.asNMSCopy(copy);
 		if (s == null) {
-			Bukkit.getServer()
-					.getLogger()
-					.log(Level.SEVERE,
-							"Attempted to create map conform copy of "
-									+ copy.toString()
-									+ ", but couldn't because this item can't be held in inventories since Minecraft 1.8");
+			Bukkit.getServer().getLogger().log(Level.SEVERE, "Attempted to create map conform copy of {0}"
+					+ ", but couldn't because this item can't be held in inventories since Minecraft 1.8",
+					copy.toString());
 			return null;
 		}
 		s.setRepairCost(0);
