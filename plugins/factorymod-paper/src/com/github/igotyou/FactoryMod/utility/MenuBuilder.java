@@ -517,8 +517,14 @@ public class MenuBuilder {
 		int fuelConsumed = rec.getProductionTime()/fuelInterval;
 		ItemStack fuels = egg.getFuel().clone();
 		fuels.setAmount(fuelConsumed);
-		ItemStack fuelStack = new ItemMap(fuels).getLoredItemCountRepresentation().get(0);
-		ISUtils.addLore(fuelStack, ChatColor.LIGHT_PURPLE + "Total duration of " + rec.getProductionTime() * 20 + " seconds");
+		ItemStack fuelStack;
+		if (fuelConsumed > fuels.getType().getMaxStackSize()) {
+			fuelStack = new ItemMap(fuels).getLoredItemCountRepresentation().get(0);
+		}
+		else {
+			fuelStack = fuels;
+		}
+		ISUtils.addLore(fuelStack, ChatColor.LIGHT_PURPLE + "Total duration of " + rec.getProductionTime() / 20 + " seconds");
 		ci.setSlot(new DecorationStack(fuelStack), 30);
 		ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(), ci, p);
 	}
