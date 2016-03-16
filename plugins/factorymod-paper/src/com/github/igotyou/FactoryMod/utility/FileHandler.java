@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -78,6 +79,12 @@ public class FileHandler {
 					config.set(current + ".runtime", fccf.getRunningTime());
 					config.set(current + ".selectedRecipe", fccf
 							.getCurrentRecipe().getRecipeName());
+					if (fccf.getActivator() == null) {
+						config.set(current + ".activator", "null");
+					}
+					else {
+						config.set(current + ".activator", fccf.getActivator().toString());
+					}
 					for(IRecipe i : ((FurnCraftChestFactory) f).getRecipes()) {
 						config.set(current + ".runcounts." + i.getRecipeName(), fccf.getRunCount(i));
 					}
@@ -175,6 +182,15 @@ public class FileHandler {
 				String selectedRecipe = current.getString("selectedRecipe");
 				FurnCraftChestFactory fac = (FurnCraftChestFactory) egg.revive(blocks, health, selectedRecipe,
 						runtime);
+				String activator = current.getString("activator", "null");
+				UUID acti;
+				if (activator.equals("null")) {
+					acti = null;
+				}
+				else {
+					acti = UUID.fromString(activator);
+				}
+				fac.setActivator(acti);
 				ConfigurationSection runCounts = current.getConfigurationSection("runcounts");
 				if(runCounts != null) {
 					for(String countKey : runCounts.getKeys(false)) {
