@@ -302,7 +302,14 @@ public class MenuBuilder {
 			};
 			ci.setSlot(cheCli, 5);
 			int slot = 40;
-			for (ItemStack is : rec.getInput().getItemStackRepresentation()) {
+			List <ItemStack> itms;
+			if (rec.getInput().getItemStackRepresentation().size() > 27) {
+				itms = rec.getInput().getLoredItemCountRepresentation();
+			}
+			else {
+				itms = rec.getInput().getItemStackRepresentation();
+			}
+			for (ItemStack is : itms) {
 				DecorationStack dec = new DecorationStack(is);
 				ci.setSlot(dec, slot);
 				if ((slot % 9) == 4) {
