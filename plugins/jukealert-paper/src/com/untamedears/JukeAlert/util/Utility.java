@@ -84,7 +84,15 @@ public class Utility {
     public static boolean isPartialOwnerOfSnitch(Snitch snitch, UUID accountId) {
         Group faction = snitch.getGroup();
         if (faction == null) return false;
-		if (faction.getOwner() == null) return false; // no owner at all?
+		if (faction.getOwner() == null) {
+			if (System.currentTimeMillis() - lastNotifyPOSFailure > failureReportDelay) {
+				JukeAlert.getInstance().getLogger().log(Level.WARNING, 
+						"isPartialOwnerOfSnitch called on ownerless group {0} {1}", 
+						faction.getName(), faction.getGroupId());
+				lastNotifyPOSFailure = System.currentTimeMillis();
+			}
+			return false; // no owner at all?
+		}
         PlayerType type = faction.getPlayerType(accountId);
         GroupPermission perm = NameAPI.getGroupManager().getPermissionforGroup(faction);
         if (perm == null && System.currentTimeMillis() - lastNotifyPOSFailure > failureReportDelay) {
