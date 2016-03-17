@@ -371,10 +371,15 @@ public class FurnCraftChestFactory extends Factory {
 	public boolean hasInputMaterials() {
 		return currentRecipe.enoughMaterialAvailable(getInventory());
 	}
+	
+	public static void removePylon(Factory f) {
+		pylonFactories.remove(f);
+	}
 
 	public void upgrade(String name, List<IRecipe> recipes, ItemStack fuel,
 			int fuelConsumptionIntervall, int updateTime) {
 		LoggingUtils.log("Upgrading " + getLogData() + " to " + name);
+		pylonFactories.remove(this);
 		deactivate();
 		this.name = name;
 		this.recipes = recipes;
@@ -391,6 +396,12 @@ public class FurnCraftChestFactory extends Factory {
 		runCount = new HashMap<IRecipe, Integer>();
 		for (IRecipe rec : recipes) {
 			runCount.put(rec, 0);
+		}
+		for (IRecipe rec : recipes) {
+			if (rec instanceof PylonRecipe) {
+				pylonFactories.add(this);
+				break;
+			}
 		}
 	}
 }

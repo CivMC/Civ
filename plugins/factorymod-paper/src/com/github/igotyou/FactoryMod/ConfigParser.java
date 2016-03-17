@@ -28,6 +28,7 @@ import com.github.igotyou.FactoryMod.recipes.DecompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
+import com.github.igotyou.FactoryMod.recipes.PylonRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
@@ -95,6 +96,8 @@ public class ConfigParser {
 		long gracePeriod = 50 * parseTime(config
 				.getString("break_grace_period"));
 		defaultMenuFactory = config.getString("default_menu_factory");
+		int globalPylonLimit = config.getInt("global_pylon_limit");
+		PylonRecipe.setGlobalLimit(globalPylonLimit);
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
 				citadelEnabled, redstonePowerOn, redstoneRecipeChange,
 				logInventories, gracePeriod);
@@ -475,6 +478,14 @@ public class ConfigParser {
 				plugin.severe("No essence specified for AOEREPAIR " + config.getCurrentPath());
 				result = null;
 			}
+			break;
+		case "PYLON":
+			ItemMap in = parseItemMap(config
+					.getConfigurationSection("input"));
+			ItemMap out = parseItemMap(config
+					.getConfigurationSection("output"));
+			int weight = config.getInt("weight");
+			result = new PylonRecipe(name, productionTime, in, out, weight);
 			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type")

@@ -19,8 +19,8 @@ public class PylonRecipe extends InputRecipe {
 
 	private ItemMap output;
 	private static int currentGlobalWeight;
+	private static int globalLimit;
 	private int weight;
-	private double maximumFraction;
 
 	public PylonRecipe(String name, int productionTime, ItemMap input,
 			ItemMap output, int weight) {
@@ -42,6 +42,14 @@ public class PylonRecipe extends InputRecipe {
 				i.addItem(is);
 			}
 		}
+	}
+	
+	public static void setGlobalLimit(int limit) {
+		globalLimit = limit;
+	}
+	
+	public static int getGlobalLimit() {
+		return globalLimit;
 	}
 
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
@@ -90,7 +98,18 @@ public class PylonRecipe extends InputRecipe {
 	}
 
 	private ItemMap getCurrentOutput() {
-		double multiplier = Math.min(1 / currentGlobalWeight, maximumFraction);
+		int weight = 0;
+		for(FurnCraftChestFactory f : FurnCraftChestFactory.getPylonFactories()) {
+			for(IRecipe rec : f.getRecipes()) {
+				if (rec instanceof PylonRecipe) {
+					weight += ((PylonRecipe) rec).getWeight();
+					break;
+				}
+			}
+		}
+		currentGlobalWeight = weight;
+		double overload = Math.max(1.0, (float) currentGlobalWeight / (float)globalLimit);
+		double multiplier = 1.0 / overload;
 		ItemMap actualOutput = new ItemMap();
 		for (Entry<ItemStack, Integer> entry : output.getEntrySet()) {
 			actualOutput.addItemAmount(entry.getKey(),

@@ -21,6 +21,7 @@ import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.eggs.PipeEgg;
 import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
@@ -176,6 +177,7 @@ public class FactoryModManager {
 			f.deactivate();
 		}
 		factories.remove(f);
+		FurnCraftChestFactory.removePylon(f);
 		for (Location b : f.getMultiBlockStructure().getAllBlocks()) {
 			locations.remove(b);
 		}

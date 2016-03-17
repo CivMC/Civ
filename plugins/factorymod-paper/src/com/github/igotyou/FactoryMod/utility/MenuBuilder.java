@@ -49,6 +49,7 @@ public class MenuBuilder {
 	private IFactoryEgg defaultMenu;
 
 	public MenuBuilder(String defaultFactory) {
+		ClickableInventory.setPlugin(FactoryMod.getPlugin());
 		manager = FactoryMod.getManager();
 		for (IFactoryEgg egg : manager.getAllEggs().values()) {
 			if (egg instanceof FurnCraftChestEgg) {
