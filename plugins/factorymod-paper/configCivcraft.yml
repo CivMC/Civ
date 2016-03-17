@@ -228,6 +228,7 @@ factories:
     - Smelt_Dark_Prismarine
     - Smelt_Prismarine_Bricks
     - Craft_Sea_Lanterns
+    - Craft_Concentrate_Of_Ocean
     - Repair_Factory
   quartzfactory:
     #Basic Contraption --> Stone Smelter --> Brick Smelter --> Quartz Factory
@@ -1855,6 +1856,10 @@ recipes:
         lore:
          - Nature Concentrate
         durability: 3
+      ocean:
+        material: INK_SACK
+        lore:
+         - Ocean Concentrate
     output:
       bastion:
         material: SPONGE
@@ -3412,20 +3417,59 @@ recipes:
         amount: 128
     factory: Bakery
   Upgrade_to_Bastion_Factory:
-    production_time: 3600s
+    production_time: 3h
     type: UPGRADE
     name: Upgrade to Bastion Factory
-    fuel_consumption_intervall: 30s
+    fuel_consumption_intervall: 2m
     input:
-      ender pearl:
+      pretzel:
+        material: CAKE
+        amount: 10
+        lore:
+         - Food Concentrate
+      soup:
+        material: MUSHROOM_SOUP
+        amount: 10
+        lore:
+         - Soup Concentrate 
+      sand:
+        material: SAND
+        amount: 10
+        lore:
+         - Desert Concentrate
+        durability: 1
+      brick:
+        material: NETHER_BRICK_ITEM
+        amount: 10
+        lore:
+         - Hell Concentrate
+      end:
         material: ENDER_PEARL
-        amount: 256
-      cobweb:
-        material: WEB
-        amount: 128
-      diamond ore:
-        material: DIAMOND_ORE
-        amount: 48
+        amount: 10
+        lore:
+         - End Concentrate
+      rainbow:
+        material: INK_SACK
+        amount: 10
+        durability: 4
+        lore:
+         - Rainbow Concentrate
+      cave:
+        material: COAL_ORE
+        amount: 10
+        lore:
+         - Cave Concentrate
+      nature:
+        material: SAPLING
+        amount: 10
+        lore:
+         - Nature Concentrate
+        durability: 3
+      ocean:
+        material: INK_SACK
+        amount: 10
+        lore:
+         - Ocean Concentrate
     factory: Bastion Factory
   Upgrade_to_Bio_Lab:
     production_time: 900s
@@ -4344,6 +4388,27 @@ recipes:
         lore:
          - Nature Concentrate
         durability: 3
+  Craft_Concentrate_Of_Ocean:
+    name: Craft Ocean Concentrate
+    type: PRODUCTION
+    production_time: 15s
+    input:
+      prismarine:
+        material: PRISMARINE_CRYSTALS
+        amount: 32
+      moreprismarine:
+        material: PRISMARINE_SHARD
+        amount: 96
+      ink:
+        material: INK_SACK
+        amount: 64
+    output:
+      ocean:
+        material: INK_SACK
+        lore:
+         - Ocean Concentrate
+        
+        
 
         
 #Dying recipes
