@@ -75,6 +75,7 @@ factories:
     - Smelt_Coal_Ore_Expert
     - Smelt_Iron_Ore_Advanced
     - Smelt_Gold_Ore
+    - Craft_Cave_Concentrate
     - Repair_Advanced_Factory
   gemextractor:
     #Basic Contraption --> Stone Smelter --> Ore Smelter --> Gem Extractor
@@ -140,6 +141,7 @@ factories:
     - Dye_GlassPanes_Green
     - Dye_GlassPanes_Red
     - Dye_GlassPanes_Black
+    - Concentrate_Rainbow
     - Repair_Factory
   advancedsandsmelter:
     #Basic Contraption --> Stone Smelter --> Sand Smelter --> Glass Blowing Workshop
@@ -165,6 +167,7 @@ factories:
     - Smelt_Chiselled_Red_Sandstone
     - Smelt_Smooth_Sandstone
     - Smelt_Smooth_Red_Sandstone
+    - Sieve_Desert_Concentrate
     - Repair_Factory
     
   #Brick smelting
@@ -214,6 +217,7 @@ factories:
     - Craft_Netherbrick_Fence
     - Craft_Netherbrick_Slabs
     - Craft_Netherbrick_Stairs
+    - Craft_Hell_Concentrate
     - Repair_Factory
   aquaticstonesmelter:
     #Basic Contraption --> Stone Smelter --> Brick Smelter --> Aquatic Brick Smelter
@@ -319,6 +323,7 @@ factories:
     - Bake_Cookies
     - Bake_Cake
     - Bake_Pumpkin_Pie
+    - Bake_Food_Concentrate
     - Repair_Factory
   grill:
     type: FCCUPGRADE
@@ -338,6 +343,7 @@ factories:
     recipes:
     - Make_Rabbit_Stew
     - Make_Mushroom_Stew
+    - Brew_Soup_Concentrate
   animalhusbandryfactorybasic:
     type: FCCUPGRADE
     name: Animal Husbandry Factory Basic
@@ -399,6 +405,7 @@ factories:
     recipes:
     - Mutate_any_sapling_into_any_other
     - Mutate_any_leaf_into_any_other
+    - Grow_Concentrate_Of_Nature
     - Repair_Factory
   madscientist:
     type: FCCUPGRADE
@@ -600,6 +607,7 @@ factories:
     - Craft_Redstone_Torch_Advanced
     - Craft_Redstone_Comparator
     - Craft_Daylight_Sensor
+    - Craft_End_Concentrate
     - Repair_Advanced_Factory
   redstonemechanicsfactory:
     type: FCCUPGRADE
@@ -1812,29 +1820,45 @@ recipes:
     name: Create Bastion
     production_time: 5s
     input:
-      admin tears:
-        material: GHAST_TEAR
-        amount: 4
+      pretzel:
+        material: CAKE
         lore:
-        - Sadmins_are_sad
-      tealnerd is bae:
-        material: WOOL
-        durability: 9
-        amount: 4
+         - Food Concentrate
+      soup:
+        material: MUSHROOM_SOUP
         lore:
-        - Teal_makes_great_configs
-      glitchwood:
-        material: LOG
-        amount: 1
+         - Soup Concentrate 
+      sand:
+        material: SAND
         lore:
-        - All_hail_the_mighty_Glitchwood
-        - There_can_be_only_one!
+         - Desert Concentrate
+        durability: 1
+      brick:
+        material: NETHER_BRICK_ITEM
+        lore:
+         - Hell Concentrate
+      end:
+        material: ENDER_PEARL
+        lore:
+         - End Concentrate
+      rainbow:
+        material: INK_SACK
+        durability: 4
+        lore:
+         - Rainbow Concentrate
+      cave:
+        material: COAL_ORE
+        lore:
+         - Cave Concentrate
+      nature:
+        material: SAPLING
+        lore:
+         - Nature Concentrate
+        durability: 3
     output:
       bastion:
         material: SPONGE
         amount: 16
-        lore:
-        - A_bastion_block
   Create_Coarse_Dirt:
     type: PRODUCTION
     name: Create Coarse Dirt
@@ -4082,6 +4106,244 @@ recipes:
         material: STONE
         durability: 5
         amount: 256
+
+#Bastion recipes
+  Brew_Soup_Concentrate:
+    name: Brew Soup Concentrate
+    type: PRODUCTION
+    production_time: 15s
+    input: 
+      wood:
+        material: WOOD
+        amount: 128
+        durability: -1
+      mushroom1:
+        material: RED_MUSHROOM
+        amount: 256
+      mushroom2:
+        material: BROWN_MUSHROOM
+        amount: 256
+      bucket:
+        material: WATER_BUCKET
+        amount: 4
+    output:
+      bucket:
+        material: BUCKET
+        amount: 4
+      soup:
+        material: MUSHROOM_SOUP
+        lore:
+         - Soup Concentrate 
+  Bake_Food_Concentrate:
+    name: Bake Food Concentrate
+    type: PRODUCTION
+    production_time: 15s
+    input:
+      sugar:
+        material: SUGAR
+        amount: 64
+      egg:
+        material: EGG
+        amount: 64
+      milk:
+        material: MILK_BUCKET
+        amount: 4
+      wheat:
+        material: WHEAT
+        amount: 256
+    output:
+      buckets:
+        material: BUCKET
+        amount: 4
+      pretzel:
+        material: CAKE
+        lore:
+         - Food Concentrate
+  Sieve_Desert_Concentrate:
+    name: Sieve Desert Concentrate
+    type: PRODUCTION
+    production_time: 15s
+    input: 
+      sand:
+        material: SAND
+        amount: 256
+      redsand:
+        material: SAND
+        amount: 128
+        durability: 1
+      cactus:
+        material: CACTUS
+        amount: 32
+    output:
+      sand:
+        material: SAND
+        lore:
+         - Desert Concentrate
+        durability: 1
+  Craft_Hell_Concentrate:
+    name: Craft Hell Concentrate
+    type: PRODUCTION
+    production_time: 15s
+    input:
+      netherrack: 
+        material: NETHERRACK
+        amount: 384
+      slow:
+        material: SOUL_SAND
+        amount: 64
+      quartz:
+        material: GLOWSTONE
+        amount: 16
+    output:
+      brick:
+        material: NETHER_BRICK_ITEM
+        lore:
+         - Hell Concentrate
+  Craft_End_Concentrate:
+    name: Craft End Concentrate
+    type: PRODUCTION
+    production_time: 15s
+    input:
+      endstone:
+        material: ENDER_STONE
+        amount: 64
+      pearls:
+        material: ENDER_PEARL
+        amount: 16
+    output:
+      concentrate:
+        material: ENDER_PEARL
+        lore:
+         - End Concentrate
+  Concentrate_Rainbow:
+    name: Concentrate Rainbow
+    type: PRODUCTION
+    production_time: 15s
+    output:
+      rainbow:
+        material: INK_SACK
+        durability: 4
+        lore:
+         - Rainbow Concentrate
+    input:
+      dye0:
+        material: INK_SACK
+        amount: 16
+        durability: 0
+      dye1:
+        material: INK_SACK
+        amount: 16
+        durability: 1
+      dye2:
+        material: INK_SACK
+        amount: 16
+        durability: 2
+      dye3:
+        material: INK_SACK
+        amount: 16
+        durability: 3
+      dye4:
+        material: INK_SACK
+        amount: 16
+        durability: 4
+      dye5:
+        material: INK_SACK
+        amount: 16
+        durability: 5
+      dye6:
+        material: INK_SACK
+        amount: 16
+        durability: 6
+      dye7:
+        material: INK_SACK
+        amount: 16
+        durability: 7
+      dye8:
+        material: INK_SACK
+        amount: 16
+        durability: 8
+      dye9:
+        material: INK_SACK
+        amount: 16
+        durability: 9
+      dye10:
+        material: INK_SACK
+        amount: 16
+        durability: 10
+      dye11:
+        material: INK_SACK
+        amount: 16
+        durability: 11
+      dye12:
+        material: INK_SACK
+        amount: 16
+        durability: 12
+      dye13:
+        material: INK_SACK
+        amount: 16
+        durability: 13
+      dye14:
+        material: INK_SACK
+        amount: 16
+        durability: 14
+      dye15:
+        material: INK_SACK
+        amount: 16
+        durability: 15        
+  Craft_Cave_Concentrate:
+    name: Craft Cave Concentrate
+    type: PRODUCTION
+    production_time: 15s
+    input:
+      goldore:
+        material: GOLD_ORE
+        amount: 16
+      lapisore:
+        material: LAPIS_ORE
+        amount: 16
+      redore:
+        material: REDSTONE_ORE
+        amount: 16
+    output:
+      concentrate:
+        material: COAL_ORE
+        lore:
+         - Cave Concentrate
+  Grow_Concentrate_Of_Nature:
+    name: Grow Nature Concentrate
+    type: PRODUCTION
+    production_time: 15s
+    input: 
+      sapling1:
+        material: SAPLING
+        amount: 8
+        durability: 0
+      sapling2:
+        material: SAPLING
+        amount: 8
+        durability: 1
+      sapling3:
+        material: SAPLING
+        amount: 8
+        durability: 2
+      sapling4:
+        material: SAPLING
+        amount: 8
+        durability: 3
+      sapling5:
+        material: SAPLING
+        amount: 8
+        durability: 4
+      sapling6:
+        material: SAPLING
+        amount: 8
+        durability: 5
+    output:
+      concentrate:
+        material: SAPLING
+        lore:
+         - Nature Concentrate
+        durability: 3
 
         
 #Dying recipes
