@@ -1,5 +1,5 @@
-name: Random Spawn
-version: 2.6
+name: ${project.name}
+version: ${project.version}
 main: me.josvth.randomspawn.RandomSpawn
 author: Josvth
 softdepend: [WorldBorder, Bastion]
