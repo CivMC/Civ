@@ -226,7 +226,9 @@ public class GrowListener implements Listener {
 		
 		// Force a grow operation on all the plant records for this chunk
 		// growChunk() will also verify that the chunk is loaded
-		plugin.getPlantManager().growChunk(e.getChunk());		
+		if (plugin.getPlantManager() != null) {
+			plugin.getPlantManager().growChunk(e.getChunk());
+		}
 	}
 	
 	@EventHandler
@@ -235,7 +237,9 @@ public class GrowListener implements Listener {
 			return;
 		
 		ChunkCoords coords = new ChunkCoords(e.getChunk());
-		plugin.getPlantManager().minecraftChunkUnloaded(coords);
+		if (plugin.getPlantManager() != null) {
+			plugin.getPlantManager().minecraftChunkUnloaded(coords);
+		}
 		
 		// TESTING
 		//this.plugin.getLogger().info("ChunkUnLoaded: " + coords);

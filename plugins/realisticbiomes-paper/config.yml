@@ -270,7 +270,7 @@ realistic_biomes:
    biomes:
     hot_rainy: 1.0
     SWAMPLAND: 0.5
-    BEACH: 0.5
+    BEACHES: 0.5
     RIVER: 0.5
 
   #----------------------------------------
