@@ -65,7 +65,7 @@ public class Trees {
 			}
 			
 		} else if (type == TreeType.TREE) {
-			if (block.getBiome() == Biome.SWAMPLAND || block.getBiome() == Biome.SWAMPLAND_MOUNTAINS) {
+			if (block.getBiome() == Biome.SWAMPLAND) {
 				// swamptree, only spawns naturally at worldgen
 				type = TreeType.SWAMP;
 				RealisticBiomes.doLog(Level.FINER, "getTreeType swamp");

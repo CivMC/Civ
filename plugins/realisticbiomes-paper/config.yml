@@ -23,17 +23,99 @@ realistic_biomes:
 
  # catagories of biomes
  biome_aliases:
-  cold: [ICE_PLAINS, ICE_MOUNTAINS, TAIGA, TAIGA_HILLS]
-  cold_forest: [TAIGA, TAIGA_HILLS]
-  temperate: [PLAINS, FOREST, FOREST_HILLS]
-  forest: [FOREST, FOREST_HILLS]
-  mountain: [EXTREME_HILLS, SMALL_MOUNTAINS]
-  hot_dry: [DESERT, DESERT_HILLS]
-  hot_rainy: [JUNGLE, JUNGLE_HILLS]
-  water: [BEACH, OCEAN, FROZEN_OCEAN, RIVER, FROZEN_RIVER]
-  freshwater: [RIVER, FROZEN_RIVER]
-  mushroom: [MUSHROOM_ISLAND, MUSHROOM_SHORE]
-  other: [HELL, SKY, SWAMPLAND]
+  water:
+  - BEACHES
+  - STONE_BEACH
+  - DEEP_OCEAN
+  - RIVER
+  - OCEAN
+  freshwater:
+  - RIVER
+  - FROZEN_RIVER
+  cold_water:
+  - COLD_BEACH
+  - FROZEN_OCEAN
+  - FROZEN_RIVER
+  temperate:
+  - PLAINS
+  - SAVANNA
+  - SAVANNA_ROCK
+  forest:
+  - BIRCH_FOREST
+  - BIRCH_FOREST_HILLS
+  - ROOFED_FOREST
+  - FOREST
+  - FOREST_HILLS
+  cold:
+  - ICE_FLATS
+  - TAIGA
+  - TAIGA_COLD
+  - REDWOOD_TAIGA
+  - TAIGA_HILLS
+  - TAIGA_COLD_HILLS
+  - REDWOOD_TAIGA_HILLS
+  - ICE_MOUNTAINS
+  cold_forest:
+  - TAIGA
+  - TAIGA_COLD
+  - REDWOOD_TAIGA
+  - TAIGA_HILLS
+  - TAIGA_COLD_HILLS
+  - REDWOOD_TAIGA_HILLS
+  hot_dry:
+  - DESERT
+  - DESERT_HILLS
+  hot_rainy:
+  - JUNGLE
+  - JUNGLE_EDGE
+  - JUNGLE_HILLS
+  mountain:
+  - EXTREME_HILLS
+  - EXTREME_HILLS_WITH_TREES
+  - SMALLER_EXTREME_HILLS
+  mesa:
+  - MESA
+  - MESA_CLEAR_ROCK
+  - MESA_ROCK
+  mushroom:
+  - MUSHROOM_ISLAND
+  - MUSHROOM_ISLAND_SHORE
+  swamp:
+  - SWAMPLAND
+  mutated_forest:
+  - MUTATED_BIRCH_FOREST
+  - MUTATED_BIRCH_FOREST_HILLS
+  - MUTATED_FOREST
+  - MUTATED_ROOFED_FOREST
+  mutated_mountain:
+  - MUTATED_EXTREME_HILLS
+  - MUTATED_EXTREME_HILLS_WITH_TREES
+  mutated_hot_dry:
+  - MUTATED_DESERT
+  mutated_cold:
+  - MUTATED_ICE_FLATS
+  - MUTATED_TAIGA
+  - MUTATED_TAIGA_COLD
+  - MUTATED_REDWOOD_TAIGA
+  - MUTATED_REDWOOD_TAIGA_HILLS
+  mutated_hot_rainy:
+  - MUTATED_JUNGLE
+  - MUTATED_JUNGLE_EDGE
+  mutated_mesa:
+  - MUTATED_MESA
+  - MUTATED_MESA_CLEAR_ROCK
+  - MUTATED_MESA_ROCK
+  mutated_temperate:
+  - MUTATED_PLAINS
+  - MUTATED_FOREST
+  - MUTATED_SAVANNA
+  - MUTATED_SAVANNA_ROCK
+  mutated_swamp:
+  - MUTATED_SWAMPLAND
+  other:
+  - SKY
+  - VOID
+  - HELL
 
  # list of crops to be effected by the plugin
  # valid crop names can be any of the following:
