@@ -12,12 +12,11 @@ public class PersistConfig {
 
 	public boolean enabled;
 	
-	// the period in tick at which data from unloaded chunks will be loaded into
-	// the database
+	// First execution delay. Name of parameter is misleading.
 	public long unloadBatchPeriod;
 	
-	// the maximum time in ms that may be spent unloading data, data no unloaded will be
-	// unloaded at the next opportunity
+	// Delay inbetween executions of unload batches. NOT max time of execution, but rather time inbetween.
+	// Execution time is unbounded.
 	public long unloadBatchMaxTime;
 	
 	// the chance that a grow_event on a block will trigger a plant chunk load

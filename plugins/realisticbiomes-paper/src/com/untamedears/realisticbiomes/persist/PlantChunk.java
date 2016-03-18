@@ -27,7 +27,7 @@ public class PlantChunk {
 	boolean loaded;
 	boolean inDatabase;
 
-	public PlantChunk(RealisticBiomes plugin, Connection readConn, long index, ChunkCoords coords) {
+	public PlantChunk(RealisticBiomes plugin, long index, ChunkCoords coords) {
 		this.plugin = plugin;
 		plants = new HashMap<Coords, Plant>();
 		this.index = index;
@@ -95,14 +95,14 @@ public class PlantChunk {
 		plants.remove(coords);
 	}
 
-	public synchronized void addPlant(Coords coords, Plant plant, Connection writeConn) {
+	public synchronized void addPlant(Coords coords, Plant plant) {
 
 		RealisticBiomes.doLog(Level.FINER,"plantchunk.add(): called with coords: "
 				+ coords + " and plant " + plant);
 		RealisticBiomes.doLog(Level.FINER, "plantchunk.add(): is loaded? " + loaded);
 		if (!loaded) {
 
-			load(writeConn);
+			load();
 
 			loaded = true;
 		}
@@ -121,15 +121,33 @@ public class PlantChunk {
 	public synchronized Set<Coords> getPlantCoords() {
 		return plants.keySet();
 	}
+	
+	public synchronized boolean load() {
+		// wrapper.
+		try { 
+			return innerLoad();
+		} catch (DataSourceException dse) {
+			// assume DB has gone away, reconnect and try one more time.
+			RealisticBiomes.LOG.log(Level.WARNING, "Looks like DB has gone away: ", dse);			
+		}
+		
+		// if we are here, had failure.
+		try {
+			plugin.getPlantManager().reconnect();
+			return innerLoad();
+		} catch(DataSourceException dse) {
+			RealisticBiomes.LOG.log(Level.WARNING, "DB really has gone away: ", dse);
+			throw dse;
+		}
+	}
 
 	/**
 	 * Loads the plants from the database into this PlantChunk object.
 	 * 
 	 * @param coords
-	 * @param readConn
 	 * @return
 	 */
-	public synchronized boolean load(Connection readConn) {
+	private boolean innerLoad() {
 		// if the data is being loaded, it is known that this chunk is in the
 		// database
 
@@ -203,6 +221,27 @@ public class PlantChunk {
 		return true;
 	}
 
+	public synchronized void unload() {
+		// wrapper.
+		try { 
+			innerUnload();
+			return;
+		} catch (DataSourceException dse) {
+			// assume DB has gone away, reconnect and try one more time.
+			RealisticBiomes.LOG.log(Level.WARNING, "Looks like DB has gone away: ", dse);			
+		}
+		
+		// if we are here, had failure.
+		try {
+			plugin.getPlantManager().reconnect();
+			innerUnload();
+		} catch(DataSourceException dse) {
+			RealisticBiomes.LOG.log(Level.WARNING, "DB really has gone away: ", dse);
+			throw dse;
+		}
+	}
+
+	
 	/**
 	 * unloads the plant chunk, and saves it to the database.
 	 * 
@@ -212,7 +251,7 @@ public class PlantChunk {
 
 	 * @param writeStmts
 	 */
-	public synchronized void unload() {
+	private void innerUnload() {
 
 		RealisticBiomes.doLog(Level.FINEST,"PlantChunk.unload(): called with coords "
 				+ coords + "plantchunk object: " + this);
@@ -255,9 +294,13 @@ public class PlantChunk {
 				// database later in this method we dont get a Constraint
 				// Failure exception
 
-				RealisticBiomes.doLog(Level.FINEST, "plantchunk.unload(): committing new plantchunk with index "
+				try {
+					RealisticBiomes.doLog(Level.FINEST, "plantchunk.unload(): committing new plantchunk with index "
 								+ this.index);
-				ChunkWriter.writeConnection.commit();
+					plugin.getPlantManager().getWriteConnection().commit();
+				} catch(SQLException e) {
+					RealisticBiomes.LOG.warning("Can't commit?" + e);
+				}
 				inDatabase = true;
 			}
 
@@ -274,6 +317,11 @@ public class PlantChunk {
 			// if we are already unloaded then don't do anything
 			if (loaded) {
 				if (!plants.isEmpty()) {
+					try {
+						plugin.getPlantManager().getWriteConnection().setAutoCommit(false);
+					} catch (SQLException e) {
+						RealisticBiomes.LOG.severe("Can't set autocommit?" + e);
+					}
 
 					// delete plants in the database for this chunk and re-add them
 					// this is OK because rb_plant does not have a autoincrement index
@@ -316,6 +364,11 @@ public class PlantChunk {
 							ChunkWriter.addPlantStmt.executeBatch();
 							coordCounter = 0;
 							needToExec = false;
+							try {
+								plugin.getPlantManager().getWriteConnection().commit();
+							} catch (SQLException e) {
+								RealisticBiomes.LOG.warning("Autocommit is probably still on..." + e);
+							}
 						}
 						
 					} // end for
@@ -323,6 +376,16 @@ public class PlantChunk {
 					// if we have left over statements afterwards, execute them
 					if (needToExec) {
 						ChunkWriter.addPlantStmt.executeBatch();
+						try {
+							plugin.getPlantManager().getWriteConnection().commit();
+						} catch (SQLException e) {
+							RealisticBiomes.LOG.warning("Autocommit is probably still on..." + e);
+						}
+					}
+					try {
+						plugin.getPlantManager().getWriteConnection().setAutoCommit(true);
+					} catch (SQLException e) {
+						RealisticBiomes.LOG.severe("Can't set autocommit?" + e);
 					}
 					
 				} 

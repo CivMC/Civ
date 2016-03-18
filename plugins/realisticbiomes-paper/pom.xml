@@ -6,7 +6,7 @@
   <groupId>com.untamedears</groupId>
   <artifactId>RealisticBiomes</artifactId>
   <packaging>jar</packaging>
-  <version>0.6.5.0-${build.number}</version>
+  <version>1.0.6</version>
   <name>RealisticBiomes</name>
   <url>https://github.com/Civcraft/RealisticBiomes</url>
   
@@ -26,6 +26,7 @@
           <include>**/*.java</include>
           <include>*.yml</include>
         </includes>
+		<filtering>true</filtering>
       </resource>
     </resources>
   </build>

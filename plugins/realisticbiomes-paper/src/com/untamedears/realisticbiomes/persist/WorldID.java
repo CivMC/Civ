@@ -75,11 +75,11 @@ public class WorldID {
 	 * @return DB id or -1 if not found
 	 */
 	public static int getPID(UUID id) {
-		if (id == overworldID) {
+		if (id.equals(overworldID)) {
 			return 0;
-		} else if (id == netherID) {
+		} else if (id.equals(netherID)) {
 			return 1;
-		} else if (id == endID) {
+		} else if (id.equals(endID)) {
 			return 2;
 		} else if (otherWorlds != null && otherWorlds.containsKey(id)) {
 			return otherWorlds.get(id);
