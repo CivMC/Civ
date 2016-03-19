@@ -276,7 +276,7 @@ saving_intervall: 15m
 #   setupcost:
 #       redstone:
 #           material: REDSTONE
-#           amount 64
+#           amount: 64
 #   fuel:
 #       normalcoal:
 #           material: COAL
@@ -386,7 +386,8 @@ factories:
 #   output:
 #       outputstuff:
 #           material: DIAMOND
-
+#           nbt:
+#             displayName: UberSword
 
 #The type for recipes works exactly like the one for factories, each recipe has it's own unique identifer that has to be used.
 #The one for production recipes is PRODUCTION.
@@ -395,7 +396,8 @@ factories:
 #with this recipe
 
 #output is a list of items that will get returned after the the input materials were consumed.
-
+# FOR MINECRAFT 1.9:
+# For a particular item you can now specify custom NBT data to be attached. This should only be used for output (currently) as it is not checked when comparing item stacks on input.
 
 #2. Compactionrecipe
 
