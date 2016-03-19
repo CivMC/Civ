@@ -7,7 +7,7 @@
   <groupId>net.minelink</groupId>
   <artifactId>CombatTagPlusParent</artifactId>
   <packaging>pom</packaging>
-  <version>1.2.2-SNAPSHOT</version>
+  <version>1.2.3-SNAPSHOT</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
