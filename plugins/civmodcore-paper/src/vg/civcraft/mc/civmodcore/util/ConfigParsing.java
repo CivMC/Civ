@@ -37,8 +37,6 @@ public class ConfigParsing {
 			}
 			Material m = Material.valueOf(current.getString("material"));
 			ItemStack toAdd = new ItemStack(m);
-			int amount = current.getInt("amount", 1);
-			toAdd.setAmount(amount);
 			int durability = current.getInt("durability", 0);
 			toAdd.setDurability((short) durability);
 			ItemMeta im = toAdd.getItemMeta();
@@ -63,6 +61,11 @@ public class ConfigParsing {
 				}
 			}
 			toAdd.setItemMeta(im);
+			if (current.contains("nbt")) {
+				toAdd = ItemMap.enrichWithNBT(toAdd, 1, current.getConfigurationSection("nbt").getValues(true));
+			}
+			int amount = current.getInt("amount", 1);
+			toAdd.setAmount(amount);
 			result.addItemStack(toAdd);
 		}
 		return result;
