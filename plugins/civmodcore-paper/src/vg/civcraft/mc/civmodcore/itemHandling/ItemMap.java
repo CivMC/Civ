@@ -105,7 +105,9 @@ public class ItemMap {
 	 */
 	public void addItemStack(ItemStack input) {
 		if (input != null) {
+			//Bukkit.getServer().getLogger().log(Level.INFO, "Adding {0} as ItemStack", input.toString());
 			ItemStack is = createMapConformCopy(input);
+			//Bukkit.getServer().getLogger().log(Level.INFO, "  Conform Copy: {0}", is.toString());
 			if (is == null) {
 				return;
 			}
@@ -478,6 +480,7 @@ public class ItemMap {
 				ItemStack toAdd = is.clone();
 				int addAmount = Math.min(amount, is.getMaxStackSize());
 				toAdd.setAmount(addAmount);
+				//Bukkit.getServer().getLogger().log(Level.INFO, "Adding {0} as ItemStack", toAdd.toString());
 				result.add(toAdd);
 				amount -= addAmount;
 			}
@@ -626,6 +629,7 @@ public class ItemMap {
 	 * @return Cloned ItemStack with amount set to amt and NBT set to map.
 	 */
 	public static ItemStack enrichWithNBT(ItemStack is, int amt, Map<String, Object> map) {
+		Bukkit.getServer().getLogger().log(Level.INFO, "Request to enrich {0} received", is.toString());
 		ItemStack copy = is.clone();
 		amt = (amt < 1 ? 1 : amt > is.getMaxStackSize() ? is.getMaxStackSize() : amt);
 		copy.setAmount(amt);
@@ -647,36 +651,60 @@ public class ItemMap {
 	}
 
 	public static NBTTagCompound mapToNBT(NBTTagCompound base, Map<String, Object> map) {
+		Bukkit.getServer().getLogger().log(Level.INFO, "Representing map --> NBTTagCompound");
 		if (map == null || base == null) return base;
 		for (Map.Entry<String, Object> entry : map.entrySet()) {
 			Object object = entry.getValue();
 			if (object instanceof Map) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding map at key {0}", entry.getKey());
 				base.set(entry.getKey(), mapToNBT(new NBTTagCompound(), (Map<String, Object>) object));
 			} else if (object instanceof List) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding list at key {0}", entry.getKey());
 				base.set(entry.getKey(), listToNBT(new NBTTagList(), (List<Object>) object));
 			} else if (object instanceof String) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding String {1} at key {0}", 
+						new Object[] {entry.getKey(), object});
 				base.setString(entry.getKey(), (String) object);
 			} else if (object instanceof Double) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding Double {1} at key {0}", 
+						new Object[] {entry.getKey(), object});
 				base.setDouble(entry.getKey(), (Double) object);
 			} else if (object instanceof Float) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding Float {1} at key {0}", 
+						new Object[] {entry.getKey(), object});
 				base.setFloat(entry.getKey(), (Float) object);
 			} else if (object instanceof Boolean) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding Boolean {1} at key {0}", 
+						new Object[] {entry.getKey(), object});
 				base.setBoolean(entry.getKey(), (Boolean) object);
 			} else if (object instanceof Byte) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding Byte {1} at key {0}", 
+						new Object[] {entry.getKey(), object});
 				base.setByte(entry.getKey(), (Byte) object);
 			} else if (object instanceof Short) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding Byte {1} at key {0}", 
+						new Object[] {entry.getKey(), object});
 				base.setShort(entry.getKey(), (Short) object);
 			} else if (object instanceof Integer) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding Integer {1} at key {0}", 
+						new Object[] {entry.getKey(), object});
 				base.setInt(entry.getKey(), (Integer) object);
 			} else if (object instanceof Long) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding Long {1} at key {0}", 
+						new Object[] {entry.getKey(), object});
 				base.setLong(entry.getKey(), (Long) object);
 			} else if (object instanceof byte[]) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding bytearray at key {0}", entry.getKey());
 				base.setByteArray(entry.getKey(), (byte[]) object);
 			} else if (object instanceof int[]) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding intarray at key {0}", entry.getKey());
 				base.setIntArray(entry.getKey(), (int[]) object);
 			} else if (object instanceof UUID) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding UUID {1} at key {0}", 
+						new Object[] {entry.getKey(), object});
 				base.a(entry.getKey(), (UUID) object);
 			} else if (object instanceof NBTBase) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding nbtobject at key {0}", entry.getKey());
 				base.set(entry.getKey(), (NBTBase) object);
 			} else {
 				Bukkit.getServer().getLogger().log(Level.WARNING, "Unrecognized entry in map-->NBT: {0}", object.toString());
@@ -686,31 +714,44 @@ public class ItemMap {
 	}
 
 	public static NBTTagList listToNBT(NBTTagList base, List<Object> list) {
+		Bukkit.getServer().getLogger().log(Level.INFO, "Representing list --> NBTTagList");
 		if (list == null || base == null) return base;
 		for (Object object : list) {
 			if (object instanceof Map) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding map to list");
 				base.add(mapToNBT(new NBTTagCompound(), (Map<String, Object>) object));
 			} else if (object instanceof List) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding list to list");
 				base.add(listToNBT(new NBTTagList(), (List<Object>) object));
 			} else if (object instanceof String) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding string {0} to list", object);
 				base.add(new NBTTagString((String) object));
 			} else if (object instanceof Double) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding double {0} to list", object);
 				base.add(new NBTTagDouble((Double) object));
 			} else if (object instanceof Float) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding float {0} to list", object);
 				base.add(new NBTTagFloat((Float) object));
 			} else if (object instanceof Byte) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding byte {0} to list", object);
 				base.add(new NBTTagByte((Byte) object));
 			} else if (object instanceof Short) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding short {0} to list", object);
 				base.add(new NBTTagShort((Short) object));
 			} else if (object instanceof Integer) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding integer {0} to list", object);
 				base.add(new NBTTagInt((Integer) object));
 			} else if (object instanceof Long) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding long {0} to list", object);
 				base.add(new NBTTagLong((Long) object));
 			} else if (object instanceof byte[]) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding byte array to list");
 				base.add(new NBTTagByteArray((byte[]) object));
 			} else if (object instanceof int[]) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding int array to list");
 				base.add(new NBTTagIntArray((int[]) object));
 			} else if (object instanceof NBTBase) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding nbt object to list");
 				base.add((NBTBase) object);
 			} else {
 				Bukkit.getServer().getLogger().log(Level.WARNING, "Unrecognized entry in list-->NBT: {0}", 
