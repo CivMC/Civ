@@ -3477,8 +3477,8 @@ recipes:
     name: Upgrade to Bio Lab
     fuel_consumption_intervall: 8s
     input:
-      grass:
-        material: GRASS
+      dirt:
+        material: DIRT
         amount: 256
       sapling:
         material: SAPLING
