@@ -39,6 +39,7 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.Inventory;
@@ -612,6 +613,18 @@ public class BlockListener implements Listener{
     		}
     	}
     	
+    }
+    
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void liquidDumpEvent(PlayerBucketEmptyEvent event){
+    	Block block = event.getBlockClicked().getRelative(event.getBlockFace());
+    	if (block.getType().equals(Material.AIR) || block.getType().isSolid())
+    		return;
+    	
+    	Reinforcement rein = rm.getReinforcement(Utility.getRealBlock(block));
+    	if (rein != null){
+    		event.setCancelled(true);
+    	}
     }
 
 	protected void sendAndLog(Player receiver, ChatColor color, String message) {
