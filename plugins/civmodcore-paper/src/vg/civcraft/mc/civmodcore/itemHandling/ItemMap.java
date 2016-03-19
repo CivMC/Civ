@@ -602,4 +602,107 @@ public class ItemMap {
 		copy = CraftItemStack.asBukkitCopy(s);
 		return copy;
 	}
+
+	/**
+	 * Utility to add NBT tags to an item and produce a custom stack size
+	 *
+	 * @param is Template Bukkit ItemStack
+	 * @param amt Output Stack Size
+	 * @param map Java Maps and Lists representing NBT data
+	 * @return Cloned ItemStack with amount set to amt and NBT set to map.
+	 */
+	public static ItemStack enrichWithNBT(ItemStack is, int amt, Map<String, Object> map) {
+		ItemStack copy = is.clone();
+		amt = (amt < 1 ? 1 : amt > is.getMaxStackSize() ? is.getMaxStackSize() : amt);
+		copy.setAmount(amt);
+		net.minecraft.server.v1_9_R1.ItemStack s = CraftItemStack.asNMSCopy(copy);
+		if (s == null) {
+			Bukkit.getServer().getLogger().log(Level.SEVERE, "Failed to create enriched copy of {0}", copy.toString());
+			return null;
+		}
+
+		NBTTagCompound nbt = s.getTag();
+		if (nbt == null) {
+			nbt = new NBTTagCompound();
+		}
+
+		mapToNBT(nbt, map);
+		s.setTag(nbt);
+		copy = CraftItemStack.asBukkitCopy(s);
+		return copy;
+	}
+
+	public static NBTTagCompound mapToNBT(NBTTagCompound base, Map<String, Object> map) {
+		if (map == null || base == null) return base;
+		for (Map.Entry<String, Object> entry : map.getEntrySet()) {
+			Object object = entry.getValue();
+			if (object instanceof Map) {
+				base.set(entry.getKey(), mapToNBT(new NBTTagCompound(), (Map<String, Object>) object));
+			} else if (object instanceof List) {
+				base.set(entry.getKey(), listToNBT(new NBTTagList(), (List<Object>) object));
+			} else if (object instanceof String) {
+				base.setString(entry.getKey(), (String) object);
+			} else if (object instanceof Double) {
+				base.setDouble(entry.getKey(), (Double) object);
+			} else if (object instanceof Float) {
+				base.setFloat(entry.getKey(), (Float) object);
+			} else if (object instanceof Boolean) {
+				base.setBoolean(entry.getKey(), (Boolean) object);
+			} else if (object instanceof Byte) {
+				base.setByte(entry.getKey(), (Byte) object);
+			} else if (object instanceof Short) {
+				base.setShort(entry.getKey(), (Short) object);
+			} else if (object instanceof Integer) {
+				base.setInt(entry.getKey(), (Integer) object);
+			} else if (object instanceof Long) {
+				base.setLong(entry.getKey(), (Long) object);
+			} else if (object instanceof byte[]) {
+				base.setByteArray(entry.getKey(), (byte[]) object);
+			} else if (object instanceof int[]) {
+				base.setIntArray(entry.getKey(), (int[]) object);
+			} else if (object instanceof UUID) {
+				base.a(entry.getKey(), (UUID) object);
+			} else if (object instanceof NBTBase) {
+				base.set(entry.getKey(), (NBTBase) object);
+			} else {
+				Bukkit.getServer().getLogger().log(Level.WARNING, "Unrecognized entry in map-->NBT: {0}", object.toString());
+			}
+		}
+		return base;
+	}
+
+	public static NBTTagList listToNBT(NBTTagList base, List<Object> list) {
+		if (list == null || base == null) return base;
+		for (Object object : list) {
+			if (object instanceof Map) {
+				base.add(mapToNBT(new NBTTagCompound(), (Map<String, Object>) object));
+			} else if (object instanceof List) {
+				base.add(listToNBT(new NBTTagList(), (List<Object>) object));
+			} else if (object instanceof String) {
+				base.add(new NBTTagString((String) object));
+			} else if (object instanceof Double) {
+				base.add(new NBTTagDouble((Double) object));
+			} else if (object instanceof Float) {
+				base.add(new NBTTagFloat((Float) object));
+			} else if (object instanceof Byte) {
+				base.add(new NBTTagByte((Byte) object));
+			} else if (object instanceof Short) {
+				base.add(new NBTTagShort((Short) object));
+			} else if (object instanceof Integer) {
+				base.add(new NBTTagInteger((Integer) object));
+			} else if (object instanceof Long) {
+				base.add(new NBTTagLong((Long) object));
+			} else if (object instanceof byte[]) {
+				base.add(new NBTTagByteArray((byte[]) object));
+			} else if (object instanceof int[]) {
+				base.add(new NBTTagIntArray((int[]) object));
+			} else if (object instanceof NBTBase) {
+				base.add((NBTBase) object);
+			} else {
+				Bukkit.getServer().getLogger().log(Level.WARNING, "Unrecognized entry in list-->NBT: {0}", 
+						base.toString());
+			}
+		}
+		return base;
+	}
 }

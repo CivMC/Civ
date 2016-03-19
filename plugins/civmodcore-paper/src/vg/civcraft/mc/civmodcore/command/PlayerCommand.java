@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.command.PluginCommand;
 
 public abstract class PlayerCommand implements Command{
 
