@@ -41,6 +41,7 @@ factories:
     - Upgrade to Enhanced Smelter
     - Upgrade to Yeast Forager
     - Upgrade to Material Synthesizer
+    - Upgrade to Weapons Factory
   dwa:
     type: FCCUPGRADE
     name: Dwarven Factory
@@ -91,7 +92,8 @@ factories:
     type: FCCUPGRADE
     name: Weapons Factory
     recipes:
-    - Empty
+    - Rapier
+    - Broadsword
     - Accident Repair
   bos:
     type: FCCUPGRADE
@@ -288,8 +290,23 @@ recipes:
     type: UPGRADE
     input:
       ch1:
-        material: BEDROCK
-        amount: 4
+        material: DIAMOND_SWORD
+        amount: 1
+      ch2:
+        material: DIAMOND_AXE
+        amount: 1
+      ch3:
+        material: DIAMOND_CHESTPLATE
+        amount: 1
+      ch4:
+        material: DIAMOND_HELMET
+        amount: 1
+      ch5:
+        material: DIAMOND_LEGGINGS
+        amount: 1
+      ch6:
+        material: DIAMOND_BOOTS
+        amount: 1
     factory: Weapons Factory
   rec14:
     name: Upgrade to Dimensional Gate
@@ -395,7 +412,7 @@ recipes:
         amount: 5
   rec21:
     name: Refine Lapis
-    production_time: 1s
+    production_time: 3s
     type: PRODUCTION
     input:
       l1:
@@ -406,3 +423,67 @@ recipes:
         material: INK_SACK
         durability: 4
         amount: 20
+  rec22:
+    name: Rapier
+    production_time: 10s
+    type: PRODUCTION
+    input:
+      l1:
+        material: DIAMOND_SWORD
+        amount: 3
+    output:
+      l2:
+        material: DIAMOND_SWORD
+        name: Rapier
+        lore:
+        - A sword embued with ancient
+        - powers of fast attack.
+        amount: 1
+        nbt:
+          AttributeModifiers:
+          - AttributeName: generic.attackSpeed
+            Slot: mainhand
+            Name: Fast Attack
+            Amount: 17.4
+            Operation: 0
+            UUIDLeast: 1
+            UUIDMost: 1
+          - AttributeName: generic.attackDamage
+            Slot: mainhand
+            Name: Light Attack
+            Amount: 20
+            Operation: 0
+            UUIDLeast: 894654
+            UUIDMost: 2872
+  rec23:
+    name: Broadsword
+    production_time: 10s
+    type: PRODUCTION
+    input:
+      l1:
+        material: DIAMOND_SWORD
+        amount: 3
+    output:
+      l2:
+        material: DIAMOND_SWORD
+        name: Broadsword
+        lore:
+        - A slow sword that will lay
+        - waste to legions of foes.
+        amount: 1
+        nbt:
+          AttributeModifiers:
+          - AttributeName: generic.attackDamage
+            Slot: mainhand
+            Name: Heavy Attack
+            Amount: 40
+            Operation: 0
+            UUIDLeast: 894654
+            UUIDMost: 2872
+          - AttributeName: generic.attackSpeed
+            Slot: mainhand
+            Name: Slow Attack
+            Amount: 2.9
+            Operation: 0
+            UUIDLeast: 1
+            UUIDMost: 1
