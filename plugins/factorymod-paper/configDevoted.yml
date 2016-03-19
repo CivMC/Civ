@@ -93,6 +93,7 @@ factories:
     name: Weapons Factory
     recipes:
     - Rapier
+    - Longsword
     - Broadsword
     - Accident Repair
   bos:
@@ -237,7 +238,7 @@ recipes:
     input:
       noteblocks1:
         material: NOTE_BLOCK
-        amount: 128
+        amount: 64
     output:
       jb:
         material: JUKEBOX
@@ -293,7 +294,7 @@ recipes:
         material: DIAMOND_SWORD
         amount: 1
       ch2:
-        material: DIAMOND_AXE
+        material: ENDER_PEARL
         amount: 1
       ch3:
         material: DIAMOND_CHESTPLATE
@@ -457,6 +458,38 @@ recipes:
             UUIDMost: 2872
   rec23:
     name: Broadsword
+    production_time: 10s
+    type: PRODUCTION
+    input:
+      l1:
+        material: DIAMOND_SWORD
+        amount: 3
+    output:
+      l2:
+        material: DIAMOND_SWORD
+        name: Broadsword
+        lore:
+        - A slow sword that will lay
+        - waste to legions of foes.
+        amount: 1
+        nbt:
+          AttributeModifiers:
+          - AttributeName: generic.attackDamage
+            Slot: mainhand
+            Name: Heavy Attack
+            Amount: 40
+            Operation: 0
+            UUIDLeast: 894654
+            UUIDMost: 2872
+          - AttributeName: generic.attackSpeed
+            Slot: mainhand
+            Name: Slow Attack
+            Amount: 2.9
+            Operation: 0
+            UUIDLeast: 1
+            UUIDMost: 1
+  rec24:
+    name: Longsword
     production_time: 10s
     type: PRODUCTION
     input:
