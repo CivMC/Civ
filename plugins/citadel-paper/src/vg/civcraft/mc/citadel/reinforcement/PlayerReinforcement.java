@@ -14,6 +14,7 @@ import org.bukkit.material.Openable;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
+import vg.civcraft.mc.citadel.CitadelConfigManager;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -131,14 +132,18 @@ public class PlayerReinforcement extends Reinforcement{
      */
     public String getHealthText() {
         double health = getHealth();
-        if (health > 0.75) {
-            return "excellently";
-        } else if (health > 0.50) {
-            return "well";
-        } else if (health > 0.25) {
-            return "decently";
+        if (CitadelConfigManager.showHealthAsPercent()) {
+        	return health * 100 + "%";
         } else {
-            return "poorly";
+          if (health > 0.75) {
+              return "excellently";
+          } else if (health > 0.50) {
+              return "well";
+          } else if (health > 0.25) {
+              return "decently";
+          } else {
+              return "poorly";
+          }
         }
     }
     /**
