@@ -445,14 +445,14 @@ recipes:
           - AttributeName: generic.attackSpeed
             Slot: mainhand
             Name: Fast Attack
-            Amount: 17.4
+            Amount: 6.4
             Operation: 0
             UUIDLeast: 1
             UUIDMost: 1
           - AttributeName: generic.attackDamage
             Slot: mainhand
             Name: Light Attack
-            Amount: 20
+            Amount: 0
             Operation: 0
             UUIDLeast: 894654
             UUIDMost: 2872
@@ -467,24 +467,24 @@ recipes:
     output:
       l2:
         material: DIAMOND_SWORD
-        name: Broadsword
+        name: Longsword
         lore:
-        - A slow sword that will lay
-        - waste to legions of foes.
+        - A medium length sword, slash and cut
+        - your enemies to pieces.
         amount: 1
         nbt:
           AttributeModifiers:
           - AttributeName: generic.attackDamage
             Slot: mainhand
             Name: Heavy Attack
-            Amount: 40
+            Amount: 4
             Operation: 0
             UUIDLeast: 894654
             UUIDMost: 2872
           - AttributeName: generic.attackSpeed
             Slot: mainhand
             Name: Slow Attack
-            Amount: 2.9
+            Amount: 3.2
             Operation: 0
             UUIDLeast: 1
             UUIDMost: 1
@@ -509,14 +509,14 @@ recipes:
           - AttributeName: generic.attackDamage
             Slot: mainhand
             Name: Heavy Attack
-            Amount: 40
+            Amount: 10
             Operation: 0
             UUIDLeast: 894654
             UUIDMost: 2872
           - AttributeName: generic.attackSpeed
             Slot: mainhand
             Name: Slow Attack
-            Amount: 2.9
+            Amount: 1.6
             Operation: 0
             UUIDLeast: 1
             UUIDMost: 1
