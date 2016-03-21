@@ -621,6 +621,52 @@ factories:
     - Upgrade_to_Weapon_Enchanter
     - Upgrade_to_Armour_Enchanter
     - Repair_Advanced_Factory
+  normalpipe:
+    type: PIPE
+    name: Standard Pipe
+    setupcost: 
+      redstone:
+        material: REDSTONE
+        amount: 128
+    transfer_time_multiplier: 1s
+    transfer_amount: 16
+    glass_color: 1
+  betterpipe:
+    type: PIPE
+    name: Improved Pipe
+    setupcost: 
+      redstone:
+        material: REDSTONE
+        amount: 384
+      gold:
+        material: GOLD_INGOT
+        amount: 32
+    transfer_time_multiplier: 10
+    transfer_amount: 24
+    glass_color: 2
+  sortera:
+    type: SORTER
+    name: Standard Sorter
+    setupcost:
+      redstone:
+        material: REDSTONE
+        amount: 128
+    sort_time: 2s
+    sort_amount: 32
+    maximum_materials_per_side: 5
+  sorterb:
+    type: SORTER
+    name: Improved Sorter
+    setupcost:
+      redstone:
+        material: REDSTONE
+        amount: 384
+      gold:
+        material: GOLD_INGOT
+        amount: 32
+    sort_time: 1s
+    sort_amount: 64
+    maximum_materials_per_side: 10
 recipes:
   Repair_Rudimentary_Factory:
     type: REPAIR
@@ -1975,8 +2021,8 @@ recipes:
     production_time: 8s
     input:
       identifiername:
-        material: 20
-        amount: 16
+        material: LEAVES
+        amount: 20
     output:
       identifiername:
         material: RED_ROSE
@@ -4084,6 +4130,7 @@ recipes:
     factory: Sandstone Smelter
   Upgrade_to_Soup_kitchen:
     production_time: 2h
+    type: UPGRADE
     name: Upgrade to Soup Kitchen
     fuel_consumption_intervall: 1m
     input:
