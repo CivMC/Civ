@@ -4103,7 +4103,7 @@ recipes:
     production_time: 2h
     type: UPGRADE
     name: Upgrade to Glass Blowing Workshop
-    fuel_consumption_intervall: 15s
+    fuel_consumption_intervall: 1m
     input:
       sand:
         material: SAND
@@ -4119,7 +4119,7 @@ recipes:
     production_time: 2h
     type: UPGRADE
     name: Upgrade to Sandstone Smelter
-    fuel_consumption_intervall: 15s
+    fuel_consumption_intervall: 1m
     input:
       sandstone:
         material: SANDSTONE
