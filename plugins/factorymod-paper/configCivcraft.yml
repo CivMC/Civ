@@ -250,15 +250,6 @@ factories:
     recipes:
     - Smelt_Clay_Bricks
     - Harden_Clay_Basic
-    - Repair_Small_Factory
-    - Upgrade_to_Advanced_Kiln
-  advancedkiln:
-    #Basic Contraption --> Stone Smelter --> Brick Smelter --> Kiln --> Advanced Kiln
-    type: FCCUPGRADE
-    name: Advanced Kiln
-    recipes:
-    - Smelt_Brickblocks
-    - Harden_Clay_Advanced
     - Craft_Flowerpots
     - Repair_Factory
     
@@ -374,7 +365,7 @@ factories:
     recipes:
     - Create_Poppy_Advanced
     - Mutate_Tall_Grass_Basic
-    - Take_friendly_mob_egg_apart
+    - Take_friendly_mob_egg_apart_Basic
     - Create_Podzol_Basic
     - Repair_Small_Factory
     - Upgrade_to_Grass_Gardening
@@ -744,24 +735,27 @@ recipes:
     input:
       wheat:
         material: WHEAT
-        amount: 192
+        amount: 80
       sugar:
         material: SUGAR
-        amount: 128
+        amount: 48
       eggs:
         material: EGG
-        amount: 64
+        amount: 24
       milk:
         material: MILK_BUCKET
-        amount: 10
+        amount: 16
     output:
       cake:
         material: CAKE
-        amount: 64
+        amount: 32
+      bucket:
+        material: BUCKET
+        amount: 16
   Bake_Cookies:
     type: PRODUCTION
     name: Bake Cookies
-    production_time: 5s
+    production_time: 32s
     input:
       cocoa:
         material: INK_SACK
@@ -773,33 +767,33 @@ recipes:
     output:
       cookie:
         material: COOKIE
-        amount: 1024
+        amount: 768
   Bake_Potatoes:
     type: PRODUCTION
     name: Bake Potatoes
-    production_time: 5s
+    production_time: 32s
     input:
       potato:
         material: POTATO_ITEM
-        amount: 512
+        amount: 256
     output:
       baked potato:
         material: BAKED_POTATO
-        amount: 1024
+        amount: 512
   Bake_Pumpkin_Pie:
     type: PRODUCTION
     name: Bake Pumpkin Pie
-    production_time: 5s
+    production_time: 32s
     input:
       pumpkin:
         material: PUMPKIN
-        amount: 64
+        amount: 128
       egg:
         material: EGG
-        amount: 64
+        amount: 128
       sugar:
         material: SUGAR
-        amount: 64
+        amount: 128
     output:
       pumpkin pie:
         material: PUMPKIN_PIE
@@ -913,11 +907,11 @@ recipes:
   Cook_Fish:
     type: PRODUCTION
     name: Cook Fish
-    production_time: 5s
+    production_time: 16s
     input:
       raw fish:
         material: RAW_FISH
-        amount: 64
+        amount: 32
     output:
       cooked fish:
         material: COOKED_FISH
@@ -925,41 +919,41 @@ recipes:
   Cook_Mutton:
     type: PRODUCTION
     name: Cook Mutton
-    production_time: 5s
+    production_time: 16s
     input:
       raw mutton:
         material: MUTTON
-        amount: 64
+        amount: 32
     output:
       cooked mutton:
         material: COOKED_MUTTON
-        amount: 128
+        amount: 64
   Cook_Rabbit:
     type: PRODUCTION
     name: Cook Rabbit
-    production_time: 5s
+    production_time: 16s
     input:
       raw rabbit:
         material: RABBIT
-        amount: 64
+        amount: 32
     output:
       cooked rabbit:
         material: COOKED_RABBIT
-        amount: 128
+        amount: 64
   Cook_Salmon:
     type: PRODUCTION
     name: Cook Salmon
-    production_time: 5s
+    production_time: 16s
     input:
       raw salmon:
         material: RAW_FISH
         durability: 1
-        amount: 64
+        amount: 32
     output:
       cooked salmon:
         material: COOKED_FISH
         durability: 1
-        amount: 128
+        amount: 64
   Craft_Anvils_Advanced:
     type: PRODUCTION
     name: Craft Anvils
@@ -1101,10 +1095,10 @@ recipes:
     input:
       stone brick:
         material: SMOOTH_BRICK
-        amount: 16
+        amount: 8
       flint:
         material: FLINT
-        amount: 2
+        amount: 1
     output:
       chiseled stone brick:
         material: SMOOTH_BRICK
@@ -1117,7 +1111,7 @@ recipes:
     input:
       stone brick:
         material: SMOOTH_BRICK
-        amount: 16
+        amount: 8
       gravel:
         material: GRAVEL
         amount: 2
@@ -1291,7 +1285,7 @@ recipes:
         amount: 16
       vine:
         material: VINE
-        amount: 2
+        amount: 8
     output:
       chiseled stone brick:
         material: SMOOTH_BRICK
@@ -1299,7 +1293,7 @@ recipes:
         amount: 16
   Craft_Netherbrick_Basic:
     type: PRODUCTION
-    name: Craft Netherbrick
+    name: Smelt Netherbrick
     production_time: 5s
     input:
       netherrack:
@@ -1308,11 +1302,11 @@ recipes:
     output:
       netherbrick:
         material: NETHER_BRICK
-        amount: 32
+        amount: 24
   Craft_Netherbrick_Fence:
     type: PRODUCTION
     name: Craft Netherbrick Fence
-    production_time: 5s
+    production_time: 20s
     input:
       nether brick:
         material: NETHER_BRICK
@@ -1324,7 +1318,7 @@ recipes:
   Craft_Netherbrick_Slabs:
     type: PRODUCTION
     name: Craft Netherbrick Slabs
-    production_time: 5s
+    production_time: 20s
     input:
       nether brick:
         material: NETHER_BRICK
@@ -1333,11 +1327,11 @@ recipes:
       nether brick slabs:
         material: STEP
         durability: 6
-        amount: 128
+        amount: 160
   Craft_Netherbrick_Stairs:
     type: PRODUCTION
     name: Craft Netherbrick Stairs
-    production_time: 5s
+    production_time: 20s
     input:
       nether brick:
         material: NETHER_BRICK
@@ -1470,7 +1464,7 @@ recipes:
   Craft_Prismarine_Basic:
     type: PRODUCTION
     name: Craft Prismarine
-    production_time: 5s
+    production_time: 15s
     input:
       prismarine shard:
         material: PRISMARINE_SHARD
@@ -1478,7 +1472,7 @@ recipes:
     output:
       orismarine:
         material: PRISMARINE
-        amount: 32
+        amount: 24
   Craft_Quartz_Blocks:
     type: PRODUCTION
     name: Craft Quartz Blocks
@@ -1494,7 +1488,7 @@ recipes:
   Craft_Quartz_Slabs:
     type: PRODUCTION
     name: Craft Quartz Slabs
-    production_time: 5s
+    production_time: 20s
     input:
       quartz block:
         material: QUARTZ_BLOCK
@@ -1503,11 +1497,11 @@ recipes:
       quartz slab:
         material: STEP
         durability: 7
-        amount: 128
+        amount: 160
   Craft_Quartz_Stairs:
     type: PRODUCTION
     name: Craft Quartz Stairs
-    production_time: 5s
+    production_time: 20s
     input:
       quartz block:
         material: QUARTZ_BLOCK
@@ -1939,8 +1933,8 @@ recipes:
         amount: 8
   Create_Podzol_Advanced:
     type: PRODUCTION
-    name: Create Podzol Advanced
-    production_time: 5s
+    name: Create Podzol
+    production_time: 32s
     input:
       dirt:
         material: DIRT
@@ -1952,8 +1946,8 @@ recipes:
         amount: 128
   Create_Podzol_Basic:
     type: PRODUCTION
-    name: Create Podzol Basic
-    production_time: 5s
+    name: Create Podzol
+    production_time: 32s
     input:
       dirt:
         material: DIRT
@@ -1966,27 +1960,27 @@ recipes:
   Create_Poppy_Advanced:
     type: PRODUCTION
     name: Create Poppy Advanced
-    production_time: 5s
+    production_time: 16s
     input:
       identifiername:
-        material: STONE
-        amount: 1
+        material: LEAVES
+        amount: 32
     output:
       identifiername:
-        material: STONE
-        amount: 1
+        material: RED_ROSE
+        amount: 16
   Create_Poppy_Basic:
     type: PRODUCTION
-    name: Create Poppy Basic
-    production_time: 5s
+    name: Grow Poppy
+    production_time: 8s
     input:
       identifiername:
-        material: STONE
-        amount: 1
+        material: 20
+        amount: 16
     output:
       identifiername:
-        material: STONE
-        amount: 1
+        material: RED_ROSE
+        amount: 8
   Create_Powered_Rail:
     type: PRODUCTION
     name: Create Powered Rail
@@ -2647,7 +2641,7 @@ recipes:
   Fry_Chicken:
     type: PRODUCTION
     name: Fry Chicken
-    production_time: 5s
+    production_time: 16s
     input:
       chicken:
         material: RAW_CHICKEN
@@ -2659,7 +2653,7 @@ recipes:
   Grill_Pork:
     type: PRODUCTION
     name: Grill Pork
-    production_time: 5s
+    production_time: 16s
     input:
       pork:
         material: PORK
@@ -2671,7 +2665,7 @@ recipes:
   Grill_Steak_Advanced:
     type: PRODUCTION
     name: Grill Steak
-    production_time: 5s
+    production_time: 16s
     input:
       beef:
         material: RAW_BEEF
@@ -2683,7 +2677,7 @@ recipes:
   Grill_Steak_Basic:
     type: PRODUCTION
     name: Grill Steak
-    production_time: 5s
+    production_time: 20s
     input:
       beef:
         material: RAW_BEEF
@@ -2747,7 +2741,7 @@ recipes:
   Harden_Clay_Basic:
     type: PRODUCTION
     name: Harden Clay
-    production_time: 5s
+    production_time: 16s
     input:
       clay:
         material: CLAY
@@ -2755,7 +2749,7 @@ recipes:
     output:
       hard clay:
         material: HARD_CLAY
-        amount: 64
+        amount: 128
   Kill_Dead_Bush:
     type: PRODUCTION
     name: Kill Dead Bush
@@ -2783,7 +2777,7 @@ recipes:
   Make_Mushroom_Stew:
     type: PRODUCTION
     name: Make Mushroom Stew
-    production_time: 5s
+    production_time: 8s
     input:
       brown mushroom:
         material: BROWN_MUSHROOM
@@ -2802,7 +2796,7 @@ recipes:
   Make_Rabbit_Stew:
     type: PRODUCTION
     name: Make Rabbit Stew
-    production_time: 5s
+    production_time: 8s
     input:
       rabbit:
         material: COOKED_RABBIT
@@ -2872,7 +2866,7 @@ recipes:
         durability: 2
   Mutate_Tall_Grass_Basic:
     type: PRODUCTION
-    name: Mutate Tall Grass Basic
+    name: Grow Tall Grass
     production_time: 5s
     input:
       fern:
@@ -2896,22 +2890,10 @@ recipes:
       identifiername:
         material: STONE
         amount: 1
-  Smelt_Brickblocks:
-    type: PRODUCTION
-    name: Smelt Brickblocks
-    production_time: 5s
-    input:
-      clay:
-        material: CLAY
-        amount: 48
-    output:
-      bricks:
-        material: BRICK
-        amount: 64
   Smelt_Clay_Bricks:
     type: PRODUCTION
     name: Smelt Clay Bricks
-    production_time: 5s
+    production_time: 8s
     input:
       clay:
         material: CLAY
@@ -2919,7 +2901,7 @@ recipes:
     output:
       bricks:
         material: BRICK
-        amount: 64
+        amount: 32
   Smelt_Coal_Ore_Basic:
     type: PRODUCTION
     name: Smelt Coal Ore
@@ -3082,8 +3064,8 @@ recipes:
         amount: 80
   Smelt_Netherbrick_Advanced:
     type: PRODUCTION
-    name: Smelt Netherbrick Advanced
-    production_time: 5s
+    name: Smelt Netherbrick
+    production_time: 10s
     input:
       netherrack:
         material: NETHERRACK
@@ -3316,7 +3298,7 @@ recipes:
       identifiername:
         material: STONE
         amount: 1
-  Take_friendly_mob_egg_apart:
+  Take_friendly_mob_egg_apart_Basic:
     type: PRODUCTION
     name: Take friendly mob egg apart
     production_time: 5s
@@ -3328,16 +3310,6 @@ recipes:
       identifiername:
         material: STONE
         amount: 1
-  Upgrade_to_Advanced_Kiln:
-    production_time: 1800s
-    type: UPGRADE
-    name: Upgrade to Advanced Kiln
-    fuel_consumption_intervall: 15s
-    input:
-      hardened clay:
-        material: HARD_CLAY
-        amount: 640
-    factory: Advanced Kiln
   Upgrade_to_Animal_Husbandry_Factory_Advanced:
     production_time: 1800s
     type: UPGRADE
@@ -3365,27 +3337,42 @@ recipes:
         amount: 16
     factory: Animal Husbandry Factory Basic
   Upgrade_to_Aquatic_Brick_Smelter:
-    production_time: 1800s
+    production_time: 1h
     type: UPGRADE
     name: Upgrade to Aquatic Brick Smelter
-    fuel_consumption_intervall: 15s
+    fuel_consumption_intervall: 30s
     input:
       prismarine shard:
         material: PRISMARINE_SHARD
-        amount: 256
+        amount: 512
       prismarine crystals:
         material: PRISMARINE_CRYSTALS
         amount: 128
+      ink:
+        material: INK_SACK
+        amount: 64
+      waterbucket:
+        material: WATER_BUCKET
+        amount: 4
+      lavabucket:
+        material: LAVA_BUCKET
+        amount: 4
     factory: Aquatic Brick Smelter
   Upgrade_to_Quartz_Factory:
-    production_time: 1800s
+    production_time: 1h
     type: UPGRADE
     name: Upgrade to Quartz Factory
-    fuel_consumption_intervall: 15s
+    fuel_consumption_intervall: 30s
     input:
       Quartz Block:
         material: QUARTZ_BLOCK
         amount: 256
+      quartz: 
+        material: QUARTZ
+        amount: 512
+      pick:
+        material: DIAMOND_PICKAXE
+        amount: 8
     factory: Quartz Factory
   Upgrade_to_Armour_Enchanter:
     production_time: 3600s
@@ -3401,20 +3388,29 @@ recipes:
         amount: 64
     factory: Armour Enchanter
   Upgrade_to_Bakery:
-    production_time: 900s
+    production_time: 2h
     type: UPGRADE
     name: Upgrade to Bakery
-    fuel_consumption_intervall: 8s
+    fuel_consumption_intervall: 1m
     input:
       bread:
         material: BREAD
         amount: 512
+      cake:
+        material: CAKE
+        amount: 32
+      pumpkinpie:
+        material: PUMPKIN_PIE
+        amount: 128
       baked potato:
         material: BAKED_POTATO
-        amount: 256
+        amount: 512
       cookie:
         material: COOKIE
-        amount: 128
+        amount: 512
+      fire:
+        material: FLINT_AND_STEEL
+        amount: 8
     factory: Bakery
   Upgrade_to_Bastion_Factory:
     production_time: 3h
@@ -3472,18 +3468,31 @@ recipes:
          - Ocean Concentrate
     factory: Bastion Factory
   Upgrade_to_Bio_Lab:
-    production_time: 900s
+    production_time: 2h
     type: UPGRADE
     name: Upgrade to Bio Lab
-    fuel_consumption_intervall: 8s
+    fuel_consumption_intervall: 1m
     input:
       dirt:
         material: DIRT
-        amount: 256
+        amount: 1024
+      poppy:
+        material: RED_ROSE
+        amount: 128
+      yellow_flower:
+        material: YELLOW_FLOWER
+        amount: 128
+      water:
+        material: WATER_BUCKET
+        amount: 8
+      bonemeal:
+        material: INK_SACK
+        durability: 15
+        amount: 128
       sapling:
         material: SAPLING
         durability: -1
-        amount: 256
+        amount: 384
     factory: Bio Lab
   Upgrade_to_Blacksmith:
     production_time: 10m
@@ -3629,10 +3638,10 @@ recipes:
     input:
       wheat:
         material: BREAD
-        amount: 384
+        amount: 192
       potato:
         material: BAKED_POTATO
-        amount: 512
+        amount: 256
       chicken:
         material: COOKED_CHICKEN
         amount: 96
@@ -3792,10 +3801,10 @@ recipes:
         amount: 32
     factory: Gold Tools Forge
   Upgrade_to_Grass_Gardening:
-    production_time: 1800s
+    production_time: 1h
     type: UPGRADE
     name: Upgrade to Grass Gardening
-    fuel_consumption_intervall: 15s
+    fuel_consumption_intervall: 30s
     input:
       grass:
         material: LONG_GRASS
@@ -3804,22 +3813,41 @@ recipes:
       dirt:
         material: DIRT
         amount: 512
+      deadbush:
+        material: DEAD_BUSH
+        amount: 128
     factory: Grass Gardening
   Upgrade_to_Grill:
-    production_time: 900s
+    production_time: 2h
     type: UPGRADE
     name: Upgrade to Grill
-    fuel_consumption_intervall: 8s
+    fuel_consumption_intervall: 1m
     input:
       beef:
-        material: RAW_BEEF
-        amount: 128
+        material: COOKED_BEEF
+        amount: 256
+      pork:
+        material: GRILLED_PORK
+        amount: 256
       mutton:
-        material: MUTTON
+        material: COOKED_MUTTON
         amount: 128
       chicken:
-        material: RAW_CHICKEN
+        material: COOKED_CHICKEN
         amount: 128
+      fish:
+        material: COOKED_FISH
+        amount: 128
+      salmon:
+        material: COOKED_FISH
+        amount: 64
+        durability: 1
+      rabbit:
+        material: COOKED_RABBIT
+        amount: 128
+      fire:
+        material: FLINT_AND_STEEL
+        amount: 8
     factory: Grill
   Upgrade_to_Iron_Equipment_Forge:
     production_time: 900s
@@ -3859,7 +3887,14 @@ recipes:
     input:
       clay:
         material: CLAY
+        amount: 1024
+      char:
+        material: COAL
+        durability: 1
         amount: 128
+      lava:
+        material: LAVA_BUCKET
+        amount: 8
     factory: Kiln
   Upgrade_to_Laboratory:
     production_time: 10m
@@ -3888,14 +3923,21 @@ recipes:
         durability: 94
     factory: Mad Scientist
   Upgrade_to_Netherbrick_Smelter:
-    production_time: 1800s
+    production_time: 1h
     type: UPGRADE
     name: Upgrade to Netherbrick Smelter
-    fuel_consumption_intervall: 15s
+    fuel_consumption_intervall: 30s
     input:
       nether brick:
         material: NETHER_BRICK
-        amount: 128
+        amount: 384
+      netherrack:
+        material: NETHERRACK
+        amount: 1024
+      lavabucket:
+        material: LAVA_BUCKET
+        amount: 16
+      
     factory: Netherbrick Smelter
   Upgrade_to_Ore_Smelter:
     production_time: 900s
@@ -4041,20 +4083,28 @@ recipes:
         amount: 640
     factory: Sandstone Smelter
   Upgrade_to_Soup_kitchen:
-    production_time: 900s
-    type: UPGRADE
-    name: Upgrade to Soup kitchen
-    fuel_consumption_intervall: 8s
+    production_time: 2h
+    name: Upgrade to Soup Kitchen
+    fuel_consumption_intervall: 1m
     input:
       red mushroom:
         material: RED_MUSHROOM
-        amount: 64
+        amount: 384
       brown mushroom:
         material: BROWN_MUSHROOM
-        amount: 64
+        amount: 384
       rabbit:
         material: RABBIT
-        amount: 64
+        amount: 128
+      bowl: 
+        material: BOWL
+        amount: 128
+      fire:
+        material: FLINT_AND_STEEL
+        amount: 8
+      water:
+        material: WATER_BUCKET
+        amount: 8
     factory: Soup kitchen
   Upgrade_to_Stone_Smelter:
     production_time: 10m
