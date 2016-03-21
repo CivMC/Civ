@@ -435,11 +435,9 @@ public class MenuBuilder {
 		ci.setSlot(inputClickable, 4);
 		int index = 13;
 		List <ItemStack> ins = rec.getInputRepresentation(null);
-		System.out.println(ins.size());
 		if (ins.size() > 18) {
 			ins = new ItemMap(ins).getLoredItemCountRepresentation();
 		}
-		System.out.println(ins.size());
 		for (ItemStack is : ins) {
 			Clickable c = new DecorationStack(is);
 			ci.setSlot(c, index);

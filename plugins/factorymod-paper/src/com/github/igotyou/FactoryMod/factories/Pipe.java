@@ -124,6 +124,7 @@ public class Pipe extends Factory {
 
 	public void transfer() {
 		LoggingUtils.log("Attempting to transfer for " + getLogData());
+		mbs.recheckComplete();
 		if (mbs.isComplete()) {
 			Inventory sourceInventory = ((InventoryHolder) (((PipeStructure) mbs)
 					.getStart().getState())).getInventory();
