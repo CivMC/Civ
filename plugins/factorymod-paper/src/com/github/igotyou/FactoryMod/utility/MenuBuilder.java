@@ -302,7 +302,7 @@ public class MenuBuilder {
 				}
 			};
 			ci.setSlot(cheCli, 5);
-			int slot = 40;
+			int slot = 31;
 			List <ItemStack> itms;
 			if (rec.getInput().getItemStackRepresentation().size() > 27) {
 				itms = rec.getInput().getLoredItemCountRepresentation();
