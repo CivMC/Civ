@@ -216,6 +216,9 @@ public class FileHandler {
 				} else {
 					mats = null;
 				}
+				if (mats.size() == 0) {
+					mats = null;
+				}
 				Factory p = pipeEgg.revive(blocks, mats, runtime);
 				manager.addFactory(p);
 				counter++;

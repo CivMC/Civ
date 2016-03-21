@@ -314,7 +314,7 @@ public class ConfigParser {
 		}
 		int transferTimeMultiplier = (int) parseTime(config
 				.getString("transfer_time_multiplier"));
-		int transferAmount = config.getInt("transferamount");
+		int transferAmount = config.getInt("transfer_amount");
 		byte color = (byte) config.getInt("glass_color");
 		return new PipeEgg(name, update, fuel, fuelIntervall, null,
 				transferTimeMultiplier, transferAmount, color, returnRate);

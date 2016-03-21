@@ -102,6 +102,7 @@ public class PipeEgg implements IFactoryEgg {
 				fuelConsumptionIntervall);
 		Pipe pipe = new Pipe(im, rm, pm, ps, updateTime, name,
 				transferTimeMultiplier, transferAmount);
+		((PipeStructure) ps).setGlassColor(color);
 		((PipeInteractionManager) im).setPipe(pipe);
 		((NoRepairDestroyOnBreakManager)rm).setFactory(pipe);
 		pipe.setAllowedMaterials(allowedMaterials);

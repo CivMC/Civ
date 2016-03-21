@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -82,6 +83,7 @@ public class Sorter extends Factory {
 	public void deactivate() {
 		LoggingUtils.log("Deactivating " + getLogData());
 		LoggingUtils.logInventory(mbs.getCenter().getBlock());
+		Bukkit.getScheduler().cancelTask(threadId);
 		turnFurnaceOff(((BlockFurnaceStructure) mbs).getFurnace());
 		active = false;
 	}

@@ -3,6 +3,7 @@ package com.github.igotyou.FactoryMod.factories;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -63,6 +64,8 @@ public class Pipe extends Factory {
 			}
 		} else {
 			rm.breakIt();
+			p.sendMessage(ChatColor.RED
+					+ "Failed to activate pipe, it is missing blocks");
 		}
 	}
 
@@ -79,6 +82,7 @@ public class Pipe extends Factory {
 	public void deactivate() {
 		LoggingUtils.log("Deactivating " + getLogData());
 		active = false;
+		Bukkit.getScheduler().cancelTask(threadId);
 		turnFurnaceOff(((PipeStructure) mbs).getFurnace());
 		runTime = 0;
 	}
@@ -128,7 +132,7 @@ public class Pipe extends Factory {
 			int leftToRemove = transferAmount;
 			for (ItemStack is : sourceInventory.getContents()) {
 				if (is != null
-						&& is.getType() != Material.AIR
+						&& is.getType() != Material.AIR && is.getAmount() != 0
 						&& (allowedMaterials == null || allowedMaterials
 								.contains(is.getType()))) {
 					int removeAmount = Math.min(leftToRemove, is.getAmount());
@@ -142,8 +146,9 @@ public class Pipe extends Factory {
 						LoggingUtils.logInventory(targetInventory,
 								"Target inventory before transfer for "
 										+ getLogData());
-						sourceInventory.removeItem(removing);
-						targetInventory.addItem(removing);
+						if (removeMap.removeSafelyFrom(sourceInventory)) {
+							targetInventory.addItem(removing);
+						}
 						LoggingUtils.logInventory(sourceInventory,
 								"Origin inventory after transfer for "
 										+ getLogData());
