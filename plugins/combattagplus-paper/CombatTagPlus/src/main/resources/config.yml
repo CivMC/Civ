@@ -1,5 +1,5 @@
 # Don't touch this. It's here to determine whether you need to refresh your config.
-config-version: 19
+config-version: 20
 
 # The duration in seconds that both the attacker and victim should be tagged in combat.
 tag-duration: 15
@@ -81,6 +81,9 @@ disable-crafting-message: '&bCrafting &cis disabled in combat.'
 
 # The duration in seconds to despawn the combat logger's NPC if it hasn't died.
 npc-despawn-time: 60
+
+# Should we reset the NPC despawn time when it gets hit?
+reset-despawn-time-on-hit: true
 
 # Generates a random name for the NPC. Turn this off to use the player name (potentially unsafe!)
 generate-random-name: true
