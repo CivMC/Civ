@@ -236,6 +236,10 @@ public class FurnCraftChestFactory extends Factory {
 					// if the factory power source inventory has enough fuel for
 					// at least 1 energyCycle
 					if (pm.powerAvailable()) {
+						//check whether the furnace is on, minecraft sometimes turns it off
+						if (getFurnace().getType() != Material.BURNING_FURNACE) {
+							turnFurnaceOn(getFurnace());
+						}
 						// if the time since fuel was last consumed is equal to
 						// how often fuel needs to be consumed
 						int consumptionIntervall = ((InputRecipe) currentRecipe)

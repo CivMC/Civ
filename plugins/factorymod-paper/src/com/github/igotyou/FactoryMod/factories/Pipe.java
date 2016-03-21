@@ -99,6 +99,10 @@ public class Pipe extends Factory {
 					deactivate();
 				}
 			} else {
+				Block furnace = ((PipeStructure) mbs).getFurnace();
+				if (furnace.getType() != Material.BURNING_FURNACE) {
+					turnFurnaceOn(furnace);
+				}
 				// if the time since fuel was last consumed is equal to
 				// how often fuel needs to be consumed
 				if (pm.getPowerCounter() >= pm.getPowerConsumptionIntervall() - 1) {

@@ -21,6 +21,7 @@ import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
+import com.github.igotyou.FactoryMod.structures.PipeStructure;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 
 public class Sorter extends Factory {
@@ -105,6 +106,10 @@ public class Sorter extends Factory {
 					deactivate();
 				}
 			} else {
+				Block furnace = ((BlockFurnaceStructure) mbs).getFurnace();
+				if (furnace.getType() != Material.BURNING_FURNACE) {
+					turnFurnaceOn(furnace);
+				}
 				if (pm.getPowerCounter() >= pm.getPowerConsumptionIntervall() - 1) {
 					pm.consumePower();
 					pm.setPowerCounter(0);
