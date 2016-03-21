@@ -452,12 +452,12 @@ recipes:
           - AttributeName: generic.attackDamage
             Slot: mainhand
             Name: Light Attack
-            Amount: 0
+            Amount: 1
             Operation: 0
             UUIDLeast: 894654
             UUIDMost: 2872
   rec23:
-    name: Broadsword
+    name: Longsword
     production_time: 10s
     type: PRODUCTION
     input:
@@ -477,7 +477,7 @@ recipes:
           - AttributeName: generic.attackDamage
             Slot: mainhand
             Name: Heavy Attack
-            Amount: 4
+            Amount: 6
             Operation: 0
             UUIDLeast: 894654
             UUIDMost: 2872
@@ -489,7 +489,7 @@ recipes:
             UUIDLeast: 1
             UUIDMost: 1
   rec24:
-    name: Longsword
+    name: Broadsword
     production_time: 10s
     type: PRODUCTION
     input:
@@ -509,7 +509,7 @@ recipes:
           - AttributeName: generic.attackDamage
             Slot: mainhand
             Name: Heavy Attack
-            Amount: 10
+            Amount: 13
             Operation: 0
             UUIDLeast: 894654
             UUIDMost: 2872
