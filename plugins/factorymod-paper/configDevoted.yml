@@ -445,7 +445,7 @@ recipes:
           - AttributeName: generic.attackSpeed
             Slot: mainhand
             Name: Fast Attack
-            Amount: 6.4
+            Amount: 3.2
             Operation: 0
             UUIDLeast: 1
             UUIDMost: 1
@@ -484,7 +484,7 @@ recipes:
           - AttributeName: generic.attackSpeed
             Slot: mainhand
             Name: Slow Attack
-            Amount: 3.2
+            Amount: 1.6
             Operation: 0
             UUIDLeast: 1
             UUIDMost: 1
@@ -516,7 +516,7 @@ recipes:
           - AttributeName: generic.attackSpeed
             Slot: mainhand
             Name: Slow Attack
-            Amount: 1.6
+            Amount: 0
             Operation: 0
             UUIDLeast: 1
             UUIDMost: 1
