@@ -4407,13 +4407,13 @@ recipes:
         enchants:
           dura:
             enchant: DURABILITY
-      essence:
-        material: EYE_OF_ENDER 
-        lore:
-         - Essence
-        enchants:
-          dura:
-            enchant: DURABILITY
+#      essence:
+#        material: EYE_OF_ENDER 
+#        lore:
+#         - Essence
+#        enchants:
+#          dura:
+#            enchant: DURABILITY 
       potato:
         material: BAKED_POTATO
         amount: 256
@@ -4453,13 +4453,13 @@ recipes:
         enchants:
           dura:
             enchant: DURABILITY
-      essence:
-        material: EYE_OF_ENDER 
-        lore:
-         - Essence
-        enchants:
-          dura:
-            enchant: DURABILITY 
+#      essence:
+#        material: EYE_OF_ENDER 
+#        lore:
+#         - Essence
+#        enchants:
+#          dura:
+#            enchant: DURABILITY 
       carrots:
         material: CARROT_ITEM
         amount: 256
@@ -4501,13 +4501,13 @@ recipes:
         enchants:
           dura:
             enchant: DURABILITY
-      essence:
-        material: EYE_OF_ENDER 
-        lore:
-         - Essence
-        enchants:
-          dura:
-            enchant: DURABILITY 
+#      essence:
+#        material: EYE_OF_ENDER 
+#        lore:
+#         - Essence
+#        enchants:
+#          dura:
+#            enchant: DURABILITY 
       vines:
         material: VINE
         amount: 128
