@@ -544,9 +544,11 @@ factories:
     - Enchant_Efficiency_Basic
     - Repair_Small_Factory
     - Upgrade_to_Bastion_Factory
+    - Upgrade_to_Emerald_Extractor
     - Upgrade_to_Compactor_Basic
     - Upgrade_to_Enchanter_Basic
     - Upgrade_to_Printing_Press
+    - Upgrade_to_Basic_Pylon
     - Upgrade_to_Redstone_Factory_Basic
   bastionfactory:
     type: FCCUPGRADE
@@ -621,6 +623,31 @@ factories:
     - Upgrade_to_Weapon_Enchanter
     - Upgrade_to_Armour_Enchanter
     - Repair_Advanced_Factory
+  xpfactory:
+    type: FCCUPGRADE
+    name: Emerald Extractor
+    recipes:
+     - Produce_Potash_Enrichement
+     - Produce_Vitamin_Enrichment
+     - Produce_Nether_Enrichement
+  basicpylon:
+    type: FCCUPGRADE
+    name: Basic Pylon
+    recipes:
+     - Pylon_Basic
+     - Upgrade_to_Advanced_Pylon
+  advancedPylon:
+    type: FCCUPGRADE
+    name: Advanced Pylon
+    recipes:
+     - Pylon_Advanced
+     - Upgrade_to_Expert_Pylon
+  expertpylon:
+    type: FCCUPGRADE
+    name: Expert Pylon
+    recipes:
+     - Pylon_Expert    
+    
   normalpipe:
     type: PIPE
     name: Standard Pipe
@@ -4247,6 +4274,316 @@ recipes:
         material: STONE
         durability: 5
         amount: 256
+  Upgrade_to_Emerald_Extractor:
+    name: Upgrade to Emerald Extractor
+    production_time: 4h
+    fuel_consumption_intervall: 2m
+    type: UPGRADE
+    factory: Emerald Extractor
+    input:
+      eye of ender:
+        material: EYE_OF_ENDER 
+        lore:
+         - Essence
+        enchants:
+          dura:
+            enchant: DURABILITY
+        amount: 32
+      potato:
+        material: BAKED_POTATO
+        amount: 512
+      carrots:
+        material: CARROT_ITEM
+        amount: 512
+      mushroom:
+        material: BROWN_MUSHROOM
+        amount: 256
+      yesdiet_more_mushroom:
+        material: RED_MUSHROOM
+        amount: 256
+      aether:
+        material: GOLD_NUGGET
+        amount: 512
+        lore:
+         - Aether
+        enchants:
+          dura:
+            enchant: DURABILITY
+      vines:
+        material: VINE
+        amount: 128
+      grass:
+        material: LONG_GRASS
+        amount: 256
+        durability: 1
+      pumpkin:
+        material: PUMPKIN
+        amount: 256
+      melon:
+        material: MELON_BLOCK
+        amount: 128
+  Upgrade_to_Basic_Pylon:
+    type: UPGRADE
+    name: Upgrade to Basic Pylon
+    production_time: 8h
+    fuel_consumption_intervall: 5m
+    factory: Basic Pylon
+    input:
+      goldblocks:
+        material: GOLD_BLOCK
+        amount: 8
+      redstoneblocks:
+        material: REDSTONE_BLOCK
+        amount: 8
+      ironblocks:
+        material: IRON_BLOCK
+        amount: 8
+      glass:
+        material: GLASS
+        amount: 512
+  Upgrade_to_Advanced_Pylon:
+    type: UPGRADE
+    name: Upgrade to Advanced Pylon
+    production_time: 8h
+    fuel_consumption_intervall: 5m
+    factory: Advanced Pylon
+    input:
+      diamondblocks:
+        material: DIAMOND_BLOCK
+        amount: 2
+      goldblocks:
+        material: GOLD_BLOCK
+        amount: 24
+      redstoneblocks:
+        material: REDSTONE_BLOCK
+        amount: 24
+      ironblocks:
+        material: IRON_BLOCK
+        amount: 24
+      glass:
+        material: GLASS
+        amount: 1024
+  Upgrade_to_Expert_Pylon:
+    type: UPGRADE
+    name: Upgrade to Expert Pylon
+    production_time: 8h
+    fuel_consumption_intervall: 5m
+    factory: Expert Pylon
+    input:
+      diamondblock:
+        material: DIAMOND_BLOCK
+        amount: 8
+      goldblocks:
+        material: GOLD_BLOCK
+        amount: 64
+      redstoneblocks:
+        material: REDSTONE_BLOCK
+        amount: 64
+      ironblocks:
+        material: IRON_BLOCK
+        amount: 64
+      glass:
+        material: GLASS
+        amount: 2048
+      gunpowder:
+        material: SULPHUR
+        amount: 64
+      logs:
+        material: LOG
+        amount: 1024
+        durability: -1
+          
+#XP recipes
+  Produce_Potash_Enrichement:
+    name: Produce Potash Enrichment
+    type: PRODUCTION
+    production_time: 15s
+    input:
+      aether:
+        material: GOLD_NUGGET
+        amount: 128
+        lore:
+         - Aether
+        enchants:
+          dura:
+            enchant: DURABILITY
+      essence:
+        material: EYE_OF_ENDER 
+        lore:
+         - Essence
+        enchants:
+          dura:
+            enchant: DURABILITY
+      potato:
+        material: BAKED_POTATO
+        amount: 256
+      sugar:
+        material: SUGAR
+        amount: 256
+      melon:
+        material: MELON_BLOCK
+        amount: 32
+      redrose:
+        material: RED_ROSE
+        amount: 8
+      brown_mushroom:
+        material: BROWN_MUSHROOM
+        amount: 64
+      oaksapling:
+        material: SAPLING
+        amount: 4
+      sprucelog:
+        material: LOG
+        amount: 32
+        durability: 1
+    output:
+      emeralds:
+        material: EMERALD
+        amount: 128
+  Produce_Vitamin_Enrichment:
+    type: PRODUCTION
+    name: Produce Vitamin Enrichment
+    production_time: 15s
+    input:
+      aether:
+        material: GOLD_NUGGET
+        amount: 128
+        lore:
+         - Aether
+        enchants:
+          dura:
+            enchant: DURABILITY
+      essence:
+        material: EYE_OF_ENDER 
+        lore:
+         - Essence
+        enchants:
+          dura:
+            enchant: DURABILITY 
+      carrots:
+        material: CARROT_ITEM
+        amount: 256
+      cocoa:
+        material: INK_SACK
+        amount: 92
+        durability: 3
+      grass:
+        material: LONG_GRASS
+        durability: 1
+        amount: 32
+      rose:
+        material: RED_ROSE
+        amount: 8
+      brownmushrooms:
+        material: BROWN_MUSHROOM
+        amount: 64
+      oaksapling:
+        material: SAPLING
+        amount: 4
+      junglelog:
+        material: LOG
+        durability: 3
+        amount: 32
+    output:
+      xp:
+        material: EMERALD
+        amount: 128
+  Produce_Nether_Enrichement:
+    type: PRODUCTION
+    name: Produce Vitamin Enrichment
+    production_time: 15s
+    input:
+      aether:
+        material: GOLD_NUGGET
+        amount: 128
+        lore:
+         - Aether
+        enchants:
+          dura:
+            enchant: DURABILITY
+      essence:
+        material: EYE_OF_ENDER 
+        lore:
+         - Essence
+        enchants:
+          dura:
+            enchant: DURABILITY 
+      vines:
+        material: VINE
+        amount: 128
+      netherwart:
+        material: NETHER_STALK 
+        amount: 64
+      cactus:
+        material: CACTUS
+        amount: 256
+      yellow_flower:
+        material: YELLOW_FLOWER
+        amount: 8
+      redmushroom:
+        material: RED_MUSHROOM
+        amount: 64
+      birchsapling:
+        material: SAPLING
+        durability: 2
+        amount: 4
+      darkoaklog:
+        material: LOG_2
+        durability: 1
+        amount: 32
+    output:
+      xp:
+        material: EMERALD
+        amount: 128
+            
+#Pylon recipes
+  Pylon_Basic:
+    name: Extract Aether
+    type: PYLON
+    production_time: 2h
+    input:
+    output:
+      aether:
+        material: GOLD_NUGGET
+        amount: 10
+        lore:
+         - Aether
+        enchants:
+          dura:
+            enchant: DURABILITY
+    weight: 40
+  Pylon_Advanced:
+    name: Extract Aether
+    type: PYLON
+    production_time: 1h
+    input:
+    output:
+      aether:
+        material: GOLD_NUGGET
+        amount: 14
+        lore:
+         - Aether
+        enchants:
+          dura:
+            enchant: DURABILITY
+    weight: 26
+  Pylon_Expert:
+    name: Extract Aether
+    type: PYLON
+    production_time: 1h
+    input:
+    output:
+      aether:
+        material: GOLD_NUGGET
+        amount: 20
+        lore:
+         - Aether
+        enchants:
+          dura:
+            enchant: DURABILITY
+    weight: 20
+    
+    
 
 #Bastion recipes
   Brew_Soup_Concentrate:
