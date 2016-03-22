@@ -276,7 +276,7 @@ public class FurnCraftChestFactory extends Factory {
 					LoggingUtils.log("Executing recipe "
 							+ currentRecipe.getRecipeName() + " for "
 							+ getLogData());
-					sendActivatorMessage(ChatColor.AQUA + currentRecipe.getRecipeName() + " in " + name + " completed");
+					sendActivatorMessage(ChatColor.GOLD + currentRecipe.getRecipeName() + " in " + name + " completed");
 					if (currentRecipe instanceof Upgraderecipe) {
 						// this if else might look a bit weird, but because
 						// upgrading changes the current recipe and a lot of
