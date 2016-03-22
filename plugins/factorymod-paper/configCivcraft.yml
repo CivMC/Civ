@@ -4496,7 +4496,7 @@ recipes:
         amount: 128
   Produce_Nether_Enrichement:
     type: PRODUCTION
-    name: Produce Vitamin Enrichment
+    name: Produce Nether Enrichment
     production_time: 15s
     input:
       aether:
