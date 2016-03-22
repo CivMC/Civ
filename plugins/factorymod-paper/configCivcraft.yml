@@ -10,6 +10,9 @@ break_grace_period: 10d
 decay_intervall: 1h
 decay_amount: 21
 use_recipe_yamlidentifiers: true
+global_pylon_limit: 100
+
+
 factories:
 
   #Base factory from which all others upgrade
