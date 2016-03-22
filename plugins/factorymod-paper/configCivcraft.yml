@@ -636,18 +636,22 @@ factories:
     recipes:
      - Pylon_Basic
      - Upgrade_to_Advanced_Pylon
+     - Repair_Basic_Pylon
   advancedPylon:
     type: FCCUPGRADE
     name: Advanced Pylon
     recipes:
      - Pylon_Advanced
      - Upgrade_to_Expert_Pylon
+     - Repair_Advanced_Pylon
   expertpylon:
     type: FCCUPGRADE
     name: Expert Pylon
     recipes:
-     - Pylon_Expert    
-    
+     - Pylon_Expert  
+     - Repair_Expert_Pylon
+
+#Pipes     
   normalpipe:
     type: PIPE
     name: Standard Pipe
@@ -671,6 +675,8 @@ factories:
     transfer_time_multiplier: 10
     transfer_amount: 24
     glass_color: 2
+
+#Sorters
   sortera:
     type: SORTER
     name: Standard Sorter
@@ -4585,7 +4591,37 @@ recipes:
           dura:
             enchant: DURABILITY
     weight: 20
-    
+
+
+#Pylon repair recipes 
+  Repair_Basic_Pylon:
+    type: REPAIR
+    name: Repair Basic Pylon
+    production_time: 10s
+    input:
+      xp:
+        material: EMERALD
+        amount: 100
+    health_gained: 1000
+  Repair_Advanced_Pylon:
+    type: REPAIR
+    name: Repair Basic Pylon
+    production_time: 10s
+    input:
+      xp:
+        material: EMERALD
+        amount: 140
+    health_gained: 1000
+  Repair_Expert_Pylon:
+    type: REPAIR
+    name: Repair Basic Pylon
+    production_time: 10s
+    input:
+      xp:
+        material: EMERALD
+        amount: 200
+    health_gained: 1000
+     
     
 
 #Bastion recipes
