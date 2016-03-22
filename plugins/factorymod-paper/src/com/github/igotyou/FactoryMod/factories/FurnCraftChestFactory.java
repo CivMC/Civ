@@ -264,7 +264,7 @@ public class FurnCraftChestFactory extends Factory {
 					}
 					// if there is no fuel Available turn off the factory
 					else {
-						sendActivatorMessage(ChatColor.RED + name + " deactivated, because it ran out of fuel");
+						sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because it ran out of fuel");
 						deactivate();
 					}
 				}
@@ -276,7 +276,7 @@ public class FurnCraftChestFactory extends Factory {
 					LoggingUtils.log("Executing recipe "
 							+ currentRecipe.getRecipeName() + " for "
 							+ getLogData());
-					sendActivatorMessage(ChatColor.AQUA + currentRecipe.getRecipeName() + " in " + name + " completed");
+					sendActivatorMessage(ChatColor.GOLD + currentRecipe.getRecipeName() + " in " + name + " completed");
 					if (currentRecipe instanceof Upgraderecipe) {
 						// this if else might look a bit weird, but because
 						// upgrading changes the current recipe and a lot of
@@ -299,11 +299,11 @@ public class FurnCraftChestFactory extends Factory {
 					}
 				}
 			} else {
-				sendActivatorMessage(ChatColor.RED + name + " deactivated, because it ran out of required materials");
+				sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because it ran out of required materials");
 				deactivate();
 			}
 		} else {
-			sendActivatorMessage(ChatColor.RED + name + " deactivated, because the factory was destroyed");
+			sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because the factory was destroyed");
 			deactivate();
 		}
 	}
