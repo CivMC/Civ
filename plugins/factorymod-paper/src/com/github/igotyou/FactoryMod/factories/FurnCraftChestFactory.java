@@ -264,7 +264,7 @@ public class FurnCraftChestFactory extends Factory {
 					}
 					// if there is no fuel Available turn off the factory
 					else {
-						sendActivatorMessage(ChatColor.RED + name + " deactivated, because it ran out of fuel");
+						sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because it ran out of fuel");
 						deactivate();
 					}
 				}
@@ -299,11 +299,11 @@ public class FurnCraftChestFactory extends Factory {
 					}
 				}
 			} else {
-				sendActivatorMessage(ChatColor.RED + name + " deactivated, because it ran out of required materials");
+				sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because it ran out of required materials");
 				deactivate();
 			}
 		} else {
-			sendActivatorMessage(ChatColor.RED + name + " deactivated, because the factory was destroyed");
+			sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because the factory was destroyed");
 			deactivate();
 		}
 	}
