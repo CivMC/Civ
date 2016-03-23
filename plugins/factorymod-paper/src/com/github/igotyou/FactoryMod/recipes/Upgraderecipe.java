@@ -44,7 +44,7 @@ public class Upgraderecipe extends InputRecipe {
 
 	public ItemStack getRecipeRepresentation() {
 		ItemStack res = ((InputRecipe)((FurnCraftChestEgg)egg).getRecipes().get(0)).getOutputRepresentation(null).get(0);
-		res.setAmount(0);
+		res.setAmount(1);
 		ItemMeta im = res.getItemMeta();
 		im.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
 		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
