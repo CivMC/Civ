@@ -4359,19 +4359,19 @@ recipes:
     input:
       diamondblocks:
         material: DIAMOND_BLOCK
-        amount: 2
+        amount: 4
       goldblocks:
         material: GOLD_BLOCK
-        amount: 24
+        amount: 48
       redstoneblocks:
         material: REDSTONE_BLOCK
-        amount: 24
+        amount: 48
       ironblocks:
         material: IRON_BLOCK
-        amount: 24
+        amount: 48
       glass:
         material: GLASS
-        amount: 1024
+        amount: 2048
   Upgrade_to_Expert_Pylon:
     type: UPGRADE
     name: Upgrade to Expert Pylon
@@ -4381,25 +4381,25 @@ recipes:
     input:
       diamondblock:
         material: DIAMOND_BLOCK
-        amount: 8
+        amount: 24
       goldblocks:
         material: GOLD_BLOCK
-        amount: 64
+        amount: 256
       redstoneblocks:
         material: REDSTONE_BLOCK
-        amount: 64
+        amount: 256
       ironblocks:
         material: IRON_BLOCK
-        amount: 64
+        amount: 256
       glass:
         material: GLASS
-        amount: 2048
+        amount: 1280
       gunpowder:
         material: SULPHUR
-        amount: 64
+        amount: 256
       logs:
         material: LOG
-        amount: 1024
+        amount: 640
         durability: -1
           
 #XP recipes
