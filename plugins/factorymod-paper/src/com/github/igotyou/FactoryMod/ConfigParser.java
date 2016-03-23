@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
@@ -25,6 +26,7 @@ import com.github.igotyou.FactoryMod.listeners.NetherPortalListener;
 import com.github.igotyou.FactoryMod.recipes.AOERepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.CompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.DecompactingRecipe;
+import com.github.igotyou.FactoryMod.recipes.DeterministicEnchantingRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
@@ -53,7 +55,7 @@ public class ConfigParser {
 		this.plugin = plugin;
 	}
 
-	/**
+	/** 
 	 * Parses the whole config and creates a manager containing everything that
 	 * was parsed from the config
 	 * 
@@ -486,6 +488,14 @@ public class ConfigParser {
 					.getConfigurationSection("output"));
 			int weight = config.getInt("weight");
 			result = new PylonRecipe(name, productionTime, in, out, weight);
+			break;
+		case "ENCHANT":
+			ItemMap inp = parseItemMap(config
+					.getConfigurationSection("input"));
+			Enchantment enchant = Enchantment.getByName(config.getString("enchant"));
+			int level = config.getInt("level", 1);
+			ItemMap tool = parseItemMap(config.getConfigurationSection("enchant_item"));
+			result = new DeterministicEnchantingRecipe(name, productionTime, inp, tool, enchant, level);
 			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type")

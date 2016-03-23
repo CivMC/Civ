@@ -496,6 +496,43 @@ factories:
 #factory is the name of the factory it's supposed to be upgraded to. This factory must have been specified as FCCUPGRADE
 #above and the name here and above has to be exactly the same.
 
+
+#6. Enchantingrecipe
+
+#Enchanting recipes allow factories to apply enchants to items. Instead of just consuming a blank tool to produce an enchanted
+#one the way it would be possible with enchanted tools, this actually applies the enchant. This can also be used to increase the
+#level of an already existing enchant 
+
+#Example:
+
+#enchanting:
+# type: ENCHANT
+# name: Enchant with Effiency 5
+# input:
+#   diamond:
+#     material: DIAMOND
+#     amount: 50
+# enchant: DIG_SPEED
+# level: 5
+# enchant_item:
+#   tool:
+#     material: DIAMOND_PICKAXE
+
+#type has to be ENCHANT for this recipe
+
+#name is the name of the recipe displayed ingame
+
+#input are additional items which are consumed as a cost to enchant the item
+
+#enchant is the enchant which is applied to the item, use official spigot identifers for this:
+#https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
+
+#level is the level of the enchant, if not specified this will default to 1
+
+#enchant_item is the item to which the enchant is applied. This can just be a blank tool, if you want this enchant to be appliable
+#to any tool of this material or you can give this item an enchant with the same type as this recipe, but of a different level to use
+#this recipe as an upgrade to the enchant
+
 recipes:
 
 
