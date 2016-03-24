@@ -24,8 +24,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.ContainerBlock;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -79,13 +80,25 @@ public class BlockListener implements Listener{
 	public void onFortificationMode(BlockPlaceEvent event){
 		Player p = event.getPlayer();
 		Block b = event.getBlock();
+		Location loc = b.getLocation();
 		Inventory inv = p.getInventory();
+		Reinforcement rein = rm.getReinforcement(b.getLocation());
 		if (Material.AIR.equals(event.getBlockReplacedState().getType())) {
-			Reinforcement rein = rm.getReinforcement(b.getLocation());
 			if (rein != null && rein instanceof PlayerReinforcement){
+				//Would be nice to find a more performant way to detect the entity w/o checking every entity.
+				for (Entity e : loc.getChunk().getEntities()){
+					if (e instanceof Hanging){
+						Location eloc = e.getLocation().getBlock().getLocation();
+						if (eloc.getBlockX() == loc.getBlockX() && eloc.getBlockY() == loc.getBlockY()
+								&& eloc.getBlockZ() == loc.getBlockZ()){
+							event.setCancelled(true);
+							return;
+						}
+					}
+				}
+				
 				rm.deleteReinforcement(rein);
 			}
-			Location loc = event.getBlockPlaced().getLocation();
 			ItemStack stack = event.getItemInHand();
 			rein = isDroppedReinforcementBlock(p, stack, loc);
 			if (rein != null){
