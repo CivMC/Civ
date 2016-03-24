@@ -5478,10 +5478,10 @@ recipes:
     type: PRODUCTION
     production_time: 10s
     input:
-      snow:
+      ice:
         material: ICE
         amount: 192
     output:
-      ice:
+      packedice:
         material: PACKED_ICE
         amount: 64
