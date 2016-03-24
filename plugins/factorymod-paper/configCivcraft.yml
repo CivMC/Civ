@@ -154,6 +154,7 @@ factories:
     - Smelt_Glass_Expert
     - Smelt_Glass_Panes_Advanced
     - Blow_Glassbottles
+    - Upgrade_to_Crystallization_Factory
     - Repair_Factory
   sandstonesmelter:
     #Basic Contraption --> Stone Smelter --> Sand Smelter --> Sandstone Smelter
@@ -553,7 +554,6 @@ factories:
     - Upgrade_to_Printing_Press
     - Upgrade_to_Basic_Pylon
     - Upgrade_to_Redstone_Factory_Basic
-    - Upgrade_to_Crystallization_Factory
   bastionfactory:
     type: FCCUPGRADE
     name: Bastion Factory
@@ -4561,7 +4561,10 @@ recipes:
     input:
       snow:
         material: SNOW_BLOCK
-        amount: 576
+        amount: 1024
+      ice:
+        material: ICE
+        amount: 1024
       waterbucket:
         material: WATER_BUCKET
         amount: 4
@@ -5466,7 +5469,7 @@ recipes:
     output:
       ice:
         material: ICE
-        amount: 288
+        amount: 64
       bucket:
         material: BUCKET
         amount: 4
@@ -5477,8 +5480,8 @@ recipes:
     input:
       snow:
         material: ICE
-        amount: 288
+        amount: 192
     output:
       ice:
         material: PACKED_ICE
-        amount: 192
+        amount: 64
