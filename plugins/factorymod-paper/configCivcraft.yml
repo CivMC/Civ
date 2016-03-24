@@ -553,6 +553,7 @@ factories:
     - Upgrade_to_Printing_Press
     - Upgrade_to_Basic_Pylon
     - Upgrade_to_Redstone_Factory_Basic
+    - Upgrade_to_Crystallization_Factory
   bastionfactory:
     type: FCCUPGRADE
     name: Bastion Factory
@@ -653,6 +654,13 @@ factories:
     recipes:
      - Pylon_Expert  
      - Repair_Expert_Pylon
+  crystallizationfactory:
+    type: FCCUPGRADE
+    name: Crystallization Factory
+    recipes:
+     - Pack_Snow_To_Ice
+     - Compress_Ice_To_Packed_Ice
+     - Repair_Factory
 
 #Pipes     
   normalpipe:
@@ -4545,6 +4553,18 @@ recipes:
         material: EMERALD
         amount: 128
             
+  Upgrade_to_Crystallization_Factory:
+    production_time: 10m
+    type: UPGRADE
+    name: Upgrade to Crystallization Factory
+    fuel_consumption_intervall: 20s
+    input:
+      snow:
+        material: SNOW_BLOCK
+        amount: 576
+      waterbucket:
+        material: WATER_BUCKET
+        amount: 4
 #Pylon recipes
   Pylon_Basic:
     name: Extract Aether
@@ -5432,3 +5452,33 @@ recipes:
         material: STAINED_GLASS_PANE
         amount: 64
         durability: 15
+  Pack_Snow_To_Ice:
+    name: Pack Snow into Ice
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      snow:
+        material: SNOW_BLOCK
+        amount: 576
+      waterbucket:
+        material: WATER_BUCKET
+        amount: 4
+    output:
+      ice:
+        material: ICE
+        amount: 288
+      bucket:
+        material: BUCKET
+        amount: 4
+  Compress_Ice_To_Packed_Ice:
+    name: Compress Ice into Compressed Ice
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      snow:
+        material: ICE
+        amount: 288
+    output:
+      ice:
+        material: PACKED_ICE
+        amount: 192
