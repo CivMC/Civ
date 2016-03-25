@@ -4331,6 +4331,22 @@ recipes:
       melon:
         material: MELON_BLOCK
         amount: 128
+  Upgrade_to_Crystallization_Factory:
+    production_time: 10m
+    type: UPGRADE
+    name: Upgrade to Crystallization Factory
+    fuel_consumption_intervall: 20s
+    factory: Crystallization Factory
+    input:
+      snow:
+        material: SNOW_BLOCK
+        amount: 1024
+      ice:
+        material: ICE
+        amount: 1024
+      waterbucket:
+        material: WATER_BUCKET
+        amount: 4
   Upgrade_to_Basic_Pylon:
     type: UPGRADE
     name: Upgrade to Basic Pylon
@@ -4621,22 +4637,8 @@ recipes:
       xp:
         material: EMERALD
         amount: 128
-            
-  Upgrade_to_Crystallization_Factory:
-    production_time: 10m
-    type: UPGRADE
-    name: Upgrade to Crystallization Factory
-    fuel_consumption_intervall: 20s
-    input:
-      snow:
-        material: SNOW_BLOCK
-        amount: 1024
-      ice:
-        material: ICE
-        amount: 1024
-      waterbucket:
-        material: WATER_BUCKET
-        amount: 4
+
+        
 #Pylon recipes
   Pylon_Basic:
     name: Extract Aether
