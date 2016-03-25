@@ -17,6 +17,8 @@ import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
+import com.github.igotyou.FactoryMod.events.RecipeExecuteEvent;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
@@ -121,6 +123,11 @@ public class FurnCraftChestFactory extends Factory {
 							p.sendMessage("This factory is already at full health!");
 							return;
 						}
+					}
+					FactoryActivateEvent fae = new FactoryActivateEvent(this, p);
+					Bukkit.getPluginManager().callEvent(fae);
+					if (fae.isCancelled()) {
+						return;
 					}
 					if (p != null) {
 						int consumptionIntervall = ((InputRecipe) currentRecipe)
@@ -276,6 +283,14 @@ public class FurnCraftChestFactory extends Factory {
 					LoggingUtils.log("Executing recipe "
 							+ currentRecipe.getRecipeName() + " for "
 							+ getLogData());
+					RecipeExecuteEvent ree = new RecipeExecuteEvent(this, (InputRecipe) currentRecipe);
+					Bukkit.getPluginManager().callEvent(ree);
+					if (ree.isCancelled()) {
+						LoggingUtils.log("Executing recipe "
+							+ currentRecipe.getRecipeName() + " for "
+							+ getLogData() + " was cancelled over the event");
+						return;
+					}
 					sendActivatorMessage(ChatColor.GOLD + currentRecipe.getRecipeName() + " in " + name + " completed");
 					if (currentRecipe instanceof Upgraderecipe) {
 						// this if else might look a bit weird, but because

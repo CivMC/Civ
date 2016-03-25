@@ -14,6 +14,8 @@ import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
+import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
+import com.github.igotyou.FactoryMod.events.ItemTransferEvent;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
@@ -45,6 +47,13 @@ public class Pipe extends Factory {
 		if (mbs.isComplete()) {
 			if (transferMaterialsAvailable()) {
 				if (pm.powerAvailable()) {
+					FactoryActivateEvent fae = new FactoryActivateEvent(this, p);
+					Bukkit.getPluginManager().callEvent(fae);
+					if (fae.isCancelled()) {
+						LoggingUtils.log("Activating for " + getLogData()
+								+ " was cancelled by the event");
+						return;
+					}
 					if (p != null) {
 						p.sendMessage(ChatColor.GREEN
 								+ "Activated pipe transfer");
@@ -137,7 +146,8 @@ public class Pipe extends Factory {
 			int leftToRemove = transferAmount;
 			for (ItemStack is : sourceInventory.getContents()) {
 				if (is != null
-						&& is.getType() != Material.AIR && is.getAmount() != 0
+						&& is.getType() != Material.AIR
+						&& is.getAmount() != 0
 						&& (allowedMaterials == null || allowedMaterials
 								.contains(is.getType()))) {
 					int removeAmount = Math.min(leftToRemove, is.getAmount());
@@ -145,6 +155,15 @@ public class Pipe extends Factory {
 					removing.setAmount(removeAmount);
 					ItemMap removeMap = new ItemMap(removing);
 					if (removeMap.fitsIn(targetInventory)) {
+						ItemTransferEvent ite = new ItemTransferEvent(this,
+								sourceInventory, targetInventory,
+								((PipeStructure) mbs).getStart(),
+								((PipeStructure) mbs).getEnd(), removing);
+						Bukkit.getPluginManager().callEvent(ite);
+						if (ite.isCancelled()) {
+							LoggingUtils.log("Transfer for " + removing.toString() + " was cancelled over the event");
+							continue;
+						}
 						LoggingUtils.logInventory(sourceInventory,
 								"Origin inventory before transfer for "
 										+ getLogData());

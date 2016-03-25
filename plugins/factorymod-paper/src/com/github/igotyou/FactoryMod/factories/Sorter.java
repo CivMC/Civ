@@ -16,12 +16,13 @@ import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
+import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
+import com.github.igotyou.FactoryMod.events.ItemTransferEvent;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
-import com.github.igotyou.FactoryMod.structures.PipeStructure;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 
 public class Sorter extends Factory {
@@ -52,6 +53,16 @@ public class Sorter extends Factory {
 		if (mbs.isComplete()) {
 			if (pm.powerAvailable()) {
 				if (sortableMaterialsAvailable()) {
+					FactoryActivateEvent fae = new FactoryActivateEvent(this, p);
+					Bukkit.getPluginManager().callEvent(fae);
+					if (fae.isCancelled()) {
+						LoggingUtils.log("Activating of " + getLogData()
+								+ " was cancelled by the event");
+						return;
+					}
+					if (p != null) {
+						p.sendMessage(ChatColor.GREEN + "Activated " + name);
+					}
 					activate();
 				} else {
 					if (p != null) {
@@ -172,6 +183,17 @@ public class Sorter extends Factory {
 						ItemStack rem = is.clone();
 						rem.setAmount(removeAmount);
 						if (new ItemMap(is).fitsIn(relInv)) {
+							ItemTransferEvent ite = new ItemTransferEvent(this,
+									inv, relInv, center,
+									center.getRelative(bf), rem);
+							Bukkit.getPluginManager().callEvent(ite);
+							if (ite.isCancelled()) {
+								LoggingUtils.log("Sorting for "
+										+ rem.toString() + " in "
+										+ getLogData()
+										+ " was cancelled over the event");
+								continue;
+							}
 							LoggingUtils.log("Moving "
 									+ rem.toString()
 									+ " from "
@@ -211,7 +233,7 @@ public class Sorter extends Factory {
 	public void setRunTime(int runtime) {
 		this.runTime = runtime;
 	}
-	
+
 	public int getRunTime() {
 		return runTime;
 	}
