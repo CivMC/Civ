@@ -669,7 +669,7 @@ factories:
     setupcost: 
       redstone:
         material: REDSTONE
-        amount: 128
+        amount: 48
     transfer_time_multiplier: 1s
     transfer_amount: 16
     glass_color: 1
@@ -694,7 +694,7 @@ factories:
     setupcost:
       redstone:
         material: REDSTONE
-        amount: 128
+        amount: 48
     sort_time: 2s
     sort_amount: 32
     maximum_materials_per_side: 5
