@@ -4336,7 +4336,7 @@ recipes:
       enchantmenttable:
         material: ENCHANTMENT_TABLE
         amount: 5
-	  ironblocks:
+      ironblocks:
         material: IRON_BLOCK
         amount: 32
       goldenapples:
@@ -4345,13 +4345,13 @@ recipes:
       compactedglass:
         material: GLASS
         amount: 8
-		lore:
-		 - Compacted item
-	  netherquartzore:
-	    material: QUARTZ_ORE
+        lore:
+         - Compacted item
+      netherquartzore:
+        material: QUARTZ_ORE
         amount: 10
-		lore:
-		 - Compacted item
+        lore:
+         - Compacted item
   Upgrade_to_Advanced_Pylon:
     type: UPGRADE
     name: Upgrade to Advanced Pylon
@@ -4365,7 +4365,7 @@ recipes:
       enderchests:
         material: ENDER_CHEST
         amount: 10
-	  ironblocks:
+      ironblocks:
         material: IRON_BLOCK
         amount: 48
       goldenapples:
@@ -4374,27 +4374,27 @@ recipes:
       compactedglass:
         material: GLASS
         amount: 32
-		lore:
-		 - Compacted item
-	  netherquartzore:
-	    material: QUARTZ_ORE
+        lore:
+         - Compacted item
+      netherquartzore:
+        material: QUARTZ_ORE
         amount: 20
-		lore:
-		 - Compacted item
-	  emerald:
+        lore:
+         - Compacted item
+      emerald:
         material: EMERALD_BLOCK
         amount: 42
-	  compactedstone:
+      compactedstone:
         material: STONE
         amount: 32
-		lore:
-		 - Compacted item
+        lore:
+         - Compacted item
       compactedlogs:
         material: LOG
         amount: 32
-		durability: -1
-		lore:
-		 - Compacted item
+        durability: -1
+        lore:
+         - Compacted item
   Upgrade_to_Expert_Pylon:
     type: UPGRADE
     name: Upgrade to Expert Pylon
@@ -4408,7 +4408,7 @@ recipes:
       enderchests:
         material: ENDER_CHEST
         amount: 32
-	  diamondblocks:
+      diamondblocks:
         material: DIAMOND_BLOCK
         amount: 16
       goldenapples:
@@ -4417,59 +4417,59 @@ recipes:
       compactedglass:
         material: GLASS
         amount: 64
-		lore:
-		 - Compacted item
-	  netherquartzore:
-	    material: QUARTZ_ORE
+        lore:
+         - Compacted item
+      netherquartzore:
+        material: QUARTZ_ORE
         amount: 48
-		lore:
-		 - Compacted item
-	  emerald:
+        lore:
+         - Compacted item
+      emerald:
         material: EMERALD_BLOCK
         amount: 16
-		lore:
-		 - Compacted item
-	  compactedstone:
+        lore:
+         - Compacted item
+      compactedstone:
         material: STONE
         amount: 512
-		lore:
-		 - Compacted item
+        lore:
+         - Compacted item
       compactedlogs:
         material: LOG
         amount: 10
-		durability: 0
-		lore:
-		 - Compacted item
-	  compactedlogs:
+        durability: 0
+        lore:
+         - Compacted item
+      compactedlogs:
         material: LOG
         amount: 10
-		durability: 1
-		lore:
-		 - Compacted item
-	  compactedlogs:
+        durability: 1
+        lore:
+         - Compacted item
+      compactedlogs:
         material: LOG
         amount: 10
-		durability: 2
-		lore:
-		 - Compacted item
-	  compactedlogs:
+        durability: 2
+        lore:
+         - Compacted item
+      compactedlogs:
         material: LOG
         amount: 10
-		durability: 3
-		lore:
-		 - Compacted item
-	  compactedlogs:
+        durability: 3
+        lore:
+         - Compacted item
+      compactedlogs:
         material: LOG_2
         amount: 10
-		durability: 0
-		lore:
-		 - Compacted item
-	  compactedlogs:
+        durability: 0
+        lore:
+         - Compacted item
+      compactedlogs:
         material: LOG_2
         amount: 10
-		durability: 1
-		lore:
-		 - Compacted item
+        durability: 1
+        lore:
+         - Compacted item
           
 #XP recipes
   Produce_Potash_Enrichement:
