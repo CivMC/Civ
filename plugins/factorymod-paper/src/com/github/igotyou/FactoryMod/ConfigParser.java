@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.Material;
@@ -31,6 +32,8 @@ import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.PylonRecipe;
+import com.github.igotyou.FactoryMod.recipes.RandomEnchantingRecipe;
+import com.github.igotyou.FactoryMod.recipes.RandomOutputRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
@@ -496,6 +499,27 @@ public class ConfigParser {
 			int level = config.getInt("level", 1);
 			ItemMap tool = parseItemMap(config.getConfigurationSection("enchant_item"));
 			result = new DeterministicEnchantingRecipe(name, productionTime, inp, tool, enchant, level);
+			break;
+		case "RANDOM":
+			ItemMap inpu = parseItemMap(config
+					.getConfigurationSection("input"));
+			if (config.getConfigurationSection("outputs") == null) {
+				plugin.severe("No outputs specified for recipe " + name);
+				return null;
+			}
+			Map <ItemMap, Double> outputs = new HashMap<ItemMap, Double>();
+			double totalChance = 0.0;
+			for(String key : config.getConfigurationSection("outputs").getKeys(false)) {
+				double chance = config.getConfigurationSection("outputs").getConfigurationSection(key).getDouble("chance");
+				totalChance += chance;
+				System.out.println("Checking for " + key);
+				ItemMap im = parseItemMap(config.getConfigurationSection("outputs").getConfigurationSection(key));
+				outputs.put(im,chance);
+			}
+			if (Math.abs(totalChance - 1.0) > 0.001) {
+				plugin.warning("Sum of output chances for recipe " + name + " is not 1.0. Total sum is: " + totalChance);
+			}
+			result = new RandomOutputRecipe(name, productionTime, inpu, outputs);
 			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type")

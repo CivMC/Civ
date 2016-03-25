@@ -482,6 +482,7 @@ factories:
 
 #upgrading:
 #   type: UPGRADE
+#   production_time: 1d
 #   name: Upgrade to super duper factory
 #   input:
 #       diamond:
@@ -508,6 +509,7 @@ factories:
 #enchanting:
 # type: ENCHANT
 # name: Enchant with Effiency 5
+# production_time: 10s
 # input:
 #   diamond:
 #     material: DIAMOND
@@ -532,6 +534,38 @@ factories:
 #enchant_item is the item to which the enchant is applied. This can just be a blank tool, if you want this enchant to be appliable
 #to any tool of this material or you can give this item an enchant with the same type as this recipe, but of a different level to use
 #this recipe as an upgrade to the enchant
+
+
+#7. Randomized output recipe
+
+#Random recipes allow you to specify multiple different outputs for a recipe and to assign a certain chance to each. The sum of all the
+#chances should always be 1.0
+
+#Example:
+
+#random:
+# type: RANDOM
+# production_time: 2s
+# name: Stone or Dirt
+# input:
+#   diamond:
+#     material: DIAMOND
+# outputs:
+#   first:
+#     chance: 0.5
+#     dirt:
+#       material: DIRT
+#   second:
+#     chance: 0.5
+#     dirt:
+#       material: STONE
+
+#type has to be RANDOM here
+
+#input are the materials consumed
+
+#output is a list of item configurations with a chance for it each. It's important to note here that the items themselves still need be a level lower
+#yaml structure wise than the chance
 
 recipes:
 
