@@ -32,6 +32,9 @@ public class ConfigParsing {
 		}
 		for (String key : config.getKeys(false)) {
 			ConfigurationSection current = config.getConfigurationSection(key);
+			if (current == null) {
+				continue;
+			}
 			Material m = Material.valueOf(current.getString("material"));
 			ItemStack toAdd = new ItemStack(m);
 			int amount = current.getInt("amount", 1);
