@@ -280,6 +280,7 @@ factories:
     - Craft_any_type_of_wooden_door
     - Cut_any_type_of_Plank_Expert
     - Repair_Small_Factory
+    - Create_Crate
   finewoodworking:
     type: FCCUPGRADE
     name: Fine Woodworking
@@ -5556,3 +5557,20 @@ recipes:
       packedice:
         material: PACKED_ICE
         amount: 64
+  Create_Crate:
+    name: Create Crate
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      chest:
+        material: CHEST
+        amount: 64
+      iron:
+        material: IRON_INGOT
+        amount: 4
+    output:
+      crates:
+        material: CHEST
+        amount: 64
+        lore:
+        - Crate
