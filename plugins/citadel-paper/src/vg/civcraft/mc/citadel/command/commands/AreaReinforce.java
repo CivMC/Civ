@@ -18,10 +18,9 @@ import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.group.Group;
 
-public class AreaReinforce extends PlayerCommand {
+public class AreaReinforce extends PlayerCommandMiddle {
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	private GroupManager gm = NameAPI.getGroupManager();
 
@@ -44,22 +43,20 @@ public class AreaReinforce extends PlayerCommand {
 		if (!p.isOp() && !p.hasPermission("citadel.admin")) {
 			// This should never actually happen thanks to the plugin.yml, but
 			// we just want to be sure
-			p.sendMessage(ChatColor.RED + "Nice try");
+			sendAndLog(p, ChatColor.RED, "Nice try");
 			return true;
 		}
 		ReinforcementType rt = ReinforcementType.getReinforcementType(p
 				.getItemInHand());
 		if (rt == null) {
-			p.sendMessage(ChatColor.RED
-					+ "The item you are holding is not a possible reinforcement");
+			sendAndLog(p, ChatColor.RED, "The item you are holding is not a possible reinforcement");
 			return true;
 		}
 		String groupName = null;
 		if (args.length == 6) {
 			groupName = gm.getDefaultGroup(uuid);
 			if (groupName == null) {
-				p.sendMessage(ChatColor.RED
-						+ "You need to set a default group \n Use /nlsdg to do so");
+				sendAndLog(p, ChatColor.RED, "You need to set a default group \n Use /nlsdg to do so");
 				return true;
 			}
 		} else {
@@ -67,7 +64,7 @@ public class AreaReinforce extends PlayerCommand {
 		}
 		Group g = gm.getGroup(groupName);
 		if (g == null) {
-			p.sendMessage(ChatColor.RED + "That group does not exist.");
+			sendAndLog(p, ChatColor.RED, "That group does not exist.");
 			return true;
 		}
 		// no additional group permission check here because the player is
@@ -88,8 +85,7 @@ public class AreaReinforce extends PlayerCommand {
 			yMax = Math.max(y1, y2);
 			zMax = Math.max(z1, z2);
 		} catch (NumberFormatException e) {
-			p.sendMessage(ChatColor.RED
-					+ "One of the arguments you provided was not a number");
+			sendAndLog(p, ChatColor.RED, "One of the arguments you provided was not a number");
 			return false;
 		}
 		for (int x = xMin; x <= xMax; x++) {
@@ -105,7 +101,7 @@ public class AreaReinforce extends PlayerCommand {
 			}
 		}
 
-		p.sendMessage("Successfully created reinforcements");
+		sendAndLog(p, ChatColor.GREEN, "Successfully created reinforcements");
 		return true;
 	}
 	

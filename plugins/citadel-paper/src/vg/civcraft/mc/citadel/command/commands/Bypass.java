@@ -7,12 +7,11 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementManager;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Bypass extends PlayerCommand{
+public class Bypass extends PlayerCommandMiddle{
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
 
 	public Bypass(String name) {
@@ -32,10 +31,11 @@ public class Bypass extends PlayerCommand{
 		Player p = (Player) sender;
 		PlayerState state = PlayerState.get(p);
 		if (state.toggleBypassMode()){
-			p.sendMessage(ChatColor.GREEN + "Bypass mode has been enabled.");
+			sendAndLog(p, ChatColor.GREEN, "Bypass mode has been enabled.");
 		}
-		else 
-			p.sendMessage(ChatColor.GREEN + "Bypass mode has been disabled.");
+		else  {
+			sendAndLog(p, ChatColor.GREEN, "Bypass mode has been disabled.");
+		}
 		return true;
 	}
 
@@ -43,5 +43,4 @@ public class Bypass extends PlayerCommand{
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		return new ArrayList<String>();
 	}
-
 }

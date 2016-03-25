@@ -14,6 +14,7 @@ import org.bukkit.material.Openable;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
+import vg.civcraft.mc.citadel.CitadelConfigManager;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -26,7 +27,7 @@ import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class PlayerReinforcement extends Reinforcement{
-
+	private transient int gid;
 	private Group g;
 	private GroupPermission gp;
 	private boolean isInsecure = false;
@@ -37,7 +38,8 @@ public class PlayerReinforcement extends Reinforcement{
 		super(loc, stack.getType(), health, creation, acid);
 		this.g = g;
 		this.stack = stack;
-		gp = NameAPI.getGroupManager().getPermissionforGroup(g);
+		this.gp = NameAPI.getGroupManager().getPermissionforGroup(g);
+		this.gid = g.getGroupId();
 	}
 	
 	/**
@@ -55,12 +57,15 @@ public class PlayerReinforcement extends Reinforcement{
 	
 	public boolean isAccessible(UUID u, PermissionType... pType){
 		checkValid();
-		PlayerType type = g.getPlayerType(u);
-		// if it is a public group we want it to check even if no
-				// PlayerType
-				
-		if (type == null && !(g instanceof PublicGroup))
+		if (g == null) {
 			return false;
+		}
+		PlayerType type = g.getPlayerType(u);
+		// if it is a public group we want it to check even if no PlayerType
+				
+		if (type == null && !(g instanceof PublicGroup)) {
+			return false;
+		}
 		return gp.isAccessible(type, pType);
 	}
 	/**
@@ -70,18 +75,26 @@ public class PlayerReinforcement extends Reinforcement{
 	 */
 	public boolean isBypassable(Player p){
 		checkValid();
-		PlayerType type = g.getPlayerType(p.getUniqueId());
-		if (type == null)
+		if (g == null) {
 			return false;
+		}
+		PlayerType type = g.getPlayerType(p.getUniqueId());
+		if (type == null) {
+			return false;
+		}
 		return gp.isAccessible(type, PermissionType.BLOCKS);
 	}
 	
 	public int getDamageMultiplier(){
+		if (g == null){
+			return 1;
+		}
 		Timestamp ts = NameAPI.getGroupManager().getTimestamp(g.getName());
 		
 		long shiftMultiplier = ((System.currentTimeMillis() - ts.getTime()) / (long)86400000) / (long)Citadel.getReinforcementManager().getDayMultiplier();
-		if(shiftMultiplier > 0)
+		if (shiftMultiplier > 0) {
 			return 1 << shiftMultiplier;
+		}
 		return 1;
 	}
 	
@@ -119,14 +132,18 @@ public class PlayerReinforcement extends Reinforcement{
      */
     public String getHealthText() {
         double health = getHealth();
-        if (health > 0.75) {
-            return "excellently";
-        } else if (health > 0.50) {
-            return "well";
-        } else if (health > 0.25) {
-            return "decently";
+        if (CitadelConfigManager.showHealthAsPercent()) {
+        	return health * 100 + "%";
         } else {
-            return "poorly";
+          if (health > 0.75) {
+              return "excellently";
+          } else if (health > 0.50) {
+              return "well";
+          } else if (health > 0.25) {
+              return "decently";
+          } else {
+              return "poorly";
+          }
         }
     }
     /**
@@ -153,6 +170,7 @@ public class PlayerReinforcement extends Reinforcement{
     public void setGroup(Group g){
     	this.g = g;
     	this.gp = NameAPI.getGroupManager().getPermissionforGroup(g);
+		this.gid = g.getGroupId();
     	isDirty = true;
     }
     /**
@@ -171,16 +189,21 @@ public class PlayerReinforcement extends Reinforcement{
         } else {
             verb = "Reinforced";
         }
-        return String.format("%s %s with %s",
-                verb,
-                getHealthText(),
-                getMaterial().name());
+        return String.format("%s %s with %s", verb, getHealthText(), getMaterial().name());
     }
     
     private void checkValid(){
+    	if (g == null) {
+    		Citadel.getInstance().getLogger().log(Level.WARNING, "CheckValid was called but the underlying group " + gid + " is gone for " + this.getLocation() + "!");
+    		return;
+    	}
     	if (!g.isValid()){ // incase it was recently merged/ deleted.
     		g = NameAPI.getGroupManager().getGroup(g.getGroupId());
-    		gp = NameAPI.getGroupManager().getPermissionforGroup(g);
+    		if (g != null) {
+    			gp = NameAPI.getGroupManager().getPermissionforGroup(g);
+    		} else {
+    			Citadel.getInstance().getLogger().log(Level.INFO, "Group " + g.getGroupId() + " was deleted or merged but not marked invalid!");
+    		}
     		isDirty = true;
     	}
     }
@@ -191,6 +214,7 @@ public class PlayerReinforcement extends Reinforcement{
      * @return Returns the value of the group_id from the group it was created with.
      */
     public int getGroupId(){
+    	if (g == null) return gid;
     	return g.getGroupId();
     }
 

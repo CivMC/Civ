@@ -61,13 +61,13 @@ public enum CitadelStatics {
 	}
 	
 	public static void displayStatisticsToConsole(){
-		String stats = "Citadel Reinforcement Stats:\n";
-		stats += "Reinforcements loaded from db " + reins_loaded_from_db + ".\n";
-		stats += "Reinforcements loaded from cache " + reins_called_from_cache + ".\n";
-		stats += "Total Reinforcement calls " + (reins_called_from_cache + reins_loaded_from_db) + ".\n";
-		stats += "Amount of Reinforcement saves " + reins_updated_to_db + ".\n";
-		stats += "Reinforcements deleted from the db " + reins_deleted_from_db + ".\n";
-		stats += "Reinforcements created and saved to db " + reins_insert_to_db + ".\n";
-		Citadel.Log(stats);
+		StringBuilder stats = new StringBuilder("Citadel Reinforcement Stats:\n");
+		stats.append("  Reinforcements loaded from db ").append(reins_loaded_from_db).append(".\n");
+		stats.append("  Reinforcements loaded from cache ").append(reins_called_from_cache).append(".\n");
+		stats.append("  Total Reinforcement calls ").append(reins_called_from_cache + reins_loaded_from_db).append(".\n");
+		stats.append("  Amount of Reinforcement saves ").append(reins_updated_to_db).append(".\n");
+		stats.append("  Reinforcements deleted from the db ").append(reins_deleted_from_db).append(".\n");
+		stats.append("  Reinforcements created and saved to db ").append(reins_insert_to_db).append(".\n");
+		Citadel.Log(stats.toString());
 	}
 }

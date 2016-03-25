@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -29,22 +30,27 @@ public class ReinforcementManager {
 
 	// This shit is cool
 	private RemovalListener<Location, Reinforcement> removalListener = new RemovalListener<Location, Reinforcement>() {
-		public void onRemoval(
-				RemovalNotification<Location, Reinforcement> removal) {
+		public void onRemoval(RemovalNotification<Location, Reinforcement> removal) {
 			Reinforcement rein = removal.getValue();
-			if (rein instanceof NullReinforcement){
+			if (rein == null || rein instanceof NullReinforcement){
 				return;
 			}
-			if (rein.isDirty())
+			if (rein.isDirty()) {
 				saveReinforcement(rein);
+			}
 		}
 	};
+	
 	private LoadingCache<Location, Reinforcement> reinforcements = CacheBuilder
 			.newBuilder().maximumSize(CitadelConfigManager.getMaxCacheSize())
 			.expireAfterAccess(CitadelConfigManager.getMaxCacheMinutes(), TimeUnit.MINUTES)
 			.removalListener(removalListener)
 			.build(new CacheLoader<Location, Reinforcement>() {
 				public Reinforcement load(Location loc) throws Exception {
+					if (loc == null) {
+						Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager cache load called with null");
+					}
+
 					Reinforcement rein = db.getReinforcement(loc);
 					if (rein == null) {
 						return new NullReinforcement(loc);
@@ -73,8 +79,13 @@ public class ReinforcementManager {
 	 * @param The Reinforcement to save
 	 */
 	public void saveReinforcement(Reinforcement rein) {
-		if (rein.getDurability() <= 0)
+		if (rein == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager saveReinforcement called with null");
+			return;
+		}
+		if (rein.getDurability() <= 0) {
 			deleteReinforcement(rein);
+		}
 		CitadelStatics.updateHitStat(CitadelStatics.UPDATE);
 		db.saveReinforcement(rein);
 		rein.setDirty(false);
@@ -88,6 +99,10 @@ public class ReinforcementManager {
 		// Do a check first, there might be an edge case for example half slabs where there is a reinforcement
 		// but it got this far.  Lets just keep the one already there and ignore this new one.
 		// If this is some other case then the code already in place should have deleted the reinforcement EX: Air.
+		if (rein == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager saveInitialReinforcement called with null");
+			return;
+		}
 		if (getReinforcement(rein.getLocation()) == null) {
 			reinforcements.put(rein.getLocation(), rein);
 			CitadelStatics.updateHitStat(CitadelStatics.INSERT);
@@ -102,15 +117,23 @@ public class ReinforcementManager {
 	 * @return Reinforcement
 	 */
 	public Reinforcement getReinforcement(Location loc) {
+		if (loc == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager getReinforcement called with null");
+			return null;
+		}
+
 		try {
 			Reinforcement rein = reinforcements.get(loc);
-			if (rein instanceof NullReinforcement)
+			if (rein instanceof NullReinforcement) {
 				return null;
+			}
 			CitadelStatics.updateHitStat(CitadelStatics.CACHE);
 			return rein;
 		} catch (Exception e) {
-			if (!(e.getCause() instanceof LoadingCacheNullException))
+			// So we ignore cache errors?
+			if (!(e.getCause() instanceof LoadingCacheNullException)) {
 				e.printStackTrace();
+			}
 		}
 		return null;
 	}
@@ -122,6 +145,10 @@ public class ReinforcementManager {
 	 * @return Reinforcement
 	 */
 	public Reinforcement getReinforcement(Block block) {
+		if (block == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager getReinforcement block called with null");
+			return null;
+		}
 		return getReinforcement(block.getLocation());
 	}
 
@@ -132,6 +159,10 @@ public class ReinforcementManager {
 	 * @param rein
 	 */
 	public void deleteReinforcement(Reinforcement rein) {
+		if (rein == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager deleteReinforcement called with null");
+			return;
+		}
 		reinforcements.invalidate(rein.getLocation());
 		CitadelStatics.updateHitStat(CitadelStatics.DELETE);
 		db.deleteReinforcement(rein);
@@ -153,6 +184,11 @@ public class ReinforcementManager {
 	 * @return Returns true if one was found.
 	 */
 	public boolean isReinforced(Location loc) {
+		if (loc == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager isReinforced called with null");
+			return false;
+		}
+
 		return getReinforcement(loc) != null;
 	}
 
@@ -164,6 +200,11 @@ public class ReinforcementManager {
 	 * @return Returns true if one was found.
 	 */
 	public boolean isReinforced(Block block) {
+		if (block == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager isReinforced block called with null");
+			return false;
+		}
+
 		return isReinforced(block.getLocation());
 	}
 	
@@ -173,12 +214,34 @@ public class ReinforcementManager {
 
 			@Override
 			public void run() {
-				List<Reinforcement> reins = new ArrayList<Reinforcement>();
-				for (Reinforcement r: reinforcements.asMap().values())
-					reins.add(r);
-				for (Reinforcement r: reins) {
-					if (r.isDirty())
+				try {
+					long cached = 0l;
+					long dirty = 0l;
+					long s = 0l;
+					if (CitadelConfigManager.shouldLogInternal()) {
+						Citadel.Log("Running Scheduled Save");
+						s = System.currentTimeMillis();
+					}
+					List<Reinforcement> reins = new ArrayList<Reinforcement>();
+					synchronized(reinforcements){
+						for (Reinforcement r: reinforcements.asMap().values()) {
+							if (r.isDirty()) {
+								reins.add(r);
+								dirty++;
+							}
+							cached++;
+						}
+					}
+					for (Reinforcement r: reins) {
 						saveReinforcement(r);
+					}
+					if (CitadelConfigManager.shouldLogInternal()) {
+						s = System.currentTimeMillis() - s;
+						Citadel.Log("Scheduled Save complete in " + s + " ms. Cache holds " +
+							cached + " entries, " + dirty + " entries saved to DB.");
+					}
+				} catch (Exception e) {
+					Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager scheduled save encountered a problem", e);
 				}
 			}
 			
@@ -191,6 +254,11 @@ public class ReinforcementManager {
 	 * Then returns the list of reinforcements in the Chunk.
 	 */
 	public List<Reinforcement> getReinforcementsByChunk(Chunk chunk){
+		if (chunk == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager getReinforcementsByChunk called with null");
+			return new ArrayList<Reinforcement>();
+		}
+
 		List<Reinforcement> reins = db.getReinforcements(chunk);
 		List<Reinforcement> reins_new = new ArrayList<Reinforcement>();
 		for (Reinforcement rein: reins){
@@ -203,8 +271,7 @@ public class ReinforcementManager {
 				try {
 					r = reinforcements.get(rein.getLocation());
 				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager getReinforcementsByChunk called with null", e);
 				}
 				reins_new.add(r);
 			}
@@ -213,6 +280,10 @@ public class ReinforcementManager {
 	}
 	
 	public void loadReinforcementChunk(Chunk chunk) {
+		if (chunk == null) {
+			Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager loadReinforcementChunk called with null");
+			return;
+		}
 		List<Reinforcement> reins = db.getReinforcements(chunk);
 		for (Reinforcement rein: reins){
 			Reinforcement r = reinforcements.getIfPresent(rein.getLocation());

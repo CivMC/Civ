@@ -3,10 +3,13 @@ package vg.civcraft.mc.citadel.command;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelConfigManager;
 import vg.civcraft.mc.citadel.command.commands.Acid;
 import vg.civcraft.mc.citadel.command.commands.AreaReinforce;
 import vg.civcraft.mc.citadel.command.commands.Bypass;
@@ -16,6 +19,7 @@ import vg.civcraft.mc.citadel.command.commands.Insecure;
 import vg.civcraft.mc.citadel.command.commands.Materials;
 import vg.civcraft.mc.citadel.command.commands.Off;
 import vg.civcraft.mc.citadel.command.commands.Reinforce;
+import vg.civcraft.mc.citadel.command.commands.SetLogging;
 import vg.civcraft.mc.citadel.command.commands.Stats;
 import vg.civcraft.mc.citadel.command.commands.UpdateReinforcements;
 import vg.civcraft.mc.civmodcore.command.Command;
@@ -37,6 +41,7 @@ public class CommandHandler {
 		addCommands(new Stats("Stats"));
 		addCommands(new UpdateReinforcements("UpdateReinforcements"));
 		addCommands(new AreaReinforce("AreaReinforce"));
+		addCommands(new SetLogging("SetLogging"));
 	}
 	
 	private void addCommands(Command command){
@@ -57,6 +62,7 @@ public class CommandHandler {
 				helpPlayer(command, sender);
 				return true;
 			}
+			
 			command.execute(sender, args);
 		}
 		return true;
