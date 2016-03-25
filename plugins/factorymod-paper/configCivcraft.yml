@@ -154,6 +154,7 @@ factories:
     - Smelt_Glass_Expert
     - Smelt_Glass_Panes_Advanced
     - Blow_Glassbottles
+    - Upgrade_to_Crystallization_Factory
     - Repair_Factory
   sandstonesmelter:
     #Basic Contraption --> Stone Smelter --> Sand Smelter --> Sandstone Smelter
@@ -653,6 +654,13 @@ factories:
     recipes:
      - Pylon_Expert  
      - Repair_Expert_Pylon
+  crystallizationfactory:
+    type: FCCUPGRADE
+    name: Crystallization Factory
+    recipes:
+     - Pack_Snow_To_Ice
+     - Compress_Ice_To_Packed_Ice
+     - Repair_Factory
 
 #Pipes     
   normalpipe:
@@ -4614,6 +4622,21 @@ recipes:
         material: EMERALD
         amount: 128
             
+  Upgrade_to_Crystallization_Factory:
+    production_time: 10m
+    type: UPGRADE
+    name: Upgrade to Crystallization Factory
+    fuel_consumption_intervall: 20s
+    input:
+      snow:
+        material: SNOW_BLOCK
+        amount: 1024
+      ice:
+        material: ICE
+        amount: 1024
+      waterbucket:
+        material: WATER_BUCKET
+        amount: 4
 #Pylon recipes
   Pylon_Basic:
     name: Extract Aether
@@ -5501,3 +5524,33 @@ recipes:
         material: STAINED_GLASS_PANE
         amount: 64
         durability: 15
+  Pack_Snow_To_Ice:
+    name: Pack Snow into Ice
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      snow:
+        material: SNOW_BLOCK
+        amount: 576
+      waterbucket:
+        material: WATER_BUCKET
+        amount: 4
+    output:
+      ice:
+        material: ICE
+        amount: 64
+      bucket:
+        material: BUCKET
+        amount: 4
+  Compress_Ice_To_Packed_Ice:
+    name: Compress Ice into Compressed Ice
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      ice:
+        material: ICE
+        amount: 192
+    output:
+      packedice:
+        material: PACKED_ICE
+        amount: 64
