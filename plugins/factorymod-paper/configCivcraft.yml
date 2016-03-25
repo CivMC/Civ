@@ -4290,14 +4290,6 @@ recipes:
     type: UPGRADE
     factory: Emerald Extractor
     input:
-      eye of ender:
-        material: EYE_OF_ENDER 
-        lore:
-         - Essence
-        enchants:
-          dura:
-            enchant: DURABILITY
-        amount: 32
       potato:
         material: BAKED_POTATO
         amount: 512
@@ -4338,18 +4330,28 @@ recipes:
     fuel_consumption_intervall: 5m
     factory: Basic Pylon
     input:
-      goldblocks:
-        material: GOLD_BLOCK
-        amount: 8
-      redstoneblocks:
-        material: REDSTONE_BLOCK
-        amount: 8
+      poisonouspotatoes:
+        material: POISONOUS_POTATO
+        amount: 10
+      enchantmenttable:
+        material: ENCHANTMENT_TABLE
+        amount: 5
       ironblocks:
         material: IRON_BLOCK
-        amount: 8
-      glass:
+        amount: 32
+      goldenapples:
+        material: GOLDEN_APPLE
+        amount: 16
+      compactedglass:
         material: GLASS
-        amount: 512
+        amount: 8
+        lore:
+         - Compacted item
+      netherquartzore:
+        material: QUARTZ_ORE
+        amount: 10
+        lore:
+         - Compacted item
   Upgrade_to_Advanced_Pylon:
     type: UPGRADE
     name: Upgrade to Advanced Pylon
@@ -4357,21 +4359,42 @@ recipes:
     fuel_consumption_intervall: 5m
     factory: Advanced Pylon
     input:
-      diamondblocks:
-        material: DIAMOND_BLOCK
-        amount: 4
-      goldblocks:
-        material: GOLD_BLOCK
-        amount: 48
-      redstoneblocks:
-        material: REDSTONE_BLOCK
-        amount: 48
+      poisonouspotatoes:
+        material: POISONOUS_POTATO
+        amount: 32
+      enderchests:
+        material: ENDER_CHEST
+        amount: 10
       ironblocks:
         material: IRON_BLOCK
         amount: 48
-      glass:
+      goldenapples:
+        material: GOLDEN_APPLE
+        amount: 32
+      compactedglass:
         material: GLASS
-        amount: 2048
+        amount: 32
+        lore:
+         - Compacted item
+      netherquartzore:
+        material: QUARTZ_ORE
+        amount: 20
+        lore:
+         - Compacted item
+      emerald:
+        material: EMERALD_BLOCK
+        amount: 42
+      compactedstone:
+        material: STONE
+        amount: 32
+        lore:
+         - Compacted item
+      compactedlogs:
+        material: LOG
+        amount: 32
+        durability: -1
+        lore:
+         - Compacted item
   Upgrade_to_Expert_Pylon:
     type: UPGRADE
     name: Upgrade to Expert Pylon
@@ -4379,28 +4402,74 @@ recipes:
     fuel_consumption_intervall: 5m
     factory: Expert Pylon
     input:
-      diamondblock:
+      poisonouspotatoes:
+        material: POISONOUS_POTATO
+        amount: 64
+      enderchests:
+        material: ENDER_CHEST
+        amount: 32
+      diamondblocks:
         material: DIAMOND_BLOCK
-        amount: 24
-      goldblocks:
-        material: GOLD_BLOCK
-        amount: 256
-      redstoneblocks:
-        material: REDSTONE_BLOCK
-        amount: 256
-      ironblocks:
-        material: IRON_BLOCK
-        amount: 256
-      glass:
+        amount: 16
+      goldenapples:
+        material: GOLDEN_APPLE
+        amount: 64
+      compactedglass:
         material: GLASS
-        amount: 1280
-      gunpowder:
-        material: SULPHUR
-        amount: 256
-      logs:
+        amount: 64
+        lore:
+         - Compacted item
+      netherquartzore:
+        material: QUARTZ_ORE
+        amount: 48
+        lore:
+         - Compacted item
+      emerald:
+        material: EMERALD_BLOCK
+        amount: 16
+        lore:
+         - Compacted item
+      compactedstone:
+        material: STONE
+        amount: 512
+        lore:
+         - Compacted item
+      compactedlogs:
         material: LOG
-        amount: 640
-        durability: -1
+        amount: 10
+        durability: 0
+        lore:
+         - Compacted item
+      compactedlogs:
+        material: LOG
+        amount: 10
+        durability: 1
+        lore:
+         - Compacted item
+      compactedlogs:
+        material: LOG
+        amount: 10
+        durability: 2
+        lore:
+         - Compacted item
+      compactedlogs:
+        material: LOG
+        amount: 10
+        durability: 3
+        lore:
+         - Compacted item
+      compactedlogs:
+        material: LOG_2
+        amount: 10
+        durability: 0
+        lore:
+         - Compacted item
+      compactedlogs:
+        material: LOG_2
+        amount: 10
+        durability: 1
+        lore:
+         - Compacted item
           
 #XP recipes
   Produce_Potash_Enrichement:
