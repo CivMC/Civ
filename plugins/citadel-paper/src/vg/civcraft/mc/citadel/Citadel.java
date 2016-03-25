@@ -22,6 +22,7 @@ import vg.civcraft.mc.citadel.misc.CitadelStatics;
 import vg.civcraft.mc.citadel.reinforcementtypes.NaturalReinforcementType;
 import vg.civcraft.mc.citadel.reinforcementtypes.NonReinforceableType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
+import vg.civcraft.mc.mercury.MercuryAPI;
 
 public class Citadel extends JavaPlugin{
 	private static Logger logger;
@@ -81,6 +82,7 @@ public class Citadel extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new WorldListener(), this);
 		if (Bukkit.getPluginManager().isPluginEnabled("Mercury") && Bukkit.getPluginManager().isPluginEnabled("BetterShards")) {
 			getServer().getPluginManager().registerEvents(new ShardListener(), this);
+			MercuryAPI.registerPluginMessageChannel("Citadel");
 		}
 	}
 	/**
