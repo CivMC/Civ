@@ -368,6 +368,7 @@ factories:
     type: FCCUPGRADE
     name: Bio Lab
     recipes:
+    - Create_Poppy_Advanced
     - Mutate_Tall_Grass_Basic
     - Take_friendly_mob_egg_apart_Basic
     - Create_Podzol_Basic
@@ -2180,6 +2181,24 @@ recipes:
         material: DIRT
         durability: 2
         amount: 64
+  Create_Poppy_Advanced:
+    type: PRODUCTION
+    name: Create Poppy Advanced
+    production_time: 16s
+    input:
+      seeds:
+        material: SEEDS
+        amount: 64
+      waterbucket:
+        material: WATER_BUCKET
+        amount: 1
+    output:
+      identifiername:
+        material: RED_ROSE
+        amount: 4
+      emptybucket:
+        material: BUCKET
+        amount: 1
   Create_Poppy_Basic:
     type: PRODUCTION
     name: Grow Poppy
@@ -2188,13 +2207,13 @@ recipes:
       seeds:
         material: SEEDS
         amount: 64
-      water:
+      waterbucket:
         material: WATER_BUCKET
         amount: 1
     output:
       roses:
         material: RED_ROSE
-        amount: 4
+        amount: 2
       emptybucket:
         material: BUCKET
         amount: 1
