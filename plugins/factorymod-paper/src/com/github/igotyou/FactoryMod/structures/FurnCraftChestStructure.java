@@ -29,32 +29,38 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 				case SOUTH:
 					if (center.getRelative(BlockFace.NORTH).getType() == Material.FURNACE) {
 						chest = b.getLocation();
-						furnace = center.getRelative(BlockFace.NORTH).getLocation();
+						furnace = center.getRelative(BlockFace.NORTH)
+								.getLocation();
 					}
 				case NORTH:
 					if (center.getRelative(BlockFace.SOUTH).getType() == Material.FURNACE) {
 						chest = b.getLocation();
-						furnace = center.getRelative(BlockFace.SOUTH).getLocation();
+						furnace = center.getRelative(BlockFace.SOUTH)
+								.getLocation();
 					}
 				case WEST:
 					if (center.getRelative(BlockFace.EAST).getType() == Material.FURNACE) {
 						chest = b.getLocation();
-						furnace = center.getRelative(BlockFace.EAST).getLocation();
+						furnace = center.getRelative(BlockFace.EAST)
+								.getLocation();
 					}
 				case EAST:
 					if (center.getRelative(BlockFace.WEST).getType() == Material.FURNACE) {
 						chest = b.getLocation();
-						furnace = center.getRelative(BlockFace.WEST).getLocation();
+						furnace = center.getRelative(BlockFace.WEST)
+								.getLocation();
 					}
 				case UP:
 					if (center.getRelative(BlockFace.DOWN).getType() == Material.FURNACE) {
 						chest = b.getLocation();
-						furnace = center.getRelative(BlockFace.DOWN).getLocation();
+						furnace = center.getRelative(BlockFace.DOWN)
+								.getLocation();
 					}
 				case DOWN:
 					if (center.getRelative(BlockFace.UP).getType() == Material.FURNACE) {
 						chest = b.getLocation();
-						furnace = center.getRelative(BlockFace.UP).getLocation();
+						furnace = center.getRelative(BlockFace.UP)
+								.getLocation();
 					}
 				}
 
@@ -71,8 +77,10 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 		complete = craftingTable != null
 				&& craftingTable.getBlock().getType() == Material.WORKBENCH
 				&& furnace != null
-				&& (furnace.getBlock().getType() == Material.FURNACE || furnace.getBlock().getType() == Material.BURNING_FURNACE)
-				&& chest != null && chest.getBlock().getType() == Material.CHEST;
+				&& (furnace.getBlock().getType() == Material.FURNACE || furnace
+						.getBlock().getType() == Material.BURNING_FURNACE)
+				&& chest != null
+				&& chest.getBlock().getType() == Material.CHEST;
 	}
 
 	public FurnCraftChestStructure(List<Location> blocks) {
@@ -94,6 +102,11 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 	}
 
 	public Block getChest() {
+		// sometimes a double chest will go across chunk borders and the other
+		// half of the chest might be unloaded. To load the other half and the
+		// full inventory this is needed to load the chunk
+		MultiBlockStructure.searchForBlockOnAllSides(chest.getBlock(),
+				Material.CHEST);
 		return chest.getBlock();
 	}
 

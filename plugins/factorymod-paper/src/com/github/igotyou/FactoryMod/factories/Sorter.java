@@ -173,6 +173,11 @@ public class Sorter extends Factory {
 		int leftToSort = sortAmount;
 		for (BlockFace bf : MultiBlockStructure.allBlockSides) {
 			if (center.getRelative(bf).getState() instanceof InventoryHolder) {
+				Block b = center.getRelative(bf);
+				if (b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST) {
+					//load adjacent chunk for double chest
+					MultiBlockStructure.getAdjacentBlocks(b);
+				}
 				Inventory relInv = ((InventoryHolder) center.getRelative(bf)
 						.getState()).getInventory();
 				ItemMap im = assignedMaterials.get(bf);
