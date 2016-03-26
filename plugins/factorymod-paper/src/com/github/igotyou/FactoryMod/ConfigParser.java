@@ -513,7 +513,6 @@ public class ConfigParser {
 			for(String key : config.getConfigurationSection("outputs").getKeys(false)) {
 				double chance = config.getConfigurationSection("outputs").getConfigurationSection(key).getDouble("chance");
 				totalChance += chance;
-				System.out.println("Checking for " + key);
 				ItemMap im = parseItemMap(config.getConfigurationSection("outputs").getConfigurationSection(key));
 				outputs.put(im,chance);
 			}
@@ -555,7 +554,7 @@ public class ConfigParser {
 		}
 		for(IRecipe reci : recipes.values()) {
 			if (!usedRecipes.contains(reci)) {
-				plugin.warning("The recipe " + reci.getRecipeName() + "");
+				plugin.warning("The recipe " + reci.getRecipeName() + " is specified in the config, but not used in any factory");
 			}
 		}
 	}
