@@ -1,6 +1,7 @@
 package com.github.igotyou.FactoryMod.interactionManager;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
@@ -109,8 +111,12 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				ClickableInventory ci = new ClickableInventory(54, fccf
 						.getCurrentRecipe().getRecipeName());
 				int index = 4;
-				for (ItemStack is : ((InputRecipe) fccf.getCurrentRecipe())
-						.getInputRepresentation(fccf.getInventory())) {
+				List <ItemStack> inp = ((InputRecipe) fccf.getCurrentRecipe())
+						.getInputRepresentation(fccf.getInventory());
+				if (inp.size() > 18) {
+					inp = new ItemMap(inp).getLoredItemCountRepresentation();
+				}
+				for (ItemStack is : inp) {
 					Clickable c = new Clickable(is) {
 						@Override
 						public void clicked(Player arg0) {
@@ -127,7 +133,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 						index -= (((index % 9) - 4) * 2);
 					} else {
 						if ((index % 9) == 0) {
-							index += 9;
+							index += 13;
 						} else {
 							index += (((4 - (index % 9)) * 2) + 1);
 						}
@@ -135,8 +141,12 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 
 				}
 				index = 49;
-				for (ItemStack is : ((InputRecipe) fccf.getCurrentRecipe())
-						.getOutputRepresentation(fccf.getInventory())) {
+				List <ItemStack> outp = ((InputRecipe) fccf.getCurrentRecipe())
+						.getOutputRepresentation(fccf.getInventory());
+				if (outp.size() > 18) {
+					outp = new ItemMap(outp).getLoredItemCountRepresentation();
+				}
+				for (ItemStack is : outp) {
 					Clickable c = new Clickable(is) {
 						@Override
 						public void clicked(Player arg0) {
@@ -152,7 +162,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 						index -= (((index % 9) - 4) * 2);
 					} else {
 						if ((index % 9) == 0) {
-							index -= 9;
+							index -= 13;
 						} else {
 							index += (((4 - (index % 9)) * 2) + 1);
 						}
