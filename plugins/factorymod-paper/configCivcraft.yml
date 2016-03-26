@@ -2290,12 +2290,12 @@ recipes:
     type: DECOMPACT
     name: De-compact Stack
     production_time: 1s
-    compact_lore: Compacted item
+    compact_lore: Compacted Item
   De-compact_Stack_Basic:
     type: DECOMPACT
     name: De-compact Stack
     production_time: 5s
-    compact_lore: Compacted item
+    compact_lore: Compacted Item
   Dye_Wool_to_Green_Wool:
     type: PRODUCTION
     name: Dye Wool to Green Wool
@@ -3050,7 +3050,7 @@ recipes:
         amount: 18
   Mutate_random_sapling:
     type: RANDOM
-    name: Mutate random sapling
+    name: Mutate Random Sapling
     production_time: 10s
     input:
       sapling:
@@ -3134,7 +3134,7 @@ recipes:
           amount: 1
   Mutate_random_leaves:
     type: RANDOM
-    name: Mutate random leaves
+    name: Mutate Random Leaves
     production_time: 10s
     input:
       sapling:
@@ -4664,12 +4664,12 @@ recipes:
         material: GLASS
         amount: 8
         lore:
-         - Compacted item
+         - Compacted Item
       netherquartzore:
         material: QUARTZ_ORE
         amount: 10
         lore:
-         - Compacted item
+         - Compacted Item
   Upgrade_to_Advanced_Pylon:
     type: UPGRADE
     name: Upgrade to Advanced Pylon
@@ -4693,12 +4693,12 @@ recipes:
         material: GLASS
         amount: 32
         lore:
-         - Compacted item
+         - Compacted Item
       netherquartzore:
         material: QUARTZ_ORE
         amount: 20
         lore:
-         - Compacted item
+         - Compacted Item
       emerald:
         material: EMERALD_BLOCK
         amount: 42
@@ -4706,13 +4706,13 @@ recipes:
         material: STONE
         amount: 32
         lore:
-         - Compacted item
+         - Compacted Item
       compactedlogs:
         material: LOG
         amount: 32
         durability: -1
         lore:
-         - Compacted item
+         - Compacted Item
   Upgrade_to_Expert_Pylon:
     type: UPGRADE
     name: Upgrade to Expert Pylon
@@ -4736,58 +4736,58 @@ recipes:
         material: GLASS
         amount: 64
         lore:
-         - Compacted item
+         - Compacted Item
       netherquartzore:
         material: QUARTZ_ORE
         amount: 48
         lore:
-         - Compacted item
+         - Compacted Item
       emerald:
         material: EMERALD_BLOCK
         amount: 16
         lore:
-         - Compacted item
+         - Compacted Item
       compactedstone:
         material: STONE
         amount: 512
         lore:
-         - Compacted item
+         - Compacted Item
       compactedlogs1:
         material: LOG
         amount: 10
         durability: 0
         lore:
-         - Compacted item
+         - Compacted Item
       compactedlogs2:
         material: LOG
         amount: 10
         durability: 1
         lore:
-         - Compacted item
+         - Compacted Item
       compactedlogs3:
         material: LOG
         amount: 10
         durability: 2
         lore:
-         - Compacted item
+         - Compacted Item
       compactedlogs4:
         material: LOG
         amount: 10
         durability: 3
         lore:
-         - Compacted item
+         - Compacted Item
       compactedlogs5:
         material: LOG_2
         amount: 10
         durability: 0
         lore:
-         - Compacted item
+         - Compacted Item
       compactedlogs6:
         material: LOG_2
         amount: 10
         durability: 1
         lore:
-         - Compacted item
+         - Compacted Item
           
 #XP recipes
   Produce_Potash_Enrichement:
