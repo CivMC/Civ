@@ -394,7 +394,7 @@ factories:
     type: FCCUPGRADE
     name: Flower Gardening
     recipes:
-    - Create_any_flower
+    - Grow_random_flower
     - Repair_Factory
   treemutator:
     type: FCCUPGRADE
@@ -1877,9 +1877,9 @@ recipes:
       activator rail:
         material: ACTIVATOR_RAIL
         amount: 96
-  Create_any_flower:
+  Grow_random_flower:
     type: RANDOM
-    name: Create any flower
+    name: Grow random flower
     production_time: 10s
     input:
       seeds:
@@ -1888,7 +1888,7 @@ recipes:
       waterbucket:
         material: WATER_BUCKET
         amount: 1
-    output:
+    outputs:
       1:
         chance: 0.08
         poppy:
