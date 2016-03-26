@@ -394,7 +394,7 @@ factories:
     type: FCCUPGRADE
     name: Flower Gardening
     recipes:
-    - Create_any_flower
+    - Grow_random_flower
     - Repair_Factory
   treemutator:
     type: FCCUPGRADE
@@ -1877,18 +1877,151 @@ recipes:
       activator rail:
         material: ACTIVATOR_RAIL
         amount: 96
-  Create_any_flower:
-    type: PRODUCTION
-    name: Create any flower
-    production_time: 5s
+  Grow_random_flower:
+    type: RANDOM
+    name: Grow random flower
+    production_time: 10s
     input:
-      identifiername:
-        material: STONE
+      seeds:
+        material: SEEDS
+        amount: 64
+      waterbucket:
+        material: WATER_BUCKET
         amount: 1
-    output:
-      identifiername:
-        material: STONE
-        amount: 1
+    outputs:
+      1:
+        chance: 0.08
+        poppy:
+          material: RED_ROSE
+          durability: 0
+          amount: 4
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      2:
+        chance: 0.08
+        blueorchid:
+          material: RED_ROSE
+          durability: 1
+          amount: 4
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      3:
+        chance: 0.08
+        allium:
+          material: RED_ROSE
+          durability: 2
+          amount: 4
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      4:
+        chance: 0.08
+        azurebluet:
+          material: RED_ROSE
+          durability: 3
+          amount: 4
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      5:
+        chance: 0.08
+        redtulip:
+          material: RED_ROSE
+          durability: 4
+          amount: 4
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      6:
+        chance: 0.08
+        orangetulip:
+          material: RED_ROSE
+          durability: 5
+          amount: 4
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      7:
+        chance: 0.08
+        whitetulip:
+          material: RED_ROSE
+          durability: 6
+          amount: 4
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      8:
+        chance: 0.08
+        pinktulip:
+          material: RED_ROSE
+          durability: 7
+          amount: 4
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      9:
+        chance: 0.08
+        oxeyedaisy:
+          material: RED_ROSE
+          durability: 8
+          amount: 4
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      10:
+        chance: 0.08
+        yellowflower:
+          material: YELLOW_FLOWER
+          amount: 4
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      11:
+        chance: 0.025
+        sunflower:
+          material: DOUBLE_PLANT
+          durability: 0
+          amount: 1
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      12:
+        chance: 0.025
+        lilac:
+          material: DOUBLE_PLANT
+          durability: 1
+          amount: 1
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      13:
+        chance: 0.025
+        rosebush:
+          material: DOUBLE_PLANT
+          durability: 4
+          amount: 1
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      14:
+        chance: 0.025
+        peony:
+          material: DOUBLE_PLANT
+          durability: 5
+          amount: 1
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      ihateflowers:
+        chance: 0.1
+        deadbush:
+          material: DEAD_BUSH
+          amount: 1
+        emptybucket:
+          material: BUCKET
+          amount: 1
   Create_any_hostile_mob_egg:
     type: PRODUCTION
     name: Create any hostile mob egg
@@ -2063,15 +2196,21 @@ recipes:
   Create_Poppy_Basic:
     type: PRODUCTION
     name: Grow Poppy
-    production_time: 8s
+    production_time: 16s
     input:
-      identifiername:
-        material: LEAVES
-        amount: 20
+      seeds:
+        material: SEEDS
+        amount: 64
+      water:
+        material: WATER_BUCKET
+        amount: 1
     output:
-      identifiername:
+      roses:
         material: RED_ROSE
-        amount: 8
+        amount: 4
+      emptybucket:
+        material: BUCKET
+        amount: 1
   Create_Powered_Rail:
     type: PRODUCTION
     name: Create Powered Rail
@@ -4459,37 +4598,37 @@ recipes:
         amount: 512
         lore:
          - Compacted item
-      compactedlogs:
+      compactedlogs1:
         material: LOG
         amount: 10
         durability: 0
         lore:
          - Compacted item
-      compactedlogs:
+      compactedlogs2:
         material: LOG
         amount: 10
         durability: 1
         lore:
          - Compacted item
-      compactedlogs:
+      compactedlogs3:
         material: LOG
         amount: 10
         durability: 2
         lore:
          - Compacted item
-      compactedlogs:
+      compactedlogs4:
         material: LOG
         amount: 10
         durability: 3
         lore:
          - Compacted item
-      compactedlogs:
+      compactedlogs5:
         material: LOG_2
         amount: 10
         durability: 0
         lore:
          - Compacted item
-      compactedlogs:
+      compactedlogs6:
         material: LOG_2
         amount: 10
         durability: 1
