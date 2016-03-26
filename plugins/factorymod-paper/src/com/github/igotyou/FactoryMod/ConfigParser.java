@@ -2,6 +2,7 @@ package com.github.igotyou.FactoryMod;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -534,13 +535,15 @@ public class ConfigParser {
 	}
 
 	public void assignRecipesToFactories() {
+		HashSet <IRecipe> usedRecipes = new HashSet<IRecipe>();
 		for (Entry<IFactoryEgg, List<String>> entry : recipeLists.entrySet()) {
 			if (entry.getKey() instanceof FurnCraftChestEgg) {
 				List<IRecipe> recipeList = new LinkedList<IRecipe>();
 				for (String recipeName : entry.getValue()) {
 					IRecipe rec = recipes.get(recipeName);
 					if (rec != null) {
-						recipeList.add(recipes.get(recipeName));
+						recipeList.add(rec);
+						usedRecipes.add(rec);
 					}
 					else {
 						plugin.severe("Could not find specified recipe " + recipeName 
@@ -548,6 +551,11 @@ public class ConfigParser {
 					}
 				}
 				((FurnCraftChestEgg) entry.getKey()).setRecipes(recipeList);
+			}
+		}
+		for(IRecipe reci : recipes.values()) {
+			if (!usedRecipes.contains(reci)) {
+				plugin.warning("The recipe " + reci.getRecipeName() + "");
 			}
 		}
 	}
