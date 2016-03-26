@@ -100,11 +100,8 @@ public class PylonRecipe extends InputRecipe {
 	private ItemMap getCurrentOutput() {
 		int weight = 0;
 		for(FurnCraftChestFactory f : FurnCraftChestFactory.getPylonFactories()) {
-			for(IRecipe rec : f.getRecipes()) {
-				if (rec instanceof PylonRecipe) {
-					weight += ((PylonRecipe) rec).getWeight();
-					break;
-				}
+			if (f.isActive() && f.getCurrentRecipe() instanceof PylonRecipe) {
+				weight += ((PylonRecipe) f.getCurrentRecipe()).getWeight();
 			}
 		}
 		currentGlobalWeight = weight;
