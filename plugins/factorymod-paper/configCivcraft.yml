@@ -4996,7 +4996,7 @@ recipes:
     health_gained: 1000
   Repair_Advanced_Pylon:
     type: REPAIR
-    name: Repair Basic Pylon
+    name: Repair Advanced Pylon
     production_time: 10s
     input:
       xp:
@@ -5005,7 +5005,7 @@ recipes:
     health_gained: 1000
   Repair_Expert_Pylon:
     type: REPAIR
-    name: Repair Basic Pylon
+    name: Repair Expert Pylon
     production_time: 10s
     input:
       xp:
