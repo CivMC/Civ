@@ -400,8 +400,8 @@ factories:
     type: FCCUPGRADE
     name: Tree Mutator
     recipes:
-    - Mutate_any_sapling_into_any_other
-    - Mutate_any_leaf_into_any_other
+    - Mutate_random_sapling
+    - Mutate_random_leaves
     - Grow_Concentrate_Of_Nature
     - Repair_Factory
   madscientist:
@@ -2186,13 +2186,19 @@ recipes:
     name: Create Poppy Advanced
     production_time: 16s
     input:
-      identifiername:
-        material: LEAVES
-        amount: 32
+      seeds:
+        material: SEEDS
+        amount: 64
+      waterbucket:
+        material: WATER_BUCKET
+        amount: 1
     output:
       identifiername:
         material: RED_ROSE
-        amount: 16
+        amount: 4
+      emptybucket:
+        material: BUCKET
+        amount: 1
   Create_Poppy_Basic:
     type: PRODUCTION
     name: Grow Poppy
@@ -2201,13 +2207,13 @@ recipes:
       seeds:
         material: SEEDS
         amount: 64
-      water:
+      waterbucket:
         material: WATER_BUCKET
         amount: 1
     output:
       roses:
         material: RED_ROSE
-        amount: 4
+        amount: 2
       emptybucket:
         material: BUCKET
         amount: 1
@@ -3042,30 +3048,178 @@ recipes:
       rabbit stew:
         material: RABBIT_STEW
         amount: 18
-  Mutate_any_leaf_into_any_other:
-    type: PRODUCTION
-    name: Mutate any leaf into any other
-    production_time: 5s
+  Mutate_random_sapling:
+    type: RANDOM
+    name: Mutate random sapling
+    production_time: 10s
     input:
-      identifiername:
-        material: STONE
+      sapling:
+        material: SAPLING
+        amount: 64
+        durability: -1
+      waterbucket:
+        material: WATER_BUCKET
         amount: 1
-    output:
-      identifiername:
-        material: STONE
-        amount: 1
-  Mutate_any_sapling_into_any_other:
-    type: PRODUCTION
-    name: Mutate any sapling into any other
-    production_time: 5s
+    outputs:
+      1:
+        chance: 0.125
+        oaksapling:
+          material: SAPLING
+          amount: 48
+          durability: 0
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      2:
+        chance: 0.125
+        sprucesapling:
+          material: SAPLING
+          amount: 48
+          durability: 1
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      3:
+        chance: 0.125
+        birchsapling:
+          material: SAPLING
+          amount: 48
+          durability: 2
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      4:
+        chance: 0.125
+        junglesapling:
+          material: SAPLING
+          amount: 48
+          durability: 3
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      5:
+        chance: 0.125
+        acaciasapling:
+          material: SAPLING
+          amount: 48
+          durability: 4
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      6:
+        chance: 0.125
+        darkoaksapling:
+          material: SAPLING
+          amount: 48
+          durability: 5
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      7:
+        chance: 0.125
+        deadbush:
+          material: DEAD_BUSH
+          amount: 16
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      8:
+        chance: 0.125
+        tallfern:
+          material: DOUBLE_PLANT
+          amount: 32
+          durability: 3         
+        emptybucket:
+          material: BUCKET
+          amount: 1
+  Mutate_random_leaves:
+    type: RANDOM
+    name: Mutate random leaves
+    production_time: 10s
     input:
-      identifiername:
-        material: STONE
+      sapling:
+        material: SAPLING
+        amount: 32
+        durability: -1
+      seeds:
+        material: SEEDS
+        amount: 32
+      waterbucket:
+        material: WATER_BUCKET
         amount: 1
-    output:
-      identifiername:
-        material: STONE
-        amount: 1
+    outputs:
+      1:
+        chance: 0.125
+        oakleaves:
+          material: LEAVES
+          amount: 64
+          durability: 0
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      2:
+        chance: 0.125
+        spruceleaves:
+          material: LEAVES
+          amount: 64
+          durability: 1
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      3:
+        chance: 0.125
+        birchleaves:
+          material: LEAVES
+          amount: 64
+          durability: 2
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      4:
+        chance: 0.125
+        jungleleaves:
+          material: LEAVES
+          amount: 64
+          durability: 3
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      5:
+        chance: 0.125
+        acacialeaves:
+          material: LEAVES_2
+          amount: 64
+          durability: 0
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      6:
+        chance: 0.125
+        darkoakleaves:
+          material: LEAVES_2
+          amount: 64
+          durability: 1
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      7:
+        chance: 0.125
+        deadbush:
+          material: DEAD_BUSH
+          amount: 16
+          durability: 0
+        emptybucket:
+          material: BUCKET
+          amount: 1
+      8:
+        chance: 0.125
+        tallgrass:
+          material: DOUBLE_PLANT
+          amount: 32
+          durability: 2
+        emptybucket:
+          material: BUCKET
+          amount: 1
   Mutate_Large_Fern:
     type: PRODUCTION
     name: Mutate Large Fern
