@@ -4795,10 +4795,10 @@ recipes:
         durability: 1
         lore:
          - Compacted Item
-  Upgrade_to_Dowsing_Factory
+  Upgrade_to_Dowsing_Factory:
     type: UPGRADE
     name: Upgrade to Dowsing Factory
-    production_time: 8hr
+    production_time: 8h
     fuel_consumption_intervall: 5m
     factory: Dowsing Factory
     input:
