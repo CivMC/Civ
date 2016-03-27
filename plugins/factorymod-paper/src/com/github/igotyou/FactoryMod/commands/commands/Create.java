@@ -19,6 +19,7 @@ import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.eggs.PipeEgg;
 import com.github.igotyou.FactoryMod.eggs.SorterEgg;
+import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
@@ -61,6 +62,10 @@ public class Create extends PlayerCommand {
 		}
 		Set<Material> transparent = null;
 		List<Block> view = ((Player) sender).getLineOfSight(transparent, 10);
+		Factory exis = manager.getFactoryAt(view.get(view.size() - 1));
+		if (exis != null) {
+			manager.removeFactory(exis);
+		}
 		if (egg instanceof FurnCraftChestEgg) {
 			FurnCraftChestEgg fcce = (FurnCraftChestEgg) egg;
 			if (view.get(view.size() - 1).getType() == Material.WORKBENCH) {
