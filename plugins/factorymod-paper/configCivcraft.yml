@@ -5906,7 +5906,8 @@ recipes:
         material: COMPASS
         amount: 1
         lore:
-         - Shows all Active, Inactive and Upgrading Pylons
+         - Shows all Active,
+         - Inactive and Upgrading Pylons
         enchants:
           dura:
             enchant: DURABILITY
