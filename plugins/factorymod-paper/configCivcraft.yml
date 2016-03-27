@@ -1520,7 +1520,7 @@ recipes:
   Craft_Polished_Andesite:
     type: PRODUCTION
     name: Craft Polished Andesite
-    production_time: 10s
+    production_time: 8s
     input:
       andesite:
         material: STONE
@@ -1530,11 +1530,11 @@ recipes:
       polished andesite:
         material: STONE
         durability: 6
-        amount: 32
+        amount: 88
   Craft_Polished_Diorite:
     type: PRODUCTION
     name: Craft Polished Diorite
-    production_time: 10s
+    production_time: 8s
     input:
       andesite:
         material: STONE
@@ -1544,11 +1544,11 @@ recipes:
       polished andesite:
         material: STONE
         durability: 4
-        amount: 32
+        amount: 88
   Craft_Polished_Granite:
     type: PRODUCTION
     name: Craft Polished Granite
-    production_time: 10s
+    production_time: 8s
     input:
       andesite:
         material: STONE
@@ -1558,7 +1558,7 @@ recipes:
       polished andesite:
         material: STONE
         durability: 2
-        amount: 32
+        amount: 88
   Craft_Prismarine_Basic:
     type: PRODUCTION
     name: Craft Prismarine
