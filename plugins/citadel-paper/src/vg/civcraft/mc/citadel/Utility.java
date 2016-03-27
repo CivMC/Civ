@@ -715,8 +715,8 @@ public class Utility {
         info.add(group);
         if (rein.getStackRepresentation().hasItemMeta()) {
             info.addAll(rein.getStackRepresentation().getItemMeta().getLore());
+            lore.setLore(info);
         }
-        lore.setLore(info);
         reinBlock.setItemMeta(lore);
         return reinBlock;
     }
