@@ -4804,13 +4804,16 @@ recipes:
     input:
       redstoneblocks:
         material: REDSTONE_BLOCK
-        amount: 32
+        amount: 64
       compass:
         material: COMPASS
         amount: 1
+      map:
+        material: MAP
+        amount: 1
       xp:
         material: EMERALD_BLOCK
-        amount: 256
+        amount: 512
 #XP recipes
   Produce_Potash_Enrichement:
     name: Produce Potash Enrichment
