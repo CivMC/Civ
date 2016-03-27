@@ -598,6 +598,7 @@ factories:
     - Repair_Factory
     - Upgrade_to_Redstone_Circularity_Factory
     - Upgrade_to_Redstone_Mechanics_Factory
+    - Upgrade_to_Dowsing_Factory
   redstonecircularityfactory:
     type: FCCUPGRADE
     name: Redstone Circularity Factory
@@ -653,7 +654,7 @@ factories:
     type: FCCUPGRADE
     name: Expert Pylon
     recipes:
-     - Pylon_Expert  
+     - Pylon_Expert
      - Repair_Expert_Pylon
   crystallizationfactory:
     type: FCCUPGRADE
@@ -662,6 +663,12 @@ factories:
      - Pack_Snow_To_Ice
      - Compress_Ice_To_Packed_Ice
      - Repair_Factory
+  dowsingfactory:
+    type: FCCUPGRADE
+    name: Dowsing Factory
+    recipes:
+     - Create_Pylon_Locator
+     - Repair_Advanced_Factory
 
 #Pipes     
   normalpipe:
@@ -5867,3 +5874,24 @@ recipes:
         amount: 64
         lore:
         - Crate
+  Create_Pylon_Locator
+    name: Create Pylon Locator
+    type: PRODUCTION
+    production_time: 20s
+    input:
+      compass:
+        material: COMPASS
+        amount: 1
+      xp:
+        material: EMERALD_BLOCK
+        amount: 150
+    output:
+      basiccompass:
+        material: COMPASS
+        amount: 1
+        lore:
+         - Shows all Active, 
+         - Inactive and Upgrading Pylons
+        enchants:
+          dura:
+            enchant: DURABILITY
