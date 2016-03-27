@@ -4795,7 +4795,22 @@ recipes:
         durability: 1
         lore:
          - Compacted Item
-          
+  Upgrade_to_Dowsing_Factory
+    type: UPGRADE
+    name: Upgrade to Dowsing Factory
+    production_time: 8hr
+    fuel_consumption_intervall: 5m
+    factory: Dowsing Factory
+    input:
+      redstoneblocks:
+        material: REDSTONE_BLOCK
+        amount: 32
+      compass:
+        material: COMPASS
+        amount: 1
+      xp:
+        material: EMERALD_BLOCK
+        amount: 256
 #XP recipes
   Produce_Potash_Enrichement:
     name: Produce Potash Enrichment
@@ -5874,10 +5889,11 @@ recipes:
         amount: 64
         lore:
         - Crate
-  Create_Pylon_Locator
+  Create_Pylon_Locator:
     name: Create Pylon Locator
     type: PRODUCTION
-    production_time: 20s
+    production_time: 1d
+    fuel_consumption_intervall: 15m
     input:
       compass:
         material: COMPASS
@@ -5890,8 +5906,7 @@ recipes:
         material: COMPASS
         amount: 1
         lore:
-         - Shows all Active, 
-         - Inactive and Upgrading Pylons
+         - Shows all Active, Inactive and Upgrading Pylons
         enchants:
           dura:
             enchant: DURABILITY
