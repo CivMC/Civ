@@ -5933,7 +5933,7 @@ recipes:
   Break_Easter_Egg:
     name: Break Easter Egg
     type: RANDOM
-    production_time: 16s
+    production_time: 5s
     input:
       easteregg:
         material: EGG
@@ -6055,7 +6055,12 @@ recipes:
           material: RECORD_11
           amount: 1
       21:
-        chance: 0.0075
+        chance: 0.0065
         record12:
           material: RECORD_12
+          amount: 1
+      22:
+        chance: 0.001
+        bastion:
+          material: SPONGE
           amount: 1
