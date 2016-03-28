@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -101,6 +102,16 @@ public class ConfigParser {
 		int redstoneRecipeChange = config.getInt("redstone_recipe_change", 2);
 		long gracePeriod = 50 * parseTime(config
 				.getString("break_grace_period"));
+		long savingIntervall = parseTime(config.getString("saving_intervall", "15m"));
+		//save factories on a regular base, unless disabled
+		if (savingIntervall != -1) {
+			Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
+				@Override
+				public void run() {
+					FactoryMod.getManager().saveFactories();	
+				}
+			}, savingIntervall, savingIntervall);
+		}
 		defaultMenuFactory = config.getString("default_menu_factory");
 		int globalPylonLimit = config.getInt("global_pylon_limit");
 		PylonRecipe.setGlobalLimit(globalPylonLimit);

@@ -12,7 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -37,8 +36,8 @@ import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 public class FileHandler {
 	private FactoryMod plugin;
 	private FactoryModManager manager;
-	File saveFile;
-	File backup;
+	private File saveFile;
+	private File backup;
 
 	public FileHandler(FactoryModManager manager) {
 		plugin = FactoryMod.getPlugin();

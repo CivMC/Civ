@@ -159,6 +159,9 @@ decay_amount: 21
 #Whether the yaml identifier or the factory name should be used when assigning recipes to factories, default to false
 use_recipe_yamlidentifiers: false
 
+#How often factory data is saved automatically. Recommended value and default is 15 minutes. Set to -1 to disable
+saving_intervall: 15m
+
 
 #----------------------------------------------------------------------------------------------------------------------
 #Factories
