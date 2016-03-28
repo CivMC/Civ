@@ -5943,6 +5943,7 @@ recipes:
         enchants:
           dura:
             enchant: DURABILITY
+            level: 0
     outputs:
       1:
         chance: 0.1
