@@ -111,6 +111,7 @@ public class FileHandler {
 				}
 			}
 			config.save(saveFile);
+			plugin.info("Successfully saved factory data");
 		} catch (Exception e) {
 			// In case anything goes wrong while saving we always keep the
 			// latest valid backup
