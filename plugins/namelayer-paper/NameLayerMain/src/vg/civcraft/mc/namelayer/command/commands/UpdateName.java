@@ -79,19 +79,20 @@ public class UpdateName extends PlayerCommandMiddle {
 							p.sendMessage(ChatColor.GREEN
 									+ "The current name of your minecraft account is \""
 									+ newName
-									+ "\". Run \"/nlun CONFIRM\" to update your name on the server to this name. Be careful though as this changes can not be reverted!");
+									+ "\". Run \"/nlun CONFIRM\" to update your name on the server to this name. Be careful though as this change can not be reverted!");
 							newNames.put(uuid, newName);
 						}
 					});
 			return true;
 		} else {
-			if (!args[0].equals("CONFIRM")) {
-				return false;
-			}
 			String newName = newNames.get(uuid);
 			if (newName == null) {
 				sender.sendMessage(ChatColor.RED
 						+ "Run \"/nlun\" first to initiate the name changes process");
+				return true;
+			}
+			if (!args[0].equals("CONFIRM")) {
+				sender.sendMessage(ChatColor.RED + "Run \"/nlun CONFIRM\" to confirm your name change to \"" + newName + "\"");
 				return true;
 			}
 			NameLayerPlugin.getGroupManagerDao().logNameChange(uuid, oldName,
