@@ -1087,7 +1087,7 @@ public class GroupManagerDao {
 		}
 	}
 	
-	public synchronized void logNameChance(UUID uuid, String oldName, String newName) {
+	public synchronized void logNameChange(UUID uuid, String oldName, String newName) {
 		try {
 			logNameChange.setString(1, uuid.toString());
 			logNameChange.setString(2, oldName);
@@ -1095,7 +1095,8 @@ public class GroupManagerDao {
 			logNameChange.execute();
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Failed to log a name change for {0} from {1} -> {2}", new Object[]{uuid, oldName, newName});
+			plugin.getLogger().log(Level.WARNING, "Exception during change.", e);
 		}
 	}
 	
@@ -1109,7 +1110,8 @@ public class GroupManagerDao {
 			return false;
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
+			plugin.getLogger().log(Level.WARNING, "Failed to check if {0} has previously changed names", uuid);
+			plugin.getLogger().log(Level.WARNING, "Exception during check.", e);
 			//just to make sure
 			return true;
 		}
