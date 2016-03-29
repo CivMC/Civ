@@ -475,7 +475,7 @@ public class GroupManagerDao {
 						+ "WHERE group_id = ? "
                         + "AND member_name = ?;");
 		logNameChange = db.prepareStatement("insert into nameLayerNameChanges (uuid,oldName,newName) values(?,?,?);");
-		checkForNameChange = db.prepareStatement("select from nameLayerNameChanges where uuid=?;");
+		checkForNameChange = db.prepareStatement("select * from nameLayerNameChanges where uuid=?;");
 	}
 	/**
 	 * Checks the version of a specific plugin's db.
