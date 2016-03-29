@@ -242,7 +242,7 @@ public class GroupManagerDao {
 		if (ver == 9) {
 			long first_time = System.currentTimeMillis();
 			log(Level.INFO, "Database updating to version ten, adding table to keep track of name chanegs");
-			db.execute("create table if not exists nameLayerNameChanges(uuid varchar(36) not null, oldName varchar(32) not null, newName varchar(32) not null);");
+			db.execute("create table if not exists nameLayerNameChanges(uuid varchar(36) not null, oldName varchar(32) not null, newName varchar(32) not null, primary key(uuid));");
 			ver = updateVersion(ver, plugin.getName());
 			log(Level.INFO, "Database update to Version ten took " + (System.currentTimeMillis() - first_time) /1000 + " seconds.");
 		}
