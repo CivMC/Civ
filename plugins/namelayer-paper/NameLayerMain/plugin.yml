@@ -65,6 +65,8 @@ commands:
     aliases: [nlsetdefaultgroup, nlsetdefault, setdefaultgroup]
    nlgdg:
     aliases: [nlgetdefaultgroup, nlgetdefault, getdefaultgroup]
+   nlun:
+    aliases: [updatename]
 permissions:
    namelayer.admin:
       default: op

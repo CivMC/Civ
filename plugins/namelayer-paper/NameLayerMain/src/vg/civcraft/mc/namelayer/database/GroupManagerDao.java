@@ -239,6 +239,13 @@ public class GroupManagerDao {
 			ver = updateVersion(ver, plugin.getName());
 			log(Level.INFO, "Database update to Version nine took " + (System.currentTimeMillis() - first_time) /1000 + " seconds.");			
 		}
+		if (ver == 9) {
+			long first_time = System.currentTimeMillis();
+			log(Level.INFO, "Database updating to version ten, adding table to keep track of name chanegs");
+			db.execute("create table if not exists nameLayerNameChanges(uuid varchar(36) not null, oldName varchar(32) not null, newName varchar(32) not null);");
+			ver = updateVersion(ver, plugin.getName());
+			log(Level.INFO, "Database update to Version ten took " + (System.currentTimeMillis() - first_time) /1000 + " seconds.");
+		}
 		
 		log(Level.INFO, "Database update took " + (System.currentTimeMillis() - begin_time) / 1000 + " seconds.");
 	}
@@ -339,6 +346,8 @@ public class GroupManagerDao {
 	private PreparedStatement getGroupNameFromRole, updateLastTimestamp, getPlayerType, getTimestamp;
 	
 	private PreparedStatement getGroupIDs;
+	
+	private PreparedStatement logNameChange, checkForNameChange;
 	
 	public void initializeStatements(){
 		version = db.prepareStatement("select max(db_version) as db_version from db_version where plugin_name=?");
@@ -465,6 +474,8 @@ public class GroupManagerDao {
 		getPlayerType = db.prepareStatement("SELECT role FROM faction_member "
 						+ "WHERE group_id = ? "
                         + "AND member_name = ?;");
+		logNameChange = db.prepareStatement("insert into nameLayerNameChanges (uuid,oldName,newName) values(?,?,?);");
+		checkForNameChange = db.prepareStatement("select from nameLayerNameChanges where uuid=?;");
 	}
 	/**
 	 * Checks the version of a specific plugin's db.
@@ -1073,6 +1084,34 @@ public class GroupManagerDao {
 			}
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem loading all group invitations", e);
+		}
+	}
+	
+	public synchronized void logNameChance(UUID uuid, String oldName, String newName) {
+		try {
+			logNameChange.setString(1, uuid.toString());
+			logNameChange.setString(2, oldName);
+			logNameChange.setString(3, newName);
+			logNameChange.execute();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized boolean hasChangedNameBefore(UUID uuid) {
+		try {
+			checkForNameChange.setString(1, uuid.toString());
+			ResultSet set = checkForNameChange.executeQuery();
+			if (set.next()) {
+				return true;
+			}
+			return false;
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			//just to make sure
+			return true;
 		}
 	}
 
