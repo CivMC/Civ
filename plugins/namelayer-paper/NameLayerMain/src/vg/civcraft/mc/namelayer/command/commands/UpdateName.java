@@ -39,7 +39,7 @@ public class UpdateName extends PlayerCommandMiddle {
 		}
 		final Player p = (Player) sender;
 		final UUID uuid = p.getUniqueId();
-		String oldName = NameAPI.getCurrentName(uuid);
+		final String oldName = NameAPI.getCurrentName(uuid);
 
 		if (NameLayerPlugin.getGroupManagerDao().hasChangedNameBefore(uuid)) {
 			p.sendMessage(ChatColor.RED + "You already changed your name");
@@ -71,11 +71,25 @@ public class UpdateName extends PlayerCommandMiddle {
 										+ "An error occured. Try again later");
 								return;
 							}
-							if (NameAPI.getUUID(newName) != null) {
-								p.sendMessage(ChatColor.RED
-										+ "Someone already has the new name of your minecraft account on this server. Because of that you may not update your name");
-								return;
+							UUID existingNameUUID = NameAPI.getUUID(newName);
+							if (existingNameUUID != null) {
+								if (!uuid.equals(existingNameUUID)) {
+									// different person has the name
+									p.sendMessage(ChatColor.RED
+											+ "Someone already has the new name of your minecraft account on this server. Because of that you may not update your name");
+									return;
+								}
+								if (oldName.equals(newName)) {
+									// name hasnt changed
+									p.sendMessage(ChatColor.RED
+											+ "The name of your minecraft account is the same one as on this server");
+									return;
+								}
+								// Player wants to change name to one which is
+								// the same one as his current name, but with
+								// different capitalization. We'll allow it
 							}
+
 							p.sendMessage(ChatColor.GREEN
 									+ "The current name of your minecraft account is \""
 									+ newName
@@ -92,12 +106,14 @@ public class UpdateName extends PlayerCommandMiddle {
 				return true;
 			}
 			if (!args[0].equals("CONFIRM")) {
-				sender.sendMessage(ChatColor.RED + "Run \"/nlun CONFIRM\" to confirm your name change to \"" + newName + "\"");
+				sender.sendMessage(ChatColor.RED
+						+ "Run \"/nlun CONFIRM\" to confirm your name change to \""
+						+ newName + "\"");
 				return true;
 			}
 			NameLayerPlugin.getGroupManagerDao().logNameChange(uuid, oldName,
 					newName);
-			//uncomment following to directly change name
+			// uncomment following to directly change name
 			// NameAPI.getAssociationList().changePlayer(newName, uuid);
 			// NameAPI.resetCache(uuid);
 			sender.sendMessage(ChatColor.GREEN
