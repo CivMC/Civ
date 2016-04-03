@@ -1,0 +1,41 @@
+# Effectively Modern Humbug. For 1.9 ground up.
+
+configuration_file_version: 1
+
+game_features:
+  elytra: off
+  chorus_fruit: off
+game_bugs:
+  nether_bed_placement: off
+admin:
+  alert_new: on
+  alert_join: on
+  alert_exit: on
+  alert_ct: on
+  alert_die: on
+newfriend:
+  helptips: on
+  helptips_end: 20m
+  introkit: on
+  introkit_contents:
+   - ==: org.bukkit.inventory.ItemStack
+     type: COOKIE
+     amount: 32
+     meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: 'Manna'
+      lore:
+       - "Gift from the Admins as you"
+       - "begin your journey on Devotion."
+  introbook: on
+  introbook_contents:
+   title: Welcome to Devoted
+   author: Bonkill
+   pages:
+    - Devoted is not your ordinary minecraft server.
+	- We run a series of custom mods that greatly impact gameplay.
+	- Welcome and we hope you will enjoy!
+tuning:
+  str2: replace_str1ext
+  pearl_gravity: 0.3

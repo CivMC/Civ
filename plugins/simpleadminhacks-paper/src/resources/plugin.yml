@@ -1,0 +1,59 @@
+name: ${project.name}
+main: com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks
+author: ProgrammerDan
+authors: []
+version: ${project.version}
+commands:
+  hacks:
+    description: Set live the various hacks and fixes supported by this plugin
+    usage: /<command> [set|show [config.option [value]]]
+    permission: simpleadmin.hacks
+  invsee:
+    description: See any player inventory, online or not.
+    usage: /<command> [playername|UUID]
+    permission: simpleadmin.invsee
+  invmod:
+    description: Modify any player inventory, online or not.
+    usage: /<command> [playername|UUID]
+    permission: simpleadmin.invmod
+  introkit:
+    description: Give a player the currently configured introkit
+    usage: /<command> [playername|UUID]
+    permission: simpleadmin.kit
+  introbook:
+    description: Give a player the currently configured intro book
+    usage: /<command> [playername|UUID]
+    permission: simpleadmin.book
+permissions:
+  simpleadmin.*:
+    description: Gives access to all SimpleAdminHacks commands
+    default: op
+    children:
+      simpleadmin.hacks: true
+      simpleadmin.invsee: true
+      simpleadmin.chestsee: true
+      simpleadmin.invmod: true
+      simpleadmin.chestmod: true
+      simpleadmin.kit: true
+      simpleadmin.book: true
+    simpleadmin.hacks:
+      description: Allows control of the hacks and settings which simpleadminhacks supports
+      default: op
+    simpleadmin.invsee:
+      description: Allows viewing player inventory
+      default: op
+    simpleadmin.chestsee:
+      description: Allows viewing any chests
+      default: op
+    simpleadmin.invmod:
+      description: Allows modifying player inventory
+      default: op
+    simpleadmin.chestmod:
+      description: Allows modifying any chests
+      default: op
+    simpleadmin.kit:
+      description: Gives ability to gift starting kit
+      default: op
+    simpleadmin.book:
+      description: Gives ability to gift starting book
+      default: op
