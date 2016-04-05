@@ -35,7 +35,6 @@ factories:
     - Cut_any_type_of_Plank_Basic
     - Bake_Bread_Basic
     - Burn_Charcoal_from_Logs_Basic
-    - Break_Easter_Egg
     - Repair_Rudimentary_Factory
     - Upgrade_to_Stone_Smelter
     - Upgrade_to_Farmstead_Factory
@@ -735,7 +734,7 @@ recipes:
 #            enchant: DURABILITY
 #        amount: 1
        emerald:
-         material: EMERALD
+         material: DIRT
          amount: 1
     health_gained: 1500
   Repair_Small_Factory:
@@ -752,7 +751,7 @@ recipes:
 #            enchant: DURABILITY
 #        amount: 1
        emerald:
-         material: EMERALD
+         material: DIRT
          amount: 3
     health_gained: 800
   Repair_Factory:
@@ -769,7 +768,7 @@ recipes:
 #            enchant: DURABILITY
 #        amount: 1
        emeraldblock:
-         material: EMERALD_BLOCK
+         material: DIRT
          amount: 1
     health_gained: 350
   Repair_Advanced_Factory:
@@ -786,7 +785,7 @@ recipes:
 #            enchant: DURABILITY
 #        amount: 1
        emeraldblock:
-         material: EMERALD_BLOCK
+         material: DIRT
          amount: 3
     health_gained: 225
   Repair_Expert_Factory:
@@ -803,7 +802,7 @@ recipes:
 #            enchant: DURABILITY
 #        amount: 1
        emeraldblock:
-         material: EMERALD_BLOCK
+         material: DIRT
          amount: 5
     health_gained: 65
   Bake_Bread_Advanced:
@@ -5930,138 +5929,3 @@ recipes:
         enchants:
           dura:
             enchant: DURABILITY
-  Break_Easter_Egg:
-    name: Break Easter Egg
-    type: RANDOM
-    production_time: 5s
-    input:
-      easteregg:
-        material: EGG
-        amount: 1
-        lore:
-         - '[Easter Egg]'
-        enchants:
-          dura:
-            enchant: DURABILITY
-            level: 0
-    outputs:
-      1:
-        chance: 0.1
-        badegg1:
-          material: DIRT
-          amount: 5
-      2:
-        chance: 0.1
-        badegg2:
-          material: GRAVEL
-          amount: 5
-      3:
-        chance: 0.1
-        badegg3:
-          material: COAL
-          amount: 5
-      4:
-        chance: 0.1
-        badegg4:
-          material: DEAD_BUSH
-          amount: 5
-      5:
-        chance: 0.05
-        badegg5:
-          material: BROWN_MUSHROOM
-          amount: 10
-      55:
-        chance: 0.05
-        badegg6:
-          material: RED_MUSHROOM
-          amount: 10
-      6:
-        chance: 0.1
-        goodegg1:
-          material: EGG
-          amount: 1
-          lore:
-           - Goldinegg
-          enchants:
-            dura:
-              enchant: DURABILITY
-      7:
-        chance: 0.1
-        goodegg2:
-          material: DIAMOND
-          amount: 1
-      8:
-        chance: 0.1
-        goodegg3:
-          material: CAKE
-          amount: 1
-      9:
-        chance: 0.1
-        goodegg4:
-          material: GOLDEN_APPLE
-          amount: 1
-      10:
-        chance: 0.0175
-        record1:
-          material: GOLD_RECORD
-          amount: 1
-      11:
-        chance: 0.0075
-        record2:
-          material: GREEN_RECORD
-          amount: 1
-      12:
-        chance: 0.0075
-        record3:
-          material: RECORD_3
-          amount: 1
-      13:
-        chance: 0.0075
-        record4:
-          material: RECORD_4
-          amount: 1
-      14:
-        chance: 0.0075
-        record5:
-          material: RECORD_5
-          amount: 1
-      15:
-        chance: 0.0075
-        record6:
-          material: RECORD_6
-          amount: 1
-      16:
-        chance: 0.0075
-        record7:
-          material: RECORD_7
-          amount: 1
-      17:
-        chance: 0.0075
-        record8:
-          material: RECORD_8
-          amount: 1
-      18:
-        chance: 0.0075
-        record9:
-          material: RECORD_9
-          amount: 1
-      19:
-        chance: 0.0075
-        record10:
-          material: RECORD_10
-          amount: 1
-      20:
-        chance: 0.0075
-        record11:
-          material: RECORD_11
-          amount: 1
-      21:
-        chance: 0.0065
-        record12:
-          material: RECORD_12
-          amount: 1
-      22:
-        chance: 0.001
-        bastion:
-          material: SPONGE
-          amount: 1
