@@ -636,6 +636,7 @@ factories:
      - Produce_Potash_Enrichement
      - Produce_Vitamin_Enrichment
      - Produce_Nether_Enrichement
+     - Repair_Expert_Factory
   basicpylon:
     type: FCCUPGRADE
     name: Basic Pylon
