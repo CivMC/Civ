@@ -341,6 +341,7 @@ factories:
     - Make_Rabbit_Stew
     - Make_Mushroom_Stew
     - Brew_Soup_Concentrate
+    - Repair_Factory
   animalhusbandryfactorybasic:
     type: FCCUPGRADE
     name: Animal Husbandry Factory Basic
