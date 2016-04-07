@@ -4630,7 +4630,7 @@ recipes:
         amount: 256
       aether:
         material: GOLD_NUGGET
-        amount: 512
+        amount: 192
         lore:
          - Aether
         enchants:
@@ -4746,16 +4746,16 @@ recipes:
     input:
       poisonouspotatoes:
         material: POISONOUS_POTATO
-        amount: 64
+        amount: 128
       enderchests:
         material: ENDER_CHEST
-        amount: 32
+        amount: 64
       diamondblocks:
         material: DIAMOND_BLOCK
-        amount: 16
+        amount: 32
       goldenapples:
         material: GOLDEN_APPLE
-        amount: 64
+        amount: 256
       compactedglass:
         material: GLASS
         amount: 64
@@ -4763,12 +4763,12 @@ recipes:
          - Compacted Item
       netherquartzore:
         material: QUARTZ_ORE
-        amount: 48
+        amount: 32
         lore:
          - Compacted Item
       emerald:
         material: EMERALD_BLOCK
-        amount: 9
+        amount: 12
         lore:
          - Compacted Item
       compactedstone:
@@ -4839,7 +4839,7 @@ recipes:
     input:
       aether:
         material: GOLD_NUGGET
-        amount: 128
+        amount: 48
         lore:
          - Aether
         enchants:
@@ -4885,7 +4885,7 @@ recipes:
     input:
       aether:
         material: GOLD_NUGGET
-        amount: 128
+        amount: 48
         lore:
          - Aether
         enchants:
@@ -4900,7 +4900,8 @@ recipes:
 #            enchant: DURABILITY 
       carrots:
         material: CARROT_ITEM
-        amount: 256
+        amount: 12
+        lore: Compacted Item
       cocoa:
         material: INK_SACK
         amount: 92
@@ -4933,7 +4934,7 @@ recipes:
     input:
       aether:
         material: GOLD_NUGGET
-        amount: 128
+        amount: 48
         lore:
          - Aether
         enchants:
@@ -4985,7 +4986,7 @@ recipes:
     output:
       aether:
         material: GOLD_NUGGET
-        amount: 10
+        amount: 3
         lore:
          - Aether
         enchants:
@@ -5001,7 +5002,7 @@ recipes:
     output:
       aether:
         material: GOLD_NUGGET
-        amount: 14
+        amount: 5
         lore:
          - Aether
         enchants:
@@ -5017,7 +5018,7 @@ recipes:
     output:
       aether:
         material: GOLD_NUGGET
-        amount: 20
+        amount: 7
         lore:
          - Aether
         enchants:
