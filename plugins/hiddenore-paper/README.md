@@ -1,6 +1,6 @@
 # HiddenOre
 
-Massively configurable, low-impact plugin to allow post world generation ore balance.
+Massively configurable, low-impact plugin to allow post world generation ore balance and anti-xray plugin.
 
 ## Overview
 
