@@ -4752,7 +4752,7 @@ recipes:
         amount: 64
       diamondblocks:
         material: DIAMOND_BLOCK
-        amount: 32
+        amount: 16
       goldenapples:
         material: GOLDEN_APPLE
         amount: 256
@@ -4839,7 +4839,7 @@ recipes:
     input:
       aether:
         material: GOLD_NUGGET
-        amount: 48
+        amount: 64
         lore:
          - Aether
         enchants:
@@ -4885,7 +4885,7 @@ recipes:
     input:
       aether:
         material: GOLD_NUGGET
-        amount: 48
+        amount: 64
         lore:
          - Aether
         enchants:
@@ -4901,7 +4901,8 @@ recipes:
       carrots:
         material: CARROT_ITEM
         amount: 12
-        lore: Compacted Item
+        lore: 
+         - Compacted Item
       cocoa:
         material: INK_SACK
         amount: 92
@@ -4934,7 +4935,7 @@ recipes:
     input:
       aether:
         material: GOLD_NUGGET
-        amount: 48
+        amount: 64
         lore:
          - Aether
         enchants:
@@ -4980,13 +4981,13 @@ recipes:
   Pylon_Basic:
     name: Extract Aether
     type: PYLON
-    production_time: 2h
+    production_time: 4h
     fuel_consumption_intervall: 6m
     input:
     output:
       aether:
         material: GOLD_NUGGET
-        amount: 3
+        amount: 10
         lore:
          - Aether
         enchants:
@@ -4997,12 +4998,12 @@ recipes:
     name: Extract Aether
     type: PYLON
     fuel_consumption_intervall: 6m
-    production_time: 1h
+    production_time: 2h
     input:
     output:
       aether:
         material: GOLD_NUGGET
-        amount: 5
+        amount: 14
         lore:
          - Aether
         enchants:
@@ -5013,12 +5014,12 @@ recipes:
     name: Extract Aether
     type: PYLON
     fuel_consumption_intervall: 6m
-    production_time: 1h
+    production_time: 2h
     input:
     output:
       aether:
         material: GOLD_NUGGET
-        amount: 7
+        amount: 20
         lore:
          - Aether
         enchants:
