@@ -4630,7 +4630,7 @@ recipes:
         amount: 256
       aether:
         material: GOLD_NUGGET
-        amount: 192
+        amount: 256
         lore:
          - Aether
         enchants:
