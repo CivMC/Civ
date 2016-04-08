@@ -333,11 +333,7 @@ public class ItemMap {
 		for (Entry<ItemStack, Integer> entry : matSubMap.getEntrySet()) {
 			ItemStack current = entry.getKey();
 			if ((is.getDurability() == -1 || is.getDurability() == current
-					.getDurability())
-					&& is.getEnchantments().equals(current.getEnchantments())
-					&& (current.getItemMeta().getLore() == null || current
-							.getItemMeta().getLore()
-							.equals(is.getItemMeta().getLore()))) {
+					.getDurability()) && is.getItemMeta().equals(current.getItemMeta())) {
 				amount += entry.getValue();
 			}
 		}
