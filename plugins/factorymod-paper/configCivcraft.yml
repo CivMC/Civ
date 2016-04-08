@@ -42,7 +42,7 @@ factories:
     - Upgrade_to_Laboratory
     - Upgrade_to_Wood_Processor
     - Upgrade_to_Basic_Forge
-    - Upgrade_to_Wood_Cauldron
+    - Upgrade_to_Apprentice_Transmuter
     
   #Smelting 
   stonesmelter:
@@ -946,23 +946,23 @@ factories:
 ## XP Production
   woodcauldron:
     type: FCCUPGRADE
-    name: Wood Cauldron
+    name: Apprentice Transmuter
     recipes:
      - Aspen_Enrichment
      - Cypress_Enrichment
      - Pine_Enrichment
-     - Upgrade_to_Iron_Cauldron
+     - Upgrade_to_Adept_Transmuter
   ironcauldron:
     type: FCCUPGRADE
-    name: Iron Cauldron
+    name: Adept Transmuter
     recipes:
      - Lead_Enrichment
      - Copper_Enrichment
      - Tin_Enrichment
-     - Upgrade_to_Diamond_Cauldron
+     - Upgrade_to_Alchemist_Transmuter
   diamondcauldron:
     type: FCCUPGRADE
-    name: Diamond Cauldron
+    name: Alchemist Transmuter
     recipes:
      - Amethyst_Enrichment
      - Topaz_Enrichment
@@ -5984,11 +5984,11 @@ factories:
 ## XP Generation Recipes
 # Upgrades
 
-  Upgrade_to_Wood_Cauldron:
+  Upgrade_to_Apprentice_Transmuter:
     production_time: 1h
     type: UPGRADE
-    name: Upgrade to Wood Cauldron
-    factory: Wood Cauldron
+    name: Upgrade to Apprentice Transmuter
+    factory: Apprentice Transmuter
     fuel_consumption_intervall: 1m
     input:
       logs:
@@ -6003,11 +6003,11 @@ factories:
         enchants:
           dura:
             enchant: DURABILITY
-  Upgrade_to_Iron_Cauldron:
+  Upgrade_to_Adept_Transmuter:
     production_time: 2h
     type: UPGRADE
-    name: Upgrade to Iron Cauldron
-    factory: Iron Cauldron
+    name: Upgrade to Adept Transmuter
+    factory: Adept Transmuter
     fuel_consumption_intervall: 1m
     input:
       ironblocks:
@@ -6024,11 +6024,11 @@ factories:
       xp:
         material: EMERALD_BLOCK
         amount: 22
-  Upgrade_to_Diamond_Cauldron:
+  Upgrade_to_Alchemist_Transmuter:
     production_time: 4h
     type: UPGRADE
-    name: Upgrade to Diamond Cauldron
-    factory: Diamond Cauldron
+    name: Upgrade to Alchemist Transmuter
+    factory: Alchemist Transmuter
     fuel_consumption_intervall: 1m
     input:
       ironblocks:
