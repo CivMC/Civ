@@ -58,8 +58,9 @@ public class PylonRecipe extends InputRecipe {
 		List<ItemStack> res = new LinkedList<ItemStack>();
 		for (ItemStack is : currOut.getItemStackRepresentation()) {
 			ISUtils.setLore(is, ChatColor.GOLD + "Currently there are "
-					+ FurnCraftChestFactory.getPylonFactories().size()
-					+ " pylons on the map", ChatColor.RED
+					+ FurnCraftChestFactory.getPylonFactories() == null ? "0"
+					: FurnCraftChestFactory.getPylonFactories().size()
+							+ " pylons on the map", ChatColor.RED
 					+ "Current global weight is " + currentGlobalWeight);
 			res.add(is);
 		}
@@ -103,7 +104,8 @@ public class PylonRecipe extends InputRecipe {
 		Set<FurnCraftChestFactory> pylons = FurnCraftChestFactory
 				.getPylonFactories();
 		if (pylons != null) {
-			//if not a single factory (not limited to pylon) is in the map, this will be null
+			// if not a single factory (not limited to pylon) is in the map,
+			// this will be null
 			for (FurnCraftChestFactory f : pylons) {
 				if (f.isActive() && f.getCurrentRecipe() instanceof PylonRecipe) {
 					weight += ((PylonRecipe) f.getCurrentRecipe()).getWeight();
