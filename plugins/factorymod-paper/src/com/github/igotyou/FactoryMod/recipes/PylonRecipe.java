@@ -3,6 +3,7 @@ package com.github.igotyou.FactoryMod.recipes;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -43,11 +44,11 @@ public class PylonRecipe extends InputRecipe {
 			}
 		}
 	}
-	
+
 	public static void setGlobalLimit(int limit) {
 		globalLimit = limit;
 	}
-	
+
 	public static int getGlobalLimit() {
 		return globalLimit;
 	}
@@ -99,13 +100,19 @@ public class PylonRecipe extends InputRecipe {
 
 	private ItemMap getCurrentOutput() {
 		int weight = 0;
-		for(FurnCraftChestFactory f : FurnCraftChestFactory.getPylonFactories()) {
-			if (f.isActive() && f.getCurrentRecipe() instanceof PylonRecipe) {
-				weight += ((PylonRecipe) f.getCurrentRecipe()).getWeight();
+		Set<FurnCraftChestFactory> pylons = FurnCraftChestFactory
+				.getPylonFactories();
+		if (pylons != null) {
+			//if not a single factory (not limited to pylon) is in the map, this will be null
+			for (FurnCraftChestFactory f : pylons) {
+				if (f.isActive() && f.getCurrentRecipe() instanceof PylonRecipe) {
+					weight += ((PylonRecipe) f.getCurrentRecipe()).getWeight();
+				}
 			}
 		}
 		currentGlobalWeight = weight;
-		double overload = Math.max(1.0, (float) currentGlobalWeight / (float)globalLimit);
+		double overload = Math.max(1.0, (float) currentGlobalWeight
+				/ (float) globalLimit);
 		double multiplier = 1.0 / overload;
 		ItemMap actualOutput = new ItemMap();
 		for (Entry<ItemStack, Integer> entry : output.getEntrySet()) {
