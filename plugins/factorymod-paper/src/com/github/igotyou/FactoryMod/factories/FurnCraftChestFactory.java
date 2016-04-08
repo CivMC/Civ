@@ -100,7 +100,6 @@ public class FurnCraftChestFactory extends Factory {
 	public void attemptToActivate(Player p) {
 		LoggingUtils.log((p != null ? p.getName() : "Redstone")
 				+ " is attempting to activate " + getLogData());
-		// TODO Citadel stuff
 		mbs.recheckComplete();
 
 		if (active) {
