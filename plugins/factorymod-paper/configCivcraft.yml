@@ -341,6 +341,7 @@ factories:
     - Make_Rabbit_Stew
     - Make_Mushroom_Stew
     - Brew_Soup_Concentrate
+    - Repair_Factory
   animalhusbandryfactorybasic:
     type: FCCUPGRADE
     name: Animal Husbandry Factory Basic
@@ -4629,7 +4630,7 @@ recipes:
         amount: 256
       aether:
         material: GOLD_NUGGET
-        amount: 512
+        amount: 256
         lore:
          - Aether
         enchants:
@@ -4745,16 +4746,16 @@ recipes:
     input:
       poisonouspotatoes:
         material: POISONOUS_POTATO
-        amount: 64
+        amount: 128
       enderchests:
         material: ENDER_CHEST
-        amount: 32
+        amount: 64
       diamondblocks:
         material: DIAMOND_BLOCK
         amount: 16
       goldenapples:
         material: GOLDEN_APPLE
-        amount: 64
+        amount: 256
       compactedglass:
         material: GLASS
         amount: 64
@@ -4762,12 +4763,12 @@ recipes:
          - Compacted Item
       netherquartzore:
         material: QUARTZ_ORE
-        amount: 48
+        amount: 32
         lore:
          - Compacted Item
       emerald:
         material: EMERALD_BLOCK
-        amount: 9
+        amount: 12
         lore:
          - Compacted Item
       compactedstone:
@@ -4838,7 +4839,7 @@ recipes:
     input:
       aether:
         material: GOLD_NUGGET
-        amount: 128
+        amount: 64
         lore:
          - Aether
         enchants:
@@ -4884,7 +4885,7 @@ recipes:
     input:
       aether:
         material: GOLD_NUGGET
-        amount: 128
+        amount: 64
         lore:
          - Aether
         enchants:
@@ -4899,7 +4900,9 @@ recipes:
 #            enchant: DURABILITY 
       carrots:
         material: CARROT_ITEM
-        amount: 256
+        amount: 12
+        lore: 
+         - Compacted Item
       cocoa:
         material: INK_SACK
         amount: 92
@@ -4932,7 +4935,7 @@ recipes:
     input:
       aether:
         material: GOLD_NUGGET
-        amount: 128
+        amount: 64
         lore:
          - Aether
         enchants:
@@ -4978,7 +4981,7 @@ recipes:
   Pylon_Basic:
     name: Extract Aether
     type: PYLON
-    production_time: 2h
+    production_time: 4h
     fuel_consumption_intervall: 6m
     input:
     output:
@@ -4995,7 +4998,7 @@ recipes:
     name: Extract Aether
     type: PYLON
     fuel_consumption_intervall: 6m
-    production_time: 1h
+    production_time: 2h
     input:
     output:
       aether:
@@ -5011,7 +5014,7 @@ recipes:
     name: Extract Aether
     type: PYLON
     fuel_consumption_intervall: 6m
-    production_time: 1h
+    production_time: 2h
     input:
     output:
       aether:
