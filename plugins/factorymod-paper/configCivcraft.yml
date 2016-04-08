@@ -959,10 +959,10 @@ factories:
      - Lead_Enrichment
      - Copper_Enrichment
      - Tin_Enrichment
-     - Upgrade_to_Alchemist_Transmuter
+     - Upgrade_to_Grandmaster_Transmuter
   diamondcauldron:
     type: FCCUPGRADE
-    name: Alchemist Transmuter
+    name: Grandmaster Transmuter
     recipes:
      - Amethyst_Enrichment
      - Topaz_Enrichment
@@ -6024,11 +6024,11 @@ factories:
       xp:
         material: EMERALD_BLOCK
         amount: 22
-  Upgrade_to_Alchemist_Transmuter:
+  Upgrade_to_Grandmaster_Transmuter:
     production_time: 4h
     type: UPGRADE
-    name: Upgrade to Alchemist Transmuter
-    factory: Alchemist Transmuter
+    name: Upgrade to Grandmaster Transmuter
+    factory: Grandmaster Transmuter
     fuel_consumption_intervall: 1m
     input:
       ironblocks:
