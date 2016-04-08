@@ -121,8 +121,8 @@ public class FurnCraftChestFactory extends Factory {
 							&& rm.atFullHealth()) {
 						if (p != null) {
 							p.sendMessage("This factory is already at full health!");
-							return;
 						}
+						return;
 					}
 					FactoryActivateEvent fae = new FactoryActivateEvent(this, p);
 					Bukkit.getPluginManager().callEvent(fae);
@@ -305,6 +305,13 @@ public class FurnCraftChestFactory extends Factory {
 								runCount.get(currentRecipe) + 1);
 					}
 					currentProductionTimer = 0;
+					if (currentRecipe instanceof RepairRecipe
+							&& rm.atFullHealth()) {
+						//already at full health, dont try to repair further
+						sendActivatorMessage(ChatColor.GOLD + name + " repaired to full health");
+						deactivate();
+						return;
+					}
 					if (hasInputMaterials() && pm.powerAvailable()) {
 						pm.setPowerCounter(0);
 						scheduleUpdate();
