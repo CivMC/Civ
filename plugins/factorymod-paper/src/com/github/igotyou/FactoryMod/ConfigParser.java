@@ -190,7 +190,12 @@ public class ConfigParser {
 	 */
 	private void parseFactory(ConfigurationSection config) {
 		IFactoryEgg egg = null;
-		switch (config.getString("type")) {
+		String type = config.getString("type");
+		if (type == null) {
+			plugin.warning("No type specified for factory at " + config.getCurrentPath()+". Skipping it.");
+			return;
+		}
+		switch (type) {
 		case "FCC": // Furnace, chest, craftingtable
 			egg = parseFCCFactory(config);
 			if (egg == null) {
