@@ -244,9 +244,11 @@ public class FactoryModManager {
 							.get(FurnCraftChestStructure.class);
 					if (eggs != null) {
 						IFactoryEgg egg = null;
-						for(Entry <ItemMap, IFactoryEgg> entry: eggs.entrySet()) {
-							if (entry.getKey().containedExactlyIn(((Chest) (fccs
-								.getChest().getState())).getInventory())) {
+						for (Entry<ItemMap, IFactoryEgg> entry : eggs
+								.entrySet()) {
+							if (entry.getKey().containedExactlyIn(
+									((Chest) (fccs.getChest().getState()))
+											.getInventory())) {
 								egg = entry.getValue();
 								break;
 							}
@@ -287,9 +289,11 @@ public class FactoryModManager {
 							.get(PipeStructure.class);
 					if (eggs != null) {
 						IFactoryEgg egg = null;
-						for(Entry <ItemMap, IFactoryEgg> entry: eggs.entrySet()) {
-							if (entry.getKey().containedExactlyIn((((Dispenser) (ps
-									.getStart().getState())).getInventory()))) {
+						for (Entry<ItemMap, IFactoryEgg> entry : eggs
+								.entrySet()) {
+							if (entry.getKey().containedExactlyIn(
+									(((Dispenser) (ps.getStart().getState()))
+											.getInventory()))) {
 								egg = entry.getValue();
 								break;
 							}
@@ -339,10 +343,11 @@ public class FactoryModManager {
 							.get(BlockFurnaceStructure.class);
 					if (eggs != null) {
 						IFactoryEgg egg = null;
-						for(Entry <ItemMap, IFactoryEgg> entry: eggs.entrySet()) {
-							if (entry.getKey().containedExactlyIn(((Dropper) (bfs
-									.getCenter().getBlock().getState()))
-									.getInventory())) {
+						for (Entry<ItemMap, IFactoryEgg> entry : eggs
+								.entrySet()) {
+							if (entry.getKey().containedExactlyIn(
+									((Dropper) (bfs.getCenter().getBlock()
+											.getState())).getInventory())) {
 								egg = entry.getValue();
 								break;
 							}
@@ -401,6 +406,14 @@ public class FactoryModManager {
 					if (recipe instanceof Upgraderecipe
 							&& ((Upgraderecipe) recipe).getEgg() == egg) {
 						map = calculateTotalSetupCost(superEgg);
+						if (map == null) {
+							plugin.warning("Could not calculate total setupcost for "
+									+ egg.getName()
+									+ ". It's parent factory  "
+									+ superEgg.getName()
+									+ " is impossible to set up");
+							break;
+						}
 						map = map.clone(); // so we dont mess with the original
 											// setup costs
 						map.merge(((Upgraderecipe) recipe).getInput());

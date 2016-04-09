@@ -146,6 +146,10 @@ public class ConfigParser {
 	private void parseRecipes(ConfigurationSection config) {
 		recipes = new HashMap<String, IRecipe>();
 		for (String key : config.getKeys(false)) {
+			if (config.getConfigurationSection(key) == null) {
+				plugin.warning("Found invalid section that should not exist at " + config.getCurrentPath() + key);
+				continue;
+			}
 			IRecipe recipe = parseRecipe(config.getConfigurationSection(key));
 			if (recipe == null) {
 				plugin.warning(String.format("Recipe %s unable to be added.", key));
