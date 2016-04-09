@@ -687,16 +687,16 @@ factories:
     name: Ember Forge
     recipes:
      - Enchant_Helmet_FireP_I
-     - Enchant_Chestplate_FireP_I
-     - Enchant_Leggings_FireP_I
-     - Enchant_Boots_FireP_I
      - Enchant_Helmet_FireP_II
-     - Enchant_Chestplate_FireP_II
-     - Enchant_Leggings_FireP_II
-     - Enchant_Boots_FireP_II
      - Enchant_Helmet_FireP_III
+     - Enchant_Chestplate_FireP_I
+     - Enchant_Chestplate_FireP_II
      - Enchant_Chestplate_FireP_III
+     - Enchant_Leggings_FireP_I
+     - Enchant_Leggings_FireP_II
      - Enchant_Leggings_FireP_III
+     - Enchant_Boots_FireP_I
+     - Enchant_Boots_FireP_II
      - Enchant_Boots_FireP_III
      - Enchant_FireAspect_I
      - Upgrade_to_Magma_Forge
@@ -704,19 +704,32 @@ factories:
     type: FCCUPGRADE
     name: Magma Forge
     recipes:
+     - Enchant_Helmet_FireP_I
+     - Enchant_Helmet_FireP_II
+     - Enchant_Helmet_FireP_III
      - Enchant_Helmet_FireP_IV
-     - Enchant_Chestplate_FireP_IV
-     - Enchant_Leggings_FireP_IV
-     - Enchant_Boots_FireP_IV
      - Enchant_Helmet_FireP_V
-     - Enchant_Chestplate_FireP_V
-     - Enchant_Leggings_FireP_V
-     - Enchant_Boots_FireP_V
      - Enchant_Helmet_FireP_VI
+     - Enchant_Chestplate_FireP_I
+     - Enchant_Chestplate_FireP_II
+     - Enchant_Chestplate_FireP_III
+     - Enchant_Chestplate_FireP_IV
+     - Enchant_Chestplate_FireP_V
      - Enchant_Chestplate_FireP_VI
+     - Enchant_Leggings_FireP_I
+     - Enchant_Leggings_FireP_II
+     - Enchant_Leggings_FireP_III
+     - Enchant_Leggings_FireP_IV
+     - Enchant_Leggings_FireP_V
      - Enchant_Leggings_FireP_VI
+     - Enchant_Boots_FireP_I
+     - Enchant_Boots_FireP_II
+     - Enchant_Boots_FireP_III
+     - Enchant_Boots_FireP_IV
+     - Enchant_Boots_FireP_V
      - Enchant_Boots_FireP_VI
      - Enchant_Flame_I
+     - Enchant_FireAspect_I
      - Enchant_FireAspect_II
 #Water
   riverforge:
@@ -732,9 +745,12 @@ factories:
     type: FCCUPGRADE
     name: Ocean Forge
     recipes:
+     - Enchant_DepthStrider_I
      - Enchant_DepthStrider_II
      - Enchant_DepthStrider_III
      - Enchant_AquaAffinity_I
+     - Enchant_Respiration_I
+     - Enchant_Respiration_II
      - Enchant_Respiration_III
 #    - Enchant_FrostWalker_II
 #Magic
@@ -756,9 +772,13 @@ factories:
      - Enchant_Pickaxe_SilkTouch_I
      - Enchant_Axe_SilkTouch_I
      - Enchant_Shovel_SilkTouch_I
-     - Enchant_Shears_SilkTouch_I
+     - Enchant_FeatherFalling_I
+     - Enchant_FeatherFalling_II
      - Enchant_FeatherFalling_III
      - Enchant_FeatherFalling_IV
+     - Enchant_BOA_I
+     - Enchant_BOA_II
+     - Enchant_BOA_III
      - Enchant_BOA_IV
      - Enchant_BOA_V
 #Armor
@@ -780,36 +800,73 @@ factories:
     type: FCCUPGRADE
     name: Titanium Forge
     recipes:
+     - Enchant_Helmet_Protection_I
      - Enchant_Helmet_Protection_II
-     - Enchant_Chestplate_Protection_II
-     - Enchant_Leggings_Protection_II
-     - Enchant_Boots_Protection_II
      - Enchant_Helmet_Protection_III
+     - Enchant_Chestplate_Protection_I
+     - Enchant_Chestplate_Protection_II
      - Enchant_Chestplate_Protection_III
+     - Enchant_Leggings_Protection_I
+     - Enchant_Leggings_Protection_II
      - Enchant_Leggings_Protection_III
+     - Enchant_Boots_Protection_I
+     - Enchant_Boots_Protection_II
      - Enchant_Boots_Protection_III
+     - Enchant_Helmet_BlastProtection_I
      - Enchant_Helmet_BlastProtection_II
-     - Enchant_Chestplate_BlastProtection_II
-     - Enchant_Leggings_BlastProtection_II
-     - Enchant_Boots_BlastProtection_II
      - Enchant_Helmet_BlastProtection_III
+     - Enchant_Chestplate_BlastProtection_I
+     - Enchant_Chestplate_BlastProtection_II
      - Enchant_Chestplate_BlastProtection_III
+     - Enchant_Leggings_BlastProtection_I
+     - Enchant_Leggings_BlastProtection_II
      - Enchant_Leggings_BlastProtection_III
+     - Enchant_Boots_BlastProtection_I
+     - Enchant_Boots_BlastProtection_II
      - Enchant_Boots_BlastProtection_III
+     - Enchant_Helmet_BlastProtection_III
+     - Enchant_Thorns_I
      - Enchant_Thorns_II
      - Upgrade_to_Meteor_Forge
   Meteorforge:
     type: FCCUPGRADE
     name: Meteor Forge
     recipes:
+     - Enchant_Helmet_Protection_I
+     - Enchant_Helmet_Protection_II
+     - Enchant_Helmet_Protection_III
      - Enchant_Helmet_Protection_IV
+     - Enchant_Chestplate_Protection_I
+     - Enchant_Chestplate_Protection_II
+     - Enchant_Chestplate_Protection_III
      - Enchant_Chestplate_Protection_IV
+     - Enchant_Leggings_Protection_I
+     - Enchant_Leggings_Protection_II
+     - Enchant_Leggings_Protection_III
      - Enchant_Leggings_Protection_IV
+     - Enchant_Boots_Protection_I
+     - Enchant_Boots_Protection_II
+     - Enchant_Boots_Protection_III
      - Enchant_Boots_Protection_IV
+     - Enchant_Helmet_BlastProtection_I
+     - Enchant_Helmet_BlastProtection_II
+     - Enchant_Helmet_BlastProtection_III
      - Enchant_Helmet_BlastProtection_IV
+     - Enchant_Chestplate_BlastProtection_I
+     - Enchant_Chestplate_BlastProtection_II
+     - Enchant_Chestplate_BlastProtection_III
      - Enchant_Chestplate_BlastProtection_IV
+     - Enchant_Leggings_BlastProtection_I
+     - Enchant_Leggings_BlastProtection_II
+     - Enchant_Leggings_BlastProtection_III
      - Enchant_Leggings_BlastProtection_IV
-     - Enchant_Boots_BlastProtection_IV
+     - Enchant_Boots_BlastProtection_I
+     - Enchant_Boots_BlastProtection_II
+     - Enchant_Boots_BlastProtection_III
+     - Enchant_Helmet_BlastProtection_III
+     - Enchant_Helmet_BlastProtection_IV
+     - Enchant_Thorns_I
+     - Enchant_Thorns_II
      - Enchant_Thorns_III
 #Archery
   archerforge:
@@ -827,27 +884,52 @@ factories:
     type: FCCUPGRADE
     name: Marksman Forge
     recipes:
+     - Enchant_Power_I
+     - Enchant_Power_II
      - Enchant_Power_III
      - Enchant_Power_IV
+     - Enchant_Helmet_ProjectileProtection_I
      - Enchant_Helmet_ProjectileProtection_II
-     - Enchant_Chestplate_ProjectileProtection_II
-     - Enchant_Leggings_ProjectileProtection_II
-     - Enchant_Boots_ProjectileProtection_II
      - Enchant_Helmet_ProjectileProtection_III
+     - Enchant_Chestplate_ProjectileProtection_I
+     - Enchant_Chestplate_ProjectileProtection_II
      - Enchant_Chestplate_ProjectileProtection_III
+     - Enchant_Leggings_ProjectileProtection_I
+     - Enchant_Leggings_ProjectileProtection_II
      - Enchant_Leggings_ProjectileProtection_III
+     - Enchant_Boots_ProjectileProtection_I
+     - Enchant_Boots_ProjectileProtection_II
      - Enchant_Boots_ProjectileProtection_III
+     - Enchant_Helmet_ProjectileProtection_III
      - Enchant_Punch_I
      - Upgrade_to_Sniper_Forge
   sniperforge:
     type: FCCUPGRADE
     name: Sniper Forge
     recipes:
+     - Enchant_Power_I
+     - Enchant_Power_II
+     - Enchant_Power_III
+     - Enchant_Power_IV
      - Enchant_Power_V
+     - Enchant_Helmet_ProjectileProtection_I
+     - Enchant_Helmet_ProjectileProtection_II
+     - Enchant_Helmet_ProjectileProtection_III
      - Enchant_Helmet_ProjectileProtection_IV
+     - Enchant_Chestplate_ProjectileProtection_I
+     - Enchant_Chestplate_ProjectileProtection_II
+     - Enchant_Chestplate_ProjectileProtection_III
      - Enchant_Chestplate_ProjectileProtection_IV
+     - Enchant_Leggings_ProjectileProtection_I
+     - Enchant_Leggings_ProjectileProtection_II
+     - Enchant_Leggings_ProjectileProtection_III
      - Enchant_Leggings_ProjectileProtection_IV
-     - Enchant_Boots_ProjectileProtection_IV
+     - Enchant_Boots_ProjectileProtection_I
+     - Enchant_Boots_ProjectileProtection_II
+     - Enchant_Boots_ProjectileProtection_III
+     - Enchant_Helmet_ProjectileProtection_III
+     - Enchant_Helmet_ProjectileProtection_IV
+     - Enchant_Punch_I
      - Enchant_Punch_II
 #Swords
   daggerforge:
@@ -863,8 +945,12 @@ factories:
     type: FCCUPGRADE
     name: Sword Forge
     recipes:
+     - Enchant_Sharpness_I
+     - Enchant_Sharpness_II
      - Enchant_Sharpness_III
      - Enchant_Sharpness_IV
+     - Enchant_Smite_I
+     - Enchant_Smite_II
      - Enchant_Smite_III
      - Enchant_Smite_IV
      - Enchant_Knockback_I
@@ -873,8 +959,17 @@ factories:
     type: FCCUPGRADE
     name: Blade Forge
     recipes:
+     - Enchant_Sharpness_I
+     - Enchant_Sharpness_II
+     - Enchant_Sharpness_III
+     - Enchant_Sharpness_IV
      - Enchant_Sharpness_V
+     - Enchant_Smite_I
+     - Enchant_Smite_II
+     - Enchant_Smite_III
+     - Enchant_Smite_IV
      - Enchant_Smite_V
+     - Enchant_Knockback_I
      - Enchant_Knockback_II
 #Efficiency
   quickforge:
@@ -882,29 +977,47 @@ factories:
     name: Quick Forge
     recipes:
      - Enchant_Pickaxe_Efficiency_I
-     - Enchant_Axe_Efficiency_I
-     - Enchant_Shovel_Efficiency_I
      - Enchant_Pickaxe_Efficiency_II
+     - Enchant_Axe_Efficiency_I
      - Enchant_Axe_Efficiency_II
+     - Enchant_Shovel_Efficiency_I
      - Enchant_Shovel_Efficiency_II
      - Upgrade_to_Rapid_Forge
   rapidforge:
     type: FCCUPGRADE
     name: Rapid Forge
     recipes:
+     - Enchant_Pickaxe_Efficiency_I
+     - Enchant_Pickaxe_Efficiency_II
      - Enchant_Pickaxe_Efficiency_III
-     - Enchant_Axe_Efficiency_III
-     - Enchant_Shovel_Efficiency_III
      - Enchant_Pickaxe_Efficiency_IV
+     - Enchant_Axe_Efficiency_I
+     - Enchant_Axe_Efficiency_II
+     - Enchant_Axe_Efficiency_III
      - Enchant_Axe_Efficiency_IV
+     - Enchant_Shovel_Efficiency_I
+     - Enchant_Shovel_Efficiency_II
+     - Enchant_Shovel_Efficiency_III
      - Enchant_Shovel_Efficiency_IV
      - Upgrade_to_Sonic_Forge
   sonicforge:
     type: FCCUPGRADE
     name: Sonic Forge
     recipes:
+     - Enchant_Pickaxe_Efficiency_I
+     - Enchant_Pickaxe_Efficiency_II
+     - Enchant_Pickaxe_Efficiency_III
+     - Enchant_Pickaxe_Efficiency_IV
      - Enchant_Pickaxe_Efficiency_V
+     - Enchant_Axe_Efficiency_I
+     - Enchant_Axe_Efficiency_II
+     - Enchant_Axe_Efficiency_III
+     - Enchant_Axe_Efficiency_IV
      - Enchant_Axe_Efficiency_V
+     - Enchant_Shovel_Efficiency_I
+     - Enchant_Shovel_Efficiency_II
+     - Enchant_Shovel_Efficiency_III
+     - Enchant_Shovel_Efficiency_IV
      - Enchant_Shovel_Efficiency_V
 #Unbreaking
   rockforge:
@@ -925,28 +1038,55 @@ factories:
     type: FCCUPGRADE
     name: Metal Forge
     recipes:
+     - Enchant_Pickaxe_Unbreaking_I
      - Enchant_Pickaxe_Unbreaking_II
+     - Enchant_Axe_Unbreaking_I
      - Enchant_Axe_Unbreaking_II
+     - Enchant_Shovel_Unbreaking_I
      - Enchant_Shovel_Unbreaking_II
+     - Enchant_Helmet_Unbreaking_I
      - Enchant_Helmet_Unbreaking_II
+     - Enchant_Chestplate_Unbreaking_I
      - Enchant_Chestplate_Unbreaking_II
+     - Enchant_Leggings_Unbreaking_I
      - Enchant_Leggings_Unbreaking_II
+     - Enchant_Boots_Unbreaking_I
      - Enchant_Boots_Unbreaking_II
+     - Enchant_Sword_Unbreaking_I
      - Enchant_Sword_Unbreaking_II
+     - Enchant_Bow_Unbreaking_I
      - Enchant_Bow_Unbreaking_II
      - Upgrade_to_Carbon_Forge
   carbonforge:
     type: FCCUPGRADE
     name: Carbon Forge
     recipes:
+     - Enchant_Pickaxe_Unbreaking_I
+     - Enchant_Pickaxe_Unbreaking_II
      - Enchant_Pickaxe_Unbreaking_III
+     - Enchant_Axe_Unbreaking_I
+     - Enchant_Axe_Unbreaking_II
      - Enchant_Axe_Unbreaking_III
+     - Enchant_Shovel_Unbreaking_I
+     - Enchant_Shovel_Unbreaking_II
      - Enchant_Shovel_Unbreaking_III
+     - Enchant_Helmet_Unbreaking_I
+     - Enchant_Helmet_Unbreaking_II
      - Enchant_Helmet_Unbreaking_III
+     - Enchant_Chestplate_Unbreaking_I
+     - Enchant_Chestplate_Unbreaking_II
      - Enchant_Chestplate_Unbreaking_III
+     - Enchant_Leggings_Unbreaking_I
+     - Enchant_Leggings_Unbreaking_II
      - Enchant_Leggings_Unbreaking_III
+     - Enchant_Boots_Unbreaking_I
+     - Enchant_Boots_Unbreaking_II
      - Enchant_Boots_Unbreaking_III
+     - Enchant_Sword_Unbreaking_I
+     - Enchant_Sword_Unbreaking_II
      - Enchant_Sword_Unbreaking_III
+     - Enchant_Bow_Unbreaking_I
+     - Enchant_Bow_Unbreaking_II
      - Enchant_Bow_Unbreaking_III
      
 ## XP Production
@@ -7451,19 +7591,6 @@ recipes:
     enchant_item:
       pickaxe:
         material: DIAMOND_SPADE
-  Enchant_Shears_SilkTouch_I:
-    name: Enchant Shears with Silk Touch
-    type: ENCHANT
-    production_time: 1m
-    input:
-      emeralds:
-        material: EMERALD
-        amount: 4000
-    enchant: SILK_TOUCH
-    level: 1
-    enchant_item:
-      pickaxe:
-        material: SHEARS
 #Protection
 
   Enchant_Helmet_Protection_I:
