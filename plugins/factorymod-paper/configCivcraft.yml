@@ -7384,11 +7384,11 @@ recipes:
             level: 4
 #Infinity
 
- Enchant_Infinity_I:
-  name: Enchant Bow with Infinity
-  production_time: 1m
-  input:
-    emeralds:
+  Enchant_Infinity_I:
+    name: Enchant Bow with Infinity
+    production_time: 1m
+    input:
+      emeralds:
         material: EMERALD
         amount: 1500
     enchant: ARROW_INFINITE
@@ -7398,11 +7398,11 @@ recipes:
         material: BOW
 #Silk Touch
 
- Enchant_Pickaxe_SilkTouch_I:
-  name: Enchant Pickaxe with Silk Touch
-  production_time: 1m
-  input:
-    emeralds:
+  Enchant_Pickaxe_SilkTouch_I:
+    name: Enchant Pickaxe with Silk Touch
+    production_time: 1m
+    input:
+      emeralds:
         material: EMERALD
         amount: 1000
     enchant: SILK_TOUCH
@@ -7410,11 +7410,11 @@ recipes:
     enchant_item:
       pickaxe:
         material: DIAMOND_PICKAXE
- Enchant_Axe_SilkTouch_I:
-  name: Enchant Axe with Silk Touch
-  production_time: 1m
-  input:
-    emeralds:
+  Enchant_Axe_SilkTouch_I:
+    name: Enchant Axe with Silk Touch
+    production_time: 1m
+    input:
+      emeralds:
         material: EMERALD
         amount: 1000
     enchant: SILK_TOUCH
@@ -7422,11 +7422,11 @@ recipes:
     enchant_item:
       pickaxe:
         material: DIAMOND_AXE
- Enchant_Shovel_SilkTouch_I:
-  name: Enchant Shovel with Silk Touch
-  production_time: 1m
-  input:
-    emeralds:
+  Enchant_Shovel_SilkTouch_I:
+    name: Enchant Shovel with Silk Touch
+    production_time: 1m
+    input:
+      emeralds:
         material: EMERALD
         amount: 1000
     enchant: SILK_TOUCH
@@ -7434,11 +7434,11 @@ recipes:
     enchant_item:
       pickaxe:
         material: DIAMOND_SPADE
- Enchant_Shears_SilkTouch_I:
-  name: Enchant Shears with Silk Touch
-  production_time: 1m
-  input:
-    emeralds:
+  Enchant_Shears_SilkTouch_I:
+    name: Enchant Shears with Silk Touch
+    production_time: 1m
+    input:
+      emeralds:
         material: EMERALD
         amount: 4000
     enchant: SILK_TOUCH
