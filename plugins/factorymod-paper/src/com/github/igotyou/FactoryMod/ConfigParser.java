@@ -435,9 +435,18 @@ public class ConfigParser {
 	private IRecipe parseRecipe(ConfigurationSection config) {
 		IRecipe result;
 		String name = config.getString("name");
+		if (name == null) {
+			plugin.warning("No name specified for recipe at " + config.getCurrentPath() +". Skipping the recipe.");
+			return null;
+		}
 		int productionTime = (int) parseTime(config
 				.getString("production_time"));
-		switch (config.getString("type")) {
+		String type = config.getString("type");
+		if (type == null) {
+			plugin.warning("No name specified for recipe at " + config.getCurrentPath() +". Skipping the recipe.");
+			return null;
+		}
+		switch (type) {
 		case "PRODUCTION":
 			ItemMap input = parseItemMap(config
 					.getConfigurationSection("input"));
