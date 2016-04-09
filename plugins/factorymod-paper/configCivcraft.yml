@@ -6262,7 +6262,7 @@ recipes:
         material: PUMPKIN
         amount: 128
       pork:
-        material: RAW_PORK
+        material: PORK
         amount: 32
       aether:
         material: GOLD_NUGGET
@@ -6424,7 +6424,7 @@ recipes:
         lore:
          - Compacted Item
       pork:
-        material: RAW_PORK
+        material: PORK
         amount: 160
       salmon:
         material: RAW_FISH
