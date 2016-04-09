@@ -948,7 +948,7 @@ factories:
      - Enchant_Bow_Unbreaking_III
      
 ## XP Production
-  woodcauldron:
+  apprenticetransmuter:
     type: FCCUPGRADE
     name: Apprentice Transmuter
     recipes:
@@ -956,7 +956,7 @@ factories:
      - Cypress_Enrichment
      - Pine_Enrichment
      - Upgrade_to_Adept_Transmuter
-  ironcauldron:
+  adepttransmuter:
     type: FCCUPGRADE
     name: Adept Transmuter
     recipes:
@@ -964,13 +964,14 @@ factories:
      - Copper_Enrichment
      - Tin_Enrichment
      - Upgrade_to_Grandmaster_Transmuter
-  diamondcauldron:
+  grandmastertransmuter:
     type: FCCUPGRADE
     name: Grandmaster Transmuter
     recipes:
      - Amethyst_Enrichment
      - Topaz_Enrichment
      - Ruby_Enrichment
+     
 
 #Pipes     
   normalpipe:
@@ -6450,6 +6451,16 @@ recipes:
 ##Enchanting Recipes
 #Upgrades
 
+  Upgrade_to_Basic_Forge:
+    production_time: 1h
+    type: UPGRADE
+    name: Upgrade to Basic Forge
+    factory: Basic Forge
+    fuel_consumption_intervall: 1m
+    input:
+      emeralds:
+        material: EMERALD
+        amount: 100
   Upgrade_to_Ember_Forge:
     production_time: 1h
     type: UPGRADE
