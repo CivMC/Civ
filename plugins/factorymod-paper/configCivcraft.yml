@@ -6032,11 +6032,11 @@ factories:
     fuel_consumption_intervall: 1m
     input:
       ironblocks:
-        material: IRON_BLOCK
-        amount: 384
+        material: DIAMOND_BLOCK
+        amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 500
+        amount: 3000
         lore:
          - Aether
         enchants:
@@ -6044,7 +6044,7 @@ factories:
             enchant: DURABILITY
       xp:
         material: EMERALD_BLOCK
-        amount: 22
+        amount: 384
 
 # Enrichments
 
