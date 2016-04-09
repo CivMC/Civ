@@ -30,6 +30,7 @@ import com.github.igotyou.FactoryMod.recipes.AOERepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.CompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.DecompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.DeterministicEnchantingRecipe;
+import com.github.igotyou.FactoryMod.recipes.FactoryMaterialReturnRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
@@ -443,8 +444,12 @@ public class ConfigParser {
 			plugin.warning("No name specified for recipe at " + config.getCurrentPath() +". Skipping the recipe.");
 			return null;
 		}
-		int productionTime = (int) parseTime(config
-				.getString("production_time"));
+		String prodTime = config.getString("production_time");
+		if (prodTime == null) {
+			plugin.warning("No production time specied for recipe " + name + ". Skipping it");
+			return null;
+		}
+		int productionTime = (int) parseTime(prodTime);
 		String type = config.getString("type");
 		if (type == null) {
 			plugin.warning("No name specified for recipe at " + config.getCurrentPath() +". Skipping the recipe.");
@@ -549,6 +554,12 @@ public class ConfigParser {
 				plugin.warning("Sum of output chances for recipe " + name + " is not 1.0. Total sum is: " + totalChance);
 			}
 			result = new RandomOutputRecipe(name, productionTime, inpu, outputs);
+			break;
+		case "COSTRETURN":
+			ItemMap costIn = parseItemMap(config
+					.getConfigurationSection("input"));
+			double factor = config.getDouble("factor", 1.0);
+			result = new FactoryMaterialReturnRecipe(name, productionTime, costIn, factor);
 			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type")

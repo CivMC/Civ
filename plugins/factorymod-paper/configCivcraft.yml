@@ -627,6 +627,7 @@ factories:
     name: Emerald Extractor
     recipes:
      - Repair_Expert_Factory
+     - Return_Materials
   basicpylon:
     type: FCCUPGRADE
     name: Basic Pylon
@@ -9508,3 +9509,13 @@ recipes:
     enchant_item:
       armor:
         material: DIAMOND_SWORD
+        
+#Destroy factory and returns the setup cost multiplied by a given factor
+  Return_Materials:
+    type: COSTRETURN
+    production_time: 10s
+    name: Destroy Factory
+    factor: 1.0
+    input:
+      dirt:
+        material: DIRT
