@@ -621,6 +621,11 @@ factories:
     - Craft_Droppers
     - Craft_Redstone_Lamps
     - Repair_Advanced_Factory
+  xpfactory:
+    type: FCCUPGRADE
+    name: Emerald Extractor
+    recipes:
+     - Repair_Expert_Factory
   basicpylon:
     type: FCCUPGRADE
     name: Basic Pylon
@@ -654,7 +659,6 @@ factories:
     recipes:
      - Create_Pylon_Locator
      - Repair_Advanced_Factory
-     
 ## Enchanting
   basicforge:
     type: FCCUPGRADE
@@ -722,15 +726,15 @@ factories:
      - Enchant_Respiration_I
      - Enchant_Respiration_II
      - Upgrade_to_Ocean_Forge
-#     - Enchant_FrostWalker_I
+#    - Enchant_FrostWalker_I
   oceanforge:
-    type:FCCUPGRADE
+    type: FCCUPGRADE
     name: Ocean Forge
     recipes:
      - Enchant_DepthStrider_II
      - Enchant_AquaAffinity_I
      - Enchant_Respiration_III
-#     - Enchant_FrostWalker_II
+#    - Enchant_FrostWalker_II
 #Magic
   magicforge:
     type: FCCUPGRADE
@@ -5106,9 +5110,6 @@ factories:
         material: EMERALD_BLOCK
         amount: 75
     health_gained: 1000
-     
-    
-
 #Bastion recipes
   Brew_Soup_Concentrate:
     name: Brew Soup Concentrate
@@ -5980,7 +5981,46 @@ factories:
         enchants:
           dura:
             enchant: DURABILITY
-
+  Upgrade_to_Emerald_Extractor:
+    name: Upgrade to Emerald Extractor
+    production_time: 4h
+    fuel_consumption_intervall: 2m
+    type: UPGRADE
+    factory: Emerald Extractor
+    input:
+      potato:
+        material: BAKED_POTATO
+        amount: 512
+      carrots:
+        material: CARROT_ITEM
+        amount: 512
+      mushroom:
+        material: BROWN_MUSHROOM
+        amount: 256
+      yesdiet_more_mushroom:
+        material: RED_MUSHROOM
+        amount: 256
+      aether:
+        material: GOLD_NUGGET
+        amount: 256
+        lore:
+         - Aether
+        enchants:
+          dura:
+            enchant: DURABILITY
+      vines:
+        material: VINE
+        amount: 128
+      grass:
+        material: LONG_GRASS
+        amount: 256
+        durability: 1
+      pumpkin:
+        material: PUMPKIN
+        amount: 256
+      melon:
+        material: MELON_BLOCK
+        amount: 128
 ## XP Generation Recipes
 # Upgrades
 
@@ -8034,7 +8074,6 @@ factories:
           power3:
             enchant: ARROW_DAMAGE
             level: 3
-            Enchant_Power
   Enchant_Power_V:
     type: ENCHANT
     name: Enchant Bow with Power V
@@ -8052,8 +8091,6 @@ factories:
           power4:
             enchant: ARROW_DAMAGE
             level: 4
-            Enchant_Power
-            
 #Projectile Protection
 
   Enchant_Helmet_ProjectileProtection_I:
