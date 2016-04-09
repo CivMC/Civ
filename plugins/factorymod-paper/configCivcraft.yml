@@ -6245,7 +6245,7 @@ recipes:
         amount: 128
         durability: -1
       netherwart:
-        material: NETHER_WARTS
+        material: NETHER_STALK
         amount: 32
       aether:
         material: GOLD_NUGGET
@@ -6330,7 +6330,7 @@ recipes:
         amount: 640
         durability: 0
       netherwart:
-        material: NETHER_WARTS
+        material: NETHER_STALK
         amount: 160
       melons:
         material: MELON_BLOCK
@@ -6367,8 +6367,9 @@ recipes:
         material: CACTUS
         amount: 320
       cocoa:
-        material: COCOA
+        material: INK_SACK
         amount: 256
+        durability: 3
       beef:
         material: RAW_BEEF
         amount: 32
@@ -6443,7 +6444,7 @@ recipes:
         lore:
          - Compacted Item
       netherwart:
-        material: NETHER_WARTS
+        material: NETHER_STALK
         amount: 15
         lore:
          - Compacted Item
@@ -6504,8 +6505,9 @@ recipes:
         lore:
          - Compacted Item
       cocoa:
-        material: COCOA
+        material: INK_SACK
         amount: 20
+        durability: 3
         lore:
          - Compacted Item
       beef:
