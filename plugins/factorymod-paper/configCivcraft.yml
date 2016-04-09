@@ -797,10 +797,10 @@ factories:
      - Enchant_Leggings_BlastProtection_III
      - Enchant_Boots_BlastProtection_III
      - Enchant_Thorns_II
-     - Upgrade_to_Molten_Forge
-  moltenforge:
+     - Upgrade_to_Meteor_Forge
+  Meteorforge:
     type: FCCUPGRADE
-    name: Molten Forge
+    name: Meteor Forge
     recipes:
      - Enchant_Helmet_Protection_IV
      - Enchant_Chestplate_Protection_IV
@@ -8002,7 +8002,7 @@ recipes:
     input:
       emeralds:
         material: EMERALD
-        amount: 450
+        amount: 150
     enchant: THORNS
     level: 2
     enchant_item:
@@ -8012,6 +8012,23 @@ recipes:
           thorns1:
             enchant: THORNS
             level: 1
+  Enchant_Thorns_III:
+    type: ENCHANT
+    name: Enchant Chestplate with Thorns III
+    production_time: 1m
+    input:
+      emeralds:
+        material: EMERALD
+        amount: 450
+    enchant: THORNS
+    level: 3
+    enchant_item:
+      chestplate:
+        material: DIAMOND_CHESTPLATE
+        enchants:
+          thorns2:
+            enchant: THORNS
+            level: 2
 #Power
 
   Enchant_Power_I:
