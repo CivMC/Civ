@@ -5025,7 +5025,7 @@ factories:
         amount: 1
       xp:
         material: EMERALD_BLOCK
-        amount: 512
+        amount: 128
         
 #Pylon recipes
   Pylon_Basic:
@@ -5969,7 +5969,7 @@ factories:
         amount: 1
       xp:
         material: EMERALD_BLOCK
-        amount: 150
+        amount: 64
     output:
       basiccompass:
         material: COMPASS
