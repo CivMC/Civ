@@ -46,7 +46,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		ItemStack is = tool.getItemStackRepresentation().get(0);
 		ItemMeta im = is.getItemMeta();
 		im.removeEnchant(enchant);
-		is.addUnsafeEnchantment(enchant, level);
+		im.addEnchant(enchant, level, true);
 		is.setItemMeta(im);
 		ISUtils.setName(is, name);
 		return is;
@@ -56,7 +56,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		ItemStack is = tool.getItemStackRepresentation().get(0);
 		ItemMeta im = is.getItemMeta();
 		im.removeEnchant(enchant);
-		is.addUnsafeEnchantment(enchant, level);
+		im.addEnchant(enchant, level, true);
 		is.setItemMeta(im);
 		if (i != null) {
 			ISUtils.addLore(
