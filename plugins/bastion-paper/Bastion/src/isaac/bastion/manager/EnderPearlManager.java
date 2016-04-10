@@ -107,6 +107,15 @@ public class EnderPearlManager {
 		}
 	}
 	
+	private static EnderPearlManager staticInstance;
+	
+	public static Set<BastionBlock> staticSimpleCollide(Set<BastionBlock> possible, Location start, Location end, Player player) {
+		if (staticInstance == null) {
+			staticInstance = new EnderPearlManager();
+		}
+		return staticInstance.simpleCollide(possible, start, end, player);
+	}
+	
 	private Set<BastionBlock> simpleCollide(Set<BastionBlock> possible, Location start, Location end, Player player) {
 		Set<BastionBlock> couldCollide = new TreeSet<BastionBlock>();
 		for (BastionBlock bastion : possible) {

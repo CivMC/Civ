@@ -35,6 +35,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	private static int RADIUS; //radius blocked
 
 	private static double BLOCK_TO_PEARL_SCALE; //factor between reinforcement removed by placing blocks and from blocking pearls
+	private static double BLOCK_TO_ELYTRA_SCALE;
 	public static boolean ONLY_BLOCK_PEARLS_ON_MATURE; //only block pearls after maturity has been reached
 
 	private static boolean first = true;
@@ -128,6 +129,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		}
 
 		BLOCK_TO_PEARL_SCALE = Bastion.getConfigManager().getEnderPearlErosionScale();
+		BLOCK_TO_ELYTRA_SCALE = Bastion.getConfigManager().getElytraErosionScale();
 		ONLY_BLOCK_PEARLS_ON_MATURE = Bastion.getConfigManager().getEnderPearlRequireMaturity();
 
 		RADIUS = Bastion.getConfigManager().getBastionBlockEffectRadius();
@@ -245,6 +247,10 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 */
 	public double erosionFromPearl() {
 		return erosionFromBlock() * BLOCK_TO_PEARL_SCALE;
+	}
+	
+	public double erosionFromElytra() {
+		return erosionFromBlock() * BLOCK_TO_ELYTRA_SCALE;
 	}
 
 	/**

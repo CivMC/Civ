@@ -6,7 +6,7 @@ import isaac.bastion.commands.PlayersStates.Mode;
 import isaac.bastion.listeners.BastionListener;
 import isaac.bastion.listeners.CommandListener;
 import isaac.bastion.listeners.EnderPearlListener;
-import isaac.bastion.listeners.PlayerMoveListener;
+import isaac.bastion.listeners.ElytraListener;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.manager.ConfigManager;
 import isaac.bastion.storage.BastionBlockStorage;
@@ -45,7 +45,7 @@ public final class Bastion extends JavaPlugin {
 		if(config.getEnderPearlsBlocked()) { //currently everything to do with blocking pearls is part of EnderPearlListener. Needs changed
 			getServer().getPluginManager().registerEvents(new EnderPearlListener(), this);
 		}
-		getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
+		getServer().getPluginManager().registerEvents(new ElytraListener(), this);
 	}
 
 	//Sets up the command managers

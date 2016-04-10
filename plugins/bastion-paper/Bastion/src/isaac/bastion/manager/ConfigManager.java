@@ -36,6 +36,13 @@ public class ConfigManager {
 	private boolean includeBastionYLevel;
 	private boolean consumePearlOnBlock;
 	
+	// elytra
+	private boolean blockElytra;
+	private boolean destroyElytraOnBlock;
+	private boolean damageElytraOnBlock;
+	private double elytraErosionScale;
+	private boolean elytraBlockingRequiresMaturity;
+	
 	static String file_name = "config.yml";
 	
 	public ConfigManager() {
@@ -78,6 +85,12 @@ public class ConfigManager {
 		enderPearlErosionScale = loadDouble("BastionBlock.EnderPearls.scaleFac");
 		blockMidAir = loadBool("BastionBlock.EnderPearls.block_midair");
 		consumePearlOnBlock = loadBool("BastionBlock.EnderPearls.consumeOnBlock");
+		
+		blockElytra = loadBool("BastionBlock.Elytra.block");
+		destroyElytraOnBlock = loadBool("BastionBlock.Elytra.destroyOnBlock");
+		damageElytraOnBlock = loadBool("BastionBlock.Elytra.damageOnBlock");
+		elytraErosionScale = loadDouble("BastionBlock.Elytra.scaleFac");
+		elytraBlockingRequiresMaturity = loadBool("BastionBlock.Elytra.requireMaturity");
 	}
 	
 	public String getHost() {
@@ -159,6 +172,22 @@ public class ConfigManager {
 	}
 	public boolean getConsumePearlOnBlock() {
 		return consumePearlOnBlock;
+	}
+	
+	public boolean getElytraIsBlocked() {
+		return blockElytra;
+	}
+	public boolean getElytraIsDestroyOnBlock() {
+		return destroyElytraOnBlock;
+	}
+	public boolean getElytraIsDamagedOnBlock() {
+		return damageElytraOnBlock;
+	}
+	public double getElytraErosionScale() {
+		return elytraErosionScale;
+	}
+	public boolean getElytraBlockingRequiresMaturity() {
+		return elytraBlockingRequiresMaturity;
 	}
 	
 	private int loadInt(String field) {

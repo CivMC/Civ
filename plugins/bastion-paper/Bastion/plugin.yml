@@ -1,6 +1,8 @@
 name: ${project.name}
 version: ${project.version}
 main: isaac.bastion.Bastion
+author: spaceFountain
+authors: [Rourke750, ProgrammerDan, Maxopoly]
 depend: [Citadel, NameLayer]
 softdepend: [Humbug]
 commands:

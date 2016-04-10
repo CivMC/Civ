@@ -102,6 +102,28 @@ public class BastionBlockSet implements Set<BastionBlock>, Iterable<BastionBlock
 		return result;
 	}
 	
+	public Set<BastionBlock> getPossibleFlightBlocking(Location loc, double maxDistance) {
+		Set<QTBox> boxes = blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ(), true);
+		
+		double maxDistanceSquared = maxDistance * maxDistance;
+		double maxBoxDistanceSquared = maxDistanceSquared * 2.0;
+		
+		Set<BastionBlock> result = new TreeSet<BastionBlock>();
+		
+		for (QTBox box : boxes) {
+			if (box instanceof BastionBlock) {
+				BastionBlock bastion = (BastionBlock)box;
+				// Fixed for square field nearness, using diagonal distance as max -- (radius * sqrt(2)) ^ 2
+				if (((config.squareField() && bastion.getLocation().distanceSquared(loc) <= maxBoxDistanceSquared) ||   
+							(!config.squareField() && bastion.getLocation().distanceSquared(loc) <= maxDistanceSquared)) &&
+							(!config.getElytraBlockingRequiresMaturity() || bastion.isMature())) {
+					result.add(bastion);
+				}
+			}
+		}
+		return result;
+	}
+	
 	public BastionBlock getBastionBlock(Location loc) {
 		Set<? extends QTBox> possible = forLocation(loc);
 		for (QTBox box: possible) {

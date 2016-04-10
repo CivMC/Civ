@@ -8,16 +8,17 @@ mysql:
   savesPerDay: 64
 BastionBlock:
   material: SPONGE
-  #If squarefield is set to wrong, the field will be a circle
-  squarefield: true
+  #If squarefield is set to false, the field will be a circle
+  squarefield: false
   effectRadius: 10
-  includeYlevel: true
+  includeYlevel: false
   startScaleFactor: 100
   finalScaleFactor: 0.2
   warmUpTime: 86400000
   maxBreaksPerMinute: 30
   erosionRatePerDay: 0
   destroyOnRemove: true
+  # Set to -1 to erode all overlapping bastions
   blocksToErode: 1
   EnderPearls:
     preventEnderPearl: true 
@@ -25,3 +26,10 @@ BastionBlock:
     scaleFac: 1
     requireMaturity: true 
     consumeOnBlock: false  
+  Elytra:
+    block: true
+    destroyOnBlock: false
+    # is the Elytra damaged when blocked?
+    damageOnBlock: true
+    scaleFac: 0
+    requireMaturity: true
