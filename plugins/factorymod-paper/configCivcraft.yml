@@ -6258,7 +6258,7 @@ recipes:
     output:
       xp:
         material: EMERALD
-        amount: 20
+        amount: 40
   Cypress_Enrichment:
     name: Cypress Enrichment
     type: PRODUCTION
@@ -6286,7 +6286,7 @@ recipes:
     output:
       xp:
         material: EMERALD
-        amount: 20
+        amount: 40
   Pine_Enrichment:
     name: Pine Enrichment
     type: PRODUCTION
@@ -6314,7 +6314,7 @@ recipes:
     output:
       xp:
         material: EMERALD
-        amount: 20
+        amount: 40
 
   Lead_Enrichment:
     name: Lead Enrichment
@@ -6335,9 +6335,9 @@ recipes:
       melons:
         material: MELON_BLOCK
         amount: 128
-      chicken:
-        material: RAW_CHICKEN
-        amount: 32
+#      chicken:
+#        material: RAW_CHICKEN
+#        amount: 32
       aether:
         material: GOLD_NUGGET
         amount: 168
@@ -6349,7 +6349,7 @@ recipes:
     output:
       xp:
         material: EMERALD_BLOCK
-        amount: 19
+        amount: 38
   Copper_Enrichment:
     name: Copper Enrichment
     type: PRODUCTION
@@ -6370,9 +6370,9 @@ recipes:
         material: INK_SACK
         amount: 256
         durability: 3
-      beef:
-        material: RAW_BEEF
-        amount: 32
+#      beef:
+#        material: RAW_BEEF
+#        amount: 32
       aether:
         material: GOLD_NUGGET
         amount: 168
@@ -6384,7 +6384,7 @@ recipes:
     output:
       xp:
         material: EMERALD_BLOCK
-        amount: 19
+        amount: 38
   Tin_Enrichment:
     name: Tin Enrichment
     type: PRODUCTION
@@ -6404,9 +6404,9 @@ recipes:
       pumpkins:
         material: PUMPKIN
         amount: 128
-      pork:
-        material: PORK
-        amount: 32
+#      pork:
+#        material: PORK
+#        amount: 32
       aether:
         material: GOLD_NUGGET
         amount: 168
@@ -6418,7 +6418,7 @@ recipes:
     output:
       xp:
         material: EMERALD_BLOCK
-        amount: 19
+        amount: 38
 
   Amethyst_Enrichment:
     name: Amethyst Enrichment
@@ -6453,9 +6453,9 @@ recipes:
         amount: 10
         lore:
          - Compacted Item
-      chicken:
-        material: RAW_CHICKEN
-        amount: 160
+#      chicken:
+#        material: RAW_CHICKEN
+#        amount: 160
       inksacs:
         material: INK_SACK
         amount: 64
@@ -6475,7 +6475,7 @@ recipes:
     output:
       xp:
         material: EMERALD_BLOCK
-        amount: 140
+        amount: 280
   Topaz_Enrichment:
     name: Topaz Enrichment
     type: PRODUCTION
@@ -6510,9 +6510,9 @@ recipes:
         durability: 3
         lore:
          - Compacted Item
-      beef:
-        material: RAW_BEEF
-        amount: 160
+#      beef:
+#        material: RAW_BEEF
+#        amount: 160
       clownfish:
         material: RAW_FISH
         amount: 3
@@ -6533,7 +6533,7 @@ recipes:
     output:
       xp:
         material: EMERALD_BLOCK
-        amount: 140
+        amount: 280
   Ruby_Enrichment:
     name: Ruby Enrichment
     type: PRODUCTION
@@ -6567,9 +6567,9 @@ recipes:
         amount: 10
         lore:
          - Compacted Item
-      pork:
-        material: PORK
-        amount: 160
+#      pork:
+#        material: PORK
+#        amount: 160
       salmon:
         material: RAW_FISH
         amount: 19
@@ -6590,7 +6590,7 @@ recipes:
     output:
       xp:
         material: EMERALD_BLOCK
-        amount: 140
+        amount: 280
 ##Enchanting Recipes
 #Upgrades
 
