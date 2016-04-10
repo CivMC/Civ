@@ -44,16 +44,20 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 
 	public ItemStack getRecipeRepresentation() {
 		ItemStack is = tool.getItemStackRepresentation().get(0);
-		is.removeEnchantment(enchant);
-		is.addEnchantment(enchant, level);
+		ItemMeta im = is.getItemMeta();
+		im.removeEnchant(enchant);
+		is.addUnsafeEnchantment(enchant, level);
+		is.setItemMeta(im);
 		ISUtils.setName(is, name);
 		return is;
 	}
 
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
 		ItemStack is = tool.getItemStackRepresentation().get(0);
-		is.removeEnchantment(enchant);
-		is.addEnchantment(enchant, level);
+		ItemMeta im = is.getItemMeta();
+		im.removeEnchant(enchant);
+		is.addUnsafeEnchantment(enchant, level);
+		is.setItemMeta(im);
 		if (i != null) {
 			ISUtils.addLore(
 					is,
