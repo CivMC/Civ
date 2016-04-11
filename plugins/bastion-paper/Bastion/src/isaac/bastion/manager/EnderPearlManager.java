@@ -113,7 +113,31 @@ public class EnderPearlManager {
 		if (staticInstance == null) {
 			staticInstance = new EnderPearlManager();
 		}
-		return staticInstance.simpleCollide(possible, start, end, player);
+		return staticInstance.alternateSimpleCollide(possible, start, end, player);
+	}
+
+	private Set<BastionBlock> alternateSimpleCollide(Set<BastionBlock> possible, Location start, Location end, Player player) {
+		Set<BastionBlock> couldCollide = new TreeSet<BastionBlock>();
+		for (BastionBlock bastion : possible) {
+			Location loc = bastion.getLocation().clone();
+			loc.setY(0);
+			
+			if (bastion.canPlace(player)) { // not blocked, continue
+				continue;
+			}
+			
+			if (Bastion.getConfigManager().squareField()) {
+				if (!getCollisionPointsSquare(start, end, loc, BastionBlock.getRadius()).isEmpty() ) { // TODO: reuse is good, doing the same thing twice is bad
+					couldCollide.add(bastion);
+				}
+			} else {
+				if (!getCollisionPoints(start, end, loc, BastionBlock.getRadiusSquared()).isEmpty()) {
+					couldCollide.add(bastion);
+				}
+			}
+		}
+
+		return couldCollide;
 	}
 	
 	private Set<BastionBlock> simpleCollide(Set<BastionBlock> possible, Location start, Location end, Player player) {

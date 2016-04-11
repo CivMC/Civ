@@ -36,10 +36,15 @@ public class ElytraListener implements Listener {
 		Player p = event.getPlayer();
 		if(!p.isGliding()) return;
 		
+		//Bastion.getPlugin().getLogger().info("Gliding");
+		
 		PlayerInventory inv = p.getInventory();
 		if(inv.getChestplate().getType() != Material.ELYTRA) return;
 		
+		//Bastion.getPlugin().getLogger().info("Via elytra");
+		
 		if (manager.handleElytraMovement(p, event.getTo())) {
+			Bastion.getPlugin().getLogger().info("Blocked.");
 			event.setCancelled(true);
 		}
 	}
