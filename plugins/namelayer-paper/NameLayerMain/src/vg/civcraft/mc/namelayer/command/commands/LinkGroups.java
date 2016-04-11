@@ -65,9 +65,14 @@ public class LinkGroups extends PlayerCommandMiddle {
 			return true;
 		}		
 		
-		if (!gm.hasAccess(subname, uuid, PermissionType.getPermission("LINKING"))) {
+		if (!gm.hasAccess(subgroup.getName(), uuid, PermissionType.getPermission("LINKING"))) {
 			p.sendMessage(ChatColor.RED 
 					+ "You don't have permission to do that on the sub group.");
+			return true;
+		}
+		if (!gm.hasAccess(supergroup.getName(), uuid, PermissionType.getPermission("LINKING"))) {
+			p.sendMessage(ChatColor.RED 
+					+ "You don't have permission to do that on the super group.");
 			return true;
 		}
 		
