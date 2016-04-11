@@ -25,7 +25,6 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class RevokeInvite extends PlayerCommandMiddle{
 
-	private GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
 	public RevokeInvite(String name) {
 		super(name);
 		setIdentifier("nlri");
@@ -71,7 +70,6 @@ public class RevokeInvite extends PlayerCommandMiddle{
 		//get invitee PlayerType
 		PlayerType pType = group.getInvite(uuid);
 		
-		GroupPermission perm = gm.getPermissionforGroup(group);
 		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
 		if (t == null){
 			p.sendMessage(ChatColor.RED + "You are not on that group.");
@@ -80,16 +78,16 @@ public class RevokeInvite extends PlayerCommandMiddle{
 		boolean allowed = false;
 		switch (pType){ // depending on the type the executor wants to add the player to
 		case MEMBERS:
-			allowed = perm.isAccessible(t, PermissionType.MEMBERS);
+			allowed = gm.hasAccess(group.getName(), uuid, PermissionType.getPermission("MEMBERS"));
 			break;
 		case MODS:
-			allowed = perm.isAccessible(t, PermissionType.MODS);
+			allowed = gm.hasAccess(group.getName(), uuid, PermissionType.getPermission("MODS"));
 			break;
 		case ADMINS:
-			allowed = perm.isAccessible(t, PermissionType.ADMINS);
+			allowed = gm.hasAccess(group.getName(), uuid, PermissionType.getPermission("ADMINS"));
 			break;
 		case OWNER:
-			allowed = perm.isAccessible(t, PermissionType.OWNER);
+			allowed = gm.hasAccess(group.getName(), uuid, PermissionType.getPermission("OWNER"));
 			break;
 		default:
 			allowed = false;

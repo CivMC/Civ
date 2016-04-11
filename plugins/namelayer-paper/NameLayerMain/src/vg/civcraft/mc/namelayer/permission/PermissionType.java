@@ -1,54 +1,149 @@
 package vg.civcraft.mc.namelayer.permission;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
 
-import com.google.common.collect.Maps;
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
-/*
- * To add or remove perms add them to this list.
- * Then either modify or leave the default perms given to players
- * in the GroupManager class method initiateDefaultPerms()
- * 
- * Also remember that you need to modify the database to
- * add the new permission type to the owners so people can
- * actually modify the groups.
- */
-public enum PermissionType {
 
-	DOORS, // Handles access to doors
-	CHESTS, // Handles access to chests
-	BLOCKS, // Handles access to breaking or remove blocks
-	ADMINS, // Handles having access to adding or removing admins
-	MODS, // Handles having access to adding or removing mods
-	MEMBERS, // I hope you would know what this does
-	OWNER, // ...
-	PASSWORD, // yep you guessed it, gives access to adding or removing passwords
-	SUBGROUP, // Add subgroup
-	PERMS, // Have control to modify permissions
-	DELETE, // Delete the current group
-	JOIN_PASSWORD, // Give this permission to the PlayerType you want to give players when they join with a password
-	MERGE, // Gives the player permission to merge the group.
-	LIST_PERMS, // Allows the player to use the command to list the perms of a PlayerType
-	TRANSFER, // Allows the player to transfer the group
-	CROPS, // Allows access to crops, mainly used for citadel.
-	GROUPSTATS, //Allows access to nlgs command for group
-	LINKING; // Allows linking and unlinking of super groups and subgroups
+public class PermissionType {
 	
-	private final static Map<String, PermissionType> BY_NAME = Maps.newHashMap();
+	private static Map <String, PermissionType> permissionByName;
+	private static Map <Integer, PermissionType> permissionById;
+	private static int maximumExistingId;
 	
-	static {
-		for (PermissionType perm : values()) {
-			BY_NAME.put(perm.name(), perm);
+	public static void initialize() {
+		permissionByName = new HashMap<String, PermissionType>();
+		permissionById = new TreeMap<Integer, PermissionType>();
+		maximumExistingId = 0;
+		registerNameLayerPermissions();
+	}
+	
+	public static PermissionType getPermission(String name) {
+		return permissionByName.get(name);
+	}
+	
+	public static PermissionType getPermission(int id) {
+		return permissionById.get(id);
+	}
+	
+	public static void registerPermission(String name, List <PlayerType> defaultPermLevels) {
+		if (name == null ) {
+			Bukkit.getLogger().severe("Could not register permission, name was null");
+			return;
 		}
-	}
-		
-	public static PermissionType getPermissionType(String type){
-		return BY_NAME.get(type);
+		if (permissionByName.get(name) != null) {
+			Bukkit.getLogger().severe("Could not register permission " + name + ". It was already registered");
+			return;
+		}
+		Map <Integer,String> permMapping = NameLayerPlugin.getGroupManagerDao().getPermissionMapping();
+		int id = -1;
+		for(Entry <Integer,String> perm : permMapping.entrySet()) {
+			if (perm.getValue().equals(name)) {
+				id = perm.getKey();
+				break;
+			}
+		}
+		PermissionType p;
+		if (id == -1) {
+			//not in db yet
+			id = maximumExistingId + 1;
+			while(permMapping.get(id) != null) {
+				id++;
+			}
+			maximumExistingId = id;
+			p = new PermissionType(name, id, defaultPermLevels);
+			NameLayerPlugin.getGroupManagerDao().registerPermission(p);
+		}
+		else {
+			//already in db, so use existing id
+			p = new PermissionType(name, id, defaultPermLevels);
+		}
+		permissionByName.put(name, p);
+		permissionById.put(id, p);
 	}
 	
+	public static Collection<PermissionType> getAllPermissions() {
+		return permissionByName.values();
+	}
+	
+	private static void registerNameLayerPermissions() {
+		LinkedList <PlayerType> members = new LinkedList<GroupManager.PlayerType>();
+		LinkedList <PlayerType> modAndAbove = new LinkedList<GroupManager.PlayerType>();
+		LinkedList <PlayerType> adminAndAbove = new LinkedList<GroupManager.PlayerType>();
+		LinkedList <PlayerType> owner = new LinkedList<GroupManager.PlayerType>();
+		members.add(PlayerType.MEMBERS);
+		modAndAbove.add(PlayerType.MODS);
+		modAndAbove.add(PlayerType.ADMINS);
+		modAndAbove.add(PlayerType.OWNER);
+		adminAndAbove.add(PlayerType.ADMINS);
+		adminAndAbove.add(PlayerType.OWNER);
+		owner.add(PlayerType.OWNER);
+		//clone the list every time so changing the list of one perm later doesn't affect other perms
+		//also not saving them to the db, because that handled by the groupmanager dao itself, which isnt
+		//even initialized at this point
+		
+		//allows adding/removing members
+		registerPermission("MEMBERS", (LinkedList <PlayerType>)modAndAbove.clone());
+		//allows adding/removing mods
+		registerPermission("MODS", (LinkedList <PlayerType>)adminAndAbove.clone());
+		//allows adding/modifying a password for the group
+		registerPermission("PASSWORD", (LinkedList <PlayerType>)adminAndAbove.clone());
+		//allows to list the permissions for each permission group
+		registerPermission("LIST_PERMS", (LinkedList <PlayerType>)adminAndAbove.clone());
+		//allows to see general group stats
+		registerPermission("GROUP_STATS", (LinkedList <PlayerType>)adminAndAbove.clone());
+		//allows to add/remove admins
+		registerPermission("ADMINS", (LinkedList <PlayerType>)owner.clone());
+		//allows to add/remove owners
+		registerPermission("OWNER", (LinkedList <PlayerType>)owner.clone());
+		//allows to modify the permissions for different permissions groups
+		registerPermission("PERMS", (LinkedList <PlayerType>)owner.clone());
+		//allows deleting the group
+		registerPermission("DELETE", (LinkedList <PlayerType>)owner.clone());
+		//allows merging the group with another one
+		registerPermission("MERGE", (LinkedList <PlayerType>)owner.clone());
+		//allows transferring this group to a new primary owner
+		registerPermission("TRANSFER", (LinkedList <PlayerType>)owner.clone());
+		//allows linking this group to another
+		registerPermission("LINKING", (LinkedList <PlayerType>)owner.clone());
+		
+		//perm level given to members when they join with a password
+		registerPermission("JOIN_PASSWORD", members);
+	}
+	
+	private String name;
+	private List <PlayerType> defaultPermLevels;
+	private int id;
+	
+	private PermissionType(String name, int id, List <PlayerType> defaultPermLevels) {
+		this.name = name;
+		this.id = id;
+		this.defaultPermLevels = defaultPermLevels;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public List <PlayerType> getDefaultPermLevels() {
+		return defaultPermLevels;
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	/**
 	public static String getStringOfTypes() {
 		StringBuilder perms = new StringBuilder();
 		for (String perm: BY_NAME.keySet()) {
@@ -62,5 +157,5 @@ public enum PermissionType {
 		p.sendMessage(ChatColor.RED 
 				+ "That PermissionType does not exists.\n"
 				+ "The current types are: " + getStringOfTypes());
-	}
+	} **/
 }

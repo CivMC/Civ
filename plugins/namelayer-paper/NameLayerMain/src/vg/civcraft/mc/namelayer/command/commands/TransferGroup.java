@@ -52,8 +52,7 @@ public class TransferGroup extends PlayerCommandMiddle{
 			return true;
 		}
 		
-		GroupPermission gPerm = gm.getPermissionforGroup(g);
-		if (!gPerm.isAccessible(pType, PermissionType.TRANSFER) && 
+		if (!gm.hasAccess(g.getName(), uuid, PermissionType.getPermission("TRANSFER")) && 
 				!(p.isOp() || p.hasPermission("namelayer.admin"))){
 			p.sendMessage(ChatColor.RED + "You do not have permission for this group to transfer it.");
 			return true;
@@ -83,9 +82,9 @@ public class TransferGroup extends PlayerCommandMiddle{
 			return null;
 
 		if (args.length == 1)
-			return GroupTabCompleter.complete(args[0], PermissionType.TRANSFER, (Player) sender);
+			return GroupTabCompleter.complete(args[0], PermissionType.getPermission("TRANSFER"), (Player) sender);
 		else if (args.length == 0) {
-			return GroupTabCompleter.complete(null, PermissionType.TRANSFER, (Player)sender);
+			return GroupTabCompleter.complete(null, PermissionType.getPermission("TRANSFER"), (Player)sender);
 		}
 		return null;
 	}

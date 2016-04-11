@@ -51,7 +51,7 @@ public class JoinGroup extends PlayerCommandMiddle{
 		}
 		UUID uuid = NameAPI.getUUID(p.getName());
 		GroupPermission groupPerm = gm.getPermissionforGroup(g);
-		PlayerType pType = groupPerm.getFirstWithPerm(PermissionType.JOIN_PASSWORD);
+		PlayerType pType = groupPerm.getFirstWithPerm(PermissionType.getPermission("JOIN_PASSWORD"));
 		if (pType == null){
 			p.sendMessage(ChatColor.RED + "Someone derped. This group does not have the specified permission to let you join, sorry.");
 			return true;

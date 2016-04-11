@@ -7,7 +7,6 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.group.groups.PublicGroup;
 
 public class GroupPermission {
 
@@ -24,50 +23,25 @@ public class GroupPermission {
 		perms = db.getPermissions(group.getName());
 	}
 	/**
-	 * Checks if a certain PlayerType has one of the permissions wanted.
+	 * Checks if a certain PlayerType has the given permission. DONT USE THIS DIRECTLY. Use GroupManager.hasAccess() instead!
 	 * @param ptype- The PlayerType in question.
 	 * @param type- The PermissionType to check for.
 	 * @return
 	 */
-	public boolean isAccessible(PlayerType ptype, PermissionType... type){
-		if (type == null || type.length == 0)
-			return true; // If the player is even a member return true
-		if (group instanceof PublicGroup){
-			for (int x = 0; x < type.length; x++)
-			switch (type[x]){
-			case DOORS:
-			case CHESTS:
-				return true;
-			default:;
-			}
-		}
-		List<PermissionType> p = perms.get(ptype);
-		if (p == null){
-			return false;
-		} else if (p.isEmpty()){
+	public boolean hasPermission(PlayerType playerType, PermissionType perm){
+		if (playerType == null || perm == null) {
 			return false;
 		}
-		boolean hasPerm = false;
-		for (PermissionType t: type){
-			if (p.contains(t)){
-				hasPerm = true;
-				break;
-			}
+		List<PermissionType> per = perms.get(perm);
+		if (per == null || per.isEmpty()){
+			return false;
 		}
-		return hasPerm;
+		if (per.contains(perm)){
+			return true;
+		}
+		return false;
 	}
-	/**
-	 * This is like isAccessible but player must have all the PermissionTypes for this method to return true.
-	 * @param ptype- The PlayerType in question.
-	 * @param type- The PermissionType to check for.
-	 * @return
-	 */
-	public boolean hasAllPermissions(PlayerType ptype, PermissionType... type){
-		for (PermissionType t: type)
-			if (!perms.get(ptype).contains(t))
-				return false;
-		return true;
-	}
+
 	/**
 	 * Lists the permissions types for a given PlayerType for the specific GroupPermission.
 	 * @param type- The PlayerType to check for.
@@ -77,7 +51,7 @@ public class GroupPermission {
 		String x = "The permission types are: ";
 		for (PermissionType pType: perms.get(type)) {
 			if (pType != null) {
-				x += pType.name() + " ";
+				x += pType.getName() + " ";
 			}
 		}
 		return x;
@@ -93,10 +67,7 @@ public class GroupPermission {
 			return false;
 		List<PermissionType> types = perms.get(pType);
 		types.add(permType);
-		String info = "";
-		for (PermissionType t: types)
-			info += t.name() + " ";
-		db.updatePermissions(group.getName(), pType, info);
+		db.updatePermissions(group.getName(), pType, types);
 		return true;
 	}
 	/**
@@ -110,10 +81,7 @@ public class GroupPermission {
 			return false;
 		List<PermissionType> types = perms.get(pType);
 		types.remove(permType);
-		String info = "";
-		for (PermissionType t: types)
-			info += t.name() + " ";
-		db.updatePermissions(group.getName(), pType, info);
+		db.updatePermissions(group.getName(), pType, types);
 		return true;
 	}
 	/**

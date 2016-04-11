@@ -50,7 +50,7 @@ public class ListCurrentMembers extends PlayerCommandMiddle {
 				return true;
 			}
 	
-			if (!gm.hasAccess(groupname, uuid, PermissionType.GROUPSTATS)) {
+			if (!gm.hasAccess(groupname, uuid, PermissionType.getPermission("GROUPSTATS"))) {
 				p.sendMessage(ChatColor.RED 
 						+ "You don't have permission to run that command.");
 				return true;

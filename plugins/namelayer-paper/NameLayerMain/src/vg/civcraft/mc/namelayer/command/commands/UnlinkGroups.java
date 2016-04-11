@@ -60,7 +60,7 @@ public class UnlinkGroups extends PlayerCommandMiddle {
 			return true;
 		}
 		
-		if (!gm.hasAccess(supername, uuid, PermissionType.LINKING)) {
+		if (!gm.hasAccess(supername, uuid, PermissionType.getPermission("LINKING"))) {
 			p.sendMessage(ChatColor.RED 
 					+ "You don't have permission to do that on the super group.");
 			return true;
@@ -93,10 +93,10 @@ public class UnlinkGroups extends PlayerCommandMiddle {
 		
 		if (args.length > 0) {
 			return GroupTabCompleter.complete(args[0], 
-					PermissionType.SUBGROUP, (Player)sender);
+					PermissionType.getPermission("SUBGROUP"), (Player)sender);
 		} else {
 			return GroupTabCompleter.complete(null, 
-					PermissionType.SUBGROUP, (Player)sender);
+					PermissionType.getPermission("SUBGROUP"), (Player)sender);
 		}
 	}
 }

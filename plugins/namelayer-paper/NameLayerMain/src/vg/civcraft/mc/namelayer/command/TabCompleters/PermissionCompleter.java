@@ -1,6 +1,5 @@
 package vg.civcraft.mc.namelayer.command.TabCompleters;
 
-import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import java.util.LinkedList;
@@ -15,12 +14,11 @@ public class PermissionCompleter {
 
 
     public static List<String> complete(String lastArg) {
-        PermissionType[] types = PermissionType.values();
         List<String> type_strings = new LinkedList<>();
         List<String> result = new LinkedList<>();
 
-        for (PermissionType type: types){
-            type_strings.add(type.toString());
+        for (PermissionType type: PermissionType.getAllPermissions()){
+            type_strings.add(type.getName());
         }
 
         if (lastArg != null) {

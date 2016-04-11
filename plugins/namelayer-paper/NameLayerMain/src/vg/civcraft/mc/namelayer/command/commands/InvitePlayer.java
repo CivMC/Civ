@@ -74,9 +74,12 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			}
 			return true;
 		}
+		if (pType == PlayerType.NOT_BLACKLISTED) {
+			p.sendMessage(ChatColor.RED + "I think we both know that this shouldnt be possible");
+			return true;
+		}
 		if (!isAdmin) {
 			// Perform access check
-			final GroupPermission perm = gm.getPermissionforGroup(group);
 			final UUID executor = p.getUniqueId();
 			final PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
 			if (t == null) {
@@ -86,16 +89,16 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			boolean allowed = false;
 			switch (pType) { // depending on the type the executor wants to add the player to
 				case MEMBERS:
-					allowed = perm.isAccessible(t, PermissionType.MEMBERS);
+					allowed = gm.hasAccess(group.getName(), executor, PermissionType.getPermission("MEMBERS"));
 					break;
 				case MODS:
-					allowed = perm.isAccessible(t, PermissionType.MODS);
+					allowed = gm.hasAccess(group.getName(), executor, PermissionType.getPermission("MODS"));
 					break;
 				case ADMINS:
-					allowed = perm.isAccessible(t, PermissionType.ADMINS);
+					allowed = gm.hasAccess(group.getName(), executor, PermissionType.getPermission("ADMINS"));
 					break;
 				case OWNER:
-					allowed = perm.isAccessible(t, PermissionType.OWNER);
+					allowed = gm.hasAccess(group.getName(), executor, PermissionType.getPermission("OWNER"));
 					break;
 				default:
 					allowed = false;

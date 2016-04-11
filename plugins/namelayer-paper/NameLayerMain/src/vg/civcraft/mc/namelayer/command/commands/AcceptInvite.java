@@ -14,7 +14,6 @@ import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.InviteTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 
 public class AcceptInvite extends PlayerCommandMiddle{

@@ -67,6 +67,13 @@ commands:
     aliases: [nlgetdefaultgroup, nlgetdefault, getdefaultgroup]
    nlun:
     aliases: [updatename]
+   nlsbl:
+    aliases: [showblacklist, listblacklist]
+   nlbl:
+    aliases: [blacklist, addblacklist]
+   nlubl:
+    aliases: [removeblacklist, unblacklist]    
+       
 permissions:
    namelayer.admin:
       default: op

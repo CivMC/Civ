@@ -83,8 +83,8 @@ public class DeleteGroup extends PlayerCommandMiddle{
 			p.sendMessage(ChatColor.RED + "Group is disiplined.");
 			return true;
 		}
-		GroupPermission gPerm = gm.getPermissionforGroup(g);
-		if (!gPerm.isAccessible(pType, PermissionType.DELETE) && !(p.isOp() || p.hasPermission("namelayer.admin"))){
+		boolean hasPerm = NameAPI.getGroupManager().hasAccess(g.getName(), uuid, PermissionType.getPermission("DELETE"));
+		if (!hasPerm && !(p.isOp() || p.hasPermission("namelayer.admin"))){
 			p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
 			return true;
 		}
@@ -104,9 +104,9 @@ public class DeleteGroup extends PlayerCommandMiddle{
 		}
 
 		if (args.length > 0)
-			return GroupTabCompleter.complete(args[args.length - 1], PermissionType.DELETE, (Player) sender);
+			return GroupTabCompleter.complete(args[args.length - 1], PermissionType.getPermission("DELETE"), (Player) sender);
 		else {
-			return GroupTabCompleter.complete(null, PermissionType.DELETE, (Player) sender);
+			return GroupTabCompleter.complete(null, PermissionType.getPermission("DELETE"), (Player) sender);
 		}
 	}
 }
