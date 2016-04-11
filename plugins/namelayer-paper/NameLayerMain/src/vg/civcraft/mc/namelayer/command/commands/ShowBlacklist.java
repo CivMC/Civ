@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.mercury.MercuryAPI;
+import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
@@ -54,7 +55,7 @@ public class ShowBlacklist extends PlayerCommandMiddle {
 		StringBuilder sb = new StringBuilder();
 		sb.append(ChatColor.GOLD + "Blacklisted players for group " + g.getName() + " are: ");
 		for(UUID id : ids) {
-			sb.append(id.toString());
+			sb.append(NameAPI.getCurrentName(id));
 			sb.append(", ");
 		}
 		String reply = sb.toString();

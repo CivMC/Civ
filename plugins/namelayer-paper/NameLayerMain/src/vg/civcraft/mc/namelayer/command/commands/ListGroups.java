@@ -28,7 +28,7 @@ public class ListGroups extends PlayerCommandMiddle {
 		UUID uuid = null;
 		boolean autopages = false;
 		
-		if ((sender.isOp() && sender.hasPermission("namelayer.admin"))) {
+		if ((sender.isOp() || sender.hasPermission("namelayer.admin"))) {
 			if (args.length == 0) {
 				uuid = NameAPI.getUUID(sender.getName());
 			} else if (args.length == 1) {
@@ -51,13 +51,17 @@ public class ListGroups extends PlayerCommandMiddle {
 		if (groups.size() % 10 > 0) {
 			pages++;
 		}
+		if (pages == 0) {
+			pages = 1;
+		}
+		int actualPages = pages;
 		
-		int target = 0;
+		int target = 1;
 		if (args.length == 1) {
 			try {
 				target = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e) {
-				p.sendMessage(ChatColor.RED + args[0] + " is not a number");
+				sender.sendMessage(ChatColor.RED + args[0] + " is not a number");
 				return false;
 			}
 		}
@@ -74,12 +78,12 @@ public class ListGroups extends PlayerCommandMiddle {
 		sb.append(ChatColor.GREEN);
 		for (int page = target; page <= pages; page++) {
 			sb.append("Page ");
-			sb.append(page + 1);
+			sb.append(page);
 			sb.append(" of ");
-			sb.append(pages);
+			sb.append(actualPages);
 			sb.append(".\n");
 			
-			int first = page * 10;
+			int first = (page - 1) * 10;
 			for (int x = first; x < first + 10 && x < groups.size(); x++){
 				Group g = GroupManager.getGroup(groups.get(x));
 				sb.append(String.format("%s : (%s)\n", 

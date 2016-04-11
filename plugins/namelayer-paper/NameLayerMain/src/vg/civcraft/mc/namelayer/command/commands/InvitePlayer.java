@@ -147,14 +147,12 @@ public class InvitePlayer extends PlayerCommandMiddle{
 				if(inviter != null){
 					String inviterName = NameAPI.getCurrentName(inviter);
 					msg = "You have been invited to the group " + group.getName()
-							+ " by " + inviterName + ".\n" + "Use the command /nlag <group> to accept.\n"
-							+ "If you wish to toggle invites so they always are accepted please run /nltaai";
+							+ " by " + inviterName + ".\n";
 				} else {
-					msg = "You have been invited to the group " + group.getName()+ ".\n" 
-					+ "Use the command /nlag <group> to accept.\n"
-					+ "If you wish to toggle invites so they always are accepted please run /nltaai";
+					msg = "You have been invited to the group " + group.getName()+ ".\n";
 				}
-				TextComponent message = new TextComponent(msg + "Click this message to accept");
+				TextComponent message = new TextComponent(msg + "Click this message to accept. If you wish to toggle invites "
+						+ "so they always are accepted please run /nltaai");
 				message.setColor(net.md_5.bungee.api.ChatColor.GREEN);
 				message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/nlag " + group.getName()));
 				message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("  ---  Click to accept").create()));

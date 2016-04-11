@@ -47,7 +47,8 @@ public class PermissionType {
 		}
 		Map <Integer,String> permMapping = NameLayerPlugin.getGroupManagerDao().getPermissionMapping();
 		int id = -1;
-		for(Entry <Integer,String> perm : permMapping.entrySet()) {
+		Map <Integer,String> dbRegisteredPerms = NameLayerPlugin.getGroupManagerDao().getPermissionMapping();
+		for(Entry <Integer,String> perm : dbRegisteredPerms.entrySet()) {
 			if (perm.getValue().equals(name)) {
 				id = perm.getKey();
 				break;
@@ -57,12 +58,13 @@ public class PermissionType {
 		if (id == -1) {
 			//not in db yet
 			id = maximumExistingId + 1;
-			while(permMapping.get(id) != null) {
+			while(dbRegisteredPerms.get(id) != null) {
 				id++;
 			}
 			maximumExistingId = id;
 			p = new PermissionType(name, id, defaultPermLevels);
 			NameLayerPlugin.getGroupManagerDao().registerPermission(p);
+			NameLayerPlugin.getGroupManagerDao().addNewDefaultPermission(defaultPermLevels, p);
 		}
 		else {
 			//already in db, so use existing id
@@ -94,6 +96,8 @@ public class PermissionType {
 		
 		//allows adding/removing members
 		registerPermission("MEMBERS", (LinkedList <PlayerType>)modAndAbove.clone());
+		//allows blacklisting/unblacklisting players and viewing the blacklist
+		registerPermission("BLACKLIST", (LinkedList <PlayerType>)modAndAbove.clone());
 		//allows adding/removing mods
 		registerPermission("MODS", (LinkedList <PlayerType>)adminAndAbove.clone());
 		//allows adding/modifying a password for the group
@@ -101,7 +105,7 @@ public class PermissionType {
 		//allows to list the permissions for each permission group
 		registerPermission("LIST_PERMS", (LinkedList <PlayerType>)adminAndAbove.clone());
 		//allows to see general group stats
-		registerPermission("GROUP_STATS", (LinkedList <PlayerType>)adminAndAbove.clone());
+		registerPermission("GROUPSTATS", (LinkedList <PlayerType>)adminAndAbove.clone());
 		//allows to add/remove admins
 		registerPermission("ADMINS", (LinkedList <PlayerType>)owner.clone());
 		//allows to add/remove owners
@@ -116,6 +120,7 @@ public class PermissionType {
 		registerPermission("TRANSFER", (LinkedList <PlayerType>)owner.clone());
 		//allows linking this group to another
 		registerPermission("LINKING", (LinkedList <PlayerType>)owner.clone());
+		
 		
 		//perm level given to members when they join with a password
 		registerPermission("JOIN_PASSWORD", members);

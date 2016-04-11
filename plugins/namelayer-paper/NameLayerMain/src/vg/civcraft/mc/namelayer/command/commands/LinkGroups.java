@@ -46,6 +46,11 @@ public class LinkGroups extends PlayerCommandMiddle {
 		    return true; 
 		}
 		
+		if(subgroup.getName().equalsIgnoreCase(supergroup.getName())) {
+			p.sendMessage(ChatColor.RED + "Not today");
+			return true;
+		}
+		
 		// check if groups are accessible
 		
 		UUID uuid = NameAPI.getUUID(p.getName());

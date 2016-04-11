@@ -1,5 +1,6 @@
 package vg.civcraft.mc.namelayer.permission;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,12 @@ public class GroupPermission {
 	
 	private void loadPermsforGroup(){
 		perms = db.getPermissions(group.getName());
+		//to save ourselves from trouble later, we ensure that every perm type has at least an empty list
+		for(PlayerType pType : PlayerType.values()) {
+			if (perms.get(pType) == null) {
+				perms.put(pType, new LinkedList<PermissionType>());
+			}
+		}
 	}
 	/**
 	 * Checks if a certain PlayerType has the given permission. DONT USE THIS DIRECTLY. Use GroupManager.hasAccess() instead!
@@ -32,7 +39,7 @@ public class GroupPermission {
 		if (playerType == null || perm == null) {
 			return false;
 		}
-		List<PermissionType> per = perms.get(perm);
+		List<PermissionType> per = perms.get(playerType);
 		if (per == null || per.isEmpty()){
 			return false;
 		}

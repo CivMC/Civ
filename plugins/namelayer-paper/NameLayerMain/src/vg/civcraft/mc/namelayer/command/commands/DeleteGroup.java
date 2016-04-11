@@ -47,6 +47,11 @@ public class DeleteGroup extends PlayerCommandMiddle{
 				//user is in the hashmap
 				String[] entry = confirmDeleteGroup.get(uuid);
 				Group gD = gm.getGroup(entry[0]);
+				//player could have lost delete permission in the mean time
+				if (!NameAPI.getGroupManager().hasAccess(gD.getName(), uuid, PermissionType.getPermission("DELETE"))){
+					p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
+					return true;
+				}
 				Date now = new Date(System.currentTimeMillis() - 15000);
 				//if it has been less than 15 seconds
 				if(now.getTime() < Long.parseLong(entry[1]))
@@ -74,6 +79,10 @@ public class DeleteGroup extends PlayerCommandMiddle{
 		if (groupIsNull(sender, x, g)) {
 			return true;
 		}
+		if (!NameAPI.getGroupManager().hasAccess(g.getName(), uuid, PermissionType.getPermission("DELETE"))){
+			p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
+			return true;
+		}
 		PlayerType pType = g.getPlayerType(uuid);
 		if (pType == null && !p.hasPermission("namelayer.admin")){
 			p.sendMessage(ChatColor.RED + "You are not on that group.");
@@ -81,11 +90,6 @@ public class DeleteGroup extends PlayerCommandMiddle{
 		}
 		if (g.isDisciplined() && !p.hasPermission("namelayer.admin")){
 			p.sendMessage(ChatColor.RED + "Group is disiplined.");
-			return true;
-		}
-		boolean hasPerm = NameAPI.getGroupManager().hasAccess(g.getName(), uuid, PermissionType.getPermission("DELETE"));
-		if (!hasPerm && !(p.isOp() || p.hasPermission("namelayer.admin"))){
-			p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
 			return true;
 		}
 		//set that user can confirm group in 15 seconds

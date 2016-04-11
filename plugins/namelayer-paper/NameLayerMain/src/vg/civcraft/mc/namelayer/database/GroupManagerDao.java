@@ -520,9 +520,9 @@ public class GroupManagerDao {
 				+ "where pg.group_id = fi.group_id");
 		removePermission = db.prepareStatement("delete from permissionByGroup where group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and perm_id=?;");
 		registerPermission = db.prepareStatement("insert into permissionIdMapping(perm_id,name) values(?,?);"); 
-		getPermissionMapping = db.prepareStatement("select * from permissionIdMapping WHERE group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and role=?;");
+		getPermissionMapping = db.prepareStatement("select * from permissionIdMapping;");
 		
-		addBlacklistMember = db.prepareStatement("insert into blacklist(member_name, group_id) ?,select group_id from faction_id where group_name = ?;");
+		addBlacklistMember = db.prepareStatement("insert into blacklist(group_id, member_name) select group_id,? from faction_id where group_name=?;");
 		removeBlackListMember = db.prepareStatement("delete from blacklist WHERE group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and member_name=?;");
 		getBlackListMembers = db.prepareStatement("select b.member_name from blacklist b inner join faction_id fi on fi.group_name=? where b.group_id=fi.group_id;");
 		

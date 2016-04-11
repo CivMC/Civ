@@ -306,6 +306,10 @@ public class GroupManager{
 	}
 		
 	public boolean hasAccess(String groupname, UUID player, PermissionType perm) {
+		Player p = Bukkit.getPlayer(player);
+		if (p != null && (p.isOp() || p.hasPermission("namelayer.admin"))) {
+			return true;
+		}
 		if (groupname == null || player == null || perm == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "hasAccess failed, caller passed in null", new Exception());
 			return false;
