@@ -6835,7 +6835,7 @@ recipes:
   Enchant_Helmet_FireP_I:
     type: ENCHANT
     name: Enchant Helmet with Fire Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -6848,7 +6848,7 @@ recipes:
   Enchant_Chestplate_FireP_I:
     type: ENCHANT
     name: Enchant Chestplate with Fire Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -6861,7 +6861,7 @@ recipes:
   Enchant_Leggings_FireP_I:
     type: ENCHANT
     name: Enchant Leggings with Fire Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -6874,7 +6874,7 @@ recipes:
   Enchant_Boots_FireP_I:
     type: ENCHANT
     name: Enchant Boots with Fire Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -6955,7 +6955,7 @@ recipes:
   Enchant_Helmet_FireP_III:
     type: ENCHANT
     name: Enchant Helmet with Fire Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -6972,7 +6972,7 @@ recipes:
   Enchant_Chestplate_FireP_III:
     type: ENCHANT
     name: Enchant Chestplate with Fire Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -6989,7 +6989,7 @@ recipes:
   Enchant_Leggings_FireP_III:
     type: ENCHANT
     name: Enchant Leggings with Fire Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7006,7 +7006,7 @@ recipes:
   Enchant_Boots_FireP_III:
     type: ENCHANT
     name: Enchant Boots with Fire Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7023,7 +7023,7 @@ recipes:
   Enchant_Helmet_FireP_IV:
     type: ENCHANT
     name: Enchant Helmet with Fire Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7040,7 +7040,7 @@ recipes:
   Enchant_Chestplate_FireP_IV:
     type: ENCHANT
     name: Enchant Chestplate with Fire Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7057,7 +7057,7 @@ recipes:
   Enchant_Leggings_FireP_IV:
     type: ENCHANT
     name: Enchant Leggings with Fire Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7074,7 +7074,7 @@ recipes:
   Enchant_Boots_FireP_IV:
     type: ENCHANT
     name: Enchant Boots with Fire Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7091,7 +7091,7 @@ recipes:
   Enchant_Helmet_FireP_V:
     type: ENCHANT
     name: Enchant Helmet with Fire Protection V
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7108,7 +7108,7 @@ recipes:
   Enchant_Chestplate_FireP_V:
     type: ENCHANT
     name: Enchant Chestplate with Fire Protection V
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7125,7 +7125,7 @@ recipes:
   Enchant_Leggings_FireP_V:
     type: ENCHANT
     name: Enchant Leggings with Fire Protection V
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7142,7 +7142,7 @@ recipes:
   Enchant_Boots_FireP_V:
     type: ENCHANT
     name: Enchant Boots with Fire Protection V
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7159,7 +7159,7 @@ recipes:
   Enchant_Helmet_FireP_VI:
     type: ENCHANT
     name: Enchant Helmet with Fire Protection VI
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7176,7 +7176,7 @@ recipes:
   Enchant_Chestplate_FireP_VI:
     type: ENCHANT
     name: Enchant Chestplate with Fire Protection VI
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7193,7 +7193,7 @@ recipes:
   Enchant_Leggings_FireP_VI:
     type: ENCHANT
     name: Enchant Leggings with Fire Protection VI
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7210,7 +7210,7 @@ recipes:
   Enchant_Boots_FireP_VI:
     type: ENCHANT
     name: Enchant Boots with Fire Protection VI
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7229,7 +7229,7 @@ recipes:
   Enchant_Flame_I:
     type: ENCHANT
     name: Enchant Bow with Flame I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7244,7 +7244,7 @@ recipes:
   Enchant_FireAspect_I:
     type: ENCHANT
     name: Enchant Sword with Fire Aspect I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7257,7 +7257,7 @@ recipes:
   Enchant_FireAspect_II:
     type: ENCHANT
     name: Enchant Sword with Fire Aspect II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7276,7 +7276,7 @@ recipes:
   Enchant_DepthStrider_I:
     type: ENCHANT
     name: Enchant Boots with Depth Strider I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7289,7 +7289,7 @@ recipes:
   Enchant_DepthStrider_II:
     type: ENCHANT
     name: Enchant Boots with Depth Strider II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7306,7 +7306,7 @@ recipes:
   Enchant_DepthStrider_III:
     type: ENCHANT
     name: Enchant Boots with Depth Strider III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7325,7 +7325,7 @@ recipes:
   Enchant_Respiration_I:
     type: ENCHANT
     name: Enchant Helmet with Respiration I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7338,7 +7338,7 @@ recipes:
   Enchant_Respiration_II:
     type: ENCHANT
     name: Enchant Helmet with Respiration II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7355,7 +7355,7 @@ recipes:
   Enchant_Respiration_III:
     type: ENCHANT
     name: Enchant Helmet with Respiration III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7377,7 +7377,7 @@ recipes:
   Enchant_AquaAffinity_I:
     type: ENCHANT
     name: Enchant Helmet with Aqua Affinity
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7392,7 +7392,7 @@ recipes:
   Enchant_FeatherFalling_I:
     type: ENCHANT
     name: Enchant Boots with FeatherFalling I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7405,7 +7405,7 @@ recipes:
   Enchant_FeatherFalling_II:
     type: ENCHANT
     name: Enchant Boots with FeatherFalling II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7422,7 +7422,7 @@ recipes:
   Enchant_FeatherFalling_III:
     type: ENCHANT
     name: Enchant Boots with FeatherFalling III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7439,7 +7439,7 @@ recipes:
   Enchant_FeatherFalling_IV:
     type: ENCHANT
     name: Enchant Boots with FeatherFalling IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7458,7 +7458,7 @@ recipes:
   Enchant_BOA_I:
     type: ENCHANT
     name: Enchant Sword with Bane of Arthropods I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7471,7 +7471,7 @@ recipes:
   Enchant_BOA_II:
     type: ENCHANT
     name: Enchant Sword with Bane of Arthropods II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7488,7 +7488,7 @@ recipes:
   Enchant_BOA_III:
     type: ENCHANT
     name: Enchant Sword with Bane of Arthropods III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7505,7 +7505,7 @@ recipes:
   Enchant_BOA_IV:
     type: ENCHANT
     name: Enchant Sword with Bane of Arthropods IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7522,7 +7522,7 @@ recipes:
   Enchant_BOA_V:
     type: ENCHANT
     name: Enchant Sword with Bane of Arthropods V
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7541,7 +7541,7 @@ recipes:
   Enchant_Infinity_I:
     name: Enchant Bow with Infinity
     type: ENCHANT
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7556,7 +7556,7 @@ recipes:
   Enchant_Pickaxe_SilkTouch_I:
     type: ENCHANT
     name: Enchant Pickaxe with Silk Touch
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7569,7 +7569,7 @@ recipes:
   Enchant_Axe_SilkTouch_I:
     type: ENCHANT
     name: Enchant Axe with Silk Touch
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7582,7 +7582,7 @@ recipes:
   Enchant_Shovel_SilkTouch_I:
     name: Enchant Shovel with Silk Touch
     type: ENCHANT
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7597,7 +7597,7 @@ recipes:
   Enchant_Helmet_Protection_I:
     type: ENCHANT
     name: Enchant Helmet with Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7610,7 +7610,7 @@ recipes:
   Enchant_Chestplate_Protection_I:
     type: ENCHANT
     name: Enchant Chestplate with Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7623,7 +7623,7 @@ recipes:
   Enchant_Leggings_Protection_I:
     type: ENCHANT
     name: Enchant Leggings with Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7636,7 +7636,7 @@ recipes:
   Enchant_Boots_Protection_I:
     type: ENCHANT
     name: Enchant Boots with Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7717,7 +7717,7 @@ recipes:
   Enchant_Helmet_Protection_III:
     type: ENCHANT
     name: Enchant Helmet with Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7734,7 +7734,7 @@ recipes:
   Enchant_Chestplate_Protection_III:
     type: ENCHANT
     name: Enchant Chestplate with Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7751,7 +7751,7 @@ recipes:
   Enchant_Leggings_Protection_III:
     type: ENCHANT
     name: Enchant Leggings with Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7768,7 +7768,7 @@ recipes:
   Enchant_Boots_Protection_III:
     type: ENCHANT
     name: Enchant Boots with Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7785,7 +7785,7 @@ recipes:
   Enchant_Helmet_Protection_IV:
     type: ENCHANT
     name: Enchant Helmet with Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7802,7 +7802,7 @@ recipes:
   Enchant_Chestplate_Protection_IV:
     type: ENCHANT
     name: Enchant Chestplate with Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7819,7 +7819,7 @@ recipes:
   Enchant_Leggings_Protection_IV:
     type: ENCHANT
     name: Enchant Leggings with Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7836,7 +7836,7 @@ recipes:
   Enchant_Boots_Protection_IV:
     type: ENCHANT
     name: Enchant Boots with Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7855,7 +7855,7 @@ recipes:
   Enchant_Helmet_BlastProtection_I:
     type: ENCHANT
     name: Enchant Helmet with Blast Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7868,7 +7868,7 @@ recipes:
   Enchant_Chestplate_BlastProtection_I:
     type: ENCHANT
     name: Enchant Chestplate with Blast Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7881,7 +7881,7 @@ recipes:
   Enchant_Leggings_BlastProtection_I:
     type: ENCHANT
     name: Enchant Leggings with Blast Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7894,7 +7894,7 @@ recipes:
   Enchant_Boots_BlastProtection_I:
     type: ENCHANT
     name: Enchant Boots with Blast Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7975,7 +7975,7 @@ recipes:
   Enchant_Helmet_BlastProtection_III:
     type: ENCHANT
     name: Enchant Helmet with Blast Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -7992,7 +7992,7 @@ recipes:
   Enchant_Chestplate_BlastProtection_III:
     type: ENCHANT
     name: Enchant Chestplate with Blast Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8009,7 +8009,7 @@ recipes:
   Enchant_Leggings_BlastProtection_III:
     type: ENCHANT
     name: Enchant Leggings with Blast Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8026,7 +8026,7 @@ recipes:
   Enchant_Boots_BlastProtection_III:
     type: ENCHANT
     name: Enchant Boots with Blast Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8043,7 +8043,7 @@ recipes:
   Enchant_Helmet_BlastProtection_IV:
     type: ENCHANT
     name: Enchant Helmet with Blast Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8060,7 +8060,7 @@ recipes:
   Enchant_Chestplate_BlastProtection_IV:
     type: ENCHANT
     name: Enchant Chestplate with Blast Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8077,7 +8077,7 @@ recipes:
   Enchant_Leggings_BlastProtection_IV:
     type: ENCHANT
     name: Enchant Leggings with Blast Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8094,7 +8094,7 @@ recipes:
   Enchant_Boots_BlastProtection_IV:
     type: ENCHANT
     name: Enchant Boots with Blast Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8113,7 +8113,7 @@ recipes:
   Enchant_Thorns_I:
     type: ENCHANT
     name: Enchant Chestplate with Thorns I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8126,7 +8126,7 @@ recipes:
   Enchant_Thorns_II:
     type: ENCHANT
     name: Enchant Chestplate with Thorns II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8143,7 +8143,7 @@ recipes:
   Enchant_Thorns_III:
     type: ENCHANT
     name: Enchant Chestplate with Thorns III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8162,7 +8162,7 @@ recipes:
   Enchant_Power_I:
     type: ENCHANT
     name: Enchant Bow with Power I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8175,7 +8175,7 @@ recipes:
   Enchant_Power_II:
     type: ENCHANT
     name: Enchant Bow with Power II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8192,7 +8192,7 @@ recipes:
   Enchant_Power_III:
     type: ENCHANT
     name: Enchant Bow with Power III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8209,7 +8209,7 @@ recipes:
   Enchant_Power_IV:
     type: ENCHANT
     name: Enchant Bow with Power IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8226,7 +8226,7 @@ recipes:
   Enchant_Power_V:
     type: ENCHANT
     name: Enchant Bow with Power V
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8245,7 +8245,7 @@ recipes:
   Enchant_Helmet_ProjectileProtection_I:
     type: ENCHANT
     name: Enchant Helmet with Projectile Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8258,7 +8258,7 @@ recipes:
   Enchant_Chestplate_ProjectileProtection_I:
     type: ENCHANT
     name: Enchant Chestplate with Projectile Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8271,7 +8271,7 @@ recipes:
   Enchant_Leggings_ProjectileProtection_I:
     type: ENCHANT
     name: Enchant Leggings with Projectile Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8284,7 +8284,7 @@ recipes:
   Enchant_Boots_ProjectileProtection_I:
     type: ENCHANT
     name: Enchant Boots with Projectile Protection I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8365,7 +8365,7 @@ recipes:
   Enchant_Helmet_ProjectileProtection_III:
     type: ENCHANT
     name: Enchant Helmet with Projectile Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8382,7 +8382,7 @@ recipes:
   Enchant_Chestplate_ProjectileProtection_III:
     type: ENCHANT
     name: Enchant Chestplate with Projectile Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8399,7 +8399,7 @@ recipes:
   Enchant_Leggings_ProjectileProtection_III:
     type: ENCHANT
     name: Enchant Leggings with Projectile Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8416,7 +8416,7 @@ recipes:
   Enchant_Boots_ProjectileProtection_III:
     type: ENCHANT
     name: Enchant Boots with Projectile Protection III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8433,7 +8433,7 @@ recipes:
   Enchant_Helmet_ProjectileProtection_IV:
     type: ENCHANT
     name: Enchant Helmet with Projectile Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8450,7 +8450,7 @@ recipes:
   Enchant_Chestplate_ProjectileProtection_IV:
     type: ENCHANT
     name: Enchant Chestplate with Projectile Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8467,7 +8467,7 @@ recipes:
   Enchant_Leggings_ProjectileProtection_IV:
     type: ENCHANT
     name: Enchant Leggings with Projectile Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8484,7 +8484,7 @@ recipes:
   Enchant_Boots_ProjectileProtection_IV:
     type: ENCHANT
     name: Enchant Boots with Projectile Protection IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8503,7 +8503,7 @@ recipes:
   Enchant_Punch_I:
     type: ENCHANT
     name: Enchant Bow with Punch I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8516,7 +8516,7 @@ recipes:
   Enchant_Punch_II:
     type: ENCHANT
     name: Enchant Bow with Punch II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8535,7 +8535,7 @@ recipes:
   Enchant_Sharpness_I:
     type: ENCHANT
     name: Enchant Sword with Sharpness I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8548,7 +8548,7 @@ recipes:
   Enchant_Sharpness_II:
     type: ENCHANT
     name: Enchant Sword with Sharpness II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8565,7 +8565,7 @@ recipes:
   Enchant_Sharpness_III:
     type: ENCHANT
     name: Enchant Sword with Sharpness III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8582,7 +8582,7 @@ recipes:
   Enchant_Sharpness_IV:
     type: ENCHANT
     name: Enchant Sword with Sharpness IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8599,7 +8599,7 @@ recipes:
   Enchant_Sharpness_V:
     type: ENCHANT
     name: Enchant Sword with Sharpness V
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8618,7 +8618,7 @@ recipes:
   Enchant_Smite_I:
     type: ENCHANT
     name: Enchant Sword with Smite I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8631,7 +8631,7 @@ recipes:
   Enchant_Smite_II:
     type: ENCHANT
     name: Enchant Sword with Smite II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8648,7 +8648,7 @@ recipes:
   Enchant_Smite_III:
     type: ENCHANT
     name: Enchant Sword with Smite III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8665,7 +8665,7 @@ recipes:
   Enchant_Smite_IV:
     type: ENCHANT
     name: Enchant Sword with Smite IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8682,7 +8682,7 @@ recipes:
   Enchant_Smite_V:
     type: ENCHANT
     name: Enchant Sword with Smite V
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8701,7 +8701,7 @@ recipes:
   Enchant_Knockback_I:
     type: ENCHANT
     name: Enchant Sword with Knockback I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8714,7 +8714,7 @@ recipes:
   Enchant_Knockback_II:
     type: ENCHANT
     name: Enchant Sword with Knockback II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8734,7 +8734,7 @@ recipes:
   Enchant_Pickaxe_Efficiency_I:
     type: ENCHANT
     name: Enchant Pickaxe with Efficiency I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8747,7 +8747,7 @@ recipes:
   Enchant_Pickaxe_Efficiency_II:
     type: ENCHANT
     name: Enchant Pickaxe with Efficiency II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8764,7 +8764,7 @@ recipes:
   Enchant_Pickaxe_Efficiency_III:
     type: ENCHANT
     name: Enchant Pickaxe with Efficiency III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8781,7 +8781,7 @@ recipes:
   Enchant_Pickaxe_Efficiency_IV:
     type: ENCHANT
     name: Enchant Pickaxe with Efficiency IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8798,7 +8798,7 @@ recipes:
   Enchant_Pickaxe_Efficiency_V:
     type: ENCHANT
     name: Enchant Pickaxe with Efficiency V
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8815,7 +8815,7 @@ recipes:
   Enchant_Axe_Efficiency_I:
     type: ENCHANT
     name: Enchant Axe with Efficiency I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8828,7 +8828,7 @@ recipes:
   Enchant_Axe_Efficiency_II:
     type: ENCHANT
     name: Enchant Axe with Efficiency II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8845,7 +8845,7 @@ recipes:
   Enchant_Axe_Efficiency_III:
     type: ENCHANT
     name: Enchant Axe with Efficiency III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8862,7 +8862,7 @@ recipes:
   Enchant_Axe_Efficiency_IV:
     type: ENCHANT
     name: Enchant Axe with Efficiency IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8879,7 +8879,7 @@ recipes:
   Enchant_Axe_Efficiency_V:
     type: ENCHANT
     name: Enchant Axe with Efficiency V
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8896,7 +8896,7 @@ recipes:
   Enchant_Shovel_Efficiency_I:
     type: ENCHANT
     name: Enchant Shovel with Efficiency I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8909,7 +8909,7 @@ recipes:
   Enchant_Shovel_Efficiency_II:
     type: ENCHANT
     name: Enchant Shovel with Efficiency II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8926,7 +8926,7 @@ recipes:
   Enchant_Shovel_Efficiency_III:
     type: ENCHANT
     name: Enchant Shovel with Efficiency III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8943,7 +8943,7 @@ recipes:
   Enchant_Shovel_Efficiency_IV:
     type: ENCHANT
     name: Enchant Shovel with Efficiency IV
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8960,7 +8960,7 @@ recipes:
   Enchant_Shovel_Efficiency_V:
     type: ENCHANT
     name: Enchant Shovel with Efficiency V
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8979,7 +8979,7 @@ recipes:
   Enchant_Pickaxe_Unbreaking_I:
     type: ENCHANT
     name: Enchant Pickaxe with Unbreaking I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8992,7 +8992,7 @@ recipes:
   Enchant_Pickaxe_Unbreaking_II:
     type: ENCHANT
     name: Enchant Pickaxe with Unbreaking II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9009,7 +9009,7 @@ recipes:
   Enchant_Pickaxe_Unbreaking_III:
     type: ENCHANT
     name: Enchant Pickaxe with Unbreaking III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9026,7 +9026,7 @@ recipes:
   Enchant_Axe_Unbreaking_I:
     type: ENCHANT
     name: Enchant Axe with Unbreaking I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9039,7 +9039,7 @@ recipes:
   Enchant_Axe_Unbreaking_II:
     type: ENCHANT
     name: Enchant Axe with Unbreaking II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9056,7 +9056,7 @@ recipes:
   Enchant_Axe_Unbreaking_III:
     type: ENCHANT
     name: Enchant Axe with Unbreaking III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9073,7 +9073,7 @@ recipes:
   Enchant_Shovel_Unbreaking_I:
     type: ENCHANT
     name: Enchant Shovel with Unbreaking I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9086,7 +9086,7 @@ recipes:
   Enchant_Shovel_Unbreaking_II:
     type: ENCHANT
     name: Enchant Shovel with Unbreaking II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9103,7 +9103,7 @@ recipes:
   Enchant_Shovel_Unbreaking_III:
     type: ENCHANT
     name: Enchant Shovel with Unbreaking III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9122,7 +9122,7 @@ recipes:
   Enchant_Sword_Unbreaking_I:
     type: ENCHANT
     name: Enchant Sword with Unbreaking I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9135,7 +9135,7 @@ recipes:
   Enchant_Sword_Unbreaking_II:
     type: ENCHANT
     name: Enchant Sword with Unbreaking II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9152,7 +9152,7 @@ recipes:
   Enchant_Sword_Unbreaking_III:
     type: ENCHANT
     name: Enchant Sword with Unbreaking III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9171,7 +9171,7 @@ recipes:
   Enchant_Bow_Unbreaking_I:
     type: ENCHANT
     name: Enchant Bow with Unbreaking I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9184,7 +9184,7 @@ recipes:
   Enchant_Bow_Unbreaking_II:
     type: ENCHANT
     name: Enchant Bow with Unbreaking II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9201,7 +9201,7 @@ recipes:
   Enchant_Bow_Unbreaking_III:
     type: ENCHANT
     name: Enchant Bow with Unbreaking III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9220,7 +9220,7 @@ recipes:
   Enchant_Helmet_Unbreaking_I:
     type: ENCHANT
     name: Enchant Helmet with Unbreaking I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9233,7 +9233,7 @@ recipes:
   Enchant_Chestplate_Unbreaking_I:
     type: ENCHANT
     name: Enchant Chestplate with Unbreaking I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9246,7 +9246,7 @@ recipes:
   Enchant_Leggings_Unbreaking_I:
     type: ENCHANT
     name: Enchant Leggings with Unbreaking I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9259,7 +9259,7 @@ recipes:
   Enchant_Boots_Unbreaking_I:
     type: ENCHANT
     name: Enchant Boots with Unbreaking I
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9272,7 +9272,7 @@ recipes:
   Enchant_Helmet_Unbreaking_II:
     type: ENCHANT
     name: Enchant Helmet with Unbreaking II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9289,7 +9289,7 @@ recipes:
   Enchant_Chestplate_Unbreaking_II:
     type: ENCHANT
     name: Enchant Chestplate with Unbreaking II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9306,7 +9306,7 @@ recipes:
   Enchant_Leggings_Unbreaking_II:
     type: ENCHANT
     name: Enchant Leggings with Unbreaking II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9323,7 +9323,7 @@ recipes:
   Enchant_Boots_Unbreaking_II:
     type: ENCHANT
     name: Enchant Boots with Unbreaking II
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9340,7 +9340,7 @@ recipes:
   Enchant_Helmet_Unbreaking_III:
     type: ENCHANT
     name: Enchant Helmet with Unbreaking III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9357,7 +9357,7 @@ recipes:
   Enchant_Chestplate_Unbreaking_III:
     type: ENCHANT
     name: Enchant Chestplate with Unbreaking III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9374,7 +9374,7 @@ recipes:
   Enchant_Leggings_Unbreaking_III:
     type: ENCHANT
     name: Enchant Leggings with Unbreaking III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9391,7 +9391,7 @@ recipes:
   Enchant_Boots_Unbreaking_III:
     type: ENCHANT
     name: Enchant Boots with Unbreaking III
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9410,7 +9410,7 @@ recipes:
   Enchant_Efficiency_Pickaxe_Basic:
     type: ENCHANT
     name: Enchant Pickaxe with Efficiency
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9423,7 +9423,7 @@ recipes:
   Enchant_Efficiency_Axe_Basic:
     type: ENCHANT
     name: Enchant Axe with Efficiency
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9436,7 +9436,7 @@ recipes:
   Enchant_Efficiency_Shovel_Basic:
     type: ENCHANT
     name: Enchant Shovel with Efficiency
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9449,7 +9449,7 @@ recipes:
   Enchant_Unbreaking_Pickaxe_Basic:
     type: ENCHANT
     name: Enchant Pickaxe with Unbreaking
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9462,7 +9462,7 @@ recipes:
   Enchant_Unbreaking_Axe_Basic:
     type: ENCHANT
     name: Enchant Axe with Unbreaking
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9475,7 +9475,7 @@ recipes:
   Enchant_Unbreaking_Shovel_Basic:
     type: ENCHANT
     name: Enchant Shovel with Unbreaking
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9488,7 +9488,7 @@ recipes:
   Enchant_Unbreaking_Sword_Basic:
     type: ENCHANT
     name: Enchant Sword with Unbreaking
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -9501,7 +9501,7 @@ recipes:
   Enchant_Sharpness_Basic:
     type: ENCHANT
     name: Enchant Sword with Sharpness
-    production_time: 1m
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
