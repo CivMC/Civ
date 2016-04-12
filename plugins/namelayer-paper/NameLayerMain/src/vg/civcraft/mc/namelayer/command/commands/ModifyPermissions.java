@@ -53,7 +53,7 @@ public class ModifyPermissions extends PlayerCommandMiddle{
 			return true;
 		}
 		String info = args[1];
-		PlayerType playerType = PlayerType.getPlayerType(args[2]);
+		PlayerType playerType = PlayerType.getPlayerType(args[2].toUpperCase());
 		if (playerType == null){
 			PlayerType.displayPlayerTypes(p);
 			return true;

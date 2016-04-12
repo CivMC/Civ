@@ -518,7 +518,7 @@ public class GroupManagerDao {
 		addPermission = db.prepareStatement("insert into permissionByGroup(group_id,role,perm_id) select g.group_id, ?, ? from faction_id g where g.group_name = ?;");
 		getPermission = db.prepareStatement("select pg.role,pg.perm_id from permissionByGroup pg inner join faction_id fi on fi.group_name=? "
 				+ "where pg.group_id = fi.group_id");
-		removePermission = db.prepareStatement("delete from permissionByGroup where group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and perm_id=?;");
+		removePermission = db.prepareStatement("delete from permissionByGroup where group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and role=?;");
 		registerPermission = db.prepareStatement("insert into permissionIdMapping(perm_id,name) values(?,?);"); 
 		getPermissionMapping = db.prepareStatement("select * from permissionIdMapping;");
 		
