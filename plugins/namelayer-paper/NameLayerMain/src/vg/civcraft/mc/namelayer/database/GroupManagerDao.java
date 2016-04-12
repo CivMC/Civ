@@ -370,7 +370,7 @@ public class GroupManagerDao {
 	
 	private PreparedStatement version, updateVersion;
 	
-	private PreparedStatement createGroup, getGroup, getGroupById, getAllGroupsNames, deleteGroup, getAllGroups;
+	private PreparedStatement createGroup, getGroup, getGroupById, getAllGroupsNames, deleteGroup, getAllGroupIds;
 	
 	private PreparedStatement addMember, getMembers, removeMember, updatePassword, updateOwner;
 	
@@ -392,7 +392,7 @@ public class GroupManagerDao {
 	
 	private PreparedStatement logNameChange, checkForNameChange;
 	
-	private PreparedStatement addPermission, getPermission, removePermission, registerPermission, getPermissionMapping;
+	private PreparedStatement addPermission, getPermission, removePermission, registerPermission, getPermissionMapping, addPermissionById;
 	
 	private PreparedStatement addBlacklistMember, removeBlackListMember, getBlackListMembers;
 	
@@ -516,9 +516,10 @@ public class GroupManagerDao {
 		checkForNameChange = db.prepareStatement("select * from nameLayerNameChanges where uuid=?;");
 		
 		addPermission = db.prepareStatement("insert into permissionByGroup(group_id,role,perm_id) select g.group_id, ?, ? from faction_id g where g.group_name = ?;");
+		addPermissionById = db.prepareStatement("insert into permissionByGroup(group_id,role,perm_id) values(?,?,?);");
 		getPermission = db.prepareStatement("select pg.role,pg.perm_id from permissionByGroup pg inner join faction_id fi on fi.group_name=? "
 				+ "where pg.group_id = fi.group_id");
-		removePermission = db.prepareStatement("delete from permissionByGroup where group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and role=?;");
+		removePermission = db.prepareStatement("delete from permissionByGroup where group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and role=? and perm_id=?;");
 		registerPermission = db.prepareStatement("insert into permissionIdMapping(perm_id,name) values(?,?);"); 
 		getPermissionMapping = db.prepareStatement("select * from permissionIdMapping;");
 		
@@ -526,7 +527,7 @@ public class GroupManagerDao {
 		removeBlackListMember = db.prepareStatement("delete from blacklist WHERE group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and member_name=?;");
 		getBlackListMembers = db.prepareStatement("select b.member_name from blacklist b inner join faction_id fi on fi.group_name=? where b.group_id=fi.group_id;");
 		
-		getAllGroups = db.prepareStatement("select group_name from faction_id");
+		getAllGroupIds = db.prepareStatement("select group_id from faction_id");
 	}
 	/**
 	 * Checks the version of a specific plugin's db.
@@ -912,17 +913,17 @@ public class GroupManagerDao {
 		return perms;
 	}
 	
-	public synchronized void updatePermissions(String group, PlayerType pType, List<PermissionType> perms){
+	public synchronized void removePermission(String group, PlayerType pType, PermissionType perm){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		try {
 			removePermission.setString(1, group);
 			removePermission.setString(2, pType.name());
+			removePermission.setInt(3, perm.getId());
 			removePermission.execute();
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem removing permissions for group " + group
 					+ " on playertype " + pType.name(), e);
 		}
-		addPermission(group,pType.name(),perms);
 	}
 	
 	public synchronized void registerPermission(PermissionType perm) {
@@ -953,13 +954,16 @@ public class GroupManagerDao {
 	
 	public synchronized void addNewDefaultPermission(List <PlayerType> playerTypes, PermissionType perm) {
 		try {
-			ResultSet set = getAllGroups.executeQuery();
+			ResultSet set = getAllGroupIds.executeQuery();
 			List <PermissionType> perms = new LinkedList<PermissionType>();
 			perms.add(perm);
 			while(set.next()) {
-				String groupName = set.getString(1);
+				int groupId = set.getInt(1);
 				for(PlayerType pType:playerTypes) {
-					addPermission(groupName, pType.name(), perms);
+					addPermissionById.setInt(1, groupId);
+					addPermissionById.setString(2, pType.name());
+					addPermissionById.setInt(3, perm.getId());
+					addPermissionById.execute();
 				}
 			}
 		}

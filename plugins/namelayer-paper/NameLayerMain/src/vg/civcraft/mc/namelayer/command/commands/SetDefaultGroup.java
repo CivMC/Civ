@@ -12,7 +12,6 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class SetDefaultGroup extends PlayerCommandMiddle{
@@ -41,11 +40,6 @@ public class SetDefaultGroup extends PlayerCommandMiddle{
 		PlayerType pType = g.getPlayerType(uuid);
 		if (pType == null){
 			p.sendMessage(ChatColor.RED + "You do not have access to that group.");
-			return true;
-		}
-		
-		if (!gm.hasAccess(g.getName(), uuid, PermissionType.getPermission("BLOCKS"))){
-			p.sendMessage(ChatColor.RED + "You do not have permission to default that group.");
 			return true;
 		}
 

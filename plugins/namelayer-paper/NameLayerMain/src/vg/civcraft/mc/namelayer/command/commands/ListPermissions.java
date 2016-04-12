@@ -46,7 +46,7 @@ public class ListPermissions extends PlayerCommandMiddle{
 		String perms = null;
 		GroupPermission gPerm = gm.getPermissionforGroup(g);
 		if(args.length > 1){
-			if (!gm.hasAccess(g.getName(), uuid, PermissionType.getPermission("LIST_PERMS"))){
+			if (!gm.hasAccess(g, uuid, PermissionType.getPermission("LIST_PERMS"))){
 					p.sendMessage(ChatColor.RED + "You do not have permission in this group to run this command.");
 					return true;
 			}

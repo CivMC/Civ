@@ -52,7 +52,7 @@ public class TransferGroup extends PlayerCommandMiddle{
 			return true;
 		}
 		
-		if (!gm.hasAccess(g.getName(), uuid, PermissionType.getPermission("TRANSFER")) && 
+		if (!gm.hasAccess(g, uuid, PermissionType.getPermission("TRANSFER")) && 
 				!(p.isOp() || p.hasPermission("namelayer.admin"))){
 			p.sendMessage(ChatColor.RED + "You do not have permission for this group to transfer it.");
 			return true;

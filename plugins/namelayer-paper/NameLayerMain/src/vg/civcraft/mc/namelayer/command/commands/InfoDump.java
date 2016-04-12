@@ -80,7 +80,7 @@ public class InfoDump extends PlayerCommandMiddle
 			
 
 			outputBuilder.append(" : [OWNERS]");
-			if(gm.hasAccess(group.getName(), playerUUID, PermissionType.getPermission("OWNER")))
+			if(gm.hasAccess(group, playerUUID, PermissionType.getPermission("OWNER")))
 			{
 				for(UUID ownerUUID : group.getAllMembers(PlayerType.OWNER))
 				{
@@ -94,7 +94,7 @@ public class InfoDump extends PlayerCommandMiddle
 			}
 
 			outputBuilder.append(" : [ADMINS]");
-			if(gm.hasAccess(group.getName(), playerUUID, PermissionType.getPermission("ADMINS")))
+			if(gm.hasAccess(group, playerUUID, PermissionType.getPermission("ADMINS")))
 			{
 				for(UUID adminUUID : group.getAllMembers(PlayerType.ADMINS))
 				{
@@ -108,7 +108,7 @@ public class InfoDump extends PlayerCommandMiddle
 			}
 
 			outputBuilder.append(" : [MODS]");
-			if(gm.hasAccess(group.getName(), playerUUID, PermissionType.getPermission("MODS")))
+			if(gm.hasAccess(group, playerUUID, PermissionType.getPermission("MODS")))
 			{
 				for(UUID modUUID : group.getAllMembers(PlayerType.MODS))
 				{
@@ -122,7 +122,7 @@ public class InfoDump extends PlayerCommandMiddle
 			}
 
 			outputBuilder.append(" : [MEMBERS]");
-			if(gm.hasAccess(group.getName(), playerUUID, PermissionType.getPermission("MEMBERS")))
+			if(gm.hasAccess(group, playerUUID, PermissionType.getPermission("MEMBERS")))
 			{
 				for(UUID memberUUID : group.getAllMembers(PlayerType.MEMBERS))
 				{
@@ -135,7 +135,7 @@ public class InfoDump extends PlayerCommandMiddle
 				outputBuilder.append(group.getAllMembers(PlayerType.MEMBERS).size());
 			}
 
-			if(gm.hasAccess(group.getName(), playerUUID, PermissionType.getPermission("LIST_PERMS")))
+			if(gm.hasAccess(group, playerUUID, PermissionType.getPermission("LIST_PERMS")))
 			{
 				outputBuilder.append(" : [OWNER-PERMS] " + permissions.listPermsforPlayerType(PlayerType.OWNER));
 				outputBuilder.append(" : [ADMIN-PERMS] " + permissions.listPermsforPlayerType(PlayerType.ADMINS));

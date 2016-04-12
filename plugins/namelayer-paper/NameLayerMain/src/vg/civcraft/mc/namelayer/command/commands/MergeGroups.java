@@ -62,11 +62,11 @@ public class MergeGroups extends PlayerCommandMiddle{
 		}
 		
 		UUID uuid = NameAPI.getUUID(p.getName());
-		if (!gm.hasAccess(g.getName(), uuid, PermissionType.getPermission("MERGE"))){
+		if (!gm.hasAccess(g, uuid, PermissionType.getPermission("MERGE"))){
 			p.sendMessage(ChatColor.RED + "You don't have permission on group " + g.getName() + ".");
 			return true;
 		}
-		if (!gm.hasAccess(toMerge.getName(), uuid, PermissionType.getPermission("MERGE"))){
+		if (!gm.hasAccess(toMerge, uuid, PermissionType.getPermission("MERGE"))){
 			p.sendMessage(ChatColor.RED + "You don't have permission on group " + toMerge.getName() + ".");
 			return true;
 		}

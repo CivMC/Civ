@@ -86,16 +86,16 @@ public class PromotePlayer extends PlayerCommandMiddle{
 		boolean allowed = false;
 		switch (promoteeType){ // depending on the type the executor wants to add the player to
 		case MEMBERS:
-			allowed = gm.hasAccess(group.getName(), executor, PermissionType.getPermission("MEMBERS"));
+			allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MEMBERS"));
 			break;
 		case MODS:
-			allowed = gm.hasAccess(group.getName(), executor, PermissionType.getPermission("MODS"));
+			allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MODS"));
 			break;
 		case ADMINS:
-			allowed = gm.hasAccess(group.getName(), executor, PermissionType.getPermission("ADMINS"));
+			allowed = gm.hasAccess(group, executor, PermissionType.getPermission("ADMINS"));
 			break;
 		case OWNER:
-			allowed = gm.hasAccess(group.getName(), executor, PermissionType.getPermission("OWNER"));
+			allowed = gm.hasAccess(group, executor, PermissionType.getPermission("OWNER"));
 			break;
 		default:
 			allowed = false;

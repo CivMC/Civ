@@ -48,7 +48,7 @@ public class ModifyPermissions extends PlayerCommandMiddle{
 			p.sendMessage(ChatColor.RED + "This group is currently disiplined.");
 			return true;
 		}
-		if (!gm.hasAccess(g.getName(), uuid, PermissionType.getPermission("PERMS")) && !g.isOwner(uuid) && !(p.isOp() || p.hasPermission("namelayer.admin"))){
+		if (!gm.hasAccess(g, uuid, PermissionType.getPermission("PERMS")) && !g.isOwner(uuid) && !(p.isOp() || p.hasPermission("namelayer.admin"))){
 			p.sendMessage(ChatColor.RED + "You do not have permission for this command.");
 			return true;
 		}
@@ -77,7 +77,7 @@ public class ModifyPermissions extends PlayerCommandMiddle{
 			else {
 				if (playerType == PlayerType.NOT_BLACKLISTED && pType == PermissionType.getPermission("JOIN_PASSWORD")) {
 					//we need to prevent players from explicitly adding people to this permission group
-					sender.sendMessage(ChatColor.RED + "You can't explicitly add players to this group group . Per default any non blacklisted person will"
+					sender.sendMessage(ChatColor.RED + "You can't explicitly add players to this group. Per default any non blacklisted person will"
 							+ "be included in this permission group");
 				}
 				gPerm.addPermission(playerType, pType);

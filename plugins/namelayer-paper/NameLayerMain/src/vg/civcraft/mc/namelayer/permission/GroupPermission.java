@@ -74,7 +74,9 @@ public class GroupPermission {
 			return false;
 		List<PermissionType> types = perms.get(pType);
 		types.add(permType);
-		db.updatePermissions(group.getName(), pType, types);
+		List <PermissionType> toAdd = new LinkedList<PermissionType>();
+		toAdd.add(permType);
+		db.addPermission(group.getName(), pType.name(), toAdd);
 		return true;
 	}
 	/**
@@ -88,7 +90,7 @@ public class GroupPermission {
 			return false;
 		List<PermissionType> types = perms.get(pType);
 		types.remove(permType);
-		db.updatePermissions(group.getName(), pType, types);
+		db.removePermission(group.getName(), pType, permType);
 		return true;
 	}
 	/**

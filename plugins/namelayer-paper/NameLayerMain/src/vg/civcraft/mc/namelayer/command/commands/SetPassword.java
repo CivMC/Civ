@@ -44,7 +44,7 @@ public class SetPassword extends PlayerCommandMiddle{
 			return true;
 		}
 		
-		if (!gm.hasAccess(g.getName(), uuid, PermissionType.getPermission("PASSWORD"))){
+		if (!gm.hasAccess(g, uuid, PermissionType.getPermission("PASSWORD"))){
 			p.sendMessage(ChatColor.RED + "You do not have permission to modify that group.");
 			return true;
 		}

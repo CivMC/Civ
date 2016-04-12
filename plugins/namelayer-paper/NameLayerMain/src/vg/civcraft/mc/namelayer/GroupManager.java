@@ -306,19 +306,28 @@ public class GroupManager{
 	}
 		
 	public boolean hasAccess(String groupname, UUID player, PermissionType perm) {
+		if (groupname == null) {
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "hasAccess failed (access denied), could not find group " + groupname);
+			return false;
+		}
+		return hasAccess(getGroup(groupname), player, perm);
+	}
+	
+	public boolean hasAccess(Group group, UUID player, PermissionType perm) {
 		Player p = Bukkit.getPlayer(player);
 		if (p != null && (p.isOp() || p.hasPermission("namelayer.admin"))) {
 			return true;
 		}
-		if (groupname == null || player == null || perm == null) {
+		if (group == null || player == null || perm == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "hasAccess failed, caller passed in null", new Exception());
 			return false;
 		}
-
-		Group group = getGroup(groupname);
-		if (group == null) {
-			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "hasAccess failed (access denied), could not find group " + groupname);
-			return false;
+		if (!group.isValid()) {
+			group = getGroup(group.getName());
+			if (group == null) {
+				//what happened? who knows?
+				return false;
+			}
 		}
 		GroupPermission perms = getPermissionforGroup(group);
 		for(PlayerType rank : getRecursivePlayerTypes(group, player)) {

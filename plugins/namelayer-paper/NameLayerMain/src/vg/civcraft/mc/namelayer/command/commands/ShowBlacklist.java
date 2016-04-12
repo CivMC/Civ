@@ -41,7 +41,7 @@ public class ShowBlacklist extends PlayerCommandMiddle {
 			p.sendMessage(ChatColor.RED + "This group does not exist");
 			return true;
 		}
-		if (!gm.hasAccess(g.getName(), p.getUniqueId(),
+		if (!gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("BLACKLIST"))
 				&& !(p.isOp() || p.hasPermission("namelayer.admin"))) {
 			p.sendMessage(ChatColor.RED + "You do not have the required permissions to do this");

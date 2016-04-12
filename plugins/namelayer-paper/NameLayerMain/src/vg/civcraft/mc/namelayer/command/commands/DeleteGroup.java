@@ -48,7 +48,7 @@ public class DeleteGroup extends PlayerCommandMiddle{
 				String[] entry = confirmDeleteGroup.get(uuid);
 				Group gD = gm.getGroup(entry[0]);
 				//player could have lost delete permission in the mean time
-				if (!NameAPI.getGroupManager().hasAccess(gD.getName(), uuid, PermissionType.getPermission("DELETE"))){
+				if (!NameAPI.getGroupManager().hasAccess(gD, uuid, PermissionType.getPermission("DELETE"))){
 					p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
 					return true;
 				}
@@ -79,7 +79,7 @@ public class DeleteGroup extends PlayerCommandMiddle{
 		if (groupIsNull(sender, x, g)) {
 			return true;
 		}
-		if (!NameAPI.getGroupManager().hasAccess(g.getName(), uuid, PermissionType.getPermission("DELETE"))){
+		if (!NameAPI.getGroupManager().hasAccess(g, uuid, PermissionType.getPermission("DELETE"))){
 			p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
 			return true;
 		}
