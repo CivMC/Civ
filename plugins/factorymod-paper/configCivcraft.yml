@@ -825,7 +825,6 @@ factories:
      - Enchant_Boots_BlastProtection_I
      - Enchant_Boots_BlastProtection_II
      - Enchant_Boots_BlastProtection_III
-     - Enchant_Helmet_BlastProtection_III
      - Enchant_Thorns_I
      - Enchant_Thorns_II
      - Upgrade_to_Meteor_Forge
@@ -900,7 +899,6 @@ factories:
      - Enchant_Boots_ProjectileProtection_I
      - Enchant_Boots_ProjectileProtection_II
      - Enchant_Boots_ProjectileProtection_III
-     - Enchant_Helmet_ProjectileProtection_III
      - Enchant_Punch_I
      - Upgrade_to_Sniper_Forge
   sniperforge:
