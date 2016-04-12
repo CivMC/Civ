@@ -1101,6 +1101,9 @@ factories:
     type: FCCUPGRADE
     name: Adept Transmuter
     recipes:
+     - Aspen_Enrichment
+     - Cypress_Enrichment
+     - Pine_Enrichment
      - Lead_Enrichment
      - Copper_Enrichment
      - Tin_Enrichment
@@ -1109,6 +1112,12 @@ factories:
     type: FCCUPGRADE
     name: Grandmaster Transmuter
     recipes:
+     - Aspen_Enrichment
+     - Cypress_Enrichment
+     - Pine_Enrichment
+     - Lead_Enrichment
+     - Copper_Enrichment
+     - Tin_Enrichment
      - Amethyst_Enrichment
      - Topaz_Enrichment
      - Ruby_Enrichment
