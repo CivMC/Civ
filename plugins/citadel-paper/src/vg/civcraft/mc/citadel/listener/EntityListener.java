@@ -1,5 +1,6 @@
 package vg.civcraft.mc.citadel.listener;
 
+import static vg.civcraft.mc.citadel.Utility.canPlace;
 import static vg.civcraft.mc.citadel.Utility.createNaturalReinforcement;
 import static vg.civcraft.mc.citadel.Utility.createPlayerReinforcement;
 import static vg.civcraft.mc.citadel.Utility.explodeReinforcement;
@@ -149,39 +150,6 @@ public class EntityListener implements Listener{
 	}
 
 
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void PlayerPromoteEvent(PromotePlayerEvent event){
-		Player p = event.getPlayer();
-		Group g = event.getGroup();
-		PlayerType currentType = event.getCurrentPlayerType();
-		PlayerType futureType = event.getFuturePlayerType();
-		PlayerState state = PlayerState.get(p);
-		GroupPermission gPerm = gm.getPermissionforGroup(g);
-		if(state.getMode() == ReinforcementMode.NORMAL){
-			//player is in NORMAL mode don't need to do anything
-			return;
-		}
-		if(gPerm.isAccessible(currentType, PermissionType.BLOCKS)){
-			//see if they can access blocks current state
-			if (!gPerm.isAccessible(futureType, PermissionType.BLOCKS)){
-				//if they will no longer be able to access blocks
-				Group citadelGroup = state.getGroup();
-				if(citadelGroup.getName() == g.getName()){
-					//Player is Actively Reinforcing in that group
-					state.reset();
-					String msg = "Your PlayerType in group (" + g.getName() + ") changed you no longer have access to reinforce/bypass";
-					p.sendMessage(ChatColor.RED + msg);
-					p.sendMessage(ChatColor.GREEN + "Your mode has been set to " + 
-							ReinforcementMode.REINFORCEMENT.name() + ".");
-				}
-
-
-			}
-		}
-	}
-
-
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void hangingPlaceEvent(HangingPlaceEvent event){
 		Player p = event.getPlayer();
@@ -296,7 +264,7 @@ public class EntityListener implements Listener{
 				}
 			}
 			boolean admin_bypass = player.hasPermission("citadel.admin.bypassmode");   
-			if (state.isBypassMode() && (pr.isBypassable(player) || admin_bypass) && !pr.getGroup().isDisciplined()) {
+			if (state.isBypassMode() && (pr.canBypass(player) || admin_bypass) && !pr.getGroup().isDisciplined()) {
 				reinforcementBroken(player, rein);
 				is_cancelled = false;
 			} else {
@@ -385,53 +353,6 @@ public class EntityListener implements Listener{
 				return;
 			}
 		}
-	}
-
-	private boolean canPlace(Block block, Player player) {
-		Material block_mat = block.getType();
-
-		if (block_mat == Material.HOPPER || block_mat == Material.DROPPER){
-			for (BlockFace direction : BlockListener.all_sides) {
-				Block adjacent = block.getRelative(direction);
-				if (!(adjacent.getState() instanceof ContainerBlock)) {
-					continue;
-				}
-				Reinforcement rein = rm.getReinforcement(adjacent);
-				if (null != rein && rein instanceof PlayerReinforcement) {
-					PlayerReinforcement pr = (PlayerReinforcement)rein;
-					if (pr.isInsecure() && !pr.isAccessible(player, PermissionType.CHESTS)) {
-						return false;
-					}
-				}
-			}
-		}
-		if (block_mat == Material.CHEST || block_mat == Material.TRAPPED_CHEST){
-			for (BlockFace direction : BlockListener.planar_sides) {
-				Block adjacent = block.getRelative(direction);
-				if (!(adjacent.getState() instanceof ContainerBlock)) {
-					continue;
-				}
-				Reinforcement rein = rm.getReinforcement(adjacent);
-				if (null != rein && rein instanceof PlayerReinforcement) {
-					PlayerReinforcement pr = (PlayerReinforcement)rein;
-					if (!pr.isAccessible(player, PermissionType.CHESTS)) {
-						return false;
-					}
-				}
-			}
-		}
-		//stops players from modifying the reinforcement on a half slab by placing another block on top
-		Reinforcement reinforcement_on_block = Citadel.getReinforcementManager().getReinforcement(block);
-		if (reinforcement_on_block instanceof PlayerReinforcement) {
-			PlayerReinforcement reinforcement = (PlayerReinforcement) reinforcement_on_block;
-			if (!reinforcement.isBypassable(player)) {
-				return false;
-			}
-		} else if (reinforcement_on_block != null) {
-			return false; //not really sure when this could happen but just in case
-		}
-
-		return true;
 	}
 
 	protected void sendAndLog(Player receiver, ChatColor color, String message) {

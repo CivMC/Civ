@@ -19,7 +19,6 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class Fortification extends PlayerCommandMiddle{
@@ -64,8 +63,7 @@ public class Fortification extends PlayerCommandMiddle{
 			sendAndLog(p, ChatColor.RED, "You are not on this group.");
 			return true;
 		}
-		GroupPermission gPerm = gm.getPermissionforGroup(g);
-		if (!p.hasPermission("citadel.admin") && !p.isOp() && !gPerm.isAccessible(type, PermissionType.BLOCKS)){
+		if (!p.hasPermission("citadel.admin") && !p.isOp() && !gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("REINFORCE"))){
 			sendAndLog(p, ChatColor.RED, "You do not have permission to "
 					+ "place a reinforcement on this group.");
 			return true;
@@ -101,9 +99,9 @@ public class Fortification extends PlayerCommandMiddle{
 			return null;
 
 		if (args.length == 0)
-			return GroupTabCompleter.complete(null, PermissionType.BLOCKS, (Player)sender);
+			return GroupTabCompleter.complete(null, PermissionType.getPermission("REINFORCE"), (Player)sender);
 		else if (args.length == 1)
-			return GroupTabCompleter.complete(args[0], PermissionType.BLOCKS, (Player)sender);
+			return GroupTabCompleter.complete(args[0], PermissionType.getPermission("REINFORCE"), (Player)sender);
 		else{
 			return new ArrayList<String>();
 		}

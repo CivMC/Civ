@@ -29,7 +29,7 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class PlayerReinforcement extends Reinforcement{
 	private transient int gid;
 	private Group g;
-	private GroupPermission gp;
+	private static GroupManager gm;
 	private boolean isInsecure = false;
 	private ItemStack stack;
 	
@@ -38,51 +38,70 @@ public class PlayerReinforcement extends Reinforcement{
 		super(loc, stack.getType(), health, creation, acid);
 		this.g = g;
 		this.stack = stack;
-		this.gp = NameAPI.getGroupManager().getPermissionforGroup(g);
+		if (gm == null) {
+			gm = NameAPI.getGroupManager();
+		}
 		this.gid = g.getGroupId();
-	}
+	}	
 	
-	/**
-	 * Returns true if the player has access to do the specified 
-	 * PermissionType on this reinforcement.
-	 * @param PermissionType
-	 * @param Player
-	 * @return true if the player has access or false if the player
-	 * doesn't have access to that specified permission or isn't on the
-	 * group.
-	 */
-	public boolean isAccessible(Player p, PermissionType... pType){
-		return isAccessible(p.getUniqueId(), pType);
-	}
-	
-	public boolean isAccessible(UUID u, PermissionType... pType){
+	public boolean canBypass(Player p) {
 		checkValid();
 		if (g == null) {
 			return false;
 		}
-		PlayerType type = g.getPlayerType(u);
-		// if it is a public group we want it to check even if no PlayerType
-				
-		if (type == null && !(g instanceof PublicGroup)) {
-			return false;
-		}
-		return gp.isAccessible(type, pType);
+		return gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("BYPASS_REINFORCEMENT"));
 	}
-	/**
-	 * Is used to see if a player has permission to bypass a reinforcement.
-	 * @param The Player who wants to bypass a Reinforcemet.
-	 * @return Returns if the Player can or not.
-	 */
-	public boolean isBypassable(Player p){
+	
+	public boolean canAccessCrops(Player p) {
 		checkValid();
 		if (g == null) {
 			return false;
 		}
-		PlayerType type = g.getPlayerType(p.getUniqueId());
-		if (type == null) {
+		return gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("CROPS"));
+	}
+	
+	public boolean canAccessChests(Player p) {
+		checkValid();
+		if (g == null) {
 			return false;
 		}
-		return gp.isAccessible(type, PermissionType.BLOCKS);
+		return gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("CHESTS"));
+	}
+	
+	public boolean canAccessDoors(Player p) {
+		checkValid();
+		if (g == null) {
+			return false;
+		}
+		return gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("DOORS"));
+	}
+	
+	public boolean canViewInformation(Player p) {
+		checkValid();
+		if (g == null) {
+			return false;
+		}
+		return gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("REINFORCEMENT_INFO"));
+	}
+	
+	public boolean canMakeInsecure(Player p) {
+		checkValid();
+		if (g == null) {
+			return false;
+		}
+		return gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("INSECURE_REINFORCEMENT"));
+	}
+	
+	public boolean canAcid(Player p) {
+		checkValid();
+		if (g == null) {
+			return false;
+		}
+		return gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("ACIDBLOCK"));
+	}
+	
+	public boolean isSecurable() {
+		return (isContainer() || isDoor());
 	}
 	
 	public int getDamageMultiplier(){
@@ -150,11 +169,25 @@ public class PlayerReinforcement extends Reinforcement{
      * Returns true if the block has an inventory that can be opened.
      * @return boolean
      */
-    public boolean isSecurable() {
+    public boolean rable() {
         Block block = getLocation().getBlock();
         return block.getState() instanceof InventoryHolder
                 || block.getState().getData() instanceof Openable || Utility.doorTypes.contains(block.getType());
     }
+    
+    /**
+     * @return True if the reinforced block is a door/trapdoor etc. or part of one
+     */
+    public boolean isDoor() {
+    	Block block = getLocation().getBlock();
+    	return Utility.doorTypes.contains(block.getType()) || block.getState().getData() instanceof Openable;
+    }
+    
+    public boolean isContainer() {
+    	return getLocation().getBlock().getState() instanceof InventoryHolder;
+    }
+    
+    
     /**
      * Returns the group this PlayerReinforcement is associated with.
      * @return group
@@ -169,7 +202,6 @@ public class PlayerReinforcement extends Reinforcement{
      */
     public void setGroup(Group g){
     	this.g = g;
-    	this.gp = NameAPI.getGroupManager().getPermissionforGroup(g);
 		this.gid = g.getGroupId();
     	isDirty = true;
     }
@@ -199,9 +231,7 @@ public class PlayerReinforcement extends Reinforcement{
     	}
     	if (!g.isValid()){ // incase it was recently merged/ deleted.
     		g = NameAPI.getGroupManager().getGroup(g.getGroupId());
-    		if (g != null) {
-    			gp = NameAPI.getGroupManager().getPermissionforGroup(g);
-    		} else {
+    		if (g == null) {
     			Citadel.getInstance().getLogger().log(Level.INFO, "Group " + g.getGroupId() + " was deleted or merged but not marked invalid!");
     		}
     		isDirty = true;
