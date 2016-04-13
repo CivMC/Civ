@@ -1,67 +1,70 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.untamedears</groupId>
-  <artifactId>ItemExchange</artifactId>
-  <packaging>jar</packaging>
-  <version>1.0.0-${build.number}</version>
-  <name>ItemExchange</name>
-  <url>https://github.com/Civcraft/ItemExchange</url>
-  
-  <properties>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
-	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  
-  <build>
-    <sourceDirectory>${basedir}/src</sourceDirectory>
-    
-    <resources>
-      <resource>
-        <directory>${basedir}</directory>
-        <includes>
-          <include>license.txt</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src</directory>
-        <includes>
-          <include>**/*.java</include>
-          <include>*.yml</include>
-          <include>*.csv</include>
-        </includes>
-      </resource>
-    </resources>
-  </build>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.untamedears</groupId>
+	<artifactId>ItemExchange</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0.1-${build.number}</version>
+	<name>ItemExchange</name>
+	<url>https://github.com/Civcraft/ItemExchange</url>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>Spigot1.8.3</artifactId>
-      <version>1.8.3</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>vg.civcraft.mc.citadel</groupId>
-      <artifactId>Citadel</artifactId>
-      <version>3.0.12-40</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>vg.civcraft.mc.namelayer</groupId>
-      <artifactId>NameLayer</artifactId>
-      <version>2.1.1</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-  
-  <repositories>
-    <repository>
-      <id>civcraft-repo</id>
-      <url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
-    </repository>
-  </repositories>
+	<properties>
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.6</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<sourceDirectory>${basedir}/src</sourceDirectory>
+
+		<resources>
+			<resource>
+				<directory>${basedir}</directory>
+				<includes>
+					<include>license.txt</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>${basedir}/src</directory>
+				<includes>
+					<include>**/*.java</include>
+					<include>*.yml</include>
+					<include>*.csv</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>1.8.8-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>vg.civcraft.mc.citadel</groupId>
+			<artifactId>Citadel</artifactId>
+			<version>3.0.12-40</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+            <groupId>vg.civcraft.mc.namelayer</groupId>
+            <artifactId>NameLayer</artifactId>
+            <version>2.6</version>
+            <scope>provided</scope>
+        </dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>civcraft-repo</id>
+			<url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
+		</repository>
+		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
 </project>

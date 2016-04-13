@@ -6,19 +6,25 @@ package com.untamedears.ItemExchange;
 
 import com.untamedears.ItemExchange.listeners.ItemExchangeListener;
 import com.untamedears.ItemExchange.command.CommandHandler;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 /**
  * 
@@ -69,11 +75,21 @@ public class ItemExchangePlugin extends JavaPlugin {
 		importCSVs();
 		// register the events(this should be moved...)
 		registerEvents();
+		registerNameLayerPerms();
 		commandHandler.registerCommands();
 	}
 
 	public void onDisable() {
 
+	}
+	
+	private void registerNameLayerPerms() {
+		LinkedList<PlayerType> memberAndAbove = new LinkedList<PlayerType>();
+		memberAndAbove.add(PlayerType.MEMBERS);
+		memberAndAbove.add(PlayerType.MODS);
+		memberAndAbove.add(PlayerType.ADMINS);
+		memberAndAbove.add(PlayerType.OWNER);
+		PermissionType.registerPermission("USE_SHOP", memberAndAbove);
 	}
 
 	public void registerEvents() {
