@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civchat2;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.command.Command;
@@ -19,6 +20,8 @@ import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.mercury.MercuryAPI;
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 /**
  * @author jjj5311
@@ -67,6 +70,7 @@ public class CivChat2 extends ACivMod{
 		
 		chatListener = new CivChat2Listener(chatMan);
 		executor = new CivChat2Executor(instance);
+		registerNameLayerPermissions();
 		registerEvents();
 		
 		getCommand("say").setExecutor(executor);
@@ -106,6 +110,16 @@ public class CivChat2 extends ACivMod{
 		if(isBetterShardsEnabled){
 			this.getServer().getPluginManager().registerEvents(new vg.civcraft.mc.civchat2.listeners.BetterShardsListener(this), this);
 		}
+	}
+	
+	public void registerNameLayerPermissions() {
+		LinkedList<PlayerType> memberAndAbove = new LinkedList<PlayerType>();
+		memberAndAbove.add(PlayerType.MEMBERS);
+		memberAndAbove.add(PlayerType.MODS);
+		memberAndAbove.add(PlayerType.ADMINS);
+		memberAndAbove.add(PlayerType.OWNER);
+		PermissionType.registerPermission("READ_CHAT", (LinkedList<PlayerType>)memberAndAbove.clone());
+		PermissionType.registerPermission("WRITE_CHAT", (LinkedList<PlayerType>)memberAndAbove.clone());
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){

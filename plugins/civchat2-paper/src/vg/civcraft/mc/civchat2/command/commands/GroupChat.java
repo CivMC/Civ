@@ -16,6 +16,7 @@ import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class GroupChat extends PlayerCommand{
 	private CivChat2 plugin = CivChat2.getInstance();
@@ -53,7 +54,6 @@ public class GroupChat extends PlayerCommand{
 		boolean defGroup = false;
 		if(args.length <1){
 			//check if player is in groupchat and move them to normal chat
-			logger.debug("Checking if name=[" + playerName + "] is groupchatting");
 			if(isGroupChatting){
 				sender.sendMessage(ChatColor.RED + "You have been moved to global chat");
 				chatMan.removeGroupChat(playerName);
@@ -78,8 +78,8 @@ public class GroupChat extends PlayerCommand{
 			sender.sendMessage(ChatColor.RED + "There is no group with that name.");
 			return true;
 		}
-		if(!group.isMember(uuid)){
-			sender.sendMessage(ChatColor.RED + "You are not a member of that group.");
+		if(NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))){
+			sender.sendMessage(ChatColor.RED + "You don't have permission to use chat in this group");
 			return true;
 		}
 		if (plugin.getDatabaseManager().isIgnoringGroup(sender.getName(), group.getName())){
@@ -117,7 +117,6 @@ public class GroupChat extends PlayerCommand{
 				chatMsg.append(args[i]);
 				chatMsg.append(" ");
 			}
-			logger.debug("checking if name=[" + playerName + "] is groupchatting");
 			if(isGroupChatting){
 				//player already groupchatting check if its this group
 				Group curGroup = GroupManager.getGroup(chatMan.getGroupChatting(playerName));
