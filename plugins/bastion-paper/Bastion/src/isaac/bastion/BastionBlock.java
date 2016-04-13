@@ -25,6 +25,8 @@ import org.bukkit.scheduler.BukkitScheduler;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BastionBlock implements QTBox, Comparable<BastionBlock> {	
 	public static int MIN_BREAK_TIME; //Minimum time between erosions that count
@@ -287,6 +289,15 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		}
 		return true;
 	}
+	
+	public boolean canPearl(Player p) {
+		PlayerReinforcement reinforcement = getReinforcement();
+
+		if(reinforcement!=null){
+			return NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), p.getUniqueId(), PermissionType.getPermission("BASTION_PEARL"));
+		}
+		return true;
+	}
 
 	/**
 	 * checks if a player would be allowed to place
@@ -297,9 +308,15 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		if (reinforcement == null) return true;
 		if (player == null) return false;
 
-		if (reinforcement.isAccessible(player)) return true;
-
-		return false;
+		return NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission("BASTION_PLACE"));
+	}
+	
+	public boolean permAccess(Player p, PermissionType perm) {
+		PlayerReinforcement rein = getReinforcement();
+		if (rein == null) {
+			return true;
+		}
+		return NameAPI.getGroupManager().hasAccess(rein.getGroup(), p.getUniqueId(), perm);
 	}
 
 	/**
@@ -314,7 +331,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 
 		for (UUID player: players){
 			if (player != null)
-				if (reinforcement.isAccessible(player))
+				if (NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player, PermissionType.getPermission("BASTION_PLACE")))
 					return true;
 		}
 
