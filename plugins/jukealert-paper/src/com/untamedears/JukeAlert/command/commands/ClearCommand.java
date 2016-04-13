@@ -1,17 +1,18 @@
 package com.untamedears.JukeAlert.command.commands;
 
-import static com.untamedears.JukeAlert.util.Utility.findTargetedOwnedSnitch;
-
-import java.util.Set;
+import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
 
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.command.PlayerCommand;
 import com.untamedears.JukeAlert.model.Snitch;
+
 import org.bukkit.Bukkit;
+
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class ClearCommand extends PlayerCommand {
 
@@ -27,8 +28,8 @@ public class ClearCommand extends PlayerCommand {
     public boolean execute(final CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            final Snitch snitch = findTargetedOwnedSnitch(player);
-            if (snitch != null) {
+            final Snitch snitch = findLookingAtOrClosestSnitch(player);
+            if (snitch != null && NameAPI.getGroupManager().hasAccess(snitch.getGroup(), player.getUniqueId(), PermissionType.getPermission("CLEAR_SNITCHLOG"))) {
                 Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                     @Override
                     public void run() {
@@ -37,11 +38,14 @@ public class ClearCommand extends PlayerCommand {
                 });
                return true;
             }
+            else {
+            	sender.sendMessage(ChatColor.RED + "You do not own any snitches nearby or lack permission to delete their logs!");
+            	return true;
+            }
         } else {
             sender.sendMessage("You must be a player!");
             return false;
         }
-        return false;
     }
 
     private void deleteLog(CommandSender sender, Snitch snitch) {

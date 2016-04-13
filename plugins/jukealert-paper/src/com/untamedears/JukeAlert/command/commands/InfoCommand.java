@@ -1,6 +1,6 @@
 package com.untamedears.JukeAlert.command.commands;
 
-import static com.untamedears.JukeAlert.util.Utility.findTargetedOwnedSnitch;
+import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
 
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +12,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.untamedears.JukeAlert.command.PlayerCommand;
 import com.untamedears.JukeAlert.model.Snitch;
@@ -43,9 +46,9 @@ public class InfoCommand extends PlayerCommand {
         if (sender instanceof Player) {
             final Player player = (Player)sender;
             final UUID accountId = player.getUniqueId();
-            final Snitch snitch = findTargetedOwnedSnitch(player);
-            if (snitch == null) {
-                player.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
+            final Snitch snitch = findLookingAtOrClosestSnitch(player);
+            if (snitch == null || !NameAPI.getGroupManager().hasAccess(snitch.getGroup(), player.getUniqueId(), PermissionType.getPermission("READ_SNITCHLOG"))) {
+                player.sendMessage(ChatColor.RED + " You do not own any snitches nearby or lack permission to view their logs!");
                 return true;
             }
             final int snitchId = snitch.getId();

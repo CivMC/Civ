@@ -22,7 +22,7 @@ public class GroupMediator {
         return GroupManager.getGroup(groupName);
     }
 
-    public List<String> getGroupsByAccount(UUID accountId, boolean includeFounders, boolean includeModerators, boolean includeMembers) {
+    public List<String> getGroupsWithPermission(UUID accountId, PermissionType perm) {
     	List<String> returnValue = new ArrayList<String>();
 		List<Group> groups = new ArrayList<Group>();
 		for (String group: groupManager.getAllGroupNames(accountId)){
@@ -30,14 +30,7 @@ public class GroupMediator {
 			if (g == null) {
 				continue;
 			}
-			if (includeFounders && g.isOwner(accountId)) {
-				groups.add(g);
-			}
-			GroupPermission perm = groupManager.getPermissionforGroup(g);
-			if (includeModerators && perm.isAccessible(g.getPlayerType(accountId), PermissionType.BLOCKS)) {
-				groups.add(g);
-			}
-			if (includeMembers && g.isMember(accountId)) {
+			if (groupManager.hasAccess(group, accountId, perm)) {
 				groups.add(g);
 			}
 		}

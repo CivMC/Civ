@@ -1,12 +1,14 @@
 package com.untamedears.JukeAlert.command.commands;
 
-import static com.untamedears.JukeAlert.util.Utility.findTargetedOwnedSnitch;
-import static com.untamedears.JukeAlert.util.Utility.isPartialOwnerOfSnitch;
+import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.command.PlayerCommand;
@@ -49,7 +51,7 @@ public class JaToggleLeversCommand extends PlayerCommand {
                 return false;
             }
             
-            Snitch snitch = findTargetedOwnedSnitch(player);
+            Snitch snitch = findLookingAtOrClosestSnitch(player);
             
             if (snitch != null) {
             	
@@ -59,9 +61,9 @@ public class JaToggleLeversCommand extends PlayerCommand {
                     return false;
             	}
             	
-            	if (!isPartialOwnerOfSnitch(snitch, player.getUniqueId()))
+            	if (!NameAPI.getGroupManager().hasAccess(snitch.getGroup(), player.getUniqueId(), PermissionType.getPermission("SNITCH_TOGGLE_LEVER")))
             	{
-                    sender.sendMessage(ChatColor.RED + "You do not own any snitches nearby!");
+                    sender.sendMessage(ChatColor.RED + "You do not own any snitches nearby or do not have permission to modify them!");
                     return false;
             	}
             	
