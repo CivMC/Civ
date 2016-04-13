@@ -45,8 +45,8 @@ public class GroupStats extends PlayerCommandMiddle {
 			p.sendMessage(ChatColor.RED + "You are not on this group.");
 			return true;
 		}
-		GroupPermission gPerm = gm.getPermissionforGroup(g);
-		if (!(p.isOp() || p.hasPermission("namelayer.admin")) && !gPerm.isAccessible(pType, PermissionType.GROUPSTATS)){
+		boolean hasPerm = NameAPI.getGroupManager().hasAccess(g, uuid, PermissionType.getPermission("GROUPSTATS"));
+		if (!(p.isOp() || p.hasPermission("namelayer.admin")) && !hasPerm){
 			p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
 			return true;
 		}

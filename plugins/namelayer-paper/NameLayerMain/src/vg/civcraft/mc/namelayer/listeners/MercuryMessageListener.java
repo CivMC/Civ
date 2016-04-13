@@ -10,7 +10,6 @@ import org.bukkit.event.Listener;
 import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.mercury.events.AsyncPluginBroadcastMessageEvent;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.command.commands.InvitePlayer;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -22,10 +21,9 @@ import vg.civcraft.mc.namelayer.group.Group;
 public class MercuryMessageListener implements Listener{
 	
 	private GroupManager gm = NameAPI.getGroupManager();
-	private NameLayerPlugin nl = NameLayerPlugin.getInstance();
 	
 	public MercuryMessageListener() {
-		MercuryAPI.instance.registerPluginMessageChannel("namelayer");
+		MercuryAPI.registerPluginMessageChannel("namelayer");
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

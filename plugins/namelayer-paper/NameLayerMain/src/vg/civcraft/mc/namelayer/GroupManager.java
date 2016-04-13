@@ -2,8 +2,11 @@ package vg.civcraft.mc.namelayer;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -49,7 +52,7 @@ public class GroupManager{
 		}
 		GroupCreateEvent event = new GroupCreateEvent(
 				group.getName(), group.getOwner(),
-				group.getPassword(), group.getType());
+				group.getPassword());
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()){
 			NameLayerPlugin.log(Level.INFO, "Group create was cancelled for group: " + group.getName());
@@ -57,7 +60,7 @@ public class GroupManager{
 		}
 		int id = groupManagerDao.createGroup(
 				event.getGroupName(), event.getOwner(), 
-				event.getPassword(), event.getType());
+				event.getPassword());
 		if (id > -1) {
 			initiateDefaultPerms(event.getGroupName()); // give default perms to a newly create group
 			GroupManager.getGroup(id); // force a recache from DB.
@@ -290,6 +293,10 @@ public class GroupManager{
 		}
 	}
 	
+	/**
+	 * DO NOT WORK WITH THE PERMISSION OBJECT ITSELF TO DETERMINE ACCESS. Use the methods provided in this class instead, as they
+	 * respect all the permission inheritation stuff
+	 */
 	public GroupPermission getPermissionforGroup(Group group){
 		if (group == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getPermissionForGroup failed, caller passed in null", new Exception());
@@ -299,21 +306,49 @@ public class GroupManager{
 	}
 		
 	public boolean hasAccess(String groupname, UUID player, PermissionType perm) {
-		if (groupname == null || player == null || perm == null) {
-			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "hasAccess failed, caller passed in null", new Exception());
-			return false;
-		}
-
-		Group group = getGroup(groupname);
-		if (group == null) {
+		if (groupname == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "hasAccess failed (access denied), could not find group " + groupname);
 			return false;
 		}
-		
+		return hasAccess(getGroup(groupname), player, perm);
+	}
+	
+	public boolean hasAccess(Group group, UUID player, PermissionType perm) {
+		Player p = Bukkit.getPlayer(player);
+		if (p != null && (p.isOp() || p.hasPermission("namelayer.admin"))) {
+			return true;
+		}
+		if (group == null || player == null || perm == null) {
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "hasAccess failed, caller passed in null", new Exception());
+			return false;
+		}
+		if (!group.isValid()) {
+			group = getGroup(group.getName());
+			if (group == null) {
+				//what happened? who knows?
+				return false;
+			}
+		}
 		GroupPermission perms = getPermissionforGroup(group);
-		PlayerType rank = group.getPlayerType(player);	
-		
-		return perms.isAccessible(rank, perm);
+		for(PlayerType rank : getRecursivePlayerTypes(group, player)) {
+			if (perms.hasPermission(rank, perm)) {
+				//player has right rank in the group itself or at least one super group
+				return true;
+			}
+		}		
+		return false;
+	}
+	
+	private List<PlayerType> getRecursivePlayerTypes(Group group, UUID player) {
+		List<PlayerType> perms = new LinkedList<PlayerType>();
+		PlayerType type = group.getPlayerType(player);
+		if (type != null) {
+			perms.add(type);
+		}
+		if (group.hasSuperGroup()) {
+			perms.addAll(getRecursivePlayerTypes(group.getSuperGroup(), player));
+		}
+		return perms;
 	}
 			
 	// == PERMISSION HANDLING ============================================================= //
@@ -339,16 +374,19 @@ public class GroupManager{
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "initiateDefaultPerms failed, caller passed in null", new Exception());
 			return;
 		}
-		// for perms follow the order that they are in the enum PlayerType
-		String[] perms = {"DOORS CHESTS", 
-				"DOORS CHESTS BLOCKS MEMBERS CROPS", 
-				"DOORS CHESTS BLOCKS MODS MEMBERS PASSWORD LIST_PERMS CROPS GROUPSTATS",
-				"DOORS CHESTS BLOCKS ADMINS OWNER MODS MEMBERS PASSWORD SUBGROUP PERMS DELETE MERGE LIST_PERMS TRANSFER CROPS GROUPSTATS LINKING", 
-				""};
-		int x = 0;
-		for (PlayerType role: PlayerType.values()){
-			groupManagerDao.addPermission(group, role.name(), perms[x]);
-			x++;
+		Map <PlayerType, List <PermissionType>> defaultPermMapping = new HashMap<GroupManager.PlayerType, List<PermissionType>>();
+		for(PermissionType perm : PermissionType.getAllPermissions()) {
+			for(PlayerType type : perm.getDefaultPermLevels()) {
+				List <PermissionType> perms = defaultPermMapping.get(type);
+				if (perms == null) {
+					perms = new LinkedList<PermissionType>();
+					defaultPermMapping.put(type, perms);
+				}
+				perms.add(perm);
+			}
+		}
+		for (Entry <PlayerType, List <PermissionType>> entry: defaultPermMapping.entrySet()){
+			groupManagerDao.addPermission(group, entry.getKey().name(), entry.getValue());
 		}
 	}
 	
@@ -375,6 +413,7 @@ public class GroupManager{
 			g.setValid(false);
 			List<Integer>k = g.getGroupIds();
 			groupsByName.remove(group.toLowerCase());
+			NameLayerPlugin.getBlackList().removeFromCache(g.getName());
 			
 			boolean fail = true;
 			// You have a freaking hashmap, use it.
@@ -408,7 +447,7 @@ public class GroupManager{
 	public Timestamp getTimestamp(String group){
 		if (group == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getTimeStamp failed, caller passed in null", new Exception());
-			return null;
+			return null; 
 		}
 
 		return groupManagerDao.getTimestamp(group);
@@ -424,7 +463,7 @@ public class GroupManager{
 		MODS,
 		ADMINS,
 		OWNER,
-		SUBGROUP;// The perm players get when they are added from a super group.
+		NOT_BLACKLISTED;//anyone, who is not blacklisted
 		
 		private final static Map<String, PlayerType> BY_NAME = Maps.newHashMap();
 		

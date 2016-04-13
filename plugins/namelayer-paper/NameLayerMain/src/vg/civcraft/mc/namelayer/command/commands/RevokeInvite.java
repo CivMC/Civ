@@ -3,9 +3,7 @@ package vg.civcraft.mc.namelayer.command.commands;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -15,17 +13,12 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
-import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
-import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
-import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class RevokeInvite extends PlayerCommandMiddle{
 
-	private GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
 	public RevokeInvite(String name) {
 		super(name);
 		setIdentifier("nlri");
@@ -71,7 +64,6 @@ public class RevokeInvite extends PlayerCommandMiddle{
 		//get invitee PlayerType
 		PlayerType pType = group.getInvite(uuid);
 		
-		GroupPermission perm = gm.getPermissionforGroup(group);
 		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
 		if (t == null){
 			p.sendMessage(ChatColor.RED + "You are not on that group.");
@@ -80,16 +72,16 @@ public class RevokeInvite extends PlayerCommandMiddle{
 		boolean allowed = false;
 		switch (pType){ // depending on the type the executor wants to add the player to
 		case MEMBERS:
-			allowed = perm.isAccessible(t, PermissionType.MEMBERS);
+			allowed = gm.hasAccess(group, uuid, PermissionType.getPermission("MEMBERS"));
 			break;
 		case MODS:
-			allowed = perm.isAccessible(t, PermissionType.MODS);
+			allowed = gm.hasAccess(group, uuid, PermissionType.getPermission("MODS"));
 			break;
 		case ADMINS:
-			allowed = perm.isAccessible(t, PermissionType.ADMINS);
+			allowed = gm.hasAccess(group, uuid, PermissionType.getPermission("ADMINS"));
 			break;
 		case OWNER:
-			allowed = perm.isAccessible(t, PermissionType.OWNER);
+			allowed = gm.hasAccess(group, uuid, PermissionType.getPermission("OWNER"));
 			break;
 		default:
 			allowed = false;

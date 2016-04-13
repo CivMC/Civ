@@ -29,7 +29,6 @@ commands:
     aliases: [nllistgroups, nllistg, listgroups]
    nllm:
     aliases: [nllistmembers, nllistm, listmembers]
-   nllcm:
    nllp:
     aliases: [nllistpermissions, nllistperms, listpermissions]
    nlpp:
@@ -51,8 +50,6 @@ commands:
     aliases: [nltransfergroup, nltransfer, transfergroup]
    nlleg:
     aliases: [nlleavegroup, nlleave, leavegroup]
-   nllgt:
-    aliases: [nllistgrouptypes, nllistgtypes, listgrouptypes]
    nllpt:
     aliases: [nllistplayertypes, nllistptypes, listplayertypes]
    nllci:
@@ -67,6 +64,13 @@ commands:
     aliases: [nlgetdefaultgroup, nlgetdefault, getdefaultgroup]
    nlun:
     aliases: [updatename]
+   nlsbl:
+    aliases: [showblacklist, listblacklist]
+   nlbl:
+    aliases: [blacklist, addblacklist]
+   nlubl:
+    aliases: [removeblacklist, unblacklist]    
+       
 permissions:
    namelayer.admin:
       default: op

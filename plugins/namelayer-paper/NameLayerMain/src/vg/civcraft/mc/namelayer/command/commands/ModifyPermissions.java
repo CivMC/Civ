@@ -48,42 +48,53 @@ public class ModifyPermissions extends PlayerCommandMiddle{
 			p.sendMessage(ChatColor.RED + "This group is currently disiplined.");
 			return true;
 		}
-		GroupPermission gPerm = gm.getPermissionforGroup(g);
-		if (!gPerm.isAccessible(type, PermissionType.PERMS) && !g.isOwner(uuid)){
+		if (!gm.hasAccess(g, uuid, PermissionType.getPermission("PERMS")) && !g.isOwner(uuid) && !(p.isOp() || p.hasPermission("namelayer.admin"))){
 			p.sendMessage(ChatColor.RED + "You do not have permission for this command.");
 			return true;
 		}
 		String info = args[1];
-		PlayerType playerType = PlayerType.getPlayerType(args[2]);
+		PlayerType playerType = PlayerType.getPlayerType(args[2].toUpperCase());
 		if (playerType == null){
 			PlayerType.displayPlayerTypes(p);
 			return true;
 		}
-		PermissionType pType = PermissionType.getPermissionType(args[3]);
+		PermissionType pType = PermissionType.getPermission(args[3]);
 		if (pType == null){
-			PermissionType.displayPermissionTypes(p);
+			StringBuilder sb = new StringBuilder();
+			for(PermissionType perm : PermissionType.getAllPermissions()) {
+				sb.append(perm.getName());
+				sb.append(" ");
+			}
+			p.sendMessage(ChatColor.RED 
+						+ "That PermissionType does not exists.\n"
+						+ "The current types are: " + sb.toString());
 			return true;
 		}
-		
+		GroupPermission gPerm = gm.getPermissionforGroup(g);
 		if (info.equalsIgnoreCase("add")){
-			if (gPerm.isAccessible(playerType, pType))
-				sender.sendMessage(ChatColor.RED + "This PlayerType already has the PermissionType: " + pType.name());
+			if (gPerm.hasPermission(playerType, pType))
+				sender.sendMessage(ChatColor.RED + "This PlayerType already has the PermissionType: " + pType.getName());
 			else {
+				if (playerType == PlayerType.NOT_BLACKLISTED && pType == PermissionType.getPermission("JOIN_PASSWORD")) {
+					//we need to prevent players from explicitly adding people to this permission group
+					sender.sendMessage(ChatColor.RED + "You can't explicitly add players to this group. Per default any non blacklisted person will"
+							+ "be included in this permission group");
+				}
 				gPerm.addPermission(playerType, pType);
-				sender.sendMessage(ChatColor.GREEN + "The PermissionType: " + pType.name() + " was successfully added to the PlayerType: " +
+				sender.sendMessage(ChatColor.GREEN + "The PermissionType: " + pType.getName() + " was successfully added to the PlayerType: " +
 				playerType.name());
 				checkRecacheGroup(g);
 			}
 		}
 		else if (info.equalsIgnoreCase("remove")){
-			if (gPerm.isAccessible(playerType, pType)){
+			if (gPerm.hasPermission(playerType, pType)){
 				gPerm.removePermission(playerType, pType);
-				sender.sendMessage(ChatColor.GREEN + "The PermissionType: " + pType.name() + " was successfully removed from" +
+				sender.sendMessage(ChatColor.GREEN + "The PermissionType: " + pType.getName() + " was successfully removed from" +
 						" the PlayerType: " + playerType.name());
 				checkRecacheGroup(g);
 			}
 			else
-				sender.sendMessage(ChatColor.RED + "This PlayerType does not have the PermissionType: " + pType.name());
+				sender.sendMessage(ChatColor.RED + "This PlayerType does not have the PermissionType: " + pType.getName());
 		}
 		else{
 			p.sendMessage(ChatColor.RED + "Specify if you want to add or remove.");
@@ -97,9 +108,9 @@ public class ModifyPermissions extends PlayerCommandMiddle{
 			return null;
 
 		if (args.length == 0)
-			return GroupTabCompleter.complete(null, PermissionType.PERMS, (Player) sender);
+			return GroupTabCompleter.complete(null, PermissionType.getPermission("PERMS"), (Player) sender);
 		else if (args.length == 1)
-			return GroupTabCompleter.complete(args[0], PermissionType.PERMS, (Player)sender);
+			return GroupTabCompleter.complete(args[0], PermissionType.getPermission("PERMS"), (Player)sender);
 		else if (args.length == 2) {
 
 			if (args[1].length() > 0) {

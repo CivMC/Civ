@@ -52,7 +52,6 @@ public class RemoveMember extends PlayerCommandMiddle {
 		}
 		
 		String playerName = NameAPI.getCurrentName(uuid);
-		GroupPermission perm = gm.getPermissionforGroup(group);
 		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
 		PlayerType toBeRemoved = group.getPlayerType(uuid);
 		if (toBeRemoved == null){
@@ -62,19 +61,16 @@ public class RemoveMember extends PlayerCommandMiddle {
 		boolean allowed = false;
 		switch (toBeRemoved){ // depending on the type the executor wants to add the player to
 		case MEMBERS:
-			allowed = perm.isAccessible(t, PermissionType.MEMBERS);
+			allowed = gm.hasAccess(group, uuid, PermissionType.getPermission("MEMBERS"));
 			break;
 		case MODS:
-			allowed = perm.isAccessible(t, PermissionType.MODS);
+			allowed = gm.hasAccess(group, uuid, PermissionType.getPermission("MODS"));
 			break;
 		case ADMINS:
-			allowed = perm.isAccessible(t, PermissionType.ADMINS);
+			allowed = gm.hasAccess(group, uuid, PermissionType.getPermission("ADMINS"));
 			break;
 		case OWNER:
-			allowed = perm.isAccessible(t, PermissionType.OWNER);
-			break;
-		default:
-			allowed = false;
+			allowed = gm.hasAccess(group, uuid, PermissionType.getPermission("OWNER"));
 			break;
 		}
 		

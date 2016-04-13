@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.Config;
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
@@ -15,14 +16,17 @@ import vg.civcraft.mc.namelayer.command.CommandHandler;
 import vg.civcraft.mc.namelayer.database.AssociationList;
 import vg.civcraft.mc.namelayer.database.Database;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
+import vg.civcraft.mc.namelayer.group.BlackList;
 import vg.civcraft.mc.namelayer.listeners.AssociationListener;
 import vg.civcraft.mc.namelayer.listeners.MercuryMessageListener;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.misc.ClassHandler;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 
 public class NameLayerPlugin extends ACivMod{
 	private static AssociationList associations;
+	private static BlackList blackList;
 	private static GroupManagerDao groupManagerDao;
 	private static NameLayerPlugin instance;
 	private CommandHandler handle;
@@ -45,6 +49,8 @@ public class NameLayerPlugin extends ACivMod{
 		loadDatabases();
 	    ClassHandler.Initialize(Bukkit.getServer());
 		new NameAPI(new GroupManager(), associations);
+		PermissionType.initialize();
+		blackList = new BlackList();
 		groupManagerDao.loadGroupsInvitations();
 		registerListeners();
 		if (loadGroups){
@@ -180,5 +186,9 @@ public class NameLayerPlugin extends ACivMod{
 	
 	public int getGroupLimit(){
 		return groupLimit;
+	}
+	
+	public static BlackList getBlackList() {
+		return blackList;
 	}
 }

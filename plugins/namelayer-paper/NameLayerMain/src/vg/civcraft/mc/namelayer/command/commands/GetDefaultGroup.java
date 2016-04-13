@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class GetDefaultGroup extends PlayerCommandMiddle{
 
@@ -48,9 +47,9 @@ public class GetDefaultGroup extends PlayerCommandMiddle{
 			return null;
 
 		if (args.length == 1)
-			return GroupTabCompleter.complete(args[0], PermissionType.BLOCKS, (Player) sender);
+			return GroupTabCompleter.complete(args[0], null, (Player) sender);
 		else{
-			return GroupTabCompleter.complete(null, PermissionType.BLOCKS, (Player)sender);
+			return GroupTabCompleter.complete(null, null, (Player)sender);
 		}
 	}
 }

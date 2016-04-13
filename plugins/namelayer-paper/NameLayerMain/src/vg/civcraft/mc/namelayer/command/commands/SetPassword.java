@@ -44,8 +44,7 @@ public class SetPassword extends PlayerCommandMiddle{
 			return true;
 		}
 		
-		GroupPermission gPerm = gm.getPermissionforGroup(g);
-		if (!gPerm.isAccessible(pType, PermissionType.PASSWORD)){
+		if (!gm.hasAccess(g, uuid, PermissionType.getPermission("PASSWORD"))){
 			p.sendMessage(ChatColor.RED + "You do not have permission to modify that group.");
 			return true;
 		}
@@ -65,9 +64,9 @@ public class SetPassword extends PlayerCommandMiddle{
 			return null;
 
 		if (args.length == 1)
-			return GroupTabCompleter.complete(args[0], PermissionType.PASSWORD, (Player) sender);
+			return GroupTabCompleter.complete(args[0], PermissionType.getPermission("PASSWORD"), (Player) sender);
 		else{
-			return GroupTabCompleter.complete(null, PermissionType.PASSWORD, (Player)sender);
+			return GroupTabCompleter.complete(null, PermissionType.getPermission("PASSWORD"), (Player)sender);
 		}
 	}
 }

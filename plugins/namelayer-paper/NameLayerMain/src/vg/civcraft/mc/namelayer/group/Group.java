@@ -23,7 +23,6 @@ public class Group {
 	private String name;
 	private String password;
 	private UUID owner;
-	private GroupType type;
 	private boolean isDisciplined; // if true, prevents any interactions with this group
 	private boolean isValid = true;  // if false, then group has recently been deleted and is invalid
 	private int id;
@@ -35,7 +34,7 @@ public class Group {
 	private Map<UUID, PlayerType> invites = Maps.<UUID, PlayerType>newHashMap();
 	
 	public Group(String name, UUID owner, boolean disciplined, 
-			String password, GroupType type, int id) {
+			String password, int id) {
 		if (db == null) {
 			db = NameLayerPlugin.getGroupManagerDao();
 		}
@@ -43,7 +42,6 @@ public class Group {
 		this.name = name;
 		this.password = password;
 		this.owner = owner;
-		this.type = type;
 		this.isDisciplined = disciplined;
 	
 		for (PlayerType permission : PlayerType.values()) {
@@ -76,35 +74,12 @@ public class Group {
 		}
 	}
 	
-	private Map<UUID, PlayerType> getMembersMap() {
-		if (supergroup == null) {
-			return Maps.newHashMap(players);
-		}
-		
-		Map<UUID, PlayerType> inheritedMembers = supergroup.getMembersMap();
-		for (Map.Entry<UUID, PlayerType> entry : players.entrySet()) { 
-			UUID player = entry.getKey();
-			PlayerType currentRank = entry.getValue();
-			
-			if (inheritedMembers.containsKey(player)) {
-				PlayerType inheritedRank = inheritedMembers.get(player);
-				if (currentRank.compareTo(inheritedRank) > 0) {
-					inheritedMembers.put(player, currentRank);
-				}
-			} else {
-				inheritedMembers.put(player, currentRank);
-			}
-		}
-		return inheritedMembers;
-	}
-	
 	/**
 	 * Returns all the uuids of the members in this group.
 	 * @return Returns all the uuids.
 	 */
 	public List<UUID> getAllMembers() {
-		Map<UUID, PlayerType> members = getMembersMap();
-		return Lists.newArrayList(members.keySet());
+		return Lists.newArrayList(players.keySet());
 	}
 	
 	/**
@@ -113,10 +88,8 @@ public class Group {
 	 * @return Returns all the UUIDS of the specific PlayerType.
 	 */
 	public List<UUID> getAllMembers(PlayerType type) {
-		List<UUID> uuids = Lists.newArrayList();
-		
-		Map<UUID, PlayerType> members = getMembersMap();
-		for (Map.Entry<UUID, PlayerType> entry : members.entrySet()) {
+		List<UUID> uuids = Lists.newArrayList();;
+		for (Map.Entry<UUID, PlayerType> entry : players.entrySet()) {
 			if (entry.getValue() == type) {
 				uuids.add(entry.getKey());
 			}
@@ -290,8 +263,7 @@ public class Group {
 	 * @return Returns true if the player is a member, false otherwise.
 	 */
 	public boolean isMember(UUID uuid) {
-		Map<UUID, PlayerType> members = getMembersMap();
-		return members.containsKey(uuid);
+		return players.containsKey(uuid);
 	}
 
 	/**
@@ -301,9 +273,8 @@ public class Group {
 	 * @return Returns true if the player is a member of the specific playertype, otherwise false.
 	 */
 	public boolean isMember(UUID uuid, PlayerType type) {
-		Map<UUID, PlayerType> members = getMembersMap();
-		if (members.containsKey(uuid))
-			return members.get(uuid).equals(type);
+		if (players.containsKey(uuid))
+			return players.get(uuid).equals(type);
 		return false;
 	}
 
@@ -323,8 +294,14 @@ public class Group {
 	 * @return Returns the PlayerType of a UUID.
 	 */
 	public PlayerType getPlayerType(UUID uuid) {
-		Map<UUID, PlayerType> members = getMembersMap();
-		return members.get(uuid);
+		PlayerType member = players.get(uuid);
+		if (member != null) {
+			return member;
+		}
+		if (NameLayerPlugin.getBlackList().isBlacklisted(this, uuid)) {
+			return null;
+		}
+		return PlayerType.NOT_BLACKLISTED;
 	}
 	
 	public PlayerType getCurrentRank(UUID uuid) {
@@ -338,6 +315,9 @@ public class Group {
 	 * it will be overwritten.
 	 */
 	public void addMember(UUID uuid, PlayerType type) {
+		if (type == PlayerType.NOT_BLACKLISTED) {
+			return;
+		}
 		if (isMember(uuid, type)) {
 			db.removeMember(uuid, name);
 		}
@@ -461,8 +441,6 @@ public class Group {
 	 */
 	public boolean isOwner(UUID uuid) { return owner.equals(uuid); }
 
-	public GroupType getType() { return type; }
-
 	public boolean isDisciplined() { return isDisciplined; }
 
 	public boolean isValid() { return isValid; }
@@ -514,8 +492,6 @@ public class Group {
 	public void setDisciplined(boolean value) { this.isDisciplined = value; }
 
 	public void setValid(boolean valid) { this.isValid = valid; }
-
-	public void setType(GroupType type) { this.type = type; }
 
 	// acts as replace
 	public void setGroupId(int id) {

@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class GroupMemberTabCompleter {
@@ -17,9 +16,7 @@ public class GroupMemberTabCompleter {
 			Player sender) {
 		Group g = GroupManager.getGroup(groupName);
 		if (g != null) {
-			GroupPermission perm = NameAPI.getGroupManager()
-					.getPermissionforGroup(g);
-			if (perm.isAccessible(g.getPlayerType(sender.getUniqueId()), PermissionType.MEMBERS)) {
+			if (NameAPI.getGroupManager().hasAccess(groupName, sender.getUniqueId(), PermissionType.getPermission("MEMBERS"))) {
 				ArrayList<String> result = new ArrayList<String>();
 				List<UUID> uuids = g.getMembersByName(playerName);
 				for (UUID uuid : uuids) {

@@ -69,9 +69,7 @@ public class InfoDump extends PlayerCommandMiddle
 				player.sendMessage(ChatColor.RED + "No such Group");
 				return true;
 			}
-			PlayerType pType = group.getPlayerType(playerUUID);
 			GroupPermission permissions = gm.getPermissionforGroup(group);
-
 			StringBuilder outputBuilder = new StringBuilder();
 			outputBuilder.append("[NLID] : [GROUPNAME] ");
 			outputBuilder.append(group.getName());
@@ -82,7 +80,7 @@ public class InfoDump extends PlayerCommandMiddle
 			
 
 			outputBuilder.append(" : [OWNERS]");
-			if(permissions.isAccessible(pType, PermissionType.OWNER))
+			if(gm.hasAccess(group, playerUUID, PermissionType.getPermission("OWNER")))
 			{
 				for(UUID ownerUUID : group.getAllMembers(PlayerType.OWNER))
 				{
@@ -96,7 +94,7 @@ public class InfoDump extends PlayerCommandMiddle
 			}
 
 			outputBuilder.append(" : [ADMINS]");
-			if(permissions.isAccessible(pType, PermissionType.ADMINS))
+			if(gm.hasAccess(group, playerUUID, PermissionType.getPermission("ADMINS")))
 			{
 				for(UUID adminUUID : group.getAllMembers(PlayerType.ADMINS))
 				{
@@ -110,7 +108,7 @@ public class InfoDump extends PlayerCommandMiddle
 			}
 
 			outputBuilder.append(" : [MODS]");
-			if(permissions.isAccessible(pType, PermissionType.MODS))
+			if(gm.hasAccess(group, playerUUID, PermissionType.getPermission("MODS")))
 			{
 				for(UUID modUUID : group.getAllMembers(PlayerType.MODS))
 				{
@@ -124,7 +122,7 @@ public class InfoDump extends PlayerCommandMiddle
 			}
 
 			outputBuilder.append(" : [MEMBERS]");
-			if(permissions.isAccessible(pType, PermissionType.MEMBERS))
+			if(gm.hasAccess(group, playerUUID, PermissionType.getPermission("MEMBERS")))
 			{
 				for(UUID memberUUID : group.getAllMembers(PlayerType.MEMBERS))
 				{
@@ -137,7 +135,7 @@ public class InfoDump extends PlayerCommandMiddle
 				outputBuilder.append(group.getAllMembers(PlayerType.MEMBERS).size());
 			}
 
-			if(permissions.isAccessible(pType, PermissionType.LIST_PERMS))
+			if(gm.hasAccess(group, playerUUID, PermissionType.getPermission("LIST_PERMS")))
 			{
 				outputBuilder.append(" : [OWNER-PERMS] " + permissions.listPermsforPlayerType(PlayerType.OWNER));
 				outputBuilder.append(" : [ADMIN-PERMS] " + permissions.listPermsforPlayerType(PlayerType.ADMINS));

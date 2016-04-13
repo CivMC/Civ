@@ -3,14 +3,12 @@ package vg.civcraft.mc.namelayer.command.TabCompleters;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
 /**
  * Created by isaac on 2/2/2015.
@@ -42,8 +40,7 @@ public class GroupTabCompleter {
             }
         } else {
             for (String group_name : fitting_groups) {
-                Group group = gm.getGroup(group_name);
-                if (gm.getPermissionforGroup(group).isAccessible(group.getPlayerType(uuid), accessLevel))
+                if (gm.hasAccess(group_name, uuid, accessLevel)) 
                     result.add(group_name);
             }
         }

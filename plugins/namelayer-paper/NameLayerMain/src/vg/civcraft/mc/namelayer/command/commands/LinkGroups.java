@@ -46,6 +46,11 @@ public class LinkGroups extends PlayerCommandMiddle {
 		    return true; 
 		}
 		
+		if(subgroup.getName().equalsIgnoreCase(supergroup.getName())) {
+			p.sendMessage(ChatColor.RED + "Not today");
+			return true;
+		}
+		
 		// check if groups are accessible
 		
 		UUID uuid = NameAPI.getUUID(p.getName());
@@ -60,9 +65,14 @@ public class LinkGroups extends PlayerCommandMiddle {
 			return true;
 		}		
 		
-		if (!gm.hasAccess(subname, uuid, PermissionType.LINKING)) {
+		if (!gm.hasAccess(subgroup, uuid, PermissionType.getPermission("LINKING"))) {
 			p.sendMessage(ChatColor.RED 
 					+ "You don't have permission to do that on the sub group.");
+			return true;
+		}
+		if (!gm.hasAccess(supergroup, uuid, PermissionType.getPermission("LINKING"))) {
+			p.sendMessage(ChatColor.RED 
+					+ "You don't have permission to do that on the super group.");
 			return true;
 		}
 		
@@ -96,10 +106,10 @@ public class LinkGroups extends PlayerCommandMiddle {
 
 		if (args.length > 0) {
 			return GroupTabCompleter.complete(args[args.length - 1], 
-					PermissionType.SUBGROUP, (Player)sender);
+					PermissionType.getPermission("LINKING"), (Player)sender);
 		} else {
 			return GroupTabCompleter.complete(null, 
-					PermissionType.SUBGROUP, (Player)sender);
+					PermissionType.getPermission("LINKING"), (Player)sender);
 		}
 	}
 }

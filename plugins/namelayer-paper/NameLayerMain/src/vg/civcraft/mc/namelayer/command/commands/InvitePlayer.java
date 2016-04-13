@@ -24,7 +24,6 @@ import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -65,6 +64,10 @@ public class InvitePlayer extends PlayerCommandMiddle{
 					+ "Use /nlpp to change their PlayerType.");
 			return true;
 		}
+		if(NameLayerPlugin.getBlackList().isBlacklisted(group, targetAccount)) {
+			s.sendMessage(ChatColor.RED + "This player is currently blacklisted, you have to unblacklist him before inviting him to the group");
+			return true;
+		}
 		final PlayerType pType = targetType != null ? PlayerType.getPlayerType(targetType) : PlayerType.MEMBERS;
 		if (pType == null) {
 			if (p != null) {
@@ -74,9 +77,12 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			}
 			return true;
 		}
+		if (pType == PlayerType.NOT_BLACKLISTED) {
+			p.sendMessage(ChatColor.RED + "I think we both know that this shouldnt be possible");
+			return true;
+		}
 		if (!isAdmin) {
 			// Perform access check
-			final GroupPermission perm = gm.getPermissionforGroup(group);
 			final UUID executor = p.getUniqueId();
 			final PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
 			if (t == null) {
@@ -86,16 +92,16 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			boolean allowed = false;
 			switch (pType) { // depending on the type the executor wants to add the player to
 				case MEMBERS:
-					allowed = perm.isAccessible(t, PermissionType.MEMBERS);
+					allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MEMBERS"));
 					break;
 				case MODS:
-					allowed = perm.isAccessible(t, PermissionType.MODS);
+					allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MODS"));
 					break;
 				case ADMINS:
-					allowed = perm.isAccessible(t, PermissionType.ADMINS);
+					allowed = gm.hasAccess(group, executor, PermissionType.getPermission("ADMINS"));
 					break;
 				case OWNER:
-					allowed = perm.isAccessible(t, PermissionType.OWNER);
+					allowed = gm.hasAccess(group, executor, PermissionType.getPermission("OWNER"));
 					break;
 				default:
 					allowed = false;
@@ -144,14 +150,12 @@ public class InvitePlayer extends PlayerCommandMiddle{
 				if(inviter != null){
 					String inviterName = NameAPI.getCurrentName(inviter);
 					msg = "You have been invited to the group " + group.getName()
-							+ " by " + inviterName + ".\n" + "Use the command /nlag <group> to accept.\n"
-							+ "If you wish to toggle invites so they always are accepted please run /nltaai";
+							+ " by " + inviterName + ".\n";
 				} else {
-					msg = "You have been invited to the group " + group.getName()+ ".\n" 
-					+ "Use the command /nlag <group> to accept.\n"
-					+ "If you wish to toggle invites so they always are accepted please run /nltaai";
+					msg = "You have been invited to the group " + group.getName()+ ".\n";
 				}
-				TextComponent message = new TextComponent(msg + "Click this message to accept");
+				TextComponent message = new TextComponent(msg + "Click this message to accept. If you wish to toggle invites "
+						+ "so they always are accepted please run /nltaai");
 				message.setColor(net.md_5.bungee.api.ChatColor.GREEN);
 				message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/nlag " + group.getName()));
 				message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("  ---  Click to accept").create()));

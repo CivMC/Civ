@@ -71,8 +71,11 @@ public class PromotePlayer extends PlayerCommandMiddle{
 			PlayerType.displayPlayerTypes(p);
 			return true;
 		}
+		if(promoteeType == PlayerType.NOT_BLACKLISTED) {
+			p.sendMessage(ChatColor.RED + "Nice try");
+			return true;
+		}
 		
-		GroupPermission perm = gm.getPermissionforGroup(group);
 		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
 		
 		if (t == null){
@@ -83,16 +86,16 @@ public class PromotePlayer extends PlayerCommandMiddle{
 		boolean allowed = false;
 		switch (promoteeType){ // depending on the type the executor wants to add the player to
 		case MEMBERS:
-			allowed = perm.isAccessible(t, PermissionType.MEMBERS);
+			allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MEMBERS"));
 			break;
 		case MODS:
-			allowed = perm.isAccessible(t, PermissionType.MODS);
+			allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MODS"));
 			break;
 		case ADMINS:
-			allowed = perm.isAccessible(t, PermissionType.ADMINS);
+			allowed = gm.hasAccess(group, executor, PermissionType.getPermission("ADMINS"));
 			break;
 		case OWNER:
-			allowed = perm.isAccessible(t, PermissionType.OWNER);
+			allowed = gm.hasAccess(group, executor, PermissionType.getPermission("OWNER"));
 			break;
 		default:
 			allowed = false;
