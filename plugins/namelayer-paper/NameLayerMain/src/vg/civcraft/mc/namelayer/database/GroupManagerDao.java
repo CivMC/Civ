@@ -27,9 +27,6 @@ import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.group.GroupType;
-import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
-import vg.civcraft.mc.namelayer.group.groups.PublicGroup;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -168,7 +165,7 @@ public class GroupManagerDao {
 				public void run() {
 					Group g = getGroup(NameLayerPlugin.getSpecialAdminGroup());
 					if (g == null)
-						createGroup(NameLayerPlugin.getSpecialAdminGroup(), null, null, GroupType.PRIVATE);
+						createGroup(NameLayerPlugin.getSpecialAdminGroup(), null, null);
 					else {
 						for (UUID uuid: g.getAllMembers())
 							g.removeMember(uuid);
@@ -254,6 +251,7 @@ public class GroupManagerDao {
 			log(Level.INFO, "Database updating to version eleven, reworking permission system");
 			db.execute("create table if not exists permissionByGroup(group_id int not null,role varchar(40) not null,perm_id int not null, primary key(group_id,role,perm_id));");
 			db.execute("create table if not exists permissionIdMapping(perm_id int not null, name varchar(64) not null,primary key(perm_id));");
+			db.execute("alter table faction drop column group_type");
 			PreparedStatement permInit = db.prepareStatement("insert into permissionByGroup(group_id,role,perm_id) values(?,?,?);");
 			try {
 				Map <String, Integer> permIds = new HashMap<String, Integer>();
@@ -268,6 +266,7 @@ public class GroupManagerDao {
 					for(String p : perms) {
 						if (!p.equals("")) {
 							if(p.equals("BLOCKS")) {
+								//this permission was renamed and now includes less functionality than previously
 								p = "REINFORCE";
 							}
 							Integer id = permIds.get(p);
@@ -358,13 +357,12 @@ public class GroupManagerDao {
 				"in group_name varchar(255), " +
 				"in founder varchar(36), " +
 				"in password varchar(255), " +
-				"in discipline_flags int(11), " +
-				"in group_type varchar(40)) " +
+				"in discipline_flags int(11)) " +
 				"sql security invoker " +
 				"begin" +
 				" if (select (count(*) = 0) from faction_id q where q.group_name = group_name) is true then" + 
 				"  insert into faction_id(group_name) values (group_name); " +
-				"  insert into faction(group_name, founder, password, discipline_flags, group_type) values (group_name, founder, password, discipline_flags, group_type);" + 
+				"  insert into faction(group_name, founder, password, discipline_flags) values (group_name, founder, password, discipline_flags);" + 
 				"  insert into faction_member (member_name, role, group_id) select founder, 'OWNER', f.group_id from faction_id f where f.group_name = group_name; " +
 				"  select f.group_id from faction_id f where f.group_name = group_name; " +
 				" end if; " +
@@ -403,14 +401,14 @@ public class GroupManagerDao {
 		version = db.prepareStatement("select max(db_version) as db_version from db_version where plugin_name=?");
 		updateVersion = db.prepareStatement("insert into db_version (db_version, update_time, plugin_name) values (?,?,?)"); 
 		
-		createGroup = db.prepareStatement("call createGroup(?,?,?,?,?)");
-		getGroup = db.prepareStatement("select f.group_name, f.founder, f.password, f.discipline_flags, f.group_type, fi.group_id " +
+		createGroup = db.prepareStatement("call createGroup(?,?,?,?)");
+		getGroup = db.prepareStatement("select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id " +
 				"from faction f "
 				+ "inner join faction_id fi on fi.group_name = f.group_name "
 				+ "where f.group_name = ?");
 		getGroupIDs = db.prepareStatement("SELECT f.group_id, count(DISTINCT fm.member_name) AS sz FROM faction_id f "
 				+ "INNER JOIN faction_member fm ON f.group_id = fm.group_id WHERE f.group_name = ? GROUP BY f.group_id ORDER BY sz DESC");
-		getGroupById = db.prepareStatement("select f.group_name, f.founder, f.password, f.discipline_flags, f.group_type, fi.group_id " +
+		getGroupById = db.prepareStatement("select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id " +
 				"from faction f "
 				+ "inner join faction_id fi on fi.group_id = ? "
 				+ "where f.group_name = fi.group_name");
@@ -572,7 +570,7 @@ public class GroupManagerDao {
 		return ++version;
 	}
 	
-	public synchronized int createGroup(String group, UUID owner, String password, GroupType type){
+	public synchronized int createGroup(String group, UUID owner, String password){
 		NameLayerPlugin.reconnectAndReintializeStatements();
 		int ret = -1;
 		try {
@@ -583,7 +581,6 @@ public class GroupManagerDao {
 			createGroup.setString(2, own);
 			createGroup.setString(3, password);
 			createGroup.setInt(4, 0);
-			createGroup.setString(5, type.name());
 			ResultSet set = createGroup.executeQuery();
 			ret = set.next() ? set.getInt("f.group_id") : -1;
 			plugin.getLogger().log(Level.INFO, "Created group {0} w/ id {1} for {2}", 
@@ -611,22 +608,10 @@ public class GroupManagerDao {
 				UUID owner = (uuid != null) ? UUID.fromString(uuid) : null;
 				boolean discipline = set.getInt(4) != 0;
 				String password = set.getString(3);
-				GroupType type = GroupType.getGroupType(set.getString(5));
-				int id = set.getInt(6);
+				int id = set.getInt(5);
 				
-				Group g = null;
-				switch(type) {
-					case PRIVATE:
-						g = new PrivateGroup(name, owner, discipline, password, id);
-						break;
-					case PUBLIC:
-						g = new PublicGroup(name, owner, discipline, password, id);
-						break;
-					default:
-						g = new Group(name, owner, discipline, password, type, id);
-				}
+				Group g = new Group(name, owner, discipline, password, id);;
 				// other group IDs cached via the constructor.
-				
 				return g;
 			}
 		} catch (SQLException e) {
@@ -648,19 +633,8 @@ public class GroupManagerDao {
 				owner = UUID.fromString(uuid);
 			boolean dis = set.getInt(4) != 0;
 			String password = set.getString(3);
-			GroupType type = GroupType.getGroupType(set.getString(5));
-			int id = set.getInt(6);
-			Group g = null;
-			switch(type){
-			case PRIVATE:
-				g = new PrivateGroup(name, owner, dis, password, id);
-				break;
-			case PUBLIC:
-				g = new PublicGroup(name, owner, dis, password, id);
-				break;
-			default:
-				g = new Group(name, owner, dis, password, type, id);
-			}
+			int id = set.getInt(5);
+			Group g = new Group(name, owner, dis, password, id);
 			return g;
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem getting group " + groupId, e);

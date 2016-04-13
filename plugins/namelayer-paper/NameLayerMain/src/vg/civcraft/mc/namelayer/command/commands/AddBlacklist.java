@@ -15,8 +15,8 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
+import vg.civcraft.mc.namelayer.group.BlackList;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.group.groups.BlackList;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class AddBlacklist extends PlayerCommandMiddle {

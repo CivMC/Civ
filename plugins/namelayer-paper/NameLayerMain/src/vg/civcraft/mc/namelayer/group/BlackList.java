@@ -1,4 +1,4 @@
-package vg.civcraft.mc.namelayer.group.groups;
+package vg.civcraft.mc.namelayer.group;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.group.Group;
 
 public class BlackList {
 	private Map<String, Set<UUID>> blackListsByGroupName;

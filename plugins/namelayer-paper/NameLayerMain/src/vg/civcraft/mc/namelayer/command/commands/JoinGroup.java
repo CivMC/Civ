@@ -11,7 +11,6 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.group.groups.PrivateGroup;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -60,10 +59,7 @@ public class JoinGroup extends PlayerCommandMiddle{
 			p.sendMessage(ChatColor.RED + "You are already a member.");
 			return true;
 		}
-		if (g instanceof PrivateGroup)
-			((PrivateGroup) g).addMember(uuid, pType);
-		else
-			g.addMember(uuid, pType);
+		g.addMember(uuid, pType);
 		p.sendMessage(ChatColor.GREEN + "You have successfully been added to this group.");
 		checkRecacheGroup(g);
 		return true;

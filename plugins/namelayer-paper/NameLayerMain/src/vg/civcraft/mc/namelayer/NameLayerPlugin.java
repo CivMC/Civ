@@ -16,7 +16,7 @@ import vg.civcraft.mc.namelayer.command.CommandHandler;
 import vg.civcraft.mc.namelayer.database.AssociationList;
 import vg.civcraft.mc.namelayer.database.Database;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
-import vg.civcraft.mc.namelayer.group.groups.BlackList;
+import vg.civcraft.mc.namelayer.group.BlackList;
 import vg.civcraft.mc.namelayer.listeners.AssociationListener;
 import vg.civcraft.mc.namelayer.listeners.MercuryMessageListener;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;

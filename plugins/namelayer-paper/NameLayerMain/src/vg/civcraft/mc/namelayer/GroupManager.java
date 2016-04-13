@@ -52,7 +52,7 @@ public class GroupManager{
 		}
 		GroupCreateEvent event = new GroupCreateEvent(
 				group.getName(), group.getOwner(),
-				group.getPassword(), group.getType());
+				group.getPassword());
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()){
 			NameLayerPlugin.log(Level.INFO, "Group create was cancelled for group: " + group.getName());
@@ -60,7 +60,7 @@ public class GroupManager{
 		}
 		int id = groupManagerDao.createGroup(
 				event.getGroupName(), event.getOwner(), 
-				event.getPassword(), event.getType());
+				event.getPassword());
 		if (id > -1) {
 			initiateDefaultPerms(event.getGroupName()); // give default perms to a newly create group
 			GroupManager.getGroup(id); // force a recache from DB.

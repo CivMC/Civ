@@ -23,7 +23,6 @@ public class Group {
 	private String name;
 	private String password;
 	private UUID owner;
-	private GroupType type;
 	private boolean isDisciplined; // if true, prevents any interactions with this group
 	private boolean isValid = true;  // if false, then group has recently been deleted and is invalid
 	private int id;
@@ -35,7 +34,7 @@ public class Group {
 	private Map<UUID, PlayerType> invites = Maps.<UUID, PlayerType>newHashMap();
 	
 	public Group(String name, UUID owner, boolean disciplined, 
-			String password, GroupType type, int id) {
+			String password, int id) {
 		if (db == null) {
 			db = NameLayerPlugin.getGroupManagerDao();
 		}
@@ -43,7 +42,6 @@ public class Group {
 		this.name = name;
 		this.password = password;
 		this.owner = owner;
-		this.type = type;
 		this.isDisciplined = disciplined;
 	
 		for (PlayerType permission : PlayerType.values()) {
@@ -443,8 +441,6 @@ public class Group {
 	 */
 	public boolean isOwner(UUID uuid) { return owner.equals(uuid); }
 
-	public GroupType getType() { return type; }
-
 	public boolean isDisciplined() { return isDisciplined; }
 
 	public boolean isValid() { return isValid; }
@@ -496,8 +492,6 @@ public class Group {
 	public void setDisciplined(boolean value) { this.isDisciplined = value; }
 
 	public void setValid(boolean valid) { this.isValid = valid; }
-
-	public void setType(GroupType type) { this.type = type; }
 
 	// acts as replace
 	public void setGroupId(int id) {

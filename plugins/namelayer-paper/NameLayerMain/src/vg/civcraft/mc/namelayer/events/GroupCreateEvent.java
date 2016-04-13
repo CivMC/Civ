@@ -6,8 +6,6 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import vg.civcraft.mc.namelayer.group.GroupType;
-
 // Use this to create the group into the database
 // Afterwards grab the group from the groupmanager
 public class GroupCreateEvent extends Event implements Cancellable{
@@ -17,13 +15,11 @@ public class GroupCreateEvent extends Event implements Cancellable{
 	private UUID uuid;
 	private boolean cancelled = false;
 	private String password;
-	private GroupType type;
 	
-	public GroupCreateEvent(String groupName, UUID uuid, String password, GroupType type){
+	public GroupCreateEvent(String groupName, UUID uuid, String password){
 		this.groupName = groupName;
 		this.uuid = uuid;
 		this.password = password;
-		this.type = type;
 	}
 	/**
 	 * Overrides the group name and changes it to something else.
@@ -74,13 +70,5 @@ public class GroupCreateEvent extends Event implements Cancellable{
 	
 	public String getPassword(){
 		return password;
-	}
-	
-	public void setType(GroupType type){
-		this.type = type;
-	}
-	
-	public GroupType getType(){
-		return type;
 	}
 }
