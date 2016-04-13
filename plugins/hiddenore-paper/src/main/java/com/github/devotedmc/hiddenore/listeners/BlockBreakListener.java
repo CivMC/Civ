@@ -131,6 +131,9 @@ public class BlockBreakListener implements Listener {
 		HiddenOre.getTracking().trackBreak(event.getBlock().getLocation());
 	}
 	
+	/**
+	 * Core method of interest, captures block breaks and checks if we care; if we do, continue
+	 */
     @SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
@@ -138,20 +141,20 @@ public class BlockBreakListener implements Listener {
     		debug("Drop skipped at {0} - layer break max met", event.getBlock().getLocation());
     		return;
     	}
+
+        Player p = event.getPlayer();
+        if (p == null) return;
     	
         Block b = event.getBlock();
         String blockName = b.getType().name();
         Byte sb = b.getData();
-        BlockConfig bc = Config.isDropBlock(blockName, sb);
-        
+
+        BlockConfig bc = Config.isDropBlock(blockName, sb);      
         if (bc == null) return;
-        
-        Player p = event.getPlayer();
-        if (p == null) return;
         
         debug("Break of tracked type {0} by {1}", blockName, p.getDisplayName());
         
-        if (p.getItemInHand().getEnchantments().containsKey(Enchantment.SILK_TOUCH)) return;
+        if (!Config.instance.ignoreSilkTouch && p.getItemInHand().getEnchantments().containsKey(Enchantment.SILK_TOUCH)) return;
 
 		boolean hasDrop = false;
 

@@ -17,6 +17,7 @@ public final class Config {
 	public String defaultPrefix;
 	public boolean alertUser;
 	public boolean listDrops;
+	public boolean ignoreSilktouch;
 	public Map<String, BlockConfig> blockConfigs;
 	public Map<String, NameConfig> prettyNames;
 	
@@ -34,6 +35,7 @@ public final class Config {
     	alertUser = false;
     	listDrops = false;
     	isDebug = false;
+		ignoreSilktouch = false;
     	defaultPrefix = "You found hidden ore!";
     }
     
@@ -55,6 +57,8 @@ public final class Config {
     	trackFile = new File(HiddenOre.getPlugin().getDataFolder(), trackFileName);
     	trackSave = file.getLong("track_save_ticks", trackSave);
     	
+    	i.ignoreSilktouch = file.getBoolean("ignore_silktouch", i.ignoreSilktouch);
+
     	i.alertUser = file.getBoolean("alert_user", i.alertUser);
     	i.listDrops = file.getBoolean("list_drops", i.listDrops);
     	i.defaultPrefix = file.getString("prefix", i.defaultPrefix);

@@ -2,11 +2,10 @@ prefix: You found a hidden ore!
 alert_user: true
 list_drops: true
 debug: true
+ignore_silktouch: false
 blocks:
  STONE:
-  allTypes: false
-  types:
-   - 0
+  allTypes: true
   dropMultiple: false
   drops:
    COAL_ORE:
@@ -80,11 +79,11 @@ blocks:
     biomes:
      EXTREME_HILLS:
       chance: 0.001437
-     EXTREME_HILLS_MOUNTAINS:
+     MUTATED_EXTREME_HILLS:
       chance: 0.001437
-     EXTREME_HILLS_PLUS:
+     EXTREME_HILLS_WITH_TREES:
       chance: 0.001437
-     EXTREME_HILLS_PLUS_MOUNTAINS:
+     MUTATED_EXTREME_HILLS_WITH_TREES:
       chance: 0.001437
  NETHERRACK:
   allTypes: true
@@ -109,7 +108,9 @@ blocks:
       chance: 0.007
 # Example w/ custom prefixes.
 # SAND:
-#  allTypes: true
+#  allTypes: false
+#  types:
+#   - 0
 #  dropMultiple: true
 #  drops:
 #   INK_SACK:
