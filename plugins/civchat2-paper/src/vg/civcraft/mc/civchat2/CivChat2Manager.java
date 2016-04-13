@@ -18,6 +18,7 @@ import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class CivChat2Manager {	
 	
@@ -443,10 +444,8 @@ public class CivChat2Manager {
 		for(UUID uuid : membersUUID){
 			//only add online players to members
 			Player toAdd = Bukkit.getPlayer(uuid);
-			if(toAdd == null){
-				//null getplayer return just ignore
-			}
-			else if(toAdd.isOnline()){
+			if(toAdd != null && toAdd.isOnline() && NameAPI.getGroupManager().hasAccess(
+					group, toAdd.getUniqueId(), PermissionType.getPermission("READ_CHAT"))){
 				members.add(toAdd);
 			}
 		}
@@ -461,13 +460,6 @@ public class CivChat2Manager {
 								.toString());
 		sb.delete(0, sb.length());
 		for(Player receiver: members){
-			CivChat2.debugmessage(sb.append("Checking if player is ignoring group or player.. Receiver: " )
-									.append( receiver.getName() )
-									.append(" Group: ") 
-									.append( group.getName()) 
-									.append( " Sender: ")
-									.append( name)
-									.toString());
 			sb.delete(0, sb.length());
 			if(DBM.isIgnoringGroup(receiver.getUniqueId(), group.getName())){
 				continue;
@@ -503,19 +495,13 @@ public class CivChat2Manager {
 		List<UUID> membersUUID = g.getAllMembers();
 		for(UUID uuid : membersUUID){
 			Player toAdd = Bukkit.getPlayer(uuid);
-			if (toAdd != null && toAdd.isOnline()) {
+			if (toAdd != null && toAdd.isOnline() && NameAPI.getGroupManager().hasAccess(
+					g, toAdd.getUniqueId(), PermissionType.getPermission("READ_CHAT"))) {
 				members.add(toAdd);
 			}
 		}
 		StringBuilder sb = new StringBuilder();
 		for(Player receiver: members){
-			CivChat2.debugmessage(sb.append("Checking if player is ignoring group or player.. Receiver: " )
-									.append( receiver.getName() )
-									.append(" Group: ") 
-									.append( g.getName()) 
-									.append( " Sender: ")
-									.append( name)
-									.toString());
 			sb.delete(0, sb.length());
 			if(DBM.isIgnoringGroup(receiver.getUniqueId(), g.getName())){
 				continue;
