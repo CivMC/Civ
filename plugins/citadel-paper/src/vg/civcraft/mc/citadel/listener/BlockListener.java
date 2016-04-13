@@ -1,5 +1,6 @@
 package vg.civcraft.mc.citadel.listener;
 
+import static vg.civcraft.mc.citadel.Utility.canPlace;
 import static vg.civcraft.mc.citadel.Utility.createNaturalReinforcement;
 import static vg.civcraft.mc.citadel.Utility.createPlayerReinforcement;
 import static vg.civcraft.mc.citadel.Utility.isAuthorizedPlayerNear;
@@ -18,7 +19,6 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -42,12 +42,10 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
-import org.bukkit.material.PistonBaseMaterial;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelConfigManager;
@@ -62,8 +60,6 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.group.GroupType;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BlockListener implements Listener{
 	
@@ -182,10 +178,10 @@ public class BlockListener implements Listener{
             PlayerReinforcement pr = (PlayerReinforcement) rein;
             PlayerState state = PlayerState.get(player);
             boolean admin_bypass = player.hasPermission("citadel.admin.bypassmode");   
-            if (reinforcingBlock != null && isPlant(block) && (pr.isAccessible(player, PermissionType.CROPS) || admin_bypass)) {
+            if (reinforcingBlock != null && isPlant(block) && (pr.canAccessCrops(player) || admin_bypass)) {
                 //player has CROPS access to the soil block, allow them to break without affecting reinforcement
             	is_cancelled = false;
-            } else if (state.isBypassMode() && (pr.isBypassable(player) || admin_bypass) && !pr.getGroup().isDisciplined()) {
+            } else if (state.isBypassMode() && (pr.canBypass(player) || admin_bypass) && !pr.getGroup().isDisciplined()) {
                 if (admin_bypass) {
                 	/*
                     Citadel.verbose(
@@ -334,10 +330,6 @@ public class BlockListener implements Listener{
             }
             PlayerReinforcement reinforcement =
                 (PlayerReinforcement)generic_reinforcement;
-            Group group = reinforcement.getGroup();
-            if (group.getType() == GroupType.PUBLIC) {
-                return;
-            }
             double redstoneDistance = CitadelConfigManager.getMaxRedstoneDistance();
             if (!isAuthorizedPlayerNear(reinforcement, redstoneDistance)) {
                // Citadel.Log( 
@@ -347,53 +339,6 @@ public class BlockListener implements Listener{
         } catch(Exception e) {
         	Citadel.getInstance().getLogger().log(Level.WARNING, "Exception occured in BlockListener, BlockRedstoneEvent ", e);
         }
-    }
-	
-	private boolean canPlace(Block block, Player player) {
-        Material block_mat = block.getType();
-        
-        if (block_mat == Material.HOPPER || block_mat == Material.DROPPER){
-            for (BlockFace direction : all_sides) {
-                Block adjacent = block.getRelative(direction);
-                if (!(adjacent.getState() instanceof ContainerBlock)) {
-                    continue;
-                }
-                Reinforcement rein = rm.getReinforcement(adjacent);
-                if (null != rein && rein instanceof PlayerReinforcement) {
-                    PlayerReinforcement pr = (PlayerReinforcement)rein;
-                    if (pr.isInsecure() && !pr.isAccessible(player, PermissionType.CHESTS)) {
-                        return false;
-                    }
-                }
-            }
-        }
-        if (block_mat == Material.CHEST || block_mat == Material.TRAPPED_CHEST){
-            for (BlockFace direction : planar_sides) {
-                Block adjacent = block.getRelative(direction);
-                if (!(adjacent.getState() instanceof ContainerBlock)) {
-                    continue;
-                }
-                Reinforcement rein = rm.getReinforcement(adjacent);
-                if (null != rein && rein instanceof PlayerReinforcement) {
-                    PlayerReinforcement pr = (PlayerReinforcement)rein;
-                    if (!pr.isAccessible(player, PermissionType.CHESTS)) {
-                        return false;
-                    }
-                }
-            }
-        }
-        //stops players from modifying the reinforcement on a half slab by placing another block on top
-        Reinforcement reinforcement_on_block = Citadel.getReinforcementManager().getReinforcement(block);
-        if (reinforcement_on_block instanceof PlayerReinforcement) {
-            PlayerReinforcement reinforcement = (PlayerReinforcement) reinforcement_on_block;
-            if (!reinforcement.isBypassable(player)) {
-                return false;
-            }
-        } else if (reinforcement_on_block != null) {
-            return false; //not really sure when this could happen but just in case
-        }
-
-        return true;
     }
 	
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -416,7 +361,8 @@ public class BlockListener implements Listener{
 	            && reinforcement.isSecurable();
 	        boolean normal_access_denied =
 	            reinforcement != null
-	            && !(reinforcement.isAccessible(player, PermissionType.CHESTS, PermissionType.DOORS));
+	            && ((reinforcement.isDoor() && !reinforcement.canAccessDoors(player)) ||
+	            		(reinforcement.isContainer() &&!reinforcement.canAccessChests(player)));
 	        boolean admin_can_access = player.hasPermission("citadel.admin");
 	        if (access_reinforcement && normal_access_denied && !admin_can_access) {
 	            /*Citadel.verbose(
@@ -466,8 +412,7 @@ public class BlockListener implements Listener{
 	                            "Loc[%s]", reinforcement.getLocation().toString()));
 	                        String groupName = "!NULL!";
 	                        if (group != null) {
-	                        	groupName = String.format("[%s] (%s)", group.getName(),
-	                        			group.getType().name());
+	                        	groupName = String.format("[%s]", group.getName());
 	                        }
 	                        sb = new StringBuilder();
 	                        sb.append(String.format(" Group%s Durability[%d/%d]",
@@ -501,7 +446,7 @@ public class BlockListener implements Listener{
 	                        sb.append("\nGroup id: " + reinforcement.getGroupId());
 	                        
 	                        sendAndLog(player, ChatColor.GREEN, sb.toString());
-	                    } else if(reinforcement.isAccessible(player, PermissionType.BLOCKS, PermissionType.DOORS, PermissionType.CHESTS)){
+	                    } else if(reinforcement.canViewInformation(player)){
 	                        sb = new StringBuilder();
 	                        boolean immature = timeUntilMature(reinforcement) != 0
 	                            && CitadelConfigManager.isMaturationEnabled();
@@ -536,7 +481,7 @@ public class BlockListener implements Listener{
 	                // did player click on a reinforced block?
 	                pie.setCancelled(true);
 	                if (reinforcement != null) {
-	                    if (reinforcement.isBypassable(player)) {
+	                    if (reinforcement.canMakeInsecure(player)) {
 	                        reinforcement.toggleInsecure();
 	                        // Save the change
 	                        Citadel.getReinforcementManager().saveReinforcement(reinforcement);
@@ -579,7 +524,7 @@ public class BlockListener implements Listener{
 	                    		Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementFortificationCancelException occured in BlockListener, PlayerInteractEvent ",e);
 	                    	}
 	                    }
-	                } else if (reinforcement.isBypassable(player) || (player.isOp() || player.hasPermission("citadel.admin"))) {
+	                } else if (reinforcement.canBypass(player) || (player.isOp() || player.hasPermission("citadel.admin"))) {
 	                    String message = "";
 	                    Group group = state.getGroup();
 	                    Group old_group = reinforcement.getGroup();

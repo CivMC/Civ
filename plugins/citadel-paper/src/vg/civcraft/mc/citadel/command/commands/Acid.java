@@ -68,8 +68,8 @@ public class Acid extends PlayerCommandMiddle {
 				sendAndLog(p, ChatColor.RED, "You do not belong on that group.");
 				return true;
 			}
-			if (!pRein.isBypassable(p)) {
-				sendAndLog(p, ChatColor.RED, "You do not have sufficient permission to use acid blocks.");
+			if (!pRein.canAcid(p)) {
+				sendAndLog(p, ChatColor.RED, "You do not have sufficient permission to use acid blocks on this group.");
 				return true;
 			}
 			int time = Utility.timeUntilAcidMature(pRein);

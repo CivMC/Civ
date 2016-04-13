@@ -16,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.ContainerBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -26,6 +27,7 @@ import org.bukkit.material.Door;
 import org.bukkit.util.Vector;
 
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
+import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.misc.ReinforcemnetFortificationCancelException;
 import vg.civcraft.mc.citadel.reinforcement.MultiBlockReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.NaturalReinforcement;
@@ -35,6 +37,8 @@ import vg.civcraft.mc.citadel.reinforcementtypes.NaturalReinforcementType;
 import vg.civcraft.mc.citadel.reinforcementtypes.NonReinforceableType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 /**
@@ -82,6 +86,12 @@ public class Utility {
             }
             return null;
         }
+
+        if (!NameAPI.getGroupManager().hasAccess(g.getName(), player.getUniqueId(), PermissionType.getPermission("REINFORCE"))) {
+        	player.sendMessage(ChatColor.RED + "You don't have permission to reinforce on this group");
+        	return null;
+        }
+        
         // Find necessary itemstacks
         final PlayerInventory inv = player.getInventory();
         final int invSize = inv.getSize();
@@ -551,7 +561,7 @@ public class Utility {
                 slb.append(" - reinf mat lost");
 				Citadel.Log(slb.toString());
             }
-            return pr.isSecurable();
+            return (pr.isDoor() || pr.isContainer());
         }
         if (CitadelConfigManager.shouldLogBreaks()) {
             Citadel.Log(slb.toString());
@@ -641,7 +651,7 @@ public class Utility {
                         player_z < min_z || player_z > max_z) {
                     continue;
                 }
-                if (!reinforcement.isAccessible(player, PermissionType.DOORS)
+                if (!reinforcement.canAccessDoors(player)
                         && !player.hasPermission("citadel.admin.accesssecurable")) {
                     continue;
                 }
@@ -963,5 +973,52 @@ public class Utility {
             }
         }
         return null;
+    }
+    
+    public static boolean canPlace(Block block, Player player) {
+        Material block_mat = block.getType();
+        
+        if (block_mat == Material.HOPPER || block_mat == Material.DROPPER){
+            for (BlockFace direction : BlockListener.all_sides) {
+                Block adjacent = block.getRelative(direction);
+                if (!(adjacent.getState() instanceof ContainerBlock)) {
+                    continue;
+                }
+                Reinforcement rein = rm.getReinforcement(adjacent);
+                if (null != rein && rein instanceof PlayerReinforcement) {
+                    PlayerReinforcement pr = (PlayerReinforcement)rein;
+                    if (pr.isInsecure() && !pr.canAccessChests(player)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        if (block_mat == Material.CHEST || block_mat == Material.TRAPPED_CHEST){
+            for (BlockFace direction : BlockListener.planar_sides) {
+                Block adjacent = block.getRelative(direction);
+                if (!(adjacent.getState() instanceof ContainerBlock)) {
+                    continue;
+                }
+                Reinforcement rein = rm.getReinforcement(adjacent);
+                if (null != rein && rein instanceof PlayerReinforcement) {
+                    PlayerReinforcement pr = (PlayerReinforcement)rein;
+                    if (!pr.canAccessChests(player)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        //stops players from modifying the reinforcement on a half slab by placing another block on top
+        Reinforcement reinforcement_on_block = Citadel.getReinforcementManager().getReinforcement(block);
+        if (reinforcement_on_block instanceof PlayerReinforcement) {
+            PlayerReinforcement reinforcement = (PlayerReinforcement) reinforcement_on_block;
+            if (!reinforcement.canBypass(player)) {
+                return false;
+            }
+        } else if (reinforcement_on_block != null) {
+            return false; //not really sure when this could happen but just in case
+        }
+
+        return true;
     }
 }

@@ -5,7 +5,7 @@
 	<groupId>vg.civcraft.mc.citadel</groupId>
 	<artifactId>Citadel</artifactId>
 	<packaging>jar</packaging>
-	<version>3.4.46</version>
+	<version>3.4.47</version>
 	<name>Citadel</name>
 	<url>https://github.com/Civcraft/Citadel</url>
 
@@ -50,11 +50,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>vg.civcraft.mc.namelayer</groupId>
-			<artifactId>NameLayer</artifactId>
-			<version>2.5.43</version>
-			<scope>provided</scope>
-		</dependency>
+            <groupId>vg.civcraft.mc.namelayer</groupId>
+            <artifactId>NameLayer</artifactId>
+            <version>2.6</version>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
