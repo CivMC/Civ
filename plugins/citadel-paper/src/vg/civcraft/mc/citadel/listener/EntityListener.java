@@ -228,8 +228,7 @@ public class EntityListener implements Listener{
 							"Loc[%s]", pr.getLocation().toString()));
 					String groupName = "!NULL!";
 					if (group != null) {
-						groupName = String.format("[%s] (%s)", group.getName(),
-								group.getType().name());
+						groupName = String.format("[%s]");
 					}
 					sb = new StringBuilder();
 					sb.append(String.format(" Group%s Durability[%d/%d]",

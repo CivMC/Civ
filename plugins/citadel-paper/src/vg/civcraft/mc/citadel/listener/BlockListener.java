@@ -19,7 +19,6 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -43,12 +42,10 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
-import org.bukkit.material.PistonBaseMaterial;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelConfigManager;
@@ -62,11 +59,7 @@ import vg.civcraft.mc.citadel.misc.ReinforcemnetFortificationCancelException;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
-import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.group.GroupType;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BlockListener implements Listener{
 	
@@ -337,10 +330,6 @@ public class BlockListener implements Listener{
             }
             PlayerReinforcement reinforcement =
                 (PlayerReinforcement)generic_reinforcement;
-            Group group = reinforcement.getGroup();
-            if (group.getType() == GroupType.PUBLIC) {
-                return;
-            }
             double redstoneDistance = CitadelConfigManager.getMaxRedstoneDistance();
             if (!isAuthorizedPlayerNear(reinforcement, redstoneDistance)) {
                // Citadel.Log( 
@@ -423,8 +412,7 @@ public class BlockListener implements Listener{
 	                            "Loc[%s]", reinforcement.getLocation().toString()));
 	                        String groupName = "!NULL!";
 	                        if (group != null) {
-	                        	groupName = String.format("[%s] (%s)", group.getName(),
-	                        			group.getType().name());
+	                        	groupName = String.format("[%s]", group.getName());
 	                        }
 	                        sb = new StringBuilder();
 	                        sb.append(String.format(" Group%s Durability[%d/%d]",
