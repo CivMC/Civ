@@ -1,6 +1,6 @@
 package com.untamedears.JukeAlert.listener;
 
-import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
+import static com.untamedears.JukeAlert.util.Utility.immuneToSnitch;
 
 import java.util.Set;
 import java.util.UUID;
@@ -30,7 +30,7 @@ public class ItemExchangeListener implements Listener{
 		UUID accountId = player.getUniqueId();
 		Set<Snitch> snitches = snitchManager.findSnitches(world, location);
 		for (Snitch snitch : snitches) {
-            if (!isOnSnitch(snitch, accountId)) {
+            if (!immuneToSnitch(snitch, accountId)) {
                 snitch.imposeSnitchTax();
                 if (snitch.shouldLog()) {
                 	plugin.getJaLogger().logSnitchExchangeEvent(snitch, player, location);

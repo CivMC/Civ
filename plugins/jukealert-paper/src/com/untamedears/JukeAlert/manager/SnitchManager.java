@@ -19,10 +19,8 @@ import org.bukkit.World;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
-import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.untamedears.JukeAlert.JukeAlert;
@@ -128,11 +126,9 @@ public class SnitchManager {
                     }
                 }
                 Long maxLastPlayed = uuids.get(playerName);
-                GroupPermission perm = NameAPI.getGroupManager().getPermissionforGroup(group);
                 for (UUID mod : group.getAllMembers()) {
                     playerName = mod;
-                    PlayerType type = group.getPlayerType(playerName);
-                    if (!perm.isAccessible(type, PermissionType.BLOCKS)) // If they have permission to break blocks.
+                    if (!NameAPI.getGroupManager().hasAccess(group, playerName, PermissionType.getPermission("LIST_SNITCHES"))) // If they have permission to break blocks.
                     	continue;
                     if (!uuids.containsKey(playerName)) {
                         OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);

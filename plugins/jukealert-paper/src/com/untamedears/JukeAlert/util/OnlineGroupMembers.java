@@ -13,6 +13,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
@@ -148,7 +149,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
             GroupPermission perm = manager_.getPermissionforGroup(g);
             List<OfflinePlayer> mods = new ArrayList<OfflinePlayer>();
             for (UUID uuid: uuids)
-            	if (perm.isAccessible(g.getPlayerType(uuid), PermissionType.BLOCKS) && !g.isOwner(uuid))
+            	if (g.getPlayerType(uuid) != PlayerType.MEMBERS && !g.isOwner(uuid))
             		mods.add(Bukkit.getOfflinePlayer(uuid));
             mods_iter_ = mods.iterator();
         }
@@ -170,8 +171,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
             for (UUID uuid: uuids){
             	Group g = manager_.getGroup(groupName_);
             	GroupPermission perm = manager_.getPermissionforGroup(g);
-            	if (g.isMember(uuid) && !g.getOwner().equals(uuid) && 
-            			!perm.isAccessible(g.getPlayerType(uuid), PermissionType.BLOCKS))
+            	if (g.getPlayerType(uuid) != PlayerType.MEMBERS && !g.getOwner().equals(uuid))
             		members.add(Bukkit.getOfflinePlayer(uuid));
             member_iter_ = members.iterator();
             }
