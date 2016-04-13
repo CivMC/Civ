@@ -1407,7 +1407,7 @@ recipes:
         durability: 1
   Burn_Charcoal_from_Logs_Expert:
     type: PRODUCTION
-    name: Burn Charcoal from Logs
+    name: Burn Charcoal from Normal Logs
     production_time: 45s
     input:
       log:
@@ -1421,7 +1421,7 @@ recipes:
         durability: 1
   Burn_Charcoal_from_Logs2_Expert:
     type: PRODUCTION
-    name: Burn Charcoal from Logs2
+    name: Burn Charcoal from Acacia or Dark Oak
     production_time: 45s
     input:
       log:
@@ -6249,7 +6249,7 @@ recipes:
         amount: 64
       logs:
         material: LOG
-        amount: 128
+        amount: 64
         durability: -1
       netherwart:
         material: NETHER_STALK
@@ -6277,7 +6277,7 @@ recipes:
         amount: 64
       logs:
         material: LOG
-        amount: 128
+        amount: 64
         durability: -1
       cactus:
         material: CACTUS
@@ -6305,7 +6305,7 @@ recipes:
         amount: 64
       logs:
         material: LOG
-        amount: 128
+        amount: 64
         durability: -1
       sugarcane:
         material: SUGAR_CANE
@@ -6334,7 +6334,7 @@ recipes:
         amount: 320
       acacialogs:
         material: LOG_2
-        amount: 640
+        amount: 320
         durability: 0
       netherwart:
         material: NETHER_STALK
@@ -6368,7 +6368,7 @@ recipes:
         amount: 320
       sprucelogs:
         material: LOG
-        amount: 640
+        amount: 320
         durability: 1
       cactus:
         material: CACTUS
@@ -6403,7 +6403,7 @@ recipes:
         amount: 320
       birchlogs:
         material: LOG
-        amount: 640
+        amount: 320
         durability: 2
       sugarcane:
         material: SUGAR_CANE
@@ -6440,13 +6440,13 @@ recipes:
          - Compacted Item
       acacialogs:
         material: LOG_2
-        amount: 50
+        amount: 25
         durability: 0
         lore:
          - Compacted Item
       junglesaplings:
         material: SAPLING
-        amount: 4
+        amount: 3
         durability: 3
         lore:
          - Compacted Item
@@ -6468,9 +6468,7 @@ recipes:
         amount: 64
       apples:
         material: APPLE
-        amount: 1
-        lore:
-         - Compacted Item
+        amount: 32
       aether:
         material: GOLD_NUGGET
         amount: 960
@@ -6496,13 +6494,13 @@ recipes:
          - Compacted Item
       sprucelogs:
         material: LOG
-        amount: 50
+        amount: 25
         durability: 1
         lore:
          - Compacted Item
       darkoaksaplings:
         material: SAPLING
-        amount: 2
+        amount: 1
         durability: 5
         lore:
          - Compacted Item
@@ -6554,13 +6552,13 @@ recipes:
          - Compacted Item
       birchlogs:
         material: LOG
-        amount: 50
+        amount: 25
         durability: 2
         lore:
          - Compacted Item
       oaksaplings:
         material: SAPLING
-        amount: 6
+        amount: 4
         durability: 0
         lore:
          - Compacted Item
