@@ -11,6 +11,9 @@ import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.Sorter;
@@ -49,14 +52,19 @@ public class SorterInteractionManager implements IInteractionManager {
 	}
 
 	public void leftClick(Player p, Block b, BlockFace bf) {
-		if(FactoryMod.getManager().isCitadelEnabled()) {
+		if (FactoryMod.getManager().isCitadelEnabled()) {
 			ReinforcementManager rm = Citadel.getReinforcementManager();
-			//is this cast safe? Let's just assume yes for now
-			PlayerReinforcement rein = (PlayerReinforcement)rm.getReinforcement(b);
-			if (rein != null && !rein.getGroup().isMember(p.getUniqueId()) && !p.isOp()) {
-				p.sendMessage(ChatColor.RED + "You dont have permission to interact with this factory");
-				FactoryMod.sendResponse("FactoryNoPermission", p);
-				return;
+			// is this cast safe? Let's just assume yes for now
+			PlayerReinforcement rein = (PlayerReinforcement) rm
+					.getReinforcement(b);
+			if (rein != null) {
+				Group g = rein.getGroup();
+				if (!NameAPI.getGroupManager().hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("USE_FACTORY"))) {
+					p.sendMessage(ChatColor.RED
+							+ "You dont have permission to interact with this factory");
+					FactoryMod.sendResponse("FactoryNoPermission", p);
+					return;
+				}
 			}
 		}
 		if (b.equals(bfs.getFurnace())) {

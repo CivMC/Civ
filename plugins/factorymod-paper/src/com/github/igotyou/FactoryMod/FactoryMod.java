@@ -3,7 +3,6 @@ package com.github.igotyou.FactoryMod;
 import org.bukkit.entity.Player;
 
 import com.github.igotyou.FactoryMod.commands.FactoryModCommandHandler;
-import com.github.igotyou.FactoryMod.interactionManager.FurnCraftChestInteractionManager;
 import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
@@ -29,7 +28,6 @@ public class FactoryMod extends ACivMod {
 		mb = new MenuBuilder(cp.getDefaultMenuFactory());
 		manager.loadFactories();
 		registerListeners();
-		FurnCraftChestInteractionManager.prep();
 		if (getServer().getPluginManager().isPluginEnabled("CivMenu")) {
 			rm = ResponseManager.getResponseManager(this);
 		}

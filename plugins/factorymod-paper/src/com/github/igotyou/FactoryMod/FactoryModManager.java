@@ -16,6 +16,8 @@ import org.bukkit.block.Dropper;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
@@ -47,6 +49,7 @@ public class FactoryModManager {
 	private HashSet<Material> possibleInteractionBlock;
 	private Material factoryInteractionMaterial;
 	private boolean citadelEnabled;
+	private boolean nameLayerEnabled;
 	private boolean logInventories;
 	private int redstonePowerOn;
 	private int redstoneRecipeChange;
@@ -55,16 +58,33 @@ public class FactoryModManager {
 
 	public FactoryModManager(FactoryMod plugin,
 			Material factoryInteractionMaterial, boolean citadelEnabled,
-			int redstonePowerOn, int redstoneRecipeChange,
-			boolean logInventories, long noHealthGracePeriod) {
+			boolean nameLayerEnabled, int redstonePowerOn,
+			int redstoneRecipeChange, boolean logInventories,
+			long noHealthGracePeriod) {
 		this.plugin = plugin;
 		this.factoryInteractionMaterial = factoryInteractionMaterial;
 		this.citadelEnabled = citadelEnabled;
+		this.nameLayerEnabled = nameLayerEnabled;
 		this.redstonePowerOn = redstonePowerOn;
 		this.redstoneRecipeChange = redstoneRecipeChange;
 		this.noHealthGracePeriod = noHealthGracePeriod;
 
 		fileHandler = new FileHandler(this);
+		
+		if(nameLayerEnabled) {
+			//register our own permissions
+			List <PlayerType> memberAndAbove = new LinkedList<PlayerType>();
+			List <PlayerType> modAndAbove = new LinkedList<PlayerType>();
+			memberAndAbove.add(PlayerType.MEMBERS);
+			memberAndAbove.add(PlayerType.MODS);
+			memberAndAbove.add(PlayerType.ADMINS);
+			memberAndAbove.add(PlayerType.OWNER);
+			modAndAbove.add(PlayerType.MODS);
+			modAndAbove.add(PlayerType.ADMINS);
+			modAndAbove.add(PlayerType.OWNER);
+			PermissionType.registerPermission("USE_FACTORY", memberAndAbove);
+			PermissionType.registerPermission("UPGRADE_FACTORY", modAndAbove);
+		}
 
 		factoryCreationRecipes = new HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>>();
 		locations = new HashMap<Location, Factory>();

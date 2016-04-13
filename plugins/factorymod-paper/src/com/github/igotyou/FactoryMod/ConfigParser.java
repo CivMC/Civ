@@ -73,6 +73,8 @@ public class ConfigParser {
 		FileConfiguration config = plugin.getConfig();
 		boolean citadelEnabled = plugin.getServer().getPluginManager()
 				.isPluginEnabled("Citadel");
+		boolean nameLayerEnabled = plugin.getServer().getPluginManager()
+				.isPluginEnabled("NameLayer");
 		boolean logInventories = config.getBoolean("log_inventories", true);
 		Material factoryInteractionMaterial = Material.STICK;
 		try {
@@ -117,7 +119,7 @@ public class ConfigParser {
 		int globalPylonLimit = config.getInt("global_pylon_limit");
 		PylonRecipe.setGlobalLimit(globalPylonLimit);
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
-				citadelEnabled, redstonePowerOn, redstoneRecipeChange,
+				citadelEnabled, nameLayerEnabled, redstonePowerOn, redstoneRecipeChange,
 				logInventories, gracePeriod);
 		handleEnabledAndDisabledRecipes(config
 				.getConfigurationSection("crafting"));
