@@ -11,7 +11,6 @@ import com.untamedears.JukeAlert.model.Snitch;
 
 import org.bukkit.Bukkit;
 
-import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class ClearCommand extends PlayerCommand {
@@ -28,8 +27,8 @@ public class ClearCommand extends PlayerCommand {
     public boolean execute(final CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            final Snitch snitch = findLookingAtOrClosestSnitch(player);
-            if (snitch != null && NameAPI.getGroupManager().hasAccess(snitch.getGroup(), player.getUniqueId(), PermissionType.getPermission("CLEAR_SNITCHLOG"))) {
+            final Snitch snitch = findLookingAtOrClosestSnitch(player, PermissionType.getPermission("CLEAR_SNITCHLOG"));
+            if (snitch != null) {
                 Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                     @Override
                     public void run() {

@@ -46,8 +46,8 @@ public class InfoCommand extends PlayerCommand {
         if (sender instanceof Player) {
             final Player player = (Player)sender;
             final UUID accountId = player.getUniqueId();
-            final Snitch snitch = findLookingAtOrClosestSnitch(player);
-            if (snitch == null || !NameAPI.getGroupManager().hasAccess(snitch.getGroup(), player.getUniqueId(), PermissionType.getPermission("READ_SNITCHLOG"))) {
+            final Snitch snitch = findLookingAtOrClosestSnitch(player, PermissionType.getPermission("READ_SNITCHLOG"));
+            if (snitch == null) {
                 player.sendMessage(ChatColor.RED + " You do not own any snitches nearby or lack permission to view their logs!");
                 return true;
             }

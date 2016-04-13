@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -85,29 +86,6 @@ public class Utility {
     private static long failureReportDelay = 10000l;
     private static long lastNotifyPOSFailure = System.currentTimeMillis() - failureReportDelay;
     
-    /*
-    public static boolean isPartialOwnerOfSnitch(Snitch snitch, UUID accountId) {
-        Group faction = snitch.getGroup();
-        if (faction == null) return false;
-		if (faction.getOwner() == null) {
-			if (System.currentTimeMillis() - lastNotifyPOSFailure > failureReportDelay) {
-				JukeAlert.getInstance().getLogger().log(Level.WARNING, 
-						"isPartialOwnerOfSnitch called on ownerless group {0} {1}", 
-						new Object[] {faction.getName(), faction.getGroupId()});
-				lastNotifyPOSFailure = System.currentTimeMillis();
-			}
-			return false; // no owner at all?
-		}
-        PlayerType type = faction.getPlayerType(accountId);
-        GroupPermission perm = NameAPI.getGroupManager().getPermissionforGroup(faction);
-        if (perm == null && System.currentTimeMillis() - lastNotifyPOSFailure > failureReportDelay) {
-            JukeAlert.getInstance().getLogger().log(Level.WARNING, 
-                    "isPartialOwnerOfSnitch unable to find permissions for group {0}", faction.getName());
-            lastNotifyPOSFailure = System.currentTimeMillis();
-        }
-        return faction.isOwner(accountId) || (type != null && perm != null && perm.isAccessible(type, PermissionType.BLOCKS));
-    }  */
-    
     
     public static Snitch getSnitchUnderCursor(Player player) {
         SnitchManager manager = JukeAlert.getInstance().getSnitchManager();
@@ -162,12 +140,12 @@ public class Utility {
         return closestSnitch;
     } */
     
-    public static Snitch findClosestSnitch(Location loc) {
+    public static Snitch findClosestSnitch(Location loc, PermissionType perm, UUID player) {
     	Snitch closestSnitch = null;
         double closestDistance = Double.MAX_VALUE;
         Set<Snitch> snitches = JukeAlert.getInstance().getSnitchManager().findSnitches(loc.getWorld(), loc);
         for (final Snitch snitch : snitches) {
-            if (doesSnitchExist(snitch, true)) {
+            if (doesSnitchExist(snitch, true) && NameAPI.getGroupManager().hasAccess(snitch.getGroup(), player, perm)) {
                 double distance = snitch.getLoc().distanceSquared(loc);
                 if (distance < closestDistance) {
                     closestDistance = distance;
@@ -178,12 +156,12 @@ public class Utility {
         return closestSnitch;
     }
     
-    public static Snitch findLookingAtOrClosestSnitch(Player player) {
+    public static Snitch findLookingAtOrClosestSnitch(Player player, PermissionType perm) {
     	Snitch cursorSnitch = getSnitchUnderCursor(player);
     	if (cursorSnitch != null
-                && doesSnitchExist(cursorSnitch, true)) {
+                && doesSnitchExist(cursorSnitch, true) && NameAPI.getGroupManager().hasAccess(cursorSnitch.getGroup(), player.getUniqueId(), perm)) {
             return cursorSnitch;
         }
-        return findClosestSnitch(player.getLocation());
+        return findClosestSnitch(player.getLocation(), perm, player.getUniqueId());
     }
 }

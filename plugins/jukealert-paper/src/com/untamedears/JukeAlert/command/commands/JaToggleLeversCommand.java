@@ -51,19 +51,13 @@ public class JaToggleLeversCommand extends PlayerCommand {
                 return false;
             }
             
-            Snitch snitch = findLookingAtOrClosestSnitch(player);
+            Snitch snitch = findLookingAtOrClosestSnitch(player, PermissionType.getPermission("SNITCH_TOGGLE_LEVER"));
             
             if (snitch != null) {
             	
             	if (!snitch.shouldLog())
             	{
                     sender.sendMessage(ChatColor.RED + "Toggle Lever Settings can only be applied to logging jukeboxes.");
-                    return false;
-            	}
-            	
-            	if (!NameAPI.getGroupManager().hasAccess(snitch.getGroup(), player.getUniqueId(), PermissionType.getPermission("SNITCH_TOGGLE_LEVER")))
-            	{
-                    sender.sendMessage(ChatColor.RED + "You do not own any snitches nearby or do not have permission to modify them!");
                     return false;
             	}
             	
@@ -77,7 +71,7 @@ public class JaToggleLeversCommand extends PlayerCommand {
                 return true;
                 
             } else {
-                sender.sendMessage(ChatColor.RED + "You do not own any snitches nearby!");
+                sender.sendMessage(ChatColor.RED + "You do not own any snitches nearby or do not have permission to modify them!");
                 return false;
             }
             

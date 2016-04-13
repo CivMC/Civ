@@ -36,8 +36,8 @@ public class NameCommand extends PlayerCommand {
             } else {
             	name = args[0];
             }
-            Snitch snitch = findLookingAtOrClosestSnitch(player);
-            if (snitch != null && NameAPI.getGroupManager().hasAccess(snitch.getGroup(), player.getUniqueId(), PermissionType.getPermission("RENAME_SNITCH"))) {
+            Snitch snitch = findLookingAtOrClosestSnitch(player, PermissionType.getPermission("RENAME_SNITCH"));
+            if (snitch != null) {
             	plugin.getJaLogger().updateSnitchName(snitch, name);
             	Snitch newSnitch = snitch;
             	newSnitch.setName(name);
