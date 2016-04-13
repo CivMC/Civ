@@ -14,6 +14,7 @@ import static vg.civcraft.mc.citadel.Utility.wouldPlantDoubleReinforce;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -40,6 +41,7 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 
@@ -57,6 +59,8 @@ import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.events.PromotePlayerEvent;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
@@ -351,6 +355,19 @@ public class EntityListener implements Listener{
 			if (group.isMember(player.getUniqueId()) == false){
 				event.setCancelled(true);
 				return;
+			}
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.LOWEST)
+	public void playerJoinEvent(PlayerJoinEvent event){
+		Player p = event.getPlayer();
+		UUID uuid = p.getUniqueId();
+		GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
+		for (String groupName : db.getGroupNames(uuid)){
+			Group group = GroupManager.getGroup(groupName);			
+			if(NameAPI.getGroupManager().hasAccess(group, p.getUniqueId(), PermissionType.getPermission("REINFORCE"))) {
+				db.updateTimestamp(groupName);
 			}
 		}
 	}
