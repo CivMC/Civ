@@ -267,6 +267,9 @@ public class GroupManagerDao {
 					String [] perms = permList.split(" ");
 					for(String p : perms) {
 						if (!p.equals("")) {
+							if(p.equals("BLOCKS")) {
+								p = "REINFORCE";
+							}
 							Integer id = permIds.get(p);
 							if (id == null) {
 								//unknown perm, so we register it
