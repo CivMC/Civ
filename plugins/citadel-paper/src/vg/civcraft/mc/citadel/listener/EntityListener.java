@@ -364,9 +364,8 @@ public class EntityListener implements Listener{
 		Player p = event.getPlayer();
 		UUID uuid = p.getUniqueId();
 		GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
-		for (String groupName : db.getGroupNames(uuid)){
-			Group group = GroupManager.getGroup(groupName);			
-			if(NameAPI.getGroupManager().hasAccess(group, p.getUniqueId(), PermissionType.getPermission("REINFORCE"))) {
+		for (String groupName : db.getGroupNames(uuid)){	
+			if(NameAPI.getGroupManager().hasAccess(groupName, p.getUniqueId(), PermissionType.getPermission("REINFORCE"))) {
 				db.updateTimestamp(groupName);
 			}
 		}
