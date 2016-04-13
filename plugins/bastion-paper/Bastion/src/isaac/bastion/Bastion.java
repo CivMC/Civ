@@ -100,8 +100,12 @@ public final class Bastion extends JavaPlugin {
 		memberAndAbove.add(PlayerType.MODS);
 		memberAndAbove.add(PlayerType.ADMINS);
 		memberAndAbove.add(PlayerType.OWNER);
+		LinkedList <PlayerType> modAndAbove = new LinkedList<PlayerType>();
+		modAndAbove.add(PlayerType.MODS);
+		modAndAbove.add(PlayerType.ADMINS);
+		modAndAbove.add(PlayerType.OWNER);
 		PermissionType.registerPermission("BASTION_PEARL", memberAndAbove);
-		PermissionType.registerPermission("BASTION_PLACE", memberAndAbove);
+		PermissionType.registerPermission("BASTION_PLACE", modAndAbove);
 	}
 
 }
