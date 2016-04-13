@@ -64,6 +64,10 @@ public class InvitePlayer extends PlayerCommandMiddle{
 					+ "Use /nlpp to change their PlayerType.");
 			return true;
 		}
+		if(NameLayerPlugin.getBlackList().isBlacklisted(group, targetAccount)) {
+			s.sendMessage(ChatColor.RED + "This player is currently blacklisted, you have to unblacklist him before inviting him to the group");
+			return true;
+		}
 		final PlayerType pType = targetType != null ? PlayerType.getPlayerType(targetType) : PlayerType.MEMBERS;
 		if (pType == null) {
 			if (p != null) {

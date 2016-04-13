@@ -53,6 +53,10 @@ public class AddBlacklist extends PlayerCommandMiddle {
 			p.sendMessage(ChatColor.RED + "This player does not exist");
 			return true;
 		}
+		if (g.isMember(targetUUID)) {
+			p.sendMessage(ChatColor.RED + "You can't blacklist members of a group");
+			return true;
+		}
 		BlackList bl = NameLayerPlugin.getBlackList();
 		if (bl.isBlacklisted(g, targetUUID)) {
 			p.sendMessage(ChatColor.RED + "This player is already blacklisted");
