@@ -171,7 +171,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
             for (UUID uuid: uuids){
             	Group g = manager_.getGroup(groupName_);
             	GroupPermission perm = manager_.getPermissionforGroup(g);
-            	if (g.getPlayerType(uuid) != PlayerType.MEMBERS && !g.getOwner().equals(uuid))
+            	if (g.getPlayerType(uuid) == PlayerType.MEMBERS && !g.getOwner().equals(uuid))
             		members.add(Bukkit.getOfflinePlayer(uuid));
             member_iter_ = members.iterator();
             }
