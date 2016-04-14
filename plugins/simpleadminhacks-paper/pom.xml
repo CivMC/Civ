@@ -11,12 +11,12 @@
   <url>https://github.com/DevotedMC/SimpleAdminHacks</url>
   
   <build>
+    <finalName>${project.name}-${project.version}</finalName>
     <pluginManagement>
       <plugins>
-      
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.3.2</version>
+          <version>3.1</version>
           <configuration>
             <source>1.7</source>
             <target>1.7</target>
@@ -26,11 +26,9 @@
       </plugins>
     </pluginManagement>
         
-    <sourceDirectory>${basedir}/src</sourceDirectory>
-    
     <resources>
       <resource>
-        <directory>${basedir}/src/resources</directory>
+        <directory>${basedir}/src/main/resources</directory>
         <includes>
           <include>*.yml</include>
           <include>*.md</include>
