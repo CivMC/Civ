@@ -28,7 +28,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleCreateException;
@@ -49,10 +48,10 @@ import com.untamedears.ItemExchange.metadata.PotionMetadata;
 public class ExchangeRule {
 	private static final List<Material> NOT_SUPPORTED = Arrays.asList(Material.MAP, Material.WRITTEN_BOOK, Material.ENCHANTED_BOOK, Material.FIREWORK, Material.FIREWORK_CHARGE, Material.POTION);
 	
-	public static final String hiddenRuleSpacer = ChatColor.translateAlternateColorCodes('-',"-&-&-&-&-r");
-	public static final String hiddenCategorySpacer = ChatColor.translateAlternateColorCodes('-',"-&-&-&-r");
-	public static final String hiddenSecondarySpacer = ChatColor.translateAlternateColorCodes('-',"-&-&-r");
-	public static final String hiddenTertiarySpacer = ChatColor.translateAlternateColorCodes('-',"-&-r");
+	public static final String hiddenRuleSpacer = "§&§&§&§&§r";
+	public static final String hiddenCategorySpacer = "§&§&§&§r";
+	public static final String hiddenSecondarySpacer = "§&§&§r";
+	public static final String hiddenTertiarySpacer = "§&§r";
 	
 	public static final String ruleSpacer = "&&&&r";
 	public static final String categorySpacer = "&&&r";
@@ -306,12 +305,12 @@ public class ExchangeRule {
 	}
 
 	/*
-	 * Adds a ï¿½ in front of every character in a string
+	 * Adds a § in front of every character in a string
 	 */
 	private static String hideString(String string) {
 		String hiddenString = "";
 		for (char character : string.toCharArray()) {
-			hiddenString += ChatColor.translateAlternateColorCodes('-',"-") + character;
+			hiddenString += "§" + character;
 		}
 		return hiddenString;
 	}
@@ -386,7 +385,7 @@ public class ExchangeRule {
 	public static ItemStack toBulkItemStack(Collection<ExchangeRule> rules) {
 		ItemStack itemStack = ItemExchangePlugin.ITEM_RULE_ITEMSTACK.clone();
 
-		String ruleSpacer = ChatColor.translateAlternateColorCodes('-',"-&-&-&-&-r");
+		String ruleSpacer = "§&§&§&§&§r";
 
 		ItemMeta itemMeta = itemStack.getItemMeta();
 		itemMeta.setDisplayName(ChatColor.DARK_RED + "Bulk Rule Block");
@@ -491,7 +490,7 @@ public class ExchangeRule {
 		if(citadelGroup != null) {
 			compiledRule += hideString(escapeString(citadelGroup.getName()));
 		}
-		compiledRule += hiddenCategorySpacer + ChatColor.translateAlternateColorCodes('-',"-r");
+		compiledRule += hiddenCategorySpacer + "§r";
 		return compiledRule;
 	}
 
@@ -500,7 +499,7 @@ public class ExchangeRule {
 			if(citadelGroup != null) {
 				UUID playerId = player.getUniqueId();
 
-				if(hasShopAccess(citadelGroup, playerId)) {
+				if(citadelGroup.isMember(playerId)) {
 					return true;
 				}
 				else {
@@ -510,10 +509,6 @@ public class ExchangeRule {
 		}
 
 		return true;
-	}
-	
-	private boolean hasShopAccess(Group g, UUID uuid) {
-		return NameAPI.getGroupManager().hasAccess(g.getName(), uuid, PermissionType.getPermission("USE_SHOP"));
 	}
 
 	/*
@@ -613,7 +608,7 @@ public class ExchangeRule {
 		if(citadelGroup != null) {
 			UUID playerId = p.getUniqueId();
 			
-			if(hasShopAccess(citadelGroup, playerId)) {
+			if(citadelGroup.isMember(playerId)) {
 				displayed.add(ChatColor.GREEN + "Restricted with Citadel. You have access to this shop.");
 			}
 			else {
