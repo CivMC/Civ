@@ -78,7 +78,7 @@ public class GroupChat extends PlayerCommand{
 			sender.sendMessage(ChatColor.RED + "There is no group with that name.");
 			return true;
 		}
-		if(NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))){
+		if(!NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))){
 			sender.sendMessage(ChatColor.RED + "You don't have permission to use chat in this group");
 			return true;
 		}
