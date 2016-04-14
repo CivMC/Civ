@@ -880,7 +880,7 @@ public class GroupManagerDao {
 				}
 				int id = set.getInt(2);
 				PermissionType perm = PermissionType.getPermission(id);
-				if (perm != null) {
+				if (perm != null && !listPerm.contains(perm)) {
 					listPerm.add(perm);
 				}
 			}
