@@ -26,13 +26,11 @@ import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
-import com.github.igotyou.FactoryMod.utility.MenuBuilder;
 
 public class FurnCraftChestInteractionManager implements IInteractionManager {
 	private FurnCraftChestFactory fccf;
 	private HashMap<Clickable, InputRecipe> recipes = new HashMap<Clickable, InputRecipe>();
 	private static ReinforcementManager rm;
-	private static MenuBuilder mb;
 
 	public FurnCraftChestInteractionManager(FurnCraftChestFactory fccf) {
 		this.fccf = fccf;
@@ -47,7 +45,6 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	}
 
 	public static void prep() {
-		mb = FactoryMod.getMenuBuilder();
 		if (FactoryMod.getManager().isCitadelEnabled()) {
 			rm = Citadel.getReinforcementManager();
 		} else {
@@ -246,7 +243,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			Clickable menuC = new Clickable(menuStack) {
 				@Override
 				public void clicked(Player arg0) {
-					mb.openFactoryBrowser(arg0, fccf.getName());
+					FactoryMod.getMenuBuilder().openFactoryBrowser(arg0, fccf.getName());
 				}
 			};
 			ci.setSlot(menuC, 35);
