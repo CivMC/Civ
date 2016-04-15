@@ -1,13 +1,11 @@
 package vg.civcraft.mc.civmodcore;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmodcore.annotations.*;
@@ -15,11 +13,11 @@ import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.interfaces.ApiManager;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
-import vg.civcraft.mc.civmodcore.util.ClassUtility;
 
-public abstract class ACivMod extends JavaPlugin implements Listener{
+public abstract class ACivMod extends JavaPlugin {
 	
 	protected CommandHandler handle;
+	private static boolean initializedAPIs = false;
 	
 	protected abstract String getPluginName();
 	
@@ -112,18 +110,25 @@ public abstract class ACivMod extends JavaPlugin implements Listener{
     }
     private void loadConfiguration() {
         config_ = new Config(this);
-        System.out.println("loaded config for: "+getPluginName() + "Config: "+ (config_!=null));
+        info("loaded config for: "+getPluginName() + "Config: "+ (config_!=null));
     }
     @Override
     public void onEnable() {
-      registerEvents();
       registerCommands();
-      new NiceNames().loadNames();
+      initApis(this);
       //global_instance_ = this;
       info("Main Plugin Events and Config Command registered");
     }
+    
+    private static synchronized void initApis(ACivMod instance) {
+    	if (!initializedAPIs) {
+    		initializedAPIs = true;
+    		instance.registerEvents();
+    		new NiceNames().loadNames();
+    	}
+    }
+    
     private void registerEvents() {
-    	getServer().getPluginManager().registerEvents(this, this);
     	getServer().getPluginManager().registerEvents(new ClickableInventoryListener(), this);
     }
     public void registerCommands() {
