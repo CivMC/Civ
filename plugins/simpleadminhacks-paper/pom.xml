@@ -54,6 +54,12 @@
       <version>1.9-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>net.minelink</groupId>
+      <artifactId>CombatTagPlus</artifactId>
+      <version>1.2.2-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
-  
+ 
 </project>

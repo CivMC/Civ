@@ -36,6 +36,7 @@ permissions:
       simpleadmin.chestmod: true
       simpleadmin.kit: true
       simpleadmin.book: true
+      simpleadmin.broadcast: true
     simpleadmin.hacks:
       description: Allows control of the hacks and settings which simpleadminhacks supports
       default: op
@@ -56,4 +57,7 @@ permissions:
       default: op
     simpleadmin.book:
       description: Gives ability to gift starting book
+      default: op
+    simpleadmin.broadcast:
+      description: Gives the holder the ability to receive broadcasts
       default: op

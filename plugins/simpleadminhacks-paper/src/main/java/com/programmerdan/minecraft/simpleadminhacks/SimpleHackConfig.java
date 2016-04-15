@@ -29,7 +29,7 @@ public abstract class SimpleHackConfig {
 	/**
 	 * Subclasses should override this method.
 	 */
-	protected void wireup(ConfigurationSection config);
+	protected abstract void wireup(ConfigurationSection config);
 
 	/**
 	 * Might be useful in some situations for subclasses to directly access the 

@@ -2,6 +2,9 @@ package com.programmerdan.minecraft.simpleadminhacks;
 
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.programmerdan.minecraft.simpleadminhacks.configs.CTAnnounceConfig;
+import com.programmerdan.minecraft.simpleadminhacks.hacks.CTAnnounce;
+
 /**
  * Baseline configuration for SimpleAdminHacks and parser for all actual Hacks.
  *
@@ -15,6 +18,7 @@ public class SimpleAdminHacksConfig {
 	private ConfigurationSection config;
 
 	private boolean debug;
+	private String broadcastPermission;
 
 	public SimpleAdminHacksConfig(ConfigurationSection root) {
 		this(SimpleAdminHacks.instance(), root);
@@ -30,9 +34,18 @@ public class SimpleAdminHacksConfig {
 		}
 
 		this.debug = config.getBoolean("debug", false);
+		
+		this.broadcastPermission = config.getString("broadcast_permission", "simpleadmin.broadcast");
 
 		// Now load all the Hacks and register.
-		ConfigurationSection hacks = config.getSection("hacks");
+		ConfigurationSection hacks = config.getConfigurationSection("hacks");
+		for (String key : hacks.getKeys(false)) {
+			ConfigurationSection hack = hacks.getConfigurationSection(key);
+			
+			// TODO eventually, replace this with reflection based load. For tonight, hack it.
+			SimpleHack<?> newHack = bootstrapHack(hack);
+			plugin.register(newHack);
+		}
 	}
 
 	public boolean isDebug() {
@@ -47,5 +60,26 @@ public class SimpleAdminHacksConfig {
 	protected void update(String node, Object value) {
 		config.set(node, value);
 		plugin.saveConfig();
+	}
+	
+	public String getBroadcastPermission() {
+		return this.broadcastPermission;
+	}
+	
+	private SimpleHack<?> bootstrapHack(ConfigurationSection boot) {
+		String hackName = boot.getString("name");
+		if (hackName == null) {
+			throw new InvalidConfigException("Hack stubbed but config lacks a name, cannot determine which hack to load");
+		}
+		
+		try {
+			if (hackName.equals(CTAnnounce.NAME)){
+				return new CTAnnounce(this.plugin, new CTAnnounceConfig(boot));
+			}
+		} catch (InvalidConfigException ice) {
+			plugin.debug("Failed to activate CTAccouncement hack");
+		}
+			
+		throw new InvalidConfigException("Claimed to be a viable hack but isn't: " + hackName);
 	}
 }

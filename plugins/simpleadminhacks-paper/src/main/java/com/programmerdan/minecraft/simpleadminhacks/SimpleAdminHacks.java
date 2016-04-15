@@ -2,11 +2,11 @@ package com.programmerdan.minecraft.simpleadminhacks;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
-
 import java.util.ArrayList;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.Listener;
 
 /**
  * Wrapper for simple admin hacks, each doing a thing and each configurable.
@@ -16,7 +16,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class SimpleAdminHacks extends JavaPlugin {
 	private static SimpleAdminHacks plugin;
 	private SimpleAdminHacksConfig config;
-	private ArrayList<SimpleHack> hacks;
+	private ArrayList<SimpleHack<?>> hacks;
 
 	/**
 	 * No-op constructor
@@ -30,7 +30,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 	 */
 	public void onEnable() {
 		SimpleAdminHacks.plugin = this;
-		this.hacks = new ArrayList<SimpleHack>();
+		this.hacks = new ArrayList<SimpleHack<?>>();
 		
 		// Config bootstrap
 		this.saveDefaultConfig();
@@ -51,7 +51,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 		}
 
 		// Boot up the hacks.
-		for (SimpleHack hack : hacks) {
+		for (SimpleHack<?> hack : hacks) {
 			hack.enable();
 		}
 
@@ -63,7 +63,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 	 */
 	public void onDisable() {
 		if (hacks == null) return;
-		for (SimpleHack hack : hacks) {
+		for (SimpleHack<?> hack : hacks) {
 			hack.disable();
 		}
 		hacks.clear();
@@ -75,7 +75,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 	/**
 	 * Registers a new SimpleHack.
 	 */
-	public void register(SimpleHack hack) {
+	public void register(SimpleHack<?> hack) {
 		if (hacks != null) {
 			hacks.add(hack);
 		}
@@ -84,7 +84,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 	/**
 	 * Unregisters an existing SimpleHack.
 	 */
-	public void unregister(SimpleHack hack) {
+	public void unregister(SimpleHack<?> hack) {
 		if (hacks != null) {
 			hacks.remove(hack);
 		}
@@ -146,5 +146,15 @@ public class SimpleAdminHacks extends JavaPlugin {
 
 	public void log(Level level, String message, Object...objects) {
 		getLogger().log(level, message, objects);
+	}
+	
+	// Other non-static convenience aides
+	
+	public boolean serverHasPlugin(String pluginName) {
+		return this.getServer().getPluginManager().isPluginEnabled(pluginName);
+	}
+	
+	public void registerListener(Listener listener) {
+		this.getPluginLoader().createRegisteredListeners(listener, this);
 	}
 }
