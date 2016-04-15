@@ -2,11 +2,15 @@ package com.programmerdan.minecraft.simpleadminhacks;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.LinkedList;
+import java.util.Collections;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.CommandExecutor;
 
 /**
  * Wrapper for simple admin hacks, each doing a thing and each configurable.
@@ -16,7 +20,7 @@ import org.bukkit.event.Listener;
 public class SimpleAdminHacks extends JavaPlugin {
 	private static SimpleAdminHacks plugin;
 	private SimpleAdminHacksConfig config;
-	private ArrayList<SimpleHack<?>> hacks;
+	private List<SimpleHack<?>> hacks;
 
 	/**
 	 * No-op constructor
@@ -30,7 +34,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 	 */
 	public void onEnable() {
 		SimpleAdminHacks.plugin = this;
-		this.hacks = new ArrayList<SimpleHack<?>>();
+		this.hacks = new LinkedList<SimpleHack<?>>();
 		
 		// Config bootstrap
 		this.saveDefaultConfig();
@@ -55,7 +59,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 			hack.enable();
 		}
 
-		this.getCommand("hacks").setExecutor(new CommandListener());
+		this.registerCommand("hacks", new CommandListener());
 	}
 
 	/**
@@ -88,6 +92,13 @@ public class SimpleAdminHacks extends JavaPlugin {
 		if (hacks != null) {
 			hacks.remove(hack);
 		}
+	}
+
+	/**
+	 * Returns a wrapped version of hacks preventing external removal but allowing interaction with the hacks.
+	 */
+	public List<SimpleHack<?>> getHacks() {
+		return Collections.unmodifiableList(hacks);
 	}
 
 	/**
@@ -157,4 +168,14 @@ public class SimpleAdminHacks extends JavaPlugin {
 	public void registerListener(Listener listener) {
 		this.getPluginLoader().createRegisteredListeners(listener, this);
 	}
+
+	public void registerCommand(String command, CommandExecutor executor) {
+		PluginCommand cmd = this.getCommand(command);
+		if (cmd != null) {
+			cmd.setExecutor(executor);
+		} else {
+			log(Level.WARNING, "Failed to register Executor for {0}, please define that command in the plugin.yml first.", command);
+		}
+	}
+		
 }

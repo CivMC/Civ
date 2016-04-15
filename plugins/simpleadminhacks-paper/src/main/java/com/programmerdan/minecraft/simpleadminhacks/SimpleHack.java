@@ -78,7 +78,6 @@ public abstract class SimpleHack<T extends SimpleHackConfig> {
 	 * </ul>
 	 * Then discarding the plugin and config references.
 	 */
-
 	public void disable() {
 		unregisterListeners();
 		unregisterCommands();
@@ -86,6 +85,41 @@ public abstract class SimpleHack<T extends SimpleHackConfig> {
 
 		this.config = null;
 		this.plugin = null;
+	}
+
+	/**
+	 * Convenience method for "soft" disabling this hack.
+	 */
+	public void softDisable() {
+		this.config.setEnabled(false);
+	}
+
+	/**
+	 * Convenience method for "soft" enabling this hack.
+	 */
+	public void softEnable() {
+		this.config.setEnabled(true);
+	}
+
+	/**
+	 * Convenience passthrough wrapper for config.isEnabled();
+	 */
+	public boolean isEnabled() {
+		return this.config == null ? false : this.config.isEnabled();
+	}
+
+	/**
+	 * Convenience passhthrough wrapper for config.getName();
+	 */
+	public String getName() {
+		return this.config == null ? null : this.config.getName();
+	}
+
+	/**
+	 * Accessor for config externally.
+	 */
+	public SimpleHackConfig config() {
+		return this.config;
 	}
 
 	/**
@@ -106,12 +140,18 @@ public abstract class SimpleHack<T extends SimpleHackConfig> {
 	public abstract void dataCleanup();
 
 	/**
+	 * Not optional; customized status for this SimpleHack for display in CnC
+	 */
+	public abstract String status();
+
+	/**
 	 * Simple name equality. Don't have two hacks with the same name please.
 	 */
 	@Override
 	public boolean equals(Object e) {
 		if (e != null  && e instanceof SimpleHack) {
-			if (e.config != null && this.config != null && e.config.getName().equals(this.config.getName())) {
+			SimpleHack f = (SimpleHack) e;
+			if (f.config != null && this.config != null && f.config.getName().equals(this.config.getName())) {
 				return true;
 			}
 		}

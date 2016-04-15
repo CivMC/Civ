@@ -2,40 +2,59 @@
 
 configuration_file_version: 1
 
-game_features:
-  elytra: off
-  chorus_fruit: off
-game_bugs:
-  nether_bed_placement: off
-admin:
-  alert_new: on
-  alert_join: on
-  alert_exit: on
-  alert_ct: on
-  alert_die: on
-newfriend:
-  helptips: on
-  helptips_end: 20m
-  introkit: on
-  introkit_contents:
-   - ==: org.bukkit.inventory.ItemStack
-     type: COOKIE
-     amount: 32
-     meta:
-      ==: ItemMeta
-      meta-type: UNSPECIFIC
-      display-name: 'Manna'
-      lore:
-       - "Gift from the Admins as you"
-       - "begin your journey on Devotion."
-  introbook: on
-  introbook_contents:
-   title: Welcome to Devoted
-   author: Bonkill
-   pages:
-    - Devoted is not your ordinary minecraft server.
-	- We run a series of custom mods that greatly impact gameplay.
-	- Welcome and we hope you will enjoy!
-tuning:
-  str2: replace_str1ext
-  pearl_gravity: 0.3
+debug: true
+broadcast_permission: simpleadmin.broadcast
+
+hacks:
+  game_features:
+    name: GameFeatures
+    enabled: true
+    elytra: off
+    chorus_fruit: off
+  game_fixes:
+    name: GameFixes
+    enabled: true
+    nether_bed_placement: off
+  game_tuning:
+    name: GameTuning
+    enabled: true
+    str2: replace_str1ext
+    pearl_gravity: 0.3
+  combattag_announce:
+    name: CTAnnounce
+    enabled: true
+    delay: 10000
+    message: %Victim% was combat tagged by %Attacker%
+    broadcast: [OP, CONSOLE]
+  newfriend:
+    name: NewfriendAssist
+    enabled: true
+    announce:
+      message: %Player% is brand new!
+      broadcast: [PERM, CONSOLE]
+    helptips: on
+    helptips_end: 20m
+  introkit:
+    name: Introkit
+    enabled: true
+    contents:
+     - ==: org.bukkit.inventory.ItemStack
+      type: COOKIE
+      amount: 32
+      meta:
+       ==: ItemMeta
+       meta-type: UNSPECIFIC
+       display-name: 'Manna'
+       lore:
+        - "Gift from the Admins as you"
+        - "begin your journey on Devotion."
+  introbook:
+    name: Introbook
+    enabled: true
+    contents:
+      title: Welcome to Devoted
+      author: Bonkill
+      pages:
+       - Devoted is not your ordinary minecraft server.
+       - We run a series of custom mods that greatly impact gameplay.
+       - Welcome and we hope you will enjoy!

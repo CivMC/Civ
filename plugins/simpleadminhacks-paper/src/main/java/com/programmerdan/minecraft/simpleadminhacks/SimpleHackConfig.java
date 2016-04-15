@@ -11,6 +11,7 @@ public abstract class SimpleHackConfig {
 
 	private ConfigurationSection base;
 	private String name;
+	private boolean enabled;
 
 	/**
 	 * Constructor that sets the internal config section. That base config is not visible
@@ -23,6 +24,7 @@ public abstract class SimpleHackConfig {
 	public SimpleHackConfig(ConfigurationSection base) {
 		this.base = base;
 		this.name = base.getString("name");
+		this.enabled = base.getBoolean("enabled", false);
 		this.wireup(base);
 	}
 
@@ -41,6 +43,34 @@ public abstract class SimpleHackConfig {
 
 	public String getName() {
 		return name;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	/**
+	 * Wrapper for base config's set, for use with the hacks command
+	 */
+	public void set(String attr, Object value) {
+		if (this.base != null && attr != null) {
+			base.set(attr, value);
+		}
+	}
+
+	/**
+	 * Wrapper for base config's get, for use with the hacks command
+	 */
+	public Object get(String attr) {
+		if (this.base != null && attr != null) {
+			return base.get(attr);
+		} else {
+			return null;
+		}
 	}
 }
 

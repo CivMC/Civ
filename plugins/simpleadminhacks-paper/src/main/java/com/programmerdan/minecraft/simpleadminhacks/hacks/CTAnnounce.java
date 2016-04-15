@@ -38,7 +38,8 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 	 * @param event
 	 */
 	@EventHandler(ignoreCancelled = true)
-	public void ctevent(PlayerCombatTagEvent event) {
+	public void CTEvent(PlayerCombatTagEvent event) {
+		if (!config.isEnabled()) return; // ignore if off
 		if (event.getVictim() == null || event.getAttacker() == null) return; // ignore non-pvp
 
 		// Throttle broadcast frequency
@@ -110,5 +111,14 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 	public void dataCleanup() {
 		lastCTAnnounce.clear();
 		lastCTAnnounce = null;
+	}
+
+	@Override
+	public String status() {
+		if (config != null && config.isEnabled()) {
+			return "CombatTagPlus.PlayerCombatTagEvent monitoring active";
+		} else {
+			return "CombatTagPlus.PlayerCombatTagEvent monitoring not active";
+		}
 	}
 }

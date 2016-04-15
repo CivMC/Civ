@@ -21,12 +21,6 @@ public class CTAnnounceConfig extends SimpleHackConfig {
 	 */
 	private List<BroadcastLevel> broadcast;
 	/**
-	 * Is this config active?
-	 * 
-	 * Default of false.
-	 */
-	private boolean enabled;
-	/**
 	 * How long to wait inbetween broadcasts for a particular player.
 	 * 
 	 * Default of 5 seconds (5000 ms).
@@ -46,7 +40,6 @@ public class CTAnnounceConfig extends SimpleHackConfig {
 	
 	@Override
 	protected void wireup(ConfigurationSection config) {
-		this.enabled = config.getBoolean("enabled", false);
 		this.broadcastDelay = config.getLong("delay", 5000l);
 		this.broadcastMessage = config.getString("message", "%Victim% was combat tagged by %Attacker%");
 		
@@ -58,8 +51,9 @@ public class CTAnnounceConfig extends SimpleHackConfig {
 		this.broadcast.clear();
 
 		if (broadcastTo == null) {
-			this.enabled = false; // disable if no broadcasters.
+			this.setEnabled(false); // disable if no broadcasters.
 		}
+
 		for (String type : broadcastTo) {
 			try {
 				broadcast.add(BroadcastLevel.valueOf(type));
@@ -67,14 +61,6 @@ public class CTAnnounceConfig extends SimpleHackConfig {
 				// noop
 			}
 		}
-	}
-	
-	public boolean isEnabled() {
-		return enabled;
-	}
-	
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
 	}
 	
 	public List<BroadcastLevel> getBroadcast() {

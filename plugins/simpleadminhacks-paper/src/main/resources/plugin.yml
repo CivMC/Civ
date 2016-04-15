@@ -5,8 +5,12 @@ authors: []
 version: ${project.version}
 commands:
   hacks:
-    description: Set live the various hacks and fixes supported by this plugin
-    usage: /<command> [set|show [config.option [value]]]
+    description: Shows the various hacks and fixes supported by this plugin and controls them
+    usage: |
+      /<command>
+      /<command> <hackname>
+      /<command> <hackname> enable|disable
+      /<command> <hackname> get|set <config> [value]
     permission: simpleadmin.hacks
   invsee:
     description: See any player inventory, online or not.
