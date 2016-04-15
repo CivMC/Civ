@@ -61,16 +61,16 @@ public class RemoveMember extends PlayerCommandMiddle {
 		boolean allowed = false;
 		switch (toBeRemoved){ // depending on the type the executor wants to add the player to
 		case MEMBERS:
-			allowed = gm.hasAccess(group, uuid, PermissionType.getPermission("MEMBERS"));
+			allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MEMBERS"));
 			break;
 		case MODS:
-			allowed = gm.hasAccess(group, uuid, PermissionType.getPermission("MODS"));
+			allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MODS"));
 			break;
 		case ADMINS:
-			allowed = gm.hasAccess(group, uuid, PermissionType.getPermission("ADMINS"));
+			allowed = gm.hasAccess(group, executor, PermissionType.getPermission("ADMINS"));
 			break;
 		case OWNER:
-			allowed = gm.hasAccess(group, uuid, PermissionType.getPermission("OWNER"));
+			allowed = gm.hasAccess(group, executor, PermissionType.getPermission("OWNER"));
 			break;
 		}
 		
