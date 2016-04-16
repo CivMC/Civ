@@ -63,5 +63,9 @@ public class FurnacePowerManager implements IPowerManager {
 		FurnaceInventory fi = ((Furnace) furnace.getState()).getInventory();
 		fi.removeItem(fuel);
 	}
+	
+	public int getFuelAmountAvailable() {
+		return new ItemMap(((Furnace) furnace.getState()).getInventory()).getAmount(fuel);
+	}
 
 }

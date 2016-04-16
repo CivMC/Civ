@@ -7,6 +7,10 @@ softdepend: [CivMenu, NameLayer, Citadel]
 commands:
     fm:
         permission: fm.public
+    fmc:
+        permission: fm.op
 permissions:
     fm.public:
         default: true
+    fm.op:
+        default: op

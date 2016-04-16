@@ -2,14 +2,18 @@ package com.github.igotyou.FactoryMod;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
@@ -25,9 +29,14 @@ import com.github.igotyou.FactoryMod.listeners.NetherPortalListener;
 import com.github.igotyou.FactoryMod.recipes.AOERepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.CompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.DecompactingRecipe;
+import com.github.igotyou.FactoryMod.recipes.DeterministicEnchantingRecipe;
+import com.github.igotyou.FactoryMod.recipes.FactoryMaterialReturnRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
+import com.github.igotyou.FactoryMod.recipes.PylonRecipe;
+import com.github.igotyou.FactoryMod.recipes.RandomEnchantingRecipe;
+import com.github.igotyou.FactoryMod.recipes.RandomOutputRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
@@ -52,7 +61,7 @@ public class ConfigParser {
 		this.plugin = plugin;
 	}
 
-	/**
+	/** 
 	 * Parses the whole config and creates a manager containing everything that
 	 * was parsed from the config
 	 * 
@@ -94,7 +103,19 @@ public class ConfigParser {
 		int redstoneRecipeChange = config.getInt("redstone_recipe_change", 2);
 		long gracePeriod = 50 * parseTime(config
 				.getString("break_grace_period"));
+		long savingIntervall = parseTime(config.getString("saving_intervall", "15m"));
+		//save factories on a regular base, unless disabled
+		if (savingIntervall != -1) {
+			Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
+				@Override
+				public void run() {
+					FactoryMod.getManager().saveFactories();	
+				}
+			}, savingIntervall, savingIntervall);
+		}
 		defaultMenuFactory = config.getString("default_menu_factory");
+		int globalPylonLimit = config.getInt("global_pylon_limit");
+		PylonRecipe.setGlobalLimit(globalPylonLimit);
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
 				citadelEnabled, redstonePowerOn, redstoneRecipeChange,
 				logInventories, gracePeriod);
@@ -126,6 +147,10 @@ public class ConfigParser {
 	private void parseRecipes(ConfigurationSection config) {
 		recipes = new HashMap<String, IRecipe>();
 		for (String key : config.getKeys(false)) {
+			if (config.getConfigurationSection(key) == null) {
+				plugin.warning("Found invalid section that should not exist at " + config.getCurrentPath() + key);
+				continue;
+			}
 			IRecipe recipe = parseRecipe(config.getConfigurationSection(key));
 			if (recipe == null) {
 				plugin.warning(String.format("Recipe %s unable to be added.", key));
@@ -170,7 +195,12 @@ public class ConfigParser {
 	 */
 	private void parseFactory(ConfigurationSection config) {
 		IFactoryEgg egg = null;
-		switch (config.getString("type")) {
+		String type = config.getString("type");
+		if (type == null) {
+			plugin.warning("No type specified for factory at " + config.getCurrentPath()+". Skipping it.");
+			return;
+		}
+		switch (type) {
 		case "FCC": // Furnace, chest, craftingtable
 			egg = parseFCCFactory(config);
 			if (egg == null) {
@@ -311,7 +341,7 @@ public class ConfigParser {
 		}
 		int transferTimeMultiplier = (int) parseTime(config
 				.getString("transfer_time_multiplier"));
-		int transferAmount = config.getInt("transferamount");
+		int transferAmount = config.getInt("transfer_amount");
 		byte color = (byte) config.getInt("glass_color");
 		return new PipeEgg(name, update, fuel, fuelIntervall, null,
 				transferTimeMultiplier, transferAmount, color, returnRate);
@@ -410,9 +440,22 @@ public class ConfigParser {
 	private IRecipe parseRecipe(ConfigurationSection config) {
 		IRecipe result;
 		String name = config.getString("name");
-		int productionTime = (int) parseTime(config
-				.getString("production_time"));
-		switch (config.getString("type")) {
+		if (name == null) {
+			plugin.warning("No name specified for recipe at " + config.getCurrentPath() +". Skipping the recipe.");
+			return null;
+		}
+		String prodTime = config.getString("production_time");
+		if (prodTime == null) {
+			plugin.warning("No production time specied for recipe " + name + ". Skipping it");
+			return null;
+		}
+		int productionTime = (int) parseTime(prodTime);
+		String type = config.getString("type");
+		if (type == null) {
+			plugin.warning("No name specified for recipe at " + config.getCurrentPath() +". Skipping the recipe.");
+			return null;
+		}
+		switch (type) {
 		case "PRODUCTION":
 			ItemMap input = parseItemMap(config
 					.getConfigurationSection("input"));
@@ -476,6 +519,48 @@ public class ConfigParser {
 				result = null;
 			}
 			break;
+		case "PYLON":
+			ItemMap in = parseItemMap(config
+					.getConfigurationSection("input"));
+			ItemMap out = parseItemMap(config
+					.getConfigurationSection("output"));
+			int weight = config.getInt("weight");
+			result = new PylonRecipe(name, productionTime, in, out, weight);
+			break;
+		case "ENCHANT":
+			ItemMap inp = parseItemMap(config
+					.getConfigurationSection("input"));
+			Enchantment enchant = Enchantment.getByName(config.getString("enchant"));
+			int level = config.getInt("level", 1);
+			ItemMap tool = parseItemMap(config.getConfigurationSection("enchant_item"));
+			result = new DeterministicEnchantingRecipe(name, productionTime, inp, tool, enchant, level);
+			break;
+		case "RANDOM":
+			ItemMap inpu = parseItemMap(config
+					.getConfigurationSection("input"));
+			if (config.getConfigurationSection("outputs") == null) {
+				plugin.severe("No outputs specified for recipe " + name);
+				return null;
+			}
+			Map <ItemMap, Double> outputs = new HashMap<ItemMap, Double>();
+			double totalChance = 0.0;
+			for(String key : config.getConfigurationSection("outputs").getKeys(false)) {
+				double chance = config.getConfigurationSection("outputs").getConfigurationSection(key).getDouble("chance");
+				totalChance += chance;
+				ItemMap im = parseItemMap(config.getConfigurationSection("outputs").getConfigurationSection(key));
+				outputs.put(im,chance);
+			}
+			if (Math.abs(totalChance - 1.0) > 0.001) {
+				plugin.warning("Sum of output chances for recipe " + name + " is not 1.0. Total sum is: " + totalChance);
+			}
+			result = new RandomOutputRecipe(name, productionTime, inpu, outputs);
+			break;
+		case "COSTRETURN":
+			ItemMap costIn = parseItemMap(config
+					.getConfigurationSection("input"));
+			double factor = config.getDouble("factor", 1.0);
+			result = new FactoryMaterialReturnRecipe(name, productionTime, costIn, factor);
+			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type")
 					+ " as a valid recipe identifier");
@@ -489,13 +574,15 @@ public class ConfigParser {
 	}
 
 	public void assignRecipesToFactories() {
+		HashSet <IRecipe> usedRecipes = new HashSet<IRecipe>();
 		for (Entry<IFactoryEgg, List<String>> entry : recipeLists.entrySet()) {
 			if (entry.getKey() instanceof FurnCraftChestEgg) {
 				List<IRecipe> recipeList = new LinkedList<IRecipe>();
 				for (String recipeName : entry.getValue()) {
 					IRecipe rec = recipes.get(recipeName);
 					if (rec != null) {
-						recipeList.add(recipes.get(recipeName));
+						recipeList.add(rec);
+						usedRecipes.add(rec);
 					}
 					else {
 						plugin.severe("Could not find specified recipe " + recipeName 
@@ -503,6 +590,11 @@ public class ConfigParser {
 					}
 				}
 				((FurnCraftChestEgg) entry.getKey()).setRecipes(recipeList);
+			}
+		}
+		for(IRecipe reci : recipes.values()) {
+			if (!usedRecipes.contains(reci)) {
+				plugin.warning("The recipe " + reci.getRecipeName() + " is specified in the config, but not used in any factory");
 			}
 		}
 	}

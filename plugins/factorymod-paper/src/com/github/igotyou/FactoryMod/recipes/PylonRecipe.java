@@ -3,6 +3,7 @@ package com.github.igotyou.FactoryMod.recipes;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,8 +20,8 @@ public class PylonRecipe extends InputRecipe {
 
 	private ItemMap output;
 	private static int currentGlobalWeight;
+	private static int globalLimit;
 	private int weight;
-	private double maximumFraction;
 
 	public PylonRecipe(String name, int productionTime, ItemMap input,
 			ItemMap output, int weight) {
@@ -44,13 +45,22 @@ public class PylonRecipe extends InputRecipe {
 		}
 	}
 
+	public static void setGlobalLimit(int limit) {
+		globalLimit = limit;
+	}
+
+	public static int getGlobalLimit() {
+		return globalLimit;
+	}
+
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
 		ItemMap currOut = getCurrentOutput();
 		List<ItemStack> res = new LinkedList<ItemStack>();
 		for (ItemStack is : currOut.getItemStackRepresentation()) {
 			ISUtils.setLore(is, ChatColor.GOLD + "Currently there are "
-					+ FurnCraftChestFactory.getPylonFactories().size()
-					+ " pylons on the map", ChatColor.RED
+					+ FurnCraftChestFactory.getPylonFactories() == null ? "0"
+					: FurnCraftChestFactory.getPylonFactories().size()
+							+ " pylons on the map", ChatColor.RED
 					+ "Current global weight is " + currentGlobalWeight);
 			res.add(is);
 		}
@@ -90,7 +100,22 @@ public class PylonRecipe extends InputRecipe {
 	}
 
 	private ItemMap getCurrentOutput() {
-		double multiplier = Math.min(1 / currentGlobalWeight, maximumFraction);
+		int weight = 0;
+		Set<FurnCraftChestFactory> pylons = FurnCraftChestFactory
+				.getPylonFactories();
+		if (pylons != null) {
+			// if not a single factory (not limited to pylon) is in the map,
+			// this will be null
+			for (FurnCraftChestFactory f : pylons) {
+				if (f.isActive() && f.getCurrentRecipe() instanceof PylonRecipe) {
+					weight += ((PylonRecipe) f.getCurrentRecipe()).getWeight();
+				}
+			}
+		}
+		currentGlobalWeight = weight;
+		double overload = Math.max(1.0, (float) currentGlobalWeight
+				/ (float) globalLimit);
+		double multiplier = 1.0 / overload;
 		ItemMap actualOutput = new ItemMap();
 		for (Entry<ItemStack, Integer> entry : output.getEntrySet()) {
 			actualOutput.addItemAmount(entry.getKey(),

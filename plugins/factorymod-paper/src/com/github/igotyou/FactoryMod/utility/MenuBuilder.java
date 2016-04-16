@@ -49,6 +49,7 @@ public class MenuBuilder {
 	private IFactoryEgg defaultMenu;
 
 	public MenuBuilder(String defaultFactory) {
+		ClickableInventory.setPlugin(FactoryMod.getPlugin());
 		manager = FactoryMod.getManager();
 		for (IFactoryEgg egg : manager.getAllEggs().values()) {
 			if (egg instanceof FurnCraftChestEgg) {
@@ -174,12 +175,17 @@ public class MenuBuilder {
 
 	private void openRecipeBrowser(Player p, String facName) {
 		ClickableInventory.forceCloseInventory(p);
-		ClickableInventory recipeInventory = new ClickableInventory(36,
-				"Recipes for " + facName); // Bukkit has 32 char limit on
-											// inventory
 		FurnCraftChestEgg egg = (FurnCraftChestEgg) manager.getEgg(facName);
 		List<IRecipe> recipes = egg.getRecipes();
-
+		int size = (recipes.size() / 9) + 2;
+		if ((recipes.size() % 9) == 0) {
+			size--;
+		}
+		size *= 9;
+		
+		ClickableInventory recipeInventory = new ClickableInventory(size,
+				"Recipes for " + facName); // Bukkit has 32 char limit on
+											// inventory
 		// put recipes
 		int j = 0;
 		for (int i = 0; i < recipes.size(); i++) {
@@ -207,7 +213,7 @@ public class MenuBuilder {
 				openFactoryBrowser(arg0, factoryViewed.get(arg0.getUniqueId()));
 			}
 		};
-		recipeInventory.setSlot(backClickable, 31);
+		recipeInventory.setSlot(backClickable, size - 5);
 		ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(),
 				recipeInventory, p);
 	}
@@ -296,8 +302,15 @@ public class MenuBuilder {
 				}
 			};
 			ci.setSlot(cheCli, 5);
-			int slot = 40;
-			for (ItemStack is : rec.getInput().getItemStackRepresentation()) {
+			int slot = 31;
+			List <ItemStack> itms;
+			if (rec.getInput().getItemStackRepresentation().size() > 27) {
+				itms = rec.getInput().getLoredItemCountRepresentation();
+			}
+			else {
+				itms = rec.getInput().getItemStackRepresentation();
+			}
+			for (ItemStack is : itms) {
 				DecorationStack dec = new DecorationStack(is);
 				ci.setSlot(dec, slot);
 				if ((slot % 9) == 4) {
@@ -422,11 +435,9 @@ public class MenuBuilder {
 		ci.setSlot(inputClickable, 4);
 		int index = 13;
 		List <ItemStack> ins = rec.getInputRepresentation(null);
-		System.out.println(ins.size());
 		if (ins.size() > 18) {
 			ins = new ItemMap(ins).getLoredItemCountRepresentation();
 		}
-		System.out.println(ins.size());
 		for (ItemStack is : ins) {
 			Clickable c = new DecorationStack(is);
 			ci.setSlot(c, index);
@@ -512,8 +523,14 @@ public class MenuBuilder {
 		int fuelConsumed = rec.getProductionTime()/fuelInterval;
 		ItemStack fuels = egg.getFuel().clone();
 		fuels.setAmount(fuelConsumed);
-		ItemStack fuelStack = new ItemMap(fuels).getLoredItemCountRepresentation().get(0);
-		ISUtils.addLore(fuelStack, ChatColor.LIGHT_PURPLE + "Total duration of " + rec.getProductionTime() * 20 + " seconds");
+		ItemStack fuelStack;
+		if (fuelConsumed > fuels.getType().getMaxStackSize()) {
+			fuelStack = new ItemMap(fuels).getLoredItemCountRepresentation().get(0);
+		}
+		else {
+			fuelStack = fuels;
+		}
+		ISUtils.addLore(fuelStack, ChatColor.LIGHT_PURPLE + "Total duration of " + rec.getProductionTime() / 20 + " seconds");
 		ci.setSlot(new DecorationStack(fuelStack), 30);
 		ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(), ci, p);
 	}

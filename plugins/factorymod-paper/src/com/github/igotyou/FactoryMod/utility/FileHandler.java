@@ -6,12 +6,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -36,8 +36,8 @@ import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 public class FileHandler {
 	private FactoryMod plugin;
 	private FactoryModManager manager;
-	File saveFile;
-	File backup;
+	private File saveFile;
+	private File backup;
 
 	public FileHandler(FactoryModManager manager) {
 		plugin = FactoryMod.getPlugin();
@@ -78,6 +78,12 @@ public class FileHandler {
 					config.set(current + ".runtime", fccf.getRunningTime());
 					config.set(current + ".selectedRecipe", fccf
 							.getCurrentRecipe().getRecipeName());
+					if (fccf.getActivator() == null) {
+						config.set(current + ".activator", "null");
+					}
+					else {
+						config.set(current + ".activator", fccf.getActivator().toString());
+					}
 					for(IRecipe i : ((FurnCraftChestFactory) f).getRecipes()) {
 						config.set(current + ".runcounts." + i.getRecipeName(), fccf.getRunCount(i));
 					}
@@ -105,6 +111,7 @@ public class FileHandler {
 				}
 			}
 			config.save(saveFile);
+			plugin.info("Successfully saved factory data");
 		} catch (Exception e) {
 			// In case anything goes wrong while saving we always keep the
 			// latest valid backup
@@ -175,6 +182,15 @@ public class FileHandler {
 				String selectedRecipe = current.getString("selectedRecipe");
 				FurnCraftChestFactory fac = (FurnCraftChestFactory) egg.revive(blocks, health, selectedRecipe,
 						runtime);
+				String activator = current.getString("activator", "null");
+				UUID acti;
+				if (activator.equals("null")) {
+					acti = null;
+				}
+				else {
+					acti = UUID.fromString(activator);
+				}
+				fac.setActivator(acti);
 				ConfigurationSection runCounts = current.getConfigurationSection("runcounts");
 				if(runCounts != null) {
 					for(String countKey : runCounts.getKeys(false)) {
@@ -198,6 +214,9 @@ public class FileHandler {
 						mats.add(Material.valueOf(mat));
 					}
 				} else {
+					mats = null;
+				}
+				if (mats.size() == 0) {
 					mats = null;
 				}
 				Factory p = pipeEgg.revive(blocks, mats, runtime);

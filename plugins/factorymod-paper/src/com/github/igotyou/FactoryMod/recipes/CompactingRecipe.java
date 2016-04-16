@@ -59,13 +59,10 @@ public class CompactingRecipe extends InputRecipe {
 			for (ItemStack is : i.getContents()) {
 				if (is != null) {
 					if (compactable(is)) {
-						List<String> loreList = new LinkedList<String>();
-						loreList.add(compactedLore);
-						for (ItemStack toRemove : input
-								.getItemStackRepresentation()) {
-							i.removeItem(toRemove);
+						if (input.removeSafelyFrom(i)) {
+							compact(is);
 						}
-						compact(is);
+						break;
 					}
 				}
 			}
@@ -78,6 +75,7 @@ public class CompactingRecipe extends InputRecipe {
 		List<ItemStack> result = new LinkedList<ItemStack>();
 		if (i == null) {
 			result.add(new ItemStack(Material.STONE, 64));
+			result.addAll(input.getItemStackRepresentation());
 			return result;
 		}
 		result = createLoredStacksForInfo(i);

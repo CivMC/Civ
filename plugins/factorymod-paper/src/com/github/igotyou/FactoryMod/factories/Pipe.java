@@ -3,6 +3,7 @@ package com.github.igotyou.FactoryMod.factories;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -13,6 +14,8 @@ import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
+import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
+import com.github.igotyou.FactoryMod.events.ItemTransferEvent;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
@@ -44,6 +47,13 @@ public class Pipe extends Factory {
 		if (mbs.isComplete()) {
 			if (transferMaterialsAvailable()) {
 				if (pm.powerAvailable()) {
+					FactoryActivateEvent fae = new FactoryActivateEvent(this, p);
+					Bukkit.getPluginManager().callEvent(fae);
+					if (fae.isCancelled()) {
+						LoggingUtils.log("Activating for " + getLogData()
+								+ " was cancelled by the event");
+						return;
+					}
 					if (p != null) {
 						p.sendMessage(ChatColor.GREEN
 								+ "Activated pipe transfer");
@@ -63,6 +73,8 @@ public class Pipe extends Factory {
 			}
 		} else {
 			rm.breakIt();
+			p.sendMessage(ChatColor.RED
+					+ "Failed to activate pipe, it is missing blocks");
 		}
 	}
 
@@ -79,6 +91,7 @@ public class Pipe extends Factory {
 	public void deactivate() {
 		LoggingUtils.log("Deactivating " + getLogData());
 		active = false;
+		Bukkit.getScheduler().cancelTask(threadId);
 		turnFurnaceOff(((PipeStructure) mbs).getFurnace());
 		runTime = 0;
 	}
@@ -95,6 +108,10 @@ public class Pipe extends Factory {
 					deactivate();
 				}
 			} else {
+				Block furnace = ((PipeStructure) mbs).getFurnace();
+				if (furnace.getType() != Material.BURNING_FURNACE) {
+					turnFurnaceOn(furnace);
+				}
 				// if the time since fuel was last consumed is equal to
 				// how often fuel needs to be consumed
 				if (pm.getPowerCounter() >= pm.getPowerConsumptionIntervall() - 1) {
@@ -120,6 +137,7 @@ public class Pipe extends Factory {
 
 	public void transfer() {
 		LoggingUtils.log("Attempting to transfer for " + getLogData());
+		mbs.recheckComplete();
 		if (mbs.isComplete()) {
 			Inventory sourceInventory = ((InventoryHolder) (((PipeStructure) mbs)
 					.getStart().getState())).getInventory();
@@ -129,6 +147,7 @@ public class Pipe extends Factory {
 			for (ItemStack is : sourceInventory.getContents()) {
 				if (is != null
 						&& is.getType() != Material.AIR
+						&& is.getAmount() != 0
 						&& (allowedMaterials == null || allowedMaterials
 								.contains(is.getType()))) {
 					int removeAmount = Math.min(leftToRemove, is.getAmount());
@@ -136,14 +155,24 @@ public class Pipe extends Factory {
 					removing.setAmount(removeAmount);
 					ItemMap removeMap = new ItemMap(removing);
 					if (removeMap.fitsIn(targetInventory)) {
+						ItemTransferEvent ite = new ItemTransferEvent(this,
+								sourceInventory, targetInventory,
+								((PipeStructure) mbs).getStart(),
+								((PipeStructure) mbs).getEnd(), removing);
+						Bukkit.getPluginManager().callEvent(ite);
+						if (ite.isCancelled()) {
+							LoggingUtils.log("Transfer for " + removing.toString() + " was cancelled over the event");
+							continue;
+						}
 						LoggingUtils.logInventory(sourceInventory,
 								"Origin inventory before transfer for "
 										+ getLogData());
 						LoggingUtils.logInventory(targetInventory,
 								"Target inventory before transfer for "
 										+ getLogData());
-						sourceInventory.removeItem(removing);
-						targetInventory.addItem(removing);
+						if (removeMap.removeSafelyFrom(sourceInventory)) {
+							targetInventory.addItem(removing);
+						}
 						LoggingUtils.logInventory(sourceInventory,
 								"Origin inventory after transfer for "
 										+ getLogData());

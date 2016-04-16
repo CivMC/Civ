@@ -27,7 +27,8 @@ public abstract class Factory implements Runnable {
 	protected MultiBlockStructure mbs;
 	protected int updateTime;
 	protected String name;
-	protected final String separator = "#";
+	protected int threadId;
+	
 
 	public Factory(IInteractionManager im, IRepairManager rm, IPowerManager pm,
 			MultiBlockStructure mbs, int updateTime, String name) {
@@ -117,7 +118,7 @@ public abstract class Factory implements Runnable {
 	public abstract void attemptToActivate(Player p);
 
 	public void scheduleUpdate() {
-		FactoryMod
+		threadId = FactoryMod
 				.getPlugin()
 				.getServer()
 				.getScheduler()

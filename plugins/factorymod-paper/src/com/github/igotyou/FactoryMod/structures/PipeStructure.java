@@ -53,7 +53,7 @@ public class PipeStructure extends MultiBlockStructure {
 			boolean foundEnd = false;
 			boolean foundPipeBlock = false;
 			for (Block b : blocks) {
-				if (b.getState() instanceof InventoryHolder) {
+				if (b.getState() instanceof InventoryHolder && !b.getLocation().equals(start)) {
 					end = b.getLocation();
 					this.length = length;
 					complete = true;
@@ -81,7 +81,7 @@ public class PipeStructure extends MultiBlockStructure {
 		this.furnace = blocks.get(1);
 		this.end = blocks.get(blocks.size() - 1);
 		List<Location> glass = new LinkedList<Location>();
-		for (int i = 3; i< blocks.size()-1;i++) {
+		for (int i = 2; i < blocks.size()-1;i++) {
 			glass.add(blocks.get(i));
 		}
 		this.glassPipe = glass;
@@ -141,6 +141,10 @@ public class PipeStructure extends MultiBlockStructure {
 
 	public byte getGlassColor() {
 		return glassColor;
+	}
+	
+	public void setGlassColor(byte data) {
+		this.glassColor = data;
 	}
 
 	public int getLength() {

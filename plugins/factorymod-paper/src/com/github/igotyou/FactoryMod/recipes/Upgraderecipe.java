@@ -6,8 +6,11 @@ import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
@@ -40,7 +43,12 @@ public class Upgraderecipe extends InputRecipe {
 	}
 
 	public ItemStack getRecipeRepresentation() {
-		ItemStack res = new ItemStack(Material.WORKBENCH);
+		ItemStack res = ((InputRecipe)((FurnCraftChestEgg)egg).getRecipes().get(0)).getOutputRepresentation(null).get(0);
+		res.setAmount(1);
+		ItemMeta im = res.getItemMeta();
+		im.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
+		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		res.setItemMeta(im);
 		ISUtils.setName(res, name);
 		return res;
 	}

@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -15,6 +17,8 @@ import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
+import com.github.igotyou.FactoryMod.events.RecipeExecuteEvent;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
@@ -39,6 +43,7 @@ public class FurnCraftChestFactory extends Factory {
 	protected List<IRecipe> recipes;
 	protected IRecipe currentRecipe;
 	protected Map<IRecipe, Integer> runCount;
+	private UUID activator;
 
 	private static HashSet<FurnCraftChestFactory> pylonFactories;
 
@@ -95,7 +100,6 @@ public class FurnCraftChestFactory extends Factory {
 	public void attemptToActivate(Player p) {
 		LoggingUtils.log((p != null ? p.getName() : "Redstone")
 				+ " is attempting to activate " + getLogData());
-		// TODO Citadel stuff
 		mbs.recheckComplete();
 
 		if (active) {
@@ -116,13 +120,26 @@ public class FurnCraftChestFactory extends Factory {
 							&& rm.atFullHealth()) {
 						if (p != null) {
 							p.sendMessage("This factory is already at full health!");
-							return;
 						}
+						return;
+					}
+					FactoryActivateEvent fae = new FactoryActivateEvent(this, p);
+					Bukkit.getPluginManager().callEvent(fae);
+					if (fae.isCancelled()) {
+						return;
 					}
 					if (p != null) {
+						int consumptionIntervall = ((InputRecipe) currentRecipe)
+								.getFuelConsumptionIntervall() != -1 ? ((InputRecipe) currentRecipe)
+								.getFuelConsumptionIntervall() : pm
+								.getPowerConsumptionIntervall();
+						if (((FurnacePowerManager) pm).getFuelAmountAvailable() < (currentRecipe.getProductionTime() / consumptionIntervall)) {
+							p.sendMessage(ChatColor.RED + "You don't have enough fuel, the factory will run out of it before completing");
+						}
 						p.sendMessage(ChatColor.GREEN + "Activated " + name
 								+ " with recipe: "
 								+ currentRecipe.getRecipeName());
+						activator = p.getUniqueId();
 					}
 					activate();
 				} else {
@@ -163,10 +180,12 @@ public class FurnCraftChestFactory extends Factory {
 	public void deactivate() {
 		LoggingUtils.log("Deactivating " + getLogData());
 		if (active) {
+			Bukkit.getScheduler().cancelTask(threadId);
 			turnFurnaceOff(getFurnace());
 			active = false;
 			// reset the production timer
 			currentProductionTimer = 0;
+			activator = null;
 		}
 	}
 
@@ -198,6 +217,18 @@ public class FurnCraftChestFactory extends Factory {
 	}
 
 	/**
+	 * @return UUID of the person who activated the factory or null if the
+	 *         factory is off or was triggered by redstone
+	 */
+	public UUID getActivator() {
+		return activator;
+	}
+
+	public void setActivator(UUID uuid) {
+		this.activator = uuid;
+	}
+
+	/**
 	 * Called by the manager each update cycle
 	 */
 	public void run() {
@@ -211,6 +242,10 @@ public class FurnCraftChestFactory extends Factory {
 					// if the factory power source inventory has enough fuel for
 					// at least 1 energyCycle
 					if (pm.powerAvailable()) {
+						//check whether the furnace is on, minecraft sometimes turns it off
+						if (getFurnace().getType() != Material.BURNING_FURNACE) {
+							turnFurnaceOn(getFurnace());
+						}
 						// if the time since fuel was last consumed is equal to
 						// how often fuel needs to be consumed
 						int consumptionIntervall = ((InputRecipe) currentRecipe)
@@ -235,6 +270,7 @@ public class FurnCraftChestFactory extends Factory {
 					}
 					// if there is no fuel Available turn off the factory
 					else {
+						sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because it ran out of fuel");
 						deactivate();
 					}
 				}
@@ -246,6 +282,15 @@ public class FurnCraftChestFactory extends Factory {
 					LoggingUtils.log("Executing recipe "
 							+ currentRecipe.getRecipeName() + " for "
 							+ getLogData());
+					RecipeExecuteEvent ree = new RecipeExecuteEvent(this, (InputRecipe) currentRecipe);
+					Bukkit.getPluginManager().callEvent(ree);
+					if (ree.isCancelled()) {
+						LoggingUtils.log("Executing recipe "
+							+ currentRecipe.getRecipeName() + " for "
+							+ getLogData() + " was cancelled over the event");
+						return;
+					}
+					sendActivatorMessage(ChatColor.GOLD + currentRecipe.getRecipeName() + " in " + name + " completed");
 					if (currentRecipe instanceof Upgraderecipe) {
 						// this if else might look a bit weird, but because
 						// upgrading changes the current recipe and a lot of
@@ -259,6 +304,13 @@ public class FurnCraftChestFactory extends Factory {
 								runCount.get(currentRecipe) + 1);
 					}
 					currentProductionTimer = 0;
+					if (currentRecipe instanceof RepairRecipe
+							&& rm.atFullHealth()) {
+						//already at full health, dont try to repair further
+						sendActivatorMessage(ChatColor.GOLD + name + " repaired to full health");
+						deactivate();
+						return;
+					}
 					if (hasInputMaterials() && pm.powerAvailable()) {
 						pm.setPowerCounter(0);
 						scheduleUpdate();
@@ -268,9 +320,11 @@ public class FurnCraftChestFactory extends Factory {
 					}
 				}
 			} else {
+				sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because it ran out of required materials");
 				deactivate();
 			}
 		} else {
+			sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because the factory was destroyed");
 			deactivate();
 		}
 	}
@@ -316,6 +370,15 @@ public class FurnCraftChestFactory extends Factory {
 	public int getRunCount(IRecipe r) {
 		return runCount.get(r);
 	}
+	
+	private void sendActivatorMessage(String msg) {
+		if (activator != null) {
+			Player p = Bukkit.getPlayer(activator);
+			if (p != null) {
+				p.sendMessage(msg);
+			}
+		}
+	}
 
 	/**
 	 * Sets the internal production timer
@@ -334,10 +397,15 @@ public class FurnCraftChestFactory extends Factory {
 	public boolean hasInputMaterials() {
 		return currentRecipe.enoughMaterialAvailable(getInventory());
 	}
+	
+	public static void removePylon(Factory f) {
+		pylonFactories.remove(f);
+	}
 
 	public void upgrade(String name, List<IRecipe> recipes, ItemStack fuel,
 			int fuelConsumptionIntervall, int updateTime) {
 		LoggingUtils.log("Upgrading " + getLogData() + " to " + name);
+		pylonFactories.remove(this);
 		deactivate();
 		this.name = name;
 		this.recipes = recipes;
@@ -354,6 +422,12 @@ public class FurnCraftChestFactory extends Factory {
 		runCount = new HashMap<IRecipe, Integer>();
 		for (IRecipe rec : recipes) {
 			runCount.put(rec, 0);
+		}
+		for (IRecipe rec : recipes) {
+			if (rec instanceof PylonRecipe) {
+				pylonFactories.add(this);
+				break;
+			}
 		}
 	}
 }

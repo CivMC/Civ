@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -15,6 +16,8 @@ import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
+import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
+import com.github.igotyou.FactoryMod.events.ItemTransferEvent;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
@@ -50,6 +53,16 @@ public class Sorter extends Factory {
 		if (mbs.isComplete()) {
 			if (pm.powerAvailable()) {
 				if (sortableMaterialsAvailable()) {
+					FactoryActivateEvent fae = new FactoryActivateEvent(this, p);
+					Bukkit.getPluginManager().callEvent(fae);
+					if (fae.isCancelled()) {
+						LoggingUtils.log("Activating of " + getLogData()
+								+ " was cancelled by the event");
+						return;
+					}
+					if (p != null) {
+						p.sendMessage(ChatColor.GREEN + "Activated " + name);
+					}
 					activate();
 				} else {
 					if (p != null) {
@@ -82,6 +95,7 @@ public class Sorter extends Factory {
 	public void deactivate() {
 		LoggingUtils.log("Deactivating " + getLogData());
 		LoggingUtils.logInventory(mbs.getCenter().getBlock());
+		Bukkit.getScheduler().cancelTask(threadId);
 		turnFurnaceOff(((BlockFurnaceStructure) mbs).getFurnace());
 		active = false;
 	}
@@ -103,6 +117,10 @@ public class Sorter extends Factory {
 					deactivate();
 				}
 			} else {
+				Block furnace = ((BlockFurnaceStructure) mbs).getFurnace();
+				if (furnace.getType() != Material.BURNING_FURNACE) {
+					turnFurnaceOn(furnace);
+				}
 				if (pm.getPowerCounter() >= pm.getPowerConsumptionIntervall() - 1) {
 					pm.consumePower();
 					pm.setPowerCounter(0);
@@ -155,6 +173,11 @@ public class Sorter extends Factory {
 		int leftToSort = sortAmount;
 		for (BlockFace bf : MultiBlockStructure.allBlockSides) {
 			if (center.getRelative(bf).getState() instanceof InventoryHolder) {
+				Block b = center.getRelative(bf);
+				if (b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST) {
+					//load adjacent chunk for double chest
+					MultiBlockStructure.getAdjacentBlocks(b);
+				}
 				Inventory relInv = ((InventoryHolder) center.getRelative(bf)
 						.getState()).getInventory();
 				ItemMap im = assignedMaterials.get(bf);
@@ -165,6 +188,17 @@ public class Sorter extends Factory {
 						ItemStack rem = is.clone();
 						rem.setAmount(removeAmount);
 						if (new ItemMap(is).fitsIn(relInv)) {
+							ItemTransferEvent ite = new ItemTransferEvent(this,
+									inv, relInv, center,
+									center.getRelative(bf), rem);
+							Bukkit.getPluginManager().callEvent(ite);
+							if (ite.isCancelled()) {
+								LoggingUtils.log("Sorting for "
+										+ rem.toString() + " in "
+										+ getLogData()
+										+ " was cancelled over the event");
+								continue;
+							}
 							LoggingUtils.log("Moving "
 									+ rem.toString()
 									+ " from "
@@ -204,7 +238,7 @@ public class Sorter extends Factory {
 	public void setRunTime(int runtime) {
 		this.runTime = runtime;
 	}
-	
+
 	public int getRunTime() {
 		return runTime;
 	}

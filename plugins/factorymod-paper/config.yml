@@ -159,6 +159,9 @@ decay_amount: 21
 #Whether the yaml identifier or the factory name should be used when assigning recipes to factories, default to false
 use_recipe_yamlidentifiers: false
 
+#How often factory data is saved automatically. Recommended value and default is 15 minutes. Set to -1 to disable
+saving_intervall: 15m
+
 
 #----------------------------------------------------------------------------------------------------------------------
 #Factories
@@ -482,6 +485,7 @@ factories:
 
 #upgrading:
 #   type: UPGRADE
+#   production_time: 1d
 #   name: Upgrade to super duper factory
 #   input:
 #       diamond:
@@ -495,6 +499,76 @@ factories:
 
 #factory is the name of the factory it's supposed to be upgraded to. This factory must have been specified as FCCUPGRADE
 #above and the name here and above has to be exactly the same.
+
+
+#6. Enchantingrecipe
+
+#Enchanting recipes allow factories to apply enchants to items. Instead of just consuming a blank tool to produce an enchanted
+#one the way it would be possible with enchanted tools, this actually applies the enchant. This can also be used to increase the
+#level of an already existing enchant 
+
+#Example:
+
+#enchanting:
+# type: ENCHANT
+# name: Enchant with Effiency 5
+# production_time: 10s
+# input:
+#   diamond:
+#     material: DIAMOND
+#     amount: 50
+# enchant: DIG_SPEED
+# level: 5
+# enchant_item:
+#   tool:
+#     material: DIAMOND_PICKAXE
+
+#type has to be ENCHANT for this recipe
+
+#name is the name of the recipe displayed ingame
+
+#input are additional items which are consumed as a cost to enchant the item
+
+#enchant is the enchant which is applied to the item, use official spigot identifers for this:
+#https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
+
+#level is the level of the enchant, if not specified this will default to 1
+
+#enchant_item is the item to which the enchant is applied. This can just be a blank tool, if you want this enchant to be appliable
+#to any tool of this material or you can give this item an enchant with the same type as this recipe, but of a different level to use
+#this recipe as an upgrade to the enchant
+
+
+#7. Randomized output recipe
+
+#Random recipes allow you to specify multiple different outputs for a recipe and to assign a certain chance to each. The sum of all the
+#chances should always be 1.0
+
+#Example:
+
+#random:
+# type: RANDOM
+# production_time: 2s
+# name: Stone or Dirt
+# input:
+#   diamond:
+#     material: DIAMOND
+# outputs:
+#   first:
+#     chance: 0.5
+#     dirt:
+#       material: DIRT
+#   second:
+#     chance: 0.5
+#     dirt:
+#       material: STONE
+
+#type has to be RANDOM here
+
+#input are the materials consumed
+
+#output is a list of item configurations with a chance for it each. It's important to note here that the items themselves still need be a level lower
+#yaml structure wise than the chance
 
 recipes:
 
