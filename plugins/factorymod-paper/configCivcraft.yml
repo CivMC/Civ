@@ -312,6 +312,7 @@ factories:
     - Upgrade_to_Soup_kitchen
     - Upgrade_to_Bio_Lab
     - Upgrade_to_Animal_Husbandry_Factory_Basic
+    - Upgrade_to_Wool_Processing
     - Upgrade_to_Apprentice_Transmuter
   bakery:
     type: FCCUPGRADE
@@ -346,20 +347,9 @@ factories:
     - Repair_Factory
   animalhusbandryfactorybasic:
     type: FCCUPGRADE
-    name: Animal Husbandry Factory Basic
+    name: Animal Husbandry Factory
     recipes:
     - Craft_Saddles_Basic
-    - Dye_Wool_to_Red_Wool
-    - Dye_Wool_to_Yellow_Wool
-    - Dye_Wool_to_Green_Wool
-    - Repair_Small_Factory
-    - Upgrade_to_Wool_Processing
-    - Upgrade_to_Animal_Husbandry_Factory_Advanced
-  animalhusbandryfactoryadvanced:
-    type: FCCUPGRADE
-    name: Animal Husbandry Factory Advanced
-    recipes:
-    - Craft_Saddles_Advanced
     - Create_Nametags
     - Create_Leads
     - Repair_Factory
@@ -367,6 +357,22 @@ factories:
     type: FCCUPGRADE
     name: Wool Processing
     recipes:
+    - Dye_Wool_Orange
+    - Dye_Wool_Magenta
+    - Dye_Wool_Light_Blue
+    - Dye_Wool_Yellow
+    - Dye_Wool_Lime
+    - Dye_Wool_Pink
+    - Dye_Wool_Gray
+    - Dye_Wool_Light_Gray
+    - Dye_Wool_Cyan
+    - Dye_Wool_Purple
+    - Dye_Wool_Blue
+    - Dye_Wool_Brown
+    - Dye_Wool_Green
+    - Dye_Wool_Red
+    - Dye_Wool_Black
+    - Repair_Factory
   biolab:
     type: FCCUPGRADE
     name: Bio Lab
@@ -379,7 +385,6 @@ factories:
     - Upgrade_to_Grass_Gardening
     - Upgrade_to_Flower_Gardening
     - Upgrade_to_Tree_Mutator
-    - Upgrade_to_Mad_Scientist
     - Upgrade_to_Organic_Block_Factory
   grassgardening:
     type: FCCUPGRADE
@@ -407,13 +412,6 @@ factories:
     - Mutate_random_leaves
     - Grow_Concentrate_Of_Nature
     - Repair_Factory
-  madscientist:
-    type: FCCUPGRADE
-    name: Mad Scientist
-    recipes:
-    - Create_any_hostile_mob_egg
-    - Take_any_mob_egg_apart
-    - Repair_Factory
   organicblockfactory:
     type: FCCUPGRADE
     name: Organic Block Factory
@@ -436,7 +434,7 @@ factories:
     - Upgrade_to_Iron_Equipment_Forge
   ironforgebasic:
     type: FCCUPGRADE
-    name: Iron Forge Basic
+    name: Iron Forge
     recipes:
     - Craft_Rail_Basic
     - Craft_Buckets_Basic
@@ -446,7 +444,7 @@ factories:
     - Upgrade_to_Rail_Factory
   ironforgeadvanced:
     type: FCCUPGRADE
-    name: Iron Forge Advanced
+    name: Steel Forge
     recipes:
     - Craft_Shears
     - Craft_Anvils_Advanced
@@ -555,7 +553,6 @@ factories:
     - Upgrade_to_Printing_Press
     - Upgrade_to_Basic_Pylon
     - Upgrade_to_Redstone_Factory_Basic
-    - Upgrade_to_Emerald_Extractor
   bastionfactory:
     type: FCCUPGRADE
     name: Bastion Factory
@@ -2190,21 +2187,6 @@ recipes:
       redstone torch:
         material: REDSTONE_TORCH_ON
         amount: 64
-  Craft_Saddles_Advanced:
-    type: PRODUCTION
-    name: Craft Saddles
-    production_time: 5s
-    input:
-      leather:
-        material: LEATHER
-        amount: 32
-      iron ingot:
-        material: IRON_INGOT
-        amount: 16
-    output:
-      saddle:
-        material: SADDLE
-        amount: 16
   Craft_Saddles_Basic:
     type: PRODUCTION
     name: Craft Saddles
@@ -2212,14 +2194,14 @@ recipes:
     input:
       leather:
         material: LEATHER
-        amount: 32
+        amount: 128
       iron ingot:
         material: IRON_INGOT
         amount: 32
     output:
       saddle:
         material: SADDLE
-        amount: 16
+        amount: 4
   Craft_Sea_Lanterns:
     type: PRODUCTION
     name: Craft Sea Lanterns
@@ -2355,11 +2337,11 @@ recipes:
   Grow_random_flower:
     type: RANDOM
     name: Grow random flower
-    production_time: 10s
+    production_time: 5s
     input:
       seeds:
         material: SEEDS
-        amount: 64
+        amount: 32
       waterbucket:
         material: WATER_BUCKET
         amount: 1
@@ -2556,7 +2538,7 @@ recipes:
     output:
       bastion:
         material: SPONGE
-        amount: 16
+        amount: 12
   Create_Coarse_Dirt:
     type: PRODUCTION
     name: Create Coarse Dirt
@@ -2629,7 +2611,7 @@ recipes:
     output:
       nametag:
         material: NAME_TAG
-        amount: 8
+        amount: 4
   Create_Podzol_Advanced:
     type: PRODUCTION
     name: Create Podzol
@@ -2771,60 +2753,6 @@ recipes:
     name: De-compact Stack
     production_time: 5s
     compact_lore: Compacted Item
-  Dye_Wool_to_Green_Wool:
-    type: PRODUCTION
-    name: Dye Wool to Green Wool
-    production_time: 5s
-    input:
-      wool:
-        material: WOOL
-        durability: -1
-        amount: 64
-      dye:
-        material: INK_SACK
-        durability: 2
-        amount: 4
-    output:
-      green wool:
-        material: WOOL
-        durability: 13
-        amount: 64
-  Dye_Wool_to_Red_Wool:
-    type: PRODUCTION
-    name: Dye Wool to Red Wool
-    production_time: 5s
-    input:
-      wool:
-        material: WOOL
-        durability: -1
-        amount: 64
-      dye:
-        material: INK_SACK
-        durability: 1
-        amount: 4
-    output:
-      green wool:
-        material: WOOL
-        durability: 14
-        amount: 64
-  Dye_Wool_to_Yellow_Wool:
-    type: PRODUCTION
-    name: Dye Wool to Yellow Wool
-    production_time: 5s
-    input:
-      wool:
-        material: WOOL
-        durability: -1
-        amount: 64
-      dye:
-        material: INK_SACK
-        durability: 11
-        amount: 4
-    output:
-      green wool:
-        material: WOOL
-        durability: 4
-        amount: 64
   Extract_Diamonds:
     type: PRODUCTION
     name: Extract Diamonds
@@ -3276,7 +3204,7 @@ recipes:
     production_time: 5s
     input:
       stone:
-        material: STONE
+        material: COBBLESTONE
         amount: 16
     output:
       stone axe:
@@ -3288,7 +3216,7 @@ recipes:
     production_time: 5s
     input:
       stone:
-        material: STONE
+        material: COBBLESTONE
         amount: 8
     output:
       stone hoe:
@@ -3300,7 +3228,7 @@ recipes:
     production_time: 5s
     input:
       stone:
-        material: STONE
+        material: COBBLESTONE
         amount: 16
     output:
       stone pickaxe:
@@ -3312,7 +3240,7 @@ recipes:
     production_time: 5s
     input:
       stone:
-        material: STONE
+        material: COBBLESTONE
         amount: 6
     output:
       stone shovel:
@@ -3324,7 +3252,7 @@ recipes:
     production_time: 5s
     input:
       stone:
-        material: STONE
+        material: COBBLESTONE
         amount: 10
     output:
       stone sword:
@@ -4150,32 +4078,19 @@ recipes:
       identifiername:
         material: STONE
         amount: 1
-  Upgrade_to_Animal_Husbandry_Factory_Advanced:
-    production_time: 1800s
-    type: UPGRADE
-    name: Upgrade to Animal Husbandry Factory Advanced
-    fuel_consumption_intervall: 15s
-    input:
-      golden apple:
-        material: GOLDEN_APPLE
-        amount: 64
-      hay bale:
-        material: HAY_BLOCK
-        amount: 128
-    factory: Animal Husbandry Factory Advanced
   Upgrade_to_Animal_Husbandry_Factory_Basic:
     production_time: 1800s
     type: UPGRADE
-    name: Upgrade to Animal Husbandry Factory Basic
+    name: Upgrade to Animal Husbandry Factory
     fuel_consumption_intervall: 15s
     input:
       hay bale:
         material: HAY_BLOCK
-        amount: 64
+        amount: 256
       golden apple:
         material: GOLDEN_APPLE
-        amount: 16
-    factory: Animal Husbandry Factory Basic
+        amount: 32
+    factory: Animal Husbandry Factory
   Upgrade_to_Aquatic_Brick_Smelter:
     production_time: 1h
     type: UPGRADE
@@ -4184,13 +4099,13 @@ recipes:
     input:
       prismarine shard:
         material: PRISMARINE_SHARD
-        amount: 512
+        amount: 2048
       prismarine crystals:
         material: PRISMARINE_CRYSTALS
-        amount: 128
+        amount: 512
       ink:
         material: INK_SACK
-        amount: 64
+        amount: 384
       waterbucket:
         material: WATER_BUCKET
         amount: 4
@@ -4206,10 +4121,10 @@ recipes:
     input:
       Quartz Block:
         material: QUARTZ_BLOCK
-        amount: 256
+        amount: 2048
       quartz: 
         material: QUARTZ
-        amount: 512
+        amount: 1024
       pick:
         material: DIAMOND_PICKAXE
         amount: 8
@@ -4222,75 +4137,75 @@ recipes:
     input:
       bread:
         material: BREAD
-        amount: 512
+        amount: 1024
       cake:
         material: CAKE
-        amount: 32
+        amount: 4
       pumpkinpie:
         material: PUMPKIN_PIE
-        amount: 128
+        amount: 256
       baked potato:
         material: BAKED_POTATO
-        amount: 512
+        amount: 1024
       cookie:
         material: COOKIE
-        amount: 512
+        amount: 384
       fire:
         material: FLINT_AND_STEEL
         amount: 8
     factory: Bakery
   Upgrade_to_Bastion_Factory:
-    production_time: 3h
+    production_time: 1d
     type: UPGRADE
     name: Upgrade to Bastion Factory
-    fuel_consumption_intervall: 2m
+    fuel_consumption_intervall: 15m
     input:
       pretzel:
         material: CAKE
-        amount: 10
+        amount: 20
         lore:
          - Food Concentrate
       soup:
         material: MUSHROOM_SOUP
-        amount: 10
+        amount: 20
         lore:
          - Soup Concentrate 
       sand:
         material: SAND
-        amount: 10
+        amount: 20
         lore:
          - Desert Concentrate
         durability: 1
       brick:
         material: NETHER_BRICK_ITEM
-        amount: 10
+        amount: 20
         lore:
          - Hell Concentrate
       end:
         material: ENDER_PEARL
-        amount: 10
+        amount: 20
         lore:
          - End Concentrate
       rainbow:
         material: INK_SACK
-        amount: 10
+        amount: 20
         durability: 4
         lore:
          - Rainbow Concentrate
       cave:
         material: COAL_ORE
-        amount: 10
+        amount: 20
         lore:
          - Cave Concentrate
       nature:
         material: SAPLING
-        amount: 10
+        amount: 20
         lore:
          - Nature Concentrate
         durability: 3
       ocean:
         material: INK_SACK
-        amount: 10
+        amount: 20
         lore:
          - Ocean Concentrate
     factory: Bastion Factory
@@ -4344,9 +4259,16 @@ recipes:
     name: Upgrade to Brick Smelter
     fuel_consumption_intervall: 8s
     input:
-      clay blocks:
-        material: CLAY
+      char:
+        material: COAL
+        durability: 1
         amount: 512
+      stone:
+        material: STONE
+        amount: 2048
+      pickaxe:
+        material: DIAMOND_PICKAXE
+        amount: 8
     factory: Brick Smelter
   Upgrade_to_Carpentry:
     production_time: 900s
@@ -4500,91 +4422,93 @@ recipes:
     fuel_consumption_intervall: 2m
     input:
       diamond:
-        material: DIAMOND
-        amount: 128
+        material: DIAMOND_BLOCK
+        amount: 64
       quartz:
         material: QUARTZ
-        amount: 512
+        amount: 2048
       lapis:
-        material: INK_SACK
-        durability: 4
+        material: LAPIS_BLOCK
+        amount: 256
+      redstone:
+        material: REDSTONE_BLOCK
         amount: 256
     factory: Gem Extractor
   Upgrade_to_Glass_Dying_Factory:
-    production_time: 3600s
+    production_time: 1h
     type: UPGRADE
     name: Upgrade to Glass Dying Factory
     fuel_consumption_intervall: 30s
     input:
       glass:
         material: GLASS
-        amount: 384
+        amount: 576
       panes:
         material: THIN_GLASS
-        amount: 384
+        amount: 576
       dye0:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 0
       dye1:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 1
       dye2:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 2
       dye3:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 3
       dye4:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 4
       dye5:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 5
       dye6:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 6
       dye7:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 7
       dye8:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 8
       dye9:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 9
       dye10:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 10
       dye11:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 11
       dye12:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 12
       dye13:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 13
       dye14:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 14
       dye15:
         material: INK_SACK
-        amount: 64
+        amount: 128
         durability: 15        
     factory: Glass Dying Factory
   Upgrade_to_Gold_Armour_Forge:
@@ -4642,19 +4566,19 @@ recipes:
     input:
       beef:
         material: COOKED_BEEF
-        amount: 256
+        amount: 768
       pork:
         material: GRILLED_PORK
-        amount: 256
+        amount: 768
       mutton:
         material: COOKED_MUTTON
         amount: 128
       chicken:
         material: COOKED_CHICKEN
-        amount: 128
+        amount: 512
       fish:
         material: COOKED_FISH
-        amount: 128
+        amount: 256
       salmon:
         material: COOKED_FISH
         amount: 64
@@ -4679,23 +4603,23 @@ recipes:
   Upgrade_to_Iron_Forge_Advanced:
     production_time: 3600s
     type: UPGRADE
-    name: Upgrade to Iron Forge Advanced
+    name: Upgrade to Steel Forge
     fuel_consumption_intervall: 30s
     input:
       iron block:
         material: IRON_BLOCK
         amount: 64
-    factory: Iron Forge Advanced
+    factory: Steel Forge
   Upgrade_to_Iron_Forge_Basic:
     production_time: 1800s
     type: UPGRADE
-    name: Upgrade to Iron Forge Basic
+    name: Upgrade to Iron Forge
     fuel_consumption_intervall: 15s
     input:
       iron block:
         material: IRON_BLOCK
         amount: 32
-    factory: Iron Forge Basic
+    factory: Iron Forge
   Upgrade_to_Kiln:
     production_time: 1800s
     type: UPGRADE
@@ -4704,14 +4628,14 @@ recipes:
     input:
       clay:
         material: CLAY
-        amount: 1024
+        amount: 1536
       char:
         material: COAL
         durability: 1
-        amount: 128
+        amount: 512
       lava:
         material: LAVA_BUCKET
-        amount: 8
+        amount: 16
     factory: Kiln
   Upgrade_to_Laboratory:
     production_time: 10m
@@ -4726,19 +4650,6 @@ recipes:
         material: CAULDRON_ITEM
         amount: 32
     factory: Laboratory
-  Upgrade_to_Mad_Scientist:
-    production_time: 1800s
-    type: UPGRADE
-    name: Upgrade to Mad Scientist
-    fuel_consumption_intervall: 15s
-    input:
-      blaze rod:
-        material: BLAZE_ROD
-        amount: 128
-      squid egg:
-        material: MONSTER_EGG
-        durability: 94
-    factory: Mad Scientist
   Upgrade_to_Netherbrick_Smelter:
     production_time: 1h
     type: UPGRADE
@@ -4750,7 +4661,7 @@ recipes:
         amount: 384
       netherrack:
         material: NETHERRACK
-        amount: 1024
+        amount: 2048
       lavabucket:
         material: LAVA_BUCKET
         amount: 16
@@ -4763,14 +4674,14 @@ recipes:
     fuel_consumption_intervall: 8s
     input:
       iron ingot:
-        material: IRON_INGOT
-        amount: 512
+        material: IRON_BLOCK
+        amount: 96
       coal:
-        material: COAL
-        amount: 1024
+        material: COAL_BLOCK
+        amount: 192
       redstone:
-        material: REDSTONE
-        amount: 256
+        material: REDSTONE_BLOCK
+        amount: 48
     factory: Ore Smelter
   Upgrade_to_Ore_Forge:
     production_time: 4h
@@ -4780,13 +4691,13 @@ recipes:
     input:
       iron ingot:
         material: IRON_BLOCK
-        amount: 256
+        amount: 384
       gold ingot:
         material: GOLD_BLOCK
-        amount: 128
+        amount: 192
       coal:
         material: COAL_BLOCK
-        amount: 384
+        amount: 512
     factory: Ore Forge
   Upgrade_to_Organic_Block_Factory:
     production_time: 1800s
@@ -4796,7 +4707,13 @@ recipes:
     input:
       grass:
         material: GRASS
-        amount: 128
+        amount: 1024
+      dirt: 
+        material: DIRT
+        amount: 1024
+      water:
+        material: WATER_BUCKET
+        amount: 16
     factory: Organic Block Factory
   Upgrade_to_Printing_Press:
     production_time: 900s
@@ -4868,7 +4785,7 @@ recipes:
     input:
       sand:
         material: SAND
-        amount: 512
+        amount: 1536
     factory: Sand Smelter
   Upgrade_to_Glass_Blowing_Workshop:
     production_time: 2h
@@ -4878,7 +4795,7 @@ recipes:
     input:
       sand:
         material: SAND
-        amount: 512
+        amount: 1536
       glass:
         material: GLASS
         amount: 1024
@@ -4894,10 +4811,10 @@ recipes:
     input:
       sandstone:
         material: SANDSTONE
-        amount: 640
+        amount: 1280
       red sandstone:
         material: RED_SANDSTONE
-        amount: 640
+        amount: 1280
     factory: Sandstone Smelter
   Upgrade_to_Soup_kitchen:
     production_time: 2h
@@ -4907,13 +4824,13 @@ recipes:
     input:
       red mushroom:
         material: RED_MUSHROOM
-        amount: 384
+        amount: 1024
       brown mushroom:
         material: BROWN_MUSHROOM
-        amount: 384
+        amount: 1024
       rabbit:
         material: RABBIT
-        amount: 128
+        amount: 256
       bowl: 
         material: BOWL
         amount: 128
@@ -4941,8 +4858,13 @@ recipes:
     fuel_consumption_intervall: 15s
     input:
       stone:
-        material: STONE
-        amount: 256
+        material: BRICK
+        amount: 108
+        lore:
+         - Compacted Item
+      picks:
+        material: DIAMOND_PICKAXE
+        amount: 12
     factory: Stonebrick Smelter
   Upgrade_to_Tree_Mutator:
     production_time: 1800s
@@ -4985,19 +4907,21 @@ recipes:
     input:
       stone:
         material: STONE
-        amount: 1152
+        amount: 108
+        lore:
+         - Compacted Item
       otherstone:
         material: STONE
         durability: 1
-        amount: 256
+        amount: 1024
       idontevenknowwhatthisoneiscalled:
         material: STONE
         durability: 3
-        amount: 256
+        amount: 1024
       morestoneIguess:
         material: STONE
         durability: 5
-        amount: 256
+        amount: 1024
   Upgrade_to_Crystallization_Factory:
     production_time: 10m
     type: UPGRADE
@@ -5278,11 +5202,11 @@ recipes:
         amount: 256
       bucket:
         material: WATER_BUCKET
-        amount: 4
+        amount: 8
     output:
       bucket:
         material: BUCKET
-        amount: 4
+        amount: 8
       soup:
         material: MUSHROOM_SOUP
         lore:
@@ -5294,20 +5218,20 @@ recipes:
     input:
       sugar:
         material: SUGAR
-        amount: 64
+        amount: 384
       egg:
         material: EGG
-        amount: 64
+        amount: 192
       milk:
         material: MILK_BUCKET
-        amount: 4
+        amount: 16
       wheat:
         material: WHEAT
-        amount: 256
+        amount: 384
     output:
       buckets:
         material: BUCKET
-        amount: 4
+        amount: 16
       pretzel:
         material: CAKE
         lore:
@@ -5319,14 +5243,14 @@ recipes:
     input: 
       sand:
         material: SAND
-        amount: 256
+        amount: 512
       redsand:
         material: SAND
-        amount: 128
+        amount: 256
         durability: 1
       cactus:
         material: CACTUS
-        amount: 32
+        amount: 192
     output:
       sand:
         material: SAND
@@ -5340,13 +5264,13 @@ recipes:
     input:
       netherrack: 
         material: NETHERRACK
-        amount: 384
+        amount: 768
       slow:
         material: SOUL_SAND
-        amount: 64
-      quartz:
+        amount: 192
+      glow:
         material: GLOWSTONE
-        amount: 16
+        amount: 64
     output:
       brick:
         material: NETHER_BRICK_ITEM
@@ -5359,10 +5283,10 @@ recipes:
     input:
       endstone:
         material: ENDER_STONE
-        amount: 64
+        amount: 384
       pearls:
         material: ENDER_PEARL
-        amount: 16
+        amount: 64
     output:
       concentrate:
         material: ENDER_PEARL
@@ -5381,67 +5305,67 @@ recipes:
     input:
       dye0:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 0
       dye1:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 1
       dye2:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 2
       dye3:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 3
       dye4:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 4
       dye5:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 5
       dye6:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 6
       dye7:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 7
       dye8:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 8
       dye9:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 9
       dye10:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 10
       dye11:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 11
       dye12:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 12
       dye13:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 13
       dye14:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 14
       dye15:
         material: INK_SACK
-        amount: 16
+        amount: 32
         durability: 15        
   Craft_Cave_Concentrate:
     name: Craft Cave Concentrate
@@ -5450,13 +5374,16 @@ recipes:
     input:
       goldore:
         material: GOLD_ORE
-        amount: 16
+        amount: 32
       lapisore:
         material: LAPIS_ORE
-        amount: 16
+        amount: 32
       redore:
         material: REDSTONE_ORE
-        amount: 16
+        amount: 32
+      diaore:
+        material: DIAMOND_ORE
+        amount: 12
     output:
       concentrate:
         material: COAL_ORE
@@ -5469,27 +5396,27 @@ recipes:
     input: 
       sapling1:
         material: SAPLING
-        amount: 8
+        amount: 32
         durability: 0
       sapling2:
         material: SAPLING
-        amount: 8
+        amount: 32
         durability: 1
       sapling3:
         material: SAPLING
-        amount: 8
+        amount: 32
         durability: 2
       sapling4:
         material: SAPLING
-        amount: 8
+        amount: 32
         durability: 3
       sapling5:
         material: SAPLING
-        amount: 8
+        amount: 32
         durability: 4
       sapling6:
         material: SAPLING
-        amount: 8
+        amount: 32
         durability: 5
     output:
       concentrate:
@@ -5504,13 +5431,13 @@ recipes:
     input:
       prismarine:
         material: PRISMARINE_CRYSTALS
-        amount: 32
+        amount: 128
       moreprismarine:
         material: PRISMARINE_SHARD
-        amount: 96
+        amount: 512
       ink:
         material: INK_SACK
-        amount: 64
+        amount: 256
     output:
       ocean:
         material: INK_SACK
@@ -5788,6 +5715,261 @@ recipes:
     output:
       stainedglass:
         material: STAINED_GLASS
+        amount: 64
+        durability: 15
+  Dye_Wool_Orange:
+    name: Dye Wool Orange
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 14
+    output:
+      dyedwool:
+        material: WOOL
+        amount: 64
+        durability: 1
+  Dye_Wool_Magenta:
+    name: Dye Wool Magenta
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 13
+    output:
+      dyedwool:
+        material: WOOL
+        amount: 64
+        durability: 2
+  Dye_Wool_Light_Blue:
+    name: Dye Wool Light Blue
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 12
+    output:
+      dyedwool:
+        material: WOOL
+        amount: 64
+        durability: 3
+  Dye_Wool_Yellow:
+    name: Dye Wool Yellow
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 11
+    output:
+      dyedwool:
+        material: WOOL
+        amount: 64
+        durability: 4
+  Dye_Wool_Lime:
+    name: Dye Wool Lime
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 10
+    output:
+      dyedwool:
+        material: WOOL
+        amount: 64
+        durability: 5
+  Dye_Wool_Pink:
+    name: Dye Wool Pink
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 9
+    output:
+      dyedwool:
+        material: WOOL
+        amount: 64
+        durability: 6
+  Dye_Wool_Gray:
+    name: Dye Wool Gray
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 8
+    output:
+      dyedwool:
+        material: WOOL
+        amount: 64
+        durability: 7
+  Dye_Wool_Light_Gray:
+    name: Dye Wool Light Gray
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 7
+    output:
+      dyedwool:
+        material: WOOL
+        amount: 64
+        durability: 8
+  Dye_Wool_Cyan:
+    name: Dye Wool Cyan
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 6
+    output:
+      dyedwool:
+        material: WOOL
+        amount: 64
+        durability: 9
+  Dye_Wool_Purple:
+    name: Dye Wool Purple
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 5
+    output:
+      dyedwool:
+        material: WOOL
+        amount: 64
+        durability: 10
+  Dye_Wool_Blue:
+    name: Dye Wool Blue
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 4
+    output:
+      dyedwool:
+        material: WOOL
+        amount: 64
+        durability: 11
+  Dye_Wool_Brown:
+    name: Dye Wool Brown
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 3
+    output:
+      dyedwool:
+        material: WOOL
+        amount: 64
+        durability: 12
+  Dye_Wool_Green:
+    name: Dye Wool Green
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 2
+    output:
+      dyedwool:
+        material: WOOL
+        amount: 64
+        durability: 13
+  Dye_Wool_Red:
+    name: Dye Wool Red
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 1
+    output:
+      dyedwool:
+        material: WOOL
+        amount: 64
+        durability: 14
+  Dye_Wool_Black:
+    name: Dye Wool Black
+    type: PRODUCTION
+    production_time: 10s
+    input:
+      glass:
+        material: WOOL
+        amount: 64
+      dye:
+        material: INK_SACK
+        amount: 4
+        durability: 0
+    output:
+      dyedwool:
+        material: WOOL
         amount: 64
         durability: 15
   Dye_GlassPanes_White:
@@ -6131,46 +6313,9 @@ recipes:
         enchants:
           dura:
             enchant: DURABILITY
-  Upgrade_to_Emerald_Extractor:
-    name: Upgrade to Emerald Extractor
-    production_time: 4h
-    fuel_consumption_intervall: 2m
-    type: UPGRADE
-    factory: Emerald Extractor
-    input:
-      potato:
-        material: BAKED_POTATO
-        amount: 512
-      carrots:
-        material: CARROT_ITEM
-        amount: 512
-      mushroom:
-        material: BROWN_MUSHROOM
-        amount: 256
-      yesdiet_more_mushroom:
-        material: RED_MUSHROOM
-        amount: 256
-      aether:
-        material: GOLD_NUGGET
-        amount: 256
-        lore:
-         - Aether
-        enchants:
-          dura:
-            enchant: DURABILITY
-      vines:
-        material: VINE
-        amount: 128
-      grass:
-        material: LONG_GRASS
-        amount: 256
-        durability: 1
-      pumpkin:
-        material: PUMPKIN
-        amount: 256
-      melon:
-        material: MELON_BLOCK
-        amount: 128
+
+            
+            
 ## XP Generation Recipes
 # Upgrades
 
@@ -9526,3 +9671,15 @@ recipes:
     input:
       dirt:
         material: DIRT
+        
+renames:
+  husbandry:
+    oldName: Animal Husbandry Factory Basic
+    newName: Animal Husbandry Factory
+  advancedforge:
+    oldName: Iron Forge Advanced
+    newName: Steel Forge
+  normalforge:
+    oldName: Iron Forge Basic
+    newName: Iron Forge
+
