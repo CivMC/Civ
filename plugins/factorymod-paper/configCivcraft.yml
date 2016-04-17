@@ -483,10 +483,10 @@ factories:
     type: FCCUPGRADE
     name: Gold Equipment Forge
     recipes:
-    - Forge_Gold_Pickaxe
-    - Forge_Gold_Shovel
-    - Forge_Gold_Breastplate
-    - Forge_Gold_Leggings
+    - Forge_Gold_Pickaxe_Basic
+    - Forge_Gold_Shovel_Basic
+    - Forge_Gold_Breastplate_Basic
+    - Forge_Gold_Leggings_Basic
     - Repair_Factory
     - Upgrade_to_Gold_Armour_Forge
     - Upgrade_to_Gold_Tools_Forge
@@ -494,10 +494,10 @@ factories:
     type: FCCUPGRADE
     name: Diamond Equipment Forge
     recipes:
-    - Forge_Diamond_Pickaxe
-    - Forge_Diamond_Shovel
-    - Forge_Diamond_Breastplate
-    - Forge_Diamond_Leggings
+    - Forge_Diamond_Pickaxe_Basic
+    - Forge_Diamond_Shovel_Basic
+    - Forge_Diamond_Breastplate_Basic
+    - Forge_Diamond_Leggings_Basic
     - Repair_Advanced_Factory
     - Upgrade_to_Diamond_Armour_Forge
     - Upgrade_to_Diamond_Tools_Forge
@@ -576,6 +576,7 @@ factories:
   dedicatedcompactor:
     type: FCCUPGRADE
     name: Dedicated Compactor
+    updatetime: 5t
     recipes:
     - Compact_Stack_Advanced
     - Repair_Advanced_Factory
@@ -587,7 +588,7 @@ factories:
     - Repair_Advanced_Factory
   redstonefactorybasic:
     type: FCCUPGRADE
-    name: Redstone Factory Basic
+    name: Redstone Techniques
     recipes:
     - Craft_Redstone_Repeater_Advanced
     - Craft_Redstone_Torch_Basic
@@ -599,7 +600,7 @@ factories:
     - Upgrade_to_Dowsing_Factory
   redstonecircularityfactory:
     type: FCCUPGRADE
-    name: Redstone Circularity Factory
+    name: Redstone Electronics
     recipes:
     - Craft_Redstone_Repeater_Advanced
     - Craft_Redstone_Torch_Advanced
@@ -609,7 +610,7 @@ factories:
     - Repair_Advanced_Factory
   redstonemechanicsfactory:
     type: FCCUPGRADE
-    name: Redstone Mechanics Factory
+    name: Redstone Mechanics
     recipes:
     - Craft_Piston
     - Craft_Sticky_Piston
@@ -1433,15 +1434,16 @@ recipes:
   Compact_Stack_Advanced:
     type: COMPACT
     name: Compact Stack
-    production_time: 1s
+    fuel_consumption_intervall: 5t
+    production_time: 5t
     input:
       crate:
         material: CHEST
         lore:
         - Crate
-        amount: 1
     compact_lore: Compacted Item
-    excluded_materials: -BOOK
+    excluded_materials: 
+     - BOOK
   Compact_Stack_Basic:
     type: COMPACT
     name: Compact Stack
@@ -1451,9 +1453,9 @@ recipes:
         material: CHEST
         lore:
         - Crate
-        amount: 1
     compact_lore: Compacted Item
-    excluded_materials: -BOOK
+    excluded_materials: 
+     - BOOK
   Convert_Normal_Sand_to_Red_Sand:
     type: PRODUCTION
     name: Extract Red Sand
@@ -2479,18 +2481,6 @@ recipes:
         emptybucket:
           material: BUCKET
           amount: 1
-  Create_any_hostile_mob_egg:
-    type: PRODUCTION
-    name: Create any hostile mob egg
-    production_time: 5s
-    input:
-      identifiername:
-        material: STONE
-        amount: 1
-    output:
-      identifiername:
-        material: STONE
-        amount: 1
   Create_Bastion:
     type: PRODUCTION
     name: Create Bastion
@@ -2745,12 +2735,13 @@ recipes:
         durability: -2
   De-compact_Stack_Advanced:
     type: DECOMPACT
-    name: De-compact Stack
-    production_time: 1s
+    name: Decompact Stack
+    production_time: 5t
+    fuel_consumption_intervall: 5t
     compact_lore: Compacted Item
   De-compact_Stack_Basic:
     type: DECOMPACT
-    name: De-compact Stack
+    name: Decompact Stack
     production_time: 5s
     compact_lore: Compacted Item
   Extract_Diamonds:
@@ -2841,71 +2832,83 @@ recipes:
   Forge_Diamond_Axe:
     type: PRODUCTION
     name: Forge Diamond Axe
-    production_time: 5s
+    production_time: 16s
     input:
       diamond:
         material: DIAMOND
-        amount: 16
+        amount: 8
     output:
       diamond axe:
         material: DIAMOND_AXE
-        amount: 8
+        amount: 4
   Forge_Diamond_Boots:
     type: PRODUCTION
     name: Forge Diamond Boots
-    production_time: 5s
+    production_time: 16s
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 12
+    output:
+      diamond boots:
+        material: DIAMOND_BOOTS
+        amount: 4
+  Forge_Diamond_Breastplate:
+    type: PRODUCTION
+    name: Forge Diamond Breastplate
+    production_time: 16s
     input:
       diamond:
         material: DIAMOND
         amount: 24
     output:
-      diamond boots:
-        material: DIAMOND_BOOTS
-        amount: 8
-  Forge_Diamond_Breastplate:
+      diamond chestplate:
+        material: DIAMOND_CHESTPLATE
+        amount: 4
+  Forge_Diamond_Breastplate_Basic:
     type: PRODUCTION
     name: Forge Diamond Breastplate
-    production_time: 5s
+    production_time: 32s
     input:
       diamond:
         material: DIAMOND
-        amount: 48
+        amount: 28
     output:
       diamond chestplate:
         material: DIAMOND_CHESTPLATE
-        amount: 8
+        amount: 4
   Forge_Diamond_Helmet:
     type: PRODUCTION
     name: Forge Diamond Helmet
-    production_time: 5s
+    production_time: 16s
     input:
       diamond:
         material: DIAMOND
-        amount: 32
+        amount: 15
     output:
       diamond helmet:
         material: DIAMOND_HELMET
-        amount: 8
+        amount: 4
   Forge_Diamond_Hoe:
     type: PRODUCTION
     name: Forge Diamond Hoe
-    production_time: 5s
+    production_time: 16s
     input:
       diamond:
         material: DIAMOND
-        amount: 8
+        amount: 6
     output:
       diamond hoe:
         material: DIAMOND_HOE
-        amount: 8
+        amount: 4
   Forge_Diamond_Horse_Armour:
     type: PRODUCTION
     name: Forge Diamond Horse Armour
-    production_time: 5s
+    production_time: 16s
     input:
       diamond:
         material: DIAMOND
-        amount: 12
+        amount: 20
     output:
       diamond horse armor:
         material: DIAMOND_BARDING
@@ -2913,35 +2916,71 @@ recipes:
   Forge_Diamond_Leggings:
     type: PRODUCTION
     name: Forge Diamond Leggings
-    production_time: 5s
+    production_time: 16s
     input:
       diamond:
         material: DIAMOND
-        amount: 40
+        amount: 21
     output:
       diamond leggings:
         material: DIAMOND_LEGGINGS
-        amount: 8
-  Forge_Diamond_Pickaxe:
+        amount: 4
+  Forge_Diamond_Leggings_Basic:
     type: PRODUCTION
-    name: Forge Diamond Pickaxe
-    production_time: 5s
+    name: Forge Diamond Leggings
+    production_time: 32s
     input:
       diamond:
         material: DIAMOND
-        amount: 16
+        amount: 25
+    output:
+      diamond leggings:
+        material: DIAMOND_LEGGINGS
+        amount: 4
+  Forge_Diamond_Pickaxe:
+    type: PRODUCTION
+    name: Forge Diamond Pickaxe
+    production_time: 16s
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 9
+    output:
+      diamond pickaxe:
+        material: DIAMOND_PICKAXE
+        amount: 4
+  Forge_Diamond_Shovel:
+    type: PRODUCTION
+    name: Forge Diamond Shovel
+    production_time: 16s
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 3
+    output:
+      diamond shovel:
+        material: DIAMOND_SPADE
+        amount: 4
+  Forge_Diamond_Pickaxe_Basic:
+    type: PRODUCTION
+    name: Forge Diamond Pickaxe
+    production_time: 32s
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 21
     output:
       diamond pickaxe:
         material: DIAMOND_PICKAXE
         amount: 8
-  Forge_Diamond_Shovel:
+  Forge_Diamond_Shovel_Basic:
     type: PRODUCTION
     name: Forge Diamond Shovel
-    production_time: 5s
+    production_time: 32s
     input:
       diamond:
         material: DIAMOND
-        amount: 6
+        amount: 7
     output:
       diamond shovel:
         material: DIAMOND_SPADE
@@ -2961,71 +3000,83 @@ recipes:
   Forge_Gold_Axe:
     type: PRODUCTION
     name: Forge Gold Axe
-    production_time: 5s
+    production_time: 16s
     input:
-      gold ingot:
+      gold:
         material: GOLD_INGOT
-        amount: 16
+        amount: 8
     output:
       gold axe:
         material: GOLD_AXE
-        amount: 8
+        amount: 4
   Forge_Gold_Boots:
     type: PRODUCTION
     name: Forge Gold Boots
-    production_time: 5s
+    production_time: 16s
     input:
-      gold ingot:
+      gold:
         material: GOLD_INGOT
-        amount: 24
+        amount: 12
     output:
       gold boots:
         material: GOLD_BOOTS
-        amount: 8
+        amount: 4
   Forge_Gold_Breastplate:
     type: PRODUCTION
     name: Forge Gold Breastplate
-    production_time: 5s
+    production_time: 16s
     input:
-      gold ingot:
+      gold:
         material: GOLD_INGOT
-        amount: 48
+        amount: 24
     output:
       gold chestplate:
         material: GOLD_CHESTPLATE
-        amount: 8
+        amount: 4
+  Forge_Gold_Breastplate_Basic:
+    type: PRODUCTION
+    name: Forge Gold Breastplate
+    production_time: 32s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 28
+    output:
+      gold chestplate:
+        material: GOLD_CHESTPLATE
+        amount: 4
   Forge_Gold_Helmet:
     type: PRODUCTION
     name: Forge Gold Helmet
-    production_time: 5s
+    production_time: 16s
     input:
-      gold ingot:
+      gold:
         material: GOLD_INGOT
-        amount: 32
+        amount: 15
     output:
       gold helmet:
         material: GOLD_HELMET
-        amount: 8
+        amount: 4
   Forge_Gold_Hoe:
     type: PRODUCTION
     name: Forge Gold Hoe
-    production_time: 5s
+    production_time: 16s
     input:
-      gold ingot:
+      gold:
         material: GOLD_INGOT
-        amount: 8
+        amount: 6
     output:
       gold hoe:
         material: GOLD_HOE
-        amount: 8
+        amount: 4
   Forge_Gold_Horse_Armour:
     type: PRODUCTION
     name: Forge Gold Horse Armour
-    production_time: 5s
+    production_time: 16s
     input:
-      gold ingot:
+      gold:
         material: GOLD_INGOT
-        amount: 12
+        amount: 20
     output:
       gold horse armor:
         material: GOLD_BARDING
@@ -3033,35 +3084,71 @@ recipes:
   Forge_Gold_Leggings:
     type: PRODUCTION
     name: Forge Gold Leggings
-    production_time: 5s
+    production_time: 16s
     input:
-      gold ingot:
+      gold:
         material: GOLD_INGOT
-        amount: 40
+        amount: 21
     output:
       gold leggings:
         material: GOLD_LEGGINGS
-        amount: 8
+        amount: 4
+  Forge_Gold_Leggings_Basic:
+    type: PRODUCTION
+    name: Forge Gold Leggings
+    production_time: 32s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 25
+    output:
+      gold leggings:
+        material: GOLD_LEGGINGS
+        amount: 4
   Forge_Gold_Pickaxe:
     type: PRODUCTION
     name: Forge Gold Pickaxe
-    production_time: 5s
+    production_time: 16s
     input:
-      gold ingot:
+      gold:
         material: GOLD_INGOT
-        amount: 16
+        amount: 9
+    output:
+      gold pickaxe:
+        material: GOLD_PICKAXE
+        amount: 4
+  Forge_Gold_Shovel:
+    type: PRODUCTION
+    name: Forge Gold Shovel
+    production_time: 16s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 3
+    output:
+      gold shovel:
+        material: GOLD_SPADE
+        amount: 4
+  Forge_Gold_Pickaxe_Basic:
+    type: PRODUCTION
+    name: Forge Gold Pickaxe
+    production_time: 32s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 21
     output:
       gold pickaxe:
         material: GOLD_PICKAXE
         amount: 8
-  Forge_Gold_Shovel:
+  Forge_Gold_Shovel_Basic:
     type: PRODUCTION
     name: Forge Gold Shovel
-    production_time: 5s
+    production_time: 32s
     input:
-      gold ingot:
+      gold:
         material: GOLD_INGOT
-        amount: 6
+        amount: 7
     output:
       gold shovel:
         material: GOLD_SPADE
@@ -3071,7 +3158,7 @@ recipes:
     name: Forge Gold Sword
     production_time: 5s
     input:
-      gold ingot:
+      gold:
         material: GOLD_INGOT
         amount: 10
     output:
@@ -3081,71 +3168,71 @@ recipes:
   Forge_Iron_Axe:
     type: PRODUCTION
     name: Forge Iron Axe
-    production_time: 5s
+    production_time: 16s
     input:
-      iron ingot:
+      iron:
         material: IRON_INGOT
-        amount: 16
+        amount: 8
     output:
       iron axe:
         material: IRON_AXE
-        amount: 8
+        amount: 4
   Forge_Iron_Boots:
     type: PRODUCTION
     name: Forge Iron Boots
-    production_time: 5s
+    production_time: 16s
     input:
-      iron ingot:
+      iron:
         material: IRON_INGOT
-        amount: 24
+        amount: 12
     output:
       iron boots:
         material: IRON_BOOTS
-        amount: 8
+        amount: 4
   Forge_Iron_Breastplate:
     type: PRODUCTION
     name: Forge Iron Breastplate
-    production_time: 5s
+    production_time: 16s
     input:
-      iron ingot:
+      iron:
         material: IRON_INGOT
-        amount: 48
+        amount: 24
     output:
       iron chestplate:
         material: IRON_CHESTPLATE
-        amount: 8
+        amount: 4
   Forge_Iron_Helmet:
     type: PRODUCTION
     name: Forge Iron Helmet
-    production_time: 5s
+    production_time: 16s
     input:
-      iron ingot:
+      iron:
         material: IRON_INGOT
-        amount: 32
+        amount: 15
     output:
       iron helmet:
         material: IRON_HELMET
-        amount: 8
+        amount: 4
   Forge_Iron_Hoe:
     type: PRODUCTION
     name: Forge Iron Hoe
-    production_time: 5s
+    production_time: 16s
     input:
-      iron ingot:
+      iron:
         material: IRON_INGOT
-        amount: 8
+        amount: 6
     output:
       iron hoe:
         material: IRON_HOE
-        amount: 8
+        amount: 4
   Forge_Iron_Horse_Armour:
     type: PRODUCTION
     name: Forge Iron Horse Armour
-    production_time: 5s
+    production_time: 16s
     input:
-      iron ingot:
+      iron:
         material: IRON_INGOT
-        amount: 12
+        amount: 20
     output:
       iron horse armor:
         material: IRON_BARDING
@@ -3153,45 +3240,45 @@ recipes:
   Forge_Iron_Leggings:
     type: PRODUCTION
     name: Forge Iron Leggings
-    production_time: 5s
+    production_time: 16s
     input:
-      iron ingot:
+      iron:
         material: IRON_INGOT
-        amount: 40
+        amount: 21
     output:
       iron leggings:
         material: IRON_LEGGINGS
-        amount: 8
+        amount: 4
   Forge_Iron_Pickaxe:
     type: PRODUCTION
     name: Forge Iron Pickaxe
-    production_time: 5s
+    production_time: 16s
     input:
-      iron ingot:
+      iron:
         material: IRON_INGOT
-        amount: 16
+        amount: 9
     output:
       iron pickaxe:
         material: IRON_PICKAXE
-        amount: 8
+        amount: 4
   Forge_Iron_Shovel:
     type: PRODUCTION
     name: Forge Iron Shovel
-    production_time: 5s
+    production_time: 16s
     input:
-      iron ingot:
+      iron:
         material: IRON_INGOT
-        amount: 6
+        amount: 3
     output:
       iron shovel:
         material: IRON_SPADE
-        amount: 8
+        amount: 4
   Forge_Iron_Sword:
     type: PRODUCTION
     name: Forge Iron Sword
     production_time: 5s
     input:
-      iron ingot:
+      iron:
         material: IRON_INGOT
         amount: 10
     output:
@@ -3201,51 +3288,51 @@ recipes:
   Forge_Stone_Axe:
     type: PRODUCTION
     name: Forge Stone Axe
-    production_time: 5s
+    production_time: 16s
     input:
       stone:
         material: COBBLESTONE
-        amount: 16
+        amount: 8
     output:
       stone axe:
         material: STONE_AXE
-        amount: 8
+        amount: 4
   Forge_Stone_Hoe:
     type: PRODUCTION
     name: Forge Stone Hoe
-    production_time: 5s
-    input:
-      stone:
-        material: COBBLESTONE
-        amount: 8
-    output:
-      stone hoe:
-        material: STONE_HOE
-        amount: 8
-  Forge_Stone_Pickaxe:
-    type: PRODUCTION
-    name: Forge Stone Pickaxe
-    production_time: 5s
-    input:
-      stone:
-        material: COBBLESTONE
-        amount: 16
-    output:
-      stone pickaxe:
-        material: STONE_PICKAXE
-        amount: 8
-  Forge_Stone_Shovel:
-    type: PRODUCTION
-    name: Forge Stone Shovel
-    production_time: 5s
+    production_time: 16s
     input:
       stone:
         material: COBBLESTONE
         amount: 6
     output:
+      stone hoe:
+        material: STONE_HOE
+        amount: 4
+  Forge_Stone_Pickaxe:
+    type: PRODUCTION
+    name: Forge Stone Pickaxe
+    production_time: 16s
+    input:
+      stone:
+        material: COBBLESTONE
+        amount: 9
+    output:
+      stone pickaxe:
+        material: STONE_PICKAXE
+        amount: 4
+  Forge_Stone_Shovel:
+    type: PRODUCTION
+    name: Forge Stone Shovel
+    production_time: 16s
+    input:
+      stone:
+        material: COBBLESTONE
+        amount: 3
+    output:
       stone shovel:
         material: STONE_SPADE
-        amount: 8
+        amount: 4
   Forge_Stone_Sword:
     type: PRODUCTION
     name: Forge Stone Sword
@@ -4299,75 +4386,132 @@ recipes:
     input:
       piston:
         material: PISTON_BASE
-        amount: 6
+        amount: 128
+      pistonSticky:
+        material: PISTON_STICKY_BASE
+        amount: 128
       chest:
         material: CHEST
+        amount: 256
+      iron:
+        material: IRON_BLOCK
         amount: 64
-      iron ingot:
-        material: IRON_INGOT
+      redstone:
+        material: REDSTONE_BLOCK
         amount: 32
+      crate:
+        material: CHEST
+        amount: 256
+        lore:
+         - Crate
     factory: Compactor Basic
   Upgrade_to_Dedicated_Compactor:
-    production_time: 3600s
+    production_time: 1h
     type: UPGRADE
     name: Upgrade to Dedicated Compactor
     fuel_consumption_intervall: 30s
     input:
       piston:
-        material: PISTON_BASE
-        amount: 6
+        material: PISTON_STICKY_BASE 
+        amount: 512
       chest:
         material: CHEST
+        amount: 1024
+      iron:
+        material: IRON_BLOCK
+        amount: 192
+      redstone:
+        material: REDSTONE_BLOCK
         amount: 64
-      iron ingot:
-        material: IRON_INGOT
-        amount: 48
+      crate:
+        material: CHEST
+        amount: 512
+        lore:
+         - Crate
     factory: Dedicated Compactor
   Upgrade_to_Dedicated_De-Compactor:
-    production_time: 3600s
+    production_time: 1h
     type: UPGRADE
     name: Upgrade to Dedicated De-Compactor
     fuel_consumption_intervall: 30s
     input:
-      sticky piston:
-        material: PISTON_STICKY_BASE
-        amount: 6
+      piston:
+        material: PISTON_STICKY_BASE 
+        amount: 512
       chest:
         material: CHEST
+        amount: 1024
+      iron:
+        material: IRON_BLOCK
+        amount: 192
+      redstone:
+        material: REDSTONE_BLOCK
         amount: 64
-      iron ingot:
-        material: IRON_INGOT
-        amount: 48
+      crate:
+        material: CHEST
+        amount: 512
+        lore:
+         - Crate
     factory: Dedicated De-Compactor
   Upgrade_to_Diamond_Armour_Forge:
-    production_time: 7200s
+    production_time: 2h
     type: UPGRADE
     name: Upgrade to Diamond Armour Forge
     fuel_consumption_intervall: 60s
     input:
       diamond block:
         material: DIAMOND_BLOCK
-        amount: 48
+        amount: 128
+      char:
+        material: COAL
+        durability: 1
+        amount: 1024
+      lava:
+        material: LAVA_BUCKET
+        amount: 16
+      anvil:
+        material: ANVIL
+        amount: 256
     factory: Diamond Armour Forge
   Upgrade_to_Diamond_Equipment_Forge:
-    production_time: 3600s
+    production_time: 1h
     type: UPGRADE
     name: Upgrade to Diamond Equipment Forge
     fuel_consumption_intervall: 30s
     input:
       diamond block:
         material: DIAMOND_BLOCK
-        amount: 32
+        amount: 48
+      char:
+        material: COAL
+        durability: 1
+        amount: 512
+      lava:
+        material: LAVA_BUCKET
+        amount: 8
+      anvil:
+        material: ANVIL
+        amount: 64
     factory: Diamond Equipment Forge
   Upgrade_to_Diamond_Tools_Forge:
-    production_time: 3600s
+    production_time: 1h
     type: UPGRADE
     name: Upgrade to Diamond Tools Forge
     fuel_consumption_intervall: 30s
     input:
       diamond block:
         material: DIAMOND_BLOCK
-        amount: 32
+        amount: 96
+      char:
+        material: COAL
+        durability: 1
+        amount: 1024
+      lava:
+        material: LAVA_BUCKET
+        amount: 16
+      anvil:
+        material: ANVIL
+        amount: 256
     factory: Diamond Tools Forge
   Upgrade_to_Farmstead_Factory:
     production_time: 10m
@@ -4511,35 +4655,77 @@ recipes:
         amount: 128
         durability: 15        
     factory: Glass Dying Factory
-  Upgrade_to_Gold_Armour_Forge:
-    production_time: 3600s
-    type: UPGRADE
-    name: Upgrade to Gold Armour Forge
-    fuel_consumption_intervall: 30s
-    input:
-      gold block:
-        material: GOLD_BLOCK
-        amount: 48
-    factory: Gold Armour Forge
   Upgrade_to_Gold_Equipment_Forge:
-    production_time: 1800s
+    production_time: 30m
     type: UPGRADE
     name: Upgrade to Gold Equipment Forge
     fuel_consumption_intervall: 15s
     input:
       gold block:
         material: GOLD_BLOCK
-        amount: 32
+        amount: 192
+      char:
+        material: COAL
+        durability: 1
+        amount: 512
+      wood:
+        material: WOOD
+        durability: -1
+        amount: 512
+      lava:
+        material: LAVA_BUCKET
+        amount: 16
+      anvil:
+        material: ANVIL
+        amount: 64
     factory: Gold Equipment Forge
+  Upgrade_to_Gold_Armour_Forge:
+    production_time: 1h
+    type: UPGRADE
+    name: Upgrade to Gold Armour Forge
+    fuel_consumption_intervall: 30s
+    input:
+      gold block:
+        material: GOLD_BLOCK
+        amount: 384
+      char:
+        material: COAL
+        durability: 1
+        amount: 1024
+      wood:
+        material: WOOD
+        durability: -1
+        amount: 512
+      lava:
+        material: LAVA_BUCKET
+        amount: 16
+      anvil:
+        material: ANVIL
+        amount: 192
+    factory: Gold Armour Forge
   Upgrade_to_Gold_Tools_Forge:
-    production_time: 3600s
+    production_time: 1h
     type: UPGRADE
     name: Upgrade to Gold Tools Forge
     fuel_consumption_intervall: 30s
     input:
       gold block:
         material: GOLD_BLOCK
-        amount: 32
+        amount: 384
+      char:
+        material: COAL
+        durability: 1
+        amount: 1024
+      wood:
+        material: WOOD
+        durability: -1
+        amount: 512
+      lava:
+        material: LAVA_BUCKET
+        amount: 16
+      anvil:
+        material: ANVIL
+        amount: 192
     factory: Gold Tools Forge
   Upgrade_to_Grass_Gardening:
     production_time: 1h
@@ -4598,7 +4784,21 @@ recipes:
     input:
       iron block:
         material: IRON_BLOCK
-        amount: 48
+        amount: 128
+      wood:
+        material: WOOD
+        durability: -1
+        amount: 512
+      char:
+        material: COAL
+        durability: 1
+        amount: 512
+      lava:
+        material: LAVA_BUCKET
+        amount: 12
+      anvil:
+        material: ANVIL
+        amount: 64
     factory: Iron Equipment Forge
   Upgrade_to_Iron_Forge_Advanced:
     production_time: 3600s
@@ -4608,7 +4808,17 @@ recipes:
     input:
       iron block:
         material: IRON_BLOCK
-        amount: 64
+        amount: 512
+      char:
+        material: COAL
+        durability: 1
+        amount: 1024
+      anvil:
+        material: ANVIL
+        amount: 384
+      lava:
+        material: LAVA_BUCKET
+        amount: 24  
     factory: Steel Forge
   Upgrade_to_Iron_Forge_Basic:
     production_time: 1800s
@@ -4618,7 +4828,14 @@ recipes:
     input:
       iron block:
         material: IRON_BLOCK
-        amount: 32
+        amount: 192
+      char:
+        material: COAL
+        durability: 1
+        amount: 512
+      lava:
+        material: LAVA_BUCKET
+        amount: 8
     factory: Iron Forge
   Upgrade_to_Kiln:
     production_time: 1800s
@@ -4734,49 +4951,86 @@ recipes:
     name: Upgrade to Rail Factory
     fuel_consumption_intervall: 15s
     input:
-      iron ingot:
-        material: IRON_INGOT
+      iron:
+        material: IRON_BLOCK
         amount: 128
-      redstone dust:
-        material: REDSTONE
+      redstone:
+        material: REDSTONE_BLOCK
         amount: 32
+      gold:
+        material: GOLD_BLOCK
+        amount: 32
+      char:
+        material: COAL
+        durability: 1
+        amount: 512
+      anvil:
+        material: ANVIL
+        amount: 128
+      lava:
+        material: LAVA_BUCKET
+        amount: 16
+      wood:
+        material: WOOD
+        durability: -1
+        amount: 1024
+        
     factory: Rail Factory
   Upgrade_to_Redstone_Circularity_Factory:
     production_time: 1800s
     type: UPGRADE
-    name: Upgrade to Redstone Circularity Factory
+    name: Upgrade to Redstone Electronics
     fuel_consumption_intervall: 15s
     input:
       redstone dust:
-        material: REDSTONE
-        amount: 128
+        material: REDSTONE_BLOCK
+        amount: 384
       quartz:
         material: QUARTZ
+        amount: 1024
+      glass:
+        material: GLASS
+        amount: 512
+      gold:
+        material: GOLD_BLOCK
         amount: 64
-    factory: Redstone Circularity Factory
+    factory: Redstone Electronics
   Upgrade_to_Redstone_Factory_Basic:
     production_time: 900s
     type: UPGRADE
-    name: Upgrade to Redstone Factory Basic
+    name: Upgrade to Redstone Techniques
     fuel_consumption_intervall: 8s
     input:
       redstone dust:
         material: REDSTONE
         amount: 128
-    factory: Redstone Factory Basic
+    factory: Redstone Techniques
   Upgrade_to_Redstone_Mechanics_Factory:
     production_time: 1800s
     type: UPGRADE
-    name: Upgrade to Redstone Mechanics Factory
+    name: Upgrade to Redstone Mechanics
     fuel_consumption_intervall: 15s
     input:
       redstone dust:
-        material: REDSTONE
+        material: REDSTONE_BLOCK
+        amount: 384
+      quartz:
+        material: QUARTZ
         amount: 128
-      iron ingot:
-        material: IRON_INGOT
-        amount: 64
-    factory: Redstone Mechanics Factory
+      stone:
+        material: STONE
+        amount: 1024
+      string:
+        material: STRING
+        amount: 512
+      glowstone:
+        material: GLOWSTONE
+        amount: 512
+      wood:
+        material: WOOD
+        amount: 512
+        durability: -1
+    factory: Redstone Mechanics
   Upgrade_to_Sand_Smelter:
     production_time: 20m
     type: UPGRADE
@@ -9673,13 +9927,12 @@ recipes:
         material: DIRT
         
 renames:
-  husbandry:
-    oldName: Animal Husbandry Factory Basic
-    newName: Animal Husbandry Factory
-  advancedforge:
-    oldName: Iron Forge Advanced
-    newName: Steel Forge
-  normalforge:
-    oldName: Iron Forge Basic
-    newName: Iron Forge
-
+  redstone1:
+    oldName: Redstone Mechanics Factory
+    newName: Redstone Mechanics
+  redstone2:
+    oldName: Redstone Circularity Factory
+    newName: Redstone Electronics
+  redstone0:
+    oldName: Redstone Factory Basic
+    newName: Redstone Techniques
