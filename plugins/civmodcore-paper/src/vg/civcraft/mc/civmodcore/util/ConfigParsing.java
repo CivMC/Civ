@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.util;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -35,32 +36,50 @@ public class ConfigParsing {
 			if (current == null) {
 				continue;
 			}
-			Material m = Material.valueOf(current.getString("material"));
+			Material m = null;
+			try{
+				m = Material.valueOf(current.getString("material"));
+			} catch (IllegalArgumentException iae) {
+				m = null;
+			} finally {
+				if (m == null) {
+					Bukkit.getServer().getLogger().log(Level.SEVERE, "Failed to find material of section {0}", key);
+					continue;
+				}
+			}
 			ItemStack toAdd = new ItemStack(m);
 			int durability = current.getInt("durability", 0);
 			toAdd.setDurability((short) durability);
 			ItemMeta im = toAdd.getItemMeta();
-			String name = current.getString("name");
-			if (name != null) {
-				im.setDisplayName(name);
-			}
-			List<String> lore = current.getStringList("lore");
-			if (lore != null) {
-				im.setLore(lore);
-			}
-			if (current.contains("enchants")) {
-				for (String enchantKey : current.getConfigurationSection(
-						"enchants").getKeys(false)) {
-					ConfigurationSection enchantConfig = current
-							.getConfigurationSection("enchants")
-							.getConfigurationSection(enchantKey);
-					Enchantment enchant = Enchantment.getByName(enchantConfig
-							.getString("enchant"));
-					int level = enchantConfig.getInt("level", 1);
-					im.addEnchant(enchant, level, true);
+			if (im == null) {
+				Bukkit.getServer().getLogger().log(Level.SEVERE, "No item meta found for {0}", key);
+			} else {
+				if (current.contains("name")) {
+					String name = current.getString("name");
+					if (name != null) {
+						im.setDisplayName(name);
+					}
 				}
+				if (current.contains("lore")) {
+					List<String> lore = current.getStringList("lore");
+					if (lore != null) {
+						im.setLore(lore);
+					}
+				}
+				if (current.contains("enchants")) {
+					for (String enchantKey : current.getConfigurationSection(
+							"enchants").getKeys(false)) {
+						ConfigurationSection enchantConfig = current
+								.getConfigurationSection("enchants")
+								.getConfigurationSection(enchantKey);
+						Enchantment enchant = Enchantment.getByName(enchantConfig
+								.getString("enchant"));
+						int level = enchantConfig.getInt("level", 1);
+						im.addEnchant(enchant, level, true);
+					}
+				}
+				toAdd.setItemMeta(im);
 			}
-			toAdd.setItemMeta(im);
 			if (current.contains("nbt")) {
 				toAdd = ItemMap.enrichWithNBT(toAdd, 1, current.getConfigurationSection("nbt").getValues(true));
 			}
