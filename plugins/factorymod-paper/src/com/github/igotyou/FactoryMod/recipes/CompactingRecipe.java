@@ -17,7 +17,7 @@ import com.github.igotyou.FactoryMod.factories.Factory;
  * Used to "compact" itemstack, which means complete stacks are reduced to a
  * single lored item, which can be stacked. This makes the transportation of
  * those items much easier. Additionally there can be a cost for each
- * compaction.
+ * compaction. Items that stack to 
  *
  */
 public class CompactingRecipe extends InputRecipe {

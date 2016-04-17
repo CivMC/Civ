@@ -53,7 +53,7 @@ public class DecompactingRecipe extends InputRecipe {
 							&& im.getLore().get(0).equals(compactedLore)) {
 						List<String> loreList = new LinkedList<String>();
 						ItemStack decompatedStack = is.clone();
-						decompatedStack.setAmount(64);
+						decompatedStack.setAmount(decompatedStack.getType().getMaxStackSize());
 						im.setLore(loreList);
 						// not changing the original because getItemMeta() just
 						// gives a copy

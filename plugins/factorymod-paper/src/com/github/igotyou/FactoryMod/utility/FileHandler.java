@@ -220,6 +220,21 @@ public class FileHandler {
 				break;
 			case "PIPE":
 				PipeEgg pipeEgg = (PipeEgg) eggs.get(name);
+				if (pipeEgg == null) {
+					String replaceName = factoryRenames.get(name);
+					if (replaceName != null) {
+						pipeEgg = (PipeEgg) eggs.get(replaceName);
+					}
+					if (pipeEgg == null) {
+						plugin.warning("Save file contained factory named "
+								+ name
+								+ " , but no factory with this name was found in the config");
+						continue;
+					}
+					else {
+						name = replaceName;
+					}
+				}
 				List<Material> mats = new LinkedList<Material>();
 				if (current.isSet("materials")) {
 					for (String mat : current.getStringList("materials")) {
@@ -238,6 +253,21 @@ public class FileHandler {
 			case "SORTER":
 				Map<BlockFace, ItemMap> assignments = new HashMap<BlockFace, ItemMap>();
 				SorterEgg sorterEgg = (SorterEgg) eggs.get(name);
+				if (sorterEgg == null) {
+					String replaceName = factoryRenames.get(name);
+					if (replaceName != null) {
+						sorterEgg = (SorterEgg) eggs.get(replaceName);
+					}
+					if (sorterEgg == null) {
+						plugin.warning("Save file contained factory named "
+								+ name
+								+ " , but no factory with this name was found in the config");
+						continue;
+					}
+					else {
+						name = replaceName;
+					}
+				}
 				for (String face : current.getConfigurationSection("faces")
 						.getKeys(false)) {
 					List<ItemStack> stacks = (List<ItemStack>) current
