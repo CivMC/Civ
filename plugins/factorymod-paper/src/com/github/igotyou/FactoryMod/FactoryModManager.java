@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
@@ -55,8 +56,9 @@ public class FactoryModManager {
 
 	public FactoryModManager(FactoryMod plugin,
 			Material factoryInteractionMaterial, boolean citadelEnabled,
-			int redstonePowerOn, int redstoneRecipeChange,
-			boolean logInventories, long noHealthGracePeriod) {
+			int redstonePowerOn, 
+			int redstoneRecipeChange, boolean logInventories,
+			long noHealthGracePeriod, Map <String,String> factoryRenames) {
 		this.plugin = plugin;
 		this.factoryInteractionMaterial = factoryInteractionMaterial;
 		this.citadelEnabled = citadelEnabled;
@@ -64,7 +66,7 @@ public class FactoryModManager {
 		this.redstoneRecipeChange = redstoneRecipeChange;
 		this.noHealthGracePeriod = noHealthGracePeriod;
 
-		fileHandler = new FileHandler(this);
+		fileHandler = new FileHandler(this, factoryRenames);
 
 		factoryCreationRecipes = new HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>>();
 		locations = new HashMap<Location, Factory>();
