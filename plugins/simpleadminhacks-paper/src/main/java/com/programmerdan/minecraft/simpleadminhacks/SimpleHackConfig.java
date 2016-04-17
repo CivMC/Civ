@@ -1,5 +1,7 @@
 package com.programmerdan.minecraft.simpleadminhacks;
 
+import java.util.logging.Level;
+
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -9,6 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 public abstract class SimpleHackConfig {
 
+	private SimpleAdminHacks plugin;
 	private ConfigurationSection base;
 	private String name;
 	private boolean enabled;
@@ -21,10 +24,12 @@ public abstract class SimpleHackConfig {
 	 *
 	 * Calls {@link #wireup(ConfigurationSection)}
 	 */
-	public SimpleHackConfig(ConfigurationSection base) {
+	public SimpleHackConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
+		this.plugin = plugin;
 		this.base = base;
 		this.name = base.getString("name");
 		this.enabled = base.getBoolean("enabled", false);
+		plugin.log(Level.INFO, "Config for {0}, enabled set to {1}", this.name, this.enabled);
 		this.wireup(base);
 	}
 
@@ -39,6 +44,14 @@ public abstract class SimpleHackConfig {
 	 */
 	protected ConfigurationSection getBase() {
 		return base;
+	}
+	
+	protected SimpleAdminHacks plugin() {
+		if (this.plugin == null) {
+			return SimpleAdminHacks.instance();
+		} else {
+			return this.plugin;
+		}
 	}
 
 	public String getName() {
@@ -73,4 +86,3 @@ public abstract class SimpleHackConfig {
 		}
 	}
 }
-

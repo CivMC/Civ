@@ -21,16 +21,16 @@ hacks:
     str2: replace_str1ext
     pearl_gravity: 0.3
   combattag_announce:
-    name: CTAnnounce
+    name: CombatTagAnnounce
     enabled: true
     delay: 10000
-    message: %Victim% was combat tagged by %Attacker%
+    message: '%Victim% was combat tagged by %Attacker%'
     broadcast: [OP, CONSOLE]
   newfriend:
     name: NewfriendAssist
     enabled: true
     announce:
-      message: %Player% is brand new!
+      message: '%Player% is brand new!'
       broadcast: [PERM, CONSOLE]
     helptips: on
     helptips_end: 20m
@@ -39,15 +39,15 @@ hacks:
     enabled: true
     contents:
      - ==: org.bukkit.inventory.ItemStack
-      type: COOKIE
-      amount: 32
-      meta:
-       ==: ItemMeta
-       meta-type: UNSPECIFIC
-       display-name: 'Manna'
-       lore:
-        - "Gift from the Admins as you"
-        - "begin your journey on Devotion."
+       type: COOKIE
+       amount: 32
+       meta:
+         ==: ItemMeta
+         meta-type: UNSPECIFIC
+         display-name: 'Manna'
+         lore:
+          - "Gift from the Admins as you"
+          - "begin your journey on Devotion."
   introbook:
     name: Introbook
     enabled: true

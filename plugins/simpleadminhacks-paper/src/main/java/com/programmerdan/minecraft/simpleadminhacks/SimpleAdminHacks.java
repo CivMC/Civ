@@ -1,11 +1,11 @@
 package com.programmerdan.minecraft.simpleadminhacks;
 
-import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Collections;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
@@ -59,7 +59,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 			hack.enable();
 		}
 
-		this.registerCommand("hacks", new CommandListener());
+		this.registerCommand("hacks", new CommandListener(this));
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 
 	// ===== debug / logging methods =====
 
-	private static final String debugPrefix = " [DEBUG] ";
+	private static final String debugPrefix = "[DEBUG] ";
 
 	public void debug(String message) {
 		if (!config.isDebug()) return;
@@ -166,7 +166,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 	}
 	
 	public void registerListener(Listener listener) {
-		this.getPluginLoader().createRegisteredListeners(listener, this);
+		this.getServer().getPluginManager().registerEvents(listener, this);
 	}
 
 	public void registerCommand(String command, CommandExecutor executor) {

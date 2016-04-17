@@ -150,7 +150,7 @@ public abstract class SimpleHack<T extends SimpleHackConfig> {
 	@Override
 	public boolean equals(Object e) {
 		if (e != null  && e instanceof SimpleHack) {
-			SimpleHack f = (SimpleHack) e;
+			SimpleHack<?> f = (SimpleHack<?>) e;
 			if (f.config != null && this.config != null && f.config.getName().equals(this.config.getName())) {
 				return true;
 			}

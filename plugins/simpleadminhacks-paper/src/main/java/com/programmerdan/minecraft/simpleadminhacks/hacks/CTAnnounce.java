@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import net.md_5.bungee.api.ChatColor;
@@ -17,6 +18,11 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.BroadcastLevel;
 import com.programmerdan.minecraft.simpleadminhacks.configs.CTAnnounceConfig;
 
+/**
+ * Ties into CombatTagPlus, listens for {@link PlayerCombatTagEvent}
+ * 
+ * @author ProgrammerDan
+ */
 public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener{
 	
 	public static final String NAME = "CombatTagAnnounce";
@@ -37,11 +43,12 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 	 * 
 	 * @param event
 	 */
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void CTEvent(PlayerCombatTagEvent event) {
 		if (!config.isEnabled()) return; // ignore if off
-		if (event.getVictim() == null || event.getAttacker() == null) return; // ignore non-pvp
-
+		if (event.getVictim() == null || event.getAttacker() == null) return; // ignore non-pvp and admin-pvp
+		plugin().debug("  Victim: {0} Attacker: {1}", event.getVictim().getName(), event.getAttacker().getName());
+		
 		// Throttle broadcast frequency
 		Long lastTag = lastCTAnnounce.get(event.getVictim().getUniqueId());
 		Long now = System.currentTimeMillis();
@@ -53,6 +60,7 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 		
 		// And Gooooo
 		for (BroadcastLevel level : config.getBroadcast()) {
+			plugin().debug("  Broadcast to {0}", level);
 			switch(level) {
 			// Overlap is possible. Some people might get double-notified
 			case OP:
@@ -61,16 +69,20 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 						op.getPlayer().sendMessage(cleanMessage);
 					}
 				}
+				break;
 			case PERM:
 				plugin().getServer().broadcast(cleanMessage, 
 						plugin().config().getBroadcastPermission());
+				break;
 			case CONSOLE:
 				plugin().getServer().getConsoleSender().sendMessage(cleanMessage);
+				break;
 			case ALL:
 				for (Player p : plugin().getServer().getOnlinePlayers()) {
 					if ( p != null && p.isOnline() )
 						p.sendMessage(cleanMessage);
 				}
+				break;
 			}
 		}
 	}
@@ -86,6 +98,7 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 	@Override
 	public void registerListeners() {
 		if (config.isEnabled()) {
+			plugin().log("Registering CombatTagEvent listener");
 			plugin().registerListener(this);
 		}
 	}

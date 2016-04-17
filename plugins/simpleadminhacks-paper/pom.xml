@@ -12,20 +12,34 @@
   
   <build>
     <finalName>${project.name}-${project.version}</finalName>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.1</version>
-          <configuration>
-            <source>1.7</source>
-            <target>1.7</target>
-            <compilerArgument></compilerArgument>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-        
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+          <compilerArgument></compilerArgument>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <formats>
+            <format>html</format>
+          </formats>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <testFailureIgnore>true</testFailureIgnore>
+        </configuration>
+      </plugin>
+    </plugins>
     <resources>
       <resource>
         <directory>${basedir}/src/main/resources</directory>
@@ -45,8 +59,6 @@
     </repository>
   </repositories>
 
-
-
   <dependencies>
     <dependency>
       <groupId>org.spigotmc</groupId>
@@ -59,6 +71,12 @@
       <artifactId>CombatTagPlus</artifactId>
       <version>1.2.2-SNAPSHOT</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>1.10.19</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
  
