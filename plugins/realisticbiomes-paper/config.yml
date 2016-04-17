@@ -249,6 +249,20 @@ realistic_biomes:
     cold: 1.0
     temperate: 0.25
 
+  #--------------------------
+
+  BEETROOT_BLOCK:
+   inherit: crop
+   persistent_growth_period: 3
+   biomes:
+    PLAINS: 1.0
+    forest: 0.75
+    SKY: 0.5
+    cold: 0.25
+    hot_dry: 0.25
+    mountain: 0.25
+    mushroom: 0.25
+
   #----------------------------------------
 
   column:
