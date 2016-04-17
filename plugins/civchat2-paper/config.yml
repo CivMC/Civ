@@ -18,6 +18,7 @@ info:
   groups: true
   #afkmessage: The default afk message people will get when player has afk toggled def=Player is currently AFK
   afkmessage: Player is currently AFK
+  loginAnnounce: true
 file:
   #filesToZip: The number of chatlog files to zip together
   filesToZip: 10

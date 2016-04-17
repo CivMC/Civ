@@ -21,6 +21,10 @@ public class CivChat2Config {
 		return config.getString("info.afkmessage");
 	}
 
+	public boolean getLoginAnnounce() {
+		return config.getBoolean("info.loginAnnounce", false);
+	}
+
 	public int getFilesToZip() {
 		return config.getInt("file.filesToZip");
 	}
