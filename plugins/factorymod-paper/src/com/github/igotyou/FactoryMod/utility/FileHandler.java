@@ -38,9 +38,12 @@ public class FileHandler {
 	private FactoryModManager manager;
 	private File saveFile;
 	private File backup;
+	
+	private Map <String, String> factoryRenames;
 
-	public FileHandler(FactoryModManager manager) {
+	public FileHandler(FactoryModManager manager, Map <String, String> factoryRenames) {
 		plugin = FactoryMod.getPlugin();
+		this.factoryRenames = factoryRenames;
 		this.manager = manager;
 		saveFile = new File(plugin.getDataFolder().getAbsolutePath()
 				+ File.separator + "factoryData.yml");
@@ -173,10 +176,19 @@ public class FileHandler {
 			case "FCC":
 				FurnCraftChestEgg egg = (FurnCraftChestEgg) eggs.get(name);
 				if (egg == null) {
-					plugin.warning("Save file contained factory named "
-							+ name
-							+ " , but no factory with this name was found in the config");
-					continue;
+					String replaceName = factoryRenames.get(name);
+					if (replaceName != null) {
+						egg = (FurnCraftChestEgg) eggs.get(replaceName);
+					}
+					if (egg == null) {
+						plugin.warning("Save file contained factory named "
+								+ name
+								+ " , but no factory with this name was found in the config");
+						continue;
+					}
+					else {
+						name = replaceName;
+					}
 				}
 				int health = current.getInt("health");
 				String selectedRecipe = current.getString("selectedRecipe");

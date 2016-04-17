@@ -574,6 +574,25 @@ recipes:
 
 
 
+#Sometimes you will want to rename existing factories. Just changing the name in the config and restarting the server will delete all existing 
+#factories of this type though, so instead you can here specify factories, which you on startup want to rename/convert into a different one
+
+#Example format:
+
+#renames:
+#  example1:
+#    oldName: Stone Smelter With Bad Name
+#    newName: Stone Smelter
+#  example2:
+#    oldName: tempName
+#    newName: Emerald Extractor
+
+#oldName is the previous name and newName is the one the factory will be converted to. The configuration for the factory with the oldName has to be 
+#removed from the config already, otherwise the name won't be changed and the old configuration for the factory will be loaded. The renaming feature
+#will work for all types of factories, not only FCCs
+
+renames:
+
 
 #CivMenu configuration
 
