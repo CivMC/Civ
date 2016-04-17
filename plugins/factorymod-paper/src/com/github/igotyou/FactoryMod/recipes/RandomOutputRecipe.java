@@ -21,23 +21,27 @@ public class RandomOutputRecipe extends InputRecipe {
 	private ItemMap lowestChanceMap;
 
 	public RandomOutputRecipe(String name, int productionTime, ItemMap input,
-			Map<ItemMap, Double> outputs) {
+			Map<ItemMap, Double> outputs, ItemMap displayOutput) {
 		super(name, productionTime, input);
 		this.outputs = outputs;
 		if (rng == null) {
 			rng = new Random();
 		}
-		for(Entry <ItemMap, Double> entry : outputs.entrySet()) {
+		if (displayOutput == null) {
+			for(Entry <ItemMap, Double> entry : outputs.entrySet()) {
+				if (lowestChanceMap == null) {
+					lowestChanceMap = entry.getKey();
+					continue;
+				}
+				if (entry.getValue() < outputs.get(lowestChanceMap)) {
+					lowestChanceMap = entry.getKey();
+				}
+			}
 			if (lowestChanceMap == null) {
-				lowestChanceMap = entry.getKey();
-				continue;
+				lowestChanceMap = new ItemMap(new ItemStack(Material.STONE));
 			}
-			if (entry.getValue() < outputs.get(lowestChanceMap)) {
-				lowestChanceMap = entry.getKey();
-			}
-		}
-		if (lowestChanceMap == null) {
-			lowestChanceMap = new ItemMap(new ItemStack(Material.STONE));
+		} else {
+			lowestChanceMap = displayOutput;
 		}
 	}
 
