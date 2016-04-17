@@ -544,6 +544,9 @@ factories:
 #Random recipes allow you to specify multiple different outputs for a recipe and to assign a certain chance to each. The sum of all the
 #chances should always be 1.0
 
+#Optionally use "display:" to pick which output to show in the GUI; otherwise the least-likely option
+# will be shown.
+
 #Example:
 
 #random:
@@ -554,6 +557,7 @@ factories:
 #   diamond:
 #     material: DIAMOND
 # outputs:
+#   display: second
 #   first:
 #     chance: 0.5
 #     dirt:

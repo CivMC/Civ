@@ -540,24 +540,33 @@ public class ConfigParser {
 			result = new DeterministicEnchantingRecipe(name, productionTime, inp, tool, enchant, level);
 			break;
 		case "RANDOM":
-			ItemMap inpu = parseItemMap(config
-					.getConfigurationSection("input"));
-			if (config.getConfigurationSection("outputs") == null) {
+			ItemMap inpu = parseItemMap(config.getConfigurationSection("input"));
+			ConfigurationSection outputSec = config.getConfigurationSection("outputs");
+			if (outputSec == null) {
 				plugin.severe("No outputs specified for recipe " + name);
 				return null;
 			}
 			Map <ItemMap, Double> outputs = new HashMap<ItemMap, Double>();
 			double totalChance = 0.0;
-			for(String key : config.getConfigurationSection("outputs").getKeys(false)) {
-				double chance = config.getConfigurationSection("outputs").getConfigurationSection(key).getDouble("chance");
-				totalChance += chance;
-				ItemMap im = parseItemMap(config.getConfigurationSection("outputs").getConfigurationSection(key));
-				outputs.put(im,chance);
+			String displayMap = outputSec.getString("display");
+			ItemMap displayThis = null;
+			for(String key : outputSec.getKeys(false)) {
+				ConfigurationSection keySec = outputSec.getConfigurationSection(key);
+				if (keySec != null) {
+					double chance = keySec.getDouble("chance");
+					totalChance += chance;
+					ItemMap im = parseItemMap(keySec);
+					outputs.put(im,chance);
+					if (key.equals(displayMap)) {
+						displayThis = im;
+						plugin.debug("Displaying " + displayMap + " as recipe label");
+					}
+				}
 			}
 			if (Math.abs(totalChance - 1.0) > 0.001) {
 				plugin.warning("Sum of output chances for recipe " + name + " is not 1.0. Total sum is: " + totalChance);
 			}
-			result = new RandomOutputRecipe(name, productionTime, inpu, outputs);
+			result = new RandomOutputRecipe(name, productionTime, inpu, outputs, displayThis);
 			break;
 		case "COSTRETURN":
 			ItemMap costIn = parseItemMap(config
