@@ -8,6 +8,8 @@ realistic_biomes:
 
  cache_entire_database: true
  persistence_enabled: true
+ # Set to true if you want fishing_drops to _replace_ MC default instead of control.
+ replace_fishing: false
 
  unload_batch_period: 100
  grow_event_load_chance: 0.1

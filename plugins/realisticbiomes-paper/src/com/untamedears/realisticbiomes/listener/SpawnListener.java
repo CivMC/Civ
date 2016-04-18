@@ -13,7 +13,9 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.GrowthMap;
+import com.untamedears.realisticbiomes.RealisticBiomes;
 
 /**
  * Event listeners for animal spawn related events. Whenever animals breed or a fish is caught, the species is checked against
@@ -25,11 +27,13 @@ import com.untamedears.realisticbiomes.GrowthMap;
 public class SpawnListener implements Listener {
 
 	private final GrowthMap growthMap;
+	private final GrowthMap fishingMap;
 	
-	public SpawnListener(GrowthMap growthMap) {
+	public SpawnListener(GrowthMap growthMap, GrowthMap fishingMap) {
 		super();
 		
 		this.growthMap = growthMap;
+		this.fishingMap = fishingMap;
 	}
 
 	/**
@@ -75,14 +79,27 @@ public class SpawnListener implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	public void fishing(PlayerFishEvent event) {
 		if(event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() != null && event.getCaught() instanceof Item) {
-			ItemStack items = ((Item)event.getCaught()).getItemStack();
-			Material type = items.getType();
-			// short fishType = items.getDurability(); // fish type has no MaterialData subclass... need to change GrowthMap to key this
 			Block block = event.getCaught().getLocation().getBlock();
-			
-			if (!fishWillSpawn(type, block)) {
+			if (!RealisticBiomes.plugin.replaceFish) {
+				ItemStack items = ((Item)event.getCaught()).getItemStack();
+				Material type = items.getType();
+				// short fishType = items.getDurability(); // fish type has no MaterialData subclass... need to change GrowthMap to key this
+				
+				if (!fishWillSpawn(type, block)) {
+					event.setCancelled(true);
+					event.getPlayer().sendMessage("Fish got away");
+				}
+			} else {
+				// replace, so choose an item.
+				Material gc = fishingMap.pickOne(block, Math.random());
+				if (gc == null) {
+					event.setCancelled(true);
+					event.getPlayer().sendMessage("Fish got away");
+				}
+				ItemStack newItem = new ItemStack(gc, 1);
+				// handle enchants?
 				event.setCancelled(true);
-				event.getPlayer().sendMessage("Fish got away");
+				// do drop?
 			}
 		}
 	}
@@ -121,8 +138,8 @@ public class SpawnListener implements Listener {
 	 * @return Whether the item will spawn
 	 */
 	private boolean fishWillSpawn(Material e, Block b) {
-		if(growthMap.containsKey(e)) {
-			return Math.random() < growthMap.get(e).getRate(b);
+		if(fishingMap.containsKey(e)) {
+			return Math.random() < fishingMap.get(e).getRate(b);
 		}
 		return true;
 	}
