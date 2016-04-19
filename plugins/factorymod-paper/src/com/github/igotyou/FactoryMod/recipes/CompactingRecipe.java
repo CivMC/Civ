@@ -11,13 +11,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
+import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.Factory;
 
 /**
- * Used to "compact" itemstack, which means complete stacks are reduced to a
- * single lored item, which can be stacked. This makes the transportation of
- * those items much easier. Additionally there can be a cost for each
- * compaction. Items that stack to 
+ * Used to compact items, which means whole or multiple stacks of an item are reduced to a single lored item, which is stackable to the same stacksize
+ * As the original material. This makes the transportation of
+ * those items much easier, additionally there can be a cost for each
+ * compaction. Items that stack to 64 and 16 will be compacted per stack and items that stack to 1 will be compacted with a 8:1 ratio 
  *
  */
 public class CompactingRecipe extends InputRecipe {
@@ -35,9 +36,10 @@ public class CompactingRecipe extends InputRecipe {
 		if (!input.isContainedIn(i)) {
 			return false;
 		}
+		ItemMap im = new ItemMap(i);
 		for (ItemStack is : i.getContents()) {
 			if (is != null) {
-				if (compactable(is)) {
+				if (compactable(is, im)) {
 					return true;
 				}
 			}
@@ -56,11 +58,15 @@ public class CompactingRecipe extends InputRecipe {
 	public void applyEffect(Inventory i, Factory f) {
 		logBeforeRecipeRun(i, f);
 		if (input.isContainedIn(i)) {
+			ItemMap im = new ItemMap(i);
+			//technically we could just directly work with the ItemMap here to iterate over the items so we dont check identical items multiple times,
+			//but using the iterator of the inventory preserves the order of the inventory, which is more important here to guarantee one behavior
+			//to the player
 			for (ItemStack is : i.getContents()) {
 				if (is != null) {
-					if (compactable(is)) {
+					if (compactable(is, im)) {
 						if (input.removeSafelyFrom(i)) {
-							compact(is);
+							compact(is,i);
 						}
 						break;
 					}
@@ -79,9 +85,10 @@ public class CompactingRecipe extends InputRecipe {
 			return result;
 		}
 		result = createLoredStacksForInfo(i);
+		ItemMap im = new ItemMap(i);
 		for (ItemStack is : i.getContents()) {
 			if (is != null) {
-				if (compactable(is)) {
+				if (compactable(is, im)) {
 					ItemStack compactedStack = is.clone();
 					result.add(compactedStack);
 					break;
@@ -95,15 +102,16 @@ public class CompactingRecipe extends InputRecipe {
 		List<ItemStack> result = new LinkedList<ItemStack>();
 		if (i == null) {
 			ItemStack is = new ItemStack(Material.STONE, 64);
-			compact(is);
+			compactStack(is);
 			result.add(is);
 			return result;
 		}
+		ItemMap im = new ItemMap(i);
 		for (ItemStack is : i.getContents()) {
 			if (is != null) {
-				if (compactable(is)) {
+				if (compactable(is, im)) {
 					ItemStack decompactedStack = is.clone();
-					compact(decompactedStack);
+					compactStack(decompactedStack);
 					result.add(decompactedStack);
 					break;
 				}
@@ -122,28 +130,55 @@ public class CompactingRecipe extends InputRecipe {
 	}
 
 	/**
-	 * Changes the lore of the given ItemStack to the compacted lore and sets
-	 * it's amount to 1
+	 * Removes the amount required to compact the given ItemStack from the given inventory and adds a comapcted item to the inventory
 	 * 
 	 * @param is
 	 */
-	private void compact(ItemStack is) {
-		ISUtils.addLore(is, compactedLore);
+	private void compact(ItemStack is, Inventory i) {
+		ItemStack copy = is.clone();
+		copy.setAmount(getCompactStackSize(copy.getType()));
+		ItemMap toRemove = new ItemMap(copy);
+		if (toRemove.removeSafelyFrom(i)) {
+			compactStack(copy);
+			i.addItem(copy);
+		}
+	}
+	
+	/**
+	 * Applies the lore and set the amount to 1. Dont call this directly if you want to compact items for players
+	 */
+	private void compactStack(ItemStack is) {
+		ISUtils.addLore(is,compactedLore);
 		is.setAmount(1);
 	}
 
+	public static int getCompactStackSize(Material m) {
+		switch (m.getMaxStackSize()) {
+			case 64: return 64;
+			case 16: return 16;
+			case 1: return 8;
+			default:
+				FactoryMod.getPlugin().warning("Unknown max stacksize for type " + m.toString());
+		}
+		return 999999; //prevents compacting in error case, because never enough will fit in a chest
+	}
 	/**
-	 * Checks whether compacting a stack is allowed, which means it doesnt have
-	 * meta data, it's a full stack and it's not on the list of excluded
-	 * materials
+	 * Checks whether enough of a certain item stack is available to compact it
 	 * 
 	 * @param is
 	 *            ItemStack to check
+	 * @param im 
+	 * 	      ItemMap representing the inventory from which is compacted
 	 * @return True if compacting the stack is allowed, false if not
 	 */
-	private boolean compactable(ItemStack is) {
-		return is.getMaxStackSize() != 1
-				&& !excludedMaterials.contains(is.getType())
-				&& is.getAmount() == is.getMaxStackSize() && !is.hasItemMeta();
+	private boolean compactable(ItemStack is, ItemMap im) {
+		if (is == null || excludedMaterials.contains(is.getType()) || (input.getAmount(is) != 0) || (is.getItemMeta().getLore() != null &&
+				is.getItemMeta().getLore().contains(compactedLore))) {
+			return false;
+		}	
+		if (im.getAmount(is) >= getCompactStackSize(is.getType())) {
+			return true;
+		} 
+		return false;
 	}
 }

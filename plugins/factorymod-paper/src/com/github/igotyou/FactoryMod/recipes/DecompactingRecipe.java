@@ -34,8 +34,7 @@ public class DecompactingRecipe extends InputRecipe {
 		}
 		for (ItemStack is : i.getContents()) {
 			if (is != null) {
-				ItemMeta im = is.getItemMeta();
-				if (im.hasLore() && im.getLore().get(0).equals(compactedLore)) {
+				if (isDecompactable(is)) {
 					return true;
 				}
 			}
@@ -48,22 +47,20 @@ public class DecompactingRecipe extends InputRecipe {
 		if (input.isContainedIn(i)) {
 			for (ItemStack is : i.getContents()) {
 				if (is != null) {
-					ItemMeta im = is.getItemMeta();
-					if (im.hasLore()
-							&& im.getLore().get(0).equals(compactedLore)) {
-						List<String> loreList = new LinkedList<String>();
-						ItemStack decompatedStack = is.clone();
-						decompatedStack.setAmount(decompatedStack.getType().getMaxStackSize());
-						im.setLore(loreList);
-						// not changing the original because getItemMeta() just
-						// gives a copy
-						decompatedStack.setItemMeta(im);
-						if (new ItemMap(decompatedStack).fitsIn(i)) {
-							if (input.removeSafelyFrom(i)) {
-								ItemStack removeLoredStack = is.clone();
-								removeLoredStack.setAmount(1);
-								i.removeItem(removeLoredStack);
-								i.addItem(decompatedStack);
+					if (isDecompactable(is)) {
+						ItemStack removeClone = is.clone();
+						removeClone.setAmount(1);
+						ItemMap toRemove = new ItemMap(removeClone);
+						ItemMap toAdd = new ItemMap();
+						removeCompactLore(removeClone);
+						toAdd.addItemAmount(removeClone, CompactingRecipe.getCompactStackSize(removeClone.getType()));
+						if (toAdd.fitsIn(i)) { //fits in chest
+							if (input.removeSafelyFrom(i)) { //remove extra input
+								if (toRemove.removeSafelyFrom(i)) { //remove one compacted item
+									for(ItemStack add : toAdd.getItemStackRepresentation()) {
+										i.addItem(add);
+									}
+								}
 							}
 						}
 						break;
@@ -86,8 +83,7 @@ public class DecompactingRecipe extends InputRecipe {
 		result = createLoredStacksForInfo(i);
 		for (ItemStack is : i.getContents()) {
 			if (is != null) {
-				ItemMeta im = is.getItemMeta();
-				if (im.hasLore() && im.getLore().get(0).equals(compactedLore)) {
+				if (isDecompactable(is)) {
 					ItemStack compactedStack = is.clone();
 					result.add(compactedStack);
 					break;
@@ -113,19 +109,37 @@ public class DecompactingRecipe extends InputRecipe {
 		}
 		for (ItemStack is : i.getContents()) {
 			if (is != null) {
-				ItemMeta im = is.getItemMeta();
-				if (im.hasLore() && im.getLore().get(0).equals(compactedLore)) {
-					ItemStack decompactedStack = is.clone();
-					decompactedStack.setAmount(decompactedStack
-							.getMaxStackSize());
-					List<String> loreList = new LinkedList<String>();
-					im.setLore(loreList);
-					decompactedStack.setItemMeta(im);
-					result.add(decompactedStack);
-					break;
+				if (isDecompactable(is)) {
+					ItemStack copy = is.clone();
+					removeCompactLore(copy);
+					ItemMap output = new ItemMap();
+					output.addItemAmount(copy, CompactingRecipe.getCompactStackSize(copy.getType()));
+					result.addAll(output.getItemStackRepresentation());
 				}
 			}
 		}
 		return result;
+	}
+	
+	private boolean isDecompactable(ItemStack is) {
+		List <String> lore = is.getItemMeta().getLore();
+		if (lore != null) {
+			for(String content : lore) {
+				if (content.equals(compactedLore)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private void removeCompactLore(ItemStack is) {
+		List <String> lore = is.getItemMeta().getLore();
+		if (lore != null) {
+			lore.remove(compactedLore);
+		}
+		ItemMeta im = is.getItemMeta();
+		im.setLore(lore);
+		is.setItemMeta(im);
 	}
 }
