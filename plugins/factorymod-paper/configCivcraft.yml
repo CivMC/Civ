@@ -5352,9 +5352,6 @@ recipes:
       compass:
         material: COMPASS
         amount: 1
-      map:
-        material: MAP
-        amount: 1
       xp:
         material: EMERALD_BLOCK
         amount: 128
