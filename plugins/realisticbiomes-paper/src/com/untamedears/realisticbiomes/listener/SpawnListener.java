@@ -91,15 +91,14 @@ public class SpawnListener implements Listener {
 				}
 			} else {
 				// replace, so choose an item.
-				Material gc = fishingMap.pickOne(block, Math.random());
+				ItemStack gc = fishingMap.pickOne(block, Math.random());
 				if (gc == null) {
 					event.setCancelled(true);
 					event.getPlayer().sendMessage("Fish got away");
+				} else {
+					Item cought = (Item) event.getCaught();
+					cought.setItemStack(gc);
 				}
-				ItemStack newItem = new ItemStack(gc, 1);
-				// handle enchants?
-				event.setCancelled(true);
-				// do drop?
 			}
 		}
 	}

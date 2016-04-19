@@ -22,6 +22,12 @@ protected String name;
 	// this represents a chance,
 	// for a fishing reward, it's an additional chance of the item dropping once Minecraft has already chosen to drop it
 	protected double baseRate;
+	
+	// For fishing when replacing drops, is if a random lvl 30 enchantment should be applied to it using enchantment table rules.
+	private boolean applyRandomEnchant;
+
+	// For fishing when replacing drops, checks if Treasure (mending, frostwalker) can be applied to the item.
+	private boolean allowTreasureEnchant;
 
 	// map from biome to the modulated growth rate per biome
 	protected Map<Biome, Double> biomeMultipliers;
@@ -124,6 +130,14 @@ protected String name;
 		
 		if (config.isSet("base_rate")) {
 			baseRate = config.getDouble("base_rate");
+		}
+		
+		if (config.isSet("random_enchant")) {
+			applyRandomEnchant = config.getBoolean("random_enchant");
+		}
+		
+		if (config.isSet("treasure_enchant")) {
+			allowTreasureEnchant = config.getBoolean("treasure_enchant");
 		}
 		
 		if (config.isSet("greenhouse_rate")) {
@@ -337,5 +351,21 @@ protected String name;
 	
 	public TreeType getTreeType() {
 		return treeType;
+	}
+	
+	public boolean getApplyRandomEnchantment() {
+		return this.applyRandomEnchant;
+	}
+	
+	public void setApplyRandomEnchantment(boolean ench) {
+		this.applyRandomEnchant = ench;
+	}
+
+	public boolean getAllowTreasureEnchantments() {
+		return this.allowTreasureEnchant;
+	}
+	
+	public void setAllowTreasureEnchantments(boolean ench){
+		this.allowTreasureEnchant = ench;
 	}
 }

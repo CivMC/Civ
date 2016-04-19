@@ -591,3 +591,20 @@ realistic_biomes:
    inherit: mat_RAW_FISH
 
   #---------------------------------------
+# Example config using replacement, if replace_fishing: true is set
+# fish_drops:
+#  mat_FISH:
+#   # 50% of drops will be fish, regardless of "minecraft" drops.
+#   base_rate: 0.5
+#
+#  mat_ENCHANTED_BOOK:
+#   # 25% of drops will be enchanted books, without any "treasure" enchants
+#   base_rate: 0.25
+#    random_enchant: true
+#    treasure_enchant: false
+#
+#  mat_LEATHER_BOOTS:
+#   # 25% of drops will be leather boots, with "treasure" enchants
+#   base_rate: 0.25
+#    random_enchant: true
+#    treasure_enchant: true
