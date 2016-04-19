@@ -13,22 +13,22 @@ commands:
       /<command> <hackname> enable|disable
       /<command> <hackname> get|set <config> [value]
     permission: simpleadmin.hacks
-#  invsee:
-#    description: See any player inventory, online or not.
-#    usage: /<command> [playername|UUID]
-#    permission: simpleadmin.invsee
+  #invsee:
+  #  description: See any player inventory, online or not.
+  #  usage: /<command> [playername|UUID]
+  #  permission: simpleadmin.invsee
   invmod:
     description: Modify any player inventory, online or not.
     usage: /<command> [playername|UUID]
     permission: simpleadmin.invmod
-#  introkit:
-#    description: Give a player the currently configured introkit
-#    usage: /<command> [playername|UUID]
-#    permission: simpleadmin.kit
-#  introbook:
-#    description: Give a player the currently configured intro book
-#    usage: /<command> [playername|UUID]
-#    permission: simpleadmin.book
+  #introkit:
+  #  description: Give a player the currently configured introkit
+  #  usage: /<command> [playername|UUID]
+  #  permission: simpleadmin.kit
+  #introbook:
+  #  description: Give a player the currently configured intro book
+  #  usage: /<command> [playername|UUID]
+  #  permission: simpleadmin.book
 permissions:
   simpleadmin.*:
     description: Gives access to all SimpleAdminHacks commands
