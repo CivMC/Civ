@@ -6625,9 +6625,10 @@ recipes:
         amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 3000
+        amount: 78
         lore:
          - Aether
+         - Compacted Item
         enchants:
           dura:
             enchant: DURABILITY
