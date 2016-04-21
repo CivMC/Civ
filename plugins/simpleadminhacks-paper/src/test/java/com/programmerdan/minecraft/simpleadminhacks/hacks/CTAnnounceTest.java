@@ -64,13 +64,15 @@ public class CTAnnounceTest {
 	public void testCTEventQuickFail() {
 		instance = new CTAnnounce(plugin, config);
 		when(config.isEnabled()).thenReturn(true);
-		PlayerCombatTagEvent cte = mock(PlayerCombatTagEvent.class);
-		when(cte.getVictim()).thenReturn(null);
-		when(cte.getAttacker()).thenReturn(null);
+		PlayerCombatTagEvent cte = new PlayerCombatTagEvent(null, null, 30);
 		
-		instance.CTEvent(cte);
-		verify(cte).getVictim(); // verify each was called only once.
-		verify(cte).getAttacker();
+		try {
+			instance.CTEvent(cte);
+
+			pass();
+		} catch( NullPointerException npe) {
+			fail("Check failed to prevent NPE by fast-failing on null attacker/victim.");
+		}
 	}
 	
 	private List<BroadcastLevel> allLevels() {
