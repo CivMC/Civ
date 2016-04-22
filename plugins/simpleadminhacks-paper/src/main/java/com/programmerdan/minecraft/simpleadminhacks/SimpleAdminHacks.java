@@ -170,9 +170,58 @@ public class SimpleAdminHacks extends JavaPlugin {
 		return this.getServer().getPluginManager().isPluginEnabled(pluginName);
 	}
 
+	// Broadcast aides
+
+	/**
+	 * Broadcast to all online players having the plugin's default broadcast permission
+	 */
+	public int serverBroadcast(String message) {
+		return this.getServer().broadcast(message, config().getBroadcastPermission());
+	}
+
+	/**
+	 * Broadcast to all online players having the specified permission
+	 */
 	public int serverBroadcast(String message, String permission) {
 		return this.getServer().broadcast(message, permission);
 	}
+
+	/**
+	 * Broadcast to all online operators.
+	 */
+	public int serverOperatorBroadcast(String message) {
+		int cnt = 0;
+		for( OfflinePlayer op : this.serverOperators()) {
+			if (op.isOnline() && op.getPlayer() != null) {
+				op.getPlayer().sendMessage(cleanMessage);
+				cnt ++;
+			}
+		}
+		return cnt;
+	}
+
+	/**
+	 * Broadcast to all online players.
+	 */
+	public int serverOnlineBroadcast(String message) {
+		int cnt = 0;
+		for (Player p : this.serverOnlinePlayers()) {
+			if ( p != null && p.isOnline() ) {
+				p.sendMessage(cleanMessage);
+				cnt ++;
+			}
+		}
+		return cnt;
+	}
+
+	/**
+	 * Send a message to the Server Console
+	 */
+	public void serverSendConsoleMessage(String message) {
+		return this.getServer().getConsoleSender().sendMessage(message);
+	}
+
+	// Non-static Server accessor helps (facilitates testing)
 
 	public ConsoleCommandSender serverConsoleSender() {
 		return this.getServer().getConsoleSender();
@@ -189,6 +238,8 @@ public class SimpleAdminHacks extends JavaPlugin {
 	public void registerListener(Listener listener) {
 		this.getServer().getPluginManager().registerEvents(listener, this);
 	}
+
+	// Safe Registration Wrapping
 
 	public void registerCommand(String command, CommandExecutor executor) {
 		PluginCommand cmd = this.getCommand(command);

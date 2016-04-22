@@ -34,27 +34,27 @@ hacks:
       broadcast: [PERM, CONSOLE]
     helptips: on
     helptips_end: 20m
-  introkit:
-    name: Introkit
-    enabled: true
-    contents:
-     - ==: org.bukkit.inventory.ItemStack
-       type: COOKIE
-       amount: 32
-       meta:
-         ==: ItemMeta
-         meta-type: UNSPECIFIC
-         display-name: 'Manna'
-         lore:
-          - "Gift from the Admins as you"
-          - "begin your journey on Devotion."
-  introbook:
-    name: Introbook
-    enabled: true
-    contents:
-      title: Welcome to Devoted
-      author: Bonkill
-      pages:
-       - Devoted is not your ordinary minecraft server.
-       - We run a series of custom mods that greatly impact gameplay.
-       - Welcome and we hope you will enjoy!
+    introkit:
+      name: Introkit
+      enabled: true
+      contents:
+       - ==: org.bukkit.inventory.ItemStack
+         type: COOKIE
+         amount: 32
+         meta:
+           ==: ItemMeta
+           meta-type: UNSPECIFIC
+           display-name: 'Manna'
+           lore:
+            - "Gift from the Admins as you"
+            - "begin your journey on Devotion."
+    introbook:
+      name: Introbook
+      enabled: true
+      contents:
+        title: Welcome to Devoted
+        author: Bonkill
+        pages:
+         - Devoted is not your ordinary minecraft server.
+         - We run a series of custom mods that greatly impact gameplay.
+         - Welcome and we hope you will enjoy!

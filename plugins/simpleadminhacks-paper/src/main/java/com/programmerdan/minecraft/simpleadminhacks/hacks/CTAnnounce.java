@@ -58,30 +58,21 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 		// Prepare message
 		String cleanMessage = cleanMessage(event);
 		
-		// And Gooooo
+		// Overlap is possible. Some people might get double-notified
 		for (BroadcastLevel level : config.getBroadcast()) {
 			plugin().debug("  Broadcast to {0}", level);
 			switch(level) {
-			// Overlap is possible. Some people might get double-notified
 			case OP:
-				for( OfflinePlayer op : plugin().serverOperators()) {
-					if (op.isOnline() && op.getPlayer() != null) {
-						op.getPlayer().sendMessage(cleanMessage);
-					}
-				}
+				plugin().serverOperatorBroadcast(cleanMessage);
 				break;
 			case PERM:
-				plugin().serverBroadcast(cleanMessage, 
-						plugin().config().getBroadcastPermission());
+				plugin().serverBroadcast(cleanMessage); 
 				break;
 			case CONSOLE:
-				plugin().serverConsoleSender().sendMessage(cleanMessage);
+				plugin().serverSendConsoleMessage(cleanMessage);
 				break;
 			case ALL:
-				for (Player p : plugin().serverOnlinePlayers()) {
-					if ( p != null && p.isOnline() )
-						p.sendMessage(cleanMessage);
-				}
+				plugin().serverOnlineBroadcast(cleanMessage);
 				break;
 			}
 		}
