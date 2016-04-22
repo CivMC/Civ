@@ -64,21 +64,21 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 			switch(level) {
 			// Overlap is possible. Some people might get double-notified
 			case OP:
-				for( OfflinePlayer op : plugin().getServer().getOperators()) {
+				for( OfflinePlayer op : plugin().serverOperators()) {
 					if (op.isOnline() && op.getPlayer() != null) {
 						op.getPlayer().sendMessage(cleanMessage);
 					}
 				}
 				break;
 			case PERM:
-				plugin().getServer().broadcast(cleanMessage, 
+				plugin().serverBroadcast(cleanMessage, 
 						plugin().config().getBroadcastPermission());
 				break;
 			case CONSOLE:
-				plugin().getServer().getConsoleSender().sendMessage(cleanMessage);
+				plugin().serverConsoleSender().sendMessage(cleanMessage);
 				break;
 			case ALL:
-				for (Player p : plugin().getServer().getOnlinePlayers()) {
+				for (Player p : plugin().serverOnlinePlayers()) {
 					if ( p != null && p.isOnline() )
 						p.sendMessage(cleanMessage);
 				}

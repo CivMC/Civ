@@ -1,14 +1,19 @@
 package com.programmerdan.minecraft.simpleadminhacks;
 
 import java.util.logging.Level;
+import java.util.Collection;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Collections;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.CommandExecutor;
 
@@ -163,6 +168,22 @@ public class SimpleAdminHacks extends JavaPlugin {
 	
 	public boolean serverHasPlugin(String pluginName) {
 		return this.getServer().getPluginManager().isPluginEnabled(pluginName);
+	}
+
+	public int serverBroadcast(String message, String permission) {
+		return this.getServer().broadcast(message, permission);
+	}
+
+	public ConsoleCommandSender serverConsoleSender() {
+		return this.getServer().getConsoleSender();
+	}
+
+	public Collection<? extends Player> serverOnlinePlayers() {
+		return this.getServer().getOnlinePlayers();
+	}
+
+	public Set<OfflinePlayer> serverOperators(){
+		return this.getServer().getOperators();
 	}
 	
 	public void registerListener(Listener listener) {

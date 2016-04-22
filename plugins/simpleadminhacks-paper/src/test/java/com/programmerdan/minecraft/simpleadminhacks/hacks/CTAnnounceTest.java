@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import junit.framework.Assert;
 import net.minelink.ctplus.event.PlayerCombatTagEvent;
 
 import org.bukkit.OfflinePlayer;
@@ -69,7 +70,7 @@ public class CTAnnounceTest {
 		try {
 			instance.CTEvent(cte);
 
-			pass();
+			assertTrue(true);
 		} catch( NullPointerException npe) {
 			fail("Check failed to prevent NPE by fast-failing on null attacker/victim.");
 		}
@@ -104,8 +105,6 @@ public class CTAnnounceTest {
 		when(config.getBroadcast()).thenReturn(allLevels());
 		when(config.getBroadcastMessage()).thenReturn("%Victim% struck by %Attacker%");
 		
-		Server s = mock(Server.class);
-		when(plugin.getServer()).thenReturn(s);
 		Set<OfflinePlayer> ops = fakeOperators();
 		Set<SoftPlayer> sops = new HashSet<SoftPlayer>();
 		for (OfflinePlayer op : ops) {
@@ -113,10 +112,10 @@ public class CTAnnounceTest {
 			when(op.getPlayer()).thenReturn(sfp);
 			sops.add(sfp);
 		}
-		when(s.getOperators()).thenReturn(ops);
-		when(s.broadcast(anyString(), anyString())).thenReturn(4);
+		when(plugin.serverOperators()).thenReturn(ops);
+		when(plugin.serverBroadcast(anyString(), anyString())).thenReturn(4);
 		ConsoleCommandSender ccs = mock(ConsoleCommandSender.class);
-		when(s.getConsoleSender()).thenReturn(ccs);
+		when(plugin.serverConsoleSender()).thenReturn(ccs);
 
 		/* This doubles as a check on hidden method {@link CTAnnounce#cleanMessage()} */
 		doAnswer(new Answer() {
@@ -128,9 +127,6 @@ public class CTAnnounceTest {
 			}
 		}).when(ccs).sendMessage(anyString());
 
-		
-		PlayerCombatTagEvent cte = mock(PlayerCombatTagEvent.class);
-		
 		SoftPlayer vic = mock(SoftPlayer.class);
 		String vicName = "Victim";
 		when(vic.getName()).thenReturn(vicName);
@@ -147,14 +143,12 @@ public class CTAnnounceTest {
 		when(att.getUniqueId()).thenReturn(attUUID);
 		when(att.isOnline()).thenReturn(true);
 		
-	
-		when(cte.getVictim()).thenReturn(vic);
-		when(cte.getAttacker()).thenReturn(att);
+		PlayerCombatTagEvent cte = new PlayerCombatTagEvent(vic, att, 30);
 		
 		LinkedList online = new LinkedList();
 		online.add(vic);
 		online.add(att);
-		when(s.getOnlinePlayers()).thenReturn(online);
+		when(plugin.serverOnlinePlayers()).thenReturn(online);
 		
 		instance.CTEvent(cte);
 		
