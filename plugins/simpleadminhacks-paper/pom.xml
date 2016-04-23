@@ -89,6 +89,10 @@
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
     </repository>
+    <repository>
+      <id>inventive-repo</id>
+      <url>http://repo.inventivetalent.org/content/groups/public/</url>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -103,6 +107,11 @@
       <artifactId>CombatTagPlus</artifactId>
       <version>1.2.2-SNAPSHOT</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.inventivetalent.npclib</groupId>
+      <artifactId>api</artifactId>
+      <version>1.8.4</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>

@@ -21,14 +21,18 @@ commands:
     description: Modify any player inventory, online or not.
     usage: /<command> [playername|UUID]
     permission: simpleadmin.invmod
-  #introkit:
-  #  description: Give a player the currently configured introkit
-  #  usage: /<command> [playername|UUID]
-  #  permission: simpleadmin.kit
-  #introbook:
-  #  description: Give a player the currently configured intro book
-  #  usage: /<command> [playername|UUID]
-  #  permission: simpleadmin.book
+  introkit:
+    description: Give a player the currently configured introkit
+    usage: /<command> [playername|UUID]
+    permission: simpleadmin.kit
+  introbook:
+    description: Give a player the currently configured intro book
+    usage: /<command> [playername|UUID]
+    permission: simpleadmin.book
+  hackbot:
+    description: Allows the creation of NPCs
+    usage: /<command> [npc name] [UUID of skin] [options and flags]
+    permission: simpleadmin.bots
 permissions:
   simpleadmin.*:
     description: Gives access to all SimpleAdminHacks commands
@@ -42,6 +46,7 @@ permissions:
       simpleadmin.kit: true
       simpleadmin.book: true
       simpleadmin.broadcast: true
+      simpleadmin.bots: true
     simpleadmin.hacks:
       description: Allows control of the hacks and settings which simpleadminhacks supports
       default: op
@@ -65,4 +70,7 @@ permissions:
       default: op
     simpleadmin.broadcast:
       description: Gives the holder the ability to receive broadcasts
+      default: op
+    simpleadmin.bots:
+      description: Gives the ability to create NPCs (bots)
       default: op

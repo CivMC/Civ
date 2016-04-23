@@ -58,6 +58,42 @@ hacks:
        - Devoted is not your ordinary minecraft server.
        - We run a series of custom mods that greatly impact gameplay.
        - Welcome and we hope you will enjoy!
-  fakeit:
-    name: FakeIt
+  hackbot:
+    name: HackBot
     enabled: true
+    bots:
+      0:
+        name: BenDurr1001
+        skin: 0000-0000-0000-0000
+        options:
+          mode: LOOK
+          health: 100
+          #loot:
+          #-
+          #armor:
+          #  chest:
+          #  helmet:
+          #  feet:
+          #  legs:
+          #weapon:
+          #  mainhand:
+          #  offhand:
+          birth:
+            respawn: true
+            exact: false
+            radius: 10
+            x: 50
+            y: 30
+            z: 50
+          namelayer:
+            aware: true
+            friendly:
+            - Admins
+            hostile:
+            - Cheaters
+            neutral:
+            - Players
+          chatbot:
+            responses: response.txt
+            learning: false
+            only_pm: false

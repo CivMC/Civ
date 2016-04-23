@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,7 +28,7 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.NewfriendAssistConfi
  * 
  * @author ProgrammerDan
  */
-public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implements Listener {
+public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implements Listener, CommandExecutor {
 	
 	public static final String NAME = "NewfriendAssist";
 	private static long newfriendCount = 0l;
@@ -143,6 +146,10 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 
 	@Override
 	public void registerCommands() {
+		if (config.isEnabled()) {
+			plugin().log("Registering introkit command");
+			plugin().registerCommand("introkit", this);
+		}
 	}
 
 	@Override
@@ -212,6 +219,38 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 		}
 
 		return sb.toString();
+	}
+	
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		if (!config.isIntroKitEnabled()) {
+			sender.sendMessage(ChatColor.RED + "Introkit gifting is disabled.");
+			return true;
+		}
+		
+		if (args.length < 1) return false;
+		
+		Player p = plugin().getServer().getPlayer(args[0]);
+		
+		if (p == null) {
+			try {
+				UUID pu = UUID.fromString(args[0]);
+				p = plugin().getServer().getPlayer(pu);
+			} catch (IllegalArgumentException iae) {
+				p = null;
+			}
+		}
+		
+		if (p == null) {
+			sender.sendMessage(ChatColor.RED + "Unable to find " + args[0]);
+		} else {
+			plugin().log(Level.INFO, "Sent introkit to {0}", args[0]);
+			p.sendMessage(ChatColor.GREEN + "You've been given an introductory kit!");
+			Inventory inv = p.getInventory();
+			inv.addItem(config.getIntroKit());
+		}
+		
+		return true;
 	}
 }
 

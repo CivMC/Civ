@@ -4,8 +4,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,6 +20,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.programmerdan.minecraft.simpleadminhacks.CommandListener;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.IntrobookConfig;
@@ -27,7 +32,7 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.IntrobookConfig;
  * @author ProgrammerDan <programmerdan@gmail.com
  *
  */
-public class Introbook extends SimpleHack<IntrobookConfig> implements Listener {
+public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, CommandExecutor {
 
 	public static final String NAME = "Introbook";
 	
@@ -47,6 +52,10 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener {
 
 	@Override
 	public void registerCommands() {
+		if (config.isEnabled()) {
+			plugin().log("Registering introbook command");
+			plugin().registerCommand("introbook", this);
+		}
 	}
 
 	@Override
@@ -144,4 +153,30 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener {
 		return sb.toString();
 	}
 
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		if (args.length < 1) return false;
+		
+		Player p = plugin().getServer().getPlayer(args[0]);
+		
+		if (p == null) {
+			try {
+				UUID pu = UUID.fromString(args[0]);
+				p = plugin().getServer().getPlayer(pu);
+			} catch (IllegalArgumentException iae) {
+				p = null;
+			}
+		}
+		
+		if (p == null) {
+			sender.sendMessage(ChatColor.RED + "Unable to find " + args[0]);
+		} else {
+			plugin().log(Level.INFO, "Sent introbook to {0}", args[0]);
+			p.sendMessage(ChatColor.GREEN + "You've been given an introductory book!");
+			Inventory inv = p.getInventory();
+			inv.addItem(config.getIntroBook());
+		}
+		
+		return true;
+	}
 }

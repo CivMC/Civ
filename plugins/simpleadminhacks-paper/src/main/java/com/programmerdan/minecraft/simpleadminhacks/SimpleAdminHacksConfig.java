@@ -104,6 +104,8 @@ public class SimpleAdminHacksConfig {
 				return new NewfriendAssist(this.plugin, new NewfriendAssistConfig(this.plugin, boot));
 			} else if (hackName.equals(Introbook.NAME)) {
 				return new Introbook(this.plugin, new IntrobookConfig(this.plugin, boot));
+			} else if (hackName.equals(FakeIt.NAME)) {
+				return new HackBot(this.plugin, new HackBotConfig(this.plugin, boot));
 			}
 		} catch (InvalidConfigException ice) {
 			plugin.log(Level.WARNING, "Failed to activate " + hackName + " hack");
