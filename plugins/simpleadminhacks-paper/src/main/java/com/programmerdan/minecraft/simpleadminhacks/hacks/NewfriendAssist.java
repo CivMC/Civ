@@ -1,10 +1,30 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Level;
+
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.ChatColor;
+
+import com.programmerdan.minecraft.simpleadminhacks.BroadcastLevel;
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.NewfriendAssistConfig;
 
 /**
  * A simple Newfriend tracker and assist module. Keeps track of newfriends so far.
+ * 
+ * @author ProgrammerDan
  */
 public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implements Listener {
 	
@@ -17,7 +37,7 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 	private HashMap<UUID, String> newfriendNames;
 	private HashMap<UUID, SessionTime> newfriendSessionTime;
 
-	public NewfriendAssist(SimplpeAdminHacks plugin, NewfriendAssistConfig config) {
+	public NewfriendAssist(SimpleAdminHacks plugin, NewfriendAssistConfig config) {
 		super(plugin, config);
 	}
 
@@ -41,8 +61,8 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 		if (departed == null) return;
 
 		UUID depUUID = departed.getUniqueId();
-		if (newfriendSessionTime.containsKey(newUUID)) {
-			newfriendSessionTime.get(newUUID).endSession(System.currentTimeMillis());
+		if (newfriendSessionTime.containsKey(depUUID)) {
+			newfriendSessionTime.get(depUUID).endSession(System.currentTimeMillis());
 		}
 	}
 
@@ -69,30 +89,42 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 		newfriendNames.put(newUUID, newfriend.getName());
 		newfriendSessionTime.put(newUUID, new SessionTime(System.currentTimeMillis()));
 		
-		// Prepare message
-		String cleanMessage = cleanMessage(event);
-		
-		// Overlap is possible. Some people might get double-notified
-		for (BroadcastLevel level : config.getAnnounceBroadcast()) {
-			plugin().debug("  Broadcast to {0}", level);
-			switch(level) {
-			case OP:
-				plugin().serverOperatorBroadcast(cleanMessage);
-				break;
-			case PERM:
-				plugin().serverBroadcast(cleanMessage); 
-				break;
-			case CONSOLE:
-				plugin().serverSendConsoleMessage(cleanMessage);
-				break;
-			case ALL:
-				plugin().serverOnlineBroadcast(cleanMessage);
-				break;
+		if (config.getAnnounceBroadcast().size() > 0) {
+			// Prepare message
+			String cleanMessage = cleanMessage(join);
+			
+			// Overlap is possible. Some people might get double-notified
+			for (BroadcastLevel level : config.getAnnounceBroadcast()) {
+				plugin().debug("  Broadcast to {0}", level);
+				switch(level) {
+				case OP:
+					plugin().serverOperatorBroadcast(cleanMessage);
+					break;
+				case PERM:
+					plugin().serverBroadcast(cleanMessage); 
+					break;
+				case CONSOLE:
+					plugin().serverSendConsoleMessage(cleanMessage);
+					break;
+				case ALL:
+					plugin().serverOnlineBroadcast(cleanMessage);
+					break;
+				}
 			}
 		}
+		
+		if (config.isIntroKitEnabled()) {
+			ItemStack[] introKit = config.getIntroKit();
+			if (introKit != null && introKit.length > 0) {
+			    Inventory inv = newfriend.getInventory();
+			    inv.addItem(introKit);
+				plugin().log(Level.INFO, "  Gave newbit kit to {0}", newfriend.getDisplayName());
+			}
+		}
+		
 	}
 	
-	private String cleanMessage(PlayerCombatTagEvent event) {
+	private String cleanMessage(PlayerJoinEvent event) {
 		return ChatColor.translateAlternateColorCodes('&',
 				config.getAnnounceMessage()
 					.replaceAll("%Player%", event.getPlayer().getDisplayName())
@@ -138,6 +170,9 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 		this.newfriendSessionTime = null;
 	}
 
+	/**
+	 * Shows all tracked data on new friends.
+	 */
 	@Override
 	public String status() {
 		StringBuffer sb = new StringBuffer();
@@ -159,6 +194,19 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 					sb.append(" online ").append(soFar.totalTime() / 1000l).append(" seconds");
 				}
 			}
+		}
+		
+		if (config.isIntroKitEnabled()) {
+			sb.append("\n  Introkit gifting is enabled. Current Introkit:");
+			if (config.getIntroKit() != null && config.getIntroKit().length > 0 ) {
+				for (ItemStack item : config.getIntroKit()) {
+					sb.append("\n    ").append(item);
+				}
+			} else {
+				sb.append("\n    ").append(ChatColor.RED).append("-- in error --");
+			}
+		} else {
+			sb.append("\n  Introkit gifting is disabled.");
 		}
 
 		return sb.toString();

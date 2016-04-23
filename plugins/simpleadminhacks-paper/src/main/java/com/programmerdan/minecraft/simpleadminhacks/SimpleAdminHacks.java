@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.Collections;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -193,7 +192,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 		int cnt = 0;
 		for( OfflinePlayer op : this.serverOperators()) {
 			if (op.isOnline() && op.getPlayer() != null) {
-				op.getPlayer().sendMessage(cleanMessage);
+				op.getPlayer().sendMessage(message);
 				cnt ++;
 			}
 		}
@@ -207,7 +206,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 		int cnt = 0;
 		for (Player p : this.serverOnlinePlayers()) {
 			if ( p != null && p.isOnline() ) {
-				p.sendMessage(cleanMessage);
+				p.sendMessage(message);
 				cnt ++;
 			}
 		}
@@ -218,7 +217,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 	 * Send a message to the Server Console
 	 */
 	public void serverSendConsoleMessage(String message) {
-		return this.getServer().getConsoleSender().sendMessage(message);
+		this.serverConsoleSender().sendMessage(message);
 	}
 
 	// Non-static Server accessor helps (facilitates testing)

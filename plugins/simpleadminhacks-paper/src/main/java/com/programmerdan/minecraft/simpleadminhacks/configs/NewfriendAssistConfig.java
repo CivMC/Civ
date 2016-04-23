@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 
 import com.programmerdan.minecraft.simpleadminhacks.BroadcastLevel;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
@@ -26,6 +27,14 @@ public class NewfriendAssistConfig extends SimpleHackConfig {
 	 * Who should I broadcast to?
 	 */
 	private List<BroadcastLevel> announceBroadcast;
+	/**
+	 * Should I give out Newbie Kits?
+	 */
+	private boolean hasNewbieKit;
+	/**
+	 * What is the newbie kit composed of.
+	 */
+	private ItemStack[] newbieKit;
 	
 	//private List<HelpTips> helps; // TODO
 
@@ -63,6 +72,22 @@ public class NewfriendAssistConfig extends SimpleHackConfig {
 				// noop
 			}
 		}
+		this.hasNewbieKit = config.getBoolean("introkit.enabled", false);
+		if (this.hasNewbieKit) {
+			List<?> rawList = config.getList("introkit.contents");
+			if (rawList != null && rawList.size() > 0) {
+				try {
+					this.newbieKit = rawList.toArray(new ItemStack[rawList.size()]);
+					plugin().log(Level.INFO, " introkit enabled");
+				} catch(ArrayStoreException ase) {
+					plugin().log(Level.WARNING, " introkit was enabled, but is invalid", ase);
+				}
+			} else {
+				plugin().log(Level.WARNING, " introkit was enabled, but is missing or empty");
+			}
+		} else {
+			plugin().log(Level.INFO, " introkit disabled");
+		}
 	}
 	
 	public List<BroadcastLevel> getAnnounceBroadcast() {
@@ -73,4 +98,11 @@ public class NewfriendAssistConfig extends SimpleHackConfig {
 		return announceMessage;
 	}
 
+	public boolean isIntroKitEnabled() {
+		return hasNewbieKit;
+	}
+	
+	public ItemStack[] getIntroKit() {
+		return newbieKit;
+	}
 }

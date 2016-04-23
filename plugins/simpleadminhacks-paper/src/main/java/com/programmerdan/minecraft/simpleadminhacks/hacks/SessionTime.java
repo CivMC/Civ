@@ -2,6 +2,8 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
 /**
  * Simple data storage and processing class for NewfriendAssist and elsewhere to track playtime.
+ * 
+ * @author ProgrammerDan <programmerdan@gmail.com>
  */
 public class SessionTime {
 	private long playtimeTotal;

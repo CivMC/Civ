@@ -5,7 +5,9 @@ import java.util.logging.Level;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.programmerdan.minecraft.simpleadminhacks.configs.CTAnnounceConfig;
+import com.programmerdan.minecraft.simpleadminhacks.configs.NewfriendAssistConfig;
 import com.programmerdan.minecraft.simpleadminhacks.hacks.CTAnnounce;
+import com.programmerdan.minecraft.simpleadminhacks.hacks.NewfriendAssist;
 
 /**
  * Baseline configuration for SimpleAdminHacks and parser for all actual Hacks.
@@ -94,8 +96,10 @@ public class SimpleAdminHacksConfig {
 		}
 		
 		try {
-			if (hackName.equals(CTAnnounce.NAME)){
+			if (hackName.equals(CTAnnounce.NAME)) {
 				return new CTAnnounce(this.plugin, new CTAnnounceConfig(this.plugin, boot));
+			} else if (hackName.equals(NewfriendAssist.NAME)) {
+				return new NewfriendAssist(this.plugin, new NewfriendAssistConfig(this.plugin, boot));
 			}
 		} catch (InvalidConfigException ice) {
 			plugin.log(Level.WARNING, "Failed to activate " + hackName + " hack");

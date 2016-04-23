@@ -112,10 +112,8 @@ public class CTAnnounceTest {
 			when(op.getPlayer()).thenReturn(sfp);
 			sops.add(sfp);
 		}
-		when(plugin.serverOperators()).thenReturn(ops);
-		when(plugin.serverBroadcast(anyString(), anyString())).thenReturn(4);
-		ConsoleCommandSender ccs = mock(ConsoleCommandSender.class);
-		when(plugin.serverConsoleSender()).thenReturn(ccs);
+		when(plugin.serverOperatorBroadcast(anyString())).thenReturn(ops.size());
+		when(plugin.serverBroadcast(anyString())).thenReturn(4);
 
 		/* This doubles as a check on hidden method {@link CTAnnounce#cleanMessage()} */
 		doAnswer(new Answer() {
@@ -125,7 +123,7 @@ public class CTAnnounceTest {
 				assertEquals("Victim struck by Attacker", toSend);
 				return null;
 			}
-		}).when(ccs).sendMessage(anyString());
+		}).when(plugin).serverSendConsoleMessage(anyString());
 
 		SoftPlayer vic = mock(SoftPlayer.class);
 		String vicName = "Victim";
@@ -148,25 +146,22 @@ public class CTAnnounceTest {
 		LinkedList online = new LinkedList();
 		online.add(vic);
 		online.add(att);
-		when(plugin.serverOnlinePlayers()).thenReturn(online);
+		when(plugin.serverOnlineBroadcast(anyString())).thenReturn(online.size());
 		
 		instance.CTEvent(cte);
-		
 		// Now we make sure everyone got notified, and only once.
 		
-		// OP got notified
-		for (SoftPlayer sfp : sops) {
-			verify(sfp).sendMessage(anyString()); // shoulda been called once and only once.
-		}
+		// OPs got notified
+		verify(plugin).serverOperatorBroadcast(anyString());
 		
 		// Console got notified
-		verify(ccs).sendMessage(anyString());
+		verify(plugin).serverSendConsoleMessage(anyString());
 		
-		// Players got notified
-		for (Object o : online) {
-			SoftPlayer p = (SoftPlayer) o;
-			verify(p).sendMessage(anyString()); // alert sent to every online player.
-		}
+		// All Players got notified
+		verify(plugin).serverOnlineBroadcast(anyString());
+		
+		// Broadcast holders got notified
+		verify(plugin).serverBroadcast(anyString());
 		
 		try {
 			Thread.sleep(10l);
@@ -177,18 +172,18 @@ public class CTAnnounceTest {
 		instance.CTEvent(cte);
 		
 		// verify that console was _not_ alerted again (e.g. still only one message)
-		verify(ccs).sendMessage(anyString()); 
+		verify(plugin).serverSendConsoleMessage(anyString());
 
 		try {
 			Thread.sleep(400l);
 		} catch (InterruptedException ie) {
 		}
 		
-		// This one should get throttled right away.
+		// This one should not get throttled.
 		instance.CTEvent(cte);
 		
 		// verify that console was alerted again (e.g. second throttled, third succeeded)
-		verify(ccs, times(2)).sendMessage(anyString());
+		verify(plugin, times(2)).serverSendConsoleMessage(anyString());
 	}
 	
 	abstract interface SoftPlayer extends Player {}
