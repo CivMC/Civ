@@ -47,15 +47,7 @@ public class NewfriendAssistConfig extends SimpleHackConfig {
 	}
 
 	@Override
-	protected void wireup(ConfigurationSection config) {
-	    /*name: NewfriendAssist
-	    enabled: true
-	    announce:
-	      message: '%Player% is brand new!'
-	      broadcast: [PERM, CONSOLE]
-	    helptips: on
-	    helptips_end: 20m*/
-		
+	protected void wireup(ConfigurationSection config) {		
 		this.announceMessage = config.getString("announce.message", announceMessage);
 		
 		List<String> broadcastTo = config.getStringList("broadcast");

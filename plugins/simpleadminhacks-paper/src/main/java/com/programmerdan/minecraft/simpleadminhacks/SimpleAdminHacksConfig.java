@@ -5,8 +5,10 @@ import java.util.logging.Level;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.programmerdan.minecraft.simpleadminhacks.configs.CTAnnounceConfig;
+import com.programmerdan.minecraft.simpleadminhacks.configs.IntrobookConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.NewfriendAssistConfig;
 import com.programmerdan.minecraft.simpleadminhacks.hacks.CTAnnounce;
+import com.programmerdan.minecraft.simpleadminhacks.hacks.Introbook;
 import com.programmerdan.minecraft.simpleadminhacks.hacks.NewfriendAssist;
 
 /**
@@ -100,6 +102,8 @@ public class SimpleAdminHacksConfig {
 				return new CTAnnounce(this.plugin, new CTAnnounceConfig(this.plugin, boot));
 			} else if (hackName.equals(NewfriendAssist.NAME)) {
 				return new NewfriendAssist(this.plugin, new NewfriendAssistConfig(this.plugin, boot));
+			} else if (hackName.equals(Introbook.NAME)) {
+				return new Introbook(this.plugin, new IntrobookConfig(this.plugin, boot));
 			}
 		} catch (InvalidConfigException ice) {
 			plugin.log(Level.WARNING, "Failed to activate " + hackName + " hack");

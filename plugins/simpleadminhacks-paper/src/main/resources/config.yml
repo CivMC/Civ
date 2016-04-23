@@ -8,21 +8,21 @@ broadcast_permission: simpleadmin.broadcast
 hacks:
   game_features:
     name: GameFeatures
-    enabled: true
+    enabled: false
     elytra: off
     chorus_fruit: off
   game_fixes:
     name: GameFixes
-    enabled: true
+    enabled: false
     nether_bed_placement: off
   game_tuning:
     name: GameTuning
-    enabled: true
+    enabled: false
     str2: replace_str1ext
     pearl_gravity: 0.3
   combattag_announce:
     name: CombatTagAnnounce
-    enabled: true
+    enabled: false
     delay: 10000
     message: '%Victim% was combat tagged by %Attacker%'
     broadcast: [OP, CONSOLE]
@@ -50,6 +50,7 @@ hacks:
   introbook:
     name: Introbook
     enabled: true
+    follow: true
     contents:
       title: Welcome to Devoted
       author: Bonkill
@@ -57,3 +58,6 @@ hacks:
        - Devoted is not your ordinary minecraft server.
        - We run a series of custom mods that greatly impact gameplay.
        - Welcome and we hope you will enjoy!
+  fakeit:
+    name: FakeIt
+    enabled: true

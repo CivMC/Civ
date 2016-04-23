@@ -1,7 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -46,6 +45,7 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void NewLeaveEvent(PlayerQuitEvent exit) {
+		if (!config.isEnabled()) return;
 		doLeave(exit.getPlayer());
 	}
 
@@ -54,6 +54,7 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void NewKickEvent(PlayerKickEvent exit) {
+		if (!config.isEnabled()) return;
 		doLeave(exit.getPlayer());
 	}
 
@@ -74,6 +75,7 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void NewJoinEvent(PlayerJoinEvent join) {
+		if (!config.isEnabled()) return;
 		Player newfriend = join.getPlayer();
 		if (newfriend == null) return;
 
@@ -177,9 +179,9 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 	public String status() {
 		StringBuffer sb = new StringBuffer();
 		if (config != null && config.isEnabled()) {
-			sb.append("NewfriendAssist.PlayerJoinEvent monitoring active");
+			sb.append("NewfriendAssist.PlayerJoin/Quit/KickEvent monitoring active");
 		} else {
-			sb.append("NewfriendAssist.PlayerJoinEvent monitoring not active");
+			sb.append("NewfriendAssist.PlayerJoin/Quit/KickEvent monitoring not active");
 		}
 
 		sb.append("\n  Since server start, ").append(NewfriendAssist.newfriendCount)
