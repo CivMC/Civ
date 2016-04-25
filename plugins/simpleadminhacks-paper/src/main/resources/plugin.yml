@@ -31,7 +31,15 @@ commands:
     permission: simpleadmin.book
   hackbot:
     description: Allows the creation of NPCs
-    usage: /<command> [npc name] [UUID of skin] [options and flags]
+    usage: |
+      /<command> spawn [npc name]
+      /<command> despawn [npc name]
+      /<command> save [npc name]
+      /<command> generate [npc name] [name of skin] [spawn:<world,x,y,z>] [options and flags] 
+      /<command> destroy [npc name]
+      /<command> all save
+      /<command> all despawn
+      /<command> all spawn
     permission: simpleadmin.bots
 permissions:
   simpleadmin.*:
