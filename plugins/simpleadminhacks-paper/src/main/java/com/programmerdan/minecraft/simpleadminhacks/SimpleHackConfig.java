@@ -42,7 +42,7 @@ public abstract class SimpleHackConfig {
 	 * Might be useful in some situations for subclasses to directly access the 
 	 * stored base config.
 	 */
-	protected ConfigurationSection getBase() {
+	public ConfigurationSection getBase() {
 		return base;
 	}
 	

@@ -35,7 +35,8 @@ commands:
       /<command> spawn [npc name]
       /<command> despawn [npc name]
       /<command> save [npc name]
-      /<command> generate [npc name] [name of skin] [spawn:<world,x,y,z>] [options and flags] 
+      /<command> generate [npc name] [name of skin] [spawn <world,x,y,z>] [options and flags]
+      /<command> help generate shows detailed help on the generate subcommand
       /<command> destroy [npc name]
       /<command> all save
       /<command> all despawn

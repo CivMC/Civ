@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -219,7 +222,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 	public void serverSendConsoleMessage(String message) {
 		this.serverConsoleSender().sendMessage(message);
 	}
-
+	
 	// Non-static Server accessor helps (facilitates testing)
 
 	public ConsoleCommandSender serverConsoleSender() {
@@ -236,6 +239,18 @@ public class SimpleAdminHacks extends JavaPlugin {
 	
 	public void registerListener(Listener listener) {
 		this.getServer().getPluginManager().registerEvents(listener, this);
+	}
+
+	public World serverGetWorld(String world) {
+		World wurld = this.getServer().getWorld(world);
+		if (world == null) {
+			try {
+				wurld = this.getServer().getWorld(UUID.fromString(world));
+			} catch (IllegalArgumentException iae) {
+				wurld = null; // not a UUID
+			}
+		}
+		return wurld;
 	}
 
 	// Safe Registration Wrapping
