@@ -6678,7 +6678,7 @@ recipes:
         amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 30
+        amount: 15
         lore:
          - Aether
         enchants:
@@ -6706,7 +6706,7 @@ recipes:
         amount: 64
       aether:
         material: GOLD_NUGGET
-        amount: 30
+        amount: 15
         lore:
          - Aether
         enchants:
@@ -6734,7 +6734,7 @@ recipes:
         amount: 64
       aether:
         material: GOLD_NUGGET
-        amount: 30
+        amount: 15
         lore:
          - Aether
         enchants:
@@ -6769,7 +6769,7 @@ recipes:
 #        amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 168
+        amount: 84
         lore:
          - Aether
         enchants:
@@ -6804,7 +6804,7 @@ recipes:
 #        amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 168
+        amount: 84
         lore:
          - Aether
         enchants:
@@ -6838,7 +6838,7 @@ recipes:
 #        amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 168
+        amount: 84
         lore:
          - Aether
         enchants:
@@ -6893,7 +6893,7 @@ recipes:
         amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 960
+        amount: 480
         lore:
          - Aether
         enchants:
@@ -6951,7 +6951,7 @@ recipes:
          - Compacted Item
       aether:
         material: GOLD_NUGGET
-        amount: 960
+        amount: 480
         lore:
          - Aether
         enchants:
@@ -7008,7 +7008,7 @@ recipes:
          - Compacted Item
       aether:
         material: GOLD_NUGGET
-        amount: 960
+        amount: 480
         lore:
          - Aether
         enchants:
