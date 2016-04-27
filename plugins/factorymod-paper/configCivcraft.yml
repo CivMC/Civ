@@ -607,6 +607,7 @@ factories:
     - Craft_Redstone_Comparator
     - Craft_Daylight_Sensor
     - Craft_End_Concentrate
+    - Create_Pylon_Locator
     - Repair_Advanced_Factory
   redstonemechanicsfactory:
     type: FCCUPGRADE
@@ -657,7 +658,7 @@ factories:
     type: FCCUPGRADE
     name: Dowsing Factory
     recipes:
-     - Create_Pylon_Locator
+     - Return_Materials
      - Repair_Advanced_Factory
 ## Enchanting
   basicforge:
@@ -6578,6 +6579,9 @@ recipes:
         amount: 1
       xp:
         material: EMERALD_BLOCK
+        amount: 256
+      redstone:
+        material: REDSTONE_BLOCK
         amount: 64
     output:
       basiccompass:
