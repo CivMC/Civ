@@ -62,7 +62,7 @@ public class Bot {
 		if (config == null) {
 			throw new InvalidConfigurationException("config cannot be null");
 		}
-		if (!this.botName.equals(config.getString("name"))) {
+		if (this.botName != null && !this.botName.equals(config.getString("name"))) {
 			throw new InvalidConfigurationException("Cannot change bot name; this config is for a different bot");
 		}
 		

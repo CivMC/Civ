@@ -110,7 +110,10 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 			plugin().log("Location: " + location);
 
 			Matcher parts = split.matcher(location);
-			parts.match();
+			if (!parts.matches()){
+				sender.sendMessage(ChatColor.RED + "Location should be formatted <World, x, y, z>");
+				return false;
+			}
 			
 			if (parts.groupCount() != 4) {
 				sender.sendMessage(ChatColor.RED + "Location needs four components! Use '/hackbot help generate' for details");
@@ -139,7 +142,7 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 				}
 				Location loc = new Location(realWorld, x, y, z);
 				
-				bconfig.set("spawn", loc);
+				bconfig.set("spawnLocation", loc);
 			} catch (NumberFormatException nfe) {
 				sender.sendMessage(ChatColor.RED + "Location needs x,y,z to be numeric!");
 				return true;
