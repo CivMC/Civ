@@ -1,6 +1,7 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.NumberConversions;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
@@ -40,7 +42,11 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (args.length < 2) { 
+		if (args.length < 2) {
+			if (args.length == 1 && ("status".equals(args[0]) || "list".equals(args[0]))) {
+				sender.sendMessage(ChatColor.AQUA + "HackBot " + ChatColor.WHITE + "status:\n" + status());
+				return true;
+			}
 			return false;
 		}
 		
@@ -70,13 +76,24 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 			String subcmd = args[1];
 			if ("generate".equals(subcmd)) {
 				sender.sendMessage(ChatColor.GREEN + "Help for /hackbot generate command:");
-				sender.sendMessage(ChatColor.AQUA + "  usage:         " + ChatColor.WHITE + "/hackbot generate [npc name] [name of skin] [spawn <world,x,y,z>] [options and flags]");
+				sender.sendMessage(ChatColor.AQUA + "  usage:         " + ChatColor.WHITE + "/hackbot generate [npc name] [name of skin] [<world,x,y,z>] [options and flags]");
 				sender.sendMessage(ChatColor.AQUA + "  npc name:      " + ChatColor.WHITE + " The name to give this NPC (shows up in player listing)");
 				sender.sendMessage(ChatColor.AQUA + "  name of skin:  " + ChatColor.WHITE + " The Minecraft user from whom to steal a skin (optional)");
-				sender.sendMessage(ChatColor.AQUA + "  spawn:         " + ChatColor.WHITE + " The spawn (and respawn) location for this npc given as <WorldName or UUID,x,y,z>");
+				sender.sendMessage(ChatColor.AQUA + "  <world,x,y,z>: " + ChatColor.WHITE + " The spawn (and respawn) location for this npc given as <WorldName or UUID,x,y,z>");
 				sender.sendMessage(ChatColor.AQUA + "  options/flags: " + ChatColor.WHITE + " flags and settings");
-				sender.sendMessage(ChatColor.BLUE + "    -alive:  " + ChatColor.WHITE + " Spawn in the bot right away");
-				sender.sendMessage(ChatColor.BLUE + "    -dead:   " + ChatColor.WHITE + " Configure the bot but don't spawn it");
+				sender.sendMessage(ChatColor.BLUE + "    +alive:    " + ChatColor.WHITE + " Spawn in the bot right away");
+				sender.sendMessage(ChatColor.BLUE + "    -alive:    " + ChatColor.WHITE + " Configure the bot but don't spawn it");
+				sender.sendMessage(ChatColor.BLUE + "    +collide:  " + ChatColor.WHITE + " Bot responds to collisions");
+				sender.sendMessage(ChatColor.BLUE + "    -collide:  " + ChatColor.WHITE + " Bot does not");
+				sender.sendMessage(ChatColor.BLUE + "    +list:  " + ChatColor.WHITE + " Bot appears in player list");
+				sender.sendMessage(ChatColor.BLUE + "    -list:  " + ChatColor.WHITE + " Bot does not");
+				sender.sendMessage(ChatColor.BLUE + "    +frozen:  " + ChatColor.WHITE + " Bot is immobile");
+				sender.sendMessage(ChatColor.BLUE + "    -frozen:  " + ChatColor.WHITE + " Bot is not");
+				sender.sendMessage(ChatColor.BLUE + "    +god:  " + ChatColor.WHITE + " Bot is invulnerable");
+				sender.sendMessage(ChatColor.BLUE + "    -god:  " + ChatColor.WHITE + " Bot is not");
+				sender.sendMessage(ChatColor.BLUE + "    +possess:  " + ChatColor.WHITE + " Bot can be controlled (?)");
+				sender.sendMessage(ChatColor.BLUE + "    -possess:  " + ChatColor.WHITE + " Bot can not");
+				
 				sender.sendMessage(ChatColor.GREEN + "    (more tbd)");
 			}
 		} else if ("generate".equals(cmd)) {
@@ -122,7 +139,7 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 			
 			String world = parts.group(1);
 			
-			ConfigurationSection bconfig = config().getBase().createSection(npcname);
+			ConfigurationSection bconfig = config.getBots().createSection(npcname);
 			bconfig.set("name", npcname);
 			
 			if (skinname != null) {
@@ -147,13 +164,40 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 				sender.sendMessage(ChatColor.RED + "Location needs x,y,z to be numeric!");
 				return true;
 			}
-			
+
+			// Set defaults.Then harvest flags.
+			bconfig.set("alive", false);
+			bconfig.set("collision", true);
+			bconfig.set("invulnerable", false);
+			bconfig.set("listed", true);
+			bconfig.set("frozen", false);
+			bconfig.set("controllable", true);
 			if (++idx < args.length) {
 				for (; idx < args.length; idx++) {
-					if ("-alive".equals(args[idx])) {
+					if ("+alive".equals(args[idx]) || "alive".equals(args[idx])) {
 						bconfig.set("alive", true);
-					} else if ("-dead".equals(args[idx])) {
+					} else if ("-alive".equals(args[idx])) {
 						bconfig.set("alive", false);
+					} else if ("+collide".equals(args[idx]) || "collide".equals(args[idx])) {
+						bconfig.set("collide", true);
+					} else if ("-collide".equals(args[idx])) {
+						bconfig.set("collide", false);
+					} else if ("+list".equals(args[idx]) || "list".equals(args[idx])) {
+						bconfig.set("listed", true);
+					} else if ("-list".equals(args[idx])) {
+						bconfig.set("listed", false);
+					} else if ("+frozen".equals(args[idx]) || "frozen".equals(args[idx])) {
+						bconfig.set("frozen", true);
+					} else if ("-frozen".equals(args[idx])) {
+						bconfig.set("frozen", false);
+					} else if ("+god".equals(args[idx]) || "god".equals(args[idx])) {
+						bconfig.set("invulnerable", true);
+					} else if ("-god".equals(args[idx])) {
+						bconfig.set("invulnerable", false);
+					} else if ("+possess".equals(args[idx]) || "possess".equals(args[idx])) {
+						bconfig.set("controllable", true);
+					} else if ("-possess".equals(args[idx])) {
+						bconfig.set("controllable", false);
 					}
 				}
 			}
@@ -191,6 +235,7 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 				sender.sendMessage(ChatColor.RED + "Destroyed permanently bot " + npcname);
 			} else if ("spawn".equals(cmd)) {
 				npc.spawn();
+				plugin().log(npc.npc().getClass().getName());
 				sender.sendMessage(ChatColor.GREEN + "Spawned bot " + npcname);
 			} else {
 				return false;
@@ -202,17 +247,40 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 
 	@Override
 	public void registerListeners() {
-		plugin().registerListener(this);
+		if (config.isEnabled()) {
+			plugin().log("Registering NPCLib listener");
+			plugin().registerListener(this);
+		}
 	}
 
 	@Override
 	public void registerCommands() {
-		plugin().registerCommand("hackbot", this);
+		if (config.isEnabled()) {
+			plugin().log("Registering hackbot command");
+			plugin().registerCommand("hackbot", this);
+		}
 	}
 
 	@Override
 	public void dataBootstrap() {
-		this.bots = new HashMap<String, Bot>();
+		if (config.isEnabled()) {
+			plugin().log("Loading hackbots");
+			this.bots = new HashMap<String, Bot>();
+			ConfigurationSection aBots = this.config.getBots();
+			for (String bot : aBots.getKeys(false)) {
+				ConfigurationSection aBot = aBots.getConfigurationSection(bot);
+				if (!config.doSpawnOnLoad()) {
+					aBot.set("alive", false);
+				}
+				try {
+					Bot savedBot = new Bot(aBot);
+					plugin().log(Level.INFO, "Created bot {0}", bot);
+					this.bots.put(bot, savedBot);
+				} catch (InvalidConfigurationException e) {
+					plugin().log(Level.WARNING, "Unable to create bot " + bot, e);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -225,13 +293,53 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 
 	@Override
 	public void dataCleanup() {
+		if (this.bots != null) {
+			for (String bot : bots.keySet()) {
+				Bot abot = bots.get(bot);
+				abot.flushToConfig();
+				abot.despawn();
+			}
+		}
 		this.bots.clear();
 		this.bots = null;
 	}
 
 	@Override
 	public String status() {
-		return null;
+		StringBuffer sb = new StringBuffer();
+		if (config != null && config.isEnabled()) {
+			sb.append("HackBots are active");
+		} else {
+			sb.append("HackBots are not active");
+			return sb.toString();
+		}
+
+		sb.append("\n  Bots ").append(config.doSpawnOnLoad() ? "do" : "don't").append(" spawn on load.");
+		sb.append("\n  All bots:");
+		for (String bot : bots.keySet()) {
+			Bot abot = bots.get(bot);
+			sb.append("\n    ").append(ChatColor.WHITE).append(abot.getName())
+					.append(ChatColor.RESET).append(" is ");
+			if (!abot.viable()) {
+				sb.append(ChatColor.RED).append("non-viable ");
+			} else if (abot.isAlive()) {
+				sb.append(ChatColor.GREEN).append("alive "); 
+			} else {
+				sb.append(ChatColor.YELLOW).append("despawned ");
+			}
+			sb.append(ChatColor.RESET).append("last seen at ").append(ChatColor.AQUA);
+			Location qLoc = abot.getLocation() == null ? abot.getSpawnLocation() : abot.getLocation();
+			sb.append("<").append(ChatColor.WHITE).append(qLoc.getWorld().getName())
+				.append(ChatColor.AQUA).append(",")
+				.append(ChatColor.WHITE).append(qLoc.getBlockX())
+				.append(ChatColor.AQUA).append(",")
+				.append(ChatColor.WHITE).append(qLoc.getBlockY())
+				.append(ChatColor.AQUA).append(",")
+				.append(ChatColor.WHITE).append(qLoc.getBlockZ())
+				.append(ChatColor.AQUA).append(">");
+			sb.append(ChatColor.RESET).append("; details: ").append(abot.status());
+		}
+		return sb.toString();
 	}
 
 }

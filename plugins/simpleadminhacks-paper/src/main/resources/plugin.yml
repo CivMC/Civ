@@ -41,6 +41,7 @@ commands:
       /<command> all save
       /<command> all despawn
       /<command> all spawn
+      /<command> [status|list]
     permission: simpleadmin.bots
 permissions:
   simpleadmin.*:

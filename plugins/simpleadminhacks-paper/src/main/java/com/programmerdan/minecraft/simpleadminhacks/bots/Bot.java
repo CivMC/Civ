@@ -1,5 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks.bots;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -21,7 +22,12 @@ public class Bot {
 	private boolean viable;
 	private boolean alive;
 	private String skinName;
-	
+	private boolean collision;
+	private boolean invulnerable;
+	private boolean listed;
+	private boolean frozen;
+	private boolean controllable;
+
 	/**
 	 * Initializes a non-viable bot with an immutable 'name'.
 	 * 
@@ -35,6 +41,11 @@ public class Bot {
 		this.config = null;
 		this.viable = false;
 		this.alive = false;
+		this.collision = true;
+		this.invulnerable = false;
+		this.listed = true;
+		this.frozen = true;
+		this.controllable = true;
 	}
 	
 	public Bot(ConfigurationSection config) throws InvalidConfigurationException {
@@ -88,6 +99,12 @@ public class Bot {
 		if (this.bot != null) {
 			this.despawn();
 		}
+		
+		this.collision = config.getBoolean("collision", true);
+		this.invulnerable = config.getBoolean("invulnerable", false);
+		this.listed = config.getBoolean("listed", true);
+		this.frozen = config.getBoolean("frozen", false);
+		this.controllable = config.getBoolean("controllable", true);
 
 		// If the bot is set to alive, spawn it.
 		if (config.getBoolean("alive", false)) {
@@ -178,6 +195,12 @@ public class Bot {
 					(this.location == null ? this.spawnLocation: this.location),
 					botName);
 		}
+		
+		this.bot.setCollision(this.collision);
+		this.bot.setControllable(this.controllable);
+		this.bot.setFrozen(this.frozen);
+		this.bot.setInvulnerable(this.invulnerable);
+		this.bot.setShownInList(this.listed);
 		this.alive = true;
 	}
 	
@@ -243,5 +266,47 @@ public class Bot {
 	public void flushToConfig() {
 		if (!this.viable || !this.alive) return;
 		this.setLocation(bot.getLocation());
+	}
+	
+	/**
+	 * Brings the attributes / settings of this bot
+	 * @return String version of attributes / settings
+	 */
+	public String status() {
+		if (this.viable && !this.alive) return "None - despawned";
+		StringBuilder sb = new StringBuilder();
+		sb.append("Skin: ").append(ChatColor.WHITE).append(this.getSkinName()).append(ChatColor.RESET);
+		if (this.bot.hasGravity()) {
+			sb.append(" Gravity: ").append(ChatColor.WHITE).append(this.bot.getGravity()).append(ChatColor.RESET);
+		} else {
+			sb.append(" Gravity: ").append(ChatColor.RED).append("off").append(ChatColor.RESET);
+		}
+		if (this.bot.hasCollision()) {
+			sb.append(" Collision: ").append(ChatColor.WHITE).append("on").append(ChatColor.RESET);
+		} else {
+			sb.append(" Collision: ").append(ChatColor.RED).append("off").append(ChatColor.RESET);
+		}
+		if (this.bot.isShownInList()) {
+			sb.append(" Listed: ").append(ChatColor.WHITE).append("yes").append(ChatColor.RESET);
+		} else {
+			sb.append(" Listed: ").append(ChatColor.RED).append("no").append(ChatColor.RESET);
+		}
+		if (this.bot.isFrozen()) {
+			sb.append(" Frozen: ").append(ChatColor.WHITE).append("yes").append(ChatColor.RESET);
+		} else {
+			sb.append(" Frozen: ").append(ChatColor.RED).append("no").append(ChatColor.RESET);
+		}
+		if (this.bot.isInvulnerable()) {
+			sb.append(" Safety: ").append(ChatColor.WHITE).append("on").append(ChatColor.RESET);
+		} else {
+			sb.append(" Safety: ").append(ChatColor.RED).append("off").append(ChatColor.RESET);
+		}
+		if (this.bot.isControllable()) {
+			sb.append(" CnC'd: ").append(ChatColor.WHITE).append("yes").append(ChatColor.RESET);
+		} else {
+			sb.append(" CnC'd: ").append(ChatColor.RED).append("no").append(ChatColor.RESET);
+		}
+
+		return sb.toString();
 	}
 }
