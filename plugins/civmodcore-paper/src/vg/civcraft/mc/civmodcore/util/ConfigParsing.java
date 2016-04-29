@@ -3,11 +3,13 @@ package vg.civcraft.mc.civmodcore.util;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -32,40 +34,69 @@ public class ConfigParsing {
 		}
 		for (String key : config.getKeys(false)) {
 			ConfigurationSection current = config.getConfigurationSection(key);
-			if (current == null) {
-				continue;
-			}
-			Material m = Material.valueOf(current.getString("material"));
-			ItemStack toAdd = new ItemStack(m);
-			int amount = current.getInt("amount", 1);
-			toAdd.setAmount(amount);
-			int durability = current.getInt("durability", 0);
-			toAdd.setDurability((short) durability);
-			ItemMeta im = toAdd.getItemMeta();
-			String name = current.getString("name");
-			if (name != null) {
-				im.setDisplayName(name);
-			}
-			List<String> lore = current.getStringList("lore");
-			if (lore != null) {
-				im.setLore(lore);
-			}
-			if (current.contains("enchants")) {
-				for (String enchantKey : current.getConfigurationSection(
-						"enchants").getKeys(false)) {
-					ConfigurationSection enchantConfig = current
-							.getConfigurationSection("enchants")
-							.getConfigurationSection(enchantKey);
-					Enchantment enchant = Enchantment.getByName(enchantConfig
-							.getString("enchant"));
-					int level = enchantConfig.getInt("level", 1);
-					im.addEnchant(enchant, level, true);
-				}
-			}
-			toAdd.setItemMeta(im);
-			result.addItemStack(toAdd);
+			ItemMap partMap = parseItemMapDirectly(current);
+			result.merge(partMap);
 		}
 		return result;
+	}
+	
+	public static ItemMap parseItemMapDirectly(ConfigurationSection current) {
+		ItemMap im = new ItemMap();
+		if (current == null) {
+			return im;
+		}
+		Material m = Material.valueOf(current.getString("material"));
+		ItemStack toAdd = new ItemStack(m);
+		int amount = current.getInt("amount", 1);
+		toAdd.setAmount(amount);
+		int durability = current.getInt("durability", 0);
+		toAdd.setDurability((short) durability);
+		ItemMeta meta = toAdd.getItemMeta();
+		String name = current.getString("name");
+		if (name != null) {
+			meta.setDisplayName(name);
+		}
+		List<String> lore = current.getStringList("lore");
+		if (lore != null) {
+			meta.setLore(lore);
+		}
+		if (current.contains("enchants")) {
+			for (String enchantKey : current.getConfigurationSection(
+					"enchants").getKeys(false)) {
+				ConfigurationSection enchantConfig = current
+						.getConfigurationSection("enchants")
+						.getConfigurationSection(enchantKey);
+				Enchantment enchant = Enchantment.getByName(enchantConfig
+						.getString("enchant"));
+				int level = enchantConfig.getInt("level", 1);
+				meta.addEnchant(enchant, level, true);
+			}
+		}
+		if (m == Material.LEATHER_BOOTS || m == Material.LEATHER_CHESTPLATE || m == Material.LEATHER_HELMET || m == Material.LEATHER_LEGGINGS) {
+			ConfigurationSection color = current.getConfigurationSection("color");
+			Color leatherColor = null;
+			if (color != null) {
+				int red = color.getInt("red");
+				int blue = color.getInt("blue");
+				int green = color.getInt("green");
+				leatherColor = Color.fromRGB(red, green, blue);
+			}
+			else {
+				String hexColorCode = current.getString("color");
+				if (hexColorCode != null) {
+					Integer hexColor = Integer.parseInt(hexColorCode, 16);
+					if (hexColor != null) {
+						leatherColor = Color.fromRGB(hexColor);
+					}
+				}
+			}
+			if (leatherColor != null) {
+				((LeatherArmorMeta) meta).setColor(leatherColor);
+			}
+		}
+		toAdd.setItemMeta(meta);
+		im.addItemStack(toAdd);
+		return im;
 	}
 	
 	
