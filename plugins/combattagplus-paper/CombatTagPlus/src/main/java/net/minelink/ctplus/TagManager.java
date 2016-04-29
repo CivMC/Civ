@@ -5,12 +5,18 @@ import net.minelink.ctplus.event.PlayerCombatTagEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public final class TagManager {
+
+    public enum Flag {
+        TAG_VICTIM, TAG_ATTACKER
+    }
 
     private final CombatTagPlus plugin;
 
@@ -33,6 +39,10 @@ public final class TagManager {
     }
 
     public void tag(Player victim, Player attacker) {
+        tag(victim, attacker, EnumSet.of(Flag.TAG_VICTIM, Flag.TAG_ATTACKER));
+    }
+
+    public void tag(Player victim, Player attacker, Set<Flag> flags) {
         NpcPlayerHelper helper = plugin.getNpcPlayerHelper();
 
         // Determine victim identity
@@ -79,12 +89,12 @@ public final class TagManager {
         Tag tag = new Tag(helper, expireTime, victim, attacker);
 
         // Add victim to tagged players
-        if (victim != null) {
+        if (victim != null && flags.contains(Flag.TAG_VICTIM)) {
             tags.put(victimId, tag);
         }
 
         // Add attacker to tagged players
-        if (attacker != null) {
+        if (attacker != null && flags.contains(Flag.TAG_ATTACKER)) {
             tags.put(attackerId, tag);
         }
     }

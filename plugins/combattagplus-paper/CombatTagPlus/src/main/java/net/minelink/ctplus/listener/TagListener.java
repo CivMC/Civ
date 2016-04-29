@@ -3,9 +3,11 @@ package net.minelink.ctplus.listener;
 import com.google.common.collect.ImmutableSet;
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.Tag;
+import net.minelink.ctplus.TagManager;
 import net.minelink.ctplus.event.PlayerCombatTagEvent;
 import net.minelink.ctplus.task.SafeLogoutTask;
 import net.minelink.ctplus.task.TagUpdateTask;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Entity;
@@ -26,6 +28,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 
+import java.util.EnumSet;
 import java.util.Set;
 
 public final class TagListener implements Listener {
@@ -170,7 +173,24 @@ public final class TagListener implements Listener {
         if (tag == null) return;
 
         // Reset the tag duration
-        tag.setExpireTime(System.currentTimeMillis() + (plugin.getSettings().getTagDuration() * 1000));
+        TagManager.Flag flag;
+        if (player.getUniqueId().equals(tag.getAttackerId())) {
+            flag = TagManager.Flag.TAG_ATTACKER;
+        } else if (player.getUniqueId().equals(tag.getVictimId())) {
+            flag = TagManager.Flag.TAG_VICTIM;
+        } else return;
+
+        Player victim = null;
+        if (tag.getVictimId() != null) {
+            victim = Bukkit.getPlayer(tag.getVictimId());
+        }
+
+        Player attacker = null;
+        if (tag.getAttackerId() != null) {
+            attacker = Bukkit.getPlayer(tag.getAttackerId());
+        }
+
+        plugin.getTagManager().tag(victim, attacker, EnumSet.of(flag));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
