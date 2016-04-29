@@ -8080,7 +8080,7 @@ recipes:
   Enchant_Helmet_Protection_II:
     type: ENCHANT
     name: Enchant Helmet with Protection II
-    production_time: 100s
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8097,7 +8097,7 @@ recipes:
   Enchant_Chestplate_Protection_II:
     type: ENCHANT
     name: Enchant Chestplate with Protection II
-    production_time: 100s
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8114,7 +8114,7 @@ recipes:
   Enchant_Leggings_Protection_II:
     type: ENCHANT
     name: Enchant Leggings with Protection II
-    production_time: 100s
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
@@ -8131,7 +8131,7 @@ recipes:
   Enchant_Boots_Protection_II:
     type: ENCHANT
     name: Enchant Boots with Protection II
-    production_time: 100s
+    production_time: 15s
     input:
       emeralds:
         material: EMERALD
