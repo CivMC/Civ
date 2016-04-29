@@ -47,6 +47,16 @@ hacks:
            lore:
             - "Gift from the Admins as you"
             - "begin your journey on Devotion."
+       - ==: org.bukkit.inventory.ItemStack
+         type: BED
+         amount: 1
+         meta:
+           ==: ItemMeta
+           meta-type: UNSPECIFIC
+           lore:
+            - "This world is unforgiving."
+            - "Be sure to get a good night's"
+            - "rest soon."
   introbook:
     name: Introbook
     enabled: true
@@ -55,45 +65,41 @@ hacks:
       title: Welcome to Devoted
       author: Bonkill
       pages:
-       - Devoted is not your ordinary minecraft server.
-       - We run a series of custom mods that greatly impact gameplay.
-       - Welcome and we hope you will enjoy!
+       - "    &oWhat is Devoted?\n\"A new type of Minecraft server built towards providing a competitive, high stakes, immersive experience controlled by the players.\"&r\n-ShadedJon, server owner"
+       - "    &oWhat is Devoted?&r\n&lNOT just survival&r\nAdmins are hands-off and only handle glitches and hackers\n&lNOT just chaos&r\nPlugins allow players and towns to enforce their own rules\n&lNOT just roleplay&r\nNobody pretends -- conflict is genuine and heated"
+       - "    &oBasic Mechanics&r\n-The world has many continents\n-They're separated by ocean.\n-Limited chat range\n-Respawn in random area unless you sleep\n-Mobs spawn sparsely\n-Vanilla Nether\n-Ore veins and vanilla ore spawning."
+       - "   &oDevoted Mods&r\n   &lCitadel&r:\n Reinforces things so it takes numerous breaks to destroy them. Locks some things too.\n&lMore Info:&r &oVisual Guide:&r imgur.com/BnlL2 &oWiki Page:&r tinyurl.com/citadelmod\n&oType \"/help citadel\" in chat to get commands"
+       - "   &lPrison Pearl&r:\n Ender Pearls trap players in the end. Others can steal back your pearl and free you -- you always know where it is so they cannot hide it\n&lMore Info:&r &oVisual Guide:&r imgur.com/XbhkK &oWiki Page:&r tinyurl.com/prisperl"
+       - "   &lJuke Alert&r:\n Creates 'Juke' blocks that record player activity in radius. If you steal, grief, or trespass -- people will know about it & put a bounty for you to be pearled.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/snitchblock"
+       - "   &lMythicMobs&r:\n Some custom mobs to increase the risk and thrill on specific islands and areas throughout Devoted.\n&lMore Info:&r &oBukkit Page:&r dev.bukkit.org/bukkit-plugins/mythicmobs"
+       - "   &lItem Exchange&r:\n It's a minecraft shop mod that enables different chests (and other inventory blocks) to perform an exchange of items with a player.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/itemxchng"
+       - "   &lHumbug&r:\n Disables some features of minecraft -- see wiki for short list. Please read it to ensure you don't waste resources on a useless block.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/humbugwiki"
+       - "   &lRealistic Biomes&r:\n Biomes are large, crops grow different in different biomes. Hit ground with seed to see growth rate. Farms need sunlight. Crops grow with nobody around.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/realbiome"
+       - "   &lArthropod Egg&r:\n Allows you to capture passive mobs into spawn eggs using Bane of Arthropod enchantment.\n&lMore Info:&r &oGithub Page:&r tinyurl.com/arthrop"
+       - "   &lBrewery&r:\n Custom brewing of booze and more.\n&lMore Info:&r &oBukkit Page:&r tinyurl.com/bukkitbrewp"
+       - "   &oFurther Info&r\nVisit our subreddit at: &oreddit.com/r/Devoted&r"
+       - "We extend our appreciation to the devs, admins, and players at: &oreddit.com/r/Civcraft"
   hackbot:
     name: HackBot
     enabled: true
     bots:
-      0:
-        name: BenDurr1001
-        skin: 0000-0000-0000-0000
-        options:
-          mode: LOOK
-          health: 100
-          #loot:
-          #-
-          #armor:
-          #  chest:
-          #  helmet:
-          #  feet:
-          #  legs:
-          #weapon:
-          #  mainhand:
-          #  offhand:
-          birth:
-            respawn: true
-            exact: false
-            radius: 10
-            x: 50
-            y: 30
-            z: 50
-          namelayer:
-            aware: true
-            friendly:
-            - Admins
-            hostile:
-            - Cheaters
-            neutral:
-            - Players
-          chatbot:
-            responses: response.txt
-            learning: false
-            only_pm: false
+      Rando:
+        name: Rando4800xXx
+        skin: DeepCopy
+        spawnLocation:
+          ==: org.bukkit.Location
+          yaw: 0.0
+          pitch: 0.0
+          z: 50.0
+          y: 40.0
+          world: world
+          x: 50.0
+        alive: false
+        location:
+          ==: org.bukkit.Location
+          yaw: 0.0
+          pitch: 0.0
+          z: 50.0
+          y: 40.0
+          world: world
+          x: 50.0

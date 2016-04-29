@@ -1,13 +1,13 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.md_5.bungee.api.ChatColor;
-
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -16,9 +16,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.NumberConversions;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.bots.Bot;
@@ -34,10 +34,21 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 
 	private HashMap<String, Bot> bots;
 	
+	private ProtocolManager pm;
+	
 	public static final String NAME = "HackBot";
 	
 	public HackBot(SimpleAdminHacks plugin, HackBotConfig config) {
 		super(plugin, config);
+
+		if (!plugin.serverHasPlugin("ProtocolLib")){
+			plugin.log("ProtocolLib not found, disabling HackBots.");
+			config.setEnabled(false);
+		}
+		if (!plugin.serverHasPlugin("NPCLib")){
+			plugin.log("NPCLib not found, disabling HackBots.");
+			config.setEnabled(false);
+		}
 	}
 
 	@Override
@@ -250,6 +261,9 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 		if (config.isEnabled()) {
 			plugin().log("Registering NPCLib listener");
 			plugin().registerListener(this);
+			
+			plugin().log("Registering ProtocolLib Hooks");
+			pm.addPacketListener( new HackBotPingHook(plugin(), this) );
 		}
 	}
 
@@ -264,6 +278,8 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 	@Override
 	public void dataBootstrap() {
 		if (config.isEnabled()) {
+			plugin().log("Getting ProtocolLib Manager");
+			pm = ProtocolLibrary.getProtocolManager();
 			plugin().log("Loading hackbots");
 			this.bots = new HashMap<String, Bot>();
 			ConfigurationSection aBots = this.config.getBots();
@@ -302,6 +318,17 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 		}
 		this.bots.clear();
 		this.bots = null;
+	}
+	
+	public List<Bot> getAliveBots() {
+		List<Bot> alive = new ArrayList<Bot>();
+		for (String bot : bots.keySet()) {
+			Bot abot = bots.get(bot);
+			if (abot.isAlive() && abot.npc().getBukkitEntity() != null && !abot.npc().getBukkitEntity().isDead()) {
+				alive.add(abot);
+			}
+		}
+		return alive;
 	}
 
 	@Override
