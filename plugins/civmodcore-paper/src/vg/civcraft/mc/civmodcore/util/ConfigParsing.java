@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.util;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -18,7 +19,7 @@ import com.google.common.collect.Lists;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class ConfigParsing {
-	
+
 	/**
 	 * Creates an itemmap containing all the items listed in the given config
 	 * section
@@ -39,67 +40,88 @@ public class ConfigParsing {
 		}
 		return result;
 	}
-	
+
 	public static ItemMap parseItemMapDirectly(ConfigurationSection current) {
 		ItemMap im = new ItemMap();
 		if (current == null) {
 			return im;
 		}
-		Material m = Material.valueOf(current.getString("material"));
+		Material m = null;
+		try {
+			m = Material.valueOf(current.getString("material"));
+		} catch (IllegalArgumentException iae) {
+			m = null;
+		} finally {
+			if (m == null) {
+				Bukkit.getServer()
+						.getLogger()
+						.log(Level.SEVERE,
+								"Failed to find material of section {0}",
+								current.getCurrentPath());
+				return im;
+			}
+		}
 		ItemStack toAdd = new ItemStack(m);
 		int amount = current.getInt("amount", 1);
 		toAdd.setAmount(amount);
 		int durability = current.getInt("durability", 0);
 		toAdd.setDurability((short) durability);
 		ItemMeta meta = toAdd.getItemMeta();
-		String name = current.getString("name");
-		if (name != null) {
-			meta.setDisplayName(name);
-		}
-		List<String> lore = current.getStringList("lore");
-		if (lore != null) {
-			meta.setLore(lore);
-		}
-		if (current.contains("enchants")) {
-			for (String enchantKey : current.getConfigurationSection(
-					"enchants").getKeys(false)) {
-				ConfigurationSection enchantConfig = current
-						.getConfigurationSection("enchants")
-						.getConfigurationSection(enchantKey);
-				Enchantment enchant = Enchantment.getByName(enchantConfig
-						.getString("enchant"));
-				int level = enchantConfig.getInt("level", 1);
-				meta.addEnchant(enchant, level, true);
+		if (meta == null) {
+			Bukkit.getServer()
+					.getLogger()
+					.log(Level.SEVERE, "No item meta found for {0}",
+							current.getCurrentPath());
+		} else {
+			String name = current.getString("name");
+			if (name != null) {
+				meta.setDisplayName(name);
 			}
-		}
-		if (m == Material.LEATHER_BOOTS || m == Material.LEATHER_CHESTPLATE || m == Material.LEATHER_HELMET || m == Material.LEATHER_LEGGINGS) {
-			ConfigurationSection color = current.getConfigurationSection("color");
-			Color leatherColor = null;
-			if (color != null) {
-				int red = color.getInt("red");
-				int blue = color.getInt("blue");
-				int green = color.getInt("green");
-				leatherColor = Color.fromRGB(red, green, blue);
+			List<String> lore = current.getStringList("lore");
+			if (lore != null) {
+				meta.setLore(lore);
 			}
-			else {
-				String hexColorCode = current.getString("color");
-				if (hexColorCode != null) {
-					Integer hexColor = Integer.parseInt(hexColorCode, 16);
-					if (hexColor != null) {
-						leatherColor = Color.fromRGB(hexColor);
-					}
+			if (current.contains("enchants")) {
+				for (String enchantKey : current.getConfigurationSection(
+						"enchants").getKeys(false)) {
+					ConfigurationSection enchantConfig = current
+							.getConfigurationSection("enchants")
+							.getConfigurationSection(enchantKey);
+					Enchantment enchant = Enchantment.getByName(enchantConfig
+							.getString("enchant"));
+					int level = enchantConfig.getInt("level", 1);
+					meta.addEnchant(enchant, level, true);
 				}
 			}
-			if (leatherColor != null) {
-				((LeatherArmorMeta) meta).setColor(leatherColor);
+			if (m == Material.LEATHER_BOOTS || m == Material.LEATHER_CHESTPLATE
+					|| m == Material.LEATHER_HELMET
+					|| m == Material.LEATHER_LEGGINGS) {
+				ConfigurationSection color = current
+						.getConfigurationSection("color");
+				Color leatherColor = null;
+				if (color != null) {
+					int red = color.getInt("red");
+					int blue = color.getInt("blue");
+					int green = color.getInt("green");
+					leatherColor = Color.fromRGB(red, green, blue);
+				} else {
+					String hexColorCode = current.getString("color");
+					if (hexColorCode != null) {
+						Integer hexColor = Integer.parseInt(hexColorCode, 16);
+						if (hexColor != null) {
+							leatherColor = Color.fromRGB(hexColor);
+						}
+					}
+				}
+				if (leatherColor != null) {
+					((LeatherArmorMeta) meta).setColor(leatherColor);
+				}
 			}
+			toAdd.setItemMeta(meta);
 		}
-		toAdd.setItemMeta(meta);
 		im.addItemStack(toAdd);
 		return im;
 	}
-	
-	
 
 	/**
 	 * Parses a time value specified in a config. This allows to specify human
@@ -183,7 +205,6 @@ public class ConfigParsing {
 		return result;
 	}
 
-	
 	/**
 	 * Parses a potion effect
 	 * 

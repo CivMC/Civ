@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -13,6 +14,7 @@ import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.interfaces.ApiManager;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
+import vg.civcraft.mc.civmodcore.util.Metrics;
 
 public abstract class ACivMod extends JavaPlugin {
 	
@@ -118,6 +120,13 @@ public abstract class ACivMod extends JavaPlugin {
       initApis(this);
       //global_instance_ = this;
       info("Main Plugin Events and Config Command registered");
+      
+      try {
+          Metrics metrics = new Metrics(this);
+          metrics.start();
+      } catch (IOException e) {
+          // Failed to submit the stats :-(
+      }
     }
     
     private static synchronized void initApis(ACivMod instance) {
