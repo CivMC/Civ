@@ -15,7 +15,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
@@ -23,6 +27,10 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.bots.Bot;
 import com.programmerdan.minecraft.simpleadminhacks.configs.HackBotConfig;
+
+import de.inventivegames.npc.NPC;
+import de.inventivegames.npc.entity.player.NPCPlayerEntityBase;
+import de.inventivegames.npc.event.NPCDespawnEvent;
 
 /**
  * Wrapping some NPC entity classes for maximum admin fun
@@ -330,6 +338,26 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 		}
 		return alive;
 	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void tellJoiningPlayerAboutBots(PlayerJoinEvent join) {
+		for (Bot bot : getAliveBots()) {
+			if (bot.npc().isShownInList()) {
+				((NPCPlayerEntityBase) bot.npc()).updateToPlayer(join.getPlayer());
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true) 
+	public void tellPlayersAboutDeath(NPCDespawnEvent npce) {
+		NPC npc = npce.getNPC();
+		if (npc instanceof NPCPlayerEntityBase) {
+			NPCPlayerEntityBase bot = (NPCPlayerEntityBase) npc;
+			for (Player p : plugin().serverOnlinePlayers()) {
+				bot.updateToPlayer(p);
+			}
+		}
+	}
 
 	@Override
 	public String status() {
@@ -367,6 +395,5 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 			sb.append(ChatColor.RESET).append("; details: ").append(abot.status());
 		}
 		return sb.toString();
-	}
-
+	}	
 }
