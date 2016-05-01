@@ -42,8 +42,8 @@
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.namelayer</groupId>
-			<artifactId>NameLayer</artifactId>
-			<version>2.5.12</version>
+			<artifactId>NameLayerMain</artifactId>
+			<version>1.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

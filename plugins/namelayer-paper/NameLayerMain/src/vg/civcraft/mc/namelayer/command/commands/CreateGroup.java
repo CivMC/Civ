@@ -63,7 +63,7 @@ public class CreateGroup extends PlayerCommandMiddle{
 		}
 		
 		if (GroupManager.getGroup(name) != null){
-			p.sendMessage(ChatColor.RED + "That group is already taken.");
+			p.sendMessage(ChatColor.RED + "That group is already taken. Try another unique group name.");
 			return true;
 		}
 		String password = "";

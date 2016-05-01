@@ -54,7 +54,7 @@ public class RevokeInvite extends PlayerCommandMiddle{
 		if(group.getInvite(uuid) == null){
 			if(group.isMember(uuid)){
 				p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " is already part of that group, "
-						+ "use /nlrm to remove them.");
+						+ "use /remove to remove them.");
 				return true;
 			}
 			p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " does not have an invite to that group.");
