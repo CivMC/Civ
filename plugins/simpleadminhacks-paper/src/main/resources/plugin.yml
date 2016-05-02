@@ -3,7 +3,7 @@ main: com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks
 author: ProgrammerDan
 authors: []
 version: ${project.version}
-softdepend: [CombatTagPlus, ProtocolLib]
+softdepend: [CombatTagPlus, ProtocolLib, NameLayer]
 commands:
   hacks:
     description: Shows the various hacks and fixes supported by this plugin and controls them
@@ -13,10 +13,10 @@ commands:
       /<command> <hackname> enable|disable
       /<command> <hackname> get|set <config> [value]
     permission: simpleadmin.hacks
-  #invsee:
-  #  description: See any player inventory, online or not.
-  #  usage: /<command> [playername|UUID]
-  #  permission: simpleadmin.invsee
+  invsee:
+    description: See any player inventory, online or not.
+    usage: /<command> [playername|UUID]
+    permission: simpleadmin.invsee
   invmod:
     description: Modify any player inventory, online or not.
     usage: /<command> [playername|UUID]

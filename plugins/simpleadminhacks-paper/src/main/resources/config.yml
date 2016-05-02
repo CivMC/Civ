@@ -103,3 +103,6 @@ hacks:
           y: 40.0
           world: world
           x: 50.0
+  invctrl:
+    name: InvControl
+    enabled: true

@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 
 import com.programmerdan.minecraft.simpleadminhacks.CommandListener;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
@@ -35,9 +36,10 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.IntrobookConfig;
 public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, CommandExecutor {
 
 	public static final String NAME = "Introbook";
+	private static long bookGiftCount = 0l;
 	
 	private Set<UUID> hasBook;
-	
+
 	public Introbook(SimpleAdminHacks plugin, IntrobookConfig config) {
 		super(plugin, config);
 	}
@@ -73,6 +75,7 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 
 	@Override
 	public void dataCleanup() {
+		Introbook.bookGiftCount = 0l;
 		this.hasBook.clear();
 		this.hasBook = null;
 	}
@@ -129,6 +132,8 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 			this.hasBook.remove(puid);
 		    Inventory inv = alive.getInventory();
 		    inv.addItem(config.getIntroBook());
+		    Introbook.bookGiftCount ++;
+		    plugin().debug("Gave {0} an introbook", alive.getName());
 		}
 	}
 
@@ -141,10 +146,25 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 			sb.append("Introbook monitoring not active");
 		}
 		if (config.isEnabled()) {
+			sb.append(ChatColor.WHITE).append("\n  Introbooks given out: ");
+			sb.append(ChatColor.GREEN).append(Introbook.bookGiftCount);
 			sb.append("\n  Current Introbook:");
 			ItemStack book = config.getIntroBook();
 			if (book != null) {
-				sb.append("\n    ").append(book);
+				BookMeta meta = (BookMeta) book.getItemMeta();
+				if (meta != null) {
+					sb.append(ChatColor.WHITE).append("\n    Title: ")
+						.append(ChatColor.AQUA).append(meta.getTitle());
+					sb.append(ChatColor.WHITE).append("\n    Author: ")
+						.append(ChatColor.AQUA).append(meta.getAuthor());
+					sb.append(ChatColor.WHITE).append("\n    Pages: ")
+						.append(ChatColor.AQUA).append(meta.getPageCount());
+					for (String page : meta.getPages()) {
+						sb.append("\n      ").append(page);
+					}
+				} else {
+					sb.append("\n    ").append(ChatColor.RED).append("-- in error --");
+				}
 			} else {
 				sb.append("\n    ").append(ChatColor.RED).append("-- in error --");
 			}

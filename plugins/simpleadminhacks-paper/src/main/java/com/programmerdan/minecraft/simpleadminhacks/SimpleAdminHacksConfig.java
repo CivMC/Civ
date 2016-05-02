@@ -7,10 +7,12 @@ import org.bukkit.configuration.ConfigurationSection;
 import com.programmerdan.minecraft.simpleadminhacks.configs.CTAnnounceConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.HackBotConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.IntrobookConfig;
+import com.programmerdan.minecraft.simpleadminhacks.configs.InvControlConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.NewfriendAssistConfig;
 import com.programmerdan.minecraft.simpleadminhacks.hacks.CTAnnounce;
 import com.programmerdan.minecraft.simpleadminhacks.hacks.HackBot;
 import com.programmerdan.minecraft.simpleadminhacks.hacks.Introbook;
+import com.programmerdan.minecraft.simpleadminhacks.hacks.InvControl;
 import com.programmerdan.minecraft.simpleadminhacks.hacks.NewfriendAssist;
 
 /**
@@ -108,6 +110,8 @@ public class SimpleAdminHacksConfig {
 				return new Introbook(this.plugin, new IntrobookConfig(this.plugin, boot));
 			} else if (hackName.equals(HackBot.NAME)) {
 				return new HackBot(this.plugin, new HackBotConfig(this.plugin, boot));
+			} else if (hackName.equals(InvControl.NAME)) {
+				return new InvControl(this.plugin, new InvControlConfig(this.plugin, boot));
 			}
 		} catch (InvalidConfigException ice) {
 			plugin.log(Level.WARNING, "Failed to activate " + hackName + " hack");
