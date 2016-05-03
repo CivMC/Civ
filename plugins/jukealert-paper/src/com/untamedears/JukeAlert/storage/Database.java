@@ -64,7 +64,7 @@ public class Database {
      * @since 0.1
      */
     public boolean connect() {
-        String jdbc = "jdbc:mysql://" + host + ":" + port + "/" + db + "?user=" + user + "&password=" + password;
+        String jdbc = "jdbc:mysql://" + host + ":" + port + "/" + db + "?user=" + user + "&password=" + password + "&autoReconnect=true";
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
         } catch (Exception ex) {
@@ -130,14 +130,14 @@ public class Database {
      */
     public void execute(String sql) {
         try {
-            if (isConnected()) {
-                connection.prepareStatement(sql).executeUpdate();
-            } else {
-                connect();
-                execute(sql);
-            }
+            connection.prepareStatement(sql).executeUpdate();
         } catch (SQLException ex) {
-            this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
+			try {
+                connect();
+                connection.prepareStatement(sql).executeUpdate();
+            } catch (SQLException ex2) {
+                this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex2);
+            }
         }
     }
 
@@ -147,28 +147,25 @@ public class Database {
      * @param sql The SQL query as a string.
      */
     public void executeLoud(String sql) throws java.sql.SQLException {
-        if (isConnected()) {
+        try {
             connection.prepareStatement(sql).executeUpdate();
-        } else {
+        } catch (SQLException ex) { // one quiet retry, scream on failure.
             connect();
-            execute(sql);
+            connection.prepareStatement(sql).executeUpdate();
         }
     }
 
     /**
-     * Executes an SQL query. (No output, No exceptions reported)
+     * Executes a SQL query. Notes an exception w/o stack and does not retry
      *
-     * @param sql The SQL query as a string.
+     * @param sql The SQL query as a strign.
      */
     public void silentExecute(String sql) {
         try {
-            if (isConnected()) {
-                connection.prepareStatement(sql).executeUpdate();
-            } else {
-                connect();
-                execute(sql);
-            }
-        } catch (SQLException ex) {}
+            connection.prepareStatement(sql).executeUpdate();
+        } catch (SQLException ex) { // one quiet retry, scream on failure.
+            this.logger.log(Level.WARNING, "Quiet execution of SQL failed, no retry attempted.");
+        }
     }
 
     /**
@@ -179,16 +176,16 @@ public class Database {
      */
     public ResultSet getResultSet(String sql) {
         try {
-            if (isConnected()) {
-                return connection.createStatement().executeQuery(sql);
-            } else {
-                connect();
-                return getResultSet(sql);
-            }
+            return connection.createStatement().executeQuery(sql);
         } catch (SQLException ex) {
-            this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
-            return null;
+            try {
+                connect();
+                return connection.createStatement().executeQuery(sql);
+            } catch (SQLException ex2) {
+                this.logger.log(Level.SEVERE, "Could not get result set from SQL statement!", ex2);
+            }
         }
+        return null;
     }
 
     /**
@@ -202,6 +199,10 @@ public class Database {
     public String getString(String sql) {
         try {
             ResultSet result = getResultSet(sql);
+            if (result == null) {
+                this.logger.log(Level.SEVERE, "Result Set Retrieval failed, null found instead");
+                return null;
+            }
             result.next();
             return result.getString(1);
         } catch (SQLException ex) {
@@ -219,6 +220,10 @@ public class Database {
     public int getInteger(String sql) {
         try {
             ResultSet result = getResultSet(sql);
+            if (result == null) {
+                this.logger.log(Level.SEVERE, "Result Set Retrieval failed, null found instead");
+                return 0;
+            }
             result.next();
             return result.getInt(1);
         } catch (SQLException ex) {
@@ -236,6 +241,10 @@ public class Database {
     public double getDouble(String sql) {
         try {
             ResultSet result = getResultSet(sql);
+            if (result == null) {
+                this.logger.log(Level.SEVERE, "Result Set Retrieval failed, null found instead");
+                return 0;
+            }
             result.next();
             return result.getDouble(1);
         } catch (SQLException ex) {
@@ -253,6 +262,10 @@ public class Database {
     public boolean getBoolean(String sql) {
         try {
             ResultSet result = getResultSet(sql);
+            if (result == null) {
+                this.logger.log(Level.SEVERE, "Result Set Retrieval failed, null found instead");
+                return false;
+            }
             result.next();
             boolean returnValue = result.getBoolean(1);
             return returnValue;
@@ -272,6 +285,10 @@ public class Database {
         List<String> coldata = new ArrayList<String>();
         try {
             ResultSet result = getResultSet(sql);
+            if (result == null) {
+                this.logger.log(Level.SEVERE, "Result Set Retrieval failed, null found instead");
+                return null;
+            }
             while (result.next()) {
                 coldata.add(result.getString(1));
             }
