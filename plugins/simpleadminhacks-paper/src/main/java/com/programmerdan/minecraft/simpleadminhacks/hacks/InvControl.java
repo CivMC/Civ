@@ -1,21 +1,29 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import vg.civcraft.mc.namelayer.NameAPI;
+import net.minecraft.server.v1_9_R1.NBTTagCompound;
+import net.minecraft.server.v1_9_R1.NBTTagList;
+import net.minecraft.server.v1_9_R1.WorldNBTStorage;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFactory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,6 +38,8 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 	
 	private boolean hasNameAPI;
 	
+	private Set<UUID> adminsWithInv;
+	
 	public InvControl(SimpleAdminHacks plugin, InvControlConfig config) {
 		super(plugin, config);
 	}
@@ -40,64 +50,123 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 			return false;
 		}
 		String playername = args[0];
-		Player admin = (Player) sender;
+		UUID playerUID = null;
 		Player player = null;
 		if (this.hasNameAPI) {
-			UUID playerUID = NameAPI.getUUID(playername);
+			plugin().debug("Using NameAPI to look up {0}", playername);
+			playerUID = NameAPI.getUUID(playername);
+			plugin().debug("Found UUID match: {0}", playerUID);
 			player = Bukkit.getPlayer(playerUID);
 		}
 		if (player == null) { // no NameAPI or failure.
+			plugin().debug("Using Bukkit byname to look up {0}", playername);
 			player = Bukkit.getPlayer(playername);
 		}
 		if (player == null) { // By name failed... is it a UUID?
 			try {
+				plugin().debug("Using Bukkit by UUID to look up {0}", playername);
 				player = Bukkit.getPlayer(UUID.fromString(playername));
+				playerUID = UUID.fromString(playername);
 			} catch (IllegalArgumentException iae) {
 				player = null;
 			}
 		}
-		if (player == null) { // Nothing left to try...
-			admin.sendMessage("Player not found");
+		if (player == null && playerUID != null) { // Go deep into NBT.
+			WorldNBTStorage storage = (WorldNBTStorage) (((CraftServer) plugin().getServer()).getServer().worlds.get(0).getDataManager());
+			NBTTagCompound rawPlayer = storage.getPlayerData(playerUID.toString());
+			
+			if (rawPlayer != null) {
+				plugin().debug("Player {0} found in NBT data, read-only access enabled.", playername);
+				sender.sendMessage("Player found via alternate lookup, read-only access enabled.");
+			} else {
+				sender.sendMessage("Player " + playername + " does not exist or cannot be opened.");
+				return false;
+			}
+			
+			float health = rawPlayer.getFloat("Health");
+			int food = rawPlayer.getInt("foodLevel");
+
+			// Fun NMS inventory reconstruction from file data.
+			net.minecraft.server.v1_9_R1.PlayerInventory nms_pl_inv = new net.minecraft.server.v1_9_R1.PlayerInventory(null);
+			NBTTagList inv = rawPlayer.getList("Inventory", rawPlayer.getTypeId());
+			nms_pl_inv.b(inv); // We use this to bypass the Craft code which requires a player object, unlike NMS.
+			PlayerInventory pl_inv = (PlayerInventory) new CraftInventoryPlayer(nms_pl_inv);
+			
+			invSee(sender, pl_inv, health, food, playername);
 			return true;
+		}
+		if (player == null) {
+			sender.sendMessage("Player " + playername + " does not exist or cannot be opened.");
+			return false;
 		}
 		if (command.getName().equalsIgnoreCase("invsee")) { // see
 			final PlayerInventory pl_inv = player.getInventory();
-			if (sender instanceof ConsoleCommandSender) { // send text only.
-				
-			} else {
-			    final Inventory inv = Bukkit.createInventory(
-			        admin, 45, playername + "'s Inventory");
-			    for (int slot = 0; slot < 36; slot++) {
-			      final ItemStack it = pl_inv.getItem(slot);
-			      inv.setItem(slot, it);
-			    }
-			    inv.setItem(36, pl_inv.getItemInOffHand());
-			    inv.setItem(38, pl_inv.getHelmet());
-			    inv.setItem(39, pl_inv.getChestplate());
-			    inv.setItem(40, pl_inv.getLeggings());
-			    inv.setItem(41, pl_inv.getBoots());
-			    ItemStack health = new ItemStack(Material.APPLE, (int)player.getHealth()*2);
-			    ItemMeta hdata = health.getItemMeta();
-			    hdata.setDisplayName("Player Health");
-			    health.setItemMeta(hdata);
-			    inv.setItem(43, health);
-			    ItemStack hunger = new ItemStack(Material.COOKED_BEEF, (int)player.getFoodLevel());
-			    hdata = hunger.getItemMeta();
-			    hdata.setDisplayName("Player Hunger");
-			    hunger.setItemMeta(hdata);
-			    inv.setItem(44, hunger);
-			    admin.openInventory(inv);
-			    admin.updateInventory();
-			}
+			invSee(sender, pl_inv, player.getHealth(), player.getFoodLevel(), playername);
 		} else if (command.getName().equalsIgnoreCase("invmod")) { // mod
-			if (sender instanceof ConsoleCommandSender) { // send text only.
+			if (!(sender instanceof Player)) { // send text only.
 				sender.sendMessage(ChatColor.RED + "Apologies, this is only for in-game operators");
 			} else {
-				// I do not know what this will do.
-				admin.openInventory(player.getOpenInventory());
+				Player admin = (Player) sender;
+				
+				if (admin.equals(player)) {
+					sender.sendMessage(ChatColor.RED + "You cannot modify your own inventory in this manner.");
+				} else {
+					// I do not know what this will do.
+					InventoryView iv = admin.openInventory(player.getInventory());
+					this.adminsWithInv.add(admin.getUniqueId());
+				}
 			}
+		} else {
+			return false;
 		}
-		return false;
+		return true;
+	}
+	
+	public void adminCloseInventory(InventoryCloseEvent event) {
+	}
+	
+	private void invSee(CommandSender sender, PlayerInventory pl_inv, double health, int food, String playername) {
+		if (!(sender instanceof Player)) { // send text only.
+			StringBuffer sb = new StringBuffer();
+			sb.append(playername).append("'s\n   Health: ").append((int)health*2);
+			sb.append("\n   Food: ").append(food);
+			sb.append("\n   Inventory: ");
+			sb.append("\n      Offhand: ").append(pl_inv.getItemInOffHand());
+			sb.append("\n      Helmet: ").append(pl_inv.getHelmet());
+			sb.append("\n      Chest: ").append(pl_inv.getChestplate());
+			sb.append("\n      Legs: ").append(pl_inv.getLeggings());
+			sb.append("\n      Feet: ").append(pl_inv.getBoots());
+			for (int slot = 0; slot < 36; slot++) {
+				final ItemStack it = pl_inv.getItem(slot);
+				sb.append("\n      ").append(slot).append(":").append(it);
+			}
+			sender.sendMessage(sb.toString());
+		} else {
+			Player admin = (Player) sender;
+		    Inventory inv = Bukkit.createInventory(
+		        admin, 45, playername + "'s Inventory");
+		    for (int slot = 0; slot < 36; slot++) {
+		      final ItemStack it = pl_inv.getItem(slot);
+		      inv.setItem(slot, it);
+		    }
+		    inv.setItem(36, pl_inv.getItemInOffHand());
+		    inv.setItem(38, pl_inv.getHelmet());
+		    inv.setItem(39, pl_inv.getChestplate());
+		    inv.setItem(40, pl_inv.getLeggings());
+		    inv.setItem(41, pl_inv.getBoots());
+		    ItemStack ihealth = new ItemStack(Material.APPLE, (int)health*2);
+		    ItemMeta hdata = ihealth.getItemMeta();
+		    hdata.setDisplayName("Player Health");
+		    ihealth.setItemMeta(hdata);
+		    inv.setItem(43, ihealth);
+		    ItemStack hunger = new ItemStack(Material.COOKED_BEEF, food);
+		    hdata = hunger.getItemMeta();
+		    hdata.setDisplayName("Player Hunger");
+		    hunger.setItemMeta(hdata);
+		    inv.setItem(44, hunger);
+		    admin.openInventory(inv);
+		    admin.updateInventory();
+		}
 	}
 
 	@Override
@@ -116,10 +185,13 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 
 	@Override
 	public void dataBootstrap() {
-		if (plugin().serverHasPlugin("NameLayer")) {
-			this.hasNameAPI = true;
-		} else {
-			this.hasNameAPI = false;
+		if (config.isEnabled()) {
+			if (plugin().serverHasPlugin("NameLayer")) {
+				this.hasNameAPI = true;
+			} else {
+				this.hasNameAPI = false;
+			}
+			this.adminsWithInv = new HashSet<UUID>();
 		}
 	}
 
