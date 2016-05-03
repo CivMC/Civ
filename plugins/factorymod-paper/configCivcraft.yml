@@ -6682,7 +6682,7 @@ recipes:
         amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 15
+        amount: 8
         lore:
          - Aether
         enchants:
@@ -6691,7 +6691,7 @@ recipes:
     output:
       xp:
         material: EMERALD
-        amount: 40
+        amount: 20
   Cypress_Enrichment:
     name: Cypress Enrichment
     type: PRODUCTION
@@ -6710,7 +6710,7 @@ recipes:
         amount: 64
       aether:
         material: GOLD_NUGGET
-        amount: 15
+        amount: 8
         lore:
          - Aether
         enchants:
@@ -6719,7 +6719,7 @@ recipes:
     output:
       xp:
         material: EMERALD
-        amount: 40
+        amount: 20
   Pine_Enrichment:
     name: Pine Enrichment
     type: PRODUCTION
@@ -6738,7 +6738,7 @@ recipes:
         amount: 64
       aether:
         material: GOLD_NUGGET
-        amount: 15
+        amount: 8
         lore:
          - Aether
         enchants:
@@ -6747,7 +6747,7 @@ recipes:
     output:
       xp:
         material: EMERALD
-        amount: 40
+        amount: 20
 
   Lead_Enrichment:
     name: Lead Enrichment
@@ -6773,7 +6773,7 @@ recipes:
 #        amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 84
+        amount: 42
         lore:
          - Aether
         enchants:
@@ -6782,7 +6782,7 @@ recipes:
     output:
       xp:
         material: EMERALD_BLOCK
-        amount: 38
+        amount: 19
   Copper_Enrichment:
     name: Copper Enrichment
     type: PRODUCTION
@@ -6808,7 +6808,7 @@ recipes:
 #        amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 84
+        amount: 42
         lore:
          - Aether
         enchants:
@@ -6817,7 +6817,7 @@ recipes:
     output:
       xp:
         material: EMERALD_BLOCK
-        amount: 38
+        amount: 19
   Tin_Enrichment:
     name: Tin Enrichment
     type: PRODUCTION
@@ -6842,7 +6842,7 @@ recipes:
 #        amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 84
+        amount: 42
         lore:
          - Aether
         enchants:
@@ -6851,7 +6851,7 @@ recipes:
     output:
       xp:
         material: EMERALD_BLOCK
-        amount: 38
+        amount: 19
 
   Amethyst_Enrichment:
     name: Amethyst Enrichment
@@ -6897,7 +6897,7 @@ recipes:
         amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 480
+        amount: 240
         lore:
          - Aether
         enchants:
@@ -6906,7 +6906,7 @@ recipes:
     output:
       xp:
         material: EMERALD_BLOCK
-        amount: 280
+        amount: 140
   Topaz_Enrichment:
     name: Topaz Enrichment
     type: PRODUCTION
@@ -6955,7 +6955,7 @@ recipes:
          - Compacted Item
       aether:
         material: GOLD_NUGGET
-        amount: 480
+        amount: 240
         lore:
          - Aether
         enchants:
@@ -6964,7 +6964,7 @@ recipes:
     output:
       xp:
         material: EMERALD_BLOCK
-        amount: 280
+        amount: 140
   Ruby_Enrichment:
     name: Ruby Enrichment
     type: PRODUCTION
@@ -7012,7 +7012,7 @@ recipes:
          - Compacted Item
       aether:
         material: GOLD_NUGGET
-        amount: 480
+        amount: 240
         lore:
          - Aether
         enchants:
@@ -7021,7 +7021,7 @@ recipes:
     output:
       xp:
         material: EMERALD_BLOCK
-        amount: 280
+        amount: 140
 ##Enchanting Recipes
 #Upgrades
 
