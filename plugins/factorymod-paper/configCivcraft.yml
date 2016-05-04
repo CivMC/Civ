@@ -6675,14 +6675,14 @@ recipes:
         amount: 64
       logs:
         material: LOG
-        amount: 64
+        amount: 16
         durability: -1
       netherwart:
         material: NETHER_STALK
         amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 8
+        amount: 4
         lore:
          - Aether
         enchants:
@@ -6703,14 +6703,14 @@ recipes:
         amount: 64
       logs:
         material: LOG
-        amount: 64
+        amount: 16
         durability: -1
       cactus:
         material: CACTUS
         amount: 64
       aether:
         material: GOLD_NUGGET
-        amount: 8
+        amount: 4
         lore:
          - Aether
         enchants:
@@ -6731,14 +6731,14 @@ recipes:
         amount: 64
       logs:
         material: LOG
-        amount: 64
+        amount: 16
         durability: -1
       sugarcane:
         material: SUGAR_CANE
         amount: 64
       aether:
         material: GOLD_NUGGET
-        amount: 8
+        amount: 4
         lore:
          - Aether
         enchants:
@@ -6752,15 +6752,15 @@ recipes:
   Lead_Enrichment:
     name: Lead Enrichment
     type: PRODUCTION
-    production_time: 2h
-    fuel_consumption_intervall: 6m
+    production_time: 30m
+    fuel_consumption_intervall: 5m
     input:
       wheat:
         material: WHEAT
         amount: 320
       acacialogs:
         material: LOG_2
-        amount: 320
+        amount: 80
         durability: 0
       netherwart:
         material: NETHER_STALK
@@ -6773,7 +6773,7 @@ recipes:
 #        amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 42
+        amount: 21
         lore:
          - Aether
         enchants:
@@ -6786,15 +6786,15 @@ recipes:
   Copper_Enrichment:
     name: Copper Enrichment
     type: PRODUCTION
-    production_time: 2h
-    fuel_consumption_intervall: 6m
+    production_time: 30m
+    fuel_consumption_intervall: 5m
     input:
       carrots:
         material: CARROT_ITEM
         amount: 320
       sprucelogs:
         material: LOG
-        amount: 320
+        amount: 80
         durability: 1
       cactus:
         material: CACTUS
@@ -6808,7 +6808,7 @@ recipes:
 #        amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 42
+        amount: 21
         lore:
          - Aether
         enchants:
@@ -6821,15 +6821,15 @@ recipes:
   Tin_Enrichment:
     name: Tin Enrichment
     type: PRODUCTION
-    production_time: 2h
-    fuel_consumption_intervall: 6m
+    production_time: 30m
+    fuel_consumption_intervall: 5m
     input:
       potatoes:
         material: POTATO_ITEM
         amount: 320
       birchlogs:
         material: LOG
-        amount: 320
+        amount: 80
         durability: 2
       sugarcane:
         material: SUGAR_CANE
@@ -6842,7 +6842,7 @@ recipes:
 #        amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 42
+        amount: 21
         lore:
          - Aether
         enchants:
@@ -6856,7 +6856,7 @@ recipes:
   Amethyst_Enrichment:
     name: Amethyst Enrichment
     type: PRODUCTION
-    production_time: 3h
+    production_time: 1h
     fuel_consumption_intervall: 6m
     input:
       wheat:
@@ -6866,13 +6866,13 @@ recipes:
          - Compacted Item
       acacialogs:
         material: LOG_2
-        amount: 25
+        amount: 6
         durability: 0
         lore:
          - Compacted Item
       junglesaplings:
         material: SAPLING
-        amount: 3
+        amount: 2
         durability: 3
         lore:
          - Compacted Item
@@ -6897,7 +6897,7 @@ recipes:
         amount: 32
       aether:
         material: GOLD_NUGGET
-        amount: 240
+        amount: 120
         lore:
          - Aether
         enchants:
@@ -6910,7 +6910,7 @@ recipes:
   Topaz_Enrichment:
     name: Topaz Enrichment
     type: PRODUCTION
-    production_time: 3h
+    production_time: 1h
     fuel_consumption_intervall: 6m
     input:
       carrots:
@@ -6920,16 +6920,14 @@ recipes:
          - Compacted Item
       sprucelogs:
         material: LOG
-        amount: 25
+        amount: 6
         durability: 1
         lore:
          - Compacted Item
       darkoaksaplings:
         material: SAPLING
-        amount: 1
+        amount: 32
         durability: 5
-        lore:
-         - Compacted Item
       cactus:
         material: CACTUS
         amount: 25
@@ -6955,7 +6953,7 @@ recipes:
          - Compacted Item
       aether:
         material: GOLD_NUGGET
-        amount: 240
+        amount: 120
         lore:
          - Aether
         enchants:
@@ -6968,7 +6966,7 @@ recipes:
   Ruby_Enrichment:
     name: Ruby Enrichment
     type: PRODUCTION
-    production_time: 3h
+    production_time: 1h
     fuel_consumption_intervall: 6m
     input:
       potatoes:
@@ -6978,13 +6976,13 @@ recipes:
          - Compacted Item
       birchlogs:
         material: LOG
-        amount: 25
+        amount: 6
         durability: 2
         lore:
          - Compacted Item
       oaksaplings:
         material: SAPLING
-        amount: 4
+        amount: 2
         durability: 0
         lore:
          - Compacted Item
@@ -7012,7 +7010,7 @@ recipes:
          - Compacted Item
       aether:
         material: GOLD_NUGGET
-        amount: 240
+        amount: 120
         lore:
          - Aether
         enchants:
