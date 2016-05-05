@@ -16,9 +16,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.ContainerBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -981,7 +981,7 @@ public class Utility {
         if (block_mat == Material.HOPPER || block_mat == Material.DROPPER){
             for (BlockFace direction : BlockListener.all_sides) {
                 Block adjacent = block.getRelative(direction);
-                if (!(adjacent.getState() instanceof ContainerBlock)) {
+                if (!(adjacent.getState() instanceof InventoryHolder)) {
                     continue;
                 }
                 Reinforcement rein = rm.getReinforcement(adjacent);
@@ -996,7 +996,7 @@ public class Utility {
         if (block_mat == Material.CHEST || block_mat == Material.TRAPPED_CHEST){
             for (BlockFace direction : BlockListener.planar_sides) {
                 Block adjacent = block.getRelative(direction);
-                if (!(adjacent.getState() instanceof ContainerBlock)) {
+                if (!(adjacent.getState() instanceof InventoryHolder)) {
                     continue;
                 }
                 Reinforcement rein = rm.getReinforcement(adjacent);
