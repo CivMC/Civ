@@ -28,14 +28,14 @@
 		<dependency>
 			<groupId>com.wimbli</groupId>
 			<artifactId>WorldBorder</artifactId>
-			<version>1.9.0</version>
+			<version>LATEST</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>isaac</groupId>
 			<artifactId>Bastion</artifactId>
-			<version>1.1.0</version>
+			<version>LATEST</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
