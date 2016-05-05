@@ -13,4 +13,5 @@ public interface Command {
 	public String getIdentifier();
 	public int getMaxArguments();
 	public int getMinArguments();
+	public void postSetup();
 }

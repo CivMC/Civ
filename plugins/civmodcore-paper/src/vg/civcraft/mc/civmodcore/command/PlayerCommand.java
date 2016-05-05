@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.command.PluginCommand;
 
 public abstract class PlayerCommand implements Command{
 
@@ -39,19 +40,28 @@ public abstract class PlayerCommand implements Command{
 	public int getMaxArguments() {
 		return max;
 	}
+
+	public void postSetup() {
+		PluginCommand cmd = Bukkit.getPluginCommand(identifier);
+		if (cmd != null) {
+			cmd.setDescription(this.description);
+			cmd.setUsage(this.usage);
+		}
+	}
+
 	
 	public void setName(String name){
 		this.name = name;
 	}
 	
 	public void setDescription(String description){
-		Bukkit.getPluginCommand(identifier).setDescription(description);
 		this.description = description;
+		postSetup();
 	}
 	
 	public void setUsage(String usage){
-		Bukkit.getPluginCommand(identifier).setUsage(usage);
 		this.usage = usage;
+		postSetup();
 	}
 	
 	public void setIdentifier(String identifier){

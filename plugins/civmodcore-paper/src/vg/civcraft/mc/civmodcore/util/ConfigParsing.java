@@ -118,6 +118,9 @@ public class ConfigParsing {
 				}
 			}
 			toAdd.setItemMeta(meta);
+			if (current.contains("nbt")) {
+				toAdd = ItemMap.enrichWithNBT(toAdd, 1, current.getConfigurationSection("nbt").getValues(true));
+			}
 		}
 		im.addItemStack(toAdd);
 		return im;
