@@ -65,6 +65,23 @@ commands:
     description: Random spawns a player.
     usage: /rs spawn <playername> <world> or /rs spawn
     permission: RandomSpawn.spawncommand
+  rs addspawn:
+    description: Adds a new spawn point.
+    usage: |
+      /rs addspawn "name" <world> <x> <y> <z> <radius> [<exclusion>] [true/false]
+        "name" - name of the spawn point
+        world - world to spawn into
+        x y z - coord location
+        radius - radius around that position to spawn players randomly
+        exclusion - but never within this radius (if not set, will be 0)
+        true/false - use 'true' if a player must be online to use this spawnpoint, 'false' to not care
+    permission: RandomSpawn.configure
+    aliases: rsas
+  rs removespawn:
+    description: Removes an existing spawn point.
+    usage: /rs removespawn "name" world
+    permission: RandomSpawn.configure
+    aliases: rsrs
 permissions:
   RandomSpawn.*:
     description: Gives access to all Random Spawn commands.

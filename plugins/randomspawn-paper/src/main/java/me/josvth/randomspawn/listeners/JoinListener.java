@@ -15,7 +15,12 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import me.josvth.randomspawn.RandomSpawn;
+import me.josvth.randomspawn.events.NewPlayerSpawn;
 
+/**
+ * Handle joins. 
+ *
+ */
 public class JoinListener implements Listener{
 
 	RandomSpawn plugin;
@@ -43,11 +48,10 @@ public class JoinListener implements Listener{
 
 		if(player.hasPlayedBefore()) return;
 		
-		//if(!plugin.isFirstJoin(player, world)) return;
-
 		List<String> randomSpawnFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".randomspawnon");
-
-		if (!randomSpawnFlags.contains("firstjoin")){ 
+		List<String> spawnPointFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".spawnpointson");
+		
+		if (!randomSpawnFlags.contains("firstjoin") && !spawnPointFlags.contains("firstjoin")){ 
 			player.teleport(getFirstSpawn(world));
 			plugin.logDebug(playerName + " is teleported to the first spawn of " + worldName);
 			return; 
@@ -57,23 +61,51 @@ public class JoinListener implements Listener{
 			plugin.logDebug(playerName + " is excluded from Random Spawning.");
 			return; 
 		}
-
-		Location spawnLocation = plugin.chooseSpawn(world);
 		
-		//player.sendMessage("You should be random spawned at: " + spawnLocation.getX() + "," + spawnLocation.getY() + "," + spawnLocation.getX());
+		if (spawnPointFlags.contains("firstjoin")) {
+			List<Location> spawnLocations = plugin.findSpawnPoints(world);
 		
-		plugin.sendGround(player, spawnLocation);
+			int totalTries = spawnLocations.size();
+			for (int i = 0 ; i < totalTries ; i++) {
+				int j = (int) ( Math.random() * spawnLocations.size() );
+				Location newSpawn = spawnLocations.get(j);
+				NewPlayerSpawn nps = new NewPlayerSpawn(player, newSpawn );
+				plugin.getServer().getPluginManager().callEvent(nps);
+				if (nps.isCancelled()) {
+					spawnLocations.remove(j);
+				} else {
+					plugin.sendGround(player, newSpawn);
+					player.teleport(newSpawn.add(0, 3, 0));
+					player.setMetadata("lasttimerandomspawned", new FixedMetadataValue(plugin, System.currentTimeMillis()));
+					
+					if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)){
+						player.setBedSpawnLocation(newSpawn);
+					}
 		
-		player.teleport(spawnLocation.add(0, 3, 0));
-
-		player.setMetadata("lasttimerandomspawned", new FixedMetadataValue(plugin, System.currentTimeMillis()));
-
-		if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)){
-			player.setBedSpawnLocation(spawnLocation);
+					if (plugin.yamlHandler.config.getString("messages.randomspawned") != null){
+						player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.yamlHandler.config.getString("messages.randomspawned")));
+					}
+					return;
+				}
+			}
 		}
 
-		if (plugin.yamlHandler.config.getString("messages.randomspawned") != null){
-			player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.yamlHandler.config.getString("messages.randomspawned")));
+		if (randomSpawnFlags.contains("firstjoin")) {
+			Location spawnLocation = plugin.chooseSpawn(world);
+		
+			plugin.sendGround(player, spawnLocation);
+			
+			player.teleport(spawnLocation.add(0, 3, 0));
+	
+			player.setMetadata("lasttimerandomspawned", new FixedMetadataValue(plugin, System.currentTimeMillis()));
+	
+			if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)){
+				player.setBedSpawnLocation(spawnLocation);
+			}
+	
+			if (plugin.yamlHandler.config.getString("messages.randomspawned") != null){
+				player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.yamlHandler.config.getString("messages.randomspawned")));
+			}
 		}
 	}
 
