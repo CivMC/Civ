@@ -1047,6 +1047,7 @@ factories:
      - Enchant_Chestplate_Unbreaking_I
      - Enchant_Leggings_Unbreaking_I
      - Enchant_Boots_Unbreaking_I
+     - Enchant_Shield_Unbreaking_I
      - Enchant_Sword_Unbreaking_I
      - Enchant_Bow_Unbreaking_I
      - Upgrade_to_Metal_Forge
@@ -1069,6 +1070,8 @@ factories:
      - Enchant_Leggings_Unbreaking_II
      - Enchant_Boots_Unbreaking_I
      - Enchant_Boots_Unbreaking_II
+     - Enchant_Shield_Unbreaking_I
+     - Enchant_Shield_Unbreaking_II
      - Enchant_Sword_Unbreaking_I
      - Enchant_Sword_Unbreaking_II
      - Enchant_Bow_Unbreaking_I
@@ -1100,6 +1103,9 @@ factories:
      - Enchant_Boots_Unbreaking_I
      - Enchant_Boots_Unbreaking_II
      - Enchant_Boots_Unbreaking_III
+     - Enchant_Shield_Unbreaking_I
+     - Enchant_Shield_Unbreaking_II
+     - Enchant_Shield_Unbreaking_III
      - Enchant_Sword_Unbreaking_I
      - Enchant_Sword_Unbreaking_II
      - Enchant_Sword_Unbreaking_III
@@ -9671,7 +9677,7 @@ recipes:
           ub2:
             enchant: DURABILITY
             level: 2
-#Unbreaking Armour
+#Unbreaking Armour/Shield
 
   Enchant_Helmet_Unbreaking_I:
     type: ENCHANT
@@ -9725,6 +9731,19 @@ recipes:
     enchant_item:
       armor:
         material: DIAMOND_BOOTS
+  Enchant_Shield_Unbreaking_I:
+    type: ENCHANT
+    name: Enchant Shield with Unbreaking I
+    production_time: 15s
+    input:
+      emeralds:
+        material: EMERALD
+        amount: 38
+    enchant: DURABILITY
+    level: 1
+    enchant_item:
+      armor:
+        material: SHIELD
   Enchant_Helmet_Unbreaking_II:
     type: ENCHANT
     name: Enchant Helmet with Unbreaking II
@@ -9793,6 +9812,23 @@ recipes:
           ub1:
             enchant: DURABILITY
             level: 1
+  Enchant_Shield_Unbreaking_II:
+    type: ENCHANT
+    name: Enchant Shield with Unbreaking II
+    production_time: 15s
+    input:
+      emeralds:
+        material: EMERALD
+        amount: 100
+    enchant: DURABILITY
+    level: 2
+    enchant_item:
+      armor:
+        material: SHIELD
+        enchants:
+          ub1:
+            enchant: DURABILITY
+            level: 1
   Enchant_Helmet_Unbreaking_III:
     type: ENCHANT
     name: Enchant Helmet with Unbreaking III
@@ -9857,6 +9893,23 @@ recipes:
     enchant_item:
       armor:
         material: DIAMOND_BOOTS
+        enchants:
+          ub2:
+            enchant: DURABILITY
+            level: 2
+  Enchant_Shield_Unbreaking_III:
+    type: ENCHANT
+    name: Enchant Shield with Unbreaking III
+    production_time: 15s
+    input:
+      emeralds:
+        material: EMERALD
+        amount: 250
+    enchant: DURABILITY
+    level: 3
+    enchant_item:
+      armor:
+        material: SHIELD
         enchants:
           ub2:
             enchant: DURABILITY
