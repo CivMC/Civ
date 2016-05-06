@@ -742,9 +742,9 @@ factories:
      - Enchant_DepthStrider_I
      - Enchant_Respiration_I
      - Enchant_Respiration_II
+     - Enchant_Frost_Walker_I
      - Upgrade_to_Ocean_Forge
      - Repair_Factory
-#    - Enchant_FrostWalker_I
   oceanforge:
     type: FCCUPGRADE
     name: Ocean Forge
@@ -756,8 +756,9 @@ factories:
      - Enchant_Respiration_I
      - Enchant_Respiration_II
      - Enchant_Respiration_III
+     - Enchant_Frost_Walker_I
+     - Enchant_Frost_Walker_II
      - Repair_Factory
-#    - Enchant_FrostWalker_II
 #Magic
   magicforge:
     type: FCCUPGRADE
@@ -7799,8 +7800,34 @@ recipes:
             enchant: OXYGEN
             level: 2
 #Frost Walker
-#Until 1.9
 
+  Enchant_Frost_Walker_I:
+    type: ENCHANT
+    name: Enchant Boots with Frost Walker I
+    production_time: 15s
+    input:
+      emeralds:
+        material: EMERALD
+        amount: 400
+    enchant: FROST_WALKER
+    level: 1
+    enchant_item:
+      boots:
+        material: DIAMOND_BOOTS
+  
+  Enchant_Frost_Walker_II:
+    type: ENCHANT
+    name: Enchant Boots with Frost Walker II
+    production_time: 15s
+    input:
+      emeralds:
+        material: EMERALD
+        amount: 500
+    enchant: FROST_WALKER
+    level: 2
+    enchant_item:
+      boots:
+        material: DIAMOND_BOOTS
 #Aqua Affinity
 
   Enchant_AquaAffinity_I:
