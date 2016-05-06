@@ -57,7 +57,7 @@ commands:
    nllpt:
     aliases: [nllistplayertypes, nllistptypes, listplayertypes]
    nllci:
-    aliases: [nllistcurrentinvites, nllistinvites, invites, ctinvites, listinvites]
+    aliases: [nllistcurrentinvites, nllistinvites, invites, listinvites]
    nltaai:
     aliases: [nlautoacceptinvites, nlautoaccept, autoaccept]
    nlcpn:

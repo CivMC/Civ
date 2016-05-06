@@ -16,30 +16,6 @@
 			<artifactId>NameLayerMain</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-	
-		<dependency>
-			<groupId>vg.civcraft.mc.namelayer</groupId>
-			<artifactId>NameLayerNMS1_8_R1</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>vg.civcraft.mc.namelayer</groupId>
-			<artifactId>NameLayerNMS1_8_R2</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>vg.civcraft.mc.namelayer</groupId>
-			<artifactId>NameLayerNMS1_8_R3</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>vg.civcraft.mc.namelayer</groupId>
-			<artifactId>NameLayerNMS1_9_R1</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 	</dependencies>
 	
 	<build>
