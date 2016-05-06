@@ -285,7 +285,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		PlayerReinforcement reinforcement = getReinforcement();
 
 		if(reinforcement!=null){
-			return reinforcement.isBypassable(player); //should return true if founder or moderator, but I feel this is more consistant
+			return reinforcement.canBypass(player); //should return true if founder or moderator, but I feel this is more consistant
 		}
 		return true;
 	}
