@@ -28,6 +28,9 @@ public class NameLayerGroupGui extends PlayerCommandMiddle {
 			sender.sendMessage(ChatColor.BLUE + "Go back home console man, we dont want you here");
 			return true;
 		}
+		if (1 > 0) {
+			return true;
+		}
 		Group g = gm.getGroup(args [0]);
 		if (g == null) {
 			sender.sendMessage(ChatColor.RED + "This group doesn't exist");
