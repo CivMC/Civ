@@ -80,7 +80,7 @@ public class CommandListener implements Listener {
 				return;
 			}
 
-			if (reinforcement.isBypassable(player)) {
+			if (reinforcement.canBypass(player)) {
 				Bastion.getBastionManager().addBastion(block.getLocation(), reinforcement);
 				player.sendMessage(ChatColor.GREEN + "Bastion block created");
 				PlayersStates.touchPlayer(player);
