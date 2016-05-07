@@ -37,7 +37,9 @@ public class CommandHandler implements CommandExecutor{
 				new SetFirstSpawnCommand(plugin), 
 				new TpFirstSpawnCommand(plugin), 
 				new UnsetFirstSpawnCommand(plugin),
-				new SpawnCommand(plugin)
+				new SpawnCommand(plugin),
+				new AddSpawnPointCommand(plugin),
+				new RemoveSpawnPointCommand(plugin)
 		});
 	}
 

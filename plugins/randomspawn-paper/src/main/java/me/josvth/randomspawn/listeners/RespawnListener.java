@@ -55,7 +55,7 @@ public class RespawnListener implements Listener{
 		if (spawnPointFlags.contains("newplayer")) {
 			// check if player is still "new", if so, respawn using point logic again.
 			if (event.getPlayer().getFirstPlayed() + 
-					plugin.yamlHandler.worlds.getLong(worldName + ".newplayertime", 0l) < System.currentTimeMillis()) {
+					plugin.yamlHandler.worlds.getLong(worldName + ".newplayertime", 0l) > System.currentTimeMillis()) {
 				// still a new player, continue.
 				List<Location> spawnLocations = plugin.findSpawnPoints(world);
 				

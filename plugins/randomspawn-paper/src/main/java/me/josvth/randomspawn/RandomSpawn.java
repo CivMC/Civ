@@ -261,14 +261,16 @@ public class RandomSpawn extends JavaPlugin{
 		if( yamlHandler.worlds.contains( worldName + ".spawnblacklist") )
 			blacklist = yamlHandler.worlds.getIntegerList(worldName + ".spawnblacklist");
 		
-		// find all spawnpoint data
-		List<ConfigurationSection> spawnpoints = (List<ConfigurationSection>) yamlHandler.worlds.getList(worldName + ".spawnpoints");
-		
 		// reserve list of online players : TODO make sure this is just online players
 		List<Player> playersOnline = world.getPlayers();
 
-		// For each potential spawn location ... 
-		for (ConfigurationSection spawnpoint : spawnpoints) {
+		// For each potential spawn location ...
+		ConfigurationSection spawnpoints = yamlHandler.worlds.getConfigurationSection(worldName + ".spawnpoints");
+		if (spawnpoints == null) {
+			return new ArrayList<Location>(0);
+		}
+		for (String spawnpointlabel : spawnpoints.getKeys(false)) {
+			ConfigurationSection spawnpoint = spawnpoints.getConfigurationSection(spawnpointlabel);
 			Location location = new Location(world, spawnpoint.getDouble("x"), 
 					spawnpoint.getDouble("y"), spawnpoint.getDouble("z"));
 			boolean skip = true;

@@ -5,6 +5,8 @@ import java.util.List;
 import me.josvth.randomspawn.RandomSpawn;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
 
 public class AddSpawnPointCommand extends AbstractCommand{
@@ -26,21 +28,60 @@ public class AddSpawnPointCommand extends AbstractCommand{
 		double x = player.getLocation().getX();
 		double y = player.getLocation().getY();
 		double z = player.getLocation().getZ();
-
-		if (args.length < 2) { // failure
-
-		} else if (args.length == 2) { // 
-
-		plugin.yamlHandler.worlds.set(worldname+".firstspawn.x", x);
-		plugin.yamlHandler.worlds.set(worldname+".firstspawn.y", y);
-		plugin.yamlHandler.worlds.set(worldname+".firstspawn.z", z);
 		
-		plugin.yamlHandler.worlds.set(worldname+".randomspawnonfirstjoin", false);
+		double radius = 500d;
+		double exclusion = 0d;
+		
+		boolean requireNearby = false;
+		
+		String name;
+
+		///rs addspawn <radius> <exclusion> true/false name
+		if (args.size() < 4) { // failure
+			return false;
+		} else {
+			try {
+				radius = Double.parseDouble(args.get(0));
+			} catch (NumberFormatException nfe ) {
+				return false;
+			}
+			
+			try {
+				exclusion = Double.parseDouble(args.get(1));
+			} catch (NumberFormatException nfe) {
+				return false;
+			}
+			
+			requireNearby = Boolean.parseBoolean(args.get(2));
+			
+			StringBuilder nameSB = new StringBuilder(args.get(3));
+			for (int a = 4; a < args.size(); a++) {
+				nameSB.append(" ").append(args.get(a));
+			}
+			name = nameSB.toString();
+		}
+		
+		int nextKey = 0;
+		ConfigurationSection current = plugin.yamlHandler.worlds.getConfigurationSection(worldname + ".spawnpoints");
+		if (current == null) {
+			current = plugin.yamlHandler.worlds.createSection(worldname + ".spawnpoints");
+		} else {
+			nextKey = current.getKeys(false).size();
+		}
+		
+		ConfigurationSection spawnpoint = current.createSection(String.valueOf(nextKey));
+
+		spawnpoint.set("name", name);
+		spawnpoint.set("x", x);
+		spawnpoint.set("y", y);
+		spawnpoint.set("z", z);
+		spawnpoint.set("radius", radius);
+		spawnpoint.set("exclusion", exclusion);
+		spawnpoint.set("nearby", requireNearby);
 		
 		plugin.yamlHandler.saveWorlds();
 		
-		plugin.playerInfo(player, "First spawn location set!");
-		plugin.playerInfo(player, "Random spawning on first join is now disabled!");
+		plugin.playerInfo(player, "Added spawn location "+ name);
 		
 		return true;
 	}
