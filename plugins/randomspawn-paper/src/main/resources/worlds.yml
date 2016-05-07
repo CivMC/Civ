@@ -11,7 +11,7 @@ exampleworld:
   - newplayer
   newplayertime: 3000
   spawnpoints:
-    city_a:
+    '0':
       name: City A
       x: 500
       y: 70
@@ -19,6 +19,7 @@ exampleworld:
       radius: 500
       exclusion: 100
       nearby: true
+      checkradius: 500
   spawnbyplayer: true
   spawnbyplayerarea:
     exclusionradius: 200

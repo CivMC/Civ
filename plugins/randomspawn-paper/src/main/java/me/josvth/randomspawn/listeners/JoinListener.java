@@ -63,6 +63,7 @@ public class JoinListener implements Listener{
 		}
 		
 		if (spawnPointFlags.contains("firstjoin")) {
+			plugin.logDebug(playerName + "First Join spawn point spawning");
 			List<Location> spawnLocations = plugin.findSpawnPoints(world);
 		
 			int totalTries = spawnLocations.size();
@@ -91,6 +92,7 @@ public class JoinListener implements Listener{
 		}
 
 		if (randomSpawnFlags.contains("firstjoin")) {
+			plugin.logDebug(playerName + "First Join random spawning");
 			Location spawnLocation = plugin.chooseSpawn(world);
 		
 			plugin.sendGround(player, spawnLocation);

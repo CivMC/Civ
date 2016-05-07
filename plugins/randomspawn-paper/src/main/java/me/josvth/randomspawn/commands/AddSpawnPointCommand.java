@@ -9,6 +9,12 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
 
+/**
+ * Add a spawn point using current location and given radius / exclusion and requirements.
+ * 
+ * @author ProgrammerDan <programmerdan@gmail.com>
+ *
+ */
 public class AddSpawnPointCommand extends AbstractCommand{
 	
 	public AddSpawnPointCommand(RandomSpawn instance){
@@ -28,7 +34,8 @@ public class AddSpawnPointCommand extends AbstractCommand{
 		double x = player.getLocation().getX();
 		double y = player.getLocation().getY();
 		double z = player.getLocation().getZ();
-		
+	
+		double checkradius = 500d;
 		double radius = 500d;
 		double exclusion = 0d;
 		
@@ -36,8 +43,8 @@ public class AddSpawnPointCommand extends AbstractCommand{
 		
 		String name;
 
-		///rs addspawn <radius> <exclusion> true/false name
-		if (args.size() < 4) { // failure
+		///rs addspawn <radius> <exclusion> true/false <check radius> name
+		if (args.size() < 5) { // failure
 			return false;
 		} else {
 			try {
@@ -54,8 +61,14 @@ public class AddSpawnPointCommand extends AbstractCommand{
 			
 			requireNearby = Boolean.parseBoolean(args.get(2));
 			
-			StringBuilder nameSB = new StringBuilder(args.get(3));
-			for (int a = 4; a < args.size(); a++) {
+			try {
+				checkradius = Double.parseDouble(args.get(3));
+			} catch(NumberFormatException nfe) {
+				return false;
+			}
+			
+			StringBuilder nameSB = new StringBuilder(args.get(4));
+			for (int a = 5; a < args.size(); a++) {
 				nameSB.append(" ").append(args.get(a));
 			}
 			name = nameSB.toString();
@@ -75,6 +88,7 @@ public class AddSpawnPointCommand extends AbstractCommand{
 		spawnpoint.set("x", x);
 		spawnpoint.set("y", y);
 		spawnpoint.set("z", z);
+		spawnpoint.set("checkradius", checkradius);
 		spawnpoint.set("radius", radius);
 		spawnpoint.set("exclusion", exclusion);
 		spawnpoint.set("nearby", requireNearby);
