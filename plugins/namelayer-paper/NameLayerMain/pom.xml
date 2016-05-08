@@ -91,6 +91,12 @@
 					<version>1.0.0</version>
 					<scope>compile</scope>
 				</dependency>
+				<dependency>
+ -					<groupId>vg.civcraft.mc.namelayer</groupId>
+ -					<artifactId>NameLayerBungee</artifactId>
+ -					<version>1.0.0</version>
+ -					<scope>compile</scope>
+ -				</dependency>
 			</dependencies>
 		</profile>
 		<profile>
