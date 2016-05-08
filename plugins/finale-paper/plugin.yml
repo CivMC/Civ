@@ -1,0 +1,7 @@
+name: Finale
+main: com.github.maxopoly.Finale
+author: Maxopoly
+version: ${project.version}
+depend: [CivModCore]
+commands:
+permissions:
