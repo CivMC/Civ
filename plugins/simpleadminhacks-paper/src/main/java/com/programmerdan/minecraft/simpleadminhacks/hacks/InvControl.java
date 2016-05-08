@@ -100,6 +100,10 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 			return false;
 		}
 		if (command.getName().equalsIgnoreCase("invsee")) { // see
+			if (player.equals(sender)) {
+				sender.sendMessage(ChatColor.RED + " Just open your inventory, silly.");
+				return true;
+			}
 			final PlayerInventory pl_inv = player.getInventory();
 			invSee(sender, pl_inv, player.getHealth(), player.getFoodLevel(), playername);
 		} else if (command.getName().equalsIgnoreCase("invmod")) { // mod
@@ -111,9 +115,8 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 				if (admin.equals(player)) {
 					sender.sendMessage(ChatColor.RED + "You cannot modify your own inventory in this manner.");
 				} else {
-					// I do not know what this will do.
-					InventoryView iv = admin.openInventory(player.getInventory());
-					this.adminsWithInv.add(admin.getUniqueId());
+					sender.sendMessage(ChatColor.RED + "Feature not yet implemented");
+					//this.adminsWithInv.add(admin.getUniqueId());
 				}
 			}
 		} else {
@@ -123,6 +126,9 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 	}
 	
 	public void adminCloseInventory(InventoryCloseEvent event) {
+		if (event.getPlayer() != null && this.adminsWithInv.contains(event.getPlayer().getUniqueId())) {
+			this.adminsWithInv.remove(event.getPlayer().getUniqueId());
+		}
 	}
 	
 	private void invSee(CommandSender sender, PlayerInventory pl_inv, double health, int food, String playername) {
