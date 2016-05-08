@@ -6,6 +6,20 @@ exampleworld:
   - bedrespawn
   - firstjoin
   keeprandomspawns: false
+  spawnpointson:
+  - firstjoin
+  - newplayer
+  newplayertime: 3000
+  spawnpoints:
+    '0':
+      name: City A
+      x: 500
+      y: 70
+      z: 1000
+      radius: 500
+      exclusion: 100
+      nearby: true
+      checkradius: 500
   spawnbyplayer: true
   spawnbyplayerarea:
     exclusionradius: 200

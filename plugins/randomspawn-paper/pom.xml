@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.josvth.randomspawn.randomspawn</groupId>
-	<artifactId>Random-Spawn</artifactId>
-	<version>2.6</version>
-	<name>Random-Spawn</name>
-	<url>https://github.com/Josvth/Random-Spawn</url>
+	<artifactId>RandomSpawn</artifactId>
+	<version>2.7.1</version>
+	<name>RandomSpawn</name>
+	<url>https://github.com/DevotedMC/random-spawn</url>
 
 	<repositories>
 		<repository>
@@ -21,21 +21,21 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
-			<artifactId>Spigot1.8.3</artifactId>
-			<version>1.8.3</version>
+			<artifactId>spigot</artifactId>
+			<version>1.9</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.wimbli</groupId>
 			<artifactId>WorldBorder</artifactId>
-			<version>1.8.3</version>
+			<version>LATEST</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>isaac</groupId>
 			<artifactId>Bastion</artifactId>
-			<version>1.0.1</version>
+			<version>LATEST</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
@@ -54,8 +54,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.0</version>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 		</plugins>

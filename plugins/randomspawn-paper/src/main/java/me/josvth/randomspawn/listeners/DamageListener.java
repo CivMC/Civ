@@ -8,6 +8,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
+/**
+ * Prevent players from taking damage if they are within the invulnerability period. 
+ *
+ */
 public class DamageListener implements Listener{
 	
 	RandomSpawn plugin;

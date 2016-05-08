@@ -1,5 +1,5 @@
-name: Random Spawn
-version: 2.6
+name: ${project.name}
+version: ${project.version}
 main: me.josvth.randomspawn.RandomSpawn
 author: Josvth
 softdepend: [WorldBorder, Bastion]
@@ -65,6 +65,25 @@ commands:
     description: Random spawns a player.
     usage: /rs spawn <playername> <world> or /rs spawn
     permission: RandomSpawn.spawncommand
+  rs addspawn:
+    description: |
+      Adds a new spawn point. 
+      Location is set to the location of the player issuing the command.
+      For console users to add a new spawn point, add it in the config and reload.
+    usage: |
+      /rs addspawn <radius> <exclusion> true/false <check radius> name
+        radius - radius around that position to spawn players randomly
+        exclusion - but never within this radius ( 0 to disable )
+        true/false - use 'true' if a player must be online to use this spawnpoint, 'false' to not care. 
+        check radius - radius to check for nearby players if prior set to true. Required, but ignored if prior is false.
+        name - name of the spawn point
+    permission: RandomSpawn.configure
+    aliases: rsas
+  rs removespawn:
+    description: Removes an existing spawn point.
+    usage: /rs removespawn world name
+    permission: RandomSpawn.configure
+    aliases: rsrs
 permissions:
   RandomSpawn.*:
     description: Gives access to all Random Spawn commands.

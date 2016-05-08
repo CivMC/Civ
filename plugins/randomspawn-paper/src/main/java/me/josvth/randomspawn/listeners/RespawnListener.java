@@ -1,8 +1,10 @@
 package me.josvth.randomspawn.listeners;
 
 import java.util.List;
+import java.util.Set;
 
 import me.josvth.randomspawn.RandomSpawn;
+import me.josvth.randomspawn.events.NewPlayerSpawn;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -37,6 +39,7 @@ public class RespawnListener implements Listener{
 		String worldName = world.getName();
 		
 		List<String> randomSpawnFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".randomspawnon");
+		List<String> spawnPointFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".spawnpointson");
 				
 		if (event.isBedSpawn() && !randomSpawnFlags.contains("bedrespawn")){  		// checks if player should be spawned at his bed
 			plugin.logDebug(playerName + " is spawned at his bed!");
@@ -49,11 +52,44 @@ public class RespawnListener implements Listener{
 			return;
 		}
 		
+		if (spawnPointFlags.contains("newplayer")) {
+			// check if player is still "new", if so, respawn using point logic again.
+			if (event.getPlayer().getFirstPlayed() + 
+					plugin.yamlHandler.worlds.getLong(worldName + ".newplayertime", 0l) > System.currentTimeMillis()) {
+				plugin.logDebug(playerName + " newplayer respawn using Spawn Points");
+				// still a new player, continue.
+				List<Location> spawnLocations = plugin.findSpawnPoints(world);
+				
+				int totalTries = spawnLocations.size();
+				for (int i = 0 ; i < totalTries ; i++) {
+					int j = (int) ( Math.random() * spawnLocations.size() );
+					Location newSpawn = spawnLocations.get(j);
+					NewPlayerSpawn nps = new NewPlayerSpawn(player, newSpawn );
+					plugin.getServer().getPluginManager().callEvent(nps);
+					if (nps.isCancelled()) {
+						spawnLocations.remove(j);
+					} else {
+						plugin.sendGround(player, newSpawn);
+						event.setRespawnLocation(newSpawn);
+						player.setMetadata("lasttimerandomspawned", new FixedMetadataValue(plugin, System.currentTimeMillis()));
+						
+						if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)){
+							player.setBedSpawnLocation(newSpawn);
+						}
+
+						if (plugin.yamlHandler.config.getString("messages.randomspawned") != null){
+							player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.yamlHandler.config.getString("messages.randomspawned")));
+						}
+						return;
+					}
+				}
+			}
+		}
+		
 		if (randomSpawnFlags.contains("respawn")){
+			plugin.logDebug(playerName + " standard Respawn");
 			
 			Location spawnLocation = plugin.chooseSpawn(world);
-			
-			//player.sendMessage("You should be random spawned at: " + spawnLocation.getX() + "," + spawnLocation.getY() + "," + spawnLocation.getZ());
 			
 			plugin.sendGround(player, spawnLocation);
 			

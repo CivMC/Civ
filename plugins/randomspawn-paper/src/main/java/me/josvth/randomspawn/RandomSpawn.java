@@ -3,7 +3,10 @@ package me.josvth.randomspawn;
 import isaac.bastion.Bastion;
 import isaac.bastion.manager.BastionBlockManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -12,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -33,7 +37,8 @@ public class RandomSpawn extends JavaPlugin{
 	DamageListener damageListener;
 	private boolean isWorldBorderEnabled = false;
 	private boolean isBastionsEnabled = false;
-
+	private static List<Integer> defaultBlacklist = Arrays.asList(new Integer[]{8,9,10,11,18,51,81});
+	
 	@Override
 	public void onEnable() {
 
@@ -81,18 +86,16 @@ public class RandomSpawn extends JavaPlugin{
 	public Location chooseSpawn(World world){
 		String worldName = world.getName();
 
-		// I don't like this method
-		// Nah man this method is pretty good. Any better ideas though?
-		
-		List<Integer> blacklist = Arrays.asList(new Integer[]{8,9,10,11,18,51,81});
+		List<Integer> blacklist = defaultBlacklist;
 		if( yamlHandler.worlds.contains( worldName + ".spawnblacklist") )
 			blacklist = yamlHandler.worlds.getIntegerList(worldName + ".spawnblacklist");
 		
 		if(yamlHandler.worlds.getBoolean(worldName + ".spawnbyplayer")) {
-			Player[] playersOnline = Bukkit.getOnlinePlayers().toArray(new Player[]{});
+			@SuppressWarnings("unchecked")
+			List<Player> playersOnline = (List<Player>) Bukkit.getOnlinePlayers();
 			
-			if(playersOnline.length > 0) {
-				Player randomPlayer = playersOnline[(int)(Math.random() * playersOnline.length)];
+			if(playersOnline.size() > 0) {
+				Player randomPlayer = playersOnline.get((int)(Math.random() * playersOnline.size()));
 				Location spawnNear = randomPlayer.getLocation();
 				
 				double radius = yamlHandler.worlds.getDouble(worldName + ".spawnbyplayerarea.radius", 500);
@@ -151,7 +154,7 @@ public class RandomSpawn extends JavaPlugin{
 		
 		do {
 			double r = exclusionRadius + Math.random() * (radius - exclusionRadius);
-			double phi = Math.random() * 2 * Math.PI;
+			double phi = Math.random() * 2d * Math.PI;
 
 			double x = center.getX() + Math.cos(phi) * r;
 			double z = center.getZ() + Math.sin(phi) * r;
@@ -159,7 +162,7 @@ public class RandomSpawn extends JavaPlugin{
 			result.setX(x);
 			result.setZ(z);
 			result.setY(getValidHighestY(center.getWorld(), x, z, blacklist));
-		} while (result.getY() == -1);
+		} while (result.getY() == -1); // TODO this should never loop forever.
 		return result;
 	}
 	
@@ -238,13 +241,70 @@ public class RandomSpawn extends JavaPlugin{
 
 	// Methods for a safe landing :)
 	public void sendGround(Player player, Location location) {
-		location.getChunk().load();
+		if (!location.getChunk().isLoaded()) {
+			location.getChunk().load();
+		}
+	}
 
-//		World world = location.getWorld();
-//
-//		for(int y = 0 ; y <= location.getBlockY() + 2; y++){
-//			Block block = world.getBlockAt(location.getBlockX(), y, location.getBlockZ());
-//			player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
-//		}
+	/**
+	 * Finds all the valid spawn points from the full set of configured spawn points in the world. What is valid?
+	 * Spawn points can configurably require another player to be nearby, or allow spawn there regardless of nearby
+	 * players. This function checks that, and checks it against the online players. If a player is sufficiently near
+	 * as determined by the "checkradius", or if not set, the "radius" of the spawn point, then use that point.
+	 * Of course if a nearby player is not required, the spawn point is added.
+	 * 
+	 * The final result of these checks is returned as the set of eligible spawn points; from which one will ultimately
+	 * be chosen and used.
+	 * 
+	 * @author ProgrammerDan <programmerdan@gmail.com>
+	 * @param world The world to restrict the check to. Only players from that world are considered.
+	 * @return The set of locations near valid spawn points; or an empty list.
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Location> findSpawnPoints(World world) {
+		String worldName = world.getName();
+		
+		if (!yamlHandler.worlds.contains(worldName + ".spawnpoints")) {
+			return new ArrayList<Location>(0);
+		}
+		
+		LinkedList<Location> spawnLocs = new LinkedList<Location>();
+		
+		List<Integer> blacklist = defaultBlacklist;
+		if( yamlHandler.worlds.contains( worldName + ".spawnblacklist") )
+			blacklist = yamlHandler.worlds.getIntegerList(worldName + ".spawnblacklist");
+		
+		// reserve list of online players : TODO make sure this is just online players
+		List<Player> playersOnline = world.getPlayers();
+
+		// For each potential spawn location ...
+		ConfigurationSection spawnpoints = yamlHandler.worlds.getConfigurationSection(worldName + ".spawnpoints");
+		if (spawnpoints == null) {
+			return new ArrayList<Location>(0);
+		}
+		for (String spawnpointlabel : spawnpoints.getKeys(false)) {
+			ConfigurationSection spawnpoint = spawnpoints.getConfigurationSection(spawnpointlabel);
+			Location location = new Location(world, spawnpoint.getDouble("x"), 
+					spawnpoint.getDouble("y"), spawnpoint.getDouble("z"));
+			boolean skip = true;
+			// check if a player must be nearby and look for a player if so
+			if (spawnpoint.getBoolean("nearby")) {
+				for (Player player : playersOnline) {
+					if (location.distance(player.getLocation()) < spawnpoint.getDouble("checkradius", spawnpoint.getDouble("radius", 0d))) {
+						skip = false;
+						break;
+					}
+				}
+			} else { // doesn't require nearby player
+				skip = false;
+			}
+			if (!skip) {
+				// Now pick a location to spawn the player.
+				Location derive = chooseSpawn(spawnpoint.getDouble("radius"), spawnpoint.getDouble("exclusion"), location, blacklist);
+				spawnLocs.add(derive);
+			}
+		}
+		
+		return spawnLocs;
 	}
 }
