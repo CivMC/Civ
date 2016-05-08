@@ -91,8 +91,7 @@ public class RandomSpawn extends JavaPlugin{
 			blacklist = yamlHandler.worlds.getIntegerList(worldName + ".spawnblacklist");
 		
 		if(yamlHandler.worlds.getBoolean(worldName + ".spawnbyplayer")) {
-			@SuppressWarnings("unchecked")
-			List<Player> playersOnline = (List<Player>) Bukkit.getOnlinePlayers();
+			List<Player> playersOnline = (List<Player>) world.getPlayers();
 			
 			if(playersOnline.size() > 0) {
 				Player randomPlayer = playersOnline.get((int)(Math.random() * playersOnline.size()));
