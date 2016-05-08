@@ -36,9 +36,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>vg.civcraft.mc.namelayer</groupId>
-			<artifactId>NameLayerMain</artifactId>
+			<artifactId>NameLayer</artifactId>
 			<version>1.0.0</version>
 			<scope>provided</scope>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>net.md-5</groupId>
