@@ -103,6 +103,26 @@
 #custom_effects allows you to list other potion effects that are tied to this item, but don't affect it's item model, which is 
 #determined by the primary potion effect
 
+#To make dyed leather armour, two different formats are supported. The first one looks like this:
+
+#exampleItem:
+# material: LEATHER_HELMET
+# color:
+#   red: 255
+#   blue: 0
+#   green: 255
+
+#The additional color section here has an option for each part of an RGB color, which is then applied on the item. All values
+#must be within 0 and 255
+
+#The other way to specify color of a leather item is directly through a hexadecimal number representing the RGB color like this:
+
+#exampleItem2:
+# material: LEATHER_BOOTS
+# color: FF00FF
+
+#Instead of using color as config identifier, you can as well just use it as option to directly specify the color in hex
+
 #----------------------------------------------------------------------------------------------------------------------
 #General
 
