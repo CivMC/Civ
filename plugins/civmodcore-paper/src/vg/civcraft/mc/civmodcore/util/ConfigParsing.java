@@ -11,8 +11,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import com.google.common.collect.Lists;
 
@@ -117,9 +120,44 @@ public class ConfigParsing {
 					((LeatherArmorMeta) meta).setColor(leatherColor);
 				}
 			}
+			if (m == Material.POTION || m == Material.SPLASH_POTION
+					|| m == Material.LINGERING_POTION
+					|| m == Material.TIPPED_ARROW) {
+				ConfigurationSection potion = current
+						.getConfigurationSection("potion_effects");
+				if (potion != null) {
+					PotionType potType;
+					try {
+						potType = PotionType.valueOf(potion.getString("type",
+								"AWKWARD"));
+					} catch (IllegalArgumentException e) {
+						Bukkit.getLogger().warning(
+								"Expected potion type at "
+										+ potion.getCurrentPath() + ", but "
+										+ potion.getString("type")
+										+ " is not a valid potion type");
+						potType = PotionType.AWKWARD;
+					}
+					boolean upgraded = potion.getBoolean("upgraded", false);
+					boolean extended = potion.getBoolean("extended", false);
+					PotionMeta potMeta = (PotionMeta) meta;
+					potMeta.setBasePotionData(new PotionData(potType, extended,
+							upgraded));
+					ConfigurationSection customEffects = potion
+							.getConfigurationSection("custom_effects");
+					if (customEffects != null) {
+						List<PotionEffect> pots = parsePotionEffects(potion);
+						for (PotionEffect pe : pots) {
+							potMeta.addCustomEffect(pe, true);
+						}
+					}
+				}
+
+			}
 			toAdd.setItemMeta(meta);
 			if (current.contains("nbt")) {
-				toAdd = ItemMap.enrichWithNBT(toAdd, 1, current.getConfigurationSection("nbt").getValues(true));
+				toAdd = ItemMap.enrichWithNBT(toAdd, 1, current
+						.getConfigurationSection("nbt").getValues(true));
 			}
 		}
 		im.addItemStack(toAdd);
@@ -223,7 +261,20 @@ public class ConfigParsing {
 				ConfigurationSection configEffect = configurationSection
 						.getConfigurationSection(name);
 				String type = configEffect.getString("type");
+				if (type == null) {
+					Bukkit.getLogger().severe(
+							"Expected potion type to be specified, but found no \"type\" option at "
+									+ configEffect.getCurrentPath());
+					continue;
+				}
 				PotionEffectType effect = PotionEffectType.getByName(type);
+				if (effect == null) {
+					Bukkit.getLogger().severe(
+							"Expected potion type to be specified at "
+									+ configEffect.getCurrentPath()
+									+ " but found " + type
+									+ " which is no valid type");
+				}
 				int duration = configEffect.getInt("duration", 200);
 				int amplifier = configEffect.getInt("amplifier", 0);
 				potionEffects
