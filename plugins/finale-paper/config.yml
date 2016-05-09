@@ -1,1 +1,6 @@
 attackSpeed: 9.4
+foodHealthRegen:
+  intervall: 4s
+  exhaustionPerHeal: 3.0
+  minimumFood: 18
+  healthPerCycle: 1.0
