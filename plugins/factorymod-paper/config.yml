@@ -70,6 +70,39 @@
 #full list of those. Second you will need to specify the level you want the desired enchantment to be, this may exceed the
 #possibilites of vanilla without causing problems.
 
+
+#You can also create items with specific meta data, currently supported are anything storing potion data, dyed leather armour
+#and custom nbt tags
+
+#For potion data (so for potions, splash potions, linering potions and tipped arrows) you can specify an additional section 
+#like this:
+
+#examplePot:
+# material: POTION
+# potion_effects:
+#   type: LUCK
+#   upgraded: true
+#   extended: true
+#   custom_effects:
+#     exampleEffect1:
+#       type: SPEED
+#       duration: 1m
+#       amplifier: 1
+
+#Each potion always has one default effect and as many additional custom effects as desired
+
+#type specifies the look of the potion and the base type of effect that will be applied by the potion. Not all possible status
+#effects can be used here, but only the ones that have PotionData, as listed here: 
+#https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html
+#If not specified the type will default to AWKWARD
+
+#upgraded specifies whether the default potion effect on the item is upgraded or not, per default this is false
+
+#extended specifies whether the default potion effect on this item is extended or not, per default this is false
+
+#custom_effects allows you to list other potion effects that are tied to this item, but don't affect it's item model, which is 
+#determined by the primary potion effect
+
 #----------------------------------------------------------------------------------------------------------------------
 #General
 
