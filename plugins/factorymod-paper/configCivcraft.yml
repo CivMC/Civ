@@ -2869,7 +2869,7 @@ recipes:
     input:
       diamond:
         material: DIAMOND
-        amount: 8
+        amount: 6
     output:
       diamond axe:
         material: DIAMOND_AXE
@@ -2881,7 +2881,7 @@ recipes:
     input:
       diamond:
         material: DIAMOND
-        amount: 12
+        amount: 8
     output:
       diamond boots:
         material: DIAMOND_BOOTS
@@ -2893,7 +2893,7 @@ recipes:
     input:
       diamond:
         material: DIAMOND
-        amount: 24
+        amount: 16
     output:
       diamond chestplate:
         material: DIAMOND_CHESTPLATE
@@ -2905,7 +2905,7 @@ recipes:
     input:
       diamond:
         material: DIAMOND
-        amount: 28
+        amount: 24
     output:
       diamond chestplate:
         material: DIAMOND_CHESTPLATE
@@ -2917,7 +2917,7 @@ recipes:
     input:
       diamond:
         material: DIAMOND
-        amount: 15
+        amount: 10
     output:
       diamond helmet:
         material: DIAMOND_HELMET
@@ -2929,7 +2929,7 @@ recipes:
     input:
       diamond:
         material: DIAMOND
-        amount: 6
+        amount: 4
     output:
       diamond hoe:
         material: DIAMOND_HOE
@@ -2953,7 +2953,7 @@ recipes:
     input:
       diamond:
         material: DIAMOND
-        amount: 21
+        amount: 14
     output:
       diamond leggings:
         material: DIAMOND_LEGGINGS
@@ -2965,7 +2965,7 @@ recipes:
     input:
       diamond:
         material: DIAMOND
-        amount: 25
+        amount: 21
     output:
       diamond leggings:
         material: DIAMOND_LEGGINGS
@@ -2977,7 +2977,7 @@ recipes:
     input:
       diamond:
         material: DIAMOND
-        amount: 9
+        amount: 6
     output:
       diamond pickaxe:
         material: DIAMOND_PICKAXE
@@ -2989,7 +2989,7 @@ recipes:
     input:
       diamond:
         material: DIAMOND
-        amount: 3
+        amount: 2
     output:
       diamond shovel:
         material: DIAMOND_SPADE
@@ -3001,11 +3001,11 @@ recipes:
     input:
       diamond:
         material: DIAMOND
-        amount: 21
+        amount: 9
     output:
       diamond pickaxe:
         material: DIAMOND_PICKAXE
-        amount: 8
+        amount: 4
   Forge_Diamond_Shovel_Basic:
     type: PRODUCTION
     name: Forge Diamond Shovel
@@ -3013,11 +3013,11 @@ recipes:
     input:
       diamond:
         material: DIAMOND
-        amount: 7
+        amount: 3
     output:
       diamond shovel:
         material: DIAMOND_SPADE
-        amount: 8
+        amount: 4
   Forge_Diamond_Sword:
     type: PRODUCTION
     name: Forge Diamond Sword
@@ -3025,19 +3025,19 @@ recipes:
     input:
       diamond:
         material: DIAMOND
-        amount: 10
+        amount: 4
     output:
       diamond sword:
         material: DIAMOND_SWORD
-        amount: 8
-  Forge_Gold_Axe:
+        amount: 4
+   Forge_Gold_Axe:
     type: PRODUCTION
     name: Forge Gold Axe
-    production_time: 16s
+    production_time: 4s
     input:
       gold:
         material: GOLD_INGOT
-        amount: 8
+        amount: 6
     output:
       gold axe:
         material: GOLD_AXE
@@ -3045,11 +3045,11 @@ recipes:
   Forge_Gold_Boots:
     type: PRODUCTION
     name: Forge Gold Boots
-    production_time: 16s
+    production_time: 4s
     input:
       gold:
         material: GOLD_INGOT
-        amount: 12
+        amount: 8
     output:
       gold boots:
         material: GOLD_BOOTS
@@ -3057,7 +3057,19 @@ recipes:
   Forge_Gold_Breastplate:
     type: PRODUCTION
     name: Forge Gold Breastplate
-    production_time: 16s
+    production_time: 4s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 16
+    output:
+      gold chestplate:
+        material: GOLD_CHESTPLATE
+        amount: 4
+  Forge_Gold_Breastplate_Basic:
+    type: PRODUCTION
+    name: Forge Gold Breastplate
+    production_time: 8s
     input:
       gold:
         material: GOLD_INGOT
@@ -3066,26 +3078,14 @@ recipes:
       gold chestplate:
         material: GOLD_CHESTPLATE
         amount: 4
-  Forge_Gold_Breastplate_Basic:
-    type: PRODUCTION
-    name: Forge Gold Breastplate
-    production_time: 32s
-    input:
-      gold:
-        material: GOLD_INGOT
-        amount: 28
-    output:
-      gold chestplate:
-        material: GOLD_CHESTPLATE
-        amount: 4
   Forge_Gold_Helmet:
     type: PRODUCTION
     name: Forge Gold Helmet
-    production_time: 16s
+    production_time: 4s
     input:
       gold:
         material: GOLD_INGOT
-        amount: 15
+        amount: 10
     output:
       gold helmet:
         material: GOLD_HELMET
@@ -3093,11 +3093,11 @@ recipes:
   Forge_Gold_Hoe:
     type: PRODUCTION
     name: Forge Gold Hoe
-    production_time: 16s
+    production_time: 4s
     input:
       gold:
         material: GOLD_INGOT
-        amount: 6
+        amount: 4
     output:
       gold hoe:
         material: GOLD_HOE
@@ -3105,7 +3105,7 @@ recipes:
   Forge_Gold_Horse_Armour:
     type: PRODUCTION
     name: Forge Gold Horse Armour
-    production_time: 16s
+    production_time: 4s
     input:
       gold:
         material: GOLD_INGOT
@@ -3117,7 +3117,19 @@ recipes:
   Forge_Gold_Leggings:
     type: PRODUCTION
     name: Forge Gold Leggings
-    production_time: 16s
+    production_time: 4s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 14
+    output:
+      gold leggings:
+        material: GOLD_LEGGINGS
+        amount: 4
+  Forge_Gold_Leggings_Basic:
+    type: PRODUCTION
+    name: Forge Gold Leggings
+    production_time: 8s
     input:
       gold:
         material: GOLD_INGOT
@@ -3126,22 +3138,34 @@ recipes:
       gold leggings:
         material: GOLD_LEGGINGS
         amount: 4
-  Forge_Gold_Leggings_Basic:
-    type: PRODUCTION
-    name: Forge Gold Leggings
-    production_time: 32s
-    input:
-      gold:
-        material: GOLD_INGOT
-        amount: 25
-    output:
-      gold leggings:
-        material: GOLD_LEGGINGS
-        amount: 4
   Forge_Gold_Pickaxe:
     type: PRODUCTION
     name: Forge Gold Pickaxe
-    production_time: 16s
+    production_time: 4s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 6
+    output:
+      gold pickaxe:
+        material: GOLD_PICKAXE
+        amount: 4
+  Forge_Gold_Shovel:
+    type: PRODUCTION
+    name: Forge Gold Shovel
+    production_time: 4s
+    input:
+      gold:
+        material: GOLD_INGOT
+        amount: 2
+    output:
+      gold shovel:
+        material: GOLD_SPADE
+        amount: 4
+  Forge_Gold_Pickaxe_Basic:
+    type: PRODUCTION
+    name: Forge Gold Pickaxe
+    production_time: 8s
     input:
       gold:
         material: GOLD_INGOT
@@ -3150,10 +3174,10 @@ recipes:
       gold pickaxe:
         material: GOLD_PICKAXE
         amount: 4
-  Forge_Gold_Shovel:
+  Forge_Gold_Shovel_Basic:
     type: PRODUCTION
     name: Forge Gold Shovel
-    production_time: 16s
+    production_time: 8s
     input:
       gold:
         material: GOLD_INGOT
@@ -3162,42 +3186,18 @@ recipes:
       gold shovel:
         material: GOLD_SPADE
         amount: 4
-  Forge_Gold_Pickaxe_Basic:
-    type: PRODUCTION
-    name: Forge Gold Pickaxe
-    production_time: 32s
-    input:
-      gold:
-        material: GOLD_INGOT
-        amount: 21
-    output:
-      gold pickaxe:
-        material: GOLD_PICKAXE
-        amount: 8
-  Forge_Gold_Shovel_Basic:
-    type: PRODUCTION
-    name: Forge Gold Shovel
-    production_time: 32s
-    input:
-      gold:
-        material: GOLD_INGOT
-        amount: 7
-    output:
-      gold shovel:
-        material: GOLD_SPADE
-        amount: 8
   Forge_Gold_Sword:
     type: PRODUCTION
     name: Forge Gold Sword
-    production_time: 5s
+    production_time: 4s
     input:
       gold:
         material: GOLD_INGOT
-        amount: 10
+        amount: 4
     output:
       gold sword:
         material: GOLD_SWORD
-        amount: 8
+        amount: 4
   Forge_Iron_Axe:
     type: PRODUCTION
     name: Forge Iron Axe
@@ -4494,7 +4494,7 @@ recipes:
     input:
       diamond block:
         material: DIAMOND_BLOCK
-        amount: 128
+        amount: 64
       char:
         material: COAL
         durability: 1
@@ -4504,7 +4504,7 @@ recipes:
         amount: 16
       anvil:
         material: ANVIL
-        amount: 256
+        amount: 128
     factory: Diamond Armour Forge
   Upgrade_to_Diamond_Equipment_Forge:
     production_time: 1h
@@ -4514,7 +4514,7 @@ recipes:
     input:
       diamond block:
         material: DIAMOND_BLOCK
-        amount: 48
+        amount: 24
       char:
         material: COAL
         durability: 1
@@ -4534,7 +4534,7 @@ recipes:
     input:
       diamond block:
         material: DIAMOND_BLOCK
-        amount: 96
+        amount: 48
       char:
         material: COAL
         durability: 1
@@ -4544,7 +4544,7 @@ recipes:
         amount: 16
       anvil:
         material: ANVIL
-        amount: 256
+        amount: 128
     factory: Diamond Tools Forge
   Upgrade_to_Farmstead_Factory:
     production_time: 10m
