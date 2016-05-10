@@ -11,6 +11,8 @@ import com.github.maxopoly.misc.SaturationHealthRegenHandler;
 public class ConfigParser {
 	private Finale plugin;
 	private FinaleManager manager;
+	private long pearlCooldown;
+	private boolean combatTagOnPearl;
 	
 	public ConfigParser(Finale plugin) {
 		this.plugin = plugin;
@@ -23,6 +25,7 @@ public class ConfigParser {
 		FileConfiguration config = plugin.getConfig();
 		double attackSpeed = config.getDouble("attackSpeed", 9.4); 
 		SaturationHealthRegenHandler regenhandler = parseHealthRegen(config.getConfigurationSection("foodHealthRegen"));
+		parsePearls(config.getConfigurationSection("pearls"));
 		boolean protocolLibEnabled = Bukkit.getPluginManager().isPluginEnabled("ProtocolLib");
 		manager = new FinaleManager(attackSpeed, regenhandler, protocolLibEnabled);
 		return manager;
@@ -37,6 +40,22 @@ public class ConfigParser {
 		boolean blockFoodRegen = config.getBoolean("blockFoodRegen", true);
 		boolean blockSaturationRegen = config.getBoolean("blockSaturationRegen", true);
 		return new SaturationHealthRegenHandler(intervall, healthPerCycle, minimumFood, exhaustionPerHeal, blockSaturationRegen, blockFoodRegen);
+	}
+	
+	private void parsePearls(ConfigurationSection config) {
+		if (config == null) {
+			return;
+		}
+		pearlCooldown = parseTime(config.getString("cooldown", "10s"));
+		combatTagOnPearl = config.getBoolean("combatTag", true);
+	}
+	
+	public long getPearlCoolDown() {
+		return pearlCooldown;
+	}
+	
+	public boolean combatTagOnPearl() {
+		return combatTagOnPearl;
 	}
 
 }

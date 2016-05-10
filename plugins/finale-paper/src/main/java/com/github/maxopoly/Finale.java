@@ -16,11 +16,13 @@ public class Finale extends ACivMod {
 	private static FinaleManager manager;
 	private static CombatTagPlusManager ctpManager;
 	private static ProtocolLibManager protocolLibManager;
+	
+	private ConfigParser config;
 
 	public void onEnable() {
 		instance = this;
-		ConfigParser cp = new ConfigParser(this);
-		manager = cp.parse();
+		config = new ConfigParser(this);
+		manager = config.parse();
 		initExternalManagers();
 		registerListener();
 	}
@@ -53,7 +55,7 @@ public class Finale extends ACivMod {
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(manager),
 				this);
 		Bukkit.getPluginManager().registerEvents(
-				new PearlCoolDownListener(200, true, ctpManager), this);
+				new PearlCoolDownListener(config.getPearlCoolDown(), config.combatTagOnPearl(), ctpManager), this);
 	}
 
 	private void initExternalManagers() {
