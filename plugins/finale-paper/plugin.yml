@@ -3,6 +3,6 @@ main: com.github.maxopoly.Finale
 author: Maxopoly
 version: ${project.version}
 depend: [CivModCore]
-softdepend: [ProtocolLib]
+softdepend: [ProtocolLib, CombatTagPlus]
 commands:
 permissions:

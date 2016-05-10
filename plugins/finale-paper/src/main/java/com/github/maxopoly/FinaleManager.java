@@ -1,10 +1,6 @@
 package com.github.maxopoly;
 
-import java.util.HashMap;
-
-import org.bukkit.Material;
-
-import com.github.maxopoly.listeners.ProtocolLibPacketListener;
+import com.github.maxopoly.external.ProtocolLibManager;
 import com.github.maxopoly.misc.SaturationHealthRegenHandler;
 
 public class FinaleManager {
@@ -17,9 +13,6 @@ public class FinaleManager {
 		this.attackSpeed = attackSpeed;
 		this.regenHandler = regenHandler;
 		this.protocolLibEnabled = protocolLibEnabled;
-		if (protocolLibEnabled) {
-			new ProtocolLibPacketListener(new HashMap<Material, Long>());
-		}
 	}
 	
 	public double getAttackSpeed() {
