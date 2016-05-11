@@ -3030,7 +3030,7 @@ recipes:
       diamond sword:
         material: DIAMOND_SWORD
         amount: 4
-   Forge_Gold_Axe:
+  Forge_Gold_Axe:
     type: PRODUCTION
     name: Forge Gold Axe
     production_time: 4s
