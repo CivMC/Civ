@@ -173,7 +173,7 @@ public class CompactingRecipe extends InputRecipe {
 	 */
 	private boolean compactable(ItemStack is, ItemMap im) {
 		if (is == null || excludedMaterials.contains(is.getType()) || (input.getAmount(is) != 0) || (is.getItemMeta().getLore() != null &&
-				is.getItemMeta().getLore().contains(compactedLore)) || is.getItemMeta().hasEnchants()) {
+				is.getItemMeta().getLore().contains(compactedLore)) || (is.getItemMeta().hasEnchants() && is.getType().getMaxStackSize() == 1)) {
 			return false;
 		}	
 		if (im.getAmount(is) >= getCompactStackSize(is.getType())) {

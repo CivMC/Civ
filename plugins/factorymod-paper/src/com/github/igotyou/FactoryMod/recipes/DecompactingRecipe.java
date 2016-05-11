@@ -122,7 +122,7 @@ public class DecompactingRecipe extends InputRecipe {
 	}
 	
 	private boolean isDecompactable(ItemStack is) {
-		if (is.getItemMeta().hasEnchants()) {
+		if ((is.getItemMeta().hasEnchants() && is.getType().getMaxStackSize() == 1)) {
 			return false;
 		}
 		List <String> lore = is.getItemMeta().getLore();
