@@ -21,16 +21,19 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void playerLogin(PlayerJoinEvent e) {
-		if (!manager.isAttackSpeedEnabled()) return;
-		// Set attack speed
-		AttributeInstance attr = e.getPlayer().getAttribute(
+		if (manager.isAttackSpeedEnabled()) {;
+			// Set attack speed
+			AttributeInstance attr = e.getPlayer().getAttribute(
 				Attribute.GENERIC_ATTACK_SPEED);
-		if (attr != null) {
-			attr.setBaseValue(manager.getAttackSpeed());
+			if (attr != null) {
+				attr.setBaseValue(manager.getAttackSpeed());
+			}
 		}
-		// Register login for custom health regen
-		manager.getPassiveRegenHandler().registerPlayer(
-				e.getPlayer().getUniqueId());
+		if (manager.isRegenHandlerEnabled()) {
+			// Register login for custom health regen
+			manager.getPassiveRegenHandler().registerPlayer(
+					e.getPlayer().getUniqueId());
+		}
 	}
 
 	@EventHandler
