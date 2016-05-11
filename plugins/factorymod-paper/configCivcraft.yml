@@ -6955,7 +6955,7 @@ recipes:
         durability: 3
       eggs:
         material: EGG
-        amount: 32
+        amount: 8
         lore:
          - Compacted Item
       aether:
