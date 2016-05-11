@@ -74,6 +74,7 @@ commands:
     aliases: [blacklist, addblacklist]
    nlubl:
     aliases: [removeblacklist, unblacklist]    
+   nl:
        
 permissions:
    namelayer.admin:

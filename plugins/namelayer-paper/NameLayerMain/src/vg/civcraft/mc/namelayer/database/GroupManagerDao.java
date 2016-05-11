@@ -26,6 +26,7 @@ import com.google.common.collect.Lists;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.database.Database;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -385,7 +386,7 @@ public class GroupManagerDao {
 	
 	private PreparedStatement setDefaultGroup, changeDefaultGroup, getDefaultGroup;
 	
-	private PreparedStatement loadGroupsInvitations, addGroupInvitation, removeGroupInvitation, loadGroupInvitation;
+	private PreparedStatement loadGroupsInvitations, addGroupInvitation, removeGroupInvitation, loadGroupInvitation, loadGroupInvitationsForGroup;
 	
 	private PreparedStatement getGroupNameFromRole, updateLastTimestamp, getPlayerType, getTimestamp;
 	
@@ -494,6 +495,8 @@ public class GroupManagerDao {
 		removeGroupInvitation = db.prepareStatement("delete from group_invitation where uuid = ? and groupName = ?");
 		
 		loadGroupInvitation = db.prepareStatement("select role from group_invitation where uuid = ? and groupName = ?");
+		
+		loadGroupInvitationsForGroup = db.prepareStatement("select uuid,role from group_invitation where groupName=?");
 		
 		// Gets all unique names (not instances) of groups having this member at that role.
 		getGroupNameFromRole = db.prepareStatement("SELECT DISTINCT faction_id.group_name FROM faction_member "
@@ -1134,6 +1137,35 @@ public class GroupManagerDao {
 			plugin.getLogger().log(Level.WARNING, "Problem loading group " + group.getName() 
 					+ " invite for " + playerUUID, e);
 		}
+	}
+	
+	public synchronized Map <UUID, PlayerType> getInvitesForGroup(String groupName) {
+		Map <UUID, PlayerType> invs = new TreeMap<UUID, GroupManager.PlayerType>();
+		if (groupName == null) {
+			return invs;
+		}
+		try {
+			loadGroupInvitationsForGroup.setString(1, groupName);
+			ResultSet set = loadGroupInvitationsForGroup.executeQuery();
+			while(set.next()) {
+				String uuid = set.getString(1);
+				String role = set.getString(2);
+				UUID playerUUID = null;
+				if (uuid != null){
+					playerUUID = UUID.fromString(uuid);
+				}
+				PlayerType pType = null;
+				if(role != null){
+					pType = PlayerType.getPlayerType(role);
+				}
+				if (uuid != null && pType != null) {
+					invs.put(playerUUID, pType);
+				}
+			}
+		}catch (SQLException e) {
+			plugin.getLogger().log(Level.WARNING, "Problem loading group invitations for group " + groupName, e);
+		}
+		return invs;
 	}
 	
 	/**
