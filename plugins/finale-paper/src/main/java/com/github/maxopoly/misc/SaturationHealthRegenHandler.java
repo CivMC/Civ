@@ -20,20 +20,20 @@ public class SaturationHealthRegenHandler implements Runnable {
 	private double healthPerCycle;
 	private int minimumFood;
 	private float exhaustionPerHeal;
-	private int intervall;
+	private int interval;
 	private int PID;
 	private boolean blockPassiveHealthRegen;
 	private boolean blockFoodHealthRegen;
 
-	public SaturationHealthRegenHandler(int intervall, double healthPerCycle,
+	public SaturationHealthRegenHandler(int interval, double healthPerCycle,
 			int minimumFood, float exhaustionPerHeal, boolean blockPassiveHealthRegen, boolean blockFoodHealthRegen) {
 		this.currentTick = 0;
-		this.ticks = new ArrayList<LinkedList<UUID>>(intervall);
-		for(int i = 0; i < intervall; i++) {
+		this.ticks = new ArrayList<LinkedList<UUID>>(interval);
+		for(int i = 0; i < interval; i++) {
 			ticks.add(null);
 		}
 		tickMapping = new TreeMap<UUID, Integer>();
-		this.intervall = intervall;
+		this.interval = interval;
 		this.healthPerCycle = healthPerCycle;
 		this.minimumFood = minimumFood;
 		this.exhaustionPerHeal = exhaustionPerHeal;
@@ -78,7 +78,7 @@ public class SaturationHealthRegenHandler implements Runnable {
 			}
 		}
 		currentTick++;
-		if (currentTick >= intervall) {
+		if (currentTick >= interval) {
 			currentTick = 0;
 		}
 	}
@@ -91,8 +91,8 @@ public class SaturationHealthRegenHandler implements Runnable {
 		return exhaustionPerHeal;
 	}
 	
-	public int getIntervall() {
-		return intervall;
+	public int getInterval() {
+		return interval;
 	}
 	
 	public double getHealthPerHeal() {
