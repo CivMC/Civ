@@ -34,7 +34,6 @@ public class MemberViewGUI extends GroupGUI {
 	private boolean canRemoveOwners;
 	private boolean canSeeAll;
 
-	private UUID memberViewed;
 	private int currentPage;
 	private NameLayerGUI parentGUI;
 
@@ -86,7 +85,6 @@ public class MemberViewGUI extends GroupGUI {
 						@Override
 						public void clicked(Player arg0) {
 							showDetail(currentId);
-							showScreen();
 						}
 					};
 				} else {
@@ -108,7 +106,6 @@ public class MemberViewGUI extends GroupGUI {
 						@Override
 						public void clicked(Player arg0) {
 							showDetail(currentId);
-							showScreen();
 						}
 					};
 				} else {
@@ -130,7 +127,6 @@ public class MemberViewGUI extends GroupGUI {
 						@Override
 						public void clicked(Player arg0) {
 							showDetail(currentId);
-							showScreen();
 						}
 					};
 				} else {
@@ -160,7 +156,6 @@ public class MemberViewGUI extends GroupGUI {
 							@Override
 							public void clicked(Player arg0) {
 								showDetail(currentId);
-								showScreen();
 							}
 						};
 					} else {
@@ -224,7 +219,7 @@ public class MemberViewGUI extends GroupGUI {
 						currentPage = 0;
 						showScreen();
 					}
-				}, 45);
+				}, 46);
 
 		ci.setSlot(
 				new Clickable(MenuUtils.toggleButton(showMods, ChatColor.GOLD
@@ -236,7 +231,7 @@ public class MemberViewGUI extends GroupGUI {
 						currentPage = 0;
 						showScreen();
 					}
-				}, 46);
+				}, 47);
 
 		ci.setSlot(
 				new Clickable(MenuUtils.toggleButton(showAdmins, ChatColor.GOLD
@@ -248,7 +243,7 @@ public class MemberViewGUI extends GroupGUI {
 						currentPage = 0;
 						showScreen();
 					}
-				}, 47);
+				}, 51);
 
 		ci.setSlot(
 				new Clickable(MenuUtils.toggleButton(showOwners, ChatColor.GOLD
@@ -260,7 +255,7 @@ public class MemberViewGUI extends GroupGUI {
 						currentPage = 0;
 						showScreen();
 					}
-				}, 48);
+				}, 52);
 
 		// to previous gui
 		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
@@ -278,6 +273,7 @@ public class MemberViewGUI extends GroupGUI {
 	public void showDetail(final UUID uuid) {
 		loadPermission();
 		if (!validGroup()) {
+			showScreen();
 			return;
 		}
 		ClickableInventory.forceCloseInventory(p);
@@ -322,6 +318,7 @@ public class MemberViewGUI extends GroupGUI {
 						if (gm.hasAccess(g, p.getUniqueId(),
 								getAccordingPermission(g.getCurrentRank(toChange)))) {
 							removeMember(toChange);
+							showDetail(toChange);
 						}
 					}
 				};
@@ -340,6 +337,7 @@ public class MemberViewGUI extends GroupGUI {
 					@Override
 					public void clicked(Player arg0) {
 						changePlayerRank(toChange, pType);
+						showDetail(toChange);
 					}
 				};
 			}
@@ -461,7 +459,7 @@ public class MemberViewGUI extends GroupGUI {
 		return getDirectRankName(pType);
 	}
 	
-	private String getDirectRankName(PlayerType pType) {
+	public static String getDirectRankName(PlayerType pType) {
 		String res = pType.toString().toLowerCase();
 		char[] chars = res.toCharArray();
 		chars[0] = new String(new char[] { chars[0] }).toUpperCase()
@@ -473,7 +471,7 @@ public class MemberViewGUI extends GroupGUI {
 		return res;
 	}
 
-	private PermissionType getAccordingPermission(PlayerType pt) {
+	public static PermissionType getAccordingPermission(PlayerType pt) {
 		switch (pt) {
 		case MEMBERS:
 			return PermissionType.getPermission("MEMBERS");
@@ -490,7 +488,7 @@ public class MemberViewGUI extends GroupGUI {
 	/**
 	 * Utility to determine whether the player is being promoted or demoted
 	 */
-	private String demoteOrPromote(PlayerType oldRank, PlayerType newRank, boolean upperCaseFirstLetter) {
+	private static String demoteOrPromote(PlayerType oldRank, PlayerType newRank, boolean upperCaseFirstLetter) {
 		int oldIndex  = 0;
 		int newIndex = 0;
 		for (int i = 0; i < PlayerType.values().length; i++) {

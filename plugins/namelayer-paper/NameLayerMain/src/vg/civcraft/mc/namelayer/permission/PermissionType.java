@@ -83,6 +83,7 @@ public class PermissionType {
 		LinkedList <PlayerType> modAndAbove = new LinkedList<GroupManager.PlayerType>();
 		LinkedList <PlayerType> adminAndAbove = new LinkedList<GroupManager.PlayerType>();
 		LinkedList <PlayerType> owner = new LinkedList<GroupManager.PlayerType>();
+		LinkedList <PlayerType> all = new LinkedList <GroupManager.PlayerType>();
 		members.add(PlayerType.MEMBERS);
 		modAndAbove.add(PlayerType.MODS);
 		modAndAbove.add(PlayerType.ADMINS);
@@ -90,6 +91,10 @@ public class PermissionType {
 		adminAndAbove.add(PlayerType.ADMINS);
 		adminAndAbove.add(PlayerType.OWNER);
 		owner.add(PlayerType.OWNER);
+		all.add(PlayerType.MEMBERS);
+		all.add(PlayerType.MODS);
+		all.add(PlayerType.ADMINS);
+		all.add(PlayerType.OWNER);
 		//clone the list every time so changing the list of one perm later doesn't affect other perms
 		//also not saving them to the db, because that handled by the groupmanager dao itself, which isnt
 		//even initialized at this point
@@ -120,6 +125,8 @@ public class PermissionType {
 		registerPermission("TRANSFER", (LinkedList <PlayerType>)owner.clone());
 		//allows linking this group to another
 		registerPermission("LINKING", (LinkedList <PlayerType>)owner.clone());
+		//allows opening the gui
+		registerPermission("OPEN_GUI", (LinkedList <PlayerType>)all.clone());
 		
 		
 		//perm level given to members when they join with a password

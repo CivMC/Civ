@@ -160,14 +160,8 @@ public class NameLayerGUI extends GroupGUI {
 		if (!validGroup()) {
 			return;
 		}
-		ClickableInventory ci = new ClickableInventory(27, g.getName());
-		
-		ItemStack perms = new ItemStack(Material.BOOK);
-		ISUtils.setName(perms, ChatColor.GOLD + "Modify group permissions");
-		Clickable per;
-		
-		notImplemented();
-		
+		PermissionManageGUI pmgui = new PermissionManageGUI(g, p, this);
+		pmgui.showScreen();
 	}
 
 	private void showModificationScreen() {
