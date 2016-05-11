@@ -1,4 +1,4 @@
-name: Finale
+name: ${project.name}
 main: com.github.maxopoly.Finale
 author: Maxopoly
 version: ${project.version}

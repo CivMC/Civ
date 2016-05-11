@@ -21,6 +21,7 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void playerLogin(PlayerJoinEvent e) {
+		if (!manager.isAttackSpeedEnabled()) return;
 		// Set attack speed
 		AttributeInstance attr = e.getPlayer().getAttribute(
 				Attribute.GENERIC_ATTACK_SPEED);
@@ -34,6 +35,7 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void healthRegen(EntityRegainHealthEvent e) {
+		if (!manager.isRegenHandlerEnabled()) return;
 		if (e.getEntityType() != EntityType.PLAYER) {
 			return;
 		}
