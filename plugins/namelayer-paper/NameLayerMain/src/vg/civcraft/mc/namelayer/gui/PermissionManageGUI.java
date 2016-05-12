@@ -6,7 +6,9 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
@@ -51,6 +53,9 @@ public class PermissionManageGUI extends GroupGUI{
 	
 	private Clickable produceSelectionClickable(Material mat, final PlayerType pType) {
 		ItemStack is = new ItemStack(mat);
+		ItemMeta im = is.getItemMeta();
+		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		is.setItemMeta(im);
 		Clickable c;
 		ISUtils.setName(is, ChatColor.GOLD + "View and edit permissions for " + MemberViewGUI.getDirectRankName(pType));
 		if (!gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("LIST_PERMS"))) {
@@ -73,6 +78,11 @@ public class PermissionManageGUI extends GroupGUI{
 		if (!validGroup()) {
 			return;
 		}
+		if (!gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("LIST_PERMS"))) {
+			p.sendMessage(ChatColor.RED + "You are not allowed to list permissions for this group");
+			showScreen();
+			return;
+		}
 		ClickableInventory ci = new ClickableInventory(54, g.getName());
 		final List <Clickable> clicks = new ArrayList<Clickable>();
 		final GroupPermission gp = gm.getPermissionforGroup(g);
@@ -89,7 +99,7 @@ public class PermissionManageGUI extends GroupGUI{
 				is = new ItemStack(Material.INK_SACK, 1, (short) 1); //red dye
 				ISUtils.addLore(is, ChatColor.DARK_AQUA + MemberViewGUI.getDirectRankName(pType) + " currently don't have", ChatColor.DARK_AQUA + "this permission");
 			}
-			ISUtils.setName(is, perm.toString());
+			ISUtils.setName(is, perm.getName());
 			if (canEdit) {
 				ISUtils.addLore(is, ChatColor.AQUA + "Click to toggle");
 				c = new Clickable(is) {

@@ -9,7 +9,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
@@ -170,6 +172,9 @@ public class MemberViewGUI extends GroupGUI {
 				// should never happen
 				continue;
 			}
+			ItemMeta im = is.getItemMeta();
+			im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+			is.setItemMeta(im);
 			ISUtils.setName(is,
 					ChatColor.GOLD + NameAPI.getCurrentName(currentId));
 			ci.setSlot(c, i - (45 * currentPage));
@@ -480,7 +485,7 @@ public class MemberViewGUI extends GroupGUI {
 		case ADMINS:
 			return PermissionType.getPermission("ADMINS");
 		case OWNER:
-			return PermissionType.getPermission("MEMBERS");
+			return PermissionType.getPermission("OWNER");
 		}
 		return null;
 	}
