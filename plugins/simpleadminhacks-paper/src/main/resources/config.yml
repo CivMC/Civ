@@ -6,6 +6,10 @@ debug: true
 broadcast_permission: simpleadmin.broadcast
 
 hacks:
+  experimental:
+    name: Experimental
+    enabled: true
+    combatspy: true
   game_features:
     name: GameFeatures
     enabled: false

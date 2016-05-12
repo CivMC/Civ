@@ -9,11 +9,13 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.HackBotConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.IntrobookConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.InvControlConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.NewfriendAssistConfig;
+import com.programmerdan.minecraft.simpleadminhacks.configs.ExperimentalConfig;
 import com.programmerdan.minecraft.simpleadminhacks.hacks.CTAnnounce;
 import com.programmerdan.minecraft.simpleadminhacks.hacks.HackBot;
 import com.programmerdan.minecraft.simpleadminhacks.hacks.Introbook;
 import com.programmerdan.minecraft.simpleadminhacks.hacks.InvControl;
 import com.programmerdan.minecraft.simpleadminhacks.hacks.NewfriendAssist;
+import com.programmerdan.minecraft.simpleadminhacks.hacks.Experimental;
 
 /**
  * Baseline configuration for SimpleAdminHacks and parser for all actual Hacks.
@@ -112,6 +114,8 @@ public class SimpleAdminHacksConfig {
 				return new HackBot(this.plugin, new HackBotConfig(this.plugin, boot));
 			} else if (hackName.equals(InvControl.NAME)) {
 				return new InvControl(this.plugin, new InvControlConfig(this.plugin, boot));
+			} else if (hackName.equals(Experimental.NAME)) {
+				return new Experimental(this.plugin, new ExperimentalConfig(this.plugin, boot));
 			}
 		} catch (InvalidConfigException ice) {
 			plugin.log(Level.WARNING, "Failed to activate " + hackName + " hack");
