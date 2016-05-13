@@ -1,7 +1,9 @@
 package vg.civcraft.mc.namelayer.gui;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -98,7 +100,11 @@ public class GUIGroupOverview {
 	private List<Clickable> getGroupClickables() {
 		List<String> groupNames = gm.getAllGroupNames(p.getUniqueId());
 		List<Clickable> result = new ArrayList<Clickable>();
+		Set <String> alreadyProcessed = new HashSet<String>();
 		for (String groupName : groupNames) {
+			if (alreadyProcessed.contains(groupName)) {
+				continue;
+			}
 			final Group g = gm.getGroup(groupName);
 			if (g == null) {
 				continue;
@@ -165,6 +171,7 @@ public class GUIGroupOverview {
 				c = new DecorationStack(is);
 			}
 			result.add(c);
+			alreadyProcessed.add(groupName);
 		}
 		return result;
 	}
