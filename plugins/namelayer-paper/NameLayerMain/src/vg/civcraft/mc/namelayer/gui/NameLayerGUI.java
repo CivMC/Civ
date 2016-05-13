@@ -18,7 +18,7 @@ public class NameLayerGUI extends GroupGUI {
 		super(g, p);
 	}
 
-	public void showInitialScreen() {
+	public void showGroupScreen() {
 		ClickableInventory.forceCloseInventory(p);
 		if (!validGroup()) {
 			return;
@@ -29,7 +29,7 @@ public class NameLayerGUI extends GroupGUI {
 		ISUtils.addLore(members, ChatColor.AQUA + "Click here to:",
 				ChatColor.GREEN + "Invite members", ChatColor.GREEN
 						+ "View pending invites", ChatColor.GREEN
-						+ "Remove members", ChatColor.GREEN
+						+ "Remove/Promote members", ChatColor.GREEN
 						+ "View existing members");
 		Clickable memberClick = new Clickable(members) {
 
@@ -43,8 +43,7 @@ public class NameLayerGUI extends GroupGUI {
 		ItemStack permissions = new ItemStack(Material.BOOK);
 		ISUtils.setName(permissions, ChatColor.GOLD
 				+ "Manage group permissions");
-		ISUtils.addLore(permissions, ChatColor.AQUA + "Click here to:",
-				ChatColor.GREEN + "Promote players", ChatColor.GREEN
+		ISUtils.addLore(permissions, ChatColor.AQUA + "Click here to:", ChatColor.GREEN
 						+ "Modify group permissions", ChatColor.GREEN
 						+ "View current group permissions");
 
@@ -149,7 +148,7 @@ public class NameLayerGUI extends GroupGUI {
 
 			@Override
 			public void clicked(Player arg0) {
-				showInitialScreen();
+				showGroupScreen();
 			}
 		}, 22);
 		ci.showInventory(p);
@@ -160,8 +159,52 @@ public class NameLayerGUI extends GroupGUI {
 		if (!validGroup()) {
 			return;
 		}
-		PermissionManageGUI pmgui = new PermissionManageGUI(g, p, this);
-		pmgui.showScreen();
+		ClickableInventory ci = new ClickableInventory(27, g.getName());
+		ItemStack permStack = new ItemStack(Material.FENCE_GATE);
+		ISUtils.setName(permStack, ChatColor.GOLD + "View and manage group permissions");
+		Clickable permClickable;
+		if (gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("LIST_PERMS"))) {
+			permClickable = new Clickable(permStack) {
+				@Override
+				public void clicked(Player arg0) {
+					PermissionManageGUI pmgui = new PermissionManageGUI(g, p, NameLayerGUI.this);
+					pmgui.showScreen();
+				}
+			};
+		}
+		else {
+			ISUtils.addLore(permStack, ChatColor.RED + "You don't have permission", ChatColor.RED + "to do this");
+			permClickable = new DecorationStack(permStack);
+		}
+		ci.setSlot(permClickable, 11);
+		
+		ItemStack blackStack = new ItemStack(Material.BOOK_AND_QUILL);
+		Clickable blackClickable;
+		ISUtils.setName(blackStack, ChatColor.GOLD + "View and manage blacklist");
+		if (gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("BLACKLIST"))) {
+			blackClickable = new Clickable(blackStack) {
+				@Override
+				public void clicked(Player arg0) {
+					//TODO
+					notImplemented();
+				}
+			};
+		}
+		else {
+			ISUtils.addLore(blackStack, ChatColor.RED + "You don't have permission", ChatColor.RED + "to do this");
+			blackClickable = new DecorationStack(blackStack);
+		}
+		ci.setSlot(permClickable, 15);
+		ItemStack goBack = new ItemStack(Material.WOOD_DOOR);
+		ISUtils.setName(goBack, ChatColor.GOLD + "Go back to overview");
+		ci.setSlot(new Clickable(goBack) {
+
+			@Override
+			public void clicked(Player arg0) {
+				showGroupScreen();
+			}
+		}, 22);
+		ci.showInventory(p);
 	}
 
 	private void showModificationScreen() {

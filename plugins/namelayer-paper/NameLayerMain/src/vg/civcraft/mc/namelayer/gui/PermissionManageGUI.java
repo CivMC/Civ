@@ -136,7 +136,7 @@ public class PermissionManageGUI extends GroupGUI{
 		}
 		for (int i = 45 * currentPage; i < 45 * (currentPage + 1)
 				&& i < clicks.size(); i++) {
-			ci.setSlot(clicks.get(i), i);			
+			ci.setSlot(clicks.get(i), i - (45 * currentPage));		
 		}
 		
 		if (currentPage > 0) {
