@@ -30,6 +30,9 @@ public class MaterialAliases {
 		materialAliases.put(Material.CARROT_ITEM, Material.CARROT);
 		materialAliases.put(Material.POTATO_ITEM, Material.POTATO);
 		materialAliases.put(Material.POISONOUS_POTATO, Material.POTATO);
+		materialAliases.put(Material.BEETROOT_SEEDS, Material.BEETROOT_BLOCK);
+		materialAliases.put(Material.BEETROOT_BLOCK, Material.BEETROOT_BLOCK);
+		materialAliases.put(Material.BEETROOT, Material.BEETROOT_BLOCK);
 
 		materialAliases.put(Material.MELON_SEEDS, Material.MELON_STEM);
 		materialAliases.put(Material.MELON, Material.MELON_BLOCK);

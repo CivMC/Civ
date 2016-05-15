@@ -44,6 +44,7 @@ public class BlockGrower {
 		growthStages.put(Material.COCOA, 3);
 		
 		growthStages.put(Material.NETHER_WARTS, 4);
+		growthStages.put(Material.BEETROOT_BLOCK, 4);
 	}
 	
 	private PlantManager plantManager;

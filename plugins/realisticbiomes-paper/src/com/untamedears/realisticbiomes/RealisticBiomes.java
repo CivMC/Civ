@@ -35,6 +35,8 @@ public class RealisticBiomes extends JavaPlugin {
 	
 	public HashMap<String, List<Biome>> biomeAliases;
 	public GrowthMap materialGrowth;
+	public GrowthMap fishSpawn;
+	public boolean replaceFish;
 	public BlockGrower blockGrower;
 	public PersistConfig persistConfig;
 	private PlantManager plantManager;
@@ -66,7 +68,8 @@ public class RealisticBiomes extends JavaPlugin {
 		loadBiomeAliases(config);
 		loadPersistConfig(config);
 		materialGrowth = loadGrowthConfigs(config.getConfigurationSection("growth"), null);
-		materialGrowth.putAll(loadGrowthConfigs(config.getConfigurationSection("fish_drops"), GrowthConfig.Type.FISHING_DROP));
+		fishSpawn = loadGrowthConfigs(config.getConfigurationSection("fish_drops"), GrowthConfig.Type.FISHING_DROP);
+		replaceFish = config.getBoolean("replace_fishing", false);
 
 		// load the max log level for our logging hack
 		// if not defined then its just initalized at INFO
@@ -325,7 +328,7 @@ public class RealisticBiomes extends JavaPlugin {
 		try {
 			PluginManager pm = getServer().getPluginManager();
 			pm.registerEvents(new GrowListener(this), this);
-			pm.registerEvents(new SpawnListener(materialGrowth), this);
+			pm.registerEvents(new SpawnListener(materialGrowth, fishSpawn), this);
 			pm.registerEvents(new PlayerListener(this, materialGrowth), this);
 		}
 		catch(Exception e)

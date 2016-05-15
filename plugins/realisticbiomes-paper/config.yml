@@ -8,6 +8,8 @@ realistic_biomes:
 
  cache_entire_database: true
  persistence_enabled: true
+ # Set to true if you want fishing_drops to _replace_ MC default instead of control.
+ replace_fishing: false
 
  unload_batch_period: 100
  grow_event_load_chance: 0.1
@@ -23,17 +25,99 @@ realistic_biomes:
 
  # catagories of biomes
  biome_aliases:
-  cold: [ICE_PLAINS, ICE_MOUNTAINS, TAIGA, TAIGA_HILLS]
-  cold_forest: [TAIGA, TAIGA_HILLS]
-  temperate: [PLAINS, FOREST, FOREST_HILLS]
-  forest: [FOREST, FOREST_HILLS]
-  mountain: [EXTREME_HILLS, SMALL_MOUNTAINS]
-  hot_dry: [DESERT, DESERT_HILLS]
-  hot_rainy: [JUNGLE, JUNGLE_HILLS]
-  water: [BEACH, OCEAN, FROZEN_OCEAN, RIVER, FROZEN_RIVER]
-  freshwater: [RIVER, FROZEN_RIVER]
-  mushroom: [MUSHROOM_ISLAND, MUSHROOM_SHORE]
-  other: [HELL, SKY, SWAMPLAND]
+  water:
+  - BEACHES
+  - STONE_BEACH
+  - DEEP_OCEAN
+  - RIVER
+  - OCEAN
+  freshwater:
+  - RIVER
+  - FROZEN_RIVER
+  cold_water:
+  - COLD_BEACH
+  - FROZEN_OCEAN
+  - FROZEN_RIVER
+  temperate:
+  - PLAINS
+  - SAVANNA
+  - SAVANNA_ROCK
+  forest:
+  - BIRCH_FOREST
+  - BIRCH_FOREST_HILLS
+  - ROOFED_FOREST
+  - FOREST
+  - FOREST_HILLS
+  cold:
+  - ICE_FLATS
+  - TAIGA
+  - TAIGA_COLD
+  - REDWOOD_TAIGA
+  - TAIGA_HILLS
+  - TAIGA_COLD_HILLS
+  - REDWOOD_TAIGA_HILLS
+  - ICE_MOUNTAINS
+  cold_forest:
+  - TAIGA
+  - TAIGA_COLD
+  - REDWOOD_TAIGA
+  - TAIGA_HILLS
+  - TAIGA_COLD_HILLS
+  - REDWOOD_TAIGA_HILLS
+  hot_dry:
+  - DESERT
+  - DESERT_HILLS
+  hot_rainy:
+  - JUNGLE
+  - JUNGLE_EDGE
+  - JUNGLE_HILLS
+  mountain:
+  - EXTREME_HILLS
+  - EXTREME_HILLS_WITH_TREES
+  - SMALLER_EXTREME_HILLS
+  mesa:
+  - MESA
+  - MESA_CLEAR_ROCK
+  - MESA_ROCK
+  mushroom:
+  - MUSHROOM_ISLAND
+  - MUSHROOM_ISLAND_SHORE
+  swamp:
+  - SWAMPLAND
+  mutated_forest:
+  - MUTATED_BIRCH_FOREST
+  - MUTATED_BIRCH_FOREST_HILLS
+  - MUTATED_FOREST
+  - MUTATED_ROOFED_FOREST
+  mutated_mountain:
+  - MUTATED_EXTREME_HILLS
+  - MUTATED_EXTREME_HILLS_WITH_TREES
+  mutated_hot_dry:
+  - MUTATED_DESERT
+  mutated_cold:
+  - MUTATED_ICE_FLATS
+  - MUTATED_TAIGA
+  - MUTATED_TAIGA_COLD
+  - MUTATED_REDWOOD_TAIGA
+  - MUTATED_REDWOOD_TAIGA_HILLS
+  mutated_hot_rainy:
+  - MUTATED_JUNGLE
+  - MUTATED_JUNGLE_EDGE
+  mutated_mesa:
+  - MUTATED_MESA
+  - MUTATED_MESA_CLEAR_ROCK
+  - MUTATED_MESA_ROCK
+  mutated_temperate:
+  - MUTATED_PLAINS
+  - MUTATED_FOREST
+  - MUTATED_SAVANNA
+  - MUTATED_SAVANNA_ROCK
+  mutated_swamp:
+  - MUTATED_SWAMPLAND
+  other:
+  - SKY
+  - VOID
+  - HELL
 
  # list of crops to be effected by the plugin
  # valid crop names can be any of the following:
@@ -167,6 +251,20 @@ realistic_biomes:
     cold: 1.0
     temperate: 0.25
 
+  #--------------------------
+
+  BEETROOT_BLOCK:
+   inherit: crop
+   persistent_growth_period: 3
+   biomes:
+    PLAINS: 1.0
+    forest: 0.75
+    SKY: 0.5
+    cold: 0.25
+    hot_dry: 0.25
+    mountain: 0.25
+    mushroom: 0.25
+
   #----------------------------------------
 
   column:
@@ -188,7 +286,7 @@ realistic_biomes:
    biomes:
     hot_rainy: 1.0
     SWAMPLAND: 0.5
-    BEACH: 0.5
+    BEACHES: 0.5
     RIVER: 0.5
 
   #----------------------------------------
@@ -493,3 +591,20 @@ realistic_biomes:
    inherit: mat_RAW_FISH
 
   #---------------------------------------
+# Example config using replacement, if replace_fishing: true is set
+# fish_drops:
+#  mat_FISH:
+#   # 50% of drops will be fish, regardless of "minecraft" drops.
+#   base_rate: 0.5
+#
+#  mat_ENCHANTED_BOOK:
+#   # 25% of drops will be enchanted books, without any "treasure" enchants
+#   base_rate: 0.25
+#    random_enchant: true
+#    treasure_enchant: false
+#
+#  mat_LEATHER_BOOTS:
+#   # 25% of drops will be leather boots, with "treasure" enchants
+#   base_rate: 0.25
+#    random_enchant: true
+#    treasure_enchant: true
