@@ -132,7 +132,7 @@ public class GrowListener implements Listener {
         					&& MaterialAliases.getConfig(plugin.materialGrowth, event.getClickedBlock()) != null) {
             			event.setCancelled(true);
         			}
-        			else if(material == Material.DOUBLE_PLANT) {
+        			else if(!plugin.allowTallPlantReplication && material == Material.DOUBLE_PLANT) {
         				event.setCancelled(true);
         			}
             	}

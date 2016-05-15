@@ -10,6 +10,8 @@ realistic_biomes:
  persistence_enabled: true
  # Set to true if you want fishing_drops to _replace_ MC default instead of control.
  replace_fishing: false
+ # Set to true if you want tapping a plant with bonemeal to double it.
+ allow_tallplant_replication: true
 
  unload_batch_period: 100
  grow_event_load_chance: 0.1
