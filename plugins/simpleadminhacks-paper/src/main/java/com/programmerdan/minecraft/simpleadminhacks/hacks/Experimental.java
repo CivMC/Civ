@@ -5,7 +5,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
+import org.bukkit.entity.Player;
+import org.bukkit.Location;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
@@ -63,6 +66,39 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 		} else {
 			return "Experiments disabled.";
 		}
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
+	private void monitorTeleportLow(PlayerTeleportEvent event) {
+		StringBuffer sb = new StringBuffer("[LO] ");
+		logTeleport(event, sb);
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	private void monitorTeleportHigh(PlayerTeleportEvent event) {
+		StringBuffer sb = new StringBuffer("[HI] ");
+		logTeleport(event, sb);
+	}
+
+	private void logTeleport(PlayerTeleportEvent event, StringBuffer sb) {
+		sb.append(event.isCancelled() ? "C " : "A ");
+		sb.append(event.getCause().name());
+		Player player = event.getPlayer();
+		Location from = event.getFrom();
+		Location to = event.getTo();
+		sb.append(String.format(" %16s", player != null ? player.getName() : "--unknown--"));
+		if (from != null) {
+			sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", from.getWorld().getName(), from.getX(), from.getY(), from.getZ()));
+		} else {
+			sb.append(" (none)");
+		}
+		sb.append(" ->");
+		if (to != null) {
+			sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", to.getWorld().getName(), to.getX(), to.getY(), to.getZ()));
+		} else {
+			sb.append(" (none)");
+		}
+		plugin().log(sb.toString());
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
