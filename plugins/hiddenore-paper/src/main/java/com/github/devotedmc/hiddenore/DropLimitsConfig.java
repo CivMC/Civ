@@ -11,7 +11,7 @@ public class DropLimitsConfig {
 	public double chance;
 	public int minAmount;
 	public int maxAmount;
-	
+
 	public DropLimitsConfig() {
 		tools = new HashSet<String>();
 		minY = 1;
@@ -20,7 +20,7 @@ public class DropLimitsConfig {
 		minAmount = 0;
 		maxAmount = 0;
 	}
-	
+
 	public void setTools(Collection<String> tools) {
 		this.tools.clear();
 		if (tools != null) {

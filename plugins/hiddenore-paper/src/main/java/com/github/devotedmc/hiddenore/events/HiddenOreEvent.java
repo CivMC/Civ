@@ -16,7 +16,7 @@ public class HiddenOreEvent extends Event implements Cancellable {
 	private final Player player;
 	private final Location dropLocation;
 	private List<ItemStack> drops;
-	
+
 	public HiddenOreEvent(final Player player, final Location dropLocation, List<ItemStack> drops) {
 		super(false);
 		this.player = player;
@@ -25,7 +25,7 @@ public class HiddenOreEvent extends Event implements Cancellable {
 	}
 
 	private boolean cancel = false;
-	
+
 	@Override
 	public boolean isCancelled() {
 		return cancel;
@@ -40,23 +40,23 @@ public class HiddenOreEvent extends Event implements Cancellable {
 	public HandlerList getHandlers() {
 		return HiddenOreEvent.handlers;
 	}
-	
+
 	public static HandlerList getHandlerList() {
 		return handlers;
 	}
-	
+
 	public Player getPlayer() {
 		return player;
 	}
-	
+
 	public Location getDropLocation() {
 		return dropLocation;
 	}
-	
+
 	public List<ItemStack> getDrops() {
 		return drops;
 	}
-	
+
 	public void setDrops(List<ItemStack> drops) {
 		if (drops == this.drops) return;
 		this.drops.clear();

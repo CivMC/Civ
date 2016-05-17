@@ -24,11 +24,11 @@ import com.github.devotedmc.hiddenore.HiddenOre;
 
 public class BreakTracking {
 	Map<UUID, Map<Long, short[]>> track;
-	
+
 	public BreakTracking() {
 		track = new HashMap<UUID, Map<Long, short[]>>();
 	}
-	
+
 	public void load() {
 		long s = System.currentTimeMillis();
 		HiddenOre.getPlugin().getLogger().info("Starting Break Tracking load");
@@ -38,7 +38,7 @@ public class BreakTracking {
 		} else {
 			try {
 				DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(tf)));
-				
+
 				String uuid = null;
 				boolean active = true;
 				while (active) {
@@ -52,9 +52,9 @@ public class BreakTracking {
 					UUID uid = UUID.fromString(uuid);
 					Map<Long, short[]> world = new HashMap<Long, short[]>();
 					track.put(uid, world);
-					
+
 					long ccnt = 0l;
-					
+
 					while (dis.readBoolean()) {
 						Long chunk = dis.readLong();
 						short[] layers = new short[256];
@@ -64,31 +64,30 @@ public class BreakTracking {
 						if (Config.isDebug) {
 							HiddenOre.getPlugin().getLogger().info("Loaded layers for chunk " + chunk);
 						}
-						ccnt ++;
+						ccnt++;
 						world.put(chunk, layers);
 					}
-					
+
 					HiddenOre.getPlugin().getLogger().info("Loaded " + ccnt + " chunks");
 				}
-				
+
 				dis.close();
-			} catch(IOException ioe) {
+			} catch (IOException ioe) {
 				HiddenOre.getPlugin().getLogger().log(Level.SEVERE, "Failed to load break tracking.", ioe);
 			}
 		}
 		s = System.currentTimeMillis() - s;
 		HiddenOre.getPlugin().getLogger().info("Took " + s + "ms to load Break Tracking");
 	}
-	
+
 	public void liveSave() {
-		Bukkit.getScheduler().runTaskLaterAsynchronously(HiddenOre.getPlugin(), 
-				new Runnable() {
+		Bukkit.getScheduler().runTaskLaterAsynchronously(HiddenOre.getPlugin(), new Runnable() {
 			public void run() {
 				save();
 			}
 		}, 0);
 	}
-	
+
 	public void save() {
 		long s = System.currentTimeMillis();
 		HiddenOre.getPlugin().getLogger().info("Starting Break Tracking save");
@@ -108,7 +107,7 @@ public class BreakTracking {
 		try {
 			if (tf.createNewFile()) {
 				DataOutputStream oos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(tf)));
-				
+
 				for (Map.Entry<UUID, Map<Long, short[]>> world : track.entrySet()) {
 					HiddenOre.getPlugin().getLogger().info("Saving world - " + world.getKey());
 					oos.writeUTF(world.getKey().toString());
@@ -133,32 +132,32 @@ public class BreakTracking {
 			} else {
 				HiddenOre.getPlugin().getLogger().log(Level.WARNING, "Failed to create break tracking save file.");
 			}
-		} catch(IOException ioe) {
+		} catch (IOException ioe) {
 			HiddenOre.getPlugin().getLogger().log(Level.SEVERE, "Failed to save break tracking.", ioe);
 		}
 		s = System.currentTimeMillis() - s;
 		HiddenOre.getPlugin().getLogger().info("Took " + s + "ms to save Break Tracking");
 	}
-	
+
 	public boolean trackBreak(Location loc) {
 		long s = System.currentTimeMillis();
 		int Y = loc.getBlockY();
 		UUID world = loc.getWorld().getUID();
-	    Chunk chunk = loc.getChunk();
-	    long chunk_id = ((long)chunk.getX() << 32L) + (long)chunk.getZ();
-	    
+		Chunk chunk = loc.getChunk();
+		long chunk_id = ((long) chunk.getX() << 32L) + (long) chunk.getZ();
+
 		Map<Long, short[]> chunks = track.get(world);
 		if (chunks == null) { // init chunk
 			chunks = new HashMap<Long, short[]>();
 			track.put(world, chunks);
 		}
-		
+
 		short[] layers = chunks.get(chunk_id);
 		if (layers == null) { // init layers
 			layers = new short[256];
 			chunks.put(chunk_id, layers);
 		}
-		
+
 		if (layers[Y] == 0) {
 			// quick layer scan for air and water
 			for (int x = 0; x < 16; x++) {
@@ -172,14 +171,15 @@ public class BreakTracking {
 		}
 
 		boolean ret = false;
-		if (layers[Y] >= 256) { // 
+		if (layers[Y] >= 256) { //
 			ret = false;
 		} else {
-			layers[Y] ++; // represent new break in layer.
+			layers[Y]++; // represent new break in layer.
 			ret = true;
 		}
 		if (Config.isDebug) {
-			HiddenOre.getPlugin().getLogger().info("now world " + world + " chunk " + chunk_id + " layersum " + layers[Y]);
+			HiddenOre.getPlugin().getLogger()
+					.info("now world " + world + " chunk " + chunk_id + " layersum " + layers[Y]);
 		}
 
 		s = System.currentTimeMillis() - s;
@@ -187,6 +187,6 @@ public class BreakTracking {
 			HiddenOre.getPlugin().getLogger().info("Took a long time (" + s + "ms) recording break at " + loc);
 		}
 
-		return ret;		
+		return ret;
 	}
 }

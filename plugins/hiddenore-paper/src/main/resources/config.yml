@@ -127,7 +127,11 @@ blocks:
 #    prefix: Lucky find! You've found a dropchest.
 #    chance: 0.25
 #    amount: 5
-  
+# Example w/ drop suppression.
+# GLASS:
+#  allTypes: true
+#  suppressDrops: true
+# This will prevent glass from dropping, ever.
 pretty_names:
  DIAMOND: Diamond
  IRON_INGOT: Iron ingot
