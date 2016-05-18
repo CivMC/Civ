@@ -33,7 +33,6 @@ public class PearlCoolDownListener implements Listener {
 	@EventHandler
 	public void pearlThrow(ProjectileLaunchEvent e) {
 		//ensure it's a pearl
-		System.out.println("happened");
 		if (e.getEntityType() != EntityType.ENDER_PEARL) {
 			return;
 		}
