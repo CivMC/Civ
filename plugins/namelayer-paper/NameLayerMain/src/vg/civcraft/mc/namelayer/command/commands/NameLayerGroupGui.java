@@ -10,7 +10,7 @@ import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.gui.GUIGroupOverview;
-import vg.civcraft.mc.namelayer.gui.NameLayerGUI;
+import vg.civcraft.mc.namelayer.gui.MemberViewGUI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class NameLayerGroupGui extends PlayerCommandMiddle {
@@ -43,8 +43,7 @@ public class NameLayerGroupGui extends PlayerCommandMiddle {
 			sender.sendMessage(ChatColor.RED + "You don't have permission to do this");
 			return true;
 		}
-		NameLayerGUI gui = new NameLayerGUI((Player) sender, g);
-		gui.showGroupScreen();
+		MemberViewGUI gui = new MemberViewGUI((Player) sender, g);
 		return true;
 	}
 	

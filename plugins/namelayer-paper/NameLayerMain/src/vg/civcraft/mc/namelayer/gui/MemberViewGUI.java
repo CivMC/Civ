@@ -2,40 +2,49 @@ package vg.civcraft.mc.namelayer.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.events.PromotePlayerEvent;
+import vg.civcraft.mc.namelayer.group.BlackList;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class MemberViewGUI extends GroupGUI {
 
+	private boolean showBlacklist;
+	private boolean showInvites;
 	private boolean showMembers;
 	private boolean showMods;
 	private boolean showAdmins;
 	private boolean showOwners;
 
 	private int currentPage;
-	private NameLayerGUI parentGUI;
+	private boolean[] savedToggleState;
 
-	public MemberViewGUI(Player p, Group g, NameLayerGUI parentGUI) {
+	public MemberViewGUI(Player p, Group g) {
 		super(g, p);
-		this.parentGUI = parentGUI;
 		showMembers = gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("MEMBERS"))
 				|| gm.hasAccess(g, p.getUniqueId(),
@@ -56,7 +65,7 @@ public class MemberViewGUI extends GroupGUI {
 		showScreen();
 	}
 
-	private void showScreen() {
+	public void showScreen() {
 		ClickableInventory.forceCloseInventory(p);
 		if (!validGroup()) {
 			return;
@@ -67,39 +76,16 @@ public class MemberViewGUI extends GroupGUI {
 			return;
 		}
 		ClickableInventory ci = new ClickableInventory(54, g.getName());
-		final List<UUID> members = getToDisplay();
-		if (members.size() < 45 * currentPage) {
+		final List<Clickable> clicks = constructClickables();
+		if (clicks.size() < 45 * currentPage) {
 			// would show an empty page, so go to previous
 			currentPage--;
 			showScreen();
 		}
 		// fill gui
-		for (int i = 45 * currentPage; i < 45 * (currentPage + 1)
-				&& i < members.size(); i++) {
-			final UUID currentId = members.get(i);
-			Clickable c;
-			switch (g.getPlayerType(currentId)) {
-			case MEMBERS:
-				c = constructOverviewClickable(Material.LEATHER_CHESTPLATE,
-						currentId, PlayerType.MEMBERS);
-				break;
-			case MODS:
-				c = constructOverviewClickable(Material.GOLD_CHESTPLATE,
-						currentId, PlayerType.MODS);
-				break;
-			case ADMINS:
-				c = constructOverviewClickable(Material.IRON_CHESTPLATE,
-						currentId, PlayerType.ADMINS);
-				break;
-			case OWNER:
-				c = constructOverviewClickable(Material.DIAMOND_CHESTPLATE,
-						currentId, PlayerType.OWNER);
-				break;
-			default:
-				// should never happen
-				continue;
-			}
-			ci.setSlot(c, i - (45 * currentPage));
+		for (int i = 36 * currentPage; i < 36 * (currentPage + 1)
+				&& i < clicks.size(); i++) {
+			ci.setSlot(clicks.get(i), 9 + i - (36 * currentPage));
 		}
 		// back button
 		if (currentPage > 0) {
@@ -118,14 +104,14 @@ public class MemberViewGUI extends GroupGUI {
 			ci.setSlot(baCl, 45);
 		}
 		// next button
-		if ((45 * (currentPage + 1)) <= members.size()) {
+		if ((45 * (currentPage + 1)) <= clicks.size()) {
 			ItemStack forward = new ItemStack(Material.ARROW);
 			ISUtils.setName(forward, ChatColor.GOLD + "Go to next page");
 			Clickable forCl = new Clickable(forward) {
 
 				@Override
 				public void clicked(Player arg0) {
-					if ((45 * (currentPage + 1)) <= members.size()) {
+					if ((45 * (currentPage + 1)) <= clicks.size()) {
 						currentPage++;
 					}
 					showScreen();
@@ -135,25 +121,250 @@ public class MemberViewGUI extends GroupGUI {
 		}
 
 		// options
-		ci.setSlot(setupMemberTypeToggle(PlayerType.MEMBERS, showMembers), 46);
 
-		ci.setSlot(setupMemberTypeToggle(PlayerType.MODS, showMods), 47);
+		ci.setSlot(createBlacklistToggle(), 46);
+		ci.setSlot(createInviteToggle(), 47);
+		ci.setSlot(setupMemberTypeToggle(PlayerType.MEMBERS, showMembers), 48);
+
+		ci.setSlot(setupMemberTypeToggle(PlayerType.MODS, showMods), 50);
 
 		ci.setSlot(setupMemberTypeToggle(PlayerType.ADMINS, showAdmins), 51);
 
 		ci.setSlot(setupMemberTypeToggle(PlayerType.OWNER, showOwners), 52);
 
-		// to previous gui
+		//exit button
 		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
-		ISUtils.setName(backToOverview, ChatColor.GOLD + "Go back");
+		ISUtils.setName(backToOverview, ChatColor.GOLD + "Close");
 		ci.setSlot(new Clickable(backToOverview) {
 
 			@Override
 			public void clicked(Player arg0) {
-				parentGUI.showMemberManageScreen();
+				// just let it close, dont do anything
 			}
 		}, 49);
+		
+		
+		//options at the top
+		
+		ItemStack permStack = new ItemStack(Material.FENCE_GATE);
+		ISUtils.setName(permStack, ChatColor.GOLD + "View and manage group permissions");
+		Clickable permClickable;
+		if (gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("LIST_PERMS"))) {
+			permClickable = new Clickable(permStack) {
+				@Override
+				public void clicked(Player arg0) {
+					PermissionManageGUI pmgui = new PermissionManageGUI(g, p, MemberViewGUI.this);
+					pmgui.showScreen();
+				}
+			};
+		}
+		else {
+			ISUtils.addLore(permStack, ChatColor.RED + "You don't have permission", ChatColor.RED + "to do this");
+			permClickable = new DecorationStack(permStack);
+		}
+		ci.setSlot(permClickable, 4);
+		
 		ci.showInventory(p);
+	}
+
+	private List<Clickable> constructClickables() {
+		List<Clickable> clicks = new ArrayList<Clickable>();
+		if (showBlacklist) {
+			final BlackList black = NameLayerPlugin.getBlackList();
+			for (final UUID uuid : black.getBlacklist(g)) {
+				ItemStack is = new ItemStack(Material.LEATHER_CHESTPLATE);
+				LeatherArmorMeta meta = (LeatherArmorMeta) is.getItemMeta();
+				meta.setColor(Color.BLACK);
+				ISUtils.setName(is, NameAPI.getCurrentName(uuid));
+				Clickable c;
+				if (gm.hasAccess(g, p.getUniqueId(),
+						PermissionType.getPermission("BLACKLIST"))) {
+					ISUtils.addLore(is, ChatColor.GREEN + "Click to remove "
+							+ NameAPI.getCurrentName(uuid), ChatColor.GREEN
+							+ "from the blacklist");
+					c = new Clickable(is) {
+
+						@Override
+						public void clicked(Player arg0) {
+							if (gm.hasAccess(g, p.getUniqueId(),
+									PermissionType.getPermission("BLACKLIST"))) {
+								black.removeBlacklistMember(g, uuid, true);
+								checkRecacheGroup();
+								p.sendMessage(ChatColor.GREEN + "You removed "
+										+ NameAPI.getCurrentName(uuid)
+										+ " from the blacklist");
+							} else {
+								p.sendMessage(ChatColor.RED
+										+ "You lost permission to remove this player from the blacklist");
+							}
+						}
+					};
+				} else {
+					ISUtils.addLore(is, ChatColor.RED
+							+ "You dont have permission to remove",
+							ChatColor.RED + NameAPI.getCurrentName(uuid)
+									+ "from the blacklist");
+					c = new DecorationStack(is);
+				}
+				clicks.add(c);
+			}
+
+		}
+		if (showInvites) {
+			Map<UUID, PlayerType> invites = NameLayerPlugin
+					.getGroupManagerDao().getInvitesForGroup(g.getName());
+			for (Entry<UUID, PlayerType> entry : invites.entrySet()) {
+				ItemStack is = new ItemStack(Material.CHAINMAIL_CHESTPLATE);
+				ItemMeta im = is.getItemMeta();
+				im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+				is.setItemMeta(im);
+				final String playerName = NameAPI
+						.getCurrentName(entry.getKey());
+				ISUtils.setName(is, ChatColor.GOLD + playerName);
+				boolean canRevoke = false;
+				switch (entry.getValue()) {
+				case MEMBERS:
+					ISUtils.addLore(is, ChatColor.AQUA + "Invited as: Member");
+					if (gm.hasAccess(g, p.getUniqueId(),
+							PermissionType.getPermission("MEMBERS"))) {
+						canRevoke = true;
+					}
+					break;
+				case MODS:
+					ISUtils.addLore(is, ChatColor.AQUA + "Invited as: Mod");
+					if (gm.hasAccess(g, p.getUniqueId(),
+							PermissionType.getPermission("MODS"))) {
+						canRevoke = true;
+					}
+					break;
+				case ADMINS:
+					ISUtils.addLore(is, ChatColor.AQUA + "Invited as: Admin");
+					if (gm.hasAccess(g, p.getUniqueId(),
+							PermissionType.getPermission("ADMINS"))) {
+						canRevoke = true;
+					}
+					break;
+				case OWNER:
+					ISUtils.addLore(is, ChatColor.AQUA + "Invited as: Owner");
+					if (gm.hasAccess(g, p.getUniqueId(),
+							PermissionType.getPermission("OWNER"))) {
+						canRevoke = true;
+					}
+					break;
+				default:
+					continue;
+				}
+				Clickable c = null;
+				if (canRevoke) {
+					ISUtils.addLore(is, ChatColor.GREEN
+							+ "Click to revoke this invite");
+					c = new Clickable(is) {
+
+						@Override
+						public void clicked(Player arg0) {
+							UUID invitedUUID = NameAPI.getUUID(playerName);
+							PlayerType pType = g.getInvite(invitedUUID);
+							if (pType == null) {
+								p.sendMessage(ChatColor.RED
+										+ "Failed to revoke invite for "
+										+ playerName
+										+ ". This player isn't invited currently.");
+								showScreen();
+							}
+							// make sure the player still has permission to do
+							// this
+							boolean allowed = false;
+							switch (pType) {
+							case MEMBERS:
+								allowed = gm
+										.hasAccess(
+												g,
+												p.getUniqueId(),
+												PermissionType
+														.getPermission("MEMBERS"));
+								break;
+							case MODS:
+								allowed = gm.hasAccess(g, p.getUniqueId(),
+										PermissionType.getPermission("MODS"));
+								break;
+							case ADMINS:
+								allowed = gm.hasAccess(g, p.getUniqueId(),
+										PermissionType.getPermission("ADMINS"));
+								break;
+							case OWNER:
+								allowed = gm.hasAccess(g, p.getUniqueId(),
+										PermissionType.getPermission("OWNER"));
+								break;
+							default:
+								allowed = false;
+								break;
+							}
+							if (!allowed) {
+								p.sendMessage(ChatColor.RED
+										+ "You don't have permission to revoke this invite");
+								showScreen();
+							} else {
+								g.removeInvite(invitedUUID, true);
+								PlayerListener.removeNotification(invitedUUID,
+										g);
+
+								if (NameLayerPlugin.isMercuryEnabled()) {
+									MercuryAPI.sendGlobalMessage(
+											"removeInvitation "
+													+ g.getGroupId() + " "
+													+ invitedUUID, "namelayer");
+								}
+								p.sendMessage(ChatColor.GREEN + playerName
+										+ "'s invitation has been revoked.");
+							}
+						}
+					};
+				} else {
+					ISUtils.addLore(is, ChatColor.RED
+							+ "You don't have permission to revoke this invite");
+					c = new DecorationStack(is);
+				}
+				if (c != null) {
+					clicks.add(c);
+				}
+			}
+		}
+		for (UUID uuid : g.getAllMembers()) {
+			Clickable c = null;
+			switch (g.getPlayerType(uuid)) {
+			case MEMBERS:
+				if (showMembers) {
+					c = constructMemberClickable(Material.LEATHER_CHESTPLATE,
+							uuid, PlayerType.MEMBERS);
+				}
+				break;
+			case MODS:
+				if (showMods) {
+					c = constructMemberClickable(Material.GOLD_CHESTPLATE,
+							uuid, PlayerType.MODS);
+				}
+				break;
+			case ADMINS:
+				if (showAdmins) {
+					c = constructMemberClickable(Material.IRON_CHESTPLATE,
+							uuid, PlayerType.ADMINS);
+				}
+				break;
+			case OWNER:
+				if (showOwners) {
+					c = constructMemberClickable(Material.DIAMOND_CHESTPLATE,
+							uuid, PlayerType.OWNER);
+				}
+				break;
+			default:
+				// should never happen
+			}
+			if (c != null) {
+				clicks.add(c);
+			}
+		}
+
+		return clicks;
 	}
 
 	private Clickable setupMemberTypeToggle(final PlayerType pType,
@@ -196,10 +407,10 @@ public class MemberViewGUI extends GroupGUI {
 
 	}
 
-	private Clickable constructOverviewClickable(Material material,
+	private Clickable constructMemberClickable(Material material,
 			final UUID toDisplay, PlayerType rank) {
 		Clickable c;
-		ItemStack is = new ItemStack(Material.DIAMOND_CHESTPLATE);
+		ItemStack is = new ItemStack(material);
 		ItemMeta im = is.getItemMeta();
 		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		is.setItemMeta(im);
@@ -385,36 +596,62 @@ public class MemberViewGUI extends GroupGUI {
 		}
 	}
 
-	private List<UUID> getToDisplay() {
-		List<UUID> res = new ArrayList<UUID>();
-		for (UUID uuid : g.getAllMembers()) {
-			switch (g.getPlayerType(uuid)) {
-			case MEMBERS:
-				if (showMembers) {
-					res.add(uuid);
+	private Clickable createBlacklistToggle() {
+		ItemStack is = MenuUtils.toggleButton(
+				showBlacklist,
+				ChatColor.GOLD + "Show blacklisted players",
+				gm.hasAccess(g, p.getUniqueId(),
+						PermissionType.getPermission("GROUPSTATS")));
+		Clickable c;
+		if (gm.hasAccess(g, p.getUniqueId(),
+				PermissionType.getPermission("GROUPSTATS"))) {
+			c = new Clickable(is) {
+
+				@Override
+				public void clicked(Player arg0) {
+					if (!showBlacklist) {
+						// currently showing members, so save state
+						savedToggleState = new boolean[5];
+						savedToggleState[0] = showInvites;
+						savedToggleState[1] = showMembers;
+						savedToggleState[2] = showMods;
+						savedToggleState[3] = showAdmins;
+						savedToggleState[4] = showOwners;
+						showInvites = false;
+						showMembers = false;
+						showMods = false;
+						showAdmins = false;
+						showOwners = false;
+						showBlacklist = true;
+					} else {
+						// load state
+						showInvites = savedToggleState[0];
+						showMembers = savedToggleState[1];
+						showMods = savedToggleState[2];
+						showAdmins = savedToggleState[3];
+						showOwners = savedToggleState[4];
+						showBlacklist = false;
+					}
+					showScreen();
 				}
-				break;
-			case MODS:
-				if (showMods) {
-					res.add(uuid);
-				}
-				break;
-			case ADMINS:
-				if (showAdmins) {
-					res.add(uuid);
-				}
-				break;
-			case OWNER:
-				if (showOwners) {
-					res.add(uuid);
-				}
-				break;
-			default:
-				// should never happen
-				continue;
-			}
+			};
+		} else {
+			c = new DecorationStack(is);
 		}
-		return res;
+		return c;
+	}
+
+	public Clickable createInviteToggle() {
+		ItemStack is = MenuUtils.toggleButton(showInvites, ChatColor.GOLD
+				+ "Show invited players", true);
+		return new Clickable(is) {
+
+			@Override
+			public void clicked(Player arg0) {
+				showInvites = !showInvites;
+				showScreen();
+			}
+		};
 	}
 
 	/**

@@ -160,8 +160,7 @@ public class GUIGroupOverview {
 
 					@Override
 					public void clicked(Player arg0) {
-						NameLayerGUI gui = new NameLayerGUI(p, g);
-						gui.showGroupScreen();
+						MemberViewGUI mgui = new MemberViewGUI(p, g);
 					}
 				};
 			} else {

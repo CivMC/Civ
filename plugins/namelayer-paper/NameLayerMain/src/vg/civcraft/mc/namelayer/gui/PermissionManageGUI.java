@@ -21,10 +21,10 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class PermissionManageGUI extends GroupGUI{
 	
-	private NameLayerGUI parent;
+	private MemberViewGUI parent;
 	private int currentPage;
 	
-	public PermissionManageGUI(Group g, Player p, NameLayerGUI parentGUI) {
+	public PermissionManageGUI(Group g, Player p, MemberViewGUI parentGUI) {
 		super(g, p);
 		this.parent = parentGUI;
 		currentPage = 0;
@@ -45,7 +45,7 @@ public class PermissionManageGUI extends GroupGUI{
 
 			@Override
 			public void clicked(Player arg0) {
-				parent.showMemberManageScreen();
+				parent.showScreen();
 			}
 		}, 22);
 		ci.showInventory(p);
