@@ -69,6 +69,9 @@ public class SaturationHealthRegenHandler implements Runnable {
 					iter.remove();
 					continue;
 				}
+				if (p.isDead() || p.getHealth() <= 0.0) {
+					continue;
+				}
 				if (p.getFoodLevel() >= minimumFood) {
 					double newHealth = p.getHealth() + healthPerCycle;
 					newHealth = Math.min(newHealth, p.getMaxHealth());
