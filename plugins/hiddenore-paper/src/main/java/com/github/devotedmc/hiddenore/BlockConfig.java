@@ -8,17 +8,19 @@ import java.util.Set;
 import java.util.logging.Level;
 
 public class BlockConfig {
+	private String material;
 	public Set<Byte> subtypes;
 	public boolean dropMultiple;
 	public boolean suppressDrops;
 	private Map<String, DropConfig> dropConfigs;
 	private String prefix;
 
-	public BlockConfig(boolean dropMultiple, boolean suppressDrops, String prefix) {
-		this(null, dropMultiple, suppressDrops, prefix);
+	public BlockConfig(String material, boolean dropMultiple, boolean suppressDrops, String prefix) {
+		this(material, null, dropMultiple, suppressDrops, prefix);
 	}
 
-	public BlockConfig(Collection<Byte> subtype, boolean dropMultiple, boolean suppressDrops, String prefix) {
+	public BlockConfig(String material, Collection<Byte> subtype, boolean dropMultiple, boolean suppressDrops, String prefix) {
+		this.material = material;
 		this.subtypes = (subtype != null) ? new HashSet<Byte>(subtype) : new HashSet<Byte>();
 		this.dropMultiple = dropMultiple;
 		this.suppressDrops = suppressDrops;
@@ -28,6 +30,10 @@ public class BlockConfig {
 
 	public boolean checkSubType(Byte subtype) {
 		return this.subtypes.isEmpty() || this.subtypes.contains(subtype);
+	}
+	
+	public String getMaterial() {
+		return this.material;
 	}
 
 	public String getPrefix(String drop) {

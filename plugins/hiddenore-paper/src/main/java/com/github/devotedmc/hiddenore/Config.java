@@ -2,6 +2,7 @@ package com.github.devotedmc.hiddenore;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -18,7 +19,7 @@ public final class Config {
 	public boolean alertUser;
 	public boolean listDrops;
 	public boolean ignoreSilktouch;
-	public Map<String, BlockConfig> blockConfigs;
+	public Map<String, List<BlockConfig>> blockConfigs;
 	public Map<String, NameConfig> prettyNames;
 
 	private static FileConfiguration file;
@@ -28,7 +29,7 @@ public final class Config {
 	public static long trackSave;
 
 	private Config() {
-		blockConfigs = new HashMap<String, BlockConfig>();
+		blockConfigs = new HashMap<String, List<BlockConfig>>();
 		prettyNames = new HashMap<String, NameConfig>();
 		trackFileName = "tracking.dat";
 		trackSave = 90000l;
@@ -100,14 +101,19 @@ public final class Config {
 		ConfigurationSection blocks = file.getConfigurationSection("blocks");
 		if (blocks != null) {
 			for (String sourceBlock : blocks.getKeys(false)) {
-				HiddenOre.getPlugin().getLogger().info("Loading config for block " + sourceBlock);
+				HiddenOre.getPlugin().getLogger().info("Loading config for " + sourceBlock);
 				ConfigurationSection block = blocks.getConfigurationSection(sourceBlock);
 
+				String cBlockName = block.getString("material");
+				if (cBlockName == null) {
+					HiddenOre.getPlugin().getLogger().warning("Failed to find material for " + sourceBlock);
+					continue;
+				}
 				String cPrefix = block.getString("prefix", null);
 				Boolean cMultiple = block.getBoolean("dropMultiple", false);
 				Boolean cSuppress = block.getBoolean("suppressDrops", false);
 				List<Byte> subtypes = (block.getBoolean("allTypes", true)) ? null : block.getByteList("types");
-				BlockConfig bc = new BlockConfig(subtypes, cMultiple, cSuppress, cPrefix);
+				BlockConfig bc = new BlockConfig(cBlockName, subtypes, cMultiple, cSuppress, cPrefix);
 
 				// now add drops.
 				ConfigurationSection drops = block.getConfigurationSection("drops");
@@ -130,8 +136,13 @@ public final class Config {
 
 					bc.addDropConfig(sourceDrop, dc);
 				}
+				List<BlockConfig> bclist = i.blockConfigs.get(sourceBlock);
+				if (bclist == null) {
+					bclist = new LinkedList<BlockConfig>();
+				}
+				bclist.add(bc);
 
-				i.blockConfigs.put(sourceBlock, bc);
+				i.blockConfigs.put(sourceBlock, bclist);
 			}
 		} else {
 			HiddenOre.getPlugin().getLogger().info("No blocks specified (Why are you using this plugin?)");
@@ -161,15 +172,20 @@ public final class Config {
 	}
 
 	public static BlockConfig isDropBlock(String block, byte subtype) {
-		BlockConfig bc = instance.blockConfigs.get(block);
-		if (bc != null) {
-			return bc.checkSubType(subtype) ? bc : null;
+		List<BlockConfig> bcs = instance.blockConfigs.get(block);
+		if (bcs != null && bcs.size() > 0) {
+			// return first match
+			for (BlockConfig bc : bcs) {
+				if (bc.checkSubType(subtype)) {
+					return bc;
+				}
+			}
 		}
 		return null;
 	}
 
-	public static String getPrefix(String block, String drop) {
-		BlockConfig bc = instance.blockConfigs.get(block);
+	public static String getPrefix(String block, byte subtype, String drop) {
+		BlockConfig bc = isDropBlock(block, subtype);
 		String pref = (bc == null) ? instance.defaultPrefix : bc.getPrefix(drop);
 		return (pref == null ? instance.defaultPrefix : pref);
 	}

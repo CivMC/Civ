@@ -19,6 +19,7 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.List;
 import java.util.logging.Level;
 
 import com.github.devotedmc.hiddenore.BlockConfig;
@@ -183,7 +184,7 @@ public class BlockBreakListener implements Listener {
 				DropConfig dc = bc.getDropConfig(drop);
 
 				if (!dc.dropsWithTool(biomeName, p.getItemInHand().getType().name())) {
-					debug("Cannot drop {0} - wrong tool", drop);
+ 					debug("Cannot drop {0} - wrong tool", drop);
 					continue;
 				}
 

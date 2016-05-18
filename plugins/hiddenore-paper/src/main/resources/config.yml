@@ -4,7 +4,8 @@ list_drops: true
 debug: true
 ignore_silktouch: false
 blocks:
- STONE:
+ stone:
+  material: STONE
   allTypes: true
   dropMultiple: false
   drops:
@@ -85,7 +86,8 @@ blocks:
       chance: 0.001437
      MUTATED_EXTREME_HILLS_WITH_TREES:
       chance: 0.001437
- NETHERRACK:
+ netherrack:
+  material: NETHERRACK
   allTypes: true
   dropMultiple: false
   drops:
@@ -107,7 +109,8 @@ blocks:
       maxY: 125
       chance: 0.007
 # Example w/ custom prefixes.
-# SAND:
+# sand:
+#  material: SAND
 #  allTypes: false
 #  types:
 #   - 0
@@ -128,7 +131,8 @@ blocks:
 #    chance: 0.25
 #    amount: 5
 # Example w/ drop suppression.
-# GLASS:
+# glass:
+#  material: GLASS
 #  allTypes: true
 #  suppressDrops: true
 # This will prevent glass from dropping, ever.
