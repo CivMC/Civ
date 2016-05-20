@@ -183,7 +183,7 @@ public class BlockBreakListener implements Listener {
 			for (String drop : bc.getDrops()) {
 				DropConfig dc = bc.getDropConfig(drop);
 
-				if (!dc.dropsWithTool(biomeName, p.getItemInHand().getType().name())) {
+				if (!dc.dropsWithTool(biomeName, p.getInventory().getItemInMainHand())) {
  					debug("Cannot drop {0} - wrong tool", drop);
 					continue;
 				}
@@ -236,7 +236,7 @@ public class BlockBreakListener implements Listener {
 				}
 			}
 		} else {
-			String drop = bc.getDropConfig(Math.random(), biomeName, p.getItemInHand().getType().name(), b
+			String drop = bc.getDropConfig(Math.random(), biomeName, p.getInventory().getItemInMainHand(), b
 					.getLocation().getBlockY());
 
 			if (drop != null) {

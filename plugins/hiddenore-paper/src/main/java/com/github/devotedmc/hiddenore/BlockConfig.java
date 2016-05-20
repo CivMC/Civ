@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.bukkit.inventory.ItemStack;
+
 public class BlockConfig {
 	private String material;
 	public Set<Byte> subtypes;
@@ -61,7 +63,7 @@ public class BlockConfig {
 		return dropConfigs.get(drop);
 	}
 
-	public String getDropConfig(double dice, String biome, String tool, int blockY) {
+	public String getDropConfig(double dice, String biome, ItemStack tool, int blockY) {
 		// accrue possible drops based on biome / tool
 		// check dice against stacked probabilities
 

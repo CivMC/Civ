@@ -35,10 +35,15 @@ public class ToolConfig {
 	private boolean ignoreLore;
 	private boolean ignoreName;
 	private boolean ignoreMeta;
+
+	/* TODO */
+	private double rateModifier;
+	private double dropInflation;
+	private double dropInflationChance;
 	
 	private static Map<String, ToolConfig> tools;
 	
-	public ToolConfig(ItemStack template, boolean ignoreAmount, boolean ignoreDurability,
+	protected ToolConfig(ItemStack template, boolean ignoreAmount, boolean ignoreDurability,
 			boolean ignoreEnchants, boolean ignoreEnchantsLvl, boolean ignoreLore, boolean ignoreName) {
 		this.template = template;
 		this.ignoreAmount = ignoreAmount;
@@ -90,7 +95,8 @@ public class ToolConfig {
 			HiddenOre.getPlugin().getLogger().info("Duplicate definition for tool: " + tool.getName());
 		}
 		
-		tools.put(tool.getName(), new ToolConfig((ItemStack) tool.get("template"),
+		tools.put(tool.getName(),
+				new ToolConfig((ItemStack) tool.get("template"),
 						tool.getBoolean("ignore.amount", true),
 						tool.getBoolean("ignore.durability", true),
 						tool.getBoolean("ignore.enchants", true),
@@ -101,7 +107,19 @@ public class ToolConfig {
 				);
 	}
 
+	public static ToolConfig getConfig(String t) {
+		return tools.get(t);
+	}
+
 	public static boolean dropsWithTool(Set<String> t, ItemStack tool) {
+		return getTool(t, tool) != null;
+	}
+
+	public static ToolConfig getAnyTool(ItemStack tool) {
+		return getTool(tools.keySet(), tool);
+	}
+
+	public static ToolConfig getTool(Set<String> t, ItemStack tool) {
 		for (String test : t) {
 			ToolConfig comp = tools.get(test);
 			if (comp != null) {
@@ -111,24 +129,40 @@ public class ToolConfig {
 				if (!comp.ignoreDurability() && 
 						compare.getDurability() != tool.getDurability()) continue;
 				if (!comp.ignoreAmount() && compare.getAmount() != tool.getAmount()) continue;
-				if (comp.ignoreMeta()) return true;
+
+				// Short circuit of metachecks.
+				if (comp.ignoreMeta()) return comp;
+
+				// Metachecks.
 				ItemMeta compmeta = compare.getItemMeta();
 				ItemMeta toolmeta = tool.getItemMeta();
 				if (toolmeta == null && toolmeta == compmeta) return true; // equal but no further compare
 				if (compmeta == null) continue; // toolmeta != null but compmeta == null
 				// both non-null.
-				if (!comp.ignoreName() && !toolmeta.getDisplayName().equals(compmeta.getDisplayName())) continue;
+				if (!comp.ignoreName() &&
+						!toolmeta.getDisplayName().equals(compmeta.getDisplayName())) continue;
+				if (!comp.ignoreLore() &&
+						!(toolmeta.hasLore() ? toolmeta.getLore().equals(compMeta.getLore()) : !compmeta.hasLore())) continue;
+				// Expensive enchantment checks.
 				if (!comp.ignoreEnchants()) {
 					Map<Enchantment, Integer> compench = compmeta.getEnchants();
 					Map<Enchantment, Integer> toolench = toolmeta.getEnchants();
-					if (compench.size() != toolench.size()) continue;
-					// now compare enchantments.
+					if (!compench.keySet().equals(toolench.keySet())) continue; // check that set of enchants is same
+					if (!comp.ignoreEnchantsLvl()) { // also check _level_ of enchants
+						boolean fail = false;
+						for(Enchantment ech : compench.keySet()) {
+							if (!compench.get(ech).equals(toolench.get(ech))) {
+								fail = true;
+								break;
+							}
+						}
+						if (fail) continue;
+					}
 				}
-				
+				return comp;
 			}
 		}
 		
-
-		return false;
+		return null;
 	}
 }
