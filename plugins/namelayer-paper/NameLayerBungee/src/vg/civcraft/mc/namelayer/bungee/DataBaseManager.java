@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.Database;
 
 public class DataBaseManager {
@@ -24,11 +25,14 @@ public class DataBaseManager {
 		}
 	}
 	
-	private String addPlayer, getPlayerFromUUID;
+	private String addPlayer, getPlayerFromUUID, getUUIDfromPlayer;
+	
 	private void intializeStringStatements() {
 		addPlayer = "call addplayertotable(?, ?)"; // order player name, uuid 
 		getPlayerFromUUID = "select player from Name_player " +
 				"where uuid=?";
+		getUUIDfromPlayer = "select uuid from Name_player " +
+				"where player=?";
 	}
 	
 	public void reconnect() {
@@ -59,6 +63,23 @@ public class DataBaseManager {
 			if (!set.next()) return null;
 			String playername = set.getString("player");
 			return playername;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	// returns null if no uuid was found
+	public UUID getUUID(String playername){
+		NameLayerPlugin.reconnectAndReintializeStatements();
+		PreparedStatement getUUIDfromPlayer = db.prepareStatement(this.getUUIDfromPlayer);
+		try {
+			getUUIDfromPlayer.setString(1, playername);
+			ResultSet set = getUUIDfromPlayer.executeQuery();
+			if (!set.next() || set.wasNull()) return null;
+			String uuid = set.getString("uuid");
+			return UUID.fromString(uuid);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

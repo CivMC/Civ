@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.UUID;
 
 import com.google.common.io.ByteStreams;
 
@@ -21,7 +22,7 @@ public class NameLayerBungee extends Plugin {
 	private ConfigurationProvider configManager;
 	private Configuration config;
 	private ProxyServer proxy;
-	private DataBaseManager db;
+	private static DataBaseManager db;
 	
 	public void onEnable() {
 		proxy = getProxy();
@@ -80,5 +81,13 @@ public class NameLayerBungee extends Plugin {
 	
 	public void runAsync(Runnable run){
 		proxy.getScheduler().runAsync(plugin, run);
+	}
+	
+	public static String getPlayerName(UUID uuid) {
+		return db.getCurrentName(uuid);
+	}
+	
+	public static UUID getUUIDFromPlayerName(String name) {
+		return db.getUUID(name);
 	}
 }
