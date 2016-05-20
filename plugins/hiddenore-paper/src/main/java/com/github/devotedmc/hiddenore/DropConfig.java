@@ -37,9 +37,13 @@ public class DropConfig {
 		return biomeLimits.containsKey(biome) ? biomeLimits.get(biome).tools : limits.tools;
 	}
 
-	public boolean dropsWithTool(String biome, String tool) {
+	public boolean dropsWithTool(String biome, ItemStack tool) {
 		Set<String> t = getTools(biome);
-		return (t == null || t.isEmpty()) ? true : t.contains(tool);
+		if (t == null || t.isEmpty()) {
+			return true;
+		} else {
+			return ToolConfig.dropsWithTool(t, tool);
+		}
 	}
 
 	public int getMinY(String biome) {

@@ -9,7 +9,8 @@ tools:
    ==: org.bukkit.inventory.ItemStack
    type: WOOD_PICKAXE
    amount: 1
-  ignore
+  ignore:
+   amount: true
    durability: true
    enchants: true
    lore: true
@@ -19,7 +20,8 @@ tools:
    ==: org.bukkit.inventory.ItemStack
    type: GOLD_PICKAXE
    amount: 1
-  ignore
+  ignore:
+   amount: true
    durability: true
    enchants: true
    lore: true
@@ -29,7 +31,8 @@ tools:
    ==: org.bukkit.inventory.ItemStack
    type: IRON_PICKAXE
    amount: 1
-  ignore
+  ignore:
+   amount: true
    durability: true
    enchants: true
    lore: true
@@ -39,7 +42,8 @@ tools:
    ==: org.bukkit.inventory.ItemStack
    type: STONE_PICKAXE
    amount: 1
-  ignore
+  ignore:
+   amount: true
    durability: true
    enchants: true
    lore: true
@@ -49,7 +53,8 @@ tools:
    ==: org.bukkit.inventory.ItemStack
    type: DIAMOND_PICKAXE
    amount: 1
-  ignore
+  ignore:
+   amount: true
    durability: true
    enchants: true
    lore: true
