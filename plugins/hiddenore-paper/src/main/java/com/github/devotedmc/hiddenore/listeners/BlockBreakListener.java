@@ -1,5 +1,6 @@
 package com.github.devotedmc.hiddenore.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.ChatColor;
@@ -18,13 +19,16 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
+import java.util.List;
 import java.util.logging.Level;
 
 import com.github.devotedmc.hiddenore.BlockConfig;
 import com.github.devotedmc.hiddenore.DropConfig;
 import com.github.devotedmc.hiddenore.HiddenOre;
 import com.github.devotedmc.hiddenore.Config;
+import com.github.devotedmc.hiddenore.events.HiddenOreEvent;
 
 public class BlockBreakListener implements Listener {
 
@@ -203,17 +207,24 @@ public class BlockBreakListener implements Listener {
 						event.setCancelled(true);
 					}
 
-					final ItemStack item = dc.renderDrop(drop, biomeName);
+					final List<ItemStack> items = dc.renderDrop(biomeName);
 					final Location l = b.getLocation();
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-							l.getWorld().dropItem(l, item);
-						}
-					}.runTaskLater(HiddenOre.getPlugin(), 1l);
+					HiddenOreEvent hoe = new HiddenOreEvent(p, l, items);
+					Bukkit.getPluginManager().callEvent(hoe);
+					if (!hoe.isCancelled()) {
+						new BukkitRunnable() {
+							@Override
+							public void run() {
+								for (ItemStack item: items) {
+									l.getWorld().dropItem(l.add(0.5, 0.5, 0.5), item).setVelocity(new Vector(0, 0.05, 0));
+								}
+							}
+						}.runTaskLater(HiddenOre.getPlugin(), 1l);
+					}
 
-					log("For {5} at {6} replacing {0}:{1} with {2} {3} at dura {4}", blockName, sb, item.getAmount(),
-							drop, item.getDurability(), p.getDisplayName(), p.getLocation());
+					log("For {3} at {4} replacing {0}:{1} with {2}", blockName, sb, 
+							drop, p.getDisplayName(), p.getLocation());
+					
 					if (Config.isAlertUser()) {
 						if (alertUser == null) {
 							alertUser = new StringBuffer().append(Config.instance.defaultPrefix);

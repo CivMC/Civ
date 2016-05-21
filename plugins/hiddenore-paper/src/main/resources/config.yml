@@ -65,7 +65,11 @@ blocks:
   allTypes: true
   dropMultiple: false
   drops:
-   COAL_ORE:
+   coal_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       type: COAL_ORE
+       amount: 1
     tools:
      - WOOD_PICKAXE
      - STONE_PICKAXE
@@ -75,9 +79,14 @@ blocks:
     minY: 1
     maxY: 131
     chance: 0.01
+    # multiplier
     minAmount: 2
     maxAmount: 8
-   IRON_ORE:
+   iron_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       type: IRON_ORE
+       amount: 1
     tools:
      - STONE_PICKAXE
      - IRON_PICKAXE
@@ -96,7 +105,11 @@ blocks:
     chance: 0.001437
     minAmount: 1
     maxAmount: 4
-   DIAMOND_ORE:
+   diamond_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       type: DIAMOND_ORE
+       amount: 1
     tools:
      - IRON_PICKAXE
      - DIAMOND_PICKAXE
@@ -105,7 +118,11 @@ blocks:
     chance: 0.0005427
     minAmount: 1
     maxAmount: 3
-   REDSTONE_ORE:
+   redstone_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       type: REDSTONE_ORE
+       amount: 1
     tools:
      - IRON_PICKAXE
      - DIAMOND_PICKAXE
@@ -114,7 +131,11 @@ blocks:
     chance: 0.01025
     minAmount: 1
     maxAmount: 4
-   LAPIS_ORE:
+   lapis_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       type: LAPIS_ORE
+       amount: 1
     tools:
      - STONE_PICKAXE
      - IRON_PICKAXE
@@ -124,7 +145,11 @@ blocks:
     chance: 0.000597
     minAmount: 1
     maxAmount: 3
-   EMERALD_ORE:
+   emerald_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       type: EMERALD_ORE
+       amount: 1
     tools:
      - IRON_PICKAXE
      - DIAMOND_PICKAXE
@@ -147,7 +172,11 @@ blocks:
   allTypes: true
   dropMultiple: false
   drops:
-   QUARTZ_ORE:
+   quartz_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       type: QUARTZ_ORE
+       amount: 1
     tools:
      - WOOD_PICKAXE
      - STONE_PICKAXE

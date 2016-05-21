@@ -9,16 +9,16 @@ public class DropLimitsConfig {
 	public int minY;
 	public int maxY;
 	public double chance;
-	public int minAmount;
-	public int maxAmount;
+	public double minAmount;
+	public double maxAmount;
 
 	public DropLimitsConfig() {
 		tools = new HashSet<String>();
 		minY = 1;
 		maxY = 255;
 		chance = 0.0;
-		minAmount = 0;
-		maxAmount = 0;
+		minAmount = 0.0;
+		maxAmount = 0.0;
 	}
 
 	public void setTools(Collection<String> tools) {

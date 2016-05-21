@@ -1,22 +1,23 @@
 package com.github.devotedmc.hiddenore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class DropConfig {
-	public String prefix;
-	public byte subtype;
+	public List<DropItemConfig> drops;
+	public String dropName;
 	public DropLimitsConfig limits;
 	private Map<String, DropLimitsConfig> biomeLimits;
 
-	public DropConfig(String prefix, byte subtype, DropLimitsConfig limits) {
-		this.prefix = prefix;
-		this.subtype = subtype;
+	public DropConfig(String dropName, List<DropItemConfig> drops, DropLimitsConfig limits) {
+		this.dropName = dropName;
+		this.drops = drops;
 		this.limits = limits;
 		this.biomeLimits = new HashMap<String, DropLimitsConfig>();
 	}
@@ -54,11 +55,11 @@ public class DropConfig {
 		return biomeLimits.containsKey(biome) ? biomeLimits.get(biome).maxY : limits.maxY;
 	}
 
-	public int getMinAmount(String biome) {
+	public double getMinAmount(String biome) {
 		return biomeLimits.containsKey(biome) ? biomeLimits.get(biome).minAmount : limits.minAmount;
 	}
 
-	public int getMaxAmount(String biome) {
+	public double getMaxAmount(String biome) {
 		return biomeLimits.containsKey(biome) ? biomeLimits.get(biome).maxAmount : limits.maxAmount;
 	}
 
@@ -73,12 +74,19 @@ public class DropConfig {
 	 * @param biome
 	 * @return
 	 */
-	public ItemStack renderDrop(String drop, String biome) {
-		int min = getMinAmount(biome);
-		int max = getMaxAmount(biome);
-		int amount = (min == max) ? min : (int) ((max - min) * Math.random() + min);
-		HiddenOre.getPlugin().getLogger().log(Level.INFO, "Item {0}:{1} [{2}, {3}] = {4}", 
-				new Object[] {drop, this.subtype, min, max, amount});
-		return new ItemStack(Material.getMaterial(drop), amount, this.subtype);
+	public List<ItemStack> renderDrop(String biome) {
+		/** multipliers **/
+		double min = getMinAmount(biome);
+		double max = getMaxAmount(biome);
+		double amount = (min == max) ? min : (double) ((max - min) * Math.random() + min);
+		
+		HiddenOre.getPlugin().getLogger().log(Level.INFO, "Trigger drop {0} [{2}, {3}] = {4}", 
+				new Object[] {dropName, min, max, amount});
+		
+		List<ItemStack> toDrop = new ArrayList<ItemStack>(drops.size());
+		for (DropItemConfig item : drops) {
+			toDrop.add(item.render(amount));
+		}
+		return toDrop;
 	}
 }
