@@ -1,8 +1,6 @@
 package com.github.devotedmc.hiddenore;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -71,6 +69,10 @@ public class ToolConfig {
 		return ignoreEnchants;
 	}
 	
+	public boolean ignoreEnchantsLvl() {
+		return ignoreEnchantsLvl;
+	}
+	
 	public boolean ignoreLore() {
 		return ignoreLore;
 	}
@@ -136,13 +138,14 @@ public class ToolConfig {
 				// Metachecks.
 				ItemMeta compmeta = compare.getItemMeta();
 				ItemMeta toolmeta = tool.getItemMeta();
-				if (toolmeta == null && toolmeta == compmeta) return true; // equal but no further compare
+				if (toolmeta == null && toolmeta == compmeta) return comp; // equal but no further compare
+				
 				if (compmeta == null) continue; // toolmeta != null but compmeta == null
 				// both non-null.
 				if (!comp.ignoreName() &&
 						!toolmeta.getDisplayName().equals(compmeta.getDisplayName())) continue;
 				if (!comp.ignoreLore() &&
-						!(toolmeta.hasLore() ? toolmeta.getLore().equals(compMeta.getLore()) : !compmeta.hasLore())) continue;
+						!(toolmeta.hasLore() ? toolmeta.getLore().equals(compmeta.getLore()) : !compmeta.hasLore())) continue;
 				// Expensive enchantment checks.
 				if (!comp.ignoreEnchants()) {
 					Map<Enchantment, Integer> compench = compmeta.getEnchants();
