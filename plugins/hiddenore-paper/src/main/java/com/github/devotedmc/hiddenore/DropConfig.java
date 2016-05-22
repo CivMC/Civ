@@ -12,10 +12,11 @@ import org.bukkit.inventory.ItemStack;
 public class DropConfig {
 	public List<DropItemConfig> drops;
 	public String dropName;
+	public String prefix;
 	public DropLimitsConfig limits;
 	private Map<String, DropLimitsConfig> biomeLimits;
 
-	public DropConfig(String dropName, List<DropItemConfig> drops, DropLimitsConfig limits) {
+	public DropConfig(String dropName, List<DropItemConfig> drops, String prefix, DropLimitsConfig limits) {
 		this.dropName = dropName;
 		this.drops = drops;
 		this.limits = limits;

@@ -9,6 +9,7 @@ import java.util.logging.Level;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 public final class Config {
 
@@ -97,6 +98,18 @@ public final class Config {
 		} else {
 			HiddenOre.getPlugin().getLogger().info("No Pretty Names specified.");
 		}
+		
+		ConfigurationSection tools = file.getConfigurationSection("tools");
+		if (tools != null) {
+			for (String key : tools.getKeys(false)) {
+				if (tools.isConfigurationSection(key)) {
+					ToolConfig.initTool(tools.getConfigurationSection(key));
+					HiddenOre.getPlugin().getLogger().info("Tool " + key + " initialized");
+				}
+			}
+		} else {
+			HiddenOre.getPlugin().getLogger().info("No tool configurations specified. This might cause issues.");
+		}
 
 		ConfigurationSection blocks = file.getConfigurationSection("blocks");
 		if (blocks != null) {
@@ -121,9 +134,11 @@ public final class Config {
 					HiddenOre.getPlugin().getLogger().info("Loading config for drop " + sourceDrop);
 					ConfigurationSection drop = drops.getConfigurationSection(sourceDrop);
 					String dPrefix = drop.getString("prefix", null);
-					byte dSubtype = (byte) drop.getInt("type", 0);
+					@SuppressWarnings("unchecked")
+					List<ItemStack> items = (List<ItemStack>) drop.getList("package");
 
-					DropConfig dc = new DropConfig(dPrefix, dSubtype, grabLimits(drop, new DropLimitsConfig()));
+					DropConfig dc = new DropConfig(sourceDrop, DropItemConfig.transform(items), 
+							dPrefix, grabLimits(drop, new DropLimitsConfig()));
 
 					ConfigurationSection biomes = drop.getConfigurationSection("biomes");
 					if (biomes != null) {
@@ -155,13 +170,13 @@ public final class Config {
 		DropLimitsConfig dlc = new DropLimitsConfig();
 		dlc.setTools(drop.isSet("tools") ? drop.getStringList("tools") : parent.tools);
 		dlc.chance = drop.getDouble("chance", parent.chance);
-		Integer amount = drop.isSet("amount") ? drop.getInt("amount") : null;
+		Double amount = drop.isSet("amount") ? drop.getDouble("amount") : null;
 		if (amount != null) {
 			dlc.minAmount = amount;
 			dlc.maxAmount = amount;
 		} else {
-			dlc.minAmount = drop.getInt("minAmount", parent.minAmount);
-			dlc.maxAmount = drop.getInt("maxAmount", parent.maxAmount);
+			dlc.minAmount = drop.getDouble("minAmount", parent.minAmount);
+			dlc.maxAmount = drop.getDouble("maxAmount", parent.maxAmount);
 		}
 		dlc.minY = drop.getInt("minY", parent.minY);
 		dlc.maxY = drop.getInt("maxY", parent.maxY);

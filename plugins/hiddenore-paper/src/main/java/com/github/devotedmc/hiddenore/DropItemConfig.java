@@ -1,5 +1,8 @@
 package com.github.devotedmc.hiddenore;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.inventory.ItemStack;
 
 public class DropItemConfig {
@@ -16,5 +19,15 @@ public class DropItemConfig {
 			is.setAmount(is.getMaxStackSize());
 		}
 		return is;
+	}
+	
+	public static List<DropItemConfig> transform(List<ItemStack> items) {
+		ArrayList<DropItemConfig> drops = new ArrayList<DropItemConfig>(items.size());
+		
+		for (ItemStack item : items) {
+			drops.add(new DropItemConfig(item));
+		}
+		
+		return drops;
 	}
 }

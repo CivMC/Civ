@@ -231,14 +231,19 @@ public class BlockBreakListener implements Listener {
 						}
 						if (bc.hasCustomPrefix(drop)) {
 							customAlerts = new StringBuffer();
-							customAlerts.append(bc.getPrefix(drop)).append(" ").append(item.getAmount()).append(" ")
-									.append(Config.getPrettyName(drop, item.getDurability()));
+							customAlerts.append(bc.getPrefix(drop));
+							for (ItemStack item : items) {
+								customAlerts.append(" ").append(item.getAmount()).append(" ")
+									.append(Config.getPrettyName(item.getType().name(), item.getDurability()));
+							}
 							event.getPlayer().sendMessage(ChatColor.GOLD + customAlerts.toString());
 							customAlerts = null;
 						} else {
 							if (Config.isListDrops()) {
-								alertUser.append(" ").append(item.getAmount()).append(" ")
-										.append(Config.getPrettyName(drop, item.getDurability())).append(",");
+								for (ItemStack item : items) {
+									alertUser.append(" ").append(item.getAmount()).append(" ")
+									.append(Config.getPrettyName(item.getType().name(), item.getDurability())).append(",");
+								}
 							}
 							hasDrop = true;
 						}
@@ -254,32 +259,42 @@ public class BlockBreakListener implements Listener {
 				// Remove block, drop special drop and cancel the event
 				b.setType(Material.AIR);
 				event.setCancelled(true);
-				final ItemStack item = dc.renderDrop(drop, biomeName);
+				final List<ItemStack> items = dc.renderDrop(biomeName);
 				final Location l = b.getLocation();
+				HiddenOreEvent hoe = new HiddenOreEvent(p, l, items);
+				Bukkit.getPluginManager().callEvent(hoe);
+				if (!hoe.isCancelled()) {
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							for (ItemStack item: items) {
+								l.getWorld().dropItem(l.add(0.5, 0.5, 0.5), item).setVelocity(new Vector(0, 0.05, 0));
+							}
+						}
+					}.runTaskLater(HiddenOre.getPlugin(), 1l);
+				}
 
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						l.getWorld().dropItem(l, item);
-					}
-				}.runTaskLater(HiddenOre.getPlugin(), 1l);
+				log("For {3} at {4} replacing {0}:{1} with {2}", blockName, sb, 
+						drop, p.getDisplayName(), p.getLocation());
 
-				log("For {5} at {6} replacing {0}:{1} with {2} {3} at dura {4}", blockName, sb, item.getAmount(), drop,
-						item.getDurability(), p.getDisplayName(), p.getLocation());
 				if (Config.isAlertUser()) {
 					if (alertUser == null) {
 						alertUser = new StringBuffer().append(Config.instance.defaultPrefix);
 					}
 					if (bc.hasCustomPrefix(drop)) {
 						customAlerts = new StringBuffer();
-						customAlerts.append(bc.getPrefix(drop)).append(" ").append(item.getAmount()).append(" ")
-								.append(Config.getPrettyName(drop, item.getDurability()));
+						for (ItemStack item : items) {
+							customAlerts.append(" ").append(item.getAmount()).append(" ")
+								.append(Config.getPrettyName(item.getType().name(), item.getDurability()));
+						}
 						event.getPlayer().sendMessage(ChatColor.GOLD + customAlerts.toString());
 						customAlerts = null;
 					} else {
 						if (Config.isListDrops()) {
-							alertUser.append(" ").append(item.getAmount()).append(" ")
-									.append(Config.getPrettyName(drop, item.getDurability())).append(",");
+							for (ItemStack item : items) {
+								alertUser.append(" ").append(item.getAmount()).append(" ")
+								.append(Config.getPrettyName(item.getType().name(), item.getDurability())).append(",");
+							}
 						}
 						hasDrop = true;
 					}
