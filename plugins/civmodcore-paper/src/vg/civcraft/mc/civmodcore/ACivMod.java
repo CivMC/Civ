@@ -10,6 +10,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmodcore.annotations.*;
+import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
+import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.interfaces.ApiManager;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
@@ -134,11 +136,13 @@ public abstract class ACivMod extends JavaPlugin {
     		initializedAPIs = true;
     		instance.registerEvents();
     		new NiceNames().loadNames();
+    		new DialogManager();
     	}
     }
     
     private void registerEvents() {
     	getServer().getPluginManager().registerEvents(new ClickableInventoryListener(), this);
+    	getServer().getPluginManager().registerEvents(new ChatListener(), this);
     }
     public void registerCommands() {
       ConsoleCommandSender console = getServer().getConsoleSender();
