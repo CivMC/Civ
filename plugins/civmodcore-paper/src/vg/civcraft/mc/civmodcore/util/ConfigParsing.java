@@ -65,8 +65,6 @@ public class ConfigParsing {
 			}
 		}
 		ItemStack toAdd = new ItemStack(m);
-		int amount = current.getInt("amount", 1);
-		toAdd.setAmount(amount);
 		int durability = current.getInt("durability", 0);
 		toAdd.setDurability((short) durability);
 		ItemMeta meta = toAdd.getItemMeta();
@@ -160,6 +158,10 @@ public class ConfigParsing {
 						.getConfigurationSection("nbt").getValues(true));
 			}
 		}
+		// Setting amount must be last just in cast enrichWithNBT is called, which
+		// resets the amount to 1. 
+		int amount = current.getInt("amount", 1);
+		toAdd.setAmount(amount);
 		im.addItemStack(toAdd);
 		return im;
 	}
