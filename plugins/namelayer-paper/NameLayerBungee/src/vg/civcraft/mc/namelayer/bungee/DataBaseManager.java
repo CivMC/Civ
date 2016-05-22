@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.Database;
 
 public class DataBaseManager {
@@ -72,7 +71,7 @@ public class DataBaseManager {
 	
 	// returns null if no uuid was found
 	public UUID getUUID(String playername){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		reconnect();
 		PreparedStatement getUUIDfromPlayer = db.prepareStatement(this.getUUIDfromPlayer);
 		try {
 			getUUIDfromPlayer.setString(1, playername);
