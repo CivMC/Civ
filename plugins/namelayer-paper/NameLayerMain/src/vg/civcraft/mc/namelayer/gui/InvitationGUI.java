@@ -1,6 +1,5 @@
 package vg.civcraft.mc.namelayer.gui;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -69,18 +68,17 @@ public class InvitationGUI extends GroupGUI{
 						public void onReply(String [] message) {
 							if (gm.hasAccess(g, p.getUniqueId(), MemberViewGUI.getAccordingPermission(selectedType))) {
 								for(String s : message) {
-									p.sendRawMessage(s);
 									UUID inviteUUID = NameAPI.getUUID(s);
 									if (inviteUUID == null) {
 										p.sendRawMessage(ChatColor.RED + "The player " + s + " doesn't exist");
 										continue;
 									}
 									if (g.isMember(inviteUUID)) { // So a player can't demote someone who is above them.
-										p.sendRawMessage(ChatColor.RED + s +" is already a member of " + g.getName());
+										p.sendRawMessage(ChatColor.RED + NameAPI.getCurrentName(inviteUUID) +" is already a member of " + g.getName());
 										continue;
 									}
 									if(NameLayerPlugin.getBlackList().isBlacklisted(g, inviteUUID)) {
-										p.sendRawMessage(ChatColor.RED + s + " is currently blacklisted, you have to unblacklist him before inviting him to the group");
+										p.sendRawMessage(ChatColor.RED + NameAPI.getCurrentName(inviteUUID) + " is currently blacklisted, you have to unblacklist him before inviting him to the group");
 										continue;
 									}
 									InvitePlayer.sendInvitation(g, pType, inviteUUID, p.getUniqueId(), true);

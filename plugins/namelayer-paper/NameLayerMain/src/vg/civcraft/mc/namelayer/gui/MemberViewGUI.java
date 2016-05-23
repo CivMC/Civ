@@ -1,6 +1,7 @@
 package vg.civcraft.mc.namelayer.gui;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
+import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
@@ -132,7 +134,7 @@ public class MemberViewGUI extends GroupGUI {
 
 		ci.setSlot(setupMemberTypeToggle(PlayerType.OWNER, showOwners), 52);
 
-		//exit button
+		// exit button
 		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
 		ISUtils.setName(backToOverview, ChatColor.GOLD + "Close");
 		ci.setSlot(new Clickable(backToOverview) {
@@ -142,37 +144,41 @@ public class MemberViewGUI extends GroupGUI {
 				// just let it close, dont do anything
 			}
 		}, 49);
-		
-		
-		//options at the top
-		
+
+		// options at the top
+
 		ItemStack permStack = new ItemStack(Material.FENCE_GATE);
-		ISUtils.setName(permStack, ChatColor.GOLD + "View and manage group permissions");
+		ISUtils.setName(permStack, ChatColor.GOLD
+				+ "View and manage group permissions");
 		Clickable permClickable;
-		if (gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("LIST_PERMS"))) {
+		if (gm.hasAccess(g, p.getUniqueId(),
+				PermissionType.getPermission("LIST_PERMS"))) {
 			permClickable = new Clickable(permStack) {
 				@Override
 				public void clicked(Player arg0) {
-					PermissionManageGUI pmgui = new PermissionManageGUI(g, p, MemberViewGUI.this);
+					PermissionManageGUI pmgui = new PermissionManageGUI(g, p,
+							MemberViewGUI.this);
 					pmgui.showScreen();
 				}
 			};
-		}
-		else {
-			ISUtils.addLore(permStack, ChatColor.RED + "You don't have permission", ChatColor.RED + "to do this");
+		} else {
+			ISUtils.addLore(permStack, ChatColor.RED
+					+ "You don't have permission", ChatColor.RED + "to do this");
 			permClickable = new DecorationStack(permStack);
 		}
-		ci.setSlot(permClickable, 4);
-		
+		ci.setSlot(permClickable, 2);
+
 		ItemStack inviteStack = new ItemStack(Material.COOKIE);
 		ISUtils.setName(inviteStack, ChatColor.GOLD + "Invite new member");
 		ci.setSlot(new Clickable(inviteStack) {
-			
+
 			@Override
 			public void clicked(Player arg0) {
-				new InvitationGUI(g, p, MemberViewGUI.this);				
+				new InvitationGUI(g, p, MemberViewGUI.this);
 			}
 		}, 0);
+		ci.setSlot(getInfoStack(), 4);
+		ci.setSlot(getAddBlackListClickable(), 1);
 		ci.showInventory(p);
 	}
 
@@ -184,6 +190,8 @@ public class MemberViewGUI extends GroupGUI {
 				ItemStack is = new ItemStack(Material.LEATHER_CHESTPLATE);
 				LeatherArmorMeta meta = (LeatherArmorMeta) is.getItemMeta();
 				meta.setColor(Color.BLACK);
+				meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+				is.setItemMeta(meta);
 				ISUtils.setName(is, NameAPI.getCurrentName(uuid));
 				Clickable c;
 				if (gm.hasAccess(g, p.getUniqueId(),
@@ -650,7 +658,7 @@ public class MemberViewGUI extends GroupGUI {
 		return c;
 	}
 
-	public Clickable createInviteToggle() {
+	private Clickable createInviteToggle() {
 		ItemStack is = MenuUtils.toggleButton(showInvites, ChatColor.GOLD
 				+ "Show invited players", true);
 		return new Clickable(is) {
@@ -661,6 +669,157 @@ public class MemberViewGUI extends GroupGUI {
 				showScreen();
 			}
 		};
+	}
+
+	private Clickable getAddBlackListClickable() {
+		Clickable c;
+		ItemStack is = new ItemStack(Material.LEASH);
+		ISUtils.setName(is, ChatColor.GOLD + "Add player to blacklist");
+		if (gm.hasAccess(g, p.getUniqueId(),
+				PermissionType.getPermission("BLACKLIST"))) {
+			c = new Clickable(is) {
+
+				@Override
+				public void clicked(final Player p) {
+					new Dialog(p, NameLayerPlugin.getInstance()) {
+
+						@Override
+						public List<String> onTabComplete(String word,
+								String[] msg) {
+							List<String> names;
+							if (NameLayerPlugin.isMercuryEnabled()) {
+								names = new LinkedList<String>(
+										MercuryAPI.getAllPlayers());
+							} else {
+								names = new LinkedList<String>();
+								for (Player p : Bukkit.getOnlinePlayers()) {
+									names.add(p.getName());
+								}
+							}
+							if (word.equals("")) {
+								return names;
+							}
+							List<String> result = new LinkedList<String>();
+							String comp = word.toLowerCase();
+							for (String s : names) {
+								if (s.toLowerCase().startsWith(comp)) {
+									result.add(s);
+								}
+							}
+							return result;
+						}
+
+						@Override
+						public void onReply(String[] message) {
+							if (gm.hasAccess(g, p.getUniqueId(),
+									PermissionType.getPermission("BLACKLIST"))) {
+								boolean didSomething = false;
+								for (String playerName : message) {
+									UUID blackUUID = NameAPI
+											.getUUID(playerName);
+									if (blackUUID == null) {
+										p.sendMessage(ChatColor.RED
+												+ playerName + " doesn't exist");
+										continue;
+									}
+									if (g.isMember(blackUUID)) {
+										p.sendMessage(ChatColor.RED
+												+ NameAPI
+														.getCurrentName(blackUUID)
+												+ " is currently a member of this group and can't be blacklisted");
+										continue;
+									}
+									BlackList bl = NameLayerPlugin
+											.getBlackList();
+									if (bl.isBlacklisted(g, blackUUID)) {
+										p.sendMessage(ChatColor.RED
+												+ NameAPI
+														.getCurrentName(blackUUID)
+												+ " is already blacklisted");
+										continue;
+									}
+									didSomething = true;
+									bl.addBlacklistMember(g, blackUUID, true);
+									p.sendMessage(ChatColor.GREEN
+											+ NameAPI.getCurrentName(blackUUID)
+											+ " was successfully blacklisted");
+								}
+								if (didSomething) {
+									checkRecacheGroup();
+								}
+							} else {
+								p.sendMessage(ChatColor.RED
+										+ "You lost permission to do this");
+							}
+							showScreen();
+						}
+					};
+
+				}
+			};
+		} else {
+			ISUtils.addLore(is, ChatColor.RED + "You don't have permission to do this");
+			c = new DecorationStack(is);
+		}
+		return c;
+	}
+
+	private Clickable getInfoStack() {
+		Clickable c;
+		ItemStack is = new ItemStack(Material.PAPER);
+		ISUtils.setName(is, ChatColor.GOLD + "Stats for " + g.getName());
+		ISUtils.addLore(is, ChatColor.DARK_AQUA + "Your current rank: "
+				+ getDirectRankName(g.getPlayerType(p.getUniqueId())));
+		boolean hasGroupStatsPerm = gm.hasAccess(g, p.getUniqueId(),
+				PermissionType.getPermission("GROUPSTATS"));
+		if (gm.hasAccess(g, p.getUniqueId(),
+				PermissionType.getPermission("MEMBERS"))
+				|| hasGroupStatsPerm) {
+			ISUtils.addLore(
+					is,
+					ChatColor.AQUA
+							+ String.valueOf(g
+									.getAllMembers(PlayerType.MEMBERS).size())
+							+ " members");
+		}
+		if (gm.hasAccess(g, p.getUniqueId(),
+				PermissionType.getPermission("MODS"))
+				|| hasGroupStatsPerm) {
+			ISUtils.addLore(
+					is,
+					ChatColor.AQUA
+							+ String.valueOf(g.getAllMembers(PlayerType.MODS)
+									.size()) + " mods");
+		}
+		if (gm.hasAccess(g, p.getUniqueId(),
+				PermissionType.getPermission("ADMINS"))
+				|| hasGroupStatsPerm) {
+			ISUtils.addLore(
+					is,
+					ChatColor.AQUA
+							+ String.valueOf(g.getAllMembers(PlayerType.ADMINS)
+									.size()) + " admins");
+		}
+		if (gm.hasAccess(g, p.getUniqueId(),
+				PermissionType.getPermission("OWNER"))
+				|| hasGroupStatsPerm) {
+			ISUtils.addLore(
+					is,
+					ChatColor.AQUA
+							+ String.valueOf(g.getAllMembers(PlayerType.OWNER)
+									.size()) + " owner");
+		}
+		if (hasGroupStatsPerm) {
+			ISUtils.addLore(
+					is,
+					ChatColor.DARK_AQUA
+							+ String.valueOf(g.getAllMembers().size())
+							+ " total group members");
+			ISUtils.addLore(is, ChatColor.DARK_AQUA + "Group owner: "
+					+ ChatColor.YELLOW + NameAPI.getCurrentName(g.getOwner()));
+		}
+		c = new DecorationStack(is);
+		return c;
 	}
 
 	/**
