@@ -164,6 +164,15 @@ public class MemberViewGUI extends GroupGUI {
 		}
 		ci.setSlot(permClickable, 4);
 		
+		ItemStack inviteStack = new ItemStack(Material.COOKIE);
+		ISUtils.setName(inviteStack, ChatColor.GOLD + "Invite new member");
+		ci.setSlot(new Clickable(inviteStack) {
+			
+			@Override
+			public void clicked(Player arg0) {
+				new InvitationGUI(g, p);				
+			}
+		}, 0);
 		ci.showInventory(p);
 	}
 

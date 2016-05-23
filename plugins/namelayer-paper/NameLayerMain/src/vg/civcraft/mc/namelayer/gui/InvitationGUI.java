@@ -1,24 +1,38 @@
 package vg.civcraft.mc.namelayer.gui;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.mercury.MercuryAPI;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.command.commands.InvitePlayer;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class InvitationGUI extends GroupGUI{
 	
 	private PlayerType selectedType;
+	private MemberViewGUI parent;
 	
-	public InvitationGUI(Group g, Player p) {
+	public InvitationGUI(Group g, Player p, MemberViewGUI parent) {
 		super(g,p);
+		this.parent = parent;
 		showScreen();
 	}
 	
@@ -45,7 +59,61 @@ public class InvitationGUI extends GroupGUI{
 				
 				@Override
 				public void clicked(Player arg0) {
-					selectedType = pType;					
+					selectedType = pType;
+					Dialog enterName = new Dialog(arg0, NameLayerPlugin.getInstance()) {
+						public void onReply(String [] message) {
+							if (gm.hasAccess(g, p.getUniqueId(), MemberViewGUI.getAccordingPermission(selectedType))) {
+								for(String s : message) {
+									UUID inviteUUID = NameAPI.getUUID(s);
+									if (inviteUUID == null) {
+										p.sendMessage(ChatColor.RED + "The player " + s + " doesn't exist");
+										continue;
+									}
+									if (g.isMember(inviteUUID)) { // So a player can't demote someone who is above them.
+										p.sendMessage(ChatColor.RED + s +" is already a member of " + g.getName());
+										continue;
+									}
+									if(NameLayerPlugin.getBlackList().isBlacklisted(g, inviteUUID)) {
+										p.sendMessage(ChatColor.RED + s + " is currently blacklisted, you have to unblacklist him before inviting him to the group");
+										continue;
+									}
+									InvitePlayer.sendInvitation(g, pType, inviteUUID, p.getUniqueId(), true);
+									
+									if(NameLayerPlugin.isMercuryEnabled()){
+										MercuryAPI.sendGlobalMessage("addInvitation " + g.getGroupId() + " " + pType.toString() + " " + inviteUUID, "namelayer");
+									}
+									p.sendMessage(ChatColor.GREEN  + "Invited " + s + " as " + MemberViewGUI.getDirectRankName(pType));
+								}
+							}
+							else {
+								p.sendMessage(ChatColor.RED + "You lost permission to invite a player to this rank");
+							}
+							parent.showScreen();
+						}
+						
+						public List <String> onTabComplete(String word, String [] msg) {
+							List <String> names;
+							if (NameLayerPlugin.isMercuryEnabled()) {
+								names = new LinkedList<String>(MercuryAPI.getAllPlayers());
+							}
+							else {
+								for(Player p : Bukkit.getOnlinePlayers()) {
+									names.add(p.getName());
+								}
+							}
+							if (word.equals("")) {
+								return names;
+							}
+							List <String> result = new LinkedList<String>();
+							String comp = word.toLowerCase();
+							for(String s : names) {
+								if (s.toLowerCase().startsWith(comp)) {
+									result.add(s);
+								}
+							}
+							return result;
+						}
+					};
 				}
 			};
 		}
@@ -55,6 +123,4 @@ public class InvitationGUI extends GroupGUI{
 		}
 		return c;
 	}
-
-	//TODO
 }
