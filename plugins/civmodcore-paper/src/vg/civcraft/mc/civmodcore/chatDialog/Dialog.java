@@ -13,7 +13,7 @@ public abstract class Dialog {
 	
 	private Player player;
 	private StringPrompt prompt;
-	private Conversation convo;
+	private CustomConversation convo;
 	
 	
 	public Dialog(Player player, JavaPlugin plugin) {
@@ -39,7 +39,9 @@ public abstract class Dialog {
 				return Prompt.END_OF_CONVERSATION;
 			}
 		};
-		convo = new Conversation(plugin, player, prompt);
+		convo = new CustomConversation(plugin, player, prompt);
+		convo.setModal(false);
+		convo.setLocalEchoEnabled(false);
 		convo.begin();
 	}
 	
