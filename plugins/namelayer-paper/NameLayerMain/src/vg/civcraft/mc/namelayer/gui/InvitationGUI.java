@@ -9,7 +9,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
@@ -52,6 +54,9 @@ public class InvitationGUI extends GroupGUI{
 	
 	private Clickable produceOptionStack(Material item, String niceRankName, final PlayerType pType, PermissionType perm) {
 		ItemStack is = new ItemStack(item);
+		ItemMeta im = is.getItemMeta();
+		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		is.setItemMeta(im);
 		ISUtils.setName(is, ChatColor.GOLD + "Invite as " + niceRankName);
 		Clickable c;
 		if (gm.hasAccess(g, p.getUniqueId(), perm)) {
@@ -64,17 +69,18 @@ public class InvitationGUI extends GroupGUI{
 						public void onReply(String [] message) {
 							if (gm.hasAccess(g, p.getUniqueId(), MemberViewGUI.getAccordingPermission(selectedType))) {
 								for(String s : message) {
+									p.sendRawMessage(s);
 									UUID inviteUUID = NameAPI.getUUID(s);
 									if (inviteUUID == null) {
-										p.sendMessage(ChatColor.RED + "The player " + s + " doesn't exist");
+										p.sendRawMessage(ChatColor.RED + "The player " + s + " doesn't exist");
 										continue;
 									}
 									if (g.isMember(inviteUUID)) { // So a player can't demote someone who is above them.
-										p.sendMessage(ChatColor.RED + s +" is already a member of " + g.getName());
+										p.sendRawMessage(ChatColor.RED + s +" is already a member of " + g.getName());
 										continue;
 									}
 									if(NameLayerPlugin.getBlackList().isBlacklisted(g, inviteUUID)) {
-										p.sendMessage(ChatColor.RED + s + " is currently blacklisted, you have to unblacklist him before inviting him to the group");
+										p.sendRawMessage(ChatColor.RED + s + " is currently blacklisted, you have to unblacklist him before inviting him to the group");
 										continue;
 									}
 									InvitePlayer.sendInvitation(g, pType, inviteUUID, p.getUniqueId(), true);
@@ -97,6 +103,7 @@ public class InvitationGUI extends GroupGUI{
 								names = new LinkedList<String>(MercuryAPI.getAllPlayers());
 							}
 							else {
+								names = new LinkedList<String>();
 								for(Player p : Bukkit.getOnlinePlayers()) {
 									names.add(p.getName());
 								}

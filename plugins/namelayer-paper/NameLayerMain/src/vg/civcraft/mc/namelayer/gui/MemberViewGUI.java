@@ -170,7 +170,7 @@ public class MemberViewGUI extends GroupGUI {
 			
 			@Override
 			public void clicked(Player arg0) {
-				new InvitationGUI(g, p);				
+				new InvitationGUI(g, p, MemberViewGUI.this);				
 			}
 		}, 0);
 		ci.showInventory(p);
