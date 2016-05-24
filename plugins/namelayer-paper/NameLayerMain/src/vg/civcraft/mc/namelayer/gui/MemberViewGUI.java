@@ -179,6 +179,7 @@ public class MemberViewGUI extends GroupGUI {
 		}, 0);
 		ci.setSlot(getInfoStack(), 4);
 		ci.setSlot(getAddBlackListClickable(), 1);
+		ci.setSlot(getPasswordClickable(), 3);
 		ci.showInventory(p);
 	}
 
@@ -214,6 +215,7 @@ public class MemberViewGUI extends GroupGUI {
 								p.sendMessage(ChatColor.RED
 										+ "You lost permission to remove this player from the blacklist");
 							}
+							showScreen();
 						}
 					};
 				} else {
@@ -319,7 +321,6 @@ public class MemberViewGUI extends GroupGUI {
 							if (!allowed) {
 								p.sendMessage(ChatColor.RED
 										+ "You don't have permission to revoke this invite");
-								showScreen();
 							} else {
 								g.removeInvite(invitedUUID, true);
 								PlayerListener.removeNotification(invitedUUID,
@@ -334,6 +335,7 @@ public class MemberViewGUI extends GroupGUI {
 								p.sendMessage(ChatColor.GREEN + playerName
 										+ "'s invitation has been revoked.");
 							}
+							showScreen();
 						}
 					};
 				} else {
@@ -758,6 +760,72 @@ public class MemberViewGUI extends GroupGUI {
 				}
 			};
 		} else {
+			ISUtils.addLore(is, ChatColor.RED
+					+ "You don't have permission to do this");
+			c = new DecorationStack(is);
+		}
+		return c;
+	}
+
+	private Clickable getPasswordClickable() {
+		Clickable c;
+		ItemStack is = new ItemStack(Material.SIGN);
+		ISUtils.setName(is, ChatColor.GOLD + "Add or change password");
+		if (gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("PASSWORD"))) {
+			String pass = g.getPassword();
+			if (pass == null) {
+				ISUtils.addLore(is, ChatColor.AQUA + "This group doesn't have a password currently");
+			}
+			else {
+				ISUtils.addLore(is, ChatColor.AQUA + "The current password is: " + ChatColor.YELLOW + pass);
+			}
+			c = new Clickable(is) {
+				
+				@Override
+				public void clicked(final Player p) {
+					if (gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("PASSWORD"))) {
+						p.sendMessage(ChatColor.GOLD + "Enter the new password for " + g.getName() + ". Enter \" delete\" to remove an existing password or cancel to exit this prompt");
+						new Dialog(p, NameLayerPlugin.getInstance()) {
+							
+							@Override
+							public List<String> onTabComplete(String wordCompleted, String[] fullMessage) {
+								return new LinkedList<String>();
+							}
+							
+							@Override
+							public void onReply(String[] message) {
+								if (message.length == 0) {
+									p.sendMessage(ChatColor.RED + "You entered nothing, no password was set");
+									return;
+								}
+								if (message.length > 1) {
+									p.sendMessage(ChatColor.RED + "Your password may not contain spaces");
+									return;
+								}
+								String newPassword = message [0];
+								if (newPassword.equals("cancel")) {
+									return;
+								}
+								if (newPassword.equals("delete")) {
+									g.setPassword(null);
+									p.sendMessage(ChatColor.GREEN + "Removed the password from the group");
+								}
+								else {
+									g.setPassword(newPassword);
+									p.sendMessage(ChatColor.GREEN + "Set new password: " + ChatColor.YELLOW + newPassword);
+								}
+								checkRecacheGroup();
+							}
+						};
+					}
+					else {
+						p.sendMessage(ChatColor.RED + "You lost permission to do this");
+					}
+					showScreen();
+				}
+			};
+		}
+		else {
 			ISUtils.addLore(is, ChatColor.RED + "You don't have permission to do this");
 			c = new DecorationStack(is);
 		}
@@ -768,8 +836,9 @@ public class MemberViewGUI extends GroupGUI {
 		Clickable c;
 		ItemStack is = new ItemStack(Material.PAPER);
 		ISUtils.setName(is, ChatColor.GOLD + "Stats for " + g.getName());
-		ISUtils.addLore(is, ChatColor.DARK_AQUA + "Your current rank: "
-				+ getDirectRankName(g.getPlayerType(p.getUniqueId())));
+		ISUtils.addLore(is,
+				ChatColor.DARK_AQUA + "Your current rank: " + ChatColor.YELLOW
+						+ getDirectRankName(g.getPlayerType(p.getUniqueId())));
 		boolean hasGroupStatsPerm = gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("GROUPSTATS"));
 		if (gm.hasAccess(g, p.getUniqueId(),
