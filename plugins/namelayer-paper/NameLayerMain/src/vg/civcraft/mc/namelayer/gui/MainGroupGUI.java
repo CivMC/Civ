@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -33,8 +34,9 @@ import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class MemberViewGUI extends GroupGUI {
+public class MainGroupGUI extends AbstractGroupGUI {
 
+	private boolean showInheritedMembers;
 	private boolean showBlacklist;
 	private boolean showInvites;
 	private boolean showMembers;
@@ -45,7 +47,7 @@ public class MemberViewGUI extends GroupGUI {
 	private int currentPage;
 	private boolean[] savedToggleState;
 
-	public MemberViewGUI(Player p, Group g) {
+	public MainGroupGUI(Player p, Group g) {
 		super(g, p);
 		showMembers = gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("MEMBERS"))
@@ -67,6 +69,10 @@ public class MemberViewGUI extends GroupGUI {
 		showScreen();
 	}
 
+	/**
+	 * Shows the main gui overview for a specific group based on the properties
+	 * of this class
+	 */
 	public void showScreen() {
 		ClickableInventory.forceCloseInventory(p);
 		if (!validGroup()) {
@@ -124,7 +130,7 @@ public class MemberViewGUI extends GroupGUI {
 
 		// options
 
-		ci.setSlot(createBlacklistToggle(), 46);
+		ci.setSlot(createInheritedMemberToggle(), 46);
 		ci.setSlot(createInviteToggle(), 47);
 		ci.setSlot(setupMemberTypeToggle(PlayerType.MEMBERS, showMembers), 48);
 
@@ -146,45 +152,36 @@ public class MemberViewGUI extends GroupGUI {
 		}, 49);
 
 		// options at the top
-
-		ItemStack permStack = new ItemStack(Material.FENCE_GATE);
-		ISUtils.setName(permStack, ChatColor.GOLD
-				+ "View and manage group permissions");
-		Clickable permClickable;
-		if (gm.hasAccess(g, p.getUniqueId(),
-				PermissionType.getPermission("LIST_PERMS"))) {
-			permClickable = new Clickable(permStack) {
-				@Override
-				public void clicked(Player arg0) {
-					PermissionManageGUI pmgui = new PermissionManageGUI(g, p,
-							MemberViewGUI.this);
-					pmgui.showScreen();
-				}
-			};
-		} else {
-			ISUtils.addLore(permStack, ChatColor.RED
-					+ "You don't have permission", ChatColor.RED + "to do this");
-			permClickable = new DecorationStack(permStack);
-		}
-		ci.setSlot(permClickable, 2);
-
-		ItemStack inviteStack = new ItemStack(Material.COOKIE);
-		ISUtils.setName(inviteStack, ChatColor.GOLD + "Invite new member");
-		ci.setSlot(new Clickable(inviteStack) {
-
-			@Override
-			public void clicked(Player arg0) {
-				new InvitationGUI(g, p, MemberViewGUI.this);
-			}
-		}, 0);
+		ci.setSlot(getInvitePlayerClickable(), 0);
+		ci.setSlot(createBlacklistToggle(), 1);
+		ci.setSlot(getAddBlackListClickable(), 2);
+		ci.setSlot(getLeaveGroupClickable(), 3);
 		ci.setSlot(getInfoStack(), 4);
-		ci.setSlot(getAddBlackListClickable(), 1);
-		ci.setSlot(getPasswordClickable(), 3);
+		ci.setSlot(getDefaultGroupStack(), 5);
+		ci.setSlot(getPasswordClickable(), 6);
+		ci.setSlot(getPermOptionClickable(), 7);
+		ci.setSlot(getAdminStuffClickable(), 8);
+		// TODO
+		// delete group
+		// merge group
+		// transfer group
+		// link group
 		ci.showInventory(p);
 	}
 
+	/**
+	 * Creates a list of all Clickables representing members, invitees and
+	 * blacklisted players, if they are supposed to be displayed. This is whats
+	 * directly fed into the middle of the gui
+	 * 
+	 */
 	private List<Clickable> constructClickables() {
 		List<Clickable> clicks = new ArrayList<Clickable>();
+		if (showInheritedMembers) {
+			if (g.hasSuperGroup()) {
+				clicks.addAll(getRecursiveInheritedMembers(g.getSuperGroup()));
+			}
+		}
 		if (showBlacklist) {
 			final BlackList black = NameLayerPlugin.getBlackList();
 			for (final UUID uuid : black.getBlacklist(g)) {
@@ -386,6 +383,10 @@ public class MemberViewGUI extends GroupGUI {
 		return clicks;
 	}
 
+	/**
+	 * Convenience method to create the toggles for the displaying of different
+	 * group member types
+	 */
 	private Clickable setupMemberTypeToggle(final PlayerType pType,
 			boolean initialState) {
 		boolean canEdit = gm.hasAccess(g, p.getUniqueId(),
@@ -426,6 +427,10 @@ public class MemberViewGUI extends GroupGUI {
 
 	}
 
+	/**
+	 * Convenience method used when constructing clickables in the middle of the
+	 * gui, which represent members
+	 */
 	private Clickable constructMemberClickable(Material material,
 			final UUID toDisplay, PlayerType rank) {
 		Clickable c;
@@ -464,6 +469,13 @@ public class MemberViewGUI extends GroupGUI {
 		return c;
 	}
 
+	/**
+	 * Called when the icon representing a member in the middle of the gui is
+	 * clicked, this opens up a detailed view where you can select what to do
+	 * (promoting/removing)
+	 * 
+	 * @param uuid
+	 */
 	public void showDetail(final UUID uuid) {
 		if (!validGroup()) {
 			showScreen();
@@ -478,8 +490,6 @@ public class MemberViewGUI extends GroupGUI {
 		String rankName = getRankName(uuid);
 		ISUtils.addLore(info, ChatColor.GOLD + "Current rank: " + rankName);
 		ci.setSlot(new DecorationStack(info), 4);
-
-		PlayerType rank = g.getCurrentRank(uuid);
 
 		Clickable memberClick = setupDetailSlot(Material.LEATHER_CHESTPLATE,
 				uuid, PlayerType.MEMBERS);
@@ -496,6 +506,10 @@ public class MemberViewGUI extends GroupGUI {
 		ci.showInventory(p);
 	}
 
+	/**
+	 * Used by the gui that allows selecting an action for a specific member to
+	 * easily construct the clickables needed
+	 */
 	private Clickable setupDetailSlot(Material slotMaterial,
 			final UUID toChange, final PlayerType pType) {
 		PlayerType rank = g.getCurrentRank(toChange);
@@ -660,6 +674,27 @@ public class MemberViewGUI extends GroupGUI {
 		return c;
 	}
 
+	private Clickable createInheritedMemberToggle() {
+		boolean canToggle = gm.hasAccess(g, p.getUniqueId(),
+				PermissionType.getPermission("GROUPSTATS"));
+		ItemStack is = MenuUtils.toggleButton(showInheritedMembers,
+				ChatColor.GOLD + "Show inherited members", canToggle);
+		Clickable c;
+		if (canToggle) {
+			c = new Clickable(is) {
+
+				@Override
+				public void clicked(Player p) {
+					showInheritedMembers = !showInheritedMembers;
+
+				}
+			};
+		} else {
+			c = new DecorationStack(is);
+		}
+		return c;
+	}
+
 	private Clickable createInviteToggle() {
 		ItemStack is = MenuUtils.toggleButton(showInvites, ChatColor.GOLD
 				+ "Show invited players", true);
@@ -771,63 +806,231 @@ public class MemberViewGUI extends GroupGUI {
 		Clickable c;
 		ItemStack is = new ItemStack(Material.SIGN);
 		ISUtils.setName(is, ChatColor.GOLD + "Add or change password");
-		if (gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("PASSWORD"))) {
+		if (gm.hasAccess(g, p.getUniqueId(),
+				PermissionType.getPermission("PASSWORD"))) {
 			String pass = g.getPassword();
 			if (pass == null) {
-				ISUtils.addLore(is, ChatColor.AQUA + "This group doesn't have a password currently");
-			}
-			else {
-				ISUtils.addLore(is, ChatColor.AQUA + "The current password is: " + ChatColor.YELLOW + pass);
+				ISUtils.addLore(is, ChatColor.AQUA
+						+ "This group doesn't have a password currently");
+			} else {
+				ISUtils.addLore(is, ChatColor.AQUA
+						+ "The current password is: " + ChatColor.YELLOW + pass);
 			}
 			c = new Clickable(is) {
-				
+
 				@Override
 				public void clicked(final Player p) {
-					if (gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("PASSWORD"))) {
-						p.sendMessage(ChatColor.GOLD + "Enter the new password for " + g.getName() + ". Enter \" delete\" to remove an existing password or cancel to exit this prompt");
+					if (gm.hasAccess(g, p.getUniqueId(),
+							PermissionType.getPermission("PASSWORD"))) {
+						p.sendMessage(ChatColor.GOLD
+								+ "Enter the new password for "
+								+ g.getName()
+								+ ". Enter \" delete\" to remove an existing password or \"cancel\" to exit this prompt");
 						new Dialog(p, NameLayerPlugin.getInstance()) {
-							
+
 							@Override
-							public List<String> onTabComplete(String wordCompleted, String[] fullMessage) {
+							public List<String> onTabComplete(
+									String wordCompleted, String[] fullMessage) {
 								return new LinkedList<String>();
 							}
-							
+
 							@Override
 							public void onReply(String[] message) {
 								if (message.length == 0) {
-									p.sendMessage(ChatColor.RED + "You entered nothing, no password was set");
+									p.sendMessage(ChatColor.RED
+											+ "You entered nothing, no password was set");
 									return;
 								}
 								if (message.length > 1) {
-									p.sendMessage(ChatColor.RED + "Your password may not contain spaces");
+									p.sendMessage(ChatColor.RED
+											+ "Your password may not contain spaces");
 									return;
 								}
-								String newPassword = message [0];
+								String newPassword = message[0];
 								if (newPassword.equals("cancel")) {
+									p.sendMessage(ChatColor.GREEN
+											+ "Left password unchanged");
 									return;
 								}
 								if (newPassword.equals("delete")) {
 									g.setPassword(null);
-									p.sendMessage(ChatColor.GREEN + "Removed the password from the group");
-								}
-								else {
+									p.sendMessage(ChatColor.GREEN
+											+ "Removed the password from the group");
+								} else {
 									g.setPassword(newPassword);
-									p.sendMessage(ChatColor.GREEN + "Set new password: " + ChatColor.YELLOW + newPassword);
+									p.sendMessage(ChatColor.GREEN
+											+ "Set new password: "
+											+ ChatColor.YELLOW + newPassword);
 								}
 								checkRecacheGroup();
+								showScreen();
 							}
 						};
+					} else {
+						p.sendMessage(ChatColor.RED
+								+ "You lost permission to do this");
+						showScreen();
 					}
-					else {
-						p.sendMessage(ChatColor.RED + "You lost permission to do this");
+				}
+			};
+		} else {
+			ISUtils.addLore(is, ChatColor.RED
+					+ "You don't have permission to do this");
+			c = new DecorationStack(is);
+		}
+		return c;
+	}
+	
+	private Clickable getPermOptionClickable() {
+		ItemStack permStack = new ItemStack(Material.FENCE_GATE);
+		ISUtils.setName(permStack, ChatColor.GOLD
+				+ "View and manage group permissions");
+		Clickable permClickable;
+		if (gm.hasAccess(g, p.getUniqueId(),
+				PermissionType.getPermission("LIST_PERMS"))) {
+			permClickable = new Clickable(permStack) {
+				@Override
+				public void clicked(Player arg0) {
+					PermissionManageGUI pmgui = new PermissionManageGUI(g, p,
+							MainGroupGUI.this);
+					pmgui.showScreen();
+				}
+			};
+		} else {
+			ISUtils.addLore(permStack, ChatColor.RED
+					+ "You don't have permission", ChatColor.RED + "to do this");
+			permClickable = new DecorationStack(permStack);
+		}
+		return permClickable;
+	}
+	
+	private Clickable getInvitePlayerClickable() {
+		ItemStack inviteStack = new ItemStack(Material.COOKIE);
+		ISUtils.setName(inviteStack, ChatColor.GOLD + "Invite new member");
+		 return new Clickable(inviteStack) {
+
+			@Override
+			public void clicked(Player arg0) {
+				new InvitationGUI(g, p, MainGroupGUI.this);
+			}
+		};
+	}
+
+	private Clickable getDefaultGroupStack() {
+		Clickable c;
+		ItemStack is = new ItemStack(Material.BRICK);
+		ISUtils.setName(is, ChatColor.GOLD + "Default group");
+		final String defGroup = gm.getDefaultGroup(p.getUniqueId());
+		if (defGroup != null && defGroup.equals(g.getName())) {
+			ISUtils.addLore(is, ChatColor.AQUA
+					+ "This group is your current default group");
+			c = new DecorationStack(is);
+		} else {
+			ISUtils.addLore(is, ChatColor.AQUA
+					+ "Click to make this group your default group");
+			if (defGroup != null) {
+				ISUtils.addLore(is, ChatColor.BLUE
+						+ "Your current default group is : " + defGroup);
+			}
+			c = new Clickable(is) {
+
+				@Override
+				public void clicked(Player p) {
+					if (defGroup == null) {
+						g.setDefaultGroup(p.getUniqueId());
+						p.sendMessage(ChatColor.GREEN
+								+ "You have set your default group to "
+								+ g.getName());
+					} else {
+						g.changeDefaultGroup(p.getUniqueId());
+						p.sendMessage(ChatColor.GREEN
+								+ "You changed your default group from "
+								+ defGroup + " to " + g.getName());
 					}
 					showScreen();
 				}
 			};
 		}
-		else {
-			ISUtils.addLore(is, ChatColor.RED + "You don't have permission to do this");
+		return c;
+	}
+	
+	private Clickable getAdminStuffClickable() {
+		ItemStack is = new ItemStack(Material.DIAMOND);
+		ISUtils.setName(is, ChatColor.GOLD + "Owner functions");
+		Clickable c = new Clickable(is) {
+			
+			@Override
+			public void clicked(Player p) {
+				AdminFunctionsGUI subGui = new AdminFunctionsGUI(p, g, MainGroupGUI.this);
+				subGui.showScreen();				
+			}
+		};
+		return c;
+	}
+
+	/**
+	 * Constructs the icon used in the gui for leaving a group
+	 */
+	private Clickable getLeaveGroupClickable() {
+		Clickable c;
+		ItemStack is = new ItemStack(Material.ACACIA_DOOR);
+		ISUtils.setName(is, ChatColor.GOLD + "Leave group");
+		if (g.isOwner(p.getUniqueId())) {
+			ISUtils.addLore(is, ChatColor.RED + "You cant leave this group,",
+					ChatColor.RED + "because you own it");
 			c = new DecorationStack(is);
+		} else {
+			c = new Clickable(is) {
+
+				@Override
+				public void clicked(Player p) {
+					ClickableInventory confirmInv = new ClickableInventory(27,
+							g.getName());
+					ItemStack info = new ItemStack(Material.PAPER);
+					ISUtils.setName(info, ChatColor.GOLD + "Leave group");
+					ISUtils.addLore(info, ChatColor.RED
+							+ "Are you sure that you want to", ChatColor.RED
+							+ "leave this group? You can not undo this!");
+					ItemStack yes = new ItemStack(Material.INK_SACK);
+					yes.setDurability((short) 10); // green
+					ISUtils.setName(yes,
+							ChatColor.GOLD + "Yes, leave " + g.getName());
+					ItemStack no = new ItemStack(Material.INK_SACK);
+					no.setDurability((short) 1); // red
+					ISUtils.setName(no,
+							ChatColor.GOLD + "No, stay in " + g.getName());
+					confirmInv.setSlot(new Clickable(yes) {
+
+						@Override
+						public void clicked(Player p) {
+							if (!g.isMember(p.getUniqueId())) {
+								p.sendMessage(ChatColor.RED
+										+ "You are not a member of this group.");
+								showScreen();
+								return;
+							}
+							if (g.isDisciplined()) {
+								p.sendMessage(ChatColor.RED
+										+ "This group is disciplined.");
+								showScreen();
+								return;
+							}
+							g.removeMember(p.getUniqueId());
+							p.sendMessage(ChatColor.GREEN + "You have left "
+									+ g.getName());
+							checkRecacheGroup();
+						}
+					}, 11);
+					confirmInv.setSlot(new Clickable(no) {
+
+						@Override
+						public void clicked(Player p) {
+							showScreen();
+						}
+					}, 15);
+					confirmInv.setSlot(new DecorationStack(info), 4);
+				}
+			};
 		}
 		return c;
 	}
@@ -966,6 +1169,36 @@ public class MemberViewGUI extends GroupGUI {
 			return res.substring(0, 1).toUpperCase() + res.substring(1);
 		}
 		return res;
+	}
+	
+	private List <Clickable> getRecursiveInheritedMembers(Group g) {
+		List <Clickable> clicks = new LinkedList<Clickable>();
+		if (g.hasSuperGroup()) {
+			clicks.addAll(getRecursiveInheritedMembers(g.getSuperGroup()));
+		}
+		for(UUID uuid : g.getAllMembers()) {
+			ItemStack is;
+			switch (g.getPlayerType(uuid)) {
+			case MEMBERS:
+				is = new ItemStack(Material.LEATHER_CHESTPLATE);
+				break;
+			case MODS:
+				is = new ItemStack(Material.GOLD_CHESTPLATE);
+				break;
+			case ADMINS:
+				is = new ItemStack(Material.IRON_CHESTPLATE);
+				break;
+			case OWNER:
+				is = new ItemStack(Material.DIAMOND_CHESTPLATE);
+				break;
+			default:
+				continue;
+			}
+			ISUtils.setName(is, NameAPI.getCurrentName(uuid));
+			ISUtils.addLore(is, ChatColor.AQUA + "Inherited " + getRankName(uuid) + " from " + g.getName());
+			clicks.add(new DecorationStack(is));
+		}
+		return clicks;
 	}
 
 	private boolean hasPermissionToViewAnything() {

@@ -12,12 +12,12 @@ import vg.civcraft.mc.namelayer.misc.Mercury;
  * Abstract utility class, which provides some functionality needed for all guis
  *
  */
-public abstract class GroupGUI {
+public abstract class AbstractGroupGUI {
 	protected Group g;
 	protected Player p;
 	protected static GroupManager gm;
 	
-	public GroupGUI(Group g, Player p) {
+	public AbstractGroupGUI(Group g, Player p) {
 		if (gm == null) {
 			gm = NameAPI.getGroupManager();
 		}

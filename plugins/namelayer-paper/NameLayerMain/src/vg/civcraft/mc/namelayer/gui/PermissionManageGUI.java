@@ -19,12 +19,12 @@ import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class PermissionManageGUI extends GroupGUI{
+public class PermissionManageGUI extends AbstractGroupGUI{
 	
-	private MemberViewGUI parent;
+	private MainGroupGUI parent;
 	private int currentPage;
 	
-	public PermissionManageGUI(Group g, Player p, MemberViewGUI parentGUI) {
+	public PermissionManageGUI(Group g, Player p, MainGroupGUI parentGUI) {
 		super(g, p);
 		this.parent = parentGUI;
 		currentPage = 0;
@@ -57,7 +57,7 @@ public class PermissionManageGUI extends GroupGUI{
 		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		is.setItemMeta(im);
 		Clickable c;
-		ISUtils.setName(is, ChatColor.GOLD + "View and edit permissions for " + MemberViewGUI.getDirectRankName(pType));
+		ISUtils.setName(is, ChatColor.GOLD + "View and edit permissions for " + MainGroupGUI.getDirectRankName(pType));
 		if (!gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("LIST_PERMS"))) {
 			ISUtils.addLore(is, ChatColor.RED + "You are not allowed to list", ChatColor.RED + "permissions for this group");
 			c = new DecorationStack(is);
@@ -93,11 +93,11 @@ public class PermissionManageGUI extends GroupGUI{
 			final boolean hasPerm = gp.hasPermission(pType, perm);
 			if (hasPerm) {
 				is = new ItemStack(Material.INK_SACK, 1, (short) 10); //green dye
-				ISUtils.addLore(is, ChatColor.DARK_AQUA + MemberViewGUI.getDirectRankName(pType) + " currently have", ChatColor.DARK_AQUA + "this permission");
+				ISUtils.addLore(is, ChatColor.DARK_AQUA + MainGroupGUI.getDirectRankName(pType) + " currently have", ChatColor.DARK_AQUA + "this permission");
 			}
 			else {
 				is = new ItemStack(Material.INK_SACK, 1, (short) 1); //red dye
-				ISUtils.addLore(is, ChatColor.DARK_AQUA + MemberViewGUI.getDirectRankName(pType) + " currently don't have", ChatColor.DARK_AQUA + "this permission");
+				ISUtils.addLore(is, ChatColor.DARK_AQUA + MainGroupGUI.getDirectRankName(pType) + " currently don't have", ChatColor.DARK_AQUA + "this permission");
 			}
 			ISUtils.setName(is, perm.getName());
 			if (canEdit) {

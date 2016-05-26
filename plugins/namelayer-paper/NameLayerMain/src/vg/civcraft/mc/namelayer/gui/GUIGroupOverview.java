@@ -166,7 +166,7 @@ public class GUIGroupOverview {
 
 					@Override
 					public void clicked(Player arg0) {
-						MemberViewGUI mgui = new MemberViewGUI(p, g);
+						MainGroupGUI mgui = new MainGroupGUI(p, g);
 					}
 				};
 			} else {

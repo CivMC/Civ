@@ -26,12 +26,12 @@ import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class InvitationGUI extends GroupGUI{
+public class InvitationGUI extends AbstractGroupGUI{
 	
 	private PlayerType selectedType;
-	private MemberViewGUI parent;
+	private MainGroupGUI parent;
 	
-	public InvitationGUI(Group g, Player p, MemberViewGUI parent) {
+	public InvitationGUI(Group g, Player p, MainGroupGUI parent) {
 		super(g,p);
 		this.parent = parent;
 		showScreen();
@@ -66,7 +66,7 @@ public class InvitationGUI extends GroupGUI{
 					selectedType = pType;
 					Dialog enterName = new Dialog(arg0, NameLayerPlugin.getInstance()) {
 						public void onReply(String [] message) {
-							if (gm.hasAccess(g, p.getUniqueId(), MemberViewGUI.getAccordingPermission(selectedType))) {
+							if (gm.hasAccess(g, p.getUniqueId(), MainGroupGUI.getAccordingPermission(selectedType))) {
 								for(String s : message) {
 									UUID inviteUUID = NameAPI.getUUID(s);
 									if (inviteUUID == null) {
@@ -86,7 +86,7 @@ public class InvitationGUI extends GroupGUI{
 									if(NameLayerPlugin.isMercuryEnabled()){
 										MercuryAPI.sendGlobalMessage("addInvitation " + g.getGroupId() + " " + pType.toString() + " " + inviteUUID, "namelayer");
 									}
-									p.sendMessage(ChatColor.GREEN  + "Invited " + s + " as " + MemberViewGUI.getDirectRankName(pType));
+									p.sendMessage(ChatColor.GREEN  + "Invited " + s + " as " + MainGroupGUI.getDirectRankName(pType));
 								}
 							}
 							else {
