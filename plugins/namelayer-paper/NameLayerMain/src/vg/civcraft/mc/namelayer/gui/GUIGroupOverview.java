@@ -146,7 +146,7 @@ public class GUIGroupOverview {
 			ItemMeta im = is.getItemMeta();
 			im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
 			if (g.getName().equals(defaultGroupName)) {
-				ISUtils.addLore(is, ChatColor.DARK_AQUA + "Your current default group");
+				im.getLore().add(ChatColor.DARK_AQUA + "Your current default group");
 				im.addEnchant(Enchantment.DURABILITY, 1, true);
 			}
 			is.setItemMeta(im);

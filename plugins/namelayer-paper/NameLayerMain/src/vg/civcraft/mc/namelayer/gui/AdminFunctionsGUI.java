@@ -90,7 +90,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 			ISUtils.addLore(deletionStack, ChatColor.RED + "You don't have permission to do this");
 			deletionClick = new DecorationStack(deletionStack);
 		}
-		ci.setSlot(deletionClick, 14);
+		ci.setSlot(deletionClick, 16);
 		
 		//back button
 		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);

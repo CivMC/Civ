@@ -49,6 +49,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 	public MainGroupGUI(Player p, Group g) {
 		super(g, p);
+		showBlacklist = false;
+		showInvites = false;
+		showInheritedMembers = false;
 		showMembers = gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("MEMBERS"))
 				|| gm.hasAccess(g, p.getUniqueId(),
@@ -161,11 +164,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		ci.setSlot(getPasswordClickable(), 6);
 		ci.setSlot(getPermOptionClickable(), 7);
 		ci.setSlot(getAdminStuffClickable(), 8);
-		// TODO
-		// delete group
-		// merge group
-		// transfer group
-		// link group
 		ci.showInventory(p);
 	}
 
@@ -503,6 +501,17 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		Clickable ownerClick = setupDetailSlot(Material.DIAMOND_CHESTPLATE,
 				uuid, PlayerType.OWNER);
 		ci.setSlot(ownerClick, 16);
+		
+		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
+		ISUtils.setName(backToOverview, ChatColor.GOLD + "Back to overview");
+		ci.setSlot(new Clickable(backToOverview) {
+
+			@Override
+			public void clicked(Player arg0) {
+				showScreen();
+			}
+		}, 22);
+		
 		ci.showInventory(p);
 	}
 
@@ -973,7 +982,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	 */
 	private Clickable getLeaveGroupClickable() {
 		Clickable c;
-		ItemStack is = new ItemStack(Material.ACACIA_DOOR);
+		ItemStack is = new ItemStack(Material.IRON_DOOR);
 		ISUtils.setName(is, ChatColor.GOLD + "Leave group");
 		if (g.isOwner(p.getUniqueId())) {
 			ISUtils.addLore(is, ChatColor.RED + "You cant leave this group,",
@@ -1029,6 +1038,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 						}
 					}, 15);
 					confirmInv.setSlot(new DecorationStack(info), 4);
+					confirmInv.showInventory(p);
 				}
 			};
 		}
