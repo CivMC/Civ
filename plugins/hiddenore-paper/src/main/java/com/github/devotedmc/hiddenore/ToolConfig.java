@@ -21,6 +21,10 @@ import org.bukkit.inventory.meta.ItemMeta;
    enchants: true
    lore: true
    name: true
+  modifiers:
+   dropChance: 1.0
+   minAmount: 0
+   maxAmount: 0
  * @author ProgrammerDan
  *
  */
@@ -34,15 +38,15 @@ public class ToolConfig {
 	private boolean ignoreName;
 	private boolean ignoreMeta;
 
-	/* TODO */
-	private double rateModifier;
-	private double dropInflation;
-	private double dropInflationChance;
+	private double minAmountModifier;
+	private double maxAmountModifier;
+	private double dropChanceModifier;
 	
 	private static Map<String, ToolConfig> tools;
 	
 	protected ToolConfig(ItemStack template, boolean ignoreAmount, boolean ignoreDurability,
-			boolean ignoreEnchants, boolean ignoreEnchantsLvl, boolean ignoreLore, boolean ignoreName) {
+			boolean ignoreEnchants, boolean ignoreEnchantsLvl, boolean ignoreLore, boolean ignoreName,
+			Double dropChanceModifier, Double minAmountModifier, Double maxAmountModifier) {
 		this.template = template;
 		this.ignoreAmount = ignoreAmount;
 		this.ignoreDurability = ignoreDurability;
@@ -51,6 +55,9 @@ public class ToolConfig {
 		this.ignoreLore = ignoreLore;
 		this.ignoreName = ignoreName;
 		this.ignoreMeta = ignoreEnchants && ignoreEnchantsLvl && ignoreLore && ignoreName;
+		this.dropChanceModifier = (dropChanceModifier == null ? 1.0 : dropChanceModifier);
+		this.minAmountModifier = (minAmountModifier == null ? 0.0 : minAmountModifier);
+		this.maxAmountModifier = (maxAmountModifier == null ? 0.0 : maxAmountModifier);
 	}
 	
 	public ItemStack getTemplate() {
@@ -85,6 +92,18 @@ public class ToolConfig {
 		return ignoreMeta;
 	}
 	
+	public double getDropChanceModifier() {
+		return dropChanceModifier;
+	}
+	
+	public double getMinAmountModifier() {
+		return minAmountModifier;
+	}
+	
+	public double getMaxAmountModifier() {
+		return maxAmountModifier;
+	}
+	
 	public static void clear() {
 		tools = new HashMap<String, ToolConfig>();
 	}
@@ -104,7 +123,10 @@ public class ToolConfig {
 						tool.getBoolean("ignore.enchants", true),
 						tool.getBoolean("ignore.enchantsLvl", true),
 						tool.getBoolean("ignore.lore", true),
-						tool.getBoolean("ignore.name", true)
+						tool.getBoolean("ignore.name", true),
+						tool.getDouble("modifiers.dropChance", 1.0),
+						tool.getDouble("modifiers.minAmount", 0.0),
+						tool.getDouble("modifiers.maxAmount", 0.0)
 					)
 				);
 	}

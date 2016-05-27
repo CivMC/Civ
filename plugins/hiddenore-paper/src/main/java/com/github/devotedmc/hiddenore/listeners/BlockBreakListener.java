@@ -28,6 +28,7 @@ import com.github.devotedmc.hiddenore.BlockConfig;
 import com.github.devotedmc.hiddenore.DropConfig;
 import com.github.devotedmc.hiddenore.HiddenOre;
 import com.github.devotedmc.hiddenore.Config;
+import com.github.devotedmc.hiddenore.ToolConfig;
 import com.github.devotedmc.hiddenore.events.HiddenOreEvent;
 
 public class BlockBreakListener implements Listener {
@@ -196,8 +197,11 @@ public class BlockBreakListener implements Listener {
 					debug("Cannot drop {0} - wrong Y", drop);
 					continue;
 				}
+				
+				ToolConfig dropModifier = dc.dropsWithToolConfig(biomeName, p.getInventory().getItemInMainHand());
 
-				double dropChance = dc.getChance(biomeName);
+				double dropChance = dc.getChance(biomeName) 
+						* (dropModifier == null ? 1.0 : dropModifier.getDropChanceModifier());
 
 				// Random check to decide whether or not the special drop should be dropped
 				if (dropChance > Math.random()) {
@@ -207,7 +211,7 @@ public class BlockBreakListener implements Listener {
 						event.setCancelled(true);
 					}
 
-					final List<ItemStack> items = dc.renderDrop(biomeName);
+					final List<ItemStack> items = dc.renderDrop(biomeName, dropModifier);
 					final Location l = b.getLocation();
 					HiddenOreEvent hoe = new HiddenOreEvent(p, l, items);
 					Bukkit.getPluginManager().callEvent(hoe);
@@ -259,7 +263,8 @@ public class BlockBreakListener implements Listener {
 				// Remove block, drop special drop and cancel the event
 				b.setType(Material.AIR);
 				event.setCancelled(true);
-				final List<ItemStack> items = dc.renderDrop(biomeName);
+				ToolConfig tc = dc.dropsWithToolConfig(biomeName, p.getInventory().getItemInMainHand());
+				final List<ItemStack> items = dc.renderDrop(biomeName, tc);
 				final Location l = b.getLocation();
 				HiddenOreEvent hoe = new HiddenOreEvent(p, l, items);
 				Bukkit.getPluginManager().callEvent(hoe);

@@ -47,6 +47,15 @@ public class DropConfig {
 			return ToolConfig.dropsWithTool(t, tool);
 		}
 	}
+	
+	public ToolConfig dropsWithToolConfig(String biome, ItemStack tool) {
+		Set<String> t = getTools(biome);
+		if (t == null || t.isEmpty()) {
+			return ToolConfig.getAnyTool(tool);
+		} else {
+			return ToolConfig.getTool(t, tool);
+		}
+	}
 
 	public int getMinY(String biome) {
 		return biomeLimits.containsKey(biome) ? biomeLimits.get(biome).minY : limits.minY;
@@ -75,10 +84,10 @@ public class DropConfig {
 	 * @param biome
 	 * @return
 	 */
-	public List<ItemStack> renderDrop(String biome) {
+	public List<ItemStack> renderDrop(String biome, ToolConfig modify) {
 		/** multipliers **/
-		double min = getMinAmount(biome);
-		double max = getMaxAmount(biome);
+		double min = getMinAmount(biome) + (modify != null ? modify.getMinAmountModifier() : 0.0);
+		double max = getMaxAmount(biome) + (modify != null ? modify.getMaxAmountModifier() : 0.0);
 		double amount = (min == max) ? min : (double) ((max - min) * Math.random() + min);
 		
 		HiddenOre.getPlugin().getLogger().log(Level.INFO, "Trigger drop {0} [{2}, {3}] = {4}", 

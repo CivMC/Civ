@@ -73,7 +73,8 @@ public class BlockConfig {
 		for (Map.Entry<String, DropConfig> dc : dropConfigs.entrySet()) {
 			if (dc.getValue().dropsWithTool(biome, tool) && blockY <= dc.getValue().getMaxY(biome)
 					&& blockY >= dc.getValue().getMinY(biome)) {
-				localChance = dc.getValue().getChance(biome);
+				ToolConfig tc = dc.getValue().dropsWithToolConfig(biome, tool);
+				localChance = dc.getValue().getChance(biome) * (tc == null ? 1.0 : tc.getDropChanceModifier());
 				if (dice >= cumChance && dice < cumChance + localChance) {
 					return dc.getKey();
 				}

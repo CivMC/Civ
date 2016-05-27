@@ -15,6 +15,10 @@ tools:
    enchants: true
    lore: true
    name: true
+  modifiers:
+   dropChance: 1.0
+   minAmount: 0.0
+   maxAmount: 0.0
  GOLD_PICKAXE:
   template:
    ==: org.bukkit.inventory.ItemStack
@@ -26,6 +30,10 @@ tools:
    enchants: true
    lore: true
    name: true
+  modifiers:
+   dropChance: 1.0
+   minAmount: 0.0
+   maxAmount: 0.0
  IRON_PICKAXE:
   template:
    ==: org.bukkit.inventory.ItemStack
@@ -37,6 +45,10 @@ tools:
    enchants: true
    lore: true
    name: true
+  modifiers:
+   dropChance: 1.0
+   minAmount: 0.0
+   maxAmount: 0.0
  STONE_PICKAXE:
   template:
    ==: org.bukkit.inventory.ItemStack
@@ -48,6 +60,10 @@ tools:
    enchants: true
    lore: true
    name: true
+  modifiers:
+   dropChance: 1.0
+   minAmount: 0.0
+   maxAmount: 0.0
  DIAMOND_PICKAXE:
   template:
    ==: org.bukkit.inventory.ItemStack
@@ -59,6 +75,10 @@ tools:
    enchants: true
    lore: true
    name: true
+  modifiers:
+   dropChance: 1.0
+   minAmount: 0.0
+   maxAmount: 0.0
 blocks:
  stone:
   material: STONE
