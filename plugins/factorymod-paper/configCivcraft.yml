@@ -10053,7 +10053,7 @@ recipes:
       god3:
         chance: 0.00040909
         clockback:
-          material: CLOCK
+          material: WATCH
           amount: 1
           lore:
            - Clockback
@@ -10521,7 +10521,7 @@ recipes:
       god3:
         chance: 0.00040909
         clockback:
-          material: CLOCK
+          material: WATCH
           amount: 1
           lore:
            - Clockback
