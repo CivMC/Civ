@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -118,6 +119,25 @@ public class ConfigParsing {
 					((LeatherArmorMeta) meta).setColor(leatherColor);
 				}
 			}
+			if (m == Material.ENCHANTED_BOOK) {
+				ConfigurationSection storedEnchantSection = current
+						.getConfigurationSection("stored_enchants");
+				if (storedEnchantSection != null) {
+					EnchantmentStorageMeta enchantMeta = (EnchantmentStorageMeta) meta;
+					for (String sEKey : storedEnchantSection.getKeys(false)) {
+						ConfigurationSection currentStoredEnchantSection = storedEnchantSection
+								.getConfigurationSection(sEKey);
+						if (currentStoredEnchantSection != null) {
+							Enchantment enchant = Enchantment
+									.getByName(currentStoredEnchantSection
+											.getString("enchant"));
+							int level = currentStoredEnchantSection.getInt(
+									"level", 1);
+							enchantMeta.addStoredEnchant(enchant, level, true);
+						}
+					}
+				}
+			}
 			if (m == Material.POTION || m == Material.SPLASH_POTION
 					|| m == Material.LINGERING_POTION
 					|| m == Material.TIPPED_ARROW) {
@@ -158,8 +178,9 @@ public class ConfigParsing {
 						.getConfigurationSection("nbt").getValues(true));
 			}
 		}
-		// Setting amount must be last just in cast enrichWithNBT is called, which
-		// resets the amount to 1. 
+		// Setting amount must be last just in cast enrichWithNBT is called,
+		// which
+		// resets the amount to 1.
 		int amount = current.getInt("amount", 1);
 		toAdd.setAmount(amount);
 		im.addItemStack(toAdd);
