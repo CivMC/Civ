@@ -221,9 +221,13 @@ blocks:
 #   - 0
 #  dropMultiple: true
 #  drops:
-#   INK_SACK:
+#   ink_sack:
+#    package:
+#     - ==: org.bukkit.inventory.ItemStack
+#       type: INK_SACK
+#       durability: 4
+#       amount: 1
 #    prefix: Lucky find! You've found a dropchest inner.
-#    type: 4
 #    chance: 0.5
 #    minAmount: 32
 #    maxAmount: 64
@@ -231,7 +235,11 @@ blocks:
 #     PLAIN:
 #      minY: 1
 #      maxY: 128
-#   QUARTZ:
+#   quartz:
+#    package:
+#     - ==: org.bukkit.inventory.ItemStack
+#       type: QUARTZ
+#       amount: 1
 #    prefix: Lucky find! You've found a dropchest.
 #    chance: 0.25
 #    amount: 5

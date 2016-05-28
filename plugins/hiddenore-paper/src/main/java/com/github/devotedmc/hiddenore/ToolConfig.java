@@ -42,7 +42,7 @@ public class ToolConfig {
 	private double maxAmountModifier;
 	private double dropChanceModifier;
 	
-	private static Map<String, ToolConfig> tools;
+	private static Map<String, ToolConfig> tools = new HashMap<String, ToolConfig>();
 	
 	protected ToolConfig(ItemStack template, boolean ignoreAmount, boolean ignoreDurability,
 			boolean ignoreEnchants, boolean ignoreEnchantsLvl, boolean ignoreLore, boolean ignoreName,

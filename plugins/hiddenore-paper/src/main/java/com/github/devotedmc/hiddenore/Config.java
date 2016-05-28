@@ -151,13 +151,13 @@ public final class Config {
 
 					bc.addDropConfig(sourceDrop, dc);
 				}
-				List<BlockConfig> bclist = i.blockConfigs.get(sourceBlock);
+				List<BlockConfig> bclist = i.blockConfigs.get(cBlockName);//sourceBlock);
 				if (bclist == null) {
 					bclist = new LinkedList<BlockConfig>();
 				}
 				bclist.add(bc);
 
-				i.blockConfigs.put(sourceBlock, bclist);
+				i.blockConfigs.put(cBlockName, bclist);//sourceBlock, bclist);
 			}
 		} else {
 			HiddenOre.getPlugin().getLogger().info("No blocks specified (Why are you using this plugin?)");
@@ -181,8 +181,8 @@ public final class Config {
 		dlc.minY = drop.getInt("minY", parent.minY);
 		dlc.maxY = drop.getInt("maxY", parent.maxY);
 		HiddenOre.getPlugin().getLogger()
-				.log(Level.INFO, "   loading drop config {0}% {1}-{2} {3}-{4}",
-						new Object[] {dlc.chance, dlc.minAmount, dlc.maxAmount, dlc.minY, dlc.maxY});
+				.log(Level.INFO, "   loading drop config {0}% {1}-{2} {3}-{4} with {5} tools",
+						new Object[] {dlc.chance*100.0, dlc.minAmount, dlc.maxAmount, dlc.minY, dlc.maxY, dlc.tools.size()});
 		return dlc;
 	}
 
