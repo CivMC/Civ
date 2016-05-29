@@ -86,7 +86,7 @@ public class InvitationGUI extends AbstractGroupGUI{
 									if(NameLayerPlugin.isMercuryEnabled()){
 										MercuryAPI.sendGlobalMessage("addInvitation " + g.getGroupId() + " " + pType.toString() + " " + inviteUUID, "namelayer");
 									}
-									p.sendMessage(ChatColor.GREEN  + "Invited " + s + " as " + MainGroupGUI.getDirectRankName(pType));
+									p.sendMessage(ChatColor.GREEN  + "Invited " + NameAPI.getCurrentName(inviteUUID) + " as " + MainGroupGUI.getDirectRankName(pType));
 								}
 							}
 							else {

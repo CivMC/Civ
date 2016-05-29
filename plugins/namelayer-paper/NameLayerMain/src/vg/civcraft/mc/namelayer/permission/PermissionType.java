@@ -37,6 +37,10 @@ public class PermissionType {
 	}
 	
 	public static void registerPermission(String name, List <PlayerType> defaultPermLevels) {
+		registerPermission(name, defaultPermLevels, null);
+	}
+	
+	public static void registerPermission(String name, List <PlayerType> defaultPermLevels, String description) {
 		if (name == null ) {
 			Bukkit.getLogger().severe("Could not register permission, name was null");
 			return;
@@ -45,7 +49,6 @@ public class PermissionType {
 			Bukkit.getLogger().severe("Could not register permission " + name + ". It was already registered");
 			return;
 		}
-		Map <Integer,String> permMapping = NameLayerPlugin.getGroupManagerDao().getPermissionMapping();
 		int id = -1;
 		Map <Integer,String> dbRegisteredPerms = NameLayerPlugin.getGroupManagerDao().getPermissionMapping();
 		for(Entry <Integer,String> perm : dbRegisteredPerms.entrySet()) {
@@ -62,13 +65,13 @@ public class PermissionType {
 				id++;
 			}
 			maximumExistingId = id;
-			p = new PermissionType(name, id, defaultPermLevels);
+			p = new PermissionType(name, id, defaultPermLevels, description);
 			NameLayerPlugin.getGroupManagerDao().registerPermission(p);
 			NameLayerPlugin.getGroupManagerDao().addNewDefaultPermission(defaultPermLevels, p);
 		}
 		else {
 			//already in db, so use existing id
-			p = new PermissionType(name, id, defaultPermLevels);
+			p = new PermissionType(name, id, defaultPermLevels, description);
 		}
 		permissionByName.put(name, p);
 		permissionById.put(id, p);
@@ -96,37 +99,35 @@ public class PermissionType {
 		all.add(PlayerType.ADMINS);
 		all.add(PlayerType.OWNER);
 		//clone the list every time so changing the list of one perm later doesn't affect other perms
-		//also not saving them to the db, because that handled by the groupmanager dao itself, which isnt
-		//even initialized at this point
 		
 		//allows adding/removing members
-		registerPermission("MEMBERS", (LinkedList <PlayerType>)modAndAbove.clone());
+		registerPermission("MEMBERS", (LinkedList <PlayerType>)modAndAbove.clone(), "Allows inviting new members and removing existing members");
 		//allows blacklisting/unblacklisting players and viewing the blacklist
-		registerPermission("BLACKLIST", (LinkedList <PlayerType>)modAndAbove.clone());
+		registerPermission("BLACKLIST", (LinkedList <PlayerType>)modAndAbove.clone(), "Allows viewing this group's blacklist, adding players to the blacklist "
+				+ "and removing players from the blacklist");
 		//allows adding/removing mods
-		registerPermission("MODS", (LinkedList <PlayerType>)adminAndAbove.clone());
+		registerPermission("MODS", (LinkedList <PlayerType>)adminAndAbove.clone(), "Allows inviting new mods and removing existing mods");
 		//allows adding/modifying a password for the group
-		registerPermission("PASSWORD", (LinkedList <PlayerType>)adminAndAbove.clone());
+		registerPermission("PASSWORD", (LinkedList <PlayerType>)adminAndAbove.clone(), "Allows viewing this groups password and changing or removing it");
 		//allows to list the permissions for each permission group
-		registerPermission("LIST_PERMS", (LinkedList <PlayerType>)adminAndAbove.clone());
+		registerPermission("LIST_PERMS", (LinkedList <PlayerType>)adminAndAbove.clone(), "Allows viewing how permission for this group are set up");
 		//allows to see general group stats
-		registerPermission("GROUPSTATS", (LinkedList <PlayerType>)adminAndAbove.clone());
+		registerPermission("GROUPSTATS", (LinkedList <PlayerType>)adminAndAbove.clone(), "Gives access to various group statistics such as member "
+				+ "counts by permission type, who owns the group etc.");
 		//allows to add/remove admins
-		registerPermission("ADMINS", (LinkedList <PlayerType>)owner.clone());
+		registerPermission("ADMINS", (LinkedList <PlayerType>)owner.clone(), "Allows inviting new admins and removing existing admins");
 		//allows to add/remove owners
-		registerPermission("OWNER", (LinkedList <PlayerType>)owner.clone());
+		registerPermission("OWNER", (LinkedList <PlayerType>)owner.clone(), "Allows inviting new owners and removing existing owners");
 		//allows to modify the permissions for different permissions groups
-		registerPermission("PERMS", (LinkedList <PlayerType>)owner.clone());
+		registerPermission("PERMS", (LinkedList <PlayerType>)owner.clone(), "Allows modifying permissions for this group");
 		//allows deleting the group
-		registerPermission("DELETE", (LinkedList <PlayerType>)owner.clone());
+		registerPermission("DELETE", (LinkedList <PlayerType>)owner.clone(), "Allows deleting this group");
 		//allows merging the group with another one
-		registerPermission("MERGE", (LinkedList <PlayerType>)owner.clone());
-		//allows transferring this group to a new primary owner
-		registerPermission("TRANSFER", (LinkedList <PlayerType>)owner.clone());
+		registerPermission("MERGE", (LinkedList <PlayerType>)owner.clone(), "Allows merging this group into another or merging another group into this one");
 		//allows linking this group to another
-		registerPermission("LINKING", (LinkedList <PlayerType>)owner.clone());
+		registerPermission("LINKING", (LinkedList <PlayerType>)owner.clone(), "Allows linking this group to another group as a supergroup or a subgroup");
 		//allows opening the gui
-		registerPermission("OPEN_GUI", (LinkedList <PlayerType>)all.clone());
+		registerPermission("OPEN_GUI", (LinkedList <PlayerType>)all.clone(), "Allows opening the GUI for this group");
 		
 		
 		//perm level given to members when they join with a password
@@ -136,11 +137,13 @@ public class PermissionType {
 	private String name;
 	private List <PlayerType> defaultPermLevels;
 	private int id;
+	private String description;
 	
-	private PermissionType(String name, int id, List <PlayerType> defaultPermLevels) {
+	private PermissionType(String name, int id, List <PlayerType> defaultPermLevels, String description) {
 		this.name = name;
 		this.id = id;
 		this.defaultPermLevels = defaultPermLevels;
+		this.description = description;
 	}
 	
 	public String getName() {
@@ -155,19 +158,7 @@ public class PermissionType {
 		return id;
 	}
 	
-	/**
-	public static String getStringOfTypes() {
-		StringBuilder perms = new StringBuilder();
-		for (String perm: BY_NAME.keySet()) {
-			perms.append(perm);
-			perms.append(" ");
-		}
-		return perms.toString();
+	public String getDescription() {
+		return description;
 	}
-	
-	public static void displayPermissionTypes(Player p) {
-		p.sendMessage(ChatColor.RED 
-				+ "That PermissionType does not exists.\n"
-				+ "The current types are: " + getStringOfTypes());
-	} **/
 }

@@ -330,25 +330,21 @@ public class GroupManager{
 			}
 		}
 		GroupPermission perms = getPermissionforGroup(group);
-		for(PlayerType rank : getRecursivePlayerTypes(group, player)) {
-			if (perms.hasPermission(rank, perm)) {
-				//player has right rank in the group itself or at least one super group
-				return true;
-			}
-		}		
+		PlayerType rank = getRecursiveHighestPlayerType(group, player); 
+		if (perms.hasPermission(rank, perm)) {
+			//player has right rank in the group itself or at least one super group
+			return true;
+		}	
 		return false;
 	}
 	
-	private List<PlayerType> getRecursivePlayerTypes(Group group, UUID player) {
-		List<PlayerType> perms = new LinkedList<PlayerType>();
+	private PlayerType getRecursiveHighestPlayerType(Group group, UUID player) {
 		PlayerType type = group.getPlayerType(player);
-		if (type != null) {
-			perms.add(type);
-		}
 		if (group.hasSuperGroup()) {
-			perms.addAll(getRecursivePlayerTypes(group.getSuperGroup(), player));
+			//only return highest rank
+			type = PlayerType.getByID(Math.max(PlayerType.getID(type), PlayerType.getID(getRecursiveHighestPlayerType(group.getSuperGroup(), player))));
 		}
-		return perms;
+		return type;
 	}
 			
 	// == PERMISSION HANDLING ============================================================= //
@@ -496,6 +492,43 @@ public class GroupManager{
 			p.sendMessage(ChatColor.GREEN 
 					+ "The current types are: " + getStringOfTypes()); 
 			//dont yell at player for nllpt
+		}
+		
+		public static PlayerType getByID(int id) {
+			switch(id) {
+			case 0:
+				return PlayerType.NOT_BLACKLISTED;
+			case 1:
+				return PlayerType.MEMBERS;
+			case 2:
+				return PlayerType.MODS;
+			case 3:
+				return PlayerType.ADMINS;
+			case 4:
+				return PlayerType.OWNER;
+			default:
+				return null;
+			}
+		}
+		
+		public static int getID(PlayerType type) {
+			if (type == null) {
+				return -1;
+			}
+			switch (type) {
+				case NOT_BLACKLISTED:
+					return 0;
+				case MEMBERS:
+					return 1;
+				case MODS:
+					return 2;
+				case ADMINS:
+					return 3;
+				case OWNER:
+					return 4;
+				default:
+					return -1;
+			}
 		}
 	}
 }

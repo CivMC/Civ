@@ -52,12 +52,6 @@ public class TransferGroup extends PlayerCommandMiddle{
 			return true;
 		}
 		
-		if (!gm.hasAccess(g, uuid, PermissionType.getPermission("TRANSFER")) && 
-				!(p.isOp() || p.hasPermission("namelayer.admin"))){
-			p.sendMessage(ChatColor.RED + "You do not have permission for this group to transfer it.");
-			return true;
-		}
-		
 		if (oPlayer == null){
 			p.sendMessage(ChatColor.RED + "This player has never played before and cannot be given the group.");
 			return true;
@@ -67,11 +61,12 @@ public class TransferGroup extends PlayerCommandMiddle{
 			p.sendMessage(ChatColor.RED + "This player cannot receive the group! This player has already reached the group limit count.");
 			return true;
 		}
-		
-		g.addMember(oPlayer, PlayerType.OWNER);
+		if (!g.isMember(oPlayer)) {
+			p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(oPlayer) + " is not a member of the group and can't be made primary owner!");
+			return true;
+		}
 		g.setOwner(oPlayer);
 		checkRecacheGroup(g);
-		g.removeMember(uuid);
 		p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(oPlayer) + " has been given ownership of the group.");
 		return true;
 	}

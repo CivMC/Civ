@@ -81,11 +81,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		if (!validGroup()) {
 			return;
 		}
-		if (!hasPermissionToViewAnything()) {
-			p.sendMessage(ChatColor.RED
-					+ "You lost the required permissions to list members of this group");
-			return;
-		}
 		ClickableInventory ci = new ClickableInventory(54, g.getName());
 		final List<Clickable> clicks = constructClickables();
 		if (clicks.size() < 45 * currentPage) {
@@ -695,6 +690,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				@Override
 				public void clicked(Player p) {
 					showInheritedMembers = !showInheritedMembers;
+					showScreen();
 
 				}
 			};

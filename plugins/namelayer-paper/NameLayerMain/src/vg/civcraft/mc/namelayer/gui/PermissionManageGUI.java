@@ -100,6 +100,10 @@ public class PermissionManageGUI extends AbstractGroupGUI{
 				ISUtils.addLore(is, ChatColor.DARK_AQUA + MainGroupGUI.getDirectRankName(pType) + " currently don't have", ChatColor.DARK_AQUA + "this permission");
 			}
 			ISUtils.setName(is, perm.getName());
+			String desc = perm.getDescription();
+			if (desc != null) {
+				ISUtils.addLore(is, ChatColor.GREEN + desc);
+			}
 			if (canEdit) {
 				ISUtils.addLore(is, ChatColor.AQUA + "Click to toggle");
 				c = new Clickable(is) {
