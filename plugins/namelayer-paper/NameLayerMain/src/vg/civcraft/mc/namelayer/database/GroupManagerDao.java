@@ -383,7 +383,7 @@ public class GroupManagerDao {
 	
 	private PreparedStatement addAutoAcceptGroup, getAutoAcceptGroup, removeAutoAcceptGroup;
 	
-	private PreparedStatement setDefaultGroup, changeDefaultGroup, getDefaultGroup;
+	private PreparedStatement setDefaultGroup, changeDefaultGroup, getDefaultGroup, getAllDefaultGroups;
 	
 	private PreparedStatement loadGroupsInvitations, addGroupInvitation, removeGroupInvitation, loadGroupInvitation;
 	
@@ -486,6 +486,7 @@ public class GroupManagerDao {
 		
 		getDefaultGroup = db.prepareStatement("select defaultgroup from default_group "
 				+ "where uuid = ?");
+		getAllDefaultGroups = db.prepareStatement("select uuid,defaultgroup from defaultgroup");
 		
 		loadGroupsInvitations = db.prepareStatement("select uuid, groupName, role from group_invitation");
 		
@@ -1066,6 +1067,22 @@ public class GroupManagerDao {
 			plugin.getLogger().log(Level.WARNING, "Problem getting default group for " + uuid, e);
 		}
 		return null;
+	}
+	
+	public synchronized Map <UUID, String> getAllDefaultGroups() {
+		Map <UUID, String> groups = null;
+		try {
+			ResultSet set = getAllDefaultGroups.executeQuery();
+			groups = new TreeMap<UUID, String>();
+			while(set.next()) {
+				UUID uuid = UUID.fromString(set.getString(1));
+				String group = set.getString(2);
+				groups.put(uuid, group);
+			}
+		} catch (SQLException e) {
+			plugin.getLogger().log(Level.WARNING, "Problem getting all default groups " , e);
+		}
+		return groups;
 	}
 	
 	/**

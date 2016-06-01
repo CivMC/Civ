@@ -395,7 +395,7 @@ public class GroupManager{
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getDefaultGroup was cancelled, caller passed in null", new Exception());
 			return null;
 		}
-		return groupManagerDao.getDefaultGroup(uuid);
+		return NameLayerPlugin.getDefaultGroupHandler().getDefaultGroup(uuid);
 	}
 
 	/**
