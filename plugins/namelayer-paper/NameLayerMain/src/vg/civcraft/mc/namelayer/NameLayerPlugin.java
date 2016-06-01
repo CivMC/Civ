@@ -33,11 +33,13 @@ public class NameLayerPlugin extends ACivMod{
 	private static Database db;
 	private static boolean loadGroups = true;
 	private static int groupLimit = 10;
+	private static boolean createGroupOnFirstJoin;
 	private Config config;
 	
 	@CivConfigs({
 		@CivConfig(name = "groups.enable", def = "true", type = CivConfigType.Bool),
-		@CivConfig(name = "groups.grouplimit", def = "10", type = CivConfigType.Int)
+		@CivConfig(name = "groups.grouplimit", def = "10", type = CivConfigType.Int),
+		@CivConfig(name = "groups.creationOnFirstJoin", def = "true", type = CivConfigType.Bool)
 	})
 	@Override
 	public void onEnable() {
@@ -45,6 +47,7 @@ public class NameLayerPlugin extends ACivMod{
 		config = GetConfig();
 		loadGroups = config.get("groups.enable").getBool();
 		groupLimit = config.get("groups.grouplimit").getInt();
+		createGroupOnFirstJoin = config.get("groups.creationOnFirstJoin").getBool();
 		instance = this;
 		loadDatabases();
 	    ClassHandler.Initialize(Bukkit.getServer());
@@ -173,6 +176,10 @@ public class NameLayerPlugin extends ACivMod{
 	
 	public static String getSpecialAdminGroup(){
 		return "Name_Layer_Special";
+	}
+	
+	public static boolean createGroupOnFirstJoin() {
+		return createGroupOnFirstJoin;
 	}
 
 	@Override
