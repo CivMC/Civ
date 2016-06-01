@@ -486,7 +486,7 @@ public class GroupManagerDao {
 		
 		getDefaultGroup = db.prepareStatement("select defaultgroup from default_group "
 				+ "where uuid = ?");
-		getAllDefaultGroups = db.prepareStatement("select uuid,defaultgroup from defaultgroup");
+		getAllDefaultGroups = db.prepareStatement("select uuid,defaultgroup from default_group");
 		
 		loadGroupsInvitations = db.prepareStatement("select uuid, groupName, role from group_invitation");
 		
