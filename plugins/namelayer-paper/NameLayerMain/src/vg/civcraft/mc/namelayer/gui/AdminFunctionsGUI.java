@@ -3,6 +3,7 @@ package vg.civcraft.mc.namelayer.gui;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -224,6 +225,11 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 							showScreen();
 							return;
 						}
+						NameLayerPlugin.log(Level.INFO,
+								p.getName() + " transferred group to "
+										+ NameAPI.getCurrentName(transferUUID)
+										+ " for group " + g.getName()
+										+ "via gui");
 						g.setOwner(transferUUID);
 						p.sendMessage(ChatColor.GREEN + playerName
 								+ " has been given ownership of the group.");
@@ -272,7 +278,8 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 					showScreen();
 					return;
 				}
-				g.removeMember(p.getUniqueId());
+				NameLayerPlugin.log(Level.INFO,
+						p.getName() + " deleted " + g.getName() + "via gui");
 				if (gm.deleteGroup(g.getName())) {
 					p.sendMessage(ChatColor.GREEN + g.getName()
 							+ " was successfully deleted.");

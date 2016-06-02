@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -196,6 +197,12 @@ public class MainGroupGUI extends AbstractGroupGUI {
 						public void clicked(Player arg0) {
 							if (gm.hasAccess(g, p.getUniqueId(),
 									PermissionType.getPermission("BLACKLIST"))) {
+								NameLayerPlugin.log(
+										Level.INFO,
+										arg0.getName() + " removed "
+												+ NameAPI.getCurrentName(uuid)
+												+ " from the blacklist of "
+												+ g.getName() + "via gui");
 								black.removeBlacklistMember(g, uuid, true);
 								checkRecacheGroup();
 								p.sendMessage(ChatColor.GREEN + "You removed "
@@ -312,6 +319,15 @@ public class MainGroupGUI extends AbstractGroupGUI {
 								p.sendMessage(ChatColor.RED
 										+ "You don't have permission to revoke this invite");
 							} else {
+								NameLayerPlugin
+										.log(Level.INFO,
+												arg0.getName()
+														+ " revoked an invite for "
+														+ NameAPI
+																.getCurrentName(invitedUUID)
+														+ " for group "
+														+ g.getName()
+														+ "via gui");
 								g.removeInvite(invitedUUID, true);
 								PlayerListener.removeNotification(invitedUUID,
 										g);
@@ -496,7 +512,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		Clickable ownerClick = setupDetailSlot(Material.DIAMOND_CHESTPLATE,
 				uuid, PlayerType.OWNER);
 		ci.setSlot(ownerClick, 16);
-		
+
 		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
 		ISUtils.setName(backToOverview, ChatColor.GOLD + "Back to overview");
 		ci.setSlot(new Clickable(backToOverview) {
@@ -506,7 +522,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				showScreen();
 			}
 		}, 22);
-		
+
 		ci.showInventory(p);
 	}
 
@@ -516,7 +532,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	 */
 	private Clickable setupDetailSlot(Material slotMaterial,
 			final UUID toChange, final PlayerType pType) {
-		PlayerType rank = g.getCurrentRank(toChange);
+		final PlayerType rank = g.getCurrentRank(toChange);
 		ItemStack mod = new ItemStack(slotMaterial);
 		Clickable modClick;
 		if (rank == pType) {
@@ -576,6 +592,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				p.sendMessage(ChatColor.RED
 						+ "This player owns the group and can't be removed");
 			}
+			NameLayerPlugin.log(Level.INFO,
+					p.getName() + " kicked " + NameAPI.getCurrentName(toRemove)
+							+ " from " + g.getName() + "via gui");
 			g.removeMember(toRemove);
 			checkRecacheGroup();
 			p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(toRemove)
@@ -601,6 +620,13 @@ public class MainGroupGUI extends AbstractGroupGUI {
 						+ "This player owns the group and can't be demoted");
 			}
 			OfflinePlayer prom = Bukkit.getOfflinePlayer(toChange);
+			NameLayerPlugin.log(
+					Level.INFO,
+					p.getName() + " changed player rank for "
+							+ NameAPI.getCurrentName(toChange) + " from "
+							+ g.getCurrentRank(toChange).toString() + " to "
+							+ newRank.toString() + " for group " + g.getName()
+							+ "via gui");
 			if (prom.isOnline()) {
 				Player oProm = (Player) prom;
 				PromotePlayerEvent event = new PromotePlayerEvent(oProm, g,
@@ -781,6 +807,15 @@ public class MainGroupGUI extends AbstractGroupGUI {
 										continue;
 									}
 									didSomething = true;
+									NameLayerPlugin
+											.log(Level.INFO,
+													p.getName()
+															+ " blacklisted "
+															+ NameAPI
+																	.getCurrentName(blackUUID)
+															+ " for group "
+															+ g.getName()
+															+ "via gui");
 									bl.addBlacklistMember(g, blackUUID, true);
 									p.sendMessage(ChatColor.GREEN
 											+ NameAPI.getCurrentName(blackUUID)
@@ -861,7 +896,15 @@ public class MainGroupGUI extends AbstractGroupGUI {
 									g.setPassword(null);
 									p.sendMessage(ChatColor.GREEN
 											+ "Removed the password from the group");
+									NameLayerPlugin.log(Level.INFO, p.getName()
+											+ " removed password "
+											+ " for group " + g.getName()
+											+ "via gui");
 								} else {
+									NameLayerPlugin.log(Level.INFO, p.getName()
+											+ " set password to " + newPassword
+											+ " for group " + g.getName()
+											+ "via gui");
 									g.setPassword(newPassword);
 									p.sendMessage(ChatColor.GREEN
 											+ "Set new password: "
@@ -885,7 +928,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		}
 		return c;
 	}
-	
+
 	private Clickable getPermOptionClickable() {
 		ItemStack permStack = new ItemStack(Material.FENCE_GATE);
 		ISUtils.setName(permStack, ChatColor.GOLD
@@ -908,11 +951,11 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		}
 		return permClickable;
 	}
-	
+
 	private Clickable getInvitePlayerClickable() {
 		ItemStack inviteStack = new ItemStack(Material.COOKIE);
 		ISUtils.setName(inviteStack, ChatColor.GOLD + "Invite new member");
-		 return new Clickable(inviteStack) {
+		return new Clickable(inviteStack) {
 
 			@Override
 			public void clicked(Player arg0) {
@@ -941,6 +984,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 				@Override
 				public void clicked(Player p) {
+					NameLayerPlugin.log(Level.INFO, p.getName()
+							+ " set default group to " + g.getName()
+							+ "via gui");
 					if (defGroup == null) {
 						g.setDefaultGroup(p.getUniqueId());
 						p.sendMessage(ChatColor.GREEN
@@ -958,16 +1004,17 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		}
 		return c;
 	}
-	
+
 	private Clickable getAdminStuffClickable() {
 		ItemStack is = new ItemStack(Material.DIAMOND);
 		ISUtils.setName(is, ChatColor.GOLD + "Owner functions");
 		Clickable c = new Clickable(is) {
-			
+
 			@Override
 			public void clicked(Player p) {
-				AdminFunctionsGUI subGui = new AdminFunctionsGUI(p, g, MainGroupGUI.this);
-				subGui.showScreen();				
+				AdminFunctionsGUI subGui = new AdminFunctionsGUI(p, g,
+						MainGroupGUI.this);
+				subGui.showScreen();
 			}
 		};
 		return c;
@@ -1020,6 +1067,8 @@ public class MainGroupGUI extends AbstractGroupGUI {
 								showScreen();
 								return;
 							}
+							NameLayerPlugin.log(Level.INFO, p.getName()
+									+ " left " + g.getName() + "via gui");
 							g.removeMember(p.getUniqueId());
 							p.sendMessage(ChatColor.GREEN + "You have left "
 									+ g.getName());
@@ -1176,13 +1225,13 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		}
 		return res;
 	}
-	
-	private List <Clickable> getRecursiveInheritedMembers(Group g) {
-		List <Clickable> clicks = new LinkedList<Clickable>();
+
+	private List<Clickable> getRecursiveInheritedMembers(Group g) {
+		List<Clickable> clicks = new LinkedList<Clickable>();
 		if (g.hasSuperGroup()) {
 			clicks.addAll(getRecursiveInheritedMembers(g.getSuperGroup()));
 		}
-		for(UUID uuid : g.getAllMembers()) {
+		for (UUID uuid : g.getAllMembers()) {
 			ItemStack is;
 			switch (g.getPlayerType(uuid)) {
 			case MEMBERS:
@@ -1201,7 +1250,8 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				continue;
 			}
 			ISUtils.setName(is, NameAPI.getCurrentName(uuid));
-			ISUtils.addLore(is, ChatColor.AQUA + "Inherited " + getRankName(uuid) + " from " + g.getName());
+			ISUtils.addLore(is, ChatColor.AQUA + "Inherited "
+					+ getRankName(uuid) + " from " + g.getName());
 			clicks.add(new DecorationStack(is));
 		}
 		return clicks;

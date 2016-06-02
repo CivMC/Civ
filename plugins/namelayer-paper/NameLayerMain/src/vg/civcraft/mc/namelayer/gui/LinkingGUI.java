@@ -2,6 +2,7 @@ package vg.civcraft.mc.namelayer.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,6 +13,7 @@ import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.misc.Mercury;
@@ -90,17 +92,18 @@ public class LinkingGUI extends AbstractGroupGUI {
 		}, 7);
 		ci.showInventory(p);
 	}
-	
-	private List <Clickable> getSubClickables() {
-		List <Clickable> clicks = new ArrayList<Clickable>();
+
+	private List<Clickable> getSubClickables() {
+		List<Clickable> clicks = new ArrayList<Clickable>();
 		for (final Group sub : g.getSubgroups()) {
 			ItemStack is = new ItemStack(Material.MAGMA_CREAM);
 			ISUtils.setName(is, ChatColor.GOLD + sub.getName());
 			ISUtils.addLore(is, ChatColor.AQUA + "This group has "
 					+ sub.getSubgroups().size() + "sub groups itself");
-			ISUtils.addLore(is, ChatColor.DARK_AQUA + "Click to remove this sub group");
+			ISUtils.addLore(is, ChatColor.DARK_AQUA
+					+ "Click to remove this sub group");
 			Clickable c = new Clickable(is) {
-				
+
 				@Override
 				public void clicked(Player arg0) {
 					if (!gm.hasAccess(g, p.getUniqueId(),
@@ -125,15 +128,14 @@ public class LinkingGUI extends AbstractGroupGUI {
 					String message;
 					if (success) {
 						message = ChatColor.GREEN + sub.getName()
-								+ " is no longer a sub group of "
-								+ g.getName();
+								+ " is no longer a sub group of " + g.getName();
 					} else {
 						message = ChatColor.RED
 								+ "Failed to unlink the groups, you should complain to an admin about this";
 					}
 					p.sendMessage(message);
 					showScreen();
-					
+
 				}
 			};
 			clicks.add(c);
@@ -390,6 +392,16 @@ public class LinkingGUI extends AbstractGroupGUI {
 		} else {
 			success = Group.link(g, linkGroup, true);
 		}
+		NameLayerPlugin.log(
+				Level.INFO,
+				p.getName()
+						+ " linked "
+						+ linkGroup.getName()
+						+ " and "
+						+ g.getName()
+						+ "via gui, "
+						+ (makingSubGroup ? linkGroup.getName() : g.getName()
+								+ " was the super group"));
 		checkRecacheGroup();
 		recacheGroup(linkGroup);
 		String message;

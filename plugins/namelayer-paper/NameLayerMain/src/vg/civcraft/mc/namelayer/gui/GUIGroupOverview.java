@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -74,10 +75,16 @@ public class GUIGroupOverview {
 			@Override
 			public void clicked(Player p) {
 				if (autoAccept){
+					NameLayerPlugin.log(Level.INFO,
+							p.getName() + " turned autoaccept for invites off "
+									+ "via gui");
 					NameLayerPlugin.getGroupManagerDao().removeAutoAcceptGroup(p.getUniqueId());
 					p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group invites");
 				}
 				else {
+					NameLayerPlugin.log(Level.INFO,
+							p.getName() + " turned autoaccept for invites on "
+									+ "via gui");
 					NameLayerPlugin.getGroupManagerDao().autoAcceptGroups(p.getUniqueId());
 					p.sendMessage(ChatColor.GREEN + "You will automatically accept group invites");
 				}
@@ -392,6 +399,10 @@ public class GUIGroupOverview {
 										showScreen();
 										return;
 									}
+									NameLayerPlugin.log(Level.INFO,
+											p.getName() + " joined with password "
+													+ " to group " + g.getName()
+													+ "via gui");
 									gro.addMember(p.getUniqueId(), pType);
 									p.sendMessage(ChatColor.GREEN + "You have successfully been added to "  + gro.getName());
 									if (NameLayerPlugin.isMercuryEnabled()) {

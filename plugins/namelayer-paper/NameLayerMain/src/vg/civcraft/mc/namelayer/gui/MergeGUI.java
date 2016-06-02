@@ -234,6 +234,16 @@ public class MergeGUI extends AbstractGroupGUI {
 			showScreen();
 			return;
 		}
+		NameLayerPlugin.log(
+				Level.INFO,
+				p.getName()
+						+ " merged "
+						+ g.getName()
+						+ " and "
+						+ mergeGroupName
+						+ "via gui, "
+						+ (mergeIntoThisGroup ? g.getName() : mergeGroupName)
+								+ " was the group merged into");
 		Bukkit.getScheduler().runTaskAsynchronously(
 				NameLayerPlugin.getInstance(), new Runnable() {
 
