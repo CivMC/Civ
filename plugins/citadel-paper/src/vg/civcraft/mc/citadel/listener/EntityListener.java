@@ -367,6 +367,12 @@ public class EntityListener implements Listener{
 				db.updateTimestamp(groupName);
 			}
 		}
+		if (CitadelConfigManager.defaultBypassOn()) {
+			PlayerState state = PlayerState.get(p);
+			if (!state.isBypassMode()) {
+				state.toggleBypassMode();
+			}
+		}
 	}
 
 	protected void sendAndLog(Player receiver, ChatColor color, String message) {

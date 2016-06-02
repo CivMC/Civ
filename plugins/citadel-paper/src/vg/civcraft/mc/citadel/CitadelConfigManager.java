@@ -160,4 +160,8 @@ public class CitadelConfigManager {
 	public static boolean showHealthAsPercent(){
 		return config.getBoolean("show_health_as_percent", false);
 	}
+	
+	public static boolean defaultBypassOn() {
+		return config.getBoolean("default_bypass_mode");
+	}
 }

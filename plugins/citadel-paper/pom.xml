@@ -5,7 +5,7 @@
 	<groupId>vg.civcraft.mc.citadel</groupId>
 	<artifactId>Citadel</artifactId>
 	<packaging>jar</packaging>
-	<version>3.5.0</version>
+	<version>3.5.1</version>
 	<name>Citadel</name>
 	<url>https://github.com/Civcraft/Citadel</url>
 

@@ -103,3 +103,5 @@ mysql:
  password: ""
 # Shows reinforcement information as percentile value
 show_health_as_percent: false
+# Whether players are automatically put in reinforcement bypass mode on login
+default_bypass_mode: false

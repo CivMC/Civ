@@ -106,7 +106,16 @@ public class Utility {
             requirementscheck++;
         }
         int requirements = requirementscheck;
+        boolean consumeOffhand = false;
         try {
+        	//offhand needs special handling
+        	
+        	ItemStack offSlot = inv.getItemInOffHand();
+        	if (offSlot != null && offSlot.isSimilar(itemType)) {
+        		requirementscheck -= offSlot.getAmount();
+        		consumeOffhand = true;
+        	}
+        	//cycle through normal inventory
             for (int slot = 0; slot < invSize && requirements > 0; ++slot) {
                 final ItemStack slotItem = inv.getItem(slot);
                 if (slotItem == null) {
@@ -155,6 +164,17 @@ public class Utility {
                 	requirements--;
                 }
             }
+        }
+        if (consumeOffhand) {
+        	ItemStack is = inv.getItemInOffHand();
+        	int stackSize = is.getAmount();
+            int deduction = Math.min(stackSize, requirements);
+            if (deduction < stackSize) {
+                is.setAmount(stackSize - deduction);
+            } else {
+                inv.setItemInOffHand(null);
+            }
+            requirements -= deduction;
         }
         for (final int slot : slots) {
             if (requirements <= 0) {
