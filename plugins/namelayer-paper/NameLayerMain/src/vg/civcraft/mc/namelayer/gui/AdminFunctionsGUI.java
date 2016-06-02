@@ -19,6 +19,7 @@ import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -72,7 +73,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 		// transferring group
 		ItemStack transferStack = new ItemStack(Material.PACKED_ICE);
 		ISUtils.setName(transferStack, ChatColor.GOLD
-				+ "Tranfer group to new primary owner");
+				+ "Transfer group to new primary owner");
 		Clickable transferClick;
 		if (g.isOwner(p.getUniqueId())) {
 			transferClick = new Clickable(transferStack) {
@@ -198,42 +199,20 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 
 					@Override
 					public void clicked(Player p) {
-						if (!g.isOwner(p.getUniqueId())) {
-							p.sendMessage(ChatColor.RED
-									+ "You are no longer the owner of this group. What happened?");
-							showScreen();
-							return;
+						if (TransferGroup.attemptTransfer(g, p, transferUUID)) {
+							NameLayerPlugin.log(
+									Level.INFO,
+									p.getName()
+											+ " transferred group to "
+											+ NameAPI
+													.getCurrentName(transferUUID)
+											+ " for group " + g.getName()
+											+ "via gui");
+							checkRecacheGroup();
 						}
-						if (g.isDisciplined()) {
-							p.sendMessage(ChatColor.RED
-									+ "This group is disciplined.");
+						else {
 							showScreen();
-							return;
 						}
-						if (NameLayerPlugin.getInstance().getGroupLimit() < gm
-								.countGroups(transferUUID) + 1) {
-							p.sendMessage(ChatColor.RED
-									+ playerName
-									+ " cannot receive the group! This player has already reached the group limit count.");
-							showScreen();
-							return;
-						}
-						if (!g.isMember(transferUUID)) {
-							p.sendMessage(ChatColor.RED
-									+ playerName
-									+ " is not a member of the group and can't be made primary owner!");
-							showScreen();
-							return;
-						}
-						NameLayerPlugin.log(Level.INFO,
-								p.getName() + " transferred group to "
-										+ NameAPI.getCurrentName(transferUUID)
-										+ " for group " + g.getName()
-										+ "via gui");
-						g.setOwner(transferUUID);
-						p.sendMessage(ChatColor.GREEN + playerName
-								+ " has been given ownership of the group.");
-						checkRecacheGroup();
 					}
 				}, 11);
 				confirmInv.setSlot(new Clickable(no) {

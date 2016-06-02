@@ -330,21 +330,25 @@ public class GroupManager{
 			}
 		}
 		GroupPermission perms = getPermissionforGroup(group);
-		PlayerType rank = getRecursiveHighestPlayerType(group, player); 
-		if (perms.hasPermission(rank, perm)) {
-			//player has right rank in the group itself or at least one super group
-			return true;
-		}	
+		for(PlayerType rank : getRecursivePlayerTypes(group, player)) {
+			if (perms.hasPermission(rank, perm)) {
+				//player has right rank in the group itself or at least one super group
+				return true;
+			}
+		}		
 		return false;
 	}
 	
-	private PlayerType getRecursiveHighestPlayerType(Group group, UUID player) {
+	private List<PlayerType> getRecursivePlayerTypes(Group group, UUID player) {
+		List<PlayerType> perms = new LinkedList<PlayerType>();
 		PlayerType type = group.getPlayerType(player);
-		if (group.hasSuperGroup()) {
-			//only return highest rank
-			type = PlayerType.getByID(Math.max(PlayerType.getID(type), PlayerType.getID(getRecursiveHighestPlayerType(group.getSuperGroup(), player))));
+		if (type != null) {
+			perms.add(type);
 		}
-		return type;
+		if (group.hasSuperGroup()) {
+			perms.addAll(getRecursivePlayerTypes(group.getSuperGroup(), player));
+		}
+		return perms;
 	}
 			
 	// == PERMISSION HANDLING ============================================================= //

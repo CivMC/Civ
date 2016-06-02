@@ -1,11 +1,13 @@
 package vg.civcraft.mc.namelayer.group;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -396,25 +398,22 @@ public class Group {
 		if (supergroup == null || subgroup == null) {
 			return false;
 		}
-		List <String> names = new LinkedList<String>();
-		names.add(supergroup.getName());
-		//check upwards to prevent cycles
-		if (supergroup.hasSuperGroup()) {
-			names.addAll(getRecursiveNamesUpwards(supergroup));
-		}
-		if (names.contains(subgroup.getName())) {
-			return true;
+		Set <String> names = new HashSet<String>();
+		Group superG = supergroup;
+		while (superG.hasSuperGroup() ) {
+		    String superGName = superG.getName();
+		    if (superGName.equals(subgroup.getName())) {
+		    	return true;
+		    }
+		    if (names.contains(superGName)) {
+		    	NameLayerPlugin.log(Level.WARNING, superGName + " is part of a cycle");
+		    	//prevent further linking always if a cycle exists
+		    	return true;
+		    }
+		    names.add(superGName);
+		    superG = superG.getSuperGroup();
 		}
 		return false;
-	}
-	
-	private static List <String> getRecursiveNamesUpwards(Group g) {
-		List <String> names = new LinkedList<String>();
-		names.add(g.getName());
-		if (g.hasSuperGroup()) {
-			names.addAll(getRecursiveNamesUpwards(g.getSuperGroup()));
-		}
-		return names;
 	}
 	
 	/**

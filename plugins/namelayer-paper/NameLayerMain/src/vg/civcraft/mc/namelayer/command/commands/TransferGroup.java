@@ -2,12 +2,14 @@ package vg.civcraft.mc.namelayer.command.commands;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
@@ -39,35 +41,47 @@ public class TransferGroup extends PlayerCommandMiddle{
 			return true;
 		}
 		
-		if (g.isDisciplined()){
-			p.sendMessage(ChatColor.RED + "This group is disiplined.");
-			return true;
-		}
-		
 		UUID oPlayer = NameAPI.getUUID(args[1]); // uuid of the second player
-		UUID uuid = NameAPI.getUUID(p.getName());
-		PlayerType pType = g.getPlayerType(uuid);
-		if (pType == null){
-			p.sendMessage(ChatColor.RED + "You are not a member of this group.");
-			return true;
-		}
 		
 		if (oPlayer == null){
 			p.sendMessage(ChatColor.RED + "This player has never played before and cannot be given the group.");
 			return true;
 		}
 		
-		if (NameLayerPlugin.getInstance().getGroupLimit() < gm.countGroups(oPlayer) + 1){
-			p.sendMessage(ChatColor.RED + "This player cannot receive the group! This player has already reached the group limit count.");
-			return true;
+		if (attemptTransfer(g, p, oPlayer)) {
+			checkRecacheGroup(g);
 		}
-		if (!g.isMember(oPlayer)) {
-			p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(oPlayer) + " is not a member of the group and can't be made primary owner!");
-			return true;
+		return true;
+	}
+	
+	public static boolean attemptTransfer(Group g, Player owner, UUID futureOwner) {
+		GroupManager gm = NameAPI.getGroupManager();
+		if (!g.isOwner(owner.getUniqueId())) {
+			owner.sendMessage(ChatColor.RED
+					+ "You don't own this group");
+			return false;
 		}
-		g.setOwner(oPlayer);
-		checkRecacheGroup(g);
-		p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(oPlayer) + " has been given ownership of the group.");
+		if (g.isDisciplined()) {
+			owner.sendMessage(ChatColor.RED
+					+ "This group is disciplined.");
+			return false;
+		}
+		if (NameLayerPlugin.getInstance().getGroupLimit() < gm
+				.countGroups(futureOwner) + 1) {
+			owner.sendMessage(ChatColor.RED
+					+ NameAPI.getCurrentName(futureOwner)
+					+ " cannot receive the group! This player has already reached the group limit count.");
+			return false;
+		}
+		if (!g.isMember(futureOwner)) {
+			owner.sendMessage(ChatColor.RED
+					+ NameAPI.getCurrentName(futureOwner)
+					+ " is not a member of the group and can't be made primary owner!");
+			return false;
+		}
+		g.setOwner(futureOwner);
+		owner.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(futureOwner)
+				+ " has been given ownership of the group.");
 		return true;
 	}
 
