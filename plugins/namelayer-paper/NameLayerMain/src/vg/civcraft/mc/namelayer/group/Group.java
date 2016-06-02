@@ -404,14 +404,14 @@ public class Group {
 	/**
 	 * Sets the default group for a player
 	 * @param uuid- The UUID of the player.
+	 * 
 	 */
-	public String setDefaultGroup(UUID uuid) {
-		db.setDefaultGroup(uuid,  name);
-		return name;
+	public void setDefaultGroup(UUID uuid) {
+		NameLayerPlugin.getDefaultGroupHandler().setDefaultGroup(uuid, this);
 	}
 
 	public void changeDefaultGroup(UUID uuid) {
-		db.changeDefaultGroup(uuid, name);
+		NameLayerPlugin.getDefaultGroupHandler().setDefaultGroup(uuid, this);
 	}
 	
 	// == GETTERS ========================================================================= //

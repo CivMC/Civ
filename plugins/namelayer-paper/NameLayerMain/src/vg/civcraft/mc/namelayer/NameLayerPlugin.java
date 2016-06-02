@@ -17,6 +17,7 @@ import vg.civcraft.mc.namelayer.database.AssociationList;
 import vg.civcraft.mc.namelayer.database.Database;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.BlackList;
+import vg.civcraft.mc.namelayer.group.DefaultGroupHandler;
 import vg.civcraft.mc.namelayer.listeners.AssociationListener;
 import vg.civcraft.mc.namelayer.listeners.MercuryMessageListener;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
@@ -28,6 +29,7 @@ public class NameLayerPlugin extends ACivMod{
 	private static AssociationList associations;
 	private static BlackList blackList;
 	private static GroupManagerDao groupManagerDao;
+	private static DefaultGroupHandler defaultGroupHandler;
 	private static NameLayerPlugin instance;
 	private CommandHandler handle;
 	private static Database db;
@@ -55,6 +57,7 @@ public class NameLayerPlugin extends ACivMod{
 		PermissionType.initialize();
 		blackList = new BlackList();
 		groupManagerDao.loadGroupsInvitations();
+		defaultGroupHandler = new DefaultGroupHandler();
 		registerListeners();
 		if (loadGroups){
 			handle = new CommandHandler();
@@ -197,5 +200,9 @@ public class NameLayerPlugin extends ACivMod{
 	
 	public static BlackList getBlackList() {
 		return blackList;
+	}
+	
+	public static DefaultGroupHandler getDefaultGroupHandler() {
+		return defaultGroupHandler;
 	}
 }
