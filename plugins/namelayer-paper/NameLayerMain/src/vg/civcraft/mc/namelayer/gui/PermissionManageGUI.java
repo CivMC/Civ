@@ -70,7 +70,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 		is.setItemMeta(im);
 		Clickable c;
 		ISUtils.setName(is, ChatColor.GOLD + "View and edit permissions for "
-				+ MainGroupGUI.getDirectRankName(pType));
+				+ PlayerType.getNiceRankName(pType));
 		if (!gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("LIST_PERMS"))) {
 			ISUtils.addLore(is, ChatColor.RED + "You are not allowed to list",
@@ -114,7 +114,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 				ISUtils.addLore(
 						is,
 						ChatColor.DARK_AQUA
-								+ MainGroupGUI.getDirectRankName(pType)
+								+ PlayerType.getNiceRankName(pType)
 								+ " currently have", ChatColor.DARK_AQUA
 								+ "this permission");
 			} else {
@@ -122,7 +122,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 				ISUtils.addLore(
 						is,
 						ChatColor.DARK_AQUA
-								+ MainGroupGUI.getDirectRankName(pType)
+								+ PlayerType.getNiceRankName(pType)
 								+ " currently don't have", ChatColor.DARK_AQUA
 								+ "this permission");
 			}

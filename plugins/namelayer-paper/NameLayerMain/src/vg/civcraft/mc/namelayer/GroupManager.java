@@ -534,5 +534,22 @@ public class GroupManager{
 					return -1;
 			}
 		}
+		
+		public static String getNiceRankName(PlayerType pType) {
+			if (pType == null) {
+				return "RANK_ERROR";
+			}
+			switch (pType) {
+			case MEMBERS:
+				return "Member";
+			case MODS:
+				return "Mod";
+			case ADMINS:
+				return "Admin";
+			case OWNER:
+				return "Owner";
+			}
+			return "RANK_ERROR";
+		}
 	}
 }

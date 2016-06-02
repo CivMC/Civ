@@ -403,7 +403,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				|| gm.hasAccess(g, p.getUniqueId(),
 						PermissionType.getPermission("GROUPSTATS"));
 		ItemStack is = MenuUtils.toggleButton(initialState, ChatColor.GOLD
-				+ "Show " + getDirectRankName(pType) + "s", canEdit);
+				+ "Show " + PlayerType.getNiceRankName(pType) + "s", canEdit);
 		Clickable c;
 		if (canEdit) {
 			c = new Clickable(is) {
@@ -561,7 +561,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					ChatColor.GOLD
 							+ demoteOrPromote(g.getPlayerType(toChange), pType,
 									true) + " this player to "
-							+ getDirectRankName(pType));
+							+ PlayerType.getNiceRankName(pType));
 			if (!gm.hasAccess(g, p.getUniqueId(), getAccordingPermission(pType))) {
 				ISUtils.addLore(mod, ChatColor.RED
 						+ "You dont have permission to do this");
@@ -1096,7 +1096,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		ISUtils.setName(is, ChatColor.GOLD + "Stats for " + g.getName());
 		ISUtils.addLore(is,
 				ChatColor.DARK_AQUA + "Your current rank: " + ChatColor.YELLOW
-						+ getDirectRankName(g.getPlayerType(p.getUniqueId())));
+						+ PlayerType.getNiceRankName(g.getPlayerType(p.getUniqueId())));
 		boolean hasGroupStatsPerm = gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("GROUPSTATS"));
 		if (gm.hasAccess(g, p.getUniqueId(),
@@ -1167,19 +1167,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		if (pType == null) {
 			return null;
 		}
-		return getDirectRankName(pType);
-	}
-
-	public static String getDirectRankName(PlayerType pType) {
-		String res = pType.toString().toLowerCase();
-		char[] chars = res.toCharArray();
-		chars[0] = new String(new char[] { chars[0] }).toUpperCase()
-				.toCharArray()[0];
-		res = new String(chars);
-		if (res.endsWith("s")) {
-			return res.substring(0, res.length() - 1);
-		}
-		return res;
+		return PlayerType.getNiceRankName(pType);
 	}
 
 	/**
@@ -1209,17 +1197,8 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	 */
 	private static String demoteOrPromote(PlayerType oldRank,
 			PlayerType newRank, boolean upperCaseFirstLetter) {
-		int oldIndex = 0;
-		int newIndex = 0;
-		for (int i = 0; i < PlayerType.values().length; i++) {
-			if (PlayerType.values()[i] == oldRank) {
-				oldIndex = i;
-			}
-			if (PlayerType.values()[i] == newRank) {
-				newIndex = i;
-			}
-		}
-		String res = oldIndex <= newIndex ? "promote" : "demote";
+		String res = PlayerType.getID(oldRank) <= PlayerType.getID(newRank) ? "promote"
+				: "demote";
 		if (upperCaseFirstLetter) {
 			return res.substring(0, 1).toUpperCase() + res.substring(1);
 		}

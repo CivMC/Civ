@@ -38,7 +38,7 @@ public class MergeGUI extends AbstractGroupGUI {
 		ISUtils.addLore(
 				mergeThisIntoOtherStack,
 				ChatColor.AQUA
-						+ "This action will transfer all members, reinforcements, snitches of this group to the one you chose nextf. "
+						+ "This action will transfer all members, reinforcements, snitches of this group to the one you chose next. "
 						+ "This group will be deleted in the process");
 		ItemStack mergeOtherIntoThisStack = new ItemStack(
 				Material.STORAGE_MINECART);
