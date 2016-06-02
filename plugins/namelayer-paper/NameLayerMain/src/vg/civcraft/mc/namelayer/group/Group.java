@@ -1,6 +1,7 @@
 package vg.civcraft.mc.namelayer.group;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -395,10 +396,25 @@ public class Group {
 		if (supergroup == null || subgroup == null) {
 			return false;
 		}
-		
-		return supergroup.hasSubGroup(subgroup) 
-				&& (subgroup.hasSuperGroup() 
-				&& subgroup.supergroup.equals(supergroup));
+		List <String> names = new LinkedList<String>();
+		names.add(supergroup.getName());
+		//check upwards to prevent cycles
+		if (supergroup.hasSuperGroup()) {
+			names.addAll(getRecursiveNamesUpwards(supergroup));
+		}
+		if (names.contains(subgroup.getName())) {
+			return true;
+		}
+		return false;
+	}
+	
+	private static List <String> getRecursiveNamesUpwards(Group g) {
+		List <String> names = new LinkedList<String>();
+		names.add(g.getName());
+		if (g.hasSuperGroup()) {
+			names.addAll(getRecursiveNamesUpwards(g.getSuperGroup()));
+		}
+		return names;
 	}
 	
 	/**
