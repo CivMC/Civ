@@ -124,7 +124,8 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 	}
 
 	private void showMergingMenu() {
-
+		MergeGUI mGui = new MergeGUI(g, p, this);
+		mGui.showScreen();
 	}
 
 	private void showTransferingMenu() {
