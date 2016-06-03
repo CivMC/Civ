@@ -3569,7 +3569,7 @@ recipes:
         amount: 1
     outputs:
       1:
-        chance: 0.125
+        chance: 0.143
         oaksapling:
           material: SAPLING
           amount: 48
@@ -3578,7 +3578,7 @@ recipes:
           material: BUCKET
           amount: 1
       2:
-        chance: 0.125
+        chance: 0.143
         sprucesapling:
           material: SAPLING
           amount: 48
@@ -3587,7 +3587,7 @@ recipes:
           material: BUCKET
           amount: 1
       3:
-        chance: 0.125
+        chance: 0.143
         birchsapling:
           material: SAPLING
           amount: 48
@@ -3596,7 +3596,7 @@ recipes:
           material: BUCKET
           amount: 1
       4:
-        chance: 0.125
+        chance: 0.143
         junglesapling:
           material: SAPLING
           amount: 48
@@ -3605,7 +3605,7 @@ recipes:
           material: BUCKET
           amount: 1
       5:
-        chance: 0.125
+        chance: 0.143
         acaciasapling:
           material: SAPLING
           amount: 48
@@ -3614,7 +3614,7 @@ recipes:
           material: BUCKET
           amount: 1
       6:
-        chance: 0.125
+        chance: 0.143
         darkoaksapling:
           material: SAPLING
           amount: 48
@@ -3623,15 +3623,7 @@ recipes:
           material: BUCKET
           amount: 1
       7:
-        chance: 0.125
-        deadbush:
-          material: DEAD_BUSH
-          amount: 16
-        emptybucket:
-          material: BUCKET
-          amount: 1
-      8:
-        chance: 0.125
+        chance: 0.142
         tallfern:
           material: DOUBLE_PLANT
           amount: 32
