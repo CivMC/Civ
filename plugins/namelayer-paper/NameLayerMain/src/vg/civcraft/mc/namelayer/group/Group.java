@@ -1,10 +1,13 @@
 package vg.civcraft.mc.namelayer.group;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -395,10 +398,22 @@ public class Group {
 		if (supergroup == null || subgroup == null) {
 			return false;
 		}
-		
-		return supergroup.hasSubGroup(subgroup) 
-				&& (subgroup.hasSuperGroup() 
-				&& subgroup.supergroup.equals(supergroup));
+		Set <String> names = new HashSet<String>();
+		Group superG = supergroup;
+		while (superG.hasSuperGroup() ) {
+		    String superGName = superG.getName();
+		    if (superGName.equals(subgroup.getName())) {
+		    	return true;
+		    }
+		    if (names.contains(superGName)) {
+		    	NameLayerPlugin.log(Level.WARNING, superGName + " is part of a cycle");
+		    	//prevent further linking always if a cycle exists
+		    	return true;
+		    }
+		    names.add(superGName);
+		    superG = superG.getSuperGroup();
+		}
+		return false;
 	}
 	
 	/**

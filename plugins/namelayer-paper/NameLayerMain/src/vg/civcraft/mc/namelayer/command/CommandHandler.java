@@ -21,6 +21,7 @@ import vg.civcraft.mc.namelayer.command.commands.InfoDump;
 import vg.civcraft.mc.namelayer.command.commands.InvitePlayer;
 import vg.civcraft.mc.namelayer.command.commands.JoinGroup;
 import vg.civcraft.mc.namelayer.command.commands.LeaveGroup;
+import vg.civcraft.mc.namelayer.command.commands.NameLayerGroupGui;
 import vg.civcraft.mc.namelayer.command.commands.ShowBlacklist;
 import vg.civcraft.mc.namelayer.command.commands.ListCurrentInvites;
 import vg.civcraft.mc.namelayer.command.commands.ListGroups;
@@ -79,6 +80,7 @@ public class CommandHandler {
 		addCommands(new AddBlacklist("AddBlacklist"));
 		addCommands(new RemoveBlacklist("RemoveBlacklist"));
 		addCommands(new ShowBlacklist("ShowBlacklist"));
+		addCommands(new NameLayerGroupGui("OpenGUI"));
 	}
 	
 	public void addCommands(Command command){

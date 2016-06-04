@@ -497,5 +497,59 @@ public class GroupManager{
 					+ "The current types are: " + getStringOfTypes()); 
 			//dont yell at player for nllpt
 		}
+		
+		public static PlayerType getByID(int id) {
+			switch(id) {
+			case 0:
+				return PlayerType.NOT_BLACKLISTED;
+			case 1:
+				return PlayerType.MEMBERS;
+			case 2:
+				return PlayerType.MODS;
+			case 3:
+				return PlayerType.ADMINS;
+			case 4:
+				return PlayerType.OWNER;
+			default:
+				return null;
+			}
+		}
+		
+		public static int getID(PlayerType type) {
+			if (type == null) {
+				return -1;
+			}
+			switch (type) {
+				case NOT_BLACKLISTED:
+					return 0;
+				case MEMBERS:
+					return 1;
+				case MODS:
+					return 2;
+				case ADMINS:
+					return 3;
+				case OWNER:
+					return 4;
+				default:
+					return -1;
+			}
+		}
+		
+		public static String getNiceRankName(PlayerType pType) {
+			if (pType == null) {
+				return "RANK_ERROR";
+			}
+			switch (pType) {
+			case MEMBERS:
+				return "Member";
+			case MODS:
+				return "Mod";
+			case ADMINS:
+				return "Admin";
+			case OWNER:
+				return "Owner";
+			}
+			return "RANK_ERROR";
+		}
 	}
 }
