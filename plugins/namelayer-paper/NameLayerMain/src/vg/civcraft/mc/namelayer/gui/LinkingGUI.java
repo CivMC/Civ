@@ -33,7 +33,7 @@ public class LinkingGUI extends AbstractGroupGUI {
 	}
 
 	public void showScreen() {
-		ClickableInventory ci = new ClickableInventory(27, g.getName());
+		ClickableInventory ci = new ClickableInventory(54, g.getName());
 		ci.setSlot(getInfoClickable(), 4);
 		if (g.hasSuperGroup()) {
 			ci.setSlot(getRemoveSuperClickable(), 3);
@@ -278,6 +278,7 @@ public class LinkingGUI extends AbstractGroupGUI {
 					}
 				};
 			}
+			clicks.add(c);
 		}
 		ClickableInventory ci = new ClickableInventory(54, this.g.getName());
 		if (clicks.size() < 45 * linkSelectingPage) {
