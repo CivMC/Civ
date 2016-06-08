@@ -1,4 +1,4 @@
-package com.github.maxopoly;
+package com.github.maxopoly.finale;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -6,7 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
 
-import com.github.maxopoly.misc.SaturationHealthRegenHandler;
+import com.github.maxopoly.finale.misc.SaturationHealthRegenHandler;
 
 public class ConfigParser {
 	private Finale plugin;

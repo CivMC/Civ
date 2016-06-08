@@ -1,4 +1,4 @@
-package com.github.maxopoly.listeners;
+package com.github.maxopoly.finale.listeners;
 
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -9,7 +9,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import com.github.maxopoly.FinaleManager;
+import com.github.maxopoly.finale.FinaleManager;
 
 public class PlayerListener implements Listener {
 

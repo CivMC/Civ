@@ -1,4 +1,4 @@
-package com.github.maxopoly.misc;
+package com.github.maxopoly.finale.misc;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -11,7 +11,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.github.maxopoly.Finale;
+import com.github.maxopoly.finale.Finale;
 
 public class SaturationHealthRegenHandler implements Runnable {
 	private List<LinkedList<UUID>> ticks;

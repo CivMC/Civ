@@ -1,4 +1,4 @@
-package com.github.maxopoly.listeners;
+package com.github.maxopoly.finale.listeners;
 
 import java.text.DecimalFormat;
 import java.util.UUID;
@@ -10,9 +10,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 
-import com.github.maxopoly.Finale;
-import com.github.maxopoly.external.CombatTagPlusManager;
-import com.github.maxopoly.external.ProtocolLibManager;
+import com.github.maxopoly.finale.Finale;
+import com.github.maxopoly.finale.external.CombatTagPlusManager;
+import com.github.maxopoly.finale.external.ProtocolLibManager;
 
 import vg.civcraft.mc.civmodcore.util.cooldowns.TickCoolDownHandler;
 

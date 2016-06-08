@@ -1,4 +1,4 @@
-package com.github.maxopoly.external;
+package com.github.maxopoly.finale.external;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
