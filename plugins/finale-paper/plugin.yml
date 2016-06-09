@@ -1,5 +1,5 @@
 name: ${project.name}
-main: com.github.maxopoly.Finale
+main: com.github.maxopoly.finale.Finale
 author: Maxopoly
 version: ${project.version}
 depend: [CivModCore]
