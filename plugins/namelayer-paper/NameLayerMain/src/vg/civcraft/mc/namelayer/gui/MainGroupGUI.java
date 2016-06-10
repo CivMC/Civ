@@ -534,6 +534,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 			final UUID toChange, final PlayerType pType) {
 		final PlayerType rank = g.getCurrentRank(toChange);
 		ItemStack mod = new ItemStack(slotMaterial);
+		ItemMeta im = mod.getItemMeta();
+		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		mod.setItemMeta(im);
 		Clickable modClick;
 		if (rank == pType) {
 			ISUtils.setName(mod, ChatColor.GOLD + "Remove this player");
