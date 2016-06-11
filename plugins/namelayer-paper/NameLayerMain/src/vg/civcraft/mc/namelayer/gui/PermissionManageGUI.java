@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
@@ -37,18 +39,25 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 		if (!validGroup()) {
 			return;
 		}
+		//dye blacklisted clickable black
+		Clickable blackClick = produceSelectionClickable(Material.LEATHER_CHESTPLATE, PlayerType.NOT_BLACKLISTED);
+		ItemStack blackStack = blackClick.getItemStack();
+		LeatherArmorMeta meta = (LeatherArmorMeta)blackStack.getItemMeta();
+		meta.setColor(Color.BLACK);
+		blackStack.setItemMeta(meta);
+		ci.setSlot(blackClick, 9);
 		ci.setSlot(
 				produceSelectionClickable(Material.LEATHER_CHESTPLATE,
-						PlayerType.MEMBERS), 10);
+						PlayerType.MEMBERS), 11);
 		ci.setSlot(
 				produceSelectionClickable(Material.GOLD_CHESTPLATE,
-						PlayerType.MODS), 12);
+						PlayerType.MODS), 13);
 		ci.setSlot(
 				produceSelectionClickable(Material.IRON_CHESTPLATE,
-						PlayerType.ADMINS), 14);
+						PlayerType.ADMINS), 15);
 		ci.setSlot(
 				produceSelectionClickable(Material.DIAMOND_CHESTPLATE,
-						PlayerType.OWNER), 16);
+						PlayerType.OWNER), 17);
 		ItemStack backStack = new ItemStack(Material.ARROW);
 		ISUtils.setName(backStack, ChatColor.GOLD
 				+ "Go back to member management");

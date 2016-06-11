@@ -548,6 +548,8 @@ public class GroupManager{
 				return "Admin";
 			case OWNER:
 				return "Owner";
+			case NOT_BLACKLISTED:
+				return "Anyone who is not blacklisted";
 			}
 			return "RANK_ERROR";
 		}

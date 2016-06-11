@@ -752,6 +752,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 				@Override
 				public void clicked(final Player p) {
+					p.sendMessage(ChatColor.GOLD + "Enter the name of the player to blacklist or \"cancel\" to exit this prompt");
 					new Dialog(p, NameLayerPlugin.getInstance()) {
 
 						@Override
@@ -782,6 +783,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 						@Override
 						public void onReply(String[] message) {
+							if (message [0].equalsIgnoreCase("cancel")) {
+								showScreen();
+							}
 							if (gm.hasAccess(g, p.getUniqueId(),
 									PermissionType.getPermission("BLACKLIST"))) {
 								boolean didSomething = false;
