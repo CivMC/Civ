@@ -6,7 +6,7 @@
   <groupId>isaac</groupId>
   <artifactId>Bastion</artifactId>
   <packaging>jar</packaging>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
   <name>Bastion</name>
   <url>https://github.com/ttk2/Bastion</url>
   
@@ -35,7 +35,7 @@
      <dependency>
            <groupId>org.spigotmc</groupId>
            <artifactId>Spigot</artifactId>
-           <version>1.9</version>
+           <version>1.10</version>
            <scope>provided</scope>
     </dependency>
     <dependency>
@@ -53,7 +53,7 @@
     <dependency>
       <groupId>com.untamedears</groupId>
       <artifactId>Humbug</artifactId>
-      <version>1.8.1</version>
+      <version>1.8.20</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
