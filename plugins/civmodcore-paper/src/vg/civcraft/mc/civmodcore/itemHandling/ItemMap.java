@@ -13,23 +13,23 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import net.minecraft.server.v1_9_R1.NBTTagCompound;
-import net.minecraft.server.v1_9_R1.NBTTagList;
-import net.minecraft.server.v1_9_R1.NBTBase;
-import net.minecraft.server.v1_9_R1.NBTTagByteArray;
-import net.minecraft.server.v1_9_R1.NBTTagIntArray;
-import net.minecraft.server.v1_9_R1.NBTTagString;
-import net.minecraft.server.v1_9_R1.NBTTagByte;
-import net.minecraft.server.v1_9_R1.NBTTagInt;
-import net.minecraft.server.v1_9_R1.NBTTagLong;
-import net.minecraft.server.v1_9_R1.NBTTagDouble;
-import net.minecraft.server.v1_9_R1.NBTTagFloat;
-import net.minecraft.server.v1_9_R1.NBTTagShort;
+import net.minecraft.server.v1_10_R1.NBTTagCompound;
+import net.minecraft.server.v1_10_R1.NBTTagList;
+import net.minecraft.server.v1_10_R1.NBTBase;
+import net.minecraft.server.v1_10_R1.NBTTagByteArray;
+import net.minecraft.server.v1_10_R1.NBTTagIntArray;
+import net.minecraft.server.v1_10_R1.NBTTagString;
+import net.minecraft.server.v1_10_R1.NBTTagByte;
+import net.minecraft.server.v1_10_R1.NBTTagInt;
+import net.minecraft.server.v1_10_R1.NBTTagLong;
+import net.minecraft.server.v1_10_R1.NBTTagDouble;
+import net.minecraft.server.v1_10_R1.NBTTagFloat;
+import net.minecraft.server.v1_10_R1.NBTTagShort;
 
 /**
  * Allows the storage and comparison of itemstacks while ignoring their maximum
@@ -607,7 +607,7 @@ public class ItemMap {
 	private static ItemStack createMapConformCopy(ItemStack is) {
 		ItemStack copy = is.clone();
 		copy.setAmount(1);
-		net.minecraft.server.v1_9_R1.ItemStack s = CraftItemStack
+		net.minecraft.server.v1_10_R1.ItemStack s = CraftItemStack
 				.asNMSCopy(copy);
 		if (s == null) {
 			Bukkit.getServer().getLogger().log(Level.SEVERE, "Attempted to create map conform copy of {0}"
@@ -633,7 +633,7 @@ public class ItemMap {
 		ItemStack copy = is.clone();
 		amt = (amt < 1 ? 1 : amt > is.getMaxStackSize() ? is.getMaxStackSize() : amt);
 		copy.setAmount(amt);
-		net.minecraft.server.v1_9_R1.ItemStack s = CraftItemStack.asNMSCopy(copy);
+		net.minecraft.server.v1_10_R1.ItemStack s = CraftItemStack.asNMSCopy(copy);
 		if (s == null) {
 			Bukkit.getServer().getLogger().log(Level.SEVERE, "Failed to create enriched copy of {0}", copy.toString());
 			return null;
