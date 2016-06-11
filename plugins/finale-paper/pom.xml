@@ -5,7 +5,7 @@
 	<groupId>com.github.maxopoly</groupId>
 	<artifactId>Finale</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<name>Finale</name>
 	<url>https://github.com/maxopoly/Finale</url>
 
@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.9.2-R0.1-SNAPSHOT</version>
+			<version>1.10-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>net.minelink</groupId>
 			<artifactId>CombatTagPlus</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
+			<version>1.2.4-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
