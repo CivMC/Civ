@@ -219,17 +219,18 @@ public final class TagListener implements Listener {
         String message = plugin.getSettings().getTagMessage();
         if (message.isEmpty()) return;
 
-        // Send combat tag notification to victim
+        Player attacker = event.getAttacker();
         Player victim = event.getVictim();
+
+        // Send combat tag notification to victim
         if (victim != null && !plugin.getTagManager().isTagged(victim.getUniqueId()) &&
                 !plugin.getSettings().onlyTagAttacker()) {
-            victim.sendMessage(message);
+            victim.sendMessage(message.replace("{opponent}", (attacker != null ? attacker.getName() : "someone") ));
         }
 
         // Send combat tag notification to attacker
-        Player attacker = event.getAttacker();
         if (attacker != null && !plugin.getTagManager().isTagged(attacker.getUniqueId())) {
-            attacker.sendMessage(message);
+            attacker.sendMessage(message.replace("{opponent}", (victim != null ? victim.getName() : "someone")));
         }
     }
 
