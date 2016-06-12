@@ -1,18 +1,18 @@
 package com.untamedears.JukeAlert.command.commands;
 
-import static com.untamedears.JukeAlert.util.Utility.findTargetedOwnedSnitch;
+import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
 
-import java.util.Set;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
+
 import com.untamedears.JukeAlert.command.PlayerCommand;
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.tasks.GetSnitchInfoPlayerTask;
+
 
 public class NameCommand extends PlayerCommand {
 
@@ -36,7 +36,7 @@ public class NameCommand extends PlayerCommand {
             } else {
             	name = args[0];
             }
-            Snitch snitch = findTargetedOwnedSnitch(player);
+            Snitch snitch = findLookingAtOrClosestSnitch(player, PermissionType.getPermission("RENAME_SNITCH"));
             if (snitch != null) {
             	plugin.getJaLogger().updateSnitchName(snitch, name);
             	Snitch newSnitch = snitch;
@@ -47,7 +47,7 @@ public class NameCommand extends PlayerCommand {
             }
             return true;
         } else {
-            sender.sendMessage(ChatColor.RED + "You do not own any snitches nearby!");
+            sender.sendMessage(ChatColor.RED + "You do not own any snitches nearby or lack permission to rename them!");
             return false;
         }
     }

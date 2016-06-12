@@ -1,11 +1,15 @@
 package com.untamedears.JukeAlert;
 
+import java.util.LinkedList;
 import java.util.logging.Level;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.untamedears.JukeAlert.command.CommandHandler;
 import com.untamedears.JukeAlert.command.commands.ClearCommand;
@@ -48,6 +52,7 @@ public class JukeAlert extends JavaPlugin {
         snitchManager = new SnitchManager();
         playerManager = new PlayerManager();
         registerEvents();
+        registerNameLayerPermissions();
         registerCommands();
         snitchManager.initialize();
         RateLimiter.initialize(this);
@@ -70,6 +75,26 @@ public class JukeAlert extends JavaPlugin {
         	pm.registerEvents(new ItemExchangeListener(), this);
         if (pm.isPluginEnabled("Mercury"))
 			pm.registerEvents(new MercuryListener(), this);
+    }
+    
+    private void registerNameLayerPermissions() {
+    	LinkedList <PlayerType> memberAndAbove = new LinkedList<PlayerType>();
+    	LinkedList <PlayerType> modAndAbove = new LinkedList<PlayerType>();
+    	memberAndAbove.add(PlayerType.MEMBERS);
+    	memberAndAbove.add(PlayerType.MODS);
+    	memberAndAbove.add(PlayerType.ADMINS);
+    	memberAndAbove.add(PlayerType.OWNER);
+    	modAndAbove.add(PlayerType.MODS);
+    	modAndAbove.add(PlayerType.ADMINS);
+    	modAndAbove.add(PlayerType.OWNER);
+    	PermissionType.registerPermission("LIST_SNITCHES", (LinkedList<PlayerType>)modAndAbove.clone()); //also tied to refreshing snitches
+    	PermissionType.registerPermission("SNITCH_NOTIFICATIONS", (LinkedList<PlayerType>)memberAndAbove.clone());
+    	PermissionType.registerPermission("READ_SNITCHLOG", (LinkedList<PlayerType>)memberAndAbove.clone());
+    	PermissionType.registerPermission("RENAME_SNITCH", (LinkedList<PlayerType>)modAndAbove.clone());
+    	PermissionType.registerPermission("SNITCH_IMMUNE", (LinkedList<PlayerType>)memberAndAbove.clone());
+    	PermissionType.registerPermission("LOOKUP_SNITCH", (LinkedList<PlayerType>)modAndAbove.clone());
+    	PermissionType.registerPermission("CLEAR_SNITCHLOG", (LinkedList<PlayerType>)modAndAbove.clone());
+    	PermissionType.registerPermission("SNITCH_TOGGLE_LEVER", (LinkedList<PlayerType>)modAndAbove.clone());
     }
 
     private void registerCommands() {

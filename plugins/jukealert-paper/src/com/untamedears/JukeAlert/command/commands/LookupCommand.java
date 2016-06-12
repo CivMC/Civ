@@ -1,13 +1,14 @@
 package com.untamedears.JukeAlert.command.commands;
 
-import static com.untamedears.JukeAlert.util.Utility.isOnSnitch;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.untamedears.JukeAlert.command.PlayerCommand;
 import com.untamedears.JukeAlert.manager.SnitchManager;
@@ -60,10 +61,10 @@ public class LookupCommand extends PlayerCommand {
                 return false;
             }
             if(canLookupAny || (
-                    player != null && isOnSnitch(match, player.getUniqueId()))) {
+                    player != null && NameAPI.getGroupManager().hasAccess(match.getGroup(), player.getUniqueId(), PermissionType.getPermission("LOOKUP_SNITCH")))) {
                 sender.sendMessage(ChatColor.AQUA + "The snitch at [" + x + " " + y + " " + z + "] is owned by " + match.getGroup().getName());
             } else {
-                sender.sendMessage(ChatColor.RED + "You do not own a snitch at those coordinates!");               
+                sender.sendMessage(ChatColor.RED + "You don't have permission to lookup the group of this snitch");               
             }
             return true;
         } else {

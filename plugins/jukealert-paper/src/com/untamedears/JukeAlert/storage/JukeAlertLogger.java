@@ -36,6 +36,7 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.chat.ChatFiller;
@@ -703,7 +704,7 @@ public class JukeAlertLogger {
         try {
         	String uuidString = java.util.UUID.randomUUID().toString();
             UUID accountId = player.getUniqueId();
-        	List<String> groups = groupMediator.getGroupsByAccount(accountId, true, true, false);
+        	List<String> groups = groupMediator.getGroupsWithPermission(accountId, PermissionType.getPermission("LIST_SNITCHES"));
         	
         	StringBuilder sb = new StringBuilder();
         	for(String group : groups) {
