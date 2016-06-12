@@ -24,7 +24,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class ClickableInventory {
 
-	private static JavaPlugin plugin;
+	private JavaPlugin plugin;
 	private static HashMap<UUID, ClickableInventory> openInventories = new HashMap<UUID, ClickableInventory>();
 	private Inventory inventory;
 	private Clickable[] clickables;
@@ -306,7 +306,7 @@ public class ClickableInventory {
 	 * @param plugin
 	 *            Plugin instance
 	 */
-	public static void setPlugin(JavaPlugin plugin) {
-		ClickableInventory.plugin = plugin;
+	public void setPlugin(JavaPlugin plugin) {
+		this.plugin = plugin;
 	}
 }
