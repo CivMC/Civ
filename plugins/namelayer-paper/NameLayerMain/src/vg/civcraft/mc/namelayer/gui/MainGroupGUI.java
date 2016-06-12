@@ -161,7 +161,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		ci.setSlot(getPasswordClickable(), 6);
 		ci.setSlot(getPermOptionClickable(), 7);
 		ci.setSlot(getAdminStuffClickable(), 8);
-		ci.setPlugin(NameLayerPlugin.getInstance());
 		ci.showInventory(p);
 	}
 
@@ -524,8 +523,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				showScreen();
 			}
 		}, 22);
-
-		ci.setPlugin(NameLayerPlugin.getInstance());
 		ci.showInventory(p);
 	}
 

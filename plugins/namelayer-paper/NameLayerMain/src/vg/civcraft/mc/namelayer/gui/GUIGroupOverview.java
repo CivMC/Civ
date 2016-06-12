@@ -137,7 +137,6 @@ public class GUIGroupOverview {
 				// just let it close, dont do anything
 			}
 		}, 49);
-		ci.setPlugin(NameLayerPlugin.getInstance());
 		ci.showInventory(p);
 	}
 
