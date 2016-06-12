@@ -49,6 +49,7 @@ public class InvitationGUI extends AbstractGroupGUI{
 		ci.setSlot(produceOptionStack(Material.GOLD_CHESTPLATE, "mod", PlayerType.MODS, PermissionType.getPermission("MODS")), 12);
 		ci.setSlot(produceOptionStack(Material.IRON_CHESTPLATE, "admin", PlayerType.ADMINS, PermissionType.getPermission("ADMINS")), 14);
 		ci.setSlot(produceOptionStack(Material.DIAMOND_CHESTPLATE, "owner", PlayerType.OWNER, PermissionType.getPermission("OWNER")), 16);
+		ci.setPlugin(NameLayerPlugin.getInstance());
 		ci.showInventory(p);
 	}
 	
