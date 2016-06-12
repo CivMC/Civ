@@ -76,6 +76,7 @@ public class MergeGUI extends AbstractGroupGUI {
 				parent.showScreen();
 			}
 		}, 49);
+		ci.setPlugin(NameLayerPlugin.getInstance());
 		ci.showInventory(p);
 	}
 
@@ -152,6 +153,7 @@ public class MergeGUI extends AbstractGroupGUI {
 				parent.showScreen();
 			}
 		}, 49);
+		ci.setPlugin(NameLayerPlugin.getInstance());
 		ci.showInventory(p);
 	}
 
@@ -192,6 +194,7 @@ public class MergeGUI extends AbstractGroupGUI {
 			}
 		}, 15);
 		confirmInv.setSlot(new DecorationStack(info), 4);
+		ci.setPlugin(NameLayerPlugin.getInstance());
 		confirmInv.showInventory(p);
 	}
 
