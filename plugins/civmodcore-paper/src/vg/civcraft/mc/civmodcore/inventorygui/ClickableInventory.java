@@ -24,7 +24,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class ClickableInventory {
 
-	private JavaPlugin plugin;
 	private static HashMap<UUID, ClickableInventory> openInventories = new HashMap<UUID, ClickableInventory>();
 	private Inventory inventory;
 	private Clickable[] clickables;
@@ -116,11 +115,10 @@ public class ClickableInventory {
 	public void addSlot(Clickable c) {
 		for (int i = 0; i < clickables.length; i++) {
 			if (clickables[i] == null) {
-				clickables[i] = c;
+				setSlot(c, i);
 				break;
 			}
 		}
-		inventory.addItem(c.getItemStack());
 	}
 
 	/**
@@ -167,34 +165,17 @@ public class ClickableInventory {
 			p.openInventory(inventory);
 			p.updateInventory();
 			openInventories.put(p.getUniqueId(), this);
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					if (inventory.getViewers().size() <= 0) {
-						return;
-					}
-					for(int i = 0; i < clickables.length; i++) {
-						if (clickables[i] instanceof BlinkingClickable) {
-							inventory.setItem(i, ((BlinkingClickable)clickables[i]).getNext());
-						}
-					}
-					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this, 40L);
-				}
-			}, 40L);
 		}
 	}
 
 	/**
 	 * Updates the inventories of this instance for all players who have it
-	 * currently open and syncs it with the internal representation. Ensure that
-	 * setPlugin(JavaPlugin plugin) was done at some point, because this method
-	 * needs a plugin to get player objects by their uuid
+	 * currently open and syncs it with the internal representation. 
 	 */
 	public void updateInventory() {
 		for (Map.Entry<UUID, ClickableInventory> c : openInventories.entrySet()) {
 			if (c.getValue() == this) {
-				Player p = plugin.getServer().getPlayer(c.getKey());
+				Player p = Bukkit.getPlayer(c.getKey());
 				forceCloseInventory(p);
 				showInventory(p);
 			}
@@ -295,18 +276,5 @@ public class ClickableInventory {
 	 */
 	public static ClickableInventory getOpenInventory(Player p) {
 		return p != null ? getOpenInventory(p.getUniqueId()) : null;
-	}
-
-	/**
-	 * Sets which plugin this clickable inventory works with. This is only
-	 * needed when updating the inventories of a specific instance of all
-	 * players who have it open, to get the player object behind the UUID which
-	 * is stored
-	 * 
-	 * @param plugin
-	 *            Plugin instance
-	 */
-	public void setPlugin(JavaPlugin plugin) {
-		this.plugin = plugin;
 	}
 }

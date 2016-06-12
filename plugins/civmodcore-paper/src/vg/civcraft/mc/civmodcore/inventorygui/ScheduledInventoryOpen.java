@@ -21,7 +21,6 @@ public class ScheduledInventoryOpen implements Runnable {
 		this.p = p;
 	}
 	public void run() {
-		ci.setPlugin(jp);
 		ci.showInventory(p);
 	}
 
