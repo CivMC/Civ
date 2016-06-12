@@ -13,6 +13,9 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
  */
 public class ExperimentalConfig extends SimpleHackConfig {
 	private boolean combatSpy;
+	private boolean teleportSpy;
+	private boolean postTeleportSpy;
+	private int postTeleportSpyCount;
 	public ExperimentalConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 	}
@@ -20,10 +23,23 @@ public class ExperimentalConfig extends SimpleHackConfig {
 	@Override
 	protected void wireup(ConfigurationSection config) {
 		this.combatSpy = config.getBoolean("combatspy", false);
+		this.teleportSpy = config.getBoolean("teleportspy", false);
+		this.postTeleportSpy = config.getBoolean("postteleport.spy", false);
+		this.postTeleportSpyCount = config.getInt("postteleport.count", 10);
 	}
 
 	public boolean isCombatSpy() {
 		return this.combatSpy;
+	}
+	public boolean isTeleportSpy() {
+		return this.teleportSpy;
+	}
+	public boolean isPostTeleportSpy() {
+		return this.postTeleportSpy;
+	}
+
+	public int getPostTeleportSpyCount() {
+		return this.postTeleportSpyCount;
 	}
 }
 

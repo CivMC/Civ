@@ -6,9 +6,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.entity.Player;
 import org.bukkit.Location;
+
+import java.util.UUID;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
@@ -62,6 +65,11 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 			} else {
 				sb.append("\n  CombatSpy is off");
 			}
+			if (config.isTeleportSpy()) {
+				sb.append("\n  TeleportSpy is on");
+			} else {
+				sb.append("\n  TeleportSpy is off");
+			}
 			return sb.toString();
 		} else {
 			return "Experiments disabled.";
@@ -70,14 +78,56 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
 	private void monitorTeleportLow(PlayerTeleportEvent event) {
+		if (!config.isTeleportSpy()) return;
 		StringBuffer sb = new StringBuffer("[LO] ");
 		logTeleport(event, sb);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	private void monitorTeleportHigh(PlayerTeleportEvent event) {
+		if (!config.isTeleportSpy()) return;
 		StringBuffer sb = new StringBuffer("[HI] ");
 		logTeleport(event, sb);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	private void monitorTeleportTrack(PlayerTeleportEvent event) {
+		if (!config.isPostTeleportSpy()) return;
+		if (!(TeleportCause.NETHER_PORTAL ==  event.getCause() ||
+				TeleportCause.END_GATEWAY == event.getCause() ||
+				TeleportCause.END_PORTAL == event.getCause() )) {
+			return;
+		}
+		
+		final Player player = event.getPlayer();
+
+		new BukkitRunnable() {
+			final UUID playerUUID = player.getUniqueId();
+			private int runCount = 0;
+			public void run() {
+				runCount++;
+				if (runCount > config.getPostTeleportSpyCount()) {
+					this.cancel();
+					return;
+				}
+				if (playerUUID != null) {
+					Player player = plugin().getServer().getPlayer(playerUUID);
+					if (player != null) {
+						StringBuffer sb = new StringBuffer("Tracking: ");
+						sb.append(playerUUID);
+						logPlayer(player, sb);
+						plugin().log(sb.toString());
+					} else {
+						StringBuffer sb = new StringBuffer("Lost: ");
+						sb.append(playerUUID);
+						plugin().log(sb.toString());
+						this.cancel();
+					}
+				} else {
+					this.cancel();
+				}
+			}
+		}.runTaskTimer(plugin(), 50l, 100l);
 	}
 
 	private void logTeleport(PlayerTeleportEvent event, StringBuffer sb) {
@@ -98,11 +148,31 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 		} else {
 			sb.append(" (none)");
 		}
+		sb.append(" [").append(player.getUniqueId()).append(" ");
+		logPlayer(player, sb);
+		sb.append("]");
 		plugin().log(sb.toString());
+	}
+
+	private void logPlayer(final Player player, StringBuffer sb) {
+		sb.append(player.getWorld().getName());
+		Location feet = player.getLocation();
+		Location eyes = player.getEyeLocation();
+		if (feet != null) {
+			sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", feet.getWorld().getName(), feet.getX(), feet.getY(), feet.getZ()));
+		} else {
+			sb.append(" (none)");
+		}
+		if (eyes != null) {
+			sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", eyes.getWorld().getName(), eyes.getX(), eyes.getY(), eyes.getZ()));
+		} else {
+			sb.append(" (none)");
+		}
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
 	private void monitorCombatLow(EntityDamageByEntityEvent event) {
+		if (!config.isCombatSpy()) return;
 		StringBuffer sb = new StringBuffer("[LO] ");
 		logCombat(event, sb);
 	}
@@ -127,6 +197,7 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
 	private void monitorCombatHigh(EntityDamageByEntityEvent event) {
+		if (!config.isCombatSpy()) return;
 		StringBuffer sb = new StringBuffer("[HI]: ");
 		logCombat(event, sb);
 	}

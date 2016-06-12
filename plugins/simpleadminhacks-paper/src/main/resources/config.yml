@@ -10,6 +10,10 @@ hacks:
     name: Experimental
     enabled: true
     combatspy: true
+    teleportspy: true
+    postteleport:
+      spy: true
+      count: 10
   game_features:
     name: GameFeatures
     enabled: false
