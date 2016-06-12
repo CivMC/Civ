@@ -24,6 +24,10 @@ public class DialogManager {
 	}
 	
 	public void registerDialog(Player p, Dialog dialog) {
+		Dialog current = dialogs.get(p.getUniqueId());
+		if (current != null) {
+			current.end();
+		}
 		dialogs.put(p.getUniqueId(), dialog);
 	}
 	
