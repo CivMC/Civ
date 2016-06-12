@@ -5,9 +5,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import vg.civcraft.mc.namelayer.NameAPI;
-import net.minecraft.server.v1_9_R1.NBTTagCompound;
-import net.minecraft.server.v1_9_R1.NBTTagList;
-import net.minecraft.server.v1_9_R1.WorldNBTStorage;
+import net.minecraft.server.v1_10_R1.NBTTagCompound;
+import net.minecraft.server.v1_10_R1.NBTTagList;
+import net.minecraft.server.v1_10_R1.WorldNBTStorage;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,9 +15,9 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftInventoryPlayer;
-import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -87,7 +87,7 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 			int food = rawPlayer.getInt("foodLevel");
 
 			// Fun NMS inventory reconstruction from file data.
-			net.minecraft.server.v1_9_R1.PlayerInventory nms_pl_inv = new net.minecraft.server.v1_9_R1.PlayerInventory(null);
+			net.minecraft.server.v1_10_R1.PlayerInventory nms_pl_inv = new net.minecraft.server.v1_10_R1.PlayerInventory(null);
 			NBTTagList inv = rawPlayer.getList("Inventory", rawPlayer.getTypeId());
 			nms_pl_inv.b(inv); // We use this to bypass the Craft code which requires a player object, unlike NMS.
 			PlayerInventory pl_inv = (PlayerInventory) new CraftInventoryPlayer(nms_pl_inv);
