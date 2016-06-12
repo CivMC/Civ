@@ -14,14 +14,20 @@ public class ScheduledInventoryOpen implements Runnable {
 
 	private ClickableInventory ci;
 	private Player p;
+	private JavaPlugin jp;
+
 	public ScheduledInventoryOpen(ClickableInventory ci, Player p) {
 		this.ci = ci;
 		this.p = p;
 	}
 	public void run() {
+		ci.setPlugin(jp);
 		ci.showInventory(p);
 	}
-	
+
+	public void setPlugin(JavaPlugin jp) {
+		this.jp = jp;
+	}
 	
 	public static void schedule(JavaPlugin plugin, ClickableInventory ci, Player p) {
 		ScheduledInventoryOpen sio = new ScheduledInventoryOpen(ci, p);
