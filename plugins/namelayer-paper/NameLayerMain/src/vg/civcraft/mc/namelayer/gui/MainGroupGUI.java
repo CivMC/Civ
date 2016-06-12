@@ -21,6 +21,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
+import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
@@ -755,7 +756,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				@Override
 				public void clicked(final Player p) {
 					p.sendMessage(ChatColor.GOLD + "Enter the name of the player to blacklist or \"cancel\" to exit this prompt");
-					new Dialog(p, NameLayerPlugin.getInstance()) {
+					Dialog dia = new Dialog(p, NameLayerPlugin.getInstance()) {
 
 						@Override
 						public List<String> onTabComplete(String word,
@@ -787,6 +788,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 						public void onReply(String[] message) {
 							if (message [0].equalsIgnoreCase("cancel")) {
 								showScreen();
+								return;
 							}
 							if (gm.hasAccess(g, p.getUniqueId(),
 									PermissionType.getPermission("BLACKLIST"))) {

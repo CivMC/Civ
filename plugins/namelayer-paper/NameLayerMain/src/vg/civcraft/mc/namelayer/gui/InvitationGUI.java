@@ -65,11 +65,17 @@ public class InvitationGUI extends AbstractGroupGUI{
 				
 				@Override
 				public void clicked(Player arg0) {
+					p.sendMessage(ChatColor.GOLD + "Enter the name of the player to invite or \"cancel\" to exit this prompt. You may also enter the names"
+							+ "of multiple players, separated with spaces to invite all of them");
 					selectedType = pType;
 					Dialog enterName = new Dialog(arg0, NameLayerPlugin.getInstance()) {
 						public void onReply(String [] message) {
 							if (gm.hasAccess(g, p.getUniqueId(), MainGroupGUI.getAccordingPermission(selectedType))) {
 								for(String s : message) {
+									if (s.equalsIgnoreCase("cancel")) {
+										parent.showScreen();
+										return;
+									}
 									UUID inviteUUID = NameAPI.getUUID(s);
 									if (inviteUUID == null) {
 										p.sendMessage(ChatColor.RED + "The player " + s + " doesn't exist");
@@ -113,6 +119,7 @@ public class InvitationGUI extends AbstractGroupGUI{
 									names.add(p.getName());
 								}
 							}
+							names.add("cancel");
 							if (word.equals("")) {
 								return names;
 							}

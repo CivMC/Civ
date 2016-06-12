@@ -125,7 +125,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 						is,
 						ChatColor.DARK_AQUA
 								+ PlayerType.getNiceRankName(pType)
-								+ " currently have", ChatColor.DARK_AQUA
+								+ "s currently have", ChatColor.DARK_AQUA
 								+ "this permission");
 			} else {
 				is = new ItemStack(Material.INK_SACK, 1, (short) 1); // red dye
@@ -133,7 +133,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 						is,
 						ChatColor.DARK_AQUA
 								+ PlayerType.getNiceRankName(pType)
-								+ " currently don't have", ChatColor.DARK_AQUA
+								+ "s currently don't have", ChatColor.DARK_AQUA
 								+ "this permission");
 			}
 			ISUtils.setName(is, perm.getName());
