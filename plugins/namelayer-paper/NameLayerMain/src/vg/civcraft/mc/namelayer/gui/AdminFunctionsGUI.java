@@ -117,7 +117,6 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 				parent.showScreen();
 			}
 		}, 22);
-		ci.setPlugin(NameLayerPlugin.getInstance());
 		ci.showInventory(p);
 	}
 
@@ -224,7 +223,6 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 					}
 				}, 15);
 				confirmInv.setSlot(new DecorationStack(info), 4);
-				confirmInv.setPlugin(NameLayerPlugin.getInstance());
 				confirmInv.showInventory(p);
 
 			}
@@ -279,7 +277,6 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 			}
 		}, 15);
 		confirmInv.setSlot(new DecorationStack(info), 4);
-		confirmInv.setPlugin(NameLayerPlugin.getInstance());
 		confirmInv.showInventory(p);
 	}
 

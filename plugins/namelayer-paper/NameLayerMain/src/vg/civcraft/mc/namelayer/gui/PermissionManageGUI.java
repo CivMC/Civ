@@ -68,7 +68,6 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 				parent.showScreen();
 			}
 		}, 22);
-		ci.setPlugin(NameLayerPlugin.getInstance());
 		ci.showInventory(p);
 	}
 
@@ -225,7 +224,6 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 				showScreen();
 			}
 		}, 49);
-		ci.setPlugin(NameLayerPlugin.getInstance());
 		ci.showInventory(p);
 	}
 

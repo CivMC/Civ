@@ -90,7 +90,6 @@ public class LinkingGUI extends AbstractGroupGUI {
 				parent.showScreen();
 			}
 		}, 7);
-		ci.setPlugin(NameLayerPlugin.getInstance());
 		ci.showInventory(p);
 	}
 
@@ -334,7 +333,6 @@ public class LinkingGUI extends AbstractGroupGUI {
 				showScreen();
 			}
 		}, 49);
-		ci.setPlugin(NameLayerPlugin.getInstance());
 		ci.showInventory(p);
 	}
 
