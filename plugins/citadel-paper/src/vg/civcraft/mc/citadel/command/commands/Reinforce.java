@@ -39,7 +39,7 @@ public class Reinforce extends PlayerCommandMiddle {
 		if(args.length == 0){
 			groupName = gm.getDefaultGroup(uuid);
 			if(groupName == null){
-				sendAndLog(p, ChatColor.RED, "You need to reinforce to a group! Try /ctr groupname. \n Or /nlcg groupname if you don't have a group yet.");
+				sendAndLog(p, ChatColor.RED, "You need to reinforce to a group! Try /reinforce groupname. \n Or /create groupname if you don't have a group yet.");
 				return true;
 			}
 		}
@@ -67,7 +67,7 @@ public class Reinforce extends PlayerCommandMiddle {
 			state.reset();
 		}
 		else{
-			sendAndLog(p, ChatColor.GREEN, "You are now in Reinforcement mode, hit blocks with a reinforcement material to secure them. \n Type /ctr or /cto to turn this off when you are done.");
+			sendAndLog(p, ChatColor.GREEN, "You are now in Reinforcement mode, hit blocks with a reinforcement material to secure them. \n Type /reinforce or /cto to turn this off when you are done.");
 			state.setMode(ReinforcementMode.REINFORCEMENT);
 			state.setGroup(g);
 		}

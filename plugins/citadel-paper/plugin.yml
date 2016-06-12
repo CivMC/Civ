@@ -14,13 +14,13 @@ commands:
  ctb:
   aliases: [ctbypass, bypass]
  cti:
-  aliases: [ctinformation, info]
+  aliases: [ctinformation, info, ctinfo]
  ctin:
   aliases: [ctinsecure]
  ctm:
-  aliases: [ctmaterials]
+  aliases: [ctmaterials, materials]
  cto:
-  aliases: [ctoff]
+  aliases: [ctoff, off]
  cts:
   aliases: [ctstats]
   permission: citadel.admin
