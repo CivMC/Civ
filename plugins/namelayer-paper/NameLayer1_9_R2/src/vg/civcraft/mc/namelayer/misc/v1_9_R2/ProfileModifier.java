@@ -1,13 +1,13 @@
-package vg.civcraft.mc.namelayer.misc.v1_10_R1;
+package vg.civcraft.mc.namelayer.misc.v1_9_R2;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.logging.Level;
 
-import net.minecraft.server.v1_10_R1.EntityHuman;
-import net.minecraft.server.v1_10_R1.MinecraftServer;
+import net.minecraft.server.v1_9_R2.EntityHuman;
+import net.minecraft.server.v1_9_R2.MinecraftServer;
 
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftHumanEntity;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -36,7 +36,7 @@ public class ProfileModifier implements ProfileInterface{
 			// start of getting the GameProfile
 			CraftHumanEntity craftHuman = (CraftHumanEntity) player;
 			EntityHuman human = craftHuman.getHandle();
-			Field fieldName = EntityHuman.class.getDeclaredField("bT");
+			Field fieldName = EntityHuman.class.getDeclaredField("bS");
 			fieldName.setAccessible(true);
 			GameProfile prof = (GameProfile) fieldName.get(human);
 			// End

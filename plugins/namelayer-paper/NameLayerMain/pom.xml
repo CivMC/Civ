@@ -91,7 +91,13 @@
 					<version>1.0.0</version>
 					<scope>compile</scope>
 				</dependency>
-        <dependency>
+				<dependency>
+					<groupId>vg.civcraft.mc.namelayer</groupId>
+					<artifactId>NameLayerNMS1_9_R2</artifactId>
+					<version>1.0.0</version>
+					<scope>compile</scope>
+				</dependency>
+				<dependency>
 					<groupId>vg.civcraft.mc.namelayer</groupId>
 					<artifactId>NameLayerNMS1_10_R1</artifactId>
 					<version>1.0.0</version>
