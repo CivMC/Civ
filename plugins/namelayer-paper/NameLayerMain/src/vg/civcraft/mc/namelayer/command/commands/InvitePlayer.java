@@ -61,11 +61,11 @@ public class InvitePlayer extends PlayerCommandMiddle{
 		}
 		if (group.isCurrentMember(targetAccount)) { // So a player can't demote someone who is above them.
 			s.sendMessage(ChatColor.RED + "Player is already a member."
-					+ "Use /nlpp to change their PlayerType.");
+					+ "Use /promoteplayer to change their PlayerType.");
 			return true;
 		}
 		if(NameLayerPlugin.getBlackList().isBlacklisted(group, targetAccount)) {
-			s.sendMessage(ChatColor.RED + "This player is currently blacklisted, you have to unblacklist him before inviting him to the group");
+			s.sendMessage(ChatColor.RED + "This player is currently blacklisted, you have to unblacklist him with /removeblacklist before inviting him to the group");
 			return true;
 		}
 		final PlayerType pType = targetType != null ? PlayerType.getPlayerType(targetType) : PlayerType.MEMBERS;
@@ -124,7 +124,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			}
 		}
 
-		s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
+		s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /revoke to Revoke an invite.");
 		return true;
 	}
 
@@ -155,7 +155,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 					msg = "You have been invited to the group " + group.getName()+ ".\n";
 				}
 				TextComponent message = new TextComponent(msg + "Click this message to accept. If you wish to toggle invites "
-						+ "so they always are accepted please run /nltaai");
+						+ "so they always are accepted please run /autoaccept");
 				message.setColor(net.md_5.bungee.api.ChatColor.GREEN);
 				message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/nlag " + group.getName()));
 				message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("  ---  Click to accept").create()));
