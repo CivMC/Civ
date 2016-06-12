@@ -5,7 +5,11 @@
 	<groupId>com.github.igotyou</groupId>
 	<artifactId>FactoryMod</artifactId>
 	<packaging>jar</packaging>
+<<<<<<< HEAD
 	<version>2.2.11</version>
+=======
+	<version>2.2.10</version>
+>>>>>>> 3da661067473c91f0d955739f69f10dfdca5f967
 	<name>FactoryMod</name>
 	<url>https://github.com/Civcraft/FactoryMod</url>
 
