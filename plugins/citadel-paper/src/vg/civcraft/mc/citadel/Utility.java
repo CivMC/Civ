@@ -313,7 +313,8 @@ public class Utility {
             || Material.POTATO.equals(mat)
             || Material.CROPS.equals(mat)
             || Material.MELON_BLOCK.equals(mat)
-            || Material.PUMPKIN.equals(mat);
+            || Material.PUMPKIN.equals(mat)
+			|| Material.BEETROOT_BLOCK.equals(mat);
     }
 
     private static boolean isDirtPlant(Material mat) {
