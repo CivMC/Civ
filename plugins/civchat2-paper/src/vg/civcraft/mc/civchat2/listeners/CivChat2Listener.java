@@ -19,6 +19,7 @@ import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 /*
  * @author jjj5311
@@ -73,12 +74,10 @@ public class CivChat2Listener implements Listener {
 		CivChat2.debugmessage(String.format("ChatEvent properties: chatMessage =[ %s ], sender = [ %s ], chatChannel = [ %s ], groupchatting = [ %s ];", chatMessage, sender.getName(), chatChannel, groupChat));
 		if(chatChannel != null){
 			StringBuilder sb = new StringBuilder();
-			CivChat2.debugmessage("PlayerChatEvent chatChannel does not equal null");
 			UUID receiverUUID = NameAPI.getUUID(chatChannel);
 			Player receiver = Bukkit.getPlayer(receiverUUID);
 			CivChat2.debugmessage("player chat event receive = [" + receiver + "]");
 			if(receiver != null){	
-				CivChat2.debugmessage("PlayerChatEvent chatman.sendPrivateMessage being sent");
 				chatman.sendPrivateMsg(sender, receiver, chatMessage);
 				return;
 			} else {
@@ -103,13 +102,13 @@ public class CivChat2Listener implements Listener {
 		}
 		if(groupChat != null){
 			//player is group chatting
-			if (GroupManager.getGroup(groupChat).isMember(NameAPI.getUUID(sender.getName()))) {
+			if (NameAPI.getGroupManager().hasAccess(groupChat, sender.getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
 				chatman.sendGroupMsg(sender.getName(), chatMessage, GroupManager.getGroup(groupChat));
 				return;
-			} //player was kicked from the group
+			} //player lost perm to write in the chat
 			else {
 				chatman.removeGroupChat(sender.getName());
-				sender.sendMessage(ChatColor.RED + "You have been removed from groupchat because you were removed from the group");
+				sender.sendMessage(ChatColor.RED + "You have been removed from groupchat because you were removed from the group or lost the permission required to groupchat");
 			}
 		}
 		
