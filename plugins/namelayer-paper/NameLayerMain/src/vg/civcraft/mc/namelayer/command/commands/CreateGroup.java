@@ -68,7 +68,7 @@ public class CreateGroup extends PlayerCommandMiddle{
 		}
 		String password = "";
 		if (args.length == 2) {
-			password = args[2];
+			password = args[1];
 		}
 		else {
 			password = null;
