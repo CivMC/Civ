@@ -1,9 +1,11 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -39,6 +41,14 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 	}
 
 	public List<ItemStack> getOutputRepresentation(Inventory i) {
+		if (i == null) {
+			ItemStack is = new ItemStack(Material.PAPER);
+			ISUtils.setName(is, "Total setupcost");
+			ISUtils.addLore(is, ChatColor.AQUA + "All the materials invested into setting up and upgrading this factory");
+			List <ItemStack> stacks = new LinkedList<ItemStack>();
+			stacks.add(is);
+			return stacks;
+		}
 		BlockState bs = (BlockState) i.getHolder();
 		Location loc = bs.getLocation();
 		FurnCraftChestFactory fcc = (FurnCraftChestFactory) FactoryMod

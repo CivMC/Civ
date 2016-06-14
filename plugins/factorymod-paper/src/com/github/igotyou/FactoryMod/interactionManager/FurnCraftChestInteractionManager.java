@@ -18,6 +18,9 @@ import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
@@ -30,7 +33,6 @@ import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 public class FurnCraftChestInteractionManager implements IInteractionManager {
 	private FurnCraftChestFactory fccf;
 	private HashMap<Clickable, InputRecipe> recipes = new HashMap<Clickable, InputRecipe>();
-	private static ReinforcementManager rm;
 
 	public FurnCraftChestInteractionManager(FurnCraftChestFactory fccf) {
 		this.fccf = fccf;
@@ -44,15 +46,9 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		this.fccf = fccf;
 	}
 
-	public static void prep() {
-		if (FactoryMod.getManager().isCitadelEnabled()) {
-			rm = Citadel.getReinforcementManager();
-		} else {
-			rm = null;
-		}
-	}
-
 	public void redStoneEvent(BlockRedstoneEvent e, Block factoryBlock) {
+		ReinforcementManager rm = FactoryMod.getManager().isCitadelEnabled() ? Citadel
+				.getReinforcementManager() : null;
 		int threshold = FactoryMod.getManager().getRedstonePowerOn();
 		if (factoryBlock.getLocation().equals(fccf.getFurnace().getLocation())) {
 			if (e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold
@@ -92,14 +88,18 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			return;
 		}
 		if (FactoryMod.getManager().isCitadelEnabled()) {
+			ReinforcementManager rm = Citadel.getReinforcementManager();
 			// is this cast safe? Let's just assume yes for now
 			PlayerReinforcement rein = (PlayerReinforcement) rm
 					.getReinforcement(b);
-			if (rein != null && !rein.getGroup().isMember(p.getUniqueId()) && !p.isOp()) {
-				p.sendMessage(ChatColor.RED
-						+ "You dont have permission to interact with this factory");
-				FactoryMod.sendResponse("FactoryNoPermission", p);
-				return;
+			if (rein != null) {
+				Group g = rein.getGroup();
+				if (!NameAPI.getGroupManager().hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("USE_FACTORY"))) {
+					p.sendMessage(ChatColor.RED
+							+ "You dont have permission to interact with this factory");
+					FactoryMod.sendResponse("FactoryNoPermission", p);
+					return;
+				}
 			}
 		}
 		if (b.equals(((FurnCraftChestStructure) fccf.getMultiBlockStructure())

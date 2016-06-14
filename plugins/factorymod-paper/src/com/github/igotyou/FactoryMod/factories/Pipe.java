@@ -40,7 +40,6 @@ public class Pipe extends Factory {
 	}
 
 	public void attemptToActivate(Player p) {
-		// TODO Citadel stuff
 		LoggingUtils.log((p != null ? p.getName() : "Redstone")
 				+ "is attempting to activate " + getLogData());
 		mbs.recheckComplete();
