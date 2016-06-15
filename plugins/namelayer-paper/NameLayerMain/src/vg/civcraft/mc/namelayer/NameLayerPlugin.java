@@ -54,12 +54,12 @@ public class NameLayerPlugin extends ACivMod{
 		loadDatabases();
 	    ClassHandler.Initialize(Bukkit.getServer());
 		new NameAPI(new GroupManager(), associations);
-		PermissionType.initialize();
-		blackList = new BlackList();
-		groupManagerDao.loadGroupsInvitations();
-		defaultGroupHandler = new DefaultGroupHandler();
 		registerListeners();
 		if (loadGroups){
+			PermissionType.initialize();
+			blackList = new BlackList();
+			groupManagerDao.loadGroupsInvitations();
+			defaultGroupHandler = new DefaultGroupHandler();
 			handle = new CommandHandler();
 			handle.registerCommands();
 		}
