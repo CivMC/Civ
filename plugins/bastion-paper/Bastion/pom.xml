@@ -6,7 +6,7 @@
   <groupId>isaac</groupId>
   <artifactId>Bastion</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.4</version>
+  <version>1.1.1</version>
   <name>Bastion</name>
   <url>https://github.com/ttk2/Bastion</url>
   
@@ -32,28 +32,28 @@
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>Spigot1.8.7</artifactId>
-      <version>1.8.7</version>
-      <scope>provided</scope>
+     <dependency>
+           <groupId>org.spigotmc</groupId>
+           <artifactId>Spigot</artifactId>
+           <version>1.10</version>
+           <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>vg.civcraft.mc.namelayer</groupId>
-      <artifactId>NameLayer</artifactId>
-      <version>2.5.42</version>
-      <scope>provided</scope>
-    </dependency>
+            <groupId>vg.civcraft.mc.namelayer</groupId>
+            <artifactId>NameLayer</artifactId>
+            <version>2.7</version>
+            <scope>provided</scope>
+        </dependency>
     <dependency>
       <groupId>vg.civcraft.mc.citadel</groupId>
       <artifactId>Citadel</artifactId>
-      <version>3.4.38</version>
+      <version>3.5.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.untamedears</groupId>
       <artifactId>Humbug</artifactId>
-      <version>1.7.2</version>
+      <version>1.8.20</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -62,6 +62,10 @@
     <repository>
       <id>civcraft-repo</id>
       <url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
+    </repository>
+    <repository>
+        <id>spigot-repo</id>
+        <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
     </repository>
   </repositories>
 </project>

@@ -38,6 +38,9 @@ import org.bukkit.material.Dispenser;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BastionBlockManager {
 	public BastionBlockSet set;
@@ -112,10 +115,6 @@ public class BastionBlockManager {
 		}
 		
 		return false;
-	}
-
-	public Set<BastionBlock> shouldStopLocation(Location loc, Player player){
-		return getBlockingBastions(loc, player);
 	}
 	
 
@@ -214,7 +213,7 @@ public class BastionBlockManager {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Set<BastionBlock> getBlockingBastions(Location loc, Player player){
+	private Set<BastionBlock> getBlockingBastions(Location loc, Player player, PermissionType perm){
 		Set<? extends QTBox> boxes = set.forLocation(loc);
 		Set<BastionBlock> bastions = null;
 		
@@ -229,7 +228,7 @@ public class BastionBlockManager {
 		Iterator<BastionBlock> i = bastions.iterator();
 		while (i.hasNext()) {
 			BastionBlock bastion = i.next();
-			if (!bastion.inField(loc) || bastion.canPlace(player)) {
+			if (!bastion.inField(loc) || bastion.permAccess(player, perm)) {
 				i.remove();
 			}
 		}
@@ -379,7 +378,7 @@ public class BastionBlockManager {
 		if (event.getPlayer().hasPermission("Bastion.bypass")) return; //I'm not totally sure about the implications of this combined with humbug. It might cause some exceptions. Bukkit will catch.
 		if (event.getCause() != TeleportCause.ENDER_PEARL) return; // Only handle enderpearl cases
 		
-		Set<BastionBlock> blocking = this.getBlockingBastions(event.getTo(), event.getPlayer());
+		Set<BastionBlock> blocking = this.getBlockingBastions(event.getTo(), event.getPlayer(), PermissionType.getPermission("BASTION_PEARL"));
 		
 		if (Bastion.getConfigManager().getEnderPearlRequireMaturity()) {
 			Iterator<BastionBlock> i = blocking.iterator();
@@ -405,7 +404,7 @@ public class BastionBlockManager {
 			return; // only block landings as above.
 		}
 		
-		blocking = this.getBlockingBastions(event.getFrom(), event.getPlayer());
+		blocking = this.getBlockingBastions(event.getFrom(), event.getPlayer(), PermissionType.getPermission("BASTION_PEARL"));
 		
 		if (Bastion.getConfigManager().getEnderPearlRequireMaturity()) {
 			Iterator<BastionBlock> i = blocking.iterator();
