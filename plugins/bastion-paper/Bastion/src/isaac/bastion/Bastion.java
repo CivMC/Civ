@@ -1,5 +1,8 @@
 package isaac.bastion;
 
+import java.util.LinkedList;
+import java.util.logging.Level;
+
 import isaac.bastion.commands.BastionCommandManager;
 import isaac.bastion.commands.ModeChangeCommand;
 import isaac.bastion.commands.PlayersStates.Mode;
@@ -17,6 +20,9 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
+
 public final class Bastion extends JavaPlugin {
 	private static BastionListener listener; ///Main listener
 	private static Bastion plugin; ///Holds the plugin
@@ -29,6 +35,7 @@ public final class Bastion extends JavaPlugin {
 		config = new ConfigManager();
 		bastionManager = new BastionBlockManager();
 		listener = new BastionListener();
+		registerNameLayerPermissions();
 		
 		removeGhostBlocks();
 		
@@ -89,6 +96,20 @@ public final class Bastion extends JavaPlugin {
 			}
 		}
 		Bukkit.getLogger().log(Level.INFO, "Bastion has ended ghost block check.");
+	}
+	
+	public void registerNameLayerPermissions() {
+		LinkedList <PlayerType> memberAndAbove = new LinkedList<PlayerType>();
+		memberAndAbove.add(PlayerType.MEMBERS);
+		memberAndAbove.add(PlayerType.MODS);
+		memberAndAbove.add(PlayerType.ADMINS);
+		memberAndAbove.add(PlayerType.OWNER);
+		LinkedList <PlayerType> modAndAbove = new LinkedList<PlayerType>();
+		modAndAbove.add(PlayerType.MODS);
+		modAndAbove.add(PlayerType.ADMINS);
+		modAndAbove.add(PlayerType.OWNER);
+		PermissionType.registerPermission("BASTION_PEARL", memberAndAbove);
+		PermissionType.registerPermission("BASTION_PLACE", modAndAbove);
 	}
 
 }

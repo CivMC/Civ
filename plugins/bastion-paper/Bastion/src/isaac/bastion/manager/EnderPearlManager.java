@@ -146,7 +146,7 @@ public class EnderPearlManager {
 			Location loc = bastion.getLocation().clone();
 			loc.setY(0);
 			
-			if (bastion.canPlace(player)) { // not blocked, continue
+			if (bastion.canPearl(player)) { // not blocked, continue
 				continue;
 			}
 			
