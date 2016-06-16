@@ -72,7 +72,7 @@ public class SaturationHealthRegenHandler implements Runnable {
 				if (p.isDead() || p.getHealth() <= 0.0) {
 					continue;
 				}
-				if (p.getFoodLevel() >= minimumFood) {
+				if (p.getFoodLevel() >= minimumFood && p.getHealth() < p.getMaxHealth()) {
 					double newHealth = p.getHealth() + healthPerCycle;
 					newHealth = Math.min(newHealth, p.getMaxHealth());
 					p.setExhaustion(p.getExhaustion() + exhaustionPerHeal);
