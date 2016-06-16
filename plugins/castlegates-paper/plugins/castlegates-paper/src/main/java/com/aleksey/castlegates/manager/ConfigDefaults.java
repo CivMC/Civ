@@ -75,7 +75,11 @@ public class ConfigDefaults {
 		Material.PURPUR_STAIRS.name(),
 		Material.PURPUR_DOUBLE_SLAB.name(),
 		Material.PURPUR_SLAB.name(),
-		Material.END_BRICKS.name()
+		Material.END_BRICKS.name(),
+		Material.MAGMA.name(),
+		Material.NETHER_WART_BLOCK.name(),
+		Material.RED_NETHER_BRICK.name(),
+		Material.BONE_BLOCK.name(),
 	};
 	
 	public static final String[] bridgeMaterials = new String[] {

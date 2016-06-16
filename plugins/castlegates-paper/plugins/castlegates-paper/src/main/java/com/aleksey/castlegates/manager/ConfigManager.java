@@ -67,7 +67,7 @@ public class ConfigManager {
 		this.database.user = getString("Database.User", "");
 		this.database.password = getString("Database.Password", "");
 		
-		this.maxPowerTransfers = getInt("Settings.MaxPowerTransfers", 5, 0, 10);
+		this.maxPowerTransfers = getInt("Settings.MaxPowerTransfers", 8, 0, 10);
 		this.maxBridgeLength = getInt("Settings.MaxBridgeLength", 16, 1, 40);
 		this.playerStateResetInSeconds = getInt("Settings.PlayerStateResetInSeconds", 5 * 60);
 		this.switchTimeout = getInt("Settings.SwitchTimeout", 1000, 500, 100000);
