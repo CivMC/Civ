@@ -1,0 +1,14 @@
+name: ${project.name}
+main: com.aleksey.castlegates.CastleGates
+version: ${project.version}
+author: Aleksey-Terzi
+load: startup
+description: 'Drawable gates and bridges'
+commands:
+  cg:
+    description: Manage Castle Gates.
+    usage: |
+           /<command> normal - Normal mode
+           /<command> create - Create gear block mode
+           /<command> link - Link gears mode
+           /<command> info - Information mode

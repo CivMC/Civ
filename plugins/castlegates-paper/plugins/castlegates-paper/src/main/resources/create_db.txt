@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS cg_gear (
+    gear_id INT NOT NULL AUTO_INCREMENT
+   ,location_worlduid VARCHAR(36) NOT NULL
+   ,location_x INT NOT NULL
+   ,location_y INT NOT NULL
+   ,location_z INT NOT NULL
+
+   ,CONSTRAINT pk_cg_gear PRIMARY KEY (gear_id)
+);
+
+CREATE TABLE IF NOT EXISTS cg_link (
+    link_id INT NOT NULL AUTO_INCREMENT
+   ,gear1_id INT
+   ,gear2_id INT
+   ,blocks VARBINARY(120)
+   
+   ,CONSTRAINT pk_cg_link PRIMARY KEY (link_id)
+);
+
+CREATE TABLE IF NOT EXISTS cg_reinforcement (
+    link_id INT NOT NULL
+   ,block_no INT NOT NULL
+   ,material_id INT NOT NULL
+   ,durability INT NOT NULL
+   ,insecure BOOL NOT NULL
+   ,group_id INT NOT NULL
+   ,maturation_time INT NOT NULL
+   ,lore VARCHAR(255)
+   ,acid_time INT NOT NULL
+   
+   ,CONSTRAINT pk_cg_reinforcement PRIMARY KEY (link_id, block_no)
+)

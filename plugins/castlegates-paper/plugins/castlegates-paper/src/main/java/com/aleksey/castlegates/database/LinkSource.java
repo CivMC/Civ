@@ -1,0 +1,120 @@
+/**
+ * @author Aleksey Terzi
+ *
+ */
+
+package com.aleksey.castlegates.database;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
+
+public class LinkSource {
+	private static final String selectAllScript = "SELECT * FROM cg_link";
+	private static final String insertScript = "INSERT INTO cg_link (gear1_id, gear2_id, blocks) VALUES (?, ?, ?)";
+	private static final String updateScript = "UPDATE cg_link SET gear1_id = ?, gear2_id = ?, blocks = ? WHERE link_id = ?";
+	private static final String deleteScript = "DELETE FROM cg_link WHERE link_id = ?";
+	
+	private SqlDatabase db;
+	
+	public LinkSource(SqlDatabase db) {
+		this.db = db;
+	}
+	
+	public List<LinkInfo> selectAll() throws SQLException {
+		ArrayList<LinkInfo> list = new ArrayList<LinkInfo>();
+		PreparedStatement sql = this.db.prepareStatement(selectAllScript);
+		
+		ResultSet rs = sql.executeQuery();
+		
+		try {
+			while(rs.next()) {
+				LinkInfo info = new LinkInfo();
+				info.link_id = rs.getInt("link_id");
+				
+				info.gear1_id = rs.getInt("gear1_id");
+				if(rs.wasNull()) info.gear1_id = null;
+				
+				info.gear2_id = rs.getInt("gear2_id");
+				if(rs.wasNull()) info.gear2_id = null;
+				
+				info.blocks = rs.getBytes("blocks");
+				
+				list.add(info);
+			}
+		} finally {
+			rs.close();
+		}
+		
+		return list;
+	}
+	
+	public void insert(LinkInfo info) throws SQLException {
+		PreparedStatement sql = this.db.prepareStatementWithReturn(insertScript);
+		
+		if(info.gear1_id != null) {
+			sql.setInt(1, info.gear1_id);
+		} else {
+			sql.setNull(1, Types.INTEGER);
+		}
+		
+		if(info.gear2_id != null) {
+			sql.setInt(2, info.gear2_id);
+		} else {
+			sql.setNull(2, Types.INTEGER);
+		}
+		
+		if(info.blocks != null) {
+			sql.setBytes(3, info.blocks);
+		} else {
+			sql.setNull(3, Types.VARBINARY);
+		}
+		
+		sql.executeUpdate();
+		
+		ResultSet rs = sql.getGeneratedKeys();
+		
+		try {
+		    rs.next();
+		    info.link_id = rs.getInt(1);
+		} finally {
+			rs.close();
+		}
+	}
+	
+	public void update(LinkInfo info) throws SQLException {
+		PreparedStatement sql = this.db.prepareStatement(updateScript);
+		
+		if(info.gear1_id != null) {
+			sql.setInt(1, info.gear1_id);
+		} else {
+			sql.setNull(1, Types.INTEGER);
+		}
+		
+		if(info.gear2_id != null) {
+			sql.setInt(2, info.gear2_id);
+		} else {
+			sql.setNull(2, Types.INTEGER);
+		}
+		
+		if(info.blocks != null) {
+			sql.setBytes(3, info.blocks);
+		} else {
+			sql.setNull(3, Types.VARBINARY);
+		}
+		
+		sql.setInt(4, info.link_id);
+		
+		sql.executeUpdate();
+	}
+	
+	public void delete(int link_id) throws SQLException {
+		PreparedStatement sql = this.db.prepareStatement(deleteScript);
+		sql.setInt(1, link_id);
+		
+		sql.executeUpdate();
+	}
+}
