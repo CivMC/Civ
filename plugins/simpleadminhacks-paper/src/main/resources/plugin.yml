@@ -21,6 +21,10 @@ commands:
     description: Modify any player inventory, online or not.
     usage: /<command> [playername|UUID]
     permission: simpleadmin.invmod
+  serialize:
+    description: Print to console the object held as serialized yaml
+    usage /<command>
+    permission: simpleadmin.hacks
   introkit:
     description: Give a player the currently configured introkit
     usage: /<command> [playername|UUID]

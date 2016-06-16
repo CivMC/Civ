@@ -7,9 +7,14 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.entity.Player;
 import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.UUID;
 
@@ -17,7 +22,7 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.ExperimentalConfig;
 
-public class Experimental extends SimpleHack<ExperimentalConfig> implements Listener {
+public class Experimental extends SimpleHack<ExperimentalConfig> implements Listener, CommandExecutor {
 
 	public static final String NAME = "Experimental";
 	
@@ -37,6 +42,7 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 	public void registerCommands() {
 		if (config.isEnabled()) {
 			plugin().log("Registering experimental commands");
+			plugin().registerCommand("serialize", this);
 		}
 	}
 
@@ -74,6 +80,24 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 		} else {
 			return "Experiments disabled.";
 		}
+	}
+
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		if (!(sender instanceof Player)) {
+			sender.sendMessage("Must be a player to execute this command");
+			return true;
+		}
+
+		Player player = (Player) sender;
+		ItemStack item = player.getInventory().getItemInMainHand();
+		if (item != null) {
+			YamlConfiguration yml = new YamlConfiguration();
+			yml.set("template", item);
+			plugin().log(yml.saveToString());
+			sender.sendMessage(yml.saveToString());
+		}
+		return true;
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
