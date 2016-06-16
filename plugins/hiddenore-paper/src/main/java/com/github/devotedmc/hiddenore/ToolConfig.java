@@ -10,7 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 /**
- *  WOOD_PICKAXE:
+ *
+ wood_pickaxe:
   template:
    ==: org.bukkit.inventory.ItemStack
    type: WOOD_PICKAXE
@@ -19,6 +20,8 @@ import org.bukkit.inventory.meta.ItemMeta;
    amount: true
    durability: true
    enchants: true
+   otherEnchants: true
+   enchantsLvl: true
    lore: true
    name: true
   modifiers:
@@ -33,6 +36,7 @@ public class ToolConfig {
 	private boolean ignoreAmount;
 	private boolean ignoreDurability;
 	private boolean ignoreEnchants;
+	private boolean ignoreOtherEnchants;
 	private boolean ignoreEnchantsLvl;
 	private boolean ignoreLore;
 	private boolean ignoreName;
@@ -45,16 +49,18 @@ public class ToolConfig {
 	private static Map<String, ToolConfig> tools = new HashMap<String, ToolConfig>();
 	
 	protected ToolConfig(ItemStack template, boolean ignoreAmount, boolean ignoreDurability,
-			boolean ignoreEnchants, boolean ignoreEnchantsLvl, boolean ignoreLore, boolean ignoreName,
+			boolean ignoreEnchants, boolean ignoreOtherEnchants, boolean ignoreEnchantsLvl, 
+			boolean ignoreLore, boolean ignoreName,
 			Double dropChanceModifier, Double minAmountModifier, Double maxAmountModifier) {
 		this.template = template;
 		this.ignoreAmount = ignoreAmount;
 		this.ignoreDurability = ignoreDurability;
 		this.ignoreEnchants = ignoreEnchants;
+		this.ignoreOtherEnchants = ignoreOtherEnchants;
 		this.ignoreEnchantsLvl = ignoreEnchantsLvl;
 		this.ignoreLore = ignoreLore;
 		this.ignoreName = ignoreName;
-		this.ignoreMeta = ignoreEnchants && ignoreEnchantsLvl && ignoreLore && ignoreName;
+		this.ignoreMeta = ignoreEnchants && ignoreLore && ignoreName;
 		this.dropChanceModifier = (dropChanceModifier == null ? 1.0 : dropChanceModifier);
 		this.minAmountModifier = (minAmountModifier == null ? 0.0 : minAmountModifier);
 		this.maxAmountModifier = (maxAmountModifier == null ? 0.0 : maxAmountModifier);
@@ -74,6 +80,10 @@ public class ToolConfig {
 	
 	public boolean ignoreEnchants() {
 		return ignoreEnchants;
+	}
+
+	public boolean ignoreOtherEnchants() {
+		return ignoreOtherEnchants;
 	}
 	
 	public boolean ignoreEnchantsLvl() {
@@ -121,6 +131,7 @@ public class ToolConfig {
 						tool.getBoolean("ignore.amount", true),
 						tool.getBoolean("ignore.durability", true),
 						tool.getBoolean("ignore.enchants", true),
+						tool.getBoolean("ignore.otherEnchants", true),
 						tool.getBoolean("ignore.enchantsLvl", true),
 						tool.getBoolean("ignore.lore", true),
 						tool.getBoolean("ignore.name", true),
@@ -172,8 +183,17 @@ public class ToolConfig {
 				if (!comp.ignoreEnchants()) {
 					Map<Enchantment, Integer> compench = compmeta.getEnchants();
 					Map<Enchantment, Integer> toolench = toolmeta.getEnchants();
-					if (!compench.keySet().equals(toolench.keySet())) continue; // check that set of enchants is same
-					if (!comp.ignoreEnchantsLvl()) { // also check _level_ of enchants
+
+					// check that set of enchants is same (both null or both not null and same) else bail
+					if (!comp.ignoreOtherEnchants() && !((compench == null && toolench == null) || 
+							(compench != null && toolench != null && compench.keySet().equals(toolench.keySet()) ) ) ) continue; 
+
+					// check that tool has at least the enchantments specified; ignore the rest.
+					if (comp.ignoreOtherEnchants() && !(compench == null || 
+							(toolench != null && toolench.keySet().containsAll(compench.keySet()) ) ) ) continue; 
+
+					// also check _level_ of enchants
+					if (!comp.ignoreEnchantsLvl()) { 
 						boolean fail = false;
 						for(Enchantment ech : compench.keySet()) {
 							if (!compench.get(ech).equals(toolench.get(ech))) {

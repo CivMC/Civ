@@ -4,7 +4,7 @@ list_drops: true
 debug: true
 ignore_silktouch: false
 tools:
- WOOD_PICKAXE:
+ wood_pickaxe:
   template:
    ==: org.bukkit.inventory.ItemStack
    type: WOOD_PICKAXE
@@ -13,13 +13,15 @@ tools:
    amount: true
    durability: true
    enchants: true
+   otherEnchants: true
+   enchantsLvl: true
    lore: true
    name: true
   modifiers:
    dropChance: 1.0
    minAmount: 0.0
    maxAmount: 0.0
- GOLD_PICKAXE:
+ gold_pickaxe:
   template:
    ==: org.bukkit.inventory.ItemStack
    type: GOLD_PICKAXE
@@ -28,13 +30,15 @@ tools:
    amount: true
    durability: true
    enchants: true
+   otherEnchants: true
+   enchantsLvl: true
    lore: true
    name: true
   modifiers:
    dropChance: 1.0
    minAmount: 0.0
    maxAmount: 0.0
- IRON_PICKAXE:
+ iron_pickaxe:
   template:
    ==: org.bukkit.inventory.ItemStack
    type: IRON_PICKAXE
@@ -43,13 +47,15 @@ tools:
    amount: true
    durability: true
    enchants: true
+   otherEnchants: true
+   enchantsLvl: true
    lore: true
    name: true
   modifiers:
    dropChance: 1.0
    minAmount: 0.0
    maxAmount: 0.0
- STONE_PICKAXE:
+ stone_pickaxe:
   template:
    ==: org.bukkit.inventory.ItemStack
    type: STONE_PICKAXE
@@ -58,13 +64,15 @@ tools:
    amount: true
    durability: true
    enchants: true
+   otherEnchants: true
+   enchantsLvl: true
    lore: true
    name: true
   modifiers:
    dropChance: 1.0
    minAmount: 0.0
    maxAmount: 0.0
- DIAMOND_PICKAXE:
+ diamond_pickaxe:
   template:
    ==: org.bukkit.inventory.ItemStack
    type: DIAMOND_PICKAXE
@@ -73,6 +81,8 @@ tools:
    amount: true
    durability: true
    enchants: true
+   otherEnchants: true
+   enchantsLvl: true
    lore: true
    name: true
   modifiers:
@@ -91,11 +101,11 @@ blocks:
        type: COAL_ORE
        amount: 1
     tools:
-     - WOOD_PICKAXE
-     - STONE_PICKAXE
-     - IRON_PICKAXE
-     - GOLD_PICKAXE
-     - DIAMOND_PICKAXE
+     - wood_pickaxe
+     - stone_pickaxe
+     - iron_pickaxe
+     - gold_pickaxe
+     - diamond_pickaxe
     minY: 1
     maxY: 131
     chance: 0.01
@@ -108,9 +118,9 @@ blocks:
        type: IRON_ORE
        amount: 1
     tools:
-     - STONE_PICKAXE
-     - IRON_PICKAXE
-     - DIAMOND_PICKAXE
+     - stone_pickaxe
+     - iron_pickaxe
+     - diamond_pickaxe
     minY: 1
     maxY: 67
     chance: 0.007
@@ -118,8 +128,8 @@ blocks:
     maxAmount: 4
    GOLD_ORE:
     tools:
-     - IRON_PICKAXE
-     - DIAMOND_PICKAXE
+     - iron_pickaxe
+     - diamond_pickaxe
     minY: 1
     maxY: 33
     chance: 0.001437
@@ -131,8 +141,8 @@ blocks:
        type: DIAMOND_ORE
        amount: 1
     tools:
-     - IRON_PICKAXE
-     - DIAMOND_PICKAXE
+     - iron_pickaxe
+     - diamond_pickaxe
     minY: 1
     maxY: 15
     chance: 0.0005427
@@ -144,8 +154,8 @@ blocks:
        type: REDSTONE_ORE
        amount: 1
     tools:
-     - IRON_PICKAXE
-     - DIAMOND_PICKAXE
+     - iron_pickaxe
+     - diamond_pickaxe
     minY: 1
     maxY: 15
     chance: 0.01025
@@ -157,9 +167,9 @@ blocks:
        type: LAPIS_ORE
        amount: 1
     tools:
-     - STONE_PICKAXE
-     - IRON_PICKAXE
-     - DIAMOND_PICKAXE
+     - stone_pickaxe
+     - iron_pickaxe
+     - diamond_pickaxe
     minY: 1
     maxY: 33
     chance: 0.000597
@@ -171,8 +181,8 @@ blocks:
        type: EMERALD_ORE
        amount: 1
     tools:
-     - IRON_PICKAXE
-     - DIAMOND_PICKAXE
+     - iron_pickaxe
+     - diamond_pickaxe
     minY: 1
     maxY: 32
     chance: 0.0
@@ -198,11 +208,11 @@ blocks:
        type: QUARTZ_ORE
        amount: 1
     tools:
-     - WOOD_PICKAXE
-     - STONE_PICKAXE
-     - IRON_PICKAXE
-     - GOLD_PICKAXE
-     - DIAMOND_PICKAXE
+     - wood_pickaxe
+     - stone_pickaxe
+     - iron_pickaxe
+     - gold_pickaxe
+     - diamond_pickaxe
     minY: 1
     maxY: 125
     chance: 0.0

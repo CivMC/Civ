@@ -1,0 +1,28 @@
+#This config is meant to illustrate more advanced uses of HiddenOre features, including the
+# full depth of the tool config and what it means, and how it works in combination with other
+# drops and configs.
+#
+#This is not a valid configuration file and will cause errors if used directly.
+# It is broken into sections, small chunks of valid configurations that individually
+# would be usable as a config.
+#
+#If you have any questions don't hesitate to open an issue on the official github:
+#  http://www.github.com/DevotedMC/HiddenOre
+
+# SAMPLE ONE: Advanced Tool Specifications
+
+prefix: You found a hidden ore!
+alert_user: true
+list_drops: true
+debug: false
+ignore_silktouch: false
+tools:
+ normal_dpick:
+  template:
+   ==: org.bukkit.inventory.ItemStack
+   type: DIAMOND_PICKAXE
+   amount: 1
+   meta:
+    ==: ItemMeta
+    meta-type: UNSPECIFIC
+    
