@@ -51,7 +51,7 @@ public class DropConfig {
 	public ToolConfig dropsWithToolConfig(String biome, ItemStack tool) {
 		Set<String> t = getTools(biome);
 		if (t == null || t.isEmpty()) {
-			return ToolConfig.getAnyTool(tool);
+			return null; // ToolConfig.getAnyTool(tool);
 		} else {
 			return ToolConfig.getTool(t, tool);
 		}

@@ -28,6 +28,19 @@ import org.bukkit.inventory.meta.ItemMeta;
    dropChance: 1.0
    minAmount: 0
    maxAmount: 0
+ *
+ * special case for anything: (catchall)
+ *  "ignore" section is ignored but "modifiers" are observed
+ *  value after "all" is ignored, just something needs to be there.
+ *
+ name:
+  ignore:
+   all: true
+  modifiers:
+   dropChance: 1.0
+   minAmount: 0
+   maxAmount: 0
+ *
  * @author ProgrammerDan
  *
  */
@@ -120,14 +133,22 @@ public class ToolConfig {
 	
 	public static void initTool(ConfigurationSection tool) {
 		if (tools == null) clear();
-		if (!tool.contains("template")) return;
+		if (!tool.contains("template")) {
+			if (!tool.contains("ignore.all")) {
+				return;
+			} else {
+				HiddenOre.getPlugin().getLogger().info("Catchall tool found: " + tool.getName());
+			}
+		}
 		
 		if (tool.contains(tool.getName())){
 			HiddenOre.getPlugin().getLogger().info("Duplicate definition for tool: " + tool.getName());
 		}
+
+		ItemStack temp = (tool.contains("ignore.all") ? null : (ItemStack) tool.get("template"));
 		
 		tools.put(tool.getName(),
-				new ToolConfig((ItemStack) tool.get("template"),
+				new ToolConfig(temp,
 						tool.getBoolean("ignore.amount", true),
 						tool.getBoolean("ignore.durability", true),
 						tool.getBoolean("ignore.enchants", true),
@@ -155,11 +176,15 @@ public class ToolConfig {
 	}
 
 	public static ToolConfig getTool(Set<String> t, ItemStack tool) {
+		ToolConfig catchall = null;
 		for (String test : t) {
 			ToolConfig comp = tools.get(test);
 			if (comp != null) {
 				ItemStack compare = comp.getTemplate();
-				if (compare == null) continue;
+				if (compare == null) {
+					catchall = comp;
+					continue;
+				}
 				if (compare.getType() != tool.getType()) continue;
 				if (!comp.ignoreDurability() && 
 						compare.getDurability() != tool.getDurability()) continue;
@@ -175,8 +200,8 @@ public class ToolConfig {
 				
 				if (compmeta == null) continue; // toolmeta != null but compmeta == null
 				// both non-null.
-				if (!comp.ignoreName() &&
-						!toolmeta.getDisplayName().equals(compmeta.getDisplayName())) continue;
+				if (!comp.ignoreName() && !(toolmeta.hasDisplayName() ? 
+						toolmeta.getDisplayName().equals(compmeta.getDisplayName()) : !compmeta.hasDisplayName() ) ) continue;
 				if (!comp.ignoreLore() &&
 						!(toolmeta.hasLore() ? toolmeta.getLore().equals(compmeta.getLore()) : !compmeta.hasLore())) continue;
 				// Expensive enchantment checks.
@@ -208,6 +233,6 @@ public class ToolConfig {
 			}
 		}
 		
-		return null;
+		return catchall;
 	}
 }

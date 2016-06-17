@@ -4,22 +4,46 @@ list_drops: true
 debug: true
 ignore_silktouch: false
 tools:
+ # Giving a tool ignore:all:true will make it the default catchall, if specified in a config.
+ # So if you have a "default" behavior you want for any non-specified tool, use that.
+ # Great for things that are often broken by hand or with random crap held, like dirt, sand, gravel.
+ # "ignore" section is ignored but "modifiers" section will be applied.
+ anything:
+  ignore:
+   all: true
+  modifiers:
+   dropChance: 1.0
+   minAmount: 0.0
+   maxAmount: 0.0
+ # Give the item a "friendly name" that you'll use in the "tools" section of each drop config.
  wood_pickaxe:
+  # Open an issue if the config-advanced.yml data doesn't give you enough to go on to 
+  #  design the template of your desire.
   template:
    ==: org.bukkit.inventory.ItemStack
    type: WOOD_PICKAXE
    amount: 1
   ignore:
+   # Ignore the amount held.
    amount: true
+   # Ignore the durability of the item held.
    durability: true
+   # Ignore all enchantments.
    enchants: true
+   # Ignore any enchantments not specified in the template
    otherEnchants: true
+   # Ignore the specific lvl of the enchantments considered
    enchantsLvl: true
+   # Ignore any differences in lore
    lore: true
+   # Ignore any differences in display name.
    name: true
   modifiers:
+   # Multiplier to drop chance; applied _after_ biome computation
    dropChance: 1.0
+   # Adder on minimum drop size; so, drop config min + this min.
    minAmount: 0.0
+   # Adder on maximum drop size; so, drop config max + this max. Both can be negative.
    maxAmount: 0.0
  gold_pickaxe:
   template:
@@ -90,26 +114,43 @@ tools:
    minAmount: 0.0
    maxAmount: 0.0
 blocks:
+ # This defines for which types of things drops are possible. Give each "block config" a friendly name.
  stone:
+  # Name the 'root type' of this block config using its Bukkit material name.
   material: STONE
+  # Indicate if all subtypes of material are included under this block config. If false, you must define a "types" list
   allTypes: true
+  # Drop mode. Multiple drops means that every possible drop is evaluated separately and all RNG-winners are grouped together in one big drop.
+  #   false is more of a "classic" mode, where every possible drop's chance is accumulated, then a single Random number is generated and
+  #   evaluated, resulting in either one or no drop.
   dropMultiple: false
   drops:
+   # Here we define all the potential drops for this material/subtype. Give each "drop config" a friendly name.
    coal_ore:
+    # Package is the list of ConfigurationSerializeable ItemStack that should constitutes this drop.
+    # You can specify one or _many_ items, to emulate the true "drop chest" experience.
     package:
      - ==: org.bukkit.inventory.ItemStack
        type: COAL_ORE
+       # Amount is _not_ ignored. Use this as the "base" multipler. This amount will be multiplied by the randomly chosen "amount" configured
+       # later and modified per tool and biome.
        amount: 1
+    # A String list here of all the tool friendly-names that you defined in the root "tools" section which can trigger this drop.
     tools:
      - wood_pickaxe
      - stone_pickaxe
      - iron_pickaxe
      - gold_pickaxe
      - diamond_pickaxe
+    # lowest Y in the map that this drop can be found.
     minY: 1
+    # highest Y in the map that this drop can be found.
     maxY: 131
+    # Base chance for this drop. This is percent chance / 100 -- so 1 is 100%, 0.1 is 10%, and 0.01 is 1%.
     chance: 0.01
-    # multiplier
+    # multipliers of package's amount. Specify these separately or "amount" for a fixed value. If min and max are used,
+    #  and this drop is selected, then a random value between min and max is chosen, after min and max are adjusted
+    #  by biome or tool.
     minAmount: 2
     maxAmount: 8
    iron_ore:
@@ -126,7 +167,11 @@ blocks:
     chance: 0.007
     minAmount: 1
     maxAmount: 4
-   GOLD_ORE:
+   gold_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       type: GOLD_ORE
+       amount: 1
     tools:
      - iron_pickaxe
      - diamond_pickaxe
@@ -188,6 +233,8 @@ blocks:
     chance: 0.0
     minAmount: 1
     maxAmount: 2
+    # Biomes can modify the chance rate. Anything specified in biome _replaces_ the base chance or min/max amounts,
+    #  unlike tools which modify those values after biome is resolved.
     biomes:
      EXTREME_HILLS:
       chance: 0.001437
@@ -220,6 +267,7 @@ blocks:
     maxAmount: 2
     biomes:
      HELL:
+      # You can also modify the minimum Y values for a specific biome giving you complete control over where things can be found.
       minY: 1
       maxY: 125
       chance: 0.007
@@ -259,6 +307,10 @@ blocks:
 #  allTypes: true
 #  suppressDrops: true
 # This will prevent glass from dropping, ever.
+#
+# Pretty names section; many tools use Vault or other dependencies. If there's a strong enough request I can add it later, but
+#  for now you can specify replacement names for your drops here. This values are only used in messaging to users about
+#  their drops and are not applied to the items dropped.
 pretty_names:
  DIAMOND: Diamond
  IRON_INGOT: Iron ingot
@@ -278,5 +330,6 @@ pretty_names:
  COAL_ORE: Coal Ore
  COAL: Coal
  NETHERRACK: Netherrack
+ # if the base type has subtypes, just specify those subtypes as a list. If you specify one, you'll need to specify all used subtypes.
  INK_SACK:
   4: Lapis Lazuli

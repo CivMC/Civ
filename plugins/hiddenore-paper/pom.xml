@@ -6,21 +6,21 @@
 
     <groupId>com.github.devotedmc</groupId>
     <artifactId>hiddenore</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <name>HiddenOre</name>
 
-    <repositories>
-        <repository>
-            <id>spigot-repo</id>
-            <url>http://repo.md-5.net/content/repositories/snapshots</url>
-        </repository>
-    </repositories>
+	<repositories>
+		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+		</repository>
+	</repositories>
 
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.10-R0.1-SNAPSHOT</version>
+            <version>1.9.2-R0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
