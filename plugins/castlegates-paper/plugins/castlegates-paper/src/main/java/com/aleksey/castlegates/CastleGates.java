@@ -23,6 +23,9 @@ import com.aleksey.castlegates.database.SqlDatabase;
 import com.aleksey.castlegates.listener.EventListener;
 import com.aleksey.castlegates.manager.CastleGatesManager;
 import com.aleksey.castlegates.manager.ConfigManager;
+import com.aleksey.castlegates.orebfuscator.IOrebfuscatorManager;
+import com.aleksey.castlegates.orebfuscator.NoOrebfuscatorManager;
+import com.aleksey.castlegates.orebfuscator.OrebfuscatorManager;
 
 public class CastleGates extends JavaPlugin {
     private static CastleGates instance;
@@ -50,6 +53,11 @@ public class CastleGates extends JavaPlugin {
     	return bastionManager;
     }
 
+    private static IOrebfuscatorManager orebfuscatorManager;
+    public static IOrebfuscatorManager getOrebfuscatorManager() {
+    	return orebfuscatorManager;
+    }
+
     public static Logger getPluginLogger() {
     	return instance.getLogger();
     }
@@ -74,6 +82,14 @@ public class CastleGates extends JavaPlugin {
         } else {
         	bastionManager = new NoBastionManager();
         	getLogger().log(Level.INFO, "Bastion plugin is NOT found");
+        }
+
+        if(getServer().getPluginManager().getPlugin("Orebfuscator4") != null) {
+        	orebfuscatorManager = new OrebfuscatorManager();
+        	getLogger().log(Level.INFO, "Orebfuscator plugin is found");
+        } else {
+        	orebfuscatorManager = new NoOrebfuscatorManager();
+        	getLogger().log(Level.INFO, "Orebfuscator plugin is NOT found");
         }
 
         // Load configurations
