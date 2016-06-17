@@ -76,10 +76,10 @@ public class ConfigDefaults {
 		Material.PURPUR_DOUBLE_SLAB.name(),
 		Material.PURPUR_SLAB.name(),
 		Material.END_BRICKS.name(),
-		Material.MAGMA.name(),
-		Material.NETHER_WART_BLOCK.name(),
-		Material.RED_NETHER_BRICK.name(),
-		Material.BONE_BLOCK.name(),
+		"MAGMA",
+		"NETHER_WART_BLOCK",
+		"RED_NETHER_BRICK",
+		"BONE_BLOCK",
 	};
 	
 	public static final String[] bridgeMaterials = new String[] {

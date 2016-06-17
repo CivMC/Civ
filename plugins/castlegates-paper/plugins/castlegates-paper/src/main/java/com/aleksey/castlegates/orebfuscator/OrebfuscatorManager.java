@@ -8,6 +8,6 @@ import com.lishid.orebfuscator.obfuscation.BlockUpdate;
 
 public class OrebfuscatorManager implements IOrebfuscatorManager {
 	public void update(List<Location> locations) {
-		BlockUpdate.updateByLocations(locations);
+		BlockUpdate.updateByLocations(locations, 1);
 	}
 }
