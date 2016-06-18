@@ -223,44 +223,46 @@ public class BlockBreakListener implements Listener {
 
 					final List<ItemStack> items = dc.renderDrop(biomeName, dropModifier);
 					final Location l = b.getLocation();
-					final HiddenOreEvent hoe = new HiddenOreEvent(p, l, items);
-					Bukkit.getPluginManager().callEvent(hoe);
-					if (!hoe.isCancelled()) {
-						new BukkitRunnable() {
-							@Override
-							public void run() {
-								for (ItemStack item: hoe.getDrops()) {
-									l.getWorld().dropItem(l.add(0.5, 0.5, 0.5), item).setVelocity(new Vector(0, 0.05, 0));
+					if (items.size() > 0) {
+						final HiddenOreEvent hoe = new HiddenOreEvent(p, l, items);
+						Bukkit.getPluginManager().callEvent(hoe);
+						if (!hoe.isCancelled()) {
+							new BukkitRunnable() {
+								@Override
+								public void run() {
+									for (ItemStack item: hoe.getDrops()) {
+										l.getWorld().dropItem(l.add(0.5, 0.5, 0.5), item).setVelocity(new Vector(0, 0.05, 0));
+									}
 								}
-							}
-						}.runTaskLater(HiddenOre.getPlugin(), 1l);
-					}
-
-					log("For {3} at {4} dropping {0}:{1} with {2}", blockName, sb, 
-							drop, p.getDisplayName(), p.getLocation());
-					
-					if (Config.isAlertUser()) {
-						if (alertUser == null) {
-							alertUser = new StringBuffer().append(Config.instance.defaultPrefix);
+							}.runTaskLater(HiddenOre.getPlugin(), 1l);
 						}
-						if (bc.hasCustomPrefix(drop)) {
-							customAlerts = new StringBuffer();
-							customAlerts.append(bc.getPrefix(drop));
-							for (ItemStack item : items) {
-								customAlerts.append(" ").append(item.getAmount()).append(" ")
-									.append(Config.getPrettyName(item.getType().name(), item.getDurability()));
+	
+						log("For {3} at {4} dropping {0}:{1} with {2}", blockName, sb, 
+								drop, p.getDisplayName(), p.getLocation());
+						
+						if (Config.isAlertUser()) {
+							if (alertUser == null) {
+								alertUser = new StringBuffer().append(Config.instance.defaultPrefix);
 							}
-							event.getPlayer().sendMessage(ChatColor.GOLD + customAlerts.toString());
-							customAlerts = null;
-						} else {
-							if (Config.isListDrops()) {
+							if (bc.hasCustomPrefix(drop)) {
+								customAlerts = new StringBuffer();
+								customAlerts.append(bc.getPrefix(drop));
 								for (ItemStack item : items) {
-									alertUser.append(" ").append(item.getAmount()).append(" ").append(
-											Config.getPrettyName(item.getType().name(), item.getDurability())
-										).append(",");
+									customAlerts.append(" ").append(item.getAmount()).append(" ")
+										.append(Config.getPrettyName(item.getType().name(), item.getDurability()));
 								}
+								event.getPlayer().sendMessage(ChatColor.GOLD + customAlerts.toString());
+								customAlerts = null;
+							} else {
+								if (Config.isListDrops()) {
+									for (ItemStack item : items) {
+										alertUser.append(" ").append(item.getAmount()).append(" ").append(
+												Config.getPrettyName(item.getType().name(), item.getDurability())
+											).append(",");
+									}
+								}
+								hasDrop = true;
 							}
-							hasDrop = true;
 						}
 					}
 					
@@ -329,43 +331,45 @@ public class BlockBreakListener implements Listener {
 				ToolConfig tc = dc.dropsWithToolConfig(biomeName, inMainHand);
 				final List<ItemStack> items = dc.renderDrop(biomeName, tc);
 				final Location l = b.getLocation();
-				HiddenOreEvent hoe = new HiddenOreEvent(p, l, items);
-				Bukkit.getPluginManager().callEvent(hoe);
-				if (!hoe.isCancelled()) {
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-							for (ItemStack item: items) {
-								l.getWorld().dropItem(l.add(0.5, 0.5, 0.5), item).setVelocity(new Vector(0, 0.05, 0));
+				if (items.size() > 0) {
+					HiddenOreEvent hoe = new HiddenOreEvent(p, l, items);
+					Bukkit.getPluginManager().callEvent(hoe);
+					if (!hoe.isCancelled()) {
+						new BukkitRunnable() {
+							@Override
+							public void run() {
+								for (ItemStack item: items) {
+									l.getWorld().dropItem(l.add(0.5, 0.5, 0.5), item).setVelocity(new Vector(0, 0.05, 0));
+								}
 							}
-						}
-					}.runTaskLater(HiddenOre.getPlugin(), 1l);
-				}
-
-				log("For {3} at {4} replacing {0}:{1} with {2}", blockName, sb, 
-						drop, p.getDisplayName(), p.getLocation());
-
-				if (Config.isAlertUser()) {
-					if (alertUser == null) {
-						alertUser = new StringBuffer().append(Config.instance.defaultPrefix);
+						}.runTaskLater(HiddenOre.getPlugin(), 1l);
 					}
-					if (bc.hasCustomPrefix(drop)) {
-						customAlerts = new StringBuffer();
-						for (ItemStack item : items) {
-							customAlerts.append(" ").append(item.getAmount()).append(" ")
-								.append(Config.getPrettyName(item.getType().name(), item.getDurability()));
+	
+					log("For {3} at {4} replacing {0}:{1} with {2}", blockName, sb, 
+							drop, p.getDisplayName(), p.getLocation());
+	
+					if (Config.isAlertUser()) {
+						if (alertUser == null) {
+							alertUser = new StringBuffer().append(Config.instance.defaultPrefix);
 						}
-						event.getPlayer().sendMessage(ChatColor.GOLD + customAlerts.toString());
-						customAlerts = null;
-					} else {
-						if (Config.isListDrops()) {
+						if (bc.hasCustomPrefix(drop)) {
+							customAlerts = new StringBuffer();
 							for (ItemStack item : items) {
-								alertUser.append(" ").append(item.getAmount()).append(" ").append(
-										Config.getPrettyName(item.getType().name(), item.getDurability())
-									).append(",");
+								customAlerts.append(" ").append(item.getAmount()).append(" ")
+									.append(Config.getPrettyName(item.getType().name(), item.getDurability()));
 							}
+							event.getPlayer().sendMessage(ChatColor.GOLD + customAlerts.toString());
+							customAlerts = null;
+						} else {
+							if (Config.isListDrops()) {
+								for (ItemStack item : items) {
+									alertUser.append(" ").append(item.getAmount()).append(" ").append(
+											Config.getPrettyName(item.getType().name(), item.getDurability())
+										).append(",");
+								}
+							}
+							hasDrop = true;
 						}
-						hasDrop = true;
 					}
 				}
 				
