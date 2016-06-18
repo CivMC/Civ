@@ -254,8 +254,9 @@ public class BlockBreakListener implements Listener {
 						} else {
 							if (Config.isListDrops()) {
 								for (ItemStack item : items) {
-									alertUser.append(" ").append(item.getAmount()).append(" ")
-									.append(Config.getPrettyName(item.getType().name(), item.getDurability())).append(",");
+									alertUser.append(" ").append(item.getAmount()).append(" ").append(
+											Config.getPrettyName(item.getType().name(), item.getDurability())
+										).append(",");
 								}
 							}
 							hasDrop = true;
@@ -306,8 +307,9 @@ public class BlockBreakListener implements Listener {
 					} else {
 						if (Config.isListDrops()) {
 							for (ItemStack item : items) {
-								alertUser.append(" ").append(item.getAmount()).append(" ")
-								.append(Config.getPrettyName(item.getType().name(), item.getDurability())).append(",");
+								alertUser.append(" ").append(item.getAmount()).append(" ").append(
+										Config.getPrettyName(item.getType().name(), item.getDurability())
+									).append(",");
 							}
 						}
 						hasDrop = true;

@@ -75,6 +75,11 @@ public class BlockConfig {
 					&& blockY >= dc.getValue().getMinY(biome)) {
 				ToolConfig tc = dc.getValue().dropsWithToolConfig(biome, tool);
 				localChance = dc.getValue().getChance(biome) * (tc == null ? 1.0 : tc.getDropChanceModifier());
+				/*DIAGNOSTICS*HiddenOre.getPlugin().getLogger()
+						.log(Level.INFO, "Base chance {0}| tool mod {1}| totalChance {2}| tc {3}",
+						new Object[] {Double.toString(dc.getValue().getChance(biome)),
+								Double.toString(tc == null ? 1.0 : tc.getDropChanceModifier()),
+								localChance, (tc == null ? null : tc.toString())});*/
 				if (dice >= cumChance && dice < cumChance + localChance) {
 					return dc.getKey();
 				}

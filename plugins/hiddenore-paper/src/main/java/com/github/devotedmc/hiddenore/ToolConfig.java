@@ -1,8 +1,11 @@
 package com.github.devotedmc.hiddenore;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -60,6 +63,7 @@ public class ToolConfig {
 	private double dropChanceModifier;
 	
 	private static Map<String, ToolConfig> tools = new HashMap<String, ToolConfig>();
+	private static List<String> toolList = new LinkedList<String>();
 	
 	protected ToolConfig(ItemStack template, boolean ignoreAmount, boolean ignoreDurability,
 			boolean ignoreEnchants, boolean ignoreOtherEnchants, boolean ignoreEnchantsLvl, 
@@ -77,6 +81,30 @@ public class ToolConfig {
 		this.dropChanceModifier = (dropChanceModifier == null ? 1.0 : dropChanceModifier);
 		this.minAmountModifier = (minAmountModifier == null ? 0.0 : minAmountModifier);
 		this.maxAmountModifier = (maxAmountModifier == null ? 0.0 : maxAmountModifier);
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(template);
+		sb.append(",ignore:");
+		if (this.ignoreAmount) sb.append("amount");
+		if (this.ignoreDurability) sb.append("durability");
+		if (this.ignoreMeta) {
+			sb.append("meta");
+		} else {
+			if (this.ignoreEnchants) sb.append("enchants");
+			if (this.ignoreOtherEnchants) sb.append("otherench");
+			if (this.ignoreEnchantsLvl) sb.append("enchantslvl");
+			if (this.ignoreLore) sb.append("lore");
+			if (this.ignoreName) sb.append("name");
+		}
+		
+		sb.append(",mods:").append("c:").append(this.dropChanceModifier);
+		sb.append("n:").append(this.minAmountModifier);
+		sb.append("m:").append(this.maxAmountModifier);
+		
+		return sb.toString();
 	}
 	
 	public ItemStack getTemplate() {
@@ -129,6 +157,7 @@ public class ToolConfig {
 	
 	public static void clear() {
 		tools = new HashMap<String, ToolConfig>();
+		toolList = new LinkedList<String>();
 	}
 	
 	public static void initTool(ConfigurationSection tool) {
@@ -141,8 +170,10 @@ public class ToolConfig {
 			}
 		}
 		
-		if (tool.contains(tool.getName())){
+		if (tools.containsKey(tool.getName())){
 			HiddenOre.getPlugin().getLogger().info("Duplicate definition for tool: " + tool.getName());
+		} else {
+			toolList.add(tool.getName());
 		}
 
 		ItemStack temp = (tool.contains("ignore.all") ? null : (ItemStack) tool.get("template"));
@@ -161,24 +192,34 @@ public class ToolConfig {
 						tool.getDouble("modifiers.maxAmount", 0.0)
 					)
 				);
+		if (Config.isDebug) {
+			HiddenOre.getPlugin().getLogger().log(Level.INFO, "Tool {0} defined as: {1}", 
+					new Object[] {tool.getName(), tools.get(tool.getName())});
+		}
 	}
 
 	public static ToolConfig getConfig(String t) {
 		return tools.get(t);
 	}
 
-	public static boolean dropsWithTool(Set<String> t, ItemStack tool) {
-		return getTool(t, tool) != null;
+	public static boolean dropsWithTool(List<String> t, ItemStack tool) {
+		ToolConfig ret = getTool(t, tool);
+		/*DIAGNOSTICS* HiddenOre.getPlugin().getLogger().log(Level.INFO, "Out of {0} picked {1} for {2}", 
+				new Object[] {t, ret, tool});*/
+		return ret != null;
 	}
 
 	public static ToolConfig getAnyTool(ItemStack tool) {
-		return getTool(tools.keySet(), tool);
+		return getTool(toolList, tool);
 	}
 
-	public static ToolConfig getTool(Set<String> t, ItemStack tool) {
+	public static ToolConfig getTool(List<String> t, ItemStack tool) {
 		ToolConfig catchall = null;
 		for (String test : t) {
 			ToolConfig comp = tools.get(test);
+			/*DIAGNOSTICS*HiddenOre.getPlugin().getLogger().log(Level.INFO, " -- Comparing {0} to {1}:{2}", new Object[] {
+					tool, test, comp == null ? null : comp.toString()
+			});*/
 			if (comp != null) {
 				ItemStack compare = comp.getTemplate();
 				if (compare == null) {
@@ -232,7 +273,9 @@ public class ToolConfig {
 				return comp;
 			}
 		}
-		
+		/*DIAGNOSTICS*HiddenOre.getPlugin().getLogger().log(Level.INFO, " -- Using Catchall with {0} as {1}", new Object[] {
+				tool, catchall != null ? catchall.toString() : null
+		});*/
 		return catchall;
 	}
 }

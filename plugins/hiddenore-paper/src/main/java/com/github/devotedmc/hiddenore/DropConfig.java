@@ -35,25 +35,33 @@ public class DropConfig {
 		return biomeLimits.get(biome);
 	}
 
-	public Set<String> getTools(String biome) {
+	public List<String> getTools(String biome) {
 		return biomeLimits.containsKey(biome) ? biomeLimits.get(biome).tools : limits.tools;
 	}
 
 	public boolean dropsWithTool(String biome, ItemStack tool) {
-		Set<String> t = getTools(biome);
+		List<String> t = getTools(biome);
 		if (t == null || t.isEmpty()) {
+			/*DIAGNOSTICS*HiddenOre.getPlugin().getLogger().log(Level.INFO, "Drops with {0} special case: no tools set", tool);*/
 			return true;
 		} else {
-			return ToolConfig.dropsWithTool(t, tool);
+			boolean ret = ToolConfig.dropsWithTool(t, tool);
+			/*DIAGNOSTICS*HiddenOre.getPlugin().getLogger().log(Level.INFO, "Drops with {0} normal case: {1}",
+					new Object[] { tool, ret});*/
+			return ret;
 		}
 	}
 	
 	public ToolConfig dropsWithToolConfig(String biome, ItemStack tool) {
-		Set<String> t = getTools(biome);
+		List<String> t = getTools(biome);
 		if (t == null || t.isEmpty()) {
+			/*DIAGNOSTICS*HiddenOre.getPlugin().getLogger().log(Level.INFO, "Out of [] picked null for {0}", tool);*/
 			return null; // ToolConfig.getAnyTool(tool);
 		} else {
-			return ToolConfig.getTool(t, tool);
+			ToolConfig ret = ToolConfig.getTool(t, tool);
+			/*DIAGNOSTICS*HiddenOre.getPlugin().getLogger().log(Level.INFO, "Out of {0} picked {1} for {2}", 
+					new Object[] {t, ret, tool});*/
+			return ret;
 		}
 	}
 

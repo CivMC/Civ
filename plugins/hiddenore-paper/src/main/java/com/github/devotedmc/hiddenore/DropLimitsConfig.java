@@ -1,11 +1,11 @@
 package com.github.devotedmc.hiddenore;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 public class DropLimitsConfig {
-	public Set<String> tools;
+	public List<String> tools;
 	public int minY;
 	public int maxY;
 	public double chance;
@@ -13,7 +13,7 @@ public class DropLimitsConfig {
 	public double maxAmount;
 
 	public DropLimitsConfig() {
-		tools = new HashSet<String>();
+		tools = new LinkedList<String>();
 		minY = 1;
 		maxY = 255;
 		chance = 0.0;

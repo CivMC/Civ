@@ -183,6 +183,7 @@ public final class Config {
 		HiddenOre.getPlugin().getLogger()
 				.log(Level.INFO, "   loading drop config {0}% {1}-{2} {3}-{4} with {5} tools",
 						new Object[] {dlc.chance*100.0, dlc.minAmount, dlc.maxAmount, dlc.minY, dlc.maxY, dlc.tools.size()});
+		HiddenOre.getPlugin().getLogger().log(Level.INFO, "     tools: {0}", dlc.tools);
 		return dlc;
 	}
 
