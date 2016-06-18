@@ -30,6 +30,7 @@ import com.github.devotedmc.hiddenore.HiddenOre;
 import com.github.devotedmc.hiddenore.Config;
 import com.github.devotedmc.hiddenore.ToolConfig;
 import com.github.devotedmc.hiddenore.events.HiddenOreEvent;
+import com.github.devotedmc.hiddenore.events.HiddenOreGenerateEvent;
 
 public class BlockBreakListener implements Listener {
 
@@ -222,20 +223,20 @@ public class BlockBreakListener implements Listener {
 
 					final List<ItemStack> items = dc.renderDrop(biomeName, dropModifier);
 					final Location l = b.getLocation();
-					HiddenOreEvent hoe = new HiddenOreEvent(p, l, items);
+					final HiddenOreEvent hoe = new HiddenOreEvent(p, l, items);
 					Bukkit.getPluginManager().callEvent(hoe);
 					if (!hoe.isCancelled()) {
 						new BukkitRunnable() {
 							@Override
 							public void run() {
-								for (ItemStack item: items) {
+								for (ItemStack item: hoe.getDrops()) {
 									l.getWorld().dropItem(l.add(0.5, 0.5, 0.5), item).setVelocity(new Vector(0, 0.05, 0));
 								}
 							}
 						}.runTaskLater(HiddenOre.getPlugin(), 1l);
 					}
 
-					log("For {3} at {4} replacing {0}:{1} with {2}", blockName, sb, 
+					log("For {3} at {4} dropping {0}:{1} with {2}", blockName, sb, 
 							drop, p.getDisplayName(), p.getLocation());
 					
 					if (Config.isAlertUser()) {
@@ -260,6 +261,58 @@ public class BlockBreakListener implements Listener {
 								}
 							}
 							hasDrop = true;
+						}
+					}
+					
+					if (dc.transformIfAble) {
+						// Use a simple random walk to try to place the discovered blocks.
+						final List<ItemStack> transform = dc.renderTransform(biomeName, dropModifier);
+						int maxWalk = 0;
+						int cPlace = 0;
+						Block walk = l.getBlock();
+						for (ItemStack xform : transform) {
+							Material sample = xform.getType();
+							maxWalk += xform.getAmount() * 2;
+							cPlace = xform.getAmount();
+							while (cPlace > 0 && maxWalk > 0) {
+								walk = walk.getRelative(
+										(int) Math.round(Math.random() * 2.0 - 1.0), 
+										(int) Math.round(Math.random() * 2.0 - 1.0),
+										(int) Math.round(Math.random() * 2.0 - 1.0));
+								if (bc.checkBlock(walk)) {
+									HiddenOreGenerateEvent hoge = new HiddenOreGenerateEvent(p, walk, sample);
+									Bukkit.getPluginManager().callEvent(hoge);
+									if (!hoge.isCancelled()) {
+										walk.setType(hoge.getTransform());
+										cPlace --;
+									}
+								}
+								maxWalk --;
+							}
+							// Anything to tell anyone about?
+							if (cPlace < xform.getAmount() && Config.isAlertUser()) {
+								if (alertUser == null) {
+									alertUser = new StringBuffer().append(Config.instance.defaultPrefix);
+								}
+								if (bc.hasCustomPrefix(drop)) {
+									customAlerts = new StringBuffer();
+									customAlerts.append(bc.getPrefix(drop));
+									customAlerts.append(" ").append(xform.getAmount() - cPlace).append(" ")
+										.append(Config.getPrettyName(xform.getType().name(), xform.getDurability()))
+										.append(" nearby"); // TODO: Replace with configured suffix
+									event.getPlayer().sendMessage(ChatColor.GOLD + customAlerts.toString());
+									customAlerts = null;
+								} else {
+									if (Config.isListDrops()) {
+										alertUser.append(" ").append(xform.getAmount() - cPlace).append(" ").append(
+													Config.getPrettyName(xform.getType().name(), xform.getDurability())
+												).append(" nearby,"); // TODO: Replace with configured suffix
+									}
+									hasDrop = true;
+								}
+							}
+							if (Config.isDebug)
+									log("Generated {0} {1} nearby {2}", (xform.getAmount() - cPlace), sample, p.getDisplayName());
 						}
 					}
 				}
@@ -313,6 +366,58 @@ public class BlockBreakListener implements Listener {
 							}
 						}
 						hasDrop = true;
+					}
+				}
+				
+				if (dc.transformIfAble) {
+					// Use a simple random walk to try to place the discovered blocks.
+					final List<ItemStack> transform = dc.renderTransform(biomeName, tc);
+					int maxWalk = 0;
+					int cPlace = 0;
+					Block walk = l.getBlock();
+					for (ItemStack xform : transform) {
+						Material sample = xform.getType();
+						maxWalk += xform.getAmount() * 2;
+						cPlace = xform.getAmount();
+						while (cPlace > 0 && maxWalk > 0) {
+							walk = walk.getRelative(
+									(int) Math.round(Math.random() * 2.0 - 1.0), 
+									(int) Math.round(Math.random() * 2.0 - 1.0),
+									(int) Math.round(Math.random() * 2.0 - 1.0));
+							if (bc.checkBlock(walk)) {
+								HiddenOreGenerateEvent hoge = new HiddenOreGenerateEvent(p, walk, sample);
+								Bukkit.getPluginManager().callEvent(hoge);
+								if (!hoge.isCancelled()) {
+									walk.setType(hoge.getTransform());
+									cPlace --;
+								}
+							}
+							maxWalk --;
+						}
+						// Anything to tell anyone about?
+						if (cPlace < xform.getAmount() && Config.isAlertUser()) {
+							if (alertUser == null) {
+								alertUser = new StringBuffer().append(Config.instance.defaultPrefix);
+							}
+							if (bc.hasCustomPrefix(drop)) {
+								customAlerts = new StringBuffer();
+								customAlerts.append(bc.getPrefix(drop));
+								customAlerts.append(" ").append(xform.getAmount() - cPlace).append(" ")
+									.append(Config.getPrettyName(xform.getType().name(), xform.getDurability()))
+									.append(" nearby"); // TODO: Replace with configured suffix
+								event.getPlayer().sendMessage(ChatColor.GOLD + customAlerts.toString());
+								customAlerts = null;
+							} else {
+								if (Config.isListDrops()) {
+									alertUser.append(" ").append(xform.getAmount() - cPlace).append(" ").append(
+												Config.getPrettyName(xform.getType().name(), xform.getDurability())
+											).append(" nearby,"); // TODO: Replace with configured suffix
+								}
+								hasDrop = true;
+							}
+						}
+						if (Config.isDebug)
+								log("Generated {0} {1} nearby {2}", (xform.getAmount() - cPlace), sample, p.getDisplayName());
 					}
 				}
 			}

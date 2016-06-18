@@ -136,9 +136,10 @@ public final class Config {
 					String dPrefix = drop.getString("prefix", null);
 					@SuppressWarnings("unchecked")
 					List<ItemStack> items = (List<ItemStack>) drop.getList("package");
+					boolean transformIfAble = drop.getBoolean("transformIfAble", false);
 
 					DropConfig dc = new DropConfig(sourceDrop, DropItemConfig.transform(items), 
-							dPrefix, grabLimits(drop, new DropLimitsConfig()));
+							transformIfAble, dPrefix, grabLimits(drop, new DropLimitsConfig()));
 
 					ConfigurationSection biomes = drop.getConfigurationSection("biomes");
 					if (biomes != null) {

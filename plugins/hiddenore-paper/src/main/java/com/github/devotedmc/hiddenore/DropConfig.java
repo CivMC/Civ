@@ -14,11 +14,13 @@ public class DropConfig {
 	public String dropName;
 	public String prefix;
 	public DropLimitsConfig limits;
+	public boolean transformIfAble;
 	private Map<String, DropLimitsConfig> biomeLimits;
 
-	public DropConfig(String dropName, List<DropItemConfig> drops, String prefix, DropLimitsConfig limits) {
+	public DropConfig(String dropName, List<DropItemConfig> drops, boolean transformIfAble, String prefix, DropLimitsConfig limits) {
 		this.dropName = dropName;
 		this.drops = drops;
+		this.transformIfAble = transformIfAble;
 		this.limits = limits;
 		this.biomeLimits = new HashMap<String, DropLimitsConfig>();
 	}
@@ -90,7 +92,7 @@ public class DropConfig {
 	 * 
 	 * @param drop
 	 * @param biome
-	 * @return
+	 * @return Items that can be rendered.
 	 */
 	public List<ItemStack> renderDrop(String biome, ToolConfig modify) {
 		/** multipliers **/
@@ -103,8 +105,38 @@ public class DropConfig {
 		
 		List<ItemStack> toDrop = new ArrayList<ItemStack>(drops.size());
 		for (DropItemConfig item : drops) {
-			toDrop.add(item.render(amount));
+			if (!this.transformIfAble || !item.canTransform())
+				toDrop.add(item.render(amount));
 		}
 		return toDrop;
+	}
+
+	/**
+	 * Gives even chance of any amount. 
+	 * 
+	 * @param drop
+	 * @param biome
+	 * @return Items that can be transformed.
+	 */
+	public List<ItemStack> renderTransform(String biome, ToolConfig modify) {
+		/** multipliers **/
+		double min = getMinAmount(biome) + (modify != null ? modify.getMinAmountModifier() : 0.0);
+		double max = getMaxAmount(biome) + (modify != null ? modify.getMaxAmountModifier() : 0.0);
+		double amount = (min == max) ? min : (double) ((max - min) * Math.random() + min);
+		
+		HiddenOre.getPlugin().getLogger().log(Level.INFO, "Trigger drop {0} [{1}, {2}] = {3}", 
+				new Object[] {dropName, min, max, amount});
+		
+		List<ItemStack> toTransform = new ArrayList<ItemStack>(drops.size());
+		for (DropItemConfig item : drops) {
+			if (this.transformIfAble && item.canTransform())
+				toTransform.add(item.render(amount));
+		}
+		return toTransform;
+	}
+
+	
+	public boolean shouldTransformIfAble() {
+		return this.transformIfAble;
 	}
 }

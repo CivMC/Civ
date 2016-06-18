@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 public class BlockConfig {
@@ -36,6 +37,11 @@ public class BlockConfig {
 	
 	public String getMaterial() {
 		return this.material;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public boolean checkBlock(Block check) {
+		return material.equals(check.getType().name()) && checkSubType(check.getData());
 	}
 
 	public String getPrefix(String drop) {

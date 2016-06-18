@@ -7,9 +7,15 @@ import org.bukkit.inventory.ItemStack;
 
 public class DropItemConfig {
 	private ItemStack template;
+	private boolean canTransform;
 	
 	public DropItemConfig(ItemStack template) {
 		this.template = template;
+		this.canTransform = template.getType().isBlock();
+	}
+	
+	public boolean canTransform() {
+		return canTransform;
 	}
 	
 	public ItemStack render(double multiplier) {

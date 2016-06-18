@@ -153,6 +153,9 @@ blocks:
     #  by biome or tool.
     minAmount: 2
     maxAmount: 8
+    # Instead of dropping the package, attempts to transform nearby blocks of the same type as triggered this
+    # drop into the package. If portions of the drop can't be transformed, they are still just dropped. 
+    transformIfAble: true
    iron_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
