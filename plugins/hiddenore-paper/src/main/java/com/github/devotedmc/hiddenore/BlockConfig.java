@@ -84,7 +84,7 @@ public class BlockConfig {
 		}
 		if (Config.isDebug) {
 			HiddenOre.getPlugin().getLogger()
-					.log(Level.INFO, "{0} tested {1} cumm {2} dice", new Object[] {counted, cumChance, dice});
+					.log(Level.INFO, "{0} tested {1} cumm {2} dice", new Object[] {counted, Double.toString(cumChance), Double.toString(dice)});
 		}
 
 		return null;

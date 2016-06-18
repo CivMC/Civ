@@ -142,10 +142,17 @@ public class BlockBreakListener implements Listener {
 	/**
 	 * Core method of interest, captures block breaks and checks if we care; if we do, continue
 	 */
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
+		try {
+			doBlockBreak(event);
+		} catch (NullPointerException npe) {
+			HiddenOre.getPlugin().getLogger().log(Level.WARNING, "Failure in Block Break handling", npe);
+		}
+	}
 
+	@SuppressWarnings("deprecation")
+	private void doBlockBreak(BlockBreakEvent event) {
 		Block b = event.getBlock();
 		String blockName = b.getType().name();
 		Byte sb = b.getData();
@@ -173,7 +180,9 @@ public class BlockBreakListener implements Listener {
 
 		debug("Break of tracked type {0} by {1}", blockName, p.getDisplayName());
 
-		if (!Config.instance.ignoreSilktouch && p.getItemInHand().getEnchantments().containsKey(Enchantment.SILK_TOUCH))
+		ItemStack inMainHand = p.getInventory().getItemInMainHand();
+		if (!Config.instance.ignoreSilktouch && inMainHand.hasItemMeta() && 
+				inMainHand.getEnchantments() != null && inMainHand.getEnchantments().containsKey(Enchantment.SILK_TOUCH))
 			return;
 
 		boolean hasDrop = false;
@@ -187,7 +196,7 @@ public class BlockBreakListener implements Listener {
 			for (String drop : bc.getDrops()) {
 				DropConfig dc = bc.getDropConfig(drop);
 
-				if (!dc.dropsWithTool(biomeName, p.getInventory().getItemInMainHand())) {
+				if (!dc.dropsWithTool(biomeName, inMainHand)) {
  					debug("Cannot drop {0} - wrong tool", drop);
 					continue;
 				}
@@ -198,7 +207,7 @@ public class BlockBreakListener implements Listener {
 					continue;
 				}
 				
-				ToolConfig dropModifier = dc.dropsWithToolConfig(biomeName, p.getInventory().getItemInMainHand());
+				ToolConfig dropModifier = dc.dropsWithToolConfig(biomeName, inMainHand);
 
 				double dropChance = dc.getChance(biomeName) 
 						* (dropModifier == null ? 1.0 : dropModifier.getDropChanceModifier());
@@ -255,15 +264,15 @@ public class BlockBreakListener implements Listener {
 				}
 			}
 		} else {
-			String drop = bc.getDropConfig(Math.random(), biomeName, p.getInventory().getItemInMainHand(), b
-					.getLocation().getBlockY());
+			String drop = bc.getDropConfig(Math.random(), biomeName, inMainHand, 
+					b.getLocation().getBlockY());
 
 			if (drop != null) {
 				DropConfig dc = bc.getDropConfig(drop);
 				// Remove block, drop special drop and cancel the event
 				b.setType(Material.AIR);
 				event.setCancelled(true);
-				ToolConfig tc = dc.dropsWithToolConfig(biomeName, p.getInventory().getItemInMainHand());
+				ToolConfig tc = dc.dropsWithToolConfig(biomeName, inMainHand);
 				final List<ItemStack> items = dc.renderDrop(biomeName, tc);
 				final Location l = b.getLocation();
 				HiddenOreEvent hoe = new HiddenOreEvent(p, l, items);

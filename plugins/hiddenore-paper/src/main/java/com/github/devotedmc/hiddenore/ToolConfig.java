@@ -218,7 +218,7 @@ public class ToolConfig {
 							(toolench != null && toolench.keySet().containsAll(compench.keySet()) ) ) ) continue; 
 
 					// also check _level_ of enchants
-					if (!comp.ignoreEnchantsLvl()) { 
+					if (!comp.ignoreEnchantsLvl() && compench != null) { 
 						boolean fail = false;
 						for(Enchantment ech : compench.keySet()) {
 							if (!compench.get(ech).equals(toolench.get(ech))) {
