@@ -40,17 +40,17 @@ public class EventListener implements Listener {
     	}    	
     }
     
-	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled=false)
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled=true)
 	public void onBlockBreak(BlockBreakEvent event) {
 		CastleGates.getManager().handleBlockBreak(event);
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=false)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
     public void onBlockRedstone(BlockRedstoneEvent event) {
 		CastleGates.getManager().handleBlockRedstone(event);
 	}
 
-	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled=false)
+	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled=true)
 	public void onBlockPhysics(BlockPhysicsEvent event) {
 		CastleGates.getManager().handleBlockPhysics(event);
 	}

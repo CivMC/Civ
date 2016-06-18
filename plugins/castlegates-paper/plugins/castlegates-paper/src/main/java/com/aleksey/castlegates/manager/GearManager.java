@@ -114,8 +114,14 @@ public class GearManager {
 		if(link == null) return;
 		
 		link.setRemoved();
-		link.getGear1().setLink(null);
-		link.getGear2().setLink(null);
+		
+		if(link.getGear1() != null) {
+			link.getGear1().setLink(null);
+		}
+		
+		if(link.getGear2() != null) {
+			link.getGear2().setLink(null);
+		}
 
 		this.dataWorker.addChangedLink(link);
 	}
@@ -149,14 +155,8 @@ public class GearManager {
 	
 	private boolean removeGearsLinks(GearState gear1, GearState gear2, int distance) {
 		if(gear1.getBrokenLink() != null && gear2.getBrokenLink() != null
-				|| gear1.getBrokenLink() != null && (
-						distance != gear1.getBrokenLink().getBlocks().size()
-						|| !gear1.getBrokenLink().canBeRestored(gear2)
-					)
-				|| gear2.getBrokenLink() != null && (
-						distance != gear2.getBrokenLink().getBlocks().size()
-						|| !gear2.getBrokenLink().canBeRestored(gear1)
-					)
+				|| gear1.getBrokenLink() != null && distance != gear1.getBrokenLink().getBlocks().size()
+				|| gear2.getBrokenLink() != null && distance != gear2.getBrokenLink().getBlocks().size()
 				)
 		{
 			return false;
