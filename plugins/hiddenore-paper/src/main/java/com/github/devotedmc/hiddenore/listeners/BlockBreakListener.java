@@ -271,16 +271,22 @@ public class BlockBreakListener implements Listener {
 						final List<ItemStack> transform = dc.renderTransform(biomeName, dropModifier);
 						int maxWalk = 0;
 						int cPlace = 0;
-						Block walk = l.getBlock();
+						double cAttempt = 0;
+						Block origin = l.getBlock();
 						for (ItemStack xform : transform) {
 							Material sample = xform.getType();
 							maxWalk += xform.getAmount() * 2;
 							cPlace = xform.getAmount();
 							while (cPlace > 0 && maxWalk > 0) {
-								walk = walk.getRelative(
-										(int) Math.round(Math.random() * 2.0 - 1.0), 
-										(int) Math.round(Math.random() * 2.0 - 1.0),
-										(int) Math.round(Math.random() * 2.0 - 1.0));
+								double z = Math.random() * 2.0 - 1.0;
+								double zsq = Math.sqrt(1-Math.pow(z, 2));
+								double u = 0.5 + Math.floor(Math.cbrt(cAttempt));
+								//double u = Math.round(1.0 + Math.random() * Math.ceil(Math.sqrt(cPlace)));
+								double theta = Math.random() * 2.0 * Math.PI;
+								Block walk = origin.getRelative(
+										(int) Math.round(u * zsq * Math.cos(theta)),
+										(int) Math.round(u * zsq * Math.sin(theta)),
+										(int) Math.round(u * z));
 								if (bc.checkBlock(walk)) {
 									HiddenOreGenerateEvent hoge = new HiddenOreGenerateEvent(p, walk, sample);
 									Bukkit.getPluginManager().callEvent(hoge);
@@ -290,6 +296,7 @@ public class BlockBreakListener implements Listener {
 									}
 								}
 								maxWalk --;
+								cAttempt ++;
 							}
 							// Anything to tell anyone about?
 							if (cPlace < xform.getAmount() && Config.isAlertUser()) {
@@ -378,16 +385,22 @@ public class BlockBreakListener implements Listener {
 					final List<ItemStack> transform = dc.renderTransform(biomeName, tc);
 					int maxWalk = 0;
 					int cPlace = 0;
-					Block walk = l.getBlock();
+					double cAttempt = 0.0;
+					Block origin = l.getBlock();
 					for (ItemStack xform : transform) {
 						Material sample = xform.getType();
 						maxWalk += xform.getAmount() * 2;
 						cPlace = xform.getAmount();
 						while (cPlace > 0 && maxWalk > 0) {
-							walk = walk.getRelative(
-									(int) Math.round(Math.random() * 2.0 - 1.0), 
-									(int) Math.round(Math.random() * 2.0 - 1.0),
-									(int) Math.round(Math.random() * 2.0 - 1.0));
+							double z = Math.random() * 2.0 - 1.0;
+							double zsq = Math.sqrt(1-Math.pow(z, 2));
+							//double u = Math.round(1.0 + Math.random() * Math.ceil(Math.sqrt(cPlace)));
+							double u = 0.5 + Math.floor(Math.cbrt(cAttempt));
+							double theta = Math.random() * 2.0 * Math.PI;
+							Block walk = origin.getRelative(
+									(int) Math.round(u * zsq * Math.cos(theta)),
+									(int) Math.round(u * zsq * Math.sin(theta)),
+									(int) Math.round(u * z));
 							if (bc.checkBlock(walk)) {
 								HiddenOreGenerateEvent hoge = new HiddenOreGenerateEvent(p, walk, sample);
 								Bukkit.getPluginManager().callEvent(hoge);
@@ -397,6 +410,7 @@ public class BlockBreakListener implements Listener {
 								}
 							}
 							maxWalk --;
+							cAttempt ++;
 						}
 						// Anything to tell anyone about?
 						if (cPlace < xform.getAmount() && Config.isAlertUser()) {
