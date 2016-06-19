@@ -41,7 +41,7 @@ public class GearManager {
 	
 	public static enum CreateResult { NotCreated, AlreadyExist, Created }
 	public static enum RemoveResult { NotExist, Removed, RemovedWithLink }
-	public static enum PowerResult { NotLinked, Unchanged, Unpowered, Blocked, Brocken, Drawn, Undrawn, NotInCitadelGroup, BastionBlocked, Allowed }
+	public static enum PowerResult { NotLinked, Unchanged, Unpowered, Blocked, Brocken, Drawn, Undrawn, CannotDrawGear, NotInCitadelGroup, BastionBlocked, Allowed }
 
 	private Map<BlockCoord, GearState> gears;
 	private DataWorker dataWorker;
@@ -332,6 +332,8 @@ public class GearManager {
 			Block block = world.getBlockAt(x1, y1, z1);
 			
 			if(!configManager.isBridgeMaterial(block)) return PowerResult.Brocken;
+			
+			if(this.gears.containsKey(new BlockCoord(block))) return PowerResult.CannotDrawGear;
 			
 			if(!canInteract(players, block.getLocation())) return PowerResult.NotInCitadelGroup;
 			
