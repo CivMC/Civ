@@ -5,7 +5,9 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -20,6 +22,10 @@ import org.bukkit.potion.PotionType;
 
 import com.google.common.collect.Lists;
 
+import vg.civcraft.mc.civmodcore.areas.EllipseArea;
+import vg.civcraft.mc.civmodcore.areas.GlobalYLimitedArea;
+import vg.civcraft.mc.civmodcore.areas.IArea;
+import vg.civcraft.mc.civmodcore.areas.RectangleArea;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class ConfigParsing {
@@ -305,5 +311,83 @@ public class ConfigParsing {
 			}
 		}
 		return potionEffects;
+	}
+
+	public static IArea parseArea(ConfigurationSection config) {
+		if (config == null) {
+			Bukkit.getLogger().warning("Tried to parse area on null section");
+			return null;
+		}
+		String type = config.getString("type");
+		if (type == null) {
+			Bukkit.getLogger().warning("Found no area type at " + config.getCurrentPath());
+			return null;
+		}
+		int lowerYBound = config.getInt("lowerYBound", 0);
+		int upperYBound = config.getInt("upperYBound", 255);
+		String worldName = config.getString("world");
+		if (worldName == null) {
+			Bukkit.getLogger().warning("Found no world specified for area at " + config.getCurrentPath());
+			return null;
+		}
+		World world = Bukkit.getWorld(worldName);
+		if (world == null) {
+			Bukkit.getLogger().warning("Found no world with name " + worldName + " as specified at " + config.getCurrentPath());
+			return null;
+		}
+		Location center = null;
+		if (config.isConfigurationSection("center")) {
+			ConfigurationSection centerSection = config.getConfigurationSection("center");
+			int x = centerSection.getInt("x", 0);
+			int y = centerSection.getInt("y", 0);
+			int z = centerSection.getInt("z", 0);
+			if (world != null) {
+			center = new Location(world, x, y, z);
+			}
+		}
+		int xSize = config.getInt("xSize", -1);
+		int zSize = config.getInt("zSize", -1);
+		
+		IArea area = null;
+		switch (type) {
+		case "GLOBAL":
+			area = new GlobalYLimitedArea(lowerYBound, upperYBound, world);
+			break;
+		case "ELLIPSE":
+			if (center == null) {
+				Bukkit.getLogger().warning("Found no center for area at " + config.getCurrentPath());
+				return null;
+			}
+			if (xSize == -1) {
+				Bukkit.getLogger().warning("Found no xSize for area at " + config.getCurrentPath());
+				return null;
+			}
+			if (zSize == -1) {
+				Bukkit.getLogger().warning("Found no zSize for area at " + config.getCurrentPath());
+				return null;
+			}
+			area = new EllipseArea(lowerYBound, upperYBound, center, xSize,
+					zSize);
+			break;
+		case "RECTANGLE":
+			if (center == null) {
+				Bukkit.getLogger().warning("Found no center for area at " + config.getCurrentPath());
+				return null;
+			}
+			if (xSize == -1) {
+				Bukkit.getLogger().warning("Found no xSize for area at " + config.getCurrentPath());
+				return null;
+			}
+			if (zSize == -1) {
+				Bukkit.getLogger().warning("Found no zSize for area at " + config.getCurrentPath());
+				return null;
+			}
+			area = new RectangleArea(lowerYBound, upperYBound, center, xSize,
+					zSize);
+			break;
+		default:
+			Bukkit.getLogger().warning("Invalid area type " + type + " at " + config.getCurrentPath());
+		}
+		return area;
 	}
 }
