@@ -14,7 +14,6 @@ public class ScheduledInventoryOpen implements Runnable {
 
 	private ClickableInventory ci;
 	private Player p;
-	private JavaPlugin jp;
 
 	public ScheduledInventoryOpen(ClickableInventory ci, Player p) {
 		this.ci = ci;
@@ -24,13 +23,8 @@ public class ScheduledInventoryOpen implements Runnable {
 		ci.showInventory(p);
 	}
 
-	public void setPlugin(JavaPlugin jp) {
-		this.jp = jp;
-	}
-	
 	public static void schedule(JavaPlugin plugin, ClickableInventory ci, Player p) {
 		ScheduledInventoryOpen sio = new ScheduledInventoryOpen(ci, p);
-		sio.setPlugin(plugin);
 		Bukkit.getServer().getScheduler().runTask(plugin, sio);
 	}
 }
