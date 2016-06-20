@@ -41,7 +41,7 @@ public class GearManager {
 	
 	public static enum CreateResult { NotCreated, AlreadyExist, Created }
 	public static enum RemoveResult { NotExist, Removed, RemovedWithLink }
-	public static enum PowerResult { NotLinked, Unchanged, Unpowered, Blocked, Brocken, Drawn, Undrawn, NotInCitadelGroup, BastionBlocked, Allowed }
+	public static enum PowerResult { NotLinked, Unchanged, Unpowered, Blocked, Brocken, Drawn, Undrawn, CannotDrawGear, NotInCitadelGroup, BastionBlocked, Allowed }
 
 	private Map<BlockCoord, GearState> gears;
 	private DataWorker dataWorker;
@@ -114,8 +114,14 @@ public class GearManager {
 		if(link == null) return;
 		
 		link.setRemoved();
-		link.getGear1().setLink(null);
-		link.getGear2().setLink(null);
+		
+		if(link.getGear1() != null) {
+			link.getGear1().setLink(null);
+		}
+		
+		if(link.getGear2() != null) {
+			link.getGear2().setLink(null);
+		}
 
 		this.dataWorker.addChangedLink(link);
 	}
@@ -149,14 +155,8 @@ public class GearManager {
 	
 	private boolean removeGearsLinks(GearState gear1, GearState gear2, int distance) {
 		if(gear1.getBrokenLink() != null && gear2.getBrokenLink() != null
-				|| gear1.getBrokenLink() != null && (
-						distance != gear1.getBrokenLink().getBlocks().size()
-						|| !gear1.getBrokenLink().canBeRestored(gear2)
-					)
-				|| gear2.getBrokenLink() != null && (
-						distance != gear2.getBrokenLink().getBlocks().size()
-						|| !gear2.getBrokenLink().canBeRestored(gear1)
-					)
+				|| gear1.getBrokenLink() != null && distance != gear1.getBrokenLink().getBlocks().size()
+				|| gear2.getBrokenLink() != null && distance != gear2.getBrokenLink().getBlocks().size()
 				)
 		{
 			return false;
@@ -333,6 +333,8 @@ public class GearManager {
 			
 			if(!configManager.isBridgeMaterial(block)) return PowerResult.Brocken;
 			
+			if(this.gears.containsKey(new BlockCoord(block))) return PowerResult.CannotDrawGear;
+			
 			if(!canInteract(players, block.getLocation())) return PowerResult.NotInCitadelGroup;
 			
 			x1 += blockFace.getModX();
@@ -356,15 +358,19 @@ public class GearManager {
 		z1 += blockFace.getModZ();
 		
 		ICitadelManager citadelManager = CastleGates.getCitadelManager();
-		ArrayList<BlockState> blocks = new ArrayList<BlockState>();
+		ArrayList<BlockState> blockStates = new ArrayList<BlockState>();
+		ArrayList<Location> locations = new ArrayList<Location>();
 		
 		while(x1 != x2 || y1 != y2 || z1 != z2) {
 			Block block = world.getBlockAt(x1, y1, z1);
+			Location location = block.getLocation();
+			
+			locations.add(location);
+			
 			BlockState blockState = new BlockState(block);
+			blockState.reinforcement = citadelManager.removeReinforcement(location);
 			
-			blockState.reinforcement = citadelManager.removeReinforcement(block.getLocation());
-			
-			blocks.add(blockState);
+			blockStates.add(blockState);
 			
 			DeprecatedMethods.setTypeIdAndData(block, Material.AIR, (byte)0);
 			
@@ -372,8 +378,10 @@ public class GearManager {
 			y1 += blockFace.getModY();
 			z1 += blockFace.getModZ();
 		}
+		
+		CastleGates.getOrebfuscatorManager().update(locations);
 				
-		link.setBlocks(blocks);
+		link.setBlocks(blockStates);
 	}
 
 	private PowerResult canUndraw(World world, GearLink link, List<Player> players) {

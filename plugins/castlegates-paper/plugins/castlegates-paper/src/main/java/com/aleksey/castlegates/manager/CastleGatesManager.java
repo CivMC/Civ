@@ -6,6 +6,7 @@
 package com.aleksey.castlegates.manager;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -160,8 +161,11 @@ public class CastleGatesManager {
 			case Brocken:
 				message = ChatColor.RED + "Bridge/gates is broken";
 				break;
+			case CannotDrawGear:
+				message = ChatColor.RED + "Gear cannot be drawn";
+				break;
 			case NotInCitadelGroup:
-				message = ChatColor.RED + "Citadel prevent undrawing";
+				message = ChatColor.RED + "Citadel prevent this operation";
 				break;
 			case BastionBlocked:
 				message = ChatColor.RED + "Bastion prevent drawing";
@@ -284,13 +288,20 @@ public class CastleGatesManager {
 		
 		if(gear == null) return false;
 		
-		if(gear.getLink() == null) {
+		List<Player> players = new ArrayList<Player>();
+		players.add(event.getPlayer());
+		
+		if(!CastleGates.getCitadelManager().canInteract(players, block.getLocation())) {
+			event.getPlayer().sendMessage(ChatColor.RED + "Gear");
+		}
+		else if(gear.getLink() == null) {
 			event.getPlayer().sendMessage(ChatColor.GREEN + "Gear not linked");
 			
 			if(gear.getBrokenLink() != null) {
 				event.getPlayer().sendMessage(ChatColor.GREEN + "But contains " + gear.getBrokenLink().getBlocks().size() + " drawn blocks");
 			}
-		} else {
+		}
+		else {
 			GearState gear2 = gear.getLink().getGear1() == gear ? gear.getLink().getGear2(): gear.getLink().getGear1();
 			event.getPlayer().sendMessage(ChatColor.GREEN + "Gear linked to gear at x = " + gear2.getCoord().getX() + ", y = " +  + gear2.getCoord().getY() + ", z = " +  + gear2.getCoord().getZ());
 			

@@ -97,9 +97,11 @@ public class DataWorker extends Thread implements Runnable {
 		for(LinkInfo info : linkData) {
 			GearState gear1 = info.gear1_id != null ? gearsById.get(info.gear1_id) : null;
 			GearState gear2 = info.gear2_id != null ? gearsById.get(info.gear2_id) : null;
+			List<BlockState> blocks = deserializeBlocks(info);
 			GearLink link = new GearLink(gear1, gear2);
 			
 			link.setId(info.link_id);
+			link.setBlocks(blocks);
 			
 			if(gear1 != null) {
 				gear1.setLink(link);
@@ -108,8 +110,6 @@ public class DataWorker extends Thread implements Runnable {
 			if(gear2 != null) {
 				gear2.setLink(link);
 			}
-			
-			link.setBlocks(deserializeBlocks(info));
 			
 			linksById.put(link.getId(), link);
 		}
