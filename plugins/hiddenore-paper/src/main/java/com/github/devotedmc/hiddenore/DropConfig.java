@@ -100,8 +100,9 @@ public class DropConfig {
 		double max = getMaxAmount(biome) + (modify != null ? modify.getMaxAmountModifier() : 0.0);
 		double amount = (min == max) ? min : (double) ((max - min) * Math.random() + min);
 		
-		HiddenOre.getPlugin().getLogger().log(Level.INFO, "Trigger drop {0} [{1}, {2}] = {3}", 
-				new Object[] {dropName, min, max, amount});
+		if (Config.isDebug)
+			HiddenOre.getPlugin().getLogger().log(Level.INFO, "Trigger drop {0} [{1}, {2}] = {3}", 
+					new Object[] {dropName, min, max, amount});
 		
 		List<ItemStack> toDrop = new ArrayList<ItemStack>(drops.size());
 		for (DropItemConfig item : drops) {
@@ -124,8 +125,9 @@ public class DropConfig {
 		double max = getMaxAmount(biome) + (modify != null ? modify.getMaxAmountModifier() : 0.0);
 		double amount = (min == max) ? min : (double) ((max - min) * Math.random() + min);
 		
-		HiddenOre.getPlugin().getLogger().log(Level.INFO, "Trigger drop {0} [{1}, {2}] = {3}", 
-				new Object[] {dropName, min, max, amount});
+		if (Config.isDebug)
+			HiddenOre.getPlugin().getLogger().log(Level.INFO, "Trigger transform {0} [{1}, {2}] = {3}", 
+					new Object[] {dropName, min, max, amount});
 		
 		List<ItemStack> toTransform = new ArrayList<ItemStack>(drops.size());
 		for (DropItemConfig item : drops) {

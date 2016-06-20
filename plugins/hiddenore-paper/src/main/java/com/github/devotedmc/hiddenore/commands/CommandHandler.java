@@ -14,8 +14,6 @@ public class CommandHandler implements CommandExecutor {
 
 	public CommandHandler(HiddenOre instance) {
 		plugin = instance;
-
-		plugin.getCommand("hiddenore").setExecutor(this);
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -29,7 +27,7 @@ public class CommandHandler implements CommandExecutor {
 					}
 				} else if (args.length >= 1) {
 					if ("save".equals(args[0])) {
-						HiddenOre.getTracking().liveSave();
+						plugin.getTracking().liveSave();
 						sender.sendMessage("HiddenOre tracking forced live save scheduled");
 						return true;
 					}

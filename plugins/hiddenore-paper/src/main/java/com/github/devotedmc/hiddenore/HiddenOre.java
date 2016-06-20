@@ -6,46 +6,58 @@ import org.bukkit.scheduler.BukkitTask;
 
 import com.github.devotedmc.hiddenore.commands.CommandHandler;
 import com.github.devotedmc.hiddenore.listeners.BlockBreakListener;
+import com.github.devotedmc.hiddenore.listeners.ExploitListener;
 import com.github.devotedmc.hiddenore.tracking.BreakTracking;
 
 public class HiddenOre extends JavaPlugin {
 
 	private static HiddenOre plugin;
 
-	private static CommandHandler cm;
+	private static CommandHandler commandHandler;
 
-	private static BreakTracking bt;
-
-	private BukkitTask btSave;
+	private static BreakTracking tracking;
+	private BukkitTask trackingSave;
+	
+	private static BlockBreakListener breakHandler;
+	private static ExploitListener exploitHandler;
 
 	@Override
 	public void onEnable() {
 		plugin = this;
+		
 		saveDefaultConfig();
 		reloadConfig();
 		Config.loadConfig();
-		bt = new BreakTracking();
-		bt.load();
-		btSave = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
+		
+		tracking = new BreakTracking();
+		tracking.load();
+		trackingSave = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
 			public void run() {
-				bt.save();
+				tracking.save();
 			}
 		}, Config.trackSave, Config.trackSave);
-		Bukkit.getPluginManager().registerEvents(new BlockBreakListener(), this);
-		cm = new CommandHandler(this);
+		
+		exploitHandler = new ExploitListener(plugin);
+		this.getServer().getPluginManager().registerEvents(exploitHandler, this);
+
+		breakHandler = new BlockBreakListener(plugin);
+		this.getServer().getPluginManager().registerEvents(breakHandler, this);
+				
+		commandHandler = new CommandHandler(this);
+		this.getCommand("hiddenore").setExecutor(commandHandler);
 	}
 
 	@Override
 	public void onDisable() {
-		bt.save();
-		btSave.cancel();
+		tracking.save();
+		trackingSave.cancel();
 	}
 
 	public static HiddenOre getPlugin() {
 		return plugin;
 	}
 
-	public static BreakTracking getTracking() {
-		return bt;
+	public BreakTracking getTracking() {
+		return tracking;
 	}
 }
