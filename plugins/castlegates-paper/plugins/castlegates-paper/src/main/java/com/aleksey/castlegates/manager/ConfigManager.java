@@ -203,7 +203,7 @@ public class ConfigManager {
     		if(Character.isDigit(material.charAt(0))) {
     			result.add(DeprecatedMethods.getMaterial(Integer.parseInt(material)));
     		} else {
-    			result.add(Material.getMaterial(material));
+    			result.add(Material.getMaterial(material.toUpperCase()));
     		}
     	}
     	

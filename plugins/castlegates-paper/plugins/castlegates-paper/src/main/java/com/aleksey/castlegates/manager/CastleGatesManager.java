@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -180,6 +181,13 @@ public class CastleGatesManager {
 					player.sendMessage(message);
 				}
 			}
+			else if(result == GearManager.PowerResult.Drawn || result == GearManager.PowerResult.Undrawn){
+				Sound sound = result == GearManager.PowerResult.Drawn
+						? Sound.BLOCK_PISTON_CONTRACT
+						: Sound.BLOCK_PISTON_EXTEND;
+				
+				block.getWorld().playSound(block.getLocation(), sound, 0.7f, 1);
+			}
 		} finally {
 			this.processingBlocks.remove(block);
 		}
@@ -189,7 +197,7 @@ public class CastleGatesManager {
 		Player player = event.getPlayer();
 		Block block = event.getClickedBlock();
 		
-		if(!CastleGates.getCitadelManager().canChange(player, block.getLocation())) {
+		if(!CastleGates.getCitadelManager().canBypass(player, block.getLocation())) {
 			player.sendMessage(ChatColor.RED + "Citadel preventing creation of gear.");
 			return false;
 		}
@@ -221,7 +229,7 @@ public class CastleGatesManager {
 		Player player = event.getPlayer();
 		Block block = event.getClickedBlock();
 		
-		if(!CastleGates.getCitadelManager().canChange(player, block.getLocation())) {
+		if(!CastleGates.getCitadelManager().canBypass(player, block.getLocation())) {
 			player.sendMessage(ChatColor.RED + "Citadel preventing creation of link.");
 			return false;
 		}
@@ -246,7 +254,7 @@ public class CastleGatesManager {
 		else {
 			Location loc = new Location(block.getWorld(), result.gear.getCoord().getX(), result.gear.getCoord().getY(), result.gear.getCoord().getZ());
 			
-			if(!CastleGates.getCitadelManager().canChange(player, loc)) {
+			if(!CastleGates.getCitadelManager().canBypass(player, loc)) {
 				player.sendMessage(ChatColor.RED + "Citadel preventing creation of link.");
 				return false;
 			}
@@ -291,7 +299,7 @@ public class CastleGatesManager {
 		List<Player> players = new ArrayList<Player>();
 		players.add(event.getPlayer());
 		
-		if(!CastleGates.getCitadelManager().canInteract(players, block.getLocation())) {
+		if(!CastleGates.getCitadelManager().canAccessDoors(players, block.getLocation())) {
 			event.getPlayer().sendMessage(ChatColor.RED + "Gear");
 		}
 		else if(gear.getLink() == null) {

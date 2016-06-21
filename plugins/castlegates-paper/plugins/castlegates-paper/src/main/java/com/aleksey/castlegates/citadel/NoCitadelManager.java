@@ -26,11 +26,15 @@ public class NoCitadelManager implements ICitadelManager {
 		return CastleGates.getConfigManager().getMaxRedstoneDistance();
 	}
 	
-	public boolean canInteract(List<Player> players, Location loc) {
+	public boolean canAccessDoors(List<Player> players, Location loc) {
 		return true;
 	}
 	
-	public boolean canChange(Player player, Location loc) {
+	public boolean canBypass(Player player, Location loc) {
+		return true;
+	}
+	
+	public boolean canViewInformation(Player player, Location loc) {
 		return true;
 	}
 	
