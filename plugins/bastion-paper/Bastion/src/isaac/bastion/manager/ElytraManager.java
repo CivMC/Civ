@@ -59,7 +59,7 @@ public class ElytraManager {
 			return false;
 		}
 		throttle.put(p.getUniqueId(), System.currentTimeMillis());
-		Bastion.getPlugin().getLogger().info("Not throttled");
+		//Bastion.getPlugin().getLogger().info("Not throttled");
 		
 		// collect to/from
 		Location from = p.getLocation();
@@ -82,22 +82,22 @@ public class ElytraManager {
 		// We doubledown; project the vector out another movement cycle.
 		Location newTo = from.clone().add(pVec);
 		
-		Bastion.getPlugin().getLogger().log(Level.INFO, "  from: {0}, to: {1}, speed {2}",
-				new Object[] {from, newTo, pVec});
+		/*Bastion.getPlugin().getLogger().log(Level.INFO, "  from: {0}, to: {1}, speed {2}",
+				new Object[] {from, newTo, pVec});*/
 		
 		// find maxset of bastions
 		Set<BastionBlock> possible = bastions.getPossibleFlightBlocking(
 				Bastion.getConfigManager().getBastionBlockEffectRadius() * 2,
 				from, newTo );
 		if (possible == null || possible.isEmpty()) {
-			Bastion.getPlugin().getLogger().info("No interations");
+			//Bastion.getPlugin().getLogger().info("No interations");
 			return false;
 		}
 		
 		// find actual collisions
 		Set<BastionBlock> definiteCollide = simpleCollide(possible, pVec, from, newTo, p); //EnderPearlManager.staticSimpleCollide(possible, from, newTo, p);
 		if (definiteCollide == null || definiteCollide.isEmpty()) {
-			Bastion.getPlugin().getLogger().info("No definite collisions");
+			//Bastion.getPlugin().getLogger().info("No definite collisions");
 			return false;
 		}
 		
@@ -132,7 +132,7 @@ public class ElytraManager {
 			
 			// We're going to clip this bastion field.
 			if (hit) {
-				Bastion.getPlugin().getLogger().log(Level.INFO, "  hit bastion at {0}", bLoc);
+				//Bastion.getPlugin().getLogger().log(Level.INFO, "  hit bastion at {0}", bLoc);
 				if (impact == null) { // we do no damage so just impact.
 					doImpact(p);
 					return true;
