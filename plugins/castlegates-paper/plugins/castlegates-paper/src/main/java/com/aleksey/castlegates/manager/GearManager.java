@@ -194,7 +194,7 @@ public class GearManager {
 			return PowerResult.Unchanged;
 		}
 		
-		if(!canInteract(players, world, gear.getCoord())) {
+		if(!canAccessDoors(players, world, gear.getCoord())) {
 			return PowerResult.NotInCitadelGroup;
 		}
 		
@@ -269,7 +269,7 @@ public class GearManager {
 			
 			if(to == null || to.isPowered() == isPowered || gears.contains(to)) continue;
 			
-			if(!canInteract(players, world, loc)) return PowerResult.NotInCitadelGroup;
+			if(!canAccessDoors(players, world, loc)) return PowerResult.NotInCitadelGroup;
 			
 			if(isPowered) {
 				GearLink link = to.getLink();
@@ -335,7 +335,7 @@ public class GearManager {
 			
 			if(this.gears.containsKey(new BlockCoord(block))) return PowerResult.CannotDrawGear;
 			
-			if(!canInteract(players, block.getLocation())) return PowerResult.NotInCitadelGroup;
+			if(!canAccessDoors(players, block.getLocation())) return PowerResult.NotInCitadelGroup;
 			
 			x1 += blockFace.getModX();
 			y1 += blockFace.getModY();
@@ -446,12 +446,12 @@ public class GearManager {
 		link.setBlocks(null);
 	}
 	
-	private static boolean canInteract(List<Player> players, Location location) {
-		return CastleGates.getCitadelManager().canInteract(players, location);
+	private static boolean canAccessDoors(List<Player> players, Location location) {
+		return CastleGates.getCitadelManager().canAccessDoors(players, location);
 	}
 	
-	private static boolean canInteract(List<Player> players, World world, BlockCoord coord) {
+	private static boolean canAccessDoors(List<Player> players, World world, BlockCoord coord) {
 		Location location = new Location(world, coord.getX(), coord.getY(), coord.getZ());
-		return CastleGates.getCitadelManager().canInteract(players, location);
+		return CastleGates.getCitadelManager().canAccessDoors(players, location);
 	}
 }

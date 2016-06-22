@@ -21,7 +21,6 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.aleksey.castlegates.CastleGates;
 import com.aleksey.castlegates.DeprecatedMethods;
@@ -56,7 +55,7 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 		return CitadelConfigManager.getMaxRedstoneDistance();
 	}
 	
-	public boolean canInteract(List<Player> players, Location loc) {
+	public boolean canAccessDoors(List<Player> players, Location loc) {
 		Reinforcement rein = Citadel.getReinforcementManager().getReinforcement(loc);
 		
 		if(rein == null || !(rein instanceof PlayerReinforcement)) return true;
@@ -66,8 +65,8 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 		PlayerReinforcement playerRein = (PlayerReinforcement)rein;
 		
 		for(Player player : players) {
-			if(playerRein.isAccessible(player, PermissionType.DOORS)
-					|| player.hasPermission("citadel.admin.accesssecurable")
+			if(playerRein.canAccessDoors(player)
+					|| player.hasPermission("citadel.admin")
 					)
 			{
 				return true;
@@ -77,7 +76,7 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 		return false;
 	}
 	
-	public boolean canChange(Player player, Location loc) {
+	public boolean canBypass(Player player, Location loc) {
 		Reinforcement rein = Citadel.getReinforcementManager().getReinforcement(loc);
 		
 		if(rein == null || !(rein instanceof PlayerReinforcement)) return true;
@@ -86,8 +85,21 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 		
 		PlayerReinforcement playerRein = (PlayerReinforcement)rein;
 		
-		return playerRein.isAccessible(player, PermissionType.BLOCKS)
-			|| player.hasPermission("citadel.admin.accesssecurable");
+		return playerRein.canBypass(player)
+			|| player.hasPermission("citadel.admin.bypassmode");
+	}
+	
+	public boolean canViewInformation(Player player, Location loc) {
+		Reinforcement rein = Citadel.getReinforcementManager().getReinforcement(loc);
+		
+		if(rein == null || !(rein instanceof PlayerReinforcement)) return true;
+		
+		if(player == null) return false;
+		
+		PlayerReinforcement playerRein = (PlayerReinforcement)rein;
+		
+		return playerRein.canViewInformation(player)
+			|| player.hasPermission("citadel.admin.ctinfodetails");
 	}
 	
 	public ReinforcementInfo removeReinforcement(Location loc) {

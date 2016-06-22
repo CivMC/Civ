@@ -16,8 +16,9 @@ public interface ICitadelManager {
 	void init();
 	void close();
 	double getMaxRedstoneDistance();
-	boolean canInteract(List<Player> players, Location loc);
-	boolean canChange(Player player, Location loc);
+	boolean canAccessDoors(List<Player> players, Location loc);
+	boolean canBypass(Player player, Location loc);
+	boolean canViewInformation(Player player, Location loc);
 	ReinforcementInfo removeReinforcement(Location loc);
 	boolean createReinforcement(ReinforcementInfo info, Location loc);
 }
