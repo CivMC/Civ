@@ -1,12 +1,12 @@
-package com.github.maxopoly;
+package com.github.maxopoly.finale;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
-import com.github.maxopoly.external.CombatTagPlusManager;
-import com.github.maxopoly.external.ProtocolLibManager;
-import com.github.maxopoly.listeners.PearlCoolDownListener;
-import com.github.maxopoly.listeners.PlayerListener;
+import com.github.maxopoly.finale.external.CombatTagPlusManager;
+import com.github.maxopoly.finale.external.ProtocolLibManager;
+import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
+import com.github.maxopoly.finale.listeners.PlayerListener;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 

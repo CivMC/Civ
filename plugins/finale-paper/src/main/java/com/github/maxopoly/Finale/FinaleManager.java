@@ -1,7 +1,7 @@
-package com.github.maxopoly;
+package com.github.maxopoly.finale;
 
-import com.github.maxopoly.external.ProtocolLibManager;
-import com.github.maxopoly.misc.SaturationHealthRegenHandler;
+import com.github.maxopoly.finale.external.ProtocolLibManager;
+import com.github.maxopoly.finale.misc.SaturationHealthRegenHandler;
 
 public class FinaleManager {
 	

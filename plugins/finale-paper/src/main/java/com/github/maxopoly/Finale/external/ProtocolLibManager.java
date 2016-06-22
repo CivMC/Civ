@@ -1,4 +1,4 @@
-package com.github.maxopoly.external;
+package com.github.maxopoly.finale.external;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -11,8 +11,8 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.github.maxopoly.Finale;
-import com.github.maxopoly.listeners.PearlCoolDownListener;
+import com.github.maxopoly.finale.Finale;
+import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
 
 public class ProtocolLibManager {
 	
