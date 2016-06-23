@@ -60,4 +60,8 @@ public class HiddenOre extends JavaPlugin {
 	public BreakTracking getTracking() {
 		return tracking;
 	}
+	
+	public BlockBreakListener getBreakListener() {
+		return breakHandler;
+	}
 }
