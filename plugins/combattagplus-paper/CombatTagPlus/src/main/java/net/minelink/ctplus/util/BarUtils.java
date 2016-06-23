@@ -85,10 +85,11 @@ public final class BarUtils {
                 if (bar == null) {
                     bar = Bukkit.createBossBar(message, BarColor.RED, BarStyle.SOLID);
                     bars.put(player, bar);
+                    bar.addPlayer(player);
                 } else {
                     bar.setTitle(message);
                 }
-                bar.addPlayer(player);
+                bar.setVisible(false);
                 bar.setProgress(percent / 100.0);
                 bar.setVisible(true);
             }
