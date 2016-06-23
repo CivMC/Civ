@@ -261,7 +261,10 @@ public final class PlayerListener implements Listener {
                 return;
             case PLUGIN:
             case UNKNOWN:
-                plugin.getTagManager().untag(player.getUniqueId());
+                // Optionally untag on PLUGIN or UNKNOWN
+                if (plugin.getSettings().untagOnPluginTeleport()) {
+                    plugin.getTagManager().untag(player.getUniqueId());
+                }
                 return;
         }
 

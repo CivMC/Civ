@@ -387,4 +387,7 @@ public final class Settings {
         return plugin.getConfig().getStringList("disabled-commands");
     }
 
+    public boolean untagOnPluginTeleport() {
+        return plugin.getConfig().getBoolean("untag-on-plugin-teleport");
+    }
 }
