@@ -180,15 +180,6 @@ public class CitadelReinforcementData {
 			ver = checkVersion(plugin.getName());
 			Citadel.Log("The update to Version 9 took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
 		}
-		if (ver == 9) {
-			long first_time = System.currentTimeMillis();
-			Citadel.Log("Updating to version 10: Reinforcement state ");
-			db.execute("alter table reinforcement add acid_time int not null;"); 
-			db.execute("update reinforcement set acid_time = maturation_time;"); // Might take a minute.
-			updateVersion(ver, plugin.getName());
-			ver = checkVersion(plugin.getName());
-			Citadel.Log("The update to Version 9 took " + (System.currentTimeMillis() / first_time) / 1000 + " seconds.");
-		}
 		Citadel.Log("The total time it took Citadel to update was " + 
 				(System.currentTimeMillis() - begin_time) / 1000 + " seconds.");
 	}
