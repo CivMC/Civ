@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -97,6 +98,49 @@ public class SqlDatabase {
 		
 		this.logger.log(Level.INFO, "Database initialized.");
 		
+		this.logger.log(Level.INFO, "Applying patches to database...");
+		
+		try {
+			applyPatches();
+    	} catch (SQLException e) {
+    		this.logger.log(Level.SEVERE, "Failed to apply patches.");
+			e.printStackTrace();
+			return false;
+		}
+		
+		this.logger.log(Level.INFO, "Patches applied to database.");
+		
 		return true;
+    }
+    
+    private void applyPatches() throws SQLException {
+    	int patchIndex = 1;
+    	String patchName = String.format("patch_%03d.txt", patchIndex);
+    	ArrayList<String> scripts;
+    	PatchSource source = new PatchSource(this);
+    	
+    	while((scripts = ResourceHelper.readScriptList("/" + patchName)) != null) {
+    		this.logger.log(Level.INFO, "Found patch " + patchName);
+    		
+    		if(source.isExist(patchName)) {
+    			this.logger.log(Level.INFO, "Skipping patch.");
+    		} else {
+	    		this.logger.log(Level.INFO, "Applying patch...");
+	    		
+	    		for(String script : scripts) {
+	    			prepareStatement(script).execute();
+	    		}
+	    		
+	    		PatchInfo patchInfo = new PatchInfo();
+	    		patchInfo.patchName = patchName;
+	    		patchInfo.appliedDate = new Timestamp(System.currentTimeMillis());
+	    		
+	    		source.insert(patchInfo);
+	    		
+	    		this.logger.log(Level.INFO, "Patch applied.");
+    		}
+    		
+    		patchName = String.format("patch_%03d.txt", ++patchIndex);
+    	}
     }
 }

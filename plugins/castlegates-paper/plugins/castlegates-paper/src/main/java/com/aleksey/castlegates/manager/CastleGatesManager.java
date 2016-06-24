@@ -29,16 +29,16 @@ import com.aleksey.castlegates.CastleGates;
 import com.aleksey.castlegates.database.SqlDatabase;
 import com.aleksey.castlegates.types.BlockCoord;
 import com.aleksey.castlegates.types.CommandMode;
-import com.aleksey.castlegates.types.GearState;
+import com.aleksey.castlegates.types.Gearblock;
 import com.aleksey.castlegates.utils.Helper;
 
 public class CastleGatesManager {
 	private static class FindGearResult {
-		public GearState gear;
+		public Gearblock gearblock;
 		public int distance;
 		
-		public FindGearResult(GearState gear, int distance) {
-			this.gear = gear;
+		public FindGearResult(Gearblock gearblock, int distance) {
+			this.gearblock = gearblock;
 			this.distance = distance;
 		}
 	}
@@ -83,23 +83,31 @@ public class CastleGatesManager {
 	}
 	
 	public void handleBlockClicked(PlayerInteractEvent event) {
-		if(!CastleGates.getConfigManager().isStickItem(event.getItem())) return;
+		boolean interacted = false;
+		ConfigManager configManager = CastleGates.getConfigManager();
 		
-		boolean interacted;
-		
-		switch(this.stateManager.getPlayerMode(event.getPlayer())) {
-		case CREATE:
-			interacted = createGear(event);
-			break;
-		case LINK:
-			interacted = linkGears(event);
-			break;
-		case INFO:
-			interacted = showGearInfo(event);
-			break;
-		default:
-			interacted = false;
-			break;
+		if(configManager.isStickItem(event.getItem())) {
+			switch(this.stateManager.getPlayerMode(event.getPlayer())) {
+			case CREATE:
+				interacted = createGearblock(event);
+				break;
+			case LINK:
+				interacted = linkGearblocks(event);
+				break;
+			case INFO:
+				interacted = showGearInfo(event);
+				break;
+			default:
+				interacted = false;
+				break;
+			}
+		}
+		else if(configManager.getAllowAutoCreate()) {
+			if(configManager.isCreationConsumeItem(event.getItem())) {
+				interacted = createGearblockAndLink(event);
+			} else {
+				interacted = showGearInfo(event);
+			}
 		}
 		
 		if(interacted) {
@@ -124,7 +132,7 @@ public class CastleGatesManager {
 		for (BlockFace face : GearManager.faces) {
 			Block faceBlock = block.getRelative(face);
 			
-			if(this.gearManager.getGear(new BlockCoord(faceBlock)) != null) {
+			if(this.gearManager.getGearblock(new BlockCoord(faceBlock)) != null) {
 				this.waitingBlocks.add(faceBlock);
 			}
         }
@@ -135,9 +143,9 @@ public class CastleGatesManager {
 		
 		if(!this.waitingBlocks.remove(block) || this.processingBlocks.contains(block)) return;
 		
-		GearState gear = this.gearManager.getGear(new BlockCoord(block));
+		Gearblock gearblock = this.gearManager.getGearblock(new BlockCoord(block));
 
-		if(gear == null || gear.isPowered() == block.isBlockPowered()) return;
+		if(gearblock == null || gearblock.isPowered() == block.isBlockPowered()) return;
 		
 		this.processingBlocks.add(block);
 			
@@ -145,12 +153,11 @@ public class CastleGatesManager {
 		{
 			List<Player> players = Helper.getNearbyPlayers(block.getLocation());
 			
-			GearManager.PowerResult result = this.gearManager.processGear(
+			GearManager.PowerResult result = this.gearManager.processGearblock(
 					block.getWorld(),
-					gear,
+					gearblock,
 					block.isBlockPowered(),
-					players,
-					block
+					players
 					);
 			
 			String message;
@@ -163,7 +170,7 @@ public class CastleGatesManager {
 				message = ChatColor.RED + "Bridge/gates is broken";
 				break;
 			case CannotDrawGear:
-				message = ChatColor.RED + "Gear cannot be drawn";
+				message = ChatColor.RED + "Gearblock cannot be drawn";
 				break;
 			case NotInCitadelGroup:
 				message = ChatColor.RED + "Citadel prevent this operation";
@@ -193,12 +200,33 @@ public class CastleGatesManager {
 		}
 	}
 	
-	private boolean createGear(PlayerInteractEvent event) {
+	private boolean createGearblockAndLink(PlayerInteractEvent event) {
+		if(!createGearblock(event)) return false;
+		
+		Block block = event.getClickedBlock();
+		Gearblock gearblock1 = this.gearManager.getGearblock(new BlockCoord(block));
+		
+		if(gearblock1.getLink() != null) return true;
+		
+		for(BlockFace face : GearManager.faces) {
+			FindGearResult result = findEndGear(block, face);
+			
+			if(result == null || result.gearblock.getLink() != null) continue;
+			
+			linkGearblocks(event.getPlayer(), gearblock1, result);
+			
+			break;
+		}
+		
+		return true;
+	}
+	
+	private boolean createGearblock(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		Block block = event.getClickedBlock();
 		
 		if(!CastleGates.getCitadelManager().canBypass(player, block.getLocation())) {
-			player.sendMessage(ChatColor.RED + "Citadel preventing creation of gear.");
+			player.sendMessage(ChatColor.RED + "Citadel preventing creation of gearblock.");
 			return false;
 		}
 		
@@ -206,26 +234,28 @@ public class CastleGatesManager {
 		List<Integer> consumeSlots = Helper.getConsumeSlots(player, consumeItem);
 		
 		if(consumeSlots == null && consumeItem != null) {
-			player.sendMessage(ChatColor.RED + "Not enough material to create gear.");
+			player.sendMessage(ChatColor.RED + "Not enough material to create gearblock.");
 			return false;
 		}
 		
 		GearManager.CreateResult result = this.gearManager.createGear(block); 
 		
 		if(result == GearManager.CreateResult.NotCreated) {
-			player.sendMessage(ChatColor.RED + "This material cannot be used for gear.");
+			player.sendMessage(ChatColor.RED + "This material cannot be used for gearblock.");
+			return false;
 		} else if(result == GearManager.CreateResult.AlreadyExist) {
-			player.sendMessage(ChatColor.RED + "Gear already exist.");
-		} else {
-			Helper.consumeItem(player, consumeItem, consumeSlots);
-			
-			player.sendMessage(ChatColor.GREEN + "Gear has been created.");
+			player.sendMessage(ChatColor.RED + "Gearblock already exist.");
+			return true;
 		}
+		
+		Helper.consumeItem(player, consumeItem, consumeSlots);
+			
+		player.sendMessage(ChatColor.GREEN + "Gearblock has been created.");
 		
 		return true;
 	}
 	
-	private boolean linkGears(PlayerInteractEvent event) {
+	private boolean linkGearblocks(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		Block block = event.getClickedBlock();
 		
@@ -234,40 +264,46 @@ public class CastleGatesManager {
 			return false;
 		}
 		
-		GearState gear1 = this.gearManager.getGear(new BlockCoord(block)); 
+		Gearblock gearblock1 = this.gearManager.getGearblock(new BlockCoord(block)); 
 		
-		if(gear1 == null) return false;
+		if(gearblock1 == null) return false;
 		
 		FindGearResult result = findEndGear(block, event.getBlockFace());
 		
 		if(result == null) {
-			event.getPlayer().sendMessage(ChatColor.RED + "End gear is not found. Link distance is limited to " + CastleGates.getConfigManager().getMaxBridgeLength() + " blocks");
+			event.getPlayer().sendMessage(ChatColor.RED + "End gearblock is not found. Link distance is limited to " + CastleGates.getConfigManager().getMaxBridgeLength() + " blocks");
 		}
-		else if(gear1.getLink() != null) {
-			if(gear1.getLink().isDrawn()) {
+		else if(gearblock1.getLink() != null) {
+			if(gearblock1.getLink().isDrawn()) {
 				player.sendMessage(ChatColor.RED + "Link in drawn state cannot be removed.");
 			} else {
-				this.gearManager.removeLink(gear1.getLink());
-				player.sendMessage(ChatColor.GREEN + "Gear's link has been removed.");
+				this.gearManager.removeLink(gearblock1.getLink());
+				player.sendMessage(ChatColor.GREEN + "Gearblock's link has been removed.");
 			}
 		}
 		else {
-			Location loc = new Location(block.getWorld(), result.gear.getCoord().getX(), result.gear.getCoord().getY(), result.gear.getCoord().getZ());
-			
-			if(!CastleGates.getCitadelManager().canBypass(player, loc)) {
-				player.sendMessage(ChatColor.RED + "Citadel preventing creation of link.");
-				return false;
-			}
-
-			if(this.gearManager.createLink(gear1, result.gear, result.distance)) {
-				player.sendMessage(ChatColor.GREEN + "Gear has been linked with gear at x = " + result.gear.getCoord().getX() + ", y = " + result.gear.getCoord().getY() + ", z = " + result.gear.getCoord().getZ());
-			}
-			else {
-				player.sendMessage(ChatColor.RED + "Link cannot be created.");
-			}
+			linkGearblocks(player, gearblock1, result);
 		}
 		
 		return true;
+	}
+	
+	private boolean linkGearblocks(Player player, Gearblock gearblock1, FindGearResult result) {
+		Location loc = new Location(player.getWorld(), result.gearblock.getCoord().getX(), result.gearblock.getCoord().getY(), result.gearblock.getCoord().getZ());
+		
+		if(!CastleGates.getCitadelManager().canBypass(player, loc)) {
+			player.sendMessage(ChatColor.RED + "Citadel preventing creation of link.");
+			return false;
+		}
+
+		if(this.gearManager.createLink(gearblock1, result.gearblock, result.distance)) {
+			player.sendMessage(ChatColor.GREEN + "Gearblock has been linked with gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ());
+			return true;
+		}
+
+		player.sendMessage(ChatColor.RED + "Link cannot be created.");
+		
+		return false;
 	}
 	
 	private FindGearResult findEndGear(Block startGearBlock, BlockFace blockFace) {
@@ -282,9 +318,11 @@ public class CastleGatesManager {
 			z += blockFace.getModZ();
 			
 			BlockCoord location = new BlockCoord(worldUID, x, y, z);
-			GearState gearState = this.gearManager.getGear(location);
+			Gearblock gearblock = this.gearManager.getGearblock(location);
 
-			if(gearState != null) return new FindGearResult(gearState, i);
+			if(gearblock != null) {
+				return i > 0 ? new FindGearResult(gearblock, i): null;
+			}
 		}
 		
 		return null;
@@ -292,28 +330,28 @@ public class CastleGatesManager {
 	
 	private boolean showGearInfo(PlayerInteractEvent event) {
 		Block block = event.getClickedBlock();
-		GearState gear = this.gearManager.getGear(new BlockCoord(block));
+		Gearblock gearblock = this.gearManager.getGearblock(new BlockCoord(block));
 		
-		if(gear == null) return false;
+		if(gearblock == null) return false;
 		
 		List<Player> players = new ArrayList<Player>();
 		players.add(event.getPlayer());
 		
 		if(!CastleGates.getCitadelManager().canAccessDoors(players, block.getLocation())) {
-			event.getPlayer().sendMessage(ChatColor.RED + "Gear");
+			event.getPlayer().sendMessage(ChatColor.RED + "Gearblock");
 		}
-		else if(gear.getLink() == null) {
-			event.getPlayer().sendMessage(ChatColor.GREEN + "Gear not linked");
+		else if(gearblock.getLink() == null) {
+			event.getPlayer().sendMessage(ChatColor.GREEN + "Gearblock not linked");
 			
-			if(gear.getBrokenLink() != null) {
-				event.getPlayer().sendMessage(ChatColor.GREEN + "But contains " + gear.getBrokenLink().getBlocks().size() + " drawn blocks");
+			if(gearblock.getBrokenLink() != null) {
+				event.getPlayer().sendMessage(ChatColor.GREEN + "But contains " + gearblock.getBrokenLink().getBlocks().size() + " drawn blocks");
 			}
 		}
 		else {
-			GearState gear2 = gear.getLink().getGear1() == gear ? gear.getLink().getGear2(): gear.getLink().getGear1();
-			event.getPlayer().sendMessage(ChatColor.GREEN + "Gear linked to gear at x = " + gear2.getCoord().getX() + ", y = " +  + gear2.getCoord().getY() + ", z = " +  + gear2.getCoord().getZ());
+			Gearblock gearblock2 = gearblock.getLink().getGearblock1() == gearblock ? gearblock.getLink().getGearblock2(): gearblock.getLink().getGearblock1();
+			event.getPlayer().sendMessage(ChatColor.GREEN + "Gearblock linked to gearblock at x = " + gearblock2.getCoord().getX() + ", y = " +  + gearblock2.getCoord().getY() + ", z = " +  + gearblock2.getCoord().getZ());
 			
-			if(gear.getLink().isDrawn()) {
+			if(gearblock.getLink().isDrawn()) {
 				event.getPlayer().sendMessage(ChatColor.GREEN + "Link is in drawn state");
 			}
 		}

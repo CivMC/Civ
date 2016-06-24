@@ -30,8 +30,11 @@ public class Helper {
 		StringBuilder lore = new StringBuilder();
 		
 		for (String line: meta.getLore()) {
+			if(lore.length() > 0) {
+				lore.append("\n");
+			}
+			
 			lore.append(line);
-			lore.append("\n");
 		}
 		
 		return lore.toString();

@@ -1,0 +1,7 @@
+RENAME TABLE cg_gear TO cg_gearblock;
+
+ALTER TABLE cg_gearblock CHANGE gear_id gearblock_id INT NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE cg_link CHANGE gear1_id gearblock1_id INT;
+
+ALTER TABLE cg_link CHANGE gear2_id gearblock2_id INT;
