@@ -7,7 +7,6 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -65,6 +64,7 @@ public class PlayerState {
     private boolean bypassMode;
     private Integer cancelModePid;
     private ItemStack fortificationStack;
+    private boolean easyMode;
 
     public PlayerState(Player player) {
         this(player.getUniqueId());
@@ -74,6 +74,7 @@ public class PlayerState {
     	reset();
     	this.accountId = uuid;
     	bypassMode = false;
+    	this.easyMode = true;
     }
 
     /**
@@ -140,6 +141,19 @@ public class PlayerState {
     public boolean toggleBypassMode() {
         bypassMode = !bypassMode;
         return bypassMode;
+    }
+    
+    public boolean getEasyMode() {
+    	return easyMode;
+    }
+    
+    /**
+     * Toggles Easy Mode.
+     * @return Returns the new value.
+     */
+    public boolean toggleEasyMode() {
+    	easyMode = !easyMode;
+    	return easyMode;
     }
     
     /**

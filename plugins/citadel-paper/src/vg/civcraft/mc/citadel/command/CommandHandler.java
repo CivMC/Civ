@@ -21,6 +21,7 @@ import vg.civcraft.mc.citadel.command.commands.Off;
 import vg.civcraft.mc.citadel.command.commands.Reinforce;
 import vg.civcraft.mc.citadel.command.commands.SetLogging;
 import vg.civcraft.mc.citadel.command.commands.Stats;
+import vg.civcraft.mc.citadel.command.commands.ToggleEasyMode;
 import vg.civcraft.mc.citadel.command.commands.UpdateReinforcements;
 import vg.civcraft.mc.civmodcore.command.Command;
 
@@ -42,6 +43,7 @@ public class CommandHandler {
 		addCommands(new UpdateReinforcements("UpdateReinforcements"));
 		addCommands(new AreaReinforce("AreaReinforce"));
 		addCommands(new SetLogging("SetLogging"));
+		addCommands(new ToggleEasyMode("ToggleEasyMode"));
 	}
 	
 	private void addCommands(Command command){
