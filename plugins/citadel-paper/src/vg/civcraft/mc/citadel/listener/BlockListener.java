@@ -112,6 +112,9 @@ public class BlockListener implements Listener {
 			type = state.getReinforcementType();
 			groupToReinforceTo = state.getGroup();
 		}else if(state.getMode() == ReinforcementMode.NORMAL) {	
+			if (!state.getEasyMode()) {
+				return;
+			}
 				type =  ReinforcementType.getReinforcementType(p.getInventory().getItemInOffHand());
 				if (type == null) {
 					return;
@@ -458,6 +461,9 @@ public class BlockListener implements Listener {
 			GroupManager gm = NameAPI.getGroupManager();
 			switch (placementMode) {
 			case NORMAL:
+				if (!state.getEasyMode()) {
+					return;
+				}
 				if (pie.getAction() == Action.LEFT_CLICK_BLOCK && generic_reinforcement == null) {
 					ItemStack stack = player.getInventory().getItemInMainHand();
 					ReinforcementType type = ReinforcementType

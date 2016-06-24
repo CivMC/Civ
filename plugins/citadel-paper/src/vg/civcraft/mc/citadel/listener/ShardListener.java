@@ -32,6 +32,8 @@ public class ShardListener implements Listener {
 			sb.append("|");
 			PlayerState ps = PlayerState.get(e.getPlayerUUID());
 			sb.append(ps.getMode().toString());
+			sb.append("|");
+			sb.append(ps.getEasyMode());
 			if (ps.getMode() == ReinforcementMode.REINFORCEMENT
 					|| ps.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION) {
 				sb.append("|");
@@ -69,6 +71,11 @@ public class ShardListener implements Listener {
 			PlayerState ps = PlayerState.get(uuid);
 			ReinforcementMode mode = ReinforcementMode.valueOf(data[2]);
 			ps.setMode(mode);
+			boolean easyMode = Boolean.valueOf(data[3]);
+			if (!easyMode) {
+				//default for easy mode is true, so only change if its turned off
+				ps.toggleEasyMode();
+			}
 			if (mode == ReinforcementMode.REINFORCEMENT
 					|| mode == ReinforcementMode.REINFORCEMENT_FORTIFICATION) {
 				Group g = NameAPI.getGroupManager().getGroup(data[3]);
