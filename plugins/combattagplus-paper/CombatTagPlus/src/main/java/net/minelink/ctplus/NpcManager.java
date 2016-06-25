@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +61,8 @@ public final class NpcManager {
 
         // Send equipment packets to nearby players
         plugin.getNpcPlayerHelper().updateEquipment(entity);
+
+        entity.setMetadata("NPC", new FixedMetadataValue(plugin, true));
 
         // Play a nice little effect indicating the NPC was spawned
         if (plugin.getSettings().playEffect()) {
