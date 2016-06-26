@@ -1,8 +1,8 @@
 prefix: You found a hidden ore!
 alert_user: true
 list_drops: true
-debug: true
-ignore_silktouch: false
+debug: false
+ignore_silktouch: true
 tools:
  # Giving a tool ignore:all:true will make it the default catchall, if specified in a config.
  # So if you have a "default" behavior you want for any non-specified tool, use that.
