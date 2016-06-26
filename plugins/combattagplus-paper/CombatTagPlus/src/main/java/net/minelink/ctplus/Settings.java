@@ -1,10 +1,5 @@
 package net.minelink.ctplus;
 
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,6 +13,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import net.minelink.ctplus.util.SimpleRegexSet;
+
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public final class Settings {
 
@@ -31,7 +34,8 @@ public final class Settings {
     public void load() {
         Configuration defaults = plugin.getConfig().getDefaults();
         defaults.set("disabled-worlds", new ArrayList<>());
-        defaults.set("disabled-commands", new ArrayList<>());
+        defaults.set("command-blacklist", new ArrayList<>());
+        defaults.set("command-whitelist", new ArrayList<>());
     }
 
     public void update() {
@@ -383,8 +387,17 @@ public final class Settings {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
-    public List<String> getDisabledCommands() {
-        return plugin.getConfig().getStringList("disabled-commands");
+    public CommandBlacklist getCommandBlacklist() {
+        List<String> blacklist = plugin.getConfig().getStringList("command-blacklist");
+        List<String> whitelist = plugin.getConfig().getStringList("command-whitelist");
+        if (plugin.getConfig().isSet("disabled-commands")) {
+            plugin.getLogger().info("Converting old 'disabled-commands' setting over to the new blacklist");
+            blacklist.addAll(plugin.getConfig().getStringList("disabled-commands").stream()
+                    .map(SimpleRegexSet::escape) // On the off chance that some idiot puts a star character or a backslash in their commands
+                    .collect(Collectors.toList()));
+            plugin.getConfig().set("command-blacklist", blacklist);
+        }
+        return CommandBlacklist.parse(blacklist, whitelist);
     }
 
     public boolean untagOnPluginTeleport() {

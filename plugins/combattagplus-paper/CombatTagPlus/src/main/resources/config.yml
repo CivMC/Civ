@@ -152,8 +152,12 @@ disabled-worlds: [world_the_end]
 disabled-command-message: '&b{command}&c is disabled in combat.'
 
 # These commands are unusable by players who are combat tagged.
-disabled-commands:
-
+# You can use wildchar characters ('*') in your lists to match multiple commands
+# If you have a single wildcard character '*' all commands will be blacklisted except the ones whitelisted
+# Whitelisted commands are prioritized over blacklisted commands,
+# However, literal blacklists (like 'tpa') will override whitelist patterns (like 'tp*')
+# If you intend '*' to be interpreted literally (for some reason), you may
+command-blacklist:
   # CombatTagPlus
   - ctlog
   - logout
@@ -333,3 +337,13 @@ disabled-commands:
   - 'essentials:eechest'
   - 'essentials:eendersee'
   - 'essentials:esell'
+
+# These commands are exceptions to the blacklist
+# You can use wildchar characters ('*') in your lists to match multiple commands
+# A command is whitelisted by default, unless you add a wildcard-matcher to your blacklist to blacklist all commands, in which case these are the only commands that will be permited
+# Whitelisted commands are prioritized over blacklisted commands,
+# However, literal blacklists (like 'tpa') will override whitelist patterns (like 'tp*')
+command-whitelist:
+  - 'ct'
+  - 'ctplus'
+  - 'combattag'

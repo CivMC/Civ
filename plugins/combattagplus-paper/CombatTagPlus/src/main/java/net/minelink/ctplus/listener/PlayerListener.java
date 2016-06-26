@@ -122,14 +122,11 @@ public final class PlayerListener implements Listener {
         String message = event.getMessage().toLowerCase();
 
         // Is player using a denied command?
-        for (String command : plugin.getSettings().getDisabledCommands()) {
-            String c = "/" + command.toLowerCase();
-            if (!message.equals(c) && !message.startsWith(c + " ")) continue;
-
+        if (plugin.getSettings().getCommandBlacklist().isBlacklisted(message)) {
             // Cancel command
             event.setCancelled(true);
             if (!plugin.getSettings().getDisabledCommandMessage().isEmpty()) {
-                player.sendMessage(plugin.getSettings().getDisabledCommandMessage().replace("{command}", c));
+                player.sendMessage(plugin.getSettings().getDisabledCommandMessage().replace("{command}", "/" + message.split(" ")[0]));
             }
         }
     }
