@@ -1816,4 +1816,29 @@ public class FakePlayer implements Player {
 		return null;
 	}
 
+	@Override
+	public boolean isSilent() {
+		return false;
+	}
+
+	@Override
+	public void setSilent(boolean flag) {
+	}
+
+	@Override
+	public boolean hasGravity() {
+		return false;
+	}
+
+	@Override
+	public void setGravity(boolean gravity) {
+	}
+
+	@Override
+	public void stopSound(Sound sound) {
+	}
+
+	@Override
+	public void stopSound(String sound) {
+	}
 }

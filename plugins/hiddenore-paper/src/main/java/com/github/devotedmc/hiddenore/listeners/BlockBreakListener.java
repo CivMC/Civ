@@ -141,7 +141,7 @@ public class BlockBreakListener implements Listener {
 		ItemStack inMainHand = p.getInventory().getItemInMainHand();
 		
 		// Check SilkTouch failfast, if configured.
-		if (!Config.instance.ignoreSilktouch && inMainHand.hasItemMeta() && 
+		if (!Config.instance.ignoreSilktouch && inMainHand != null && inMainHand.hasItemMeta() && 
 				inMainHand.getEnchantments() != null && inMainHand.getEnchantments().containsKey(Enchantment.SILK_TOUCH)) {
 			return;
 		}
