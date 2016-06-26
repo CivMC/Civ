@@ -14,8 +14,8 @@ import java.util.List;
 
 public class LinkSource {
 	private static final String selectAllScript = "SELECT * FROM cg_link";
-	private static final String insertScript = "INSERT INTO cg_link (gear1_id, gear2_id, blocks) VALUES (?, ?, ?)";
-	private static final String updateScript = "UPDATE cg_link SET gear1_id = ?, gear2_id = ?, blocks = ? WHERE link_id = ?";
+	private static final String insertScript = "INSERT INTO cg_link (gearblock1_id, gearblock2_id, blocks) VALUES (?, ?, ?)";
+	private static final String updateScript = "UPDATE cg_link SET gearblock1_id = ?, gearblock2_id = ?, blocks = ? WHERE link_id = ?";
 	private static final String deleteScript = "DELETE FROM cg_link WHERE link_id = ?";
 	
 	private SqlDatabase db;
@@ -35,11 +35,11 @@ public class LinkSource {
 				LinkInfo info = new LinkInfo();
 				info.link_id = rs.getInt("link_id");
 				
-				info.gear1_id = rs.getInt("gear1_id");
-				if(rs.wasNull()) info.gear1_id = null;
+				info.gearblock1_id = rs.getInt("gearblock1_id");
+				if(rs.wasNull()) info.gearblock1_id = null;
 				
-				info.gear2_id = rs.getInt("gear2_id");
-				if(rs.wasNull()) info.gear2_id = null;
+				info.gearblock2_id = rs.getInt("gearblock2_id");
+				if(rs.wasNull()) info.gearblock2_id = null;
 				
 				info.blocks = rs.getBytes("blocks");
 				
@@ -55,14 +55,14 @@ public class LinkSource {
 	public void insert(LinkInfo info) throws SQLException {
 		PreparedStatement sql = this.db.prepareStatementWithReturn(insertScript);
 		
-		if(info.gear1_id != null) {
-			sql.setInt(1, info.gear1_id);
+		if(info.gearblock1_id != null) {
+			sql.setInt(1, info.gearblock1_id);
 		} else {
 			sql.setNull(1, Types.INTEGER);
 		}
 		
-		if(info.gear2_id != null) {
-			sql.setInt(2, info.gear2_id);
+		if(info.gearblock2_id != null) {
+			sql.setInt(2, info.gearblock2_id);
 		} else {
 			sql.setNull(2, Types.INTEGER);
 		}
@@ -88,14 +88,14 @@ public class LinkSource {
 	public void update(LinkInfo info) throws SQLException {
 		PreparedStatement sql = this.db.prepareStatement(updateScript);
 		
-		if(info.gear1_id != null) {
-			sql.setInt(1, info.gear1_id);
+		if(info.gearblock1_id != null) {
+			sql.setInt(1, info.gearblock1_id);
 		} else {
 			sql.setNull(1, Types.INTEGER);
 		}
 		
-		if(info.gear2_id != null) {
-			sql.setInt(2, info.gear2_id);
+		if(info.gearblock2_id != null) {
+			sql.setInt(2, info.gearblock2_id);
 		} else {
 			sql.setNull(2, Types.INTEGER);
 		}

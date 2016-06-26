@@ -25,8 +25,8 @@ import com.aleksey.castlegates.citadel.ICitadelManager;
 import com.aleksey.castlegates.database.SqlDatabase;
 import com.aleksey.castlegates.types.BlockCoord;
 import com.aleksey.castlegates.types.BlockState;
-import com.aleksey.castlegates.types.GearLink;
-import com.aleksey.castlegates.types.GearState;
+import com.aleksey.castlegates.types.GearblockLink;
+import com.aleksey.castlegates.types.Gearblock;
 import com.aleksey.castlegates.utils.DataWorker;
 
 public class GearManager {
@@ -43,14 +43,14 @@ public class GearManager {
 	public static enum RemoveResult { NotExist, Removed, RemovedWithLink }
 	public static enum PowerResult { NotLinked, Unchanged, Unpowered, Blocked, Brocken, Drawn, Undrawn, CannotDrawGear, NotInCitadelGroup, BastionBlocked, Allowed }
 
-	private Map<BlockCoord, GearState> gears;
+	private Map<BlockCoord, Gearblock> gearblocks;
 	private DataWorker dataWorker;
 	
 	public void init(SqlDatabase db) throws SQLException {
 		this.dataWorker = new DataWorker(db);
-		this.gears = this.dataWorker.load();
+		this.gearblocks = this.dataWorker.load();
 		
-		CastleGates.getPluginLogger().log(Level.INFO, "Loaded " + this.gears.size() + " gears");
+		CastleGates.getPluginLogger().log(Level.INFO, "Loaded " + this.gearblocks.size() + " gearblocks");
 		
 		this.dataWorker.startThread();
 	}
@@ -65,19 +65,19 @@ public class GearManager {
 		BlockCoord location = new BlockCoord(block);
 		
 		if(!CastleGates.getConfigManager().isGearBlockType(block)) return CreateResult.NotCreated;
-		if(this.gears.containsKey(location)) return CreateResult.AlreadyExist;
+		if(this.gearblocks.containsKey(location)) return CreateResult.AlreadyExist;
 		
-		GearState gear = new GearState(location);
+		Gearblock gear = new Gearblock(location);
 		
-		this.gears.put(location, gear);
+		this.gearblocks.put(location, gear);
 		
-		this.dataWorker.addChangedGear(gear);
+		this.dataWorker.addChangedGearblock(gear);
 		
 		return CreateResult.Created;
 	}
 	
 	public RemoveResult removeGear(BlockCoord location) {
-		GearState gear = this.gears.get(location);
+		Gearblock gear = this.gearblocks.get(location);
 		
 		if(gear == null) return RemoveResult.NotExist;
 		
@@ -97,73 +97,73 @@ public class GearManager {
 			}
 		}
 		
-		this.gears.remove(location);
+		this.gearblocks.remove(location);
 		
 		gear.setRemoved();
 		
-		this.dataWorker.addChangedGear(gear);
+		this.dataWorker.addChangedGearblock(gear);
 		
 		return result;
 	}
 	
-	public GearState getGear(BlockCoord location) {
-		return this.gears.get(location);
+	public Gearblock getGearblock(BlockCoord location) {
+		return this.gearblocks.get(location);
 	}
 	
-	public void removeLink(GearLink link) {
+	public void removeLink(GearblockLink link) {
 		if(link == null) return;
 		
 		link.setRemoved();
 		
-		if(link.getGear1() != null) {
-			link.getGear1().setLink(null);
+		if(link.getGearblock1() != null) {
+			link.getGearblock1().setLink(null);
 		}
 		
-		if(link.getGear2() != null) {
-			link.getGear2().setLink(null);
+		if(link.getGearblock2() != null) {
+			link.getGearblock2().setLink(null);
 		}
 
 		this.dataWorker.addChangedLink(link);
 	}
 	
-	public boolean createLink(GearState gear1, GearState gear2, int distance) {
-		if(!removeGearsLinks(gear1, gear2, distance)) return false;
+	public boolean createLink(Gearblock gearblock1, Gearblock gearblock2, int distance) {
+		if(!removeGearblocksLinks(gearblock1, gearblock2, distance)) return false;
 		
-		if(gear1.getLink() != null) return true;
+		if(gearblock1.getLink() != null) return true;
 		
-		GearLink link = new GearLink(gear1, gear2);
+		GearblockLink link = new GearblockLink(gearblock1, gearblock2);
 		
-		if(gear1.getBrokenLink() != null) {
-			link = gear1.getBrokenLink();
-			link.setRestored(gear2);
+		if(gearblock1.getBrokenLink() != null) {
+			link = gearblock1.getBrokenLink();
+			link.setRestored(gearblock2);
 		}
-		else if(gear2.getBrokenLink() != null) {
-			link = gear2.getBrokenLink();
-			link.setRestored(gear1);
+		else if(gearblock2.getBrokenLink() != null) {
+			link = gearblock2.getBrokenLink();
+			link.setRestored(gearblock1);
 		}
 		else {
-			link = new GearLink(gear1, gear2);
+			link = new GearblockLink(gearblock1, gearblock2);
 		}
 		
-		gear1.setLink(link);
-		gear2.setLink(link);
+		gearblock1.setLink(link);
+		gearblock2.setLink(link);
 		
 		this.dataWorker.addChangedLink(link);
 		
 		return true;
 	}
 	
-	private boolean removeGearsLinks(GearState gear1, GearState gear2, int distance) {
-		if(gear1.getBrokenLink() != null && gear2.getBrokenLink() != null
-				|| gear1.getBrokenLink() != null && distance != gear1.getBrokenLink().getBlocks().size()
-				|| gear2.getBrokenLink() != null && distance != gear2.getBrokenLink().getBlocks().size()
+	private boolean removeGearblocksLinks(Gearblock gearblock1, Gearblock gearblock2, int distance) {
+		if(gearblock1.getBrokenLink() != null && gearblock2.getBrokenLink() != null
+				|| gearblock1.getBrokenLink() != null && distance != gearblock1.getBrokenLink().getBlocks().size()
+				|| gearblock2.getBrokenLink() != null && distance != gearblock2.getBrokenLink().getBlocks().size()
 				)
 		{
 			return false;
 		}
 
-		GearLink link1 = gear1.getLink();
-		GearLink link2 = gear2.getLink();
+		GearblockLink link1 = gearblock1.getLink();
+		GearblockLink link2 = gearblock2.getLink();
 		
 		if(link1 != null && link1.equals(link2)) return true;
 
@@ -182,56 +182,56 @@ public class GearManager {
 		return true;
 	}
 	
-	public PowerResult processGear(World world, GearState gear, boolean isPowered, List<Player> players, Block mainGearBlock) {
-		if(gear.isPowered() == isPowered) return PowerResult.Unchanged;
+	public PowerResult processGearblock(World world, Gearblock gearblock, boolean isPowered, List<Player> players) {
+		if(gearblock.isPowered() == isPowered) return PowerResult.Unchanged;
 		
 		if(!isPowered) {
-			gear.setPowered(false);
+			gearblock.setPowered(false);
 			return PowerResult.Unpowered;
 		}
 		
-		if(System.currentTimeMillis() - gear.getLastSwitchTime() < CastleGates.getConfigManager().getSwitchTimeout()) {
+		if(System.currentTimeMillis() - gearblock.getLastSwitchTime() < CastleGates.getConfigManager().getSwitchTimeout()) {
 			return PowerResult.Unchanged;
 		}
 		
-		if(!canAccessDoors(players, world, gear.getCoord())) {
+		if(!canAccessDoors(players, world, gearblock.getCoord())) {
 			return PowerResult.NotInCitadelGroup;
 		}
 		
-		gear.setPowered(true);
+		gearblock.setPowered(true);
 		
-		if(gear.getLink() != null)
+		if(gearblock.getLink() != null)
 		{
 			PowerResult result;
 			
-			if(!gear.getLink().isDrawn()) {
-				result = canDraw(world, gear.getLink(), players);
+			if(!gearblock.getLink().isDrawn()) {
+				result = canDraw(world, gearblock.getLink(), players);
 			} else {
-				result = canUndraw(world, gear.getLink(), players);			
+				result = canUndraw(world, gearblock.getLink(), players);			
 			}
 			
 			if(result != PowerResult.Allowed) return result;
 		}
 		
-		PowerResult result = powerGear(world, gear, isPowered, players);
+		PowerResult result = powerGear(world, gearblock, isPowered, players);
 		
-		gear.setLastSwitchTime();
+		gearblock.setLastSwitchTime();
 		
 		return result;
 	}
 	
-	private PowerResult powerGear(World world, GearState gear, boolean isPowered, List<Player> players) {
-		HashSet<GearState> gears = new HashSet<GearState>();
-		gears.add(gear);
+	private PowerResult powerGear(World world, Gearblock gearblock, boolean isPowered, List<Player> players) {
+		HashSet<Gearblock> gearblocks = new HashSet<Gearblock>();
+		gearblocks.add(gearblock);
 		
-		PowerResult result = transferPower(world, gear, isPowered, players, gears);
+		PowerResult result = transferPower(world, gearblock, isPowered, players, gearblocks);
 		
 		if(result != PowerResult.Allowed) return result;
 
 		Boolean draw = null;
 
-		for(GearState gearFromList : gears) {
-			GearLink linkFromList = gearFromList.getLink();
+		for(Gearblock gearFromList : gearblocks) {
+			GearblockLink linkFromList = gearFromList.getLink();
 			
 			if(linkFromList == null) continue;
 			
@@ -248,31 +248,33 @@ public class GearManager {
 			this.dataWorker.addChangedLink(linkFromList);
 		}
 		
-		return draw == null || (boolean)draw ? PowerResult.Drawn : PowerResult.Undrawn;
+		if(draw == null) return PowerResult.Unchanged;
+		
+		return draw ? PowerResult.Drawn : PowerResult.Undrawn;
 	}
 	
 	private PowerResult transferPower(
 			World world,
-			GearState gear,
+			Gearblock gearblock,
 			boolean isPowered,
 			List<Player> players,
-			HashSet<GearState> gears
+			HashSet<Gearblock> gearblocks
 			)
 	{
 		ConfigManager configManager = CastleGates.getConfigManager();
-		BlockCoord gearLoc = gear.getCoord();
+		BlockCoord gearLoc = gearblock.getCoord();
 
-		for(int i = 0; i < faces.length && gears.size() <= configManager.getMaxPowerTransfers(); i++) {
+		for(int i = 0; i < faces.length && gearblocks.size() <= configManager.getMaxPowerTransfers(); i++) {
 			BlockFace face = faces[i];
 			BlockCoord loc = new BlockCoord(world.getUID(), gearLoc.getX() + face.getModX(), gearLoc.getY() + face.getModY(), gearLoc.getZ() + face.getModZ());
-			GearState to = this.gears.get(loc);
+			Gearblock to = this.gearblocks.get(loc);
 			
-			if(to == null || to.isPowered() == isPowered || gears.contains(to)) continue;
+			if(to == null || to.isPowered() == isPowered || gearblocks.contains(to)) continue;
 			
 			if(!canAccessDoors(players, world, loc)) return PowerResult.NotInCitadelGroup;
 			
 			if(isPowered) {
-				GearLink link = to.getLink();
+				GearblockLink link = to.getLink();
 				
 				if(link != null) {
 					PowerResult result;
@@ -286,10 +288,10 @@ public class GearManager {
 					if(result != PowerResult.Allowed) return result;
 				}
 				
-				gears.add(to);
+				gearblocks.add(to);
 			}
 			
-			PowerResult result = transferPower(world, to, isPowered, players, gears);
+			PowerResult result = transferPower(world, to, isPowered, players, gearblocks);
 			
 			if(result != PowerResult.Allowed) return result;
 		}
@@ -297,9 +299,9 @@ public class GearManager {
 		return PowerResult.Allowed;
 	}
 	
-	private BlockFace getLinkFace(GearLink link) {
-		BlockCoord loc1 = link.getGear1().getCoord();
-		BlockCoord loc2 = link.getGear2().getCoord();
+	private BlockFace getLinkFace(GearblockLink link) {
+		BlockCoord loc1 = link.getGearblock1().getCoord();
+		BlockCoord loc2 = link.getGearblock2().getCoord();
 		
 		if(loc1.getX() != loc2.getX()) {
 			return loc1.getX() < loc2.getX() ? BlockFace.EAST: BlockFace.WEST;
@@ -314,12 +316,12 @@ public class GearManager {
 		return null;
 	}
 	
-	private PowerResult canDraw(World world, GearLink link, List<Player> players) {
+	private PowerResult canDraw(World world, GearblockLink link, List<Player> players) {
 		ConfigManager configManager = CastleGates.getConfigManager();
 		
 		BlockFace blockFace = getLinkFace(link);;
-		BlockCoord loc1 = link.getGear1().getCoord();
-		BlockCoord loc2 = link.getGear2().getCoord();
+		BlockCoord loc1 = link.getGearblock1().getCoord();
+		BlockCoord loc2 = link.getGearblock2().getCoord();
 		
 		int x1 = loc1.getX(), y1 = loc1.getY(), z1 = loc1.getZ();
 		int x2 = loc2.getX(), y2 = loc2.getY(), z2 = loc2.getZ();
@@ -333,7 +335,7 @@ public class GearManager {
 			
 			if(!configManager.isBridgeMaterial(block)) return PowerResult.Brocken;
 			
-			if(this.gears.containsKey(new BlockCoord(block))) return PowerResult.CannotDrawGear;
+			if(this.gearblocks.containsKey(new BlockCoord(block))) return PowerResult.CannotDrawGear;
 			
 			if(!canAccessDoors(players, block.getLocation())) return PowerResult.NotInCitadelGroup;
 			
@@ -345,10 +347,10 @@ public class GearManager {
 		return PowerResult.Allowed;
 	}
 
-	private void draw(World world, GearLink link) {
+	private void draw(World world, GearblockLink link) {
 		BlockFace blockFace = getLinkFace(link);
-		BlockCoord loc1 = link.getGear1().getCoord();
-		BlockCoord loc2 = link.getGear2().getCoord();
+		BlockCoord loc1 = link.getGearblock1().getCoord();
+		BlockCoord loc2 = link.getGearblock2().getCoord();
 		
 		int x1 = loc1.getX(), y1 = loc1.getY(), z1 = loc1.getZ();
 		int x2 = loc2.getX(), y2 = loc2.getY(), z2 = loc2.getZ();
@@ -384,10 +386,10 @@ public class GearManager {
 		link.setBlocks(blockStates);
 	}
 
-	private PowerResult canUndraw(World world, GearLink link, List<Player> players) {
+	private PowerResult canUndraw(World world, GearblockLink link, List<Player> players) {
 		BlockFace blockFace = getLinkFace(link);
-		BlockCoord loc1 = link.getGear1().getCoord();
-		BlockCoord loc2 = link.getGear2().getCoord();
+		BlockCoord loc1 = link.getGearblock1().getCoord();
+		BlockCoord loc2 = link.getGearblock2().getCoord();
 		
 		int x1 = loc1.getX(), y1 = loc1.getY(), z1 = loc1.getZ();
 		int x2 = loc2.getX(), y2 = loc2.getY(), z2 = loc2.getZ();
@@ -415,10 +417,10 @@ public class GearManager {
 				: PowerResult.BastionBlocked; 
 	}
 	
-	private void undraw(World world, GearLink link) {
+	private void undraw(World world, GearblockLink link) {
 		BlockFace blockFace = getLinkFace(link);
-		BlockCoord loc1 = link.getGear1().getCoord();
-		BlockCoord loc2 = link.getGear2().getCoord();
+		BlockCoord loc1 = link.getGearblock1().getCoord();
+		BlockCoord loc2 = link.getGearblock2().getCoord();
 		
 		int x1 = loc1.getX(), y1 = loc1.getY(), z1 = loc1.getZ();
 		int x2 = loc2.getX(), y2 = loc2.getY(), z2 = loc2.getZ();

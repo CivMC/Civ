@@ -56,6 +56,7 @@ public class ConfigManager {
 	private int playerStateResetInSeconds;
 	private int switchTimeout;
 	private int maxRedstoneDistance;
+	private boolean allowAutoCreate;
 	
 	public void load(FileConfiguration file) {
 		this.file = file;
@@ -67,6 +68,7 @@ public class ConfigManager {
 		this.database.user = getString("Database.User", "");
 		this.database.password = getString("Database.Password", "");
 		
+		this.allowAutoCreate = getBoolean("Settings.AllowAutoCreate", true);
 		this.maxPowerTransfers = getInt("Settings.MaxPowerTransfers", 8, 0, 10);
 		this.maxBridgeLength = getInt("Settings.MaxBridgeLength", 16, 1, 40);
 		this.playerStateResetInSeconds = getInt("Settings.PlayerStateResetInSeconds", 5 * 60);
@@ -78,7 +80,7 @@ public class ConfigManager {
 		
 		this.stickItem = getItemMaterial("Items.Tool", Material.STICK, null);
 		
-		this.creationConsumeItem = getItemMaterial("Items.CreationConsume", Material.IRON_INGOT, 1);
+		this.creationConsumeItem = getItemMaterial("Items.CreationConsume", Material.GOLD_INGOT, 1);
 		
 		if(this.creationConsumeItem.amount == null) {
 			this.creationConsumeItem.amount = 1;
@@ -98,7 +100,8 @@ public class ConfigManager {
 	}
 	
 	public boolean isStickItem(ItemStack item) {
-		if(item.getType() != this.stickItem.material
+		if(item == null
+				|| item.getType() != this.stickItem.material
 				|| this.stickItem.damage != null && item.getDurability() != this.stickItem.damage
 				|| this.stickItem.amount != null && item.getAmount() != this.stickItem.amount
 				)
@@ -117,6 +120,24 @@ public class ConfigManager {
 	
 	public boolean isBridgeMaterial(Block block) {
 		return this.bridgeMaterials.contains(block.getType());
+	}
+	
+	public boolean isCreationConsumeItem(ItemStack item) {
+		if(item == null
+				|| item.getType() != this.creationConsumeItem.material
+				|| this.creationConsumeItem.damage != null && item.getDurability() != this.creationConsumeItem.damage
+				)
+		{
+			return false;
+		}
+				
+		String lore = Helper.getLore(item);
+		
+		if(Objects.equals(lore, "")) {
+			lore = null;
+		}
+		
+		return Objects.equals(lore, this.creationConsumeItem.lore);
 	}
 	
 	public ItemStack getCreationConsumeItem() {
@@ -155,6 +176,10 @@ public class ConfigManager {
 		return this.maxRedstoneDistance;
 	}
 	
+	public boolean getAllowAutoCreate() {
+		return this.allowAutoCreate;
+	}
+	
     private String getString(String path, String defaultData) {
         if (this.file.get(path) == null)
         	this.file.set(path, defaultData);
@@ -183,6 +208,13 @@ public class ConfigManager {
         }
         
         return value;
+    }
+    
+    private boolean getBoolean(String path, boolean defaultData) {
+        if (this.file.get(path) == null)
+        	this.file.set(path, defaultData);
+        
+        return this.file.getBoolean(path, defaultData);
     }
     
     private HashSet<Material> getBlockMaterials(String path, String[] materials) {

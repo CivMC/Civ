@@ -5,8 +5,8 @@
 
 package com.aleksey.castlegates.database;
 
-public class GearInfo {
-	public int gear_id;
+public class GearblockInfo {
+	public int gearblock_id;
 	public String location_worlduid;
 	public int location_x;
 	public int location_y;

@@ -15,8 +15,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 import com.aleksey.castlegates.CastleGates;
-import com.aleksey.castlegates.database.GearInfo;
-import com.aleksey.castlegates.database.GearSource;
+import com.aleksey.castlegates.database.GearblockInfo;
+import com.aleksey.castlegates.database.GearblockSource;
 import com.aleksey.castlegates.database.LinkInfo;
 import com.aleksey.castlegates.database.LinkSource;
 import com.aleksey.castlegates.database.ReinforcementInfo;
@@ -24,38 +24,38 @@ import com.aleksey.castlegates.database.ReinforcementSource;
 import com.aleksey.castlegates.database.SqlDatabase;
 import com.aleksey.castlegates.types.BlockCoord;
 import com.aleksey.castlegates.types.BlockState;
-import com.aleksey.castlegates.types.GearLink;
-import com.aleksey.castlegates.types.GearState;
+import com.aleksey.castlegates.types.GearblockLink;
+import com.aleksey.castlegates.types.Gearblock;
 
 public class DataWorker extends Thread implements Runnable {
-	private static class GearForUpdate {
-		public GearState original;
-		public GearInfo info;
+	private static class GearblockForUpdate {
+		public Gearblock original;
+		public GearblockInfo info;
 	}
 	
 	private static class LinkForUpdate {
-		public GearLink original;
-		public GearState gear1;
-		public GearState gear2;
+		public GearblockLink original;
+		public Gearblock gearblock1;
+		public Gearblock gearblock2;
 		public byte[] blocks;
 		public List<ReinforcementInfo> reinforcements;
 	}
 	
-	private GearSource gearSource;
+	private GearblockSource gearblockSource;
 	private LinkSource linkSource;
 	private ReinforcementSource reinforcementSource;
 
-	private Map<GearState, GearForUpdate> changedGears = new WeakHashMap<GearState, GearForUpdate>();
-	private Map<GearLink, LinkForUpdate> changedLinks = new WeakHashMap<GearLink, LinkForUpdate>();
+	private Map<Gearblock, GearblockForUpdate> changedGearblocks = new WeakHashMap<Gearblock, GearblockForUpdate>();
+	private Map<GearblockLink, LinkForUpdate> changedLinks = new WeakHashMap<GearblockLink, LinkForUpdate>();
 
-	private ArrayList<GearForUpdate> localChangedGears = new ArrayList<GearForUpdate>();
+	private ArrayList<GearblockForUpdate> localChangedGearblocks = new ArrayList<GearblockForUpdate>();
 	private ArrayList<LinkForUpdate> localChangedLinks = new ArrayList<LinkForUpdate>();
 
 	private long lastExecute = System.currentTimeMillis();
     private AtomicBoolean kill = new AtomicBoolean(false);
 
     public DataWorker(SqlDatabase db) {
-		this.gearSource = new GearSource(db);
+		this.gearblockSource = new GearblockSource(db);
 		this.linkSource = new LinkSource(db);
 		this.reinforcementSource = new ReinforcementSource(db);
 	}
@@ -64,60 +64,60 @@ public class DataWorker extends Thread implements Runnable {
 		terminateThread();
 	}
 	
-	public Map<BlockCoord, GearState> load() throws SQLException {
-		Map<BlockCoord, GearState> gears = new WeakHashMap<BlockCoord, GearState>();
-		Map<Integer, GearState> gearsById = new WeakHashMap<Integer, GearState>();
-		Map<Integer, GearLink> linksById = new WeakHashMap<Integer, GearLink>();
+	public Map<BlockCoord, Gearblock> load() throws SQLException {
+		Map<BlockCoord, Gearblock> gearblocks = new WeakHashMap<BlockCoord, Gearblock>();
+		Map<Integer, Gearblock> gearblocksById = new WeakHashMap<Integer, Gearblock>();
+		Map<Integer, GearblockLink> linksById = new WeakHashMap<Integer, GearblockLink>();
 		
-		loadGears(gears, gearsById);
-		loadLinks(linksById, gearsById);
+		loadGears(gearblocks, gearblocksById);
+		loadLinks(linksById, gearblocksById);
 		loadReinforcements(linksById);
 		
-		return gears;
+		return gearblocks;
 	}
 	
-	private void loadGears(Map<BlockCoord, GearState> gears, Map<Integer, GearState> gearsById) throws SQLException {
-		List<GearInfo> gearData = this.gearSource.selectAll();
+	private void loadGears(Map<BlockCoord, Gearblock> gearblocks, Map<Integer, Gearblock> gearblocksById) throws SQLException {
+		List<GearblockInfo> gearData = this.gearblockSource.selectAll();
 		
-		for(GearInfo info : gearData) {
+		for(GearblockInfo info : gearData) {
 			UUID world = UUID.fromString(info.location_worlduid);
 			BlockCoord location = new BlockCoord(world, info.location_x, info.location_y, info.location_z);
-			GearState gear = new GearState(location);
+			Gearblock gearblock = new Gearblock(location);
 			
-			gear.setId(info.gear_id);
+			gearblock.setId(info.gearblock_id);
 			
-			gears.put(location, gear);
-			gearsById.put(info.gear_id, gear);
+			gearblocks.put(location, gearblock);
+			gearblocksById.put(info.gearblock_id, gearblock);
 		}
 	}
 	
-	private void loadLinks(Map<Integer, GearLink> linksById, Map<Integer, GearState> gearsById) throws SQLException {
+	private void loadLinks(Map<Integer, GearblockLink> linksById, Map<Integer, Gearblock> gearblocksById) throws SQLException {
 		List<LinkInfo> linkData = this.linkSource.selectAll();
 		
 		for(LinkInfo info : linkData) {
-			GearState gear1 = info.gear1_id != null ? gearsById.get(info.gear1_id) : null;
-			GearState gear2 = info.gear2_id != null ? gearsById.get(info.gear2_id) : null;
+			Gearblock gearblock1 = info.gearblock1_id != null ? gearblocksById.get(info.gearblock1_id) : null;
+			Gearblock gearblock2 = info.gearblock2_id != null ? gearblocksById.get(info.gearblock2_id) : null;
 			List<BlockState> blocks = deserializeBlocks(info);
-			GearLink link = new GearLink(gear1, gear2);
+			GearblockLink link = new GearblockLink(gearblock1, gearblock2);
 			
 			link.setId(info.link_id);
 			link.setBlocks(blocks);
 			
-			if(gear1 != null) {
-				gear1.setLink(link);
+			if(gearblock1 != null) {
+				gearblock1.setLink(link);
 			}
 
-			if(gear2 != null) {
-				gear2.setLink(link);
+			if(gearblock2 != null) {
+				gearblock2.setLink(link);
 			}
 			
 			linksById.put(link.getId(), link);
 		}
 	}
 	
-	private void loadReinforcements(Map<Integer, GearLink> linksById) throws SQLException {
+	private void loadReinforcements(Map<Integer, GearblockLink> linksById) throws SQLException {
 		List<ReinforcementInfo> reinforcementData = this.reinforcementSource.selectAll();
-		GearLink link = null;
+		GearblockLink link = null;
 		
 		for(ReinforcementInfo info : reinforcementData) {
 			if(link == null || link.getId() != info.link_id) {
@@ -150,12 +150,12 @@ public class DataWorker extends Thread implements Runnable {
                     Thread.sleep(timeWait);
                 }
                 
-                synchronized (this.changedGears) {
-                	for(GearForUpdate gearForUpdate : this.changedGears.values()) {
-                		this.localChangedGears.add(gearForUpdate);
+                synchronized (this.changedGearblocks) {
+                	for(GearblockForUpdate gearForUpdate : this.changedGearblocks.values()) {
+                		this.localChangedGearblocks.add(gearForUpdate);
                 	}
 
-                	this.changedGears.clear();
+                	this.changedGearblocks.clear();
                 }
                 
                 synchronized (this.changedLinks) {
@@ -170,7 +170,7 @@ public class DataWorker extends Thread implements Runnable {
 	                updateGears();
 	                updateLinks();
                 } finally {
-	                this.localChangedGears.clear();
+	                this.localChangedGearblocks.clear();
 	                this.localChangedLinks.clear();
                 }
             } catch (Exception e) {
@@ -180,18 +180,18 @@ public class DataWorker extends Thread implements Runnable {
     }
     
     private void updateGears() throws SQLException {
-    	for(GearForUpdate gearForUpdate : this.localChangedGears) {
+    	for(GearblockForUpdate gearForUpdate : this.localChangedGearblocks) {
     		if(gearForUpdate.original.isRemoved()) {
     			if(gearForUpdate.original.getId() != 0) {
-    				this.gearSource.delete(gearForUpdate.original.getId());
+    				this.gearblockSource.delete(gearForUpdate.original.getId());
     			}
     		}
     		else if(gearForUpdate.original.getId() != 0) {
-    			this.gearSource.update(gearForUpdate.info);
+    			this.gearblockSource.update(gearForUpdate.info);
     		}
     		else {
-    			this.gearSource.insert(gearForUpdate.info);
-    			gearForUpdate.original.setId(gearForUpdate.info.gear_id);
+    			this.gearblockSource.insert(gearForUpdate.info);
+    			gearForUpdate.original.setId(gearForUpdate.info.gearblock_id);
     		}
     	}
     }
@@ -206,8 +206,8 @@ public class DataWorker extends Thread implements Runnable {
     		} else {
 	    		LinkInfo info = new LinkInfo();
 	    		info.link_id = linkForUpdate.original.getId();
-	    		info.gear1_id = linkForUpdate.gear1 != null ? linkForUpdate.gear1.getId(): null;
-	    		info.gear2_id = linkForUpdate.gear2 != null ? linkForUpdate.gear2.getId(): null;
+	    		info.gearblock1_id = linkForUpdate.gearblock1 != null ? linkForUpdate.gearblock1.getId(): null;
+	    		info.gearblock2_id = linkForUpdate.gearblock2 != null ? linkForUpdate.gearblock2.getId(): null;
 	    		info.blocks = linkForUpdate.blocks;
 	    		
 	    		if(info.link_id != 0) {
@@ -234,38 +234,38 @@ public class DataWorker extends Thread implements Runnable {
     	}
     }
 
-    public void addChangedGear(GearState gear) {
-		GearInfo info;
+    public void addChangedGearblock(Gearblock gearblock) {
+		GearblockInfo info;
 		
-		if(gear.isRemoved()) {
+		if(gearblock.isRemoved()) {
 			info = null;
 		} else {
-			info = new GearInfo();
+			info = new GearblockInfo();
 
-			BlockCoord location = gear.getCoord();
-			info.gear_id = gear.getId();
+			BlockCoord location = gearblock.getCoord();
+			info.gearblock_id = gearblock.getId();
 			info.location_worlduid = location.getWorldUID().toString();
 			info.location_x = location.getX();
 			info.location_y = location.getY();
 			info.location_z = location.getZ();
 		}
 		
-		GearForUpdate gearForUpdate = new GearForUpdate();
-		gearForUpdate.original = gear;
+		GearblockForUpdate gearForUpdate = new GearblockForUpdate();
+		gearForUpdate.original = gearblock;
 		gearForUpdate.info = info;
 
-		synchronized(this.changedGears) {
-			this.changedGears.put(gear, gearForUpdate);
+		synchronized(this.changedGearblocks) {
+			this.changedGearblocks.put(gearblock, gearForUpdate);
 		}
 	}
 	
-	public void addChangedLink(GearLink link) {
+	public void addChangedLink(GearblockLink link) {
 		LinkForUpdate linkForUpdate = new LinkForUpdate();
 		linkForUpdate.original = link;
 		
 		if(!link.isRemoved()) {
-			linkForUpdate.gear1 = link.getGear1();
-			linkForUpdate.gear2 = link.getGear2();
+			linkForUpdate.gearblock1 = link.getGearblock1();
+			linkForUpdate.gearblock2 = link.getGearblock2();
 			linkForUpdate.blocks = serializeBlocks(link);
 			
 			if(link.getBlocks() != null) {
@@ -287,7 +287,7 @@ public class DataWorker extends Thread implements Runnable {
 		}
 	}
 	
-	private static byte[] serializeBlocks(GearLink link) {
+	private static byte[] serializeBlocks(GearblockLink link) {
 		if(link.getBlocks() == null) return null;
 		
 		byte[] data = new byte[BlockState.BytesPerBlock * link.getBlocks().size()];

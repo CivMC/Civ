@@ -29,4 +29,11 @@ CREATE TABLE IF NOT EXISTS cg_reinforcement (
    ,acid_time INT NOT NULL
    
    ,CONSTRAINT pk_cg_reinforcement PRIMARY KEY (link_id, block_no)
+);
+
+CREATE TABLE IF NOT EXISTS cg_patch (
+    patch_name VARCHAR(200) NOT NULL
+   ,applied_date DATETIME NOT NULL
+   
+   ,CONSTRAINT pk_cg_patches PRIMARY KEY (patch_name)
 )

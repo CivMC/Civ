@@ -6,15 +6,15 @@
 package com.aleksey.castlegates.types;
 
 
-public class GearState {
+public class Gearblock {
 	private int id;
 	private BlockCoord coord;
 	private boolean powered;
 	private boolean removed;
-	private GearLink link;
+	private GearblockLink link;
 	private long lastSwitchTime;
 	
-	public GearState(BlockCoord coord) {
+	public Gearblock(BlockCoord coord) {
 		this.coord = coord;
 	}
 	
@@ -29,20 +29,20 @@ public class GearState {
 	public boolean isPowered() { return this.powered; }
 	public void setPowered(boolean value) { this.powered = value; }
 	
-	public GearLink getLink() { return this.link != null && !this.link.isBroken() ? this.link: null; }
-	public GearLink getBrokenLink() { return this.link != null && this.link.isBroken() ? this.link: null; }
-	public void setLink(GearLink link) { this.link = link; }
+	public GearblockLink getLink() { return this.link != null && !this.link.isBroken() ? this.link: null; }
+	public GearblockLink getBrokenLink() { return this.link != null && this.link.isBroken() ? this.link: null; }
+	public void setLink(GearblockLink link) { this.link = link; }
 	
 	public long getLastSwitchTime() { return this.lastSwitchTime; }
 	public void setLastSwitchTime() { this.lastSwitchTime = System.currentTimeMillis(); }
 
 	@Override
 	public boolean equals(Object other) {
-		if (other == null || !(other instanceof GearState)) {
+		if (other == null || !(other instanceof Gearblock)) {
 			return false;
 		}
 
-		GearState object = (GearState) other;
+		Gearblock object = (Gearblock) other;
 		
 		return this.coord.equals(object.coord);
 	}
