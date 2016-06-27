@@ -27,6 +27,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
+            <!-- Don't worry, 1.10.2 isn't a nms version bump -->
             <version>1.10.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>

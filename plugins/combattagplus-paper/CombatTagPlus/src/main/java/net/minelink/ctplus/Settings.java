@@ -172,6 +172,10 @@ public final class Settings {
         load();
     }
 
+    public boolean areNPCsRequired() {
+        return !instantlyKill() || alwaysSpawn();
+    }
+
     public int getConfigVersion() {
         return plugin.getConfig().getInt("config-version", 0);
     }

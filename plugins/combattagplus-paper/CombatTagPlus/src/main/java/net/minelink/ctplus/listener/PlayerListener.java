@@ -2,8 +2,11 @@ package net.minelink.ctplus.listener;
 
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.Tag;
+import net.minelink.ctplus.event.CombatLogEvent;
 import net.minelink.ctplus.event.PlayerCombatTagEvent;
+import net.minelink.ctplus.task.SafeLogoutTask;
 import net.minelink.ctplus.task.TagUpdateTask;
+
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -44,6 +47,37 @@ public final class PlayerListener implements Listener {
 
         // Add player to cache
         plugin.getPlayerCache().addPlayer(player);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onLogout(PlayerQuitEvent event) {
+        // Do nothing if player is not combat tagged and NPCs only spawn if tagged
+        Player player = event.getPlayer();
+
+        // Do nothing if player is dead
+        if (player.isDead()) return;
+
+        boolean isTagged = plugin.getTagManager().isTagged(player.getUniqueId());
+        if (!isTagged && !plugin.getSettings().alwaysSpawn()) return;
+
+        // Do nothing if player is not within enabled world
+        if (plugin.getSettings().getDisabledWorlds().contains(player.getWorld().getName())) return;
+
+        // Do nothing if a player logs off in combat in a WorldGuard protected region
+        if (!plugin.getHookManager().isPvpEnabledAt(player.getLocation())) return;
+
+        // Do nothing if player has permission
+        if (player.hasPermission("ctplus.bypass.tag")) return;
+
+        // Do nothing if player has safely logged out
+        if (SafeLogoutTask.isFinished(player)) return;
+
+        plugin.getServer().getPluginManager().callEvent(
+                new CombatLogEvent(
+                        player,
+                        isTagged ? CombatLogEvent.Reason.TAGGED : CombatLogEvent.Reason.UNSAFE_LOGOUT
+                )
+        );
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

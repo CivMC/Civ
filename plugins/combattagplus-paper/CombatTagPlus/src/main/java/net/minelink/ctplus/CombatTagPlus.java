@@ -1,11 +1,17 @@
 package net.minelink.ctplus;
 
+import java.io.IOException;
+import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minelink.ctplus.compat.api.NpcNameGeneratorFactory;
 import net.minelink.ctplus.compat.api.NpcPlayerHelper;
 import net.minelink.ctplus.hook.Hook;
 import net.minelink.ctplus.hook.HookManager;
 import net.minelink.ctplus.hook.TownyHook;
 import net.minelink.ctplus.listener.ForceFieldListener;
+import net.minelink.ctplus.listener.InstakillListener;
 import net.minelink.ctplus.listener.NpcListener;
 import net.minelink.ctplus.listener.PlayerHeadsListener;
 import net.minelink.ctplus.listener.PlayerListener;
@@ -16,16 +22,15 @@ import net.minelink.ctplus.task.TagUpdateTask;
 import net.minelink.ctplus.util.BarUtils;
 import net.minelink.ctplus.util.DurationUtils;
 import net.minelink.ctplus.util.ReflectionUtils;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.MetricsLite;
-
-import java.io.IOException;
-import java.util.UUID;
 
 import static org.bukkit.ChatColor.*;
 
@@ -39,8 +44,10 @@ public final class CombatTagPlus extends JavaPlugin {
 
     private TagManager tagManager;
 
-    private NpcPlayerHelper npcPlayerHelper;
+    @Nonnull
+    private NpcPlayerHelper npcPlayerHelper = NoOpNpcPlayerHelper.INSTANCE;
 
+    @Nullable
     private NpcManager npcManager;
 
     public PlayerCache getPlayerCache() {
@@ -59,22 +66,27 @@ public final class CombatTagPlus extends JavaPlugin {
         return tagManager;
     }
 
+    @Nonnull
     public NpcPlayerHelper getNpcPlayerHelper() {
         return npcPlayerHelper;
     }
 
+    @Nonnull
     public NpcManager getNpcManager() {
-        return npcManager;
+        NpcManager npcManager = this.npcManager;
+        if (npcManager == null) {
+            throw new IllegalStateException("NPCs aren't enabled!");
+        } else {
+            return npcManager;
+        }
+    }
+
+    public boolean hasNpcs() {
+        return npcManager != null;
     }
 
     @Override
     public void onEnable() {
-        // Disable plugin if version compatibility check fails
-        if (!checkVersionCompatibility()) {
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
-
         // Load settings
         saveDefaultConfig();
 
@@ -84,9 +96,35 @@ public final class CombatTagPlus extends JavaPlugin {
             getLogger().info("Configuration file has been updated.");
         }
 
+        // Disable plugin if version compatibility check fails
+        if (isVersionCompatible()) {
+            getLogger().info("CombatTagPlus appears to support npcs for your version of CraftBukkit (" + ReflectionUtils.API_VERSION + ")!");
+            // Helper class was found
+            try {
+                // Attempt to create a new helper
+                npcPlayerHelper = (NpcPlayerHelper) PLAYER_HELPER_IMPL_CLASS.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                // Fail miserably
+                throw new RuntimeException(e);
+            }
+        } else if (settings.areNPCsRequired()) {
+            getLogger().severe("**VERSION ERROR**");
+            getLogger().severe("Server API version detected: " + ReflectionUtils.API_VERSION);
+            getLogger().severe("This version of CombatTagPlus doesn't support NPCs on your version of CraftBukkit!");
+            getLogger().severe("The plugin is configured to use NPCs, and therefore won't work without it!");
+            getLogger().severe("You may disable NPCs by setting 'instantly-kill' to true and 'always-spawn' to false");
+            getLogger().severe("Disabling plugin.....");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        } else {
+            getLogger().warning("Server API version detected: " + ReflectionUtils.API_VERSION);
+            getLogger().warning("This version of CombatTagPlus doesn't support NPCs on your version of CraftBukkit.");
+            getLogger().warning("However, the plugin isn't configured to use NPCs, and therefore will work without it!");
+        }
+
         // Initialize plugin state
         hookManager = new HookManager(this);
-        npcManager = new NpcManager(this);
+        npcManager = hasNpcs() ? new NpcManager(this) : null;
         tagManager = new TagManager(this);
 
         NpcNameGeneratorFactory.setNameGenerator(new NpcNameGeneratorImpl(this));
@@ -104,7 +142,10 @@ public final class CombatTagPlus extends JavaPlugin {
 
         // Register event listeners
         Bukkit.getPluginManager().registerEvents(new ForceFieldListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new NpcListener(this), this);
+        if (hasNpcs()) {
+            Bukkit.getPluginManager().registerEvents(new NpcListener(this), this);
+        }
+        Bukkit.getPluginManager().registerEvents(new InstakillListener(this), this);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
         Bukkit.getPluginManager().registerEvents(new TagListener(this), this);
 
@@ -137,29 +178,11 @@ public final class CombatTagPlus extends JavaPlugin {
         TagUpdateTask.cancelTasks(this);
     }
 
-    private boolean checkVersionCompatibility() {
-        // Load NMS compatibility helper class
-        Class<?> helperClass = ReflectionUtils.getCompatClass("NpcPlayerHelperImpl");
+    // Load NMS compatibility helper class
+    private static final Class<?> PLAYER_HELPER_IMPL_CLASS = ReflectionUtils.getCompatClass("NpcPlayerHelperImpl");
 
-        // Warn about incompatibility and return false indicating failure
-        if (helperClass == null) {
-            getLogger().severe("**VERSION ERROR**");
-            getLogger().severe("Server API version detected: " + ReflectionUtils.API_VERSION);
-            getLogger().severe("This version of CombatTagPlus is not compatible with your CraftBukkit.");
-            return false;
-        }
-
-        // Helper class was found
-        try {
-            // Attempt to create a new helper
-            npcPlayerHelper = (NpcPlayerHelper) helperClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            // Fail miserably
-            throw new RuntimeException(e);
-        }
-
-        // Yay, we're compatible! (hopefully)
-        return true;
+    private boolean isVersionCompatible() {
+        return PLAYER_HELPER_IMPL_CLASS != null;
     }
 
     private void integrateFactions() {
@@ -247,7 +270,25 @@ public final class CombatTagPlus extends JavaPlugin {
         if (cmd.getName().equals("ctplusreload")) {
             reloadConfig();
             getSettings().load();
-            sender.sendMessage(GREEN + getName() + " config reloaded.");
+            if (!hasNpcs() && getSettings().areNPCsRequired()) {
+                if (sender instanceof Player) {
+                    sender.sendMessage(RED + "You reconfigured the plugin to use NPCs, but NPCS aren't supported on CraftBukkit " + ReflectionUtils.API_VERSION);
+                    sender.sendMessage(RED + "Therefore the plugin won't work on this version of CraftBukkit and needs to be disabled!");
+                    sender.sendMessage(RED + "You may disable NPCs by setting 'instantly-kill' to true and 'always-spawn' to false");
+                }
+                getLogger().severe(sender.getName() + " reconfigured the plugin to use NPCs!");
+                getLogger().severe("However, NPCs aren't supprted on CraftBukkit " + ReflectionUtils.API_VERSION);
+                getLogger().severe("Therefore the plugin won't work on this version of CraftBukkit and needs to be disabled!");
+                getLogger().severe("You may disable NPCs by setting 'instantly-kill' to true and 'always-spawn' to false");
+                getLogger().severe("Disabling plugin....");
+                getServer().getPluginManager().disablePlugin(this);
+                return true;
+            } else {
+                if (sender instanceof Player) {
+                    sender.sendMessage(GREEN + getName() + " config reloaded.");
+                }
+                getLogger().info("Config reloaded by " + sender.getName());
+            }
         } else if (cmd.getName().equals("combattagplus")) {
             if (!(sender instanceof Player)) return false;
 
