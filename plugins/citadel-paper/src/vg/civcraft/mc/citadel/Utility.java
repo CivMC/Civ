@@ -694,7 +694,7 @@ public class Utility {
      * @return Returns a natural Reinforcement for the block or null if it isn't meant to have one.
      */
     public static NaturalReinforcement createNaturalReinforcement(Block block, Player player) {
-    	if (block == null || player == null) {
+    	if (block == null) {
 			Citadel.getInstance().getLogger().log(Level.WARNING,
 					"Utility createNaturalReinforcement called with null");
 			return null;
