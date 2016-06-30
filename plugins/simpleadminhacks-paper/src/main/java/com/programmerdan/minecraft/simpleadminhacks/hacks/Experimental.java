@@ -7,6 +7,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -115,13 +116,8 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void monitorTeleportTrack(PlayerTeleportEvent event) {
+	private void monitorTeleportTrack(PlayerPortalEvent event) {
 		if (!config.isPostTeleportSpy()) return;
-		if (!(TeleportCause.NETHER_PORTAL ==  event.getCause() ||
-				TeleportCause.END_GATEWAY == event.getCause() ||
-				TeleportCause.END_PORTAL == event.getCause() )) {
-			return;
-		}
 		
 		final Player player = event.getPlayer();
 
@@ -151,7 +147,7 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 					this.cancel();
 				}
 			}
-		}.runTaskTimer(plugin(), 50l, 100l);
+		}.runTaskTimer(plugin(), 2l, 4l);
 	}
 
 	private void logTeleport(PlayerTeleportEvent event, StringBuffer sb) {

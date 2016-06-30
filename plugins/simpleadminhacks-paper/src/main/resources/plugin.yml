@@ -23,7 +23,7 @@ commands:
     permission: simpleadmin.invmod
   serialize:
     description: Print to console the object held as serialized yaml
-    usage /<command>
+    usage: /<command>
     permission: simpleadmin.hacks
   introkit:
     description: Give a player the currently configured introkit
