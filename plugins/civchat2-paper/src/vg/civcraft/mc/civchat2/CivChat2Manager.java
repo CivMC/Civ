@@ -285,36 +285,28 @@ public class CivChat2Manager {
 			sb.delete(0, sb.length());
 		}
 		
+		ChatColor color = ChatColor.valueOf(defaultColor);
+		if(event.getFormat().equals("<%1$s> %2$s")) {
+			event.setFormat("%1$s: %2$s");
+		}
 		for (Player receiver : recipients){
 			if (!DBM.isIgnoringPlayer(receiver.getUniqueId(), sender.getUniqueId())) {
 				//loop through players and send to those that are close enough
-				ChatColor color = ChatColor.valueOf(defaultColor);
-				int rx = receiver.getLocation().getBlockX();
-				int ry = receiver.getLocation().getBlockY();
-				int rz = receiver.getLocation().getBlockZ();
-				
-				chatdist = Math.sqrt(Math.pow(x- rx, 2) + Math.pow(y - ry, 2) + Math.pow(z - rz, 2));
-				
-				if(chatdist <= range){
-					if(receiver.getWorld() != sender.getWorld()){
-						//reciever is in differnt world dont send
-						continue;
-					} else {
-						double receiverDistance = sender.getLocation().distance(receiver.getLocation());
-						ChatColor newColor = ChatColor.getByChar(config.getColorAtDistance(receiverDistance));
-						color = newColor != null ? newColor : color;
-						if(event.getFormat().equals("<%1$s> %2$s")) {
-							event.setFormat(color + "%1$s: %2$s");
-						}else {
-							event.setFormat(color + event.getFormat());
-						}
-						receiver.sendMessage(String.format(event.getFormat(), NameAPI.getCurrentName(sender.getUniqueId()), chatMessage));
-						/*receiver.sendMessage(sb.append(color) 
-												.append( NameAPI.getCurrentName(uuid)) 
-												.append(": ") 
-												.append( chatMessage)
-												.toString());*/
-						sb.delete(0, sb.length());
+				if(receiver.getWorld().equals(sender.getWorld())){
+					//reciever is in same world so send
+					double receiverDistance = location.distance(receiver.getLocation());
+					if(receiverDistance <= range){
+						ChatColor newColor = ChatColor.valueOf(config.getColorAtDistance(receiverDistance));
+						newColor = newColor != null ? newColor : color;
+
+						/*CivChat2.debugmessage(String.format("%s to %s dist %s color %s", 
+							NameAPI.getCurrentName(sender.getUniqueId()),
+							NameAPI.getCurrentName(receiver.getUniqueId()),
+							receiverDistance,
+							newColor.name()));*/
+
+						receiver.sendMessage(String.format(event.getFormat(), newColor + NameAPI.getCurrentName(sender.getUniqueId()), 
+								newColor + chatMessage));
 					}
 				}
 			}

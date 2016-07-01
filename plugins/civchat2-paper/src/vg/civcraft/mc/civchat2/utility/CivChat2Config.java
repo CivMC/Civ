@@ -1,6 +1,9 @@
 package vg.civcraft.mc.civchat2.utility;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class CivChat2Config {
 	private static FileConfiguration config;
@@ -73,19 +76,22 @@ public class CivChat2Config {
 		return config.getString("mysql.dbname");
 	}
 
-	//This could be changed to a string instead of a char fairly easily in the future
-	public char getColorAtDistance(double distance) {
-		char ret = '-';
-		double minRange = Double.MAX_VALUE;
-		if(config.contains("chat.colors")) {
-			for(String s : config.getConfigurationSection("chat.colors").getKeys(false)) {
-				double range = config.getDouble("chat.colors." + s + ".range");
-				if(config.contains("chat.colors." + s + ".range") && distance < range && range < minRange) {
-					minRange = range;
-					ret = config.getString("chat.colors." + s + ".color").charAt(0);
+	private TreeMap<Double, String> chatColor = null;
+
+	public synchronized String getColorAtDistance(double distance) {
+		if (chatColor == null) {
+			chatColor = new TreeMap<Double, String>();
+			chatColor.put(0.0, getDefaultColor());
+			if (config.contains("chat.colors")) {
+				ConfigurationSection section = config.getConfigurationSection("chat.colors");
+				for (String s : section.getKeys(false)) {
+					chatColor.put(section.getDouble(s + ".range"), section.getString(s + ".color"));
 				}
 			}
 		}
-		return ret;
+
+		String ret = "-";
+		Map.Entry<Double, String> let = chatColor.floorEntry(distance);
+		return let == null ? ret : let.getValue();
 	}
 }
