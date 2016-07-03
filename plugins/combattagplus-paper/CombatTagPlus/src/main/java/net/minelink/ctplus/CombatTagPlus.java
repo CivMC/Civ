@@ -254,12 +254,12 @@ public final class CombatTagPlus extends JavaPlugin {
             UUID uniqueId = ((Player) sender).getUniqueId();
             Tag tag = getTagManager().getTag(uniqueId);
             if (tag == null || tag.isExpired() || !getTagManager().isTagged(uniqueId)) {
-                sender.sendMessage(GREEN + "You are not in combat.");
+                sender.sendMessage(getSettings().getUntaggedCommandReply());
                 return true;
             }
 
             String duration = DurationUtils.format(tag.getTagDuration());
-            sender.sendMessage(RED + duration + GRAY + " remaining on your combat timer.");
+            sender.sendMessage(getSettings().getTaggedCommandReply().replace("{time}", duration));
         } else if (cmd.getName().equals("ctpluslogout")) {
             if (!(sender instanceof Player)) return false;
 
