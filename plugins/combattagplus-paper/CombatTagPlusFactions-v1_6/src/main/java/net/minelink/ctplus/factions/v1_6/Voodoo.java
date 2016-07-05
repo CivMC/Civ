@@ -21,18 +21,12 @@ public class Voodoo {
 
     // magic based on FactionsEntityListener.canDamagerHurtDamagee(EntityDamageByEntityEvent) modified to work for offline players
 
-    public static boolean canDamagerHurtDamagee(UUID damager, UUID damagee) {
-        @Nullable
-        Entity attackerEntity = Bukkit.getPlayer(damager);
-        @Nullable
-        Entity defenderEntity = Bukkit.getPlayer(damagee);
-
-        FPlayer defender = FPlayers.getInstance().getById(damagee.toString());
+    public static boolean canDamagerHurtDamagee(UUID attackerId, @Nullable Location attackerLocation, UUID defenderId, @Nullable Location defenderLocation) {
+        FPlayer defender = FPlayers.getInstance().getById(defenderId.toString());
 
         if (defender == null) return true;
 
-        Location defenderLoc = defenderEntity != null ? defenderEntity.getLocation() : null;
-        Faction defLocFaction = defenderEntity != null ? Board.getInstance().getFactionAt(new FLocation(defenderLoc)) : null;
+        Faction defLocFaction = defenderLocation != null ? Board.getInstance().getFactionAt(new FLocation(defenderLocation)) : null;
 
         /*
         // for damage caused by projectiles, getDamager() returns the projectile... what we need to know is the source
@@ -47,10 +41,10 @@ public class Voodoo {
         }
         */
 
-        if (damager.equals(damagee)) return true; // ender pearl usage and other self-inflicted damage
+        if (attackerId.equals(defenderId)) return true; // ender pearl usage and other self-inflicted damage
 
         // Players can not take attack damage in a SafeZone, or possibly peaceful territory
-        if (defenderEntity != null && defLocFaction.noPvPInTerritory()) {
+        if (defenderLocation != null && defLocFaction.noPvPInTerritory()) {
             /*
             if (damager instanceof Player) {
                 return false;
@@ -66,7 +60,7 @@ public class Voodoo {
         }
         */
 
-        FPlayer attacker = FPlayers.getInstance().getById(damager.toString());
+        FPlayer attacker = FPlayers.getInstance().getById(attackerId.toString());
 
         if (attacker == null) return true;
 
@@ -78,18 +72,18 @@ public class Voodoo {
             return false;
         }
 
-        Faction locFaction = attackerEntity != null ? Board.getInstance().getFactionAt(new FLocation(attacker)) : null;
+        Faction locFaction = attackerLocation != null ? Board.getInstance().getFactionAt(new FLocation(attacker)) : null;
 
         // so we know from above that the defender isn't in a safezone... what about the attacker, sneaky dog that he might be?
-        if (attackerEntity != null && locFaction.noPvPInTerritory()) {
+        if (attackerLocation != null && locFaction.noPvPInTerritory()) {
             return false;
         }
 
-        if (attackerEntity != null && locFaction.isWarZone() && Conf.warZoneFriendlyFire) {
+        if (attackerLocation != null && locFaction.isWarZone() && Conf.warZoneFriendlyFire) {
             return true;
         }
 
-        if (defenderEntity != null && Conf.worldsIgnorePvP.contains(defenderLoc.getWorld().getName())) {
+        if (defenderLocation != null && Conf.worldsIgnorePvP.contains(defenderLocation.getWorld().getName())) {
             return true;
         }
 

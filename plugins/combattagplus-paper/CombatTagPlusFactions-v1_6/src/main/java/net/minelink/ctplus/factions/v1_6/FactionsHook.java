@@ -40,8 +40,8 @@ public class FactionsHook implements Hook, FactionsPlugin {
     }
 
     @Override
-    public boolean mayAttack(UUID first, UUID second) {
-        return Voodoo.canDamagerHurtDamagee(first, second);
+    public boolean mayAttack(UUID attacker, @Nullable Location attackerLocation, UUID defender, @Nullable Location defenderLocation) {
+        return Voodoo.canDamagerHurtDamagee(attacker, attackerLocation, defender, defenderLocation);
     }
 
     // We compile against an old version that doesn't have the TRUCE relationship
