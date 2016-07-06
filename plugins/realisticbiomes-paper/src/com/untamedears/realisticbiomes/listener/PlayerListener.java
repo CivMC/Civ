@@ -84,7 +84,7 @@ public class PlayerListener implements Listener {
 			}
 			
 			if (!Fruits.isFruit(event.getClickedBlock().getType())) {
-				if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {				
+				if (plugin.persistConfig.enabled && growthConfig != null && growthConfig.isPersistent()) {
 					plant = plugin.growAndPersistBlock(block, false, growthConfig, null, null);
 				}
 			}

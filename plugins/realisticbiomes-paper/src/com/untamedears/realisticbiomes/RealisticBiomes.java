@@ -392,6 +392,7 @@ public class RealisticBiomes extends JavaPlugin {
 		
 		if (plant.isFullyGrown()) {
 			// if plant is fully grown and either has no fruits or fruit has fully grown, stop tracking it
+			RealisticBiomes.doLog(Level.FINER,"Realisticbiomes.growAndPersistBlock(): Removing fully grown plant");
 			plantManager.removePlant(block);
 		}
 		
