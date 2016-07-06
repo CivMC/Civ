@@ -1,5 +1,5 @@
 # Don't touch this. It's here to determine whether you need to refresh your config.
-config-version: 21
+config-version: 22
 
 # The duration in seconds that both the attacker and victim should be tagged in combat.
 tag-duration: 15
@@ -16,7 +16,11 @@ untaggedCommandReply: '&aYou are not in combat.'
 #This message is displayed to the player when they check the remaining time on their tag via command. {time} will be replaced with the remaining
 #tag time
 taggedCommandReply: '&c{time} seconds remaining on your combat timer.'
- 
+
+# This message is displayed to a player if they try to attack a player in their faction.
+# {player} will be replaced with the name of the npc's player
+cant-attack-npc-message: "&eYou can't attack &a{player}&e's npc."
+
 # Resets the tag time when the tagged player throws an enderpearl.
 reset-tag-on-pearl: false
 

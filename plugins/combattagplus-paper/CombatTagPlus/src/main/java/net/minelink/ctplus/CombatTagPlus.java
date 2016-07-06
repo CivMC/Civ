@@ -10,6 +10,7 @@ import net.minelink.ctplus.compat.api.NpcPlayerHelper;
 import net.minelink.ctplus.hook.Hook;
 import net.minelink.ctplus.hook.HookManager;
 import net.minelink.ctplus.hook.TownyHook;
+import net.minelink.ctplus.hook.factions.FactionsPlugin;
 import net.minelink.ctplus.listener.ForceFieldListener;
 import net.minelink.ctplus.listener.InstakillListener;
 import net.minelink.ctplus.listener.NpcListener;
@@ -50,6 +51,9 @@ public final class CombatTagPlus extends JavaPlugin {
     @Nullable
     private NpcManager npcManager;
 
+    @Nullable
+    private FactionsPlugin factionsPlugin;
+
     public PlayerCache getPlayerCache() {
         return playerCache;
     }
@@ -79,6 +83,11 @@ public final class CombatTagPlus extends JavaPlugin {
         } else {
             return npcManager;
         }
+    }
+
+    @Nullable
+    public FactionsPlugin getFactionsPlugin() {
+        return factionsPlugin;
     }
 
     public boolean hasNpcs() {
@@ -211,7 +220,14 @@ public final class CombatTagPlus extends JavaPlugin {
 
         try {
             // Create and add FactionsHook
-            getHookManager().addHook((Hook) Class.forName(className).newInstance());
+            Hook hook = (Hook) Class.forName(className).newInstance();
+            if (hook instanceof FactionsPlugin) {
+                getLogger().info("Advanced factions integration available.");
+                getLogger().info("CombatTagPlus should respect factions relationships for NPCs now!");
+                factionsPlugin = (FactionsPlugin) hook;
+            } else {
+                getLogger().info("Advanced factions integration isn't available for your version of factions.");
+            }
         } catch (Exception e) {
             // Something went wrong, chances are it's a newer, incompatible Factions
             getLogger().warning("**WARNING**");

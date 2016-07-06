@@ -74,6 +74,29 @@ public final class NpcListener implements Listener {
         });
     }
 
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+    public void onNPCDamage(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Player)) return; // Check if the attacker is a player
+        if (!(event.getEntity() instanceof Player) || !plugin.getNpcPlayerHelper().isNpc((Player) event.getEntity())) return; // Check if the defender is an entity
+        Player attacker = (Player) event.getDamager();
+        Player npc = (Player) event.getEntity();
+        UUID npcPlayerId = plugin.getNpcPlayerHelper().getIdentity(npc).getId();
+        // Factions integration
+        if (plugin.getFactionsPlugin() != null) {
+            // Check if the attacker can attack the NPC's player
+            if (!plugin.getFactionsPlugin().mayAttack(
+                    attacker.getUniqueId(),
+                    attacker.getLocation(),
+                    npcPlayerId,
+                    npc.getLocation())) {
+                event.setCancelled(true);
+                attacker.sendMessage(plugin.getSettings().getCantAttackNpcMessage(plugin.getNpcPlayerHelper().getIdentity(npc).getName()));
+                //noinspection UnnecessaryReturnStatement - ur mum is unnecessary
+                return;
+            }
+        }
+    }
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void updateDespawnTime(EntityDamageByEntityEvent event) {
         // Do nothing if we are not to update NPC despawn time on hit

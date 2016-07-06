@@ -419,4 +419,9 @@ public final class Settings {
     public String getTaggedCommandReply() {
     	return plugin.getConfig().getString("taggedCommandReply");    	
     }
+
+    public String getCantAttackNpcMessage(String playerName) {
+        return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("cant-attack-npc-message")).replace("{player}", playerName);
+    }
+
 }
