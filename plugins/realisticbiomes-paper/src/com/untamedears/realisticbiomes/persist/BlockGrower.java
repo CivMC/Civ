@@ -44,7 +44,7 @@ public class BlockGrower {
 		growthStages.put(Material.COCOA, 3);
 		
 		growthStages.put(Material.NETHER_WARTS, 4);
-		growthStages.put(Material.BEETROOT_BLOCK, 4);
+		growthStages.put(Material.BEETROOT_BLOCK, 8);
 	}
 	
 	private PlantManager plantManager;
@@ -79,6 +79,9 @@ public class BlockGrower {
 			return false;
 		}
 		
+		RealisticBiomes.doLog(Level.FINER, "BlockGrower.growBlock(): growing " + block.getType() + " growth: " 
+				+ growth + " fruit: " + fruitGrowth);
+		
 		if (growth > 1.0f) {
 			growth = 1.0f;
 		}
@@ -98,7 +101,6 @@ public class BlockGrower {
 			// trust that enum order is sanely declared in order
 			NetherWartsState cropSize = NetherWartsState.values()[stage]; 
 			((NetherWarts)data).setState(cropSize);
-			
 		} else {
 			data.setData(stage);
 		}
@@ -249,7 +251,9 @@ public class BlockGrower {
 					stage = 2;
 					break;
 			}
-			
+		} else if (block.getType() == Material.BEETROOT_BLOCK) {
+			// Let Bukkit fit the 4 stages into 8 for us.
+			stage = ((Crops) data).getState().getData();
 		} else {
 			stage = data.getData();
 		}
