@@ -133,7 +133,7 @@ public final class CombatTagPlus extends JavaPlugin {
 
         // Initialize plugin state
         hookManager = new HookManager(this);
-        npcManager = hasNpcs() ? new NpcManager(this) : null;
+        npcManager = isVersionCompatible() ? new NpcManager(this) : null;
         tagManager = new TagManager(this);
 
         NpcNameGeneratorFactory.setNameGenerator(new NpcNameGeneratorImpl(this));
