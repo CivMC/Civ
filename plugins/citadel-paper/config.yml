@@ -3,6 +3,16 @@
 # return is the amount of material to return.
 # percent_chance is the chance to return the block. Scales with damage.
 # scale_amount is, if maturation is enabled, the amount extra to damage a block if it is not fully matured.  The forumla for calculating the extra damage is 1/(1-((time left of maturation) / (default amount of time for maturation))) * scale.  So if a block has 5 minutes left of maturation on a 10 minute default period with a scale of 3 we do 1/(5 / 10) * 3 = 6 damage. Setting scale amount to 0 disables this function.
+# effect allows to add particles around a reinforced block when it is created or damaged.
+#  type: The bukkit name of the particle.
+#  id: the item/block/data id for the effect
+#  data: the data value of the block/item for the effect
+#  offsetX: the amount to be randomly offset by in the X axis
+#  offsetY: the amount to be randomly offset by in the Y axis
+#  offsetZ: the amount to be randomly offset by in the Z axis
+#  speed: the speed of the particles
+#  particleCount: the amount of particle to display. 
+#  view_distance: the distance from which players will be able to see the effect. default is 16. 
 internal_logging: true
 command_logging: true
 break_logging: true
@@ -19,6 +29,10 @@ reinforcements:
   acid_time: 1440
   scale_amount: 1
   lore:
+  effect:
+   type: FLYING_GLYPH
+   speed: 0.5
+   particleCount: 50
 # Delete the comment char to use lore.  Three spaces are required 
 # after lore. You can add multiple lines by adding -
 #   - Some string representation required for this reinforcement.
@@ -36,6 +50,10 @@ reinforcements:
   acid_time: 60
   scale_amount: 1
   lore:
+  effect:
+   type: FLYING_GLYPH
+   speed: 0.5
+   particleCount: 50
  stone:
   material: STONE
   requirements: 1
@@ -46,6 +64,10 @@ reinforcements:
   acid_time: 10
   scale_amount: 1
   lore:
+  effect:
+   type: FLYING_GLYPH
+   speed: 0.5
+   particleCount: 50
  bedrock:
   material: BEDROCK
   requirements: 1
@@ -56,6 +78,10 @@ reinforcements:
   acid_time: 147483646
   scale_amount: 1
   lore:
+  effect:
+   type: FLYING_GLYPH
+   speed: 0.5
+   particleCount: 50
 #natural_reinforcements:
  #diamond_ore:
   #material: DIAMOND_ORE
