@@ -6,7 +6,7 @@
   <groupId>com.aleksey</groupId>
   <artifactId>castlegates</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.3-SNAPSHOT</version>
   <name>CastleGates</name>
   <url>https://github.com/Aleksey-Terzi/CastleGates</url>
   
@@ -31,7 +31,7 @@
 	<dependency>
 	  <groupId>vg.civcraft.mc.citadel</groupId>
       <artifactId>Citadel</artifactId>
-      <version>3.5.2</version>
+      <version>3.5.4</version>
       <scope>provided</scope>
     </dependency>
 	<dependency>

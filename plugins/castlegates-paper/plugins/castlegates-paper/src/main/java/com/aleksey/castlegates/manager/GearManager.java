@@ -398,7 +398,7 @@ public class GearManager {
 		y1 += blockFace.getModY();
 		z1 += blockFace.getModZ();
 		
-		HashSet<Block> bridgeBlocks = new HashSet<Block>();
+		List<Block> bridgeBlocks = new ArrayList<Block>();
 
 		while(x1 != x2 || y1 != y2 || z1 != z2) {
 			Block block = world.getBlockAt(x1, y1, z1); 

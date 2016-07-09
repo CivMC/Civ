@@ -259,29 +259,31 @@ public class CastleGatesManager {
 		Player player = event.getPlayer();
 		Block block = event.getClickedBlock();
 		
+		Gearblock gearblock1 = this.gearManager.getGearblock(new BlockCoord(block)); 
+		
+		if(gearblock1 == null) return false;
+
 		if(!CastleGates.getCitadelManager().canBypass(player, block.getLocation())) {
 			player.sendMessage(ChatColor.RED + "Citadel preventing creation of link.");
 			return false;
 		}
-		
-		Gearblock gearblock1 = this.gearManager.getGearblock(new BlockCoord(block)); 
-		
-		if(gearblock1 == null) return false;
-		
-		FindGearResult result = findEndGear(block, event.getBlockFace());
-		
-		if(result == null) {
-			event.getPlayer().sendMessage(ChatColor.RED + "End gearblock is not found. Link distance is limited to " + CastleGates.getConfigManager().getMaxBridgeLength() + " blocks");
-		}
-		else if(gearblock1.getLink() != null) {
+
+		if(gearblock1.getLink() != null) {
 			if(gearblock1.getLink().isDrawn()) {
 				player.sendMessage(ChatColor.RED + "Link in drawn state cannot be removed.");
 			} else {
 				this.gearManager.removeLink(gearblock1.getLink());
 				player.sendMessage(ChatColor.GREEN + "Gearblock's link has been removed.");
 			}
+			
+			return true;
 		}
-		else {
+		
+		FindGearResult result = findEndGear(block, event.getBlockFace());
+
+		if(result == null) {
+			event.getPlayer().sendMessage(ChatColor.RED + "End gearblock is not found. Link distance is limited to " + CastleGates.getConfigManager().getMaxBridgeLength() + " blocks");
+		} else {
 			linkGearblocks(player, gearblock1, result);
 		}
 		

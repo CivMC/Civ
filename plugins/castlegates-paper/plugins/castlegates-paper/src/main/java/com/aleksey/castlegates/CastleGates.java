@@ -79,6 +79,7 @@ public class CastleGates extends JavaPlugin {
 
         if(getServer().getPluginManager().getPlugin("Bastion") != null) {
         	bastionManager = new BastionManager();
+        	bastionManager.init();
         	getLogger().log(Level.INFO, "Bastion plugin is found");
         } else {
         	bastionManager = new NoBastionManager();

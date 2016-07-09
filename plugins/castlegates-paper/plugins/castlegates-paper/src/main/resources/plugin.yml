@@ -3,7 +3,7 @@ main: com.aleksey.castlegates.CastleGates
 version: ${project.version}
 author: Aleksey-Terzi
 description: 'Drawable gates and bridges'
-softdepend: [Orebfuscator4, Citadel, Bastion]
+softdepend: [Orebfuscator4, NameLayer, Citadel, Bastion]
 commands:
   cg:
     description: Manage Castle Gates.
