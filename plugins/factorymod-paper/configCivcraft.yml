@@ -50,6 +50,12 @@ factories:
     type: FCCUPGRADE
     name: Basic Fortifications
     recipes:
+     - Produce_basic_andesite_Miner_Component
+     - Produce_basic_diorite_Miner_Component
+     - Produce_basic_granite_Miner_Component
+     - Produce_basic_ink_splashed_Hunter_Component
+     - Produce_basic_mysterious_Hunter_Component
+     - Produce_basic_sticky_Hunter_Component
      - Produce_decent_solid_Miner_Component
      - Produce_decent_shiny_Miner_Component
      - Produce_decent_bouncy_Hunter_Component
@@ -62,6 +68,12 @@ factories:
     type: FCCUPGRADE
     name: Intermediate Fortifications
     recipes:
+     - Produce_basic_andesite_Miner_Component
+     - Produce_basic_diorite_Miner_Component
+     - Produce_basic_granite_Miner_Component
+     - Produce_basic_ink_splashed_Hunter_Component
+     - Produce_basic_mysterious_Hunter_Component
+     - Produce_basic_sticky_Hunter_Component
      - Produce_decent_solid_Miner_Component
      - Produce_decent_shiny_Miner_Component
      - Produce_decent_bouncy_Hunter_Component
@@ -78,6 +90,12 @@ factories:
     type: FCCUPGRADE
     name: Advanced Fortifications
     recipes:
+     - Produce_basic_andesite_Miner_Component
+     - Produce_basic_diorite_Miner_Component
+     - Produce_basic_granite_Miner_Component
+     - Produce_basic_ink_splashed_Hunter_Component
+     - Produce_basic_mysterious_Hunter_Component
+     - Produce_basic_sticky_Hunter_Component
      - Produce_decent_solid_Miner_Component
      - Produce_decent_shiny_Miner_Component
      - Produce_decent_bouncy_Hunter_Component
@@ -11001,6 +11019,132 @@ recipes:
           amount: 1
 
 #Reinforcement recipes:
+  Produce_basic_granite_Miner_Component:
+    type: PRODUCTION
+    production_time: 2s
+    name: Produce basic Granite Miner Component
+    input:
+      stone:
+        material: STONE
+        amount: 128
+      granite:
+        material: STONE
+        amount: 64
+        durability: 1
+      coalore:
+        material: COAL_ORE
+        amount: 24
+    output:
+      basicMiner:
+        material: FLINT
+        name: Miner Component
+        lore: Basic Reinforcement Ingredient
+        amount: 8
+        
+  Produce_basic_andesite_Miner_Component:
+    type: PRODUCTION
+    production_time: 2s
+    name: Produce basic Andesite Miner Component
+    input:
+      stone:
+        material: STONE
+        amount: 128
+      granite:
+        material: STONE
+        amount: 64
+        durability: 5
+      coalore:
+        material: COAL_ORE
+        amount: 24
+    output:
+      basicMiner:
+        material: FLINT
+        name: Miner Component
+        lore: Basic Reinforcement Ingredient
+        amount: 8
+        
+  Produce_basic_diorite_Miner_Component:
+    type: PRODUCTION
+    production_time: 4s
+    name: Produce basic Diorite Miner Component
+    input:
+      stone:
+        material: STONE
+        amount: 128
+      granite:
+        material: STONE
+        amount: 64
+        durability: 3
+      coalore:
+        material: COAL_ORE
+        amount: 24
+    output:
+      basicMiner:
+        material: FLINT
+        name: Miner Component
+        lore: Basic Reinforcement Ingredient
+        amount: 8
+        
+  Produce_basic_ink_splashed_Hunter_Component:
+    type: PRODUCTION
+    production_time: 4s
+    name: Produce basic ink splashed Hunter Component
+    input:
+      inksack:
+        material: INK_SACK
+        amount: 16
+      bone:
+        material: BONE
+        amount: 24
+      string:
+        material: STRING
+        amount: 32
+    output:
+      basicHunter:
+        material: BONE
+        name: Hunter Component
+        lore: Basic Reinforcement Ingredient
+        amount: 8   
+
+  Produce_basic_sticky_Hunter_Component:
+    type: PRODUCTION
+    production_time: 4s
+    name: Produce basic sticky Hunter Component
+    input:
+      inksack:
+        material: SPIDER_EYE
+        amount: 32
+      bone:
+        material: ROTTEN_FLESH
+        amount: 64
+    output:
+      basicHunter:
+        material: BONE
+        name: Hunter Component
+        lore: Basic Reinforcement Ingredient
+        amount: 8  
+
+  Produce_basic_mysterious_Hunter_Component:
+    type: PRODUCTION
+    production_time: 4s
+    name: Produce basic mysterious Hunter Component
+    input:
+      inksack:
+        material: ENDER_PEARL
+        amount: 16
+      bone:
+        material: ROTTEN_FLESH
+        amount: 32
+      string:
+        material: STRING
+        amount: 32
+    output:
+      basicHunter:
+        material: BONE
+        name: Hunter Component
+        lore: Basic Reinforcement Ingredient
+        amount: 8 
+      
   Produce_decent_solid_Miner_Component:
     type: PRODUCTION
     production_time: 4s
@@ -11200,7 +11344,7 @@ recipes:
         amount: 64
     output:
       bracers:
-        material: FLINT
+        material: NETHER_BRICK_ITEM
         lore:
          - Structure Bracing
         amount: 64
@@ -11248,8 +11392,7 @@ recipes:
         material: EMERALD_BLOCK
         amount: 12
     output:
-      material: INK_SACK
-      durability: 1
+      material: FIREWORK_CHARGE
       lore:
        - Rapid Reinforcement
       amount: 32
