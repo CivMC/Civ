@@ -48,7 +48,7 @@ factories:
   #Basic Contraption --> Basic Fortification
   basicFortification:
     type: FCCUPGRADE
-    name: Basic Fortification
+    name: Basic Fortifications
     recipes:
      - Produce_decent_solid_Miner_Component
      - Produce_decent_shiny_Miner_Component
@@ -60,7 +60,7 @@ factories:
   #Basic Contraption --> Basic Fortification --> Intermediate Fortification
   intermediateFortification:
     type: FCCUPGRADE
-    name: Intermediate Fortification
+    name: Intermediate Fortifications
     recipes:
      - Produce_decent_solid_Miner_Component
      - Produce_decent_shiny_Miner_Component
@@ -76,7 +76,7 @@ factories:
   #Basic Contraption --> Basic Fortification --> Intermediate Fortification --> Advanced Fortification
   advancedFortification:
     type: FCCUPGRADE
-    name: Advanced Fortification
+    name: Advanced Fortifications
     recipes:
      - Produce_decent_solid_Miner_Component
      - Produce_decent_shiny_Miner_Component
@@ -11258,7 +11258,7 @@ recipes:
     production_time: 5m
     type: UPGRADE
     name: Upgrade to Basic Fortification
-    factory: Basic Fortification
+    factory: Basic Fortifications
     fuel_consumption_intervall: 10s
     input:
       basicMiner:
@@ -11276,7 +11276,7 @@ recipes:
     production_time: 1h
     type: UPGRADE
     name: Upgrade to Intermediate Fortification
-    factory: Intermediate Fortification
+    factory: Intermediate Fortifications
     fuel_consumption_intervall: 1m
     input:
       decentMiner:
@@ -11294,7 +11294,7 @@ recipes:
     production_time: 12h
     type: UPGRADE
     name: Upgrade to Advanced Fortification
-    factory: Advanced Fortification
+    factory: Advanced Fortifications
     fuel_consumption_intervall: 15m
     input:
       strongMiner:
