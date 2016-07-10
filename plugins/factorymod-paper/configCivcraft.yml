@@ -695,12 +695,6 @@ factories:
     - Craft_Droppers
     - Craft_Redstone_Lamps
     - Repair_Advanced_Factory
-  xpfactory:
-    type: FCCUPGRADE
-    name: Emerald Extractor
-    recipes:
-     - Repair_Expert_Factory
-     - Return_Materials
   basicpylon:
     type: FCCUPGRADE
     name: Basic Pylon
@@ -728,12 +722,6 @@ factories:
      - Pack_Snow_To_Ice
      - Compress_Ice_To_Packed_Ice
      - Repair_Factory
-  dowsingfactory:
-    type: FCCUPGRADE
-    name: Dowsing Factory
-    recipes:
-     - Return_Materials
-     - Repair_Advanced_Factory
 ## Enchanting
   basicforge:
     type: FCCUPGRADE
