@@ -56,6 +56,8 @@ factories:
      - Produce_basic_ink_splashed_Hunter_Component
      - Produce_basic_mysterious_Hunter_Component
      - Produce_basic_sticky_Hunter_Component
+     - Produce_basic_miner_reinforcement
+     - Produce_basic_hunter_reinforcement
      - Produce_decent_solid_Miner_Component
      - Produce_decent_shiny_Miner_Component
      - Produce_decent_bouncy_Hunter_Component
@@ -74,6 +76,8 @@ factories:
      - Produce_basic_ink_splashed_Hunter_Component
      - Produce_basic_mysterious_Hunter_Component
      - Produce_basic_sticky_Hunter_Component
+     - Produce_basic_miner_reinforcement
+     - Produce_basic_hunter_reinforcement
      - Produce_decent_solid_Miner_Component
      - Produce_decent_shiny_Miner_Component
      - Produce_decent_bouncy_Hunter_Component
@@ -96,6 +100,8 @@ factories:
      - Produce_basic_ink_splashed_Hunter_Component
      - Produce_basic_mysterious_Hunter_Component
      - Produce_basic_sticky_Hunter_Component
+     - Produce_basic_miner_reinforcement
+     - Produce_basic_hunter_reinforcement
      - Produce_decent_solid_Miner_Component
      - Produce_decent_shiny_Miner_Component
      - Produce_decent_bouncy_Hunter_Component
@@ -11038,7 +11044,8 @@ recipes:
       basicMiner:
         material: FLINT
         name: Miner Component
-        lore: Basic Reinforcement Ingredient
+        lore: 
+         - Basic Reinforcement Ingredient
         
   Produce_basic_andesite_Miner_Component:
     type: PRODUCTION
@@ -11059,11 +11066,12 @@ recipes:
       basicMiner:
         material: FLINT
         name: Miner Component
-        lore: Basic Reinforcement Ingredient
+        lore: 
+         - Basic Reinforcement Ingredient
         
   Produce_basic_diorite_Miner_Component:
     type: PRODUCTION
-    production_time: 4s
+    production_time: 2s
     name: Produce basic Diorite Miner Component
     input:
       stone:
@@ -11080,11 +11088,12 @@ recipes:
       basicMiner:
         material: FLINT
         name: Miner Component
-        lore: Basic Reinforcement Ingredient
+        lore: 
+         - Basic Reinforcement Ingredient
         
   Produce_basic_ink_splashed_Hunter_Component:
     type: PRODUCTION
-    production_time: 4s
+    production_time: 2s
     name: Produce basic ink splashed Hunter Component
     input:
       inksack:
@@ -11100,11 +11109,12 @@ recipes:
       basicHunter:
         material: BONE
         name: Hunter Component
-        lore: Basic Reinforcement Ingredient   
+        lore: 
+         - Basic Reinforcement Ingredient   
 
   Produce_basic_sticky_Hunter_Component:
     type: PRODUCTION
-    production_time: 4s
+    production_time: 2s
     name: Produce basic sticky Hunter Component
     input:
       inksack:
@@ -11117,11 +11127,12 @@ recipes:
       basicHunter:
         material: BONE
         name: Hunter Component
-        lore: Basic Reinforcement Ingredient
+        lore: 
+         - Basic Reinforcement Ingredient
 
   Produce_basic_mysterious_Hunter_Component:
     type: PRODUCTION
-    production_time: 4s
+    production_time: 2s
     name: Produce basic mysterious Hunter Component
     input:
       inksack:
@@ -11137,7 +11148,45 @@ recipes:
       basicHunter:
         material: BONE
         name: Hunter Component
-        lore: Basic Reinforcement Ingredient
+        lore: 
+         - Basic Reinforcement Ingredient
+        
+  Produce_basic_miner_reinforcement:
+    type: PRODUCTION
+    production_time: 2s
+    name: Produce basic miner reinforcement
+    input:
+      basicMiner:
+        material: FLINT
+        name: Miner Component
+        lore: 
+         - Basic Reinforcement Ingredient
+        amount: 4
+        
+    output:
+      basicRein:
+        material: CLAY_BALL
+        amount: 64
+        lore:
+         - Basic Reinforcement
+         
+  Produce_basic_hunter_reinforcement:
+    type: PRODUCTION
+    production_time: 2s
+    amount: 4
+    name: Produce basic hunter reinforcement
+    input:
+      basicHunter:
+        material: BONE
+        name: Hunter Component
+        lore: 
+         - Basic Reinforcement Ingredient
+    output:
+      basicRein:
+        material: CLAY_BALL
+        amount: 64
+        lore:
+         - Basic Reinforcement
       
   Produce_decent_solid_Miner_Component:
     type: PRODUCTION
@@ -11147,7 +11196,8 @@ recipes:
       basicHunter:
         material: BONE
         name: Hunter Component
-        lore: Basic Reinforcement Ingredient
+        lore: 
+         - Basic Reinforcement Ingredient
         amount: 8
       flint:
         material: FLINT
@@ -11159,8 +11209,8 @@ recipes:
       decentMiner:
         material: QUARTZ
         name: Miner Component
-        lore: Decent Reinforcement Ingredient
-        amount: 1
+        lore: 
+         - Decent Reinforcement Ingredient
  
   Produce_decent_shiny_Miner_Component:
     type: PRODUCTION
@@ -11170,7 +11220,8 @@ recipes:
       basicHunter:
         material: BONE
         name: Hunter Component
-        lore: Basic Reinforcement Ingredient
+        lore: 
+         - Basic Reinforcement Ingredient
         amount: 8
       redstone:
         material: REDSTONE
@@ -11182,8 +11233,8 @@ recipes:
       decentMiner:
         material: QUARTZ
         name: Miner Component
-        lore: Decent Reinforcement Ingredient
-        amount: 1
+        lore: 
+         - Decent Reinforcement Ingredient
   
   Produce_decent_bouncy_Hunter_Component:
     type: PRODUCTION
@@ -11193,7 +11244,8 @@ recipes:
       basicMiner:
         material: FLINT
         name: Miner Component
-        lore: Basic Reinforcement Ingredient
+        lore: 
+         - Basic Reinforcement Ingredient
         amount: 8
       slime:
         material: SLIME_BALL
@@ -11205,7 +11257,8 @@ recipes:
       decentHunter:
         material: SULPHUR
         name: Hunter Component
-        lore: Decent Reinforcement Ingredient
+        lore: 
+         - Decent Reinforcement Ingredient
   
   Produce_decent_heatresistant_Hunter_Component:
     type: PRODUCTION
@@ -11215,7 +11268,8 @@ recipes:
       basicMiner:
         material: FLINT
         name: Miner Component
-        lore: Basic Reinforcement Ingredient
+        lore: 
+         - Basic Reinforcement Ingredient
         amount: 8
       magmaCream:
         material: MAGMA_CREAM
@@ -11227,7 +11281,8 @@ recipes:
       decentHunter:
         material: SULPHUR
         name: Hunter Component
-        lore: Decent Reinforcement Ingredient
+        lore: 
+         - Decent Reinforcement Ingredient
   
   Produce_decent_reinforcement:
     type: PRODUCTION
@@ -11237,12 +11292,14 @@ recipes:
       decentMiner:
         material: QUARTZ
         name: Miner Component
-        lore: Decent Reinforcement Ingredient
+        lore: 
+         - Decent Reinforcement Ingredient
         amount: 4
       decentHunter:
         material: SULPHUR
         name: Hunter Component
-        lore: Decent Reinforcement Ingredient
+        lore: 
+         - Decent Reinforcement Ingredient
         amount: 4
     output:
       slimeball:
@@ -11259,7 +11316,8 @@ recipes:
       decentMiner:
         material: QUARTZ
         name: Miner Component
-        lore: Decent Reinforcement Ingredient
+        lore: 
+         - Decent Reinforcement Ingredient
         amount: 6
       ghastTear:
         material: GHAST_TEAR
@@ -11271,7 +11329,8 @@ recipes:
       strongHunter:
         material: GHAST_TEAR
         name: Hunter Component
-        lore: Strong Reinforcement Ingredient
+        lore: 
+         - Strong Reinforcement Ingredient
         amount: 1
       
   Produce_strong_Miner_Component:
@@ -11282,7 +11341,8 @@ recipes:
       decentHunter:
         material: SULPHUR
         name: Hunter Component
-        lore: Decent Reinforcement Ingredient
+        lore: 
+         - Decent Reinforcement Ingredient
         amount: 6
       diamond:
         material: DIAMOND
@@ -11295,7 +11355,8 @@ recipes:
       strongMiner:
         material: PRISMARINE
         name: Miner Component
-        lore: Strong Reinforcement Ingredient
+        lore: 
+         - Strong Reinforcement Ingredient
         amount: 1
     
   Produce_good_reinforcement:
@@ -11306,12 +11367,14 @@ recipes:
       strongMiner:
         material: PRISMARINE
         name: Miner Component
-        lore: Strong Reinforcement Ingredient
+        lore: 
+         - Strong Reinforcement Ingredient
         amount: 4
       strongHunter:
         material: GHAST_TEAR
         name: Hunter Component
-        lore: Strong Reinforcement Ingredient
+        lore: 
+         - Strong Reinforcement Ingredient
         amount: 4
     output:
       goodReinforcement:
@@ -11351,21 +11414,24 @@ recipes:
       strongMiner:
         material: PRISMARINE
         name: Miner Component
-        lore: Strong Reinforcement Ingredient
+        lore: 
+         - Strong Reinforcement Ingredient
         amount: 6
       strongHunter:
         material: GHAST_TEAR
         name: Hunter Component
-        lore: Strong Reinforcement Ingredient
+        lore: 
+         - Strong Reinforcement Ingredient
         amount: 6
       xp:
         material: EMERALD_BLOCK
         amount: 18
     output:
-      material: QUARTZ
-      lore:
-       - Best Reinforcement
-      amount: 32
+      bestRein:
+        material: QUARTZ
+        lore:
+         - Best Reinforcement
+        amount: 32
       
   Produce_good_instant_reinforcement:
     type: PRODUCTION
@@ -11375,21 +11441,24 @@ recipes:
       strongMiner:
         material: PRISMARINE
         name: Miner Component
-        lore: Strong Reinforcement Ingredient
+        lore: 
+         - Strong Reinforcement Ingredient
         amount: 6
       strongHunter:
         material: GHAST_TEAR
         name: Hunter Component
-        lore: Strong Reinforcement Ingredient
+        lore: 
+         - Strong Reinforcement Ingredient
         amount: 6
       xp:
         material: EMERALD_BLOCK
         amount: 12
     output:
-      material: FIREWORK_CHARGE
-      lore:
-       - Rapid Reinforcement
-      amount: 32
+      goodInstantRein:
+        material: FIREWORK_CHARGE
+        lore:
+         - Rapid Reinforcement
+        amount: 32
       
   Upgrade_to_Basic_Fortification:
     production_time: 5m
