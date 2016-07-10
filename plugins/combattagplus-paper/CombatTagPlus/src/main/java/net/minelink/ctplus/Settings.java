@@ -413,11 +413,11 @@ public final class Settings {
     }
 
     public String getUntaggedCommandReply() {
-    	return plugin.getConfig().getString("untaggedCommandReply");    	
+    	return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("untaggedCommandReply"));
     }
     
     public String getTaggedCommandReply() {
-    	return plugin.getConfig().getString("taggedCommandReply");    	
+    	return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("taggedCommandReply"));
     }
 
     public String getCantAttackNpcMessage(String playerName) {
