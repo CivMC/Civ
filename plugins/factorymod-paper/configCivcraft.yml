@@ -11039,7 +11039,6 @@ recipes:
         material: FLINT
         name: Miner Component
         lore: Basic Reinforcement Ingredient
-        amount: 8
         
   Produce_basic_andesite_Miner_Component:
     type: PRODUCTION
@@ -11061,7 +11060,6 @@ recipes:
         material: FLINT
         name: Miner Component
         lore: Basic Reinforcement Ingredient
-        amount: 8
         
   Produce_basic_diorite_Miner_Component:
     type: PRODUCTION
@@ -11083,7 +11081,6 @@ recipes:
         material: FLINT
         name: Miner Component
         lore: Basic Reinforcement Ingredient
-        amount: 8
         
   Produce_basic_ink_splashed_Hunter_Component:
     type: PRODUCTION
@@ -11103,8 +11100,7 @@ recipes:
       basicHunter:
         material: BONE
         name: Hunter Component
-        lore: Basic Reinforcement Ingredient
-        amount: 8   
+        lore: Basic Reinforcement Ingredient   
 
   Produce_basic_sticky_Hunter_Component:
     type: PRODUCTION
@@ -11122,7 +11118,6 @@ recipes:
         material: BONE
         name: Hunter Component
         lore: Basic Reinforcement Ingredient
-        amount: 8  
 
   Produce_basic_mysterious_Hunter_Component:
     type: PRODUCTION
@@ -11143,7 +11138,6 @@ recipes:
         material: BONE
         name: Hunter Component
         lore: Basic Reinforcement Ingredient
-        amount: 8 
       
   Produce_decent_solid_Miner_Component:
     type: PRODUCTION
