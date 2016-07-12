@@ -42,6 +42,7 @@ public class GearManager {
 	public static enum CreateResult { NotCreated, AlreadyExist, Created }
 	public static enum RemoveResult { NotExist, Removed, RemovedWithLink }
 	public static enum PowerResult { NotLinked, Unchanged, Unpowered, Blocked, Brocken, Drawn, Undrawn, CannotDrawGear, NotInCitadelGroup, BastionBlocked, Allowed }
+	public static enum SearchBridgeBlockResult { NotFound, Bridge, Gates }
 
 	private Map<BlockCoord, Gearblock> gearblocks;
 	private DataWorker dataWorker;
@@ -58,6 +59,58 @@ public class GearManager {
 	public void close() {
 		if(this.dataWorker != null) {
 			this.dataWorker.close();
+		}
+	}
+	
+	public SearchBridgeBlockResult searchBridgeBlock(BlockCoord coord) {
+		int maxLen = CastleGates.getConfigManager().getMaxBridgeLength();
+		
+		for(BlockFace face : faces) {
+			BlockCoord current = coord;
+			
+			for(int i = 0; i < maxLen; i++) {
+				current.increment(face);
+				
+				Gearblock gearblock = this.gearblocks.get(current);
+				
+				if(gearblock != null) {
+					if(isBridgeBlock(gearblock, face)) {
+						return face == BlockFace.UP || face == BlockFace.DOWN
+								? SearchBridgeBlockResult.Gates
+								: SearchBridgeBlockResult.Bridge;
+					}
+					
+					break;
+				}
+			}
+		}
+		
+		return SearchBridgeBlockResult.NotFound;
+	}
+	
+	private static boolean isBridgeBlock(Gearblock gearblock, BlockFace face) {
+		GearblockLink link = gearblock.getLink();  
+		
+		if(link == null || link.isDrawn()) return false;
+		
+		BlockCoord coord1 = link.getGearblock1().getCoord();
+		BlockCoord coord2 = link.getGearblock2().getCoord();
+		
+		switch(face) {
+		case EAST:
+			return coord1.getX() < gearblock.getCoord().getX() || coord2.getX() < gearblock.getCoord().getX();
+		case WEST:
+			return coord1.getX() > gearblock.getCoord().getX() || coord2.getX() > gearblock.getCoord().getX();
+		case UP:
+			return coord1.getY() < gearblock.getCoord().getY() || coord2.getY() < gearblock.getCoord().getY();
+		case DOWN:
+			return coord1.getY() > gearblock.getCoord().getY() || coord2.getY() > gearblock.getCoord().getY();
+		case SOUTH:
+			return coord1.getZ() < gearblock.getCoord().getZ() || coord2.getZ() < gearblock.getCoord().getZ();
+		case NORTH:
+			return coord1.getZ() > gearblock.getCoord().getZ() || coord2.getZ() > gearblock.getCoord().getZ();
+		default:
+			return false;
 		}
 	}
 	

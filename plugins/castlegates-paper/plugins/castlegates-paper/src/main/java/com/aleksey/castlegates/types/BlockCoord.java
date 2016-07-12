@@ -8,6 +8,7 @@ package com.aleksey.castlegates.types;
 import java.util.UUID;
 
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 
 public class BlockCoord {
 	private UUID world;
@@ -36,6 +37,12 @@ public class BlockCoord {
 	public int getY() { return this.y; }
 	
 	public int getZ() { return this.z; }
+	
+	public void increment(BlockFace face) {
+		this.x += face.getModX();
+		this.y += face.getModY();
+		this.z += face.getModZ();
+	}
 
 	@Override
 	public boolean equals(Object other) {
