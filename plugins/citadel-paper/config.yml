@@ -18,15 +18,15 @@ command_logging: true
 break_logging: true
 reinf_logging: false
 reinforcements:
- diamond:
-  material: DIAMOND
+ stone_tier:
+  material: STONE
   requirements: 1
   return: 1
   percent_chance: 100
-  hit_points: 1800
+  hit_points: 50
 # mature time is in minutes
-  mature_time: 1440
-  acid_time: 1440
+  mature_time: 5
+  acid_time: 30
   scale_amount: 1
   lore:
   effect:
@@ -40,30 +40,92 @@ reinforcements:
 # # Uncomment below to add limits to what blocks this reinforcement can be applied to
 # reinforceables:
 #   - STONE
- iron:
-  material: IRON_INGOT
+ bracers:
+  material: NETHER_BRICK_ITEM
   requirements: 1
-  return: 1
-  percent_chance: 100
-  hit_points: 250
-  mature_time: 60
-  acid_time: 60
+  return: 0
+  percent_chance: 0
+  hit_points: 750
+  mature_time: 129600
+  acid_time: 10080
   scale_amount: 1
   lore:
+   - Structure Bracing
   effect:
    type: FLYING_GLYPH
    speed: 0.5
    particleCount: 50
- stone:
-  material: STONE
+ basic_tier:
+  material: CLAY_BALL
   requirements: 1
   return: 1
   percent_chance: 100
-  hit_points: 25
-  mature_time: 10
-  acid_time: 10
+  hit_points: 250
+  mature_time: 20
+  acid_time: 120
   scale_amount: 1
   lore:
+   - Basic Reinforcement
+  effect:
+   type: FLYING_GLYPH
+   speed: 0.5
+   particleCount: 50
+ decent_tier:
+  material: SLIME_BALL
+  requirements: 1
+  return: 1
+  percent_chance: 100
+  hit_points: 750
+  mature_time: 180
+  acid_time: 480
+  scale_amount: 1
+  lore:
+   - Decent Reinforcement
+  effect:
+   type: FLYING_GLYPH
+   speed: 0.5
+   particleCount: 50
+ good_tier:
+  material: MAGMA_CREAM
+  requirements: 1
+  return: 1
+  percent_chance: 100
+  hit_points: 1500
+  mature_time: 640
+  acid_time: 1440
+  scale_amount: 1
+  lore:
+   - Good Reinforcement
+  effect:
+   type: FLYING_GLYPH
+   speed: 0.5
+   particleCount: 50
+ best_tier:
+  material: QUARTZ
+  requirements: 1
+  return: 1
+  percent_chance: 100
+  hit_points: 2000
+  mature_time: 2560
+  acid_time: 2880
+  scale_amount: 2
+  lore:
+   - Best Reinforcement
+  effect:
+   type: FLYING_GLYPH
+   speed: 0.5
+   particleCount: 50
+ good_tier_instant:
+  material: FIREWORK_CHARGE
+  requirements: 1
+  return: 1
+  percent_chance: 95
+  hit_points: 1500
+  mature_time: 5
+  acid_time: 1440
+  scale_amount: 1
+  lore:
+   - Rapid Reinforcement
   effect:
    type: FLYING_GLYPH
    speed: 0.5
