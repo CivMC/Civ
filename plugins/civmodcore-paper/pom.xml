@@ -1,48 +1,50 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>vg.civcraft.mc.civmodcore</groupId>
-	<artifactId>CivModCore</artifactId>
-	<packaging>jar</packaging>
-	<description />
-	<version>1.4.41</version>
-	<name>CivModCore</name>
-	<url>https://github.com/Civcraft/CivModCore/</url>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<properties>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
-	</properties>
+  <groupId>vg.civcraft.mc.civmodcore</groupId>
+  <artifactId>CivModCore</artifactId>
+  <packaging>jar</packaging>
+  <version>1.4.42</version>
 
-	<build>
-		<sourceDirectory>${basedir}/src</sourceDirectory>
+  <name>CivModCore</name>
+  <description/>
+  <url>https://github.com/Civcraft/CivModCore/</url>
 
-		<resources>
-			<resource>
-				<directory>${basedir}</directory>
-				<includes>
-					<include>*.yml</include>
-				</includes>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>${basedir}/resources/</directory>
-				<targetPath>./resources/</targetPath>
-				<includes>
-					<include>*.csv</include>
-				</includes>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-	</build>
+  <properties>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+  </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>Spigot</artifactId>
-			<version>1.10</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>Spigot</artifactId>
+      <version>1.10</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>${basedir}/src</sourceDirectory>
+
+    <resources>
+      <resource>
+        <directory>${basedir}</directory>
+        <includes>
+          <include>*.yml</include>
+        </includes>
+        <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}/resources/</directory>
+        <targetPath>./resources/</targetPath>
+        <includes>
+          <include>*.csv</include>
+        </includes>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
 </project>
