@@ -43,6 +43,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelConfigManager;
@@ -360,13 +361,20 @@ public class EntityListener implements Listener{
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void playerJoinEvent(PlayerJoinEvent event){
 		Player p = event.getPlayer();
-		UUID uuid = p.getUniqueId();
-		GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
-		for (String groupName : db.getGroupNames(uuid)){	
-			if(NameAPI.getGroupManager().hasAccess(groupName, p.getUniqueId(), PermissionType.getPermission("REINFORCE"))) {
-				db.updateTimestamp(groupName);
+		final UUID uuid = p.getUniqueId();
+		
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
+				for (String groupName : db.getGroupNames(uuid)){	
+					if(NameAPI.getGroupManager().hasAccess(groupName, uuid, PermissionType.getPermission("REINFORCE"))) {
+						db.updateTimestamp(groupName);
+					}
+				}
 			}
-		}
+		}.runTaskAsynchronously(Citadel.getInstance());
+
 		if (CitadelConfigManager.defaultBypassOn()) {
 			PlayerState state = PlayerState.get(p);
 			if (!state.isBypassMode()) {
