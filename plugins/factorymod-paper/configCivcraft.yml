@@ -35,6 +35,8 @@ factories:
     - Cut_any_type_of_Plank_Basic
     - Bake_Bread_Basic
     - Burn_Charcoal_from_Logs_Basic
+    - Produce_basic_andesite_Miner_Component
+    - Produce_basic_sticky_Hunter_Component
     - Repair_Rudimentary_Factory
     - Upgrade_to_Stone_Smelter
     - Upgrade_to_Farmstead_Factory
@@ -11161,12 +11163,12 @@ recipes:
   Produce_basic_hunter_reinforcement:
     type: PRODUCTION
     production_time: 2s
-    amount: 4
     name: Produce basic hunter reinforcement
     input:
       basicHunter:
         material: BONE
         name: Hunter Component
+        amount: 4
         lore: 
          - Basic Reinforcement Ingredient
     output:
