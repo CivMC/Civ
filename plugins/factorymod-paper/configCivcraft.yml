@@ -66,6 +66,7 @@ factories:
      - Produce_decent_heatresistant_Hunter_Component
      - Produce_decent_reinforcement
      - Upgrade_to_Intermediate_Fortification
+     - Repair_Basic_Factory
   
   #Basic Contraption --> Basic Fortification --> Intermediate Fortification
   intermediateFortification:
@@ -90,6 +91,7 @@ factories:
      - Produce_good_reinforcement
      - Produce_Bracers
      - Upgrade_to_Advanced_Fortification
+     - Repair_Advanced_Factory
      
   #Basic Contraption --> Basic Fortification --> Intermediate Fortification --> Advanced Fortification
   advancedFortification:
@@ -115,6 +117,7 @@ factories:
      - Produce_Bracers
      - Produce_best_reinforcement
      - Produce_good_instant_reinforcement  
+     - Repair_Expert_Factory
   
   #Smelting 
   stonesmelter:
@@ -180,7 +183,7 @@ factories:
     - Smelt_Sandstone_Basic
     - Smelt_Red_Sandstone_Basic
     - Convert_Normal_Sand_to_Red_Sand
-    - Repair_Small_Factory
+    - Repair_Basic_Factory
     - Upgrade_to_Glass_Blowing_Workshop
     - Upgrade_to_Sandstone_Smelter
     - Upgrade_to_Glass_Dying_Factory
@@ -261,7 +264,7 @@ factories:
     - Craft_Stonebricks_Basic
     - Craft_Prismarine_Basic
     - Craft_Netherbrick_Basic
-    - Repair_Small_Factory
+    - Repair_Basic_Factory
     - Upgrade_to_Stonebrick_Smelter
     - Upgrade_to_Netherbrick_Smelter
     - Upgrade_to_Aquatic_Brick_Smelter
@@ -356,7 +359,7 @@ factories:
     - Craft_any_type_of_wooden_slab
     - Craft_any_type_of_wooden_door
     - Cut_any_type_of_Plank_Expert
-    - Repair_Small_Factory
+    - Repair_Basic_Factory
     - Create_Crate
   finewoodworking:
     type: FCCUPGRADE
@@ -366,7 +369,7 @@ factories:
     - Craft_any_type_of_fence_gate
     - Craft_ladder
     - Craft_trap_door
-    - Repair_Small_Factory
+    - Repair_Basic_Factory
   coalburner:
     type: FCCUPGRADE
     name: Coal Burner
@@ -374,7 +377,7 @@ factories:
     - Burn_Charcoal_from_Logs_Expert
     - Burn_Charcoal_from_Logs2_Expert
     - Burn_Charcoal_from_Coal
-    - Repair_Small_Factory
+    - Repair_Basic_Factory
   farmsteadfactory:
     type: FCCUPGRADE
     name: Farmstead Factory
@@ -412,7 +415,7 @@ factories:
     - Cook_Fish
     - Cook_Mutton
     - Cook_Rabbit
-    - Repair_Small_Factory
+    - Repair_Factory
   stewmaker:
     type: FCCUPGRADE
     name: Soup kitchen
@@ -448,7 +451,7 @@ factories:
     - Dye_Wool_Green
     - Dye_Wool_Red
     - Dye_Wool_Black
-    - Repair_Factory
+    - Repair_Basic_Factory
   biolab:
     type: FCCUPGRADE
     name: Bio Lab
@@ -457,7 +460,7 @@ factories:
     - Mutate_Tall_Grass_Basic
     - Take_friendly_mob_egg_apart_Basic
     - Create_Podzol_Basic
-    - Repair_Small_Factory
+    - Repair_Basic_Factory
     - Upgrade_to_Grass_Gardening
     - Upgrade_to_Flower_Gardening
     - Upgrade_to_Tree_Mutator
@@ -473,13 +476,13 @@ factories:
     - Grow_Fern
     - Grow_Vine
     - Kill_Dead_Shrub
-    - Repair_Factory
+    - Repair_Basic_Factory
   flowergardening:
     type: FCCUPGRADE
     name: Flower Gardening
     recipes:
     - Grow_random_flower
-    - Repair_Factory
+    - Repair_Basic_Factory
   treemutator:
     type: FCCUPGRADE
     name: Tree Mutator
@@ -487,7 +490,7 @@ factories:
     - Mutate_random_sapling
     - Mutate_random_leaves
     - Grow_Concentrate_Of_Nature
-    - Repair_Factory
+    - Repair_Basic_Factory
   organicblockfactory:
     type: FCCUPGRADE
     name: Organic Block Factory
@@ -495,7 +498,7 @@ factories:
     - Create_Podzol_Advanced
     - Create_Coarse_Dirt
     - Create_Mycelium
-    - Repair_Factory
+    - Repair_Basic_Factory
   blacksmith:
     type: FCCUPGRADE
     name: Blacksmith
@@ -505,7 +508,7 @@ factories:
     - Forge_Stone_Shovel
     - Forge_Stone_Hoe
     - Forge_Stone_Axe
-    - Repair_Small_Factory
+    - Repair_Rudimentary_Factory
     - Upgrade_to_Iron_Forge_Basic
     - Upgrade_to_Iron_Equipment_Forge
   ironforgebasic:
@@ -623,7 +626,7 @@ factories:
     recipes:
     - Craft_Redstone_Repeater_Basic
     - Craft_Dispenser_Basic
-    - Repair_Small_Factory
+    - Repair_Rudimentary_Factory
     - Upgrade_to_Bastion_Factory
     - Upgrade_to_Compactor_Basic
     - Upgrade_to_Printing_Press
@@ -646,7 +649,7 @@ factories:
     recipes:
     - Compact_Stack_Basic
     - De-compact_Stack_Basic
-    - Repair_Factory
+    - Repair_Basic_Factory
     - Upgrade_to_Dedicated_Compactor
     - Upgrade_to_Dedicated_De-Compactor
   dedicatedcompactor:
@@ -655,13 +658,13 @@ factories:
     updatetime: 5t
     recipes:
     - Compact_Stack_Advanced
-    - Repair_Advanced_Factory
+    - Repair_Basic_Factory
   dedicateddecompactor:
     type: FCCUPGRADE
     name: Dedicated De-Compactor
     recipes:
     - De-compact_Stack_Advanced
-    - Repair_Advanced_Factory
+    - Repair_Basic_Factory
   redstonefactorybasic:
     type: FCCUPGRADE
     name: Redstone Techniques
@@ -797,7 +800,7 @@ factories:
      - Enchant_Flame_I
      - Enchant_FireAspect_I
      - Enchant_FireAspect_II
-     - Repair_Factory
+     - Repair_Advanced_Factory
 #Water
   riverforge:
     type: FCCUPGRADE
@@ -822,7 +825,7 @@ factories:
      - Enchant_Respiration_III
      - Enchant_Frost_Walker_I
      - Enchant_Frost_Walker_II
-     - Repair_Factory
+     - Repair_Advanced_Factory
 #Magic
   magicforge:
     type: FCCUPGRADE
@@ -852,7 +855,7 @@ factories:
      - Enchant_BOA_III
      - Enchant_BOA_IV
      - Enchant_BOA_V
-     - Repair_Factory
+     - Repair_Advanced_Factory
 #Armor
   mithrilforge:
     type: FCCUPGRADE
@@ -900,7 +903,7 @@ factories:
      - Enchant_Thorns_I
      - Enchant_Thorns_II
      - Upgrade_to_Meteor_Forge
-     - Repair_Factory
+     - Repair_Advanced_Factory
   Meteorforge:
     type: FCCUPGRADE
     name: Meteor Forge
@@ -940,7 +943,7 @@ factories:
      - Enchant_Thorns_I
      - Enchant_Thorns_II
      - Enchant_Thorns_III
-     - Repair_Factory
+     - Repair_Expert_Factory
 #Archery
   archerforge:
     type: FCCUPGRADE
@@ -976,7 +979,7 @@ factories:
      - Enchant_Boots_ProjectileProtection_III
      - Enchant_Punch_I
      - Upgrade_to_Sniper_Forge
-     - Repair_Factory
+     - Repair_Advanced_Factory
   sniperforge:
     type: FCCUPGRADE
     name: Sniper Forge
@@ -1004,7 +1007,7 @@ factories:
      - Enchant_Boots_ProjectileProtection_IV
      - Enchant_Punch_I
      - Enchant_Punch_II
-     - Repair_Factory
+     - Repair_Expert_Factory
 #Swords
   daggerforge:
     type: FCCUPGRADE
@@ -1030,7 +1033,7 @@ factories:
      - Enchant_Smite_IV
      - Enchant_Knockback_I
      - Upgrade_to_Blade_Forge
-     - Repair_Factory
+     - Repair_Advanced_Factory
   bladeforge:
     type: FCCUPGRADE
     name: Blade Forge
@@ -1047,7 +1050,7 @@ factories:
      - Enchant_Smite_V
      - Enchant_Knockback_I
      - Enchant_Knockback_II
-     - Repair_Factory
+     - Repair_Expert_Factory
 #Efficiency
   quickforge:
     type: FCCUPGRADE
@@ -1078,7 +1081,7 @@ factories:
      - Enchant_Shovel_Efficiency_III
      - Enchant_Shovel_Efficiency_IV
      - Upgrade_to_Sonic_Forge
-     - Repair_Factory
+     - Repair_Advanced_Factory
   sonicforge:
     type: FCCUPGRADE
     name: Sonic Forge
@@ -1098,7 +1101,7 @@ factories:
      - Enchant_Shovel_Efficiency_III
      - Enchant_Shovel_Efficiency_IV
      - Enchant_Shovel_Efficiency_V
-     - Repair_Factory
+     - Repair_Expert_Factory
 #Unbreaking
   rockforge:
     type: FCCUPGRADE
@@ -1141,7 +1144,7 @@ factories:
      - Enchant_Bow_Unbreaking_I
      - Enchant_Bow_Unbreaking_II
      - Upgrade_to_Carbon_Forge
-     - Repair_Factory
+     - Repair_Advanced_Factory
   carbonforge:
     type: FCCUPGRADE
     name: Carbon Forge
@@ -1176,7 +1179,7 @@ factories:
      - Enchant_Bow_Unbreaking_I
      - Enchant_Bow_Unbreaking_II
      - Enchant_Bow_Unbreaking_III
-     - Repair_Factory
+     - Repair_Expert_Factory
      
 ## XP Production
   apprenticetransmuter:
@@ -1199,7 +1202,7 @@ factories:
      - Copper_Enrichment
      - Tin_Enrichment
      - Upgrade_to_Grandmaster_Transmuter
-     - Repair_Factory
+     - Repair_Advanced_Factory
   grandmastertransmuter:
     type: FCCUPGRADE
     name: Grandmaster Transmuter
@@ -1213,7 +1216,7 @@ factories:
      - Amethyst_Enrichment
      - Topaz_Enrichment
      - Ruby_Enrichment
-     - Repair_Factory
+     - Repair_Expert_Factory
      
 
 #Pipes     
@@ -1267,92 +1270,81 @@ factories:
     maximum_materials_per_side: 10
     
 recipes:
-
+# lvl 1
   Repair_Rudimentary_Factory:
     type: REPAIR
     name: Repair Factory
-    production_time: 60s
-    input:
-#      eye of ender:
-#        material: EYE_OF_ENDER 
-#        lore:
-#         - Essence
-#        enchants:
-#          dura:
-#            enchant: DURABILITY
-#        amount: 1
-       emerald:
-         material: DIRT
-         amount: 1
-    health_gained: 1500
-  Repair_Small_Factory:
-    type: REPAIR
-    name: Repair Factory
     production_time: 30s
     input:
-#      eye of ender:
-#        material: EYE_OF_ENDER 
-#        lore:
-#         - Essence
-#        enchants:
-#          dura:
-#            enchant: DURABILITY
-#        amount: 1
-       emerald:
-         material: DIRT
-         amount: 3
-    health_gained: 800
+      eye of ender:
+        material: EYE_OF_ENDER 
+        lore:
+         - Essence
+        enchants:
+          dura:
+            enchant: DURABILITY
+        amount: 35
+    health_gained: 3334
+# lvl 2
+  Repair_Basic_Factory:
+    type: REPAIR
+    name: Repair Factory
+    production_time: 40s
+    input:
+      eye of ender:
+        material: EYE_OF_ENDER 
+        lore:
+         - Essence
+        enchants:
+          dura:
+            enchant: DURABILITY
+        amount: 53
+    health_gained: 3334
+# lvl 3
   Repair_Factory:
     type: REPAIR
     name: Repair Factory
-    production_time: 30s
+    production_time: 50s
     input:
-#      eye of ender:
-#        material: EYE_OF_ENDER 
-#        lore:
-#         - Essence
-#        enchants:
-#          dura:
-#            enchant: DURABILITY
-#        amount: 1
-       emeraldblock:
-         material: DIRT
-         amount: 1
-    health_gained: 350
+      eye of ender:
+        material: EYE_OF_ENDER 
+        lore:
+         - Essence
+        enchants:
+          dura:
+            enchant: DURABILITY
+        amount: 70
+    health_gained: 3334
+# lvl 4
   Repair_Advanced_Factory:
     type: REPAIR
     name: Repair Advanced Factory
-    production_time: 15s
+    production_time: 60s
     input:
-#      eye of ender:
-#        material: EYE_OF_ENDER 
-#        lore:
-#         - Essence
-#        enchants:
-#          dura:
-#            enchant: DURABILITY
-#        amount: 1
-       emeraldblock:
-         material: DIRT
-         amount: 3
-    health_gained: 225
+      eye of ender:
+        material: EYE_OF_ENDER 
+        lore:
+         - Essence
+        enchants:
+          dura:
+            enchant: DURABILITY
+        amount: 140
+    health_gained: 3334
+# lvl 5
   Repair_Expert_Factory:
     type: REPAIR
     name: Repair Expert Factory
-    production_time: 10s
+    production_time: 90s
     input:
-#      eye of ender:
-#        material: EYE_OF_ENDER 
-#        lore:
-#         - Essence
-#        enchants:
-#          dura:
-#            enchant: DURABILITY
-#        amount: 1
-       emeraldblock:
-         material: DIRT
-         amount: 5
-    health_gained: 65
+      eye of ender:
+        material: EYE_OF_ENDER 
+        lore:
+         - Essence
+        enchants:
+          dura:
+            enchant: DURABILITY
+        amount: 210
+    health_gained: 3334
   Bake_Bread_Advanced:
     type: PRODUCTION
     name: Bake Bread
