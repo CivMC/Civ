@@ -673,7 +673,6 @@ factories:
     - Repair_Factory
     - Upgrade_to_Redstone_Circularity_Factory
     - Upgrade_to_Redstone_Mechanics_Factory
-    - Upgrade_to_Dowsing_Factory
   redstonecircularityfactory:
     type: FCCUPGRADE
     name: Redstone Electronics
@@ -5428,22 +5427,6 @@ recipes:
         durability: 1
         lore:
          - Compacted Item
-  Upgrade_to_Dowsing_Factory:
-    type: UPGRADE
-    name: Upgrade to Dowsing Factory
-    production_time: 8h
-    fuel_consumption_intervall: 5m
-    factory: Dowsing Factory
-    input:
-      redstoneblocks:
-        material: REDSTONE_BLOCK
-        amount: 64
-      compass:
-        material: COMPASS
-        amount: 1
-      xp:
-        material: EMERALD_BLOCK
-        amount: 128
         
 #Pylon recipes
   Pylon_Basic:
@@ -11460,12 +11443,14 @@ recipes:
       basicMiner:
         material: FLINT
         name: Miner Component
-        lore: Basic Reinforcement Ingredient
+        lore: 
+         - Basic Reinforcement Ingredient
         amount: 8
       basicHunter:
         material: BONE
         name: Hunter Component
-        lore: Basic Reinforcement Ingredient
+        lore: 
+         - Basic Reinforcement Ingredient
         amount: 8
         
   Upgrade_to_Intermediate_Fortification:
@@ -11478,12 +11463,14 @@ recipes:
       decentMiner:
         material: QUARTZ
         name: Miner Component
-        lore: Decent Reinforcement Ingredient
+        lore: 
+         - Decent Reinforcement Ingredient
         amount: 8
       decentHunter:
         material: SULPHUR
         name: Hunter Component
-        lore: Decent Reinforcement Ingredient
+        lore: 
+         - Decent Reinforcement Ingredient
         amount: 8
         
   Upgrade_to_Advanced_Fortification:
@@ -11496,12 +11483,14 @@ recipes:
       strongMiner:
         material: PRISMARINE
         name: Miner Component
-        lore: Strong Reinforcement Ingredient
+        lore: 
+         - Strong Reinforcement Ingredient
         amount: 8
       strongHunter:
         material: GHAST_TEAR
         name: Hunter Component
-        lore: Strong Reinforcement Ingredient
+        lore: 
+         - Strong Reinforcement Ingredient
         amount: 8
         
         
