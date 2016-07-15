@@ -6,6 +6,7 @@ import java.util.HashSet;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 
 public class RectangleArea extends AbstractYLimitedArea {
 
@@ -13,9 +14,9 @@ public class RectangleArea extends AbstractYLimitedArea {
 	private double xSize;
 	private double zSize;
 
-	public RectangleArea(double lowerYBound, double upperYBound,
+	public RectangleArea(double lowerYBound, double upperYBound, Collection <Biome> allowedBiomes,
 			Location center, double xSize, double zSize) {
-		super(lowerYBound, upperYBound);
+		super(lowerYBound, upperYBound, allowedBiomes);
 		this.center = center;
 		this.xSize = xSize;
 		this.zSize = zSize;

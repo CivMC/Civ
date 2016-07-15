@@ -1,25 +1,30 @@
 package vg.civcraft.mc.civmodcore.areas;
 
+import java.util.Collection;
+
 import org.bukkit.Location;
+import org.bukkit.block.Biome;
 
 public abstract class AbstractYLimitedArea implements IArea {
 	
 	
 	private double lowerYBound;
 	private double upperYBound;
+	private Collection <Biome> allowedBiomes;
 	
 	
-	public AbstractYLimitedArea(double lowerYBound, double upperYBound) {
+	public AbstractYLimitedArea(double lowerYBound, double upperYBound, Collection <Biome> allowedBiomes) {
 		if (lowerYBound > upperYBound) {
 			throw new IllegalArgumentException("Lower bound can't be bigger upper one");
 		}
 		this.lowerYBound = lowerYBound;
 		this.upperYBound = upperYBound;
+		this.allowedBiomes = allowedBiomes;
 	}
 
 	@Override
 	public boolean isInArea(Location loc) {
-		return loc.getY() <= upperYBound && loc.getY() >= lowerYBound;
+		return loc.getY() <= upperYBound && loc.getY() >= lowerYBound && (allowedBiomes == null || allowedBiomes.contains(loc.getBlock().getBiome()));
 	}
 	
 	/**
