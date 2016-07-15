@@ -1,19 +1,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>vg.civcraft.mc.civmodcore</groupId>
 	<artifactId>CivModCore</artifactId>
 	<packaging>jar</packaging>
-	<description />
 	<version>1.4.42</version>
+
 	<name>CivModCore</name>
+	<description />
 	<url>https://github.com/Civcraft/CivModCore/</url>
 
 	<properties>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>Spigot</artifactId>
+			<version>1.10</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<sourceDirectory>${basedir}/src</sourceDirectory>
@@ -37,12 +46,4 @@
 		</resources>
 	</build>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>Spigot</artifactId>
-			<version>1.10</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
 </project>
