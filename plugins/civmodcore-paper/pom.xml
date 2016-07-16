@@ -4,10 +4,8 @@
 	<groupId>vg.civcraft.mc.civmodcore</groupId>
 	<artifactId>CivModCore</artifactId>
 	<packaging>jar</packaging>
-	<description />
 	<version>1.4.41</version>
 	<name>CivModCore</name>
-	<description />
 	<url>https://github.com/Civcraft/CivModCore/</url>
 
 	<properties>
