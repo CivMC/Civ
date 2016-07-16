@@ -29,14 +29,10 @@ public class EllipseArea extends AbstractYLimitedArea {
 				Chunk c = new Location(center.getWorld(), x, center.getY(), z)
 						.getChunk();
 				// if one of the corners is in the area the chunk is inside
-				if (isInArea(c.getBlock(0, (int) getLowerYBound(), 15)
-						.getLocation())
-						|| isInArea(c.getBlock(0, (int) getLowerYBound(), 0)
-								.getLocation())
-						|| isInArea(c.getBlock(15, (int) getLowerYBound(), 0)
-								.getLocation())
-						|| isInArea(c.getBlock(15, (int) getLowerYBound(), 15)
-								.getLocation())) {
+				if (isInArea(new Location(c.getWorld(), c.getX() * 16, 0, (c.getZ() * 16) + 15))
+						|| isInArea(new Location(c.getWorld(), c.getX() * 16, 0, c.getZ() * 16))
+						|| isInArea(new Location(c.getWorld(), (c.getX() * 16) + 15, 0, c.getZ() * 16))
+						|| isInArea(new Location(c.getWorld(), (c.getX() * 16) + 15, 0, (c.getZ() * 16) + 15))) {
 					chunks.add(c);
 				}
 			}
