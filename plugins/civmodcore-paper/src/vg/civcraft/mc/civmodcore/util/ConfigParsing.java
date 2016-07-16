@@ -354,7 +354,7 @@ public class ConfigParsing {
 		int zSize = config.getInt("zSize", -1);
 		Collection <Biome> biomes;
 		List <String> biomeNames = config.getStringList("biomes");
-		if (biomeNames == null) {
+		if (biomeNames == null || biomeNames.size() == 0) {
 		    biomes = null;
 		}
 		else {
