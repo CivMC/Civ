@@ -1,18 +1,13 @@
 package vg.civcraft.mc.civmodcore.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -351,29 +346,11 @@ public class ConfigParsing {
 			}
 		}
 		int xSize = config.getInt("xSize", -1);
-		int zSize = config.getInt("zSize", -1);
-		Collection <Biome> biomes;
-		List <String> biomeNames = config.getStringList("biomes");
-		if (biomeNames == null || biomeNames.size() == 0) {
-		    biomes = null;
-		}
-		else {
-		    biomes = (biomeNames.size() > 5)? new HashSet<Biome>() : new ArrayList<Biome>();
-		    for(String biomeName : biomeNames) {
-			try {
-			    Biome b = Biome.valueOf(biomeName);
-			    biomes.add(b);
-			}
-			catch (IllegalArgumentException e) {
-			    Bukkit.getLogger().warning("Found invalid biome name " + biomeName + " specified at " + config.getCurrentPath());
-			}
-		    }
-		}
-		
+		int zSize = config.getInt("zSize", -1);		
 		IArea area = null;
 		switch (type) {
 		case "GLOBAL":
-			area = new GlobalYLimitedArea(lowerYBound, upperYBound, biomes, world);
+			area = new GlobalYLimitedArea(lowerYBound, upperYBound, world);
 			break;
 		case "ELLIPSE":
 			if (center == null) {
@@ -388,7 +365,7 @@ public class ConfigParsing {
 				Bukkit.getLogger().warning("Found no zSize for area at " + config.getCurrentPath());
 				return null;
 			}
-			area = new EllipseArea(lowerYBound, upperYBound, biomes, center, xSize,
+			area = new EllipseArea(lowerYBound, upperYBound, center, xSize,
 					zSize);
 			break;
 		case "RECTANGLE":
@@ -404,7 +381,7 @@ public class ConfigParsing {
 				Bukkit.getLogger().warning("Found no zSize for area at " + config.getCurrentPath());
 				return null;
 			}
-			area = new RectangleArea(lowerYBound, upperYBound, biomes, center, xSize,
+			area = new RectangleArea(lowerYBound, upperYBound, center, xSize,
 					zSize);
 			break;
 		default:

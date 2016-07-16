@@ -6,7 +6,6 @@ import java.util.HashSet;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
 
 public class EllipseArea extends AbstractYLimitedArea {
 
@@ -14,9 +13,9 @@ public class EllipseArea extends AbstractYLimitedArea {
 	private double xSize;
 	private double zSize;
 
-	public EllipseArea(double lowerYBound, double upperYBound, Collection <Biome> allowedBiomes, Location center,
+	public EllipseArea(double lowerYBound, double upperYBound, Location center,
 			double xSize, double zSize) {
-		super(lowerYBound, upperYBound, allowedBiomes);
+		super(lowerYBound, upperYBound);
 		this.center = center;
 		this.xSize = xSize;
 		this.zSize = zSize;
