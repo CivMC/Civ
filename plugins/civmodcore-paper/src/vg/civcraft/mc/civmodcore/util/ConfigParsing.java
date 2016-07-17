@@ -346,8 +346,7 @@ public class ConfigParsing {
 			}
 		}
 		int xSize = config.getInt("xSize", -1);
-		int zSize = config.getInt("zSize", -1);
-		
+		int zSize = config.getInt("zSize", -1);		
 		IArea area = null;
 		switch (type) {
 		case "GLOBAL":
