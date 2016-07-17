@@ -23,6 +23,15 @@ public interface IArea {
 	 * @return All chunks in the area or null in case of an infinite size
 	 */
 	public Collection<Chunk> getChunks();
+	
+	/**
+	 * Collects all chunks which are (partially) inside the defined area. Instead of actual chunk objects, which
+	 * require the chunk behind it to be loaded, this will only return pseudo chunks, which contain the right chunk coordinates for it
+	 * to be loaded later on
+	 * @return All chunks in the area represented through pseudo chunks or null in case of an infinite size
+	 */
+	public Collection<PseudoChunk> getPseudoChunks(); 
+	
 
 	/**
 	 * @return Center of this area

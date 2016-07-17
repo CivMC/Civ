@@ -72,4 +72,22 @@ public class EllipseArea extends AbstractYLimitedArea {
 	public double getZSize() {
 		return zSize;
 	}
+
+	@Override
+	public Collection<PseudoChunk> getPseudoChunks() {
+	    Collection<PseudoChunk> chunks = new HashSet<PseudoChunk>();
+		for (int x = (int)(center.getX() - xSize); x <= center.getX() + xSize; x += 16) {
+			for (int z = (int) (center.getZ() - zSize); z <= center.getZ() + zSize; z += 16) {
+				PseudoChunk c = new PseudoChunk(center.getWorld(), x / 16, z /16);
+				// if one of the corners is in the area the chunk is inside
+				if (isInArea(new Location(c.getWorld(), c.getX() * 16, 0, (c.getZ() * 16) + 15))
+						|| isInArea(new Location(c.getWorld(), c.getX() * 16, 0, c.getZ() * 16))
+						|| isInArea(new Location(c.getWorld(), (c.getX() * 16) + 15, 0, c.getZ() * 16))
+						|| isInArea(new Location(c.getWorld(), (c.getX() * 16) + 15, 0, (c.getZ() * 16) + 15))) {
+					chunks.add(c);
+				}
+			}
+		}
+		return chunks;
+	}
 }

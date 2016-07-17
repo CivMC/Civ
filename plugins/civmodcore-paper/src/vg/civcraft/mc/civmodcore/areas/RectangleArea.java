@@ -67,4 +67,17 @@ public class RectangleArea extends AbstractYLimitedArea {
 		return zSize;
 	}
 
+	@Override
+	public Collection<PseudoChunk> getPseudoChunks() {
+	    Collection <PseudoChunk> chunks = new HashSet <PseudoChunk>();
+		for (int x = (int)(center.getX() - xSize); x <= center.getX() + xSize; x += 16) {
+			for (int z = (int)(center.getZ() - zSize); z <= center.getZ() + zSize; z += 16) {
+				chunks.add(new PseudoChunk(center.getWorld(), x / 16, z / 16));
+			}
+			//last one might have been skipped
+			chunks.add(new PseudoChunk(center.getWorld(), x / 16, ((int)(center.getZ() + zSize)) / 16));
+		}
+		return chunks;
+	}
+
 }

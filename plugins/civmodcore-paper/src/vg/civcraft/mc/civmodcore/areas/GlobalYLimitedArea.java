@@ -39,4 +39,9 @@ public class GlobalYLimitedArea extends AbstractYLimitedArea {
 		return super.isInArea(loc) && loc.getWorld().getUID().equals(world.getUID());
 	}
 
+	@Override
+	public Collection<PseudoChunk> getPseudoChunks() {
+	    return null;
+	}
+
 }
