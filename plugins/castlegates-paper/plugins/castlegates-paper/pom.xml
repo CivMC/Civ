@@ -6,7 +6,7 @@
   <groupId>com.aleksey</groupId>
   <artifactId>castlegates</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.4-SNAPSHOT</version>
+  <version>1.0.5-SNAPSHOT</version>
   <name>CastleGates</name>
   <url>https://github.com/Aleksey-Terzi/CastleGates</url>
   
@@ -50,6 +50,12 @@
 	  <groupId>com.lishid</groupId>
       <artifactId>orebfuscator</artifactId>
       <version>4.1.2-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+	<dependency>
+	  <groupId>com.untamedears</groupId>
+      <artifactId>JukeAlert</artifactId>
+      <version>1.4.2</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

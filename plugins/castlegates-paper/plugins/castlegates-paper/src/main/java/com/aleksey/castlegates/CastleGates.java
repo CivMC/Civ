@@ -21,6 +21,9 @@ import com.aleksey.castlegates.citadel.ICitadelManager;
 import com.aleksey.castlegates.citadel.NoCitadelManager;
 import com.aleksey.castlegates.command.CastleGatesCommand;
 import com.aleksey.castlegates.database.SqlDatabase;
+import com.aleksey.castlegates.jukealert.IJukeAlertManager;
+import com.aleksey.castlegates.jukealert.JukeAlertManager;
+import com.aleksey.castlegates.jukealert.NoJukeAlertManager;
 import com.aleksey.castlegates.listener.EventListener;
 import com.aleksey.castlegates.manager.CastleGatesManager;
 import com.aleksey.castlegates.manager.ConfigManager;
@@ -52,6 +55,11 @@ public class CastleGates extends JavaPlugin {
     private static IBastionManager bastionManager;
     public static IBastionManager getBastionManager() {
     	return bastionManager;
+    }
+
+    private static IJukeAlertManager jukeAlertManager;
+    public static IJukeAlertManager getJukeAlertManager() {
+    	return jukeAlertManager;
     }
 
     private static IOrebfuscatorManager orebfuscatorManager;
@@ -86,6 +94,14 @@ public class CastleGates extends JavaPlugin {
         	getLogger().log(Level.INFO, "Bastion plugin is NOT found");
         }
         
+        if(getServer().getPluginManager().getPlugin("JukeAlert") != null) {
+        	jukeAlertManager = new JukeAlertManager();
+        	getLogger().log(Level.INFO, "JukeAlert plugin is found");
+        } else {
+        	jukeAlertManager = new NoJukeAlertManager();
+        	getLogger().log(Level.INFO, "JukeAlert plugin is NOT found");
+        }
+
         createOrebfuscatorManager();
 
         // Load configurations

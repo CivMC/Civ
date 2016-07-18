@@ -60,20 +60,21 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 		
 		if(rein == null || !(rein instanceof PlayerReinforcement)) return true;
 		
-		if(players == null || players.size() == 0) return false;
-		
 		PlayerReinforcement playerRein = (PlayerReinforcement)rein;
-		
-		for(Player player : players) {
-			if(playerRein.canAccessDoors(player)
-					|| player.hasPermission("citadel.admin")
-					)
-			{
-				return true;
+
+		if(players != null && players.size() > 0) {
+			
+			for(Player player : players) {
+				if(playerRein.canAccessDoors(player)
+						|| player.hasPermission("citadel.admin")
+						)
+				{
+					return true;
+				}
 			}
 		}
 		
-		return false;
+		return CastleGates.getJukeAlertManager().hasToggleLeverSnitchInRadius(loc, playerRein.getGroupId());
 	}
 	
 	public boolean canBypass(Player player, Location loc) {

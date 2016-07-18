@@ -6,7 +6,6 @@
 package com.aleksey.castlegates.manager;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -352,10 +351,7 @@ public class CastleGatesManager {
 			return;
 		}
 		
-		List<Player> players = new ArrayList<Player>();
-		players.add(event.getPlayer());
-		
-		if(!CastleGates.getCitadelManager().canAccessDoors(players, block.getLocation())) {
+		if(!CastleGates.getCitadelManager().canViewInformation(event.getPlayer(), block.getLocation())) {
 			event.getPlayer().sendMessage(ChatColor.RED + "Gearblock");
 		}
 		else if(gearblock.getLink() == null) {
