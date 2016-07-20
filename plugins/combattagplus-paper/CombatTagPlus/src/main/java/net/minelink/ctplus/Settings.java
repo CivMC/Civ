@@ -172,10 +172,6 @@ public final class Settings {
         load();
     }
 
-    public boolean areNPCsRequired() {
-        return !instantlyKill() || alwaysSpawn();
-    }
-
     public int getConfigVersion() {
         return plugin.getConfig().getInt("config-version", 0);
     }
@@ -418,10 +414,6 @@ public final class Settings {
     
     public String getCommandTagMessage() {
         return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("command-tag-message"));
-    }
-
-    public String getCantAttackNpcMessage(String playerName) {
-        return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("cant-attack-npc-message")).replace("{player}", playerName);
     }
 
 }

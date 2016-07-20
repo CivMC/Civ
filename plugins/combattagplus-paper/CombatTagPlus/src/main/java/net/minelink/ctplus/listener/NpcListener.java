@@ -21,15 +21,12 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import static com.google.common.base.Preconditions.*;
-
 public final class NpcListener implements Listener {
 
     private final CombatTagPlus plugin;
 
     public NpcListener(CombatTagPlus plugin) {
-        this.plugin = checkNotNull(plugin, "Null plugin");
-        checkArgument(plugin.hasNpcs(), "The plugin doesn't have npcs enabled!");
+        this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
