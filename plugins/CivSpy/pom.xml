@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.programmerdan.minecraft</groupId>
+	<artifactId>civspy-parent</artifactId>
+	<version>1.0</version>
+	<packaging>pom</packaging>
+
+	<name>CivSpy Parent</name>
+	<url>http://www.github.com/ProgrammerDan/CivSpy</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
+			<id>civcraft-repo</id>
+			<url>http://build.civcraft.co/plugin/repository/everything/</url>
+		</repository>
+		<repository>
+			<id>bungeecord-repo</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
+
+	<modules>
+		<module>CivSpy-API</module>
+		<module>CivSpy-Bukkit</module>
+		<module>CivSpy-Bungee</module>
+	</modules>
+
+</project>
