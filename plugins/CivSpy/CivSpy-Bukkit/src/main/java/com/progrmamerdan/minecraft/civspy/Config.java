@@ -33,7 +33,7 @@ public class ConfigParser {
 			log.severe("No port for database specified. Could not load database credentials");
 			return;
 		}
-		String db = dbStuff.getString("database_name");
+		String db = dbStuff.getString("database");
 		if (db == null) {
 			log.severe("No name for database specified. Could not load database credentials");
 			return;
