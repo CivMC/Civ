@@ -8,7 +8,6 @@ import net.minelink.ctplus.compat.api.NpcPlayerHelper;
 import net.minelink.ctplus.hook.Hook;
 import net.minelink.ctplus.hook.HookManager;
 import net.minelink.ctplus.hook.TownyHook;
-import net.minelink.ctplus.hook.factions.FactionsPlugin;
 import net.minelink.ctplus.listener.ForceFieldListener;
 import net.minelink.ctplus.listener.InstakillListener;
 import net.minelink.ctplus.listener.NpcListener;
@@ -46,8 +45,6 @@ public final class CombatTagPlus extends JavaPlugin {
 
     private NpcManager npcManager;
 
-    private FactionsPlugin factionsPlugin;
-
     public PlayerCache getPlayerCache() {
         return playerCache;
     }
@@ -75,10 +72,6 @@ public final class CombatTagPlus extends JavaPlugin {
         } else {
             return npcManager;
         }
-    }
-
-    public FactionsPlugin getFactionsPlugin() {
-        return factionsPlugin;
     }
 
     public boolean hasNpcs() {
@@ -211,14 +204,7 @@ public final class CombatTagPlus extends JavaPlugin {
 
         try {
             // Create and add FactionsHook
-            Hook hook = (Hook) Class.forName(className).newInstance();
-            if (hook instanceof FactionsPlugin) {
-                getLogger().info("Advanced factions integration available.");
-                getLogger().info("CombatTagPlus should respect factions relationships for NPCs now!");
-                factionsPlugin = (FactionsPlugin) hook;
-            } else {
-                getLogger().info("Advanced factions integration isn't available for your version of factions.");
-            }
+            getHookManager().addHook((Hook) Class.forName(className).newInstance());
         } catch (Exception e) {
             // Something went wrong, chances are it's a newer, incompatible Factions
             getLogger().warning("**WARNING**");
@@ -237,8 +223,7 @@ public final class CombatTagPlus extends JavaPlugin {
 
         // Determine if Towny is loaded
         if (Bukkit.getPluginManager().isPluginEnabled("Towny")) {
-            Hook hook = new TownyHook();
-            getHookManager().addHook(hook);
+            getHookManager().addHook(new TownyHook());
         }
     }
 
