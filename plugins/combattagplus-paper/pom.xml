@@ -36,16 +36,6 @@
         <module>CombatTagPlus</module>
     </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>2.0.1</version>
-            <!-- compiled in by the core module -->
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
-
     <distributionManagement>
         <repository>
             <id>minelink-releases</id>

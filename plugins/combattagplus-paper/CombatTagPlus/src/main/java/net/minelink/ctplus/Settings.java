@@ -412,12 +412,12 @@ public final class Settings {
         return plugin.getConfig().getBoolean("untag-on-plugin-teleport");
     }
 
-    public String getUntaggedCommandReply() {
-    	return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("untaggedCommandReply"));
+    public String getCommandUntagMessage() {
+        return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("command-untag-message"));
     }
     
-    public String getTaggedCommandReply() {
-    	return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("taggedCommandReply"));
+    public String getCommandTagMessage() {
+        return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("command-tag-message"));
     }
 
     public String getCantAttackNpcMessage(String playerName) {

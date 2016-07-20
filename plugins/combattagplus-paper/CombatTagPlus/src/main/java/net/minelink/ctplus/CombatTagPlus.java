@@ -2,8 +2,6 @@ package net.minelink.ctplus;
 
 import java.io.IOException;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import net.minelink.ctplus.compat.api.NpcNameGeneratorFactory;
 import net.minelink.ctplus.compat.api.NpcPlayerHelper;
@@ -27,7 +25,6 @@ import net.minelink.ctplus.util.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -45,13 +42,10 @@ public final class CombatTagPlus extends JavaPlugin {
 
     private TagManager tagManager;
 
-    @Nonnull
     private NpcPlayerHelper npcPlayerHelper = NoOpNpcPlayerHelper.INSTANCE;
 
-    @Nullable
     private NpcManager npcManager;
 
-    @Nullable
     private FactionsPlugin factionsPlugin;
 
     public PlayerCache getPlayerCache() {
@@ -70,12 +64,10 @@ public final class CombatTagPlus extends JavaPlugin {
         return tagManager;
     }
 
-    @Nonnull
     public NpcPlayerHelper getNpcPlayerHelper() {
         return npcPlayerHelper;
     }
 
-    @Nonnull
     public NpcManager getNpcManager() {
         NpcManager npcManager = this.npcManager;
         if (npcManager == null) {
@@ -85,7 +77,6 @@ public final class CombatTagPlus extends JavaPlugin {
         }
     }
 
-    @Nullable
     public FactionsPlugin getFactionsPlugin() {
         return factionsPlugin;
     }
@@ -311,12 +302,12 @@ public final class CombatTagPlus extends JavaPlugin {
             UUID uniqueId = ((Player) sender).getUniqueId();
             Tag tag = getTagManager().getTag(uniqueId);
             if (tag == null || tag.isExpired() || !getTagManager().isTagged(uniqueId)) {
-                sender.sendMessage(getSettings().getUntaggedCommandReply());
+                sender.sendMessage(getSettings().getCommandUntagMessage());
                 return true;
             }
 
             String duration = DurationUtils.format(tag.getTagDuration());
-            sender.sendMessage(getSettings().getTaggedCommandReply().replace("{time}", duration));
+            sender.sendMessage(getSettings().getCommandTagMessage().replace("{time}", duration));
         } else if (cmd.getName().equals("ctpluslogout")) {
             if (!(sender instanceof Player)) return false;
 
