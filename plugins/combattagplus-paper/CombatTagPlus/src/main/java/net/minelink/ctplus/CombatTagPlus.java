@@ -147,16 +147,15 @@ public final class CombatTagPlus extends JavaPlugin {
     }
 
     private boolean checkVersionCompatibility() {
-        // Always compatible if NPCs aren't being used
-        if (settings.instantlyKill() && !settings.alwaysSpawn()) {
-            return true;
-        }
-
         // Load NMS compatibility helper class
         Class<?> helperClass = ReflectionUtils.getCompatClass("NpcPlayerHelperImpl");
 
         // Warn about incompatibility and return false indicating failure
         if (helperClass == null) {
+            // Always compatible if NPCs aren't being used
+            if (settings.instantlyKill() && !settings.alwaysSpawn()) {
+                return true;
+            }
             getLogger().severe("**VERSION ERROR**");
             getLogger().severe("Server API version detected: " + ReflectionUtils.API_VERSION);
             getLogger().severe("This version of CombatTagPlus is not compatible with your CraftBukkit.");
