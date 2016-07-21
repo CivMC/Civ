@@ -1,14 +1,20 @@
 package com.programmerdan.minecraft.civspy;
 
-public class ConfigParser {
+import java.util.Logger;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
+
+import com.programmerdan.minecraft.civspy.database.Database;
+
+public class Config {
 	private FileConfiguration config;
 	private Logger log;
 
-	ConfigParser(Logger log) {
+	Config(Logger log) {
 		this.log = log;
 	}
 
-	public ConfigParser setupConfig(CivSpy plugin) {
+	public Config setupConfig(CivSpy plugin) {
 		log.info("Initializing config");
 		plugin.saveDefaultConfig();
 		plugin.reloadConfig();

@@ -4,26 +4,29 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.logging.Level;
+import java.util.HashMap;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.nio.file.Files;
 
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.config.ConfigurationProvider;
-import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
-import net.md_5.bungee.event.EventHandler;
-
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import com.programmerdan.minecraft.civspy.database.Database;
 
-public class CivSpyBungee extends Plugin {
+public class CivSpyBungee extends Plugin implements Listener {
 
 	private Configuration config;
 	private Database db;
 	private ScheduledTask tracker;
 	private CivSpyPlayerCount counter;
+
+	private HashMap<UUID, Long> players;
 
 	@Override
 	public void onEnable() {
@@ -37,13 +40,21 @@ public class CivSpyBungee extends Plugin {
 			getLogger().severe("Config not found, CivSpyBungee going dark.");
 		}
 		
-		if (this.db != null && this.db.available()) {
-			getLogger().info("Setting up CivSpyBungee Playercount Tracker");
-			this.counter = new CivSpyPlayerCount(config, db);
-			tracker = getProxy().getScheduler().schedule(this, this.counter,
-					config.getInt("interval", 12000) * 50, config.getInt("interval", 12000) * 50, TimeUnit.SECONDS);
-		} else {
-			getLogger().severe("Database not connected, CivSpyBungee going dark.");
+		try {
+			if (this.db != null && this.db.available()) {
+				getLogger().info("Setting up CivSpyBungee Playercount Tracker");
+				this.counter = new CivSpyPlayerCount(this, db);
+				tracker = getProxy().getScheduler().schedule(this, this.counter,
+						config.getInt("interval", 12000) * 50, config.getInt("interval", 12000) * 50, TimeUnit.SECONDS);
+
+				getLogger().info("Setting up CivSpyBungee Player Tracking");
+				this.players = new HashMap<UUID, Long>();
+				getProxy().getPluginManager().registerListener(this, this);
+			} else {
+				getLogger().severe("Database not connected, CivSpyBungee going dark.");
+			}
+		} catch(SQLException se) {
+			getLogger().severe("Database failed connecting, CivSpyBungee going dark.");
 		}
 	}
 
@@ -52,9 +63,13 @@ public class CivSpyBungee extends Plugin {
 		getLogger().info("Shutting down CivSpyBungee");
 		getProxy().getScheduler().cancel(tracker);
 		this.counter.sample();
+		for (UUID player : players.keySet()) {
+			db.insertData("bungee.logout", player.toString());
+			session(player);
+		}
+		players.removeAll();
 		this.db.close();
 	}
-
 
 	private Configuration loadConfig() {
 		if (!getDataFolder().exists())
@@ -114,24 +129,30 @@ public class CivSpyBungee extends Plugin {
 	@EventHandler
 	public void afterLogin(PostLoginEvent event) {
 		if (db == null) {
-			getLogger().severe("Login occurred but no database configured. Skipping.");
 			return;
 		}
 
 		ProxiedPlayer player = event.getPlayer();
-		if (db.(player.getUniqueId())[0] == 0) {
-			handleFirstLogin(player);
-		} else {
-			handleLogin(player);
-		}
+		db.insertData("bungee.login", player.getUniqueId().toString());
+		players.add(player.getUniqueId());
 	}
 
-	public void handleFirstLogin(ProxiedPlayer p) {
-		dbm.initEssenceData(p.getUniqueId());
-		handleLogin(p);
+	@EventHandler
+	public void afterLeave(PlayerDisconnectEvent event) {
+		if (db == null) {
+			return;
+		}
+
+		ProxiedPlayer player = event.getPlayer();
+		UUID unid = player.getUniqueId();
+		db.insertData("bungee.logout", unid.toString());
+		session(unid);
+		players.remove(unid);
 	}
-	
-	public void handleLogin(ProxiedPlayer p) {
-		dbm.updateEssenceLogin(p.getUniqueId(), System.currentTimeMillis());
+
+	public void session(UUID player) {
+		Long start = players.get(player);
+		if (start == null) return;
+		db.insertData("bungee.session", player.toString(), System.currentTimeMillis() - start);
 	}
 }
