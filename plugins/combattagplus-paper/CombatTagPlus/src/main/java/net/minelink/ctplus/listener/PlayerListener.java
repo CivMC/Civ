@@ -160,7 +160,7 @@ public final class PlayerListener implements Listener {
             // Cancel command
             event.setCancelled(true);
             if (!plugin.getSettings().getDisabledCommandMessage().isEmpty()) {
-                player.sendMessage(plugin.getSettings().getDisabledCommandMessage().replace("{command}", "/" + message.split(" ")[0]));
+                player.sendMessage(plugin.getSettings().getDisabledCommandMessage().replace("{command}", message.split(" ")[0]));
             }
         }
     }
