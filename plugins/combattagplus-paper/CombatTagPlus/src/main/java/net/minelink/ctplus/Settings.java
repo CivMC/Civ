@@ -13,9 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import net.minelink.ctplus.util.SimpleRegexSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -391,17 +388,26 @@ public final class Settings {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
-    public CommandBlacklist getCommandBlacklist() {
-        List<String> blacklist = plugin.getConfig().getStringList("command-blacklist");
-        List<String> whitelist = plugin.getConfig().getStringList("command-whitelist");
-        if (plugin.getConfig().isSet("disabled-commands")) {
-            plugin.getLogger().info("Converting old 'disabled-commands' setting over to the new blacklist");
-            blacklist.addAll(plugin.getConfig().getStringList("disabled-commands").stream()
-                    .map(SimpleRegexSet::escape) // On the off chance that some idiot puts a star character or a backslash in their commands
-                    .collect(Collectors.toList()));
-            plugin.getConfig().set("command-blacklist", blacklist);
+    public boolean isCommandBlacklisted(String message) {
+        if (message.charAt(0) == '/') {
+            message = message.substring(1);
         }
-        return CommandBlacklist.parse(blacklist, whitelist);
+
+        message = message.toLowerCase();
+
+        for (String command : plugin.getConfig().getStringList("command-whitelist")) {
+            if (command.equals("*") || message.equals(command) || message.startsWith(command + " ")) {
+                return false;
+            }
+        }
+
+        for (String command : plugin.getConfig().getStringList("command-blacklist")) {
+            if (command.equals("*") || message.equals(command) || message.startsWith(command + " ")) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean untagOnPluginTeleport() {

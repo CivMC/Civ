@@ -153,14 +153,14 @@ public final class PlayerListener implements Listener {
         // Do nothing if player isn't even combat tagged
         if (!plugin.getTagManager().isTagged(player.getUniqueId())) return;
 
-        String message = event.getMessage().toLowerCase();
+        String message = event.getMessage();
 
         // Is player using a denied command?
-        if (plugin.getSettings().getCommandBlacklist().isBlacklisted(message)) {
+        if (plugin.getSettings().isCommandBlacklisted(message)) {
             // Cancel command
             event.setCancelled(true);
             if (!plugin.getSettings().getDisabledCommandMessage().isEmpty()) {
-                player.sendMessage(plugin.getSettings().getDisabledCommandMessage().replace("{command}", message.split(" ")[0]));
+                player.sendMessage(plugin.getSettings().getDisabledCommandMessage().replace("{command}", message));
             }
         }
     }
