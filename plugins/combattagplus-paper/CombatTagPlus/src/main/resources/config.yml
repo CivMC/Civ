@@ -1,11 +1,14 @@
 # Don't touch this. It's here to determine whether you need to refresh your config.
-config-version: 24
+config-version: 25
 
 # The duration in seconds that both the attacker and victim should be tagged in combat.
 tag-duration: 15
 
 # This message is displayed to both the attacker and victim when newly tagged. Set this to '' to display nothing. {opponent} is the other player.
 tag-message: '&cYou have engaged in combat with &b{opponent}&c. Type &b/ct &cto check your timer.'
+
+# This message is displayed to both the attacker and victim when newly tagged if the opponent is unknown. Set this to '' to display nothing.
+tag-unknown-message: '&cYou have engaged in combat. Type &b/ct &cto check your timer.'
 
 # This message is displayed the player when their tag expires. Set this to '' to display nothing.
 untag-message: '&aYou are no longer in combat.'

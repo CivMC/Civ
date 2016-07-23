@@ -190,6 +190,11 @@ public final class Settings {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
+    public String getTagUnknownMessage() {
+        String message = plugin.getConfig().getString("tag-unknown-message", "");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
     public String getUntagMessage() {
         String message = plugin.getConfig().getString("untag-message", "");
         return ChatColor.translateAlternateColorCodes('&', message);

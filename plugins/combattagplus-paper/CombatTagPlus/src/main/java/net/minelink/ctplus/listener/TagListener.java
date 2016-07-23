@@ -218,22 +218,38 @@ public final class TagListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void sendTagMessage(PlayerCombatTagEvent event) {
-        // Do nothing if tag message is blank
-        String message = plugin.getSettings().getTagMessage();
-        if (message.isEmpty()) return;
-
         Player attacker = event.getAttacker();
         Player victim = event.getVictim();
 
         // Send combat tag notification to victim
-        if (victim != null && !plugin.getTagManager().isTagged(victim.getUniqueId()) &&
-                !plugin.getSettings().onlyTagAttacker()) {
-            victim.sendMessage(message.replace("{opponent}", (attacker != null ? attacker.getName() : "someone") ));
+        if (victim != null && !plugin.getTagManager().isTagged(victim.getUniqueId())
+                && !plugin.getSettings().onlyTagAttacker()) {
+            if (attacker != null) {
+                String message = plugin.getSettings().getTagMessage();
+                if (!message.isEmpty()) {
+                    victim.sendMessage(message.replace("{opponent}", attacker.getName()));
+                }
+            } else {
+                String message = plugin.getSettings().getTagUnknownMessage();
+                if (!message.isEmpty()) {
+                    victim.sendMessage(message);
+                }
+            }
         }
 
         // Send combat tag notification to attacker
         if (attacker != null && !plugin.getTagManager().isTagged(attacker.getUniqueId())) {
-            attacker.sendMessage(message.replace("{opponent}", (victim != null ? victim.getName() : "someone")));
+            if (victim != null) {
+                String message = plugin.getSettings().getTagMessage();
+                if (!message.isEmpty()) {
+                    attacker.sendMessage(message.replace("{opponent}", victim.getName()));
+                }
+            } else {
+                String message = plugin.getSettings().getTagUnknownMessage();
+                if (!message.isEmpty()) {
+                    attacker.sendMessage(message);
+                }
+            }
         }
     }
 
