@@ -10126,7 +10126,7 @@ recipes:
       godbook1:
         chance: 0.00120909
         power5book:
-          material: BOOK
+          material: ENCHANTED_BOOK
           amount: 1
           stored_enchants:
             power5:
@@ -10135,7 +10135,7 @@ recipes:
       godbook2:
         chance: 0.00120909
         infinity:
-          material: BOOK
+          material: ENCHANTED_BOOK
           amount: 1
           stored_enchants:
             infinity:
@@ -10144,7 +10144,7 @@ recipes:
       godbook3:
         chance: 0.00120909
         eff5:
-          material: BOOK
+          material: ENCHANTED_BOOK
           amount: 1
           stored_enchants:
             eff5:
@@ -10153,7 +10153,7 @@ recipes:
       godbook4:
         chance: 0.00120909
         ub3:
-          material: BOOK
+          material: ENCHANTED_BOOK
           amount: 1
           stored_enchants:
             ub3:
@@ -10162,7 +10162,7 @@ recipes:
       godbook5:
         chance: 0.00120909
         sharpness5:
-          material: BOOK
+          material: ENCHANTED_BOOK
           amount: 1
           stored_enchants:
             sharpness5:
@@ -10171,7 +10171,7 @@ recipes:
       godbook6:
         chance: 0.00110909
         protection4:
-          material: BOOK
+          material: ENCHANTED_BOOK
           amount: 1
           stored_enchants:
             protection4:
@@ -10180,7 +10180,7 @@ recipes:
       godbook7:
         chance: 0.00120909
         silktouch:
-          material: BOOK
+          material: ENCHANTED_BOOK
           amount: 1
           stored_enchants:
             silktouch:
@@ -10594,7 +10594,7 @@ recipes:
       godbook1:
         chance: 0.00120909
         power5book:
-          material: BOOK
+          material: ENCHANTED_BOOK
           amount: 1
           stored_enchants:
             power5:
@@ -10603,7 +10603,7 @@ recipes:
       godbook2:
         chance: 0.00120909
         infinity:
-          material: BOOK
+          material: ENCHANTED_BOOK
           amount: 1
           stored_enchants:
             infinity:
@@ -10612,7 +10612,7 @@ recipes:
       godbook3:
         chance: 0.00120909
         eff5:
-          material: BOOK
+          material: ENCHANTED_BOOK
           amount: 1
           stored_enchants:
             eff5:
@@ -10621,7 +10621,7 @@ recipes:
       godbook4:
         chance: 0.00120909
         ub3:
-          material: BOOK
+          material: ENCHANTED_BOOK
           amount: 1
           stored_enchants:
             ub3:
@@ -10630,7 +10630,7 @@ recipes:
       godbook5:
         chance: 0.00120909
         sharpness5:
-          material: BOOK
+          material: ENCHANTED_BOOK
           amount: 1
           stored_enchants:
             sharpness5:
@@ -10639,7 +10639,7 @@ recipes:
       godbook6:
         chance: 0.00110909
         protection4:
-          material: BOOK
+          material: ENCHANTED_BOOK
           amount: 1
           stored_enchants:
             protection4:
@@ -10648,7 +10648,7 @@ recipes:
       godbook7:
         chance: 0.00120909
         silktouch:
-          material: BOOK
+          material: ENCHANTED_BOOK
           amount: 1
           stored_enchants:
             silktouch:
