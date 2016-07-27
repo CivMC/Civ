@@ -18,23 +18,29 @@ public class Database {
 			"  id BIGINT NOT NULL AUTO_INCREMENT," +
 			"  stat_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
 			"  stat_key VARCHAR(64) NOT NULL," +
-			"  numeric_value NUMERIC," +
-			"  string_value TEXT," +
+			"  server VARCHAR(64) DEFAULT NULL," +
+			"  world VARCHAR(100) DEFAULT NULL," +
+			"  chunk_x INT DEFAULT NULL," +
+			"  chunk_z INT DEFAULT NULL," + 
+			"  uuid VARCHAR(36) DEFAULT NULL," +
+			"  numeric_value NUMERIC DEFAULT NULL," +
+			"  string_value TEXT DEFAULT NULL," +
 			"  CONSTRAINT pk_spy_stats PRIMARY KEY (id)," +
-			"  INDEX idx_spy_stats_time_key USING BTREE (stat_time, stat_key)" +
+			"  INDEX idx_spy_stats_time_key USING BTREE (stat_time, stat_key)," +
+			"  INDEX idx_spy_ext_key USING BTREE (server, world, chunk_x, chunk_z, uuid)" +
 			");";
 	
 	public static final String INSERT_KEY =
-			"INSERT INTO spy_stats (stat_time, stat_key) VALUES (?, ?);";
+			"INSERT INTO spy_stats (stat_time, stat_key, server, world, chunk_x, chunk_z, uuid) VALUES (?, ?, ?, ?, ?, ?, ?);";
 
 	public static final String INSERT_STRING =
-			"INSERT INTO spy_stats (stat_time, stat_key, string_value) VALUES (?, ?, ?);";
+			"INSERT INTO spy_stats (stat_time, stat_key, server, world, chunk_x, chunk_z, uuid, string_value) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 	
 	public static final String INSERT_NUMBER =
-			"INSERT INTO spy_stats (stat_time, stat_key, numeric_value) VALUES (?, ?, ?);";
+			"INSERT INTO spy_stats (stat_time, stat_key, server, world, chunk_x, chunk_z, uuid, numeric_value) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 	
 	public static final String INSERT_COMBINED =
-			"INSERT INTO spy_stats (stat_time, stat_key, string_value, numeric_value) VALUES (?, ?, ?, ?);";
+			"INSERT INTO spy_stats (stat_time, stat_key, server, world, chunk_x, chunk_z, uuid, string_value, numeric_value) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 	private HikariDataSource datasource;
 	
@@ -92,15 +98,35 @@ public class Database {
 	}
 	
 	public int insertData(String key) {
-		return insertData(king, null, null, null, null);
+		return insertData(key, null, null, null, null, null, null, null, null, null);
 	}
 	public int insertData(String key, String value) {
-		return insertData(king, value, null, null, null);
+		return insertData(key, null, null, null, null, null, value, null, null, null);
 	}
 	public int insertData(String key, Number value) {
-		return insertData(king, null, value, null, null);
+		return insertData(key, null, null, null, null, null, null, value, null, null);
+	}
+	public int insertData(String key, String sValue, Number nValue) {
+		return insertData(key, null, null, null, null, null, sValue, nValue, null, null);
 	}
 	public int insertData(String key, String sValue, Number nValue, Long time, Connection connection) {
+		return insertData(key, null, null, null, null, null, sValue, nValue, time, connection);
+	}
+	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z) {
+		return insertData(key, world, server, chunk_x, chunk_z, null, null, null, null, null);
+	}
+	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, String value) {
+		return insertData(key, world, server, chunk_x, chunk_z, null, value, null, null, null);
+	}
+	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, Number value) {
+		return insertData(key, world, server, chunk_x, chunk_z, null, null, value, null, null);
+	}
+	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, String sValue, Number nValue) {
+		return insertData(key, world, server, chunk_x, chunk_z, null, sValue, nValue, null, null);
+	}
+
+	public int insertData(String key, String server, String world, Integer chunk_x, Integer chunk_z, UUID uuid, 
+			String sValue, Number nValue, Long time, Connection connection) {
 		if (key == null) return -1;
 		boolean iOwn = connection == null;
 		try {
