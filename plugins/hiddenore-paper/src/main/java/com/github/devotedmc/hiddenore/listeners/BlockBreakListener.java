@@ -1,64 +1,23 @@
 package com.github.devotedmc.hiddenore.listeners;
 
-import org.bukkit.Achievement;
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
-import org.bukkit.EntityEffect;
-import org.bukkit.GameMode;
-import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.ChatColor;
-import org.bukkit.Note;
-import org.bukkit.Particle;
-import org.bukkit.Server;
-import org.bukkit.Sound;
-import org.bukkit.Statistic;
-import org.bukkit.WeatherType;
-import org.bukkit.World;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
-import org.bukkit.conversations.Conversation;
-import org.bukkit.conversations.ConversationAbandonedEvent;
+import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.InventoryView.Property;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.MainHand;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.map.MapView;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.permissions.PermissionAttachmentInfo;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
-import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.Random;
 import java.util.logging.Level;
 
 import com.github.devotedmc.hiddenore.BlockConfig;
@@ -296,6 +255,7 @@ public class BlockBreakListener implements Listener {
 			int maxWalk = 0;
 			int cPlace = 0;
 			double cAttempt = 0;
+			boolean tryFacing = false; // pick a facing block of attacked block
 			Block origin = sourceLocation.getBlock();
 			for (ItemStack xform : transform) {
 				Material sample = xform.getType();
@@ -303,15 +263,20 @@ public class BlockBreakListener implements Listener {
 				maxWalk += xform.getAmount() * 2;
 				cPlace = xform.getAmount();
 				while (cPlace > 0 && maxWalk > 0) {
-					double z = Math.random() * 2.0 - 1.0;
-					double zsq = Math.sqrt(1-Math.pow(z, 2));
-					double u = 0.5 + Math.floor(Math.cbrt(cAttempt));
-					//double u = Math.round(1.0 + Math.random() * Math.ceil(Math.sqrt(cPlace)));
-					double theta = Math.random() * 2.0 * Math.PI;
-					Block walk = origin.getRelative(
-							(int) Math.round(u * zsq * Math.cos(theta)),
-							(int) Math.round(u * zsq * Math.sin(theta)),
-							(int) Math.round(u * z));
+					Block walk = null;
+					if (!tryFacing) {
+						walk = this.getVisibleFacing(origin);
+					} else {
+						double z = Math.random() * 2.0 - 1.0;
+						double zsq = Math.sqrt(1-Math.pow(z, 2));
+						double u = 0.5 + Math.floor(Math.cbrt(cAttempt++));
+						//double u = Math.round(1.0 + Math.random() * Math.ceil(Math.sqrt(cPlace)));
+						double theta = Math.random() * 2.0 * Math.PI;
+						walk = origin.getRelative(
+								(int) Math.round(u * zsq * Math.cos(theta)),
+								(int) Math.round(u * zsq * Math.sin(theta)),
+								(int) Math.round(u * z));
+					}
 					if (blockConfig.checkBlock(walk)) {
 						HiddenOreGenerateEvent hoge = new HiddenOreGenerateEvent(player, walk, sample);
 						Bukkit.getPluginManager().callEvent(hoge);
@@ -319,10 +284,10 @@ public class BlockBreakListener implements Listener {
 							walk.setType(hoge.getTransform());
 							expressed = hoge.getTransform();
 							cPlace --;
+							tryFacing = true;
 						}
 					}
 					maxWalk --;
-					cAttempt ++;
 				}
 
 				log("STAT: Player {0} at {1} broke {2}:{3} - replacing with {4} {5}:{6} as {7}", 
@@ -354,6 +319,16 @@ public class BlockBreakListener implements Listener {
 		return true;
 	}
 	
+	private static BlockFace[] visibleFaces = new BlockFace[] {
+				BlockFace.DOWN, BlockFace.UP, BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH
+			};
+	private static Random facerandom = new Random();
+	
+	private Block getVisibleFacing(Block origin) {
+		Block face = origin.getRelative(visibleFaces[facerandom.nextInt(visibleFaces.length)]);
+		return face;
+	}
+
 	private void log(String message, Object...replace) {
 		plugin.getLogger().log(Level.INFO, message, replace);
 	}
