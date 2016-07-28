@@ -64,7 +64,7 @@ public class CivSpyBungee extends Plugin implements Listener {
 		getProxy().getScheduler().cancel(tracker);
 		this.counter.sample();
 		for (UUID player : players.keySet()) {
-			db.insertData("bungee.logout", player.toString());
+			db.insertData("bungee.logout", player);
 			session(player);
 		}
 		players.removeAll();
@@ -133,7 +133,7 @@ public class CivSpyBungee extends Plugin implements Listener {
 		}
 
 		ProxiedPlayer player = event.getPlayer();
-		db.insertData("bungee.login", player.getUniqueId().toString());
+		db.insertData("bungee.login", player.getUniqueId());
 		players.add(player.getUniqueId());
 	}
 
@@ -145,7 +145,7 @@ public class CivSpyBungee extends Plugin implements Listener {
 
 		ProxiedPlayer player = event.getPlayer();
 		UUID unid = player.getUniqueId();
-		db.insertData("bungee.logout", unid.toString());
+		db.insertData("bungee.logout", unid);
 		session(unid);
 		players.remove(unid);
 	}
@@ -153,6 +153,6 @@ public class CivSpyBungee extends Plugin implements Listener {
 	public void session(UUID player) {
 		Long start = players.get(player);
 		if (start == null) return;
-		db.insertData("bungee.session", player.toString(), System.currentTimeMillis() - start);
+		db.insertData("bungee.session", player, System.currentTimeMillis() - start);
 	}
 }

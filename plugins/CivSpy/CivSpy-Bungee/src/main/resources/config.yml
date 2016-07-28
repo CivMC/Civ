@@ -1,0 +1,7 @@
+database:
+ host:
+ port:
+ database:
+ user:
+ password:
+interval: 12000

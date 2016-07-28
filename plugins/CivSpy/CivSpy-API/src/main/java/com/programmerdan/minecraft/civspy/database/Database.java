@@ -34,13 +34,13 @@ public class Database {
 			"INSERT INTO spy_stats (stat_time, stat_key, server, world, chunk_x, chunk_z, uuid) VALUES (?, ?, ?, ?, ?, ?, ?);";
 
 	public static final String INSERT_STRING =
-			"INSERT INTO spy_stats (stat_time, stat_key, server, world, chunk_x, chunk_z, uuid, string_value) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+			"INSERT INTO spy_stats (stat_time, stat_key, string_value, server, world, chunk_x, chunk_z, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 	
 	public static final String INSERT_NUMBER =
-			"INSERT INTO spy_stats (stat_time, stat_key, server, world, chunk_x, chunk_z, uuid, numeric_value) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+			"INSERT INTO spy_stats (stat_time, stat_key, numeric_value, server, world, chunk_x, chunk_z, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 	
 	public static final String INSERT_COMBINED =
-			"INSERT INTO spy_stats (stat_time, stat_key, server, world, chunk_x, chunk_z, uuid, string_value, numeric_value) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+			"INSERT INTO spy_stats (stat_time, stat_key, string_value, numeric_value, server, world, chunk_x, chunk_z, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 	private HikariDataSource datasource;
 	
@@ -112,6 +112,21 @@ public class Database {
 	public int insertData(String key, String sValue, Number nValue, Long time, Connection connection) {
 		return insertData(key, null, null, null, null, null, sValue, nValue, time, connection);
 	}
+	public int insertData(String key, UUID uuid) {
+		return insertData(key, null, null, null, null, uuid, null, null, null, null);
+	}
+	public int insertData(String key, UUID uuid, String value) {
+		return insertData(key, null, null, null, null, uuid, value, null, null, null);
+	}
+	public int insertData(String key, UUID uuid, Number value) {
+		return insertData(key, null, null, null, null, uuid, null, value, null, null);
+	}
+	public int insertData(String key, UUID uuid, String sValue, Number nValue) {
+		return insertData(key, null, null, null, null, uuid, sValue, nValue, null, null);
+	}
+	public int insertData(String key, UUID uuid, String sValue, Number nValue, Long time, Connection connection) {
+		return insertData(key, null, null, null, null, uuid, sValue, nValue, time, connection);
+	}
 	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z) {
 		return insertData(key, world, server, chunk_x, chunk_z, null, null, null, null, null);
 	}
@@ -124,7 +139,23 @@ public class Database {
 	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, String sValue, Number nValue) {
 		return insertData(key, world, server, chunk_x, chunk_z, null, sValue, nValue, null, null);
 	}
+	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, String sValue, Number nValue,
+			Long time, Connection connection) {
+		return insertData(key, world, server, chunk_x, chunk_z, null, sValue, nValue, time, connection);
+	}
 
+	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, UUID uuid) {
+		return insertData(key, world, server, chunk_x, chunk_z, uuid, null, null, null, null);
+	}
+	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, UUID uuid, String value) {
+		return insertData(key, world, server, chunk_x, chunk_z, uuid, value, null, null, null);
+	}
+	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, UUID uuid, Number value) {
+		return insertData(key, world, server, chunk_x, chunk_z, uuid, null, value, null, null);
+	}
+	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, UUID uuid, String sValue, Number nValue) {
+		return insertData(key, world, server, chunk_x, chunk_z, uuid, sValue, nValue, null, null);
+	}
 	public int insertData(String key, String server, String world, Integer chunk_x, Integer chunk_z, UUID uuid, 
 			String sValue, Number nValue, Long time, Connection connection) {
 		if (key == null) return -1;
@@ -133,25 +164,56 @@ public class Database {
 			connection = iOwn ? getConnection() : connection;
 			time = time == null ? System.currentTimeMillis() : time;
 			PreparedStatement statement = null;
+			int o = 0;
 			if (sValue == null) {
 				if (nValue == null) {
 					statement = connection.prepareStatement(Database.INSERT_KEY);
 				} else {
 					statement = connection.prepareStatement(Database.INSERT_NUMBER);
 					statement.setDouble(3, nValue.doubleValue());
+					o = 1;
 				}
 			} else {
 				if (nValue == null) {
 					statement = connection.prepareStatement(Database.INSERT_STRING);
 					statement.setString(3, sValue);
+					o = 1;
 				} else {
 					statement = connection.prepareStatement(Database.INSERT_COMBINED);
 					statement.setString(3, sValue);
 					statement.setDouble(4, nValue.doubleValue());
+					o = 2;
 				}
 			}
 			statement.setLong(1, time);
 			statement.setString(2, key);
+
+			if (server != null) {
+				statement.setString(3 + o, server);
+			} else {
+				statement.setNull(3 + o, Types.VARCHAR);
+			}
+			if (world != null) {
+				statement.setString(4 + o, world);
+			} else {
+				statement.setNull(4 + o, Types.VARCHAR);
+			}
+			if (chunk_x != null) {
+				statement.setInt(5 + o, chunk_x);
+			} else {
+				statement.setNull(5 + o, Types.INTEGER);
+			}
+			if (chunk_z != null) {
+				statement.setInt(6 + o, chunk_z);
+			} else {
+				statement.setNull(6 + o, Types.INTEGER);
+			}
+			if (uuid != null) {
+				statement.setString(7 + o, uuid.toString());
+			} else {
+				statement.setNull(7 + o, Types.VARCHAR);
+			}
+
 			int results = statement.executeUpdate();
 			SQLWarning warning = statement.getWarnings();
 			while (warning != null) {

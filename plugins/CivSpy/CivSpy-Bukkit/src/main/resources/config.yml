@@ -1,0 +1,9 @@
+database:
+ host:
+ port:
+ database:
+ user:
+ password:
+save_interval: 12000
+interval: 12000
+server: local

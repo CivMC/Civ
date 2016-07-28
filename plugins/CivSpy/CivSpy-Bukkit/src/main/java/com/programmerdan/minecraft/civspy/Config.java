@@ -60,4 +60,12 @@ public class Config {
 	public int getInterval() {
 		return config.getInt("interval", 12000);
 	}
+
+	public int getSaveInterval() {
+		return config.getInt("save_interval", 12000);
+	}
+
+	public String getServer() {
+		return config.getString("server", "local");
+	}
 }

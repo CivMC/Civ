@@ -14,8 +14,6 @@ public class CivSpy extends JavaPlugin implements Listener {
 	private Config config;
 	private Database db;
 
-	private HashMap<UUID, CivSpyPlayer> spydata;
-
 	private BukkitTask savedata;
 
 	private CivSpySaver saver;
@@ -31,16 +29,16 @@ public class CivSpy extends JavaPlugin implements Listener {
 				getLogger().log(Level.SEVERE, "Failed to acquire database, skipping listeners");
 				return;
 			}
+
 			getLogger().log(Level.INFO, "Preparing CivSpy datastructures");
-			this.spydata = new ConcurrentHashMap<UUID, CivSpyPlayer>();
+			this.saver = new CivSpySaver(db, this);
 
 			getLogger().log(Level.INFO, "Registering CivSpy listeners");
 			this.getServer().getPluginManager().registerEvents(this, this);
 			
 			getLogger().log(Level.INFO, "Registering CivSpy saver");
-			this.saver = new CivSpySaver(db);
 			this.savedata = this.getServer().getScheduler().runTaskTimerAsynchronously(
-					this, this.saver, this.config.getInterval(), this.config.getInterval());
+					this, this.saver, this.config.getSaveInterval(), this.config.getSaveInterval());
 		} catch (SQLException se) {
 			getLogger().log(Level.SEVERE, "Failed to acquire database, skipping listeners");
 		}
@@ -54,9 +52,6 @@ public class CivSpy extends JavaPlugin implements Listener {
 		this.saver.saveAll();
 		this.saver = null;
 		this.cancelTasks(this);
-		getLogger().log(Level.INFO, "Clearing CivSpy datastructures");
-		this.spydata.removeAll();
-		this.spydata = null;
 		getLogger().log(Level.INFO, "Closing CivSpy database");
 		if (this.db != null) this.db.close();
 	}
@@ -66,5 +61,6 @@ public class CivSpy extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onRegularBreak(BlockBreakEvent event) {
 		if (event.getPlayer() == null)
-
+			return;
+	}
 }
