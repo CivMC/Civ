@@ -6,21 +6,23 @@ public class CivSpyPlayer implements Cloneable {
 
 	
 	static enum Tracking {
-		FossilDrop,
-		CoalOreGenerate,
-		IronOreGenerate,
-		RedstoneOreGenerate,
-		LapisOreGenerate,
-		GoldOreGenerate,
-		QuartzOreGenerate,
-		EmeraldOreGenetare,
-		CoalOreBreak,
-		IronOreBreak,
-		RedstoneOreBreak,
-		LapisOreBreak,
-		GoldOreBreak,
-		QuartzOreBreak,
-		EmeraldOreBreak,
-		DiamondOreBreak,
+		Drop("hiddenore.drop"),
+		Generate("hiddenore.generate"),
+		Kill("hunter.slay"),
+		KillDrop("hunter.drop"),
+		Mine("miner.mine"),
+		Build("builder.place"),
+		Plant("farmer.plant"),
+		Harvest("farmer.harvest"),
 
+		private String key;
+
+		public Tracking(String key) {
+			this.key = key;
+		}
+
+		public String getKey() {
+			return key;
+		}
+	}
 }

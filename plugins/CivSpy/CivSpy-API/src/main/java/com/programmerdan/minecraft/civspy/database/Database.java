@@ -228,4 +228,90 @@ public class Database {
 			if (iOwn) connection.close();
 		}
 	}
+
+	public PreparedStatement batchData(String key, String server, String world, Integer chunk_x, Integer chunk_z, UUID uuid, 
+			String sValue, Number nValue, Long time, Connection connection, PreparedStatement statement) {
+		if (key == null) return -1;
+		boolean iOwn = connection == null;
+		boolean newState = statement == null;
+		try {
+			connection = iOwn ? getConnection() : connection;
+			time = time == null ? System.currentTimeMillis() : time;
+			statement = newState ? connection.prepareStatement(Database.INSERT_COMBINED) : statement;
+		
+			statement.setLong(1, time);
+			statement.setString(2, key);
+			if (sValue != null) {
+				statement.setString(3, sValue);
+			} else {
+				statement.setNull(3, Types.VARCHAR);
+			}
+			if (nValue != null) {
+				statement.setDouble(4, nValue.doubleValue());
+			} else {
+				statement.setNull(4, Types.NUMERIC);
+			}
+			if (server != null) {
+				statement.setString(5, server);
+			} else {
+				statement.setNull(5, Types.VARCHAR);
+			}
+			if (world != null) {
+				statement.setString(6, world);
+			} else {
+				statement.setNull(6, Types.VARCHAR);
+			}
+			if (chunk_x != null) {
+				statement.setInt(7, chunk_x);
+			} else {
+				statement.setNull(7, Types.INTEGER);
+			}
+			if (chunk_z != null) {
+				statement.setInt(8, chunk_z);
+			} else {
+				statement.setNull(8, Types.INTEGER);
+			}
+			if (uuid != null) {
+				statement.setString(9, uuid.toString());
+			} else {
+				statement.setNull(9, Types.VARCHAR);
+			}
+
+			statement.addBatch();
+			return statement;
+		} catch (SQLException se) {
+			log.log(Level.SEVERE, "Unable to insert data", se);
+			return null;
+		}
+	}
+
+	public int[] batchExecute(Statement statement, boolean closeConnection) {
+		if (statement == null || statement.isClosed()) return null;
+		try {
+			int[] results = statement.executeBatch();
+			SQLWarning warning = statement.getWarnings();
+			while (warning != null) {
+				log.log(Level.WARNING, warning.getErrorCode(), warning);
+				warning = warning.getNextWarning();
+			}
+			return results;
+		} catch (SQLException se) {
+			log.log(Level.SEVERE, "Unable to execute this batch!", se);
+			return null;
+		} finally {
+			if (closeConnection) {
+				try {
+					statement.getConnection().close();
+				} catch (SQLException se2) {
+					log.log(Level.WARNING, "Failed to close the connection post batch", se2);
+				}
+			} else {
+				try {
+					statement.close();
+				} catch (SQLException se3) {
+					log.log(Level.WARNING, "Failed to close the statement post batch", se3);
+				}
+			}
+		}
+	}
 }
