@@ -214,6 +214,7 @@ protected String name;
 		
 		greenhouseRate = other.greenhouseRate;
 		isGreenhouseEnabled = other.isGreenhouseEnabled;
+		persistentRate = other.persistentRate;
 		
 		needsSunlight = other.needsSunlight;
 		
