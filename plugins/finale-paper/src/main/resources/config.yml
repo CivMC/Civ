@@ -16,3 +16,21 @@ pearls:
   enabled: true
   cooldown: 10s
   combatTag: true
+  
+#allows adjusting the attack damage of any item by its spigot material identifier
+adjustedDamage:
+  diamondAxe:
+    material: DIAMOND_AXE
+    damage: 6
+  ironAxe:
+    material: IRON_AXE
+    damage: 5
+  stoneAxe:
+    material: STONE_AXE
+    damage: 4
+  goldAxe:
+    material: GOLD_AXE
+    damage: 3
+  woodAxe:
+    material: WOOD_AXE
+    damage: 3

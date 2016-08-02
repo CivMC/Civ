@@ -1,6 +1,12 @@
 package com.github.maxopoly.finale;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javafx.scene.shape.CullFace;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -33,11 +39,12 @@ public class ConfigParser {
 				parseHealthRegen(config.getConfigurationSection("foodHealthRegen")) : null;
 		// Pearl cooldown changes
 		this.pearlEnabled = parsePearls(config.getConfigurationSection("pearls"));
+		Map <Material, Integer> adjustedDamage = parseAdjustedDamage(config.getConfigurationSection("adjustedDamage"));
 		// Flags
 		boolean protocolLibEnabled = Bukkit.getPluginManager().isPluginEnabled("ProtocolLib");
 
 		// Initialize the manager
-		manager = new FinaleManager(attackEnabled, attackSpeed, regenEnabled, regenhandler, protocolLibEnabled);
+		manager = new FinaleManager(attackEnabled, attackSpeed, regenEnabled, regenhandler, adjustedDamage, protocolLibEnabled);
 		return manager;
 	}
 	
@@ -59,6 +66,41 @@ public class ConfigParser {
 		pearlCooldown = parseTime(config.getString("cooldown", "10s"));
 		combatTagOnPearl = config.getBoolean("combatTag", true) && Bukkit.getPluginManager().isPluginEnabled("CombatTagPlus");
 		return true;
+	}
+	
+	private Map <Material, Integer> parseAdjustedDamage(ConfigurationSection config) {
+	    Map <Material, Integer> damages = new HashMap<Material, Integer>();
+	    if (config == null) {
+		return damages;
+	    }
+	    for(String key : config.getKeys(false)) {
+		ConfigurationSection current = config.getConfigurationSection(key);
+		if (current == null) {
+		    plugin.warning("Found invalid value " + key + " at " + config + " only mapping values allowed here");
+		    continue;
+		}
+		String matString = current.getString("material");
+		if (matString == null) {
+		    plugin.warning("Found no material specified at " + current + ". Skipping attack damage adjustment");
+		    continue;
+		}
+		Material mat;
+		try {
+		   
+		    mat = Material.valueOf(matString);
+		}
+		catch (IllegalArgumentException e) {
+		    plugin.warning("Found invalid material " + matString + " specified at " + current + ". Skipping attack damage adjustment for it");
+		    continue;
+		}
+		int damage = current.getInt("damage", -1);
+		if (damage == -1) {
+		    plugin.warning("Found no damage specified at " + current + ". Skipping attack damage adjustment");
+		    continue;
+		}
+		damages.put(mat, damage);
+	    }
+	    return damages;
 	}
 
 	public boolean isPearlEnabled() {
