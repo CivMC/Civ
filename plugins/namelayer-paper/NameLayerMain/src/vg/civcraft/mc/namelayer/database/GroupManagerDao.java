@@ -56,6 +56,18 @@ public class GroupManagerDao {
 				ver = 1;
 			} catch (SQLException e) {
 			}
+		//So best case the version table would only be created once at the beginning and then never changed again.
+		//Sadly the initial version table tracked time stamps as varchar in a very specific format, so we had to
+		//change it here. To avoid having to create a version table for the version table, we will just attempt this fix
+		//on startup every time and let it silently fail
+		try {
+			db.execute("alter table db_version add column timestamp datetime default now();");
+			db.execute("update db_version set timestamp=STR_TO_DATE(update_time, '%Y-%m-%d %h:%i:%s');");
+			db.execute("alter table db_version drop column update_time");
+		}
+		catch (SQLException e) {
+			//column already exists and this just silently fails
+		}
 		if (ver == 0){
 			long first_time = System.currentTimeMillis();
 			log(Level.INFO, "Performing database update to version 1!\n" +
@@ -400,7 +412,7 @@ public class GroupManagerDao {
 	
 	public void initializeStatements(){
 		version = db.prepareStatement("select max(db_version) as db_version from db_version where plugin_name=?");
-		updateVersion = db.prepareStatement("insert into db_version (db_version, update_time, plugin_name) values (?,?,?)"); 
+		updateVersion = db.prepareStatement("insert into db_version (db_version, plugin_name) values (?,?)"); 
 		
 		createGroup = db.prepareStatement("call createGroup(?,?,?,?)");
 		getGroup = db.prepareStatement("select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id " +
@@ -562,11 +574,9 @@ public class GroupManagerDao {
 	 */
 	public synchronized int updateVersion(int version, String pluginname){
 		NameLayerPlugin.reconnectAndReintializeStatements();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
 			updateVersion.setInt(1, version+ 1);
-			updateVersion.setString(2, sdf.format(new Date()));
-			updateVersion.setString(3, pluginname);
+			updateVersion.setString(2, pluginname);
 			updateVersion.execute();
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem updating version", e);
