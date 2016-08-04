@@ -61,9 +61,9 @@ public class GroupManagerDao {
 		//change it here. To avoid having to create a version table for the version table, we will just attempt this fix
 		//on startup every time and let it silently fail
 		try {
-			db.execute("alter table db_version add column timestamp datetime default now();");
-			db.execute("update db_version set timestamp=STR_TO_DATE(update_time, '%Y-%m-%d %h:%i:%s');");
-			db.execute("alter table db_version drop column update_time");
+			db.execute("alter table db_version add column timestamp datetime default now();", true);
+			db.execute("update db_version set timestamp=STR_TO_DATE(update_time, '%Y-%m-%d %h:%i:%s');", true);
+			db.execute("alter table db_version drop column update_time", true);
 		}
 		catch (SQLException e) {
 			//column already exists and this just silently fails
