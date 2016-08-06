@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.github.civcraft.donum.database.Database;
 import com.github.civcraft.donum.database.DonumDAO;
 import com.github.civcraft.donum.inventories.DeliveryInventory;
 import com.github.civcraft.donum.misc.ItemMapBlobHandling;
@@ -49,8 +48,12 @@ public class DonumManager {
 
 			@Override
 			public void run() {
+				System.out.println("haha");
+				Donum.getInstance().debug("Attempting to load delivery inventory for " + uuid.toString());
 				ItemMap delivery = database.getDeliveryInventory(uuid);
+				System.out.println(delivery.toString());
 				deliveryInventories.put(uuid, new DeliveryInventory(uuid, delivery));
+				Donum.getInstance().debug("Loaded " + delivery.toString() + " for " + uuid.toString());
 			}
 		}.runTaskAsynchronously(Donum.getInstance());
 	}
@@ -80,6 +83,17 @@ public class DonumManager {
 			public void run() {
 				database.insertLogoutInventory(uuid, ItemMapBlobHandling.constructItemMapFromInventory(inventory));
 
+			}
+		}.runTaskAsynchronously(Donum.getInstance());
+	}
+	
+	public void stageDeliveryAddition(UUID uuid, ItemMap items) {
+		new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				database.stageDeliveryAddition(uuid, items);
+				
 			}
 		}.runTaskAsynchronously(Donum.getInstance());
 	}

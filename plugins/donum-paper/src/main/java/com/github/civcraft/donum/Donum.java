@@ -16,6 +16,8 @@ public class Donum extends ACivMod {
 	public void onEnable() {
 		super.onEnable();
 		instance = this;
+		config = new DonumConfiguration();
+		config.parse();
 		manager = new DonumManager();
 		handle = new DonumCommandHandler();
 		handle.registerCommands();

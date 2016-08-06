@@ -41,10 +41,11 @@ public class ItemMapBlobHandling {
 		for (Entry<ItemStack, Integer> entry : im.getEntrySet()) {
 			ItemStack is = entry.getKey().clone();
 			is.setAmount(entry.getValue());
-			yaml.set(String.valueOf(count), is);
+			//yaml doesnt allow int as keys, so we have to add a string
+			yaml.set("bla" + String.valueOf(count), is);
 			count++;
 		}
-		return compress(yaml.toString());
+		return compress(yaml.saveToString());
 	}
 
 	/**
@@ -107,7 +108,7 @@ public class ItemMapBlobHandling {
 			BufferedReader br = new BufferedReader(new InputStreamReader(gis, "UTF-8"));
 			String line;
 			while ((line = br.readLine()) != null) {
-				sb.append(line);
+				sb.append(line + "\n");
 			}
 			br.close();
 			gis.close();

@@ -30,30 +30,51 @@ public class DonumConfiguration {
 		this.password = config.getString("database.password", RandomStringUtils.random(16));		
 	}
 	
+	/**
+	 * @return URL to open if players click the complain button in the GUI
+	 */
 	public String getComplaintURL() {
 		return complaintURL;
 	}
 	
+	/**
+	 * @return Whether Mercury is enabled
+	 */
 	public boolean isMercuryEnabled() {
 		return isMercuryEnabled;
 	}
 	
+	/**
+	 * @return Host of the database connection used
+	 */
 	public String getHost() {
 		return host;
 	}
 	
+	/**
+	 * @return Name of the database used
+	 */
 	public String getDatabaseName() {
 		return database;
 	}
 	
+	/**
+	 * @return Port used for the database connection
+	 */
 	public int getPort() {
 		return port;
 	}
 	
+	/**
+	 * @return Username used for the database connection
+	 */
 	public String getUser() {
 		return user;
 	}
 	
+	/**
+	 * @return Password used to log into the database
+	 */
 	public String getPassword() {
 		return password;
 	}
