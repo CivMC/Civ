@@ -5,4 +5,5 @@ version: ${project.version}
 depend: [CivModCore]
 softdepend: []
 commands:
+  present:
 permissions:

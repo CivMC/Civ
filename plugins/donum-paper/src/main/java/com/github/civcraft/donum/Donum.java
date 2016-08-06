@@ -1,6 +1,9 @@
 package com.github.civcraft.donum;
 
-import com.github.civcraft.donum.commands.CustomCommandHandler;
+import org.bukkit.Bukkit;
+
+import com.github.civcraft.donum.commands.DonumCommandHandler;
+import com.github.civcraft.donum.listeners.PlayerListener;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 
@@ -8,14 +11,15 @@ public class Donum extends ACivMod {
 
 	private static Donum instance;
 	private static DonumManager manager;
+	private static DonumConfiguration config;
 
 	public void onEnable() {
 		super.onEnable();
 		instance = this;
 		manager = new DonumManager();
-		handle = new CustomCommandHandler();
+		handle = new DonumCommandHandler();
 		handle.registerCommands();
-
+		Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
 	}
 
 	public void onDisable() {
@@ -33,6 +37,10 @@ public class Donum extends ACivMod {
 
 	public static DonumManager getManager() {
 		return manager;
+	}
+	
+	public static DonumConfiguration getConfiguration() {
+		return config;
 	}
 
 }

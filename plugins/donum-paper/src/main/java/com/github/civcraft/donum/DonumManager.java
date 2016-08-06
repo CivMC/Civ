@@ -2,12 +2,14 @@ package com.github.civcraft.donum;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.github.civcraft.donum.database.Database;
 import com.github.civcraft.donum.database.DonumDAO;
+import com.github.civcraft.donum.inventories.DeliveryInventory;
 import com.github.civcraft.donum.misc.ItemMapBlobHandling;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
@@ -16,6 +18,16 @@ public class DonumManager {
 
 	private DonumDAO database;
 	private Map<UUID, DeliveryInventory> deliveryInventories;
+	
+	public DonumManager() {
+		DonumConfiguration config = Donum.getConfiguration();
+		this.database = new DonumDAO(config.getHost(), config.getPort(), config.getDatabaseName(), config.getUser(), config.getPassword());
+		this.deliveryInventories = new ConcurrentHashMap<UUID, DeliveryInventory>();
+	}
+	
+	public DeliveryInventory getDeliveryInventory(UUID player) {
+		return deliveryInventories.get(player);
+	}
 
 	public void loadPlayerData(UUID uuid, Inventory i) {
 		Donum.getInstance().debug("Loading data for " + uuid.toString());
@@ -32,6 +44,15 @@ public class DonumManager {
 				}
 			}
 		}.runTaskAsynchronously(Donum.getInstance());
+		
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				ItemMap delivery = database.getDeliveryInventory(uuid);
+				deliveryInventories.put(uuid, new DeliveryInventory(uuid, delivery));
+			}
+		}.runTaskAsynchronously(Donum.getInstance());
 	}
 
 	public void savePlayerData(UUID uuid, Inventory inventory) {
@@ -46,7 +67,8 @@ public class DonumManager {
 
 					@Override
 					public void run() {
-						database.updateDeliveryInventory(uuid, del.getContent());
+						database.updateDeliveryInventory(uuid, del.getInventory(), true);
+						deliveryInventories.remove(uuid);
 
 					}
 				}.runTaskAsynchronously(Donum.getInstance());
@@ -61,6 +83,17 @@ public class DonumManager {
 			}
 		}.runTaskAsynchronously(Donum.getInstance());
 	}
+	
+	public void saveDeathInventory(UUID uuid, ItemMap inventory) {
+		Donum.getInstance().debug("Saving death inventory for " + uuid.toString());
+		new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				database.insertDeathInventory(uuid, inventory);
+			}
+		};
+	}
 
 	private void handleInventoryInconsistency(UUID player, ItemMap oldInventory, ItemMap newInventory) {
 		Donum.getInstance().info("Creating diff of lost items for " + player);
@@ -68,33 +101,4 @@ public class DonumManager {
 		Donum.getInstance().debug("New inventory: " + newInventory.toString());
 		// TODO
 	}
-
-	private class DeliveryInventory {
-		private UUID owner;
-		private ItemMap content;
-		private boolean isDirty;
-
-		private DeliveryInventory(UUID owner, ItemMap content) {
-			this.owner = owner;
-			this.content = content;
-			this.isDirty = false;
-		}
-
-		private void setDirty() {
-			isDirty = true;
-		}
-
-		private UUID getOwner() {
-			return owner;
-		}
-
-		private ItemMap getContent() {
-			return content;
-		}
-
-		private boolean isDirty() {
-			return isDirty;
-		}
-	}
-
 }

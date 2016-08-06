@@ -4,6 +4,9 @@ import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -13,13 +16,14 @@ import org.bukkit.Bukkit;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.civcraft.donum.Donum;
+import com.github.civcraft.donum.inventories.DeathInventory;
 import com.github.civcraft.donum.misc.ItemMapBlobHandling;
 
 public class DonumDAO {
 
 	private Database db;
 
-	public DonumDAO(String username, String host, int port, String password, String dbname) {
+	public DonumDAO(String host, int port, String dbname, String username, String password) {
 		db = new Database(host, port, dbname, username, password, Donum.getInstance().getLogger());
 		if (!db.connect()) {
 			Donum.getInstance().severe("Could not establish database connection, shutting down");
@@ -36,10 +40,23 @@ public class DonumDAO {
 		db.execute("create table if not exists db_version (db_version int(11), plugin_name varchar(40), timestamp datetime default now());");
 		int version = getVersion();
 		if (version == 0) {
-			db.execute("create table if not exists deliveryInventories (uuid varchar(36), inventory blob not null, lastUpdate datetime not null default now(), primary key (uuid));");
-			db.execute("create table if not exists logoutInventories (uuid varchar(36), inventory blob not null, hash int, lastUpdate datetime not null default now(),primary key(uuid));");
+			db.execute("create table if not exists deliveryInventories (uuid varchar(36), inventory blob not null, "
+					+ "lastUpdate datetime not null default now(), primary key (uuid));");
+			db.execute("create table if not exists deliveryAdditions (deliveryId int not null auto_increment, uuid varchar(36) not null, "
+					+ "inventory blob not null, creationTime datetime not null default now(), index deliveryAdditionsUuidIndex (uuid), "
+					+ "primary key(deliveryId), foreign key (uuid) references deliveryInventories(uuid));");
+			db.execute("create table if not exists deliveryInventoryLocks (uuid varchar(36) not null, creationTime datetime not null default now(), "
+					+ "primary key(uuid), foreign key (uuid) references deliveryInventories(uuid));");
+			db.execute("create table if not exists logoutInventories (uuid varchar(36), inventory blob not null, hash int, "
+					+ "creationTime datetime not null default now(), index logOutInventoryLastUpdateIndex (lastUpdate), primary key(uuid, creationTime));");
+			db.execute("create domain if not exists donumHandlingState as varchar(20) default 'NEW' "
+					+ "constraint validValues check (value in ('NEW','ITEMS_RETURNED','IGNORED')) not deferrable;");
+			db.execute("create table if not exists loggedInconsistencies (uuid varchar(36), inventory blob not null, state donumHandlingState not null, "
+					+ "creationTime datetime not null default now(), lastUpdate datetime not null default now(), index loggedInconsistenciesUuidIndex (uuid),"
+					+ "index loggedInconsistenciesState (state));");
+			db.execute("create table if not exists deathInventories (uuid varchar(36), inventory blob not null, returned boolean not null default false, "
+					+ "creationTime datetime not null default now(), index deathInventoriesUuidIndex (uuid));");
 		}
-
 	}
 
 	/**
@@ -75,6 +92,25 @@ public class DonumDAO {
 		}
 	}
 
+	public synchronized boolean getLock(UUID uuid) {
+		try (PreparedStatement getLock = db.prepareStatement("insert into deliveryInventoryLocks (uuid) values(?);")) {
+			getLock.setString(1, uuid.toString());
+			getLock.execute();
+			return true;
+		} catch (SQLException e) {
+			return false;
+		}
+	}
+
+	public synchronized void freeLock(UUID uuid) {
+		try (PreparedStatement freeLock = db.prepareStatement("delete from deliveryInventoryLocks where uuid=?;")) {
+			freeLock.setString(1, uuid.toString());
+			freeLock.execute();
+		} catch (SQLException e) {
+			Donum.getInstance().warning("Failed to free lock for " + uuid.toString() + ": " + e);
+		}
+	}
+
 	/**
 	 * Gets the delivery inventory stored for the given player. If a players
 	 * delivery inventory is empty, no data on it will be in the database, in
@@ -86,6 +122,12 @@ public class DonumDAO {
 	 * @return ItemMap representing the players delivery inventory
 	 */
 	public ItemMap getDeliveryInventory(UUID uuid) {
+		while (!getLock(uuid)) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+			}
+		}
 		try (PreparedStatement ps = db.prepareStatement("select inventory from deliveryInventories where uuid=?;")) {
 			ps.setString(1, uuid.toString());
 			ResultSet rs = ps.executeQuery();
@@ -96,10 +138,48 @@ public class DonumDAO {
 			int blobLength = (int) blob.length();
 			byte[] blobAsBytes = blob.getBytes(1, blobLength);
 			blob.free();
-			return ItemMapBlobHandling.turnBlobIntoItemMap(blobAsBytes);
+			ItemMap loadedMap = ItemMapBlobHandling.turnBlobIntoItemMap(blobAsBytes);
+			try (PreparedStatement loadToProcess = db
+					.prepareStatement("select deliveryId, inventory from deliveryAdditions where uuid=?;")) {
+				loadToProcess.setString(1, uuid.toString());
+				ResultSet toProcess = loadToProcess.executeQuery();
+				boolean changes = false;
+				while (toProcess.next()) {
+					changes = true;
+					int id = toProcess.getInt(1);
+					Blob addBlob = toProcess.getBlob(2);
+					int blobLengthInner = (int) addBlob.length();
+					byte[] blobInnerAsBytes = addBlob.getBytes(1, blobLengthInner);
+					addBlob.free();
+					ItemMap mapToAdd = ItemMapBlobHandling.turnBlobIntoItemMap(blobInnerAsBytes);
+					Donum.getInstance().info("Adding " + mapToAdd + " to delivery inventory for " + uuid.toString());
+					loadedMap.addAll(mapToAdd.getItemStackRepresentation());
+					try (PreparedStatement cleanPendingAdditions = db
+							.prepareStatement("delete from deliveryAdditions where deliveryId=?;")) {
+						cleanPendingAdditions.setInt(1, id);
+						cleanPendingAdditions.execute();
+					}
+				}
+				if (changes) {
+					updateDeliveryInventory(uuid, loadedMap, false);
+				}
+			}
+			return loadedMap;
 		} catch (SQLException e) {
 			Donum.getInstance().warning("Failed to get delivery inventory for player " + uuid + " ; " + e);
 			return new ItemMap();
+		} finally {
+			freeLock(uuid);
+		}
+	}
+
+	public void stageDeliveryAddition(UUID uuid, ItemMap addition) {
+		try (PreparedStatement ps = db.prepareStatement("insert into deliveryAdditions (uuid,inventory) values(?,?);")) {
+			ps.setString(1, uuid.toString());
+			ps.setBlob(2, new SerialBlob(ItemMapBlobHandling.turnItemMapIntoBlob(addition)));
+			ps.execute();
+		} catch (SQLException e) {
+			Donum.getInstance().warning("Failed to stage delivery inventory addition for player " + uuid + " ; " + e);
 		}
 	}
 
@@ -112,20 +192,12 @@ public class DonumDAO {
 	 * @param im
 	 *            DeliveryInventory to save
 	 */
-	public void updateDeliveryInventory(UUID uuid, ItemMap im) {
-		if (im.getTotalItemAmount() == 0) {
-			// no items in the inventory, we can just remove its entry completly
-			// from the db
-			try (PreparedStatement ps = db.prepareStatement("delete from deliveryInventories where uuid=?;")) {
-				Donum.getInstance().debug(
-						"Delivery inventory for " + uuid.toString() + " is empty, removing any records from the db");
-				ps.setString(1, uuid.toString());
-				ps.execute();
-			} catch (SQLException e) {
-				Donum.getInstance().warning(
-						"Error deleting record of delivery inventory for player " + uuid + " ; " + e);
+	public void updateDeliveryInventory(UUID uuid, ItemMap im, boolean acquireLock) {
+		while (acquireLock && !getLock(uuid)) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
 			}
-			return;
 		}
 		try (PreparedStatement ps = db
 				.prepareStatement("insert into deliveryInventories (uuid,inventory) values(?,?) on duplicate key update inventory=values(inventory);")) {
@@ -135,6 +207,8 @@ public class DonumDAO {
 			ps.execute();
 		} catch (SQLException e) {
 			Donum.getInstance().warning("Error updating record of delivery inventory for player " + uuid + " ; " + e);
+		} finally {
+			freeLock(uuid);
 		}
 	}
 
@@ -155,8 +229,10 @@ public class DonumDAO {
 	 *         they dont and there was an issue
 	 */
 	public ItemMap checkForInventoryInconsistency(UUID uuid, int hash) {
-		try (PreparedStatement ps = db.prepareStatement("select inventory, hash from logoutInventories where uuid=?;")) {
+		try (PreparedStatement ps = db
+				.prepareStatement("select inventory, hash from logoutInventories where uuid=? and creationTime=(select max(creationTime) from logoutInventories where uuid=?);")) {
 			ps.setString(1, uuid.toString());
+			ps.setString(2, uuid.toString());
 			ResultSet rs = ps.executeQuery();
 			if (!rs.next()) {
 				Donum.getInstance().debug("Found no logout inventory for " + uuid + ", login hash: " + hash);
@@ -188,13 +264,64 @@ public class DonumDAO {
 	 */
 	public void insertLogoutInventory(UUID uuid, ItemMap items) {
 		try (PreparedStatement ps = db
-				.prepareStatement("insert into logoutInventories (uuid,inventory,hash) values(?,?,?) on duplicate key update inventory=values(inventory), hash = values(hash);")) {
+				.prepareStatement("insert into logoutInventories (uuid,inventory,hash) values(?,?,?);")) {
 			ps.setString(1, uuid.toString());
 			ps.setBlob(2, new SerialBlob(ItemMapBlobHandling.turnItemMapIntoBlob(items)));
 			ps.setInt(3, items.hashCode());
 			ps.execute();
 		} catch (SQLException e) {
-			Donum.getInstance().warning("Failed to insert logout inventor for player " + uuid + " ; " + e);
+			Donum.getInstance().warning("Failed to insert logout inventory for player " + uuid + " ; " + e);
 		}
+	}
+
+	/**
+	 * Saves the given ItemMap for the given UUID as death inventory
+	 * 
+	 * @param uuid
+	 *            UUID of the player
+	 * @param items
+	 *            ItemMap representing the players inventory when dying
+	 */
+	public void insertDeathInventory(UUID uuid, ItemMap inventory) {
+		try (PreparedStatement ps = db.prepareStatement("insert into deathInventories (uuid,inventory) values(?,?);")) {
+			ps.setString(1, uuid.toString());
+			ps.setBlob(2, new SerialBlob(ItemMapBlobHandling.turnItemMapIntoBlob(inventory)));
+			ps.execute();
+		} catch (SQLException e) {
+			Donum.getInstance().warning("Failed to insert death inventory for player " + uuid + " ; " + e);
+		}
+	}
+
+	/**
+	 * Loads death inventories saved for the given players, sorted from newest
+	 * to oldest
+	 * 
+	 * @param uuid
+	 *            UUID of the player of which we want the death inventories
+	 * @param limit
+	 *            How many inventories to load
+	 * @return Deathinventories of the player
+	 */
+	public List<DeathInventory> getLastDeathInventories(UUID uuid, int limit) {
+		List<DeathInventory> inventories = new LinkedList<DeathInventory>();
+		try (PreparedStatement ps = db
+				.prepareStatement("select inventory, creationTime, returned from deathInventories where uuid=? order by creationTime desc limit ?);")) {
+			ps.setString(1, uuid.toString());
+			ps.setInt(2, limit);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				Blob blob = rs.getBlob(1);
+				Date date = rs.getDate(2);
+				boolean returned = rs.getBoolean(3);
+				int blobLength = (int) blob.length();
+				byte[] blobAsBytes = blob.getBytes(1, blobLength);
+				blob.free();
+				ItemMap im = ItemMapBlobHandling.turnBlobIntoItemMap(blobAsBytes);
+				inventories.add(new DeathInventory(uuid, im, returned, date));
+			}
+		} catch (SQLException e) {
+			Donum.getInstance().warning("Failed to load death inventores for player " + uuid + " ; " + e);
+		}
+		return inventories;
 	}
 }
