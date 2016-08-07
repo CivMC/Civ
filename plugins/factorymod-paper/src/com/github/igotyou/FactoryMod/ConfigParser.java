@@ -56,7 +56,10 @@ public class ConfigParser {
 	private HashMap<String, IFactoryEgg> upgradeEggs;
 	private HashMap<IFactoryEgg, List<String>> recipeLists;
 	private String defaultMenuFactory;
+	private long defaultBreakGracePeriod;
+	private int defaultDamagePerBreakPeriod;
 	private boolean useYamlIdentifers;
+	private int defaultHealth;
 
 	public ConfigParser(FactoryMod plugin) {
 		this.plugin = plugin;
@@ -93,6 +96,7 @@ public class ConfigParser {
 		useYamlIdentifers = config.getBoolean("use_recipe_yamlidentifiers", false);
 		defaultUpdateTime = (int) parseTime(config.getString(
 				"default_update_time", "5"));
+		defaultHealth = config.getInt("default_health", 10000);
 		ItemMap dFuel = parseItemMap(config.getConfigurationSection("default_fuel"));
 		if (dFuel.getTotalUniqueItemAmount() > 0) {
 			defaultFuel = dFuel.getItemStackRepresentation().get(0);
@@ -104,8 +108,9 @@ public class ConfigParser {
 		defaultReturnRate = config.getDouble("default_return_rate", 0.0);
 		int redstonePowerOn = config.getInt("redstone_power_on", 7);
 		int redstoneRecipeChange = config.getInt("redstone_recipe_change", 2);
-		long gracePeriod = 50 * parseTime(config
-				.getString("break_grace_period"));
+		defaultBreakGracePeriod = 50 * parseTime(config
+				.getString("default_break_grace_period"));
+		defaultDamagePerBreakPeriod = config.getInt("default_decay_amount", 21);
 		long savingIntervall = parseTime(config.getString("saving_intervall", "15m"));
 		//save factories on a regular base, unless disabled
 		if (savingIntervall != -1) {
@@ -122,9 +127,7 @@ public class ConfigParser {
 		Map <String,String> factoryRenames = parseRenames(config.getConfigurationSection("renames"));
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
 				citadelEnabled, nameLayerEnabled, redstonePowerOn, redstoneRecipeChange,
-				logInventories, gracePeriod, factoryRenames);
-		handleEnabledAndDisabledRecipes(config
-				.getConfigurationSection("crafting"));
+				logInventories, factoryRenames);
 		upgradeEggs = new HashMap<String, IFactoryEgg>();
 		recipeLists = new HashMap<IFactoryEgg, List<String>>();
 		parseFactories(config.getConfigurationSection("factories"));
@@ -377,6 +380,13 @@ public class ConfigParser {
 		} else {
 			fuel = defaultFuel;
 		}
+		int health;
+		if (config.contains("health")) {
+			health = config.getInt("health");
+		}
+		else {
+			health = defaultHealth;
+		}
 		int fuelIntervall;
 		if (config.contains("fuel_consumption_intervall")) {
 			fuelIntervall = (int) parseTime(config
@@ -384,54 +394,31 @@ public class ConfigParser {
 		} else {
 			fuelIntervall = defaultFuelConsumptionTime;
 		}
+		long gracePeriod;
+		if (config.contains("grace_period")) {
+			//milliseconds
+			gracePeriod = 50 * parseTime(config.getString("grace_period"));
+		}
+		else {
+			gracePeriod = defaultBreakGracePeriod;
+		}
+		int healthPerDamageIntervall;
+		if (config.contains("decay_amount")) {
+			healthPerDamageIntervall = config.getInt("decay_amount");
+		}
+		else {
+			healthPerDamageIntervall = defaultDamagePerBreakPeriod;
+		}
 		FurnCraftChestEgg egg = new FurnCraftChestEgg(name, update, null, fuel,
-				fuelIntervall, returnRate);
+				fuelIntervall, returnRate, health, gracePeriod, healthPerDamageIntervall);
 		recipeLists.put(egg, config.getStringList("recipes"));
 		return egg;
 	}
 
 	public void enableFactoryDecay(ConfigurationSection config) {
 		long interval = parseTime(config.getString("decay_intervall"));
-		int amount = config.getInt("decay_amount");
 		plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, 
-						new FactoryGarbageCollector(amount), interval, interval);
-	}
-
-	/**
-	 * Disables and enables crafting recipes as specified in the config
-	 * 
-	 * @param config
-	 *            ConfigurationSection to parse from
-	 */
-	private void handleEnabledAndDisabledRecipes(ConfigurationSection config) {
-		// Disabling recipes
-		List<Recipe> toDisable = new ArrayList<Recipe>();
-		ItemMap disabledRecipes = parseItemMap(config
-				.getConfigurationSection("disabled"));
-		for (ItemStack recipe : disabledRecipes.getItemStackRepresentation()) {
-			plugin.info("Attempting to disable recipes for "
-					+ recipe.toString());
-			List<Recipe> tempList = plugin.getServer().getRecipesFor(recipe);
-			for (Recipe potential : tempList) {
-				if (potential.getResult().isSimilar(recipe)) {
-					plugin.info("Found a disable recipe match "
-							+ potential.toString());
-					toDisable.add(potential);
-				}
-			}
-		}
-		Iterator<Recipe> it = plugin.getServer().recipeIterator();
-		while (it.hasNext()) {
-			Recipe recipe = it.next();
-			for (Recipe disable : toDisable) {
-				if (disable.getResult().isSimilar(recipe.getResult())) {
-					it.remove();
-					plugin.info("Disabling recipe "	+ recipe.getResult().toString());
-				}
-			}
-		}
-
-		// TODO enable shaped and unshaped recipes here
+						new FactoryGarbageCollector(), interval, interval);
 	}
 
 	/**

@@ -21,17 +21,23 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 	private List<IRecipe> recipes;
 	private ItemStack fuel;
 	private int fuelConsumptionIntervall;
+	private int maximumHealth;
+	private long breakGracePeriod;
+	private int healthPerDamagePeriod;
 	private double returnRateOnDestruction;
 
 	public FurnCraftChestEgg(String name, int updateTime,
 			List<IRecipe> recipes, ItemStack fuel,
-			int fuelConsumptionIntervall, double returnRateOnDestruction) {
+			int fuelConsumptionIntervall, double returnRateOnDestruction, int maximumHealth, long breakGracePeriod, int healthPerDamagePeriod) {
 		this.name = name;
 		this.updateTime = updateTime;
 		this.recipes = recipes;
 		this.fuel = fuel;
+		this.breakGracePeriod = breakGracePeriod;
+		this.healthPerDamagePeriod = healthPerDamagePeriod;
 		this.fuelConsumptionIntervall = fuelConsumptionIntervall;
 		this.returnRateOnDestruction = returnRateOnDestruction;
+		this.maximumHealth = maximumHealth;
 	}
 
 	public Factory hatch(MultiBlockStructure mbs, Player p) {
@@ -39,8 +45,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		FurnacePowerManager fpm = new FurnacePowerManager(fccs.getFurnace(),
 				fuel, fuelConsumptionIntervall);
 		FurnCraftChestInteractionManager fccim = new FurnCraftChestInteractionManager();
-		PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(
-				PercentageHealthRepairManager.getMaximumHealth());
+		PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(maximumHealth, maximumHealth, 0, healthPerDamagePeriod, breakGracePeriod);
 		FurnCraftChestFactory fccf = new FurnCraftChestFactory(fccim, phrm,
 				fpm, fccs, updateTime, name, recipes);
 		fccim.setFactory(fccf);
@@ -78,15 +83,26 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 	public int getFuelConsumptionIntervall() {
 		return fuelConsumptionIntervall;
 	}
+	
+	public int getMaximumHealth() {
+		return maximumHealth;
+	}
+	
+	public int getDamagePerDamagingPeriod() {
+		return healthPerDamagePeriod;
+	}
+	
+	public long getBreakGracePeriod() {
+		return breakGracePeriod;
+	}
 
 	public Factory revive(List<Location> blocks, int health,
-			String selectedRecipe, int productionTimer) {
+			String selectedRecipe, int productionTimer, int breakTime) {
 		FurnCraftChestStructure fccs = new FurnCraftChestStructure(blocks);
 		FurnacePowerManager fpm = new FurnacePowerManager(fccs.getFurnace(),
 				fuel, fuelConsumptionIntervall);
 		FurnCraftChestInteractionManager fccim = new FurnCraftChestInteractionManager();
-		PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(
-				health);
+		PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(health, maximumHealth, breakTime, healthPerDamagePeriod, breakGracePeriod);
 		FurnCraftChestFactory fccf = new FurnCraftChestFactory(fccim, phrm,
 				fpm, fccs, updateTime, name, recipes);
 		fccim.setFactory(fccf);

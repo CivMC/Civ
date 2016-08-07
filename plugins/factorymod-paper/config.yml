@@ -128,31 +128,6 @@
 
 #This section allows you to define global default values and some general stuff. 
 
-#First of all under the crafting option you can disable existing 
-#vanilla crafting recipes here and enable new custom recipes.
-
-#An example to disable recipes:
-
-#crafting:
-#   disabled:
-#       firstdisabledidentifer:
-#           material: TORCH
-#       crackedStoneBrick:
-#           material: SMOOTH_BRICK
-#           durability: 2
-
-#Basically you only need to give a list of items here and all their crafting recipes will be disabled
-
-#To enable new crafting recipes 
-
-#TODO TODO TODO TODO TODO
-
-
-crafting:
-    disabled:
-    enabled:
-
-
 #Additionally you can specify default options here, which are applied to all factories which use this option, unless
 #you chose to overwrite the default for a specific factory, in that case the option specified in the factories config 
 #will apply to it.
@@ -184,6 +159,10 @@ default_fuel:
 
 default_fuel_consumption_intervall: 2s
 
+#default_health specifies a default for how much health a factory has. Factories will continuously lose health over time and have
+#to be repaired before they can be used again, once they are at 0 health
+default_health: 10000
+
 #default_menu_factory allows you to specify the menu for which factory will be opened when a player runs /fm without 
 #specifying a factory. If this is not specified and the player runs "/fm" one will be picked randomly.
 default_menu_factory:
@@ -200,14 +179,14 @@ disable_nether: false
 
 
 #When FCCs are in disrepair they will be removed after a set amount of time, which can be specified here
-break_grace_period: 7d
+default_break_grace_period: 7d
 
 
 #How often factories are passively decayed
 decay_intervall: 1h
 
-#How much health is decayed from factories, factories have 10k health total
-decay_amount: 21
+#How much health is decayed from factories by default each damaging run
+default_decay_amount: 21
 
 #Whether the yaml identifier or the factory name should be used when assigning recipes to factories, default to false
 use_recipe_yamlidentifiers: false
@@ -254,6 +233,9 @@ saving_intervall: 15m
 #   type: FCC
 #   name: Smelter
 #   updatetime: 2s
+#   health: 20000
+#   grace_period: 14d
+#   decay_amount: 40
 #   fuel:
 #       fuelidentifier:
 #           material: COAL
@@ -277,6 +259,17 @@ saving_intervall: 15m
 #updatetime decides how often this factory is ticked to check whether it still has all the materials required, fuel etc.
 #If this is not specified the default option which was specified above will be used. For more details on this option read
 #the explaination next to the default updatetime above
+
+#health determines how much health the factory has and how long it takes for it go in disrepair. If this option is not set,
+#the default_health specified at the beginning of the config will be used
+
+#grace_period determines how long the factory will stay alive while at 0 health. If the factory remains at 0 health for this
+#time period, it will be permanently removed. Repairing the factory once will reset this counter and if this value is not set
+#for a factory, default_grace_period as specified at the start of the config will be used
+
+#decay_amount is the amount of health the factory loses every time factories are damaged by time based decay. The intervall for
+#this damaging is the same for all factories and specified as decay_intervall at the top of the config. If no decay_amount is
+#specified for a factory, default_decay_amount as specified at the top of the config will be used
 
 #fuel specifies which item is used in the furnace to power this factory. You will still need to give the fuel it's own
 #sub identifer here, because it's techincally part of a list of items. If this option is not set, the default fuel specified

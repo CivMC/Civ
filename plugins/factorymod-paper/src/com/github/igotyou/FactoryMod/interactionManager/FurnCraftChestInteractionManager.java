@@ -186,11 +186,8 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		p.sendMessage(ChatColor.GOLD + "Currently at "
 			+ fccf.getRepairManager().getHealth() + " health");
 		if (fccf.getRepairManager().inDisrepair()) {
-		    long breaktime = ((PercentageHealthRepairManager) fccf
-			    .getRepairManager()).getBreakTime();
-		    long leftTime = FactoryMod.getManager()
-			    .getNoHealthGracePeriod()
-			    - (System.currentTimeMillis() - breaktime);
+			PercentageHealthRepairManager rm = ((PercentageHealthRepairManager) fccf.getRepairManager());
+		    long leftTime = rm.getGracePeriod() - rm.getBreakTime();
 		    long months = leftTime % (60 * 60 * 24 * 30 * 1000);
 		    long days = leftTime - (months * 60 * 60 * 24 * 30 * 1000)
 			    % (60 * 60 * 24 * 1000);
@@ -199,9 +196,10 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		    String time = (months != 0 ? months + " months, " : "")
 			    + (days != 0 ? days + " days, " : "")
 			    + (hours != 0 ? hours + " hours" : "");
-		    // p.sendMessage(ChatColor.GOLD + "It will break in " +
-		    // time);
-		    // TODO FIX THIS
+		    if (time.equals("")) {
+		    	time = " less than an hour";
+		    }
+		     p.sendMessage(ChatColor.GOLD + "It will break permanently in " + time);
 		}
 	    }
 

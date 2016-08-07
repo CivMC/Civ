@@ -55,20 +55,18 @@ public class FactoryModManager {
 	private int redstonePowerOn;
 	private int redstoneRecipeChange;
 	private String compactLore;
-	private long noHealthGracePeriod;
 
 	public FactoryModManager(FactoryMod plugin,
 			Material factoryInteractionMaterial, boolean citadelEnabled,
 			boolean nameLayerEnabled, int redstonePowerOn,
 			int redstoneRecipeChange, boolean logInventories,
-			long noHealthGracePeriod, Map <String,String> factoryRenames) {
+			Map <String,String> factoryRenames) {
 		this.plugin = plugin;
 		this.factoryInteractionMaterial = factoryInteractionMaterial;
 		this.citadelEnabled = citadelEnabled;
 		this.nameLayerEnabled = nameLayerEnabled;
 		this.redstonePowerOn = redstonePowerOn;
 		this.redstoneRecipeChange = redstoneRecipeChange;
-		this.noHealthGracePeriod = noHealthGracePeriod;
 
 		fileHandler = new FileHandler(this, factoryRenames);
 		
@@ -574,17 +572,6 @@ public class FactoryModManager {
 	 */
 	public int getRedstonePowerOn() {
 		return this.redstonePowerOn;
-	}
-
-	/**
-	 * Gets how long factories using percentage health managers will stay alive
-	 * after being broken. This is measure in milliseconds, because unix
-	 * timestamps are used to track it
-	 * 
-	 * @return How long a factory will be alive at 0 % health in milli seconds
-	 */
-	public long getNoHealthGracePeriod() {
-		return noHealthGracePeriod;
 	}
 
 	/**

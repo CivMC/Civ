@@ -14,19 +14,32 @@ public class PercentageHealthRepairManager implements IRepairManager {
 	private int health;
 	private Factory factory;
 	private long breakTime;
-	private static final int maximumHealth = 10000;
+	private int maximumHealth;
+	private int damageAmountPerDecayIntervall;
+	private long gracePeriod;
 
-	public PercentageHealthRepairManager(int initialHealth) {
-		health = initialHealth;
-		breakTime = 0;
+	public PercentageHealthRepairManager(int initialHealth, int maximumHealth, int breakTime, int damageAmountPerDecayIntervall, long gracePeriod) {
+		this.health = initialHealth;
+		this.maximumHealth = maximumHealth;
+		this.breakTime = breakTime;
+		this.damageAmountPerDecayIntervall = damageAmountPerDecayIntervall;
+		this.gracePeriod = gracePeriod;
 	}
 
 	public boolean atFullHealth() {
 		return health >= maximumHealth;
 	}
-	
-	public static int getMaximumHealth() {
+
+	public int getMaximumHealth() {
 		return maximumHealth;
+	}
+	
+	public int getDamageAmountPerDecayIntervall() {
+		return damageAmountPerDecayIntervall;
+	}
+	
+	public long getGracePeriod() {
+		return gracePeriod;
 	}
 
 	public boolean inDisrepair() {
@@ -38,8 +51,8 @@ public class PercentageHealthRepairManager implements IRepairManager {
 	}
 
 	public String getHealth() {
-		return String.valueOf(health / 100) + "."
-				+ String.valueOf(health % 100) + " %";
+		return String.valueOf(health / (maximumHealth / 100)) + "." + String.valueOf(health % (maximumHealth / 100))
+				+ " %";
 	}
 
 	public void repair(int amount) {
@@ -50,26 +63,19 @@ public class PercentageHealthRepairManager implements IRepairManager {
 	public void breakIt() {
 		health = 0;
 		breakTime = System.currentTimeMillis();
-		FactoryMod
-				.getPlugin()
-				.getServer()
-				.getScheduler()
-				.scheduleSyncDelayedTask(FactoryMod.getPlugin(),
-						new Runnable() {
+		FactoryMod.getPlugin().getServer().getScheduler()
+				.scheduleSyncDelayedTask(FactoryMod.getPlugin(), new Runnable() {
 
-							@Override
-							public void run() {
-								if (factory.getMultiBlockStructure()
-										.relevantBlocksDestroyed()) {
-									LoggingUtils.log(factory.getLogData()
-											+ " removed because blocks were destroyed");
-									FactoryMod.getManager().removeFactory(
-											factory);
-									returnStuff(factory);
-								}
+					@Override
+					public void run() {
+						if (factory.getMultiBlockStructure().relevantBlocksDestroyed()) {
+							LoggingUtils.log(factory.getLogData() + " removed because blocks were destroyed");
+							FactoryMod.getManager().removeFactory(factory);
+							returnStuff(factory);
+						}
 
-							}
-						});
+					}
+				});
 	}
 
 	public int getRawHealth() {
@@ -81,24 +87,19 @@ public class PercentageHealthRepairManager implements IRepairManager {
 	}
 
 	public static void returnStuff(Factory factory) {
-		double rate = FactoryMod.getManager().getEgg(factory.getName())
-				.getReturnRate();
+		double rate = FactoryMod.getManager().getEgg(factory.getName()).getReturnRate();
 		if (rate == 0.0) {
 			return;
 		}
-		for (Entry<ItemStack, Integer> items : FactoryMod.getManager()
-				.getTotalSetupCost(factory).getEntrySet()) {
+		for (Entry<ItemStack, Integer> items : FactoryMod.getManager().getTotalSetupCost(factory).getEntrySet()) {
 			int returnAmount = (int) (items.getValue() * rate);
 			ItemMap im = new ItemMap();
 			im.addItemAmount(items.getKey(), returnAmount);
 			for (ItemStack is : im.getItemStackRepresentation()) {
-				if(is.getDurability() == -1) is.setDurability((short)0);
-				factory.getMultiBlockStructure()
-						.getCenter()
-						.getWorld()
-						.dropItemNaturally(
-								factory.getMultiBlockStructure().getCenter(),
-								is);
+				if (is.getDurability() == -1)
+					is.setDurability((short) 0);
+				factory.getMultiBlockStructure().getCenter().getWorld()
+						.dropItemNaturally(factory.getMultiBlockStructure().getCenter(), is);
 			}
 		}
 	}

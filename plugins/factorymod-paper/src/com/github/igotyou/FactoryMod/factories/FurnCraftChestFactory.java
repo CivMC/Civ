@@ -21,7 +21,6 @@ import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
@@ -441,7 +440,7 @@ public class FurnCraftChestFactory extends Factory {
 	}
 
 	public void upgrade(String name, List<IRecipe> recipes, ItemStack fuel,
-			int fuelConsumptionIntervall, int updateTime) {
+			int fuelConsumptionIntervall, int updateTime, int maximumHealth, int damageAmountPerDecayIntervall, long gracePeriod) {
 		LoggingUtils.log("Upgrading " + getLogData() + " to " + name);
 		pylonFactories.remove(this);
 		deactivate();
@@ -450,8 +449,7 @@ public class FurnCraftChestFactory extends Factory {
 		this.updateTime = updateTime;
 		this.pm = new FurnacePowerManager(getFurnace(), fuel,
 				fuelConsumptionIntervall);
-		((PercentageHealthRepairManager) this.rm)
-				.repair(PercentageHealthRepairManager.getMaximumHealth());
+		this.rm = new PercentageHealthRepairManager(maximumHealth, maximumHealth, 0, damageAmountPerDecayIntervall, gracePeriod);
 		if (recipes.size() != 0) {
 			setRecipe(recipes.get(0));
 		} else {

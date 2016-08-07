@@ -36,7 +36,8 @@ public class Upgraderecipe extends InputRecipe {
 				FurnCraftChestEgg e = (FurnCraftChestEgg) egg;
 				((FurnCraftChestFactory) f).upgrade(e.getName(),
 						e.getRecipes(), e.getFuel(),
-						e.getFuelConsumptionIntervall(), e.getUpdateTime());
+						e.getFuelConsumptionIntervall(), e.getUpdateTime(), e.getMaximumHealth(), 
+						e.getDamagePerDamagingPeriod(), e.getBreakGracePeriod());
 			}
 		}
 		logAfterRecipeRun(i, f);

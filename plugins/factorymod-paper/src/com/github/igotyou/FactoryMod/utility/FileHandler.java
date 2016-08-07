@@ -78,6 +78,9 @@ public class FileHandler {
 					config.set(current + ".health",
 							((PercentageHealthRepairManager) fccf
 									.getRepairManager()).getRawHealth());
+					config.set(current + ".breakTime",
+							((PercentageHealthRepairManager) fccf
+									.getRepairManager()).getBreakTime());
 					config.set(current + ".runtime", fccf.getRunningTime());
 					config.set(current + ".selectedRecipe", fccf
 							.getCurrentRecipe().getRecipeName());
@@ -191,9 +194,10 @@ public class FileHandler {
 					}
 				}
 				int health = current.getInt("health");
+				int breakTime = current.getInt("breakTime", 0);
 				String selectedRecipe = current.getString("selectedRecipe");
 				FurnCraftChestFactory fac = (FurnCraftChestFactory) egg.revive(blocks, health, selectedRecipe,
-						runtime);
+						runtime, breakTime);
 				String activator = current.getString("activator", "null");
 				UUID acti;
 				if (activator.equals("null")) {
