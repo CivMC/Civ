@@ -1740,24 +1740,24 @@ recipes:
     production_time: 5s
     input:
       iron block:
-        material: IRON_BLOCK
-        amount: 4
+        material: IRON_INGOT
+        amount: 18
     output:
       bucket:
         material: BUCKET
-        amount: 16
+        amount: 10
   Craft_Buckets_Basic:
     type: PRODUCTION
     name: Craft Buckets
     production_time: 5s
     input:
       iron block:
-        material: IRON_BLOCK
-        amount: 5
+        material: IRON_INGOT
+        amount: 24
     output:
       bucket:
         material: BUCKET
-        amount: 16
+        amount: 10
   Craft_Chiselled_Quartz_Blocks:
     type: PRODUCTION
     name: Craft Chiselled Quartz Blocks
@@ -2200,10 +2200,10 @@ recipes:
     input:
       iron ingot:
         material: IRON_INGOT
-        amount: 32
+        amount: 30
       stick:
         material: STICK
-        amount: 4
+        amount: 5
     output:
       rail:
         material: RAILS
@@ -2805,6 +2805,9 @@ recipes:
       iron ingot:
         material: IRON_INGOT
         amount: 32
+      sticks:
+        material: STICK
+        amount: 5
     output:
       rail:
         material: RAILS
@@ -10188,7 +10191,7 @@ recipes:
           stored_enchants:
             ub3:
               enchant: DURABILITY
-              level: 4
+              level: 3
       godbook5:
         chance: 0.00120909
         sharpness5:
@@ -10473,7 +10476,7 @@ recipes:
         chance: 0.026176
         item:
           material: RECORD_10
-          amount: 64
+          amount: 1
       mid21:
         chance: 0.026176
         item:
@@ -10656,7 +10659,7 @@ recipes:
           stored_enchants:
             ub3:
               enchant: DURABILITY
-              level: 4
+              level: 3
       godbook5:
         chance: 0.00120909
         sharpness5:
@@ -10941,7 +10944,7 @@ recipes:
         chance: 0.026176
         item:
           material: RECORD_10
-          amount: 64
+          amount: 1
       mid21:
         chance: 0.026176
         item:
