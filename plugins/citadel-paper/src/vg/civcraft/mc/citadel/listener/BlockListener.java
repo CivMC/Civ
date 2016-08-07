@@ -110,6 +110,12 @@ public class BlockListener implements Listener {
 		Group groupToReinforceTo = null;
 		if (state.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION) {
 			type = state.getReinforcementType();
+			if (type == null) {
+				sendAndLog(p, ChatColor.RED, "Something went wrong, you dont seem to have a reinforcement material selected?");
+				state.reset();
+				event.setCancelled(true);
+				return;
+			}
 			groupToReinforceTo = state.getGroup();
 		}else if(state.getMode() == ReinforcementMode.NORMAL) {	
 			if (!state.getEasyMode()) {
