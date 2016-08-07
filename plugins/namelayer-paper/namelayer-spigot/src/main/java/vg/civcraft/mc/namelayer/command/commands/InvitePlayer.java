@@ -139,7 +139,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 					group.addMember(invitedPlayer, pType);
 				}
 				else {
-					NameAPI.getGroupManager().invalidateCache(group.getName());
+					group.addMember(invitedPlayer, pType, false);
 				}
 				invitee.sendMessage(
 						ChatColor.GREEN + " You have auto-accepted invite to the group: " + group.getName());
@@ -168,7 +168,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 					group.addMember(invitedPlayer, pType);
 				}
 				else {
-					NameAPI.getGroupManager().invalidateCache(group.getName());
+					group.addMember(invitedPlayer, pType, false);
 				}
 			} else {
 				// Player did not auto accept

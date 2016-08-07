@@ -4,9 +4,7 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 
 /**
  * Abstract utility class, which provides some functionality needed for all guis
@@ -43,11 +41,5 @@ public abstract class AbstractGroupGUI {
 		return g;
 	}
 	
-	protected void checkRecacheGroup(){
-		if (NameLayerPlugin.isMercuryEnabled()){
-			String message = "recache " + g.getName();
-			Mercury.invalidateGroup(message);
-		}
-	}
 
 }

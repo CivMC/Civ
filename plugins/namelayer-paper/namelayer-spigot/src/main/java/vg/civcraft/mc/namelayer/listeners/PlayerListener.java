@@ -20,9 +20,7 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class PlayerListener implements Listener{
 
@@ -118,10 +116,6 @@ public class PlayerListener implements Listener{
 		}
 		g.setGroupId(id);
 		NameLayerPlugin.getBlackList().initEmptyBlackList(name);
-		if (NameLayerPlugin.isMercuryEnabled()){
-			String message = "recache " + g.getName();
-			Mercury.invalidateGroup(message);
-		}
 		return g;
 	}
 }

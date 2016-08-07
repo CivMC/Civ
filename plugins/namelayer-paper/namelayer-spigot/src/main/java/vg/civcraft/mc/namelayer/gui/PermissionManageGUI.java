@@ -159,7 +159,6 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 								} else {
 									gp.addPermission(pType, perm);
 								}
-								checkRecacheGroup();
 							}
 						} else {
 							p.sendMessage(ChatColor.RED

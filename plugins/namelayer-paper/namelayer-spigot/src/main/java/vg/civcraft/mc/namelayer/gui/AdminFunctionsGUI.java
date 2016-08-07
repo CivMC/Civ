@@ -208,7 +208,6 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 													.getCurrentName(transferUUID)
 											+ " for group " + g.getName()
 											+ "via gui");
-							checkRecacheGroup();
 						}
 						else {
 							showScreen();
@@ -266,7 +265,6 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 					p.sendMessage(ChatColor.GREEN + "Group is now disciplined."
 							+ " Check back later to see if group is deleted.");
 				}
-				checkRecacheGroup();
 			}
 		}, 11);
 		confirmInv.setSlot(new Clickable(no) {

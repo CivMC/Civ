@@ -205,7 +205,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 												+ " from the blacklist of "
 												+ g.getName() + "via gui");
 								black.removeBlacklistMember(g, uuid, true);
-								checkRecacheGroup();
 								p.sendMessage(ChatColor.GREEN + "You removed "
 										+ NameAPI.getCurrentName(uuid)
 										+ " from the blacklist");
@@ -599,7 +598,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					p.getName() + " kicked " + NameAPI.getCurrentName(toRemove)
 							+ " from " + g.getName() + "via gui");
 			g.removeMember(toRemove);
-			checkRecacheGroup();
 			p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(toRemove)
 					+ " has been removed from the group");
 		} else {
@@ -650,7 +648,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				g.removeMember(toChange);
 				g.addMember(toChange, newRank);
 			}
-			checkRecacheGroup();
 			p.sendMessage(ChatColor.GREEN
 					+ NameAPI.getCurrentName(toChange)
 					+ " has been "
@@ -829,9 +826,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 											+ NameAPI.getCurrentName(blackUUID)
 											+ " was successfully blacklisted");
 								}
-								if (didSomething) {
-									checkRecacheGroup();
-								}
 							} else {
 								p.sendMessage(ChatColor.RED
 										+ "You lost permission to do this");
@@ -918,7 +912,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 											+ "Set new password: "
 											+ ChatColor.YELLOW + newPassword);
 								}
-								checkRecacheGroup();
 								showScreen();
 							}
 						};
@@ -1080,7 +1073,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 							g.removeMember(p.getUniqueId());
 							p.sendMessage(ChatColor.GREEN + "You have left "
 									+ g.getName());
-							checkRecacheGroup();
 						}
 					}, 11);
 					confirmInv.setSlot(new Clickable(no) {

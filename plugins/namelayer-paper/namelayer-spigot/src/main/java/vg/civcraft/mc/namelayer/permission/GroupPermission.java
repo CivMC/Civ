@@ -8,6 +8,7 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.misc.Mercury;
 
 public class GroupPermission {
 
@@ -69,14 +70,20 @@ public class GroupPermission {
 	 * @param permType- The PermissionType.
 	 * @return Returns false if the PlayerType already has the permission.
 	 */
-	public boolean addPermission(PlayerType pType, PermissionType permType){
+	public boolean addPermission(PlayerType ptype, PermissionType permtype){
+		return addPermission(ptype,permtype,true);
+	}
+	public boolean addPermission(PlayerType pType, PermissionType permType, boolean savetodb){
 		if (perms.get(pType).contains(permType))
 			return false;
 		List<PermissionType> types = perms.get(pType);
 		types.add(permType);
 		List <PermissionType> toAdd = new LinkedList<PermissionType>();
 		toAdd.add(permType);
-		db.addPermission(group.getName(), pType.name(), toAdd);
+		if (savetodb){
+			db.addPermissionAsync(group.getName(), pType.name(), toAdd);
+			Mercury.message("permadd "+ group.getName() +" "+ pType.name() +" "+ permType.getName());
+		}
 		return true;
 	}
 	/**
@@ -85,12 +92,19 @@ public class GroupPermission {
 	 * @param permType- The PermissionType.
 	 * @return Returns false if the PlayerType doesn't have that permission.
 	 */
-	public boolean removePermission(PlayerType pType, PermissionType permType){
+	public boolean removePermission(PlayerType ptype, PermissionType permtype){
+		return removePermission(ptype,permtype,true);
+	}
+	
+	public boolean removePermission(PlayerType pType, PermissionType permType, boolean savetodb){
 		if (!perms.get(pType).contains(permType))
 			return false;
 		List<PermissionType> types = perms.get(pType);
 		types.remove(permType);
-		db.removePermission(group.getName(), pType, permType);
+		if (savetodb){
+			db.removePermissionAsync(group.getName(), pType, permType);
+			Mercury.message("permrem "+ group.getName() +" "+ pType.name() +" "+ permType.getName());
+		}
 		return true;
 	}
 	/**

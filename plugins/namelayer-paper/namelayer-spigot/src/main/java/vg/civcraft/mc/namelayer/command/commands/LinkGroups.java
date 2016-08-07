@@ -82,8 +82,6 @@ public class LinkGroups extends PlayerCommandMiddle {
 		}
 		
 		boolean success = Group.link(supergroup, subgroup, true);
-		checkRecacheGroup(supergroup);
-		checkRecacheGroup(subgroup);
 		
 		String message;
 		if (success) {

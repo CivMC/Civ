@@ -64,7 +64,6 @@ public class AddBlacklist extends PlayerCommandMiddle {
 		}
 		bl.addBlacklistMember(g, targetUUID, true);
 		p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(targetUUID) + " was successfully blacklisted on the group " + g.getName());
-		checkRecacheGroup(g);
 		return true;
 	}
 

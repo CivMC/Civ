@@ -32,11 +32,11 @@ public class ToggleAutoAcceptInvites extends PlayerCommandMiddle{
 		Player p = (Player) sender;
 		UUID uuid = NameAPI.getUUID(p.getName());
 		if (db.shouldAutoAcceptGroups(uuid)){
-			db.removeAutoAcceptGroup(uuid);
+			db.removeAutoAcceptGroupAsync(uuid);
 			p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group requests.");
 		}
 		else {
-			db.autoAcceptGroups(uuid);
+			db.autoAcceptGroupsAsync(uuid);
 			p.sendMessage(ChatColor.GREEN + "You will automatically accept group requests.");
 		}
 		return true;

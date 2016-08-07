@@ -111,7 +111,7 @@ public class UpdateName extends PlayerCommandMiddle {
 						+ newName + "\"");
 				return true;
 			}
-			NameLayerPlugin.getGroupManagerDao().logNameChange(uuid, oldName,
+			NameLayerPlugin.getGroupManagerDao().logNameChangeAsync(uuid, oldName,
 					newName);
 			// uncomment following to directly change name
 			// NameAPI.getAssociationList().changePlayer(newName, uuid);

@@ -46,6 +46,10 @@ public class GroupManager{
 	 * @param The group to create to db.
 	 */
 	public int createGroup(Group group){
+		return createGroup(group,true);
+	}
+	
+	public int createGroup(Group group, boolean savetodb){
 		if (group == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create failed, caller passed in null", new Exception());
 			return -1;
@@ -58,9 +62,17 @@ public class GroupManager{
 			NameLayerPlugin.log(Level.INFO, "Group create was cancelled for group: " + group.getName());
 			return -1;
 		}
-		int id = groupManagerDao.createGroup(
+		int id;
+		if (savetodb){
+			id = groupManagerDao.createGroup(
 				event.getGroupName(), event.getOwner(), 
 				event.getPassword());
+			Mercury.message("create " + group.getName() +" "+ 
+				group.getOwner().toString() +" "+ group.isDisciplined() +" "+
+				group.getPassword() +" "+ String.valueOf(id));
+		} else {
+			id = group.getGroupId();
+		}
 		if (id > -1) {
 			initiateDefaultPerms(event.getGroupName()); // give default perms to a newly create group
 			GroupManager.getGroup(id); // force a recache from DB.
@@ -75,6 +87,10 @@ public class GroupManager{
 	}
 	
 	public boolean deleteGroup(String groupName){
+		return deleteGroup(groupName,true);
+	}
+	
+	public boolean deleteGroup(String groupName, boolean savetodb){
 		if (groupName == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group delete failed, caller passed in null", new Exception());
 			return false;
@@ -93,12 +109,10 @@ public class GroupManager{
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group delete was cancelled for "+ groupName);
 			return false;
 		}
-		
 		// Unlinks subgroups.
 		group.prepareForDeletion();
 		deleteGroupPerms(group);
-		groupManagerDao.deleteGroup(groupName);
-		groupsByName.remove(groupName);
+		groupsByName.remove(group.getName());
 		for (int id : group.getGroupIds()) {
 			groupsById.remove(id);
 		}
@@ -109,15 +123,19 @@ public class GroupManager{
 		
 		group.setDisciplined(true);
 		group.setValid(false);
-		
-		if (NameLayerPlugin.isMercuryEnabled()){
+		if (savetodb){
+			groupManagerDao.deleteGroupAsync(groupName);
 			String message = "delete " + groupName;
-			Mercury.invalidateGroup(message);
+			Mercury.message(message);
 		}
 		return true;
 	}
 	
 	public void transferGroup(Group g, UUID uuid){
+		transferGroup(g,uuid,true);
+	}
+	
+	public void transferGroup(Group g, UUID uuid, boolean savetodb){
 		if (g == null || uuid == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group transfer failed, caller passed in null", new Exception());
 			return;
@@ -129,15 +147,22 @@ public class GroupManager{
 			NameLayerPlugin.log(Level.INFO, "Group transfer event was cancelled for group: " + g.getName());
 			return;
 		}
-		g.addMember(uuid, PlayerType.OWNER);
-		g.setOwner(uuid);
-		if (NameLayerPlugin.isMercuryEnabled()){
-			String message = "transfer " + g.getName();
-			Mercury.invalidateGroup(message);
+		if (savetodb){
+			g.addMember(uuid, PlayerType.OWNER);
+			g.setOwner(uuid);
+			String message = "transfer " + g.getName() + " " + uuid.toString();
+			Mercury.message(message);
+		} else {
+			g.addMember(uuid, PlayerType.OWNER, false);
+			g.setOwner(uuid, false);
 		}
 	}
 	
-	public void mergeGroup(final Group group, final Group toMerge){
+	public void mergeGroup(Group group, Group to){
+		mergeGroup(group,to,true);
+	}
+	
+	public void mergeGroup(final Group group, final Group toMerge, boolean savetodb){
 		if (group == null || toMerge == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group merge failed, caller passed in null", new Exception());
 			return;
@@ -152,8 +177,12 @@ public class GroupManager{
 					group.getName() + " and " + toMerge.getName());
 			return;
 		}
-
-		groupManagerDao.mergeGroup(group.getName(), toMerge.getName());
+		
+		if (savetodb){
+			groupManagerDao.mergeGroupAsync(group.getName(), toMerge.getName());
+			String message = "merge " + group.getName() + " " + toMerge.getName();
+			Mercury.message(message);
+		}
 		// At this point, at the DB level all non-overlap members are in target group, name is reset to target,
 		// unique group header record is removed, and faction_id all point to new name.
 		/*deleteGroup(toMerge.getName());
@@ -169,27 +198,19 @@ public class GroupManager{
 		if (toMerge.getSuperGroup() != null) {
 			Group sup = toMerge.getSuperGroup();
 			Group.unlink(sup, toMerge); // need to unlink any supergroup from merge.
-			invalidateCache(sup.getName());
 		}
 		// Merge brings subgroups with, but unlinks the toMerge group out from under any supergroup it had.
 		//toMerge.prepareForDeletion();
 		for (Group subMerge : toMerge.getSubgroups()) {
 			Group.link(group, subMerge, false);
-			invalidateCache(subMerge.getName());
 		}
 		deleteGroupPerms(toMerge);
 		toMerge.setDisciplined(true);
-		invalidateCache(toMerge.getName()); // Removes merge group from cache & invalidates object
-		invalidateCache(group.getName()); // Means next access will requery the group, good.
 		
 		event = new GroupMergeEvent(group, toMerge, true);
 		Bukkit.getPluginManager().callEvent(event);
 		//toMerge.setDisciplined(true); // duplicate action, toMerge is set to discipline by deleteGroup()
 		// Fail safe for plugins that don't check if the group is valid or not.
-		if (NameLayerPlugin.isMercuryEnabled()){
-			String message = "merge " + group.getName() + " " + toMerge.getName();
-			Mercury.invalidateGroup(message);
-		}
 	}
 	
 	public static List<Group> getSubGroups(String name) {
@@ -386,7 +407,7 @@ public class GroupManager{
 			}
 		}
 		for (Entry <PlayerType, List <PermissionType>> entry: defaultPermMapping.entrySet()){
-			groupManagerDao.addPermission(group, entry.getKey().name(), entry.getValue());
+			groupManagerDao.addPermissionAsync(group, entry.getKey().name(), entry.getValue());
 		}
 	}
 	
@@ -402,7 +423,7 @@ public class GroupManager{
 	 * Invalidates a group from cache.
 	 * @param group
 	 */
-	public void invalidateCache(String group){
+	public static void invalidateCache(String group){
 		if (group == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "invalidateCache failed, caller passed in null", new Exception());
 			return;

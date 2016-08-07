@@ -72,8 +72,6 @@ public class UnlinkGroups extends PlayerCommandMiddle {
 		}
 		
 		boolean success = Group.unlink(supergroup, subgroup);
-	    checkRecacheGroup(GroupManager.getGroup(supername));
-	    checkRecacheGroup(GroupManager.getGroup(subname));
 		
 		String message;
 		if (success) {

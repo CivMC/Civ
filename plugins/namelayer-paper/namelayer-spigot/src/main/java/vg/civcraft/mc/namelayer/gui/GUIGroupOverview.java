@@ -27,7 +27,6 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -78,14 +77,14 @@ public class GUIGroupOverview {
 					NameLayerPlugin.log(Level.INFO,
 							p.getName() + " turned autoaccept for invites off "
 									+ "via gui");
-					NameLayerPlugin.getGroupManagerDao().removeAutoAcceptGroup(p.getUniqueId());
+					NameLayerPlugin.getGroupManagerDao().removeAutoAcceptGroupAsync(p.getUniqueId());
 					p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group invites");
 				}
 				else {
 					NameLayerPlugin.log(Level.INFO,
 							p.getName() + " turned autoaccept for invites on "
 									+ "via gui");
-					NameLayerPlugin.getGroupManagerDao().autoAcceptGroups(p.getUniqueId());
+					NameLayerPlugin.getGroupManagerDao().autoAcceptGroupsAsync(p.getUniqueId());
 					p.sendMessage(ChatColor.GREEN + "You will automatically accept group invites");
 				}
 				autoAccept = !autoAccept;
@@ -325,10 +324,6 @@ public class GUIGroupOverview {
 											.getGroupLimit()
 									+ " groups! Please delete un-needed groups if you wish to create more.");
 						}
-						if (NameLayerPlugin.isMercuryEnabled()) {
-							String msg = "recache " + g.getName();
-							Mercury.invalidateGroup(msg);
-						}
 						showScreen();
 					}
 				};
@@ -405,10 +400,6 @@ public class GUIGroupOverview {
 													+ "via gui");
 									gro.addMember(p.getUniqueId(), pType);
 									p.sendMessage(ChatColor.GREEN + "You have successfully been added to "  + gro.getName());
-									if (NameLayerPlugin.isMercuryEnabled()) {
-										String msg = "recache " + gro.getName();
-										Mercury.invalidateGroup(msg);
-									}
 									showScreen();
 								}
 								

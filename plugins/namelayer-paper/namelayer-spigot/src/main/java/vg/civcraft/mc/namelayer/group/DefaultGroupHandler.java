@@ -5,9 +5,9 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
+import vg.civcraft.mc.namelayer.misc.Mercury;
 
 public class DefaultGroupHandler {
 	
@@ -29,21 +29,25 @@ public class DefaultGroupHandler {
 	}
 	
 	public void setDefaultGroup(Player p, Group g) {
-		setDefaultGroup(p.getUniqueId(), g);
+		setDefaultGroup(p.getUniqueId(), g, true);
 	}
 	
-	public void setDefaultGroup(UUID uuid, Group g) {
-		String previous = defaultGroups.get(uuid);
-		if (previous == null) {
-			dao.setDefaultGroup(uuid, g.getName());
-		}
-		else {
-			dao.changeDefaultGroup(uuid, g.getName());
+	public void setDefaultGroup(UUID uuid, Group g){
+		setDefaultGroup(uuid,g,true);
+	}
+	
+	public void setDefaultGroup(UUID uuid, Group g, boolean savetodb) {
+		if (savetodb){
+			String previous = defaultGroups.get(uuid);
+			if (previous == null) {
+				dao.setDefaultGroupAsync(uuid, g.getName());
+			}
+			else {
+				dao.changeDefaultGroupAsync(uuid, g.getName());
+			}
+			Mercury.message("defaultGroup " + g.getName() + " " + uuid.toString());
 		}
 		defaultGroups.put(uuid, g.getName());
-		if (NameLayerPlugin.isMercuryEnabled()) {
-			MercuryAPI.sendGlobalMessage("defaultGroup " + uuid.toString(), "namelayer");
-		}
 	}
 	
 	public String recacheDefaultGroup(UUID uuid) {

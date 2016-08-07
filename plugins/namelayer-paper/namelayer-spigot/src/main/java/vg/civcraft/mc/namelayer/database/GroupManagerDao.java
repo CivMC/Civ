@@ -546,16 +546,29 @@ public class GroupManagerDao {
 		
 		getAllGroupIds = db.prepareStatement("select group_id from faction_id");
 	}
+	
+	public synchronized void dbrefresh(){
+		NameLayerPlugin.reconnectAndReintializeStatements();
+	}
+	
+	public synchronized ResultSet queryStatement(PreparedStatement stat) throws SQLException{
+		return stat.executeQuery();
+	}
+	
+	public synchronized void execStatement(PreparedStatement stat) throws SQLException{
+		stat.execute();
+	}
+	
 	/**
 	 * Checks the version of a specific plugin's db.
 	 * @param name- The name of the plugin.
 	 * @return Returns the version of the plugin or 0 if none was found.
 	 */
 	public int checkVersion(String name){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
 			version.setString(1, name);
-			ResultSet set = version.executeQuery();
+			ResultSet set = this.queryStatement(version);
 			if (!set.next()) 
 				return 0;
 			return set.getInt("db_version");
@@ -573,11 +586,11 @@ public class GroupManagerDao {
 	 * @return Returns the new version of the db.
 	 */
 	public synchronized int updateVersion(int version, String pluginname){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
 			updateVersion.setInt(1, version+ 1);
 			updateVersion.setString(2, pluginname);
-			updateVersion.execute();
+			this.execStatement(updateVersion);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem updating version", e);
 		}
@@ -585,7 +598,7 @@ public class GroupManagerDao {
 	}
 	
 	public synchronized int createGroup(String group, UUID owner, String password){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		int ret = -1;
 		try {
 			String own = null;
@@ -595,7 +608,7 @@ public class GroupManagerDao {
 			createGroup.setString(2, own);
 			createGroup.setString(3, password);
 			createGroup.setInt(4, 0);
-			ResultSet set = createGroup.executeQuery();
+			ResultSet set = this.queryStatement(createGroup);
 			ret = set.next() ? set.getInt("f.group_id") : -1;
 			plugin.getLogger().log(Level.INFO, "Created group {0} w/ id {1} for {2}", 
 					new Object[] {group, ret, own});
@@ -608,11 +621,11 @@ public class GroupManagerDao {
 	}
 	
 	public synchronized Group getGroup(String groupName){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
 			getGroup.clearParameters();
 			getGroup.setString(1, groupName);
-			try (ResultSet set = getGroup.executeQuery()) {
+			try (ResultSet set = this.queryStatement(getGroup)){
 				if (!set.next()) {
 					return null;
 				}
@@ -635,10 +648,10 @@ public class GroupManagerDao {
 	}
 	
 	public synchronized Group getGroup(int groupId){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
 			getGroupById.setInt(1, groupId);
-			ResultSet set = getGroupById.executeQuery();
+			ResultSet set = this.queryStatement(getGroupById);
 			if (!set.next()) return null;
 			String name = set.getString(1);
 			String uuid = set.getString(2);
@@ -657,11 +670,11 @@ public class GroupManagerDao {
 	}
 	
 	public synchronized List<String> getGroupNames(UUID uuid){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		List<String> groups = new ArrayList<String>();
 		try {
 			getAllGroupsNames.setString(1, uuid.toString());
-			ResultSet set = getAllGroupsNames.executeQuery();
+			ResultSet set = this.queryStatement(getAllGroupsNames);
 			while(set.next()) {
 				groups.add(set.getString(1));
 			}
@@ -672,12 +685,12 @@ public class GroupManagerDao {
 	}
 	
 	public synchronized List<String> getGroupNames(UUID uuid, String role){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		List<String> groups = new ArrayList<String>();
 		try {
 			getGroupNameFromRole.setString(1, uuid.toString());
 			getGroupNameFromRole.setString(2, role);
-			ResultSet set = getGroupNameFromRole.executeQuery();
+			ResultSet set = this.queryStatement(getGroupNameFromRole);
 			while(set.next()) {
 				groups.add(set.getString(1));
 			}
@@ -688,11 +701,11 @@ public class GroupManagerDao {
 	}
 	
 	public synchronized Timestamp getTimestamp(String group){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		Timestamp timestamp = null;
 		try{
 			getTimestamp.setString(1, group);
-			ResultSet set = getTimestamp.executeQuery();
+			ResultSet set = this.queryStatement(getTimestamp);
 			if(set.next())
 				timestamp = set.getTimestamp(1);
 		} catch (SQLException e) {
@@ -703,12 +716,12 @@ public class GroupManagerDao {
 	}
 	
 	public synchronized PlayerType getPlayerType(int groupid, UUID uuid){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		PlayerType ptype = null;
 		try {
 			getPlayerType.setInt(1, groupid);
 			getPlayerType.setString(2, uuid.toString());
-			ResultSet set = getPlayerType.executeQuery();
+			ResultSet set = this.queryStatement(getPlayerType);
 			if(set.next()){
 				ptype = PlayerType.getPlayerType(set.getString(1));
 			}
@@ -718,47 +731,80 @@ public class GroupManagerDao {
 		return ptype;
 	}
 	
+	public void updateTimestampAsync(final String group){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				updateTimestampAsync(group);
+			}
+			
+		});
+	}
+	
 	public synchronized void updateTimestamp(String group){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
 			updateLastTimestamp.setString(1, group);
-			updateLastTimestamp.execute();
+			this.execStatement(updateLastTimestamp);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem updating timestamp for group " + group, e);
 		}
 	}
 	
+	public void deleteGroupAsync(final String groupName){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				deleteGroup(groupName);
+			}
+			
+		});
+	}
+	
 	public synchronized void deleteGroup(String groupName){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
 			deleteGroup.setString(1, groupName);
 			deleteGroup.setString(2, NameLayerPlugin.getSpecialAdminGroup());
-			deleteGroup.execute();
+			this.execStatement(deleteGroup);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem deleting group " + groupName, e);
 		}
 	}
 	
+	public void addMemberAsync(final UUID member, final String faction, final PlayerType role){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				addMember(member,faction,role);
+			}
+			
+		});
+	}
+	
 	public synchronized void addMember(UUID member, String faction, PlayerType role){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
 			addMember.setString(1, member.toString());
 			addMember.setString(2, role.name());
 			addMember.setString(3, faction);
-			addMember.execute();
+			this.execStatement(addMember);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem adding " + member + " as " + role.toString() 
 					+ " to group " + faction, e);
-		}
+		}			
 	}
 	
 	public synchronized List<UUID> getAllMembers(String groupName, PlayerType role){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		List<UUID> members = new ArrayList<UUID>();
 		try {
 			getMembers.setString(1, groupName);
 			getMembers.setString(2, role.name());
-			ResultSet set = getMembers.executeQuery();
+			ResultSet set = this.queryStatement(getMembers);
 			while(set.next()){
 				String uuid = set.getString(1);
 				if (uuid == null) {
@@ -774,23 +820,45 @@ public class GroupManagerDao {
 		return members;
 	}
 	
+	public void removeMemberAsync(final UUID member, final String group){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				removeMember(member,group);
+			}
+			
+		});
+	}
+	
 	public synchronized void removeMember(UUID member, String group){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
 			removeMember.setString(1, member.toString());
 			removeMember.setString(2, group);
-			removeMember.execute();
+			this.execStatement(removeMember);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem removing " + member + " from group " + group, e);
 		}
 	}
 	
+	public void addSubGroupAsync(final String group, final String subGroup){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				addSubGroup(group,subGroup);
+			}
+			
+		});
+	}
+	
 	public synchronized void addSubGroup(String group, String subGroup){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
 			addSubGroup.setString(1, subGroup);
 			addSubGroup.setString(2, group);
-			addSubGroup.execute();
+			this.execStatement(addSubGroup);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem adding subgroup " + subGroup
 					+ " to group " + group, e);
@@ -798,19 +866,18 @@ public class GroupManagerDao {
 	}
 	
 	public synchronized List<Group> getSubGroups(String group){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		List<Group> groups = new ArrayList<Group>();
 		try {
 			getSubGroups.clearParameters();
 			getSubGroups.setString(1, group);
 			
 			List<String> subgroups = Lists.newArrayList();
-			try (ResultSet set = getSubGroups.executeQuery()) {
+			try (ResultSet set = this.queryStatement(getSubGroups);){
 				while (set.next()) {
 					subgroups.add(set.getString(1));
 				}
-			}
-			
+			}			
 			for (String groupname : subgroups) {				
 				Group g = null;
 				if (GroupManager.hasGroup(groupname)) {
@@ -830,11 +897,12 @@ public class GroupManagerDao {
 	}
 	
 	public synchronized Group getSuperGroup(String group){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
 			getSuperGroup.clearParameters();
 			getSuperGroup.setString(1, group);
-			try (ResultSet set = getSuperGroup.executeQuery()) {
+			try {
+				ResultSet set = this.queryStatement(getSuperGroup);
 				if (!set.next()) {
 					return null;
 				}
@@ -844,47 +912,68 @@ public class GroupManagerDao {
 				} else {
 					return getGroup(supergroup);
 				}
-			}
+			} catch (Exception e){}
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem getting superGroup for group " + group, e);
 		}
 		return null;
 	}
 	
+	public void removeSubGroupAsync(final String group, final String subgroup){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				removeSubGroup(group,subgroup);
+			}
+			
+		});
+	}
+	
 	public synchronized void removeSubGroup(String group, String subGroup){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
 			removeSubGroup.setString(1, group);
 			removeSubGroup.setString(2, subGroup);
-			removeSubGroup.execute();
+			this.execStatement(removeSubGroup);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Removing subgroup " + subGroup
 					+ " from group " + group, e);
 		}
 	}
+	
+	public void addPermissionAsync(final String gname, final String role, final List <PermissionType> perms){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				addPermission(gname,role,perms);
+			}
+			
+		});
+	}
 
 	public synchronized void addPermission(String groupName, String role, List <PermissionType> perms){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		for(PermissionType perm : perms) {
 			try {
 				addPermission.setString(1, role);
 				addPermission.setInt(2, perm.getId());
 				addPermission.setString(3, groupName);
-				addPermission.execute();
+				this.execStatement(addPermission);
 			} catch (SQLException e) {
 				plugin.getLogger().log(Level.WARNING, "Problem adding " + role + " with " + perms
 						+ " to group " + groupName, e);
-			
 			}
 		}
 	}
 	
 	public synchronized Map<PlayerType, List<PermissionType>> getPermissions(String group){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		Map<PlayerType, List<PermissionType>> perms = new HashMap<PlayerType, List<PermissionType>>();
 		try {
 			getPermission.setString(1, group);
-			ResultSet set = getPermission.executeQuery();
+			ResultSet set = this.queryStatement(getPermission);
 			while(set.next()){
 				PlayerType type = PlayerType.getPlayerType(set.getString(1));
 				List<PermissionType> listPerm = perms.get(type);
@@ -904,35 +993,56 @@ public class GroupManagerDao {
 		return perms;
 	}
 	
+	public void removePermissionAsync(final String group, final PlayerType ptype, final PermissionType perm){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				removePermission(group,ptype,perm);
+			}
+			
+		});
+	}
+	
 	public synchronized void removePermission(String group, PlayerType pType, PermissionType perm){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
 			removePermission.setString(1, group);
 			removePermission.setString(2, pType.name());
 			removePermission.setInt(3, perm.getId());
-			removePermission.execute();
+			this.execStatement(removePermission);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem removing permissions for group " + group
 					+ " on playertype " + pType.name(), e);
 		}
 	}
 	
+	public void registerPermissionAsync(final PermissionType perm){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				registerPermission(perm);
+			}
+			
+		});
+	}
+	
 	public synchronized void registerPermission(PermissionType perm) {
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
 			registerPermission.setInt(1, perm.getId());
 			registerPermission.setString(2, perm.getName());
-			registerPermission.execute();
+			this.execStatement(registerPermission);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem register permission " + perm.getName(), e);
 		}
 	}
 	
 	public synchronized Map<Integer, String> getPermissionMapping() {
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		Map <Integer,String> perms = new TreeMap<Integer, String>();
-		try {
-			ResultSet res = getPermissionMapping.executeQuery();
+		try (ResultSet res = this.queryStatement(getPermissionMapping)) {
 			while (res.next()) {
 				perms.put(res.getInt(1), res.getString(2));
 			}
@@ -941,6 +1051,17 @@ public class GroupManagerDao {
 			plugin.getLogger().log(Level.WARNING, "Problem getting permissions from db", e);
 		}
 		return perms;
+	}
+	
+	public void addNewDefaultPermissionAsync(final List <PlayerType> ptypes, final PermissionType perm){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				addNewDefaultPermission(ptypes,perm);
+			}
+			
+		});
 	}
 	
 	public synchronized void addNewDefaultPermission(List <PlayerType> playerTypes, PermissionType perm) {
@@ -954,7 +1075,7 @@ public class GroupManagerDao {
 					addPermissionById.setInt(1, groupId);
 					addPermissionById.setString(2, pType.name());
 					addPermissionById.setInt(3, perm.getId());
-					addPermissionById.execute();
+					this.execStatement(addPermissionById);
 				}
 			}
 		}
@@ -964,9 +1085,9 @@ public class GroupManagerDao {
 	}
 	
 	public synchronized int countGroups(){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
-			ResultSet set = countGroups.executeQuery();
+			ResultSet set = this.queryStatement(countGroups);
 			return set.next() ? set.getInt("count") : 0;
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem counting groups", e);
@@ -975,10 +1096,10 @@ public class GroupManagerDao {
 	}
 	
 	public synchronized int countGroups(UUID uuid){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try{
 			countGroupsFromUUID.setString(1, uuid.toString());
-			ResultSet set = countGroupsFromUUID.executeQuery();
+			ResultSet set = this.queryStatement(countGroupsFromUUID);
 			return set.next() ? set.getInt("count") : 0;
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem counting groups for " + uuid, e);
@@ -987,24 +1108,46 @@ public class GroupManagerDao {
 		
 	}
 	
+	public void mergeGroupAsync(final String groupname, final String tomerge){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				mergeGroup(groupname,tomerge);
+			}
+			
+		});
+	}
+	
 	public synchronized void mergeGroup(String groupName, String toMerge){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
 			mergeGroup.setString(1, groupName);
 			mergeGroup.setString(2, toMerge);
-			mergeGroup.execute();
+			this.execStatement(mergeGroup);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem merging group " + toMerge
 					+ " into " + groupName, e);
 		}
 	}
 	
+	public void updatePasswordAsync(final String groupname, final String password){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				updatePassword(groupname,password);
+			}
+			
+		});
+	}
+	
 	public synchronized void updatePassword(String groupName, String password){
-		NameLayerPlugin.reconnectAndReintializeStatements();
+		this.dbrefresh();
 		try {
 			updatePassword.setString(1, password);
 			updatePassword.setString(2, groupName);
-			updatePassword.execute();
+			this.execStatement(updatePassword);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem updating password for group " + groupName, e);
 		}
@@ -1014,10 +1157,21 @@ public class GroupManagerDao {
 	 * Adds the uuid to the db if they should auto accept groups when invited.
 	 * @param uuid
 	 */
-	public synchronized void autoAcceptGroups(UUID uuid){
+	public void autoAcceptGroupsAsync(final UUID uuid){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				autoAcceptGroups(uuid);
+			}
+		});
+	}
+	
+	public synchronized void autoAcceptGroups(final UUID uuid){
+		this.dbrefresh();
 		try {
 			addAutoAcceptGroup.setString(1, uuid.toString());
-			addAutoAcceptGroup.execute();
+			this.execStatement(addAutoAcceptGroup);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem setting autoaccept for " + uuid, e);
 		}
@@ -1030,7 +1184,7 @@ public class GroupManagerDao {
 	public synchronized boolean shouldAutoAcceptGroups(UUID uuid){
 		try {
 			getAutoAcceptGroup.setString(1, uuid.toString());
-			ResultSet set = getAutoAcceptGroup.executeQuery();
+			ResultSet set = this.queryStatement(getAutoAcceptGroup);
 			return set.next();
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem getting autoaccept for " + uuid, e);
@@ -1038,31 +1192,64 @@ public class GroupManagerDao {
 		return false;
 	}
 	
-	public synchronized void removeAutoAcceptGroup(UUID uuid){
+	public void removeAutoAcceptGroupAsync(final UUID uuid){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				removeAutoAcceptGroup(uuid);
+			}
+		});
+	}
+	
+	public synchronized void removeAutoAcceptGroup(final UUID uuid){
+		this.dbrefresh();
 		try {
 			removeAutoAcceptGroup.setString(1, uuid.toString());
-			removeAutoAcceptGroup.execute();
+			this.execStatement(removeAutoAcceptGroup);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem removing autoaccept for " + uuid, e);
 		}
+	}
+	
+	public void setDefaultGroupAsync(final UUID uuid, final String groupname){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				setDefaultGroup(uuid,groupname);
+			}
+			
+		});
 	}
 	
 	public synchronized void setDefaultGroup(UUID uuid, String groupName){
 		try {
 			setDefaultGroup.setString(1, uuid.toString());
 			setDefaultGroup.setString(2, groupName );
-			setDefaultGroup.execute();
+			this.execStatement(setDefaultGroup);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem setting user " + uuid 
 					+ " default group to " + groupName, e);
 		}
 	}
 	
+	public void changeDefaultGroupAsync(final UUID uuid, final String groupname){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				changeDefaultGroup(uuid,groupname);
+			}
+			
+		});
+	}
+	
 	public synchronized void changeDefaultGroup(UUID uuid, String groupName){
 		try {
 			changeDefaultGroup.setString(1, groupName);
 			changeDefaultGroup.setString(2, uuid.toString());
-			changeDefaultGroup.execute();
+			this.execStatement(changeDefaultGroup);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem changing user " + uuid
 					+ " default group to " + groupName, e);
@@ -1072,7 +1259,7 @@ public class GroupManagerDao {
 	public synchronized String getDefaultGroup(UUID uuid) {
 		try {
 			getDefaultGroup.setString(1, uuid.toString());
-			ResultSet set = getDefaultGroup.executeQuery();
+			ResultSet set = this.queryStatement(getDefaultGroup);
 			if(!set.next()) return null;
 			String group = set.getString(1);
 			return group;
@@ -1085,7 +1272,7 @@ public class GroupManagerDao {
 	public synchronized Map <UUID, String> getAllDefaultGroups() {
 		Map <UUID, String> groups = null;
 		try {
-			ResultSet set = getAllDefaultGroups.executeQuery();
+			ResultSet set = this.queryStatement(getAllDefaultGroups);
 			groups = new TreeMap<UUID, String>();
 			while(set.next()) {
 				UUID uuid = UUID.fromString(set.getString(1));
@@ -1103,34 +1290,67 @@ public class GroupManagerDao {
 	 * @param uuid This is the uuid of the player.
 	 * @param group This is the group that we are changing the founder of.
 	 */
+	public void setFounderAsync(final UUID uuid, final Group group){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				setFounder(uuid,group);
+			}
+			
+		});
+	}
+	
 	public synchronized void setFounder(UUID uuid, Group group) {
 		try {
 			updateOwner.setString(1, uuid.toString());
 			updateOwner.setString(2, group.getName());
-			updateOwner.execute();
+			this.execStatement(updateOwner);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem setting founder of group " + group.getName() 
 					+ " to " + uuid, e);
 		}
 	}
 	
+	public void addGroupInvitationAsync(final UUID uuid, final String groupName, final String role){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				addGroupInvitation(uuid,groupName,role);
+			}
+			
+		});
+	}
+	
 	public synchronized void addGroupInvitation(UUID uuid, String groupName, String role){
 		try {
 			addGroupInvitation.setString(1, uuid.toString());
 			addGroupInvitation.setString(2, groupName);
-			addGroupInvitation.setString(3, role); 
-			addGroupInvitation.execute();
+			addGroupInvitation.setString(3, role);
+			this.execStatement(addGroupInvitation);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem adding group " + groupName + " invite for "
 					+ uuid + " with role " + role, e);
 		}
 	}
 	
+	public void removeGroupInvitationAsync(final UUID uuid, final String groupName){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				removeGroupInvitation(uuid,groupName);
+			}
+			
+		});
+	}
+	
 	public synchronized void removeGroupInvitation(UUID uuid, String groupName){
 		try {
 			removeGroupInvitation.setString(1, uuid.toString());
 			removeGroupInvitation.setString(2, groupName);
-			removeGroupInvitation.execute();
+			this.execStatement(removeGroupInvitation);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Problem removing group " + groupName + " invite for "
 					+ uuid, e);
@@ -1143,6 +1363,17 @@ public class GroupManagerDao {
 	 * @param playerUUID The uuid of the invited player.
 	 * @param group The group the player was invited to. 
 	 */
+	public void loadGroupInvitationAsync(final UUID playerUUID, final Group group){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				loadGroupInvitation(playerUUID, group);
+			}
+			
+		});
+	}
+	
 	public synchronized void loadGroupInvitation(UUID playerUUID, Group group){
 		if(group == null){
 			return;
@@ -1151,7 +1382,7 @@ public class GroupManagerDao {
 		try {
 			loadGroupInvitation.setString(1, playerUUID.toString());
 			loadGroupInvitation.setString(2, group.getName());
-			ResultSet set = loadGroupInvitation.executeQuery();
+			ResultSet set = this.queryStatement(loadGroupInvitation);
 			while(set.next()){
 				String role = set.getString("role");
 				PlayerType type = null;
@@ -1173,7 +1404,7 @@ public class GroupManagerDao {
 		}
 		try {
 			loadGroupInvitationsForGroup.setString(1, groupName);
-			ResultSet set = loadGroupInvitationsForGroup.executeQuery();
+			ResultSet set = this.queryStatement(loadGroupInvitationsForGroup);
 			while(set.next()) {
 				String uuid = set.getString(1);
 				String role = set.getString(2);
@@ -1200,7 +1431,7 @@ public class GroupManagerDao {
 	 */
 	public synchronized void loadGroupsInvitations(){
 		try {
-			ResultSet set = loadGroupsInvitations.executeQuery();
+			ResultSet set = this.queryStatement(loadGroupsInvitations);
 			while(set.next()){
 				String uuid = set.getString("uuid");
 				String group = set.getString("groupName");
@@ -1228,12 +1459,23 @@ public class GroupManagerDao {
 		}
 	}
 	
+	public void logNameChangeAsync(final UUID uuid, final String oldName, final String newName){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				logNameChange(uuid,oldName,newName);
+			}
+			
+		});
+	}
+	
 	public synchronized void logNameChange(UUID uuid, String oldName, String newName) {
 		try {
 			logNameChange.setString(1, uuid.toString());
 			logNameChange.setString(2, oldName);
 			logNameChange.setString(3, newName);
-			logNameChange.execute();
+			this.execStatement(logNameChange);
 		}
 		catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Failed to log a name change for {0} from {1} -> {2}", new Object[]{uuid, oldName, newName});
@@ -1244,7 +1486,7 @@ public class GroupManagerDao {
 	public synchronized boolean hasChangedNameBefore(UUID uuid) {
 		try {
 			checkForNameChange.setString(1, uuid.toString());
-			ResultSet set = checkForNameChange.executeQuery();
+			ResultSet set = this.queryStatement(checkForNameChange);
 			if (set.next()) {
 				return true;
 			}
@@ -1258,22 +1500,44 @@ public class GroupManagerDao {
 		}
 	}
 	
+	public void addBlackListMemberAsync(final String groupName, final UUID uuid){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				addBlackListMember(groupName,uuid);
+			}
+			
+		});
+	}
+	
 	public synchronized void addBlackListMember(String groupName, UUID player) {
 		try {
 			addBlacklistMember.setString(1, player.toString());
 			addBlacklistMember.setString(2, groupName);
-			addBlacklistMember.execute();
+			this.execStatement(addBlacklistMember);
 		}
 		catch(SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Unable to add black list member " + player + " to group " + groupName, e);
 		}
 	}
 	
+	public void removeBlackListMemberAsync(final String gname, final UUID uuid){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				removeBlackListMember(gname,uuid);
+			}
+			
+		});
+	}
+	
 	public synchronized void removeBlackListMember(String groupName, UUID player) {
 		try {
 			removeBlackListMember.setString(1, groupName);
 			removeBlackListMember.setString(2, player.toString());
-			removeBlackListMember.execute();
+			this.execStatement(removeBlackListMember);
 		}
 		catch(SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Unable to remove black list member " + player + " to group " + groupName, e);
@@ -1284,7 +1548,7 @@ public class GroupManagerDao {
 		Set<UUID> uuids = new HashSet<UUID>();
 		try {
 			getBlackListMembers.setString(1, groupName);
-			ResultSet set = getBlackListMembers.executeQuery();
+			ResultSet set = this.queryStatement(getBlackListMembers);
 			while (set.next()) {
 				uuids.add(UUID.fromString(set.getString(1)));
 			}
@@ -1310,7 +1574,7 @@ public class GroupManagerDao {
 		}
 		try {
 			getGroupIDs.setString(1, groupName);
-			ResultSet set = getGroupIDs.executeQuery();
+			ResultSet set = this.queryStatement(getGroupIDs);
 			LinkedList<Integer> ids = new LinkedList<Integer>();
 			
 			while (set.next()) {
@@ -1323,5 +1587,6 @@ public class GroupManagerDao {
 		}
 		return null;
 	}
+	
 	
 }
