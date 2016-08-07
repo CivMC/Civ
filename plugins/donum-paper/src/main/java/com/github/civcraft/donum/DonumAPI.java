@@ -9,9 +9,10 @@ import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 public class DonumAPI {
 
 	/**
-	 * Adds the given itemstack to the given players delivery inventory. This
-	 * addition will be done async and the earliest point at which it will take
-	 * effect is when the player relogs
+	 * Adds the given itemstack to the given players delivery inventory. If the
+	 * player is currently online on the server this is run it will be applied
+	 * right away, if he isnt it will be applied the next time the players
+	 * delivery data is reloaded, which is usually when he relogs
 	 * 
 	 * @param player
 	 *            UUID of the player to whichs delivery inventory we want to add
@@ -24,9 +25,10 @@ public class DonumAPI {
 	}
 
 	/**
-	 * Adds the given ItemMap to the given players delivery inventory. This
-	 * addition will be done async and the earliest point at which it will take
-	 * effect is when the player relogs
+	 * Adds the given itemstack to the given players delivery inventory. If the
+	 * player is currently online on the server this is run it will be applied
+	 * right away, if he isnt it will be applied the next time the players
+	 * delivery data is reloaded, which is usually when he relogs
 	 * 
 	 * @param player
 	 *            UUID of the player to whichs delivery inventory we want to add
@@ -35,7 +37,7 @@ public class DonumAPI {
 	 *            Items to add
 	 */
 	public static void deliverItem(UUID player, ItemMap items) {
-		Donum.getManager().stageDeliveryAddition(player, items);
+		Donum.getManager().addToDeliveryInventory(player, items);
 	}
 
 }

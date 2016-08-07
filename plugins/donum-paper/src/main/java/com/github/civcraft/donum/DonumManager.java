@@ -1,10 +1,12 @@
 package com.github.civcraft.donum;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.civcraft.donum.database.DonumDAO;
@@ -48,10 +50,8 @@ public class DonumManager {
 
 			@Override
 			public void run() {
-				System.out.println("haha");
 				Donum.getInstance().debug("Attempting to load delivery inventory for " + uuid.toString());
 				ItemMap delivery = database.getDeliveryInventory(uuid);
-				System.out.println(delivery.toString());
 				deliveryInventories.put(uuid, new DeliveryInventory(uuid, delivery));
 				Donum.getInstance().debug("Loaded " + delivery.toString() + " for " + uuid.toString());
 			}
@@ -87,6 +87,17 @@ public class DonumManager {
 		}.runTaskAsynchronously(Donum.getInstance());
 	}
 	
+	public void addToDeliveryInventory(UUID uuid, ItemMap items) {
+		DeliveryInventory inventory = deliveryInventories.get(uuid);
+		if (inventory != null) {
+			inventory.getInventory().addAll(items.getItemStackRepresentation());
+			inventory.setDirty(true);
+		}
+		else {
+			stageDeliveryAddition(uuid, items);
+		}
+	}
+	
 	public void stageDeliveryAddition(UUID uuid, ItemMap items) {
 		new BukkitRunnable() {
 			
@@ -113,6 +124,19 @@ public class DonumManager {
 		Donum.getInstance().info("Creating diff of lost items for " + player);
 		Donum.getInstance().debug("Old inventory: " + oldInventory.toString());
 		Donum.getInstance().debug("New inventory: " + newInventory.toString());
-		// TODO
+		ItemMap diff = new ItemMap();
+		for(Entry <ItemStack,Integer> entry : oldInventory.getEntrySet()) {
+			ItemStack is = entry.getKey();
+			int oldAmount = entry.getValue();
+			int newAmount = newInventory.getAmount(is);
+			if (newAmount > oldAmount) {
+				Donum.getInstance().warning("[DUPEALERT]" + player + " had " + oldAmount + " of " + is.toString() + " when logging off and now has " + newAmount);
+				continue;
+			}
+			if (newAmount < oldAmount) {
+				diff.addItemAmount(is, oldAmount - newAmount);
+			}
+		}
+		database.insertInconsistency(player, diff);
 	}
 }

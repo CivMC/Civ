@@ -8,6 +8,8 @@ commands:
   present:
   deliver:
     permission: donum.op
+  deliverml:
+    permission: donum.op
 permissions:
   donum.op:
     default: op

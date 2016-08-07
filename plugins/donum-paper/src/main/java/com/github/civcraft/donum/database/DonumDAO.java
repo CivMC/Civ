@@ -50,9 +50,9 @@ public class DonumDAO {
 					+ "primary key(uuid));");
 			db.execute("create table if not exists logoutInventories (uuid varchar(36), inventory blob not null, hash int, "
 					+ "creationTime datetime not null default now(), index logOutInventoryCreationTimeIndex (creationTime), primary key(uuid, creationTime));");
-			db.execute("create table if not exists loggedInconsistencies (uuid varchar(36), inventory blob not null, state varchar(20) not null, "
+			db.execute("create table if not exists loggedInconsistencies (id int not null auto_increment, uuid varchar(36), inventory blob not null, state varchar(20) not null default 'NEW', "
 					+ "creationTime datetime not null default now(), lastUpdate datetime not null default now(), index loggedInconsistenciesUuidIndex (uuid),"
-					+ "index loggedInconsistenciesState (state));");
+					+ "index loggedInconsistenciesState (state), primary key(id));");
 			db.execute("create table if not exists deathInventories (uuid varchar(36), inventory blob not null, returned boolean not null default false, "
 					+ "creationTime datetime not null default now(), index deathInventoriesUuidIndex (uuid));");
 		}
@@ -265,6 +265,18 @@ public class DonumDAO {
 		} catch (SQLException e) {
 			Donum.getInstance().warning("Failed to check logout inventory for player " + uuid + " ; " + e);
 			return null;
+		}
+	}
+	
+	public void insertInconsistency(UUID uuid, ItemMap diff) {
+		ensureConnection();
+		try (PreparedStatement ps = db
+				.prepareStatement("insert into loggedInconsistencies (uuid,inventory) values(?,?);")) {
+			ps.setString(1, uuid.toString());
+			ps.setBlob(2, new SerialBlob(ItemMapBlobHandling.turnItemMapIntoBlob(diff)));
+			ps.execute();
+		} catch (SQLException e) {
+			Donum.getInstance().warning("Failed to insert diff inconsistency inventory for player " + uuid + " ; " + e);
 		}
 	}
 
