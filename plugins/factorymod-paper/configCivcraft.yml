@@ -6,9 +6,10 @@ default_fuel:
 default_fuel_consumption_intervall: 2s
 default_menu_factory: Basic Contraption
 default_return_rate: 0.5
-break_grace_period: 10d
+default_break_grace_period: 10d
 decay_intervall: 1h
-decay_amount: 21
+default_decay_amount: 21
+default_health: 10000
 use_recipe_yamlidentifiers: true
 global_pylon_limit: 100
 
