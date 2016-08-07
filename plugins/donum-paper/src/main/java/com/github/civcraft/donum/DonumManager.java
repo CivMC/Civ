@@ -5,6 +5,10 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.md_5.bungee.api.ChatColor;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -19,13 +23,14 @@ public class DonumManager {
 
 	private DonumDAO database;
 	private Map<UUID, DeliveryInventory> deliveryInventories;
-	
+
 	public DonumManager() {
 		DonumConfiguration config = Donum.getConfiguration();
-		this.database = new DonumDAO(config.getHost(), config.getPort(), config.getDatabaseName(), config.getUser(), config.getPassword());
+		this.database = new DonumDAO(config.getHost(), config.getPort(), config.getDatabaseName(), config.getUser(),
+				config.getPassword());
 		this.deliveryInventories = new ConcurrentHashMap<UUID, DeliveryInventory>();
 	}
-	
+
 	public DeliveryInventory getDeliveryInventory(UUID player) {
 		return deliveryInventories.get(player);
 	}
@@ -45,7 +50,7 @@ public class DonumManager {
 				}
 			}
 		}.runTaskAsynchronously(Donum.getInstance());
-		
+
 		new BukkitRunnable() {
 
 			@Override
@@ -53,6 +58,13 @@ public class DonumManager {
 				Donum.getInstance().debug("Attempting to load delivery inventory for " + uuid.toString());
 				ItemMap delivery = database.getDeliveryInventory(uuid);
 				deliveryInventories.put(uuid, new DeliveryInventory(uuid, delivery));
+				if (delivery.getTotalItemAmount() != 0) {
+					Player p = Bukkit.getPlayer(uuid);
+					if (p != null) {
+						p.sendMessage(ChatColor.GOLD
+								+ "You have " + delivery.getTotalItemAmount() + "items available to claim! Run /present to open your delivery inventory");
+					}
+				}
 				Donum.getInstance().debug("Loaded " + delivery.toString() + " for " + uuid.toString());
 			}
 		}.runTaskAsynchronously(Donum.getInstance());
@@ -86,33 +98,32 @@ public class DonumManager {
 			}
 		}.runTaskAsynchronously(Donum.getInstance());
 	}
-	
+
 	public void addToDeliveryInventory(UUID uuid, ItemMap items) {
 		DeliveryInventory inventory = deliveryInventories.get(uuid);
 		if (inventory != null) {
 			inventory.getInventory().addAll(items.getItemStackRepresentation());
 			inventory.setDirty(true);
-		}
-		else {
+		} else {
 			stageDeliveryAddition(uuid, items);
 		}
 	}
-	
+
 	public void stageDeliveryAddition(UUID uuid, ItemMap items) {
 		new BukkitRunnable() {
-			
+
 			@Override
 			public void run() {
 				database.stageDeliveryAddition(uuid, items);
-				
+
 			}
 		}.runTaskAsynchronously(Donum.getInstance());
 	}
-	
+
 	public void saveDeathInventory(UUID uuid, ItemMap inventory) {
 		Donum.getInstance().debug("Saving death inventory for " + uuid.toString());
 		new BukkitRunnable() {
-			
+
 			@Override
 			public void run() {
 				database.insertDeathInventory(uuid, inventory);
@@ -125,12 +136,14 @@ public class DonumManager {
 		Donum.getInstance().debug("Old inventory: " + oldInventory.toString());
 		Donum.getInstance().debug("New inventory: " + newInventory.toString());
 		ItemMap diff = new ItemMap();
-		for(Entry <ItemStack,Integer> entry : oldInventory.getEntrySet()) {
+		for (Entry<ItemStack, Integer> entry : oldInventory.getEntrySet()) {
 			ItemStack is = entry.getKey();
 			int oldAmount = entry.getValue();
 			int newAmount = newInventory.getAmount(is);
 			if (newAmount > oldAmount) {
-				Donum.getInstance().warning("[DUPEALERT]" + player + " had " + oldAmount + " of " + is.toString() + " when logging off and now has " + newAmount);
+				Donum.getInstance().warning(
+						"[DUPEALERT]" + player + " had " + oldAmount + " of " + is.toString()
+								+ " when logging off and now has " + newAmount);
 				continue;
 			}
 			if (newAmount < oldAmount) {
