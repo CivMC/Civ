@@ -37,6 +37,9 @@ public class ShardListener implements Listener {
 			if (ps.getMode() == ReinforcementMode.REINFORCEMENT
 					|| ps.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION) {
 				sb.append("|");
+				if (ps.getGroup() == null) {
+					return;
+				}
 				sb.append(ps.getGroup().getName());
 				if (ps.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION) {
 					sb.append("|");
