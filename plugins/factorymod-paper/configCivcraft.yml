@@ -10427,7 +10427,7 @@ recipes:
         chance: 0.026176
         item:
           material: LAPIS_BLOCK
-          amount: 64
+          amount: 1
       mid11:
         chance: 0.026176
         item:
@@ -10895,7 +10895,7 @@ recipes:
         chance: 0.026176
         item:
           material: LAPIS_BLOCK
-          amount: 64
+          amount: 1
       mid11:
         chance: 0.026176
         item:
