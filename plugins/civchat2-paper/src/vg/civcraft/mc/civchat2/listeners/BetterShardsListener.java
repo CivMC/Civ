@@ -24,6 +24,9 @@ public class BetterShardsListener implements Listener{
 	
 	@EventHandler
 	public void PlayerChangeServer(PlayerChangeServerEvent event){
+		if (event.getPlayerUUID() == null) {
+			return;
+		}
 		String playerName = NameAPI.getCurrentName(event.getPlayerUUID());
 		UUID playerToReplyUUID = chatMan.getPlayerReply(playerName);
 		if (playerToReplyUUID != null) {
