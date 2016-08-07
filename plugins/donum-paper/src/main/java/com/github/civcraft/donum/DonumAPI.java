@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
-public class DomumAPI {
+public class DonumAPI {
 
 	/**
 	 * Adds the given itemstack to the given players delivery inventory. This

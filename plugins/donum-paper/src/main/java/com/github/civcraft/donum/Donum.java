@@ -3,6 +3,7 @@ package com.github.civcraft.donum;
 import org.bukkit.Bukkit;
 
 import com.github.civcraft.donum.commands.DonumCommandHandler;
+import com.github.civcraft.donum.listeners.AdminDeliveryListener;
 import com.github.civcraft.donum.listeners.PlayerListener;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -22,6 +23,7 @@ public class Donum extends ACivMod {
 		handle = new DonumCommandHandler();
 		handle.registerCommands();
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+		Bukkit.getPluginManager().registerEvents(new AdminDeliveryListener(), this);
 	}
 
 	public void onDisable() {

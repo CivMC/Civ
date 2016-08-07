@@ -45,7 +45,7 @@ public class DonumDAO {
 					+ "lastUpdate datetime not null default now(), primary key (uuid));");
 			db.execute("create table if not exists deliveryAdditions (deliveryId int not null auto_increment, uuid varchar(36) not null, "
 					+ "inventory blob not null, creationTime datetime not null default now(), index deliveryAdditionsUuidIndex (uuid), "
-					+ "primary key(deliveryId), foreign key (uuid) references deliveryInventories(uuid));");
+					+ "primary key(deliveryId));");
 			db.execute("create table if not exists deliveryInventoryLocks (uuid varchar(36) not null, creationTime datetime not null default now(), "
 					+ "primary key(uuid));");
 			db.execute("create table if not exists logoutInventories (uuid varchar(36), inventory blob not null, hash int, "
@@ -101,7 +101,7 @@ public class DonumDAO {
 			getLock.execute();
 			return true;
 		} catch (SQLException e) {
-			System.out.println("no lock");
+			Donum.getInstance().debug("Failed to get lock for " + uuid.toString());
 			return false;
 		}
 	}
@@ -139,14 +139,16 @@ public class DonumDAO {
 		try (PreparedStatement ps = db.prepareStatement("select inventory from deliveryInventories where uuid=?;")) {
 			ps.setString(1, uuid.toString());
 			ResultSet rs = ps.executeQuery();
+			ItemMap loadedMap;
 			if (!rs.next()) {
-				return new ItemMap();
+				loadedMap = new ItemMap();
+			} else {
+				Blob blob = rs.getBlob(1);
+				int blobLength = (int) blob.length();
+				byte[] blobAsBytes = blob.getBytes(1, blobLength);
+				blob.free();
+				loadedMap = ItemMapBlobHandling.turnBlobIntoItemMap(blobAsBytes);
 			}
-			Blob blob = rs.getBlob(1);
-			int blobLength = (int) blob.length();
-			byte[] blobAsBytes = blob.getBytes(1, blobLength);
-			blob.free();
-			ItemMap loadedMap = ItemMapBlobHandling.turnBlobIntoItemMap(blobAsBytes);
 			try (PreparedStatement loadToProcess = db
 					.prepareStatement("select deliveryId, inventory from deliveryAdditions where uuid=?;")) {
 				loadToProcess.setString(1, uuid.toString());
@@ -340,7 +342,7 @@ public class DonumDAO {
 		}
 		return inventories;
 	}
-	
+
 	private void ensureConnection() {
 		if (!db.isConnected()) {
 			db.connect();

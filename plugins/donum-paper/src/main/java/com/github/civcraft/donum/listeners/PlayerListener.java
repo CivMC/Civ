@@ -15,19 +15,16 @@ public class PlayerListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void playerJoin(PlayerJoinEvent e) {
-		System.out.println("Listener called");
 		Donum.getManager().loadPlayerData(e.getPlayer().getUniqueId(), e.getPlayer().getInventory());
 	}
 
 	@EventHandler
 	public void playerQuit(PlayerQuitEvent e) {
-		System.out.println("Listener called");
 		Donum.getManager().savePlayerData(e.getPlayer().getUniqueId(), e.getPlayer().getInventory());
 	}
 	
 	@EventHandler
 	public void playerWasStupid(PlayerDeathEvent e) {
-		System.out.println("Listener called");
 		Donum.getManager().saveDeathInventory(e.getEntity().getUniqueId(), new ItemMap(e.getDrops()));
 	}
 }

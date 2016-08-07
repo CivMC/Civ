@@ -9,11 +9,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.NameAPI;
 
-import com.github.civcraft.donum.Donum;
-import com.github.civcraft.donum.gui.DeliveryGUI;
-import com.github.civcraft.donum.inventories.DeliveryInventory;
-
+import com.github.civcraft.donum.gui.AdminDeliveryGUI;
 public class Deliver extends PlayerCommand {
 
 	public Deliver(String name) {
@@ -27,17 +25,16 @@ public class Deliver extends PlayerCommand {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "Please no");
+			sender.sendMessage(ChatColor.RED + "No");
 			return true;
 		}
-		UUID uuid = ((Player) sender).getUniqueId();
-		DeliveryInventory delInv = Donum.getManager().getDeliveryInventory(uuid);
-		if (delInv == null) {
-			sender.sendMessage(ChatColor.RED + "Your inventory isnt loaded yet, try again in a few seconds");
+		//TODO make namelayer soft dependency
+		UUID delUUID = NameAPI.getUUID(args [0]);
+		if (delUUID == null) {
+			sender.sendMessage(ChatColor.RED + "This player has never logged into civcraft");
 			return true;
 		}
-		DeliveryGUI delGUI = new DeliveryGUI(uuid, delInv);
-		delGUI.showScreen();
+		AdminDeliveryGUI.showInventory((Player) sender, delUUID);
 		return true;
 	}
 

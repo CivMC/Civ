@@ -2,8 +2,12 @@ name: ${project.name}
 main: com.github.civcraft.donum.Donum
 author: Maxopoly
 version: ${project.version}
-depend: [CivModCore]
-softdepend: []
+depend: [CivModCore, NameLayer]
+softdepend: [Mercury]
 commands:
   present:
+  deliver:
+    permission: donum.op
 permissions:
+  donum.op:
+    default: op
