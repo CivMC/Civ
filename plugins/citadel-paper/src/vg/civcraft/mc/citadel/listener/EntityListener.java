@@ -4,6 +4,7 @@ import static vg.civcraft.mc.citadel.Utility.canPlace;
 import static vg.civcraft.mc.citadel.Utility.createNaturalReinforcement;
 import static vg.civcraft.mc.citadel.Utility.createPlayerReinforcement;
 import static vg.civcraft.mc.citadel.Utility.explodeReinforcement;
+import static vg.civcraft.mc.citadel.Utility.getRealBlock;
 import static vg.civcraft.mc.citadel.Utility.maybeReinforcementDamaged;
 import static vg.civcraft.mc.citadel.Utility.reinforcementBroken;
 import static vg.civcraft.mc.citadel.Utility.reinforcementDamaged;
@@ -102,7 +103,7 @@ public class EntityListener implements Listener{
 
 	@EventHandler(ignoreCancelled = true)
 	public void breakDoor(EntityBreakDoorEvent ebde) {
-		ebde.setCancelled(maybeReinforcementDamaged(ebde.getBlock()));
+		ebde.setCancelled(maybeReinforcementDamaged(getRealBlock(ebde.getBlock())));
 	}
 
 	@EventHandler(ignoreCancelled = true)
