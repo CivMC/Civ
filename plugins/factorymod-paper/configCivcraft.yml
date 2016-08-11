@@ -425,6 +425,7 @@ factories:
     recipes:
     - Make_Rabbit_Stew
     - Make_Mushroom_Stew
+    - Make_Beetroot_Soup
     - Brew_Soup_Concentrate
     - Repair_Factory
   animalhusbandryfactorybasic:
@@ -3641,6 +3642,22 @@ recipes:
       rabbit stew:
         material: RABBIT_STEW
         amount: 18
+  Make_Beetroot_Soup:
+    type: PRODUCTION
+    name: Make Beetroot Soup
+    production_time: 8s
+    input:
+      beetroot:
+        material: BEETROOT
+        amount: 16
+      planks:
+        material: WOOD
+        durability: -1
+        amount: 32
+    output:
+      beetroot soup:
+        material: BEETROOT_SOUP
+        amount: 18
   Mutate_random_sapling:
     type: RANDOM
     name: Mutate Random Sapling
@@ -5548,6 +5565,9 @@ recipes:
         amount: 256
       mushroom2:
         material: BROWN_MUSHROOM
+        amount: 256
+      beetroot:
+        material: BEETROOT
         amount: 256
       bucket:
         material: WATER_BUCKET
