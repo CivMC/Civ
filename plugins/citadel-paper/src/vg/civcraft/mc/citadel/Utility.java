@@ -556,7 +556,7 @@ public class Utility {
 		if (logIt) {
 			slb = new StringBuffer();
 			slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
-					.append("] broke a ").append(reinforcement.getMaterial()).append(" reinforcement at ")
+					.append("] bypassed a ").append(reinforcement.getMaterial()).append(" reinforcement at ")
 					.append(reinforcement.getLocation());
 		}
         Citadel.getReinforcementManager().deleteReinforcement(reinforcement);
