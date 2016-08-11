@@ -418,10 +418,22 @@ public class Utility {
         reinforcement.setDurability(durability);
         boolean cancelled = durability > 0;
         if (durability <= 0) {
-            cancelled = reinforcementBroken(null, reinforcement);
+			if (CitadelConfigManager.shouldLogHostileBreaks()) {
+				StringBuffer slb = new StringBuffer();
+				if (player != null) {
+					slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
+								.append("] ");
+				} else {
+					slb.append("Something ");
+				}
+				slb.append("broke a ").append(reinforcement.getMaterial()).append(" reinforcement at ")
+						.append(reinforcement.getLocation());
+				Citadel.Log(slb.toString());
+			}
+	        cancelled = reinforcementBroken(null, reinforcement);
         } else {
 			/* TODO: Move to ReinforcementEvent listener*/
-			if (CitadelConfigManager.shouldLogBreaks()) {
+			if (CitadelConfigManager.shouldLogDamage()) {
 				StringBuffer slb = new StringBuffer();
 				if (player != null) {
 					slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
@@ -456,6 +468,7 @@ public class Utility {
 					slb.append("excellent (");
 				}
 				slb.append(durability).append(") at ").append(reinforcement.getLocation());
+				Citadel.Log(slb.toString());
 			}
             if (reinforcement instanceof PlayerReinforcement) {
                 // leave message
@@ -539,22 +552,19 @@ public class Utility {
 			return false;
 		}
     	StringBuffer slb = null;
-		if (CitadelConfigManager.shouldLogBreaks()) {
+		boolean logIt = CitadelConfigManager.shouldLogFriendlyBreaks() && player != null;
+		if (logIt) {
 			slb = new StringBuffer();
-			if (player != null) {
-				slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
-						.append("]");
-			} else {
-				slb.append("Something ");
-			}
-			slb.append("broke a ").append(reinforcement.getMaterial()).append(" reinforcement at ")
+			slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
+					.append("] broke a ").append(reinforcement.getMaterial()).append(" reinforcement at ")
 					.append(reinforcement.getLocation());
 		}
         Citadel.getReinforcementManager().deleteReinforcement(reinforcement);
         if (reinforcement instanceof PlayerReinforcement) {
             PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
             ReinforcementType material = ReinforcementType.getReinforcementType(pr.getStackRepresentation());
-            if (rng.nextDouble() <= pr.getHealth() * material.getPercentReturn()) {
+			// RNG is [0,1) so <= would give chance of return if health is 0. Replaced with < alone to fix.
+            if (rng.nextDouble() < pr.getHealth() * material.getPercentReturn()) {
                 Location location = pr.getLocation();
                 if (player != null){
                     Inventory inv = player.getInventory();
@@ -579,17 +589,17 @@ public class Utility {
                 	dropItemAtLocation(location, new ItemStack(material.getMaterial()
                             , material.getReturnValue()));
 				}
-                if (CitadelConfigManager.shouldLogBreaks()) {
+				if (logIt) {
                     slb.append(" - reinf mat refunded");
 					Citadel.Log(slb.toString());
                 }
-            } else if (CitadelConfigManager.shouldLogBreaks()) { 
+            } else if (logIt) {
                 slb.append(" - reinf mat lost");
 				Citadel.Log(slb.toString());
             }
             return (pr.isDoor() || pr.isContainer());
         }
-        if (CitadelConfigManager.shouldLogBreaks()) {
+        if (logIt) {
             Citadel.Log(slb.toString());
         }
         return false;  // implicit isSecureable() == false
