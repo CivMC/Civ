@@ -104,11 +104,11 @@ public class FurnCraftChestFactory extends Factory {
 	 * Attempts to turn the factory on and does all the checks needed to ensure
 	 * that the factory is allowed to turn on
 	 */
-	public void attemptToActivate(Player p) {
+	public void attemptToActivate(Player p, boolean onStartUp) {
 		LoggingUtils.log((p != null ? p.getName() : "Redstone")
 				+ " is attempting to activate " + getLogData());
 		mbs.recheckComplete();
-
+ 
 		if (active) {
 			return;
 		}
@@ -130,7 +130,7 @@ public class FurnCraftChestFactory extends Factory {
 						}
 						return;
 					}
-					if (currentRecipe instanceof Upgraderecipe
+					if (!onStartUp && currentRecipe instanceof Upgraderecipe
 							&& FactoryMod.getManager().isCitadelEnabled()) {
 						// only allow permitted members to upgrade the factory
 						ReinforcementManager rm = Citadel

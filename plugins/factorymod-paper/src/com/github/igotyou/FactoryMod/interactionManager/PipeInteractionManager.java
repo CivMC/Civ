@@ -44,7 +44,7 @@ public class PipeInteractionManager implements IInteractionManager {
 	}
 
 	public void leftClick(Player p, Block b, BlockFace bf) {
-		ItemStack hand = p.getItemInHand();
+		ItemStack hand = p.getInventory().getItemInMainHand();
 		if (FactoryMod.getManager().isCitadelEnabled()) {
 			ReinforcementManager rm = Citadel.getReinforcementManager();
 			// is this cast safe? Let's just assume yes for now
@@ -91,7 +91,7 @@ public class PipeInteractionManager implements IInteractionManager {
 				p.sendMessage(ChatColor.GOLD + pipe.getName()
 						+ " has been deactivated");
 			} else {
-				pipe.attemptToActivate(p);
+				pipe.attemptToActivate(p, false);
 			}
 		}
 	}
@@ -114,7 +114,7 @@ public class PipeInteractionManager implements IInteractionManager {
 				if (rm == null
 						|| MultiBlockStructure.citadelRedstoneChecks(e
 								.getBlock())) {
-					pipe.attemptToActivate(null);
+					pipe.attemptToActivate(null, false);
 				}
 			} else {
 				return;

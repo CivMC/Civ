@@ -71,7 +71,7 @@ public class SorterEgg implements IFactoryEgg {
 		((NoRepairDestroyOnBreakManager) rm).setFactory(sorter);
 		sorter.setAssignments(assignments);
 		if (runTime != 0) {
-			sorter.attemptToActivate(null);
+			sorter.attemptToActivate(null, true);
 			if (sorter.isActive()) {
 				sorter.setRunTime(runTime);
 			}

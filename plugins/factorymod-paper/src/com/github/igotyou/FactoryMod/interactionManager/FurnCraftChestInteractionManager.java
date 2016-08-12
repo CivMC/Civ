@@ -62,7 +62,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		if (rm == null
 			|| MultiBlockStructure.citadelRedstoneChecks(e
 				.getBlock())) {
-		    fccf.attemptToActivate(null);
+		    fccf.attemptToActivate(null, false);
 		}
 	    } else {
 		return;
@@ -83,7 +83,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
     }
 
     public void leftClick(Player p, Block b, BlockFace bf) {
-	if (p.getItemInHand().getType() != FactoryMod.getManager()
+	if (p.getInventory().getItemInMainHand().getType() != FactoryMod.getManager()
 		.getFactoryInteractionMaterial()) {
 	    return;
 	}
@@ -267,7 +267,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		p.sendMessage(ChatColor.RED + "Deactivated " + fccf.getName());
 		FactoryMod.sendResponse("FactoryActivation", p);
 	    } else {
-		fccf.attemptToActivate(p);
+		fccf.attemptToActivate(p, false);
 		FactoryMod.sendResponse("FactoryDeactivation", p);
 	    }
 	}

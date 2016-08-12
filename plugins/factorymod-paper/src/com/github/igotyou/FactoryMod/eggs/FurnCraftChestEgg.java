@@ -116,7 +116,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 			fccf.setRecipe(recipes.get(0));
 		}
 		if (productionTimer != 0) {
-			fccf.attemptToActivate(null);
+			fccf.attemptToActivate(null, true);
 			if (fccf.isActive()) {
 				fccf.setProductionTimer(productionTimer);
 			}

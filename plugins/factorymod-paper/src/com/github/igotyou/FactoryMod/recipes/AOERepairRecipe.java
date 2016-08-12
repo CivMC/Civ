@@ -161,7 +161,7 @@ public class AOERepairRecipe extends InputRecipe {
 								break;
 							}
 						}
-						fac.attemptToActivate(null);
+						fac.attemptToActivate(null, false);
 						break;
 					}
 				}

@@ -68,22 +68,22 @@ public class SorterInteractionManager implements IInteractionManager {
 			}
 		}
 		if (b.equals(bfs.getFurnace())) {
-			if (p.getItemInHand()
+			if (p.getInventory().getItemInMainHand()
 					.getType()
 					.equals(FactoryMod.getManager()
 							.getFactoryInteractionMaterial())) {
-				sorter.attemptToActivate(p);
+				sorter.attemptToActivate(p, false);
 			}
 		} else { // center
 			if (p.isSneaking()
-					&& p.getItemInHand()
+					&& p.getInventory().getItemInMainHand()
 							.getType()
 							.equals(FactoryMod.getManager()
 									.getFactoryInteractionMaterial())) {
 				mb.showSorterFace(p, sorter, bf);
 				return;
 			}
-			ItemStack is = p.getItemInHand();
+			ItemStack is = p.getInventory().getItemInMainHand();
 			if (is == null) {
 				return;
 				//no item in hand
@@ -126,7 +126,7 @@ public class SorterInteractionManager implements IInteractionManager {
 				if (rm == null
 						|| MultiBlockStructure.citadelRedstoneChecks(e
 								.getBlock())) {
-					sorter.attemptToActivate(null);
+					sorter.attemptToActivate(null, false);
 				}
 			} else {
 				return;

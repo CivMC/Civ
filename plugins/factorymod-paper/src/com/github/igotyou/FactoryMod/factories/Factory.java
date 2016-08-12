@@ -28,10 +28,9 @@ public abstract class Factory implements Runnable {
 	protected int updateTime;
 	protected String name;
 	protected int threadId;
-	
 
-	public Factory(IInteractionManager im, IRepairManager rm, IPowerManager pm,
-			MultiBlockStructure mbs, int updateTime, String name) {
+	public Factory(IInteractionManager im, IRepairManager rm, IPowerManager pm, MultiBlockStructure mbs,
+			int updateTime, String name) {
 		this.im = im;
 		this.rm = rm;
 		this.mbs = mbs;
@@ -114,16 +113,15 @@ public abstract class Factory implements Runnable {
 	 * @param p
 	 *            Player turning the factory on or null if something other than
 	 *            a player is attempting to turn it on
+	 * @param onStartUp
+	 *            Whether this factory is just being reactivated after a
+	 *            restart/reload and any permissions checks should be bypassed
 	 */
-	public abstract void attemptToActivate(Player p);
+	public abstract void attemptToActivate(Player p, boolean onStartUp);
 
 	public void scheduleUpdate() {
-		threadId = FactoryMod
-				.getPlugin()
-				.getServer()
-				.getScheduler()
-				.scheduleSyncDelayedTask(FactoryMod.getPlugin(), this,
-						(long) updateTime);
+		threadId = FactoryMod.getPlugin().getServer().getScheduler()
+				.scheduleSyncDelayedTask(FactoryMod.getPlugin(), this, (long) updateTime);
 	}
 
 	public void turnFurnaceOn(Block f) {
@@ -132,29 +130,30 @@ public abstract class Factory implements Runnable {
 		}
 		Furnace furnace = (Furnace) f.getState();
 		ItemStack[] oldContents = furnace.getInventory().getContents();
-		BlockFace facing = ((DirectionalContainer)furnace.getData()).getFacing();
+		BlockFace facing = ((DirectionalContainer) furnace.getData()).getFacing();
 		furnace.getInventory().clear();
 		f.setType(Material.BURNING_FURNACE);
 		furnace = (Furnace) f.getState();
 		MaterialData data = furnace.getData();
-		((DirectionalContainer)data).setFacingDirection(facing);
+		((DirectionalContainer) data).setFacingDirection(facing);
 		furnace.setData(data);
 		furnace.update();
 		furnace.setBurnTime(Short.MAX_VALUE);
 		furnace.getInventory().setContents(oldContents);
 	}
-	
+
 	public String getLogData() {
-		return name+" at " + mbs.getCenter().toString();
+		return name + " at " + mbs.getCenter().toString();
 	}
 
 	public void turnFurnaceOff(Block f) {
-		//Since we are turning it off that implies its on, that means we should check if the furnace is burning.
+		// Since we are turning it off that implies its on, that means we should
+		// check if the furnace is burning.
 		if (f.getType() != Material.BURNING_FURNACE) {
 			return;
 		}
 		Furnace furnace = (Furnace) f.getState();
-		furnace.setBurnTime((short)0);
+		furnace.setBurnTime((short) 0);
 		furnace.update();
 	}
 }

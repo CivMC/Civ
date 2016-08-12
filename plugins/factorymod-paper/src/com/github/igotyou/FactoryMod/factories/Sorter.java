@@ -46,7 +46,7 @@ public class Sorter extends Factory {
 		}
 	}
 
-	public void attemptToActivate(Player p) {
+	public void attemptToActivate(Player p, boolean onStartUp) {
 		LoggingUtils.log((p != null ? p.getName() : "Redstone")
 				+ "is attempting to activate " + getLogData());
 		mbs.recheckComplete();

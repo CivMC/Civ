@@ -107,7 +107,7 @@ public class PipeEgg implements IFactoryEgg {
 		((NoRepairDestroyOnBreakManager)rm).setFactory(pipe);
 		pipe.setAllowedMaterials(allowedMaterials);
 		if (runTime != 0) {
-			pipe.attemptToActivate(null);
+			pipe.attemptToActivate(null, true);
 			if (pipe.isActive()) {
 				pipe.setRunTime(runTime);
 			}

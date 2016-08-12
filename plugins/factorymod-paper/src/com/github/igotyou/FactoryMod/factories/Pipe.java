@@ -39,7 +39,7 @@ public class Pipe extends Factory {
 		runTime = 0;
 	}
 
-	public void attemptToActivate(Player p) {
+	public void attemptToActivate(Player p, boolean onStartUp) {
 		LoggingUtils.log((p != null ? p.getName() : "Redstone")
 				+ "is attempting to activate " + getLogData());
 		mbs.recheckComplete();
