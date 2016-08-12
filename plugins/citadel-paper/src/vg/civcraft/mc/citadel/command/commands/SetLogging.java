@@ -17,7 +17,7 @@ public class SetLogging extends PlayerCommandMiddle {
 		super(name);
 		setIdentifier("ctsl");
 		setDescription("Allows admins to toggle special logging types live or show current status");
-		setUsage("/ctsl [internal|playercommands|breaks|reinforcements [on|off]]");
+		setUsage("/ctsl [internal|playercommands|breaks|hostilebreaks|damage|reinforcements [on|off]]");
 		setArguments(0, 2);
 	}
 
@@ -43,7 +43,9 @@ public class SetLogging extends PlayerCommandMiddle {
 			StringBuilder sb = new StringBuilder("Current deep logging set to: \n");
 			sb.append("   Internal: ").append(CitadelConfigManager.shouldLogInternal()).append("\n");
 			sb.append("   Player Command Responses: ").append(CitadelConfigManager.shouldLogPlayerCommands()).append("\n");
-			sb.append("   Breaks: ").append(CitadelConfigManager.shouldLogBreaks()).append("\n");
+			sb.append("   Friendly/CTB Breaks: ").append(CitadelConfigManager.shouldLogFriendlyBreaks()).append("\n");
+			sb.append("   Hostile Breaks: ").append(CitadelConfigManager.shouldLogHostileBreaks()).append("\n");
+			sb.append("   Damage: ").append(CitadelConfigManager.shouldLogDamage()).append("\n");
 			sb.append("   Reinforcements: ").append(CitadelConfigManager.shouldLogReinforcement()).append("\n");
 			
 			sendAndLog(sender, ChatColor.GREEN, sb.toString());
@@ -54,13 +56,19 @@ public class SetLogging extends PlayerCommandMiddle {
 		if (args.length >= 1) {
 			if ("internal".equalsIgnoreCase(args[0])) {
 				flag = "internal_logging";
-				newval = CitadelConfigManager.shouldLogInternal();				
+				newval = CitadelConfigManager.shouldLogInternal();
 			} else if ("playercommands".equalsIgnoreCase(args[0])) {
 				flag = "command_logging";
-				newval = CitadelConfigManager.shouldLogPlayerCommands();				
+				newval = CitadelConfigManager.shouldLogPlayerCommands();
 			} else if ("breaks".equalsIgnoreCase(args[0])) {
 				flag = "break_logging";
-				newval = CitadelConfigManager.shouldLogBreaks();
+				newval = CitadelConfigManager.shouldLogFriendlyBreaks();
+			} else if ("hostilebreaks".equalsIgnoreCase(args[0])) {
+				flag = "hostile_logging";
+				newval = CitadelConfigManager.shouldLogHostileBreaks();
+			} else if ("damage".equalsIgnoreCase(args[0])) {
+				flag = "damage_logging";
+				newval = CitadelConfigManager.shouldLogDamage();
 			} else if ("reinforcements".equalsIgnoreCase(args[0])) {
 				flag = "reinf_logging";
 				newval = CitadelConfigManager.shouldLogReinforcement();				
@@ -76,7 +84,7 @@ public class SetLogging extends PlayerCommandMiddle {
 		
 		if (flag != null) {
 			Citadel.getInstance().getConfig().set(flag, newval);
-			sendAndLog(sender, ChatColor.GREEN, "Flag " + newval + " is " + (newval ? "on" : "off"));
+			sendAndLog(sender, ChatColor.GREEN, "Flag " + flag + " is " + (newval ? "on" : "off"));
 			return true;
 		} else {
 			sendAndLog(sender, ChatColor.RED, "Unknown setting!");
@@ -84,7 +92,7 @@ public class SetLogging extends PlayerCommandMiddle {
 		}
 	}
 
-	private static List<String> cmds = Arrays.asList("internal","playercommands", "breaks", "reinforcements");
+	private static List<String> cmds = Arrays.asList("internal","playercommands", "hostilebreaks", "breaks", "damage", "reinforcements");
 	private static List<String> flgs = Arrays.asList("on", "off");
 	@Override
 	public List<String> tabComplete(CommandSender arg0, String[] arg1) {

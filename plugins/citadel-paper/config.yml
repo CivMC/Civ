@@ -13,10 +13,19 @@
 #  speed: the speed of the particles
 #  particleCount: the amount of particle to display. 
 #  view_distance: the distance from which players will be able to see the effect. default is 16. 
+# internal_logging logs Citadel internal status messages, config notices, and the like. Strongly recommend it be on.
 internal_logging: true
+# command_logging logs the _response_ that Citadel sends to the player; very useful.
 command_logging: true
-break_logging: true
+# break_logging logs all reinforcement breaks that are done in /ctb mode (e.g. friendly breaks).
+break_logging: false
+# hostile_logging logs all reinforcement breaks that are done without bypass (e.g. hostile breaks).
+hostile_logging: true
+# damage_logging logs all reinforcement break attempts. Leave off unless you need it.
+damage_logging: false
+# reinf_logging logs all reinforcement creation and also logs when group lookups fail. Can get super spammy.
 reinf_logging: false
+# All logging states can be controlled using /ctsl
 reinforcements:
  stone_tier:
   material: STONE

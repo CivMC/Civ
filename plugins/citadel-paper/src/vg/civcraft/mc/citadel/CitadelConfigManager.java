@@ -182,8 +182,16 @@ public class CitadelConfigManager {
 		return config.getBoolean("command_logging", false);
 	}
 
-	public static boolean shouldLogBreaks() {
+	public static boolean shouldLogFriendlyBreaks() {
 		return config.getBoolean("break_logging", false);
+	}
+
+	public static boolean shouldLogHostileBreaks() {
+		return config.getBoolean("hostile_logging", false);
+	}
+
+	public static boolean shouldLogDamage() {
+		return config.getBoolean("damage_logging", false);
 	}
 
 	public static boolean shouldLogReinforcement() {
