@@ -15,9 +15,10 @@ public class DropConfig {
 	public String prefix;
 	public DropLimitsConfig limits;
 	public boolean transformIfAble;
+	public boolean dropIfTransformFails;
 	private Map<String, DropLimitsConfig> biomeLimits;
 
-	public DropConfig(String dropName, List<DropItemConfig> drops, boolean transformIfAble, String prefix, DropLimitsConfig limits) {
+	public DropConfig(String dropName, List<DropItemConfig> drops, boolean transformIfAble, boolean dropIfTransformFails, String prefix, DropLimitsConfig limits) {
 		this.dropName = dropName;
 		this.drops = drops;
 		this.transformIfAble = transformIfAble;
