@@ -1,15 +1,13 @@
 package vg.civcraft.mc.civmodcore;
 
-import java.io.IOException;
+import static vg.civcraft.mc.civmodcore.CivModCorePlugin.log;
+
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.google.common.reflect.ClassPath;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
 import vg.civcraft.mc.civmodcore.annotations.ConfigOption;
@@ -39,7 +37,7 @@ public class Config {
 
 	    plugin_ = plugin;
 	    initialize();
-	    
+
 	    for(Class clazz:ClassUtility.GetClassesForPlugin(plugin)){
 	    	scanAnnotations(clazz);
 	    }
@@ -49,7 +47,7 @@ public class Config {
 
   private void addToConfig(CivConfig bug) {
     if (dynamicOptions_.containsKey(bug.name())) {
-    	plugin_.info("Duplicate configuration option detected: " + bug.name());
+    	log().info("Duplicate configuration option detected: " + bug.name());
       return;
     }
     dynamicOptions_.put(bug.name(), new ConfigOption(this, bug));
@@ -79,7 +77,7 @@ public class Config {
     } catch(NoClassDefFoundError e){
     	// We want to ignore any errors found from this because it could be a soft dependency that is not loaded for a plugin.
     } catch(Exception ex) {
-    	plugin_.info(ex.toString());
+    	log().info(ex.toString());
     }
   }
 //  private void scanAnnotations() {
@@ -133,7 +131,7 @@ public class Config {
     }
     return false;
   }
-  
+
   private void setConfig(){
 		for (ConfigOption c : dynamicOptions_.values()){
 			switch (c.getType()){

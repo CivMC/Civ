@@ -33,7 +33,7 @@ public class ConfigParsing {
 	/**
 	 * Creates an itemmap containing all the items listed in the given config
 	 * section
-	 * 
+	 *
 	 * @param config
 	 *            ConfigurationSection to parse the items from
 	 * @return The item map created
@@ -200,13 +200,13 @@ public class ConfigParsing {
 	 * it, for example 5h means 5 hours or 34s means 34 seconds. Possible
 	 * modifiers are: t (ticks), s (seconds), m (minutes), h (hours) and d
 	 * (days). If no letter is added the value will be parsed as ticks.
-	 * 
+	 *
 	 * Additionally you can combine those amounts in any way you want, for
 	 * example you can specify 3h5m43s as 3 hours, 5 minutes and 43 seconds.
 	 * This doesn't have to be sorted and may even list the same unit multiple
 	 * times for different values, but the values are not allowed to be
 	 * separated by anything
-	 * 
+	 *
 	 * @param arg
 	 *            Parsed string containing the time format
 	 * @return How many ticks the given time value is
@@ -277,7 +277,7 @@ public class ConfigParsing {
 
 	/**
 	 * Parses a potion effect
-	 * 
+	 *
 	 * @param configurationSection
 	 *            ConfigurationSection to parse the effect from
 	 * @return The potion effect parsed
@@ -346,7 +346,7 @@ public class ConfigParsing {
 			}
 		}
 		int xSize = config.getInt("xSize", -1);
-		int zSize = config.getInt("zSize", -1);		
+		int zSize = config.getInt("zSize", -1);
 		IArea area = null;
 		switch (type) {
 		case "GLOBAL":
