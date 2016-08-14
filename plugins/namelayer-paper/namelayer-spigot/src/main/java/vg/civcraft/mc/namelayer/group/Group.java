@@ -43,7 +43,7 @@ public class Group {
 			db = NameLayerPlugin.getGroupManagerDao();
 		}
 		
-		this.name = name;
+		this.name = name.replace("|", "");
 		this.password = password;
 		this.owner = owner;
 		this.isDisciplined = disciplined;
@@ -225,7 +225,7 @@ public class Group {
 	public void addInvite(UUID uuid, PlayerType type, boolean saveToDB){
 		invites.put(uuid, type);
 		if(saveToDB){
-			db.addGroupInvitationAsync(uuid, name, type.name());
+			db.addGroupInvitation(uuid, name, type.name());
 		}
 	}
 	
@@ -258,7 +258,7 @@ public class Group {
 	public void removeInvite(UUID uuid, boolean saveToDB){
 		invites.remove(uuid);
 		if(saveToDB){
-			db.removeGroupInvitationAsync(uuid, name);
+			db.removeGroupInvitation(uuid, name);
 		}
 	}
 	/**
@@ -327,12 +327,12 @@ public class Group {
 		if (type == PlayerType.NOT_BLACKLISTED) {
 			return;
 		}
-		if (savetodb == true) {
+		if (savetodb) {
 			if (isMember(uuid, type)){
-				db.removeMemberAsync(uuid, name);
+				db.removeMember(uuid, name);
 			}
-			db.addMemberAsync(uuid, name, type);
-			Mercury.message("addMember " + this.name + " " + uuid.toString() + " " + type.toString());
+			db.addMember(uuid, name, type);
+			Mercury.addMember(this.name, uuid.toString(), type.toString());
 		}
 		players.put(uuid, type);
 	}
@@ -347,8 +347,8 @@ public class Group {
 	
 	public void removeMember(UUID uuid, boolean savetodb) {
 		if (savetodb){
-			db.removeMemberAsync(uuid, name);
-			Mercury.message("removeMember " + this.name + " " + uuid.toString());
+			db.removeMember(uuid, name);
+			Mercury.remMember(this.name,uuid.toString());
 		}
 		players.remove(uuid);
 	}
@@ -381,8 +381,8 @@ public class Group {
 			supergroup.subgroups.add(subgroup);
 		}
 		if (saveToDb) {		
-			db.addSubGroupAsync(supergroup.getName(), subgroup.getName());
-			Mercury.message("link "+ supergroup.name +" "+ subgroup.name);
+			db.addSubGroup(supergroup.getName(), subgroup.getName());
+			Mercury.linkGroup(supergroup.name, subgroup.getName());
 		}
 		
 		return true;
@@ -410,8 +410,8 @@ public class Group {
 		}		
 						
 		if (savetodb){
-			db.removeSubGroupAsync(supergroup.getName(), subgroup.getName());
-			Mercury.message("unlink "+ supergroup.name +" "+ subgroup.name);
+			db.removeSubGroup(supergroup.getName(), subgroup.getName());
+			Mercury.unlinkGroup(supergroup.name, subgroup.name);
 		}
 		
 		return true;
@@ -519,8 +519,8 @@ public class Group {
 	public void setPassword(String password, boolean savetodb) {
 		this.password = password;
 		if (savetodb){
-			db.updatePasswordAsync(name, password);
-			Mercury.message("setPass " + this.name + " " + password);
+			db.updatePassword(name, password);
+			Mercury.setPassword(this.name, password);
 		}
 	}
 
@@ -535,14 +535,21 @@ public class Group {
 	public void setOwner(UUID uuid, boolean savetodb) {
 		this.owner = uuid;
 		if (savetodb){
-			db.setFounderAsync(uuid, this);
-			Mercury.message("setOwner "+ this.name + " " + uuid.toString());
+			db.setFounder(uuid, this);
+			Mercury.setFounder(this.name, uuid.toString());
 		}
 	}
+	
+	public void setDisciplined(boolean value){
+		setDisciplined(value, true);
+	}
 
-	public void setDisciplined(boolean value) {
+	public void setDisciplined(boolean value, boolean savetodb) {
 		this.isDisciplined = value;
-		Mercury.message("discipline "+ this.name +" "+ this.isDisciplined);
+		if (savetodb){
+			db.setDisciplined(this, value);
+			Mercury.setDisciplined(this.name, this.isDisciplined);
+		}
 	}
 
 	public void setValid(boolean valid) { this.isValid = valid; }

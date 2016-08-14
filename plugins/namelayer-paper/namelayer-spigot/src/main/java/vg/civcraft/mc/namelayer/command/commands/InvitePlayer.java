@@ -25,6 +25,7 @@ import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
+import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -112,16 +113,10 @@ public class InvitePlayer extends PlayerCommandMiddle{
 				return true;
 			}
 			sendInvitation(group, pType, targetAccount, p.getUniqueId(), true);
-			
-			if(NameLayerPlugin.isMercuryEnabled()){
-				MercuryAPI.sendGlobalMessage("addInvitation " + group.getGroupId() + " " + pType.toString() + " " + targetAccount + " " + p.getUniqueId(), "namelayer");
-			}
+			Mercury.addInvite(group.getGroupId(), pType.toString(), targetAccount, p.getUniqueId().toString());
 		} else {
 			sendInvitation(group, pType, targetAccount, null, true);
-			
-			if(NameLayerPlugin.isMercuryEnabled()){
-				MercuryAPI.sendGlobalMessage("addInvitation " + group.getGroupId() + " " + pType.toString() + " " + targetAccount, "namelayer");
-			}
+			Mercury.addInvite(group.getGroupId(), pType.toString(), targetAccount, " ");
 		}
 
 		s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");

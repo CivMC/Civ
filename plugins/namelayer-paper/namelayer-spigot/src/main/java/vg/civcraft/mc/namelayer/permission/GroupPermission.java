@@ -81,8 +81,8 @@ public class GroupPermission {
 		List <PermissionType> toAdd = new LinkedList<PermissionType>();
 		toAdd.add(permType);
 		if (savetodb){
-			db.addPermissionAsync(group.getName(), pType.name(), toAdd);
-			Mercury.message("permadd "+ group.getName() +" "+ pType.name() +" "+ permType.getName());
+			db.addPermission(group.getName(), pType.name(), toAdd);
+			Mercury.addPerm(group.getName(),pType.name(), permType.getName());
 		}
 		return true;
 	}
@@ -102,8 +102,8 @@ public class GroupPermission {
 		List<PermissionType> types = perms.get(pType);
 		types.remove(permType);
 		if (savetodb){
-			db.removePermissionAsync(group.getName(), pType, permType);
-			Mercury.message("permrem "+ group.getName() +" "+ pType.name() +" "+ permType.getName());
+			db.removePermission(group.getName(), pType, permType);
+			Mercury.remPerm(group.getName(), pType.name(), permType.getName());
 		}
 		return true;
 	}

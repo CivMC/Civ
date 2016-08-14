@@ -67,9 +67,7 @@ public class GroupManager{
 			id = groupManagerDao.createGroup(
 				event.getGroupName(), event.getOwner(), 
 				event.getPassword());
-			Mercury.message("create " + group.getName() +" "+ 
-				group.getOwner().toString() +" "+ group.isDisciplined() +" "+
-				group.getPassword() +" "+ String.valueOf(id));
+			Mercury.createGroup(group, id);
 		} else {
 			id = group.getGroupId();
 		}
@@ -124,9 +122,8 @@ public class GroupManager{
 		group.setDisciplined(true);
 		group.setValid(false);
 		if (savetodb){
-			groupManagerDao.deleteGroupAsync(groupName);
-			String message = "delete " + groupName;
-			Mercury.message(message);
+			groupManagerDao.deleteGroup(groupName);
+			Mercury.deleteGroup(groupName);
 		}
 		return true;
 	}
@@ -150,8 +147,7 @@ public class GroupManager{
 		if (savetodb){
 			g.addMember(uuid, PlayerType.OWNER);
 			g.setOwner(uuid);
-			String message = "transfer " + g.getName() + " " + uuid.toString();
-			Mercury.message(message);
+			Mercury.transferGroup(g, uuid);
 		} else {
 			g.addMember(uuid, PlayerType.OWNER, false);
 			g.setOwner(uuid, false);
@@ -179,9 +175,8 @@ public class GroupManager{
 		}
 		
 		if (savetodb){
-			groupManagerDao.mergeGroupAsync(group.getName(), toMerge.getName());
-			String message = "merge " + group.getName() + " " + toMerge.getName();
-			Mercury.message(message);
+			groupManagerDao.mergeGroup(group.getName(), toMerge.getName());
+			Mercury.mergeGroup(group.getName(), toMerge.getName());
 		}
 		// At this point, at the DB level all non-overlap members are in target group, name is reset to target,
 		// unique group header record is removed, and faction_id all point to new name.
@@ -407,7 +402,7 @@ public class GroupManager{
 			}
 		}
 		for (Entry <PlayerType, List <PermissionType>> entry: defaultPermMapping.entrySet()){
-			groupManagerDao.addPermissionAsync(group, entry.getKey().name(), entry.getValue());
+			groupManagerDao.addPermission(group, entry.getKey().name(), entry.getValue());
 		}
 	}
 	

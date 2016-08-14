@@ -34,7 +34,7 @@ public class MercuryMessageListener implements Listener{
 	public void onMercuryMessage(AsyncPluginBroadcastMessageEvent event){
 		if (!event.getChannel().equalsIgnoreCase("namelayer"))
 			return;
-		String[] message = event.getMessage().split(" ");
+		String[] message = event.getMessage().split("|");
 		String reason = message[0];	
 		String groupname = message[1];
 		if (reason.equals("recache")){
@@ -188,6 +188,13 @@ public class MercuryMessageListener implements Listener{
 			UUID uuid = UUID.fromString(message[2]);
 			if (bl != null && uuid != null){
 				bl.removeBlacklistMember(groupname, uuid, false);
+			}
+		}
+		else if (reason.equals("disciplined")){
+			Group group = GroupManager.getGroup(groupname);
+			boolean disp = Boolean.getBoolean(message[2]);
+			if (group != null){
+				group.setDisciplined(disp, false);
 			}
 		}
 	}

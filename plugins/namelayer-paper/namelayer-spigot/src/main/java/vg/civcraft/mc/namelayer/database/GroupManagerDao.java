@@ -386,7 +386,7 @@ public class GroupManagerDao {
 	
 	private PreparedStatement createGroup, getGroup, getGroupById, getAllGroupsNames, deleteGroup, getAllGroupIds;
 	
-	private PreparedStatement addMember, getMembers, removeMember, updatePassword, updateOwner;
+	private PreparedStatement addMember, getMembers, removeMember, updatePassword, updateOwner, updateDisciplined;
 	
 	private PreparedStatement addSubGroup, getSubGroups, getSuperGroup, removeSubGroup;
 	
@@ -484,6 +484,9 @@ public class GroupManagerDao {
 				+ "where group_name = ?");
 		
 		updateOwner = db.prepareStatement("update faction set founder = ? "
+				+ "where group_name = ?");
+		
+		updateDisciplined = db.prepareStatement("update faction set discipline_flags = ? "
 				+ "where group_name = ?");
 		
 		addAutoAcceptGroup = db.prepareStatement("insert into toggleAutoAccept(uuid)"
@@ -1311,6 +1314,30 @@ public class GroupManagerDao {
 					+ " to " + uuid, e);
 		}
 	}
+	
+	public void setDisciplinedAsync(final Group group, final boolean disciplined){
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				setDisciplined(group,disciplined);
+			}
+			
+		});
+	}
+	
+	public synchronized void setDisciplined(Group group, boolean disciplined) {
+		try {
+			int val; if (disciplined){val=1;}else{val=0;}
+			updateDisciplined.setInt(1, val);
+			updateDisciplined.setString(2, group.getName());
+			this.execStatement(updateDisciplined);
+		} catch (SQLException e) {
+			plugin.getLogger().log(Level.WARNING, "Problem setting disciplined of group " + group.getName() 
+					+ " to " + disciplined, e);
+		}
+	}
+
 	
 	public void addGroupInvitationAsync(final UUID uuid, final String groupName, final String role){
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){

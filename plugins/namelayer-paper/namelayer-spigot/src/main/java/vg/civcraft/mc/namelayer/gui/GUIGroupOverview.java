@@ -73,18 +73,19 @@ public class GUIGroupOverview {
 			
 			@Override
 			public void clicked(Player p) {
+				// TODO: Autoacceptance needs a cache to reduce db calls.
 				if (autoAccept){
 					NameLayerPlugin.log(Level.INFO,
 							p.getName() + " turned autoaccept for invites off "
 									+ "via gui");
-					NameLayerPlugin.getGroupManagerDao().removeAutoAcceptGroupAsync(p.getUniqueId());
+					NameLayerPlugin.getGroupManagerDao().removeAutoAcceptGroup(p.getUniqueId());
 					p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group invites");
 				}
 				else {
 					NameLayerPlugin.log(Level.INFO,
 							p.getName() + " turned autoaccept for invites on "
 									+ "via gui");
-					NameLayerPlugin.getGroupManagerDao().autoAcceptGroupsAsync(p.getUniqueId());
+					NameLayerPlugin.getGroupManagerDao().autoAcceptGroups(p.getUniqueId());
 					p.sendMessage(ChatColor.GREEN + "You will automatically accept group invites");
 				}
 				autoAccept = !autoAccept;

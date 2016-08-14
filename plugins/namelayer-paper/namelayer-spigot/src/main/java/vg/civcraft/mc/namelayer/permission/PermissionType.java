@@ -66,8 +66,8 @@ public class PermissionType {
 			}
 			maximumExistingId = id;
 			p = new PermissionType(name, id, defaultPermLevels, description);
-			NameLayerPlugin.getGroupManagerDao().registerPermissionAsync(p);
-			NameLayerPlugin.getGroupManagerDao().addNewDefaultPermissionAsync(defaultPermLevels, p);
+			NameLayerPlugin.getGroupManagerDao().registerPermission(p);
+			NameLayerPlugin.getGroupManagerDao().addNewDefaultPermission(defaultPermLevels, p);
 		}
 		else {
 			//already in db, so use existing id

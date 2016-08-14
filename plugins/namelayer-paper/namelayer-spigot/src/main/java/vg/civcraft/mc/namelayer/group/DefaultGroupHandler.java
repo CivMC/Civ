@@ -40,12 +40,12 @@ public class DefaultGroupHandler {
 		if (savetodb){
 			String previous = defaultGroups.get(uuid);
 			if (previous == null) {
-				dao.setDefaultGroupAsync(uuid, g.getName());
+				dao.setDefaultGroup(uuid, g.getName());
 			}
 			else {
-				dao.changeDefaultGroupAsync(uuid, g.getName());
+				dao.changeDefaultGroup(uuid, g.getName());
 			}
-			Mercury.message("defaultGroup " + g.getName() + " " + uuid.toString());
+			Mercury.defaultGroup(g.getName(), uuid.toString());
 		}
 		defaultGroups.put(uuid, g.getName());
 	}
