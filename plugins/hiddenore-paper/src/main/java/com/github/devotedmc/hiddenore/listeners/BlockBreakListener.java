@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -202,99 +203,121 @@ public class BlockBreakListener implements Listener {
 		final List<ItemStack> items = dropConfig.renderDrop(biomeName, dropTool);
 		final Location sourceLocation = sourceBlock.getLocation();
 		if (items.size() > 0) {
-			final HiddenOreEvent hoe = new HiddenOreEvent(player, sourceLocation, items);
-			Bukkit.getPluginManager().callEvent(hoe);
-			if (!hoe.isCancelled()) {
-				// Schedule drop.
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						for (ItemStack item: hoe.getDrops()) {
-							sourceLocation.getWorld().dropItem(sourceLocation.add(0.5, 0.5, 0.5), item).setVelocity(new Vector(0, 0.05, 0));
-						}
-					}
-				}.runTaskLater(plugin, 1l);
+			doActualDrops(items, sourceLocation, player, dropName, blockName, blockConfig, blockSubType, alertBuffer);
+		}
 
-				// Correct stats output.
-				for (ItemStack item: hoe.getDrops()) {
-					log("STAT: Player {0} at {1} broke {2}:{3} - dropping {4} {5}:{6}", 
-							player.getDisplayName(), player.getLocation(), blockName, blockSubType, 
-							item.getAmount(), item.getType().name(), item.getDurability());
-				}
-				
-				if (Config.isAlertUser()) {
-					if (blockConfig.hasCustomPrefix(dropName)) {
-						StringBuffer customAlerts = new StringBuffer(blockConfig.getPrefix(dropName));
-	
-						for (ItemStack item : hoe.getDrops()) {
-							customAlerts.append(" ").append(item.getAmount()).append(" ")
-								.append(Config.getPrettyName(item.getType().name(), item.getDurability()));
-						}
-						event.getPlayer().sendMessage(ChatColor.GOLD + customAlerts.toString());
-					} else {
-						if (Config.isListDrops()) {
-							for (ItemStack item : hoe.getDrops()) {
-								alertBuffer.append(" ").append(item.getAmount()).append(" ").append(
-										Config.getPrettyName(item.getType().name(), item.getDurability())
-									).append(",");
-							}
-						}
-					}
-				}
-			} else {
-				log("For {0} at {1}, HiddenOre {2} cancelled.", player.getDisplayName(), player.getLocation(), dropName);
+		if (dropConfig.transformIfAble) {
+			final List<ItemStack> transform = dropConfig.renderTransform(biomeName, dropTool);
+			if (transform.size() > 0) {
+				doActualGenerate(transform, sourceLocation, player, dropName, blockName, blockConfig, 
+						blockSubType, alertBuffer, dropConfig);
 			}
 		}
-		
-		if (dropConfig.transformIfAble) {
-			// Use a kind of radial bloom to try to place the discovered blocks.
-			final List<ItemStack> transform = dropConfig.renderTransform(biomeName, dropTool);
-			if (transform.size() <= 0) {
-				return true; // failfast.
-			}
-			int maxWalk = 0;
-			int cPlace = 0;
-			double cAttempt = 0;
-			boolean tryFacing = false; // pick a facing block of attacked block
-			Block origin = sourceLocation.getBlock();
-			for (ItemStack xform : transform) {
-				Material sample = xform.getType();
-				Material expressed = sample;
-				maxWalk += xform.getAmount() * 2;
-				cPlace = xform.getAmount();
-				while (cPlace > 0 && maxWalk > 0) {
-					Block walk = null;
-					if (!tryFacing) {
-						walk = this.getVisibleFacing(origin);
-					} else {
-						double z = Math.random() * 2.0 - 1.0;
-						double zsq = Math.sqrt(1-Math.pow(z, 2));
-						double u = 0.5 + Math.floor(Math.cbrt(cAttempt++));
-						//double u = Math.round(1.0 + Math.random() * Math.ceil(Math.sqrt(cPlace)));
-						double theta = Math.random() * 2.0 * Math.PI;
-						walk = origin.getRelative(
-								(int) Math.round(u * zsq * Math.cos(theta)),
-								(int) Math.round(u * zsq * Math.sin(theta)),
-								(int) Math.round(u * z));
+
+		return true;
+	}
+
+	private void doActualDrops(final List<ItemStack> items, final Location sourceLocation, final Player player,
+			String dropName, String blockName, BlockConfig blockConfig, byte blockSubType, StringBuffer alertBuffer) {
+		final HiddenOreEvent hoe = new HiddenOreEvent(player, sourceLocation, items);
+		Bukkit.getPluginManager().callEvent(hoe);
+		if (!hoe.isCancelled()) {
+			// Schedule drop.
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					for (ItemStack item: hoe.getDrops()) {
+						sourceLocation.getWorld().dropItem(sourceLocation.add(0.5, 0.5, 0.5), item).setVelocity(new Vector(0, 0.05, 0));
 					}
-					if (blockConfig.checkBlock(walk)) {
-						HiddenOreGenerateEvent hoge = new HiddenOreGenerateEvent(player, walk, sample);
-						Bukkit.getPluginManager().callEvent(hoge);
-						if (!hoge.isCancelled()) {
-							walk.setType(hoge.getTransform());
-							expressed = hoge.getTransform();
-							cPlace --;
-							tryFacing = true;
+				}
+			}.runTaskLater(plugin, 1l);
+
+			// Correct stats output.
+			for (ItemStack item: hoe.getDrops()) {
+				log("STAT: Player {0} at {1} broke {2}:{3} - dropping {4} {5}:{6}", 
+						player.getDisplayName(), player.getLocation(), blockName, blockSubType, 
+						item.getAmount(), item.getType().name(), item.getDurability());
+			}
+			
+			if (Config.isAlertUser()) {
+				if (blockConfig.hasCustomPrefix(dropName)) {
+					StringBuffer customAlerts = new StringBuffer(blockConfig.getPrefix(dropName));
+
+					for (ItemStack item : hoe.getDrops()) {
+						customAlerts.append(" ").append(item.getAmount()).append(" ")
+							.append(Config.getPrettyName(item.getType().name(), item.getDurability()));
+					}
+					player.sendMessage(ChatColor.GOLD + customAlerts.toString());
+				} else {
+					if (Config.isListDrops()) {
+						for (ItemStack item : hoe.getDrops()) {
+							alertBuffer.append(" ").append(item.getAmount()).append(" ").append(
+									Config.getPrettyName(item.getType().name(), item.getDurability())
+								).append(",");
 						}
 					}
-					maxWalk --;
 				}
+			}
+		} else {
+			log("For {0} at {1}, HiddenOre {2} cancelled.", player.getDisplayName(), player.getLocation(), dropName);
+		}
+		
+	}
 
+	private void doActualGenerate(final List<ItemStack> items, final Location sourceLocation, final Player player,
+			String dropName, String blockName, BlockConfig blockConfig, byte blockSubType, StringBuffer alertBuffer,
+			DropConfig dropConfig) {
+		int maxWalk = 0;
+		int cPlace = 0;
+		double cAttempt = 0;
+		boolean tryFacing = false; // pick a facing block of attacked block
+		Block origin = sourceLocation.getBlock();
+		for (ItemStack xform : items) {
+			Material sample = xform.getType();
+			Material expressed = sample;
+			maxWalk += xform.getAmount() * Config.getTransformAttemptMultiplier();
+			cPlace = xform.getAmount();
+			while (cPlace > 0 && maxWalk > 0) {
+				Block walk = null;
+				if (!tryFacing) {
+					// Try to ensure something of the generation is visible.
+					walk = this.getVisibleFacing(origin);
+				} else {
+					// Use a kind of radial bloom to try to place the discovered blocks.
+					double z = Math.random() * 2.0 - 1.0;
+					double zsq = Math.sqrt(1-Math.pow(z, 2));
+					double u = 0.5 + Math.floor(Math.cbrt(cAttempt++));
+					double theta = Math.random() * 2.0 * Math.PI;
+					walk = origin.getRelative(
+							(int) Math.round(u * zsq * Math.cos(theta)),
+							(int) Math.round(u * zsq * Math.sin(theta)),
+							(int) Math.round(u * z));
+				}
+				if (blockConfig.checkGenerateBlock(walk)) {
+					HiddenOreGenerateEvent hoge = new HiddenOreGenerateEvent(player, walk, sample);
+					Bukkit.getPluginManager().callEvent(hoge);
+					if (!hoge.isCancelled()) {
+						walk.setType(hoge.getTransform());
+						expressed = hoge.getTransform();
+						cPlace --;
+						tryFacing = true;
+					}
+				}
+				maxWalk --;
+			}
+
+			if (xform.getAmount() - cPlace < 1 && dropConfig.dropIfTransformFails) { // total failure.
+				ItemStack toDrop = xform.clone();
+				toDrop.setAmount(Math.min(xform.getAmount(), dropConfig.maxDropsIfTransformFails));
+				log("{0}", toDrop.toString());
+				final List<ItemStack> newDrops = new ArrayList<ItemStack>();
+				newDrops.add(toDrop);
+				doActualDrops(newDrops, sourceLocation, player, dropName, blockName, blockConfig, blockSubType, alertBuffer);
+			} else {
 				log("STAT: Player {0} at {1} broke {2}:{3} - replacing with {4} {5}:{6} as {7}", 
 						player.getDisplayName(), player.getLocation(), blockName, blockSubType, 
 						xform.getAmount()- cPlace, xform.getType().name(), xform.getDurability(),
 						expressed);
-
 				
 				// Anything to tell anyone about?
 				if (cPlace < xform.getAmount() && Config.isAlertUser()) {
@@ -315,8 +338,6 @@ public class BlockBreakListener implements Listener {
 				}
 			}
 		}
-		
-		return true;
 	}
 	
 	private static BlockFace[] visibleFaces = new BlockFace[] {

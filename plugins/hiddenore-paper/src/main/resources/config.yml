@@ -3,6 +3,9 @@ alert_user: true
 list_drops: true
 debug: false
 ignore_silktouch: true
+# For each potential transformation in a generate event, how many attempts at most will be made?
+# Keep this value small, or performance _will_ suffer.
+transform_attempt_multiplier: 3
 tools:
  # Giving a tool ignore:all:true will make it the default catchall, if specified in a config.
  # So if you have a "default" behavior you want for any non-specified tool, use that.
@@ -120,6 +123,18 @@ blocks:
   material: STONE
   # Indicate if all subtypes of material are included under this block config. If false, you must define a "types" list
   allTypes: true
+  # If any of the drops for this block have Transform mode enabled, you can specify a list of blocks that,
+  # in addition to the block defined above, can be transformed.
+  validTransforms:
+    # Use the same style of definition as above. Throwaway label, then 'material' and either 'allTypes' true, or define a "types" list.
+    cobblestone:
+      material: COBBLESTONE
+      allTypes: true
+    dirt:
+      material: DIRT
+      allTypes: false
+      types:
+       - 0
   # Drop mode. Multiple drops means that every possible drop is evaluated separately and all RNG-winners are grouped together in one big drop.
   #   false is more of a "classic" mode, where every possible drop's chance is accumulated, then a single Random number is generated and
   #   evaluated, resulting in either one or no drop.
@@ -154,8 +169,15 @@ blocks:
     minAmount: 2
     maxAmount: 8
     # Instead of dropping the package, attempts to transform nearby blocks of the same type as triggered this
-    # drop into the package. If portions of the drop can't be transformed, they are still just dropped. 
+    # drop into the package. If portions of the drop can't be transformed, they are still just dropped.
+    # Default is false. 
     transformIfAble: true
+    # If for some reason transformation can't find a place to do its magic, should we use normal drop behavior?
+    # Default is false.
+    transformDropIfFails: false
+    # If we do use normal drop behavior, what's the maximum drop size (after being constrained by maxAmount above)
+    # Default is 1.
+    transformMaxDropsIfFails: 1
    iron_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack

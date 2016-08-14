@@ -15,12 +15,18 @@ public class DropConfig {
 	public String prefix;
 	public DropLimitsConfig limits;
 	public boolean transformIfAble;
+	public boolean dropIfTransformFails;
+	public int maxDropsIfTransformFails;
 	private Map<String, DropLimitsConfig> biomeLimits;
 
-	public DropConfig(String dropName, List<DropItemConfig> drops, boolean transformIfAble, String prefix, DropLimitsConfig limits) {
+	public DropConfig(String dropName, List<DropItemConfig> drops, boolean transformIfAble, 
+			boolean dropIfTransformFails, int maxDropsIfTransformFails, String prefix, 
+			DropLimitsConfig limits) {
 		this.dropName = dropName;
 		this.drops = drops;
 		this.transformIfAble = transformIfAble;
+		this.dropIfTransformFails = dropIfTransformFails;
+		this.maxDropsIfTransformFails = maxDropsIfTransformFails;
 		this.limits = limits;
 		this.biomeLimits = new HashMap<String, DropLimitsConfig>();
 	}
@@ -140,5 +146,13 @@ public class DropConfig {
 	
 	public boolean shouldTransformIfAble() {
 		return this.transformIfAble;
+	}
+	
+	public boolean shouldDropIfTransformFails() {
+		return this.dropIfTransformFails;
+	}
+	
+	public int maxDropsIfTransformFails() {
+		return this.maxDropsIfTransformFails;
 	}
 }

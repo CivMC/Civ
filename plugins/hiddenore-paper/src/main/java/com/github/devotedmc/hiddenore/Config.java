@@ -1,6 +1,7 @@
 package com.github.devotedmc.hiddenore;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +29,8 @@ public final class Config {
 	private static String trackFileName;
 	private static File trackFile;
 	public static long trackSave;
+	
+	public int transformAttemptMultiplier = 3;
 
 	private Config() {
 		blockConfigs = new HashMap<String, List<BlockConfig>>();
@@ -39,6 +42,7 @@ public final class Config {
 		isDebug = false;
 		ignoreSilktouch = false;
 		defaultPrefix = "You found hidden ore!";
+		transformAttemptMultiplier = 3;
 	}
 
 	public static void loadConfig() {
@@ -64,6 +68,7 @@ public final class Config {
 		i.alertUser = file.getBoolean("alert_user", i.alertUser);
 		i.listDrops = file.getBoolean("list_drops", i.listDrops);
 		i.defaultPrefix = file.getString("prefix", i.defaultPrefix);
+		i.transformAttemptMultiplier = file.getInt("transform_attempt_multiplier", i.transformAttemptMultiplier);
 
 		ConfigurationSection prettyNames = file.getConfigurationSection("pretty_names");
 		if (prettyNames != null) {
@@ -126,7 +131,21 @@ public final class Config {
 				Boolean cMultiple = block.getBoolean("dropMultiple", false);
 				Boolean cSuppress = block.getBoolean("suppressDrops", false);
 				List<Byte> subtypes = (block.getBoolean("allTypes", true)) ? null : block.getByteList("types");
-				BlockConfig bc = new BlockConfig(cBlockName, subtypes, cMultiple, cSuppress, cPrefix);
+				
+				// add what blocks should be transformed, if transformation is used.
+				ConfigurationSection validTransforms = block.getConfigurationSection("validTransforms");
+				List<BlockConfig.MaterialWrapper> transformThese = new ArrayList<BlockConfig.MaterialWrapper>();
+				if (validTransforms != null) {
+					for (String transformL : validTransforms.getKeys(false)) {
+						ConfigurationSection transform = validTransforms.getConfigurationSection(transformL);
+						String tBlockName = transform.getString("material");
+						List<Byte> tSubtypes = (transform.getBoolean("allTypes", true)) ? null : transform.getByteList("types");
+						transformThese.add(new BlockConfig.MaterialWrapper(tBlockName, tSubtypes));
+					}
+				} else {
+					validTransforms = null;
+				}
+				BlockConfig bc = new BlockConfig(cBlockName, subtypes, cMultiple, cSuppress, cPrefix, transformThese);
 
 				// now add drops.
 				ConfigurationSection drops = block.getConfigurationSection("drops");
@@ -137,9 +156,12 @@ public final class Config {
 					@SuppressWarnings("unchecked")
 					List<ItemStack> items = (List<ItemStack>) drop.getList("package");
 					boolean transformIfAble = drop.getBoolean("transformIfAble", false);
+					boolean transformDropIfFails = drop.getBoolean("transformDropIfFails", false);
+					int transformMaxDropsIfFails = drop.getInt("transformMaxDropsIfFails", 1);
 
 					DropConfig dc = new DropConfig(sourceDrop, DropItemConfig.transform(items), 
-							transformIfAble, dPrefix, grabLimits(drop, new DropLimitsConfig()));
+							transformIfAble, transformDropIfFails, transformMaxDropsIfFails,
+							dPrefix, grabLimits(drop, new DropLimitsConfig()));
 
 					ConfigurationSection biomes = drop.getConfigurationSection("biomes");
 					if (biomes != null) {
@@ -227,5 +249,9 @@ public final class Config {
 
 	public static File getTrackFile() {
 		return trackFile;
+	}
+	
+	public static int getTransformAttemptMultiplier() {
+		return instance.transformAttemptMultiplier;
 	}
 }

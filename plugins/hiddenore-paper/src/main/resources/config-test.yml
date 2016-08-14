@@ -1,0 +1,220 @@
+prefix: You found a hidden ore!
+alert_user: true
+list_drops: true
+debug: true
+ignore_silktouch: true
+# For each potential transformation in a generate event, how many attempts at most will be made?
+# Keep this value small, or performance _will_ suffer.
+transform_attempt_multiplier: 4
+tools:
+ anything:
+  ignore:
+   all: true
+  modifiers:
+   dropChance: 1.0
+   minAmount: 0.0
+   maxAmount: 0.0
+ wood_pickaxe:
+  template:
+   ==: org.bukkit.inventory.ItemStack
+   type: WOOD_PICKAXE
+   amount: 1
+  ignore:
+   amount: true
+   durability: true
+   enchants: true
+   otherEnchants: true
+   enchantsLvl: true
+   lore: true
+   name: true
+  modifiers:
+   dropChance: 1.0
+   minAmount: 0.0
+   maxAmount: 2.0
+ gold_pickaxe:
+  template:
+   ==: org.bukkit.inventory.ItemStack
+   type: GOLD_PICKAXE
+   amount: 1
+  ignore:
+   amount: true
+   durability: true
+   enchants: true
+   otherEnchants: true
+   enchantsLvl: true
+   lore: true
+   name: true
+  modifiers:
+   dropChance: 1.1
+   minAmount: 1.0
+   maxAmount: 3.0
+ iron_pickaxe:
+  template:
+   ==: org.bukkit.inventory.ItemStack
+   type: IRON_PICKAXE
+   amount: 1
+  ignore:
+   amount: true
+   durability: true
+   enchants: true
+   otherEnchants: true
+   enchantsLvl: true
+   lore: true
+   name: true
+  modifiers:
+   dropChance: 1.1
+   minAmount: 2.0
+   maxAmount: 4.0
+ stone_pickaxe:
+  template:
+   ==: org.bukkit.inventory.ItemStack
+   type: STONE_PICKAXE
+   amount: 1
+  ignore:
+   amount: true
+   durability: true
+   enchants: true
+   otherEnchants: true
+   enchantsLvl: true
+   lore: true
+   name: true
+  modifiers:
+   dropChance: 1.05
+   minAmount: 0.0
+   maxAmount: 0.0
+ diamond_pickaxe:
+  template:
+   ==: org.bukkit.inventory.ItemStack
+   type: DIAMOND_PICKAXE
+   amount: 1
+  ignore:
+   amount: true
+   durability: true
+   enchants: true
+   otherEnchants: true
+   enchantsLvl: true
+   lore: true
+   name: true
+  modifiers:
+   dropChance: 1.2
+   minAmount: 5.0
+   maxAmount: 10.0
+blocks:
+ stone:
+  material: STONE
+  allTypes: true
+  validTransforms:
+    cobblestone:
+      material: COBBLESTONE
+      allTypes: true
+    dirt:
+      material: DIRT
+      allTypes: false
+      types:
+       - 0
+  dropMultiple: false
+  drops:
+   coal_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       type: COAL_ORE
+       amount: 1
+    tools:
+     - wood_pickaxe
+     - stone_pickaxe
+     - iron_pickaxe
+     - gold_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 131
+    chance: 0.1
+    minAmount: 2
+    maxAmount: 8
+    transformIfAble: true
+    transformDropIfFails: true
+    transformMaxDropsIfFails: 4
+   iron_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       type: IRON_ORE
+       amount: 1
+    tools:
+     - stone_pickaxe
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 67
+    chance: 0.2
+    minAmount: 1
+    maxAmount: 4
+    transformIfAble: true
+    transformDropIfFails: false
+    transformMaxDropsIfFails: 4
+   gold_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       type: GOLD_ORE
+       amount: 1
+    tools:
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 33
+    chance: 0.3
+    minAmount: 1
+    maxAmount: 4
+    transformIfAble: false
+    transformDropIfFails: false
+    transformMaxDropsIfFails: 4
+   diamond_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       type: DIAMOND_ORE
+       amount: 1
+    tools:
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 15
+    chance: 0.2
+    minAmount: 1
+    maxAmount: 3
+   redstone_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       type: REDSTONE_ORE
+       amount: 1
+    tools:
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 15
+    chance: 0.1
+    minAmount: 1
+    maxAmount: 4
+    transformIfAble: true
+    transformDropIfFails: true
+    transformMaxDropsIfFails: 1
+   lapis_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       type: LAPIS_ORE
+       amount: 1
+    tools:
+     - stone_pickaxe
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 33
+    chance: 0.1
+    minAmount: 1
+    maxAmount: 3
+pretty_names:
+ DIAMOND_ORE: Diamond Ore
+ IRON_ORE: Iron Ore
+ GOLD_ORE: Gold Ore
+ QUARTZ_ORE: Quartz Ore
+ EMERALD_ORE: Emerald Ore
+ REDSTONE_ORE: Redstone Ore
+ LAPIS_ORE: Lapis Lazuli Ore
+ COAL_ORE: Coal Ore
