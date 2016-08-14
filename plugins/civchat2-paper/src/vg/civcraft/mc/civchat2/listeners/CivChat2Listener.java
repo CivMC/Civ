@@ -13,6 +13,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
@@ -62,61 +63,63 @@ public class CivChat2Listener implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void PlayerChatEvent(AsyncPlayerChatEvent asyncPlayerChatEvent){
-		CivChat2.debugmessage("PlayerChatEvent occured");
+	public void PlayerChatEvent(final AsyncPlayerChatEvent asyncPlayerChatEvent){
 		asyncPlayerChatEvent.setCancelled(true);
-		
-		String chatMessage = asyncPlayerChatEvent.getMessage();
-		Player sender = asyncPlayerChatEvent.getPlayer();
-		String chatChannel = chatman.getChannel(sender.getName());
-		String groupChat = chatman.getGroupChatting(sender.getName());
-		
-		CivChat2.debugmessage(String.format("ChatEvent properties: chatMessage =[ %s ], sender = [ %s ], chatChannel = [ %s ], groupchatting = [ %s ];", chatMessage, sender.getName(), chatChannel, groupChat));
-		if(chatChannel != null){
-			
-			
-			
-			StringBuilder sb = new StringBuilder();
-			UUID receiverUUID = NameAPI.getUUID(chatChannel);
-			Player receiver = Bukkit.getPlayer(receiverUUID);
-			CivChat2.debugmessage("player chat event receive = [" + receiver + "]");
-			if(receiver != null){	
-				chatman.sendPrivateMsg(sender, receiver, chatMessage);
-				return;
-			} else {
-				if (CivChat2.getInstance().isMercuryEnabled()){
-					String receiverName = NameAPI.getCurrentName(receiverUUID);
-					for(String name : MercuryAPI.getAllPlayers()) {
-						if (name.equalsIgnoreCase(receiverName)){
-							//This separator needs to be changed to load from config.
-							chatman.sendPrivateMsgAcrossShards(sender, receiverName, chatMessage);
-							return;
-						}	
+		//this needs to be done sync to avoid rare deadlock due to minecraft internals
+		new BukkitRunnable() {
+		    
+		    @Override
+		    public void run() {
+				String chatMessage = asyncPlayerChatEvent.getMessage();
+				Player sender = asyncPlayerChatEvent.getPlayer();
+				String chatChannel = chatman.getChannel(sender.getName());
+				String groupChat = chatman.getGroupChatting(sender.getName());
+				
+				CivChat2.debugmessage(String.format("ChatEvent properties: chatMessage =[ %s ], sender = [ %s ], chatChannel = [ %s ], groupchatting = [ %s ];", chatMessage, sender.getName(), chatChannel, groupChat));
+				if(chatChannel != null){
+					StringBuilder sb = new StringBuilder();
+					UUID receiverUUID = NameAPI.getUUID(chatChannel);
+					Player receiver = Bukkit.getPlayer(receiverUUID);
+					CivChat2.debugmessage("player chat event receive = [" + receiver + "]");
+					if(receiver != null){	
+						chatman.sendPrivateMsg(sender, receiver, chatMessage);
+						return;
+					} else {
+						if (CivChat2.getInstance().isMercuryEnabled()){
+							String receiverName = NameAPI.getCurrentName(receiverUUID);
+							for(String name : MercuryAPI.getAllPlayers()) {
+								if (name.equalsIgnoreCase(receiverName)){
+									//This separator needs to be changed to load from config.
+									chatman.sendPrivateMsgAcrossShards(sender, receiverName, chatMessage);
+									return;
+								}	
+							}
+						}
+						chatman.removeChannel(sender.getName());
+						String offlineMessage = sb.append(ChatColor.GOLD )
+													.append( "The player you were chatting with has gone offline,")
+													.append(" you have been moved to regular chat").toString();
+						sb.delete(0, sb.length());
+						sender.sendMessage(offlineMessage);
+						return;
 					}
 				}
-				chatman.removeChannel(sender.getName());
-				String offlineMessage = sb.append(ChatColor.GOLD )
-											.append( "The player you were chatting with has gone offline,")
-											.append(" you have been moved to regular chat").toString();
-				sb.delete(0, sb.length());
-				sender.sendMessage(offlineMessage);
-				return;
-			}
-		}
-		if(groupChat != null){
-			//player is group chatting
-			if (NameAPI.getGroupManager().hasAccess(groupChat, sender.getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
-				chatman.sendGroupMsg(sender.getName(), chatMessage, GroupManager.getGroup(groupChat));
-				return;
-			} //player lost perm to write in the chat
-			else {
-				chatman.removeGroupChat(sender.getName());
-				sender.sendMessage(ChatColor.RED + "You have been removed from groupchat because you were removed from the group or lost the permission required to groupchat");
-			}
-		}
-		
-		CivChat2.debugmessage("PlayerChatEvent calling chatman.broadcastMessage()");
-		chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getRecipients());
+				if(groupChat != null){
+					//player is group chatting
+					if (NameAPI.getGroupManager().hasAccess(groupChat, sender.getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
+						chatman.sendGroupMsg(sender.getName(), chatMessage, GroupManager.getGroup(groupChat));
+						return;
+					} //player lost perm to write in the chat
+					else {
+						chatman.removeGroupChat(sender.getName());
+						sender.sendMessage(ChatColor.RED + "You have been removed from groupchat because you were removed from the group or lost the permission required to groupchat");
+					}
+				}
+				
+				CivChat2.debugmessage("PlayerChatEvent calling chatman.broadcastMessage()");
+				chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getRecipients());
+		    }
+		}.runTask(CivChat2.getInstance());
 	}
 	
 	
