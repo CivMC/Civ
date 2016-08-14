@@ -10,6 +10,8 @@ commands:
     permission: donum.op
   deliverml:
     permission: donum.op
+  deliverdeath:
+    permission: donum.op
 permissions:
   donum.op:
     default: op

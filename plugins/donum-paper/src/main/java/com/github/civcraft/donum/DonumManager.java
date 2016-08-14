@@ -1,5 +1,6 @@
 package com.github.civcraft.donum;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -14,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.civcraft.donum.database.DonumDAO;
+import com.github.civcraft.donum.inventories.DeathInventory;
 import com.github.civcraft.donum.inventories.DeliveryInventory;
 import com.github.civcraft.donum.misc.ItemMapBlobHandling;
 
@@ -35,6 +37,15 @@ public class DonumManager {
 		return deliveryInventories.get(player);
 	}
 
+	/**
+	 * Spawns an async task to load the given players delivery inventory and
+	 * check for possible inconsistencies since his last logout. This method
+	 * should never be used by anything other than the login listener in this
+	 * plugin
+	 * 
+	 * @param uuid UUID of the player to load
+	 * @param i Player inventory on login to compare with the saved logout inventory
+	 */
 	public void loadPlayerData(UUID uuid, Inventory i) {
 		Donum.getInstance().debug("Loading data for " + uuid.toString());
 		ItemMap currentInv = ItemMapBlobHandling.constructItemMapFromInventory(i);
@@ -61,8 +72,8 @@ public class DonumManager {
 				if (delivery.getTotalItemAmount() != 0) {
 					Player p = Bukkit.getPlayer(uuid);
 					if (p != null) {
-						p.sendMessage(ChatColor.GOLD
-								+ "You have " + delivery.getTotalItemAmount() + "items available to claim! Run /present to open your delivery inventory");
+						p.sendMessage(ChatColor.GOLD + "You have " + delivery.getTotalItemAmount()
+								+ " items available to claim! Run /present to open your delivery inventory");
 					}
 				}
 				Donum.getInstance().debug("Loaded " + delivery.toString() + " for " + uuid.toString());
@@ -151,5 +162,22 @@ public class DonumManager {
 			}
 		}
 		database.insertInconsistency(player, diff);
+	}
+	
+	public void returnDeathInventory(DeathInventory inv) {
+		inv.setReturned(true);
+		DonumAPI.deliverItem(inv.getOwner(), inv.getInventory());
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				database.updateDeathInventoryReturnStatus(inv.getID(), true);
+
+			}
+		}.runTaskAsynchronously(Donum.getInstance());
+	}
+
+	public List<DeathInventory> getDeathInventories(UUID player, int limit) {
+		return database.getLastDeathInventories(player, limit);
 	}
 }

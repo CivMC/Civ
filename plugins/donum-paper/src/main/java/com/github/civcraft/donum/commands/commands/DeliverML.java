@@ -39,6 +39,7 @@ public class DeliverML extends PlayerCommand {
 				amount = Integer.valueOf(args[i]);
 			} catch (NumberFormatException e) {
 				sender.sendMessage(ChatColor.RED + args [i] + " is not a valid number");
+				i++;
 				continue;
 			}
 			i++;
@@ -64,6 +65,7 @@ public class DeliverML extends PlayerCommand {
 			}
 			ItemStack is = new ItemStack(mat,amount);
 			items.addItemStack(is);
+			sender.sendMessage(ChatColor.GREEN + "Added " + is.getAmount() + " " + is.getType().toString());
 		}
 		sender.sendMessage(ChatColor.GREEN + "Added a total of " + items.getTotalItemAmount() + " items to the delivery inventory of " + NameAPI.getCurrentName(delUUID));
 		DonumAPI.deliverItem(delUUID, items);

@@ -50,11 +50,11 @@ public class DonumDAO {
 					+ "primary key(uuid));");
 			db.execute("create table if not exists logoutInventories (uuid varchar(36), inventory blob not null, hash int, "
 					+ "creationTime datetime not null default now(), index logOutInventoryCreationTimeIndex (creationTime), primary key(uuid, creationTime));");
-			db.execute("create table if not exists loggedInconsistencies (id int not null auto_increment, uuid varchar(36), inventory blob not null, state varchar(20) not null default 'NEW', "
+			db.execute("create table if not exists loggedInconsistencies (id int not null auto_increment, uuid varchar(36) not null, inventory blob not null, state varchar(20) not null default 'NEW', "
 					+ "creationTime datetime not null default now(), lastUpdate datetime not null default now(), index loggedInconsistenciesUuidIndex (uuid),"
 					+ "index loggedInconsistenciesState (state), primary key(id));");
-			db.execute("create table if not exists deathInventories (uuid varchar(36), inventory blob not null, returned boolean not null default false, "
-					+ "creationTime datetime not null default now(), index deathInventoriesUuidIndex (uuid));");
+			db.execute("create table if not exists deathInventories (id int not null auto_increment, uuid varchar(36), inventory blob not null, returned boolean not null default false, "
+					+ "creationTime datetime not null default now(), primary key(id), index deathInventoriesUuidIndex (uuid));");
 		}
 	}
 
@@ -335,24 +335,37 @@ public class DonumDAO {
 		ensureConnection();
 		List<DeathInventory> inventories = new LinkedList<DeathInventory>();
 		try (PreparedStatement ps = db
-				.prepareStatement("select inventory, creationTime, returned from deathInventories where uuid=? order by creationTime desc limit ?);")) {
+				.prepareStatement("select id, inventory, creationTime, returned from deathInventories where uuid=? order by creationTime desc limit ?;")) {
 			ps.setString(1, uuid.toString());
 			ps.setInt(2, limit);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				Blob blob = rs.getBlob(1);
-				Date date = rs.getDate(2);
-				boolean returned = rs.getBoolean(3);
+				int id = rs.getInt(1);
+				Blob blob = rs.getBlob(2);
+				Date date = rs.getDate(3);
+				boolean returned = rs.getBoolean(4);
 				int blobLength = (int) blob.length();
 				byte[] blobAsBytes = blob.getBytes(1, blobLength);
 				blob.free();
 				ItemMap im = ItemMapBlobHandling.turnBlobIntoItemMap(blobAsBytes);
-				inventories.add(new DeathInventory(uuid, im, returned, date));
+				inventories.add(new DeathInventory(id, uuid, im, returned, date));
 			}
 		} catch (SQLException e) {
-			Donum.getInstance().warning("Failed to load death inventores for player " + uuid + " ; " + e);
+			Donum.getInstance().warning("Failed to load death inventories for player " + uuid + " ; " + e);
 		}
 		return inventories;
+	}
+	
+	public void updateDeathInventoryReturnStatus(int id, boolean returnStatus) {
+		ensureConnection();
+		try (PreparedStatement ps = db
+				.prepareStatement("update deathInventories set returned=? where id=?;")) {
+			ps.setBoolean(1, returnStatus);
+			ps.setInt(2, id);
+			ps.execute();
+		} catch (SQLException e) {
+			Donum.getInstance().warning("Failed to update death inventory with id " + id + " ; " + e);
+		}
 	}
 
 	private void ensureConnection() {
