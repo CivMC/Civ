@@ -309,7 +309,6 @@ public class BlockBreakListener implements Listener {
 			if (xform.getAmount() - cPlace < 1 && dropConfig.dropIfTransformFails) { // total failure.
 				ItemStack toDrop = xform.clone();
 				toDrop.setAmount(Math.min(xform.getAmount(), dropConfig.maxDropsIfTransformFails));
-				log("{0}", toDrop.toString());
 				final List<ItemStack> newDrops = new ArrayList<ItemStack>();
 				newDrops.add(toDrop);
 				doActualDrops(newDrops, sourceLocation, player, dropName, blockName, blockConfig, blockSubType, alertBuffer);
