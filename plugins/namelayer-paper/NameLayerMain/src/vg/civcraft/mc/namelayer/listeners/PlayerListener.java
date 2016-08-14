@@ -36,17 +36,11 @@ public class PlayerListener implements Listener{
 		if (!p.hasPlayedBefore()) {
 			handleFirstJoin(p);
 		}
-		GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
-		
-		for (String groupName : db.getGroupNames(uuid)){
-			Group group = GroupManager.getGroup(groupName);
-			GroupPermission perm = new GroupPermission(group);
-			PlayerType ptype = group.getPlayerType(uuid);
-		}
 		
 		if (!notifications.containsKey(uuid) || notifications.get(uuid).isEmpty())
 			return;
 		
+		GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
 		String x = null;
 				
 		boolean shouldAutoAccept = db.shouldAutoAcceptGroups(uuid);
