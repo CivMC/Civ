@@ -13,22 +13,24 @@ import org.bukkit.inventory.ItemStack;
 public class BlockConfig {
 	private String material;
 	public Set<Byte> subtypes;
+	public Collection<MaterialWrapper> validGenTypes;
 	public boolean dropMultiple;
 	public boolean suppressDrops;
 	private Map<String, DropConfig> dropConfigs;
 	private String prefix;
 
-	public BlockConfig(String material, boolean dropMultiple, boolean suppressDrops, String prefix) {
-		this(material, null, dropMultiple, suppressDrops, prefix);
+	public BlockConfig(String material, boolean dropMultiple, boolean suppressDrops, String prefix, Collection<MaterialWrapper> validGenTypes) {
+		this(material, null, dropMultiple, suppressDrops, prefix, validGenTypes);
 	}
 
-	public BlockConfig(String material, Collection<Byte> subtype, boolean dropMultiple, boolean suppressDrops, String prefix) {
+	public BlockConfig(String material, Collection<Byte> subtype, boolean dropMultiple, boolean suppressDrops, String prefix, Collection<MaterialWrapper> validGenTypes) {
 		this.material = material;
 		this.subtypes = (subtype != null) ? new HashSet<Byte>(subtype) : new HashSet<Byte>();
 		this.dropMultiple = dropMultiple;
 		this.suppressDrops = suppressDrops;
 		this.dropConfigs = new HashMap<String, DropConfig>();
 		this.prefix = prefix;
+		this.validGenTypes = validGenTypes;
 	}
 
 	public boolean checkSubType(Byte subtype) {
@@ -42,6 +44,24 @@ public class BlockConfig {
 	@SuppressWarnings("deprecation")
 	public boolean checkBlock(Block check) {
 		return material.equals(check.getType().name()) && checkSubType(check.getData());
+	}
+	
+	/**
+	 * Allows check against an expanded list of valid blocks that ores can generate in -- companion blocks, effectively.
+	 * For instance, if you separately configure stone types but want generation in stone of all types;
+	 * 
+	 * @param check
+	 * @return
+	 */
+	public boolean checkGenerateBlock(Block check) {
+		if (checkBlock(check)) return true;
+		
+		if (validGenTypes == null) return false;
+		for (MaterialWrapper wrapper : validGenTypes) {
+			if (wrapper.checkBlock(check)) return true;
+		}
+		
+		return false;
 	}
 
 	public String getPrefix(String drop) {
@@ -102,5 +122,28 @@ public class BlockConfig {
 		}
 
 		return null;
+	}
+	
+	static class MaterialWrapper {
+		String material;
+		Set<Byte> subtypes;
+		
+		public MaterialWrapper(String material, Collection<Byte> subtypes) {
+			this.material = material;
+			this.subtypes = (subtypes != null) ? new HashSet<Byte>(subtypes) : new HashSet<Byte>();	
+		}
+
+		public boolean checkSubType(Byte subtype) {
+			return this.subtypes.isEmpty() || this.subtypes.contains(subtype);
+		}
+		
+		public String getMaterial() {
+			return this.material;
+		}
+		
+		@SuppressWarnings("deprecation")
+		public boolean checkBlock(Block check) {
+			return material.equals(check.getType().name()) && checkSubType(check.getData());
+		}
 	}
 }

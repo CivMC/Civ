@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -208,8 +209,8 @@ public class BlockBreakListener implements Listener {
 		if (dropConfig.transformIfAble) {
 			final List<ItemStack> transform = dropConfig.renderTransform(biomeName, dropTool);
 			if (transform.size() > 0) {
-				doActualGenerate(transform, sourceLocation, player, dropName, blockName, blockConfig, blockSubType, alertBuffer,
-					dropConfig.dropIfTransformFails);
+				doActualGenerate(transform, sourceLocation, player, dropName, blockName, blockConfig, 
+						blockSubType, alertBuffer, dropConfig);
 			}
 		}
 
@@ -246,7 +247,7 @@ public class BlockBreakListener implements Listener {
 						customAlerts.append(" ").append(item.getAmount()).append(" ")
 							.append(Config.getPrettyName(item.getType().name(), item.getDurability()));
 					}
-					event.getPlayer().sendMessage(ChatColor.GOLD + customAlerts.toString());
+					player.sendMessage(ChatColor.GOLD + customAlerts.toString());
 				} else {
 					if (Config.isListDrops()) {
 						for (ItemStack item : hoe.getDrops()) {
@@ -264,16 +265,17 @@ public class BlockBreakListener implements Listener {
 	}
 
 	private void doActualGenerate(final List<ItemStack> items, final Location sourceLocation, final Player player,
-			String dropName, String blockName, BlockConfig blockConfig, byte blockSubType, StringBuffer alertBuffer) {
+			String dropName, String blockName, BlockConfig blockConfig, byte blockSubType, StringBuffer alertBuffer,
+			DropConfig dropConfig) {
 		int maxWalk = 0;
 		int cPlace = 0;
 		double cAttempt = 0;
 		boolean tryFacing = false; // pick a facing block of attacked block
 		Block origin = sourceLocation.getBlock();
-		for (ItemStack xform : transform) {
+		for (ItemStack xform : items) {
 			Material sample = xform.getType();
 			Material expressed = sample;
-			maxWalk += xform.getAmount() * 2;
+			maxWalk += xform.getAmount() * Config.getTransformAttemptMultiplier();
 			cPlace = xform.getAmount();
 			while (cPlace > 0 && maxWalk > 0) {
 				Block walk = null;
@@ -291,7 +293,7 @@ public class BlockBreakListener implements Listener {
 							(int) Math.round(u * zsq * Math.sin(theta)),
 							(int) Math.round(u * z));
 				}
-				if (blockConfig.checkBlock(walk)) {
+				if (blockConfig.checkGenerateBlock(walk)) {
 					HiddenOreGenerateEvent hoge = new HiddenOreGenerateEvent(player, walk, sample);
 					Bukkit.getPluginManager().callEvent(hoge);
 					if (!hoge.isCancelled()) {
@@ -304,14 +306,18 @@ public class BlockBreakListener implements Listener {
 				maxWalk --;
 			}
 
-			if (xform.getAmount() - cPlace < 1) { // total failure.
-
+			if (xform.getAmount() - cPlace < 1 && dropConfig.dropIfTransformFails) { // total failure.
+				ItemStack toDrop = xform.clone();
+				toDrop.setAmount(Math.min(xform.getAmount(), dropConfig.maxDropsIfTransformFails));
+				log("{0}", toDrop.toString());
+				final List<ItemStack> newDrops = new ArrayList<ItemStack>();
+				newDrops.add(toDrop);
+				doActualDrops(newDrops, sourceLocation, player, dropName, blockName, blockConfig, blockSubType, alertBuffer);
 			} else {
 				log("STAT: Player {0} at {1} broke {2}:{3} - replacing with {4} {5}:{6} as {7}", 
 						player.getDisplayName(), player.getLocation(), blockName, blockSubType, 
 						xform.getAmount()- cPlace, xform.getType().name(), xform.getDurability(),
 						expressed);
-
 				
 				// Anything to tell anyone about?
 				if (cPlace < xform.getAmount() && Config.isAlertUser()) {
