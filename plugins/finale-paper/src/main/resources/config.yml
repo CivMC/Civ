@@ -18,7 +18,7 @@ pearls:
   combatTag: true
   
 #allows adjusting the attack damage of any item by its spigot material identifier
-adjustedDamage:
+weaponModification:
   diamondAxe:
     material: DIAMOND_AXE
     damage: 6
