@@ -7,6 +7,7 @@ import com.github.maxopoly.finale.external.CombatTagPlusManager;
 import com.github.maxopoly.finale.external.ProtocolLibManager;
 import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
 import com.github.maxopoly.finale.listeners.PlayerListener;
+import com.github.maxopoly.finale.listeners.WeaponModificationListener;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 
@@ -61,6 +62,7 @@ public class Finale extends ACivMod {
 			Bukkit.getPluginManager().registerEvents(
 					new PearlCoolDownListener(config.getPearlCoolDown(), config.combatTagOnPearl(), ctpManager), this);
 		}
+		Bukkit.getPluginManager().registerEvents(new WeaponModificationListener(), this);
 	}
 
 	private void initExternalManagers() {
