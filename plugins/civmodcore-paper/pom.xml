@@ -1,47 +1,91 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>vg.civcraft.mc.civmodcore</groupId>
-	<artifactId>CivModCore</artifactId>
-	<packaging>jar</packaging>
-	<version>1.4.45</version>
-	<name>CivModCore</name>
-	<url>https://github.com/Civcraft/CivModCore/</url>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>vg.civcraft.mc.civmodcore</groupId>
+  <artifactId>CivModCore</artifactId>
+  <packaging>jar</packaging>
+  <version>1.4.45</version>
+  <name>CivModCore</name>
+  <url>https://github.com/Civcraft/CivModCore/</url>
 
-	<properties>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
-	</properties>
+  <properties>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+  </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot</artifactId>
-			<version>1.10.2-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
+  <dependencies>
+    <!-- Run Spigot BuildTools to add this to your local Maven repo -->
+    <dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot</artifactId>
+      <version>1.10.2-R0.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
 
-	<build>
-		<sourceDirectory>${basedir}/src</sourceDirectory>
+    <dependency>
+      <groupId>org.mcstats.bukkit</groupId>
+      <artifactId>metrics</artifactId>
+      <version>R8-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
 
-		<resources>
-			<resource>
-				<directory>${basedir}</directory>
-				<includes>
-					<include>*.yml</include>
-				</includes>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>${basedir}/resources/</directory>
-				<targetPath>./resources/</targetPath>
-				<includes>
-					<include>*.csv</include>
-				</includes>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-	</build>
+  <repositories>
+    <repository>
+      <id>Plugin Metrics</id>
+      <url>http://repo.mcstats.org/content/repositories/public</url>
+    </repository>
+  </repositories>
+
+  <build>
+    <sourceDirectory>${basedir}/src</sourceDirectory>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <configuration>
+          <createDependencyReducedPom>false</createDependencyReducedPom>
+          <artifactSet>
+            <includes>
+              <include>org.mcstats.bukkit:metrics</include>
+            </includes>
+          </artifactSet>
+          <relocations>
+            <relocation>
+              <pattern>org.mcstats</pattern>
+              <shadedPattern>${groupId}</shadedPattern>
+            </relocation>
+          </relocations>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <resources>
+      <resource>
+        <directory>${basedir}</directory>
+        <includes>
+          <include>*.yml</include>
+        </includes>
+        <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}/resources/</directory>
+        <targetPath>./resources/</targetPath>
+        <includes>
+          <include>*.csv</include>
+        </includes>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
 
 </project>

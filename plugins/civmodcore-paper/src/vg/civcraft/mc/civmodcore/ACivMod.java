@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -7,7 +8,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
-import vg.civcraft.mc.civmodcore.annotations.ConfigOption;
+
+import org.mcstats.Metrics;
+import vg.civcraft.mc.civmodcore.annotations.*;
 import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
@@ -122,6 +125,13 @@ public abstract class ACivMod extends JavaPlugin {
 		initApis(this);
 		//global_instance_ = this;
 		log().info("Main Plugin Events and Config Command registered");
+
+		try {
+			Metrics metrics = new Metrics(this);
+			metrics.start();
+		} catch (IOException e) {
+			// Failed to submit the stats :-(
+		}
 	}
 
 	private static synchronized void initApis(ACivMod instance) {
