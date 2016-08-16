@@ -16,8 +16,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
-      <artifactId>Spigot</artifactId>
-			<version>1.10</version>
+			<artifactId>spigot</artifactId>
+			<version>1.10.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

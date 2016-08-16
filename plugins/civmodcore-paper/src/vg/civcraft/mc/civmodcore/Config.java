@@ -1,7 +1,5 @@
 package vg.civcraft.mc.civmodcore;
 
-import static vg.civcraft.mc.civmodcore.CivModCorePlugin.log;
-
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.TreeMap;
@@ -47,7 +45,7 @@ public class Config {
 
   private void addToConfig(CivConfig bug) {
     if (dynamicOptions_.containsKey(bug.name())) {
-    	log().info("Duplicate configuration option detected: " + bug.name());
+    	//log().info("Duplicate configuration option detected: " + bug.name());
       return;
     }
     dynamicOptions_.put(bug.name(), new ConfigOption(this, bug));
@@ -77,7 +75,7 @@ public class Config {
     } catch(NoClassDefFoundError e){
     	// We want to ignore any errors found from this because it could be a soft dependency that is not loaded for a plugin.
     } catch(Exception ex) {
-    	log().info(ex.toString());
+    	//log().info(ex.toString());
     }
   }
 //  private void scanAnnotations() {

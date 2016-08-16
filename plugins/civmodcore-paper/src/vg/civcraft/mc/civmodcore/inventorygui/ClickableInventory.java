@@ -1,5 +1,7 @@
 package vg.civcraft.mc.civmodcore.inventorygui;
 
+import static vg.civcraft.mc.civmodcore.CivModCorePlugin.log;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -15,10 +17,10 @@ import org.bukkit.plugin.java.JavaPlugin;
  * clicked by a player, the clickables specific action is executed. To use
  * those, either extend your main plugin class from ACivMod or register
  * ClickableInventoryListener as a listener in your plugin. DONT DO BOTH.
- * 
+ *
  * Also if you want to update players inventories with the given method, use
  * setPlugin(JavaPlugin plugin) to specify which plugin this runs on
- * 
+ *
  * @author Maxopoly
  *
  */
@@ -30,7 +32,7 @@ public class ClickableInventory {
 
 	/**
 	 * Creates a new ClickableInventory
-	 * 
+	 *
 	 * @param type
 	 *            type of the inventory, dont use CREATIVE here, it wont work
 	 * @param name
@@ -39,7 +41,7 @@ public class ClickableInventory {
 	 */
 	public ClickableInventory(InventoryType type, String name) {
 		if (name != null && name.length() > 32) {
-			Bukkit.getLogger().warning("ClickableInventory title exceeds Bukkit limits: " + name);
+			log().warning("ClickableInventory title exceeds Bukkit limits: " + name);
 			name = name.substring(0, 32);
 		}
 		inventory = Bukkit.createInventory(null, type, name);
@@ -50,7 +52,7 @@ public class ClickableInventory {
 	 * Creates a new Clickable Inventory based on how many slots the inventory
 	 * should have. The given size should always be dividable by 9 and smaller
 	 * or equal to 54, which is the maximum possible size
-	 * 
+	 *
 	 * @param size
 	 *            Size of the inventory to create, must be multiple of 9, bigger
 	 *            than 0 and smaller than 54
@@ -60,7 +62,7 @@ public class ClickableInventory {
 	 */
 	public ClickableInventory(int size, String name) {
 		if (name != null && name.length() > 32) {
-			Bukkit.getLogger().warning("ClickableInventory title exceeds Bukkit limits: " + name);
+			log().warning("ClickableInventory title exceeds Bukkit limits: " + name);
 			name = name.substring(0, 32);
 		}
 		inventory = Bukkit.createInventory(null, size, name);
@@ -76,7 +78,7 @@ public class ClickableInventory {
 	 * in something the player did not want to do. Either only use this if you
 	 * are sure noone has this inventory open currently or update the
 	 * inventories right away
-	 * 
+	 *
 	 * @param c
 	 *            The new clickable for the given slot
 	 * @param index
@@ -90,7 +92,7 @@ public class ClickableInventory {
 	/**
 	 * Gets which Clickable currently represents the given slot in this
 	 * instance.
-	 * 
+	 *
 	 * @param index
 	 *            index of the Clickable or the item representation in the
 	 *            inventory
@@ -108,7 +110,7 @@ public class ClickableInventory {
 	 * clickables, whichs item representation is identical to another already in
 	 * this inventory existing clickable, because their item representation
 	 * would stack in the inventory
-	 * 
+	 *
 	 * @param c
 	 *            Clickable to add
 	 */
@@ -125,7 +127,7 @@ public class ClickableInventory {
 	 * Called whenever a player clicks an item in a clickable inventory. This
 	 * executes the clicked items clickable and also closes the clickable
 	 * inventory, unless the clicked object was a decoration stack
-	 * 
+	 *
 	 * @param p
 	 *            Player who clicked
 	 * @param index
@@ -147,7 +149,7 @@ public class ClickableInventory {
 	/**
 	 * Gets the inventory shown to players by this instance. Do not modify the
 	 * inventory object directly, use the methods provided by this class instead
-	 * 
+	 *
 	 * @return The inventory which represents this instance
 	 */
 	public Inventory getInventory() {
@@ -156,7 +158,7 @@ public class ClickableInventory {
 
 	/**
 	 * Shows a player the inventory of this instance with all of its clickables
-	 * 
+	 *
 	 * @param p
 	 *            Player to show the inventory to
 	 */
@@ -170,7 +172,7 @@ public class ClickableInventory {
 
 	/**
 	 * Updates the inventories of this instance for all players who have it
-	 * currently open and syncs it with the internal representation. 
+	 * currently open and syncs it with the internal representation.
 	 */
 	public void updateInventory() {
 		for (Map.Entry<UUID, ClickableInventory> c : openInventories.entrySet()) {
@@ -184,7 +186,7 @@ public class ClickableInventory {
 
 	/**
 	 * Gets the index of any given Clickable in this instance
-	 * 
+	 *
 	 * @param c
 	 *            Clickable to search for
 	 * @return The index of the clickable if it exists in this inventory or -1
@@ -204,7 +206,7 @@ public class ClickableInventory {
 	 * close any other inventory the player has possibly open, but no problems
 	 * will occur if this is called while no clickable inventory was actually
 	 * open
-	 * 
+	 *
 	 * @param p
 	 *            Player whose inventory is closed
 	 */
@@ -218,7 +220,7 @@ public class ClickableInventory {
 	/**
 	 * Called whenever a player closes a clickable inventory to update this in
 	 * the internal tracking
-	 * 
+	 *
 	 * @param p
 	 *            Player who closed the inventory
 	 */
@@ -230,7 +232,7 @@ public class ClickableInventory {
 
 	/**
 	 * Checks whether a player has a clickable inventory open currently
-	 * 
+	 *
 	 * @param p
 	 *            Player to check
 	 * @return true if the player has a clickable inventory open currently,
@@ -242,7 +244,7 @@ public class ClickableInventory {
 
 	/**
 	 * Checks whether the player with this uuid has a clickable inventory open
-	 * 
+	 *
 	 * @param uuid
 	 *            UUID of the player to check
 	 * @return true if the player has a clickable inventory open currently,
@@ -255,7 +257,7 @@ public class ClickableInventory {
 	/**
 	 * Gets which clickable inventory the player with the given uuid has
 	 * currently open
-	 * 
+	 *
 	 * @param uuid
 	 *            UUID of the player
 	 * @return The clickable inventory the player has currently open or null if
@@ -267,7 +269,7 @@ public class ClickableInventory {
 
 	/**
 	 * Gets which clickable inventory the given player has currently open
-	 * 
+	 *
 	 * @param p
 	 *            Player whose ClickableInventory is returned
 	 * @return The ClickableInventory the player has currently open or null if

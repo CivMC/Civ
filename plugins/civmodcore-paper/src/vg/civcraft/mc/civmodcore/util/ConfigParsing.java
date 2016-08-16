@@ -1,8 +1,10 @@
 package vg.civcraft.mc.civmodcore.util;
 
-import java.util.List;
-import java.util.logging.Level;
+import static vg.civcraft.mc.civmodcore.CivModCorePlugin.log;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -19,9 +21,6 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
-
-import com.google.common.collect.Lists;
-
 import vg.civcraft.mc.civmodcore.areas.EllipseArea;
 import vg.civcraft.mc.civmodcore.areas.GlobalYLimitedArea;
 import vg.civcraft.mc.civmodcore.areas.IArea;
@@ -63,11 +62,7 @@ public class ConfigParsing {
 			m = null;
 		} finally {
 			if (m == null) {
-				Bukkit.getServer()
-						.getLogger()
-						.log(Level.SEVERE,
-								"Failed to find material of section {0}",
-								current.getCurrentPath());
+				log().severe("Failed to find material of section " + current.getCurrentPath());
 				return im;
 			}
 		}
@@ -76,10 +71,7 @@ public class ConfigParsing {
 		toAdd.setDurability((short) durability);
 		ItemMeta meta = toAdd.getItemMeta();
 		if (meta == null) {
-			Bukkit.getServer()
-					.getLogger()
-					.log(Level.SEVERE, "No item meta found for {0}",
-							current.getCurrentPath());
+			log().severe("No item meta found for" + current.getCurrentPath());
 		} else {
 			String name = current.getString("name");
 			if (name != null) {
@@ -155,7 +147,7 @@ public class ConfigParsing {
 						potType = PotionType.valueOf(potion.getString("type",
 								"AWKWARD"));
 					} catch (IllegalArgumentException e) {
-						Bukkit.getLogger().warning(
+						log().warning(
 								"Expected potion type at "
 										+ potion.getCurrentPath() + ", but "
 										+ potion.getString("type")
@@ -251,7 +243,7 @@ public class ConfigParsing {
 				length = String.valueOf(days).length() + 1;
 				break;
 			default:
-				Bukkit.getLogger()
+				log()
 						.severe("Invalid time value in config:" + arg);
 			}
 			arg = arg.substring(0, arg.length() - length);
@@ -291,14 +283,14 @@ public class ConfigParsing {
 						.getConfigurationSection(name);
 				String type = configEffect.getString("type");
 				if (type == null) {
-					Bukkit.getLogger().severe(
+					log().severe(
 							"Expected potion type to be specified, but found no \"type\" option at "
 									+ configEffect.getCurrentPath());
 					continue;
 				}
 				PotionEffectType effect = PotionEffectType.getByName(type);
 				if (effect == null) {
-					Bukkit.getLogger().severe(
+					log().severe(
 							"Expected potion type to be specified at "
 									+ configEffect.getCurrentPath()
 									+ " but found " + type
@@ -315,24 +307,24 @@ public class ConfigParsing {
 
 	public static IArea parseArea(ConfigurationSection config) {
 		if (config == null) {
-			Bukkit.getLogger().warning("Tried to parse area on null section");
+			log().warning("Tried to parse area on null section");
 			return null;
 		}
 		String type = config.getString("type");
 		if (type == null) {
-			Bukkit.getLogger().warning("Found no area type at " + config.getCurrentPath());
+			log().warning("Found no area type at " + config.getCurrentPath());
 			return null;
 		}
 		int lowerYBound = config.getInt("lowerYBound", 0);
 		int upperYBound = config.getInt("upperYBound", 255);
 		String worldName = config.getString("world");
 		if (worldName == null) {
-			Bukkit.getLogger().warning("Found no world specified for area at " + config.getCurrentPath());
+			log().warning("Found no world specified for area at " + config.getCurrentPath());
 			return null;
 		}
 		World world = Bukkit.getWorld(worldName);
 		if (world == null) {
-			Bukkit.getLogger().warning("Found no world with name " + worldName + " as specified at " + config.getCurrentPath());
+			log().warning("Found no world with name " + worldName + " as specified at " + config.getCurrentPath());
 			return null;
 		}
 		Location center = null;
@@ -354,15 +346,15 @@ public class ConfigParsing {
 			break;
 		case "ELLIPSE":
 			if (center == null) {
-				Bukkit.getLogger().warning("Found no center for area at " + config.getCurrentPath());
+				log().warning("Found no center for area at " + config.getCurrentPath());
 				return null;
 			}
 			if (xSize == -1) {
-				Bukkit.getLogger().warning("Found no xSize for area at " + config.getCurrentPath());
+				log().warning("Found no xSize for area at " + config.getCurrentPath());
 				return null;
 			}
 			if (zSize == -1) {
-				Bukkit.getLogger().warning("Found no zSize for area at " + config.getCurrentPath());
+				log().warning("Found no zSize for area at " + config.getCurrentPath());
 				return null;
 			}
 			area = new EllipseArea(lowerYBound, upperYBound, center, xSize,
@@ -370,22 +362,22 @@ public class ConfigParsing {
 			break;
 		case "RECTANGLE":
 			if (center == null) {
-				Bukkit.getLogger().warning("Found no center for area at " + config.getCurrentPath());
+				log().warning("Found no center for area at " + config.getCurrentPath());
 				return null;
 			}
 			if (xSize == -1) {
-				Bukkit.getLogger().warning("Found no xSize for area at " + config.getCurrentPath());
+				log().warning("Found no xSize for area at " + config.getCurrentPath());
 				return null;
 			}
 			if (zSize == -1) {
-				Bukkit.getLogger().warning("Found no zSize for area at " + config.getCurrentPath());
+				log().warning("Found no zSize for area at " + config.getCurrentPath());
 				return null;
 			}
 			area = new RectangleArea(lowerYBound, upperYBound, center, xSize,
 					zSize);
 			break;
 		default:
-			Bukkit.getLogger().warning("Invalid area type " + type + " at " + config.getCurrentPath());
+			log().warning("Invalid area type " + type + " at " + config.getCurrentPath());
 		}
 		return area;
 	}
