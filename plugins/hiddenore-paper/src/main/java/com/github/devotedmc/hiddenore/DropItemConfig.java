@@ -20,7 +20,7 @@ public class DropItemConfig {
 	
 	public ItemStack render(double multiplier) {
 		ItemStack is = template.clone();
-		is.setAmount((int) (is.getAmount() * multiplier));
+		is.setAmount((int) Math.round((double) is.getAmount() * multiplier));
 		if (is.getAmount() > is.getMaxStackSize()) {
 			is.setAmount(is.getMaxStackSize());
 		}
