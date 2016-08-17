@@ -562,7 +562,7 @@ public class ConfigParser {
 			break;
 		case "LOREENCHANT":
 			ItemMap loreCostIn = parseItemMap(config.getConfigurationSection("input"));
-			ItemMap loreTool = parseItemMap(config.getConfigurationSection("lored_item"));
+			ItemMap loreTool = parseItemMap(config.getConfigurationSection("loredItem"));
 			List <String> appliedLore = config.getStringList("appliedLore");
 			List <String> overwrittenLore = config.getStringList("overwrittenLore");
 			if (appliedLore == null || appliedLore.size() == 0) {
