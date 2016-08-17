@@ -620,6 +620,61 @@ factories:
 #output is a list of item configurations with a chance for it each. It's important to note here that the items themselves still need be a level lower
 #yaml structure wise than the chance
 
+
+#8. Cost return recipe
+
+#Cost return recipes allow you to return a percentage of the total setup cost of a factory, which is different from the return rate on break. This can for
+#example be very useful when making factories obsolete to reimburse players. When the recipe completes, the factory will be destroyed.
+
+#Example:
+
+#return:
+# type: COSTRETURN
+# input:
+#   dirt:
+#     material: DIRT
+# factor: 1.0
+
+#type has to be COSTRETURN
+
+#input allows you to specify items which are consumed when breaking the factory, it may be left empty if desired
+
+#factor specifies a multiplier for how much of the total setup cost is dropped, where 1.0 means full setupcost.
+
+
+#9. Lore enchanting recipes
+
+#This type of recipe allows you to apply a set of lore to an item in exchange for consuming another set of lore, basically custom enchants
+
+#Example:
+
+#loreEnchant:
+# type: LOREENCHANT
+# input:
+#   emeralds:
+#     material: EMERALD
+#     amount: 9
+# loredItem:
+#   pick:
+#     material: DIAMOND_PICKAXE
+# overwrittenLore:
+#  - TNTBreaker I
+# appliedLore:
+#  - TNTBreaker II
+
+#This recipe will increment the count after the lore line 'TNTBreaker'
+
+#type has to be LOREENCHANT
+
+#input is whatever input is consumed additionally
+
+#loredItem specifies the tool to which this enchant is applied. Only it's material is respected here, specific ItemMeta is ignored
+
+#overwrittenLore is the lore which is required on the item which is being enchanted. This list may be empty or have multiple lines, both will work
+
+#appliedLore is the lore which is applied as replacement for the removed lore. This list may not be empty, but it may contain multiple entries
+
+
 recipes:
 
 

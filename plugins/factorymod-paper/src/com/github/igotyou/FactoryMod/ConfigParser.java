@@ -1,22 +1,19 @@
 package com.github.igotyou.FactoryMod;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseItemMap;
@@ -34,9 +31,9 @@ import com.github.igotyou.FactoryMod.recipes.DeterministicEnchantingRecipe;
 import com.github.igotyou.FactoryMod.recipes.FactoryMaterialReturnRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
+import com.github.igotyou.FactoryMod.recipes.LoreEnchantRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.PylonRecipe;
-import com.github.igotyou.FactoryMod.recipes.RandomEnchantingRecipe;
 import com.github.igotyou.FactoryMod.recipes.RandomOutputRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
@@ -114,12 +111,14 @@ public class ConfigParser {
 		long savingIntervall = parseTime(config.getString("saving_intervall", "15m"));
 		//save factories on a regular base, unless disabled
 		if (savingIntervall != -1) {
-			Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
+			new BukkitRunnable() {
+				
 				@Override
 				public void run() {
-					FactoryMod.getManager().saveFactories();	
+					FactoryMod.getManager().saveFactories();
+					
 				}
-			}, savingIntervall, savingIntervall);
+			}.runTaskTimerAsynchronously(plugin, savingIntervall, savingIntervall);
 		}
 		defaultMenuFactory = config.getString("default_menu_factory");
 		int globalPylonLimit = config.getInt("global_pylon_limit");
@@ -560,6 +559,18 @@ public class ConfigParser {
 					.getConfigurationSection("input"));
 			double factor = config.getDouble("factor", 1.0);
 			result = new FactoryMaterialReturnRecipe(name, productionTime, costIn, factor);
+			break;
+		case "LOREENCHANT":
+			ItemMap loreCostIn = parseItemMap(config.getConfigurationSection("input"));
+			ItemMap loreTool = parseItemMap(config.getConfigurationSection("lored_item"));
+			List <String> appliedLore = config.getStringList("appliedLore");
+			List <String> overwrittenLore = config.getStringList("overwrittenLore");
+			if (appliedLore == null || appliedLore.size() == 0) {
+				plugin.warning("No result lore specified for lore enchant recipe at " + config.getCurrentPath() + ". It was skipped");
+				result = null;
+				break;
+			}
+			result = new LoreEnchantRecipe(name, productionTime, loreCostIn, loreTool, appliedLore, overwrittenLore);
 			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type")
