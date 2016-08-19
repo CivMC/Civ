@@ -10,7 +10,7 @@
     <version>1.0.0</version>
   </parent>
 
-  <artifactId>Namelayer</artifactId>
+  <artifactId>NameLayer</artifactId>
   <version>${namelayer.version}</version>
 
   <dependencies>
