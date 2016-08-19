@@ -199,7 +199,7 @@ public class FileHandler {
 					}
 				}
 				int health = current.getInt("health");
-				int breakTime = current.getInt("breakTime", 0);
+				long breakTime = current.getLong("breakTime", 0);
 				String selectedRecipe = current.getString("selectedRecipe");
 				List <String> recipes = current.getStringList("recipes");
 				if (recipes == null) {

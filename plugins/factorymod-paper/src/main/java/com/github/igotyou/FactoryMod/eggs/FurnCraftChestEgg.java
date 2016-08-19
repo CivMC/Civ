@@ -99,7 +99,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 	}
 
 	public Factory revive(List<Location> blocks, int health,
-			String selectedRecipe, int productionTimer, int breakTime, List <String> recipeStrings) {
+			String selectedRecipe, int productionTimer, long breakTime, List <String> recipeStrings) {
 		FurnCraftChestStructure fccs = new FurnCraftChestStructure(blocks);
 		FurnacePowerManager fpm = new FurnacePowerManager(fccs.getFurnace(),
 				fuel, fuelConsumptionIntervall);

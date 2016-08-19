@@ -18,7 +18,7 @@ public class PercentageHealthRepairManager implements IRepairManager {
 	private int damageAmountPerDecayIntervall;
 	private long gracePeriod;
 
-	public PercentageHealthRepairManager(int initialHealth, int maximumHealth, int breakTime, int damageAmountPerDecayIntervall, long gracePeriod) {
+	public PercentageHealthRepairManager(int initialHealth, int maximumHealth, long breakTime, int damageAmountPerDecayIntervall, long gracePeriod) {
 		this.health = initialHealth;
 		this.maximumHealth = maximumHealth;
 		this.breakTime = breakTime;
@@ -62,7 +62,9 @@ public class PercentageHealthRepairManager implements IRepairManager {
 
 	public void breakIt() {
 		health = 0;
-		breakTime = System.currentTimeMillis();
+		if (breakTime == 0) {
+			breakTime = System.currentTimeMillis();
+		}
 		FactoryMod.getPlugin().getServer().getScheduler()
 				.scheduleSyncDelayedTask(FactoryMod.getPlugin(), new Runnable() {
 

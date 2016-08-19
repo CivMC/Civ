@@ -48,11 +48,13 @@ public class FactoryModListener implements Listener {
 		if (manager.isPossibleInteractionBlock(block.getType())) {
 			Factory c = manager.getFactoryAt(block);
 			if (c != null) {
-				c.getInteractionManager().blockBreak(e.getPlayer(), block);
 				//let creative player interact without breaking it
-				if (e.getPlayer().getGameMode() == GameMode.CREATIVE) {
+				if (e.getPlayer().getGameMode() == GameMode.CREATIVE && e.getPlayer().getInventory().getItemInMainHand() != null 
+						&& e.getPlayer().getInventory().getItemInMainHand().getType() == manager.getFactoryInteractionMaterial()) {
 					e.setCancelled(true);
+					return;
 				}
+				c.getInteractionManager().blockBreak(e.getPlayer(), block);
 			}
 		}
 

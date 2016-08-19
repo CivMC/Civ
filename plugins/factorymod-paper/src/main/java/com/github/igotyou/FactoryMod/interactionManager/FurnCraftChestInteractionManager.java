@@ -187,12 +187,12 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			+ fccf.getRepairManager().getHealth() + " health");
 		if (fccf.getRepairManager().inDisrepair()) {
 			PercentageHealthRepairManager rm = ((PercentageHealthRepairManager) fccf.getRepairManager());
-		    long leftTime = rm.getGracePeriod() - rm.getBreakTime();
-		    long months = leftTime % (60 * 60 * 24 * 30 * 1000);
-		    long days = leftTime - (months * 60 * 60 * 24 * 30 * 1000)
-			    % (60 * 60 * 24 * 1000);
-		    long hours = leftTime - (months * 60 * 60 * 24 * 30 * 1000)
-			    - (days * 60 * 60 * 24 * 1000) % (60 * 60 * 1000);
+		    long leftTime = rm.getGracePeriod() - (System.currentTimeMillis() - rm.getBreakTime());
+		    long months = leftTime / (60L * 60L * 24L * 30L * 1000L);
+		    long days = (leftTime - (months * 60L * 60L * 24L * 30L * 1000L))
+			    / (60L * 60L * 24L * 1000L);
+		    long hours = (leftTime - (months * 60L * 60L * 24L * 30L * 1000L)
+			    - (days * 60L * 60L * 24L * 1000L)) / (60L * 60L * 1000L);
 		    String time = (months != 0 ? months + " months, " : "")
 			    + (days != 0 ? days + " days, " : "")
 			    + (hours != 0 ? hours + " hours" : "");
