@@ -9,35 +9,34 @@
   <version>1.0.0</version>
   <packaging>pom</packaging>
 
-  <name>NameLayer Parent</name>
-  <url>https://github.com/Civcraft/NameLayer/</url>
+  <url>https://github.com/Civcraft/NameLayer</url>
 
   <modules>
-    <module>namelayer-nms</module>
-    <module>namelayer-nms-v1_8_R1</module>
-    <module>namelayer-nms-v1_8_R2</module>
-    <module>namelayer-nms-v1_8_R3</module>
-    <module>namelayer-nms-v1_9_R1</module>
-    <module>namelayer-nms-v1_9_R2</module>
-    <module>namelayer-nms-v1_10_R1</module>
-    <module>NameLayerSpigot</module>
-    <module>NameLayerBungee</module>
+    <module>nms/interface</module>
+    <module>nms/v1_10_R1</module>
+    <module>namelayer-spigot</module>
+    <module>namelayer-bungee</module>
+    <module>namelayer-all</module>
   </modules>
 
   <properties>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <namelayer.version>2.8.09</namelayer.version>
   </properties>
 
   <repositories>
     <repository>
-      <id>codecrafter47-repo</id>
-      <url>http://nexus.codecrafter47.dyndns.eu/content/repositories/public/</url>
-    </repository>
-    <repository>
       <id>civcraft-repo</id>
       <url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
     </repository>
+
+    <repository>
+      <id>codecrafter47-repo</id>
+      <url>http://nexus.codecrafter47.dyndns.eu/content/repositories/public/</url>
+    </repository>
+
     <repository>
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
@@ -46,10 +45,12 @@
       <id>spigot-repo2</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots</url>
     </repository>
+
     <repository>
       <id>bukkit</id>
       <url>http://repo.bukkit.org/content/groups/public/</url>
     </repository>
+
     <repository>
       <id>md_5-repo</id>
       <url>http://repo.md-5.net/content/repositories/public/</url>
@@ -70,39 +71,11 @@
         </property>
       </activation>
       <modules>
-        <module>namelayer-nms</module>
-        <module>namelayer-nms-v1_8_R1</module>
-        <module>namelayer-nms-v1_8_R2</module>
-        <module>namelayer-nms-v1_8_R3</module>
-        <module>namelayer-nms-v1_9_R1</module>
-        <module>namelayer-nms-v1_9_R2</module>
-        <module>namelayer-nms-v1_10_R1</module>
-        <module>NameLayerSpigot</module>
-        <module>NameLayerBungee</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>latest</id>
-      <activation>
-        <property>
-          <name>cbdedicated</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <modules>
-        <module>namelayer-nms-v1_10_R1</module>
-        <module>NameLayerSpigot</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>minimal</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <modules>
-        <module>NameLayerSpigot</module>
+        <module>nms/v1_8_R1</module>
+        <module>nms/v1_8_R2</module>
+        <module>nms/v1_8_R3</module>
+        <module>nms/v1_9_R1</module>
+        <module>nms/v1_9_R2</module>
       </modules>
     </profile>
   </profiles>

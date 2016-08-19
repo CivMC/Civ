@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>vg.civcraft.mc.namelayer</groupId>
+    <artifactId>namelayer-parent</artifactId>
+    <version>1.0.0</version>
+  </parent>
+
+  <artifactId>namelayer-spigot</artifactId>
+  <version>${namelayer.version}</version>
+  <packaging>jar</packaging>
+
+  <name>NameLayer Spigot</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>vg.civcraft.mc.namelayer</groupId>
+      <artifactId>namelayer-nms-v1_10_R1</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <!-- Spigot -->
+    <dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot-api</artifactId>
+      <version>1.10-R0.1-SNAPSHOT</version>
+    </dependency>
+
+    <!-- Civcraft -->
+    <dependency>
+      <groupId>vg.civcraft.mc.mercury</groupId>
+      <artifactId>Mercury</artifactId>
+      <version>1.2.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>vg.civcraft.mc.civmodcore</groupId>
+      <artifactId>CivModCore</artifactId>
+      <version>1.4.3</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Misc -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.35</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>18.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jline</groupId>
+      <artifactId>jline</artifactId>
+      <version>2.12.1</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.4.3</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>all</id>
+      <activation>
+        <property>
+          <name>cbdedicated</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <!-- NMS crap -->
+        <dependency>
+          <groupId>vg.civcraft.mc.namelayer</groupId>
+          <artifactId>namelayer-nms-v1_8_R1</artifactId>
+          <version>1.0.0</version>
+        </dependency>
+        <dependency>
+          <groupId>vg.civcraft.mc.namelayer</groupId>
+          <artifactId>namelayer-nms-v1_8_R2</artifactId>
+          <version>1.0.0</version>
+        </dependency>
+        <dependency>
+          <groupId>vg.civcraft.mc.namelayer</groupId>
+          <artifactId>namelayer-nms-v1_8_R3</artifactId>
+          <version>1.0.0</version>
+        </dependency>
+        <dependency>
+          <groupId>vg.civcraft.mc.namelayer</groupId>
+          <artifactId>namelayer-nms-v1_9_R1</artifactId>
+          <version>1.0.0</version>
+        </dependency>
+        <dependency>
+          <groupId>vg.civcraft.mc.namelayer</groupId>
+          <artifactId>namelayer-nms-v1_9_R2</artifactId>
+          <version>1.0.0</version>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
+</project>
