@@ -11051,14 +11051,14 @@ recipes:
     input:
       stone:
         material: STONE
-        amount: 128
+        amount: 96
       granite:
         material: STONE
         amount: 64
         durability: 1
       coalore:
         material: COAL_ORE
-        amount: 24
+        amount: 16
     output:
       basicMiner:
         material: FLINT
@@ -11073,14 +11073,14 @@ recipes:
     input:
       stone:
         material: STONE
-        amount: 128
+        amount: 96
       granite:
         material: STONE
         amount: 64
         durability: 5
       coalore:
         material: COAL_ORE
-        amount: 24
+        amount: 16
     output:
       basicMiner:
         material: FLINT
@@ -11095,14 +11095,14 @@ recipes:
     input:
       stone:
         material: STONE
-        amount: 128
+        amount: 96
       granite:
         material: STONE
         amount: 64
         durability: 3
       coalore:
         material: COAL_ORE
-        amount: 24
+        amount: 16
     output:
       basicMiner:
         material: FLINT
@@ -11117,13 +11117,13 @@ recipes:
     input:
       inksack:
         material: INK_SACK
-        amount: 16
+        amount: 8
       bone:
         material: BONE
-        amount: 24
+        amount: 12
       string:
         material: STRING
-        amount: 32
+        amount: 16
     output:
       basicHunter:
         material: BONE
@@ -11138,10 +11138,10 @@ recipes:
     input:
       inksack:
         material: SPIDER_EYE
-        amount: 32
+        amount: 16
       bone:
         material: ROTTEN_FLESH
-        amount: 64
+        amount: 32
     output:
       basicHunter:
         material: BONE
@@ -11156,13 +11156,13 @@ recipes:
     input:
       inksack:
         material: ENDER_PEARL
-        amount: 16
+        amount: 8
       bone:
         material: ROTTEN_FLESH
-        amount: 32
+        amount: 16
       string:
         material: STRING
-        amount: 32
+        amount: 16
     output:
       basicHunter:
         material: BONE
@@ -11180,7 +11180,7 @@ recipes:
         name: Miner Component
         lore: 
          - Basic Reinforcement Ingredient
-        amount: 4
+        amount: 3
         
     output:
       basicRein:
@@ -11197,7 +11197,7 @@ recipes:
       basicHunter:
         material: BONE
         name: Hunter Component
-        amount: 4
+        amount: 3
         lore: 
          - Basic Reinforcement Ingredient
     output:
@@ -11217,13 +11217,13 @@ recipes:
         name: Hunter Component
         lore: 
          - Basic Reinforcement Ingredient
-        amount: 8
+        amount: 6
       flint:
         material: FLINT
         amount: 24
       iron:
         material: IRON_INGOT
-        amount: 48
+        amount: 32
     output:
       decentMiner:
         material: QUARTZ
@@ -11241,13 +11241,13 @@ recipes:
         name: Hunter Component
         lore: 
          - Basic Reinforcement Ingredient
-        amount: 8
+        amount: 6
       redstone:
         material: REDSTONE
-        amount: 24
+        amount: 16
       gold:
         material: GOLD_INGOT
-        amount: 32
+        amount: 24
     output:
       decentMiner:
         material: QUARTZ
@@ -11265,13 +11265,13 @@ recipes:
         name: Miner Component
         lore: 
          - Basic Reinforcement Ingredient
-        amount: 8
+        amount: 6
       slime:
         material: SLIME_BALL
-        amount: 32
+        amount: 24
       blazeRod:
         material: BLAZE_ROD
-        amount: 24
+        amount: 16
     output:
       decentHunter:
         material: SULPHUR
@@ -11289,13 +11289,13 @@ recipes:
         name: Miner Component
         lore: 
          - Basic Reinforcement Ingredient
-        amount: 8
+        amount: 6
       magmaCream:
         material: MAGMA_CREAM
         amount: 24
       gunpowder:
         material: SULPHUR
-        amount: 32
+        amount: 24
     output:
       decentHunter:
         material: SULPHUR
@@ -11313,13 +11313,13 @@ recipes:
         name: Miner Component
         lore: 
          - Decent Reinforcement Ingredient
-        amount: 4
+        amount: 3
       decentHunter:
         material: SULPHUR
         name: Hunter Component
         lore: 
          - Decent Reinforcement Ingredient
-        amount: 4
+        amount: 3
     output:
       slimeball:
         material: SLIME_BALL
@@ -11340,7 +11340,7 @@ recipes:
         amount: 6
       ghastTear:
         material: GHAST_TEAR
-        amount: 16
+        amount: 12
       witherskull:
         material: SKULL_ITEM
         durability: 1
@@ -11365,11 +11365,11 @@ recipes:
         amount: 6
       diamond:
         material: DIAMOND
-        amount: 32
+        amount: 1
       lapis:
         material: INK_SACK
         durability: 4
-        amount: 32
+        amount: 10
     output:
       strongMiner:
         material: PRISMARINE
@@ -11388,13 +11388,13 @@ recipes:
         name: Miner Component
         lore: 
          - Strong Reinforcement Ingredient
-        amount: 4
+        amount: 3
       strongHunter:
         material: GHAST_TEAR
         name: Hunter Component
         lore: 
          - Strong Reinforcement Ingredient
-        amount: 4
+        amount: 3
     output:
       goodReinforcement:
         material: MAGMA_CREAM
@@ -11435,13 +11435,13 @@ recipes:
         name: Miner Component
         lore: 
          - Strong Reinforcement Ingredient
-        amount: 6
+        amount: 4
       strongHunter:
         material: GHAST_TEAR
         name: Hunter Component
         lore: 
          - Strong Reinforcement Ingredient
-        amount: 6
+        amount: 4
       xp:
         material: EMERALD_BLOCK
         amount: 18
@@ -11462,13 +11462,13 @@ recipes:
         name: Miner Component
         lore: 
          - Strong Reinforcement Ingredient
-        amount: 6
+        amount: 4
       strongHunter:
         material: GHAST_TEAR
         name: Hunter Component
         lore: 
          - Strong Reinforcement Ingredient
-        amount: 6
+        amount: 4
       xp:
         material: EMERALD_BLOCK
         amount: 12
