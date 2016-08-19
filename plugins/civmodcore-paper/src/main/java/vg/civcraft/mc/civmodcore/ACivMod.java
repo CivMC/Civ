@@ -19,32 +19,14 @@ import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 
 public abstract class ACivMod extends JavaPlugin {
 
-	/**
-	 * The {@link Logger} assigned to this plugin by Spigot. For the sake of consistency,
-	 * it should never be accessed directly and always through {@link #log()}.
-	 */
-	private static Logger logger;
-
-	/**
-	 * Returns the logger for this plugin. Assumes the plugin has already been loaded.
-	 *
-	 * @return The logger for this plugin.
-	 */
-	public static Logger log() {
-		return logger;
-	}
-
-	protected ACivMod() {
-		logger = getLogger();
-	}
-
 	protected CommandHandler handle;
 
 	private static boolean initializedAPIs = false;
 
 	public Config GetConfig() {
 		if (config_ == null) {
-			log().info("Config not initialized. Most likely due to overriding onLoad and not calling super.onLoad()");
+			getLogger().info("Config not initialized. Most likely due to "
+					+ "overriding onLoad and not calling super.onLoad()");
 		}
 		return config_;
 	}
@@ -110,12 +92,12 @@ public abstract class ACivMod extends JavaPlugin {
 	public void onLoad() {
 		classLoader = getClassLoader();
 		loadConfiguration();
-		log().info("Configuration Loaded");
+		getLogger().info("Configuration Loaded");
 	}
 
 	private void loadConfiguration() {
 		config_ = new Config(this);
-		log().info("loaded config for: " + getPluginName() + "Config: " + (config_ != null));
+		getLogger().info("loaded config for: " + getPluginName() + "Config: " + (config_ != null));
 	}
 
 	@Override
@@ -123,7 +105,7 @@ public abstract class ACivMod extends JavaPlugin {
 		registerCommands();
 		initApis(this);
 		//global_instance_ = this;
-		log().info("Main Plugin Events and Config Command registered");
+		getLogger().info("Main Plugin Events and Config Command registered");
 
 		try {
 			Metrics metrics = new Metrics(this);
@@ -179,23 +161,23 @@ public abstract class ACivMod extends JavaPlugin {
 
 	@Deprecated
 	public void severe(String message) {
-		log().severe("[" + getPluginName() + "] " + message);
+		getLogger().severe("[" + getPluginName() + "] " + message);
 	}
 
 	@Deprecated
 	public void warning(String message) {
-		log().warning("[" + getPluginName() + "] " + message);
+		getLogger().warning("[" + getPluginName() + "] " + message);
 	}
 
 	@Deprecated
 	public void info(String message) {
-		log().info("[" + getPluginName() + "] " + message);
+		getLogger().info("[" + getPluginName() + "] " + message);
 	}
 
 	@Deprecated
 	public void debug(String message) {
 		if (config_.DebugLog) {
-			log().info("[" + getPluginName() + "] " + message);
+			getLogger().info("[" + getPluginName() + "] " + message);
 		}
 	}
 
