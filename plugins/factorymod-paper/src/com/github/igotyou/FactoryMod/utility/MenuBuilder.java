@@ -8,15 +8,11 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.banner.Pattern;
-import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BannerMeta;
 
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
@@ -73,17 +69,6 @@ public class MenuBuilder {
 		if (defaultFactory != null) {
 			defaultMenu = manager.getEgg(defaultFactory);
 		}
-	}
-
-	private DecorationStack createBannerDeco(PatternType... types) {
-		ItemStack is = new ItemStack(Material.BANNER);
-		BannerMeta bm = (BannerMeta) is.getItemMeta();
-		bm.setBaseColor(DyeColor.GRAY);
-		for (PatternType type : types) {
-			bm.addPattern(new Pattern(DyeColor.YELLOW, type));
-		}
-		is.setItemMeta(bm);
-		return new DecorationStack(is);
 	}
 
 	public void openFactoryBrowser(Player p, String startingFac) {

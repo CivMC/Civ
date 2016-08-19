@@ -32,36 +32,42 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 						furnace = center.getRelative(BlockFace.NORTH)
 								.getLocation();
 					}
+					break;
 				case NORTH:
 					if (center.getRelative(BlockFace.SOUTH).getType() == Material.FURNACE) {
 						chest = b.getLocation();
 						furnace = center.getRelative(BlockFace.SOUTH)
 								.getLocation();
 					}
+					break;
 				case WEST:
 					if (center.getRelative(BlockFace.EAST).getType() == Material.FURNACE) {
 						chest = b.getLocation();
 						furnace = center.getRelative(BlockFace.EAST)
 								.getLocation();
 					}
+					break;
 				case EAST:
 					if (center.getRelative(BlockFace.WEST).getType() == Material.FURNACE) {
 						chest = b.getLocation();
 						furnace = center.getRelative(BlockFace.WEST)
 								.getLocation();
 					}
+					break;
 				case UP:
 					if (center.getRelative(BlockFace.DOWN).getType() == Material.FURNACE) {
 						chest = b.getLocation();
 						furnace = center.getRelative(BlockFace.DOWN)
 								.getLocation();
 					}
+					break;
 				case DOWN:
 					if (center.getRelative(BlockFace.UP).getType() == Material.FURNACE) {
 						chest = b.getLocation();
 						furnace = center.getRelative(BlockFace.UP)
 								.getLocation();
 					}
+					break;
 				}
 
 			}

@@ -115,7 +115,7 @@ public class PipeEgg implements IFactoryEgg {
 		return pipe;
 	}
 
-	public Class getMultiBlockStructure() {
+	public Class <PipeStructure> getMultiBlockStructure() {
 		return PipeStructure.class;
 	}
 }

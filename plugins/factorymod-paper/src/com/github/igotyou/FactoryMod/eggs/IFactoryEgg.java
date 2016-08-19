@@ -52,7 +52,7 @@ public interface IFactoryEgg {
 	 * 
 	 * @return Structure class of the factories created by this egg
 	 */
-	public Class getMultiBlockStructure();
+	public Class <? extends MultiBlockStructure> getMultiBlockStructure();
 
 	/**
 	 * Java wont let me specify a method here without specifying its parameters

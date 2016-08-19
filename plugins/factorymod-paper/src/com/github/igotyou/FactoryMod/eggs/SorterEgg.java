@@ -111,7 +111,7 @@ public class SorterEgg implements IFactoryEgg {
 		return sortAmount;
 	}
 
-	public Class getMultiBlockStructure() {
+	public Class <BlockFurnaceStructure> getMultiBlockStructure() {
 		return BlockFurnaceStructure.class;
 	}
 

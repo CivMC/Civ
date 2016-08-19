@@ -124,7 +124,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		return fccf;
 	}
 	
-	public Class getMultiBlockStructure() {
+	public Class <FurnCraftChestStructure> getMultiBlockStructure() {
 		return FurnCraftChestStructure.class;
 	}
 

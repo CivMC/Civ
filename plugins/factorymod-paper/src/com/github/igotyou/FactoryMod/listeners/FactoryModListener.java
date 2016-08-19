@@ -130,7 +130,7 @@ public class FactoryModListener implements Listener {
 			if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
 				if (c == null) {
 					if (manager.isPossibleCenterBlock(block.getType())) {
-						if (player.getItemInHand().getType() == manager
+						if (player.getInventory().getItemInMainHand().getType() == manager
 								.getFactoryInteractionMaterial()) {
 							manager.attemptCreation(block, player);
 						}

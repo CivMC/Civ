@@ -41,16 +41,16 @@ import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 public class FactoryModManager {
 	private FactoryMod plugin;
 	private FileHandler fileHandler;
-	private HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>> factoryCreationRecipes;
+	private HashMap<Class<? extends MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>> factoryCreationRecipes;
 	private HashMap<IFactoryEgg, ItemMap> totalSetupCosts;
 	private HashMap<Location, Factory> locations;
 	private HashMap<String, IFactoryEgg> eggs;
 	private HashSet<Factory> factories;
+	private Map<String, IRecipe> recipes;
 	private HashSet<Material> possibleCenterBlocks;
 	private HashSet<Material> possibleInteractionBlock;
 	private Material factoryInteractionMaterial;
 	private boolean citadelEnabled;
-	private boolean nameLayerEnabled;
 	private boolean logInventories;
 	private int redstonePowerOn;
 	private int redstoneRecipeChange;
@@ -60,15 +60,14 @@ public class FactoryModManager {
 			Material factoryInteractionMaterial, boolean citadelEnabled,
 			boolean nameLayerEnabled, int redstonePowerOn,
 			int redstoneRecipeChange, boolean logInventories,
-			Map <String,String> factoryRenames) {
+			Map <String,String> factoryRenames, Map <String, IRecipe> recipes) {
 		this.plugin = plugin;
 		this.factoryInteractionMaterial = factoryInteractionMaterial;
 		this.citadelEnabled = citadelEnabled;
-		this.nameLayerEnabled = nameLayerEnabled;
 		this.redstonePowerOn = redstonePowerOn;
 		this.redstoneRecipeChange = redstoneRecipeChange;
-
-		fileHandler = new FileHandler(this, factoryRenames);
+		this.recipes = recipes;
+		this.fileHandler = new FileHandler(this, factoryRenames);
 		
 		if(nameLayerEnabled) {
 			//register our own permissions
@@ -85,7 +84,7 @@ public class FactoryModManager {
 			PermissionType.registerPermission("UPGRADE_FACTORY", modAndAbove);
 		}
 
-		factoryCreationRecipes = new HashMap<Class<MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>>();
+		factoryCreationRecipes = new HashMap<Class<? extends MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>>();
 		locations = new HashMap<Location, Factory>();
 		eggs = new HashMap<String, IFactoryEgg>();
 		possibleCenterBlocks = new HashSet<Material>();
@@ -140,7 +139,7 @@ public class FactoryModManager {
 	 *            Name of the factory
 	 * @return Setupcost if the factory if it was found or null if it wasnt
 	 */
-	public ItemMap getSetupCost(Class c, String name) {
+	public ItemMap getSetupCost(Class <? extends MultiBlockStructure> c, String name) {
 		for (Entry<ItemMap, IFactoryEgg> entry : factoryCreationRecipes.get(c)
 				.entrySet()) {
 			if (entry.getValue().getName().equals(name)) {
@@ -487,7 +486,7 @@ public class FactoryModManager {
 	 * @param egg
 	 *            Encapsulates the factory itself
 	 */
-	public void addFactoryCreationEgg(Class blockStructureClass,
+	public void addFactoryCreationEgg(Class <? extends MultiBlockStructure> blockStructureClass,
 			ItemMap recipe, IFactoryEgg egg) {
 		HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
 				.get(blockStructureClass);
@@ -594,5 +593,17 @@ public class FactoryModManager {
 	 */
 	public HashSet<Factory> getAllFactories() {
 		return factories;
+	}
+	
+	/**
+	 * Gets the recipe with the given name, if it exists
+	 * @param name Name of the recipe
+	 * @return Recipe with the given name or null if either the recipe doesn't exist or the given string was null
+	 */
+	public IRecipe getRecipe(String name) {
+		if (name == null) {
+			return null;
+		}
+		return recipes.get(name);
 	}
 }
