@@ -83,7 +83,12 @@ public class FileHandler {
 									.getRepairManager()).getBreakTime());
 					config.set(current + ".runtime", fccf.getRunningTime());
 					config.set(current + ".selectedRecipe", fccf
-							.getCurrentRecipe().getRecipeName());
+							.getCurrentRecipe().getName());
+					List <String> recipeList = new LinkedList<String>();
+					for(IRecipe rec : fccf.getRecipes()) {
+						recipeList.add(rec.getIdentifier());
+					}
+					config.set(current + ".recipes", recipeList);
 					if (fccf.getActivator() == null) {
 						config.set(current + ".activator", "null");
 					}
@@ -91,7 +96,7 @@ public class FileHandler {
 						config.set(current + ".activator", fccf.getActivator().toString());
 					}
 					for(IRecipe i : ((FurnCraftChestFactory) f).getRecipes()) {
-						config.set(current + ".runcounts." + i.getRecipeName(), fccf.getRunCount(i));
+						config.set(current + ".runcounts." + i.getName(), fccf.getRunCount(i));
 					}
 				} else if (f instanceof Pipe) {
 					Pipe p = (Pipe) f;
@@ -196,8 +201,9 @@ public class FileHandler {
 				int health = current.getInt("health");
 				int breakTime = current.getInt("breakTime", 0);
 				String selectedRecipe = current.getString("selectedRecipe");
+				List <String> recipes = current.getStringList("recipes");
 				FurnCraftChestFactory fac = (FurnCraftChestFactory) egg.revive(blocks, health, selectedRecipe,
-						runtime, breakTime);
+						runtime, breakTime, recipes);
 				String activator = current.getString("activator", "null");
 				UUID acti;
 				if (activator.equals("null")) {
@@ -212,7 +218,7 @@ public class FileHandler {
 					for(String countKey : runCounts.getKeys(false)) {
 						int runs = runCounts.getInt(countKey);
 						for(IRecipe r : fac.getRecipes()) {
-							if (r.getRecipeName().equals(countKey)) {
+							if (r.getName().equals(countKey)) {
 								fac.setRunCount(r, runs);
 								break;
 							}

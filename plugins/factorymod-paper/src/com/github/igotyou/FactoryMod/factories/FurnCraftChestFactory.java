@@ -165,7 +165,7 @@ public class FurnCraftChestFactory extends Factory {
 						}
 						p.sendMessage(ChatColor.GREEN + "Activated " + name
 								+ " with recipe: "
-								+ currentRecipe.getRecipeName());
+								+ currentRecipe.getName());
 						activator = p.getUniqueId();
 					}
 					activate();
@@ -309,20 +309,20 @@ public class FurnCraftChestFactory extends Factory {
 				else if (currentProductionTimer >= currentRecipe
 						.getProductionTime()) {
 					LoggingUtils.log("Executing recipe "
-							+ currentRecipe.getRecipeName() + " for "
+							+ currentRecipe.getName() + " for "
 							+ getLogData());
 					RecipeExecuteEvent ree = new RecipeExecuteEvent(this,
 							(InputRecipe) currentRecipe);
 					Bukkit.getPluginManager().callEvent(ree);
 					if (ree.isCancelled()) {
 						LoggingUtils.log("Executing recipe "
-								+ currentRecipe.getRecipeName() + " for "
+								+ currentRecipe.getName() + " for "
 								+ getLogData()
 								+ " was cancelled over the event");
 						return;
 					}
 					sendActivatorMessage(ChatColor.GOLD
-							+ currentRecipe.getRecipeName() + " in " + name
+							+ currentRecipe.getName() + " in " + name
 							+ " completed");
 					if (currentRecipe instanceof Upgraderecipe) {
 						// this if else might look a bit weird, but because

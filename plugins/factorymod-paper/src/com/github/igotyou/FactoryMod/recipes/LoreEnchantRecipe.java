@@ -19,9 +19,9 @@ public class LoreEnchantRecipe extends InputRecipe {
 	private List<String> overwritenLore;
 	private ItemMap tool;
 
-	public LoreEnchantRecipe(String name, int productionTime, ItemMap input, ItemMap tool, List<String> appliedLore,
+	public LoreEnchantRecipe(String identifier, String name, int productionTime, ItemMap input, ItemMap tool, List<String> appliedLore,
 			List<String> overwritenLore) {
-		super(name, productionTime, input);
+		super(identifier, name, productionTime, input);
 		this.overwritenLore = overwritenLore;
 		this.appliedLore = appliedLore;
 		this.tool = tool;

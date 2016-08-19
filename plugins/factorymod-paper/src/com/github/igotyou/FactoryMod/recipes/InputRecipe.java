@@ -23,11 +23,13 @@ public abstract class InputRecipe implements IRecipe {
 	protected int productionTime;
 	protected ItemMap input;
 	protected int fuel_consumption_intervall = -1;
+	protected String identifier;
 
-	public InputRecipe(String name, int productionTime, ItemMap input) {
+	public InputRecipe(String identifier, String name, int productionTime, ItemMap input) {
 		this.name = name;
 		this.productionTime = productionTime;
 		this.input = input;
+		this.identifier = identifier;
 	}
 
 	/**
@@ -62,7 +64,7 @@ public abstract class InputRecipe implements IRecipe {
 	 */
 	public abstract List<ItemStack> getOutputRepresentation(Inventory i);
 
-	public String getRecipeName() {
+	public String getName() {
 		return name;
 	}
 	
@@ -84,6 +86,10 @@ public abstract class InputRecipe implements IRecipe {
 
 	public boolean enoughMaterialAvailable(Inventory i) {
 		return input.isContainedIn(i);
+	}
+	
+	public String getIdentifier() {
+		return identifier;
 	}
 
 	/**

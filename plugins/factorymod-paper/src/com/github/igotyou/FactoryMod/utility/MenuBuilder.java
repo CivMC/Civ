@@ -392,13 +392,13 @@ public class MenuBuilder {
 				.getEgg(factoryViewed.get(p.getUniqueId()));
 		InputRecipe rec = null;
 		for (IRecipe recipe : egg.getRecipes()) {
-			if (recipe == null || recipe.getRecipeName() == null) {
+			if (recipe == null || recipe.getName() == null) {
 				FactoryMod.getPlugin().warning(
 						"Null recipe or recipe name registered with "
 								+ egg.getName());
 				continue;
 			}
-			if (recipeName.equals(recipe.getRecipeName())) {
+			if (recipeName.equals(recipe.getName())) {
 				rec = (InputRecipe) recipe;
 				break;
 			}

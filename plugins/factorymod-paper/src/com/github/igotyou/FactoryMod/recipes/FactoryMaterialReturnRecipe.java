@@ -27,9 +27,9 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 
 	private double factor;
 
-	public FactoryMaterialReturnRecipe(String name, int productionTime,
+	public FactoryMaterialReturnRecipe(String identifier, String name, int productionTime,
 			ItemMap input, double factor) {
-		super(name, productionTime, input);
+		super(identifier, name, productionTime, input);
 		this.factor = factor;
 	}
 

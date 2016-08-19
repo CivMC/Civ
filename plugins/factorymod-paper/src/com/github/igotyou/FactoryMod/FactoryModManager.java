@@ -60,13 +60,12 @@ public class FactoryModManager {
 			Material factoryInteractionMaterial, boolean citadelEnabled,
 			boolean nameLayerEnabled, int redstonePowerOn,
 			int redstoneRecipeChange, boolean logInventories,
-			Map <String,String> factoryRenames, Map <String, IRecipe> recipes) {
+			Map <String,String> factoryRenames) {
 		this.plugin = plugin;
 		this.factoryInteractionMaterial = factoryInteractionMaterial;
 		this.citadelEnabled = citadelEnabled;
 		this.redstonePowerOn = redstonePowerOn;
 		this.redstoneRecipeChange = redstoneRecipeChange;
-		this.recipes = recipes;
 		this.fileHandler = new FileHandler(this, factoryRenames);
 		
 		if(nameLayerEnabled) {
@@ -91,6 +90,7 @@ public class FactoryModManager {
 		possibleInteractionBlock = new HashSet<Material>();
 		factories = new HashSet<Factory>();
 		totalSetupCosts = new HashMap<IFactoryEgg, ItemMap>();
+		recipes = new HashMap<String, IRecipe>();
 
 		// Normal furnace, craftingtable, chest factories
 		possibleCenterBlocks.add(Material.WORKBENCH);
@@ -596,14 +596,22 @@ public class FactoryModManager {
 	}
 	
 	/**
-	 * Gets the recipe with the given name, if it exists
-	 * @param name Name of the recipe
-	 * @return Recipe with the given name or null if either the recipe doesn't exist or the given string was null
+	 * Gets the recipe with the given identifier, if it exists
+	 * @param name Identifier of the recipe
+	 * @return Recipe with the given identifier or null if either the recipe doesn't exist or the given string was null
 	 */
-	public IRecipe getRecipe(String name) {
-		if (name == null) {
+	public IRecipe getRecipe(String identifier) {
+		if (identifier == null) {
 			return null;
 		}
-		return recipes.get(name);
+		return recipes.get(identifier);
 	}
-}
+	
+	/**
+	 * Registers a recipe and add it to the recipe tracking.
+	 * @param recipe Recipe to register
+	 */
+	public void registerRecipe(IRecipe recipe) {
+		recipes.put(recipe.getIdentifier(), recipe);
+	}
+} 

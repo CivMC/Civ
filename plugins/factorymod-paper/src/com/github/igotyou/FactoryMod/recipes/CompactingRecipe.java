@@ -25,9 +25,9 @@ public class CompactingRecipe extends InputRecipe {
 	private List<Material> excludedMaterials;
 	private String compactedLore;
 
-	public CompactingRecipe(ItemMap input, List<Material> excludedMaterial,
+	public CompactingRecipe(String identifier, ItemMap input, List<Material> excludedMaterial,
 			String name, int productionTime, String compactedLore) {
-		super(name, productionTime, input);
+		super(identifier, name, productionTime, input);
 		this.excludedMaterials = excludedMaterial;
 		this.compactedLore = compactedLore;
 	}
@@ -51,7 +51,7 @@ public class CompactingRecipe extends InputRecipe {
 		return productionTime;
 	}
 
-	public String getRecipeName() {
+	public String getName() {
 		return name;
 	}
 
@@ -124,7 +124,7 @@ public class CompactingRecipe extends InputRecipe {
 	public ItemStack getRecipeRepresentation() {
 		ItemStack res = new ItemStack(Material.CHEST);
 		ItemMeta im = res.getItemMeta();
-		im.setDisplayName(getRecipeName());
+		im.setDisplayName(getName());
 		res.setItemMeta(im);
 		return res;
 	}

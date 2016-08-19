@@ -22,9 +22,9 @@ import com.github.igotyou.FactoryMod.factories.Factory;
 public class DecompactingRecipe extends InputRecipe {
 	private String compactedLore;
 
-	public DecompactingRecipe(ItemMap input, String name, int productionTime,
+	public DecompactingRecipe(String identifier, ItemMap input, String name, int productionTime,
 			String compactedLore) {
-		super(name, productionTime, input);
+		super(identifier, name, productionTime, input);
 		this.compactedLore = compactedLore;
 	}
 
@@ -96,7 +96,7 @@ public class DecompactingRecipe extends InputRecipe {
 	public ItemStack getRecipeRepresentation() {
 		ItemStack res = new ItemStack(Material.CHEST);
 		ItemMeta im = res.getItemMeta();
-		im.setDisplayName(getRecipeName());
+		im.setDisplayName(getName());
 		res.setItemMeta(im);
 		return res;
 	}

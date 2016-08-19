@@ -15,7 +15,12 @@ public interface IRecipe {
 	 * @return The identifier for this recipe, which is used both internally and
 	 *         to display the recipe to a player
 	 */
-	public String getRecipeName();
+	public String getName();
+	
+	/**
+	 * @return A unique identifier for this recipe
+	 */
+	public String getIdentifier();
 
 	/**
 	 * @return How long this recipe takes for one run in ticks

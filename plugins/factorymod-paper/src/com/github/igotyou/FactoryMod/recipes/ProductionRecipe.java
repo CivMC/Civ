@@ -20,9 +20,9 @@ import com.github.igotyou.FactoryMod.factories.Factory;
 public class ProductionRecipe extends InputRecipe {
 	private ItemMap output;
 
-	public ProductionRecipe(String name, int productionTime, ItemMap inputs,
+	public ProductionRecipe(String identifier, String name, int productionTime, ItemMap inputs,
 			ItemMap output) {
-		super(name, productionTime, inputs);
+		super(identifier, name, productionTime, inputs);
 		this.output = output;
 	}
 
@@ -82,7 +82,7 @@ public class ProductionRecipe extends InputRecipe {
 		} else {
 			res = out.get(0);
 		}
-		ISUtils.setName(res, getRecipeName());
+		ISUtils.setName(res, getName());
 		return res;
 	}
 }

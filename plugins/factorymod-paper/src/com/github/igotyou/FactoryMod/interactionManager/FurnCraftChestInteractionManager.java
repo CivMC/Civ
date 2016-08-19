@@ -108,7 +108,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		.getChest())) { // chest interaction
 	    if (p.isSneaking()) { // sneaking, so showing detailed recipe stuff
 		ClickableInventory ci = new ClickableInventory(54, fccf
-			.getCurrentRecipe().getRecipeName());
+			.getCurrentRecipe().getName());
 		int index = 4;
 		List<ItemStack> inp = ((InputRecipe) fccf.getCurrentRecipe())
 			.getInputRepresentation(fccf.getInventory());
@@ -182,7 +182,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			    + " seconds remaining until current run is complete");
 		}
 		p.sendMessage(ChatColor.GOLD + "Currently selected recipe: "
-			+ fccf.getCurrentRecipe().getRecipeName());
+			+ fccf.getCurrentRecipe().getName());
 		p.sendMessage(ChatColor.GOLD + "Currently at "
 			+ fccf.getRepairManager().getHealth() + " health");
 		if (fccf.getRepairManager().inDisrepair()) {
@@ -236,7 +236,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			    fccf.setRecipe(recipes.get(this));
 			    p.sendMessage(ChatColor.GREEN
 				    + "Switched recipe to "
-				    + recipes.get(this).getRecipeName());
+				    + recipes.get(this).getName());
 			    FactoryMod.sendResponse("RecipeSwitch", p);
 			}
 

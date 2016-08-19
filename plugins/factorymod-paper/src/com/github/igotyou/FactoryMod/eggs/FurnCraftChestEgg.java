@@ -1,11 +1,13 @@
 package com.github.igotyou.FactoryMod.eggs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.interactionManager.FurnCraftChestInteractionManager;
@@ -97,18 +99,37 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 	}
 
 	public Factory revive(List<Location> blocks, int health,
-			String selectedRecipe, int productionTimer, int breakTime) {
+			String selectedRecipe, int productionTimer, int breakTime, List <String> recipeStrings) {
 		FurnCraftChestStructure fccs = new FurnCraftChestStructure(blocks);
 		FurnacePowerManager fpm = new FurnacePowerManager(fccs.getFurnace(),
 				fuel, fuelConsumptionIntervall);
 		FurnCraftChestInteractionManager fccim = new FurnCraftChestInteractionManager();
 		PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(health, maximumHealth, breakTime, healthPerDamagePeriod, breakGracePeriod);
+		List <IRecipe> currRecipes = new ArrayList <IRecipe> (recipes);
+		for(String recName : recipeStrings) {
+			boolean found = false;
+			for(IRecipe exRec : currRecipes) {
+				if (exRec.getIdentifier().equals(recName)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				IRecipe rec = FactoryMod.getManager().getRecipe(recName);
+				if (rec == null) {
+					FactoryMod.getPlugin().warning("Factory at " + blocks.get(0).toString() + " had recipe " + recName + " saved, but it could not be loaded from the config");
+				}
+				else {
+					currRecipes.add(rec);
+				}
+			}
+		}
 		FurnCraftChestFactory fccf = new FurnCraftChestFactory(fccim, phrm,
-				fpm, fccs, updateTime, name, recipes);
+				fpm, fccs, updateTime, name, currRecipes);
 		fccim.setFactory(fccf);
 		phrm.setFactory(fccf);
 		for (IRecipe recipe : recipes) {
-			if (recipe.getRecipeName().equals(selectedRecipe)) {
+			if (recipe.getName().equals(selectedRecipe)) {
 				fccf.setRecipe(recipe);
 			}
 		}

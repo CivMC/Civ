@@ -23,9 +23,9 @@ import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 public class Upgraderecipe extends InputRecipe {
 	private IFactoryEgg egg;
 
-	public Upgraderecipe(String name, int productionTime, ItemMap input,
+	public Upgraderecipe(String identifier, String name, int productionTime, ItemMap input,
 			IFactoryEgg egg) {
-		super(name, productionTime, input);
+		super(identifier, name, productionTime, input);
 		this.egg = egg;
 	}
 
@@ -95,7 +95,7 @@ public class Upgraderecipe extends InputRecipe {
 		ISUtils.setName(fur, egg.getName());
 		ISUtils.setLore(fur, ChatColor.LIGHT_PURPLE + "Recipes:");
 		for (IRecipe rec : ((FurnCraftChestEgg) egg).getRecipes()) {
-			ISUtils.addLore(fur, ChatColor.YELLOW + rec.getRecipeName());
+			ISUtils.addLore(fur, ChatColor.YELLOW + rec.getName());
 		}
 		res.add(fur);
 		ItemStack che = new ItemStack(Material.CHEST);
