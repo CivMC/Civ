@@ -1,4 +1,4 @@
-name: ${project.name}
+name: NameLayer
 main: vg.civcraft.mc.namelayer.NameLayerPlugin
 version: ${project.version}
 author: Rourke750
@@ -73,9 +73,9 @@ commands:
    nlbl:
     aliases: [blacklist, addblacklist]
    nlubl:
-    aliases: [removeblacklist, unblacklist]    
+    aliases: [removeblacklist, unblacklist]
    nl:
-       
+
 permissions:
    namelayer.admin:
       default: op
