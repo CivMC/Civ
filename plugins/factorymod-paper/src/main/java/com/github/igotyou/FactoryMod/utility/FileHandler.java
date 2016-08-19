@@ -202,6 +202,9 @@ public class FileHandler {
 				int breakTime = current.getInt("breakTime", 0);
 				String selectedRecipe = current.getString("selectedRecipe");
 				List <String> recipes = current.getStringList("recipes");
+				if (recipes == null) {
+					recipes = new LinkedList<String>();
+				}
 				FurnCraftChestFactory fac = (FurnCraftChestFactory) egg.revive(blocks, health, selectedRecipe,
 						runtime, breakTime, recipes);
 				String activator = current.getString("activator", "null");

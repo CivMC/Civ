@@ -2,6 +2,7 @@ package com.github.igotyou.FactoryMod.listeners;
 
 import java.util.List;
 
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -48,6 +49,10 @@ public class FactoryModListener implements Listener {
 			Factory c = manager.getFactoryAt(block);
 			if (c != null) {
 				c.getInteractionManager().blockBreak(e.getPlayer(), block);
+				//let creative player interact without breaking it
+				if (e.getPlayer().getGameMode() == GameMode.CREATIVE) {
+					e.setCancelled(true);
+				}
 			}
 		}
 
