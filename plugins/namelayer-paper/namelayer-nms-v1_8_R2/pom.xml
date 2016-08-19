@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>vg.civcraft.mc.namelayer</groupId>
+    <artifactId>namelayer-parent</artifactId>
+    <version>1.0.0</version>
+  </parent>
+
+  <artifactId>NameLayerNMS1_8_R2</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+
+  <name>NameLayerNMS1_8_R2</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>vg.civcraft.mc.namelayer</groupId>
+      <artifactId>namelayer-nms</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot</artifactId>
+      <version>1.8.3-R0.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
+</project>
