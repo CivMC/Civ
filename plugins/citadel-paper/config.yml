@@ -54,7 +54,7 @@ reinforcements:
   requirements: 1
   return: 0
   percent_chance: 0
-  hit_points: 750
+  hit_points: 500
   mature_time: 129600
   acid_time: 10080
   scale_amount: 1
