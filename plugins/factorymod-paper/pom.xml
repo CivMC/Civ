@@ -10,20 +10,20 @@
 	<url>https://github.com/Civcraft/FactoryMod</url>
 
 	<properties>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
 	<build>
-		<sourceDirectory>${basedir}/src</sourceDirectory>
-
 		<resources>
 			<resource>
 				<directory>${basedir}</directory>
 				<includes>
-					<include>*.yml</include>
-					<include>license.txt</include>
+					<include>LICENSE.txt</include>
 				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
 		</resources>
@@ -60,7 +60,6 @@
 			<version>1.3</version>
 			<scope>provided</scope>
 		</dependency>
-
 	</dependencies>
 
 	<repositories>
