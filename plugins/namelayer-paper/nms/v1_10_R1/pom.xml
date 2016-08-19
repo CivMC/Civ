@@ -8,6 +8,7 @@
     <groupId>vg.civcraft.mc.namelayer</groupId>
     <artifactId>namelayer-parent</artifactId>
     <version>1.0.0</version>
+    <relativePath>../../pom.xml</relativePath>
   </parent>
 
   <artifactId>namelayer-nms-v1_10_R1</artifactId>
