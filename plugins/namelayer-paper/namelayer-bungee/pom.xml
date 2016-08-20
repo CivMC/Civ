@@ -14,8 +14,6 @@
   <version>${namelayer.version}</version>
   <packaging>jar</packaging>
 
-  <name>NameLayer Bungee</name>
-
   <dependencies>
     <dependency>
       <groupId>vg.civcraft.mc.namelayer</groupId>

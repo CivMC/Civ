@@ -14,8 +14,6 @@
   <version>${namelayer.version}</version>
   <packaging>jar</packaging>
 
-  <name>NameLayer Spigot</name>
-
   <dependencies>
     <dependency>
       <groupId>vg.civcraft.mc.namelayer</groupId>
