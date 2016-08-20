@@ -30,16 +30,29 @@ import net.minecraft.server.v1_10_R1.NBTTagLong;
 import net.minecraft.server.v1_10_R1.NBTTagDouble;
 import net.minecraft.server.v1_10_R1.NBTTagFloat;
 import net.minecraft.server.v1_10_R1.NBTTagShort;
+import net.minecraft.server.v1_10_R1.PlayerInventory;
 
 /**
- * Allows the storage and comparison of itemstacks while ignoring their maximum
- * possible stack sizes. This offers various tools to compare inventories, to
- * store recipe costs or to specify setupcosts. Take great care when dealing
- * with itemstacks with negative amounnts, while this implementation should be
- * consistent even with negative values, they create possibly unexpected
- * results. For example an empty inventory/itemmap will seem to contain items
- * when compared to a map containing negative values. Additionally this
- * implementation allows durability "wild cards", if you specify -1 as
+ * Allows storage and comparison of sets of itemstacks and includes many utility
+ * methods. Other than the name may suggest, this structure is no map, but a
+ * set. It used to use a map as underlying structure and the name was kept due
+ * to legacy reasons.
+ * 
+ * This class has many possible use, the first one simply being storage of
+ * multiple item stacks without any restrictions that would be created by inventories and some additional convenience methods.
+ * 
+ * Far more is possible though, as you have the possiblity to assign wildcards to individual itemstacks, which is then taken into 
+ * account in the comparison or item interaction methods. A very simple example would be to wildcard the durability of a piece of wool, so using th
+ * 
+ * 
+ * Allows the storage and comparison of a sets of itemstacks while ignoring
+ * their maximum possible stack sizes. This offers various tools to compare
+ * inventories, to store recipe costs or to specify setupcosts. Take great care
+ * when dealing with itemstacks with negative amounts, while this implementation
+ * should be consistent even with negative values, they create possibly
+ * unexpected results. For example an empty inventory/itemmap will seem to
+ * contain items when compared to a map containing negative values. Additionally
+ * this implementation allows durability "wild cards", if you specify -1 as
  * durability it will count as any given durability. When working with multiple
  * ItemMaps this will only work if all methods are executed on the instance
  * containing items with a durability of -1.
@@ -105,9 +118,11 @@ public class ItemMap {
 	 */
 	public void addItemStack(ItemStack input) {
 		if (input != null) {
-			//Bukkit.getServer().getLogger().log(Level.INFO, "Adding {0} as ItemStack", input.toString());
+			// Bukkit.getServer().getLogger().log(Level.INFO,
+			// "Adding {0} as ItemStack", input.toString());
 			ItemStack is = createMapConformCopy(input);
-			//Bukkit.getServer().getLogger().log(Level.INFO, "  Conform Copy: {0}", is.toString());
+			// Bukkit.getServer().getLogger().log(Level.INFO,
+			// "  Conform Copy: {0}", is.toString());
 			if (is == null) {
 				return;
 			}
@@ -290,12 +305,10 @@ public class ItemMap {
 	 * @return New ItemMap with all ItemStack and their amount whose material,
 	 *         durability and enchants matches the given one
 	 */
-	public ItemMap getStacksByMaterialDurabilityEnchants(Material m,
-			int durability, Map<Enchantment, Integer> enchants) {
+	public ItemMap getStacksByMaterialDurabilityEnchants(Material m, int durability, Map<Enchantment, Integer> enchants) {
 		ItemMap result = new ItemMap();
 		for (ItemStack is : items.keySet()) {
-			if (is.getType() == m && is.getDurability() == durability
-					&& is.getItemMeta() != null
+			if (is.getType() == m && is.getDurability() == durability && is.getItemMeta() != null
 					&& is.getItemMeta().getEnchants().equals(enchants)) {
 				result.addItemAmount(is.clone(), items.get(is));
 			}
@@ -305,11 +318,10 @@ public class ItemMap {
 
 	public ItemMap getStacksByMaterialDurabilityEnchants(ItemStack is) {
 		if (is.getItemMeta() != null) {
-			return getStacksByMaterialDurabilityEnchants(is.getType(),
-					(int) is.getDurability(), is.getItemMeta().getEnchants());
+			return getStacksByMaterialDurabilityEnchants(is.getType(), (int) is.getDurability(), is.getItemMeta()
+					.getEnchants());
 		} else {
-			return getStacksByMaterialDurabilityEnchants(is.getType(),
-					(int) is.getDurability(),
+			return getStacksByMaterialDurabilityEnchants(is.getType(), (int) is.getDurability(),
 					new HashMap<Enchantment, Integer>());
 		}
 	}
@@ -326,8 +338,7 @@ public class ItemMap {
 	public ItemMap getStacksByLore(List<String> lore) {
 		ItemMap result = new ItemMap();
 		for (ItemStack is : items.keySet()) {
-			if (is.getItemMeta() != null
-					&& is.getItemMeta().getLore().equals(lore)) {
+			if (is.getItemMeta() != null && is.getItemMeta().getLore().equals(lore)) {
 				result.addItemAmount(is.clone(), items.get(is));
 			}
 		}
@@ -348,8 +359,8 @@ public class ItemMap {
 		int amount = 0;
 		for (Entry<ItemStack, Integer> entry : matSubMap.getEntrySet()) {
 			ItemStack current = entry.getKey();
-			if ((is.getDurability() == -1 || is.getDurability() == current
-					.getDurability()) && is.getItemMeta().equals(current.getItemMeta())) {
+			if ((is.getDurability() == -1 || is.getDurability() == current.getDurability())
+					&& is.getItemMeta().equals(current.getItemMeta())) {
 				amount += entry.getValue();
 			}
 		}
@@ -480,7 +491,8 @@ public class ItemMap {
 				ItemStack toAdd = is.clone();
 				int addAmount = Math.min(amount, is.getMaxStackSize());
 				toAdd.setAmount(addAmount);
-				//Bukkit.getServer().getLogger().log(Level.INFO, "Adding {0} as ItemStack", toAdd.toString());
+				// Bukkit.getServer().getLogger().log(Level.INFO,
+				// "Adding {0} as ItemStack", toAdd.toString());
 				result.add(toAdd);
 				amount -= addAmount;
 			}
@@ -508,10 +520,20 @@ public class ItemMap {
 	 *         the inventory, false if not
 	 */
 	public boolean fitsIn(Inventory i) {
-		ItemMap invCopy = new ItemMap(i);
+		int size;
+		if (i instanceof PlayerInventory) {
+			size = 36;
+		}
+		else {
+			size = i.getSize();
+		}
+		ItemMap invCopy = new ItemMap();
+		for(ItemStack is : i.getStorageContents()) {
+			invCopy.addItemStack(is);
+		}
 		ItemMap instanceCopy = this.clone();
 		instanceCopy.merge(invCopy);
-		return instanceCopy.getItemStackRepresentation().size() <= i.getSize();
+		return instanceCopy.getItemStackRepresentation().size() <= size;
 	}
 
 	/**
@@ -526,8 +548,7 @@ public class ItemMap {
 		List<ItemStack> items = new LinkedList<ItemStack>();
 		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
 			ItemStack is = entry.getKey().clone();
-			ISUtils.addLore(is,
-					ChatColor.GOLD + "Total item count: " + entry.getValue());
+			ISUtils.addLore(is, ChatColor.GOLD + "Total item count: " + entry.getValue());
 			if (entry.getValue() > entry.getKey().getType().getMaxStackSize()) {
 				int stacks = entry.getValue() / is.getType().getMaxStackSize();
 				int extra = entry.getValue() % is.getType().getMaxStackSize();
@@ -564,8 +585,7 @@ public class ItemMap {
 				}
 				if (inventoryStack.getType() == is.getType()) {
 					ItemMap compareMap = new ItemMap(inventoryStack);
-					int removeAmount = Math.min(amountToRemove,
-							compareMap.getAmount(is));
+					int removeAmount = Math.min(amountToRemove, compareMap.getAmount(is));
 					if (removeAmount != 0) {
 						ItemStack cloneStack = inventoryStack.clone();
 						cloneStack.setAmount(removeAmount);
@@ -607,12 +627,14 @@ public class ItemMap {
 	private static ItemStack createMapConformCopy(ItemStack is) {
 		ItemStack copy = is.clone();
 		copy.setAmount(1);
-		net.minecraft.server.v1_10_R1.ItemStack s = CraftItemStack
-				.asNMSCopy(copy);
+		net.minecraft.server.v1_10_R1.ItemStack s = CraftItemStack.asNMSCopy(copy);
 		if (s == null) {
-			Bukkit.getServer().getLogger().log(Level.SEVERE, "Attempted to create map conform copy of {0}"
-					+ ", but couldn't because this item can't be held in inventories since Minecraft 1.8",
-					copy.toString());
+			Bukkit.getServer()
+					.getLogger()
+					.log(Level.SEVERE,
+							"Attempted to create map conform copy of {0}"
+									+ ", but couldn't because this item can't be held in inventories since Minecraft 1.8",
+							copy.toString());
 			return null;
 		}
 		s.setRepairCost(0);
@@ -623,9 +645,12 @@ public class ItemMap {
 	/**
 	 * Utility to add NBT tags to an item and produce a custom stack size
 	 *
-	 * @param is Template Bukkit ItemStack
-	 * @param amt Output Stack Size
-	 * @param map Java Maps and Lists representing NBT data
+	 * @param is
+	 *            Template Bukkit ItemStack
+	 * @param amt
+	 *            Output Stack Size
+	 * @param map
+	 *            Java Maps and Lists representing NBT data
 	 * @return Cloned ItemStack with amount set to amt and NBT set to map.
 	 */
 	public static ItemStack enrichWithNBT(ItemStack is, int amt, Map<String, Object> map) {
@@ -652,7 +677,8 @@ public class ItemMap {
 
 	public static NBTTagCompound mapToNBT(NBTTagCompound base, Map<String, Object> map) {
 		Bukkit.getServer().getLogger().log(Level.INFO, "Representing map --> NBTTagCompound");
-		if (map == null || base == null) return base;
+		if (map == null || base == null)
+			return base;
 		for (Map.Entry<String, Object> entry : map.entrySet()) {
 			Object object = entry.getValue();
 			if (object instanceof Map) {
@@ -662,36 +688,36 @@ public class ItemMap {
 				Bukkit.getServer().getLogger().log(Level.INFO, "Adding list at key {0}", entry.getKey());
 				base.set(entry.getKey(), listToNBT(new NBTTagList(), (List<Object>) object));
 			} else if (object instanceof String) {
-				Bukkit.getServer().getLogger().log(Level.INFO, "Adding String {1} at key {0}", 
-						new Object[] {entry.getKey(), object});
+				Bukkit.getServer().getLogger()
+						.log(Level.INFO, "Adding String {1} at key {0}", new Object[] { entry.getKey(), object });
 				base.setString(entry.getKey(), (String) object);
 			} else if (object instanceof Double) {
-				Bukkit.getServer().getLogger().log(Level.INFO, "Adding Double {1} at key {0}", 
-						new Object[] {entry.getKey(), object});
+				Bukkit.getServer().getLogger()
+						.log(Level.INFO, "Adding Double {1} at key {0}", new Object[] { entry.getKey(), object });
 				base.setDouble(entry.getKey(), (Double) object);
 			} else if (object instanceof Float) {
-				Bukkit.getServer().getLogger().log(Level.INFO, "Adding Float {1} at key {0}", 
-						new Object[] {entry.getKey(), object});
+				Bukkit.getServer().getLogger()
+						.log(Level.INFO, "Adding Float {1} at key {0}", new Object[] { entry.getKey(), object });
 				base.setFloat(entry.getKey(), (Float) object);
 			} else if (object instanceof Boolean) {
-				Bukkit.getServer().getLogger().log(Level.INFO, "Adding Boolean {1} at key {0}", 
-						new Object[] {entry.getKey(), object});
+				Bukkit.getServer().getLogger()
+						.log(Level.INFO, "Adding Boolean {1} at key {0}", new Object[] { entry.getKey(), object });
 				base.setBoolean(entry.getKey(), (Boolean) object);
 			} else if (object instanceof Byte) {
-				Bukkit.getServer().getLogger().log(Level.INFO, "Adding Byte {1} at key {0}", 
-						new Object[] {entry.getKey(), object});
+				Bukkit.getServer().getLogger()
+						.log(Level.INFO, "Adding Byte {1} at key {0}", new Object[] { entry.getKey(), object });
 				base.setByte(entry.getKey(), (Byte) object);
 			} else if (object instanceof Short) {
-				Bukkit.getServer().getLogger().log(Level.INFO, "Adding Byte {1} at key {0}", 
-						new Object[] {entry.getKey(), object});
+				Bukkit.getServer().getLogger()
+						.log(Level.INFO, "Adding Byte {1} at key {0}", new Object[] { entry.getKey(), object });
 				base.setShort(entry.getKey(), (Short) object);
 			} else if (object instanceof Integer) {
-				Bukkit.getServer().getLogger().log(Level.INFO, "Adding Integer {1} at key {0}", 
-						new Object[] {entry.getKey(), object});
+				Bukkit.getServer().getLogger()
+						.log(Level.INFO, "Adding Integer {1} at key {0}", new Object[] { entry.getKey(), object });
 				base.setInt(entry.getKey(), (Integer) object);
 			} else if (object instanceof Long) {
-				Bukkit.getServer().getLogger().log(Level.INFO, "Adding Long {1} at key {0}", 
-						new Object[] {entry.getKey(), object});
+				Bukkit.getServer().getLogger()
+						.log(Level.INFO, "Adding Long {1} at key {0}", new Object[] { entry.getKey(), object });
 				base.setLong(entry.getKey(), (Long) object);
 			} else if (object instanceof byte[]) {
 				Bukkit.getServer().getLogger().log(Level.INFO, "Adding bytearray at key {0}", entry.getKey());
@@ -700,14 +726,15 @@ public class ItemMap {
 				Bukkit.getServer().getLogger().log(Level.INFO, "Adding intarray at key {0}", entry.getKey());
 				base.setIntArray(entry.getKey(), (int[]) object);
 			} else if (object instanceof UUID) {
-				Bukkit.getServer().getLogger().log(Level.INFO, "Adding UUID {1} at key {0}", 
-						new Object[] {entry.getKey(), object});
+				Bukkit.getServer().getLogger()
+						.log(Level.INFO, "Adding UUID {1} at key {0}", new Object[] { entry.getKey(), object });
 				base.a(entry.getKey(), (UUID) object);
 			} else if (object instanceof NBTBase) {
 				Bukkit.getServer().getLogger().log(Level.INFO, "Adding nbtobject at key {0}", entry.getKey());
 				base.set(entry.getKey(), (NBTBase) object);
 			} else {
-				Bukkit.getServer().getLogger().log(Level.WARNING, "Unrecognized entry in map-->NBT: {0}", object.toString());
+				Bukkit.getServer().getLogger()
+						.log(Level.WARNING, "Unrecognized entry in map-->NBT: {0}", object.toString());
 			}
 		}
 		return base;
@@ -715,7 +742,8 @@ public class ItemMap {
 
 	public static NBTTagList listToNBT(NBTTagList base, List<Object> list) {
 		Bukkit.getServer().getLogger().log(Level.INFO, "Representing list --> NBTTagList");
-		if (list == null || base == null) return base;
+		if (list == null || base == null)
+			return base;
 		for (Object object : list) {
 			if (object instanceof Map) {
 				Bukkit.getServer().getLogger().log(Level.INFO, "Adding map to list");
@@ -754,8 +782,8 @@ public class ItemMap {
 				Bukkit.getServer().getLogger().log(Level.INFO, "Adding nbt object to list");
 				base.add((NBTBase) object);
 			} else {
-				Bukkit.getServer().getLogger().log(Level.WARNING, "Unrecognized entry in list-->NBT: {0}", 
-						base.toString());
+				Bukkit.getServer().getLogger()
+						.log(Level.WARNING, "Unrecognized entry in list-->NBT: {0}", base.toString());
 			}
 		}
 		return base;
