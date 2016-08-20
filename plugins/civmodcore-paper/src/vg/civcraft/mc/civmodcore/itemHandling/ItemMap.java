@@ -17,6 +17,8 @@ import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.configuration.MemorySection;
 
 import net.minecraft.server.v1_10_R1.NBTTagCompound;
 import net.minecraft.server.v1_10_R1.NBTTagList;
@@ -30,7 +32,6 @@ import net.minecraft.server.v1_10_R1.NBTTagLong;
 import net.minecraft.server.v1_10_R1.NBTTagDouble;
 import net.minecraft.server.v1_10_R1.NBTTagFloat;
 import net.minecraft.server.v1_10_R1.NBTTagShort;
-import net.minecraft.server.v1_10_R1.PlayerInventory;
 
 /**
  * Allows storage and comparison of sets of itemstacks and includes many utility
@@ -684,6 +685,9 @@ public class ItemMap {
 			if (object instanceof Map) {
 				Bukkit.getServer().getLogger().log(Level.INFO, "Adding map at key {0}", entry.getKey());
 				base.set(entry.getKey(), mapToNBT(new NBTTagCompound(), (Map<String, Object>) object));
+			} else if (object instanceof MemorySection) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding map from MemorySection at key {0}", entry.getKey());
+				base.set(entry.getKey(), mapToNBT(new NBTTagCompound(), ((MemorySection)object).getValues(true)));
 			} else if (object instanceof List) {
 				Bukkit.getServer().getLogger().log(Level.INFO, "Adding list at key {0}", entry.getKey());
 				base.set(entry.getKey(), listToNBT(new NBTTagList(), (List<Object>) object));
@@ -748,6 +752,9 @@ public class ItemMap {
 			if (object instanceof Map) {
 				Bukkit.getServer().getLogger().log(Level.INFO, "Adding map to list");
 				base.add(mapToNBT(new NBTTagCompound(), (Map<String, Object>) object));
+			} else if (object instanceof MemorySection) {
+				Bukkit.getServer().getLogger().log(Level.INFO, "Adding map from MemorySection to list");
+				base.add(mapToNBT(new NBTTagCompound(), ((MemorySection)object).getValues(true)));
 			} else if (object instanceof List) {
 				Bukkit.getServer().getLogger().log(Level.INFO, "Adding list to list");
 				base.add(listToNBT(new NBTTagList(), (List<Object>) object));
