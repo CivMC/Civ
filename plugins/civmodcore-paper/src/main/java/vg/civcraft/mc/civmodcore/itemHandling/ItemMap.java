@@ -23,6 +23,7 @@ import net.minecraft.server.v1_10_R1.NBTTagList;
 import net.minecraft.server.v1_10_R1.NBTTagLong;
 import net.minecraft.server.v1_10_R1.NBTTagShort;
 import net.minecraft.server.v1_10_R1.NBTTagString;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.MemorySection;
@@ -30,6 +31,7 @@ import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 /**
  * Allows the storage and comparison of itemstacks while ignoring their maximum
@@ -486,10 +488,20 @@ public class ItemMap {
 	 * the inventory, false if not
 	 */
 	public boolean fitsIn(Inventory i) {
-		ItemMap invCopy = new ItemMap(i);
+		int size;
+		if (i instanceof PlayerInventory) {
+			size = 36;
+		}
+		else {
+			size = i.getSize();
+		}
+		ItemMap invCopy = new ItemMap();
+		for(ItemStack is : i.getStorageContents()) {
+			invCopy.addItemStack(is);
+		}
 		ItemMap instanceCopy = this.clone();
 		instanceCopy.merge(invCopy);
-		return instanceCopy.getItemStackRepresentation().size() <= i.getSize();
+		return instanceCopy.getItemStackRepresentation().size() <= size;
 	}
 
 	/**
