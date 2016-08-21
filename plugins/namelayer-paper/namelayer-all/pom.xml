@@ -11,18 +11,18 @@
   </parent>
 
   <artifactId>NameLayer</artifactId>
-  <version>${namelayer.version}</version>
+  <version>2.8.09</version>
 
   <dependencies>
     <dependency>
       <groupId>vg.civcraft.mc.namelayer</groupId>
       <artifactId>namelayer-spigot</artifactId>
-      <version>${namelayer.version}</version>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>vg.civcraft.mc.namelayer</groupId>
       <artifactId>namelayer-bungee</artifactId>
-      <version>${namelayer.version}</version>
+      <version>1.0.0</version>
     </dependency>
   </dependencies>
 
@@ -50,7 +50,10 @@
             <configuration>
               <artifactSet>
                 <excludes>
-                  <exclude>vg.civcraft.mc.namelayer:namelayer-spigot</exclude>
+                  <exclude>vg.civcraft.mc.namelayer:NameLayer</exclude>
+                  <exclude>org.spigotmc:spigot</exclude>
+                  <exclude>junit:junit</exclude>
+                  <exclude>org.hamcrest:hamcrest-core</exclude>
                 </excludes>
               </artifactSet>
             </configuration>

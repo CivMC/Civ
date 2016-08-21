@@ -11,7 +11,7 @@
   </parent>
 
   <artifactId>namelayer-spigot</artifactId>
-  <version>${namelayer.version}</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <dependencies>
@@ -50,30 +50,6 @@
         <filtering>true</filtering>
       </resource>
     </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4.3</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <artifactSet>
-                <excludes>
-                  <exclude>org.spigotmc:spigot</exclude>
-                  <exclude>junit:junit</exclude>
-                  <exclude>org.hamcrest:hamcrest-core</exclude>
-                </excludes>
-              </artifactSet>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
   </build>
 
   <profiles>

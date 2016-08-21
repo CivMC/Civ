@@ -11,14 +11,14 @@
   </parent>
 
   <artifactId>namelayer-bungee</artifactId>
-  <version>${namelayer.version}</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
       <groupId>vg.civcraft.mc.namelayer</groupId>
       <artifactId>namelayer-spigot</artifactId>
-      <version>${namelayer.version}</version>
+      <version>1.0.0</version>
     </dependency>
 
     <dependency>
