@@ -1,4 +1,15 @@
+#Url that can be opened in the delivery gui
 complaintURL: https://www.reddit.com/message/compose?to=%2Fr%2FCivcraft
+
+#Whether BetterShards player data API should be used for delivery inventories
+useBetterShards: true
+
+
+
+#database credentials
 database:
-  password: 
-  user: root
+  host: {{ central_db_location }}
+  database: {{ central_db_name }}
+  port: 3306
+  password: {{ mysql_non_root_pass }}
+  user: {{ central_db_user }}
