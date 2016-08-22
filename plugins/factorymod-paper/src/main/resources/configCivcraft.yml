@@ -4517,19 +4517,19 @@ recipes:
     input:
       piston:
         material: PISTON_BASE
-        amount: 128
+        amount: 64
       pistonSticky:
         material: PISTON_STICKY_BASE
-        amount: 128
+        amount: 64
       chest:
         material: CHEST
         amount: 256
       iron:
         material: IRON_BLOCK
-        amount: 64
+        amount: 32
       redstone:
         material: REDSTONE_BLOCK
-        amount: 32
+        amount: 16
       crate:
         material: CHEST
         amount: 256
@@ -4592,46 +4592,6 @@ recipes:
     input:
       diamond block:
         material: DIAMOND_BLOCK
-        amount: 64
-      char:
-        material: COAL
-        durability: 1
-        amount: 1024
-      lava:
-        material: LAVA_BUCKET
-        amount: 16
-      anvil:
-        material: ANVIL
-        amount: 128
-    factory: Diamond Armour Forge
-  Upgrade_to_Diamond_Equipment_Forge:
-    production_time: 1h
-    type: UPGRADE
-    name: Upgrade to Diamond Equipment Forge
-    fuel_consumption_intervall: 30s
-    input:
-      diamond block:
-        material: DIAMOND_BLOCK
-        amount: 24
-      char:
-        material: COAL
-        durability: 1
-        amount: 512
-      lava:
-        material: LAVA_BUCKET
-        amount: 8
-      anvil:
-        material: ANVIL
-        amount: 64
-    factory: Diamond Equipment Forge
-  Upgrade_to_Diamond_Tools_Forge:
-    production_time: 1h
-    type: UPGRADE
-    name: Upgrade to Diamond Tools Forge
-    fuel_consumption_intervall: 30s
-    input:
-      diamond block:
-        material: DIAMOND_BLOCK
         amount: 48
       char:
         material: COAL
@@ -4642,7 +4602,47 @@ recipes:
         amount: 16
       anvil:
         material: ANVIL
-        amount: 128
+        amount: 5
+    factory: Diamond Armour Forge
+  Upgrade_to_Diamond_Equipment_Forge:
+    production_time: 1h
+    type: UPGRADE
+    name: Upgrade to Diamond Equipment Forge
+    fuel_consumption_intervall: 30s
+    input:
+      diamond block:
+        material: DIAMOND_BLOCK
+        amount: 16
+      char:
+        material: COAL
+        durability: 1
+        amount: 512
+      lava:
+        material: LAVA_BUCKET
+        amount: 8
+      anvil:
+        material: ANVIL
+        amount: 5
+    factory: Diamond Equipment Forge
+  Upgrade_to_Diamond_Tools_Forge:
+    production_time: 1h
+    type: UPGRADE
+    name: Upgrade to Diamond Tools Forge
+    fuel_consumption_intervall: 30s
+    input:
+      diamond block:
+        material: DIAMOND_BLOCK
+        amount: 32
+      char:
+        material: COAL
+        durability: 1
+        amount: 1024
+      lava:
+        material: LAVA_BUCKET
+        amount: 16
+      anvil:
+        material: ANVIL
+        amount: 5
     factory: Diamond Tools Forge
   Upgrade_to_Farmstead_Factory:
     production_time: 10m
@@ -4698,16 +4698,16 @@ recipes:
     input:
       diamond:
         material: DIAMOND_BLOCK
-        amount: 64
+        amount: 20
       quartz:
         material: QUARTZ
-        amount: 2048
+        amount: 1280
       lapis:
         material: LAPIS_BLOCK
-        amount: 256
+        amount: 128
       redstone:
         material: REDSTONE_BLOCK
-        amount: 256
+        amount: 128
     factory: Gem Extractor
   Upgrade_to_Glass_Dying_Factory:
     production_time: 1h
@@ -4723,67 +4723,67 @@ recipes:
         amount: 576
       dye0:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 0
       dye1:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 1
       dye2:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 2
       dye3:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 3
       dye4:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 4
       dye5:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 5
       dye6:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 6
       dye7:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 7
       dye8:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 8
       dye9:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 9
       dye10:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 10
       dye11:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 11
       dye12:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 12
       dye13:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 13
       dye14:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 14
       dye15:
         material: INK_SACK
-        amount: 128
+        amount: 32
         durability: 15        
     factory: Glass Dying Factory
   Upgrade_to_Gold_Equipment_Forge:
@@ -4915,7 +4915,7 @@ recipes:
     input:
       iron block:
         material: IRON_BLOCK
-        amount: 128
+        amount: 32
       wood:
         material: WOOD
         durability: -1
@@ -4929,7 +4929,7 @@ recipes:
         amount: 12
       anvil:
         material: ANVIL
-        amount: 64
+        amount: 5
     factory: Iron Equipment Forge
   Upgrade_to_Iron_Forge_Advanced:
     production_time: 3600s
@@ -4939,14 +4939,14 @@ recipes:
     input:
       iron block:
         material: IRON_BLOCK
-        amount: 512
+        amount: 128
       char:
         material: COAL
         durability: 1
         amount: 1024
       anvil:
         material: ANVIL
-        amount: 384
+        amount: 10
       lava:
         material: LAVA_BUCKET
         amount: 24  
@@ -4959,7 +4959,7 @@ recipes:
     input:
       iron block:
         material: IRON_BLOCK
-        amount: 192
+        amount: 32
       char:
         material: COAL
         durability: 1
@@ -4991,11 +4991,14 @@ recipes:
     name: Upgrade to Laboratory
     fuel_consumption_intervall: 20s
     input:
-      cauldron:
+      redstone:
         material: REDSTONE
-        amount: 256
-      glass bottle:
+        amount: 192
+      cauldron:
         material: CAULDRON_ITEM
+        amount: 16
+      slime balls: 
+        material: SLIME_BALL
         amount: 32
     factory: Laboratory
   Upgrade_to_Netherbrick_Smelter:
@@ -5023,13 +5026,13 @@ recipes:
     input:
       iron ingot:
         material: IRON_BLOCK
-        amount: 96
+        amount: 48
       coal:
         material: COAL_BLOCK
-        amount: 192
+        amount: 128
       redstone:
         material: REDSTONE_BLOCK
-        amount: 48
+        amount: 32
     factory: Ore Smelter
   Upgrade_to_Ore_Forge:
     production_time: 4h
@@ -5039,13 +5042,13 @@ recipes:
     input:
       iron ingot:
         material: IRON_BLOCK
-        amount: 384
+        amount: 192
       gold ingot:
         material: GOLD_BLOCK
-        amount: 192
+        amount: 128
       coal:
         material: COAL_BLOCK
-        amount: 512
+        amount: 256
     factory: Ore Forge
   Upgrade_to_Organic_Block_Factory:
     production_time: 1800s
@@ -5084,7 +5087,7 @@ recipes:
     input:
       iron:
         material: IRON_BLOCK
-        amount: 128
+        amount: 64
       redstone:
         material: REDSTONE_BLOCK
         amount: 32
@@ -5097,7 +5100,7 @@ recipes:
         amount: 512
       anvil:
         material: ANVIL
-        amount: 128
+        amount: 10
       lava:
         material: LAVA_BUCKET
         amount: 16
@@ -5115,16 +5118,16 @@ recipes:
     input:
       redstone dust:
         material: REDSTONE_BLOCK
-        amount: 384
+        amount: 128
       quartz:
         material: QUARTZ
-        amount: 1024
+        amount: 768
       glass:
         material: GLASS
         amount: 512
       gold:
         material: GOLD_BLOCK
-        amount: 64
+        amount: 32
     factory: Redstone Electronics
   Upgrade_to_Redstone_Factory_Basic:
     production_time: 900s
@@ -5134,7 +5137,14 @@ recipes:
     input:
       redstone dust:
         material: REDSTONE
-        amount: 128
+        amount: 384
+      stone:
+        material: STONE
+        amount: 256
+      wood:
+        material: WOOD
+        amount: 512
+        durability: -1
     factory: Redstone Techniques
   Upgrade_to_Redstone_Mechanics_Factory:
     production_time: 1800s
@@ -5144,16 +5154,16 @@ recipes:
     input:
       redstone dust:
         material: REDSTONE_BLOCK
-        amount: 384
+        amount: 128
       quartz:
         material: QUARTZ
-        amount: 128
+        amount: 256
       stone:
         material: STONE
         amount: 1024
       string:
         material: STRING
-        amount: 512
+        amount: 256
       glowstone:
         material: GLOWSTONE
         amount: 512
@@ -5215,16 +5225,19 @@ recipes:
         amount: 1024
       rabbit:
         material: RABBIT
-        amount: 256
+        amount: 192
       bowl: 
         material: BOWL
         amount: 128
       fire:
         material: FLINT_AND_STEEL
-        amount: 8
+        amount: 4
       water:
         material: WATER_BUCKET
         amount: 8
+      beetroot:
+        material: BEETROOT
+        amount: 320      
     factory: Soup kitchen
   Upgrade_to_Stone_Smelter:
     production_time: 10m
@@ -5282,6 +5295,70 @@ recipes:
       wool:
         material: WOOL
         amount: 256
+      dye0:
+        material: INK_SACK
+        amount: 32
+        durability: 0
+      dye1:
+        material: INK_SACK
+        amount: 32
+        durability: 1
+      dye2:
+        material: INK_SACK
+        amount: 32
+        durability: 2
+      dye3:
+        material: INK_SACK
+        amount: 32
+        durability: 3
+      dye4:
+        material: INK_SACK
+        amount: 32
+        durability: 4
+      dye5:
+        material: INK_SACK
+        amount: 32
+        durability: 5
+      dye6:
+        material: INK_SACK
+        amount: 32
+        durability: 6
+      dye7:
+        material: INK_SACK
+        amount: 32
+        durability: 7
+      dye8:
+        material: INK_SACK
+        amount: 32
+        durability: 8
+      dye9:
+        material: INK_SACK
+        amount: 32
+        durability: 9
+      dye10:
+        material: INK_SACK
+        amount: 32
+        durability: 10
+      dye11:
+        material: INK_SACK
+        amount: 32
+        durability: 11
+      dye12:
+        material: INK_SACK
+        amount: 32
+        durability: 12
+      dye13:
+        material: INK_SACK
+        amount: 32
+        durability: 13
+      dye14:
+        material: INK_SACK
+        amount: 32
+        durability: 14
+      dye15:
+        material: INK_SACK
+        amount: 32
+        durability: 15
     factory: Wool Processing
   Upgrade_to_Fancy_Stone_Smelter:
     name: Upgrade to Fancy Stone Smelter
@@ -6719,7 +6796,7 @@ recipes:
     input:
       ironblocks:
         material: IRON_BLOCK
-        amount: 384
+        amount: 128
       aether:
         material: GOLD_NUGGET
         amount: 500
@@ -6730,7 +6807,7 @@ recipes:
             enchant: DURABILITY
       xp:
         material: EMERALD_BLOCK
-        amount: 22
+        amount: 44
   Upgrade_to_Grandmaster_Transmuter:
     production_time: 4h
     type: UPGRADE
@@ -6740,7 +6817,7 @@ recipes:
     input:
       ironblocks:
         material: DIAMOND_BLOCK
-        amount: 32
+        amount: 16
       aether:
         material: GOLD_NUGGET
         amount: 78
@@ -10176,7 +10253,8 @@ recipes:
               level: 5
             ub:
               enchant: DURABILITY
-              level: 5
+              level: 4
+          durability: 1500
       godbook1:
         chance: 0.00120909
         power5book:
@@ -10383,7 +10461,7 @@ recipes:
         chance: 0.0037038
         item:
           material: COAL
-          amount: 32
+          amount: 16
           durability: 1
           lore:
            - Compacted Item
@@ -10391,7 +10469,7 @@ recipes:
         chance: 0.0037012
         item:
           material: COAL_ORE
-          amount: 5
+          amount: 2
           lore:
            - Cave Concentrate
       mid1:
@@ -10644,7 +10722,8 @@ recipes:
               level: 5
             ub:
               enchant: DURABILITY
-              level: 5
+              level: 4
+          durability: 1500
       godbook1:
         chance: 0.00120909
         power5book:
@@ -10851,7 +10930,7 @@ recipes:
         chance: 0.0037038
         item:
           material: COAL
-          amount: 32
+          amount: 16
           durability: 1
           lore:
            - Compacted Item
@@ -10859,7 +10938,7 @@ recipes:
         chance: 0.0037012
         item:
           material: COAL_ORE
-          amount: 5
+          amount: 2
           lore:
            - Cave Concentrate
       mid1:
