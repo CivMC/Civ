@@ -392,10 +392,15 @@ public class BastionBlockManager {
 		}
 		
 		if (blocking.size() > 0) {
-			this.erodeFromTeleport(event.getTo(), event.getPlayer().getName(), blocking);
+			if(!Bastion.getConfigManager().getDamageFirstBastion()){
+				this.erodeFromTeleport(event.getTo(), event.getPlayer().getName(), blocking);
+			}
 			event.getPlayer().sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
 			// TODO: Make consumption of pearls optional here.
-			event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+			if (!Bastion.getConfigManager().getConsumePearlOnBlock()) {
+				event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+				event.getPlayer().updateInventory();
+			}
 			event.setCancelled(true);
 			return;
 		}
@@ -422,7 +427,10 @@ public class BastionBlockManager {
 			this.erodeFromTeleport(event.getFrom(), event.getPlayer().getName(), blocking);
 			event.getPlayer().sendMessage(ChatColor.RED + "Ender pearl blocked by Bastion Block");
 			// TODO: Make consumption of pearls optional here.
-			event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+			if (!Bastion.getConfigManager().getConsumePearlOnBlock()) {
+				event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+				event.getPlayer().updateInventory();
+			}
 			event.setCancelled(true);
 			return;
 		}	

@@ -22,6 +22,7 @@ BastionBlock:
   EnderPearls:
     preventEnderPearl: true 
     block_midair: false
+    damage_first_bastion: true
     scaleFac: 1
     requireMaturity: true 
     consumeOnBlock: false  
