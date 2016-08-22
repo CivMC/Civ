@@ -306,6 +306,13 @@ public class GroupManagerDao {
 			ver = updateVersion(ver, plugin.getName());
 			log(Level.INFO, "Database update to Version eleven took " + (System.currentTimeMillis() - first_time) /1000 + " seconds.");
 		}
+		if (ver == 11){
+			long first_time = System.currentTimeMillis();
+			log(Level.INFO, "Database updating to version twelve, stripping pipes.");
+			db.execute("UPDATE faction SET group_name=REPLACE(group_name,'|','');");
+			ver = updateVersion(ver, plugin.getName());
+			log(Level.INFO, "Database update to Version twelve took " + (System.currentTimeMillis() - first_time) /1000 + " seconds.");
+		}
 		
 		log(Level.INFO, "Database update took " + (System.currentTimeMillis() - begin_time) / 1000 + " seconds.");
 	}
