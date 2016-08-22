@@ -7,7 +7,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class DonumConfiguration {
 	
 	private String complaintURL;
-	private boolean isMercuryEnabled;
 	
 	private String host;
 	private String database;
@@ -15,13 +14,19 @@ public class DonumConfiguration {
 	private String user;
 	private String password;
 	
+	private boolean useBetterShards;
+	
 	
 	public void parse() {
 		Donum plugin = Donum.getInstance();
 		plugin.saveDefaultConfig();
 		plugin.reloadConfig();
 		FileConfiguration config = plugin.getConfig();
-		this.isMercuryEnabled = Bukkit.getPluginManager().isPluginEnabled("Mercury");
+		this.useBetterShards = config.getBoolean("useBetterShards", false);
+		if (this.useBetterShards) {
+			//make sure plugin is enabled
+			this.useBetterShards = Bukkit.getPluginManager().isPluginEnabled("BetterShards");
+		}
 		this.complaintURL = config.getString("complaintURL","");
 		this.host= config.getString("database.host", "localhost");
 		this.database = config.getString("database.database", "global");
@@ -37,11 +42,8 @@ public class DonumConfiguration {
 		return complaintURL;
 	}
 	
-	/**
-	 * @return Whether Mercury is enabled
-	 */
-	public boolean isMercuryEnabled() {
-		return isMercuryEnabled;
+	public boolean useBetterShards() {
+		return useBetterShards;
 	}
 	
 	/**

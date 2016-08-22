@@ -20,6 +20,7 @@ import com.github.civcraft.donum.inventories.DeliveryInventory;
 
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
+import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
@@ -48,8 +49,16 @@ public class DeliveryGUI {
 			currentPage--;
 			showScreen();
 		}
-		for (int i = 45 * currentPage; i < 45 * (currentPage + 1) && i < stacks.size(); i++) {
-			ci.setSlot(createRemoveItemClickable(stacks.get(i)), i - (45 * currentPage));
+		if (stacks.size() == 0) {
+			//item to indicate that there is nothing to claim
+			ItemStack noClaim = new ItemStack(Material.BARRIER);
+			ISUtils.setName(noClaim, ChatColor.GOLD + "No items available");
+			ISUtils.addLore(noClaim, ChatColor.RED + "You currently have no items you could claim");
+			ci.setSlot(new DecorationStack(noClaim), 4);
+		} else {
+			for (int i = 45 * currentPage; i < 45 * (currentPage + 1) && i < stacks.size(); i++) {
+				ci.setSlot(createRemoveItemClickable(stacks.get(i)), i - (45 * currentPage));
+			}
 		}
 		// previous button
 		if (currentPage > 0) {
@@ -115,7 +124,40 @@ public class DeliveryGUI {
 			}
 		};
 		ci.setSlot(openComplaintForm, 47);
-		
+
+		// claim all button
+		ItemStack gibAll = new ItemStack(Material.BLAZE_POWDER);
+		ISUtils.setName(gibAll, ChatColor.GOLD + "Claim all items");
+		ISUtils.addLore(gibAll, ChatColor.AQUA
+				+ "Click to automatically claim items until your inventory is full or your delivery inventory is empty");
+		Clickable autoClaimClick = new Clickable(gibAll) {
+
+			@Override
+			public void clicked(Player p) {
+				PlayerInventory pInv = p.getInventory();
+				for (ItemStack current : inventory.getInventory().getItemStackRepresentation()) {
+					if (new ItemMap(current).fitsIn(pInv)) {
+						Donum.getInstance().debug(
+								p.getName() + " got " + current.toString() + " auto delivered from delivery inventory");
+						inventory.getInventory().removeItemStack(current);
+						pInv.addItem(current);
+						inventory.setDirty(true);
+					} else {
+						p.sendMessage(ChatColor.RED + "Your inventory its full!");
+						break;
+					}
+				}
+				p.updateInventory();
+				if (inventory.getInventory().getTotalItemAmount() == 0) {
+					p.sendMessage(ChatColor.GREEN + "Successfully claimed all items");
+				} else {
+					showScreen();
+				}
+			}
+
+		};
+		ci.setSlot(autoClaimClick, 51);
+
 		ci.showInventory(p);
 	}
 

@@ -4,6 +4,7 @@ import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -149,30 +150,8 @@ public class DonumDAO {
 				blob.free();
 				loadedMap = ItemMapBlobHandling.turnBlobIntoItemMap(blobAsBytes);
 			}
-			try (PreparedStatement loadToProcess = db
-					.prepareStatement("select deliveryId, inventory from deliveryAdditions where uuid=?;")) {
-				loadToProcess.setString(1, uuid.toString());
-				ResultSet toProcess = loadToProcess.executeQuery();
-				boolean changes = false;
-				while (toProcess.next()) {
-					changes = true;
-					int id = toProcess.getInt(1);
-					Blob addBlob = toProcess.getBlob(2);
-					int blobLengthInner = (int) addBlob.length();
-					byte[] blobInnerAsBytes = addBlob.getBytes(1, blobLengthInner);
-					addBlob.free();
-					ItemMap mapToAdd = ItemMapBlobHandling.turnBlobIntoItemMap(blobInnerAsBytes);
-					Donum.getInstance().info("Adding " + mapToAdd + " to delivery inventory for " + uuid.toString());
-					loadedMap.addAll(mapToAdd.getItemStackRepresentation());
-					try (PreparedStatement cleanPendingAdditions = db
-							.prepareStatement("delete from deliveryAdditions where deliveryId=?;")) {
-						cleanPendingAdditions.setInt(1, id);
-						cleanPendingAdditions.execute();
-					}
-				}
-				if (changes) {
-					updateDeliveryInventory(uuid, loadedMap, false);
-				}
+			for (ItemMap toAdd : popStagedAdditions(uuid)) {
+				loadedMap.merge(toAdd);
 			}
 			return loadedMap;
 		} catch (SQLException e) {
@@ -181,6 +160,39 @@ public class DonumDAO {
 		} finally {
 			freeLock(uuid);
 		}
+	}
+
+	/**
+	 * Gets all staged additions and removes them from the database
+	 * 
+	 * @return All staged additions for the given player
+	 */
+	public Collection<ItemMap> popStagedAdditions(UUID player) {
+		Collection<ItemMap> maps = new LinkedList<ItemMap>();
+		try (PreparedStatement loadToProcess = db
+				.prepareStatement("select deliveryId, inventory from deliveryAdditions where uuid=?;")) {
+			loadToProcess.setString(1, player.toString());
+			ResultSet toProcess = loadToProcess.executeQuery();
+			while (toProcess.next()) {
+				int id = toProcess.getInt(1);
+				Blob addBlob = toProcess.getBlob(2);
+				int blobLengthInner = (int) addBlob.length();
+				byte[] blobInnerAsBytes = addBlob.getBytes(1, blobLengthInner);
+				addBlob.free();
+				ItemMap mapToAdd = ItemMapBlobHandling.turnBlobIntoItemMap(blobInnerAsBytes);
+				Donum.getInstance().info("Adding " + mapToAdd + " to delivery inventory for " + player.toString());
+				maps.add(mapToAdd);
+				try (PreparedStatement cleanPendingAdditions = db
+						.prepareStatement("delete from deliveryAdditions where deliveryId=?;")) {
+					cleanPendingAdditions.setInt(1, id);
+					cleanPendingAdditions.execute();
+				}
+			}
+		} catch (SQLException e) {
+			Donum.getInstance().warning("Failed to get delivery inventory addition for player " + player + " ; " + e);
+			return maps;
+		}
+		return maps;
 	}
 
 	public void stageDeliveryAddition(UUID uuid, ItemMap addition) {
@@ -203,9 +215,9 @@ public class DonumDAO {
 	 * @param im
 	 *            DeliveryInventory to save
 	 */
-	public void updateDeliveryInventory(UUID uuid, ItemMap im, boolean acquireLock) {
+	public void updateDeliveryInventory(UUID uuid, ItemMap im) {
 		ensureConnection();
-		while (acquireLock && !getLock(uuid)) {
+		while (!getLock(uuid)) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -220,9 +232,7 @@ public class DonumDAO {
 		} catch (SQLException e) {
 			Donum.getInstance().warning("Error updating record of delivery inventory for player " + uuid + " ; " + e);
 		} finally {
-			if (acquireLock) {
-				freeLock(uuid);
-			}
+			freeLock(uuid);
 		}
 	}
 
@@ -267,7 +277,7 @@ public class DonumDAO {
 			return null;
 		}
 	}
-	
+
 	public void insertInconsistency(UUID uuid, ItemMap diff) {
 		ensureConnection();
 		try (PreparedStatement ps = db
@@ -355,11 +365,10 @@ public class DonumDAO {
 		}
 		return inventories;
 	}
-	
+
 	public void updateDeathInventoryReturnStatus(int id, boolean returnStatus) {
 		ensureConnection();
-		try (PreparedStatement ps = db
-				.prepareStatement("update deathInventories set returned=? where id=?;")) {
+		try (PreparedStatement ps = db.prepareStatement("update deathInventories set returned=? where id=?;")) {
 			ps.setBoolean(1, returnStatus);
 			ps.setInt(2, id);
 			ps.execute();

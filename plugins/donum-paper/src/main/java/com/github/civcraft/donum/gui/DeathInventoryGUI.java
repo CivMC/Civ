@@ -114,10 +114,20 @@ public class DeathInventoryGUI {
 				for (ItemStack is : i.getInventory().getItemStackRepresentation()) {
 					ci.addSlot(new DecorationStack(is));
 				}
+				// back button
+				ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
+				ISUtils.setName(backToOverview, ChatColor.GOLD + "Go back to overview");
+				ci.setSlot(new Clickable(backToOverview) {
+
+					@Override
+					public void clicked(Player arg0) {
+						showScreen();
+					}
+				}, 49);
 				ItemStack returnStack = new ItemStack(Material.ANVIL);
 				ISUtils.setName(returnStack, ChatColor.GOLD + "Return items");
 				ISUtils.addLore(
-						is,
+						returnStack,
 						ChatColor.GOLD
 								+ "This inventory was already returned previously. You may return it again, if you know what you are doing");
 				ISUtils.addLore(returnStack, ChatColor.RED + "You can not undo this!");

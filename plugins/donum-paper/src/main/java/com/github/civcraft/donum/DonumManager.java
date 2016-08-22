@@ -6,10 +6,6 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.md_5.bungee.api.ChatColor;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -18,18 +14,28 @@ import com.github.civcraft.donum.database.DonumDAO;
 import com.github.civcraft.donum.inventories.DeathInventory;
 import com.github.civcraft.donum.inventories.DeliveryInventory;
 import com.github.civcraft.donum.misc.ItemMapBlobHandling;
+import com.github.civcraft.donum.storage.BetterShardsDeliveryStorage;
+import com.github.civcraft.donum.storage.DatabaseStorage;
+import com.github.civcraft.donum.storage.IDeliveryStorage;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class DonumManager {
 
 	private DonumDAO database;
+	private IDeliveryStorage deliveryStorage;
 	private Map<UUID, DeliveryInventory> deliveryInventories;
 
 	public DonumManager() {
 		DonumConfiguration config = Donum.getConfiguration();
 		this.database = new DonumDAO(config.getHost(), config.getPort(), config.getDatabaseName(), config.getUser(),
 				config.getPassword());
+		if (config.useBetterShards()) {
+			deliveryStorage = new BetterShardsDeliveryStorage();
+		}
+		else {
+			deliveryStorage = new DatabaseStorage();
+		}
 		this.deliveryInventories = new ConcurrentHashMap<UUID, DeliveryInventory>();
 	}
 
@@ -62,44 +68,23 @@ public class DonumManager {
 			}
 		}.runTaskAsynchronously(Donum.getInstance());
 
-		new BukkitRunnable() {
-
-			@Override
-			public void run() {
-				Donum.getInstance().debug("Attempting to load delivery inventory for " + uuid.toString());
-				ItemMap delivery = database.getDeliveryInventory(uuid);
-				deliveryInventories.put(uuid, new DeliveryInventory(uuid, delivery));
-				if (delivery.getTotalItemAmount() != 0) {
-					Player p = Bukkit.getPlayer(uuid);
-					if (p != null) {
-						p.sendMessage(ChatColor.GOLD + "You have " + delivery.getTotalItemAmount()
-								+ " items available to claim! Run /present to open your delivery inventory");
-					}
-				}
-				Donum.getInstance().debug("Loaded " + delivery.toString() + " for " + uuid.toString());
-			}
-		}.runTaskAsynchronously(Donum.getInstance());
+		deliveryStorage.loadDeliveryInventory(uuid);
 	}
 
-	public void savePlayerData(UUID uuid, Inventory inventory) {
+	public void savePlayerData(UUID uuid, Inventory inventory, boolean async) {
 		Donum.getInstance().debug("Saving data for " + uuid.toString());
 		DeliveryInventory del = deliveryInventories.get(uuid);
 		if (del == null) {
 			Donum.getInstance().debug(
 					"Attempted to remove delivery inventory of " + uuid.toString() + ", but it was already gone");
+			return;
 		} else {
+			deliveryInventories.remove(uuid);
 			if (del.isDirty()) {
-				new BukkitRunnable() {
-
-					@Override
-					public void run() {
-						database.updateDeliveryInventory(uuid, del.getInventory(), true);
-						deliveryInventories.remove(uuid);
-
-					}
-				}.runTaskAsynchronously(Donum.getInstance());
+				deliveryStorage.updateDeliveryInventory(uuid, del.getInventory(), async);
 			}
 		}
+		if (async) {
 		new BukkitRunnable() {
 
 			@Override
@@ -108,6 +93,10 @@ public class DonumManager {
 
 			}
 		}.runTaskAsynchronously(Donum.getInstance());
+		}
+		else {
+			database.insertLogoutInventory(uuid, ItemMapBlobHandling.constructItemMapFromInventory(inventory));
+		}
 	}
 
 	public void addToDeliveryInventory(UUID uuid, ItemMap items) {
@@ -139,7 +128,11 @@ public class DonumManager {
 			public void run() {
 				database.insertDeathInventory(uuid, inventory);
 			}
-		};
+		}.runTaskAsynchronously(Donum.getInstance());
+	}
+	
+	public void setDeliveryInventory(UUID player,ItemMap im) {
+		deliveryInventories.put(player, new DeliveryInventory(player, im));
 	}
 
 	private void handleInventoryInconsistency(UUID player, ItemMap oldInventory, ItemMap newInventory) {
@@ -179,5 +172,9 @@ public class DonumManager {
 
 	public List<DeathInventory> getDeathInventories(UUID player, int limit) {
 		return database.getLastDeathInventories(player, limit);
+	}
+	
+	public DonumDAO getDAO() {
+		return database;
 	}
 }

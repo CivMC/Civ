@@ -1,18 +1,21 @@
 package com.github.civcraft.donum;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import com.github.civcraft.donum.commands.DonumCommandHandler;
 import com.github.civcraft.donum.listeners.AdminDeliveryListener;
 import com.github.civcraft.donum.listeners.PlayerListener;
+import com.github.civcraft.donum.listeners.storage.BetterShardsListener;
+import com.github.civcraft.donum.listeners.storage.BukkitListener;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 
 public class Donum extends ACivMod {
 
 	private static Donum instance;
-	private static DonumManager manager;
-	private static DonumConfiguration config;
+	private DonumManager manager;
+	private DonumConfiguration config;
 
 	public void onEnable() {
 		super.onEnable();
@@ -22,12 +25,22 @@ public class Donum extends ACivMod {
 		manager = new DonumManager();
 		handle = new DonumCommandHandler();
 		handle.registerCommands();
-		Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
-		Bukkit.getPluginManager().registerEvents(new AdminDeliveryListener(), this);
+		registerListeners();
 	}
 
 	public void onDisable() {
-
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			manager.savePlayerData(p.getUniqueId(), p.getInventory(), false);
+		}
+	}
+	
+	private void registerListeners() {
+		Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+		Bukkit.getPluginManager().registerEvents(new AdminDeliveryListener(), this);
+		Bukkit.getPluginManager().registerEvents(new BukkitListener(), this);
+		if(config.useBetterShards()) {
+			Bukkit.getPluginManager().registerEvents(new BetterShardsListener(), this);
+		}
 	}
 
 	@Override
@@ -40,11 +53,11 @@ public class Donum extends ACivMod {
 	}
 
 	public static DonumManager getManager() {
-		return manager;
+		return getInstance().manager;
 	}
 	
 	public static DonumConfiguration getConfiguration() {
-		return config;
+		return getInstance().config;
 	}
 
 }
