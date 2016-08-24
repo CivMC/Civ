@@ -22,6 +22,7 @@ public class CivSpy extends JavaPlugin implements Listener {
 	public void onEnable() {
 		getLogger().log(Level.INFO, "Initializing CivSpy config");
 		this.config = new Config(getLogger()).setupConfig(this);
+
 		getLogger().log(Level.INFO, "Initializing CivSpy database");
 		this.db = config.parseDatabase();
 		try {
@@ -31,16 +32,16 @@ public class CivSpy extends JavaPlugin implements Listener {
 			}
 
 			getLogger().log(Level.INFO, "Preparing CivSpy datastructures");
-			this.saver = new CivSpySaver(db, this);
+			this.saver = new CivSpySaver(db, this.config.getServer());
 
 			getLogger().log(Level.INFO, "Registering CivSpy listeners");
-			this.getServer().getPluginManager().registerEvents(this, this);
+			getServer().getPluginManager().registerEvents(this, this);
 			
 			getLogger().log(Level.INFO, "Registering CivSpy saver");
-			this.savedata = this.getServer().getScheduler().runTaskTimerAsynchronously(
+			this.savedata = getServer().getScheduler().runTaskTimerAsynchronously(
 					this, this.saver, this.config.getSaveInterval(), this.config.getSaveInterval());
 		} catch (SQLException se) {
-			getLogger().log(Level.SEVERE, "Failed to acquire database, skipping listeners");
+			getLogger().log(Level.SEVERE, "Failed to acquire database, skipping listeners", se);
 		}
 	}
 
@@ -48,10 +49,12 @@ public class CivSpy extends JavaPlugin implements Listener {
 	public void onDisable() {
 		getLogger().log(Level.INFO, "Deregistering CivSpy listeners");
 		HandlerList.unregisterAll((Plugin) this);
+
 		getLogger().log(Level.INFO, "Forcing saver to run and deactivating");
 		this.saver.saveAll();
 		this.saver = null;
 		this.cancelTasks(this);
+
 		getLogger().log(Level.INFO, "Closing CivSpy database");
 		if (this.db != null) this.db.close();
 	}

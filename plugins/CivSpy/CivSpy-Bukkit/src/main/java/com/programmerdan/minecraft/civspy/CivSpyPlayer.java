@@ -26,31 +26,26 @@ public class CivSpyPlayer implements Cloneable {
 		}
 	}
 
-	class Key implements Comparable<Key> {
+	class Key {
 		private Integer chunkX;
-		private Integer chunkY;
+		private Integer chunkZ;
 		private UUID player;
 
 		@Override
-		public int compareTo(Key o) {
-			if ((this.chunkX == null && o.chunkX != null) || this.chunkX < o.chunkX) {
-				return -1;
-			} else if ((this.chunkX == this.chunkX > o.chunkX) {
-				return 1;
-			} else {
-				if (this.chunkZ < o.chunkZ) {
-					return -1;
-				} else if (this.chunkZ > o.chunkZ) {
-					return 1;
-				} else {
-					return this.player.compareTo(o);
-				}
-
+		public boolean equals(Object o) {
+			if (o instanceof Key) {
+				Key k = (Key) o;
+				return this.chunkX == k.chunkX && this.chunkZ == k.chunkZ && this.player == k.player;
 			}
+			return false;
 		}
 
 		@Override
 		public int hashCode() {
-
+			int hash = 1;
+			hash = 19 * hash + (player != null ? player.hashCode() : 0);
+			hash = 31 * hash + (chunkX != null ? chunkX.hashCode() : 0);
+			hash = 19 * hash + (chunkZ != null ? chunkZ.hashCode() : 0);
+			return hash;
 		}
 }

@@ -1,5 +1,10 @@
 package com.programmerdan.minecraft.civspy;
 
+/**
+ * This runnable handles dispatching data updates and saving data.
+ *
+ * @author ProgrammerDan <programmerdan@gmail.com>
+ */
 public class CivSpySaver implements Runnable {
 
 	private Database db;
@@ -11,6 +16,7 @@ public class CivSpySaver implements Runnable {
 		this.db = db;
 		this.server = server;
 		this.spydata = new ConcurrentHashMap<UUID, CivSpyPlayer>();
+		this.markRemove = new HashSet<UUID>();
 	}
 
 	@Override
@@ -35,8 +41,11 @@ public class CivSpySaver implements Runnable {
 				markRemove.clear();
 			}
 		}
+		int batchSize = 0;
+		PreparedStatement batch = null;
 		for (CivSpyPlayer player : list) {
-			player.save(db);
+			
+			player.save(this.server, db, batch);
 		}
 	}
 

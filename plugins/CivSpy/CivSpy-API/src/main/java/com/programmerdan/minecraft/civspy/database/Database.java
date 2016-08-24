@@ -1,11 +1,17 @@
 package com.programmerdan.minecraft.civspy.database;
 
+import java.util.UUID;
+import java.util.logging.Logger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Types;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.util.logging.Level;
 
 import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.HikariConfig;
 
 /**
  * Wrapper for Connection Pool, and holder for static strings.
@@ -50,7 +56,7 @@ public class Database {
 		this.log = log;
 		if (user != null && host != null && port > 0 && database != null) {
 			HikariConfig config = new HikariConfig();
-			config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + name);
+			config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database);
 			config.setConnectionTimeout(1000l);
 			config.setIdleTimeout(600000l);
 			config.setMaxLifetime(7200000l);
@@ -127,33 +133,33 @@ public class Database {
 	public int insertData(String key, UUID uuid, String sValue, Number nValue, Long time, Connection connection) {
 		return insertData(key, null, null, null, null, uuid, sValue, nValue, time, connection);
 	}
-	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z) {
+	public int insertData(String key, String server, String world, Integer chunk_x, Integer chunk_z) {
 		return insertData(key, world, server, chunk_x, chunk_z, null, null, null, null, null);
 	}
-	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, String value) {
+	public int insertData(String key, String server, String world, Integer chunk_x, Integer chunk_z, String value) {
 		return insertData(key, world, server, chunk_x, chunk_z, null, value, null, null, null);
 	}
-	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, Number value) {
+	public int insertData(String key, String server, String world, Integer chunk_x, Integer chunk_z, Number value) {
 		return insertData(key, world, server, chunk_x, chunk_z, null, null, value, null, null);
 	}
-	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, String sValue, Number nValue) {
+	public int insertData(String key, String server, String world, Integer chunk_x, Integer chunk_z, String sValue, Number nValue) {
 		return insertData(key, world, server, chunk_x, chunk_z, null, sValue, nValue, null, null);
 	}
-	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, String sValue, Number nValue,
+	public int insertData(String key, String server, String world, Integer chunk_x, Integer chunk_z, String sValue, Number nValue,
 			Long time, Connection connection) {
 		return insertData(key, world, server, chunk_x, chunk_z, null, sValue, nValue, time, connection);
 	}
 
-	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, UUID uuid) {
+	public int insertData(String key, String server, String world, Integer chunk_x, Integer chunk_z, UUID uuid) {
 		return insertData(key, world, server, chunk_x, chunk_z, uuid, null, null, null, null);
 	}
-	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, UUID uuid, String value) {
+	public int insertData(String key, String server, String world, Integer chunk_x, Integer chunk_z, UUID uuid, String value) {
 		return insertData(key, world, server, chunk_x, chunk_z, uuid, value, null, null, null);
 	}
-	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, UUID uuid, Number value) {
+	public int insertData(String key, String server, String world, Integer chunk_x, Integer chunk_z, UUID uuid, Number value) {
 		return insertData(key, world, server, chunk_x, chunk_z, uuid, null, value, null, null);
 	}
-	public int insertData(String key, String world, String server, Integer chunk_x, Integer chunk_z, UUID uuid, String sValue, Number nValue) {
+	public int insertData(String key, String server, String world, Integer chunk_x, Integer chunk_z, UUID uuid, String sValue, Number nValue) {
 		return insertData(key, world, server, chunk_x, chunk_z, uuid, sValue, nValue, null, null);
 	}
 	public int insertData(String key, String server, String world, Integer chunk_x, Integer chunk_z, UUID uuid, 
@@ -217,7 +223,7 @@ public class Database {
 			int results = statement.executeUpdate();
 			SQLWarning warning = statement.getWarnings();
 			while (warning != null) {
-				log.log(Level.WARNING, warning.getErrorCode(), warning);
+				log.log(Level.WARNING, "Problem inserting: {0} {1}", new Object[]{warning.getErrorCode(), warning});
 				warning = warning.getNextWarning();
 			}
 			return results;
@@ -225,13 +231,20 @@ public class Database {
 			log.log(Level.SEVERE, "Unable to insert data", se);
 			return -1;
 		} finally {
-			if (iOwn) connection.close();
+			try {
+				if (iOwn) connection.close();
+			} catch(SQLException se) {
+				log.log(Level.SEVERE, "Failed to close connection?", se);
+			}
 		}
 	}
 
 	public PreparedStatement batchData(String key, String server, String world, Integer chunk_x, Integer chunk_z, UUID uuid, 
 			String sValue, Number nValue, Long time, Connection connection, PreparedStatement statement) {
-		if (key == null) return -1;
+		if (key == null) {
+			log.log(Level.SEVERE, "Key given was null, cannot batch this data.");
+			return statement;
+		}
 		boolean iOwn = connection == null;
 		boolean newState = statement == null;
 		try {
@@ -278,20 +291,21 @@ public class Database {
 			}
 
 			statement.addBatch();
-			return statement;
 		} catch (SQLException se) {
 			log.log(Level.SEVERE, "Unable to insert data", se);
-			return null;
 		}
+		return statement;
 	}
 
 	public int[] batchExecute(Statement statement, boolean closeConnection) {
-		if (statement == null || statement.isClosed()) return null;
+		if (statement == null) return null;
 		try {
+			if (statement.isClosed()) return null;
+
 			int[] results = statement.executeBatch();
 			SQLWarning warning = statement.getWarnings();
 			while (warning != null) {
-				log.log(Level.WARNING, warning.getErrorCode(), warning);
+				log.log(Level.WARNING, "Problem executing: {0} {1}", new Object[]{warning.getErrorCode(), warning});
 				warning = warning.getNextWarning();
 			}
 			return results;
