@@ -3,7 +3,7 @@ main: com.aleksey.castlegates.CastleGates
 version: ${project.version}
 author: Aleksey-Terzi
 description: 'Drawable gates and bridges'
-softdepend: [Orebfuscator4, Citadel, Bastion]
+softdepend: [Orebfuscator4, NameLayer, Citadel, Bastion, JukeAlert]
 commands:
   cg:
     description: Manage Castle Gates.
@@ -12,3 +12,7 @@ commands:
            /<command> create - Create gear block mode
            /<command> link - Link gears mode
            /<command> info - Information mode
+  gear:
+    description: Create gear block mode
+  link:
+    description: Create link block mode

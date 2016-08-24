@@ -57,6 +57,7 @@ public class ConfigManager {
 	private int switchTimeout;
 	private int maxRedstoneDistance;
 	private boolean allowAutoCreate;
+	private boolean interactWithSnitches;
 	
 	public void load(FileConfiguration file) {
 		this.file = file;
@@ -69,6 +70,7 @@ public class ConfigManager {
 		this.database.password = getString("Database.Password", "");
 		
 		this.allowAutoCreate = getBoolean("Settings.AllowAutoCreate", true);
+		this.interactWithSnitches = getBoolean("Settings.InteractWithSnitches", true);
 		this.maxPowerTransfers = getInt("Settings.MaxPowerTransfers", 8, 0, 10);
 		this.maxBridgeLength = getInt("Settings.MaxBridgeLength", 16, 1, 40);
 		this.playerStateResetInSeconds = getInt("Settings.PlayerStateResetInSeconds", 5 * 60);
@@ -180,7 +182,11 @@ public class ConfigManager {
 		return this.allowAutoCreate;
 	}
 	
-    private String getString(String path, String defaultData) {
+	public boolean getInteractWithSnitches() {
+		return this.interactWithSnitches;
+	}
+
+	private String getString(String path, String defaultData) {
         if (this.file.get(path) == null)
         	this.file.set(path, defaultData);
         

@@ -6,7 +6,6 @@
 package com.aleksey.castlegates.manager;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -85,8 +84,18 @@ public class CastleGatesManager {
 	public void handleBlockClicked(PlayerInteractEvent event) {
 		boolean interacted = false;
 		ConfigManager configManager = CastleGates.getConfigManager();
+		CommandMode mode = this.stateManager.getPlayerMode(event.getPlayer());
 		
-		if(configManager.isStickItem(event.getItem())) {
+		if(configManager.getAllowAutoCreate()
+				&& configManager.isCreationConsumeItem(event.getItem()))
+		{
+			interacted = createGearblockAndLink(event);
+		}
+		else if(mode == CommandMode.INFO) {
+			showGearInfo(event);
+			interacted = true;
+		}
+		else if(configManager.isStickItem(event.getItem())) {
 			switch(this.stateManager.getPlayerMode(event.getPlayer())) {
 			case CREATE:
 				interacted = createGearblock(event);
@@ -94,19 +103,9 @@ public class CastleGatesManager {
 			case LINK:
 				interacted = linkGearblocks(event);
 				break;
-			case INFO:
-				interacted = showGearInfo(event);
-				break;
 			default:
 				interacted = false;
 				break;
-			}
-		}
-		else if(configManager.getAllowAutoCreate()) {
-			if(configManager.isCreationConsumeItem(event.getItem())) {
-				interacted = createGearblockAndLink(event);
-			} else {
-				interacted = showGearInfo(event);
 			}
 		}
 		
@@ -176,7 +175,7 @@ public class CastleGatesManager {
 				message = ChatColor.RED + "Citadel prevent this operation";
 				break;
 			case BastionBlocked:
-				message = ChatColor.RED + "Bastion prevent drawing";
+				message = ChatColor.RED + "Bastion prevent undrawing";
 				break;
 			default:
 				message = null;
@@ -259,29 +258,31 @@ public class CastleGatesManager {
 		Player player = event.getPlayer();
 		Block block = event.getClickedBlock();
 		
+		Gearblock gearblock1 = this.gearManager.getGearblock(new BlockCoord(block)); 
+		
+		if(gearblock1 == null) return false;
+
 		if(!CastleGates.getCitadelManager().canBypass(player, block.getLocation())) {
 			player.sendMessage(ChatColor.RED + "Citadel preventing creation of link.");
 			return false;
 		}
-		
-		Gearblock gearblock1 = this.gearManager.getGearblock(new BlockCoord(block)); 
-		
-		if(gearblock1 == null) return false;
-		
-		FindGearResult result = findEndGear(block, event.getBlockFace());
-		
-		if(result == null) {
-			event.getPlayer().sendMessage(ChatColor.RED + "End gearblock is not found. Link distance is limited to " + CastleGates.getConfigManager().getMaxBridgeLength() + " blocks");
-		}
-		else if(gearblock1.getLink() != null) {
+
+		if(gearblock1.getLink() != null) {
 			if(gearblock1.getLink().isDrawn()) {
 				player.sendMessage(ChatColor.RED + "Link in drawn state cannot be removed.");
 			} else {
 				this.gearManager.removeLink(gearblock1.getLink());
 				player.sendMessage(ChatColor.GREEN + "Gearblock's link has been removed.");
 			}
+			
+			return true;
 		}
-		else {
+		
+		FindGearResult result = findEndGear(block, event.getBlockFace());
+
+		if(result == null) {
+			event.getPlayer().sendMessage(ChatColor.RED + "End gearblock is not found. Link distance is limited to " + CastleGates.getConfigManager().getMaxBridgeLength() + " blocks");
+		} else {
 			linkGearblocks(player, gearblock1, result);
 		}
 		
@@ -328,16 +329,29 @@ public class CastleGatesManager {
 		return null;
 	}
 	
-	private boolean showGearInfo(PlayerInteractEvent event) {
+	private void showGearInfo(PlayerInteractEvent event) {
 		Block block = event.getClickedBlock();
-		Gearblock gearblock = this.gearManager.getGearblock(new BlockCoord(block));
+		BlockCoord blockCoord = new BlockCoord(block);
+		Gearblock gearblock = this.gearManager.getGearblock(blockCoord);
 		
-		if(gearblock == null) return false;
+		if(gearblock == null) {
+			GearManager.SearchBridgeBlockResult searchResult = this.gearManager.searchBridgeBlock(blockCoord);
+			
+			switch(searchResult) {
+			case Bridge:
+				event.getPlayer().sendMessage("Bridge block");
+				break;
+			case Gates:
+				event.getPlayer().sendMessage("Gates block");
+				break;
+			default:
+				break;
+			}
+			
+			return;
+		}
 		
-		List<Player> players = new ArrayList<Player>();
-		players.add(event.getPlayer());
-		
-		if(!CastleGates.getCitadelManager().canAccessDoors(players, block.getLocation())) {
+		if(!CastleGates.getCitadelManager().canViewInformation(event.getPlayer(), block.getLocation())) {
 			event.getPlayer().sendMessage(ChatColor.RED + "Gearblock");
 		}
 		else if(gearblock.getLink() == null) {
@@ -355,7 +369,5 @@ public class CastleGatesManager {
 				event.getPlayer().sendMessage(ChatColor.GREEN + "Link is in drawn state");
 			}
 		}
-		
-		return true;
 	}
 }
