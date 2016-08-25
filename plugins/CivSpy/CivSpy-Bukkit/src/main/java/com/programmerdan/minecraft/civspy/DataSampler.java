@@ -12,14 +12,19 @@ public abstract DataSampler implements Runnable {
 
 	private final Logger logger; 
 
-	DataSampler(final DataManager target, final Logger logger) {
+	private boolean isActive = false;
+
+	private InactiveReason inactiveReason = InactiveReason.NEW;
+
+	public DataSampler(final DataManager target, final Logger logger) {
 		this.target = target;
 		this.logger = logger;
 	}
 
-	private boolean isActive = false;
-
-	private InactiveReason inactiveReason = InactiveReason.NEW;
+	/**
+	 * Samplers should implement this method.
+	 */
+	public abstract DataSample sample();
 
 	/**
 	 * Be sure to activate immediately (or when safe) to ensure no lost message.
@@ -37,10 +42,16 @@ public abstract DataSampler implements Runnable {
 		inactiveReason = InactiveReason.REQUEST;
 	}
 
+	/**
+	 * Managed run pattern, handles calling {@link #sample} and passing the results to the Manager.
+	 */
 	public void run() {
 		if (isActive) {
 			try {
-				this.sample();
+				DataSample data = this.sample();
+				if (data != null) {
+					target.enqueue(data);
+				}
 			} catch ( Exception e ) {
 				logger.log(Level.SEVERE, "Uncaught exception while sampling!", e);
 				isActive = false;

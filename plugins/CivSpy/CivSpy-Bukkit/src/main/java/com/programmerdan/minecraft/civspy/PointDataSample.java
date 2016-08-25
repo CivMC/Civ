@@ -6,7 +6,8 @@ package com.programmerdan.minecraft.civspy;
  */
 public class PointDataSample extends DataSample {
 
-	public PointDataSample(String key, String server, String world, UUID player, Integer chunkX, Integer chunkZ, String valueString, Number valueNumber) {
+	public PointDataSample(String key, String server, String world, UUID player, Integer chunkX, Integer chunkZ, 
+			String valueString, Number valueNumber) {
 		super(key, server, world, player, chunkX, chunkZ, valueString, valueNumber);
 	}
 
