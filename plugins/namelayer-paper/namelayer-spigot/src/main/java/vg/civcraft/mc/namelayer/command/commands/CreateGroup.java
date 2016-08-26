@@ -51,7 +51,7 @@ public class CreateGroup extends PlayerCommandMiddle{
 			invalidChars = true;
 		}
 		//cant allow them to hurt mercury :(
-		if (name.contains("\\|")) {
+		if (name.contains("|")) {
 			invalidChars = true;
 		}
 		
