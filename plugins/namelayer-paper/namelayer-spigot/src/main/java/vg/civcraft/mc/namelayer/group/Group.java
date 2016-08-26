@@ -43,7 +43,7 @@ public class Group {
 			db = NameLayerPlugin.getGroupManagerDao();
 		}
 		
-		this.name = name.replace("|", "");
+		this.name = name;
 		this.password = password;
 		this.owner = owner;
 		this.isDisciplined = disciplined;

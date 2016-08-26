@@ -50,6 +50,10 @@ public class CreateGroup extends PlayerCommandMiddle{
 		if (!latin1.newEncoder().canEncode(name)) {
 			invalidChars = true;
 		}
+		//cant allow them to hurt mercury :(
+		if (name.contains("\\|")) {
+			invalidChars = true;
+		}
 		
 		for(char c:name.toCharArray()) {
 			if (Character.isISOControl(c)) {
