@@ -34,7 +34,7 @@ public class MercuryMessageListener implements Listener{
 	public void onMercuryMessage(AsyncPluginBroadcastMessageEvent event){
 		if (!event.getChannel().equalsIgnoreCase("namelayer"))
 			return;
-		String[] message = event.getMessage().split("|");
+		String[] message = event.getMessage().split("\\|");
 		String reason = message[0];	
 		String groupname = message[1];
 		if (reason.equals("recache")){
