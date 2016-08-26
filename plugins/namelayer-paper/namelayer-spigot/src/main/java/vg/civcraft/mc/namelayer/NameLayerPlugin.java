@@ -37,6 +37,7 @@ public class NameLayerPlugin extends ACivMod{
 	private static int groupLimit = 10;
 	private static boolean createGroupOnFirstJoin;
 	private Config config;
+	private boolean mercuryEnabled;
 	
 	@CivConfigs({
 		@CivConfig(name = "groups.enable", def = "true", type = CivConfigType.Bool),
@@ -51,6 +52,7 @@ public class NameLayerPlugin extends ACivMod{
 		groupLimit = config.get("groups.grouplimit").getInt();
 		createGroupOnFirstJoin = config.get("groups.creationOnFirstJoin").getBool();
 		instance = this;
+		mercuryEnabled = Bukkit.getPluginManager().isPluginEnabled("Mercury");
 		loadDatabases();
 	    ClassHandler.Initialize(Bukkit.getServer());
 		new NameAPI(new GroupManager(), associations);
@@ -71,7 +73,6 @@ public class NameLayerPlugin extends ACivMod{
 		super.onLoad();
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void registerListeners(){
 		getServer().getPluginManager().registerEvents(new AssociationListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
@@ -191,7 +192,7 @@ public class NameLayerPlugin extends ACivMod{
 	}
 
 	public static boolean isMercuryEnabled() {
-		return Bukkit.getPluginManager().isPluginEnabled("Mercury");
+		return getInstance().mercuryEnabled;
 	}
 	
 	public int getGroupLimit(){
