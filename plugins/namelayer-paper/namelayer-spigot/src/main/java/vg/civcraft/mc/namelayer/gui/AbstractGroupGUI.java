@@ -25,7 +25,7 @@ public abstract class AbstractGroupGUI {
 	
 	protected boolean validGroup() {
 		if (!g.isValid()) {
-			g = gm.getGroup(g.getName());
+			g = GroupManager.getGroup(g.getName());
 			if (g == null) {
 				return false;
 			}

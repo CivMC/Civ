@@ -79,7 +79,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	 * of this class
 	 */
 	public void showScreen() {
-		ClickableInventory.forceCloseInventory(p);
 		if (!validGroup()) {
 			return;
 		}
@@ -490,7 +489,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 			showScreen();
 			return;
 		}
-		ClickableInventory.forceCloseInventory(p);
 		ClickableInventory ci = new ClickableInventory(27, g.getName());
 		String playerName = NameAPI.getCurrentName(uuid);
 
