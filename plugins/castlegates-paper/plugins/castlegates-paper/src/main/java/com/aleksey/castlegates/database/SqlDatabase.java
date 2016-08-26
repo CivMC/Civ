@@ -72,6 +72,14 @@ public class SqlDatabase {
         return false;
     }
     
+    public boolean checkConnection() {
+    	if(isConnected()) return true;
+    	
+		this.logger.log(Level.INFO, "Database went away, reconnecting.");
+		
+		return connect();
+    }
+    
     public PreparedStatement prepareStatement(String sqlStatement) throws SQLException {
         return this.connection.prepareStatement(sqlStatement);
     }
