@@ -15,13 +15,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.GroupPermission;
-
 public class PlayerListener implements Listener{
 
 	private static Map<UUID, List<Group>> notifications = new HashMap<UUID, List<Group>>();
@@ -90,13 +87,16 @@ public class PlayerListener implements Listener{
 		if (!NameLayerPlugin.createGroupOnFirstJoin()) {
 			return;
 		}
-		GroupManager gm = NameAPI.getGroupManager();
+		if (NameLayerPlugin.getDefaultGroupHandler().getDefaultGroup(p) != null) {
+			//assume something went wrong, feel free to chose a random civcraft dev to blame
+			return;
+		}
 		Group g = null;
-		if (gm.getGroup(p.getName()) == null) {
+		if (GroupManager.getGroup(p.getName()) == null) {
 			g = createNewFriendGroup(p.getName(), p.getUniqueId());
 		}
 		for(int i = 0; i < 20 && g == null ; i++) {
-			if (gm.getGroup(p.getName() + String.valueOf(i)) == null) {
+			if (GroupManager.getGroup(p.getName() + String.valueOf(i)) == null) {
 				g = createNewFriendGroup(p.getName() + String.valueOf(i), p.getUniqueId());
 			}
 		}
