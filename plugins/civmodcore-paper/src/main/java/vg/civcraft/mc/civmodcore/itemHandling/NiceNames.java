@@ -72,7 +72,7 @@ public class NiceNames {
 		items = new HashMap<>();
 		try {
 			InputStream in = getClass().getResourceAsStream(
-					"/resources/materials.csv");
+					"/materials.csv");
 			BufferedReader reader = new BufferedReader(
 					new InputStreamReader(in));
 			String line = reader.readLine();
@@ -94,7 +94,7 @@ public class NiceNames {
 		enchantAcronyms = new HashMap<>();
 		try {
 			InputStream in = getClass().getResourceAsStream(
-					"/resources/enchantments.csv");
+					"/enchantments.csv");
 			BufferedReader reader = new BufferedReader(
 					new InputStreamReader(in));
 			String line = reader.readLine();
