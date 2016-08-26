@@ -152,6 +152,20 @@ public class ClickableInventory {
 	 * @param p Player to show the inventory to
 	 */
 	public void showInventory(Player p) {
+		ClickableInventory currentInv = getOpenInventory(p);
+		if (currentInv != null) {
+			Inventory actualCurrentInv = currentInv.getInventory();
+			if (actualCurrentInv.getType() == getInventory().getType() && actualCurrentInv.getSize() == getInventory().getSize()) {
+				//we opened an identical inventory, so instead of reopening a new inventory, which would reset the player cursor,
+				//we will adjust the inventory the player already has open
+				actualCurrentInv.clear();
+				actualCurrentInv.setContents(getInventory().getContents());
+				this.inventory = actualCurrentInv;
+				openInventories.put(p.getUniqueId(), this);
+				p.updateInventory();
+				return;
+			}
+		}
 		if (p != null) {
 			p.openInventory(inventory);
 			p.updateInventory();
