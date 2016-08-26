@@ -41,6 +41,7 @@ public class DataWorker extends Thread implements Runnable {
 		public List<ReinforcementInfo> reinforcements;
 	}
 	
+	private SqlDatabase db;
 	private GearblockSource gearblockSource;
 	private LinkSource linkSource;
 	private ReinforcementSource reinforcementSource;
@@ -55,6 +56,7 @@ public class DataWorker extends Thread implements Runnable {
     private AtomicBoolean kill = new AtomicBoolean(false);
 
     public DataWorker(SqlDatabase db) {
+    	this.db = db;
 		this.gearblockSource = new GearblockSource(db);
 		this.linkSource = new LinkSource(db);
 		this.reinforcementSource = new ReinforcementSource(db);
@@ -166,12 +168,16 @@ public class DataWorker extends Thread implements Runnable {
                 	this.changedLinks.clear();
                 }
                 
-                try {
-	                updateGears();
-	                updateLinks();
-                } finally {
-	                this.localChangedGearblocks.clear();
-	                this.localChangedLinks.clear();
+                if(this.localChangedGearblocks.size() > 0 || this.localChangedLinks.size() > 0) {
+                	if(this.db.checkConnection()) {
+		                try {
+			                updateGears();
+			                updateLinks();
+		                } finally {
+			                this.localChangedGearblocks.clear();
+			                this.localChangedLinks.clear();
+		                }
+                	}
                 }
             } catch (Exception e) {
             	e.printStackTrace();
