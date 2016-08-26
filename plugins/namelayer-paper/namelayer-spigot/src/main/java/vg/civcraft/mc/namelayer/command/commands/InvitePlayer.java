@@ -12,11 +12,11 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.mercury.MercuryAPI;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -26,7 +26,6 @@ import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.misc.Mercury;
-import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class InvitePlayer extends PlayerCommandMiddle{
@@ -47,7 +46,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 		final boolean isPlayer = s instanceof Player;
 		final Player p = isPlayer ? (Player)s : null;
 		final boolean isAdmin = !isPlayer || p.hasPermission("namelayer.admin");
-		final Group group = gm.getGroup(targetGroup);
+		final Group group = GroupManager.getGroup(targetGroup);
 		if (groupIsNull(s, targetGroup, group)) {
 			return true;
 		}
@@ -188,7 +187,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 		} else if (args.length == 2) {
 			List<String> namesToReturn = new ArrayList<String>();
 			if (NameLayerPlugin.isMercuryEnabled()) {
-				Set<String> players = MercuryAPI.instance.getAllPlayers();
+				Set<String> players = MercuryAPI.getAllPlayers();
 				for (String x: players) {
 					if (x.toLowerCase().startsWith(args[1].toLowerCase()))
 						namesToReturn.add(x);
