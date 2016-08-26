@@ -1,5 +1,14 @@
 package com.programmerdan.minecraft.civspy;
 
+import java.util.logging.Logger;
+import java.util.logging.Level;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedTransferQueue;
+
 /**
  * Represents a self-monitoring manager that accepts data into a queue and asynchronously pulls data
  *   off and handles aggregation; then passes off to the batcher for database insertion
@@ -7,7 +16,39 @@ package com.programmerdan.minecraft.civspy;
 public class DataManager {
 	private final DataBatcher batcher;
 	private final Logger logger;
-	
+
+	/**
+	 * Threadpool to handle scheduled tasks like flowMonitor and aggregateHandler.
+	 */
+	private final ScheduledExecutorService scheduler;
+	/**
+	 * This task runs periodically and does the following:
+	 * <ul><li>Zeros out the next window buckets
+	 *     <li>Increments window index
+	 *     <li>Adds up all other window flow records
+	 *     <li>Prints out alerts of flow issues if necessary
+	 *     <li>Enqueues flowrate data as periodic data
+	 * </ul>
+	 */
+	private ScheduledFuture<?> flowMonitor;
+
+	/**
+	 * Based on configuration of aggregation window, this handler does the work of submitting
+	 * aggregate batches to the batching handler for insertion into the database.
+	 */
+	private ScheduledFuture<?> aggregateHandler;
+
+	/**
+	 * A fixed size threadpool of greedy queue consumers that read off the data queue.
+	 */
+	private final ExecutorService dequeueWorkers;
+
+	/*
+	 * These are all flow watching variables. The basic idea is simple. You record flowcount into a "window" of a bucket
+	 * then periodically move the "now" bucket, and sum up all the buckets that are left. Use roundrobin so no
+	 * new data allocation ever, just clearing and filling.
+	 * Lets you do instant, short term, or longer term flow rate monitoring.
+	 */
 	private long[] instantOutflow;
 	private long[] instantInflow;
 	private long lastFlowUpdate = 0l;
@@ -18,9 +59,9 @@ public class DataManager {
 
 	/**
 	 * Defines how many "windows" to capture flow rate in. These are filled round-robin and used to monitor flowrate.
-	 * Actual use is flowCaptureWindows + 1; the "current" flow window is ignored while recomputing flow.
+	 * Actual use is flowCaptureWindows - 1; the "current" flow window is ignored while recomputing flow.
 	 */
-	private int flowCaptureWindows = 60;
+	private int flowCaptureWindows = 61;
 	/**
 	 * Defines how long inbetween window movement in milliseconds; or, how long to capture inflow/outflow before 
 	 * updating the flow ratios
@@ -39,7 +80,7 @@ public class DataManager {
 	 */
 	private double flowRatioSevere = 2.0d;
 
-	private final ConcurrentLinkedQueue<DataSample> sampleQueue;
+	private final LinkedTransferQueue<DataSample> sampleQueue;
 	/**
 	 * This controls the aggregation of data points that are eligible for aggregation. From this single
 	 * configuration value comes a host of outcomes related to aggregation.
@@ -112,9 +153,12 @@ public class DataManager {
 		this.batcher = batcher;
 		this.logger = logger;
 
+		// Prepare the incoming queue.
+		sampleQueue = new LinkedTransferQueue<DataSample>();
+
 		// TODO: Configure flow capture and such
-		this.instantOutflow = new long[flowCaptureWindows + 1];
-		this.instantInflow = new long[flowCaptureWindows + 1];
+		this.instantOutflow = new long[flowCaptureWindows];
+		this.instantInflow = new long[flowCaptureWindows];
 
 		// Set up aggregation.
 		this.aggregationPeriod = aggregationPeriod;
@@ -142,9 +186,10 @@ public class DataManager {
 			this.aggregationWindowEnd[idx] = window;
 		}
 
-
 		// Now create the executor and schedule repeating tasks.
-		// Executor before all.
+		// Executor before all. TODO: Configurable dequeue Worker pool size.
+		this.scheduler = Executors.newScheduledThreadPool(2);
+		this.dequeueWorkers = Executors.newFixedThreadPool(8);
 
 		// First, the queue reading task.
 
@@ -152,4 +197,91 @@ public class DataManager {
 
 		// Third, the aggregator window cycle task.
 	}
+
+	/**
+	 * This is the only method accessible to the outside world, besides a shutdown hook method.
+	 * It adds data to be processed. It increments the inflow counter.
+	 */
+	public void enqueue(DataSample data) {
+		sampleQueue.offer(data);
+		instantInflow[whichFlowWindow]++;
+	}
+
+	/**
+	 * Undoes what the constructor starts. 
+	 * This method stops the various executors and forces an immediate flush of _all_ aggregation buckets with data.
+	 */
+	public void shutdown() {
+		// TODO
+	}
+
+	static class RepeatingQueueMinder implements Runnable {
+		private final WeakReference<ExecutorService> scheduler;
+
+		RepeatingQueueMinder(ExecutorService scheduler) {
+			this.scheduler = new WeakReference<ExecutorService>(scheduler);
+		}
+
+		public void run() {
+			/* TODO: 
+			 * surround by interrupted.
+			 * Blocks at queue.get()
+			 * Once the queue returns something, do the work of finding the bucket and inserting it.
+			 * If insertion fails, appropriately increment the counters
+			 * In any case, update outflow.
+			 */
+			DataSample sample = null;
+			try {
+				sample = sampleQueue.take();
+			} catch (InterruptedException ie) {
+				logger.log(Level.WARNING, "While waiting on a queue, interrupted:", ie);
+			}
+
+			if (sample != null) {
+				if (sample.forAggregate()) {
+					// Find which bucket.
+					// get the appropriate aggregate or create it
+					// update it
+					
+					// THIS NEEDS TO BE ATOMIC SOMEHOW
+					int offset = (int) ((sample.getTimestamp() - aggregationWindowStart[oldestAggregatorIndex]) / aggregationPeriod;
+					if (offset < 0 || offset >= aggregateCycleSize) {
+						// out of tracking period entirely.
+						missCounter++;
+					} else {
+						int index = offset % aggregateCycleSize; // Round Robin around and around
+						if (sample.isBetween(aggregationWindowStart[index], aggregationWindowEnd[index])) {
+							// Sanity check.
+							DataAggregate aggregate = aggregation[index].get(sample.getKey());
+							if (aggregate == null) {
+								aggregate = new DataAggregate(aggregationWindowStart[index]);
+								aggregation[index].put(sample.getKey(), aggregate);
+							}
+							aggregate.include(sample);
+						} else {
+							logger.log(Level.WARNING, "Computed window index doesn't match when attempting to get aggregator");
+							missCounter++;
+						}
+					}
+				} else {
+					// Create an aggregate to conform to batching expectations
+					DataAggregate simple = new DataAggregate(sample.getTimestamp());
+					simple.include(sample);
+					batcher.stage(sample.getKey(), simple);
+				}
+			}
+
+			if (this.scheduler.get() != null) {
+				try {
+					this.scheduler.get().execute(this);
+				} catch (RejectedExecutionException ree) {
+					logger.log(Level.WARNING, "Unable to reschedule {0} minder.", this.toString());
+					logger.log(Level.WARNING, "Failure based on this exception:", ree);
+				}
+			} else {
+				logger.log(Level.INFO, "Gracefully not rescheduling {0} as scheduler has been finalized.", this.toString());
+			}
+		}
+	}
+
 }
