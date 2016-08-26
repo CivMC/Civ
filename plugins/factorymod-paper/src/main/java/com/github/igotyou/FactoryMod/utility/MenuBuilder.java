@@ -72,7 +72,6 @@ public class MenuBuilder {
 	}
 
 	public void openFactoryBrowser(Player p, String startingFac) {
-		ClickableInventory.forceCloseInventory(p);
 		IFactoryEgg egg;
 		if (startingFac == null) {
 			egg = defaultMenu;
@@ -158,7 +157,6 @@ public class MenuBuilder {
 	}
 
 	private void openRecipeBrowser(Player p, String facName) {
-		ClickableInventory.forceCloseInventory(p);
 		FurnCraftChestEgg egg = (FurnCraftChestEgg) manager.getEgg(facName);
 		List<IRecipe> recipes = egg.getRecipes();
 		int size = (recipes.size() / 9) + 2;
@@ -203,7 +201,6 @@ public class MenuBuilder {
 	}
 
 	private void openSetupBrowser(Player p, String facName) {
-		ClickableInventory.forceCloseInventory(p);
 		FurnCraftChestEgg egg = (FurnCraftChestEgg) manager.getEgg(facName);
 		FurnCraftChestEgg parEgg = (FurnCraftChestEgg) manager
 				.getEgg(parentFactories.get(facName));
@@ -327,7 +324,6 @@ public class MenuBuilder {
 	}
 
 	private void openUpgradeBrowser(Player p, String facName) {
-		ClickableInventory.forceCloseInventory(p);
 		FurnCraftChestEgg egg = (FurnCraftChestEgg) manager
 				.getEgg(factoryViewed.get(p.getUniqueId()));
 		List<IRecipe> upgrades = new LinkedList<IRecipe>();
@@ -380,7 +376,6 @@ public class MenuBuilder {
 	}
 
 	private void openDetailedRecipeBrowser(Player p, String recipeName) {
-		ClickableInventory.forceCloseInventory(p);
 		if (recipeName == null) {
 			FactoryMod
 					.getPlugin()
@@ -570,7 +565,6 @@ public class MenuBuilder {
 	}
 
 	public void showSorterFace(Player p, Sorter s, BlockFace face) {
-		ClickableInventory.forceCloseInventory(p);
 		ClickableInventory ci = new ClickableInventory(54,
 				"Items for this side");
 		viewed.put(p.getUniqueId(), s);
