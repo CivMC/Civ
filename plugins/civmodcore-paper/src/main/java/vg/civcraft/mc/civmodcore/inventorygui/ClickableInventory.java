@@ -162,13 +162,11 @@ public class ClickableInventory {
 				actualCurrentInv.setContents(getInventory().getContents());
 				this.inventory = actualCurrentInv;
 				openInventories.put(p.getUniqueId(), this);
-				p.updateInventory();
 				return;
 			}
 		}
 		if (p != null) {
 			p.openInventory(inventory);
-			p.updateInventory();
 			openInventories.put(p.getUniqueId(), this);
 		}
 	}
