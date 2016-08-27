@@ -1,9 +1,12 @@
 package com.programmerdan.minecraft.civspy;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Represents a scheduled sampler that feeds data into the aggregator (DataManager)
  */
-public abstract DataSampler implements Runnable {
+public abstract class DataSampler implements Runnable {
 
 	/**
 	 * Target for all messages to enqueue against.
@@ -60,7 +63,7 @@ public abstract DataSampler implements Runnable {
 		}
 	}
 
-	public enum InactiveReason {
+	enum InactiveReason {
 		NEW,
 		REQUEST,
 		ERROR,

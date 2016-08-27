@@ -1,5 +1,7 @@
 package com.programmerdan.minecraft.civspy;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -7,16 +9,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+
+import com.programmerdan.minecraft.civspy.database.Database;
 
 
-public class CivSpy extends JavaPlugin implements Listener {
+public class CivSpy extends JavaPlugin {
 
 	private Config config;
 	private Database db;
-
-	private BukkitTask savedata;
-
-	private CivSpySaver saver;
+	
+	private DataBatcher batcher;
+	private DataManager manager;
 
 	@Override
 	public void onEnable() {
@@ -26,20 +30,25 @@ public class CivSpy extends JavaPlugin implements Listener {
 		getLogger().log(Level.INFO, "Initializing CivSpy database");
 		this.db = config.parseDatabase();
 		try {
-			if (this.db == null || !this.db.available()){
-				getLogger().log(Level.SEVERE, "Failed to acquire database, skipping listeners");
+			if (this.db == null){
+				getLogger().log(Level.SEVERE, "Failed to acquire database, skipping managers, samplers, and listeners.");
 				return;
 			}
-
-			getLogger().log(Level.INFO, "Preparing CivSpy datastructures");
-			this.saver = new CivSpySaver(db, this.config.getServer());
-
-			getLogger().log(Level.INFO, "Registering CivSpy listeners");
-			getServer().getPluginManager().registerEvents(this, this);
+			this.db.available();
 			
-			getLogger().log(Level.INFO, "Registering CivSpy saver");
-			this.savedata = getServer().getScheduler().runTaskTimerAsynchronously(
-					this, this.saver, this.config.getSaveInterval(), this.config.getSaveInterval());
+			getLogger().log(Level.INFO, "Preparing CivSpy Data Batcher");
+			this.batcher = new DataBatcher(db, getLogger());
+
+			getLogger().log(Level.INFO, "Preparing CivSpy Data Manager");
+			this.manager = new DataManager(batcher, getLogger(), this.config.getAggregationPeriod(),
+					this.config.getPeriodDelayCount(), this.config.getPeriodFutureCount());
+			
+			this.samplers = new ArrayList<DataSampler>();
+			startSamplers();
+			
+			this.listeners = new ArrayList<Listener>();
+			startListeners();
+			
 		} catch (SQLException se) {
 			getLogger().log(Level.SEVERE, "Failed to acquire database, skipping listeners", se);
 		}
@@ -48,22 +57,70 @@ public class CivSpy extends JavaPlugin implements Listener {
 	@Override
 	public void onDisable() {
 		getLogger().log(Level.INFO, "Deregistering CivSpy listeners");
+		stopListeners();
 		HandlerList.unregisterAll((Plugin) this);
+		
+		getLogger().log(Level.INFO, "Deregistering CivSpy samplers");
+		stopSamplers();
 
-		getLogger().log(Level.INFO, "Forcing saver to run and deactivating");
-		this.saver.saveAll();
-		this.saver = null;
-		this.cancelTasks(this);
+		getLogger().log(Level.INFO, "Stopping CivSpy Data Manager");
+		this.manager.shutdown();
 
+		getLogger().log(Level.INFO, "Stopping CivSpy Data Batcher");
+		this.batcher.shutdown();
+		
 		getLogger().log(Level.INFO, "Closing CivSpy database");
-		if (this.db != null) this.db.close();
+		if (this.db != null) {
+			try {
+				this.db.close();
+			} catch (SQLException se) {
+				getLogger().log(Level.SEVERE, "Failed to close out CivSpy database");
+			}
+		}
 	}
-
-	/* Listeners */
-
-	@EventHandler
-	public void onRegularBreak(BlockBreakEvent event) {
-		if (event.getPlayer() == null)
-			return;
+	
+	ArrayList<DataSampler> samplers;
+	
+	ArrayList<Listener> listeners;
+	
+	private void startSamplers() {
+		getLogger().log(Level.INFO, "Registering CivSpy samplers");
+		
+		// SAMPLE
+		getLogger().log(Level.INFO, "Registering player count sampler");
+		DataSampler pCount = new DataSampler(this.manager, this.getLogger()) {
+			@Override
+			public DataSample sample() {
+				DataSample ds = new PeriodicDataSample("server.playercount", config.getServer(),
+						null, null, Bukkit.getOnlinePlayers().size());
+				return ds;
+			}
+		};
+		pCount.activate();
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, pCount, 1200l, 1200l);
+		samplers.add(pCount);
+		// END SAMPLE
+	}
+	
+	private void stopSamplers() {
+		getLogger().log(Level.INFO, "Deregistering CivSpy samplers");
+		
+		// GENERIC deactivator
+		for (DataSampler sampler : samplers) {
+			sampler.deactivate();
+		}
+		
+		// Turn them off.
+		Bukkit.getScheduler().cancelTasks(this);
+	}
+	
+	private void startListeners() {
+		getLogger().log(Level.INFO, "Registering CivSpy listeners");
+		
+	}
+	
+	private void stopListeners() {
+		getLogger().log(Level.INFO, "Deregistering CivSpy listeners");
+	
 	}
 }

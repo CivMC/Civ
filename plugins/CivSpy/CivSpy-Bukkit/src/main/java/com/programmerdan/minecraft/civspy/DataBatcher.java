@@ -1,9 +1,11 @@
 package com.programmerdan.minecraft.civspy;
 
 import java.sql.PreparedStatement;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -43,6 +45,8 @@ public class DataBatcher {
 	 */
 	private final LinkedTransferQueue<BatchLine> batchQueue;
 	
+	private boolean active = true;
+	
 	/**
 	 * Maximum number of elements to put into a single batch.
 	 */
@@ -72,6 +76,26 @@ public class DataBatcher {
 		this.batchExecutor = Executors.newFixedThreadPool(this.maxExecutors);
 	}
 	
+	public void shutdown() {
+		active = false;
+		int delay = 0;
+		while (!this.batchQueue.isEmpty() && delay < 600) {
+			try {
+				Thread.sleep(1000l);
+			} catch(Exception e) {}
+			delay ++;
+			if (delay % 30 == 0) {
+				this.logger.log(Level.INFO, "Waiting on batch queue workers to finish up, {0} seconds so far", delay);
+			}
+		}
+		if (delay >= 600) {
+			this.logger.log(Level.WARNING, "Giving up on waiting. DATA LOSS MAY OCCUR.");
+		}
+		batchQueue.clear();
+		this.scheduler.shutdown();
+		this.batchExecutor.shutdown();
+	}
+	
 	/** 
 	 * This task just keeps a worker running from time to time, just to make sure someone is watching
 	 * the incoming queue and help moderate against inflow explosion.
@@ -89,52 +113,85 @@ public class DataBatcher {
 	}
 	
 	private void generateWorker() {
-		batchExecutor.execute( new Runnable() {
-			
-			@Override
-			public void run() {
-				/* General sketch:
-				 *  Based on maximum wait time and max count, pull batch lines off
-				 *  and batch up into a new PrepareStatement batch against a new connection.
-				 */
+		try {
+			batchExecutor.execute( new Runnable() {
 				
-				PreparedStatement batch = null;
-				long startTime = System.currentTimeMillis();
-				int count = 0;
-				while (System.currentTimeMillis() - startTime < maxBatchWait
-						&& count < maxBatchSize) {
-					try {
-						BatchLine newLine = batchQueue.poll(maxBatchWait, TimeUnit.MILLISECONDS);
-						if (newLine != null) {
-							batch = db.batchData(newLine.key.getKey(),
-									newLine.key.getServer(),
-									newLine.key.getWorld(), 
-									newLine.key.getChunkX(),
-									newLine.key.getChunkZ(),
-									newLine.key.getPlayer(),
-									newLine.valueString,
-									newLine.valueNumber,
-									newLine.timestamp, null, batch);
-							count ++;
+				@Override
+				public void run() {
+					/* General sketch:
+					 *  Based on maximum wait time and max count, pull batch lines off
+					 *  and batch up into a new PrepareStatement batch against a new connection.
+					 */
+					
+					PreparedStatement batch = null;
+					long startTime = System.currentTimeMillis();
+					int count = 0;
+					while (System.currentTimeMillis() - startTime < maxBatchWait
+							&& count < maxBatchSize) {
+						try {
+							BatchLine newLine = batchQueue.poll(maxBatchWait, TimeUnit.MILLISECONDS);
+							if (newLine != null) {
+								batch = db.batchData(newLine.key.getKey(),
+										newLine.key.getServer(),
+										newLine.key.getWorld(), 
+										newLine.key.getChunkX(),
+										newLine.key.getChunkZ(),
+										newLine.key.getPlayer(),
+										newLine.valueString,
+										newLine.valueNumber,
+										newLine.timestamp, null, batch);
+								count ++;
+								outflowCount.getAndIncrement();
+							}
+						} catch (InterruptedException ie) {
+							logger.log(Level.WARNING, "A batching task was interrupted", ie);
 						}
-					} catch (InterruptedException ie) {
-						logger.log(Level.WARNING, "A batching task was interrupted", ie);
 					}
-				}
-				
-				if (batch != null) {
-					try {
-						int[] results = db.batchExecute(batch, true);
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, "Critical failure while saving a batch!", e);
+					
+					if (batch != null) {
+						try {
+							int[] results = db.batchExecute(batch, true);
+							int inserts = 0;
+							for (int r : results) {
+								inserts += r;
+							}
+							if (inserts != results.length) {
+								logger.log(Level.WARNING, "Some submitted data failed to insert: given {0} saved {1}",
+										new Object[]{results.length, inserts});
+							}
+						} catch (Exception e) {
+							logger.log(Level.SEVERE, "Critical failure while saving a batch!", e);
+						}
 					}
+					
+					inflowCount.addAndGet(-count);
+					outflowCount.addAndGet(-count);
 				}
-			}
-		});
+			});
+		} catch (RejectedExecutionException ree) {
+			logger.log(Level.WARNING, "Tried to scheduled a new batch worker, rejected: ", ree);
+		}
 	}
 	
 	public void stage(DataSampleKey key, DataAggregate aggregate) {
+		if (!active) return;
+		
 		// now unwrap
+		if (aggregate.sum != null) {
+			this.batchQueue.offer(new BatchLine(key, aggregate.getTimestamp(), null, aggregate.sum));
+			this.inflowCount.getAndIncrement();
+		}
+		for (Entry<String, Double> entry : aggregate.namedSums.entrySet()) {
+			this.batchQueue.offer(new BatchLine(key, aggregate.getTimestamp(), entry.getKey(), entry.getValue()));
+			this.inflowCount.getAndIncrement();
+		}
+		if (this.inflowCount.get() - this.outflowCount.get() >= maxBatchSize) {
+			if (this.workerCount.get() < this.maxExecutors) {
+				this.generateWorker();
+			} else {
+				logger.log(Level.WARNING, "Inflow count far in advance of outflow count, but no room for more outflow workers. Check your config!");
+			}
+		}
 	}
 	
 	/**

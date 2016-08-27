@@ -24,6 +24,8 @@ public class DataManager {
 	private final DataBatcher batcher;
 	private final Logger logger;
 
+	private boolean active = true;
+	
 	/**
 	 * Threadpool to handle scheduled tasks like flowMonitor and aggregateHandler.
 	 */
@@ -166,9 +168,11 @@ public class DataManager {
 			final int periodFutureCount) {
 		this.batcher = batcher;
 		this.logger = logger;
+		
+		this.active = true;
 
 		// Prepare the incoming queue.
-		sampleQueue = new LinkedTransferQueue<DataSample>();
+		this.sampleQueue = new LinkedTransferQueue<DataSample>();
 
 		// TODO: Configure flow capture and such
 		this.instantOutflow = new long[flowCaptureWindows];
@@ -218,6 +222,34 @@ public class DataManager {
 
 		// Third, the aggregator window cycle task.
 		scheduleWindowCycle();
+	}
+
+	/**
+	 * Undoes what the constructor starts. 
+	 * This method stops the various executors and forces an immediate flush of _all_ aggregation buckets with data.
+	 */
+	public void shutdown() {
+		this.active = false;
+		int delay = 0;
+		while (!this.sampleQueue.isEmpty() && delay < 600) {
+			try {
+				Thread.sleep(1000l);
+			} catch(Exception e) {}
+			delay ++;
+			if (delay % 30 == 0) {
+				this.logger.log(Level.INFO, "Waiting on dequeue workers to finish up, {0} seconds so far", delay);
+			}
+		}
+		if (delay >= 600) {
+			this.logger.log(Level.WARNING, "Giving up on waiting. DATA LOSS MAY OCCUR.");
+		}
+		
+		this.sampleQueue.clear();
+		
+		this.aggregateHandler.cancel(false);
+		this.flowMonitor.cancel(false);
+		this.scheduler.shutdown();
+		this.dequeueWorkers.shutdown();
 	}
 	
 	/**
@@ -318,16 +350,9 @@ public class DataManager {
 	 * It adds data to be processed. It increments the inflow counter.
 	 */
 	public void enqueue(DataSample data) {
+		if (!active) return;
 		sampleQueue.offer(data);
 		instantInflow[whichFlowWindow]++;
-	}
-
-	/**
-	 * Undoes what the constructor starts. 
-	 * This method stops the various executors and forces an immediate flush of _all_ aggregation buckets with data.
-	 */
-	public void shutdown() {
-		// TODO
 	}
 
 	static class RepeatingQueueMinder implements Runnable {
@@ -407,23 +432,11 @@ public class DataManager {
 					}
 				}
 			} catch (NullPointerException npe) {
-				if (parent != null) {
-					parent.logger.log(Level.SEVERE, "Null pointer while aggregating sample", npe);
-				} else {
-					npe.printStackTrace();
-				}
+				parent.logger.log(Level.SEVERE, "Null pointer while aggregating sample", npe);
 			} catch (IndexOutOfBoundsException ioobe) {
-				if (parent != null) {
-					parent.logger.log(Level.SEVERE, "Array math problem while aggregating sample", ioobe);
-				} else {
-					ioobe.printStackTrace();
-				}
+				parent.logger.log(Level.SEVERE, "Array math problem while aggregating sample", ioobe);
 			} catch (Exception e) {
-				if (parent != null) {
-					parent.logger.log(Level.SEVERE, "Unexpected error while aggregating sample", e);
-				} else {
-					e.printStackTrace();
-				}
+				parent.logger.log(Level.SEVERE, "Unexpected error while aggregating sample", e);
 			}
 			
 			// Now schedule this worker again.

@@ -1,5 +1,7 @@
 package com.programmerdan.minecraft.civspy;
 
+import java.util.UUID;
+
 /**
  * Simple implementation of a DataSample, this encapuslates a server/world/player (max granularity) sampling of data, done on a distinct period.
  * As it is sampled and not event driven, this is data not meant to be aggregated by CivSpy, as it is best presented using histograms

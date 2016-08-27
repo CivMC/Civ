@@ -20,7 +20,7 @@ public class DataAggregate {
 	public DataAggregate(long timestamp) {
 		this.timestamp = timestamp;
 		this.namedSums = new HashMap<String, Double>();
-		sum = 0.0d;
+		sum = null;
 	}
 
 	public long getTimestamp() {
@@ -41,7 +41,11 @@ public class DataAggregate {
 		double value = 1.0d;
 		if (valueNumber != null) value = valueNumber.doubleValue();
 		if (valueString == null) {
-			sum += value;
+			if (sum == null) {
+				sum = value;
+			} else {
+				sum += value;
+			}
 		} else {
 			Double priorValue = namedSums.get(valueString);
 			if (priorValue != null) {

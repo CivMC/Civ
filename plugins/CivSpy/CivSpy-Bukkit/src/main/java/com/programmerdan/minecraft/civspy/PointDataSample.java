@@ -1,5 +1,7 @@
 package com.programmerdan.minecraft.civspy;
 
+import java.util.UUID;
+
 /**
  * Simple implementation of a DataSample, this encapsulates an event's point of data, done on event or demand.
  * This data is meant to be aggregated into a "time bucket" before database insertion.
