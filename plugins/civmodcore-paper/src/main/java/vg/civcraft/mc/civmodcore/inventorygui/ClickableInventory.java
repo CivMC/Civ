@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Represents an inventory filled with Clickables. Whenever one of those is
@@ -28,7 +29,7 @@ public class ClickableInventory {
 
 	private Inventory inventory;
 
-	private Clickable[] clickables;
+	private IClickable[] clickables;
 
 	/**
 	 * Creates a new ClickableInventory
@@ -43,7 +44,7 @@ public class ClickableInventory {
 			name = name.substring(0, 32);
 		}
 		inventory = Bukkit.createInventory(null, type, name);
-		this.clickables = new Clickable[inventory.getSize() + 1];
+		this.clickables = new IClickable[inventory.getSize() + 1];
 	}
 
 	/**
@@ -62,7 +63,7 @@ public class ClickableInventory {
 			name = name.substring(0, 32);
 		}
 		inventory = Bukkit.createInventory(null, size, name);
-		this.clickables = new Clickable[size + 1];
+		this.clickables = new IClickable[size + 1];
 	}
 
 	/**
@@ -78,9 +79,10 @@ public class ClickableInventory {
 	 * @param c     The new clickable for the given slot
 	 * @param index index of the slot in the inventory
 	 */
-	public void setSlot(Clickable c, int index) {
+	public void setSlot(IClickable c, int index) {
 		inventory.setItem(index, c.getItemStack());
 		clickables[index] = c;
+		c.addedToInventory(this, index);
 	}
 
 	/**
@@ -93,7 +95,7 @@ public class ClickableInventory {
 	 * empty or if the given index is out of range of the inventory
 	 * indices
 	 */
-	public Clickable getSlot(int index) {
+	public IClickable getSlot(int index) {
 		return index < inventory.getSize() ? clickables[index] : null;
 	}
 
@@ -106,7 +108,7 @@ public class ClickableInventory {
 	 *
 	 * @param c Clickable to add
 	 */
-	public void addSlot(Clickable c) {
+	public void addSlot(IClickable c) {
 		for (int i = 0; i < clickables.length; i++) {
 			if (clickables[i] == null) {
 				setSlot(c, i);
@@ -128,11 +130,6 @@ public class ClickableInventory {
 			return;
 		}
 		clickables[index].clicked(p);
-		if (!(clickables[index] instanceof DecorationStack)
-				&& getOpenInventory(p) == this) {
-			// if the clickable opened a new window, we dont want to close it
-			// here
-		}
 	}
 
 	/**
@@ -165,6 +162,7 @@ public class ClickableInventory {
 		for (Map.Entry<UUID, ClickableInventory> c : openInventories.entrySet()) {
 			if (c.getValue() == this) {
 				Player p = Bukkit.getPlayer(c.getKey());
+				p.updateInventory();
 				showInventory(p);
 			}
 		}
@@ -177,13 +175,22 @@ public class ClickableInventory {
 	 * @return The index of the clickable if it exists in this inventory or -1
 	 * if it doesnt
 	 */
-	public int indexOf(Clickable c) {
+	public int indexOf(IClickable c) {
 		for (int i = 0; i < clickables.length; i++) {
 			if (clickables[i] == c) {
 				return i;
 			}
 		}
 		return -1;
+	}
+	
+	/**
+	 * Sets a certain item slot, while bypassing the clickable structure
+	 * @param is ItemStack to set to
+	 * @param slot Slot to be set
+	 */
+	void setItem(ItemStack is, int slot) {
+		inventory.setItem(slot, is);
 	}
 
 	/**

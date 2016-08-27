@@ -1,6 +1,5 @@
 package vg.civcraft.mc.civmodcore.inventorygui;
 
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -9,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Maxopoly
  */
-public abstract class Clickable {
+public abstract class Clickable implements IClickable {
 
 	protected ItemStack item;
 
@@ -18,17 +17,14 @@ public abstract class Clickable {
 	}
 
 	/**
-	 * What is done whenever this element is clicked
-	 *
-	 * @param p Player who clicked
-	 */
-	public abstract void clicked(Player p);
-
-	/**
 	 * @return Which item stack represents this clickable
 	 */
 	public ItemStack getItemStack() {
 		return item;
+	}
+	
+	public void addedToInventory(ClickableInventory inv, int slot) {
+		//dont need anything for static representation		
 	}
 
 }

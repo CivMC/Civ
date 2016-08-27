@@ -12,5 +12,4 @@ public class DecorationStack extends Clickable {
 	public void clicked(Player p) {
 		//dont do anything here, it's supposed to be just decoration
 	}
-
 }

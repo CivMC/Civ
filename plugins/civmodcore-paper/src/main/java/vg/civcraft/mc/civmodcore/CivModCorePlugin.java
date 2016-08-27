@@ -11,6 +11,13 @@ import org.bukkit.plugin.java.JavaPlugin;
  * Replaces Dummy class.
  */
 public class CivModCorePlugin extends JavaPlugin {
+	
+	private static CivModCorePlugin instance;
+	
+	public void onEnable() {
+		//needed for some of the apis
+		instance = this;
+	}
 
 	/**
 	 * Returns the logger for this plugin. Assumes the plugin has already been loaded.
@@ -18,7 +25,11 @@ public class CivModCorePlugin extends JavaPlugin {
 	 * @return The logger for this plugin.
 	 */
 	public static Logger log() {
-		return getPlugin(CivModCorePlugin.class).getLogger();
+		return getInstance().getLogger();
+	}
+	
+	public static CivModCorePlugin getInstance() {
+		return instance;
 	}
 
 }
