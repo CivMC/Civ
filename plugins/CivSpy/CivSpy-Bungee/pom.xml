@@ -8,7 +8,7 @@
 	<name>CivSpy-bungee</name>
 
 	<parent>
-		<groupId>com.programmerdan.minecrft</groupId>
+		<groupId>com.programmerdan.minecraft</groupId>
 		<artifactId>civspy-parent</artifactId>
 		<version>1.0</version>
 	</parent>

@@ -1,5 +1,7 @@
 package com.programmerdan.minecraft.civspy;
 
+import java.util.UUID;
+
 /**
  * A data sample; can be destined for aggregation or stand alone.
  */
@@ -9,7 +11,7 @@ public abstract class DataSample {
 
 	private final long timestamp;
 
-	private final DateSampleKey key;
+	private final DataSampleKey key;
 
 	DataSample(String key, String server, String world, UUID player, Integer chunkX, Integer chunkZ, Number valueNumber) {
 		this(key, server, world, player, chunkX, chunkZ, null, valueNumber);
@@ -21,12 +23,12 @@ public abstract class DataSample {
 		this.timestamp = System.currentTimeMillis();
 		this.valueString = valueString;
 		this.valueNumber = valueNumber;
-		this.key = new DateSampleKey(server, world, player, chunkX, chunkZ, key);
+		this.key = new DataSampleKey(server, world, player, chunkX, chunkZ, key);
 	}
 	
 	public abstract boolean forAggregate();
 
-	public DateSampleKey getKey() {
+	public DataSampleKey getKey() {
 		return key;
 	}
 

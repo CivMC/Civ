@@ -1,17 +1,24 @@
 package com.programmerdan.minecraft.civspy;
 
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Represents a self-monitoring manager that accepts data into a queue and asynchronously pulls data
  *   off and handles aggregation; then passes off to the batcher for database insertion
+ *   
+ * @author ProgrammerDan
  */
 public class DataManager {
 	private final DataBatcher batcher;
@@ -90,6 +97,7 @@ public class DataManager {
 	 * Collection periods are not instantly transferred to the database once the period has "ended" -- a delay is maintained, 
 	 * controlled by this delay count. If you notice a lot of lost records due to closed out periods, expand this delay count.
 	 * Be mindful of memory implications.
+	 */
 	private final int periodDelayCount;
 
 	/**
@@ -115,6 +123,8 @@ public class DataManager {
 
 	private long[] aggregationWindowStart;
 	private long[] aggregationWindowEnd;
+	
+	private Object aggregationResolver;
 
 	/**
 	 * This index forms the "base" of aggregation. Initially a bunch of windows are set up into the future; as time progresses
@@ -148,6 +158,7 @@ public class DataManager {
 	 * @param periodFutureCount is the number of "future" aggregation periods to setup in advance. It's good to set this to 
 	 *   about 1/4 to 1/2 of perioddelay for similar reasons.
 	 */
+	@SuppressWarnings("unchecked")
 	public DataManager(final DataBatcher batcher, final Logger logger, final long aggregationPeriod, final int periodDelayCount,
 			final int periodFutureCount) {
 		this.batcher = batcher;
@@ -164,22 +175,24 @@ public class DataManager {
 		this.aggregationPeriod = aggregationPeriod;
 		this.periodDelayCount = periodDelayCount;
 		this.periodFutureCount = periodFutureCount;
+		
 
 		// Here we set up windows. Everything is geared towards pre-compute; we pre-compute our window bounds and
 		// our storages, so that once we start reading off the queue we can rapid fire with no management;
 		// management and cycling the windows is someone else's job, handled round robin so nothing changes in terms of
 		// array ordering, just eventually things start getting dropped if they have somehow hung around too long.
-		this.aggregateCycleSize = this.periodDelayCount + this.periodFutureCount + 1;
-		this.aggregation = new ConcurrentHashMap<DataSampleKey, DataAggregate>[this.aggregateCycleSize];
-		this.aggregationWindowStart = new long[this.aggregateCycleSize];
-		this.aggregationWindowEnd = new long[this.aggregateCycleSize];
+		this.aggregationCycleSize = this.periodDelayCount + this.periodFutureCount + 1;
+		this.aggregation = (ConcurrentHashMap<DataSampleKey, DataAggregate>[]) new ConcurrentHashMap[this.aggregationCycleSize];
+		this.aggregationWindowStart = new long[this.aggregationCycleSize];
+		this.aggregationWindowEnd = new long[this.aggregationCycleSize];
+		this.aggregationResolver = new Object();
 		
 		this.oldestAggregatorIndex = 1;
 		this.offloadAggregatorIndex = 0;
 
 		// We backdate our windows.
 		long window = System.currentTimeMillis() - (this.aggregationPeriod * this.periodDelayCount);
-		for (int idx = this.oldestAggregatorIndex; idx < this.aggregateCycleSize; id++) {
+		for (int idx = this.oldestAggregatorIndex; idx < this.aggregationCycleSize; idx++) {
 			this.aggregation[idx] = new ConcurrentHashMap<DataSampleKey, DataAggregate>();
 			this.aggregationWindowStart[idx] = window;
 			window += this.aggregationPeriod;
@@ -189,13 +202,104 @@ public class DataManager {
 		// Now create the executor and schedule repeating tasks.
 		// Executor before all. TODO: Configurable dequeue Worker pool size.
 		this.scheduler = Executors.newScheduledThreadPool(2);
-		this.dequeueWorkers = Executors.newFixedThreadPool(8);
+		
+		int workerCount = 8;
+		this.dequeueWorkers = Executors.newFixedThreadPool(workerCount);
 
 		// First, the queue reading task.
+		for (int i = 0; i < workerCount; i++) {
+			this.dequeueWorkers.execute(new RepeatingQueueMinder(this.dequeueWorkers, this));
+		}
 
 		// Second, the queue throughput watchdog task.
+		scheduleFlowMonitor();
 
 		// Third, the aggregator window cycle task.
+		scheduleWindowCycle();
+	}
+	
+	/**
+	 * Schedules a repeating task that monitors flow and reports on adverse conditions.
+	 */
+	private void scheduleFlowMonitor() {
+		this.flowMonitor = this.scheduler.scheduleAtFixedRate(new Runnable() {
+
+			@Override
+			public void run() {
+				/* Basic structure is: 
+				 *   * increment whichFlowWindow
+				 *   * sum all other windows
+				 *   * clear next window.
+				 *   * do notification if needed
+				 */
+				whichFlowWindow = (whichFlowWindow + 1) % flowCaptureWindows;
+				long inFlow = 0l;
+				long outFlow = 0l;
+				for (int i = 0 ; i < flowCaptureWindows; i++) {
+					if (i == whichFlowWindow) continue;
+					inFlow += instantInflow[i];
+					outFlow += instantOutflow[i];
+				}
+				avgInflow = (double) inFlow / (double) (flowCaptureWindows - 1);
+				avgOutflow = (double) outFlow / (double) (flowCaptureWindows - 1);
+				flowRatio = avgInflow / avgOutflow;
+				
+				int nextFlowWindow = (whichFlowWindow + 1) % flowCaptureWindows;
+				instantInflow[nextFlowWindow] = 0l;
+				instantOutflow[nextFlowWindow] = 0l;
+				
+				if (flowRatio > flowRatioSevere) {
+					logger.log(Level.SEVERE, "Inflow vs. Outflow DANGEROUSLY imbalanced: in vs out ratio at {0}", flowRatio);
+					logger.log(Level.SEVERE, "Action should be taken immediately or memory exhaustion may occur");
+				} else if (flowRatio > flowRatioWarn) {
+					logger.log(Level.WARNING, "Inflow vs. Outflow imbalanced: in vs out ratio at {0}", flowRatio);
+				}
+				
+				// Periodically report.
+				if (whichFlowWindow == 0) {
+					logger.log(Level.INFO, "Over last {0} milliseconds, absolute inflow = {1} and outflow = {2}, missed aggregations = {3}",
+							new Object[] { (flowCapturePeriod * (flowCaptureWindows - 1)), inFlow, outFlow, missCounter});
+				}
+			}
+			
+		}, flowCapturePeriod, flowCapturePeriod, TimeUnit.MILLISECONDS);
+	}
+	
+	private void scheduleWindowCycle() {
+		// Basic idea here is a scheduled task that periodically cycles which aggregation buckets are in use.
+		this.aggregateHandler = this.scheduler.scheduleAtFixedRate(new Runnable() {
+
+			@Override
+			public void run() {
+				/* General Sketch:
+				 *   * Grab aggregate lock.
+				 *   * Shift "locked" window pointer.
+				 *   * Adjust oldest pointer.
+				 *   * Release aggregate lock.
+				 *   * Grab offload aggregation lock.
+				 *   * Send all aggregated data to batcher.
+				 *   * Clear the datastructure of aggregations.
+				 *   * Update the timestamps on the boundary arrays.
+				 */
+				synchronized(aggregationResolver) {
+					oldestAggregatorIndex = (oldestAggregatorIndex + 1) % aggregationCycleSize;
+					offloadAggregatorIndex = (offloadAggregatorIndex + 1) % aggregationCycleSize;
+				}
+				
+				synchronized(aggregation[offloadAggregatorIndex]) {
+					ConcurrentHashMap<DataSampleKey, DataAggregate> aggregationMap = aggregation[offloadAggregatorIndex];
+					for(Entry<DataSampleKey, DataAggregate> entry : aggregationMap.entrySet()) {
+						batcher.stage(entry.getKey(), entry.getValue());
+					}
+					aggregationMap.clear();
+					
+					// oldest window shift to newest.
+					aggregationWindowStart[offloadAggregatorIndex] += aggregationCycleSize * aggregationPeriod;
+					aggregationWindowEnd[offloadAggregatorIndex] += aggregationCycleSize * aggregationPeriod;
+				}
+			}
+			
+		}, this.aggregationPeriod, this.aggregationPeriod, TimeUnit.MILLISECONDS);
 	}
 
 	/**
@@ -217,69 +321,109 @@ public class DataManager {
 
 	static class RepeatingQueueMinder implements Runnable {
 		private final WeakReference<ExecutorService> scheduler;
+		private final WeakReference<DataManager> parent;
 
-		RepeatingQueueMinder(ExecutorService scheduler) {
+		RepeatingQueueMinder(ExecutorService scheduler, DataManager parent) {
 			this.scheduler = new WeakReference<ExecutorService>(scheduler);
+			this.parent = new WeakReference<DataManager>(parent);
 		}
 
 		public void run() {
-			/* TODO: 
-			 * surround by interrupted.
-			 * Blocks at queue.get()
-			 * Once the queue returns something, do the work of finding the bucket and inserting it.
-			 * If insertion fails, appropriately increment the counters
-			 * In any case, update outflow.
-			 */
+			// Get definite reference to manager parent.
+			DataManager parent = this.parent.get();
+			if (parent == null) {
+				System.out.println("No logger, no parent, this RepeatingQueueMinder is saying goodnight sweet prince");
+				return;
+			}
+			
+			// Wait for a new sample.
 			DataSample sample = null;
 			try {
-				sample = sampleQueue.take();
+				sample = parent.sampleQueue.take();
 			} catch (InterruptedException ie) {
-				logger.log(Level.WARNING, "While waiting on a queue, interrupted:", ie);
+				parent.logger.log(Level.WARNING, "While waiting on a queue, interrupted:", ie);
 			}
 
-			if (sample != null) {
-				if (sample.forAggregate()) {
-					// Find which bucket.
-					// get the appropriate aggregate or create it
-					// update it
-					
-					// THIS NEEDS TO BE ATOMIC SOMEHOW
-					int offset = (int) ((sample.getTimestamp() - aggregationWindowStart[oldestAggregatorIndex]) / aggregationPeriod;
-					if (offset < 0 || offset >= aggregateCycleSize) {
-						// out of tracking period entirely.
-						missCounter++;
-					} else {
-						int index = offset % aggregateCycleSize; // Round Robin around and around
-						if (sample.isBetween(aggregationWindowStart[index], aggregationWindowEnd[index])) {
-							// Sanity check.
-							DataAggregate aggregate = aggregation[index].get(sample.getKey());
-							if (aggregate == null) {
-								aggregate = new DataAggregate(aggregationWindowStart[index]);
-								aggregation[index].put(sample.getKey(), aggregate);
+			try {
+				if (sample != null) {
+					if (sample.forAggregate()) {
+						// Find which bucket the sample belongs to; get the appropriate aggregate or create it
+						int index = -1; // must resolve.
+						
+						// So the idea here is to synchronize around a lock that means nothing changes
+						// the windows while we are resolving.
+						synchronized(parent.aggregationResolver) {
+							int offset = (int) ((sample.getTimestamp() - parent.aggregationWindowStart[parent.oldestAggregatorIndex]) / parent.aggregationPeriod);
+							if (offset < 0 || offset >= parent.aggregationCycleSize || offset == parent.offloadAggregatorIndex) {
+								// out of tracking period entirely.
+								parent.missCounter++;
+							} else {
+								index = offset % parent.aggregationCycleSize; // Round Robin around and around
+								if (!sample.isBetween(parent.aggregationWindowStart[index], parent.aggregationWindowEnd[index])) {
+									parent.logger.log(Level.WARNING, "Computed window index doesn't match when attempting to get aggregator");
+									parent.missCounter++;
+									index = -1;
+								}
 							}
-							aggregate.include(sample);
-						} else {
-							logger.log(Level.WARNING, "Computed window index doesn't match when attempting to get aggregator");
-							missCounter++;
 						}
+						if (index > -1) {
+							// Then the idea here is, if we've found an index (we've release our aggregation lock)
+							// we then lock on the specific aggregator and do our work.
+							// Ideally I _think_ I want to keep the resolver lock until I have the aggregator lock.
+							
+							// tbh I have no idea if this will work. I should replace with a proper lock.
+							synchronized(parent.aggregation[index]) {
+								if (index != parent.offloadAggregatorIndex) { // sanity check.
+									ConcurrentHashMap<DataSampleKey, DataAggregate> aggregationMap = parent.aggregation[index];
+									DataAggregate aggregate = aggregationMap.get(sample.getKey());
+									if (aggregate == null) {
+										aggregate = new DataAggregate(parent.aggregationWindowStart[index]);
+										aggregationMap.put(sample.getKey(), aggregate);
+									}
+									aggregate.include(sample);
+								} else {
+									parent.missCounter++;
+								}
+							}
+						}
+					} else {
+						// Create an aggregate to conform to batching expectations as this
+						// sample stands alone.
+						DataAggregate simple = new DataAggregate(sample.getTimestamp());
+						simple.include(sample);
+						parent.batcher.stage(sample.getKey(), simple);
 					}
+				}
+			} catch (NullPointerException npe) {
+				if (parent != null) {
+					parent.logger.log(Level.SEVERE, "Null pointer while aggregating sample", npe);
 				} else {
-					// Create an aggregate to conform to batching expectations
-					DataAggregate simple = new DataAggregate(sample.getTimestamp());
-					simple.include(sample);
-					batcher.stage(sample.getKey(), simple);
+					npe.printStackTrace();
+				}
+			} catch (IndexOutOfBoundsException ioobe) {
+				if (parent != null) {
+					parent.logger.log(Level.SEVERE, "Array math problem while aggregating sample", ioobe);
+				} else {
+					ioobe.printStackTrace();
+				}
+			} catch (Exception e) {
+				if (parent != null) {
+					parent.logger.log(Level.SEVERE, "Unexpected error while aggregating sample", e);
+				} else {
+					e.printStackTrace();
 				}
 			}
-
+			
+			// Now schedule this worker again.
 			if (this.scheduler.get() != null) {
 				try {
 					this.scheduler.get().execute(this);
 				} catch (RejectedExecutionException ree) {
-					logger.log(Level.WARNING, "Unable to reschedule {0} minder.", this.toString());
-					logger.log(Level.WARNING, "Failure based on this exception:", ree);
+					parent.logger.log(Level.WARNING, "Unable to reschedule {0} minder.", this.toString());
+					parent.logger.log(Level.WARNING, "Failure based on this exception:", ree);
 				}
 			} else {
-				logger.log(Level.INFO, "Gracefully not rescheduling {0} as scheduler has been finalized.", this.toString());
+				parent.logger.log(Level.INFO, "Gracefully not rescheduling {0} as scheduler has been finalized.", this.toString());
 			}
 		}
 	}

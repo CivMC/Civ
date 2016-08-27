@@ -1,10 +1,14 @@
 package com.programmerdan.minecraft.civspy;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * A data aggregation. Includes base timestamp, and summations.
  * For the moment, the only aggregation we will support is summation.
+ *  
+ * @author ProgrammerDan
  */
-
 public class DataAggregate {
 
 	private long timestamp;

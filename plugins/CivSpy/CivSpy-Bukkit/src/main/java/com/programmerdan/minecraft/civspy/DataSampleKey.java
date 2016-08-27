@@ -1,9 +1,11 @@
 package com.programmerdan.minecraft.civspy;
 
+import java.util.UUID;
+
 /**
  * Immutable key, used for aggregations
  */
-public class DataSampleKey implements Comparable<Key>{
+public class DataSampleKey implements Comparable<DataSampleKey>{
 	private String server;
 	private String world;
 	private UUID player;
@@ -14,7 +16,7 @@ public class DataSampleKey implements Comparable<Key>{
 
 	private final int hash;
 
-	public Key(final String server, final String world, final UUID player, final Integer chunkX, final Integer chunkZ, final String key) {
+	public DataSampleKey(final String server, final String world, final UUID player, final Integer chunkX, final Integer chunkZ, final String key) {
 		this.server = server;
 		this.world = world;
 		this.player = player;
@@ -64,16 +66,16 @@ public class DataSampleKey implements Comparable<Key>{
 
 	@Override
 	public boolean equals(Object o) {
-		if (o != null && o instanceof Key) {
-			if ( this.hashCode() == ((Key) o).hashCode() ) {
-				return this.compareTo((Key) o) == 0;
+		if (o != null && o instanceof DataSampleKey) {
+			if ( this.hashCode() == ((DataSampleKey) o).hashCode() ) {
+				return this.compareTo((DataSampleKey) o) == 0;
 			}
 		}
 		return false;
 	}
 
 	@Override
-	public int compareTo(Key k) {
+	public int compareTo(DataSampleKey k) {
 		int comp = 0;
 
 		if (this.key != null) {
@@ -81,42 +83,42 @@ public class DataSampleKey implements Comparable<Key>{
 		} else if (k.key != null) {
 			comp = -k.key.compareTo(this.key);
 		}
-		if (comp <> 0) return comp;
+		if (comp != 0) return comp;
 
 		if (this.player != null) {
 			comp = this.player.compareTo(k.player);
 		} else if (k.player != null) {
 			comp = -k.player.compareTo(this.player);
 		}
-		if (comp <> 0) return comp;
+		if (comp != 0) return comp;
 
 		if (this.chunkX != null) {
 			comp = this.chunkX.compareTo(k.chunkX);
 		} else if (k.chunkX != null) {
 			comp = -k.chunkX.compareTo(this.chunkX);
 		}
-		if (comp <> 0) return comp;
+		if (comp != 0) return comp;
 
 		if (this.chunkZ != null) {
 			comp = this.chunkZ.compareTo(k.chunkZ);
 		} else if (k.chunkZ != null) {
 			comp = -k.chunkZ.compareTo(this.chunkZ);
 		}
-		if (comp <> 0) return comp;
+		if (comp != 0) return comp;
 
 		if (this.world != null) {
 			comp = this.world.compareTo(k.world);
 		} else if (k.world != null) {
 			comp = -k.world.compareTo(this.world);
 		}
-		if (comp <> 0) return comp;
+		if (comp != 0) return comp;
 		
 		if (this.server != null) {
 			comp = this.server.compareTo(k.server);
 		} else if (k.server != null) {
 			comp = -k.server.compareTo(this.server);
 		}
-		if (comp <> 0) return comp;
+		return comp;
 	}
 
 
