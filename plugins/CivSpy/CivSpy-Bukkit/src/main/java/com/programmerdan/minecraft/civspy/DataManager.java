@@ -49,6 +49,9 @@ public class DataManager {
 	 * A fixed size threadpool of greedy queue consumers that read off the data queue.
 	 */
 	private final ExecutorService dequeueWorkers;
+	
+	private int roughWorkerCount = 0; // actual
+	private int workerCount = 8; //target
 
 	/*
 	 * These are all flow watching variables. The basic idea is simple. You record flowcount into a "window" of a bucket
@@ -203,12 +206,11 @@ public class DataManager {
 		// Executor before all. TODO: Configurable dequeue Worker pool size.
 		this.scheduler = Executors.newScheduledThreadPool(2);
 		
-		int workerCount = 8;
 		this.dequeueWorkers = Executors.newFixedThreadPool(workerCount);
 
 		// First, the queue reading task.
 		for (int i = 0; i < workerCount; i++) {
-			this.dequeueWorkers.execute(new RepeatingQueueMinder(this.dequeueWorkers, this));
+			newWorker();
 		}
 
 		// Second, the queue throughput watchdog task.
@@ -260,9 +262,18 @@ public class DataManager {
 					logger.log(Level.INFO, "Over last {0} milliseconds, absolute inflow = {1} and outflow = {2}, missed aggregations = {3}",
 							new Object[] { (flowCapturePeriod * (flowCaptureWindows - 1)), inFlow, outFlow, missCounter});
 				}
+				
+				// Check on dequeue workers
+				if (roughWorkerCount < workerCount) {
+					newWorker();
+				}
 			}
 			
 		}, flowCapturePeriod, flowCapturePeriod, TimeUnit.MILLISECONDS);
+	}
+	
+	private void newWorker() {
+		this.dequeueWorkers.execute(new RepeatingQueueMinder(this.dequeueWorkers, this));
 	}
 	
 	private void scheduleWindowCycle() {
@@ -326,6 +337,7 @@ public class DataManager {
 		RepeatingQueueMinder(ExecutorService scheduler, DataManager parent) {
 			this.scheduler = new WeakReference<ExecutorService>(scheduler);
 			this.parent = new WeakReference<DataManager>(parent);
+			parent.roughWorkerCount++;
 		}
 
 		public void run() {
@@ -421,9 +433,11 @@ public class DataManager {
 				} catch (RejectedExecutionException ree) {
 					parent.logger.log(Level.WARNING, "Unable to reschedule {0} minder.", this.toString());
 					parent.logger.log(Level.WARNING, "Failure based on this exception:", ree);
+					parent.roughWorkerCount--;
 				}
 			} else {
 				parent.logger.log(Level.INFO, "Gracefully not rescheduling {0} as scheduler has been finalized.", this.toString());
+				parent.roughWorkerCount--;
 			}
 		}
 	}
