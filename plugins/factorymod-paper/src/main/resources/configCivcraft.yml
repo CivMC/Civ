@@ -45,6 +45,7 @@ factories:
     - Upgrade_to_Blacksmith
     - Upgrade_to_Laboratory
     - Upgrade_to_Wood_Processor
+    - Upgrade_to_Wood_Processor_2
     - Upgrade_to_Basic_Forge
     - Upgrade_to_Basic_Fortification
     
@@ -5286,6 +5287,16 @@ recipes:
         durability: -1
         amount: 512
     factory: Wood Processor
+  Upgrade_to_Wood_Processor_2:
+    production_time: 10m
+    type: UPGRADE
+    name: Upgrade to Wood Processor with Dark Oak or Acacia
+    fuel_consumption_interval: 20s
+    input:
+      planks:
+        material: LOG_2
+        durability: -1
+        amount: 512
   Upgrade_to_Wool_Processing:
     production_time: 1800s
     type: UPGRADE
