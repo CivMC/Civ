@@ -225,7 +225,7 @@ public class PlayerReinforcement extends Reinforcement{
     		return;
     	}
     	if (!g.isValid()){ // incase it was recently merged/ deleted.
-    		g = NameAPI.getGroupManager().getGroup(g.getGroupId());
+    		g = GroupManager.getGroup(g.getGroupId());
     		if (g == null) {
     			Citadel.getInstance().getLogger().log(Level.INFO, "Group " + g.getGroupId() + " was deleted or merged but not marked invalid!");
     		}
