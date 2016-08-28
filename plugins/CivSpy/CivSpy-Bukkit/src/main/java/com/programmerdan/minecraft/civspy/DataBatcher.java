@@ -94,6 +94,14 @@ public class DataBatcher {
 		batchQueue.clear();
 		this.scheduler.shutdown();
 		this.batchExecutor.shutdown();
+		
+		try {
+			if (!this.batchExecutor.awaitTermination(60l, TimeUnit.SECONDS)) {
+				this.logger.log(Level.WARNING, "Giving up on waiting for batch commit; DATA LOSS MAY HAVE OCCURRED.");
+			}
+		} catch (InterruptedException ie) {
+			this.logger.log(Level.WARNING, "Was awaiting batch saving to finish, but was interrupted.", ie);
+		}
 	}
 	
 	/** 
