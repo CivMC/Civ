@@ -3,20 +3,25 @@ package com.programmerdan.minecraft.civspy;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.nio.file.Files;
 
+import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import com.programmerdan.minecraft.civspy.CivSpyPlayerCount;
 import com.programmerdan.minecraft.civspy.database.Database;
 
 public class CivSpyBungee extends Plugin implements Listener {
@@ -41,7 +46,9 @@ public class CivSpyBungee extends Plugin implements Listener {
 		}
 		
 		try {
-			if (this.db != null && this.db.available()) {
+			if (this.db != null) {
+				this.db.available();
+				
 				getLogger().info("Setting up CivSpyBungee Playercount Tracker");
 				this.counter = new CivSpyPlayerCount(this, db);
 				tracker = getProxy().getScheduler().schedule(this, this.counter,
@@ -67,8 +74,12 @@ public class CivSpyBungee extends Plugin implements Listener {
 			db.insertData("bungee.logout", player);
 			session(player);
 		}
-		players.removeAll();
-		this.db.close();
+		players.clear();
+		try {
+			this.db.close();
+		} catch (SQLException se) {
+			getLogger().log(Level.SEVERE, "Couldn't close out database and connections for CivSpyBungee");
+		}
 	}
 
 	private Configuration loadConfig() {
@@ -94,7 +105,7 @@ public class CivSpyBungee extends Plugin implements Listener {
 		}
 	}
 
-	public DataBaseManager configDatabase(Configuration dbStuff) {
+	public Database configDatabase(Configuration dbStuff) {
 		if (dbStuff == null) {
 			getLogger().severe("No database credentials specified. This plugin requires a database to run!");
 			return null;
@@ -134,7 +145,7 @@ public class CivSpyBungee extends Plugin implements Listener {
 
 		ProxiedPlayer player = event.getPlayer();
 		db.insertData("bungee.login", player.getUniqueId());
-		players.add(player.getUniqueId());
+		players.put(player.getUniqueId(), System.currentTimeMillis());
 	}
 
 	@EventHandler

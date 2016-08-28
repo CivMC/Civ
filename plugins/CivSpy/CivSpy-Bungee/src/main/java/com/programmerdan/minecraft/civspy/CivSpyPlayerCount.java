@@ -17,7 +17,7 @@ public class CivSpyPlayerCount implements Runnable {
 	}
 
 	public void sample() {
-		int playersNow = plugin.getProxy().getPlayerCount();
+		int playersNow = plugin.getProxy().getOnlineCount();
 
 		this.db.insertData("bungee.playercount", playersNow);
 	}
