@@ -199,11 +199,14 @@ public class DataManager {
 
 		// We backdate our windows.
 		long window = System.currentTimeMillis() - (this.aggregationPeriod * this.periodDelayCount);
-		for (int idx = this.oldestAggregatorIndex; idx < this.aggregationCycleSize; idx++) {
-			this.aggregation[idx] = new ConcurrentHashMap<DataSampleKey, DataAggregate>();
-			this.aggregationWindowStart[idx] = window;
+		for (int idx = 1; idx <= this.aggregationCycleSize; idx++) {
+			int odx = idx % aggregationCycleSize;
+			this.aggregation[odx] = new ConcurrentHashMap<DataSampleKey, DataAggregate>();
+			this.aggregationWindowStart[odx] = window;
 			window += this.aggregationPeriod;
-			this.aggregationWindowEnd[idx] = window;
+			this.aggregationWindowEnd[odx] = window;
+			logger.log(Level.INFO, "Aggregator window {0} bounds: {1} to {2}", 
+					new Object[] {odx, aggregationWindowStart[odx], aggregationWindowEnd[odx]} );
 		}
 
 		// Now create the executor and schedule repeating tasks.
@@ -244,12 +247,18 @@ public class DataManager {
 			this.logger.log(Level.WARNING, "Giving up on waiting. DATA LOSS MAY OCCUR.");
 		}
 		
+		this.logger.log(Level.INFO, "Clearing queue and shutting down queue minders");
+		this.dequeueWorkers.shutdown();
 		this.sampleQueue.clear();
 		
+		this.logger.log(Level.INFO, "Shutting down scheduled tasks");
 		this.aggregateHandler.cancel(false);
 		this.flowMonitor.cancel(false);
 		this.scheduler.shutdown();
-		this.dequeueWorkers.shutdown();
+
+		this.logger.log(Level.INFO, "Forcing a flush of aggregators");
+		forceFlush();
+		
 	}
 	
 	/**
@@ -283,6 +292,7 @@ public class DataManager {
 				instantOutflow[nextFlowWindow] = 0l;
 				
 				if (flowRatio > flowRatioSevere) {
+					// TODO add mechanism to only alert once.
 					logger.log(Level.SEVERE, "Inflow vs. Outflow DANGEROUSLY imbalanced: in vs out ratio at {0}", flowRatio);
 					logger.log(Level.SEVERE, "Action should be taken immediately or memory exhaustion may occur");
 				} else if (flowRatio > flowRatioWarn) {
@@ -324,6 +334,7 @@ public class DataManager {
 				 *   * Clear the datastructure of aggregations.
 				 *   * Update the timestamps on the boundary arrays.
 				 */
+				
 				synchronized(aggregationResolver) {
 					oldestAggregatorIndex = (oldestAggregatorIndex + 1) % aggregationCycleSize;
 					offloadAggregatorIndex = (offloadAggregatorIndex + 1) % aggregationCycleSize;
@@ -339,10 +350,38 @@ public class DataManager {
 					// oldest window shift to newest.
 					aggregationWindowStart[offloadAggregatorIndex] += aggregationCycleSize * aggregationPeriod;
 					aggregationWindowEnd[offloadAggregatorIndex] += aggregationCycleSize * aggregationPeriod;
+					
+					logger.log(Level.INFO, "Aggregator window {0} bounds: {1} to {2}", 
+							new Object[] {offloadAggregatorIndex, aggregationWindowStart[offloadAggregatorIndex], aggregationWindowEnd[offloadAggregatorIndex]} );
 				}
 			}
 			
 		}, this.aggregationPeriod, this.aggregationPeriod, TimeUnit.MILLISECONDS);
+	}
+	
+	private final void forceFlush() {
+		int start = offloadAggregatorIndex;
+		while (oldestAggregatorIndex != start) {
+			synchronized(aggregationResolver) {
+				oldestAggregatorIndex = (oldestAggregatorIndex + 1) % aggregationCycleSize;
+				offloadAggregatorIndex = (offloadAggregatorIndex + 1) % aggregationCycleSize;
+			}
+		
+			synchronized(aggregation[offloadAggregatorIndex]) {
+				ConcurrentHashMap<DataSampleKey, DataAggregate> aggregationMap = aggregation[offloadAggregatorIndex];
+				for(Entry<DataSampleKey, DataAggregate> entry : aggregationMap.entrySet()) {
+					batcher.stage(entry.getKey(), entry.getValue());
+				}
+				aggregationMap.clear();
+				
+				// oldest window shift to newest.
+				aggregationWindowStart[offloadAggregatorIndex] += aggregationCycleSize * aggregationPeriod;
+				aggregationWindowEnd[offloadAggregatorIndex] += aggregationCycleSize * aggregationPeriod;
+				
+				logger.log(Level.INFO, "Aggregator window {0} bounds: {1} to {2}", 
+						new Object[] {offloadAggregatorIndex, aggregationWindowStart[offloadAggregatorIndex], aggregationWindowEnd[offloadAggregatorIndex]} );
+			}
+		}
 	}
 
 	/**
@@ -383,6 +422,7 @@ public class DataManager {
 
 			try {
 				if (sample != null) {
+					parent.instantOutflow[parent.whichFlowWindow]++;
 					if (sample.forAggregate()) {
 						// Find which bucket the sample belongs to; get the appropriate aggregate or create it
 						int index = -1; // must resolve.
@@ -390,14 +430,15 @@ public class DataManager {
 						// So the idea here is to synchronize around a lock that means nothing changes
 						// the windows while we are resolving.
 						synchronized(parent.aggregationResolver) {
-							int offset = (int) ((sample.getTimestamp() - parent.aggregationWindowStart[parent.oldestAggregatorIndex]) / parent.aggregationPeriod);
+							int offset = (int) Math.floorDiv((sample.getTimestamp() - parent.aggregationWindowStart[parent.oldestAggregatorIndex]), parent.aggregationPeriod);
 							if (offset < 0 || offset >= parent.aggregationCycleSize || offset == parent.offloadAggregatorIndex) {
 								// out of tracking period entirely.
 								parent.missCounter++;
 							} else {
-								index = offset % parent.aggregationCycleSize; // Round Robin around and around
+								index = Math.floorMod(parent.oldestAggregatorIndex + offset, parent.aggregationCycleSize); // Round Robin around and around
 								if (!sample.isBetween(parent.aggregationWindowStart[index], parent.aggregationWindowEnd[index])) {
-									parent.logger.log(Level.WARNING, "Computed window index doesn't match when attempting to get aggregator");
+									parent.logger.log(Level.WARNING, "Computed window offset {4} to index {0} doesnt match when attempting to get aggregator: {1} not between {2} and {3}",
+											new Object[]{index, sample.getTimestamp(), parent.aggregationWindowStart[index], parent.aggregationWindowEnd[index], offset});
 									parent.missCounter++;
 									index = -1;
 								}

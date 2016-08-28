@@ -250,7 +250,7 @@ public class Database {
 		boolean iOwn = (connection == null);
 		boolean newState = (statement == null);
 		try {
-			connection = iOwn ? getConnection() : connection;
+			connection = iOwn && newState ? getConnection() : newState ? connection: statement.getConnection();
 			time = time == null ? System.currentTimeMillis() : time;
 			statement = newState ? connection.prepareStatement(Database.INSERT_COMBINED) : statement;
 		
