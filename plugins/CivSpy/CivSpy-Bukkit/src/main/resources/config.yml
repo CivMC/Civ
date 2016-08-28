@@ -4,6 +4,7 @@ database:
  database:
  user:
  password:
-save_interval: 12000
-interval: 12000
+aggregate_period: 60000
+period_delay_count: 6
+period_future_count: 3
 server: local

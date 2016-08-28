@@ -152,8 +152,10 @@ public class DataBatcher {
 						try {
 							int[] results = db.batchExecute(batch, true);
 							int inserts = 0;
-							for (int r : results) {
-								inserts += r;
+							if (results != null) {
+								for (int r : results) {
+									inserts += r;
+								}
 							}
 							if (inserts != results.length) {
 								logger.log(Level.WARNING, "Some submitted data failed to insert: given {0} saved {1}",

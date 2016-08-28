@@ -61,16 +61,24 @@ public class CivSpy extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		getLogger().log(Level.INFO, "Deregistering CivSpy listeners");
-		stopListeners();
+		if (listeners != null) {
+			stopListeners();
+		}
 		
 		getLogger().log(Level.INFO, "Deregistering CivSpy samplers");
-		stopSamplers();
+		if (samplers != null) {
+			stopSamplers();
+		}
 
 		getLogger().log(Level.INFO, "Stopping CivSpy Data Manager");
-		this.manager.shutdown();
+		if (this.manager !=  null) {
+			this.manager.shutdown();
+		}
 
 		getLogger().log(Level.INFO, "Stopping CivSpy Data Batcher");
-		this.batcher.shutdown();
+		if (this.batcher != null) {
+			this.batcher.shutdown();
+		}
 		
 		getLogger().log(Level.INFO, "Closing CivSpy database");
 		if (this.db != null) {

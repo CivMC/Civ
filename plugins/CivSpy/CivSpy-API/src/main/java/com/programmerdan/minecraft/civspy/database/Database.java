@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
@@ -46,7 +47,7 @@ public class Database {
 			"INSERT INTO spy_stats (stat_time, stat_key, numeric_value, server, world, chunk_x, chunk_z, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 	
 	public static final String INSERT_COMBINED =
-			"INSERT INTO spy_stats (stat_time, stat_key, string_value, numeric_value, server, world, chunk_x, chunk_z, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+			"INSERT INTO spy_stats (stat_time, stat_key, string_value, numeric_value, server, world, chunk_x, chunk_z, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 	private HikariDataSource datasource;
 	
@@ -191,7 +192,7 @@ public class Database {
 					o = 2;
 				}
 			}
-			statement.setLong(1, time);
+			statement.setTimestamp(1, new Timestamp(time));
 			statement.setString(2, key);
 
 			if (server != null) {
@@ -239,20 +240,21 @@ public class Database {
 		}
 	}
 
+	@SuppressWarnings("resource")
 	public PreparedStatement batchData(String key, String server, String world, Integer chunk_x, Integer chunk_z, UUID uuid, 
 			String sValue, Number nValue, Long time, Connection connection, PreparedStatement statement) {
 		if (key == null) {
 			log.log(Level.SEVERE, "Key given was null, cannot batch this data.");
 			return statement;
 		}
-		boolean iOwn = connection == null;
-		boolean newState = statement == null;
+		boolean iOwn = (connection == null);
+		boolean newState = (statement == null);
 		try {
 			connection = iOwn ? getConnection() : connection;
 			time = time == null ? System.currentTimeMillis() : time;
 			statement = newState ? connection.prepareStatement(Database.INSERT_COMBINED) : statement;
 		
-			statement.setLong(1, time);
+			statement.setTimestamp(1, new Timestamp(time));
 			statement.setString(2, key);
 			if (sValue != null) {
 				statement.setString(3, sValue);
