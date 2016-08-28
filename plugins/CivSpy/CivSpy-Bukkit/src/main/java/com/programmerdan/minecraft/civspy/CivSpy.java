@@ -88,14 +88,7 @@ public class CivSpy extends JavaPlugin {
 		
 		// SAMPLE
 		getLogger().log(Level.INFO, "Registering player count sampler");
-		DataSampler pCount = new DataSampler(this.manager, this.getLogger()) {
-			@Override
-			public DataSample sample() {
-				DataSample ds = new PeriodicDataSample("server.playercount", config.getServer(),
-						null, null, Bukkit.getOnlinePlayers().size());
-				return ds;
-			}
-		};
+		DataSampler pCount = 
 		pCount.activate();
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, pCount, 1200l, 1200l);
 		samplers.add(pCount);
