@@ -85,4 +85,9 @@ public class ProductionRecipe extends InputRecipe {
 		ISUtils.setName(res, getName());
 		return res;
 	}
+	
+	@Override
+	public String getTypeIdentifier() {
+		return "PRODUCTION";
+	}
 }

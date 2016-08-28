@@ -1,11 +1,13 @@
 package com.github.igotyou.FactoryMod;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.bukkit.Material;
@@ -28,6 +30,7 @@ import com.github.igotyou.FactoryMod.recipes.AOERepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.CompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.DecompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.DeterministicEnchantingRecipe;
+import com.github.igotyou.FactoryMod.recipes.DummyParsingRecipe;
 import com.github.igotyou.FactoryMod.recipes.FactoryMaterialReturnRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
@@ -91,6 +94,10 @@ public class ConfigParser {
 					.registerEvents(new NetherPortalListener(), plugin);
 		}
 		useYamlIdentifers = config.getBoolean("use_recipe_yamlidentifiers", false);
+		if (!useYamlIdentifers) {
+			plugin.warning("You have usage of yaml identifiers turned off, names will be used instead to identify factories and recipes. This behavior"
+					+ "is not recommended and not compatible with config inheritation");
+		}
 		defaultUpdateTime = (int) parseTime(config.getString(
 				"default_update_time", "5"));
 		defaultHealth = config.getInt("default_health", 10000);
@@ -152,14 +159,68 @@ public class ConfigParser {
 	 */
 	private void parseRecipes(ConfigurationSection config) {
 		recipes = new HashMap<String, IRecipe>();
+		List <String> recipeKeys = new LinkedList<String>();
 		for (String key : config.getKeys(false)) {
-			if (config.getConfigurationSection(key) == null) {
+			ConfigurationSection current = config.getConfigurationSection(key);
+			if (current == null) {
 				plugin.warning("Found invalid section that should not exist at " + config.getCurrentPath() + key);
 				continue;
 			}
-			IRecipe recipe = parseRecipe(config.getConfigurationSection(key));
+			recipeKeys.add(key);
+		}
+		while (!recipeKeys.isEmpty()) {
+			String currentIdent = recipeKeys.get(0);
+			ConfigurationSection current = config.getConfigurationSection(currentIdent);
+			if (useYamlIdentifers) {
+				//no support for inheritation when not using yaml identifiers
+				boolean foundParent = false;
+				while(!foundParent) {
+					//keep track of already parsed sections, so we dont get stuck forever in cyclic dependencies
+					List <String> children = new LinkedList<String>();
+					children.add(currentIdent);
+					if (current.isString("inherit")) {
+						//parent is defined for this recipe
+						String parent = current.getString("inherit");
+						if (recipes.containsKey(parent)) {
+							//we already parsed the parent, so parsing this recipe is fine
+							foundParent = true;
+						}
+						else{
+							if (!recipeKeys.contains(parent)) {
+								//specified parent doesnt exist
+								plugin.warning("The recipe " + currentIdent + " specified " + parent + " as parent, but this recipe could not be found");
+								current = null;
+								foundParent = true;
+							}
+							else {
+								
+								//specified parent exists, but wasnt parsed yet, so we do it first
+								if (children.contains(parent)) {
+									//cyclic dependency
+									plugin.warning("The recipe " + currentIdent + " specified a cyclic dependency with parent " + parent + " it was skipped");
+									current = null;
+									foundParent = true;
+									break;
+								}
+								currentIdent = parent;
+								current = config.getConfigurationSection(parent);
+							}
+						}
+					}
+					else {
+						//no parent is a parent as well
+						foundParent = true;
+					}
+				}
+			}
+			recipeKeys.remove(currentIdent);
+			if (current == null) {
+				plugin.warning(String.format("Recipe %s unable to be added.", currentIdent));
+				continue;
+			}
+			IRecipe recipe = parseRecipe(current);
 			if (recipe == null) {
-				plugin.warning(String.format("Recipe %s unable to be added.", key));
+				plugin.warning(String.format("Recipe %s unable to be added.", currentIdent));
 			} else {
 				if (recipes.containsKey(recipe.getIdentifier())) {
 					plugin.warning("Recipe identifier " + recipe.getIdentifier() + " was found twice in the config. One instance was skipped");
@@ -430,11 +491,16 @@ public class ConfigParser {
 	 */
 	private IRecipe parseRecipe(ConfigurationSection config) {
 		IRecipe result;
-		String name = config.getString("name");
+		IRecipe parentRecipe = null;
+		if (config.isString("inherit") && useYamlIdentifers) {
+			parentRecipe = recipes.get(config.get("inherit"));
+		}
+		String name = config.getString("name", (parentRecipe != null) ? parentRecipe.getName() : null);
 		if (name == null) {
 			plugin.warning("No name specified for recipe at " + config.getCurrentPath() +". Skipping the recipe.");
 			return null;
 		}
+		//we dont inherit identifier, because that would make no sense
 		String identifier = config.getString("identifier");
 		if (identifier == null) {
 			if (useYamlIdentifers) {
@@ -445,66 +511,129 @@ public class ConfigParser {
 			}
 		}
 		String prodTime = config.getString("production_time");
-		if (prodTime == null) {
+		if (prodTime == null && parentRecipe == null) {
 			plugin.warning("No production time specied for recipe " + name + ". Skipping it");
 			return null;
 		}
-		int productionTime = (int) parseTime(prodTime);
-		String type = config.getString("type");
+		int productionTime;
+		if (parentRecipe == null) {
+			productionTime = (int) parseTime(prodTime);
+		}
+		else {
+			productionTime = parentRecipe.getProductionTime();
+		}
+		String type = config.getString("type", (parentRecipe != null) ? parentRecipe.getTypeIdentifier() : null);
 		if (type == null) {
-			plugin.warning("No name specified for recipe at " + config.getCurrentPath() +". Skipping the recipe.");
+			plugin.warning("No type specified for recipe at " + config.getCurrentPath() +". Skipping the recipe.");
 			return null;
+		}
+		ConfigurationSection inputSection = config.getConfigurationSection("input");
+		ItemMap input;
+		if (inputSection == null) {
+			//no input specified, check parent
+			if (!(parentRecipe instanceof InputRecipe)) {
+				//default to empty input
+				input = new ItemMap();
+			}
+			else {
+				input = ((InputRecipe) parentRecipe).getInput();
+			}
+		}
+		else {
+			input = parseItemMap(inputSection);
 		}
 		switch (type) {
 		case "PRODUCTION":
-			ItemMap input = parseItemMap(config
-					.getConfigurationSection("input"));
-			ItemMap output = parseItemMap(config
-					.getConfigurationSection("output"));
+			ConfigurationSection outputSection = config.getConfigurationSection("output");
+			ItemMap output;
+			if (outputSection == null) {
+				if (!(parentRecipe instanceof ProductionRecipe)) {
+					output = new ItemMap();
+				}
+				else {
+					output = ((ProductionRecipe) parentRecipe).getOutput();
+				}
+			}
+			else {
+				output = parseItemMap(outputSection);
+			}
 			result = new ProductionRecipe(identifier, name, productionTime, input, output);
 			break;
 		case "COMPACT":
-			ItemMap extraMats = parseItemMap(config
-					.getConfigurationSection("input"));
-			String compactedLore = config.getString("compact_lore");
-			manager.setCompactLore(compactedLore);
+			String compactedLore = config.getString("compact_lore", 
+					(parentRecipe instanceof CompactingRecipe) ? ((CompactingRecipe)parentRecipe).getCompactedLore() : null);
+			if (compactedLore == null) {
+				plugin.warning("No special lore specified for compaction recipe " + name + " it was skipped");
+				result = null;
+				break;
+			}
+			manager.addCompactLore(compactedLore);
 			List<Material> excluded = new LinkedList<Material>();
-			for (String mat : config.getStringList("excluded_materials")) {
-				try {
-					excluded.add(Material.valueOf(mat));
-				} catch (IllegalArgumentException iae) {
-					plugin.warning(mat + " is not a valid material to exclude: " + config.getCurrentPath());
+			if (config.isList("excluded_materials")) {
+				for (String mat : config.getStringList("excluded_materials")) {
+					try {
+						excluded.add(Material.valueOf(mat));
+					} catch (IllegalArgumentException iae) {
+						plugin.warning(mat + " is not a valid material to exclude: " + config.getCurrentPath());
+					}
 				}
 			}
-			result = new CompactingRecipe(identifier, extraMats, excluded, name,
+			else {
+				if (parentRecipe instanceof CompactingRecipe) {
+					//copy so they are not using same instance
+					for(Material m : ((CompactingRecipe) parentRecipe).getExcludedMaterials()) {
+						excluded.add(m);
+					}
+				}
+				//otherwise just leave list empty, as nothing is specified, which is fine
+			}
+			result = new CompactingRecipe(identifier, input, excluded, name,
 					productionTime, compactedLore);
 			break;
 		case "DECOMPACT":
-			ItemMap extraMate = parseItemMap(config
-					.getConfigurationSection("input"));
-			String decompactedLore = config.getString("compact_lore");
-			result = new DecompactingRecipe(identifier, extraMate, name, productionTime,
-					decompactedLore);
+			String decompactedLore = config.getString("compact_lore", 
+					(parentRecipe instanceof DecompactingRecipe) ? ((DecompactingRecipe)parentRecipe).getCompactedLore() : null);
+			if (decompactedLore == null) {
+				plugin.warning("No special lore specified for decompaction recipe " + name + " it was skipped");
+				result = null;
+				break;
+			}
+			manager.addCompactLore(decompactedLore);
+			result = new DecompactingRecipe(identifier, input, name, productionTime, decompactedLore);
 			break;
 		case "REPAIR":
-			ItemMap rep = parseItemMap(config.getConfigurationSection("input"));
-			int health = config.getInt("health_gained");
-			result = new RepairRecipe(identifier, name, productionTime, rep, health);
+			int health = config.getInt("health_gained", 
+					(parentRecipe instanceof RepairRecipe) ? ((RepairRecipe)parentRecipe).getHealth() : 0);
+			if (health == 0) {
+				plugin.warning("Health gained from repair recipe " + name + " is set to or was defaulted to 0, this might not be what was intended");
+			}
+			result = new RepairRecipe(identifier, name, productionTime, input, health);
 			break;
 		case "UPGRADE":
-			ItemMap upgradeCost = parseItemMap(config
-					.getConfigurationSection("input"));
 			String upgradeName = config.getString("factory");
-			IFactoryEgg egg = upgradeEggs.get(upgradeName);
+			IFactoryEgg egg;
+			if (upgradeName == null) {
+				if (parentRecipe instanceof Upgraderecipe) {
+					egg = ((Upgraderecipe) parentRecipe).getEgg();
+				}
+				else {
+					egg = null;
+				}
+			}
+			else {
+				egg = upgradeEggs.get(upgradeName);
+			}
 			if (egg == null) {
-				plugin.severe("Could not find factory " + upgradeName
+				plugin.warning("Could not find factory " + upgradeName
 						+ " for upgrade recipe " + name);
 				result = null;
 			} else {
-				result = new Upgraderecipe(identifier, name, productionTime, upgradeCost, egg);
+				result = new Upgraderecipe(identifier, name, productionTime, input, egg);
 			}
 			break;
 		case "AOEREPAIR":
+			//This is untested and should not be used for now
+			plugin.warning("This recipe is not tested or even completly developed, use it with great care and don't expect it to work");
 			ItemMap tessence = parseItemMap(
 					config.getConfigurationSection("essence"));
 			if (tessence.getTotalUniqueItemAmount() > 0){
@@ -520,67 +649,145 @@ public class ConfigParser {
 			}
 			break;
 		case "PYLON":
-			ItemMap in = parseItemMap(config
-					.getConfigurationSection("input"));
-			ItemMap out = parseItemMap(config
-					.getConfigurationSection("output"));
-			int weight = config.getInt("weight");
-			result = new PylonRecipe(identifier, name, productionTime, in, out, weight);
-			break;
-		case "ENCHANT":
-			ItemMap inp = parseItemMap(config
-					.getConfigurationSection("input"));
-			Enchantment enchant = Enchantment.getByName(config.getString("enchant"));
-			int level = config.getInt("level", 1);
-			ItemMap tool = parseItemMap(config.getConfigurationSection("enchant_item"));
-			result = new DeterministicEnchantingRecipe(identifier, name, productionTime, inp, tool, enchant, level);
-			break;
-		case "RANDOM":
-			ItemMap inpu = parseItemMap(config.getConfigurationSection("input"));
-			ConfigurationSection outputSec = config.getConfigurationSection("outputs");
+			ConfigurationSection outputSec = config.getConfigurationSection("output");
+			ItemMap outputMap;
 			if (outputSec == null) {
-				plugin.severe("No outputs specified for recipe " + name);
-				return null;
-			}
-			Map <ItemMap, Double> outputs = new HashMap<ItemMap, Double>();
-			double totalChance = 0.0;
-			String displayMap = outputSec.getString("display");
-			ItemMap displayThis = null;
-			for(String key : outputSec.getKeys(false)) {
-				ConfigurationSection keySec = outputSec.getConfigurationSection(key);
-				if (keySec != null) {
-					double chance = keySec.getDouble("chance");
-					totalChance += chance;
-					ItemMap im = parseItemMap(keySec);
-					outputs.put(im,chance);
-					if (key.equals(displayMap)) {
-						displayThis = im;
-						plugin.debug("Displaying " + displayMap + " as recipe label");
-					}
+				if (!(parentRecipe instanceof PylonRecipe)) {
+					outputMap = new ItemMap();
+				}
+				else {
+					outputMap = ((PylonRecipe) parentRecipe).getOutput().clone();
 				}
 			}
-			if (Math.abs(totalChance - 1.0) > 0.001) {
-				plugin.warning("Sum of output chances for recipe " + name + " is not 1.0. Total sum is: " + totalChance);
+			else {
+				outputMap = parseItemMap(outputSec);
 			}
-			result = new RandomOutputRecipe(identifier, name, productionTime, inpu, outputs, displayThis);
+			if (outputMap.getTotalItemAmount() == 0) {
+				plugin.warning("Pylon recipe " + name + " has an empty output specified");
+			}
+			int weight = config.getInt("weight", 
+					(parentRecipe instanceof PylonRecipe) ? ((PylonRecipe)parentRecipe).getWeight() : 20);
+			result = new PylonRecipe(identifier, name, productionTime, input, outputMap, weight);
 			break;
-		case "COSTRETURN":
-			ItemMap costIn = parseItemMap(config
-					.getConfigurationSection("input"));
-			double factor = config.getDouble("factor", 1.0);
-			result = new FactoryMaterialReturnRecipe(identifier, name, productionTime, costIn, factor);
-			break;
-		case "LOREENCHANT":
-			ItemMap loreCostIn = parseItemMap(config.getConfigurationSection("input"));
-			ItemMap loreTool = parseItemMap(config.getConfigurationSection("loredItem"));
-			List <String> appliedLore = config.getStringList("appliedLore");
-			List <String> overwrittenLore = config.getStringList("overwrittenLore");
-			if (appliedLore == null || appliedLore.size() == 0) {
-				plugin.warning("No result lore specified for lore enchant recipe at " + config.getCurrentPath() + ". It was skipped");
+		case "ENCHANT":
+			Enchantment enchant = Enchantment.getByName(config.getString("enchant", 
+					(parentRecipe instanceof DeterministicEnchantingRecipe) ? ((DeterministicEnchantingRecipe)parentRecipe).getEnchant().getName() : null));
+			if (enchant == null) {
+				plugin.warning("No enchant specified for deterministic enchanting recipe " + name + ". It was skipped.");
 				result = null;
 				break;
 			}
-			result = new LoreEnchantRecipe(identifier, name, productionTime, loreCostIn, loreTool, appliedLore, overwrittenLore);
+			int level = config.getInt("level", 
+					(parentRecipe instanceof DeterministicEnchantingRecipe) ? ((DeterministicEnchantingRecipe)parentRecipe).getLevel() : 1);
+			ConfigurationSection toolSection = config.getConfigurationSection("enchant_item");
+			ItemMap tool;
+			if (toolSection == null) {
+				if (!(parentRecipe instanceof DeterministicEnchantingRecipe)) {
+					tool = new ItemMap();
+				}
+				else {
+					tool = ((DeterministicEnchantingRecipe) parentRecipe).getTool().clone();
+				}
+			}
+			else {
+				tool = parseItemMap(toolSection);
+			}
+			if (tool.getTotalItemAmount() == 0) {
+				plugin.warning("Deterministic enchanting recipe " + name + " had no tool to enchant specified, it was skipped");
+				result = null;
+				break;
+			}
+			result = new DeterministicEnchantingRecipe(identifier, name, productionTime, input, tool, enchant, level);
+			break;
+		case "RANDOM":
+			ConfigurationSection outputSect = config.getConfigurationSection("outputs");
+			Map <ItemMap, Double> outputs = new HashMap<ItemMap, Double>();
+			ItemMap displayThis = null;
+			if (outputSect == null) {
+				if (parentRecipe instanceof RandomOutputRecipe) {
+					//clone it
+					for(Entry <ItemMap, Double> entry :  ((RandomOutputRecipe) parentRecipe).getOutputs().entrySet()) {
+						outputs.put(entry.getKey().clone(), entry.getValue());
+					}
+					displayThis = ((RandomOutputRecipe) parentRecipe).getDisplayMap();
+				}
+				else {
+					plugin.severe("No outputs specified for random recipe " + name + " it was skipped");
+					result = null;
+					break;
+				}
+			}
+			else {
+				double totalChance = 0.0;
+				String displayMap = outputSect.getString("display");
+				for(String key : outputSect.getKeys(false)) {
+					ConfigurationSection keySec = outputSect.getConfigurationSection(key);
+					if (keySec != null) {
+						double chance = keySec.getDouble("chance");
+						totalChance += chance;
+						ItemMap im = parseItemMap(keySec);
+						outputs.put(im,chance);
+						if (key.equals(displayMap)) {
+							displayThis = im;
+							plugin.debug("Displaying " + displayMap + " as recipe label");
+						}
+					}
+				}
+				if (Math.abs(totalChance - 1.0) > 0.0001) {
+					plugin.warning("Sum of output chances for recipe " + name + " is not 1.0. Total sum is: " + totalChance);
+				}
+			}
+			result = new RandomOutputRecipe(identifier, name, productionTime, input, outputs, displayThis);
+			break;
+		case "COSTRETURN":
+			double factor = config.getDouble("factor",
+					(parentRecipe instanceof FactoryMaterialReturnRecipe) ? ((FactoryMaterialReturnRecipe)parentRecipe).getFactor() : 1.0);
+			result = new FactoryMaterialReturnRecipe(identifier, name, productionTime, input, factor);
+			break;
+		case "LOREENCHANT":
+			ConfigurationSection toolSec = config.getConfigurationSection("loredItem");
+			ItemMap toolMap;
+			if (toolSec == null) {
+				if (!(parentRecipe instanceof LoreEnchantRecipe)) {
+					toolMap = new ItemMap();
+				}
+				else {
+					toolMap = ((LoreEnchantRecipe) parentRecipe).getTool().clone();
+				}
+			}
+			else {
+				toolMap = parseItemMap(toolSec);
+			}
+			if (toolMap.getTotalItemAmount() == 0) {
+				plugin.warning("Lore enchanting recipe " + name + " had no tool to enchant specified, it was skipped");
+				result = null;
+				break;
+			}
+			List <String> appliedLore = config.getStringList("appliedLore");
+			if (appliedLore == null || appliedLore.size() == 0) {
+				if (parentRecipe instanceof LoreEnchantRecipe) {
+					appliedLore = ((LoreEnchantRecipe) parentRecipe).getAppliedLore();
+				}
+				else {
+					plugin.warning("No lore to apply found for lore enchanting recipe " + name + ". It was skipped");
+					result = null;
+					break;
+				}
+			}
+			List <String> overwrittenLore = config.getStringList("overwrittenLore");
+			if (overwrittenLore == null || overwrittenLore.size() == 0) {
+				if (parentRecipe instanceof LoreEnchantRecipe) {
+					overwrittenLore = ((LoreEnchantRecipe) parentRecipe).getOverwrittenLore();
+				}
+				else {
+					//having no lore to be overwritten is completly fine
+					overwrittenLore = new LinkedList<String>();
+				}
+			}
+			result = new LoreEnchantRecipe(identifier, name, productionTime, input, toolMap, appliedLore, overwrittenLore);
+			break;
+		case "DUMMY":
+			result = new DummyParsingRecipe(identifier, name, productionTime, null);
 			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type")
@@ -619,12 +826,16 @@ public class ConfigParser {
 				List<IRecipe> recipeList = new LinkedList<IRecipe>();
 				for (String recipeName : entry.getValue()) {
 					IRecipe rec = recipes.get(recipeName);
+					if (rec instanceof DummyParsingRecipe) {
+						plugin.warning("You can't add dummy recipes to factories! Maybe you are the dummy here?");
+						continue;
+					}
 					if (rec != null) {
 						recipeList.add(rec);
 						usedRecipes.add(rec);
 					}
 					else {
-						plugin.severe("Could not find specified recipe " + recipeName 
+						plugin.warning("Could not find specified recipe " + recipeName 
 								+ " for factory " + entry.getKey().getName());
 					}
 				}

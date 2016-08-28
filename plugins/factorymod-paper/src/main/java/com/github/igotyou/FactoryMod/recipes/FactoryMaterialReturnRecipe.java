@@ -102,4 +102,9 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 	public double getFactor() {
 		return factor;
 	}
+
+	@Override
+	public String getTypeIdentifier() {
+		return "COSTRETURN";
+	}
 }

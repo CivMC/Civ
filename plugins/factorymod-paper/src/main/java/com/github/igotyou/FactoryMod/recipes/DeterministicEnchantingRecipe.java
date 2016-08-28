@@ -107,4 +107,20 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		logAfterRecipeRun(i, f);
 	}
 
+	@Override
+	public String getTypeIdentifier() {
+		return "ENCHANT";
+	}
+	
+	public int getLevel() {
+		return level;
+	}
+	
+	public Enchantment getEnchant() {
+		return enchant;
+	}
+	
+	public ItemMap getTool() {
+		return tool;
+	}
 }

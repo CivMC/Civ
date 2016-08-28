@@ -8,31 +8,22 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import com.github.igotyou.FactoryMod.FactoryMod;
 
 /**
  * Used to handle events related to items with compacted lore
  *
  */
 public class CompactItemListener implements Listener {
-	private String compactLore;
-
-	public CompactItemListener(String compactLore) {
-		this.compactLore = compactLore;
-	}
 
 	/**
 	 * Prevents players from placing compacted blocks
 	 */
 	@EventHandler
 	public void blockPlaceEvent(BlockPlaceEvent e) {
-		if (!e.getItemInHand().hasItemMeta()) {
-			return;
-		}
-		if (!e.getItemInHand().getItemMeta().hasLore()) {
-			return;
-		}
-		if (e.getItemInHand().getItemMeta().getLore().get(0)
-				.equals(compactLore)) {
+		if (isCompacted(e.getItemInHand())) {
 			e.setCancelled(true);
 			Player p = e.getPlayer();
 			if (p != null) {
@@ -49,16 +40,7 @@ public class CompactItemListener implements Listener {
 	public void craftingEvent(CraftItemEvent e) {
 		CraftingInventory ci = e.getInventory();
 		for (ItemStack is : ci.getMatrix()) {
-			if (is == null) {
-				continue;
-			}
-			if (!is.hasItemMeta()) {
-				continue;
-			}
-			if (!is.getItemMeta().hasLore()) {
-				continue;
-			}
-			if (is.getItemMeta().getLore().get(0).equals(compactLore)) {
+			if (isCompacted(is)) {
 				e.setCancelled(true);
 				HumanEntity h = e.getWhoClicked();
 				if (h instanceof Player && h != null) {
@@ -68,6 +50,25 @@ public class CompactItemListener implements Listener {
 				break;
 			}
 		}
+	}
+	
+	private boolean isCompacted(ItemStack is) {
+		if (is == null) {
+			return false;
+		}
+		if (!is.hasItemMeta()) {
+			return false;
+		}
+		ItemMeta im = is.getItemMeta();
+		if (!im.hasLore()) {
+			return false;
+		}
+		for(String lore : im.getLore()) {
+			if (FactoryMod.getManager().isCompactLore(lore)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

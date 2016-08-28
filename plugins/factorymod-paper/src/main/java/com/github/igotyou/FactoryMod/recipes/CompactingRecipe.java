@@ -181,4 +181,17 @@ public class CompactingRecipe extends InputRecipe {
 		} 
 		return false;
 	}
+
+	@Override
+	public String getTypeIdentifier() {
+		return "COMPACT";
+	}
+	
+	public String getCompactedLore() {
+		return compactedLore;
+	}
+	
+	public List <Material> getExcludedMaterials() {
+		return excludedMaterials;
+	}
 }

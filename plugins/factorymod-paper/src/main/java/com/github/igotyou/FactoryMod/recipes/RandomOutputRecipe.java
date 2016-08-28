@@ -95,5 +95,14 @@ public class RandomOutputRecipe extends InputRecipe {
 		}
 		return items;
 	}
+	
+	@Override
+	public String getTypeIdentifier() {
+		return "RANDOM";
+	}
+	
+	public ItemMap getDisplayMap() {
+		return lowestChanceMap;
+	}
 
 }

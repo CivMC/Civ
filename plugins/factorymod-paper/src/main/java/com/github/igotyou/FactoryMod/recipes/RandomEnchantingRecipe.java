@@ -117,5 +117,10 @@ public class RandomEnchantingRecipe extends InputRecipe {
 		}
 		logAfterRecipeRun(i, f);
 	}
+	
+	@Override
+	public String getTypeIdentifier() {
+		return "RANDOMENCHANT";
+	}
 
 }

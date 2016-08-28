@@ -147,4 +147,13 @@ public class DecompactingRecipe extends InputRecipe {
 		im.setLore(lore);
 		is.setItemMeta(im);
 	}
+
+	@Override
+	public String getTypeIdentifier() {
+		return "DECOMPACT";
+	}
+	
+	public String getCompactedLore() {
+		return compactedLore;
+	}
 }

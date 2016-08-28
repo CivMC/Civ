@@ -121,4 +121,21 @@ public class LoreEnchantRecipe extends InputRecipe {
 		List<String> lore = im.getLore();
 		return lore.containsAll(overwritenLore);
 	}
+	
+	@Override
+	public String getTypeIdentifier() {
+		return "LOREENCHANT";
+	}
+	
+	public List <String> getAppliedLore() {
+		return appliedLore;
+	}
+	
+	public List <String> getOverwrittenLore() {
+		return overwritenLore;
+	}
+	
+	public ItemMap getTool() {
+		return tool;
+	}
 }

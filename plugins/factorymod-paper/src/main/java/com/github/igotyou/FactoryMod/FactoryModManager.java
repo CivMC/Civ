@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -54,7 +55,7 @@ public class FactoryModManager {
 	private boolean logInventories;
 	private int redstonePowerOn;
 	private int redstoneRecipeChange;
-	private String compactLore;
+	private Set<String> compactLore;
 
 	public FactoryModManager(FactoryMod plugin,
 			Material factoryInteractionMaterial, boolean citadelEnabled,
@@ -91,6 +92,7 @@ public class FactoryModManager {
 		factories = new HashSet<Factory>();
 		totalSetupCosts = new HashMap<IFactoryEgg, ItemMap>();
 		recipes = new HashMap<String, IRecipe>();
+		compactLore = new HashSet<String>();
 
 		// Normal furnace, craftingtable, chest factories
 		possibleCenterBlocks.add(Material.WORKBENCH);
@@ -115,8 +117,8 @@ public class FactoryModManager {
 	 * @param lore
 	 *            Lore used for compacting items
 	 */
-	public void setCompactLore(String lore) {
-		compactLore = lore;
+	public void addCompactLore(String lore) {
+		compactLore.add(lore);
 	}
 
 	public boolean logInventories() {
@@ -126,8 +128,8 @@ public class FactoryModManager {
 	/**
 	 * @return Lore given to compacted items
 	 */
-	public String getCompactLore() {
-		return compactLore;
+	public boolean isCompactLore(String lore) {
+		return compactLore.contains(lore);
 	}
 
 	/**

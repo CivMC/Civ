@@ -171,4 +171,8 @@ public class AOERepairRecipe extends InputRecipe {
 		}
 	}
 
+	public String getTypeIdentifier() {
+		return "AOEREPAIR";
+	}
+
 }

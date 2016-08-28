@@ -16,7 +16,7 @@ public interface IRecipe {
 	 *         to display the recipe to a player
 	 */
 	public String getName();
-	
+
 	/**
 	 * @return A unique identifier for this recipe
 	 */
@@ -46,4 +46,12 @@ public interface IRecipe {
 	 *            Factory which is run
 	 */
 	public void applyEffect(Inventory i, Factory f);
+
+	/**
+	 * Each implementation of this class has to specify a unique identifier,
+	 * which is used to identify instances of this recipe in the config
+	 * 
+	 * @return Unique identifier for the implementation
+	 */
+	public String getTypeIdentifier();
 }

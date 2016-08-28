@@ -132,4 +132,12 @@ public class PylonRecipe extends InputRecipe {
 		currentGlobalWeight -= weight;
 	}
 
+	@Override
+	public String getTypeIdentifier() {
+		return "PYLON";
+	}
+	
+	public ItemMap getOutput() {
+		return output;
+	}
 }

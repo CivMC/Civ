@@ -57,8 +57,7 @@ public class FactoryMod extends ACivMod {
 		plugin.getServer()
 				.getPluginManager()
 				.registerEvents(
-						new CompactItemListener(manager.getCompactLore()),
-						plugin);
+						new CompactItemListener(), plugin);
 	}
 
 	public static MenuBuilder getMenuBuilder() {

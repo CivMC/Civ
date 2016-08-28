@@ -109,5 +109,10 @@ public class Upgraderecipe extends InputRecipe {
 	public IFactoryEgg getEgg() {
 		return egg;
 	}
+	
+	@Override
+	public String getTypeIdentifier() {
+		return "UPGRADE";
+	}
 
 }
