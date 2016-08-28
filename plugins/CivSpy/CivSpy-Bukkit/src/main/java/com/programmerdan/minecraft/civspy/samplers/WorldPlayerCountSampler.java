@@ -12,16 +12,12 @@ import org.bukkit.World;
 
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;
-import com.programmerdan.minecraft.civspy.MultiDataSampler;
 import com.programmerdan.minecraft.civspy.PeriodicDataSample;
 
-public final class WorldPlayerCountSampler extends MultiDataSampler {
+public final class WorldPlayerCountSampler extends ServerMultiDataSampler {
 	
-	private final String server;
-
 	public WorldPlayerCountSampler(DataManager manager, Logger logger, String server) {
-		super(manager, logger);
-		this.server = server;
+		super(manager, logger, server);
 	}
 
 	/**
@@ -32,7 +28,7 @@ public final class WorldPlayerCountSampler extends MultiDataSampler {
 		List<DataSample> ds = new LinkedList<DataSample>();
 		if (worlds != null) {
 			for (World world : worlds) {
-				ds.add(new PeriodicDataSample("world.playercount", this.server,
+				ds.add(new PeriodicDataSample("world.playercount", this.getServer(),
 						world.getName(), null, world.getPlayers().size()));
 			}
 			return ds;

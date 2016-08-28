@@ -12,6 +12,10 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
 import com.programmerdan.minecraft.civspy.database.Database;
+import com.programmerdan.minecraft.civspy.listeners.BreakListener;
+import com.programmerdan.minecraft.civspy.listeners.MovementListener;
+import com.programmerdan.minecraft.civspy.samplers.PlayerCountSampler;
+import com.programmerdan.minecraft.civspy.samplers.WorldPlayerCountSampler;
 
 
 public class CivSpy extends JavaPlugin {
@@ -46,7 +50,7 @@ public class CivSpy extends JavaPlugin {
 			this.samplers = new ArrayList<DataSampler>();
 			startSamplers();
 			
-			this.listeners = new ArrayList<Listener>();
+			this.listeners = new ArrayList<DataListener>();
 			startListeners();
 			
 		} catch (SQLException se) {
@@ -58,7 +62,6 @@ public class CivSpy extends JavaPlugin {
 	public void onDisable() {
 		getLogger().log(Level.INFO, "Deregistering CivSpy listeners");
 		stopListeners();
-		HandlerList.unregisterAll((Plugin) this);
 		
 		getLogger().log(Level.INFO, "Deregistering CivSpy samplers");
 		stopSamplers();
@@ -81,20 +84,30 @@ public class CivSpy extends JavaPlugin {
 	
 	ArrayList<DataSampler> samplers;
 	
-	ArrayList<Listener> listeners;
+	ArrayList<DataListener> listeners;
 	
 	private void startSamplers() {
 		getLogger().log(Level.INFO, "Registering CivSpy samplers");
 		
 		// SAMPLE
-		getLogger().log(Level.INFO, "Registering player count sampler");
-		DataSampler pCount = 
+		getLogger().log(Level.INFO, "Registering server player count sampler");
+		DataSampler pCount = new PlayerCountSampler(this.manager, this.getLogger(), this.config.getServer());
 		pCount.activate();
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, pCount, 1200l, 1200l);
 		samplers.add(pCount);
+		
+		getLogger().log(Level.INFO, "Registering world player count sampler");
+		DataSampler wCount = new WorldPlayerCountSampler(this.manager, this.getLogger(), this.config.getServer());
+		wCount.activate();
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, wCount, 1200l, 1200l);
+		samplers.add(wCount);
 		// END SAMPLE
 	}
 	
+	/**
+	 * Calls deactivate on each sampler (which internally halts sampling) then formally cancels
+	 * the scheduled tasks.
+	 */
 	private void stopSamplers() {
 		getLogger().log(Level.INFO, "Deregistering CivSpy samplers");
 		
@@ -110,10 +123,31 @@ public class CivSpy extends JavaPlugin {
 	private void startListeners() {
 		getLogger().log(Level.INFO, "Registering CivSpy listeners");
 		
+		// SAMPLE
+		getLogger().log(Level.INFO, "Registering player movement listener");
+		DataListener movement = new MovementListener(this.manager, this.getLogger(), this.config.getServer());
+		Bukkit.getPluginManager().registerEvents(movement, this);
+		listeners.add(movement);
+		
+		getLogger().log(Level.INFO, "Registering player block break listener");
+		DataListener bbreak = new BreakListener(this.manager, this.getLogger(), this.config.getServer());
+		Bukkit.getPluginManager().registerEvents(bbreak, this);
+		listeners.add(bbreak);
+		// END SAMPLE
 	}
 	
+	/**
+	 * Unregisters all listeners (so they stop firing) then calls shutdown on each.
+	 */
 	private void stopListeners() {
 		getLogger().log(Level.INFO, "Deregistering CivSpy listeners");
-	
+
+		// Turn them off.
+		HandlerList.unregisterAll((Plugin) this);
+		
+		// GENERIC cleanup.
+		for (DataListener listener : listeners) {
+			listener.shutdown();
+		}
 	}
 }
