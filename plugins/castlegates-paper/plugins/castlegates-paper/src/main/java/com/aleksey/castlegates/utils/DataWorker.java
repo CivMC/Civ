@@ -24,27 +24,17 @@ import com.aleksey.castlegates.database.ReinforcementSource;
 import com.aleksey.castlegates.database.SqlDatabase;
 import com.aleksey.castlegates.types.BlockCoord;
 import com.aleksey.castlegates.types.BlockState;
-import com.aleksey.castlegates.types.GearblockLink;
 import com.aleksey.castlegates.types.Gearblock;
+import com.aleksey.castlegates.types.GearblockForUpdate;
+import com.aleksey.castlegates.types.GearblockLink;
+import com.aleksey.castlegates.types.LinkForUpdate;
 
 public class DataWorker extends Thread implements Runnable {
-	private static class GearblockForUpdate {
-		public Gearblock original;
-		public GearblockInfo info;
-	}
-	
-	private static class LinkForUpdate {
-		public GearblockLink original;
-		public Gearblock gearblock1;
-		public Gearblock gearblock2;
-		public byte[] blocks;
-		public List<ReinforcementInfo> reinforcements;
-	}
-	
 	private SqlDatabase db;
 	private GearblockSource gearblockSource;
 	private LinkSource linkSource;
 	private ReinforcementSource reinforcementSource;
+	private ChangeLogger changeLogger;
 
 	private Map<Gearblock, GearblockForUpdate> changedGearblocks = new WeakHashMap<Gearblock, GearblockForUpdate>();
 	private Map<GearblockLink, LinkForUpdate> changedLinks = new WeakHashMap<GearblockLink, LinkForUpdate>();
@@ -55,15 +45,21 @@ public class DataWorker extends Thread implements Runnable {
 	private long lastExecute = System.currentTimeMillis();
     private AtomicBoolean kill = new AtomicBoolean(false);
 
-    public DataWorker(SqlDatabase db) {
+    public DataWorker(SqlDatabase db, boolean logChanges) {
     	this.db = db;
 		this.gearblockSource = new GearblockSource(db);
 		this.linkSource = new LinkSource(db);
 		this.reinforcementSource = new ReinforcementSource(db);
+		this.changeLogger = logChanges ? new ChangeLogger(): null;
 	}
 	
 	public void close() {
 		terminateThread();
+		
+		if(this.changeLogger != null) {
+			this.changeLogger.close();
+			this.changeLogger = null;
+		}
 	}
 	
 	public Map<BlockCoord, Gearblock> load() throws SQLException {
@@ -99,7 +95,7 @@ public class DataWorker extends Thread implements Runnable {
 		for(LinkInfo info : linkData) {
 			Gearblock gearblock1 = info.gearblock1_id != null ? gearblocksById.get(info.gearblock1_id) : null;
 			Gearblock gearblock2 = info.gearblock2_id != null ? gearblocksById.get(info.gearblock2_id) : null;
-			List<BlockState> blocks = deserializeBlocks(info);
+			List<BlockState> blocks = deserializeBlocks(info.blocks);
 			GearblockLink link = new GearblockLink(gearblock1, gearblock2);
 			
 			link.setId(info.link_id);
@@ -173,6 +169,10 @@ public class DataWorker extends Thread implements Runnable {
 		                try {
 			                updateGears();
 			                updateLinks();
+			                
+			                if(this.changeLogger != null) {
+			                	this.changeLogger.flush();
+			                }
 		                } finally {
 			                this.localChangedGearblocks.clear();
 			                this.localChangedLinks.clear();
@@ -187,6 +187,10 @@ public class DataWorker extends Thread implements Runnable {
     
     private void updateGears() throws SQLException {
     	for(GearblockForUpdate gearForUpdate : this.localChangedGearblocks) {
+    		if(this.changeLogger != null) {
+    			this.changeLogger.write(gearForUpdate);
+    		}
+    		
     		if(gearForUpdate.original.isRemoved()) {
     			if(gearForUpdate.original.getId() != 0) {
     				this.gearblockSource.delete(gearForUpdate.original.getId());
@@ -204,6 +208,10 @@ public class DataWorker extends Thread implements Runnable {
     
     private void updateLinks() throws SQLException {
     	for(LinkForUpdate linkForUpdate : this.localChangedLinks) {
+    		if(this.changeLogger != null) {
+    			this.changeLogger.write(linkForUpdate);
+    		}
+    		
     		if(linkForUpdate.original.isRemoved()) {
     			if(linkForUpdate.original.getId() != 0) {
     				this.reinforcementSource.deleteByLinkId(linkForUpdate.original.getId());
@@ -306,16 +314,16 @@ public class DataWorker extends Thread implements Runnable {
 		return data;
 	}
 	
-	private static List<BlockState> deserializeBlocks(LinkInfo info) {
-		if(info.blocks == null || info.blocks.length == 0) return null;
+	public static List<BlockState> deserializeBlocks(byte[] blockBytes) {
+		if(blockBytes == null || blockBytes.length == 0) return null;
 		
 		List<BlockState> blocks = new ArrayList<BlockState>();
 		int offset = 0;
 			
-		while(offset < info.blocks.length) {
+		while(offset < blockBytes.length) {
 			BlockState block = new BlockState();
 			
-			offset = BlockState.deserialize(info.blocks, offset, block);
+			offset = BlockState.deserialize(blockBytes, offset, block);
 			
 			blocks.add(block);
 		}

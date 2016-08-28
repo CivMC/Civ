@@ -48,7 +48,7 @@ public class GearManager {
 	private DataWorker dataWorker;
 	
 	public void init(SqlDatabase db) throws SQLException {
-		this.dataWorker = new DataWorker(db);
+		this.dataWorker = new DataWorker(db,  CastleGates.getConfigManager().getLogChanges());
 		this.gearblocks = this.dataWorker.load();
 		
 		CastleGates.getPluginLogger().log(Level.INFO, "Loaded " + this.gearblocks.size() + " gearblocks");
