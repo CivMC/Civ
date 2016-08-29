@@ -72,7 +72,7 @@ public class GroupManager{
 			id = group.getGroupId();
 		}
 		if (id > -1 && savetodb) {
-			initiateDefaultPerms(event.getGroupName()); // give default perms to a newly create group
+			initiateDefaultPerms(id); // give default perms to a newly create group
 			GroupManager.getGroup(id); // force a recache from DB.
 			/*group.setGroupIds(groupManagerDao.getAllIDs(event.getGroupName()));
 			group.addMember(event.getOwner(), PlayerType.OWNER);
@@ -385,8 +385,8 @@ public class GroupManager{
 		return groupManagerDao.getGroupNames(uuid);
 	}
 	
-	private void initiateDefaultPerms(String group){
-		if (group == null) {
+	private void initiateDefaultPerms(Integer groupId){
+		if (groupId == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "initiateDefaultPerms failed, caller passed in null", new Exception());
 			return;
 		}
@@ -401,9 +401,7 @@ public class GroupManager{
 				perms.add(perm);
 			}
 		}
-		for (Entry <PlayerType, List <PermissionType>> entry: defaultPermMapping.entrySet()){
-			groupManagerDao.addPermission(group, entry.getKey().name(), entry.getValue());
-		}
+		groupManagerDao.addAllPermissions(groupId, defaultPermMapping);
 	}
 	
 	public String getDefaultGroup(UUID uuid){

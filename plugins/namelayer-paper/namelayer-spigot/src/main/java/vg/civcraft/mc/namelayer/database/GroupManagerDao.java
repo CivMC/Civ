@@ -6,9 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -17,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -952,6 +951,34 @@ public class GroupManagerDao {
 		}
 	}
 	
+	public void addAllPermissions(int groupId, Map <PlayerType, List <PermissionType>> perms) {
+		this.dbrefresh();
+		PreparedStatement addPermissionById = db.prepareStatement("insert into permissionByGroup(group_id,role,perm_id) values(?,?,?);");
+		try {
+			for (Entry <PlayerType, List <PermissionType>> entry: perms.entrySet()){
+				String role = entry.getKey().name();
+				for(PermissionType perm : entry.getValue()) {
+					addPermissionById.setInt(1,  groupId);
+					addPermissionById.setString(2, role);
+					addPermissionById.setInt(3, perm.getId());
+					addPermissionById.addBatch();
+				}
+			}
+			
+			int[] res = addPermissionById.executeBatch();
+			if (res == null) {
+				plugin.getLogger().log(Level.WARNING, "Failed to add all permissions to group {0}", groupId);
+			} else {
+				int cnt = 0;
+				for (int r : res) cnt += r;
+				plugin.getLogger().log(Level.INFO, "Added {0} of {1} permissions to group {2}",
+						new Object[] {cnt, res.length, groupId});
+			}
+		} catch (SQLException e) {
+			plugin.getLogger().log(Level.WARNING, "Problem adding all permissions to group " + groupId, e);
+		}
+	}
+	
 	public void addPermissionAsync(final String gname, final String role, final List <PermissionType> perms){
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
 
@@ -1077,17 +1104,56 @@ public class GroupManagerDao {
 	public synchronized void addNewDefaultPermission(List <PlayerType> playerTypes, PermissionType perm) {
 		try {
 			ResultSet set = getAllGroupIds.executeQuery();
-			List <PermissionType> perms = new LinkedList<PermissionType>();
-			perms.add(perm);
+			// unpack ids;
+			List <Integer> groups = new LinkedList<Integer>();
 			while(set.next()) {
-				int groupId = set.getInt(1);
-				for(PlayerType pType:playerTypes) {
+				groups.add(set.getInt(1));
+			}
+			set.close(); // unpack and close, don't keep this query open!
+			
+			int batchsize = 0, maxbatch = 100;
+			PreparedStatement addPermissionById = null;
+			for (int groupId : groups) {
+				if (batchsize == 0) {
+					addPermissionById = db.prepareStatement("insert into permissionByGroup(group_id,role,perm_id) values(?,?,?);");
+				}
+				for(PlayerType pType: playerTypes) {
 					addPermissionById.setInt(1, groupId);
 					addPermissionById.setString(2, pType.name());
 					addPermissionById.setInt(3, perm.getId());
-					this.execStatement(addPermissionById);
+					addPermissionById.addBatch();
+					batchsize ++;
+				}
+				// inline batch commit at cutoff level (100 default).
+				if (batchsize >= maxbatch) {
+					int[] res = addPermissionById.executeBatch();
+					if (res == null) {
+						plugin.getLogger().log(Level.WARNING, "Problem inserting new default permission into all groups");
+					} else {
+						int rc = 0;
+						for (int r : res) rc+= r;
+						if (rc != res.length) {
+							plugin.getLogger().log(Level.WARNING, "Problem inserting new default permission into all groups, count mismatch");
+						}
+					}
+					batchsize = 0; // reset.
 				}
 			}
+			// final cleanup.
+			if (batchsize > 0) {
+				int[] res = addPermissionById.executeBatch();
+				if (res == null) {
+					plugin.getLogger().log(Level.WARNING, "Problem inserting new default permission into all groups");
+				} else {
+					int rc = 0;
+					for (int r : res) rc+= r;
+					if (rc != res.length) {
+						plugin.getLogger().log(Level.WARNING, "Problem inserting new default permission into all groups, count mismatch");
+					}
+				}
+				batchsize = 0; // reset.
+			}
+
 		}
 		catch (SQLException e) {
 			plugin.getLogger().log(Level.WARNING, "Error initiating default perms for permission " + perm + " for player types " + playerTypes, e);
