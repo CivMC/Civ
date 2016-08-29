@@ -34,8 +34,9 @@ public class CreateGroup extends PlayerCommandMiddle{
 		}
 		Player p = (Player) sender;
 		String name = args[0];
+		int currentGroupCount = gm.countGroups(p.getUniqueId());
 		
-		if (NameLayerPlugin.getInstance().getGroupLimit() < gm.countGroups(p.getUniqueId()) + 1 && !(p.isOp() || p.hasPermission("namelayer.admin"))){
+		if (NameLayerPlugin.getInstance().getGroupLimit() < currentGroupCount + 1 && !(p.isOp() || p.hasPermission("namelayer.admin"))){
 			p.sendMessage(ChatColor.RED + "You cannot create any more groups! Please delete an un-needed group before making more.");
 			return true;
 		}
@@ -87,7 +88,7 @@ public class CreateGroup extends PlayerCommandMiddle{
 		g.setGroupId(id);
 		NameLayerPlugin.getBlackList().initEmptyBlackList(name);
 		p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
-		if (NameLayerPlugin.getInstance().getGroupLimit() == gm.countGroups(p.getUniqueId())){
+		if (NameLayerPlugin.getInstance().getGroupLimit() == (currentGroupCount + 1)){
 			p.sendMessage(ChatColor.YELLOW + "You have reached the group limit with " + NameLayerPlugin.getInstance().getGroupLimit() + " groups! Please delete un-needed groups if you wish to create more.");
 		}
 		return true;
