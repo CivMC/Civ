@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -24,8 +25,15 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import com.programmerdan.minecraft.civspy.CivSpyPlayerCount;
 import com.programmerdan.minecraft.civspy.database.Database;
 
+/**
+ * Lightweight Bungee data sampler; at this point just tracks player sessions, so
+ * has no complex infrastructure.
+ * 
+ * @author ProgrammerDan
+ */
 public class CivSpyBungee extends Plugin implements Listener {
 
+	private Logger logger;
 	private Configuration config;
 	private Database db;
 	private ScheduledTask tracker;
@@ -35,39 +43,40 @@ public class CivSpyBungee extends Plugin implements Listener {
 
 	@Override
 	public void onEnable() {
-		getLogger().info("Getting CivSpyBungee configuration");
+		this.logger = getLogger();
+		logger.info("Getting CivSpyBungee configuration");
 		this.config = loadConfig();
 
 		if (this.config != null) {
-			getLogger().info("Setting up Database for CivSpyBungee");
+			logger.info("Setting up Database for CivSpyBungee");
 			this.db = configDatabase(config.getSection("database"));
 		} else {
-			getLogger().severe("Config not found, CivSpyBungee going dark.");
+			logger.severe("Config not found, CivSpyBungee going dark.");
 		}
 		
 		try {
 			if (this.db != null) {
 				this.db.available();
 				
-				getLogger().info("Setting up CivSpyBungee Playercount Tracker");
+				logger.info("Setting up CivSpyBungee Playercount Tracker");
 				this.counter = new CivSpyPlayerCount(this, db);
 				tracker = getProxy().getScheduler().schedule(this, this.counter,
-						config.getInt("interval", 12000) * 50, config.getInt("interval", 12000) * 50, TimeUnit.SECONDS);
+						config.getInt("interval", 60000), config.getInt("interval", 60000), TimeUnit.MILLISECONDS);
 
-				getLogger().info("Setting up CivSpyBungee Player Tracking");
+				logger.info("Setting up CivSpyBungee Player Tracking");
 				this.players = new HashMap<UUID, Long>();
 				getProxy().getPluginManager().registerListener(this, this);
 			} else {
-				getLogger().severe("Database not connected, CivSpyBungee going dark.");
+				logger.severe("Database not connected, CivSpyBungee going dark.");
 			}
 		} catch(SQLException se) {
-			getLogger().severe("Database failed connecting, CivSpyBungee going dark.");
+			logger.severe("Database failed connecting, CivSpyBungee going dark.");
 		}
 	}
 
 	@Override
 	public void onDisable() {
-		getLogger().info("Shutting down CivSpyBungee");
+		logger.info("Shutting down CivSpyBungee");
 		getProxy().getScheduler().cancel(tracker);
 		this.counter.sample();
 		for (UUID player : players.keySet()) {
@@ -78,7 +87,7 @@ public class CivSpyBungee extends Plugin implements Listener {
 		try {
 			this.db.close();
 		} catch (SQLException se) {
-			getLogger().log(Level.SEVERE, "Couldn't close out database and connections for CivSpyBungee");
+			logger.log(Level.SEVERE, "Couldn't close out database and connections for CivSpyBungee");
 		}
 	}
 
@@ -89,52 +98,52 @@ public class CivSpyBungee extends Plugin implements Listener {
 		File file = new File(getDataFolder(), "config.yml");
 
 		if (!file.exists()) {
-			getLogger().info("Setting up CivSpyBungee default configuration");
+			logger.info("Setting up CivSpyBungee default configuration");
 			try (InputStream in = getResourceAsStream("config.yml")) {
 				Files.copy(in, file.toPath());
 			} catch (IOException e) {
-				getLogger().log(Level.SEVERE, "Failed to save CivSpyBungee default config", e);
+				logger.log(Level.SEVERE, "Failed to save CivSpyBungee default config", e);
 			}
 		}
 
 		try {
 			return ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
 		} catch (IOException ioe) {
-			getLogger().log(Level.SEVERE, "Failed to load CivSpyBungee config", ioe);
+			logger.log(Level.SEVERE, "Failed to load CivSpyBungee config", ioe);
 			return null;
 		}
 	}
 
 	public Database configDatabase(Configuration dbStuff) {
 		if (dbStuff == null) {
-			getLogger().severe("No database credentials specified. This plugin requires a database to run!");
+			logger.severe("No database credentials specified. This plugin requires a database to run!");
 			return null;
 		}
 		String host = dbStuff.getString("host");
 		if (host == null) {
-			getLogger().severe("No host for database specified. Could not load database credentials");
+			logger.severe("No host for database specified. Could not load database credentials");
 			return null;
 		}
 		int port = dbStuff.getInt("port", -1);
 		if (port == -1) {
-			getLogger().severe("No port for database specified. Could not load database credentials");
+			logger.severe("No port for database specified. Could not load database credentials");
 			return null;
 		}
 		String db = dbStuff.getString("database");
 		if (db == null) {
-			getLogger().severe("No name for database specified. Could not load database credentials");
+			logger.severe("No name for database specified. Could not load database credentials");
 			return null;
 		}
 		String user = dbStuff.getString("user");
 		if (user == null) {
-			getLogger().severe("No user for database specified. Could not load database credentials");
+			logger.severe("No user for database specified. Could not load database credentials");
 			return null;
 		}
 		String password = dbStuff.getString("password");
 		if (password == null) {
-			getLogger().warning("No password for database specified.");
+			logger.warning("No password for database specified.");
 		}
-		return new Database(getLogger(), user, password, host, port, db);
+		return new Database(logger, user, password, host, port, db);
 	}
 
 	@EventHandler

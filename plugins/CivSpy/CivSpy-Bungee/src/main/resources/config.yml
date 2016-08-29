@@ -4,4 +4,5 @@ database:
  database:
  user:
  password:
-interval: 12000
+# Sampling interval (used for player counts at the moment)
+interval: 60000

@@ -1,7 +1,9 @@
 ### CivSpy
 -------------
 
-Better targetted recording of very specific actions and data.
+Better targeted recording of very specific actions and data.
+
+
 
 To create a new scanner, just add it the scanners in either the Bungee or Bukkit module as appropriate.
 
