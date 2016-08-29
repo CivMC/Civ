@@ -163,8 +163,11 @@ public class Mercury {
 		msg.append("addInvitation|");
 		msg.append(groupId); msg.append("|");
 		msg.append(ptype); msg.append("|");
-		msg.append(targetAccount.toString()); msg.append("|");
-		msg.append(uuid);
+		msg.append(targetAccount.toString()); 
+		if (uuid != null) {
+			msg.append("|");
+			msg.append(uuid);
+		}
 		MercuryAPI.sendGlobalMessage(msg.toString(), "namelayer");
 	}
 

@@ -115,7 +115,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			Mercury.addInvite(group.getGroupId(), pType.toString(), targetAccount, p.getUniqueId().toString());
 		} else {
 			sendInvitation(group, pType, targetAccount, null, true);
-			Mercury.addInvite(group.getGroupId(), pType.toString(), targetAccount, " ");
+			Mercury.addInvite(group.getGroupId(), pType.toString(), targetAccount, null);
 		}
 
 		s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /nlri to Revoke an invite.");
