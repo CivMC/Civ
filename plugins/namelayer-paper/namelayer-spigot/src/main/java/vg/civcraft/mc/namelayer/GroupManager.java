@@ -71,7 +71,7 @@ public class GroupManager{
 		} else {
 			id = group.getGroupId();
 		}
-		if (id > -1) {
+		if (id > -1 && savetodb) {
 			initiateDefaultPerms(event.getGroupName()); // give default perms to a newly create group
 			GroupManager.getGroup(id); // force a recache from DB.
 			/*group.setGroupIds(groupManagerDao.getAllIDs(event.getGroupName()));
