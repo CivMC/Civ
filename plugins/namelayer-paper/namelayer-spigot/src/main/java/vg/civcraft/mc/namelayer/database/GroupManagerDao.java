@@ -444,19 +444,20 @@ public class GroupManagerDao {
 			try (PreparedStatement permInit = connection.prepareStatement(addPermissionById);
 					PreparedStatement permReg = connection.prepareStatement(registerPermission); ) {
 				Map <String, Integer> permIds = new HashMap<String, Integer>();
+
 				LinkedList<Object[]> unspool = new LinkedList<Object[]>();
-				Statement getOldPerms = connection.createStatement();
-				ResultSet res = getOldPerms.executeQuery("select * from permissions");
-				
-				int maximumId = 0;
-				while(res.next()) {
-					unspool.add(new Object[]{res.getInt(1), res.getString(2), res.getString(3)});
-					if (res.getInt(1) > maximumId) maximumId = res.getInt(1);
+				try (Statement getOldPerms = connection.createStatement();
+						ResultSet res = getOldPerms.executeQuery("select * from permissions");) {
+					int maximumId = 0;
+					while(res.next()) {
+						unspool.add(new Object[]{res.getInt(1), res.getString(2), res.getString(3)});
+						if (res.getInt(1) > maximumId) maximumId = res.getInt(1);
+					}
+				} catch (SQLException e) {
+					logger.log(Level.SEVERE, "Failed to get old permissions, things might get a little wonky now.", e);
 				}
-				res.close();
-				getOldPerms.close();
 				
-				int maxBatch = 100, count = 0;
+				int maxBatch = 100, count = 0; regadd = 0
 				
 				for (Object[] spool : unspool) {
 					int groupId = (int) spool[0];
@@ -478,6 +479,7 @@ public class GroupManagerDao {
 								permReg.addBatch(); // defer insert.
 								
 								permIds.put(p, id);
+								regadd ++;
 							}
 							permInit.setInt(1, groupId);
 							permInit.setString(2, role);
@@ -498,8 +500,10 @@ public class GroupManagerDao {
 					// TODO process warnings / errors
 				}
 				
-				permReg.executeBatch();
-				// TODO process warnings / errors
+				if (regAdd > 0) {
+					permReg.executeBatch();
+					// TODO process warnings / errors
+				}
 
 			} catch (SQLException se) {
 				logger.log(Level.SEVERE, "Something fatal occured while updating permissions", se);
@@ -633,13 +637,15 @@ public class GroupManagerDao {
 		try (Connection connection = db.getConnection();
 				PreparedStatement version = connection.prepareStatement(this.version)){
 			version.setString(1, name);
-			ResultSet set = version.executeQuery();
-			if (set.next()) {
-				ret = set.getInt("db_version");
+			try (ResultSet set = version.executeQuery();) {
+				if (set.next()) {
+					ret = set.getInt("db_version");
+				}
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Problem accessing db_version table", e);
 			}
-			set.close();
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem accessing db_version table", e);
+			logger.log(Level.WARNING, "Problem preparing query to access db_version table", e);
 			// table doesnt exist
 		}
 		return ret;
@@ -668,18 +674,20 @@ public class GroupManagerDao {
 		try (Connection connection = db.getConnection();
 				PreparedStatement createGroup = connection.prepareStatement(this.createGroup)){
 			String own = null;
-			if (owner != null)
-				own = owner.toString();
+			if (owner != null) own = owner.toString();
 			createGroup.setString(1, group);
 			createGroup.setString(2, own);
 			createGroup.setString(3, password);
 			createGroup.setInt(4, 0);
-			ResultSet set = createGroup.executeQuery();
-			ret = set.next() ? set.getInt("f.group_id") : -1;
-			set.close();
-			logger.log(Level.INFO, "Created group {0} w/ id {1} for {2}", new Object[] {group, ret, own});
+			try (ResultSet set = createGroup.executeQuery();)  {
+				ret = set.next() ? set.getInt("f.group_id") : -1;
+				logger.log(Level.INFO, "Created group {0} w/ id {1} for {2}", new Object[] {group, ret, own});
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Problem creating group " + group, e);
+				ret = -1;
+			}
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem creating group " + group, e);
+			logger.log(Level.WARNING, "Problem setting up query to create group " + group, e);
 			ret = -1;
 		}
 		
@@ -707,9 +715,11 @@ public class GroupManagerDao {
 				
 				// other group IDs cached via the constructor.
 				return g;
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Problem getting group " + groupName, e);
 			}
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem getting group " + groupName, e);
+			logger.log(Level.WARNING, "Problem preparing query to get group " + groupName, e);
 		}
 		return null;
 	}
@@ -718,20 +728,25 @@ public class GroupManagerDao {
 		try (Connection connection = db.getConnection();
 				PreparedStatement getGroupById = connection.prepareStatement(this.getGroupById)){
 			getGroupById.setInt(1, groupId);
-			ResultSet set = getGroupById.executeQuery();
-			if (!set.next()) return null;
-			String name = set.getString(1);
-			String uuid = set.getString(2);
-			UUID owner = null;
-			if (uuid != null)
-				owner = UUID.fromString(uuid);
-			boolean dis = set.getInt(4) != 0;
-			String password = set.getString(3);
-			int id = set.getInt(5);
-			Group g = new Group(name, owner, dis, password, id);
-			return g;
+			try (ResultSet set = getGroupById.executeQuery();) {
+				if (!set.next()) return null;
+
+				String name = set.getString(1);
+				String uuid = set.getString(2);
+				UUID owner = null;
+				if (uuid != null)
+					owner = UUID.fromString(uuid);
+				boolean dis = set.getInt(4) != 0;
+				String password = set.getString(3);
+				int id = set.getInt(5);
+				
+				Group g = new Group(name, owner, dis, password, id);
+				return g;
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Problem getting group " + groupId, e);
+			}
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem getting group " + groupId, e);
+			logger.log(Level.WARNING, "Problem preparing query to get group " + groupId, e);
 		}
 		return null;
 	}
@@ -741,13 +756,15 @@ public class GroupManagerDao {
 		try (Connection connection = db.getConnection();
 				PreparedStatement getAllGroupsNames = connection.prepareStatement(this.getAllGroupsNames)){
 			getAllGroupsNames.setString(1, uuid.toString());
-			ResultSet set = getAllGroupsNames.executeQuery();
-			while(set.next()) {
-				groups.add(set.getString(1));
+			try (ResultSet set = getAllGroupsNames.executeQuery();) {
+				while(set.next()) {
+					groups.add(set.getString(1));
+				}
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Problem getting player's groups " + uuid, e);
 			}
-			set.close();
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem getting player's groups " + uuid, e);
+			logger.log(Level.WARNING, "Problem preparing to get player's groups " + uuid, e);
 		}
 		return groups;
 	}
@@ -758,13 +775,15 @@ public class GroupManagerDao {
 				PreparedStatement getGroupNameFromRole = connection.prepareStatement(this.getGroupNameFromRole)){
 			getGroupNameFromRole.setString(1, uuid.toString());
 			getGroupNameFromRole.setString(2, role);
-			ResultSet set = getGroupNameFromRole.executeQuery();
-			while(set.next()) {
-				groups.add(set.getString(1));
+			try (ResultSet set = getGroupNameFromRole.executeQuery();) {
+				while(set.next()) {
+					groups.add(set.getString(1));
+				}
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Problem getting player " + uuid + " groups by role " + role, e);
 			}
-			set.close();
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem getting player " + uuid + " groups by role " + role, e);
+			logger.log(Level.WARNING, "Problem preparing to get player " + uuid + " groups by role " + role, e);
 		}
 		return groups;
 	}
@@ -774,13 +793,15 @@ public class GroupManagerDao {
 		try (Connection connection = db.getConnection();
 				PreparedStatement getTimestamp = connection.prepareStatement(this.getTimestamp)){
 			getTimestamp.setString(1, group);
-			ResultSet set = getTimestamp.executeQuery();
-			if(set.next()) {
-				timestamp = set.getTimestamp(1);
-			}
-			set.close();
+			try (ResultSet set = getTimestamp.executeQuery();) {
+				if(set.next()) {
+					timestamp = set.getTimestamp(1);
+				}
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Problem getting group timestamp " + group, e);
+			} 
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem getting group timestamp " + group, e);
+			logger.log(Level.WARNING, "Problem preparing to get group timestamp " + group, e);
 		}
 		
 		return timestamp;
@@ -792,13 +813,15 @@ public class GroupManagerDao {
 				PreparedStatement getPlayerType = connection.prepareStatement(this.getPlayerType)){
 			getPlayerType.setInt(1, groupid);
 			getPlayerType.setString(2, uuid.toString());
-			ResultSet set = getPlayerType.executeQuery();
-			if(set.next()){
-				ptype = PlayerType.getPlayerType(set.getString(1));
+			try (ResultSet set = getPlayerType.executeQuery();) {
+				if(set.next()){
+					ptype = PlayerType.getPlayerType(set.getString(1));
+				}
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Problem getting player " + uuid + " type within group " + groupid, e);
 			}
-			set.close();
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem getting player " + uuid + " type within group " + groupid, e);
+			logger.log(Level.WARNING, "Problem preparing to get player " + uuid + " type within group " + groupid, e);
 		}
 		return ptype;
 	}
@@ -876,18 +899,19 @@ public class GroupManagerDao {
 				PreparedStatement getMembers = connection.prepareStatement(this.getMembers)){
 			getMembers.setString(1, groupName);
 			getMembers.setString(2, role.name());
-			ResultSet set = getMembers.executeQuery();
-			while(set.next()){
-				String uuid = set.getString(1);
-				if (uuid == null) {
-					continue;
+			try (ResultSet set = getMembers.executeQuery();) {
+				while(set.next()){
+					String uuid = set.getString(1);
+					if (uuid == null) {
+						continue;
+					}
+					members.add(UUID.fromString(uuid));
 				}
-				members.add(UUID.fromString(uuid));
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Problem getting all " + role.toString() + " for group " + groupName, e);
 			}
-			set.close();
-			return members;
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem getting all " + role.toString() + " for group " + groupName, e);
+			logger.log(Level.WARNING, "Problem preparing to get all " + role.toString() + " for group " + groupName, e);
 		}
 		return members;
 	}
@@ -1302,15 +1326,14 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void mergeGroup(String groupName, String toMerge){
-		this.dbrefresh();
-		try {
+	public void mergeGroup(String groupName, String toMerge){
+		try (Connection connection = db.getConnection();
+				PreparedStatement mergeGroup = connection.prepareStatement(this.mergeGroup);){
 			mergeGroup.setString(1, groupName);
 			mergeGroup.setString(2, toMerge);
-			this.execStatement(mergeGroup);
+			mergeGroup.execute();
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem merging group " + toMerge
-					+ " into " + groupName, e);
+			logger.log(Level.WARNING, "Problem merging group " + toMerge + " into " + groupName, e);
 		}
 	}
 	
@@ -1325,12 +1348,12 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void updatePassword(String groupName, String password){
-		this.dbrefresh();
-		try {
+	public void updatePassword(String groupName, String password){
+		try (Connection connection = db.getConnection();
+				PreparedStatement updatePassword = connection.prepareStatement(this.updatePassword);){
 			updatePassword.setString(1, password);
 			updatePassword.setString(2, groupName);
-			this.execStatement(updatePassword);
+			updatePassword.executeUpdate();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem updating password for group " + groupName, e);
 		}
@@ -1350,11 +1373,11 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void autoAcceptGroups(final UUID uuid){
-		this.dbrefresh();
-		try {
+	public void autoAcceptGroups(final UUID uuid){
+		try (Connection connection = db.getConnection();
+				PreparedStatement addAutoAcceptGroup = connection.prepareStatement(this.addAutoAcceptGroup);){
 			addAutoAcceptGroup.setString(1, uuid.toString());
-			this.execStatement(addAutoAcceptGroup);
+			addAutoAcceptGroup.executeUpdate();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem setting autoaccept for " + uuid, e);
 		}
@@ -1364,13 +1387,17 @@ public class GroupManagerDao {
 	 * @param uuid- The UUID of the player.
 	 * @return Returns true if they should auto accept.
 	 */
-	public synchronized boolean shouldAutoAcceptGroups(UUID uuid){
-		try {
+	public boolean shouldAutoAcceptGroups(UUID uuid){
+		try (Connection connection = db.getConnection();
+				PreparedStatement getAutoAcceptGroup = connection.prepareStatement(this.getAutoAcceptGroup);){
 			getAutoAcceptGroup.setString(1, uuid.toString());
-			ResultSet set = this.queryStatement(getAutoAcceptGroup);
-			return set.next();
+			try (ResultSet set = getAutoAcceptGroup.executeQuery();) {
+				return set.next();
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Problem getting autoaccept for " + uuid, e);
+			}
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem getting autoaccept for " + uuid, e);
+			logger.log(Level.WARNING, "Problem setting up query to get autoaccept for " + uuid, e);
 		}
 		return false;
 	}
@@ -1385,11 +1412,11 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void removeAutoAcceptGroup(final UUID uuid){
-		this.dbrefresh();
-		try {
+	public void removeAutoAcceptGroup(final UUID uuid){
+		try (Connection connection = db.getConnection();
+				PreparedStatement removeAutoAcceptGroup = connection.prepareStatement(this.removeAutoAcceptGroup);){
 			removeAutoAcceptGroup.setString(1, uuid.toString());
-			this.execStatement(removeAutoAcceptGroup);
+			removeAutoAcceptGroup.executeUpdate();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem removing autoaccept for " + uuid, e);
 		}
@@ -1406,14 +1433,14 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void setDefaultGroup(UUID uuid, String groupName){
-		try {
+	public void setDefaultGroup(UUID uuid, String groupName){
+		try (Connection connection = db.getConnection();
+				PreparedStatement setDefaultGroup = connection.prepareStatement(this.setDefaultGroup);){
 			setDefaultGroup.setString(1, uuid.toString());
 			setDefaultGroup.setString(2, groupName );
-			this.execStatement(setDefaultGroup);
+			setDefaultGroup.executeUpdate();
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem setting user " + uuid 
-					+ " default group to " + groupName, e);
+			logger.log(Level.WARNING, "Problem setting user " + uuid + " default group to " + groupName, e);
 		}
 	}
 	
@@ -1428,34 +1455,38 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void changeDefaultGroup(UUID uuid, String groupName){
-		try {
+	public void changeDefaultGroup(UUID uuid, String groupName){
+		try (Connection connection = db.getConnection();
+				PreparedStatement changeDefaultGroup = connection.prepareStatement(this.changeDefaultGroup);){
 			changeDefaultGroup.setString(1, groupName);
 			changeDefaultGroup.setString(2, uuid.toString());
-			this.execStatement(changeDefaultGroup);
+			changeDefaultGroup.executeUpdate();
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem changing user " + uuid
-					+ " default group to " + groupName, e);
+			logger.log(Level.WARNING, "Problem changing user " + uuid + " default group to " + groupName, e);
 		}
 	}
 
-	public synchronized String getDefaultGroup(UUID uuid) {
-		try {
+	public String getDefaultGroup(UUID uuid) {
+		String group = null;
+		try (Connection connection = db.getConnection();
+				PreparedStatement getDefaultGroup = connection.prepareStatement(this.getDefaultGroup);){
 			getDefaultGroup.setString(1, uuid.toString());
-			ResultSet set = this.queryStatement(getDefaultGroup);
-			if(!set.next()) return null;
-			String group = set.getString(1);
-			return group;
+			try (ResultSet set = getDefaultGroup.executeQuery();) {
+				String group = set.getString(1);
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Problem getting default group for " + uuid, e);
+			}
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem getting default group for " + uuid, e);
+			logger.log(Level.WARNING, "Problem setting up query to get default group for " + uuid, e);
 		}
-		return null;
+		return group;
 	}
 	
-	public synchronized Map <UUID, String> getAllDefaultGroups() {
+	public Map <UUID, String> getAllDefaultGroups() {
 		Map <UUID, String> groups = null;
-		try {
-			ResultSet set = this.queryStatement(getAllDefaultGroups);
+		try (Connection connection = db.getConnection();
+				Statement getAllDefaultGroups = connection.createStatement();
+				ResultSet set = getAllDefaultGroups.executeQuery(this.getAllDefaultGroups);){
 			groups = new TreeMap<UUID, String>();
 			while(set.next()) {
 				UUID uuid = UUID.fromString(set.getString(1));
@@ -1484,14 +1515,14 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void setFounder(UUID uuid, Group group) {
-		try {
+	public void setFounder(UUID uuid, Group group) {
+		try (Connection connection = db.getConnection();
+				PreparedStatement updateOwner = connection.prepareStatement(this.updateOwner);){
 			updateOwner.setString(1, uuid.toString());
 			updateOwner.setString(2, group.getName());
-			this.execStatement(updateOwner);
+			updateOwner.executeUpdate();
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem setting founder of group " + group.getName() 
-					+ " to " + uuid, e);
+			logger.log(Level.WARNING, "Problem setting founder of group " + group.getName() + " to " + uuid, e);
 		}
 	}
 	
@@ -1506,12 +1537,12 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void setDisciplined(Group group, boolean disciplined) {
-		try {
-			int val; if (disciplined){val=1;}else{val=0;}
-			updateDisciplined.setInt(1, val);
+	public void setDisciplined(Group group, boolean disciplined) {
+		try (Connection connection = db.getConnection();
+				PreparedStatement updateDisciplined = connection.prepareStatement(this.updateDisciplined);){
+			updateDisciplined.setInt(1, disciplined ? 1 : 0);
 			updateDisciplined.setString(2, group.getName());
-			this.execStatement(updateDisciplined);
+			updateDisciplined.executeUpdate();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem setting disciplined of group " + group.getName() 
 					+ " to " + disciplined, e);
@@ -1530,12 +1561,13 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void addGroupInvitation(UUID uuid, String groupName, String role){
-		try {
+	public void addGroupInvitation(UUID uuid, String groupName, String role){
+		try (Connection connection = db.getConnection();
+				PreparedStatement addGroupInvitation = connection.prepareStatement(this.addGroupInvitation);){
 			addGroupInvitation.setString(1, uuid.toString());
 			addGroupInvitation.setString(2, groupName);
 			addGroupInvitation.setString(3, role);
-			this.execStatement(addGroupInvitation);
+			addGroupInvitation.executeUpdate();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem adding group " + groupName + " invite for "
 					+ uuid + " with role " + role, e);
@@ -1553,11 +1585,12 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void removeGroupInvitation(UUID uuid, String groupName){
-		try {
+	public void removeGroupInvitation(UUID uuid, String groupName){
+		try (Connection connection = db.getConnection();
+				PreparedStatement removeGroupInvitation = connection.prepareStatement(this.removeGroupInvitation);){
 			removeGroupInvitation.setString(1, uuid.toString());
 			removeGroupInvitation.setString(2, groupName);
-			this.execStatement(removeGroupInvitation);
+			removeGroupInvitation.executeUpdate();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem removing group " + groupName + " invite for "
 					+ uuid, e);
@@ -1581,54 +1614,60 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void loadGroupInvitation(UUID playerUUID, Group group){
-		if(group == null){
-			return;
-		}
+	public void loadGroupInvitation(UUID playerUUID, Group group){
+		if(group == null) return;
 		
-		try {
+		try (Connection connection = db.getConnection();
+				PreparedStatement loadGroupInvitation = connection.prepareStatement(this.loadGroupInvitation);){
 			loadGroupInvitation.setString(1, playerUUID.toString());
 			loadGroupInvitation.setString(2, group.getName());
-			ResultSet set = this.queryStatement(loadGroupInvitation);
-			while(set.next()){
-				String role = set.getString("role");
-				PlayerType type = null;
-				if(role != null){
-					type = PlayerType.getPlayerType(role);
+			try (ResultSet set = loadGroupInvitation.executeQuery();) {
+				while(set.next()){
+					String role = set.getString("role");
+					PlayerType type = null;
+					if(role != null){
+						type = PlayerType.getPlayerType(role);
+					}
+					group.addInvite(playerUUID, type, false);
 				}
-				group.addInvite(playerUUID, type, false);
+			} catch(SQLException e) {
+				logger.log(Level.WARNING, "Problem loading group " + group.getName() + " invites for " + playerUUID, e);
 			}
 		} catch(SQLException e) {
-			logger.log(Level.WARNING, "Problem loading group " + group.getName() 
-					+ " invite for " + playerUUID, e);
+			logger.log(Level.WARNING, "Problem preparing query to load group " + group.getName() + 
+				" invites for " + playerUUID, e);
 		}
 	}
 	
-	public synchronized Map <UUID, PlayerType> getInvitesForGroup(String groupName) {
+	public Map<UUID, PlayerType> getInvitesForGroup(String groupName) {
 		Map <UUID, PlayerType> invs = new TreeMap<UUID, GroupManager.PlayerType>();
 		if (groupName == null) {
 			return invs;
 		}
-		try {
+		try (Connection connection = db.getConnection();
+				PreparedStatement loadGroupInvitationsForGroup = connection.prepareStatement(this.loadGroupInvitationsForGroup);){
 			loadGroupInvitationsForGroup.setString(1, groupName);
-			ResultSet set = this.queryStatement(loadGroupInvitationsForGroup);
-			while(set.next()) {
-				String uuid = set.getString(1);
-				String role = set.getString(2);
-				UUID playerUUID = null;
-				if (uuid != null){
-					playerUUID = UUID.fromString(uuid);
+			try (ResultSet set = loadGroupInvitationsForGroup.executeQuery();) {
+				while(set.next()) {
+					String uuid = set.getString(1);
+					String role = set.getString(2);
+					UUID playerUUID = null;
+					if (uuid != null){
+						playerUUID = UUID.fromString(uuid);
+					}
+					PlayerType pType = null;
+					if(role != null){
+						pType = PlayerType.getPlayerType(role);
+					}
+					if (uuid != null && pType != null) {
+						invs.put(playerUUID, pType);
+					}
 				}
-				PlayerType pType = null;
-				if(role != null){
-					pType = PlayerType.getPlayerType(role);
-				}
-				if (uuid != null && pType != null) {
-					invs.put(playerUUID, pType);
-				}
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Problem loading group invitations for group " + groupName, e);
 			}
-		}catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem loading group invitations for group " + groupName, e);
+		} catch (SQLException e) {
+			logger.log(Level.WARNING, "Problem preparing statement to load group invitations for group " + groupName, e);
 		}
 		return invs;
 	}
@@ -1636,9 +1675,10 @@ public class GroupManagerDao {
 	/**
 	 * Use this method to load all invitations to all groups.
 	 */
-	public synchronized void loadGroupsInvitations(){
-		try {
-			ResultSet set = this.queryStatement(loadGroupsInvitations);
+	public void loadGroupsInvitations(){
+		try (Connection connection = db.getConnection();
+				PreparedStatement loadGroupInvitations = connection.prepareStatement(this.loadGroupInvitations);
+				ResultSet set = loadGroupsInvitations.executeQuery();) {
 			while(set.next()){
 				String uuid = set.getString("uuid");
 				String group = set.getString("groupName");
@@ -1677,34 +1717,34 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void logNameChange(UUID uuid, String oldName, String newName) {
-		try {
+	public void logNameChange(UUID uuid, String oldName, String newName) {
+		try (Connection connection = db.getConnection();
+				PreparedStatement logNameChange = connection.prepareStatement(this.logNameChange);){
 			logNameChange.setString(1, uuid.toString());
 			logNameChange.setString(2, oldName);
 			logNameChange.setString(3, newName);
-			this.execStatement(logNameChange);
-		}
-		catch (SQLException e) {
+			logNameChange.executeUpdate();
+		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Failed to log a name change for {0} from {1} -> {2}", new Object[]{uuid, oldName, newName});
 			logger.log(Level.WARNING, "Exception during change.", e);
 		}
 	}
 	
-	public synchronized boolean hasChangedNameBefore(UUID uuid) {
-		try {
+	public boolean hasChangedNameBefore(UUID uuid) {
+		boolean ret = false;
+		try (Connection connection = db.getConnection();
+				PreparedStatement checkForNameChange = connection.prepareStatement(this.checkForNameChange);){
 			checkForNameChange.setString(1, uuid.toString());
-			ResultSet set = this.queryStatement(checkForNameChange);
-			if (set.next()) {
-				return true;
-			}
-			return false;
-		}
-		catch (SQLException e) {
+			try (ResultSet set = checkForNameChange.executeQuery();) { 
+				ret = set.next();
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Failed to check if " + uuid + " has previously changed names", e);
+			} 
+		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Failed to check if {0} has previously changed names", uuid);
 			logger.log(Level.WARNING, "Exception during check.", e);
-			//just to make sure
-			return true;
 		}
+		return ret;
 	}
 	
 	public void addBlackListMemberAsync(final String groupName, final UUID uuid){
@@ -1718,13 +1758,13 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void addBlackListMember(String groupName, UUID player) {
-		try {
+	public void addBlackListMember(String groupName, UUID player) {
+		try (Connection connection = db.getConnection();
+				PreparedStatement addBlacklistMember = connection.prepareStatement(this.addBlacklistMember);){
 			addBlacklistMember.setString(1, player.toString());
 			addBlacklistMember.setString(2, groupName);
-			this.execStatement(addBlacklistMember);
-		}
-		catch(SQLException e) {
+			addBlacklistMember.executeUpdate();
+		} catch(SQLException e) {
 			logger.log(Level.WARNING, "Unable to add black list member " + player + " to group " + groupName, e);
 		}
 	}
@@ -1740,28 +1780,31 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void removeBlackListMember(String groupName, UUID player) {
-		try {
+	public void removeBlackListMember(String groupName, UUID player) {
+		try (Connection connection = db.getConnection();
+				PreparedStatement addBlacklistMember = connection.prepareStatement(this.addBlacklistMember);){
 			removeBlackListMember.setString(1, groupName);
 			removeBlackListMember.setString(2, player.toString());
-			this.execStatement(removeBlackListMember);
-		}
-		catch(SQLException e) {
+			removeBlackListMember.executeUpdate();
+		} catch(SQLException e) {
 			logger.log(Level.WARNING, "Unable to remove black list member " + player + " to group " + groupName, e);
 		}
 	}
 	
-	public synchronized Set<UUID> getBlackListMembers(String groupName) {
+	public Set<UUID> getBlackListMembers(String groupName) {
 		Set<UUID> uuids = new HashSet<UUID>();
-		try {
+		try (Connection connection = db.getConnection();
+				PreparedStatement getBlacklistMembers = connection.prepareStatement(this.getBlacklistMembers);){
 			getBlackListMembers.setString(1, groupName);
-			ResultSet set = this.queryStatement(getBlackListMembers);
-			while (set.next()) {
-				uuids.add(UUID.fromString(set.getString(1)));
+			try (ResultSet set = getBlackListMembers.executeQuery();) {
+				while (set.next()) {
+					uuids.add(UUID.fromString(set.getString(1)));
+				}
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Unable to retrieve black list members for group " + groupName, e);
 			}
-		}
-		catch (SQLException e) {
-			logger.log(Level.WARNING, "Unable to retrieve black list members for group " + groupName, e);
+		} catch (SQLException e) {
+			logger.log(Level.WARNING, "Unable to prepare query to retrieve black list members for group " + groupName, e);
 		}
 		return uuids;
 	}
@@ -1779,18 +1822,22 @@ public class GroupManagerDao {
 		if (groupName == null) {
 			return null;
 		}
-		try {
+		try (Connection connection = db.getConnection();
+				PreparedStatement getGroupIDs = connection.prepareStatement(this.getGroupIDs);){
 			getGroupIDs.setString(1, groupName);
-			ResultSet set = this.queryStatement(getGroupIDs);
-			LinkedList<Integer> ids = new LinkedList<Integer>();
+			try (ResultSet set = getGroupIDs.executeQuery();) {
+				LinkedList<Integer> ids = new LinkedList<Integer>();
 			
-			while (set.next()) {
-				ids.add(set.getInt(1));
+				while (set.next()) {
+					ids.add(set.getInt(1));
+				}
+				
+				return ids;
+			} catch (SQLException se) {
+				logger.log(Level.WARNING, "Unable to fully load group ID set", se);
 			}
-			
-			return ids;
 		} catch (SQLException se) {
-			logger.log(Level.WARNING, "Unable to fully load group ID set", se);
+			logger.log(Level.WARNING, "Unable to prepare query to fully load group ID set", se);
 		}
 		return null;
 	}
