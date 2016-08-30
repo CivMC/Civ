@@ -629,18 +629,20 @@ public class GroupManagerDao {
 	 * @return Returns the version of the plugin or 0 if none was found.
 	 */
 	public int checkVersion(String name){
+		int ret = 0;
 		try (Connection connection = db.getConnection();
 				PreparedStatement version = connection.prepareStatement(this.version)){
 			version.setString(1, name);
 			ResultSet set = version.executeQuery();
-			if (!set.next()) 
-				return 0;
-			return set.getInt("db_version");
+			if (set.next()) {
+				ret = set.getInt("db_version");
+			}
+			set.close();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem accessing db_version table", e);
 			// table doesnt exist
-			return 0;
 		}
+		return ret;
 	}
 	/**
 	 * Updates the version number for a plugin. You must specify what 
@@ -674,6 +676,7 @@ public class GroupManagerDao {
 			createGroup.setInt(4, 0);
 			ResultSet set = createGroup.executeQuery();
 			ret = set.next() ? set.getInt("f.group_id") : -1;
+			set.close();
 			logger.log(Level.INFO, "Created group {0} w/ id {1} for {2}", new Object[] {group, ret, own});
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem creating group " + group, e);
@@ -742,13 +745,14 @@ public class GroupManagerDao {
 			while(set.next()) {
 				groups.add(set.getString(1));
 			}
+			set.close();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem getting player's groups " + uuid, e);
 		}
 		return groups;
 	}
 	
-	public synchronized List<String> getGroupNames(UUID uuid, String role){
+	public List<String> getGroupNames(UUID uuid, String role){
 		List<String> groups = new ArrayList<String>();
 		try (Connection connection = db.getConnection();
 				PreparedStatement getGroupNameFromRole = connection.prepareStatement(this.getGroupNameFromRole)){
@@ -758,13 +762,14 @@ public class GroupManagerDao {
 			while(set.next()) {
 				groups.add(set.getString(1));
 			}
+			set.close();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem getting player " + uuid + " groups by role " + role, e);
 		}
 		return groups;
 	}
 	
-	public synchronized Timestamp getTimestamp(String group){
+	public Timestamp getTimestamp(String group){
 		Timestamp timestamp = null;
 		try (Connection connection = db.getConnection();
 				PreparedStatement getTimestamp = connection.prepareStatement(this.getTimestamp)){
@@ -773,6 +778,7 @@ public class GroupManagerDao {
 			if(set.next()) {
 				timestamp = set.getTimestamp(1);
 			}
+			set.close();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem getting group timestamp " + group, e);
 		}
@@ -780,7 +786,7 @@ public class GroupManagerDao {
 		return timestamp;
 	}
 	
-	public synchronized PlayerType getPlayerType(int groupid, UUID uuid){
+	public PlayerType getPlayerType(int groupid, UUID uuid){
 		PlayerType ptype = null;
 		try (Connection connection = db.getConnection();
 				PreparedStatement getPlayerType = connection.prepareStatement(this.getPlayerType)){
@@ -790,6 +796,7 @@ public class GroupManagerDao {
 			if(set.next()){
 				ptype = PlayerType.getPlayerType(set.getString(1));
 			}
+			set.close();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem getting player " + uuid + " type within group " + groupid, e);
 		}
@@ -801,13 +808,13 @@ public class GroupManagerDao {
 
 			@Override
 			public void run() {
-				updateTimestampAsync(group);
+				updateTimestamp(group);
 			}
 			
 		});
 	}
 	
-	public synchronized void updateTimestamp(String group){
+	public void updateTimestamp(String group){
 		try (Connection connection = db.getConnection();
 				PreparedStatement updateLastTimestamp = connection.prepareStatement(this.updateLastTimestamp)){
 			updateLastTimestamp.setString(1, group);
@@ -828,7 +835,7 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void deleteGroup(String groupName){
+	public void deleteGroup(String groupName){
 		try (Connection connection = db.getConnection();
 				PreparedStatement deleteGroup = connection.prepareStatement(this.deleteGroup)){
 			deleteGroup.setString(1, groupName);
@@ -850,7 +857,7 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void addMember(UUID member, String faction, PlayerType role){
+	public void addMember(UUID member, String faction, PlayerType role){
 		try (Connection connection = db.getConnection();
 				PreparedStatement addMember = connection.prepareStatement(this.addMember)){
 			addMember.setString(1, member.toString());
@@ -863,7 +870,7 @@ public class GroupManagerDao {
 		}			
 	}
 	
-	public synchronized List<UUID> getAllMembers(String groupName, PlayerType role){
+	public List<UUID> getAllMembers(String groupName, PlayerType role){
 		List<UUID> members = new ArrayList<UUID>();
 		try (Connection connection = db.getConnection();
 				PreparedStatement getMembers = connection.prepareStatement(this.getMembers)){
@@ -877,6 +884,7 @@ public class GroupManagerDao {
 				}
 				members.add(UUID.fromString(uuid));
 			}
+			set.close();
 			return members;
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem getting all " + role.toString() + " for group " + groupName, e);
@@ -895,7 +903,7 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void removeMember(UUID member, String group){
+	public void removeMember(UUID member, String group){
 		try (Connection connection = db.getConnection();
 				PreparedStatement removeMember = connection.prepareStatement(this.removeMember)){
 			removeMember.setString(1, member.toString());
@@ -917,7 +925,7 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void removeAllMembers(String group){
+	public void removeAllMembers(String group){
 		try (Connection connection = db.getConnection();
 				PreparedStatement removeAllMembers = connection.prepareStatement(this.removeAllMembers)){
 			removeAllMembers.setString(1, group);
@@ -938,27 +946,26 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void addSubGroup(String group, String subGroup){
-		this.dbrefresh();
-		try {
+	public void addSubGroup(String group, String subGroup){
+		try (Connection connection = db.getConnection();
+				PreparedStatement addSubGroup = connection.prepareStatement(this.addSubGroup)){
 			addSubGroup.setString(1, subGroup);
 			addSubGroup.setString(2, group);
-			this.execStatement(addSubGroup);
+			addSubGroup.executeUpdate();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem adding subgroup " + subGroup
 					+ " to group " + group, e);
 		}
 	}
 	
-	public synchronized List<Group> getSubGroups(String group){
-		this.dbrefresh();
+	public List<Group> getSubGroups(String group){
 		List<Group> groups = new ArrayList<Group>();
-		try {
-			getSubGroups.clearParameters();
+		try (Connection connection = db.getConnection();
+				PreparedStatement getSubGroups = connection.prepareStatement(this.getSubGroups)){
 			getSubGroups.setString(1, group);
 			
 			List<String> subgroups = Lists.newArrayList();
-			try (ResultSet set = this.queryStatement(getSubGroups);){
+			try (ResultSet set = getSubGroups.executeQuery();){
 				while (set.next()) {
 					subgroups.add(set.getString(1));
 				}
@@ -981,13 +988,11 @@ public class GroupManagerDao {
 		return groups;
 	}
 	
-	public synchronized Group getSuperGroup(String group){
-		this.dbrefresh();
-		try {
-			getSuperGroup.clearParameters();
+	public Group getSuperGroup(String group){
+		try (Connection connection = db.getConnection();
+				PreparedStatement getSuperGroup = connection.prepareStatement(this.getSuperGroup)){
 			getSuperGroup.setString(1, group);
-			try {
-				ResultSet set = this.queryStatement(getSuperGroup);
+			try (ResultSet set = getSuperGroup.executeQuery();) {
 				if (!set.next()) {
 					return null;
 				}
@@ -997,7 +1002,9 @@ public class GroupManagerDao {
 				} else {
 					return getGroup(supergroup);
 				}
-			} catch (Exception e){}
+			} catch (Exception e){
+				logger.log(Level.WARNING, "Problem finding or getting superGroup for group " + group, e);
+			}
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem getting superGroup for group " + group, e);
 		}
@@ -1015,12 +1022,12 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void removeSubGroup(String group, String subGroup){
-		this.dbrefresh();
-		try {
+	public void removeSubGroup(String group, String subGroup){
+		try (Connection connection = db.getConnection();
+				PreparedStatement removeSubGroup = connection.prepareStatement(this.removeSubGroup)){
 			removeSubGroup.setString(1, group);
 			removeSubGroup.setString(2, subGroup);
-			this.execStatement(removeSubGroup);
+			removeSubGroup.executeUpdate();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Removing subgroup " + subGroup
 					+ " from group " + group, e);
@@ -1028,9 +1035,8 @@ public class GroupManagerDao {
 	}
 	
 	public void addAllPermissions(int groupId, Map <PlayerType, List <PermissionType>> perms) {
-		this.dbrefresh();
-		PreparedStatement addPermissionById = db.prepareStatement("insert into permissionByGroup(group_id,role,perm_id) values(?,?,?);");
-		try {
+		try (Connection connection = db.getConnection();
+				PreparedStatement addPermissionById = connection.prepareStatement(this.addPermissionById)){
 			for (Entry <PlayerType, List <PermissionType>> entry: perms.entrySet()){
 				String role = entry.getKey().name();
 				for(PermissionType perm : entry.getValue()) {
@@ -1066,42 +1072,55 @@ public class GroupManagerDao {
 		});
 	}
 
-	public synchronized void addPermission(String groupName, String role, List <PermissionType> perms){
-		this.dbrefresh();
-		for(PermissionType perm : perms) {
-			try {
+	public void addPermission(String groupName, String role, List <PermissionType> perms){
+		try (Connection connection = db.getConnection();
+				PreparedStatement addPermission = connection.prepareStatement(this.addPermission)){
+			for(PermissionType perm : perms) {
 				addPermission.setString(1, role);
 				addPermission.setInt(2, perm.getId());
 				addPermission.setString(3, groupName);
-				this.execStatement(addPermission);
-			} catch (SQLException e) {
-				logger.log(Level.WARNING, "Problem adding " + role + " with " + perms
-						+ " to group " + groupName, e);
+				addPermission.addBatch();
 			}
+			int[] res = addPermission.executeBatch();
+			if (res == null) {
+				logger.log(Level.WARNING, "Failed to add all permissions to group {0}, role {1}",
+						new Object[] {groupName, role} );
+			} else {
+				int cnt = 0;
+				for (int r : res) cnt += r;
+				logger.log(Level.INFO, "Added {0} of {1} permissions to group {2}, role {3}",
+						new Object[] {cnt, res.length, groupName, role});
+			}
+		} catch (SQLException e) {
+			logger.log(Level.WARNING, "Problem adding " + role + " with " + perms
+					+ " to group " + groupName, e);
 		}
 	}
 	
-	public synchronized Map<PlayerType, List<PermissionType>> getPermissions(String group){
-		this.dbrefresh();
+	public Map<PlayerType, List<PermissionType>> getPermissions(String group){
 		Map<PlayerType, List<PermissionType>> perms = new HashMap<PlayerType, List<PermissionType>>();
-		try {
+		try (Connection connection = db.getConnection();
+				PreparedStatement getPermission = connection.prepareStatement(this.getPermission)){
 			getPermission.setString(1, group);
-			ResultSet set = this.queryStatement(getPermission);
-			while(set.next()){
-				PlayerType type = PlayerType.getPlayerType(set.getString(1));
-				List<PermissionType> listPerm = perms.get(type);
-				if (listPerm == null) {
-					listPerm = new ArrayList<PermissionType>();
-					perms.put(type, listPerm);
+			try (ResultSet set = getPermission.executeQuery();) {
+				while(set.next()){
+					PlayerType type = PlayerType.getPlayerType(set.getString(1));
+					List<PermissionType> listPerm = perms.get(type);
+					if (listPerm == null) {
+						listPerm = new ArrayList<PermissionType>();
+						perms.put(type, listPerm);
+					}
+					int id = set.getInt(2);
+					PermissionType perm = PermissionType.getPermission(id);
+					if (perm != null && !listPerm.contains(perm)) {
+						listPerm.add(perm);
+					}
 				}
-				int id = set.getInt(2);
-				PermissionType perm = PermissionType.getPermission(id);
-				if (perm != null && !listPerm.contains(perm)) {
-					listPerm.add(perm);
-				}
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Problem getting permissions for group " + group, e);
 			}
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem getting permissions for group " + group, e);
+			logger.log(Level.WARNING, "Problem preparing statement to get permissions for group " + group, e);
 		}
 		return perms;
 	}
@@ -1117,13 +1136,13 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void removePermission(String group, PlayerType pType, PermissionType perm){
-		this.dbrefresh();
-		try {
+	public void removePermission(String group, PlayerType pType, PermissionType perm){
+		try (Connection connection = db.getConnection();
+				PreparedStatement removePermission = connection.prepareStatement(this.removePermission)){
 			removePermission.setString(1, group);
 			removePermission.setString(2, pType.name());
 			removePermission.setInt(3, perm.getId());
-			this.execStatement(removePermission);
+			removePermission.executeUpdate();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem removing permissions for group " + group
 					+ " on playertype " + pType.name(), e);
@@ -1141,27 +1160,30 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void registerPermission(PermissionType perm) {
-		this.dbrefresh();
-		try {
+	public void registerPermission(PermissionType perm) {
+		try (Connection connection = db.getConnection();
+				PreparedStatement registerPermission = connection.prepareStatement(this.registerPermission)){
 			registerPermission.setInt(1, perm.getId());
 			registerPermission.setString(2, perm.getName());
-			this.execStatement(registerPermission);
+			registerPermission.executeUpdate();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem register permission " + perm.getName(), e);
 		}
 	}
 	
-	public synchronized Map<Integer, String> getPermissionMapping() {
-		this.dbrefresh();
+	public Map<Integer, String> getPermissionMapping() {
 		Map <Integer,String> perms = new TreeMap<Integer, String>();
-		try (ResultSet res = this.queryStatement(getPermissionMapping)) {
-			while (res.next()) {
-				perms.put(res.getInt(1), res.getString(2));
+		try (Connection connection = db.getConnection();
+				Statement getPermissionMapping = connection.createStatement()) {
+			try (ResultSet res = getPermissionMapping.executeQuery(this.getPermissionMapping)) {
+				while (res.next()) {
+					perms.put(res.getInt(1), res.getString(2));
+				}
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Problem getting permissions from db", e);
 			}
-		}
-		catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem getting permissions from db", e);
+		} catch (SQLException e) {
+			logger.log(Level.WARNING, "Problem forming statement to get permissions from db", e);
 		}
 		return perms;
 	}
@@ -1177,31 +1199,49 @@ public class GroupManagerDao {
 		});
 	}
 	
-	public synchronized void addNewDefaultPermission(List <PlayerType> playerTypes, PermissionType perm) {
-		try {
-			ResultSet set = getAllGroupIds.executeQuery();
-			// unpack ids;
+	public void addNewDefaultPermission(List <PlayerType> playerTypes, PermissionType perm) {
+		try (Connection connection = db.getConnection();) {
 			List <Integer> groups = new LinkedList<Integer>();
-			while(set.next()) {
-				groups.add(set.getInt(1));
+			try (Statement getAllGroupsIds = connection.createStatement();
+					ResultSet set = getAllGroupIds.executeQuery(this.getAllGroupIds);) {
+				// unpack ids;
+				while(set.next()) {
+					groups.add(set.getInt(1));
+				}
+				// unpack and close, don't keep this query open!
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Error retrieving all group Ids to initiate default perms for permission " + perm + 
+						" for player types " + playerTypes, e);
 			}
-			set.close(); // unpack and close, don't keep this query open!
 			
 			int batchsize = 0, maxbatch = 100;
-			PreparedStatement addPermissionById = null;
-			for (int groupId : groups) {
-				if (batchsize == 0) {
-					addPermissionById = db.prepareStatement("insert into permissionByGroup(group_id,role,perm_id) values(?,?,?);");
+			try (PreparedStatement addPermissionById = connection.prepareStatement(this.addPermissionById);) {
+				for (int groupId : groups) {
+					for(PlayerType pType: playerTypes) {
+						addPermissionById.setInt(1, groupId);
+						addPermissionById.setString(2, pType.name());
+						addPermissionById.setInt(3, perm.getId());
+						addPermissionById.addBatch();
+						batchsize ++;
+					}
+					// inline batch commit at cutoff level (100 default).
+					if (batchsize >= maxbatch) {
+						int[] res = addPermissionById.executeBatch();
+						if (res == null) {
+							logger.log(Level.WARNING, "Problem inserting new default permission into all groups");
+						} else {
+							int rc = 0;
+							for (int r : res) rc+= r;
+							if (rc != res.length) {
+								logger.log(Level.WARNING, "Problem inserting new default permission into all groups, count mismatch");
+							}
+						}
+						batchsize = 0; // reset.
+					}
 				}
-				for(PlayerType pType: playerTypes) {
-					addPermissionById.setInt(1, groupId);
-					addPermissionById.setString(2, pType.name());
-					addPermissionById.setInt(3, perm.getId());
-					addPermissionById.addBatch();
-					batchsize ++;
-				}
-				// inline batch commit at cutoff level (100 default).
-				if (batchsize >= maxbatch) {
+
+				// final cleanup.
+				if (batchsize > 0) {
 					int[] res = addPermissionById.executeBatch();
 					if (res == null) {
 						logger.log(Level.WARNING, "Problem inserting new default permission into all groups");
@@ -1214,49 +1254,40 @@ public class GroupManagerDao {
 					}
 					batchsize = 0; // reset.
 				}
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Error initiating default perms for permission " + perm + " for player types " + playerTypes, e);
 			}
-			// final cleanup.
-			if (batchsize > 0) {
-				int[] res = addPermissionById.executeBatch();
-				if (res == null) {
-					logger.log(Level.WARNING, "Problem inserting new default permission into all groups");
-				} else {
-					int rc = 0;
-					for (int r : res) rc+= r;
-					if (rc != res.length) {
-						logger.log(Level.WARNING, "Problem inserting new default permission into all groups, count mismatch");
-					}
-				}
-				batchsize = 0; // reset.
-			}
-
-		}
-		catch (SQLException e) {
-			logger.log(Level.WARNING, "Error initiating default perms for permission " + perm + " for player types " + playerTypes, e);
+		} catch (SQLException e) {
+			logger.log(Level.WARNING, "Error initiating connection to set default perms for permission " + perm + " for player types " + playerTypes, e);
 		}
 	}
 	
-	public synchronized int countGroups(){
-		this.dbrefresh();
-		try {
-			ResultSet set = this.queryStatement(countGroups);
-			return set.next() ? set.getInt("count") : 0;
+	public int countGroups(){
+		int ret = 0;
+		try (Connection connection = db.getConnection();
+				Statement countGroups = connection.createStatement();
+				ResultSet set = countGroups.executeQuery(this.countGroups);){
+			ret = set.next() ? set.getInt("count") : 0;
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem counting groups", e);
 		}
-		return 0;
+		return ret;
 	}
 	
-	public synchronized int countGroups(UUID uuid){
-		this.dbrefresh();
-		try{
+	public int countGroups(UUID uuid){
+		int ret = 0;
+		try (Connection connection = db.getConnection();
+				PreparedStatement countGroupsFromUUID = connection.prepareStatement(this.countGroupsFromUUID);){
 			countGroupsFromUUID.setString(1, uuid.toString());
-			ResultSet set = this.queryStatement(countGroupsFromUUID);
-			return set.next() ? set.getInt("count") : 0;
+			try (ResultSet set = countGroupsFromUUID.executeQuery();) {
+				ret = set.next() ? set.getInt("count") : 0;
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "Problem counting groups for " + uuid, e);
+			} 
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem counting groups for " + uuid, e);
+			logger.log(Level.WARNING, "Problem setting up statement to count groups for " + uuid, e);
 		}
-		return 0;
+		return ret;
 		
 	}
 	
