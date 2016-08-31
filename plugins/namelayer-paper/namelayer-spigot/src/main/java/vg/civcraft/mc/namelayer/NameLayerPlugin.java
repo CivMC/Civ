@@ -94,7 +94,13 @@ public class NameLayerPlugin extends ACivMod{
 	}
 
 	public void onDisable() {
-		
+		if (db != null) {
+			try {
+				db.close();
+			} catch (Exception e) {
+				log(Level.INFO, "Failed to close database gracefully on shutdown.");
+			}
+		}
 	}
 	
 	public static NameLayerPlugin getInstance(){
@@ -106,7 +112,11 @@ public class NameLayerPlugin extends ACivMod{
 		@CivConfig(name = "sql.username", def = "", type = CivConfigType.String),
 		@CivConfig(name = "sql.password", def = "", type = CivConfigType.String),
 		@CivConfig(name = "sql.port", def = "3306", type = CivConfigType.Int),
-		@CivConfig(name = "sql.dbname", def = "namelayer", type = CivConfigType.String)
+		@CivConfig(name = "sql.dbname", def = "namelayer", type = CivConfigType.String),
+		@CivConfig(name = "sql.poolsize", def = "10", type = CivConfigType.Int),
+		@CivConfig(name = "sql.connection_timeout", def = "10000", type = CivConfigType.Long),
+		@CivConfig(name = "sql.idle_timeout", def = "600000", type = CivConfigType.Long),
+		@CivConfig(name = "sql.max_lifetime", def = "7200000", type = CivConfigType.Long)
 	})
 	public void loadDatabases(){
 		String host = config.get("sql.hostname").getString();
@@ -114,24 +124,22 @@ public class NameLayerPlugin extends ACivMod{
 		String dbname = config.get("sql.dbname").getString();
 		String username = config.get("sql.username").getString();
 		String password = config.get("sql.password").getString();
-		db = new Database(host, port, dbname, username, password, getLogger());
-		db.connect();
-		if (!db.isConnected()){
+		int poolsize = config.get("sql.poolsize").getInt();
+		long connectionTimeout = config.get("sql.connection_timeout").getLong();
+		long idleTimeout = config.get("sql.idle_timeout").getLong();
+		long maxLifetime = config.get("sql.max_lifetime").getLong();
+		db = new Database(getLogger(), username, password, host, port, dbname,
+				poolsize, connectionTimeout, idleTimeout, maxLifetime);
+		try {
+			db.available();
+		} catch (Exception se) {
 			NameLayerPlugin.log(Level.WARNING, "Could not connect to DataBase, shutting down!");
 			Bukkit.getPluginManager().disablePlugin(this); // Why have it try connect, it can't
 		}
-		associations = new AssociationList(db);
-		if (loadGroups)
-			groupManagerDao = new GroupManagerDao(db);
-	}
-	
-	public static void reconnectAndReintializeStatements(){
-		if (db.isConnected())
-			return;
-		db.connect();
-		associations.initializeStatements();
-		if (loadGroups)
-			groupManagerDao.initializeStatements();
+		associations = new AssociationList(getLogger(), db);
+		if (loadGroups) {
+			groupManagerDao = new GroupManagerDao(getLogger(), db);
+		}
 	}
 	
 	/**

@@ -354,7 +354,7 @@ public class GroupManagerDao {
 					if (g == null) {
 						createGroup(NameLayerPlugin.getSpecialAdminGroup(), null, null);
 					} else {
-						g.removeAllMembers();
+						removeAllMembers(g.getName());
 					}
 				}
 			}, 1);
@@ -446,9 +446,9 @@ public class GroupManagerDao {
 				Map <String, Integer> permIds = new HashMap<String, Integer>();
 
 				LinkedList<Object[]> unspool = new LinkedList<Object[]>();
+				int maximumId = 0;
 				try (Statement getOldPerms = connection.createStatement();
 						ResultSet res = getOldPerms.executeQuery("select * from permissions");) {
-					int maximumId = 0;
 					while(res.next()) {
 						unspool.add(new Object[]{res.getInt(1), res.getString(2), res.getString(3)});
 						if (res.getInt(1) > maximumId) maximumId = res.getInt(1);
@@ -457,7 +457,7 @@ public class GroupManagerDao {
 					logger.log(Level.SEVERE, "Failed to get old permissions, things might get a little wonky now.", e);
 				}
 				
-				int maxBatch = 100, count = 0; regadd = 0
+				int maxBatch = 100, count = 0, regadd = 0;
 				
 				for (Object[] spool : unspool) {
 					int groupId = (int) spool[0];
@@ -500,7 +500,7 @@ public class GroupManagerDao {
 					// TODO process warnings / errors
 				}
 				
-				if (regAdd > 0) {
+				if (regadd > 0) {
 					permReg.executeBatch();
 					// TODO process warnings / errors
 				}
@@ -1226,7 +1226,7 @@ public class GroupManagerDao {
 	public void addNewDefaultPermission(List <PlayerType> playerTypes, PermissionType perm) {
 		try (Connection connection = db.getConnection();) {
 			List <Integer> groups = new LinkedList<Integer>();
-			try (Statement getAllGroupsIds = connection.createStatement();
+			try (Statement getAllGroupIds = connection.createStatement();
 					ResultSet set = getAllGroupIds.executeQuery(this.getAllGroupIds);) {
 				// unpack ids;
 				while(set.next()) {
@@ -1472,7 +1472,7 @@ public class GroupManagerDao {
 				PreparedStatement getDefaultGroup = connection.prepareStatement(this.getDefaultGroup);){
 			getDefaultGroup.setString(1, uuid.toString());
 			try (ResultSet set = getDefaultGroup.executeQuery();) {
-				String group = set.getString(1);
+				group = set.getString(1);
 			} catch (SQLException e) {
 				logger.log(Level.WARNING, "Problem getting default group for " + uuid, e);
 			}
@@ -1677,7 +1677,7 @@ public class GroupManagerDao {
 	 */
 	public void loadGroupsInvitations(){
 		try (Connection connection = db.getConnection();
-				PreparedStatement loadGroupInvitations = connection.prepareStatement(this.loadGroupInvitations);
+				PreparedStatement loadGroupsInvitations = connection.prepareStatement(this.loadGroupsInvitations);
 				ResultSet set = loadGroupsInvitations.executeQuery();) {
 			while(set.next()){
 				String uuid = set.getString("uuid");
@@ -1782,7 +1782,7 @@ public class GroupManagerDao {
 	
 	public void removeBlackListMember(String groupName, UUID player) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement addBlacklistMember = connection.prepareStatement(this.addBlacklistMember);){
+				PreparedStatement removeBlackListMember = connection.prepareStatement(this.removeBlackListMember);){
 			removeBlackListMember.setString(1, groupName);
 			removeBlackListMember.setString(2, player.toString());
 			removeBlackListMember.executeUpdate();
@@ -1794,7 +1794,7 @@ public class GroupManagerDao {
 	public Set<UUID> getBlackListMembers(String groupName) {
 		Set<UUID> uuids = new HashSet<UUID>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement getBlacklistMembers = connection.prepareStatement(this.getBlacklistMembers);){
+				PreparedStatement getBlackListMembers = connection.prepareStatement(this.getBlackListMembers);){
 			getBlackListMembers.setString(1, groupName);
 			try (ResultSet set = getBlackListMembers.executeQuery();) {
 				while (set.next()) {

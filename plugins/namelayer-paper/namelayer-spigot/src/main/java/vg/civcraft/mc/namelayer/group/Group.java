@@ -2,7 +2,6 @@ package vg.civcraft.mc.namelayer.group;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -328,6 +327,7 @@ public class Group {
 			return;
 		}
 		if (savetodb) {
+			// TODO: Make this atomic. UPDATE, don't remove and add! (Use INSERT ... UPDATE ON DUPLICATE / FAILURE semantic)
 			if (isMember(uuid, type)){
 				db.removeMember(uuid, name);
 			}
@@ -351,6 +351,18 @@ public class Group {
 			Mercury.remMember(this.name,uuid.toString());
 		}
 		players.remove(uuid);
+	}
+	
+	public void removeAllMembers() {
+		removeAllMembers(true);
+	}
+	
+	public void removeAllMembers(boolean savetodb) {
+		if (savetodb) {
+			db.removeAllMembers(this.name);
+			// TODO: Mercury message!
+		}
+		players.clear();
 	}
 
 	/**
