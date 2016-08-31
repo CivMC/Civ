@@ -17,7 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
-import vg.civcraft.mc.civmodcore.inventorygui.ScheduledInventoryOpen;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
@@ -151,9 +150,8 @@ public class MenuBuilder {
 				}
 			};
 			browser.setSlot(upgradeClickable, 16);
-			ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(), browser, p);
+			browser.showInventory(p);
 		}
-
 	}
 
 	private void openRecipeBrowser(Player p, String facName) {
@@ -196,8 +194,7 @@ public class MenuBuilder {
 			}
 		};
 		recipeInventory.setSlot(backClickable, size - 5);
-		ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(),
-				recipeInventory, p);
+		recipeInventory.showInventory(p);
 	}
 
 	private void openSetupBrowser(Player p, String facName) {
@@ -320,7 +317,7 @@ public class MenuBuilder {
 			}
 		};
 		ci.setSlot(backClickable, 18);
-		ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(), ci, p);
+		ci.showInventory(p);
 	}
 
 	private void openUpgradeBrowser(Player p, String facName) {
@@ -372,7 +369,7 @@ public class MenuBuilder {
 			}
 		};
 		ci.setSlot(backClickable, 17);
-		ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(), ci, p);
+		ci.showInventory(p);
 	}
 
 	private void openDetailedRecipeBrowser(Player p, String recipeName) {
@@ -511,7 +508,7 @@ public class MenuBuilder {
 		}
 		ISUtils.addLore(fuelStack, ChatColor.LIGHT_PURPLE + "Total duration of " + rec.getProductionTime() / 20 + " seconds");
 		ci.setSlot(new DecorationStack(fuelStack), 30);
-		ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(), ci, p);
+		ci.showInventory(p);
 	}
 
 	public void showPipeMaterials(Player p, Pipe pipe) {
@@ -561,7 +558,7 @@ public class MenuBuilder {
 			};
 			ci.setSlot(nextClick, 49);
 		}
-		ScheduledInventoryOpen.schedule(FactoryMod.getPlugin(), ci, p);
+		ci.showInventory(p);
 	}
 
 	public void showSorterFace(Player p, Sorter s, BlockFace face) {

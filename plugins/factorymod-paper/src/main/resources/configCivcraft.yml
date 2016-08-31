@@ -10198,28 +10198,26 @@ recipes:
     enchant_item:
       armor:
         material: DIAMOND_SWORD
-        
   Enchant_Leaf_Burner_I:
     type: LOREENCHANT
     name: Enchant Shear with Leaf Burner
     production_time: 15s
     loredItem:
       tool:
-        material: SHEAR
+        material: SHEARS
     appliedLore:
      - Leaf Burner
     input:
       emeralds:
         material: EMERALD
         amount: 40
-        
   Enchant_Leaf_Burner_II:
     type: LOREENCHANT
     name: Enchant Shear with Leaf Burner II
     production_time: 15s
     loredItem:
       tool:
-        material: SHEAR
+        material: SHEARS
     appliedLore:
      - Leaf Burner II
     overwrittenLore:
@@ -10228,7 +10226,7 @@ recipes:
       emeralds:
         material: EMERALD
         amount: 80
-        
+
 #Fossils
   Break_Fossil_Basic:
     type: RANDOM
