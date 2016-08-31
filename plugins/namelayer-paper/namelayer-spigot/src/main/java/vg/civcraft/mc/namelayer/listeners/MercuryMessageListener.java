@@ -75,6 +75,15 @@ public class MercuryMessageListener implements Listener{
 				gm.mergeGroup(group, toMerge, false);
 			}
 		}
+		else if (reason.equals("donemerge")){
+			GroupInvalidationEvent e = new GroupInvalidationEvent(reason, groupname, message[2]);
+			Bukkit.getPluginManager().callEvent(e);
+			Group group = GroupManager.getGroup(groupname);
+			Group toMerge = GroupManager.getGroup(message[2]);
+			if ((group != null) && (toMerge != null)){
+				gm.doneMergeGroup(group, toMerge); // always false
+			}
+		}
 		else if (reason.equals("transfer")){
 			GroupInvalidationEvent e = new GroupInvalidationEvent(reason, message[2]);
 			Bukkit.getPluginManager().callEvent(e);

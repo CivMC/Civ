@@ -53,6 +53,16 @@ public class Mercury {
 		MercuryAPI.sendGlobalMessage(msg.toString(), "namelayer");
 	}
 
+	public static void doneMergeGroup(String groupFrom, String groupTo) {
+		if (isEnabled() == false)
+			return;
+		StringBuilder msg = new StringBuilder();
+		msg.append("donemerge|");
+		msg.append(groupFrom); msg.append("|");
+		msg.append(groupTo);
+		MercuryAPI.sendGlobalMessage(msg.toString(), "namelayer");
+	}
+
 	public static void addPerm(String group, String ptype, String permtype) {
 		if (isEnabled() == false)
 			return;
@@ -222,5 +232,14 @@ public class Mercury {
 		msg.append("addAutoAccept|");
 		msg.append(player.toString());
 		MercuryAPI.sendGlobalMessage(msg.toString(), "namelayer");		
+	}
+
+	public static void forceRecache(String group) {
+		if (isEnabled() == false)
+			return;
+		StringBuilder msg = new StringBuilder();
+		msg.append("recache|");
+		msg.append(group);
+		MercuryAPI.sendGlobalMessage(msg.toString(), "namelayer");
 	}
 }

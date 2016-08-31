@@ -153,7 +153,39 @@ public class GroupManager{
 			g.setOwner(uuid, false);
 		}
 	}
-	
+
+	/**
+	 * Merging is initiated asynchronously on the shard the player currently inhabits. On initiation and post initial checks,
+	 * a Mercury message "merge|" is sent, indicating the beginning of the merging process. All shards receive this and
+	 * immediately discipline the groups involved to prevent desynchronization.
+	 * 
+	 * When the host shard is _done_, a second mercury message is sent, which signals the end of the process.
+	 * Due to the complexity of keeping the cache consistent, we're whiffing on this one a bit and
+	 * _for now_ simply invalidating the cache on servers.
+	 *
+	 * Eventually, we'll need to go line-by-line through the db code and just replicate in cache. That day is not today.
+	 */
+	public void doneMergeGroup(Group group, Group toMerge) {
+		if (group == null || toMerge == null) {
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group merge failed, caller passed in null", new Exception());
+			return;
+		}
+
+		// Merge brings subgroups with, but unlinks the toMerge group out from under any supergroup it had.
+		// This doesn't update the database but simply updates all _impacted_ groups in cache. The database is
+		// already updated for this.
+		for (Group subMerge : toMerge.getSubgroups()) {
+			Group.link(group, subMerge, false);
+		}
+
+		GroupMergeEvent event = new GroupMergeEvent(group, toMerge, true);
+		Bukkit.getPluginManager().callEvent(event);
+
+		// Then invalidate. Updating the cache was proving unreliable; we'll address it later.
+		GroupManager.invalidateCache(group.getName());
+		GroupManager.invalidateCache(toMerge.getName());
+	}
+
 	public void mergeGroup(Group group, Group to){
 		mergeGroup(group,to,true);
 	}
@@ -163,7 +195,7 @@ public class GroupManager{
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group merge failed, caller passed in null", new Exception());
 			return;
 		} else if (group == toMerge || group.getName().equalsIgnoreCase(toMerge.getName())) {
-			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group merge failed, caller passed in null", new Exception());
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group merge failed, can't merge the same group into itself", new Exception());
 			return;
 		}
 		GroupMergeEvent event = new GroupMergeEvent(group, toMerge, false);
@@ -173,39 +205,43 @@ public class GroupManager{
 					group.getName() + " and " + toMerge.getName());
 			return;
 		}
+		group.setDisciplined(true, false);
+		toMerge.setDisciplined(true, false);
 		
 		if (savetodb){
-			groupManagerDao.mergeGroup(group.getName(), toMerge.getName());
 			Mercury.mergeGroup(group.getName(), toMerge.getName());
+			// This basically just fires starting events and disciplines groups on target server.
+			// They then wait for merge to complete. Botched merges will lock groups, basically. :shrug:
+
+			NameLayerPlugin.getInstance().getServer().getScheduler().runTaskAsynchronously(
+					NameLayerPlugin.getInstance(), new Runnable(){
+
+				@Override
+				public void run() {
+					groupManagerDao.mergeGroup(group.getName(), toMerge.getName());
+					// At this point, at the DB level all non-overlap members are in target group, name is reset to target,
+					// unique group header record is removed, and faction_id all point to new name.
+
+					// We handle supergroup right here right now; does its own mercury message to update in cache.
+					if (toMerge.getSuperGroup() != null) {
+						Group sup = toMerge.getSuperGroup();
+						Group.unlink(sup, toMerge); 
+						// The above handles the need to unlink any supergroup from merge in DB. This sends its own
+						// Mercury message updating everyone else to do the same in-cache so no further unlinking needs doing.
+					}
+
+					// Subgroup update is handled in doneMerge, as its a cache-only update.
+
+					deleteGroupPerms(toMerge); // commit perm updates to DB.
+
+					doneMergeGroup(group, toMerge);
+
+					// Now we are done the merging process probably, so tell everyone to invalidate their caches for these
+					// two groups and perform any other cleanup (subgroup links,etc.)
+					Mercury.doneMergeGroup(group.getName(), toMerge.getName()); 
+				}
+			});
 		}
-		// At this point, at the DB level all non-overlap members are in target group, name is reset to target,
-		// unique group header record is removed, and faction_id all point to new name.
-		/*deleteGroup(toMerge.getName());
-		// b/c cache isn't clear yet, this works. 
-		// Delete the actual subgroup links from old group
-		// Uncaches permissions
-		// Attempts to "delete" group (move to special) but can't b/c name is already removed.
-		//   Consequently the subgroups, permissions, and blacklist will be unaltered.
-		// Removes toMerge from cache.
-		// "Disciplines" the memory-copy and sets to invalid.
-		 */
-		// deleteGroup was wasteful. Pulled the only things it did of value out and put them here:
-		if (toMerge.getSuperGroup() != null) {
-			Group sup = toMerge.getSuperGroup();
-			Group.unlink(sup, toMerge); // need to unlink any supergroup from merge.
-		}
-		// Merge brings subgroups with, but unlinks the toMerge group out from under any supergroup it had.
-		//toMerge.prepareForDeletion();
-		for (Group subMerge : toMerge.getSubgroups()) {
-			Group.link(group, subMerge, false);
-		}
-		deleteGroupPerms(toMerge);
-		toMerge.setDisciplined(true);
-		
-		event = new GroupMergeEvent(group, toMerge, true);
-		Bukkit.getPluginManager().callEvent(event);
-		//toMerge.setDisciplined(true); // duplicate action, toMerge is set to discipline by deleteGroup()
-		// Fail safe for plugins that don't check if the group is valid or not.
 	}
 	
 	public static List<Group> getSubGroups(String name) {
