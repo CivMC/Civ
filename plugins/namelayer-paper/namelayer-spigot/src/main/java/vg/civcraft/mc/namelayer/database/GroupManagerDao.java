@@ -1369,8 +1369,8 @@ public class GroupManagerDao {
 	public Set <UUID> loadAllAutoAccept() {
 		Set <UUID> accepts = new HashSet<UUID>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement addAutoAcceptGroup = connection.prepareStatement(this.loadAllAutoAcceptGroup);){
-			ResultSet rs = addAutoAcceptGroup.executeQuery();
+				PreparedStatement addAutoAcceptGroup = connection.prepareStatement(this.loadAllAutoAcceptGroup);
+				ResultSet rs = addAutoAcceptGroup.executeQuery();){
 			while (rs.next()) {
 				accepts.add(UUID.fromString(rs.getString(1)));
 			}
