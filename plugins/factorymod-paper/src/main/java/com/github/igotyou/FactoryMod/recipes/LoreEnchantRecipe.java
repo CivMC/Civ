@@ -3,6 +3,7 @@ package com.github.igotyou.FactoryMod.recipes;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -91,11 +92,17 @@ public class LoreEnchantRecipe extends InputRecipe {
 		if (input.removeSafelyFrom(i)) {
 			ItemStack toolio = tool.getItemStackRepresentation().get(0);
 			for (ItemStack is : i.getContents()) {
-				if (is != null && toolio.getType() == is.getType() && hasStackRequiredLore(toolio)) {
+				if (is != null && toolio.getType() == is.getType() && hasStackRequiredLore(is)) {
 					ItemMeta im = is.getItemMeta();
+					if (im == null) {
+						 im = Bukkit.getItemFactory().getItemMeta(is.getType());
+					}
 					List<String> currentLore = im.getLore();
 					if (overwritenLore.size() != 0) {
 						currentLore.removeAll(overwritenLore);
+					}
+					if (currentLore == null) {
+						currentLore = new LinkedList<String>();
 					}
 					currentLore.addAll(appliedLore);
 					im.setLore(currentLore);
@@ -108,17 +115,26 @@ public class LoreEnchantRecipe extends InputRecipe {
 	}
 
 	private boolean hasStackRequiredLore(ItemStack is) {
-		if (overwritenLore.size() == 0) {
-			return true;
+		if (is == null) {
+			return false;
 		}
-		if (!is.hasItemMeta()) {
+		if (!is.hasItemMeta() && overwritenLore.size() != 0) {
 			return false;
 		}
 		ItemMeta im = is.getItemMeta();
-		if (!im.hasLore()) {
+		if (!im.hasLore() && overwritenLore.size() != 0) {
 			return false;
 		}
 		List<String> lore = im.getLore();
+		if (im.hasLore()) {
+			//check whether lore to apply preexists
+			if (lore.containsAll(appliedLore)) {
+				return false;
+			}
+		}
+		if (overwritenLore.size() == 0) {
+			return true;
+		}
 		return lore.containsAll(overwritenLore);
 	}
 	
