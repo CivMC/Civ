@@ -104,4 +104,16 @@ public class Config {
 	public int getPeriodFutureCount() {
 		return config.getInt("period_future_count", 3);
 	}
+
+
+	/**
+	 * Used by autoloader, grabs a configuration section with the same simple name as the class passed in, or null if nothing found.
+	 *
+	 * @param clazz A Class to find a configuration section with the same name
+	 * @return null if not found, the configuration section otherwise.
+	 */
+	public ConfigurationSection getSection(Class clazz) {
+		if (clazz == null) return null;
+		return config.getConfigurationSection(clazz.getName());
+	}
 }

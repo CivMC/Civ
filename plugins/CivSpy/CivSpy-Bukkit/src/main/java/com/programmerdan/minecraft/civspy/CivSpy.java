@@ -4,8 +4,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.IOException;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.event.HandlerList;
@@ -17,7 +19,22 @@ import com.programmerdan.minecraft.civspy.listeners.MovementListener;
 import com.programmerdan.minecraft.civspy.samplers.PlayerCountSampler;
 import com.programmerdan.minecraft.civspy.samplers.WorldPlayerCountSampler;
 
+import com.google.common.reflect.ClassPath;
+import java.lang.reflect.Constructor;
 
+
+//import org.reflections.Reflections;
+
+/**
+ * CivSpy is an aggregation platform for vital tracking statistics.
+ * It can also be used as a point data collector, with reduced effectiveness.
+ * For holistic data collection, see Devotion: http://www.github.com/DevotedMC/Devotion
+ * If you realize that the gigabytes of data that project will give you
+ * are too much for your needs, come closer -- CivSpy might be what you
+ * are looking for.
+ *
+ * @author ProgrammerDan
+ */
 public class CivSpy extends JavaPlugin {
 
 	private Config config;
@@ -97,8 +114,71 @@ public class CivSpy extends JavaPlugin {
 	private void startSamplers() {
 		getLogger().log(Level.INFO, "Registering CivSpy samplers");
 		
+		try {
+			ClassPath getSamplersPath = ClassPath.from(this.getClassLoader());
+
+			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses("com.programmerdan.minecraft.civspy.samplers")) {
+				Class<?> clazz = clsInfo.load();
+				getLogger().log(Level.INFO, "Found a class {0}, attempting to find a suitable constructor", clazz.getName());
+				if (clazz != null && DataSampler.class.isAssignableFrom(clazz)) {
+					DataSampler dataSampler = null;
+					try {
+						Constructor<?> constructBasic = clazz.getConstructor(DataManager.class, Logger.class, String.class);
+						dataSampler = (DataSampler) constructBasic.newInstance(this.manager, this.getLogger(), this.config.getServer());
+						getLogger().log(Level.INFO, "Created a new DataSampler of type {0}", clazz.getName());
+					} catch (Exception e) {}
+
+					if (dataSampler == null) {
+						try {
+							Constructor<?> constructBasic =
+								clazz.getConstructor(DataManager.class, Logger.class, String.class, ConfigurationSection.class);
+							dataSampler = (DataSampler) constructBasic.newInstance(this.manager, this.getLogger(), this.config.getServer(), 
+								this.config.getSection(clazz));
+							getLogger().log(Level.INFO, "Create a new DataSampler of type {0} with unique configuration", clazz.getName());
+						} catch (Exception e) {}
+					}
+
+					if (dataSampler != null) {
+						dataSampler.activate();
+						Bukkit.getScheduler().scheduleSyncRepeatingTask(this, dataSampler, 1200l, 1200l);
+						samplers.add(dataSampler);
+					} else {
+						getLogger().log(Level.INFO, "Class {0} is not suitable as a DataSampler.", clazz.getName());
+					}
+				}
+			}
+		} catch (IOException ioe) {
+			getLogger().log(Level.WARNING, "Failed to load any samplers, due to IO error", ioe);
+		}
+
+		/*Reflections getSamplers = new Reflections("com.programmerdan.minecraft.civspy.samplers");
+
+		Set<Class<? extends DataSampler>> potentialSamplers = getSamplers.getSubTypesOf(DataSampler.class);
+
+		for (Class<? extends DataSampler> potentialSampler : potentialSamplers) {
+			DataSampler dataSampler = null;
+			try {
+				Constructor<? extends DataSampler> constructBasic = potentialSampler.getConstructor(DataManager.class, Logger.class, String.class);
+				dataSampler = constructBasic.newInstance(this.manager, this.getLogger(), this.config.getServer());
+			} catch (Exception e) {}
+
+			if (constructBasic == null) {
+				try {
+					Constructor<? extends DataSampler> constructBasic =
+						potentialSampler.getConstructor(DataManager.class, Logger.class, String.class, ConfigurationSection.class);
+					dataSampler = constructBasic.newInstance(this.manager, this.getLogger(), this.config.getServer(), 
+						this.config.getSection(potentialSampler));
+				} catch (Exception e) {}
+			}
+
+			if (dataSampler != null) {
+				dataSampler.activate();
+				Bukkit.getScheduler().scheduleSyncRepeatingTask(this, dataSampler, 1200l, 1200l);
+				samplers.add(dataSampler);
+			}
+		}*/
 		// SAMPLE
-		getLogger().log(Level.INFO, "Registering server player count sampler");
+		/*getLogger().log(Level.INFO, "Registering server player count sampler");
 		DataSampler pCount = new PlayerCountSampler(this.manager, this.getLogger(), this.config.getServer());
 		pCount.activate();
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, pCount, 1200l, 1200l);
@@ -108,7 +188,7 @@ public class CivSpy extends JavaPlugin {
 		DataSampler wCount = new WorldPlayerCountSampler(this.manager, this.getLogger(), this.config.getServer());
 		wCount.activate();
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, wCount, 1200l, 1200l);
-		samplers.add(wCount);
+		samplers.add(wCount);*/
 		// END SAMPLE
 	}
 	
@@ -131,8 +211,43 @@ public class CivSpy extends JavaPlugin {
 	private void startListeners() {
 		getLogger().log(Level.INFO, "Registering CivSpy listeners");
 		
+		try {
+			ClassPath getSamplersPath = ClassPath.from(this.getClassLoader());
+
+			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses("com.programmerdan.minecraft.civspy.listeners")) {
+				Class<?> clazz = clsInfo.load();
+				getLogger().log(Level.INFO, "Found a class {0}, attempting to find a suitable constructor", clazz.getName());
+				if (clazz != null && DataListener.class.isAssignableFrom(clazz)) {
+					DataListener dataListener = null;
+					try {
+						Constructor<?> constructBasic = clazz.getConstructor(DataManager.class, Logger.class, String.class);
+						dataListener = (DataListener) constructBasic.newInstance(this.manager, this.getLogger(), this.config.getServer());
+						getLogger().log(Level.INFO, "Create a new DataListener of type {0}", clazz.getName());
+					} catch (Exception e) {}
+
+					if (dataListener == null) {
+						try {
+							Constructor<?> constructBasic =
+								clazz.getConstructor(DataManager.class, Logger.class, String.class, ConfigurationSection.class);
+							dataListener = (DataListener) constructBasic.newInstance(this.manager, this.getLogger(), this.config.getServer(), 
+								this.config.getSection(clazz));
+							getLogger().log(Level.INFO, "Create a new DataListener of type {0} with unique configuration", clazz.getName());
+						} catch (Exception e) {}
+					}
+
+					if (dataListener != null) {
+						Bukkit.getPluginManager().registerEvents(dataListener, this);
+						listeners.add(dataListener);
+					} else {
+						getLogger().log(Level.INFO, "Class {0} is not suitable as a DataListener.", clazz.getName());
+					}
+				}
+			}
+		} catch (IOException ioe) {
+			getLogger().log(Level.WARNING, "Failed to load any listeners, due to IO error", ioe);
+		}
 		// SAMPLE
-		getLogger().log(Level.INFO, "Registering player movement listener");
+		/*getLogger().log(Level.INFO, "Registering player movement listener");
 		DataListener movement = new MovementListener(this.manager, this.getLogger(), this.config.getServer());
 		Bukkit.getPluginManager().registerEvents(movement, this);
 		listeners.add(movement);
@@ -140,7 +255,7 @@ public class CivSpy extends JavaPlugin {
 		getLogger().log(Level.INFO, "Registering player block break listener");
 		DataListener bbreak = new BreakListener(this.manager, this.getLogger(), this.config.getServer());
 		Bukkit.getPluginManager().registerEvents(bbreak, this);
-		listeners.add(bbreak);
+		listeners.add(bbreak);*/
 		// END SAMPLE
 	}
 	
