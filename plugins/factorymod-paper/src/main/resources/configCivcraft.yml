@@ -1066,6 +1066,7 @@ factories:
      - Enchant_Axe_Efficiency_II
      - Enchant_Shovel_Efficiency_I
      - Enchant_Shovel_Efficiency_II
+     - Enchant_Leaf_Burner_I
      - Upgrade_to_Rapid_Forge
      - Repair_Factory
   rapidforge:
@@ -1084,6 +1085,8 @@ factories:
      - Enchant_Shovel_Efficiency_II
      - Enchant_Shovel_Efficiency_III
      - Enchant_Shovel_Efficiency_IV
+     - Enchant_Leaf_Burner_I
+     - Enchant_Leaf_Burner_II
      - Upgrade_to_Sonic_Forge
      - Repair_Advanced_Factory
   sonicforge:
@@ -1105,6 +1108,8 @@ factories:
      - Enchant_Shovel_Efficiency_III
      - Enchant_Shovel_Efficiency_IV
      - Enchant_Shovel_Efficiency_V
+     - Enchant_Leaf_Burner_I
+     - Enchant_Leaf_Burner_II
      - Repair_Expert_Factory
 #Unbreaking
   rockforge:
@@ -10193,6 +10198,37 @@ recipes:
     enchant_item:
       armor:
         material: DIAMOND_SWORD
+        
+  Enchant_Leaf_Burner_I:
+    type: LOREENCHANT
+    name: Enchant Shear with Leaf Burner
+    production_time: 15s
+    loredItem:
+      tool:
+        material: SHEAR
+    appliedLore:
+     - Leaf Burner
+    input:
+      emeralds:
+        material: EMERALD
+        amount: 40
+        
+  Enchant_Leaf_Burner_II:
+    type: LOREENCHANT
+    name: Enchant Shear with Leaf Burner II
+    production_time: 15s
+    loredItem:
+      tool:
+        material: SHEAR
+    appliedLore:
+     - Leaf Burner II
+    overwrittenLore:
+     - Leaf Burner
+    input:
+      emeralds:
+        material: EMERALD
+        amount: 80
+        
 #Fossils
   Break_Fossil_Basic:
     type: RANDOM
