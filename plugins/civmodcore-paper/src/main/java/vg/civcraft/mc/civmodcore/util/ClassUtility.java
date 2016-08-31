@@ -31,10 +31,10 @@ public class ClassUtility {
 					try {
 						clazz = Class.forName(info.getName(), true, classloader);
 					} catch (NoClassDefFoundError e) {
-						log().info("CivModCore failed to load class " + info.getName()
-								+ ", you could be missing a dependency. This message is more of an info "
-								+ "message useful for debugging. If you see this message you can usually "
-								+ "ignore it unless the plugin itself throws an error.");
+					//	log().info("CivModCore failed to load class " + info.getName()
+					//			+ ", you could be missing a dependency. This message is more of an info "
+					//		+ "message useful for debugging. If you see this message you can usually "
+					//			+ "ignore it unless the plugin itself throws an error.");
 						continue;
 					}
 					if (ofType == null || ofType.isAssignableFrom(clazz)) {
