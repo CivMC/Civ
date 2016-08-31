@@ -128,6 +128,8 @@ public class GroupManagerDao {
 				+ "where uuid = ?";
 		removeAutoAcceptGroup = "delete from toggleAutoAccept where uuid = ?";
 		
+		loadAllAutoAcceptGroup = "select uuid from toggleAutoAccept;";
+		
 		setDefaultGroup = "insert into default_group values(?, ?)";
 		
 		changeDefaultGroup = "update default_group set defaultgroup = ? where uuid = ?";
@@ -611,7 +613,7 @@ public class GroupManagerDao {
 	
 	private final String countGroups, countGroupsFromUUID;
 	
-	private final String addAutoAcceptGroup, getAutoAcceptGroup, removeAutoAcceptGroup;
+	private final String addAutoAcceptGroup, getAutoAcceptGroup, removeAutoAcceptGroup, loadAllAutoAcceptGroup;
 	
 	private final String setDefaultGroup, changeDefaultGroup, getDefaultGroup, getAllDefaultGroups;
 	
@@ -1360,6 +1362,26 @@ public class GroupManagerDao {
 	}
 	
 	/**
+	 * Loads the uuid of all players who have autoaccept for group invites turned on
+	 * 
+	 * @return All Players who have auto accept turned on
+	 */
+	public Set <UUID> loadAllAutoAccept() {
+		Set <UUID> accepts = new HashSet<UUID>();
+		try (Connection connection = db.getConnection();
+				PreparedStatement addAutoAcceptGroup = connection.prepareStatement(this.loadAllAutoAcceptGroup);){
+			ResultSet rs = addAutoAcceptGroup.executeQuery();
+			while (rs.next()) {
+				accepts.add(UUID.fromString(rs.getString(1)));
+			}
+			
+		} catch (SQLException e) {
+			logger.log(Level.WARNING, "Problem loading all autoaccepts", e);
+		}
+		return accepts;
+	}
+	
+	/**
 	 * Adds the uuid to the db if they should auto accept groups when invited.
 	 * @param uuid
 	 */
@@ -1387,6 +1409,7 @@ public class GroupManagerDao {
 	 * @param uuid- The UUID of the player.
 	 * @return Returns true if they should auto accept.
 	 */
+	@Deprecated
 	public boolean shouldAutoAcceptGroups(UUID uuid){
 		try (Connection connection = db.getConnection();
 				PreparedStatement getAutoAcceptGroup = connection.prepareStatement(this.getAutoAcceptGroup);){

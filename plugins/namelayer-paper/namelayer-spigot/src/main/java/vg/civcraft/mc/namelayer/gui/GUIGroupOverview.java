@@ -38,10 +38,10 @@ public class GUIGroupOverview {
 	private boolean autoAccept;
 
 	public GUIGroupOverview(Player p) {
-		if (this.gm == null) {
-			this.gm = NameAPI.getGroupManager();
+		if (gm == null) {
+			gm = NameAPI.getGroupManager();
 		}
-		autoAccept = NameLayerPlugin.getGroupManagerDao().shouldAutoAcceptGroups(p.getUniqueId());
+		autoAccept = NameLayerPlugin.getAutoAcceptHandler().getAutoAccept(p.getUniqueId());
 		this.p = p;
 		this.currentPage = 0;
 	}
@@ -73,22 +73,20 @@ public class GUIGroupOverview {
 			
 			@Override
 			public void clicked(Player p) {
-				// TODO: Autoacceptance needs a cache to reduce db calls.
 				if (autoAccept){
 					NameLayerPlugin.log(Level.INFO,
 							p.getName() + " turned autoaccept for invites off "
 									+ "via gui");
-					NameLayerPlugin.getGroupManagerDao().removeAutoAcceptGroup(p.getUniqueId());
 					p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group invites");
 				}
 				else {
 					NameLayerPlugin.log(Level.INFO,
 							p.getName() + " turned autoaccept for invites on "
 									+ "via gui");
-					NameLayerPlugin.getGroupManagerDao().autoAcceptGroups(p.getUniqueId());
 					p.sendMessage(ChatColor.GREEN + "You will automatically accept group invites");
 				}
 				autoAccept = !autoAccept;
+				NameLayerPlugin.getAutoAcceptHandler().toggleAutoAccept(p.getUniqueId(), true);
 				showScreen();			
 			}
 		};
@@ -134,7 +132,7 @@ public class GUIGroupOverview {
 
 			@Override
 			public void clicked(Player arg0) {
-				// just let it close, dont do anything
+				ClickableInventory.forceCloseInventory(arg0);
 			}
 		}, 49);
 		ci.showInventory(p);
@@ -149,7 +147,7 @@ public class GUIGroupOverview {
 			if (alreadyProcessed.contains(groupName)) {
 				continue;
 			}
-			final Group g = gm.getGroup(groupName);
+			final Group g = GroupManager.getGroup(groupName);
 			if (g == null) {
 				continue;
 			}
@@ -234,6 +232,7 @@ public class GUIGroupOverview {
 			public void clicked(final Player p) {
 				p.sendMessage(ChatColor.YELLOW
 						+ "Enter the name of your new group or \"cancel\" to exit this prompt");
+				ClickableInventory.forceCloseInventory(p);
 				Dialog dia = new Dialog(p, NameLayerPlugin.getInstance()) {
 
 					@Override
@@ -342,6 +341,7 @@ public class GUIGroupOverview {
 			@Override
 			public void clicked(final Player p) {
 				p.sendMessage(ChatColor.YELLOW + "Enter the name of the group or \"cancel\" to leave this prompt");
+				ClickableInventory.forceCloseInventory(p);
 				Dialog dia = new Dialog(p, NameLayerPlugin.getInstance()) {
 					
 					@Override
@@ -416,7 +416,7 @@ public class GUIGroupOverview {
 	
 	private Group ensureFreshGroup(Group g) {
 		if (!g.isValid()) {
-			return gm.getGroup(g.getName());
+			return GroupManager.getGroup(g.getName());
 		}
 		return g;
 	}

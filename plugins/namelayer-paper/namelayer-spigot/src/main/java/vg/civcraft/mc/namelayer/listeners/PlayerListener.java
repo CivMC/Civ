@@ -17,7 +17,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.Group;
 public class PlayerListener implements Listener{
 
@@ -35,10 +34,9 @@ public class PlayerListener implements Listener{
 		if (!notifications.containsKey(uuid) || notifications.get(uuid).isEmpty())
 			return;
 		
-		GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
 		String x = null;
 				
-		boolean shouldAutoAccept = db.shouldAutoAcceptGroups(uuid);
+		boolean shouldAutoAccept = NameLayerPlugin.getAutoAcceptHandler().getAutoAccept(uuid);
 		if(shouldAutoAccept){
 			x = "You have auto-accepted invitation from the following groups while you were away: ";
 		}

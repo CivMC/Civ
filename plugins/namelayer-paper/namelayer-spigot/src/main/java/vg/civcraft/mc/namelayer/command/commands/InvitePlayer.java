@@ -124,7 +124,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 
 	public static void sendInvitation(Group group, PlayerType pType, UUID invitedPlayer, UUID inviter, boolean saveToDB){
 		Player invitee = Bukkit.getPlayer(invitedPlayer);
-		boolean shouldAutoAccept = NameLayerPlugin.getGroupManagerDao().shouldAutoAcceptGroups(invitedPlayer);
+		boolean shouldAutoAccept = NameLayerPlugin.getAutoAcceptHandler().getAutoAccept(invitedPlayer);
 		if (invitee != null) {
 			// invitee is online
 			if (shouldAutoAccept) {

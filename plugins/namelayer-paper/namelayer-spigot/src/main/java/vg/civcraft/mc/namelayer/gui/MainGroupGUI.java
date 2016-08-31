@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -21,7 +20,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
-import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
@@ -147,7 +145,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 			@Override
 			public void clicked(Player arg0) {
-				// just let it close, dont do anything
+				ClickableInventory.forceCloseInventory(arg0);
 			}
 		}, 49);
 
@@ -733,6 +731,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				@Override
 				public void clicked(final Player p) {
 					p.sendMessage(ChatColor.GOLD + "Enter the name of the player to blacklist or \"cancel\" to exit this prompt");
+					ClickableInventory.forceCloseInventory(p);
 					Dialog dia = new Dialog(p, NameLayerPlugin.getInstance()) {
 
 						@Override
@@ -851,6 +850,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 								+ "Enter the new password for "
 								+ g.getName()
 								+ ". Enter \" delete\" to remove an existing password or \"cancel\" to exit this prompt");
+						ClickableInventory.forceCloseInventory(p);
 						new Dialog(p, NameLayerPlugin.getInstance()) {
 
 							@Override

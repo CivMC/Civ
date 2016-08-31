@@ -197,5 +197,13 @@ public class MercuryMessageListener implements Listener{
 				group.setDisciplined(disp, false);
 			}
 		}
+		else if (reason.equals("removeAutoAccept")) {
+			UUID uuid = UUID.fromString(message[1]);
+			NameLayerPlugin.getAutoAcceptHandler().setAutoAccept(uuid, false, false);
+		}
+		else if (reason.equals("addAutoAccept")) {
+			UUID uuid = UUID.fromString(message[1]);
+			NameLayerPlugin.getAutoAcceptHandler().setAutoAccept(uuid, true, false);
+		}
 	}
 }

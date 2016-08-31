@@ -133,6 +133,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 	private void showTransferingMenu() {
 		p.sendMessage(ChatColor.GOLD
 				+ "Enter the name of the new primary owner or \"cancel\" to exit this prompt");
+		ClickableInventory.forceCloseInventory(p);
 		Dialog dia = new Dialog(p, NameLayerPlugin.getInstance()) {
 
 			@Override

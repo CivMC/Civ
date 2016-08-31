@@ -204,4 +204,23 @@ public class Mercury {
 		MercuryAPI.sendGlobalMessage(msg.toString(), "namelayer");		
 	}
 	
+	public static void removeAutoAccept(UUID player) {
+		if (!isEnabled()) {
+			return;
+		}
+		StringBuilder msg = new StringBuilder();
+		msg.append("removeAutoAccept|");
+		msg.append(player.toString());
+		MercuryAPI.sendGlobalMessage(msg.toString(), "namelayer");		
+	}
+	
+	public static void addAutoAccept(UUID player) {
+		if (!isEnabled()) {
+			return;
+		}
+		StringBuilder msg = new StringBuilder();
+		msg.append("addAutoAccept|");
+		msg.append(player.toString());
+		MercuryAPI.sendGlobalMessage(msg.toString(), "namelayer");		
+	}
 }
