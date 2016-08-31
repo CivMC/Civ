@@ -291,12 +291,8 @@ public class MainGroupGUI extends AbstractGroupGUI {
 							boolean allowed = false;
 							switch (pType) {
 							case MEMBERS:
-								allowed = gm
-										.hasAccess(
-												g,
-												p.getUniqueId(),
-												PermissionType
-														.getPermission("MEMBERS"));
+								allowed = gm.hasAccess(g, p.getUniqueId(),
+										PermissionType.getPermission("MEMBERS"));
 								break;
 							case MODS:
 								allowed = gm.hasAccess(g, p.getUniqueId(),
@@ -318,25 +314,13 @@ public class MainGroupGUI extends AbstractGroupGUI {
 								p.sendMessage(ChatColor.RED
 										+ "You don't have permission to revoke this invite");
 							} else {
-								NameLayerPlugin
-										.log(Level.INFO,
-												arg0.getName()
-														+ " revoked an invite for "
-														+ NameAPI
-																.getCurrentName(invitedUUID)
-														+ " for group "
-														+ g.getName()
-														+ "via gui");
+								NameLayerPlugin.log(Level.INFO, arg0.getName()
+										+ " revoked an invite for " + NameAPI.getCurrentName(invitedUUID)
+										+ " for group " + g.getName() + "via gui");
 								g.removeInvite(invitedUUID, true);
-								PlayerListener.removeNotification(invitedUUID,
-										g);
+								PlayerListener.removeNotification(invitedUUID, g);
+								Mercury.remInvite(g.getGroupId(), invitedUUID);
 
-								if (NameLayerPlugin.isMercuryEnabled()) {
-									MercuryAPI.sendGlobalMessage(
-											"removeInvitation "
-													+ g.getGroupId() + " "
-													+ invitedUUID, "namelayer");
-								}
 								p.sendMessage(ChatColor.GREEN + playerName
 										+ "'s invitation has been revoked.");
 							}
