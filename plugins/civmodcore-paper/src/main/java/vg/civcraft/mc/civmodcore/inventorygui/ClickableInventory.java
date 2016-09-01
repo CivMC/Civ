@@ -1,10 +1,9 @@
 package vg.civcraft.mc.civmodcore.inventorygui;
 
-import static vg.civcraft.mc.civmodcore.CivModCorePlugin.log;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -25,6 +24,8 @@ import org.bukkit.inventory.ItemStack;
  */
 public class ClickableInventory {
 
+	private static final Logger log = Bukkit.getLogger();
+	
 	private static HashMap<UUID, ClickableInventory> openInventories = new HashMap<>();
 
 	private Inventory inventory;
@@ -40,7 +41,7 @@ public class ClickableInventory {
 	 */
 	public ClickableInventory(InventoryType type, String name) {
 		if (name != null && name.length() > 32) {
-			log().warning("ClickableInventory title exceeds Bukkit limits: " + name);
+			log.warning("ClickableInventory title exceeds Bukkit limits: " + name);
 			name = name.substring(0, 32);
 		}
 		inventory = Bukkit.createInventory(null, type, name);
@@ -59,7 +60,7 @@ public class ClickableInventory {
 	 */
 	public ClickableInventory(int size, String name) {
 		if (name != null && name.length() > 32) {
-			log().warning("ClickableInventory title exceeds Bukkit limits: " + name);
+			log.warning("ClickableInventory title exceeds Bukkit limits: " + name);
 			name = name.substring(0, 32);
 		}
 		inventory = Bukkit.createInventory(null, size, name);

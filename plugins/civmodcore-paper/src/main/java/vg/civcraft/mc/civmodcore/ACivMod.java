@@ -2,13 +2,14 @@ package vg.civcraft.mc.civmodcore;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
+
 import vg.civcraft.mc.civmodcore.annotations.ConfigOption;
 import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
@@ -25,7 +26,7 @@ public abstract class ACivMod extends JavaPlugin {
 
 	public Config GetConfig() {
 		if (config_ == null) {
-			getLogger().info("Config not initialized. Most likely due to "
+			info("Config not initialized. Most likely due to "
 					+ "overriding onLoad and not calling super.onLoad()");
 		}
 		return config_;
@@ -92,12 +93,12 @@ public abstract class ACivMod extends JavaPlugin {
 	public void onLoad() {
 		classLoader = getClassLoader();
 		loadConfiguration();
-		getLogger().info("Configuration Loaded");
+		info("Configuration Loaded");
 	}
 
 	private void loadConfiguration() {
 		config_ = new Config(this);
-		getLogger().info("loaded config for: " + getPluginName() + "Config: " + (config_ != null));
+		info("loaded config for: {0} Config: {1}", getPluginName(), (config_ != null));
 	}
 
 	@Override
@@ -159,25 +160,75 @@ public abstract class ACivMod extends JavaPlugin {
 
 	protected abstract String getPluginName();
 
-	@Deprecated
+	/**
+	 * Simple SEVERE level logging.
+	 */
 	public void severe(String message) {
-		getLogger().severe("[" + getPluginName() + "] " + message);
+		getLogger().log(Level.SEVERE, message);
 	}
 
-	@Deprecated
+	/**
+	 * Simple SEVERE level logging with Throwable record.
+	 */
+	public void severe(String message, Throwable error) {
+		getLogger().log(Level.SEVERE, message, error);
+	}
+
+	/**
+	 * Simple WARNING level logging.
+	 */
 	public void warning(String message) {
-		getLogger().warning("[" + getPluginName() + "] " + message);
+		getLogger().log(Level.WARNING, message);
 	}
 
-	@Deprecated
+	/**
+	 * Simple WARNING level logging with Throwable record.
+	 */
+	public void warning(String message, Throwable error) {
+		getLogger().log(Level.WARNING, message, error);
+	}
+
+	/**
+	 * Simple WARNING level logging with ellipsis notation shortcut for defered injection argument array.
+	 */
+	public void warning(String message, Object...vars) {
+		getLogger().log(Level.WARNING, message, vars);
+	}
+
+	/**
+	 * Simple INFO level logging
+	 */
 	public void info(String message) {
-		getLogger().info("[" + getPluginName() + "] " + message);
+		getLogger().log(Level.INFO, message);
 	}
 
-	@Deprecated
+	/**
+	 * Simple INFO level logging with ellipsis notation shortcut for defered injection argument array.
+	 */
+	public void info(String message, Object...vars) {
+		getLogger().log(Level.INFO, message, vars);
+	}
+
+	/**
+	 * Live activatable debug message (using {@link Config#DebugLog} to decide) at INFO level.
+	 *
+	 * Skipped if DebugLog is false.
+	 */
 	public void debug(String message) {
 		if (config_.DebugLog) {
-			getLogger().info("[" + getPluginName() + "] " + message);
+			getLogger().log(Level.INFO, message);
+		}
+	}
+
+	/**
+	 * Live activatable debug message (using {@link Config#DebugLog} to decide) at INFO level
+	 * with ellipsis notation shorcut for defered injection argument array.
+	 *
+	 * Skipped if DebugLog is false.
+	 */
+	public void debug(String message, Object...vars) {
+		if (config_.DebugLog) {
+			getLogger().log(Level.INFO, message, vars);
 		}
 	}
 
