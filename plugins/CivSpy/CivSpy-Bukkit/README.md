@@ -1,0 +1,5 @@
+### CivSpy for Bukkit
+-------------
+
+Placeholder.
+

@@ -11,6 +11,8 @@ import org.bukkit.configuration.ConfigurationSection;
  * Abstract wrapper expecting server name at construction. Optionally, configuration section.
  * 
  * Chances are good you should use this.
+ *
+ * @see com.programmerdan.minecraft.civspy.samplers for details on how.
  * 
  * @author ProgrammerDan
  */

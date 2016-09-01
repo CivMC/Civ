@@ -12,6 +12,8 @@ import com.programmerdan.minecraft.civspy.SingleDataSampler;
  * 
  * Chances are good you should use this.
  * 
+ * @see com.programmerdan.minecraft.civspy.samplers for details on how.
+ * 
  * @author ProgrammerDan
  */
 public abstract class ServerSingleDataSampler extends SingleDataSampler {

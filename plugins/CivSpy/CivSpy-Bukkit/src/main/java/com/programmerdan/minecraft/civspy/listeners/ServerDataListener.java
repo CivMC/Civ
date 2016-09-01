@@ -11,6 +11,8 @@ import org.bukkit.configuration.ConfigurationSection;
  * Convenience wrapper of DataListener that embeds Server name handling. Optionally adds configuration section handling.
  *
  * Most implementations should use this as their superclass.
+ *
+ * @see com.programmerdan.minecraft.civspy.listeners for details on how to use this
  * 
  * @author ProgrammerDan
  */

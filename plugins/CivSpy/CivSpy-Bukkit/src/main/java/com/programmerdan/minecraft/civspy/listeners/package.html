@@ -1,0 +1,50 @@
+<HTML>
+<BODY>
+This package contains one abstract class -- {@link com.programmerdan.minecraft.civspy.listeners.ServerDataListener} which must be the superclass of any Listener implementations you want automatically loaded by CivSpy.
+
+You don't have to implement for both constructors; choose the one that suits your needs. 
+
+Listeners can be simple or complex, but I strongly recommend keeping them simple and lightweight, maintaining as little state as possible.
+
+<br/><hr/><br/>
+
+A quick introduction to listeners:
+
+<h2>Data Listeners</h2>
+
+A Data Listeners should contain one or more @EventListener annotated methods, that generate {@link com.programmerdan.minecraft.civspy.PointDataSample} POJOs. 
+
+<ul>
+	<li>Although Listeners are free to generate any valid DataSample type, PointDataSample is recommended as it is specifically designed for Event-driven data sources, and is ready for aggregation. 
+	<li>If, however, your listener generates low-volume data that shouldn't be aggregated (say, perhaps, a logout listener that computes session length) don't be shy to use {@link com.programmerdan.minecraft.civspy.PeriodicDataSample} POJOs. 
+</ul>
+
+<br/>
+
+<h4>Requirements</h4>
+
+All implementations of DataListener must provide a <code>shutdown</code> implementation. This simple method is a cleanup hook; CivSpy will make every attempt to call <code>shutdown</code> on all listeners during CivSpy deactivation.
+
+All implementations of DataListener must provide a constructor that takes a DataManager, Logger, String, and optionally a ConfigurationSection as input.
+<ul>
+	<li>The {@link com.programmerdan.minecraft.civspy.DataManager} is CivSpy system provided and your code should likely leave it alone to prevent abnormalities.</li>
+	<li>The {@link java.util.logging.Logger} is put into protected variable <code>logger</code> and is available to subclasses to write exceptional circumstances to the log (do not log on every execution of your sampler!).
+	<li>The String is the value that will be returned by {@link com.programmerdan.minecraft.civspy.ServerDataListener#getServer}. Note while you don't have to pass this value along to the superclass, it is strongly recommended, and regardless the parameter must exist on your constructor.
+	<li>(optional) The {@link org.bukkit.configuration.ConfigurationSection} is the configuration for your Listener as defined in the <code>config.yml</code> file. The _simple name_ of your class determines which section to extract and pass along. So if you Listener is called </code>PlayerMovementListener</code> then CivSpy attempts to give the config.yml root-level section of the same name to your Listener, if a constructor is found that accepts configuration sections.
+</ul>
+
+<br/>
+
+<h4>Usage</h4>
+
+DataSamples are POJOs -- just construct them via their constructor and don't worry about anything else, they just hold and pass along data.
+
+One parameter on all DataSample constructors is "Server" -- you can get the plugin's configured "Server" name via <code>getServer()</code>. Be sure toinclude the server name in your DataListener POJOs -- see the constructors on <code>PointDataSample</code> and <code>PeriodicDataSample</code>. If local or not specified in CivSpy config, this value will be the string literal "local".
+
+When your listener has constructed a DataSample POJO, pass it along to the {@link com.programmerdan.minecraft.civspy.DataListener#record(com.programmerdan.minecraft.civspy.DataSample)} superclass method. This method handles actually alerting the DataManager of the new data to be aggregated or recorded. 
+
+<hr/>
+
+That's basically it. Extend ServerDataListener, add some normal Bukkit Listeners, create some DataSamples and pass them along to <code>record()</code>.
+</BODY>
+</HTML>

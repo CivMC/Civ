@@ -1,0 +1,54 @@
+<HTML>
+<BODY>
+This package contains two abstract classes -- {@link com.programmerdan.minecraft.civspy.samplers.ServerMultiDataSampler} or {@link com.programmerdan.minecraft.civspy.samplers.ServerSingleDataSampler} -- one of which must be the superclass of any implementations you want automatically loaded by CivSpy.
+
+Each abstract class defines two constructors but you don't have to implement for both constructors; choose the one that suits your needs. 
+
+Samplers can declare their own period, but no guarantee is made in terms of ordering of execution or alignment of samplers; their executions may be offset, in some cases intentionally, even if their period is the same.
+
+<br/><hr/><br/>
+
+A quick introduction to samplers:
+
+<h2>Data Samplers</h2>
+
+A Data Sampler should quickly sample one or more pieces of data and pass that data along to the {@link com.programmerdan.minecraft.civspy.DataManager}. This data does not need to be aggregatable, although it is welcome to be so. 
+<ul>
+	<li> For Samplers that collect aggregation data, use a {@link com.programmerdan.minecraft.civspy.PointDataSample} POJO to store your samples before passing to the DataManager. 
+	<li> For Samplers that collect periodic data that should not be summation aggregated, use a {@link com.programmerdan.minecraft.civspy.PeriodicDataSample} POJO to store your samples.
+</ul>
+
+<br/>
+
+<h4>Requirements</h4>
+
+All implementations of DataSampler must provide a <code>sample</code> implementation. 
+<ul>
+	<li>If you extend from <code>ServerMultiDataSampler</code>, your {@link com.programmerdan.minecraft.civspy.samplers.ServerMultiDataSampler#sample} method must return a List of DataSample POJOs.
+	<li>If you extend from <code>ServerSingleDataSampler</code>, your {@link com.programmerdan.minecraft.civspy.samplers.ServerSingleDataSampler#sample} method must return a single DataSample POJO.
+</ul>
+
+All implementations of DataSampler must provide a constructor that takes a DataManager, Logger, String, and optionally a ConfigurationSection as input.
+<ul>
+	<li>The {@link com.programmerdan.minecraft.civspy.DataManager} is CivSpy system provided and your code should likely leave it alone to prevent abnormalities.</li>
+	<li>The {@link java.util.logging.Logger} is put into protected variable <code>logger</code> and is available to subclasses to write exceptional circumstances to the log (do not log on every execution of your sampler!).
+	<li>The String is the value that will be returned by <code>getServer</code>. Note while you don't have to pass this value along to the superclass, it is strongly recommended, and regardless the parameter must exist on your constructor.
+	<li>(optional) The {@link org.bukkit.configuration.ConfigurationSection} is the configuration for your Sampler as defined in the <code>config.yml</code> file. The _simple name_ of your class determines which section to extract and pass along. So if you Sampler is called </code>PlayerLocationSampler</code> then CivSpy attempts to give the config.yml root-level section of the same name to your Sampler, if a constructor is found that accepts configuration sections.
+	<li>If you want to override the default sample period of 1 minute (60,000 ms) call <code>setPeriod</code> from within your constructor. Subsequent calls to <code>setPeriod</code> will be ignored.
+</ul>
+
+<br/>
+
+<h4>Usage</h4>
+
+DataSamples are POJOs -- just construct them via their constructor and don't worry about anything else, they just hold and pass along data.
+
+One parameter on all DataSample constructors is "Server" -- you can get the plugin's configured "Server" name via <code>getServer()</code>. Be sure to include the server name in your DataSampler POJOs -- see the constructor on <code>PointDataSample</code> and <code>PeriodicDataSample</code>. If local or not specified in CivSpy config, this value will be the string literal "local".
+
+Your sampler can turn itself off by calling <code>deactivate</code> -- the sampler is still called on period, but your <code>sample</code> method won't be called, so only do so in case of exceptional circumstance; otherwise, leave activation and deactivation up to CivSpy's management routines.
+
+<hr/>
+
+That's basically it. Pick a Sampler base type to extend from -- either multi-sample or single-sample -- and enjoy.
+</BODY>
+</HTML>
