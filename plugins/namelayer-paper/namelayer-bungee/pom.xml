@@ -25,16 +25,19 @@
       <groupId>net.md-5</groupId>
       <artifactId>bungeecord-protocol</artifactId>
       <version>1.10-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>net.md-5</groupId>
       <artifactId>bungeecord-api</artifactId>
       <version>1.10-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>net.md-5</groupId>
       <artifactId>bungeecord-proxy</artifactId>
       <version>1.10-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
