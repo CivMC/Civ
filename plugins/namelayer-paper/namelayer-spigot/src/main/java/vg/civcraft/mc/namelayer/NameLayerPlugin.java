@@ -16,6 +16,7 @@ import vg.civcraft.mc.namelayer.command.CommandHandler;
 import vg.civcraft.mc.namelayer.database.AssociationList;
 import vg.civcraft.mc.namelayer.database.Database;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
+import vg.civcraft.mc.namelayer.group.AutoAcceptHandler;
 import vg.civcraft.mc.namelayer.group.BlackList;
 import vg.civcraft.mc.namelayer.group.DefaultGroupHandler;
 import vg.civcraft.mc.namelayer.listeners.AssociationListener;
@@ -31,12 +32,14 @@ public class NameLayerPlugin extends ACivMod{
 	private static GroupManagerDao groupManagerDao;
 	private static DefaultGroupHandler defaultGroupHandler;
 	private static NameLayerPlugin instance;
+	private static AutoAcceptHandler autoAcceptHandler;
 	private CommandHandler handle;
 	private static Database db;
 	private static boolean loadGroups = true;
 	private static int groupLimit = 10;
 	private static boolean createGroupOnFirstJoin;
 	private Config config;
+	private boolean mercuryEnabled;
 	
 	@CivConfigs({
 		@CivConfig(name = "groups.enable", def = "true", type = CivConfigType.Bool),
@@ -51,6 +54,7 @@ public class NameLayerPlugin extends ACivMod{
 		groupLimit = config.get("groups.grouplimit").getInt();
 		createGroupOnFirstJoin = config.get("groups.creationOnFirstJoin").getBool();
 		instance = this;
+		mercuryEnabled = Bukkit.getPluginManager().isPluginEnabled("Mercury");
 		loadDatabases();
 	    ClassHandler.Initialize(Bukkit.getServer());
 		new NameAPI(new GroupManager(), associations);
@@ -60,6 +64,7 @@ public class NameLayerPlugin extends ACivMod{
 			blackList = new BlackList();
 			groupManagerDao.loadGroupsInvitations();
 			defaultGroupHandler = new DefaultGroupHandler();
+			autoAcceptHandler = new AutoAcceptHandler(groupManagerDao.loadAllAutoAccept());
 			handle = new CommandHandler();
 			handle.registerCommands();
 		}
@@ -71,7 +76,6 @@ public class NameLayerPlugin extends ACivMod{
 		super.onLoad();
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void registerListeners(){
 		getServer().getPluginManager().registerEvents(new AssociationListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
@@ -93,7 +97,13 @@ public class NameLayerPlugin extends ACivMod{
 	}
 
 	public void onDisable() {
-		
+		if (db != null) {
+			try {
+				db.close();
+			} catch (Exception e) {
+				log(Level.INFO, "Failed to close database gracefully on shutdown.");
+			}
+		}
 	}
 	
 	public static NameLayerPlugin getInstance(){
@@ -105,7 +115,11 @@ public class NameLayerPlugin extends ACivMod{
 		@CivConfig(name = "sql.username", def = "", type = CivConfigType.String),
 		@CivConfig(name = "sql.password", def = "", type = CivConfigType.String),
 		@CivConfig(name = "sql.port", def = "3306", type = CivConfigType.Int),
-		@CivConfig(name = "sql.dbname", def = "namelayer", type = CivConfigType.String)
+		@CivConfig(name = "sql.dbname", def = "namelayer", type = CivConfigType.String),
+		@CivConfig(name = "sql.poolsize", def = "10", type = CivConfigType.Int),
+		@CivConfig(name = "sql.connection_timeout", def = "10000", type = CivConfigType.Long),
+		@CivConfig(name = "sql.idle_timeout", def = "600000", type = CivConfigType.Long),
+		@CivConfig(name = "sql.max_lifetime", def = "7200000", type = CivConfigType.Long)
 	})
 	public void loadDatabases(){
 		String host = config.get("sql.hostname").getString();
@@ -113,24 +127,22 @@ public class NameLayerPlugin extends ACivMod{
 		String dbname = config.get("sql.dbname").getString();
 		String username = config.get("sql.username").getString();
 		String password = config.get("sql.password").getString();
-		db = new Database(host, port, dbname, username, password, getLogger());
-		db.connect();
-		if (!db.isConnected()){
+		int poolsize = config.get("sql.poolsize").getInt();
+		long connectionTimeout = config.get("sql.connection_timeout").getLong();
+		long idleTimeout = config.get("sql.idle_timeout").getLong();
+		long maxLifetime = config.get("sql.max_lifetime").getLong();
+		db = new Database(getLogger(), username, password, host, port, dbname,
+				poolsize, connectionTimeout, idleTimeout, maxLifetime);
+		try {
+			db.available();
+		} catch (Exception se) {
 			NameLayerPlugin.log(Level.WARNING, "Could not connect to DataBase, shutting down!");
 			Bukkit.getPluginManager().disablePlugin(this); // Why have it try connect, it can't
 		}
-		associations = new AssociationList(db);
-		if (loadGroups)
-			groupManagerDao = new GroupManagerDao(db);
-	}
-	
-	public static void reconnectAndReintializeStatements(){
-		if (db.isConnected())
-			return;
-		db.connect();
-		associations.initializeStatements();
-		if (loadGroups)
-			groupManagerDao.initializeStatements();
+		associations = new AssociationList(getLogger(), db);
+		if (loadGroups) {
+			groupManagerDao = new GroupManagerDao(getLogger(), db);
+		}
 	}
 	
 	/**
@@ -191,7 +203,7 @@ public class NameLayerPlugin extends ACivMod{
 	}
 
 	public static boolean isMercuryEnabled() {
-		return Bukkit.getPluginManager().isPluginEnabled("Mercury");
+		return getInstance().mercuryEnabled;
 	}
 	
 	public int getGroupLimit(){
@@ -200,6 +212,10 @@ public class NameLayerPlugin extends ACivMod{
 	
 	public static BlackList getBlackList() {
 		return blackList;
+	}
+	
+	public static AutoAcceptHandler getAutoAcceptHandler() {
+		return autoAcceptHandler;
 	}
 	
 	public static DefaultGroupHandler getDefaultGroupHandler() {

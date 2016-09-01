@@ -67,6 +67,7 @@ public class InvitationGUI extends AbstractGroupGUI{
 					p.sendMessage(ChatColor.GOLD + "Enter the name of the player to invite or \"cancel\" to exit this prompt. You may also enter the names"
 							+ "of multiple players, separated with spaces to invite all of them");
 					selectedType = pType;
+					ClickableInventory.forceCloseInventory(arg0);
 					Dialog enterName = new Dialog(arg0, NameLayerPlugin.getInstance()) {
 						public void onReply(String [] message) {
 							if (gm.hasAccess(g, p.getUniqueId(), MainGroupGUI.getAccordingPermission(selectedType))) {
@@ -95,9 +96,8 @@ public class InvitationGUI extends AbstractGroupGUI{
 													+ "via gui");
 									InvitePlayer.sendInvitation(g, pType, inviteUUID, p.getUniqueId(), true);
 									
-									if(NameLayerPlugin.isMercuryEnabled()){
-										MercuryAPI.sendGlobalMessage("addInvitation " + g.getGroupId() + " " + pType.toString() + " " + inviteUUID, "namelayer");
-									}
+									Mercury.addInvite(g.getGroupId(), pType.toString(), inviteUUID, p.getUniqueId().toString());
+
 									p.sendMessage(ChatColor.GREEN  + "Invited " + NameAPI.getCurrentName(inviteUUID) + " as " + PlayerType.getNiceRankName(pType));
 								}
 							}

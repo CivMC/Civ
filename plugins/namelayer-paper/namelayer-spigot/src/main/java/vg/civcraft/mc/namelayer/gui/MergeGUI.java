@@ -75,12 +75,12 @@ public class MergeGUI extends AbstractGroupGUI {
 			public void clicked(Player arg0) {
 				parent.showScreen();
 			}
-		}, 49);
+		}, 22);
 		ci.showInventory(p);
 	}
 
 	private void showMergeGroupSelector() {
-		ClickableInventory ci = new ClickableInventory(27, g.getName());
+		ClickableInventory ci = new ClickableInventory(54, g.getName());
 		final List<String> gName = gm.getAllGroupNames(p.getUniqueId());
 		if (gName.size() < 45 * currentPage) {
 			// would show an empty page, so go to previous

@@ -29,4 +29,20 @@ public class ConfigManager {
 	public static int getPort() {
 		return config.getInt("mysql.port");
 	}
+	
+	public static int getPoolsize() {
+		return config.getInt("mysql.poolsize", 5);
+	}
+	
+	public static long getConnectionTimeout() {
+		return config.getLong("mysql.connection_timeout", 10000l);
+	}
+	
+	public static long getIdleTimeout() {
+		return config.getLong("mysql.idle_timeout", 600000l);
+	}
+	
+	public static long getMaxLifetime() {
+		return config.getLong("mysql.max_lifetime", 7200000l);
+	}
 }

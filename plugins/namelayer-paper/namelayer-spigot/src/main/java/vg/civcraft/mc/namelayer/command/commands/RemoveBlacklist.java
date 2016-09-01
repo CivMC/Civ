@@ -60,7 +60,6 @@ public class RemoveBlacklist extends PlayerCommandMiddle {
 		}
 		bl.removeBlacklistMember(g, targetUUID, true);
 		p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(targetUUID) + " was successfully removed from the blacklist for the group " + g.getName());
-		checkRecacheGroup(g);
 		return true;
 	}
 

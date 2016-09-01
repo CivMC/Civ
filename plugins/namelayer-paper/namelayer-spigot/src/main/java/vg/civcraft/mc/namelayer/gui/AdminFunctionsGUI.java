@@ -133,6 +133,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 	private void showTransferingMenu() {
 		p.sendMessage(ChatColor.GOLD
 				+ "Enter the name of the new primary owner or \"cancel\" to exit this prompt");
+		ClickableInventory.forceCloseInventory(p);
 		Dialog dia = new Dialog(p, NameLayerPlugin.getInstance()) {
 
 			@Override
@@ -208,7 +209,6 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 													.getCurrentName(transferUUID)
 											+ " for group " + g.getName()
 											+ "via gui");
-							checkRecacheGroup();
 						}
 						else {
 							showScreen();
@@ -266,7 +266,6 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 					p.sendMessage(ChatColor.GREEN + "Group is now disciplined."
 							+ " Check back later to see if group is deleted.");
 				}
-				checkRecacheGroup();
 			}
 		}, 11);
 		confirmInv.setSlot(new Clickable(no) {

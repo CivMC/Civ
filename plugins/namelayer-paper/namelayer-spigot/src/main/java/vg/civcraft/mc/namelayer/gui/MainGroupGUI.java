@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -21,7 +20,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
-import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
@@ -34,6 +32,7 @@ import vg.civcraft.mc.namelayer.events.PromotePlayerEvent;
 import vg.civcraft.mc.namelayer.group.BlackList;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
+import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class MainGroupGUI extends AbstractGroupGUI {
@@ -79,7 +78,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	 * of this class
 	 */
 	public void showScreen() {
-		ClickableInventory.forceCloseInventory(p);
 		if (!validGroup()) {
 			return;
 		}
@@ -147,7 +145,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 			@Override
 			public void clicked(Player arg0) {
-				// just let it close, dont do anything
+				ClickableInventory.forceCloseInventory(arg0);
 			}
 		}, 49);
 
@@ -205,7 +203,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 												+ " from the blacklist of "
 												+ g.getName() + "via gui");
 								black.removeBlacklistMember(g, uuid, true);
-								checkRecacheGroup();
 								p.sendMessage(ChatColor.GREEN + "You removed "
 										+ NameAPI.getCurrentName(uuid)
 										+ " from the blacklist");
@@ -293,12 +290,8 @@ public class MainGroupGUI extends AbstractGroupGUI {
 							boolean allowed = false;
 							switch (pType) {
 							case MEMBERS:
-								allowed = gm
-										.hasAccess(
-												g,
-												p.getUniqueId(),
-												PermissionType
-														.getPermission("MEMBERS"));
+								allowed = gm.hasAccess(g, p.getUniqueId(),
+										PermissionType.getPermission("MEMBERS"));
 								break;
 							case MODS:
 								allowed = gm.hasAccess(g, p.getUniqueId(),
@@ -320,25 +313,13 @@ public class MainGroupGUI extends AbstractGroupGUI {
 								p.sendMessage(ChatColor.RED
 										+ "You don't have permission to revoke this invite");
 							} else {
-								NameLayerPlugin
-										.log(Level.INFO,
-												arg0.getName()
-														+ " revoked an invite for "
-														+ NameAPI
-																.getCurrentName(invitedUUID)
-														+ " for group "
-														+ g.getName()
-														+ "via gui");
+								NameLayerPlugin.log(Level.INFO, arg0.getName()
+										+ " revoked an invite for " + NameAPI.getCurrentName(invitedUUID)
+										+ " for group " + g.getName() + "via gui");
 								g.removeInvite(invitedUUID, true);
-								PlayerListener.removeNotification(invitedUUID,
-										g);
+								PlayerListener.removeNotification(invitedUUID, g);
+								Mercury.remInvite(g.getGroupId(), invitedUUID);
 
-								if (NameLayerPlugin.isMercuryEnabled()) {
-									MercuryAPI.sendGlobalMessage(
-											"removeInvitation "
-													+ g.getGroupId() + " "
-													+ invitedUUID, "namelayer");
-								}
 								p.sendMessage(ChatColor.GREEN + playerName
 										+ "'s invitation has been revoked.");
 							}
@@ -491,7 +472,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 			showScreen();
 			return;
 		}
-		ClickableInventory.forceCloseInventory(p);
 		ClickableInventory ci = new ClickableInventory(27, g.getName());
 		String playerName = NameAPI.getCurrentName(uuid);
 
@@ -599,7 +579,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					p.getName() + " kicked " + NameAPI.getCurrentName(toRemove)
 							+ " from " + g.getName() + "via gui");
 			g.removeMember(toRemove);
-			checkRecacheGroup();
 			p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(toRemove)
 					+ " has been removed from the group");
 		} else {
@@ -650,7 +629,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				g.removeMember(toChange);
 				g.addMember(toChange, newRank);
 			}
-			checkRecacheGroup();
 			p.sendMessage(ChatColor.GREEN
 					+ NameAPI.getCurrentName(toChange)
 					+ " has been "
@@ -753,6 +731,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				@Override
 				public void clicked(final Player p) {
 					p.sendMessage(ChatColor.GOLD + "Enter the name of the player to blacklist or \"cancel\" to exit this prompt");
+					ClickableInventory.forceCloseInventory(p);
 					Dialog dia = new Dialog(p, NameLayerPlugin.getInstance()) {
 
 						@Override
@@ -829,9 +808,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 											+ NameAPI.getCurrentName(blackUUID)
 											+ " was successfully blacklisted");
 								}
-								if (didSomething) {
-									checkRecacheGroup();
-								}
 							} else {
 								p.sendMessage(ChatColor.RED
 										+ "You lost permission to do this");
@@ -874,6 +850,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 								+ "Enter the new password for "
 								+ g.getName()
 								+ ". Enter \" delete\" to remove an existing password or \"cancel\" to exit this prompt");
+						ClickableInventory.forceCloseInventory(p);
 						new Dialog(p, NameLayerPlugin.getInstance()) {
 
 							@Override
@@ -918,7 +895,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 											+ "Set new password: "
 											+ ChatColor.YELLOW + newPassword);
 								}
-								checkRecacheGroup();
 								showScreen();
 							}
 						};
@@ -1080,7 +1056,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 							g.removeMember(p.getUniqueId());
 							p.sendMessage(ChatColor.GREEN + "You have left "
 									+ g.getName());
-							checkRecacheGroup();
 						}
 					}, 11);
 					confirmInv.setSlot(new Clickable(no) {

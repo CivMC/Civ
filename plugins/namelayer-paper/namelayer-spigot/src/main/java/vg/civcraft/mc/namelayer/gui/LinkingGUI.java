@@ -13,10 +13,8 @@ import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
-import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class LinkingGUI extends AbstractGroupGUI {
@@ -123,8 +121,6 @@ public class LinkingGUI extends AbstractGroupGUI {
 						return;
 					}
 					boolean success = Group.unlink(g, sub);
-					recacheGroup(sub);
-					checkRecacheGroup();
 					String message;
 					if (success) {
 						message = ChatColor.GREEN + sub.getName()
@@ -207,8 +203,6 @@ public class LinkingGUI extends AbstractGroupGUI {
 				}
 				Group superGroup = g.getSuperGroup();
 				boolean success = Group.unlink(superGroup, g);
-				recacheGroup(superGroup);
-				checkRecacheGroup();
 				String message;
 				if (success) {
 					message = ChatColor.GREEN + g.getName()
@@ -403,8 +397,6 @@ public class LinkingGUI extends AbstractGroupGUI {
 						+ "via gui, "
 						+ (makingSubGroup ? linkGroup.getName() : g.getName()
 								+ " was the super group"));
-		checkRecacheGroup();
-		recacheGroup(linkGroup);
 		String message;
 		if (success) {
 			if (makingSubGroup) {
@@ -421,10 +413,4 @@ public class LinkingGUI extends AbstractGroupGUI {
 		p.sendMessage(message);
 	}
 
-	private void recacheGroup(Group g) {
-		if (NameLayerPlugin.isMercuryEnabled()) {
-			String message = "recache " + g.getName();
-			Mercury.invalidateGroup(message);
-		}
-	}
 }

@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
@@ -34,7 +35,7 @@ public class ModifyPermissions extends PlayerCommandMiddle{
 			return true;
 		}
 		Player p = (Player) sender;
-		Group g = gm.getGroup(args[0]);
+		Group g = GroupManager.getGroup(args[0]);
 		if (groupIsNull(sender, args[0], g)) {
 			return true;
 		}
@@ -82,8 +83,7 @@ public class ModifyPermissions extends PlayerCommandMiddle{
 				}
 				gPerm.addPermission(playerType, pType);
 				sender.sendMessage(ChatColor.GREEN + "The PermissionType: " + pType.getName() + " was successfully added to the PlayerType: " +
-				playerType.name());
-				checkRecacheGroup(g);
+						playerType.name());
 			}
 		}
 		else if (info.equalsIgnoreCase("remove")){
@@ -91,7 +91,6 @@ public class ModifyPermissions extends PlayerCommandMiddle{
 				gPerm.removePermission(playerType, pType);
 				sender.sendMessage(ChatColor.GREEN + "The PermissionType: " + pType.getName() + " was successfully removed from" +
 						" the PlayerType: " + playerType.name());
-				checkRecacheGroup(g);
 			}
 			else
 				sender.sendMessage(ChatColor.RED + "This PlayerType does not have the PermissionType: " + pType.getName());

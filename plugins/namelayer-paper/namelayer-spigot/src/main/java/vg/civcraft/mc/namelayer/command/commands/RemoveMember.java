@@ -92,7 +92,6 @@ public class RemoveMember extends PlayerCommandMiddle {
 		
 		p.sendMessage(ChatColor.GREEN + playerName + " has been removed from the group.");
 		group.removeMember(uuid);
-		checkRecacheGroup(group);
 		return true;
 	}
 

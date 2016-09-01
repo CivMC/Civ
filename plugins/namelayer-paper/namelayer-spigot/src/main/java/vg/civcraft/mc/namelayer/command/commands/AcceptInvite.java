@@ -8,13 +8,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.InviteTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
+import vg.civcraft.mc.namelayer.misc.Mercury;
 
 public class AcceptInvite extends PlayerCommandMiddle{
 
@@ -54,15 +53,11 @@ public class AcceptInvite extends PlayerCommandMiddle{
 		}
 		group.addMember(uuid, type);
 		group.removeInvite(uuid, true);
-		checkRecacheGroup(group);
 		PlayerListener.removeNotification(uuid, group);
 		
-		if(NameLayerPlugin.isMercuryEnabled()){
-			MercuryAPI.sendGlobalMessage("removeInvitation " + group.getGroupId() + " " + uuid, "namelayer");
-		}
-		
+		Mercury.remInvite(group.getGroupId(), uuid);
+				
 		p.sendMessage(ChatColor.GREEN + "You have successfully been added to the group as a " + type.name() +".");
-		checkRecacheGroup(group);
 		return true;
 	}
 	@Override
