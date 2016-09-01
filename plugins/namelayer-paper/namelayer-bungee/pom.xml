@@ -19,6 +19,7 @@
       <groupId>vg.civcraft.mc.namelayer</groupId>
       <artifactId>namelayer-spigot</artifactId>
       <version>1.0.0</version>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
