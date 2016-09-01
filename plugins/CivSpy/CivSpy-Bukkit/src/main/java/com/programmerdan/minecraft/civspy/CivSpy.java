@@ -14,10 +14,10 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
 import com.programmerdan.minecraft.civspy.database.Database;
-import com.programmerdan.minecraft.civspy.listeners.BreakListener;
+/*import com.programmerdan.minecraft.civspy.listeners.BreakListener;
 import com.programmerdan.minecraft.civspy.listeners.MovementListener;
 import com.programmerdan.minecraft.civspy.samplers.PlayerCountSampler;
-import com.programmerdan.minecraft.civspy.samplers.WorldPlayerCountSampler;
+import com.programmerdan.minecraft.civspy.samplers.WorldPlayerCountSampler;*/
 
 import com.google.common.reflect.ClassPath;
 import java.lang.reflect.Constructor;
@@ -117,7 +117,7 @@ public class CivSpy extends JavaPlugin {
 		try {
 			ClassPath getSamplersPath = ClassPath.from(this.getClassLoader());
 
-			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses("com.programmerdan.minecraft.civspy.samplers")) {
+			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses("com.programmerdan.minecraft.civspy.samplers.impl")) {
 				Class<?> clazz = clsInfo.load();
 				getLogger().log(Level.INFO, "Found a class {0}, attempting to find a suitable constructor", clazz.getName());
 				if (clazz != null && DataSampler.class.isAssignableFrom(clazz)) {
@@ -140,8 +140,13 @@ public class CivSpy extends JavaPlugin {
 
 					if (dataSampler != null) {
 						dataSampler.activate();
-						Bukkit.getScheduler().scheduleSyncRepeatingTask(this, dataSampler, 1200l, 1200l);
-						samplers.add(dataSampler);
+						if (Bukkit.getScheduler().scheduleSyncRepeatingTask(this, dataSampler, 
+							(long) (Math.random() * dataSampler.getPeriod()), dataSampler.getPeriod()) > -1) {
+							samplers.add(dataSampler);
+						} else {
+							getLogger().log(Level.WARNING, "Class {0} failed to schedule as a DataSampler with period {1}.", 
+									new Object[] {clazz.getName(), dataSampler.getPeriod()});
+						}
 					} else {
 						getLogger().log(Level.INFO, "Class {0} is not suitable as a DataSampler.", clazz.getName());
 					}
@@ -151,32 +156,6 @@ public class CivSpy extends JavaPlugin {
 			getLogger().log(Level.WARNING, "Failed to load any samplers, due to IO error", ioe);
 		}
 
-		/*Reflections getSamplers = new Reflections("com.programmerdan.minecraft.civspy.samplers");
-
-		Set<Class<? extends DataSampler>> potentialSamplers = getSamplers.getSubTypesOf(DataSampler.class);
-
-		for (Class<? extends DataSampler> potentialSampler : potentialSamplers) {
-			DataSampler dataSampler = null;
-			try {
-				Constructor<? extends DataSampler> constructBasic = potentialSampler.getConstructor(DataManager.class, Logger.class, String.class);
-				dataSampler = constructBasic.newInstance(this.manager, this.getLogger(), this.config.getServer());
-			} catch (Exception e) {}
-
-			if (constructBasic == null) {
-				try {
-					Constructor<? extends DataSampler> constructBasic =
-						potentialSampler.getConstructor(DataManager.class, Logger.class, String.class, ConfigurationSection.class);
-					dataSampler = constructBasic.newInstance(this.manager, this.getLogger(), this.config.getServer(), 
-						this.config.getSection(potentialSampler));
-				} catch (Exception e) {}
-			}
-
-			if (dataSampler != null) {
-				dataSampler.activate();
-				Bukkit.getScheduler().scheduleSyncRepeatingTask(this, dataSampler, 1200l, 1200l);
-				samplers.add(dataSampler);
-			}
-		}*/
 		// SAMPLE
 		/*getLogger().log(Level.INFO, "Registering server player count sampler");
 		DataSampler pCount = new PlayerCountSampler(this.manager, this.getLogger(), this.config.getServer());
@@ -214,7 +193,7 @@ public class CivSpy extends JavaPlugin {
 		try {
 			ClassPath getSamplersPath = ClassPath.from(this.getClassLoader());
 
-			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses("com.programmerdan.minecraft.civspy.listeners")) {
+			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses("com.programmerdan.minecraft.civspy.listeners.impl")) {
 				Class<?> clazz = clsInfo.load();
 				getLogger().log(Level.INFO, "Found a class {0}, attempting to find a suitable constructor", clazz.getName());
 				if (clazz != null && DataListener.class.isAssignableFrom(clazz)) {

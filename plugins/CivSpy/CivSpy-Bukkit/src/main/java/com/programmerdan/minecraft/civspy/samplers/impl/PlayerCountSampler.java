@@ -1,4 +1,4 @@
-package com.programmerdan.minecraft.civspy.samplers;
+package com.programmerdan.minecraft.civspy.samplers.impl;
 
 import java.util.logging.Logger;
 
@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;
 import com.programmerdan.minecraft.civspy.PeriodicDataSample;
+import com.programmerdan.minecraft.civspy.samplers.ServerSingleDataSampler;
 
 public final class PlayerCountSampler extends ServerSingleDataSampler {
 	

@@ -6,6 +6,9 @@ import java.util.logging.Logger;
 /**
  * Simple single-sampling sampler. Used for very basic data queries.
  * 
+ * Advanced implementers could use this as a base class for their Samplers, but remember
+ *  that the Sampler detection code expects DataManager, Logger, String at minimum.
+ *
  * @author ProgrammerDan
  *
  */

@@ -1,4 +1,4 @@
-package com.programmerdan.minecraft.civspy.listeners;
+package com.programmerdan.minecraft.civspy.listeners.impl;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,7 +15,14 @@ import com.programmerdan.minecraft.civspy.DataListener;
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;
 import com.programmerdan.minecraft.civspy.PointDataSample;
+import com.programmerdan.minecraft.civspy.listeners.ServerDataListener;
 
+/**
+ * Example Listener; this sends for aggregation movement data on players. It records distance travelled at chunk granularities within 
+ *  the global sampling period rate.
+ * 
+ * @author ProgrammerDan
+ */
 public final class MovementListener extends ServerDataListener {
 
 	private ConcurrentHashMap<UUID, Location> storedLocations;

@@ -1,4 +1,4 @@
-package com.programmerdan.minecraft.civspy.samplers;
+package com.programmerdan.minecraft.civspy.samplers.impl;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -13,6 +13,7 @@ import org.bukkit.World;
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;
 import com.programmerdan.minecraft.civspy.PeriodicDataSample;
+import com.programmerdan.minecraft.civspy.samplers.ServerMultiDataSampler;
 
 public final class WorldPlayerCountSampler extends ServerMultiDataSampler {
 	

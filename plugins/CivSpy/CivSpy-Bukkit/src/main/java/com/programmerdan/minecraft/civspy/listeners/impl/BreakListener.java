@@ -1,4 +1,4 @@
-package com.programmerdan.minecraft.civspy.listeners;
+package com.programmerdan.minecraft.civspy.listeners.impl;
 
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -14,7 +14,15 @@ import org.bukkit.event.block.BlockBreakEvent;
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;
 import com.programmerdan.minecraft.civspy.PointDataSample;
+import com.programmerdan.minecraft.civspy.listeners.ServerDataListener;
 
+/**
+ * Sample Listener class that records all block breaks for summation by who and what.
+ * This only records _player_ breaks, so if other entities cause a break those events are
+ * ignored.
+ * 
+ * @author ProgrammerDan
+ */
 public final class BreakListener extends ServerDataListener {
 
 	public BreakListener(DataManager target, Logger logger, String server) {

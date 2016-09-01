@@ -2,6 +2,8 @@ package com.programmerdan.minecraft.civspy.samplers;
 
 import java.util.logging.Logger;
 
+import org.bukkit.configuration.ConfigurationSection;
+
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.SingleDataSampler;
 
@@ -15,13 +17,25 @@ import com.programmerdan.minecraft.civspy.SingleDataSampler;
 public abstract class ServerSingleDataSampler extends SingleDataSampler {
 
 	private final String server;
+	private final ConfigurationSection config;
 
 	public ServerSingleDataSampler(DataManager target, Logger logger, String server) {
 		super(target, logger);
 		this.server = server;
+		this.config = null;
+	}
+
+	public ServerSingleDataSampler(DataManager target, Logger logger, String server, ConfigurationSection config) {
+		super(target, logger);
+		this.server = server;
+		this.config = config;
 	}
 	
 	public String getServer() {
 		return this.server;
+	}
+
+	public ConfigurationSection getConfig() {
+		return this.config;
 	}
 }

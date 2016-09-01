@@ -12,15 +12,42 @@ abstract class DataSampler implements Runnable {
 	 */
 	protected final DataManager target;
 
+	/**
+	 * Logger for subclasses to use.
+	 */
 	protected final Logger logger; 
 
 	private boolean isActive = false;
 
 	private InactiveReason inactiveReason = InactiveReason.NEW;
 
+	/**
+	 * How long between executions of this sampler?
+	 * Note that once the sampler is scheduled, this attribute is ignored.
+	 */
+	private long period;
+
+	/**
+	 * Basic constructor.
+	 */
 	public DataSampler(final DataManager target, final Logger logger) {
 		this.target = target;
 		this.logger = logger;
+		this.period = 60000l;
+	}
+
+	/**
+	 * Can be used by subclasses to redefine the period during construction.
+	 */
+	protected void setPeriod(long period) {
+		this.period = period;
+	}
+
+	/**
+	 * Returns the period inbetween executions of Sampler.
+	 */
+	public long getPeriod() {
+		return this.period;
 	}
 
 	/**

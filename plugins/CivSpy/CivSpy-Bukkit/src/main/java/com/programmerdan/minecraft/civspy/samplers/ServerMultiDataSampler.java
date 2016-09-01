@@ -5,8 +5,10 @@ import java.util.logging.Logger;
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.MultiDataSampler;
 
+import org.bukkit.configuration.ConfigurationSection;
+
 /**
- * Abstract wrapper expecting server name at construction.
+ * Abstract wrapper expecting server name at construction. Optionally, configuration section.
  * 
  * Chances are good you should use this.
  * 
@@ -15,14 +17,26 @@ import com.programmerdan.minecraft.civspy.MultiDataSampler;
 public abstract class ServerMultiDataSampler extends MultiDataSampler {
 
 	private final String server;
+	private final ConfigurationSection config;
 
 	public ServerMultiDataSampler(DataManager target, Logger logger, String server) {
 		super(target, logger);
 		this.server = server;
+		this.config = null;
+	}
+
+	public ServerMultiDataSampler(DataManager target, Logger logger, String server, ConfigurationSection config) {
+		super(target, logger);
+		this.server = server;
+		this.config = config;
 	}
 	
 	public String getServer() {
 		return this.server;
+	}
+
+	public ConfigurationSection getConfig() {
+		return this.config;
 	}
 
 }
