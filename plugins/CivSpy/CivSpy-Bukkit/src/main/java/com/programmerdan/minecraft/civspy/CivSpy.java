@@ -11,19 +11,12 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 
 import com.programmerdan.minecraft.civspy.database.Database;
-/*import com.programmerdan.minecraft.civspy.listeners.BreakListener;
-import com.programmerdan.minecraft.civspy.listeners.MovementListener;
-import com.programmerdan.minecraft.civspy.samplers.PlayerCountSampler;
-import com.programmerdan.minecraft.civspy.samplers.WorldPlayerCountSampler;*/
 
 import com.google.common.reflect.ClassPath;
 import java.lang.reflect.Constructor;
 
-
-//import org.reflections.Reflections;
 
 /**
  * CivSpy is an aggregation platform for vital tracking statistics.
@@ -140,8 +133,10 @@ public class CivSpy extends JavaPlugin {
 
 					if (dataSampler != null) {
 						dataSampler.activate();
+						// TODO: Use our own executor, and figure out how to bind to tick closest to period execution. 
+						//    Perhaps wrapper task that registers a sync task for next tick?
 						if (Bukkit.getScheduler().scheduleSyncRepeatingTask(this, dataSampler, 
-							(long) (Math.random() * dataSampler.getPeriod()), dataSampler.getPeriod()) > -1) {
+							(long) (Math.random() * dataSampler.getPeriod())/50l, dataSampler.getPeriod()/50l) > -1) {
 							samplers.add(dataSampler);
 						} else {
 							getLogger().log(Level.WARNING, "Class {0} failed to schedule as a DataSampler with period {1}.", 
@@ -155,20 +150,6 @@ public class CivSpy extends JavaPlugin {
 		} catch (IOException ioe) {
 			getLogger().log(Level.WARNING, "Failed to load any samplers, due to IO error", ioe);
 		}
-
-		// SAMPLE
-		/*getLogger().log(Level.INFO, "Registering server player count sampler");
-		DataSampler pCount = new PlayerCountSampler(this.manager, this.getLogger(), this.config.getServer());
-		pCount.activate();
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, pCount, 1200l, 1200l);
-		samplers.add(pCount);
-		
-		getLogger().log(Level.INFO, "Registering world player count sampler");
-		DataSampler wCount = new WorldPlayerCountSampler(this.manager, this.getLogger(), this.config.getServer());
-		wCount.activate();
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, wCount, 1200l, 1200l);
-		samplers.add(wCount);*/
-		// END SAMPLE
 	}
 	
 	/**
@@ -225,17 +206,6 @@ public class CivSpy extends JavaPlugin {
 		} catch (IOException ioe) {
 			getLogger().log(Level.WARNING, "Failed to load any listeners, due to IO error", ioe);
 		}
-		// SAMPLE
-		/*getLogger().log(Level.INFO, "Registering player movement listener");
-		DataListener movement = new MovementListener(this.manager, this.getLogger(), this.config.getServer());
-		Bukkit.getPluginManager().registerEvents(movement, this);
-		listeners.add(movement);
-		
-		getLogger().log(Level.INFO, "Registering player block break listener");
-		DataListener bbreak = new BreakListener(this.manager, this.getLogger(), this.config.getServer());
-		Bukkit.getPluginManager().registerEvents(bbreak, this);
-		listeners.add(bbreak);*/
-		// END SAMPLE
 	}
 	
 	/**

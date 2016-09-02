@@ -143,7 +143,14 @@ public class CivSpyBungee extends Plugin implements Listener {
 		if (password == null) {
 			logger.warning("No password for database specified.");
 		}
-		return new Database(logger, user, password, host, port, db);
+		
+		Integer poolSize = dbStuff.getInt("poolsize", 10);
+		Long connectionTimeout = dbStuff.getLong("connectionTimeout", 10000l);
+		Long idleTimeout = dbStuff.getLong("idleTimeout", 600000l);
+		Long maxLifetime = dbStuff.getLong("maxLifetime", 7200000l);
+		
+		return new Database(logger, user, password, host, port, db,
+				poolSize, connectionTimeout, idleTimeout, maxLifetime);
 	}
 
 	@EventHandler

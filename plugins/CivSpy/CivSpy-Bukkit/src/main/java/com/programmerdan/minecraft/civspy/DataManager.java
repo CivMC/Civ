@@ -53,6 +53,10 @@ public class DataManager {
 	private final ExecutorService dequeueWorkers;
 	
 	private int roughWorkerCount = 0; // actual
+	/**
+	 * 	Should be configurable
+	 * TODO: From config
+	 */
 	private int workerCount = 8; //target
 
 	/*
@@ -72,23 +76,31 @@ public class DataManager {
 	/**
 	 * Defines how many "windows" to capture flow rate in. These are filled round-robin and used to monitor flowrate.
 	 * Actual use is flowCaptureWindows - 1; the "current" flow window is ignored while recomputing flow.
+	 * 
+	 * TODO: From config
 	 */
 	private int flowCaptureWindows = 61;
 	/**
 	 * Defines how long inbetween window movement in milliseconds; or, how long to capture inflow/outflow before 
 	 * updating the flow ratios
+	 * 
+	 * TODO: From config
 	 */
 	private long flowCapturePeriod = 1000;
 	/**
 	 * What avg inflow/outflow ratio is considered "bad enough" that if exceeded a warning message should be generated?
 	 * Recommended: > 1.1
 	 * As this indicates that inflow exceeds outflow over the capture window.
+	 * 
+	 * TODO: From config
 	 */
 	private double flowRatioWarn = 1.1d;
 	/**
 	 * What avg inflow/outflow ratio is considered "very bad" that possibly other action will be taken (dropping incoming data, etc.)
 	 * Recommended: > 2.0
 	 * As this indicates that on average inflow exceeds outflow by _double_ meaning the queue is growing very rapidly.
+	 * 
+	 * TODO: From config
 	 */
 	private double flowRatioSevere = 2.0d;
 
@@ -301,7 +313,7 @@ public class DataManager {
 				
 				// Periodically report.
 				if (whichFlowWindow == 0) {
-					logger.log(Level.INFO, "Over last {0} milliseconds, absolute inflow = {1} and outflow = {2}, missed aggregations = {3}",
+					logger.log(Level.INFO, "Over last {0} milliseconds, absolute inflow = {1} and outflow = {2}, missed aggregations now at = {3}",
 							new Object[] { (flowCapturePeriod * (flowCaptureWindows - 1)), inFlow, outFlow, missCounter});
 				}
 				
@@ -351,7 +363,7 @@ public class DataManager {
 					aggregationWindowStart[offloadAggregatorIndex] += aggregationCycleSize * aggregationPeriod;
 					aggregationWindowEnd[offloadAggregatorIndex] += aggregationCycleSize * aggregationPeriod;
 					
-					logger.log(Level.INFO, "Aggregator window {0} bounds: {1} to {2}", 
+					logger.log(Level.FINE, "Aggregator window {0} bounds: {1} to {2}", 
 							new Object[] {offloadAggregatorIndex, aggregationWindowStart[offloadAggregatorIndex], aggregationWindowEnd[offloadAggregatorIndex]} );
 				}
 			}
@@ -378,7 +390,7 @@ public class DataManager {
 				aggregationWindowStart[offloadAggregatorIndex] += aggregationCycleSize * aggregationPeriod;
 				aggregationWindowEnd[offloadAggregatorIndex] += aggregationCycleSize * aggregationPeriod;
 				
-				logger.log(Level.INFO, "Aggregator window {0} bounds: {1} to {2}", 
+				logger.log(Level.FINE, "Aggregator window {0} bounds: {1} to {2}", 
 						new Object[] {offloadAggregatorIndex, aggregationWindowStart[offloadAggregatorIndex], aggregationWindowEnd[offloadAggregatorIndex]} );
 			}
 		}

@@ -6,6 +6,12 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import com.programmerdan.minecraft.civspy.database.Database;
 
+/**
+ * Wraps the configuration file for Bukkit. "Knows how" to extract the 
+ * parameters for the database. 
+ * 
+ * @author ProgrammerDan
+ */
 public class Config {
 	private FileConfiguration config;
 	private Logger log;
@@ -54,7 +60,13 @@ public class Config {
 			log.severe("No password for database specified. Could not load database credentials");
 			return null;
 		}
-		return new Database(log, user, password, host, port, db);
+		Integer poolSize = dbStuff.getInt("poolsize", 10);
+		Long connectionTimeout = dbStuff.getLong("connectionTimeout", 10000l);
+		Long idleTimeout = dbStuff.getLong("idleTimeout", 600000l);
+		Long maxLifetime = dbStuff.getLong("maxLifetime", 7200000l);
+		
+		return new Database(log, user, password, host, port, db,
+				poolSize, connectionTimeout, idleTimeout, maxLifetime);
 	}
 
 	/**

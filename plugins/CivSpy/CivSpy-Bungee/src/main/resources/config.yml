@@ -4,5 +4,9 @@ database:
  database:
  user:
  password:
+ poolsize: 10
+ connectionTimeout: 10000
+ idleTimeout: 600000
+ maxLifetime: 7200000
 # Sampling interval (used for player counts at the moment)
 interval: 60000

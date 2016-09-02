@@ -168,12 +168,18 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#Database-java.util.logging.Logger-java.lang.String-java.lang.String-java.lang.String-int-java.lang.String-">Database</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging">Logger</a>&nbsp;log,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#Database-java.util.logging.Logger-java.lang.String-java.lang.String-java.lang.String-int-java.lang.String-int-long-long-long-">Database</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging">Logger</a>&nbsp;log,
         <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;user,
         <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;pass,
         <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;host,
         int&nbsp;port,
-        <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;database)</code>&nbsp;</td>
+        <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;database,
+        int&nbsp;poolSize,
+        long&nbsp;connectionTimeout,
+        long&nbsp;idleTimeout,
+        long&nbsp;maxLifetime)</code>
+<div class="block">Creates the Database connection pool backed by Hikari.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -208,12 +214,17 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;nValue,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang">Long</a>&nbsp;time,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/Connection.html?is-external=true" title="class or interface in java.sql">Connection</a>&nbsp;connection,
-         <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/PreparedStatement.html?is-external=true" title="class or interface in java.sql">PreparedStatement</a>&nbsp;statement)</code>&nbsp;</td>
+         <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/PreparedStatement.html?is-external=true" title="class or interface in java.sql">PreparedStatement</a>&nbsp;statement)</code>
+<div class="block">Does all that <a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#insertData-java.lang.String-java.lang.String-java.lang.String-java.lang.Integer-java.lang.Integer-java.util.UUID-java.lang.String-java.lang.Number-java.lang.Long-java.sql.Connection-"><code>insertData(String, String, String, Integer, Integer, UUID, String, Number, Long, Connection)</code></a> does and more
+ If a PreparedStatement is passed in, attempt to add this new deque to the mix.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>int[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#batchExecute-java.sql.Statement-boolean-">batchExecute</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/sql/Statement.html?is-external=true" title="class or interface in java.sql">Statement</a>&nbsp;statement,
-            boolean&nbsp;closeConnection)</code>&nbsp;</td>
+            boolean&nbsp;closeConnection)</code>
+<div class="block">Handles committing a batch created using the batch commands.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
@@ -225,23 +236,31 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#insertData-java.lang.String-">insertData</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#insertData-java.lang.String-">insertData</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key)</code>
+<div class="block">Inserts a simple sample of _just_ a stat key, nothing more.</div>
+</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#insertData-java.lang.String-java.lang.Number-">insertData</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
-          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;value)</code>&nbsp;</td>
+          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;value)</code>
+<div class="block">Inserts a simple sample of a stat key with a numeric value.</div>
+</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#insertData-java.lang.String-java.lang.String-">insertData</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
-          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value)</code>&nbsp;</td>
+          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value)</code>
+<div class="block">Inserts a simple sample of a stat key with a string label.</div>
+</td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#insertData-java.lang.String-java.lang.String-java.lang.Number-">insertData</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sValue,
-          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;nValue)</code>&nbsp;</td>
+          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;nValue)</code>
+<div class="block">Inserts a simple sample of a stat key with a string label and a numeric value</div>
+</td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>int</code></td>
@@ -249,7 +268,10 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sValue,
           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;nValue,
           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang">Long</a>&nbsp;time,
-          <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/Connection.html?is-external=true" title="class or interface in java.sql">Connection</a>&nbsp;connection)</code>&nbsp;</td>
+          <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/Connection.html?is-external=true" title="class or interface in java.sql">Connection</a>&nbsp;connection)</code>
+<div class="block">Same as <a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#insertData-java.lang.String-java.lang.String-java.lang.Number-"><code>insertData(String, String, Number)</code></a> but with ability to set 
+ the datapoint time and which connection to use (if null, manages requesting on).</div>
+</td>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>int</code></td>
@@ -350,7 +372,9 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sValue,
           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;nValue,
           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang">Long</a>&nbsp;time,
-          <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/Connection.html?is-external=true" title="class or interface in java.sql">Connection</a>&nbsp;connection)</code>&nbsp;</td>
+          <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/Connection.html?is-external=true" title="class or interface in java.sql">Connection</a>&nbsp;connection)</code>
+<div class="block">Fully specified insertData.</div>
+</td>
 </tr>
 <tr id="i20" class="altColor">
 <td class="colFirst"><code>int</code></td>
@@ -480,7 +504,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="Database-java.util.logging.Logger-java.lang.String-java.lang.String-java.lang.String-int-java.lang.String-">
+<a name="Database-java.util.logging.Logger-java.lang.String-java.lang.String-java.lang.String-int-java.lang.String-int-long-long-long-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -491,7 +515,25 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;pass,
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;host,
                 int&nbsp;port,
-                <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;database)</pre>
+                <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;database,
+                int&nbsp;poolSize,
+                long&nbsp;connectionTimeout,
+                long&nbsp;idleTimeout,
+                long&nbsp;maxLifetime)</pre>
+<div class="block">Creates the Database connection pool backed by Hikari.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>log</code> - The logger to use</dd>
+<dd><code>user</code> - The user to connection as</dd>
+<dd><code>pass</code> - The password to use</dd>
+<dd><code>host</code> - The host to connect to</dd>
+<dd><code>port</code> - The port on the host to connect to</dd>
+<dd><code>database</code> - The database to use</dd>
+<dd><code>poolSize</code> - The maximum size of the connection pool</dd>
+<dd><code>connectionTimeout</code> - The longest a query can run until timeout occurs</dd>
+<dd><code>idleTimeout</code> - The longest a connection can sit idle before recycling</dd>
+<dd><code>maxLifetime</code> - The absolute longest length of time a connection can exist</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -552,6 +594,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>insertData</h4>
 <pre>public&nbsp;int&nbsp;insertData(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key)</pre>
+<div class="block">Inserts a simple sample of _just_ a stat key, nothing more.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - The stat key to insert with no additional data.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd># of records inserted</dd>
+</dl>
 </li>
 </ul>
 <a name="insertData-java.lang.String-java.lang.String-">
@@ -562,6 +611,14 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <h4>insertData</h4>
 <pre>public&nbsp;int&nbsp;insertData(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value)</pre>
+<div class="block">Inserts a simple sample of a stat key with a string label.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - The stat key to insert</dd>
+<dd><code>value</code> - The string_value to insert.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd># of records inserted</dd>
+</dl>
 </li>
 </ul>
 <a name="insertData-java.lang.String-java.lang.Number-">
@@ -572,6 +629,14 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <h4>insertData</h4>
 <pre>public&nbsp;int&nbsp;insertData(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;value)</pre>
+<div class="block">Inserts a simple sample of a stat key with a numeric value.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - The stat key to insert</dd>
+<dd><code>value</code> - The numeric_value to insert.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd># of records inserted</dd>
+</dl>
 </li>
 </ul>
 <a name="insertData-java.lang.String-java.lang.String-java.lang.Number-">
@@ -583,6 +648,15 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <pre>public&nbsp;int&nbsp;insertData(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sValue,
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;nValue)</pre>
+<div class="block">Inserts a simple sample of a stat key with a string label and a numeric value</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - The stat key to insert</dd>
+<dd><code>sValue</code> - The string_value to insert.</dd>
+<dd><code>nValue</code> - The numeric_value to insert.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd># of records inserted</dd>
+</dl>
 </li>
 </ul>
 <a name="insertData-java.lang.String-java.lang.String-java.lang.Number-java.lang.Long-java.sql.Connection-">
@@ -596,6 +670,18 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;nValue,
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang">Long</a>&nbsp;time,
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/Connection.html?is-external=true" title="class or interface in java.sql">Connection</a>&nbsp;connection)</pre>
+<div class="block">Same as <a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#insertData-java.lang.String-java.lang.String-java.lang.Number-"><code>insertData(String, String, Number)</code></a> but with ability to set 
+ the datapoint time and which connection to use (if null, manages requesting on).</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - </dd>
+<dd><code>sValue</code> - </dd>
+<dd><code>nValue</code> - </dd>
+<dd><code>time</code> - The time of sampling</dd>
+<dd><code>connection</code> - The connection or null if a new connection is requested.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd># of records inserted</dd>
+</dl>
 </li>
 </ul>
 <a name="insertData-java.lang.String-java.util.UUID-">
@@ -805,6 +891,22 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;nValue,
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang">Long</a>&nbsp;time,
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/Connection.html?is-external=true" title="class or interface in java.sql">Connection</a>&nbsp;connection)</pre>
+<div class="block">Fully specified insertData.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - The stat_key to use</dd>
+<dd><code>server</code> - The server to use</dd>
+<dd><code>world</code> - The world to use</dd>
+<dd><code>chunk_x</code> - The chunk_x of investigation</dd>
+<dd><code>chunk_z</code> - The chunk_z of investigation</dd>
+<dd><code>uuid</code> - The player uuid involved, if any</dd>
+<dd><code>sValue</code> - The string value on the stats indicator</dd>
+<dd><code>nValue</code> - The number value on the stats indicator</dd>
+<dd><code>time</code> - When did sample occur or bukkit was started</dd>
+<dd><code>connection</code> - A connection object to ignore or use -- ignore if empy, use if not.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd># of records inserted.</dd>
+</dl>
 </li>
 </ul>
 <a name="batchData-java.lang.String-java.lang.String-java.lang.String-java.lang.Integer-java.lang.Integer-java.util.UUID-java.lang.String-java.lang.Number-java.lang.Long-java.sql.Connection-java.sql.PreparedStatement-">
@@ -824,6 +926,31 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                                    <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang">Long</a>&nbsp;time,
                                    <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/Connection.html?is-external=true" title="class or interface in java.sql">Connection</a>&nbsp;connection,
                                    <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/PreparedStatement.html?is-external=true" title="class or interface in java.sql">PreparedStatement</a>&nbsp;statement)</pre>
+<div class="block">Does all that <a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#insertData-java.lang.String-java.lang.String-java.lang.String-java.lang.Integer-java.lang.Integer-java.util.UUID-java.lang.String-java.lang.Number-java.lang.Long-java.sql.Connection-"><code>insertData(String, String, String, Integer, Integer, UUID, String, Number, Long, Connection)</code></a> does and more
+ If a PreparedStatement is passed in, attempt to add this new deque to the mix.
+ 
+ If no PreparedStatement is found, one is made on either the provided connection or a new one.
+ If a PreparedStatment is found, just add mercury messages in the meantime.
+ 
+ If you are using this class to manage your batch, use the returned PreparedStatement in the
+ next call to this method for maximum success.
+ 
+ When the batch is done just call <a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#batchExecute-java.sql.Statement-boolean-"><code>batchExecute(Statement, boolean)</code></a> on the PrepareStatement.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - </dd>
+<dd><code>server</code> - </dd>
+<dd><code>world</code> - </dd>
+<dd><code>chunk_x</code> - </dd>
+<dd><code>chunk_z</code> - </dd>
+<dd><code>uuid</code> - </dd>
+<dd><code>sValue</code> - </dd>
+<dd><code>nValue</code> - </dd>
+<dd><code>time</code> - </dd>
+<dd><code>connection</code> - </dd>
+<dd><code>statement</code> - </dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a name="batchExecute-java.sql.Statement-boolean-">
@@ -834,6 +961,14 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <h4>batchExecute</h4>
 <pre>public&nbsp;int[]&nbsp;batchExecute(<a href="http://docs.oracle.com/javase/7/docs/api/java/sql/Statement.html?is-external=true" title="class or interface in java.sql">Statement</a>&nbsp;statement,
                           boolean&nbsp;closeConnection)</pre>
+<div class="block">Handles committing a batch created using the batch commands.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>statement</code> - The statement with an open batch</dd>
+<dd><code>closeConnection</code> - Close the connection (return to pool) when done or no?</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Array of results from all batch statements.</dd>
+</dl>
 </li>
 </ul>
 </li>

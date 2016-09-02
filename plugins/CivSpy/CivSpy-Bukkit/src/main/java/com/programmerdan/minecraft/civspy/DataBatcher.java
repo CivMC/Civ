@@ -49,14 +49,20 @@ public class DataBatcher {
 	
 	/**
 	 * Maximum number of elements to put into a single batch.
+	 * 
+	 * TODO: From config
 	 */
 	private final long maxBatchSize = 100l;
 	/**
 	 * Maximum number of milliseconds to wait on more elements to join an open batch.
+	 * 
+	 * TODO: From config
 	 */
 	private final long maxBatchWait = 1000l;
 	/**
 	 * Effectively, max simultaneous connections. A single batch is run against a single connection.
+	 * 
+	 * TODO: From config
 	 */
 	private final int maxExecutors = 5;
 	

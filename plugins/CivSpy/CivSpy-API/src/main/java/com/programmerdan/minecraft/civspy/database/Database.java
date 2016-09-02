@@ -53,15 +53,29 @@ public class Database {
 	
 	private Logger log;
 	
-	public Database(Logger log, String user, String pass, String host, int port, String database) {
+	/**
+	 * Creates the Database connection pool backed by Hikari.
+	 * @param log The logger to use
+	 * @param user The user to connection as
+	 * @param pass The password to use
+	 * @param host The host to connect to
+	 * @param port The port on the host to connect to
+	 * @param database The database to use
+	 * @param poolSize The maximum size of the connection pool
+	 * @param connectionTimeout The longest a query can run until timeout occurs
+	 * @param idleTimeout The longest a connection can sit idle before recycling
+	 * @param maxLifetime The absolute longest length of time a connection can exist
+	 */
+	public Database(Logger log, String user, String pass, String host, int port, String database,
+			int poolSize, long connectionTimeout, long idleTimeout, long maxLifetime) {
 		this.log = log;
 		if (user != null && host != null && port > 0 && database != null) {
 			HikariConfig config = new HikariConfig();
 			config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database);
-			config.setConnectionTimeout(1000l);
-			config.setIdleTimeout(600000l);
-			config.setMaxLifetime(7200000l);
-			config.setMaximumPoolSize(10);
+			config.setConnectionTimeout(connectionTimeout); // 1000l);
+			config.setIdleTimeout(idleTimeout); //600000l);
+			config.setMaxLifetime(maxLifetime); //7200000l);
+			config.setMaximumPoolSize(poolSize); //10);
 			config.setUsername(user);
 			if (pass != null) {
 				config.setPassword(pass);
@@ -104,18 +118,60 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Inserts a simple sample of _just_ a stat key, nothing more.
+	 * 
+	 * @param key The stat key to insert with no additional data.
+	 * @return # of records inserted
+	 */
 	public int insertData(String key) {
 		return insertData(key, null, null, null, null, null, null, null, null, null);
 	}
+	
+	/**
+	 * Inserts a simple sample of a stat key with a string label.
+	 * 
+	 * @param key The stat key to insert
+	 * @param value The string_value to insert.
+	 * @return # of records inserted
+	 */
 	public int insertData(String key, String value) {
 		return insertData(key, null, null, null, null, null, value, null, null, null);
 	}
+	
+	/**
+	 * Inserts a simple sample of a stat key with a numeric value.
+	 * 
+	 * @param key The stat key to insert
+	 * @param value The numeric_value to insert.
+	 * @return # of records inserted
+	 */
 	public int insertData(String key, Number value) {
 		return insertData(key, null, null, null, null, null, null, value, null, null);
 	}
+	
+	/**
+	 * Inserts a simple sample of a stat key with a string label and a numeric value
+	 * 
+	 * @param key The stat key to insert
+	 * @param sValue The string_value to insert.
+	 * @param nValue The numeric_value to insert.
+	 * @return # of records inserted
+	 */
 	public int insertData(String key, String sValue, Number nValue) {
 		return insertData(key, null, null, null, null, null, sValue, nValue, null, null);
 	}
+	
+	/**
+	 * Same as {@link #insertData(String, String, Number)} but with ability to set 
+	 * the datapoint time and which connection to use (if null, manages requesting on).
+	 * @param key
+	 * @param sValue
+	 * @param nValue
+	 * @param time The time of sampling 
+	 * @param connection The connection or null if a new connection is requested.
+	 * @return # of records inserted
+	 */
 	public int insertData(String key, String sValue, Number nValue, Long time, Connection connection) {
 		return insertData(key, null, null, null, null, null, sValue, nValue, time, connection);
 	}
@@ -163,6 +219,22 @@ public class Database {
 	public int insertData(String key, String server, String world, Integer chunk_x, Integer chunk_z, UUID uuid, String sValue, Number nValue) {
 		return insertData(key, world, server, chunk_x, chunk_z, uuid, sValue, nValue, null, null);
 	}
+	
+	/**
+	 * Fully specified insertData.
+	 * 
+	 * @param key The stat_key to use
+	 * @param server The server to use
+	 * @param world The world to use
+	 * @param chunk_x The chunk_x of investigation
+	 * @param chunk_z The chunk_z of investigation
+	 * @param uuid The player uuid involved, if any
+	 * @param sValue The string value on the stats indicator
+	 * @param nValue The number value on the stats indicator
+	 * @param time When did sample occur or bukkit was started
+	 * @param connection A connection object to ignore or use -- ignore if empy, use if not.
+	 * @return # of records inserted.
+	 */
 	public int insertData(String key, String server, String world, Integer chunk_x, Integer chunk_z, UUID uuid, 
 			String sValue, Number nValue, Long time, Connection connection) {
 		if (key == null) return -1;
@@ -240,6 +312,31 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Does all that {@link #insertData(String, String, String, Integer, Integer, UUID, String, Number, Long, Connection)} does and more
+	 * If a PreparedStatement is passed in, attempt to add this new deque to the mix.
+	 * 
+	 * If no PreparedStatement is found, one is made on either the provided connection or a new one.
+	 * If a PreparedStatment is found, just add mercury messages in the meantime.
+	 * 
+	 * If you are using this class to manage your batch, use the returned PreparedStatement in the
+	 * next call to this method for maximum success.
+	 * 
+	 * When the batch is done just call {@link #batchExecute(Statement, boolean)} on the PrepareStatement.
+	 * 
+	 * @param key
+	 * @param server
+	 * @param world
+	 * @param chunk_x
+	 * @param chunk_z
+	 * @param uuid
+	 * @param sValue
+	 * @param nValue
+	 * @param time
+	 * @param connection
+	 * @param statement
+	 * @return
+	 */
 	@SuppressWarnings("resource")
 	public PreparedStatement batchData(String key, String server, String world, Integer chunk_x, Integer chunk_z, UUID uuid, 
 			String sValue, Number nValue, Long time, Connection connection, PreparedStatement statement) {
@@ -299,6 +396,14 @@ public class Database {
 		return statement;
 	}
 
+	/**
+	 * Handles committing a batch created using the batch commands.
+	 * 
+	 * @param statement The statement with an open batch
+	 * @param closeConnection Close the connection (return to pool) when done or no?
+	 * 
+	 * @return Array of results from all batch statements.
+	 */
 	public int[] batchExecute(Statement statement, boolean closeConnection) {
 		if (statement == null) return null;
 		try {
