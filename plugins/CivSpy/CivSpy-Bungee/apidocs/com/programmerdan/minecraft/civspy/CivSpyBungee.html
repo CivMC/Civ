@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -163,27 +163,29 @@ implements net.md_5.bungee.api.plugin.Listener</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/CivSpyBungee.html#afterLeave-net.md_5.bungee.api.event.PlayerDisconnectEvent-">afterLeave</a></span>(net.md_5.bungee.api.event.PlayerDisconnectEvent&nbsp;event)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/CivSpyBungee.html#afterLeave-net.md_5.bungee.api.event.PlayerDisconnectEvent-">afterLeave</a></span>(net.md_5.bungee.api.event.PlayerDisconnectEvent&nbsp;event)</code>
+<div class="block">Records player departure from the network.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/CivSpyBungee.html#afterLogin-net.md_5.bungee.api.event.PostLoginEvent-">afterLogin</a></span>(net.md_5.bungee.api.event.PostLoginEvent&nbsp;event)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/CivSpyBungee.html#afterLogin-net.md_5.bungee.api.event.PostLoginEvent-">afterLogin</a></span>(net.md_5.bungee.api.event.PostLoginEvent&nbsp;event)</code>
+<div class="block">Records player joining the network.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="http://www.github.com/ProgrammerDan/CivSpy/civspy-api/apidocs/com/programmerdan/minecraft/civspy/database/Database.html?is-external=true" title="class or interface in com.programmerdan.minecraft.civspy.database">Database</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/CivSpyBungee.html#configDatabase-net.md_5.bungee.config.Configuration-">configDatabase</a></span>(net.md_5.bungee.config.Configuration&nbsp;dbStuff)</code>&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/CivSpyBungee.html#onDisable--">onDisable</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/CivSpyBungee.html#onEnable--">onEnable</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/CivSpyBungee.html#session-java.util.UUID-">session</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/UUID.html?is-external=true" title="class or interface in java.util">UUID</a>&nbsp;player)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/CivSpyBungee.html#session-java.util.UUID-">session</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/UUID.html?is-external=true" title="class or interface in java.util">UUID</a>&nbsp;player)</code>
+<div class="block">Computes the session length of the player in milliseconds.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -257,15 +259,6 @@ implements net.md_5.bungee.api.plugin.Listener</pre>
 </dl>
 </li>
 </ul>
-<a name="configDatabase-net.md_5.bungee.config.Configuration-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>configDatabase</h4>
-<pre>public&nbsp;<a href="http://www.github.com/ProgrammerDan/CivSpy/civspy-api/apidocs/com/programmerdan/minecraft/civspy/database/Database.html?is-external=true" title="class or interface in com.programmerdan.minecraft.civspy.database">Database</a>&nbsp;configDatabase(net.md_5.bungee.config.Configuration&nbsp;dbStuff)</pre>
-</li>
-</ul>
 <a name="afterLogin-net.md_5.bungee.api.event.PostLoginEvent-">
 <!--   -->
 </a>
@@ -273,6 +266,13 @@ implements net.md_5.bungee.api.plugin.Listener</pre>
 <li class="blockList">
 <h4>afterLogin</h4>
 <pre>public&nbsp;void&nbsp;afterLogin(net.md_5.bungee.api.event.PostLoginEvent&nbsp;event)</pre>
+<div class="block">Records player joining the network.
+ 
+ Generates: <code>bungee.login</code> stat_key data.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>event</code> - The login event</dd>
+</dl>
 </li>
 </ul>
 <a name="afterLeave-net.md_5.bungee.api.event.PlayerDisconnectEvent-">
@@ -282,6 +282,13 @@ implements net.md_5.bungee.api.plugin.Listener</pre>
 <li class="blockList">
 <h4>afterLeave</h4>
 <pre>public&nbsp;void&nbsp;afterLeave(net.md_5.bungee.api.event.PlayerDisconnectEvent&nbsp;event)</pre>
+<div class="block">Records player departure from the network.
+
+ Generates: <code>bungee.logout</code> stat_key data.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>event</code> - The disconnect event</dd>
+</dl>
 </li>
 </ul>
 <a name="session-java.util.UUID-">
@@ -291,6 +298,13 @@ implements net.md_5.bungee.api.plugin.Listener</pre>
 <li class="blockList">
 <h4>session</h4>
 <pre>public&nbsp;void&nbsp;session(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/UUID.html?is-external=true" title="class or interface in java.util">UUID</a>&nbsp;player)</pre>
+<div class="block">Computes the session length of the player in milliseconds.
+
+ Generates: <code>bungee.session</code> stat_key data.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>player</code> - The UUID of the player whose session length needs computing.</dd>
+</dl>
 </li>
 </ul>
 </li>

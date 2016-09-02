@@ -80,6 +80,7 @@ public class CivSpyBungee extends Plugin implements Listener {
 		getProxy().getScheduler().cancel(tracker);
 		this.counter.sample();
 		for (UUID player : players.keySet()) {
+			// TODO: Check that this doesn't double-insert.
 			db.insertData("bungee.logout", player);
 			session(player);
 		}
@@ -114,7 +115,7 @@ public class CivSpyBungee extends Plugin implements Listener {
 		}
 	}
 
-	public Database configDatabase(Configuration dbStuff) {
+	private Database configDatabase(Configuration dbStuff) {
 		if (dbStuff == null) {
 			logger.severe("No database credentials specified. This plugin requires a database to run!");
 			return null;
@@ -153,6 +154,13 @@ public class CivSpyBungee extends Plugin implements Listener {
 				poolSize, connectionTimeout, idleTimeout, maxLifetime);
 	}
 
+	/**
+	 * Records player joining the network.
+	 * 
+	 * Generates: <code>bungee.login</code> stat_key data.
+	 *
+	 * @param event The login event
+	 */
 	@EventHandler
 	public void afterLogin(PostLoginEvent event) {
 		if (db == null) {
@@ -164,6 +172,13 @@ public class CivSpyBungee extends Plugin implements Listener {
 		players.put(player.getUniqueId(), System.currentTimeMillis());
 	}
 
+	/**
+	 * Records player departure from the network.
+	 *
+	 * Generates: <code>bungee.logout</code> stat_key data.
+	 * 
+	 * @param event The disconnect event
+	 */
 	@EventHandler
 	public void afterLeave(PlayerDisconnectEvent event) {
 		if (db == null) {
@@ -177,6 +192,13 @@ public class CivSpyBungee extends Plugin implements Listener {
 		players.remove(unid);
 	}
 
+	/**
+	 * Computes the session length of the player in milliseconds.
+	 *
+	 * Generates: <code>bungee.session</code> stat_key data.
+	 * 
+	 * @param player The UUID of the player whose session length needs computing.
+	 */
 	public void session(UUID player) {
 		Long start = players.get(player);
 		if (start == null) return;
