@@ -135,11 +135,14 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/DataManager.html#DataManager-com.programmerdan.minecraft.civspy.DataBatcher-java.util.logging.Logger-long-int-int-">DataManager</a></span>(<a href="../../../../com/programmerdan/minecraft/civspy/DataBatcher.html" title="class in com.programmerdan.minecraft.civspy">DataBatcher</a>&nbsp;batcher,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/DataManager.html#DataManager-com.programmerdan.minecraft.civspy.DataBatcher-java.util.logging.Logger-long-int-int-int-int-long-">DataManager</a></span>(<a href="../../../../com/programmerdan/minecraft/civspy/DataBatcher.html" title="class in com.programmerdan.minecraft.civspy">DataBatcher</a>&nbsp;batcher,
            <a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging">Logger</a>&nbsp;logger,
            long&nbsp;aggregationPeriod,
            int&nbsp;periodDelayCount,
-           int&nbsp;periodFutureCount)</code>
+           int&nbsp;periodFutureCount,
+           int&nbsp;workerCount,
+           int&nbsp;flowCaptureWindowCount,
+           long&nbsp;flowCapturePeriod)</code>
 <div class="block">Sets up a data manager; defining who to forward aggregate and sampled data to, a logger to log to, and aggregation
  configurations including period of aggregation, and how many "windows" to keep and store samples in.</div>
 </td>
@@ -193,7 +196,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="DataManager-com.programmerdan.minecraft.civspy.DataBatcher-java.util.logging.Logger-long-int-int-">
+<a name="DataManager-com.programmerdan.minecraft.civspy.DataBatcher-java.util.logging.Logger-long-int-int-int-int-long-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -203,7 +206,10 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                    <a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging">Logger</a>&nbsp;logger,
                    long&nbsp;aggregationPeriod,
                    int&nbsp;periodDelayCount,
-                   int&nbsp;periodFutureCount)</pre>
+                   int&nbsp;periodFutureCount,
+                   int&nbsp;workerCount,
+                   int&nbsp;flowCaptureWindowCount,
+                   long&nbsp;flowCapturePeriod)</pre>
 <div class="block">Sets up a data manager; defining who to forward aggregate and sampled data to, a logger to log to, and aggregation
  configurations including period of aggregation, and how many "windows" to keep and store samples in.</div>
 <dl>
@@ -215,6 +221,11 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
    you expect high incoming event counts, to help even out variations in throughput</dd>
 <dd><code>periodFutureCount</code> - is the number of "future" aggregation periods to setup in advance. It's good to set this to 
    about 1/4 to 1/2 of perioddelay for similar reasons.</dd>
+<dd><code>workerCount</code> - the number of workers maximum who take DataSamples off the queue and attempt to aggregate them. Recommend 5-10.</dd>
+<dd><code>flowCaptureWindowCount</code> - the number of "windows" to capture and smooth flow in vs. flow out rate data. Part of a set of
+   parameters focused on keeping track of data rates.</dd>
+<dd><code>flowCapturePeriod</code> - the length of time each "window" records flow in and flow out. This * count is the total flow tracking timespan.
+   Recommend 1000 (1 second).</dd>
 </dl>
 </li>
 </ul>

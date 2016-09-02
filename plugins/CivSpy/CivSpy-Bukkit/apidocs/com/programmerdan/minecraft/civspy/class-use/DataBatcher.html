@@ -102,11 +102,14 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/DataManager.html#DataManager-com.programmerdan.minecraft.civspy.DataBatcher-java.util.logging.Logger-long-int-int-">DataManager</a></span>(<a href="../../../../../com/programmerdan/minecraft/civspy/DataBatcher.html" title="class in com.programmerdan.minecraft.civspy">DataBatcher</a>&nbsp;batcher,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/DataManager.html#DataManager-com.programmerdan.minecraft.civspy.DataBatcher-java.util.logging.Logger-long-int-int-int-int-long-">DataManager</a></span>(<a href="../../../../../com/programmerdan/minecraft/civspy/DataBatcher.html" title="class in com.programmerdan.minecraft.civspy">DataBatcher</a>&nbsp;batcher,
            <a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging">Logger</a>&nbsp;logger,
            long&nbsp;aggregationPeriod,
            int&nbsp;periodDelayCount,
-           int&nbsp;periodFutureCount)</code>
+           int&nbsp;periodFutureCount,
+           int&nbsp;workerCount,
+           int&nbsp;flowCaptureWindowCount,
+           long&nbsp;flowCapturePeriod)</code>
 <div class="block">Sets up a data manager; defining who to forward aggregate and sampled data to, a logger to log to, and aggregation
  configurations including period of aggregation, and how many "windows" to keep and store samples in.</div>
 </td>

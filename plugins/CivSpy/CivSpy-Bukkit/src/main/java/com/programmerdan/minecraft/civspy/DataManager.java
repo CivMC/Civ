@@ -1,7 +1,6 @@
 package com.programmerdan.minecraft.civspy;
 
 import java.lang.ref.WeakReference;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -55,7 +54,6 @@ public class DataManager {
 	private int roughWorkerCount = 0; // actual
 	/**
 	 * 	Should be configurable
-	 * TODO: From config
 	 */
 	private int workerCount = 8; //target
 
@@ -76,31 +74,21 @@ public class DataManager {
 	/**
 	 * Defines how many "windows" to capture flow rate in. These are filled round-robin and used to monitor flowrate.
 	 * Actual use is flowCaptureWindows - 1; the "current" flow window is ignored while recomputing flow.
-	 * 
-	 * TODO: From config
 	 */
 	private int flowCaptureWindows = 61;
 	/**
 	 * Defines how long inbetween window movement in milliseconds; or, how long to capture inflow/outflow before 
 	 * updating the flow ratios
-	 * 
-	 * TODO: From config
 	 */
 	private long flowCapturePeriod = 1000;
 	/**
 	 * What avg inflow/outflow ratio is considered "bad enough" that if exceeded a warning message should be generated?
-	 * Recommended: > 1.1
 	 * As this indicates that inflow exceeds outflow over the capture window.
-	 * 
-	 * TODO: From config
 	 */
 	private double flowRatioWarn = 1.1d;
 	/**
 	 * What avg inflow/outflow ratio is considered "very bad" that possibly other action will be taken (dropping incoming data, etc.)
-	 * Recommended: > 2.0
 	 * As this indicates that on average inflow exceeds outflow by _double_ meaning the queue is growing very rapidly.
-	 * 
-	 * TODO: From config
 	 */
 	private double flowRatioSevere = 2.0d;
 
@@ -174,10 +162,15 @@ public class DataManager {
 	 *   you expect high incoming event counts, to help even out variations in throughput
 	 * @param periodFutureCount is the number of "future" aggregation periods to setup in advance. It's good to set this to 
 	 *   about 1/4 to 1/2 of perioddelay for similar reasons.
+	 * @param workerCount the number of workers maximum who take DataSamples off the queue and attempt to aggregate them. Recommend 5-10.
+	 * @param flowCaptureWindowCount the number of "windows" to capture and smooth flow in vs. flow out rate data. Part of a set of
+	 *   parameters focused on keeping track of data rates.
+	 * @param flowCapturePeriod the length of time each "window" records flow in and flow out. This * count is the total flow tracking timespan.
+	 *   Recommend 1000 (1 second).
 	 */
 	@SuppressWarnings("unchecked")
 	public DataManager(final DataBatcher batcher, final Logger logger, final long aggregationPeriod, final int periodDelayCount,
-			final int periodFutureCount) {
+			final int periodFutureCount, final int workerCount, final int flowCaptureWindowCount, final long flowCapturePeriod) {
 		this.batcher = batcher;
 		this.logger = logger;
 		
@@ -185,6 +178,9 @@ public class DataManager {
 
 		// Prepare the incoming queue.
 		this.sampleQueue = new LinkedTransferQueue<DataSample>();
+		
+		this.flowCaptureWindows = flowCaptureWindowCount + 1;
+		this.flowCapturePeriod = flowCapturePeriod;
 
 		// TODO: Configure flow capture and such
 		this.instantOutflow = new long[flowCaptureWindows];
@@ -222,13 +218,14 @@ public class DataManager {
 		}
 
 		// Now create the executor and schedule repeating tasks.
-		// Executor before all. TODO: Configurable dequeue Worker pool size.
 		this.scheduler = Executors.newScheduledThreadPool(2);
 		
-		this.dequeueWorkers = Executors.newFixedThreadPool(workerCount);
+		this.workerCount = workerCount;
+		
+		this.dequeueWorkers = Executors.newFixedThreadPool(this.workerCount);
 
 		// First, the queue reading task.
-		for (int i = 0; i < workerCount; i++) {
+		for (int i = 0; i < this.workerCount; i++) {
 			newWorker();
 		}
 
@@ -303,6 +300,14 @@ public class DataManager {
 				instantInflow[nextFlowWindow] = 0l;
 				instantOutflow[nextFlowWindow] = 0l;
 				
+				long truePeriod = System.currentTimeMillis();
+				if (lastFlowUpdate > 0) {
+					truePeriod -= lastFlowUpdate;
+				} else {
+					truePeriod = flowCapturePeriod;
+				}
+				lastFlowUpdate = System.currentTimeMillis();
+				
 				if (flowRatio > flowRatioSevere) {
 					// TODO add mechanism to only alert once.
 					logger.log(Level.SEVERE, "Inflow vs. Outflow DANGEROUSLY imbalanced: in vs out ratio at {0}", flowRatio);
@@ -315,6 +320,11 @@ public class DataManager {
 				if (whichFlowWindow == 0) {
 					logger.log(Level.INFO, "Over last {0} milliseconds, absolute inflow = {1} and outflow = {2}, missed aggregations now at = {3}",
 							new Object[] { (flowCapturePeriod * (flowCaptureWindows - 1)), inFlow, outFlow, missCounter});
+				}
+				
+				if (truePeriod > (flowCapturePeriod * 1.1d)) {
+					logger.log(Level.WARNING, "Experiencing significant flow capture period drift: {0} expected period, {1} observed.",
+							new Object[] { flowCapturePeriod, truePeriod });
 				}
 				
 				// Check on dequeue workers

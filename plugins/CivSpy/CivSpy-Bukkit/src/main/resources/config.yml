@@ -8,7 +8,11 @@ database:
  connectionTimeout: 10000
  idleTimeout: 600000
  maxLifetime: 7200000
-aggregate_period: 60000
-period_delay_count: 6
-period_future_count: 3
+manager:
+ aggregate_period: 60000
+ period_delay_count: 6
+ period_future_count: 3
+ worker_count: 5
+ flow_capture_window_count: 60
+ flow_capture_period: 1000
 server: local

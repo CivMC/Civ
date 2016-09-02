@@ -142,7 +142,7 @@
 <div class="block">Represents a self-monitoring manager that accepts data into a queue and asynchronously pulls data
    off and handles aggregation; then passes off to the batcher for database insertion</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataManager.html#DataManager-com.programmerdan.minecraft.civspy.DataBatcher-java.util.logging.Logger-long-int-int-">DataManager(DataBatcher, Logger, long, int, int)</a></span> - Constructor for class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy">DataManager</a></dt>
+<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataManager.html#DataManager-com.programmerdan.minecraft.civspy.DataBatcher-java.util.logging.Logger-long-int-int-int-int-long-">DataManager(DataBatcher, Logger, long, int, int, int, int, long)</a></span> - Constructor for class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy">DataManager</a></dt>
 <dd>
 <div class="block">Sets up a data manager; defining who to forward aggregate and sampled data to, a logger to log to, and aggregation
  configurations including period of aggregation, and how many "windows" to keep and store samples in.</div>
@@ -201,6 +201,14 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/samplers/ServerSingleDataSampler.html#getConfig--">getConfig()</a></span> - Method in class com.programmerdan.minecraft.civspy.samplers.<a href="com/programmerdan/minecraft/civspy/samplers/ServerSingleDataSampler.html" title="class in com.programmerdan.minecraft.civspy.samplers">ServerSingleDataSampler</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/Config.html#getFlowCapturePeriod--">getFlowCapturePeriod()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/Config.html" title="class in com.programmerdan.minecraft.civspy">Config</a></dt>
+<dd>
+<div class="block">How big is each window we use to monitor and normalize in flow vs.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/Config.html#getFlowCaptureWindowCount--">getFlowCaptureWindowCount()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/Config.html" title="class in com.programmerdan.minecraft.civspy">Config</a></dt>
+<dd>
+<div class="block">How many "windows" do we keep to monitor and normalize in flow vs.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataSample.html#getKey--">getKey()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataSample.html" title="class in com.programmerdan.minecraft.civspy">DataSample</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataSampleKey.html#getKey--">getKey()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataSampleKey.html" title="class in com.programmerdan.minecraft.civspy">DataSampleKey</a></dt>
@@ -218,7 +226,7 @@
 </dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataSampleKey.html#getPlayer--">getPlayer()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataSampleKey.html" title="class in com.programmerdan.minecraft.civspy">DataSampleKey</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/Config.html#getSection-java.lang.Class-">getSection(Class)</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/Config.html" title="class in com.programmerdan.minecraft.civspy">Config</a></dt>
+<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/Config.html#getSection-java.lang.Class-">getSection(Class&lt;?&gt;)</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/Config.html" title="class in com.programmerdan.minecraft.civspy">Config</a></dt>
 <dd>
 <div class="block">Used by autoloader, grabs a configuration section with the same simple name as the class passed in, or null if nothing found.</div>
 </dd>
@@ -243,6 +251,11 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataSample.html#getValueString--">getValueString()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataSample.html" title="class in com.programmerdan.minecraft.civspy">DataSample</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/Config.html#getWorkerCount--">getWorkerCount()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/Config.html" title="class in com.programmerdan.minecraft.civspy">Config</a></dt>
+<dd>
+<div class="block">How many workers are taking data off the queue and pushing into aggregation bins? Due to some
+ synchronization effects, don't pick too big a number; somewhere around 5 is probably more then enough.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataSampleKey.html#getWorld--">getWorld()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataSampleKey.html" title="class in com.programmerdan.minecraft.civspy">DataSampleKey</a></dt>
 <dd>&nbsp;</dd>
 </dl>

@@ -83,11 +83,11 @@ public class Config {
 	 * How long to aggregate data into buckets before committing. A longer delay should not use
 	 * much more memory then a shorter delay (due to aggregation effects) but does expose you to
 	 * more data loss issues in case of shutdown. 
-	 * @return Default of 60,000 milliseconds, or whatever is defined as <code>aggregation_period</code>
+	 * @return Default of 60,000 milliseconds, or whatever is defined as <code>manager.aggregation_period</code>
 	 *   in config.
 	 */
 	public long getAggregationPeriod() {
-		return config.getLong("aggregation_period", 60000l);
+		return config.getLong("manager.aggregation_period", 60000l);
 	}
 	
 	/**
@@ -99,10 +99,10 @@ public class Config {
 	 * Be careful with this; as this number increases the raw amount of data stored in memory
 	 * continues to increase.
 	 * 
-	 * @return Default of 6, or whatever is defined in config as <code>period_delay_count</code>
+	 * @return Default of 6, or whatever is defined in config as <code>manager.period_delay_count</code>
 	 */
 	public int getPeriodDelayCount() {
-		return config.getInt("period_delay_count", 6);
+		return config.getInt("manager.period_delay_count", 6);
 	}
 	
 	/**
@@ -111,12 +111,42 @@ public class Config {
 	 * that "current" (future from the perspective of the "stuck" queue) data isn't lost.
 	 * This also speeds the actual transition from aggregation bucket to aggregation bucket.
 	 * 
-	 * @return Default of 3, or whatever is defined in config as <code>period_future_count</code>
+	 * @return Default of 3, or whatever is defined in config as <code>manager.period_future_count</code>
 	 */
 	public int getPeriodFutureCount() {
-		return config.getInt("period_future_count", 3);
+		return config.getInt("manager.period_future_count", 3);
 	}
-
+	
+	/**
+	 * How many workers are taking data off the queue and pushing into aggregation bins? Due to some
+	 * synchronization effects, don't pick too big a number; somewhere around 5 is probably more then enough.
+	 * 
+	 * @return Default of 5, or whatever is defined in config as <code>manager.worker_count</code>
+	 */
+	public int getWorkerCount() {
+		return config.getInt("manager.worker_count", 5);
+	}
+	
+	/**
+	 * How many "windows" do we keep to monitor and normalize in flow vs. out flow of DataSamples? 
+	 * Recommend 60.
+	 * 
+	 * @return Default of 60, or whatever is defined in config as <code>manager.flow_capture_window_count</code>
+	 */
+	public int getFlowCaptureWindowCount() {
+		return config.getInt("manager.flow_capture_window_count", 60);
+	}
+	
+	/**
+	 * How big is each window we use to monitor and normalize in flow vs. out flow? Total monitoring / smoothing
+	 * period is then window count * capture period. Typical to monitor about a minute's worth of inflow/outflow,
+	 * but 10 minutes would be fine too; default total is 1 minute (60000 milliseconds).
+	 * 
+	 * @return Default of 1000, or whatever is defined in config as <code>manager.flow_capture_period</code>
+	 */
+	public long getFlowCapturePeriod() {
+		return config.getLong("manager.flow_capture_period", 1000l);
+	}
 
 	/**
 	 * Used by autoloader, grabs a configuration section with the same simple name as the class passed in, or null if nothing found.
@@ -124,7 +154,7 @@ public class Config {
 	 * @param clazz A Class to find a configuration section with the same name
 	 * @return null if not found, the configuration section otherwise.
 	 */
-	public ConfigurationSection getSection(Class clazz) {
+	public ConfigurationSection getSection(Class<?> clazz) {
 		if (clazz == null) return null;
 		return config.getConfigurationSection(clazz.getName());
 	}

@@ -55,7 +55,9 @@ public class CivSpy extends JavaPlugin {
 
 			getLogger().log(Level.INFO, "Preparing CivSpy Data Manager");
 			this.manager = new DataManager(batcher, getLogger(), this.config.getAggregationPeriod(),
-					this.config.getPeriodDelayCount(), this.config.getPeriodFutureCount());
+					this.config.getPeriodDelayCount(), this.config.getPeriodFutureCount(),
+					this.config.getWorkerCount(), this.config.getFlowCaptureWindowCount(),
+					this.config.getFlowCapturePeriod());
 			
 			this.samplers = new ArrayList<DataSampler>();
 			startSamplers();
