@@ -74,3 +74,5 @@ The last two indexes are hugely useful. Note that `string_value` is _not_ indexe
 The Database class is the only member of the shared API; it wraps the HikariCP pool, defines database creation and any migrations, and exposes convenient methods to use to insert the data that Bukkit and Bungee will capture.
 
 Check the [JavaDoc](apidocs/index.html) for more details on those methods.
+
+Having trouble loading the javadocs? Clone this repository locally and you'll have them available -- just navigate to the index.html file inside `apidocs` folder.
