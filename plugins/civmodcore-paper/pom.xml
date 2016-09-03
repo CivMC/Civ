@@ -31,12 +31,23 @@
       <version>R8-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
+    
+    <dependency>
+	  <groupId>vg.civcraft.mc.mercury</groupId>
+	  <artifactId>Mercury</artifactId>
+	  <version>1.2.16</version>
+	  <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <repositories>
     <repository>
       <id>Plugin Metrics</id>
       <url>http://repo.mcstats.org/content/repositories/public</url>
+    </repository>
+    <repository>
+      <id>civcraft-repo</id>
+      <url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
     </repository>
   </repositories>
 
