@@ -178,7 +178,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
         long&nbsp;connectionTimeout,
         long&nbsp;idleTimeout,
         long&nbsp;maxLifetime)</code>
-<div class="block">Creates the Database connection pool backed by Hikari.</div>
+<div class="block">Creates the Database connection pool backed by HikariCP.</div>
 </td>
 </tr>
 </table>
@@ -216,7 +216,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
          <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/Connection.html?is-external=true" title="class or interface in java.sql">Connection</a>&nbsp;connection,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/PreparedStatement.html?is-external=true" title="class or interface in java.sql">PreparedStatement</a>&nbsp;statement)</code>
 <div class="block">Does all that <a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#insertData-java.lang.String-java.lang.String-java.lang.String-java.lang.Integer-java.lang.Integer-java.util.UUID-java.lang.String-java.lang.Number-java.lang.Long-java.sql.Connection-"><code>insertData(String, String, String, Integer, Integer, UUID, String, Number, Long, Connection)</code></a> does and more
- If a PreparedStatement is passed in, attempt to add this new deque to the mix.</div>
+ 
+ If a PreparedStatement is passed in, attempts to add this new data batch to the mix.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -228,11 +229,15 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#close--">close</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#close--">close</a></span>()</code>
+<div class="block">Closes all connections and this connection pool.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/sql/Connection.html?is-external=true" title="class or interface in java.sql">Connection</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#getConnection--">getConnection</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#getConnection--">getConnection</a></span>()</code>
+<div class="block">Gets a single connection from the pool for use.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>int</code></td>
@@ -520,7 +525,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                 long&nbsp;connectionTimeout,
                 long&nbsp;idleTimeout,
                 long&nbsp;maxLifetime)</pre>
-<div class="block">Creates the Database connection pool backed by Hikari.</div>
+<div class="block">Creates the Database connection pool backed by HikariCP.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>log</code> - The logger to use</dd>
@@ -552,7 +557,10 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <h4>getConnection</h4>
 <pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/sql/Connection.html?is-external=true" title="class or interface in java.sql">Connection</a>&nbsp;getConnection()
                          throws <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/SQLException.html?is-external=true" title="class or interface in java.sql">SQLException</a></pre>
+<div class="block">Gets a single connection from the pool for use. Checks for null database first.</div>
 <dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A new Connection</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/sql/SQLException.html?is-external=true" title="class or interface in java.sql">SQLException</a></code></dd>
 </dl>
@@ -566,6 +574,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <h4>close</h4>
 <pre>public&nbsp;void&nbsp;close()
            throws <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/SQLException.html?is-external=true" title="class or interface in java.sql">SQLException</a></pre>
+<div class="block">Closes all connections and this connection pool.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/sql/SQLException.html?is-external=true" title="class or interface in java.sql">SQLException</a></code></dd>
@@ -902,8 +911,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dd><code>uuid</code> - The player uuid involved, if any</dd>
 <dd><code>sValue</code> - The string value on the stats indicator</dd>
 <dd><code>nValue</code> - The number value on the stats indicator</dd>
-<dd><code>time</code> - When did sample occur or bukkit was started</dd>
-<dd><code>connection</code> - A connection object to ignore or use -- ignore if empy, use if not.</dd>
+<dd><code>time</code> - When did sample occur or aggregate bucket was started</dd>
+<dd><code>connection</code> - A connection object to ignore or use -- ignore if empty, use if not.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd># of records inserted.</dd>
 </dl>
@@ -927,10 +936,10 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                                    <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/Connection.html?is-external=true" title="class or interface in java.sql">Connection</a>&nbsp;connection,
                                    <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/PreparedStatement.html?is-external=true" title="class or interface in java.sql">PreparedStatement</a>&nbsp;statement)</pre>
 <div class="block">Does all that <a href="../../../../../com/programmerdan/minecraft/civspy/database/Database.html#insertData-java.lang.String-java.lang.String-java.lang.String-java.lang.Integer-java.lang.Integer-java.util.UUID-java.lang.String-java.lang.Number-java.lang.Long-java.sql.Connection-"><code>insertData(String, String, String, Integer, Integer, UUID, String, Number, Long, Connection)</code></a> does and more
- If a PreparedStatement is passed in, attempt to add this new deque to the mix.
  
- If no PreparedStatement is found, one is made on either the provided connection or a new one.
- If a PreparedStatment is found, just add mercury messages in the meantime.
+ If a PreparedStatement is passed in, attempts to add this new data batch to the mix.
+ 
+ If no PreparedStatement is found, one is made on either the provided connection or a new one, then starts a new batch.
  
  If you are using this class to manage your batch, use the returned PreparedStatement in the
  next call to this method for maximum success.
@@ -946,10 +955,11 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dd><code>uuid</code> - </dd>
 <dd><code>sValue</code> - </dd>
 <dd><code>nValue</code> - </dd>
-<dd><code>time</code> - </dd>
+<dd><code>time</code> - The time of sampling / aggregation or null to use the time-at-batching</dd>
 <dd><code>connection</code> - </dd>
 <dd><code>statement</code> - </dd>
 <dt><span class="returnLabel">Returns:</span></dt>
+<dd>A PreparedStatement suitable for continued use</dd>
 </dl>
 </li>
 </ul>

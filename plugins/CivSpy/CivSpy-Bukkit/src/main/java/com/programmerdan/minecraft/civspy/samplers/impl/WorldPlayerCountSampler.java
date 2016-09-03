@@ -1,10 +1,7 @@
 package com.programmerdan.minecraft.civspy.samplers.impl;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -23,6 +20,8 @@ public final class WorldPlayerCountSampler extends ServerMultiDataSampler {
 
 	/**
 	 * Must be called by a Bukkit Synchronous task! Shows the player count in this world.
+	 * 
+	 * Generates: <code>world.playercount</code> stat_key data.
 	 */
 	public List<DataSample> sample() {
 		List<World> worlds = Bukkit.getWorlds();

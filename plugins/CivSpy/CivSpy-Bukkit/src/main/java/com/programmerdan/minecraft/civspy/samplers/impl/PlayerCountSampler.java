@@ -9,6 +9,11 @@ import com.programmerdan.minecraft.civspy.DataSample;
 import com.programmerdan.minecraft.civspy.PeriodicDataSample;
 import com.programmerdan.minecraft.civspy.samplers.ServerSingleDataSampler;
 
+/**
+ * A simple PlayerCountSampler that periodically records the server's player count.
+ * 
+ * @author ProgrammerDan
+ */
 public final class PlayerCountSampler extends ServerSingleDataSampler {
 	
 	public PlayerCountSampler(DataManager manager, Logger logger, String server) {
@@ -16,7 +21,7 @@ public final class PlayerCountSampler extends ServerSingleDataSampler {
 	}
 
 	/**
-	 * Must be called by a Bukkit Synchronous task!
+	 * Generates: <code>server.playercount</code> stat_key data.
 	 */
 	public DataSample sample() {
 		DataSample ds = new PeriodicDataSample("server.playercount", this.getServer(),

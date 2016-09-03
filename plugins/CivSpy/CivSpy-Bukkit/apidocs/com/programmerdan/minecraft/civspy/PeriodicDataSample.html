@@ -121,6 +121,10 @@ extends <a href="../../../../com/programmerdan/minecraft/civspy/DataSample.html"
  and statistic analysis.
 
  Ideally the period should be stable.</div>
+<dl>
+<dt><span class="simpleTagLabel">Author:</span></dt>
+<dd>ProgrammerDan</dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -143,7 +147,9 @@ extends <a href="../../../../com/programmerdan/minecraft/civspy/DataSample.html"
                   <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;server,
                   <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;world,
                   <a href="http://docs.oracle.com/javase/7/docs/api/java/util/UUID.html?is-external=true" title="class or interface in java.util">UUID</a>&nbsp;player,
-                  <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;valueNumber)</code>&nbsp;</td>
+                  <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;valueNumber)</code>
+<div class="block">Note that chunk x, chunk z are not exposed in this interface.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -204,6 +210,16 @@ extends <a href="../../../../com/programmerdan/minecraft/civspy/DataSample.html"
                           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;world,
                           <a href="http://docs.oracle.com/javase/7/docs/api/java/util/UUID.html?is-external=true" title="class or interface in java.util">UUID</a>&nbsp;player,
                           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;valueNumber)</pre>
+<div class="block">Note that chunk x, chunk z are not exposed in this interface. If you data sample is periodic
+ and requires these, just wrap DataSample directly.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - </dd>
+<dd><code>server</code> - </dd>
+<dd><code>world</code> - </dd>
+<dd><code>player</code> - </dd>
+<dd><code>valueNumber</code> - </dd>
+</dl>
 </li>
 </ul>
 </li>

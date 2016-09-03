@@ -125,6 +125,11 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>public final class <span class="typeNameLabel">PlayerCountSampler</span>
 extends <a href="../../../../../../com/programmerdan/minecraft/civspy/samplers/ServerSingleDataSampler.html" title="class in com.programmerdan.minecraft.civspy.samplers">ServerSingleDataSampler</a></pre>
+<div class="block">A simple PlayerCountSampler that periodically records the server's player count.</div>
+<dl>
+<dt><span class="simpleTagLabel">Author:</span></dt>
+<dd>ProgrammerDan</dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -218,7 +223,7 @@ extends <a href="../../../../../../com/programmerdan/minecraft/civspy/samplers/S
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../com/programmerdan/minecraft/civspy/DataSample.html" title="class in com.programmerdan.minecraft.civspy">DataSample</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../com/programmerdan/minecraft/civspy/samplers/impl/PlayerCountSampler.html#sample--">sample</a></span>()</code>
-<div class="block">Must be called by a Bukkit Synchronous task!</div>
+<div class="block">Generates: <code>server.playercount</code> stat_key data.</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
@@ -321,11 +326,12 @@ extends <a href="../../../../../../com/programmerdan/minecraft/civspy/samplers/S
 <li class="blockList">
 <h4>sample</h4>
 <pre>public&nbsp;<a href="../../../../../../com/programmerdan/minecraft/civspy/DataSample.html" title="class in com.programmerdan.minecraft.civspy">DataSample</a>&nbsp;sample()</pre>
-<div class="block">Must be called by a Bukkit Synchronous task!</div>
+<div class="block">Generates: <code>server.playercount</code> stat_key data.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../../../com/programmerdan/minecraft/civspy/SingleDataSampler.html#sample--">sample</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../com/programmerdan/minecraft/civspy/SingleDataSampler.html" title="class in com.programmerdan.minecraft.civspy">SingleDataSampler</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
+<dd>a DataSample to enqueue</dd>
 </dl>
 </li>
 </ul>
@@ -337,6 +343,10 @@ extends <a href="../../../../../../com/programmerdan/minecraft/civspy/samplers/S
 <h4>setPeriod</h4>
 <pre>protected&nbsp;void&nbsp;setPeriod(long&nbsp;period)</pre>
 <div class="block">Can be used by subclasses to redefine the period during construction.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>period</code> - The new period. Only used during construction.</dd>
+</dl>
 </li>
 </ul>
 <a name="getPeriod--">
@@ -347,6 +357,10 @@ extends <a href="../../../../../../com/programmerdan/minecraft/civspy/samplers/S
 <h4>getPeriod</h4>
 <pre>public&nbsp;long&nbsp;getPeriod()</pre>
 <div class="block">Returns the period inbetween executions of Sampler.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The period as currently defined.</dd>
+</dl>
 </li>
 </ul>
 <a name="activate--">

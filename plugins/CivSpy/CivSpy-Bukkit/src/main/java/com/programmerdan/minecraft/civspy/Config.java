@@ -21,7 +21,7 @@ public class Config {
 	}
 
 	public Config setupConfig(CivSpy plugin) {
-		log.info("Initializing config");
+		log.info("Initializing CivSpy config");
 		plugin.saveDefaultConfig();
 		plugin.reloadConfig();
 		config = plugin.getConfig();

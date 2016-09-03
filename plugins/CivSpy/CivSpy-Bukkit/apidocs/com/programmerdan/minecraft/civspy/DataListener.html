@@ -120,6 +120,16 @@ var activeTableTab = "activeTableTab";
 <pre>public abstract class <span class="typeNameLabel">DataListener</span>
 extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>
 implements org.bukkit.event.Listener</pre>
+<div class="block">Root abstract class that exemplifies a piece of code that listens to Bukkit
+ events and passes some data along for batching in aggregate. 
+ 
+ Use one of the subclasses in <a href="../../../../com/programmerdan/minecraft/civspy/listeners/package-summary.html"><code>com.programmerdan.minecraft.civspy.listeners</code></a> instead.</div>
+<dl>
+<dt><span class="simpleTagLabel">Author:</span></dt>
+<dd>ProgrammerDan</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../com/programmerdan/minecraft/civspy/listeners/ServerDataListener.html" title="class in com.programmerdan.minecraft.civspy.listeners"><code>ServerDataListener</code></a></dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -158,7 +168,9 @@ implements org.bukkit.event.Listener</pre>
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/DataListener.html#DataListener-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-">DataListener</a></span>(<a href="../../../../com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy">DataManager</a>&nbsp;target,
-            <a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging">Logger</a>&nbsp;logger)</code>&nbsp;</td>
+            <a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging">Logger</a>&nbsp;logger)</code>
+<div class="block">Sets up this listener.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -177,7 +189,9 @@ implements org.bukkit.event.Listener</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/DataListener.html#record-com.programmerdan.minecraft.civspy.DataSample-">record</a></span>(<a href="../../../../com/programmerdan/minecraft/civspy/DataSample.html" title="class in com.programmerdan.minecraft.civspy">DataSample</a>&nbsp;sample)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/DataListener.html#record-com.programmerdan.minecraft.civspy.DataSample-">record</a></span>(<a href="../../../../com/programmerdan/minecraft/civspy/DataSample.html" title="class in com.programmerdan.minecraft.civspy">DataSample</a>&nbsp;sample)</code>
+<div class="block">Safely wrap enqueue requests against the privately held DataManager target.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>abstract void</code></td>
@@ -232,6 +246,12 @@ implements org.bukkit.event.Listener</pre>
 <h4>DataListener</h4>
 <pre>public&nbsp;DataListener(<a href="../../../../com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy">DataManager</a>&nbsp;target,
                     <a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging">Logger</a>&nbsp;logger)</pre>
+<div class="block">Sets up this listener.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>target</code> - The DataManager to pass point data along to</dd>
+<dd><code>logger</code> - A logger available for logging of errors or status</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -259,6 +279,11 @@ implements org.bukkit.event.Listener</pre>
 <li class="blockList">
 <h4>record</h4>
 <pre>protected&nbsp;void&nbsp;record(<a href="../../../../com/programmerdan/minecraft/civspy/DataSample.html" title="class in com.programmerdan.minecraft.civspy">DataSample</a>&nbsp;sample)</pre>
+<div class="block">Safely wrap enqueue requests against the privately held DataManager target.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>sample</code> - The DataSample to enqueue for aggregation.</dd>
+</dl>
 </li>
 </ul>
 </li>

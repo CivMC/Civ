@@ -11,7 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import com.programmerdan.minecraft.civspy.DataListener;
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;
 import com.programmerdan.minecraft.civspy.PointDataSample;
@@ -37,6 +36,14 @@ public final class MovementListener extends ServerDataListener {
 		this.storedLocations.clear();
 	}
 	
+	/**
+	 * Generates: <code>player_movement</code> stat_key data. What state the player is in
+	 * or the vehicle they are riding is stored as the string value field. The distance
+	 * recorded, assuming the player moves more then a single block in any cardinal direction, is
+	 * the number value field.
+	 * 
+	 * @param event The PlayerMoveEvent to record.
+	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void MovementListen(PlayerMoveEvent event) {
 		Player p = event.getPlayer();

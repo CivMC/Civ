@@ -75,7 +75,9 @@
 <h2 class="title">B</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/listeners/impl/BreakListener.html#BreakListen-org.bukkit.event.block.BlockBreakEvent-">BreakListen(BlockBreakEvent)</a></span> - Method in class com.programmerdan.minecraft.civspy.listeners.impl.<a href="com/programmerdan/minecraft/civspy/listeners/impl/BreakListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl">BreakListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Generates: <code>player.blockbreak</code> stat_key data.</div>
+</dd>
 <dt><a href="com/programmerdan/minecraft/civspy/listeners/impl/BreakListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl"><span class="typeNameLink">BreakListener</span></a> - Class in <a href="com/programmerdan/minecraft/civspy/listeners/impl/package-summary.html">com.programmerdan.minecraft.civspy.listeners.impl</a></dt>
 <dd>
 <div class="block">Sample Listener class that records all block breaks for summation by who and what.</div>
@@ -132,11 +134,18 @@
  other task(s) come along to deliver to the database.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataBatcher.html#DataBatcher-com.programmerdan.minecraft.civspy.database.Database-java.util.logging.Logger-java.lang.Long-java.lang.Long-java.lang.Integer-">DataBatcher(Database, Logger, Long, Long, Integer)</a></span> - Constructor for class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataBatcher.html" title="class in com.programmerdan.minecraft.civspy">DataBatcher</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Creates a new Data Batcher.</div>
+</dd>
 <dt><a href="com/programmerdan/minecraft/civspy/DataListener.html" title="class in com.programmerdan.minecraft.civspy"><span class="typeNameLink">DataListener</span></a> - Class in <a href="com/programmerdan/minecraft/civspy/package-summary.html">com.programmerdan.minecraft.civspy</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Root abstract class that exemplifies a piece of code that listens to Bukkit
+ events and passes some data along for batching in aggregate.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataListener.html#DataListener-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-">DataListener(DataManager, Logger)</a></span> - Constructor for class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataListener.html" title="class in com.programmerdan.minecraft.civspy">DataListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Sets up this listener.</div>
+</dd>
 <dt><a href="com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy"><span class="typeNameLink">DataManager</span></a> - Class in <a href="com/programmerdan/minecraft/civspy/package-summary.html">com.programmerdan.minecraft.civspy</a></dt>
 <dd>
 <div class="block">Represents a self-monitoring manager that accepts data into a queue and asynchronously pulls data
@@ -156,7 +165,9 @@
 <div class="block">Immutable key, used for aggregations</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataSampleKey.html#DataSampleKey-java.lang.String-java.lang.String-java.util.UUID-java.lang.Integer-java.lang.Integer-java.lang.String-">DataSampleKey(String, String, UUID, Integer, Integer, String)</a></span> - Constructor for class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataSampleKey.html" title="class in com.programmerdan.minecraft.civspy">DataSampleKey</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This computes a hash at create, which isn't changed, so future hash-based comparisons are very fast.</div>
+</dd>
 </dl>
 <a name="I:E">
 <!--   -->
@@ -196,11 +207,17 @@
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataSampleKey.html#getChunkZ--">getChunkZ()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataSampleKey.html" title="class in com.programmerdan.minecraft.civspy">DataSampleKey</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/listeners/ServerDataListener.html#getConfig--">getConfig()</a></span> - Method in class com.programmerdan.minecraft.civspy.listeners.<a href="com/programmerdan/minecraft/civspy/listeners/ServerDataListener.html" title="class in com.programmerdan.minecraft.civspy.listeners">ServerDataListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Get the configuration passed in (if any).</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/samplers/ServerMultiDataSampler.html#getConfig--">getConfig()</a></span> - Method in class com.programmerdan.minecraft.civspy.samplers.<a href="com/programmerdan/minecraft/civspy/samplers/ServerMultiDataSampler.html" title="class in com.programmerdan.minecraft.civspy.samplers">ServerMultiDataSampler</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Get the configuration passed in (if any).</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/samplers/ServerSingleDataSampler.html#getConfig--">getConfig()</a></span> - Method in class com.programmerdan.minecraft.civspy.samplers.<a href="com/programmerdan/minecraft/civspy/samplers/ServerSingleDataSampler.html" title="class in com.programmerdan.minecraft.civspy.samplers">ServerSingleDataSampler</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Get the configuration passed in (if any).</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/Config.html#getFlowCapturePeriod--">getFlowCapturePeriod()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/Config.html" title="class in com.programmerdan.minecraft.civspy">Config</a></dt>
 <dd>
 <div class="block">How big is each window we use to monitor and normalize in flow vs.</div>
@@ -312,7 +329,9 @@
 <h2 class="title">M</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/listeners/impl/MovementListener.html#MovementListen-org.bukkit.event.player.PlayerMoveEvent-">MovementListen(PlayerMoveEvent)</a></span> - Method in class com.programmerdan.minecraft.civspy.listeners.impl.<a href="com/programmerdan/minecraft/civspy/listeners/impl/MovementListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl">MovementListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Generates: <code>player_movement</code> stat_key data.</div>
+</dd>
 <dt><a href="com/programmerdan/minecraft/civspy/listeners/impl/MovementListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl"><span class="typeNameLink">MovementListener</span></a> - Class in <a href="com/programmerdan/minecraft/civspy/listeners/impl/package-summary.html">com.programmerdan.minecraft.civspy.listeners.impl</a></dt>
 <dd>
 <div class="block">Example Listener; this sends for aggregation movement data on players.</div>
@@ -325,7 +344,6 @@
  same data against multiple keys.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/MultiDataSampler.html#MultiDataSampler-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-">MultiDataSampler(DataManager, Logger)</a></span> - Constructor for class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/MultiDataSampler.html" title="class in com.programmerdan.minecraft.civspy">MultiDataSampler</a></dt>
-<dd>&nbsp;</dd>
 </dl>
 <a name="I:O">
 <!--   -->
@@ -349,9 +367,13 @@
 <div class="block">Simple implementation of a DataSample, this encapuslates a server/world/player (max granularity) sampling of data, done on a distinct period.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/PeriodicDataSample.html#PeriodicDataSample-java.lang.String-java.lang.String-java.lang.String-java.util.UUID-java.lang.Number-">PeriodicDataSample(String, String, String, UUID, Number)</a></span> - Constructor for class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/PeriodicDataSample.html" title="class in com.programmerdan.minecraft.civspy">PeriodicDataSample</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Note that chunk x, chunk z are not exposed in this interface.</div>
+</dd>
 <dt><a href="com/programmerdan/minecraft/civspy/samplers/impl/PlayerCountSampler.html" title="class in com.programmerdan.minecraft.civspy.samplers.impl"><span class="typeNameLink">PlayerCountSampler</span></a> - Class in <a href="com/programmerdan/minecraft/civspy/samplers/impl/package-summary.html">com.programmerdan.minecraft.civspy.samplers.impl</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A simple PlayerCountSampler that periodically records the server's player count.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/samplers/impl/PlayerCountSampler.html#PlayerCountSampler-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-java.lang.String-">PlayerCountSampler(DataManager, Logger, String)</a></span> - Constructor for class com.programmerdan.minecraft.civspy.samplers.impl.<a href="com/programmerdan/minecraft/civspy/samplers/impl/PlayerCountSampler.html" title="class in com.programmerdan.minecraft.civspy.samplers.impl">PlayerCountSampler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/programmerdan/minecraft/civspy/PointDataSample.html" title="class in com.programmerdan.minecraft.civspy"><span class="typeNameLink">PointDataSample</span></a> - Class in <a href="com/programmerdan/minecraft/civspy/package-summary.html">com.programmerdan.minecraft.civspy</a></dt>
@@ -371,7 +393,9 @@
 <h2 class="title">R</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataListener.html#record-com.programmerdan.minecraft.civspy.DataSample-">record(DataSample)</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataListener.html" title="class in com.programmerdan.minecraft.civspy">DataListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Safely wrap enqueue requests against the privately held DataManager target.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/MultiDataSampler.html#run--">run()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/MultiDataSampler.html" title="class in com.programmerdan.minecraft.civspy">MultiDataSampler</a></dt>
 <dd>
 <div class="block">Managed run pattern, handles calling <a href="com/programmerdan/minecraft/civspy/MultiDataSampler.html#sample--"><code>MultiDataSampler.sample()</code></a> and passing the results to the Manager.</div>
@@ -392,7 +416,7 @@
 </dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/samplers/impl/PlayerCountSampler.html#sample--">sample()</a></span> - Method in class com.programmerdan.minecraft.civspy.samplers.impl.<a href="com/programmerdan/minecraft/civspy/samplers/impl/PlayerCountSampler.html" title="class in com.programmerdan.minecraft.civspy.samplers.impl">PlayerCountSampler</a></dt>
 <dd>
-<div class="block">Must be called by a Bukkit Synchronous task!</div>
+<div class="block">Generates: <code>server.playercount</code> stat_key data.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/samplers/impl/WorldPlayerCountSampler.html#sample--">sample()</a></span> - Method in class com.programmerdan.minecraft.civspy.samplers.impl.<a href="com/programmerdan/minecraft/civspy/samplers/impl/WorldPlayerCountSampler.html" title="class in com.programmerdan.minecraft.civspy.samplers.impl">WorldPlayerCountSampler</a></dt>
 <dd>
@@ -429,7 +453,9 @@
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/Config.html#setupConfig-com.programmerdan.minecraft.civspy.CivSpy-">setupConfig(CivSpy)</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/Config.html" title="class in com.programmerdan.minecraft.civspy">Config</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataBatcher.html#shutdown--">shutdown()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataBatcher.html" title="class in com.programmerdan.minecraft.civspy">DataBatcher</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Force an orderly shutdown of the batching process.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataListener.html#shutdown--">shutdown()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataListener.html" title="class in com.programmerdan.minecraft.civspy">DataListener</a></dt>
 <dd>
 <div class="block">Expose this method in case this listener needs cleanup (data structures, tasks, etc).</div>
@@ -447,9 +473,10 @@
 <div class="block">Simple single-sampling sampler.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/SingleDataSampler.html#SingleDataSampler-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-">SingleDataSampler(DataManager, Logger)</a></span> - Constructor for class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/SingleDataSampler.html" title="class in com.programmerdan.minecraft.civspy">SingleDataSampler</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataBatcher.html#stage-com.programmerdan.minecraft.civspy.DataSampleKey-com.programmerdan.minecraft.civspy.DataAggregate-">stage(DataSampleKey, DataAggregate)</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataBatcher.html" title="class in com.programmerdan.minecraft.civspy">DataBatcher</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block"><a href="com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy"><code>DataManager</code></a> calls this to queue aggregates up for batch commit.</div>
+</dd>
 </dl>
 <a name="I:W">
 <!--   -->

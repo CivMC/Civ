@@ -37,6 +37,12 @@ public abstract class ServerMultiDataSampler extends MultiDataSampler {
 		return this.server;
 	}
 
+	/**
+	 * Get the configuration passed in (if any). Ideally this is parsed during startup, but
+	 * it can be used directly during runtime as well.
+	 * 
+	 * @return the {@link org.bukkit.configuration.ConfigurationSection} for this ServerMultiDataSampler
+	 */
 	public ConfigurationSection getConfig() {
 		return this.config;
 	}

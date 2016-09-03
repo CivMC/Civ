@@ -16,6 +16,16 @@ public class DataSampleKey implements Comparable<DataSampleKey>{
 
 	private final int hash;
 
+	/**
+	 * This computes a hash at create, which isn't changed, so future hash-based comparisons are very fast.
+	 * 
+	 * @param server
+	 * @param world
+	 * @param player
+	 * @param chunkX
+	 * @param chunkZ
+	 * @param key
+	 */
 	public DataSampleKey(final String server, final String world, final UUID player, final Integer chunkX, final Integer chunkZ, final String key) {
 		this.server = server;
 		this.world = world;

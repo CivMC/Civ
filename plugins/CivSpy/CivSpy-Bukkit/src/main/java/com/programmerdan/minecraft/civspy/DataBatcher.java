@@ -60,6 +60,15 @@ public class DataBatcher {
 	 */
 	private final int maxExecutors; // = 5;
 	
+	/**
+	 * Creates a new Data Batcher.
+	 * 
+	 * @param db The Database to send data to. Wraps a connection pool.
+	 * @param logger The Logger instance to use for logging.
+	 * @param maxBatchSize The maximum number of elements to commit together as a batch
+	 * @param maxBatchWait The maximum amount of time to wait for that max elements to show up
+	 * @param maxBatchers The maximum number of workers constructing batches simultaneously
+	 */
 	public DataBatcher(final Database db, final Logger logger, final Long maxBatchSize,
 			final Long maxBatchWait, final Integer maxBatchers) {
 		this.db = db;
@@ -81,10 +90,15 @@ public class DataBatcher {
 		this.batchExecutor = Executors.newFixedThreadPool(this.maxExecutors);
 	}
 	
+	/**
+	 * Force an orderly shutdown of the batching process. Waits until the queue is done
+	 * or 2 minutes have elapsed. Once dequeue has occurred, waits up to 2 minutes
+	 * for the consequential commits to complete. 
+	 */
 	public void shutdown() {
 		active = false;
 		int delay = 0;
-		while (!this.batchQueue.isEmpty() && delay < 600) {
+		while (!this.batchQueue.isEmpty() && delay < 120) {
 			try {
 				Thread.sleep(1000l);
 			} catch(Exception e) {}
@@ -93,7 +107,7 @@ public class DataBatcher {
 				this.logger.log(Level.INFO, "Waiting on batch queue workers to finish up, {0} seconds so far", delay);
 			}
 		}
-		if (delay >= 600) {
+		if (delay >= 120) {
 			this.logger.log(Level.WARNING, "Giving up on waiting. DATA LOSS MAY OCCUR.");
 		}
 		batchQueue.clear();
@@ -101,7 +115,7 @@ public class DataBatcher {
 		this.batchExecutor.shutdown();
 		
 		try {
-			if (!this.batchExecutor.awaitTermination(60l, TimeUnit.SECONDS)) {
+			if (!this.batchExecutor.awaitTermination(120l, TimeUnit.SECONDS)) {
 				this.logger.log(Level.WARNING, "Giving up on waiting for batch commit; DATA LOSS MAY HAVE OCCURRED.");
 			}
 		} catch (InterruptedException ie) {
@@ -188,6 +202,12 @@ public class DataBatcher {
 		}
 	}
 	
+	/**
+	 * {@link DataManager} calls this to queue aggregates up for batch commit.
+	 * 
+	 * @param key The {@link DataSampleKey} to index this aggregate against.
+	 * @param aggregate A {@link DataAggregate} which holds either one or more aggregations of data over a time period.
+	 */
 	public void stage(DataSampleKey key, DataAggregate aggregate) {
 		if (!active) return;
 		

@@ -14,13 +14,17 @@ import java.util.logging.Logger;
  */
 public abstract class SingleDataSampler extends DataSampler {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public SingleDataSampler(DataManager target, Logger logger) {
 		super(target, logger);
 	}
 
 	/**
 	 * Subclasses should use this; does the actual sampling
-	 * @return
+	 * 
+	 * @return a DataSample to enqueue
 	 */
 	public abstract DataSample sample();
 

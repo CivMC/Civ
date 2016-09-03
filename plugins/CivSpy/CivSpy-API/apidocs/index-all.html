@@ -86,7 +86,8 @@
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/database/Database.html#batchData-java.lang.String-java.lang.String-java.lang.String-java.lang.Integer-java.lang.Integer-java.util.UUID-java.lang.String-java.lang.Number-java.lang.Long-java.sql.Connection-java.sql.PreparedStatement-">batchData(String, String, String, Integer, Integer, UUID, String, Number, Long, Connection, PreparedStatement)</a></span> - Method in class com.programmerdan.minecraft.civspy.database.<a href="com/programmerdan/minecraft/civspy/database/Database.html" title="class in com.programmerdan.minecraft.civspy.database">Database</a></dt>
 <dd>
 <div class="block">Does all that <a href="com/programmerdan/minecraft/civspy/database/Database.html#insertData-java.lang.String-java.lang.String-java.lang.String-java.lang.Integer-java.lang.Integer-java.util.UUID-java.lang.String-java.lang.Number-java.lang.Long-java.sql.Connection-"><code>insertData(String, String, String, Integer, Integer, UUID, String, Number, Long, Connection)</code></a> does and more
- If a PreparedStatement is passed in, attempt to add this new deque to the mix.</div>
+ 
+ If a PreparedStatement is passed in, attempts to add this new data batch to the mix.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/database/Database.html#batchExecute-java.sql.Statement-boolean-">batchExecute(Statement, boolean)</a></span> - Method in class com.programmerdan.minecraft.civspy.database.<a href="com/programmerdan/minecraft/civspy/database/Database.html" title="class in com.programmerdan.minecraft.civspy.database">Database</a></dt>
 <dd>
@@ -99,7 +100,9 @@
 <h2 class="title">C</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/database/Database.html#close--">close()</a></span> - Method in class com.programmerdan.minecraft.civspy.database.<a href="com/programmerdan/minecraft/civspy/database/Database.html" title="class in com.programmerdan.minecraft.civspy.database">Database</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Closes all connections and this connection pool.</div>
+</dd>
 <dt><a href="com/programmerdan/minecraft/civspy/database/package-summary.html">com.programmerdan.minecraft.civspy.database</a> - package com.programmerdan.minecraft.civspy.database</dt>
 <dd>&nbsp;</dd>
 </dl>
@@ -114,7 +117,7 @@
 </dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/database/Database.html#Database-java.util.logging.Logger-java.lang.String-java.lang.String-java.lang.String-int-java.lang.String-int-long-long-long-">Database(Logger, String, String, String, int, String, int, long, long, long)</a></span> - Constructor for class com.programmerdan.minecraft.civspy.database.<a href="com/programmerdan/minecraft/civspy/database/Database.html" title="class in com.programmerdan.minecraft.civspy.database">Database</a></dt>
 <dd>
-<div class="block">Creates the Database connection pool backed by Hikari.</div>
+<div class="block">Creates the Database connection pool backed by HikariCP.</div>
 </dd>
 </dl>
 <a name="I:G">
@@ -123,7 +126,9 @@
 <h2 class="title">G</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/database/Database.html#getConnection--">getConnection()</a></span> - Method in class com.programmerdan.minecraft.civspy.database.<a href="com/programmerdan/minecraft/civspy/database/Database.html" title="class in com.programmerdan.minecraft.civspy.database">Database</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Gets a single connection from the pool for use.</div>
+</dd>
 </dl>
 <a name="I:I">
 <!--   -->

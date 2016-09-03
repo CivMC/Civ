@@ -4,6 +4,13 @@ import java.util.UUID;
 
 /**
  * A data sample; can be destined for aggregation or stand alone.
+ * 
+ * Use one of the definite abstract subclasses.
+ * 
+ * @see PeriodicDataSample
+ * @see PointDataSample
+ * 
+ * @author ProgrammerDan
  */
 public abstract class DataSample {
 	private final String valueString;

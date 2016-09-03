@@ -23,14 +23,14 @@ A Data Listeners should contain one or more @EventListener annotated methods, th
 
 <h4>Requirements</h4>
 
-All implementations of DataListener must provide a <code>shutdown</code> implementation. This simple method is a cleanup hook; CivSpy will make every attempt to call <code>shutdown</code> on all listeners during CivSpy deactivation.
+All implementations of DataListener must provide a <code>shutdown</code> implementation. This simple method is a cleanup hook; CivSpy will make every attempt to call <code>shutdown</code> on all listeners during CivSpy de-activation.
 
 All implementations of DataListener must provide a constructor that takes a DataManager, Logger, String, and optionally a ConfigurationSection as input.
 <ul>
 	<li>The {@link com.programmerdan.minecraft.civspy.DataManager} is CivSpy system provided and your code should likely leave it alone to prevent abnormalities.</li>
 	<li>The {@link java.util.logging.Logger} is put into protected variable <code>logger</code> and is available to subclasses to write exceptional circumstances to the log (do not log on every execution of your sampler!).
 	<li>The String is the value that will be returned by {@link com.programmerdan.minecraft.civspy.ServerDataListener#getServer}. Note while you don't have to pass this value along to the superclass, it is strongly recommended, and regardless the parameter must exist on your constructor.
-	<li>(optional) The {@link org.bukkit.configuration.ConfigurationSection} is the configuration for your Listener as defined in the <code>config.yml</code> file. The _simple name_ of your class determines which section to extract and pass along. So if you Listener is called </code>PlayerMovementListener</code> then CivSpy attempts to give the config.yml root-level section of the same name to your Listener, if a constructor is found that accepts configuration sections.
+	<li>(optional) The {@link org.bukkit.configuration.ConfigurationSection} is the configuration for your Listener as defined in the <code>config.yml</code> file. The _simple name_ of your class determines which section to extract and pass along. So if you Listener is called <code>PlayerMovementListener</code> then CivSpy attempts to give the config.yml root-level section of the same name to your Listener, if a constructor is found that accepts configuration sections.
 </ul>
 
 <br/>

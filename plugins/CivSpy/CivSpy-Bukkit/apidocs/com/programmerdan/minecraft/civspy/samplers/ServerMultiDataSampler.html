@@ -217,7 +217,9 @@ extends <a href="../../../../../com/programmerdan/minecraft/civspy/MultiDataSamp
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>org.bukkit.configuration.ConfigurationSection</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/samplers/ServerMultiDataSampler.html#getConfig--">getConfig</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/samplers/ServerMultiDataSampler.html#getConfig--">getConfig</a></span>()</code>
+<div class="block">Get the configuration passed in (if any).</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>long</code></td>
@@ -351,6 +353,12 @@ extends <a href="../../../../../com/programmerdan/minecraft/civspy/MultiDataSamp
 <li class="blockList">
 <h4>getConfig</h4>
 <pre>public&nbsp;org.bukkit.configuration.ConfigurationSection&nbsp;getConfig()</pre>
+<div class="block">Get the configuration passed in (if any). Ideally this is parsed during startup, but
+ it can be used directly during runtime as well.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the <code>ConfigurationSection</code> for this ServerMultiDataSampler</dd>
+</dl>
 </li>
 </ul>
 <a name="setPeriod-long-">
@@ -361,6 +369,10 @@ extends <a href="../../../../../com/programmerdan/minecraft/civspy/MultiDataSamp
 <h4>setPeriod</h4>
 <pre>protected&nbsp;void&nbsp;setPeriod(long&nbsp;period)</pre>
 <div class="block">Can be used by subclasses to redefine the period during construction.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>period</code> - The new period. Only used during construction.</dd>
+</dl>
 </li>
 </ul>
 <a name="getPeriod--">
@@ -371,6 +383,10 @@ extends <a href="../../../../../com/programmerdan/minecraft/civspy/MultiDataSamp
 <h4>getPeriod</h4>
 <pre>public&nbsp;long&nbsp;getPeriod()</pre>
 <div class="block">Returns the period inbetween executions of Sampler.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The period as currently defined.</dd>
+</dl>
 </li>
 </ul>
 <a name="activate--">

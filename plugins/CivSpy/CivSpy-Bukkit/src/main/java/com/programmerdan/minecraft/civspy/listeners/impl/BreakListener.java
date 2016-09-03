@@ -4,7 +4,6 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,6 +33,12 @@ public final class BreakListener extends ServerDataListener {
 		// NO-OP
 	}
 	
+	/**
+	 * Generates: <code>player.blockbreak</code> stat_key data. Block type:subtype
+	 * is stored in the string value field.
+	 * 
+	 * @param event The BlockBreakEvent
+	 */
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void BreakListen(BlockBreakEvent event) {

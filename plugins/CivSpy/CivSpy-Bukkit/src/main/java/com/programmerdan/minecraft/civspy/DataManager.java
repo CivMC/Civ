@@ -416,6 +416,15 @@ public class DataManager {
 		instantInflow[whichFlowWindow]++;
 	}
 
+	/**
+	 * Fancy bit of code that attempted to schedule itself again for next execution
+	 * but does so without holding strong references, so that if the parent goes
+	 * away while this is off working, it will gracefully fail to attempt to reschedule
+	 * itself, leading to graceful shutdowns.
+	 * 
+	 * @author ProgrammerDan
+	 *
+	 */
 	static class RepeatingQueueMinder implements Runnable {
 		private final WeakReference<ExecutorService> scheduler;
 		private final WeakReference<DataManager> parent;

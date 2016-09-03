@@ -118,7 +118,7 @@ A quick introduction to samplers:
 
 <h2>Data Samplers</h2>
 
-A Data Sampler should quickly sample one or more pieces of data and pass that data along to the <a href="../../../../../com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy"><code>DataManager</code></a>. This data does not need to be aggregatable, although it is welcome to be so. 
+A Data Sampler should quickly sample one or more pieces of data and pass that data along to the <a href="../../../../../com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy"><code>DataManager</code></a>. This data does not need to be aggregate-able, although it is welcome to be so. 
 <ul>
         <li> For Samplers that collect aggregation data, use a <a href="../../../../../com/programmerdan/minecraft/civspy/PointDataSample.html" title="class in com.programmerdan.minecraft.civspy"><code>PointDataSample</code></a> POJO to store your samples before passing to the DataManager. 
         <li> For Samplers that collect periodic data that should not be summation aggregated, use a <a href="../../../../../com/programmerdan/minecraft/civspy/PeriodicDataSample.html" title="class in com.programmerdan.minecraft.civspy"><code>PeriodicDataSample</code></a> POJO to store your samples.
@@ -139,7 +139,7 @@ All implementations of DataSampler must provide a constructor that takes a DataM
         <li>The <a href="../../../../../com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy"><code>DataManager</code></a> is CivSpy system provided and your code should likely leave it alone to prevent abnormalities.</li>
         <li>The <a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging"><code>Logger</code></a> is put into protected variable <code>logger</code> and is available to subclasses to write exceptional circumstances to the log (do not log on every execution of your sampler!).
         <li>The String is the value that will be returned by <code>getServer</code>. Note while you don't have to pass this value along to the superclass, it is strongly recommended, and regardless the parameter must exist on your constructor.
-        <li>(optional) The <code>ConfigurationSection</code> is the configuration for your Sampler as defined in the <code>config.yml</code> file. The _simple name_ of your class determines which section to extract and pass along. So if you Sampler is called </code>PlayerLocationSampler</code> then CivSpy attempts to give the config.yml root-level section of the same name to your Sampler, if a constructor is found that accepts configuration sections.
+        <li>(optional) The <code>ConfigurationSection</code> is the configuration for your Sampler as defined in the <code>config.yml</code> file. The _simple name_ of your class determines which section to extract and pass along. So if you Sampler is called <code>PlayerLocationSampler</code> then CivSpy attempts to give the config.yml root-level section of the same name to your Sampler, if a constructor is found that accepts configuration sections.
         <li>If you want to override the default sample period of 1 minute (60,000 ms) call <code>setPeriod</code> from within your constructor. Subsequent calls to <code>setPeriod</code> will be ignored.
 </ul>
 
@@ -151,7 +151,7 @@ DataSamples are POJOs -- just construct them via their constructor and don't wor
 
 One parameter on all DataSample constructors is "Server" -- you can get the plugin's configured "Server" name via <code>getServer()</code>. Be sure to include the server name in your DataSampler POJOs -- see the constructor on <code>PointDataSample</code> and <code>PeriodicDataSample</code>. If local or not specified in CivSpy config, this value will be the string literal "local".
 
-Your sampler can turn itself off by calling <code>deactivate</code> -- the sampler is still called on period, but your <code>sample</code> method won't be called, so only do so in case of exceptional circumstance; otherwise, leave activation and deactivation up to CivSpy's management routines.
+Your sampler can turn itself off by calling <code>deactivate</code> -- the sampler is still called on period, but your <code>sample</code> method won't be called, so only do so in case of exceptional circumstance; otherwise, leave activation and de-activation up to CivSpy's management routines.
 
 <hr/>
 

@@ -55,6 +55,5 @@ public class DataAggregate {
 		}
 	}
 
-	// TODO: retrieve the data
 }
 

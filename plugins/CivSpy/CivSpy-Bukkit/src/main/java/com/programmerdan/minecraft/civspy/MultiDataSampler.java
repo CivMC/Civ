@@ -15,10 +15,20 @@ import java.util.logging.Logger;
  */
 public abstract class MultiDataSampler extends DataSampler {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public MultiDataSampler(DataManager target, Logger logger) {
 		super(target, logger);
 	}
-	
+
+	/**
+	 * Samplers should implement this method.
+	 * 
+	 * @return A List of DataSample objects that should get stored
+	 */
+	public abstract List<DataSample> sample();
+
 	/**
 	 * Managed run pattern, handles calling {@link #sample} and passing the results to the Manager.
 	 */
@@ -38,11 +48,4 @@ public abstract class MultiDataSampler extends DataSampler {
 			}
 		}
 	}
-	
-	/**
-	 * Samplers should implement this method.
-	 */
-	public abstract List<DataSample> sample();
-
-
 }

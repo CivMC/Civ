@@ -8,9 +8,21 @@ import java.util.UUID;
  * and statistic analysis.
  *
  * Ideally the period should be stable.
+ * 
+ * @author ProgrammerDan
  */
 public class PeriodicDataSample extends DataSample {
 
+	/**
+	 * Note that chunk x, chunk z are not exposed in this interface. If you data sample is periodic
+	 * and requires these, just wrap DataSample directly.
+	 * 
+	 * @param key
+	 * @param server
+	 * @param world
+	 * @param player
+	 * @param valueNumber
+	 */
 	public PeriodicDataSample(String key, String server, String world, UUID player, Number valueNumber) {
 		super(key, server, world, player, null, null, valueNumber);
 	}

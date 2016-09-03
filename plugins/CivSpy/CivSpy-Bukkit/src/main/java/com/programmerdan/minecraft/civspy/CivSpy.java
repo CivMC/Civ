@@ -103,9 +103,9 @@ public class CivSpy extends JavaPlugin {
 		}
 	}
 	
-	ArrayList<DataSampler> samplers;
+	private ArrayList<DataSampler> samplers;
 	
-	ArrayList<DataListener> listeners;
+	private ArrayList<DataListener> listeners;
 	
 	private void startSamplers() {
 		getLogger().log(Level.INFO, "Registering CivSpy samplers");

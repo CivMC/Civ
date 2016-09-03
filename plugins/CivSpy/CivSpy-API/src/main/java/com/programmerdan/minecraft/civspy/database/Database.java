@@ -54,7 +54,8 @@ public class Database {
 	private Logger log;
 	
 	/**
-	 * Creates the Database connection pool backed by Hikari.
+	 * Creates the Database connection pool backed by HikariCP.
+	 * 
 	 * @param log The logger to use
 	 * @param user The user to connection as
 	 * @param pass The password to use
@@ -97,12 +98,22 @@ public class Database {
 			log.log(Level.SEVERE, "Database not configured and is unavaiable");
 		}
 	}
-	
+
+	/**
+	 * Gets a single connection from the pool for use. Checks for null database first.
+	 * 
+	 * @return A new Connection
+	 * @throws SQLException
+	 */
 	public Connection getConnection() throws SQLException {
 		available();
 		return this.datasource.getConnection();
 	}
 	
+	/** 
+	 * Closes all connections and this connection pool.
+	 * @throws SQLException
+	 */
 	public void close() throws SQLException {
 		available();
 		this.datasource.close();
@@ -231,8 +242,8 @@ public class Database {
 	 * @param uuid The player uuid involved, if any
 	 * @param sValue The string value on the stats indicator
 	 * @param nValue The number value on the stats indicator
-	 * @param time When did sample occur or bukkit was started
-	 * @param connection A connection object to ignore or use -- ignore if empy, use if not.
+	 * @param time When did sample occur or aggregate bucket was started
+	 * @param connection A connection object to ignore or use -- ignore if empty, use if not.
 	 * @return # of records inserted.
 	 */
 	public int insertData(String key, String server, String world, Integer chunk_x, Integer chunk_z, UUID uuid, 
@@ -314,10 +325,10 @@ public class Database {
 
 	/**
 	 * Does all that {@link #insertData(String, String, String, Integer, Integer, UUID, String, Number, Long, Connection)} does and more
-	 * If a PreparedStatement is passed in, attempt to add this new deque to the mix.
 	 * 
-	 * If no PreparedStatement is found, one is made on either the provided connection or a new one.
-	 * If a PreparedStatment is found, just add mercury messages in the meantime.
+	 * If a PreparedStatement is passed in, attempts to add this new data batch to the mix.
+	 * 
+	 * If no PreparedStatement is found, one is made on either the provided connection or a new one, then starts a new batch.
 	 * 
 	 * If you are using this class to manage your batch, use the returned PreparedStatement in the
 	 * next call to this method for maximum success.
@@ -332,10 +343,10 @@ public class Database {
 	 * @param uuid
 	 * @param sValue
 	 * @param nValue
-	 * @param time
+	 * @param time The time of sampling / aggregation or null to use the time-at-batching
 	 * @param connection
 	 * @param statement
-	 * @return
+	 * @return A PreparedStatement suitable for continued use
 	 */
 	@SuppressWarnings("resource")
 	public PreparedStatement batchData(String key, String server, String world, Integer chunk_x, Integer chunk_z, UUID uuid, 

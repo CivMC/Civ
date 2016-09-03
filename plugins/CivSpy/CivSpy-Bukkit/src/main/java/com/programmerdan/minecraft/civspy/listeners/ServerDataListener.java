@@ -38,6 +38,12 @@ public abstract class ServerDataListener extends DataListener {
 		return this.server;
 	}
 
+	/**
+	 * Get the configuration passed in (if any). Ideally this is parsed during startup, but
+	 * it can be used directly during runtime as well.
+	 * 
+	 * @return the {@link org.bukkit.configuration.ConfigurationSection} for this ServerDataListener
+	 */
 	public ConfigurationSection getConfig() {
 		return this.config;
 	}

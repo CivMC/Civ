@@ -2,11 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.programmerdan.minecraft</groupId>
 	<artifactId>civspy</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
-
 	<name>CivSpy</name>
 	<url>https://github.com/ProgrammerDan/CivSpy</url>
 
@@ -95,7 +93,6 @@
 			<artifactId>spigot-api</artifactId>
 			<version>1.10-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.programmerdan.minecraft</groupId>

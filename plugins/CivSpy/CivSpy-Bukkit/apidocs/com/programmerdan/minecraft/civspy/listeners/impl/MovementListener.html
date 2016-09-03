@@ -185,7 +185,9 @@ extends <a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/impl/MovementListener.html#MovementListen-org.bukkit.event.player.PlayerMoveEvent-">MovementListen</a></span>(org.bukkit.event.player.PlayerMoveEvent&nbsp;event)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/impl/MovementListener.html#MovementListen-org.bukkit.event.player.PlayerMoveEvent-">MovementListen</a></span>(org.bukkit.event.player.PlayerMoveEvent&nbsp;event)</code>
+<div class="block">Generates: <code>player_movement</code> stat_key data.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
@@ -270,6 +272,14 @@ extends <a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/
 <li class="blockList">
 <h4>MovementListen</h4>
 <pre>public&nbsp;void&nbsp;MovementListen(org.bukkit.event.player.PlayerMoveEvent&nbsp;event)</pre>
+<div class="block">Generates: <code>player_movement</code> stat_key data. What state the player is in
+ or the vehicle they are riding is stored as the string value field. The distance
+ recorded, assuming the player moves more then a single block in any cardinal direction, is
+ the number value field.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>event</code> - The PlayerMoveEvent to record.</dd>
+</dl>
 </li>
 </ul>
 </li>

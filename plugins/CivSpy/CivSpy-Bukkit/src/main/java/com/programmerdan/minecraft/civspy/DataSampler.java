@@ -3,7 +3,15 @@ package com.programmerdan.minecraft.civspy;
 import java.util.logging.Logger;
 
 /**
- * Represents a scheduled sampler that feeds data into the aggregator (DataManager)
+ * Represents a scheduled sampler that feeds data into the aggregator {@link DataManager}.
+ * 
+ * Not recommended to subclass this; if you do, follow the instructions found in 
+ * {@link com.programmerdan.minecraft.civspy.samplers} package docs.
+ * 
+ * @see MultiDataSampler
+ * @see SingleDataSampler
+ * 
+ * @author ProgrammerDan
  */
 abstract class DataSampler implements Runnable {
 
@@ -29,6 +37,9 @@ abstract class DataSampler implements Runnable {
 
 	/**
 	 * Basic constructor.
+	 * 
+	 * @param target The DataManager to send data to
+	 * @param logger a Logger for subclasses to use to log errors and status to.
 	 */
 	public DataSampler(final DataManager target, final Logger logger) {
 		this.target = target;
@@ -38,6 +49,8 @@ abstract class DataSampler implements Runnable {
 
 	/**
 	 * Can be used by subclasses to redefine the period during construction.
+	 * 
+	 * @param period The new period. Only used during construction.
 	 */
 	protected void setPeriod(long period) {
 		this.period = period;
@@ -45,6 +58,8 @@ abstract class DataSampler implements Runnable {
 
 	/**
 	 * Returns the period inbetween executions of Sampler.
+	 * 
+	 * @return The period as currently defined.
 	 */
 	public long getPeriod() {
 		return this.period;
@@ -80,7 +95,12 @@ abstract class DataSampler implements Runnable {
 	}
 
 	/** 
-	 * Two subclasses of Samplerimplement this.
+	 * To ensure orderly submission of samples, don't subclass DataSampler directly,
+	 * use one of the previously defined abstract subclasses that offer a <code>sample</code>
+	 * method instead.
+	 * 
+	 * @see MultiDataSampler
+	 * @see SingleDataSampler
 	 */
 	public abstract void run();
 	
