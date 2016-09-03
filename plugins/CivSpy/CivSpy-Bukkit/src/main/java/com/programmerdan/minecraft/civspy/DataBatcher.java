@@ -49,29 +49,28 @@ public class DataBatcher {
 	
 	/**
 	 * Maximum number of elements to put into a single batch.
-	 * 
-	 * TODO: From config
 	 */
-	private final long maxBatchSize = 100l;
+	private final long maxBatchSize; // = 100l;
 	/**
 	 * Maximum number of milliseconds to wait on more elements to join an open batch.
-	 * 
-	 * TODO: From config
 	 */
-	private final long maxBatchWait = 1000l;
+	private final long maxBatchWait; // = 1000l;
 	/**
 	 * Effectively, max simultaneous connections. A single batch is run against a single connection.
-	 * 
-	 * TODO: From config
 	 */
-	private final int maxExecutors = 5;
+	private final int maxExecutors; // = 5;
 	
-	public DataBatcher(final Database db, final Logger logger) {
+	public DataBatcher(final Database db, final Logger logger, final Long maxBatchSize,
+			final Long maxBatchWait, final Integer maxBatchers) {
 		this.db = db;
 		this.logger = logger;
 		this.inflowCount = new AtomicLong(0l);
 		this.outflowCount = new AtomicLong(0l);
 		this.workerCount = new AtomicInteger(0);
+
+		this.maxBatchSize = (maxBatchSize == null ? 100l : maxBatchSize);
+		this.maxBatchWait = (maxBatchWait == null ? 1000l : maxBatchWait);
+		this.maxExecutors = (maxBatchers == null ? 5 : maxBatchers);
 		
 		this.batchQueue = new LinkedTransferQueue<BatchLine>();
 		

@@ -131,7 +131,7 @@
 <div class="block">Roughly similar approach to Manager; stage() unwinds data to batch it up, then
  other task(s) come along to deliver to the database.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataBatcher.html#DataBatcher-com.programmerdan.minecraft.civspy.database.Database-java.util.logging.Logger-">DataBatcher(Database, Logger)</a></span> - Constructor for class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataBatcher.html" title="class in com.programmerdan.minecraft.civspy">DataBatcher</a></dt>
+<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataBatcher.html#DataBatcher-com.programmerdan.minecraft.civspy.database.Database-java.util.logging.Logger-java.lang.Long-java.lang.Long-java.lang.Integer-">DataBatcher(Database, Logger, Long, Long, Integer)</a></span> - Constructor for class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataBatcher.html" title="class in com.programmerdan.minecraft.civspy">DataBatcher</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/programmerdan/minecraft/civspy/DataListener.html" title="class in com.programmerdan.minecraft.civspy"><span class="typeNameLink">DataListener</span></a> - Class in <a href="com/programmerdan/minecraft/civspy/package-summary.html">com.programmerdan.minecraft.civspy</a></dt>
 <dd>&nbsp;</dd>
@@ -213,6 +213,22 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataSampleKey.html#getKey--">getKey()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataSampleKey.html" title="class in com.programmerdan.minecraft.civspy">DataSampleKey</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/Config.html#getMaxBatchSize--">getMaxBatchSize()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/Config.html" title="class in com.programmerdan.minecraft.civspy">Config</a></dt>
+<dd>
+<div class="block">What is the upper limit per-batch in terms of records? Recommended 100, which is default.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/Config.html#getMaxBatchWait--">getMaxBatchWait()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/Config.html" title="class in com.programmerdan.minecraft.civspy">Config</a></dt>
+<dd>
+<div class="block">What is the max time for a batch worker to sit around waiting for enough data to reach the max_batch_size?
+ Recommended 1000l, which is default; Note: this assumes that connection timeout is longer then 1 second!
+ If connection timeout is shorter then one second, <i>do not forget</i> to make this shorter then connection
+ timeout.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/Config.html#getMaxBatchWorkers--">getMaxBatchWorkers()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/Config.html" title="class in com.programmerdan.minecraft.civspy">Config</a></dt>
+<dd>
+<div class="block">What is the most number of batch workers that can be employed? This should tie to # of connections available
+ in the pool; don't allow more workers then you've allowed connections.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/Config.html#getPeriodDelayCount--">getPeriodDelayCount()</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/Config.html" title="class in com.programmerdan.minecraft.civspy">Config</a></dt>
 <dd>
 <div class="block">How many aggregation periods in the past do we hold on to, before we call it "done" and

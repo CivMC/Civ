@@ -149,6 +149,37 @@ public class Config {
 	}
 
 	/**
+	 * What is the upper limit per-batch in terms of records? Recommended 100, which is default.
+	 *
+	 * @return Default of 100, or whatever is defined in config as <code>batcher.max_batch_size</code>
+	 */
+	public long getMaxBatchSize() {
+		return config.getLong("batcher.max_batch_size", 100l);
+	}
+
+	/**
+	 * What is the max time for a batch worker to sit around waiting for enough data to reach the max_batch_size?
+	 * Recommended 1000l, which is default; Note: this assumes that connection timeout is longer then 1 second!
+	 * If connection timeout is shorter then one second, <i>do not forget</i> to make this shorter then connection
+	 * timeout.
+	 *
+	 * @return Default of 1000, or whatever is defined in config as <code>batcher.max_batch_wait</code>
+	 */
+	public long getMaxBatchWait() {
+		return config.getLong("batcher.max_batch_wait", 1000l);
+	}
+
+	/**
+	 * What is the most number of batch workers that can be employed? This should tie to # of connections available
+	 * in the pool; don't allow more workers then you've allowed connections. Recommend # of workers less then pool size.
+	 *
+	 * @return Default of 5, or whatever is defined in config as <code>batcher.max_workers</code>
+	 */
+	public int getMaxBatchWorkers() {
+		return config.getInt("batcher.max_workers", 5);
+	}
+
+	/**
 	 * Used by autoloader, grabs a configuration section with the same simple name as the class passed in, or null if nothing found.
 	 *
 	 * @param clazz A Class to find a configuration section with the same name

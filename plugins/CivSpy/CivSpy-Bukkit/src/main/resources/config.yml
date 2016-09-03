@@ -9,10 +9,14 @@ database:
  idleTimeout: 600000
  maxLifetime: 7200000
 manager:
- aggregate_period: 60000
+ aggregation_period: 60000
  period_delay_count: 6
  period_future_count: 3
  worker_count: 5
  flow_capture_window_count: 60
  flow_capture_period: 1000
+batcher:
+ max_batch_size: 100
+ max_batch_wait: 1000
+ max_workers: 5
 server: local

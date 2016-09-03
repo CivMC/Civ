@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -154,13 +154,35 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code>long</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/Config.html#getMaxBatchSize--">getMaxBatchSize</a></span>()</code>
+<div class="block">What is the upper limit per-batch in terms of records? Recommended 100, which is default.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>long</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/Config.html#getMaxBatchWait--">getMaxBatchWait</a></span>()</code>
+<div class="block">What is the max time for a batch worker to sit around waiting for enough data to reach the max_batch_size?
+ Recommended 1000l, which is default; Note: this assumes that connection timeout is longer then 1 second!
+ If connection timeout is shorter then one second, <i>do not forget</i> to make this shorter then connection
+ timeout.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/Config.html#getMaxBatchWorkers--">getMaxBatchWorkers</a></span>()</code>
+<div class="block">What is the most number of batch workers that can be employed? This should tie to # of connections available
+ in the pool; don't allow more workers then you've allowed connections.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/Config.html#getPeriodDelayCount--">getPeriodDelayCount</a></span>()</code>
 <div class="block">How many aggregation periods in the past do we hold on to, before we call it "done" and
  commit it to the database.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/Config.html#getPeriodFutureCount--">getPeriodFutureCount</a></span>()</code>
 <div class="block">How many aggregation periods into the future do we pre-create? Recommend at least a few;
@@ -168,31 +190,31 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
  that "current" (future from the perspective of the "stuck" queue) data isn't lost.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>org.bukkit.configuration.ConfigurationSection</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/Config.html#getSection-java.lang.Class-">getSection</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;?&gt;&nbsp;clazz)</code>
 <div class="block">Used by autoloader, grabs a configuration section with the same simple name as the class passed in, or null if nothing found.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/Config.html#getServer--">getServer</a></span>()</code>
 <div class="block">Which server are we running on? I could add BetterShards as a dependency, but for now just
  declare it.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/Config.html#getWorkerCount--">getWorkerCount</a></span>()</code>
 <div class="block">How many workers are taking data off the queue and pushing into aggregation bins? Due to some
  synchronization effects, don't pick too big a number; somewhere around 5 is probably more then enough.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="http://www.github.com/ProgrammerDan/CivSpy/civspy-api/apidocs/com/programmerdan/minecraft/civspy/database/Database.html?is-external=true" title="class or interface in com.programmerdan.minecraft.civspy.database">Database</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/Config.html#parseDatabase--">parseDatabase</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="../../../../com/programmerdan/minecraft/civspy/Config.html" title="class in com.programmerdan.minecraft.civspy">Config</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/programmerdan/minecraft/civspy/Config.html#setupConfig-com.programmerdan.minecraft.civspy.CivSpy-">setupConfig</a></span>(<a href="../../../../com/programmerdan/minecraft/civspy/CivSpy.html" title="class in com.programmerdan.minecraft.civspy">CivSpy</a>&nbsp;plugin)</code>&nbsp;</td>
 </tr>
@@ -348,6 +370,52 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Default of 1000, or whatever is defined in config as <code>manager.flow_capture_period</code></dd>
+</dl>
+</li>
+</ul>
+<a name="getMaxBatchSize--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMaxBatchSize</h4>
+<pre>public&nbsp;long&nbsp;getMaxBatchSize()</pre>
+<div class="block">What is the upper limit per-batch in terms of records? Recommended 100, which is default.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Default of 100, or whatever is defined in config as <code>batcher.max_batch_size</code></dd>
+</dl>
+</li>
+</ul>
+<a name="getMaxBatchWait--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMaxBatchWait</h4>
+<pre>public&nbsp;long&nbsp;getMaxBatchWait()</pre>
+<div class="block">What is the max time for a batch worker to sit around waiting for enough data to reach the max_batch_size?
+ Recommended 1000l, which is default; Note: this assumes that connection timeout is longer then 1 second!
+ If connection timeout is shorter then one second, <i>do not forget</i> to make this shorter then connection
+ timeout.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Default of 1000, or whatever is defined in config as <code>batcher.max_batch_wait</code></dd>
+</dl>
+</li>
+</ul>
+<a name="getMaxBatchWorkers--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMaxBatchWorkers</h4>
+<pre>public&nbsp;int&nbsp;getMaxBatchWorkers()</pre>
+<div class="block">What is the most number of batch workers that can be employed? This should tie to # of connections available
+ in the pool; don't allow more workers then you've allowed connections. Recommend # of workers less then pool size.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Default of 5, or whatever is defined in config as <code>batcher.max_workers</code></dd>
 </dl>
 </li>
 </ul>

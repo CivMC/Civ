@@ -51,7 +51,8 @@ public class CivSpy extends JavaPlugin {
 			this.db.available();
 			
 			getLogger().log(Level.INFO, "Preparing CivSpy Data Batcher");
-			this.batcher = new DataBatcher(db, getLogger());
+			this.batcher = new DataBatcher(db, getLogger(), this.config.getMaxBatchSize(), 
+					this.config.getMaxBatchWait(), this.config.getMaxBatchWorkers());
 
 			getLogger().log(Level.INFO, "Preparing CivSpy Data Manager");
 			this.manager = new DataManager(batcher, getLogger(), this.config.getAggregationPeriod(),
