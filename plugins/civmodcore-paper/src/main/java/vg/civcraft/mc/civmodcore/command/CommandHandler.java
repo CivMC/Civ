@@ -10,8 +10,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.mercury.MercuryAPI;
-
 public abstract class CommandHandler {
 
 	public Map<String, Command> commands = new HashMap<>();
@@ -23,6 +21,9 @@ public abstract class CommandHandler {
 		commands.put(command.getIdentifier().toLowerCase(), command);
 		if (mercuryEnabled == null) {
 			mercuryEnabled = Bukkit.getPluginManager().getPlugin("Mercury") != null;
+		}
+		else {
+			mercuryEnabled = false;
 		}
 	}
 
@@ -52,11 +53,7 @@ public abstract class CommandHandler {
 			if (completes == null) {
 				completes = new LinkedList<String>();
 				if (mercuryEnabled) {
-					for(String p : MercuryAPI.getAllPlayers()) {
-						if (p.toLowerCase().startsWith(completeArg)) {
-							completes.add(p);
-						}
-					}
+					return MercuryTabCompleter.complete(completeArg);
 				}
 				else {
 					for(Player p : Bukkit.getOnlinePlayers()) {
