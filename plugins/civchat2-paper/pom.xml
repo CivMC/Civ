@@ -5,7 +5,7 @@
 	<groupId>vg.civcraft.mc.civchat2</groupId>
 	<artifactId>CivChat2</artifactId>
 	<packaging>jar</packaging>
-	<version>1.29</version>
+	<version>1.30</version>
 	<name>CivChat2</name>
 	<url>https://github.com/Civcraft/CivChat2</url>
 
@@ -18,30 +18,13 @@
 
 	<build>
 		<sourceDirectory>${basedir}/src</sourceDirectory>
-		<finalName>${project.name}</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.3</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<finalName>${project.artifactId}.${project.version}</finalName>
-				</configuration>
-			</plugin>
-		</plugins>
+
 		<resources>
 			<resource>
 				<directory>${basedir}</directory>
 				<includes>
 					<include>*.yml</include>
+					<include>License.txt</include>
 				</includes>
 				<filtering>true</filtering>
 			</resource>

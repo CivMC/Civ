@@ -13,16 +13,11 @@ chat:
   yIncreaseScale: 1
 info:
   #debug: lots of debugging logging will show up in the console def=false
-  debug: true
+  debug: false
   #groups: if NameLayer groups is enabled def=true
   groups: true
   #afkmessage: The default afk message people will get when player has afk toggled def=Player is currently AFK
   afkmessage: Player is currently AFK
-file:
-  #filesToZip: The number of chatlog files to zip together
-  filesToZip: 10
-  #maxNumberofZips: The number of chatlog zips to keep
-  maxNumberofZips: 4
 mysql:
   host: localhost
   dbname: ''
