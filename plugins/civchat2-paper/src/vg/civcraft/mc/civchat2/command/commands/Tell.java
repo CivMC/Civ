@@ -12,19 +12,15 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
-import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.database.DatabaseManager;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.mercury.MercuryAPI;
-import vg.civcraft.mc.mercury.MercuryPlugin;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
 public class Tell extends PlayerCommand{
 	private CivChat2 plugin = CivChat2.getInstance();
 	private CivChat2Manager chatMan;
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
-	private CivChat2CommandHandler handler = (CivChat2CommandHandler) plugin.getCivChat2CommandHandler();
 	private DatabaseManager DBM = plugin.getDatabaseManager();
 	
 	public Tell(String name) {
@@ -128,10 +124,7 @@ public class Tell extends PlayerCommand{
 			player.sendMessage(ChatColor.GREEN + "You are now chatting with " + receiver.getName() + ".");
 			return true;
 		}
-		handler.helpPlayer(this, sender);
-		
-		return true;
-		
+		return false;
 	}
 
 	@Override
@@ -140,7 +133,7 @@ public class Tell extends PlayerCommand{
 			return null;
 		List<String> namesToReturn = new ArrayList<String>();
 		if (plugin.isMercuryEnabled()) {
-			Set<String> players = MercuryAPI.instance.getAllPlayers();
+			Set<String> players = MercuryAPI.getAllPlayers();
 			for (String x: players) {
 				if (x.toLowerCase().startsWith(args[0].toLowerCase()))
 					namesToReturn.add(x);
