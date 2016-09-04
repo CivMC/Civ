@@ -64,6 +64,9 @@ public abstract class CommandHandler {
 				}
 				return completes;
 			}
+			else {
+				return completes;
+			}
 		}
 		return null;
 	}
