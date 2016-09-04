@@ -28,34 +28,4 @@ public class CivChat2CommandHandler extends CommandHandler{
 		addCommands(new Exit("exit"));
 		addCommands(new SayAll("sayall"));
 	}
-	
-	public void addCommands(Command command){
-		commands.put(command.getIdentifier().toLowerCase(), command);
-	}
-	
-	public void helpPlayer(Command command, CommandSender sender){
-		StringBuilder sb = new StringBuilder();
-		
-		String cmd = sb.append(ChatColor.RED)
-						.append("Command: ")
-						.append(command.getName().toString())
-						.toString();
-		sb.delete(0, sb.length());
-		
-		String desc = sb.append(ChatColor.RED)
-						.append("Description: ")
-						.append(command.getDescription().toString())
-						.toString();
-		sb.delete(0, sb.length());
-		
-		String usage = sb.append(ChatColor.RED)
-						.append("Usage: ")
-						.append(command.getUsage().toString())
-						.toString();
-		sb.delete(0, sb.length());
-		
-		sender.sendMessage(cmd);
-		sender.sendMessage(desc);
-		sender.sendMessage(usage);
-	}
 }
