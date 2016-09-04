@@ -22,9 +22,6 @@ public abstract class CommandHandler {
 		if (mercuryEnabled == null) {
 			mercuryEnabled = Bukkit.getPluginManager().getPlugin("Mercury") != null;
 		}
-		else {
-			mercuryEnabled = false;
-		}
 	}
 
 	public boolean execute(CommandSender sender, org.bukkit.command.Command cmd, String[] args) {
