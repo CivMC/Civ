@@ -84,6 +84,9 @@ public class ConfigParsing {
 			if (lore != null) {
 				meta.setLore(lore);
 			}
+			if (current.isBoolean("unbreakable")) {
+				meta.spigot().setUnbreakable(current.getBoolean("unbreakable"));
+			}
 			if (current.contains("enchants")) {
 				for (String enchantKey : current.getConfigurationSection(
 						"enchants").getKeys(false)) {
