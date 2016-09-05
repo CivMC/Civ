@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -86,6 +87,11 @@ public class ConfigParsing {
 			}
 			if (current.isBoolean("unbreakable")) {
 				meta.spigot().setUnbreakable(current.getBoolean("unbreakable"));
+			}
+			if (current.isBoolean("hideFlags") && current.getBoolean("hideFlags")) {
+				for(ItemFlag flag : ItemFlag.values()) {
+					meta.addItemFlags(flag);
+				}
 			}
 			if (current.contains("enchants")) {
 				for (String enchantKey : current.getConfigurationSection(
