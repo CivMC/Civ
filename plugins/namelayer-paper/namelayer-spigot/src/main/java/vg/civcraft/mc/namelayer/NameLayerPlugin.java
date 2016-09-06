@@ -131,14 +131,15 @@ public class NameLayerPlugin extends ACivMod{
 		long connectionTimeout = config.get("sql.connection_timeout").getLong();
 		long idleTimeout = config.get("sql.idle_timeout").getLong();
 		long maxLifetime = config.get("sql.max_lifetime").getLong();
-		db = new Database(getLogger(), username, password, host, port, dbname,
+		db = new ManagedDatasource(this, username, password, host, port, dbname,
 				poolsize, connectionTimeout, idleTimeout, maxLifetime);
 		try {
-			db.available();
+			db.getConnection().close();
 		} catch (Exception se) {
 			NameLayerPlugin.log(Level.WARNING, "Could not connect to DataBase, shutting down!");
-			Bukkit.getPluginManager().disablePlugin(this); // Why have it try connect, it can't
+			Bukkit.shutdown();
 		}
+		// TODO: have associations be a separate managed datasource.
 		associations = new AssociationList(getLogger(), db);
 		if (loadGroups) {
 			groupManagerDao = new GroupManagerDao(getLogger(), db);
