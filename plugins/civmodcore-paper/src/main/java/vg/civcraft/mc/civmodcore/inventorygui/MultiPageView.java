@@ -14,7 +14,7 @@ import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
  * automatically adjust their size
  *
  */
-public abstract class MultiPageView {
+public class MultiPageView {
 
 	private Player p;
 	private int currentPage;
