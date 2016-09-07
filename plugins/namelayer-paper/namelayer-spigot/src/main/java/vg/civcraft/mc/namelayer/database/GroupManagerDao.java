@@ -1,7 +1,5 @@
 package vg.civcraft.mc.namelayer.database;
 
-import static vg.civcraft.mc.namelayer.NameLayerPlugin.log;
-
 import java.util.concurrent.Callable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,7 +27,6 @@ import com.google.common.collect.Lists;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.database.Database;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -186,35 +183,12 @@ public class GroupManagerDao {
 	public GroupManagerDao(Logger logger, ManagedDatasource db){
 		this.logger = logger;
 		this.db = db;
-
-		// Now do updates.
-		try{
-			checkUpdate();
-		} catch (SQLException se) {
-			logger.log(Level.SEVERE, "Failed to set up database / procedures!", se);
-			throw new RuntimeException(se);
-		}
 	}
 	
 	/**
 	 * Not going to lie, I can't make heads or tails out of half of this.
-	 * @throws SQLException
 	 */
-	public void checkUpdate() throws SQLException {
-		long begin_time = System.currentTimeMillis();
-
-		// First migration is conversion from old system to new.
-		db.registerMigration(0, false,
-				new Callable<Boolean>() {
-					@Override
-					public Boolean call() {
-						return false; // Force a failure. Migrations doesn't check the current migration per step, only at beginning.
-						// So, we force a shutdown failure on first run. Then on second run, the Migration table will hold the correct values.
-					}
-				},
-				"INSERT INTO managed_plugin_data (plugin_name, current_migration_number, last_migration)"
-						+ " SELECT plugin_name, max(db_version), `timestamp` FROM db_version WHERE plugin_name = '" + plugin.getName() + "' LIMIT 1;");
-
+	public void registerMigrations() {
 		db.registerMigration(1, false, 
 				"alter table faction drop `version`;",
 				"alter table faction add type int default 0;",
@@ -367,9 +341,8 @@ public class GroupManagerDao {
 				new Callable<Boolean>() {
 					@Override
 					public Boolean call() {
-						Connection connection = db.getConnection();
-						
-						try (PreparedStatement permInit = connection.prepareStatement(addPermissionById);
+						try (Connection connection = db.getConnection();
+								PreparedStatement permInit = connection.prepareStatement(addPermissionById);
 								PreparedStatement permReg = connection.prepareStatement(registerPermission); ) {
 							Map <String, Integer> permIds = new HashMap<String, Integer>();
 
@@ -518,16 +491,12 @@ public class GroupManagerDao {
 					"  select f.group_id from faction_id f where f.group_name = group_name; " +
 					" end if; " +
 					"end;");
-		
-		db.updateDatabase();
-
-		logger.log(Level.INFO, "Database update took {0} seconds", (System.currentTimeMillis() - begin_time) / 1000);
 	}
 	
 	public int createGroup(String group, UUID owner, String password){
 		int ret = -1;
 		try (Connection connection = db.getConnection();
-				PreparedStatement createGroup = connection.prepareStatement(this.createGroup)){
+				PreparedStatement createGroup = connection.prepareStatement(GroupManagerDao.createGroup)){
 			String own = null;
 			if (owner != null) own = owner.toString();
 			createGroup.setString(1, group);
@@ -551,7 +520,7 @@ public class GroupManagerDao {
 	
 	public Group getGroup(String groupName){
 		try (Connection connection = db.getConnection();
-				PreparedStatement getGroup = connection.prepareStatement(this.getGroup)){
+				PreparedStatement getGroup = connection.prepareStatement(GroupManagerDao.getGroup)){
 			
 			getGroup.setString(1, groupName);
 			try (ResultSet set = getGroup.executeQuery()){
@@ -581,7 +550,7 @@ public class GroupManagerDao {
 	
 	public Group getGroup(int groupId){
 		try (Connection connection = db.getConnection();
-				PreparedStatement getGroupById = connection.prepareStatement(this.getGroupById)){
+				PreparedStatement getGroupById = connection.prepareStatement(GroupManagerDao.getGroupById)){
 			getGroupById.setInt(1, groupId);
 			try (ResultSet set = getGroupById.executeQuery();) {
 				if (!set.next()) return null;
@@ -609,7 +578,7 @@ public class GroupManagerDao {
 	public List<String> getGroupNames(UUID uuid){
 		List<String> groups = new ArrayList<String>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement getAllGroupsNames = connection.prepareStatement(this.getAllGroupsNames)){
+				PreparedStatement getAllGroupsNames = connection.prepareStatement(GroupManagerDao.getAllGroupsNames)){
 			getAllGroupsNames.setString(1, uuid.toString());
 			try (ResultSet set = getAllGroupsNames.executeQuery();) {
 				while(set.next()) {
@@ -627,7 +596,7 @@ public class GroupManagerDao {
 	public List<String> getGroupNames(UUID uuid, String role){
 		List<String> groups = new ArrayList<String>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement getGroupNameFromRole = connection.prepareStatement(this.getGroupNameFromRole)){
+				PreparedStatement getGroupNameFromRole = connection.prepareStatement(GroupManagerDao.getGroupNameFromRole)){
 			getGroupNameFromRole.setString(1, uuid.toString());
 			getGroupNameFromRole.setString(2, role);
 			try (ResultSet set = getGroupNameFromRole.executeQuery();) {
@@ -646,7 +615,7 @@ public class GroupManagerDao {
 	public Timestamp getTimestamp(String group){
 		Timestamp timestamp = null;
 		try (Connection connection = db.getConnection();
-				PreparedStatement getTimestamp = connection.prepareStatement(this.getTimestamp)){
+				PreparedStatement getTimestamp = connection.prepareStatement(GroupManagerDao.getTimestamp)){
 			getTimestamp.setString(1, group);
 			try (ResultSet set = getTimestamp.executeQuery();) {
 				if(set.next()) {
@@ -665,7 +634,7 @@ public class GroupManagerDao {
 	public PlayerType getPlayerType(int groupid, UUID uuid){
 		PlayerType ptype = null;
 		try (Connection connection = db.getConnection();
-				PreparedStatement getPlayerType = connection.prepareStatement(this.getPlayerType)){
+				PreparedStatement getPlayerType = connection.prepareStatement(GroupManagerDao.getPlayerType)){
 			getPlayerType.setInt(1, groupid);
 			getPlayerType.setString(2, uuid.toString());
 			try (ResultSet set = getPlayerType.executeQuery();) {
@@ -694,7 +663,7 @@ public class GroupManagerDao {
 	
 	public void updateTimestamp(String group){
 		try (Connection connection = db.getConnection();
-				PreparedStatement updateLastTimestamp = connection.prepareStatement(this.updateLastTimestamp)){
+				PreparedStatement updateLastTimestamp = connection.prepareStatement(GroupManagerDao.updateLastTimestamp)){
 			updateLastTimestamp.setString(1, group);
 			updateLastTimestamp.executeUpdate();
 		} catch (SQLException e) {
@@ -715,7 +684,7 @@ public class GroupManagerDao {
 	
 	public void deleteGroup(String groupName){
 		try (Connection connection = db.getConnection();
-				PreparedStatement deleteGroup = connection.prepareStatement(this.deleteGroup)){
+				PreparedStatement deleteGroup = connection.prepareStatement(GroupManagerDao.deleteGroup)){
 			deleteGroup.setString(1, groupName);
 			deleteGroup.setString(2, NameLayerPlugin.getSpecialAdminGroup());
 			deleteGroup.executeUpdate();
@@ -737,7 +706,7 @@ public class GroupManagerDao {
 	
 	public void addMember(UUID member, String faction, PlayerType role){
 		try (Connection connection = db.getConnection();
-				PreparedStatement addMember = connection.prepareStatement(this.addMember)){
+				PreparedStatement addMember = connection.prepareStatement(GroupManagerDao.addMember)){
 			addMember.setString(1, member.toString());
 			addMember.setString(2, role.name());
 			addMember.setString(3, faction);
@@ -751,7 +720,7 @@ public class GroupManagerDao {
 	public List<UUID> getAllMembers(String groupName, PlayerType role){
 		List<UUID> members = new ArrayList<UUID>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement getMembers = connection.prepareStatement(this.getMembers)){
+				PreparedStatement getMembers = connection.prepareStatement(GroupManagerDao.getMembers)){
 			getMembers.setString(1, groupName);
 			getMembers.setString(2, role.name());
 			try (ResultSet set = getMembers.executeQuery();) {
@@ -784,7 +753,7 @@ public class GroupManagerDao {
 	
 	public void removeMember(UUID member, String group){
 		try (Connection connection = db.getConnection();
-				PreparedStatement removeMember = connection.prepareStatement(this.removeMember)){
+				PreparedStatement removeMember = connection.prepareStatement(GroupManagerDao.removeMember)){
 			removeMember.setString(1, member.toString());
 			removeMember.setString(2, group);
 			removeMember.executeUpdate();
@@ -806,7 +775,7 @@ public class GroupManagerDao {
 	
 	public void removeAllMembers(String group){
 		try (Connection connection = db.getConnection();
-				PreparedStatement removeAllMembers = connection.prepareStatement(this.removeAllMembers)){
+				PreparedStatement removeAllMembers = connection.prepareStatement(GroupManagerDao.removeAllMembers)){
 			removeAllMembers.setString(1, group);
 			removeAllMembers.executeUpdate();
 		} catch (SQLException e) {
@@ -827,7 +796,7 @@ public class GroupManagerDao {
 	
 	public void addSubGroup(String group, String subGroup){
 		try (Connection connection = db.getConnection();
-				PreparedStatement addSubGroup = connection.prepareStatement(this.addSubGroup)){
+				PreparedStatement addSubGroup = connection.prepareStatement(GroupManagerDao.addSubGroup)){
 			addSubGroup.setString(1, subGroup);
 			addSubGroup.setString(2, group);
 			addSubGroup.executeUpdate();
@@ -840,7 +809,7 @@ public class GroupManagerDao {
 	public List<Group> getSubGroups(String group){
 		List<Group> groups = new ArrayList<Group>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement getSubGroups = connection.prepareStatement(this.getSubGroups)){
+				PreparedStatement getSubGroups = connection.prepareStatement(GroupManagerDao.getSubGroups)){
 			getSubGroups.setString(1, group);
 			
 			List<String> subgroups = Lists.newArrayList();
@@ -869,7 +838,7 @@ public class GroupManagerDao {
 	
 	public Group getSuperGroup(String group){
 		try (Connection connection = db.getConnection();
-				PreparedStatement getSuperGroup = connection.prepareStatement(this.getSuperGroup)){
+				PreparedStatement getSuperGroup = connection.prepareStatement(GroupManagerDao.getSuperGroup)){
 			getSuperGroup.setString(1, group);
 			try (ResultSet set = getSuperGroup.executeQuery();) {
 				if (!set.next()) {
@@ -903,7 +872,7 @@ public class GroupManagerDao {
 	
 	public void removeSubGroup(String group, String subGroup){
 		try (Connection connection = db.getConnection();
-				PreparedStatement removeSubGroup = connection.prepareStatement(this.removeSubGroup)){
+				PreparedStatement removeSubGroup = connection.prepareStatement(GroupManagerDao.removeSubGroup)){
 			removeSubGroup.setString(1, group);
 			removeSubGroup.setString(2, subGroup);
 			removeSubGroup.executeUpdate();
@@ -915,7 +884,7 @@ public class GroupManagerDao {
 	
 	public void addAllPermissions(int groupId, Map <PlayerType, List <PermissionType>> perms) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement addPermissionById = connection.prepareStatement(this.addPermissionById)){
+				PreparedStatement addPermissionById = connection.prepareStatement(GroupManagerDao.addPermissionById)){
 			for (Entry <PlayerType, List <PermissionType>> entry: perms.entrySet()){
 				String role = entry.getKey().name();
 				for(PermissionType perm : entry.getValue()) {
@@ -953,7 +922,7 @@ public class GroupManagerDao {
 
 	public void addPermission(String groupName, String role, List <PermissionType> perms){
 		try (Connection connection = db.getConnection();
-				PreparedStatement addPermission = connection.prepareStatement(this.addPermission)){
+				PreparedStatement addPermission = connection.prepareStatement(GroupManagerDao.addPermission)){
 			for(PermissionType perm : perms) {
 				addPermission.setString(1, role);
 				addPermission.setInt(2, perm.getId());
@@ -979,7 +948,7 @@ public class GroupManagerDao {
 	public Map<PlayerType, List<PermissionType>> getPermissions(String group){
 		Map<PlayerType, List<PermissionType>> perms = new HashMap<PlayerType, List<PermissionType>>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement getPermission = connection.prepareStatement(this.getPermission)){
+				PreparedStatement getPermission = connection.prepareStatement(GroupManagerDao.getPermission)){
 			getPermission.setString(1, group);
 			try (ResultSet set = getPermission.executeQuery();) {
 				while(set.next()){
@@ -1017,7 +986,7 @@ public class GroupManagerDao {
 	
 	public void removePermission(String group, PlayerType pType, PermissionType perm){
 		try (Connection connection = db.getConnection();
-				PreparedStatement removePermission = connection.prepareStatement(this.removePermission)){
+				PreparedStatement removePermission = connection.prepareStatement(GroupManagerDao.removePermission)){
 			removePermission.setString(1, group);
 			removePermission.setString(2, pType.name());
 			removePermission.setInt(3, perm.getId());
@@ -1041,7 +1010,7 @@ public class GroupManagerDao {
 	
 	public void registerPermission(PermissionType perm) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement registerPermission = connection.prepareStatement(this.registerPermission)){
+				PreparedStatement registerPermission = connection.prepareStatement(GroupManagerDao.registerPermission)){
 			registerPermission.setInt(1, perm.getId());
 			registerPermission.setString(2, perm.getName());
 			registerPermission.executeUpdate();
@@ -1054,7 +1023,7 @@ public class GroupManagerDao {
 		Map <Integer,String> perms = new TreeMap<Integer, String>();
 		try (Connection connection = db.getConnection();
 				Statement getPermissionMapping = connection.createStatement()) {
-			try (ResultSet res = getPermissionMapping.executeQuery(this.getPermissionMapping)) {
+			try (ResultSet res = getPermissionMapping.executeQuery(GroupManagerDao.getPermissionMapping)) {
 				while (res.next()) {
 					perms.put(res.getInt(1), res.getString(2));
 				}
@@ -1082,7 +1051,7 @@ public class GroupManagerDao {
 		try (Connection connection = db.getConnection();) {
 			List <Integer> groups = new LinkedList<Integer>();
 			try (Statement getAllGroupIds = connection.createStatement();
-					ResultSet set = getAllGroupIds.executeQuery(this.getAllGroupIds);) {
+					ResultSet set = getAllGroupIds.executeQuery(GroupManagerDao.getAllGroupIds);) {
 				// unpack ids;
 				while(set.next()) {
 					groups.add(set.getInt(1));
@@ -1094,7 +1063,7 @@ public class GroupManagerDao {
 			}
 			
 			int batchsize = 0, maxbatch = 100;
-			try (PreparedStatement addPermissionById = connection.prepareStatement(this.addPermissionById);) {
+			try (PreparedStatement addPermissionById = connection.prepareStatement(GroupManagerDao.addPermissionById);) {
 				for (int groupId : groups) {
 					for(PlayerType pType: playerTypes) {
 						addPermissionById.setInt(1, groupId);
@@ -1145,7 +1114,7 @@ public class GroupManagerDao {
 		int ret = 0;
 		try (Connection connection = db.getConnection();
 				Statement countGroups = connection.createStatement();
-				ResultSet set = countGroups.executeQuery(this.countGroups);){
+				ResultSet set = countGroups.executeQuery(GroupManagerDao.countGroups);){
 			ret = set.next() ? set.getInt("count") : 0;
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem counting groups", e);
@@ -1156,7 +1125,7 @@ public class GroupManagerDao {
 	public int countGroups(UUID uuid){
 		int ret = 0;
 		try (Connection connection = db.getConnection();
-				PreparedStatement countGroupsFromUUID = connection.prepareStatement(this.countGroupsFromUUID);){
+				PreparedStatement countGroupsFromUUID = connection.prepareStatement(GroupManagerDao.countGroupsFromUUID);){
 			countGroupsFromUUID.setString(1, uuid.toString());
 			try (ResultSet set = countGroupsFromUUID.executeQuery();) {
 				ret = set.next() ? set.getInt("count") : 0;
@@ -1183,7 +1152,7 @@ public class GroupManagerDao {
 	
 	public void mergeGroup(String groupName, String toMerge){
 		try (Connection connection = db.getConnection();
-				PreparedStatement mergeGroup = connection.prepareStatement(this.mergeGroup);){
+				PreparedStatement mergeGroup = connection.prepareStatement(GroupManagerDao.mergeGroup);){
 			mergeGroup.setString(1, groupName);
 			mergeGroup.setString(2, toMerge);
 			mergeGroup.execute();
@@ -1205,7 +1174,7 @@ public class GroupManagerDao {
 	
 	public void updatePassword(String groupName, String password){
 		try (Connection connection = db.getConnection();
-				PreparedStatement updatePassword = connection.prepareStatement(this.updatePassword);){
+				PreparedStatement updatePassword = connection.prepareStatement(GroupManagerDao.updatePassword);){
 			updatePassword.setString(1, password);
 			updatePassword.setString(2, groupName);
 			updatePassword.executeUpdate();
@@ -1222,7 +1191,7 @@ public class GroupManagerDao {
 	public Set <UUID> loadAllAutoAccept() {
 		Set <UUID> accepts = new HashSet<UUID>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement addAutoAcceptGroup = connection.prepareStatement(this.loadAllAutoAcceptGroup);
+				PreparedStatement addAutoAcceptGroup = connection.prepareStatement(GroupManagerDao.loadAllAutoAcceptGroup);
 				ResultSet rs = addAutoAcceptGroup.executeQuery();){
 			while (rs.next()) {
 				accepts.add(UUID.fromString(rs.getString(1)));
@@ -1250,7 +1219,7 @@ public class GroupManagerDao {
 	
 	public void autoAcceptGroups(final UUID uuid){
 		try (Connection connection = db.getConnection();
-				PreparedStatement addAutoAcceptGroup = connection.prepareStatement(this.addAutoAcceptGroup);){
+				PreparedStatement addAutoAcceptGroup = connection.prepareStatement(GroupManagerDao.addAutoAcceptGroup);){
 			addAutoAcceptGroup.setString(1, uuid.toString());
 			addAutoAcceptGroup.executeUpdate();
 		} catch (SQLException e) {
@@ -1265,7 +1234,7 @@ public class GroupManagerDao {
 	@Deprecated
 	public boolean shouldAutoAcceptGroups(UUID uuid){
 		try (Connection connection = db.getConnection();
-				PreparedStatement getAutoAcceptGroup = connection.prepareStatement(this.getAutoAcceptGroup);){
+				PreparedStatement getAutoAcceptGroup = connection.prepareStatement(GroupManagerDao.getAutoAcceptGroup);){
 			getAutoAcceptGroup.setString(1, uuid.toString());
 			try (ResultSet set = getAutoAcceptGroup.executeQuery();) {
 				return set.next();
@@ -1290,7 +1259,7 @@ public class GroupManagerDao {
 	
 	public void removeAutoAcceptGroup(final UUID uuid){
 		try (Connection connection = db.getConnection();
-				PreparedStatement removeAutoAcceptGroup = connection.prepareStatement(this.removeAutoAcceptGroup);){
+				PreparedStatement removeAutoAcceptGroup = connection.prepareStatement(GroupManagerDao.removeAutoAcceptGroup);){
 			removeAutoAcceptGroup.setString(1, uuid.toString());
 			removeAutoAcceptGroup.executeUpdate();
 		} catch (SQLException e) {
@@ -1311,7 +1280,7 @@ public class GroupManagerDao {
 	
 	public void setDefaultGroup(UUID uuid, String groupName){
 		try (Connection connection = db.getConnection();
-				PreparedStatement setDefaultGroup = connection.prepareStatement(this.setDefaultGroup);){
+				PreparedStatement setDefaultGroup = connection.prepareStatement(GroupManagerDao.setDefaultGroup);){
 			setDefaultGroup.setString(1, uuid.toString());
 			setDefaultGroup.setString(2, groupName );
 			setDefaultGroup.executeUpdate();
@@ -1333,7 +1302,7 @@ public class GroupManagerDao {
 	
 	public void changeDefaultGroup(UUID uuid, String groupName){
 		try (Connection connection = db.getConnection();
-				PreparedStatement changeDefaultGroup = connection.prepareStatement(this.changeDefaultGroup);){
+				PreparedStatement changeDefaultGroup = connection.prepareStatement(GroupManagerDao.changeDefaultGroup);){
 			changeDefaultGroup.setString(1, groupName);
 			changeDefaultGroup.setString(2, uuid.toString());
 			changeDefaultGroup.executeUpdate();
@@ -1345,7 +1314,7 @@ public class GroupManagerDao {
 	public String getDefaultGroup(UUID uuid) {
 		String group = null;
 		try (Connection connection = db.getConnection();
-				PreparedStatement getDefaultGroup = connection.prepareStatement(this.getDefaultGroup);){
+				PreparedStatement getDefaultGroup = connection.prepareStatement(GroupManagerDao.getDefaultGroup);){
 			getDefaultGroup.setString(1, uuid.toString());
 			try (ResultSet set = getDefaultGroup.executeQuery();) {
 				group = set.getString(1);
@@ -1362,7 +1331,7 @@ public class GroupManagerDao {
 		Map <UUID, String> groups = null;
 		try (Connection connection = db.getConnection();
 				Statement getAllDefaultGroups = connection.createStatement();
-				ResultSet set = getAllDefaultGroups.executeQuery(this.getAllDefaultGroups);){
+				ResultSet set = getAllDefaultGroups.executeQuery(GroupManagerDao.getAllDefaultGroups);){
 			groups = new TreeMap<UUID, String>();
 			while(set.next()) {
 				UUID uuid = UUID.fromString(set.getString(1));
@@ -1393,7 +1362,7 @@ public class GroupManagerDao {
 	
 	public void setFounder(UUID uuid, Group group) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement updateOwner = connection.prepareStatement(this.updateOwner);){
+				PreparedStatement updateOwner = connection.prepareStatement(GroupManagerDao.updateOwner);){
 			updateOwner.setString(1, uuid.toString());
 			updateOwner.setString(2, group.getName());
 			updateOwner.executeUpdate();
@@ -1415,7 +1384,7 @@ public class GroupManagerDao {
 	
 	public void setDisciplined(Group group, boolean disciplined) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement updateDisciplined = connection.prepareStatement(this.updateDisciplined);){
+				PreparedStatement updateDisciplined = connection.prepareStatement(GroupManagerDao.updateDisciplined);){
 			updateDisciplined.setInt(1, disciplined ? 1 : 0);
 			updateDisciplined.setString(2, group.getName());
 			updateDisciplined.executeUpdate();
@@ -1439,7 +1408,7 @@ public class GroupManagerDao {
 	
 	public void addGroupInvitation(UUID uuid, String groupName, String role){
 		try (Connection connection = db.getConnection();
-				PreparedStatement addGroupInvitation = connection.prepareStatement(this.addGroupInvitation);){
+				PreparedStatement addGroupInvitation = connection.prepareStatement(GroupManagerDao.addGroupInvitation);){
 			addGroupInvitation.setString(1, uuid.toString());
 			addGroupInvitation.setString(2, groupName);
 			addGroupInvitation.setString(3, role);
@@ -1463,7 +1432,7 @@ public class GroupManagerDao {
 	
 	public void removeGroupInvitation(UUID uuid, String groupName){
 		try (Connection connection = db.getConnection();
-				PreparedStatement removeGroupInvitation = connection.prepareStatement(this.removeGroupInvitation);){
+				PreparedStatement removeGroupInvitation = connection.prepareStatement(GroupManagerDao.removeGroupInvitation);){
 			removeGroupInvitation.setString(1, uuid.toString());
 			removeGroupInvitation.setString(2, groupName);
 			removeGroupInvitation.executeUpdate();
@@ -1494,7 +1463,7 @@ public class GroupManagerDao {
 		if(group == null) return;
 		
 		try (Connection connection = db.getConnection();
-				PreparedStatement loadGroupInvitation = connection.prepareStatement(this.loadGroupInvitation);){
+				PreparedStatement loadGroupInvitation = connection.prepareStatement(GroupManagerDao.loadGroupInvitation);){
 			loadGroupInvitation.setString(1, playerUUID.toString());
 			loadGroupInvitation.setString(2, group.getName());
 			try (ResultSet set = loadGroupInvitation.executeQuery();) {
@@ -1521,7 +1490,7 @@ public class GroupManagerDao {
 			return invs;
 		}
 		try (Connection connection = db.getConnection();
-				PreparedStatement loadGroupInvitationsForGroup = connection.prepareStatement(this.loadGroupInvitationsForGroup);){
+				PreparedStatement loadGroupInvitationsForGroup = connection.prepareStatement(GroupManagerDao.loadGroupInvitationsForGroup);){
 			loadGroupInvitationsForGroup.setString(1, groupName);
 			try (ResultSet set = loadGroupInvitationsForGroup.executeQuery();) {
 				while(set.next()) {
@@ -1553,7 +1522,7 @@ public class GroupManagerDao {
 	 */
 	public void loadGroupsInvitations(){
 		try (Connection connection = db.getConnection();
-				PreparedStatement loadGroupsInvitations = connection.prepareStatement(this.loadGroupsInvitations);
+				PreparedStatement loadGroupsInvitations = connection.prepareStatement(GroupManagerDao.loadGroupsInvitations);
 				ResultSet set = loadGroupsInvitations.executeQuery();) {
 			while(set.next()){
 				String uuid = set.getString("uuid");
@@ -1595,7 +1564,7 @@ public class GroupManagerDao {
 	
 	public void logNameChange(UUID uuid, String oldName, String newName) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement logNameChange = connection.prepareStatement(this.logNameChange);){
+				PreparedStatement logNameChange = connection.prepareStatement(GroupManagerDao.logNameChange);){
 			logNameChange.setString(1, uuid.toString());
 			logNameChange.setString(2, oldName);
 			logNameChange.setString(3, newName);
@@ -1609,7 +1578,7 @@ public class GroupManagerDao {
 	public boolean hasChangedNameBefore(UUID uuid) {
 		boolean ret = false;
 		try (Connection connection = db.getConnection();
-				PreparedStatement checkForNameChange = connection.prepareStatement(this.checkForNameChange);){
+				PreparedStatement checkForNameChange = connection.prepareStatement(GroupManagerDao.checkForNameChange);){
 			checkForNameChange.setString(1, uuid.toString());
 			try (ResultSet set = checkForNameChange.executeQuery();) { 
 				ret = set.next();
@@ -1636,7 +1605,7 @@ public class GroupManagerDao {
 	
 	public void addBlackListMember(String groupName, UUID player) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement addBlacklistMember = connection.prepareStatement(this.addBlacklistMember);){
+				PreparedStatement addBlacklistMember = connection.prepareStatement(GroupManagerDao.addBlacklistMember);){
 			addBlacklistMember.setString(1, player.toString());
 			addBlacklistMember.setString(2, groupName);
 			addBlacklistMember.executeUpdate();
@@ -1658,7 +1627,7 @@ public class GroupManagerDao {
 	
 	public void removeBlackListMember(String groupName, UUID player) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement removeBlackListMember = connection.prepareStatement(this.removeBlackListMember);){
+				PreparedStatement removeBlackListMember = connection.prepareStatement(GroupManagerDao.removeBlackListMember);){
 			removeBlackListMember.setString(1, groupName);
 			removeBlackListMember.setString(2, player.toString());
 			removeBlackListMember.executeUpdate();
@@ -1670,7 +1639,7 @@ public class GroupManagerDao {
 	public Set<UUID> getBlackListMembers(String groupName) {
 		Set<UUID> uuids = new HashSet<UUID>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement getBlackListMembers = connection.prepareStatement(this.getBlackListMembers);){
+				PreparedStatement getBlackListMembers = connection.prepareStatement(GroupManagerDao.getBlackListMembers);){
 			getBlackListMembers.setString(1, groupName);
 			try (ResultSet set = getBlackListMembers.executeQuery();) {
 				while (set.next()) {
@@ -1699,7 +1668,7 @@ public class GroupManagerDao {
 			return null;
 		}
 		try (Connection connection = db.getConnection();
-				PreparedStatement getGroupIDs = connection.prepareStatement(this.getGroupIDs);){
+				PreparedStatement getGroupIDs = connection.prepareStatement(GroupManagerDao.getGroupIDs);){
 			getGroupIDs.setString(1, groupName);
 			try (ResultSet set = getGroupIDs.executeQuery();) {
 				LinkedList<Integer> ids = new LinkedList<Integer>();
