@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.Factory;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
@@ -48,7 +49,22 @@ public class RandomOutputRecipe extends InputRecipe {
 	public void applyEffect(Inventory i, Factory f) {
 		logBeforeRecipeRun(i, f);
 		ItemMap toRemove = input.clone();
-		ItemMap toAdd = getRandomOutput().clone();
+		ItemMap toAdd = null;
+		int counter = 0;
+		while(counter < 20) {
+			toAdd = getRandomOutput();
+			if (toAdd != null) {
+				toAdd = toAdd.clone();
+				break;
+			}
+			else {
+				counter++;
+			}
+		}
+		if (toAdd == null) {
+			FactoryMod.getPlugin().warning("Unable to find a random item to output. Recipe execution was cancelled," + f.getLogData());
+			return;
+		}
 		if (toRemove.isContainedIn(i)) {
 			if (toRemove.removeSafelyFrom(i)) {
 				for(ItemStack is: toAdd.getItemStackRepresentation()) {
