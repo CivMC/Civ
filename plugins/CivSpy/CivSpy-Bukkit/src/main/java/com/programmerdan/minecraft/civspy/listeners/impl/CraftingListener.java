@@ -10,21 +10,23 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import haveric.recipeManager.api.events.RecipeManagerCraftEvent;
+import haveric.recipeManager.recipes.ItemResult;
+import haveric.recipeManager.recipes.WorkbenchRecipe;
+
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;
 import com.programmerdan.minecraft.civspy.PointDataSample;
 import com.programmerdan.minecraft.civspy.listeners.ServerDataListener;
 
 /**
- * Sample Listener class that records all block breaks for summation by who and what.
- * This only records _player_ breaks, so if other entities cause a break those events are
- * ignored.
+ * Listener that records crafting recipe use.
  * 
  * @author ProgrammerDan
  */
-public final class BreakListener extends ServerDataListener {
+public final class CraftingListener extends ServerDataListener {
 
-	public BreakListener(DataManager target, Logger logger, String server) {
+	public CraftingListener(DataManager target, Logger logger, String server) {
 		super(target, logger, server);
 	}
 	
@@ -34,19 +36,18 @@ public final class BreakListener extends ServerDataListener {
 	}
 	
 	/**
-	 * Generates: <code>player.blockbreak</code> stat_key data. Block type:subtype
-	 * is stored in the string value field.
+	 * Generates: <code>player.craft</code> stat_key data.
+	 * ItemStack size stored in number value, toString in string value.
 	 * 
-	 * @param event The BlockBreakEvent
 	 */
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
-	public void BreakListen(BlockBreakEvent event) {
-		Player p = event.getPlayer();
-		if (p == null) return;
-		UUID id = p.getUniqueId();
-		Block broken = event.getBlock();
-		Chunk chunk = broken.getChunk();
+	public void CraftListen(RecipeManagerCraftEvent event) {
+		Player player = event.getPlayer();
+		if (player == null) return;
+		UUID id = player.getUniqueId();
+
+		Location location = p.getLocation();
+		Chunk chunk = location.getChunk();
 		
 		StringBuilder blockName = new StringBuilder(broken.getType().toString());
 		blockName.append(":").append(broken.getData());
@@ -57,3 +58,4 @@ public final class BreakListener extends ServerDataListener {
 	}
 
 }
+
