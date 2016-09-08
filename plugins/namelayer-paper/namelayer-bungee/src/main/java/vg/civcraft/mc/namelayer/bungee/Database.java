@@ -1,4 +1,4 @@
-package vg.civcraft.mc.namelayer.database;
+package vg.civcraft.mc.namelayer.bungee;
 
 import java.sql.Connection;
 import java.sql.SQLException;

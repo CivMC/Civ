@@ -16,7 +16,6 @@ import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.command.CommandHandler;
 import vg.civcraft.mc.namelayer.database.AssociationList;
-import vg.civcraft.mc.namelayer.database.Database;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.AutoAcceptHandler;
 import vg.civcraft.mc.namelayer.group.BlackList;
@@ -103,7 +102,7 @@ public class NameLayerPlugin extends ACivMod{
 			try {
 				db.close();
 			} catch (Exception e) {
-				log(Level.INFO, "Failed to close database gracefully on shutdown.");
+				getLogger().log(Level.INFO, "Failed to close database gracefully on shutdown.", e);
 			}
 		}
 	}
@@ -165,6 +164,7 @@ public class NameLayerPlugin extends ACivMod{
 		long begin_time = System.currentTimeMillis();
 
 		try {
+			getLogger().log(Level.INFO, "Update prepared, starting database update.");
 			if (!db.updateDatabase()) {
 				getLogger().log(Level.SEVERE, "Update failed, terminating Bukkit.");
 				Bukkit.shutdown();

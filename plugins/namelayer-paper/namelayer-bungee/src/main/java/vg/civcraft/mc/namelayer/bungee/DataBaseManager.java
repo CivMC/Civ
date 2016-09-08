@@ -8,13 +8,15 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import vg.civcraft.mc.namelayer.database.Database;
-
 public class DataBaseManager {
 
 	private Logger logger;
 	private Database db;
 	private NameLayerBungee plugin = NameLayerBungee.getInstance();
+	
+	private static final String addPlayer = "call addplayertotable(?, ?)"; // order player name, uuid 
+	private static final String getPlayerFromUUID = "select player from Name_player where uuid=?";
+	private static final String getUUIDfromPlayer = "select uuid from Name_player where player=?";
 	
 	public DataBaseManager() {
 		this.logger = plugin.getLogger();
@@ -31,25 +33,14 @@ public class DataBaseManager {
 				poolsize, connectionTimeout, idleTimeout, maxLifetime);
 		try {
 			db.available();
-			intializeStringStatements();
 		} catch (Exception e){
 			logger.log(Level.SEVERE, "Unable to prepare the database pool!");
 		}
 	}
 	
-	private String addPlayer, getPlayerFromUUID, getUUIDfromPlayer;
-	
-	private void intializeStringStatements() {
-		addPlayer = "call addplayertotable(?, ?)"; // order player name, uuid 
-		getPlayerFromUUID = "select player from Name_player " +
-				"where uuid=?";
-		getUUIDfromPlayer = "select uuid from Name_player " +
-				"where player=?";
-	}
-	
 	public void addPlayer(String playername, UUID uuid){
 		try (Connection connection = db.getConnection();
-				PreparedStatement addPlayer = connection.prepareStatement(this.addPlayer);) {
+				PreparedStatement addPlayer = connection.prepareStatement(DataBaseManager.addPlayer);) {
 			addPlayer.setString(1, playername);
 			addPlayer.setString(2, uuid.toString());
 			addPlayer.execute();
@@ -62,7 +53,7 @@ public class DataBaseManager {
 	// returns null if no playername was found
 	public String getCurrentName(UUID uuid){
 		try (Connection connection = db.getConnection();
-				PreparedStatement getPlayerfromUUID = connection.prepareStatement(this.getPlayerFromUUID);) {
+				PreparedStatement getPlayerfromUUID = connection.prepareStatement(DataBaseManager.getPlayerFromUUID);) {
 			getPlayerfromUUID.setString(1, uuid.toString());
 			try (ResultSet set = getPlayerfromUUID.executeQuery();) {
 				if (!set.next()) return null;
@@ -80,7 +71,7 @@ public class DataBaseManager {
 	// returns null if no uuid was found
 	public UUID getUUID(String playername){
 		try (Connection connection = db.getConnection();
-				PreparedStatement getUUIDfromPlayer = connection.prepareStatement(this.getUUIDfromPlayer);) {
+				PreparedStatement getUUIDfromPlayer = connection.prepareStatement(DataBaseManager.getUUIDfromPlayer);) {
 			getUUIDfromPlayer.setString(1, playername);
 			try (ResultSet set = getUUIDfromPlayer.executeQuery();) {
 				if (!set.next() || set.wasNull()) return null;
