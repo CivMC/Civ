@@ -51,12 +51,13 @@ public class FurnCraftChestFactory extends Factory {
 	protected IRecipe currentRecipe;
 	protected Map<IRecipe, Integer> runCount;
 	private UUID activator;
+	private double citadelBreakReduction;
 
 	private static HashSet<FurnCraftChestFactory> pylonFactories;
 
 	public FurnCraftChestFactory(IInteractionManager im, IRepairManager rm,
 			IPowerManager ipm, FurnCraftChestStructure mbs, int updateTime,
-			String name, List<IRecipe> recipes) {
+			String name, List<IRecipe> recipes, double citadelBreakReduction) {
 		super(im, rm, ipm, mbs, updateTime, name);
 		this.active = false;
 		this.recipes = recipes;
@@ -440,13 +441,14 @@ public class FurnCraftChestFactory extends Factory {
 	}
 
 	public void upgrade(String name, List<IRecipe> recipes, ItemStack fuel,
-			int fuelConsumptionIntervall, int updateTime, int maximumHealth, int damageAmountPerDecayIntervall, long gracePeriod) {
+			int fuelConsumptionIntervall, int updateTime, int maximumHealth, int damageAmountPerDecayIntervall, long gracePeriod, double citadelBreakReduction) {
 		LoggingUtils.log("Upgrading " + getLogData() + " to " + name);
 		pylonFactories.remove(this);
 		deactivate();
 		this.name = name;
 		this.recipes = recipes;
 		this.updateTime = updateTime;
+		this.citadelBreakReduction = citadelBreakReduction;
 		this.pm = new FurnacePowerManager(getFurnace(), fuel,
 				fuelConsumptionIntervall);
 		this.rm = new PercentageHealthRepairManager(maximumHealth, maximumHealth, 0, damageAmountPerDecayIntervall, gracePeriod);
@@ -465,5 +467,9 @@ public class FurnCraftChestFactory extends Factory {
 				break;
 			}
 		}
+	}
+	
+	public double getCitadelBreakReduction() {
+		return citadelBreakReduction;
 	}
 }

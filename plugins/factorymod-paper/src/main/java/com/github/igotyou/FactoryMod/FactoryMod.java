@@ -3,6 +3,7 @@ package com.github.igotyou.FactoryMod;
 import org.bukkit.entity.Player;
 
 import com.github.igotyou.FactoryMod.commands.FactoryModCommandHandler;
+import com.github.igotyou.FactoryMod.listeners.CitadelListener;
 import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
@@ -58,6 +59,9 @@ public class FactoryMod extends ACivMod {
 				.getPluginManager()
 				.registerEvents(
 						new CompactItemListener(), plugin);
+		if (manager.isCitadelEnabled()) {
+			plugin.getServer().getPluginManager().registerEvents(new CitadelListener(), plugin);
+		}
 	}
 
 	public static MenuBuilder getMenuBuilder() {

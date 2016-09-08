@@ -470,8 +470,9 @@ public class ConfigParser {
 		else {
 			healthPerDamageIntervall = defaultDamagePerBreakPeriod;
 		}
+		double citadelBreakReduction = config.getDouble("citadelBreakReduction", 1.0);
 		FurnCraftChestEgg egg = new FurnCraftChestEgg(name, update, null, fuel,
-				fuelIntervall, returnRate, health, gracePeriod, healthPerDamageIntervall);
+				fuelIntervall, returnRate, health, gracePeriod, healthPerDamageIntervall, citadelBreakReduction);
 		recipeLists.put(egg, config.getStringList("recipes"));
 		return egg;
 	}

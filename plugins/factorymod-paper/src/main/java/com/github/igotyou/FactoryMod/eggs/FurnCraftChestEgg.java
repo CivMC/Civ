@@ -27,10 +27,11 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 	private long breakGracePeriod;
 	private int healthPerDamagePeriod;
 	private double returnRateOnDestruction;
+	private double citadelBreakReduction;
 
 	public FurnCraftChestEgg(String name, int updateTime,
 			List<IRecipe> recipes, ItemStack fuel,
-			int fuelConsumptionIntervall, double returnRateOnDestruction, int maximumHealth, long breakGracePeriod, int healthPerDamagePeriod) {
+			int fuelConsumptionIntervall, double returnRateOnDestruction, int maximumHealth, long breakGracePeriod, int healthPerDamagePeriod, double citadelBreakReduction) {
 		this.name = name;
 		this.updateTime = updateTime;
 		this.recipes = recipes;
@@ -40,6 +41,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		this.fuelConsumptionIntervall = fuelConsumptionIntervall;
 		this.returnRateOnDestruction = returnRateOnDestruction;
 		this.maximumHealth = maximumHealth;
+		this.citadelBreakReduction = citadelBreakReduction;
 	}
 
 	public Factory hatch(MultiBlockStructure mbs, Player p) {
@@ -49,7 +51,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		FurnCraftChestInteractionManager fccim = new FurnCraftChestInteractionManager();
 		PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(maximumHealth, maximumHealth, 0, healthPerDamagePeriod, breakGracePeriod);
 		FurnCraftChestFactory fccf = new FurnCraftChestFactory(fccim, phrm,
-				fpm, fccs, updateTime, name, recipes);
+				fpm, fccs, updateTime, name, recipes, citadelBreakReduction);
 		fccim.setFactory(fccf);
 		phrm.setFactory(fccf);
 		if (recipes.size() != 0) {
@@ -125,7 +127,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 			}
 		}
 		FurnCraftChestFactory fccf = new FurnCraftChestFactory(fccim, phrm,
-				fpm, fccs, updateTime, name, currRecipes);
+				fpm, fccs, updateTime, name, currRecipes, citadelBreakReduction);
 		fccim.setFactory(fccf);
 		phrm.setFactory(fccf);
 		for (IRecipe recipe : currRecipes) {
@@ -148,5 +150,8 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 	public Class <FurnCraftChestStructure> getMultiBlockStructure() {
 		return FurnCraftChestStructure.class;
 	}
-
+	
+	public double getCitadelBreakReduction() {
+		return citadelBreakReduction;
+	}
 }

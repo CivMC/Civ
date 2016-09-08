@@ -37,7 +37,7 @@ public class Upgraderecipe extends InputRecipe {
 				((FurnCraftChestFactory) f).upgrade(e.getName(),
 						e.getRecipes(), e.getFuel(),
 						e.getFuelConsumptionIntervall(), e.getUpdateTime(), e.getMaximumHealth(), 
-						e.getDamagePerDamagingPeriod(), e.getBreakGracePeriod());
+						e.getDamagePerDamagingPeriod(), e.getBreakGracePeriod(), e.getCitadelBreakReduction());
 			}
 		}
 		logAfterRecipeRun(i, f);
