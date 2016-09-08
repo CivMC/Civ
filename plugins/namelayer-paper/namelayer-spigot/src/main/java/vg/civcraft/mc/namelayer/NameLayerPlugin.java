@@ -171,6 +171,7 @@ public class NameLayerPlugin extends ACivMod{
 			}
 		} catch (Exception e) {
 			getLogger().log(Level.SEVERE, "Update failed, terminating Bukkit. Cause:", e);
+			Bukkit.shutdown();
 		}
 
 		getLogger().log(Level.INFO, "Database update took {0} seconds", (System.currentTimeMillis() - begin_time) / 1000);

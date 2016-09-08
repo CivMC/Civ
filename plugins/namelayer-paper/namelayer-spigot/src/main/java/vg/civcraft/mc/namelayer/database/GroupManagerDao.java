@@ -42,38 +42,38 @@ public class GroupManagerDao {
 	protected NameLayerPlugin plugin = NameLayerPlugin.getInstance();
 	
 		
-	public static final String createGroup = "call createGroup(?,?,?,?)";
-	public static final String getGroup = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id " +
+	private static final String createGroup = "call createGroup(?,?,?,?)";
+	private static final String getGroup = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id " +
 				"from faction f "
 				+ "inner join faction_id fi on fi.group_name = f.group_name "
 				+ "where f.group_name = ?";
-	public static final String getGroupIDs = "SELECT f.group_id, count(DISTINCT fm.member_name) AS sz FROM faction_id f "
+	private static final String getGroupIDs = "SELECT f.group_id, count(DISTINCT fm.member_name) AS sz FROM faction_id f "
 				+ "INNER JOIN faction_member fm ON f.group_id = fm.group_id WHERE f.group_name = ? GROUP BY f.group_id ORDER BY sz DESC";
-	public static final String getGroupById = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id " +
+	private static final String getGroupById = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id " +
 				"from faction f "
 				+ "inner join faction_id fi on fi.group_id = ? "
 				+ "where f.group_name = fi.group_name";
-	public static final String getAllGroupsNames = "select f.group_name from faction_id f "
+	private static final String getAllGroupsNames = "select f.group_name from faction_id f "
 				+ "inner join faction_member fm on f.group_id = fm.group_id "
 				+ "where fm.member_name = ?";
-	public static final String deleteGroup = "call deletegroupfromtable(?, ?)";
+	private static final String deleteGroup = "call deletegroupfromtable(?, ?)";
 
-	public static final String addMember = "insert into faction_member(" +
+	private static final String addMember = "insert into faction_member(" +
 				"group_id, member_name, role) select group_id, ?, ? from "
 				+ "faction_id where group_name = ?";
-	public static final String getMembers = "select fm.member_name from faction_member fm "
+	private static final String getMembers = "select fm.member_name from faction_member fm "
 				+ "inner join faction_id id on id.group_name = ? "
 				+ "where fm.group_id = id.group_id and fm.role = ?";
-	public static final String removeMember = "delete fm.* from faction_member fm "
+	private static final String removeMember = "delete fm.* from faction_member fm "
 				+ "inner join faction_id fi on fi.group_id = fm.group_id "
 				+ "where fm.member_name = ? and fi.group_name =?";
 		
-	public static final String removeAllMembers = "delete fm.* from faction_member fm "
+	private static final String removeAllMembers = "delete fm.* from faction_member fm "
 				+ "inner join faction_id fi on fi.group_id = fm.group_id "
 				+ "where fi.group_name =?";
 		
 		// So this will link all instances (name/id pairs) of the subgroup to all instances (name/id pairs) of the supergroup.
-	public static final String addSubGroup = "INSERT INTO subgroup (group_id, sub_group_id) "
+	private static final String addSubGroup = "INSERT INTO subgroup (group_id, sub_group_id) "
 				+ "SELECT super.group_id, sub.group_id "
 				+ "FROM faction_id super "
 				+ "INNER JOIN faction_id sub "
@@ -81,12 +81,12 @@ public class GroupManagerDao {
 				+ "WHERE super.group_name = ?";
 		
 		// This undoes the above. It unlinks all instances (name/id pairs) of the subgroup from all instances (name/id pairs) of the supergroup.
-	public static final String removeSubGroup ="DELETE FROM subgroup "
+	private static final String removeSubGroup ="DELETE FROM subgroup "
 				+ "WHERE group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) "
 				+ "AND sub_group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?)";
 		
 		// This lists all unique subgroups (names) for all instances (name/id pairs) of the supergroup.
-	public static final String getSubGroups = "SELECT DISTINCT sub.group_name FROM faction_id sub "
+	private static final String getSubGroups = "SELECT DISTINCT sub.group_name FROM faction_id sub "
 				+ "INNER JOIN faction_id super "
 				+ "ON super.group_name = ? "
 				+ "INNER JOIN subgroup other "
@@ -95,89 +95,89 @@ public class GroupManagerDao {
 		
 		// This lists all unique supergroups (names) which are parent(s) for all instances (name/id pairs) of the subgroup. 
 		// I expect most implementations to ignore if this has multiple results; a "safe" implementation will check.
-	public static final String getSuperGroup ="SELECT DISTINCT f.group_name FROM faction_id f "
+	private static final String getSuperGroup ="SELECT DISTINCT f.group_name FROM faction_id f "
 				+ "INNER JOIN faction_id sf ON sf.group_name = ? "
 				+ "INNER JOIN subgroup sg ON sg.group_id = sf.group_id "
 				+ "WHERE f.group_id = sg.sub_group_id";
 		
 		// returns count of unique names, but not (name / id pairs) of all groups.
-	public static final String countGroups = "select count(DISTINCT group_name) as count from faction";
+	private static final String countGroups = "select count(DISTINCT group_name) as count from faction";
 		
 		// returns count of unique names of groups owned by founder
-	public static final String countGroupsFromUUID = "select count(DISTINCT group_name) as count from faction where founder = ?";
+	private static final String countGroupsFromUUID = "select count(DISTINCT group_name) as count from faction where founder = ?";
 		
-	public static final String mergeGroup = "call mergeintogroup(?,?)";
+	private static final String mergeGroup = "call mergeintogroup(?,?)";
 		
-	public static final String updatePassword = "update faction set `password` = ? "
+	private static final String updatePassword = "update faction set `password` = ? "
 				+ "where group_name = ?";
 		
-	public static final String updateOwner = "update faction set founder = ? "
+	private static final String updateOwner = "update faction set founder = ? "
 				+ "where group_name = ?";
 		
-	public static final String updateDisciplined = "update faction set discipline_flags = ? "
+	private static final String updateDisciplined = "update faction set discipline_flags = ? "
 				+ "where group_name = ?";
 		
-	public static final String addAutoAcceptGroup = "insert into toggleAutoAccept(uuid)"
+	private static final String addAutoAcceptGroup = "insert into toggleAutoAccept(uuid)"
 				+ "values(?)";
-	public static final String getAutoAcceptGroup = "select uuid from toggleAutoAccept "
+	private static final String getAutoAcceptGroup = "select uuid from toggleAutoAccept "
 				+ "where uuid = ?";
-	public static final String removeAutoAcceptGroup = "delete from toggleAutoAccept where uuid = ?";
+	private static final String removeAutoAcceptGroup = "delete from toggleAutoAccept where uuid = ?";
 		
-	public static final String loadAllAutoAcceptGroup = "select uuid from toggleAutoAccept;";
+	private static final String loadAllAutoAcceptGroup = "select uuid from toggleAutoAccept;";
 		
-	public static final String setDefaultGroup = "insert into default_group values(?, ?)";
+	private static final String setDefaultGroup = "insert into default_group values(?, ?)";
 		
-	public static final String changeDefaultGroup = "update default_group set defaultgroup = ? where uuid = ?";
+	private static final String changeDefaultGroup = "update default_group set defaultgroup = ? where uuid = ?";
 	
 		
-	public static final String getDefaultGroup = "select defaultgroup from default_group "
+	private static final String getDefaultGroup = "select defaultgroup from default_group "
 				+ "where uuid = ?";
-	public static final String getAllDefaultGroups = "select uuid,defaultgroup from default_group";
+	private static final String getAllDefaultGroups = "select uuid,defaultgroup from default_group";
 		
-	public static final String loadGroupsInvitations = "select uuid, groupName, role from group_invitation";
+	private static final String loadGroupsInvitations = "select uuid, groupName, role from group_invitation";
 		
-	public static final String addGroupInvitation = "insert into group_invitation(uuid, groupName, role) values(?, ?, ?) on duplicate key update role=values(role), date=now();";
+	private static final String addGroupInvitation = "insert into group_invitation(uuid, groupName, role) values(?, ?, ?) on duplicate key update role=values(role), date=now();";
 		
-	public static final String removeGroupInvitation = "delete from group_invitation where uuid = ? and groupName = ?";
+	private static final String removeGroupInvitation = "delete from group_invitation where uuid = ? and groupName = ?";
 		
-	public static final String loadGroupInvitation = "select role from group_invitation where uuid = ? and groupName = ?";
+	private static final String loadGroupInvitation = "select role from group_invitation where uuid = ? and groupName = ?";
 		
-	public static final String loadGroupInvitationsForGroup = "select uuid,role from group_invitation where groupName=?";
+	private static final String loadGroupInvitationsForGroup = "select uuid,role from group_invitation where groupName=?";
 		
 		// Gets all unique names (not instances) of groups having this member at that role.
-	public static final String getGroupNameFromRole = "SELECT DISTINCT faction_id.group_name FROM faction_member "
+	private static final String getGroupNameFromRole = "SELECT DISTINCT faction_id.group_name FROM faction_member "
 								+ "inner join faction_id on faction_member.group_id = faction_id.group_id "
 								+ "WHERE member_name = ? "
 								+ "AND role = ?;";
 		
 		// Gets the "most recent" updated group from all groups that share the name.
-	public static final String getTimestamp = "SELECT MAX(faction.last_timestamp) FROM faction "
+	private static final String getTimestamp = "SELECT MAX(faction.last_timestamp) FROM faction "
 								+ "WHERE group_name = ?;";
 		
 		// updates "most recent" of all groups with a given name.
-	public static final String updateLastTimestamp = "UPDATE faction SET faction.last_timestamp = NOW() "
+	private static final String updateLastTimestamp = "UPDATE faction SET faction.last_timestamp = NOW() "
 								+ "WHERE group_name = ?;";
 		
 		// Breaking the pattern. Here we directly access a role based on _group ID_ rather then group_name. TODO: evaluate safety.
-	public static final String getPlayerType = "SELECT role FROM faction_member "
+	private static final String getPlayerType = "SELECT role FROM faction_member "
 						+ "WHERE group_id = ? "
                         + "AND member_name = ?;";
-	public static final String logNameChange = "insert into nameLayerNameChanges (uuid,oldName,newName) values(?,?,?);";
-	public static final String checkForNameChange = "select * from nameLayerNameChanges where uuid=?;";
+	private static final String logNameChange = "insert into nameLayerNameChanges (uuid,oldName,newName) values(?,?,?);";
+	private static final String checkForNameChange = "select * from nameLayerNameChanges where uuid=?;";
 		
-	public static final String addPermission = "insert into permissionByGroup(group_id,role,perm_id) select g.group_id, ?, ? from faction_id g where g.group_name = ?;";
-	public static final String addPermissionById = "insert into permissionByGroup(group_id,role,perm_id) values(?,?,?);";
-	public static final String getPermission = "select pg.role,pg.perm_id from permissionByGroup pg inner join faction_id fi on fi.group_name=? "
+	private static final String addPermission = "insert into permissionByGroup(group_id,role,perm_id) select g.group_id, ?, ? from faction_id g where g.group_name = ?;";
+	private static final String addPermissionById = "insert into permissionByGroup(group_id,role,perm_id) values(?,?,?);";
+	private static final String getPermission = "select pg.role,pg.perm_id from permissionByGroup pg inner join faction_id fi on fi.group_name=? "
 				+ "where pg.group_id = fi.group_id";
-	public static final String removePermission = "delete from permissionByGroup where group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and role=? and perm_id=?;";
-	public static final String registerPermission = "insert into permissionIdMapping(perm_id,name) values(?,?);"; 
-	public static final String getPermissionMapping = "select * from permissionIdMapping;";
+	private static final String removePermission = "delete from permissionByGroup where group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and role=? and perm_id=?;";
+	private static final String registerPermission = "insert into permissionIdMapping(perm_id,name) values(?,?);"; 
+	private static final String getPermissionMapping = "select * from permissionIdMapping;";
 		
-	public static final String addBlacklistMember = "insert into blacklist(group_id, member_name) select group_id,? from faction_id where group_name=?;";
-	public static final String removeBlackListMember = "delete from blacklist WHERE group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and member_name=?;";
-	public static final String getBlackListMembers = "select b.member_name from blacklist b inner join faction_id fi on fi.group_name=? where b.group_id=fi.group_id;";
+	private static final String addBlacklistMember = "insert into blacklist(group_id, member_name) select group_id,? from faction_id where group_name=?;";
+	private static final String removeBlackListMember = "delete from blacklist WHERE group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and member_name=?;";
+	private static final String getBlackListMembers = "select b.member_name from blacklist b inner join faction_id fi on fi.group_name=? where b.group_id=fi.group_id;";
 		
-	public static final String getAllGroupIds = "select group_id from faction_id";
+	private static final String getAllGroupIds = "select group_id from faction_id";
 
 
 	public GroupManagerDao(Logger logger, ManagedDatasource db){
@@ -263,7 +263,7 @@ public class GroupManagerDao {
 									removeAllMembers(g.getName());
 								}
 							}
-						}, 1);
+						});
 						return true;
 					}
 				},
