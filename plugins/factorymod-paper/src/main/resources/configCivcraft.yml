@@ -20,6 +20,7 @@ factories:
   basiccontraption:
     type: FCC
     name: Basic Contraption
+    citadelBreakReduction: 0.4
     setupcost:
       planks:
         material: WOOD
@@ -54,6 +55,7 @@ factories:
   basicFortification:
     type: FCCUPGRADE
     name: Basic Fortifications
+    citadelBreakReduction: 0.2
     recipes:
      - Produce_basic_andesite_Miner_Component
      - Produce_basic_diorite_Miner_Component
@@ -74,6 +76,7 @@ factories:
   #Basic Contraption --> Basic Fortification --> Intermediate Fortification
   intermediateFortification:
     type: FCCUPGRADE
+    citadelBreakReduction: 0.05
     name: Intermediate Fortifications
     recipes:
      - Produce_basic_andesite_Miner_Component
@@ -100,6 +103,7 @@ factories:
   advancedFortification:
     type: FCCUPGRADE
     name: Advanced Fortifications
+    citadelBreakReduction: 0.025
     recipes:
      - Produce_basic_andesite_Miner_Component
      - Produce_basic_diorite_Miner_Component
@@ -127,6 +131,7 @@ factories:
     #Basic Contraption --> Stone Smelter
     type: FCCUPGRADE
     name: Stone Smelter
+    citadelBreakReduction: 0.4
     recipes:
     - Smelt_Stone_Advanced
     - Smelt_Coal_Ore_Basic
@@ -142,6 +147,7 @@ factories:
     #Basic Contraption --> Stone Smelter --> Ore Smelter
     type: FCCUPGRADE
     name: Ore Smelter
+    citadelBreakReduction: 0.1
     recipes:
     - Smelt_Coal_Ore_Advanced
     - Smelt_Iron_Ore_Basic
@@ -155,6 +161,7 @@ factories:
     #Basic Contraption --> Stone Smelter --> Ore Smelter --> Ore Forge
     type: FCCUPGRADE
     name: Ore Forge
+    citadelBreakReduction: 0.05
     recipes:
     - Smelt_Coal_Ore_Expert
     - Smelt_Iron_Ore_Advanced
@@ -166,6 +173,7 @@ factories:
     #Basic Contraption --> Stone Smelter --> Ore Smelter --> Gem Extractor
     type: FCCUPGRADE
     name: Gem Extractor
+    citadelBreakReduction: 0.05
     recipes:
     - Extract_Diamonds
     - Extract_Emeralds
@@ -180,6 +188,7 @@ factories:
     #Basic Contraption --> Stone Smelter --> Sand Smelter
     type: FCCUPGRADE
     name: Sand Smelter
+    citadelBreakReduction: 0.2
     recipes:
     - Smelt_Glass_Advanced
     - Smelt_Glass_Panes_Basic
@@ -194,6 +203,7 @@ factories:
     #Basic Contraption --> Stone Smelter --> Sand Smelter --> Glass Dying Factory
     type: FCCUPGRADE
     name: Glass Dying Factory
+    citadelBreakReduction: 0.1    
     recipes:
     - Dye_Glass_White
     - Dye_Glass_Orange
@@ -233,6 +243,7 @@ factories:
     #Basic Contraption --> Stone Smelter --> Sand Smelter --> Glass Blowing Workshop
     type: FCCUPGRADE
     name: Glass Blowing Workshop
+    citadelBreakReduction: 0.1
     recipes:
     - Smelt_Glass_Expert
     - Smelt_Glass_Panes_Advanced
@@ -243,6 +254,7 @@ factories:
     #Basic Contraption --> Stone Smelter --> Sand Smelter --> Sandstone Smelter
     type: FCCUPGRADE
     name: Sandstone Smelter
+    citadelBreakReduction: 0.1
     recipes:
     - Smelt_Sandstone_Advanced
     - Smelt_Red_Sandstone_Advanced
@@ -262,6 +274,7 @@ factories:
     #Basic Contraption --> Stone Smelter --> Brick Smelter
     type: FCCUPGRADE
     name: Brick Smelter
+    citadelBreakReduction: 0.2
     recipes:
     - Smelt_Stone_Advanced
     - Craft_Stonebricks_Basic
@@ -277,6 +290,7 @@ factories:
     #Basic Contraption --> Stone Smelter --> Brick Smelter --> Fancy Stone Smelter
     type: FCCUPGRADE
     name: Fancy Stone Smelter
+    citadelBreakReduction: 0.1
     recipes:
     - Smelt_Stone_Expert
     - Craft_Polished_Andesite
@@ -287,6 +301,7 @@ factories:
     #Basic Contraption --> Stone Smelter --> Brick Smelter --> Stonebrick Smelter
     type: FCCUPGRADE
     name: Stonebrick Smelter
+    citadelBreakReduction: 0.1
     recipes:
     - Craft_Stonebricks_Advanced
     - Craft_Stonebrick_Stairs
@@ -299,6 +314,7 @@ factories:
     #Basic Contraption --> Stone Smelter --> Brick Smelter --> Netherbrick Smelter
     type: FCCUPGRADE
     name: Netherbrick Smelter
+    citadelBreakReduction: 0.1
     recipes:
     - Smelt_Netherbrick_Advanced
     - Craft_Netherbrick_Fence
@@ -310,6 +326,7 @@ factories:
     #Basic Contraption --> Stone Smelter --> Brick Smelter --> Aquatic Brick Smelter
     type: FCCUPGRADE
     name: Aquatic Brick Smelter
+    citadelBreakReduction: 0.1
     recipes:
     - Smelt_Prismarine
     - Smelt_Dark_Prismarine
@@ -321,6 +338,7 @@ factories:
     #Basic Contraption --> Stone Smelter --> Brick Smelter --> Quartz Factory
     type: FCCUPGRADE
     name: Quartz Factory
+    citadelBreakReduction: 0.1
     recipes:
     - Craft_Quartz_Slabs
     - Craft_Quartz_Blocks
@@ -334,6 +352,7 @@ factories:
     #Basic Contraption --> Stone Smelter --> Kiln
     type: FCCUPGRADE
     name: Kiln
+    citadelBreakReduction: 0.1
     recipes:
     - Smelt_Clay_Bricks
     - Harden_Clay_Basic
@@ -344,6 +363,7 @@ factories:
   woodprocessor:
     type: FCCUPGRADE
     name: Wood Processor
+    citadelBreakReduction: 0.4
     recipes:
     - Burn_Charcoal_from_Logs_Advanced
     - Burn_Charcoal_from_Logs2_Advanced
@@ -356,6 +376,7 @@ factories:
   carpentry:
     type: FCCUPGRADE
     name: Carpentry
+    citadelBreakReduction: 0.2
     recipes:
     - Craft_Boat
     - Cut_any_type_of_Plank_Advanced
@@ -368,6 +389,7 @@ factories:
   finewoodworking:
     type: FCCUPGRADE
     name: Fine Woodworking
+    citadelBreakReduction: 0.2
     recipes:
     - Craft_any_type_of_fence
     - Craft_any_type_of_fence_gate
@@ -377,6 +399,7 @@ factories:
   coalburner:
     type: FCCUPGRADE
     name: Coal Burner
+    citadelBreakReduction: 0.2
     recipes:
     - Burn_Charcoal_from_Logs_Expert
     - Burn_Charcoal_from_Logs2_Expert
@@ -385,6 +408,7 @@ factories:
   farmsteadfactory:
     type: FCCUPGRADE
     name: Farmstead Factory
+    citadelBreakReduction: 0.4
     recipes:
     - Bake_Bread_Advanced
     - Grill_Steak_Basic
@@ -400,6 +424,7 @@ factories:
   bakery:
     type: FCCUPGRADE
     name: Bakery
+    citadelBreakReduction: 0.1
     recipes:
     - Bake_Potatoes
     - Bake_Bread_Expert
@@ -411,6 +436,7 @@ factories:
   grill:
     type: FCCUPGRADE
     name: Grill
+    citadelBreakReduction: 0.1
     recipes:
     - Grill_Steak_Advanced
     - Grill_Pork
@@ -423,6 +449,7 @@ factories:
   stewmaker:
     type: FCCUPGRADE
     name: Soup kitchen
+    citadelBreakReduction: 0.1
     recipes:
     - Make_Rabbit_Stew
     - Make_Mushroom_Stew
@@ -432,6 +459,7 @@ factories:
   animalhusbandryfactorybasic:
     type: FCCUPGRADE
     name: Animal Husbandry Factory
+    citadelBreakReduction: 0.1
     recipes:
     - Craft_Saddles_Basic
     - Create_Nametags
@@ -440,6 +468,7 @@ factories:
   woolprocessor:
     type: FCCUPGRADE
     name: Wool Processing
+    citadelBreakReduction: 0.2
     recipes:
     - Dye_Wool_Orange
     - Dye_Wool_Magenta
@@ -460,6 +489,7 @@ factories:
   biolab:
     type: FCCUPGRADE
     name: Bio Lab
+    citadelBreakReduction: 0.2
     recipes:
     - Create_Poppy_Advanced
     - Mutate_Tall_Grass_Basic
@@ -473,6 +503,7 @@ factories:
   grassgardening:
     type: FCCUPGRADE
     name: Grass Gardening
+    citadelBreakReduction: 0.1
     recipes:
     - Mutate_Tall_Grass_Advanced
     - Mutate_Large_Fern
@@ -485,12 +516,14 @@ factories:
   flowergardening:
     type: FCCUPGRADE
     name: Flower Gardening
+    citadelBreakReduction: 0.1
     recipes:
     - Grow_random_flower
     - Repair_Basic_Factory
   treemutator:
     type: FCCUPGRADE
     name: Tree Mutator
+    citadelBreakReduction: 0.1
     recipes:
     - Mutate_random_sapling
     - Mutate_random_leaves
@@ -499,6 +532,7 @@ factories:
   organicblockfactory:
     type: FCCUPGRADE
     name: Organic Block Factory
+    citadelBreakReduction: 0.1
     recipes:
     - Create_Podzol_Advanced
     - Create_Coarse_Dirt
@@ -507,6 +541,7 @@ factories:
   blacksmith:
     type: FCCUPGRADE
     name: Blacksmith
+    citadelBreakReduction: 0.4
     recipes:
     - Forge_Stone_Sword
     - Forge_Stone_Pickaxe
@@ -519,6 +554,7 @@ factories:
   ironforgebasic:
     type: FCCUPGRADE
     name: Iron Forge
+    citadelBreakReduction: 0.1
     recipes:
     - Craft_Rail_Basic
     - Craft_Buckets_Basic
@@ -529,6 +565,7 @@ factories:
   ironforgeadvanced:
     type: FCCUPGRADE
     name: Steel Forge
+    citadelBreakReduction: 0.05
     recipes:
     - Craft_Shears
     - Craft_Anvils_Advanced
@@ -540,6 +577,7 @@ factories:
   railfactory:
     type: FCCUPGRADE
     name: Rail Factory
+    citadelBreakReduction: 0.05
     recipes:
     - Create_Rail_Advanced
     - Create_Powered_Rail
@@ -549,6 +587,7 @@ factories:
   ironequipmentforge:
     type: FCCUPGRADE
     name: Iron Equipment Forge
+    citadelBreakReduction: 0.1
     recipes:
     - Forge_Iron_Pickaxe
     - Forge_Iron_Shovel
@@ -566,6 +605,7 @@ factories:
   goldequipmentforge:
     type: FCCUPGRADE
     name: Gold Equipment Forge
+    citadelBreakReduction: 0.1
     recipes:
     - Forge_Gold_Pickaxe_Basic
     - Forge_Gold_Shovel_Basic
@@ -577,6 +617,7 @@ factories:
   diamondequipmentforge:
     type: FCCUPGRADE
     name: Diamond Equipment Forge
+    citadelBreakReduction: 0.05
     recipes:
     - Forge_Diamond_Pickaxe_Basic
     - Forge_Diamond_Shovel_Basic
@@ -588,6 +629,7 @@ factories:
   goldarmourforge:
     type: FCCUPGRADE
     name: Gold Armour Forge
+    citadelBreakReduction: 0.1
     recipes:
     - Forge_Gold_Helmet
     - Forge_Gold_Boots
@@ -598,6 +640,7 @@ factories:
   goldtoolsforge:
     type: FCCUPGRADE
     name: Gold Tools Forge
+    citadelBreakReduction: 0.1
     recipes:
     - Forge_Gold_Pickaxe
     - Forge_Gold_Shovel
@@ -608,6 +651,7 @@ factories:
   diamondarmourforge:
     type: FCCUPGRADE
     name: Diamond Armour Forge
+    citadelBreakReduction: 0.025
     recipes:
     - Forge_Diamond_Helmet
     - Forge_Diamond_Boots
@@ -618,6 +662,7 @@ factories:
   diamondtoolsforge:
     type: FCCUPGRADE
     name: Diamond Tools Forge
+    citadelBreakReduction: 0.025
     recipes:
     - Forge_Diamond_Pickaxe
     - Forge_Diamond_Shovel
@@ -628,6 +673,7 @@ factories:
   laboratory:
     type: FCCUPGRADE
     name: Laboratory
+    citadelBreakReduction: 0.4
     recipes:
     - Craft_Redstone_Repeater_Basic
     - Craft_Dispenser_Basic
@@ -640,17 +686,20 @@ factories:
   bastionfactory:
     type: FCCUPGRADE
     name: Bastion Factory
+    citadelBreakReduction: 0.025
     recipes:
     - Create_Bastion
     - Repair_Expert_Factory
   printingpress:
     type: FCCUPGRADE
     name: Printing Press
+    citadelBreakReduction: 0.1
     recipes:
     - Repair_Factory
   compactorbasic:
     type: FCCUPGRADE
     name: Compactor Basic
+    citadelBreakReduction: 0.2
     recipes:
     - Compact_Stack_Basic
     - De-compact_Stack_Basic
@@ -660,6 +709,7 @@ factories:
   dedicatedcompactor:
     type: FCCUPGRADE
     name: Dedicated Compactor
+    citadelBreakReduction: 0.1
     updatetime: 5t
     recipes:
     - Compact_Stack_Advanced
@@ -667,12 +717,14 @@ factories:
   dedicateddecompactor:
     type: FCCUPGRADE
     name: Dedicated De-Compactor
+    citadelBreakReduction: 0.1
     recipes:
     - De-compact_Stack_Advanced
     - Repair_Basic_Factory
   redstonefactorybasic:
     type: FCCUPGRADE
     name: Redstone Techniques
+    citadelBreakReduction: 0.1
     recipes:
     - Craft_Redstone_Repeater_Advanced
     - Craft_Redstone_Torch_Basic
@@ -684,6 +736,7 @@ factories:
   redstonecircularityfactory:
     type: FCCUPGRADE
     name: Redstone Electronics
+    citadelBreakReduction: 0.05
     recipes:
     - Craft_Redstone_Repeater_Advanced
     - Craft_Redstone_Torch_Advanced
@@ -695,6 +748,7 @@ factories:
   redstonemechanicsfactory:
     type: FCCUPGRADE
     name: Redstone Mechanics
+    citadelBreakReduction: 0.05
     recipes:
     - Craft_Piston
     - Craft_Sticky_Piston
@@ -707,6 +761,7 @@ factories:
   basicpylon:
     type: FCCUPGRADE
     name: Basic Pylon
+    citadelBreakReduction: 0.1
     recipes:
      - Pylon_Basic
      - Upgrade_to_Advanced_Pylon
@@ -714,6 +769,7 @@ factories:
   advancedPylon:
     type: FCCUPGRADE
     name: Advanced Pylon
+    citadelBreakReduction: 0.05
     recipes:
      - Pylon_Advanced
      - Upgrade_to_Expert_Pylon
@@ -721,12 +777,14 @@ factories:
   expertpylon:
     type: FCCUPGRADE
     name: Expert Pylon
+    citadelBreakReduction: 0.025
     recipes:
      - Pylon_Expert
      - Repair_Expert_Pylon
   crystallizationfactory:
     type: FCCUPGRADE
     name: Crystallization Factory
+    citadelBreakReduction: 0.1
     recipes:
      - Pack_Snow_To_Ice
      - Compress_Ice_To_Packed_Ice
@@ -735,6 +793,7 @@ factories:
   basicforge:
     type: FCCUPGRADE
     name: Basic Forge
+    citadelBreakReduction: 0.1
     recipes:
      - Enchant_Efficiency_Pickaxe_Basic
      - Enchant_Efficiency_Axe_Basic
@@ -757,6 +816,7 @@ factories:
   emberforge:
     type: FCCUPGRADE
     name: Ember Forge
+    citadelBreakReduction: 0.1
     recipes:
      - Enchant_Helmet_FireP_I
      - Enchant_Helmet_FireP_II
@@ -776,6 +836,7 @@ factories:
   magmaforge:
     type: FCCUPGRADE
     name: Magma Forge
+    citadelBreakReduction: 0.05
     recipes:
      - Enchant_Helmet_FireP_I
      - Enchant_Helmet_FireP_II
@@ -809,6 +870,7 @@ factories:
   riverforge:
     type: FCCUPGRADE
     name: River Forge
+    citadelBreakReduction: 0.1
     recipes:
      - Enchant_DepthStrider_I
      - Enchant_Respiration_I
@@ -819,6 +881,7 @@ factories:
   oceanforge:
     type: FCCUPGRADE
     name: Ocean Forge
+    citadelBreakReduction: 0.05
     recipes:
      - Enchant_DepthStrider_I
      - Enchant_DepthStrider_II
@@ -834,6 +897,7 @@ factories:
   magicforge:
     type: FCCUPGRADE
     name: Magic Forge
+    citadelBreakReduction: 0.1
     recipes:
      - Enchant_FeatherFalling_I
      - Enchant_FeatherFalling_II
@@ -845,6 +909,7 @@ factories:
   arcaneforge:
     type: FCCUPGRADE
     name: Arcane Forge
+    citadelBreakReduction: 0.05
     recipes:
      - Enchant_Infinity_I
      - Enchant_Pickaxe_SilkTouch_I
@@ -864,6 +929,7 @@ factories:
   mithrilforge:
     type: FCCUPGRADE
     name: Mithril Forge
+    citadelBreakReduction: 0.1
     recipes:
      - Enchant_Helmet_Protection_I
      - Enchant_Chestplate_Protection_I
@@ -879,6 +945,7 @@ factories:
   titaniumforge:
     type: FCCUPGRADE
     name: Titanium Forge
+    citadelBreakReduction: 0.05
     recipes:
      - Enchant_Helmet_Protection_I
      - Enchant_Helmet_Protection_II
@@ -911,6 +978,7 @@ factories:
   Meteorforge:
     type: FCCUPGRADE
     name: Meteor Forge
+    citadelBreakReduction: 0.025
     recipes:
      - Enchant_Helmet_Protection_I
      - Enchant_Helmet_Protection_II
@@ -952,6 +1020,7 @@ factories:
   archerforge:
     type: FCCUPGRADE
     name: Archer Forge
+    citadelBreakReduction: 0.1
     recipes:
      - Enchant_Power_I
      - Enchant_Power_II
@@ -964,6 +1033,7 @@ factories:
   marksmanforge:
     type: FCCUPGRADE
     name: Marksman Forge
+    citadelBreakReduction: 0.05
     recipes:
      - Enchant_Power_I
      - Enchant_Power_II
@@ -987,6 +1057,7 @@ factories:
   sniperforge:
     type: FCCUPGRADE
     name: Sniper Forge
+    citadelBreakReduction: 0.025
     recipes:
      - Enchant_Power_I
      - Enchant_Power_II
@@ -1016,6 +1087,7 @@ factories:
   daggerforge:
     type: FCCUPGRADE
     name: Dagger Forge
+    citadelBreakReduction: 0.1
     recipes:
      - Enchant_Sharpness_I
      - Enchant_Sharpness_II
@@ -1026,6 +1098,7 @@ factories:
   swordforge:
     type: FCCUPGRADE
     name: Sword Forge
+    citadelBreakReduction: 0.05
     recipes:
      - Enchant_Sharpness_I
      - Enchant_Sharpness_II
@@ -1041,6 +1114,7 @@ factories:
   bladeforge:
     type: FCCUPGRADE
     name: Blade Forge
+    citadelBreakReduction: 0.025
     recipes:
      - Enchant_Sharpness_I
      - Enchant_Sharpness_II
@@ -1059,6 +1133,7 @@ factories:
   quickforge:
     type: FCCUPGRADE
     name: Quick Forge
+    citadelBreakReduction: 0.1
     recipes:
      - Enchant_Pickaxe_Efficiency_I
      - Enchant_Pickaxe_Efficiency_II
@@ -1072,6 +1147,7 @@ factories:
   rapidforge:
     type: FCCUPGRADE
     name: Rapid Forge
+    citadelBreakReduction: 0.05
     recipes:
      - Enchant_Pickaxe_Efficiency_I
      - Enchant_Pickaxe_Efficiency_II
@@ -1092,6 +1168,7 @@ factories:
   sonicforge:
     type: FCCUPGRADE
     name: Sonic Forge
+    citadelBreakReduction: 0.025
     recipes:
      - Enchant_Pickaxe_Efficiency_I
      - Enchant_Pickaxe_Efficiency_II
@@ -1115,6 +1192,7 @@ factories:
   rockforge:
     type: FCCUPGRADE
     name: Rock Forge
+    citadelBreakReduction: 0.1
     recipes:
      - Enchant_Pickaxe_Unbreaking_I
      - Enchant_Axe_Unbreaking_I
@@ -1131,6 +1209,7 @@ factories:
   metalforge:
     type: FCCUPGRADE
     name: Metal Forge
+    citadelBreakReduction: 0.05
     recipes:
      - Enchant_Pickaxe_Unbreaking_I
      - Enchant_Pickaxe_Unbreaking_II
@@ -1157,6 +1236,7 @@ factories:
   carbonforge:
     type: FCCUPGRADE
     name: Carbon Forge
+    citadelBreakReduction: 0.025
     recipes:
      - Enchant_Pickaxe_Unbreaking_I
      - Enchant_Pickaxe_Unbreaking_II
@@ -1194,6 +1274,7 @@ factories:
   apprenticetransmuter:
     type: FCCUPGRADE
     name: Apprentice Transmuter
+    citadelBreakReduction: 0.1
     recipes:
      - Aspen_Enrichment
      - Cypress_Enrichment
@@ -1203,6 +1284,7 @@ factories:
   adepttransmuter:
     type: FCCUPGRADE
     name: Adept Transmuter
+    citadelBreakReduction: 0.05
     recipes:
      - Aspen_Enrichment
      - Cypress_Enrichment
@@ -1215,6 +1297,7 @@ factories:
   grandmastertransmuter:
     type: FCCUPGRADE
     name: Grandmaster Transmuter
+    citadelBreakReduction: 0.025
     recipes:
      - Aspen_Enrichment
      - Cypress_Enrichment
@@ -11467,7 +11550,8 @@ recipes:
         amount: 6
       witherskull:
         material: SKULL_ITEM
-        durability: 2
+        durability: 1
+        amount: 2
     output:
       strongHunter:
         material: GHAST_TEAR
