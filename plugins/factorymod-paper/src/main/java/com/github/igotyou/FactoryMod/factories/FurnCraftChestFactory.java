@@ -62,6 +62,7 @@ public class FurnCraftChestFactory extends Factory {
 		this.active = false;
 		this.recipes = recipes;
 		this.runCount = new HashMap<IRecipe, Integer>();
+		this.citadelBreakReduction = citadelBreakReduction;
 		for (IRecipe rec : recipes) {
 			runCount.put(rec, 0);
 		}

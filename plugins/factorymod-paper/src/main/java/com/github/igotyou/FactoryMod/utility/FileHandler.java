@@ -2,10 +2,12 @@ package com.github.igotyou.FactoryMod.utility;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -40,6 +42,8 @@ public class FileHandler {
 	private File backup;
 	
 	private Map <String, String> factoryRenames;
+	
+	private static int saveFileVersion = 2;
 
 	public FileHandler(FactoryModManager manager, Map <String, String> factoryRenames) {
 		plugin = FactoryMod.getPlugin();
@@ -63,15 +67,13 @@ public class FileHandler {
 			saveFile.createNewFile();
 			YamlConfiguration config = YamlConfiguration
 					.loadConfiguration(saveFile);
+			config.set("version", saveFileVersion);
 			for (Factory f : factories) {
 				String current = serializeLocation(f.getMultiBlockStructure()
 						.getCenter());
 				config.set(current + ".name", f.getName());
-				config.getConfigurationSection(current).createSection("blocks");
-				for (Location b : f.getMultiBlockStructure().getAllBlocks()) {
-					configureLocation(config.getConfigurationSection(current)
-							.getConfigurationSection("blocks"), b);
-				}
+				ConfigurationSection blockSection = config.getConfigurationSection(current).createSection("blocks");
+				configureLocation(blockSection, f.getMultiBlockStructure().getAllBlocks());
 				if (f instanceof FurnCraftChestFactory) {
 					FurnCraftChestFactory fccf = (FurnCraftChestFactory) f;
 					config.set(current + ".type", "FCC");
@@ -132,12 +134,15 @@ public class FileHandler {
 		}
 	}
 
-	private void configureLocation(ConfigurationSection config, Location loc) {
-		String identifier = serializeLocation(loc);
-		config.set(identifier + ".world", loc.getWorld().getName());
-		config.set(identifier + ".x", loc.getBlockX());
-		config.set(identifier + ".y", loc.getBlockY());
-		config.set(identifier + ".z", loc.getBlockZ());
+	private void configureLocation(ConfigurationSection config, List <Location> locations) {
+		int count = 0;
+		for(Location loc : locations) {
+			String identifier = "a" + count++ + serializeLocation(loc);
+			config.set(identifier + ".world", loc.getWorld().getName());
+			config.set(identifier + ".x", loc.getBlockX());
+			config.set(identifier + ".y", loc.getBlockY());
+			config.set(identifier + ".z", loc.getBlockZ());
+		}
 	}
 
 	private String serializeLocation(Location loc) {
@@ -163,14 +168,19 @@ public class FileHandler {
 		int counter = 0;
 		YamlConfiguration config = YamlConfiguration
 				.loadConfiguration(saveFile);
+		int loadedVersion = config.getInt("version", 1);
 		for (String key : config.getKeys(false)) {
 			ConfigurationSection current = config.getConfigurationSection(key);
+			if (current == null) {
+				continue;
+			}
 			String type = current.getString("type");
 			String name = current.getString("name");
 			int runtime = current.getInt("runtime");
 			List<Location> blocks = new LinkedList<Location>();
-			for (String blockKey : current.getConfigurationSection("blocks")
-					.getKeys(false)) {
+			Set <String> blockKeys = current.getConfigurationSection("blocks").getKeys(false);
+			Collections.sort(new LinkedList <String> (blockKeys));
+			for (String blockKey : blockKeys) {
 				ConfigurationSection currSec = current.getConfigurationSection(
 						"blocks").getConfigurationSection(blockKey);
 				String worldName = currSec.getString("world");
@@ -182,6 +192,38 @@ public class FileHandler {
 			}
 			switch (type) {
 			case "FCC":
+				if (loadedVersion == 1) {
+					//need to sort the locations properly, because they werent previously
+					List <Location> sortedList = new LinkedList<Location>();
+					int totalX = 0;
+					int totalY = 0;
+					int totalZ = 0;
+					for(Location loc : blocks) {
+						totalX += loc.getBlockX();
+						totalY += loc.getBlockY();
+						totalZ += loc.getBlockZ();
+					}
+					Location center = new Location(blocks.get(0).getWorld(), totalX / 3, totalY / 3, totalZ / 3);
+					if (!blocks.contains(center)) {
+						plugin.warning("Failed to convert location for factory at " + blocks.get(0).toString() + "; calculated center: " + center.toString());
+					}
+					else {
+					blocks.remove(center);
+					sortedList.add(center);
+					//we cant guarantee that this will work, it might very well fail for partially broken factories, but it's the best thing I got
+						if (blocks.get(0).getBlock().getType() == Material.CHEST) {
+							sortedList.add(blocks.get(1));
+							sortedList.add(blocks.get(0));
+						}
+						else {
+							sortedList.add(blocks.get(0));
+							sortedList.add(blocks.get(1));
+						}
+						blocks = sortedList;
+					}
+					
+					
+				}
 				FurnCraftChestEgg egg = (FurnCraftChestEgg) eggs.get(name);
 				if (egg == null) {
 					String replaceName = factoryRenames.get(name);

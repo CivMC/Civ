@@ -78,6 +78,12 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 			complete = false;
 		}
 	}
+	
+	public FurnCraftChestStructure(List<Location> blocks) {
+		craftingTable = blocks.get(0);
+		furnace = blocks.get(1);
+		chest = blocks.get(2);
+	}
 
 	public void recheckComplete() {
 		complete = craftingTable != null
@@ -87,12 +93,6 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 						.getBlock().getType() == Material.BURNING_FURNACE)
 				&& chest != null
 				&& chest.getBlock().getType() == Material.CHEST;
-	}
-
-	public FurnCraftChestStructure(List<Location> blocks) {
-		craftingTable = blocks.get(0);
-		furnace = blocks.get(1);
-		chest = blocks.get(2);
 	}
 
 	public boolean isComplete() {
@@ -140,7 +140,7 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 	}
 
 	public Location getCenter() {
-		return chest;
+		return craftingTable;
 	}
 
 }
