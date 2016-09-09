@@ -105,5 +105,14 @@
 			<version>1.2.4</version>
 			<scope>provided</scope>
 		</dependency>
+		<!--  Note: RecipeManager isn't distributed in POM form.
+					For this to build successfully, use install:install-file with
+					attributes as below. -->
+		<dependency>
+			<groupId>haveric</groupId>
+			<artifactId>recipeManager</artifactId>
+			<version>2.7.3</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 </project>

@@ -187,6 +187,6 @@ public class Config {
 	 */
 	public ConfigurationSection getSection(Class<?> clazz) {
 		if (clazz == null) return null;
-		return config.getConfigurationSection(clazz.getName());
+		return config.getConfigurationSection(clazz.getSimpleName());
 	}
 }

@@ -1,14 +1,18 @@
 package com.programmerdan.minecraft.civspy.listeners.impl;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Chunk;
-import org.bukkit.block.Block;
+import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;
@@ -56,7 +60,7 @@ public final class HuntingListener extends ServerDataListener {
 		String diedCName = died.getCustomName();
 		
 		DataSample death = new PointDataSample("entity.death." + type, this.getServer(),
-				chunk.getWorld().getName(), killerUUID, chunk.getX(), chunk.getZ(), diedName);
+				chunk.getWorld().getName(), killerUUID, chunk.getX(), chunk.getZ(), diedCName);
 		this.record(death);
 
 		if (dropped != null && dropped.size() > 0) {
@@ -71,7 +75,7 @@ public final class HuntingListener extends ServerDataListener {
 
 		if (xpd > 0) {
 			DataSample deathxp = new PointDataSample("entity.death.xp." + type, this.getServer(),
-					chunk.getWorld().getName(), killerUUID, chunk.getX(), chunk.getZ(), diedName, xpd);
+					chunk.getWorld().getName(), killerUUID, chunk.getX(), chunk.getZ(), diedCName, xpd);
 			this.record(deathxp);
 			
 		}

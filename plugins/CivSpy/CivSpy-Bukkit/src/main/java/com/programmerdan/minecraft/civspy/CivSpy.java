@@ -130,7 +130,11 @@ public class CivSpy extends JavaPlugin {
 								clazz.getConstructor(DataManager.class, Logger.class, String.class, ConfigurationSection.class);
 							dataSampler = (DataSampler) constructBasic.newInstance(this.manager, this.getLogger(), this.config.getServer(), 
 								this.config.getSection(clazz));
-							getLogger().log(Level.INFO, "Create a new DataSampler of type {0} with unique configuration", clazz.getName());
+							if (this.config.getSection(clazz) != null) {
+								getLogger().log(Level.INFO, "Create a new DataSampler of type {0} with unique configuration", clazz.getName());
+							} else {
+								getLogger().log(Level.INFO, "Create a new DataSampler of type {0} with null configuration", clazz.getName());
+							}
 						} catch (Exception e) {}
 					}
 
@@ -141,6 +145,8 @@ public class CivSpy extends JavaPlugin {
 						if (Bukkit.getScheduler().scheduleSyncRepeatingTask(this, dataSampler, 
 							(long) (Math.random() * dataSampler.getPeriod())/50l, dataSampler.getPeriod()/50l) > -1) {
 							samplers.add(dataSampler);
+							getLogger().log(Level.INFO, "Class {0} scheduled as a DataSampler with period {1}.", 
+									new Object[] {clazz.getName(), dataSampler.getPeriod()});
 						} else {
 							getLogger().log(Level.WARNING, "Class {0} failed to schedule as a DataSampler with period {1}.", 
 									new Object[] {clazz.getName(), dataSampler.getPeriod()});
@@ -194,13 +200,18 @@ public class CivSpy extends JavaPlugin {
 								clazz.getConstructor(DataManager.class, Logger.class, String.class, ConfigurationSection.class);
 							dataListener = (DataListener) constructBasic.newInstance(this.manager, this.getLogger(), this.config.getServer(), 
 								this.config.getSection(clazz));
-							getLogger().log(Level.INFO, "Create a new DataListener of type {0} with unique configuration", clazz.getName());
+							if (this.config.getSection(clazz) != null) {
+								getLogger().log(Level.INFO, "Create a new DataListener of type {0} with unique configuration", clazz.getName());
+							} else {
+								getLogger().log(Level.INFO, "Create a new DataListener of type {0} with null configuration", clazz.getName());
+							}
 						} catch (Exception e) {}
 					}
 
 					if (dataListener != null) {
 						Bukkit.getPluginManager().registerEvents(dataListener, this);
 						listeners.add(dataListener);
+						getLogger().log(Level.INFO, "Class {0} registered as a DataListener.", clazz.getName());
 					} else {
 						getLogger().log(Level.INFO, "Class {0} is not suitable as a DataListener.", clazz.getName());
 					}

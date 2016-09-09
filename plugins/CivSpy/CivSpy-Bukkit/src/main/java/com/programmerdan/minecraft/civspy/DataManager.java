@@ -149,7 +149,10 @@ public class DataManager {
 	 * concurrently) or alter your sampling/event tracking rates to ease congestion.
 	 */
 	private long missCounter = 0l;
-
+	private long missCounterNegativeOffset = 0l;
+	private long missCounterOffloadIndex = 0l;
+	private long missCounterOutsideTracking = 0l;
+	private long missCounterWrongWindow = 0l;
 
 	/**
 	 * Sets up a data manager; defining who to forward aggregate and sampled data to, a logger to log to, and aggregation
@@ -308,18 +311,22 @@ public class DataManager {
 				}
 				lastFlowUpdate = System.currentTimeMillis();
 				
-				if (flowRatio > flowRatioSevere) {
+				if (flowRatio > flowRatioSevere && whichFlowWindow % 3 == 0) {
 					// TODO add mechanism to only alert once.
 					logger.log(Level.SEVERE, "Inflow vs. Outflow DANGEROUSLY imbalanced: in vs out ratio at {0}", flowRatio);
 					logger.log(Level.SEVERE, "Action should be taken immediately or memory exhaustion may occur");
-				} else if (flowRatio > flowRatioWarn) {
+				} else if (flowRatio > flowRatioWarn && whichFlowWindow == 0) {
 					logger.log(Level.WARNING, "Inflow vs. Outflow imbalanced: in vs out ratio at {0}", flowRatio);
 				}
 				
 				// Periodically report.
 				if (whichFlowWindow == 0) {
-					logger.log(Level.INFO, "Over last {0} milliseconds, absolute inflow = {1} and outflow = {2}, missed aggregations now at = {3}",
-							new Object[] { (flowCapturePeriod * (flowCaptureWindows - 1)), inFlow, outFlow, missCounter});
+					logger.log(Level.INFO, "Over last {0} milliseconds, absolute inflow = {1} and outflow = {2}, missed aggregations now at = {3}. \n Missed due to negative offset: {4}, offload index collision: {5}, outside tracking windows: {6}, window mismatch: {7}",
+							new Object[] { (flowCapturePeriod * (flowCaptureWindows - 1)), inFlow, outFlow, missCounter,
+							missCounterNegativeOffset,
+							missCounterOffloadIndex,
+							missCounterOutsideTracking,
+							missCounterWrongWindow});
 				}
 				
 				if (truePeriod > (flowCapturePeriod * 1.1d)) {
@@ -363,9 +370,12 @@ public class DataManager {
 				}
 				
 				synchronized(aggregation[offloadAggregatorIndex]) {
+					long shiftTime = System.currentTimeMillis();
+					long count = 0l;
 					ConcurrentHashMap<DataSampleKey, DataAggregate> aggregationMap = aggregation[offloadAggregatorIndex];
 					for(Entry<DataSampleKey, DataAggregate> entry : aggregationMap.entrySet()) {
 						batcher.stage(entry.getKey(), entry.getValue());
+						count++;
 					}
 					aggregationMap.clear();
 					
@@ -373,8 +383,9 @@ public class DataManager {
 					aggregationWindowStart[offloadAggregatorIndex] += aggregationCycleSize * aggregationPeriod;
 					aggregationWindowEnd[offloadAggregatorIndex] += aggregationCycleSize * aggregationPeriod;
 					
-					logger.log(Level.FINE, "Aggregator window {0} bounds: {1} to {2}", 
-							new Object[] {offloadAggregatorIndex, aggregationWindowStart[offloadAggregatorIndex], aggregationWindowEnd[offloadAggregatorIndex]} );
+					logger.log(Level.INFO, "Aggregator window {0} bounds: {1} to {2} offloading {3} in {4}ms", 
+							new Object[] {offloadAggregatorIndex, aggregationWindowStart[offloadAggregatorIndex], 
+							aggregationWindowEnd[offloadAggregatorIndex], count, (System.currentTimeMillis() - shiftTime)} );
 				}
 			}
 			
@@ -452,8 +463,8 @@ public class DataManager {
 			}
 
 			try {
+				parent.instantOutflow[parent.whichFlowWindow]++;
 				if (sample != null) {
-					parent.instantOutflow[parent.whichFlowWindow]++;
 					if (sample.forAggregate()) {
 						// Find which bucket the sample belongs to; get the appropriate aggregate or create it
 						int index = -1; // must resolve.
@@ -462,15 +473,24 @@ public class DataManager {
 						// the windows while we are resolving.
 						synchronized(parent.aggregationResolver) {
 							int offset = (int) Math.floorDiv((sample.getTimestamp() - parent.aggregationWindowStart[parent.oldestAggregatorIndex]), parent.aggregationPeriod);
-							if (offset < 0 || offset >= parent.aggregationCycleSize || offset == parent.offloadAggregatorIndex) {
+							if (offset < 0) {
 								// out of tracking period entirely.
 								parent.missCounter++;
+								parent.missCounterNegativeOffset++;
+							} else if  (offset >= parent.aggregationCycleSize){
+								parent.missCounter++;
+								parent.missCounterOutsideTracking++;
+							} else if (offset == parent.offloadAggregatorIndex) {
+								// TODO: Noticing a supermajority of misses are offload index misses.
+								parent.missCounter++;
+								parent.missCounterOffloadIndex++;
 							} else {
 								index = Math.floorMod(parent.oldestAggregatorIndex + offset, parent.aggregationCycleSize); // Round Robin around and around
 								if (!sample.isBetween(parent.aggregationWindowStart[index], parent.aggregationWindowEnd[index])) {
 									parent.logger.log(Level.WARNING, "Computed window offset {4} to index {0} doesnt match when attempting to get aggregator: {1} not between {2} and {3}",
 											new Object[]{index, sample.getTimestamp(), parent.aggregationWindowStart[index], parent.aggregationWindowEnd[index], offset});
 									parent.missCounter++;
+									parent.missCounterWrongWindow++;
 									index = -1;
 								}
 							}
@@ -492,6 +512,8 @@ public class DataManager {
 									aggregate.include(sample);
 								} else {
 									parent.missCounter++;
+									// TODO: Differentiate here to detect if misses are from pre-seek or post
+									parent.missCounterOffloadIndex++;
 								}
 							}
 						}

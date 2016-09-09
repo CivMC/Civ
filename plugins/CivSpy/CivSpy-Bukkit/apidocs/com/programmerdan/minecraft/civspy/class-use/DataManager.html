@@ -178,6 +178,21 @@
              <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;server)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/listeners/impl/CraftingListener.html#CraftingListener-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-java.lang.String-">CraftingListener</a></span>(<a href="../../../../../com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy">DataManager</a>&nbsp;target,
+                <a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging">Logger</a>&nbsp;logger,
+                <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;server)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/listeners/impl/CustomCraftingListener.html#CustomCraftingListener-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-java.lang.String-">CustomCraftingListener</a></span>(<a href="../../../../../com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy">DataManager</a>&nbsp;target,
+                      <a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging">Logger</a>&nbsp;logger,
+                      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;server)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/listeners/impl/HuntingListener.html#HuntingListener-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-java.lang.String-">HuntingListener</a></span>(<a href="../../../../../com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy">DataManager</a>&nbsp;target,
+               <a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging">Logger</a>&nbsp;logger,
+               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;server)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/listeners/impl/MovementListener.html#MovementListener-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-java.lang.String-">MovementListener</a></span>(<a href="../../../../../com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy">DataManager</a>&nbsp;target,
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging">Logger</a>&nbsp;logger,
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;server)</code>&nbsp;</td>
@@ -231,14 +246,22 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/samplers/impl/PlayerCountSampler.html#PlayerCountSampler-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-java.lang.String-">PlayerCountSampler</a></span>(<a href="../../../../../com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy">DataManager</a>&nbsp;manager,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/samplers/impl/PlayerCountSampler.html#PlayerCountSampler-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-java.lang.String-org.bukkit.configuration.ConfigurationSection-">PlayerCountSampler</a></span>(<a href="../../../../../com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy">DataManager</a>&nbsp;manager,
                   <a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging">Logger</a>&nbsp;logger,
-                  <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;server)</code>&nbsp;</td>
+                  <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;server,
+                  org.bukkit.configuration.ConfigurationSection&nbsp;config)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/samplers/impl/WorldPlayerCountSampler.html#WorldPlayerCountSampler-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-java.lang.String-">WorldPlayerCountSampler</a></span>(<a href="../../../../../com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy">DataManager</a>&nbsp;manager,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/samplers/impl/TPSSampler.html#TPSSampler-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-java.lang.String-org.bukkit.configuration.ConfigurationSection-">TPSSampler</a></span>(<a href="../../../../../com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy">DataManager</a>&nbsp;manager,
+          <a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging">Logger</a>&nbsp;logger,
+          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;server,
+          org.bukkit.configuration.ConfigurationSection&nbsp;config)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/programmerdan/minecraft/civspy/samplers/impl/WorldPlayerCountSampler.html#WorldPlayerCountSampler-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-java.lang.String-org.bukkit.configuration.ConfigurationSection-">WorldPlayerCountSampler</a></span>(<a href="../../../../../com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy">DataManager</a>&nbsp;manager,
                        <a href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html?is-external=true" title="class or interface in java.util.logging">Logger</a>&nbsp;logger,
-                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;server)</code>&nbsp;</td>
+                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;server,
+                       org.bukkit.configuration.ConfigurationSection&nbsp;config)</code>&nbsp;</td>
 </tr>
 </tbody>
 </table>

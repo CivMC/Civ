@@ -63,7 +63,7 @@ public final class MovementListener extends ServerDataListener {
 			String world = to.getWorld().getName();
 			double distance = Math.sqrt(xMove * xMove + yMove * yMove + zMove * zMove);
 			String type = p.isSneaking() ? "sneaking" : p.isFlying() ? "flying" : p.isGliding() ? "gliding" : 
-				p.isInsideVehicle() ? (p.getVehicle() == null ? "vehicle" : p.getVehicle().getType()) : p.isSprinting() ? "running" : "walking";
+				p.isInsideVehicle() ? (p.getVehicle() == null ? "vehicle" : p.getVehicle().getType().toString()) : p.isSprinting() ? "running" : "walking";
 			Chunk chunk = to.getChunk();
 			DataSample chunkMovement = new PointDataSample("player.movement", this.getServer(), world, id,
 					chunk.getX(), chunk.getZ(), type, distance);
