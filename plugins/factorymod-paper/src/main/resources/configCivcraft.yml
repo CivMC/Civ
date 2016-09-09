@@ -11550,7 +11550,8 @@ recipes:
         amount: 6
       witherskull:
         material: SKULL_ITEM
-        durability: 2
+        durability: 1
+        amount: 2
     output:
       strongHunter:
         material: GHAST_TEAR
