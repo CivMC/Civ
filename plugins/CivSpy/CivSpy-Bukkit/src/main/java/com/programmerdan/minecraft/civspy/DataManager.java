@@ -154,7 +154,6 @@ public class DataManager {
 	private long missCounter = 0l;
 	private long missCounterNegativeOffset = 0l;
 	private long missCounterOffloadIndex = 0l;
-	private long missCounterRecheckOffloadIndex = 0l;
 	private long missCounterOutsideTracking = 0l;
 	private long missCounterWrongWindow = 0l;
 
@@ -329,11 +328,10 @@ public class DataManager {
 				
 				// Periodically report.
 				if (whichFlowWindow == 0) {
-					logger.log(Level.INFO, "Over last {0} milliseconds, absolute inflow = {1} and outflow = {2}, missed aggregations now at = {3}. \n Missed due to negative offset: {4}, offload index collision: {5}, offload recheck index collision: {6}, outside tracking windows: {7}, window mismatch: {8}",
+					logger.log(Level.INFO, "Over last {0} milliseconds, absolute inflow = {1} and outflow = {2}, missed aggregations now at = {3}. \n Missed due to negative offset: {4}, offload index collision: {5}, outside tracking windows: {6}, window mismatch: {7}",
 							new Object[] { (flowCapturePeriod * (flowCaptureWindows - 1)), inFlow, outFlow, missCounter,
 							missCounterNegativeOffset,
 							missCounterOffloadIndex,
-							missCounterRecheckOffloadIndex,
 							missCounterOutsideTracking,
 							missCounterWrongWindow});
 					StringBuilder flowReport = new StringBuilder();
@@ -521,10 +519,6 @@ public class DataManager {
 							} else if  (offset >= parent.aggregationCycleSize){
 								parent.missCounter++;
 								parent.missCounterOutsideTracking++;
-							} else if (offset == parent.offloadAggregatorIndex) {
-								// TODO: Noticing a supermajority of misses are offload index misses.
-								parent.missCounter++;
-								parent.missCounterOffloadIndex++;
 							} else {
 								index = Math.floorMod(parent.oldestAggregatorIndex + offset, parent.aggregationCycleSize); // Round Robin around and around
 								if (!sample.isBetween(parent.aggregationWindowStart[index], parent.aggregationWindowEnd[index])) {
@@ -554,7 +548,7 @@ public class DataManager {
 								} else {
 									parent.missCounter++;
 									// TODO: Differentiate here to detect if misses are from pre-seek or post
-									parent.missCounterRecheckOffloadIndex++;
+									parent.missCounterOffloadIndex++;
 								}
 							}
 						}
