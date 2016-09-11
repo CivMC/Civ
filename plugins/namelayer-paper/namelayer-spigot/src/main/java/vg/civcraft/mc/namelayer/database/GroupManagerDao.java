@@ -1,7 +1,6 @@
 package vg.civcraft.mc.namelayer.database;
 
-import static vg.civcraft.mc.namelayer.NameLayerPlugin.log;
-
+import java.util.concurrent.Callable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,57 +27,53 @@ import com.google.common.collect.Lists;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.database.Database;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
+import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
+/**
+ * First guinea pig of conversion to ManagedDatasource.
+ *
+ */
 public class GroupManagerDao {
 	private Logger logger;
-	private Database db;
+	private ManagedDatasource db;
 	protected NameLayerPlugin plugin = NameLayerPlugin.getInstance();
 	
-	public GroupManagerDao(Logger logger, Database db){
-		this.logger = logger;
-		this.db = db;
-
-		// configure fields.
 		
-		version = "select max(db_version) as db_version from db_version where plugin_name=?";
-		updateVersion = "insert into db_version (db_version, plugin_name) values (?,?)"; 
-		
-		createGroup = "call createGroup(?,?,?,?)";
-		getGroup = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id " +
+	private static final String createGroup = "call createGroup(?,?,?,?)";
+	private static final String getGroup = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id " +
 				"from faction f "
 				+ "inner join faction_id fi on fi.group_name = f.group_name "
 				+ "where f.group_name = ?";
-		getGroupIDs = "SELECT f.group_id, count(DISTINCT fm.member_name) AS sz FROM faction_id f "
+	private static final String getGroupIDs = "SELECT f.group_id, count(DISTINCT fm.member_name) AS sz FROM faction_id f "
 				+ "INNER JOIN faction_member fm ON f.group_id = fm.group_id WHERE f.group_name = ? GROUP BY f.group_id ORDER BY sz DESC";
-		getGroupById = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id " +
+	private static final String getGroupById = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id " +
 				"from faction f "
 				+ "inner join faction_id fi on fi.group_id = ? "
 				+ "where f.group_name = fi.group_name";
-		getAllGroupsNames = "select f.group_name from faction_id f "
+	private static final String getAllGroupsNames = "select f.group_name from faction_id f "
 				+ "inner join faction_member fm on f.group_id = fm.group_id "
 				+ "where fm.member_name = ?";
-		deleteGroup = "call deletegroupfromtable(?, ?)";
+	private static final String deleteGroup = "call deletegroupfromtable(?, ?)";
 
-		addMember = "insert into faction_member(" +
+	private static final String addMember = "insert into faction_member(" +
 				"group_id, member_name, role) select group_id, ?, ? from "
 				+ "faction_id where group_name = ?";
-		getMembers = "select fm.member_name from faction_member fm "
+	private static final String getMembers = "select fm.member_name from faction_member fm "
 				+ "inner join faction_id id on id.group_name = ? "
 				+ "where fm.group_id = id.group_id and fm.role = ?";
-		removeMember = "delete fm.* from faction_member fm "
+	private static final String removeMember = "delete fm.* from faction_member fm "
 				+ "inner join faction_id fi on fi.group_id = fm.group_id "
 				+ "where fm.member_name = ? and fi.group_name =?";
 		
-		removeAllMembers = "delete fm.* from faction_member fm "
+	private static final String removeAllMembers = "delete fm.* from faction_member fm "
 				+ "inner join faction_id fi on fi.group_id = fm.group_id "
 				+ "where fi.group_name =?";
 		
 		// So this will link all instances (name/id pairs) of the subgroup to all instances (name/id pairs) of the supergroup.
-		addSubGroup = "INSERT INTO subgroup (group_id, sub_group_id) "
+	private static final String addSubGroup = "INSERT INTO subgroup (group_id, sub_group_id) "
 				+ "SELECT super.group_id, sub.group_id "
 				+ "FROM faction_id super "
 				+ "INNER JOIN faction_id sub "
@@ -86,12 +81,12 @@ public class GroupManagerDao {
 				+ "WHERE super.group_name = ?";
 		
 		// This undoes the above. It unlinks all instances (name/id pairs) of the subgroup from all instances (name/id pairs) of the supergroup.
-		removeSubGroup ="DELETE FROM subgroup "
+	private static final String removeSubGroup ="DELETE FROM subgroup "
 				+ "WHERE group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) "
 				+ "AND sub_group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?)";
 		
 		// This lists all unique subgroups (names) for all instances (name/id pairs) of the supergroup.
-		getSubGroups = "SELECT DISTINCT sub.group_name FROM faction_id sub "
+	private static final String getSubGroups = "SELECT DISTINCT sub.group_name FROM faction_id sub "
 				+ "INNER JOIN faction_id super "
 				+ "ON super.group_name = ? "
 				+ "INNER JOIN subgroup other "
@@ -100,432 +95,335 @@ public class GroupManagerDao {
 		
 		// This lists all unique supergroups (names) which are parent(s) for all instances (name/id pairs) of the subgroup. 
 		// I expect most implementations to ignore if this has multiple results; a "safe" implementation will check.
-		getSuperGroup ="SELECT DISTINCT f.group_name FROM faction_id f "
+	private static final String getSuperGroup ="SELECT DISTINCT f.group_name FROM faction_id f "
 				+ "INNER JOIN faction_id sf ON sf.group_name = ? "
 				+ "INNER JOIN subgroup sg ON sg.group_id = sf.group_id "
 				+ "WHERE f.group_id = sg.sub_group_id";
 		
 		// returns count of unique names, but not (name / id pairs) of all groups.
-		countGroups = "select count(DISTINCT group_name) as count from faction";
+	private static final String countGroups = "select count(DISTINCT group_name) as count from faction";
 		
 		// returns count of unique names of groups owned by founder
-		countGroupsFromUUID = "select count(DISTINCT group_name) as count from faction where founder = ?";
+	private static final String countGroupsFromUUID = "select count(DISTINCT group_name) as count from faction where founder = ?";
 		
-		mergeGroup = "call mergeintogroup(?,?)";
+	private static final String mergeGroup = "call mergeintogroup(?,?)";
 		
-		updatePassword = "update faction set `password` = ? "
+	private static final String updatePassword = "update faction set `password` = ? "
 				+ "where group_name = ?";
 		
-		updateOwner = "update faction set founder = ? "
+	private static final String updateOwner = "update faction set founder = ? "
 				+ "where group_name = ?";
 		
-		updateDisciplined = "update faction set discipline_flags = ? "
+	private static final String updateDisciplined = "update faction set discipline_flags = ? "
 				+ "where group_name = ?";
 		
-		addAutoAcceptGroup = "insert into toggleAutoAccept(uuid)"
+	private static final String addAutoAcceptGroup = "insert into toggleAutoAccept(uuid)"
 				+ "values(?)";
-		getAutoAcceptGroup = "select uuid from toggleAutoAccept "
+	private static final String getAutoAcceptGroup = "select uuid from toggleAutoAccept "
 				+ "where uuid = ?";
-		removeAutoAcceptGroup = "delete from toggleAutoAccept where uuid = ?";
+	private static final String removeAutoAcceptGroup = "delete from toggleAutoAccept where uuid = ?";
 		
-		loadAllAutoAcceptGroup = "select uuid from toggleAutoAccept;";
+	private static final String loadAllAutoAcceptGroup = "select uuid from toggleAutoAccept;";
 		
-		setDefaultGroup = "insert into default_group values(?, ?)";
+	private static final String setDefaultGroup = "insert into default_group values(?, ?)";
 		
-		changeDefaultGroup = "update default_group set defaultgroup = ? where uuid = ?";
+	private static final String changeDefaultGroup = "update default_group set defaultgroup = ? where uuid = ?";
 	
 		
-		getDefaultGroup = "select defaultgroup from default_group "
+	private static final String getDefaultGroup = "select defaultgroup from default_group "
 				+ "where uuid = ?";
-		getAllDefaultGroups = "select uuid,defaultgroup from default_group";
+	private static final String getAllDefaultGroups = "select uuid,defaultgroup from default_group";
 		
-		loadGroupsInvitations = "select uuid, groupName, role from group_invitation";
+	private static final String loadGroupsInvitations = "select uuid, groupName, role from group_invitation";
 		
-		addGroupInvitation = "insert into group_invitation(uuid, groupName, role) values(?, ?, ?) on duplicate key update role=values(role), date=now();";
+	private static final String addGroupInvitation = "insert into group_invitation(uuid, groupName, role) values(?, ?, ?) on duplicate key update role=values(role), date=now();";
 		
-		removeGroupInvitation = "delete from group_invitation where uuid = ? and groupName = ?";
+	private static final String removeGroupInvitation = "delete from group_invitation where uuid = ? and groupName = ?";
 		
-		loadGroupInvitation = "select role from group_invitation where uuid = ? and groupName = ?";
+	private static final String loadGroupInvitation = "select role from group_invitation where uuid = ? and groupName = ?";
 		
-		loadGroupInvitationsForGroup = "select uuid,role from group_invitation where groupName=?";
+	private static final String loadGroupInvitationsForGroup = "select uuid,role from group_invitation where groupName=?";
 		
 		// Gets all unique names (not instances) of groups having this member at that role.
-		getGroupNameFromRole = "SELECT DISTINCT faction_id.group_name FROM faction_member "
+	private static final String getGroupNameFromRole = "SELECT DISTINCT faction_id.group_name FROM faction_member "
 								+ "inner join faction_id on faction_member.group_id = faction_id.group_id "
 								+ "WHERE member_name = ? "
 								+ "AND role = ?;";
 		
 		// Gets the "most recent" updated group from all groups that share the name.
-		getTimestamp = "SELECT MAX(faction.last_timestamp) FROM faction "
+	private static final String getTimestamp = "SELECT MAX(faction.last_timestamp) FROM faction "
 								+ "WHERE group_name = ?;";
 		
 		// updates "most recent" of all groups with a given name.
-		updateLastTimestamp = "UPDATE faction SET faction.last_timestamp = NOW() "
+	private static final String updateLastTimestamp = "UPDATE faction SET faction.last_timestamp = NOW() "
 								+ "WHERE group_name = ?;";
 		
 		// Breaking the pattern. Here we directly access a role based on _group ID_ rather then group_name. TODO: evaluate safety.
-		getPlayerType = "SELECT role FROM faction_member "
+	private static final String getPlayerType = "SELECT role FROM faction_member "
 						+ "WHERE group_id = ? "
                         + "AND member_name = ?;";
-		logNameChange = "insert into nameLayerNameChanges (uuid,oldName,newName) values(?,?,?);";
-		checkForNameChange = "select * from nameLayerNameChanges where uuid=?;";
+	private static final String logNameChange = "insert into nameLayerNameChanges (uuid,oldName,newName) values(?,?,?);";
+	private static final String checkForNameChange = "select * from nameLayerNameChanges where uuid=?;";
 		
-		addPermission = "insert into permissionByGroup(group_id,role,perm_id) select g.group_id, ?, ? from faction_id g where g.group_name = ?;";
-		addPermissionById = "insert into permissionByGroup(group_id,role,perm_id) values(?,?,?);";
-		getPermission = "select pg.role,pg.perm_id from permissionByGroup pg inner join faction_id fi on fi.group_name=? "
+	private static final String addPermission = "insert into permissionByGroup(group_id,role,perm_id) select g.group_id, ?, ? from faction_id g where g.group_name = ?;";
+	private static final String addPermissionById = "insert into permissionByGroup(group_id,role,perm_id) values(?,?,?);";
+	private static final String getPermission = "select pg.role,pg.perm_id from permissionByGroup pg inner join faction_id fi on fi.group_name=? "
 				+ "where pg.group_id = fi.group_id";
-		removePermission = "delete from permissionByGroup where group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and role=? and perm_id=?;";
-		registerPermission = "insert into permissionIdMapping(perm_id,name) values(?,?);"; 
-		getPermissionMapping = "select * from permissionIdMapping;";
+	private static final String removePermission = "delete from permissionByGroup where group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and role=? and perm_id=?;";
+	private static final String registerPermission = "insert into permissionIdMapping(perm_id,name) values(?,?);"; 
+	private static final String getPermissionMapping = "select * from permissionIdMapping;";
 		
-		addBlacklistMember = "insert into blacklist(group_id, member_name) select group_id,? from faction_id where group_name=?;";
-		removeBlackListMember = "delete from blacklist WHERE group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and member_name=?;";
-		getBlackListMembers = "select b.member_name from blacklist b inner join faction_id fi on fi.group_name=? where b.group_id=fi.group_id;";
+	private static final String addBlacklistMember = "insert into blacklist(group_id, member_name) select group_id,? from faction_id where group_name=?;";
+	private static final String removeBlackListMember = "delete from blacklist WHERE group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and member_name=?;";
+	private static final String getBlackListMembers = "select b.member_name from blacklist b inner join faction_id fi on fi.group_name=? where b.group_id=fi.group_id;";
 		
-		getAllGroupIds = "select group_id from faction_id";
+	private static final String getAllGroupIds = "select group_id from faction_id";
 
-		// Now do updates.
-		try{
-			checkUpdate();
-		} catch (SQLException se) {
-			logger.log(Level.SEVERE, "Failed to set up database / procedures!", se);
-			throw new RuntimeException(se);
-		}
-	}
-	
-	/**
-	 * Returns true if the statement executed has a result set with at least one member or an update count >= 0
-	 * 
-	 * Does NOT report warnings.
-	 * 
-	 * @param connection The connection to use.
-	 * @param sql
-	 * @return true if the statement executed has a result set with at least one member or an update count >= 0
-	 */
-	private boolean cleanExecute(String sql) {
-		try (Connection connection = db.getConnection()) {
-			Statement statement = connection.createStatement();
-			if (statement.execute(sql)){
-				ResultSet rs = statement.getResultSet();
-				return rs.next();
-			} else {
-				return statement.getUpdateCount() >= 0;
-			}
-		} catch (SQLException se) {
-			logger.log(Level.SEVERE, "Failed to run cleanExecute: ", se);
-		}
-		return false;
+
+	public GroupManagerDao(Logger logger, ManagedDatasource db){
+		this.logger = logger;
+		this.db = db;
 	}
 	
 	/**
 	 * Not going to lie, I can't make heads or tails out of half of this.
-	 * @throws SQLException
 	 */
-	public void checkUpdate() throws SQLException {
-		long begin_time = System.currentTimeMillis();
-		log(Level.INFO, "Checking Database to see if update is needed!");
-		int ver = checkVersion(plugin.getName());
-		if (ver == 0) {
-			if (cleanExecute("create table if not exists db_version (db_version int not null," +
-						"  update_time varchar(24), plugin_name varchar(40))")) {
-				ver = 1;
-			} else {
-				logger.log(Level.WARNING, "Database upgrade to version 1 might have failed!");
-			}
-		}
-		
-		//So best case the version table would only be created once at the beginning and then never changed again.
-		//Sadly the initial version table tracked time stamps as varchar in a very specific format, so we had to
-		//change it here. To avoid having to create a version table for the version table, we will just attempt this fix
-		//on startup every time and let it silently fail
-		if (cleanExecute("alter table db_version add column timestamp datetime default now()")) {
-			cleanExecute("update db_version set timestamp=STR_TO_DATE(update_time, '%Y-%m-%d %h:%i:%s')");
-			cleanExecute("alter table db_version drop column update_time");
-		}
-
-		if (ver == 0){
-			long first_time = System.currentTimeMillis();
-			logger.log(Level.INFO, "Performing database update to version 1!\n" +
-					"This may take a long time depending on how big your database is.");
-			cleanExecute("alter table faction drop `version`;");
-			cleanExecute("alter table faction add type int default 0;");
-			cleanExecute("create table faction_id("
+	public void registerMigrations() {
+		db.registerMigration(1, false, 
+				"alter table faction drop `version`;",
+				"alter table faction add type int default 0;",
+				"create table faction_id("
 					+ "group_id int not null AUTO_INCREMENT,"
 					+ "group_name varchar(255),"
-					+ "primary key(group_id));");
-
-			cleanExecute("create table if not exists permissions(" +
+					+ "primary key(group_id));",
+				"create table if not exists permissions(" +
 					"group_id varchar(255) not null," +
 					"role varchar(40) not null," +
 					"tier varchar(255) not null," +
-					"unique key (group_id, role));");
-			cleanExecute("delete from faction where `name` is null;");
-			cleanExecute("delete from faction_member where faction_name is null;");
-			cleanExecute("delete from moderator where faction_name is null;");
-			cleanExecute("insert into faction_id (group_name) select `name` from faction;");
-			cleanExecute("alter table faction add group_name varchar(255) default null;");
-			cleanExecute("update faction g set g.group_name = g.name;");
-			cleanExecute("alter table faction drop `name`;");
-			cleanExecute("alter table faction add primary key group_primary_key (group_name);");
-			cleanExecute("drop table personal_group;");
-			cleanExecute("alter table faction_member change member_name member_name varchar(36);");
-			cleanExecute("alter table faction_member add role varchar(10) not null default 'MEMBERS';");
-			cleanExecute("alter table faction_member add group_id int not null;");
-			cleanExecute("delete fm.* from faction_member fm where not exists " // deletes any non faction_id entries.
+					"unique key (group_id, role));",
+				"delete from faction where `name` is null;",
+				"delete from faction_member where faction_name is null;",
+				"delete from moderator where faction_name is null;",
+				"insert into faction_id (group_name) select `name` from faction;",
+				"alter table faction add group_name varchar(255) default null;",
+				"update faction g set g.group_name = g.name;",
+				"alter table faction drop `name`;",
+				"alter table faction add primary key group_primary_key (group_name);",
+				"drop table personal_group;",
+				"alter table faction_member change member_name member_name varchar(36);",
+				"alter table faction_member add role varchar(10) not null default 'MEMBERS';",
+				"alter table faction_member add group_id int not null;",
+				"delete fm.* from faction_member fm where not exists " // deletes any non faction_id entries.
 					+ "(select fi.group_id from faction_id fi "
-					+ "where fi.group_name = fm.faction_name limit 1);");
-			cleanExecute("update faction_member fm set fm.group_id = (select fi.group_id from faction_id fi "
-					+ "where fi.group_name = fm.faction_name limit 1);");
-			cleanExecute("alter table faction_member add unique key uq_meber_faction(member_name, group_id);");
-			cleanExecute("alter table faction_member drop index uq_faction_member_1;");
-			cleanExecute("alter table faction_member drop faction_name;");
-			cleanExecute("insert ignore into faction_member (group_id, member_name, role)" +
+					+ "where fi.group_name = fm.faction_name limit 1);",
+				"update faction_member fm set fm.group_id = (select fi.group_id from faction_id fi "
+					+ "where fi.group_name = fm.faction_name limit 1);",
+				"alter table faction_member add unique key uq_meber_faction(member_name, group_id);",
+				"alter table faction_member drop index uq_faction_member_1;",
+				"alter table faction_member drop faction_name;",
+				"insert ignore into faction_member (group_id, member_name, role)" +
 					"select g.group_id, m.member_name, 'MODS' from moderator m "
-					+ "inner join faction_id g on g.group_name = m.faction_name");
-			cleanExecute("insert into faction_member (group_id, member_name, role)"
+					+ "inner join faction_id g on g.group_name = m.faction_name",
+				"insert into faction_member (group_id, member_name, role)"
 					+ "select fi.group_id, f.founder, 'OWNER' from faction f "
-					+ "inner join faction_id fi on fi.group_name = f.group_name;");
-			cleanExecute("drop table moderator;");
-			cleanExecute("alter table faction change `type` group_type varchar(40) not null default 'PRIVATE';");
-			cleanExecute("update faction set group_type = 'PRIVATE';");
-			cleanExecute("alter table faction change founder founder varchar(36);");
-			cleanExecute("alter table db_version add plugin_name varchar(40);");
-			cleanExecute("alter table db_version change db_version db_version int not null;"); // for some reason db_version may have an auto increment on it.
-			cleanExecute("alter table db_version drop primary key;");
-			cleanExecute("insert into permissions (group_id, role, tier) "
+					+ "inner join faction_id fi on fi.group_name = f.group_name;",
+				"drop table moderator;",
+				"alter table faction change `type` group_type varchar(40) not null default 'PRIVATE';",
+				"update faction set group_type = 'PRIVATE';",
+				"alter table faction change founder founder varchar(36);",
+				"insert into permissions (group_id, role, tier) "
 					+ "select f.group_id, 'OWNER', "
 					+ "'DOORS CHESTS BLOCKS OWNER ADMINS MODS MEMBERS PASSWORD SUBGROUP PERMS DELETE MERGE LIST_PERMS TRANSFER CROPS' "
-					+ "from faction_id f;");
-			cleanExecute("insert into permissions (group_id, role, tier) "
+					+ "from faction_id f;",
+				"insert into permissions (group_id, role, tier) "
 					+ "select f.group_id, 'ADMINS', "
 					+ "'DOORS CHESTS BLOCKS MODS MEMBERS PASSWORD LIST_PERMS CROPS' "
-					+ "from faction_id f;");	
-			cleanExecute("insert into permissions (group_id, role, tier) "
+					+ "from faction_id f;",	
+				"insert into permissions (group_id, role, tier) "
 					+ "select f.group_id, 'MODS', "
 					+ "'DOORS CHESTS BLOCKS MEMBERS CROPS' "
-					+ "from faction_id f;");
-			cleanExecute("insert into permissions (group_id, role, tier) "
+					+ "from faction_id f;",
+				"insert into permissions (group_id, role, tier) "
 					+ "select f.group_id, 'MEMBERS', "
 					+ "'DOORS CHESTS' "
 					+ "from faction_id f;");
-			ver = updateVersion(ver, plugin.getName());
-			logger.log(Level.INFO, "Database update to Version one took {0} seconds", (System.currentTimeMillis() - first_time) / 1000);
-		}
-		
-		if (ver == 1){
-			long first_time = System.currentTimeMillis();
-			logger.log(Level.INFO, "Performing database creation!");
-			cleanExecute("create table if not exists faction_id("
+				
+		db.registerMigration(2, false, 
+				new Callable<Boolean>() {
+					@Override
+					public Boolean call() {
+						// Procedures may not be initialized yet.
+						Bukkit.getScheduler().scheduleSyncDelayedTask(NameLayerPlugin.getInstance(), new Runnable(){
+							@Override
+							public void run() {
+								Group g = getGroup(NameLayerPlugin.getSpecialAdminGroup());
+								if (g == null) {
+									createGroup(NameLayerPlugin.getSpecialAdminGroup(), null, null);
+								} else {
+									removeAllMembers(g.getName());
+								}
+							}
+						});
+						return true;
+					}
+				},
+				"create table if not exists faction_id("
 					+ "group_id int not null AUTO_INCREMENT,"
 					+ "group_name varchar(255),"
-					+ "primary key(group_id));");
+					+ "primary key(group_id));",
 			/* In the faction table we use group names. This is important because when merging other groups
 			 * it will create multiple same group_names within the faction_id table. The benefits are that when other
 			 * tables come looking for a group they always find the right one due to their only being one group with a name.
 			 */
-			cleanExecute("create table if not exists faction(" +
+				"create table if not exists faction(" +
 					"group_name varchar(255)," +
 					"founder varchar(36)," +
 					"password varchar(255) default null," +
 					"discipline_flags int(11) not null," +
 					"group_type varchar(40) not null default 'PRIVATE'," +
-					"primary key(group_name));");
-			cleanExecute("create table if not exists faction_member(" +
+					"primary key(group_name));",
+				"create table if not exists faction_member(" +
 					"group_id int not null," +
 					"member_name varchar(36)," +
 					"role varchar(10) not null default 'MEMBERS'," +
-					"unique key (group_id, member_name));");
-			cleanExecute("create table if not exists blacklist(" +
+					"unique key (group_id, member_name));",
+				"create table if not exists blacklist(" +
 					"member_name varchar(36) not null," +
-					"group_id varchar(255) not null);");
-			cleanExecute("create table if not exists permissions(" +
+					"group_id varchar(255) not null);",
+				"create table if not exists permissions(" +
 					"group_id varchar(255) not null," +
 					"role varchar(40) not null," +
 					"tier varchar(255) not null," +
-					"unique key (group_id, role));");
-			cleanExecute("create table if not exists subgroup(" +
+					"unique key (group_id, role));",
+				"create table if not exists subgroup(" +
 					"group_id varchar(255) not null," +
 					"sub_group_id varchar(255) not null," +
 					"unique key (group_id, sub_group_id));");
 			
-			// Procedures may not be initialized yet.
-			Bukkit.getScheduler().scheduleSyncDelayedTask(NameLayerPlugin.getInstance(), new Runnable(){
-				@Override
-				public void run() {
-					Group g = getGroup(NameLayerPlugin.getSpecialAdminGroup());
-					if (g == null) {
-						createGroup(NameLayerPlugin.getSpecialAdminGroup(), null, null);
-					} else {
-						removeAllMembers(g.getName());
-					}
-				}
-			}, 1);
-			
-			ver = updateVersion(ver, plugin.getName());
-			logger.log(Level.INFO, "Database update to Version two took {0} seconds", (System.currentTimeMillis() - first_time) / 1000);
-		}
-		
-		if (ver == 2){
-			long first_time = System.currentTimeMillis();
-			logger.log(Level.INFO, "Database updating to Version three.");
-			
-			cleanExecute("create table if not exists toggleAutoAccept("
+
+		db.registerMigration(3, false, 
+				"create table if not exists toggleAutoAccept("
 					+ "uuid varchar(36) not null,"
 					+ "primary key key_uuid(uuid));");
-			
-			ver = updateVersion(ver, plugin.getName());
-			logger.log(Level.INFO, "Database update to Version three took {0} seconds", (System.currentTimeMillis() - first_time) / 1000);
-		}
-		if (ver == 3){
-			long first_time = System.currentTimeMillis();
-			logger.log(Level.INFO, "Database updating to Version four.");
-			cleanExecute("alter table faction_id add index `faction_id_index` (group_name);");
-			ver = updateVersion(ver, plugin.getName());
-			logger.log(Level.INFO, "Database update to Version four took {0} seconds", (System.currentTimeMillis() - first_time) / 1000);
-		}
-		if (ver == 4){
-			long first_time = System.currentTimeMillis();
-			logger.log(Level.INFO, "Database updating to Version five.");
-			cleanExecute("alter table faction_member add index `faction_member_index` (group_id);");
-			ver = updateVersion(ver, plugin.getName());
-			logger.log(Level.INFO, "Database update to Version five took {0} seconds", (System.currentTimeMillis() - first_time) / 1000);
-		}
-		if (ver == 5){
-			long first_time = System.currentTimeMillis();
-			logger.log(Level.INFO, "Database upadting to version six.");
-			cleanExecute("create table if not exists default_group(" + 
+
+		db.registerMigration(4, false, 
+				"alter table faction_id add index `faction_id_index` (group_name);");
+
+		db.registerMigration(5, false, 
+				"alter table faction_member add index `faction_member_index` (group_id);");
+
+		db.registerMigration(6, false,
+				"create table if not exists default_group(" + 
 					"uuid varchar(36) NOT NULL," +
 					"defaultgroup varchar(255) NOT NULL,"+
 					"primary key key_uuid(uuid))");
-			ver = updateVersion(ver, plugin.getName());
-			logger.log(Level.INFO, "Database update to Version six took {0} seconds", (System.currentTimeMillis() - first_time) / 1000);
-		}
-		if (ver == 6){
-			long first_time = System.currentTimeMillis();
-			logger.log(Level.INFO, "Database updating to version seven.");
-			cleanExecute("create table if not exists group_invitation(" + 
+
+		db.registerMigration(7, false,
+				"create table if not exists group_invitation(" + 
 					"uuid varchar(36) NOT NULL," +
 					"groupName varchar(255) NOT NULL,"+
 					"role varchar(10) NOT NULL default 'MEMBERS'," +
 					"date datetime NOT NULL default NOW()," +
 					"constraint UQ_uuid_groupName unique(uuid, groupName))");
-			ver = updateVersion(ver, plugin.getName());
-			logger.log(Level.INFO, "Database update to Version seven took {0} seconds", (System.currentTimeMillis() - first_time) / 1000);
-		}
-		if (ver == 7){
-			long first_time = System.currentTimeMillis();
-			logger.log(Level.INFO, "Database updating to version eight.");
-			cleanExecute("alter table faction add last_timestamp datetime NOT NULL default NOW();");
-			ver = updateVersion(ver, plugin.getName());
-			logger.log(Level.INFO, "Database update to Version eight took {0} seconds", (System.currentTimeMillis() - first_time) / 1000);
-		}
-		if (ver == 8) {
-			long first_time = System.currentTimeMillis();
-			logger.log(Level.INFO, "Database updating to version nine, fixing datatypes.");
-			cleanExecute("alter table blacklist modify column group_id int;");
-			cleanExecute("alter table permissions modify column group_id int;");
-			cleanExecute("alter table subgroup modify column group_id int, modify column sub_group_id int;");
-			ver = updateVersion(ver, plugin.getName());
-			logger.log(Level.INFO, "Database update to Version nine took {0} seconds", (System.currentTimeMillis() - first_time) / 1000);			
-		}
-		if (ver == 9) {
-			long first_time = System.currentTimeMillis();
-			logger.log(Level.INFO, "Database updating to version ten, adding table to keep track of name changes");
-			cleanExecute("create table if not exists nameLayerNameChanges(uuid varchar(36) not null, oldName varchar(32) not null, newName varchar(32) not null, primary key(uuid));");
-			ver = updateVersion(ver, plugin.getName());
-			logger.log(Level.INFO, "Database update to Version ten took {0} seconds", (System.currentTimeMillis() - first_time) / 1000);
-		}
-		if (ver == 10) {
-			long first_time = System.currentTimeMillis();
-			logger.log(Level.INFO, "Database updating to version eleven, reworking permission system");
-			cleanExecute("create table if not exists permissionByGroup(group_id int not null,role varchar(40) not null,perm_id int not null, primary key(group_id,role,perm_id));");
-			cleanExecute("create table if not exists permissionIdMapping(perm_id int not null, name varchar(64) not null,primary key(perm_id));");
-			cleanExecute("alter table faction drop column group_type");
-			Connection connection = db.getConnection();
-			
-			try (PreparedStatement permInit = connection.prepareStatement(addPermissionById);
-					PreparedStatement permReg = connection.prepareStatement(registerPermission); ) {
-				Map <String, Integer> permIds = new HashMap<String, Integer>();
 
-				LinkedList<Object[]> unspool = new LinkedList<Object[]>();
-				int maximumId = 0;
-				try (Statement getOldPerms = connection.createStatement();
-						ResultSet res = getOldPerms.executeQuery("select * from permissions");) {
-					while(res.next()) {
-						unspool.add(new Object[]{res.getInt(1), res.getString(2), res.getString(3)});
-						if (res.getInt(1) > maximumId) maximumId = res.getInt(1);
-					}
-				} catch (SQLException e) {
-					logger.log(Level.SEVERE, "Failed to get old permissions, things might get a little wonky now.", e);
-				}
-				
-				int maxBatch = 100, count = 0, regadd = 0;
-				
-				for (Object[] spool : unspool) {
-					int groupId = (int) spool[0];
-					String role = (String) spool[1];
-					String [] perms = ((String) spool[2]).split(" ");
-					for(String p : perms) {
-						if (!p.equals("")) {
-							if(p.equals("BLOCKS")) {
-								//this permission was renamed and now includes less functionality than previously
-								p = "REINFORCE";
+		db.registerMigration(8, false,
+				"alter table faction add last_timestamp datetime NOT NULL default NOW();");
+
+		db.registerMigration(9, false,
+				"alter table blacklist modify column group_id int;",
+				"alter table permissions modify column group_id int;",
+				"alter table subgroup modify column group_id int, modify column sub_group_id int;");
+
+		db.registerMigration(10, false,
+				"create table if not exists nameLayerNameChanges(uuid varchar(36) not null, oldName varchar(32) not null, newName varchar(32) not null, primary key(uuid));");
+
+		db.registerMigration(11, false,
+				new Callable<Boolean>() {
+					@Override
+					public Boolean call() {
+						try (Connection connection = db.getConnection();
+								PreparedStatement permInit = connection.prepareStatement(addPermissionById);
+								PreparedStatement permReg = connection.prepareStatement(registerPermission); ) {
+							Map <String, Integer> permIds = new HashMap<String, Integer>();
+
+							LinkedList<Object[]> unspool = new LinkedList<Object[]>();
+							int maximumId = 0;
+							try (Statement getOldPerms = connection.createStatement();
+									ResultSet res = getOldPerms.executeQuery("select * from permissions");) {
+								while(res.next()) {
+									unspool.add(new Object[]{res.getInt(1), res.getString(2), res.getString(3)});
+									if (res.getInt(1) > maximumId) maximumId = res.getInt(1);
+								}
+							} catch (SQLException e) {
+								logger.log(Level.SEVERE, "Failed to get old permissions, things might get a little wonky now.", e);
 							}
-							Integer id = permIds.get(p);
-							if (id == null) {
-								//unknown perm, so we register it
-								id = ++maximumId; // prefix mutator!
-								
-								permReg.setInt(1, maximumId);
-								permReg.setString(2, p);
-								permReg.addBatch(); // defer insert.
-								
-								permIds.put(p, id);
-								regadd ++;
-							}
-							permInit.setInt(1, groupId);
-							permInit.setString(2, role);
-							permInit.setInt(3, id);
-							permInit.addBatch();
-							count ++;
 							
-							if (count > maxBatch) {
+							int maxBatch = 100, count = 0, regadd = 0;
+							
+							for (Object[] spool : unspool) {
+								int groupId = (int) spool[0];
+								String role = (String) spool[1];
+								String [] perms = ((String) spool[2]).split(" ");
+								for(String p : perms) {
+									if (!p.equals("")) {
+										if(p.equals("BLOCKS")) {
+											//this permission was renamed and now includes less functionality than previously
+											p = "REINFORCE";
+										}
+										Integer id = permIds.get(p);
+										if (id == null) {
+											//unknown perm, so we register it
+											id = ++maximumId; // prefix mutator!
+											
+											permReg.setInt(1, maximumId);
+											permReg.setString(2, p);
+											permReg.addBatch(); // defer insert.
+											
+											permIds.put(p, id);
+											regadd ++;
+										}
+										permInit.setInt(1, groupId);
+										permInit.setString(2, role);
+										permInit.setInt(3, id);
+										permInit.addBatch();
+										count ++;
+										
+										if (count > maxBatch) {
+											permInit.executeBatch();
+											// TODO process warnings / errors
+											count = 0;
+										}
+									}
+								}
+							}
+							if (count > 0) {
 								permInit.executeBatch();
 								// TODO process warnings / errors
-								count = 0;
 							}
-						}
-					}
-				}
-				if (count > 0) {
-					permInit.executeBatch();
-					// TODO process warnings / errors
-				}
-				
-				if (regadd > 0) {
-					permReg.executeBatch();
-					// TODO process warnings / errors
-				}
+							
+							if (regadd > 0) {
+								permReg.executeBatch();
+								// TODO process warnings / errors
+							}
 
-			} catch (SQLException se) {
-				logger.log(Level.SEVERE, "Something fatal occured while updating permissions", se);
-			}
-			ver = updateVersion(ver, plugin.getName());
-			logger.log(Level.INFO, "Database update to Version eleven took {0} seconds", (System.currentTimeMillis() - first_time) / 1000);
-		}
-		if (ver == 11){
-			long first_time = System.currentTimeMillis();
-			logger.log(Level.INFO, "Database updating to version twelve, stripping pipes.");
-			cleanExecute("UPDATE faction SET group_name=REPLACE(group_name,'|','');");
-			ver = updateVersion(ver, plugin.getName());
-			logger.log(Level.INFO, "Database update to Version twelve took {0} seconds", (System.currentTimeMillis() - first_time) / 1000);
-		}
+						} catch (SQLException se) {
+							logger.log(Level.SEVERE, "Something fatal occured while updating permissions", se);
+							return false;
+						}
+						return true;
+					}
+				},
+				"create table if not exists permissionByGroup(group_id int not null,role varchar(40) not null,perm_id int not null, primary key(group_id,role,perm_id));",
+				"create table if not exists permissionIdMapping(perm_id int not null, name varchar(64) not null,primary key(perm_id));",
+				"alter table faction drop column group_type");
+
+
+		db.registerMigration(12, false, 
+				"UPDATE faction SET group_name=REPLACE(group_name,'|','');");
 		
-		if (ver == 12){
-			long first_time = System.currentTimeMillis();
-			logger.log(Level.INFO, "Database updating to version thirteen, adding procedures to managed updates.");
-			cleanExecute("drop procedure if exists deletegroupfromtable;");
-			cleanExecute("create definer=current_user procedure deletegroupfromtable(" +
+		db.registerMigration(13, false,
+				"drop procedure if exists deletegroupfromtable;",
+				"create definer=current_user procedure deletegroupfromtable(" +
 					"in groupName varchar(36),"
 					+ "in specialAdminGroup varchar(36)" +
 					") sql security invoker begin " +
@@ -545,10 +443,10 @@ public class GroupManagerDao {
 					+ "where f.group_name = specialAdminGroup;" +
 					"update faction_id set group_name = specialAdminGroup where group_name = groupName;" +
 					"delete from faction where group_name = groupName;" +
-					"end;");
-			cleanExecute("drop procedure if exists mergeintogroup;");
+					"end;",
+				"drop procedure if exists mergeintogroup;",
 			// needs to be set with inner joins
-			cleanExecute("create definer=current_user procedure mergeintogroup(" +
+				"create definer=current_user procedure mergeintogroup(" +
 					"in groupName varchar(255), in tomerge varchar(255)) " +
 					"sql security invoker begin " +
 					"DECLARE destID, tmp int;" +
@@ -577,9 +475,9 @@ public class GroupManagerDao {
 					+ "inner join faction_id fii on fii.group_name = tomerge "
 					+ "set fi.group_name = groupName "
 					+ "where fi.group_id = fii.group_id;" +
-					"end;");
-			cleanExecute("drop procedure if exists createGroup;");
-			cleanExecute("create definer=current_user procedure createGroup(" + 
+					"end;",
+				"drop procedure if exists createGroup;",
+				"create definer=current_user procedure createGroup(" + 
 					"in group_name varchar(255), " +
 					"in founder varchar(36), " +
 					"in password varchar(255), " +
@@ -593,88 +491,12 @@ public class GroupManagerDao {
 					"  select f.group_id from faction_id f where f.group_name = group_name; " +
 					" end if; " +
 					"end;");
-
-			ver = updateVersion(ver, plugin.getName());
-			logger.log(Level.INFO, "Database update to Version thirteen took {0} seconds", (System.currentTimeMillis() - first_time) / 1000);
-		}
-		
-		logger.log(Level.INFO, "Database update took {0} seconds", (System.currentTimeMillis() - begin_time) / 1000);
-	}
-	
-	private final String version, updateVersion;
-	
-	private final String createGroup, getGroup, getGroupById, getAllGroupsNames, deleteGroup, getAllGroupIds;
-	
-	private final String addMember, getMembers, removeMember, removeAllMembers, updatePassword, updateOwner, updateDisciplined;
-	
-	private final String addSubGroup, getSubGroups, getSuperGroup, removeSubGroup;
-	
-	private final String mergeGroup;
-	
-	private final String countGroups, countGroupsFromUUID;
-	
-	private final String addAutoAcceptGroup, getAutoAcceptGroup, removeAutoAcceptGroup, loadAllAutoAcceptGroup;
-	
-	private final String setDefaultGroup, changeDefaultGroup, getDefaultGroup, getAllDefaultGroups;
-	
-	private final String loadGroupsInvitations, addGroupInvitation, removeGroupInvitation, loadGroupInvitation, loadGroupInvitationsForGroup;
-	
-	private final String getGroupNameFromRole, updateLastTimestamp, getPlayerType, getTimestamp;
-	
-	private final String getGroupIDs;
-	
-	private final String logNameChange, checkForNameChange;
-	
-	private final String addPermission, getPermission, removePermission, registerPermission, getPermissionMapping, addPermissionById;
-	
-	private final String addBlacklistMember, removeBlackListMember, getBlackListMembers;
-	
-	/**
-	 * Checks the version of a specific plugin's db.
-	 * @param name- The name of the plugin.
-	 * @return Returns the version of the plugin or 0 if none was found.
-	 */
-	public int checkVersion(String name){
-		int ret = 0;
-		try (Connection connection = db.getConnection();
-				PreparedStatement version = connection.prepareStatement(this.version)){
-			version.setString(1, name);
-			try (ResultSet set = version.executeQuery();) {
-				if (set.next()) {
-					ret = set.getInt("db_version");
-				}
-			} catch (SQLException e) {
-				logger.log(Level.WARNING, "Problem accessing db_version table", e);
-			}
-		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem preparing query to access db_version table", e);
-			// table doesnt exist
-		}
-		return ret;
-	}
-	/**
-	 * Updates the version number for a plugin. You must specify what 
-	 * the current version number is.
-	 * @param version- The current version of the plugin.
-	 * @param pluginname- The plugin name.
-	 * @return Returns the new version of the db.
-	 */
-	public int updateVersion(int version, String pluginname){
-		try (Connection connection = db.getConnection();
-				PreparedStatement updateVersion = connection.prepareStatement(this.updateVersion)){
-			updateVersion.setInt(1, version+ 1);
-			updateVersion.setString(2, pluginname);
-			updateVersion.execute();
-		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem updating version", e);
-		}
-		return ++version;
 	}
 	
 	public int createGroup(String group, UUID owner, String password){
 		int ret = -1;
 		try (Connection connection = db.getConnection();
-				PreparedStatement createGroup = connection.prepareStatement(this.createGroup)){
+				PreparedStatement createGroup = connection.prepareStatement(GroupManagerDao.createGroup)){
 			String own = null;
 			if (owner != null) own = owner.toString();
 			createGroup.setString(1, group);
@@ -698,7 +520,7 @@ public class GroupManagerDao {
 	
 	public Group getGroup(String groupName){
 		try (Connection connection = db.getConnection();
-				PreparedStatement getGroup = connection.prepareStatement(this.getGroup)){
+				PreparedStatement getGroup = connection.prepareStatement(GroupManagerDao.getGroup)){
 			
 			getGroup.setString(1, groupName);
 			try (ResultSet set = getGroup.executeQuery()){
@@ -728,7 +550,7 @@ public class GroupManagerDao {
 	
 	public Group getGroup(int groupId){
 		try (Connection connection = db.getConnection();
-				PreparedStatement getGroupById = connection.prepareStatement(this.getGroupById)){
+				PreparedStatement getGroupById = connection.prepareStatement(GroupManagerDao.getGroupById)){
 			getGroupById.setInt(1, groupId);
 			try (ResultSet set = getGroupById.executeQuery();) {
 				if (!set.next()) return null;
@@ -756,7 +578,7 @@ public class GroupManagerDao {
 	public List<String> getGroupNames(UUID uuid){
 		List<String> groups = new ArrayList<String>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement getAllGroupsNames = connection.prepareStatement(this.getAllGroupsNames)){
+				PreparedStatement getAllGroupsNames = connection.prepareStatement(GroupManagerDao.getAllGroupsNames)){
 			getAllGroupsNames.setString(1, uuid.toString());
 			try (ResultSet set = getAllGroupsNames.executeQuery();) {
 				while(set.next()) {
@@ -774,7 +596,7 @@ public class GroupManagerDao {
 	public List<String> getGroupNames(UUID uuid, String role){
 		List<String> groups = new ArrayList<String>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement getGroupNameFromRole = connection.prepareStatement(this.getGroupNameFromRole)){
+				PreparedStatement getGroupNameFromRole = connection.prepareStatement(GroupManagerDao.getGroupNameFromRole)){
 			getGroupNameFromRole.setString(1, uuid.toString());
 			getGroupNameFromRole.setString(2, role);
 			try (ResultSet set = getGroupNameFromRole.executeQuery();) {
@@ -793,7 +615,7 @@ public class GroupManagerDao {
 	public Timestamp getTimestamp(String group){
 		Timestamp timestamp = null;
 		try (Connection connection = db.getConnection();
-				PreparedStatement getTimestamp = connection.prepareStatement(this.getTimestamp)){
+				PreparedStatement getTimestamp = connection.prepareStatement(GroupManagerDao.getTimestamp)){
 			getTimestamp.setString(1, group);
 			try (ResultSet set = getTimestamp.executeQuery();) {
 				if(set.next()) {
@@ -812,7 +634,7 @@ public class GroupManagerDao {
 	public PlayerType getPlayerType(int groupid, UUID uuid){
 		PlayerType ptype = null;
 		try (Connection connection = db.getConnection();
-				PreparedStatement getPlayerType = connection.prepareStatement(this.getPlayerType)){
+				PreparedStatement getPlayerType = connection.prepareStatement(GroupManagerDao.getPlayerType)){
 			getPlayerType.setInt(1, groupid);
 			getPlayerType.setString(2, uuid.toString());
 			try (ResultSet set = getPlayerType.executeQuery();) {
@@ -841,7 +663,7 @@ public class GroupManagerDao {
 	
 	public void updateTimestamp(String group){
 		try (Connection connection = db.getConnection();
-				PreparedStatement updateLastTimestamp = connection.prepareStatement(this.updateLastTimestamp)){
+				PreparedStatement updateLastTimestamp = connection.prepareStatement(GroupManagerDao.updateLastTimestamp)){
 			updateLastTimestamp.setString(1, group);
 			updateLastTimestamp.executeUpdate();
 		} catch (SQLException e) {
@@ -862,7 +684,7 @@ public class GroupManagerDao {
 	
 	public void deleteGroup(String groupName){
 		try (Connection connection = db.getConnection();
-				PreparedStatement deleteGroup = connection.prepareStatement(this.deleteGroup)){
+				PreparedStatement deleteGroup = connection.prepareStatement(GroupManagerDao.deleteGroup)){
 			deleteGroup.setString(1, groupName);
 			deleteGroup.setString(2, NameLayerPlugin.getSpecialAdminGroup());
 			deleteGroup.executeUpdate();
@@ -884,7 +706,7 @@ public class GroupManagerDao {
 	
 	public void addMember(UUID member, String faction, PlayerType role){
 		try (Connection connection = db.getConnection();
-				PreparedStatement addMember = connection.prepareStatement(this.addMember)){
+				PreparedStatement addMember = connection.prepareStatement(GroupManagerDao.addMember)){
 			addMember.setString(1, member.toString());
 			addMember.setString(2, role.name());
 			addMember.setString(3, faction);
@@ -898,7 +720,7 @@ public class GroupManagerDao {
 	public List<UUID> getAllMembers(String groupName, PlayerType role){
 		List<UUID> members = new ArrayList<UUID>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement getMembers = connection.prepareStatement(this.getMembers)){
+				PreparedStatement getMembers = connection.prepareStatement(GroupManagerDao.getMembers)){
 			getMembers.setString(1, groupName);
 			getMembers.setString(2, role.name());
 			try (ResultSet set = getMembers.executeQuery();) {
@@ -931,7 +753,7 @@ public class GroupManagerDao {
 	
 	public void removeMember(UUID member, String group){
 		try (Connection connection = db.getConnection();
-				PreparedStatement removeMember = connection.prepareStatement(this.removeMember)){
+				PreparedStatement removeMember = connection.prepareStatement(GroupManagerDao.removeMember)){
 			removeMember.setString(1, member.toString());
 			removeMember.setString(2, group);
 			removeMember.executeUpdate();
@@ -953,7 +775,7 @@ public class GroupManagerDao {
 	
 	public void removeAllMembers(String group){
 		try (Connection connection = db.getConnection();
-				PreparedStatement removeAllMembers = connection.prepareStatement(this.removeAllMembers)){
+				PreparedStatement removeAllMembers = connection.prepareStatement(GroupManagerDao.removeAllMembers)){
 			removeAllMembers.setString(1, group);
 			removeAllMembers.executeUpdate();
 		} catch (SQLException e) {
@@ -974,7 +796,7 @@ public class GroupManagerDao {
 	
 	public void addSubGroup(String group, String subGroup){
 		try (Connection connection = db.getConnection();
-				PreparedStatement addSubGroup = connection.prepareStatement(this.addSubGroup)){
+				PreparedStatement addSubGroup = connection.prepareStatement(GroupManagerDao.addSubGroup)){
 			addSubGroup.setString(1, subGroup);
 			addSubGroup.setString(2, group);
 			addSubGroup.executeUpdate();
@@ -987,7 +809,7 @@ public class GroupManagerDao {
 	public List<Group> getSubGroups(String group){
 		List<Group> groups = new ArrayList<Group>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement getSubGroups = connection.prepareStatement(this.getSubGroups)){
+				PreparedStatement getSubGroups = connection.prepareStatement(GroupManagerDao.getSubGroups)){
 			getSubGroups.setString(1, group);
 			
 			List<String> subgroups = Lists.newArrayList();
@@ -1016,7 +838,7 @@ public class GroupManagerDao {
 	
 	public Group getSuperGroup(String group){
 		try (Connection connection = db.getConnection();
-				PreparedStatement getSuperGroup = connection.prepareStatement(this.getSuperGroup)){
+				PreparedStatement getSuperGroup = connection.prepareStatement(GroupManagerDao.getSuperGroup)){
 			getSuperGroup.setString(1, group);
 			try (ResultSet set = getSuperGroup.executeQuery();) {
 				if (!set.next()) {
@@ -1050,7 +872,7 @@ public class GroupManagerDao {
 	
 	public void removeSubGroup(String group, String subGroup){
 		try (Connection connection = db.getConnection();
-				PreparedStatement removeSubGroup = connection.prepareStatement(this.removeSubGroup)){
+				PreparedStatement removeSubGroup = connection.prepareStatement(GroupManagerDao.removeSubGroup)){
 			removeSubGroup.setString(1, group);
 			removeSubGroup.setString(2, subGroup);
 			removeSubGroup.executeUpdate();
@@ -1062,7 +884,7 @@ public class GroupManagerDao {
 	
 	public void addAllPermissions(int groupId, Map <PlayerType, List <PermissionType>> perms) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement addPermissionById = connection.prepareStatement(this.addPermissionById)){
+				PreparedStatement addPermissionById = connection.prepareStatement(GroupManagerDao.addPermissionById)){
 			for (Entry <PlayerType, List <PermissionType>> entry: perms.entrySet()){
 				String role = entry.getKey().name();
 				for(PermissionType perm : entry.getValue()) {
@@ -1100,7 +922,7 @@ public class GroupManagerDao {
 
 	public void addPermission(String groupName, String role, List <PermissionType> perms){
 		try (Connection connection = db.getConnection();
-				PreparedStatement addPermission = connection.prepareStatement(this.addPermission)){
+				PreparedStatement addPermission = connection.prepareStatement(GroupManagerDao.addPermission)){
 			for(PermissionType perm : perms) {
 				addPermission.setString(1, role);
 				addPermission.setInt(2, perm.getId());
@@ -1126,7 +948,7 @@ public class GroupManagerDao {
 	public Map<PlayerType, List<PermissionType>> getPermissions(String group){
 		Map<PlayerType, List<PermissionType>> perms = new HashMap<PlayerType, List<PermissionType>>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement getPermission = connection.prepareStatement(this.getPermission)){
+				PreparedStatement getPermission = connection.prepareStatement(GroupManagerDao.getPermission)){
 			getPermission.setString(1, group);
 			try (ResultSet set = getPermission.executeQuery();) {
 				while(set.next()){
@@ -1164,7 +986,7 @@ public class GroupManagerDao {
 	
 	public void removePermission(String group, PlayerType pType, PermissionType perm){
 		try (Connection connection = db.getConnection();
-				PreparedStatement removePermission = connection.prepareStatement(this.removePermission)){
+				PreparedStatement removePermission = connection.prepareStatement(GroupManagerDao.removePermission)){
 			removePermission.setString(1, group);
 			removePermission.setString(2, pType.name());
 			removePermission.setInt(3, perm.getId());
@@ -1188,7 +1010,7 @@ public class GroupManagerDao {
 	
 	public void registerPermission(PermissionType perm) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement registerPermission = connection.prepareStatement(this.registerPermission)){
+				PreparedStatement registerPermission = connection.prepareStatement(GroupManagerDao.registerPermission)){
 			registerPermission.setInt(1, perm.getId());
 			registerPermission.setString(2, perm.getName());
 			registerPermission.executeUpdate();
@@ -1201,7 +1023,7 @@ public class GroupManagerDao {
 		Map <Integer,String> perms = new TreeMap<Integer, String>();
 		try (Connection connection = db.getConnection();
 				Statement getPermissionMapping = connection.createStatement()) {
-			try (ResultSet res = getPermissionMapping.executeQuery(this.getPermissionMapping)) {
+			try (ResultSet res = getPermissionMapping.executeQuery(GroupManagerDao.getPermissionMapping)) {
 				while (res.next()) {
 					perms.put(res.getInt(1), res.getString(2));
 				}
@@ -1229,7 +1051,7 @@ public class GroupManagerDao {
 		try (Connection connection = db.getConnection();) {
 			List <Integer> groups = new LinkedList<Integer>();
 			try (Statement getAllGroupIds = connection.createStatement();
-					ResultSet set = getAllGroupIds.executeQuery(this.getAllGroupIds);) {
+					ResultSet set = getAllGroupIds.executeQuery(GroupManagerDao.getAllGroupIds);) {
 				// unpack ids;
 				while(set.next()) {
 					groups.add(set.getInt(1));
@@ -1241,7 +1063,7 @@ public class GroupManagerDao {
 			}
 			
 			int batchsize = 0, maxbatch = 100;
-			try (PreparedStatement addPermissionById = connection.prepareStatement(this.addPermissionById);) {
+			try (PreparedStatement addPermissionById = connection.prepareStatement(GroupManagerDao.addPermissionById);) {
 				for (int groupId : groups) {
 					for(PlayerType pType: playerTypes) {
 						addPermissionById.setInt(1, groupId);
@@ -1292,7 +1114,7 @@ public class GroupManagerDao {
 		int ret = 0;
 		try (Connection connection = db.getConnection();
 				Statement countGroups = connection.createStatement();
-				ResultSet set = countGroups.executeQuery(this.countGroups);){
+				ResultSet set = countGroups.executeQuery(GroupManagerDao.countGroups);){
 			ret = set.next() ? set.getInt("count") : 0;
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem counting groups", e);
@@ -1303,7 +1125,7 @@ public class GroupManagerDao {
 	public int countGroups(UUID uuid){
 		int ret = 0;
 		try (Connection connection = db.getConnection();
-				PreparedStatement countGroupsFromUUID = connection.prepareStatement(this.countGroupsFromUUID);){
+				PreparedStatement countGroupsFromUUID = connection.prepareStatement(GroupManagerDao.countGroupsFromUUID);){
 			countGroupsFromUUID.setString(1, uuid.toString());
 			try (ResultSet set = countGroupsFromUUID.executeQuery();) {
 				ret = set.next() ? set.getInt("count") : 0;
@@ -1330,7 +1152,7 @@ public class GroupManagerDao {
 	
 	public void mergeGroup(String groupName, String toMerge){
 		try (Connection connection = db.getConnection();
-				PreparedStatement mergeGroup = connection.prepareStatement(this.mergeGroup);){
+				PreparedStatement mergeGroup = connection.prepareStatement(GroupManagerDao.mergeGroup);){
 			mergeGroup.setString(1, groupName);
 			mergeGroup.setString(2, toMerge);
 			mergeGroup.execute();
@@ -1352,7 +1174,7 @@ public class GroupManagerDao {
 	
 	public void updatePassword(String groupName, String password){
 		try (Connection connection = db.getConnection();
-				PreparedStatement updatePassword = connection.prepareStatement(this.updatePassword);){
+				PreparedStatement updatePassword = connection.prepareStatement(GroupManagerDao.updatePassword);){
 			updatePassword.setString(1, password);
 			updatePassword.setString(2, groupName);
 			updatePassword.executeUpdate();
@@ -1369,7 +1191,7 @@ public class GroupManagerDao {
 	public Set <UUID> loadAllAutoAccept() {
 		Set <UUID> accepts = new HashSet<UUID>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement addAutoAcceptGroup = connection.prepareStatement(this.loadAllAutoAcceptGroup);
+				PreparedStatement addAutoAcceptGroup = connection.prepareStatement(GroupManagerDao.loadAllAutoAcceptGroup);
 				ResultSet rs = addAutoAcceptGroup.executeQuery();){
 			while (rs.next()) {
 				accepts.add(UUID.fromString(rs.getString(1)));
@@ -1397,7 +1219,7 @@ public class GroupManagerDao {
 	
 	public void autoAcceptGroups(final UUID uuid){
 		try (Connection connection = db.getConnection();
-				PreparedStatement addAutoAcceptGroup = connection.prepareStatement(this.addAutoAcceptGroup);){
+				PreparedStatement addAutoAcceptGroup = connection.prepareStatement(GroupManagerDao.addAutoAcceptGroup);){
 			addAutoAcceptGroup.setString(1, uuid.toString());
 			addAutoAcceptGroup.executeUpdate();
 		} catch (SQLException e) {
@@ -1412,7 +1234,7 @@ public class GroupManagerDao {
 	@Deprecated
 	public boolean shouldAutoAcceptGroups(UUID uuid){
 		try (Connection connection = db.getConnection();
-				PreparedStatement getAutoAcceptGroup = connection.prepareStatement(this.getAutoAcceptGroup);){
+				PreparedStatement getAutoAcceptGroup = connection.prepareStatement(GroupManagerDao.getAutoAcceptGroup);){
 			getAutoAcceptGroup.setString(1, uuid.toString());
 			try (ResultSet set = getAutoAcceptGroup.executeQuery();) {
 				return set.next();
@@ -1437,7 +1259,7 @@ public class GroupManagerDao {
 	
 	public void removeAutoAcceptGroup(final UUID uuid){
 		try (Connection connection = db.getConnection();
-				PreparedStatement removeAutoAcceptGroup = connection.prepareStatement(this.removeAutoAcceptGroup);){
+				PreparedStatement removeAutoAcceptGroup = connection.prepareStatement(GroupManagerDao.removeAutoAcceptGroup);){
 			removeAutoAcceptGroup.setString(1, uuid.toString());
 			removeAutoAcceptGroup.executeUpdate();
 		} catch (SQLException e) {
@@ -1458,7 +1280,7 @@ public class GroupManagerDao {
 	
 	public void setDefaultGroup(UUID uuid, String groupName){
 		try (Connection connection = db.getConnection();
-				PreparedStatement setDefaultGroup = connection.prepareStatement(this.setDefaultGroup);){
+				PreparedStatement setDefaultGroup = connection.prepareStatement(GroupManagerDao.setDefaultGroup);){
 			setDefaultGroup.setString(1, uuid.toString());
 			setDefaultGroup.setString(2, groupName );
 			setDefaultGroup.executeUpdate();
@@ -1480,7 +1302,7 @@ public class GroupManagerDao {
 	
 	public void changeDefaultGroup(UUID uuid, String groupName){
 		try (Connection connection = db.getConnection();
-				PreparedStatement changeDefaultGroup = connection.prepareStatement(this.changeDefaultGroup);){
+				PreparedStatement changeDefaultGroup = connection.prepareStatement(GroupManagerDao.changeDefaultGroup);){
 			changeDefaultGroup.setString(1, groupName);
 			changeDefaultGroup.setString(2, uuid.toString());
 			changeDefaultGroup.executeUpdate();
@@ -1492,7 +1314,7 @@ public class GroupManagerDao {
 	public String getDefaultGroup(UUID uuid) {
 		String group = null;
 		try (Connection connection = db.getConnection();
-				PreparedStatement getDefaultGroup = connection.prepareStatement(this.getDefaultGroup);){
+				PreparedStatement getDefaultGroup = connection.prepareStatement(GroupManagerDao.getDefaultGroup);){
 			getDefaultGroup.setString(1, uuid.toString());
 			try (ResultSet set = getDefaultGroup.executeQuery();) {
 				group = set.getString(1);
@@ -1509,7 +1331,7 @@ public class GroupManagerDao {
 		Map <UUID, String> groups = null;
 		try (Connection connection = db.getConnection();
 				Statement getAllDefaultGroups = connection.createStatement();
-				ResultSet set = getAllDefaultGroups.executeQuery(this.getAllDefaultGroups);){
+				ResultSet set = getAllDefaultGroups.executeQuery(GroupManagerDao.getAllDefaultGroups);){
 			groups = new TreeMap<UUID, String>();
 			while(set.next()) {
 				UUID uuid = UUID.fromString(set.getString(1));
@@ -1540,7 +1362,7 @@ public class GroupManagerDao {
 	
 	public void setFounder(UUID uuid, Group group) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement updateOwner = connection.prepareStatement(this.updateOwner);){
+				PreparedStatement updateOwner = connection.prepareStatement(GroupManagerDao.updateOwner);){
 			updateOwner.setString(1, uuid.toString());
 			updateOwner.setString(2, group.getName());
 			updateOwner.executeUpdate();
@@ -1562,7 +1384,7 @@ public class GroupManagerDao {
 	
 	public void setDisciplined(Group group, boolean disciplined) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement updateDisciplined = connection.prepareStatement(this.updateDisciplined);){
+				PreparedStatement updateDisciplined = connection.prepareStatement(GroupManagerDao.updateDisciplined);){
 			updateDisciplined.setInt(1, disciplined ? 1 : 0);
 			updateDisciplined.setString(2, group.getName());
 			updateDisciplined.executeUpdate();
@@ -1586,7 +1408,7 @@ public class GroupManagerDao {
 	
 	public void addGroupInvitation(UUID uuid, String groupName, String role){
 		try (Connection connection = db.getConnection();
-				PreparedStatement addGroupInvitation = connection.prepareStatement(this.addGroupInvitation);){
+				PreparedStatement addGroupInvitation = connection.prepareStatement(GroupManagerDao.addGroupInvitation);){
 			addGroupInvitation.setString(1, uuid.toString());
 			addGroupInvitation.setString(2, groupName);
 			addGroupInvitation.setString(3, role);
@@ -1610,7 +1432,7 @@ public class GroupManagerDao {
 	
 	public void removeGroupInvitation(UUID uuid, String groupName){
 		try (Connection connection = db.getConnection();
-				PreparedStatement removeGroupInvitation = connection.prepareStatement(this.removeGroupInvitation);){
+				PreparedStatement removeGroupInvitation = connection.prepareStatement(GroupManagerDao.removeGroupInvitation);){
 			removeGroupInvitation.setString(1, uuid.toString());
 			removeGroupInvitation.setString(2, groupName);
 			removeGroupInvitation.executeUpdate();
@@ -1641,7 +1463,7 @@ public class GroupManagerDao {
 		if(group == null) return;
 		
 		try (Connection connection = db.getConnection();
-				PreparedStatement loadGroupInvitation = connection.prepareStatement(this.loadGroupInvitation);){
+				PreparedStatement loadGroupInvitation = connection.prepareStatement(GroupManagerDao.loadGroupInvitation);){
 			loadGroupInvitation.setString(1, playerUUID.toString());
 			loadGroupInvitation.setString(2, group.getName());
 			try (ResultSet set = loadGroupInvitation.executeQuery();) {
@@ -1668,7 +1490,7 @@ public class GroupManagerDao {
 			return invs;
 		}
 		try (Connection connection = db.getConnection();
-				PreparedStatement loadGroupInvitationsForGroup = connection.prepareStatement(this.loadGroupInvitationsForGroup);){
+				PreparedStatement loadGroupInvitationsForGroup = connection.prepareStatement(GroupManagerDao.loadGroupInvitationsForGroup);){
 			loadGroupInvitationsForGroup.setString(1, groupName);
 			try (ResultSet set = loadGroupInvitationsForGroup.executeQuery();) {
 				while(set.next()) {
@@ -1700,7 +1522,7 @@ public class GroupManagerDao {
 	 */
 	public void loadGroupsInvitations(){
 		try (Connection connection = db.getConnection();
-				PreparedStatement loadGroupsInvitations = connection.prepareStatement(this.loadGroupsInvitations);
+				PreparedStatement loadGroupsInvitations = connection.prepareStatement(GroupManagerDao.loadGroupsInvitations);
 				ResultSet set = loadGroupsInvitations.executeQuery();) {
 			while(set.next()){
 				String uuid = set.getString("uuid");
@@ -1742,7 +1564,7 @@ public class GroupManagerDao {
 	
 	public void logNameChange(UUID uuid, String oldName, String newName) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement logNameChange = connection.prepareStatement(this.logNameChange);){
+				PreparedStatement logNameChange = connection.prepareStatement(GroupManagerDao.logNameChange);){
 			logNameChange.setString(1, uuid.toString());
 			logNameChange.setString(2, oldName);
 			logNameChange.setString(3, newName);
@@ -1756,7 +1578,7 @@ public class GroupManagerDao {
 	public boolean hasChangedNameBefore(UUID uuid) {
 		boolean ret = false;
 		try (Connection connection = db.getConnection();
-				PreparedStatement checkForNameChange = connection.prepareStatement(this.checkForNameChange);){
+				PreparedStatement checkForNameChange = connection.prepareStatement(GroupManagerDao.checkForNameChange);){
 			checkForNameChange.setString(1, uuid.toString());
 			try (ResultSet set = checkForNameChange.executeQuery();) { 
 				ret = set.next();
@@ -1783,7 +1605,7 @@ public class GroupManagerDao {
 	
 	public void addBlackListMember(String groupName, UUID player) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement addBlacklistMember = connection.prepareStatement(this.addBlacklistMember);){
+				PreparedStatement addBlacklistMember = connection.prepareStatement(GroupManagerDao.addBlacklistMember);){
 			addBlacklistMember.setString(1, player.toString());
 			addBlacklistMember.setString(2, groupName);
 			addBlacklistMember.executeUpdate();
@@ -1805,7 +1627,7 @@ public class GroupManagerDao {
 	
 	public void removeBlackListMember(String groupName, UUID player) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement removeBlackListMember = connection.prepareStatement(this.removeBlackListMember);){
+				PreparedStatement removeBlackListMember = connection.prepareStatement(GroupManagerDao.removeBlackListMember);){
 			removeBlackListMember.setString(1, groupName);
 			removeBlackListMember.setString(2, player.toString());
 			removeBlackListMember.executeUpdate();
@@ -1817,7 +1639,7 @@ public class GroupManagerDao {
 	public Set<UUID> getBlackListMembers(String groupName) {
 		Set<UUID> uuids = new HashSet<UUID>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement getBlackListMembers = connection.prepareStatement(this.getBlackListMembers);){
+				PreparedStatement getBlackListMembers = connection.prepareStatement(GroupManagerDao.getBlackListMembers);){
 			getBlackListMembers.setString(1, groupName);
 			try (ResultSet set = getBlackListMembers.executeQuery();) {
 				while (set.next()) {
@@ -1846,7 +1668,7 @@ public class GroupManagerDao {
 			return null;
 		}
 		try (Connection connection = db.getConnection();
-				PreparedStatement getGroupIDs = connection.prepareStatement(this.getGroupIDs);){
+				PreparedStatement getGroupIDs = connection.prepareStatement(GroupManagerDao.getGroupIDs);){
 			getGroupIDs.setString(1, groupName);
 			try (ResultSet set = getGroupIDs.executeQuery();) {
 				LinkedList<Integer> ids = new LinkedList<Integer>();

@@ -11,7 +11,6 @@
   </parent>
 
   <artifactId>NameLayer</artifactId>
-  <version>2.9.00</version>
 
   <dependencies>
     <dependency>
@@ -27,6 +26,8 @@
   </dependencies>
 
   <build>
+  	<!-- This allows us to avoid specifying versions in subprojects, made more difficult in M4 now that versions _must_ be literals -->
+    <finalName>${project.artifactId}-${releaseVersion}</finalName>
     <directory>../target</directory>
     <resources>
       <resource>
@@ -47,6 +48,29 @@
             <goals>
               <goal>shade</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>2.3.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <phase>install</phase>
+            <configuration>
+              <file>../target/${project.artifactId}-${releaseVersion}.jar</file>
+              <generatePom>true</generatePom>
+              <!--<pomFile>dependency-reduced-pom.xml</pomFile>-->
+			  <groupId>${project.groupId}</groupId>
+			  <artifactId>${project.artifactId}</artifactId>
+			  <packaging>${project.packaging}</packaging>
+              <version>${releaseVersion}</version>
+			  <description>Super Jar for both bungee and spigot, and spigot NMS support</description>
+            </configuration>
           </execution>
         </executions>
       </plugin>

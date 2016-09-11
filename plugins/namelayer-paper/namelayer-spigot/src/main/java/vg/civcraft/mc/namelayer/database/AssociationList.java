@@ -4,72 +4,46 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AssociationList {
-	private Database db;
-	private Logger logger;
+import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
-	public AssociationList(Logger logger, Database db){
+public class AssociationList {
+	private ManagedDatasource db;
+	private Logger logger;
+	
+	private static final String addPlayer = "call addplayertotable(?, ?)"; // order player name, uuid
+	private static final String getUUIDfromPlayer = "select uuid from Name_player where player=?"; 
+	private static final String getPlayerfromUUID = "select player from Name_player where uuid=?";
+	private static final String changePlayerName = "delete from Name_player where uuid=?";
+	private static final String getAllPlayerInfo = "select * from Name_player";
+	
+	public AssociationList(Logger logger, ManagedDatasource db){
 		this.db = db;
 		this.logger = logger;
-
-		if (db != null) {
-			genTables();
-			initializeProcedures();
-			initializeStatements();
-		}
 	}
 
-	public void genTables(){
+	public void registerMigrations(){
 		// creates the player table
 		// Where uuid and host names will be stored
-		try (Connection connection = db.getConnection();
-				Statement statement = connection.createStatement();) {
-			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `Name_player` (" + 
+		db.registerMigration(-1, false, 
+				"CREATE TABLE IF NOT EXISTS `Name_player` (" + 
 					"`uuid` varchar(40) NOT NULL," +
 					"`player` varchar(40) NOT NULL,"
-					+ "UNIQUE KEY `uuid_player_combo` (`uuid`, `player`));");
-	
-			// this creates the table needed for when a player changes there name to a prexisting name before joining the server
-			statement.executeUpdate("create table if not exists playercountnames ("
+					+ "UNIQUE KEY `uuid_player_combo` (`uuid`, `player`));",
+				// this creates the table needed for when a player changes there name to a prexisting name before joining the server
+				"create table if not exists playercountnames ("
 					+ "player varchar(40) not null,"
 					+ "amount int(10) not null,"
 					+ "primary key (player));");
-		} catch (SQLException se) {
-			logger.log(Level.SEVERE, "Failed to generate tables for the association listener", se);
-		}
-	}
 
-	private String addPlayer;
-	private String getUUIDfromPlayer;
-	private String getPlayerfromUUID;
-	private String changePlayerName;
-	private String getAllPlayerInfo;
-
-	public void initializeStatements(){
-		addPlayer = "call addplayertotable(?, ?)"; // order player name, uuid 
-		getUUIDfromPlayer = "select uuid from Name_player " +
-				"where player=?";
-		getPlayerfromUUID = "select player from Name_player " +
-				"where uuid=?";
-		changePlayerName = "delete from Name_player " +
-				"where uuid=?";
-		getAllPlayerInfo = "select * from Name_player";
-	}
-
-	public void initializeProcedures(){
-		// TODO: lock this behind version update so its not run every time.
-		try (Connection connection = db.getConnection();
-				Statement statement = connection.createStatement();) {
-		
-			statement.executeUpdate("drop procedure if exists addplayertotable");
-			statement.executeUpdate("create definer=current_user procedure addplayertotable("
+		db.registerMigration(0, false, 
+				"drop procedure if exists addplayertotable",
+				"create definer=current_user procedure addplayertotable("
 					+ "in pl varchar(40), in uu varchar(40)) sql security invoker begin "
 					+ ""
 					+ "declare account varchar(40);"
@@ -109,15 +83,18 @@ public class AssociationList {
 					+ "END LOOP setName;"
 					+ "end if;"
 					+ "end");
-		} catch (SQLException se) {
-			logger.log(Level.SEVERE, "Failed to drop and create addplayertotable procedure", se);
-		}
+		// For future migrations, check the max migrations that is combination of here and
+		// GroupManagerDao!
 	}
 
-	// returns null if no uuid was found
+	/**
+	 * returns null if no uuid was found
+	 * @param playername
+	 * @return
+	 */
 	public UUID getUUID(String playername){
 		try (Connection connection = db.getConnection();
-				PreparedStatement getUUIDfromPlayer = connection.prepareStatement(this.getUUIDfromPlayer);) {
+				PreparedStatement getUUIDfromPlayer = connection.prepareStatement(AssociationList.getUUIDfromPlayer);) {
 			getUUIDfromPlayer.setString(1, playername);
 			try (ResultSet set = getUUIDfromPlayer.executeQuery();) {
 				if (!set.next() || set.wasNull()) return null;
@@ -132,10 +109,14 @@ public class AssociationList {
 		return null;
 	}
 
-	// returns null if no playername was found
+	/**
+	 *  returns null if no playername was found
+	 * @param uuid
+	 * @return
+	 */
 	public String getCurrentName(UUID uuid){
 		try (Connection connection = db.getConnection();
-				PreparedStatement getPlayerfromUUID = connection.prepareStatement(this.getPlayerfromUUID);) {
+				PreparedStatement getPlayerfromUUID = connection.prepareStatement(AssociationList.getPlayerfromUUID);) {
 			getPlayerfromUUID.setString(1, uuid.toString());
 			try (ResultSet set = getPlayerfromUUID.executeQuery();) {
 				if (!set.next()) return null;
@@ -152,7 +133,7 @@ public class AssociationList {
 
 	public void addPlayer(String playername, UUID uuid){
 		try (Connection connection = db.getConnection();
-				PreparedStatement addPlayer = connection.prepareStatement(this.addPlayer);) {
+				PreparedStatement addPlayer = connection.prepareStatement(AssociationList.addPlayer);) {
 			addPlayer.setString(1, playername);
 			addPlayer.setString(2, uuid.toString());
 			addPlayer.execute();
@@ -165,7 +146,7 @@ public class AssociationList {
 
 	public void changePlayer(String newName, UUID uuid) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement changePlayerName = connection.prepareStatement(this.changePlayerName);) {
+				PreparedStatement changePlayerName = connection.prepareStatement(AssociationList.changePlayerName);) {
 			changePlayerName.setString(1, uuid.toString());
 			changePlayerName.execute();
 		} catch (SQLException e) {
@@ -188,7 +169,7 @@ public class AssociationList {
 		Map<String, UUID> nameMapping = new HashMap<String, UUID>();
 		Map<UUID, String> uuidMapping = new HashMap<UUID, String>();
 		try (Connection connection = db.getConnection();
-				PreparedStatement getAllPlayerInfo = connection.prepareStatement(this.getAllPlayerInfo);
+				PreparedStatement getAllPlayerInfo = connection.prepareStatement(AssociationList.getAllPlayerInfo);
 				ResultSet set = getAllPlayerInfo.executeQuery();) {
 			while (set.next()){
 				UUID uuid = UUID.fromString(set.getString("uuid"));

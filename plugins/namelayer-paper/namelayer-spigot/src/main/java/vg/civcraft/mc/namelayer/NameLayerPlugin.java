@@ -1,6 +1,7 @@
 package vg.civcraft.mc.namelayer;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -12,9 +13,9 @@ import vg.civcraft.mc.civmodcore.Config;
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
+import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.command.CommandHandler;
 import vg.civcraft.mc.namelayer.database.AssociationList;
-import vg.civcraft.mc.namelayer.database.Database;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.AutoAcceptHandler;
 import vg.civcraft.mc.namelayer.group.BlackList;
@@ -34,7 +35,7 @@ public class NameLayerPlugin extends ACivMod{
 	private static NameLayerPlugin instance;
 	private static AutoAcceptHandler autoAcceptHandler;
 	private CommandHandler handle;
-	private static Database db;
+	private static ManagedDatasource db;
 	private static boolean loadGroups = true;
 	private static int groupLimit = 10;
 	private static boolean createGroupOnFirstJoin;
@@ -101,7 +102,7 @@ public class NameLayerPlugin extends ACivMod{
 			try {
 				db.close();
 			} catch (Exception e) {
-				log(Level.INFO, "Failed to close database gracefully on shutdown.");
+				getLogger().log(Level.INFO, "Failed to close database gracefully on shutdown.", e);
 			}
 		}
 	}
@@ -131,18 +132,50 @@ public class NameLayerPlugin extends ACivMod{
 		long connectionTimeout = config.get("sql.connection_timeout").getLong();
 		long idleTimeout = config.get("sql.idle_timeout").getLong();
 		long maxLifetime = config.get("sql.max_lifetime").getLong();
-		db = new Database(getLogger(), username, password, host, port, dbname,
+		db = new ManagedDatasource(this, username, password, host, port, dbname,
 				poolsize, connectionTimeout, idleTimeout, maxLifetime);
 		try {
-			db.available();
+			db.getConnection().close();
 		} catch (Exception se) {
 			NameLayerPlugin.log(Level.WARNING, "Could not connect to DataBase, shutting down!");
-			Bukkit.getPluginManager().disablePlugin(this); // Why have it try connect, it can't
+			Bukkit.shutdown();
 		}
+		
+		// First migration is conversion from old system to new, and lives outside AssociationList and GroupManagerDao.
+		db.registerMigration(-2, false,
+				new Callable<Boolean>() {
+					@Override
+					public Boolean call() {
+						return false; // Force a failure. Migrations doesn't check the current migration per step, only at beginning.
+						// So, we force a shutdown failure on first run. Then on second run, the Migration table will hold the correct values.
+					}
+				},
+				"INSERT INTO managed_plugin_data (plugin_name, current_migration_number, last_migration)"
+						+ " SELECT plugin_name, max(db_version), `timestamp` FROM db_version WHERE plugin_name = '" + this.getName() + "' LIMIT 1;");
+
 		associations = new AssociationList(getLogger(), db);
+		associations.registerMigrations();
+		
 		if (loadGroups) {
 			groupManagerDao = new GroupManagerDao(getLogger(), db);
+			groupManagerDao.registerMigrations();
 		}
+		
+		long begin_time = System.currentTimeMillis();
+
+		try {
+			getLogger().log(Level.INFO, "Update prepared, starting database update.");
+			if (!db.updateDatabase()) {
+				getLogger().log(Level.SEVERE, "Update failed, terminating Bukkit.");
+				Bukkit.shutdown();
+			}
+		} catch (Exception e) {
+			getLogger().log(Level.SEVERE, "Update failed, terminating Bukkit. Cause:", e);
+			Bukkit.shutdown();
+		}
+
+		getLogger().log(Level.INFO, "Database update took {0} seconds", (System.currentTimeMillis() - begin_time) / 1000);
+
 	}
 	
 	/**
@@ -177,16 +210,18 @@ public class NameLayerPlugin extends ACivMod{
 	 * @param pluginName- The plugin name.
 	 * @return Returns the new version of the db.
 	 */
+	@Deprecated
 	public static void insertVersionNum(int currentVersion, String pluginName){
-		groupManagerDao.updateVersion(currentVersion, pluginName);
+		throw new UnsupportedOperationException("insertVersionNum is no longer supported. Extend CivModCore and use ManagedDatasource"); 
 	}
 	/**
 	 * Checks the version of a specific plugin's db.
 	 * @param name- The name of the plugin.
 	 * @return Returns the version of the plugin or 0 if none was found.
 	 */
+	@Deprecated
 	public static int getVersionNum(String pluginName){
-		return groupManagerDao.checkVersion(pluginName);
+		throw new UnsupportedOperationException("getVersionNum is no longer supported. Extend CivModCore and use ManagedDatasource");
 	}
 	
 	public static String getSpecialAdminGroup(){
