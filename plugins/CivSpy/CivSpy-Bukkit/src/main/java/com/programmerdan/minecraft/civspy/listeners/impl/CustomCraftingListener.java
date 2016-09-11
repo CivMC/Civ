@@ -18,6 +18,7 @@ import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;
 import com.programmerdan.minecraft.civspy.PointDataSample;
 import com.programmerdan.minecraft.civspy.listeners.ServerDataListener;
+import com.programmerdan.minecraft.civspy.util.ItemStackToString;
 
 /**
  * Listener that records crafting recipe use.
@@ -58,7 +59,8 @@ public final class CustomCraftingListener extends ServerDataListener {
 		stack.setAmount(1);
 		
 		DataSample recipeGen = new PointDataSample("player.craft", this.getServer(),
-				chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), stack.toString(), result.getAmount());
+				chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
+				ItemStackToString.toString(stack), result.getAmount());
 		this.record(recipeGen);
 		
 		DataSample customCraft = new PointDataSample("player.craft.custom", this.getServer(),

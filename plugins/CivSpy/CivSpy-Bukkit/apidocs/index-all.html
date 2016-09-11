@@ -92,6 +92,8 @@
 <dl>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/listeners/impl/HuntingListener.html#captureDeath-org.bukkit.event.entity.EntityDeathEvent-">captureDeath(EntityDeathEvent)</a></span> - Method in class com.programmerdan.minecraft.civspy.listeners.impl.<a href="com/programmerdan/minecraft/civspy/listeners/impl/HuntingListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl">HuntingListener</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/listeners/impl/HuntingListener.html#capturePlayerDeath-org.bukkit.event.entity.PlayerDeathEvent-">capturePlayerDeath(PlayerDeathEvent)</a></span> - Method in class com.programmerdan.minecraft.civspy.listeners.impl.<a href="com/programmerdan/minecraft/civspy/listeners/impl/HuntingListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl">HuntingListener</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/programmerdan/minecraft/civspy/CivSpy.html" title="class in com.programmerdan.minecraft.civspy"><span class="typeNameLink">CivSpy</span></a> - Class in <a href="com/programmerdan/minecraft/civspy/package-summary.html">com.programmerdan.minecraft.civspy</a></dt>
 <dd>
 <div class="block">CivSpy is an aggregation platform for vital tracking statistics.</div>
@@ -111,6 +113,8 @@
 <div class="block">This package contains two abstract classes -- <a href="com/programmerdan/minecraft/civspy/samplers/ServerMultiDataSampler.html" title="class in com.programmerdan.minecraft.civspy.samplers"><code>ServerMultiDataSampler</code></a> or <a href="com/programmerdan/minecraft/civspy/samplers/ServerSingleDataSampler.html" title="class in com.programmerdan.minecraft.civspy.samplers"><code>ServerSingleDataSampler</code></a> -- one of which must be the superclass of any implementations you want automatically loaded by CivSpy.</div>
 </dd>
 <dt><a href="com/programmerdan/minecraft/civspy/samplers/impl/package-summary.html">com.programmerdan.minecraft.civspy.samplers.impl</a> - package com.programmerdan.minecraft.civspy.samplers.impl</dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/programmerdan/minecraft/civspy/util/package-summary.html">com.programmerdan.minecraft.civspy.util</a> - package com.programmerdan.minecraft.civspy.util</dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/DataSampleKey.html#compareTo-com.programmerdan.minecraft.civspy.DataSampleKey-">compareTo(DataSampleKey)</a></span> - Method in class com.programmerdan.minecraft.civspy.<a href="com/programmerdan/minecraft/civspy/DataSampleKey.html" title="class in com.programmerdan.minecraft.civspy">DataSampleKey</a></dt>
 <dd>&nbsp;</dd>
@@ -323,7 +327,7 @@
 <dd>&nbsp;</dd>
 <dt><a href="com/programmerdan/minecraft/civspy/listeners/impl/HuntingListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl"><span class="typeNameLink">HuntingListener</span></a> - Class in <a href="com/programmerdan/minecraft/civspy/listeners/impl/package-summary.html">com.programmerdan.minecraft.civspy.listeners.impl</a></dt>
 <dd>
-<div class="block">Listener that accumulates kills of non-players by players.</div>
+<div class="block">Listener that accumulates kills of non-players by players, and players by entities (including players).</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/listeners/impl/HuntingListener.html#HuntingListener-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-java.lang.String-">HuntingListener(DataManager, Logger, String)</a></span> - Constructor for class com.programmerdan.minecraft.civspy.listeners.impl.<a href="com/programmerdan/minecraft/civspy/listeners/impl/HuntingListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl">HuntingListener</a></dt>
 <dd>&nbsp;</dd>
@@ -342,6 +346,8 @@
 <div class="block">Convenient betweenness test for aggregation purposes;
  inclusive of start, exclusive of end.</div>
 </dd>
+<dt><a href="com/programmerdan/minecraft/civspy/util/ItemStackToString.html" title="class in com.programmerdan.minecraft.civspy.util"><span class="typeNameLink">ItemStackToString</span></a> - Class in <a href="com/programmerdan/minecraft/civspy/util/package-summary.html">com.programmerdan.minecraft.civspy.util</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <a name="I:L">
 <!--   -->
@@ -398,6 +404,16 @@
 <dd>
 <div class="block">Note that chunk x, chunk z are not exposed in this interface.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/listeners/impl/PlaceListener.html#PlaceListen-org.bukkit.event.block.BlockPlaceEvent-">PlaceListen(BlockPlaceEvent)</a></span> - Method in class com.programmerdan.minecraft.civspy.listeners.impl.<a href="com/programmerdan/minecraft/civspy/listeners/impl/PlaceListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl">PlaceListener</a></dt>
+<dd>
+<div class="block">Generates: <code>player.blockbreak</code> stat_key data.</div>
+</dd>
+<dt><a href="com/programmerdan/minecraft/civspy/listeners/impl/PlaceListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl"><span class="typeNameLink">PlaceListener</span></a> - Class in <a href="com/programmerdan/minecraft/civspy/listeners/impl/package-summary.html">com.programmerdan.minecraft.civspy.listeners.impl</a></dt>
+<dd>
+<div class="block">Sample Listener class that records all block placements for summation by who and what.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/listeners/impl/PlaceListener.html#PlaceListener-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-java.lang.String-">PlaceListener(DataManager, Logger, String)</a></span> - Constructor for class com.programmerdan.minecraft.civspy.listeners.impl.<a href="com/programmerdan/minecraft/civspy/listeners/impl/PlaceListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl">PlaceListener</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/programmerdan/minecraft/civspy/samplers/impl/PlayerCountSampler.html" title="class in com.programmerdan.minecraft.civspy.samplers.impl"><span class="typeNameLink">PlayerCountSampler</span></a> - Class in <a href="com/programmerdan/minecraft/civspy/samplers/impl/package-summary.html">com.programmerdan.minecraft.civspy.samplers.impl</a></dt>
 <dd>
 <div class="block">A simple PlayerCountSampler that periodically records the server's player count.</div>
@@ -506,6 +522,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/listeners/impl/MovementListener.html#shutdown--">shutdown()</a></span> - Method in class com.programmerdan.minecraft.civspy.listeners.impl.<a href="com/programmerdan/minecraft/civspy/listeners/impl/MovementListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl">MovementListener</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/listeners/impl/PlaceListener.html#shutdown--">shutdown()</a></span> - Method in class com.programmerdan.minecraft.civspy.listeners.impl.<a href="com/programmerdan/minecraft/civspy/listeners/impl/PlaceListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl">PlaceListener</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/programmerdan/minecraft/civspy/SingleDataSampler.html" title="class in com.programmerdan.minecraft.civspy"><span class="typeNameLink">SingleDataSampler</span></a> - Class in <a href="com/programmerdan/minecraft/civspy/package-summary.html">com.programmerdan.minecraft.civspy</a></dt>
 <dd>
 <div class="block">Simple single-sampling sampler.</div>
@@ -521,6 +539,14 @@
 </a>
 <h2 class="title">T</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/util/ItemStackToString.html#toString-org.bukkit.inventory.ItemStack-">toString(ItemStack)</a></span> - Static method in class com.programmerdan.minecraft.civspy.util.<a href="com/programmerdan/minecraft/civspy/util/ItemStackToString.html" title="class in com.programmerdan.minecraft.civspy.util">ItemStackToString</a></dt>
+<dd>
+<div class="block">For 1.10.2 ItemStacks.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/util/ItemStackToString.html#toString-org.bukkit.block.BlockState-">toString(BlockState)</a></span> - Static method in class com.programmerdan.minecraft.civspy.util.<a href="com/programmerdan/minecraft/civspy/util/ItemStackToString.html" title="class in com.programmerdan.minecraft.civspy.util">ItemStackToString</a></dt>
+<dd>
+<div class="block">For 1.10.2 Blocks</div>
+</dd>
 <dt><a href="com/programmerdan/minecraft/civspy/samplers/impl/TPSSampler.html" title="class in com.programmerdan.minecraft.civspy.samplers.impl"><span class="typeNameLink">TPSSampler</span></a> - Class in <a href="com/programmerdan/minecraft/civspy/samplers/impl/package-summary.html">com.programmerdan.minecraft.civspy.samplers.impl</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/programmerdan/minecraft/civspy/samplers/impl/TPSSampler.html#TPSSampler-com.programmerdan.minecraft.civspy.DataManager-java.util.logging.Logger-java.lang.String-org.bukkit.configuration.ConfigurationSection-">TPSSampler(DataManager, Logger, String, ConfigurationSection)</a></span> - Constructor for class com.programmerdan.minecraft.civspy.samplers.impl.<a href="com/programmerdan/minecraft/civspy/samplers/impl/TPSSampler.html" title="class in com.programmerdan.minecraft.civspy.samplers.impl">TPSSampler</a></dt>
