@@ -96,11 +96,34 @@ Fork the repo, and get hacking!
 Clone locally to check out the javadocs for even more details on getting started with CivSpy. Just navigate to the index.html file inside `apidocs` folder on your local clone from your favorite web-browser.
 
 -----------------
-#### Catalogue of Current `stat_key` elements
+#### Catalog of Current `stat_key` elements
 
-As of Sept 2 2016:
+As of Sept 11 2016:
 
-`player.blockbreak` - Aggregate statistic, breaks down based on string_value of blocktype:subtype and count within aggregation period.
-`player.movement` - Aggregate statistic, breaks down based on string_value of movement type (walking, sneaking, vehicle, etc.) within aggregation period.
-`server.playercount` - Periodic statistic, default sampling period of every minute, records players online the server.
-`world.playercount` - Periodic statistic, default sampling period of every minute, records players online per world on the server.
+##### Aggregate Statistics
+
+`player.blockbreak` - Breaks down based on string_value of encoded block attributes and count within aggregation period.
+`block.drop.TYPE` - When the block broken drops items. TYPE is the material type of the block that is dropping stuff.
+`player.craft` - When player crafts something. What was crafted size stored in number value, serialized string in string value.
+`player.craft.custom` - For RecipeManager unique crafting with recipe name as string value.
+`player.movement` - Breaks down based on string_value of movement type (walking, sneaking, vehicle, etc.) within aggregation period. Includes Vehicle movement, and resets prior location on teleport.
+`player.drop` - Records item dropped when a person drops something
+`block.dispense.TYPE` - When a dispenser/dropper launches an item. TYPE is the material type of the block that is dispensing.
+`entity.death.TYPE`
+`entity.death.drop.TYPE`
+`entity.death.xp.TYPE` - where TYPE is the EntityType.name() of what died; If killer is a player and isn't empty, UUID is filled for all. Otherwise is null. If creature has a custom name, recorded in string value field for death and XP; not for drop (itemstack serialized recorded there).
+`player.killed` - used for PVP kills or death by entities, the UUID of the player or TYPE/Name of the entity responsible for killing is in the string value field. The UUID field holds the player killed in all cases.
+`player.killed.drop` - the serialized items dropped by player on death
+`player.died` - records player deaths when killed by some non-strictly-entity cause (drowning, etc.). The `drop` contributions are similar to entity death, but the UUID recorded is the player that died.
+`player.died.drop` - The serialized items dropped by player on death 
+`player.pickup` - Records when a person picks up something
+`inventory.pickup.TYPE` - An inventory holder picks up an item. TYPE is the Hopper or HopperMinecart that picked up the item.
+`player.blockbreak` - When a player breaks a block. UUID is recorded, and Block serialization is stored in the string value field.
+
+##### Periodic Statistics
+
+`server.playercount` - default sampling period of every minute, records players online the server.
+`world.playercount` - default sampling period of every minute, records players online per world on the server.
+`server.tick.min` - In sampling period, the minimum tick in milliseconds (shortest observed).
+`server.tick.max` - In sampling period, the maximum tick in milliseconds (longest observed).
+`server.tick.average` - In sampling period, the average tick in milliseconds.

@@ -35,12 +35,11 @@ public final class PlaceListener extends ServerDataListener {
 	}
 	
 	/**
-	 * Generates: <code>player.blockbreak</code> stat_key data. Block type:subtype
+	 * Generates: <code>player.blockbreak</code> stat_key data. Block serialization
 	 * is stored in the string value field.
 	 * 
 	 * @param event The BlockBreakEvent
 	 */
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void PlaceListen(BlockPlaceEvent event) {
 		Player p = event.getPlayer();
@@ -48,9 +47,6 @@ public final class PlaceListener extends ServerDataListener {
 		UUID id = p.getUniqueId();
 		Block placed = event.getBlockPlaced();
 		Chunk chunk = placed.getChunk();
-		
-		//StringBuilder blockName = new StringBuilder(broken.getType().toString());
-		//blockName.append(":").append(broken.getData());
 
 		DataSample blockPlace = new PointDataSample("player.blockplace", this.getServer(),
 				chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 

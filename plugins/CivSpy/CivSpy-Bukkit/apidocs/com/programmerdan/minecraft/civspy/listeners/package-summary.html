@@ -101,30 +101,30 @@
 </a>
 <h2 title="Package com.programmerdan.minecraft.civspy.listeners Description">Package com.programmerdan.minecraft.civspy.listeners Description</h2>
 <div class="block">This package contains one abstract class -- <a href="../../../../../com/programmerdan/minecraft/civspy/listeners/ServerDataListener.html" title="class in com.programmerdan.minecraft.civspy.listeners"><code>ServerDataListener</code></a> which must be the superclass of any Listener implementations you want automatically loaded by CivSpy.
-
+<br/>
 You don't have to implement for both constructors; choose the one that suits your needs. 
-
+<br/>
 Listeners can be simple or complex, but I strongly recommend keeping them simple and lightweight, maintaining as little state as possible.
-
+<br/>
 <br/><hr/><br/>
-
+<br/>
 A quick introduction to listeners:
-
+<br/>
 <h2>Data Listeners</h2>
-
+<br/>
 A Data Listeners should contain one or more @EventListener annotated methods, that generate <a href="../../../../../com/programmerdan/minecraft/civspy/PointDataSample.html" title="class in com.programmerdan.minecraft.civspy"><code>PointDataSample</code></a> POJOs. 
-
+<br/>
 <ul>
         <li>Although Listeners are free to generate any valid DataSample type, PointDataSample is recommended as it is specifically designed for Event-driven data sources, and is ready for aggregation. 
         <li>If, however, your listener generates low-volume data that shouldn't be aggregated (say, perhaps, a logout listener that computes session length) don't be shy to use <a href="../../../../../com/programmerdan/minecraft/civspy/PeriodicDataSample.html" title="class in com.programmerdan.minecraft.civspy"><code>PeriodicDataSample</code></a> POJOs. 
 </ul>
-
 <br/>
-
+<br/>
+<br/>
 <h4>Requirements</h4>
-
+<br/>
 All implementations of DataListener must provide a <code>shutdown</code> implementation. This simple method is a cleanup hook; CivSpy will make every attempt to call <code>shutdown</code> on all listeners during CivSpy de-activation.
-
+<br/>
 All implementations of DataListener must provide a constructor that takes a DataManager, Logger, String, and optionally a ConfigurationSection as input.
 <ul>
         <li>The <a href="../../../../../com/programmerdan/minecraft/civspy/DataManager.html" title="class in com.programmerdan.minecraft.civspy"><code>DataManager</code></a> is CivSpy system provided and your code should likely leave it alone to prevent abnormalities.</li>
@@ -132,19 +132,19 @@ All implementations of DataListener must provide a constructor that takes a Data
         <li>The String is the value that will be returned by <code>com.programmerdan.minecraft.civspy.ServerDataListener#getServer</code>. Note while you don't have to pass this value along to the superclass, it is strongly recommended, and regardless the parameter must exist on your constructor.
         <li>(optional) The <code>ConfigurationSection</code> is the configuration for your Listener as defined in the <code>config.yml</code> file. The _simple name_ of your class determines which section to extract and pass along. So if you Listener is called <code>PlayerMovementListener</code> then CivSpy attempts to give the config.yml root-level section of the same name to your Listener, if a constructor is found that accepts configuration sections.
 </ul>
-
 <br/>
-
+<br/>
+<br/>
 <h4>Usage</h4>
-
+<br/>
 DataSamples are POJOs -- just construct them via their constructor and don't worry about anything else, they just hold and pass along data.
-
+<br/>
 One parameter on all DataSample constructors is "Server" -- you can get the plugin's configured "Server" name via <code>getServer()</code>. Be sure toinclude the server name in your DataListener POJOs -- see the constructors on <code>PointDataSample</code> and <code>PeriodicDataSample</code>. If local or not specified in CivSpy config, this value will be the string literal "local".
-
+<br/>
 When your listener has constructed a DataSample POJO, pass it along to the <a href="../../../../../com/programmerdan/minecraft/civspy/DataListener.html#record-com.programmerdan.minecraft.civspy.DataSample-"><code>DataListener.record(com.programmerdan.minecraft.civspy.DataSample)</code></a> superclass method. This method handles actually alerting the DataManager of the new data to be aggregated or recorded. 
-
+<br/>
 <hr/>
-
+<br/>
 That's basically it. Extend ServerDataListener, add some normal Bukkit Listeners, create some DataSamples and pass them along to <code>record()</code>.</div>
 </div>
 <!-- ======= START OF BOTTOM NAVBAR ====== -->

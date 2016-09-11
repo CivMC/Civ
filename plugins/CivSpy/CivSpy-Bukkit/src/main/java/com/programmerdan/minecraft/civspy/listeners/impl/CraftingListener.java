@@ -36,7 +36,7 @@ public final class CraftingListener extends ServerDataListener {
 	
 	/**
 	 * Generates: <code>player.craft</code> stat_key data.
-	 * ItemStack size stored in number value, toString in string value.
+	 * ItemStack size stored in number value, serialized string in string value.
 	 * 
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)

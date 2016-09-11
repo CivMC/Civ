@@ -226,6 +226,7 @@ public class ItemStackToString {
 	 * @param block
 	 * @return
 	 */
+	@SuppressWarnings("deprecation")
 	public static String toString(BlockState block) {
 		StringBuilder toString = new StringBuilder();
 
@@ -291,6 +292,9 @@ public class ItemStackToString {
 		} else if (data instanceof Crops) {
 			toString.append(((Crops)data).getState().name());
 			toString.append("_").append(material.toString());
+			if (data.getData() != 0) {
+				toString.append(":").append(data.getData());
+			}
 		} else if (data instanceof Diode) {
 			toString.append(((Diode)data).getDelay()).append("t_Delay");
 			toString.append("_Diode");
@@ -302,10 +306,19 @@ public class ItemStackToString {
 				toString.append("Left_");
 			}
 			toString.append("_").append(material.toString());
+			if (data.getData() != 0) {
+				toString.append(":").append(data.getData());
+			}
 		} else if (data instanceof Dye) {
 			toString.append("Dye_").append(material.toString());
+			if (data.getData() != 0) {
+				toString.append(":").append(data.getData());
+			}
 		} else if (data instanceof Gate) {
 			toString.append(material.toString());
+			if (data.getData() != 0) {
+				toString.append(":").append(data.getData());
+			}
 		} else if (data instanceof Hopper) {
 			toString.append(((Hopper) data).isActive() ? "Active_" : "Inactive_").append("Hopper");
 		} else if (data instanceof LongGrass) {
@@ -320,6 +333,9 @@ public class ItemStackToString {
 			toString.append(((PistonExtensionMaterial) data).isSticky() ? "StickyPistonExtension" : "PistonExtension");
 		} else if (data instanceof PressurePlate) {
 			toString.append(material.toString());
+			if (data.getData() != 0) {
+				toString.append(":").append(data.getData());
+			}
 		} else if (data instanceof Pumpkin) {
 			toString.append(((Pumpkin) data).isLit() ? "LitPumpkin" : "Pumpkin");
 		} else if (data instanceof Rails) {
@@ -343,7 +359,8 @@ public class ItemStackToString {
 			toString.append(((Sign)data).isWallSign() ? "OnWall_" : "Standing_")
 					.append("Sign");
 		} else if (data instanceof Button) {
-			toString.append("Button");
+			toString.append(material.toString());
+			toString.append("_Button");
 		} else if (data instanceof Ladder) {
 			toString.append("Ladder");
 		} else if (data instanceof Lever) {
@@ -357,6 +374,9 @@ public class ItemStackToString {
 				toString.append("Inverted_");
 			}
 			toString.append(material.toString());
+			if (data.getData() != 0) {
+				toString.append(":").append(data.getData());
+			}
 		} else if (data instanceof TripwireHook) {
 			TripwireHook hook = (TripwireHook) data;
 			toString.append(hook.isActivated() ? "Activated_" : "Inactive_")
@@ -370,6 +390,9 @@ public class ItemStackToString {
 			toString.append("Ascends").append(stairs.getAscendingDirection().toString()).append("_");
 			toString.append("Descends").append(stairs.getDescendingDirection().toString()).append("_");
 			toString.append(material.toString());
+			if (data.getData() != 0) {
+				toString.append(":").append(data.getData());
+			}
 		} else if (data instanceof TexturedMaterial) {
 			if (data instanceof Step) {
 				if (((Step) data).isInverted()) {
@@ -378,6 +401,9 @@ public class ItemStackToString {
 			}
 			toString.append("Textured").append(((TexturedMaterial)data).getMaterial().toString());
 			toString.append("_").append(material.toString());
+			if (data.getData() != 0) {
+				toString.append(":").append(data.getData());
+			}
 		} else if (data instanceof Tripwire) {
 			Tripwire tripwire = (Tripwire) data;
 			toString.append(tripwire.isActivated() ? "Activated_" : "Inactivated_");
@@ -406,10 +432,16 @@ public class ItemStackToString {
 				}
 			}
 			toString.append(material.toString());
+			if (data.getData() != 0) {
+				toString.append(":").append(data.getData());
+			}
 		} else if (data instanceof Wool) {
 			toString.append("Wool");
 		} else {
 			toString.append(material.toString());
+			if (data.getData() != 0) {
+				toString.append(":").append(data.getData());
+			}
 		}
 		return toString.toString();
 	}

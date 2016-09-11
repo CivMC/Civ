@@ -31,7 +31,7 @@ import com.programmerdan.minecraft.civspy.util.ItemStackToString;
  * <br>
  * If killer is a player and isn't empty, UUID is filled for all. Otherwise is null.
  * <br>
- * If creature has a custom name, recorded in string value field for death and XP; not for drop (itemstack.tostring() recorded there).
+ * If creature has a custom name, recorded in string value field for death and XP; not for drop (itemstack serialization recorded there).
  * <br>
  * Contributes <code>player.killed</code> and <code>player.died</code> and <code>player.killed.drop</code> and <code>player.died.drop</code>
  * <code>.killed</code> is used for PVP kills or death by entities, the UUID of the player or TYPE/Name of the entity responsible for killing is in hte
@@ -93,7 +93,7 @@ public final class HuntingListener extends ServerDataListener {
 			for (ItemStack drop : dropped) {
 				ItemStack dropQ = drop.clone();
 				dropQ.setAmount(1);
-				DataSample deathdrop = new PointDataSample("player." + (killerIsEntity ? "killed.drops" : "died.drops"),
+				DataSample deathdrop = new PointDataSample("player." + (killerIsEntity ? "killed.drop" : "died.drop"),
 						this.getServer(), chunk.getWorld().getName(), playerUUID, chunk.getX(), chunk.getZ(), 
 						ItemStackToString.toString(dropQ), drop.getAmount());
 				this.record(deathdrop);

@@ -273,8 +273,11 @@ extends <a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/
 <li class="blockList">
 <h4>BreakListen</h4>
 <pre>public&nbsp;void&nbsp;BreakListen(org.bukkit.event.block.BlockBreakEvent&nbsp;event)</pre>
-<div class="block">Generates: <code>player.blockbreak</code> stat_key data. Block type:subtype
- is stored in the string value field.</div>
+<div class="block">Generates: <code>player.blockbreak</code> stat_key data. Block encoded attributes
+ is stored in the string value field.
+ <br><br>
+ Generates: <code>block.drop.TYPE</code> when the block broken drops items. 
+ TYPE is the material type of the block that is dropping stuff.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>event</code> - The BlockBreakEvent</dd>

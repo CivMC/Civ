@@ -38,7 +38,7 @@ public final class CustomCraftingListener extends ServerDataListener {
 	
 	/**
 	 * Generates: <code>player.craft</code> stat_key data.
-	 * ItemStack size stored in number value, toString in string value.
+	 * ItemStack size stored in number value, serialized string in string value.
 	 * 
 	 * For RecipeManager stuff gens <code>player.craft.custom</code> with recipe name as string value.
 	 * 

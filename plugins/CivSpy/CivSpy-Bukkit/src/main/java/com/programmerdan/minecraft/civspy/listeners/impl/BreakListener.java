@@ -9,6 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;
@@ -35,12 +38,14 @@ public final class BreakListener extends ServerDataListener {
 	}
 	
 	/**
-	 * Generates: <code>player.blockbreak</code> stat_key data. Block type:subtype
+	 * Generates: <code>player.blockbreak</code> stat_key data. Block encoded attributes
 	 * is stored in the string value field.
+	 * <br><br>
+	 * Generates: <code>block.drop.TYPE</code> when the block broken drops items. 
+	 * TYPE is the material type of the block that is dropping stuff.
 	 * 
 	 * @param event The BlockBreakEvent
 	 */
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void BreakListen(BlockBreakEvent event) {
 		Player p = event.getPlayer();
@@ -49,9 +54,22 @@ public final class BreakListener extends ServerDataListener {
 		Block broken = event.getBlock();
 		Chunk chunk = broken.getChunk();
 		
-		//StringBuilder blockName = new StringBuilder(broken.getType().toString());
-		//blockName.append(":").append(broken.getData());
-
+		if (broken instanceof InventoryHolder) {
+			Inventory inventory = ((InventoryHolder) broken).getInventory();
+			ItemStack[] dropped = inventory.getStorageContents();
+			
+			if (dropped != null && dropped.length > 0) {
+				for (ItemStack drop : dropped) {
+					ItemStack dropQ = drop.clone();
+					dropQ.setAmount(1);
+					DataSample deathdrop = new PointDataSample("block.drop." + broken.getType().toString(),
+							this.getServer(), chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
+							ItemStackToString.toString(dropQ), drop.getAmount());
+					this.record(deathdrop);
+				}
+			}
+		}
+		
 		DataSample blockBreak = new PointDataSample("player.blockbreak", this.getServer(),
 				chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
 				ItemStackToString.toString(broken.getState()));

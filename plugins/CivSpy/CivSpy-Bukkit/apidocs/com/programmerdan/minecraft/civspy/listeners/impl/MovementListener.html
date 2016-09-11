@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -50,7 +50,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/impl/HuntingListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/impl/PlaceListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/impl/PickupListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../../index.html?com/programmerdan/minecraft/civspy/listeners/impl/MovementListener.html" target="_top">Frames</a></li>
@@ -195,6 +195,18 @@ extends <a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/
 <div class="block">Expose this method in case this listener needs cleanup (data structures, tasks, etc).</div>
 </td>
 </tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/impl/MovementListener.html#TeleportReset-org.bukkit.event.player.PlayerTeleportEvent-">TeleportReset</a></span>(org.bukkit.event.player.PlayerTeleportEvent&nbsp;event)</code>
+<div class="block">Just cleanly resets location to prevent weird location movement changes during teleports.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/impl/MovementListener.html#VehicleMovementListen-org.bukkit.event.vehicle.VehicleMoveEvent-">VehicleMovementListen</a></span>(org.bukkit.event.vehicle.VehicleMoveEvent&nbsp;event)</code>
+<div class="block">Captures movement events for vehicles, too!</div>
+</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.com.programmerdan.minecraft.civspy.listeners.ServerDataListener">
@@ -268,7 +280,7 @@ extends <a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/
 <a name="MovementListen-org.bukkit.event.player.PlayerMoveEvent-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>MovementListen</h4>
 <pre>public&nbsp;void&nbsp;MovementListen(org.bukkit.event.player.PlayerMoveEvent&nbsp;event)</pre>
@@ -279,6 +291,36 @@ extends <a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>event</code> - The PlayerMoveEvent to record.</dd>
+</dl>
+</li>
+</ul>
+<a name="VehicleMovementListen-org.bukkit.event.vehicle.VehicleMoveEvent-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>VehicleMovementListen</h4>
+<pre>public&nbsp;void&nbsp;VehicleMovementListen(org.bukkit.event.vehicle.VehicleMoveEvent&nbsp;event)</pre>
+<div class="block">Captures movement events for vehicles, too!</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>event</code> - </dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/impl/MovementListener.html#MovementListen-org.bukkit.event.player.PlayerMoveEvent-"><code>MovementListen(PlayerMoveEvent)</code></a></dd>
+</dl>
+</li>
+</ul>
+<a name="TeleportReset-org.bukkit.event.player.PlayerTeleportEvent-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>TeleportReset</h4>
+<pre>public&nbsp;void&nbsp;TeleportReset(org.bukkit.event.player.PlayerTeleportEvent&nbsp;event)</pre>
+<div class="block">Just cleanly resets location to prevent weird location movement changes during teleports.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>event</code> - </dd>
 </dl>
 </li>
 </ul>
@@ -311,7 +353,7 @@ extends <a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/impl/HuntingListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/impl/PlaceListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../../com/programmerdan/minecraft/civspy/listeners/impl/PickupListener.html" title="class in com.programmerdan.minecraft.civspy.listeners.impl"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../../index.html?com/programmerdan/minecraft/civspy/listeners/impl/MovementListener.html" target="_top">Frames</a></li>

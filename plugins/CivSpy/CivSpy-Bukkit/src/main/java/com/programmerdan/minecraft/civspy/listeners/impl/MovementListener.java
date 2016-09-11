@@ -6,10 +6,13 @@ import java.util.logging.Logger;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.vehicle.VehicleMoveEvent;
 
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;
@@ -49,6 +52,10 @@ public final class MovementListener extends ServerDataListener {
 		Player p = event.getPlayer();
 		UUID id = p.getUniqueId();
 		Location to = event.getTo();
+		doMove(p, id, to);
+	}
+	
+	private void doMove(Player p, UUID id, Location to) {
 		Location from = storedLocations.get(id);
 		if (from == null || !from.getWorld().equals(to.getWorld())) {
 			storedLocations.put(id, to);
@@ -71,5 +78,36 @@ public final class MovementListener extends ServerDataListener {
 			storedLocations.put(id, to);
 		}
 	}
+	
+	/**
+	 * Captures movement events for vehicles, too!
+	 * @see #MovementListen(PlayerMoveEvent)
+	 * 
+	 * @param event
+	 */
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
+	public void VehicleMovementListen(VehicleMoveEvent event) {
+		Entity e = event.getVehicle().getPassenger();
+		// TODO: apparently there's no way to get the second passenger? wtf, bukkit
+		if (e instanceof Player) {
+			Player p = (Player) e;
+			UUID id = p.getUniqueId();
+			Location to = event.getTo();
+			doMove(p, id, to);
+		}
+	}
 
+	/**
+	 * Just cleanly resets location to prevent weird location movement changes during teleports.
+	 * 
+	 * @param event
+	 */
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
+	public void TeleportReset(PlayerTeleportEvent event) {
+		Player p = event.getPlayer();
+		Location to = event.getTo();
+		UUID id = p.getUniqueId();
+		storedLocations.put(id, to);
+	}
+	
 }
