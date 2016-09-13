@@ -1359,6 +1359,14 @@ public class JukeAlertLogger {
                     break;
                 case 3:
                     actionText = victim;
+                    // Add location data (if possible)
+                    Material victim_material = Material.matchMaterial(victim);
+                    if (victim_material != null && action != LoggedAction.KILL){
+                        int victim_id = victim_material.getId();
+                        if (victim_id >= 0){
+                            actionText = String.format("%d [%d %d %d]", victim_id, x, y, z);
+                        }
+                    }
                     break;
                 case 4:
                     actionText = name;
