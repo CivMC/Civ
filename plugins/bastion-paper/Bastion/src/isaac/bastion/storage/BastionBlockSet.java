@@ -92,9 +92,9 @@ public class BastionBlockSet implements Set<BastionBlock>, Iterable<BastionBlock
 			if (box instanceof BastionBlock) {
 				BastionBlock bastion = (BastionBlock)box;
 				// Fixed for square field nearness, using diagonal distance as max -- (radius * sqrt(2)) ^ 2
-				if (((config.squareField() && bastion.getLocation().distanceSquared(loc) <= maxBoxDistanceSquared) ||   
-							(!config.squareField() && bastion.getLocation().distanceSquared(loc) <= maxDistanceSquared)) &&
-							(!config.getEnderPearlRequireMaturity() || bastion.isMature())) {
+				if (((bastion.getType().isSquare() && bastion.getLocation().distanceSquared(loc) <= maxBoxDistanceSquared) ||   
+							(!bastion.getType().isSquare() && bastion.getLocation().distanceSquared(loc) <= maxDistanceSquared)) &&
+							(!bastion.getType().isRequireMaturity() || bastion.isMature())) {
 					result.add(bastion);
 				}
 			}
@@ -115,9 +115,9 @@ public class BastionBlockSet implements Set<BastionBlock>, Iterable<BastionBlock
 				if (box instanceof BastionBlock) {
 					BastionBlock bastion = (BastionBlock)box;
 					// Fixed for square field nearness, using diagonal distance as max -- (radius * sqrt(2)) ^ 2
-					if (((config.squareField() && bastion.getLocation().distanceSquared(loc) <= maxBoxDistanceSquared) ||   
-								(!config.squareField() && bastion.getLocation().distanceSquared(loc) <= maxDistanceSquared)) &&
-								(!config.getElytraBlockingRequiresMaturity() || bastion.isMature())) {
+					if (((bastion.getType().isSquare() && bastion.getLocation().distanceSquared(loc) <= maxBoxDistanceSquared) ||   
+								(!bastion.getType().isSquare() && bastion.getLocation().distanceSquared(loc) <= maxDistanceSquared)) &&
+								(!bastion.getType().isElytraRequireMature() || bastion.isMature())) {
 						result.add(bastion);
 					}
 				}

@@ -1,9 +1,5 @@
 package isaac.bastion.storage;
 
-import isaac.bastion.Bastion;
-import isaac.bastion.BastionBlock;
-import isaac.bastion.manager.ConfigManager;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +7,11 @@ import java.util.Enumeration;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+
+import isaac.bastion.Bastion;
+import isaac.bastion.BastionBlock;
+import isaac.bastion.BastionType;
+import isaac.bastion.manager.ConfigManager;
 
 public class BastionBlockStorage {
 	public static Database db;
@@ -36,7 +37,7 @@ public class BastionBlockStorage {
 	
 	public static void prepareStatements() {
 		if (tablesCreated) {
-			insertBastion = db.prepareStatement("INSERT INTO "+BastionBlockStorage.bastionBlocksTable+" (loc_x,loc_y,loc_z,loc_world,placed,fraction) VALUES(?,?,?,?,?,?);");
+			insertBastion = db.prepareStatement("INSERT INTO "+BastionBlockStorage.bastionBlocksTable+" (loc_x,loc_y,loc_z,loc_world,type,placed,fraction) VALUES(?,?,?,?,?,?,?);");
 			updateBastion = db.prepareStatement("UPDATE "+BastionBlockStorage.bastionBlocksTable+" set placed=?,fraction=? where bastion_id=?;");
 			deleteBastion = db.prepareStatement("DELETE FROM "+BastionBlockStorage.bastionBlocksTable+" WHERE bastion_id=?;");
 		}
@@ -49,7 +50,8 @@ public class BastionBlockStorage {
 				+ "loc_x int(10), "
 				+ "loc_y int(10), "
 				+ "loc_z int(10), "
-				+ "loc_world varchar(40) NOT NULl, "
+				+ "loc_world varchar(40) NOT NULL, "
+				+ "type varchar(40) NOT NULL"
 				+ "placed bigint(20) Unsigned, "
 				+ "fraction float(20) Unsigned, "
 				+ "PRIMARY KEY (`bastion_id`)"
@@ -96,6 +98,7 @@ public class BastionBlockStorage {
 			int x,y,z,id;
 			long placed;
 			float balance;
+			BastionType type;
 			try {
 				if (result == null || !result.next()) {
 					result = null;
@@ -105,15 +108,16 @@ public class BastionBlockStorage {
 				y = result.getInt("loc_y");
 				z = result.getInt("loc_z");
 				id = result.getInt("bastion_id");
+				type = BastionType.getBastionType(result.getString("type"));
 				placed = result.getLong("placed");
 				balance = result.getFloat("fraction");
-
+				
 			} catch (SQLException e) {
 				e.printStackTrace();
 				return null;
 			}
 			Location loc = new Location(world, x, y, z);
-			return new BastionBlock(loc, placed, balance, id);
+			return new BastionBlock(loc, placed, balance, id, type);
 		}
 
 		public Database getDatabase(){

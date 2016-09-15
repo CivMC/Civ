@@ -3,23 +3,20 @@ package isaac.bastion;
 import java.util.LinkedList;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import isaac.bastion.commands.BastionCommandManager;
 import isaac.bastion.commands.ModeChangeCommand;
 import isaac.bastion.commands.PlayersStates.Mode;
 import isaac.bastion.listeners.BastionListener;
 import isaac.bastion.listeners.CommandListener;
-import isaac.bastion.listeners.EnderPearlListener;
 import isaac.bastion.listeners.ElytraListener;
+import isaac.bastion.listeners.EnderPearlListener;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.manager.ConfigManager;
 import isaac.bastion.storage.BastionBlockStorage;
 import isaac.bastion.storage.Database;
-
-import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -49,9 +46,7 @@ public final class Bastion extends JavaPlugin {
 	private void registerListeners() {
 		getServer().getPluginManager().registerEvents(listener, this);
 		getServer().getPluginManager().registerEvents(new CommandListener(), this);
-		if(config.getEnderPearlsBlocked()) { //currently everything to do with blocking pearls is part of EnderPearlListener. Needs changed
-			getServer().getPluginManager().registerEvents(new EnderPearlListener(), this);
-		}
+		getServer().getPluginManager().registerEvents(new EnderPearlListener(), this);
 		getServer().getPluginManager().registerEvents(new ElytraListener(), this);
 	}
 
@@ -89,7 +84,8 @@ public final class Bastion extends JavaPlugin {
 		Database db = BastionBlockStorage.db;
 		Bukkit.getLogger().log(Level.INFO, "Bastion is beginning ghost block check.");
 		for (BastionBlock block: bastionManager.set) {
-			if (block.getLocation().getBlock().getType() != config.getBastionBlockMaterial()) {
+			if (block.getLocation().getBlock().getType() != block.getType().getMaterial().getItemType() &&
+					block.getLocation().getBlock().getData() != block.getType().getMaterial().getData()) {
 				Bukkit.getLogger().log(Level.INFO, "Bastion removed a block at: " + block.getLocation() + ". If it is still"
 						+ " there, there is a problem...");
 				block.delete(db);

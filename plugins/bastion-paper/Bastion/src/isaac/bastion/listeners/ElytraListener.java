@@ -31,8 +31,6 @@ public class ElytraListener implements Listener {
 	
 	@EventHandler(ignoreCancelled=true)
 	public void onElytraGlide(PlayerMoveEvent event) {
-		if (!Bastion.getConfigManager().getElytraIsBlocked()) return;
-		
 		Player p = event.getPlayer();
 		if(!p.isGliding()) return;
 		
@@ -60,7 +58,6 @@ public class ElytraListener implements Listener {
 	}
 	
 	private void unwatchPlayer(PlayerEvent event) {
-		if (!Bastion.getConfigManager().getElytraIsBlocked()) return;
 		Player p = event.getPlayer();
 		if (p == null) return;
 		manager.clearThrottle(p.getUniqueId());

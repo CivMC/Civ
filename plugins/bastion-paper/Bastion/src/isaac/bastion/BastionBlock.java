@@ -1,10 +1,5 @@
 package isaac.bastion;
 
-import isaac.bastion.storage.BastionBlockSet;
-import isaac.bastion.storage.BastionBlockStorage;
-import isaac.bastion.storage.Database;
-import isaac.bastion.util.QTBox;
-
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -22,6 +17,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import isaac.bastion.storage.BastionBlockSet;
+import isaac.bastion.storage.BastionBlockStorage;
+import isaac.bastion.storage.Database;
+import isaac.bastion.util.QTBox;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
@@ -29,18 +28,6 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BastionBlock implements QTBox, Comparable<BastionBlock> {	
-	public static int MIN_BREAK_TIME; //Minimum time between erosions that count
-	private static int EROSION_TIME; //time between auto erosion. If 0 never called.
-	private static int SCALING_TIME; //time between creation and max strength/maturity
-
-	private static int RADIUS_SQUARED; //radius blocked squared
-	private static int RADIUS; //radius blocked
-
-	private static double BLOCK_TO_PEARL_SCALE; //factor between reinforcement removed by placing blocks and from blocking pearls
-	private static double BLOCK_TO_ELYTRA_SCALE;
-	public static boolean ONLY_BLOCK_PEARLS_ON_MATURE; //only block pearls after maturity has been reached
-
-	private static boolean first = true;
 
 	private Location location; 
 	private int id = -1;
@@ -49,19 +36,20 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	private long placed; //time when the bastion block was created
 	private boolean inDB = false;
 	private int taskId; //the id of the task associated with erosion
-	private static Random random; //used only to offset the erosion tasks
+	private static Random random = new Random(); //used only to offset the erosion tasks
 	public static BastionBlockSet set; 
-
+	private BastionType type;
+	
 	/**
 	 * constructor for new blocks. Reinforcement must be passed because it does not exist at the time of the reinforcement event.
 	 * @param location
 	 * @param reinforcement
 	 */
-	public BastionBlock(Location location, PlayerReinforcement reinforcement) {
+	public BastionBlock(Location location, PlayerReinforcement reinforcement, BastionType type) {
 		this.location = location;
 		this.placed = System.currentTimeMillis();
 		this.id = set.size();
-
+		this.type = type;
 		this.strength = reinforcement.getDurability();
 		setup();
 	}
@@ -73,7 +61,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 * @param balance
 	 * @param ID
 	 */
-	public BastionBlock(Location location, long placed, float balance, int ID) {
+	public BastionBlock(Location location, long placed, float balance, int ID, BastionType type) {
 		this.id = ID;
 		this.location = location;
 
@@ -82,6 +70,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 
 		this.inDB = true;
 
+		this.type = type;
 		PlayerReinforcement reinforcement = getReinforcement();
 		if (reinforcement != null) {
 			this.strength = reinforcement.getDurability();
@@ -97,48 +86,9 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 * called by both constructors to do the things they share
 	 */
 	private void setup() {
-		if (first) {
-			firstime_setup();
-		}
-
-		if (EROSION_TIME != 0) {
+		if (type.getErosionPerDay() != 0) {
 			taskId = registerTask();
 		}
-	}
-	
-	/**
-	 * called if this is the first Bastion block created to set up the static variables
-	 */
-	private void firstime_setup() {
-
-		if (Bastion.getConfigManager().getBastionBlockMaxBreaks() !=0 ) { // we really should never have 0
-			/* convert getBastionBlockMaxBreaks() from breaks per second to
-			 * invulnerability time in milliseconds */ 
-			MIN_BREAK_TIME = 60000 / Bastion.getConfigManager().getBastionBlockMaxBreaks();
-		} else {
-			MIN_BREAK_TIME = 0; //if we do default to no invulnerability time
-		}
-
-		SCALING_TIME=Bastion.getConfigManager().getBastionBlockScaleTime();
-
-		if (Bastion.getConfigManager().getBastionBlockErosion() !=0 ){ // 0 disables constant erosion
-			/* Convert getBastionBlockErosion() from erosion per day to time between erosions
-			 * number of ticks per day / erosion per day = number of ticks between erosions
-			 * so time between erosions (EROSION_TIME) = 20t * 60s * 60m * 24h / epd */
-			EROSION_TIME = 1728000 / Bastion.getConfigManager().getBastionBlockErosion(); 
-		} else{
-			EROSION_TIME = 0;
-		}
-
-		BLOCK_TO_PEARL_SCALE = Bastion.getConfigManager().getEnderPearlErosionScale();
-		BLOCK_TO_ELYTRA_SCALE = Bastion.getConfigManager().getElytraErosionScale();
-		ONLY_BLOCK_PEARLS_ON_MATURE = Bastion.getConfigManager().getEnderPearlRequireMaturity();
-
-		RADIUS = Bastion.getConfigManager().getBastionBlockEffectRadius();
-		RADIUS_SQUARED = RADIUS*RADIUS;
-
-		random = new Random();
-		first = false;
 	}
 	
 	/**
@@ -153,7 +103,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 					erode(1);
 				}
 			},
-		random.nextInt(EROSION_TIME),EROSION_TIME).getTaskId();
+		random.nextInt(type.getErosionPerDay()),type.getErosionPerDay()).getTaskId();
 	}
 
 	/**
@@ -229,16 +179,16 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 * @return The percentage that should erode
 	 */
 	public double erosionFromBlock() {
-		double scaleStart = Bastion.getConfigManager().getBastionBlockScaleFacStart();
-		double scaleEnd = Bastion.getConfigManager().getBastionBlockScaleFacEnd();
+		double scaleStart = type.getStartScaleFactor();
+		double scaleEnd = type.getFinalScaleFactor();
 		
 		// This needs to be a long or it will roll over after 21 days!
 		long time = System.currentTimeMillis() - placed;
 
-		if (SCALING_TIME == 0) {
+		if (type.getWarmupTime() == 0) {
 			return scaleStart;
-		} else if (time < SCALING_TIME) {
-			return (((scaleEnd - scaleStart) / (float)SCALING_TIME) * time + scaleStart);
+		} else if (time < type.getWarmupTime()) {
+			return (((scaleEnd - scaleStart) / (float)type.getWarmupTime()) * time + scaleStart);
 		} else{
 			return scaleEnd;
 		}
@@ -248,11 +198,11 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 * currently very simple but gives easy options to change
 	 */
 	public double erosionFromPearl() {
-		return erosionFromBlock() * BLOCK_TO_PEARL_SCALE;
+		return erosionFromBlock() * type.getPearlScaleFactor();
 	}
 	
 	public double erosionFromElytra() {
-		return erosionFromBlock() * BLOCK_TO_ELYTRA_SCALE;
+		return erosionFromBlock() * type.getElytraScale();
 	}
 
 	/**
@@ -264,18 +214,18 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	public boolean inField(Location loc) {
 		return !(yLevelCheck(loc) || // Everyone checks the Y, do it first.
 				// Square Check
-				(Bastion.getConfigManager().squareField() &&
-					(Math.abs(loc.getBlockX() - location.getBlockX()) > RADIUS || 
-					Math.abs(loc.getBlockZ() - location.getBlockZ()) > RADIUS) ) || 
+				(type.isSquare() &&
+					(Math.abs(loc.getBlockX() - location.getBlockX()) > type.getEffectRadius() || 
+					Math.abs(loc.getBlockZ() - location.getBlockZ()) > type.getEffectRadius()) ) || 
 				// Round Check
-				(!Bastion.getConfigManager().squareField() && 
+				(!type.isSquare() && 
 					((loc.getBlockX() - location.getX()) * (float)(loc.getBlockX() - location.getX()) + 
-					(loc.getBlockZ() - location.getZ()) * (float)(loc.getBlockZ() - location.getZ()) >= RADIUS_SQUARED))
+					(loc.getBlockZ() - location.getZ()) * (float)(loc.getBlockZ() - location.getZ()) >= type.getRadiusSquared()))
 			);
 	}
 	
 	public boolean yLevelCheck(Location loc) {
-		if (Bastion.getConfigManager().includeSameYLevel()) {
+		if (type.isIncludeY()) {
 			return loc.getBlockY() < location.getY();
 		}
 		return loc.getBlockY() <= location.getY();
@@ -387,11 +337,11 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	}
 
 	public void mature() {
-		placed -= SCALING_TIME;
+		placed -= type.getWarmupTime();
 	}
 	
 	public boolean isMature() {
-		return System.currentTimeMillis() - placed >= SCALING_TIME;
+		return System.currentTimeMillis() - placed >= type.getWarmupTime();
 	}
 
 	private PlayerReinforcement getReinforcement() {
@@ -414,14 +364,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		return location;
 	}
 
-	static public int getRadiusSquared() {
-		return RADIUS_SQUARED;
-	}
-	
-	public static int getRadius() {
-		return RADIUS;
-	}
-	
 	public long getId() {
 		return id;
 	}
@@ -429,7 +371,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	// needed to use SparseQuadTree
 	@Override
 	public int qtXMin() {
-		return location.getBlockX()-RADIUS;
+		return location.getBlockX()-type.getEffectRadius();
 	}
 
 	@Override
@@ -439,12 +381,12 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 
 	@Override
 	public int qtXMax() {
-		return location.getBlockX()+RADIUS;
+		return location.getBlockX()+type.getEffectRadius();
 	}
 
 	@Override
 	public int qtZMin() {
-		return location.getBlockZ()-RADIUS;
+		return location.getBlockZ()-type.getEffectRadius();
 	}
 
 	@Override
@@ -454,7 +396,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 
 	@Override
 	public int qtZMax() {
-		return location.getBlockZ()+RADIUS;
+		return location.getBlockZ()+type.getEffectRadius();
 	}
 
 	public String toString(){
@@ -464,10 +406,10 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		PlayerReinforcement reinforcement = getReinforcement();
 
 		double scaleTime_as_hours=0;
-		if(SCALING_TIME==0){
+		if(type.getWarmupTime()==0){
 			result.append("Maturity timers are disabled \n");
 		} else{
-			scaleTime_as_hours = ((double) SCALING_TIME)/(1000*60*60);
+			scaleTime_as_hours = ((double) type.getWarmupTime())/(1000*60*60);
 		}
 		if (reinforcement instanceof PlayerReinforcement) {
 			strength = reinforcement.getDurability();
@@ -495,10 +437,10 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		}
 
 		double fractionOfMaturityTime = 0;
-		if (SCALING_TIME == 0) {
+		if (type.getWarmupTime() == 0) {
 			fractionOfMaturityTime = 1;
 		} else {
-			fractionOfMaturityTime = ((double) (System.currentTimeMillis() - placed)) / SCALING_TIME;
+			fractionOfMaturityTime = ((double) (System.currentTimeMillis() - placed)) / type.getWarmupTime();
 		}
 		if (fractionOfMaturityTime == 0) {
 			result.append("No strength");
@@ -564,7 +506,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 * removes Bastion from database and destroys the block at the location
 	 */
 	public void destroy() {
-		if (Bastion.getConfigManager().getDestroy()) {
+		if (type.isDestroyOnRemove()) {
 			location.getBlock().setType(Material.AIR);
 		}
 		close();
@@ -578,12 +520,16 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 			Bastion.getPlugin().getLogger().warning("Tried to close already closed Bastion at " + this.location);
 		}
 
-		if (EROSION_TIME != 0) {
+		if (type.getErosionPerDay() != 0) {
 			Bukkit.getServer().getScheduler().cancelTask(taskId);
 		}
 		
 		set.remove(this);
 
 		Bastion.getPlugin().getLogger().log(Level.INFO, "Removed bastion {0}. Had been placed on {1} at {2}", new Object[]{id, placed, location});
+	}
+
+	public BastionType getType() {
+		return type;
 	}
 }

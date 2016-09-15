@@ -20,7 +20,6 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
 public class CommandListener implements Listener {
 	private static BastionBlockManager manager;
-	private Material bastionBlock = Bastion.getConfigManager().getBastionBlockMaterial();
 	
 	public CommandListener() {
 		manager=Bastion.getBastionManager();
@@ -71,7 +70,7 @@ public class CommandListener implements Listener {
 			}
 			bastionBlock.mature();
 			player.sendMessage(ChatColor.GREEN + "Matured");
-		} else if (block.getType() == bastionBlock && PlayersStates.playerInMode(player, Mode.BASTION)) {
+		} else if (BastionListener.pendingBastions.containsKey(block.getLocation()) && PlayersStates.playerInMode(player, Mode.BASTION)) {
 			//event.getPlayer().sendMessage(bastionBlock.name());
 			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
 					getReinforcement(block.getLocation());
@@ -81,7 +80,7 @@ public class CommandListener implements Listener {
 			}
 
 			if (reinforcement.canBypass(player)) {
-				Bastion.getBastionManager().addBastion(block.getLocation(), reinforcement);
+				Bastion.getBastionManager().addBastion(block.getLocation(), reinforcement, BastionListener.pendingBastions.get(block.getLocation()));
 				player.sendMessage(ChatColor.GREEN + "Bastion block created");
 				PlayersStates.touchPlayer(player);
 			} else{
