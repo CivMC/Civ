@@ -1336,7 +1336,7 @@ recipes:
       diamondpick:
         material: DIAMOND_PICKAXE
         amount: 1
-        durability: 50
+        durability: 1511
         enchants:
           Efficiency:
             enchant: DIG_SPEED
@@ -1386,7 +1386,7 @@ recipes:
       diamondpick:
         material: DIAMOND_PICKAXE
         amount: 1
-        durability: 50
+        durability: 1511
         enchants:
           Efficiency:
             enchant: DIG_SPEED
@@ -1473,7 +1473,7 @@ recipes:
       diamondpick:
         material: DIAMOND_PICKAXE
         amount: 1
-        durability: 50
+        durability: 1511
         enchants:
           Efficiency:
             enchant: DIG_SPEED
@@ -1560,7 +1560,7 @@ recipes:
       diamondaxe:
         material: DIAMOND_AXE
         amount: 1
-        durability: 50
+        durability: 1511
         enchants:
           Efficiency:
             enchant: DIG_SPEED
