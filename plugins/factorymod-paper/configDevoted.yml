@@ -10,115 +10,132 @@ default_fuel:
     amount: 1
 default_fuel_consumption_intervall: 2s
 default_menu_factory: Workshop
-default_return_rate: 0.75
+default_return_rate: 0.5
 break_grace_period: 100d
 decay_intervall: 1h
 decay_amount: 0
-disable_nether: false
+disable_nether: true
 default_update_time: 1s
-use_recipe_yamlidentifiers: false
+use_recipe_yamlidentifiers: true
 log_inventories: true
 factories:
   workshop:
     type: FCC
     name: Workshop
     setupcost:
-      spick:
+      stonepick:
         material: STONE_PICKAXE
         amount: 1
-      shovel:
-        material: STONE_SPADE
-        amount: 1
-      shoe:
-        material: STONE_HOE
-        amount: 1
-      saxe:
-        material: STONE_AXE
-        amount: 1
     recipes:
-    - Upgrade to Dwarven Factory
-    - Upgrade to Dead Drop
-    - Upgrade to Enhanced Smelter
-    - Upgrade to Yeast Forager
-    - Upgrade to Material Synthesizer
-    - Upgrade to Weapons Factory
-  dwa:
-    type: FCCUPGRADE
-    name: Dwarven Factory
-    recipes:
-    - Combine EFF4UB3
+    - Upgrade to Smelter
+    - Upgrade to First Vault Factory
+    - Upgrade to First Pickaxe Factory
+    - Upgrade to Potion Factory
+    - Upgrade to Lottery Factory
     - Accident Repair
-  spy:
+  Smelter:
     type: FCCUPGRADE
-    name: Dead Drop
+    name: Smelter
     recipes:
-    - Request a snitch
+    - Smelt Glass
+    - Smelt Stone
+    - Create Sea Lantern
+    - Craft Coal Blocks
+    - Create Netherbrick
+    - Create Quartz Blocks
+    - Create Prismarine Blocks
+    - Freeze Packed Ice
+    - Create Redstone Lamp
+    - Forge Rails
+    - Forge Powered Rails
+    - Create Claims Bastion
     - Accident Repair
-  egg:
+  Vault_Factory_1:
     type: FCCUPGRADE
-    name: Genetics Lab
+    name: Vault Factory 1
     recipes:
-    - Empty
+    - Stone Obsidian
+    - Iron Obsidian
+    - Iron Door
+    - City Bastion
+    - Upgrade to Second Vault Factory
     - Accident Repair
-  sml:
+  Vault_Factory_2:
     type: FCCUPGRADE
-    name: Enhanced Smelter
+    name: Vault Factory 2
     recipes:
-    - Sift Diamonds
-    - Extract Gems
-    - Smelt Iron
-    - Crush Coal
-    - Refine Lapis
+    - Stone Obsidian
+    - Iron Obsidian
+    - Diamond Obsidian
+    - Iron Door
+    - Diamond Door
+    - Diamond Chest
+    - Diamond Spike
+    - City Bastion
+    - Upgrade to Third Vault Factory
     - Accident Repair
-  def:
+  Vault_Factory_3:
     type: FCCUPGRADE
-    name: Defense Factory
+    name: Vault Factory 3
     recipes:
-    - Empty
+    - Stone Obsidian
+    - Iron Obsidian
+    - Diamond Obsidian
+    - Emerald Obsidian
+    - Iron Door
+    - Diamond Door
+    - Emerald Door
+    - Diamond Chest
+    - Emerald Chest
+    - Diamond Spike
+    - Emerald Spike
+    - City Bastion
+    - Vault Bastion
     - Accident Repair
-  rai:
+  Pickaxe_Factory_1:
     type: FCCUPGRADE
-    name: Intrusion Ops
+    name: Pickaxe Factory 1
     recipes:
-    - Empty
+    - Unbreaking IV Book
+    - Efficiency VI Pickaxe
+    - Upgrade to Second Pickaxe Factory
     - Accident Repair
-  for:
+  Pickaxe_Factory_2:
     type: FCCUPGRADE
-    name: Yeast Forager
+    name: Pickaxe Factory 2
     recipes:
-    - Discover pure water
+    - Unbreaking IV Book
+    - Unbreaking V Book
+    - Efficiency VI Pickaxe
+    - Efficiency VII Pickaxe
+    - Upgrade to Third Pickaxe Factory
     - Accident Repair
-  wea:
+  Pickaxe_Factory_3:
     type: FCCUPGRADE
-    name: Weapons Factory
+    name: Pickaxe Factory 3
     recipes:
-    - Rapier
-    - Longsword
-    - Broadsword
+    - Unbreaking IV Book
+    - Unbreaking V Book
+    - Unbreaking VI Book
+    - Efficiency VI Pickaxe
+    - Efficiency VII Pickaxe
+    - Efficiency VIII Pickaxe
+    - Efficiency VI Axe
     - Accident Repair
-  bos:
+  Potion_Factory:
     type: FCCUPGRADE
-    name: Dimensional Gate
+    name: Potion Factory
     recipes:
-    - Empty
+    - Placeholder
     - Accident Repair
-  cit:
+  Lottery_Factory:
     type: FCCUPGRADE
-    name: Material Synthesizer
+    name: Lottery Factory
     recipes:
-    - Mix Concrete
+    - Placeholder
     - Accident Repair
 recipes:
-  xprepair:
-    name: XP Repair
-    production_time: 1s
-    type: REPAIR
-    input:
-      xp_bottles:
-        material: EXP_BOTTLE
-        amount: 1
-    health_gained: 79
-  fullrepair:
+  Accident Repair:
     name: Accident Repair
     production_time: 1s
     type: REPAIR
@@ -127,396 +144,1742 @@ recipes:
         material: EXP_BOTTLE
         amount: 10
     health_gained: 10000
-  dwr:
-    name: Upgrade to Dwarven Factory
-    production_time: 10s
-    type: UPGRADE
-    input:
-      chests:
-        material: DIAMOND
-        amount: 5
-    factory: Dwarven Factory
-  rec1:
+  Smelt Glass:
     type: PRODUCTION
-    name: Mix Concrete
-    production_time: 10s
+    name: Smelt Glass
+    production_time: 5s
     input:
-      stone:
-        material: STONE
-        durability: -1
-        amount: 64
-      gravel:
-        material: GRAVEL
-        amount: 64
       sand:
         material: SAND
         amount: 64
     output:
-      concrete:
-        material: GRAVEL
-        amount: 64
-        lore:
-        - Reinforce then let it set!
-  rec2:
-    name: Empty
+      glass:
+        material: GLASS
+        amount: 192
+  Smelt Stone:
     type: PRODUCTION
-    production_time: 10s
+    name: Smelt Stone
+    production_time: 5s
     input:
       cobble:
         material: COBBLESTONE
+        amount: 64
+    output:
+      stone:
+        material: STONE
+        amount: 192
+  Create Sea Lantern:
+    type: PRODUCTION
+    name: Create Sea Lantern
+    production_time: 5s
+    input:
+      lapis:
+        material: INK_SACK
+        durability: 4
+        amount: 16
+      glowstonedust:
+        material: GLOWSTONE_DUST
+        amount: 4
+    output:
+      sealantern:
+        material: SEA_LANTERN
+        amount: 64
+  Craft Coal Blocks:
+    type: PRODUCTION
+    name: Craft Coal Blocks
+    production_time: 5s
+    input:
+      coalore:
+        material: COAL_ORE
+        amount: 16
+      stone:
+        material: STONE
+        amount: 64
+      quartz:
+        material: QUARTZ
+        amount: 64
+    output:
+      coalblocks:
+        material: COAL_BLOCK
+        amount: 64
+  Create Netherbrick:
+    type: PRODUCTION
+    name: Create Netherbrick
+    production_time: 5s
+    input:
+      obsidian:
+        material: OBSIDIAN
+        amount: 32
+      sand:
+        material: SAND
+        amount: 32
+    output:
+      netherbrick:
+        material: NETHER_BRICK
+        amount: 192
+  Create Quartz Blocks:
+    type: PRODUCTION
+    name: Create Quartz Blocks
+    production_time: 5s
+    input:
+      snow:
+        material: SNOW_BLOCK
+        amount: 32
+      stone:
+        material: STONE
+        amount: 32
+    output:
+      quartzblock:
+        material: QUARTZ_BLOCK
+        amount: 192
+  Create Prismarine Blocks:
+    type: PRODUCTION
+    name: Create Prismarine Blocks
+    production_time: 5s
+    input:
+      lapis:
+        material: INK_SACK
+        durability: 4
+        amount: 16
+    output:
+      prismarineblock:
+        material: PRISMARINE
+        amount: 192
+  Freeze Packed Ice:
+    type: PRODUCTION
+    name: Freeze Packed Ice
+    production_time: 5s
+    input:
+      snow:
+        material: SNOW_BLOCK
+        amount: 64
+      waterbucket:
+        material: WATER_BUCKET
+        amount: 4
+    output:
+      packedice:
+        material: PACKED_ICE
+        amount: 192
+      bucket:
+        material: BUCKET
+        amount: 4
+  Create Redstone Lamp:
+    type: PRODUCTION
+    name: Create Redstone Lamp
+    production_time: 5s
+    input:
+      redstone:
+        material: REDSTONE
+        amount: 16
+      glowstonedust:
+        material: GLOWSTONE_DUST
+        amount: 4
+    output:
+      redstonelamp:
+        material: REDSTONE_LAMP_OFF
+        amount: 32
+  Forge Rails:
+    type: PRODUCTION
+    name: Forge Rails
+    production_time: 5s
+    input:
+      lavabucket:
+        material: LAVA_BUCKET
+        amount: 4
+      stone:
+        material: STONE
+        amount: 256
+    output:
+      rails:
+        material: RAILS
+        amount: 48
+  Forge Powered Rails:
+    type: PRODUCTION
+    name: Forge Powered Rails
+    production_time: 5s
+    input:
+      lavabucket:
+        material: LAVA_BUCKET
+        amount: 4
+      stone:
+        material: SANDSTONE
+        amount: 256
+    output:
+      poweredrails:
+        material: POWERED_RAIL
+        amount: 24
+  Stone Obsidian:
+    type: PRODUCTION
+    name: Stone Obsidian
+    production_time: 5s
+    input:
+      coal:
+        material: COAL
+        amount: 16
+      iron:
+        material: IRON_INGOT
+        amount: 16
+      lapis:
+        material: INK_SACK
+        durability: 4
+        amount: 16
+      gold:
+        material: GOLD_INGOT
+        amount: 16
+      redstone:
+        material: REDSTONE
+        amount: 16
+      diamond:
+        material: DIAMOND
+        amount: 16
+      emerald:
+        material: EMERALD
+        amount: 16
+    output:
+      Stone_Obsidian:
+        material: OBSIDIAN
+        amount: 128
+        lore:
+        - Stone Reinforced Obsidian
+  Iron Obsidian:
+    type: PRODUCTION
+    name: Iron Obsidian
+    production_time: 5s
+    input:
+      lead:
+        material: COAL
+        amount: 8
+        lore:
+        - Lead T1
+      steel:
+        material: IRON_INGOT
+        amount: 8
+        lore:
+        - Steel T1
+      bronze:
+        material: INK_SACK
+        durability: 4
+        amount: 4
+        lore:
+        - Bronze T1
+      silver:
+        material: GOLD_INGOT
+        amount: 4
+        lore:
+        - Silver T1
+      copper:
+        material: REDSTONE
+        amount: 4
+        lore:
+        - Copper T1
+      titanium:
+        material: DIAMOND
+        amount: 4
+        lore:
+        - Titanium T1
+      mercury:
+        material: EMERALD
+        amount: 4
+        lore:
+        - Mercury T1
+    output:
+      Iron_Obsidian:
+        material: OBSIDIAN
+        amount: 16
+        lore:
+        - Iron Reinforced Obsidian
+  Diamond Obsidian:
+    type: PRODUCTION
+    name: Diamond Obsidian
+    production_time: 5s
+    input:
+      nickel:
+        material: COAL
+        amount: 64
+        lore:
+        - Nickel T2
+      aluminum:
+        material: IRON_INGOT
+        amount: 64
+        lore:
+        - Aluminum T2
+      pewter:
+        material: INK_SACK
+        durability: 4
+        amount: 32
+        lore:
+        - Pewter T2
+      pearl:
+        material: GOLD_INGOT
+        amount: 32
+        lore:
+        - Pearl T2
+      brass:
+        material: REDSTONE
+        amount: 32
+        lore:
+        - Brass T2
+      platinum:
+        material: DIAMOND
+        amount: 32
+        lore:
+        - Platinum T2
+      enderite:
+        material: EMERALD
+        amount: 32
+        lore:
+        - Enderite T2
+    output:
+      Diamond_Obsidian:
+        material: OBSIDIAN
+        amount: 128
+        lore:
+        - Diamond Reinforced Obsidian
+  Emerald Obsidian:
+    type: PRODUCTION
+    name: Emerald Obsidian
+    production_time: 5s
+    input:
+      oil:
+        material: COAL
+        amount: 64
+        lore:
+        - Oil T3
+      silicon:
+        material: IRON_INGOT
+        amount: 64
+        lore:
+        - Silicon T3
+      fiberglass:
+        material: INK_SACK
+        amount: 32
+        durability: 5
+        lore:
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        amount: 32
+        lore:
+        - Artifact T3
+      graphite:
+        material: REDSTONE
+        amount: 32
+        lore:
+        - Graphite T3
+      carbon:
+        material: DIAMOND
+        amount: 32
+        lore:
+        - Carbon T3
+      uranium:
+        material: EMERALD
+        amount: 32
+        lore:
+        - Uranium T3
+      ghastheart:
+        material: FIREWORK_CHARGE
+        amount: 32
+        lore:
+        - Ghast Heart T3
+      slimyheart:
+        material: FERMENTED_SPIDER_EYE
+        amount: 32
+        lore:
+        - Slimy Heart T3
+      burntheart:
+        material: COAL
+        amount: 32
+        lore:
+        - Burnt Heart T3
+      sulfurheart:
+        material: STONE
+        amount: 32
+        lore:
+        - Sulfur Heart T3
+      boneheart:
+        material: INK_SACK
+        durability: 15
+        amount: 32
+        lore:
+        - Bone Heart T3
+      magmaheart:
+        material: REDSTONE_TORCH_ON
+        amount: 32
+        lore:
+        - Magma Heart T3
+      rottenheart:
+        material: INK_SACK
+        durability: 3
+        amount: 32
+        lore:
+        - Rotten Heart T3
+    output:
+      Emerald_Obsidian:
+        material: OBSIDIAN
+        amount: 256
+        lore:
+        - Emerald Reinforced Obsidian
+  Iron Door:
+    type: PRODUCTION
+    name: Iron Door
+    production_time: 5s
+    input:
+      lead:
+        material: COAL
+        amount: 8
+        lore:
+        - Lead T1
+      steel:
+        material: IRON_INGOT
+        amount: 8
+        lore:
+        - Steel T1
+      bronze:
+        material: INK_SACK
+        durability: 4
+        amount: 4
+        lore:
+        - Bronze T1
+      silver:
+        material: GOLD_INGOT
+        amount: 4
+        lore:
+        - Silver T1
+      copper:
+        material: REDSTONE
+        amount: 4
+        lore:
+        - Copper T1
+      titanium:
+        material: DIAMOND
+        amount: 4
+        lore:
+        - Titanium T1
+      mercury:
+        material: EMERALD
+        amount: 4
+        lore:
+        - Mercury T1
+    output:
+      Iron_Door:
+        material: IRON_DOOR
+        amount: 8
+        lore:
+        - Iron Reinforced Door
+  Diamond Door:
+    type: PRODUCTION
+    name: Diamond Door
+    production_time: 5s
+    input:
+      nickel:
+        material: COAL
+        amount: 64
+        lore:
+        - Nickel T2
+      aluminum:
+        material: IRON_INGOT
+        amount: 64
+        lore:
+        - Aluminum T2
+      pewter:
+        material: INK_SACK
+        durability: 4
+        amount: 32
+        lore:
+        - Pewter T2
+      pearl:
+        material: GOLD_INGOT
+        amount: 32
+        lore:
+        - Pearl T2
+      brass:
+        material: REDSTONE
+        amount: 32
+        lore:
+        - Brass T2
+      platinum:
+        material: DIAMOND
+        amount: 32
+        lore:
+        - Platinum T2
+      enderite:
+        material: EMERALD
+        amount: 32
+        lore:
+        - Enderite T2
+    output:
+      Diamond_Door:
+        material: IRON_DOOR
+        amount: 32
+        lore:
+        - Diamond Reinforced Door
+  Emerald Door:
+    type: PRODUCTION
+    name: Emerald Door
+    production_time: 5s
+    input:
+      oil:
+        material: COAL
+        amount: 64
+        lore:
+        - Oil T3
+      silicon:
+        material: IRON_INGOT
+        amount: 64
+        lore:
+        - Silicon T3
+      fiberglass:
+        material: INK_SACK
+        amount: 32
+        durability: 5
+        lore:
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        amount: 32
+        lore:
+        - Artifact T3
+      graphite:
+        material: REDSTONE
+        amount: 32
+        lore:
+        - Graphite T3
+      carbon:
+        material: DIAMOND
+        amount: 32
+        lore:
+        - Carbon T3
+      uranium:
+        material: EMERALD
+        amount: 32
+        lore:
+        - Uranium T3
+      ghastheart:
+        material: FIREWORK_CHARGE
+        amount: 32
+        lore:
+        - Ghast Heart T3
+      slimyheart:
+        material: FERMENTED_SPIDER_EYE
+        amount: 32
+        lore:
+        - Slimy Heart T3
+      burntheart:
+        material: COAL
+        amount: 32
+        lore:
+        - Burnt Heart T3
+      sulfurheart:
+        material: STONE
+        amount: 32
+        lore:
+        - Sulfur Heart T3
+      boneheart:
+        material: INK_SACK
+        durability: 15
+        amount: 32
+        lore:
+        - Bone Heart T3
+      magmaheart:
+        material: REDSTONE_TORCH_ON
+        amount: 32
+        lore:
+        - Magma Heart T3
+      rottenheart:
+        material: INK_SACK
+        durability: 3
+        amount: 32
+        lore:
+        - Rotten Heart T3
+    output:
+      Emerald_Door:
+        material: IRON_DOOR
+        amount: 32
+        lore:
+        - Emerald Reinforced Door
+  Diamond Chest:
+    type: PRODUCTION
+    name: Diamond Chest
+    production_time: 5s
+    input:
+      nickel:
+        material: COAL
+        amount: 64
+        lore:
+        - Nickel T2
+      aluminum:
+        material: IRON_INGOT
+        amount: 64
+        lore:
+        - Aluminum T2
+      pewter:
+        material: INK_SACK
+        durability: 4
+        amount: 32
+        lore:
+        - Pewter T2
+      pearl:
+        material: GOLD_INGOT
+        amount: 32
+        lore:
+        - Pearl T2
+      brass:
+        material: REDSTONE
+        amount: 32
+        lore:
+        - Brass T2
+      platinum:
+        material: DIAMOND
+        amount: 32
+        lore:
+        - Platinum T2
+      enderite:
+        material: EMERALD
+        amount: 32
+        lore:
+        - Enderite T2
+    output:
+      Diamond_Chest:
+        material: CHEST
+        amount: 8
+        lore:
+        - Diamond Reinforced Chest
+  Emerald Chest:
+    type: PRODUCTION
+    name: Emerald Chest
+    production_time: 5s
+    input:
+      oil:
+        material: COAL
+        amount: 64
+        lore:
+        - Oil T3
+      silicon:
+        material: IRON_INGOT
+        amount: 64
+        lore:
+        - Silicon T3
+      fiberglass:
+        material: INK_SACK
+        amount: 32
+        durability: 5
+        lore:
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        amount: 32
+        lore:
+        - Artifact T3
+      graphite:
+        material: REDSTONE
+        amount: 32
+        lore:
+        - Graphite T3
+      carbon:
+        material: DIAMOND
+        amount: 32
+        lore:
+        - Carbon T3
+      uranium:
+        material: EMERALD
+        amount: 32
+        lore:
+        - Uranium T3
+      ghastheart:
+        material: FIREWORK_CHARGE
+        amount: 32
+        lore:
+        - Ghast Heart T3
+      slimyheart:
+        material: FERMENTED_SPIDER_EYE
+        amount: 32
+        lore:
+        - Slimy Heart T3
+      burntheart:
+        material: COAL
+        amount: 32
+        lore:
+        - Burnt Heart T3
+      sulfurheart:
+        material: STONE
+        amount: 32
+        lore:
+        - Sulfur Heart T3
+      boneheart:
+        material: INK_SACK
+        durability: 15
+        amount: 32
+        lore:
+        - Bone Heart T3
+      magmaheart:
+        material: REDSTONE_TORCH_ON
+        amount: 32
+        lore:
+        - Magma Heart T3
+      rottenheart:
+        material: INK_SACK
+        durability: 3
+        amount: 32
+        lore:
+        - Rotten Heart T3
+    output:
+      Emerald_Chest:
+        material: CHEST
+        amount: 32
+        lore:
+        - Emerald Reinforced Chest
+  Diamond Spike:
+    type: PRODUCTION
+    name: Diamond Spike
+    production_time: 5s
+    input:
+      nickel:
+        material: COAL
+        amount: 256
+        lore:
+        - Nickel T2
+      aluminum:
+        material: IRON_INGOT
+        amount: 128
+        lore:
+        - Aluminum T2
+      pewter:
+        material: INK_SACK
+        durability: 4
+        amount: 64
+        lore:
+        - Pewter T2
+      pearl:
+        material: GOLD_INGOT
+        amount: 64
+        lore:
+        - Pearl T2
+      brass:
+        material: REDSTONE
+        amount: 64
+        lore:
+        - Brass T2
+      platinum:
+        material: DIAMOND
+        amount: 64
+        lore:
+        - Platinum T2
+      enderite:
+        material: EMERALD
+        amount: 64
+        lore:
+        - Enderite T2
+    output:
+      Diamond_Spike:
+        material: OBSIDIAN
+        amount: 4
+        lore:
+        - Diamond Reinforced Obsidian Spike
+  Emerald Spike:
+    type: PRODUCTION
+    name: Emerald Spike
+    production_time: 5s
+    input:
+      oil:
+        material: COAL
+        amount: 124
+        lore:
+        - Oil T3
+      silicon:
+        material: IRON_INGOT
+        amount: 124
+        lore:
+        - Silicon T3
+      fiberglass:
+        material: INK_SACK
+        amount: 64
+        durability: 5
+        lore:
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        amount: 64
+        lore:
+        - Artifact T3
+      graphite:
+        material: REDSTONE
+        amount: 64
+        lore:
+        - Graphite T3
+      carbon:
+        material: DIAMOND
+        amount: 64
+        lore:
+        - Carbon T3
+      uranium:
+        material: EMERALD
+        amount: 64
+        lore:
+        - Uranium T3
+      ghastheart:
+        material: FIREWORK_CHARGE
+        amount: 64
+        lore:
+        - Ghast Heart T3
+      slimyheart:
+        material: FERMENTED_SPIDER_EYE
+        amount: 64
+        lore:
+        - Slimy Heart T3
+      burntheart:
+        material: COAL
+        amount: 64
+        lore:
+        - Burnt Heart T3
+      sulfurheart:
+        material: STONE
+        amount: 64
+        lore:
+        - Sulfur Heart T3
+      boneheart:
+        material: INK_SACK
+        durability: 15
+        amount: 64
+        lore:
+        - Bone Heart T3
+      magmaheart:
+        material: REDSTONE_TORCH_ON
+        amount: 64
+        lore:
+        - Magma Heart T3
+      rottenheart:
+        material: INK_SACK
+        durability: 3
+        amount: 64
+        lore:
+        - Rotten Heart T3
+    output:
+      Emerald_Spike:
+        material: OBSIDIAN
+        amount: 16
+        lore:
+        - Emerald Reinforced Obsidian Spike
+  Create Claims Bastion:
+    type: PRODUCTION
+    name: Create Claims Bastion
+    production_time: 5s
+    input:
+      stone:
+        material: STONE
+        amount: 320
+      glass:
+        material: GLASS
+        amount: 320
+    output:
+      sponge:
+        material: SPONGE
+        amount: 1
+        lore:
+        - Claims Bastion
+  City Bastion:
+    type: PRODUCTION
+    name: City Bastion
+    production_time: 5s
+    input:
+      lead:
+        material: COAL
+        amount: 4
+        lore:
+        - Lead T1
+      steel:
+        material: IRON_INGOT
+        amount: 4
+        lore:
+        - Steel T1
+      bronze:
+        material: INK_SACK
+        durability: 4
+        amount: 2
+        lore:
+        - Bronze T1
+      silver:
+        material: GOLD_INGOT
+        amount: 2
+        lore:
+        - Silver T1
+      copper:
+        material: REDSTONE
+        amount: 2
+        lore:
+        - Copper T1
+      titanium:
+        material: DIAMOND
+        amount: 2
+        lore:
+        - Titanium T1
+      mercury:
+        material: EMERALD
+        amount: 2
+        lore:
+        - Mercury T1
+    output:
+      sponge:
+        material: SPONGE
+        amount: 1
+        lore:
+        - City Bastion
+  Vault Bastion:
+    type: PRODUCTION
+    name: Vault Bastion
+    production_time: 5s
+    input:
+      oil:
+        material: COAL
+        amount: 124
+        lore:
+        - Oil T3
+      silicon:
+        material: IRON_INGOT
+        amount: 124
+        lore:
+        - Silicon T3
+      fiberglass:
+        material: INK_SACK
+        amount: 64
+        durability: 5
+        lore:
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        amount: 64
+        lore:
+        - Artifact T3
+      graphite:
+        material: REDSTONE
+        amount: 64
+        lore:
+        - Graphite T3
+      carbon:
+        material: DIAMOND
+        amount: 64
+        lore:
+        - Carbon T3
+      uranium:
+        material: EMERALD
+        amount: 64
+        lore:
+        - Uranium T3
+      ghastheart:
+        material: FIREWORK_CHARGE
+        amount: 64
+        lore:
+        - Ghast Heart T3
+      slimyheart:
+        material: FERMENTED_SPIDER_EYE
+        amount: 64
+        lore:
+        - Slimy Heart T3
+      burntheart:
+        material: COAL
+        amount: 64
+        lore:
+        - Burnt Heart T3
+      sulfurheart:
+        material: STONE
+        amount: 64
+        lore:
+        - Sulfur Heart T3
+      boneheart:
+        material: INK_SACK
+        durability: 15
+        amount: 64
+        lore:
+        - Bone Heart T3
+      magmaheart:
+        material: REDSTONE_TORCH_ON
+        amount: 64
+        lore:
+        - Magma Heart T3
+      rottenheart:
+        material: INK_SACK
+        durability: 3
+        amount: 64
+        lore:
+        - Rotten Heart T3
+    output:
+      sponge:
+        material: SPONGE
+        amount: 32
+        lore:
+        - Vault Bastion
+  Unbreaking IV Book:
+    type: PRODUCTION
+    name: Unbreaking IV Book
+    production_time: 5s
+    input:
+      ghasteye:
+        material: SPIDER_EYE
+        amount: 32
+        lore:
+        - Ghast Eye T1
+      cocoon:
+        material: SNOW_BALL
+        amount: 32
+        lore:
+        - Cocoon T1
+      blazeember:
+        material: SULPHUR
+        amount: 32
+        lore:
+        - Blaze Ember T1
+      creeperblood:
+        material: CARPET
+        durability: 14
+        amount: 32
+        lore:
+        - Creeper Blood T1
+      ribcage:
+        material: BONE_BLOCK
+        amount: 32
+        lore:
+        - Ribcage T1
+      magmaegg:
+        material: MAGMA
+        amount: 32
+        lore:
+        - Magma Egg T1
+      zombietooth:
+        material: FEATHER
+        amount: 32
+        lore:
+        - Zombie's Tooth T1
+    output:
+      Unbreaking_IV_Book:
+        material: ENCHANTED_BOOK
+        amount: 1
+        stored_enchants:
+          Unbreaking_IV:
+            enchant: DURABILITY
+            level: 4
+  Unbreaking V Book:
+    type: PRODUCTION
+    name: Unbreaking V Book
+    production_time: 5s
+    input:
+      ghasteye:
+        material: SPIDER_EYE
+        amount: 64
+        lore:
+        - Ghast Eye T1
+      cocoon:
+        material: SNOW_BALL
+        amount: 64
+        lore:
+        - Cocoon T1
+      blazeember:
+        material: SULPHUR
+        amount: 64
+        lore:
+        - Blaze Ember T1
+      creeperblood:
+        material: CARPET
+        durability: 14
+        amount: 64
+        lore:
+        - Creeper Blood T1
+      ribcage:
+        material: BONE_BLOCK
+        amount: 64
+        lore:
+        - Ribcage T1
+      magmaegg:
+        material: MAGMA
+        amount: 64
+        lore:
+        - Magma Egg T1
+      zombietooth:
+        material: FEATHER
+        amount: 64
+        lore:
+        - Zombie's Tooth T1
+    output:
+      Unbreaking_V_Book:
+        material: ENCHANTED_BOOK
+        amount: 1
+        stored_enchants:
+          Unbreaking_V:
+            enchant: DURABILITY
+            level: 5
+  Unbreaking VI Book:
+    type: PRODUCTION
+    name: Unbreaking VI Book
+    production_time: 5s
+    input:
+      oil:
+        material: COAL
+        amount: 64
+        lore:
+        - Oil T3
+      silicon:
+        material: IRON_INGOT
+        amount: 64
+        lore:
+        - Silicon T3
+      fiberglass:
+        material: INK_SACK
+        amount: 32
+        durability: 5
+        lore:
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        amount: 32
+        lore:
+        - Artifact T3
+      graphite:
+        material: REDSTONE
+        amount: 32
+        lore:
+        - Graphite T3
+      carbon:
+        material: DIAMOND
+        amount: 32
+        lore:
+        - Carbon T3
+      uranium:
+        material: EMERALD
+        amount: 32
+        lore:
+        - Uranium T3
+      ghastheart:
+        material: FIREWORK_CHARGE
+        amount: 32
+        lore:
+        - Ghast Heart T3
+      slimyheart:
+        material: FERMENTED_SPIDER_EYE
+        amount: 32
+        lore:
+        - Slimy Heart T3
+      burntheart:
+        material: COAL
+        amount: 32
+        lore:
+        - Burnt Heart T3
+      sulfurheart:
+        material: STONE
+        amount: 32
+        lore:
+        - Sulfur Heart T3
+      boneheart:
+        material: INK_SACK
+        durability: 15
+        amount: 32
+        lore:
+        - Bone Heart T3
+      magmaheart:
+        material: REDSTONE_TORCH_ON
+        amount: 32
+        lore:
+        - Magma Heart T3
+      rottenheart:
+        material: INK_SACK
+        durability: 3
+        amount: 32
+        lore:
+        - Rotten Heart T3
+    output:
+      Unbreaking_VI_Book:
+        material: ENCHANTED_BOOK
+        amount: 1
+        stored_enchants:
+          Unbreaking_VI:
+            enchant: DURABILITY
+            level: 6
+  Efficiency VI Pickaxe:
+    type: PRODUCTION
+    name: Efficiency VI Pickaxe
+    production_time: 5s
+    input:
+      ghasteye:
+        material: SPIDER_EYE
+        amount: 32
+        lore:
+        - Ghast Eye T1
+      cocoon:
+        material: SNOW_BALL
+        amount: 32
+        lore:
+        - Cocoon T1
+      blazeember:
+        material: SULPHUR
+        amount: 32
+        lore:
+        - Blaze Ember T1
+      creeperblood:
+        material: CARPET
+        durability: 14
+        amount: 32
+        lore:
+        - Creeper Blood T1
+      ribcage:
+        material: BONE_BLOCK
+        amount: 32
+        lore:
+        - Ribcage T1
+      magmaegg:
+        material: MAGMA
+        amount: 32
+        lore:
+        - Magma Egg T1
+      zombietooth:
+        material: FEATHER
+        amount: 32
+        lore:
+        - Zombie's Tooth T1
+    output:
+      diamondpick:
+        material: DIAMOND_PICKAXE
+        amount: 1
+        durability: 50
+        enchants:
+          Efficiency:
+            enchant: DIG_SPEED
+            level: 6
+  Efficiency VII Pickaxe:
+    type: PRODUCTION
+    name: Efficiency VII Pickaxe
+    production_time: 5s
+    input:
+      ghasteye:
+        material: SPIDER_EYE
+        amount: 64
+        lore:
+        - Ghast Eye T1
+      cocoon:
+        material: SNOW_BALL
+        amount: 64
+        lore:
+        - Cocoon T1
+      blazeember:
+        material: SULPHUR
+        amount: 64
+        lore:
+        - Blaze Ember T1
+      creeperblood:
+        material: CARPET
+        durability: 14
+        amount: 64
+        lore:
+        - Creeper Blood T1
+      ribcage:
+        material: BONE_BLOCK
+        amount: 64
+        lore:
+        - Ribcage T1
+      magmaegg:
+        material: MAGMA
+        amount: 64
+        lore:
+        - Magma Egg T1
+      zombietooth:
+        material: FEATHER
+        amount: 64
+        lore:
+        - Zombie's Tooth T1
+    output:
+      diamondpick:
+        material: DIAMOND_PICKAXE
+        amount: 1
+        durability: 50
+        enchants:
+          Efficiency:
+            enchant: DIG_SPEED
+            level: 7
+  Efficiency VIII Pickaxe:
+    type: PRODUCTION
+    name: Efficiency VIII Pickaxe
+    production_time: 5s
+    input:
+      oil:
+        material: COAL
+        amount: 64
+        lore:
+        - Oil T3
+      silicon:
+        material: IRON_INGOT
+        amount: 64
+        lore:
+        - Silicon T3
+      fiberglass:
+        material: INK_SACK
+        amount: 32
+        durability: 5
+        lore:
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        amount: 32
+        lore:
+        - Artifact T3
+      graphite:
+        material: REDSTONE
+        amount: 32
+        lore:
+        - Graphite T3
+      carbon:
+        material: DIAMOND
+        amount: 32
+        lore:
+        - Carbon T3
+      uranium:
+        material: EMERALD
+        amount: 32
+        lore:
+        - Uranium T3
+      ghastheart:
+        material: FIREWORK_CHARGE
+        amount: 32
+        lore:
+        - Ghast Heart T3
+      slimyheart:
+        material: FERMENTED_SPIDER_EYE
+        amount: 32
+        lore:
+        - Slimy Heart T3
+      burntheart:
+        material: COAL
+        amount: 32
+        lore:
+        - Burnt Heart T3
+      sulfurheart:
+        material: STONE
+        amount: 32
+        lore:
+        - Sulfur Heart T3
+      boneheart:
+        material: INK_SACK
+        durability: 15
+        amount: 32
+        lore:
+        - Bone Heart T3
+      magmaheart:
+        material: REDSTONE_TORCH_ON
+        amount: 32
+        lore:
+        - Magma Heart T3
+      rottenheart:
+        material: INK_SACK
+        durability: 3
+        amount: 32
+        lore:
+        - Rotten Heart T3
+    output:
+      diamondpick:
+        material: DIAMOND_PICKAXE
+        amount: 1
+        durability: 50
+        enchants:
+          Efficiency:
+            enchant: DIG_SPEED
+            level: 8
+  Efficiency VI Axe:
+    type: PRODUCTION
+    name: Efficiency VIII Axe
+    production_time: 5s
+    input:
+      oil:
+        material: COAL
+        amount: 64
+        lore:
+        - Oil T3
+      silicon:
+        material: IRON_INGOT
+        amount: 64
+        lore:
+        - Silicon T3
+      fiberglass:
+        material: INK_SACK
+        amount: 32
+        durability: 5
+        lore:
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        amount: 32
+        lore:
+        - Artifact T3
+      graphite:
+        material: REDSTONE
+        amount: 32
+        lore:
+        - Graphite T3
+      carbon:
+        material: DIAMOND
+        amount: 32
+        lore:
+        - Carbon T3
+      uranium:
+        material: EMERALD
+        amount: 32
+        lore:
+        - Uranium T3
+      ghastheart:
+        material: FIREWORK_CHARGE
+        amount: 32
+        lore:
+        - Ghast Heart T3
+      slimyheart:
+        material: FERMENTED_SPIDER_EYE
+        amount: 32
+        lore:
+        - Slimy Heart T3
+      burntheart:
+        material: COAL
+        amount: 32
+        lore:
+        - Burnt Heart T3
+      sulfurheart:
+        material: STONE
+        amount: 32
+        lore:
+        - Sulfur Heart T3
+      boneheart:
+        material: INK_SACK
+        durability: 15
+        amount: 32
+        lore:
+        - Bone Heart T3
+      magmaheart:
+        material: REDSTONE_TORCH_ON
+        amount: 32
+        lore:
+        - Magma Heart T3
+      rottenheart:
+        material: INK_SACK
+        durability: 3
+        amount: 32
+        lore:
+        - Rotten Heart T3
+    output:
+      diamondaxe:
+        material: DIAMOND_AXE
+        amount: 1
+        durability: 50
+        enchants:
+          Efficiency:
+            enchant: DIG_SPEED
+            level: 8
+  Placeholder:
+    type: PRODUCTION
+    name: Placeholder
+    production_time: 5s
+    input:
+      stone:
+        material: STONE
         amount: 1
     output:
       stone:
         material: STONE
         amount: 1
-  rec4:
-    name: Upgrade to Dead Drop
+  Upgrade to Smelter:
+    name: Upgrade to Smelter
     production_time: 10s
     type: UPGRADE
     input:
-      diamonds1:
-        material: DIAMOND
-        amount: 1
-    factory: Dead Drop
-  rec5:
-    name: Discover pure water
-    production_time: 10s
-    type: PRODUCTION
-    input:
-      water:
-        material: WATER_BUCKET
-        amount: 3
-    output:
-      purewater:
-        material: WATER_BUCKET
-        amount: 1
-        lore:
-        - Pure water
-  rec6:
-    name: Breed a bigger cow
-    production_time: 10s
-    type: PRODUCTION
-    input:
-      water:
-        material: WATER_BUCKET
-        amount: 3
-  rec7:
-    name: Combine EFF4UB3
-    production_time: 10s
-    type: PRODUCTION
-    input:
-      pick:
-        material: DIAMOND_PICKAXE
-        amount: 3
-        durability: 1560
-        enchants:
-          enchantidentifier1:
-            enchant: DURABILITY
-            level: 3
-          enchantgharbbl:
-            enchant: DIG_SPEED
-            level: 4
-    output:
-      5pick:
-        material: DIAMOND_PICKAXE
-        amount: 1
-        name: Dwarven Pick
-        lore:
-        - A dwarven mithril pick
-        - Known for its strength.
-        enchants:
-          enchantidentifier1:
-            enchant: DURABILITY
-            level: 4
-          enchantgharbbl:
-            enchant: DIG_SPEED
-            level: 5
-  rec8:
-    name: Request a snitch
-    production_time: 100s
-    type: PRODUCTION
-    input:
-      noteblocks1:
-        material: NOTE_BLOCK
-        amount: 64
-    output:
-      jb:
-        material: JUKEBOX
-        amount: 1
-  rec9:
-    name: Upgrade to Genetics Lab
-    production_time: 10s
-    type: UPGRADE
-    input:
-      chests1:
-        material: BEDROCK
-        amount: 1
-    factory: Genetics Lab
-  rec10:
-    name: Upgrade to Defense Factory
-    production_time: 10s
-    type: UPGRADE
-    input:
-      chests2:
-        material: BEDROCK
-        amount: 2
-    factory: Defense Factory
-  rec11:
-    name: Upgrade to Intrusion Ops
-    production_time: 10s
-    type: UPGRADE
-    input:
-      chests:
-        material: BEDROCK
-        amount: 3
-    factory: Intrusion Ops
-  rec12:
-    name: Upgrade to Yeast Forager
-    production_time: 10s
-    type: UPGRADE
-    input:
-      bones1:
-        material: BONE
-        amount: 128
-      clay1:
-        material: CLAY
-        amount: 128
-      sugar1:
-        material: SUGAR
-        amount: 128
-    factory: Yeast Forager
-  rec13:
-    name: Upgrade to Weapons Factory
-    production_time: 10s
-    type: UPGRADE
-    input:
-      ch1:
-        material: DIAMOND_SWORD
-        amount: 1
-      ch2:
-        material: ENDER_PEARL
-        amount: 1
-      ch3:
-        material: DIAMOND_CHESTPLATE
-        amount: 1
-      ch4:
-        material: DIAMOND_HELMET
-        amount: 1
-      ch5:
-        material: DIAMOND_LEGGINGS
-        amount: 1
-      ch6:
-        material: DIAMOND_BOOTS
-        amount: 1
-    factory: Weapons Factory
-  rec14:
-    name: Upgrade to Dimensional Gate
-    production_time: 10s
-    type: UPGRADE
-    input:
-      ch5:
-        material: BEDROCK
-        amount: 6
-    factory: Dimensional Gate
-  rec15:
-    name: Upgrade to Material Synthesizer
-    production_time: 10s
-    type: UPGRADE
-    input:
-      melon:
-        material: MELON
-        amount: 1
-      stn:
+      stone:
         material: STONE
-        amount: 1
-      irn:
-        material: IRON_INGOT
-        amount: 1
-      dbred:
-        material: REDSTONE_BLOCK
-        amount: 1
-      diams:
-        material: DIAMOND
-        amount: 1
-      emrd:
-        material: EMERALD
-        amount: 1
-    factory: Material Synthesizer
-  rec16:
-    name: Upgrade to Enhanced Smelter
-    production_time: 20s
+        amount: 64
+      furnace:
+        material: FURNACE
+        amount: 8
+      coalore:
+        material: COAL_ORE
+        amount: 8
+    factory: Smelter
+  Upgrade to First Vault Factory:
+    name: Upgrade to First Vault Factory
+    production_time: 10s
     type: UPGRADE
     input:
-      m1:
-        material: IRON_BLOCK
-        amount: 15
-      m2:
+      lead:
+        material: COAL
+        amount: 196
+        lore:
+        - Lead T1
+      steel:
+        material: IRON_INGOT
+        amount: 128
+        lore:
+        - Steel T1
+      bronze:
+        material: INK_SACK
+        amount: 64
+        durability: 14
+        lore:
+        - Bronze T1
+      silver:
+        material: IRON_INGOT
+        amount: 64
+        lore:
+        - Silver T1
+      copper:
+        material: REDSTONE
+        amount: 64
+        lore:
+        - Copper T1
+      titanium:
         material: DIAMOND
         amount: 64
-      m3:
+        lore:
+        - Titanium T1
+      mercury:
         material: EMERALD
-        amount: 10
-      m4:
-        material: LAPIS_BLOCK
-        amount: 15
-      m5:
-        material: COAL_ORE
-        amount: 640
-    factory: Enhanced Smelter
-  rec17:
-    name: Sift Diamonds
-    production_time: 3s
-    type: PRODUCTION
+        amount: 64
+        lore:
+        - Mercury T1
+    factory: Vault Factory 1
+  Upgrade to Second Vault Factory:
+    name: Upgrade to Second Vault Factory
+    production_time: 10s
+    type: UPGRADE
     input:
-      d1:
-        material: DIAMOND_ORE
-        amount: 2
-    output:
-      d2:
-        material: DIAMOND
-        amount: 5
-  rec18:
-    name: Extract Gems
-    production_time: 3s
-    type: PRODUCTION
-    input:
-      g1:
-        material: EMERALD_ORE
-        amount: 2
-    output:
-      g2:
-        material: EMERALD
-        amount: 5
-  rec19:
-    name: Smelt Iron
-    production_time: 3s
-    type: PRODUCTION
-    input:
-      i1:
-        material: IRON_ORE
-        amount: 3
-    output:
-      i2:
-        material: IRON_INGOT
-        amount: 4
-  rec20:
-    name: Crush Coal
-    production_time: 3s
-    type: PRODUCTION
-    input:
-      c1:
-        material: COAL_ORE
-        amount: 2
-    output:
-      c2:
+      nickel:
         material: COAL
-        amount: 5
-  rec21:
-    name: Refine Lapis
-    production_time: 3s
-    type: PRODUCTION
-    input:
-      l1:
-        material: LAPIS_ORE
-        amount: 1
-    output:
-      l2:
+        amount: 384
+        lore:
+        - Nickel T2
+      aluminum:
+        material: IRON_INGOT
+        amount: 256
+        lore:
+        - Aluminum T2
+      pewter:
         material: INK_SACK
-        durability: 4
-        amount: 20
-  rec22:
-    name: Rapier
-    production_time: 10s
-    type: PRODUCTION
-    input:
-      l1:
-        material: DIAMOND_SWORD
-        amount: 3
-    output:
-      l2:
-        material: DIAMOND_SWORD
-        name: Rapier
+        amount: 128
+        durability: 8
         lore:
-        - A sword embued with ancient
-        - powers of fast attack.
-        amount: 1
-        nbt:
-          AttributeModifiers:
-          - AttributeName: generic.attackSpeed
-            Slot: mainhand
-            Name: Fast Attack
-            Amount: 3.2
-            Operation: 0
-            UUIDLeast: 1
-            UUIDMost: 1
-          - AttributeName: generic.attackDamage
-            Slot: mainhand
-            Name: Light Attack
-            Amount: 1
-            Operation: 0
-            UUIDLeast: 894654
-            UUIDMost: 2872
-  rec23:
-    name: Longsword
-    production_time: 10s
-    type: PRODUCTION
-    input:
-      l1:
-        material: DIAMOND_SWORD
-        amount: 3
-    output:
-      l2:
-        material: DIAMOND_SWORD
-        name: Longsword
+        - Pewter T2
+      pearl:
+        material: EYE_OF_ENDER
+        amount: 128
         lore:
-        - A medium length sword, slash and cut
-        - your enemies to pieces.
-        amount: 1
-        nbt:
-          AttributeModifiers:
-          - AttributeName: generic.attackDamage
-            Slot: mainhand
-            Name: Heavy Attack
-            Amount: 6
-            Operation: 0
-            UUIDLeast: 894654
-            UUIDMost: 2872
-          - AttributeName: generic.attackSpeed
-            Slot: mainhand
-            Name: Slow Attack
-            Amount: 1.6
-            Operation: 0
-            UUIDLeast: 1
-            UUIDMost: 1
-  rec24:
-    name: Broadsword
-    production_time: 10s
-    type: PRODUCTION
-    input:
-      l1:
-        material: DIAMOND_SWORD
-        amount: 3
-    output:
-      l2:
-        material: DIAMOND_SWORD
-        name: Broadsword
+        - Pearl T2
+      brass:
+        material: REDSTONE
+        amount: 128
         lore:
-        - A slow sword that will lay
-        - waste to legions of foes.
-        amount: 1
-        nbt:
-          AttributeModifiers:
-          - AttributeName: generic.attackDamage
-            Slot: mainhand
-            Name: Heavy Attack
-            Amount: 13
-            Operation: 0
-            UUIDLeast: 894654
-            UUIDMost: 2872
-          - AttributeName: generic.attackSpeed
-            Slot: mainhand
-            Name: Slow Attack
-            Amount: 0
-            Operation: 0
-            UUIDLeast: 1
-            UUIDMost: 1
+        - Brass T2
+      platinum:
+        material: DIAMOND
+        amount: 128
+        lore:
+        - Platinum T2
+      enderite:
+        material: EMERALD
+        amount: 128
+        lore:
+        - Enderite T2
+    factory: Vault Factory 2
+  Upgrade to Third Vault Factory:
+    name: Upgrade to Third Vault Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      oil:
+        material: COAL
+        amount: 384
+        lore:
+        - Oil T3
+      silicon:
+        material: IRON_INGOT
+        amount: 256
+        lore:
+        - Silicon T3
+      fiberglass:
+        material: INK_SACK
+        amount: 128
+        durability: 5
+        lore:
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        amount: 128
+        lore:
+        - Artifact T3
+      graphite:
+        material: REDSTONE
+        amount: 128
+        lore:
+        - Graphite T3
+      carbon:
+        material: DIAMOND
+        amount: 128
+        lore:
+        - Carbon T3
+      uranium:
+        material: EMERALD
+        amount: 128
+        lore:
+        - Uranium T3
+    factory: Vault Factory 3
+  Upgrade to First Pickaxe Factory:
+    name: Upgrade to First Pickaxe Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      ghasteye:
+        material: SPIDER_EYE
+        amount: 128
+        lore:
+        - Ghast Eye T1
+      cocoon:
+        material: SNOW_BALL
+        amount: 128
+        lore:
+        - Cocoon T1
+      blazeember:
+        material: SULPHUR
+        amount: 128
+        lore:
+        - Blaze Ember T1
+      creeperblood:
+        material: CARPET
+        durability: 14
+        amount: 128
+        lore:
+        - Creeper Blood T1
+      ribcage:
+        material: BONE_BLOCK
+        amount: 128
+        lore:
+        - Ribcage T1
+      magmaegg:
+        material: MAGMA
+        amount: 128
+        lore:
+        - Magma Egg T1
+      zombietooth:
+        material: FEATHER
+        amount: 128
+        lore:
+        - Zombie's Tooth T1
+    factory: Pickaxe Factory 1
+  Upgrade to Second Pickaxe Factory:
+    name: Upgrade to Second Pickaxe Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      ghastfireball:
+        material: FIREBALL
+        amount: 256
+        lore:
+        - Ghast Fireball T2
+      spiderfang:
+        material: TRIPWIRE_HOOK
+        amount: 256
+        lore:
+        - Spider Fang T2
+      blazefireball:
+        material: BLAZE_POWDER
+        amount: 256
+        lore:
+        - Blaze Fireball T2
+      creeperleg:
+        material: CACTUS
+        amount: 256
+        lore:
+        - Creeper Leg T2
+      femur:
+        material: QUARTZ_BLOCK
+        amount: 256
+        lore:
+        - Femur T2
+      magmaeye:
+        material: RED_MUSHROOM
+        amount: 256
+        lore:
+        - Magma Eye T2
+      zombieleg:
+        material: END_ROD
+        amount: 256
+        lore:
+        - Zombie Leg T2
+    factory: Pickaxe Factory 2
+  Upgrade to Third Pickaxe Factory:
+    name: Upgrade to Third Pickaxe Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      ghastheart:
+        material: FIREWORK_CHARGE
+        amount: 512
+        lore:
+        - Ghast Heart T3
+      slimyheart:
+        material: FERMENTED_SPIDER_EYE
+        amount: 512
+        lore:
+        - Slimy Heart T3
+      burntheart:
+        material: COAL
+        amount: 512
+        lore:
+        - Burnt Heart T3
+      sulfurheart:
+        material: STONE
+        amount: 512
+        lore:
+        - Sulfur Heart T3
+      boneheart:
+        material: INK_SACK
+        durability: 15
+        amount: 512
+        lore:
+        - Bone Heart T3
+      magmaheart:
+        material: REDSTONE_TORCH_ON
+        amount: 512
+        lore:
+        - Magma Heart T3
+      rottenheart:
+        material: INK_SACK
+        durability: 3
+        amount: 512
+        lore:
+        - Rotten Heart T3
+    factory: Pickaxe Factory 3
+  Upgrade to Potion Factory:
+    name: Upgrade to Potion Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      blazerods:
+        material: BLAZE_ROD
+        amount: 64
+      SULPHUR:
+        material: SULPHUR
+        amount: 128
+      bone:
+        material: BONE
+        amount: 512
+      magmacream:
+        material: MAGMA_CREAM
+        amount: 128
+      rottenflesh:
+        material: ROTTEN_FLESH
+        amount: 256
+      spidereye:
+        material: SPIDER_EYE
+        amount: 128
+      ghasttear:
+        material: GHAST_TEAR
+        amount: 64
+    factory: Potion Factory
+  Upgrade to Lottery Factory:
+    name: Upgrade to Lottery Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      obsidian:
+        material: OBSIDIAN
+        amount: 512
+      diamond:
+        material: DIAMOND
+        amount: 512
+    factory: Lottery Factory
