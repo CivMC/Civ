@@ -189,7 +189,7 @@ public class GroupManagerDao {
 	 * Not going to lie, I can't make heads or tails out of half of this.
 	 */
 	public void registerMigrations() {
-		db.registerMigration(1, false, 
+		db.registerMigration(2, true, 
 				"alter table faction drop `version`;",
 				"alter table faction add type int default 0;",
 				"create table faction_id("
@@ -248,7 +248,7 @@ public class GroupManagerDao {
 					+ "'DOORS CHESTS' "
 					+ "from faction_id f;");
 				
-		db.registerMigration(2, false, 
+		db.registerMigration(1, false, 
 				new Callable<Boolean>() {
 					@Override
 					public Boolean call() {

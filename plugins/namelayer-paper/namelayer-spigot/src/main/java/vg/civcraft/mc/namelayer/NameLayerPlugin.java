@@ -26,6 +26,11 @@ import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.misc.ClassHandler;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 
 public class NameLayerPlugin extends ACivMod{
 	private static AssociationList associations;
@@ -132,26 +137,49 @@ public class NameLayerPlugin extends ACivMod{
 		long connectionTimeout = config.get("sql.connection_timeout").getLong();
 		long idleTimeout = config.get("sql.idle_timeout").getLong();
 		long maxLifetime = config.get("sql.max_lifetime").getLong();
-		db = new ManagedDatasource(this, username, password, host, port, dbname,
-				poolsize, connectionTimeout, idleTimeout, maxLifetime);
 		try {
+			db = new ManagedDatasource(this, username, password, host, port, dbname,
+					poolsize, connectionTimeout, idleTimeout, maxLifetime);
 			db.getConnection().close();
 		} catch (Exception se) {
 			NameLayerPlugin.log(Level.WARNING, "Could not connect to DataBase, shutting down!");
 			Bukkit.shutdown();
 		}
 		
-		// First migration is conversion from old system to new, and lives outside AssociationList and GroupManagerDao.
-		db.registerMigration(-2, false,
-				new Callable<Boolean>() {
-					@Override
-					public Boolean call() {
-						return false; // Force a failure. Migrations doesn't check the current migration per step, only at beginning.
-						// So, we force a shutdown failure on first run. Then on second run, the Migration table will hold the correct values.
-					}
-				},
-				"INSERT INTO managed_plugin_data (plugin_name, current_migration_number, last_migration)"
-						+ " SELECT plugin_name, max(db_version), `timestamp` FROM db_version WHERE plugin_name = '" + this.getName() + "' LIMIT 1;");
+		// First "migration"is conversion from old system to new, and lives outside AssociationList and GroupManagerDao.
+		boolean isNew = true;
+		try (Connection connection = db.getConnection();
+				PreparedStatement checkNewInstall = connection.prepareStatement("SELECT * FROM db_version LIMIT 1;");
+				// See if this was a new install. If it was, db_version statement will fail. If it isn't, it'll succeed.
+				//   If the version statement fails, return true; this is new install, carryon.
+				ResultSet rs = checkNewInstall.executeQuery();) {
+			isNew = !rs.next();
+		} catch (SQLException se) {
+			NameLayerPlugin.log(Level.INFO, "New installation: Welcome to Namelayer!");
+		}
+
+		if (!isNew) {
+			try (Connection connection = db.getConnection();
+					PreparedStatement migrateInstall = connection.prepareStatement( 
+							"INSERT INTO managed_plugin_data (plugin_name, current_migration_number, last_migration)"
+								+ " SELECT plugin_name, max(db_version), `timestamp` FROM db_version WHERE plugin_name = '"
+								+ this.getName() + "' LIMIT 1;");) {
+				int rows = migrateInstall.executeUpdate();
+				if (rows == 1) {
+					NameLayerPlugin.log(Level.INFO, "Migration successful!");
+				} else {
+					Bukkit.shutdown();
+					NameLayerPlugin.log(Level.SEVERE, "Migration failed; db_version exists but uncaptured. Could be version problem.");
+					return;
+				}
+			} catch (SQLException se) {
+				Bukkit.shutdown();
+				// Migration failed...
+				NameLayerPlugin.log(Level.SEVERE, "Migration failure!");
+				return;
+			}
+		}
+
 
 		associations = new AssociationList(getLogger(), db);
 		associations.registerMigrations();
